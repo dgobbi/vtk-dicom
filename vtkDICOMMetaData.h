@@ -11,19 +11,20 @@ public:
 
   void PrintSelf(ostream& os, vtkIndent indent);
 
+  class Tag;
+
   enum TagEnum
   {
     PatientName = 0x00100010,
-    PatientID   = 0x00100020, 
+    PatientID   = 0x00100020,
   };
 
 protected:
   vtkDICOMMetaData();
   ~vtkDICOMMetaData();
 
-  class Tag;
   class Container;
-  class Element;
+  struct Element;
 
   Container *Contents;
 
@@ -46,6 +47,11 @@ public:
     this->T1 = static_cast<unsigned int>(tag);
     }
 
+  unsigned int GetHash()
+    {
+    return (this->T1 ^ (this->T1 >> 12));
+    }
+
 private:
   Tag() {};
 
@@ -64,7 +70,13 @@ private:
       }
     T2;
     };
+
+  friend bool operator==(const Tag& a, const Tag& b);
 };
 
+bool operator==(const vtkDICOMMetaData::Tag& a, const vtkDICOMMetaData::Tag& b)
+{
+  return (a.T1 == b.T1);
+};
 
 #endif /* __vtkDICOMMetaData_h */
