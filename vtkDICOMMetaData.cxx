@@ -18,7 +18,7 @@ vtkStandardNewMacro(vtkDICOMMetaData);
 struct vtkDICOMMetaData::Element
 {
   Element(Tag t, unsigned short r, unsigned int l, int d)
-  : tag(t), vr(r), vl(l), data(d) {}
+    : tag(t), vr(r), vl(l), data(d) {}
 
   Tag tag;
   unsigned short vr;
@@ -27,34 +27,16 @@ struct vtkDICOMMetaData::Element
 };
 
 //----------------------------------------------------------------------------
-// The container is a simple hash table
-
-class vtkDICOMMetaData::Container
-{
-public:
-  Container();
-  ~Container();
-
-  vtkDICOMMetaData::Element *FindElement(Tag tag);
-  void EraseElement(Tag tag);
-  vtkDICOMMetaData::Element *&FindElementSlot(Tag tag);
-  void InsertElement(
-    Tag tag, unsigned short vr, unsigned int vl, int data);
-
-private:
-  vtkDICOMMetaData::Element ***Table;
-};
-
-// Create an empty hash table
-vtkDICOMMetaData::Container::Container()
+// Constructor
+vtkDICOMMetaData::vtkDICOMMetaData()
 {
   this->Table = NULL;
 }
 
-// Destruct the hash table
-vtkDICOMMetaData::Container::~Container()
+// Destructor
+vtkDICOMMetaData::~vtkDICOMMetaData()
 {
-  vtkDICOMMetaData::Element ***htable = this->Table;
+  Element ***htable = this->Table;
 
   if (htable)
     {
@@ -68,10 +50,8 @@ vtkDICOMMetaData::Container::~Container()
   this->Table = NULL;
 }
 
-
 // Get an element from the hash table.
-vtkDICOMMetaData::Element *vtkDICOMMetaData::Container::FindElement(
-  Tag tag)
+vtkDICOMMetaData::Element *vtkDICOMMetaData::FindElement(Tag tag)
 {
   unsigned int m = METADATA_HASH_SIZE - 1;
   unsigned int i = (tag.GetHash() & m);
@@ -94,7 +74,7 @@ vtkDICOMMetaData::Element *vtkDICOMMetaData::Container::FindElement(
 }
 
 // Erase an element from the hash table
-void vtkDICOMMetaData::Container::EraseElement(Tag tag)
+void vtkDICOMMetaData::EraseElement(Tag tag)
 {
   unsigned int m = METADATA_HASH_SIZE - 1;
   unsigned int i = (tag.GetHash() & m);
@@ -117,8 +97,7 @@ void vtkDICOMMetaData::Container::EraseElement(Tag tag)
 
 // Return a reference to the element within the hash table, which can
 // be used to insert a new value.
-vtkDICOMMetaData::Element *&vtkDICOMMetaData::Container::FindElementSlot(
-  Tag tag)
+vtkDICOMMetaData::Element *&vtkDICOMMetaData::FindElementSlot(Tag tag)
 {
   unsigned int m = METADATA_HASH_SIZE - 1;
   unsigned int i = (tag.GetHash() & m);
@@ -183,8 +162,7 @@ vtkDICOMMetaData::Element *&vtkDICOMMetaData::Container::FindElementSlot(
 }
 
 // Insert an element into the hash table
-void vtkDICOMMetaData::Container::InsertElement(
-  Tag tag, unsigned short vr, unsigned int vl, int data)
+void vtkDICOMMetaData::InsertElement(Tag tag, unsigned short vr, unsigned int vl, int data)
 {
   vtkDICOMMetaData::Element *&slot = this->FindElementSlot(tag);
 
@@ -194,18 +172,6 @@ void vtkDICOMMetaData::Container::InsertElement(
     }
 
   slot = new vtkDICOMMetaData::Element(tag, vr, vl, data);
-}
-
-// Constructor
-vtkDICOMMetaData::vtkDICOMMetaData()
-{
-  this->Contents = new Container;
-}
-
-// Destructor
-vtkDICOMMetaData::~vtkDICOMMetaData()
-{
-  delete this->Contents;
 }
 
 void vtkDICOMMetaData::PrintSelf(ostream& os, vtkIndent indent)

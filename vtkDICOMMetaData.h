@@ -8,7 +8,7 @@ class vtkDICOMMetaData : public vtkObject
 public:
   static vtkDICOMMetaData *New();
   vtkTypeMacro(vtkDICOMMetaData, vtkObjectBase);
-
+  
   void PrintSelf(ostream& os, vtkIndent indent);
 
   class Tag;
@@ -22,13 +22,18 @@ public:
 protected:
   vtkDICOMMetaData();
   ~vtkDICOMMetaData();
-
-  class Container;
+  
   struct Element;
 
-  Container *Contents;
+  Element *FindElement(Tag tag);
+  void EraseElement(Tag tag);
+  Element *&FindElementSlot(Tag tag);
+  void InsertElement(
+                     Tag tag, unsigned short vr, unsigned int vl, int data); 
 
 private:
+  Element ***Table;
+  
   vtkDICOMMetaData(const vtkDICOMMetaData&);  // Not implemented.
   void operator=(const vtkDICOMMetaData&);  // Not implemented.
 };
