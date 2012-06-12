@@ -14,6 +14,7 @@ IF (VTK_FOUND)
 ENDIF (VTK_FOUND)
 
 SET(TEST_SRCS
+  vtkDICOMMetaData.cxx
 )
 
 ADD_LIBRARY(DataManager ${TEST_SRCS})
