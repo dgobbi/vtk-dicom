@@ -148,25 +148,31 @@ for te in ht:
 print "#include \"vtkDICOMMetaData.h\""
 print
 
-print "static vtkDICOMMetaData::DictElement DictElements[] = {"
+print "namespace {"
+print
+
+print "vtkDICOMMetaData::DictElement DictElements[] = {"
 for l in element_list:
   print l
 print "};"
 print
 
-print "static vtkDICOMMetaData::DictElement *DictRows[] = {"
+print "vtkDICOMMetaData::DictElement *DictRows[] = {"
 for l in entry_list:
   print l
 print "};"
 print
 
-print "static vtkDICOMMetaData::DictElement** DictHashTable[] = {"
+print "vtkDICOMMetaData::DictElement** DictHashTable[] = {"
 for l in table_list:
   print l
 print "};"
 print
+print "}"
+print
 
-print "vtkDICOMMetaData::DictHashTable = DictHashTable;"
+print "vtkDICOMMetaData::DictElement ***vtkDICOMMetaData::DictHashTable ="
+print "  ::DictHashTable;"
 
 # informative: these names represent a range of tag values
 """ keys with ranges

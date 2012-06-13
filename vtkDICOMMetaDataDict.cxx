@@ -1,6 +1,8 @@
 #include "vtkDICOMMetaData.h"
 
-static vtkDICOMMetaData::DictElement DictElements[] = {
+namespace {
+
+vtkDICOMMetaData::DictElement DictElements[] = {
 { 0x00010008, VR::UL, VM::M1, "Length to End" },
 { 0x00050008, VR::CS, VM::M1TN, "Specific Character Set" },
 { 0x00060008, VR::SQ, VM::M1, "Language Code Sequence" },
@@ -3481,7 +3483,7 @@ static vtkDICOMMetaData::DictElement DictElements[] = {
 { 0x106C4010, VR::OB, VM::M1, "Detector Calibration Data" },
 };
 
-static vtkDICOMMetaData::DictElement *DictRows[] = {
+vtkDICOMMetaData::DictElement *DictRows[] = {
 &DictElements[256], &DictElements[315], &DictElements[1241], &DictElements[1539], NULL,
 &DictElements[1698], &DictElements[1741], &DictElements[2327], &DictElements[2478], &DictElements[2644], NULL,
 NULL,
@@ -4508,7 +4510,7 @@ NULL,
 &DictElements[2297], NULL,
 };
 
-static vtkDICOMMetaData::DictElement** DictHashTable[] = {
+vtkDICOMMetaData::DictElement** DictHashTable[] = {
 &DictRows[0],
 &DictRows[5],
 &DictRows[11],
@@ -5535,4 +5537,7 @@ static vtkDICOMMetaData::DictElement** DictHashTable[] = {
 &DictRows[4500],
 };
 
-vtkDICOMMetaData::DictHashTable = DictHashTable;
+}
+
+vtkDICOMMetaData::DictElement ***vtkDICOMMetaData::DictHashTable =
+  ::DictHashTable;
