@@ -257,19 +257,19 @@ SQ
 1
 
 (0008,0090)
-Referring Physician’s Name
+Referring Physician's Name
 ReferringPhysicianName
 PN
 1
 
 (0008,0092)
-Referring Physician’s Address
+Referring Physician's Address
 ReferringPhysicianAddress
 ST
 1
 
 (0008,0094)
-Referring Physician’s Telephone Numbers
+Referring Physician's Telephone Numbers
 ReferringPhysicianTelephoneNumbers
 SH
 1-n
@@ -443,7 +443,7 @@ SQ
 1
 
 (0008,1050)
-Performing Physician’s Name
+Performing Physician's Name
 PerformingPhysicianName
 PN
 1-n
@@ -467,7 +467,7 @@ SQ
 1
 
 (0008,1070)
-Operators’ Name
+Operators' Name
 OperatorsName
 PN
 1-n
@@ -491,7 +491,7 @@ SQ
 1
 
 (0008,1090)
-Manufacturer’s Model Name
+Manufacturer's Model Name
 ManufacturerModelName
 LO
 1
@@ -1019,7 +1019,7 @@ CS
 1
 
 (0010,0010)
-Patient’s Name
+Patient's Name
 PatientName
 PN
 1
@@ -1049,37 +1049,37 @@ SQ
 1
 
 (0010,0030)
-Patient’s Birth Date
+Patient's Birth Date
 PatientBirthDate
 DA
 1
 
 (0010,0032)
-Patient’s Birth Time
+Patient's Birth Time
 PatientBirthTime
 TM
 1
 
 (0010,0040)
-Patient’s Sex
+Patient's Sex
 PatientSex
 CS
 1
 
 (0010,0050)
-Patient’s Insurance Plan Code Sequence
+Patient's Insurance Plan Code Sequence
 PatientInsurancePlanCodeSequence
 SQ
 1
 
 (0010,0101)
-Patient’s Primary Language Code Sequence
+Patient's Primary Language Code Sequence
 PatientPrimaryLanguageCodeSequence
 SQ
 1
 
 (0010,0102)
-Patient’s Primary Language Modifier Code Sequence
+Patient's Primary Language Modifier Code Sequence
 PatientPrimaryLanguageModifierCodeSequence
 SQ
 1
@@ -1103,37 +1103,37 @@ SQ
 1
 
 (0010,1005)
-Patient’s Birth Name
+Patient's Birth Name
 PatientBirthName
 PN
 1
 
 (0010,1010)
-Patient’s Age
+Patient's Age
 PatientAge
 AS
 1
 
 (0010,1020)
-Patient’s Size
+Patient's Size
 PatientSize
 DS
 1
 
 (0010,1021)
-Patient’s Size Code Sequence
+Patient's Size Code Sequence
 PatientSizeCodeSequence
 SQ
 1
 
 (0010,1030)
-Patient’s Weight
+Patient's Weight
 PatientWeight
 DS
 1
 
 (0010,1040)
-Patient’s Address
+Patient's Address
 PatientAddress
 LO
 1
@@ -1145,7 +1145,7 @@ LO
 1-n
 RET
 (0010,1060)
-Patient’s Mother’s Birth Name
+Patient's Mother's Birth Name
 PatientMotherBirthName
 PN
 1
@@ -1193,7 +1193,7 @@ LO
 1
 
 (0010,2154)
-Patient’s Telephone Numbers
+Patient's Telephone Numbers
 PatientTelephoneNumbers
 SH
 1-n
@@ -1235,7 +1235,7 @@ DA
 1
 
 (0010,21F0)
-Patient’s Religious Preference
+Patient's Religious Preference
 PatientReligiousPreference
 LO
 1
@@ -1253,7 +1253,7 @@ SQ
 1
 
 (0010,2203)
-Patient’s Sex Neutered
+Patient's Sex Neutered
 PatientSexNeutered
 CS
 1
@@ -2591,7 +2591,7 @@ LO
 1
 RET
 (0018,1018)
-Secondary Capture Device Manufacturer’s Model Name
+Secondary Capture Device Manufacturer's Model Name
 SecondaryCaptureDeviceManufacturerModelName
 LO
 1
@@ -2609,7 +2609,7 @@ LO
 1-n
 RET
 (0018,101B)
-Hardcopy Device Manufacturer’s Model Name
+Hardcopy Device Manufacturer's Model Name
 HardcopyDeviceManufacturerModelName
 LO
 1
@@ -4205,7 +4205,7 @@ LO
 1
 
 (0018,702B)
-Detector Manufacturer’s Model Name
+Detector Manufacturer's Model Name
 DetectorManufacturerModelName
 LO
 1
@@ -7871,7 +7871,7 @@ US
 1
 
 (0024,0044)
-Comments on Patient’s Performance of Visual Field
+Comments on Patient's Performance of Visual Field
 CommentsOnPatientPerformanceOfVisualField
 LT
 1
@@ -9803,7 +9803,7 @@ LO
 1
 
 (0038,0400)
-Patient’s Institution Residence
+Patient's Institution Residence
 PatientInstitutionResidence
 LO
 1
@@ -10085,7 +10085,7 @@ TM
 1
 
 (0040,0006)
-Scheduled Performing Physician’s Name
+Scheduled Performing Physician's Name
 ScheduledPerformingPhysicianName
 PN
 1
@@ -10739,13 +10739,13 @@ SQ
 1
 
 (0040,1102)
-Person’s Address
+Person's Address
 PersonAddress
 ST
 1
 
 (0040,1103)
-Person’s Telephone Numbers
+Person's Telephone Numbers
 PersonTelephoneNumbers
 LO
 1-n
@@ -10793,7 +10793,7 @@ PN
 1
 
 (0040,2009)
-Order Enterer’s Location
+Order Enterer's Location
 OrderEntererLocation
 SH
 1
@@ -11003,13 +11003,13 @@ SQ
 1
 
 (0040,4036)
-Human Performer’s Organization
+Human Performer's Organization
 HumanPerformerOrganization
 LO
 1
 
 (0040,4037)
-Human Performer’s Name
+Human Performer's Name
 HumanPerformerName
 PN
 1
@@ -14267,13 +14267,13 @@ TM
 1
 
 (0070,0084)
-Content Creator’s Name
+Content Creator's Name
 ContentCreatorName
 PN
 1
 
 (0070,0086)
-Content Creator’s Identification Code Sequence
+Content Creator's Identification Code Sequence
 ContentCreatorIdentificationCodeSequence
 SQ
 1
