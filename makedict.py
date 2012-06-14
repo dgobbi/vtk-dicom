@@ -95,13 +95,13 @@ while i < n:
 
   if key:
     enum_list.append(
-      "%-39s = 0x%s%s // %s %5s %s" % (key, e, g, vr, vm, ret))
+      "%-39s = 0x%s%s // %s %5s %s" % (key, g, e, vr, vm, ret))
 
     element_list.append(
-      "{ 0x%s%s, VR::%s, VM::%s, \"%s\" }," % (e, g, vr, vm, name))
+      "{ 0x%s%s, VR::%s, VM::%s, \"%s\" }," % (g, e, vr, vm, name))
 
     # create a hash from group, element
-    h = ((ei << 8) | gi)
+    h = ((gi << 8) | ei)
     h = ((h >> 6) ^ (h >> 8) ^ (h << 2))
 
     # build the hash table

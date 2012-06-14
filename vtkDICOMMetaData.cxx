@@ -12,21 +12,6 @@ vtkStandardNewMacro(vtkDICOMMetaData);
 // The hash table size, must be a power of two
 #define METADATA_HASH_SIZE 512
 
-//----------------------------------------------------------------------------
-// An Element is just a std::pair of smart pointers
-// (smart pointers provide automatic reference counting)
-struct vtkDICOMMetaData::Element
-{
-  Element(Tag t, unsigned short r, unsigned int l, int d)
-    : tag(t), vr(r), vl(l), data(d) {}
-
-  Tag tag;
-  unsigned short vr;
-  size_t vl;
-  int data;
-};
-
-//----------------------------------------------------------------------------
 // Constructor
 vtkDICOMMetaData::vtkDICOMMetaData()
 {
@@ -162,7 +147,7 @@ vtkDICOMMetaData::Element *&vtkDICOMMetaData::FindElementSlot(Tag tag)
 }
 
 // Insert an element into the hash table
-void vtkDICOMMetaData::InsertElement(Tag tag, unsigned short vr, unsigned int vl, int data)
+void vtkDICOMMetaData::InsertElement(Tag tag, unsigned short vr, unsigned int vl, const char *data)
 {
   vtkDICOMMetaData::Element *&slot = this->FindElementSlot(tag);
 
@@ -171,7 +156,34 @@ void vtkDICOMMetaData::InsertElement(Tag tag, unsigned short vr, unsigned int vl
     delete slot;
     }
 
-  slot = new vtkDICOMMetaData::Element(tag, vr, vl, data);
+  char *newdata = new char[strlen(data)+1];
+  strcpy(newdata, data);
+
+  slot = new vtkDICOMMetaData::Element(tag, vr, vl, newdata);
+}
+
+// Get an element from the hash table.
+#define DICT_HASH_SIZE 1024
+vtkDICOMMetaData::DictElement *vtkDICOMMetaData::FindDictElement(Tag tag)
+{
+  unsigned int m = DICT_HASH_SIZE - 1;
+  unsigned int i = (tag.GetHash() & m);
+  vtkDICOMMetaData::DictElement ***htable = vtkDICOMMetaData::DictHashTable;
+  vtkDICOMMetaData::DictElement **hptr;
+
+  if (htable && (hptr = htable[i]) != NULL)
+    {
+    while (*hptr)
+      {
+      if ((*hptr)->tag == tag.GetKey())
+        {
+        return *hptr;
+        }
+      hptr++;
+      }
+    }
+
+  return NULL;
 }
 
 void vtkDICOMMetaData::PrintSelf(ostream& os, vtkIndent indent)
