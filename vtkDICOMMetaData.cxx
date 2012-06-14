@@ -80,6 +80,7 @@ void vtkDICOMMetaData::EraseElement(Tag tag)
         while (*hptr++);
         break;
         }
+      hptr++;
       }
     }
 }
