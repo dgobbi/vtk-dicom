@@ -38,13 +38,22 @@ j = 0
 i = 0
 n = len(lines)
 while i < n:
-  tag = lines[i].strip()
-  name = lines[i+1].strip()
-  key = lines[i+2].strip()
-  vr = lines[i+3].strip()
-  vm = lines[i+4].strip()
-  ret = lines[i+5].strip()
-  i = i + 6
+  try:
+    tag = lines[i].encode('ascii').strip()
+    i = i + 1
+    name = lines[i].encode('ascii').strip()
+    i = i + 1
+    key = lines[i].encode('ascii').strip()
+    i = i + 1
+    vr = lines[i].encode('ascii').strip()
+    i = i + 1
+    vm = lines[i].encode('ascii').strip()
+    i = i + 1
+    ret = lines[i].encode('ascii').strip()
+    i = i + 1
+  except:
+    print "non-ascii character encounterd on line %d" % (i,)
+    raise TypeError
 
   # replace "US or SS" with "XS"
   if vr == "US or SS":

@@ -3053,13 +3053,13 @@ IS
 1
 
 (0018,1152)
-Exposure 
+Exposure
 Exposure
 IS
 1
 
 (0018,1153)
-Exposure in µAs
+Exposure in uAs
 ExposureInuAs
 IS
 1
@@ -4337,13 +4337,13 @@ DS
 1
 
 (0018,8150)
-Exposure Time in µS
+Exposure Time in uS
 ExposureTimeInuS
 DS
 1
 
 (0018,8151)
-X-Ray Tube Current in µA
+X-Ray Tube Current in uA
 XRayTubeCurrentInuA
 DS
 1
@@ -12599,13 +12599,13 @@ FD
 1
 
 (0052,0011)
-A‑line Rate
+A-line Rate
 ALineRate
 FD
 1
 
 (0052,0012)
-A‑lines Per Frame
+A-lines Per Frame
 ALinesPerFrame
 US
 1
@@ -12617,7 +12617,7 @@ FD
 1
 
 (0052,0014)
-A‑line Pixel Spacing
+A-line Pixel Spacing
 ALinePixelSpacing
 FD
 1
@@ -12677,7 +12677,7 @@ FD
 1
 
 (0052,0034)
-First A‑line Location
+First A-line Location
 FirstALineLocation
 FD
 1
@@ -12689,7 +12689,7 @@ US
 1
 
 (0052,0038)
-Number of Padded A‑lines
+Number of Padded A-lines
 NumberOfPaddedAlines
 US
 1
