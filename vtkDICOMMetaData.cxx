@@ -73,7 +73,11 @@ void vtkDICOMMetaData::EraseElement(Tag tag)
       if ((*hptr)->tag == tag)
         {
         delete *hptr;
-        *hptr = NULL;
+        do
+          {
+          hptr[0] = hptr[1];
+          }
+        while (*hptr++);
         break;
         }
       }
