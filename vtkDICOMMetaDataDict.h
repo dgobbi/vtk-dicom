@@ -31,7 +31,7 @@ namespace VR
     US = 0x5553, // Unsigned Short
     UT = 0x5554, // Unlimited Text
     OX = 0x4f58, // Either OB or OW
-    XS = 0x5855, // Either SS or US
+    XS = 0x5853, // Either SS or US
   };
 };
 
