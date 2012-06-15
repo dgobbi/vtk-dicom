@@ -24,7 +24,6 @@ f.close()
 enum_list = []
 element_list = []
 entry_list = []
-table_list = []
 
 # a set to keep track of all VM strings encountered
 vms = {}
@@ -104,14 +103,13 @@ while i < n:
 
   if key:
     enum_list.append(
-      "%-39s = 0x%s%s // %s %5s %s" % (key, g, e, vr, vm, ret))
+      ("%-39s = 0x%s%s, // %s %-5s %s" % (key, g, e, vr, vm, ret)).strip())
 
     element_list.append(
-      "{ 0x%s%s, VR::%s, VM::%s, \"%s\" }," % (g, e, vr, vm, name))
+      "{ 0x%s, 0x%s, VR::%s, VM::%s, \"%s\" }," % (g, e, vr, vm, name))
 
     # create a hash from group, element
-    h = ((gi << 8) | ei)
-    h = ((h >> 6) ^ (h >> 8) ^ (h << 2))
+    h = ((gi ^ (gi >> 6)) ^ (ei ^ (ei >> 6)))
 
     # build the hash table
     h = (h & 0x3ff)
@@ -143,45 +141,43 @@ for te in ht:
   minl = min(minl, l)
   s = ""
   for idx in te:
-    s = s + ("%-19s " % ("&DictElements[%d]," % (idx,)))
-  s = s + "NULL,"
+    s = s + element_list[idx] + "\n"
+  s = s + "{ 0, 0, 0, 0 }"
   entry_list.append(s)
-  table_list.append("&DictRows[%d]," % (k,))
   k = k + len(te) + 1
 
 # debug: print statistics about the hash table
 #print maxl, minl, k0, k4
 
 # write the output file
-
 print "#include \"vtkDICOMMetaData.h\""
 print
 
 print "namespace {"
 print
 
-print "vtkDICOMMetaData::DictElement DictElements[] = {"
-for l in element_list:
-  print l
-print "};"
-print
-
-print "vtkDICOMMetaData::DictElement *DictRows[] = {"
+ct = 0
 for l in entry_list:
+  print "vtkDICOMMetaData::DictElement DictRow%04d[] = {" % (ct,)
   print l
-print "};"
-print
-
-print "vtkDICOMMetaData::DictElement** DictHashTable[] = {"
-for l in table_list:
-  print l
-print "};"
+  print "};"
+  ct = ct + 1
 print
 print "}"
 print
 
-print "vtkDICOMMetaData::DictElement ***vtkDICOMMetaData::DictHashTable ="
-print "  ::DictHashTable;"
+ct = 0
+print "vtkDICOMMetaData::DictElement *vtkDICOMMetaData::DictHashTable[1024] = {"
+for l in entry_list:
+  print "DictRow%04d," % (ct,)
+  ct = ct + 1
+print "};"
+print
+
+"""
+for l in enum_list:
+  print l
+"""
 
 # informative: these names represent a range of tag values
 """ keys with ranges

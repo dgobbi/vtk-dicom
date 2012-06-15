@@ -2,5542 +2,7583 @@
 
 namespace {
 
-vtkDICOMMetaData::DictElement DictElements[] = {
-{ 0x00080001, VR::UL, VM::M1, "Length to End" },
-{ 0x00080005, VR::CS, VM::M1TN, "Specific Character Set" },
-{ 0x00080006, VR::SQ, VM::M1, "Language Code Sequence" },
-{ 0x00080008, VR::CS, VM::M2TN, "Image Type" },
-{ 0x00080010, VR::SH, VM::M1, "Recognition Code" },
-{ 0x00080012, VR::DA, VM::M1, "Instance Creation Date" },
-{ 0x00080013, VR::TM, VM::M1, "Instance Creation Time" },
-{ 0x00080014, VR::UI, VM::M1, "Instance Creator UID" },
-{ 0x00080016, VR::UI, VM::M1, "SOP Class UID" },
-{ 0x00080018, VR::UI, VM::M1, "SOP Instance UID" },
-{ 0x0008001A, VR::UI, VM::M1TN, "Related General SOP Class UID" },
-{ 0x0008001B, VR::UI, VM::M1, "Original Specialized SOP Class UID" },
-{ 0x00080020, VR::DA, VM::M1, "Study Date" },
-{ 0x00080021, VR::DA, VM::M1, "Series Date" },
-{ 0x00080022, VR::DA, VM::M1, "Acquisition Date" },
-{ 0x00080023, VR::DA, VM::M1, "Content Date" },
-{ 0x00080024, VR::DA, VM::M1, "Overlay Date" },
-{ 0x00080025, VR::DA, VM::M1, "Curve Date" },
-{ 0x0008002A, VR::DT, VM::M1, "Acquisition DateTime" },
-{ 0x00080030, VR::TM, VM::M1, "Study Time" },
-{ 0x00080031, VR::TM, VM::M1, "Series Time" },
-{ 0x00080032, VR::TM, VM::M1, "Acquisition Time" },
-{ 0x00080033, VR::TM, VM::M1, "Content Time" },
-{ 0x00080034, VR::TM, VM::M1, "Overlay Time" },
-{ 0x00080035, VR::TM, VM::M1, "Curve Time" },
-{ 0x00080040, VR::US, VM::M1, "Data Set Type" },
-{ 0x00080041, VR::LO, VM::M1, "Data Set Subtype" },
-{ 0x00080042, VR::CS, VM::M1, "Nuclear Medicine Series Type" },
-{ 0x00080050, VR::SH, VM::M1, "Accession Number" },
-{ 0x00080051, VR::SQ, VM::M1, "Issuer of Accession Number Sequence" },
-{ 0x00080052, VR::CS, VM::M1, "Query/Retrieve Level" },
-{ 0x00080054, VR::AE, VM::M1TN, "Retrieve AE Title" },
-{ 0x00080056, VR::CS, VM::M1, "Instance Availability" },
-{ 0x00080058, VR::UI, VM::M1TN, "Failed SOP Instance UID List" },
-{ 0x00080060, VR::CS, VM::M1, "Modality" },
-{ 0x00080061, VR::CS, VM::M1TN, "Modalities in Study" },
-{ 0x00080062, VR::UI, VM::M1TN, "SOP Classes in Study" },
-{ 0x00080064, VR::CS, VM::M1, "Conversion Type" },
-{ 0x00080068, VR::CS, VM::M1, "Presentation Intent Type" },
-{ 0x00080070, VR::LO, VM::M1, "Manufacturer" },
-{ 0x00080080, VR::LO, VM::M1, "Institution Name" },
-{ 0x00080081, VR::ST, VM::M1, "Institution Address" },
-{ 0x00080082, VR::SQ, VM::M1, "Institution Code Sequence" },
-{ 0x00080090, VR::PN, VM::M1, "Referring Physician's Name" },
-{ 0x00080092, VR::ST, VM::M1, "Referring Physician's Address" },
-{ 0x00080094, VR::SH, VM::M1TN, "Referring Physician's Telephone Numbers" },
-{ 0x00080096, VR::SQ, VM::M1, "Referring Physician Identification Sequence" },
-{ 0x00080100, VR::SH, VM::M1, "Code Value" },
-{ 0x00080102, VR::SH, VM::M1, "Coding Scheme Designator" },
-{ 0x00080103, VR::SH, VM::M1, "Coding Scheme Version" },
-{ 0x00080104, VR::LO, VM::M1, "Code Meaning" },
-{ 0x00080105, VR::CS, VM::M1, "Mapping Resource" },
-{ 0x00080106, VR::DT, VM::M1, "Context Group Version" },
-{ 0x00080107, VR::DT, VM::M1, "Context Group Local Version" },
-{ 0x0008010B, VR::CS, VM::M1, "Context Group Extension Flag" },
-{ 0x0008010C, VR::UI, VM::M1, "Coding Scheme UID" },
-{ 0x0008010D, VR::UI, VM::M1, "Context Group Extension Creator UID" },
-{ 0x0008010F, VR::CS, VM::M1, "Context Identifier" },
-{ 0x00080110, VR::SQ, VM::M1, "Coding Scheme Identification Sequence" },
-{ 0x00080112, VR::LO, VM::M1, "Coding Scheme Registry" },
-{ 0x00080114, VR::ST, VM::M1, "Coding Scheme External ID" },
-{ 0x00080115, VR::ST, VM::M1, "Coding Scheme Name" },
-{ 0x00080116, VR::ST, VM::M1, "Coding Scheme Responsible Organization" },
-{ 0x00080117, VR::UI, VM::M1, "Context UID" },
-{ 0x00080201, VR::SH, VM::M1, "Timezone Offset From UTC" },
-{ 0x00081000, VR::AE, VM::M1, "Network ID" },
-{ 0x00081010, VR::SH, VM::M1, "Station Name" },
-{ 0x00081030, VR::LO, VM::M1, "Study Description" },
-{ 0x00081032, VR::SQ, VM::M1, "Procedure Code Sequence" },
-{ 0x0008103E, VR::LO, VM::M1, "Series Description" },
-{ 0x0008103F, VR::SQ, VM::M1, "Series Description Code Sequence" },
-{ 0x00081040, VR::LO, VM::M1, "Institutional Department Name" },
-{ 0x00081048, VR::PN, VM::M1TN, "Physician(s) of Record" },
-{ 0x00081049, VR::SQ, VM::M1, "Physician(s) of Record Identification Sequence" },
-{ 0x00081050, VR::PN, VM::M1TN, "Performing Physician's Name" },
-{ 0x00081052, VR::SQ, VM::M1, "Performing Physician Identification Sequence" },
-{ 0x00081060, VR::PN, VM::M1TN, "Name of Physician(s) Reading Study" },
-{ 0x00081062, VR::SQ, VM::M1, "Physician(s) Reading Study Identification Sequence" },
-{ 0x00081070, VR::PN, VM::M1TN, "Operators' Name" },
-{ 0x00081072, VR::SQ, VM::M1, "Operator Identification Sequence" },
-{ 0x00081080, VR::LO, VM::M1TN, "Admitting Diagnoses Description" },
-{ 0x00081084, VR::SQ, VM::M1, "Admitting Diagnoses Code Sequence" },
-{ 0x00081090, VR::LO, VM::M1, "Manufacturer's Model Name" },
-{ 0x00081100, VR::SQ, VM::M1, "Referenced Results Sequence" },
-{ 0x00081110, VR::SQ, VM::M1, "Referenced Study Sequence" },
-{ 0x00081111, VR::SQ, VM::M1, "Referenced Performed Procedure Step Sequence" },
-{ 0x00081115, VR::SQ, VM::M1, "Referenced Series Sequence" },
-{ 0x00081120, VR::SQ, VM::M1, "Referenced Patient Sequence" },
-{ 0x00081125, VR::SQ, VM::M1, "Referenced Visit Sequence" },
-{ 0x00081130, VR::SQ, VM::M1, "Referenced Overlay Sequence" },
-{ 0x00081134, VR::SQ, VM::M1, "Referenced Stereometric Instance Sequence" },
-{ 0x0008113A, VR::SQ, VM::M1, "Referenced Waveform Sequence" },
-{ 0x00081140, VR::SQ, VM::M1, "Referenced Image Sequence" },
-{ 0x00081145, VR::SQ, VM::M1, "Referenced Curve Sequence" },
-{ 0x0008114A, VR::SQ, VM::M1, "Referenced Instance Sequence" },
-{ 0x0008114B, VR::SQ, VM::M1, "Referenced Real World Value Mapping Instance Sequence" },
-{ 0x00081150, VR::UI, VM::M1, "Referenced SOP Class UID" },
-{ 0x00081155, VR::UI, VM::M1, "Referenced SOP Instance UID" },
-{ 0x0008115A, VR::UI, VM::M1TN, "SOP Classes Supported" },
-{ 0x00081160, VR::IS, VM::M1TN, "Referenced Frame Number" },
-{ 0x00081161, VR::UL, VM::M1TN, "Simple Frame List" },
-{ 0x00081162, VR::UL, VM::M3T3N, "Calculated Frame List" },
-{ 0x00081163, VR::FD, VM::M2, "Time Range" },
-{ 0x00081164, VR::SQ, VM::M1, "Frame Extraction Sequence" },
-{ 0x00081167, VR::UI, VM::M1, "Multi-Frame Source SOP Instance UID" },
-{ 0x00081195, VR::UI, VM::M1, "Transaction UID" },
-{ 0x00081197, VR::US, VM::M1, "Failure Reason" },
-{ 0x00081198, VR::SQ, VM::M1, "Failed SOP Sequence" },
-{ 0x00081199, VR::SQ, VM::M1, "Referenced SOP Sequence" },
-{ 0x00081200, VR::SQ, VM::M1, "Studies Containing Other Referenced Instances Sequence" },
-{ 0x00081250, VR::SQ, VM::M1, "Related Series Sequence" },
-{ 0x00082110, VR::CS, VM::M1, "Lossy Image Compression (Retired)" },
-{ 0x00082111, VR::ST, VM::M1, "Derivation Description" },
-{ 0x00082112, VR::SQ, VM::M1, "Source Image Sequence" },
-{ 0x00082120, VR::SH, VM::M1, "Stage Name" },
-{ 0x00082122, VR::IS, VM::M1, "Stage Number" },
-{ 0x00082124, VR::IS, VM::M1, "Number of Stages" },
-{ 0x00082127, VR::SH, VM::M1, "View Name" },
-{ 0x00082128, VR::IS, VM::M1, "View Number" },
-{ 0x00082129, VR::IS, VM::M1, "Number of Event Timers" },
-{ 0x0008212A, VR::IS, VM::M1, "Number of Views in Stage" },
-{ 0x00082130, VR::DS, VM::M1TN, "Event Elapsed Time(s)" },
-{ 0x00082132, VR::LO, VM::M1TN, "Event Timer Name(s)" },
-{ 0x00082133, VR::SQ, VM::M1, "Event Timer Sequence" },
-{ 0x00082134, VR::FD, VM::M1, "Event Time Offset" },
-{ 0x00082135, VR::SQ, VM::M1, "Event Code Sequence" },
-{ 0x00082142, VR::IS, VM::M1, "Start Trim" },
-{ 0x00082143, VR::IS, VM::M1, "Stop Trim" },
-{ 0x00082144, VR::IS, VM::M1, "Recommended Display Frame Rate" },
-{ 0x00082200, VR::CS, VM::M1, "Transducer Position" },
-{ 0x00082204, VR::CS, VM::M1, "Transducer Orientation" },
-{ 0x00082208, VR::CS, VM::M1, "Anatomic Structure" },
-{ 0x00082218, VR::SQ, VM::M1, "Anatomic Region Sequence" },
-{ 0x00082220, VR::SQ, VM::M1, "Anatomic Region Modifier Sequence" },
-{ 0x00082228, VR::SQ, VM::M1, "Primary Anatomic Structure Sequence" },
-{ 0x00082229, VR::SQ, VM::M1, "Anatomic Structure, Space or Region Sequence" },
-{ 0x00082230, VR::SQ, VM::M1, "Primary Anatomic Structure Modifier Sequence" },
-{ 0x00082240, VR::SQ, VM::M1, "Transducer Position Sequence" },
-{ 0x00082242, VR::SQ, VM::M1, "Transducer Position Modifier Sequence" },
-{ 0x00082244, VR::SQ, VM::M1, "Transducer Orientation Sequence" },
-{ 0x00082246, VR::SQ, VM::M1, "Transducer Orientation Modifier Sequence" },
-{ 0x00082251, VR::SQ, VM::M1, "Anatomic Structure Space Or Region Code Sequence (Trial)" },
-{ 0x00082253, VR::SQ, VM::M1, "Anatomic Portal Of Entrance Code Sequence (Trial)" },
-{ 0x00082255, VR::SQ, VM::M1, "Anatomic Approach Direction Code Sequence (Trial)" },
-{ 0x00082256, VR::ST, VM::M1, "Anatomic Perspective Description (Trial)" },
-{ 0x00082257, VR::SQ, VM::M1, "Anatomic Perspective Code Sequence (Trial)" },
-{ 0x00082258, VR::ST, VM::M1, "Anatomic Location Of Examining Instrument Description (Trial)" },
-{ 0x00082259, VR::SQ, VM::M1, "Anatomic Location Of Examining Instrument Code Sequence (Trial)" },
-{ 0x0008225A, VR::SQ, VM::M1, "Anatomic Structure Space Or Region Modifier Code Sequence (Trial)" },
-{ 0x0008225C, VR::SQ, VM::M1, "OnAxis Background Anatomic Structure Code Sequence (Trial)" },
-{ 0x00083001, VR::SQ, VM::M1, "Alternate Representation Sequence" },
-{ 0x00083010, VR::UI, VM::M1, "Irradiation Event UID" },
-{ 0x00084000, VR::LT, VM::M1, "Identifying Comments" },
-{ 0x00089007, VR::CS, VM::M4, "Frame Type" },
-{ 0x00089092, VR::SQ, VM::M1, "Referenced Image Evidence Sequence" },
-{ 0x00089121, VR::SQ, VM::M1, "Referenced Raw Data Sequence" },
-{ 0x00089123, VR::UI, VM::M1, "Creator-Version UID" },
-{ 0x00089124, VR::SQ, VM::M1, "Derivation Image Sequence" },
-{ 0x00089154, VR::SQ, VM::M1, "Source Image Evidence Sequence" },
-{ 0x00089205, VR::CS, VM::M1, "Pixel Presentation" },
-{ 0x00089206, VR::CS, VM::M1, "Volumetric Properties" },
-{ 0x00089207, VR::CS, VM::M1, "Volume Based Calculation Technique" },
-{ 0x00089208, VR::CS, VM::M1, "Complex Image Component" },
-{ 0x00089209, VR::CS, VM::M1, "Acquisition Contrast" },
-{ 0x00089215, VR::SQ, VM::M1, "Derivation Code Sequence" },
-{ 0x00089237, VR::SQ, VM::M1, "Referenced Presentation State Sequence" },
-{ 0x00089410, VR::SQ, VM::M1, "Referenced Other Plane Sequence" },
-{ 0x00089458, VR::SQ, VM::M1, "Frame Display Sequence" },
-{ 0x00089459, VR::FL, VM::M1, "Recommended Display Frame Rate in Float" },
-{ 0x00089460, VR::CS, VM::M1, "Skip Frame Range Flag" },
-{ 0x00100010, VR::PN, VM::M1, "Patient's Name" },
-{ 0x00100020, VR::LO, VM::M1, "Patient ID" },
-{ 0x00100021, VR::LO, VM::M1, "Issuer of Patient ID" },
-{ 0x00100022, VR::CS, VM::M1, "Type of Patient ID" },
-{ 0x00100024, VR::SQ, VM::M1, "Issuer of Patient ID Qualifiers Sequence" },
-{ 0x00100030, VR::DA, VM::M1, "Patient's Birth Date" },
-{ 0x00100032, VR::TM, VM::M1, "Patient's Birth Time" },
-{ 0x00100040, VR::CS, VM::M1, "Patient's Sex" },
-{ 0x00100050, VR::SQ, VM::M1, "Patient's Insurance Plan Code Sequence" },
-{ 0x00100101, VR::SQ, VM::M1, "Patient's Primary Language Code Sequence" },
-{ 0x00100102, VR::SQ, VM::M1, "Patient's Primary Language Modifier Code Sequence" },
-{ 0x00101000, VR::LO, VM::M1TN, "Other Patient IDs" },
-{ 0x00101001, VR::PN, VM::M1TN, "Other Patient Names" },
-{ 0x00101002, VR::SQ, VM::M1, "Other Patient IDs Sequence" },
-{ 0x00101005, VR::PN, VM::M1, "Patient's Birth Name" },
-{ 0x00101010, VR::AS, VM::M1, "Patient's Age" },
-{ 0x00101020, VR::DS, VM::M1, "Patient's Size" },
-{ 0x00101021, VR::SQ, VM::M1, "Patient's Size Code Sequence" },
-{ 0x00101030, VR::DS, VM::M1, "Patient's Weight" },
-{ 0x00101040, VR::LO, VM::M1, "Patient's Address" },
-{ 0x00101050, VR::LO, VM::M1TN, "Insurance Plan Identification" },
-{ 0x00101060, VR::PN, VM::M1, "Patient's Mother's Birth Name" },
-{ 0x00101080, VR::LO, VM::M1, "Military Rank" },
-{ 0x00101081, VR::LO, VM::M1, "Branch of Service" },
-{ 0x00101090, VR::LO, VM::M1, "Medical Record Locator" },
-{ 0x00102000, VR::LO, VM::M1TN, "Medical Alerts" },
-{ 0x00102110, VR::LO, VM::M1TN, "Allergies" },
-{ 0x00102150, VR::LO, VM::M1, "Country of Residence" },
-{ 0x00102152, VR::LO, VM::M1, "Region of Residence" },
-{ 0x00102154, VR::SH, VM::M1TN, "Patient's Telephone Numbers" },
-{ 0x00102160, VR::SH, VM::M1, "Ethnic Group" },
-{ 0x00102180, VR::SH, VM::M1, "Occupation" },
-{ 0x001021A0, VR::CS, VM::M1, "Smoking Status" },
-{ 0x001021B0, VR::LT, VM::M1, "Additional Patient History" },
-{ 0x001021C0, VR::US, VM::M1, "Pregnancy Status" },
-{ 0x001021D0, VR::DA, VM::M1, "Last Menstrual Date" },
-{ 0x001021F0, VR::LO, VM::M1, "Patient's Religious Preference" },
-{ 0x00102201, VR::LO, VM::M1, "Patient Species Description" },
-{ 0x00102202, VR::SQ, VM::M1, "Patient Species Code Sequence" },
-{ 0x00102203, VR::CS, VM::M1, "Patient's Sex Neutered" },
-{ 0x00102210, VR::CS, VM::M1, "Anatomical Orientation Type" },
-{ 0x00102292, VR::LO, VM::M1, "Patient Breed Description" },
-{ 0x00102293, VR::SQ, VM::M1, "Patient Breed Code Sequence" },
-{ 0x00102294, VR::SQ, VM::M1, "Breed Registration Sequence" },
-{ 0x00102295, VR::LO, VM::M1, "Breed Registration Number" },
-{ 0x00102296, VR::SQ, VM::M1, "Breed Registry Code Sequence" },
-{ 0x00102297, VR::PN, VM::M1, "Responsible Person" },
-{ 0x00102298, VR::CS, VM::M1, "Responsible Person Role" },
-{ 0x00102299, VR::LO, VM::M1, "Responsible Organization" },
-{ 0x00104000, VR::LT, VM::M1, "Patient Comments" },
-{ 0x00109431, VR::FL, VM::M1, "Examined Body Thickness" },
-{ 0x00120010, VR::LO, VM::M1, "Clinical Trial Sponsor Name" },
-{ 0x00120020, VR::LO, VM::M1, "Clinical Trial Protocol ID" },
-{ 0x00120021, VR::LO, VM::M1, "Clinical Trial Protocol Name" },
-{ 0x00120030, VR::LO, VM::M1, "Clinical Trial Site ID" },
-{ 0x00120031, VR::LO, VM::M1, "Clinical Trial Site Name" },
-{ 0x00120040, VR::LO, VM::M1, "Clinical Trial Subject ID" },
-{ 0x00120042, VR::LO, VM::M1, "Clinical Trial Subject Reading ID" },
-{ 0x00120050, VR::LO, VM::M1, "Clinical Trial Time Point ID" },
-{ 0x00120051, VR::ST, VM::M1, "Clinical Trial Time Point Description" },
-{ 0x00120060, VR::LO, VM::M1, "Clinical Trial Coordinating Center Name" },
-{ 0x00120062, VR::CS, VM::M1, "Patient Identity Removed" },
-{ 0x00120063, VR::LO, VM::M1TN, "De-identification Method" },
-{ 0x00120064, VR::SQ, VM::M1, "De-identification Method Code Sequence" },
-{ 0x00120071, VR::LO, VM::M1, "Clinical Trial Series ID" },
-{ 0x00120072, VR::LO, VM::M1, "Clinical Trial Series Description" },
-{ 0x00120081, VR::LO, VM::M1, "Clinical Trial Protocol Ethics Committee Name" },
-{ 0x00120082, VR::LO, VM::M1, "Clinical Trial Protocol Ethics Committee Approval Number" },
-{ 0x00120083, VR::SQ, VM::M1, "Consent for Clinical Trial Use Sequence" },
-{ 0x00120084, VR::CS, VM::M1, "Distribution Type" },
-{ 0x00120085, VR::CS, VM::M1, "Consent for Distribution Flag" },
-{ 0x00140023, VR::ST, VM::M1TN, "CAD File Format" },
-{ 0x00140024, VR::ST, VM::M1TN, "Component Reference System" },
-{ 0x00140025, VR::ST, VM::M1TN, "Component Manufacturing Procedure" },
-{ 0x00140028, VR::ST, VM::M1TN, "Component Manufacturer" },
-{ 0x00140030, VR::DS, VM::M1TN, "Material Thickness" },
-{ 0x00140032, VR::DS, VM::M1TN, "Material Pipe Diameter" },
-{ 0x00140034, VR::DS, VM::M1TN, "Material Isolation Diameter" },
-{ 0x00140042, VR::ST, VM::M1TN, "Material Grade" },
-{ 0x00140044, VR::ST, VM::M1TN, "Material Properties File ID" },
-{ 0x00140045, VR::ST, VM::M1TN, "Material Properties File Format" },
-{ 0x00140046, VR::LT, VM::M1, "Material Notes" },
-{ 0x00140050, VR::CS, VM::M1, "Component Shape" },
-{ 0x00140052, VR::CS, VM::M1, "Curvature Type" },
-{ 0x00140054, VR::DS, VM::M1, "Outer Diameter" },
-{ 0x00140056, VR::DS, VM::M1, "Inner Diameter" },
-{ 0x00141010, VR::ST, VM::M1, "Actual Environmental Conditions" },
-{ 0x00141020, VR::DA, VM::M1, "Expiry Date" },
-{ 0x00141040, VR::ST, VM::M1, "Environmental Conditions" },
-{ 0x00142002, VR::SQ, VM::M1, "Evaluator Sequence" },
-{ 0x00142004, VR::IS, VM::M1, "Evaluator Number" },
-{ 0x00142006, VR::PN, VM::M1, "Evaluator Name" },
-{ 0x00142008, VR::IS, VM::M1, "Evaluation Attempt" },
-{ 0x00142012, VR::SQ, VM::M1, "Indication Sequence" },
-{ 0x00142014, VR::IS, VM::M1, "Indication Number" },
-{ 0x00142016, VR::SH, VM::M1, "Indication Label" },
-{ 0x00142018, VR::ST, VM::M1, "Indication Description" },
-{ 0x0014201A, VR::CS, VM::M1TN, "Indication Type" },
-{ 0x0014201C, VR::CS, VM::M1, "Indication Disposition" },
-{ 0x0014201E, VR::SQ, VM::M1, "Indication ROI Sequence" },
-{ 0x00142030, VR::SQ, VM::M1, "Indication Physical Property Sequence" },
-{ 0x00142032, VR::SH, VM::M1, "Property Label" },
-{ 0x00142202, VR::IS, VM::M1, "Coordinate System Number of Axes" },
-{ 0x00142204, VR::SQ, VM::M1, "Coordinate System Axes Sequence" },
-{ 0x00142206, VR::ST, VM::M1, "Coordinate System Axis Description" },
-{ 0x00142208, VR::CS, VM::M1, "Coordinate System Data Set Mapping" },
-{ 0x0014220A, VR::IS, VM::M1, "Coordinate System Axis Number" },
-{ 0x0014220C, VR::CS, VM::M1, "Coordinate System Axis Type" },
-{ 0x0014220E, VR::CS, VM::M1, "Coordinate System Axis Units" },
-{ 0x00142210, VR::OB, VM::M1, "Coordinate System Axis Values" },
-{ 0x00142220, VR::SQ, VM::M1, "Coordinate System Transform Sequence" },
-{ 0x00142222, VR::ST, VM::M1, "Transform Description" },
-{ 0x00142224, VR::IS, VM::M1, "Transform Number of Axes" },
-{ 0x00142226, VR::IS, VM::M1TN, "Transform Order of Axes" },
-{ 0x00142228, VR::CS, VM::M1, "Transformed Axis Units" },
-{ 0x0014222A, VR::DS, VM::M1TN, "Coordinate System Transform Rotation and Scale Matrix" },
-{ 0x0014222C, VR::DS, VM::M1TN, "Coordinate System Transform Translation Matrix" },
-{ 0x00143011, VR::DS, VM::M1, "Internal Detector Frame Time" },
-{ 0x00143012, VR::DS, VM::M1, "Number of Frames Integrated" },
-{ 0x00143020, VR::SQ, VM::M1, "Detector Temperature Sequence" },
-{ 0x00143022, VR::DS, VM::M1, "Sensor Name" },
-{ 0x00143024, VR::DS, VM::M1, "Horizontal Offset of Sensor" },
-{ 0x00143026, VR::DS, VM::M1, "Vertical Offset of Sensor" },
-{ 0x00143028, VR::DS, VM::M1, "Sensor Temperature" },
-{ 0x00143040, VR::SQ, VM::M1, "Dark Current Sequence" },
-{ 0x00143050, VR::OX, VM::M1, "Dark Current Counts" },
-{ 0x00143060, VR::SQ, VM::M1, "Gain Correction Reference Sequence" },
-{ 0x00143070, VR::OX, VM::M1, "Air Counts" },
-{ 0x00143071, VR::DS, VM::M1, "KV Used in Gain Calibration" },
-{ 0x00143072, VR::DS, VM::M1, "MA Used in Gain Calibration" },
-{ 0x00143073, VR::DS, VM::M1, "Number of Frames Used for Integration" },
-{ 0x00143074, VR::LO, VM::M1, "Filter Material Used in Gain Calibration" },
-{ 0x00143075, VR::DS, VM::M1, "Filter Thickness Used in Gain Calibration" },
-{ 0x00143076, VR::DA, VM::M1, "Date of Gain Calibration" },
-{ 0x00143077, VR::TM, VM::M1, "Time of Gain Calibration" },
-{ 0x00143080, VR::OB, VM::M1, "Bad Pixel Image" },
-{ 0x00143099, VR::LT, VM::M1, "Calibration Notes" },
-{ 0x00144002, VR::SQ, VM::M1, "Pulser Equipment Sequence" },
-{ 0x00144004, VR::CS, VM::M1, "Pulser Type" },
-{ 0x00144006, VR::LT, VM::M1, "Pulser Notes" },
-{ 0x00144008, VR::SQ, VM::M1, "Receiver Equipment Sequence" },
-{ 0x0014400A, VR::CS, VM::M1, "Amplifier Type" },
-{ 0x0014400C, VR::LT, VM::M1, "Receiver Notes" },
-{ 0x0014400E, VR::SQ, VM::M1, "Pre-Amplifier Equipment Sequence" },
-{ 0x0014400F, VR::LT, VM::M1, "Pre-Amplifier Notes" },
-{ 0x00144010, VR::SQ, VM::M1, "Transmit Transducer Sequence" },
-{ 0x00144011, VR::SQ, VM::M1, "Receive Transducer Sequence" },
-{ 0x00144012, VR::US, VM::M1, "Number of Elements" },
-{ 0x00144013, VR::CS, VM::M1, "Element Shape" },
-{ 0x00144014, VR::DS, VM::M1, "Element Dimension A" },
-{ 0x00144015, VR::DS, VM::M1, "Element Dimension B" },
-{ 0x00144016, VR::DS, VM::M1, "Element Pitch" },
-{ 0x00144017, VR::DS, VM::M1, "Measured Beam Dimension A" },
-{ 0x00144018, VR::DS, VM::M1, "Measured Beam Dimension B" },
-{ 0x00144019, VR::DS, VM::M1, "Location of Measured Beam Diameter" },
-{ 0x0014401A, VR::DS, VM::M1, "Nominal Frequency" },
-{ 0x0014401B, VR::DS, VM::M1, "Measured Center Frequency" },
-{ 0x0014401C, VR::DS, VM::M1, "Measured Bandwidth" },
-{ 0x00144020, VR::SQ, VM::M1, "Pulser Settings Sequence" },
-{ 0x00144022, VR::DS, VM::M1, "Pulse Width" },
-{ 0x00144024, VR::DS, VM::M1, "Excitation Frequency" },
-{ 0x00144026, VR::CS, VM::M1, "Modulation Type" },
-{ 0x00144028, VR::DS, VM::M1, "Damping" },
-{ 0x00144030, VR::SQ, VM::M1, "Receiver Settings Sequence" },
-{ 0x00144031, VR::DS, VM::M1, "Acquired Soundpath Length" },
-{ 0x00144032, VR::CS, VM::M1, "Acquisition Compression Type" },
-{ 0x00144033, VR::IS, VM::M1, "Acquisition Sample Size" },
-{ 0x00144034, VR::DS, VM::M1, "Rectifier Smoothing" },
-{ 0x00144035, VR::SQ, VM::M1, "DAC Sequence" },
-{ 0x00144036, VR::CS, VM::M1, "DAC Type" },
-{ 0x00144038, VR::DS, VM::M1TN, "DAC Gain Points" },
-{ 0x0014403A, VR::DS, VM::M1TN, "DAC Time Points" },
-{ 0x0014403C, VR::DS, VM::M1TN, "DAC Amplitude" },
-{ 0x00144040, VR::SQ, VM::M1, "Pre-Amplifier Settings Sequence" },
-{ 0x00144050, VR::SQ, VM::M1, "Transmit Transducer Settings Sequence" },
-{ 0x00144051, VR::SQ, VM::M1, "Receive Transducer Settings Sequence" },
-{ 0x00144052, VR::DS, VM::M1, "Incident Angle" },
-{ 0x00144054, VR::ST, VM::M1, "Coupling Technique" },
-{ 0x00144056, VR::ST, VM::M1, "Coupling Medium" },
-{ 0x00144057, VR::DS, VM::M1, "Coupling Velocity" },
-{ 0x00144058, VR::DS, VM::M1, "Crystal Center Location X" },
-{ 0x00144059, VR::DS, VM::M1, "Crystal Center Location Z" },
-{ 0x0014405A, VR::DS, VM::M1, "Sound Path Length" },
-{ 0x0014405C, VR::ST, VM::M1, "Delay Law Identifier" },
-{ 0x00144060, VR::SQ, VM::M1, "Gate Settings Sequence" },
-{ 0x00144062, VR::DS, VM::M1, "Gate Threshold" },
-{ 0x00144064, VR::DS, VM::M1, "Velocity of Sound" },
-{ 0x00144070, VR::SQ, VM::M1, "Calibration Settings Sequence" },
-{ 0x00144072, VR::ST, VM::M1, "Calibration Procedure" },
-{ 0x00144074, VR::SH, VM::M1, "Procedure Version" },
-{ 0x00144076, VR::DA, VM::M1, "Procedure Creation Date" },
-{ 0x00144078, VR::DA, VM::M1, "Procedure Expiration Date" },
-{ 0x0014407A, VR::DA, VM::M1, "Procedure Last Modified Date" },
-{ 0x0014407C, VR::TM, VM::M1TN, "Calibration Time" },
-{ 0x0014407E, VR::DA, VM::M1TN, "Calibration Date" },
-{ 0x00145002, VR::IS, VM::M1, "LINAC Energy" },
-{ 0x00145004, VR::IS, VM::M1, "LINAC Output" },
-{ 0x00180010, VR::LO, VM::M1, "Contrast/Bolus Agent" },
-{ 0x00180012, VR::SQ, VM::M1, "Contrast/Bolus Agent Sequence" },
-{ 0x00180014, VR::SQ, VM::M1, "Contrast/Bolus Administration Route Sequence" },
-{ 0x00180015, VR::CS, VM::M1, "Body Part Examined" },
-{ 0x00180020, VR::CS, VM::M1TN, "Scanning Sequence" },
-{ 0x00180021, VR::CS, VM::M1TN, "Sequence Variant" },
-{ 0x00180022, VR::CS, VM::M1TN, "Scan Options" },
-{ 0x00180023, VR::CS, VM::M1, "MR Acquisition Type" },
-{ 0x00180024, VR::SH, VM::M1, "Sequence Name" },
-{ 0x00180025, VR::CS, VM::M1, "Angio Flag" },
-{ 0x00180026, VR::SQ, VM::M1, "Intervention Drug Information Sequence" },
-{ 0x00180027, VR::TM, VM::M1, "Intervention Drug Stop Time" },
-{ 0x00180028, VR::DS, VM::M1, "Intervention Drug Dose" },
-{ 0x00180029, VR::SQ, VM::M1, "Intervention Drug Code Sequence" },
-{ 0x0018002A, VR::SQ, VM::M1, "Additional Drug Sequence" },
-{ 0x00180030, VR::LO, VM::M1TN, "Radionuclide" },
-{ 0x00180031, VR::LO, VM::M1, "Radiopharmaceutical" },
-{ 0x00180032, VR::DS, VM::M1, "Energy Window Centerline" },
-{ 0x00180033, VR::DS, VM::M1TN, "Energy Window Total Width" },
-{ 0x00180034, VR::LO, VM::M1, "Intervention Drug Name" },
-{ 0x00180035, VR::TM, VM::M1, "Intervention Drug Start Time" },
-{ 0x00180036, VR::SQ, VM::M1, "Intervention Sequence" },
-{ 0x00180037, VR::CS, VM::M1, "Therapy Type" },
-{ 0x00180038, VR::CS, VM::M1, "Intervention Status" },
-{ 0x00180039, VR::CS, VM::M1, "Therapy Description" },
-{ 0x0018003A, VR::ST, VM::M1, "Intervention Description" },
-{ 0x00180040, VR::IS, VM::M1, "Cine Rate" },
-{ 0x00180042, VR::CS, VM::M1, "Initial Cine Run State" },
-{ 0x00180050, VR::DS, VM::M1, "Slice Thickness" },
-{ 0x00180060, VR::DS, VM::M1, "KVP" },
-{ 0x00180070, VR::IS, VM::M1, "Counts Accumulated" },
-{ 0x00180071, VR::CS, VM::M1, "Acquisition Termination Condition" },
-{ 0x00180072, VR::DS, VM::M1, "Effective Duration" },
-{ 0x00180073, VR::CS, VM::M1, "Acquisition Start Condition" },
-{ 0x00180074, VR::IS, VM::M1, "Acquisition Start Condition Data" },
-{ 0x00180075, VR::IS, VM::M1, "Acquisition Termination Condition Data" },
-{ 0x00180080, VR::DS, VM::M1, "Repetition Time" },
-{ 0x00180081, VR::DS, VM::M1, "Echo Time" },
-{ 0x00180082, VR::DS, VM::M1, "Inversion Time" },
-{ 0x00180083, VR::DS, VM::M1, "Number of Averages" },
-{ 0x00180084, VR::DS, VM::M1, "Imaging Frequency" },
-{ 0x00180085, VR::SH, VM::M1, "Imaged Nucleus" },
-{ 0x00180086, VR::IS, VM::M1TN, "Echo Number(s)" },
-{ 0x00180087, VR::DS, VM::M1, "Magnetic Field Strength" },
-{ 0x00180088, VR::DS, VM::M1, "Spacing Between Slices" },
-{ 0x00180089, VR::IS, VM::M1, "Number of Phase Encoding Steps" },
-{ 0x00180090, VR::DS, VM::M1, "Data Collection Diameter" },
-{ 0x00180091, VR::IS, VM::M1, "Echo Train Length" },
-{ 0x00180093, VR::DS, VM::M1, "Percent Sampling" },
-{ 0x00180094, VR::DS, VM::M1, "Percent Phase Field of View" },
-{ 0x00180095, VR::DS, VM::M1, "Pixel Bandwidth" },
-{ 0x00181000, VR::LO, VM::M1, "Device Serial Number" },
-{ 0x00181002, VR::UI, VM::M1, "Device UID" },
-{ 0x00181003, VR::LO, VM::M1, "Device ID" },
-{ 0x00181004, VR::LO, VM::M1, "Plate ID" },
-{ 0x00181005, VR::LO, VM::M1, "Generator ID" },
-{ 0x00181006, VR::LO, VM::M1, "Grid ID" },
-{ 0x00181007, VR::LO, VM::M1, "Cassette ID" },
-{ 0x00181008, VR::LO, VM::M1, "Gantry ID" },
-{ 0x00181010, VR::LO, VM::M1, "Secondary Capture Device ID" },
-{ 0x00181011, VR::LO, VM::M1, "Hardcopy Creation Device ID" },
-{ 0x00181012, VR::DA, VM::M1, "Date of Secondary Capture" },
-{ 0x00181014, VR::TM, VM::M1, "Time of Secondary Capture" },
-{ 0x00181016, VR::LO, VM::M1, "Secondary Capture Device Manufacturer" },
-{ 0x00181017, VR::LO, VM::M1, "Hardcopy Device Manufacturer" },
-{ 0x00181018, VR::LO, VM::M1, "Secondary Capture Device Manufacturer's Model Name" },
-{ 0x00181019, VR::LO, VM::M1TN, "Secondary Capture Device Software Versions" },
-{ 0x0018101A, VR::LO, VM::M1TN, "Hardcopy Device Software Version" },
-{ 0x0018101B, VR::LO, VM::M1, "Hardcopy Device Manufacturer's Model Name" },
-{ 0x00181020, VR::LO, VM::M1TN, "Software Version(s)" },
-{ 0x00181022, VR::SH, VM::M1, "Video Image Format Acquired" },
-{ 0x00181023, VR::LO, VM::M1, "Digital Image Format Acquired" },
-{ 0x00181030, VR::LO, VM::M1, "Protocol Name" },
-{ 0x00181040, VR::LO, VM::M1, "Contrast/Bolus Route" },
-{ 0x00181041, VR::DS, VM::M1, "Contrast/Bolus Volume" },
-{ 0x00181042, VR::TM, VM::M1, "Contrast/Bolus Start Time" },
-{ 0x00181043, VR::TM, VM::M1, "Contrast/Bolus Stop Time" },
-{ 0x00181044, VR::DS, VM::M1, "Contrast/Bolus Total Dose" },
-{ 0x00181045, VR::IS, VM::M1, "Syringe Counts" },
-{ 0x00181046, VR::DS, VM::M1TN, "Contrast Flow Rate" },
-{ 0x00181047, VR::DS, VM::M1TN, "Contrast Flow Duration" },
-{ 0x00181048, VR::CS, VM::M1, "Contrast/Bolus Ingredient" },
-{ 0x00181049, VR::DS, VM::M1, "Contrast/Bolus Ingredient Concentration" },
-{ 0x00181050, VR::DS, VM::M1, "Spatial Resolution" },
-{ 0x00181060, VR::DS, VM::M1, "Trigger Time" },
-{ 0x00181061, VR::LO, VM::M1, "Trigger Source or Type" },
-{ 0x00181062, VR::IS, VM::M1, "Nominal Interval" },
-{ 0x00181063, VR::DS, VM::M1, "Frame Time" },
-{ 0x00181064, VR::LO, VM::M1, "Cardiac Framing Type" },
-{ 0x00181065, VR::DS, VM::M1TN, "Frame Time Vector" },
-{ 0x00181066, VR::DS, VM::M1, "Frame Delay" },
-{ 0x00181067, VR::DS, VM::M1, "Image Trigger Delay" },
-{ 0x00181068, VR::DS, VM::M1, "Multiplex Group Time Offset" },
-{ 0x00181069, VR::DS, VM::M1, "Trigger Time Offset" },
-{ 0x0018106A, VR::CS, VM::M1, "Synchronization Trigger" },
-{ 0x0018106C, VR::US, VM::M2, "Synchronization Channel" },
-{ 0x0018106E, VR::UL, VM::M1, "Trigger Sample Position" },
-{ 0x00181070, VR::LO, VM::M1, "Radiopharmaceutical Route" },
-{ 0x00181071, VR::DS, VM::M1, "Radiopharmaceutical Volume" },
-{ 0x00181072, VR::TM, VM::M1, "Radiopharmaceutical Start Time" },
-{ 0x00181073, VR::TM, VM::M1, "Radiopharmaceutical Stop Time" },
-{ 0x00181074, VR::DS, VM::M1, "Radionuclide Total Dose" },
-{ 0x00181075, VR::DS, VM::M1, "Radionuclide Half Life" },
-{ 0x00181076, VR::DS, VM::M1, "Radionuclide Positron Fraction" },
-{ 0x00181077, VR::DS, VM::M1, "Radiopharmaceutical Specific Activity" },
-{ 0x00181078, VR::DT, VM::M1, "Radiopharmaceutical Start DateTime" },
-{ 0x00181079, VR::DT, VM::M1, "Radiopharmaceutical Stop DateTime" },
-{ 0x00181080, VR::CS, VM::M1, "Beat Rejection Flag" },
-{ 0x00181081, VR::IS, VM::M1, "Low R-R Value" },
-{ 0x00181082, VR::IS, VM::M1, "High R-R Value" },
-{ 0x00181083, VR::IS, VM::M1, "Intervals Acquired" },
-{ 0x00181084, VR::IS, VM::M1, "Intervals Rejected" },
-{ 0x00181085, VR::LO, VM::M1, "PVC Rejection" },
-{ 0x00181086, VR::IS, VM::M1, "Skip Beats" },
-{ 0x00181088, VR::IS, VM::M1, "Heart Rate" },
-{ 0x00181090, VR::IS, VM::M1, "Cardiac Number of Images" },
-{ 0x00181094, VR::IS, VM::M1, "Trigger Window" },
-{ 0x00181100, VR::DS, VM::M1, "Reconstruction Diameter" },
-{ 0x00181110, VR::DS, VM::M1, "Distance Source to Detector" },
-{ 0x00181111, VR::DS, VM::M1, "Distance Source to Patient" },
-{ 0x00181114, VR::DS, VM::M1, "Estimated Radiographic Magnification Factor" },
-{ 0x00181120, VR::DS, VM::M1, "Gantry/Detector Tilt" },
-{ 0x00181121, VR::DS, VM::M1, "Gantry/Detector Slew" },
-{ 0x00181130, VR::DS, VM::M1, "Table Height" },
-{ 0x00181131, VR::DS, VM::M1, "Table Traverse" },
-{ 0x00181134, VR::CS, VM::M1, "Table Motion" },
-{ 0x00181135, VR::DS, VM::M1TN, "Table Vertical Increment" },
-{ 0x00181136, VR::DS, VM::M1TN, "Table Lateral Increment" },
-{ 0x00181137, VR::DS, VM::M1TN, "Table Longitudinal Increment" },
-{ 0x00181138, VR::DS, VM::M1, "Table Angle" },
-{ 0x0018113A, VR::CS, VM::M1, "Table Type" },
-{ 0x00181140, VR::CS, VM::M1, "Rotation Direction" },
-{ 0x00181141, VR::DS, VM::M1, "Angular Position" },
-{ 0x00181142, VR::DS, VM::M1TN, "Radial Position" },
-{ 0x00181143, VR::DS, VM::M1, "Scan Arc" },
-{ 0x00181144, VR::DS, VM::M1, "Angular Step" },
-{ 0x00181145, VR::DS, VM::M1, "Center of Rotation Offset" },
-{ 0x00181146, VR::DS, VM::M1TN, "Rotation Offset" },
-{ 0x00181147, VR::CS, VM::M1, "Field of View Shape" },
-{ 0x00181149, VR::IS, VM::M1T2, "Field of View Dimension(s)" },
-{ 0x00181150, VR::IS, VM::M1, "Exposure Time" },
-{ 0x00181151, VR::IS, VM::M1, "X-Ray Tube Current" },
-{ 0x00181152, VR::IS, VM::M1, "Exposure" },
-{ 0x00181153, VR::IS, VM::M1, "Exposure in uAs" },
-{ 0x00181154, VR::DS, VM::M1, "Average Pulse Width" },
-{ 0x00181155, VR::CS, VM::M1, "Radiation Setting" },
-{ 0x00181156, VR::CS, VM::M1, "Rectification Type" },
-{ 0x0018115A, VR::CS, VM::M1, "Radiation Mode" },
-{ 0x0018115E, VR::DS, VM::M1, "Image and Fluoroscopy Area Dose Product" },
-{ 0x00181160, VR::SH, VM::M1, "Filter Type" },
-{ 0x00181161, VR::LO, VM::M1TN, "Type of Filters" },
-{ 0x00181162, VR::DS, VM::M1, "Intensifier Size" },
-{ 0x00181164, VR::DS, VM::M2, "Imager Pixel Spacing" },
-{ 0x00181166, VR::CS, VM::M1TN, "Grid" },
-{ 0x00181170, VR::IS, VM::M1, "Generator Power" },
-{ 0x00181180, VR::SH, VM::M1, "Collimator/grid Name" },
-{ 0x00181181, VR::CS, VM::M1, "Collimator Type" },
-{ 0x00181182, VR::IS, VM::M1T2, "Focal Distance" },
-{ 0x00181183, VR::DS, VM::M1T2, "X Focus Center" },
-{ 0x00181184, VR::DS, VM::M1T2, "Y Focus Center" },
-{ 0x00181190, VR::DS, VM::M1TN, "Focal Spot(s)" },
-{ 0x00181191, VR::CS, VM::M1, "Anode Target Material" },
-{ 0x001811A0, VR::DS, VM::M1, "Body Part Thickness" },
-{ 0x001811A2, VR::DS, VM::M1, "Compression Force" },
-{ 0x00181200, VR::DA, VM::M1TN, "Date of Last Calibration" },
-{ 0x00181201, VR::TM, VM::M1TN, "Time of Last Calibration" },
-{ 0x00181210, VR::SH, VM::M1TN, "Convolution Kernel" },
-{ 0x00181240, VR::IS, VM::M1TN, "Upper/Lower Pixel Values" },
-{ 0x00181242, VR::IS, VM::M1, "Actual Frame Duration" },
-{ 0x00181243, VR::IS, VM::M1, "Count Rate" },
-{ 0x00181244, VR::US, VM::M1, "Preferred Playback Sequencing" },
-{ 0x00181250, VR::SH, VM::M1, "Receive Coil Name" },
-{ 0x00181251, VR::SH, VM::M1, "Transmit Coil Name" },
-{ 0x00181260, VR::SH, VM::M1, "Plate Type" },
-{ 0x00181261, VR::LO, VM::M1, "Phosphor Type" },
-{ 0x00181300, VR::DS, VM::M1, "Scan Velocity" },
-{ 0x00181301, VR::CS, VM::M1TN, "Whole Body Technique" },
-{ 0x00181302, VR::IS, VM::M1, "Scan Length" },
-{ 0x00181310, VR::US, VM::M4, "Acquisition Matrix" },
-{ 0x00181312, VR::CS, VM::M1, "In-plane Phase Encoding Direction" },
-{ 0x00181314, VR::DS, VM::M1, "Flip Angle" },
-{ 0x00181315, VR::CS, VM::M1, "Variable Flip Angle Flag" },
-{ 0x00181316, VR::DS, VM::M1, "SAR" },
-{ 0x00181318, VR::DS, VM::M1, "dB/dt" },
-{ 0x00181400, VR::LO, VM::M1, "Acquisition Device Processing Description" },
-{ 0x00181401, VR::LO, VM::M1, "Acquisition Device Processing Code" },
-{ 0x00181402, VR::CS, VM::M1, "Cassette Orientation" },
-{ 0x00181403, VR::CS, VM::M1, "Cassette Size" },
-{ 0x00181404, VR::US, VM::M1, "Exposures on Plate" },
-{ 0x00181405, VR::IS, VM::M1, "Relative X-Ray Exposure" },
-{ 0x00181411, VR::DS, VM::M1, "Exposure Index" },
-{ 0x00181412, VR::DS, VM::M1, "Target Exposure Index" },
-{ 0x00181413, VR::DS, VM::M1, "Deviation Index" },
-{ 0x00181450, VR::DS, VM::M1, "Column Angulation" },
-{ 0x00181460, VR::DS, VM::M1, "Tomo Layer Height" },
-{ 0x00181470, VR::DS, VM::M1, "Tomo Angle" },
-{ 0x00181480, VR::DS, VM::M1, "Tomo Time" },
-{ 0x00181490, VR::CS, VM::M1, "Tomo Type" },
-{ 0x00181491, VR::CS, VM::M1, "Tomo Class" },
-{ 0x00181495, VR::IS, VM::M1, "Number of Tomosynthesis Source Images" },
-{ 0x00181500, VR::CS, VM::M1, "Positioner Motion" },
-{ 0x00181508, VR::CS, VM::M1, "Positioner Type" },
-{ 0x00181510, VR::DS, VM::M1, "Positioner Primary Angle" },
-{ 0x00181511, VR::DS, VM::M1, "Positioner Secondary Angle" },
-{ 0x00181520, VR::DS, VM::M1TN, "Positioner Primary Angle Increment" },
-{ 0x00181521, VR::DS, VM::M1TN, "Positioner Secondary Angle Increment" },
-{ 0x00181530, VR::DS, VM::M1, "Detector Primary Angle" },
-{ 0x00181531, VR::DS, VM::M1, "Detector Secondary Angle" },
-{ 0x00181600, VR::CS, VM::M1T3, "Shutter Shape" },
-{ 0x00181602, VR::IS, VM::M1, "Shutter Left Vertical Edge" },
-{ 0x00181604, VR::IS, VM::M1, "Shutter Right Vertical Edge" },
-{ 0x00181606, VR::IS, VM::M1, "Shutter Upper Horizontal Edge" },
-{ 0x00181608, VR::IS, VM::M1, "Shutter Lower Horizontal Edge" },
-{ 0x00181610, VR::IS, VM::M2, "Center of Circular Shutter" },
-{ 0x00181612, VR::IS, VM::M1, "Radius of Circular Shutter" },
-{ 0x00181620, VR::IS, VM::M2T2N, "Vertices of the Polygonal Shutter" },
-{ 0x00181622, VR::US, VM::M1, "Shutter Presentation Value" },
-{ 0x00181623, VR::US, VM::M1, "Shutter Overlay Group" },
-{ 0x00181624, VR::US, VM::M3, "Shutter Presentation Color CIELab Value" },
-{ 0x00181700, VR::CS, VM::M1T3, "Collimator Shape" },
-{ 0x00181702, VR::IS, VM::M1, "Collimator Left Vertical Edge" },
-{ 0x00181704, VR::IS, VM::M1, "Collimator Right Vertical Edge" },
-{ 0x00181706, VR::IS, VM::M1, "Collimator Upper Horizontal Edge" },
-{ 0x00181708, VR::IS, VM::M1, "Collimator Lower Horizontal Edge" },
-{ 0x00181710, VR::IS, VM::M2, "Center of Circular Collimator" },
-{ 0x00181712, VR::IS, VM::M1, "Radius of Circular Collimator" },
-{ 0x00181720, VR::IS, VM::M2T2N, "Vertices of the Polygonal Collimator" },
-{ 0x00181800, VR::CS, VM::M1, "Acquisition Time Synchronized" },
-{ 0x00181801, VR::SH, VM::M1, "Time Source" },
-{ 0x00181802, VR::CS, VM::M1, "Time Distribution Protocol" },
-{ 0x00181803, VR::LO, VM::M1, "NTP Source Address" },
-{ 0x00182001, VR::IS, VM::M1TN, "Page Number Vector" },
-{ 0x00182002, VR::SH, VM::M1TN, "Frame Label Vector" },
-{ 0x00182003, VR::DS, VM::M1TN, "Frame Primary Angle Vector" },
-{ 0x00182004, VR::DS, VM::M1TN, "Frame Secondary Angle Vector" },
-{ 0x00182005, VR::DS, VM::M1TN, "Slice Location Vector" },
-{ 0x00182006, VR::SH, VM::M1TN, "Display Window Label Vector" },
-{ 0x00182010, VR::DS, VM::M2, "Nominal Scanned Pixel Spacing" },
-{ 0x00182020, VR::CS, VM::M1, "Digitizing Device Transport Direction" },
-{ 0x00182030, VR::DS, VM::M1, "Rotation of Scanned Film" },
-{ 0x00183100, VR::CS, VM::M1, "IVUS Acquisition" },
-{ 0x00183101, VR::DS, VM::M1, "IVUS Pullback Rate" },
-{ 0x00183102, VR::DS, VM::M1, "IVUS Gated Rate" },
-{ 0x00183103, VR::IS, VM::M1, "IVUS Pullback Start Frame Number" },
-{ 0x00183104, VR::IS, VM::M1, "IVUS Pullback Stop Frame Number" },
-{ 0x00183105, VR::IS, VM::M1TN, "Lesion Number" },
-{ 0x00184000, VR::LT, VM::M1, "Acquisition Comments" },
-{ 0x00185000, VR::SH, VM::M1TN, "Output Power" },
-{ 0x00185010, VR::LO, VM::M1TN, "Transducer Data" },
-{ 0x00185012, VR::DS, VM::M1, "Focus Depth" },
-{ 0x00185020, VR::LO, VM::M1, "Processing Function" },
-{ 0x00185021, VR::LO, VM::M1, "Postprocessing Function" },
-{ 0x00185022, VR::DS, VM::M1, "Mechanical Index" },
-{ 0x00185024, VR::DS, VM::M1, "Bone Thermal Index" },
-{ 0x00185026, VR::DS, VM::M1, "Cranial Thermal Index" },
-{ 0x00185027, VR::DS, VM::M1, "Soft Tissue Thermal Index" },
-{ 0x00185028, VR::DS, VM::M1, "Soft Tissue-focus Thermal Index" },
-{ 0x00185029, VR::DS, VM::M1, "Soft Tissue-surface Thermal Index" },
-{ 0x00185030, VR::DS, VM::M1, "Dynamic Range" },
-{ 0x00185040, VR::DS, VM::M1, "Total Gain" },
-{ 0x00185050, VR::IS, VM::M1, "Depth of Scan Field" },
-{ 0x00185100, VR::CS, VM::M1, "Patient Position" },
-{ 0x00185101, VR::CS, VM::M1, "View Position" },
-{ 0x00185104, VR::SQ, VM::M1, "Projection Eponymous Name Code Sequence" },
-{ 0x00185210, VR::DS, VM::M6, "Image Transformation Matrix" },
-{ 0x00185212, VR::DS, VM::M3, "Image Translation Vector" },
-{ 0x00186000, VR::DS, VM::M1, "Sensitivity" },
-{ 0x00186011, VR::SQ, VM::M1, "Sequence of Ultrasound Regions" },
-{ 0x00186012, VR::US, VM::M1, "Region Spatial Format" },
-{ 0x00186014, VR::US, VM::M1, "Region Data Type" },
-{ 0x00186016, VR::UL, VM::M1, "Region Flags" },
-{ 0x00186018, VR::UL, VM::M1, "Region Location Min X0" },
-{ 0x0018601A, VR::UL, VM::M1, "Region Location Min Y0" },
-{ 0x0018601C, VR::UL, VM::M1, "Region Location Max X1" },
-{ 0x0018601E, VR::UL, VM::M1, "Region Location Max Y1" },
-{ 0x00186020, VR::SL, VM::M1, "Reference Pixel X0" },
-{ 0x00186022, VR::SL, VM::M1, "Reference Pixel Y0" },
-{ 0x00186024, VR::US, VM::M1, "Physical Units X Direction" },
-{ 0x00186026, VR::US, VM::M1, "Physical Units Y Direction" },
-{ 0x00186028, VR::FD, VM::M1, "Reference Pixel Physical Value X" },
-{ 0x0018602A, VR::FD, VM::M1, "Reference Pixel Physical Value Y" },
-{ 0x0018602C, VR::FD, VM::M1, "Physical Delta X" },
-{ 0x0018602E, VR::FD, VM::M1, "Physical Delta Y" },
-{ 0x00186030, VR::UL, VM::M1, "Transducer Frequency" },
-{ 0x00186031, VR::CS, VM::M1, "Transducer Type" },
-{ 0x00186032, VR::UL, VM::M1, "Pulse Repetition Frequency" },
-{ 0x00186034, VR::FD, VM::M1, "Doppler Correction Angle" },
-{ 0x00186036, VR::FD, VM::M1, "Steering Angle" },
-{ 0x00186038, VR::UL, VM::M1, "Doppler Sample Volume X Position (Retired)" },
-{ 0x00186039, VR::SL, VM::M1, "Doppler Sample Volume X Position" },
-{ 0x0018603A, VR::UL, VM::M1, "Doppler Sample Volume Y Position (Retired)" },
-{ 0x0018603B, VR::SL, VM::M1, "Doppler Sample Volume Y Position" },
-{ 0x0018603C, VR::UL, VM::M1, "TM-Line Position X0 (Retired)" },
-{ 0x0018603D, VR::SL, VM::M1, "TM-Line Position X0" },
-{ 0x0018603E, VR::UL, VM::M1, "TM-Line Position Y0 (Retired)" },
-{ 0x0018603F, VR::SL, VM::M1, "TM-Line Position Y0" },
-{ 0x00186040, VR::UL, VM::M1, "TM-Line Position X1 (Retired)" },
-{ 0x00186041, VR::SL, VM::M1, "TM-Line Position X1" },
-{ 0x00186042, VR::UL, VM::M1, "TM-Line Position Y1 (Retired)" },
-{ 0x00186043, VR::SL, VM::M1, "TM-Line Position Y1" },
-{ 0x00186044, VR::US, VM::M1, "Pixel Component Organization" },
-{ 0x00186046, VR::UL, VM::M1, "Pixel Component Mask" },
-{ 0x00186048, VR::UL, VM::M1, "Pixel Component Range Start" },
-{ 0x0018604A, VR::UL, VM::M1, "Pixel Component Range Stop" },
-{ 0x0018604C, VR::US, VM::M1, "Pixel Component Physical Units" },
-{ 0x0018604E, VR::US, VM::M1, "Pixel Component Data Type" },
-{ 0x00186050, VR::UL, VM::M1, "Number of Table Break Points" },
-{ 0x00186052, VR::UL, VM::M1TN, "Table of X Break Points" },
-{ 0x00186054, VR::FD, VM::M1TN, "Table of Y Break Points" },
-{ 0x00186056, VR::UL, VM::M1, "Number of Table Entries" },
-{ 0x00186058, VR::UL, VM::M1TN, "Table of Pixel Values" },
-{ 0x0018605A, VR::FL, VM::M1TN, "Table of Parameter Values" },
-{ 0x00186060, VR::FL, VM::M1TN, "R Wave Time Vector" },
-{ 0x00187000, VR::CS, VM::M1, "Detector Conditions Nominal Flag" },
-{ 0x00187001, VR::DS, VM::M1, "Detector Temperature" },
-{ 0x00187004, VR::CS, VM::M1, "Detector Type" },
-{ 0x00187005, VR::CS, VM::M1, "Detector Configuration" },
-{ 0x00187006, VR::LT, VM::M1, "Detector Description" },
-{ 0x00187008, VR::LT, VM::M1, "Detector Mode" },
-{ 0x0018700A, VR::SH, VM::M1, "Detector ID" },
-{ 0x0018700C, VR::DA, VM::M1, "Date of Last Detector Calibration" },
-{ 0x0018700E, VR::TM, VM::M1, "Time of Last Detector Calibration" },
-{ 0x00187010, VR::IS, VM::M1, "Exposures on Detector Since Last Calibration" },
-{ 0x00187011, VR::IS, VM::M1, "Exposures on Detector Since Manufactured" },
-{ 0x00187012, VR::DS, VM::M1, "Detector Time Since Last Exposure" },
-{ 0x00187014, VR::DS, VM::M1, "Detector Active Time" },
-{ 0x00187016, VR::DS, VM::M1, "Detector Activation Offset From Exposure" },
-{ 0x0018701A, VR::DS, VM::M2, "Detector Binning" },
-{ 0x00187020, VR::DS, VM::M2, "Detector Element Physical Size" },
-{ 0x00187022, VR::DS, VM::M2, "Detector Element Spacing" },
-{ 0x00187024, VR::CS, VM::M1, "Detector Active Shape" },
-{ 0x00187026, VR::DS, VM::M1T2, "Detector Active Dimension(s)" },
-{ 0x00187028, VR::DS, VM::M2, "Detector Active Origin" },
-{ 0x0018702A, VR::LO, VM::M1, "Detector Manufacturer Name" },
-{ 0x0018702B, VR::LO, VM::M1, "Detector Manufacturer's Model Name" },
-{ 0x00187030, VR::DS, VM::M2, "Field of View Origin" },
-{ 0x00187032, VR::DS, VM::M1, "Field of View Rotation" },
-{ 0x00187034, VR::CS, VM::M1, "Field of View Horizontal Flip" },
-{ 0x00187036, VR::FL, VM::M2, "Pixel Data Area Origin Relative To FOV" },
-{ 0x00187038, VR::FL, VM::M1, "Pixel Data Area Rotation Angle Relative To FOV" },
-{ 0x00187040, VR::LT, VM::M1, "Grid Absorbing Material" },
-{ 0x00187041, VR::LT, VM::M1, "Grid Spacing Material" },
-{ 0x00187042, VR::DS, VM::M1, "Grid Thickness" },
-{ 0x00187044, VR::DS, VM::M1, "Grid Pitch" },
-{ 0x00187046, VR::IS, VM::M2, "Grid Aspect Ratio" },
-{ 0x00187048, VR::DS, VM::M1, "Grid Period" },
-{ 0x0018704C, VR::DS, VM::M1, "Grid Focal Distance" },
-{ 0x00187050, VR::CS, VM::M1TN, "Filter Material" },
-{ 0x00187052, VR::DS, VM::M1TN, "Filter Thickness Minimum" },
-{ 0x00187054, VR::DS, VM::M1TN, "Filter Thickness Maximum" },
-{ 0x00187056, VR::FL, VM::M1TN, "Filter Beam Path Length Minimum" },
-{ 0x00187058, VR::FL, VM::M1TN, "Filter Beam Path Length Maximum" },
-{ 0x00187060, VR::CS, VM::M1, "Exposure Control Mode" },
-{ 0x00187062, VR::LT, VM::M1, "Exposure Control Mode Description" },
-{ 0x00187064, VR::CS, VM::M1, "Exposure Status" },
-{ 0x00187065, VR::DS, VM::M1, "Phototimer Setting" },
-{ 0x00188150, VR::DS, VM::M1, "Exposure Time in uS" },
-{ 0x00188151, VR::DS, VM::M1, "X-Ray Tube Current in uA" },
-{ 0x00189004, VR::CS, VM::M1, "Content Qualification" },
-{ 0x00189005, VR::SH, VM::M1, "Pulse Sequence Name" },
-{ 0x00189006, VR::SQ, VM::M1, "MR Imaging Modifier Sequence" },
-{ 0x00189008, VR::CS, VM::M1, "Echo Pulse Sequence" },
-{ 0x00189009, VR::CS, VM::M1, "Inversion Recovery" },
-{ 0x00189010, VR::CS, VM::M1, "Flow Compensation" },
-{ 0x00189011, VR::CS, VM::M1, "Multiple Spin Echo" },
-{ 0x00189012, VR::CS, VM::M1, "Multi-planar Excitation" },
-{ 0x00189014, VR::CS, VM::M1, "Phase Contrast" },
-{ 0x00189015, VR::CS, VM::M1, "Time of Flight Contrast" },
-{ 0x00189016, VR::CS, VM::M1, "Spoiling" },
-{ 0x00189017, VR::CS, VM::M1, "Steady State Pulse Sequence" },
-{ 0x00189018, VR::CS, VM::M1, "Echo Planar Pulse Sequence" },
-{ 0x00189019, VR::FD, VM::M1, "Tag Angle First Axis" },
-{ 0x00189020, VR::CS, VM::M1, "Magnetization Transfer" },
-{ 0x00189021, VR::CS, VM::M1, "T2 Preparation" },
-{ 0x00189022, VR::CS, VM::M1, "Blood Signal Nulling" },
-{ 0x00189024, VR::CS, VM::M1, "Saturation Recovery" },
-{ 0x00189025, VR::CS, VM::M1, "Spectrally Selected Suppression" },
-{ 0x00189026, VR::CS, VM::M1, "Spectrally Selected Excitation" },
-{ 0x00189027, VR::CS, VM::M1, "Spatial Pre-saturation" },
-{ 0x00189028, VR::CS, VM::M1, "Tagging" },
-{ 0x00189029, VR::CS, VM::M1, "Oversampling Phase" },
-{ 0x00189030, VR::FD, VM::M1, "Tag Spacing First Dimension" },
-{ 0x00189032, VR::CS, VM::M1, "Geometry of k-Space Traversal" },
-{ 0x00189033, VR::CS, VM::M1, "Segmented k-Space Traversal" },
-{ 0x00189034, VR::CS, VM::M1, "Rectilinear Phase Encode Reordering" },
-{ 0x00189035, VR::FD, VM::M1, "Tag Thickness" },
-{ 0x00189036, VR::CS, VM::M1, "Partial Fourier Direction" },
-{ 0x00189037, VR::CS, VM::M1, "Cardiac Synchronization Technique" },
-{ 0x00189041, VR::LO, VM::M1, "Receive Coil Manufacturer Name" },
-{ 0x00189042, VR::SQ, VM::M1, "MR Receive Coil Sequence" },
-{ 0x00189043, VR::CS, VM::M1, "Receive Coil Type" },
-{ 0x00189044, VR::CS, VM::M1, "Quadrature Receive Coil" },
-{ 0x00189045, VR::SQ, VM::M1, "Multi-Coil Definition Sequence" },
-{ 0x00189046, VR::LO, VM::M1, "Multi-Coil Configuration" },
-{ 0x00189047, VR::SH, VM::M1, "Multi-Coil Element Name" },
-{ 0x00189048, VR::CS, VM::M1, "Multi-Coil Element Used" },
-{ 0x00189049, VR::SQ, VM::M1, "MR Transmit Coil Sequence" },
-{ 0x00189050, VR::LO, VM::M1, "Transmit Coil Manufacturer Name" },
-{ 0x00189051, VR::CS, VM::M1, "Transmit Coil Type" },
-{ 0x00189052, VR::FD, VM::M1T2, "Spectral Width" },
-{ 0x00189053, VR::FD, VM::M1T2, "Chemical Shift Reference" },
-{ 0x00189054, VR::CS, VM::M1, "Volume Localization Technique" },
-{ 0x00189058, VR::US, VM::M1, "MR Acquisition Frequency Encoding Steps" },
-{ 0x00189059, VR::CS, VM::M1, "De-coupling" },
-{ 0x00189060, VR::CS, VM::M1T2, "De-coupled Nucleus" },
-{ 0x00189061, VR::FD, VM::M1T2, "De-coupling Frequency" },
-{ 0x00189062, VR::CS, VM::M1, "De-coupling Method" },
-{ 0x00189063, VR::FD, VM::M1T2, "De-coupling Chemical Shift Reference" },
-{ 0x00189064, VR::CS, VM::M1, "k-space Filtering" },
-{ 0x00189065, VR::CS, VM::M1T2, "Time Domain Filtering" },
-{ 0x00189066, VR::US, VM::M1T2, "Number of Zero Fills" },
-{ 0x00189067, VR::CS, VM::M1, "Baseline Correction" },
-{ 0x00189069, VR::FD, VM::M1, "Parallel Reduction Factor In-plane" },
-{ 0x00189070, VR::FD, VM::M1, "Cardiac R-R Interval Specified" },
-{ 0x00189073, VR::FD, VM::M1, "Acquisition Duration" },
-{ 0x00189074, VR::DT, VM::M1, "Frame Acquisition DateTime" },
-{ 0x00189075, VR::CS, VM::M1, "Diffusion Directionality" },
-{ 0x00189076, VR::SQ, VM::M1, "Diffusion Gradient Direction Sequence" },
-{ 0x00189077, VR::CS, VM::M1, "Parallel Acquisition" },
-{ 0x00189078, VR::CS, VM::M1, "Parallel Acquisition Technique" },
-{ 0x00189079, VR::FD, VM::M1TN, "Inversion Times" },
-{ 0x00189080, VR::ST, VM::M1, "Metabolite Map Description" },
-{ 0x00189081, VR::CS, VM::M1, "Partial Fourier" },
-{ 0x00189082, VR::FD, VM::M1, "Effective Echo Time" },
-{ 0x00189083, VR::SQ, VM::M1, "Metabolite Map Code Sequence" },
-{ 0x00189084, VR::SQ, VM::M1, "Chemical Shift Sequence" },
-{ 0x00189085, VR::CS, VM::M1, "Cardiac Signal Source" },
-{ 0x00189087, VR::FD, VM::M1, "Diffusion b-value" },
-{ 0x00189089, VR::FD, VM::M3, "Diffusion Gradient Orientation" },
-{ 0x00189090, VR::FD, VM::M3, "Velocity Encoding Direction" },
-{ 0x00189091, VR::FD, VM::M1, "Velocity Encoding Minimum Value" },
-{ 0x00189092, VR::SQ, VM::M1, "Velocity Encoding Acquisition Sequence" },
-{ 0x00189093, VR::US, VM::M1, "Number of k-Space Trajectories" },
-{ 0x00189094, VR::CS, VM::M1, "Coverage of k-Space" },
-{ 0x00189095, VR::UL, VM::M1, "Spectroscopy Acquisition Phase Rows" },
-{ 0x00189096, VR::FD, VM::M1, "Parallel Reduction Factor In-plane (Retired)" },
-{ 0x00189098, VR::FD, VM::M1T2, "Transmitter Frequency" },
-{ 0x00189100, VR::CS, VM::M1T2, "Resonant Nucleus" },
-{ 0x00189101, VR::CS, VM::M1, "Frequency Correction" },
-{ 0x00189103, VR::SQ, VM::M1, "MR Spectroscopy FOV/Geometry Sequence" },
-{ 0x00189104, VR::FD, VM::M1, "Slab Thickness" },
-{ 0x00189105, VR::FD, VM::M3, "Slab Orientation" },
-{ 0x00189106, VR::FD, VM::M3, "Mid Slab Position" },
-{ 0x00189107, VR::SQ, VM::M1, "MR Spatial Saturation Sequence" },
-{ 0x00189112, VR::SQ, VM::M1, "MR Timing and Related Parameters Sequence" },
-{ 0x00189114, VR::SQ, VM::M1, "MR Echo Sequence" },
-{ 0x00189115, VR::SQ, VM::M1, "MR Modifier Sequence" },
-{ 0x00189117, VR::SQ, VM::M1, "MR Diffusion Sequence" },
-{ 0x00189118, VR::SQ, VM::M1, "Cardiac Synchronization Sequence" },
-{ 0x00189119, VR::SQ, VM::M1, "MR Averages Sequence" },
-{ 0x00189125, VR::SQ, VM::M1, "MR FOV/Geometry Sequence" },
-{ 0x00189126, VR::SQ, VM::M1, "Volume Localization Sequence" },
-{ 0x00189127, VR::UL, VM::M1, "Spectroscopy Acquisition Data Columns" },
-{ 0x00189147, VR::CS, VM::M1, "Diffusion Anisotropy Type" },
-{ 0x00189151, VR::DT, VM::M1, "Frame Reference DateTime" },
-{ 0x00189152, VR::SQ, VM::M1, "MR Metabolite Map Sequence" },
-{ 0x00189155, VR::FD, VM::M1, "Parallel Reduction Factor out-of-plane" },
-{ 0x00189159, VR::UL, VM::M1, "Spectroscopy Acquisition Out-of-plane Phase Steps" },
-{ 0x00189166, VR::CS, VM::M1, "Bulk Motion Status" },
-{ 0x00189168, VR::FD, VM::M1, "Parallel Reduction Factor Second In-plane" },
-{ 0x00189169, VR::CS, VM::M1, "Cardiac Beat Rejection Technique" },
-{ 0x00189170, VR::CS, VM::M1, "Respiratory Motion Compensation Technique" },
-{ 0x00189171, VR::CS, VM::M1, "Respiratory Signal Source" },
-{ 0x00189172, VR::CS, VM::M1, "Bulk Motion Compensation Technique" },
-{ 0x00189173, VR::CS, VM::M1, "Bulk Motion Signal Source" },
-{ 0x00189174, VR::CS, VM::M1, "Applicable Safety Standard Agency" },
-{ 0x00189175, VR::LO, VM::M1, "Applicable Safety Standard Description" },
-{ 0x00189176, VR::SQ, VM::M1, "Operating Mode Sequence" },
-{ 0x00189177, VR::CS, VM::M1, "Operating Mode Type" },
-{ 0x00189178, VR::CS, VM::M1, "Operating Mode" },
-{ 0x00189179, VR::CS, VM::M1, "Specific Absorption Rate Definition" },
-{ 0x00189180, VR::CS, VM::M1, "Gradient Output Type" },
-{ 0x00189181, VR::FD, VM::M1, "Specific Absorption Rate Value" },
-{ 0x00189182, VR::FD, VM::M1, "Gradient Output" },
-{ 0x00189183, VR::CS, VM::M1, "Flow Compensation Direction" },
-{ 0x00189184, VR::FD, VM::M1, "Tagging Delay" },
-{ 0x00189185, VR::ST, VM::M1, "Respiratory Motion Compensation Technique Description" },
-{ 0x00189186, VR::SH, VM::M1, "Respiratory Signal Source ID" },
-{ 0x00189195, VR::FD, VM::M1, "Chemical Shift Minimum Integration Limit in Hz" },
-{ 0x00189196, VR::FD, VM::M1, "Chemical Shift Maximum Integration Limit in Hz" },
-{ 0x00189197, VR::SQ, VM::M1, "MR Velocity Encoding Sequence" },
-{ 0x00189198, VR::CS, VM::M1, "First Order Phase Correction" },
-{ 0x00189199, VR::CS, VM::M1, "Water Referenced Phase Correction" },
-{ 0x00189200, VR::CS, VM::M1, "MR Spectroscopy Acquisition Type" },
-{ 0x00189214, VR::CS, VM::M1, "Respiratory Cycle Position" },
-{ 0x00189217, VR::FD, VM::M1, "Velocity Encoding Maximum Value" },
-{ 0x00189218, VR::FD, VM::M1, "Tag Spacing Second Dimension" },
-{ 0x00189219, VR::SS, VM::M1, "Tag Angle Second Axis" },
-{ 0x00189220, VR::FD, VM::M1, "Frame Acquisition Duration" },
-{ 0x00189226, VR::SQ, VM::M1, "MR Image Frame Type Sequence" },
-{ 0x00189227, VR::SQ, VM::M1, "MR Spectroscopy Frame Type Sequence" },
-{ 0x00189231, VR::US, VM::M1, "MR Acquisition Phase Encoding Steps in-plane" },
-{ 0x00189232, VR::US, VM::M1, "MR Acquisition Phase Encoding Steps out-of-plane" },
-{ 0x00189234, VR::UL, VM::M1, "Spectroscopy Acquisition Phase Columns" },
-{ 0x00189236, VR::CS, VM::M1, "Cardiac Cycle Position" },
-{ 0x00189239, VR::SQ, VM::M1, "Specific Absorption Rate Sequence" },
-{ 0x00189240, VR::US, VM::M1, "RF Echo Train Length" },
-{ 0x00189241, VR::US, VM::M1, "Gradient Echo Train Length" },
-{ 0x00189250, VR::CS, VM::M1, "Arterial Spin Labeling Contrast" },
-{ 0x00189251, VR::SQ, VM::M1, "MR Arterial Spin Labeling Sequence" },
-{ 0x00189252, VR::LO, VM::M1, "ASL Technique Description" },
-{ 0x00189253, VR::US, VM::M1, "ASL Slab Number" },
-{ 0x00189254, VR::FD, VM::M1, "ASL Slab Thickness" },
-{ 0x00189255, VR::FD, VM::M3, "ASL Slab Orientation" },
-{ 0x00189256, VR::FD, VM::M3, "ASL Mid Slab Position" },
-{ 0x00189257, VR::CS, VM::M1, "ASL Context" },
-{ 0x00189258, VR::UL, VM::M1, "ASL Pulse Train Duration" },
-{ 0x00189259, VR::CS, VM::M1, "ASL Crusher Flag" },
-{ 0x0018925A, VR::FD, VM::M1, "ASL Crusher Flow" },
-{ 0x0018925B, VR::LO, VM::M1, "ASL Crusher Description" },
-{ 0x0018925C, VR::CS, VM::M1, "ASL Bolus Cut-off Flag" },
-{ 0x0018925D, VR::SQ, VM::M1, "ASL Bolus Cut-off Timing Sequence" },
-{ 0x0018925E, VR::LO, VM::M1, "ASL Bolus Cut-off Technique" },
-{ 0x0018925F, VR::UL, VM::M1, "ASL Bolus Cut-off Delay Time" },
-{ 0x00189260, VR::SQ, VM::M1, "ASL Slab Sequence" },
-{ 0x00189295, VR::FD, VM::M1, "Chemical Shift Minimum Integration Limit in ppm" },
-{ 0x00189296, VR::FD, VM::M1, "Chemical Shift Maximum Integration Limit in ppm" },
-{ 0x00189301, VR::SQ, VM::M1, "CT Acquisition Type Sequence" },
-{ 0x00189302, VR::CS, VM::M1, "Acquisition Type" },
-{ 0x00189303, VR::FD, VM::M1, "Tube Angle" },
-{ 0x00189304, VR::SQ, VM::M1, "CT Acquisition Details Sequence" },
-{ 0x00189305, VR::FD, VM::M1, "Revolution Time" },
-{ 0x00189306, VR::FD, VM::M1, "Single Collimation Width" },
-{ 0x00189307, VR::FD, VM::M1, "Total Collimation Width" },
-{ 0x00189308, VR::SQ, VM::M1, "CT Table Dynamics Sequence" },
-{ 0x00189309, VR::FD, VM::M1, "Table Speed" },
-{ 0x00189310, VR::FD, VM::M1, "Table Feed per Rotation" },
-{ 0x00189311, VR::FD, VM::M1, "Spiral Pitch Factor" },
-{ 0x00189312, VR::SQ, VM::M1, "CT Geometry Sequence" },
-{ 0x00189313, VR::FD, VM::M3, "Data Collection Center (Patient)" },
-{ 0x00189314, VR::SQ, VM::M1, "CT Reconstruction Sequence" },
-{ 0x00189315, VR::CS, VM::M1, "Reconstruction Algorithm" },
-{ 0x00189316, VR::CS, VM::M1, "Convolution Kernel Group" },
-{ 0x00189317, VR::FD, VM::M2, "Reconstruction Field of View" },
-{ 0x00189318, VR::FD, VM::M3, "Reconstruction Target Center (Patient)" },
-{ 0x00189319, VR::FD, VM::M1, "Reconstruction Angle" },
-{ 0x00189320, VR::SH, VM::M1, "Image Filter" },
-{ 0x00189321, VR::SQ, VM::M1, "CT Exposure Sequence" },
-{ 0x00189322, VR::FD, VM::M2, "Reconstruction Pixel Spacing" },
-{ 0x00189323, VR::CS, VM::M1, "Exposure Modulation Type" },
-{ 0x00189324, VR::FD, VM::M1, "Estimated Dose Saving" },
-{ 0x00189325, VR::SQ, VM::M1, "CT X-Ray Details Sequence" },
-{ 0x00189326, VR::SQ, VM::M1, "CT Position Sequence" },
-{ 0x00189327, VR::FD, VM::M1, "Table Position" },
-{ 0x00189328, VR::FD, VM::M1, "Exposure Time in ms" },
-{ 0x00189329, VR::SQ, VM::M1, "CT Image Frame Type Sequence" },
-{ 0x00189330, VR::FD, VM::M1, "X-Ray Tube Current in mA" },
-{ 0x00189332, VR::FD, VM::M1, "Exposure in mAs" },
-{ 0x00189333, VR::CS, VM::M1, "Constant Volume Flag" },
-{ 0x00189334, VR::CS, VM::M1, "Fluoroscopy Flag" },
-{ 0x00189335, VR::FD, VM::M1, "Distance Source to Data Collection Center" },
-{ 0x00189337, VR::US, VM::M1, "Contrast/Bolus Agent Number" },
-{ 0x00189338, VR::SQ, VM::M1, "Contrast/Bolus Ingredient Code Sequence" },
-{ 0x00189340, VR::SQ, VM::M1, "Contrast Administration Profile Sequence" },
-{ 0x00189341, VR::SQ, VM::M1, "Contrast/Bolus Usage Sequence" },
-{ 0x00189342, VR::CS, VM::M1, "Contrast/Bolus Agent Administered" },
-{ 0x00189343, VR::CS, VM::M1, "Contrast/Bolus Agent Detected" },
-{ 0x00189344, VR::CS, VM::M1, "Contrast/Bolus Agent Phase" },
-{ 0x00189345, VR::FD, VM::M1, "CTDIvol" },
-{ 0x00189346, VR::SQ, VM::M1, "CTDI Phantom Type Code Sequence" },
-{ 0x00189351, VR::FL, VM::M1, "Calcium Scoring Mass Factor Patient" },
-{ 0x00189352, VR::FL, VM::M3, "Calcium Scoring Mass Factor Device" },
-{ 0x00189353, VR::FL, VM::M1, "Energy Weighting Factor" },
-{ 0x00189360, VR::SQ, VM::M1, "CT Additional X-Ray Source Sequence" },
-{ 0x00189401, VR::SQ, VM::M1, "Projection Pixel Calibration Sequence" },
-{ 0x00189402, VR::FL, VM::M1, "Distance Source to Isocenter" },
-{ 0x00189403, VR::FL, VM::M1, "Distance Object to Table Top" },
-{ 0x00189404, VR::FL, VM::M2, "Object Pixel Spacing in Center of Beam" },
-{ 0x00189405, VR::SQ, VM::M1, "Positioner Position Sequence" },
-{ 0x00189406, VR::SQ, VM::M1, "Table Position Sequence" },
-{ 0x00189407, VR::SQ, VM::M1, "Collimator Shape Sequence" },
-{ 0x00189410, VR::CS, VM::M1, "Planes in Acquisition" },
-{ 0x00189412, VR::SQ, VM::M1, "XA/XRF Frame Characteristics Sequence" },
-{ 0x00189417, VR::SQ, VM::M1, "Frame Acquisition Sequence" },
-{ 0x00189420, VR::CS, VM::M1, "X-Ray Receptor Type" },
-{ 0x00189423, VR::LO, VM::M1, "Acquisition Protocol Name" },
-{ 0x00189424, VR::LT, VM::M1, "Acquisition Protocol Description" },
-{ 0x00189425, VR::CS, VM::M1, "Contrast/Bolus Ingredient Opaque" },
-{ 0x00189426, VR::FL, VM::M1, "Distance Receptor Plane to Detector Housing" },
-{ 0x00189427, VR::CS, VM::M1, "Intensifier Active Shape" },
-{ 0x00189428, VR::FL, VM::M1T2, "Intensifier Active Dimension(s)" },
-{ 0x00189429, VR::FL, VM::M2, "Physical Detector Size" },
-{ 0x00189430, VR::FL, VM::M2, "Position of Isocenter Projection" },
-{ 0x00189432, VR::SQ, VM::M1, "Field of View Sequence" },
-{ 0x00189433, VR::LO, VM::M1, "Field of View Description" },
-{ 0x00189434, VR::SQ, VM::M1, "Exposure Control Sensing Regions Sequence" },
-{ 0x00189435, VR::CS, VM::M1, "Exposure Control Sensing Region Shape" },
-{ 0x00189436, VR::SS, VM::M1, "Exposure Control Sensing Region Left Vertical Edge" },
-{ 0x00189437, VR::SS, VM::M1, "Exposure Control Sensing Region Right Vertical Edge" },
-{ 0x00189438, VR::SS, VM::M1, "Exposure Control Sensing Region Upper Horizontal Edge" },
-{ 0x00189439, VR::SS, VM::M1, "Exposure Control Sensing Region Lower Horizontal Edge" },
-{ 0x00189440, VR::SS, VM::M2, "Center of Circular Exposure Control Sensing Region" },
-{ 0x00189441, VR::US, VM::M1, "Radius of Circular Exposure Control Sensing Region" },
-{ 0x00189442, VR::SS, VM::M2TN, "Vertices of the Polygonal Exposure Control Sensing Region" },
-{ 0x00189447, VR::FL, VM::M1, "Column Angulation (Patient)" },
-{ 0x00189449, VR::FL, VM::M1, "Beam Angle" },
-{ 0x00189451, VR::SQ, VM::M1, "Frame Detector Parameters Sequence" },
-{ 0x00189452, VR::FL, VM::M1, "Calculated Anatomy Thickness" },
-{ 0x00189455, VR::SQ, VM::M1, "Calibration Sequence" },
-{ 0x00189456, VR::SQ, VM::M1, "Object Thickness Sequence" },
-{ 0x00189457, VR::CS, VM::M1, "Plane Identification" },
-{ 0x00189461, VR::FL, VM::M1T2, "Field of View Dimension(s) in Float" },
-{ 0x00189462, VR::SQ, VM::M1, "Isocenter Reference System Sequence" },
-{ 0x00189463, VR::FL, VM::M1, "Positioner Isocenter Primary Angle" },
-{ 0x00189464, VR::FL, VM::M1, "Positioner Isocenter Secondary Angle" },
-{ 0x00189465, VR::FL, VM::M1, "Positioner Isocenter Detector Rotation Angle" },
-{ 0x00189466, VR::FL, VM::M1, "Table X Position to Isocenter" },
-{ 0x00189467, VR::FL, VM::M1, "Table Y Position to Isocenter" },
-{ 0x00189468, VR::FL, VM::M1, "Table Z Position to Isocenter" },
-{ 0x00189469, VR::FL, VM::M1, "Table Horizontal Rotation Angle" },
-{ 0x00189470, VR::FL, VM::M1, "Table Head Tilt Angle" },
-{ 0x00189471, VR::FL, VM::M1, "Table Cradle Tilt Angle" },
-{ 0x00189472, VR::SQ, VM::M1, "Frame Display Shutter Sequence" },
-{ 0x00189473, VR::FL, VM::M1, "Acquired Image Area Dose Product" },
-{ 0x00189474, VR::CS, VM::M1, "C-arm Positioner Tabletop Relationship" },
-{ 0x00189476, VR::SQ, VM::M1, "X-Ray Geometry Sequence" },
-{ 0x00189477, VR::SQ, VM::M1, "Irradiation Event Identification Sequence" },
-{ 0x00189504, VR::SQ, VM::M1, "X-Ray 3D Frame Type Sequence" },
-{ 0x00189506, VR::SQ, VM::M1, "Contributing Sources Sequence" },
-{ 0x00189507, VR::SQ, VM::M1, "X-Ray 3D Acquisition Sequence" },
-{ 0x00189508, VR::FL, VM::M1, "Primary Positioner Scan Arc" },
-{ 0x00189509, VR::FL, VM::M1, "Secondary Positioner Scan Arc" },
-{ 0x00189510, VR::FL, VM::M1, "Primary Positioner Scan Start Angle" },
-{ 0x00189511, VR::FL, VM::M1, "Secondary Positioner Scan Start Angle" },
-{ 0x00189514, VR::FL, VM::M1, "Primary Positioner Increment" },
-{ 0x00189515, VR::FL, VM::M1, "Secondary Positioner Increment" },
-{ 0x00189516, VR::DT, VM::M1, "Start Acquisition DateTime" },
-{ 0x00189517, VR::DT, VM::M1, "End Acquisition DateTime" },
-{ 0x00189524, VR::LO, VM::M1, "Application Name" },
-{ 0x00189525, VR::LO, VM::M1, "Application Version" },
-{ 0x00189526, VR::LO, VM::M1, "Application Manufacturer" },
-{ 0x00189527, VR::CS, VM::M1, "Algorithm Type" },
-{ 0x00189528, VR::LO, VM::M1, "Algorithm Description" },
-{ 0x00189530, VR::SQ, VM::M1, "X-Ray 3D Reconstruction Sequence" },
-{ 0x00189531, VR::LO, VM::M1, "Reconstruction Description" },
-{ 0x00189538, VR::SQ, VM::M1, "Per Projection Acquisition Sequence" },
-{ 0x00189601, VR::SQ, VM::M1, "Diffusion b-matrix Sequence" },
-{ 0x00189602, VR::FD, VM::M1, "Diffusion b-value XX" },
-{ 0x00189603, VR::FD, VM::M1, "Diffusion b-value XY" },
-{ 0x00189604, VR::FD, VM::M1, "Diffusion b-value XZ" },
-{ 0x00189605, VR::FD, VM::M1, "Diffusion b-value YY" },
-{ 0x00189606, VR::FD, VM::M1, "Diffusion b-value YZ" },
-{ 0x00189607, VR::FD, VM::M1, "Diffusion b-value ZZ" },
-{ 0x00189701, VR::DT, VM::M1, "Decay Correction DateTime" },
-{ 0x00189715, VR::FD, VM::M1, "Start Density Threshold" },
-{ 0x00189716, VR::FD, VM::M1, "Start Relative Density Difference Threshold" },
-{ 0x00189717, VR::FD, VM::M1, "Start Cardiac Trigger Count Threshold" },
-{ 0x00189718, VR::FD, VM::M1, "Start Respiratory Trigger Count Threshold" },
-{ 0x00189719, VR::FD, VM::M1, "Termination Counts Threshold" },
-{ 0x00189720, VR::FD, VM::M1, "Termination Density Threshold" },
-{ 0x00189721, VR::FD, VM::M1, "Termination Relative Density Threshold" },
-{ 0x00189722, VR::FD, VM::M1, "Termination Time Threshold" },
-{ 0x00189723, VR::FD, VM::M1, "Termination Cardiac Trigger Count Threshold" },
-{ 0x00189724, VR::FD, VM::M1, "Termination Respiratory Trigger Count Threshold" },
-{ 0x00189725, VR::CS, VM::M1, "Detector Geometry" },
-{ 0x00189726, VR::FD, VM::M1, "Transverse Detector Separation" },
-{ 0x00189727, VR::FD, VM::M1, "Axial Detector Dimension" },
-{ 0x00189729, VR::US, VM::M1, "Radiopharmaceutical Agent Number" },
-{ 0x00189732, VR::SQ, VM::M1, "PET Frame Acquisition Sequence" },
-{ 0x00189733, VR::SQ, VM::M1, "PET Detector Motion Details Sequence" },
-{ 0x00189734, VR::SQ, VM::M1, "PET Table Dynamics Sequence" },
-{ 0x00189735, VR::SQ, VM::M1, "PET Position Sequence" },
-{ 0x00189736, VR::SQ, VM::M1, "PET Frame Correction Factors Sequence" },
-{ 0x00189737, VR::SQ, VM::M1, "Radiopharmaceutical Usage Sequence" },
-{ 0x00189738, VR::CS, VM::M1, "Attenuation Correction Source" },
-{ 0x00189739, VR::US, VM::M1, "Number of Iterations" },
-{ 0x00189740, VR::US, VM::M1, "Number of Subsets" },
-{ 0x00189749, VR::SQ, VM::M1, "PET Reconstruction Sequence" },
-{ 0x00189751, VR::SQ, VM::M1, "PET Frame Type Sequence" },
-{ 0x00189755, VR::CS, VM::M1, "Time of Flight Information Used" },
-{ 0x00189756, VR::CS, VM::M1, "Reconstruction Type" },
-{ 0x00189758, VR::CS, VM::M1, "Decay Corrected" },
-{ 0x00189759, VR::CS, VM::M1, "Attenuation Corrected" },
-{ 0x00189760, VR::CS, VM::M1, "Scatter Corrected" },
-{ 0x00189761, VR::CS, VM::M1, "Dead Time Corrected" },
-{ 0x00189762, VR::CS, VM::M1, "Gantry Motion Corrected" },
-{ 0x00189763, VR::CS, VM::M1, "Patient Motion Corrected" },
-{ 0x00189764, VR::CS, VM::M1, "Count Loss Normalization Corrected" },
-{ 0x00189765, VR::CS, VM::M1, "Randoms Corrected" },
-{ 0x00189766, VR::CS, VM::M1, "Non-uniform Radial Sampling Corrected" },
-{ 0x00189767, VR::CS, VM::M1, "Sensitivity Calibrated" },
-{ 0x00189768, VR::CS, VM::M1, "Detector Normalization Correction" },
-{ 0x00189769, VR::CS, VM::M1, "Iterative Reconstruction Method" },
-{ 0x00189770, VR::CS, VM::M1, "Attenuation Correction Temporal Relationship" },
-{ 0x00189771, VR::SQ, VM::M1, "Patient Physiological State Sequence" },
-{ 0x00189772, VR::SQ, VM::M1, "Patient Physiological State Code Sequence" },
-{ 0x00189801, VR::FD, VM::M1TN, "Depth(s) of Focus" },
-{ 0x00189803, VR::SQ, VM::M1, "Excluded Intervals Sequence" },
-{ 0x00189804, VR::DT, VM::M1, "Exclusion Start Datetime" },
-{ 0x00189805, VR::FD, VM::M1, "Exclusion Duration" },
-{ 0x00189806, VR::SQ, VM::M1, "US Image Description Sequence" },
-{ 0x00189807, VR::SQ, VM::M1, "Image Data Type Sequence" },
-{ 0x00189808, VR::CS, VM::M1, "Data Type" },
-{ 0x00189809, VR::SQ, VM::M1, "Transducer Scan Pattern Code Sequence" },
-{ 0x0018980B, VR::CS, VM::M1, "Aliased Data Type" },
-{ 0x0018980C, VR::CS, VM::M1, "Position Measuring Device Used" },
-{ 0x0018980D, VR::SQ, VM::M1, "Transducer Geometry Code Sequence" },
-{ 0x0018980E, VR::SQ, VM::M1, "Transducer Beam Steering Code Sequence" },
-{ 0x0018980F, VR::SQ, VM::M1, "Transducer Application Code Sequence" },
-{ 0x0018A001, VR::SQ, VM::M1, "Contributing Equipment Sequence" },
-{ 0x0018A002, VR::DT, VM::M1, "Contribution Date Time" },
-{ 0x0018A003, VR::ST, VM::M1, "Contribution Description" },
-{ 0x0020000D, VR::UI, VM::M1, "Study Instance UID" },
-{ 0x0020000E, VR::UI, VM::M1, "Series Instance UID" },
-{ 0x00200010, VR::SH, VM::M1, "Study ID" },
-{ 0x00200011, VR::IS, VM::M1, "Series Number" },
-{ 0x00200012, VR::IS, VM::M1, "Acquisition Number" },
-{ 0x00200013, VR::IS, VM::M1, "Instance Number" },
-{ 0x00200014, VR::IS, VM::M1, "Isotope Number" },
-{ 0x00200015, VR::IS, VM::M1, "Phase Number" },
-{ 0x00200016, VR::IS, VM::M1, "Interval Number" },
-{ 0x00200017, VR::IS, VM::M1, "Time Slot Number" },
-{ 0x00200018, VR::IS, VM::M1, "Angle Number" },
-{ 0x00200019, VR::IS, VM::M1, "Item Number" },
-{ 0x00200020, VR::CS, VM::M2, "Patient Orientation" },
-{ 0x00200022, VR::IS, VM::M1, "Overlay Number" },
-{ 0x00200024, VR::IS, VM::M1, "Curve Number" },
-{ 0x00200026, VR::IS, VM::M1, "LUT Number" },
-{ 0x00200030, VR::DS, VM::M3, "Image Position" },
-{ 0x00200032, VR::DS, VM::M3, "Image Position (Patient)" },
-{ 0x00200035, VR::DS, VM::M6, "Image Orientation" },
-{ 0x00200037, VR::DS, VM::M6, "Image Orientation (Patient)" },
-{ 0x00200050, VR::DS, VM::M1, "Location" },
-{ 0x00200052, VR::UI, VM::M1, "Frame of Reference UID" },
-{ 0x00200060, VR::CS, VM::M1, "Laterality" },
-{ 0x00200062, VR::CS, VM::M1, "Image Laterality" },
-{ 0x00200070, VR::LO, VM::M1, "Image Geometry Type" },
-{ 0x00200080, VR::CS, VM::M1TN, "Masking Image" },
-{ 0x002000AA, VR::IS, VM::M1, "Report Number" },
-{ 0x00200100, VR::IS, VM::M1, "Temporal Position Identifier" },
-{ 0x00200105, VR::IS, VM::M1, "Number of Temporal Positions" },
-{ 0x00200110, VR::DS, VM::M1, "Temporal Resolution" },
-{ 0x00200200, VR::UI, VM::M1, "Synchronization Frame of Reference UID" },
-{ 0x00200242, VR::UI, VM::M1, "SOP Instance UID of Concatenation Source" },
-{ 0x00201000, VR::IS, VM::M1, "Series in Study" },
-{ 0x00201001, VR::IS, VM::M1, "Acquisitions in Series" },
-{ 0x00201002, VR::IS, VM::M1, "Images in Acquisition" },
-{ 0x00201003, VR::IS, VM::M1, "Images in Series" },
-{ 0x00201004, VR::IS, VM::M1, "Acquisitions in Study" },
-{ 0x00201005, VR::IS, VM::M1, "Images in Study" },
-{ 0x00201020, VR::LO, VM::M1TN, "Reference" },
-{ 0x00201040, VR::LO, VM::M1, "Position Reference Indicator" },
-{ 0x00201041, VR::DS, VM::M1, "Slice Location" },
-{ 0x00201070, VR::IS, VM::M1TN, "Other Study Numbers" },
-{ 0x00201200, VR::IS, VM::M1, "Number of Patient Related Studies" },
-{ 0x00201202, VR::IS, VM::M1, "Number of Patient Related Series" },
-{ 0x00201204, VR::IS, VM::M1, "Number of Patient Related Instances" },
-{ 0x00201206, VR::IS, VM::M1, "Number of Study Related Series" },
-{ 0x00201208, VR::IS, VM::M1, "Number of Study Related Instances" },
-{ 0x00201209, VR::IS, VM::M1, "Number of Series Related Instances" },
-{ 0x00203100, VR::CS, VM::M1TN, "Source Image IDs" },
-{ 0x00203401, VR::CS, VM::M1, "Modifying Device ID" },
-{ 0x00203402, VR::CS, VM::M1, "Modified Image ID" },
-{ 0x00203403, VR::DA, VM::M1, "Modified Image Date" },
-{ 0x00203404, VR::LO, VM::M1, "Modifying Device Manufacturer" },
-{ 0x00203405, VR::TM, VM::M1, "Modified Image Time" },
-{ 0x00203406, VR::LO, VM::M1, "Modified Image Description" },
-{ 0x00204000, VR::LT, VM::M1, "Image Comments" },
-{ 0x00205000, VR::AT, VM::M1TN, "Original Image Identification" },
-{ 0x00205002, VR::LO, VM::M1TN, "Original Image Identification Nomenclature" },
-{ 0x00209056, VR::SH, VM::M1, "Stack ID" },
-{ 0x00209057, VR::UL, VM::M1, "In-Stack Position Number" },
-{ 0x00209071, VR::SQ, VM::M1, "Frame Anatomy Sequence" },
-{ 0x00209072, VR::CS, VM::M1, "Frame Laterality" },
-{ 0x00209111, VR::SQ, VM::M1, "Frame Content Sequence" },
-{ 0x00209113, VR::SQ, VM::M1, "Plane Position Sequence" },
-{ 0x00209116, VR::SQ, VM::M1, "Plane Orientation Sequence" },
-{ 0x00209128, VR::UL, VM::M1, "Temporal Position Index" },
-{ 0x00209153, VR::FD, VM::M1, "Nominal Cardiac Trigger Delay Time" },
-{ 0x00209154, VR::FL, VM::M1, "Nominal Cardiac Trigger Time Prior To R-Peak" },
-{ 0x00209155, VR::FL, VM::M1, "Actual Cardiac Trigger Time Prior To R-Peak" },
-{ 0x00209156, VR::US, VM::M1, "Frame Acquisition Number" },
-{ 0x00209157, VR::UL, VM::M1TN, "Dimension Index Values" },
-{ 0x00209158, VR::LT, VM::M1, "Frame Comments" },
-{ 0x00209161, VR::UI, VM::M1, "Concatenation UID" },
-{ 0x00209162, VR::US, VM::M1, "In-concatenation Number" },
-{ 0x00209163, VR::US, VM::M1, "In-concatenation Total Number" },
-{ 0x00209164, VR::UI, VM::M1, "Dimension Organization UID" },
-{ 0x00209165, VR::AT, VM::M1, "Dimension Index Pointer" },
-{ 0x00209167, VR::AT, VM::M1, "Functional Group Pointer" },
-{ 0x00209213, VR::LO, VM::M1, "Dimension Index Private Creator" },
-{ 0x00209221, VR::SQ, VM::M1, "Dimension Organization Sequence" },
-{ 0x00209222, VR::SQ, VM::M1, "Dimension Index Sequence" },
-{ 0x00209228, VR::UL, VM::M1, "Concatenation Frame Offset Number" },
-{ 0x00209238, VR::LO, VM::M1, "Functional Group Private Creator" },
-{ 0x00209241, VR::FL, VM::M1, "Nominal Percentage of Cardiac Phase" },
-{ 0x00209245, VR::FL, VM::M1, "Nominal Percentage of Respiratory Phase" },
-{ 0x00209246, VR::FL, VM::M1, "Starting Respiratory Amplitude" },
-{ 0x00209247, VR::CS, VM::M1, "Starting Respiratory Phase" },
-{ 0x00209248, VR::FL, VM::M1, "Ending Respiratory Amplitude" },
-{ 0x00209249, VR::CS, VM::M1, "Ending Respiratory Phase" },
-{ 0x00209250, VR::CS, VM::M1, "Respiratory Trigger Type" },
-{ 0x00209251, VR::FD, VM::M1, "R-R Interval Time Nominal" },
-{ 0x00209252, VR::FD, VM::M1, "Actual Cardiac Trigger Delay Time" },
-{ 0x00209253, VR::SQ, VM::M1, "Respiratory Synchronization Sequence" },
-{ 0x00209254, VR::FD, VM::M1, "Respiratory Interval Time" },
-{ 0x00209255, VR::FD, VM::M1, "Nominal Respiratory Trigger Delay Time" },
-{ 0x00209256, VR::FD, VM::M1, "Respiratory Trigger Delay Threshold" },
-{ 0x00209257, VR::FD, VM::M1, "Actual Respiratory Trigger Delay Time" },
-{ 0x00209301, VR::FD, VM::M3, "Image Position (Volume)" },
-{ 0x00209302, VR::FD, VM::M6, "Image Orientation (Volume)" },
-{ 0x00209307, VR::CS, VM::M1, "Ultrasound Acquisition Geometry" },
-{ 0x00209308, VR::FD, VM::M3, "Apex Position" },
-{ 0x00209309, VR::FD, VM::M16, "Volume to Transducer Mapping Matrix" },
-{ 0x0020930A, VR::FD, VM::M16, "Volume to Table Mapping Matrix" },
-{ 0x0020930C, VR::CS, VM::M1, "Patient Frame of Reference Source" },
-{ 0x0020930D, VR::FD, VM::M1, "Temporal Position Time Offset" },
-{ 0x0020930E, VR::SQ, VM::M1, "Plane Position (Volume) Sequence" },
-{ 0x0020930F, VR::SQ, VM::M1, "Plane Orientation (Volume) Sequence" },
-{ 0x00209310, VR::SQ, VM::M1, "Temporal Position Sequence" },
-{ 0x00209311, VR::CS, VM::M1, "Dimension Organization Type" },
-{ 0x00209312, VR::UI, VM::M1, "Volume Frame of Reference UID" },
-{ 0x00209313, VR::UI, VM::M1, "Table Frame of Reference UID" },
-{ 0x00209421, VR::LO, VM::M1, "Dimension Description Label" },
-{ 0x00209450, VR::SQ, VM::M1, "Patient Orientation in Frame Sequence" },
-{ 0x00209453, VR::LO, VM::M1, "Frame Label" },
-{ 0x00209518, VR::US, VM::M1TN, "Acquisition Index" },
-{ 0x00209529, VR::SQ, VM::M1, "Contributing SOP Instances Reference Sequence" },
-{ 0x00209536, VR::US, VM::M1, "Reconstruction Index" },
-{ 0x00220001, VR::US, VM::M1, "Light Path Filter Pass-Through Wavelength" },
-{ 0x00220002, VR::US, VM::M2, "Light Path Filter Pass Band" },
-{ 0x00220003, VR::US, VM::M1, "Image Path Filter Pass-Through Wavelength" },
-{ 0x00220004, VR::US, VM::M2, "Image Path Filter Pass Band" },
-{ 0x00220005, VR::CS, VM::M1, "Patient Eye Movement Commanded" },
-{ 0x00220006, VR::SQ, VM::M1, "Patient Eye Movement Command Code Sequence" },
-{ 0x00220007, VR::FL, VM::M1, "Spherical Lens Power" },
-{ 0x00220008, VR::FL, VM::M1, "Cylinder Lens Power" },
-{ 0x00220009, VR::FL, VM::M1, "Cylinder Axis" },
-{ 0x0022000A, VR::FL, VM::M1, "Emmetropic Magnification" },
-{ 0x0022000B, VR::FL, VM::M1, "Intra Ocular Pressure" },
-{ 0x0022000C, VR::FL, VM::M1, "Horizontal Field of View" },
-{ 0x0022000D, VR::CS, VM::M1, "Pupil Dilated" },
-{ 0x0022000E, VR::FL, VM::M1, "Degree of Dilation" },
-{ 0x00220010, VR::FL, VM::M1, "Stereo Baseline Angle" },
-{ 0x00220011, VR::FL, VM::M1, "Stereo Baseline Displacement" },
-{ 0x00220012, VR::FL, VM::M1, "Stereo Horizontal Pixel Offset" },
-{ 0x00220013, VR::FL, VM::M1, "Stereo Vertical Pixel Offset" },
-{ 0x00220014, VR::FL, VM::M1, "Stereo Rotation" },
-{ 0x00220015, VR::SQ, VM::M1, "Acquisition Device Type Code Sequence" },
-{ 0x00220016, VR::SQ, VM::M1, "Illumination Type Code Sequence" },
-{ 0x00220017, VR::SQ, VM::M1, "Light Path Filter Type Stack Code Sequence" },
-{ 0x00220018, VR::SQ, VM::M1, "Image Path Filter Type Stack Code Sequence" },
-{ 0x00220019, VR::SQ, VM::M1, "Lenses Code Sequence" },
-{ 0x0022001A, VR::SQ, VM::M1, "Channel Description Code Sequence" },
-{ 0x0022001B, VR::SQ, VM::M1, "Refractive State Sequence" },
-{ 0x0022001C, VR::SQ, VM::M1, "Mydriatic Agent Code Sequence" },
-{ 0x0022001D, VR::SQ, VM::M1, "Relative Image Position Code Sequence" },
-{ 0x0022001E, VR::FL, VM::M1, "Camera Angle of View" },
-{ 0x00220020, VR::SQ, VM::M1, "Stereo Pairs Sequence" },
-{ 0x00220021, VR::SQ, VM::M1, "Left Image Sequence" },
-{ 0x00220022, VR::SQ, VM::M1, "Right Image Sequence" },
-{ 0x00220030, VR::FL, VM::M1, "Axial Length of the Eye" },
-{ 0x00220031, VR::SQ, VM::M1, "Ophthalmic Frame Location Sequence" },
-{ 0x00220032, VR::FL, VM::M2T2N, "Reference Coordinates" },
-{ 0x00220035, VR::FL, VM::M1, "Depth Spatial Resolution" },
-{ 0x00220036, VR::FL, VM::M1, "Maximum Depth Distortion" },
-{ 0x00220037, VR::FL, VM::M1, "Along-scan Spatial Resolution" },
-{ 0x00220038, VR::FL, VM::M1, "Maximum Along-scan Distortion" },
-{ 0x00220039, VR::CS, VM::M1, "Ophthalmic Image Orientation" },
-{ 0x00220041, VR::FL, VM::M1, "Depth of Transverse Image" },
-{ 0x00220042, VR::SQ, VM::M1, "Mydriatic Agent Concentration Units Sequence" },
-{ 0x00220048, VR::FL, VM::M1, "Across-scan Spatial Resolution" },
-{ 0x00220049, VR::FL, VM::M1, "Maximum Across-scan Distortion" },
-{ 0x0022004E, VR::DS, VM::M1, "Mydriatic Agent Concentration" },
-{ 0x00220055, VR::FL, VM::M1, "Illumination Wave Length" },
-{ 0x00220056, VR::FL, VM::M1, "Illumination Power" },
-{ 0x00220057, VR::FL, VM::M1, "Illumination Bandwidth" },
-{ 0x00220058, VR::SQ, VM::M1, "Mydriatic Agent Sequence" },
-{ 0x00221007, VR::SQ, VM::M1, "Ophthalmic Axial Measurements Right Eye Sequence" },
-{ 0x00221008, VR::SQ, VM::M1, "Ophthalmic Axial Measurements Left Eye Sequence" },
-{ 0x00221010, VR::CS, VM::M1, "Ophthalmic Axial Length Measurements Type" },
-{ 0x00221019, VR::FL, VM::M1, "Ophthalmic Axial Length" },
-{ 0x00221024, VR::SQ, VM::M1, "Lens Status Code Sequence" },
-{ 0x00221025, VR::SQ, VM::M1, "Vitreous Status Code Sequence" },
-{ 0x00221028, VR::SQ, VM::M1, "IOL Formula Code Sequence" },
-{ 0x00221029, VR::LO, VM::M1, "IOL Formula Detail" },
-{ 0x00221033, VR::FL, VM::M1, "Keratometer Index" },
-{ 0x00221035, VR::SQ, VM::M1, "Source of Ophthalmic Axial Length Code Sequence" },
-{ 0x00221037, VR::FL, VM::M1, "Target Refraction" },
-{ 0x00221039, VR::CS, VM::M1, "Refractive Procedure Occurred" },
-{ 0x00221040, VR::SQ, VM::M1, "Refractive Surgery Type Code Sequence" },
-{ 0x00221044, VR::SQ, VM::M1, "Ophthalmic Ultrasound Axial Measurements Type Code Sequence" },
-{ 0x00221050, VR::SQ, VM::M1, "Ophthalmic Axial Length Measurements Sequence" },
-{ 0x00221053, VR::FL, VM::M1, "IOL Power" },
-{ 0x00221054, VR::FL, VM::M1, "Predicted Refractive Error" },
-{ 0x00221059, VR::FL, VM::M1, "Ophthalmic Axial Length Velocity" },
-{ 0x00221065, VR::LO, VM::M1, "Lens Status Description" },
-{ 0x00221066, VR::LO, VM::M1, "Vitreous Status Description" },
-{ 0x00221090, VR::SQ, VM::M1, "IOL Power Sequence" },
-{ 0x00221092, VR::SQ, VM::M1, "Lens Constant Sequence" },
-{ 0x00221093, VR::LO, VM::M1, "IOL Manufacturer" },
-{ 0x00221094, VR::LO, VM::M1, "Lens Constant Description" },
-{ 0x00221096, VR::SQ, VM::M1, "Keratometry Measurement Type Code Sequence" },
-{ 0x00221100, VR::SQ, VM::M1, "Referenced Ophthalmic Axial Measurements Sequence" },
-{ 0x00221101, VR::SQ, VM::M1, "Ophthalmic Axial Length Measurements Segment Name Code Sequence" },
-{ 0x00221103, VR::SQ, VM::M1, "Refractive Error Before Refractive Surgery Code Sequence" },
-{ 0x00221121, VR::FL, VM::M1, "IOL Power For Exact Emmetropia" },
-{ 0x00221122, VR::FL, VM::M1, "IOL Power For Exact Target Refraction" },
-{ 0x00221125, VR::SQ, VM::M1, "Anterior Chamber Depth Definition Code Sequence" },
-{ 0x00221130, VR::FL, VM::M1, "Lens Thickness" },
-{ 0x00221131, VR::FL, VM::M1, "Anterior Chamber Depth" },
-{ 0x00221132, VR::SQ, VM::M1, "Source of Lens Thickness Data Code Sequence" },
-{ 0x00221133, VR::SQ, VM::M1, "Source of Anterior Chamber Depth Data Code Sequence" },
-{ 0x00221135, VR::SQ, VM::M1, "Source of Refractive Error Data Code Sequence" },
-{ 0x00221140, VR::CS, VM::M1, "Ophthalmic Axial Length Measurement Modified" },
-{ 0x00221150, VR::SQ, VM::M1, "Ophthalmic Axial Length Data Source Code Sequence" },
-{ 0x00221153, VR::SQ, VM::M1, "Ophthalmic Axial Length Acquisition Method Code Sequence" },
-{ 0x00221155, VR::FL, VM::M1, "Signal to Noise Ratio" },
-{ 0x00221159, VR::LO, VM::M1, "Ophthalmic Axial Length Data Source Description" },
-{ 0x00221210, VR::SQ, VM::M1, "Ophthalmic Axial Length Measurements Total Length Sequence" },
-{ 0x00221211, VR::SQ, VM::M1, "Ophthalmic Axial Length Measurements Segmental Length Sequence" },
-{ 0x00221212, VR::SQ, VM::M1, "Ophthalmic Axial Length Measurements Length Summation Sequence" },
-{ 0x00221220, VR::SQ, VM::M1, "Ultrasound Ophthalmic Axial Length Measurements Sequence" },
-{ 0x00221225, VR::SQ, VM::M1, "Optical Ophthalmic Axial Length Measurements Sequence" },
-{ 0x00221230, VR::SQ, VM::M1, "Ultrasound Selected Ophthalmic Axial Length Sequence" },
-{ 0x00221250, VR::SQ, VM::M1, "Ophthalmic Axial Length Selection Method Code Sequence" },
-{ 0x00221255, VR::SQ, VM::M1, "Optical Selected Ophthalmic Axial Length Sequence" },
-{ 0x00221257, VR::SQ, VM::M1, "Selected Segmental Ophthalmic Axial Length Sequence" },
-{ 0x00221260, VR::SQ, VM::M1, "Selected Total Ophthalmic Axial Length Sequence" },
-{ 0x00221262, VR::SQ, VM::M1, "Ophthalmic Axial Length Quality Metric Sequence" },
-{ 0x00221273, VR::LO, VM::M1, "Ophthalmic Axial  Length Quality Metric Type Description" },
-{ 0x00221300, VR::SQ, VM::M1, "Intraocular Lens Calculations Right Eye Sequence" },
-{ 0x00221310, VR::SQ, VM::M1, "Intraocular Lens Calculations Left Eye Sequence" },
-{ 0x00221330, VR::SQ, VM::M1, "Referenced Ophthalmic Axial Length Measurement QC Image Sequence" },
-{ 0x00240010, VR::FL, VM::M1, "Visual Field Horizontal Extent" },
-{ 0x00240011, VR::FL, VM::M1, "Visual Field Vertical Extent" },
-{ 0x00240012, VR::CS, VM::M1, "Visual Field Shape" },
-{ 0x00240016, VR::SQ, VM::M1, "Screening Test Mode Code Sequence" },
-{ 0x00240018, VR::FL, VM::M1, "Maximum Stimulus Luminance" },
-{ 0x00240020, VR::FL, VM::M1, "Background Luminance" },
-{ 0x00240021, VR::SQ, VM::M1, "Stimulus Color Code Sequence" },
-{ 0x00240024, VR::SQ, VM::M1, "Background Illumination Color Code Sequence" },
-{ 0x00240025, VR::FL, VM::M1, "Stimulus Area" },
-{ 0x00240028, VR::FL, VM::M1, "Stimulus Presentation Time" },
-{ 0x00240032, VR::SQ, VM::M1, "Fixation Sequence" },
-{ 0x00240033, VR::SQ, VM::M1, "Fixation Monitoring Code Sequence" },
-{ 0x00240034, VR::SQ, VM::M1, "Visual Field Catch Trial Sequence" },
-{ 0x00240035, VR::US, VM::M1, "Fixation Checked Quantity" },
-{ 0x00240036, VR::US, VM::M1, "Patient Not Properly Fixated Quantity" },
-{ 0x00240037, VR::CS, VM::M1, "Presented Visual Stimuli Data Flag" },
-{ 0x00240038, VR::US, VM::M1, "Number of Visual Stimuli" },
-{ 0x00240039, VR::CS, VM::M1, "Excessive Fixation Losses Data Flag" },
-{ 0x00240040, VR::CS, VM::M1, "Excessive Fixation Losses" },
-{ 0x00240042, VR::US, VM::M1, "Stimuli Retesting Quantity" },
-{ 0x00240044, VR::LT, VM::M1, "Comments on Patient's Performance of Visual Field" },
-{ 0x00240045, VR::CS, VM::M1, "False Negatives Estimate Flag" },
-{ 0x00240046, VR::FL, VM::M1, "False Negatives Estimate" },
-{ 0x00240048, VR::US, VM::M1, "Negative Catch Trials Quantity" },
-{ 0x00240050, VR::US, VM::M1, "False Negatives Quantity" },
-{ 0x00240051, VR::CS, VM::M1, "Excessive False Negatives Data Flag" },
-{ 0x00240052, VR::CS, VM::M1, "Excessive False Negatives" },
-{ 0x00240053, VR::CS, VM::M1, "False Positives Estimate Flag" },
-{ 0x00240054, VR::FL, VM::M1, "False Positives Estimate" },
-{ 0x00240055, VR::CS, VM::M1, "Catch Trials Data Flag" },
-{ 0x00240056, VR::US, VM::M1, "Positive Catch Trials Quantity" },
-{ 0x00240057, VR::CS, VM::M1, "Test Point Normals Data Flag" },
-{ 0x00240058, VR::SQ, VM::M1, "Test Point Normals Sequence" },
-{ 0x00240059, VR::CS, VM::M1, "Global Deviation Probability Normals Flag" },
-{ 0x00240060, VR::US, VM::M1, "False Positives Quantity" },
-{ 0x00240061, VR::CS, VM::M1, "Excessive False Positives Data Flag" },
-{ 0x00240062, VR::CS, VM::M1, "Excessive False Positives" },
-{ 0x00240063, VR::CS, VM::M1, "Visual Field Test Normals Flag" },
-{ 0x00240064, VR::SQ, VM::M1, "Results Normals Sequence" },
-{ 0x00240065, VR::SQ, VM::M1, "Age Corrected Sensitivity Deviation Algorithm Sequence" },
-{ 0x00240066, VR::FL, VM::M1, "Global Deviation From Normal" },
-{ 0x00240067, VR::SQ, VM::M1, "Generalized Defect Sensitivity Deviation Algorithm Sequence" },
-{ 0x00240068, VR::FL, VM::M1, "Localized Deviation from Normal" },
-{ 0x00240069, VR::LO, VM::M1, "Patient Reliability Indicator" },
-{ 0x00240070, VR::FL, VM::M1, "Visual Field Mean Sensitivity" },
-{ 0x00240071, VR::FL, VM::M1, "Global Deviation Probability" },
-{ 0x00240072, VR::CS, VM::M1, "Local Deviation Probability Normals Flag" },
-{ 0x00240073, VR::FL, VM::M1, "Localized Deviation Probability" },
-{ 0x00240074, VR::CS, VM::M1, "Short Term Fluctuation Calculated" },
-{ 0x00240075, VR::FL, VM::M1, "Short Term Fluctuation" },
-{ 0x00240076, VR::CS, VM::M1, "Short Term Fluctuation Probability Calculated" },
-{ 0x00240077, VR::FL, VM::M1, "Short Term Fluctuation Probability" },
-{ 0x00240078, VR::CS, VM::M1, "Corrected Localized Deviation From Normal Calculated" },
-{ 0x00240079, VR::FL, VM::M1, "Corrected Localized Deviation From Normal" },
-{ 0x00240080, VR::CS, VM::M1, "Corrected Localized Deviation From Normal Probability Calculated" },
-{ 0x00240081, VR::FL, VM::M1, "Corrected Localized Deviation From Normal Probability" },
-{ 0x00240083, VR::SQ, VM::M1, "Global Deviation Probability Sequence" },
-{ 0x00240085, VR::SQ, VM::M1, "Localized Deviation Probability Sequence" },
-{ 0x00240086, VR::CS, VM::M1, "Foveal Sensitivity Measured" },
-{ 0x00240087, VR::FL, VM::M1, "Foveal Sensitivity" },
-{ 0x00240088, VR::FL, VM::M1, "Visual Field Test Duration" },
-{ 0x00240089, VR::SQ, VM::M1, "Visual Field Test Point Sequence" },
-{ 0x00240090, VR::FL, VM::M1, "Visual Field Test Point X-Coordinate" },
-{ 0x00240091, VR::FL, VM::M1, "Visual Field Test Point Y-Coordinate" },
-{ 0x00240092, VR::FL, VM::M1, "Age Corrected Sensitivity Deviation Value" },
-{ 0x00240093, VR::CS, VM::M1, "Stimulus Results" },
-{ 0x00240094, VR::FL, VM::M1, "Sensitivity Value" },
-{ 0x00240095, VR::CS, VM::M1, "Retest Stimulus Seen" },
-{ 0x00240096, VR::FL, VM::M1, "Retest Sensitivity Value" },
-{ 0x00240097, VR::SQ, VM::M1, "Visual Field Test Point Normals Sequence" },
-{ 0x00240098, VR::FL, VM::M1, "Quantified Defect" },
-{ 0x00240100, VR::FL, VM::M1, "Age Corrected Sensitivity Deviation Probability Value" },
-{ 0x00240102, VR::CS, VM::M1, "Generalized Defect Corrected Sensitivity Deviation Flag" },
-{ 0x00240103, VR::FL, VM::M1, "Generalized Defect Corrected Sensitivity Deviation Value" },
-{ 0x00240104, VR::FL, VM::M1, "Generalized Defect Corrected Sensitivity Deviation Probability Value" },
-{ 0x00240105, VR::FL, VM::M1, "Minimum Sensitivity Value" },
-{ 0x00240106, VR::CS, VM::M1, "Blind Spot Localized" },
-{ 0x00240107, VR::FL, VM::M1, "Blind Spot X-Coordinate" },
-{ 0x00240108, VR::FL, VM::M1, "Blind Spot Y-Coordinate" },
-{ 0x00240110, VR::SQ, VM::M1, "Visual Acuity Measurement Sequence" },
-{ 0x00240112, VR::SQ, VM::M1, "Refractive Parameters Used on Patient Sequence" },
-{ 0x00240113, VR::CS, VM::M1, "Measurement Laterality" },
-{ 0x00240114, VR::SQ, VM::M1, "Ophthalmic Patient Clinical Information Left Eye Sequence" },
-{ 0x00240115, VR::SQ, VM::M1, "Ophthalmic Patient Clinical Information Right Eye Sequence" },
-{ 0x00240117, VR::CS, VM::M1, "Foveal Point Normative Data Flag" },
-{ 0x00240118, VR::FL, VM::M1, "Foveal Point Probability Value" },
-{ 0x00240120, VR::CS, VM::M1, "Screening Baseline Measured" },
-{ 0x00240122, VR::SQ, VM::M1, "Screening Baseline Measured Sequence" },
-{ 0x00240124, VR::CS, VM::M1, "Screening Baseline Type" },
-{ 0x00240126, VR::FL, VM::M1, "Screening Baseline Value" },
-{ 0x00240202, VR::LO, VM::M1, "Algorithm Source" },
-{ 0x00240306, VR::LO, VM::M1, "Data Set Name" },
-{ 0x00240307, VR::LO, VM::M1, "Data Set Version" },
-{ 0x00240308, VR::LO, VM::M1, "Data Set Source" },
-{ 0x00240309, VR::LO, VM::M1, "Data Set Description" },
-{ 0x00240317, VR::SQ, VM::M1, "Visual Field Test Reliability Global Index Sequence" },
-{ 0x00240320, VR::SQ, VM::M1, "Visual Field Global Results Index Sequence" },
-{ 0x00240325, VR::SQ, VM::M1, "Data Observation Sequence" },
-{ 0x00240338, VR::CS, VM::M1, "Index Normals Flag" },
-{ 0x00240341, VR::FL, VM::M1, "Index Probability" },
-{ 0x00240344, VR::SQ, VM::M1, "Index Probability Sequence" },
-{ 0x00280002, VR::US, VM::M1, "Samples per Pixel" },
-{ 0x00280003, VR::US, VM::M1, "Samples per Pixel Used" },
-{ 0x00280004, VR::CS, VM::M1, "Photometric Interpretation" },
-{ 0x00280005, VR::US, VM::M1, "Image Dimensions" },
-{ 0x00280006, VR::US, VM::M1, "Planar Configuration" },
-{ 0x00280008, VR::IS, VM::M1, "Number of Frames" },
-{ 0x00280009, VR::AT, VM::M1TN, "Frame Increment Pointer" },
-{ 0x0028000A, VR::AT, VM::M1TN, "Frame Dimension Pointer" },
-{ 0x00280010, VR::US, VM::M1, "Rows" },
-{ 0x00280011, VR::US, VM::M1, "Columns" },
-{ 0x00280012, VR::US, VM::M1, "Planes" },
-{ 0x00280014, VR::US, VM::M1, "Ultrasound Color Data Present" },
-{ 0x00280030, VR::DS, VM::M2, "Pixel Spacing" },
-{ 0x00280031, VR::DS, VM::M2, "Zoom Factor" },
-{ 0x00280032, VR::DS, VM::M2, "Zoom Center" },
-{ 0x00280034, VR::IS, VM::M2, "Pixel Aspect Ratio" },
-{ 0x00280040, VR::CS, VM::M1, "Image Format" },
-{ 0x00280050, VR::LO, VM::M1TN, "Manipulated Image" },
-{ 0x00280051, VR::CS, VM::M1TN, "Corrected Image" },
-{ 0x0028005F, VR::LO, VM::M1, "Compression Recognition Code" },
-{ 0x00280060, VR::CS, VM::M1, "Compression Code" },
-{ 0x00280061, VR::SH, VM::M1, "Compression Originator" },
-{ 0x00280062, VR::LO, VM::M1, "Compression Label" },
-{ 0x00280063, VR::SH, VM::M1, "Compression Description" },
-{ 0x00280065, VR::CS, VM::M1TN, "Compression Sequence" },
-{ 0x00280066, VR::AT, VM::M1TN, "Compression Step Pointers" },
-{ 0x00280068, VR::US, VM::M1, "Repeat Interval" },
-{ 0x00280069, VR::US, VM::M1, "Bits Grouped" },
-{ 0x00280070, VR::US, VM::M1TN, "Perimeter Table" },
-{ 0x00280071, VR::XS, VM::M1, "Perimeter Value" },
-{ 0x00280080, VR::US, VM::M1, "Predictor Rows" },
-{ 0x00280081, VR::US, VM::M1, "Predictor Columns" },
-{ 0x00280082, VR::US, VM::M1TN, "Predictor Constants" },
-{ 0x00280090, VR::CS, VM::M1, "Blocked Pixels" },
-{ 0x00280091, VR::US, VM::M1, "Block Rows" },
-{ 0x00280092, VR::US, VM::M1, "Block Columns" },
-{ 0x00280093, VR::US, VM::M1, "Row Overlap" },
-{ 0x00280094, VR::US, VM::M1, "Column Overlap" },
-{ 0x00280100, VR::US, VM::M1, "Bits Allocated" },
-{ 0x00280101, VR::US, VM::M1, "Bits Stored" },
-{ 0x00280102, VR::US, VM::M1, "High Bit" },
-{ 0x00280103, VR::US, VM::M1, "Pixel Representation" },
-{ 0x00280104, VR::XS, VM::M1, "Smallest Valid Pixel Value" },
-{ 0x00280105, VR::XS, VM::M1, "Largest Valid Pixel Value" },
-{ 0x00280106, VR::XS, VM::M1, "Smallest Image Pixel Value" },
-{ 0x00280107, VR::XS, VM::M1, "Largest Image Pixel Value" },
-{ 0x00280108, VR::XS, VM::M1, "Smallest Pixel Value in Series" },
-{ 0x00280109, VR::XS, VM::M1, "Largest Pixel Value in Series" },
-{ 0x00280110, VR::XS, VM::M1, "Smallest Image Pixel Value in Plane" },
-{ 0x00280111, VR::XS, VM::M1, "Largest Image Pixel Value in Plane" },
-{ 0x00280120, VR::XS, VM::M1, "Pixel Padding Value" },
-{ 0x00280121, VR::XS, VM::M1, "Pixel Padding Range Limit" },
-{ 0x00280200, VR::US, VM::M1, "Image Location" },
-{ 0x00280300, VR::CS, VM::M1, "Quality Control Image" },
-{ 0x00280301, VR::CS, VM::M1, "Burned In Annotation" },
-{ 0x00280302, VR::CS, VM::M1, "Recognizable Visual Features" },
-{ 0x00280303, VR::CS, VM::M1, "Longitudinal Temporal Information Modified" },
-{ 0x00280400, VR::LO, VM::M1, "Transform Label" },
-{ 0x00280401, VR::LO, VM::M1, "Transform Version Number" },
-{ 0x00280402, VR::US, VM::M1, "Number of Transform Steps" },
-{ 0x00280403, VR::LO, VM::M1TN, "Sequence of Compressed Data" },
-{ 0x00280404, VR::AT, VM::M1TN, "Details of Coefficients" },
-{ 0x00280400, VR::US, VM::M1, "Rows For Nth Order Coefficients" },
-{ 0x00280401, VR::US, VM::M1, "Columns For Nth Order Coefficients" },
-{ 0x00280402, VR::LO, VM::M1TN, "Coefficient Coding" },
-{ 0x00280403, VR::AT, VM::M1TN, "Coefficient Coding Pointers" },
-{ 0x00280700, VR::LO, VM::M1, "DCT Label" },
-{ 0x00280701, VR::CS, VM::M1TN, "Data Block Description" },
-{ 0x00280702, VR::AT, VM::M1TN, "Data Block" },
-{ 0x00280710, VR::US, VM::M1, "Normalization Factor Format" },
-{ 0x00280720, VR::US, VM::M1, "Zonal Map Number Format" },
-{ 0x00280721, VR::AT, VM::M1TN, "Zonal Map Location" },
-{ 0x00280722, VR::US, VM::M1, "Zonal Map Format" },
-{ 0x00280730, VR::US, VM::M1, "Adaptive Map Format" },
-{ 0x00280740, VR::US, VM::M1, "Code Number Format" },
-{ 0x00280800, VR::CS, VM::M1TN, "Code Label" },
-{ 0x00280802, VR::US, VM::M1, "Number of Tables" },
-{ 0x00280803, VR::AT, VM::M1TN, "Code Table Location" },
-{ 0x00280804, VR::US, VM::M1, "Bits For Code Word" },
-{ 0x00280808, VR::AT, VM::M1TN, "Image Data Location" },
-{ 0x00280A02, VR::CS, VM::M1, "Pixel Spacing Calibration Type" },
-{ 0x00280A04, VR::LO, VM::M1, "Pixel Spacing Calibration Description" },
-{ 0x00281040, VR::CS, VM::M1, "Pixel Intensity Relationship" },
-{ 0x00281041, VR::SS, VM::M1, "Pixel Intensity Relationship Sign" },
-{ 0x00281050, VR::DS, VM::M1TN, "Window Center" },
-{ 0x00281051, VR::DS, VM::M1TN, "Window Width" },
-{ 0x00281052, VR::DS, VM::M1, "Rescale Intercept" },
-{ 0x00281053, VR::DS, VM::M1, "Rescale Slope" },
-{ 0x00281054, VR::LO, VM::M1, "Rescale Type" },
-{ 0x00281055, VR::LO, VM::M1TN, "Window Center & Width Explanation" },
-{ 0x00281056, VR::CS, VM::M1, "VOI LUT Function" },
-{ 0x00281080, VR::CS, VM::M1, "Gray Scale" },
-{ 0x00281090, VR::CS, VM::M1, "Recommended Viewing Mode" },
-{ 0x00281100, VR::XS, VM::M3, "Gray Lookup Table Descriptor" },
-{ 0x00281101, VR::XS, VM::M3, "Red Palette Color Lookup Table Descriptor" },
-{ 0x00281102, VR::XS, VM::M3, "Green Palette Color Lookup Table Descriptor" },
-{ 0x00281103, VR::XS, VM::M3, "Blue Palette Color Lookup Table Descriptor" },
-{ 0x00281104, VR::US, VM::M3, "Alpha Palette Color Lookup Table Descriptor" },
-{ 0x00281111, VR::XS, VM::M4, "Large Red Palette Color Lookup Table Descriptor" },
-{ 0x00281112, VR::XS, VM::M4, "Large Green Palette Color Lookup Table Descriptor" },
-{ 0x00281113, VR::XS, VM::M4, "Large Blue Palette Color Lookup Table Descriptor" },
-{ 0x00281199, VR::UI, VM::M1, "Palette Color Lookup Table UID" },
-{ 0x00281200, VR::OB, VM::M1, "Gray Lookup Table Data" },
-{ 0x00281201, VR::OW, VM::M1, "Red Palette Color Lookup Table Data" },
-{ 0x00281202, VR::OW, VM::M1, "Green Palette Color Lookup Table Data" },
-{ 0x00281203, VR::OW, VM::M1, "Blue Palette Color Lookup Table Data" },
-{ 0x00281204, VR::OW, VM::M1, "Alpha Palette Color Lookup Table Data" },
-{ 0x00281211, VR::OW, VM::M1, "Large Red Palette Color Lookup Table Data" },
-{ 0x00281212, VR::OW, VM::M1, "Large Green Palette Color Lookup Table Data" },
-{ 0x00281213, VR::OW, VM::M1, "Large Blue Palette Color Lookup Table Data" },
-{ 0x00281214, VR::UI, VM::M1, "Large Palette Color Lookup Table UID" },
-{ 0x00281221, VR::OW, VM::M1, "Segmented Red Palette Color Lookup Table Data" },
-{ 0x00281222, VR::OW, VM::M1, "Segmented Green Palette Color Lookup Table Data" },
-{ 0x00281223, VR::OW, VM::M1, "Segmented Blue Palette Color Lookup Table Data" },
-{ 0x00281300, VR::CS, VM::M1, "Breast Implant Present" },
-{ 0x00281350, VR::CS, VM::M1, "Partial View" },
-{ 0x00281351, VR::ST, VM::M1, "Partial View Description" },
-{ 0x00281352, VR::SQ, VM::M1, "Partial View Code Sequence" },
-{ 0x0028135A, VR::CS, VM::M1, "Spatial Locations Preserved" },
-{ 0x00281401, VR::SQ, VM::M1, "Data Frame Assignment Sequence" },
-{ 0x00281402, VR::CS, VM::M1, "Data Path Assignment" },
-{ 0x00281403, VR::US, VM::M1, "Bits Mapped to Color Lookup Table" },
-{ 0x00281404, VR::SQ, VM::M1, "Blending LUT 1 Sequence" },
-{ 0x00281405, VR::CS, VM::M1, "Blending LUT 1 Transfer Function" },
-{ 0x00281406, VR::FD, VM::M1, "Blending Weight Constant" },
-{ 0x00281407, VR::US, VM::M3, "Blending Lookup Table Descriptor" },
-{ 0x00281408, VR::OW, VM::M1, "Blending Lookup Table Data" },
-{ 0x0028140B, VR::SQ, VM::M1, "Enhanced Palette Color Lookup Table Sequence" },
-{ 0x0028140C, VR::SQ, VM::M1, "Blending LUT 2 Sequence" },
-{ 0x0028140D, VR::CS, VM::M1, "Blending LUT 2 Transfer Function" },
-{ 0x0028140E, VR::CS, VM::M1, "Data Path ID" },
-{ 0x0028140F, VR::CS, VM::M1, "RGB LUT Transfer Function" },
-{ 0x00281410, VR::CS, VM::M1, "Alpha LUT Transfer Function" },
-{ 0x00282000, VR::OB, VM::M1, "ICC Profile" },
-{ 0x00282110, VR::CS, VM::M1, "Lossy Image Compression" },
-{ 0x00282112, VR::DS, VM::M1TN, "Lossy Image Compression Ratio" },
-{ 0x00282114, VR::CS, VM::M1TN, "Lossy Image Compression Method" },
-{ 0x00283000, VR::SQ, VM::M1, "Modality LUT Sequence" },
-{ 0x00283002, VR::XS, VM::M3, "LUT Descriptor" },
-{ 0x00283003, VR::LO, VM::M1, "LUT Explanation" },
-{ 0x00283004, VR::LO, VM::M1, "Modality LUT Type" },
-{ 0x00283006, VR::OB, VM::M1, "LUT Data" },
-{ 0x00283010, VR::SQ, VM::M1, "VOI LUT Sequence" },
-{ 0x00283110, VR::SQ, VM::M1, "Softcopy VOI LUT Sequence" },
-{ 0x00284000, VR::LT, VM::M1, "Image Presentation Comments" },
-{ 0x00285000, VR::SQ, VM::M1, "Bi-Plane Acquisition Sequence" },
-{ 0x00286010, VR::US, VM::M1, "Representative Frame Number" },
-{ 0x00286020, VR::US, VM::M1TN, "Frame Numbers of Interest (FOI)" },
-{ 0x00286022, VR::LO, VM::M1TN, "Frame of Interest Description" },
-{ 0x00286023, VR::CS, VM::M1TN, "Frame of Interest Type" },
-{ 0x00286030, VR::US, VM::M1TN, "Mask Pointer(s)" },
-{ 0x00286040, VR::US, VM::M1TN, "R Wave Pointer" },
-{ 0x00286100, VR::SQ, VM::M1, "Mask Subtraction Sequence" },
-{ 0x00286101, VR::CS, VM::M1, "Mask Operation" },
-{ 0x00286102, VR::US, VM::M2T2N, "Applicable Frame Range" },
-{ 0x00286110, VR::US, VM::M1TN, "Mask Frame Numbers" },
-{ 0x00286112, VR::US, VM::M1, "Contrast Frame Averaging" },
-{ 0x00286114, VR::FL, VM::M2, "Mask Sub-pixel Shift" },
-{ 0x00286120, VR::SS, VM::M1, "TID Offset" },
-{ 0x00286190, VR::ST, VM::M1, "Mask Operation Explanation" },
-{ 0x00287FE0, VR::UT, VM::M1, "Pixel Data Provider URL" },
-{ 0x00289001, VR::UL, VM::M1, "Data Point Rows" },
-{ 0x00289002, VR::UL, VM::M1, "Data Point Columns" },
-{ 0x00289003, VR::CS, VM::M1, "Signal Domain Columns" },
-{ 0x00289099, VR::US, VM::M1, "Largest Monochrome Pixel Value" },
-{ 0x00289108, VR::CS, VM::M1, "Data Representation" },
-{ 0x00289110, VR::SQ, VM::M1, "Pixel Measures Sequence" },
-{ 0x00289132, VR::SQ, VM::M1, "Frame VOI LUT Sequence" },
-{ 0x00289145, VR::SQ, VM::M1, "Pixel Value Transformation Sequence" },
-{ 0x00289235, VR::CS, VM::M1, "Signal Domain Rows" },
-{ 0x00289411, VR::FL, VM::M1, "Display Filter Percentage" },
-{ 0x00289415, VR::SQ, VM::M1, "Frame Pixel Shift Sequence" },
-{ 0x00289416, VR::US, VM::M1, "Subtraction Item ID" },
-{ 0x00289422, VR::SQ, VM::M1, "Pixel Intensity Relationship LUT Sequence" },
-{ 0x00289443, VR::SQ, VM::M1, "Frame Pixel Data Properties Sequence" },
-{ 0x00289444, VR::CS, VM::M1, "Geometrical Properties" },
-{ 0x00289445, VR::FL, VM::M1, "Geometric Maximum Distortion" },
-{ 0x00289446, VR::CS, VM::M1TN, "Image Processing Applied" },
-{ 0x00289454, VR::CS, VM::M1, "Mask Selection Mode" },
-{ 0x00289474, VR::CS, VM::M1, "LUT Function" },
-{ 0x00289478, VR::FL, VM::M1, "Mask Visibility Percentage" },
-{ 0x00289501, VR::SQ, VM::M1, "Pixel Shift Sequence" },
-{ 0x00289502, VR::SQ, VM::M1, "Region Pixel Shift Sequence" },
-{ 0x00289503, VR::SS, VM::M2T2N, "Vertices of the Region" },
-{ 0x00289505, VR::SQ, VM::M1, "Multi-frame Presentation Sequence" },
-{ 0x00289506, VR::US, VM::M2T2N, "Pixel Shift Frame Range" },
-{ 0x00289507, VR::US, VM::M2T2N, "LUT Frame Range" },
-{ 0x00289520, VR::DS, VM::M16, "Image to Equipment Mapping Matrix" },
-{ 0x00289537, VR::CS, VM::M1, "Equipment Coordinate System Identification" },
-{ 0x0032000A, VR::CS, VM::M1, "Study Status ID" },
-{ 0x0032000C, VR::CS, VM::M1, "Study Priority ID" },
-{ 0x00320012, VR::LO, VM::M1, "Study ID Issuer" },
-{ 0x00320032, VR::DA, VM::M1, "Study Verified Date" },
-{ 0x00320033, VR::TM, VM::M1, "Study Verified Time" },
-{ 0x00320034, VR::DA, VM::M1, "Study Read Date" },
-{ 0x00320035, VR::TM, VM::M1, "Study Read Time" },
-{ 0x00321000, VR::DA, VM::M1, "Scheduled Study Start Date" },
-{ 0x00321001, VR::TM, VM::M1, "Scheduled Study Start Time" },
-{ 0x00321010, VR::DA, VM::M1, "Scheduled Study Stop Date" },
-{ 0x00321011, VR::TM, VM::M1, "Scheduled Study Stop Time" },
-{ 0x00321020, VR::LO, VM::M1, "Scheduled Study Location" },
-{ 0x00321021, VR::AE, VM::M1TN, "Scheduled Study Location AE Title" },
-{ 0x00321030, VR::LO, VM::M1, "Reason for Study" },
-{ 0x00321031, VR::SQ, VM::M1, "Requesting Physician Identification Sequence" },
-{ 0x00321032, VR::PN, VM::M1, "Requesting Physician" },
-{ 0x00321033, VR::LO, VM::M1, "Requesting Service" },
-{ 0x00321034, VR::SQ, VM::M1, "Requesting Service Code Sequence" },
-{ 0x00321040, VR::DA, VM::M1, "Study Arrival Date" },
-{ 0x00321041, VR::TM, VM::M1, "Study Arrival Time" },
-{ 0x00321050, VR::DA, VM::M1, "Study Completion Date" },
-{ 0x00321051, VR::TM, VM::M1, "Study Completion Time" },
-{ 0x00321055, VR::CS, VM::M1, "Study Component Status ID" },
-{ 0x00321060, VR::LO, VM::M1, "Requested Procedure Description" },
-{ 0x00321064, VR::SQ, VM::M1, "Requested Procedure Code Sequence" },
-{ 0x00321070, VR::LO, VM::M1, "Requested Contrast Agent" },
-{ 0x00324000, VR::LT, VM::M1, "Study Comments" },
-{ 0x00380004, VR::SQ, VM::M1, "Referenced Patient Alias Sequence" },
-{ 0x00380008, VR::CS, VM::M1, "Visit Status ID" },
-{ 0x00380010, VR::LO, VM::M1, "Admission ID" },
-{ 0x00380011, VR::LO, VM::M1, "Issuer of Admission ID" },
-{ 0x00380014, VR::SQ, VM::M1, "Issuer of Admission ID Sequence" },
-{ 0x00380016, VR::LO, VM::M1, "Route of Admissions" },
-{ 0x0038001A, VR::DA, VM::M1, "Scheduled Admission Date" },
-{ 0x0038001B, VR::TM, VM::M1, "Scheduled Admission Time" },
-{ 0x0038001C, VR::DA, VM::M1, "Scheduled Discharge Date" },
-{ 0x0038001D, VR::TM, VM::M1, "Scheduled Discharge Time" },
-{ 0x0038001E, VR::LO, VM::M1, "Scheduled Patient Institution Residence" },
-{ 0x00380020, VR::DA, VM::M1, "Admitting Date" },
-{ 0x00380021, VR::TM, VM::M1, "Admitting Time" },
-{ 0x00380030, VR::DA, VM::M1, "Discharge Date" },
-{ 0x00380032, VR::TM, VM::M1, "Discharge Time" },
-{ 0x00380040, VR::LO, VM::M1, "Discharge Diagnosis Description" },
-{ 0x00380044, VR::SQ, VM::M1, "Discharge Diagnosis Code Sequence" },
-{ 0x00380050, VR::LO, VM::M1, "Special Needs" },
-{ 0x00380060, VR::LO, VM::M1, "Service Episode ID" },
-{ 0x00380061, VR::LO, VM::M1, "Issuer of Service Episode ID" },
-{ 0x00380062, VR::LO, VM::M1, "Service Episode Description" },
-{ 0x00380064, VR::SQ, VM::M1, "Issuer of Service Episode ID Sequence" },
-{ 0x00380100, VR::SQ, VM::M1, "Pertinent Documents Sequence" },
-{ 0x00380300, VR::LO, VM::M1, "Current Patient Location" },
-{ 0x00380400, VR::LO, VM::M1, "Patient's Institution Residence" },
-{ 0x00380500, VR::LO, VM::M1, "Patient State" },
-{ 0x00380502, VR::SQ, VM::M1, "Patient Clinical Trial Participation Sequence" },
-{ 0x00384000, VR::LT, VM::M1, "Visit Comments" },
-{ 0x003A0004, VR::CS, VM::M1, "Waveform Originality" },
-{ 0x003A0005, VR::US, VM::M1, "Number of Waveform Channels" },
-{ 0x003A0010, VR::UL, VM::M1, "Number of Waveform Samples" },
-{ 0x003A001A, VR::DS, VM::M1, "Sampling Frequency" },
-{ 0x003A0020, VR::SH, VM::M1, "Multiplex Group Label" },
-{ 0x003A0200, VR::SQ, VM::M1, "Channel Definition Sequence" },
-{ 0x003A0202, VR::IS, VM::M1, "Waveform Channel Number" },
-{ 0x003A0203, VR::SH, VM::M1, "Channel Label" },
-{ 0x003A0205, VR::CS, VM::M1TN, "Channel Status" },
-{ 0x003A0208, VR::SQ, VM::M1, "Channel Source Sequence" },
-{ 0x003A0209, VR::SQ, VM::M1, "Channel Source Modifiers Sequence" },
-{ 0x003A020A, VR::SQ, VM::M1, "Source Waveform Sequence" },
-{ 0x003A020C, VR::LO, VM::M1, "Channel Derivation Description" },
-{ 0x003A0210, VR::DS, VM::M1, "Channel Sensitivity" },
-{ 0x003A0211, VR::SQ, VM::M1, "Channel Sensitivity Units Sequence" },
-{ 0x003A0212, VR::DS, VM::M1, "Channel Sensitivity Correction Factor" },
-{ 0x003A0213, VR::DS, VM::M1, "Channel Baseline" },
-{ 0x003A0214, VR::DS, VM::M1, "Channel Time Skew" },
-{ 0x003A0215, VR::DS, VM::M1, "Channel Sample Skew" },
-{ 0x003A0218, VR::DS, VM::M1, "Channel Offset" },
-{ 0x003A021A, VR::US, VM::M1, "Waveform Bits Stored" },
-{ 0x003A0220, VR::DS, VM::M1, "Filter Low Frequency" },
-{ 0x003A0221, VR::DS, VM::M1, "Filter High Frequency" },
-{ 0x003A0222, VR::DS, VM::M1, "Notch Filter Frequency" },
-{ 0x003A0223, VR::DS, VM::M1, "Notch Filter Bandwidth" },
-{ 0x003A0230, VR::FL, VM::M1, "Waveform Data Display Scale" },
-{ 0x003A0231, VR::US, VM::M3, "Waveform Display Background CIELab Value" },
-{ 0x003A0240, VR::SQ, VM::M1, "Waveform Presentation Group Sequence" },
-{ 0x003A0241, VR::US, VM::M1, "Presentation Group Number" },
-{ 0x003A0242, VR::SQ, VM::M1, "Channel Display Sequence" },
-{ 0x003A0244, VR::US, VM::M3, "Channel Recommended Display CIELab Value" },
-{ 0x003A0245, VR::FL, VM::M1, "Channel Position" },
-{ 0x003A0246, VR::CS, VM::M1, "Display Shading Flag" },
-{ 0x003A0247, VR::FL, VM::M1, "Fractional Channel Display Scale" },
-{ 0x003A0248, VR::FL, VM::M1, "Absolute Channel Display Scale" },
-{ 0x003A0300, VR::SQ, VM::M1, "Multiplexed Audio Channels Description Code Sequence" },
-{ 0x003A0301, VR::IS, VM::M1, "Channel Identification Code" },
-{ 0x003A0302, VR::CS, VM::M1, "Channel Mode" },
-{ 0x00400001, VR::AE, VM::M1TN, "Scheduled Station AE Title" },
-{ 0x00400002, VR::DA, VM::M1, "Scheduled Procedure Step Start Date" },
-{ 0x00400003, VR::TM, VM::M1, "Scheduled Procedure Step Start Time" },
-{ 0x00400004, VR::DA, VM::M1, "Scheduled Procedure Step End Date" },
-{ 0x00400005, VR::TM, VM::M1, "Scheduled Procedure Step End Time" },
-{ 0x00400006, VR::PN, VM::M1, "Scheduled Performing Physician's Name" },
-{ 0x00400007, VR::LO, VM::M1, "Scheduled Procedure Step Description" },
-{ 0x00400008, VR::SQ, VM::M1, "Scheduled Protocol Code Sequence" },
-{ 0x00400009, VR::SH, VM::M1, "Scheduled Procedure Step ID" },
-{ 0x0040000A, VR::SQ, VM::M1, "Stage Code Sequence" },
-{ 0x0040000B, VR::SQ, VM::M1, "Scheduled Performing Physician Identification Sequence" },
-{ 0x00400010, VR::SH, VM::M1TN, "Scheduled Station Name" },
-{ 0x00400011, VR::SH, VM::M1, "Scheduled Procedure Step Location" },
-{ 0x00400012, VR::LO, VM::M1, "Pre-Medication" },
-{ 0x00400020, VR::CS, VM::M1, "Scheduled Procedure Step Status" },
-{ 0x00400026, VR::SQ, VM::M1, "Order Placer Identifier Sequence" },
-{ 0x00400027, VR::SQ, VM::M1, "Order Filler Identifier Sequence" },
-{ 0x00400031, VR::UT, VM::M1, "Local Namespace Entity ID" },
-{ 0x00400032, VR::UT, VM::M1, "Universal Entity ID" },
-{ 0x00400033, VR::CS, VM::M1, "Universal Entity ID Type" },
-{ 0x00400035, VR::CS, VM::M1, "Identifier Type Code" },
-{ 0x00400036, VR::SQ, VM::M1, "Assigning Facility Sequence" },
-{ 0x00400039, VR::SQ, VM::M1, "Assigning Jurisdiction Code Sequence" },
-{ 0x0040003A, VR::SQ, VM::M1, "Assigning Agency or Department Code Sequence" },
-{ 0x00400100, VR::SQ, VM::M1, "Scheduled Procedure Step Sequence" },
-{ 0x00400220, VR::SQ, VM::M1, "Referenced Non-Image Composite SOP Instance Sequence" },
-{ 0x00400241, VR::AE, VM::M1, "Performed Station AE Title" },
-{ 0x00400242, VR::SH, VM::M1, "Performed Station Name" },
-{ 0x00400243, VR::SH, VM::M1, "Performed Location" },
-{ 0x00400244, VR::DA, VM::M1, "Performed Procedure Step Start Date" },
-{ 0x00400245, VR::TM, VM::M1, "Performed Procedure Step Start Time" },
-{ 0x00400250, VR::DA, VM::M1, "Performed Procedure Step End Date" },
-{ 0x00400251, VR::TM, VM::M1, "Performed Procedure Step End Time" },
-{ 0x00400252, VR::CS, VM::M1, "Performed Procedure Step Status" },
-{ 0x00400253, VR::SH, VM::M1, "Performed Procedure Step ID" },
-{ 0x00400254, VR::LO, VM::M1, "Performed Procedure Step Description" },
-{ 0x00400255, VR::LO, VM::M1, "Performed Procedure Type Description" },
-{ 0x00400260, VR::SQ, VM::M1, "Performed Protocol Code Sequence" },
-{ 0x00400261, VR::CS, VM::M1, "Performed Protocol Type" },
-{ 0x00400270, VR::SQ, VM::M1, "Scheduled Step Attributes Sequence" },
-{ 0x00400275, VR::SQ, VM::M1, "Request Attributes Sequence" },
-{ 0x00400280, VR::ST, VM::M1, "Comments on the Performed Procedure Step" },
-{ 0x00400281, VR::SQ, VM::M1, "Performed Procedure Step Discontinuation Reason Code Sequence" },
-{ 0x00400293, VR::SQ, VM::M1, "Quantity Sequence" },
-{ 0x00400294, VR::DS, VM::M1, "Quantity" },
-{ 0x00400295, VR::SQ, VM::M1, "Measuring Units Sequence" },
-{ 0x00400296, VR::SQ, VM::M1, "Billing Item Sequence" },
-{ 0x00400300, VR::US, VM::M1, "Total Time of Fluoroscopy" },
-{ 0x00400301, VR::US, VM::M1, "Total Number of Exposures" },
-{ 0x00400302, VR::US, VM::M1, "Entrance Dose" },
-{ 0x00400303, VR::US, VM::M1T2, "Exposed Area" },
-{ 0x00400306, VR::DS, VM::M1, "Distance Source to Entrance" },
-{ 0x00400307, VR::DS, VM::M1, "Distance Source to Support" },
-{ 0x0040030E, VR::SQ, VM::M1, "Exposure Dose Sequence" },
-{ 0x00400310, VR::ST, VM::M1, "Comments on Radiation Dose" },
-{ 0x00400312, VR::DS, VM::M1, "X-Ray Output" },
-{ 0x00400314, VR::DS, VM::M1, "Half Value Layer" },
-{ 0x00400316, VR::DS, VM::M1, "Organ Dose" },
-{ 0x00400318, VR::CS, VM::M1, "Organ Exposed" },
-{ 0x00400320, VR::SQ, VM::M1, "Billing Procedure Step Sequence" },
-{ 0x00400321, VR::SQ, VM::M1, "Film Consumption Sequence" },
-{ 0x00400324, VR::SQ, VM::M1, "Billing Supplies and Devices Sequence" },
-{ 0x00400330, VR::SQ, VM::M1, "Referenced Procedure Step Sequence" },
-{ 0x00400340, VR::SQ, VM::M1, "Performed Series Sequence" },
-{ 0x00400400, VR::LT, VM::M1, "Comments on the Scheduled Procedure Step" },
-{ 0x00400440, VR::SQ, VM::M1, "Protocol Context Sequence" },
-{ 0x00400441, VR::SQ, VM::M1, "Content Item Modifier Sequence" },
-{ 0x00400500, VR::SQ, VM::M1, "Scheduled Specimen Sequence" },
-{ 0x0040050A, VR::LO, VM::M1, "Specimen Accession Number" },
-{ 0x00400512, VR::LO, VM::M1, "Container Identifier" },
-{ 0x00400513, VR::SQ, VM::M1, "Issuer of the Container Identifier Sequence" },
-{ 0x00400515, VR::SQ, VM::M1, "Alternate Container Identifier Sequence" },
-{ 0x00400518, VR::SQ, VM::M1, "Container Type Code Sequence" },
-{ 0x0040051A, VR::LO, VM::M1, "Container Description" },
-{ 0x00400520, VR::SQ, VM::M1, "Container Component Sequence" },
-{ 0x00400550, VR::SQ, VM::M1, "Specimen Sequence" },
-{ 0x00400551, VR::LO, VM::M1, "Specimen Identifier" },
-{ 0x00400552, VR::SQ, VM::M1, "Specimen Description Sequence (Trial)" },
-{ 0x00400553, VR::ST, VM::M1, "Specimen Description (Trial)" },
-{ 0x00400554, VR::UI, VM::M1, "Specimen UID" },
-{ 0x00400555, VR::SQ, VM::M1, "Acquisition Context Sequence" },
-{ 0x00400556, VR::ST, VM::M1, "Acquisition Context Description" },
-{ 0x0040059A, VR::SQ, VM::M1, "Specimen Type Code Sequence" },
-{ 0x00400560, VR::SQ, VM::M1, "Specimen Description Sequence" },
-{ 0x00400562, VR::SQ, VM::M1, "Issuer of the Specimen Identifier Sequence" },
-{ 0x00400600, VR::LO, VM::M1, "Specimen Short Description" },
-{ 0x00400602, VR::UT, VM::M1, "Specimen Detailed Description" },
-{ 0x00400610, VR::SQ, VM::M1, "Specimen Preparation Sequence" },
-{ 0x00400612, VR::SQ, VM::M1, "Specimen Preparation Step Content Item Sequence" },
-{ 0x00400620, VR::SQ, VM::M1, "Specimen Localization Content Item Sequence" },
-{ 0x004006FA, VR::LO, VM::M1, "Slide Identifier" },
-{ 0x0040071A, VR::SQ, VM::M1, "Image Center Point Coordinates Sequence" },
-{ 0x0040072A, VR::DS, VM::M1, "X Offset in Slide Coordinate System" },
-{ 0x0040073A, VR::DS, VM::M1, "Y Offset in Slide Coordinate System" },
-{ 0x0040074A, VR::DS, VM::M1, "Z Offset in Slide Coordinate System" },
-{ 0x004008D8, VR::SQ, VM::M1, "Pixel Spacing Sequence" },
-{ 0x004008DA, VR::SQ, VM::M1, "Coordinate System Axis Code Sequence" },
-{ 0x004008EA, VR::SQ, VM::M1, "Measurement Units Code Sequence" },
-{ 0x004009F8, VR::SQ, VM::M1, "Vital Stain Code Sequence (Trial)" },
-{ 0x00401001, VR::SH, VM::M1, "Requested Procedure ID" },
-{ 0x00401002, VR::LO, VM::M1, "Reason for the Requested Procedure" },
-{ 0x00401003, VR::SH, VM::M1, "Requested Procedure Priority" },
-{ 0x00401004, VR::LO, VM::M1, "Patient Transport Arrangements" },
-{ 0x00401005, VR::LO, VM::M1, "Requested Procedure Location" },
-{ 0x00401006, VR::SH, VM::M1, "Placer Order Number / Procedure" },
-{ 0x00401007, VR::SH, VM::M1, "Filler Order Number / Procedure" },
-{ 0x00401008, VR::LO, VM::M1, "Confidentiality Code" },
-{ 0x00401009, VR::SH, VM::M1, "Reporting Priority" },
-{ 0x0040100A, VR::SQ, VM::M1, "Reason for Requested Procedure Code Sequence" },
-{ 0x00401010, VR::PN, VM::M1TN, "Names of Intended Recipients of Results" },
-{ 0x00401011, VR::SQ, VM::M1, "Intended Recipients of Results Identification Sequence" },
-{ 0x00401012, VR::SQ, VM::M1, "Reason For Performed Procedure Code Sequence" },
-{ 0x00401060, VR::LO, VM::M1, "Requested Procedure Description (Trial)" },
-{ 0x00401101, VR::SQ, VM::M1, "Person Identification Code Sequence" },
-{ 0x00401102, VR::ST, VM::M1, "Person's Address" },
-{ 0x00401103, VR::LO, VM::M1TN, "Person's Telephone Numbers" },
-{ 0x00401400, VR::LT, VM::M1, "Requested Procedure Comments" },
-{ 0x00402001, VR::LO, VM::M1, "Reason for the Imaging Service Request" },
-{ 0x00402004, VR::DA, VM::M1, "Issue Date of Imaging Service Request" },
-{ 0x00402005, VR::TM, VM::M1, "Issue Time of Imaging Service Request" },
-{ 0x00402006, VR::SH, VM::M1, "Placer Order Number / Imaging Service Request (Retired)" },
-{ 0x00402007, VR::SH, VM::M1, "Filler Order Number / Imaging Service Request (Retired)" },
-{ 0x00402008, VR::PN, VM::M1, "Order Entered By" },
-{ 0x00402009, VR::SH, VM::M1, "Order Enterer's Location" },
-{ 0x00402010, VR::SH, VM::M1, "Order Callback Phone Number" },
-{ 0x00402016, VR::LO, VM::M1, "Placer Order Number / Imaging Service Request" },
-{ 0x00402017, VR::LO, VM::M1, "Filler Order Number / Imaging Service Request" },
-{ 0x00402400, VR::LT, VM::M1, "Imaging Service Request Comments" },
-{ 0x00403001, VR::LO, VM::M1, "Confidentiality Constraint on Patient Data Description" },
-{ 0x00404001, VR::CS, VM::M1, "General Purpose Scheduled Procedure Step Status" },
-{ 0x00404002, VR::CS, VM::M1, "General Purpose Performed Procedure Step Status" },
-{ 0x00404003, VR::CS, VM::M1, "General Purpose Scheduled Procedure Step Priority" },
-{ 0x00404004, VR::SQ, VM::M1, "Scheduled Processing Applications Code Sequence" },
-{ 0x00404005, VR::DT, VM::M1, "Scheduled Procedure Step Start DateTime" },
-{ 0x00404006, VR::CS, VM::M1, "Multiple Copies Flag" },
-{ 0x00404007, VR::SQ, VM::M1, "Performed Processing Applications Code Sequence" },
-{ 0x00404009, VR::SQ, VM::M1, "Human Performer Code Sequence" },
-{ 0x00404010, VR::DT, VM::M1, "Scheduled Procedure Step Modification Date Time" },
-{ 0x00404011, VR::DT, VM::M1, "Expected Completion Date Time" },
-{ 0x00404015, VR::SQ, VM::M1, "Resulting General Purpose Performed Procedure Steps Sequence" },
-{ 0x00404016, VR::SQ, VM::M1, "Referenced General Purpose Scheduled Procedure Step Sequence" },
-{ 0x00404018, VR::SQ, VM::M1, "Scheduled Workitem Code Sequence" },
-{ 0x00404019, VR::SQ, VM::M1, "Performed Workitem Code Sequence" },
-{ 0x00404020, VR::CS, VM::M1, "Input Availability Flag" },
-{ 0x00404021, VR::SQ, VM::M1, "Input Information Sequence" },
-{ 0x00404022, VR::SQ, VM::M1, "Relevant Information Sequence" },
-{ 0x00404023, VR::UI, VM::M1, "Referenced General Purpose Scheduled Procedure Step Transaction UID" },
-{ 0x00404025, VR::SQ, VM::M1, "Scheduled Station Name Code Sequence" },
-{ 0x00404026, VR::SQ, VM::M1, "Scheduled Station Class Code Sequence" },
-{ 0x00404027, VR::SQ, VM::M1, "Scheduled Station Geographic Location Code Sequence" },
-{ 0x00404028, VR::SQ, VM::M1, "Performed Station Name Code Sequence" },
-{ 0x00404029, VR::SQ, VM::M1, "Performed Station Class Code Sequence" },
-{ 0x00404030, VR::SQ, VM::M1, "Performed Station Geographic Location Code Sequence" },
-{ 0x00404031, VR::SQ, VM::M1, "Requested Subsequent Workitem Code Sequence" },
-{ 0x00404032, VR::SQ, VM::M1, "Non-DICOM Output Code Sequence" },
-{ 0x00404033, VR::SQ, VM::M1, "Output Information Sequence" },
-{ 0x00404034, VR::SQ, VM::M1, "Scheduled Human Performers Sequence" },
-{ 0x00404035, VR::SQ, VM::M1, "Actual Human Performers Sequence" },
-{ 0x00404036, VR::LO, VM::M1, "Human Performer's Organization" },
-{ 0x00404037, VR::PN, VM::M1, "Human Performer's Name" },
-{ 0x00404040, VR::CS, VM::M1, "Raw Data Handling" },
-{ 0x00404041, VR::CS, VM::M1, "Input Readiness State" },
-{ 0x00404050, VR::DT, VM::M1, "Performed Procedure Step Start DateTime" },
-{ 0x00404051, VR::DT, VM::M1, "Performed Procedure Step End DateTime" },
-{ 0x00404052, VR::DT, VM::M1, "Procedure Step Cancellation DateTime" },
-{ 0x00408302, VR::DS, VM::M1, "Entrance Dose in mGy" },
-{ 0x00409094, VR::SQ, VM::M1, "Referenced Image Real World Value Mapping Sequence" },
-{ 0x00409096, VR::SQ, VM::M1, "Real World Value Mapping Sequence" },
-{ 0x00409098, VR::SQ, VM::M1, "Pixel Value Mapping Code Sequence" },
-{ 0x00409210, VR::SH, VM::M1, "LUT Label" },
-{ 0x00409211, VR::XS, VM::M1, "Real World Value Last Value Mapped" },
-{ 0x00409212, VR::FD, VM::M1TN, "Real World Value LUT Data" },
-{ 0x00409216, VR::XS, VM::M1, "Real World Value First Value Mapped" },
-{ 0x00409224, VR::FD, VM::M1, "Real World Value Intercept" },
-{ 0x00409225, VR::FD, VM::M1, "Real World Value Slope" },
-{ 0x0040A007, VR::CS, VM::M1, "Findings Flag (Trial)" },
-{ 0x0040A010, VR::CS, VM::M1, "Relationship Type" },
-{ 0x0040A020, VR::SQ, VM::M1, "Findings Sequence (Trial)" },
-{ 0x0040A021, VR::UI, VM::M1, "Findings Group UID (Trial)" },
-{ 0x0040A022, VR::UI, VM::M1, "Referenced Findings Group UID (Trial)" },
-{ 0x0040A023, VR::DA, VM::M1, "Findings Group Recording Date (Trial)" },
-{ 0x0040A024, VR::TM, VM::M1, "Findings Group Recording Time (Trial)" },
-{ 0x0040A026, VR::SQ, VM::M1, "Findings Source Category Code Sequence (Trial)" },
-{ 0x0040A027, VR::LO, VM::M1, "Verifying Organization" },
-{ 0x0040A028, VR::SQ, VM::M1, "Documenting Organization Identifier Code Sequence (Trial)" },
-{ 0x0040A030, VR::DT, VM::M1, "Verification Date Time" },
-{ 0x0040A032, VR::DT, VM::M1, "Observation Date Time" },
-{ 0x0040A040, VR::CS, VM::M1, "Value Type" },
-{ 0x0040A043, VR::SQ, VM::M1, "Concept Name Code Sequence" },
-{ 0x0040A047, VR::LO, VM::M1, "Measurement Precision Description (Trial)" },
-{ 0x0040A050, VR::CS, VM::M1, "Continuity Of Content" },
-{ 0x0040A057, VR::CS, VM::M1TN, "Urgency or Priority Alerts (Trial)" },
-{ 0x0040A060, VR::LO, VM::M1, "Sequencing Indicator (Trial)" },
-{ 0x0040A066, VR::SQ, VM::M1, "Document Identifier Code Sequence (Trial)" },
-{ 0x0040A067, VR::PN, VM::M1, "Document Author (Trial)" },
-{ 0x0040A068, VR::SQ, VM::M1, "Document Author Identifier Code Sequence (Trial)" },
-{ 0x0040A070, VR::SQ, VM::M1, "Identifier Code Sequence (Trial)" },
-{ 0x0040A073, VR::SQ, VM::M1, "Verifying Observer Sequence" },
-{ 0x0040A074, VR::OB, VM::M1, "Object Binary Identifier (Trial)" },
-{ 0x0040A075, VR::PN, VM::M1, "Verifying Observer Name" },
-{ 0x0040A076, VR::SQ, VM::M1, "Documenting Observer Identifier Code Sequence (Trial)" },
-{ 0x0040A078, VR::SQ, VM::M1, "Author Observer Sequence" },
-{ 0x0040A07A, VR::SQ, VM::M1, "Participant Sequence" },
-{ 0x0040A07C, VR::SQ, VM::M1, "Custodial Organization Sequence" },
-{ 0x0040A080, VR::CS, VM::M1, "Participation Type" },
-{ 0x0040A082, VR::DT, VM::M1, "Participation DateTime" },
-{ 0x0040A084, VR::CS, VM::M1, "Observer Type" },
-{ 0x0040A085, VR::SQ, VM::M1, "Procedure Identifier Code Sequence (Trial)" },
-{ 0x0040A088, VR::SQ, VM::M1, "Verifying Observer Identification Code Sequence" },
-{ 0x0040A089, VR::OB, VM::M1, "Object Directory Binary Identifier (Trial)" },
-{ 0x0040A090, VR::SQ, VM::M1, "Equivalent CDA Document Sequence" },
-{ 0x0040A0B0, VR::US, VM::M2T2N, "Referenced Waveform Channels" },
-{ 0x0040A110, VR::DA, VM::M1, "Date of Document or Verbal Transaction (Trial)" },
-{ 0x0040A112, VR::TM, VM::M1, "Time of Document Creation or Verbal Transaction (Trial)" },
-{ 0x0040A120, VR::DT, VM::M1, "DateTime" },
-{ 0x0040A121, VR::DA, VM::M1, "Date" },
-{ 0x0040A122, VR::TM, VM::M1, "Time" },
-{ 0x0040A123, VR::PN, VM::M1, "Person Name" },
-{ 0x0040A124, VR::UI, VM::M1, "UID" },
-{ 0x0040A125, VR::CS, VM::M2, "Report Status ID (Trial)" },
-{ 0x0040A130, VR::CS, VM::M1, "Temporal Range Type" },
-{ 0x0040A132, VR::UL, VM::M1TN, "Referenced Sample Positions" },
-{ 0x0040A136, VR::US, VM::M1TN, "Referenced Frame Numbers" },
-{ 0x0040A138, VR::DS, VM::M1TN, "Referenced Time Offsets" },
-{ 0x0040A13A, VR::DT, VM::M1TN, "Referenced DateTime" },
-{ 0x0040A160, VR::UT, VM::M1, "Text Value" },
-{ 0x0040A167, VR::SQ, VM::M1, "Observation Category Code Sequence (Trial)" },
-{ 0x0040A168, VR::SQ, VM::M1, "Concept Code Sequence" },
-{ 0x0040A16A, VR::ST, VM::M1, "Bibliographic Citation (Trial)" },
-{ 0x0040A170, VR::SQ, VM::M1, "Purpose of Reference Code Sequence" },
-{ 0x0040A171, VR::UI, VM::M1, "Observation UID (Trial)" },
-{ 0x0040A172, VR::UI, VM::M1, "Referenced Observation UID (Trial)" },
-{ 0x0040A173, VR::CS, VM::M1, "Referenced Observation Class (Trial)" },
-{ 0x0040A174, VR::CS, VM::M1, "Referenced Object Observation Class (Trial)" },
-{ 0x0040A180, VR::US, VM::M1, "Annotation Group Number" },
-{ 0x0040A192, VR::DA, VM::M1, "Observation Date (Trial)" },
-{ 0x0040A193, VR::TM, VM::M1, "Observation Time (Trial)" },
-{ 0x0040A194, VR::CS, VM::M1, "Measurement Automation (Trial)" },
-{ 0x0040A195, VR::SQ, VM::M1, "Modifier Code Sequence" },
-{ 0x0040A224, VR::ST, VM::M1, "Identification Description (Trial)" },
-{ 0x0040A290, VR::CS, VM::M1, "Coordinates Set Geometric Type (Trial)" },
-{ 0x0040A296, VR::SQ, VM::M1, "Algorithm Code Sequence (Trial)" },
-{ 0x0040A297, VR::ST, VM::M1, "Algorithm Description (Trial)" },
-{ 0x0040A29A, VR::SL, VM::M2T2N, "Pixel Coordinates Set (Trial)" },
-{ 0x0040A300, VR::SQ, VM::M1, "Measured Value Sequence" },
-{ 0x0040A301, VR::SQ, VM::M1, "Numeric Value Qualifier Code Sequence" },
-{ 0x0040A307, VR::PN, VM::M1, "Current Observer (Trial)" },
-{ 0x0040A30A, VR::DS, VM::M1TN, "Numeric Value" },
-{ 0x0040A313, VR::SQ, VM::M1, "Referenced Accession Sequence (Trial)" },
-{ 0x0040A33A, VR::ST, VM::M1, "Report Status Comment (Trial)" },
-{ 0x0040A340, VR::SQ, VM::M1, "Procedure Context Sequence (Trial)" },
-{ 0x0040A352, VR::PN, VM::M1, "Verbal Source (Trial)" },
-{ 0x0040A353, VR::ST, VM::M1, "Address (Trial)" },
-{ 0x0040A354, VR::LO, VM::M1, "Telephone Number (Trial)" },
-{ 0x0040A358, VR::SQ, VM::M1, "Verbal Source Identifier Code Sequence (Trial)" },
-{ 0x0040A360, VR::SQ, VM::M1, "Predecessor Documents Sequence" },
-{ 0x0040A370, VR::SQ, VM::M1, "Referenced Request Sequence" },
-{ 0x0040A372, VR::SQ, VM::M1, "Performed Procedure Code Sequence" },
-{ 0x0040A375, VR::SQ, VM::M1, "Current Requested Procedure Evidence Sequence" },
-{ 0x0040A380, VR::SQ, VM::M1, "Report Detail Sequence (Trial)" },
-{ 0x0040A385, VR::SQ, VM::M1, "Pertinent Other Evidence Sequence" },
-{ 0x0040A390, VR::SQ, VM::M1, "HL7 Structured Document Reference Sequence" },
-{ 0x0040A402, VR::UI, VM::M1, "Observation Subject UID (Trial)" },
-{ 0x0040A403, VR::CS, VM::M1, "Observation Subject Class (Trial)" },
-{ 0x0040A404, VR::SQ, VM::M1, "Observation Subject Type Code Sequence (Trial)" },
-{ 0x0040A491, VR::CS, VM::M1, "Completion Flag" },
-{ 0x0040A492, VR::LO, VM::M1, "Completion Flag Description" },
-{ 0x0040A493, VR::CS, VM::M1, "Verification Flag" },
-{ 0x0040A494, VR::CS, VM::M1, "Archive Requested" },
-{ 0x0040A496, VR::CS, VM::M1, "Preliminary Flag" },
-{ 0x0040A504, VR::SQ, VM::M1, "Content Template Sequence" },
-{ 0x0040A525, VR::SQ, VM::M1, "Identical Documents Sequence" },
-{ 0x0040A600, VR::CS, VM::M1, "Observation Subject Context Flag (Trial)" },
-{ 0x0040A601, VR::CS, VM::M1, "Observer Context Flag (Trial)" },
-{ 0x0040A603, VR::CS, VM::M1, "Procedure Context Flag (Trial)" },
-{ 0x0040A730, VR::SQ, VM::M1, "Content Sequence" },
-{ 0x0040A731, VR::SQ, VM::M1, "Relationship Sequence (Trial)" },
-{ 0x0040A732, VR::SQ, VM::M1, "Relationship Type Code Sequence (Trial)" },
-{ 0x0040A744, VR::SQ, VM::M1, "Language Code Sequence (Trial)" },
-{ 0x0040A992, VR::ST, VM::M1, "Uniform Resource Locator (Trial)" },
-{ 0x0040B020, VR::SQ, VM::M1, "Waveform Annotation Sequence" },
-{ 0x0040DB00, VR::CS, VM::M1, "Template Identifier" },
-{ 0x0040DB06, VR::DT, VM::M1, "Template Version" },
-{ 0x0040DB07, VR::DT, VM::M1, "Template Local Version" },
-{ 0x0040DB0B, VR::CS, VM::M1, "Template Extension Flag" },
-{ 0x0040DB0C, VR::UI, VM::M1, "Template Extension Organization UID" },
-{ 0x0040DB0D, VR::UI, VM::M1, "Template Extension Creator UID" },
-{ 0x0040DB73, VR::UL, VM::M1TN, "Referenced Content Item Identifier" },
-{ 0x0040E001, VR::ST, VM::M1, "HL7 Instance Identifier" },
-{ 0x0040E004, VR::DT, VM::M1, "HL7 Document Effective Time" },
-{ 0x0040E006, VR::SQ, VM::M1, "HL7 Document Type Code Sequence" },
-{ 0x0040E008, VR::SQ, VM::M1, "Document Class Code Sequence" },
-{ 0x0040E010, VR::UT, VM::M1, "Retrieve URI" },
-{ 0x0040E011, VR::UI, VM::M1, "Retrieve Location UID" },
-{ 0x0040E020, VR::CS, VM::M1, "Type of Instances" },
-{ 0x0040E021, VR::SQ, VM::M1, "DICOM Retrieval Sequence" },
-{ 0x0040E022, VR::SQ, VM::M1, "DICOM Media Retrieval Sequence" },
-{ 0x0040E023, VR::SQ, VM::M1, "WADO Retrieval Sequence" },
-{ 0x0040E024, VR::SQ, VM::M1, "XDS Retrieval Sequence" },
-{ 0x0040E030, VR::UI, VM::M1, "Repository Unique ID" },
-{ 0x0040E031, VR::UI, VM::M1, "Home Community ID" },
-{ 0x00420010, VR::ST, VM::M1, "Document Title" },
-{ 0x00420011, VR::OB, VM::M1, "Encapsulated Document" },
-{ 0x00420012, VR::LO, VM::M1, "MIME Type of Encapsulated Document" },
-{ 0x00420013, VR::SQ, VM::M1, "Source Instance Sequence" },
-{ 0x00420014, VR::LO, VM::M1TN, "List of MIME Types" },
-{ 0x00440001, VR::ST, VM::M1, "Product Package Identifier" },
-{ 0x00440002, VR::CS, VM::M1, "Substance Administration Approval" },
-{ 0x00440003, VR::LT, VM::M1, "Approval Status Further Description" },
-{ 0x00440004, VR::DT, VM::M1, "Approval Status DateTime" },
-{ 0x00440007, VR::SQ, VM::M1, "Product Type Code Sequence" },
-{ 0x00440008, VR::LO, VM::M1TN, "Product Name" },
-{ 0x00440009, VR::LT, VM::M1, "Product Description" },
-{ 0x0044000A, VR::LO, VM::M1, "Product Lot Identifier" },
-{ 0x0044000B, VR::DT, VM::M1, "Product Expiration DateTime" },
-{ 0x00440010, VR::DT, VM::M1, "Substance Administration DateTime" },
-{ 0x00440011, VR::LO, VM::M1, "Substance Administration Notes" },
-{ 0x00440012, VR::LO, VM::M1, "Substance Administration Device ID" },
-{ 0x00440013, VR::SQ, VM::M1, "Product Parameter Sequence" },
-{ 0x00440019, VR::SQ, VM::M1, "Substance Administration Parameter Sequence" },
-{ 0x00460012, VR::LO, VM::M1, "Lens Description" },
-{ 0x00460014, VR::SQ, VM::M1, "Right Lens Sequence" },
-{ 0x00460015, VR::SQ, VM::M1, "Left Lens Sequence" },
-{ 0x00460016, VR::SQ, VM::M1, "Unspecified Laterality Lens Sequence" },
-{ 0x00460018, VR::SQ, VM::M1, "Cylinder Sequence" },
-{ 0x00460028, VR::SQ, VM::M1, "Prism Sequence" },
-{ 0x00460030, VR::FD, VM::M1, "Horizontal Prism Power" },
-{ 0x00460032, VR::CS, VM::M1, "Horizontal Prism Base" },
-{ 0x00460034, VR::FD, VM::M1, "Vertical Prism Power" },
-{ 0x00460036, VR::CS, VM::M1, "Vertical Prism Base" },
-{ 0x00460038, VR::CS, VM::M1, "Lens Segment Type" },
-{ 0x00460040, VR::FD, VM::M1, "Optical Transmittance" },
-{ 0x00460042, VR::FD, VM::M1, "Channel Width" },
-{ 0x00460044, VR::FD, VM::M1, "Pupil Size" },
-{ 0x00460046, VR::FD, VM::M1, "Corneal Size" },
-{ 0x00460050, VR::SQ, VM::M1, "Autorefraction Right Eye Sequence" },
-{ 0x00460052, VR::SQ, VM::M1, "Autorefraction Left Eye Sequence" },
-{ 0x00460060, VR::FD, VM::M1, "Distance Pupillary Distance" },
-{ 0x00460062, VR::FD, VM::M1, "Near Pupillary Distance" },
-{ 0x00460063, VR::FD, VM::M1, "Intermediate Pupillary Distance" },
-{ 0x00460064, VR::FD, VM::M1, "Other Pupillary Distance" },
-{ 0x00460070, VR::SQ, VM::M1, "Keratometry Right Eye Sequence" },
-{ 0x00460071, VR::SQ, VM::M1, "Keratometry Left Eye Sequence" },
-{ 0x00460074, VR::SQ, VM::M1, "Steep Keratometric Axis Sequence" },
-{ 0x00460075, VR::FD, VM::M1, "Radius of Curvature" },
-{ 0x00460076, VR::FD, VM::M1, "Keratometric Power" },
-{ 0x00460077, VR::FD, VM::M1, "Keratometric Axis" },
-{ 0x00460080, VR::SQ, VM::M1, "Flat Keratometric Axis Sequence" },
-{ 0x00460092, VR::CS, VM::M1, "Background Color" },
-{ 0x00460094, VR::CS, VM::M1, "Optotype" },
-{ 0x00460095, VR::CS, VM::M1, "Optotype Presentation" },
-{ 0x00460097, VR::SQ, VM::M1, "Subjective Refraction Right Eye Sequence" },
-{ 0x00460098, VR::SQ, VM::M1, "Subjective Refraction Left Eye Sequence" },
-{ 0x00460100, VR::SQ, VM::M1, "Add Near Sequence" },
-{ 0x00460101, VR::SQ, VM::M1, "Add Intermediate Sequence" },
-{ 0x00460102, VR::SQ, VM::M1, "Add Other Sequence" },
-{ 0x00460104, VR::FD, VM::M1, "Add Power" },
-{ 0x00460106, VR::FD, VM::M1, "Viewing Distance" },
-{ 0x00460121, VR::SQ, VM::M1, "Visual Acuity Type Code Sequence" },
-{ 0x00460122, VR::SQ, VM::M1, "Visual Acuity Right Eye Sequence" },
-{ 0x00460123, VR::SQ, VM::M1, "Visual Acuity Left Eye Sequence" },
-{ 0x00460124, VR::SQ, VM::M1, "Visual Acuity Both Eyes Open Sequence" },
-{ 0x00460125, VR::CS, VM::M1, "Viewing Distance Type" },
-{ 0x00460135, VR::SS, VM::M2, "Visual Acuity Modifiers" },
-{ 0x00460137, VR::FD, VM::M1, "Decimal Visual Acuity" },
-{ 0x00460139, VR::LO, VM::M1, "Optotype Detailed Definition" },
-{ 0x00460145, VR::SQ, VM::M1, "Referenced Refractive Measurements Sequence" },
-{ 0x00460146, VR::FD, VM::M1, "Sphere Power" },
-{ 0x00460147, VR::FD, VM::M1, "Cylinder Power" },
-{ 0x00480001, VR::FL, VM::M1, "Imaged Volume Width" },
-{ 0x00480002, VR::FL, VM::M1, "Imaged Volume Height" },
-{ 0x00480003, VR::FL, VM::M1, "Imaged Volume Depth" },
-{ 0x00480006, VR::UL, VM::M1, "Total Pixel Matrix Columns" },
-{ 0x00480007, VR::UL, VM::M1, "Total Pixel Matrix Rows" },
-{ 0x00480008, VR::SQ, VM::M1, "Total Pixel Matrix Origin Sequence" },
-{ 0x00480010, VR::CS, VM::M1, "Specimen Label in Image" },
-{ 0x00480011, VR::CS, VM::M1, "Focus Method" },
-{ 0x00480012, VR::CS, VM::M1, "Extended Depth of Field" },
-{ 0x00480013, VR::US, VM::M1, "Number of Focal Planes" },
-{ 0x00480014, VR::FL, VM::M1, "Distance Between Focal Planes" },
-{ 0x00480015, VR::US, VM::M3, "Recommended Absent Pixel CIELab Value" },
-{ 0x00480100, VR::SQ, VM::M1, "Illuminator Type Code Sequence" },
-{ 0x00480102, VR::DS, VM::M6, "Image Orientation (Slide)" },
-{ 0x00480105, VR::SQ, VM::M1, "Optical Path Sequence" },
-{ 0x00480106, VR::SH, VM::M1, "Optical Path Identifier" },
-{ 0x00480107, VR::ST, VM::M1, "Optical Path Description" },
-{ 0x00480108, VR::SQ, VM::M1, "Illumination Color Code Sequence" },
-{ 0x00480110, VR::SQ, VM::M1, "Specimen Reference Sequence" },
-{ 0x00480111, VR::DS, VM::M1, "Condenser Lens Power" },
-{ 0x00480112, VR::DS, VM::M1, "Objective Lens Power" },
-{ 0x00480113, VR::DS, VM::M1, "Objective Lens Numerical Aperture" },
-{ 0x00480120, VR::SQ, VM::M1, "Palette Color Lookup Table Sequence" },
-{ 0x00480200, VR::SQ, VM::M1, "Referenced Image Navigation Sequence" },
-{ 0x00480201, VR::US, VM::M2, "Top Left Hand Corner of Localizer Area" },
-{ 0x00480202, VR::US, VM::M2, "Bottom Right Hand Corner of Localizer Area" },
-{ 0x00480207, VR::SQ, VM::M1, "Optical Path Identification Sequence" },
-{ 0x0048021A, VR::SQ, VM::M1, "Plane Position (Slide) Sequence" },
-{ 0x0048021E, VR::SL, VM::M1, "Row Position In Total Image Pixel Matrix" },
-{ 0x0048021F, VR::SL, VM::M1, "Column Position In Total Image Pixel Matrix" },
-{ 0x00480301, VR::CS, VM::M1, "Pixel Origin Interpretation" },
-{ 0x00500004, VR::CS, VM::M1, "Calibration Image" },
-{ 0x00500010, VR::SQ, VM::M1, "Device Sequence" },
-{ 0x00500012, VR::SQ, VM::M1, "Container Component Type Code Sequence" },
-{ 0x00500013, VR::FD, VM::M1, "Container Component Thickness" },
-{ 0x00500014, VR::DS, VM::M1, "Device Length" },
-{ 0x00500015, VR::FD, VM::M1, "Container Component Width" },
-{ 0x00500016, VR::DS, VM::M1, "Device Diameter" },
-{ 0x00500017, VR::CS, VM::M1, "Device Diameter Units" },
-{ 0x00500018, VR::DS, VM::M1, "Device Volume" },
-{ 0x00500019, VR::DS, VM::M1, "Inter-Marker Distance" },
-{ 0x0050001A, VR::CS, VM::M1, "Container Component Material" },
-{ 0x0050001B, VR::LO, VM::M1, "Container Component ID" },
-{ 0x0050001C, VR::FD, VM::M1, "Container Component Length" },
-{ 0x0050001D, VR::FD, VM::M1, "Container Component Diameter" },
-{ 0x0050001E, VR::LO, VM::M1, "Container Component Description" },
-{ 0x00500020, VR::LO, VM::M1, "Device Description" },
-{ 0x00520001, VR::FL, VM::M1, "Contrast/Bolus Ingredient Percent by Volume" },
-{ 0x00520002, VR::FD, VM::M1, "OCT Focal Distance" },
-{ 0x00520003, VR::FD, VM::M1, "Beam Spot Size" },
-{ 0x00520004, VR::FD, VM::M1, "Effective Refractive Index" },
-{ 0x00520006, VR::CS, VM::M1, "OCT Acquisition Domain" },
-{ 0x00520007, VR::FD, VM::M1, "OCT Optical Center Wavelength" },
-{ 0x00520008, VR::FD, VM::M1, "Axial Resolution" },
-{ 0x00520009, VR::FD, VM::M1, "Ranging Depth" },
-{ 0x00520011, VR::FD, VM::M1, "A-line Rate" },
-{ 0x00520012, VR::US, VM::M1, "A-lines Per Frame" },
-{ 0x00520013, VR::FD, VM::M1, "Catheter Rotational Rate" },
-{ 0x00520014, VR::FD, VM::M1, "A-line Pixel Spacing" },
-{ 0x00520016, VR::SQ, VM::M1, "Mode of Percutaneous Access Sequence" },
-{ 0x00520025, VR::SQ, VM::M1, "Intravascular OCT Frame Type Sequence" },
-{ 0x00520026, VR::CS, VM::M1, "OCT Z Offset Applied" },
-{ 0x00520027, VR::SQ, VM::M1, "Intravascular Frame Content Sequence" },
-{ 0x00520028, VR::FD, VM::M1, "Intravascular Longitudinal Distance" },
-{ 0x00520029, VR::SQ, VM::M1, "Intravascular OCT Frame Content Sequence" },
-{ 0x00520030, VR::SS, VM::M1, "OCT Z Offset Correction" },
-{ 0x00520031, VR::CS, VM::M1, "Catheter Direction of Rotation" },
-{ 0x00520033, VR::FD, VM::M1, "Seam Line Location" },
-{ 0x00520034, VR::FD, VM::M1, "First A-line Location" },
-{ 0x00520036, VR::US, VM::M1, "Seam Line Index" },
-{ 0x00520038, VR::US, VM::M1, "Number of Padded A-lines" },
-{ 0x00520039, VR::CS, VM::M1, "Interpolation Type" },
-{ 0x0052003A, VR::CS, VM::M1, "Refractive Index Applied" },
-{ 0x00540010, VR::US, VM::M1TN, "Energy Window Vector" },
-{ 0x00540011, VR::US, VM::M1, "Number of Energy Windows" },
-{ 0x00540012, VR::SQ, VM::M1, "Energy Window Information Sequence" },
-{ 0x00540013, VR::SQ, VM::M1, "Energy Window Range Sequence" },
-{ 0x00540014, VR::DS, VM::M1, "Energy Window Lower Limit" },
-{ 0x00540015, VR::DS, VM::M1, "Energy Window Upper Limit" },
-{ 0x00540016, VR::SQ, VM::M1, "Radiopharmaceutical Information Sequence" },
-{ 0x00540017, VR::IS, VM::M1, "Residual Syringe Counts" },
-{ 0x00540018, VR::SH, VM::M1, "Energy Window Name" },
-{ 0x00540020, VR::US, VM::M1TN, "Detector Vector" },
-{ 0x00540021, VR::US, VM::M1, "Number of Detectors" },
-{ 0x00540022, VR::SQ, VM::M1, "Detector Information Sequence" },
-{ 0x00540030, VR::US, VM::M1TN, "Phase Vector" },
-{ 0x00540031, VR::US, VM::M1, "Number of Phases" },
-{ 0x00540032, VR::SQ, VM::M1, "Phase Information Sequence" },
-{ 0x00540033, VR::US, VM::M1, "Number of Frames in Phase" },
-{ 0x00540036, VR::IS, VM::M1, "Phase Delay" },
-{ 0x00540038, VR::IS, VM::M1, "Pause Between Frames" },
-{ 0x00540039, VR::CS, VM::M1, "Phase Description" },
-{ 0x00540050, VR::US, VM::M1TN, "Rotation Vector" },
-{ 0x00540051, VR::US, VM::M1, "Number of Rotations" },
-{ 0x00540052, VR::SQ, VM::M1, "Rotation Information Sequence" },
-{ 0x00540053, VR::US, VM::M1, "Number of Frames in Rotation" },
-{ 0x00540060, VR::US, VM::M1TN, "R-R Interval Vector" },
-{ 0x00540061, VR::US, VM::M1, "Number of R-R Intervals" },
-{ 0x00540062, VR::SQ, VM::M1, "Gated Information Sequence" },
-{ 0x00540063, VR::SQ, VM::M1, "Data Information Sequence" },
-{ 0x00540070, VR::US, VM::M1TN, "Time Slot Vector" },
-{ 0x00540071, VR::US, VM::M1, "Number of Time Slots" },
-{ 0x00540072, VR::SQ, VM::M1, "Time Slot Information Sequence" },
-{ 0x00540073, VR::DS, VM::M1, "Time Slot Time" },
-{ 0x00540080, VR::US, VM::M1TN, "Slice Vector" },
-{ 0x00540081, VR::US, VM::M1, "Number of Slices" },
-{ 0x00540090, VR::US, VM::M1TN, "Angular View Vector" },
-{ 0x00540100, VR::US, VM::M1TN, "Time Slice Vector" },
-{ 0x00540101, VR::US, VM::M1, "Number of Time Slices" },
-{ 0x00540200, VR::DS, VM::M1, "Start Angle" },
-{ 0x00540202, VR::CS, VM::M1, "Type of Detector Motion" },
-{ 0x00540210, VR::IS, VM::M1TN, "Trigger Vector" },
-{ 0x00540211, VR::US, VM::M1, "Number of Triggers in Phase" },
-{ 0x00540220, VR::SQ, VM::M1, "View Code Sequence" },
-{ 0x00540222, VR::SQ, VM::M1, "View Modifier Code Sequence" },
-{ 0x00540300, VR::SQ, VM::M1, "Radionuclide Code Sequence" },
-{ 0x00540302, VR::SQ, VM::M1, "Administration Route Code Sequence" },
-{ 0x00540304, VR::SQ, VM::M1, "Radiopharmaceutical Code Sequence" },
-{ 0x00540306, VR::SQ, VM::M1, "Calibration Data Sequence" },
-{ 0x00540308, VR::US, VM::M1, "Energy Window Number" },
-{ 0x00540400, VR::SH, VM::M1, "Image ID" },
-{ 0x00540410, VR::SQ, VM::M1, "Patient Orientation Code Sequence" },
-{ 0x00540412, VR::SQ, VM::M1, "Patient Orientation Modifier Code Sequence" },
-{ 0x00540414, VR::SQ, VM::M1, "Patient Gantry Relationship Code Sequence" },
-{ 0x00540500, VR::CS, VM::M1, "Slice Progression Direction" },
-{ 0x00541000, VR::CS, VM::M2, "Series Type" },
-{ 0x00541001, VR::CS, VM::M1, "Units" },
-{ 0x00541002, VR::CS, VM::M1, "Counts Source" },
-{ 0x00541004, VR::CS, VM::M1, "Reprojection Method" },
-{ 0x00541006, VR::CS, VM::M1, "SUV Type" },
-{ 0x00541100, VR::CS, VM::M1, "Randoms Correction Method" },
-{ 0x00541101, VR::LO, VM::M1, "Attenuation Correction Method" },
-{ 0x00541102, VR::CS, VM::M1, "Decay Correction" },
-{ 0x00541103, VR::LO, VM::M1, "Reconstruction Method" },
-{ 0x00541104, VR::LO, VM::M1, "Detector Lines of Response Used" },
-{ 0x00541105, VR::LO, VM::M1, "Scatter Correction Method" },
-{ 0x00541200, VR::DS, VM::M1, "Axial Acceptance" },
-{ 0x00541201, VR::IS, VM::M2, "Axial Mash" },
-{ 0x00541202, VR::IS, VM::M1, "Transverse Mash" },
-{ 0x00541203, VR::DS, VM::M2, "Detector Element Size" },
-{ 0x00541210, VR::DS, VM::M1, "Coincidence Window Width" },
-{ 0x00541220, VR::CS, VM::M1TN, "Secondary Counts Type" },
-{ 0x00541300, VR::DS, VM::M1, "Frame Reference Time" },
-{ 0x00541310, VR::IS, VM::M1, "Primary (Prompts) Counts Accumulated" },
-{ 0x00541311, VR::IS, VM::M1TN, "Secondary Counts Accumulated" },
-{ 0x00541320, VR::DS, VM::M1, "Slice Sensitivity Factor" },
-{ 0x00541321, VR::DS, VM::M1, "Decay Factor" },
-{ 0x00541322, VR::DS, VM::M1, "Dose Calibration Factor" },
-{ 0x00541323, VR::DS, VM::M1, "Scatter Fraction Factor" },
-{ 0x00541324, VR::DS, VM::M1, "Dead Time Factor" },
-{ 0x00541330, VR::US, VM::M1, "Image Index" },
-{ 0x00541400, VR::CS, VM::M1TN, "Counts Included" },
-{ 0x00541401, VR::CS, VM::M1, "Dead Time Correction Flag" },
-{ 0x00603000, VR::SQ, VM::M1, "Histogram Sequence" },
-{ 0x00603002, VR::US, VM::M1, "Histogram Number of Bins" },
-{ 0x00603004, VR::XS, VM::M1, "Histogram First Bin Value" },
-{ 0x00603006, VR::XS, VM::M1, "Histogram Last Bin Value" },
-{ 0x00603008, VR::US, VM::M1, "Histogram Bin Width" },
-{ 0x00603010, VR::LO, VM::M1, "Histogram Explanation" },
-{ 0x00603020, VR::UL, VM::M1TN, "Histogram Data" },
-{ 0x00620001, VR::CS, VM::M1, "Segmentation Type" },
-{ 0x00620002, VR::SQ, VM::M1, "Segment Sequence" },
-{ 0x00620003, VR::SQ, VM::M1, "Segmented Property Category Code Sequence" },
-{ 0x00620004, VR::US, VM::M1, "Segment Number" },
-{ 0x00620005, VR::LO, VM::M1, "Segment Label" },
-{ 0x00620006, VR::ST, VM::M1, "Segment Description" },
-{ 0x00620008, VR::CS, VM::M1, "Segment Algorithm Type" },
-{ 0x00620009, VR::LO, VM::M1, "Segment Algorithm Name" },
-{ 0x0062000A, VR::SQ, VM::M1, "Segment Identification Sequence" },
-{ 0x0062000B, VR::US, VM::M1TN, "Referenced Segment Number" },
-{ 0x0062000C, VR::US, VM::M1, "Recommended Display Grayscale Value" },
-{ 0x0062000D, VR::US, VM::M3, "Recommended Display CIELab Value" },
-{ 0x0062000E, VR::US, VM::M1, "Maximum Fractional Value" },
-{ 0x0062000F, VR::SQ, VM::M1, "Segmented Property Type Code Sequence" },
-{ 0x00620010, VR::CS, VM::M1, "Segmentation Fractional Type" },
-{ 0x00640002, VR::SQ, VM::M1, "Deformable Registration Sequence" },
-{ 0x00640003, VR::UI, VM::M1, "Source Frame of Reference UID" },
-{ 0x00640005, VR::SQ, VM::M1, "Deformable Registration Grid Sequence" },
-{ 0x00640007, VR::UL, VM::M3, "Grid Dimensions" },
-{ 0x00640008, VR::FD, VM::M3, "Grid Resolution" },
-{ 0x00640009, VR::OF, VM::M1, "Vector Grid Data" },
-{ 0x0064000F, VR::SQ, VM::M1, "Pre Deformation Matrix Registration Sequence" },
-{ 0x00640010, VR::SQ, VM::M1, "Post Deformation Matrix Registration Sequence" },
-{ 0x00660001, VR::UL, VM::M1, "Number of Surfaces" },
-{ 0x00660002, VR::SQ, VM::M1, "Surface Sequence" },
-{ 0x00660003, VR::UL, VM::M1, "Surface Number" },
-{ 0x00660004, VR::LT, VM::M1, "Surface Comments" },
-{ 0x00660009, VR::CS, VM::M1, "Surface Processing" },
-{ 0x0066000A, VR::FL, VM::M1, "Surface Processing Ratio" },
-{ 0x0066000B, VR::LO, VM::M1, "Surface Processing Description" },
-{ 0x0066000C, VR::FL, VM::M1, "Recommended Presentation Opacity" },
-{ 0x0066000D, VR::CS, VM::M1, "Recommended Presentation Type" },
-{ 0x0066000E, VR::CS, VM::M1, "Finite Volume" },
-{ 0x00660010, VR::CS, VM::M1, "Manifold" },
-{ 0x00660011, VR::SQ, VM::M1, "Surface Points Sequence" },
-{ 0x00660012, VR::SQ, VM::M1, "Surface Points Normals Sequence" },
-{ 0x00660013, VR::SQ, VM::M1, "Surface Mesh Primitives Sequence" },
-{ 0x00660015, VR::UL, VM::M1, "Number of Surface Points" },
-{ 0x00660016, VR::OF, VM::M1, "Point Coordinates Data" },
-{ 0x00660017, VR::FL, VM::M3, "Point Position Accuracy" },
-{ 0x00660018, VR::FL, VM::M1, "Mean Point Distance" },
-{ 0x00660019, VR::FL, VM::M1, "Maximum Point Distance" },
-{ 0x0066001A, VR::FL, VM::M6, "Points Bounding Box Coordinates" },
-{ 0x0066001B, VR::FL, VM::M3, "Axis of Rotation" },
-{ 0x0066001C, VR::FL, VM::M3, "Center of Rotation" },
-{ 0x0066001E, VR::UL, VM::M1, "Number of Vectors" },
-{ 0x0066001F, VR::US, VM::M1, "Vector Dimensionality" },
-{ 0x00660020, VR::FL, VM::M1TN, "Vector Accuracy" },
-{ 0x00660021, VR::OF, VM::M1, "Vector Coordinate Data" },
-{ 0x00660023, VR::OW, VM::M1, "Triangle Point Index List" },
-{ 0x00660024, VR::OW, VM::M1, "Edge Point Index List" },
-{ 0x00660025, VR::OW, VM::M1, "Vertex Point Index List" },
-{ 0x00660026, VR::SQ, VM::M1, "Triangle Strip Sequence" },
-{ 0x00660027, VR::SQ, VM::M1, "Triangle Fan Sequence" },
-{ 0x00660028, VR::SQ, VM::M1, "Line Sequence" },
-{ 0x00660029, VR::OW, VM::M1, "Primitive Point Index List" },
-{ 0x0066002A, VR::UL, VM::M1, "Surface Count" },
-{ 0x0066002B, VR::SQ, VM::M1, "Referenced Surface Sequence" },
-{ 0x0066002C, VR::UL, VM::M1, "Referenced Surface Number" },
-{ 0x0066002D, VR::SQ, VM::M1, "Segment Surface Generation Algorithm Identification Sequence" },
-{ 0x0066002E, VR::SQ, VM::M1, "Segment Surface Source Instance Sequence" },
-{ 0x0066002F, VR::SQ, VM::M1, "Algorithm Family Code Sequence" },
-{ 0x00660030, VR::SQ, VM::M1, "Algorithm Name Code Sequence" },
-{ 0x00660031, VR::LO, VM::M1, "Algorithm Version" },
-{ 0x00660032, VR::LT, VM::M1, "Algorithm Parameters" },
-{ 0x00660034, VR::SQ, VM::M1, "Facet Sequence" },
-{ 0x00660035, VR::SQ, VM::M1, "Surface Processing Algorithm Identification Sequence" },
-{ 0x00660036, VR::LO, VM::M1, "Algorithm Name" },
-{ 0x00686210, VR::LO, VM::M1, "Implant Size" },
-{ 0x00686221, VR::LO, VM::M1, "Implant Template Version" },
-{ 0x00686222, VR::SQ, VM::M1, "Replaced Implant Template Sequence" },
-{ 0x00686223, VR::CS, VM::M1, "Implant Type" },
-{ 0x00686224, VR::SQ, VM::M1, "Derivation Implant Template Sequence" },
-{ 0x00686225, VR::SQ, VM::M1, "Original Implant Template Sequence" },
-{ 0x00686226, VR::DT, VM::M1, "Effective DateTime" },
-{ 0x00686230, VR::SQ, VM::M1, "Implant Target Anatomy Sequence" },
-{ 0x00686260, VR::SQ, VM::M1, "Information From Manufacturer Sequence" },
-{ 0x00686265, VR::SQ, VM::M1, "Notification From Manufacturer Sequence" },
-{ 0x00686270, VR::DT, VM::M1, "Information Issue DateTime" },
-{ 0x00686280, VR::ST, VM::M1, "Information Summary" },
-{ 0x006862A0, VR::SQ, VM::M1, "Implant Regulatory Disapproval Code Sequence" },
-{ 0x006862A5, VR::FD, VM::M1, "Overall Template Spatial Tolerance" },
-{ 0x006862C0, VR::SQ, VM::M1, "HPGL Document Sequence" },
-{ 0x006862D0, VR::US, VM::M1, "HPGL Document ID" },
-{ 0x006862D5, VR::LO, VM::M1, "HPGL Document Label" },
-{ 0x006862E0, VR::SQ, VM::M1, "View Orientation Code Sequence" },
-{ 0x006862F0, VR::FD, VM::M9, "View Orientation Modifier" },
-{ 0x006862F2, VR::FD, VM::M1, "HPGL Document Scaling" },
-{ 0x00686300, VR::OB, VM::M1, "HPGL Document" },
-{ 0x00686310, VR::US, VM::M1, "HPGL Contour Pen Number" },
-{ 0x00686320, VR::SQ, VM::M1, "HPGL Pen Sequence" },
-{ 0x00686330, VR::US, VM::M1, "HPGL Pen Number" },
-{ 0x00686340, VR::LO, VM::M1, "HPGL Pen Label" },
-{ 0x00686345, VR::ST, VM::M1, "HPGL Pen Description" },
-{ 0x00686346, VR::FD, VM::M2, "Recommended Rotation Point" },
-{ 0x00686347, VR::FD, VM::M4, "Bounding Rectangle" },
-{ 0x00686350, VR::US, VM::M1TN, "Implant Template 3D Model Surface Number" },
-{ 0x00686360, VR::SQ, VM::M1, "Surface Model Description Sequence" },
-{ 0x00686380, VR::LO, VM::M1, "Surface Model Label" },
-{ 0x00686390, VR::FD, VM::M1, "Surface Model Scaling Factor" },
-{ 0x006863A0, VR::SQ, VM::M1, "Materials Code Sequence" },
-{ 0x006863A4, VR::SQ, VM::M1, "Coating Materials Code Sequence" },
-{ 0x006863A8, VR::SQ, VM::M1, "Implant Type Code Sequence" },
-{ 0x006863AC, VR::SQ, VM::M1, "Fixation Method Code Sequence" },
-{ 0x006863B0, VR::SQ, VM::M1, "Mating Feature Sets Sequence" },
-{ 0x006863C0, VR::US, VM::M1, "Mating Feature Set ID" },
-{ 0x006863D0, VR::LO, VM::M1, "Mating Feature Set Label" },
-{ 0x006863E0, VR::SQ, VM::M1, "Mating Feature Sequence" },
-{ 0x006863F0, VR::US, VM::M1, "Mating Feature ID" },
-{ 0x00686400, VR::SQ, VM::M1, "Mating Feature Degree of Freedom Sequence" },
-{ 0x00686410, VR::US, VM::M1, "Degree of Freedom ID" },
-{ 0x00686420, VR::CS, VM::M1, "Degree of Freedom Type" },
-{ 0x00686430, VR::SQ, VM::M1, "2D Mating Feature Coordinates Sequence" },
-{ 0x00686440, VR::US, VM::M1, "Referenced HPGL Document ID" },
-{ 0x00686450, VR::FD, VM::M2, "2D Mating Point" },
-{ 0x00686460, VR::FD, VM::M4, "2D Mating Axes" },
-{ 0x00686470, VR::SQ, VM::M1, "2D Degree of Freedom Sequence" },
-{ 0x00686490, VR::FD, VM::M3, "3D Degree of Freedom Axis" },
-{ 0x006864A0, VR::FD, VM::M2, "Range of Freedom" },
-{ 0x006864C0, VR::FD, VM::M3, "3D Mating Point" },
-{ 0x006864D0, VR::FD, VM::M9, "3D Mating Axes" },
-{ 0x006864F0, VR::FD, VM::M3, "2D Degree of Freedom Axis" },
-{ 0x00686500, VR::SQ, VM::M1, "Planning Landmark Point Sequence" },
-{ 0x00686510, VR::SQ, VM::M1, "Planning Landmark Line Sequence" },
-{ 0x00686520, VR::SQ, VM::M1, "Planning Landmark Plane Sequence" },
-{ 0x00686530, VR::US, VM::M1, "Planning Landmark ID" },
-{ 0x00686540, VR::LO, VM::M1, "Planning Landmark Description" },
-{ 0x00686545, VR::SQ, VM::M1, "Planning Landmark Identification Code Sequence" },
-{ 0x00686550, VR::SQ, VM::M1, "2D Point Coordinates Sequence" },
-{ 0x00686560, VR::FD, VM::M2, "2D Point Coordinates" },
-{ 0x00686590, VR::FD, VM::M3, "3D Point Coordinates" },
-{ 0x006865A0, VR::SQ, VM::M1, "2D Line Coordinates Sequence" },
-{ 0x006865B0, VR::FD, VM::M4, "2D Line Coordinates" },
-{ 0x006865D0, VR::FD, VM::M6, "3D Line Coordinates" },
-{ 0x006865E0, VR::SQ, VM::M1, "2D Plane Coordinates Sequence" },
-{ 0x006865F0, VR::FD, VM::M4, "2D Plane Intersection" },
-{ 0x00686610, VR::FD, VM::M3, "3D Plane Origin" },
-{ 0x00686620, VR::FD, VM::M3, "3D Plane Normal" },
-{ 0x00700001, VR::SQ, VM::M1, "Graphic Annotation Sequence" },
-{ 0x00700002, VR::CS, VM::M1, "Graphic Layer" },
-{ 0x00700003, VR::CS, VM::M1, "Bounding Box Annotation Units" },
-{ 0x00700004, VR::CS, VM::M1, "Anchor Point Annotation Units" },
-{ 0x00700005, VR::CS, VM::M1, "Graphic Annotation Units" },
-{ 0x00700006, VR::ST, VM::M1, "Unformatted Text Value" },
-{ 0x00700008, VR::SQ, VM::M1, "Text Object Sequence" },
-{ 0x00700009, VR::SQ, VM::M1, "Graphic Object Sequence" },
-{ 0x00700010, VR::FL, VM::M2, "Bounding Box Top Left Hand Corner" },
-{ 0x00700011, VR::FL, VM::M2, "Bounding Box Bottom Right Hand Corner" },
-{ 0x00700012, VR::CS, VM::M1, "Bounding Box Text Horizontal Justification" },
-{ 0x00700014, VR::FL, VM::M2, "Anchor Point" },
-{ 0x00700015, VR::CS, VM::M1, "Anchor Point Visibility" },
-{ 0x00700020, VR::US, VM::M1, "Graphic Dimensions" },
-{ 0x00700021, VR::US, VM::M1, "Number of Graphic Points" },
-{ 0x00700022, VR::FL, VM::M2TN, "Graphic Data" },
-{ 0x00700023, VR::CS, VM::M1, "Graphic Type" },
-{ 0x00700024, VR::CS, VM::M1, "Graphic Filled" },
-{ 0x00700040, VR::IS, VM::M1, "Image Rotation (Retired)" },
-{ 0x00700041, VR::CS, VM::M1, "Image Horizontal Flip" },
-{ 0x00700042, VR::US, VM::M1, "Image Rotation" },
-{ 0x00700050, VR::US, VM::M2, "Displayed Area Top Left Hand Corner (Trial)" },
-{ 0x00700051, VR::US, VM::M2, "Displayed Area Bottom Right Hand Corner (Trial)" },
-{ 0x00700052, VR::SL, VM::M2, "Displayed Area Top Left Hand Corner" },
-{ 0x00700053, VR::SL, VM::M2, "Displayed Area Bottom Right Hand Corner" },
-{ 0x0070005A, VR::SQ, VM::M1, "Displayed Area Selection Sequence" },
-{ 0x00700060, VR::SQ, VM::M1, "Graphic Layer Sequence" },
-{ 0x00700062, VR::IS, VM::M1, "Graphic Layer Order" },
-{ 0x00700066, VR::US, VM::M1, "Graphic Layer Recommended Display Grayscale Value" },
-{ 0x00700067, VR::US, VM::M3, "Graphic Layer Recommended Display RGB Value" },
-{ 0x00700068, VR::LO, VM::M1, "Graphic Layer Description" },
-{ 0x00700080, VR::CS, VM::M1, "Content Label" },
-{ 0x00700081, VR::LO, VM::M1, "Content Description" },
-{ 0x00700082, VR::DA, VM::M1, "Presentation Creation Date" },
-{ 0x00700083, VR::TM, VM::M1, "Presentation Creation Time" },
-{ 0x00700084, VR::PN, VM::M1, "Content Creator's Name" },
-{ 0x00700086, VR::SQ, VM::M1, "Content Creator's Identification Code Sequence" },
-{ 0x00700087, VR::SQ, VM::M1, "Alternate Content Description Sequence" },
-{ 0x00700100, VR::CS, VM::M1, "Presentation Size Mode" },
-{ 0x00700101, VR::DS, VM::M2, "Presentation Pixel Spacing" },
-{ 0x00700102, VR::IS, VM::M2, "Presentation Pixel Aspect Ratio" },
-{ 0x00700103, VR::FL, VM::M1, "Presentation Pixel Magnification Ratio" },
-{ 0x00700207, VR::LO, VM::M1, "Graphic Group Label" },
-{ 0x00700208, VR::ST, VM::M1, "Graphic Group Description" },
-{ 0x00700209, VR::SQ, VM::M1, "Compound Graphic Sequence" },
-{ 0x00700226, VR::UL, VM::M1, "Compound Graphic Instance ID" },
-{ 0x00700227, VR::LO, VM::M1, "Font Name" },
-{ 0x00700228, VR::CS, VM::M1, "Font Name Type" },
-{ 0x00700229, VR::LO, VM::M1, "CSS Font Name" },
-{ 0x00700230, VR::FD, VM::M1, "Rotation Angle" },
-{ 0x00700231, VR::SQ, VM::M1, "Text Style Sequence" },
-{ 0x00700232, VR::SQ, VM::M1, "Line Style Sequence" },
-{ 0x00700233, VR::SQ, VM::M1, "Fill Style Sequence" },
-{ 0x00700234, VR::SQ, VM::M1, "Graphic Group Sequence" },
-{ 0x00700241, VR::US, VM::M3, "Text Color CIELab Value" },
-{ 0x00700242, VR::CS, VM::M1, "Horizontal Alignment" },
-{ 0x00700243, VR::CS, VM::M1, "Vertical Alignment" },
-{ 0x00700244, VR::CS, VM::M1, "Shadow Style" },
-{ 0x00700245, VR::FL, VM::M1, "Shadow Offset X" },
-{ 0x00700246, VR::FL, VM::M1, "Shadow Offset Y" },
-{ 0x00700247, VR::US, VM::M3, "Shadow Color CIELab Value" },
-{ 0x00700248, VR::CS, VM::M1, "Underlined" },
-{ 0x00700249, VR::CS, VM::M1, "Bold" },
-{ 0x00700250, VR::CS, VM::M1, "Italic" },
-{ 0x00700251, VR::US, VM::M3, "Pattern On Color CIELab Value" },
-{ 0x00700252, VR::US, VM::M3, "Pattern Off Color CIELab Value" },
-{ 0x00700253, VR::FL, VM::M1, "Line Thickness" },
-{ 0x00700254, VR::CS, VM::M1, "Line Dashing Style" },
-{ 0x00700255, VR::UL, VM::M1, "Line Pattern" },
-{ 0x00700256, VR::OB, VM::M1, "Fill Pattern" },
-{ 0x00700257, VR::CS, VM::M1, "Fill Mode" },
-{ 0x00700258, VR::FL, VM::M1, "Shadow Opacity" },
-{ 0x00700261, VR::FL, VM::M1, "Gap Length" },
-{ 0x00700262, VR::FL, VM::M1, "Diameter of Visibility" },
-{ 0x00700273, VR::FL, VM::M2, "Rotation Point" },
-{ 0x00700274, VR::CS, VM::M1, "Tick Alignment" },
-{ 0x00700278, VR::CS, VM::M1, "Show Tick Label" },
-{ 0x00700279, VR::CS, VM::M1, "Tick Label Alignment" },
-{ 0x00700282, VR::CS, VM::M1, "Compound Graphic Units" },
-{ 0x00700284, VR::FL, VM::M1, "Pattern On Opacity" },
-{ 0x00700285, VR::FL, VM::M1, "Pattern Off Opacity" },
-{ 0x00700287, VR::SQ, VM::M1, "Major Ticks Sequence" },
-{ 0x00700288, VR::FL, VM::M1, "Tick Position" },
-{ 0x00700289, VR::SH, VM::M1, "Tick Label" },
-{ 0x00700294, VR::CS, VM::M1, "Compound Graphic Type" },
-{ 0x00700295, VR::UL, VM::M1, "Graphic Group ID" },
-{ 0x00700306, VR::CS, VM::M1, "Shape Type" },
-{ 0x00700308, VR::SQ, VM::M1, "Registration Sequence" },
-{ 0x00700309, VR::SQ, VM::M1, "Matrix Registration Sequence" },
-{ 0x0070030A, VR::SQ, VM::M1, "Matrix Sequence" },
-{ 0x0070030C, VR::CS, VM::M1, "Frame of Reference Transformation Matrix Type" },
-{ 0x0070030D, VR::SQ, VM::M1, "Registration Type Code Sequence" },
-{ 0x0070030F, VR::ST, VM::M1, "Fiducial Description" },
-{ 0x00700310, VR::SH, VM::M1, "Fiducial Identifier" },
-{ 0x00700311, VR::SQ, VM::M1, "Fiducial Identifier Code Sequence" },
-{ 0x00700312, VR::FD, VM::M1, "Contour Uncertainty Radius" },
-{ 0x00700314, VR::SQ, VM::M1, "Used Fiducials Sequence" },
-{ 0x00700318, VR::SQ, VM::M1, "Graphic Coordinates Data Sequence" },
-{ 0x0070031A, VR::UI, VM::M1, "Fiducial UID" },
-{ 0x0070031C, VR::SQ, VM::M1, "Fiducial Set Sequence" },
-{ 0x0070031E, VR::SQ, VM::M1, "Fiducial Sequence" },
-{ 0x00700401, VR::US, VM::M3, "Graphic Layer Recommended Display CIELab Value" },
-{ 0x00700402, VR::SQ, VM::M1, "Blending Sequence" },
-{ 0x00700403, VR::FL, VM::M1, "Relative Opacity" },
-{ 0x00700404, VR::SQ, VM::M1, "Referenced Spatial Registration Sequence" },
-{ 0x00700405, VR::CS, VM::M1, "Blending Position" },
-{ 0x00720002, VR::SH, VM::M1, "Hanging Protocol Name" },
-{ 0x00720004, VR::LO, VM::M1, "Hanging Protocol Description" },
-{ 0x00720006, VR::CS, VM::M1, "Hanging Protocol Level" },
-{ 0x00720008, VR::LO, VM::M1, "Hanging Protocol Creator" },
-{ 0x0072000A, VR::DT, VM::M1, "Hanging Protocol Creation DateTime" },
-{ 0x0072000C, VR::SQ, VM::M1, "Hanging Protocol Definition Sequence" },
-{ 0x0072000E, VR::SQ, VM::M1, "Hanging Protocol User Identification Code Sequence" },
-{ 0x00720010, VR::LO, VM::M1, "Hanging Protocol User Group Name" },
-{ 0x00720012, VR::SQ, VM::M1, "Source Hanging Protocol Sequence" },
-{ 0x00720014, VR::US, VM::M1, "Number of Priors Referenced" },
-{ 0x00720020, VR::SQ, VM::M1, "Image Sets Sequence" },
-{ 0x00720022, VR::SQ, VM::M1, "Image Set Selector Sequence" },
-{ 0x00720024, VR::CS, VM::M1, "Image Set Selector Usage Flag" },
-{ 0x00720026, VR::AT, VM::M1, "Selector Attribute" },
-{ 0x00720028, VR::US, VM::M1, "Selector Value Number" },
-{ 0x00720030, VR::SQ, VM::M1, "Time Based Image Sets Sequence" },
-{ 0x00720032, VR::US, VM::M1, "Image Set Number" },
-{ 0x00720034, VR::CS, VM::M1, "Image Set Selector Category" },
-{ 0x00720038, VR::US, VM::M2, "Relative Time" },
-{ 0x0072003A, VR::CS, VM::M1, "Relative Time Units" },
-{ 0x0072003C, VR::SS, VM::M2, "Abstract Prior Value" },
-{ 0x0072003E, VR::SQ, VM::M1, "Abstract Prior Code Sequence" },
-{ 0x00720040, VR::LO, VM::M1, "Image Set Label" },
-{ 0x00720050, VR::CS, VM::M1, "Selector Attribute VR" },
-{ 0x00720052, VR::AT, VM::M1TN, "Selector Sequence Pointer" },
-{ 0x00720054, VR::LO, VM::M1TN, "Selector Sequence Pointer Private Creator" },
-{ 0x00720056, VR::LO, VM::M1, "Selector Attribute Private Creator" },
-{ 0x00720060, VR::AT, VM::M1TN, "Selector AT Value" },
-{ 0x00720062, VR::CS, VM::M1TN, "Selector CS Value" },
-{ 0x00720064, VR::IS, VM::M1TN, "Selector IS Value" },
-{ 0x00720066, VR::LO, VM::M1TN, "Selector LO Value" },
-{ 0x00720068, VR::LT, VM::M1, "Selector LT Value" },
-{ 0x0072006A, VR::PN, VM::M1TN, "Selector PN Value" },
-{ 0x0072006C, VR::SH, VM::M1TN, "Selector SH Value" },
-{ 0x0072006E, VR::ST, VM::M1, "Selector ST Value" },
-{ 0x00720070, VR::UT, VM::M1, "Selector UT Value" },
-{ 0x00720072, VR::DS, VM::M1TN, "Selector DS Value" },
-{ 0x00720074, VR::FD, VM::M1TN, "Selector FD Value" },
-{ 0x00720076, VR::FL, VM::M1TN, "Selector FL Value" },
-{ 0x00720078, VR::UL, VM::M1TN, "Selector UL Value" },
-{ 0x0072007A, VR::US, VM::M1TN, "Selector US Value" },
-{ 0x0072007C, VR::SL, VM::M1TN, "Selector SL Value" },
-{ 0x0072007E, VR::SS, VM::M1TN, "Selector SS Value" },
-{ 0x00720080, VR::SQ, VM::M1, "Selector Code Sequence Value" },
-{ 0x00720100, VR::US, VM::M1, "Number of Screens" },
-{ 0x00720102, VR::SQ, VM::M1, "Nominal Screen Definition Sequence" },
-{ 0x00720104, VR::US, VM::M1, "Number of Vertical Pixels" },
-{ 0x00720106, VR::US, VM::M1, "Number of Horizontal Pixels" },
-{ 0x00720108, VR::FD, VM::M4, "Display Environment Spatial Position" },
-{ 0x0072010A, VR::US, VM::M1, "Screen Minimum Grayscale Bit Depth" },
-{ 0x0072010C, VR::US, VM::M1, "Screen Minimum Color Bit Depth" },
-{ 0x0072010E, VR::US, VM::M1, "Application Maximum Repaint Time" },
-{ 0x00720200, VR::SQ, VM::M1, "Display Sets Sequence" },
-{ 0x00720202, VR::US, VM::M1, "Display Set Number" },
-{ 0x00720203, VR::LO, VM::M1, "Display Set Label" },
-{ 0x00720204, VR::US, VM::M1, "Display Set Presentation Group" },
-{ 0x00720206, VR::LO, VM::M1, "Display Set Presentation Group Description" },
-{ 0x00720208, VR::CS, VM::M1, "Partial Data Display Handling" },
-{ 0x00720210, VR::SQ, VM::M1, "Synchronized Scrolling Sequence" },
-{ 0x00720212, VR::US, VM::M2TN, "Display Set Scrolling Group" },
-{ 0x00720214, VR::SQ, VM::M1, "Navigation Indicator Sequence" },
-{ 0x00720216, VR::US, VM::M1, "Navigation Display Set" },
-{ 0x00720218, VR::US, VM::M1TN, "Reference Display Sets" },
-{ 0x00720300, VR::SQ, VM::M1, "Image Boxes Sequence" },
-{ 0x00720302, VR::US, VM::M1, "Image Box Number" },
-{ 0x00720304, VR::CS, VM::M1, "Image Box Layout Type" },
-{ 0x00720306, VR::US, VM::M1, "Image Box Tile Horizontal Dimension" },
-{ 0x00720308, VR::US, VM::M1, "Image Box Tile Vertical Dimension" },
-{ 0x00720310, VR::CS, VM::M1, "Image Box Scroll Direction" },
-{ 0x00720312, VR::CS, VM::M1, "Image Box Small Scroll Type" },
-{ 0x00720314, VR::US, VM::M1, "Image Box Small Scroll Amount" },
-{ 0x00720316, VR::CS, VM::M1, "Image Box Large Scroll Type" },
-{ 0x00720318, VR::US, VM::M1, "Image Box Large Scroll Amount" },
-{ 0x00720320, VR::US, VM::M1, "Image Box Overlap Priority" },
-{ 0x00720330, VR::FD, VM::M1, "Cine Relative to Real-Time" },
-{ 0x00720400, VR::SQ, VM::M1, "Filter Operations Sequence" },
-{ 0x00720402, VR::CS, VM::M1, "Filter-by Category" },
-{ 0x00720404, VR::CS, VM::M1, "Filter-by Attribute Presence" },
-{ 0x00720406, VR::CS, VM::M1, "Filter-by Operator" },
-{ 0x00720420, VR::US, VM::M3, "Structured Display Background CIELab Value" },
-{ 0x00720421, VR::US, VM::M3, "Empty Image Box CIELab Value" },
-{ 0x00720422, VR::SQ, VM::M1, "Structured Display Image Box Sequence" },
-{ 0x00720424, VR::SQ, VM::M1, "Structured Display Text Box Sequence" },
-{ 0x00720427, VR::SQ, VM::M1, "Referenced First Frame Sequence" },
-{ 0x00720430, VR::SQ, VM::M1, "Image Box Synchronization Sequence" },
-{ 0x00720432, VR::US, VM::M2TN, "Synchronized Image Box List" },
-{ 0x00720434, VR::CS, VM::M1, "Type of Synchronization" },
-{ 0x00720500, VR::CS, VM::M1, "Blending Operation Type" },
-{ 0x00720510, VR::CS, VM::M1, "Reformatting Operation Type" },
-{ 0x00720512, VR::FD, VM::M1, "Reformatting Thickness" },
-{ 0x00720514, VR::FD, VM::M1, "Reformatting Interval" },
-{ 0x00720516, VR::CS, VM::M1, "Reformatting Operation Initial View Direction" },
-{ 0x00720520, VR::CS, VM::M1TN, "3D Rendering Type" },
-{ 0x00720600, VR::SQ, VM::M1, "Sorting Operations Sequence" },
-{ 0x00720602, VR::CS, VM::M1, "Sort-by Category" },
-{ 0x00720604, VR::CS, VM::M1, "Sorting Direction" },
-{ 0x00720700, VR::CS, VM::M2, "Display Set Patient Orientation" },
-{ 0x00720702, VR::CS, VM::M1, "VOI Type" },
-{ 0x00720704, VR::CS, VM::M1, "Pseudo-Color Type" },
-{ 0x00720705, VR::SQ, VM::M1, "Pseudo-Color Palette Instance Reference Sequence" },
-{ 0x00720706, VR::CS, VM::M1, "Show Grayscale Inverted" },
-{ 0x00720710, VR::CS, VM::M1, "Show Image True Size Flag" },
-{ 0x00720712, VR::CS, VM::M1, "Show Graphic Annotation Flag" },
-{ 0x00720714, VR::CS, VM::M1, "Show Patient Demographics Flag" },
-{ 0x00720716, VR::CS, VM::M1, "Show Acquisition Techniques Flag" },
-{ 0x00720717, VR::CS, VM::M1, "Display Set Horizontal Justification" },
-{ 0x00720718, VR::CS, VM::M1, "Display Set Vertical Justification" },
-{ 0x00740120, VR::FD, VM::M1, "Continuation Start Meterset" },
-{ 0x00740121, VR::FD, VM::M1, "Continuation End Meterset" },
-{ 0x00741000, VR::CS, VM::M1, "Procedure Step State" },
-{ 0x00741002, VR::SQ, VM::M1, "Procedure Step Progress Information Sequence" },
-{ 0x00741004, VR::DS, VM::M1, "Procedure Step Progress" },
-{ 0x00741006, VR::ST, VM::M1, "Procedure Step Progress Description" },
-{ 0x00741008, VR::SQ, VM::M1, "Procedure Step Communications URI Sequence" },
-{ 0x0074100a, VR::ST, VM::M1, "Contact URI" },
-{ 0x0074100c, VR::LO, VM::M1, "Contact Display Name" },
-{ 0x0074100e, VR::SQ, VM::M1, "Procedure Step Discontinuation Reason Code Sequence" },
-{ 0x00741020, VR::SQ, VM::M1, "Beam Task Sequence" },
-{ 0x00741022, VR::CS, VM::M1, "Beam Task Type" },
-{ 0x00741024, VR::IS, VM::M1, "Beam Order Index (Trial)" },
-{ 0x00741026, VR::FD, VM::M1, "Table Top Vertical Adjusted Position" },
-{ 0x00741027, VR::FD, VM::M1, "Table Top Longitudinal Adjusted Position" },
-{ 0x00741028, VR::FD, VM::M1, "Table Top Lateral Adjusted Position" },
-{ 0x0074102A, VR::FD, VM::M1, "Patient Support Adjusted Angle" },
-{ 0x0074102B, VR::FD, VM::M1, "Table Top Eccentric Adjusted Angle" },
-{ 0x0074102C, VR::FD, VM::M1, "Table Top Pitch Adjusted Angle" },
-{ 0x0074102D, VR::FD, VM::M1, "Table Top Roll Adjusted Angle" },
-{ 0x00741030, VR::SQ, VM::M1, "Delivery Verification Image Sequence" },
-{ 0x00741032, VR::CS, VM::M1, "Verification Image Timing" },
-{ 0x00741034, VR::CS, VM::M1, "Double Exposure Flag" },
-{ 0x00741036, VR::CS, VM::M1, "Double Exposure Ordering" },
-{ 0x00741038, VR::DS, VM::M1, "Double Exposure Meterset (Trial)" },
-{ 0x0074103A, VR::DS, VM::M4, "Double Exposure Field Delta (Trial)" },
-{ 0x00741040, VR::SQ, VM::M1, "Related Reference RT Image Sequence" },
-{ 0x00741042, VR::SQ, VM::M1, "General Machine Verification Sequence" },
-{ 0x00741044, VR::SQ, VM::M1, "Conventional Machine Verification Sequence" },
-{ 0x00741046, VR::SQ, VM::M1, "Ion Machine Verification Sequence" },
-{ 0x00741048, VR::SQ, VM::M1, "Failed Attributes Sequence" },
-{ 0x0074104A, VR::SQ, VM::M1, "Overridden Attributes Sequence" },
-{ 0x0074104C, VR::SQ, VM::M1, "Conventional Control Point Verification Sequence" },
-{ 0x0074104E, VR::SQ, VM::M1, "Ion Control Point Verification Sequence" },
-{ 0x00741050, VR::SQ, VM::M1, "Attribute Occurrence Sequence" },
-{ 0x00741052, VR::AT, VM::M1, "Attribute Occurrence Pointer" },
-{ 0x00741054, VR::UL, VM::M1, "Attribute Item Selector" },
-{ 0x00741056, VR::LO, VM::M1, "Attribute Occurrence Private Creator" },
-{ 0x00741057, VR::IS, VM::M1TN, "Selector Sequence Pointer Items" },
-{ 0x00741200, VR::CS, VM::M1, "Scheduled Procedure Step Priority" },
-{ 0x00741202, VR::LO, VM::M1, "Worklist Label" },
-{ 0x00741204, VR::LO, VM::M1, "Procedure Step Label" },
-{ 0x00741210, VR::SQ, VM::M1, "Scheduled Processing Parameters Sequence" },
-{ 0x00741212, VR::SQ, VM::M1, "Performed Processing Parameters Sequence" },
-{ 0x00741216, VR::SQ, VM::M1, "Unified Procedure Step Performed Procedure Sequence" },
-{ 0x00741220, VR::SQ, VM::M1, "Related Procedure Step Sequence" },
-{ 0x00741222, VR::LO, VM::M1, "Procedure Step Relationship Type" },
-{ 0x00741224, VR::SQ, VM::M1, "Replaced Procedure Step Sequence" },
-{ 0x00741230, VR::LO, VM::M1, "Deletion Lock" },
-{ 0x00741234, VR::AE, VM::M1, "Receiving AE" },
-{ 0x00741236, VR::AE, VM::M1, "Requesting AE" },
-{ 0x00741238, VR::LT, VM::M1, "Reason for Cancellation" },
-{ 0x00741242, VR::CS, VM::M1, "SCP Status" },
-{ 0x00741244, VR::CS, VM::M1, "Subscription List Status" },
-{ 0x00741246, VR::CS, VM::M1, "Unified Procedure Step List Status" },
-{ 0x00741324, VR::UL, VM::M1, "Beam Order Index" },
-{ 0x00741338, VR::FD, VM::M1, "Double Exposure Meterset" },
-{ 0x0074133A, VR::FD, VM::M4, "Double Exposure Field Delta" },
-{ 0x00760001, VR::LO, VM::M1, "Implant Assembly Template Name" },
-{ 0x00760003, VR::LO, VM::M1, "Implant Assembly Template Issuer" },
-{ 0x00760006, VR::LO, VM::M1, "Implant Assembly Template Version" },
-{ 0x00760008, VR::SQ, VM::M1, "Replaced Implant Assembly Template Sequence" },
-{ 0x0076000A, VR::CS, VM::M1, "Implant Assembly Template Type" },
-{ 0x0076000C, VR::SQ, VM::M1, "Original Implant Assembly Template Sequence" },
-{ 0x0076000E, VR::SQ, VM::M1, "Derivation Implant Assembly Template Sequence" },
-{ 0x00760010, VR::SQ, VM::M1, "Implant Assembly Template Target Anatomy Sequence" },
-{ 0x00760020, VR::SQ, VM::M1, "Procedure Type Code Sequence" },
-{ 0x00760030, VR::LO, VM::M1, "Surgical Technique" },
-{ 0x00760032, VR::SQ, VM::M1, "Component Types Sequence" },
-{ 0x00760034, VR::CS, VM::M1, "Component Type Code Sequence" },
-{ 0x00760036, VR::CS, VM::M1, "Exclusive Component Type" },
-{ 0x00760038, VR::CS, VM::M1, "Mandatory Component Type" },
-{ 0x00760040, VR::SQ, VM::M1, "Component Sequence" },
-{ 0x00760055, VR::US, VM::M1, "Component ID" },
-{ 0x00760060, VR::SQ, VM::M1, "Component Assembly Sequence" },
-{ 0x00760070, VR::US, VM::M1, "Component 1 Referenced ID" },
-{ 0x00760080, VR::US, VM::M1, "Component 1 Referenced Mating Feature Set ID" },
-{ 0x00760090, VR::US, VM::M1, "Component 1 Referenced Mating Feature ID" },
-{ 0x007600A0, VR::US, VM::M1, "Component 2 Referenced ID" },
-{ 0x007600B0, VR::US, VM::M1, "Component 2 Referenced Mating Feature Set ID" },
-{ 0x007600C0, VR::US, VM::M1, "Component 2 Referenced Mating Feature ID" },
-{ 0x00780001, VR::LO, VM::M1, "Implant Template Group Name" },
-{ 0x00780010, VR::ST, VM::M1, "Implant Template Group Description" },
-{ 0x00780020, VR::LO, VM::M1, "Implant Template Group Issuer" },
-{ 0x00780024, VR::LO, VM::M1, "Implant Template Group Version" },
-{ 0x00780026, VR::SQ, VM::M1, "Replaced Implant Template Group Sequence" },
-{ 0x00780028, VR::SQ, VM::M1, "Implant Template Group Target Anatomy Sequence" },
-{ 0x0078002A, VR::SQ, VM::M1, "Implant Template Group Members Sequence" },
-{ 0x0078002E, VR::US, VM::M1, "Implant Template Group Member ID" },
-{ 0x00780050, VR::FD, VM::M3, "3D Implant Template Group Member Matching Point" },
-{ 0x00780060, VR::FD, VM::M9, "3D Implant Template Group Member Matching Axes" },
-{ 0x00780070, VR::SQ, VM::M1, "Implant Template Group Member Matching 2D Coordinates Sequence" },
-{ 0x00780090, VR::FD, VM::M2, "2D Implant Template Group Member Matching Point" },
-{ 0x007800A0, VR::FD, VM::M4, "2D Implant Template Group Member Matching Axes" },
-{ 0x007800B0, VR::SQ, VM::M1, "Implant Template Group Variation Dimension Sequence" },
-{ 0x007800B2, VR::LO, VM::M1, "Implant Template Group Variation Dimension Name" },
-{ 0x007800B4, VR::SQ, VM::M1, "Implant Template Group Variation Dimension Rank Sequence" },
-{ 0x007800B6, VR::US, VM::M1, "Referenced Implant Template Group Member ID" },
-{ 0x007800B8, VR::US, VM::M1, "Implant Template Group Variation Dimension Rank" },
-{ 0x00880130, VR::SH, VM::M1, "Storage Media File-set ID" },
-{ 0x00880140, VR::UI, VM::M1, "Storage Media File-set UID" },
-{ 0x00880200, VR::SQ, VM::M1, "Icon Image Sequence" },
-{ 0x00880904, VR::LO, VM::M1, "Topic Title" },
-{ 0x00880906, VR::ST, VM::M1, "Topic Subject" },
-{ 0x00880910, VR::LO, VM::M1, "Topic Author" },
-{ 0x00880912, VR::LO, VM::M1T32, "Topic Keywords" },
-{ 0x01000410, VR::CS, VM::M1, "SOP Instance Status" },
-{ 0x01000420, VR::DT, VM::M1, "SOP Authorization DateTime" },
-{ 0x01000424, VR::LT, VM::M1, "SOP Authorization Comment" },
-{ 0x01000426, VR::LO, VM::M1, "Authorization Equipment Certification Number" },
-{ 0x04000005, VR::US, VM::M1, "MAC ID Number" },
-{ 0x04000010, VR::UI, VM::M1, "MAC Calculation Transfer Syntax UID" },
-{ 0x04000015, VR::CS, VM::M1, "MAC Algorithm" },
-{ 0x04000020, VR::AT, VM::M1TN, "Data Elements Signed" },
-{ 0x04000100, VR::UI, VM::M1, "Digital Signature UID" },
-{ 0x04000105, VR::DT, VM::M1, "Digital Signature DateTime" },
-{ 0x04000110, VR::CS, VM::M1, "Certificate Type" },
-{ 0x04000115, VR::OB, VM::M1, "Certificate of Signer" },
-{ 0x04000120, VR::OB, VM::M1, "Signature" },
-{ 0x04000305, VR::CS, VM::M1, "Certified Timestamp Type" },
-{ 0x04000310, VR::OB, VM::M1, "Certified Timestamp" },
-{ 0x04000401, VR::SQ, VM::M1, "Digital Signature Purpose Code Sequence" },
-{ 0x04000402, VR::SQ, VM::M1, "Referenced Digital Signature Sequence" },
-{ 0x04000403, VR::SQ, VM::M1, "Referenced SOP Instance MAC Sequence" },
-{ 0x04000404, VR::OB, VM::M1, "MAC" },
-{ 0x04000500, VR::SQ, VM::M1, "Encrypted Attributes Sequence" },
-{ 0x04000510, VR::UI, VM::M1, "Encrypted Content Transfer Syntax UID" },
-{ 0x04000520, VR::OB, VM::M1, "Encrypted Content" },
-{ 0x04000550, VR::SQ, VM::M1, "Modified Attributes Sequence" },
-{ 0x04000561, VR::SQ, VM::M1, "Original Attributes Sequence" },
-{ 0x04000562, VR::DT, VM::M1, "Attribute Modification DateTime" },
-{ 0x04000563, VR::LO, VM::M1, "Modifying System" },
-{ 0x04000564, VR::LO, VM::M1, "Source of Previous Values" },
-{ 0x04000565, VR::CS, VM::M1, "Reason for the Attribute Modification" },
-{ 0x10000000, VR::US, VM::M3, "Escape Triplet" },
-{ 0x10000001, VR::US, VM::M3, "Run Length Triplet" },
-{ 0x10000002, VR::US, VM::M1, "Huffman Table Size" },
-{ 0x10000003, VR::US, VM::M3, "Huffman Table Triplet" },
-{ 0x10000004, VR::US, VM::M1, "Shift Table Size" },
-{ 0x10000005, VR::US, VM::M3, "Shift Table Triplet" },
-{ 0x10100000, VR::US, VM::M1TN, "Zonal Map" },
-{ 0x20000010, VR::IS, VM::M1, "Number of Copies" },
-{ 0x2000001E, VR::SQ, VM::M1, "Printer Configuration Sequence" },
-{ 0x20000020, VR::CS, VM::M1, "Print Priority" },
-{ 0x20000030, VR::CS, VM::M1, "Medium Type" },
-{ 0x20000040, VR::CS, VM::M1, "Film Destination" },
-{ 0x20000050, VR::LO, VM::M1, "Film Session Label" },
-{ 0x20000060, VR::IS, VM::M1, "Memory Allocation" },
-{ 0x20000061, VR::IS, VM::M1, "Maximum Memory Allocation" },
-{ 0x20000062, VR::CS, VM::M1, "Color Image Printing Flag" },
-{ 0x20000063, VR::CS, VM::M1, "Collation Flag" },
-{ 0x20000065, VR::CS, VM::M1, "Annotation Flag" },
-{ 0x20000067, VR::CS, VM::M1, "Image Overlay Flag" },
-{ 0x20000069, VR::CS, VM::M1, "Presentation LUT Flag" },
-{ 0x2000006A, VR::CS, VM::M1, "Image Box Presentation LUT Flag" },
-{ 0x200000A0, VR::US, VM::M1, "Memory Bit Depth" },
-{ 0x200000A1, VR::US, VM::M1, "Printing Bit Depth" },
-{ 0x200000A2, VR::SQ, VM::M1, "Media Installed Sequence" },
-{ 0x200000A4, VR::SQ, VM::M1, "Other Media Available Sequence" },
-{ 0x200000A8, VR::SQ, VM::M1, "Supported Image Display Formats Sequence" },
-{ 0x20000500, VR::SQ, VM::M1, "Referenced Film Box Sequence" },
-{ 0x20000510, VR::SQ, VM::M1, "Referenced Stored Print  Sequence" },
-{ 0x20100010, VR::ST, VM::M1, "Image Display Format" },
-{ 0x20100030, VR::CS, VM::M1, "Annotation Display Format ID" },
-{ 0x20100040, VR::CS, VM::M1, "Film Orientation" },
-{ 0x20100050, VR::CS, VM::M1, "Film Size ID" },
-{ 0x20100052, VR::CS, VM::M1, "Printer Resolution ID" },
-{ 0x20100054, VR::CS, VM::M1, "Default Printer Resolution ID" },
-{ 0x20100060, VR::CS, VM::M1, "Magnification Type" },
-{ 0x20100080, VR::CS, VM::M1, "Smoothing Type" },
-{ 0x201000A6, VR::CS, VM::M1, "Default Magnification Type" },
-{ 0x201000A7, VR::CS, VM::M1TN, "Other Magnification Types Available" },
-{ 0x201000A8, VR::CS, VM::M1, "Default Smoothing Type" },
-{ 0x201000A9, VR::CS, VM::M1TN, "Other Smoothing Types Available" },
-{ 0x20100100, VR::CS, VM::M1, "Border Density" },
-{ 0x20100110, VR::CS, VM::M1, "Empty Image Density" },
-{ 0x20100120, VR::US, VM::M1, "Min Density" },
-{ 0x20100130, VR::US, VM::M1, "Max Density" },
-{ 0x20100140, VR::CS, VM::M1, "Trim" },
-{ 0x20100150, VR::ST, VM::M1, "Configuration Information" },
-{ 0x20100152, VR::LT, VM::M1, "Configuration Information Description" },
-{ 0x20100154, VR::IS, VM::M1, "Maximum Collated Films" },
-{ 0x2010015E, VR::US, VM::M1, "Illumination" },
-{ 0x20100160, VR::US, VM::M1, "Reflected Ambient Light" },
-{ 0x20100376, VR::DS, VM::M2, "Printer Pixel Spacing" },
-{ 0x20100500, VR::SQ, VM::M1, "Referenced Film Session Sequence" },
-{ 0x20100510, VR::SQ, VM::M1, "Referenced Image Box Sequence" },
-{ 0x20100520, VR::SQ, VM::M1, "Referenced Basic Annotation Box Sequence" },
-{ 0x20200010, VR::US, VM::M1, "Image Box Position" },
-{ 0x20200020, VR::CS, VM::M1, "Polarity" },
-{ 0x20200030, VR::DS, VM::M1, "Requested Image Size" },
-{ 0x20200040, VR::CS, VM::M1, "Requested Decimate/Crop Behavior" },
-{ 0x20200050, VR::CS, VM::M1, "Requested Resolution ID" },
-{ 0x202000A0, VR::CS, VM::M1, "Requested Image Size Flag" },
-{ 0x202000A2, VR::CS, VM::M1, "Decimate/Crop Result" },
-{ 0x20200110, VR::SQ, VM::M1, "Basic Grayscale Image Sequence" },
-{ 0x20200111, VR::SQ, VM::M1, "Basic Color Image Sequence" },
-{ 0x20200130, VR::SQ, VM::M1, "Referenced Image Overlay Box Sequence" },
-{ 0x20200140, VR::SQ, VM::M1, "Referenced VOI LUT Box Sequence" },
-{ 0x20300010, VR::US, VM::M1, "Annotation Position" },
-{ 0x20300020, VR::LO, VM::M1, "Text String" },
-{ 0x20400010, VR::SQ, VM::M1, "Referenced Overlay Plane Sequence" },
-{ 0x20400011, VR::US, VM::M1T99, "Referenced Overlay Plane Groups" },
-{ 0x20400020, VR::SQ, VM::M1, "Overlay Pixel Data Sequence" },
-{ 0x20400060, VR::CS, VM::M1, "Overlay Magnification Type" },
-{ 0x20400070, VR::CS, VM::M1, "Overlay Smoothing Type" },
-{ 0x20400072, VR::CS, VM::M1, "Overlay or Image Magnification" },
-{ 0x20400074, VR::US, VM::M1, "Magnify to Number of Columns" },
-{ 0x20400080, VR::CS, VM::M1, "Overlay Foreground Density" },
-{ 0x20400082, VR::CS, VM::M1, "Overlay Background Density" },
-{ 0x20400090, VR::CS, VM::M1, "Overlay Mode" },
-{ 0x20400100, VR::CS, VM::M1, "Threshold Density" },
-{ 0x20400500, VR::SQ, VM::M1, "Referenced Image Box Sequence (Retired)" },
-{ 0x20500010, VR::SQ, VM::M1, "Presentation LUT Sequence" },
-{ 0x20500020, VR::CS, VM::M1, "Presentation LUT Shape" },
-{ 0x20500500, VR::SQ, VM::M1, "Referenced Presentation  LUT Sequence" },
-{ 0x21000010, VR::SH, VM::M1, "Print Job ID" },
-{ 0x21000020, VR::CS, VM::M1, "Execution Status" },
-{ 0x21000030, VR::CS, VM::M1, "Execution Status Info" },
-{ 0x21000040, VR::DA, VM::M1, "Creation Date" },
-{ 0x21000050, VR::TM, VM::M1, "Creation Time" },
-{ 0x21000070, VR::AE, VM::M1, "Originator" },
-{ 0x21000140, VR::AE, VM::M1, "Destination AE" },
-{ 0x21000160, VR::SH, VM::M1, "Owner ID" },
-{ 0x21000170, VR::IS, VM::M1, "Number of Films" },
-{ 0x21000500, VR::SQ, VM::M1, "Referenced Print Job Sequence (Pull Stored Print)" },
-{ 0x21100010, VR::CS, VM::M1, "Printer Status" },
-{ 0x21100020, VR::CS, VM::M1, "Printer Status Info" },
-{ 0x21100030, VR::LO, VM::M1, "Printer Name" },
-{ 0x21100099, VR::SH, VM::M1, "Print Queue ID" },
-{ 0x21200010, VR::CS, VM::M1, "Queue Status" },
-{ 0x21200050, VR::SQ, VM::M1, "Print Job Description Sequence" },
-{ 0x21200070, VR::SQ, VM::M1, "Referenced Print Job Sequence" },
-{ 0x21300010, VR::SQ, VM::M1, "Print Management Capabilities Sequence" },
-{ 0x21300015, VR::SQ, VM::M1, "Printer Characteristics Sequence" },
-{ 0x21300030, VR::SQ, VM::M1, "Film Box Content Sequence" },
-{ 0x21300040, VR::SQ, VM::M1, "Image Box Content Sequence" },
-{ 0x21300050, VR::SQ, VM::M1, "Annotation Content Sequence" },
-{ 0x21300060, VR::SQ, VM::M1, "Image Overlay Box Content Sequence" },
-{ 0x21300080, VR::SQ, VM::M1, "Presentation LUT Content Sequence" },
-{ 0x213000A0, VR::SQ, VM::M1, "Proposed Study Sequence" },
-{ 0x213000C0, VR::SQ, VM::M1, "Original Image Sequence" },
-{ 0x22000001, VR::CS, VM::M1, "Label Using Information Extracted From Instances" },
-{ 0x22000002, VR::UT, VM::M1, "Label Text" },
-{ 0x22000003, VR::CS, VM::M1, "Label Style Selection" },
-{ 0x22000004, VR::LT, VM::M1, "Media Disposition" },
-{ 0x22000005, VR::LT, VM::M1, "Barcode Value" },
-{ 0x22000006, VR::CS, VM::M1, "Barcode Symbology" },
-{ 0x22000007, VR::CS, VM::M1, "Allow Media Splitting" },
-{ 0x22000008, VR::CS, VM::M1, "Include Non-DICOM Objects" },
-{ 0x22000009, VR::CS, VM::M1, "Include Display Application" },
-{ 0x2200000A, VR::CS, VM::M1, "Preserve Composite Instances After Media Creation" },
-{ 0x2200000B, VR::US, VM::M1, "Total Number of Pieces of Media Created" },
-{ 0x2200000C, VR::LO, VM::M1, "Requested Media Application Profile" },
-{ 0x2200000D, VR::SQ, VM::M1, "Referenced Storage Media Sequence" },
-{ 0x2200000E, VR::AT, VM::M1TN, "Failure Attributes" },
-{ 0x2200000F, VR::CS, VM::M1, "Allow Lossy Compression" },
-{ 0x22000020, VR::CS, VM::M1, "Request Priority" },
-{ 0x30020002, VR::SH, VM::M1, "RT Image Label" },
-{ 0x30020003, VR::LO, VM::M1, "RT Image Name" },
-{ 0x30020004, VR::ST, VM::M1, "RT Image Description" },
-{ 0x3002000A, VR::CS, VM::M1, "Reported Values Origin" },
-{ 0x3002000C, VR::CS, VM::M1, "RT Image Plane" },
-{ 0x3002000D, VR::DS, VM::M3, "X-Ray Image Receptor Translation" },
-{ 0x3002000E, VR::DS, VM::M1, "X-Ray Image Receptor Angle" },
-{ 0x30020010, VR::DS, VM::M6, "RT Image Orientation" },
-{ 0x30020011, VR::DS, VM::M2, "Image Plane Pixel Spacing" },
-{ 0x30020012, VR::DS, VM::M2, "RT Image Position" },
-{ 0x30020020, VR::SH, VM::M1, "Radiation Machine Name" },
-{ 0x30020022, VR::DS, VM::M1, "Radiation Machine SAD" },
-{ 0x30020024, VR::DS, VM::M1, "Radiation Machine SSD" },
-{ 0x30020026, VR::DS, VM::M1, "RT Image SID" },
-{ 0x30020028, VR::DS, VM::M1, "Source to Reference Object Distance" },
-{ 0x30020029, VR::IS, VM::M1, "Fraction Number" },
-{ 0x30020030, VR::SQ, VM::M1, "Exposure Sequence" },
-{ 0x30020032, VR::DS, VM::M1, "Meterset Exposure" },
-{ 0x30020034, VR::DS, VM::M4, "Diaphragm Position" },
-{ 0x30020040, VR::SQ, VM::M1, "Fluence Map Sequence" },
-{ 0x30020041, VR::CS, VM::M1, "Fluence Data Source" },
-{ 0x30020042, VR::DS, VM::M1, "Fluence Data Scale" },
-{ 0x30020050, VR::SQ, VM::M1, "Primary Fluence Mode Sequence" },
-{ 0x30020051, VR::CS, VM::M1, "Fluence Mode" },
-{ 0x30020052, VR::SH, VM::M1, "Fluence Mode ID" },
-{ 0x30040001, VR::CS, VM::M1, "DVH Type" },
-{ 0x30040002, VR::CS, VM::M1, "Dose Units" },
-{ 0x30040004, VR::CS, VM::M1, "Dose Type" },
-{ 0x30040006, VR::LO, VM::M1, "Dose Comment" },
-{ 0x30040008, VR::DS, VM::M3, "Normalization Point" },
-{ 0x3004000A, VR::CS, VM::M1, "Dose Summation Type" },
-{ 0x3004000C, VR::DS, VM::M2TN, "Grid Frame Offset Vector" },
-{ 0x3004000E, VR::DS, VM::M1, "Dose Grid Scaling" },
-{ 0x30040010, VR::SQ, VM::M1, "RT Dose ROI Sequence" },
-{ 0x30040012, VR::DS, VM::M1, "Dose Value" },
-{ 0x30040014, VR::CS, VM::M1T3, "Tissue Heterogeneity Correction" },
-{ 0x30040040, VR::DS, VM::M3, "DVH Normalization Point" },
-{ 0x30040042, VR::DS, VM::M1, "DVH Normalization Dose Value" },
-{ 0x30040050, VR::SQ, VM::M1, "DVH Sequence" },
-{ 0x30040052, VR::DS, VM::M1, "DVH Dose Scaling" },
-{ 0x30040054, VR::CS, VM::M1, "DVH Volume Units" },
-{ 0x30040056, VR::IS, VM::M1, "DVH Number of Bins" },
-{ 0x30040058, VR::DS, VM::M2T2N, "DVH Data" },
-{ 0x30040060, VR::SQ, VM::M1, "DVH Referenced ROI Sequence" },
-{ 0x30040062, VR::CS, VM::M1, "DVH ROI Contribution Type" },
-{ 0x30040070, VR::DS, VM::M1, "DVH Minimum Dose" },
-{ 0x30040072, VR::DS, VM::M1, "DVH Maximum Dose" },
-{ 0x30040074, VR::DS, VM::M1, "DVH Mean Dose" },
-{ 0x30060002, VR::SH, VM::M1, "Structure Set Label" },
-{ 0x30060004, VR::LO, VM::M1, "Structure Set Name" },
-{ 0x30060006, VR::ST, VM::M1, "Structure Set Description" },
-{ 0x30060008, VR::DA, VM::M1, "Structure Set Date" },
-{ 0x30060009, VR::TM, VM::M1, "Structure Set Time" },
-{ 0x30060010, VR::SQ, VM::M1, "Referenced Frame of Reference Sequence" },
-{ 0x30060012, VR::SQ, VM::M1, "RT Referenced Study Sequence" },
-{ 0x30060014, VR::SQ, VM::M1, "RT Referenced Series Sequence" },
-{ 0x30060016, VR::SQ, VM::M1, "Contour Image Sequence" },
-{ 0x30060020, VR::SQ, VM::M1, "Structure Set ROI Sequence" },
-{ 0x30060022, VR::IS, VM::M1, "ROI Number" },
-{ 0x30060024, VR::UI, VM::M1, "Referenced Frame of Reference UID" },
-{ 0x30060026, VR::LO, VM::M1, "ROI Name" },
-{ 0x30060028, VR::ST, VM::M1, "ROI Description" },
-{ 0x3006002A, VR::IS, VM::M3, "ROI Display Color" },
-{ 0x3006002C, VR::DS, VM::M1, "ROI Volume" },
-{ 0x30060030, VR::SQ, VM::M1, "RT Related ROI Sequence" },
-{ 0x30060033, VR::CS, VM::M1, "RT ROI Relationship" },
-{ 0x30060036, VR::CS, VM::M1, "ROI Generation Algorithm" },
-{ 0x30060038, VR::LO, VM::M1, "ROI Generation Description" },
-{ 0x30060039, VR::SQ, VM::M1, "ROI Contour Sequence" },
-{ 0x30060040, VR::SQ, VM::M1, "Contour Sequence" },
-{ 0x30060042, VR::CS, VM::M1, "Contour Geometric Type" },
-{ 0x30060044, VR::DS, VM::M1, "Contour Slab Thickness" },
-{ 0x30060045, VR::DS, VM::M3, "Contour Offset Vector" },
-{ 0x30060046, VR::IS, VM::M1, "Number of Contour Points" },
-{ 0x30060048, VR::IS, VM::M1, "Contour Number" },
-{ 0x30060049, VR::IS, VM::M1TN, "Attached Contours" },
-{ 0x30060050, VR::DS, VM::M3T3N, "Contour Data" },
-{ 0x30060080, VR::SQ, VM::M1, "RT ROI Observations Sequence" },
-{ 0x30060082, VR::IS, VM::M1, "Observation Number" },
-{ 0x30060084, VR::IS, VM::M1, "Referenced ROI Number" },
-{ 0x30060085, VR::SH, VM::M1, "ROI Observation Label" },
-{ 0x30060086, VR::SQ, VM::M1, "RT ROI Identification Code Sequence" },
-{ 0x30060088, VR::ST, VM::M1, "ROI Observation Description" },
-{ 0x300600A0, VR::SQ, VM::M1, "Related RT ROI Observations Sequence" },
-{ 0x300600A4, VR::CS, VM::M1, "RT ROI Interpreted Type" },
-{ 0x300600A6, VR::PN, VM::M1, "ROI Interpreter" },
-{ 0x300600B0, VR::SQ, VM::M1, "ROI Physical Properties Sequence" },
-{ 0x300600B2, VR::CS, VM::M1, "ROI Physical Property" },
-{ 0x300600B4, VR::DS, VM::M1, "ROI Physical Property Value" },
-{ 0x300600B6, VR::SQ, VM::M1, "ROI Elemental Composition Sequence" },
-{ 0x300600B7, VR::US, VM::M1, "ROI Elemental Composition Atomic Number" },
-{ 0x300600B8, VR::FL, VM::M1, "ROI Elemental Composition Atomic Mass Fraction" },
-{ 0x300600C0, VR::SQ, VM::M1, "Frame of Reference Relationship Sequence" },
-{ 0x300600C2, VR::UI, VM::M1, "Related Frame of Reference UID" },
-{ 0x300600C4, VR::CS, VM::M1, "Frame of Reference Transformation Type" },
-{ 0x300600C6, VR::DS, VM::M16, "Frame of Reference Transformation Matrix" },
-{ 0x300600C8, VR::LO, VM::M1, "Frame of Reference Transformation Comment" },
-{ 0x30080010, VR::SQ, VM::M1, "Measured Dose Reference Sequence" },
-{ 0x30080012, VR::ST, VM::M1, "Measured Dose Description" },
-{ 0x30080014, VR::CS, VM::M1, "Measured Dose Type" },
-{ 0x30080016, VR::DS, VM::M1, "Measured Dose Value" },
-{ 0x30080020, VR::SQ, VM::M1, "Treatment Session Beam Sequence" },
-{ 0x30080021, VR::SQ, VM::M1, "Treatment Session Ion Beam Sequence" },
-{ 0x30080022, VR::IS, VM::M1, "Current Fraction Number" },
-{ 0x30080024, VR::DA, VM::M1, "Treatment Control Point Date" },
-{ 0x30080025, VR::TM, VM::M1, "Treatment Control Point Time" },
-{ 0x3008002A, VR::CS, VM::M1, "Treatment Termination Status" },
-{ 0x3008002B, VR::SH, VM::M1, "Treatment Termination Code" },
-{ 0x3008002C, VR::CS, VM::M1, "Treatment Verification Status" },
-{ 0x30080030, VR::SQ, VM::M1, "Referenced Treatment Record Sequence" },
-{ 0x30080032, VR::DS, VM::M1, "Specified Primary Meterset" },
-{ 0x30080033, VR::DS, VM::M1, "Specified Secondary Meterset" },
-{ 0x30080036, VR::DS, VM::M1, "Delivered Primary Meterset" },
-{ 0x30080037, VR::DS, VM::M1, "Delivered Secondary Meterset" },
-{ 0x3008003A, VR::DS, VM::M1, "Specified Treatment Time" },
-{ 0x3008003B, VR::DS, VM::M1, "Delivered Treatment Time" },
-{ 0x30080040, VR::SQ, VM::M1, "Control Point Delivery Sequence" },
-{ 0x30080041, VR::SQ, VM::M1, "Ion Control Point Delivery Sequence" },
-{ 0x30080042, VR::DS, VM::M1, "Specified Meterset" },
-{ 0x30080044, VR::DS, VM::M1, "Delivered Meterset" },
-{ 0x30080045, VR::FL, VM::M1, "Meterset Rate Set" },
-{ 0x30080046, VR::FL, VM::M1, "Meterset Rate Delivered" },
-{ 0x30080047, VR::FL, VM::M1TN, "Scan Spot Metersets Delivered" },
-{ 0x30080048, VR::DS, VM::M1, "Dose Rate Delivered" },
-{ 0x30080050, VR::SQ, VM::M1, "Treatment Summary Calculated Dose Reference Sequence" },
-{ 0x30080052, VR::DS, VM::M1, "Cumulative Dose to Dose Reference" },
-{ 0x30080054, VR::DA, VM::M1, "First Treatment Date" },
-{ 0x30080056, VR::DA, VM::M1, "Most Recent Treatment Date" },
-{ 0x3008005A, VR::IS, VM::M1, "Number of Fractions Delivered" },
-{ 0x30080060, VR::SQ, VM::M1, "Override Sequence" },
-{ 0x30080061, VR::AT, VM::M1, "Parameter Sequence Pointer" },
-{ 0x30080062, VR::AT, VM::M1, "Override Parameter Pointer" },
-{ 0x30080063, VR::IS, VM::M1, "Parameter Item Index" },
-{ 0x30080064, VR::IS, VM::M1, "Measured Dose Reference Number" },
-{ 0x30080065, VR::AT, VM::M1, "Parameter Pointer" },
-{ 0x30080066, VR::ST, VM::M1, "Override Reason" },
-{ 0x30080068, VR::SQ, VM::M1, "Corrected Parameter Sequence" },
-{ 0x3008006A, VR::FL, VM::M1, "Correction Value" },
-{ 0x30080070, VR::SQ, VM::M1, "Calculated Dose Reference Sequence" },
-{ 0x30080072, VR::IS, VM::M1, "Calculated Dose Reference Number" },
-{ 0x30080074, VR::ST, VM::M1, "Calculated Dose Reference Description" },
-{ 0x30080076, VR::DS, VM::M1, "Calculated Dose Reference Dose Value" },
-{ 0x30080078, VR::DS, VM::M1, "Start Meterset" },
-{ 0x3008007A, VR::DS, VM::M1, "End Meterset" },
-{ 0x30080080, VR::SQ, VM::M1, "Referenced Measured Dose Reference Sequence" },
-{ 0x30080082, VR::IS, VM::M1, "Referenced Measured Dose Reference Number" },
-{ 0x30080090, VR::SQ, VM::M1, "Referenced Calculated Dose Reference Sequence" },
-{ 0x30080092, VR::IS, VM::M1, "Referenced Calculated Dose Reference Number" },
-{ 0x300800A0, VR::SQ, VM::M1, "Beam Limiting Device Leaf Pairs Sequence" },
-{ 0x300800B0, VR::SQ, VM::M1, "Recorded Wedge Sequence" },
-{ 0x300800C0, VR::SQ, VM::M1, "Recorded Compensator Sequence" },
-{ 0x300800D0, VR::SQ, VM::M1, "Recorded Block Sequence" },
-{ 0x300800E0, VR::SQ, VM::M1, "Treatment Summary Measured Dose Reference Sequence" },
-{ 0x300800F0, VR::SQ, VM::M1, "Recorded Snout Sequence" },
-{ 0x300800F2, VR::SQ, VM::M1, "Recorded Range Shifter Sequence" },
-{ 0x300800F4, VR::SQ, VM::M1, "Recorded Lateral Spreading Device Sequence" },
-{ 0x300800F6, VR::SQ, VM::M1, "Recorded Range Modulator Sequence" },
-{ 0x30080100, VR::SQ, VM::M1, "Recorded Source Sequence" },
-{ 0x30080105, VR::LO, VM::M1, "Source Serial Number" },
-{ 0x30080110, VR::SQ, VM::M1, "Treatment Session Application Setup Sequence" },
-{ 0x30080116, VR::CS, VM::M1, "Application Setup Check" },
-{ 0x30080120, VR::SQ, VM::M1, "Recorded Brachy Accessory Device Sequence" },
-{ 0x30080122, VR::IS, VM::M1, "Referenced Brachy Accessory Device Number" },
-{ 0x30080130, VR::SQ, VM::M1, "Recorded Channel Sequence" },
-{ 0x30080132, VR::DS, VM::M1, "Specified Channel Total Time" },
-{ 0x30080134, VR::DS, VM::M1, "Delivered Channel Total Time" },
-{ 0x30080136, VR::IS, VM::M1, "Specified Number of Pulses" },
-{ 0x30080138, VR::IS, VM::M1, "Delivered Number of Pulses" },
-{ 0x3008013A, VR::DS, VM::M1, "Specified Pulse Repetition Interval" },
-{ 0x3008013C, VR::DS, VM::M1, "Delivered Pulse Repetition Interval" },
-{ 0x30080140, VR::SQ, VM::M1, "Recorded Source Applicator Sequence" },
-{ 0x30080142, VR::IS, VM::M1, "Referenced Source Applicator Number" },
-{ 0x30080150, VR::SQ, VM::M1, "Recorded Channel Shield Sequence" },
-{ 0x30080152, VR::IS, VM::M1, "Referenced Channel Shield Number" },
-{ 0x30080160, VR::SQ, VM::M1, "Brachy Control Point Delivered Sequence" },
-{ 0x30080162, VR::DA, VM::M1, "Safe Position Exit Date" },
-{ 0x30080164, VR::TM, VM::M1, "Safe Position Exit Time" },
-{ 0x30080166, VR::DA, VM::M1, "Safe Position Return Date" },
-{ 0x30080168, VR::TM, VM::M1, "Safe Position Return Time" },
-{ 0x30080200, VR::CS, VM::M1, "Current Treatment Status" },
-{ 0x30080202, VR::ST, VM::M1, "Treatment Status Comment" },
-{ 0x30080220, VR::SQ, VM::M1, "Fraction Group Summary Sequence" },
-{ 0x30080223, VR::IS, VM::M1, "Referenced Fraction Number" },
-{ 0x30080224, VR::CS, VM::M1, "Fraction Group Type" },
-{ 0x30080230, VR::CS, VM::M1, "Beam Stopper Position" },
-{ 0x30080240, VR::SQ, VM::M1, "Fraction Status Summary Sequence" },
-{ 0x30080250, VR::DA, VM::M1, "Treatment Date" },
-{ 0x30080251, VR::TM, VM::M1, "Treatment Time" },
-{ 0x300A0002, VR::SH, VM::M1, "RT Plan Label" },
-{ 0x300A0003, VR::LO, VM::M1, "RT Plan Name" },
-{ 0x300A0004, VR::ST, VM::M1, "RT Plan Description" },
-{ 0x300A0006, VR::DA, VM::M1, "RT Plan Date" },
-{ 0x300A0007, VR::TM, VM::M1, "RT Plan Time" },
-{ 0x300A0009, VR::LO, VM::M1TN, "Treatment Protocols" },
-{ 0x300A000A, VR::CS, VM::M1, "Plan Intent" },
-{ 0x300A000B, VR::LO, VM::M1TN, "Treatment Sites" },
-{ 0x300A000C, VR::CS, VM::M1, "RT Plan Geometry" },
-{ 0x300A000E, VR::ST, VM::M1, "Prescription Description" },
-{ 0x300A0010, VR::SQ, VM::M1, "Dose Reference Sequence" },
-{ 0x300A0012, VR::IS, VM::M1, "Dose Reference Number" },
-{ 0x300A0013, VR::UI, VM::M1, "Dose Reference UID" },
-{ 0x300A0014, VR::CS, VM::M1, "Dose Reference Structure Type" },
-{ 0x300A0015, VR::CS, VM::M1, "Nominal Beam Energy Unit" },
-{ 0x300A0016, VR::LO, VM::M1, "Dose Reference Description" },
-{ 0x300A0018, VR::DS, VM::M3, "Dose Reference Point Coordinates" },
-{ 0x300A001A, VR::DS, VM::M1, "Nominal Prior Dose" },
-{ 0x300A0020, VR::CS, VM::M1, "Dose Reference Type" },
-{ 0x300A0021, VR::DS, VM::M1, "Constraint Weight" },
-{ 0x300A0022, VR::DS, VM::M1, "Delivery Warning Dose" },
-{ 0x300A0023, VR::DS, VM::M1, "Delivery Maximum Dose" },
-{ 0x300A0025, VR::DS, VM::M1, "Target Minimum Dose" },
-{ 0x300A0026, VR::DS, VM::M1, "Target Prescription Dose" },
-{ 0x300A0027, VR::DS, VM::M1, "Target Maximum Dose" },
-{ 0x300A0028, VR::DS, VM::M1, "Target Underdose Volume Fraction" },
-{ 0x300A002A, VR::DS, VM::M1, "Organ at Risk Full-volume Dose" },
-{ 0x300A002B, VR::DS, VM::M1, "Organ at Risk Limit Dose" },
-{ 0x300A002C, VR::DS, VM::M1, "Organ at Risk Maximum Dose" },
-{ 0x300A002D, VR::DS, VM::M1, "Organ at Risk Overdose Volume Fraction" },
-{ 0x300A0040, VR::SQ, VM::M1, "Tolerance Table Sequence" },
-{ 0x300A0042, VR::IS, VM::M1, "Tolerance Table Number" },
-{ 0x300A0043, VR::SH, VM::M1, "Tolerance Table Label" },
-{ 0x300A0044, VR::DS, VM::M1, "Gantry Angle Tolerance" },
-{ 0x300A0046, VR::DS, VM::M1, "Beam Limiting Device Angle Tolerance" },
-{ 0x300A0048, VR::SQ, VM::M1, "Beam Limiting Device Tolerance Sequence" },
-{ 0x300A004A, VR::DS, VM::M1, "Beam Limiting Device Position Tolerance" },
-{ 0x300A004B, VR::FL, VM::M1, "Snout Position Tolerance" },
-{ 0x300A004C, VR::DS, VM::M1, "Patient Support Angle Tolerance" },
-{ 0x300A004E, VR::DS, VM::M1, "Table Top Eccentric Angle Tolerance" },
-{ 0x300A004F, VR::FL, VM::M1, "Table Top Pitch Angle Tolerance" },
-{ 0x300A0050, VR::FL, VM::M1, "Table Top Roll Angle Tolerance" },
-{ 0x300A0051, VR::DS, VM::M1, "Table Top Vertical Position Tolerance" },
-{ 0x300A0052, VR::DS, VM::M1, "Table Top Longitudinal Position Tolerance" },
-{ 0x300A0053, VR::DS, VM::M1, "Table Top Lateral Position Tolerance" },
-{ 0x300A0055, VR::CS, VM::M1, "RT Plan Relationship" },
-{ 0x300A0070, VR::SQ, VM::M1, "Fraction Group Sequence" },
-{ 0x300A0071, VR::IS, VM::M1, "Fraction Group Number" },
-{ 0x300A0072, VR::LO, VM::M1, "Fraction Group Description" },
-{ 0x300A0078, VR::IS, VM::M1, "Number of Fractions Planned" },
-{ 0x300A0079, VR::IS, VM::M1, "Number of Fraction Pattern Digits Per Day" },
-{ 0x300A007A, VR::IS, VM::M1, "Repeat Fraction Cycle Length" },
-{ 0x300A007B, VR::LT, VM::M1, "Fraction Pattern" },
-{ 0x300A0080, VR::IS, VM::M1, "Number of Beams" },
-{ 0x300A0082, VR::DS, VM::M3, "Beam Dose Specification Point" },
-{ 0x300A0084, VR::DS, VM::M1, "Beam Dose" },
-{ 0x300A0086, VR::DS, VM::M1, "Beam Meterset" },
-{ 0x300A0088, VR::FL, VM::M1, "Beam Dose Point Depth" },
-{ 0x300A0089, VR::FL, VM::M1, "Beam Dose Point Equivalent Depth" },
-{ 0x300A008A, VR::FL, VM::M1, "Beam Dose Point SSD" },
-{ 0x300A00A0, VR::IS, VM::M1, "Number of Brachy Application Setups" },
-{ 0x300A00A2, VR::DS, VM::M3, "Brachy Application Setup Dose Specification Point" },
-{ 0x300A00A4, VR::DS, VM::M1, "Brachy Application Setup Dose" },
-{ 0x300A00B0, VR::SQ, VM::M1, "Beam Sequence" },
-{ 0x300A00B2, VR::SH, VM::M1, "Treatment Machine Name" },
-{ 0x300A00B3, VR::CS, VM::M1, "Primary Dosimeter Unit" },
-{ 0x300A00B4, VR::DS, VM::M1, "Source-Axis Distance" },
-{ 0x300A00B6, VR::SQ, VM::M1, "Beam Limiting Device Sequence" },
-{ 0x300A00B8, VR::CS, VM::M1, "RT Beam Limiting Device Type" },
-{ 0x300A00BA, VR::DS, VM::M1, "Source to Beam Limiting Device Distance" },
-{ 0x300A00BB, VR::FL, VM::M1, "Isocenter to Beam Limiting Device Distance" },
-{ 0x300A00BC, VR::IS, VM::M1, "Number of Leaf/Jaw Pairs" },
-{ 0x300A00BE, VR::DS, VM::M3TN, "Leaf Position Boundaries" },
-{ 0x300A00C0, VR::IS, VM::M1, "Beam Number" },
-{ 0x300A00C2, VR::LO, VM::M1, "Beam Name" },
-{ 0x300A00C3, VR::ST, VM::M1, "Beam Description" },
-{ 0x300A00C4, VR::CS, VM::M1, "Beam Type" },
-{ 0x300A00C6, VR::CS, VM::M1, "Radiation Type" },
-{ 0x300A00C7, VR::CS, VM::M1, "High-Dose Technique Type" },
-{ 0x300A00C8, VR::IS, VM::M1, "Reference Image Number" },
-{ 0x300A00CA, VR::SQ, VM::M1, "Planned Verification Image Sequence" },
-{ 0x300A00CC, VR::LO, VM::M1TN, "Imaging Device-Specific Acquisition Parameters" },
-{ 0x300A00CE, VR::CS, VM::M1, "Treatment Delivery Type" },
-{ 0x300A00D0, VR::IS, VM::M1, "Number of Wedges" },
-{ 0x300A00D1, VR::SQ, VM::M1, "Wedge Sequence" },
-{ 0x300A00D2, VR::IS, VM::M1, "Wedge Number" },
-{ 0x300A00D3, VR::CS, VM::M1, "Wedge Type" },
-{ 0x300A00D4, VR::SH, VM::M1, "Wedge ID" },
-{ 0x300A00D5, VR::IS, VM::M1, "Wedge Angle" },
-{ 0x300A00D6, VR::DS, VM::M1, "Wedge Factor" },
-{ 0x300A00D7, VR::FL, VM::M1, "Total Wedge Tray Water-Equivalent Thickness" },
-{ 0x300A00D8, VR::DS, VM::M1, "Wedge Orientation" },
-{ 0x300A00D9, VR::FL, VM::M1, "Isocenter to Wedge Tray Distance" },
-{ 0x300A00DA, VR::DS, VM::M1, "Source to Wedge Tray Distance" },
-{ 0x300A00DB, VR::FL, VM::M1, "Wedge Thin Edge Position" },
-{ 0x300A00DC, VR::SH, VM::M1, "Bolus ID" },
-{ 0x300A00DD, VR::ST, VM::M1, "Bolus Description" },
-{ 0x300A00E0, VR::IS, VM::M1, "Number of Compensators" },
-{ 0x300A00E1, VR::SH, VM::M1, "Material ID" },
-{ 0x300A00E2, VR::DS, VM::M1, "Total Compensator Tray Factor" },
-{ 0x300A00E3, VR::SQ, VM::M1, "Compensator Sequence" },
-{ 0x300A00E4, VR::IS, VM::M1, "Compensator Number" },
-{ 0x300A00E5, VR::SH, VM::M1, "Compensator ID" },
-{ 0x300A00E6, VR::DS, VM::M1, "Source to Compensator Tray Distance" },
-{ 0x300A00E7, VR::IS, VM::M1, "Compensator Rows" },
-{ 0x300A00E8, VR::IS, VM::M1, "Compensator Columns" },
-{ 0x300A00E9, VR::DS, VM::M2, "Compensator Pixel Spacing" },
-{ 0x300A00EA, VR::DS, VM::M2, "Compensator Position" },
-{ 0x300A00EB, VR::DS, VM::M1TN, "Compensator Transmission Data" },
-{ 0x300A00EC, VR::DS, VM::M1TN, "Compensator Thickness Data" },
-{ 0x300A00ED, VR::IS, VM::M1, "Number of Boli" },
-{ 0x300A00EE, VR::CS, VM::M1, "Compensator Type" },
-{ 0x300A00F0, VR::IS, VM::M1, "Number of Blocks" },
-{ 0x300A00F2, VR::DS, VM::M1, "Total Block Tray Factor" },
-{ 0x300A00F3, VR::FL, VM::M1, "Total Block Tray Water-Equivalent Thickness" },
-{ 0x300A00F4, VR::SQ, VM::M1, "Block Sequence" },
-{ 0x300A00F5, VR::SH, VM::M1, "Block Tray ID" },
-{ 0x300A00F6, VR::DS, VM::M1, "Source to Block Tray Distance" },
-{ 0x300A00F7, VR::FL, VM::M1, "Isocenter to Block Tray Distance" },
-{ 0x300A00F8, VR::CS, VM::M1, "Block Type" },
-{ 0x300A00F9, VR::LO, VM::M1, "Accessory Code" },
-{ 0x300A00FA, VR::CS, VM::M1, "Block Divergence" },
-{ 0x300A00FB, VR::CS, VM::M1, "Block Mounting Position" },
-{ 0x300A00FC, VR::IS, VM::M1, "Block Number" },
-{ 0x300A00FE, VR::LO, VM::M1, "Block Name" },
-{ 0x300A0100, VR::DS, VM::M1, "Block Thickness" },
-{ 0x300A0102, VR::DS, VM::M1, "Block Transmission" },
-{ 0x300A0104, VR::IS, VM::M1, "Block Number of Points" },
-{ 0x300A0106, VR::DS, VM::M2T2N, "Block Data" },
-{ 0x300A0107, VR::SQ, VM::M1, "Applicator Sequence" },
-{ 0x300A0108, VR::SH, VM::M1, "Applicator ID" },
-{ 0x300A0109, VR::CS, VM::M1, "Applicator Type" },
-{ 0x300A010A, VR::LO, VM::M1, "Applicator Description" },
-{ 0x300A010C, VR::DS, VM::M1, "Cumulative Dose Reference Coefficient" },
-{ 0x300A010E, VR::DS, VM::M1, "Final Cumulative Meterset Weight" },
-{ 0x300A0110, VR::IS, VM::M1, "Number of Control Points" },
-{ 0x300A0111, VR::SQ, VM::M1, "Control Point Sequence" },
-{ 0x300A0112, VR::IS, VM::M1, "Control Point Index" },
-{ 0x300A0114, VR::DS, VM::M1, "Nominal Beam Energy" },
-{ 0x300A0115, VR::DS, VM::M1, "Dose Rate Set" },
-{ 0x300A0116, VR::SQ, VM::M1, "Wedge Position Sequence" },
-{ 0x300A0118, VR::CS, VM::M1, "Wedge Position" },
-{ 0x300A011A, VR::SQ, VM::M1, "Beam Limiting Device Position Sequence" },
-{ 0x300A011C, VR::DS, VM::M2T2N, "Leaf/Jaw Positions" },
-{ 0x300A011E, VR::DS, VM::M1, "Gantry Angle" },
-{ 0x300A011F, VR::CS, VM::M1, "Gantry Rotation Direction" },
-{ 0x300A0120, VR::DS, VM::M1, "Beam Limiting Device Angle" },
-{ 0x300A0121, VR::CS, VM::M1, "Beam Limiting Device Rotation Direction" },
-{ 0x300A0122, VR::DS, VM::M1, "Patient Support Angle" },
-{ 0x300A0123, VR::CS, VM::M1, "Patient Support Rotation Direction" },
-{ 0x300A0124, VR::DS, VM::M1, "Table Top Eccentric Axis Distance" },
-{ 0x300A0125, VR::DS, VM::M1, "Table Top Eccentric Angle" },
-{ 0x300A0126, VR::CS, VM::M1, "Table Top Eccentric Rotation Direction" },
-{ 0x300A0128, VR::DS, VM::M1, "Table Top Vertical Position" },
-{ 0x300A0129, VR::DS, VM::M1, "Table Top Longitudinal Position" },
-{ 0x300A012A, VR::DS, VM::M1, "Table Top Lateral Position" },
-{ 0x300A012C, VR::DS, VM::M3, "Isocenter Position" },
-{ 0x300A012E, VR::DS, VM::M3, "Surface Entry Point" },
-{ 0x300A0130, VR::DS, VM::M1, "Source to Surface Distance" },
-{ 0x300A0134, VR::DS, VM::M1, "Cumulative Meterset Weight" },
-{ 0x300A0140, VR::FL, VM::M1, "Table Top Pitch Angle" },
-{ 0x300A0142, VR::CS, VM::M1, "Table Top Pitch Rotation Direction" },
-{ 0x300A0144, VR::FL, VM::M1, "Table Top Roll Angle" },
-{ 0x300A0146, VR::CS, VM::M1, "Table Top Roll Rotation Direction" },
-{ 0x300A0148, VR::FL, VM::M1, "Head Fixation Angle" },
-{ 0x300A014A, VR::FL, VM::M1, "Gantry Pitch Angle" },
-{ 0x300A014C, VR::CS, VM::M1, "Gantry Pitch Rotation Direction" },
-{ 0x300A014E, VR::FL, VM::M1, "Gantry Pitch Angle Tolerance" },
-{ 0x300A0180, VR::SQ, VM::M1, "Patient Setup Sequence" },
-{ 0x300A0182, VR::IS, VM::M1, "Patient Setup Number" },
-{ 0x300A0183, VR::LO, VM::M1, "Patient Setup Label" },
-{ 0x300A0184, VR::LO, VM::M1, "Patient Additional Position" },
-{ 0x300A0190, VR::SQ, VM::M1, "Fixation Device Sequence" },
-{ 0x300A0192, VR::CS, VM::M1, "Fixation Device Type" },
-{ 0x300A0194, VR::SH, VM::M1, "Fixation Device Label" },
-{ 0x300A0196, VR::ST, VM::M1, "Fixation Device Description" },
-{ 0x300A0198, VR::SH, VM::M1, "Fixation Device Position" },
-{ 0x300A0199, VR::FL, VM::M1, "Fixation Device Pitch Angle" },
-{ 0x300A019A, VR::FL, VM::M1, "Fixation Device Roll Angle" },
-{ 0x300A01A0, VR::SQ, VM::M1, "Shielding Device Sequence" },
-{ 0x300A01A2, VR::CS, VM::M1, "Shielding Device Type" },
-{ 0x300A01A4, VR::SH, VM::M1, "Shielding Device Label" },
-{ 0x300A01A6, VR::ST, VM::M1, "Shielding Device Description" },
-{ 0x300A01A8, VR::SH, VM::M1, "Shielding Device Position" },
-{ 0x300A01B0, VR::CS, VM::M1, "Setup Technique" },
-{ 0x300A01B2, VR::ST, VM::M1, "Setup Technique Description" },
-{ 0x300A01B4, VR::SQ, VM::M1, "Setup Device Sequence" },
-{ 0x300A01B6, VR::CS, VM::M1, "Setup Device Type" },
-{ 0x300A01B8, VR::SH, VM::M1, "Setup Device Label" },
-{ 0x300A01BA, VR::ST, VM::M1, "Setup Device Description" },
-{ 0x300A01BC, VR::DS, VM::M1, "Setup Device Parameter" },
-{ 0x300A01D0, VR::ST, VM::M1, "Setup Reference Description" },
-{ 0x300A01D2, VR::DS, VM::M1, "Table Top Vertical Setup Displacement" },
-{ 0x300A01D4, VR::DS, VM::M1, "Table Top Longitudinal Setup Displacement" },
-{ 0x300A01D6, VR::DS, VM::M1, "Table Top Lateral Setup Displacement" },
-{ 0x300A0200, VR::CS, VM::M1, "Brachy Treatment Technique" },
-{ 0x300A0202, VR::CS, VM::M1, "Brachy Treatment Type" },
-{ 0x300A0206, VR::SQ, VM::M1, "Treatment Machine Sequence" },
-{ 0x300A0210, VR::SQ, VM::M1, "Source Sequence" },
-{ 0x300A0212, VR::IS, VM::M1, "Source Number" },
-{ 0x300A0214, VR::CS, VM::M1, "Source Type" },
-{ 0x300A0216, VR::LO, VM::M1, "Source Manufacturer" },
-{ 0x300A0218, VR::DS, VM::M1, "Active Source Diameter" },
-{ 0x300A021A, VR::DS, VM::M1, "Active Source Length" },
-{ 0x300A0222, VR::DS, VM::M1, "Source Encapsulation Nominal Thickness" },
-{ 0x300A0224, VR::DS, VM::M1, "Source Encapsulation Nominal Transmission" },
-{ 0x300A0226, VR::LO, VM::M1, "Source Isotope Name" },
-{ 0x300A0228, VR::DS, VM::M1, "Source Isotope Half Life" },
-{ 0x300A0229, VR::CS, VM::M1, "Source Strength Units" },
-{ 0x300A022A, VR::DS, VM::M1, "Reference Air Kerma Rate" },
-{ 0x300A022B, VR::DS, VM::M1, "Source Strength" },
-{ 0x300A022C, VR::DA, VM::M1, "Source Strength Reference Date" },
-{ 0x300A022E, VR::TM, VM::M1, "Source Strength Reference Time" },
-{ 0x300A0230, VR::SQ, VM::M1, "Application Setup Sequence" },
-{ 0x300A0232, VR::CS, VM::M1, "Application Setup Type" },
-{ 0x300A0234, VR::IS, VM::M1, "Application Setup Number" },
-{ 0x300A0236, VR::LO, VM::M1, "Application Setup Name" },
-{ 0x300A0238, VR::LO, VM::M1, "Application Setup Manufacturer" },
-{ 0x300A0240, VR::IS, VM::M1, "Template Number" },
-{ 0x300A0242, VR::SH, VM::M1, "Template Type" },
-{ 0x300A0244, VR::LO, VM::M1, "Template Name" },
-{ 0x300A0250, VR::DS, VM::M1, "Total Reference Air Kerma" },
-{ 0x300A0260, VR::SQ, VM::M1, "Brachy Accessory Device Sequence" },
-{ 0x300A0262, VR::IS, VM::M1, "Brachy Accessory Device Number" },
-{ 0x300A0263, VR::SH, VM::M1, "Brachy Accessory Device ID" },
-{ 0x300A0264, VR::CS, VM::M1, "Brachy Accessory Device Type" },
-{ 0x300A0266, VR::LO, VM::M1, "Brachy Accessory Device Name" },
-{ 0x300A026A, VR::DS, VM::M1, "Brachy Accessory Device Nominal Thickness" },
-{ 0x300A026C, VR::DS, VM::M1, "Brachy Accessory Device Nominal Transmission" },
-{ 0x300A0280, VR::SQ, VM::M1, "Channel Sequence" },
-{ 0x300A0282, VR::IS, VM::M1, "Channel Number" },
-{ 0x300A0284, VR::DS, VM::M1, "Channel Length" },
-{ 0x300A0286, VR::DS, VM::M1, "Channel Total Time" },
-{ 0x300A0288, VR::CS, VM::M1, "Source Movement Type" },
-{ 0x300A028A, VR::IS, VM::M1, "Number of Pulses" },
-{ 0x300A028C, VR::DS, VM::M1, "Pulse Repetition Interval" },
-{ 0x300A0290, VR::IS, VM::M1, "Source Applicator Number" },
-{ 0x300A0291, VR::SH, VM::M1, "Source Applicator ID" },
-{ 0x300A0292, VR::CS, VM::M1, "Source Applicator Type" },
-{ 0x300A0294, VR::LO, VM::M1, "Source Applicator Name" },
-{ 0x300A0296, VR::DS, VM::M1, "Source Applicator Length" },
-{ 0x300A0298, VR::LO, VM::M1, "Source Applicator Manufacturer" },
-{ 0x300A029C, VR::DS, VM::M1, "Source Applicator Wall Nominal Thickness" },
-{ 0x300A029E, VR::DS, VM::M1, "Source Applicator Wall Nominal Transmission" },
-{ 0x300A02A0, VR::DS, VM::M1, "Source Applicator Step Size" },
-{ 0x300A02A2, VR::IS, VM::M1, "Transfer Tube Number" },
-{ 0x300A02A4, VR::DS, VM::M1, "Transfer Tube Length" },
-{ 0x300A02B0, VR::SQ, VM::M1, "Channel Shield Sequence" },
-{ 0x300A02B2, VR::IS, VM::M1, "Channel Shield Number" },
-{ 0x300A02B3, VR::SH, VM::M1, "Channel Shield ID" },
-{ 0x300A02B4, VR::LO, VM::M1, "Channel Shield Name" },
-{ 0x300A02B8, VR::DS, VM::M1, "Channel Shield Nominal Thickness" },
-{ 0x300A02BA, VR::DS, VM::M1, "Channel Shield Nominal Transmission" },
-{ 0x300A02C8, VR::DS, VM::M1, "Final Cumulative Time Weight" },
-{ 0x300A02D0, VR::SQ, VM::M1, "Brachy Control Point Sequence" },
-{ 0x300A02D2, VR::DS, VM::M1, "Control Point Relative Position" },
-{ 0x300A02D4, VR::DS, VM::M3, "Control Point 3D Position" },
-{ 0x300A02D6, VR::DS, VM::M1, "Cumulative Time Weight" },
-{ 0x300A02E0, VR::CS, VM::M1, "Compensator Divergence" },
-{ 0x300A02E1, VR::CS, VM::M1, "Compensator Mounting Position" },
-{ 0x300A02E2, VR::DS, VM::M1TN, "Source to Compensator Distance" },
-{ 0x300A02E3, VR::FL, VM::M1, "Total Compensator Tray Water-Equivalent Thickness" },
-{ 0x300A02E4, VR::FL, VM::M1, "Isocenter to Compensator Tray Distance" },
-{ 0x300A02E5, VR::FL, VM::M1, "Compensator Column Offset" },
-{ 0x300A02E6, VR::FL, VM::M1TN, "Isocenter to Compensator Distances" },
-{ 0x300A02E7, VR::FL, VM::M1, "Compensator Relative Stopping Power Ratio" },
-{ 0x300A02E8, VR::FL, VM::M1, "Compensator Milling Tool Diameter" },
-{ 0x300A02EA, VR::SQ, VM::M1, "Ion Range Compensator Sequence" },
-{ 0x300A02EB, VR::LT, VM::M1, "Compensator Description" },
-{ 0x300A0302, VR::IS, VM::M1, "Radiation Mass Number" },
-{ 0x300A0304, VR::IS, VM::M1, "Radiation Atomic Number" },
-{ 0x300A0306, VR::SS, VM::M1, "Radiation Charge State" },
-{ 0x300A0308, VR::CS, VM::M1, "Scan Mode" },
-{ 0x300A030A, VR::FL, VM::M2, "Virtual Source-Axis Distances" },
-{ 0x300A030C, VR::SQ, VM::M1, "Snout Sequence" },
-{ 0x300A030D, VR::FL, VM::M1, "Snout Position" },
-{ 0x300A030F, VR::SH, VM::M1, "Snout ID" },
-{ 0x300A0312, VR::IS, VM::M1, "Number of Range Shifters" },
-{ 0x300A0314, VR::SQ, VM::M1, "Range Shifter Sequence" },
-{ 0x300A0316, VR::IS, VM::M1, "Range Shifter Number" },
-{ 0x300A0318, VR::SH, VM::M1, "Range Shifter ID" },
-{ 0x300A0320, VR::CS, VM::M1, "Range Shifter Type" },
-{ 0x300A0322, VR::LO, VM::M1, "Range Shifter Description" },
-{ 0x300A0330, VR::IS, VM::M1, "Number of Lateral Spreading Devices" },
-{ 0x300A0332, VR::SQ, VM::M1, "Lateral Spreading Device Sequence" },
-{ 0x300A0334, VR::IS, VM::M1, "Lateral Spreading Device Number" },
-{ 0x300A0336, VR::SH, VM::M1, "Lateral Spreading Device ID" },
-{ 0x300A0338, VR::CS, VM::M1, "Lateral Spreading Device Type" },
-{ 0x300A033A, VR::LO, VM::M1, "Lateral Spreading Device Description" },
-{ 0x300A033C, VR::FL, VM::M1, "Lateral Spreading Device Water Equivalent Thickness" },
-{ 0x300A0340, VR::IS, VM::M1, "Number of Range Modulators" },
-{ 0x300A0342, VR::SQ, VM::M1, "Range Modulator Sequence" },
-{ 0x300A0344, VR::IS, VM::M1, "Range Modulator Number" },
-{ 0x300A0346, VR::SH, VM::M1, "Range Modulator ID" },
-{ 0x300A0348, VR::CS, VM::M1, "Range Modulator Type" },
-{ 0x300A034A, VR::LO, VM::M1, "Range Modulator Description" },
-{ 0x300A034C, VR::SH, VM::M1, "Beam Current Modulation ID" },
-{ 0x300A0350, VR::CS, VM::M1, "Patient Support Type" },
-{ 0x300A0352, VR::SH, VM::M1, "Patient Support ID" },
-{ 0x300A0354, VR::LO, VM::M1, "Patient Support Accessory Code" },
-{ 0x300A0356, VR::FL, VM::M1, "Fixation Light Azimuthal Angle" },
-{ 0x300A0358, VR::FL, VM::M1, "Fixation Light Polar Angle" },
-{ 0x300A035A, VR::FL, VM::M1, "Meterset Rate" },
-{ 0x300A0360, VR::SQ, VM::M1, "Range Shifter Settings Sequence" },
-{ 0x300A0362, VR::LO, VM::M1, "Range Shifter Setting" },
-{ 0x300A0364, VR::FL, VM::M1, "Isocenter to Range Shifter Distance" },
-{ 0x300A0366, VR::FL, VM::M1, "Range Shifter Water Equivalent Thickness" },
-{ 0x300A0370, VR::SQ, VM::M1, "Lateral Spreading Device Settings Sequence" },
-{ 0x300A0372, VR::LO, VM::M1, "Lateral Spreading Device Setting" },
-{ 0x300A0374, VR::FL, VM::M1, "Isocenter to Lateral Spreading Device Distance" },
-{ 0x300A0380, VR::SQ, VM::M1, "Range Modulator Settings Sequence" },
-{ 0x300A0382, VR::FL, VM::M1, "Range Modulator Gating Start Value" },
-{ 0x300A0384, VR::FL, VM::M1, "Range Modulator Gating Stop Value" },
-{ 0x300A0386, VR::FL, VM::M1, "Range Modulator Gating Start Water Equivalent Thickness" },
-{ 0x300A0388, VR::FL, VM::M1, "Range Modulator Gating Stop Water Equivalent Thickness" },
-{ 0x300A038A, VR::FL, VM::M1, "Isocenter to Range Modulator Distance" },
-{ 0x300A0390, VR::SH, VM::M1, "Scan Spot Tune ID" },
-{ 0x300A0392, VR::IS, VM::M1, "Number of Scan Spot Positions" },
-{ 0x300A0394, VR::FL, VM::M1TN, "Scan Spot Position Map" },
-{ 0x300A0396, VR::FL, VM::M1TN, "Scan Spot Meterset Weights" },
-{ 0x300A0398, VR::FL, VM::M2, "Scanning Spot Size" },
-{ 0x300A039A, VR::IS, VM::M1, "Number of Paintings" },
-{ 0x300A03A0, VR::SQ, VM::M1, "Ion Tolerance Table Sequence" },
-{ 0x300A03A2, VR::SQ, VM::M1, "Ion Beam Sequence" },
-{ 0x300A03A4, VR::SQ, VM::M1, "Ion Beam Limiting Device Sequence" },
-{ 0x300A03A6, VR::SQ, VM::M1, "Ion Block Sequence" },
-{ 0x300A03A8, VR::SQ, VM::M1, "Ion Control Point Sequence" },
-{ 0x300A03AA, VR::SQ, VM::M1, "Ion Wedge Sequence" },
-{ 0x300A03AC, VR::SQ, VM::M1, "Ion Wedge Position Sequence" },
-{ 0x300A0401, VR::SQ, VM::M1, "Referenced Setup Image Sequence" },
-{ 0x300A0402, VR::ST, VM::M1, "Setup Image Comment" },
-{ 0x300A0410, VR::SQ, VM::M1, "Motion Synchronization Sequence" },
-{ 0x300A0412, VR::FL, VM::M3, "Control Point Orientation" },
-{ 0x300A0420, VR::SQ, VM::M1, "General Accessory Sequence" },
-{ 0x300A0421, VR::SH, VM::M1, "General Accessory ID" },
-{ 0x300A0422, VR::ST, VM::M1, "General Accessory Description" },
-{ 0x300A0423, VR::CS, VM::M1, "General Accessory Type" },
-{ 0x300A0424, VR::IS, VM::M1, "General Accessory Number" },
-{ 0x300A0431, VR::SQ, VM::M1, "Applicator Geometry Sequence" },
-{ 0x300A0432, VR::CS, VM::M1, "Applicator Aperture Shape" },
-{ 0x300A0433, VR::FL, VM::M1, "Applicator Opening" },
-{ 0x300A0434, VR::FL, VM::M1, "Applicator Opening X" },
-{ 0x300A0435, VR::FL, VM::M1, "Applicator Opening Y" },
-{ 0x300A0436, VR::FL, VM::M1, "Source to Applicator Mounting Position Distance" },
-{ 0x300C0002, VR::SQ, VM::M1, "Referenced RT Plan Sequence" },
-{ 0x300C0004, VR::SQ, VM::M1, "Referenced Beam Sequence" },
-{ 0x300C0006, VR::IS, VM::M1, "Referenced Beam Number" },
-{ 0x300C0007, VR::IS, VM::M1, "Referenced Reference Image Number" },
-{ 0x300C0008, VR::DS, VM::M1, "Start Cumulative Meterset Weight" },
-{ 0x300C0009, VR::DS, VM::M1, "End Cumulative Meterset Weight" },
-{ 0x300C000A, VR::SQ, VM::M1, "Referenced Brachy Application Setup Sequence" },
-{ 0x300C000C, VR::IS, VM::M1, "Referenced Brachy Application Setup Number" },
-{ 0x300C000E, VR::IS, VM::M1, "Referenced Source Number" },
-{ 0x300C0020, VR::SQ, VM::M1, "Referenced Fraction Group Sequence" },
-{ 0x300C0022, VR::IS, VM::M1, "Referenced Fraction Group Number" },
-{ 0x300C0040, VR::SQ, VM::M1, "Referenced Verification Image Sequence" },
-{ 0x300C0042, VR::SQ, VM::M1, "Referenced Reference Image Sequence" },
-{ 0x300C0050, VR::SQ, VM::M1, "Referenced Dose Reference Sequence" },
-{ 0x300C0051, VR::IS, VM::M1, "Referenced Dose Reference Number" },
-{ 0x300C0055, VR::SQ, VM::M1, "Brachy Referenced Dose Reference Sequence" },
-{ 0x300C0060, VR::SQ, VM::M1, "Referenced Structure Set Sequence" },
-{ 0x300C006A, VR::IS, VM::M1, "Referenced Patient Setup Number" },
-{ 0x300C0080, VR::SQ, VM::M1, "Referenced Dose Sequence" },
-{ 0x300C00A0, VR::IS, VM::M1, "Referenced Tolerance Table Number" },
-{ 0x300C00B0, VR::SQ, VM::M1, "Referenced Bolus Sequence" },
-{ 0x300C00C0, VR::IS, VM::M1, "Referenced Wedge Number" },
-{ 0x300C00D0, VR::IS, VM::M1, "Referenced Compensator Number" },
-{ 0x300C00E0, VR::IS, VM::M1, "Referenced Block Number" },
-{ 0x300C00F0, VR::IS, VM::M1, "Referenced Control Point Index" },
-{ 0x300C00F2, VR::SQ, VM::M1, "Referenced Control Point Sequence" },
-{ 0x300C00F4, VR::IS, VM::M1, "Referenced Start Control Point Index" },
-{ 0x300C00F6, VR::IS, VM::M1, "Referenced Stop Control Point Index" },
-{ 0x300C0100, VR::IS, VM::M1, "Referenced Range Shifter Number" },
-{ 0x300C0102, VR::IS, VM::M1, "Referenced Lateral Spreading Device Number" },
-{ 0x300C0104, VR::IS, VM::M1, "Referenced Range Modulator Number" },
-{ 0x300E0002, VR::CS, VM::M1, "Approval Status" },
-{ 0x300E0004, VR::DA, VM::M1, "Review Date" },
-{ 0x300E0005, VR::TM, VM::M1, "Review Time" },
-{ 0x300E0008, VR::PN, VM::M1, "Reviewer Name" },
-{ 0x40000010, VR::LT, VM::M1, "Arbitrary" },
-{ 0x40004000, VR::LT, VM::M1, "Text Comments" },
-{ 0x40080040, VR::SH, VM::M1, "Results ID" },
-{ 0x40080042, VR::LO, VM::M1, "Results ID Issuer" },
-{ 0x40080050, VR::SQ, VM::M1, "Referenced Interpretation Sequence" },
-{ 0x400800FF, VR::CS, VM::M1, "Report Production Status (Trial)" },
-{ 0x40080100, VR::DA, VM::M1, "Interpretation Recorded Date" },
-{ 0x40080101, VR::TM, VM::M1, "Interpretation Recorded Time" },
-{ 0x40080102, VR::PN, VM::M1, "Interpretation Recorder" },
-{ 0x40080103, VR::LO, VM::M1, "Reference to Recorded Sound" },
-{ 0x40080108, VR::DA, VM::M1, "Interpretation Transcription Date" },
-{ 0x40080109, VR::TM, VM::M1, "Interpretation Transcription Time" },
-{ 0x4008010A, VR::PN, VM::M1, "Interpretation Transcriber" },
-{ 0x4008010B, VR::ST, VM::M1, "Interpretation Text" },
-{ 0x4008010C, VR::PN, VM::M1, "Interpretation Author" },
-{ 0x40080111, VR::SQ, VM::M1, "Interpretation Approver Sequence" },
-{ 0x40080112, VR::DA, VM::M1, "Interpretation Approval Date" },
-{ 0x40080113, VR::TM, VM::M1, "Interpretation Approval Time" },
-{ 0x40080114, VR::PN, VM::M1, "Physician Approving Interpretation" },
-{ 0x40080115, VR::LT, VM::M1, "Interpretation Diagnosis Description" },
-{ 0x40080117, VR::SQ, VM::M1, "Interpretation Diagnosis Code Sequence" },
-{ 0x40080118, VR::SQ, VM::M1, "Results Distribution List Sequence" },
-{ 0x40080119, VR::PN, VM::M1, "Distribution Name" },
-{ 0x4008011A, VR::LO, VM::M1, "Distribution Address" },
-{ 0x40080200, VR::SH, VM::M1, "Interpretation ID" },
-{ 0x40080202, VR::LO, VM::M1, "Interpretation ID Issuer" },
-{ 0x40080210, VR::CS, VM::M1, "Interpretation Type ID" },
-{ 0x40080212, VR::CS, VM::M1, "Interpretation Status ID" },
-{ 0x40080300, VR::ST, VM::M1, "Impressions" },
-{ 0x40084000, VR::ST, VM::M1, "Results Comments" },
-{ 0x40100001, VR::CS, VM::M1, "Low Energy Detectors" },
-{ 0x40100002, VR::CS, VM::M1, "High Energy Detectors" },
-{ 0x40100004, VR::SQ, VM::M1, "Detector Geometry Sequence" },
-{ 0x40101001, VR::SQ, VM::M1, "Threat ROI Voxel Sequence" },
-{ 0x40101004, VR::FL, VM::M3, "Threat ROI Base" },
-{ 0x40101005, VR::FL, VM::M3, "Threat ROI Extents" },
-{ 0x40101006, VR::OB, VM::M1, "Threat ROI Bitmap" },
-{ 0x40101007, VR::SH, VM::M1, "Route Segment ID" },
-{ 0x40101008, VR::CS, VM::M1, "Gantry Type" },
-{ 0x40101009, VR::CS, VM::M1, "OOI Owner Type" },
-{ 0x4010100A, VR::SQ, VM::M1, "Route Segment Sequence" },
-{ 0x40101010, VR::US, VM::M1, "Potential Threat Object ID" },
-{ 0x40101011, VR::SQ, VM::M1, "Threat Sequence" },
-{ 0x40101012, VR::CS, VM::M1, "Threat Category" },
-{ 0x40101013, VR::LT, VM::M1, "Threat Category Description" },
-{ 0x40101014, VR::CS, VM::M1, "ATD Ability Assessment" },
-{ 0x40101015, VR::CS, VM::M1, "ATD Assessment Flag" },
-{ 0x40101016, VR::FL, VM::M1, "ATD Assessment Probability" },
-{ 0x40101017, VR::FL, VM::M1, "Mass" },
-{ 0x40101018, VR::FL, VM::M1, "Density" },
-{ 0x40101019, VR::FL, VM::M1, "Z Effective" },
-{ 0x4010101A, VR::SH, VM::M1, "Boarding Pass ID" },
-{ 0x4010101B, VR::FL, VM::M3, "Center of Mass" },
-{ 0x4010101C, VR::FL, VM::M3, "Center of PTO" },
-{ 0x4010101D, VR::FL, VM::M6TN, "Bounding Polygon" },
-{ 0x4010101E, VR::SH, VM::M1, "Route Segment Start Location ID" },
-{ 0x4010101F, VR::SH, VM::M1, "Route Segment End Location ID" },
-{ 0x40101020, VR::CS, VM::M1, "Route Segment Location ID Type" },
-{ 0x40101021, VR::CS, VM::M1TN, "Abort Reason" },
-{ 0x40101023, VR::FL, VM::M1, "Volume of PTO" },
-{ 0x40101024, VR::CS, VM::M1, "Abort Flag" },
-{ 0x40101025, VR::DT, VM::M1, "Route Segment Start Time" },
-{ 0x40101026, VR::DT, VM::M1, "Route Segment End Time" },
-{ 0x40101027, VR::CS, VM::M1, "TDR Type" },
-{ 0x40101028, VR::CS, VM::M1, "International Route Segment" },
-{ 0x40101029, VR::LO, VM::M1TN, "Threat Detection Algorithm and Version" },
-{ 0x4010102A, VR::SH, VM::M1, "Assigned Location" },
-{ 0x4010102B, VR::DT, VM::M1, "Alarm Decision Time" },
-{ 0x40101031, VR::CS, VM::M1, "Alarm Decision" },
-{ 0x40101033, VR::US, VM::M1, "Number of Total Objects" },
-{ 0x40101034, VR::US, VM::M1, "Number of Alarm Objects" },
-{ 0x40101037, VR::SQ, VM::M1, "PTO Representation Sequence" },
-{ 0x40101038, VR::SQ, VM::M1, "ATD Assessment Sequence" },
-{ 0x40101039, VR::CS, VM::M1, "TIP Type" },
-{ 0x4010103A, VR::CS, VM::M1, "DICOS Version" },
-{ 0x40101041, VR::DT, VM::M1, "OOI Owner Creation Time" },
-{ 0x40101042, VR::CS, VM::M1, "OOI Type" },
-{ 0x40101043, VR::FL, VM::M3, "OOI Size" },
-{ 0x40101044, VR::CS, VM::M1, "Acquisition Status" },
-{ 0x40101045, VR::SQ, VM::M1, "Basis Materials Code Sequence" },
-{ 0x40101046, VR::CS, VM::M1, "Phantom Type" },
-{ 0x40101047, VR::SQ, VM::M1, "OOI Owner Sequence" },
-{ 0x40101048, VR::CS, VM::M1, "Scan Type" },
-{ 0x40101051, VR::LO, VM::M1, "Itinerary ID" },
-{ 0x40101052, VR::SH, VM::M1, "Itinerary ID Type" },
-{ 0x40101053, VR::LO, VM::M1, "Itinerary ID Assigning Authority" },
-{ 0x40101054, VR::SH, VM::M1, "Route ID" },
-{ 0x40101055, VR::SH, VM::M1, "Route ID Assigning Authority" },
-{ 0x40101056, VR::CS, VM::M1, "Inbound  Arrival Type" },
-{ 0x40101058, VR::SH, VM::M1, "Carrier ID" },
-{ 0x40101059, VR::CS, VM::M1, "Carrier ID Assigning Authority" },
-{ 0x40101060, VR::FL, VM::M3, "Source Orientation" },
-{ 0x40101061, VR::FL, VM::M3, "Source Position" },
-{ 0x40101062, VR::FL, VM::M1, "Belt Height" },
-{ 0x40101064, VR::SQ, VM::M1, "Algorithm Routing Code Sequence" },
-{ 0x40101067, VR::CS, VM::M1, "Transport Classification" },
-{ 0x40101068, VR::LT, VM::M1, "OOI Type Descriptor" },
-{ 0x40101069, VR::FL, VM::M1, "Total Processing Time" },
-{ 0x4010106C, VR::OB, VM::M1, "Detector Calibration Data" },
+vtkDICOMMetaData::DictElement DictRow0000[] = {
+{ 0x0008, 0x0008, VR::CS, VM::M2TN, "Image Type" },
+{ 0x0008, 0x1049, VR::SQ, VM::M1, "Physician(s) of Record Identification Sequence" },
+{ 0x0010, 0x0010, VR::PN, VM::M1, "Patient's Name" },
+{ 0x0018, 0x9251, VR::SQ, VM::M1, "MR Arterial Spin Labeling Sequence" },
+{ 0x0020, 0x0020, VR::CS, VM::M2, "Patient Orientation" },
+{ 0x0022, 0x0022, VR::SQ, VM::M1, "Right Image Sequence" },
+{ 0x0024, 0x0024, VR::SQ, VM::M1, "Background Illumination Color Code Sequence" },
+{ 0x0028, 0x0808, VR::AT, VM::M1TN, "Image Data Location" },
+{ 0x0032, 0x0032, VR::DA, VM::M1, "Study Verified Date" },
+{ 0x0040, 0x1001, VR::SH, VM::M1, "Requested Procedure ID" },
+{ 0x0046, 0x0046, VR::FD, VM::M1, "Corneal Size" },
+{ 0x0072, 0x0072, VR::DS, VM::M1TN, "Selector DS Value" },
+{ 0x0400, 0x0010, VR::UI, VM::M1, "MAC Calculation Transfer Syntax UID" },
+{ 0x2020, 0x00A2, VR::CS, VM::M1, "Decimate/Crop Result" },
+{ 0x4000, 0x4000, VR::LT, VM::M1, "Text Comments" },
+{ 0x4008, 0x010C, VR::PN, VM::M1, "Interpretation Author" },
+{ 0, 0, 0, 0 }
 };
-
-vtkDICOMMetaData::DictElement *DictRows[] = {
-&DictElements[1753], &DictElements[2688], &DictElements[3424], NULL,
-&DictElements[54],  &DictElements[1836], &DictElements[2740], &DictElements[2773], &DictElements[3392], NULL,
-&DictElements[133], &DictElements[2812], NULL,
-&DictElements[1707], &DictElements[2281], &DictElements[2481], &DictElements[3131], NULL,
-&DictElements[256], &DictElements[1754], &DictElements[2678], &DictElements[2689], &DictElements[2776], &DictElements[2839], &DictElements[3352], &DictElements[3425], NULL,
-&DictElements[115], &DictElements[343], &DictElements[1837], &DictElements[2668], &DictElements[3391], NULL,
-&DictElements[2813], &DictElements[2862], &DictElements[3005], NULL,
-&DictElements[1708], &DictElements[3130], &DictElements[3272], NULL,
-&DictElements[3],   &DictElements[1755], &DictElements[2690], &DictElements[3426], NULL,
-&DictElements[721], &DictElements[1443], &DictElements[1838], &DictElements[3390], NULL,
-&DictElements[3006], NULL,
-&DictElements[1705], &DictElements[2480], NULL,
-&DictElements[2691], &DictElements[2840], &DictElements[3351], &DictElements[3427], NULL,
-&DictElements[114], &DictElements[722], &DictElements[1442], &DictElements[3389], NULL,
-&DictElements[2861], &DictElements[3007], NULL,
-&DictElements[1706], &DictElements[3132], &DictElements[3273], NULL,
-&DictElements[170], &DictElements[185], &DictElements[434], &DictElements[1622], &DictElements[1749], &DictElements[2675], &DictElements[2692], &DictElements[2716], &DictElements[2837], &DictElements[3420], NULL,
-&DictElements[57],  &DictElements[117], &DictElements[720], &DictElements[2371], &DictElements[2669], &DictElements[2679], &DictElements[2714], NULL,
-&DictElements[1661], &DictElements[3008], NULL,
-&DictElements[1462], &DictElements[2479], &DictElements[3275], NULL,
-&DictElements[435], &DictElements[1300], &DictElements[1750], &DictElements[2664], &DictElements[2693], &DictElements[3350], &DictElements[3421], NULL,
-&DictElements[2729], NULL,
-&DictElements[1662], &DictElements[2860], &DictElements[3378], NULL,
-&DictElements[550], &DictElements[1463], &DictElements[2010], &DictElements[3133], &DictElements[3274], NULL,
-&DictElements[432], &DictElements[606], &DictElements[1621], &DictElements[1751], &DictElements[2677], &DictElements[3349], &DictElements[3422], NULL,
-&DictElements[56],  &DictElements[679], &DictElements[719], &DictElements[2644], NULL,
-&DictElements[221], &DictElements[2814], &DictElements[3009], NULL,
-&DictElements[1464], &DictElements[1709], &DictElements[2478], &DictElements[2673], &DictElements[3276], NULL,
-&DictElements[433], &DictElements[1752], &DictElements[2676], &DictElements[2838], &DictElements[3348], &DictElements[3423], NULL,
-&DictElements[55],  &DictElements[116], &DictElements[2319], &DictElements[3393], NULL,
-&DictElements[1246], NULL,
-&DictElements[1710], &DictElements[2009], &DictElements[3134], NULL,
-&DictElements[430], &DictElements[559], &DictElements[1081], &DictElements[1299], &DictElements[2743], &DictElements[3347], &DictElements[3432], NULL,
-&DictElements[49],  &DictElements[1379], &DictElements[3388], NULL,
-&DictElements[134], &DictElements[1217], &DictElements[2815], &DictElements[2991], &DictElements[3195], &DictElements[3377], &DictElements[3403], NULL,
-&DictElements[548], &DictElements[591], &DictElements[2477], NULL,
-&DictElements[270], &DictElements[431], &DictElements[558], &DictElements[1298], &DictElements[2843], &DictElements[3346], &DictElements[3433], NULL,
-&DictElements[48],  &DictElements[120], &DictElements[3387], NULL,
-&DictElements[64],  &DictElements[135], &DictElements[580], &DictElements[1245], &DictElements[3376], NULL,
-&DictElements[547], &DictElements[3125], &DictElements[3407], NULL,
-&DictElements[369], &DictElements[429], &DictElements[557], &DictElements[1082], &DictElements[3434], NULL,
-&DictElements[86],  &DictElements[119], &DictElements[569], &DictElements[1380], &DictElements[2369], &DictElements[3374], &DictElements[3386], NULL,
-&DictElements[1215], &DictElements[1586], &DictElements[1598], &DictElements[2992], &DictElements[3000], &DictElements[3196], &DictElements[3404], NULL,
-&DictElements[592], &DictElements[1270], &DictElements[2476], NULL,
-&DictElements[0],   &DictElements[271], &DictElements[370], &DictElements[2844], &DictElements[3345], &DictElements[3435], NULL,
-&DictElements[47],  &DictElements[118], &DictElements[487], &DictElements[570], &DictElements[2370], &DictElements[2969], &DictElements[3385], NULL,
-&DictElements[581], &DictElements[1216], &DictElements[1244], &DictElements[1587], &DictElements[3001], NULL,
-&DictElements[549], &DictElements[1388], &DictElements[2628], &DictElements[3126], &DictElements[3269], NULL,
-&DictElements[2],   &DictElements[368], &DictElements[428], &DictElements[1083], &DictElements[1297], &DictElements[3428], NULL,
-&DictElements[53],  &DictElements[1377], &DictElements[2367], &DictElements[3373], NULL,
-&DictElements[533], &DictElements[1584], &DictElements[1596], &DictElements[2818], &DictElements[3002], &DictElements[3329], NULL,
-&DictElements[1269], &DictElements[2414], &DictElements[2475], NULL,
-&DictElements[1296], &DictElements[2841], &DictElements[3344], &DictElements[3429], NULL,
-&DictElements[52],  NULL,
-&DictElements[1243], &DictElements[1585], &DictElements[1597], NULL,
-&DictElements[545], &DictElements[1268], &DictElements[3127], &DictElements[3270], NULL,
-&DictElements[66],  &DictElements[367], &DictElements[426], &DictElements[1084], &DictElements[3430], NULL,
-&DictElements[51],  &DictElements[85],  &DictElements[486], &DictElements[626], &DictElements[1378], &DictElements[2368], &DictElements[2970], &DictElements[3372], NULL,
-&DictElements[1281], &DictElements[1594], &DictElements[2816], &DictElements[2864], &DictElements[3003], &DictElements[3197], NULL,
-&DictElements[1267], &DictElements[1387], &DictElements[2474], &DictElements[3129], NULL,
-&DictElements[1],   &DictElements[427], &DictElements[2842], &DictElements[3431], NULL,
-&DictElements[50],  &DictElements[84],  &DictElements[485], NULL,
-&DictElements[1556], &DictElements[1595], &DictElements[2817], &DictElements[2863], &DictElements[3004], &DictElements[3330], &DictElements[3375], NULL,
-&DictElements[546], &DictElements[1266], &DictElements[1290], &DictElements[2413], &DictElements[3128], &DictElements[3271], NULL,
-&DictElements[10],  &DictElements[1406], &DictElements[2665], &DictElements[2695], &DictElements[3379], &DictElements[3411], &DictElements[3413], NULL,
-&DictElements[123], &DictElements[345], &DictElements[1834], &DictElements[2136], &DictElements[2739], &DictElements[2774], NULL,
-&DictElements[136], &DictElements[2041], &DictElements[2821], &DictElements[3016], &DictElements[3202], NULL,
-&DictElements[590], &DictElements[1701], &DictElements[2279], &DictElements[2489], NULL,
-&DictElements[11],  &DictElements[184], &DictElements[293], &DictElements[2847], &DictElements[3414], NULL,
-&DictElements[122], &DictElements[344], &DictElements[1835], &DictElements[2135], &DictElements[2670], &DictElements[3402], NULL,
-&DictElements[285], &DictElements[579], &DictElements[2042], &DictElements[2300], &DictElements[2868], NULL,
-&DictElements[1702], &DictElements[2008], &DictElements[3141], &DictElements[3280], NULL,
-&DictElements[9],   &DictElements[1404], &DictElements[3415], NULL,
-&DictElements[568], &DictElements[2138], &DictElements[3401], NULL,
-&DictElements[1224], &DictElements[2819], &DictElements[3017], &DictElements[3203], NULL,
-&DictElements[2488], NULL,
-&DictElements[1405], &DictElements[3416], NULL,
-&DictElements[121], &DictElements[346], &DictElements[2137], &DictElements[3400], NULL,
-&DictElements[284], &DictElements[1225], &DictElements[1737], &DictElements[2040], &DictElements[2820], &DictElements[2867], NULL,
-&DictElements[1700], &DictElements[2007], &DictElements[2674], &DictElements[3142], NULL,
-&DictElements[181], &DictElements[1308], &DictElements[2694], NULL,
-&DictElements[179], &DictElements[1740], &DictElements[2671], &DictElements[2680], &DictElements[2715], NULL,
-&DictElements[1640], &DictElements[1657], NULL,
-&DictElements[1465], &DictElements[2487], NULL,
-&DictElements[182], &DictElements[1307], &DictElements[2666], &DictElements[2845], &DictElements[3409], &DictElements[3412], NULL,
-&DictElements[347], &DictElements[1739], &DictElements[2728], NULL,
-&DictElements[1503], &DictElements[1658], &DictElements[2866], NULL,
-&DictElements[2006], &DictElements[2280], &DictElements[3143], NULL,
-&DictElements[183], &DictElements[425], &DictElements[605], &DictElements[1407], &DictElements[1619], &DictElements[2332], &DictElements[3410], NULL,
-&DictElements[125], &DictElements[349], &DictElements[2645], NULL,
-&DictElements[1241], &DictElements[1504], &DictElements[1659], NULL,
-&DictElements[1389], &DictElements[1703], &DictElements[2417], &DictElements[2486], &DictElements[3145], NULL,
-&DictElements[1620], &DictElements[2846], NULL,
-&DictElements[124], &DictElements[180], &DictElements[348], &DictElements[2318], NULL,
-&DictElements[286], &DictElements[1242], &DictElements[1505], &DictElements[1660], &DictElements[2865], NULL,
-&DictElements[1704], &DictElements[2005], &DictElements[2418], &DictElements[3144], NULL,
-&DictElements[5],   &DictElements[423], &DictElements[554], &DictElements[1085], &DictElements[1304], &DictElements[2744], &DictElements[2910], NULL,
-&DictElements[351], &DictElements[2786], &DictElements[3396], NULL,
-&DictElements[1220], &DictElements[3010], &DictElements[3198], &DictElements[3405], NULL,
-&DictElements[586], &DictElements[2485], &DictElements[3136], NULL,
-&DictElements[6],   &DictElements[289], &DictElements[424], &DictElements[553], &DictElements[1303], NULL,
-&DictElements[59],  &DictElements[350], &DictElements[2751], &DictElements[3395], NULL,
-&DictElements[281], &DictElements[575], NULL,
-&DictElements[3135], NULL,
-&DictElements[4],   &DictElements[421], &DictElements[552], &DictElements[1086], &DictElements[1306], &DictElements[2909], NULL,
-&DictElements[567], &DictElements[3394], NULL,
-&DictElements[1218], &DictElements[1239], &DictElements[3011], &DictElements[3199], &DictElements[3406], NULL,
-&DictElements[587], &DictElements[1265], &DictElements[2416], &DictElements[2484], NULL,
-&DictElements[290], &DictElements[422], &DictElements[551], &DictElements[1305], NULL,
-&DictElements[58],  &DictElements[352], &DictElements[2971], NULL,
-&DictElements[280], &DictElements[576], &DictElements[1219], &DictElements[1240], &DictElements[1280], &DictElements[3012], NULL,
-&DictElements[2629], &DictElements[3137], &DictElements[3277], NULL,
-&DictElements[8],   &DictElements[419], &DictElements[596], &DictElements[1107], &DictElements[2754], &DictElements[2912], &DictElements[3417], NULL,
-&DictElements[63],  &DictElements[2792], &DictElements[3399], NULL,
-&DictElements[109], &DictElements[531], &DictElements[1222], &DictElements[1768], &DictElements[3013], &DictElements[3200], NULL,
-&DictElements[543], &DictElements[588], &DictElements[2483], &DictElements[3139], NULL,
-&DictElements[291], &DictElements[420], &DictElements[597], &DictElements[1087], &DictElements[3418], NULL,
-&DictElements[62],  &DictElements[353], &DictElements[2972], NULL,
-&DictElements[283], &DictElements[532], &DictElements[577], &DictElements[1223], &DictElements[3014], &DictElements[3331], NULL,
-&DictElements[542], &DictElements[1264], &DictElements[2415], &DictElements[3138], &DictElements[3278], NULL,
-&DictElements[7],   &DictElements[65],  &DictElements[418], &DictElements[556], &DictElements[594], &DictElements[1302], &DictElements[2696], &DictElements[2911], &DictElements[3419], NULL,
-&DictElements[61],  &DictElements[627], &DictElements[3398], NULL,
-&DictElements[1279], &DictElements[1592], &DictElements[3015], &DictElements[3201], NULL,
-&DictElements[589], &DictElements[1263], &DictElements[2482], NULL,
-&DictElements[292], &DictElements[555], &DictElements[595], &DictElements[1088], &DictElements[1301], NULL,
-&DictElements[60],  &DictElements[83],  &DictElements[484], &DictElements[3397], NULL,
-&DictElements[282], &DictElements[578], &DictElements[1221], &DictElements[1593], &DictElements[3332], NULL,
-&DictElements[544], &DictElements[3140], &DictElements[3279], NULL,
-&DictElements[18],  &DictElements[69],  &DictElements[1392], &DictElements[1468], &DictElements[1613], &DictElements[2667], &DictElements[2697], &DictElements[2918], &DictElements[3449], NULL,
-&DictElements[668], &DictElements[711], &DictElements[1433], &DictElements[2140], &DictElements[2759], NULL,
-&DictElements[129], &DictElements[1195], &DictElements[1444], &DictElements[1502], &DictElements[1653], &DictElements[2823], &DictElements[3025], &DictElements[3207], NULL,
-&DictElements[1446], &DictElements[2020], &DictElements[3154], NULL,
-&DictElements[70],  &DictElements[245], &DictElements[266], &DictElements[1393], &DictElements[1469], &DictElements[2777], &DictElements[2919], NULL,
-&DictElements[354], &DictElements[1432], &DictElements[2139], &DictElements[2584], &DictElements[2672], NULL,
-&DictElements[1196], &DictElements[1654], &DictElements[2299], &DictElements[2872], &DictElements[3208], NULL,
-&DictElements[1445], &DictElements[2019], &DictElements[3153], NULL,
-&DictElements[1467], &DictElements[1525], &DictElements[1612], NULL,
-&DictElements[667], &DictElements[710], &DictElements[1431], &DictElements[2142], &DictElements[2760], NULL,
-&DictElements[1193], &DictElements[1472], &DictElements[2822], &DictElements[3026], &DictElements[3209], NULL,
-&DictElements[1448], &DictElements[1713], &DictElements[2018], NULL,
-&DictElements[246], &DictElements[267], &DictElements[1453], &DictElements[1524], &DictElements[3450], NULL,
-&DictElements[355], &DictElements[1430], &DictElements[2141], &DictElements[2585], NULL,
-&DictElements[1194], &DictElements[2871], &DictElements[3027], &DictElements[3210], NULL,
-&DictElements[1447], &DictElements[2017], &DictElements[3155], NULL,
-&DictElements[175], &DictElements[188], &DictElements[392], &DictElements[1396], &DictElements[1452], &DictElements[1457], &DictElements[2717], NULL,
-&DictElements[665], &DictElements[709], &DictElements[1369], &DictElements[1437], &DictElements[1492], &DictElements[1786], &DictElements[2681], &DictElements[2761], NULL,
-&DictElements[130], &DictElements[1199], &DictElements[1473], &DictElements[1638], &DictElements[1649], &DictElements[2825], &DictElements[3028], &DictElements[3211], NULL,
-&DictElements[1458], NULL,
-&DictElements[247], &DictElements[268], &DictElements[1069], &DictElements[1451], &DictElements[1456], &DictElements[3447], NULL,
-&DictElements[91],  &DictElements[356], &DictElements[497], &DictElements[666], &DictElements[1436], &DictElements[1491], &DictElements[2586], &DictElements[2731], NULL,
-&DictElements[1499], &DictElements[1650], &DictElements[2870], &DictElements[3029], NULL,
-&DictElements[1459], &DictElements[3156], NULL,
-&DictElements[151], &DictElements[176], &DictElements[390], &DictElements[604], &DictElements[1070], &DictElements[1394], &DictElements[1450], &DictElements[1455], &DictElements[1470], &DictElements[1534], &DictElements[1610], &DictElements[2331], &DictElements[2920], NULL,
-&DictElements[663], &DictElements[707], &DictElements[1435], &DictElements[1490], NULL,
-&DictElements[224], &DictElements[803], &DictElements[1197], &DictElements[1500], &DictElements[1651], &DictElements[2824], &DictElements[3212], NULL,
-&DictElements[849], &DictElements[1384], &DictElements[1460], &DictElements[2016], &DictElements[2402], NULL,
-&DictElements[269], &DictElements[391], &DictElements[1395], &DictElements[1449], &DictElements[1454], &DictElements[1611], &DictElements[3448], NULL,
-&DictElements[496], &DictElements[664], &DictElements[708], &DictElements[1434], &DictElements[1535], &DictElements[2317], &DictElements[2587], NULL,
-&DictElements[225], &DictElements[1198], &DictElements[1238], &DictElements[1501], &DictElements[1652], &DictElements[2869], NULL,
-&DictElements[848], &DictElements[1385], &DictElements[1714], &DictElements[2015], &DictElements[2403], &DictElements[3157], NULL,
-&DictElements[14],  &DictElements[287], &DictElements[388], &DictElements[1399], &DictElements[1618], &DictElements[2915], NULL,
-&DictElements[495], &DictElements[672], &DictElements[1365], NULL,
-&DictElements[131], &DictElements[802], &DictElements[1187], &DictElements[2993], &DictElements[3018], NULL,
-&DictElements[847], &DictElements[1382], &DictElements[2400], &DictElements[3147], NULL,
-&DictElements[15],  &DictElements[389], &DictElements[882], NULL,
-&DictElements[494], &DictElements[1096], &DictElements[1366], &DictElements[2580], &DictElements[2974], NULL,
-&DictElements[1188], &DictElements[3019], &DictElements[3337], NULL,
-&DictElements[846], &DictElements[1383], &DictElements[2401], &DictElements[2606], &DictElements[3146], &DictElements[3281], NULL,
-&DictElements[12],  &DictElements[386], &DictElements[883], &DictElements[1397], &DictElements[1471], &DictElements[1616], &DictElements[2913], NULL,
-&DictElements[493], &DictElements[573], &DictElements[671], &DictElements[713], &DictElements[1367], &DictElements[1439], NULL,
-&DictElements[800], &DictElements[1099], &DictElements[2826], &DictElements[3020], &DictElements[3204], NULL,
-&DictElements[845], &DictElements[2398], &DictElements[3149], NULL,
-&DictElements[13],  &DictElements[263], &DictElements[288], &DictElements[387], &DictElements[1398], &DictElements[1617], &DictElements[2914], NULL,
-&DictElements[90],  &DictElements[492], &DictElements[574], &DictElements[1368], &DictElements[1438], &DictElements[2581], &DictElements[2973], NULL,
-&DictElements[279], &DictElements[801], &DictElements[1186], &DictElements[2827], &DictElements[2875], &DictElements[2994], &DictElements[3021], NULL,
-&DictElements[2399], &DictElements[2626], &DictElements[3148], &DictElements[3282], NULL,
-&DictElements[68],  &DictElements[384], &DictElements[1614], &DictElements[2753], &DictElements[3451], NULL,
-&DictElements[670], &DictElements[1097], &DictElements[1362], &DictElements[2359], &DictElements[2791], NULL,
-&DictElements[154], &DictElements[798], &DictElements[1191], &DictElements[1278], &DictElements[1583], &DictElements[1655], &DictElements[2995], &DictElements[3205], &DictElements[3334], NULL,
-&DictElements[2396], &DictElements[3151], NULL,
-&DictElements[264], &DictElements[385], &DictElements[1615], &DictElements[3354], &DictElements[3452], NULL,
-&DictElements[196], &DictElements[2360], &DictElements[2582], NULL,
-&DictElements[799], &DictElements[1192], &DictElements[1381], &DictElements[2874], &DictElements[3022], &DictElements[3333], NULL,
-&DictElements[2397], &DictElements[2608], &DictElements[3150], NULL,
-&DictElements[16],  &DictElements[67],  &DictElements[382], &DictElements[439], &DictElements[2916], &DictElements[3453], NULL,
-&DictElements[491], &DictElements[669], &DictElements[712], &DictElements[1363], &DictElements[2361], NULL,
-&DictElements[210], &DictElements[796], &DictElements[1189], &DictElements[1237], &DictElements[1276], &DictElements[1590], &DictElements[1639], &DictElements[1656], &DictElements[3023], &DictElements[3206], &DictElements[3336], NULL,
-&DictElements[2469], NULL,
-&DictElements[17],  &DictElements[265], &DictElements[383], &DictElements[2917], &DictElements[3353], NULL,
-&DictElements[89],  &DictElements[490], &DictElements[1364], &DictElements[2583], NULL,
-&DictElements[797], &DictElements[1190], &DictElements[1277], &DictElements[1591], &DictElements[2873], &DictElements[3024], &DictElements[3335], NULL,
-&DictElements[1289], &DictElements[2395], &DictElements[2607], &DictElements[3152], NULL,
-&DictElements[174], &DictElements[603], &DictElements[1079], &DictElements[1402], &DictElements[1513], &DictElements[1533], &DictElements[2698], &DictElements[2926], &DictElements[3439], NULL,
-&DictElements[676], &DictElements[717], &DictElements[1634], &DictElements[2144], &DictElements[2741], &DictElements[2758], &DictElements[2775], NULL,
-&DictElements[1210], &DictElements[1498], &DictElements[1636], &DictElements[2829], &DictElements[3217], NULL,
-NULL,
-&DictElements[257], &DictElements[262], &DictElements[1080], &DictElements[1512], &DictElements[2778], &DictElements[2927], &DictElements[3440], NULL,
-&DictElements[113], &DictElements[357], &DictElements[1527], &DictElements[2143], &DictElements[2980], NULL,
-&DictElements[276], &DictElements[1211], &DictElements[1637], &DictElements[1644], &DictElements[2295], &DictElements[2878], NULL,
-&DictElements[3287], NULL,
-&DictElements[241], &DictElements[601], &DictElements[1400], &DictElements[1511], &DictElements[1532], &DictElements[1608], &DictElements[3441], NULL,
-&DictElements[112], &DictElements[612], &DictElements[675], &DictElements[716], &DictElements[1441], &DictElements[1543], &DictElements[1633], &DictElements[2146], NULL,
-&DictElements[1208], &DictElements[1582], &DictElements[2828], NULL,
-&DictElements[1711], NULL,
-&DictElements[602], &DictElements[1401], &DictElements[1632], &DictElements[2330], &DictElements[3442], NULL,
-&DictElements[111], &DictElements[358], &DictElements[611], &DictElements[1440], &DictElements[1489], &DictElements[1526], &DictElements[2145], &DictElements[2979], NULL,
-&DictElements[275], &DictElements[1209], NULL,
-&DictElements[1712], &DictElements[2014], &DictElements[3288], NULL,
-&DictElements[171], &DictElements[186], &DictElements[243], &DictElements[381], &DictElements[599], &DictElements[1517], &DictElements[1530], &DictElements[1757], &DictElements[3436], NULL,
-&DictElements[610], &DictElements[674], &DictElements[715], &DictElements[1376], &DictElements[1488], NULL,
-&DictElements[1214], &DictElements[1494], &DictElements[1581], &DictElements[1641], &DictElements[2296], &DictElements[2877], NULL,
-&DictElements[1461], &DictElements[1672], &DictElements[2013], NULL,
-&DictElements[172], &DictElements[187], &DictElements[242], &DictElements[600], &DictElements[1295], &DictElements[1516], &DictElements[1531], &DictElements[3437], NULL,
-&DictElements[359], &DictElements[609], &DictElements[1487], &DictElements[2730], NULL,
-&DictElements[278], &DictElements[1495], NULL,
-&DictElements[1506], &DictElements[1631], &DictElements[1671], &DictElements[2012], &DictElements[3289], NULL,
-&DictElements[173], &DictElements[379], &DictElements[1403], &DictElements[1515], &DictElements[1529], &DictElements[1758], &DictElements[2329], NULL,
-&DictElements[608], &DictElements[673], &DictElements[714], &DictElements[1486], &DictElements[2366], &DictElements[2643], NULL,
-&DictElements[222], &DictElements[1115], &DictElements[1212], &DictElements[1236], &DictElements[1496], &DictElements[1642], &DictElements[2298], &DictElements[2830], NULL,
-&DictElements[2412], NULL,
-&DictElements[150], &DictElements[380], &DictElements[598], &DictElements[1514], &DictElements[3438], NULL,
-&DictElements[360], &DictElements[607], &DictElements[1485], &DictElements[1528], &DictElements[1630], &DictElements[2316], &DictElements[2981], NULL,
-&DictElements[223], &DictElements[277], &DictElements[795], &DictElements[1116], &DictElements[1213], &DictElements[1497], &DictElements[1643], &DictElements[2297], &DictElements[2876], NULL,
-&DictElements[1673], &DictElements[2011], NULL,
-&DictElements[21],  &DictElements[377], &DictElements[1071], &DictElements[1105], &DictElements[1118], &DictElements[1519], &DictElements[2742], &DictElements[2922], NULL,
-&DictElements[1373], &DictElements[2750], &DictElements[2785], NULL,
-&DictElements[132], &DictElements[1114], &DictElements[1202], &DictElements[1648], &DictElements[2996], &DictElements[3213], &DictElements[3342], NULL,
-&DictElements[593], &DictElements[2410], &DictElements[2473], NULL,
-&DictElements[22],  &DictElements[244], &DictElements[378], &DictElements[1072], &DictElements[1106], &DictElements[2923], NULL,
-&DictElements[361], &DictElements[1098], &DictElements[1374], &DictElements[2588], &DictElements[2749], &DictElements[2976], NULL,
-&DictElements[272], &DictElements[582], &DictElements[794], &DictElements[1203], &DictElements[1235], &DictElements[3341], NULL,
-&DictElements[844], &DictElements[1386], &DictElements[2411], &DictElements[3158], &DictElements[3283], NULL,
-&DictElements[19],  &DictElements[375], &DictElements[1073], &DictElements[1120], &DictElements[2921], NULL,
-&DictElements[88],  &DictElements[571], NULL,
-&DictElements[584], &DictElements[792], &DictElements[1113], &DictElements[1200], &DictElements[3214], NULL,
-&DictElements[843], &DictElements[2408], &DictElements[2472], NULL,
-&DictElements[20],  &DictElements[259], &DictElements[376], &DictElements[1074], &DictElements[1119], &DictElements[1294], &DictElements[1518], NULL,
-&DictElements[362], &DictElements[572], &DictElements[1375], &DictElements[2589], &DictElements[2975], NULL,
-&DictElements[583], &DictElements[793], &DictElements[1201], &DictElements[3343], NULL,
-&DictElements[842], &DictElements[2409], &DictElements[3284], NULL,
-&DictElements[195], &DictElements[373], &DictElements[437], &DictElements[1075], &DictElements[1101], &DictElements[1122], &DictElements[1292], &DictElements[1523], &DictElements[2924], &DictElements[3443], NULL,
-&DictElements[678], &DictElements[1370], &DictElements[2362], &DictElements[2790], NULL,
-&DictElements[208], &DictElements[790], &DictElements[1112], &DictElements[1206], &DictElements[1645], &DictElements[3215], &DictElements[3338], NULL,
-&DictElements[841], &DictElements[1262], &DictElements[2406], &DictElements[2471], NULL,
-&DictElements[260], &DictElements[374], &DictElements[438], &DictElements[1076], &DictElements[1102], &DictElements[1121], &DictElements[1291], &DictElements[1522], &DictElements[2925], &DictElements[3444], NULL,
-&DictElements[363], &DictElements[1117], &DictElements[2363], &DictElements[2590], &DictElements[2978], NULL,
-&DictElements[209], &DictElements[274], &DictElements[585], &DictElements[791], &DictElements[1207], &DictElements[1646], NULL,
-&DictElements[840], &DictElements[2407], &DictElements[3159], &DictElements[3285], NULL,
-&DictElements[23],  &DictElements[371], &DictElements[436], &DictElements[1077], &DictElements[1103], &DictElements[1521], &DictElements[1609], &DictElements[3445], NULL,
-&DictElements[489], &DictElements[677], &DictElements[718], &DictElements[1371], &DictElements[2364], &DictElements[2592], NULL,
-&DictElements[788], &DictElements[1111], &DictElements[1204], &DictElements[1588], &DictElements[1647], &DictElements[2880], &DictElements[3216], &DictElements[3340], NULL,
-&DictElements[839], &DictElements[1261], &DictElements[2404], &DictElements[2470], &DictElements[2627], NULL,
-&DictElements[24],  &DictElements[261], &DictElements[372], &DictElements[1078], &DictElements[1104], &DictElements[1123], &DictElements[1293], &DictElements[1520], &DictElements[3446], NULL,
-&DictElements[87],  &DictElements[364], &DictElements[488], &DictElements[1372], &DictElements[2365], &DictElements[2591], &DictElements[2977], NULL,
-&DictElements[207], &DictElements[273], &DictElements[789], &DictElements[1205], &DictElements[1589], &DictElements[2879], &DictElements[3339], NULL,
-&DictElements[838], &DictElements[1260], &DictElements[1288], &DictElements[2405], &DictElements[3286], NULL,
-&DictElements[645], &DictElements[698], &DictElements[1685], &DictElements[1776], &DictElements[1811], &DictElements[1917], &DictElements[2074], &DictElements[2169], &DictElements[2195], &DictElements[2639], &DictElements[2755], NULL,
-&DictElements[1414], &DictElements[2150], &DictElements[2167], &DictElements[2173], &DictElements[2699], &DictElements[2721], &DictElements[2769], &DictElements[3465], NULL,
-&DictElements[1977], &DictElements[2094], &DictElements[2182], &DictElements[2278], NULL,
-&DictElements[2159], &DictElements[2833], &DictElements[3035], NULL,
-&DictElements[515], &DictElements[1686], &DictElements[1777], &DictElements[1790], &DictElements[1812], &DictElements[2163], &DictElements[2168], &DictElements[2194], &DictElements[2569], &DictElements[2735], &DictElements[2756], NULL,
-&DictElements[252], &DictElements[1415], &DictElements[1745], &DictElements[2151], &DictElements[2174], &DictElements[3466], NULL,
-&DictElements[1978], &DictElements[1997], &DictElements[2095], &DictElements[2153], &DictElements[2181], &DictElements[3164], &DictElements[3294], NULL,
-&DictElements[1729], &DictElements[1953], &DictElements[2294], &DictElements[2885], NULL,
-&DictElements[644], &DictElements[697], &DictElements[1542], &DictElements[1687], &DictElements[1778], &DictElements[2571], &DictElements[2638], NULL,
-&DictElements[1412], &DictElements[2175], &DictElements[2935], &DictElements[3467], NULL,
-&DictElements[1975], &DictElements[1996], &DictElements[2070], &DictElements[2093], &DictElements[2180], NULL,
-&DictElements[2158], &DictElements[2185], &DictElements[2831], &DictElements[2884], &DictElements[3036], NULL,
-&DictElements[307], &DictElements[365], &DictElements[1779], &DictElements[2170], &DictElements[2570], NULL,
-&DictElements[253], &DictElements[1413], &DictElements[2176], NULL,
-&DictElements[1976], &DictElements[1995], &DictElements[2152], &DictElements[2179], &DictElements[3165], &DictElements[3295], NULL,
-&DictElements[1728], &DictElements[2832], &DictElements[2883], &DictElements[3037], NULL,
-&DictElements[219], &DictElements[643], &DictElements[696], &DictElements[1990], &DictElements[2573], &DictElements[2780], NULL,
-&DictElements[178], &DictElements[190], &DictElements[1334], &DictElements[1417], &DictElements[1787], &DictElements[2177], &DictElements[2719], &DictElements[2779], NULL,
-&DictElements[2091], NULL,
-&DictElements[2161], &DictElements[3038], NULL,
-&DictElements[98],  &DictElements[308], &DictElements[366], &DictElements[514], &DictElements[1773], &DictElements[1813], &DictElements[1989], &DictElements[2171], &DictElements[2572], &DictElements[2733], NULL,
-&DictElements[254], &DictElements[1333], &DictElements[2178], &DictElements[2848], &DictElements[3462], NULL,
-&DictElements[1762], &DictElements[1994], &DictElements[2092], &DictElements[3166], &DictElements[3296], NULL,
-&DictElements[1731], &DictElements[2882], NULL,
-&DictElements[642], &DictElements[695], &DictElements[1774], &DictElements[1814], &DictElements[1992], &DictElements[2637], NULL,
-&DictElements[1743], &DictElements[1789], &DictElements[2328], &DictElements[2720], &DictElements[3463], NULL,
-&DictElements[1979], &DictElements[2071], &DictElements[2388], &DictElements[2461], NULL,
-&DictElements[228], &DictElements[2160], &DictElements[3039], NULL,
-&DictElements[309], &DictElements[1775], &DictElements[1991], &DictElements[2172], &DictElements[2315], &DictElements[2734], NULL,
-&DictElements[255], &DictElements[1416], &DictElements[1744], &DictElements[1788], &DictElements[2849], &DictElements[3464], NULL,
-&DictElements[1761], &DictElements[2072], &DictElements[2090], &DictElements[2389], &DictElements[3167], NULL,
-&DictElements[229], &DictElements[1730], &DictElements[2881], &DictElements[3040], NULL,
-&DictElements[649], &DictElements[1815], &DictElements[2051], &DictElements[2358], &DictElements[2642], NULL,
-&DictElements[27],  &DictElements[298], &DictElements[1091], &DictElements[1330], &DictElements[2064], &DictElements[2554], &DictElements[2930], &DictElements[3382], NULL,
-&DictElements[1884], &DictElements[2386], &DictElements[2460], NULL,
-&DictElements[2997], &DictElements[3030], &DictElements[3218], NULL,
-&DictElements[310], &DictElements[513], &DictElements[1816], &DictElements[2052], &DictElements[2564], &DictElements[2983], NULL,
-&DictElements[297], &DictElements[1329], &DictElements[2063], &DictElements[2555], NULL,
-&DictElements[1942], &DictElements[2270], &DictElements[2387], &DictElements[2528], &DictElements[2600], &DictElements[3160], &DictElements[3290], NULL,
-NULL,
-&DictElements[97],  &DictElements[512], &DictElements[648], &DictElements[1914], &DictElements[2049], NULL,
-&DictElements[25],  &DictElements[300], &DictElements[1092], &DictElements[1332], &DictElements[1418], &DictElements[2062], &DictElements[2928], &DictElements[3381], NULL,
-&DictElements[2269], &DictElements[2459], &DictElements[2527], NULL,
-&DictElements[1910], &DictElements[2162], &DictElements[2539], &DictElements[3031], &DictElements[3219], NULL,
-&DictElements[311], &DictElements[511], &DictElements[2050], &DictElements[2565], &DictElements[2736], &DictElements[2982], NULL,
-&DictElements[26],  &DictElements[299], &DictElements[560], &DictElements[630], &DictElements[1331], &DictElements[1419], &DictElements[1935], &DictElements[2061], &DictElements[2929], NULL,
-&DictElements[1943], &DictElements[2268], &DictElements[2526], &DictElements[2599], &DictElements[2620], &DictElements[3161], &DictElements[3291], NULL,
-&DictElements[1732], &DictElements[1909], &DictElements[3032], NULL,
-&DictElements[510], &DictElements[647], &DictElements[700], &DictElements[1780], &DictElements[1915], &DictElements[1993], &DictElements[2202], &DictElements[2354], &DictElements[2641], &DictElements[2789], NULL,
-&DictElements[75],  &DictElements[302], &DictElements[1110], &DictElements[1326], &DictElements[1746], &DictElements[2933], &DictElements[3468], NULL,
-&DictElements[1939], &DictElements[2458], &DictElements[2530], NULL,
-&DictElements[110], &DictElements[538], &DictElements[1765], &DictElements[1912], &DictElements[3033], &DictElements[3220], NULL,
-&DictElements[312], &DictElements[509], &DictElements[701], &DictElements[1781], &DictElements[1916], &DictElements[2355], &DictElements[2566], NULL,
-&DictElements[301], &DictElements[1325], &DictElements[2934], &DictElements[3356], &DictElements[3469], NULL,
-&DictElements[2267], &DictElements[3162], &DictElements[3292], NULL,
-&DictElements[539], &DictElements[1287], &DictElements[1911], NULL,
-&DictElements[314], &DictElements[508], &DictElements[613], &DictElements[614], &DictElements[646], &DictElements[699], &DictElements[1782], &DictElements[2053], &DictElements[2356], &DictElements[2568], &DictElements[2640], NULL,
-&DictElements[74],  &DictElements[304], &DictElements[395], &DictElements[450], &DictElements[629], &DictElements[1328], &DictElements[1747], &DictElements[2931], NULL,
-&DictElements[1941], &DictElements[2096], &DictElements[2266], &DictElements[2457], NULL,
-&DictElements[1606], &DictElements[2609], &DictElements[2887], &DictElements[3034], NULL,
-&DictElements[96],  &DictElements[313], &DictElements[507], &DictElements[2054], &DictElements[2357], &DictElements[2567], NULL,
-&DictElements[303], &DictElements[628], &DictElements[1327], &DictElements[2932], &DictElements[3355], NULL,
-&DictElements[1940], &DictElements[1998], &DictElements[2097], &DictElements[2265], &DictElements[2529], &DictElements[2601], &DictElements[3163], &DictElements[3293], NULL,
-&DictElements[2520], &DictElements[2886], NULL,
-&DictElements[316], &DictElements[654], &DictElements[705], &DictElements[1540], &DictElements[2078], &DictElements[2117], &DictElements[2770], &DictElements[3380], NULL,
-&DictElements[2700], &DictElements[2940], &DictElements[3457], NULL,
-&DictElements[1882], &DictElements[2102], &DictElements[2264], &DictElements[2468], NULL,
-&DictElements[1724], &DictElements[2031], &DictElements[2611], &DictElements[2836], NULL,
-&DictElements[315], &DictElements[1541], &DictElements[1674], &DictElements[1803], &DictElements[1983], &DictElements[2079], &DictElements[2116], &DictElements[2164], &DictElements[2578], NULL,
-&DictElements[258], &DictElements[1698], &DictElements[2765], &DictElements[2852], &DictElements[3458], NULL,
-&DictElements[1883], &DictElements[2263], &DictElements[2272], &DictElements[3301], NULL,
-&DictElements[1723], &DictElements[2293], NULL,
-&DictElements[318], &DictElements[653], &DictElements[704], &DictElements[1539], &DictElements[1675], &DictElements[1804], &DictElements[1984], &DictElements[2048], &DictElements[2080], &DictElements[2119], NULL,
-&DictElements[33],  &DictElements[1420], &DictElements[1629], &DictElements[3459], NULL,
-&DictElements[2101], &DictElements[2155], &DictElements[2262], &DictElements[2273], &DictElements[2467], NULL,
-&DictElements[1722], &DictElements[2030], &DictElements[2186], &DictElements[2610], &DictElements[2834], NULL,
-&DictElements[317], &DictElements[1676], &DictElements[1805], &DictElements[2081], &DictElements[2118], &DictElements[2165], &DictElements[2579], NULL,
-&DictElements[248], &DictElements[1421], &DictElements[1550], &DictElements[2060], &DictElements[2853], &DictElements[3460], NULL,
-&DictElements[2154], &DictElements[2183], &DictElements[2261], &DictElements[2274], &DictElements[2605], &DictElements[2625], &DictElements[3302], NULL,
-&DictElements[1721], &DictElements[2187], &DictElements[2835], NULL,
-&DictElements[95],  &DictElements[320], &DictElements[652], &DictElements[703], &DictElements[1677], &DictElements[1783], &DictElements[1806], &DictElements[1980], &DictElements[2075], &DictElements[2121], &DictElements[2682], &DictElements[2767], NULL,
-&DictElements[177], &DictElements[189], &DictElements[250], &DictElements[1344], &DictElements[1628], &DictElements[1741], &DictElements[2718], &DictElements[2766], NULL,
-&DictElements[2099], &DictElements[2260], &DictElements[2275], &DictElements[2466], NULL,
-&DictElements[227], &DictElements[1726], &DictElements[2029], NULL,
-&DictElements[94],  &DictElements[319], &DictElements[1678], &DictElements[1738], &DictElements[1784], &DictElements[1807], &DictElements[2120], &DictElements[2166], &DictElements[2660], &DictElements[2732], NULL,
-&DictElements[249], &DictElements[1343], &DictElements[2850], &DictElements[3454], NULL,
-&DictElements[1760], &DictElements[2100], &DictElements[2259], &DictElements[2276], &DictElements[2340], NULL,
-&DictElements[1725], NULL,
-&DictElements[322], &DictElements[506], &DictElements[650], &DictElements[702], &DictElements[1679], &DictElements[1785], &DictElements[1808], &DictElements[1982], &DictElements[2076], &DictElements[2123], NULL,
-&DictElements[72],  &DictElements[448], &DictElements[1626], &DictElements[2327], &DictElements[3455], NULL,
-&DictElements[2258], &DictElements[2277], &DictElements[2465], NULL,
-&DictElements[226], &DictElements[2027], NULL,
-&DictElements[321], &DictElements[651], &DictElements[1680], &DictElements[1809], &DictElements[1981], &DictElements[2077], &DictElements[2122], &DictElements[2314], NULL,
-&DictElements[73],  &DictElements[251], &DictElements[449], &DictElements[1627], &DictElements[2851], &DictElements[3456], NULL,
-&DictElements[1759], &DictElements[2098], &DictElements[2257], NULL,
-&DictElements[2028], &DictElements[2888], NULL,
-&DictElements[324], &DictElements[505], &DictElements[661], &DictElements[1681], &DictElements[2044], &DictElements[2086], NULL,
-&DictElements[30],  &DictElements[446], &DictElements[1093], &DictElements[1340], &DictElements[2937], NULL,
-&DictElements[1878], &DictElements[2066], &DictElements[2256], NULL,
-&DictElements[537], &DictElements[1254], &DictElements[2073], &DictElements[2998], &DictElements[3041], &DictElements[3221], NULL,
-&DictElements[323], &DictElements[504], &DictElements[662], &DictElements[1682], &DictElements[1810], &DictElements[2045], &DictElements[2087], &DictElements[2124], &DictElements[2574], &DictElements[2985], NULL,
-&DictElements[296], &DictElements[447], &DictElements[1339], &DictElements[2056], NULL,
-&DictElements[2067], &DictElements[2255], &DictElements[2532], &DictElements[2622], &DictElements[3297], NULL,
-&DictElements[1908], &DictElements[2999], &DictElements[3042], NULL,
-&DictElements[93],  &DictElements[152], &DictElements[326], &DictElements[503], &DictElements[659], &DictElements[1683], &DictElements[2088], &DictElements[3408], NULL,
-&DictElements[28],  &DictElements[444], &DictElements[1342], &DictElements[2936], &DictElements[3359], &DictElements[3383], NULL,
-&DictElements[1879], &DictElements[2068], &DictElements[2254], &DictElements[2394], &DictElements[2464], NULL,
-&DictElements[1605], &DictElements[3043], NULL,
-&DictElements[325], &DictElements[502], &DictElements[660], &DictElements[1684], &DictElements[2043], &DictElements[2575], &DictElements[2984], NULL,
-&DictElements[29],  &DictElements[445], &DictElements[1341], &DictElements[1933], &DictElements[2055], NULL,
-&DictElements[2253], &DictElements[2531], &DictElements[2602], &DictElements[2621], &DictElements[3298], NULL,
-&DictElements[1253], &DictElements[3044], NULL,
-&DictElements[501], &DictElements[616], &DictElements[657], &DictElements[1986], &DictElements[2046], &DictElements[2082], NULL,
-&DictElements[32],  &DictElements[394], &DictElements[442], &DictElements[1336], &DictElements[2059], &DictElements[2939], &DictElements[3461], NULL,
-&DictElements[631], &DictElements[1880], &DictElements[2252], &DictElements[2392], &DictElements[2463], NULL,
-&DictElements[534], &DictElements[1286], NULL,
-&DictElements[200], &DictElements[327], &DictElements[500], &DictElements[658], &DictElements[1985], &DictElements[2047], &DictElements[2083], &DictElements[2576], NULL,
-&DictElements[443], &DictElements[1335], &DictElements[2058], &DictElements[2854], NULL,
-&DictElements[1881], &DictElements[2393], &DictElements[2604], &DictElements[2624], &DictElements[3299], NULL,
-&DictElements[1727], &DictElements[3045], NULL,
-&DictElements[499], &DictElements[615], &DictElements[655], &DictElements[706], &DictElements[1988], &DictElements[2084], NULL,
-&DictElements[31],  &DictElements[71],  &DictElements[393], &DictElements[440], &DictElements[1338], &DictElements[1742], &DictElements[1934], &DictElements[2057], &DictElements[2938], &DictElements[3358], NULL,
-&DictElements[632], &DictElements[2251], &DictElements[2390], &DictElements[2462], NULL,
-&DictElements[535], &DictElements[1285], &DictElements[1604], NULL,
-&DictElements[92],  &DictElements[498], &DictElements[656], &DictElements[1987], &DictElements[2085], &DictElements[2577], NULL,
-&DictElements[441], &DictElements[1337], &DictElements[3357], NULL,
-&DictElements[2069], &DictElements[2250], &DictElements[2391], &DictElements[2533], &DictElements[2603], &DictElements[2623], &DictElements[3300], NULL,
-&DictElements[536], &DictElements[2521], NULL,
-&DictElements[127], &DictElements[684], &DictElements[1826], &DictElements[2126], &DictElements[2686], &DictElements[2771], NULL,
-&DictElements[1482], &DictElements[2701], &DictElements[2949], NULL,
-&DictElements[2104], &DictElements[2249], &DictElements[2271], &DictElements[2453], NULL,
-&DictElements[137], &DictElements[2190], &DictElements[2433], NULL,
-&DictElements[126], &DictElements[328], &DictElements[1691], &DictElements[1827], &DictElements[2125], &DictElements[2560], &DictElements[2662], &DictElements[2687], NULL,
-&DictElements[1548], &DictElements[2702], NULL,
-&DictElements[2003], &DictElements[2105], &DictElements[2157], &DictElements[2248], &DictElements[2616], &DictElements[2738], NULL,
-&DictElements[2038], &DictElements[2191], &DictElements[2292], &DictElements[2498], NULL,
-&DictElements[682], &DictElements[1538], &DictElements[1692], &DictElements[1828], NULL,
-&DictElements[38],  &DictElements[1408], &DictElements[1480], &DictElements[2703], &DictElements[2948], NULL,
-&DictElements[2452], NULL,
-&DictElements[138], &DictElements[1228], &DictElements[2188], &DictElements[2432], &DictElements[3227], NULL,
-&DictElements[329], &DictElements[683], &DictElements[1693], &DictElements[1829], &DictElements[2127], &DictElements[2561], &DictElements[2663], &DictElements[2990], NULL,
-&DictElements[1481], &DictElements[1547], &DictElements[2704], NULL,
-&DictElements[2002], &DictElements[2103], &DictElements[2156], &DictElements[2184], &DictElements[2247], &DictElements[2615], NULL,
-&DictElements[1229], &DictElements[1736], &DictElements[2037], &DictElements[2189], &DictElements[2431], &DictElements[2497], NULL,
-&DictElements[1830], &DictElements[2089], &DictElements[2200], &DictElements[2347], &DictElements[2768], &DictElements[2782], NULL,
-&DictElements[1478], NULL,
-&DictElements[1466], &DictElements[1508], &DictElements[2246], &DictElements[2451], NULL,
-&DictElements[139], &DictElements[235], &DictElements[1230], &DictElements[3228], NULL,
-&DictElements[330], &DictElements[1694], &DictElements[1831], &DictElements[2348], &DictElements[2562], &DictElements[2661], &DictElements[2683], NULL,
-&DictElements[1314], &DictElements[1479], &DictElements[2705], &DictElements[2855], &DictElements[3361], NULL,
-&DictElements[1507], &DictElements[2001], &DictElements[2245], &DictElements[2339], &DictElements[2618], NULL,
-&DictElements[2430], &DictElements[2496], NULL,
-&DictElements[623], &DictElements[633], &DictElements[680], &DictElements[1537], &DictElements[1635], &DictElements[1695], &DictElements[1832], &DictElements[2684], NULL,
-&DictElements[472], &DictElements[1476], &DictElements[1625], &DictElements[2326], NULL,
-&DictElements[1275], &DictElements[2244], &DictElements[2384], &DictElements[2450], &DictElements[2504], NULL,
-&DictElements[140], &DictElements[2192], &DictElements[2429], NULL,
-&DictElements[128], &DictElements[331], &DictElements[624], &DictElements[681], &DictElements[1833], &DictElements[2313], &DictElements[2563], &DictElements[2635], &DictElements[2685], NULL,
-&DictElements[473], &DictElements[1477], &DictElements[1549], &DictElements[2706], &DictElements[2856], NULL,
-&DictElements[1509], &DictElements[2000], &DictElements[2243], &DictElements[2385], &DictElements[2617], NULL,
-&DictElements[234], &DictElements[1252], &DictElements[2428], &DictElements[2495], &DictElements[2514], NULL,
-&DictElements[621], &DictElements[688], &DictElements[1798], &DictElements[2198], &DictElements[2344], &DictElements[2442], NULL,
-&DictElements[36],  &DictElements[470], &DictElements[1312], &DictElements[2745], &DictElements[2943], NULL,
-&DictElements[1885], &DictElements[2242], &DictElements[2449], &DictElements[2503], &DictElements[2613], NULL,
-&DictElements[1100], &DictElements[1227], &DictElements[2544], &DictElements[3222], NULL,
-&DictElements[199], &DictElements[332], &DictElements[622], &DictElements[1696], &DictElements[2345], &DictElements[2556], &DictElements[2752], &DictElements[2788], &DictElements[2987], NULL,
-&DictElements[295], &DictElements[471], &DictElements[1311], &DictElements[2707], &DictElements[2944], NULL,
-&DictElements[2241], &DictElements[2383], &DictElements[2523], &DictElements[2541], &DictElements[2594], &DictElements[3303], NULL,
-&DictElements[1284], &DictElements[2427], &DictElements[2494], &DictElements[2513], NULL,
-&DictElements[620], &DictElements[687], &DictElements[1697], &DictElements[2199], &DictElements[2346], &DictElements[2444], NULL,
-&DictElements[34],  &DictElements[401], &DictElements[468], &DictElements[2708], &DictElements[2941], NULL,
-&DictElements[1274], &DictElements[1391], &DictElements[2217], &DictElements[2240], &DictElements[2448], &DictElements[2502], &DictElements[2612], NULL,
-&DictElements[1251], &DictElements[2534], &DictElements[2543], &DictElements[3223], NULL,
-&DictElements[2443], &DictElements[2557], &DictElements[2986], NULL,
-&DictElements[35],  &DictElements[402], &DictElements[469], &DictElements[562], &DictElements[1313], &DictElements[2942], NULL,
-&DictElements[2522], &DictElements[2540], &DictElements[2593], &DictElements[3304], NULL,
-&DictElements[1226], &DictElements[1283], &DictElements[1603], &DictElements[2493], &DictElements[2512], &DictElements[3224], NULL,
-&DictElements[619], &DictElements[686], &DictElements[1125], &DictElements[2196], &DictElements[2446], &DictElements[2787], NULL,
-&DictElements[79],  &DictElements[399], &DictElements[466], &DictElements[2380], &DictElements[2947], NULL,
-&DictElements[1273], &DictElements[2239], &DictElements[2447], &DictElements[2500], NULL,
-&DictElements[1767], &DictElements[2547], &DictElements[3225], NULL,
-&DictElements[197], &DictElements[1802], &DictElements[2225], &DictElements[2341], &DictElements[2445], &DictElements[2558], &DictElements[2989], NULL,
-&DictElements[400], &DictElements[467], &DictElements[1309], &DictElements[2379], NULL,
-&DictElements[2238], &DictElements[2501], &DictElements[2525], &DictElements[2614], &DictElements[3305], NULL,
-&DictElements[1250], &DictElements[2492], &DictElements[2511], NULL,
-&DictElements[617], &DictElements[685], &DictElements[1126], &DictElements[1799], &DictElements[2197], &DictElements[2342], NULL,
-&DictElements[37],  &DictElements[78],  &DictElements[397], &DictElements[464], &DictElements[2382], &DictElements[2945], NULL,
-&DictElements[1607], &DictElements[2106], &DictElements[2237], &DictElements[2499], NULL,
-&DictElements[1249], &DictElements[1282], &DictElements[1601], &DictElements[2545], &DictElements[3226], NULL,
-&DictElements[198], &DictElements[521], &DictElements[618], &DictElements[1800], &DictElements[2343], &DictElements[2559], &DictElements[2988], NULL,
-&DictElements[398], &DictElements[465], &DictElements[1310], &DictElements[2381], &DictElements[2946], &DictElements[3360], NULL,
-&DictElements[1272], &DictElements[1390], &DictElements[1510], &DictElements[2004], &DictElements[2107], &DictElements[2236], &DictElements[2524], &DictElements[2542], &DictElements[2595], &DictElements[3306], NULL,
-&DictElements[1602], &DictElements[2039], &DictElements[2491], &DictElements[2510], &DictElements[2546], NULL,
-&DictElements[334], &DictElements[637], &DictElements[693], &DictElements[1688], &DictElements[1796], &DictElements[1817], &DictElements[2129], &DictElements[2757], &DictElements[2772], NULL,
-&DictElements[463], &DictElements[2955], &DictElements[3473], NULL,
-&DictElements[1840], &DictElements[2112], &DictElements[2211], NULL,
-&DictElements[1666], &DictElements[3049], NULL,
-&DictElements[333], &DictElements[1797], &DictElements[1818], &DictElements[2128], NULL,
-&DictElements[1546], &DictElements[2859], NULL,
-&DictElements[2212], &DictElements[2235], NULL,
-&DictElements[141], &DictElements[1667], &DictElements[2291], &DictElements[2441], &DictElements[3050], NULL,
-&DictElements[336], &DictElements[636], &DictElements[692], &DictElements[1536], &DictElements[1819], &DictElements[2131], &DictElements[2224], NULL,
-&DictElements[462], &DictElements[1409], &DictElements[1545], &DictElements[1624], &DictElements[2954], NULL,
-&DictElements[1699], &DictElements[1841], &DictElements[2111], &DictElements[2209], &DictElements[2234], NULL,
-&DictElements[233], &DictElements[1234], &DictElements[1668], &DictElements[1734], &DictElements[2035], &DictElements[2193], &DictElements[2553], &DictElements[3051], NULL,
-&DictElements[335], &DictElements[1820], &DictElements[2130], NULL,
-&DictElements[1410], &DictElements[1544], &DictElements[3474], NULL,
-&DictElements[2210], &DictElements[2233], NULL,
-&DictElements[142], &DictElements[1669], &DictElements[1733], &DictElements[2036], &DictElements[2440], &DictElements[3052], NULL,
-&DictElements[338], &DictElements[635], &DictElements[691], &DictElements[2223], &DictElements[2781], NULL,
-&DictElements[191], &DictElements[461], &DictElements[1324], &DictElements[1748], &DictElements[2722], &DictElements[3470], NULL,
-&DictElements[2215], &DictElements[2232], NULL,
-&DictElements[231], &DictElements[1663], &DictElements[2033], NULL,
-&DictElements[337], &DictElements[1821], &DictElements[2222], &DictElements[2737], NULL,
-&DictElements[1323], &DictElements[2857], &DictElements[3471], NULL,
-&DictElements[2110], &DictElements[2216], &DictElements[2231], NULL,
-&DictElements[143], &DictElements[232], &DictElements[1664], &DictElements[2034], &DictElements[2439], NULL,
-&DictElements[689], &DictElements[1689], &DictElements[1822], &DictElements[2636], NULL,
-&DictElements[459], &DictElements[1474], &DictElements[1623], &DictElements[2325], &DictElements[3472], NULL,
-&DictElements[2108], &DictElements[2213], &DictElements[2230], &DictElements[2509], NULL,
-&DictElements[144], &DictElements[230], &DictElements[1665], NULL,
-&DictElements[339], &DictElements[634], &DictElements[690], &DictElements[1690], &DictElements[1823], &DictElements[2132], &DictElements[2312], NULL,
-&DictElements[460], &DictElements[1475], &DictElements[2858], NULL,
-&DictElements[1763], &DictElements[2109], &DictElements[2214], NULL,
-&DictElements[145], &DictElements[1735], &DictElements[2032], &DictElements[2438], &DictElements[2519], NULL,
-&DictElements[104], &DictElements[641], &DictElements[1124], &DictElements[1824], &DictElements[2134], &DictElements[2220], &DictElements[2352], &DictElements[2784], NULL,
-&DictElements[457], &DictElements[1089], &DictElements[1320], &DictElements[2746], &DictElements[2951], &DictElements[3477], NULL,
-&DictElements[2204], &DictElements[2508], NULL,
-&DictElements[146], &DictElements[2536], &DictElements[2549], &DictElements[3046], NULL,
-&DictElements[340], &DictElements[520], &DictElements[1791], &DictElements[1825], &DictElements[2133], &DictElements[2353], NULL,
-&DictElements[294], &DictElements[458], &DictElements[1319], NULL,
-&DictElements[2205], &DictElements[2597], &DictElements[3307], NULL,
-&DictElements[147], &DictElements[2518], &DictElements[3047], NULL,
-&DictElements[640], &DictElements[2221], NULL,
-&DictElements[39],  &DictElements[455], &DictElements[1090], &DictElements[1322], &DictElements[2950], NULL,
-&DictElements[2456], &DictElements[2507], NULL,
-&DictElements[148], &DictElements[1248], &DictElements[2535], &DictElements[2548], &DictElements[3048], NULL,
-&DictElements[103], &DictElements[341], &DictElements[519], NULL,
-&DictElements[456], &DictElements[561], &DictElements[1321], &DictElements[2065], NULL,
-&DictElements[2203], &DictElements[2229], &DictElements[2596], &DictElements[2619], &DictElements[3308], NULL,
-&DictElements[2437], &DictElements[2517], NULL,
-&DictElements[102], &DictElements[639], &DictElements[694], &DictElements[1792], &DictElements[2201], &DictElements[2349], NULL,
-&DictElements[77],  &DictElements[453], &DictElements[1108], &DictElements[1316], &DictElements[2953], &DictElements[3475], NULL,
-&DictElements[1842], &DictElements[2115], &DictElements[2208], &DictElements[2228], &DictElements[2455], &DictElements[2506], NULL,
-&DictElements[149], &DictElements[540], &DictElements[1232], &DictElements[1670], &DictElements[1766], &DictElements[2538], &DictElements[2551], NULL,
-&DictElements[101], &DictElements[342], &DictElements[518], &DictElements[1793], &DictElements[1801], &DictElements[2350], NULL,
-&DictElements[454], &DictElements[1109], &DictElements[1315], &DictElements[1411], &DictElements[3476], NULL,
-&DictElements[2227], &DictElements[2598], &DictElements[3309], NULL,
-&DictElements[541], &DictElements[1233], &DictElements[2436], &DictElements[2516], &DictElements[2552], NULL,
-&DictElements[100], &DictElements[517], &DictElements[625], &DictElements[638], &DictElements[1794], &DictElements[2219], &DictElements[2351], NULL,
-&DictElements[76],  &DictElements[396], &DictElements[451], &DictElements[1318], &DictElements[2952], NULL,
-&DictElements[2113], &DictElements[2206], &DictElements[2226], &DictElements[2454], &DictElements[2505], NULL,
-&DictElements[1247], &DictElements[1599], &DictElements[2435], &DictElements[2537], &DictElements[2550], NULL,
-&DictElements[99],  &DictElements[516], &DictElements[1795], &DictElements[2218], NULL,
-&DictElements[452], &DictElements[1317], NULL,
-&DictElements[1271], &DictElements[1999], &DictElements[2114], &DictElements[2207], NULL,
-&DictElements[1231], &DictElements[1600], &DictElements[2434], &DictElements[2515], NULL,
-&DictElements[220], &DictElements[1552], &DictElements[3057], &DictElements[3233], NULL,
-&DictElements[1183], &DictElements[2289], NULL,
-NULL,
-&DictElements[1031], &DictElements[1770], NULL,
-&DictElements[2311], &DictElements[2796], &DictElements[2893], &DictElements[3058], NULL,
-&DictElements[3314], NULL,
-NULL,
-&DictElements[1032], NULL,
-&DictElements[957], &DictElements[1562], &DictElements[2797], &DictElements[2892], &DictElements[3059], &DictElements[3234], NULL,
-&DictElements[1002], &DictElements[2290], NULL,
-&DictElements[1095], NULL,
-&DictElements[1769], NULL,
-&DictElements[956], &DictElements[2798], &DictElements[2891], NULL,
-&DictElements[3315], NULL,
-&DictElements[1928], NULL,
-NULL,
-&DictElements[2799], &DictElements[3235], NULL,
-NULL,
-&DictElements[194], NULL,
-NULL,
-&DictElements[1564], &DictElements[2800], &DictElements[2890], NULL,
-NULL,
-&DictElements[862], NULL,
-&DictElements[919], NULL,
-&DictElements[1563], &DictElements[2801], NULL,
-NULL,
-&DictElements[2338], NULL,
-&DictElements[108], NULL,
-&DictElements[2802], &DictElements[2889], NULL,
-&DictElements[1558], NULL,
-NULL,
-&DictElements[107], &DictElements[2324], NULL,
-&DictElements[753], &DictElements[951], &DictElements[2803], &DictElements[3053], &DictElements[3229], NULL,
-&DictElements[1864], NULL,
-&DictElements[42],  &DictElements[860], &DictElements[1926], &DictElements[2747], &DictElements[2957], NULL,
-&DictElements[106], &DictElements[917], NULL,
-&DictElements[754], &DictElements[950], &DictElements[2804], NULL,
-&DictElements[3168], &DictElements[3310], NULL,
-&DictElements[1925], NULL,
-&DictElements[916], NULL,
-&DictElements[751], &DictElements[2805], &DictElements[3054], &DictElements[3230], NULL,
-&DictElements[1000], &DictElements[3170], NULL,
-&DictElements[40],  &DictElements[416], &DictElements[483], &DictElements[565], &DictElements[861], &DictElements[2748], &DictElements[2956], NULL,
-&DictElements[105], &DictElements[918], &DictElements[1025], NULL,
-&DictElements[752], &DictElements[949], &DictElements[2806], NULL,
-&DictElements[1001], &DictElements[1133], &DictElements[3169], &DictElements[3311], NULL,
-&DictElements[41],  &DictElements[165], &DictElements[417], &DictElements[564], NULL,
-&DictElements[1026], NULL,
-&DictElements[749], &DictElements[955], &DictElements[2807], &DictElements[3055], &DictElements[3231], NULL,
-&DictElements[1131], NULL,
-NULL,
-&DictElements[1027], &DictElements[1179], NULL,
-&DictElements[750], &DictElements[954], &DictElements[2808], NULL,
-&DictElements[3171], &DictElements[3312], NULL,
-&DictElements[415], &DictElements[858], &DictElements[1147], NULL,
-&DictElements[203], &DictElements[913], &DictElements[1028], &DictElements[1178], NULL,
-&DictElements[748], &DictElements[953], &DictElements[2809], &DictElements[3056], &DictElements[3232], NULL,
-&DictElements[1132], NULL,
-&DictElements[82],  &DictElements[413], &DictElements[482], &DictElements[566], &DictElements[859], NULL,
-&DictElements[528], &DictElements[915], &DictElements[1029], &DictElements[1177], NULL,
-&DictElements[952], &DictElements[2810], &DictElements[2894], NULL,
-&DictElements[1865], &DictElements[3313], NULL,
-&DictElements[414], &DictElements[1927], &DictElements[3362], NULL,
-&DictElements[527], &DictElements[914], &DictElements[1030], &DictElements[1176], NULL,
-&DictElements[3241], NULL,
-&DictElements[1574], &DictElements[2288], &DictElements[3177], NULL,
-NULL,
-&DictElements[1175], NULL,
-&DictElements[2310], NULL,
-&DictElements[1575], &DictElements[3176], &DictElements[3320], NULL,
-NULL,
-&DictElements[1024], &DictElements[1174], NULL,
-&DictElements[239], &DictElements[948], NULL,
-&DictElements[999], NULL,
-NULL,
-&DictElements[1173], NULL,
-&DictElements[240], &DictElements[947], NULL,
-&DictElements[1573], &DictElements[3178], &DictElements[3321], NULL,
-NULL,
-&DictElements[1172], NULL,
-&DictElements[237], &DictElements[1067], &DictElements[1554], &DictElements[3242], NULL,
-&DictElements[1577], NULL,
-&DictElements[192], &DictElements[2723], NULL,
-&DictElements[912], NULL,
-&DictElements[238], &DictElements[1068], &DictElements[1555], NULL,
-&DictElements[1578], NULL,
-&DictElements[193], NULL,
-&DictElements[911], &DictElements[1171], NULL,
-&DictElements[746], &DictElements[3243], NULL,
-NULL,
-&DictElements[411], &DictElements[481], &DictElements[2337], NULL,
-&DictElements[1170], NULL,
-&DictElements[236], &DictElements[747], &DictElements[1066], &DictElements[1553], NULL,
-&DictElements[1576], NULL,
-&DictElements[412], NULL,
-&DictElements[1169], NULL,
-&DictElements[744], &DictElements[942], &DictElements[3236], NULL,
-&DictElements[819], &DictElements[1861], NULL,
-&DictElements[44],  &DictElements[409], &DictElements[480], &DictElements[2959], NULL,
-&DictElements[908], &DictElements[1016], &DictElements[1168], NULL,
-&DictElements[745], &DictElements[3237], NULL,
-&DictElements[818], &DictElements[3172], &DictElements[3316], NULL,
-&DictElements[410], NULL,
-&DictElements[907], &DictElements[1017], NULL,
-&DictElements[742], &DictElements[3238], NULL,
-&DictElements[817], NULL,
-&DictElements[43],  &DictElements[81],  &DictElements[407], &DictElements[478], &DictElements[856], &DictElements[1952], &DictElements[2958], NULL,
-&DictElements[910], &DictElements[1018], NULL,
-&DictElements[743], &DictElements[941], NULL,
-&DictElements[157], &DictElements[1862], &DictElements[2653], &DictElements[3173], &DictElements[3317], NULL,
-&DictElements[408], &DictElements[479], &DictElements[563], &DictElements[857], &DictElements[1924], NULL,
-&DictElements[526], &DictElements[909], &DictElements[1019], NULL,
-&DictElements[741], &DictElements[946], &DictElements[3239], NULL,
-&DictElements[156], &DictElements[997], NULL,
-&DictElements[46],  &DictElements[405], &DictElements[476], &DictElements[855], NULL,
-&DictElements[525], &DictElements[904], &DictElements[1020], NULL,
-&DictElements[945], NULL,
-&DictElements[998], &DictElements[3174], &DictElements[3318], NULL,
-&DictElements[406], &DictElements[477], NULL,
-&DictElements[202], &DictElements[524], &DictElements[903], &DictElements[1021], &DictElements[1167], NULL,
-&DictElements[739], &DictElements[944], &DictElements[3240], NULL,
-&DictElements[155], &DictElements[995], NULL,
-&DictElements[45],  &DictElements[80],  &DictElements[403], &DictElements[474], &DictElements[1961], NULL,
-&DictElements[523], &DictElements[906], &DictElements[1022], &DictElements[1166], NULL,
-&DictElements[740], &DictElements[943], NULL,
-&DictElements[996], &DictElements[1557], &DictElements[1863], &DictElements[3175], &DictElements[3319], NULL,
-&DictElements[404], &DictElements[475], NULL,
-&DictElements[522], &DictElements[905], &DictElements[1023], NULL,
-&DictElements[2811], NULL,
-&DictElements[1875], &DictElements[2286], NULL,
-&DictElements[306], &DictElements[1424], &DictElements[2709], NULL,
-&DictElements[1014], NULL,
-&DictElements[2309], &DictElements[2897], NULL,
-&DictElements[3183], &DictElements[3326], NULL,
-&DictElements[1561], &DictElements[2710], NULL,
-&DictElements[1015], NULL,
-NULL,
-&DictElements[1876], NULL,
-&DictElements[1422], &DictElements[2711], NULL,
-NULL,
-&DictElements[2896], NULL,
-&DictElements[3327], NULL,
-&DictElements[1423], &DictElements[1772], NULL,
-NULL,
-NULL,
-&DictElements[1877], NULL,
-&DictElements[853], &DictElements[1352], &DictElements[2712], NULL,
-&DictElements[902], NULL,
-NULL,
-&DictElements[1559], &DictElements[1580], &DictElements[2287], &DictElements[3328], NULL,
-&DictElements[854], &DictElements[1351], NULL,
-&DictElements[901], NULL,
-&DictElements[217], &DictElements[737], NULL,
-&DictElements[816], NULL,
-&DictElements[1151], &DictElements[1484], &DictElements[2336], NULL,
-NULL,
-&DictElements[218], &DictElements[738], &DictElements[2895], NULL,
-&DictElements[815], NULL,
-NULL,
-&DictElements[2323], NULL,
-&DictElements[215], &DictElements[735], &DictElements[1259], &DictElements[1904], &DictElements[3060], &DictElements[3244], NULL,
-&DictElements[814], &DictElements[1870], NULL,
-&DictElements[851], &DictElements[1094], &DictElements[1348], &DictElements[2655], &DictElements[2713], NULL,
-&DictElements[898], NULL,
-&DictElements[216], &DictElements[736], &DictElements[939], &DictElements[1903], NULL,
-&DictElements[3179], &DictElements[3322], NULL,
-&DictElements[164], &DictElements[1931], NULL,
-&DictElements[897], NULL,
-&DictElements[213], &DictElements[733], &DictElements[1258], &DictElements[1906], &DictElements[3061], &DictElements[3245], NULL,
-&DictElements[813], &DictElements[989], NULL,
-&DictElements[1350], &DictElements[2960], NULL,
-&DictElements[900], NULL,
-&DictElements[166], &DictElements[214], &DictElements[734], &DictElements[938], &DictElements[1905], NULL,
-&DictElements[812], &DictElements[990], &DictElements[1871], &DictElements[2634], &DictElements[3180], &DictElements[3323], NULL,
-&DictElements[852], &DictElements[1349], &DictElements[1930], NULL,
-&DictElements[899], NULL,
-&DictElements[211], &DictElements[732], &DictElements[940], &DictElements[1256], &DictElements[3062], &DictElements[3246], NULL,
-&DictElements[993], &DictElements[1872], NULL,
-&DictElements[1346], NULL,
-&DictElements[894], NULL,
-&DictElements[212], &DictElements[1257], &DictElements[1907], NULL,
-&DictElements[811], &DictElements[994], &DictElements[1764], &DictElements[1873], &DictElements[2657], &DictElements[3181], &DictElements[3324], NULL,
-&DictElements[1345], NULL,
-&DictElements[893], &DictElements[1011], NULL,
-&DictElements[730], &DictElements[1255], NULL,
-&DictElements[991], &DictElements[1185], &DictElements[1874], NULL,
-&DictElements[1347], &DictElements[1932], NULL,
-&DictElements[896], &DictElements[1012], &DictElements[1493], NULL,
-&DictElements[731], NULL,
-&DictElements[992], &DictElements[2656], &DictElements[3182], &DictElements[3325], NULL,
-&DictElements[3363], NULL,
-&DictElements[895], &DictElements[1013], NULL,
-&DictElements[1064], &DictElements[2902], &DictElements[3068], &DictElements[3251], NULL,
-&DictElements[1869], &DictElements[2285], NULL,
-&DictElements[1427], NULL,
-&DictElements[1771], NULL,
-&DictElements[1065], &DictElements[1565], &DictElements[1901], &DictElements[2308], &DictElements[2901], NULL,
-&DictElements[1184], &DictElements[3188], NULL,
-&DictElements[1428], NULL,
-NULL,
-&DictElements[1062], &DictElements[3069], &DictElements[3252], NULL,
-&DictElements[987], &DictElements[1579], NULL,
-&DictElements[1425], &DictElements[2724], NULL,
-NULL,
-&DictElements[1063], &DictElements[1902], &DictElements[2900], &DictElements[3070], NULL,
-&DictElements[988], &DictElements[3189], NULL,
-&DictElements[1426], &DictElements[2725], NULL,
-NULL,
-&DictElements[3071], NULL,
-NULL,
-&DictElements[162], NULL,
-&DictElements[892], NULL,
-&DictElements[1061], &DictElements[2899], NULL,
-&DictElements[1134], &DictElements[3190], NULL,
-&DictElements[163], &DictElements[1361], NULL,
-&DictElements[891], NULL,
-&DictElements[728], &DictElements[1059], &DictElements[3072], NULL,
-NULL,
-&DictElements[1150], &DictElements[1429], &DictElements[1483], NULL,
-NULL,
-&DictElements[729], &DictElements[1060], &DictElements[2898], NULL,
-NULL,
-NULL,
-&DictElements[2322], NULL,
-&DictElements[727], &DictElements[933], &DictElements[1057], &DictElements[1180], &DictElements[3063], &DictElements[3247], NULL,
-&DictElements[810], &DictElements[1866], NULL,
-&DictElements[1003], &DictElements[1358], NULL,
-&DictElements[888], NULL,
-&DictElements[153], &DictElements[932], &DictElements[1058], &DictElements[1899], NULL,
-&DictElements[809], &DictElements[2659], &DictElements[3184], NULL,
-&DictElements[159], &DictElements[305], &DictElements[1357], NULL,
-&DictElements[887], &DictElements[1010], NULL,
-&DictElements[725], &DictElements[931], &DictElements[1055], &DictElements[3064], &DictElements[3248], NULL,
-&DictElements[808], NULL,
-&DictElements[160], &DictElements[1005], &DictElements[1360], &DictElements[2961], NULL,
-&DictElements[890], NULL,
-&DictElements[726], &DictElements[1056], &DictElements[3065], &DictElements[3249], NULL,
-&DictElements[807], &DictElements[2658], &DictElements[3185], NULL,
-&DictElements[161], &DictElements[1004], &DictElements[1359], &DictElements[1929], NULL,
-&DictElements[889], NULL,
-&DictElements[937], &DictElements[3066], &DictElements[3250], NULL,
-&DictElements[806], &DictElements[985], NULL,
-&DictElements[850], &DictElements[1007], &DictElements[1149], &DictElements[1354], &DictElements[2726], NULL,
-&DictElements[884], &DictElements[2795], NULL,
-&DictElements[936], &DictElements[1054], NULL,
-&DictElements[986], &DictElements[3186], NULL,
-&DictElements[1006], &DictElements[1353], &DictElements[2727], NULL,
-&DictElements[201], &DictElements[530], NULL,
-&DictElements[935], &DictElements[1900], &DictElements[3067], NULL,
-&DictElements[805], &DictElements[984], &DictElements[1867], NULL,
-&DictElements[1009], &DictElements[1356], NULL,
-&DictElements[886], NULL,
-&DictElements[934], &DictElements[1053], &DictElements[2903], NULL,
-&DictElements[804], &DictElements[1868], &DictElements[3187], NULL,
-&DictElements[1008], &DictElements[1148], &DictElements[1355], &DictElements[3364], NULL,
-&DictElements[529], &DictElements[885], NULL,
-&DictElements[2025], NULL,
-&DictElements[3079], &DictElements[3253], NULL,
-&DictElements[2148], &DictElements[2764], NULL,
-NULL,
-&DictElements[1717], NULL,
-&DictElements[2307], &DictElements[2907], NULL,
-&DictElements[2147], NULL,
-NULL,
-&DictElements[2024], NULL,
-&DictElements[3080], NULL,
-&DictElements[1847], NULL,
-NULL,
-&DictElements[2023], NULL,
-&DictElements[2906], NULL,
-&DictElements[1848], NULL,
-NULL,
-&DictElements[1720], NULL,
-&DictElements[3081], NULL,
-NULL,
-NULL,
-&DictElements[1140], &DictElements[2022], NULL,
-&DictElements[2905], NULL,
-NULL,
-NULL,
-&DictElements[837], &DictElements[1718], NULL,
-&DictElements[786], &DictElements[3082], NULL,
-&DictElements[2647], NULL,
-&DictElements[2335], NULL,
-&DictElements[836], &DictElements[1719], NULL,
-&DictElements[787], &DictElements[1570], &DictElements[2904], NULL,
-NULL,
-NULL,
-&DictElements[835], &DictElements[1137], &DictElements[1850], &DictElements[1966], NULL,
-&DictElements[784], &DictElements[980], &DictElements[3073], NULL,
-&DictElements[1050], NULL,
-&DictElements[1164], &DictElements[1922], NULL,
-&DictElements[834], &DictElements[1136], &DictElements[1967], NULL,
-&DictElements[785], &DictElements[979], &DictElements[1181], &DictElements[1886], NULL,
-&DictElements[1051], NULL,
-&DictElements[1165], NULL,
-&DictElements[833], &DictElements[1139], NULL,
-&DictElements[782], &DictElements[978], &DictElements[1127], &DictElements[1182], &DictElements[3074], NULL,
-&DictElements[1052], NULL,
-&DictElements[1162], &DictElements[2962], NULL,
-&DictElements[832], &DictElements[1138], &DictElements[2632], NULL,
-&DictElements[783], &DictElements[977], &DictElements[1128], &DictElements[1887], &DictElements[3075], NULL,
-NULL,
-&DictElements[1163], NULL,
-&DictElements[831], NULL,
-&DictElements[983], &DictElements[3076], NULL,
-NULL,
-&DictElements[1160], NULL,
-&DictElements[830], NULL,
-&DictElements[781], &DictElements[982], NULL,
-&DictElements[206], &DictElements[2783], NULL,
-&DictElements[1161], NULL,
-&DictElements[829], &DictElements[1135], NULL,
-&DictElements[780], &DictElements[3077], NULL,
-NULL,
-&DictElements[1158], &DictElements[1756], NULL,
-&DictElements[828], &DictElements[2026], NULL,
-&DictElements[981], &DictElements[2908], &DictElements[3078], NULL,
-NULL,
-&DictElements[1159], &DictElements[3365], NULL,
-&DictElements[1965], &DictElements[2283], NULL,
-&DictElements[1566], &DictElements[3091], NULL,
-&DictElements[1048], &DictElements[2651], &DictElements[2762], NULL,
-NULL,
-NULL,
-&DictElements[2303], &DictElements[3092], NULL,
-&DictElements[1049], &DictElements[2149], NULL,
-&DictElements[1921], NULL,
-&DictElements[1560], &DictElements[1715], NULL,
-&DictElements[976], &DictElements[3093], NULL,
-&DictElements[2650], &DictElements[2763], NULL,
-NULL,
-&DictElements[1716], NULL,
-&DictElements[975], &DictElements[3094], NULL,
-NULL,
-NULL,
-NULL,
-&DictElements[3095], NULL,
-&DictElements[2649], NULL,
-NULL,
-&DictElements[2284], NULL,
-&DictElements[1569], &DictElements[2304], &DictElements[3096], NULL,
-NULL,
-NULL,
-&DictElements[827], NULL,
-&DictElements[1568], NULL,
-&DictElements[2648], NULL,
-&DictElements[1156], &DictElements[2334], NULL,
-&DictElements[826], &DictElements[2021], NULL,
-&DictElements[779], &DictElements[1567], NULL,
-&DictElements[2321], NULL,
-&DictElements[1157], NULL,
-NULL,
-&DictElements[777], &DictElements[970], &DictElements[1944], &DictElements[3083], &DictElements[3254], NULL,
-&DictElements[1040], NULL,
-&DictElements[1154], NULL,
-&DictElements[825], &DictElements[1938], &DictElements[1962], &DictElements[3191], NULL,
-&DictElements[778], &DictElements[969], &DictElements[2305], &DictElements[3084], NULL,
-&DictElements[1041], NULL,
-&DictElements[1155], NULL,
-NULL,
-&DictElements[775], &DictElements[968], &DictElements[3085], &DictElements[3255], NULL,
-&DictElements[1042], NULL,
-&DictElements[1919], &DictElements[2963], NULL,
-&DictElements[2633], &DictElements[3192], NULL,
-&DictElements[169], &DictElements[776], &DictElements[3086], NULL,
-&DictElements[1043], NULL,
-&DictElements[1153], &DictElements[1918], NULL,
-&DictElements[1963], NULL,
-&DictElements[773], &DictElements[974], &DictElements[3087], &DictElements[3256], NULL,
-&DictElements[1044], &DictElements[1948], &DictElements[2794], NULL,
-&DictElements[881], &DictElements[1920], NULL,
-&DictElements[3193], NULL,
-&DictElements[774], &DictElements[973], &DictElements[2306], &DictElements[3088], NULL,
-&DictElements[930], &DictElements[1045], NULL,
-NULL,
-&DictElements[1937], &DictElements[1964], NULL,
-&DictElements[771], &DictElements[972], &DictElements[3089], &DictElements[3257], NULL,
-&DictElements[1046], &DictElements[1947], &DictElements[2652], NULL,
-NULL,
-&DictElements[1849], &DictElements[1936], &DictElements[3194], NULL,
-&DictElements[772], &DictElements[971], &DictElements[3090], NULL,
-&DictElements[1047], &DictElements[1946], NULL,
-&DictElements[1152], &DictElements[3366], NULL,
-NULL,
-&DictElements[3105], &DictElements[3266], NULL,
-&DictElements[1038], NULL,
-&DictElements[877], &DictElements[1960], NULL,
-NULL,
-&DictElements[1897], &DictElements[2302], &DictElements[3106], NULL,
-&DictElements[1039], NULL,
-&DictElements[878], &DictElements[1923], &DictElements[1959], NULL,
-NULL,
-&DictElements[168], &DictElements[3107], &DictElements[3267], NULL,
-NULL,
-&DictElements[879], NULL,
-NULL,
-&DictElements[167], &DictElements[1898], &DictElements[3108], &DictElements[3268], NULL,
-NULL,
-&DictElements[880], &DictElements[1551], NULL,
-NULL,
-&DictElements[3109], NULL,
-NULL,
-&DictElements[873], NULL,
-NULL,
-&DictElements[3110], NULL,
-NULL,
-&DictElements[874], NULL,
-&DictElements[824], &DictElements[2423], NULL,
-&DictElements[769], &DictElements[3111], NULL,
-NULL,
-&DictElements[875], &DictElements[1958], &DictElements[2333], NULL,
-&DictElements[2424], NULL,
-&DictElements[770], &DictElements[1571], NULL,
-&DictElements[2320], NULL,
-&DictElements[876], NULL,
-&DictElements[1859], &DictElements[1973], NULL,
-&DictElements[3097], &DictElements[3258], NULL,
-&DictElements[2376], NULL,
-&DictElements[869], NULL,
-&DictElements[1974], &DictElements[2422], NULL,
-&DictElements[964], &DictElements[1894], &DictElements[3098], &DictElements[3259], NULL,
-&DictElements[1035], NULL,
-&DictElements[870], NULL,
-&DictElements[823], &DictElements[1860], &DictElements[2420], NULL,
-&DictElements[768], &DictElements[963], &DictElements[3099], &DictElements[3260], NULL,
-&DictElements[2377], NULL,
-&DictElements[871], &DictElements[1957], &DictElements[2964], NULL,
-&DictElements[158], &DictElements[2421], &DictElements[2630], &DictElements[2654], NULL,
-&DictElements[1572], &DictElements[1895], &DictElements[3100], &DictElements[3261], NULL,
-&DictElements[2378], NULL,
-&DictElements[872], &DictElements[1956], NULL,
-&DictElements[1954], &DictElements[2419], NULL,
-&DictElements[766], &DictElements[967], &DictElements[3101], &DictElements[3262], NULL,
-&DictElements[927], &DictElements[2372], NULL,
-&DictElements[865], &DictElements[1951], NULL,
-&DictElements[822], NULL,
-&DictElements[767], &DictElements[966], &DictElements[1129], &DictElements[3102], &DictElements[3263], NULL,
-&DictElements[205], &DictElements[1036], &DictElements[2373], NULL,
-&DictElements[866], &DictElements[1955], NULL,
-&DictElements[724], &DictElements[821], &DictElements[2490], NULL,
-&DictElements[764], &DictElements[965], &DictElements[1130], &DictElements[3103], &DictElements[3264], NULL,
-&DictElements[929], &DictElements[1037], &DictElements[2374], NULL,
-&DictElements[867], &DictElements[1949], NULL,
-&DictElements[723], NULL,
-&DictElements[765], &DictElements[1896], &DictElements[3104], &DictElements[3265], NULL,
-&DictElements[928], &DictElements[2375], NULL,
-&DictElements[868], &DictElements[1950], &DictElements[3367], NULL,
-&DictElements[1858], &DictElements[2282], NULL,
-&DictElements[3119], NULL,
-&DictElements[1846], NULL,
-NULL,
-NULL,
-&DictElements[2301], &DictElements[3120], NULL,
-&DictElements[1034], NULL,
-&DictElements[1839], NULL,
-NULL,
-&DictElements[962], &DictElements[3121], NULL,
-NULL,
-NULL,
-NULL,
-&DictElements[3122], NULL,
-NULL,
-NULL,
-NULL,
-&DictElements[3123], NULL,
-&DictElements[1845], NULL,
-NULL,
-NULL,
-NULL,
-NULL,
-&DictElements[3384], NULL,
-NULL,
-&DictElements[762], &DictElements[3124], NULL,
-&DictElements[1843], &DictElements[2646], NULL,
-NULL,
-NULL,
-&DictElements[763], NULL,
-&DictElements[1844], NULL,
-NULL,
-&DictElements[820], &DictElements[1145], &DictElements[1851], &DictElements[1968], NULL,
-&DictElements[760], &DictElements[1889], &DictElements[3112], NULL,
-&DictElements[925], &DictElements[1033], NULL,
-&DictElements[2966], NULL,
-&DictElements[1144], &DictElements[1852], &DictElements[1969], NULL,
-&DictElements[761], &DictElements[960], &DictElements[1888], &DictElements[1945], NULL,
-&DictElements[924], NULL,
-&DictElements[3371], NULL,
-&DictElements[1146], &DictElements[1853], &DictElements[1970], &DictElements[2425], NULL,
-&DictElements[758], &DictElements[959], &DictElements[1891], &DictElements[3113], NULL,
-NULL,
-&DictElements[2965], NULL,
-&DictElements[1854], &DictElements[1971], &DictElements[2426], &DictElements[2631], NULL,
-&DictElements[759], &DictElements[958], &DictElements[1890], &DictElements[3114], NULL,
-&DictElements[926], NULL,
-&DictElements[3370], NULL,
-&DictElements[1141], &DictElements[1855], &DictElements[1972], NULL,
-&DictElements[756], &DictElements[961], &DictElements[1893], &DictElements[3115], NULL,
-&DictElements[921], &DictElements[2793], NULL,
-&DictElements[863], &DictElements[2968], NULL,
-NULL,
-&DictElements[757], &DictElements[1892], &DictElements[3116], NULL,
-&DictElements[204], &DictElements[920], NULL,
-&DictElements[864], &DictElements[3369], NULL,
-&DictElements[1143], &DictElements[1856], NULL,
-&DictElements[3117], NULL,
-&DictElements[923], &DictElements[1913], NULL,
-&DictElements[2967], NULL,
-&DictElements[1142], &DictElements[1857], NULL,
-&DictElements[755], &DictElements[3118], NULL,
-&DictElements[922], NULL,
-&DictElements[3368], NULL,
+vtkDICOMMetaData::DictElement DictRow0001[] = {
+{ 0x0008, 0x1048, VR::PN, VM::M1TN, "Physician(s) of Record" },
+{ 0x0010, 0x1050, VR::LO, VM::M1TN, "Insurance Plan Identification" },
+{ 0x0018, 0x9250, VR::CS, VM::M1, "Arterial Spin Labeling Contrast" },
+{ 0x0024, 0x0025, VR::FL, VM::M1, "Stimulus Area" },
+{ 0x0032, 0x0033, VR::TM, VM::M1, "Study Verified Time" },
+{ 0x0074, 0x1034, VR::CS, VM::M1, "Double Exposure Flag" },
+{ 0x0400, 0x0401, VR::SQ, VM::M1, "Digital Signature Purpose Code Sequence" },
+{ 0x3006, 0x00C4, VR::CS, VM::M1, "Frame of Reference Transformation Type" },
+{ 0x300A, 0x00C8, VR::IS, VM::M1, "Reference Image Number" },
+{ 0, 0, 0, 0 }
 };
-
-vtkDICOMMetaData::DictElement** DictHashTable[] = {
-&DictRows[0],
-&DictRows[4],
-&DictRows[10],
-&DictRows[13],
-&DictRows[18],
-&DictRows[27],
-&DictRows[33],
-&DictRows[37],
-&DictRows[41],
-&DictRows[46],
-&DictRows[51],
-&DictRows[53],
-&DictRows[56],
-&DictRows[61],
-&DictRows[66],
-&DictRows[69],
-&DictRows[73],
-&DictRows[84],
-&DictRows[92],
-&DictRows[95],
-&DictRows[99],
-&DictRows[107],
-&DictRows[109],
-&DictRows[113],
-&DictRows[119],
-&DictRows[127],
-&DictRows[132],
-&DictRows[136],
-&DictRows[142],
-&DictRows[149],
-&DictRows[154],
-&DictRows[156],
-&DictRows[160],
-&DictRows[168],
-&DictRows[172],
-&DictRows[180],
-&DictRows[184],
-&DictRows[192],
-&DictRows[196],
-&DictRows[202],
-&DictRows[206],
-&DictRows[212],
-&DictRows[220],
-&DictRows[228],
-&DictRows[232],
-&DictRows[239],
-&DictRows[247],
-&DictRows[253],
-&DictRows[259],
-&DictRows[266],
-&DictRows[271],
-&DictRows[278],
-&DictRows[282],
-&DictRows[287],
-&DictRows[289],
-&DictRows[293],
-&DictRows[298],
-&DictRows[304],
-&DictRows[313],
-&DictRows[320],
-&DictRows[325],
-&DictRows[330],
-&DictRows[334],
-&DictRows[342],
-&DictRows[349],
-&DictRows[357],
-&DictRows[364],
-&DictRows[370],
-&DictRows[375],
-&DictRows[381],
-&DictRows[388],
-&DictRows[394],
-&DictRows[399],
-&DictRows[403],
-&DictRows[407],
-&DictRows[412],
-&DictRows[414],
-&DictRows[417],
-&DictRows[422],
-&DictRows[429],
-&DictRows[434],
-&DictRows[438],
-&DictRows[444],
-&DictRows[447],
-&DictRows[450],
-&DictRows[457],
-&DictRows[461],
-&DictRows[465],
-&DictRows[469],
-&DictRows[477],
-&DictRows[481],
-&DictRows[485],
-&DictRows[491],
-&DictRows[494],
-&DictRows[499],
-&DictRows[505],
-&DictRows[510],
-&DictRows[518],
-&DictRows[522],
-&DictRows[527],
-&DictRows[531],
-&DictRows[537],
-&DictRows[542],
-&DictRows[545],
-&DictRows[547],
-&DictRows[554],
-&DictRows[557],
-&DictRows[563],
-&DictRows[568],
-&DictRows[573],
-&DictRows[577],
-&DictRows[584],
-&DictRows[588],
-&DictRows[596],
-&DictRows[600],
-&DictRows[607],
-&DictRows[612],
-&DictRows[618],
-&DictRows[622],
-&DictRows[629],
-&DictRows[635],
-&DictRows[645],
-&DictRows[649],
-&DictRows[654],
-&DictRows[658],
-&DictRows[664],
-&DictRows[669],
-&DictRows[675],
-&DictRows[679],
-&DictRows[689],
-&DictRows[695],
-&DictRows[704],
-&DictRows[708],
-&DictRows[716],
-&DictRows[722],
-&DictRows[728],
-&DictRows[732],
-&DictRows[736],
-&DictRows[742],
-&DictRows[748],
-&DictRows[752],
-&DictRows[758],
-&DictRows[763],
-&DictRows[768],
-&DictRows[772],
-&DictRows[780],
-&DictRows[789],
-&DictRows[798],
-&DictRows[800],
-&DictRows[807],
-&DictRows[816],
-&DictRows[821],
-&DictRows[824],
-&DictRows[838],
-&DictRows[843],
-&DictRows[851],
-&DictRows[857],
-&DictRows[865],
-&DictRows[873],
-&DictRows[880],
-&DictRows[887],
-&DictRows[894],
-&DictRows[898],
-&DictRows[904],
-&DictRows[909],
-&DictRows[913],
-&DictRows[919],
-&DictRows[923],
-&DictRows[930],
-&DictRows[938],
-&DictRows[945],
-&DictRows[951],
-&DictRows[955],
-&DictRows[963],
-&DictRows[971],
-&DictRows[979],
-&DictRows[984],
-&DictRows[990],
-&DictRows[996],
-&DictRows[1006],
-&DictRows[1009],
-&DictRows[1015],
-&DictRows[1019],
-&DictRows[1026],
-&DictRows[1030],
-&DictRows[1037],
-&DictRows[1043],
-&DictRows[1055],
-&DictRows[1057],
-&DictRows[1063],
-&DictRows[1068],
-&DictRows[1076],
-&DictRows[1081],
-&DictRows[1091],
-&DictRows[1099],
-&DictRows[1105],
-&DictRows[1106],
-&DictRows[1114],
-&DictRows[1120],
-&DictRows[1127],
-&DictRows[1129],
-&DictRows[1137],
-&DictRows[1146],
-&DictRows[1150],
-&DictRows[1152],
-&DictRows[1158],
-&DictRows[1167],
-&DictRows[1170],
-&DictRows[1174],
-&DictRows[1184],
-&DictRows[1190],
-&DictRows[1197],
-&DictRows[1201],
-&DictRows[1210],
-&DictRows[1215],
-&DictRows[1218],
-&DictRows[1224],
-&DictRows[1232],
-&DictRows[1239],
-&DictRows[1248],
-&DictRows[1250],
-&DictRows[1256],
-&DictRows[1264],
-&DictRows[1274],
-&DictRows[1277],
-&DictRows[1286],
-&DictRows[1290],
-&DictRows[1298],
-&DictRows[1302],
-&DictRows[1309],
-&DictRows[1316],
-&DictRows[1323],
-&DictRows[1329],
-&DictRows[1335],
-&DictRows[1338],
-&DictRows[1344],
-&DictRows[1348],
-&DictRows[1356],
-&DictRows[1362],
-&DictRows[1367],
-&DictRows[1371],
-&DictRows[1382],
-&DictRows[1387],
-&DictRows[1395],
-&DictRows[1400],
-&DictRows[1411],
-&DictRows[1417],
-&DictRows[1424],
-&DictRows[1429],
-&DictRows[1438],
-&DictRows[1445],
-&DictRows[1454],
-&DictRows[1460],
-&DictRows[1470],
-&DictRows[1478],
-&DictRows[1486],
-&DictRows[1492],
-&DictRows[1504],
-&DictRows[1513],
-&DictRows[1518],
-&DictRows[1522],
-&DictRows[1534],
-&DictRows[1541],
-&DictRows[1549],
-&DictRows[1554],
-&DictRows[1562],
-&DictRows[1567],
-&DictRows[1573],
-&DictRows[1579],
-&DictRows[1585],
-&DictRows[1589],
-&DictRows[1596],
-&DictRows[1601],
-&DictRows[1608],
-&DictRows[1617],
-&DictRows[1619],
-&DictRows[1622],
-&DictRows[1633],
-&DictRows[1639],
-&DictRows[1645],
-&DictRows[1648],
-&DictRows[1655],
-&DictRows[1661],
-&DictRows[1666],
-&DictRows[1670],
-&DictRows[1677],
-&DictRows[1684],
-&DictRows[1690],
-&DictRows[1695],
-&DictRows[1701],
-&DictRows[1710],
-&DictRows[1714],
-&DictRows[1718],
-&DictRows[1725],
-&DictRows[1730],
-&DictRows[1738],
-&DictRows[1739],
-&DictRows[1745],
-&DictRows[1754],
-&DictRows[1758],
-&DictRows[1764],
-&DictRows[1771],
-&DictRows[1781],
-&DictRows[1789],
-&DictRows[1793],
-&DictRows[1804],
-&DictRows[1812],
-&DictRows[1816],
-&DictRows[1823],
-&DictRows[1831],
-&DictRows[1837],
-&DictRows[1841],
-&DictRows[1845],
-&DictRows[1857],
-&DictRows[1866],
-&DictRows[1871],
-&DictRows[1876],
-&DictRows[1883],
-&DictRows[1889],
-&DictRows[1898],
-&DictRows[1901],
-&DictRows[1910],
-&DictRows[1914],
-&DictRows[1919],
-&DictRows[1924],
-&DictRows[1934],
-&DictRows[1940],
-&DictRows[1945],
-&DictRows[1948],
-&DictRows[1959],
-&DictRows[1964],
-&DictRows[1970],
-&DictRows[1976],
-&DictRows[1984],
-&DictRows[1991],
-&DictRows[1999],
-&DictRows[2003],
-&DictRows[2016],
-&DictRows[2025],
-&DictRows[2030],
-&DictRows[2034],
-&DictRows[2045],
-&DictRows[2050],
-&DictRows[2056],
-&DictRows[2058],
-&DictRows[2069],
-&DictRows[2075],
-&DictRows[2079],
-&DictRows[2082],
-&DictRows[2091],
-&DictRows[2098],
-&DictRows[2102],
-&DictRows[2105],
-&DictRows[2112],
-&DictRows[2118],
-&DictRows[2122],
-&DictRows[2129],
-&DictRows[2140],
-&DictRows[2145],
-&DictRows[2151],
-&DictRows[2155],
-&DictRows[2164],
-&DictRows[2171],
-&DictRows[2177],
-&DictRows[2180],
-&DictRows[2188],
-&DictRows[2194],
-&DictRows[2200],
-&DictRows[2203],
-&DictRows[2210],
-&DictRows[2218],
-&DictRows[2224],
-&DictRows[2227],
-&DictRows[2236],
-&DictRows[2241],
-&DictRows[2247],
-&DictRows[2250],
-&DictRows[2257],
-&DictRows[2268],
-&DictRows[2273],
-&DictRows[2277],
-&DictRows[2284],
-&DictRows[2288],
-&DictRows[2296],
-&DictRows[2299],
-&DictRows[2306],
-&DictRows[2310],
-&DictRows[2315],
-&DictRows[2319],
-&DictRows[2328],
-&DictRows[2331],
-&DictRows[2338],
-&DictRows[2343],
-&DictRows[2348],
-&DictRows[2354],
-&DictRows[2356],
-&DictRows[2362],
-&DictRows[2371],
-&DictRows[2375],
-&DictRows[2382],
-&DictRows[2389],
-&DictRows[2396],
-&DictRows[2398],
-&DictRows[2403],
-&DictRows[2408],
-&DictRows[2416],
-&DictRows[2422],
-&DictRows[2428],
-&DictRows[2431],
-&DictRows[2440],
-&DictRows[2445],
-&DictRows[2451],
-&DictRows[2455],
-&DictRows[2465],
-&DictRows[2471],
-&DictRows[2477],
-&DictRows[2483],
-&DictRows[2490],
-&DictRows[2496],
-&DictRows[2502],
-&DictRows[2507],
-&DictRows[2517],
-&DictRows[2523],
-&DictRows[2530],
-&DictRows[2535],
-&DictRows[2542],
-&DictRows[2548],
-&DictRows[2556],
-&DictRows[2561],
-&DictRows[2565],
-&DictRows[2572],
-&DictRows[2577],
-&DictRows[2584],
-&DictRows[2591],
-&DictRows[2597],
-&DictRows[2602],
-&DictRows[2606],
-&DictRows[2614],
-&DictRows[2619],
-&DictRows[2625],
-&DictRows[2629],
-&DictRows[2636],
-&DictRows[2643],
-&DictRows[2648],
-&DictRows[2654],
-&DictRows[2662],
-&DictRows[2669],
-&DictRows[2680],
-&DictRows[2686],
-&DictRows[2696],
-&DictRows[2700],
-&DictRows[2704],
-&DictRows[2707],
-&DictRows[2712],
-&DictRows[2715],
-&DictRows[2718],
-&DictRows[2724],
-&DictRows[2732],
-&DictRows[2738],
-&DictRows[2744],
-&DictRows[2753],
-&DictRows[2757],
-&DictRows[2761],
-&DictRows[2764],
-&DictRows[2771],
-&DictRows[2777],
-&DictRows[2784],
-&DictRows[2787],
-&DictRows[2791],
-&DictRows[2796],
-&DictRows[2800],
-&DictRows[2804],
-&DictRows[2810],
-&DictRows[2815],
-&DictRows[2821],
-&DictRows[2826],
-&DictRows[2830],
-&DictRows[2838],
-&DictRows[2842],
-&DictRows[2846],
-&DictRows[2852],
-&DictRows[2861],
-&DictRows[2868],
-&DictRows[2871],
-&DictRows[2876],
-&DictRows[2883],
-&DictRows[2887],
-&DictRows[2891],
-&DictRows[2895],
-&DictRows[2898],
-&DictRows[2904],
-&DictRows[2907],
-&DictRows[2913],
-&DictRows[2917],
-&DictRows[2922],
-&DictRows[2928],
-&DictRows[2931],
-&DictRows[2938],
-&DictRows[2945],
-&DictRows[2952],
-&DictRows[2960],
-&DictRows[2967],
-&DictRows[2973],
-&DictRows[2977],
-&DictRows[2983],
-&DictRows[2991],
-&DictRows[2997],
-&DictRows[3003],
-&DictRows[3009],
-&DictRows[3014],
-&DictRows[3017],
-&DictRows[3022],
-&DictRows[3027],
-&DictRows[3032],
-&DictRows[3035],
-&DictRows[3036],
-&DictRows[3039],
-&DictRows[3044],
-&DictRows[3046],
-&DictRows[3047],
-&DictRows[3049],
-&DictRows[3056],
-&DictRows[3059],
-&DictRows[3061],
-&DictRows[3063],
-&DictRows[3067],
-&DictRows[3069],
-&DictRows[3071],
-&DictRows[3072],
-&DictRows[3075],
-&DictRows[3076],
-&DictRows[3078],
-&DictRows[3079],
-&DictRows[3083],
-&DictRows[3084],
-&DictRows[3086],
-&DictRows[3088],
-&DictRows[3091],
-&DictRows[3092],
-&DictRows[3094],
-&DictRows[3096],
-&DictRows[3099],
-&DictRows[3101],
-&DictRows[3102],
-&DictRows[3105],
-&DictRows[3111],
-&DictRows[3113],
-&DictRows[3119],
-&DictRows[3122],
-&DictRows[3126],
-&DictRows[3129],
-&DictRows[3131],
-&DictRows[3133],
-&DictRows[3138],
-&DictRows[3141],
-&DictRows[3149],
-&DictRows[3153],
-&DictRows[3157],
-&DictRows[3162],
-&DictRows[3167],
-&DictRows[3169],
-&DictRows[3175],
-&DictRows[3177],
-&DictRows[3178],
-&DictRows[3181],
-&DictRows[3185],
-&DictRows[3188],
-&DictRows[3192],
-&DictRows[3197],
-&DictRows[3203],
-&DictRows[3205],
-&DictRows[3211],
-&DictRows[3216],
-&DictRows[3220],
-&DictRows[3223],
-&DictRows[3227],
-&DictRows[3232],
-&DictRows[3234],
-&DictRows[3238],
-&DictRows[3239],
-&DictRows[3241],
-&DictRows[3243],
-&DictRows[3247],
-&DictRows[3248],
-&DictRows[3251],
-&DictRows[3254],
-&DictRows[3256],
-&DictRows[3257],
-&DictRows[3259],
-&DictRows[3262],
-&DictRows[3266],
-&DictRows[3267],
-&DictRows[3269],
-&DictRows[3274],
-&DictRows[3276],
-&DictRows[3279],
-&DictRows[3281],
-&DictRows[3285],
-&DictRows[3287],
-&DictRows[3289],
-&DictRows[3292],
-&DictRows[3295],
-&DictRows[3296],
-&DictRows[3300],
-&DictRows[3302],
-&DictRows[3307],
-&DictRows[3309],
-&DictRows[3311],
-&DictRows[3313],
-&DictRows[3317],
-&DictRows[3320],
-&DictRows[3325],
-&DictRows[3329],
-&DictRows[3332],
-&DictRows[3336],
-&DictRows[3338],
-&DictRows[3341],
-&DictRows[3344],
-&DictRows[3346],
-&DictRows[3354],
-&DictRows[3357],
-&DictRows[3360],
-&DictRows[3366],
-&DictRows[3372],
-&DictRows[3376],
-&DictRows[3380],
-&DictRows[3383],
-&DictRows[3388],
-&DictRows[3392],
-&DictRows[3394],
-&DictRows[3398],
-&DictRows[3401],
-&DictRows[3407],
-&DictRows[3411],
-&DictRows[3414],
-&DictRows[3420],
-&DictRows[3425],
-&DictRows[3428],
-&DictRows[3434],
-&DictRows[3437],
-&DictRows[3441],
-&DictRows[3443],
-&DictRows[3446],
-&DictRows[3450],
-&DictRows[3452],
-&DictRows[3455],
-&DictRows[3458],
-&DictRows[3461],
-&DictRows[3463],
-&DictRows[3464],
-&DictRows[3466],
-&DictRows[3469],
-&DictRows[3470],
-&DictRows[3472],
-&DictRows[3474],
-&DictRows[3477],
-&DictRows[3478],
-&DictRows[3479],
-&DictRows[3481],
-&DictRows[3485],
-&DictRows[3487],
-&DictRows[3488],
-&DictRows[3493],
-&DictRows[3496],
-&DictRows[3498],
-&DictRows[3501],
-&DictRows[3503],
-&DictRows[3507],
-&DictRows[3508],
-&DictRows[3512],
-&DictRows[3514],
-&DictRows[3515],
-&DictRows[3517],
-&DictRows[3524],
-&DictRows[3527],
-&DictRows[3533],
-&DictRows[3535],
-&DictRows[3540],
-&DictRows[3543],
-&DictRows[3546],
-&DictRows[3548],
-&DictRows[3555],
-&DictRows[3558],
-&DictRows[3561],
-&DictRows[3563],
-&DictRows[3569],
-&DictRows[3576],
-&DictRows[3580],
-&DictRows[3582],
-&DictRows[3589],
-&DictRows[3592],
-&DictRows[3594],
-&DictRows[3596],
-&DictRows[3600],
-&DictRows[3608],
-&DictRows[3610],
-&DictRows[3613],
-&DictRows[3616],
-&DictRows[3620],
-&DictRows[3623],
-&DictRows[3627],
-&DictRows[3629],
-&DictRows[3634],
-&DictRows[3636],
-&DictRows[3639],
-&DictRows[3644],
-&DictRows[3647],
-&DictRows[3649],
-&DictRows[3651],
-&DictRows[3657],
-&DictRows[3660],
-&DictRows[3662],
-&DictRows[3663],
-&DictRows[3667],
-&DictRows[3670],
-&DictRows[3673],
-&DictRows[3674],
-&DictRows[3679],
-&DictRows[3682],
-&DictRows[3685],
-&DictRows[3686],
-&DictRows[3688],
-&DictRows[3689],
-&DictRows[3691],
-&DictRows[3693],
-&DictRows[3696],
-&DictRows[3699],
-&DictRows[3702],
-&DictRows[3704],
-&DictRows[3708],
-&DictRows[3709],
-&DictRows[3713],
-&DictRows[3714],
-&DictRows[3718],
-&DictRows[3719],
-&DictRows[3720],
-&DictRows[3722],
-&DictRows[3729],
-&DictRows[3732],
-&DictRows[3735],
-&DictRows[3737],
-&DictRows[3742],
-&DictRows[3746],
-&DictRows[3750],
-&DictRows[3753],
-&DictRows[3759],
-&DictRows[3761],
-&DictRows[3766],
-&DictRows[3768],
-&DictRows[3773],
-&DictRows[3777],
-&DictRows[3782],
-&DictRows[3784],
-&DictRows[3788],
-&DictRows[3791],
-&DictRows[3797],
-&DictRows[3800],
-&DictRows[3803],
-&DictRows[3806],
-&DictRows[3810],
-&DictRows[3813],
-&DictRows[3817],
-&DictRows[3821],
-&DictRows[3824],
-&DictRows[3826],
-&DictRows[3830],
-&DictRows[3834],
-&DictRows[3839],
-&DictRows[3842],
-&DictRows[3844],
-&DictRows[3847],
-&DictRows[3850],
-&DictRows[3851],
-&DictRows[3853],
-&DictRows[3856],
-&DictRows[3858],
-&DictRows[3859],
-&DictRows[3861],
-&DictRows[3863],
-&DictRows[3865],
-&DictRows[3866],
-&DictRows[3868],
-&DictRows[3870],
-&DictRows[3872],
-&DictRows[3873],
-&DictRows[3875],
-&DictRows[3877],
-&DictRows[3878],
-&DictRows[3879],
-&DictRows[3882],
-&DictRows[3884],
-&DictRows[3885],
-&DictRows[3886],
-&DictRows[3889],
-&DictRows[3892],
-&DictRows[3894],
-&DictRows[3896],
-&DictRows[3899],
-&DictRows[3903],
-&DictRows[3904],
-&DictRows[3905],
-&DictRows[3910],
-&DictRows[3914],
-&DictRows[3916],
-&DictRows[3919],
-&DictRows[3923],
-&DictRows[3928],
-&DictRows[3930],
-&DictRows[3932],
-&DictRows[3935],
-&DictRows[3941],
-&DictRows[3943],
-&DictRows[3946],
-&DictRows[3950],
-&DictRows[3956],
-&DictRows[3957],
-&DictRows[3959],
-&DictRows[3961],
-&DictRows[3964],
-&DictRows[3965],
-&DictRows[3967],
-&DictRows[3969],
-&DictRows[3972],
-&DictRows[3975],
-&DictRows[3977],
-&DictRows[3980],
-&DictRows[3983],
-&DictRows[3984],
-&DictRows[3987],
-&DictRows[3990],
-&DictRows[3994],
-&DictRows[3995],
-&DictRows[3998],
-&DictRows[4001],
-&DictRows[4004],
-&DictRows[4008],
-&DictRows[4009],
-&DictRows[4010],
-&DictRows[4013],
-&DictRows[4016],
-&DictRows[4018],
-&DictRows[4021],
-&DictRows[4024],
-&DictRows[4027],
-&DictRows[4028],
-&DictRows[4030],
-&DictRows[4033],
-&DictRows[4034],
-&DictRows[4035],
-&DictRows[4036],
-&DictRows[4038],
-&DictRows[4040],
-&DictRows[4041],
-&DictRows[4043],
-&DictRows[4047],
-&DictRows[4048],
-&DictRows[4049],
-&DictRows[4051],
-&DictRows[4053],
-&DictRows[4055],
-&DictRows[4058],
-&DictRows[4061],
-&DictRows[4064],
-&DictRows[4066],
-&DictRows[4068],
-&DictRows[4069],
-&DictRows[4075],
-&DictRows[4077],
-&DictRows[4079],
-&DictRows[4084],
-&DictRows[4089],
-&DictRows[4091],
-&DictRows[4093],
-&DictRows[4094],
-&DictRows[4099],
-&DictRows[4101],
-&DictRows[4104],
-&DictRows[4107],
-&DictRows[4111],
-&DictRows[4113],
-&DictRows[4116],
-&DictRows[4118],
-&DictRows[4123],
-&DictRows[4127],
-&DictRows[4130],
-&DictRows[4132],
-&DictRows[4137],
-&DictRows[4140],
-&DictRows[4141],
-&DictRows[4144],
-&DictRows[4149],
-&DictRows[4153],
-&DictRows[4154],
-&DictRows[4158],
-&DictRows[4162],
-&DictRows[4165],
-&DictRows[4168],
-&DictRows[4169],
-&DictRows[4172],
-&DictRows[4174],
-&DictRows[4177],
-&DictRows[4178],
-&DictRows[4182],
-&DictRows[4184],
-&DictRows[4188],
-&DictRows[4189],
-&DictRows[4193],
-&DictRows[4194],
-&DictRows[4196],
-&DictRows[4197],
-&DictRows[4202],
-&DictRows[4203],
-&DictRows[4206],
-&DictRows[4207],
-&DictRows[4209],
-&DictRows[4210],
-&DictRows[4212],
-&DictRows[4213],
-&DictRows[4215],
-&DictRows[4216],
-&DictRows[4218],
-&DictRows[4221],
-&DictRows[4224],
-&DictRows[4225],
-&DictRows[4229],
-&DictRows[4231],
-&DictRows[4234],
-&DictRows[4236],
-&DictRows[4238],
-&DictRows[4241],
-&DictRows[4244],
-&DictRows[4246],
-&DictRows[4248],
-&DictRows[4251],
-&DictRows[4256],
-&DictRows[4258],
-&DictRows[4260],
-&DictRows[4264],
-&DictRows[4269],
-&DictRows[4271],
-&DictRows[4275],
-&DictRows[4280],
-&DictRows[4285],
-&DictRows[4287],
-&DictRows[4290],
-&DictRows[4293],
-&DictRows[4298],
-&DictRows[4301],
-&DictRows[4304],
-&DictRows[4306],
-&DictRows[4312],
-&DictRows[4316],
-&DictRows[4319],
-&DictRows[4323],
-&DictRows[4329],
-&DictRows[4333],
-&DictRows[4336],
-&DictRows[4338],
-&DictRows[4343],
-&DictRows[4346],
-&DictRows[4350],
-&DictRows[4353],
-&DictRows[4355],
-&DictRows[4357],
-&DictRows[4358],
-&DictRows[4359],
-&DictRows[4362],
-&DictRows[4364],
-&DictRows[4366],
-&DictRows[4367],
-&DictRows[4370],
-&DictRows[4371],
-&DictRows[4372],
-&DictRows[4373],
-&DictRows[4375],
-&DictRows[4376],
-&DictRows[4377],
-&DictRows[4378],
-&DictRows[4380],
-&DictRows[4382],
-&DictRows[4383],
-&DictRows[4384],
-&DictRows[4385],
-&DictRows[4386],
-&DictRows[4388],
-&DictRows[4389],
-&DictRows[4392],
-&DictRows[4395],
-&DictRows[4396],
-&DictRows[4397],
-&DictRows[4399],
-&DictRows[4401],
-&DictRows[4402],
-&DictRows[4407],
-&DictRows[4411],
-&DictRows[4414],
-&DictRows[4416],
-&DictRows[4420],
-&DictRows[4425],
-&DictRows[4427],
-&DictRows[4429],
-&DictRows[4434],
-&DictRows[4439],
-&DictRows[4440],
-&DictRows[4442],
-&DictRows[4447],
-&DictRows[4452],
-&DictRows[4454],
-&DictRows[4456],
-&DictRows[4460],
-&DictRows[4465],
-&DictRows[4468],
-&DictRows[4471],
-&DictRows[4472],
-&DictRows[4476],
-&DictRows[4479],
-&DictRows[4482],
-&DictRows[4485],
-&DictRows[4487],
-&DictRows[4490],
-&DictRows[4492],
-&DictRows[4495],
-&DictRows[4498],
-&DictRows[4500],
+vtkDICOMMetaData::DictElement DictRow0002[] = {
+{ 0x0012, 0x0010, VR::LO, VM::M1, "Clinical Trial Sponsor Name" },
+{ 0x0018, 0x9253, VR::US, VM::M1, "ASL Slab Number" },
+{ 0x0020, 0x0022, VR::IS, VM::M1, "Overlay Number" },
+{ 0x0022, 0x0020, VR::SQ, VM::M1, "Stereo Pairs Sequence" },
+{ 0x0040, 0x1003, VR::SH, VM::M1, "Requested Procedure Priority" },
+{ 0x0046, 0x0044, VR::FD, VM::M1, "Pupil Size" },
+{ 0x0072, 0x0070, VR::UT, VM::M1, "Selector UT Value" },
+{ 0x0400, 0x0402, VR::SQ, VM::M1, "Referenced Digital Signature Sequence" },
+{ 0x2020, 0x00A0, VR::CS, VM::M1, "Requested Image Size Flag" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0003[] = {
+{ 0x0018, 0x9252, VR::LO, VM::M1, "ASL Technique Description" },
+{ 0x0022, 0x0021, VR::SQ, VM::M1, "Left Image Sequence" },
+{ 0x0032, 0x1070, VR::LO, VM::M1, "Requested Contrast Agent" },
+{ 0x0040, 0x1002, VR::LO, VM::M1, "Reason for the Requested Procedure" },
+{ 0x0074, 0x1036, VR::CS, VM::M1, "Double Exposure Ordering" },
+{ 0x0400, 0x0403, VR::SQ, VM::M1, "Referenced SOP Instance MAC Sequence" },
+{ 0x3006, 0x00C6, VR::DS, VM::M16, "Frame of Reference Transformation Matrix" },
+{ 0x300A, 0x00CA, VR::SQ, VM::M1, "Planned Verification Image Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0004[] = {
+{ 0x0018, 0x9255, VR::FD, VM::M3, "ASL Slab Orientation" },
+{ 0x0020, 0x0024, VR::IS, VM::M1, "Curve Number" },
+{ 0x0024, 0x0020, VR::FL, VM::M1, "Background Luminance" },
+{ 0x0040, 0x1005, VR::LO, VM::M1, "Requested Procedure Location" },
+{ 0x0046, 0x0042, VR::FD, VM::M1, "Channel Width" },
+{ 0x0054, 0x0050, VR::US, VM::M1TN, "Rotation Vector" },
+{ 0x0054, 0x1401, VR::CS, VM::M1, "Dead Time Correction Flag" },
+{ 0x0072, 0x0076, VR::FL, VM::M1TN, "Selector FL Value" },
+{ 0x0400, 0x0404, VR::OB, VM::M1, "MAC" },
+{ 0x4008, 0x0108, VR::DA, VM::M1, "Interpretation Transcription Date" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0005[] = {
+{ 0x0018, 0x9254, VR::FD, VM::M1, "ASL Slab Thickness" },
+{ 0x0022, 0x1066, VR::LO, VM::M1, "Vitreous Status Description" },
+{ 0x0024, 0x0021, VR::SQ, VM::M1, "Stimulus Color Code Sequence" },
+{ 0x0040, 0x1004, VR::LO, VM::M1, "Patient Transport Arrangements" },
+{ 0x0054, 0x0051, VR::US, VM::M1, "Number of Rotations" },
+{ 0x0054, 0x1400, VR::CS, VM::M1TN, "Counts Included" },
+{ 0x0074, 0x1030, VR::SQ, VM::M1, "Delivery Verification Image Sequence" },
+{ 0x0400, 0x0015, VR::CS, VM::M1, "MAC Algorithm" },
+{ 0x3006, 0x00C0, VR::SQ, VM::M1, "Frame of Reference Relationship Sequence" },
+{ 0x300A, 0x00CC, VR::LO, VM::M1TN, "Imaging Device-Specific Acquisition Parameters" },
+{ 0x4008, 0x0109, VR::TM, VM::M1, "Interpretation Transcription Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0006[] = {
+{ 0x0018, 0x9257, VR::CS, VM::M1, "ASL Context" },
+{ 0x0020, 0x0026, VR::IS, VM::M1, "LUT Number" },
+{ 0x0022, 0x1065, VR::LO, VM::M1, "Lens Status Description" },
+{ 0x0032, 0x0034, VR::DA, VM::M1, "Study Read Date" },
+{ 0x0040, 0x1007, VR::SH, VM::M1, "Filler Order Number / Procedure" },
+{ 0x0046, 0x0040, VR::FD, VM::M1, "Optical Transmittance" },
+{ 0x0054, 0x0052, VR::SQ, VM::M1, "Rotation Information Sequence" },
+{ 0x0072, 0x0074, VR::FD, VM::M1TN, "Selector FD Value" },
+{ 0x0076, 0x0070, VR::US, VM::M1, "Component 1 Referenced ID" },
+{ 0x4008, 0x010A, VR::PN, VM::M1, "Interpretation Transcriber" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0007[] = {
+{ 0x0018, 0x9256, VR::FD, VM::M3, "ASL Mid Slab Position" },
+{ 0x0032, 0x0035, VR::TM, VM::M1, "Study Read Time" },
+{ 0x0040, 0x1006, VR::SH, VM::M1, "Placer Order Number / Procedure" },
+{ 0x0054, 0x0053, VR::US, VM::M1, "Number of Frames in Rotation" },
+{ 0x0074, 0x1032, VR::CS, VM::M1, "Verification Image Timing" },
+{ 0x3006, 0x00C2, VR::UI, VM::M1, "Related Frame of Reference UID" },
+{ 0x300A, 0x00CE, VR::CS, VM::M1, "Treatment Delivery Type" },
+{ 0x4008, 0x010B, VR::ST, VM::M1, "Interpretation Text" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0008[] = {
+{ 0x0018, 0x0010, VR::LO, VM::M1, "Contrast/Bolus Agent" },
+{ 0x0018, 0x9259, VR::CS, VM::M1, "ASL Crusher Flag" },
+{ 0x0028, 0x0800, VR::CS, VM::M1TN, "Code Label" },
+{ 0x0038, 0x0030, VR::DA, VM::M1, "Discharge Date" },
+{ 0x0040, 0x1009, VR::SH, VM::M1, "Reporting Priority" },
+{ 0x0072, 0x007A, VR::US, VM::M1TN, "Selector US Value" },
+{ 0x0078, 0x0070, VR::SQ, VM::M1, "Implant Template Group Member Matching 2D Coordinates Sequence" },
+{ 0x4008, 0x4000, VR::ST, VM::M1, "Results Comments" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0009[] = {
+{ 0x0008, 0x0001, VR::UL, VM::M1, "Length to End" },
+{ 0x0008, 0x1040, VR::LO, VM::M1, "Institutional Department Name" },
+{ 0x0018, 0x1050, VR::DS, VM::M1, "Spatial Resolution" },
+{ 0x0018, 0x9258, VR::UL, VM::M1, "ASL Pulse Train Duration" },
+{ 0x0040, 0x1008, VR::LO, VM::M1, "Confidentiality Code" },
+{ 0x300A, 0x00C0, VR::IS, VM::M1, "Beam Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0010[] = {
+{ 0x0018, 0x0012, VR::SQ, VM::M1, "Contrast/Bolus Agent Sequence" },
+{ 0x0018, 0x925B, VR::LO, VM::M1, "ASL Crusher Description" },
+{ 0x0028, 0x0802, VR::US, VM::M1, "Number of Tables" },
+{ 0x0038, 0x0032, VR::TM, VM::M1, "Discharge Time" },
+{ 0x0072, 0x0078, VR::UL, VM::M1TN, "Selector UL Value" },
+{ 0x300A, 0x00C3, VR::ST, VM::M1, "Beam Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0011[] = {
+{ 0x0018, 0x925A, VR::FD, VM::M1, "ASL Crusher Flow" },
+{ 0x0028, 0x0803, VR::AT, VM::M1TN, "Code Table Location" },
+{ 0x0040, 0x100A, VR::SQ, VM::M1, "Reason for Requested Procedure Code Sequence" },
+{ 0x3008, 0x00C0, VR::SQ, VM::M1, "Recorded Compensator Sequence" },
+{ 0x300A, 0x00C2, VR::LO, VM::M1, "Beam Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0012[] = {
+{ 0x0018, 0x0014, VR::SQ, VM::M1, "Contrast/Bolus Administration Route Sequence" },
+{ 0x0018, 0x925D, VR::SQ, VM::M1, "ASL Bolus Cut-off Timing Sequence" },
+{ 0x0024, 0x0028, VR::FL, VM::M1, "Stimulus Presentation Time" },
+{ 0x0028, 0x0804, VR::US, VM::M1, "Bits For Code Word" },
+{ 0x0072, 0x007E, VR::SS, VM::M1TN, "Selector SS Value" },
+{ 0x4008, 0x0100, VR::DA, VM::M1, "Interpretation Recorded Date" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0013[] = {
+{ 0x0008, 0x0005, VR::CS, VM::M1TN, "Specific Character Set" },
+{ 0x0018, 0x0015, VR::CS, VM::M1, "Body Part Examined" },
+{ 0x0018, 0x925C, VR::CS, VM::M1, "ASL Bolus Cut-off Flag" },
+{ 0x0074, 0x1038, VR::DS, VM::M1, "Double Exposure Meterset (Trial)" },
+{ 0x3006, 0x00C8, VR::LO, VM::M1, "Frame of Reference Transformation Comment" },
+{ 0x300A, 0x00C4, VR::CS, VM::M1, "Beam Type" },
+{ 0x4008, 0x0101, VR::TM, VM::M1, "Interpretation Recorded Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0014[] = {
+{ 0x0008, 0x0006, VR::SQ, VM::M1, "Language Code Sequence" },
+{ 0x0018, 0x925F, VR::UL, VM::M1, "ASL Bolus Cut-off Delay Time" },
+{ 0x0068, 0x65F0, VR::FD, VM::M4, "2D Plane Intersection" },
+{ 0x0072, 0x007C, VR::SL, VM::M1TN, "Selector SL Value" },
+{ 0x300A, 0x00C7, VR::CS, VM::M1, "High-Dose Technique Type" },
+{ 0x4008, 0x0102, VR::PN, VM::M1, "Interpretation Recorder" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0015[] = {
+{ 0x0018, 0x925E, VR::LO, VM::M1, "ASL Bolus Cut-off Technique" },
+{ 0x0074, 0x103A, VR::DS, VM::M4, "Double Exposure Field Delta (Trial)" },
+{ 0x300A, 0x00C6, VR::CS, VM::M1, "Radiation Type" },
+{ 0x300C, 0x00C0, VR::IS, VM::M1, "Referenced Wedge Number" },
+{ 0x4008, 0x0103, VR::LO, VM::M1, "Reference to Recorded Sound" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0016[] = {
+{ 0x0008, 0x0018, VR::UI, VM::M1, "SOP Instance UID" },
+{ 0x0018, 0x1049, VR::DS, VM::M1, "Contrast/Bolus Ingredient Concentration" },
+{ 0x0018, 0x9241, VR::US, VM::M1, "Gradient Echo Train Length" },
+{ 0x0020, 0x0030, VR::DS, VM::M3, "Image Position" },
+{ 0x0022, 0x0032, VR::FL, VM::M2T2N, "Reference Coordinates" },
+{ 0x0024, 0x0034, VR::SQ, VM::M1, "Visual Field Catch Trial Sequence" },
+{ 0x0040, 0x0440, VR::SQ, VM::M1, "Protocol Context Sequence" },
+{ 0x0040, 0x1011, VR::SQ, VM::M1, "Intended Recipients of Results Identification Sequence" },
+{ 0x0070, 0x0060, VR::SQ, VM::M1, "Graphic Layer Sequence" },
+{ 0x0072, 0x0062, VR::CS, VM::M1TN, "Selector CS Value" },
+{ 0x300A, 0x00D9, VR::FL, VM::M1, "Isocenter to Wedge Tray Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0017[] = {
+{ 0x0010, 0x1040, VR::LO, VM::M1, "Patient's Address" },
+{ 0x0018, 0x1048, VR::CS, VM::M1, "Contrast/Bolus Ingredient" },
+{ 0x0018, 0x9240, VR::US, VM::M1, "RF Echo Train Length" },
+{ 0x0020, 0x1070, VR::IS, VM::M1TN, "Other Study Numbers" },
+{ 0x0024, 0x0035, VR::US, VM::M1, "Fixation Checked Quantity" },
+{ 0x0040, 0x0441, VR::SQ, VM::M1, "Content Item Modifier Sequence" },
+{ 0x0040, 0x1010, VR::PN, VM::M1TN, "Names of Intended Recipients of Results" },
+{ 0x0040, 0x1400, VR::LT, VM::M1, "Requested Procedure Comments" },
+{ 0x0054, 0x1004, VR::CS, VM::M1, "Reprojection Method" },
+{ 0x0074, 0x1024, VR::IS, VM::M1, "Beam Order Index (Trial)" },
+{ 0x300A, 0x00D8, VR::DS, VM::M1, "Wedge Orientation" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0018[] = {
+{ 0x0008, 0x001A, VR::UI, VM::M1TN, "Related General SOP Class UID" },
+{ 0x0020, 0x0032, VR::DS, VM::M3, "Image Position (Patient)" },
+{ 0x0022, 0x0030, VR::FL, VM::M1, "Axial Length of the Eye" },
+{ 0x0024, 0x0036, VR::US, VM::M1, "Patient Not Properly Fixated Quantity" },
+{ 0x0070, 0x0062, VR::IS, VM::M1, "Graphic Layer Order" },
+{ 0x0072, 0x0060, VR::AT, VM::M1TN, "Selector AT Value" },
+{ 0x0074, 0x1027, VR::FD, VM::M1, "Table Top Longitudinal Adjusted Position" },
+{ 0x2010, 0x0080, VR::CS, VM::M1, "Smoothing Type" },
+{ 0x300A, 0x00DB, VR::FL, VM::M1, "Wedge Thin Edge Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0019[] = {
+{ 0x0008, 0x001B, VR::UI, VM::M1, "Original Specialized SOP Class UID" },
+{ 0x0022, 0x0031, VR::SQ, VM::M1, "Ophthalmic Frame Location Sequence" },
+{ 0x0024, 0x0037, VR::CS, VM::M1, "Presented Visual Stimuli Data Flag" },
+{ 0x0032, 0x1060, VR::LO, VM::M1, "Requested Procedure Description" },
+{ 0x0040, 0x1012, VR::SQ, VM::M1, "Reason For Performed Procedure Code Sequence" },
+{ 0x0054, 0x1006, VR::CS, VM::M1, "SUV Type" },
+{ 0x0074, 0x1026, VR::FD, VM::M1, "Table Top Vertical Adjusted Position" },
+{ 0x300A, 0x00DA, VR::DS, VM::M1, "Source to Wedge Tray Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0020[] = {
+{ 0x0022, 0x0036, VR::FL, VM::M1, "Maximum Depth Distortion" },
+{ 0x0046, 0x0052, VR::SQ, VM::M1, "Autorefraction Left Eye Sequence" },
+{ 0x0054, 0x1001, VR::CS, VM::M1, "Units" },
+{ 0x0072, 0x0066, VR::LO, VM::M1TN, "Selector LO Value" },
+{ 0x300A, 0x00DD, VR::ST, VM::M1, "Bolus Description" },
+{ 0x4008, 0x0118, VR::SQ, VM::M1, "Results Distribution List Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0021[] = {
+{ 0x0014, 0x1040, VR::ST, VM::M1, "Environmental Conditions" },
+{ 0x0020, 0x0035, VR::DS, VM::M6, "Image Orientation" },
+{ 0x0022, 0x0037, VR::FL, VM::M1, "Along-scan Spatial Resolution" },
+{ 0x0054, 0x1000, VR::CS, VM::M2, "Series Type" },
+{ 0x0074, 0x1020, VR::SQ, VM::M1, "Beam Task Sequence" },
+{ 0x0400, 0x0005, VR::US, VM::M1, "MAC ID Number" },
+{ 0x300A, 0x00DC, VR::SH, VM::M1, "Bolus ID" },
+{ 0x4008, 0x0119, VR::PN, VM::M1, "Distribution Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0022[] = {
+{ 0x0024, 0x0032, VR::SQ, VM::M1, "Fixation Sequence" },
+{ 0x0046, 0x0050, VR::SQ, VM::M1, "Autorefraction Right Eye Sequence" },
+{ 0x0070, 0x0066, VR::US, VM::M1, "Graphic Layer Recommended Display Grayscale Value" },
+{ 0x0072, 0x0064, VR::IS, VM::M1TN, "Selector IS Value" },
+{ 0x0076, 0x0060, VR::SQ, VM::M1, "Component Assembly Sequence" },
+{ 0x4008, 0x011A, VR::LO, VM::M1, "Distribution Address" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0023[] = {
+{ 0x0020, 0x0037, VR::DS, VM::M6, "Image Orientation (Patient)" },
+{ 0x0022, 0x0035, VR::FL, VM::M1, "Depth Spatial Resolution" },
+{ 0x0024, 0x0033, VR::SQ, VM::M1, "Fixation Monitoring Code Sequence" },
+{ 0x0032, 0x1064, VR::SQ, VM::M1, "Requested Procedure Code Sequence" },
+{ 0x0054, 0x1002, VR::CS, VM::M1, "Counts Source" },
+{ 0x0070, 0x0067, VR::US, VM::M3, "Graphic Layer Recommended Display RGB Value" },
+{ 0x0074, 0x1022, VR::CS, VM::M1, "Beam Task Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0024[] = {
+{ 0x0008, 0x0010, VR::SH, VM::M1, "Recognition Code" },
+{ 0x0018, 0x1041, VR::DS, VM::M1, "Contrast/Bolus Volume" },
+{ 0x0028, 0x0030, VR::DS, VM::M2, "Pixel Spacing" },
+{ 0x0038, 0x0020, VR::DA, VM::M1, "Admitting Date" },
+{ 0x0040, 0x9211, VR::XS, VM::M1, "Real World Value Last Value Mapped" },
+{ 0x0070, 0x0068, VR::LO, VM::M1, "Graphic Layer Description" },
+{ 0x0072, 0x006A, VR::PN, VM::M1TN, "Selector PN Value" },
+{ 0x0074, 0x102D, VR::FD, VM::M1, "Table Top Roll Adjusted Angle" },
+{ 0x0078, 0x0060, VR::FD, VM::M9, "3D Implant Template Group Member Matching Axes" },
+{ 0x300A, 0x00D1, VR::SQ, VM::M1, "Wedge Sequence" },
+{ 0x4008, 0x0114, VR::PN, VM::M1, "Physician Approving Interpretation" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0025[] = {
+{ 0x0008, 0x1050, VR::PN, VM::M1TN, "Performing Physician's Name" },
+{ 0x0018, 0x1040, VR::LO, VM::M1, "Contrast/Bolus Route" },
+{ 0x0018, 0x1450, VR::DS, VM::M1, "Column Angulation" },
+{ 0x0028, 0x0031, VR::DS, VM::M2, "Zoom Factor" },
+{ 0x0038, 0x0021, VR::TM, VM::M1, "Admitting Time" },
+{ 0x0040, 0x9210, VR::SH, VM::M1, "LUT Label" },
+{ 0x0074, 0x102C, VR::FD, VM::M1, "Table Top Pitch Adjusted Angle" },
+{ 0x300A, 0x00D0, VR::IS, VM::M1, "Number of Wedges" },
+{ 0x4008, 0x0115, VR::LT, VM::M1, "Interpretation Diagnosis Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0026[] = {
+{ 0x0008, 0x0012, VR::DA, VM::M1, "Instance Creation Date" },
+{ 0x0018, 0x1043, VR::TM, VM::M1, "Contrast/Bolus Stop Time" },
+{ 0x0022, 0x0038, VR::FL, VM::M1, "Maximum Along-scan Distortion" },
+{ 0x0028, 0x0032, VR::DS, VM::M2, "Zoom Center" },
+{ 0x003A, 0x0020, VR::SH, VM::M1, "Multiplex Group Label" },
+{ 0x0072, 0x0068, VR::LT, VM::M1, "Selector LT Value" },
+{ 0x300A, 0x00D3, VR::CS, VM::M1, "Wedge Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0027[] = {
+{ 0x0008, 0x0013, VR::TM, VM::M1, "Instance Creation Time" },
+{ 0x0008, 0x1052, VR::SQ, VM::M1, "Performing Physician Identification Sequence" },
+{ 0x0018, 0x1042, VR::TM, VM::M1, "Contrast/Bolus Start Time" },
+{ 0x0022, 0x0039, VR::CS, VM::M1, "Ophthalmic Image Orientation" },
+{ 0x0040, 0x9212, VR::FD, VM::M1TN, "Real World Value LUT Data" },
+{ 0x3008, 0x00D0, VR::SQ, VM::M1, "Recorded Block Sequence" },
+{ 0x300A, 0x00D2, VR::IS, VM::M1, "Wedge Number" },
+{ 0x4008, 0x0117, VR::SQ, VM::M1, "Interpretation Diagnosis Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0028[] = {
+{ 0x0008, 0x0014, VR::UI, VM::M1, "Instance Creator UID" },
+{ 0x0018, 0x1045, VR::IS, VM::M1, "Syringe Counts" },
+{ 0x0024, 0x0038, VR::US, VM::M1, "Number of Visual Stimuli" },
+{ 0x0028, 0x0034, VR::IS, VM::M2, "Pixel Aspect Ratio" },
+{ 0x0072, 0x006E, VR::ST, VM::M1, "Selector ST Value" },
+{ 0x300A, 0x00D5, VR::IS, VM::M1, "Wedge Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0029[] = {
+{ 0x0018, 0x1044, VR::DS, VM::M1, "Contrast/Bolus Total Dose" },
+{ 0x0024, 0x0039, VR::CS, VM::M1, "Excessive Fixation Losses Data Flag" },
+{ 0x0074, 0x1028, VR::FD, VM::M1, "Table Top Lateral Adjusted Position" },
+{ 0x300A, 0x00D4, VR::SH, VM::M1, "Wedge ID" },
+{ 0x4008, 0x0111, VR::SQ, VM::M1, "Interpretation Approver Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0030[] = {
+{ 0x0008, 0x0016, VR::UI, VM::M1, "SOP Class UID" },
+{ 0x0018, 0x1047, VR::DS, VM::M1TN, "Contrast Flow Duration" },
+{ 0x0068, 0x65E0, VR::SQ, VM::M1, "2D Plane Coordinates Sequence" },
+{ 0x0072, 0x006C, VR::SH, VM::M1TN, "Selector SH Value" },
+{ 0x0074, 0x102B, VR::FD, VM::M1, "Table Top Eccentric Adjusted Angle" },
+{ 0x300A, 0x00D7, VR::FL, VM::M1, "Total Wedge Tray Water-Equivalent Thickness" },
+{ 0x4008, 0x0112, VR::DA, VM::M1, "Interpretation Approval Date" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0031[] = {
+{ 0x0018, 0x1046, VR::DS, VM::M1TN, "Contrast Flow Rate" },
+{ 0x0040, 0x9216, VR::XS, VM::M1, "Real World Value First Value Mapped" },
+{ 0x0074, 0x102A, VR::FD, VM::M1, "Patient Support Adjusted Angle" },
+{ 0x300A, 0x00D6, VR::DS, VM::M1, "Wedge Factor" },
+{ 0x300C, 0x00D0, VR::IS, VM::M1, "Referenced Compensator Number" },
+{ 0x4008, 0x0113, VR::TM, VM::M1, "Interpretation Approval Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0032[] = {
+{ 0x0010, 0x0030, VR::DA, VM::M1, "Patient's Birth Date" },
+{ 0x0014, 0x0034, VR::DS, VM::M1TN, "Material Isolation Diameter" },
+{ 0x0018, 0x0038, VR::CS, VM::M1, "Intervention Status" },
+{ 0x0018, 0x1079, VR::DT, VM::M1, "Radiopharmaceutical Stop DateTime" },
+{ 0x0020, 0x1041, VR::DS, VM::M1, "Slice Location" },
+{ 0x0020, 0x9249, VR::CS, VM::M1, "Ending Respiratory Phase" },
+{ 0x0022, 0x0002, VR::US, VM::M2, "Light Path Filter Pass Band" },
+{ 0x0028, 0x0008, VR::IS, VM::M1, "Number of Frames" },
+{ 0x0032, 0x0012, VR::LO, VM::M1, "Study ID Issuer" },
+{ 0x003A, 0x001A, VR::DS, VM::M1, "Sampling Frequency" },
+{ 0x0040, 0xDB0D, VR::UI, VM::M1, "Template Extension Creator UID" },
+{ 0x0070, 0x0050, VR::US, VM::M2, "Displayed Area Top Left Hand Corner (Trial)" },
+{ 0x0072, 0x0052, VR::AT, VM::M1TN, "Selector Sequence Pointer" },
+{ 0x2000, 0x00A2, VR::SQ, VM::M1, "Media Installed Sequence" },
+{ 0x300A, 0x00E9, VR::DS, VM::M2, "Compensator Pixel Spacing" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0033[] = {
+{ 0x0018, 0x0039, VR::CS, VM::M1, "Therapy Description" },
+{ 0x0018, 0x1078, VR::DT, VM::M1, "Radiopharmaceutical Start DateTime" },
+{ 0x0020, 0x1040, VR::LO, VM::M1, "Position Reference Indicator" },
+{ 0x0020, 0x9248, VR::FL, VM::M1, "Ending Respiratory Amplitude" },
+{ 0x0022, 0x0003, VR::US, VM::M1, "Image Path Filter Pass-Through Wavelength" },
+{ 0x0028, 0x0009, VR::AT, VM::M1TN, "Frame Increment Pointer" },
+{ 0x0040, 0xDB0C, VR::UI, VM::M1, "Template Extension Organization UID" },
+{ 0x0070, 0x0051, VR::US, VM::M2, "Displayed Area Bottom Right Hand Corner (Trial)" },
+{ 0x300A, 0x00E8, VR::IS, VM::M1, "Compensator Columns" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0034[] = {
+{ 0x0008, 0x002A, VR::DT, VM::M1, "Acquisition DateTime" },
+{ 0x0010, 0x0032, VR::TM, VM::M1, "Patient's Birth Time" },
+{ 0x0012, 0x0030, VR::LO, VM::M1, "Clinical Trial Site ID" },
+{ 0x0018, 0x003A, VR::ST, VM::M1, "Intervention Description" },
+{ 0x0028, 0x000A, VR::AT, VM::M1TN, "Frame Dimension Pointer" },
+{ 0x0032, 0x1051, VR::TM, VM::M1, "Study Completion Time" },
+{ 0x0038, 0x001A, VR::DA, VM::M1, "Scheduled Admission Date" },
+{ 0x0046, 0x0064, VR::FD, VM::M1, "Other Pupillary Distance" },
+{ 0x0070, 0x0052, VR::SL, VM::M2, "Displayed Area Top Left Hand Corner" },
+{ 0x0072, 0x0050, VR::CS, VM::M1, "Selector Attribute VR" },
+{ 0x2000, 0x00A0, VR::US, VM::M1, "Memory Bit Depth" },
+{ 0x300A, 0x00EB, VR::DS, VM::M1TN, "Compensator Transmission Data" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0035[] = {
+{ 0x0012, 0x0031, VR::LO, VM::M1, "Clinical Trial Site Name" },
+{ 0x0022, 0x0001, VR::US, VM::M1, "Light Path Filter Pass-Through Wavelength" },
+{ 0x0022, 0x1040, VR::SQ, VM::M1, "Refractive Surgery Type Code Sequence" },
+{ 0x0032, 0x1050, VR::DA, VM::M1, "Study Completion Date" },
+{ 0x0038, 0x001B, VR::TM, VM::M1, "Scheduled Admission Time" },
+{ 0x0070, 0x0053, VR::SL, VM::M2, "Displayed Area Bottom Right Hand Corner" },
+{ 0x0076, 0x0055, VR::US, VM::M1, "Component ID" },
+{ 0x2000, 0x00A1, VR::US, VM::M1, "Printing Bit Depth" },
+{ 0x300A, 0x00EA, VR::DS, VM::M2, "Compensator Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0036[] = {
+{ 0x0014, 0x0030, VR::DS, VM::M1TN, "Material Thickness" },
+{ 0x0022, 0x0006, VR::SQ, VM::M1, "Patient Eye Movement Command Code Sequence" },
+{ 0x0038, 0x001C, VR::DA, VM::M1, "Scheduled Discharge Date" },
+{ 0x0046, 0x0062, VR::FD, VM::M1, "Near Pupillary Distance" },
+{ 0x0054, 0x0070, VR::US, VM::M1TN, "Time Slot Vector" },
+{ 0x0072, 0x0056, VR::LO, VM::M1, "Selector Attribute Private Creator" },
+{ 0x300A, 0x00ED, VR::IS, VM::M1, "Number of Boli" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0037[] = {
+{ 0x0022, 0x0007, VR::FL, VM::M1, "Spherical Lens Power" },
+{ 0x0038, 0x001D, VR::TM, VM::M1, "Scheduled Discharge Time" },
+{ 0x0046, 0x0063, VR::FD, VM::M1, "Intermediate Pupillary Distance" },
+{ 0x0054, 0x0071, VR::US, VM::M1, "Number of Time Slots" },
+{ 0x300A, 0x00EC, VR::DS, VM::M1TN, "Compensator Thickness Data" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0038[] = {
+{ 0x0014, 0x0032, VR::DS, VM::M1TN, "Material Pipe Diameter" },
+{ 0x0022, 0x0004, VR::US, VM::M2, "Image Path Filter Pass Band" },
+{ 0x0032, 0x1055, VR::CS, VM::M1, "Study Component Status ID" },
+{ 0x0038, 0x001E, VR::LO, VM::M1, "Scheduled Patient Institution Residence" },
+{ 0x0040, 0xDB0B, VR::CS, VM::M1, "Template Extension Flag" },
+{ 0x0046, 0x0060, VR::FD, VM::M1, "Distance Pupillary Distance" },
+{ 0x0054, 0x0072, VR::SQ, VM::M1, "Time Slot Information Sequence" },
+{ 0x0072, 0x0054, VR::LO, VM::M1TN, "Selector Sequence Pointer Private Creator" },
+{ 0x2000, 0x00A4, VR::SQ, VM::M1, "Other Media Available Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0039[] = {
+{ 0x0022, 0x0005, VR::CS, VM::M1, "Patient Eye Movement Commanded" },
+{ 0x0022, 0x1044, VR::SQ, VM::M1, "Ophthalmic Ultrasound Axial Measurements Type Code Sequence" },
+{ 0x0054, 0x0073, VR::DS, VM::M1, "Time Slot Time" },
+{ 0x300A, 0x00EE, VR::CS, VM::M1, "Compensator Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0040[] = {
+{ 0x0008, 0x0020, VR::DA, VM::M1, "Study Date" },
+{ 0x0018, 0x0030, VR::LO, VM::M1TN, "Radionuclide" },
+{ 0x0018, 0x1071, VR::DS, VM::M1, "Radiopharmaceutical Volume" },
+{ 0x0020, 0x9241, VR::FL, VM::M1, "Nominal Percentage of Cardiac Phase" },
+{ 0x0022, 0x000A, VR::FL, VM::M1, "Emmetropic Magnification" },
+{ 0x0028, 0x1041, VR::SS, VM::M1, "Pixel Intensity Relationship Sign" },
+{ 0x0038, 0x0010, VR::LO, VM::M1, "Admission ID" },
+{ 0x0038, 0x0400, VR::LO, VM::M1, "Patient's Institution Residence" },
+{ 0x0078, 0x0050, VR::FD, VM::M3, "3D Implant Template Group Member Matching Point" },
+{ 0x300A, 0x00E1, VR::SH, VM::M1, "Material ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0041[] = {
+{ 0x0008, 0x0021, VR::DA, VM::M1, "Series Date" },
+{ 0x0008, 0x1060, VR::PN, VM::M1TN, "Name of Physician(s) Reading Study" },
+{ 0x0018, 0x0031, VR::LO, VM::M1, "Radiopharmaceutical" },
+{ 0x0018, 0x1070, VR::LO, VM::M1, "Radiopharmaceutical Route" },
+{ 0x0018, 0x1460, VR::DS, VM::M1, "Tomo Layer Height" },
+{ 0x0022, 0x000B, VR::FL, VM::M1, "Intra Ocular Pressure" },
+{ 0x0028, 0x1040, VR::CS, VM::M1, "Pixel Intensity Relationship" },
+{ 0x0038, 0x0011, VR::LO, VM::M1, "Issuer of Admission ID" },
+{ 0x300A, 0x00E0, VR::IS, VM::M1, "Number of Compensators" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0042[] = {
+{ 0x0008, 0x0022, VR::DA, VM::M1, "Acquisition Date" },
+{ 0x0018, 0x0032, VR::DS, VM::M1, "Energy Window Centerline" },
+{ 0x0018, 0x1073, VR::TM, VM::M1, "Radiopharmaceutical Stop Time" },
+{ 0x0022, 0x0008, VR::FL, VM::M1, "Cylinder Lens Power" },
+{ 0x0028, 0x0002, VR::US, VM::M1, "Samples per Pixel" },
+{ 0x003A, 0x0010, VR::UL, VM::M1, "Number of Waveform Samples" },
+{ 0x0040, 0xDB07, VR::DT, VM::M1, "Template Local Version" },
+{ 0x0070, 0x005A, VR::SQ, VM::M1, "Displayed Area Selection Sequence" },
+{ 0x2000, 0x00A8, VR::SQ, VM::M1, "Supported Image Display Formats Sequence" },
+{ 0x300A, 0x00E3, VR::SQ, VM::M1, "Compensator Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0043[] = {
+{ 0x0008, 0x0023, VR::DA, VM::M1, "Content Date" },
+{ 0x0008, 0x1062, VR::SQ, VM::M1, "Physician(s) Reading Study Identification Sequence" },
+{ 0x0018, 0x0033, VR::DS, VM::M1TN, "Energy Window Total Width" },
+{ 0x0018, 0x1072, VR::TM, VM::M1, "Radiopharmaceutical Start Time" },
+{ 0x0022, 0x0009, VR::FL, VM::M1, "Cylinder Axis" },
+{ 0x0028, 0x0003, VR::US, VM::M1, "Samples per Pixel Used" },
+{ 0x0040, 0xDB06, VR::DT, VM::M1, "Template Version" },
+{ 0x3008, 0x00E0, VR::SQ, VM::M1, "Treatment Summary Measured Dose Reference Sequence" },
+{ 0x300A, 0x00E2, VR::DS, VM::M1, "Total Compensator Tray Factor" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0044[] = {
+{ 0x0008, 0x0024, VR::DA, VM::M1, "Overlay Date" },
+{ 0x0018, 0x0034, VR::LO, VM::M1, "Intervention Drug Name" },
+{ 0x0018, 0x1075, VR::DS, VM::M1, "Radionuclide Half Life" },
+{ 0x0020, 0x9245, VR::FL, VM::M1, "Nominal Percentage of Respiratory Phase" },
+{ 0x0022, 0x000E, VR::FL, VM::M1, "Degree of Dilation" },
+{ 0x0028, 0x0004, VR::CS, VM::M1, "Photometric Interpretation" },
+{ 0x0038, 0x0014, VR::SQ, VM::M1, "Issuer of Admission ID Sequence" },
+{ 0x0040, 0x9225, VR::FD, VM::M1, "Real World Value Slope" },
+{ 0x300A, 0x00E5, VR::SH, VM::M1, "Compensator ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0045[] = {
+{ 0x0008, 0x0025, VR::DA, VM::M1, "Curve Date" },
+{ 0x0018, 0x0035, VR::TM, VM::M1, "Intervention Drug Start Time" },
+{ 0x0018, 0x1074, VR::DS, VM::M1, "Radionuclide Total Dose" },
+{ 0x0020, 0x000D, VR::UI, VM::M1, "Study Instance UID" },
+{ 0x0028, 0x0005, VR::US, VM::M1, "Image Dimensions" },
+{ 0x0040, 0x9224, VR::FD, VM::M1, "Real World Value Intercept" },
+{ 0x0040, 0xDB00, VR::CS, VM::M1, "Template Identifier" },
+{ 0x300A, 0x00E4, VR::IS, VM::M1, "Compensator Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0046[] = {
+{ 0x0018, 0x0036, VR::SQ, VM::M1, "Intervention Sequence" },
+{ 0x0018, 0x1077, VR::DS, VM::M1, "Radiopharmaceutical Specific Activity" },
+{ 0x0020, 0x000E, VR::UI, VM::M1, "Series Instance UID" },
+{ 0x0020, 0x9247, VR::CS, VM::M1, "Starting Respiratory Phase" },
+{ 0x0022, 0x000C, VR::FL, VM::M1, "Horizontal Field of View" },
+{ 0x0028, 0x0006, VR::US, VM::M1, "Planar Configuration" },
+{ 0x0038, 0x0016, VR::LO, VM::M1, "Route of Admissions" },
+{ 0x0068, 0x65D0, VR::FD, VM::M6, "3D Line Coordinates" },
+{ 0x300A, 0x00E7, VR::IS, VM::M1, "Compensator Rows" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0047[] = {
+{ 0x0018, 0x0037, VR::CS, VM::M1, "Therapy Type" },
+{ 0x0018, 0x1076, VR::DS, VM::M1, "Radionuclide Positron Fraction" },
+{ 0x0020, 0x9246, VR::FL, VM::M1, "Starting Respiratory Amplitude" },
+{ 0x0022, 0x000D, VR::CS, VM::M1, "Pupil Dilated" },
+{ 0x300A, 0x00E6, VR::DS, VM::M1, "Source to Compensator Tray Distance" },
+{ 0x300C, 0x00E0, VR::IS, VM::M1, "Referenced Block Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0048[] = {
+{ 0x0010, 0x0020, VR::LO, VM::M1, "Patient ID" },
+{ 0x0014, 0x0024, VR::ST, VM::M1TN, "Component Reference System" },
+{ 0x0018, 0x0028, VR::DS, VM::M1, "Intervention Drug Dose" },
+{ 0x0018, 0x1069, VR::DS, VM::M1, "Trigger Time Offset" },
+{ 0x0020, 0x0010, VR::SH, VM::M1, "Study ID" },
+{ 0x0022, 0x0012, VR::FL, VM::M1, "Stereo Horizontal Pixel Offset" },
+{ 0x0022, 0x1053, VR::FL, VM::M1, "IOL Power" },
+{ 0x0038, 0x0008, VR::CS, VM::M1, "Visit Status ID" },
+{ 0x0046, 0x0076, VR::FD, VM::M1, "Keratometric Power" },
+{ 0x0070, 0x0040, VR::IS, VM::M1, "Image Rotation (Retired)" },
+{ 0x0400, 0x0020, VR::AT, VM::M1TN, "Data Elements Signed" },
+{ 0x300A, 0x00F9, VR::LO, VM::M1, "Accessory Code" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0049[] = {
+{ 0x0010, 0x0021, VR::LO, VM::M1, "Issuer of Patient ID" },
+{ 0x0010, 0x1060, VR::PN, VM::M1, "Patient's Mother's Birth Name" },
+{ 0x0014, 0x0025, VR::ST, VM::M1TN, "Component Manufacturing Procedure" },
+{ 0x0018, 0x0029, VR::SQ, VM::M1, "Intervention Drug Code Sequence" },
+{ 0x0018, 0x1068, VR::DS, VM::M1, "Multiplex Group Time Offset" },
+{ 0x0018, 0x9260, VR::SQ, VM::M1, "ASL Slab Sequence" },
+{ 0x0020, 0x0011, VR::IS, VM::M1, "Series Number" },
+{ 0x0022, 0x0013, VR::FL, VM::M1, "Stereo Vertical Pixel Offset" },
+{ 0x0046, 0x0077, VR::FD, VM::M1, "Keratometric Axis" },
+{ 0x0070, 0x0041, VR::CS, VM::M1, "Image Horizontal Flip" },
+{ 0x0074, 0x1004, VR::DS, VM::M1, "Procedure Step Progress" },
+{ 0x300A, 0x00F8, VR::CS, VM::M1, "Block Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0050[] = {
+{ 0x0010, 0x0022, VR::CS, VM::M1, "Type of Patient ID" },
+{ 0x0012, 0x0020, VR::LO, VM::M1, "Clinical Trial Protocol ID" },
+{ 0x0018, 0x002A, VR::SQ, VM::M1, "Additional Drug Sequence" },
+{ 0x0020, 0x0012, VR::IS, VM::M1, "Acquisition Number" },
+{ 0x0022, 0x0010, VR::FL, VM::M1, "Stereo Baseline Angle" },
+{ 0x0024, 0x0016, VR::SQ, VM::M1, "Screening Test Mode Code Sequence" },
+{ 0x0032, 0x1041, VR::TM, VM::M1, "Study Arrival Time" },
+{ 0x0046, 0x0074, VR::SQ, VM::M1, "Steep Keratometric Axis Sequence" },
+{ 0x0070, 0x0042, VR::US, VM::M1, "Image Rotation" },
+{ 0x0072, 0x0040, VR::LO, VM::M1, "Image Set Label" },
+{ 0x300A, 0x00FB, VR::CS, VM::M1, "Block Mounting Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0051[] = {
+{ 0x0012, 0x0021, VR::LO, VM::M1, "Clinical Trial Protocol Name" },
+{ 0x0018, 0x106A, VR::CS, VM::M1, "Synchronization Trigger" },
+{ 0x0020, 0x0013, VR::IS, VM::M1, "Instance Number" },
+{ 0x0022, 0x0011, VR::FL, VM::M1, "Stereo Baseline Displacement" },
+{ 0x0022, 0x1050, VR::SQ, VM::M1, "Ophthalmic Axial Length Measurements Sequence" },
+{ 0x0032, 0x1040, VR::DA, VM::M1, "Study Arrival Date" },
+{ 0x0046, 0x0075, VR::FD, VM::M1, "Radius of Curvature" },
+{ 0x0074, 0x1006, VR::ST, VM::M1, "Procedure Step Progress Description" },
+{ 0x300A, 0x00FA, VR::CS, VM::M1, "Block Divergence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0052[] = {
+{ 0x0010, 0x0024, VR::SQ, VM::M1, "Issuer of Patient ID Qualifiers Sequence" },
+{ 0x0020, 0x0014, VR::IS, VM::M1, "Isotope Number" },
+{ 0x0022, 0x0016, VR::SQ, VM::M1, "Illumination Type Code Sequence" },
+{ 0x0024, 0x0010, VR::FL, VM::M1, "Visual Field Horizontal Extent" },
+{ 0x0054, 0x0060, VR::US, VM::M1TN, "R-R Interval Vector" },
+{ 0x2010, 0x00A6, VR::CS, VM::M1, "Default Magnification Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0053[] = {
+{ 0x0018, 0x106C, VR::US, VM::M2, "Synchronization Channel" },
+{ 0x0020, 0x0015, VR::IS, VM::M1, "Phase Number" },
+{ 0x0022, 0x0017, VR::SQ, VM::M1, "Light Path Filter Type Stack Code Sequence" },
+{ 0x0024, 0x0011, VR::FL, VM::M1, "Visual Field Vertical Extent" },
+{ 0x0054, 0x0061, VR::US, VM::M1, "Number of R-R Intervals" },
+{ 0x0074, 0x1000, VR::CS, VM::M1, "Procedure Step State" },
+{ 0x2010, 0x00A7, VR::CS, VM::M1TN, "Other Magnification Types Available" },
+{ 0x300A, 0x00FC, VR::IS, VM::M1, "Block Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0054[] = {
+{ 0x0020, 0x0016, VR::IS, VM::M1, "Interval Number" },
+{ 0x0022, 0x0014, VR::FL, VM::M1, "Stereo Rotation" },
+{ 0x0024, 0x0012, VR::CS, VM::M1, "Visual Field Shape" },
+{ 0x0046, 0x0070, VR::SQ, VM::M1, "Keratometry Right Eye Sequence" },
+{ 0x0054, 0x0062, VR::SQ, VM::M1, "Gated Information Sequence" },
+{ 0x0076, 0x0040, VR::SQ, VM::M1, "Component Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0055[] = {
+{ 0x0014, 0x0023, VR::ST, VM::M1TN, "CAD File Format" },
+{ 0x0018, 0x106E, VR::UL, VM::M1, "Trigger Sample Position" },
+{ 0x0020, 0x0017, VR::IS, VM::M1, "Time Slot Number" },
+{ 0x0022, 0x0015, VR::SQ, VM::M1, "Acquisition Device Type Code Sequence" },
+{ 0x0022, 0x1054, VR::FL, VM::M1, "Predicted Refractive Error" },
+{ 0x0046, 0x0071, VR::SQ, VM::M1, "Keratometry Left Eye Sequence" },
+{ 0x0054, 0x0063, VR::SQ, VM::M1, "Data Information Sequence" },
+{ 0x0074, 0x1002, VR::SQ, VM::M1, "Procedure Step Progress Information Sequence" },
+{ 0x300A, 0x00FE, VR::LO, VM::M1, "Block Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0056[] = {
+{ 0x0008, 0x0030, VR::TM, VM::M1, "Study Time" },
+{ 0x0018, 0x0020, VR::CS, VM::M1TN, "Scanning Sequence" },
+{ 0x0018, 0x1061, VR::LO, VM::M1, "Trigger Source or Type" },
+{ 0x0020, 0x0018, VR::IS, VM::M1, "Angle Number" },
+{ 0x0020, 0x9251, VR::FD, VM::M1, "R-R Interval Time Nominal" },
+{ 0x0022, 0x001A, VR::SQ, VM::M1, "Channel Description Code Sequence" },
+{ 0x0028, 0x0010, VR::US, VM::M1, "Rows" },
+{ 0x0028, 0x0400, VR::LO, VM::M1, "Transform Label" },
+{ 0x0028, 0x0400, VR::US, VM::M1, "Rows For Nth Order Coefficients" },
+{ 0x0028, 0x1051, VR::DS, VM::M1TN, "Window Width" },
+{ 0x0032, 0x000A, VR::CS, VM::M1, "Study Status ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0057[] = {
+{ 0x0008, 0x0031, VR::TM, VM::M1, "Series Time" },
+{ 0x0008, 0x1070, VR::PN, VM::M1TN, "Operators' Name" },
+{ 0x0018, 0x0021, VR::CS, VM::M1TN, "Sequence Variant" },
+{ 0x0018, 0x1060, VR::DS, VM::M1, "Trigger Time" },
+{ 0x0018, 0x1470, VR::DS, VM::M1, "Tomo Angle" },
+{ 0x0020, 0x0019, VR::IS, VM::M1, "Item Number" },
+{ 0x0020, 0x9250, VR::CS, VM::M1, "Respiratory Trigger Type" },
+{ 0x0022, 0x001B, VR::SQ, VM::M1, "Refractive State Sequence" },
+{ 0x0028, 0x0011, VR::US, VM::M1, "Columns" },
+{ 0x0028, 0x0401, VR::LO, VM::M1, "Transform Version Number" },
+{ 0x0028, 0x0401, VR::US, VM::M1, "Columns For Nth Order Coefficients" },
+{ 0x0028, 0x1050, VR::DS, VM::M1TN, "Window Center" },
+{ 0x0074, 0x100c, VR::LO, VM::M1, "Contact Display Name" },
+{ 0x3008, 0x00F2, VR::SQ, VM::M1, "Recorded Range Shifter Sequence" },
+{ 0x300A, 0x00F0, VR::IS, VM::M1, "Number of Blocks" },
+{ 0x300C, 0x00F6, VR::IS, VM::M1, "Referenced Stop Control Point Index" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0058[] = {
+{ 0x0008, 0x0032, VR::TM, VM::M1, "Acquisition Time" },
+{ 0x0018, 0x0022, VR::CS, VM::M1TN, "Scan Options" },
+{ 0x0018, 0x1063, VR::DS, VM::M1, "Frame Time" },
+{ 0x0020, 0x9253, VR::SQ, VM::M1, "Respiratory Synchronization Sequence" },
+{ 0x0022, 0x0018, VR::SQ, VM::M1, "Image Path Filter Type Stack Code Sequence" },
+{ 0x0022, 0x1059, VR::FL, VM::M1, "Ophthalmic Axial Length Velocity" },
+{ 0x0028, 0x0012, VR::US, VM::M1, "Planes" },
+{ 0x0028, 0x0402, VR::US, VM::M1, "Number of Transform Steps" },
+{ 0x0028, 0x0402, VR::LO, VM::M1TN, "Coefficient Coding" },
+{ 0x0028, 0x1053, VR::DS, VM::M1, "Rescale Slope" },
+{ 0x2010, 0x00A8, VR::CS, VM::M1, "Default Smoothing Type" },
+{ 0x300A, 0x00F3, VR::FL, VM::M1, "Total Block Tray Water-Equivalent Thickness" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0059[] = {
+{ 0x0008, 0x0033, VR::TM, VM::M1, "Content Time" },
+{ 0x0008, 0x1072, VR::SQ, VM::M1, "Operator Identification Sequence" },
+{ 0x0018, 0x0023, VR::CS, VM::M1, "MR Acquisition Type" },
+{ 0x0018, 0x1062, VR::IS, VM::M1, "Nominal Interval" },
+{ 0x0020, 0x9252, VR::FD, VM::M1, "Actual Cardiac Trigger Delay Time" },
+{ 0x0022, 0x0019, VR::SQ, VM::M1, "Lenses Code Sequence" },
+{ 0x0028, 0x0403, VR::LO, VM::M1TN, "Sequence of Compressed Data" },
+{ 0x0028, 0x0403, VR::AT, VM::M1TN, "Coefficient Coding Pointers" },
+{ 0x0028, 0x1052, VR::DS, VM::M1, "Rescale Intercept" },
+{ 0x0074, 0x100e, VR::SQ, VM::M1, "Procedure Step Discontinuation Reason Code Sequence" },
+{ 0x2010, 0x00A9, VR::CS, VM::M1TN, "Other Smoothing Types Available" },
+{ 0x3008, 0x00F0, VR::SQ, VM::M1, "Recorded Snout Sequence" },
+{ 0x300A, 0x00F2, VR::DS, VM::M1, "Total Block Tray Factor" },
+{ 0x300C, 0x00F4, VR::IS, VM::M1, "Referenced Start Control Point Index" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0060[] = {
+{ 0x0008, 0x0034, VR::TM, VM::M1, "Overlay Time" },
+{ 0x0014, 0x0028, VR::ST, VM::M1TN, "Component Manufacturer" },
+{ 0x0018, 0x0024, VR::SH, VM::M1, "Sequence Name" },
+{ 0x0018, 0x1065, VR::DS, VM::M1TN, "Frame Time Vector" },
+{ 0x0020, 0x9255, VR::FD, VM::M1, "Nominal Respiratory Trigger Delay Time" },
+{ 0x0022, 0x001E, VR::FL, VM::M1, "Camera Angle of View" },
+{ 0x0024, 0x0018, VR::FL, VM::M1, "Maximum Stimulus Luminance" },
+{ 0x0028, 0x0014, VR::US, VM::M1, "Ultrasound Color Data Present" },
+{ 0x0028, 0x0404, VR::AT, VM::M1TN, "Details of Coefficients" },
+{ 0x0028, 0x1055, VR::LO, VM::M1TN, "Window Center & Width Explanation" },
+{ 0x0038, 0x0004, VR::SQ, VM::M1, "Referenced Patient Alias Sequence" },
+{ 0x300A, 0x00F5, VR::SH, VM::M1, "Block Tray ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0061[] = {
+{ 0x0008, 0x0035, VR::TM, VM::M1, "Curve Time" },
+{ 0x0018, 0x0025, VR::CS, VM::M1, "Angio Flag" },
+{ 0x0018, 0x1064, VR::LO, VM::M1, "Cardiac Framing Type" },
+{ 0x0020, 0x9254, VR::FD, VM::M1, "Respiratory Interval Time" },
+{ 0x0028, 0x1054, VR::LO, VM::M1, "Rescale Type" },
+{ 0x0074, 0x1008, VR::SQ, VM::M1, "Procedure Step Communications URI Sequence" },
+{ 0x3008, 0x00F6, VR::SQ, VM::M1, "Recorded Range Modulator Sequence" },
+{ 0x300A, 0x00F4, VR::SQ, VM::M1, "Block Sequence" },
+{ 0x300C, 0x00F2, VR::SQ, VM::M1, "Referenced Control Point Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0062[] = {
+{ 0x0018, 0x0026, VR::SQ, VM::M1, "Intervention Drug Information Sequence" },
+{ 0x0018, 0x1067, VR::DS, VM::M1, "Image Trigger Delay" },
+{ 0x0020, 0x9257, VR::FD, VM::M1, "Actual Respiratory Trigger Delay Time" },
+{ 0x0022, 0x001C, VR::SQ, VM::M1, "Mydriatic Agent Code Sequence" },
+{ 0x0028, 0x6190, VR::ST, VM::M1, "Mask Operation Explanation" },
+{ 0x0032, 0x000C, VR::CS, VM::M1, "Study Priority ID" },
+{ 0x003A, 0x0004, VR::CS, VM::M1, "Waveform Originality" },
+{ 0x300A, 0x00F7, VR::FL, VM::M1, "Isocenter to Block Tray Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0063[] = {
+{ 0x0018, 0x0027, VR::TM, VM::M1, "Intervention Drug Stop Time" },
+{ 0x0018, 0x1066, VR::DS, VM::M1, "Frame Delay" },
+{ 0x0020, 0x9256, VR::FD, VM::M1, "Respiratory Trigger Delay Threshold" },
+{ 0x0022, 0x001D, VR::SQ, VM::M1, "Relative Image Position Code Sequence" },
+{ 0x0028, 0x1056, VR::CS, VM::M1, "VOI LUT Function" },
+{ 0x003A, 0x0005, VR::US, VM::M1, "Number of Waveform Channels" },
+{ 0x0074, 0x100a, VR::ST, VM::M1, "Contact URI" },
+{ 0x3008, 0x00F4, VR::SQ, VM::M1, "Recorded Lateral Spreading Device Sequence" },
+{ 0x300A, 0x00F6, VR::DS, VM::M1, "Source to Block Tray Distance" },
+{ 0x300C, 0x00F0, VR::IS, VM::M1, "Referenced Control Point Index" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0064[] = {
+{ 0x0010, 0x1010, VR::AS, VM::M1, "Patient's Age" },
+{ 0x0018, 0x1018, VR::LO, VM::M1, "Secondary Capture Device Manufacturer's Model Name" },
+{ 0x0020, 0x1020, VR::LO, VM::M1TN, "Reference" },
+{ 0x0020, 0x9228, VR::UL, VM::M1, "Concatenation Frame Offset Number" },
+{ 0x0024, 0x0065, VR::SQ, VM::M1, "Age Corrected Sensitivity Deviation Algorithm Sequence" },
+{ 0x0028, 0x0069, VR::US, VM::M1, "Bits Grouped" },
+{ 0x0032, 0x1032, VR::PN, VM::M1, "Requesting Physician" },
+{ 0x0040, 0x0001, VR::AE, VM::M1TN, "Scheduled Station AE Title" },
+{ 0x0052, 0x0013, VR::FD, VM::M1, "Catheter Rotational Rate" },
+{ 0x0054, 0x0015, VR::DS, VM::M1, "Energy Window Upper Limit" },
+{ 0x0066, 0x0027, VR::SQ, VM::M1, "Triangle Fan Sequence" },
+{ 0x1000, 0x0000, VR::US, VM::M3, "Escape Triplet" },
+{ 0x3006, 0x0084, VR::IS, VM::M1, "Referenced ROI Number" },
+{ 0x300A, 0x0088, VR::FL, VM::M1, "Beam Dose Point Depth" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0065[] = {
+{ 0x0010, 0x0050, VR::SQ, VM::M1, "Patient's Insurance Plan Code Sequence" },
+{ 0x0014, 0x0054, VR::DS, VM::M1, "Outer Diameter" },
+{ 0x0018, 0x1019, VR::LO, VM::M1TN, "Secondary Capture Device Software Versions" },
+{ 0x0018, 0x9601, VR::SQ, VM::M1, "Diffusion b-matrix Sequence" },
+{ 0x0020, 0x0060, VR::CS, VM::M1, "Laterality" },
+{ 0x0024, 0x0064, VR::SQ, VM::M1, "Results Normals Sequence" },
+{ 0x0028, 0x0068, VR::US, VM::M1, "Repeat Interval" },
+{ 0x0032, 0x1033, VR::LO, VM::M1, "Requesting Service" },
+{ 0x0044, 0x0004, VR::DT, VM::M1, "Approval Status DateTime" },
+{ 0x0048, 0x0008, VR::SQ, VM::M1, "Total Pixel Matrix Origin Sequence" },
+{ 0x0050, 0x0010, VR::SQ, VM::M1, "Device Sequence" },
+{ 0x0052, 0x0012, VR::US, VM::M1, "A-lines Per Frame" },
+{ 0x0054, 0x0014, VR::DS, VM::M1, "Energy Window Lower Limit" },
+{ 0x0066, 0x0026, VR::SQ, VM::M1, "Triangle Strip Sequence" },
+{ 0x0072, 0x0032, VR::US, VM::M1, "Image Set Number" },
+{ 0x0072, 0x0422, VR::SQ, VM::M1, "Structured Display Image Box Sequence" },
+{ 0x0076, 0x0036, VR::CS, VM::M1, "Exclusive Component Type" },
+{ 0x1000, 0x0001, VR::US, VM::M3, "Run Length Triplet" },
+{ 0x2040, 0x0082, VR::CS, VM::M1, "Overlay Background Density" },
+{ 0x3006, 0x0085, VR::SH, VM::M1, "ROI Observation Label" },
+{ 0x300A, 0x0089, VR::FL, VM::M1, "Beam Dose Point Equivalent Depth" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0066[] = {
+{ 0x0012, 0x0051, VR::ST, VM::M1, "Clinical Trial Time Point Description" },
+{ 0x0018, 0x101A, VR::LO, VM::M1TN, "Hardcopy Device Software Version" },
+{ 0x0018, 0x9602, VR::FD, VM::M1, "Diffusion b-value XX" },
+{ 0x0024, 0x0067, VR::SQ, VM::M1, "Generalized Defect Sensitivity Deviation Algorithm Sequence" },
+{ 0x0032, 0x1030, VR::LO, VM::M1, "Reason for Study" },
+{ 0x0040, 0x0003, VR::TM, VM::M1, "Scheduled Procedure Step Start Time" },
+{ 0x0044, 0x0007, VR::SQ, VM::M1, "Product Type Code Sequence" },
+{ 0x0050, 0x0013, VR::FD, VM::M1, "Container Component Thickness" },
+{ 0x0052, 0x0011, VR::FD, VM::M1, "A-line Rate" },
+{ 0x0054, 0x0017, VR::IS, VM::M1, "Residual Syringe Counts" },
+{ 0x0066, 0x0025, VR::OW, VM::M1, "Vertex Point Index List" },
+{ 0x0072, 0x0421, VR::US, VM::M3, "Empty Image Box CIELab Value" },
+{ 0x1000, 0x0002, VR::US, VM::M1, "Huffman Table Size" },
+{ 0x3006, 0x0086, VR::SQ, VM::M1, "RT ROI Identification Code Sequence" },
+{ 0x300A, 0x008A, VR::FL, VM::M1, "Beam Dose Point SSD" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0067[] = {
+{ 0x0012, 0x0050, VR::LO, VM::M1, "Clinical Trial Time Point ID" },
+{ 0x0014, 0x0056, VR::DS, VM::M1, "Inner Diameter" },
+{ 0x0018, 0x101B, VR::LO, VM::M1, "Hardcopy Device Manufacturer's Model Name" },
+{ 0x0018, 0x9603, VR::FD, VM::M1, "Diffusion b-value XY" },
+{ 0x0020, 0x0062, VR::CS, VM::M1, "Image Laterality" },
+{ 0x0024, 0x0066, VR::FL, VM::M1, "Global Deviation From Normal" },
+{ 0x0032, 0x1031, VR::SQ, VM::M1, "Requesting Physician Identification Sequence" },
+{ 0x0040, 0x0002, VR::DA, VM::M1, "Scheduled Procedure Step Start Date" },
+{ 0x0050, 0x0012, VR::SQ, VM::M1, "Container Component Type Code Sequence" },
+{ 0x0054, 0x0016, VR::SQ, VM::M1, "Radiopharmaceutical Information Sequence" },
+{ 0x0066, 0x0024, VR::OW, VM::M1, "Edge Point Index List" },
+{ 0x0072, 0x0030, VR::SQ, VM::M1, "Time Based Image Sets Sequence" },
+{ 0x0072, 0x0420, VR::US, VM::M3, "Structured Display Background CIELab Value" },
+{ 0x0076, 0x0034, VR::CS, VM::M1, "Component Type Code Sequence" },
+{ 0x1000, 0x0003, VR::US, VM::M3, "Huffman Table Triplet" },
+{ 0x2040, 0x0080, VR::CS, VM::M1, "Overlay Foreground Density" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0068[] = {
+{ 0x0014, 0x1010, VR::ST, VM::M1, "Actual Environmental Conditions" },
+{ 0x0018, 0x9214, VR::CS, VM::M1, "Respiratory Cycle Position" },
+{ 0x0018, 0x9604, VR::FD, VM::M1, "Diffusion b-value XZ" },
+{ 0x0024, 0x0061, VR::CS, VM::M1, "Excessive False Positives Data Flag" },
+{ 0x0040, 0x0005, VR::TM, VM::M1, "Scheduled Procedure Step End Time" },
+{ 0x0044, 0x0001, VR::ST, VM::M1, "Product Package Identifier" },
+{ 0x0050, 0x0015, VR::FD, VM::M1, "Container Component Width" },
+{ 0x0054, 0x0011, VR::US, VM::M1, "Number of Energy Windows" },
+{ 0x0066, 0x0023, VR::OW, VM::M1, "Triangle Point Index List" },
+{ 0x0072, 0x0427, VR::SQ, VM::M1, "Referenced First Frame Sequence" },
+{ 0x1000, 0x0004, VR::US, VM::M1, "Shift Table Size" },
+{ 0x3006, 0x0080, VR::SQ, VM::M1, "RT ROI Observations Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0069[] = {
+{ 0x0008, 0x9205, VR::CS, VM::M1, "Pixel Presentation" },
+{ 0x0014, 0x0050, VR::CS, VM::M1, "Component Shape" },
+{ 0x0018, 0x9605, VR::FD, VM::M1, "Diffusion b-value YY" },
+{ 0x0024, 0x0060, VR::US, VM::M1, "False Positives Quantity" },
+{ 0x0040, 0x0004, VR::DA, VM::M1, "Scheduled Procedure Step End Date" },
+{ 0x0050, 0x0014, VR::DS, VM::M1, "Device Length" },
+{ 0x0052, 0x0016, VR::SQ, VM::M1, "Mode of Percutaneous Access Sequence" },
+{ 0x0054, 0x0010, VR::US, VM::M1TN, "Energy Window Vector" },
+{ 0x0054, 0x0400, VR::SH, VM::M1, "Image ID" },
+{ 0x0076, 0x0032, VR::SQ, VM::M1, "Component Types Sequence" },
+{ 0x1000, 0x0005, VR::US, VM::M3, "Shift Table Triplet" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0070[] = {
+{ 0x0008, 0x9206, VR::CS, VM::M1, "Volumetric Properties" },
+{ 0x0018, 0x9606, VR::FD, VM::M1, "Diffusion b-value YZ" },
+{ 0x0022, 0x1024, VR::SQ, VM::M1, "Lens Status Code Sequence" },
+{ 0x0024, 0x0063, VR::CS, VM::M1, "Visual Field Test Normals Flag" },
+{ 0x0032, 0x1034, VR::SQ, VM::M1, "Requesting Service Code Sequence" },
+{ 0x0040, 0x0007, VR::LO, VM::M1, "Scheduled Procedure Step Description" },
+{ 0x0044, 0x0003, VR::LT, VM::M1, "Approval Status Further Description" },
+{ 0x0050, 0x0017, VR::CS, VM::M1, "Device Diameter Units" },
+{ 0x0054, 0x0013, VR::SQ, VM::M1, "Energy Window Range Sequence" },
+{ 0x0066, 0x0021, VR::OF, VM::M1, "Vector Coordinate Data" },
+{ 0x3006, 0x0082, VR::IS, VM::M1, "Observation Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0071[] = {
+{ 0x0008, 0x9207, VR::CS, VM::M1, "Volume Based Calculation Technique" },
+{ 0x0014, 0x0052, VR::CS, VM::M1, "Curvature Type" },
+{ 0x0018, 0x9217, VR::FD, VM::M1, "Velocity Encoding Maximum Value" },
+{ 0x0018, 0x9607, VR::FD, VM::M1, "Diffusion b-value ZZ" },
+{ 0x0022, 0x1025, VR::SQ, VM::M1, "Vitreous Status Code Sequence" },
+{ 0x0024, 0x0062, VR::CS, VM::M1, "Excessive False Positives" },
+{ 0x0040, 0x0006, VR::PN, VM::M1, "Scheduled Performing Physician's Name" },
+{ 0x0044, 0x0002, VR::CS, VM::M1, "Substance Administration Approval" },
+{ 0x0050, 0x0016, VR::DS, VM::M1, "Device Diameter" },
+{ 0x0052, 0x0014, VR::FD, VM::M1, "A-line Pixel Spacing" },
+{ 0x0054, 0x0012, VR::SQ, VM::M1, "Energy Window Information Sequence" },
+{ 0x0066, 0x0020, VR::FL, VM::M1TN, "Vector Accuracy" },
+{ 0x0072, 0x0034, VR::CS, VM::M1, "Image Set Selector Category" },
+{ 0x0072, 0x0424, VR::SQ, VM::M1, "Structured Display Text Box Sequence" },
+{ 0x0076, 0x0030, VR::LO, VM::M1, "Surgical Technique" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0072[] = {
+{ 0x0008, 0x0041, VR::LO, VM::M1, "Data Set Subtype" },
+{ 0x0008, 0x1000, VR::AE, VM::M1, "Network ID" },
+{ 0x0008, 0x9208, VR::CS, VM::M1, "Complex Image Component" },
+{ 0x0018, 0x1010, VR::LO, VM::M1, "Secondary Capture Device ID" },
+{ 0x0018, 0x1400, VR::LO, VM::M1, "Acquisition Device Processing Description" },
+{ 0x0018, 0x9218, VR::FD, VM::M1, "Tag Spacing Second Dimension" },
+{ 0x0028, 0x0061, VR::SH, VM::M1, "Compression Originator" },
+{ 0x0040, 0x0009, VR::SH, VM::M1, "Scheduled Procedure Step ID" },
+{ 0x0048, 0x0001, VR::FL, VM::M1, "Imaged Volume Width" },
+{ 0x0050, 0x0019, VR::DS, VM::M1, "Inter-Marker Distance" },
+{ 0x0066, 0x002F, VR::SQ, VM::M1, "Algorithm Family Code Sequence" },
+{ 0x3008, 0x0082, VR::IS, VM::M1, "Referenced Measured Dose Reference Number" },
+{ 0x300A, 0x0080, VR::IS, VM::M1, "Number of Beams" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0073[] = {
+{ 0x0008, 0x0040, VR::US, VM::M1, "Data Set Type" },
+{ 0x0008, 0x9209, VR::CS, VM::M1, "Acquisition Contrast" },
+{ 0x0018, 0x0050, VR::DS, VM::M1, "Slice Thickness" },
+{ 0x0018, 0x1011, VR::LO, VM::M1, "Hardcopy Creation Device ID" },
+{ 0x0018, 0x1401, VR::LO, VM::M1, "Acquisition Device Processing Code" },
+{ 0x0018, 0x9219, VR::SS, VM::M1, "Tag Angle Second Axis" },
+{ 0x0020, 0x9221, VR::SQ, VM::M1, "Dimension Organization Sequence" },
+{ 0x0028, 0x0060, VR::CS, VM::M1, "Compression Code" },
+{ 0x0040, 0x0008, VR::SQ, VM::M1, "Scheduled Protocol Code Sequence" },
+{ 0x0050, 0x0018, VR::DS, VM::M1, "Device Volume" },
+{ 0x0066, 0x002E, VR::SQ, VM::M1, "Segment Surface Source Instance Sequence" },
+{ 0x0072, 0x003A, VR::CS, VM::M1, "Relative Time Units" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0074[] = {
+{ 0x0018, 0x1012, VR::DA, VM::M1, "Date of Secondary Capture" },
+{ 0x0018, 0x1402, VR::CS, VM::M1, "Cassette Orientation" },
+{ 0x0020, 0x9222, VR::SQ, VM::M1, "Dimension Index Sequence" },
+{ 0x0022, 0x1028, VR::SQ, VM::M1, "IOL Formula Code Sequence" },
+{ 0x0028, 0x0063, VR::SH, VM::M1, "Compression Description" },
+{ 0x0040, 0x000B, VR::SQ, VM::M1, "Scheduled Performing Physician Identification Sequence" },
+{ 0x0048, 0x0003, VR::FL, VM::M1, "Imaged Volume Depth" },
+{ 0x0050, 0x001B, VR::LO, VM::M1, "Container Component ID" },
+{ 0x0066, 0x002D, VR::SQ, VM::M1, "Segment Surface Generation Algorithm Identification Sequence" },
+{ 0x3008, 0x0080, VR::SQ, VM::M1, "Referenced Measured Dose Reference Sequence" },
+{ 0x300A, 0x0082, VR::DS, VM::M3, "Beam Dose Specification Point" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0075[] = {
+{ 0x0008, 0x0042, VR::CS, VM::M1, "Nuclear Medicine Series Type" },
+{ 0x0018, 0x1403, VR::CS, VM::M1, "Cassette Size" },
+{ 0x0022, 0x1029, VR::LO, VM::M1, "IOL Formula Detail" },
+{ 0x0028, 0x0062, VR::LO, VM::M1, "Compression Label" },
+{ 0x0040, 0x000A, VR::SQ, VM::M1, "Stage Code Sequence" },
+{ 0x0048, 0x0002, VR::FL, VM::M1, "Imaged Volume Height" },
+{ 0x0050, 0x001A, VR::CS, VM::M1, "Container Component Material" },
+{ 0x0066, 0x002C, VR::UL, VM::M1, "Referenced Surface Number" },
+{ 0x0072, 0x0038, VR::US, VM::M2, "Relative Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0076[] = {
+{ 0x0018, 0x1014, VR::TM, VM::M1, "Time of Secondary Capture" },
+{ 0x0018, 0x1404, VR::US, VM::M1, "Exposures on Plate" },
+{ 0x0024, 0x0069, VR::LO, VM::M1, "Patient Reliability Indicator" },
+{ 0x0028, 0x0065, VR::CS, VM::M1TN, "Compression Sequence" },
+{ 0x0044, 0x0009, VR::LT, VM::M1, "Product Description" },
+{ 0x0050, 0x001D, VR::FD, VM::M1, "Container Component Diameter" },
+{ 0x0066, 0x002B, VR::SQ, VM::M1, "Referenced Surface Sequence" },
+{ 0x3006, 0x0088, VR::ST, VM::M1, "ROI Observation Description" },
+{ 0x300A, 0x0084, VR::DS, VM::M1, "Beam Dose" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0077[] = {
+{ 0x0018, 0x1405, VR::IS, VM::M1, "Relative X-Ray Exposure" },
+{ 0x0024, 0x0068, VR::FL, VM::M1, "Localized Deviation from Normal" },
+{ 0x0044, 0x0008, VR::LO, VM::M1TN, "Product Name" },
+{ 0x0050, 0x001C, VR::FD, VM::M1, "Container Component Length" },
+{ 0x0054, 0x0018, VR::SH, VM::M1, "Energy Window Name" },
+{ 0x0066, 0x002A, VR::UL, VM::M1, "Surface Count" },
+{ 0x0072, 0x003E, VR::SQ, VM::M1, "Abstract Prior Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0078[] = {
+{ 0x0018, 0x1016, VR::LO, VM::M1, "Secondary Capture Device Manufacturer" },
+{ 0x0044, 0x000B, VR::DT, VM::M1, "Product Expiration DateTime" },
+{ 0x0048, 0x0007, VR::UL, VM::M1, "Total Pixel Matrix Rows" },
+{ 0x0066, 0x0029, VR::OW, VM::M1, "Primitive Point Index List" },
+{ 0x300A, 0x0086, VR::DS, VM::M1, "Beam Meterset" },
+{ 0x300C, 0x0080, VR::SQ, VM::M1, "Referenced Dose Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0079[] = {
+{ 0x0014, 0x3099, VR::LT, VM::M1, "Calibration Notes" },
+{ 0x0018, 0x1017, VR::LO, VM::M1, "Hardcopy Device Manufacturer" },
+{ 0x0028, 0x0066, VR::AT, VM::M1TN, "Compression Step Pointers" },
+{ 0x0044, 0x000A, VR::LO, VM::M1, "Product Lot Identifier" },
+{ 0x0048, 0x0006, VR::UL, VM::M1, "Total Pixel Matrix Columns" },
+{ 0x0050, 0x001E, VR::LO, VM::M1, "Container Component Description" },
+{ 0x0066, 0x0028, VR::SQ, VM::M1, "Line Sequence" },
+{ 0x0068, 0x65B0, VR::FD, VM::M4, "2D Line Coordinates" },
+{ 0x0072, 0x003C, VR::SS, VM::M2, "Abstract Prior Value" },
+{ 0x0076, 0x0038, VR::CS, VM::M1, "Mandatory Component Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0080[] = {
+{ 0x0010, 0x1000, VR::LO, VM::M1TN, "Other Patient IDs" },
+{ 0x0014, 0x0045, VR::ST, VM::M1TN, "Material Properties File Format" },
+{ 0x0018, 0x1008, VR::LO, VM::M1, "Gantry ID" },
+{ 0x0018, 0x9200, VR::CS, VM::M1, "MR Spectroscopy Acquisition Type" },
+{ 0x0020, 0x9238, VR::LO, VM::M1, "Functional Group Private Creator" },
+{ 0x0024, 0x0075, VR::FL, VM::M1, "Short Term Fluctuation" },
+{ 0x0040, 0x0011, VR::SH, VM::M1, "Scheduled Procedure Step Location" },
+{ 0x0042, 0x0013, VR::SQ, VM::M1, "Source Instance Sequence" },
+{ 0x0052, 0x0003, VR::FD, VM::M1, "Beam Spot Size" },
+{ 0x0070, 0x0021, VR::US, VM::M1, "Number of Graphic Points" },
+{ 0x1010, 0x0000, VR::US, VM::M1TN, "Zonal Map" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0081[] = {
+{ 0x0008, 0x0058, VR::UI, VM::M1TN, "Failed SOP Instance UID List" },
+{ 0x0010, 0x0040, VR::CS, VM::M1, "Patient's Sex" },
+{ 0x0010, 0x1001, VR::PN, VM::M1TN, "Other Patient Names" },
+{ 0x0012, 0x0042, VR::LO, VM::M1, "Clinical Trial Subject Reading ID" },
+{ 0x0014, 0x0044, VR::ST, VM::M1TN, "Material Properties File ID" },
+{ 0x0020, 0x0070, VR::LO, VM::M1, "Image Geometry Type" },
+{ 0x0022, 0x1033, VR::FL, VM::M1, "Keratometer Index" },
+{ 0x0024, 0x0074, VR::CS, VM::M1, "Short Term Fluctuation Calculated" },
+{ 0x0040, 0x0010, VR::SH, VM::M1TN, "Scheduled Station Name" },
+{ 0x0040, 0x0400, VR::LT, VM::M1, "Comments on the Scheduled Procedure Step" },
+{ 0x0040, 0xA29A, VR::SL, VM::M2T2N, "Pixel Coordinates Set (Trial)" },
+{ 0x0042, 0x0012, VR::LO, VM::M1, "MIME Type of Encapsulated Document" },
+{ 0x0046, 0x0016, VR::SQ, VM::M1, "Unspecified Laterality Lens Sequence" },
+{ 0x0052, 0x0002, VR::FD, VM::M1, "OCT Focal Distance" },
+{ 0x0054, 0x0414, VR::SQ, VM::M1, "Patient Gantry Relationship Code Sequence" },
+{ 0x0066, 0x0036, VR::LO, VM::M1, "Algorithm Name" },
+{ 0x0070, 0x0020, VR::US, VM::M1, "Graphic Dimensions" },
+{ 0x0072, 0x0022, VR::SQ, VM::M1, "Image Set Selector Sequence" },
+{ 0x0072, 0x0432, VR::US, VM::M2TN, "Synchronized Image Box List" },
+{ 0x0078, 0x0028, VR::SQ, VM::M1, "Implant Template Group Target Anatomy Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0082[] = {
+{ 0x0010, 0x1002, VR::SQ, VM::M1, "Other Patient IDs Sequence" },
+{ 0x0024, 0x0077, VR::FL, VM::M1, "Short Term Fluctuation Probability" },
+{ 0x0032, 0x1020, VR::LO, VM::M1, "Scheduled Study Location" },
+{ 0x0042, 0x0011, VR::OB, VM::M1, "Encapsulated Document" },
+{ 0x0046, 0x0015, VR::SQ, VM::M1, "Left Lens Sequence" },
+{ 0x0052, 0x0001, VR::FL, VM::M1, "Contrast/Bolus Ingredient Percent by Volume" },
+{ 0x0066, 0x0035, VR::SQ, VM::M1, "Surface Processing Algorithm Identification Sequence" },
+{ 0x0070, 0x0023, VR::CS, VM::M1, "Graphic Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0083[] = {
+{ 0x0012, 0x0040, VR::LO, VM::M1, "Clinical Trial Subject ID" },
+{ 0x0014, 0x0046, VR::LT, VM::M1, "Material Notes" },
+{ 0x0024, 0x0076, VR::CS, VM::M1, "Short Term Fluctuation Probability Calculated" },
+{ 0x0032, 0x1021, VR::AE, VM::M1TN, "Scheduled Study Location AE Title" },
+{ 0x0040, 0x0012, VR::LO, VM::M1, "Pre-Medication" },
+{ 0x0042, 0x0010, VR::ST, VM::M1, "Document Title" },
+{ 0x0046, 0x0014, VR::SQ, VM::M1, "Right Lens Sequence" },
+{ 0x0066, 0x0034, VR::SQ, VM::M1, "Facet Sequence" },
+{ 0x0070, 0x0022, VR::FL, VM::M2TN, "Graphic Data" },
+{ 0x0072, 0x0020, VR::SQ, VM::M1, "Image Sets Sequence" },
+{ 0x0072, 0x0430, VR::SQ, VM::M1, "Image Box Synchronization Sequence" },
+{ 0x0078, 0x002A, VR::SQ, VM::M1, "Implant Template Group Members Sequence" },
+{ 0x2040, 0x0090, VR::CS, VM::M1, "Overlay Mode" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0084[] = {
+{ 0x0024, 0x0071, VR::FL, VM::M1, "Global Deviation Probability" },
+{ 0x0044, 0x0011, VR::LO, VM::M1, "Substance Administration Notes" },
+{ 0x0052, 0x0007, VR::FD, VM::M1, "OCT Optical Center Wavelength" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0085[] = {
+{ 0x0008, 0x9215, VR::SQ, VM::M1, "Derivation Code Sequence" },
+{ 0x0010, 0x1005, VR::PN, VM::M1, "Patient's Birth Name" },
+{ 0x0022, 0x1037, VR::FL, VM::M1, "Target Refraction" },
+{ 0x0024, 0x0070, VR::FL, VM::M1, "Visual Field Mean Sensitivity" },
+{ 0x0028, 0x9235, VR::CS, VM::M1, "Signal Domain Rows" },
+{ 0x0044, 0x0010, VR::DT, VM::M1, "Substance Administration DateTime" },
+{ 0x0046, 0x0012, VR::LO, VM::M1, "Lens Description" },
+{ 0x0050, 0x0004, VR::CS, VM::M1, "Calibration Image" },
+{ 0x0052, 0x0006, VR::CS, VM::M1, "OCT Acquisition Domain" },
+{ 0x0054, 0x0410, VR::SQ, VM::M1, "Patient Orientation Code Sequence" },
+{ 0x0066, 0x0032, VR::LT, VM::M1, "Algorithm Parameters" },
+{ 0x0070, 0x0024, VR::CS, VM::M1, "Graphic Filled" },
+{ 0x0072, 0x0026, VR::AT, VM::M1, "Selector Attribute" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0086[] = {
+{ 0x0014, 0x3080, VR::OB, VM::M1, "Bad Pixel Image" },
+{ 0x0024, 0x0073, VR::FL, VM::M1, "Localized Deviation Probability" },
+{ 0x0044, 0x0013, VR::SQ, VM::M1, "Product Parameter Sequence" },
+{ 0x0066, 0x0031, VR::LO, VM::M1, "Algorithm Version" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0087[] = {
+{ 0x0014, 0x0042, VR::ST, VM::M1TN, "Material Grade" },
+{ 0x0022, 0x1035, VR::SQ, VM::M1, "Source of Ophthalmic Axial Length Code Sequence" },
+{ 0x0024, 0x0072, VR::CS, VM::M1, "Local Deviation Probability Normals Flag" },
+{ 0x0042, 0x0014, VR::LO, VM::M1TN, "List of MIME Types" },
+{ 0x0044, 0x0012, VR::LO, VM::M1, "Substance Administration Device ID" },
+{ 0x0052, 0x0004, VR::FD, VM::M1, "Effective Refractive Index" },
+{ 0x0054, 0x0412, VR::SQ, VM::M1, "Patient Orientation Modifier Code Sequence" },
+{ 0x0066, 0x0030, VR::SQ, VM::M1, "Algorithm Name Code Sequence" },
+{ 0x0072, 0x0024, VR::CS, VM::M1, "Image Set Selector Usage Flag" },
+{ 0x0072, 0x0434, VR::CS, VM::M1, "Type of Synchronization" },
+{ 0x0076, 0x0020, VR::SQ, VM::M1, "Procedure Type Code Sequence" },
+{ 0x0078, 0x002E, VR::US, VM::M1, "Implant Template Group Member ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0088[] = {
+{ 0x0008, 0x0051, VR::SQ, VM::M1, "Issuer of Accession Number Sequence" },
+{ 0x0008, 0x1010, VR::SH, VM::M1, "Station Name" },
+{ 0x0018, 0x1000, VR::LO, VM::M1, "Device Serial Number" },
+{ 0x0018, 0x5104, VR::SQ, VM::M1, "Projection Eponymous Name Code Sequence" },
+{ 0x0028, 0x0071, VR::XS, VM::M1, "Perimeter Value" },
+{ 0x0038, 0x0061, VR::LO, VM::M1, "Issuer of Service Episode ID" },
+{ 0x0048, 0x0011, VR::CS, VM::M1, "Focus Method" },
+{ 0x3008, 0x0092, VR::IS, VM::M1, "Referenced Calculated Dose Reference Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0089[] = {
+{ 0x0008, 0x0050, VR::SH, VM::M1, "Accession Number" },
+{ 0x0018, 0x0040, VR::IS, VM::M1, "Cine Rate" },
+{ 0x0018, 0x1411, VR::DS, VM::M1, "Exposure Index" },
+{ 0x0028, 0x0070, VR::US, VM::M1TN, "Perimeter Table" },
+{ 0x0038, 0x0060, VR::LO, VM::M1, "Service Episode ID" },
+{ 0x0048, 0x0010, VR::CS, VM::M1, "Specimen Label in Image" },
+{ 0x0078, 0x0020, VR::LO, VM::M1, "Implant Template Group Issuer" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0090[] = {
+{ 0x0018, 0x1002, VR::UI, VM::M1, "Device UID" },
+{ 0x0018, 0x1412, VR::DS, VM::M1, "Target Exposure Index" },
+{ 0x0048, 0x0013, VR::US, VM::M1, "Number of Focal Planes" },
+{ 0x0052, 0x0009, VR::FD, VM::M1, "Ranging Depth" },
+{ 0x3008, 0x0090, VR::SQ, VM::M1, "Referenced Calculated Dose Reference Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0091[] = {
+{ 0x0008, 0x0052, VR::CS, VM::M1, "Query/Retrieve Level" },
+{ 0x0018, 0x0042, VR::CS, VM::M1, "Initial Cine Run State" },
+{ 0x0018, 0x1003, VR::LO, VM::M1, "Device ID" },
+{ 0x0018, 0x1413, VR::DS, VM::M1, "Deviation Index" },
+{ 0x0022, 0x1039, VR::CS, VM::M1, "Refractive Procedure Occurred" },
+{ 0x0038, 0x0062, VR::LO, VM::M1, "Service Episode Description" },
+{ 0x0040, 0xA290, VR::CS, VM::M1, "Coordinates Set Geometric Type (Trial)" },
+{ 0x0048, 0x0012, VR::CS, VM::M1, "Extended Depth of Field" },
+{ 0x0052, 0x0008, VR::FD, VM::M1, "Axial Resolution" },
+{ 0x0072, 0x0028, VR::US, VM::M1, "Selector Value Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0092[] = {
+{ 0x0018, 0x1004, VR::LO, VM::M1, "Plate ID" },
+{ 0x0018, 0x5100, VR::CS, VM::M1, "Patient Position" },
+{ 0x0024, 0x0079, VR::FL, VM::M1, "Corrected Localized Deviation From Normal" },
+{ 0x0040, 0xA297, VR::ST, VM::M1, "Algorithm Description (Trial)" },
+{ 0x0044, 0x0019, VR::SQ, VM::M1, "Substance Administration Parameter Sequence" },
+{ 0x0048, 0x0015, VR::US, VM::M3, "Recommended Absent Pixel CIELab Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0093[] = {
+{ 0x0008, 0x0054, VR::AE, VM::M1TN, "Retrieve AE Title" },
+{ 0x0018, 0x1005, VR::LO, VM::M1, "Generator ID" },
+{ 0x0018, 0x5101, VR::CS, VM::M1, "View Position" },
+{ 0x0024, 0x0078, VR::CS, VM::M1, "Corrected Localized Deviation From Normal Calculated" },
+{ 0x0038, 0x0064, VR::SQ, VM::M1, "Issuer of Service Episode ID Sequence" },
+{ 0x0040, 0xA296, VR::SQ, VM::M1, "Algorithm Code Sequence (Trial)" },
+{ 0x0048, 0x0014, VR::FL, VM::M1, "Distance Between Focal Planes" },
+{ 0x0078, 0x0024, VR::LO, VM::M1, "Implant Template Group Version" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0094[] = {
+{ 0x0018, 0x1006, VR::LO, VM::M1, "Grid ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0095[] = {
+{ 0x0008, 0x0056, VR::CS, VM::M1, "Instance Availability" },
+{ 0x0018, 0x1007, VR::LO, VM::M1, "Cassette ID" },
+{ 0x0040, 0xDB73, VR::UL, VM::M1TN, "Referenced Content Item Identifier" },
+{ 0x0046, 0x0018, VR::SQ, VM::M1, "Cylinder Sequence" },
+{ 0x0068, 0x65A0, VR::SQ, VM::M1, "2D Line Coordinates Sequence" },
+{ 0x0078, 0x0026, VR::SQ, VM::M1, "Replaced Implant Template Group Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0096[] = {
+{ 0x0010, 0x1030, VR::DS, VM::M1, "Patient's Weight" },
+{ 0x0020, 0x1000, VR::IS, VM::M1, "Series in Study" },
+{ 0x0024, 0x0045, VR::CS, VM::M1, "False Negatives Estimate Flag" },
+{ 0x0040, 0x1060, VR::LO, VM::M1, "Requested Procedure Description (Trial)" },
+{ 0x0052, 0x0033, VR::FD, VM::M1, "Seam Line Location" },
+{ 0x0062, 0x0003, VR::SQ, VM::M1, "Segmented Property Category Code Sequence" },
+{ 0x0064, 0x0005, VR::SQ, VM::M1, "Deformable Registration Grid Sequence" },
+{ 0x0070, 0x0011, VR::FL, VM::M2, "Bounding Box Bottom Right Hand Corner" },
+{ 0x0070, 0x0401, VR::US, VM::M3, "Graphic Layer Recommended Display CIELab Value" },
+{ 0x0074, 0x1054, VR::UL, VM::M1, "Attribute Item Selector" },
+{ 0x3006, 0x00A4, VR::CS, VM::M1, "RT ROI Interpreted Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0097[] = {
+{ 0x0008, 0x0068, VR::CS, VM::M1, "Presentation Intent Type" },
+{ 0x0012, 0x0072, VR::LO, VM::M1, "Clinical Trial Series Description" },
+{ 0x0018, 0x9231, VR::US, VM::M1, "MR Acquisition Phase Encoding Steps in-plane" },
+{ 0x0020, 0x1001, VR::IS, VM::M1, "Acquisitions in Series" },
+{ 0x0022, 0x0042, VR::SQ, VM::M1, "Mydriatic Agent Concentration Units Sequence" },
+{ 0x0024, 0x0044, VR::LT, VM::M1, "Comments on Patient's Performance of Visual Field" },
+{ 0x0040, 0x0020, VR::CS, VM::M1, "Scheduled Procedure Step Status" },
+{ 0x0062, 0x0002, VR::SQ, VM::M1, "Segment Sequence" },
+{ 0x0070, 0x0010, VR::FL, VM::M2, "Bounding Box Top Left Hand Corner" },
+{ 0x0072, 0x0012, VR::SQ, VM::M1, "Source Hanging Protocol Sequence" },
+{ 0x0072, 0x0402, VR::CS, VM::M1, "Filter-by Category" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0098[] = {
+{ 0x0012, 0x0071, VR::LO, VM::M1, "Clinical Trial Series ID" },
+{ 0x0018, 0x9232, VR::US, VM::M1, "MR Acquisition Phase Encoding Steps out-of-plane" },
+{ 0x0020, 0x1002, VR::IS, VM::M1, "Images in Acquisition" },
+{ 0x0022, 0x0041, VR::FL, VM::M1, "Depth of Transverse Image" },
+{ 0x0032, 0x1010, VR::DA, VM::M1, "Scheduled Study Stop Date" },
+{ 0x0052, 0x0031, VR::CS, VM::M1, "Catheter Direction of Rotation" },
+{ 0x0062, 0x0001, VR::CS, VM::M1, "Segmentation Type" },
+{ 0x0064, 0x0007, VR::UL, VM::M3, "Grid Dimensions" },
+{ 0x0070, 0x0403, VR::FL, VM::M1, "Relative Opacity" },
+{ 0x0074, 0x1056, VR::LO, VM::M1, "Attribute Occurrence Private Creator" },
+{ 0x3006, 0x00A6, VR::PN, VM::M1, "ROI Interpreter" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0099[] = {
+{ 0x0020, 0x1003, VR::IS, VM::M1, "Images in Series" },
+{ 0x0024, 0x0046, VR::FL, VM::M1, "False Negatives Estimate" },
+{ 0x0032, 0x1011, VR::TM, VM::M1, "Scheduled Study Stop Time" },
+{ 0x0052, 0x0030, VR::SS, VM::M1, "OCT Z Offset Correction" },
+{ 0x0054, 0x0036, VR::IS, VM::M1, "Phase Delay" },
+{ 0x0066, 0x0004, VR::LT, VM::M1, "Surface Comments" },
+{ 0x0070, 0x0012, VR::CS, VM::M1, "Bounding Box Text Horizontal Justification" },
+{ 0x0070, 0x0402, VR::SQ, VM::M1, "Blending Sequence" },
+{ 0x0072, 0x0010, VR::LO, VM::M1, "Hanging Protocol User Group Name" },
+{ 0x0072, 0x0400, VR::SQ, VM::M1, "Filter Operations Sequence" },
+{ 0x0074, 0x1057, VR::IS, VM::M1TN, "Selector Sequence Pointer Items" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0100[] = {
+{ 0x0018, 0x9234, VR::UL, VM::M1, "Spectroscopy Acquisition Phase Columns" },
+{ 0x0020, 0x1004, VR::IS, VM::M1, "Acquisitions in Study" },
+{ 0x0054, 0x0031, VR::US, VM::M1, "Number of Phases" },
+{ 0x0066, 0x0003, VR::UL, VM::M1, "Surface Number" },
+{ 0x0070, 0x0015, VR::CS, VM::M1, "Anchor Point Visibility" },
+{ 0x0070, 0x0405, VR::CS, VM::M1, "Blending Position" },
+{ 0x0074, 0x1050, VR::SQ, VM::M1, "Attribute Occurrence Sequence" },
+{ 0x3006, 0x00A0, VR::SQ, VM::M1, "Related RT ROI Observations Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0101[] = {
+{ 0x0020, 0x1005, VR::IS, VM::M1, "Images in Study" },
+{ 0x0022, 0x1007, VR::SQ, VM::M1, "Ophthalmic Axial Measurements Right Eye Sequence" },
+{ 0x0024, 0x0040, VR::CS, VM::M1, "Excessive Fixation Losses" },
+{ 0x0052, 0x0036, VR::US, VM::M1, "Seam Line Index" },
+{ 0x0054, 0x0030, VR::US, VM::M1TN, "Phase Vector" },
+{ 0x0062, 0x0006, VR::ST, VM::M1, "Segment Description" },
+{ 0x0066, 0x0002, VR::SQ, VM::M1, "Surface Sequence" },
+{ 0x0070, 0x0014, VR::FL, VM::M2, "Anchor Point" },
+{ 0x0070, 0x0404, VR::SQ, VM::M1, "Referenced Spatial Registration Sequence" },
+{ 0x0072, 0x0406, VR::CS, VM::M1, "Filter-by Operator" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0102[] = {
+{ 0x0018, 0x9236, VR::CS, VM::M1, "Cardiac Cycle Position" },
+{ 0x0040, 0x0027, VR::SQ, VM::M1, "Order Filler Identifier Sequence" },
+{ 0x0054, 0x0033, VR::US, VM::M1, "Number of Frames in Phase" },
+{ 0x0062, 0x0005, VR::LO, VM::M1, "Segment Label" },
+{ 0x0064, 0x0003, VR::UI, VM::M1, "Source Frame of Reference UID" },
+{ 0x0066, 0x0001, VR::UL, VM::M1, "Number of Surfaces" },
+{ 0x0074, 0x1052, VR::AT, VM::M1, "Attribute Occurrence Pointer" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0103[] = {
+{ 0x0024, 0x0042, VR::US, VM::M1, "Stimuli Retesting Quantity" },
+{ 0x0040, 0x0026, VR::SQ, VM::M1, "Order Placer Identifier Sequence" },
+{ 0x0052, 0x0034, VR::FD, VM::M1, "First A-line Location" },
+{ 0x0054, 0x0032, VR::SQ, VM::M1, "Phase Information Sequence" },
+{ 0x0062, 0x0004, VR::US, VM::M1, "Segment Number" },
+{ 0x0064, 0x0002, VR::SQ, VM::M1, "Deformable Registration Sequence" },
+{ 0x0072, 0x0014, VR::US, VM::M1, "Number of Priors Referenced" },
+{ 0x0072, 0x0404, VR::CS, VM::M1, "Filter-by Attribute Presence" },
+{ 0x0076, 0x0010, VR::SQ, VM::M1, "Implant Assembly Template Target Anatomy Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0104[] = {
+{ 0x0008, 0x0061, VR::CS, VM::M1TN, "Modalities in Study" },
+{ 0x0018, 0x0071, VR::CS, VM::M1, "Acquisition Termination Condition" },
+{ 0x0018, 0x1030, VR::LO, VM::M1, "Protocol Name" },
+{ 0x0028, 0x1410, VR::CS, VM::M1, "Alpha LUT Transfer Function" },
+{ 0x0062, 0x000B, VR::US, VM::M1TN, "Referenced Segment Number" },
+{ 0x300A, 0x00A0, VR::IS, VM::M1, "Number of Brachy Application Setups" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0105[] = {
+{ 0x0008, 0x0060, VR::CS, VM::M1, "Modality" },
+{ 0x0018, 0x0070, VR::IS, VM::M1, "Counts Accumulated" },
+{ 0x0018, 0x9239, VR::SQ, VM::M1, "Specific Absorption Rate Sequence" },
+{ 0x0028, 0x0040, VR::CS, VM::M1, "Image Format" },
+{ 0x0038, 0x0050, VR::LO, VM::M1, "Special Needs" },
+{ 0x0052, 0x003A, VR::CS, VM::M1, "Refractive Index Applied" },
+{ 0x0062, 0x000A, VR::SQ, VM::M1, "Segment Identification Sequence" },
+{ 0x0066, 0x000E, VR::CS, VM::M1, "Finite Volume" },
+{ 0x0078, 0x0010, VR::ST, VM::M1, "Implant Template Group Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0106[] = {
+{ 0x0018, 0x0073, VR::CS, VM::M1, "Acquisition Start Condition" },
+{ 0x0022, 0x0049, VR::FL, VM::M1, "Maximum Across-scan Distortion" },
+{ 0x0022, 0x1008, VR::SQ, VM::M1, "Ophthalmic Axial Measurements Left Eye Sequence" },
+{ 0x0052, 0x0039, VR::CS, VM::M1, "Interpolation Type" },
+{ 0x0062, 0x0009, VR::LO, VM::M1, "Segment Algorithm Name" },
+{ 0x0064, 0x000F, VR::SQ, VM::M1, "Pre Deformation Matrix Registration Sequence" },
+{ 0x0066, 0x000D, VR::CS, VM::M1, "Recommended Presentation Type" },
+{ 0x3008, 0x00A0, VR::SQ, VM::M1, "Beam Limiting Device Leaf Pairs Sequence" },
+{ 0x300A, 0x00A2, VR::DS, VM::M3, "Brachy Application Setup Dose Specification Point" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0107[] = {
+{ 0x0008, 0x0062, VR::UI, VM::M1TN, "SOP Classes in Study" },
+{ 0x0018, 0x0072, VR::DS, VM::M1, "Effective Duration" },
+{ 0x0022, 0x0048, VR::FL, VM::M1, "Across-scan Spatial Resolution" },
+{ 0x0052, 0x0038, VR::US, VM::M1, "Number of Padded A-lines" },
+{ 0x0062, 0x0008, VR::CS, VM::M1, "Segment Algorithm Type" },
+{ 0x0066, 0x000C, VR::FL, VM::M1, "Recommended Presentation Opacity" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0108[] = {
+{ 0x0018, 0x0075, VR::IS, VM::M1, "Acquisition Termination Condition Data" },
+{ 0x0054, 0x0039, VR::CS, VM::M1, "Phase Description" },
+{ 0x0062, 0x000F, VR::SQ, VM::M1, "Segmented Property Type Code Sequence" },
+{ 0x0064, 0x0009, VR::OF, VM::M1, "Vector Grid Data" },
+{ 0x0066, 0x000B, VR::LO, VM::M1, "Surface Processing Description" },
+{ 0x300A, 0x00A4, VR::DS, VM::M1, "Brachy Application Setup Dose" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0109[] = {
+{ 0x0008, 0x0064, VR::CS, VM::M1, "Conversion Type" },
+{ 0x0018, 0x0074, VR::IS, VM::M1, "Acquisition Start Condition Data" },
+{ 0x0022, 0x004E, VR::DS, VM::M1, "Mydriatic Agent Concentration" },
+{ 0x0024, 0x0048, VR::US, VM::M1, "Negative Catch Trials Quantity" },
+{ 0x0054, 0x0038, VR::IS, VM::M1, "Pause Between Frames" },
+{ 0x0062, 0x000E, VR::US, VM::M1, "Maximum Fractional Value" },
+{ 0x0064, 0x0008, VR::FD, VM::M3, "Grid Resolution" },
+{ 0x0066, 0x000A, VR::FL, VM::M1, "Surface Processing Ratio" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0110[] = {
+{ 0x0062, 0x000D, VR::US, VM::M3, "Recommended Display CIELab Value" },
+{ 0x0066, 0x0009, VR::CS, VM::M1, "Surface Processing" },
+{ 0x300C, 0x00A0, VR::IS, VM::M1, "Referenced Tolerance Table Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0111[] = {
+{ 0x0046, 0x0028, VR::SQ, VM::M1, "Prism Sequence" },
+{ 0x0062, 0x000C, VR::US, VM::M1, "Recommended Display Grayscale Value" },
+{ 0x0068, 0x6590, VR::FD, VM::M3, "3D Point Coordinates" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0112[] = {
+{ 0x0010, 0x1020, VR::DS, VM::M1, "Patient's Size" },
+{ 0x0012, 0x0063, VR::LO, VM::M1TN, "De-identification Method" },
+{ 0x0018, 0x9220, VR::FD, VM::M1, "Frame Acquisition Duration" },
+{ 0x0024, 0x0055, VR::CS, VM::M1, "Catch Trials Data Flag" },
+{ 0x0028, 0x1408, VR::OW, VM::M1, "Blending Lookup Table Data" },
+{ 0x0040, 0x0031, VR::UT, VM::M1, "Local Namespace Entity ID" },
+{ 0x0066, 0x0017, VR::FL, VM::M3, "Point Position Accuracy" },
+{ 0x0070, 0x0001, VR::SQ, VM::M1, "Graphic Annotation Sequence" },
+{ 0x0074, 0x1044, VR::SQ, VM::M1, "Conventional Machine Verification Sequence" },
+{ 0x3006, 0x00B4, VR::DS, VM::M1, "ROI Physical Property Value" },
+{ 0x300A, 0x00B8, VR::CS, VM::M1, "RT Beam Limiting Device Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0113[] = {
+{ 0x0010, 0x1021, VR::SQ, VM::M1, "Patient's Size Code Sequence" },
+{ 0x0012, 0x0062, VR::CS, VM::M1, "Patient Identity Removed" },
+{ 0x0020, 0x0050, VR::DS, VM::M1, "Location" },
+{ 0x0024, 0x0054, VR::FL, VM::M1, "False Positives Estimate" },
+{ 0x0046, 0x0036, VR::CS, VM::M1, "Vertical Prism Base" },
+{ 0x0050, 0x0020, VR::LO, VM::M1, "Device Description" },
+{ 0x0066, 0x0016, VR::OF, VM::M1, "Point Coordinates Data" },
+{ 0x0072, 0x0002, VR::SH, VM::M1, "Hanging Protocol Name" },
+{ 0x0076, 0x0006, VR::LO, VM::M1, "Implant Assembly Template Version" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0114[] = {
+{ 0x0022, 0x1010, VR::CS, VM::M1, "Ophthalmic Axial Length Measurements Type" },
+{ 0x0024, 0x0057, VR::CS, VM::M1, "Test Point Normals Data Flag" },
+{ 0x0032, 0x1000, VR::DA, VM::M1, "Scheduled Study Start Date" },
+{ 0x0040, 0x0033, VR::CS, VM::M1, "Universal Entity ID Type" },
+{ 0x0066, 0x0015, VR::UL, VM::M1, "Number of Surface Points" },
+{ 0x0070, 0x0003, VR::CS, VM::M1, "Bounding Box Annotation Units" },
+{ 0x0074, 0x1046, VR::SQ, VM::M1, "Ion Machine Verification Sequence" },
+{ 0x3006, 0x00B6, VR::SQ, VM::M1, "ROI Elemental Composition Sequence" },
+{ 0x300A, 0x00BA, VR::DS, VM::M1, "Source to Beam Limiting Device Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0115[] = {
+{ 0x0012, 0x0060, VR::LO, VM::M1, "Clinical Trial Coordinating Center Name" },
+{ 0x0020, 0x0052, VR::UI, VM::M1, "Frame of Reference UID" },
+{ 0x0024, 0x0056, VR::US, VM::M1, "Positive Catch Trials Quantity" },
+{ 0x0028, 0x140B, VR::SQ, VM::M1, "Enhanced Palette Color Lookup Table Sequence" },
+{ 0x0032, 0x1001, VR::TM, VM::M1, "Scheduled Study Start Time" },
+{ 0x0040, 0x0032, VR::UT, VM::M1, "Universal Entity ID" },
+{ 0x0046, 0x0034, VR::FD, VM::M1, "Vertical Prism Power" },
+{ 0x0062, 0x0010, VR::CS, VM::M1, "Segmentation Fractional Type" },
+{ 0x0070, 0x0002, VR::CS, VM::M1, "Graphic Layer" },
+{ 0x3006, 0x00B7, VR::US, VM::M1, "ROI Elemental Composition Atomic Number" },
+{ 0x300A, 0x00BB, VR::FL, VM::M1, "Isocenter to Beam Limiting Device Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0116[] = {
+{ 0x0014, 0x1020, VR::DA, VM::M1, "Expiry Date" },
+{ 0x0022, 0x0057, VR::FL, VM::M1, "Illumination Bandwidth" },
+{ 0x0024, 0x0051, VR::CS, VM::M1, "Excessive False Negatives Data Flag" },
+{ 0x0028, 0x140C, VR::SQ, VM::M1, "Blending LUT 2 Sequence" },
+{ 0x0040, 0x0035, VR::CS, VM::M1, "Identifier Type Code" },
+{ 0x0052, 0x0027, VR::SQ, VM::M1, "Intravascular Frame Content Sequence" },
+{ 0x0054, 0x0021, VR::US, VM::M1, "Number of Detectors" },
+{ 0x0066, 0x0013, VR::SQ, VM::M1, "Surface Mesh Primitives Sequence" },
+{ 0x0070, 0x0005, VR::CS, VM::M1, "Graphic Annotation Units" },
+{ 0x0074, 0x1040, VR::SQ, VM::M1, "Related Reference RT Image Sequence" },
+{ 0x0076, 0x0003, VR::LO, VM::M1, "Implant Assembly Template Issuer" },
+{ 0x3006, 0x00B0, VR::SQ, VM::M1, "ROI Physical Properties Sequence" },
+{ 0x300A, 0x00BC, VR::IS, VM::M1, "Number of Leaf/Jaw Pairs" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0117[] = {
+{ 0x0022, 0x0056, VR::FL, VM::M1, "Illumination Power" },
+{ 0x0024, 0x0050, VR::US, VM::M1, "False Negatives Quantity" },
+{ 0x0028, 0x140D, VR::CS, VM::M1, "Blending LUT 2 Transfer Function" },
+{ 0x0046, 0x0032, VR::CS, VM::M1, "Horizontal Prism Base" },
+{ 0x0052, 0x0026, VR::CS, VM::M1, "OCT Z Offset Applied" },
+{ 0x0054, 0x0020, VR::US, VM::M1TN, "Detector Vector" },
+{ 0x0064, 0x0010, VR::SQ, VM::M1, "Post Deformation Matrix Registration Sequence" },
+{ 0x0066, 0x0012, VR::SQ, VM::M1, "Surface Points Normals Sequence" },
+{ 0x0070, 0x0004, VR::CS, VM::M1, "Anchor Point Annotation Units" },
+{ 0x0072, 0x0006, VR::CS, VM::M1, "Hanging Protocol Level" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0118[] = {
+{ 0x0008, 0x103E, VR::LO, VM::M1, "Series Description" },
+{ 0x0018, 0x9226, VR::SQ, VM::M1, "MR Image Frame Type Sequence" },
+{ 0x0022, 0x0055, VR::FL, VM::M1, "Illumination Wave Length" },
+{ 0x0024, 0x0053, VR::CS, VM::M1, "False Positives Estimate Flag" },
+{ 0x0028, 0x005F, VR::LO, VM::M1, "Compression Recognition Code" },
+{ 0x0028, 0x140E, VR::CS, VM::M1, "Data Path ID" },
+{ 0x0052, 0x0025, VR::SQ, VM::M1, "Intravascular OCT Frame Type Sequence" },
+{ 0x0066, 0x0011, VR::SQ, VM::M1, "Surface Points Sequence" },
+{ 0x0074, 0x1042, VR::SQ, VM::M1, "General Machine Verification Sequence" },
+{ 0x0076, 0x0001, VR::LO, VM::M1, "Implant Assembly Template Name" },
+{ 0x3006, 0x00B2, VR::CS, VM::M1, "ROI Physical Property" },
+{ 0x300A, 0x00BE, VR::DS, VM::M3TN, "Leaf Position Boundaries" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0119[] = {
+{ 0x0008, 0x103F, VR::SQ, VM::M1, "Series Description Code Sequence" },
+{ 0x0008, 0x9237, VR::SQ, VM::M1, "Referenced Presentation State Sequence" },
+{ 0x0012, 0x0064, VR::SQ, VM::M1, "De-identification Method Code Sequence" },
+{ 0x0018, 0x9227, VR::SQ, VM::M1, "MR Spectroscopy Frame Type Sequence" },
+{ 0x0024, 0x0052, VR::CS, VM::M1, "Excessive False Negatives" },
+{ 0x0028, 0x140F, VR::CS, VM::M1, "RGB LUT Transfer Function" },
+{ 0x0040, 0x0036, VR::SQ, VM::M1, "Assigning Facility Sequence" },
+{ 0x0046, 0x0030, VR::FD, VM::M1, "Horizontal Prism Power" },
+{ 0x0054, 0x0022, VR::SQ, VM::M1, "Detector Information Sequence" },
+{ 0x0066, 0x0010, VR::CS, VM::M1, "Manifold" },
+{ 0x0070, 0x0006, VR::ST, VM::M1, "Unformatted Text Value" },
+{ 0x0072, 0x0004, VR::LO, VM::M1, "Hanging Protocol Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0120[] = {
+{ 0x0008, 0x1030, VR::LO, VM::M1, "Study Description" },
+{ 0x0018, 0x1020, VR::LO, VM::M1TN, "Software Version(s)" },
+{ 0x0018, 0x1800, VR::CS, VM::M1, "Acquisition Time Synchronized" },
+{ 0x0028, 0x0051, VR::CS, VM::M1TN, "Corrected Image" },
+{ 0x0040, 0x0039, VR::SQ, VM::M1, "Assigning Jurisdiction Code Sequence" },
+{ 0x0066, 0x001F, VR::US, VM::M1, "Vector Dimensionality" },
+{ 0x0070, 0x0009, VR::SQ, VM::M1, "Graphic Object Sequence" },
+{ 0x0074, 0x104C, VR::SQ, VM::M1, "Conventional Control Point Verification Sequence" },
+{ 0x0078, 0x0001, VR::LO, VM::M1, "Implant Template Group Name" },
+{ 0x300A, 0x00B0, VR::SQ, VM::M1, "Beam Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0121[] = {
+{ 0x0008, 0x0070, VR::LO, VM::M1, "Manufacturer" },
+{ 0x0018, 0x0060, VR::DS, VM::M1, "KVP" },
+{ 0x0018, 0x1801, VR::SH, VM::M1, "Time Source" },
+{ 0x0028, 0x0050, VR::LO, VM::M1TN, "Manipulated Image" },
+{ 0x0028, 0x1401, VR::SQ, VM::M1, "Data Frame Assignment Sequence" },
+{ 0x0038, 0x0040, VR::LO, VM::M1, "Discharge Diagnosis Description" },
+{ 0x0066, 0x001E, VR::UL, VM::M1, "Number of Vectors" },
+{ 0x0070, 0x0008, VR::SQ, VM::M1, "Text Object Sequence" },
+{ 0x0072, 0x000A, VR::DT, VM::M1, "Hanging Protocol Creation DateTime" },
+{ 0x0076, 0x000E, VR::SQ, VM::M1, "Derivation Implant Assembly Template Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0122[] = {
+{ 0x0008, 0x1032, VR::SQ, VM::M1, "Procedure Code Sequence" },
+{ 0x0018, 0x1022, VR::SH, VM::M1, "Video Image Format Acquired" },
+{ 0x0018, 0x1802, VR::CS, VM::M1, "Time Distribution Protocol" },
+{ 0x0028, 0x1402, VR::CS, VM::M1, "Data Path Assignment" },
+{ 0x0052, 0x0029, VR::SQ, VM::M1, "Intravascular OCT Frame Content Sequence" },
+{ 0x0074, 0x104E, VR::SQ, VM::M1, "Ion Control Point Verification Sequence" },
+{ 0x3008, 0x00B0, VR::SQ, VM::M1, "Recorded Wedge Sequence" },
+{ 0x300A, 0x00B2, VR::SH, VM::M1, "Treatment Machine Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0123[] = {
+{ 0x0018, 0x1023, VR::LO, VM::M1, "Digital Image Format Acquired" },
+{ 0x0018, 0x1803, VR::LO, VM::M1, "NTP Source Address" },
+{ 0x0020, 0x9213, VR::LO, VM::M1, "Dimension Index Private Creator" },
+{ 0x0022, 0x0058, VR::SQ, VM::M1, "Mydriatic Agent Sequence" },
+{ 0x0022, 0x1019, VR::FL, VM::M1, "Ophthalmic Axial Length" },
+{ 0x0028, 0x1403, VR::US, VM::M1, "Bits Mapped to Color Lookup Table" },
+{ 0x0040, 0x003A, VR::SQ, VM::M1, "Assigning Agency or Department Code Sequence" },
+{ 0x0052, 0x0028, VR::FD, VM::M1, "Intravascular Longitudinal Distance" },
+{ 0x0066, 0x001C, VR::FL, VM::M3, "Center of Rotation" },
+{ 0x0072, 0x0008, VR::LO, VM::M1, "Hanging Protocol Creator" },
+{ 0x0076, 0x000C, VR::SQ, VM::M1, "Original Implant Assembly Template Sequence" },
+{ 0x300A, 0x00B3, VR::CS, VM::M1, "Primary Dosimeter Unit" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0124[] = {
+{ 0x0024, 0x0059, VR::CS, VM::M1, "Global Deviation Probability Normals Flag" },
+{ 0x0028, 0x1404, VR::SQ, VM::M1, "Blending LUT 1 Sequence" },
+{ 0x0066, 0x001B, VR::FL, VM::M3, "Axis of Rotation" },
+{ 0x0074, 0x1048, VR::SQ, VM::M1, "Failed Attributes Sequence" },
+{ 0x3006, 0x00B8, VR::FL, VM::M1, "ROI Elemental Composition Atomic Mass Fraction" },
+{ 0x300A, 0x00B4, VR::DS, VM::M1, "Source-Axis Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0125[] = {
+{ 0x0024, 0x0058, VR::SQ, VM::M1, "Test Point Normals Sequence" },
+{ 0x0028, 0x1405, VR::CS, VM::M1, "Blending LUT 1 Transfer Function" },
+{ 0x0038, 0x0044, VR::SQ, VM::M1, "Discharge Diagnosis Code Sequence" },
+{ 0x0066, 0x001A, VR::FL, VM::M6, "Points Bounding Box Coordinates" },
+{ 0x0072, 0x000E, VR::SQ, VM::M1, "Hanging Protocol User Identification Code Sequence" },
+{ 0x0076, 0x000A, VR::CS, VM::M1, "Implant Assembly Template Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0126[] = {
+{ 0x0028, 0x1406, VR::FD, VM::M1, "Blending Weight Constant" },
+{ 0x0066, 0x0019, VR::FL, VM::M1, "Maximum Point Distance" },
+{ 0x0074, 0x104A, VR::SQ, VM::M1, "Overridden Attributes Sequence" },
+{ 0x300A, 0x00B6, VR::SQ, VM::M1, "Beam Limiting Device Sequence" },
+{ 0x300C, 0x00B0, VR::SQ, VM::M1, "Referenced Bolus Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0127[] = {
+{ 0x0028, 0x1407, VR::US, VM::M3, "Blending Lookup Table Descriptor" },
+{ 0x0046, 0x0038, VR::CS, VM::M1, "Lens Segment Type" },
+{ 0x0066, 0x0018, VR::FL, VM::M1, "Mean Point Distance" },
+{ 0x0072, 0x000C, VR::SQ, VM::M1, "Hanging Protocol Definition Sequence" },
+{ 0x0076, 0x0008, VR::SQ, VM::M1, "Replaced Implant Assembly Template Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0128[] = {
+{ 0x0014, 0x2014, VR::IS, VM::M1, "Indication Number" },
+{ 0x0040, 0x3001, VR::LO, VM::M1, "Confidentiality Constraint on Patient Data Description" },
+{ 0x2010, 0x0010, VR::ST, VM::M1, "Image Display Format" },
+{ 0x2020, 0x0020, VR::CS, VM::M1, "Polarity" },
+{ 0x300A, 0x004B, VR::FL, VM::M1, "Snout Position Tolerance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0129[] = {
+{ 0x0060, 0x3020, VR::UL, VM::M1TN, "Histogram Data" },
+{ 0x3002, 0x0042, VR::DS, VM::M1, "Fluence Data Scale" },
+{ 0x3006, 0x0046, VR::IS, VM::M1, "Number of Contour Points" },
+{ 0x3008, 0x0048, VR::DS, VM::M1, "Dose Rate Delivered" },
+{ 0x300A, 0x004A, VR::DS, VM::M1, "Beam Limiting Device Position Tolerance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0130[] = {
+{ 0x0014, 0x2016, VR::SH, VM::M1, "Indication Label" },
+{ 0x3002, 0x0041, VR::CS, VM::M1, "Fluence Data Source" },
+{ 0x3006, 0x0045, VR::DS, VM::M3, "Contour Offset Vector" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0131[] = {
+{ 0x3002, 0x0040, VR::SQ, VM::M1, "Fluence Map Sequence" },
+{ 0x3006, 0x0044, VR::DS, VM::M1, "Contour Slab Thickness" },
+{ 0x300A, 0x0048, VR::SQ, VM::M1, "Beam Limiting Device Tolerance Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0132[] = {
+{ 0x300A, 0x004F, VR::FL, VM::M1, "Table Top Pitch Angle Tolerance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0133[] = {
+{ 0x0014, 0x3050, VR::OX, VM::M1, "Dark Current Counts" },
+{ 0x3004, 0x0040, VR::DS, VM::M3, "DVH Normalization Point" },
+{ 0x3006, 0x0042, VR::CS, VM::M1, "Contour Geometric Type" },
+{ 0x300A, 0x004E, VR::DS, VM::M1, "Table Top Eccentric Angle Tolerance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0134[] = {
+{ 0x0014, 0x2012, VR::SQ, VM::M1, "Indication Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0135[] = {
+{ 0x3004, 0x0042, VR::DS, VM::M1, "DVH Normalization Dose Value" },
+{ 0x3006, 0x0040, VR::SQ, VM::M1, "Contour Sequence" },
+{ 0x300A, 0x004C, VR::DS, VM::M1, "Patient Support Angle Tolerance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0136[] = {
+{ 0x0008, 0x0082, VR::SQ, VM::M1, "Institution Code Sequence" },
+{ 0x0014, 0x201C, VR::CS, VM::M1, "Indication Disposition" },
+{ 0x0018, 0x2010, VR::DS, VM::M2, "Nominal Scanned Pixel Spacing" },
+{ 0x0020, 0x00AA, VR::IS, VM::M1, "Report Number" },
+{ 0x0040, 0x08EA, VR::SQ, VM::M1, "Measurement Units Code Sequence" },
+{ 0x3008, 0x0041, VR::SQ, VM::M1, "Ion Control Point Delivery Sequence" },
+{ 0x300A, 0x0043, VR::SH, VM::M1, "Tolerance Table Label" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0137[] = {
+{ 0x0018, 0x0093, VR::DS, VM::M1, "Percent Sampling" },
+{ 0x3008, 0x0040, VR::SQ, VM::M1, "Control Point Delivery Sequence" },
+{ 0x300A, 0x0042, VR::IS, VM::M1, "Tolerance Table Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0138[] = {
+{ 0x0008, 0x0080, VR::LO, VM::M1, "Institution Name" },
+{ 0x0014, 0x201E, VR::SQ, VM::M1, "Indication ROI Sequence" },
+{ 0x0018, 0x0090, VR::DS, VM::M1, "Data Collection Diameter" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0139[] = {
+{ 0x0008, 0x0081, VR::ST, VM::M1, "Institution Address" },
+{ 0x0018, 0x0091, VR::IS, VM::M1, "Echo Train Length" },
+{ 0x3008, 0x0042, VR::DS, VM::M1, "Specified Meterset" },
+{ 0x300A, 0x0040, VR::SQ, VM::M1, "Tolerance Table Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0140[] = {
+{ 0x0014, 0x2018, VR::ST, VM::M1, "Indication Description" },
+{ 0x0028, 0x6120, VR::SS, VM::M1, "TID Offset" },
+{ 0x3008, 0x0045, VR::FL, VM::M1, "Meterset Rate Set" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0141[] = {
+{ 0x3008, 0x0044, VR::DS, VM::M1, "Delivered Meterset" },
+{ 0x300A, 0x0046, VR::DS, VM::M1, "Beam Limiting Device Angle Tolerance" },
+{ 0x300C, 0x0040, VR::SQ, VM::M1, "Referenced Verification Image Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0142[] = {
+{ 0x0014, 0x201A, VR::CS, VM::M1TN, "Indication Type" },
+{ 0x0018, 0x0094, VR::DS, VM::M1, "Percent Phase Field of View" },
+{ 0x3006, 0x0049, VR::IS, VM::M1TN, "Attached Contours" },
+{ 0x3008, 0x0047, VR::FL, VM::M1TN, "Scan Spot Metersets Delivered" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0143[] = {
+{ 0x0018, 0x0095, VR::DS, VM::M1, "Pixel Bandwidth" },
+{ 0x3006, 0x0048, VR::IS, VM::M1, "Contour Number" },
+{ 0x3008, 0x0046, VR::FL, VM::M1, "Meterset Rate Delivered" },
+{ 0x300A, 0x0044, VR::DS, VM::M1, "Gantry Angle Tolerance" },
+{ 0x300C, 0x0042, VR::SQ, VM::M1, "Referenced Reference Image Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0144[] = {
+{ 0x0010, 0x2000, VR::LO, VM::M1TN, "Medical Alerts" },
+{ 0x0014, 0x2004, VR::IS, VM::M1, "Evaluator Number" },
+{ 0x2000, 0x0010, VR::IS, VM::M1, "Number of Copies" },
+{ 0x2020, 0x0030, VR::DS, VM::M1, "Requested Image Size" },
+{ 0x2030, 0x0020, VR::LO, VM::M1, "Text String" },
+{ 0x2100, 0x0500, VR::SQ, VM::M1, "Referenced Print Job Sequence (Pull Stored Print)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0145[] = {
+{ 0x0012, 0x0081, VR::LO, VM::M1, "Clinical Trial Protocol Ethics Committee Name" },
+{ 0x3002, 0x0052, VR::SH, VM::M1, "Fluence Mode ID" },
+{ 0x3004, 0x0054, VR::CS, VM::M1, "DVH Volume Units" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0146[] = {
+{ 0x0012, 0x0082, VR::LO, VM::M1, "Clinical Trial Protocol Ethics Committee Approval Number" },
+{ 0x0014, 0x2006, VR::PN, VM::M1, "Evaluator Name" },
+{ 0x0018, 0x0088, VR::DS, VM::M1, "Spacing Between Slices" },
+{ 0x3002, 0x0051, VR::CS, VM::M1, "Fluence Mode" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0147[] = {
+{ 0x0012, 0x0083, VR::SQ, VM::M1, "Consent for Clinical Trial Use Sequence" },
+{ 0x0018, 0x0089, VR::IS, VM::M1, "Number of Phase Encoding Steps" },
+{ 0x3002, 0x0050, VR::SQ, VM::M1, "Primary Fluence Mode Sequence" },
+{ 0x3004, 0x0056, VR::IS, VM::M1, "DVH Number of Bins" },
+{ 0x3008, 0x005A, VR::IS, VM::M1, "Number of Fractions Delivered" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0148[] = {
+{ 0x0012, 0x0084, VR::CS, VM::M1, "Distribution Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0149[] = {
+{ 0x0012, 0x0085, VR::CS, VM::M1, "Consent for Distribution Flag" },
+{ 0x0014, 0x3040, VR::SQ, VM::M1, "Dark Current Sequence" },
+{ 0x3004, 0x0050, VR::SQ, VM::M1, "DVH Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0150[] = {
+{ 0x0014, 0x2002, VR::SQ, VM::M1, "Evaluator Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0151[] = {
+{ 0x3004, 0x0052, VR::DS, VM::M1, "DVH Dose Scaling" },
+{ 0x3006, 0x0050, VR::DS, VM::M3T3N, "Contour Data" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0152[] = {
+{ 0x0008, 0x0092, VR::ST, VM::M1, "Referring Physician's Address" },
+{ 0x0018, 0x0082, VR::DS, VM::M1, "Inversion Time" },
+{ 0x300A, 0x0053, VR::DS, VM::M1, "Table Top Lateral Position Tolerance" },
+{ 0x300C, 0x0055, VR::SQ, VM::M1, "Brachy Referenced Dose Reference Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0153[] = {
+{ 0x0018, 0x0083, VR::DS, VM::M1, "Number of Averages" },
+{ 0x0018, 0x2001, VR::IS, VM::M1TN, "Page Number Vector" },
+{ 0x3008, 0x0050, VR::SQ, VM::M1, "Treatment Summary Calculated Dose Reference Sequence" },
+{ 0x300A, 0x0052, VR::DS, VM::M1, "Table Top Longitudinal Position Tolerance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0154[] = {
+{ 0x0008, 0x0090, VR::PN, VM::M1, "Referring Physician's Name" },
+{ 0x0018, 0x0080, VR::DS, VM::M1, "Repetition Time" },
+{ 0x0018, 0x2002, VR::SH, VM::M1TN, "Frame Label Vector" },
+{ 0x300A, 0x0051, VR::DS, VM::M1, "Table Top Vertical Position Tolerance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0155[] = {
+{ 0x0018, 0x0081, VR::DS, VM::M1, "Echo Time" },
+{ 0x0018, 0x2003, VR::DS, VM::M1TN, "Frame Primary Angle Vector" },
+{ 0x3008, 0x0052, VR::DS, VM::M1, "Cumulative Dose to Dose Reference" },
+{ 0x300A, 0x0050, VR::FL, VM::M1, "Table Top Roll Angle Tolerance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0156[] = {
+{ 0x0008, 0x0096, VR::SQ, VM::M1, "Referring Physician Identification Sequence" },
+{ 0x0014, 0x2008, VR::IS, VM::M1, "Evaluation Attempt" },
+{ 0x0018, 0x0086, VR::IS, VM::M1TN, "Echo Number(s)" },
+{ 0x0018, 0x2004, VR::DS, VM::M1TN, "Frame Secondary Angle Vector" },
+{ 0x0068, 0x6560, VR::FD, VM::M2, "2D Point Coordinates" },
+{ 0x300C, 0x0051, VR::IS, VM::M1, "Referenced Dose Reference Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0157[] = {
+{ 0x0018, 0x0087, VR::DS, VM::M1, "Magnetic Field Strength" },
+{ 0x0018, 0x2005, VR::DS, VM::M1TN, "Slice Location Vector" },
+{ 0x3004, 0x0058, VR::DS, VM::M2T2N, "DVH Data" },
+{ 0x3008, 0x0054, VR::DA, VM::M1, "First Treatment Date" },
+{ 0x300C, 0x0050, VR::SQ, VM::M1, "Referenced Dose Reference Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0158[] = {
+{ 0x0008, 0x0094, VR::SH, VM::M1TN, "Referring Physician's Telephone Numbers" },
+{ 0x0018, 0x0084, VR::DS, VM::M1, "Imaging Frequency" },
+{ 0x0018, 0x2006, VR::SH, VM::M1TN, "Display Window Label Vector" },
+{ 0x2000, 0x001E, VR::SQ, VM::M1, "Printer Configuration Sequence" },
+{ 0x300A, 0x0055, VR::CS, VM::M1, "RT Plan Relationship" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0159[] = {
+{ 0x0018, 0x0085, VR::SH, VM::M1, "Imaged Nucleus" },
+{ 0x3008, 0x0056, VR::DA, VM::M1, "Most Recent Treatment Date" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0160[] = {
+{ 0x0014, 0x3075, VR::DS, VM::M1, "Filter Thickness Used in Gain Calibration" },
+{ 0x0024, 0x0086, VR::CS, VM::M1, "Foveal Sensitivity Measured" },
+{ 0x2000, 0x0020, VR::CS, VM::M1, "Print Priority" },
+{ 0x2010, 0x0030, VR::CS, VM::M1, "Annotation Display Format ID" },
+{ 0x2030, 0x0010, VR::US, VM::M1, "Annotation Position" },
+{ 0x2040, 0x0060, VR::CS, VM::M1, "Overlay Magnification Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0161[] = {
+{ 0x0014, 0x3074, VR::LO, VM::M1, "Filter Material Used in Gain Calibration" },
+{ 0x0024, 0x0087, VR::FL, VM::M1, "Foveal Sensitivity" },
+{ 0x0060, 0x3000, VR::SQ, VM::M1, "Histogram Sequence" },
+{ 0x3008, 0x0068, VR::SQ, VM::M1, "Corrected Parameter Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0162[] = {
+{ 0x0014, 0x3077, VR::TM, VM::M1, "Time of Gain Calibration" },
+{ 0x0020, 0x0080, VR::CS, VM::M1TN, "Masking Image" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0163[] = {
+{ 0x0014, 0x3076, VR::DA, VM::M1, "Date of Gain Calibration" },
+{ 0x0024, 0x0085, VR::SQ, VM::M1, "Localized Deviation Probability Sequence" },
+{ 0x0060, 0x3002, VR::US, VM::M1, "Histogram Number of Bins" },
+{ 0x3008, 0x006A, VR::FL, VM::M1, "Correction Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0164[] = {
+{ 0x0014, 0x2030, VR::SQ, VM::M1, "Indication Physical Property Sequence" },
+{ 0x0014, 0x3071, VR::DS, VM::M1, "KV Used in Gain Calibration" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0165[] = {
+{ 0x0014, 0x3070, VR::OX, VM::M1, "Air Counts" },
+{ 0x0024, 0x0083, VR::SQ, VM::M1, "Global Deviation Probability Sequence" },
+{ 0x0060, 0x3004, VR::XS, VM::M1, "Histogram First Bin Value" },
+{ 0x3004, 0x0060, VR::SQ, VM::M1, "DVH Referenced ROI Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0166[] = {
+{ 0x0014, 0x2032, VR::SH, VM::M1, "Property Label" },
+{ 0x0014, 0x3073, VR::DS, VM::M1, "Number of Frames Used for Integration" },
+{ 0x0024, 0x0080, VR::CS, VM::M1, "Corrected Localized Deviation From Normal Probability Calculated" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0167[] = {
+{ 0x0014, 0x3072, VR::DS, VM::M1, "MA Used in Gain Calibration" },
+{ 0x0024, 0x0081, VR::FL, VM::M1, "Corrected Localized Deviation From Normal Probability" },
+{ 0x0060, 0x3006, VR::XS, VM::M1, "Histogram Last Bin Value" },
+{ 0x3004, 0x0062, VR::CS, VM::M1, "DVH ROI Contribution Type" },
+{ 0x300C, 0x006A, VR::IS, VM::M1, "Referenced Patient Setup Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0168[] = {
+{ 0x0018, 0x2030, VR::DS, VM::M1, "Rotation of Scanned Film" },
+{ 0x0028, 0x0082, VR::US, VM::M1TN, "Predictor Constants" },
+{ 0x0028, 0x2000, VR::OB, VM::M1, "ICC Profile" },
+{ 0x3008, 0x0061, VR::AT, VM::M1, "Parameter Sequence Pointer" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0169[] = {
+{ 0x0060, 0x3008, VR::US, VM::M1, "Histogram Bin Width" },
+{ 0x3008, 0x0060, VR::SQ, VM::M1, "Override Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0170[] = {
+{ 0x0028, 0x0080, VR::US, VM::M1, "Predictor Rows" },
+{ 0x3008, 0x0063, VR::IS, VM::M1, "Parameter Item Index" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0171[] = {
+{ 0x0028, 0x0081, VR::US, VM::M1, "Predictor Columns" },
+{ 0x3008, 0x0062, VR::AT, VM::M1, "Override Parameter Pointer" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0172[] = {
+{ 0x0028, 0x6100, VR::SQ, VM::M1, "Mask Subtraction Sequence" },
+{ 0x0068, 0x6550, VR::SQ, VM::M1, "2D Point Coordinates Sequence" },
+{ 0x3008, 0x0065, VR::AT, VM::M1, "Parameter Pointer" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0173[] = {
+{ 0x0028, 0x6101, VR::CS, VM::M1, "Mask Operation" },
+{ 0x3008, 0x0064, VR::IS, VM::M1, "Measured Dose Reference Number" },
+{ 0x300C, 0x0060, VR::SQ, VM::M1, "Referenced Structure Set Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0174[] = {
+{ 0x0024, 0x0088, VR::FL, VM::M1, "Visual Field Test Duration" },
+{ 0x0028, 0x6102, VR::US, VM::M2T2N, "Applicable Frame Range" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0175[] = {
+{ 0x0024, 0x0089, VR::SQ, VM::M1, "Visual Field Test Point Sequence" },
+{ 0x3008, 0x0066, VR::ST, VM::M1, "Override Reason" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0176[] = {
+{ 0x0024, 0x0096, VR::FL, VM::M1, "Retest Sensitivity Value" },
+{ 0x2000, 0x0030, VR::CS, VM::M1, "Medium Type" },
+{ 0x2020, 0x0010, VR::US, VM::M1, "Image Box Position" },
+{ 0x2040, 0x0070, VR::CS, VM::M1, "Overlay Smoothing Type" },
+{ 0x300A, 0x007B, VR::LT, VM::M1, "Fraction Pattern" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0177[] = {
+{ 0x0024, 0x0097, VR::SQ, VM::M1, "Visual Field Test Point Normals Sequence" },
+{ 0x0060, 0x3010, VR::LO, VM::M1, "Histogram Explanation" },
+{ 0x3004, 0x0074, VR::DS, VM::M1, "DVH Mean Dose" },
+{ 0x3008, 0x0078, VR::DS, VM::M1, "Start Meterset" },
+{ 0x300A, 0x007A, VR::IS, VM::M1, "Repeat Fraction Cycle Length" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0178[] = {
+{ 0x0024, 0x0094, VR::FL, VM::M1, "Sensitivity Value" },
+{ 0x2040, 0x0072, VR::CS, VM::M1, "Overlay or Image Magnification" },
+{ 0x300A, 0x0079, VR::IS, VM::M1, "Number of Fraction Pattern Digits Per Day" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0179[] = {
+{ 0x0024, 0x0095, VR::CS, VM::M1, "Retest Stimulus Seen" },
+{ 0x3008, 0x007A, VR::DS, VM::M1, "End Meterset" },
+{ 0x300A, 0x0078, VR::IS, VM::M1, "Number of Fractions Planned" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0180[] = {
+{ 0x0024, 0x0092, VR::FL, VM::M1, "Age Corrected Sensitivity Deviation Value" },
+{ 0x0076, 0x00C0, VR::US, VM::M1, "Component 2 Referenced Mating Feature ID" },
+{ 0x2040, 0x0074, VR::US, VM::M1, "Magnify to Number of Columns" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0181[] = {
+{ 0x0014, 0x3060, VR::SQ, VM::M1, "Gain Correction Reference Sequence" },
+{ 0x0024, 0x0093, VR::CS, VM::M1, "Stimulus Results" },
+{ 0x3004, 0x0070, VR::DS, VM::M1, "DVH Minimum Dose" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0182[] = {
+{ 0x0024, 0x0090, VR::FL, VM::M1, "Visual Field Test Point X-Coordinate" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0183[] = {
+{ 0x0024, 0x0091, VR::FL, VM::M1, "Visual Field Test Point Y-Coordinate" },
+{ 0x3004, 0x0072, VR::DS, VM::M1, "DVH Maximum Dose" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0184[] = {
+{ 0x0018, 0x2020, VR::CS, VM::M1, "Digitizing Device Transport Direction" },
+{ 0x0028, 0x0092, VR::US, VM::M1, "Block Columns" },
+{ 0x0028, 0x6114, VR::FL, VM::M2, "Mask Sub-pixel Shift" },
+{ 0x0040, 0x08DA, VR::SQ, VM::M1, "Coordinate System Axis Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0185[] = {
+{ 0x0028, 0x0093, VR::US, VM::M1, "Row Overlap" },
+{ 0x0068, 0x6545, VR::SQ, VM::M1, "Planning Landmark Identification Code Sequence" },
+{ 0x3008, 0x0070, VR::SQ, VM::M1, "Calculated Dose Reference Sequence" },
+{ 0x300A, 0x0072, VR::LO, VM::M1, "Fraction Group Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0186[] = {
+{ 0x0028, 0x0090, VR::CS, VM::M1, "Blocked Pixels" },
+{ 0x0040, 0x08D8, VR::SQ, VM::M1, "Pixel Spacing Sequence" },
+{ 0x300A, 0x0071, VR::IS, VM::M1, "Fraction Group Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0187[] = {
+{ 0x0028, 0x0091, VR::US, VM::M1, "Block Rows" },
+{ 0x3008, 0x0072, VR::IS, VM::M1, "Calculated Dose Reference Number" },
+{ 0x300A, 0x0070, VR::SQ, VM::M1, "Fraction Group Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0188[] = {
+{ 0x0028, 0x6110, VR::US, VM::M1TN, "Mask Frame Numbers" },
+{ 0x0068, 0x6540, VR::LO, VM::M1, "Planning Landmark Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0189[] = {
+{ 0x3008, 0x0074, VR::ST, VM::M1, "Calculated Dose Reference Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0190[] = {
+{ 0x0024, 0x0098, VR::FL, VM::M1, "Quantified Defect" },
+{ 0x0028, 0x0094, VR::US, VM::M1, "Column Overlap" },
+{ 0x0028, 0x6112, VR::US, VM::M1, "Contrast Frame Averaging" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0191[] = {
+{ 0x3008, 0x0076, VR::DS, VM::M1, "Calculated Dose Reference Dose Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0192[] = {
+{ 0x0040, 0x2001, VR::LO, VM::M1, "Reason for the Imaging Service Request" },
+{ 0x3002, 0x0002, VR::SH, VM::M1, "RT Image Label" },
+{ 0x3004, 0x0004, VR::CS, VM::M1, "Dose Type" },
+{ 0x3006, 0x0006, VR::ST, VM::M1, "Structure Set Description" },
+{ 0x300A, 0x000A, VR::CS, VM::M1, "Plan Intent" },
+{ 0x300C, 0x000C, VR::IS, VM::M1, "Referenced Brachy Application Setup Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0193[] = {
+{ 0x2000, 0x0040, VR::CS, VM::M1, "Film Destination" },
+{ 0x2010, 0x0050, VR::CS, VM::M1, "Film Size ID" },
+{ 0x2050, 0x0010, VR::SQ, VM::M1, "Presentation LUT Sequence" },
+{ 0x2100, 0x0140, VR::AE, VM::M1, "Destination AE" },
+{ 0x3002, 0x0003, VR::LO, VM::M1, "RT Image Name" },
+{ 0x300A, 0x000B, VR::LO, VM::M1TN, "Treatment Sites" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0194[] = {
+{ 0x0010, 0x1090, VR::LO, VM::M1, "Medical Record Locator" },
+{ 0x3004, 0x0006, VR::LO, VM::M1, "Dose Comment" },
+{ 0x3006, 0x0004, VR::LO, VM::M1, "Structure Set Name" },
+{ 0x300C, 0x000E, VR::IS, VM::M1, "Referenced Source Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0195[] = {
+{ 0x0078, 0x00B8, VR::US, VM::M1, "Implant Template Group Variation Dimension Rank" },
+{ 0x2010, 0x0052, VR::CS, VM::M1, "Printer Resolution ID" },
+{ 0x300A, 0x0009, VR::LO, VM::M1TN, "Treatment Protocols" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0196[] = {
+{ 0x0018, 0x9296, VR::FD, VM::M1, "Chemical Shift Maximum Integration Limit in ppm" },
+{ 0x0040, 0x2005, VR::TM, VM::M1, "Issue Time of Imaging Service Request" },
+{ 0x3006, 0x0002, VR::SH, VM::M1, "Structure Set Label" },
+{ 0x300A, 0x000E, VR::ST, VM::M1, "Prescription Description" },
+{ 0x300C, 0x0008, VR::DS, VM::M1, "Start Cumulative Meterset Weight" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0197[] = {
+{ 0x0014, 0x3011, VR::DS, VM::M1, "Internal Detector Frame Time" },
+{ 0x0040, 0x2004, VR::DA, VM::M1, "Issue Date of Imaging Service Request" },
+{ 0x0046, 0x0080, VR::SQ, VM::M1, "Flat Keratometric Axis Sequence" },
+{ 0x0076, 0x00B0, VR::US, VM::M1, "Component 2 Referenced Mating Feature Set ID" },
+{ 0x2010, 0x0054, VR::CS, VM::M1, "Default Printer Resolution ID" },
+{ 0x3004, 0x0001, VR::CS, VM::M1, "DVH Type" },
+{ 0x300C, 0x0009, VR::DS, VM::M1, "End Cumulative Meterset Weight" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0198[] = {
+{ 0x0014, 0x3012, VR::DS, VM::M1, "Number of Frames Integrated" },
+{ 0x0040, 0x2007, VR::SH, VM::M1, "Filler Order Number / Imaging Service Request (Retired)" },
+{ 0x3002, 0x0004, VR::ST, VM::M1, "RT Image Description" },
+{ 0x3004, 0x0002, VR::CS, VM::M1, "Dose Units" },
+{ 0x300A, 0x000C, VR::CS, VM::M1, "RT Plan Geometry" },
+{ 0x300C, 0x000A, VR::SQ, VM::M1, "Referenced Brachy Application Setup Sequence" },
+{ 0x300E, 0x0008, VR::PN, VM::M1, "Reviewer Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0199[] = {
+{ 0x0018, 0x9295, VR::FD, VM::M1, "Chemical Shift Minimum Integration Limit in ppm" },
+{ 0x0040, 0x2006, VR::SH, VM::M1, "Placer Order Number / Imaging Service Request (Retired)" },
+{ 0x0054, 0x0090, VR::US, VM::M1TN, "Angular View Vector" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0200[] = {
+{ 0x0040, 0x2009, VR::SH, VM::M1, "Order Enterer's Location" },
+{ 0x3002, 0x000A, VR::CS, VM::M1, "Reported Values Origin" },
+{ 0x3004, 0x000C, VR::DS, VM::M2TN, "Grid Frame Offset Vector" },
+{ 0x300A, 0x0002, VR::SH, VM::M1, "RT Plan Label" },
+{ 0x300A, 0x0412, VR::FL, VM::M3, "Control Point Orientation" },
+{ 0x300C, 0x0004, VR::SQ, VM::M1, "Referenced Beam Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0201[] = {
+{ 0x0008, 0x3001, VR::SQ, VM::M1, "Alternate Representation Sequence" },
+{ 0x0040, 0x2008, VR::PN, VM::M1, "Order Entered By" },
+{ 0x0078, 0x00B2, VR::LO, VM::M1, "Implant Template Group Variation Dimension Name" },
+{ 0x300A, 0x0003, VR::LO, VM::M1, "RT Plan Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0202[] = {
+{ 0x0008, 0x1080, VR::LO, VM::M1TN, "Admitting Diagnoses Description" },
+{ 0x0018, 0x1090, VR::IS, VM::M1, "Cardiac Number of Images" },
+{ 0x0018, 0x1480, VR::DS, VM::M1, "Tomo Time" },
+{ 0x3004, 0x000E, VR::DS, VM::M1, "Dose Grid Scaling" },
+{ 0x300A, 0x0410, VR::SQ, VM::M1, "Motion Synchronization Sequence" },
+{ 0x300C, 0x0006, VR::IS, VM::M1, "Referenced Beam Number" },
+{ 0x300E, 0x0004, VR::DA, VM::M1, "Review Date" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0203[] = {
+{ 0x0078, 0x00B0, VR::SQ, VM::M1, "Implant Template Group Variation Dimension Sequence" },
+{ 0x300C, 0x0007, VR::IS, VM::M1, "Referenced Reference Image Number" },
+{ 0x300E, 0x0005, VR::TM, VM::M1, "Review Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0204[] = {
+{ 0x3002, 0x000E, VR::DS, VM::M1, "X-Ray Image Receptor Angle" },
+{ 0x3004, 0x0008, VR::DS, VM::M3, "Normalization Point" },
+{ 0x300A, 0x0006, VR::DA, VM::M1, "RT Plan Date" },
+{ 0x300E, 0x0002, VR::CS, VM::M1, "Approval Status" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0205[] = {
+{ 0x0068, 0x6530, VR::US, VM::M1, "Planning Landmark ID" },
+{ 0x0078, 0x00B6, VR::US, VM::M1, "Referenced Implant Template Group Member ID" },
+{ 0x300A, 0x0007, VR::TM, VM::M1, "RT Plan Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0206[] = {
+{ 0x0008, 0x1084, VR::SQ, VM::M1, "Admitting Diagnoses Code Sequence" },
+{ 0x0018, 0x1094, VR::IS, VM::M1, "Trigger Window" },
+{ 0x3002, 0x000C, VR::CS, VM::M1, "RT Image Plane" },
+{ 0x3004, 0x000A, VR::CS, VM::M1, "Dose Summation Type" },
+{ 0x3006, 0x0008, VR::DA, VM::M1, "Structure Set Date" },
+{ 0x300A, 0x0004, VR::ST, VM::M1, "RT Plan Description" },
+{ 0x300C, 0x0002, VR::SQ, VM::M1, "Referenced RT Plan Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0207[] = {
+{ 0x0078, 0x00B4, VR::SQ, VM::M1, "Implant Template Group Variation Dimension Rank Sequence" },
+{ 0x3002, 0x000D, VR::DS, VM::M3, "X-Ray Image Receptor Translation" },
+{ 0x3006, 0x0009, VR::TM, VM::M1, "Structure Set Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0208[] = {
+{ 0x0046, 0x0095, VR::CS, VM::M1, "Optotype Presentation" },
+{ 0x2040, 0x0011, VR::US, VM::M1T99, "Referenced Overlay Plane Groups" },
+{ 0x3002, 0x0012, VR::DS, VM::M2, "RT Image Position" },
+{ 0x3004, 0x0014, VR::CS, VM::M1T3, "Tissue Heterogeneity Correction" },
+{ 0x3006, 0x0016, VR::SQ, VM::M1, "Contour Image Sequence" },
+{ 0x300A, 0x001A, VR::DS, VM::M1, "Nominal Prior Dose" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0209[] = {
+{ 0x0040, 0x2010, VR::SH, VM::M1, "Order Callback Phone Number" },
+{ 0x0040, 0x2400, VR::LT, VM::M1, "Imaging Service Request Comments" },
+{ 0x0046, 0x0094, VR::CS, VM::M1, "Optotype" },
+{ 0x2000, 0x0050, VR::LO, VM::M1, "Film Session Label" },
+{ 0x2010, 0x0040, VR::CS, VM::M1, "Film Orientation" },
+{ 0x2040, 0x0010, VR::SQ, VM::M1, "Referenced Overlay Plane Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0210[] = {
+{ 0x0010, 0x1080, VR::LO, VM::M1, "Military Rank" },
+{ 0x0018, 0x1088, VR::IS, VM::M1, "Heart Rate" },
+{ 0x0046, 0x0097, VR::SQ, VM::M1, "Subjective Refraction Right Eye Sequence" },
+{ 0x3002, 0x0010, VR::DS, VM::M6, "RT Image Orientation" },
+{ 0x3006, 0x0014, VR::SQ, VM::M1, "RT Referenced Series Sequence" },
+{ 0x300A, 0x0018, VR::DS, VM::M3, "Dose Reference Point Coordinates" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0211[] = {
+{ 0x0010, 0x1081, VR::LO, VM::M1, "Branch of Service" },
+{ 0x3002, 0x0011, VR::DS, VM::M2, "Image Plane Pixel Spacing" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0212[] = {
+{ 0x3004, 0x0010, VR::SQ, VM::M1, "RT Dose ROI Sequence" },
+{ 0x3006, 0x0012, VR::SQ, VM::M1, "RT Referenced Study Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0213[] = {
+{ 0x0076, 0x00A0, VR::US, VM::M1, "Component 2 Referenced ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0214[] = {
+{ 0x0040, 0x2017, VR::LO, VM::M1, "Filler Order Number / Imaging Service Request" },
+{ 0x0054, 0x0081, VR::US, VM::M1, "Number of Slices" },
+{ 0x3004, 0x0012, VR::DS, VM::M1, "Dose Value" },
+{ 0x3006, 0x0010, VR::SQ, VM::M1, "Referenced Frame of Reference Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0215[] = {
+{ 0x0040, 0x2016, VR::LO, VM::M1, "Placer Order Number / Imaging Service Request" },
+{ 0x0046, 0x0092, VR::CS, VM::M1, "Background Color" },
+{ 0x0054, 0x0080, VR::US, VM::M1TN, "Slice Vector" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0216[] = {
+{ 0x0008, 0x3010, VR::UI, VM::M1, "Irradiation Event UID" },
+{ 0x0018, 0x1082, VR::IS, VM::M1, "High R-R Value" },
+{ 0x0040, 0xA601, VR::CS, VM::M1, "Observer Context Flag (Trial)" },
+{ 0x3008, 0x0010, VR::SQ, VM::M1, "Measured Dose Reference Sequence" },
+{ 0x300A, 0x0012, VR::IS, VM::M1, "Dose Reference Number" },
+{ 0x300A, 0x0402, VR::ST, VM::M1, "Setup Image Comment" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0217[] = {
+{ 0x0018, 0x1083, VR::IS, VM::M1, "Intervals Acquired" },
+{ 0x0040, 0xA600, VR::CS, VM::M1, "Observation Subject Context Flag (Trial)" },
+{ 0x300A, 0x0013, VR::UI, VM::M1, "Dose Reference UID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0218[] = {
+{ 0x0008, 0x1090, VR::LO, VM::M1, "Manufacturer's Model Name" },
+{ 0x0018, 0x1080, VR::CS, VM::M1, "Beat Rejection Flag" },
+{ 0x0018, 0x1490, VR::CS, VM::M1, "Tomo Type" },
+{ 0x0040, 0xA603, VR::CS, VM::M1, "Procedure Context Flag (Trial)" },
+{ 0x3008, 0x0012, VR::ST, VM::M1, "Measured Dose Description" },
+{ 0x300A, 0x0010, VR::SQ, VM::M1, "Dose Reference Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0219[] = {
+{ 0x0018, 0x1081, VR::IS, VM::M1, "Low R-R Value" },
+{ 0x0018, 0x1491, VR::CS, VM::M1, "Tomo Class" },
+{ 0x0078, 0x00A0, VR::FD, VM::M4, "2D Implant Template Group Member Matching Axes" },
+{ 0x300A, 0x0401, VR::SQ, VM::M1, "Referenced Setup Image Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0220[] = {
+{ 0x0018, 0x1086, VR::IS, VM::M1, "Skip Beats" },
+{ 0x3008, 0x0014, VR::CS, VM::M1, "Measured Dose Type" },
+{ 0x300A, 0x0016, VR::LO, VM::M1, "Dose Reference Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0221[] = {
+{ 0x0046, 0x0098, VR::SQ, VM::M1, "Subjective Refraction Left Eye Sequence" },
+{ 0x0068, 0x6520, VR::SQ, VM::M1, "Planning Landmark Plane Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0222[] = {
+{ 0x0018, 0x1084, VR::IS, VM::M1, "Intervals Rejected" },
+{ 0x3008, 0x0016, VR::DS, VM::M1, "Measured Dose Value" },
+{ 0x300A, 0x0014, VR::CS, VM::M1, "Dose Reference Structure Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0223[] = {
+{ 0x0018, 0x1085, VR::LO, VM::M1, "PVC Rejection" },
+{ 0x0018, 0x1495, VR::IS, VM::M1, "Number of Tomosynthesis Source Images" },
+{ 0x300A, 0x0015, VR::CS, VM::M1, "Nominal Beam Energy Unit" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0224[] = {
+{ 0x2000, 0x0061, VR::IS, VM::M1, "Maximum Memory Allocation" },
+{ 0x3002, 0x0022, VR::DS, VM::M1, "Radiation Machine SAD" },
+{ 0x3006, 0x0026, VR::LO, VM::M1, "ROI Name" },
+{ 0x300A, 0x002A, VR::DS, VM::M1, "Organ at Risk Full-volume Dose" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0225[] = {
+{ 0x2000, 0x0060, VR::IS, VM::M1, "Memory Allocation" },
+{ 0x2020, 0x0040, VR::CS, VM::M1, "Requested Decimate/Crop Behavior" },
+{ 0x2040, 0x0020, VR::SQ, VM::M1, "Overlay Pixel Data Sequence" },
+{ 0x2100, 0x0160, VR::SH, VM::M1, "Owner ID" },
+{ 0x300A, 0x002B, VR::DS, VM::M1, "Organ at Risk Limit Dose" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0226[] = {
+{ 0x2000, 0x0063, VR::CS, VM::M1, "Collation Flag" },
+{ 0x3002, 0x0020, VR::SH, VM::M1, "Radiation Machine Name" },
+{ 0x3006, 0x0024, VR::UI, VM::M1, "Referenced Frame of Reference UID" },
+{ 0x3008, 0x002A, VR::CS, VM::M1, "Treatment Termination Status" },
+{ 0x300A, 0x0028, VR::DS, VM::M1, "Target Underdose Volume Fraction" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0227[] = {
+{ 0x2000, 0x0062, VR::CS, VM::M1, "Color Image Printing Flag" },
+{ 0x3008, 0x002B, VR::SH, VM::M1, "Treatment Termination Code" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0228[] = {
+{ 0x2000, 0x0065, VR::CS, VM::M1, "Annotation Flag" },
+{ 0x3002, 0x0026, VR::DS, VM::M1, "RT Image SID" },
+{ 0x3006, 0x0022, VR::IS, VM::M1, "ROI Number" },
+{ 0x3008, 0x002C, VR::CS, VM::M1, "Treatment Verification Status" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0229[] = {
+{ 0x0076, 0x0090, VR::US, VM::M1, "Component 1 Referenced Mating Feature ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0230[] = {
+{ 0x2000, 0x0067, VR::CS, VM::M1, "Image Overlay Flag" },
+{ 0x3002, 0x0024, VR::DS, VM::M1, "Radiation Machine SSD" },
+{ 0x3006, 0x0020, VR::SQ, VM::M1, "Structure Set ROI Sequence" },
+{ 0x300A, 0x002C, VR::DS, VM::M1, "Organ at Risk Maximum Dose" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0231[] = {
+{ 0x300A, 0x002D, VR::DS, VM::M1, "Organ at Risk Overdose Volume Fraction" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0232[] = {
+{ 0x0028, 0x3000, VR::SQ, VM::M1, "Modality LUT Sequence" },
+{ 0x2000, 0x0069, VR::CS, VM::M1, "Presentation LUT Flag" },
+{ 0x3008, 0x0020, VR::SQ, VM::M1, "Treatment Session Beam Sequence" },
+{ 0x300A, 0x0022, VR::DS, VM::M1, "Delivery Warning Dose" },
+{ 0x300A, 0x0432, VR::CS, VM::M1, "Applicator Aperture Shape" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0233[] = {
+{ 0x3008, 0x0021, VR::SQ, VM::M1, "Treatment Session Ion Beam Sequence" },
+{ 0x300A, 0x0023, VR::DS, VM::M1, "Delivery Maximum Dose" },
+{ 0x300A, 0x0433, VR::FL, VM::M1, "Applicator Opening" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0234[] = {
+{ 0x0028, 0x1080, VR::CS, VM::M1, "Gray Scale" },
+{ 0x0028, 0x3002, VR::XS, VM::M3, "LUT Descriptor" },
+{ 0x3002, 0x0028, VR::DS, VM::M1, "Source to Reference Object Distance" },
+{ 0x3006, 0x002C, VR::DS, VM::M1, "ROI Volume" },
+{ 0x3008, 0x0022, VR::IS, VM::M1, "Current Fraction Number" },
+{ 0x300A, 0x0020, VR::CS, VM::M1, "Dose Reference Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0235[] = {
+{ 0x0028, 0x3003, VR::LO, VM::M1, "LUT Explanation" },
+{ 0x0078, 0x0090, VR::FD, VM::M2, "2D Implant Template Group Member Matching Point" },
+{ 0x2000, 0x006A, VR::CS, VM::M1, "Image Box Presentation LUT Flag" },
+{ 0x3002, 0x0029, VR::IS, VM::M1, "Fraction Number" },
+{ 0x300A, 0x0021, VR::DS, VM::M1, "Constraint Weight" },
+{ 0x300A, 0x0431, VR::SQ, VM::M1, "Applicator Geometry Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0236[] = {
+{ 0x0028, 0x3004, VR::LO, VM::M1, "Modality LUT Type" },
+{ 0x3006, 0x002A, VR::IS, VM::M3, "ROI Display Color" },
+{ 0x3008, 0x0024, VR::DA, VM::M1, "Treatment Control Point Date" },
+{ 0x300A, 0x0026, VR::DS, VM::M1, "Target Prescription Dose" },
+{ 0x300A, 0x0436, VR::FL, VM::M1, "Source to Applicator Mounting Position Distance" },
+{ 0x300C, 0x0020, VR::SQ, VM::M1, "Referenced Fraction Group Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0237[] = {
+{ 0x0040, 0xA224, VR::ST, VM::M1, "Identification Description (Trial)" },
+{ 0x0068, 0x6510, VR::SQ, VM::M1, "Planning Landmark Line Sequence" },
+{ 0x3008, 0x0025, VR::TM, VM::M1, "Treatment Control Point Time" },
+{ 0x300A, 0x0027, VR::DS, VM::M1, "Target Maximum Dose" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0238[] = {
+{ 0x0028, 0x3006, VR::OB, VM::M1, "LUT Data" },
+{ 0x3006, 0x0028, VR::ST, VM::M1, "ROI Description" },
+{ 0x300A, 0x0434, VR::FL, VM::M1, "Applicator Opening X" },
+{ 0x300C, 0x0022, VR::IS, VM::M1, "Referenced Fraction Group Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0239[] = {
+{ 0x300A, 0x0025, VR::DS, VM::M1, "Target Minimum Dose" },
+{ 0x300A, 0x0435, VR::FL, VM::M1, "Applicator Opening Y" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0240[] = {
+{ 0x0014, 0x3024, VR::DS, VM::M1, "Horizontal Offset of Sensor" },
+{ 0x0022, 0x1090, VR::SQ, VM::M1, "IOL Power Sequence" },
+{ 0x0070, 0x0083, VR::TM, VM::M1, "Presentation Creation Time" },
+{ 0x3002, 0x0032, VR::DS, VM::M1, "Meterset Exposure" },
+{ 0x3006, 0x0036, VR::CS, VM::M1, "ROI Generation Algorithm" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0241[] = {
+{ 0x0020, 0x3401, VR::CS, VM::M1, "Modifying Device ID" },
+{ 0x0070, 0x0082, VR::DA, VM::M1, "Presentation Creation Date" },
+{ 0x0072, 0x0080, VR::SQ, VM::M1, "Selector Code Sequence Value" },
+{ 0x2010, 0x0060, VR::CS, VM::M1, "Magnification Type" },
+{ 0x2020, 0x0050, VR::CS, VM::M1, "Requested Resolution ID" },
+{ 0x2050, 0x0020, VR::CS, VM::M1, "Presentation LUT Shape" },
+{ 0x2100, 0x0170, VR::IS, VM::M1, "Number of Films" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0242[] = {
+{ 0x0014, 0x3026, VR::DS, VM::M1, "Vertical Offset of Sensor" },
+{ 0x0020, 0x3402, VR::CS, VM::M1, "Modified Image ID" },
+{ 0x0022, 0x1092, VR::SQ, VM::M1, "Lens Constant Sequence" },
+{ 0x0070, 0x0081, VR::LO, VM::M1, "Content Description" },
+{ 0x3002, 0x0030, VR::SQ, VM::M1, "Exposure Sequence" },
+{ 0x3008, 0x003A, VR::DS, VM::M1, "Specified Treatment Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0243[] = {
+{ 0x0020, 0x3403, VR::DA, VM::M1, "Modified Image Date" },
+{ 0x0022, 0x1093, VR::LO, VM::M1, "IOL Manufacturer" },
+{ 0x0070, 0x0080, VR::CS, VM::M1, "Content Label" },
+{ 0x3008, 0x003B, VR::DS, VM::M1, "Delivered Treatment Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0244[] = {
+{ 0x0014, 0x3020, VR::SQ, VM::M1, "Detector Temperature Sequence" },
+{ 0x0020, 0x3404, VR::LO, VM::M1, "Modifying Device Manufacturer" },
+{ 0x0022, 0x1094, VR::LO, VM::M1, "Lens Constant Description" },
+{ 0x0070, 0x0087, VR::SQ, VM::M1, "Alternate Content Description Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0245[] = {
+{ 0x0020, 0x3405, VR::TM, VM::M1, "Modified Image Time" },
+{ 0x0070, 0x0086, VR::SQ, VM::M1, "Content Creator's Identification Code Sequence" },
+{ 0x0076, 0x0080, VR::US, VM::M1, "Component 1 Referenced Mating Feature Set ID" },
+{ 0x3006, 0x0033, VR::CS, VM::M1, "RT ROI Relationship" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0246[] = {
+{ 0x0014, 0x3022, VR::DS, VM::M1, "Sensor Name" },
+{ 0x0020, 0x3406, VR::LO, VM::M1, "Modified Image Description" },
+{ 0x0022, 0x1096, VR::SQ, VM::M1, "Keratometry Measurement Type Code Sequence" },
+{ 0x3002, 0x0034, VR::DS, VM::M4, "Diaphragm Position" },
+{ 0x3006, 0x0030, VR::SQ, VM::M1, "RT Related ROI Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0247[] = {
+{ 0x0070, 0x0084, VR::PN, VM::M1, "Content Creator's Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0248[] = {
+{ 0x0028, 0x3010, VR::SQ, VM::M1, "VOI LUT Sequence" },
+{ 0x3008, 0x0030, VR::SQ, VM::M1, "Referenced Treatment Record Sequence" },
+{ 0x300A, 0x0422, VR::ST, VM::M1, "General Accessory Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0249[] = {
+{ 0x300A, 0x0423, VR::CS, VM::M1, "General Accessory Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0250[] = {
+{ 0x0028, 0x1090, VR::CS, VM::M1, "Recommended Viewing Mode" },
+{ 0x3008, 0x0032, VR::DS, VM::M1, "Specified Primary Meterset" },
+{ 0x300A, 0x0420, VR::SQ, VM::M1, "General Accessory Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0251[] = {
+{ 0x3008, 0x0033, VR::DS, VM::M1, "Specified Secondary Meterset" },
+{ 0x300A, 0x0421, VR::SH, VM::M1, "General Accessory ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0252[] = {
+{ 0x0014, 0x3028, VR::DS, VM::M1, "Sensor Temperature" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0253[] = {
+{ 0x0068, 0x6500, VR::SQ, VM::M1, "Planning Landmark Point Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0254[] = {
+{ 0x3006, 0x0038, VR::LO, VM::M1, "ROI Generation Description" },
+{ 0x3008, 0x0036, VR::DS, VM::M1, "Delivered Primary Meterset" },
+{ 0x300A, 0x0424, VR::IS, VM::M1, "General Accessory Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0255[] = {
+{ 0x3006, 0x0039, VR::SQ, VM::M1, "ROI Contour Sequence" },
+{ 0x3008, 0x0037, VR::DS, VM::M1, "Delivered Secondary Meterset" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0256[] = {
+{ 0x0008, 0x010C, VR::UI, VM::M1, "Coding Scheme UID" },
+{ 0x0014, 0x4014, VR::DS, VM::M1, "Element Dimension A" },
+{ 0x0024, 0x0120, VR::CS, VM::M1, "Screening Baseline Measured" },
+{ 0x0040, 0x0554, VR::UI, VM::M1, "Specimen UID" },
+{ 0x0040, 0x4040, VR::CS, VM::M1, "Raw Data Handling" },
+{ 0x4010, 0x1051, VR::LO, VM::M1, "Itinerary ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0257[] = {
+{ 0x0008, 0x010D, VR::UI, VM::M1, "Context Group Extension Creator UID" },
+{ 0x0014, 0x4015, VR::DS, VM::M1, "Element Dimension B" },
+{ 0x0040, 0x0555, VR::SQ, VM::M1, "Acquisition Context Sequence" },
+{ 0x0040, 0x4041, VR::CS, VM::M1, "Input Readiness State" },
+{ 0x0400, 0x0115, VR::OB, VM::M1, "Certificate of Signer" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0258[] = {
+{ 0x0014, 0x4016, VR::DS, VM::M1, "Element Pitch" },
+{ 0x0024, 0x0122, VR::SQ, VM::M1, "Screening Baseline Measured Sequence" },
+{ 0x0040, 0x0556, VR::ST, VM::M1, "Acquisition Context Description" },
+{ 0x4010, 0x1053, VR::LO, VM::M1, "Itinerary ID Assigning Authority" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0259[] = {
+{ 0x0008, 0x010F, VR::CS, VM::M1, "Context Identifier" },
+{ 0x0014, 0x4017, VR::DS, VM::M1, "Measured Beam Dimension A" },
+{ 0x0018, 0x115E, VR::DS, VM::M1, "Image and Fluoroscopy Area Dose Product" },
+{ 0x4010, 0x1052, VR::SH, VM::M1, "Itinerary ID Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0260[] = {
+{ 0x0014, 0x4010, VR::SQ, VM::M1, "Transmit Transducer Sequence" },
+{ 0x0018, 0x9351, VR::FL, VM::M1, "Calcium Scoring Mass Factor Patient" },
+{ 0x0024, 0x0124, VR::CS, VM::M1, "Screening Baseline Type" },
+{ 0x0040, 0x0550, VR::SQ, VM::M1, "Specimen Sequence" },
+{ 0x0040, 0x1101, VR::SQ, VM::M1, "Person Identification Code Sequence" },
+{ 0x0046, 0x0146, VR::FD, VM::M1, "Sphere Power" },
+{ 0x0100, 0x0410, VR::CS, VM::M1, "SOP Instance Status" },
+{ 0x0400, 0x0110, VR::CS, VM::M1, "Certificate Type" },
+{ 0x0400, 0x0500, VR::SQ, VM::M1, "Encrypted Attributes Sequence" },
+{ 0x4010, 0x1055, VR::SH, VM::M1, "Route ID Assigning Authority" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0261[] = {
+{ 0x0014, 0x4011, VR::SQ, VM::M1, "Receive Transducer Sequence" },
+{ 0x0018, 0x9740, VR::US, VM::M1, "Number of Subsets" },
+{ 0x0040, 0x0551, VR::LO, VM::M1, "Specimen Identifier" },
+{ 0x0046, 0x0147, VR::FD, VM::M1, "Cylinder Power" },
+{ 0x4010, 0x1054, VR::SH, VM::M1, "Route ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0262[] = {
+{ 0x0008, 0x114B, VR::SQ, VM::M1, "Referenced Real World Value Mapping Instance Sequence" },
+{ 0x0014, 0x4012, VR::US, VM::M1, "Number of Elements" },
+{ 0x0018, 0x9353, VR::FL, VM::M1, "Energy Weighting Factor" },
+{ 0x0024, 0x0126, VR::FL, VM::M1, "Screening Baseline Value" },
+{ 0x0040, 0x0552, VR::SQ, VM::M1, "Specimen Description Sequence (Trial)" },
+{ 0x0040, 0x1103, VR::LO, VM::M1TN, "Person's Telephone Numbers" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0263[] = {
+{ 0x0008, 0x010B, VR::CS, VM::M1, "Context Group Extension Flag" },
+{ 0x0008, 0x114A, VR::SQ, VM::M1, "Referenced Instance Sequence" },
+{ 0x0014, 0x4013, VR::CS, VM::M1, "Element Shape" },
+{ 0x0018, 0x115A, VR::CS, VM::M1, "Radiation Mode" },
+{ 0x0018, 0x9352, VR::FL, VM::M3, "Calcium Scoring Mass Factor Device" },
+{ 0x0040, 0x0553, VR::ST, VM::M1, "Specimen Description (Trial)" },
+{ 0x0040, 0x1102, VR::ST, VM::M1, "Person's Address" },
+{ 0x0046, 0x0145, VR::SQ, VM::M1, "Referenced Refractive Measurements Sequence" },
+{ 0x4010, 0x1056, VR::CS, VM::M1, "Inbound  Arrival Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0264[] = {
+{ 0x0008, 0x0104, VR::LO, VM::M1, "Code Meaning" },
+{ 0x0008, 0x1145, VR::SQ, VM::M1, "Referenced Curve Sequence" },
+{ 0x0008, 0x4000, VR::LT, VM::M1, "Identifying Comments" },
+{ 0x0014, 0x401C, VR::DS, VM::M1, "Measured Bandwidth" },
+{ 0x0018, 0x1155, VR::CS, VM::M1, "Radiation Setting" },
+{ 0x4010, 0x1059, VR::CS, VM::M1, "Carrier ID Assigning Authority" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0265[] = {
+{ 0x0008, 0x0105, VR::CS, VM::M1, "Mapping Resource" },
+{ 0x0018, 0x1154, VR::DS, VM::M1, "Average Pulse Width" },
+{ 0x0018, 0x5050, VR::IS, VM::M1, "Depth of Scan Field" },
+{ 0x4010, 0x1058, VR::SH, VM::M1, "Carrier ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0266[] = {
+{ 0x0008, 0x0106, VR::DT, VM::M1, "Context Group Version" },
+{ 0x0068, 0x64F0, VR::FD, VM::M3, "2D Degree of Freedom Axis" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0267[] = {
+{ 0x0008, 0x0107, VR::DT, VM::M1, "Context Group Local Version" },
+{ 0x0018, 0x1156, VR::CS, VM::M1, "Rectification Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0268[] = {
+{ 0x0008, 0x0100, VR::SH, VM::M1, "Code Value" },
+{ 0x0014, 0x4018, VR::DS, VM::M1, "Measured Beam Dimension B" },
+{ 0x0018, 0x1151, VR::IS, VM::M1, "X-Ray Tube Current" },
+{ 0x0018, 0x9749, VR::SQ, VM::M1, "PET Reconstruction Sequence" },
+{ 0x0028, 0x0120, VR::XS, VM::M1, "Pixel Padding Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0269[] = {
+{ 0x0008, 0x1140, VR::SQ, VM::M1, "Referenced Image Sequence" },
+{ 0x0014, 0x4019, VR::DS, VM::M1, "Location of Measured Beam Diameter" },
+{ 0x0018, 0x1150, VR::IS, VM::M1, "Exposure Time" },
+{ 0x0028, 0x0121, VR::XS, VM::M1, "Pixel Padding Range Limit" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0270[] = {
+{ 0x0008, 0x0102, VR::SH, VM::M1, "Coding Scheme Designator" },
+{ 0x0014, 0x401A, VR::DS, VM::M1, "Nominal Frequency" },
+{ 0x0018, 0x1153, VR::IS, VM::M1, "Exposure in uAs" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0271[] = {
+{ 0x0008, 0x0103, VR::SH, VM::M1, "Coding Scheme Version" },
+{ 0x0014, 0x401B, VR::DS, VM::M1, "Measured Center Frequency" },
+{ 0x0018, 0x1152, VR::IS, VM::M1, "Exposure" },
+{ 0x2110, 0x0099, VR::SH, VM::M1, "Print Queue ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0272[] = {
+{ 0x0010, 0x4000, VR::LT, VM::M1, "Patient Comments" },
+{ 0x0014, 0x4004, VR::CS, VM::M1, "Pulser Type" },
+{ 0x0018, 0x9345, VR::FD, VM::M1, "CTDIvol" },
+{ 0x0018, 0x9755, VR::CS, VM::M1, "Time of Flight Information Used" },
+{ 0x0040, 0x4050, VR::DT, VM::M1, "Performed Procedure Step Start DateTime" },
+{ 0x0054, 0x1101, VR::LO, VM::M1, "Attenuation Correction Method" },
+{ 0x4000, 0x0010, VR::LT, VM::M1, "Arbitrary" },
+{ 0x4010, 0x1041, VR::DT, VM::M1, "OOI Owner Creation Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0273[] = {
+{ 0x0018, 0x9344, VR::CS, VM::M1, "Contrast/Bolus Agent Phase" },
+{ 0x0040, 0x4051, VR::DT, VM::M1, "Performed Procedure Step End DateTime" },
+{ 0x0054, 0x1100, VR::CS, VM::M1, "Randoms Correction Method" },
+{ 0x0400, 0x0105, VR::DT, VM::M1, "Digital Signature DateTime" },
+{ 0x4010, 0x0001, VR::CS, VM::M1, "Low Energy Detectors" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0274[] = {
+{ 0x0014, 0x4006, VR::LT, VM::M1, "Pulser Notes" },
+{ 0x0040, 0x4052, VR::DT, VM::M1, "Procedure Step Cancellation DateTime" },
+{ 0x0054, 0x1103, VR::LO, VM::M1, "Reconstruction Method" },
+{ 0x4010, 0x0002, VR::CS, VM::M1, "High Energy Detectors" },
+{ 0x4010, 0x1043, VR::FL, VM::M3, "OOI Size" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0275[] = {
+{ 0x0018, 0x9346, VR::SQ, VM::M1, "CTDI Phantom Type Code Sequence" },
+{ 0x0018, 0x9756, VR::CS, VM::M1, "Reconstruction Type" },
+{ 0x0054, 0x1102, VR::CS, VM::M1, "Decay Correction" },
+{ 0x4010, 0x1042, VR::CS, VM::M1, "OOI Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0276[] = {
+{ 0x0018, 0x1149, VR::IS, VM::M1T2, "Field of View Dimension(s)" },
+{ 0x0018, 0x9341, VR::SQ, VM::M1, "Contrast/Bolus Usage Sequence" },
+{ 0x0018, 0x9751, VR::SQ, VM::M1, "PET Frame Type Sequence" },
+{ 0x0054, 0x1105, VR::LO, VM::M1, "Scatter Correction Method" },
+{ 0x0400, 0x0100, VR::UI, VM::M1, "Digital Signature UID" },
+{ 0x0400, 0x0510, VR::UI, VM::M1, "Encrypted Content Transfer Syntax UID" },
+{ 0x4010, 0x0004, VR::SQ, VM::M1, "Detector Geometry Sequence" },
+{ 0x4010, 0x1045, VR::SQ, VM::M1, "Basis Materials Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0277[] = {
+{ 0x0010, 0x0101, VR::SQ, VM::M1, "Patient's Primary Language Code Sequence" },
+{ 0x0018, 0x9340, VR::SQ, VM::M1, "Contrast Administration Profile Sequence" },
+{ 0x0054, 0x1104, VR::LO, VM::M1, "Detector Lines of Response Used" },
+{ 0x4010, 0x1044, VR::CS, VM::M1, "Acquisition Status" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0278[] = {
+{ 0x0010, 0x0102, VR::SQ, VM::M1, "Patient's Primary Language Modifier Code Sequence" },
+{ 0x0010, 0x2180, VR::SH, VM::M1, "Occupation" },
+{ 0x0014, 0x4002, VR::SQ, VM::M1, "Pulser Equipment Sequence" },
+{ 0x0018, 0x9343, VR::CS, VM::M1, "Contrast/Bolus Agent Detected" },
+{ 0x2130, 0x00A0, VR::SQ, VM::M1, "Proposed Study Sequence" },
+{ 0x4010, 0x1047, VR::SQ, VM::M1, "OOI Owner Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0279[] = {
+{ 0x0008, 0x115A, VR::UI, VM::M1TN, "SOP Classes Supported" },
+{ 0x0018, 0x9342, VR::CS, VM::M1, "Contrast/Bolus Agent Administered" },
+{ 0x4010, 0x1046, VR::CS, VM::M1, "Phantom Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0280[] = {
+{ 0x0008, 0x0114, VR::ST, VM::M1, "Coding Scheme External ID" },
+{ 0x0008, 0x1155, VR::UI, VM::M1, "Referenced SOP Instance UID" },
+{ 0x0014, 0x400C, VR::LT, VM::M1, "Receiver Notes" },
+{ 0x0018, 0x1145, VR::DS, VM::M1, "Center of Rotation Offset" },
+{ 0x0018, 0x4000, VR::LT, VM::M1, "Acquisition Comments" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0281[] = {
+{ 0x0008, 0x0115, VR::ST, VM::M1, "Coding Scheme Name" },
+{ 0x0018, 0x1144, VR::DS, VM::M1, "Angular Step" },
+{ 0x0018, 0x5040, VR::DS, VM::M1, "Total Gain" },
+{ 0x300A, 0x01D4, VR::DS, VM::M1, "Table Top Longitudinal Setup Displacement" },
+{ 0x4010, 0x1048, VR::CS, VM::M1, "Scan Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0282[] = {
+{ 0x0008, 0x0116, VR::ST, VM::M1, "Coding Scheme Responsible Organization" },
+{ 0x0014, 0x400E, VR::SQ, VM::M1, "Pre-Amplifier Equipment Sequence" },
+{ 0x0018, 0x1147, VR::CS, VM::M1, "Field of View Shape" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0283[] = {
+{ 0x0008, 0x0117, VR::UI, VM::M1, "Context UID" },
+{ 0x0014, 0x400F, VR::LT, VM::M1, "Pre-Amplifier Notes" },
+{ 0x0018, 0x1146, VR::DS, VM::M1TN, "Rotation Offset" },
+{ 0x300A, 0x01D6, VR::DS, VM::M1, "Table Top Lateral Setup Displacement" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0284[] = {
+{ 0x0008, 0x0110, VR::SQ, VM::M1, "Coding Scheme Identification Sequence" },
+{ 0x0014, 0x4008, VR::SQ, VM::M1, "Receiver Equipment Sequence" },
+{ 0x0018, 0x1141, VR::DS, VM::M1, "Angular Position" },
+{ 0x0018, 0x9759, VR::CS, VM::M1, "Attenuation Corrected" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0285[] = {
+{ 0x0008, 0x1150, VR::UI, VM::M1, "Referenced SOP Class UID" },
+{ 0x0018, 0x1140, VR::CS, VM::M1, "Rotation Direction" },
+{ 0x0018, 0x9758, VR::CS, VM::M1, "Decay Corrected" },
+{ 0x300A, 0x01D0, VR::ST, VM::M1, "Setup Reference Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0286[] = {
+{ 0x0008, 0x0112, VR::LO, VM::M1, "Coding Scheme Registry" },
+{ 0x0014, 0x400A, VR::CS, VM::M1, "Amplifier Type" },
+{ 0x0018, 0x1143, VR::DS, VM::M1, "Scan Arc" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0287[] = {
+{ 0x0018, 0x1142, VR::DS, VM::M1TN, "Radial Position" },
+{ 0x300A, 0x01D2, VR::DS, VM::M1, "Table Top Vertical Setup Displacement" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0288[] = {
+{ 0x0014, 0x4034, VR::DS, VM::M1, "Rectifier Smoothing" },
+{ 0x0018, 0x9765, VR::CS, VM::M1, "Randoms Corrected" },
+{ 0x0020, 0x4000, VR::LT, VM::M1, "Image Comments" },
+{ 0x0024, 0x0100, VR::FL, VM::M1, "Age Corrected Sensitivity Deviation Probability Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0289[] = {
+{ 0x0014, 0x4035, VR::SQ, VM::M1, "DAC Sequence" },
+{ 0x0018, 0x9764, VR::CS, VM::M1, "Count Loss Normalization Corrected" },
+{ 0x0020, 0x0105, VR::IS, VM::M1, "Number of Temporal Positions" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0290[] = {
+{ 0x0014, 0x4036, VR::CS, VM::M1, "DAC Type" },
+{ 0x0018, 0x9767, VR::CS, VM::M1, "Sensitivity Calibrated" },
+{ 0x0024, 0x0102, VR::CS, VM::M1, "Generalized Defect Corrected Sensitivity Deviation Flag" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0291[] = {
+{ 0x0018, 0x9766, VR::CS, VM::M1, "Non-uniform Radial Sampling Corrected" },
+{ 0x0024, 0x0103, VR::FL, VM::M1, "Generalized Defect Corrected Sensitivity Deviation Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0292[] = {
+{ 0x0014, 0x4030, VR::SQ, VM::M1, "Receiver Settings Sequence" },
+{ 0x0018, 0x9761, VR::CS, VM::M1, "Dead Time Corrected" },
+{ 0x0020, 0x0100, VR::IS, VM::M1, "Temporal Position Identifier" },
+{ 0x0024, 0x0104, VR::FL, VM::M1, "Generalized Defect Corrected Sensitivity Deviation Probability Value" },
+{ 0x0028, 0x0108, VR::XS, VM::M1, "Smallest Pixel Value in Series" },
+{ 0x0400, 0x0520, VR::OB, VM::M1, "Encrypted Content" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0293[] = {
+{ 0x0014, 0x4031, VR::DS, VM::M1, "Acquired Soundpath Length" },
+{ 0x0018, 0x9760, VR::CS, VM::M1, "Scatter Corrected" },
+{ 0x0024, 0x0105, VR::FL, VM::M1, "Minimum Sensitivity Value" },
+{ 0x0028, 0x0109, VR::XS, VM::M1, "Largest Pixel Value in Series" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0294[] = {
+{ 0x0010, 0x21B0, VR::LT, VM::M1, "Additional Patient History" },
+{ 0x0014, 0x4032, VR::CS, VM::M1, "Acquisition Compression Type" },
+{ 0x0018, 0x9763, VR::CS, VM::M1, "Patient Motion Corrected" },
+{ 0x0024, 0x0106, VR::CS, VM::M1, "Blind Spot Localized" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0295[] = {
+{ 0x0014, 0x4033, VR::IS, VM::M1, "Acquisition Sample Size" },
+{ 0x0018, 0x9762, VR::CS, VM::M1, "Gantry Motion Corrected" },
+{ 0x0022, 0x1140, VR::CS, VM::M1, "Ophthalmic Axial Length Measurement Modified" },
+{ 0x0024, 0x0107, VR::FL, VM::M1, "Blind Spot X-Coordinate" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0296[] = {
+{ 0x0014, 0x403C, VR::DS, VM::M1TN, "DAC Amplitude" },
+{ 0x0024, 0x0108, VR::FL, VM::M1, "Blind Spot Y-Coordinate" },
+{ 0x0028, 0x0104, VR::XS, VM::M1, "Smallest Valid Pixel Value" },
+{ 0x0028, 0x4000, VR::LT, VM::M1, "Image Presentation Comments" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0297[] = {
+{ 0x0008, 0x1164, VR::SQ, VM::M1, "Frame Extraction Sequence" },
+{ 0x0028, 0x0105, VR::XS, VM::M1, "Largest Valid Pixel Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0298[] = {
+{ 0x0008, 0x1167, VR::UI, VM::M1, "Multi-Frame Source SOP Instance UID" },
+{ 0x0028, 0x0106, VR::XS, VM::M1, "Smallest Image Pixel Value" },
+{ 0x0068, 0x64D0, VR::FD, VM::M9, "3D Mating Axes" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0299[] = {
+{ 0x0028, 0x0107, VR::XS, VM::M1, "Largest Image Pixel Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0300[] = {
+{ 0x0008, 0x1161, VR::UL, VM::M1TN, "Simple Frame List" },
+{ 0x0014, 0x4038, VR::DS, VM::M1TN, "DAC Gain Points" },
+{ 0x0018, 0x9769, VR::CS, VM::M1, "Iterative Reconstruction Method" },
+{ 0x0028, 0x0100, VR::US, VM::M1, "Bits Allocated" },
+{ 0x0038, 0x0500, VR::LO, VM::M1, "Patient State" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0301[] = {
+{ 0x0008, 0x1160, VR::IS, VM::M1TN, "Referenced Frame Number" },
+{ 0x0018, 0x1170, VR::IS, VM::M1, "Generator Power" },
+{ 0x0018, 0x9768, VR::CS, VM::M1, "Detector Normalization Correction" },
+{ 0x0028, 0x0101, VR::US, VM::M1, "Bits Stored" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0302[] = {
+{ 0x0008, 0x1163, VR::FD, VM::M2, "Time Range" },
+{ 0x0014, 0x403A, VR::DS, VM::M1TN, "DAC Time Points" },
+{ 0x0028, 0x0102, VR::US, VM::M1, "High Bit" },
+{ 0x0038, 0x0502, VR::SQ, VM::M1, "Patient Clinical Trial Participation Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0303[] = {
+{ 0x0008, 0x1162, VR::UL, VM::M3T3N, "Calculated Frame List" },
+{ 0x0028, 0x0103, VR::US, VM::M1, "Pixel Representation" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0304[] = {
+{ 0x0014, 0x4024, VR::DS, VM::M1, "Excitation Frequency" },
+{ 0x0024, 0x0110, VR::SQ, VM::M1, "Visual Acuity Measurement Sequence" },
+{ 0x0100, 0x0424, VR::LT, VM::M1, "SOP Authorization Comment" },
+{ 0x4010, 0x1061, VR::FL, VM::M3, "Source Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0305[] = {
+{ 0x4010, 0x1060, VR::FL, VM::M3, "Source Orientation" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0306[] = {
+{ 0x0014, 0x4026, VR::CS, VM::M1, "Modulation Type" },
+{ 0x0022, 0x1155, VR::FL, VM::M1, "Signal to Noise Ratio" },
+{ 0x0024, 0x0112, VR::SQ, VM::M1, "Refractive Parameters Used on Patient Sequence" },
+{ 0x0032, 0x4000, VR::LT, VM::M1, "Study Comments" },
+{ 0x0100, 0x0426, VR::LO, VM::M1, "Authorization Equipment Certification Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0307[] = {
+{ 0x0024, 0x0113, VR::CS, VM::M1, "Measurement Laterality" },
+{ 0x4010, 0x1062, VR::FL, VM::M1, "Belt Height" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0308[] = {
+{ 0x0014, 0x4020, VR::SQ, VM::M1, "Pulser Settings Sequence" },
+{ 0x0018, 0x9771, VR::SQ, VM::M1, "Patient Physiological State Sequence" },
+{ 0x0020, 0x0110, VR::DS, VM::M1, "Temporal Resolution" },
+{ 0x0022, 0x1153, VR::SQ, VM::M1, "Ophthalmic Axial Length Acquisition Method Code Sequence" },
+{ 0x0024, 0x0114, VR::SQ, VM::M1, "Ophthalmic Patient Clinical Information Left Eye Sequence" },
+{ 0x0040, 0x0560, VR::SQ, VM::M1, "Specimen Description Sequence" },
+{ 0x0100, 0x0420, VR::DT, VM::M1, "SOP Authorization DateTime" },
+{ 0x0400, 0x0120, VR::OB, VM::M1, "Signature" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0309[] = {
+{ 0x0018, 0x9360, VR::SQ, VM::M1, "CT Additional X-Ray Source Sequence" },
+{ 0x0018, 0x9770, VR::CS, VM::M1, "Attenuation Correction Temporal Relationship" },
+{ 0x0024, 0x0115, VR::SQ, VM::M1, "Ophthalmic Patient Clinical Information Right Eye Sequence" },
+{ 0x4010, 0x1064, VR::SQ, VM::M1, "Algorithm Routing Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0310[] = {
+{ 0x0010, 0x21A0, VR::CS, VM::M1, "Smoking Status" },
+{ 0x0014, 0x4022, VR::DS, VM::M1, "Pulse Width" },
+{ 0x0040, 0x0562, VR::SQ, VM::M1, "Issuer of the Specimen Identifier Sequence" },
+{ 0x2130, 0x0080, VR::SQ, VM::M1, "Presentation LUT Content Sequence" },
+{ 0x4010, 0x1067, VR::CS, VM::M1, "Transport Classification" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0311[] = {
+{ 0x0018, 0x9772, VR::SQ, VM::M1, "Patient Physiological State Code Sequence" },
+{ 0x0022, 0x1150, VR::SQ, VM::M1, "Ophthalmic Axial Length Data Source Code Sequence" },
+{ 0x0024, 0x0117, VR::CS, VM::M1, "Foveal Point Normative Data Flag" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0312[] = {
+{ 0x0024, 0x0118, VR::FL, VM::M1, "Foveal Point Probability Value" },
+{ 0x0038, 0x4000, VR::LT, VM::M1, "Visit Comments" },
+{ 0x4010, 0x1069, VR::FL, VM::M1, "Total Processing Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0313[] = {
+{ 0x0018, 0x1164, VR::DS, VM::M2, "Imager Pixel Spacing" },
+{ 0x4010, 0x1068, VR::LT, VM::M1, "OOI Type Descriptor" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0314[] = {
+{ 0x0068, 0x64C0, VR::FD, VM::M3, "3D Mating Point" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0315[] = {
+{ 0x0018, 0x1166, VR::CS, VM::M1TN, "Grid" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0316[] = {
+{ 0x0014, 0x4028, VR::DS, VM::M1, "Damping" },
+{ 0x0018, 0x1161, VR::LO, VM::M1TN, "Type of Filters" },
+{ 0x0028, 0x0110, VR::XS, VM::M1, "Smallest Image Pixel Value in Plane" },
+{ 0x0038, 0x0100, VR::SQ, VM::M1, "Pertinent Documents Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0317[] = {
+{ 0x0018, 0x1160, VR::SH, VM::M1, "Filter Type" },
+{ 0x0028, 0x0111, VR::XS, VM::M1, "Largest Image Pixel Value in Plane" },
+{ 0x4010, 0x106C, VR::OB, VM::M1, "Detector Calibration Data" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0318[] = {
+{ 0x0022, 0x1159, VR::LO, VM::M1, "Ophthalmic Axial Length Data Source Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0319[] = {
+{ 0x0018, 0x1162, VR::DS, VM::M1, "Intensifier Size" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0320[] = {
+{ 0x0018, 0x9314, VR::SQ, VM::M1, "CT Reconstruction Sequence" },
+{ 0x0040, 0x0515, VR::SQ, VM::M1, "Alternate Container Identifier Sequence" },
+{ 0x0040, 0x4001, VR::CS, VM::M1, "General Purpose Scheduled Procedure Step Status" },
+{ 0x4010, 0x1010, VR::US, VM::M1, "Potential Threat Object ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0321[] = {
+{ 0x0014, 0x4054, VR::ST, VM::M1, "Coupling Technique" },
+{ 0x0018, 0x9315, VR::CS, VM::M1, "Reconstruction Algorithm" },
+{ 0x0046, 0x0102, VR::SQ, VM::M1, "Add Other Sequence" },
+{ 0x0054, 0x0500, VR::CS, VM::M1, "Slice Progression Direction" },
+{ 0x4010, 0x1011, VR::SQ, VM::M1, "Threat Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0322[] = {
+{ 0x0014, 0x4057, VR::DS, VM::M1, "Coupling Velocity" },
+{ 0x0018, 0x9316, VR::CS, VM::M1, "Convolution Kernel Group" },
+{ 0x0040, 0x4003, VR::CS, VM::M1, "General Purpose Scheduled Procedure Step Priority" },
+{ 0x0046, 0x0101, VR::SQ, VM::M1, "Add Intermediate Sequence" },
+{ 0x4010, 0x1012, VR::CS, VM::M1, "Threat Category" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0323[] = {
+{ 0x0014, 0x4056, VR::ST, VM::M1, "Coupling Medium" },
+{ 0x0018, 0x9317, VR::FD, VM::M2, "Reconstruction Field of View" },
+{ 0x0022, 0x1125, VR::SQ, VM::M1, "Anterior Chamber Depth Definition Code Sequence" },
+{ 0x0040, 0x4002, VR::CS, VM::M1, "General Purpose Performed Procedure Step Status" },
+{ 0x0046, 0x0100, VR::SQ, VM::M1, "Add Near Sequence" },
+{ 0x4010, 0x1013, VR::LT, VM::M1, "Threat Category Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0324[] = {
+{ 0x0014, 0x4051, VR::SQ, VM::M1, "Receive Transducer Settings Sequence" },
+{ 0x0018, 0x1508, VR::CS, VM::M1, "Positioner Type" },
+{ 0x0018, 0x9310, VR::FD, VM::M1, "Table Feed per Rotation" },
+{ 0x0022, 0x1122, VR::FL, VM::M1, "IOL Power For Exact Target Refraction" },
+{ 0x0040, 0x4005, VR::DT, VM::M1, "Scheduled Procedure Step Start DateTime" },
+{ 0x4010, 0x1014, VR::CS, VM::M1, "ATD Ability Assessment" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0325[] = {
+{ 0x0014, 0x4050, VR::SQ, VM::M1, "Transmit Transducer Settings Sequence" },
+{ 0x0018, 0x9311, VR::FD, VM::M1, "Spiral Pitch Factor" },
+{ 0x0018, 0x9701, VR::DT, VM::M1, "Decay Correction DateTime" },
+{ 0x0040, 0x0100, VR::SQ, VM::M1, "Scheduled Procedure Step Sequence" },
+{ 0x0040, 0x4004, VR::SQ, VM::M1, "Scheduled Processing Applications Code Sequence" },
+{ 0x0046, 0x0106, VR::FD, VM::M1, "Viewing Distance" },
+{ 0x0048, 0x0108, VR::SQ, VM::M1, "Illumination Color Code Sequence" },
+{ 0x4010, 0x1015, VR::CS, VM::M1, "ATD Assessment Flag" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0326[] = {
+{ 0x0018, 0x9312, VR::SQ, VM::M1, "CT Geometry Sequence" },
+{ 0x0040, 0x0513, VR::SQ, VM::M1, "Issuer of the Container Identifier Sequence" },
+{ 0x0040, 0x4007, VR::SQ, VM::M1, "Performed Processing Applications Code Sequence" },
+{ 0x4010, 0x1016, VR::FL, VM::M1, "ATD Assessment Probability" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0327[] = {
+{ 0x0010, 0x21D0, VR::DA, VM::M1, "Last Menstrual Date" },
+{ 0x0014, 0x4052, VR::DS, VM::M1, "Incident Angle" },
+{ 0x0018, 0x9313, VR::FD, VM::M3, "Data Collection Center (Patient)" },
+{ 0x0022, 0x1121, VR::FL, VM::M1, "IOL Power For Exact Emmetropia" },
+{ 0x0040, 0x0512, VR::LO, VM::M1, "Container Identifier" },
+{ 0x0040, 0x4006, VR::CS, VM::M1, "Multiple Copies Flag" },
+{ 0x0046, 0x0104, VR::FD, VM::M1, "Add Power" },
+{ 0x0072, 0x0520, VR::CS, VM::M1TN, "3D Rendering Type" },
+{ 0x4010, 0x1017, VR::FL, VM::M1, "Mass" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0328[] = {
+{ 0x0018, 0x1114, VR::DS, VM::M1, "Estimated Radiographic Magnification Factor" },
+{ 0x0018, 0x5010, VR::LO, VM::M1TN, "Transducer Data" },
+{ 0x0040, 0x4009, VR::SQ, VM::M1, "Human Performer Code Sequence" },
+{ 0x0048, 0x0105, VR::SQ, VM::M1, "Optical Path Sequence" },
+{ 0x300A, 0x0184, VR::LO, VM::M1, "Patient Additional Position" },
+{ 0x4010, 0x1018, VR::FL, VM::M1, "Density" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0329[] = {
+{ 0x0014, 0x405C, VR::ST, VM::M1, "Delay Law Identifier" },
+{ 0x4008, 0x0040, VR::SH, VM::M1, "Results ID" },
+{ 0x4010, 0x1019, VR::FL, VM::M1, "Z Effective" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0330[] = {
+{ 0x0018, 0x5012, VR::DS, VM::M1, "Focus Depth" },
+{ 0x0040, 0xA385, VR::SQ, VM::M1, "Pertinent Other Evidence Sequence" },
+{ 0x0048, 0x0107, VR::ST, VM::M1, "Optical Path Description" },
+{ 0x4010, 0x101A, VR::SH, VM::M1, "Boarding Pass ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0331[] = {
+{ 0x0048, 0x0106, VR::SH, VM::M1, "Optical Path Identifier" },
+{ 0x4008, 0x0042, VR::LO, VM::M1, "Results ID Issuer" },
+{ 0x4010, 0x101B, VR::FL, VM::M3, "Center of Mass" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0332[] = {
+{ 0x0008, 0x1100, VR::SQ, VM::M1, "Referenced Results Sequence" },
+{ 0x0014, 0x4059, VR::DS, VM::M1, "Crystal Center Location Z" },
+{ 0x0018, 0x1110, VR::DS, VM::M1, "Distance Source to Detector" },
+{ 0x0018, 0x1500, VR::CS, VM::M1, "Positioner Motion" },
+{ 0x0018, 0x9318, VR::FD, VM::M3, "Reconstruction Target Center (Patient)" },
+{ 0x300A, 0x0180, VR::SQ, VM::M1, "Patient Setup Sequence" },
+{ 0x4010, 0x101C, VR::FL, VM::M3, "Center of PTO" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0333[] = {
+{ 0x0014, 0x4058, VR::DS, VM::M1, "Crystal Center Location X" },
+{ 0x0018, 0x1111, VR::DS, VM::M1, "Distance Source to Patient" },
+{ 0x0018, 0x9319, VR::FD, VM::M1, "Reconstruction Angle" },
+{ 0x0040, 0x0518, VR::SQ, VM::M1, "Container Type Code Sequence" },
+{ 0x0048, 0x0100, VR::SQ, VM::M1, "Illuminator Type Code Sequence" },
+{ 0x4010, 0x101D, VR::FL, VM::M6TN, "Bounding Polygon" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0334[] = {
+{ 0x300A, 0x0182, VR::IS, VM::M1, "Patient Setup Number" },
+{ 0x4010, 0x101E, VR::SH, VM::M1, "Route Segment Start Location ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0335[] = {
+{ 0x0014, 0x405A, VR::DS, VM::M1, "Sound Path Length" },
+{ 0x0040, 0x051A, VR::LO, VM::M1, "Container Description" },
+{ 0x0040, 0x8302, VR::DS, VM::M1, "Entrance Dose in mGy" },
+{ 0x0040, 0xA380, VR::SQ, VM::M1, "Report Detail Sequence (Trial)" },
+{ 0x0048, 0x0102, VR::DS, VM::M6, "Image Orientation (Slide)" },
+{ 0x300A, 0x0183, VR::LO, VM::M1, "Patient Setup Label" },
+{ 0x4010, 0x101F, VR::SH, VM::M1, "Route Segment End Location ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0336[] = {
+{ 0x0014, 0x5004, VR::IS, VM::M1, "LINAC Output" },
+{ 0x0018, 0x9304, VR::SQ, VM::M1, "CT Acquisition Details Sequence" },
+{ 0x0040, 0x4011, VR::DT, VM::M1, "Expected Completion Date Time" },
+{ 0x0054, 0x0101, VR::US, VM::M1, "Number of Time Slices" },
+{ 0x0074, 0x0121, VR::FD, VM::M1, "Continuation End Meterset" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0337[] = {
+{ 0x0018, 0x9305, VR::FD, VM::M1, "Revolution Time" },
+{ 0x0018, 0x9715, VR::FD, VM::M1, "Start Density Threshold" },
+{ 0x0040, 0x4010, VR::DT, VM::M1, "Scheduled Procedure Step Modification Date Time" },
+{ 0x0054, 0x0100, VR::US, VM::M1TN, "Time Slice Vector" },
+{ 0x0074, 0x0120, VR::FD, VM::M1, "Continuation Start Meterset" },
+{ 0x4010, 0x1001, VR::SQ, VM::M1, "Threat ROI Voxel Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0338[] = {
+{ 0x0018, 0x9306, VR::FD, VM::M1, "Single Collimation Width" },
+{ 0x0018, 0x9716, VR::FD, VM::M1, "Start Relative Density Difference Threshold" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0339[] = {
+{ 0x0018, 0x9307, VR::FD, VM::M1, "Total Collimation Width" },
+{ 0x0018, 0x9717, VR::FD, VM::M1, "Start Cardiac Trigger Count Threshold" },
+{ 0x0022, 0x1135, VR::SQ, VM::M1, "Source of Refractive Error Data Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0340[] = {
+{ 0x0022, 0x1132, VR::SQ, VM::M1, "Source of Lens Thickness Data Code Sequence" },
+{ 0x0040, 0x4015, VR::SQ, VM::M1, "Resulting General Purpose Performed Procedure Steps Sequence" },
+{ 0x300A, 0x0198, VR::SH, VM::M1, "Fixation Device Position" },
+{ 0x4010, 0x1004, VR::FL, VM::M3, "Threat ROI Base" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0341[] = {
+{ 0x0014, 0x4040, VR::SQ, VM::M1, "Pre-Amplifier Settings Sequence" },
+{ 0x0018, 0x9301, VR::SQ, VM::M1, "CT Acquisition Type Sequence" },
+{ 0x0022, 0x1133, VR::SQ, VM::M1, "Source of Anterior Chamber Depth Data Code Sequence" },
+{ 0x0040, 0x0500, VR::SQ, VM::M1, "Scheduled Specimen Sequence" },
+{ 0x0400, 0x0550, VR::SQ, VM::M1, "Modified Attributes Sequence" },
+{ 0x300A, 0x0199, VR::FL, VM::M1, "Fixation Device Pitch Angle" },
+{ 0x4010, 0x1005, VR::FL, VM::M3, "Threat ROI Extents" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0342[] = {
+{ 0x0014, 0x5002, VR::IS, VM::M1, "LINAC Energy" },
+{ 0x0018, 0x9302, VR::CS, VM::M1, "Acquisition Type" },
+{ 0x0022, 0x1130, VR::FL, VM::M1, "Lens Thickness" },
+{ 0x300A, 0x019A, VR::FL, VM::M1, "Fixation Device Roll Angle" },
+{ 0x4010, 0x1006, VR::OB, VM::M1, "Threat ROI Bitmap" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0343[] = {
+{ 0x0010, 0x21C0, VR::US, VM::M1, "Pregnancy Status" },
+{ 0x0018, 0x9303, VR::FD, VM::M1, "Tube Angle" },
+{ 0x0022, 0x1131, VR::FL, VM::M1, "Anterior Chamber Depth" },
+{ 0x0040, 0x4016, VR::SQ, VM::M1, "Referenced General Purpose Scheduled Procedure Step Sequence" },
+{ 0x4010, 0x1007, VR::SH, VM::M1, "Route Segment ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0344[] = {
+{ 0x0018, 0x5000, VR::SH, VM::M1TN, "Output Power" },
+{ 0x0040, 0x4019, VR::SQ, VM::M1, "Performed Workitem Code Sequence" },
+{ 0x300A, 0x0194, VR::SH, VM::M1, "Fixation Device Label" },
+{ 0x4010, 0x1008, VR::CS, VM::M1, "Gantry Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0345[] = {
+{ 0x0008, 0x1115, VR::SQ, VM::M1, "Referenced Series Sequence" },
+{ 0x0040, 0x4018, VR::SQ, VM::M1, "Scheduled Workitem Code Sequence" },
+{ 0x4008, 0x0050, VR::SQ, VM::M1, "Referenced Interpretation Sequence" },
+{ 0x4010, 0x1009, VR::CS, VM::M1, "OOI Owner Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0346[] = {
+{ 0x300A, 0x0196, VR::ST, VM::M1, "Fixation Device Description" },
+{ 0x4010, 0x100A, VR::SQ, VM::M1, "Route Segment Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0347[] = {
+{ 0x0068, 0x64A0, VR::FD, VM::M2, "Range of Freedom" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0348[] = {
+{ 0x0008, 0x1110, VR::SQ, VM::M1, "Referenced Study Sequence" },
+{ 0x0018, 0x1100, VR::DS, VM::M1, "Reconstruction Diameter" },
+{ 0x0018, 0x1510, VR::DS, VM::M1, "Positioner Primary Angle" },
+{ 0x0018, 0x9308, VR::SQ, VM::M1, "CT Table Dynamics Sequence" },
+{ 0x0018, 0x9718, VR::FD, VM::M1, "Start Respiratory Trigger Count Threshold" },
+{ 0x0048, 0x0111, VR::DS, VM::M1, "Condenser Lens Power" },
+{ 0x300A, 0x0190, VR::SQ, VM::M1, "Fixation Device Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0349[] = {
+{ 0x0008, 0x1111, VR::SQ, VM::M1, "Referenced Performed Procedure Step Sequence" },
+{ 0x0018, 0x1511, VR::DS, VM::M1, "Positioner Secondary Angle" },
+{ 0x0018, 0x9309, VR::FD, VM::M1, "Table Speed" },
+{ 0x0018, 0x9719, VR::FD, VM::M1, "Termination Counts Threshold" },
+{ 0x0048, 0x0110, VR::SQ, VM::M1, "Specimen Reference Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0350[] = {
+{ 0x0048, 0x0113, VR::DS, VM::M1, "Objective Lens Numerical Aperture" },
+{ 0x300A, 0x0192, VR::CS, VM::M1, "Fixation Device Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0351[] = {
+{ 0x0040, 0x050A, VR::LO, VM::M1, "Specimen Accession Number" },
+{ 0x0040, 0xA390, VR::SQ, VM::M1, "HL7 Structured Document Reference Sequence" },
+{ 0x0048, 0x0112, VR::DS, VM::M1, "Objective Lens Power" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0352[] = {
+{ 0x0018, 0x9334, VR::CS, VM::M1, "Fluoroscopy Flag" },
+{ 0x0018, 0x9724, VR::FD, VM::M1, "Termination Respiratory Trigger Count Threshold" },
+{ 0x0020, 0x5000, VR::AT, VM::M1TN, "Original Image Identification" },
+{ 0x0020, 0x930C, VR::CS, VM::M1, "Patient Frame of Reference Source" },
+{ 0x0040, 0x4021, VR::SQ, VM::M1, "Input Information Sequence" },
+{ 0x0046, 0x0123, VR::SQ, VM::M1, "Visual Acuity Left Eye Sequence" },
+{ 0x0400, 0x0565, VR::CS, VM::M1, "Reason for the Attribute Modification" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0353[] = {
+{ 0x0014, 0x4074, VR::SH, VM::M1, "Procedure Version" },
+{ 0x0018, 0x9335, VR::FD, VM::M1, "Distance Source to Data Collection Center" },
+{ 0x0018, 0x9725, VR::CS, VM::M1, "Detector Geometry" },
+{ 0x0020, 0x930D, VR::FD, VM::M1, "Temporal Position Time Offset" },
+{ 0x0040, 0x4020, VR::CS, VM::M1, "Input Availability Flag" },
+{ 0x0046, 0x0122, VR::SQ, VM::M1, "Visual Acuity Right Eye Sequence" },
+{ 0x0400, 0x0564, VR::LO, VM::M1, "Source of Previous Values" },
+{ 0x4010, 0x1031, VR::CS, VM::M1, "Alarm Decision" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0354[] = {
+{ 0x0018, 0x9726, VR::FD, VM::M1, "Transverse Detector Separation" },
+{ 0x0020, 0x5002, VR::LO, VM::M1TN, "Original Image Identification Nomenclature" },
+{ 0x0020, 0x930E, VR::SQ, VM::M1, "Plane Position (Volume) Sequence" },
+{ 0x0040, 0x4023, VR::UI, VM::M1, "Referenced General Purpose Scheduled Procedure Step Transaction UID" },
+{ 0x0046, 0x0121, VR::SQ, VM::M1, "Visual Acuity Type Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0355[] = {
+{ 0x0014, 0x4076, VR::DA, VM::M1, "Procedure Creation Date" },
+{ 0x0018, 0x9337, VR::US, VM::M1, "Contrast/Bolus Agent Number" },
+{ 0x0018, 0x9727, VR::FD, VM::M1, "Axial Detector Dimension" },
+{ 0x0020, 0x930F, VR::SQ, VM::M1, "Plane Orientation (Volume) Sequence" },
+{ 0x0040, 0x4022, VR::SQ, VM::M1, "Relevant Information Sequence" },
+{ 0x4010, 0x1033, VR::US, VM::M1, "Number of Total Objects" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0356[] = {
+{ 0x0018, 0x1138, VR::DS, VM::M1, "Table Angle" },
+{ 0x0018, 0x9330, VR::FD, VM::M1, "X-Ray Tube Current in mA" },
+{ 0x0018, 0x9720, VR::FD, VM::M1, "Termination Density Threshold" },
+{ 0x0020, 0x9308, VR::FD, VM::M3, "Apex Position" },
+{ 0x0040, 0x4025, VR::SQ, VM::M1, "Scheduled Station Name Code Sequence" },
+{ 0x0400, 0x0561, VR::SQ, VM::M1, "Original Attributes Sequence" },
+{ 0x300A, 0x01A8, VR::SH, VM::M1, "Shielding Device Position" },
+{ 0x4010, 0x1034, VR::US, VM::M1, "Number of Alarm Objects" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0357[] = {
+{ 0x0014, 0x4070, VR::SQ, VM::M1, "Calibration Settings Sequence" },
+{ 0x0018, 0x9721, VR::FD, VM::M1, "Termination Relative Density Threshold" },
+{ 0x0020, 0x9309, VR::FD, VM::M16, "Volume to Transducer Mapping Matrix" },
+{ 0x0022, 0x1103, VR::SQ, VM::M1, "Refractive Error Before Refractive Surgery Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0358[] = {
+{ 0x0018, 0x113A, VR::CS, VM::M1, "Table Type" },
+{ 0x0018, 0x9332, VR::FD, VM::M1, "Exposure in mAs" },
+{ 0x0018, 0x9722, VR::FD, VM::M1, "Termination Time Threshold" },
+{ 0x0020, 0x930A, VR::FD, VM::M16, "Volume to Table Mapping Matrix" },
+{ 0x0022, 0x1100, VR::SQ, VM::M1, "Referenced Ophthalmic Axial Measurements Sequence" },
+{ 0x0040, 0x4027, VR::SQ, VM::M1, "Scheduled Station Geographic Location Code Sequence" },
+{ 0x0046, 0x0125, VR::CS, VM::M1, "Viewing Distance Type" },
+{ 0x0400, 0x0563, VR::LO, VM::M1, "Modifying System" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0359[] = {
+{ 0x0010, 0x21F0, VR::LO, VM::M1, "Patient's Religious Preference" },
+{ 0x0014, 0x4072, VR::ST, VM::M1, "Calibration Procedure" },
+{ 0x0018, 0x9333, VR::CS, VM::M1, "Constant Volume Flag" },
+{ 0x0018, 0x9723, VR::FD, VM::M1, "Termination Cardiac Trigger Count Threshold" },
+{ 0x0022, 0x1101, VR::SQ, VM::M1, "Ophthalmic Axial Length Measurements Segment Name Code Sequence" },
+{ 0x0040, 0x4026, VR::SQ, VM::M1, "Scheduled Station Class Code Sequence" },
+{ 0x0046, 0x0124, VR::SQ, VM::M1, "Visual Acuity Both Eyes Open Sequence" },
+{ 0x0072, 0x0500, VR::CS, VM::M1, "Blending Operation Type" },
+{ 0x0400, 0x0562, VR::DT, VM::M1, "Attribute Modification DateTime" },
+{ 0x4010, 0x1037, VR::SQ, VM::M1, "PTO Representation Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0360[] = {
+{ 0x0018, 0x1134, VR::CS, VM::M1, "Table Motion" },
+{ 0x0018, 0x5030, VR::DS, VM::M1, "Dynamic Range" },
+{ 0x0028, 0x1104, VR::US, VM::M3, "Alpha Palette Color Lookup Table Descriptor" },
+{ 0x0028, 0x5000, VR::SQ, VM::M1, "Bi-Plane Acquisition Sequence" },
+{ 0x0040, 0x4029, VR::SQ, VM::M1, "Performed Station Class Code Sequence" },
+{ 0x300A, 0x01A4, VR::SH, VM::M1, "Shielding Device Label" },
+{ 0x4010, 0x1038, VR::SQ, VM::M1, "ATD Assessment Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0361[] = {
+{ 0x0008, 0x1125, VR::SQ, VM::M1, "Referenced Visit Sequence" },
+{ 0x0014, 0x407C, VR::TM, VM::M1TN, "Calibration Time" },
+{ 0x0018, 0x1135, VR::DS, VM::M1TN, "Table Vertical Increment" },
+{ 0x0040, 0x4028, VR::SQ, VM::M1, "Performed Station Name Code Sequence" },
+{ 0x4010, 0x1039, VR::CS, VM::M1, "TIP Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0362[] = {
+{ 0x0018, 0x1136, VR::DS, VM::M1TN, "Table Lateral Increment" },
+{ 0x300A, 0x01A6, VR::ST, VM::M1, "Shielding Device Description" },
+{ 0x4010, 0x103A, VR::CS, VM::M1, "DICOS Version" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0363[] = {
+{ 0x0014, 0x407E, VR::DA, VM::M1TN, "Calibration Date" },
+{ 0x0018, 0x1137, VR::DS, VM::M1TN, "Table Longitudinal Increment" },
+{ 0x0020, 0x9307, VR::CS, VM::M1, "Ultrasound Acquisition Geometry" },
+{ 0x0068, 0x6490, VR::FD, VM::M3, "3D Degree of Freedom Axis" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0364[] = {
+{ 0x0008, 0x1120, VR::SQ, VM::M1, "Referenced Patient Sequence" },
+{ 0x0018, 0x1130, VR::DS, VM::M1, "Table Height" },
+{ 0x0018, 0x1520, VR::DS, VM::M1TN, "Positioner Primary Angle Increment" },
+{ 0x0018, 0x9338, VR::SQ, VM::M1, "Contrast/Bolus Ingredient Code Sequence" },
+{ 0x0028, 0x1100, VR::XS, VM::M3, "Gray Lookup Table Descriptor" },
+{ 0x300A, 0x01A0, VR::SQ, VM::M1, "Shielding Device Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0365[] = {
+{ 0x0014, 0x4078, VR::DA, VM::M1, "Procedure Expiration Date" },
+{ 0x0018, 0x1131, VR::DS, VM::M1, "Table Traverse" },
+{ 0x0018, 0x1521, VR::DS, VM::M1TN, "Positioner Secondary Angle Increment" },
+{ 0x0018, 0x9729, VR::US, VM::M1, "Radiopharmaceutical Agent Number" },
+{ 0x0020, 0x9301, VR::FD, VM::M3, "Image Position (Volume)" },
+{ 0x0028, 0x1101, VR::XS, VM::M3, "Red Palette Color Lookup Table Descriptor" },
+{ 0x0048, 0x0120, VR::SQ, VM::M1, "Palette Color Lookup Table Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0366[] = {
+{ 0x0020, 0x9302, VR::FD, VM::M6, "Image Orientation (Volume)" },
+{ 0x0028, 0x1102, VR::XS, VM::M3, "Green Palette Color Lookup Table Descriptor" },
+{ 0x300A, 0x01A2, VR::CS, VM::M1, "Shielding Device Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0367[] = {
+{ 0x0014, 0x407A, VR::DA, VM::M1, "Procedure Last Modified Date" },
+{ 0x0028, 0x1103, VR::XS, VM::M3, "Blue Palette Color Lookup Table Descriptor" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0368[] = {
+{ 0x0018, 0x5028, VR::DS, VM::M1, "Soft Tissue-focus Thermal Index" },
+{ 0x0018, 0x9324, VR::FD, VM::M1, "Estimated Dose Saving" },
+{ 0x0018, 0x9734, VR::SQ, VM::M1, "PET Table Dynamics Sequence" },
+{ 0x0040, 0x4031, VR::SQ, VM::M1, "Requested Subsequent Workitem Code Sequence" },
+{ 0x300A, 0x01BC, VR::DS, VM::M1, "Setup Device Parameter" },
+{ 0x4010, 0x1020, VR::CS, VM::M1, "Route Segment Location ID Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0369[] = {
+{ 0x0014, 0x4064, VR::DS, VM::M1, "Velocity of Sound" },
+{ 0x0018, 0x5029, VR::DS, VM::M1, "Soft Tissue-surface Thermal Index" },
+{ 0x0018, 0x9325, VR::SQ, VM::M1, "CT X-Ray Details Sequence" },
+{ 0x0018, 0x9735, VR::SQ, VM::M1, "PET Position Sequence" },
+{ 0x0040, 0x4030, VR::SQ, VM::M1, "Performed Station Geographic Location Code Sequence" },
+{ 0x0072, 0x0106, VR::US, VM::M1, "Number of Horizontal Pixels" },
+{ 0x0072, 0x0516, VR::CS, VM::M1, "Reformatting Operation Initial View Direction" },
+{ 0x4010, 0x1021, VR::CS, VM::M1TN, "Abort Reason" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0370[] = {
+{ 0x0018, 0x9326, VR::SQ, VM::M1, "CT Position Sequence" },
+{ 0x0018, 0x9736, VR::SQ, VM::M1, "PET Frame Correction Factors Sequence" },
+{ 0x0040, 0x4033, VR::SQ, VM::M1, "Output Information Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0371[] = {
+{ 0x0018, 0x9327, VR::FD, VM::M1, "Table Position" },
+{ 0x0018, 0x9737, VR::SQ, VM::M1, "Radiopharmaceutical Usage Sequence" },
+{ 0x0040, 0x4032, VR::SQ, VM::M1, "Non-DICOM Output Code Sequence" },
+{ 0x0072, 0x0104, VR::US, VM::M1, "Number of Vertical Pixels" },
+{ 0x0072, 0x0514, VR::FD, VM::M1, "Reformatting Interval" },
+{ 0x4010, 0x1023, VR::FL, VM::M1, "Volume of PTO" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0372[] = {
+{ 0x0018, 0x9320, VR::SH, VM::M1, "Image Filter" },
+{ 0x0040, 0x4035, VR::SQ, VM::M1, "Actual Human Performers Sequence" },
+{ 0x0046, 0x0137, VR::FD, VM::M1, "Decimal Visual Acuity" },
+{ 0x0070, 0x0101, VR::DS, VM::M2, "Presentation Pixel Spacing" },
+{ 0x300A, 0x01B8, VR::SH, VM::M1, "Setup Device Label" },
+{ 0x4010, 0x1024, VR::CS, VM::M1, "Abort Flag" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0373[] = {
+{ 0x0014, 0x4060, VR::SQ, VM::M1, "Gate Settings Sequence" },
+{ 0x0018, 0x9321, VR::SQ, VM::M1, "CT Exposure Sequence" },
+{ 0x0040, 0x0520, VR::SQ, VM::M1, "Container Component Sequence" },
+{ 0x0040, 0x4034, VR::SQ, VM::M1, "Scheduled Human Performers Sequence" },
+{ 0x0070, 0x0100, VR::CS, VM::M1, "Presentation Size Mode" },
+{ 0x0072, 0x0102, VR::SQ, VM::M1, "Nominal Screen Definition Sequence" },
+{ 0x0072, 0x0512, VR::FD, VM::M1, "Reformatting Thickness" },
+{ 0x4010, 0x1025, VR::DT, VM::M1, "Route Segment Start Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0374[] = {
+{ 0x0008, 0x113A, VR::SQ, VM::M1, "Referenced Waveform Sequence" },
+{ 0x0018, 0x9322, VR::FD, VM::M2, "Reconstruction Pixel Spacing" },
+{ 0x0018, 0x9732, VR::SQ, VM::M1, "PET Frame Acquisition Sequence" },
+{ 0x0040, 0x4037, VR::PN, VM::M1, "Human Performer's Name" },
+{ 0x0046, 0x0135, VR::SS, VM::M2, "Visual Acuity Modifiers" },
+{ 0x0070, 0x0103, VR::FL, VM::M1, "Presentation Pixel Magnification Ratio" },
+{ 0x300A, 0x01BA, VR::ST, VM::M1, "Setup Device Description" },
+{ 0x4010, 0x1026, VR::DT, VM::M1, "Route Segment End Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0375[] = {
+{ 0x0014, 0x4062, VR::DS, VM::M1, "Gate Threshold" },
+{ 0x0018, 0x9323, VR::CS, VM::M1, "Exposure Modulation Type" },
+{ 0x0018, 0x9733, VR::SQ, VM::M1, "PET Detector Motion Details Sequence" },
+{ 0x0040, 0x4036, VR::LO, VM::M1, "Human Performer's Organization" },
+{ 0x0070, 0x0102, VR::IS, VM::M2, "Presentation Pixel Aspect Ratio" },
+{ 0x0072, 0x0100, VR::US, VM::M1, "Number of Screens" },
+{ 0x0072, 0x0510, VR::CS, VM::M1, "Reformatting Operation Type" },
+{ 0x2130, 0x00C0, VR::SQ, VM::M1, "Original Image Sequence" },
+{ 0x4010, 0x1027, VR::CS, VM::M1, "TDR Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0376[] = {
+{ 0x0008, 0x1134, VR::SQ, VM::M1, "Referenced Stereometric Instance Sequence" },
+{ 0x0018, 0x5020, VR::LO, VM::M1, "Processing Function" },
+{ 0x300A, 0x01B4, VR::SQ, VM::M1, "Setup Device Sequence" },
+{ 0x4010, 0x1028, VR::CS, VM::M1, "International Route Segment" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0377[] = {
+{ 0x0018, 0x5021, VR::LO, VM::M1, "Postprocessing Function" },
+{ 0x0072, 0x010E, VR::US, VM::M1, "Application Maximum Repaint Time" },
+{ 0x4010, 0x1029, VR::LO, VM::M1TN, "Threat Detection Algorithm and Version" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0378[] = {
+{ 0x0018, 0x5022, VR::DS, VM::M1, "Mechanical Index" },
+{ 0x0046, 0x0139, VR::LO, VM::M1, "Optotype Detailed Definition" },
+{ 0x300A, 0x01B6, VR::CS, VM::M1, "Setup Device Type" },
+{ 0x4010, 0x102A, VR::SH, VM::M1, "Assigned Location" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0379[] = {
+{ 0x0072, 0x010C, VR::US, VM::M1, "Screen Minimum Color Bit Depth" },
+{ 0x4010, 0x102B, VR::DT, VM::M1, "Alarm Decision Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0380[] = {
+{ 0x0008, 0x1130, VR::SQ, VM::M1, "Referenced Overlay Sequence" },
+{ 0x0018, 0x1120, VR::DS, VM::M1, "Gantry/Detector Tilt" },
+{ 0x0018, 0x1530, VR::DS, VM::M1, "Detector Primary Angle" },
+{ 0x0018, 0x5024, VR::DS, VM::M1, "Bone Thermal Index" },
+{ 0x0018, 0x9328, VR::FD, VM::M1, "Exposure Time in ms" },
+{ 0x0018, 0x9738, VR::CS, VM::M1, "Attenuation Correction Source" },
+{ 0x0020, 0x9310, VR::SQ, VM::M1, "Temporal Position Sequence" },
+{ 0x300A, 0x01B0, VR::CS, VM::M1, "Setup Technique" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0381[] = {
+{ 0x0018, 0x1121, VR::DS, VM::M1, "Gantry/Detector Slew" },
+{ 0x0018, 0x1531, VR::DS, VM::M1, "Detector Secondary Angle" },
+{ 0x0018, 0x9329, VR::SQ, VM::M1, "CT Image Frame Type Sequence" },
+{ 0x0018, 0x9739, VR::US, VM::M1, "Number of Iterations" },
+{ 0x0020, 0x9311, VR::CS, VM::M1, "Dimension Organization Type" },
+{ 0x0028, 0x1111, VR::XS, VM::M4, "Large Red Palette Color Lookup Table Descriptor" },
+{ 0x0072, 0x010A, VR::US, VM::M1, "Screen Minimum Grayscale Bit Depth" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0382[] = {
+{ 0x0018, 0x5026, VR::DS, VM::M1, "Cranial Thermal Index" },
+{ 0x0020, 0x9312, VR::UI, VM::M1, "Volume Frame of Reference UID" },
+{ 0x0028, 0x1112, VR::XS, VM::M4, "Large Green Palette Color Lookup Table Descriptor" },
+{ 0x300A, 0x01B2, VR::ST, VM::M1, "Setup Technique Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0383[] = {
+{ 0x0018, 0x5027, VR::DS, VM::M1, "Soft Tissue Thermal Index" },
+{ 0x0020, 0x9313, VR::UI, VM::M1, "Table Frame of Reference UID" },
+{ 0x0028, 0x1113, VR::XS, VM::M4, "Large Blue Palette Color Lookup Table Descriptor" },
+{ 0x0072, 0x0108, VR::FD, VM::M4, "Display Environment Spatial Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0384[] = {
+{ 0x0018, 0x6018, VR::UL, VM::M1, "Region Location Min X0" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0385[] = {
+{ 0x0018, 0x7058, VR::FL, VM::M1TN, "Filter Beam Path Length Maximum" },
+{ 0x300A, 0x014E, VR::FL, VM::M1, "Gantry Pitch Angle Tolerance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0386[] = {
+{ 0x0018, 0x601A, VR::UL, VM::M1, "Region Location Min Y0" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0387[] = {
+{ 0x300A, 0x014C, VR::CS, VM::M1, "Gantry Pitch Rotation Direction" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0388[] = {
+{ 0x0010, 0x2110, VR::LO, VM::M1TN, "Allergies" },
+{ 0x0018, 0x601C, VR::UL, VM::M1, "Region Location Max X1" },
+{ 0x2000, 0x0510, VR::SQ, VM::M1, "Referenced Stored Print  Sequence" },
+{ 0x2010, 0x0110, VR::CS, VM::M1, "Empty Image Density" },
+{ 0x2010, 0x0500, VR::SQ, VM::M1, "Referenced Film Session Sequence" },
+{ 0x2110, 0x0010, VR::CS, VM::M1, "Printer Status" },
+{ 0x2130, 0x0030, VR::SQ, VM::M1, "Film Box Content Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0389[] = {
+{ 0x300A, 0x014A, VR::FL, VM::M1, "Gantry Pitch Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0390[] = {
+{ 0x0018, 0x601E, VR::UL, VM::M1, "Region Location Max Y1" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0391[] = {
+{ 0x300A, 0x0148, VR::FL, VM::M1, "Head Fixation Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0392[] = {
+{ 0x0028, 0x6020, VR::US, VM::M1TN, "Frame Numbers of Interest (FOI)" },
+{ 0x0068, 0x6470, VR::SQ, VM::M1, "2D Degree of Freedom Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0393[] = {
+{ 0x0018, 0x6011, VR::SQ, VM::M1, "Sequence of Ultrasound Regions" },
+{ 0x0018, 0x7050, VR::CS, VM::M1TN, "Filter Material" },
+{ 0x300A, 0x0146, VR::CS, VM::M1, "Table Top Roll Rotation Direction" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0394[] = {
+{ 0x0018, 0x6012, VR::US, VM::M1, "Region Spatial Format" },
+{ 0x0028, 0x6022, VR::LO, VM::M1TN, "Frame of Interest Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0395[] = {
+{ 0x0018, 0x7052, VR::DS, VM::M1TN, "Filter Thickness Minimum" },
+{ 0x0028, 0x6023, VR::CS, VM::M1TN, "Frame of Interest Type" },
+{ 0x300A, 0x0144, VR::FL, VM::M1, "Table Top Roll Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0396[] = {
+{ 0x0018, 0x6014, VR::US, VM::M1, "Region Data Type" },
+{ 0x0040, 0xA340, VR::SQ, VM::M1, "Procedure Context Sequence (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0397[] = {
+{ 0x0018, 0x7054, VR::DS, VM::M1TN, "Filter Thickness Maximum" },
+{ 0x3008, 0x0140, VR::SQ, VM::M1, "Recorded Source Applicator Sequence" },
+{ 0x300A, 0x0142, VR::CS, VM::M1, "Table Top Pitch Rotation Direction" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0398[] = {
+{ 0x0018, 0x6016, VR::UL, VM::M1, "Region Flags" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0399[] = {
+{ 0x0018, 0x7056, VR::FL, VM::M1TN, "Filter Beam Path Length Minimum" },
+{ 0x3008, 0x0142, VR::IS, VM::M1, "Referenced Source Applicator Number" },
+{ 0x300A, 0x0140, VR::FL, VM::M1, "Table Top Pitch Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0400[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0401[] = {
+{ 0x0018, 0x7048, VR::DS, VM::M1, "Grid Period" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0402[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0403[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0404[] = {
+{ 0x0040, 0xA358, VR::SQ, VM::M1, "Verbal Source Identifier Code Sequence (Trial)" },
+{ 0x2000, 0x0500, VR::SQ, VM::M1, "Referenced Film Box Sequence" },
+{ 0x2010, 0x0100, VR::CS, VM::M1, "Border Density" },
+{ 0x2010, 0x0510, VR::SQ, VM::M1, "Referenced Image Box Sequence" },
+{ 0x2020, 0x0130, VR::SQ, VM::M1, "Referenced Image Overlay Box Sequence" },
+{ 0x2100, 0x0010, VR::SH, VM::M1, "Print Job ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0405[] = {
+{ 0x0018, 0x704C, VR::DS, VM::M1, "Grid Focal Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0406[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0407[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0408[] = {
+{ 0x0018, 0x6000, VR::DS, VM::M1, "Sensitivity" },
+{ 0x0018, 0x7041, VR::LT, VM::M1, "Grid Spacing Material" },
+{ 0x0028, 0x6030, VR::US, VM::M1TN, "Mask Pointer(s)" },
+{ 0x0040, 0xA354, VR::LO, VM::M1, "Telephone Number (Trial)" },
+{ 0x0040, 0xA744, VR::SQ, VM::M1, "Language Code Sequence (Trial)" },
+{ 0x0068, 0x6460, VR::FD, VM::M4, "2D Mating Axes" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0409[] = {
+{ 0x0018, 0x7040, VR::LT, VM::M1, "Grid Absorbing Material" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0410[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0411[] = {
+{ 0x0018, 0x7042, VR::DS, VM::M1, "Grid Thickness" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0412[] = {
+{ 0x0008, 0x2110, VR::CS, VM::M1, "Lossy Image Compression (Retired)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0413[] = {
+{ 0x0008, 0x2111, VR::ST, VM::M1, "Derivation Description" },
+{ 0x0018, 0x7044, VR::DS, VM::M1, "Grid Pitch" },
+{ 0x3008, 0x0150, VR::SQ, VM::M1, "Recorded Channel Shield Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0414[] = {
+{ 0x0008, 0x2112, VR::SQ, VM::M1, "Source Image Sequence" },
+{ 0x0040, 0x09F8, VR::SQ, VM::M1, "Vital Stain Code Sequence (Trial)" },
+{ 0x0040, 0xA352, VR::PN, VM::M1, "Verbal Source (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0415[] = {
+{ 0x0018, 0x7046, VR::IS, VM::M2, "Grid Aspect Ratio" },
+{ 0x0040, 0xA353, VR::ST, VM::M1, "Address (Trial)" },
+{ 0x3008, 0x0152, VR::IS, VM::M1, "Referenced Channel Shield Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0416[] = {
+{ 0x0018, 0x6038, VR::UL, VM::M1, "Doppler Sample Volume X Position (Retired)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0417[] = {
+{ 0x0018, 0x6039, VR::SL, VM::M1, "Doppler Sample Volume X Position" },
+{ 0x2130, 0x0015, VR::SQ, VM::M1, "Printer Characteristics Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0418[] = {
+{ 0x0018, 0x603A, VR::UL, VM::M1, "Doppler Sample Volume Y Position (Retired)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0419[] = {
+{ 0x0018, 0x603B, VR::SL, VM::M1, "Doppler Sample Volume Y Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0420[] = {
+{ 0x0008, 0x2128, VR::IS, VM::M1, "View Number" },
+{ 0x0018, 0x603C, VR::UL, VM::M1, "TM-Line Position X0 (Retired)" },
+{ 0x2010, 0x0130, VR::US, VM::M1, "Max Density" },
+{ 0x2010, 0x0520, VR::SQ, VM::M1, "Referenced Basic Annotation Box Sequence" },
+{ 0x2100, 0x0020, VR::CS, VM::M1, "Execution Status" },
+{ 0x2110, 0x0030, VR::LO, VM::M1, "Printer Name" },
+{ 0x2130, 0x0010, VR::SQ, VM::M1, "Print Management Capabilities Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0421[] = {
+{ 0x0008, 0x2129, VR::IS, VM::M1, "Number of Event Timers" },
+{ 0x0018, 0x603D, VR::SL, VM::M1, "TM-Line Position X0" },
+{ 0x3008, 0x0168, VR::TM, VM::M1, "Safe Position Return Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0422[] = {
+{ 0x0008, 0x212A, VR::IS, VM::M1, "Number of Views in Stage" },
+{ 0x0018, 0x603E, VR::UL, VM::M1, "TM-Line Position Y0 (Retired)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0423[] = {
+{ 0x0018, 0x603F, VR::SL, VM::M1, "TM-Line Position Y0" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0424[] = {
+{ 0x0008, 0x2124, VR::IS, VM::M1, "Number of Stages" },
+{ 0x0018, 0x6030, VR::UL, VM::M1, "Transducer Frequency" },
+{ 0x0068, 0x6450, VR::FD, VM::M2, "2D Mating Point" },
+{ 0x0088, 0x0906, VR::ST, VM::M1, "Topic Subject" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0425[] = {
+{ 0x0018, 0x6031, VR::CS, VM::M1, "Transducer Type" },
+{ 0x3008, 0x0164, VR::TM, VM::M1, "Safe Position Exit Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0426[] = {
+{ 0x0018, 0x6032, VR::UL, VM::M1, "Pulse Repetition Frequency" },
+{ 0x0088, 0x0904, VR::LO, VM::M1, "Topic Title" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0427[] = {
+{ 0x0008, 0x2127, VR::SH, VM::M1, "View Name" },
+{ 0x3008, 0x0166, VR::DA, VM::M1, "Safe Position Return Date" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0428[] = {
+{ 0x0008, 0x2120, VR::SH, VM::M1, "Stage Name" },
+{ 0x0018, 0x6034, VR::FD, VM::M1, "Doppler Correction Angle" },
+{ 0x0040, 0xA360, VR::SQ, VM::M1, "Predecessor Documents Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0429[] = {
+{ 0x3008, 0x0160, VR::SQ, VM::M1, "Brachy Control Point Delivered Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0430[] = {
+{ 0x0008, 0x2122, VR::IS, VM::M1, "Stage Number" },
+{ 0x0018, 0x6036, VR::FD, VM::M1, "Steering Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0431[] = {
+{ 0x3008, 0x0162, VR::DA, VM::M1, "Safe Position Exit Date" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0432[] = {
+{ 0x0018, 0x6028, VR::FD, VM::M1, "Reference Pixel Physical Value X" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0433[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0434[] = {
+{ 0x0018, 0x602A, VR::FD, VM::M1, "Reference Pixel Physical Value Y" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0435[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0436[] = {
+{ 0x0018, 0x602C, VR::FD, VM::M1, "Physical Delta X" },
+{ 0x2010, 0x0120, VR::US, VM::M1, "Min Density" },
+{ 0x2020, 0x0110, VR::SQ, VM::M1, "Basic Grayscale Image Sequence" },
+{ 0x2100, 0x0030, VR::CS, VM::M1, "Execution Status Info" },
+{ 0x2110, 0x0020, VR::CS, VM::M1, "Printer Status Info" },
+{ 0x2120, 0x0010, VR::CS, VM::M1, "Queue Status" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0437[] = {
+{ 0x2020, 0x0111, VR::SQ, VM::M1, "Basic Color Image Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0438[] = {
+{ 0x0018, 0x602E, VR::FD, VM::M1, "Physical Delta Y" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0439[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0440[] = {
+{ 0x0008, 0x2134, VR::FD, VM::M1, "Event Time Offset" },
+{ 0x0018, 0x6020, VR::SL, VM::M1, "Reference Pixel X0" },
+{ 0x0028, 0x2114, VR::CS, VM::M1TN, "Lossy Image Compression Method" },
+{ 0x0028, 0x6010, VR::US, VM::M1, "Representative Frame Number" },
+{ 0x0068, 0x6440, VR::US, VM::M1, "Referenced HPGL Document ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0441[] = {
+{ 0x0008, 0x2135, VR::SQ, VM::M1, "Event Code Sequence" },
+{ 0x0018, 0x7060, VR::CS, VM::M1, "Exposure Control Mode" },
+{ 0x0040, 0xA375, VR::SQ, VM::M1, "Current Requested Procedure Evidence Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0442[] = {
+{ 0x0018, 0x6022, VR::SL, VM::M1, "Reference Pixel Y0" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0443[] = {
+{ 0x0018, 0x7062, VR::LT, VM::M1, "Exposure Control Mode Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0444[] = {
+{ 0x0008, 0x2130, VR::DS, VM::M1TN, "Event Elapsed Time(s)" },
+{ 0x0018, 0x6024, VR::US, VM::M1, "Physical Units X Direction" },
+{ 0x0018, 0x7065, VR::DS, VM::M1, "Phototimer Setting" },
+{ 0x0028, 0x2110, VR::CS, VM::M1, "Lossy Image Compression" },
+{ 0x0040, 0xA370, VR::SQ, VM::M1, "Referenced Request Sequence" },
+{ 0x0088, 0x0912, VR::LO, VM::M1T32, "Topic Keywords" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0445[] = {
+{ 0x0018, 0x7064, VR::CS, VM::M1, "Exposure Status" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0446[] = {
+{ 0x0008, 0x2132, VR::LO, VM::M1TN, "Event Timer Name(s)" },
+{ 0x0018, 0x6026, VR::US, VM::M1, "Physical Units Y Direction" },
+{ 0x0028, 0x2112, VR::DS, VM::M1TN, "Lossy Image Compression Ratio" },
+{ 0x0040, 0xA372, VR::SQ, VM::M1, "Performed Procedure Code Sequence" },
+{ 0x0088, 0x0130, VR::SH, VM::M1, "Storage Media File-set ID" },
+{ 0x0088, 0x0910, VR::LO, VM::M1, "Topic Author" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0447[] = {
+{ 0x0008, 0x2133, VR::SQ, VM::M1, "Event Timer Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0448[] = {
+{ 0x300A, 0x010E, VR::DS, VM::M1, "Final Cumulative Meterset Weight" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0449[] = {
+{ 0x0010, 0x2154, VR::SH, VM::M1TN, "Patient's Telephone Numbers" },
+{ 0x0018, 0x6058, VR::UL, VM::M1TN, "Table of Pixel Values" },
+{ 0x2010, 0x0154, VR::IS, VM::M1, "Maximum Collated Films" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0450[] = {
+{ 0x0018, 0x701A, VR::DS, VM::M2, "Detector Binning" },
+{ 0x300A, 0x010C, VR::DS, VM::M1, "Cumulative Dose Reference Coefficient" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0451[] = {
+{ 0x0018, 0x605A, VR::FL, VM::M1TN, "Table of Parameter Values" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0452[] = {
+{ 0x300A, 0x010A, VR::LO, VM::M1, "Applicator Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0453[] = {
+{ 0x0010, 0x2150, VR::LO, VM::M1, "Country of Residence" },
+{ 0x2010, 0x0150, VR::ST, VM::M1, "Configuration Information" },
+{ 0x2040, 0x0100, VR::CS, VM::M1, "Threshold Density" },
+{ 0x2050, 0x0500, VR::SQ, VM::M1, "Referenced Presentation  LUT Sequence" },
+{ 0x2100, 0x0040, VR::DA, VM::M1, "Creation Date" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0454[] = {
+{ 0x300A, 0x0108, VR::SH, VM::M1, "Applicator ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0455[] = {
+{ 0x0010, 0x2152, VR::LO, VM::M1, "Region of Residence" },
+{ 0x0040, 0xA30A, VR::DS, VM::M1TN, "Numeric Value" },
+{ 0x2010, 0x0152, VR::LT, VM::M1, "Configuration Information Description" },
+{ 0x300A, 0x0109, VR::CS, VM::M1, "Applicator Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0456[] = {
+{ 0x0018, 0x7010, VR::IS, VM::M1, "Exposures on Detector Since Last Calibration" },
+{ 0x300A, 0x0106, VR::DS, VM::M2T2N, "Block Data" },
+{ 0x300C, 0x0100, VR::IS, VM::M1, "Referenced Range Shifter Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0457[] = {
+{ 0x0008, 0x2144, VR::IS, VM::M1, "Recommended Display Frame Rate" },
+{ 0x0018, 0x6050, VR::UL, VM::M1, "Number of Table Break Points" },
+{ 0x0018, 0x7011, VR::IS, VM::M1, "Exposures on Detector Since Manufactured" },
+{ 0x0068, 0x6430, VR::SQ, VM::M1, "2D Mating Feature Coordinates Sequence" },
+{ 0x3008, 0x0105, VR::LO, VM::M1, "Source Serial Number" },
+{ 0x300A, 0x0107, VR::SQ, VM::M1, "Applicator Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0458[] = {
+{ 0x0018, 0x7012, VR::DS, VM::M1, "Detector Time Since Last Exposure" },
+{ 0x0040, 0xA307, VR::PN, VM::M1, "Current Observer (Trial)" },
+{ 0x300A, 0x0104, VR::IS, VM::M1, "Block Number of Points" },
+{ 0x300C, 0x0102, VR::IS, VM::M1, "Referenced Lateral Spreading Device Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0459[] = {
+{ 0x0018, 0x6052, VR::UL, VM::M1TN, "Table of X Break Points" },
+{ 0x2010, 0x015E, VR::US, VM::M1, "Illumination" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0460[] = {
+{ 0x0018, 0x7014, VR::DS, VM::M1, "Detector Active Time" },
+{ 0x0040, 0xA301, VR::SQ, VM::M1, "Numeric Value Qualifier Code Sequence" },
+{ 0x3008, 0x0100, VR::SQ, VM::M1, "Recorded Source Sequence" },
+{ 0x300A, 0x0102, VR::DS, VM::M1, "Block Transmission" },
+{ 0x300C, 0x0104, VR::IS, VM::M1, "Referenced Range Modulator Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0461[] = {
+{ 0x0018, 0x6054, VR::FD, VM::M1TN, "Table of Y Break Points" },
+{ 0x0040, 0x059A, VR::SQ, VM::M1, "Specimen Type Code Sequence" },
+{ 0x0040, 0xA300, VR::SQ, VM::M1, "Measured Value Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0462[] = {
+{ 0x0008, 0x2143, VR::IS, VM::M1, "Stop Trim" },
+{ 0x0018, 0x1190, VR::DS, VM::M1TN, "Focal Spot(s)" },
+{ 0x0018, 0x7016, VR::DS, VM::M1, "Detector Activation Offset From Exposure" },
+{ 0x300A, 0x0100, VR::DS, VM::M1, "Block Thickness" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0463[] = {
+{ 0x0008, 0x2142, VR::IS, VM::M1, "Start Trim" },
+{ 0x0018, 0x1191, VR::CS, VM::M1, "Anode Target Material" },
+{ 0x0018, 0x6056, VR::UL, VM::M1, "Number of Table Entries" },
+{ 0x0088, 0x0140, VR::UI, VM::M1, "Storage Media File-set UID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0464[] = {
+{ 0x0018, 0x7008, VR::LT, VM::M1, "Detector Mode" },
+{ 0x300A, 0x011E, VR::DS, VM::M1, "Gantry Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0465[] = {
+{ 0x0018, 0x6048, VR::UL, VM::M1, "Pixel Component Range Start" },
+{ 0x300A, 0x011F, VR::CS, VM::M1, "Gantry Rotation Direction" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0466[] = {
+{ 0x0018, 0x700A, VR::SH, VM::M1, "Detector ID" },
+{ 0x300A, 0x011C, VR::DS, VM::M2T2N, "Leaf/Jaw Positions" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0467[] = {
+{ 0x0018, 0x604A, VR::UL, VM::M1, "Pixel Component Range Stop" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0468[] = {
+{ 0x0018, 0x700C, VR::DA, VM::M1, "Date of Last Detector Calibration" },
+{ 0x300A, 0x011A, VR::SQ, VM::M1, "Beam Limiting Device Position Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0469[] = {
+{ 0x0018, 0x604C, VR::US, VM::M1, "Pixel Component Physical Units" },
+{ 0x2010, 0x0140, VR::CS, VM::M1, "Trim" },
+{ 0x2040, 0x0500, VR::SQ, VM::M1, "Referenced Image Box Sequence (Retired)" },
+{ 0x2100, 0x0050, VR::TM, VM::M1, "Creation Time" },
+{ 0x2120, 0x0070, VR::SQ, VM::M1, "Referenced Print Job Sequence" },
+{ 0x2130, 0x0060, VR::SQ, VM::M1, "Image Overlay Box Content Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0470[] = {
+{ 0x0008, 0x1198, VR::SQ, VM::M1, "Failed SOP Sequence" },
+{ 0x0018, 0x700E, VR::TM, VM::M1, "Time of Last Detector Calibration" },
+{ 0x300A, 0x0118, VR::CS, VM::M1, "Wedge Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0471[] = {
+{ 0x0008, 0x1199, VR::SQ, VM::M1, "Referenced SOP Sequence" },
+{ 0x0018, 0x604E, VR::US, VM::M1, "Pixel Component Data Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0472[] = {
+{ 0x0018, 0x3104, VR::IS, VM::M1, "IVUS Pullback Stop Frame Number" },
+{ 0x0018, 0x6041, VR::SL, VM::M1, "TM-Line Position X1" },
+{ 0x0018, 0x7000, VR::CS, VM::M1, "Detector Conditions Nominal Flag" },
+{ 0x300A, 0x0116, VR::SQ, VM::M1, "Wedge Position Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0473[] = {
+{ 0x0008, 0x1197, VR::US, VM::M1, "Failure Reason" },
+{ 0x0018, 0x3105, VR::IS, VM::M1TN, "Lesion Number" },
+{ 0x0018, 0x6040, VR::UL, VM::M1, "TM-Line Position X1 (Retired)" },
+{ 0x0018, 0x7001, VR::DS, VM::M1, "Detector Temperature" },
+{ 0x0068, 0x6420, VR::CS, VM::M1, "Degree of Freedom Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0474[] = {
+{ 0x0018, 0x1184, VR::DS, VM::M1T2, "Y Focus Center" },
+{ 0x0018, 0x6043, VR::SL, VM::M1, "TM-Line Position Y1" },
+{ 0x3008, 0x0116, VR::CS, VM::M1, "Application Setup Check" },
+{ 0x300A, 0x0114, VR::DS, VM::M1, "Nominal Beam Energy" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0475[] = {
+{ 0x0008, 0x1195, VR::UI, VM::M1, "Transaction UID" },
+{ 0x0018, 0x6042, VR::UL, VM::M1, "TM-Line Position Y1 (Retired)" },
+{ 0x300A, 0x0115, VR::DS, VM::M1, "Dose Rate Set" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0476[] = {
+{ 0x0018, 0x1182, VR::IS, VM::M1T2, "Focal Distance" },
+{ 0x0018, 0x3100, VR::CS, VM::M1, "IVUS Acquisition" },
+{ 0x0018, 0x7004, VR::CS, VM::M1, "Detector Type" },
+{ 0x3008, 0x0110, VR::SQ, VM::M1, "Treatment Session Application Setup Sequence" },
+{ 0x300A, 0x0112, VR::IS, VM::M1, "Control Point Index" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0477[] = {
+{ 0x0018, 0x1183, VR::DS, VM::M1T2, "X Focus Center" },
+{ 0x0018, 0x3101, VR::DS, VM::M1, "IVUS Pullback Rate" },
+{ 0x0018, 0x6044, VR::US, VM::M1, "Pixel Component Organization" },
+{ 0x0018, 0x7005, VR::CS, VM::M1, "Detector Configuration" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0478[] = {
+{ 0x0018, 0x1180, VR::SH, VM::M1, "Collimator/grid Name" },
+{ 0x0018, 0x3102, VR::DS, VM::M1, "IVUS Gated Rate" },
+{ 0x0018, 0x7006, VR::LT, VM::M1, "Detector Description" },
+{ 0x0040, 0xA313, VR::SQ, VM::M1, "Referenced Accession Sequence (Trial)" },
+{ 0x300A, 0x0110, VR::IS, VM::M1, "Number of Control Points" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0479[] = {
+{ 0x0018, 0x1181, VR::CS, VM::M1, "Collimator Type" },
+{ 0x0018, 0x3103, VR::IS, VM::M1, "IVUS Pullback Start Frame Number" },
+{ 0x0018, 0x6046, VR::UL, VM::M1, "Pixel Component Mask" },
+{ 0x300A, 0x0111, VR::SQ, VM::M1, "Control Point Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0480[] = {
+{ 0x0018, 0x7038, VR::FL, VM::M1, "Pixel Data Area Rotation Angle Relative To FOV" },
+{ 0x300A, 0x012E, VR::DS, VM::M3, "Surface Entry Point" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0481[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0482[] = {
+{ 0x300A, 0x012C, VR::DS, VM::M3, "Isocenter Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0483[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0484[] = {
+{ 0x0020, 0x3100, VR::CS, VM::M1TN, "Source Image IDs" },
+{ 0x300A, 0x012A, VR::DS, VM::M1, "Table Top Lateral Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0485[] = {
+{ 0x2020, 0x0140, VR::SQ, VM::M1, "Referenced VOI LUT Box Sequence" },
+{ 0x2130, 0x0050, VR::SQ, VM::M1, "Annotation Content Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0486[] = {
+{ 0x300A, 0x0128, VR::DS, VM::M1, "Table Top Vertical Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0487[] = {
+{ 0x300A, 0x0129, VR::DS, VM::M1, "Table Top Longitudinal Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0488[] = {
+{ 0x0018, 0x7030, VR::DS, VM::M2, "Field of View Origin" },
+{ 0x300A, 0x0126, VR::CS, VM::M1, "Table Top Eccentric Rotation Direction" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0489[] = {
+{ 0x0028, 0x6040, VR::US, VM::M1TN, "R Wave Pointer" },
+{ 0x0068, 0x6410, VR::US, VM::M1, "Degree of Freedom ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0490[] = {
+{ 0x0018, 0x7032, VR::DS, VM::M1, "Field of View Rotation" },
+{ 0x300A, 0x0124, VR::DS, VM::M1, "Table Top Eccentric Axis Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0491[] = {
+{ 0x300A, 0x0125, VR::DS, VM::M1, "Table Top Eccentric Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0492[] = {
+{ 0x0018, 0x7034, VR::CS, VM::M1, "Field of View Horizontal Flip" },
+{ 0x0040, 0xA731, VR::SQ, VM::M1, "Relationship Sequence (Trial)" },
+{ 0x3008, 0x0120, VR::SQ, VM::M1, "Recorded Brachy Accessory Device Sequence" },
+{ 0x300A, 0x0122, VR::DS, VM::M1, "Patient Support Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0493[] = {
+{ 0x0040, 0xA730, VR::SQ, VM::M1, "Content Sequence" },
+{ 0x300A, 0x0123, VR::CS, VM::M1, "Patient Support Rotation Direction" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0494[] = {
+{ 0x0018, 0x7036, VR::FL, VM::M2, "Pixel Data Area Origin Relative To FOV" },
+{ 0x3008, 0x0122, VR::IS, VM::M1, "Referenced Brachy Accessory Device Number" },
+{ 0x300A, 0x0120, VR::DS, VM::M1, "Beam Limiting Device Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0495[] = {
+{ 0x0040, 0xA732, VR::SQ, VM::M1, "Relationship Type Code Sequence (Trial)" },
+{ 0x300A, 0x0121, VR::CS, VM::M1, "Beam Limiting Device Rotation Direction" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0496[] = {
+{ 0x0018, 0x7028, VR::DS, VM::M2, "Detector Active Origin" },
+{ 0x3008, 0x013C, VR::DS, VM::M1, "Delivered Pulse Repetition Interval" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0497[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0498[] = {
+{ 0x0018, 0x702A, VR::LO, VM::M1, "Detector Manufacturer Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0499[] = {
+{ 0x0018, 0x702B, VR::LO, VM::M1, "Detector Manufacturer's Model Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0500[] = {
+{ 0x3008, 0x0138, VR::IS, VM::M1, "Delivered Number of Pulses" },
+{ 0x4008, 0x00FF, VR::CS, VM::M1, "Report Production Status (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0501[] = {
+{ 0x0010, 0x2160, VR::SH, VM::M1, "Ethnic Group" },
+{ 0x2010, 0x0160, VR::US, VM::M1, "Reflected Ambient Light" },
+{ 0x2100, 0x0070, VR::AE, VM::M1, "Originator" },
+{ 0x2120, 0x0050, VR::SQ, VM::M1, "Print Job Description Sequence" },
+{ 0x2130, 0x0040, VR::SQ, VM::M1, "Image Box Content Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0502[] = {
+{ 0x3008, 0x013A, VR::DS, VM::M1, "Specified Pulse Repetition Interval" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0503[] = {
+{ 0x0028, 0x1199, VR::UI, VM::M1, "Palette Color Lookup Table UID" },
+{ 0x0040, 0xA33A, VR::ST, VM::M1, "Report Status Comment (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0504[] = {
+{ 0x0018, 0x7020, VR::DS, VM::M2, "Detector Element Physical Size" },
+{ 0x3008, 0x0134, VR::DS, VM::M1, "Delivered Channel Total Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0505[] = {
+{ 0x0018, 0x6060, VR::FL, VM::M1TN, "R Wave Time Vector" },
+{ 0x0068, 0x6400, VR::SQ, VM::M1, "Mating Feature Degree of Freedom Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0506[] = {
+{ 0x0018, 0x7022, VR::DS, VM::M2, "Detector Element Spacing" },
+{ 0x3008, 0x0136, VR::IS, VM::M1, "Specified Number of Pulses" },
+{ 0x300A, 0x0134, VR::DS, VM::M1, "Cumulative Meterset Weight" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0507[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0508[] = {
+{ 0x0018, 0x11A2, VR::DS, VM::M1, "Compression Force" },
+{ 0x0018, 0x7024, VR::CS, VM::M1, "Detector Active Shape" },
+{ 0x0028, 0x3110, VR::SQ, VM::M1, "Softcopy VOI LUT Sequence" },
+{ 0x3008, 0x0130, VR::SQ, VM::M1, "Recorded Channel Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0509[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0510[] = {
+{ 0x0018, 0x11A0, VR::DS, VM::M1, "Body Part Thickness" },
+{ 0x0018, 0x7026, VR::DS, VM::M1T2, "Detector Active Dimension(s)" },
+{ 0x3008, 0x0132, VR::DS, VM::M1, "Specified Channel Total Time" },
+{ 0x300A, 0x0130, VR::DS, VM::M1, "Source to Surface Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0511[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0512[] = {
+{ 0x0008, 0x9459, VR::FL, VM::M1, "Recommended Display Frame Rate in Float" },
+{ 0x0018, 0x1251, VR::SH, VM::M1, "Transmit Coil Name" },
+{ 0x0018, 0x9059, VR::CS, VM::M1, "De-coupling" },
+{ 0x0018, 0x9449, VR::FL, VM::M1, "Beam Angle" },
+{ 0x0070, 0x0278, VR::CS, VM::M1, "Show Tick Label" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0513[] = {
+{ 0x0008, 0x0201, VR::SH, VM::M1, "Timezone Offset From UTC" },
+{ 0x0008, 0x9458, VR::SQ, VM::M1, "Frame Display Sequence" },
+{ 0x0018, 0x1250, VR::SH, VM::M1, "Receive Coil Name" },
+{ 0x0018, 0x9058, VR::US, VM::M1, "MR Acquisition Frequency Encoding Steps" },
+{ 0x0028, 0x9478, VR::FL, VM::M1, "Mask Visibility Percentage" },
+{ 0x0070, 0x0279, VR::CS, VM::M1, "Tick Label Alignment" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0514[] = {
+{ 0x0010, 0x2298, VR::CS, VM::M1, "Responsible Person Role" },
+{ 0x0028, 0x0A02, VR::CS, VM::M1, "Pixel Spacing Calibration Type" },
+{ 0x003A, 0x0230, VR::FL, VM::M1, "Waveform Data Display Scale" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0515[] = {
+{ 0x0010, 0x2299, VR::LO, VM::M1, "Responsible Organization" },
+{ 0x003A, 0x0231, VR::US, VM::M3, "Waveform Display Background CIELab Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0516[] = {
+{ 0x0028, 0x0A04, VR::LO, VM::M1, "Pixel Spacing Calibration Description" },
+{ 0x4008, 0x0300, VR::ST, VM::M1, "Impressions" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0517[] = {
+{ 0x0074, 0x1238, VR::LT, VM::M1, "Reason for Cancellation" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0518[] = {
+{ 0x0068, 0x63E0, VR::SQ, VM::M1, "Mating Feature Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0519[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0520[] = {
+{ 0x0010, 0x2292, VR::LO, VM::M1, "Patient Breed Description" },
+{ 0x0018, 0x9051, VR::CS, VM::M1, "Transmit Coil Type" },
+{ 0x0018, 0x9441, VR::US, VM::M1, "Radius of Circular Exposure Control Sensing Region" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0521[] = {
+{ 0x0010, 0x2293, VR::SQ, VM::M1, "Patient Breed Code Sequence" },
+{ 0x0018, 0x9050, VR::LO, VM::M1, "Transmit Coil Manufacturer Name" },
+{ 0x0018, 0x9440, VR::SS, VM::M2, "Center of Circular Exposure Control Sensing Region" },
+{ 0x0022, 0x1262, VR::SQ, VM::M1, "Ophthalmic Axial Length Quality Metric Sequence" },
+{ 0x0040, 0x0241, VR::AE, VM::M1, "Performed Station AE Title" },
+{ 0x0074, 0x1234, VR::AE, VM::M1, "Receiving AE" },
+{ 0x300A, 0x02C8, VR::DS, VM::M1, "Final Cumulative Time Weight" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0522[] = {
+{ 0x0018, 0x9053, VR::FD, VM::M1T2, "Chemical Shift Reference" },
+{ 0x0040, 0x0242, VR::SH, VM::M1, "Performed Station Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0523[] = {
+{ 0x0018, 0x9052, VR::FD, VM::M1T2, "Spectral Width" },
+{ 0x0018, 0x9442, VR::SS, VM::M2TN, "Vertices of the Polygonal Exposure Control Sensing Region" },
+{ 0x0022, 0x1260, VR::SQ, VM::M1, "Selected Total Ophthalmic Axial Length Sequence" },
+{ 0x0040, 0x0243, VR::SH, VM::M1, "Performed Location" },
+{ 0x0070, 0x0273, VR::FL, VM::M2, "Rotation Point" },
+{ 0x0074, 0x1236, VR::AE, VM::M1, "Requesting AE" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0524[] = {
+{ 0x0010, 0x2296, VR::SQ, VM::M1, "Breed Registry Code Sequence" },
+{ 0x0040, 0x0244, VR::DA, VM::M1, "Performed Procedure Step Start Date" },
+{ 0x0070, 0x0274, VR::CS, VM::M1, "Tick Alignment" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0525[] = {
+{ 0x0010, 0x2297, VR::PN, VM::M1, "Responsible Person" },
+{ 0x0018, 0x9054, VR::CS, VM::M1, "Volume Localization Technique" },
+{ 0x0028, 0x9474, VR::CS, VM::M1, "LUT Function" },
+{ 0x0040, 0x0245, VR::TM, VM::M1, "Performed Procedure Step Start Time" },
+{ 0x0054, 0x1210, VR::DS, VM::M1, "Coincidence Window Width" },
+{ 0x0074, 0x1230, VR::LO, VM::M1, "Deletion Lock" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0526[] = {
+{ 0x0010, 0x2294, VR::SQ, VM::M1, "Breed Registration Sequence" },
+{ 0x0018, 0x9447, VR::FL, VM::M1, "Column Angulation (Patient)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0527[] = {
+{ 0x0010, 0x2295, VR::LO, VM::M1, "Breed Registration Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0528[] = {
+{ 0x0018, 0x9049, VR::SQ, VM::M1, "MR Transmit Coil Sequence" },
+{ 0x0020, 0x9071, VR::SQ, VM::M1, "Frame Anatomy Sequence" },
+{ 0x003A, 0x0222, VR::DS, VM::M1, "Notch Filter Frequency" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0529[] = {
+{ 0x0008, 0x1250, VR::SQ, VM::M1, "Related Series Sequence" },
+{ 0x0018, 0x1240, VR::IS, VM::M1TN, "Upper/Lower Pixel Values" },
+{ 0x0018, 0x9048, VR::CS, VM::M1, "Multi-Coil Element Used" },
+{ 0x003A, 0x0223, VR::DS, VM::M1, "Notch Filter Bandwidth" },
+{ 0x300A, 0x02D0, VR::SQ, VM::M1, "Brachy Control Point Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0530[] = {
+{ 0x0018, 0x1243, VR::IS, VM::M1, "Count Rate" },
+{ 0x003A, 0x0220, VR::DS, VM::M1, "Filter Low Frequency" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0531[] = {
+{ 0x0018, 0x1242, VR::IS, VM::M1, "Actual Frame Duration" },
+{ 0x0020, 0x9072, VR::CS, VM::M1, "Frame Laterality" },
+{ 0x003A, 0x0221, VR::DS, VM::M1, "Filter High Frequency" },
+{ 0x300A, 0x02D2, VR::DS, VM::M1, "Control Point Relative Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0532[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0533[] = {
+{ 0x0018, 0x1244, VR::US, VM::M1, "Preferred Playback Sequencing" },
+{ 0x300A, 0x02D4, VR::DS, VM::M3, "Control Point 3D Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0534[] = {
+{ 0x0068, 0x63F0, VR::US, VM::M1, "Mating Feature ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0535[] = {
+{ 0x300A, 0x02D6, VR::DS, VM::M1, "Cumulative Time Weight" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0536[] = {
+{ 0x0018, 0x9041, VR::LO, VM::M1, "Receive Coil Manufacturer Name" },
+{ 0x0018, 0x9451, VR::SQ, VM::M1, "Frame Detector Parameters Sequence" },
+{ 0x0022, 0x1273, VR::LO, VM::M1, "Ophthalmic Axial  Length Quality Metric Type Description" },
+{ 0x0040, 0x0250, VR::DA, VM::M1, "Performed Procedure Step End Date" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0537[] = {
+{ 0x0040, 0x0251, VR::TM, VM::M1, "Performed Procedure Step End Time" },
+{ 0x0070, 0x0261, VR::FL, VM::M1, "Gap Length" },
+{ 0x0074, 0x1224, VR::SQ, VM::M1, "Replaced Procedure Step Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0538[] = {
+{ 0x0018, 0x9043, VR::CS, VM::M1, "Receive Coil Type" },
+{ 0x0040, 0x0252, VR::CS, VM::M1, "Performed Procedure Step Status" },
+{ 0x0070, 0x0262, VR::FL, VM::M1, "Diameter of Visibility" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0539[] = {
+{ 0x0018, 0x9042, VR::SQ, VM::M1, "MR Receive Coil Sequence" },
+{ 0x0018, 0x9452, VR::FL, VM::M1, "Calculated Anatomy Thickness" },
+{ 0x0040, 0x0253, VR::SH, VM::M1, "Performed Procedure Step ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0540[] = {
+{ 0x0018, 0x9045, VR::SQ, VM::M1, "Multi-Coil Definition Sequence" },
+{ 0x0018, 0x9455, VR::SQ, VM::M1, "Calibration Sequence" },
+{ 0x0040, 0x0254, VR::LO, VM::M1, "Performed Procedure Step Description" },
+{ 0x0054, 0x1201, VR::IS, VM::M2, "Axial Mash" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0541[] = {
+{ 0x0018, 0x9044, VR::CS, VM::M1, "Quadrature Receive Coil" },
+{ 0x0040, 0x0255, VR::LO, VM::M1, "Performed Procedure Type Description" },
+{ 0x0054, 0x1200, VR::DS, VM::M1, "Axial Acceptance" },
+{ 0x0074, 0x1220, VR::SQ, VM::M1, "Related Procedure Step Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0542[] = {
+{ 0x0018, 0x9047, VR::SH, VM::M1, "Multi-Coil Element Name" },
+{ 0x0018, 0x9457, VR::CS, VM::M1, "Plane Identification" },
+{ 0x0054, 0x1203, VR::DS, VM::M2, "Detector Element Size" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0543[] = {
+{ 0x0018, 0x9046, VR::LO, VM::M1, "Multi-Coil Configuration" },
+{ 0x0018, 0x9456, VR::SQ, VM::M1, "Object Thickness Sequence" },
+{ 0x0054, 0x1202, VR::IS, VM::M1, "Transverse Mash" },
+{ 0x0074, 0x1222, VR::LO, VM::M1, "Procedure Step Relationship Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0544[] = {
+{ 0x0018, 0x9079, VR::FD, VM::M1TN, "Inversion Times" },
+{ 0x0018, 0x9469, VR::FL, VM::M1, "Table Horizontal Rotation Angle" },
+{ 0x0028, 0x0200, VR::US, VM::M1, "Image Location" },
+{ 0x003A, 0x0212, VR::DS, VM::M1, "Channel Sensitivity Correction Factor" },
+{ 0x0070, 0x0258, VR::FL, VM::M1, "Shadow Opacity" },
+{ 0x300A, 0x02E1, VR::CS, VM::M1, "Compensator Mounting Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0545[] = {
+{ 0x0018, 0x9078, VR::CS, VM::M1, "Parallel Acquisition Technique" },
+{ 0x0018, 0x9468, VR::FL, VM::M1, "Table Z Position to Isocenter" },
+{ 0x0020, 0x9450, VR::SQ, VM::M1, "Patient Orientation in Frame Sequence" },
+{ 0x003A, 0x0213, VR::DS, VM::M1, "Channel Baseline" },
+{ 0x300A, 0x02E0, VR::CS, VM::M1, "Compensator Divergence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0546[] = {
+{ 0x0020, 0x9453, VR::LO, VM::M1, "Frame Label" },
+{ 0x003A, 0x0210, VR::DS, VM::M1, "Channel Sensitivity" },
+{ 0x300A, 0x02E3, VR::FL, VM::M1, "Total Compensator Tray Water-Equivalent Thickness" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0547[] = {
+{ 0x003A, 0x0211, VR::SQ, VM::M1, "Channel Sensitivity Units Sequence" },
+{ 0x300A, 0x02E2, VR::DS, VM::M1TN, "Source to Compensator Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0548[] = {
+{ 0x300A, 0x02E5, VR::FL, VM::M1, "Compensator Column Offset" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0549[] = {
+{ 0x300A, 0x02E4, VR::FL, VM::M1, "Isocenter to Compensator Tray Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0550[] = {
+{ 0x003A, 0x0214, VR::DS, VM::M1, "Channel Time Skew" },
+{ 0x0068, 0x63C0, VR::US, VM::M1, "Mating Feature Set ID" },
+{ 0x300A, 0x02E7, VR::FL, VM::M1, "Compensator Relative Stopping Power Ratio" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0551[] = {
+{ 0x003A, 0x0215, VR::DS, VM::M1, "Channel Sample Skew" },
+{ 0x300A, 0x02E6, VR::FL, VM::M1TN, "Isocenter to Compensator Distances" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0552[] = {
+{ 0x0018, 0x9461, VR::FL, VM::M1T2, "Field of View Dimension(s) in Float" },
+{ 0x0020, 0x0200, VR::UI, VM::M1, "Synchronization Frame of Reference UID" },
+{ 0x003A, 0x021A, VR::US, VM::M1, "Waveform Bits Stored" },
+{ 0x0040, 0x0260, VR::SQ, VM::M1, "Performed Protocol Code Sequence" },
+{ 0x0070, 0x0250, VR::CS, VM::M1, "Italic" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0553[] = {
+{ 0x0018, 0x9070, VR::FD, VM::M1, "Cardiac R-R Interval Specified" },
+{ 0x0040, 0x0261, VR::CS, VM::M1, "Performed Protocol Type" },
+{ 0x0070, 0x0251, VR::US, VM::M3, "Pattern On Color CIELab Value" },
+{ 0x300A, 0x02E8, VR::FL, VM::M1, "Compensator Milling Tool Diameter" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0554[] = {
+{ 0x0018, 0x9073, VR::FD, VM::M1, "Acquisition Duration" },
+{ 0x0018, 0x9463, VR::FL, VM::M1, "Positioner Isocenter Primary Angle" },
+{ 0x003A, 0x0218, VR::DS, VM::M1, "Channel Offset" },
+{ 0x0070, 0x0252, VR::US, VM::M3, "Pattern Off Color CIELab Value" },
+{ 0x300A, 0x02EB, VR::LT, VM::M1, "Compensator Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0555[] = {
+{ 0x0018, 0x9462, VR::SQ, VM::M1, "Isocenter Reference System Sequence" },
+{ 0x0070, 0x0253, VR::FL, VM::M1, "Line Thickness" },
+{ 0x0074, 0x1216, VR::SQ, VM::M1, "Unified Procedure Step Performed Procedure Sequence" },
+{ 0x300A, 0x02EA, VR::SQ, VM::M1, "Ion Range Compensator Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0556[] = {
+{ 0x0018, 0x9075, VR::CS, VM::M1, "Diffusion Directionality" },
+{ 0x0018, 0x9465, VR::FL, VM::M1, "Positioner Isocenter Detector Rotation Angle" },
+{ 0x0070, 0x0254, VR::CS, VM::M1, "Line Dashing Style" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0557[] = {
+{ 0x0018, 0x9074, VR::DT, VM::M1, "Frame Acquisition DateTime" },
+{ 0x0018, 0x9464, VR::FL, VM::M1, "Positioner Isocenter Secondary Angle" },
+{ 0x0028, 0x9454, VR::CS, VM::M1, "Mask Selection Mode" },
+{ 0x0070, 0x0255, VR::UL, VM::M1, "Line Pattern" },
+{ 0x0074, 0x1210, VR::SQ, VM::M1, "Scheduled Processing Parameters Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0558[] = {
+{ 0x0018, 0x9077, VR::CS, VM::M1, "Parallel Acquisition" },
+{ 0x0018, 0x9467, VR::FL, VM::M1, "Table Y Position to Isocenter" },
+{ 0x0024, 0x0202, VR::LO, VM::M1, "Algorithm Source" },
+{ 0x0070, 0x0256, VR::OB, VM::M1, "Fill Pattern" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0559[] = {
+{ 0x0018, 0x9076, VR::SQ, VM::M1, "Diffusion Gradient Direction Sequence" },
+{ 0x0018, 0x9466, VR::FL, VM::M1, "Table X Position to Isocenter" },
+{ 0x0070, 0x0257, VR::CS, VM::M1, "Fill Mode" },
+{ 0x0074, 0x1212, VR::SQ, VM::M1, "Performed Processing Parameters Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0560[] = {
+{ 0x0018, 0x1261, VR::LO, VM::M1, "Phosphor Type" },
+{ 0x0018, 0x9069, VR::FD, VM::M1, "Parallel Reduction Factor In-plane" },
+{ 0x003A, 0x0202, VR::IS, VM::M1, "Waveform Channel Number" },
+{ 0x0070, 0x0248, VR::CS, VM::M1, "Underlined" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0561[] = {
+{ 0x0018, 0x1260, VR::SH, VM::M1, "Plate Type" },
+{ 0x003A, 0x0203, VR::SH, VM::M1, "Channel Label" },
+{ 0x0070, 0x0249, VR::CS, VM::M1, "Bold" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0562[] = {
+{ 0x003A, 0x0200, VR::SQ, VM::M1, "Channel Definition Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0563[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0564[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0565[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0566[] = {
+{ 0x0020, 0x9057, VR::UL, VM::M1, "In-Stack Position Number" },
+{ 0x0068, 0x63D0, VR::LO, VM::M1, "Mating Feature Set Label" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0567[] = {
+{ 0x0020, 0x9056, VR::SH, VM::M1, "Stack ID" },
+{ 0x0028, 0x7FE0, VR::UT, VM::M1, "Pixel Data Provider URL" },
+{ 0x003A, 0x0205, VR::CS, VM::M1TN, "Channel Status" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0568[] = {
+{ 0x0018, 0x9061, VR::FD, VM::M1T2, "De-coupling Frequency" },
+{ 0x0018, 0x9471, VR::FL, VM::M1, "Table Cradle Tilt Angle" },
+{ 0x003A, 0x020A, VR::SQ, VM::M1, "Source Waveform Sequence" },
+{ 0x0040, 0x0270, VR::SQ, VM::M1, "Scheduled Step Attributes Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0569[] = {
+{ 0x0008, 0x9460, VR::CS, VM::M1, "Skip Frame Range Flag" },
+{ 0x0018, 0x9060, VR::CS, VM::M1T2, "De-coupled Nucleus" },
+{ 0x0018, 0x9470, VR::FL, VM::M1, "Table Head Tilt Angle" },
+{ 0x0070, 0x0241, VR::US, VM::M3, "Text Color CIELab Value" },
+{ 0x0074, 0x1204, VR::LO, VM::M1, "Procedure Step Label" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0570[] = {
+{ 0x0018, 0x9063, VR::FD, VM::M1T2, "De-coupling Chemical Shift Reference" },
+{ 0x0018, 0x9473, VR::FL, VM::M1, "Acquired Image Area Dose Product" },
+{ 0x0028, 0x9443, VR::SQ, VM::M1, "Frame Pixel Data Properties Sequence" },
+{ 0x003A, 0x0208, VR::SQ, VM::M1, "Channel Source Sequence" },
+{ 0x0070, 0x0242, VR::CS, VM::M1, "Horizontal Alignment" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0571[] = {
+{ 0x0018, 0x9062, VR::CS, VM::M1, "De-coupling Method" },
+{ 0x0018, 0x9472, VR::SQ, VM::M1, "Frame Display Shutter Sequence" },
+{ 0x0022, 0x1250, VR::SQ, VM::M1, "Ophthalmic Axial Length Selection Method Code Sequence" },
+{ 0x003A, 0x0209, VR::SQ, VM::M1, "Channel Source Modifiers Sequence" },
+{ 0x0070, 0x0243, VR::CS, VM::M1, "Vertical Alignment" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0572[] = {
+{ 0x0018, 0x9065, VR::CS, VM::M1T2, "Time Domain Filtering" },
+{ 0x0022, 0x1257, VR::SQ, VM::M1, "Selected Segmental Ophthalmic Axial Length Sequence" },
+{ 0x0028, 0x9445, VR::FL, VM::M1, "Geometric Maximum Distortion" },
+{ 0x0070, 0x0244, VR::CS, VM::M1, "Shadow Style" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0573[] = {
+{ 0x0018, 0x9064, VR::CS, VM::M1, "k-space Filtering" },
+{ 0x0018, 0x9474, VR::CS, VM::M1, "C-arm Positioner Tabletop Relationship" },
+{ 0x0028, 0x9444, VR::CS, VM::M1, "Geometrical Properties" },
+{ 0x0040, 0x0275, VR::SQ, VM::M1, "Request Attributes Sequence" },
+{ 0x0054, 0x1220, VR::CS, VM::M1TN, "Secondary Counts Type" },
+{ 0x0070, 0x0245, VR::FL, VM::M1, "Shadow Offset X" },
+{ 0x0074, 0x1200, VR::CS, VM::M1, "Scheduled Procedure Step Priority" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0574[] = {
+{ 0x0018, 0x9067, VR::CS, VM::M1, "Baseline Correction" },
+{ 0x0018, 0x9477, VR::SQ, VM::M1, "Irradiation Event Identification Sequence" },
+{ 0x0022, 0x1255, VR::SQ, VM::M1, "Optical Selected Ophthalmic Axial Length Sequence" },
+{ 0x003A, 0x020C, VR::LO, VM::M1, "Channel Derivation Description" },
+{ 0x0070, 0x0246, VR::FL, VM::M1, "Shadow Offset Y" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0575[] = {
+{ 0x0018, 0x9066, VR::US, VM::M1T2, "Number of Zero Fills" },
+{ 0x0018, 0x9476, VR::SQ, VM::M1, "X-Ray Geometry Sequence" },
+{ 0x0028, 0x9446, VR::CS, VM::M1TN, "Image Processing Applied" },
+{ 0x0070, 0x0247, VR::US, VM::M3, "Shadow Color CIELab Value" },
+{ 0x0074, 0x1202, VR::LO, VM::M1, "Worklist Label" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0576[] = {
+{ 0x0008, 0x1200, VR::SQ, VM::M1, "Studies Containing Other Referenced Instances Sequence" },
+{ 0x0018, 0x1210, VR::SH, VM::M1TN, "Convolution Kernel" },
+{ 0x0018, 0x1600, VR::CS, VM::M1T3, "Shutter Shape" },
+{ 0x0018, 0x9018, VR::CS, VM::M1, "Echo Planar Pulse Sequence" },
+{ 0x0040, 0xA493, VR::CS, VM::M1, "Verification Flag" },
+{ 0x0048, 0x0201, VR::US, VM::M2, "Top Left Hand Corner of Localizer Area" },
+{ 0x300A, 0x0280, VR::SQ, VM::M1, "Channel Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0577[] = {
+{ 0x0018, 0x9019, VR::FD, VM::M1, "Tag Angle First Axis" },
+{ 0x0028, 0x1221, VR::OW, VM::M1, "Segmented Red Palette Color Lookup Table Data" },
+{ 0x0040, 0xA082, VR::DT, VM::M1, "Participation DateTime" },
+{ 0x0040, 0xA492, VR::LO, VM::M1, "Completion Flag Description" },
+{ 0x0048, 0x0200, VR::SQ, VM::M1, "Referenced Image Navigation Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0578[] = {
+{ 0x0018, 0x1602, VR::IS, VM::M1, "Shutter Left Vertical Edge" },
+{ 0x0028, 0x1222, VR::OW, VM::M1, "Segmented Green Palette Color Lookup Table Data" },
+{ 0x0040, 0xA491, VR::CS, VM::M1, "Completion Flag" },
+{ 0x300A, 0x0282, VR::IS, VM::M1, "Channel Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0579[] = {
+{ 0x0028, 0x1223, VR::OW, VM::M1, "Segmented Blue Palette Color Lookup Table Data" },
+{ 0x0040, 0xA080, VR::CS, VM::M1, "Participation Type" },
+{ 0x0048, 0x0202, VR::US, VM::M2, "Bottom Right Hand Corner of Localizer Area" },
+{ 0x0068, 0x63A4, VR::SQ, VM::M1, "Coating Materials Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0580[] = {
+{ 0x0018, 0x1604, VR::IS, VM::M1, "Shutter Right Vertical Edge" },
+{ 0x300A, 0x0284, VR::DS, VM::M1, "Channel Length" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0581[] = {
+{ 0x0040, 0xA496, VR::CS, VM::M1, "Preliminary Flag" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0582[] = {
+{ 0x0018, 0x1606, VR::IS, VM::M1, "Shutter Upper Horizontal Edge" },
+{ 0x0040, 0xA085, VR::SQ, VM::M1, "Procedure Identifier Code Sequence (Trial)" },
+{ 0x0048, 0x0207, VR::SQ, VM::M1, "Optical Path Identification Sequence" },
+{ 0x300A, 0x0286, VR::DS, VM::M1, "Channel Total Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0583[] = {
+{ 0x0040, 0xA084, VR::CS, VM::M1, "Observer Type" },
+{ 0x0040, 0xA494, VR::CS, VM::M1, "Archive Requested" },
+{ 0x0068, 0x63A0, VR::SQ, VM::M1, "Materials Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0584[] = {
+{ 0x0008, 0x9410, VR::SQ, VM::M1, "Referenced Other Plane Sequence" },
+{ 0x0018, 0x1608, VR::IS, VM::M1, "Shutter Lower Horizontal Edge" },
+{ 0x0018, 0x9010, VR::CS, VM::M1, "Flow Compensation" },
+{ 0x0070, 0x0231, VR::SQ, VM::M1, "Text Style Sequence" },
+{ 0x300A, 0x0288, VR::CS, VM::M1, "Source Movement Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0585[] = {
+{ 0x0018, 0x9011, VR::CS, VM::M1, "Multiple Spin Echo" },
+{ 0x0018, 0x9401, VR::SQ, VM::M1, "Projection Pixel Calibration Sequence" },
+{ 0x0040, 0x0610, VR::SQ, VM::M1, "Specimen Preparation Sequence" },
+{ 0x0070, 0x0230, VR::FD, VM::M1, "Rotation Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0586[] = {
+{ 0x0018, 0x9012, VR::CS, VM::M1, "Multi-planar Excitation" },
+{ 0x0018, 0x9402, VR::FL, VM::M1, "Distance Source to Isocenter" },
+{ 0x0022, 0x1220, VR::SQ, VM::M1, "Ultrasound Ophthalmic Axial Length Measurements Sequence" },
+{ 0x0040, 0xA089, VR::OB, VM::M1, "Object Directory Binary Identifier (Trial)" },
+{ 0x0070, 0x0233, VR::SQ, VM::M1, "Fill Style Sequence" },
+{ 0x300A, 0x028A, VR::IS, VM::M1, "Number of Pulses" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0587[] = {
+{ 0x0018, 0x9403, VR::FL, VM::M1, "Distance Object to Table Top" },
+{ 0x0040, 0x0612, VR::SQ, VM::M1, "Specimen Preparation Step Content Item Sequence" },
+{ 0x0040, 0xA088, VR::SQ, VM::M1, "Verifying Observer Identification Code Sequence" },
+{ 0x0068, 0x63AC, VR::SQ, VM::M1, "Fixation Method Code Sequence" },
+{ 0x0070, 0x0232, VR::SQ, VM::M1, "Line Style Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0588[] = {
+{ 0x0018, 0x9014, VR::CS, VM::M1, "Phase Contrast" },
+{ 0x0018, 0x9404, VR::FL, VM::M2, "Object Pixel Spacing in Center of Beam" },
+{ 0x0054, 0x0211, VR::US, VM::M1, "Number of Triggers in Phase" },
+{ 0x300A, 0x028C, VR::DS, VM::M1, "Pulse Repetition Interval" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0589[] = {
+{ 0x0018, 0x9015, VR::CS, VM::M1, "Time of Flight Contrast" },
+{ 0x0018, 0x9405, VR::SQ, VM::M1, "Positioner Position Sequence" },
+{ 0x0054, 0x0210, VR::IS, VM::M1TN, "Trigger Vector" },
+{ 0x0070, 0x0234, VR::SQ, VM::M1, "Graphic Group Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0590[] = {
+{ 0x0018, 0x9016, VR::CS, VM::M1, "Spoiling" },
+{ 0x0018, 0x9406, VR::SQ, VM::M1, "Table Position Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0591[] = {
+{ 0x0008, 0x9007, VR::CS, VM::M4, "Frame Type" },
+{ 0x0018, 0x9017, VR::CS, VM::M1, "Steady State Pulse Sequence" },
+{ 0x0018, 0x9407, VR::SQ, VM::M1, "Collimator Shape Sequence" },
+{ 0x0022, 0x1225, VR::SQ, VM::M1, "Optical Ophthalmic Axial Length Measurements Sequence" },
+{ 0x0068, 0x63A8, VR::SQ, VM::M1, "Implant Type Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0592[] = {
+{ 0x0018, 0x1200, VR::DA, VM::M1TN, "Date of Last Calibration" },
+{ 0x0018, 0x1610, VR::IS, VM::M2, "Center of Circular Shutter" },
+{ 0x0018, 0x9008, VR::CS, VM::M1, "Echo Pulse Sequence" },
+{ 0x0070, 0x0229, VR::LO, VM::M1, "CSS Font Name" },
+{ 0x300A, 0x0290, VR::IS, VM::M1, "Source Applicator Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0593[] = {
+{ 0x0018, 0x1201, VR::TM, VM::M1TN, "Time of Last Calibration" },
+{ 0x0018, 0x9009, VR::CS, VM::M1, "Inversion Recovery" },
+{ 0x0020, 0x9421, VR::LO, VM::M1, "Dimension Description Label" },
+{ 0x0070, 0x0228, VR::CS, VM::M1, "Font Name Type" },
+{ 0x300A, 0x0291, VR::SH, VM::M1, "Source Applicator ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0594[] = {
+{ 0x0018, 0x1612, VR::IS, VM::M1, "Radius of Circular Shutter" },
+{ 0x300A, 0x0292, VR::CS, VM::M1, "Source Applicator Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0595[] = {
+{ 0x0040, 0xA090, VR::SQ, VM::M1, "Equivalent CDA Document Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0596[] = {
+{ 0x300A, 0x0294, VR::LO, VM::M1, "Source Applicator Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0597[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0598[] = {
+{ 0x300A, 0x0296, VR::DS, VM::M1, "Source Applicator Length" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0599[] = {
+{ 0x0068, 0x63B0, VR::SQ, VM::M1, "Mating Feature Sets Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0600[] = {
+{ 0x0018, 0x9410, VR::CS, VM::M1, "Planes in Acquisition" },
+{ 0x300A, 0x0298, VR::LO, VM::M1, "Source Applicator Manufacturer" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0601[] = {
+{ 0x0040, 0x0600, VR::LO, VM::M1, "Specimen Short Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0602[] = {
+{ 0x0018, 0x9412, VR::SQ, VM::M1, "XA/XRF Frame Characteristics Sequence" },
+{ 0x0022, 0x1230, VR::SQ, VM::M1, "Ultrasound Selected Ophthalmic Axial Length Sequence" },
+{ 0x0028, 0x9422, VR::SQ, VM::M1, "Pixel Intensity Relationship LUT Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0603[] = {
+{ 0x0040, 0x0602, VR::UT, VM::M1, "Specimen Detailed Description" },
+{ 0x0048, 0x021A, VR::SQ, VM::M1, "Plane Position (Slide) Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0604[] = {
+{ 0x0018, 0x9004, VR::CS, VM::M1, "Content Qualification" },
+{ 0x300A, 0x029C, VR::DS, VM::M1, "Source Applicator Wall Nominal Thickness" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0605[] = {
+{ 0x0018, 0x9005, VR::SH, VM::M1, "Pulse Sequence Name" },
+{ 0x0054, 0x0200, VR::DS, VM::M1, "Start Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0606[] = {
+{ 0x0018, 0x9006, VR::SQ, VM::M1, "MR Imaging Modifier Sequence" },
+{ 0x0048, 0x021F, VR::SL, VM::M1, "Column Position In Total Image Pixel Matrix" },
+{ 0x0070, 0x0227, VR::LO, VM::M1, "Font Name" },
+{ 0x300A, 0x029E, VR::DS, VM::M1, "Source Applicator Wall Nominal Transmission" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0607[] = {
+{ 0x0018, 0x9417, VR::SQ, VM::M1, "Frame Acquisition Sequence" },
+{ 0x0048, 0x021E, VR::SL, VM::M1, "Row Position In Total Image Pixel Matrix" },
+{ 0x0054, 0x0202, VR::CS, VM::M1, "Type of Detector Motion" },
+{ 0x0070, 0x0226, VR::UL, VM::M1, "Compound Graphic Instance ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0608[] = {
+{ 0x0018, 0x1620, VR::IS, VM::M2T2N, "Vertices of the Polygonal Shutter" },
+{ 0x0018, 0x9428, VR::FL, VM::M1T2, "Intensifier Active Dimension(s)" },
+{ 0x0020, 0x1208, VR::IS, VM::M1, "Number of Study Related Instances" },
+{ 0x0028, 0x1200, VR::OB, VM::M1, "Gray Lookup Table Data" },
+{ 0x300A, 0x02A0, VR::DS, VM::M1, "Source Applicator Step Size" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0609[] = {
+{ 0x0018, 0x9429, VR::FL, VM::M2, "Physical Detector Size" },
+{ 0x0020, 0x1209, VR::IS, VM::M1, "Number of Series Related Instances" },
+{ 0x0028, 0x1201, VR::OW, VM::M1, "Red Palette Color Lookup Table Data" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0610[] = {
+{ 0x0018, 0x1622, VR::US, VM::M1, "Shutter Presentation Value" },
+{ 0x0028, 0x1202, VR::OW, VM::M1, "Green Palette Color Lookup Table Data" },
+{ 0x300A, 0x02A2, VR::IS, VM::M1, "Transfer Tube Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0611[] = {
+{ 0x0018, 0x1623, VR::US, VM::M1, "Shutter Overlay Group" },
+{ 0x0028, 0x1203, VR::OW, VM::M1, "Blue Palette Color Lookup Table Data" },
+{ 0x0072, 0x0218, VR::US, VM::M1TN, "Reference Display Sets" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0612[] = {
+{ 0x0018, 0x1624, VR::US, VM::M3, "Shutter Presentation Color CIELab Value" },
+{ 0x0028, 0x1204, VR::OW, VM::M1, "Alpha Palette Color Lookup Table Data" },
+{ 0x300A, 0x02A4, VR::DS, VM::M1, "Transfer Tube Length" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0613[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0614[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0615[] = {
+{ 0x0068, 0x6380, VR::LO, VM::M1, "Surface Model Label" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0616[] = {
+{ 0x0018, 0x9030, VR::FD, VM::M1, "Tag Spacing First Dimension" },
+{ 0x0018, 0x9420, VR::CS, VM::M1, "X-Ray Receptor Type" },
+{ 0x0020, 0x1200, VR::IS, VM::M1, "Number of Patient Related Studies" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0617[] = {
+{ 0x0028, 0x9001, VR::UL, VM::M1, "Data Point Rows" },
+{ 0x0028, 0x9411, VR::FL, VM::M1, "Display Filter Percentage" },
+{ 0x0040, 0x0220, VR::SQ, VM::M1, "Referenced Non-Image Composite SOP Instance Sequence" },
+{ 0x0072, 0x0212, VR::US, VM::M2TN, "Display Set Scrolling Group" },
+{ 0x0072, 0x0602, VR::CS, VM::M1, "Sort-by Category" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0618[] = {
+{ 0x0018, 0x9032, VR::CS, VM::M1, "Geometry of k-Space Traversal" },
+{ 0x0020, 0x1202, VR::IS, VM::M1, "Number of Patient Related Series" },
+{ 0x0028, 0x9002, VR::UL, VM::M1, "Data Point Columns" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0619[] = {
+{ 0x0018, 0x9033, VR::CS, VM::M1, "Segmented k-Space Traversal" },
+{ 0x0018, 0x9423, VR::LO, VM::M1, "Acquisition Protocol Name" },
+{ 0x0020, 0x0242, VR::UI, VM::M1, "SOP Instance UID of Concatenation Source" },
+{ 0x0028, 0x9003, VR::CS, VM::M1, "Signal Domain Columns" },
+{ 0x0072, 0x0210, VR::SQ, VM::M1, "Synchronized Scrolling Sequence" },
+{ 0x0072, 0x0600, VR::SQ, VM::M1, "Sorting Operations Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0620[] = {
+{ 0x0018, 0x9034, VR::CS, VM::M1, "Rectilinear Phase Encode Reordering" },
+{ 0x0018, 0x9424, VR::LT, VM::M1, "Acquisition Protocol Description" },
+{ 0x0020, 0x1204, VR::IS, VM::M1, "Number of Patient Related Instances" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0621[] = {
+{ 0x0018, 0x9035, VR::FD, VM::M1, "Tag Thickness" },
+{ 0x0018, 0x9425, VR::CS, VM::M1, "Contrast/Bolus Ingredient Opaque" },
+{ 0x0028, 0x9415, VR::SQ, VM::M1, "Frame Pixel Shift Sequence" },
+{ 0x0072, 0x0216, VR::US, VM::M1, "Navigation Display Set" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0622[] = {
+{ 0x0018, 0x9036, VR::CS, VM::M1, "Partial Fourier Direction" },
+{ 0x0018, 0x9426, VR::FL, VM::M1, "Distance Receptor Plane to Detector Housing" },
+{ 0x0020, 0x1206, VR::IS, VM::M1, "Number of Study Related Series" },
+{ 0x0028, 0x9416, VR::US, VM::M1, "Subtraction Item ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0623[] = {
+{ 0x0018, 0x9037, VR::CS, VM::M1, "Cardiac Synchronization Technique" },
+{ 0x0018, 0x9427, VR::CS, VM::M1, "Intensifier Active Shape" },
+{ 0x0072, 0x0214, VR::SQ, VM::M1, "Navigation Indicator Sequence" },
+{ 0x0072, 0x0604, VR::CS, VM::M1, "Sorting Direction" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0624[] = {
+{ 0x0018, 0x9028, VR::CS, VM::M1, "Tagging" },
+{ 0x0018, 0x9438, VR::SS, VM::M1, "Exposure Control Sensing Region Upper Horizontal Edge" },
+{ 0x0018, 0x9808, VR::CS, VM::M1, "Data Type" },
+{ 0x0070, 0x0209, VR::SQ, VM::M1, "Compound Graphic Sequence" },
+{ 0x300A, 0x02B0, VR::SQ, VM::M1, "Channel Shield Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0625[] = {
+{ 0x0010, 0x9431, VR::FL, VM::M1, "Examined Body Thickness" },
+{ 0x0018, 0x9029, VR::CS, VM::M1, "Oversampling Phase" },
+{ 0x0018, 0x9439, VR::SS, VM::M1, "Exposure Control Sensing Region Lower Horizontal Edge" },
+{ 0x0018, 0x9809, VR::SQ, VM::M1, "Transducer Scan Pattern Code Sequence" },
+{ 0x0028, 0x1211, VR::OW, VM::M1, "Large Red Palette Color Lookup Table Data" },
+{ 0x003A, 0x0242, VR::SQ, VM::M1, "Channel Display Sequence" },
+{ 0x0070, 0x0208, VR::ST, VM::M1, "Graphic Group Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0626[] = {
+{ 0x0028, 0x1212, VR::OW, VM::M1, "Large Green Palette Color Lookup Table Data" },
+{ 0x003A, 0x0241, VR::US, VM::M1, "Presentation Group Number" },
+{ 0x300A, 0x02B2, VR::IS, VM::M1, "Channel Shield Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0627[] = {
+{ 0x0018, 0x980B, VR::CS, VM::M1, "Aliased Data Type" },
+{ 0x0028, 0x1213, VR::OW, VM::M1, "Large Blue Palette Color Lookup Table Data" },
+{ 0x003A, 0x0240, VR::SQ, VM::M1, "Waveform Presentation Group Sequence" },
+{ 0x0040, 0xA0B0, VR::US, VM::M2T2N, "Referenced Waveform Channels" },
+{ 0x0072, 0x0208, VR::CS, VM::M1, "Partial Data Display Handling" },
+{ 0x300A, 0x02B3, VR::SH, VM::M1, "Channel Shield ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0628[] = {
+{ 0x0018, 0x980C, VR::CS, VM::M1, "Position Measuring Device Used" },
+{ 0x0028, 0x1214, VR::UI, VM::M1, "Large Palette Color Lookup Table UID" },
+{ 0x003A, 0x0247, VR::FL, VM::M1, "Fractional Channel Display Scale" },
+{ 0x300A, 0x02B4, VR::LO, VM::M1, "Channel Shield Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0629[] = {
+{ 0x0018, 0x980D, VR::SQ, VM::M1, "Transducer Geometry Code Sequence" },
+{ 0x003A, 0x0246, VR::CS, VM::M1, "Display Shading Flag" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0630[] = {
+{ 0x0018, 0x980E, VR::SQ, VM::M1, "Transducer Beam Steering Code Sequence" },
+{ 0x003A, 0x0245, VR::FL, VM::M1, "Channel Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0631[] = {
+{ 0x0018, 0x980F, VR::SQ, VM::M1, "Transducer Application Code Sequence" },
+{ 0x003A, 0x0244, VR::US, VM::M3, "Channel Recommended Display CIELab Value" },
+{ 0x0068, 0x6390, VR::FD, VM::M1, "Surface Model Scaling Factor" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0632[] = {
+{ 0x0018, 0x9020, VR::CS, VM::M1, "Magnetization Transfer" },
+{ 0x0018, 0x9430, VR::FL, VM::M2, "Position of Isocenter Projection" },
+{ 0x0022, 0x1212, VR::SQ, VM::M1, "Ophthalmic Axial Length Measurements Length Summation Sequence" },
+{ 0x0072, 0x0203, VR::LO, VM::M1, "Display Set Label" },
+{ 0x0074, 0x1244, VR::CS, VM::M1, "Subscription List Status" },
+{ 0x300A, 0x02B8, VR::DS, VM::M1, "Channel Shield Nominal Thickness" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0633[] = {
+{ 0x0018, 0x9021, VR::CS, VM::M1, "T2 Preparation" },
+{ 0x0018, 0x9801, VR::FD, VM::M1TN, "Depth(s) of Focus" },
+{ 0x0040, 0x0620, VR::SQ, VM::M1, "Specimen Localization Content Item Sequence" },
+{ 0x0072, 0x0202, VR::US, VM::M1, "Display Set Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0634[] = {
+{ 0x0018, 0x9022, VR::CS, VM::M1, "Blood Signal Nulling" },
+{ 0x0018, 0x9432, VR::SQ, VM::M1, "Field of View Sequence" },
+{ 0x0022, 0x1210, VR::SQ, VM::M1, "Ophthalmic Axial Length Measurements Total Length Sequence" },
+{ 0x0074, 0x1246, VR::CS, VM::M1, "Unified Procedure Step List Status" },
+{ 0x300A, 0x02BA, VR::DS, VM::M1, "Channel Shield Nominal Transmission" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0635[] = {
+{ 0x0018, 0x9433, VR::LO, VM::M1, "Field of View Description" },
+{ 0x0018, 0x9803, VR::SQ, VM::M1, "Excluded Intervals Sequence" },
+{ 0x0022, 0x1211, VR::SQ, VM::M1, "Ophthalmic Axial Length Measurements Segmental Length Sequence" },
+{ 0x003A, 0x0248, VR::FL, VM::M1, "Absolute Channel Display Scale" },
+{ 0x0072, 0x0200, VR::SQ, VM::M1, "Display Sets Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0636[] = {
+{ 0x0018, 0x9024, VR::CS, VM::M1, "Saturation Recovery" },
+{ 0x0018, 0x9434, VR::SQ, VM::M1, "Exposure Control Sensing Regions Sequence" },
+{ 0x0018, 0x9804, VR::DT, VM::M1, "Exclusion Start Datetime" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0637[] = {
+{ 0x0018, 0x9025, VR::CS, VM::M1, "Spectrally Selected Suppression" },
+{ 0x0018, 0x9435, VR::CS, VM::M1, "Exposure Control Sensing Region Shape" },
+{ 0x0018, 0x9805, VR::FD, VM::M1, "Exclusion Duration" },
+{ 0x0054, 0x0220, VR::SQ, VM::M1, "View Code Sequence" },
+{ 0x0072, 0x0206, VR::LO, VM::M1, "Display Set Presentation Group Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0638[] = {
+{ 0x0018, 0x9026, VR::CS, VM::M1, "Spectrally Selected Excitation" },
+{ 0x0018, 0x9436, VR::SS, VM::M1, "Exposure Control Sensing Region Left Vertical Edge" },
+{ 0x0018, 0x9806, VR::SQ, VM::M1, "US Image Description Sequence" },
+{ 0x0070, 0x0207, VR::LO, VM::M1, "Graphic Group Label" },
+{ 0x0074, 0x1242, VR::CS, VM::M1, "SCP Status" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0639[] = {
+{ 0x0018, 0x9027, VR::CS, VM::M1, "Spatial Pre-saturation" },
+{ 0x0018, 0x9437, VR::SS, VM::M1, "Exposure Control Sensing Region Right Vertical Edge" },
+{ 0x0018, 0x9807, VR::SQ, VM::M1, "Image Data Type Sequence" },
+{ 0x0054, 0x0222, VR::SQ, VM::M1, "View Modifier Code Sequence" },
+{ 0x0072, 0x0204, VR::US, VM::M1, "Display Set Presentation Group" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0640[] = {
+{ 0x0008, 0x2200, VR::CS, VM::M1, "Transducer Position" },
+{ 0x0040, 0xA040, VR::CS, VM::M1, "Value Type" },
+{ 0x2200, 0x0008, VR::CS, VM::M1, "Include Non-DICOM Objects" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0641[] = {
+{ 0x2200, 0x0009, VR::CS, VM::M1, "Include Display Application" },
+{ 0x3008, 0x0240, VR::SQ, VM::M1, "Fraction Status Summary Sequence" },
+{ 0x300A, 0x0242, VR::SH, VM::M1, "Template Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0642[] = {
+{ 0x0088, 0x0200, VR::SQ, VM::M1, "Icon Image Sequence" },
+{ 0x2200, 0x000A, VR::CS, VM::M1, "Preserve Composite Instances After Media Creation" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0643[] = {
+{ 0x0040, 0xA043, VR::SQ, VM::M1, "Concept Name Code Sequence" },
+{ 0x2200, 0x000B, VR::US, VM::M1, "Total Number of Pieces of Media Created" },
+{ 0x300A, 0x0240, VR::IS, VM::M1, "Template Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0644[] = {
+{ 0x0008, 0x2204, VR::CS, VM::M1, "Transducer Orientation" },
+{ 0x0068, 0x6360, VR::SQ, VM::M1, "Surface Model Description Sequence" },
+{ 0x2200, 0x000C, VR::LO, VM::M1, "Requested Media Application Profile" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0645[] = {
+{ 0x2200, 0x000D, VR::SQ, VM::M1, "Referenced Storage Media Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0646[] = {
+{ 0x2200, 0x000E, VR::AT, VM::M1TN, "Failure Attributes" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0647[] = {
+{ 0x0040, 0xA047, VR::LO, VM::M1, "Measurement Precision Description (Trial)" },
+{ 0x2200, 0x000F, VR::CS, VM::M1, "Allow Lossy Compression" },
+{ 0x300A, 0x0244, VR::LO, VM::M1, "Template Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0648[] = {
+{ 0x0008, 0x2208, VR::CS, VM::M1, "Anatomic Structure" },
+{ 0x0010, 0x2210, VR::CS, VM::M1, "Anatomical Orientation Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0649[] = {
+{ 0x2200, 0x0001, VR::CS, VM::M1, "Label Using Information Extracted From Instances" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0650[] = {
+{ 0x2200, 0x0002, VR::UT, VM::M1, "Label Text" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0651[] = {
+{ 0x2200, 0x0003, VR::CS, VM::M1, "Label Style Selection" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0652[] = {
+{ 0x0014, 0x2210, VR::OB, VM::M1, "Coordinate System Axis Values" },
+{ 0x2200, 0x0004, VR::LT, VM::M1, "Media Disposition" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0653[] = {
+{ 0x2200, 0x0005, VR::LT, VM::M1, "Barcode Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0654[] = {
+{ 0x2200, 0x0006, VR::CS, VM::M1, "Barcode Symbology" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0655[] = {
+{ 0x2200, 0x0007, VR::CS, VM::M1, "Allow Media Splitting" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0656[] = {
+{ 0x0014, 0x220C, VR::CS, VM::M1, "Coordinate System Axis Type" },
+{ 0x0040, 0xA050, VR::CS, VM::M1, "Continuity Of Content" },
+{ 0x3008, 0x0251, VR::TM, VM::M1, "Treatment Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0657[] = {
+{ 0x3008, 0x0250, VR::DA, VM::M1, "Treatment Date" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0658[] = {
+{ 0x0014, 0x220E, VR::CS, VM::M1, "Coordinate System Axis Units" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0659[] = {
+{ 0x300A, 0x0250, VR::DS, VM::M1, "Total Reference Air Kerma" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0660[] = {
+{ 0x0014, 0x2208, VR::CS, VM::M1, "Coordinate System Data Set Mapping" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0661[] = {
+{ 0x0040, 0x9096, VR::SQ, VM::M1, "Real World Value Mapping Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0662[] = {
+{ 0x0014, 0x220A, VR::IS, VM::M1, "Coordinate System Axis Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0663[] = {
+{ 0x0040, 0x9094, VR::SQ, VM::M1, "Referenced Image Real World Value Mapping Sequence" },
+{ 0x0040, 0xA057, VR::CS, VM::M1TN, "Urgency or Priority Alerts (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0664[] = {
+{ 0x0008, 0x2218, VR::SQ, VM::M1, "Anatomic Region Sequence" },
+{ 0x0014, 0x2204, VR::SQ, VM::M1, "Coordinate System Axes Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0665[] = {
+{ 0x0010, 0x2201, VR::LO, VM::M1, "Patient Species Description" },
+{ 0x0018, 0xA001, VR::SQ, VM::M1, "Contributing Equipment Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0666[] = {
+{ 0x0010, 0x2202, VR::SQ, VM::M1, "Patient Species Code Sequence" },
+{ 0x0014, 0x2206, VR::ST, VM::M1, "Coordinate System Axis Description" },
+{ 0x0018, 0xA002, VR::DT, VM::M1, "Contribution Date Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0667[] = {
+{ 0x0010, 0x2203, VR::CS, VM::M1, "Patient's Sex Neutered" },
+{ 0x0018, 0xA003, VR::ST, VM::M1, "Contribution Description" },
+{ 0x0040, 0x9098, VR::SQ, VM::M1, "Pixel Value Mapping Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0668[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0669[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0670[] = {
+{ 0x0014, 0x2202, VR::IS, VM::M1, "Coordinate System Number of Axes" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0671[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0672[] = {
+{ 0x0008, 0x2220, VR::SQ, VM::M1, "Anatomic Region Modifier Sequence" },
+{ 0x0040, 0x06FA, VR::LO, VM::M1, "Slide Identifier" },
+{ 0x0040, 0xA060, VR::LO, VM::M1, "Sequencing Indicator (Trial)" },
+{ 0x300A, 0x0263, VR::SH, VM::M1, "Brachy Accessory Device ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0673[] = {
+{ 0x0040, 0xB020, VR::SQ, VM::M1, "Waveform Annotation Sequence" },
+{ 0x0068, 0x6345, VR::ST, VM::M1, "HPGL Pen Description" },
+{ 0x300A, 0x0262, VR::IS, VM::M1, "Brachy Accessory Device Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0674[] = {
+{ 0x0068, 0x6346, VR::FD, VM::M2, "Recommended Rotation Point" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0675[] = {
+{ 0x0068, 0x6347, VR::FD, VM::M4, "Bounding Rectangle" },
+{ 0x300A, 0x0260, VR::SQ, VM::M1, "Brachy Accessory Device Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0676[] = {
+{ 0x0068, 0x6340, VR::LO, VM::M1, "HPGL Pen Label" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0677[] = {
+{ 0x300A, 0x0266, VR::LO, VM::M1, "Brachy Accessory Device Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0678[] = {
+{ 0x0040, 0xA066, VR::SQ, VM::M1, "Document Identifier Code Sequence (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0679[] = {
+{ 0x0040, 0xA067, VR::PN, VM::M1, "Document Author (Trial)" },
+{ 0x300A, 0x0264, VR::CS, VM::M1, "Brachy Accessory Device Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0680[] = {
+{ 0x0008, 0x2228, VR::SQ, VM::M1, "Primary Anatomic Structure Sequence" },
+{ 0x0040, 0xA068, VR::SQ, VM::M1, "Document Author Identifier Code Sequence (Trial)" },
+{ 0x2200, 0x0020, VR::CS, VM::M1, "Request Priority" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0681[] = {
+{ 0x0008, 0x2229, VR::SQ, VM::M1, "Anatomic Structure, Space or Region Sequence" },
+{ 0x300A, 0x026A, VR::DS, VM::M1, "Brachy Accessory Device Nominal Thickness" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0682[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0683[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0684[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0685[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0686[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0687[] = {
+{ 0x300A, 0x026C, VR::DS, VM::M1, "Brachy Accessory Device Nominal Transmission" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0688[] = {
+{ 0x0008, 0x2230, VR::SQ, VM::M1, "Primary Anatomic Structure Modifier Sequence" },
+{ 0x0014, 0x222C, VR::DS, VM::M1TN, "Coordinate System Transform Translation Matrix" },
+{ 0x0040, 0xA070, VR::SQ, VM::M1, "Identifier Code Sequence (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0689[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0690[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0691[] = {
+{ 0x0040, 0xA073, VR::SQ, VM::M1, "Verifying Observer Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0692[] = {
+{ 0x0014, 0x2228, VR::CS, VM::M1, "Transformed Axis Units" },
+{ 0x0040, 0xA074, VR::OB, VM::M1, "Object Binary Identifier (Trial)" },
+{ 0x0068, 0x6350, VR::US, VM::M1TN, "Implant Template 3D Model Surface Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0693[] = {
+{ 0x0040, 0xA075, VR::PN, VM::M1, "Verifying Observer Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0694[] = {
+{ 0x0014, 0x222A, VR::DS, VM::M1TN, "Coordinate System Transform Rotation and Scale Matrix" },
+{ 0x0040, 0xA076, VR::SQ, VM::M1, "Documenting Observer Identifier Code Sequence (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0695[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0696[] = {
+{ 0x0014, 0x2224, VR::IS, VM::M1, "Transform Number of Axes" },
+{ 0x0040, 0xA078, VR::SQ, VM::M1, "Author Observer Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0697[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0698[] = {
+{ 0x0014, 0x2226, VR::IS, VM::M1TN, "Transform Order of Axes" },
+{ 0x0040, 0xA07A, VR::SQ, VM::M1, "Participant Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0699[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0700[] = {
+{ 0x0014, 0x2220, VR::SQ, VM::M1, "Coordinate System Transform Sequence" },
+{ 0x0040, 0xA07C, VR::SQ, VM::M1, "Custodial Organization Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0701[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0702[] = {
+{ 0x0014, 0x2222, VR::ST, VM::M1, "Transform Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0703[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0704[] = {
+{ 0x3008, 0x0200, VR::CS, VM::M1, "Current Treatment Status" },
+{ 0x300A, 0x0202, VR::CS, VM::M1, "Brachy Treatment Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0705[] = {
+{ 0x0008, 0x2240, VR::SQ, VM::M1, "Transducer Position Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0706[] = {
+{ 0x0018, 0x9098, VR::FD, VM::M1T2, "Transmitter Frequency" },
+{ 0x3008, 0x0202, VR::ST, VM::M1, "Treatment Status Comment" },
+{ 0x300A, 0x0200, VR::CS, VM::M1, "Brachy Treatment Technique" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0707[] = {
+{ 0x0008, 0x2242, VR::SQ, VM::M1, "Transducer Position Modifier Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0708[] = {
+{ 0x300A, 0x0206, VR::SQ, VM::M1, "Treatment Machine Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0709[] = {
+{ 0x0008, 0x2244, VR::SQ, VM::M1, "Transducer Orientation Sequence" },
+{ 0x0068, 0x6320, VR::SQ, VM::M1, "HPGL Pen Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0710[] = {
+{ 0x0040, 0xA007, VR::CS, VM::M1, "Findings Flag (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0711[] = {
+{ 0x0008, 0x2246, VR::SQ, VM::M1, "Transducer Orientation Modifier Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0712[] = {
+{ 0x0018, 0x9092, VR::SQ, VM::M1, "Velocity Encoding Acquisition Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0713[] = {
+{ 0x0018, 0x9093, VR::US, VM::M1, "Number of k-Space Trajectories" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0714[] = {
+{ 0x0018, 0x9090, VR::FD, VM::M3, "Velocity Encoding Direction" },
+{ 0x0040, 0x0281, VR::SQ, VM::M1, "Performed Procedure Step Discontinuation Reason Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0715[] = {
+{ 0x0018, 0x9091, VR::FD, VM::M1, "Velocity Encoding Minimum Value" },
+{ 0x0040, 0x0280, VR::ST, VM::M1, "Comments on the Performed Procedure Step" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0716[] = {
+{ 0x0018, 0x9096, VR::FD, VM::M1, "Parallel Reduction Factor In-plane (Retired)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0717[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0718[] = {
+{ 0x0018, 0x9094, VR::CS, VM::M1, "Coverage of k-Space" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0719[] = {
+{ 0x0018, 0x9095, VR::UL, VM::M1, "Spectroscopy Acquisition Phase Rows" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0720[] = {
+{ 0x0008, 0x2251, VR::SQ, VM::M1, "Anatomic Structure Space Or Region Code Sequence (Trial)" },
+{ 0x300A, 0x0212, VR::IS, VM::M1, "Source Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0721[] = {
+{ 0x0040, 0xA010, VR::CS, VM::M1, "Relationship Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0722[] = {
+{ 0x0008, 0x2253, VR::SQ, VM::M1, "Anatomic Portal Of Entrance Code Sequence (Trial)" },
+{ 0x0040, 0xA403, VR::CS, VM::M1, "Observation Subject Class (Trial)" },
+{ 0x300A, 0x0210, VR::SQ, VM::M1, "Source Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0723[] = {
+{ 0x0018, 0x9089, VR::FD, VM::M3, "Diffusion Gradient Orientation" },
+{ 0x0040, 0xA402, VR::UI, VM::M1, "Observation Subject UID (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0724[] = {
+{ 0x0008, 0x2255, VR::SQ, VM::M1, "Anatomic Approach Direction Code Sequence (Trial)" },
+{ 0x300A, 0x0216, VR::LO, VM::M1, "Source Manufacturer" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0725[] = {
+{ 0x0040, 0xA404, VR::SQ, VM::M1, "Observation Subject Type Code Sequence (Trial)" },
+{ 0x0068, 0x6330, VR::US, VM::M1, "HPGL Pen Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0726[] = {
+{ 0x0008, 0x2257, VR::SQ, VM::M1, "Anatomic Perspective Code Sequence (Trial)" },
+{ 0x300A, 0x0214, VR::CS, VM::M1, "Source Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0727[] = {
+{ 0x0008, 0x2256, VR::ST, VM::M1, "Anatomic Perspective Description (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0728[] = {
+{ 0x0008, 0x2259, VR::SQ, VM::M1, "Anatomic Location Of Examining Instrument Code Sequence (Trial)" },
+{ 0x0008, 0x9092, VR::SQ, VM::M1, "Referenced Image Evidence Sequence" },
+{ 0x0018, 0x9082, VR::FD, VM::M1, "Effective Echo Time" },
+{ 0x0040, 0x0293, VR::SQ, VM::M1, "Quantity Sequence" },
+{ 0x300A, 0x021A, VR::DS, VM::M1, "Active Source Length" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0729[] = {
+{ 0x0008, 0x2258, VR::ST, VM::M1, "Anatomic Location Of Examining Instrument Description (Trial)" },
+{ 0x0018, 0x9083, VR::SQ, VM::M1, "Metabolite Map Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0730[] = {
+{ 0x0018, 0x9080, VR::ST, VM::M1, "Metabolite Map Description" },
+{ 0x300A, 0x0218, VR::DS, VM::M1, "Active Source Diameter" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0731[] = {
+{ 0x0008, 0x225A, VR::SQ, VM::M1, "Anatomic Structure Space Or Region Modifier Code Sequence (Trial)" },
+{ 0x0018, 0x9081, VR::CS, VM::M1, "Partial Fourier" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0732[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0733[] = {
+{ 0x0008, 0x225C, VR::SQ, VM::M1, "OnAxis Background Anatomic Structure Code Sequence (Trial)" },
+{ 0x0018, 0x9087, VR::FD, VM::M1, "Diffusion b-value" },
+{ 0x0040, 0x0296, VR::SQ, VM::M1, "Billing Item Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0734[] = {
+{ 0x0018, 0x9084, VR::SQ, VM::M1, "Chemical Shift Sequence" },
+{ 0x0040, 0x0295, VR::SQ, VM::M1, "Measuring Units Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0735[] = {
+{ 0x0018, 0x9085, VR::CS, VM::M1, "Cardiac Signal Source" },
+{ 0x0040, 0x0294, VR::DS, VM::M1, "Quantity" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0736[] = {
+{ 0x0040, 0xA021, VR::UI, VM::M1, "Findings Group UID (Trial)" },
+{ 0x3008, 0x0220, VR::SQ, VM::M1, "Fraction Group Summary Sequence" },
+{ 0x300A, 0x0222, VR::DS, VM::M1, "Source Encapsulation Nominal Thickness" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0737[] = {
+{ 0x0040, 0xA020, VR::SQ, VM::M1, "Findings Sequence (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0738[] = {
+{ 0x0040, 0xA023, VR::DA, VM::M1, "Findings Group Recording Date (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0739[] = {
+{ 0x0040, 0xA022, VR::UI, VM::M1, "Referenced Findings Group UID (Trial)" },
+{ 0x3008, 0x0223, VR::IS, VM::M1, "Referenced Fraction Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0740[] = {
+{ 0x3008, 0x0224, VR::CS, VM::M1, "Fraction Group Type" },
+{ 0x300A, 0x0226, VR::LO, VM::M1, "Source Isotope Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0741[] = {
+{ 0x0040, 0xA024, VR::TM, VM::M1, "Findings Group Recording Time (Trial)" },
+{ 0x0068, 0x6300, VR::OB, VM::M1, "HPGL Document" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0742[] = {
+{ 0x0040, 0xA027, VR::LO, VM::M1, "Verifying Organization" },
+{ 0x300A, 0x0224, VR::DS, VM::M1, "Source Encapsulation Nominal Transmission" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0743[] = {
+{ 0x0040, 0xA026, VR::SQ, VM::M1, "Findings Source Category Code Sequence (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0744[] = {
+{ 0x300A, 0x022A, VR::DS, VM::M1, "Reference Air Kerma Rate" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0745[] = {
+{ 0x0040, 0xA028, VR::SQ, VM::M1, "Documenting Organization Identifier Code Sequence (Trial)" },
+{ 0x300A, 0x022B, VR::DS, VM::M1, "Source Strength" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0746[] = {
+{ 0x300A, 0x0228, VR::DS, VM::M1, "Source Isotope Half Life" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0747[] = {
+{ 0x300A, 0x0229, VR::CS, VM::M1, "Source Strength Units" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0748[] = {
+{ 0x300A, 0x022E, VR::TM, VM::M1, "Source Strength Reference Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0749[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0750[] = {
+{ 0x0070, 0x0295, VR::UL, VM::M1, "Graphic Group ID" },
+{ 0x300A, 0x022C, VR::DA, VM::M1, "Source Strength Reference Date" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0751[] = {
+{ 0x0070, 0x0294, VR::CS, VM::M1, "Compound Graphic Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0752[] = {
+{ 0x3008, 0x0230, VR::CS, VM::M1, "Beam Stopper Position" },
+{ 0x300A, 0x0232, VR::CS, VM::M1, "Application Setup Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0753[] = {
+{ 0x0040, 0xA030, VR::DT, VM::M1, "Verification Date Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0754[] = {
+{ 0x0070, 0x0289, VR::SH, VM::M1, "Tick Label" },
+{ 0x300A, 0x0230, VR::SQ, VM::M1, "Application Setup Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0755[] = {
+{ 0x0028, 0x9099, VR::US, VM::M1, "Largest Monochrome Pixel Value" },
+{ 0x0040, 0xA032, VR::DT, VM::M1, "Observation Date Time" },
+{ 0x0070, 0x0288, VR::FL, VM::M1, "Tick Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0756[] = {
+{ 0x300A, 0x0236, VR::LO, VM::M1, "Application Setup Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0757[] = {
+{ 0x0068, 0x6310, VR::US, VM::M1, "HPGL Contour Pen Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0758[] = {
+{ 0x300A, 0x0234, VR::IS, VM::M1, "Application Setup Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0759[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0760[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0761[] = {
+{ 0x0070, 0x0282, VR::CS, VM::M1, "Compound Graphic Units" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0762[] = {
+{ 0x300A, 0x0238, VR::LO, VM::M1, "Application Setup Manufacturer" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0763[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0764[] = {
+{ 0x0070, 0x0287, VR::SQ, VM::M1, "Major Ticks Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0765[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0766[] = {
+{ 0x0070, 0x0285, VR::FL, VM::M1, "Pattern Off Opacity" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0767[] = {
+{ 0x0070, 0x0284, VR::FL, VM::M1, "Pattern On Opacity" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0768[] = {
+{ 0x0020, 0x9165, VR::AT, VM::M1, "Dimension Index Pointer" },
+{ 0x4008, 0x0200, VR::SH, VM::M1, "Interpretation ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0769[] = {
+{ 0x0020, 0x9164, VR::UI, VM::M1, "Dimension Organization UID" },
+{ 0x0074, 0x1338, VR::FD, VM::M1, "Double Exposure Meterset" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0770[] = {
+{ 0x0020, 0x9167, VR::AT, VM::M1, "Functional Group Pointer" },
+{ 0x0068, 0x62E0, VR::SQ, VM::M1, "View Orientation Code Sequence" },
+{ 0x4008, 0x0202, VR::LO, VM::M1, "Interpretation ID Issuer" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0771[] = {
+{ 0x0074, 0x133A, VR::FD, VM::M4, "Double Exposure Field Delta" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0772[] = {
+{ 0x0018, 0x9159, VR::UL, VM::M1, "Spectroscopy Acquisition Out-of-plane Phase Steps" },
+{ 0x0020, 0x9161, VR::UI, VM::M1, "Concatenation UID" },
+{ 0x0028, 0x0730, VR::US, VM::M1, "Adaptive Map Format" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0773[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0774[] = {
+{ 0x0020, 0x9163, VR::US, VM::M1, "In-concatenation Total Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0775[] = {
+{ 0x0020, 0x9162, VR::US, VM::M1, "In-concatenation Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0776[] = {
+{ 0x0018, 0x9155, VR::FD, VM::M1, "Parallel Reduction Factor out-of-plane" },
+{ 0x0024, 0x0320, VR::SQ, VM::M1, "Visual Field Global Results Index Sequence" },
+{ 0x0054, 0x1311, VR::IS, VM::M1TN, "Secondary Counts Accumulated" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0777[] = {
+{ 0x0054, 0x1310, VR::IS, VM::M1, "Primary (Prompts) Counts Accumulated" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0778[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0779[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0780[] = {
+{ 0x0018, 0x9151, VR::DT, VM::M1, "Frame Reference DateTime" },
+{ 0x0040, 0x0340, VR::SQ, VM::M1, "Performed Series Sequence" },
+{ 0x0400, 0x0310, VR::OB, VM::M1, "Certified Timestamp" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0781[] = {
+{ 0x0024, 0x0325, VR::SQ, VM::M1, "Data Observation Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0782[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0783[] = {
+{ 0x0018, 0x9152, VR::SQ, VM::M1, "MR Metabolite Map Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0784[] = {
+{ 0x0024, 0x0338, VR::CS, VM::M1, "Index Normals Flag" },
+{ 0x0068, 0x62F2, VR::FD, VM::M1, "HPGL Document Scaling" },
+{ 0x4008, 0x0210, VR::CS, VM::M1, "Interpretation Type ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0785[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0786[] = {
+{ 0x0068, 0x62F0, VR::FD, VM::M9, "View Orientation Modifier" },
+{ 0x4008, 0x0212, VR::CS, VM::M1, "Interpretation Status ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0787[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0788[] = {
+{ 0x0028, 0x0720, VR::US, VM::M1, "Zonal Map Number Format" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0789[] = {
+{ 0x0028, 0x0721, VR::AT, VM::M1TN, "Zonal Map Location" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0790[] = {
+{ 0x0028, 0x0722, VR::US, VM::M1, "Zonal Map Format" },
+{ 0x0040, 0x074A, VR::DS, VM::M1, "Z Offset in Slide Coordinate System" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0791[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0792[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0793[] = {
+{ 0x0008, 0x9154, VR::SQ, VM::M1, "Source Image Evidence Sequence" },
+{ 0x0054, 0x1300, VR::DS, VM::M1, "Frame Reference Time" },
+{ 0x0400, 0x0305, VR::CS, VM::M1, "Certified Timestamp Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0794[] = {
+{ 0x0018, 0x9147, VR::CS, VM::M1, "Diffusion Anisotropy Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0795[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0796[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0797[] = {
+{ 0x0074, 0x1324, VR::UL, VM::M1, "Beam Order Index" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0798[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0799[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0800[] = {
+{ 0x0024, 0x0308, VR::LO, VM::M1, "Data Set Source" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0801[] = {
+{ 0x0024, 0x0309, VR::LO, VM::M1, "Data Set Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0802[] = {
+{ 0x0068, 0x62C0, VR::SQ, VM::M1, "HPGL Document Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0803[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0804[] = {
+{ 0x0018, 0x9179, VR::CS, VM::M1, "Specific Absorption Rate Definition" },
+{ 0x0028, 0x0300, VR::CS, VM::M1, "Quality Control Image" },
+{ 0x0028, 0x0710, VR::US, VM::M1, "Normalization Factor Format" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0805[] = {
+{ 0x0018, 0x9178, VR::CS, VM::M1, "Operating Mode" },
+{ 0x0028, 0x0301, VR::CS, VM::M1, "Burned In Annotation" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0806[] = {
+{ 0x0028, 0x0302, VR::CS, VM::M1, "Recognizable Visual Features" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0807[] = {
+{ 0x0028, 0x0303, VR::CS, VM::M1, "Longitudinal Temporal Information Modified" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0808[] = {
+{ 0x0018, 0x9175, VR::LO, VM::M1, "Applicable Safety Standard Description" },
+{ 0x0028, 0x9145, VR::SQ, VM::M1, "Pixel Value Transformation Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0809[] = {
+{ 0x0018, 0x9174, VR::CS, VM::M1, "Applicable Safety Standard Agency" },
+{ 0x0054, 0x1330, VR::US, VM::M1, "Image Index" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0810[] = {
+{ 0x0018, 0x9177, VR::CS, VM::M1, "Operating Mode Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0811[] = {
+{ 0x0018, 0x9176, VR::SQ, VM::M1, "Operating Mode Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0812[] = {
+{ 0x0018, 0x9171, VR::CS, VM::M1, "Respiratory Signal Source" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0813[] = {
+{ 0x0018, 0x9170, VR::CS, VM::M1, "Respiratory Motion Compensation Technique" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0814[] = {
+{ 0x0018, 0x9173, VR::CS, VM::M1, "Bulk Motion Signal Source" },
+{ 0x0024, 0x0306, VR::LO, VM::M1, "Data Set Name" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0815[] = {
+{ 0x0018, 0x9172, VR::CS, VM::M1, "Bulk Motion Compensation Technique" },
+{ 0x0024, 0x0307, VR::LO, VM::M1, "Data Set Version" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0816[] = {
+{ 0x0020, 0x9155, VR::FL, VM::M1, "Actual Cardiac Trigger Time Prior To R-Peak" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0817[] = {
+{ 0x0020, 0x9154, VR::FL, VM::M1, "Nominal Cardiac Trigger Time Prior To R-Peak" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0818[] = {
+{ 0x0020, 0x9157, VR::UL, VM::M1TN, "Dimension Index Values" },
+{ 0x0068, 0x62D0, VR::US, VM::M1, "HPGL Document ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0819[] = {
+{ 0x0020, 0x9156, VR::US, VM::M1, "Frame Acquisition Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0820[] = {
+{ 0x0018, 0x9169, VR::CS, VM::M1, "Cardiac Beat Rejection Technique" },
+{ 0x0028, 0x0700, VR::LO, VM::M1, "DCT Label" },
+{ 0x0028, 0x1351, VR::ST, VM::M1, "Partial View Description" },
+{ 0x0038, 0x0300, VR::LO, VM::M1, "Current Patient Location" },
+{ 0x003A, 0x0302, VR::CS, VM::M1, "Channel Mode" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0821[] = {
+{ 0x0018, 0x9168, VR::FD, VM::M1, "Parallel Reduction Factor Second In-plane" },
+{ 0x0028, 0x0701, VR::CS, VM::M1TN, "Data Block Description" },
+{ 0x0028, 0x1350, VR::CS, VM::M1, "Partial View" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0822[] = {
+{ 0x0020, 0x9153, VR::FD, VM::M1, "Nominal Cardiac Trigger Delay Time" },
+{ 0x0028, 0x0702, VR::AT, VM::M1TN, "Data Block" },
+{ 0x003A, 0x0300, VR::SQ, VM::M1, "Multiplexed Audio Channels Description Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0823[] = {
+{ 0x0028, 0x1352, VR::SQ, VM::M1, "Partial View Code Sequence" },
+{ 0x003A, 0x0301, VR::IS, VM::M1, "Channel Identification Code" },
+{ 0x0068, 0x62D5, VR::LO, VM::M1, "HPGL Document Label" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0824[] = {
+{ 0x0054, 0x1321, VR::DS, VM::M1, "Decay Factor" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0825[] = {
+{ 0x0054, 0x1320, VR::DS, VM::M1, "Slice Sensitivity Factor" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0826[] = {
+{ 0x0054, 0x1323, VR::DS, VM::M1, "Scatter Fraction Factor" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0827[] = {
+{ 0x0018, 0x9166, VR::CS, VM::M1, "Bulk Motion Status" },
+{ 0x0054, 0x1322, VR::DS, VM::M1, "Dose Calibration Factor" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0828[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0829[] = {
+{ 0x0020, 0x9158, VR::LT, VM::M1, "Frame Comments" },
+{ 0x0054, 0x1324, VR::DS, VM::M1, "Dead Time Factor" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0830[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0831[] = {
+{ 0x0024, 0x0317, VR::SQ, VM::M1, "Visual Field Test Reliability Global Index Sequence" },
+{ 0x0028, 0x135A, VR::CS, VM::M1, "Spatial Locations Preserved" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0832[] = {
+{ 0x0018, 0x1314, VR::DS, VM::M1, "Flip Angle" },
+{ 0x0018, 0x1704, VR::IS, VM::M1, "Collimator Right Vertical Edge" },
+{ 0x0018, 0x5210, VR::DS, VM::M6, "Image Transformation Matrix" },
+{ 0x300A, 0x0384, VR::FL, VM::M1, "Range Modulator Gating Stop Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0833[] = {
+{ 0x0018, 0x1315, VR::CS, VM::M1, "Variable Flip Angle Flag" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0834[] = {
+{ 0x0018, 0x1316, VR::DS, VM::M1, "SAR" },
+{ 0x0018, 0x1706, VR::IS, VM::M1, "Collimator Upper Horizontal Edge" },
+{ 0x0018, 0x5212, VR::DS, VM::M3, "Image Translation Vector" },
+{ 0x0020, 0x9536, VR::US, VM::M1, "Reconstruction Index" },
+{ 0x300A, 0x0386, VR::FL, VM::M1, "Range Modulator Gating Start Water Equivalent Thickness" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0835[] = {
+{ 0x0040, 0x030E, VR::SQ, VM::M1, "Exposure Dose Sequence" },
+{ 0x0068, 0x62A0, VR::SQ, VM::M1, "Implant Regulatory Disapproval Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0836[] = {
+{ 0x0018, 0x1310, VR::US, VM::M4, "Acquisition Matrix" },
+{ 0x0018, 0x1700, VR::CS, VM::M1T3, "Collimator Shape" },
+{ 0x0018, 0x9118, VR::SQ, VM::M1, "Cardiac Synchronization Sequence" },
+{ 0x0018, 0x9508, VR::FL, VM::M1, "Primary Positioner Scan Arc" },
+{ 0x0048, 0x0301, VR::CS, VM::M1, "Pixel Origin Interpretation" },
+{ 0x300A, 0x0380, VR::SQ, VM::M1, "Range Modulator Settings Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0837[] = {
+{ 0x0018, 0x9119, VR::SQ, VM::M1, "MR Averages Sequence" },
+{ 0x0018, 0x9509, VR::FL, VM::M1, "Secondary Positioner Scan Arc" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0838[] = {
+{ 0x0018, 0x1312, VR::CS, VM::M1, "In-plane Phase Encoding Direction" },
+{ 0x0018, 0x1702, VR::IS, VM::M1, "Collimator Left Vertical Edge" },
+{ 0x0068, 0x62A5, VR::FD, VM::M1, "Overall Template Spatial Tolerance" },
+{ 0x300A, 0x0382, VR::FL, VM::M1, "Range Modulator Gating Start Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0839[] = {
+{ 0x0040, 0x071A, VR::SQ, VM::M1, "Image Center Point Coordinates Sequence" },
+{ 0x0040, 0xA180, VR::US, VM::M1, "Annotation Group Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0840[] = {
+{ 0x0018, 0x9114, VR::SQ, VM::M1, "MR Echo Sequence" },
+{ 0x0018, 0x9504, VR::SQ, VM::M1, "X-Ray 3D Frame Type Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0841[] = {
+{ 0x0018, 0x9115, VR::SQ, VM::M1, "MR Modifier Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0842[] = {
+{ 0x0018, 0x9506, VR::SQ, VM::M1, "Contributing Sources Sequence" },
+{ 0x0040, 0x0307, VR::DS, VM::M1, "Distance Source to Support" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0843[] = {
+{ 0x0018, 0x9117, VR::SQ, VM::M1, "MR Diffusion Sequence" },
+{ 0x0018, 0x9507, VR::SQ, VM::M1, "X-Ray 3D Acquisition Sequence" },
+{ 0x0028, 0x9537, VR::CS, VM::M1, "Equipment Coordinate System Identification" },
+{ 0x0040, 0x0306, VR::DS, VM::M1, "Distance Source to Entrance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0844[] = {
+{ 0x0018, 0x1318, VR::DS, VM::M1, "dB/dt" },
+{ 0x0018, 0x1708, VR::IS, VM::M1, "Collimator Lower Horizontal Edge" },
+{ 0x0018, 0x8151, VR::DS, VM::M1, "X-Ray Tube Current in uA" },
+{ 0x0020, 0x9128, VR::UL, VM::M1, "Temporal Position Index" },
+{ 0x0040, 0x0301, VR::US, VM::M1, "Total Number of Exposures" },
+{ 0x300A, 0x0388, VR::FL, VM::M1, "Range Modulator Gating Stop Water Equivalent Thickness" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0845[] = {
+{ 0x0018, 0x8150, VR::DS, VM::M1, "Exposure Time in uS" },
+{ 0x0040, 0x0300, VR::US, VM::M1, "Total Time of Fluoroscopy" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0846[] = {
+{ 0x0018, 0x9112, VR::SQ, VM::M1, "MR Timing and Related Parameters Sequence" },
+{ 0x0040, 0x0303, VR::US, VM::M1T2, "Exposed Area" },
+{ 0x300A, 0x038A, VR::FL, VM::M1, "Isocenter to Range Modulator Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0847[] = {
+{ 0x0040, 0x0302, VR::US, VM::M1, "Entrance Dose" },
+{ 0x0072, 0x0330, VR::FD, VM::M1, "Cine Relative to Real-Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0848[] = {
+{ 0x300A, 0x0394, VR::FL, VM::M1TN, "Scan Spot Position Map" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0849[] = {
+{ 0x0054, 0x0308, VR::US, VM::M1, "Energy Window Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0850[] = {
+{ 0x0040, 0xA195, VR::SQ, VM::M1, "Modifier Code Sequence" },
+{ 0x300A, 0x0396, VR::FL, VM::M1TN, "Scan Spot Meterset Weights" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0851[] = {
+{ 0x0040, 0xA194, VR::CS, VM::M1, "Measurement Automation (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0852[] = {
+{ 0x0018, 0x1300, VR::DS, VM::M1, "Scan Velocity" },
+{ 0x0018, 0x1710, VR::IS, VM::M2, "Center of Circular Collimator" },
+{ 0x0040, 0xA193, VR::TM, VM::M1, "Observation Time (Trial)" },
+{ 0x300A, 0x0390, VR::SH, VM::M1, "Scan Spot Tune ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0853[] = {
+{ 0x0018, 0x1301, VR::CS, VM::M1TN, "Whole Body Technique" },
+{ 0x0040, 0x0318, VR::CS, VM::M1, "Organ Exposed" },
+{ 0x0040, 0xA192, VR::DA, VM::M1, "Observation Date (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0854[] = {
+{ 0x0018, 0x1302, VR::IS, VM::M1, "Scan Length" },
+{ 0x0018, 0x1712, VR::IS, VM::M1, "Radius of Circular Collimator" },
+{ 0x300A, 0x0392, VR::IS, VM::M1, "Number of Scan Spot Positions" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0855[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0856[] = {
+{ 0x0018, 0x9104, VR::FD, VM::M1, "Slab Thickness" },
+{ 0x0018, 0x9514, VR::FL, VM::M1, "Primary Positioner Increment" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0857[] = {
+{ 0x0018, 0x9105, VR::FD, VM::M3, "Slab Orientation" },
+{ 0x0018, 0x9515, VR::FL, VM::M1, "Secondary Positioner Increment" },
+{ 0x0040, 0x0314, VR::DS, VM::M1, "Half Value Layer" },
+{ 0x0054, 0x0300, VR::SQ, VM::M1, "Radionuclide Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0858[] = {
+{ 0x0018, 0x9106, VR::FD, VM::M3, "Mid Slab Position" },
+{ 0x0018, 0x9516, VR::DT, VM::M1, "Start Acquisition DateTime" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0859[] = {
+{ 0x0018, 0x9107, VR::SQ, VM::M1, "MR Spatial Saturation Sequence" },
+{ 0x0018, 0x9517, VR::DT, VM::M1, "End Acquisition DateTime" },
+{ 0x0040, 0x0316, VR::DS, VM::M1, "Organ Dose" },
+{ 0x0054, 0x0302, VR::SQ, VM::M1, "Administration Route Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0860[] = {
+{ 0x0018, 0x9100, VR::CS, VM::M1T2, "Resonant Nucleus" },
+{ 0x0018, 0x9510, VR::FL, VM::M1, "Primary Positioner Scan Start Angle" },
+{ 0x0028, 0x9520, VR::DS, VM::M16, "Image to Equipment Mapping Matrix" },
+{ 0x300A, 0x0398, VR::FL, VM::M2, "Scanning Spot Size" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0861[] = {
+{ 0x0018, 0x9101, VR::CS, VM::M1, "Frequency Correction" },
+{ 0x0018, 0x9511, VR::FL, VM::M1, "Secondary Positioner Scan Start Angle" },
+{ 0x0020, 0x9529, VR::SQ, VM::M1, "Contributing SOP Instances Reference Sequence" },
+{ 0x0040, 0x0310, VR::ST, VM::M1, "Comments on Radiation Dose" },
+{ 0x0054, 0x0304, VR::SQ, VM::M1, "Radiopharmaceutical Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0862[] = {
+{ 0x0022, 0x1330, VR::SQ, VM::M1, "Referenced Ophthalmic Axial Length Measurement QC Image Sequence" },
+{ 0x0028, 0x9132, VR::SQ, VM::M1, "Frame VOI LUT Sequence" },
+{ 0x300A, 0x039A, VR::IS, VM::M1, "Number of Paintings" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0863[] = {
+{ 0x0018, 0x9103, VR::SQ, VM::M1, "MR Spectroscopy FOV/Geometry Sequence" },
+{ 0x0040, 0x0312, VR::DS, VM::M1, "X-Ray Output" },
+{ 0x0054, 0x0306, VR::SQ, VM::M1, "Calibration Data Sequence" },
+{ 0x0072, 0x0320, VR::US, VM::M1, "Image Box Overlap Priority" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0864[] = {
+{ 0x300A, 0x03A4, VR::SQ, VM::M1, "Ion Beam Limiting Device Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0865[] = {
+{ 0x0070, 0x031C, VR::SQ, VM::M1, "Fiducial Set Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0866[] = {
+{ 0x300A, 0x03A6, VR::SQ, VM::M1, "Ion Block Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0867[] = {
+{ 0x0068, 0x6280, VR::ST, VM::M1, "Information Summary" },
+{ 0x0070, 0x031E, VR::SQ, VM::M1, "Fiducial Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0868[] = {
+{ 0x0018, 0x1720, VR::IS, VM::M2T2N, "Vertices of the Polygonal Collimator" },
+{ 0x0018, 0x9528, VR::LO, VM::M1, "Algorithm Description" },
+{ 0x0028, 0x1300, VR::CS, VM::M1, "Breast Implant Present" },
+{ 0x0028, 0x9108, VR::CS, VM::M1, "Data Representation" },
+{ 0x300A, 0x03A0, VR::SQ, VM::M1, "Ion Tolerance Table Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0869[] = {
+{ 0x0070, 0x0318, VR::SQ, VM::M1, "Graphic Coordinates Data Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0870[] = {
+{ 0x300A, 0x03A2, VR::SQ, VM::M1, "Ion Beam Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0871[] = {
+{ 0x0040, 0x073A, VR::DS, VM::M1, "Y Offset in Slide Coordinate System" },
+{ 0x0070, 0x031A, VR::UI, VM::M1, "Fiducial UID" },
+{ 0x0072, 0x0318, VR::US, VM::M1, "Image Box Large Scroll Amount" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0872[] = {
+{ 0x0008, 0x9124, VR::SQ, VM::M1, "Derivation Image Sequence" },
+{ 0x0018, 0x9524, VR::LO, VM::M1, "Application Name" },
+{ 0x0024, 0x0341, VR::FL, VM::M1, "Index Probability" },
+{ 0x300A, 0x03AC, VR::SQ, VM::M1, "Ion Wedge Position Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0873[] = {
+{ 0x0018, 0x9525, VR::LO, VM::M1, "Application Version" },
+{ 0x0040, 0x0324, VR::SQ, VM::M1, "Billing Supplies and Devices Sequence" },
+{ 0x0070, 0x0314, VR::SQ, VM::M1, "Used Fiducials Sequence" },
+{ 0x0072, 0x0316, VR::CS, VM::M1, "Image Box Large Scroll Type" },
+{ 0x0072, 0x0706, VR::CS, VM::M1, "Show Grayscale Inverted" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0874[] = {
+{ 0x0018, 0x9526, VR::LO, VM::M1, "Application Manufacturer" },
+{ 0x0072, 0x0705, VR::SQ, VM::M1, "Pseudo-Color Palette Instance Reference Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0875[] = {
+{ 0x0018, 0x9527, VR::CS, VM::M1, "Algorithm Type" },
+{ 0x0072, 0x0314, VR::US, VM::M1, "Image Box Small Scroll Amount" },
+{ 0x0072, 0x0704, VR::CS, VM::M1, "Pseudo-Color Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0876[] = {
+{ 0x0020, 0x9518, VR::US, VM::M1TN, "Acquisition Index" },
+{ 0x0040, 0x0321, VR::SQ, VM::M1, "Film Consumption Sequence" },
+{ 0x0070, 0x0311, VR::SQ, VM::M1, "Fiducial Identifier Code Sequence" },
+{ 0x300A, 0x03A8, VR::SQ, VM::M1, "Ion Control Point Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0877[] = {
+{ 0x0008, 0x9121, VR::SQ, VM::M1, "Referenced Raw Data Sequence" },
+{ 0x0024, 0x0344, VR::SQ, VM::M1, "Index Probability Sequence" },
+{ 0x0040, 0x0320, VR::SQ, VM::M1, "Billing Procedure Step Sequence" },
+{ 0x0070, 0x0310, VR::SH, VM::M1, "Fiducial Identifier" },
+{ 0x0072, 0x0312, VR::CS, VM::M1, "Image Box Small Scroll Type" },
+{ 0x0072, 0x0702, VR::CS, VM::M1, "VOI Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0878[] = {
+{ 0x0022, 0x1300, VR::SQ, VM::M1, "Intraocular Lens Calculations Right Eye Sequence" },
+{ 0x300A, 0x03AA, VR::SQ, VM::M1, "Ion Wedge Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0879[] = {
+{ 0x0008, 0x9123, VR::UI, VM::M1, "Creator-Version UID" },
+{ 0x0070, 0x0312, VR::FD, VM::M1, "Contour Uncertainty Radius" },
+{ 0x0072, 0x0310, VR::CS, VM::M1, "Image Box Scroll Direction" },
+{ 0x0072, 0x0700, VR::CS, VM::M2, "Display Set Patient Orientation" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0880[] = {
+{ 0x0070, 0x030D, VR::SQ, VM::M1, "Registration Type Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0881[] = {
+{ 0x0070, 0x030C, VR::CS, VM::M1, "Frame of Reference Transformation Matrix Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0882[] = {
+{ 0x0020, 0x9116, VR::SQ, VM::M1, "Plane Orientation Sequence" },
+{ 0x0070, 0x030F, VR::ST, VM::M1, "Fiducial Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0883[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0884[] = {
+{ 0x0018, 0x9538, VR::SQ, VM::M1, "Per Projection Acquisition Sequence" },
+{ 0x0070, 0x0309, VR::SQ, VM::M1, "Matrix Registration Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0885[] = {
+{ 0x0020, 0x9111, VR::SQ, VM::M1, "Frame Content Sequence" },
+{ 0x0028, 0x0740, VR::US, VM::M1, "Code Number Format" },
+{ 0x0040, 0xA992, VR::ST, VM::M1, "Uniform Resource Locator (Trial)" },
+{ 0x0070, 0x0308, VR::SQ, VM::M1, "Registration Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0886[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0887[] = {
+{ 0x0020, 0x9113, VR::SQ, VM::M1, "Plane Position Sequence" },
+{ 0x0040, 0x072A, VR::DS, VM::M1, "X Offset in Slide Coordinate System" },
+{ 0x0070, 0x030A, VR::SQ, VM::M1, "Matrix Sequence" },
+{ 0x0072, 0x0308, VR::US, VM::M1, "Image Box Tile Vertical Dimension" },
+{ 0x0072, 0x0718, VR::CS, VM::M1, "Display Set Vertical Justification" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0888[] = {
+{ 0x0072, 0x0717, VR::CS, VM::M1, "Display Set Horizontal Justification" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0889[] = {
+{ 0x0018, 0x9125, VR::SQ, VM::M1, "MR FOV/Geometry Sequence" },
+{ 0x0028, 0x9505, VR::SQ, VM::M1, "Multi-frame Presentation Sequence" },
+{ 0x0072, 0x0306, VR::US, VM::M1, "Image Box Tile Horizontal Dimension" },
+{ 0x0072, 0x0716, VR::CS, VM::M1, "Show Acquisition Techniques Flag" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0890[] = {
+{ 0x0018, 0x9126, VR::SQ, VM::M1, "Volume Localization Sequence" },
+{ 0x0028, 0x9506, VR::US, VM::M2T2N, "Pixel Shift Frame Range" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0891[] = {
+{ 0x0018, 0x9127, VR::UL, VM::M1, "Spectroscopy Acquisition Data Columns" },
+{ 0x0028, 0x9507, VR::US, VM::M2T2N, "LUT Frame Range" },
+{ 0x0070, 0x0306, VR::CS, VM::M1, "Shape Type" },
+{ 0x0072, 0x0304, VR::CS, VM::M1, "Image Box Layout Type" },
+{ 0x0072, 0x0714, VR::CS, VM::M1, "Show Patient Demographics Flag" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0892[] = {
+{ 0x0018, 0x9530, VR::SQ, VM::M1, "X-Ray 3D Reconstruction Sequence" },
+{ 0x0028, 0x9110, VR::SQ, VM::M1, "Pixel Measures Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0893[] = {
+{ 0x0018, 0x9531, VR::LO, VM::M1, "Reconstruction Description" },
+{ 0x0028, 0x9501, VR::SQ, VM::M1, "Pixel Shift Sequence" },
+{ 0x0040, 0x0330, VR::SQ, VM::M1, "Referenced Procedure Step Sequence" },
+{ 0x0072, 0x0302, VR::US, VM::M1, "Image Box Number" },
+{ 0x0072, 0x0712, VR::CS, VM::M1, "Show Graphic Annotation Flag" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0894[] = {
+{ 0x0022, 0x1310, VR::SQ, VM::M1, "Intraocular Lens Calculations Left Eye Sequence" },
+{ 0x0028, 0x9502, VR::SQ, VM::M1, "Region Pixel Shift Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0895[] = {
+{ 0x0028, 0x9503, VR::SS, VM::M2T2N, "Vertices of the Region" },
+{ 0x0072, 0x0300, VR::SQ, VM::M1, "Image Boxes Sequence" },
+{ 0x0072, 0x0710, VR::CS, VM::M1, "Show Image True Size Flag" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0896[] = {
+{ 0x0068, 0x6260, VR::SQ, VM::M1, "Information From Manufacturer Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0897[] = {
+{ 0x300A, 0x0346, VR::SH, VM::M1, "Range Modulator ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0898[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0899[] = {
+{ 0x300A, 0x0344, VR::IS, VM::M1, "Range Modulator Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0900[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0901[] = {
+{ 0x0068, 0x6265, VR::SQ, VM::M1, "Notification From Manufacturer Sequence" },
+{ 0x300A, 0x0342, VR::SQ, VM::M1, "Range Modulator Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0902[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0903[] = {
+{ 0x300A, 0x0340, VR::IS, VM::M1, "Number of Range Modulators" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0904[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0905[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0906[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0907[] = {
+{ 0x300A, 0x034C, VR::SH, VM::M1, "Beam Current Modulation ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0908[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0909[] = {
+{ 0x300A, 0x034A, VR::LO, VM::M1, "Range Modulator Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0910[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0911[] = {
+{ 0x300A, 0x0348, VR::CS, VM::M1, "Range Modulator Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0912[] = {
+{ 0x0068, 0x6270, VR::DT, VM::M1, "Information Issue DateTime" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0913[] = {
+{ 0x300A, 0x0356, VR::FL, VM::M1, "Fixation Light Azimuthal Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0914[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0915[] = {
+{ 0x300A, 0x0354, VR::LO, VM::M1, "Patient Support Accessory Code" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0916[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0917[] = {
+{ 0x300A, 0x0352, VR::SH, VM::M1, "Patient Support ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0918[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0919[] = {
+{ 0x300A, 0x0350, VR::CS, VM::M1, "Patient Support Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0920[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0921[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0922[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0923[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0924[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0925[] = {
+{ 0x300A, 0x035A, VR::FL, VM::M1, "Meterset Rate" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0926[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0927[] = {
+{ 0x300A, 0x0358, VR::FL, VM::M1, "Fixation Light Polar Angle" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0928[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0929[] = {
+{ 0x300A, 0x0366, VR::FL, VM::M1, "Range Shifter Water Equivalent Thickness" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0930[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0931[] = {
+{ 0x0040, 0xA167, VR::SQ, VM::M1, "Observation Category Code Sequence (Trial)" },
+{ 0x300A, 0x0364, VR::FL, VM::M1, "Isocenter to Range Shifter Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0932[] = {
+{ 0x0040, 0xA160, VR::UT, VM::M1, "Text Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0933[] = {
+{ 0x300A, 0x0362, VR::LO, VM::M1, "Range Shifter Setting" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0934[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0935[] = {
+{ 0x300A, 0x0360, VR::SQ, VM::M1, "Range Shifter Settings Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0936[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0937[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0938[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0939[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0940[] = {
+{ 0x0040, 0xA168, VR::SQ, VM::M1, "Concept Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0941[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0942[] = {
+{ 0x0040, 0xA16A, VR::ST, VM::M1, "Bibliographic Citation (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0943[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0944[] = {
+{ 0x0040, 0xA174, VR::CS, VM::M1, "Referenced Object Observation Class (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0945[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0946[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0947[] = {
+{ 0x300A, 0x0374, VR::FL, VM::M1, "Isocenter to Lateral Spreading Device Distance" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0948[] = {
+{ 0x0040, 0xA170, VR::SQ, VM::M1, "Purpose of Reference Code Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0949[] = {
+{ 0x0040, 0xA171, VR::UI, VM::M1, "Observation UID (Trial)" },
+{ 0x300A, 0x0372, VR::LO, VM::M1, "Lateral Spreading Device Setting" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0950[] = {
+{ 0x0040, 0xA172, VR::UI, VM::M1, "Referenced Observation UID (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0951[] = {
+{ 0x0040, 0xA173, VR::CS, VM::M1, "Referenced Observation Class (Trial)" },
+{ 0x300A, 0x0370, VR::SQ, VM::M1, "Lateral Spreading Device Settings Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0952[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0953[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0954[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0955[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0956[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0957[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0958[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0959[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0960[] = {
+{ 0x0040, 0xE001, VR::ST, VM::M1, "HL7 Instance Identifier" },
+{ 0x0068, 0x6221, VR::LO, VM::M1, "Implant Template Version" },
+{ 0x300A, 0x0306, VR::SS, VM::M1, "Radiation Charge State" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0961[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0962[] = {
+{ 0x0068, 0x6223, VR::CS, VM::M1, "Implant Type" },
+{ 0x300A, 0x0304, VR::IS, VM::M1, "Radiation Atomic Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0963[] = {
+{ 0x0068, 0x6222, VR::SQ, VM::M1, "Replaced Implant Template Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0964[] = {
+{ 0x0068, 0x6225, VR::SQ, VM::M1, "Original Implant Template Sequence" },
+{ 0x300A, 0x0302, VR::IS, VM::M1, "Radiation Mass Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0965[] = {
+{ 0x0040, 0xE004, VR::DT, VM::M1, "HL7 Document Effective Time" },
+{ 0x0068, 0x6224, VR::SQ, VM::M1, "Derivation Implant Template Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0966[] = {
+{ 0x0018, 0x9198, VR::CS, VM::M1, "First Order Phase Correction" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0967[] = {
+{ 0x0018, 0x9199, VR::CS, VM::M1, "Water Referenced Phase Correction" },
+{ 0x0040, 0xE006, VR::SQ, VM::M1, "HL7 Document Type Code Sequence" },
+{ 0x0068, 0x6226, VR::DT, VM::M1, "Effective DateTime" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0968[] = {
+{ 0x0018, 0x9196, VR::FD, VM::M1, "Chemical Shift Maximum Integration Limit in Hz" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0969[] = {
+{ 0x0018, 0x9197, VR::SQ, VM::M1, "MR Velocity Encoding Sequence" },
+{ 0x0040, 0xE008, VR::SQ, VM::M1, "Document Class Code Sequence" },
+{ 0x300A, 0x030F, VR::SH, VM::M1, "Snout ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0970[] = {
+{ 0x300A, 0x030C, VR::SQ, VM::M1, "Snout Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0971[] = {
+{ 0x0018, 0x9195, VR::FD, VM::M1, "Chemical Shift Minimum Integration Limit in Hz" },
+{ 0x300A, 0x030D, VR::FL, VM::M1, "Snout Position" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0972[] = {
+{ 0x300A, 0x030A, VR::FL, VM::M2, "Virtual Source-Axis Distances" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0973[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0974[] = {
+{ 0x300A, 0x0308, VR::CS, VM::M1, "Scan Mode" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0975[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0976[] = {
+{ 0x0040, 0xE011, VR::UI, VM::M1, "Retrieve Location UID" },
+{ 0x300A, 0x0316, VR::IS, VM::M1, "Range Shifter Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0977[] = {
+{ 0x0040, 0xA504, VR::SQ, VM::M1, "Content Template Sequence" },
+{ 0x0040, 0xE010, VR::UT, VM::M1, "Retrieve URI" },
+{ 0x0068, 0x6230, VR::SQ, VM::M1, "Implant Target Anatomy Sequence" },
+{ 0x0068, 0x6620, VR::FD, VM::M3, "3D Plane Normal" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0978[] = {
+{ 0x300A, 0x0314, VR::SQ, VM::M1, "Range Shifter Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0979[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0980[] = {
+{ 0x300A, 0x0312, VR::IS, VM::M1, "Number of Range Shifters" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0981[] = {
+{ 0x0040, 0xA110, VR::DA, VM::M1, "Date of Document or Verbal Transaction (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0982[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0983[] = {
+{ 0x0040, 0xA112, VR::TM, VM::M1, "Time of Document Creation or Verbal Transaction (Trial)" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0984[] = {
+{ 0x0018, 0x9186, VR::SH, VM::M1, "Respiratory Signal Source ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0985[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0986[] = {
+{ 0x0018, 0x9184, VR::FD, VM::M1, "Tagging Delay" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0987[] = {
+{ 0x0018, 0x9185, VR::ST, VM::M1, "Respiratory Motion Compensation Technique Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0988[] = {
+{ 0x0018, 0x9182, VR::FD, VM::M1, "Gradient Output" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0989[] = {
+{ 0x0018, 0x9183, VR::CS, VM::M1, "Flow Compensation Direction" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0990[] = {
+{ 0x0018, 0x9180, VR::CS, VM::M1, "Gradient Output Type" },
+{ 0x300A, 0x0318, VR::SH, VM::M1, "Range Shifter ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0991[] = {
+{ 0x0018, 0x9181, VR::FD, VM::M1, "Specific Absorption Rate Value" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0992[] = {
+{ 0x0040, 0xA125, VR::CS, VM::M2, "Report Status ID (Trial)" },
+{ 0x0040, 0xE021, VR::SQ, VM::M1, "DICOM Retrieval Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0993[] = {
+{ 0x0040, 0xA124, VR::UI, VM::M1, "UID" },
+{ 0x0040, 0xE020, VR::CS, VM::M1, "Type of Instances" },
+{ 0x0068, 0x6610, VR::FD, VM::M3, "3D Plane Origin" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0994[] = {
+{ 0x0040, 0xE023, VR::SQ, VM::M1, "WADO Retrieval Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0995[] = {
+{ 0x0040, 0xE022, VR::SQ, VM::M1, "DICOM Media Retrieval Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0996[] = {
+{ 0x0040, 0xA121, VR::DA, VM::M1, "Date" },
+{ 0x300A, 0x0322, VR::LO, VM::M1, "Range Shifter Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0997[] = {
+{ 0x0040, 0xA120, VR::DT, VM::M1, "DateTime" },
+{ 0x0040, 0xE024, VR::SQ, VM::M1, "XDS Retrieval Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0998[] = {
+{ 0x0040, 0xA123, VR::PN, VM::M1, "Person Name" },
+{ 0x300A, 0x0320, VR::CS, VM::M1, "Range Shifter Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow0999[] = {
+{ 0x0040, 0xA122, VR::TM, VM::M1, "Time" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1000[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1001[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1002[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1003[] = {
+{ 0x2010, 0x0376, VR::DS, VM::M2, "Printer Pixel Spacing" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1004[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1005[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1006[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1007[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1008[] = {
+{ 0x0040, 0xA525, VR::SQ, VM::M1, "Identical Documents Sequence" },
+{ 0x0040, 0xE031, VR::UI, VM::M1, "Home Community ID" },
+{ 0x300A, 0x0336, VR::SH, VM::M1, "Lateral Spreading Device ID" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1009[] = {
+{ 0x0040, 0xE030, VR::UI, VM::M1, "Repository Unique ID" },
+{ 0x0068, 0x6210, VR::LO, VM::M1, "Implant Size" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1010[] = {
+{ 0x300A, 0x0334, VR::IS, VM::M1, "Lateral Spreading Device Number" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1011[] = {
+{ 0x0040, 0xA136, VR::US, VM::M1TN, "Referenced Frame Numbers" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1012[] = {
+{ 0x300A, 0x0332, VR::SQ, VM::M1, "Lateral Spreading Device Sequence" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1013[] = {
+{ 0x0040, 0xA130, VR::CS, VM::M1, "Temporal Range Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1014[] = {
+{ 0x300A, 0x0330, VR::IS, VM::M1, "Number of Lateral Spreading Devices" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1015[] = {
+{ 0x0040, 0xA132, VR::UL, VM::M1TN, "Referenced Sample Positions" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1016[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1017[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1018[] = {
+{ 0x300A, 0x033C, VR::FL, VM::M1, "Lateral Spreading Device Water Equivalent Thickness" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1019[] = {
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1020[] = {
+{ 0x300A, 0x033A, VR::LO, VM::M1, "Lateral Spreading Device Description" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1021[] = {
+{ 0x0040, 0xA138, VR::DS, VM::M1TN, "Referenced Time Offsets" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1022[] = {
+{ 0x300A, 0x0338, VR::CS, VM::M1, "Lateral Spreading Device Type" },
+{ 0, 0, 0, 0 }
+};
+vtkDICOMMetaData::DictElement DictRow1023[] = {
+{ 0x0040, 0xA13A, VR::DT, VM::M1TN, "Referenced DateTime" },
+{ 0, 0, 0, 0 }
 };
 
 }
 
-vtkDICOMMetaData::DictElement ***vtkDICOMMetaData::DictHashTable =
-  ::DictHashTable;
+vtkDICOMMetaData::DictElement *vtkDICOMMetaData::DictHashTable[1024] = {
+DictRow0000,
+DictRow0001,
+DictRow0002,
+DictRow0003,
+DictRow0004,
+DictRow0005,
+DictRow0006,
+DictRow0007,
+DictRow0008,
+DictRow0009,
+DictRow0010,
+DictRow0011,
+DictRow0012,
+DictRow0013,
+DictRow0014,
+DictRow0015,
+DictRow0016,
+DictRow0017,
+DictRow0018,
+DictRow0019,
+DictRow0020,
+DictRow0021,
+DictRow0022,
+DictRow0023,
+DictRow0024,
+DictRow0025,
+DictRow0026,
+DictRow0027,
+DictRow0028,
+DictRow0029,
+DictRow0030,
+DictRow0031,
+DictRow0032,
+DictRow0033,
+DictRow0034,
+DictRow0035,
+DictRow0036,
+DictRow0037,
+DictRow0038,
+DictRow0039,
+DictRow0040,
+DictRow0041,
+DictRow0042,
+DictRow0043,
+DictRow0044,
+DictRow0045,
+DictRow0046,
+DictRow0047,
+DictRow0048,
+DictRow0049,
+DictRow0050,
+DictRow0051,
+DictRow0052,
+DictRow0053,
+DictRow0054,
+DictRow0055,
+DictRow0056,
+DictRow0057,
+DictRow0058,
+DictRow0059,
+DictRow0060,
+DictRow0061,
+DictRow0062,
+DictRow0063,
+DictRow0064,
+DictRow0065,
+DictRow0066,
+DictRow0067,
+DictRow0068,
+DictRow0069,
+DictRow0070,
+DictRow0071,
+DictRow0072,
+DictRow0073,
+DictRow0074,
+DictRow0075,
+DictRow0076,
+DictRow0077,
+DictRow0078,
+DictRow0079,
+DictRow0080,
+DictRow0081,
+DictRow0082,
+DictRow0083,
+DictRow0084,
+DictRow0085,
+DictRow0086,
+DictRow0087,
+DictRow0088,
+DictRow0089,
+DictRow0090,
+DictRow0091,
+DictRow0092,
+DictRow0093,
+DictRow0094,
+DictRow0095,
+DictRow0096,
+DictRow0097,
+DictRow0098,
+DictRow0099,
+DictRow0100,
+DictRow0101,
+DictRow0102,
+DictRow0103,
+DictRow0104,
+DictRow0105,
+DictRow0106,
+DictRow0107,
+DictRow0108,
+DictRow0109,
+DictRow0110,
+DictRow0111,
+DictRow0112,
+DictRow0113,
+DictRow0114,
+DictRow0115,
+DictRow0116,
+DictRow0117,
+DictRow0118,
+DictRow0119,
+DictRow0120,
+DictRow0121,
+DictRow0122,
+DictRow0123,
+DictRow0124,
+DictRow0125,
+DictRow0126,
+DictRow0127,
+DictRow0128,
+DictRow0129,
+DictRow0130,
+DictRow0131,
+DictRow0132,
+DictRow0133,
+DictRow0134,
+DictRow0135,
+DictRow0136,
+DictRow0137,
+DictRow0138,
+DictRow0139,
+DictRow0140,
+DictRow0141,
+DictRow0142,
+DictRow0143,
+DictRow0144,
+DictRow0145,
+DictRow0146,
+DictRow0147,
+DictRow0148,
+DictRow0149,
+DictRow0150,
+DictRow0151,
+DictRow0152,
+DictRow0153,
+DictRow0154,
+DictRow0155,
+DictRow0156,
+DictRow0157,
+DictRow0158,
+DictRow0159,
+DictRow0160,
+DictRow0161,
+DictRow0162,
+DictRow0163,
+DictRow0164,
+DictRow0165,
+DictRow0166,
+DictRow0167,
+DictRow0168,
+DictRow0169,
+DictRow0170,
+DictRow0171,
+DictRow0172,
+DictRow0173,
+DictRow0174,
+DictRow0175,
+DictRow0176,
+DictRow0177,
+DictRow0178,
+DictRow0179,
+DictRow0180,
+DictRow0181,
+DictRow0182,
+DictRow0183,
+DictRow0184,
+DictRow0185,
+DictRow0186,
+DictRow0187,
+DictRow0188,
+DictRow0189,
+DictRow0190,
+DictRow0191,
+DictRow0192,
+DictRow0193,
+DictRow0194,
+DictRow0195,
+DictRow0196,
+DictRow0197,
+DictRow0198,
+DictRow0199,
+DictRow0200,
+DictRow0201,
+DictRow0202,
+DictRow0203,
+DictRow0204,
+DictRow0205,
+DictRow0206,
+DictRow0207,
+DictRow0208,
+DictRow0209,
+DictRow0210,
+DictRow0211,
+DictRow0212,
+DictRow0213,
+DictRow0214,
+DictRow0215,
+DictRow0216,
+DictRow0217,
+DictRow0218,
+DictRow0219,
+DictRow0220,
+DictRow0221,
+DictRow0222,
+DictRow0223,
+DictRow0224,
+DictRow0225,
+DictRow0226,
+DictRow0227,
+DictRow0228,
+DictRow0229,
+DictRow0230,
+DictRow0231,
+DictRow0232,
+DictRow0233,
+DictRow0234,
+DictRow0235,
+DictRow0236,
+DictRow0237,
+DictRow0238,
+DictRow0239,
+DictRow0240,
+DictRow0241,
+DictRow0242,
+DictRow0243,
+DictRow0244,
+DictRow0245,
+DictRow0246,
+DictRow0247,
+DictRow0248,
+DictRow0249,
+DictRow0250,
+DictRow0251,
+DictRow0252,
+DictRow0253,
+DictRow0254,
+DictRow0255,
+DictRow0256,
+DictRow0257,
+DictRow0258,
+DictRow0259,
+DictRow0260,
+DictRow0261,
+DictRow0262,
+DictRow0263,
+DictRow0264,
+DictRow0265,
+DictRow0266,
+DictRow0267,
+DictRow0268,
+DictRow0269,
+DictRow0270,
+DictRow0271,
+DictRow0272,
+DictRow0273,
+DictRow0274,
+DictRow0275,
+DictRow0276,
+DictRow0277,
+DictRow0278,
+DictRow0279,
+DictRow0280,
+DictRow0281,
+DictRow0282,
+DictRow0283,
+DictRow0284,
+DictRow0285,
+DictRow0286,
+DictRow0287,
+DictRow0288,
+DictRow0289,
+DictRow0290,
+DictRow0291,
+DictRow0292,
+DictRow0293,
+DictRow0294,
+DictRow0295,
+DictRow0296,
+DictRow0297,
+DictRow0298,
+DictRow0299,
+DictRow0300,
+DictRow0301,
+DictRow0302,
+DictRow0303,
+DictRow0304,
+DictRow0305,
+DictRow0306,
+DictRow0307,
+DictRow0308,
+DictRow0309,
+DictRow0310,
+DictRow0311,
+DictRow0312,
+DictRow0313,
+DictRow0314,
+DictRow0315,
+DictRow0316,
+DictRow0317,
+DictRow0318,
+DictRow0319,
+DictRow0320,
+DictRow0321,
+DictRow0322,
+DictRow0323,
+DictRow0324,
+DictRow0325,
+DictRow0326,
+DictRow0327,
+DictRow0328,
+DictRow0329,
+DictRow0330,
+DictRow0331,
+DictRow0332,
+DictRow0333,
+DictRow0334,
+DictRow0335,
+DictRow0336,
+DictRow0337,
+DictRow0338,
+DictRow0339,
+DictRow0340,
+DictRow0341,
+DictRow0342,
+DictRow0343,
+DictRow0344,
+DictRow0345,
+DictRow0346,
+DictRow0347,
+DictRow0348,
+DictRow0349,
+DictRow0350,
+DictRow0351,
+DictRow0352,
+DictRow0353,
+DictRow0354,
+DictRow0355,
+DictRow0356,
+DictRow0357,
+DictRow0358,
+DictRow0359,
+DictRow0360,
+DictRow0361,
+DictRow0362,
+DictRow0363,
+DictRow0364,
+DictRow0365,
+DictRow0366,
+DictRow0367,
+DictRow0368,
+DictRow0369,
+DictRow0370,
+DictRow0371,
+DictRow0372,
+DictRow0373,
+DictRow0374,
+DictRow0375,
+DictRow0376,
+DictRow0377,
+DictRow0378,
+DictRow0379,
+DictRow0380,
+DictRow0381,
+DictRow0382,
+DictRow0383,
+DictRow0384,
+DictRow0385,
+DictRow0386,
+DictRow0387,
+DictRow0388,
+DictRow0389,
+DictRow0390,
+DictRow0391,
+DictRow0392,
+DictRow0393,
+DictRow0394,
+DictRow0395,
+DictRow0396,
+DictRow0397,
+DictRow0398,
+DictRow0399,
+DictRow0400,
+DictRow0401,
+DictRow0402,
+DictRow0403,
+DictRow0404,
+DictRow0405,
+DictRow0406,
+DictRow0407,
+DictRow0408,
+DictRow0409,
+DictRow0410,
+DictRow0411,
+DictRow0412,
+DictRow0413,
+DictRow0414,
+DictRow0415,
+DictRow0416,
+DictRow0417,
+DictRow0418,
+DictRow0419,
+DictRow0420,
+DictRow0421,
+DictRow0422,
+DictRow0423,
+DictRow0424,
+DictRow0425,
+DictRow0426,
+DictRow0427,
+DictRow0428,
+DictRow0429,
+DictRow0430,
+DictRow0431,
+DictRow0432,
+DictRow0433,
+DictRow0434,
+DictRow0435,
+DictRow0436,
+DictRow0437,
+DictRow0438,
+DictRow0439,
+DictRow0440,
+DictRow0441,
+DictRow0442,
+DictRow0443,
+DictRow0444,
+DictRow0445,
+DictRow0446,
+DictRow0447,
+DictRow0448,
+DictRow0449,
+DictRow0450,
+DictRow0451,
+DictRow0452,
+DictRow0453,
+DictRow0454,
+DictRow0455,
+DictRow0456,
+DictRow0457,
+DictRow0458,
+DictRow0459,
+DictRow0460,
+DictRow0461,
+DictRow0462,
+DictRow0463,
+DictRow0464,
+DictRow0465,
+DictRow0466,
+DictRow0467,
+DictRow0468,
+DictRow0469,
+DictRow0470,
+DictRow0471,
+DictRow0472,
+DictRow0473,
+DictRow0474,
+DictRow0475,
+DictRow0476,
+DictRow0477,
+DictRow0478,
+DictRow0479,
+DictRow0480,
+DictRow0481,
+DictRow0482,
+DictRow0483,
+DictRow0484,
+DictRow0485,
+DictRow0486,
+DictRow0487,
+DictRow0488,
+DictRow0489,
+DictRow0490,
+DictRow0491,
+DictRow0492,
+DictRow0493,
+DictRow0494,
+DictRow0495,
+DictRow0496,
+DictRow0497,
+DictRow0498,
+DictRow0499,
+DictRow0500,
+DictRow0501,
+DictRow0502,
+DictRow0503,
+DictRow0504,
+DictRow0505,
+DictRow0506,
+DictRow0507,
+DictRow0508,
+DictRow0509,
+DictRow0510,
+DictRow0511,
+DictRow0512,
+DictRow0513,
+DictRow0514,
+DictRow0515,
+DictRow0516,
+DictRow0517,
+DictRow0518,
+DictRow0519,
+DictRow0520,
+DictRow0521,
+DictRow0522,
+DictRow0523,
+DictRow0524,
+DictRow0525,
+DictRow0526,
+DictRow0527,
+DictRow0528,
+DictRow0529,
+DictRow0530,
+DictRow0531,
+DictRow0532,
+DictRow0533,
+DictRow0534,
+DictRow0535,
+DictRow0536,
+DictRow0537,
+DictRow0538,
+DictRow0539,
+DictRow0540,
+DictRow0541,
+DictRow0542,
+DictRow0543,
+DictRow0544,
+DictRow0545,
+DictRow0546,
+DictRow0547,
+DictRow0548,
+DictRow0549,
+DictRow0550,
+DictRow0551,
+DictRow0552,
+DictRow0553,
+DictRow0554,
+DictRow0555,
+DictRow0556,
+DictRow0557,
+DictRow0558,
+DictRow0559,
+DictRow0560,
+DictRow0561,
+DictRow0562,
+DictRow0563,
+DictRow0564,
+DictRow0565,
+DictRow0566,
+DictRow0567,
+DictRow0568,
+DictRow0569,
+DictRow0570,
+DictRow0571,
+DictRow0572,
+DictRow0573,
+DictRow0574,
+DictRow0575,
+DictRow0576,
+DictRow0577,
+DictRow0578,
+DictRow0579,
+DictRow0580,
+DictRow0581,
+DictRow0582,
+DictRow0583,
+DictRow0584,
+DictRow0585,
+DictRow0586,
+DictRow0587,
+DictRow0588,
+DictRow0589,
+DictRow0590,
+DictRow0591,
+DictRow0592,
+DictRow0593,
+DictRow0594,
+DictRow0595,
+DictRow0596,
+DictRow0597,
+DictRow0598,
+DictRow0599,
+DictRow0600,
+DictRow0601,
+DictRow0602,
+DictRow0603,
+DictRow0604,
+DictRow0605,
+DictRow0606,
+DictRow0607,
+DictRow0608,
+DictRow0609,
+DictRow0610,
+DictRow0611,
+DictRow0612,
+DictRow0613,
+DictRow0614,
+DictRow0615,
+DictRow0616,
+DictRow0617,
+DictRow0618,
+DictRow0619,
+DictRow0620,
+DictRow0621,
+DictRow0622,
+DictRow0623,
+DictRow0624,
+DictRow0625,
+DictRow0626,
+DictRow0627,
+DictRow0628,
+DictRow0629,
+DictRow0630,
+DictRow0631,
+DictRow0632,
+DictRow0633,
+DictRow0634,
+DictRow0635,
+DictRow0636,
+DictRow0637,
+DictRow0638,
+DictRow0639,
+DictRow0640,
+DictRow0641,
+DictRow0642,
+DictRow0643,
+DictRow0644,
+DictRow0645,
+DictRow0646,
+DictRow0647,
+DictRow0648,
+DictRow0649,
+DictRow0650,
+DictRow0651,
+DictRow0652,
+DictRow0653,
+DictRow0654,
+DictRow0655,
+DictRow0656,
+DictRow0657,
+DictRow0658,
+DictRow0659,
+DictRow0660,
+DictRow0661,
+DictRow0662,
+DictRow0663,
+DictRow0664,
+DictRow0665,
+DictRow0666,
+DictRow0667,
+DictRow0668,
+DictRow0669,
+DictRow0670,
+DictRow0671,
+DictRow0672,
+DictRow0673,
+DictRow0674,
+DictRow0675,
+DictRow0676,
+DictRow0677,
+DictRow0678,
+DictRow0679,
+DictRow0680,
+DictRow0681,
+DictRow0682,
+DictRow0683,
+DictRow0684,
+DictRow0685,
+DictRow0686,
+DictRow0687,
+DictRow0688,
+DictRow0689,
+DictRow0690,
+DictRow0691,
+DictRow0692,
+DictRow0693,
+DictRow0694,
+DictRow0695,
+DictRow0696,
+DictRow0697,
+DictRow0698,
+DictRow0699,
+DictRow0700,
+DictRow0701,
+DictRow0702,
+DictRow0703,
+DictRow0704,
+DictRow0705,
+DictRow0706,
+DictRow0707,
+DictRow0708,
+DictRow0709,
+DictRow0710,
+DictRow0711,
+DictRow0712,
+DictRow0713,
+DictRow0714,
+DictRow0715,
+DictRow0716,
+DictRow0717,
+DictRow0718,
+DictRow0719,
+DictRow0720,
+DictRow0721,
+DictRow0722,
+DictRow0723,
+DictRow0724,
+DictRow0725,
+DictRow0726,
+DictRow0727,
+DictRow0728,
+DictRow0729,
+DictRow0730,
+DictRow0731,
+DictRow0732,
+DictRow0733,
+DictRow0734,
+DictRow0735,
+DictRow0736,
+DictRow0737,
+DictRow0738,
+DictRow0739,
+DictRow0740,
+DictRow0741,
+DictRow0742,
+DictRow0743,
+DictRow0744,
+DictRow0745,
+DictRow0746,
+DictRow0747,
+DictRow0748,
+DictRow0749,
+DictRow0750,
+DictRow0751,
+DictRow0752,
+DictRow0753,
+DictRow0754,
+DictRow0755,
+DictRow0756,
+DictRow0757,
+DictRow0758,
+DictRow0759,
+DictRow0760,
+DictRow0761,
+DictRow0762,
+DictRow0763,
+DictRow0764,
+DictRow0765,
+DictRow0766,
+DictRow0767,
+DictRow0768,
+DictRow0769,
+DictRow0770,
+DictRow0771,
+DictRow0772,
+DictRow0773,
+DictRow0774,
+DictRow0775,
+DictRow0776,
+DictRow0777,
+DictRow0778,
+DictRow0779,
+DictRow0780,
+DictRow0781,
+DictRow0782,
+DictRow0783,
+DictRow0784,
+DictRow0785,
+DictRow0786,
+DictRow0787,
+DictRow0788,
+DictRow0789,
+DictRow0790,
+DictRow0791,
+DictRow0792,
+DictRow0793,
+DictRow0794,
+DictRow0795,
+DictRow0796,
+DictRow0797,
+DictRow0798,
+DictRow0799,
+DictRow0800,
+DictRow0801,
+DictRow0802,
+DictRow0803,
+DictRow0804,
+DictRow0805,
+DictRow0806,
+DictRow0807,
+DictRow0808,
+DictRow0809,
+DictRow0810,
+DictRow0811,
+DictRow0812,
+DictRow0813,
+DictRow0814,
+DictRow0815,
+DictRow0816,
+DictRow0817,
+DictRow0818,
+DictRow0819,
+DictRow0820,
+DictRow0821,
+DictRow0822,
+DictRow0823,
+DictRow0824,
+DictRow0825,
+DictRow0826,
+DictRow0827,
+DictRow0828,
+DictRow0829,
+DictRow0830,
+DictRow0831,
+DictRow0832,
+DictRow0833,
+DictRow0834,
+DictRow0835,
+DictRow0836,
+DictRow0837,
+DictRow0838,
+DictRow0839,
+DictRow0840,
+DictRow0841,
+DictRow0842,
+DictRow0843,
+DictRow0844,
+DictRow0845,
+DictRow0846,
+DictRow0847,
+DictRow0848,
+DictRow0849,
+DictRow0850,
+DictRow0851,
+DictRow0852,
+DictRow0853,
+DictRow0854,
+DictRow0855,
+DictRow0856,
+DictRow0857,
+DictRow0858,
+DictRow0859,
+DictRow0860,
+DictRow0861,
+DictRow0862,
+DictRow0863,
+DictRow0864,
+DictRow0865,
+DictRow0866,
+DictRow0867,
+DictRow0868,
+DictRow0869,
+DictRow0870,
+DictRow0871,
+DictRow0872,
+DictRow0873,
+DictRow0874,
+DictRow0875,
+DictRow0876,
+DictRow0877,
+DictRow0878,
+DictRow0879,
+DictRow0880,
+DictRow0881,
+DictRow0882,
+DictRow0883,
+DictRow0884,
+DictRow0885,
+DictRow0886,
+DictRow0887,
+DictRow0888,
+DictRow0889,
+DictRow0890,
+DictRow0891,
+DictRow0892,
+DictRow0893,
+DictRow0894,
+DictRow0895,
+DictRow0896,
+DictRow0897,
+DictRow0898,
+DictRow0899,
+DictRow0900,
+DictRow0901,
+DictRow0902,
+DictRow0903,
+DictRow0904,
+DictRow0905,
+DictRow0906,
+DictRow0907,
+DictRow0908,
+DictRow0909,
+DictRow0910,
+DictRow0911,
+DictRow0912,
+DictRow0913,
+DictRow0914,
+DictRow0915,
+DictRow0916,
+DictRow0917,
+DictRow0918,
+DictRow0919,
+DictRow0920,
+DictRow0921,
+DictRow0922,
+DictRow0923,
+DictRow0924,
+DictRow0925,
+DictRow0926,
+DictRow0927,
+DictRow0928,
+DictRow0929,
+DictRow0930,
+DictRow0931,
+DictRow0932,
+DictRow0933,
+DictRow0934,
+DictRow0935,
+DictRow0936,
+DictRow0937,
+DictRow0938,
+DictRow0939,
+DictRow0940,
+DictRow0941,
+DictRow0942,
+DictRow0943,
+DictRow0944,
+DictRow0945,
+DictRow0946,
+DictRow0947,
+DictRow0948,
+DictRow0949,
+DictRow0950,
+DictRow0951,
+DictRow0952,
+DictRow0953,
+DictRow0954,
+DictRow0955,
+DictRow0956,
+DictRow0957,
+DictRow0958,
+DictRow0959,
+DictRow0960,
+DictRow0961,
+DictRow0962,
+DictRow0963,
+DictRow0964,
+DictRow0965,
+DictRow0966,
+DictRow0967,
+DictRow0968,
+DictRow0969,
+DictRow0970,
+DictRow0971,
+DictRow0972,
+DictRow0973,
+DictRow0974,
+DictRow0975,
+DictRow0976,
+DictRow0977,
+DictRow0978,
+DictRow0979,
+DictRow0980,
+DictRow0981,
+DictRow0982,
+DictRow0983,
+DictRow0984,
+DictRow0985,
+DictRow0986,
+DictRow0987,
+DictRow0988,
+DictRow0989,
+DictRow0990,
+DictRow0991,
+DictRow0992,
+DictRow0993,
+DictRow0994,
+DictRow0995,
+DictRow0996,
+DictRow0997,
+DictRow0998,
+DictRow0999,
+DictRow1000,
+DictRow1001,
+DictRow1002,
+DictRow1003,
+DictRow1004,
+DictRow1005,
+DictRow1006,
+DictRow1007,
+DictRow1008,
+DictRow1009,
+DictRow1010,
+DictRow1011,
+DictRow1012,
+DictRow1013,
+DictRow1014,
+DictRow1015,
+DictRow1016,
+DictRow1017,
+DictRow1018,
+DictRow1019,
+DictRow1020,
+DictRow1021,
+DictRow1022,
+DictRow1023,
+};
+

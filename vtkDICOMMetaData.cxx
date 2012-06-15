@@ -39,7 +39,7 @@ vtkDICOMMetaData::~vtkDICOMMetaData()
 vtkDICOMMetaData::Element *vtkDICOMMetaData::FindElement(Tag tag)
 {
   unsigned int m = METADATA_HASH_SIZE - 1;
-  unsigned int i = (tag.GetHash() & m);
+  unsigned int i = (tag.hash() & m);
   vtkDICOMMetaData::Element ***htable = this->Table;
   vtkDICOMMetaData::Element **hptr;
 
@@ -62,7 +62,7 @@ vtkDICOMMetaData::Element *vtkDICOMMetaData::FindElement(Tag tag)
 void vtkDICOMMetaData::EraseElement(Tag tag)
 {
   unsigned int m = METADATA_HASH_SIZE - 1;
-  unsigned int i = (tag.GetHash() & m);
+  unsigned int i = (tag.hash() & m);
   vtkDICOMMetaData::Element ***htable = this->Table;
   vtkDICOMMetaData::Element **hptr;
 
@@ -90,7 +90,7 @@ void vtkDICOMMetaData::EraseElement(Tag tag)
 vtkDICOMMetaData::Element *&vtkDICOMMetaData::FindElementSlot(Tag tag)
 {
   unsigned int m = METADATA_HASH_SIZE - 1;
-  unsigned int i = (tag.GetHash() & m);
+  unsigned int i = (tag.hash() & m);
   vtkDICOMMetaData::Element ***htable = this->Table;
   vtkDICOMMetaData::Element **hptr;
 
@@ -167,22 +167,21 @@ void vtkDICOMMetaData::InsertElement(Tag tag, unsigned short vr, unsigned int vl
   slot = new vtkDICOMMetaData::Element(tag, vr, vl, newdata);
 }
 
-// Get an element from the hash table.
-#define DICT_HASH_SIZE 1024
 vtkDICOMMetaData::DictElement *vtkDICOMMetaData::FindDictElement(Tag tag)
 {
-  unsigned int m = DICT_HASH_SIZE - 1;
-  unsigned int i = (tag.GetHash() & m);
-  vtkDICOMMetaData::DictElement ***htable = vtkDICOMMetaData::DictHashTable;
-  vtkDICOMMetaData::DictElement **hptr;
+  unsigned int m = DICT_HASH_TABLE_SIZE - 1;
+  unsigned int i = (tag.hash() & m);
+  vtkDICOMMetaData::DictElement **htable = vtkDICOMMetaData::DictHashTable;
+  vtkDICOMMetaData::DictElement *hptr;
 
   if (htable && (hptr = htable[i]) != NULL)
     {
-    while (*hptr)
+    while (hptr->tg)
       {
-      if ((*hptr)->tag == tag.GetKey())
+      if (hptr->tg == tag.group() &&
+          hptr->te == tag.element())
         {
-        return *hptr;
+        return hptr;
         }
       hptr++;
       }
