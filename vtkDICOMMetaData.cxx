@@ -138,7 +138,7 @@ vtkDICOMMetaData::Element *&vtkDICOMMetaData::FindElementSlot(Tag tag)
         htable[i] = hptr;
         for (unsigned int j = 0; j < n; j++)
           {
-          *hptr++ = *oldptr++;
+          *hptr++ = oldptr[i];
           }
         delete [] oldptr;
         }
