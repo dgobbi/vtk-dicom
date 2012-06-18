@@ -123,6 +123,7 @@ vtkDICOMMetaData::Element **vtkDICOMMetaData::FindElementLocation(Tag tag)
         {
         break;
         }
+      // "n" includes the terminating null pointer
       n++;
       hptr++;
       }
@@ -136,14 +137,18 @@ vtkDICOMMetaData::Element **vtkDICOMMetaData::FindElementLocation(Tag tag)
         vtkDICOMMetaData::Element **oldptr = htable[i];
         hptr = new vtkDICOMMetaData::Element *[2*(n+1)];
         htable[i] = hptr;
+        // copy the old list, including the terminating null
         for (unsigned int j = 0; j < n; j++)
           {
-          *hptr++ = oldptr[i];
+          *hptr++ = oldptr[j];
           }
+        // go back to the terminating null
+        hptr--;
+
         delete [] oldptr;
         }
 
-      // add a terminating null
+      // add a new terminating null (after the current one)
       hptr[1] = NULL;
       }
     }
