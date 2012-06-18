@@ -142,7 +142,7 @@ for te in ht:
   s = ""
   for idx in te:
     s = s + element_list[idx] + "\n"
-  s = s + "{ 0, 0, 0, 0 }"
+  s = s + "{ 0, 0, 0, 0, 0 }"
   entry_list.append(s)
   k = k + len(te) + 1
 
