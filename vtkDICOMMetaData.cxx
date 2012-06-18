@@ -87,7 +87,7 @@ void vtkDICOMMetaData::EraseElement(Tag tag)
 
 // Return a reference to the element within the hash table, which can
 // be used to insert a new value.
-vtkDICOMMetaData::Element *&vtkDICOMMetaData::FindElementSlot(Tag tag)
+vtkDICOMMetaData::Element **vtkDICOMMetaData::FindElementLocation(Tag tag)
 {
   unsigned int m = METADATA_HASH_SIZE - 1;
   unsigned int i = (tag.hash() & m);
@@ -148,23 +148,24 @@ vtkDICOMMetaData::Element *&vtkDICOMMetaData::FindElementSlot(Tag tag)
       }
     }
 
-  return *hptr;
+  return hptr;
 }
 
 // Insert an element into the hash table
-void vtkDICOMMetaData::InsertElement(Tag tag, unsigned short vr, unsigned int vl, const char *data)
+void vtkDICOMMetaData::InsertElement(
+  Tag tag, unsigned short vr, unsigned int vl, const char *data)
 {
-  vtkDICOMMetaData::Element *&slot = this->FindElementSlot(tag);
+  vtkDICOMMetaData::Element **loc = this->FindElementLocation(tag);
 
-  if (slot)
+  if (*loc)
     {
-    delete slot;
+    delete *loc;
     }
 
   char *newdata = new char[strlen(data)+1];
   strcpy(newdata, data);
 
-  slot = new vtkDICOMMetaData::Element(tag, vr, vl, newdata);
+  *loc = new vtkDICOMMetaData::Element(tag, vr, vl, newdata);
 }
 
 vtkDICOMMetaData::DictElement *vtkDICOMMetaData::FindDictElement(Tag tag)
