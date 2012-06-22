@@ -1,4 +1,6 @@
 #include "vtkDICOMMetaData.h"
+#include "vtkDICOMElement.h"
+#include "vtkDICOMTag.h"
 
 #include <vtkObjectFactory.h>
 #include <vtkSmartPointer.h>
@@ -21,7 +23,7 @@ vtkDICOMMetaData::vtkDICOMMetaData()
 // Destructor
 vtkDICOMMetaData::~vtkDICOMMetaData()
 {
-  Element ***htable = this->Table;
+  vtkDICOMElement ***htable = this->Table;
 
   if (htable)
     {
@@ -36,18 +38,18 @@ vtkDICOMMetaData::~vtkDICOMMetaData()
 }
 
 // Get an element from the hash table.
-vtkDICOMMetaData::Element *vtkDICOMMetaData::FindElement(Tag tag)
+vtkDICOMElement *vtkDICOMMetaData::FindElement(vtkDICOMTag tag)
 {
   unsigned int m = METADATA_HASH_SIZE - 1;
-  unsigned int i = (tag.hash() & m);
-  vtkDICOMMetaData::Element ***htable = this->Table;
-  vtkDICOMMetaData::Element **hptr;
+  unsigned int i = (tag.ComputeHash() & m);
+  vtkDICOMElement ***htable = this->Table;
+  vtkDICOMElement **hptr;
 
   if (htable && (hptr = htable[i]) != NULL)
     {
     while (*hptr)
       {
-      if ((*hptr)->tag == tag)
+      if ((*hptr)->GetTag() == tag)
         {
         return *hptr;
         }
@@ -59,18 +61,18 @@ vtkDICOMMetaData::Element *vtkDICOMMetaData::FindElement(Tag tag)
 }
 
 // Erase an element from the hash table
-void vtkDICOMMetaData::EraseElement(Tag tag)
+void vtkDICOMMetaData::EraseElement(vtkDICOMTag tag)
 {
   unsigned int m = METADATA_HASH_SIZE - 1;
-  unsigned int i = (tag.hash() & m);
-  vtkDICOMMetaData::Element ***htable = this->Table;
-  vtkDICOMMetaData::Element **hptr;
+  unsigned int i = (tag.ComputeHash() & m);
+  vtkDICOMElement ***htable = this->Table;
+  vtkDICOMElement **hptr;
 
   if (htable && (hptr = htable[i]) != NULL)
     {
     while (*hptr)
       {
-      if ((*hptr)->tag == tag)
+      if ((*hptr)->GetTag() == tag)
         {
         delete *hptr;
         do
@@ -87,18 +89,18 @@ void vtkDICOMMetaData::EraseElement(Tag tag)
 
 // Return a reference to the element within the hash table, which can
 // be used to insert a new value.
-vtkDICOMMetaData::Element **vtkDICOMMetaData::FindElementLocation(Tag tag)
+vtkDICOMElement **vtkDICOMMetaData::FindElementLocation(vtkDICOMTag tag)
 {
   unsigned int m = METADATA_HASH_SIZE - 1;
-  unsigned int i = (tag.hash() & m);
-  vtkDICOMMetaData::Element ***htable = this->Table;
-  vtkDICOMMetaData::Element **hptr;
+  unsigned int i = (tag.ComputeHash() & m);
+  vtkDICOMElement ***htable = this->Table;
+  vtkDICOMElement **hptr;
 
   if (htable == NULL)
     {
     // allocate the hash table
     m = METADATA_HASH_SIZE;
-    htable = new vtkDICOMMetaData::Element **[METADATA_HASH_SIZE];
+    htable = new vtkDICOMElement **[METADATA_HASH_SIZE];
     this->Table = htable;
     do { *htable++ = NULL; } while (--m);
     htable = this->Table;
@@ -108,7 +110,7 @@ vtkDICOMMetaData::Element **vtkDICOMMetaData::FindElementLocation(Tag tag)
 
   if (hptr == NULL)
     {
-    hptr = new vtkDICOMMetaData::Element *[4];
+    hptr = new vtkDICOMElement *[4];
     htable[i] = hptr;
     hptr[0] = NULL;
     hptr[1] = NULL;
@@ -119,7 +121,7 @@ vtkDICOMMetaData::Element **vtkDICOMMetaData::FindElementLocation(Tag tag)
     unsigned int n = 0;
     do
       {
-      if ((*hptr)->tag == tag)
+      if ((*hptr)->GetTag() == tag)
         {
         break;
         }
@@ -134,8 +136,8 @@ vtkDICOMMetaData::Element **vtkDICOMMetaData::FindElementLocation(Tag tag)
       // if n+1 is a power of two, double allocated space
       if (n > 1 && (n & (n+1)) == 0)
         {
-        vtkDICOMMetaData::Element **oldptr = htable[i];
-        hptr = new vtkDICOMMetaData::Element *[2*(n+1)];
+        vtkDICOMElement **oldptr = htable[i];
+        hptr = new vtkDICOMElement *[2*(n+1)];
         htable[i] = hptr;
         // copy the old list, including the terminating null
         for (unsigned int j = 0; j < n; j++)
@@ -158,9 +160,9 @@ vtkDICOMMetaData::Element **vtkDICOMMetaData::FindElementLocation(Tag tag)
 
 // Insert an element into the hash table
 void vtkDICOMMetaData::InsertElement(
-  Tag tag, unsigned short vr, unsigned int vl, const char *data)
+  vtkDICOMTag tag, vtkDICOMVR vr, const char *data, vtkIdType l)
 {
-  vtkDICOMMetaData::Element **loc = this->FindElementLocation(tag);
+  vtkDICOMElement **loc = this->FindElementLocation(tag);
 
   if (*loc)
     {
@@ -170,22 +172,21 @@ void vtkDICOMMetaData::InsertElement(
   char *newdata = new char[strlen(data)+1];
   strcpy(newdata, data);
 
-  *loc = new vtkDICOMMetaData::Element(tag, vr, vl, newdata);
+  *loc = vtkDICOMElement::New(tag, vr, newdata, l);
 }
 
-vtkDICOMMetaData::DictElement *vtkDICOMMetaData::FindDictElement(Tag tag)
+vtkDICOMMetaData::DictEntry *vtkDICOMMetaData::FindDictEntry(vtkDICOMTag tag)
 {
   unsigned int m = DICT_HASH_TABLE_SIZE - 1;
-  unsigned int i = (tag.hash() & m);
-  vtkDICOMMetaData::DictElement **htable = vtkDICOMMetaData::DictHashTable;
-  vtkDICOMMetaData::DictElement *hptr;
+  unsigned int i = (tag.ComputeHash() & m);
+  vtkDICOMMetaData::DictEntry **htable = vtkDICOMMetaData::DictHashTable;
+  vtkDICOMMetaData::DictEntry *hptr;
 
   if (htable && (hptr = htable[i]) != NULL)
     {
-    while (hptr->tg)
+    while (hptr->GetName())
       {
-      if (hptr->tg == tag.group() &&
-          hptr->te == tag.element())
+      if (hptr->GetTag() == tag)
         {
         return hptr;
         }

@@ -1,6 +1,10 @@
+#ifndef __vtkDICOMMetaDataDict_h
+#define __vtkDICOMMetaDataDict_h
+
 //! VRs (Value Representations)
-namespace VR
+class vtkDICOMVR
 {
+public:
   enum EnumType
   {
     AE = 0x4145, // Application Entity
@@ -30,14 +34,37 @@ namespace VR
     UN = 0x554e, // Unknown
     US = 0x5553, // Unsigned Short
     UT = 0x5554, // Unlimited Text
-    OX = 0x4f58, // Either OB or OW
-    XS = 0x5853, // Either SS or US
+    OX = 0x4f58, // Either OB or OW (will only appear in dict elements)
+    XS = 0x5853, // Either SS or US (will only appear in dict elements)
+    XQ = 0x5851, // Sequence over slices (per-slice elements)
   };
+
+  vtkDICOMVR(EnumType vr) : Key(static_cast<unsigned short>(vr)) {};
+
+private:
+  vtkDICOMVR() {};
+
+  unsigned short Key;
+
+  friend ostream& operator<<(ostream& o, vtkDICOMVR a);
+  friend bool operator==(vtkDICOMVR a, vtkDICOMVR b);
 };
 
-//! VMs (Value Multiplicities)
-namespace VM
+inline bool operator==(vtkDICOMVR a, vtkDICOMVR b)
 {
+  return (a.Key == b.Key);
+}
+
+inline ostream& operator<<(ostream& o, vtkDICOMVR a)
+{
+  o << static_cast<char>(a.Key >> 8) << static_cast<char>(a.Key);
+  return o;
+}
+
+//! VMs (Value Multiplicities)
+class vtkDICOMVM
+{
+public:
   enum EnumType
   {
     M     = 0x0000,
@@ -59,7 +86,21 @@ namespace VM
     M3TN  = 0xFF03,
     M6TN  = 0xFF06,
   };
+
+  vtkDICOMVM(EnumType vr) : Key(static_cast<unsigned short>(vr)) {};
+
+private:
+  vtkDICOMVM() {};
+
+  unsigned short Key;
+
+  friend bool operator==(vtkDICOMVM a, vtkDICOMVM b);
 };
+
+inline bool operator==(vtkDICOMVM a, vtkDICOMVM b)
+{
+  return (a.Key == b.Key);
+}
 
 //! Tags
 namespace DC
@@ -3545,3 +3586,5 @@ TotalProcessingTime                     = 0x40101069, // FL 1
 DetectorCalibrationData                 = 0x4010106C, // OB 1
 };
 };
+
+#endif /* __vtkDICOMMetaDataDict_h */
