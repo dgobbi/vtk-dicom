@@ -65,12 +65,12 @@ void vtkDICOMSequence::SetItem(int i, const vtkDICOMSequenceItem& item)
   // reallocate the array if we aren't the sole owner
   if (this->V->ReferenceCount > 1)
     {
-    unsigned int n = this->V->NumberOfValues;
+    unsigned int m = this->V->NumberOfValues;
     const vtkDICOMSequenceItem *cptr = ptr;
-    ptr = this->AllocateSequenceData(vtkDICOMVR::SQ, n);
-    for (unsigned int i = 0; i < n; i++)
+    ptr = this->AllocateSequenceData(vtkDICOMVR::SQ, m);
+    for (unsigned int j = 0; j < m; j++)
       {
-      ptr[i] = cptr[i];
+      ptr[j] = cptr[j];
       }
     }
 
