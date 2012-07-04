@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
    unsigned int l = 5;
    const char *data = "hello there";*/
   
-  const char * inputImageFileName = "/Users/lucy_l/LUCYWORK/Develop/Data/SFMRC/Fast_SPGR_2/IM-0007-0006.dcm";
+  const char * inputImageFileName = "/Volumes/Work/CAIN/Data/SFMRC/Fast_SPGR_2/IM-0007-0006.dcm";
   
   gdcm::Reader tagreader;
   tagreader.SetFileName(inputImageFileName);
@@ -51,22 +51,24 @@ int main(int argc, char *argv[])
   const char *data =  strm.str().c_str(); 
   cerr << "Data : " << data << endl;
   
-  vtkDICOMMetaData::Tag tagMeta(dataGroup,dataElement);
+  vtkDICOMTag tagMeta(dataGroup,dataElement);
   
   vtkDICOMMetaData *metaData = vtkDICOMMetaData::New();  
   
-  vtkDICOMMetaData::DictElement *de = metaData->FindDictElement(tagMeta);
-  unsigned short r = de->vr;
-  cerr << static_cast<char>(de->vr) << static_cast<char>(de->vr >> 8) << endl;
+  vtkDICOMDictEntry de;
+  if (metaData->FindDictEntry(tagMeta, de))
+    {
+    cerr << de.GetVR() << endl;
+    }
   
-  metaData->InsertElement(tagMeta,r,l,data);
+  metaData->SetAttributeValue(tagMeta,data);
   
-  vtkDICOMMetaData::Element *metaElement;
-  metaElement = metaData->FindElement(tagMeta);
+  vtkDICOMValue metaValue;
+  metaData->GetAttributeValue(0, tagMeta, metaValue);
   
-  cerr << "VR : " << static_cast<char>(metaElement->vr) << static_cast<char>(metaElement->vr >> 8) << "\n"
-       << "VL : " << metaElement->vl << "\n"
-       << "Data : " << metaElement->data << endl;
+  cerr << "VR : " << metaValue.GetVR() << "\n"
+       << "VL : " << metaValue.GetVL() << "\n"
+       << "Data : " << metaValue.GetTextData() << endl;
   
   return 0;
 }

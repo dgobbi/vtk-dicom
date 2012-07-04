@@ -3,27 +3,21 @@
 
 #include <vtkObject.h>
 
-#include "vtkDICOMMetaDataDict.h"
-#include "vtkDICOMTag.h"
-
-class vtkDICOMElement;
+#include "vtkDICOMDataElement.h"
+#include "vtkDICOMDictEntry.h"
 
 //! The size of the hash table for the dicom dictionary.
 #define DICT_HASH_TABLE_SIZE 1024
 
 //! A container class for DICOM metadata.
 /*!
- *  The vtkDICOMMetaData object stores DICOM metadata elements
- *  in a lookup table.  The FindElement() method will return an
- *  element, given a DICOM tag, or will return NULL if that element
- *  is not found.  Likewise, DICOM dictionary lookups can be done
- *  with the FindDictEntry() method.
+ *  The vtkDICOMMetaData object stores DICOM metadata in a hash table
+ *  for efficient access.  One vtkDICOMMetaData object can store the
+ *  metadata for a series of DICOM images.
  */
 class vtkDICOMMetaData : public vtkObject
 {
 public:
-  struct DictEntry;
-
   //! Create a new vtkDICOMMetaData instance.
   static vtkDICOMMetaData *New();
 
@@ -33,63 +27,125 @@ public:
   //! Print a summary of the contents of this object.
   void PrintSelf(ostream& os, vtkIndent indent);
 
-  //! Find an element, given a tag.
+  //! Set the number of instances (i.e. files).
   /*!
-   *  This will return an element, or NULL if no element was found for
-   *  the supplied tag.  There are two ways that this method can be
-   *  called:  FindElement(Tag(0x0008,0x1030)) or, using DC::EnumType,
-   *  FindElement(DC::StudyDescription).
+   *  We want to track the metadata from all of the files that
+   *  make up the image volume that we have loaded into VTK.
+   *  The number of file instances must be set here before any
+   *  attributes are set.  All the files should be from the same
+   *  series.
    */
-  vtkDICOMElement *FindElement(vtkDICOMTag tag);
+  void SetNumberOfInstances(int n);
+  int GetNumberOfInstances() { return this->NumberOfInstances; }
 
-  //! Erase an element.
-  void EraseElement(vtkDICOMTag tag);
+  //! Clear the metadata, initialize the structure.
+  void Clear();
 
-  //! Construct and insert an element (text only, for now).
-  void InsertElement(vtkDICOMTag tag, vtkDICOMVR vr,
-                     const char *data, vtkIdType l);
+  //! Get the number of data elements that are present.
+  int GetNumberOfDataElements() {
+    return this->NumberOfDataElements; }
+
+  //! Get an iterator for the list of data elements.
+  vtkDICOMDataElementIterator GetData() { return this->Head.Next; }
+
+  //! Get an end iterator for the list of data elements.
+  vtkDICOMDataElementIterator GetDataEnd() { return &this->Tail; }
+
+  //! Check whether an attribute is present in the metadata.
+  bool HasAttribute(vtkDICOMTag tag);
+
+  //! Erase an attribute.
+  void RemoveAttribute(vtkDICOMTag tag);
+
+  //! Get an attribute value for the specified slice index.
+  /*!
+   *  The value will be returned in the provided reference argument,
+   *  after conversion to the type of the reference argument.  For
+   *  example, if you supply a string, then numerical attribute values
+   *  will be converted to text and written to the string.  If the
+   *  attribute is stored as a decimal string or integer string, then
+   *  it can be converted to a numerical type.  To get the value without
+   *  any implicit conversion, get it directly as a vtkDICOMValue.
+   *  There are two ways that this method can be called:
+   *  GetAttributeValue(idx, Tag(0x0008,0x1030), v) or, using
+   *  DC::EnumType, GetAttributeValue(idx, DC::StudyDescription, v).
+   */
+  bool GetAttributeValue(int idx, vtkDICOMTag tag, vtkDICOMValue& v);
+  bool GetAttributeValue(int idx, vtkDICOMTag tag, short& v);
+  bool GetAttributeValue(int idx, vtkDICOMTag tag, unsigned short& v);
+  bool GetAttributeValue(int idx, vtkDICOMTag tag, int& v);
+  bool GetAttributeValue(int idx, vtkDICOMTag tag, unsigned int& v);
+  bool GetAttributeValue(int idx, vtkDICOMTag tag, float& v);
+  bool GetAttributeValue(int idx, vtkDICOMTag tag, double& v);
+  bool GetAttributeValue(int idx, vtkDICOMTag tag, std::string& v);
+  //bool GetAttributeValue(int idx, vtkDICOMTag tag, vtkMatrix4x4 *v);
+  //bool GetAttributeValue(int idx, vtkDICOMTag tag, vtkAbstractArray *v);
+
+  //! Set an attribute value for the image at index "idx".
+  /*!
+   *  Except for the method that takes a vtkDICOMValue, these methods
+   *  will use the dictionary to find the VR for the attribute, and will
+   *  attempt to convert the input data to the correct VR.  Strings and
+   *  doubles will be converted to integer values where necessary, and
+   *  numeric values will be converted to strings where necessary.
+   */
+  void SetAttributeValue(int idx, vtkDICOMTag tag, const vtkDICOMValue& v);
+  void SetAttributeValue(int idx, vtkDICOMTag tag, double v);
+  void SetAttributeValue(int idx, vtkDICOMTag tag, const std::string& v);
+  //void SetAttributeValue(int idx, vtkDICOMTag tag, vtkMatrix4x4 *v);
+  //void SetAttributeValue(int idx, vtkDICOMTag tag, vtkAbstractArray *v);
+
+  //! Set the same attribute value for all images.
+  void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
+  void SetAttributeValue(vtkDICOMTag tag, double v);
+  void SetAttributeValue(vtkDICOMTag tag, const std::string& v);
+  //void SetAttributeValue(vtkDICOMTag tag, vtkMatrix4x4 *v);
+  //void SetAttributeValue(vtkDICOMTag tag, vtkAbstractArray *v);
 
   //! Find the dictionary entry for the given tag.
-  static DictEntry *FindDictEntry(vtkDICOMTag tag);
+  static bool FindDictEntry(vtkDICOMTag tag, vtkDICOMDictEntry& e);
 
 protected:
   vtkDICOMMetaData();
   ~vtkDICOMMetaData();
 
-  //! Get the address of the element for this tag.
-  /*!
-   *  This will either return the address of an existing element,
-   *  or an address at which a new element can be inserted.
-   */
-  vtkDICOMElement **FindElementLocation(vtkDICOMTag tag);
+  //! Find a tag, value pair.
+  vtkDICOMDataElement *FindDataElement(vtkDICOMTag tag);
+
+  //! Find a tag, value pair or insert a pair if not found.
+  vtkDICOMDataElement *FindDataElementOrInsert(vtkDICOMTag tag);
+
+  //! Find the attribute value for the specified image index.
+  const vtkDICOMValue *FindAttributeValue(int idx, vtkDICOMTag tag);
+
+  //! Internal templated SetAttributeValue method
+  template<class T>
+  void SetAttributeValueT(vtkDICOMTag tag, T v);
+  template<class T>
+  void SetAttributeValueT(int idx, vtkDICOMTag tag, T v);
 
 private:
+
+  //! The number of DICOM files.
+  int NumberOfInstances;
+
   //! The lookup table for the metadata.
-  vtkDICOMElement ***Table;
+  vtkDICOMDataElement **Table;
+
+  //! Links to the first data element.
+  vtkDICOMDataElement Head;
+
+  //! Links to the last data element.
+  vtkDICOMDataElement Tail;
+
+  //! The number of data elements.
+  int NumberOfDataElements;
 
   //! The lookup table for the dictionary.
-  static DictEntry *DictHashTable[DICT_HASH_TABLE_SIZE];
+  static vtkDICOMDictEntry::Internal *DictHashTable[DICT_HASH_TABLE_SIZE];
 
   vtkDICOMMetaData(const vtkDICOMMetaData&);  // Not implemented.
   void operator=(const vtkDICOMMetaData&);  // Not implemented.
-};
-
-struct vtkDICOMMetaData::DictEntry
-{
-  vtkDICOMTag GetTag() {
-    return vtkDICOMTag(this->Group, this->Element); }
-  vtkDICOMVR GetVR() {
-    return vtkDICOMVR(static_cast<vtkDICOMVR::EnumType>(this->VR)); }
-  vtkDICOMVM GetVM() {
-    return vtkDICOMVM(static_cast<vtkDICOMVM::EnumType>(this->VM)); }
-  const char *GetName() {
-    return this->Name; }
-
-  unsigned short Group;
-  unsigned short Element;
-  unsigned short VR;
-  unsigned short VM;
-  const char *Name;
 };
 
 #endif /* __vtkDICOMMetaData_h */

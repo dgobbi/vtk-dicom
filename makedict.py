@@ -5,18 +5,29 @@ This program will read a text file generated from the DICOM data
 element regsistry table (DICOM Chapter 6 part 6) and will generate
 a hash table that can be used for dictionary lookups.
 
-Usage: python makedict.py nemadict.txt > vtkDICOMMetaDataDict.cxx"
+Usage: python makedict.py nemadict.txt > vtkDICOMDictionary.cxx"
+Usage: python makedict.py ---header nemadict.txt > vtkDICOMDictionary.h"
 
 """
 
 import sys
 
-if len(sys.argv) != 2:
-  print "usage: python makedict.py nemadict.txt > vtkDICOMMetaDataDict.cxx"
+if ((len(sys.argv) != 3 or sys.argv[1] != "--header") and
+    (len(sys.argv) != 2 or sys.argv[1] == "--header")):
+  sys.stderr.write(
+    """usage: python makedict.py nemadict.txt > vtkDICOMDictionary.cxx
+    python makedict.py --header nemadict.txt > vtkDICOMDictionary.h\n""")
   sys.exit(1)
 
 # read the file in one go
-f = open(sys.argv[1], 'r')
+if sys.argv[1] == "--header":
+  printheader = True
+  filename = sys.argv[2]
+else:
+  printheader = False
+  filename = sys.argv[1]
+
+f = open(filename, 'r')
 lines = f.readlines()
 f.close()
 
@@ -142,7 +153,7 @@ for te in ht:
   s = ""
   for idx in te:
     s = s + element_list[idx] + "\n"
-  s = s + "{ 0, 0, 0, 0, 0 }"
+  s = s + "{ 0, 0, VR::UN, VM::M1, \"\" }"
   entry_list.append(s)
   k = k + len(te) + 1
 
@@ -150,34 +161,48 @@ for te in ht:
 #print maxl, minl, k0, k4
 
 # write the output file
-print "#include \"vtkDICOMMetaData.h\""
-print
-
-print "namespace {"
-print
-
-ct = 0
-for l in entry_list:
-  print "vtkDICOMMetaData::DictElement DictRow%04d[] = {" % (ct,)
-  print l
+if printheader:
+  print "#ifndef __vtkDICOMDictionary_h"
+  print "#define __vtkDICOMDictionary_h"
+  print
+  print "//! Tag values defined in the DICOM standard"
+  print "namespace DC"
+  print "{"
+  print "enum EnumType {"
+  for l in enum_list:
+    print l
   print "};"
-  ct = ct + 1
-print
-print "}"
-print
+  print "} // end namespace DC"
+  print
+  print "#endif /* __vtkDICOMDictionary_h */"
 
-ct = 0
-print "vtkDICOMMetaData::DictElement *vtkDICOMMetaData::DictHashTable[1024] = {"
-for l in entry_list:
-  print "DictRow%04d," % (ct,)
-  ct = ct + 1
-print "};"
-print
+else:
+  print "#include \"vtkDICOMMetaData.h\""
+  print
 
-"""
-for l in enum_list:
-  print l
-"""
+  print "namespace {"
+  print
+  print "typedef vtkDICOMVR VR;"
+  print "typedef vtkDICOMVM VM;"
+  print "typedef vtkDICOMDictEntry::Internal DictEntry;"
+  print
+
+  ct = 0
+  for l in entry_list:
+    print "DictEntry DictRow%04d[] = {" % (ct,)
+    print l
+    print "};"
+    ct = ct + 1
+  print
+  print "}"
+  print
+
+  ct = 0
+  print "DictEntry *vtkDICOMMetaData::DictHashTable[1024] = {"
+  for l in entry_list:
+    print "DictRow%04d," % (ct,)
+    ct = ct + 1
+  print "};"
 
 # informative: these names represent a range of tag values
 """ keys with ranges

@@ -23,7 +23,15 @@ ENDIF(GDCM_FOUND)
 
 SET(LIB_SRCS
   vtkDICOMMetaData.cxx
-  vtkDICOMMetaDataDict.cxx
+  vtkDICOMDictionary.cxx
+  vtkDICOMTag.cxx
+  vtkDICOMVR.cxx
+  vtkDICOMVM.cxx
+  vtkDICOMDataElement.cxx
+  vtkDICOMDictEntry.cxx
+  vtkDICOMSequence.cxx
+  vtkDICOMSequenceItem.cxx
+  vtkDICOMValue.cxx
 )
 
 ADD_LIBRARY(DataManager ${LIB_SRCS})
@@ -31,3 +39,9 @@ TARGET_LINK_LIBRARIES(DataManager vtkCommon gdcmMSFF)
 
 ADD_EXECUTABLE(TestDICOMMetaData TestDICOMMetaData.cxx)
 TARGET_LINK_LIBRARIES(TestDICOMMetaData DataManager)
+
+ADD_EXECUTABLE(TestDICOMValue TestDICOMValue.cxx)
+TARGET_LINK_LIBRARIES(TestDICOMValue DataManager)
+
+ADD_EXECUTABLE(TestDICOMSequence TestDICOMSequence.cxx)
+TARGET_LINK_LIBRARIES(TestDICOMSequence DataManager)
