@@ -35,15 +35,16 @@ class vtkDICOMSequenceItem
 public:
   vtkDICOMSequenceItem() : L(0) {}
 
+  //! Copy constructor does reference counting.
   vtkDICOMSequenceItem(const vtkDICOMSequenceItem &o) : L(o.L) {
     if (this->L) { this->L->ReferenceCount++; } }
 
+  //! Destructor does reference counting.
   ~vtkDICOMSequenceItem() { this->Clear(); }
 
   //! Clear the data.
   void Clear() {
-    if (this->L && --this->L->ReferenceCount == 0) {
-      delete this->L; }
+    if (this->L && --this->L->ReferenceCount == 0) { delete this->L; }
     this->L = 0; }
 
   //! Add a data element to this item.
@@ -68,7 +69,13 @@ public:
   bool operator!=(const vtkDICOMSequenceItem& o) const {
     return !(*this == o); }
 
-  vtkDICOMSequenceItem &operator=(const vtkDICOMSequenceItem &o);
+  //! Assignment operator does reference counting.
+  vtkDICOMSequenceItem &operator=(const vtkDICOMSequenceItem &o) {
+    if (this->L != o.L) {
+      if (o.L) { o.L->ReferenceCount++; }
+      if (this->L && --this->L->ReferenceCount == 0) { delete this->L; }
+      this->L = o.L; }
+    return *this; }
 
 private:
   void CopyList(const List *o, List *t);

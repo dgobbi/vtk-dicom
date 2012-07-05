@@ -192,7 +192,13 @@ public:
   void AppendValueToString(std::string &str, int i) const;
 
   //! Override assignment operator for reference counting.
-  vtkDICOMValue& operator=(const vtkDICOMValue& o);
+  vtkDICOMValue& operator=(const vtkDICOMValue& o) {
+    if (this->V != o.V) {
+      if (o.V) { o.V->ReferenceCount++; }
+      if (this->V) {
+        if (--this->V->ReferenceCount == 0) { this->FreeValue(this->V); } }
+      this->V = o.V; }
+    return *this; }
 
   bool operator==(const vtkDICOMValue& o) const;
   bool operator!=(const vtkDICOMValue& o) const { return !(*this == o); }

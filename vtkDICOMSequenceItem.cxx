@@ -79,26 +79,3 @@ bool vtkDICOMSequenceItem::operator==(const vtkDICOMSequenceItem& ob) const
     }
   return r;
 }
-
-//----------------------------------------------------------------------------
-vtkDICOMSequenceItem& vtkDICOMSequenceItem::operator=(
-  const vtkDICOMSequenceItem& o)
-{
-  // assignment with reference counting
-  if (this->L != o.L)
-    {
-    if (this->L)
-      {
-      if (--this->L->ReferenceCount == 0)
-        {
-        delete this->L;
-        }
-      }
-    this->L = o.L;
-    if (this->L)
-      {
-      this->L->ReferenceCount++;
-      }
-    }
-  return *this;
-}

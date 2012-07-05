@@ -1051,28 +1051,6 @@ void vtkDICOMValue::AppendValueToString(std::string& str, int i) const
 }
 
 //----------------------------------------------------------------------------
-vtkDICOMValue& vtkDICOMValue::operator=(const vtkDICOMValue& o)
-{
-  // assignment with reference counting
-  if (this->V != o.V)
-    {
-    if (this->V)
-      {
-      if (--this->V->ReferenceCount == 0)
-        {
-        this->FreeValue(this->V);
-        }
-      }
-    this->V = o.V;
-    if (this->V)
-      {
-      this->V->ReferenceCount++;
-      }
-    }
-  return *this;
-}
-
-//----------------------------------------------------------------------------
 // These compare functions can only be safely used within "operator=="
 // because they require a pre-check that VL is not zero and that a, b
 // are the correct type.
