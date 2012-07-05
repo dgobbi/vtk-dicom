@@ -12,6 +12,10 @@
 class vtkDICOMDataElement
 {
 public:
+  vtkDICOMDataElement() : Tag(), Value(), Next(0), Prev(0) {}
+  vtkDICOMDataElement(const vtkDICOMTag& t, const vtkDICOMValue &v) :
+    Tag(t), Value(v), Next(0), Prev(0) {}
+
   vtkDICOMTag GetTag() const { return this->Tag; }
   vtkDICOMVR GetVR() const { return this->Value.GetVR(); }
   unsigned int GetVL() const { return this->Value.GetVL(); }

@@ -256,44 +256,39 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
       {
       if (hptr->Tag == tag)
         {
-        break;
+        return hptr;
         }
-      // "n" includes the terminating null pointer
+      // "n" includes the empty element that marks the end
       n++;
       hptr++;
       }
     while (hptr->Tag.GetGroup() != 0);
 
-    if (hptr->Tag.GetGroup() == 0)
+    // if n+1 is a power of two, double allocated space
+    if (n > 1 && (n & (n+1)) == 0)
       {
-      // if n+1 is a power of two, double allocated space
-      if (n > 1 && (n & (n+1)) == 0)
+      vtkDICOMDataElement *oldptr = htable[i];
+      hptr = new vtkDICOMDataElement[2*(n+1)];
+      htable[i] = hptr;
+      // copy the old list, excluding the empty element at the end
+      n--;
+      for (unsigned int j = 0; j < n; j++)
         {
-       vtkDICOMDataElement *oldptr = htable[i];
-        hptr = new vtkDICOMDataElement[2*(n+1)];
-        htable[i] = hptr;
-        // copy the old list, including the terminating null
-        for (unsigned int j = 0; j < n; j++)
-          {
-          *hptr = oldptr[j];
-          // restore the list linkages
-          hptr->Next->Prev = hptr;
-          hptr->Prev->Next = hptr;
-          hptr++;
-          }
-        // go back to the first empty element
-        hptr--;
-        // insert into the linked list
-        hptr->Prev = this->Tail.Prev;
-        hptr->Next = &this->Tail;
-        hptr->Prev->Next = hptr;
+        *hptr = oldptr[j];
+        // link the new element into the list
         hptr->Next->Prev = hptr;
-        this->NumberOfDataElements++;
-
-        delete [] oldptr;
+        hptr->Prev->Next = hptr;
         }
+      delete [] oldptr;
       }
     }
+
+  // insert into the linked list
+  hptr->Prev = this->Tail.Prev;
+  hptr->Next = &this->Tail;
+  hptr->Prev->Next = hptr;
+  hptr->Next->Prev = hptr;
+  this->NumberOfDataElements++;
 
   return hptr;
 }
