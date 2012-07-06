@@ -89,11 +89,15 @@ void vtkDICOMMetaData::RemoveAttribute(vtkDICOMTag tag)
         hptr->Next->Prev = hptr->Prev;
         hptr->Prev->Next = hptr->Next;
         // remove from the hash table
-        do
+        hptr[0] = hptr[1];
+        while (hptr->Tag.GetGroup() != 0)
           {
+          // adjust links as necessary
+          hptr->Prev->Next = hptr;
+          hptr->Next->Prev = hptr;
+          hptr++;
           hptr[0] = hptr[1];
           }
-        while (hptr->Tag.GetGroup() != 0);
         this->NumberOfDataElements--;
         break;
         }
@@ -231,6 +235,12 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
   vtkDICOMDataElement **htable = this->Table;
   vtkDICOMDataElement *hptr;
 
+  if (tag.GetGroup() == 0)
+    {
+    // group number cannot be zero
+    return 0;
+    }
+
   if (htable == NULL)
     {
     // allocate the hash table
@@ -278,6 +288,7 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
         // link the new element into the list
         hptr->Next->Prev = hptr;
         hptr->Prev->Next = hptr;
+        hptr++;
         }
       delete [] oldptr;
       }
@@ -299,6 +310,11 @@ void vtkDICOMMetaData::SetAttributeValue(
   vtkDICOMTag tag, const vtkDICOMValue& v)
 {
   vtkDICOMDataElement *loc = this->FindDataElementOrInsert(tag);
+  if (loc == 0)
+    {
+    vtkErrorMacro("SetAttributeValue: tag group number must not be zero.");
+    return;
+    }
   loc->Tag = tag;
   loc->Value = v;
 }
@@ -335,6 +351,12 @@ void vtkDICOMMetaData::SetAttributeValue(
   int idx, vtkDICOMTag tag, const vtkDICOMValue& v)
 {
   vtkDICOMDataElement *loc = this->FindDataElementOrInsert(tag);
+  if (loc == 0)
+    {
+    vtkErrorMacro("SetAttributeValue: tag group number must not be zero.");
+    return;
+    }
+
   loc->Tag = tag;
   vtkDICOMValue *vptr = &loc->Value;
 
