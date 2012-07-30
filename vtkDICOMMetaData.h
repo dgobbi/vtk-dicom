@@ -118,6 +118,9 @@ protected:
   //! Find the attribute value for the specified image index.
   const vtkDICOMValue *FindAttributeValue(int idx, vtkDICOMTag tag);
 
+  //! Use the dictionary to get the VR.
+  vtkDICOMVR FindDictVR(int idx, vtkDICOMTag tag);
+
   //! Internal templated SetAttributeValue method
   template<class T>
   void SetAttributeValueT(vtkDICOMTag tag, T v);

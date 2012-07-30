@@ -320,16 +320,10 @@ void vtkDICOMMetaData::SetAttributeValue(
 template<class T>
 void vtkDICOMMetaData::SetAttributeValueT(vtkDICOMTag tag, T v)
 {
-  vtkDICOMDictEntry e;
-  if (vtkDICOMMetaData::FindDictEntry(tag, e))
+  vtkDICOMVR vr = this->FindDictVR(0, tag);
+  if (vr != vtkDICOMVR::UN)
     {
-    // use the dictionary VR
-    this->SetAttributeValue(tag, vtkDICOMValue(e.GetVR(), v));
-    }
-  else
-    {
-    vtkErrorMacro("SetAttributeValue: could not find tag (" <<
-                  tag << ") in the dictionary");
+    this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
     }
 }
 
@@ -398,16 +392,10 @@ void vtkDICOMMetaData::SetAttributeValue(
 template<class T>
 void vtkDICOMMetaData::SetAttributeValueT(int idx, vtkDICOMTag tag, T v)
 {
-  vtkDICOMDictEntry e;
-  if (vtkDICOMMetaData::FindDictEntry(tag, e))
+  vtkDICOMVR vr = this->FindDictVR(idx, tag);
+  if (vr != vtkDICOMVR::UN)
     {
-    // use the dictionary VR
-    this->SetAttributeValue(idx, tag, vtkDICOMValue(e.GetVR(), v));
-    }
-  else
-    {
-    vtkErrorMacro("SetAttributeValue: could not find tag (" <<
-                  tag << ") in the dictionary");
+    this->SetAttributeValue(idx, tag, vtkDICOMValue(vr, v));
     }
 }
 
@@ -447,6 +435,67 @@ bool vtkDICOMMetaData::FindDictEntry(vtkDICOMTag tag, vtkDICOMDictEntry &e)
 
   e = vtkDICOMDictEntry();
   return false;
+}
+
+// should only be called from SetAttributeValue
+vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
+{
+  vtkDICOMVR vr = vtkDICOMVR::UN;
+  vtkDICOMDictEntry e;
+
+  if (vtkDICOMMetaData::FindDictEntry(tag, e))
+    {
+    vr = e.GetVR();
+    // use the dictionary VR
+    if (vr == vtkDICOMVR::XS)
+      {
+      unsigned short r;
+      if (this->GetAttributeValue(idx, vtkDICOMTag(0x0028,0x0103), r))
+        {
+        vr = (r == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
+        }
+      else
+        {
+        vtkErrorMacro("SetAttributeValue: could not look up vr for (" <<
+                      tag << ") because PixelRepresentation is not set.");
+        }
+      }
+    else if (vr == vtkDICOMVR::OX)
+      {
+      unsigned short s;
+      if (tag.GetGroup() == 0x5400)
+        {
+        if (this->GetAttributeValue(idx, vtkDICOMTag(0x5400,0x1004), s))
+          {
+          vr = (s > 8 ? vtkDICOMVR::OW : vtkDICOMVR::OB);
+          }
+        else
+          {
+          vtkErrorMacro("SetAttributeValue: could not look up vr for (" <<
+                        tag << ") because WaveformBitsAllocated is not set.");
+          }
+        }
+      else
+        {
+        if (this->GetAttributeValue(idx, vtkDICOMTag(0x0028,0x0100), s))
+          {
+          vr = (s > 8 ? vtkDICOMVR::OW : vtkDICOMVR::OB);
+          }
+        else
+          {
+          vtkErrorMacro("SetAttributeValue: could not look up vr for (" <<
+                        tag << ") because BitsAllocated is not set.");
+          }
+        }
+      }
+    }
+  else
+    {
+    vtkErrorMacro("SetAttributeValue: could not find tag (" <<
+                  tag << ") in the dictionary");
+    }
+
+  return vr;
 }
 
 //----------------------------------------------------------------------------
