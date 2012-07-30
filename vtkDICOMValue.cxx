@@ -1178,7 +1178,7 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
     const char *dp = cp + v.GetVL();
     while (cp != dp && *cp == ' ') { cp++; }
     while (cp != dp && dp[-1] == ' ') { dp--; }
-    if (*dp == '\0')
+    if ((cp != dp && dp[-1] == '\0') || *dp == '\0')
       {
       os << cp;
       }
