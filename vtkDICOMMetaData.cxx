@@ -268,20 +268,18 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
         {
         return hptr;
         }
-      // "n" includes the empty element that marks the end
       n++;
       hptr++;
       }
     while (hptr->Tag.GetGroup() != 0);
 
     // if n+1 is a power of two, double allocated space
-    if (n > 1 && (n & (n+1)) == 0)
+    if (n > 2 && (n & (n+1)) == 0)
       {
       vtkDICOMDataElement *oldptr = htable[i];
       hptr = new vtkDICOMDataElement[2*(n+1)];
       htable[i] = hptr;
-      // copy the old list, excluding the empty element at the end
-      n--;
+      // copy the old list
       for (unsigned int j = 0; j < n; j++)
         {
         *hptr = oldptr[j];
