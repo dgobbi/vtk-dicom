@@ -15,7 +15,8 @@ public:
   {
     unsigned short Group;
     unsigned short Element;
-    unsigned short VR;
+    unsigned char  Owner;
+    unsigned char  VR;
     unsigned short VM;
     const char *Name;
   };
@@ -30,6 +31,8 @@ public:
     return vtkDICOMVM(static_cast<vtkDICOMVM::EnumType>(this->I->VM)); }
   const char *GetName() {
     return this->I->Name; }
+  bool IsRetired() {
+    return (this->I->Owner == 1); }
 
 private:
   vtkDICOMDictEntry(Internal *o) : I(o) {}

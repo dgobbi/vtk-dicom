@@ -5,8 +5,8 @@
 #include "vtkDICOMVR.h"
 
 // type constants
-#define VTK_DICOM_ITEM   51
-#define VTK_DICOM_VALUE  52
+#define VTK_DICOM_ITEM   13 
+#define VTK_DICOM_VALUE  14
 
 class vtkDICOMSequenceItem;
 class vtkDICOMSequence;

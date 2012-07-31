@@ -1,3 +1,63 @@
+(0002,0000)
+File Meta Information Group Length
+FileMetaInformationGroupLength
+UL
+1
+
+(0002,0001)
+File Meta Information Version
+FileMetaInformationVersion
+OB
+1
+
+(0002,0002)
+Media Storage SOP Class UID
+MediaStorageSOPClassUID
+UI
+1
+
+(0002,0003)
+Media Storage SOP Instance UID
+MediaStorageSOPInstanceUID
+UI
+1
+
+(0002,0010)
+Transfer Syntax UID
+TransferSyntaxUID
+UI
+1
+
+(0002,0012)
+Implementation Class UID
+ImplementationClassUID
+UI
+1
+
+(0002,0013)
+Implementation Version Name
+ImplementationVersionName
+SH
+1
+
+(0002,0016)
+Source Application Entity Title
+SourceApplicationEntityTitle
+AE
+1
+
+(0002,0100)
+Private Information Creator UID
+PrivateInformationCreatorUID
+UI
+1
+
+(0002,0102)
+Private Information
+PrivateInformation
+OB
+1
+
 (0008,0001)
 Length to End
 LengthToEnd
@@ -623,7 +683,7 @@ SQ
 1
 
 (0008,1167)
-Multi-Frame Source SOP Instance UID 
+Multi-Frame Source SOP Instance UID
 MultiFrameSourceSOPInstanceUID
 UI
 1
@@ -1552,7 +1612,7 @@ EnvironmentalConditions
 ST
 1
 
-(0014,2002) 
+(0014,2002)
 Evaluator Sequence
 EvaluatorSequence
 SQ
@@ -1582,9 +1642,9 @@ IndicationSequence
 SQ
 1
 
-(0014,2014) 
-Indication Number 
-IndicationNumber 
+(0014,2014)
+Indication Number
+IndicationNumber
 IS
 1
 
@@ -1631,8 +1691,8 @@ SH
 1
 
 (0014,2202)
-Coordinate System Number of Axes 
-CoordinateSystemNumberOfAxes 
+Coordinate System Number of Axes
+CoordinateSystemNumberOfAxes
 IS
 1
 
@@ -2357,7 +2417,7 @@ ST
 1
 
 (0018,0040)
-Cine Rate 
+Cine Rate
 CineRate
 IS
 1
@@ -2651,13 +2711,13 @@ DS
 1
 
 (0018,1042)
-Contrast/Bolus Start Time 
+Contrast/Bolus Start Time
 ContrastBolusStartTime
 TM
 1
 
 (0018,1043)
-Contrast/Bolus Stop Time 
+Contrast/Bolus Stop Time
 ContrastBolusStopTime
 TM
 1
@@ -3076,7 +3136,7 @@ RadiationSetting
 CS
 1
 
-(0018,1156) 
+(0018,1156)
 Rectification Type
 RectificationType
 CS
@@ -3131,7 +3191,7 @@ IS
 1
 
 (0018,1180)
-Collimator/grid Name 
+Collimator/grid Name
 CollimatorGridName
 SH
 1
@@ -3305,7 +3365,7 @@ DS
 1
 
 (0018,1400)
-Acquisition Device Processing Description 
+Acquisition Device Processing Description
 AcquisitionDeviceProcessingDescription
 LO
 1
@@ -3671,7 +3731,7 @@ IS
 1
 
 (0018,3105)
-Lesion Number 
+Lesion Number
 LesionNumber
 IS
 1-n
@@ -4079,7 +4139,7 @@ FL
 1-n
 
 (0018,7000)
-Detector Conditions Nominal Flag 
+Detector Conditions Nominal Flag
 DetectorConditionsNominalFlag
 CS
 1
@@ -4121,7 +4181,7 @@ SH
 1
 
 (0018,700C)
-Date of Last Detector Calibration 
+Date of Last Detector Calibration
 DateOfLastDetectorCalibration
 DA
 1
@@ -4133,25 +4193,25 @@ TM
 1
 
 (0018,7010)
-Exposures on Detector Since Last Calibration 
+Exposures on Detector Since Last Calibration
 ExposuresOnDetectorSinceLastCalibration
 IS
 1
 
 (0018,7011)
-Exposures on Detector Since Manufactured 
+Exposures on Detector Since Manufactured
 ExposuresOnDetectorSinceManufactured
 IS
 1
 
 (0018,7012)
-Detector Time Since Last Exposure 
+Detector Time Since Last Exposure
 DetectorTimeSinceLastExposure
 DS
 1
 
 (0018,7014)
-Detector Active Time 
+Detector Active Time
 DetectorActiveTime
 DS
 1
@@ -4163,7 +4223,7 @@ DS
 1
 
 (0018,701A)
-Detector Binning 
+Detector Binning
 DetectorBinning
 DS
 2
@@ -4541,13 +4601,13 @@ SQ
 1
 
 (0018,9043)
-Receive Coil Type 
+Receive Coil Type
 ReceiveCoilType
 CS
 1
 
 (0018,9044)
-Quadrature Receive Coil 
+Quadrature Receive Coil
 QuadratureReceiveCoil
 CS
 1
@@ -4559,7 +4619,7 @@ SQ
 1
 
 (0018,9046)
-Multi-Coil Configuration 
+Multi-Coil Configuration
 MultiCoilConfiguration
 LO
 1
@@ -5188,53 +5248,53 @@ GradientEchoTrainLength
 US
 1
 
-(0018,9250) 
+(0018,9250)
 Arterial Spin Labeling Contrast
 ArterialSpinLabelingContrast
 CS
 1
 
-(0018,9251) 
+(0018,9251)
 MR Arterial Spin Labeling Sequence
 MRArterialSpinLabelingSequence
 SQ
 1
 
-(0018,9252) 
+(0018,9252)
 ASL Technique Description
 ASLTechniqueDescription
 LO
 1
 
-(0018,9253) 
+(0018,9253)
 ASL Slab Number
 ASLSlabNumber
 US
 1
 
-(0018,9254) 
+(0018,9254)
 ASL Slab Thickness
 ASLSlabThickness
-FD 
-1 
+FD
+1
 
-(0018,9255) 
+(0018,9255)
 ASL Slab Orientation
 ASLSlabOrientation
-FD 
-3 
-
-(0018,9256) 
-ASL Mid Slab Position
-ASLMidSlabPosition
-FD 
+FD
 3
 
-(0018,9257) 
+(0018,9256)
+ASL Mid Slab Position
+ASLMidSlabPosition
+FD
+3
+
+(0018,9257)
 ASL Context
 ASLContext
 CS
-1 
+1
 
 (0018,9258)
 ASL Pulse Train Duration
@@ -5242,11 +5302,11 @@ ASLPulseTrainDuration
 UL
 1
 
-(0018,9259) 
+(0018,9259)
 ASL Crusher Flag
 ASLCrusherFlag
 CS
-1 
+1
 
 (0018,925A)
 ASL Crusher Flow
@@ -5260,11 +5320,11 @@ ASLCrusherDescription
 LO
 1
 
-(0018,925C) 
+(0018,925C)
 ASL Bolus Cut-off Flag
 ASLBolusCutoffFlag
 CS
-1 
+1
 
 (0018,925D)
 ASL Bolus Cut-off Timing Sequence
@@ -5429,7 +5489,7 @@ SQ
 1
 
 (0018,9322)
-Reconstruction Pixel Spacing 
+Reconstruction Pixel Spacing
 ReconstructionPixelSpacing
 FD
 2
@@ -5489,7 +5549,7 @@ FD
 1
 
 (0018,9333)
-Constant Volume Flag 
+Constant Volume Flag
 ConstantVolumeFlag
 CS
 1
@@ -5941,7 +6001,7 @@ FL
 (0018,9510)
 Primary Positioner Scan Start Angle
 PrimaryPositionerScanStartAngle
-FL 
+FL
 1
 
 (0018,9511)
@@ -6233,37 +6293,37 @@ CS
 1
 
 (0018,9758)
-Decay Corrected 
+Decay Corrected
 DecayCorrected
 CS
 1
 
 (0018,9759)
-Attenuation Corrected 
+Attenuation Corrected
 AttenuationCorrected
 CS
 1
 
 (0018,9760)
-Scatter Corrected 
+Scatter Corrected
 ScatterCorrected
 CS
 1
 
 (0018,9761)
-Dead Time Corrected 
+Dead Time Corrected
 DeadTimeCorrected
 CS
 1
 
 (0018,9762)
-Gantry Motion Corrected 
+Gantry Motion Corrected
 GantryMotionCorrected
 CS
 1
 
 (0018,9763)
-Patient Motion Corrected 
+Patient Motion Corrected
 PatientMotionCorrected
 CS
 1
@@ -6299,7 +6359,7 @@ CS
 1
 
 (0018,9769)
-Iterative Reconstruction Method 
+Iterative Reconstruction Method
 IterativeReconstructionMethod
 CS
 1
@@ -7433,7 +7493,7 @@ CS
 1
 
 (0022,1019)
-Ophthalmic Axial Length 
+Ophthalmic Axial Length
 OphthalmicAxialLength
 FL
 1
@@ -7475,7 +7535,7 @@ SQ
 1
 
 (0022,1037)
-Target Refraction 
+Target Refraction
 TargetRefraction
 FL
 1
@@ -7559,7 +7619,7 @@ LO
 1
 
 (0022,1096)
-Keratometry Measurement Type Code Sequence 
+Keratometry Measurement Type Code Sequence
 KeratometryMeasurementTypeCodeSequence
 SQ
 1
@@ -7751,7 +7811,7 @@ SQ
 1
 
 (0024,0010)
-Visual Field Horizontal Extent 
+Visual Field Horizontal Extent
 VisualFieldHorizontalExtent
 FL
 1
@@ -7781,7 +7841,7 @@ FL
 1
 
 (0024,0020)
-Background Luminance 
+Background Luminance
 BackgroundLuminance
 FL
 1
@@ -7793,7 +7853,7 @@ SQ
 1
 
 (0024,0024)
-Background Illumination Color Code Sequence 
+Background Illumination Color Code Sequence
 BackgroundIlluminationColorCodeSequence
 SQ
 1
@@ -8009,7 +8069,7 @@ FL
 1
 
 (0024,0069)
-Patient Reliability Indicator  
+Patient Reliability Indicator
 PatientReliabilityIndicator
 LO
 1
@@ -8183,19 +8243,19 @@ FL
 1
 
 (0024,0102)
-Generalized Defect Corrected Sensitivity Deviation Flag 
-GeneralizedDefectCorrectedSensitivityDeviationFlag 
+Generalized Defect Corrected Sensitivity Deviation Flag
+GeneralizedDefectCorrectedSensitivityDeviationFlag
 CS
 1
 
 (0024,0103)
-Generalized Defect Corrected Sensitivity Deviation Value 
-GeneralizedDefectCorrectedSensitivityDeviationValue 
+Generalized Defect Corrected Sensitivity Deviation Value
+GeneralizedDefectCorrectedSensitivityDeviationValue
 FL
 1
 
 (0024,0104)
-Generalized Defect Corrected Sensitivity Deviation Probability Value 
+Generalized Defect Corrected Sensitivity Deviation Probability Value
 GeneralizedDefectCorrectedSensitivityDeviationProbabilityValue
 FL
 1
@@ -8203,7 +8263,7 @@ FL
 (0024,0105)
 Minimum Sensitivity Value
 MinimumSensitivityValue
-FL 
+FL
 1
 
 (0024,0106)
@@ -8219,8 +8279,8 @@ FL
 1
 
 (0024,0108)
-Blind Spot Y-Coordinate 
-BlindSpotYCoordinate 
+Blind Spot Y-Coordinate
+BlindSpotYCoordinate
 FL
 1
 
@@ -8231,7 +8291,7 @@ SQ
 1
 
 (0024,0112)
-Refractive Parameters Used on Patient Sequence 
+Refractive Parameters Used on Patient Sequence
 RefractiveParametersUsedOnPatientSequence
 SQ
 1
@@ -9245,7 +9305,7 @@ US
 1
 
 (0028,6020)
-Frame Numbers of Interest (FOI) 
+Frame Numbers of Interest (FOI)
 FrameNumbersOfInterest
 US
 1-n
@@ -9833,25 +9893,25 @@ CS
 1
 
 (003A,0005)
-Number of Waveform Channels 
+Number of Waveform Channels
 NumberOfWaveformChannels
 US
 1
 
 (003A,0010)
-Number of Waveform Samples 
+Number of Waveform Samples
 NumberOfWaveformSamples
 UL
 1
 
 (003A,001A)
-Sampling Frequency 
+Sampling Frequency
 SamplingFrequency
 DS
 1
 
 (003A,0020)
-Multiplex Group Label 
+Multiplex Group Label
 MultiplexGroupLabel
 SH
 1
@@ -9863,7 +9923,7 @@ SQ
 1
 
 (003A,0202)
-Waveform Channel Number 
+Waveform Channel Number
 WaveformChannelNumber
 IS
 1
@@ -9905,7 +9965,7 @@ LO
 1
 
 (003A,0210)
-Channel Sensitivity 
+Channel Sensitivity
 ChannelSensitivity
 DS
 1
@@ -9923,7 +9983,7 @@ DS
 1
 
 (003A,0213)
-Channel Baseline 
+Channel Baseline
 ChannelBaseline
 DS
 1
@@ -10205,7 +10265,7 @@ SQ
 1
 
 (0040,0220)
-Referenced Non-Image Composite SOP Instance Sequence 
+Referenced Non-Image Composite SOP Instance Sequence
 ReferencedNonImageCompositeSOPInstanceSequence
 SQ
 1
@@ -10565,13 +10625,13 @@ SQ
 1
 
 (0040,0600)
-Specimen Short Description 
+Specimen Short Description
 SpecimenShortDescription
 LO
 1
 
 (0040,0602)
-Specimen Detailed Description 
+Specimen Detailed Description
 SpecimenDetailedDescription
 UT
 1
@@ -10661,7 +10721,7 @@ LO
 1
 
 (0040,1003)
-Requested Procedure Priority 
+Requested Procedure Priority
 RequestedProcedurePriority
 SH
 1
@@ -11057,7 +11117,7 @@ SQ
 1
 
 (0040,9096)
-Real World Value Mapping Sequence 
+Real World Value Mapping Sequence
 RealWorldValueMappingSequence
 SQ
 1
@@ -11399,7 +11459,7 @@ DS
 1-n
 
 (0040,A13A)
-Referenced DateTime 
+Referenced DateTime
 ReferencedDateTime
 DT
 1-n
@@ -11483,7 +11543,7 @@ CS
 1
 RET
 (0040,A195)
-Modifier Code Sequence 
+Modifier Code Sequence
 ModifierCodeSequence
 SQ
 1
@@ -11783,7 +11843,7 @@ UL
 1-n
 
 (0040,E001)
-HL7 Instance Identifier 
+HL7 Instance Identifier
 HL7InstanceIdentifier
 ST
 1
@@ -11807,7 +11867,7 @@ SQ
 1
 
 (0040,E010)
-Retrieve URI 
+Retrieve URI
 RetrieveURI
 UT
 1
@@ -11909,7 +11969,7 @@ LT
 1
 
 (0044,0004)
-Approval Status DateTime 
+Approval Status DateTime
 ApprovalStatusDateTime
 DT
 1
@@ -12551,7 +12611,7 @@ LO
 1
 
 (0052,0001)
-Contrast/Bolus Ingredient Percent by Volume 
+Contrast/Bolus Ingredient Percent by Volume
 ContrastBolusIngredientPercentByVolume
 FL
 1
@@ -13661,13 +13721,13 @@ CS
 1
 
 (0068,6224)
-Derivation Implant Template Sequence 
+Derivation Implant Template Sequence
 DerivationImplantTemplateSequence
 SQ
 1
 
 (0068,6225)
-Original Implant Template Sequence 
+Original Implant Template Sequence
 OriginalImplantTemplateSequence
 SQ
 1
@@ -14135,7 +14195,7 @@ CS
 1
 
 (0070,0020)
-Graphic Dimensions 
+Graphic Dimensions
 GraphicDimensions
 US
 1
@@ -14177,7 +14237,7 @@ CS
 1
 
 (0070,0042)
-Image Rotation 
+Image Rotation
 ImageRotation
 US
 1
@@ -15059,7 +15119,7 @@ SQ
 1
 
 (0072,0216)
-Navigation Display Set 
+Navigation Display Set
 NavigationDisplaySet
 US
 1
@@ -15323,7 +15383,7 @@ CS
 1
 
 (0072,0717)
-Display Set Horizontal Justification 
+Display Set Horizontal Justification
 DisplaySetHorizontalJustification
 CS
 1
@@ -15701,7 +15761,7 @@ LO
 1
 
 (0076,0008)
-Replaced Implant Assembly Template Sequence 
+Replaced Implant Assembly Template Sequence
 ReplacedImplantAssemblyTemplateSequence
 SQ
 1
@@ -15713,13 +15773,13 @@ CS
 1
 
 (0076,000C)
-Original Implant Assembly Template Sequence 
+Original Implant Assembly Template Sequence
 OriginalImplantAssemblyTemplateSequence
 SQ
 1
 
 (0076,000E)
-Derivation Implant Assembly Template Sequence 
+Derivation Implant Assembly Template Sequence
 DerivationImplantAssemblyTemplateSequence
 SQ
 1
@@ -15737,7 +15797,7 @@ SQ
 1
 
 (0076,0030)
-Surgical Technique 
+Surgical Technique
 SurgicalTechnique
 LO
 1
@@ -15815,7 +15875,7 @@ US
 1
 
 (0076,00C0)
-Component 2 Referenced Mating Feature ID 
+Component 2 Referenced Mating Feature ID
 Component2ReferencedMatingFeatureID
 US
 1
@@ -15845,7 +15905,7 @@ LO
 1
 
 (0078,0026)
-Replaced Implant Template Group Sequence 
+Replaced Implant Template Group Sequence
 ReplacedImplantTemplateGroupSequence
 SQ
 1
@@ -15887,7 +15947,7 @@ SQ
 1
 
 (0078,0090)
-2D Implant Template Group Member Matching Point 
+2D Implant Template Group Member Matching Point
 TwoDImplantTemplateGroupMemberMatchingPoint
 FD
 2
@@ -16349,7 +16409,7 @@ CS
 1
 
 (2010,0080)
-Smoothing Type  
+Smoothing Type
 SmoothingType
 CS
 1
@@ -16523,7 +16583,7 @@ SQ
 1
 RET
 (2020,0140)
-Referenced VOI LUT Box Sequence 
+Referenced VOI LUT Box Sequence
 ReferencedVOILUTBoxSequence
 SQ
 1
@@ -17543,25 +17603,25 @@ SQ
 1
 
 (3008,0032)
-Specified Primary Meterset 
+Specified Primary Meterset
 SpecifiedPrimaryMeterset
 DS
 1
 
 (3008,0033)
-Specified Secondary Meterset 
+Specified Secondary Meterset
 SpecifiedSecondaryMeterset
 DS
 1
 
 (3008,0036)
-Delivered Primary Meterset 
+Delivered Primary Meterset
 DeliveredPrimaryMeterset
 DS
 1
 
 (3008,0037)
-Delivered Secondary Meterset 
+Delivered Secondary Meterset
 DeliveredSecondaryMeterset
 DS
 1
@@ -18395,7 +18455,7 @@ SQ
 1
 
 (300A,00B2)
-Treatment Machine Name 
+Treatment Machine Name
 TreatmentMachineName
 SH
 1
@@ -20462,7 +20522,7 @@ RET
 Results Comments
 ResultsComments
 ST
-1 
+1
 RET
 (4010,0001)
 Low Energy Detectors
@@ -20495,7 +20555,7 @@ FL
 3
 
 (4010,1005)
-Threat ROI Extents 
+Threat ROI Extents
 ThreatROIExtents
 FL
 3
@@ -20543,7 +20603,7 @@ SQ
 1
 
 (4010,1012)
-Threat Category 
+Threat Category
 ThreatCategory
 CS
 1
@@ -20681,7 +20741,7 @@ LO
 1-n
 
 (4010,102A)
-Assigned Location 
+Assigned Location
 AssignedLocation
 SH
 1
@@ -20758,7 +20818,7 @@ AcquisitionStatus
 CS
 1
 
-(4010,1045) 
+(4010,1045)
 Basis Materials Code Sequence
 BasisMaterialsCodeSequence
 SQ
@@ -20854,7 +20914,7 @@ AlgorithmRoutingCodeSequence
 SQ
 1
 
-(4010,1067) 
+(4010,1067)
 Transport Classification
 TransportClassification
 CS
@@ -20876,5 +20936,557 @@ FL
 Detector Calibration Data
 DetectorCalibrationData
 OB
+1
+
+(4FFE,0001)
+MAC Parameters Sequence
+MACParametersSequence
+SQ
+1
+
+(50xx,0005)
+Curve Dimensions
+CurveDimensions
+US
+1
+RET
+(50xx,0010)
+Number of Points
+NumberOfPoints
+US
+1
+RET
+(50xx,0020)
+Type of Data
+TypeOfData
+CS
+1
+RET
+(50xx,0022)
+Curve Description
+CurveDescription
+LO
+1
+RET
+(50xx,0030)
+Axis Units
+AxisUnits
+SH
+1-n
+RET
+(50xx,0040)
+Axis Labels
+AxisLabels
+SH
+1-n
+RET
+(50xx,0103)
+Data Value Representation
+DataValueRepresentation
+US
+1
+RET
+(50xx,0104)
+Minimum Coordinate Value
+MinimumCoordinateValue
+US
+1-n
+RET
+(50xx,0105)
+Maximum Coordinate Value
+MaximumCoordinateValue
+US
+1-n
+RET
+(50xx,0106)
+Curve Range
+CurveRange
+SH
+1-n
+RET
+(50xx,0110)
+Curve Data Descriptor
+CurveDataDescriptor
+US
+1-n
+RET
+(50xx,0112)
+Coordinate Start Value
+CoordinateStartValue
+US
+1-n
+RET
+(50xx,0114)
+Coordinate Step Value
+CoordinateStepValue
+US
+1-n
+RET
+(50xx,1001)
+Curve Activation Layer
+CurveActivationLayer
+CS
+1
+RET
+(50xx,2000)
+Audio Type
+AudioType
+US
+1
+RET
+(50xx,2002)
+Audio Sample Format
+AudioSampleFormat
+US
+1
+RET
+(50xx,2004)
+Number of Channels
+NumberOfChannels
+US
+1
+RET
+(50xx,2006)
+Number of Samples
+NumberOfSamples
+UL
+1
+RET
+(50xx,2008)
+Sample Rate
+SampleRate
+UL
+1
+RET
+(50xx,200A)
+Total Time
+TotalTime
+UL
+1
+RET
+(50xx,200C)
+Audio Sample Data
+AudioSampleData
+OW or OB
+1
+RET
+(50xx,200E)
+Audio Comments
+AudioComments
+LT
+1
+RET
+(50xx,2500)
+Curve Label
+CurveLabel
+LO
+1
+RET
+(50xx,2600)
+Curve Referenced Overlay Sequence
+CurveReferencedOverlaySequence
+SQ
+1
+RET
+(50xx,2610)
+Curve Referenced Overlay Group
+CurveReferencedOverlayGroup
+US
+1
+RET
+(50xx,3000)
+Curve Data
+CurveData
+OW or OB
+1
+RET
+(5200,9229)
+Shared Functional Groups Sequence
+SharedFunctionalGroupsSequence
+SQ
+1
+
+(5200,9230)
+Per-frame Functional Groups Sequence
+PerFrameFunctionalGroupsSequence
+SQ
+1
+
+(5400,0100)
+Waveform Sequence
+WaveformSequence
+SQ
+1
+
+(5400,0110)
+Channel Minimum Value
+ChannelMinimumValue
+OB or OW
+1
+
+(5400,0112)
+Channel Maximum Value
+ChannelMaximumValue
+OB or OW
+1
+
+(5400,1004)
+Waveform Bits Allocated
+WaveformBitsAllocated
+US
+1
+
+(5400,1006)
+Waveform Sample Interpretation
+WaveformSampleInterpretation
+CS
+1
+
+(5400,100A)
+Waveform Padding Value
+WaveformPaddingValue
+OB or OW
+1
+
+(5400,1010)
+Waveform Data
+WaveformData
+OB or OW
+1
+
+(5600,0010)
+First Order Phase Correction Angle
+FirstOrderPhaseCorrectionAngle
+OF
+1
+
+(5600,0020)
+Spectroscopy Data
+SpectroscopyData
+OF
+1
+
+(60xx,0010)
+Overlay Rows
+OverlayRows
+US
+1
+
+(60xx,0011)
+Overlay Columns
+OverlayColumns
+US
+1
+
+(60xx,0012)
+Overlay Planes
+OverlayPlanes
+US
+1
+RET
+(60xx,0015)
+Number of Frames in Overlay
+NumberOfFramesInOverlay
+IS
+1
+
+(60xx,0022)
+Overlay Description
+OverlayDescription
+LO
+1
+
+(60xx,0040)
+Overlay Type
+OverlayType
+CS
+1
+
+(60xx,0045)
+Overlay Subtype
+OverlaySubtype
+LO
+1
+
+(60xx,0050)
+Overlay Origin
+OverlayOrigin
+SS
+2
+
+(60xx,0051)
+Image Frame Origin
+ImageFrameOrigin
+US
+1
+
+(60xx,0052)
+Overlay Plane Origin
+OverlayPlaneOrigin
+US
+1
+RET
+(60xx,0060)
+Overlay Compression Code
+OverlayCompressionCode
+CS
+1
+RET
+(60xx,0061)
+Overlay Compression Originator
+OverlayCompressionOriginator
+SH
+1
+RET
+(60xx,0062)
+Overlay Compression Label
+OverlayCompressionLabel
+SH
+1
+RET
+(60xx,0063)
+Overlay Compression Description
+OverlayCompressionDescription
+CS
+1
+RET
+(60xx,0066)
+Overlay Compression Step Pointers
+OverlayCompressionStepPointers
+AT
+1-n
+RET
+(60xx,0068)
+Overlay Repeat Interval
+OverlayRepeatInterval
+US
+1
+RET
+(60xx,0069)
+Overlay Bits Grouped
+OverlayBitsGrouped
+US
+1
+RET
+(60xx,0100)
+Overlay Bits Allocated
+OverlayBitsAllocated
+US
+1
+
+(60xx,0102)
+Overlay Bit Position
+OverlayBitPosition
+US
+1
+
+(60xx,0110)
+Overlay Format
+OverlayFormat
+CS
+1
+RET
+(60xx,0200)
+Overlay Location
+OverlayLocation
+US
+1
+RET
+(60xx,0800)
+Overlay Code Label
+OverlayCodeLabel
+CS
+1-n
+RET
+(60xx,0802)
+Overlay Number of Tables
+OverlayNumberOfTables
+US
+1
+RET
+(60xx,0803)
+Overlay Code Table Location
+OverlayCodeTableLocation
+AT
+1-n
+RET
+(60xx,0804)
+Overlay Bits For Code Word
+OverlayBitsForCodeWord
+US
+1
+RET
+(60xx,1001)
+Overlay Activation Layer
+OverlayActivationLayer
+CS
+1
+
+(60xx,1100)
+Overlay Descriptor - Gray
+OverlayDescriptorGray
+US
+1
+RET
+(60xx,1101)
+Overlay Descriptor - Red
+OverlayDescriptorRed
+US
+1
+RET
+(60xx,1102)
+Overlay Descriptor - Green
+OverlayDescriptorGreen
+US
+1
+RET
+(60xx,1103)
+Overlay Descriptor - Blue
+OverlayDescriptorBlue
+US
+1
+RET
+(60xx,1200)
+Overlays - Gray
+OverlaysGray
+US
+1-n
+RET
+(60xx,1201)
+Overlays - Red
+OverlaysRed
+US
+1-n
+RET
+(60xx,1202)
+Overlays - Green
+OverlaysGreen
+US
+1-n
+RET
+(60xx,1203)
+Overlays - Blue
+OverlaysBlue
+US
+1-n
+RET
+(60xx,1301)
+ROI Area
+ROIArea
+IS
+1
+
+(60xx,1302)
+ROI Mean
+ROIMean
+DS
+1
+
+(60xx,1303)
+ROI Standard Deviation
+ROIStandardDeviation
+DS
+1
+
+(60xx,1500)
+Overlay Label
+OverlayLabel
+LO
+1
+
+(60xx,3000)
+Overlay Data
+OverlayData
+OB or OW
+1
+
+(60xx,4000)
+Overlay Comments
+OverlayComments
+LT
+1
+RET
+(7FE0,0010)
+Pixel Data
+PixelData
+OW or OB
+1
+
+(7FE0,0020)
+Coefficients SDVN
+CoefficientsSDVN
+OW
+1
+RET
+(7FE0,0030)
+Coefficients SDHN
+CoefficientsSDHN
+OW
+1
+RET
+(7FE0,0040)
+Coefficients SDDN
+CoefficientsSDDN
+OW
+1
+RET
+(7Fxx,0010)
+Variable Pixel Data
+VariablePixelData
+OW or OB
+1
+RET
+(7Fxx,0011)
+Variable Next Data Group
+VariableNextDataGroup
+US
+1
+RET
+(7Fxx,0020)
+Variable Coefficients SDVN
+VariableCoefficientsSDVN
+OW
+1
+RET
+(7Fxx,0030)
+Variable Coefficients SDHN
+VariableCoefficientsSDHN
+OW
+1
+RET
+(7Fxx,0040)
+Variable Coefficients SDDN
+VariableCoefficientsSDDN
+OW
+1
+RET
+(FFFA,FFFA)
+Digital Signatures Sequence
+DigitalSignaturesSequence
+SQ
+1
+
+(FFFC,FFFC)
+Data Set Trailing Padding
+DataSetTrailingPadding
+OB
+1
+
+(FFFE,E000)
+Item
+Item
+see note
+1
+
+(FFFE,E00D)
+Item Delimitation Item
+ItemDelimitationItem
+see note
+1
+
+(FFFE,E0DD)
+Sequence Delimitation Item
+SequenceDelimitationItem
+see note
 1
 

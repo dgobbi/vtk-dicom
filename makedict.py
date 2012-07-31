@@ -5,8 +5,8 @@ This program will read a text file generated from the DICOM data
 element regsistry table (DICOM Chapter 6 part 6) and will generate
 a hash table that can be used for dictionary lookups.
 
-Usage: python makedict.py nemadict.txt > vtkDICOMDictionary.cxx"
-Usage: python makedict.py ---header nemadict.txt > vtkDICOMDictionary.h"
+Usage: python makedict.py nemadict.txt > vtkDICOMDictionary.cxx
+Usage: python makedict.py --header nemadict.txt > vtkDICOMDictionary.h
 
 """
 
@@ -70,8 +70,12 @@ while i < n:
     vr = "XS"
 
   # replace "OB or OW" with "OX"
-  if vr == "OB or OW":
+  if vr == "OB or OW" or vr == "OW or OB":
     vr = "OX"
+
+  # replace "see note" with "UN"
+  if vr == "" or vr == "see note":
+    vr = "UN"
 
   # replace mixed short with "OW"
   if len(vr) > 2:
@@ -117,7 +121,7 @@ while i < n:
       ("%-39s = 0x%s%s, // %s %-5s %s" % (key, g, e, vr, vm, ret)).strip())
 
     element_list.append(
-      "{ 0x%s, 0x%s, VR::%s, VM::%s, \"%s\" }," % (g, e, vr, vm, name))
+      "{ 0x%s, 0x%s, %s, VR::%s, VM::%s, \"%s\" }," % (g, e, ret, vr, vm, name))
 
     # create a hash from group, element
     h = ((gi ^ (gi >> 6)) ^ (ei ^ (ei >> 6)))
@@ -153,7 +157,7 @@ for te in ht:
   s = ""
   for idx in te:
     s = s + element_list[idx] + "\n"
-  s = s + "{ 0, 0, VR::UN, VM::M1, \"\" }"
+  s = s + "{ 0, 0, 0, 0, 0, NULL }"
   entry_list.append(s)
   k = k + len(te) + 1
 
@@ -178,6 +182,7 @@ if printheader:
 
 else:
   print "#include \"vtkDICOMMetaData.h\""
+  print "#include <string.h>"
   print
 
   print "namespace {"

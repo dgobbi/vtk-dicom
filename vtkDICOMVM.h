@@ -28,7 +28,14 @@ public:
     M16   = 0x1010,
   };
 
-  vtkDICOMVM() : Key(M1) {};
+  //! Construct an empty, invalid VM.
+  vtkDICOMVM() : Key(0) {}
+
+  //! Construct a VM from a VM enum constant.
+  vtkDICOMVM(EnumType vm) : Key(static_cast<unsigned short>(vm)) {};
+
+  //! Check validity of this VM.
+  bool IsValid() const { return (this->Key != 0); }
 
   //! Get the minimum allowed number of values
   int GetMin() const {
@@ -41,8 +48,6 @@ public:
   //! Get the step between allowed values.
   int GetStep() const {
     return ((this->Key & 0x80) == 0 ? 1 : ((-this->Key) & 0xff)); }
-
-  vtkDICOMVM(EnumType vm) : Key(static_cast<unsigned short>(vm)) {};
 
   bool operator==(vtkDICOMVM b) const { return (this->Key == b.Key); }
   bool operator!=(vtkDICOMVM b) const { return (this->Key != b.Key); }
