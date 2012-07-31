@@ -293,8 +293,15 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
     }
 
   // insert into the linked list
-  hptr->Prev = this->Tail.Prev;
-  hptr->Next = &this->Tail;
+  vtkDICOMDataElement *tptr = &this->Tail;
+  do
+    {
+    tptr = tptr->Prev;
+    }
+  while (tag < tptr->GetTag());
+  
+  hptr->Prev = tptr;
+  hptr->Next = tptr->Next;
   hptr->Prev->Next = hptr;
   hptr->Next->Prev = hptr;
   this->NumberOfDataElements++;
