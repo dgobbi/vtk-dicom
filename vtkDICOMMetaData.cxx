@@ -81,7 +81,7 @@ void vtkDICOMMetaData::RemoveAttribute(vtkDICOMTag tag)
 
   if (htable && (hptr = htable[i]) != NULL)
     {
-    while (hptr->Tag.GetGroup() != 0)
+    while (hptr->Next != 0)
       {
       if (hptr->Tag == tag)
         {
@@ -90,7 +90,7 @@ void vtkDICOMMetaData::RemoveAttribute(vtkDICOMTag tag)
         hptr->Prev->Next = hptr->Next;
         // remove from the hash table
         hptr[0] = hptr[1];
-        while (hptr->Tag.GetGroup() != 0)
+        while (hptr->Next != 0)
           {
           // adjust links as necessary
           hptr->Prev->Next = hptr;
@@ -118,7 +118,7 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElement(
 
   if (htable && (hptr = htable[i]) != NULL)
     {
-    while (hptr->Tag.GetGroup() != 0)
+    while (hptr->Next != 0)
       {
       if (hptr->Tag == tag)
         {
@@ -235,12 +235,6 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
   vtkDICOMDataElement **htable = this->Table;
   vtkDICOMDataElement *hptr;
 
-  if (tag.GetGroup() == 0)
-    {
-    // group number cannot be zero
-    return 0;
-    }
-
   if (htable == NULL)
     {
     // allocate the hash table
@@ -258,7 +252,7 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
     hptr = new vtkDICOMDataElement[4];
     htable[i] = hptr;
     }
-  else if (hptr->Tag.GetGroup() != 0)
+  else if (hptr->Next != 0)
     {
     // see if item is already there
     unsigned int n = 0;
@@ -271,7 +265,7 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
       n++;
       hptr++;
       }
-    while (hptr->Tag.GetGroup() != 0);
+    while (hptr->Next != 0);
 
     // if n+1 is a power of two, double allocated space
     if (n > 2 && (n & (n+1)) == 0)
@@ -428,7 +422,7 @@ bool vtkDICOMMetaData::FindDictEntry(vtkDICOMTag tag, vtkDICOMDictEntry &e)
 
   if (htable && (hptr = htable[i]) != NULL)
     {
-    while (hptr->Group)
+    while (hptr->Group || hptr->Element || hptr->VR)
       {
       if (hptr->Group == tag.GetGroup() &&
           hptr->Element == tag.GetElement())
