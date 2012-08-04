@@ -2322,7 +2322,7 @@ DictEntry DictRow0237[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0238[] = {
-{ 0x0028, 0x3006, 0, VR::OB, VM::M1, "LUT Data" },
+{ 0x0028, 0x3006, 0, VR::OW, VM::M1, "LUT Data" },
 { 0x3006, 0x0028, 0, VR::ST, VM::M1, "ROI Description" },
 { 0x300A, 0x0434, 0, VR::FL, VM::M1, "Applicator Opening X" },
 { 0x300C, 0x0022, 0, VR::IS, VM::M1, "Referenced Fraction Group Number" },
@@ -4725,7 +4725,7 @@ DictEntry DictRow0608[] = {
 { 0x0018, 0x1620, 0, VR::IS, VM::M2T2N, "Vertices of the Polygonal Shutter" },
 { 0x0018, 0x9428, 0, VR::FL, VM::M1T2, "Intensifier Active Dimension(s)" },
 { 0x0020, 0x1208, 0, VR::IS, VM::M1, "Number of Study Related Instances" },
-{ 0x0028, 0x1200, 1, VR::OB, VM::M1, "Gray Lookup Table Data" },
+{ 0x0028, 0x1200, 1, VR::OW, VM::M1, "Gray Lookup Table Data" },
 { 0x300A, 0x02A0, 0, VR::DS, VM::M1, "Source Applicator Step Size" },
 { 0, 0, 0, 0, 0, NULL }
 };

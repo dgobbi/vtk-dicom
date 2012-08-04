@@ -66,7 +66,7 @@ while i < n:
     raise TypeError
 
   # replace "US or SS" with "XS"
-  if vr == "US or SS":
+  if vr == "US or SS" or vr == "SS or US":
     vr = "XS"
 
   # replace "OB or OW" with "OX"
@@ -79,9 +79,9 @@ while i < n:
 
   # replace mixed short with "OW"
   if len(vr) > 2:
-    if vr.find("OW"):
+    if vr.find("OW") >= 0:
       vr = "OW"
-    if vr.find("OB"):
+    if vr.find("OB") >= 0:
       vr = "OB"
 
   # replace 'RET' with 1 or 0
