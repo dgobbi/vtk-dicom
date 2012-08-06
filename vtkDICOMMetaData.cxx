@@ -1,6 +1,4 @@
 #include "vtkDICOMMetaData.h"
-#include "vtkDICOMSequence.h"
-#include "vtkDICOMSequenceItem.h"
 
 #include <vtkObjectFactory.h>
 #include <vtkMatrix4x4.h>
@@ -16,23 +14,11 @@ vtkStandardNewMacro(vtkDICOMMetaData);
 #define METADATA_HASH_SIZE 512
 
 //----------------------------------------------------------------------------
-// Helper class for building sequences
-struct vtkDICOMMetaData::SequenceInfo
-{
-  vtkDICOMSequence Sequence;
-  vtkDICOMSequenceItem Item;
-  vtkDICOMTag Tag;
-  int Index;
-};
-
-//----------------------------------------------------------------------------
 // Constructor
 vtkDICOMMetaData::vtkDICOMMetaData()
 {
   this->NumberOfInstances = 1;
   this->NumberOfDataElements = 0;
-  this->SequenceStack = NULL;
-  this->SequenceStackTop = NULL;
   this->Table = NULL;
   this->Head.Prev = NULL;
   this->Head.Next = &this->Tail;
@@ -60,10 +46,6 @@ void vtkDICOMMetaData::Clear()
     delete [] htable;
     }
 
-  delete [] this->SequenceStack;
-
-  this->SequenceStack = NULL;
-  this->SequenceStackTop = NULL;
   this->NumberOfInstances = 1;
   this->Table = NULL;
   this->Head.Next = &this->Tail;
@@ -311,7 +293,7 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
     tptr = tptr->Prev;
     }
   while (tag < tptr->GetTag());
-
+  
   hptr->Prev = tptr;
   hptr->Next = tptr->Next;
   hptr->Prev->Next = hptr;
@@ -326,13 +308,12 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
 void vtkDICOMMetaData::SetAttributeValue(
   vtkDICOMTag tag, const vtkDICOMValue& v)
 {
-  if (this->SequenceStackTop)
+  vtkDICOMDataElement *loc = this->FindDataElementOrInsert(tag);
+  if (loc == 0)
     {
-    this->SequenceStackTop->Item.AddDataElement(tag, v);
+    vtkErrorMacro("SetAttributeValue: tag group number must not be zero.");
     return;
     }
-
-  vtkDICOMDataElement *loc = this->FindDataElementOrInsert(tag);
   loc->Tag = tag;
   loc->Value = v;
 }
@@ -362,22 +343,6 @@ void vtkDICOMMetaData::SetAttributeValue(vtkDICOMTag tag, const std::string& v)
 void vtkDICOMMetaData::SetAttributeValue(
   int idx, vtkDICOMTag tag, const vtkDICOMValue& v)
 {
-  if (this->SequenceStackTop)
-    {
-    this->SequenceStackTop->Item.AddDataElement(tag, v);
-    if (this->SequenceStackTop->Index != idx)
-      {
-      if (this->SequenceStackTop->Index != -1)
-        {
-        vtkWarningMacro("SetAttributeValue: Different new index " << idx
-                        << " used in sequence overrides old index "
-                        << this->SequenceStackTop->Index);
-        }
-      this->SequenceStackTop->Index = idx;
-      }
-    return;
-    }
-
   vtkDICOMDataElement *loc = this->FindDataElementOrInsert(tag);
   if (loc == 0)
     {
@@ -445,120 +410,6 @@ void vtkDICOMMetaData::SetAttributeValue(
   int idx, vtkDICOMTag tag, const std::string& v)
 {
   this->SetAttributeValueT(idx, tag, v);
-}
-
-//----------------------------------------------------------------------------
-void vtkDICOMMetaData::BeginSequence(vtkDICOMTag tag)
-{
-  SequenceInfo *sstack = this->SequenceStack;
-
-  // allocate a stack if none exists
-  if (!sstack)
-    {
-    sstack = new SequenceInfo[2];
-    this->SequenceStack = sstack;
-    this->SequenceStackTop = sstack;
-    }
-  else
-    {
-    // find the size of the stack
-    size_t n = 0;
-    if (this->SequenceStackTop)
-      {
-      n = this->SequenceStackTop + 1 - this->SequenceStack;
-      }
-
-    // reallocate with double size if n is a power of two
-    if (n > 1 && (n & (n - 1)) == 0)
-      {
-      SequenceInfo *newstack = new SequenceInfo[2*n];
-      for (size_t i = 0; i < n; i++)
-        {
-        newstack[i] = sstack[i];
-        }
-      delete [] sstack;
-      sstack = newstack;
-      this->SequenceStack = sstack;
-      this->SequenceStackTop = sstack + n;
-      }
-    else
-      {
-      this->SequenceStackTop++;
-      }
-    }
-
-  // initial image instance index is undetermined
-  this->SequenceStackTop->Tag = tag;
-  this->SequenceStackTop->Index = -1;
-}
-
-void vtkDICOMMetaData::EndSequence()
-{
-  if (!this->SequenceStackTop)
-    {
-    vtkErrorMacro("EndSequence: mismatched EndSequence()");
-    return;
-    }
-  else if (!this->SequenceStackTop->Item.IsEmpty())
-    {
-    vtkWarningMacro("EndSequence: missing EndItem()");
-    this->EndItem();
-    }
-
-  // pop the stack
-  SequenceInfo *top = this->SequenceStackTop;
-  if (this->SequenceStackTop == this->SequenceStack)
-    {
-    this->SequenceStackTop = NULL;
-    }
-  else
-    {
-    this->SequenceStackTop--;
-    }
-
-  // add the sequence to the data set
-  if (top->Index == -1)
-    {
-    this->SetAttributeValue(top->Tag, top->Sequence);
-    }
-  else
-    {
-    this->SetAttributeValue(top->Index, top->Tag, top->Sequence);
-    }
-
-  // clear the old stack top
-  top->Sequence.Clear();
-  top->Item.Clear();
-  top->Tag = vtkDICOMTag();
-  top->Index = 0;
-}
-
-void vtkDICOMMetaData::BeginItem()
-{
-  if (this->SequenceStackTop)
-    {
-    vtkErrorMacro("BeginItem: missing BeginSequence()");
-    return;
-    }
-  else if (!this->SequenceStackTop->Item.IsEmpty())
-    {
-    vtkWarningMacro("BeginItem: missing EndItem()");
-    this->EndItem();
-    }
-}
-
-void vtkDICOMMetaData::EndItem()
-{
-  if (this->SequenceStackTop)
-    {
-    vtkErrorMacro("BeginItem: missing BeginSequence()");
-    return;
-    }
-
-  SequenceInfo *top = this->SequenceStackTop;
-
-  top->Sequence.AddItem(top->Item);
-  top->Item.Clear();
 }
 
 //----------------------------------------------------------------------------

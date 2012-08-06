@@ -102,18 +102,6 @@ public:
   //void SetAttributeValue(vtkDICOMTag tag, vtkMatrix4x4 *v);
   //void SetAttributeValue(vtkDICOMTag tag, vtkAbstractArray *v);
 
-  //! Mark the beginning of a sequence.
-  void BeginSequence(vtkDICOMTag tag);
-
-  //! Mark the end of a sequence.
-  void EndSequence();
-
-  //! Mark the beginning of an item.
-  void BeginItem();
-
-  //! Mark the end of an item.
-  void EndItem();
-
   //! Find the dictionary entry for the given tag.
   static bool FindDictEntry(vtkDICOMTag tag, vtkDICOMDictEntry& e);
 
@@ -141,9 +129,6 @@ protected:
 
 private:
 
-  //! The number of data elements.
-  int NumberOfDataElements;
-
   //! The number of DICOM files.
   int NumberOfInstances;
 
@@ -156,12 +141,8 @@ private:
   //! Links to the last data element.
   vtkDICOMDataElement Tail;
 
-  //! Class needed to implement sequence building methods.
-  struct SequenceInfo;
-
-  //! The list of sequences that are being built.
-  SequenceInfo *SequenceStack;
-  SequenceInfo *SequenceStackTop;
+  //! The number of data elements.
+  int NumberOfDataElements;
 
   //! The lookup table for the dictionary.
   static vtkDICOMDictEntry::Internal *DictHashTable[DICT_HASH_TABLE_SIZE];
