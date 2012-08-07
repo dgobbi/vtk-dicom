@@ -717,7 +717,7 @@ bool vtkDICOMParser::ReadMetaHeader(
   // verify that this is the right tag
   if (g == 0x0002 && e == 0x0000 && vl == 4)
     {
-    unsigned int l = Decoder<LE>::GetInt32(cp + 8) + 16;
+    unsigned int l = Decoder<LE>::GetInt32(cp + 8) + 12;
     decoder.ReadElements(cp, ep, l, DC::PixelData, bytesRead);
     }
 
@@ -748,8 +748,8 @@ bool vtkDICOMParser::ReadMetaData(
   int i = (idx == -1 ? 0 : idx);
   this->MetaData->GetAttributeValue(i, DC::TransferSyntaxUID, tsyntax);
 
-  if (tsyntax == "1.2.840.10008.1.2.2" ||  // Implicit LE
-      tsyntax == "1.2.840.10008.1.2.20" || // Papyrus Implicit LE
+  if (tsyntax == "1.2.840.10008.1.2" ||  // Implicit LE
+      tsyntax == "1.2.840.10008.1.20" || // Papyrus Implicit LE
       tsyntax == "") // no meta header, assume Implicit LE
     {
     decoder = &decoderLE;
