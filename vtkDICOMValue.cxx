@@ -954,6 +954,7 @@ void vtkDICOMValue::AppendValueToString(std::string& str, int i) const
 
   if (this->V->Type == VTK_CHAR)
     {
+    while (cp != dp && dp[-1] == '\0') { --dp; }
     str.append(cp, dp);
     }
   else if (this->V->Type == VTK_FLOAT || this->V->Type == VTK_DOUBLE)
