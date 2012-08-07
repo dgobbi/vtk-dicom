@@ -29,6 +29,7 @@ SET(LIB_SRCS
   vtkDICOMVM.cxx
   vtkDICOMDataElement.cxx
   vtkDICOMDictEntry.cxx
+  vtkDICOMParser.cxx
   vtkDICOMSequence.cxx
   vtkDICOMSequenceItem.cxx
   vtkDICOMValue.cxx
@@ -36,6 +37,9 @@ SET(LIB_SRCS
 
 ADD_LIBRARY(DataManager ${LIB_SRCS})
 TARGET_LINK_LIBRARIES(DataManager vtkCommon gdcmMSFF)
+
+ADD_EXECUTABLE(TestDICOMParser TestDICOMParser.cxx)
+TARGET_LINK_LIBRARIES(TestDICOMParser DataManager)
 
 ADD_EXECUTABLE(TestDICOMMetaData TestDICOMMetaData.cxx)
 TARGET_LINK_LIBRARIES(TestDICOMMetaData DataManager)

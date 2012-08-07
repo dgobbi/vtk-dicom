@@ -47,11 +47,11 @@ public:
     if (this->L && --this->L->ReferenceCount == 0) { delete this->L; }
     this->L = 0; }
 
+  //! Check if empty.
+  bool IsEmpty() { return (this->L == 0); }
+
   //! Add a data element to this item.
   void AddDataElement(vtkDICOMTag tag, const vtkDICOMValue& v);
-
-  //! Add a delimiter.  Do not add anything after this.
-  void AddDelimiter();
 
   //! Get the number of data elements.
   int GetNumberOfDataElements() const {

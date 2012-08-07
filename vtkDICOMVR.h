@@ -54,6 +54,9 @@ public:
   vtkDICOMVR(const char *vr) : Key(VRTable[static_cast<unsigned char>(vr[0])]
                                    [static_cast<unsigned char>(vr[1])]) {}
 
+  //! Attempt to construct a VR from a two unsigned bytes.
+  vtkDICOMVR(const unsigned char vr[2]) : Key(VRTable[vr[0]][vr[1]]) {}
+
   //! Check validity of this VR.
   bool IsValid() const { return (this->Key != 0); }
 
@@ -62,6 +65,9 @@ public:
 
   //! Get the two-character text for this VR.
   const char *GetText() const { return TextTable[this->Key]; }
+
+  //! The VRs OB, OF, OW, SQ, UN, UT require a 32-bit VL.
+  bool HasLongVL() const { return (((1 << this->Key) & 0x0a08e000) != 0); }
 
   bool operator==(vtkDICOMVR a) const { return (this->Key == a.Key); }
   bool operator!=(vtkDICOMVR a) const { return (this->Key != a.Key); }
