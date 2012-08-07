@@ -67,6 +67,7 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
   vtkDICOMMetaData *meta = this->MetaData;
   vtkDICOMDictEntry de;
   vtkDICOMVR vr = vtkDICOMVR::UN;
+
   if (tag.GetElement() == 0x0000)
     {
     // group length element
@@ -354,6 +355,24 @@ unsigned int Decoder<E>::ReadElementHead(
       vl = Decoder<E>::GetInt32(data);
       data += 4;
       l += 4;
+      }
+    }
+
+  if (vr == vtkDICOMVR::UN && vl == 0xffffffff)
+    {
+    // make sure unknown length elements are proper sequences
+    if (!this->CheckBuffer(data, enddata, 4)) { return 0; }
+    unsigned short g1 = Decoder<E>::GetInt16(data);
+    unsigned short e1 = Decoder<E>::GetInt16(data + 2);
+    if (g1 == 0xfffe && (e1 == 0xe000 || e1 == 0xe0dd))
+      {
+      // VR is a sequence
+      vr = vtkDICOMVR::SQ;
+      }
+    else
+      {
+      // can't handle non-sequence with unknown length
+      return false;
       }
     }
 
