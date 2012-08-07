@@ -348,7 +348,13 @@ unsigned int Decoder<E>::ReadElementHead(
     vr = vtkDICOMVR(data);
     vl = Decoder<E>::GetInt16(data + 2);
     data += 4;
-    if (vr.HasLongVL())
+    if (!vr.IsValid())
+      {
+      // try to get VR from dictionary instead
+      vr = this->FindDictVR(tag);
+      vl = Decoder<E>::GetInt32(data - 4);
+      }
+    else if (vr.HasLongVL())
       {
       // check that buffer has 4 bytes for 32-bit VL
       if (!this->CheckBuffer(data, enddata, 4)) { return 0; }
