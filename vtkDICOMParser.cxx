@@ -342,6 +342,8 @@ unsigned int Decoder<E>::ReadElementHead(
     // implicit VR
     vr = this->FindDictVR(tag);
     vl = Decoder<E>::GetInt32(data);
+    // force group length tags to have one 32-bit length value
+    if (e == 0x0000) { vl = 4; }
     data += 4;
     }
   else
