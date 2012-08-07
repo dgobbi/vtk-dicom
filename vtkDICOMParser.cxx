@@ -404,7 +404,7 @@ unsigned int Decoder<E>::ReadElementValue(
       char *ptr = v.AllocateTextData(vr, vl);
       l = this->ReadData(data, enddata, ptr, vl);
       // AllocateTextData makes room for terminal null
-      ptr[vl] = '\0';
+      if (l == 0 || ptr[l-1] != '\0') { ptr[l] = '\0'; }
       }
       break;
     case VTK_UNSIGNED_CHAR:
