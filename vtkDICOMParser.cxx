@@ -67,7 +67,12 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
   vtkDICOMMetaData *meta = this->MetaData;
   vtkDICOMDictEntry de;
   vtkDICOMVR vr = vtkDICOMVR::UN;
-  if (this->MetaData->FindDictEntry(tag, de))
+  if (tag.GetElement() == 0x0000)
+    {
+    // group length element
+    vr = vtkDICOMVR::UL;
+    }
+  else if (this->MetaData->FindDictEntry(tag, de))
     {
     int idx = (this->Index == -1 ? 0 : this->Index);
     vr = de.GetVR();
