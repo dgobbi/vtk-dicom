@@ -421,7 +421,7 @@ unsigned int Decoder<E>::ReadElementValue(
   unsigned int l = 0;
 
   // handle elements of unknown length
-  if (vl == 0xffffffff && vr != vtkDICOMVR::SQ)
+  if (vl == 0xffffffff)
     {
     // make sure unknown length elements are proper sequences
     if (!this->CheckBuffer(data, enddata, 8)) { return 0; }
@@ -429,14 +429,9 @@ unsigned int Decoder<E>::ReadElementValue(
     unsigned short e1 = Decoder<E>::GetInt16(data + 2);
     if (g1 != 0xfffe || (e1 != 0xe000 && e1 != 0xe0dd)) { return 0; }
 
-    if (vr == vtkDICOMVR::UN)
+    if (vr != vtkDICOMVR::SQ)
       {
-      // most likely a sequence of data sets
-      vr = vtkDICOMVR::SQ;
-      }
-    else
-      {
-      // most likely a sequence of fragments
+      // skip it
       v.Clear();
       vtkDICOMTag endtag(0xfffe, 0xe0dd);
       unsigned int il = 0;
@@ -530,6 +525,12 @@ unsigned int Decoder<E>::ReadElementValue(
         else if (g == 0xfffe && e == 0xe0dd)
           {
           // sequence delimiter found
+          break;
+          }
+        else
+          {
+          // non-item tag found, skip the rest
+          l += this->SkipData(data, enddata, vl-l);
           break;
           }
         }
