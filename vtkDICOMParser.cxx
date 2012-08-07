@@ -58,13 +58,54 @@ struct DecoderBase
     return r;
   }
 
+  // find an element within the current context
+  bool GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v);
+  bool GetAttributeValue(vtkDICOMTag tag, unsigned short &u);
+
   // get the dictionary VR (for implicit VR elements)
   vtkDICOMVR FindDictVR(vtkDICOMTag tag);
 };
 
+bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v)
+{
+  if (this->Item)
+    {
+    vtkDICOMDataElementIterator iter = this->Item->GetData();
+    vtkDICOMDataElementIterator iend = this->Item->GetDataEnd();
+
+    while (iter != iend)
+      {
+      if (iter->GetTag() == tag)
+        {
+        v = iter->GetValue();
+        return true;
+        }
+      ++iter;
+      }
+    }
+  else if (this->MetaData)
+    {
+    int idx = (this->Index == -1 ? 0 : this->Index);
+    return this->MetaData->GetAttributeValue(idx, tag, v);
+    }
+
+  return false;
+}
+
+bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, unsigned short &u)
+{
+  vtkDICOMValue v;
+  if (this->GetAttributeValue(tag, v))
+    {
+    v.GetValues(&u, 0, 1);
+    return true;
+    }
+
+  return false;
+}
+
 vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
 {
-  vtkDICOMMetaData *meta = this->MetaData;
   vtkDICOMDictEntry de;
   vtkDICOMVR vr = vtkDICOMVR::UN;
 
@@ -75,13 +116,12 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
     }
   else if (this->MetaData->FindDictEntry(tag, de))
     {
-    int idx = (this->Index == -1 ? 0 : this->Index);
     vr = de.GetVR();
     if (vr == vtkDICOMVR::XS)
       {
       unsigned short r;
       vr = vtkDICOMVR::US;
-      if (meta->GetAttributeValue(idx, DC::PixelRepresentation, r))
+      if (this->GetAttributeValue(DC::PixelRepresentation, r))
         {
         vr = (r == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
         }
@@ -92,14 +132,14 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
       vr = vtkDICOMVR::OW;
       if (tag.GetGroup() == 0x5400)
         {
-        if (meta->GetAttributeValue(idx, DC::WaveformBitsAllocated, s))
+        if (this->GetAttributeValue(DC::WaveformBitsAllocated, s))
           {
           vr = (s > 8 ? vtkDICOMVR::OW : vtkDICOMVR::OB);
           }
         }
       else
         {
-        if (meta->GetAttributeValue(idx, DC::BitsAllocated, s))
+        if (this->GetAttributeValue(DC::BitsAllocated, s))
           {
           vr = (s > 8 ? vtkDICOMVR::OW : vtkDICOMVR::OB);
           }
@@ -141,7 +181,8 @@ struct Decoder : DecoderBase
 
   // skip n bytes and return the number of bytes actually skipped
   unsigned int SkipData(
-    const unsigned char* &data, const unsigned char* &enddata, unsigned int n);
+    const unsigned char* &data, const unsigned char* &enddata,
+    unsigned int n);
 
   // read the tag, vr, and vl and return the number of bytes read (will
   // return zero if an error occurred)
@@ -368,24 +409,6 @@ unsigned int Decoder<E>::ReadElementHead(
       }
     }
 
-  if (vr == vtkDICOMVR::UN && vl == 0xffffffff)
-    {
-    // make sure unknown length elements are proper sequences
-    if (!this->CheckBuffer(data, enddata, 4)) { return 0; }
-    unsigned short g1 = Decoder<E>::GetInt16(data);
-    unsigned short e1 = Decoder<E>::GetInt16(data + 2);
-    if (g1 == 0xfffe && (e1 == 0xe000 || e1 == 0xe0dd))
-      {
-      // VR is a sequence
-      vr = vtkDICOMVR::SQ;
-      }
-    else
-      {
-      // can't handle non-sequence with unknown length
-      return false;
-      }
-    }
-
   return l;
 }
 
@@ -396,6 +419,31 @@ unsigned int Decoder<E>::ReadElementValue(
   vtkDICOMVR vr, unsigned int vl, vtkDICOMValue &v)
 {
   unsigned int l = 0;
+
+  // handle elements of unknown length
+  if (vl == 0xffffffff && vr != vtkDICOMVR::SQ)
+    {
+    // make sure unknown length elements are proper sequences
+    if (!this->CheckBuffer(data, enddata, 8)) { return 0; }
+    unsigned short g1 = Decoder<E>::GetInt16(data);
+    unsigned short e1 = Decoder<E>::GetInt16(data + 2);
+    if (g1 != 0xfffe || (e1 != 0xe000 && e1 != 0xe0dd)) { return 0; }
+
+    if (vr == vtkDICOMVR::UN)
+      {
+      // most likely a sequence of data sets
+      vr = vtkDICOMVR::SQ;
+      }
+    else
+      {
+      // most likely a sequence of fragments
+      v.Clear();
+      vtkDICOMTag endtag(0xfffe, 0xe0dd);
+      unsigned int il = 0;
+      this->SkipElements(data, enddata, vl, endtag, il);
+      return il;
+      }
+    }
 
   switch (vr.GetType())
     {
@@ -470,6 +518,7 @@ unsigned int Decoder<E>::ReadElementValue(
 
         if (g == 0xfffe && e == 0xe000)
           {
+          // read one item
           vtkDICOMTag endtag(0xfffe, 0xe00d);
           vtkDICOMSequenceItem item;
           vtkDICOMSequenceItem *olditem = this->Item;
@@ -480,6 +529,7 @@ unsigned int Decoder<E>::ReadElementValue(
           }
         else if (g == 0xfffe && e == 0xe0dd)
           {
+          // sequence delimiter found
           break;
           }
         }
