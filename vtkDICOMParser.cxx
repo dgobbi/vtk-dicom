@@ -115,9 +115,9 @@ template<int E>
 struct Decoder : DecoderBase
 {
   // decode two, four, or eight bytes
-  static short GetInt16(const unsigned char* ip);
-  static int GetInt32(const unsigned char* ip);
-  static long long GetInt64(const unsigned char* ip);
+  static unsigned short GetInt16(const unsigned char* ip);
+  static unsigned int GetInt32(const unsigned char* ip);
+  static unsigned long long GetInt64(const unsigned char* ip);
 
   // decode n values of the specified type
   static void GetValues(const unsigned char *ip, char *v, unsigned int n);
@@ -168,19 +168,19 @@ struct Decoder : DecoderBase
 
 //----------------------------------------------------------------------------
 template<>
-short Decoder<LE>::GetInt16(const unsigned char *ip)
+unsigned short Decoder<LE>::GetInt16(const unsigned char *ip)
 {
   return ip[0] + (ip[1] << 8);
 }
 
 template<>
-int Decoder<LE>::GetInt32(const unsigned char *ip)
+unsigned int Decoder<LE>::GetInt32(const unsigned char *ip)
 {
   return ip[0] + (ip[1] << 8) + ((ip[2] + (ip[3] << 8)) << 16);
 }
 
 template<>
-long long Decoder<LE>::GetInt64(const unsigned char *ip)
+unsigned long long Decoder<LE>::GetInt64(const unsigned char *ip)
 {
   unsigned int a = ip[0] + (ip[1] << 8) + ((ip[2] + (ip[3] << 8)) << 16);
   long long b = ip[4] + (ip[5] << 8) + ((ip[6] + (ip[7] << 8)) << 16);
@@ -188,19 +188,19 @@ long long Decoder<LE>::GetInt64(const unsigned char *ip)
 }
 
 template<>
-short Decoder<BE>::GetInt16(const unsigned char *ip)
+unsigned short Decoder<BE>::GetInt16(const unsigned char *ip)
 {
   return (ip[0] << 8) + ip[1];
 }
 
 template<>
-int Decoder<BE>::GetInt32(const unsigned char *ip)
+unsigned int Decoder<BE>::GetInt32(const unsigned char *ip)
 {
   return ((((ip[0] << 8) + ip[1]) << 8) + ip[2] << 8) + ip[3];
 }
 
 template<>
-long long Decoder<BE>::GetInt64(const unsigned char *ip)
+unsigned long long Decoder<BE>::GetInt64(const unsigned char *ip)
 {
   long long a = ((((ip[0] << 8) + ip[1]) << 8) + ip[2]) << 8 + ip[3];
   unsigned int b = ((((ip[4] << 8) + ip[5]) << 8) + ip[6]) << 8 + ip[7];
@@ -212,7 +212,7 @@ template<int E>
 void Decoder<E>::GetValues(
   const unsigned char *ip, char *op, unsigned int n)
 {
-  do { *op++ = *ip++; } while (--n);
+  do { *op++ = static_cast<char>(*ip++); } while (--n);
 }
 
 template<int E>
@@ -226,7 +226,8 @@ template<int E>
 void Decoder<E>::GetValues(
   const unsigned char *ip, short *op, unsigned int n)
 {
-  do { *op++ = Decoder<E>::GetInt16(ip); ip += 2; } while (--n);
+  do { *op++ = static_cast<short>(Decoder<E>::GetInt16(ip)); ip += 2; }
+  while (--n);
 }
 
 template<int E>
@@ -240,7 +241,8 @@ template<int E>
 void Decoder<E>::GetValues(
   const unsigned char *ip, int *op, unsigned int n)
 {
-  do { *op++ = Decoder<E>::GetInt32(ip); ip += 4; } while (--n);
+  do { *op++ = static_cast<int>(Decoder<E>::GetInt32(ip)); ip += 4; }
+  while (--n);
 }
 
 template<int E>
@@ -254,7 +256,7 @@ template<int E>
 void Decoder<E>::GetValues(
   const unsigned char *ip, float *op, unsigned int n)
 {
-  union { float f; int i; } u;
+  union { float f; unsigned int i; } u;
 
   do
     {
@@ -269,7 +271,7 @@ template<int E>
 void Decoder<E>::GetValues(
   const unsigned char *ip, double *op, unsigned int n)
 {
-  union { double d; long long l; } u;
+  union { double d; unsigned long long l; } u;
 
   do
     {
