@@ -26,18 +26,16 @@ namespace {
 #define BE 1
 
 // base class for the decoder class template
-struct DecoderBase
+class DecoderBase
 {
-  // the parser has the stream to read from
-  vtkDICOMParser *Parser;
-  // the item to read the data into (has priority over MetaData)
-  vtkDICOMSequenceItem *Item;
-  // the metadata object to read the data into
-  vtkDICOMMetaData *MetaData;
-  // the index to use with the meta data
-  int Index;
-  // the VRs are implicit
-  bool ImplicitVR;
+public:
+  // constructor that initializes all of the members
+  DecoderBase() : Parser(0), Item(0), MetaData(0), Index(0), ImplicitVR(0) {}
+  DecoderBase(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
+    Parser(parser), Item(0), MetaData(data), Index(idx), ImplicitVR(0) {}
+
+  // specify whether to use implicit VRs (default: explicit VRs)
+  void SetImplicitVR(bool i) { this->ImplicitVR = i; }
 
   // read l bytes of data, or until delimiter tag found
   virtual bool ReadElements(
@@ -52,25 +50,43 @@ struct DecoderBase
   // ensure that there are at least "n" chars left in buffer
   bool CheckBuffer(
     const unsigned char* &data, const unsigned char* &enddata,
-    unsigned int n)
-  {
-    bool r = true;
-    if (data + n >= enddata)
-      {
-      r = this->Parser->FillBuffer(data, enddata);
-      r &= (data + n < enddata);
-      }
-    return r;
-  }
+    unsigned int n);
 
-  // find an element within the current context
+  // find an element within the current context, e.g. sequence.
   bool GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v);
   bool GetAttributeValue(vtkDICOMTag tag, unsigned short &u);
 
   // get the dictionary VR (for implicit VR elements)
   vtkDICOMVR FindDictVR(vtkDICOMTag tag);
+
+protected:
+  // the parser has the stream to read from
+  vtkDICOMParser *Parser;
+  // the item to read the data into (has priority over MetaData)
+  vtkDICOMSequenceItem *Item;
+  // the metadata object to read the data into
+  vtkDICOMMetaData *MetaData;
+  // the index to use with the meta data
+  int Index;
+  // the VRs are implicit
+  bool ImplicitVR;
 };
 
+//----------------------------------------------------------------------------
+inline bool DecoderBase::CheckBuffer(
+  const unsigned char* &data, const unsigned char* &enddata,
+  unsigned int n)
+{
+  bool r = true;
+  if (data + n >= enddata)
+    {
+    r = this->Parser->FillBuffer(data, enddata);
+    r &= (data + n < enddata);
+    }
+   return r;
+}
+
+//----------------------------------------------------------------------------
 bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v)
 {
   if (this->Item)
@@ -109,6 +125,7 @@ bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, unsigned short &u)
   return false;
 }
 
+//----------------------------------------------------------------------------
 vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
 {
   vtkDICOMDictEntry de;
@@ -157,8 +174,12 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
 
 //----------------------------------------------------------------------------
 template<int E>
-struct Decoder : DecoderBase
+class Decoder : public DecoderBase
 {
+public:
+  Decoder(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
+    DecoderBase(parser, data, idx) {}
+
   // decode two, four, or eight bytes
   static unsigned short GetInt16(const unsigned char* ip);
   static unsigned int GetInt32(const unsigned char* ip);
@@ -189,6 +210,17 @@ struct Decoder : DecoderBase
     const unsigned char* &data, const unsigned char* &enddata,
     unsigned int n);
 
+  // read l bytes of data, or until delimiter tag found
+  bool ReadElements(
+    const unsigned char* &data, const unsigned char* &enddata,
+    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
+
+  // skip l bytes of data, or skip until delimiter tag found
+  bool SkipElements(
+    const unsigned char* &data, const unsigned char* &enddata,
+    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
+
+private:
   // read the tag, vr, and vl and return the number of bytes read (will
   // return zero if an error occurred)
   unsigned int ReadElementHead(
@@ -200,16 +232,6 @@ struct Decoder : DecoderBase
   unsigned int ReadElementValue(
     const unsigned char* &data, const unsigned char* &enddata,
     vtkDICOMVR vr, unsigned int vl, vtkDICOMValue &v);
-
-  // read l bytes of data, or until delimiter tag found
-  bool ReadElements(
-    const unsigned char* &data, const unsigned char* &enddata,
-    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
-
-  // skip l bytes of data, or skip until delimiter tag found
-  bool SkipElements(
-    const unsigned char* &data, const unsigned char* &enddata,
-    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
 };
 
 //----------------------------------------------------------------------------
@@ -814,12 +836,7 @@ bool vtkDICOMParser::ReadMetaHeader(
   const unsigned char* &cp, const unsigned char* &ep,
   vtkDICOMMetaData *meta, int idx)
 {
-  Decoder<LE> decoder;
-  decoder.Parser = this;
-  decoder.Item = NULL;
-  decoder.MetaData = meta;
-  decoder.Index = idx;
-  decoder.ImplicitVR = false;
+  Decoder<LE> decoder(this, meta, idx);
 
   unsigned int bytesRead = 0;
 
@@ -832,13 +849,16 @@ bool vtkDICOMParser::ReadMetaHeader(
   // verify that this is the right tag
   if (g == 0x0002)
     {
-    decoder.ImplicitVR = !vr.IsValid();
+    // check for strange files with implicit VR meta header
+    decoder.SetImplicitVR(!vr.IsValid());
+
     unsigned int l = 0xffffffff;
     if (e == 0x0000 && vl == 4)
       {
-      // normative DICOM files will have 0x0002,0x0000 length tag
+      // get length from tag 0x0002,0x0000
       l = Decoder<LE>::GetInt32(cp + 8) + 12;
       }
+
     decoder.ReadElements(cp, ep, l, vtkDICOMTag(g,0), bytesRead);
     }
 
@@ -851,9 +871,9 @@ bool vtkDICOMParser::ReadMetaData(
   vtkDICOMMetaData *meta, int idx)
 {
   // the decoders to choose from
-  Decoder<LE> decoderLE;
-  Decoder<BE> decoderBE;
-  DecoderBase *decoder = NULL;
+  Decoder<LE> decoderLE(this, meta, idx);
+  Decoder<BE> decoderBE(this, meta, idx);
+  DecoderBase *decoder = &decoderLE;
 
   // make sure there is at least one data element
   if (ep - cp < 8)
@@ -871,32 +891,19 @@ bool vtkDICOMParser::ReadMetaData(
 
   if (tsyntax == "") // try to guess the syntax
     {
-    decoder = &decoderLE;
-    decoder->Parser = this;
     if (!decoder->CheckBuffer(cp, ep, 8)) { return false; }
-    decoder->ImplicitVR = !vtkDICOMVR(cp + 4).IsValid();
+    decoder->SetImplicitVR(!vtkDICOMVR(cp + 4).IsValid());
     }
   else if (tsyntax == "1.2.840.10008.1.2" ||  // Implicit LE
            tsyntax == "1.2.840.10008.1.20")   // Papyrus Implicit LE
     {
-    decoder = &decoderLE;
-    decoder->ImplicitVR = true;
+    decoder->SetImplicitVR(true);
     }
   else if (tsyntax == "1.2.840.10008.1.2.2") // Explicit BE
     {
     decoder = &decoderBE;
-    decoder->ImplicitVR = false;
+    decoder->SetImplicitVR(false);
     }
-  else // Anything else is Explicit LE
-    {
-    decoder = &decoderLE;
-    decoder->ImplicitVR = false;
-    }
-
-  decoder->Parser = this;
-  decoder->Item = NULL;
-  decoder->MetaData = meta;
-  decoder->Index = idx;
 
   unsigned int bytesRead = 0;
 
