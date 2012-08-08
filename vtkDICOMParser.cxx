@@ -868,9 +868,15 @@ bool vtkDICOMParser::ReadMetaData(
   int i = (idx == -1 ? 0 : idx);
   this->MetaData->GetAttributeValue(i, DC::TransferSyntaxUID, tsyntax);
 
-  if (tsyntax == "1.2.840.10008.1.2" ||  // Implicit LE
-      tsyntax == "1.2.840.10008.1.20" || // Papyrus Implicit LE
-      tsyntax == "") // no meta header, assume Implicit LE
+  if (tsyntax == "") // try to guess the syntax
+    {
+    decoder = &decoderLE;
+    decoder->Parser = this;
+    if (!decoder->CheckBuffer(cp, ep, 8)) { return false; }
+    decoder->ImplicitVR = !vtkDICOMVR(cp + 4).IsValid();
+    }
+  else if (tsyntax == "1.2.840.10008.1.2" ||  // Implicit LE
+           tsyntax == "1.2.840.10008.1.20")   // Papyrus Implicit LE
     {
     decoder = &decoderLE;
     decoder->ImplicitVR = true;
@@ -880,7 +886,7 @@ bool vtkDICOMParser::ReadMetaData(
     decoder = &decoderBE;
     decoder->ImplicitVR = false;
     }
-  else
+  else // Anything else is Explicit LE
     {
     decoder = &decoderLE;
     decoder->ImplicitVR = false;
