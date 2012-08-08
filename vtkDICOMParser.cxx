@@ -214,19 +214,19 @@ struct Decoder : DecoderBase
 
 //----------------------------------------------------------------------------
 template<>
-unsigned short Decoder<LE>::GetInt16(const unsigned char *ip)
+inline unsigned short Decoder<LE>::GetInt16(const unsigned char *ip)
 {
   return ip[0] + (ip[1] << 8);
 }
 
 template<>
-unsigned int Decoder<LE>::GetInt32(const unsigned char *ip)
+inline unsigned int Decoder<LE>::GetInt32(const unsigned char *ip)
 {
   return ip[0] + (ip[1] << 8) + ((ip[2] + (ip[3] << 8)) << 16);
 }
 
 template<>
-unsigned long long Decoder<LE>::GetInt64(const unsigned char *ip)
+inline unsigned long long Decoder<LE>::GetInt64(const unsigned char *ip)
 {
   unsigned int a = ip[0] + (ip[1] << 8) + ((ip[2] + (ip[3] << 8)) << 16);
   long long b = ip[4] + (ip[5] << 8) + ((ip[6] + (ip[7] << 8)) << 16);
@@ -234,19 +234,19 @@ unsigned long long Decoder<LE>::GetInt64(const unsigned char *ip)
 }
 
 template<>
-unsigned short Decoder<BE>::GetInt16(const unsigned char *ip)
+inline unsigned short Decoder<BE>::GetInt16(const unsigned char *ip)
 {
   return (ip[0] << 8) + ip[1];
 }
 
 template<>
-unsigned int Decoder<BE>::GetInt32(const unsigned char *ip)
+inline unsigned int Decoder<BE>::GetInt32(const unsigned char *ip)
 {
   return ((((ip[0] << 8) + ip[1]) << 8) + ip[2] << 8) + ip[3];
 }
 
 template<>
-unsigned long long Decoder<BE>::GetInt64(const unsigned char *ip)
+inline unsigned long long Decoder<BE>::GetInt64(const unsigned char *ip)
 {
   long long a = ((((ip[0] << 8) + ip[1]) << 8) + ip[2]) << 8 + ip[3];
   unsigned int b = ((((ip[4] << 8) + ip[5]) << 8) + ip[6]) << 8 + ip[7];
