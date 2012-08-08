@@ -808,21 +808,8 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
     cp += 4;
     }
 
-  if (ep - cp < 8)
-    {
-    vtkErrorMacro("ReadFile: Not a DICOM file " << this->FileName);
-    }
-  else if (cp[0] == 0x02 && cp[1] == 0x00)
-    {
-    // meta header tag found (group 0x0002)
-    this->ReadMetaHeader(cp, ep, data, idx);
-    this->ReadMetaData(cp, ep, data, idx);
-    }
-  else if (cp[0] == 0x08 && cp[1] == 0x00)
-    {
-    // ACR-NEMA 1 or ACR-NEMA 2, assume little-endian implicit
-    this->ReadMetaData(cp, ep, data, idx);
-    }
+  this->ReadMetaHeader(cp, ep, data, idx);
+  this->ReadMetaData(cp, ep, data, idx);
 
   delete [] this->Buffer;
   this->InputStream = NULL;
