@@ -573,13 +573,14 @@ bool Decoder<E>::ReadElements(
     vtkDICOMVR vr;
     unsigned int vl;
     unsigned int hl = this->ReadElementHead(cp, ep, tag, vr, vl);
+    tl += 4 + hl;
 
     // break if end of file or if delimiter
     if (hl == 0 || tag == delimiter) { break; }
 
     // read the value
     vtkDICOMValue v;
-    tl += 4 + hl + this->ReadElementValue(cp, ep, vr, vl, v);
+    tl += this->ReadElementValue(cp, ep, vr, vl, v);
 
     // store the value
     if (this->Item)
@@ -597,7 +598,7 @@ bool Decoder<E>::ReadElements(
     // cout << tag << " " << vr << " " << vl << " " << v << "\n";
     }
 
-  bytesRead += l;
+  bytesRead += tl;
 
   return true;
 }
