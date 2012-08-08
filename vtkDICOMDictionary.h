@@ -3582,9 +3582,9 @@ VariableCoefficientsSDHN                = 0x7F000030, // OW M1    1
 VariableCoefficientsSDDN                = 0x7F000040, // OW M1    1
 DigitalSignaturesSequence               = 0xFFFAFFFA, // SQ M1    0
 DataSetTrailingPadding                  = 0xFFFCFFFC, // OB M1    0
-Item                                    = 0xFFFEE000, // UN M1    0
-ItemDelimitationItem                    = 0xFFFEE00D, // UN M1    0
-SequenceDelimitationItem                = 0xFFFEE0DD, // UN M1    0
+Item                                    = 0xFFFEE000, // XX M0    0
+ItemDelimitationItem                    = 0xFFFEE00D, // XX M0    0
+SequenceDelimitationItem                = 0xFFFEE0DD, // XX M0    0
 };
 } // end namespace DC
 

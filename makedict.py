@@ -73,9 +73,9 @@ while i < n:
   if vr == "OB or OW" or vr == "OW or OB":
     vr = "OX"
 
-  # replace "see note" with "UN"
+  # replace "see note" with "XX"
   if vr == "" or vr == "see note":
-    vr = "UN"
+    vr = "XX"
 
   # replace mixed short with "OW"
   if len(vr) > 2:

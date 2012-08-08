@@ -9,6 +9,7 @@ class vtkDICOMVM
 public:
   enum EnumType
   {
+    M0    = 0x0000,
     M1    = 0x0101,
     M1T2  = 0x0102,
     M1T3  = 0x0103,

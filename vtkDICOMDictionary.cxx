@@ -5978,7 +5978,7 @@ DictEntry DictRow0863[] = {
 { 0x0040, 0x0312, 0, VR::DS, VM::M1, "X-Ray Output" },
 { 0x0054, 0x0306, 0, VR::SQ, VM::M1, "Calibration Data Sequence" },
 { 0x0072, 0x0320, 0, VR::US, VM::M1, "Image Box Overlap Priority" },
-{ 0xFFFE, 0xE0DD, 0, VR::UN, VM::M1, "Sequence Delimitation Item" },
+{ 0xFFFE, 0xE0DD, 0, VR::XX, VM::M0, "Sequence Delimitation Item" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0864[] = {
@@ -6168,7 +6168,7 @@ DictEntry DictRow0896[] = {
 };
 DictEntry DictRow0897[] = {
 { 0x300A, 0x0346, 0, VR::SH, VM::M1, "Range Modulator ID" },
-{ 0xFFFE, 0xE000, 0, VR::UN, VM::M1, "Item" },
+{ 0xFFFE, 0xE000, 0, VR::XX, VM::M0, "Item" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0898[] = {
@@ -6208,7 +6208,7 @@ DictEntry DictRow0907[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0908[] = {
-{ 0xFFFE, 0xE00D, 0, VR::UN, VM::M1, "Item Delimitation Item" },
+{ 0xFFFE, 0xE00D, 0, VR::XX, VM::M0, "Item Delimitation Item" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0909[] = {

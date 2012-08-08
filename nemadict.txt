@@ -21476,17 +21476,17 @@ OB
 Item
 Item
 see note
-1
+0
 
 (FFFE,E00D)
 Item Delimitation Item
 ItemDelimitationItem
 see note
-1
+0
 
 (FFFE,E0DD)
 Sequence Delimitation Item
 SequenceDelimitationItem
 see note
-1
+0
 

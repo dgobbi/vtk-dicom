@@ -13,6 +13,7 @@ public:
    */
   enum EnumType
   {
+    XX = 0x00, //!< Null (No Value)
     AE = 0x01, //!< Application Entity
     AS = 0x02, //!< Age String
     AT = 0x03, //!< Attribute Tag
