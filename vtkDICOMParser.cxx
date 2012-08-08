@@ -42,7 +42,12 @@ struct DecoderBase
   // read l bytes of data, or until delimiter tag found
   virtual bool ReadElements(
     const unsigned char* &data, const unsigned char* &enddata,
-    unsigned int l, const vtkDICOMTag& delimiter, unsigned int &bytesRead) = 0;
+    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead) = 0;
+
+  // skip l bytes of data, or until delimiter tag found
+  virtual bool SkipElements(
+    const unsigned char* &data, const unsigned char* &enddata,
+    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead) = 0;
 
   // ensure that there are at least "n" chars left in buffer
   bool CheckBuffer(
@@ -188,7 +193,7 @@ struct Decoder : DecoderBase
   // return zero if an error occurred)
   unsigned int ReadElementHead(
     const unsigned char* &data, const unsigned char* &enddata,
-    vtkDICOMTag &tag, vtkDICOMVR &vr, unsigned int &vl);
+    vtkDICOMTag tag, vtkDICOMVR &vr, unsigned int &vl);
 
   // read one data element value of the specified vr and vl, where vl can
   // be 0xffffffff, and return the number of bytes read
@@ -199,12 +204,12 @@ struct Decoder : DecoderBase
   // read l bytes of data, or until delimiter tag found
   bool ReadElements(
     const unsigned char* &data, const unsigned char* &enddata,
-    unsigned int l, const vtkDICOMTag& delimiter, unsigned int &bytesRead);
+    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
 
   // skip l bytes of data, or skip until delimiter tag found
   bool SkipElements(
     const unsigned char* &data, const unsigned char* &enddata,
-    unsigned int l, const vtkDICOMTag& delimiter, unsigned int &bytesRead);
+    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
 };
 
 //----------------------------------------------------------------------------
@@ -368,15 +373,9 @@ unsigned int Decoder<E>::SkipData(
 template<int E>
 unsigned int Decoder<E>::ReadElementHead(
   const unsigned char* &data, const unsigned char* &enddata,
-  vtkDICOMTag &tag, vtkDICOMVR &vr, unsigned int &vl)
+  vtkDICOMTag tag, vtkDICOMVR &vr, unsigned int &vl)
 {
-  // minimum data element size is 8 bytes
-  if (!this->CheckBuffer(data, enddata, 8)) { return 0; }
-  unsigned short g = Decoder<E>::GetInt16(data);
-  unsigned short e = Decoder<E>::GetInt16(data + 2);
-  tag = vtkDICOMTag(g,e);
-  data += 4;
-  unsigned int l = 8;
+  unsigned int l = 4;
 
   if (this->ImplicitVR)
     {
@@ -384,7 +383,7 @@ unsigned int Decoder<E>::ReadElementHead(
     vr = this->FindDictVR(tag);
     vl = Decoder<E>::GetInt32(data);
     // force group length tags to have one 32-bit length value
-    if (e == 0x0000) { vl = 4; }
+    if (tag.GetElement() == 0x0000) { vl = 4; }
     data += 4;
     }
   else
@@ -546,20 +545,43 @@ unsigned int Decoder<E>::ReadElementValue(
 template<int E>
 bool Decoder<E>::ReadElements(
   const unsigned char* &cp, const unsigned char* &ep,
-  unsigned int l, const vtkDICOMTag& delimiter, unsigned int &bytesRead)
+  unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead)
 {
-  vtkDICOMVR vr;
-  vtkDICOMTag tag;
-  unsigned int vl = 0;
   unsigned int tl = 0;
-  unsigned int el = 0;
+  unsigned short group = 0x0000;
+
+  // does delimiter specify a single group to read?
+  if (delimiter.GetElement() == 0x0000)
+    {
+    group = delimiter.GetGroup();
+    delimiter = vtkDICOMTag(0x0000,0x0000);
+    }
 
   while (tl < l)
     {
-    el = this->ReadElementHead(cp, ep, tag, vr, vl);
-    if (el == 0 || tag == delimiter) { break; }
+    // read the tag
+    if (!this->CheckBuffer(cp, ep, 8)) { break; }
+    unsigned short g = Decoder<E>::GetInt16(cp);
+    unsigned short e = Decoder<E>::GetInt16(cp + 2);
+    vtkDICOMTag tag(g,e);
+
+    // break if element is not in the chosen group
+    if (group && group != g) { break; }
+
+    // read the VR and VL
+    cp += 4;
+    vtkDICOMVR vr;
+    unsigned int vl;
+    unsigned int hl = this->ReadElementHead(cp, ep, tag, vr, vl);
+
+    // break if end of file or if delimiter
+    if (hl == 0 || tag == delimiter) { break; }
+
+    // read the value
     vtkDICOMValue v;
-    el += this->ReadElementValue(cp, ep, vr, vl, v);
+    tl += 4 + hl + this->ReadElementValue(cp, ep, vr, vl, v);
+
+    // store the value
     if (this->Item)
       {
       this->Item->AddDataElement(tag, v);
@@ -572,7 +594,6 @@ bool Decoder<E>::ReadElements(
       {
       this->MetaData->SetAttributeValue(this->Index, tag, v);
       }
-    tl += el;
     // cout << tag << " " << vr << " " << vl << " " << v << "\n";
     }
 
@@ -585,15 +606,28 @@ bool Decoder<E>::ReadElements(
 template<int E>
 bool Decoder<E>::SkipElements(
   const unsigned char* &data, const unsigned char* &enddata,
-  unsigned int l, const vtkDICOMTag& delimiter, unsigned int &bytesRead)
+  unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead)
 {
   if (l == 0xffffffff)
     {
+    unsigned short group = 0x0000;
+
+    // does delimiter specify a single group to read?
+    if (delimiter.GetElement() == 0x0000)
+      {
+      group = delimiter.GetGroup();
+      delimiter = vtkDICOMTag(0x0000,0x0000);
+      }
+
     for (;;)
       {
       if (!this->CheckBuffer(data, enddata, 8)) { return false; }
       unsigned short g = Decoder<E>::GetInt16(data);
       unsigned short e = Decoder<E>::GetInt16(data + 2);
+
+      // break if element is not in the chosen group
+      if (group && group != g) { break; }
+
       data += 4;
       unsigned int tl = 8;
       unsigned int vl = 0;
@@ -795,10 +829,16 @@ bool vtkDICOMParser::ReadMetaHeader(
   unsigned int vl = Decoder<LE>::GetInt16(cp + 6);
 
   // verify that this is the right tag
-  if (g == 0x0002 && e == 0x0000 && vl == 4)
+  if (g == 0x0002)
     {
-    unsigned int l = Decoder<LE>::GetInt32(cp + 8) + 12;
-    decoder.ReadElements(cp, ep, l, DC::PixelData, bytesRead);
+    decoder.ImplicitVR = !vr.IsValid();
+    unsigned int l = 0xffffffff;
+    if (e == 0x0000 && vl == 4)
+      {
+      // normative DICOM files will have 0x0002,0x0000 length tag
+      l = Decoder<LE>::GetInt32(cp + 8) + 12;
+      }
+    decoder.ReadElements(cp, ep, l, vtkDICOMTag(g,0), bytesRead);
     }
 
   return true;
