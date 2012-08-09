@@ -37,6 +37,9 @@ public:
   // specify whether to use implicit VRs (default: explicit VRs)
   void SetImplicitVR(bool i) { this->ImplicitVR = i; }
 
+  // set the Item member variable
+  void SetItem(vtkDICOMSequenceItem *i) { this->Item = i; }
+
   // read l bytes of data, or until delimiter tag found
   virtual bool ReadElements(
     const unsigned char* &data, const unsigned char* &enddata,
@@ -44,6 +47,11 @@ public:
 
   // skip l bytes of data, or until delimiter tag found
   virtual bool SkipElements(
+    const unsigned char* &data, const unsigned char* &enddata,
+    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead) = 0;
+
+  // skip a value marked as "UN" by assuming implicit LE encoding
+  virtual bool SkipUnknown(
     const unsigned char* &data, const unsigned char* &enddata,
     unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead) = 0;
 
@@ -217,6 +225,11 @@ public:
 
   // skip l bytes of data, or skip until delimiter tag found
   bool SkipElements(
+    const unsigned char* &data, const unsigned char* &enddata,
+    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
+
+  // skip a value marked as "UN" by assuming implicit LE encoding
+  bool SkipUnknown(
     const unsigned char* &data, const unsigned char* &enddata,
     unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
 
@@ -444,19 +457,25 @@ unsigned int Decoder<E>::ReadElementValue(
   // handle elements of unknown length
   if (vl == 0xffffffff)
     {
-    // make sure unknown length elements are proper sequences
-    if (!this->CheckBuffer(data, enddata, 8)) { return 0; }
-    unsigned short g1 = Decoder<E>::GetInt16(data);
-    unsigned short e1 = Decoder<E>::GetInt16(data + 2);
-    if (g1 != 0xfffe || (e1 != 0xe000 && e1 != 0xe0dd)) { return 0; }
-
-    if (vr != vtkDICOMVR::SQ)
+    // if VR is UN then it is a sequence encoded as implicit LE
+    if (vr == vtkDICOMVR::UN)
       {
-      // skip it
       v.Clear();
-      vtkDICOMTag endtag(0xfffe, 0xe0dd);
       unsigned int il = 0;
-      this->SkipElements(data, enddata, vl, endtag, il);
+      this->SkipUnknown(data, enddata, vl, vtkDICOMTag(0xfffe,0xe0dd), il);
+      return il;
+      }
+    else if (vr != vtkDICOMVR::SQ)
+      {
+      // make sure unknown length elements are proper sequences
+      if (!this->CheckBuffer(data, enddata, 8)) { return 0; }
+      unsigned short g1 = Decoder<E>::GetInt16(data);
+      unsigned short e1 = Decoder<E>::GetInt16(data + 2);
+      if (g1 != 0xfffe || (e1 != 0xe000 && e1 != 0xe0dd)) { return 0; }
+
+      v.Clear();
+      unsigned int il = 0;
+      this->SkipElements(data, enddata, vl, vtkDICOMTag(0xfffe,0xe0dd), il);
       return il;
       }
     }
@@ -550,8 +569,11 @@ unsigned int Decoder<E>::ReadElementValue(
           }
         else
           {
-          // non-item tag found, skip the rest
-          l += this->SkipData(data, enddata, vl-l);
+          // non-item tag found
+          if (vl != 0xffffffff)
+            {
+            l += this->SkipData(data, enddata, vl-l);
+            }
           break;
           }
         }
@@ -654,6 +676,7 @@ bool Decoder<E>::SkipElements(
       data += 4;
       unsigned int tl = 8;
       unsigned int vl = 0;
+      vtkDICOMVR vr;
 
       if (g == 0xfffe || this->ImplicitVR)
         {
@@ -662,7 +685,7 @@ bool Decoder<E>::SkipElements(
         }
       else
         {
-        vtkDICOMVR vr = vtkDICOMVR(data);
+        vr = vtkDICOMVR(data);
         vl = Decoder<E>::GetInt16(data + 2);
         data += 4;
         if (vr.HasLongVL())
@@ -692,9 +715,20 @@ bool Decoder<E>::SkipElements(
           newdelim = vtkDICOMTag(0xfffe, 0xe00d);
           }
         // skip internal segment until new delimiter found
-        if (!this->SkipElements(data, enddata, vl, newdelim, bytesRead))
+        if (vr == vtkDICOMVR::UN)
           {
-          return false;
+          // if VR is explicit UN, sequence is implicit LE
+          if (!this->SkipUnknown(data, enddata, vl, newdelim, bytesRead))
+            {
+            return false;
+            }
+          } 
+        else
+          {
+          if (!this->SkipElements(data, enddata, vl, newdelim, bytesRead))
+            {
+            return false;
+            }
           }
         }
       else
@@ -719,6 +753,40 @@ bool Decoder<E>::SkipElements(
     }
 
   return true;
+}
+
+//----------------------------------------------------------------------------
+template<>
+bool Decoder<LE>::SkipUnknown(
+  const unsigned char* &data, const unsigned char* &enddata,
+  unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead)
+{
+  // switch to implicit VR before skipping unknown element
+  // (see Part 5 Section 6.2.2 Unknown (UN) Value Representation)
+  bool saveImplicit = this->ImplicitVR;
+  this->ImplicitVR = true;
+
+  bool r = this->SkipElements(data, enddata, l, delimiter, bytesRead);
+
+  this->ImplicitVR = saveImplicit;
+
+  return r;
+}
+
+template<>
+bool Decoder<BE>::SkipUnknown(
+  const unsigned char* &data, const unsigned char* &enddata,
+  unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead)
+{
+  // switch to little-endian implicit VR before skipping unknown element
+  // (see Part 5 Section 6.2.2 Unknown (UN) Value Representation)
+  Decoder<LE> decoder(this->Parser, this->MetaData, this->Index);
+  decoder.SetImplicitVR(true);
+  decoder.SetItem(this->Item);
+
+  bool r = decoder.SkipElements(data, enddata, l, delimiter, bytesRead);
+
+  return r;
 }
 
 } // end anonymous namespace
