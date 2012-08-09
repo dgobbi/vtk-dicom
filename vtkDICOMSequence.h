@@ -16,8 +16,11 @@ class vtkDICOMSequenceItem;
 class vtkDICOMSequence : public vtkDICOMValue
 {
 public:
-  //! Construct an empty sequence.
-  vtkDICOMSequence() : vtkDICOMValue() {}
+  //! Construct a growable sequence with no items.
+  vtkDICOMSequence() {
+    this->AllocateSequenceData(vtkDICOMVR::SQ, 2);
+    this->V->NumberOfValues = 0;
+    this->V->VL = 0xffffffff; }
 
   //! Construct a sequence of fixed size.
   vtkDICOMSequence(unsigned int n) {
@@ -45,6 +48,13 @@ public:
   //! Use base class assignment operator.
   vtkDICOMSequence& operator=(const vtkDICOMSequence& o) {
     *(static_cast<vtkDICOMValue *>(this)) = o; return *this; }
+
+protected:
+  //! The Clear method clears the VR, but sequence VR must always be SQ
+  void Clear() {}
+
+  //! An empty value doesn't mean the same thing as an empty sequence
+  bool IsEmpty() const { return this->vtkDICOMValue::IsEmpty(); }
 };
 
 #endif /* __vtkDICOMSequence_h */
