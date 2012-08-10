@@ -34,16 +34,19 @@ public:
   vtkSetMacro(Index, int);
   int GetIndex() { return this->Index; }
 
+  //! Get the file offset after reading the metadata.
+  vtkTypeInt64 GetFileOffset() { return this->FileOffset; }
+
   //! Set the buffer size, the default is 8192 (8k).
   void SetBufferSize(int size);
   int GetBufferSize() { return this->BufferSize; }
 
-  //! Fill the buffer, return false if no data was read.
-  virtual bool FillBuffer(
-    const unsigned char* &data, const unsigned char* &enddata);
-
   //! Read the file.
   void Update() { this->ReadFile(this->MetaData, this->Index); }
+
+  //! Internal method for filling the buffer, do not use.
+  virtual bool FillBuffer(
+    const unsigned char* &data, const unsigned char* &enddata);
 
 protected:
   vtkDICOMParser();
@@ -59,9 +62,14 @@ protected:
     const unsigned char* &data, const unsigned char* &enddata,
     vtkDICOMMetaData *meta, int idx);
 
+  void ComputeFileOffset(
+    const unsigned char* data, const unsigned char* enddata);
+
   char *FileName;
   vtkDICOMMetaData *MetaData;
-  istream *InputStream;
+  std::istream *InputStream;
+  std::streamsize BytesRead;
+  vtkTypeInt64 FileOffset;
   char *Buffer;
   int BufferSize;
   int ChunkSize;

@@ -21,6 +21,13 @@ vtkCxxSetObjectMacro(vtkDICOMParser, MetaData, vtkDICOMMetaData);
 
 namespace {
 
+// useful constants
+const unsigned short HxFFFE = 0xFFFE; // sequence group
+const unsigned short HxE000 = 0xE000; // item start
+const unsigned short HxE00D = 0xE00D; // item end
+const unsigned short HxE0DD = 0xE0DD; // sequence end
+const unsigned int HxFFFFFFFF = 0xFFFFFFFF; // unknown length
+
 // decoder has two specializations
 const int LE = 0;
 const int BE = 1;
@@ -35,17 +42,29 @@ class DecoderBase
 {
 public:
   // specify whether to use implicit VRs (default: explicit VRs)
-  void SetImplicitVR(bool i) {this->ImplicitVR = i; }
+  void SetImplicitVR(bool i) { this->ImplicitVR = i; }
 
   // set the Item member variable
   void SetItem(vtkDICOMSequenceItem *i);
 
   // read l bytes of data, or until delimiter tag found
+  bool ReadElements(
+    const unsigned char* &data, const unsigned char* &enddata,
+    unsigned int l, vtkDICOMTag delimiter) {
+    unsigned int bytesRead;
+    return ReadElements(data, enddata, l, delimiter, bytesRead); }
+
+  // skip l bytes of data, or until delimiter tag found
+  bool SkipElements(
+    const unsigned char* &data, const unsigned char* &enddata,
+    unsigned int l, vtkDICOMTag delimiter) {
+    unsigned int bytesRead;
+    return SkipElements(data, enddata, l, delimiter, bytesRead); }
+
   virtual bool ReadElements(
     const unsigned char* &data, const unsigned char* &enddata,
     unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead) = 0;
 
-  // skip l bytes of data, or until delimiter tag found
   virtual bool SkipElements(
     const unsigned char* &data, const unsigned char* &enddata,
     unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead) = 0;
@@ -119,6 +138,20 @@ public:
   // read l bytes of data, or until delimiter tag found
   bool ReadElements(
     const unsigned char* &data, const unsigned char* &enddata,
+    unsigned int l, vtkDICOMTag delimiter) {
+    unsigned int bytesRead;
+    return ReadElements(data, enddata, l, delimiter, bytesRead); }
+
+  // skip l bytes of data, or until delimiter tag found
+  bool SkipElements(
+    const unsigned char* &data, const unsigned char* &enddata,
+    unsigned int l, vtkDICOMTag delimiter) {
+    unsigned int bytesRead;
+    return SkipElements(data, enddata, l, delimiter, bytesRead); }
+
+  // read l bytes of data, or until delimiter tag found
+  bool ReadElements(
+    const unsigned char* &data, const unsigned char* &enddata,
     unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
 
   // skip l bytes of data, or skip until delimiter tag found
@@ -133,7 +166,7 @@ public:
     vtkDICOMTag tag, vtkDICOMVR &vr, unsigned int &vl);
 
   // read one data element value of the specified vr and vl, where vl can
-  // be 0xffffffff, and return the number of bytes read
+  // be HxFFFFFFFF, and return the number of bytes read
   unsigned int ReadElementValue(
     const unsigned char* &data, const unsigned char* &enddata,
     vtkDICOMVR vr, unsigned int vl, vtkDICOMValue &v);
@@ -491,7 +524,7 @@ unsigned int Decoder<E>::ReadElementValue(
   unsigned int l = 0;
 
   // handle elements of unknown length
-  if (vl == 0xffffffff)
+  if (vl == HxFFFFFFFF)
     {
     // if VR is UN then it is a sequence encoded as implicit LE
     if (vr == vtkDICOMVR::UN)
@@ -499,7 +532,7 @@ unsigned int Decoder<E>::ReadElementValue(
       v.Clear();
       unsigned int il = 0;
       this->ImplicitLE->SkipElements(
-        data, enddata, vl, vtkDICOMTag(0xfffe,0xe0dd), il);
+        data, enddata, vl, vtkDICOMTag(HxFFFE,HxE0DD), il);
       return il;
       }
     else if (vr != vtkDICOMVR::SQ)
@@ -508,11 +541,11 @@ unsigned int Decoder<E>::ReadElementValue(
       if (!this->CheckBuffer(data, enddata, 8)) { return 0; }
       unsigned short g1 = Decoder<E>::GetInt16(data);
       unsigned short e1 = Decoder<E>::GetInt16(data + 2);
-      if (g1 != 0xfffe || (e1 != 0xe000 && e1 != 0xe0dd)) { return 0; }
+      if (g1 != HxFFFE || (e1 != HxE000 && e1 != HxE0DD)) { return 0; }
 
       v.Clear();
       unsigned int il = 0;
-      this->SkipElements(data, enddata, vl, vtkDICOMTag(0xfffe,0xe0dd), il);
+      this->SkipElements(data, enddata, vl, vtkDICOMTag(HxFFFE,HxE0DD), il);
       return il;
       }
     }
@@ -588,10 +621,10 @@ unsigned int Decoder<E>::ReadElementValue(
         data += 8;
         l += 8;
 
-        if (g == 0xfffe && e == 0xe000)
+        if (g == HxFFFE && e == HxE000)
           {
           // read one item
-          vtkDICOMTag endtag(0xfffe, 0xe00d);
+          vtkDICOMTag endtag(HxFFFE, HxE00D);
           vtkDICOMSequenceItem item;
           vtkDICOMSequenceItem *olditem = this->Item;
           this->SetItem(&item);
@@ -599,7 +632,7 @@ unsigned int Decoder<E>::ReadElementValue(
           seq.AddItem(item);
           this->SetItem(olditem);
           }
-        else if (g == 0xfffe && e == 0xe0dd)
+        else if (g == HxFFFE && e == HxE0DD)
           {
           // sequence delimiter found
           break;
@@ -607,7 +640,7 @@ unsigned int Decoder<E>::ReadElementValue(
         else
           {
           // non-item tag found
-          if (vl != 0xffffffff)
+          if (vl != HxFFFFFFFF)
             {
             l += this->SkipData(data, enddata, vl-l);
             }
@@ -638,7 +671,7 @@ bool Decoder<E>::ReadElements(
     delimiter = vtkDICOMTag(0x0000,0x0000);
     }
 
-  while (tl < l)
+  while (tl < l || l == HxFFFFFFFF)
     {
     // read the tag
     if (!this->CheckBuffer(cp, ep, 8)) { break; }
@@ -699,7 +732,7 @@ bool Decoder<E>::SkipElements(
   const unsigned char* &data, const unsigned char* &enddata,
   unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead)
 {
-  if (l == 0xffffffff)
+  if (l == HxFFFFFFFF)
     {
     unsigned short group = 0x0000;
 
@@ -724,7 +757,7 @@ bool Decoder<E>::SkipElements(
       unsigned int vl = 0;
       vtkDICOMVR vr;
 
-      if (g == 0xfffe || this->ImplicitVR)
+      if (g == HxFFFE || this->ImplicitVR)
         {
         vl = Decoder<E>::GetInt32(data);
         data += 4;
@@ -751,14 +784,14 @@ bool Decoder<E>::SkipElements(
         break;
         }
 
-      if (vl == 0xffffffff)
+      if (vl == HxFFFFFFFF)
         {
         // use sequence delimiter
-        vtkDICOMTag newdelim(0xfffe, 0xe0dd);
-        if (g == 0xfffe && e == 0xe000)
+        vtkDICOMTag newdelim(HxFFFE, HxE0DD);
+        if (g == HxFFFE && e == HxE000)
           {
           // use item delimiter
-          newdelim = vtkDICOMTag(0xfffe, 0xe00d);
+          newdelim = vtkDICOMTag(HxFFFE, HxE00D);
           }
         // skip internal segment until new delimiter found
         if (vr != vtkDICOMVR::UN)
@@ -808,6 +841,8 @@ vtkDICOMParser::vtkDICOMParser()
   this->FileName = NULL;
   this->MetaData = NULL;
   this->InputStream = NULL;
+  this->BytesRead = 0;
+  this->FileOffset = 0;
   this->Buffer = NULL;
   this->BufferSize = 8192;
   this->ChunkSize = 0;
@@ -856,7 +891,7 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
     }
 
   // Make sure that the file is readable.
-  ifstream infile(this->FileName, ios::in | ios::binary);
+  std::ifstream infile(this->FileName, ios::in | ios::binary);
 
   if (infile.fail())
     {
@@ -865,6 +900,7 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
     }
 
   this->InputStream = &infile;
+  this->BytesRead = 0;
   this->Buffer = new char [this->BufferSize + 8];
   // guard against anyone changing BufferSize while reading
   this->ChunkSize = this->BufferSize;
@@ -903,8 +939,6 @@ bool vtkDICOMParser::ReadMetaHeader(
 {
   LittleEndianDecoder decoder(this, meta, idx);
 
-  unsigned int bytesRead = 0;
-
   // get the meta information group length
   unsigned short g = Decoder<LE>::GetInt16(cp);
   unsigned short e = Decoder<LE>::GetInt16(cp + 2);
@@ -917,15 +951,17 @@ bool vtkDICOMParser::ReadMetaHeader(
     // check for strange files with implicit VR meta header
     decoder.SetImplicitVR(!vr.IsValid());
 
-    unsigned int l = 0xffffffff;
+    unsigned int l = HxFFFFFFFF;
     if (e == 0x0000 && vl == 4)
       {
       // get length from tag 0x0002,0x0000
       l = Decoder<LE>::GetInt32(cp + 8) + 12;
       }
 
-    decoder.ReadElements(cp, ep, l, vtkDICOMTag(g,0), bytesRead);
+    decoder.ReadElements(cp, ep, l, vtkDICOMTag(g,0));
     }
+
+  this->ComputeFileOffset(cp, ep);
 
   return true;
 }
@@ -967,12 +1003,11 @@ bool vtkDICOMParser::ReadMetaData(
   else if (tsyntax == "1.2.840.10008.1.2.2") // Explicit BE
     {
     decoder = &decoderBE;
-    decoder->SetImplicitVR(false);
     }
 
-  unsigned int bytesRead = 0;
+  decoder->ReadElements(cp, ep, HxFFFFFFFF, DC::PixelData);
 
-  decoder->ReadElements(cp, ep, 0xffffffff, DC::PixelData, bytesRead);
+  this->ComputeFileOffset(cp, ep);
 
   return true;
 }
@@ -1013,6 +1048,7 @@ bool vtkDICOMParser::FillBuffer(
 
   // get number of chars read
   n = this->InputStream->gcount();
+  this->BytesRead += n;
 
   // ep is recycled chars plus newly read chars
   ep = reinterpret_cast<unsigned char *>(dp + n);
@@ -1022,12 +1058,22 @@ bool vtkDICOMParser::FillBuffer(
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMParser::ComputeFileOffset(
+  const unsigned char* cp, const unsigned char* ep)
+{
+  // the offset is the number of bytes read minus
+  // the number of bytes remaining in the buffer.
+  this->FileOffset = this->BytesRead - (ep - cp);
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMParser::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 
   os << indent << "FileName: "
      << (this->FileName ? this->FileName : "(NULL)") << "\n";
+  os << indent << "FileOffset: " << this->FileOffset << "\n";
   os << indent << "MetaData: " << this->MetaData << "\n";
   os << indent << "Index: " << this->Index << "\n";
   os << indent << "BufferSize: " << this->BufferSize << "\n";
