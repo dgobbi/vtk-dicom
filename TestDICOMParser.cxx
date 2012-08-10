@@ -27,16 +27,21 @@ int main(int argc, char *argv[])
   while (cp != exename && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
   exename = cp;
 
-  const char * inputImageFileName =
-    "/Volumes/Work/CAIN/Data/SFMRC/Fast_SPGR_2/IM-0007-0006.dcm";
-
   vtkSmartPointer<vtkDICOMParser> parser =
     vtkSmartPointer<vtkDICOMParser>::New();
 
-  parser->SetFileName(inputImageFileName);
-  parser->SetMetaData(vtkDICOMMetaData::New());
+  for (int i = 1; i < argc; i++)
+    {
+    cout << "=========== " << argv[i] << " =========\n";
 
-  parser->Update();
+    vtkSmartPointer<vtkDICOMMetaData> data =
+      vtkSmartPointer<vtkDICOMMetaData>::New();
+
+    parser->SetFileName(argv[i]);
+    parser->SetMetaData(data);
+
+    parser->Update();
+    }
 
   return rval;
 }
