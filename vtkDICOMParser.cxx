@@ -49,25 +49,25 @@ public:
 
   // read l bytes of data, or until delimiter tag found
   bool ReadElements(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter) {
     unsigned int bytesRead;
-    return ReadElements(data, enddata, l, delimiter, bytesRead); }
+    return ReadElements(cp, ep, l, delimiter, bytesRead); }
 
   // skip l bytes of data, or until delimiter tag found
   bool SkipElements(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter) {
-    return SkipElements(data, enddata, l, delimiter, 0); }
+    return SkipElements(cp, ep, l, delimiter, 0); }
 
   // overload of ReadElements that returns the number of bytes read
   virtual bool ReadElements(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead) = 0;
 
   // overload of SkipElements that copies skipped data into value "v".
   virtual bool SkipElements(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter, vtkDICOMValue *v) = 0;
 
   // copy bytes from sp to cp into value "v" (unless "v" is null).
@@ -76,12 +76,12 @@ public:
 
   // ensure that there are at least "n" chars left in buffer
   bool CheckBuffer(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     unsigned int n);
 
   // an overload of CheckBuffer that also copies data into value "v".
   bool CheckBuffer(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     unsigned int n, vtkDICOMValue *v, const unsigned char* &sp);
 
   // find an element within the current context, e.g. sequence.
@@ -137,48 +137,48 @@ public:
   // number of bytes read.
   template<class T>
   unsigned int ReadData(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     T *ptr, unsigned int n);
 
   // skip n bytes and return the number of bytes actually skipped
   unsigned int SkipData(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     unsigned int n);
 
   // read l bytes of data, or until delimiter tag found
   bool ReadElements(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter) {
     unsigned int bytesRead;
-    return ReadElements(data, enddata, l, delimiter, bytesRead); }
+    return ReadElements(cp, ep, l, delimiter, bytesRead); }
 
   // skip l bytes of data, or until delimiter tag found
   bool SkipElements(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter) {
     unsigned int bytesRead;
-    return SkipElements(data, enddata, l, delimiter, 0); }
+    return SkipElements(cp, ep, l, delimiter, 0); }
 
   // read l bytes of data, or until delimiter tag found
   bool ReadElements(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
 
   // skip l bytes of data, or skip until delimiter tag found
   bool SkipElements(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter, vtkDICOMValue *v);
 
   // read the tag, vr, and vl and return the number of bytes read (will
   // return zero if an error occurred)
   unsigned int ReadElementHead(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     vtkDICOMTag tag, vtkDICOMVR &vr, unsigned int &vl);
 
   // read one data element value of the specified vr and vl, where vl can
   // be HxFFFFFFFF, and return the number of bytes read
   unsigned int ReadElementValue(
-    const unsigned char* &data, const unsigned char* &enddata,
+    const unsigned char* &cp, const unsigned char* &ep,
     vtkDICOMVR vr, unsigned int vl, vtkDICOMValue &v);
 
 protected:
@@ -242,29 +242,29 @@ inline void DecoderBase::CopyBuffer(
 
 //----------------------------------------------------------------------------
 inline bool DecoderBase::CheckBuffer(
-  const unsigned char* &data, const unsigned char* &enddata,
+  const unsigned char* &cp, const unsigned char* &ep,
   unsigned int n)
 {
   bool r = true;
-  if (data + n >= enddata)
+  if (cp + n >= ep)
     {
-    r = this->Parser->FillBuffer(data, enddata);
-    r &= (data + n < enddata);
+    r = this->Parser->FillBuffer(cp, ep);
+    r &= (cp + n < ep);
     }
   return r;
 }
 
 inline bool DecoderBase::CheckBuffer(
-  const unsigned char* &data, const unsigned char* &enddata,
+  const unsigned char* &cp, const unsigned char* &ep,
   unsigned int n, vtkDICOMValue *v, const unsigned char* &sp)
 {
   bool r = true;
-  if (data + n >= enddata)
+  if (cp + n >= ep)
     {
-    this->CopyBuffer(v, sp, data);
-    r = this->Parser->FillBuffer(data, enddata);
-    r &= (data + n < enddata);
-    sp = data;
+    this->CopyBuffer(v, sp, cp);
+    r = this->Parser->FillBuffer(cp, ep);
+    r &= (cp + n < ep);
+    sp = cp;
     }
   return r;
 }
@@ -476,16 +476,16 @@ void Decoder<E>::GetValues(
 template<int E>
 template<class T>
 unsigned int Decoder<E>::ReadData(
-  const unsigned char* &data, const unsigned char* &enddata,
+  const unsigned char* &cp, const unsigned char* &ep,
   T *ptr, unsigned int n)
 {
   unsigned int l = n*sizeof(T);
-  while (n != 0 && this->CheckBuffer(data, enddata, sizeof(T)))
+  while (n != 0 && this->CheckBuffer(cp, ep, sizeof(T)))
     {
-    unsigned int m = static_cast<unsigned int>((enddata - data)/sizeof(T));
+    unsigned int m = static_cast<unsigned int>((ep - cp)/sizeof(T));
     if (m > n) { m = n; }
-    Decoder<E>::GetValues(data, ptr, m);
-    data += m*sizeof(T);
+    Decoder<E>::GetValues(cp, ptr, m);
+    cp += m*sizeof(T);
     ptr += m;
     n -= m;
     }
@@ -497,15 +497,15 @@ unsigned int Decoder<E>::ReadData(
 // Skip "l" bytes in the buffer, return the number of bytes actually skipped
 template<int E>
 unsigned int Decoder<E>::SkipData(
-  const unsigned char* &data, const unsigned char* &enddata, unsigned int l)
+  const unsigned char* &cp, const unsigned char* &ep, unsigned int l)
 {
   unsigned int n = l;
 
-  while (n != 0 && this->CheckBuffer(data, enddata, 2))
+  while (n != 0 && this->CheckBuffer(cp, ep, 2))
     {
-    unsigned int m = static_cast<unsigned int>(enddata - data);
+    unsigned int m = static_cast<unsigned int>(ep - cp);
     if (m > n) { m = n; }
-    data += m;
+    cp += m;
     n -= m;
     }
 
@@ -515,7 +515,7 @@ unsigned int Decoder<E>::SkipData(
 //----------------------------------------------------------------------------
 template<int E>
 unsigned int Decoder<E>::ReadElementHead(
-  const unsigned char* &data, const unsigned char* &enddata,
+  const unsigned char* &cp, const unsigned char* &ep,
   vtkDICOMTag tag, vtkDICOMVR &vr, unsigned int &vl)
 {
   unsigned int l = 4;
@@ -524,29 +524,29 @@ unsigned int Decoder<E>::ReadElementHead(
     {
     // implicit VR
     vr = this->FindDictVR(tag);
-    vl = Decoder<E>::GetInt32(data);
+    vl = Decoder<E>::GetInt32(cp);
     // force group length tags to have one 32-bit length value
     if (tag.GetElement() == 0x0000) { vl = 4; }
-    data += 4;
+    cp += 4;
     }
   else
     {
     // explicit VR
-    vr = vtkDICOMVR(data);
-    vl = Decoder<E>::GetInt16(data + 2);
-    data += 4;
+    vr = vtkDICOMVR(cp);
+    vl = Decoder<E>::GetInt16(cp + 2);
+    cp += 4;
     if (!vr.IsValid())
       {
       // try to get VR from dictionary instead
       vr = this->FindDictVR(tag);
-      vl = Decoder<E>::GetInt32(data - 4);
+      vl = Decoder<E>::GetInt32(cp - 4);
       }
     else if (vr.HasLongVL())
       {
       // check that buffer has 4 bytes for 32-bit VL
-      if (!this->CheckBuffer(data, enddata, 4)) { return 0; }
-      vl = Decoder<E>::GetInt32(data);
-      data += 4;
+      if (!this->CheckBuffer(cp, ep, 4)) { return 0; }
+      vl = Decoder<E>::GetInt32(cp);
+      cp += 4;
       l += 4;
       }
     }
@@ -557,7 +557,7 @@ unsigned int Decoder<E>::ReadElementHead(
 //----------------------------------------------------------------------------
 template<int E>
 unsigned int Decoder<E>::ReadElementValue(
-  const unsigned char* &data, const unsigned char* &enddata,
+  const unsigned char* &cp, const unsigned char* &ep,
   vtkDICOMVR vr, unsigned int vl, vtkDICOMValue &v)
 {
   unsigned int l = 0;
@@ -570,20 +570,20 @@ unsigned int Decoder<E>::ReadElementValue(
       {
       v.AllocateByteData(vr, 0);
       this->ImplicitLE->SkipElements(
-        data, enddata, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
+        cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
       return v.GetNumberOfValues();
       }
     else if (vr == vtkDICOMVR::OB)
       {
       // make sure unknown length data is properly encapsulated
-      if (!this->CheckBuffer(data, enddata, 8)) { return 0; }
-      unsigned short g1 = Decoder<E>::GetInt16(data);
-      unsigned short e1 = Decoder<E>::GetInt16(data + 2);
+      if (!this->CheckBuffer(cp, ep, 8)) { return 0; }
+      unsigned short g1 = Decoder<E>::GetInt16(cp);
+      unsigned short e1 = Decoder<E>::GetInt16(cp + 2);
       if (g1 != HxFFFE || (e1 != HxE000 && e1 != HxE0DD)) { return 0; }
 
       v.AllocateByteData(vr, 0);
       this->SkipElements(
-        data, enddata, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
+        cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
       return v.GetNumberOfValues();
       }
     else if (vr != vtkDICOMVR::SQ)
@@ -597,7 +597,7 @@ unsigned int Decoder<E>::ReadElementValue(
     case VTK_CHAR:
       {
       char *ptr = v.AllocateTextData(vr, vl);
-      l = this->ReadData(data, enddata, ptr, vl);
+      l = this->ReadData(cp, ep, ptr, vl);
       // AllocateTextData makes room for terminal null
       if (l == 0 || ptr[l-1] != '\0') { ptr[l] = '\0'; }
       }
@@ -605,49 +605,49 @@ unsigned int Decoder<E>::ReadElementValue(
     case VTK_UNSIGNED_CHAR:
       {
       unsigned char *ptr = v.AllocateByteData(vr, vl);
-      l = this->ReadData(data, enddata, ptr, vl);
+      l = this->ReadData(cp, ep, ptr, vl);
       }
       break;
     case VTK_SHORT:
       {
       unsigned int n = vl/sizeof(short);
       short *ptr = v.AllocateShortData(vr, n);
-      l = this->ReadData(data, enddata, ptr, n);
+      l = this->ReadData(cp, ep, ptr, n);
       }
       break;
     case VTK_UNSIGNED_SHORT:
       {
       unsigned int n = vl/sizeof(unsigned short);
       unsigned short *ptr = v.AllocateUShortData(vr, n);
-      l = this->ReadData(data, enddata, ptr, n);
+      l = this->ReadData(cp, ep, ptr, n);
       }
       break;
     case VTK_INT:
       {
       unsigned int n = vl/sizeof(int);
       int *ptr = v.AllocateLongData(vr, n);
-      l = this->ReadData(data, enddata, ptr, n);
+      l = this->ReadData(cp, ep, ptr, n);
       }
       break;
     case VTK_UNSIGNED_INT:
       {
       unsigned int n = vl/sizeof(unsigned int);
       unsigned int *ptr = v.AllocateULongData(vr, n);
-      l = this->ReadData(data, enddata, ptr, n);
+      l = this->ReadData(cp, ep, ptr, n);
       }
       break;
     case VTK_FLOAT:
       {
       unsigned int n = vl/sizeof(float);
       float *ptr = v.AllocateFloatData(vr, n);
-      l = this->ReadData(data, enddata, ptr, n);
+      l = this->ReadData(cp, ep, ptr, n);
       }
       break;
     case VTK_DOUBLE:
       {
       unsigned int n = vl/sizeof(double);
       double *ptr = v.AllocateDoubleData(vr, n);
-      l = this->ReadData(data, enddata, ptr, n);
+      l = this->ReadData(cp, ep, ptr, n);
       }
       break;
     case VTK_DICOM_ITEM:
@@ -656,11 +656,11 @@ unsigned int Decoder<E>::ReadElementValue(
       l = 0;
       while (l < vl)
         {
-        if (!this->CheckBuffer(data, enddata, 8)) { return l; }
-        unsigned short g = Decoder<E>::GetInt16(data);
-        unsigned short e = Decoder<E>::GetInt16(data + 2);
-        unsigned int il = Decoder<E>::GetInt32(data + 4);
-        data += 8;
+        if (!this->CheckBuffer(cp, ep, 8)) { return l; }
+        unsigned short g = Decoder<E>::GetInt16(cp);
+        unsigned short e = Decoder<E>::GetInt16(cp + 2);
+        unsigned int il = Decoder<E>::GetInt32(cp + 4);
+        cp += 8;
         l += 8;
 
         if (g == HxFFFE && e == HxE000)
@@ -670,7 +670,7 @@ unsigned int Decoder<E>::ReadElementValue(
           vtkDICOMSequenceItem item;
           vtkDICOMSequenceItem *olditem = this->Item;
           this->SetItem(&item);
-          this->ReadElements(data, enddata, il, endtag, l);
+          this->ReadElements(cp, ep, il, endtag, l);
           seq.AddItem(item);
           this->SetItem(olditem);
           }
@@ -684,7 +684,7 @@ unsigned int Decoder<E>::ReadElementValue(
           // non-item tag found
           if (vl != HxFFFFFFFF)
             {
-            l += this->SkipData(data, enddata, vl-l);
+            l += this->SkipData(cp, ep, vl-l);
             }
           break;
           }
@@ -771,13 +771,13 @@ bool Decoder<E>::ReadElements(
 //----------------------------------------------------------------------------
 template<int E>
 bool Decoder<E>::SkipElements(
-  const unsigned char* &data, const unsigned char* &enddata,
+  const unsigned char* &cp, const unsigned char* &ep,
   unsigned int l, vtkDICOMTag delimiter, vtkDICOMValue *v)
 {
   if (l == HxFFFFFFFF)
     {
     // save the current buffer position
-    const unsigned char *sp = data;
+    const unsigned char *sp = cp;
 
     // does delimiter specify a single group to read?
     unsigned short group = 0x0000;
@@ -789,33 +789,33 @@ bool Decoder<E>::SkipElements(
 
     for (;;)
       {
-      if (!this->CheckBuffer(data, enddata, 8, v, sp)) { return false; }
-      unsigned short g = Decoder<E>::GetInt16(data);
-      unsigned short e = Decoder<E>::GetInt16(data + 2);
+      if (!this->CheckBuffer(cp, ep, 8, v, sp)) { return false; }
+      unsigned short g = Decoder<E>::GetInt16(cp);
+      unsigned short e = Decoder<E>::GetInt16(cp + 2);
 
       // break if element is not in the chosen group
       if (group && group != g) { break; }
 
-      data += 4;
+      cp += 4;
       unsigned int tl = 8;
       unsigned int vl = 0;
       vtkDICOMVR vr;
 
       if (g == HxFFFE || this->ImplicitVR)
         {
-        vl = Decoder<E>::GetInt32(data);
-        data += 4;
+        vl = Decoder<E>::GetInt32(cp);
+        cp += 4;
         }
       else
         {
-        vr = vtkDICOMVR(data);
-        vl = Decoder<E>::GetInt16(data + 2);
-        data += 4;
+        vr = vtkDICOMVR(cp);
+        vl = Decoder<E>::GetInt16(cp + 2);
+        cp += 4;
         if (vr.HasLongVL())
           {
-          if (!this->CheckBuffer(data, enddata, 4, v, sp)) { return false; }
-          vl = Decoder<E>::GetInt32(data);
-          data += 4;
+          if (!this->CheckBuffer(cp, ep, 4, v, sp)) { return false; }
+          vl = Decoder<E>::GetInt32(cp);
+          cp += 4;
           tl += 4;
           }
         }
@@ -829,8 +829,8 @@ bool Decoder<E>::SkipElements(
       if (vl == HxFFFFFFFF)
         {
         // copy data up to current buffer position
-        this->CopyBuffer(v, sp, data);
-        sp = data;
+        this->CopyBuffer(v, sp, cp);
+        sp = cp;
 
         // use sequence delimiter
         vtkDICOMTag newdelim(HxFFFE, HxE0DD);
@@ -842,40 +842,40 @@ bool Decoder<E>::SkipElements(
         // skip internal segment until new delimiter found
         if (vr != vtkDICOMVR::UN)
           {
-          if (!this->SkipElements(data, enddata, vl, newdelim, v))
+          if (!this->SkipElements(cp, ep, vl, newdelim, v))
             {
             return false;
             }
           }
         // if VR is explicit UN, sequence is implicit LE
         else if (!this->ImplicitLE->SkipElements(
-                   data, enddata, vl, newdelim, v))
+                   cp, ep, vl, newdelim, v))
           {
           return false;
           }
-        sp = data;
+        sp = cp;
         }
       else
         {
-        if (v != 0 && vl > static_cast<unsigned int>(enddata - data))
+        if (v != 0 && vl > static_cast<unsigned int>(ep - cp))
           {
-          unsigned int m = static_cast<unsigned int>(data - sp);
+          unsigned int m = static_cast<unsigned int>(cp - sp);
           unsigned int n = v->GetNumberOfValues();
           unsigned char *ptr = v->ReallocateByteData(n + vl + m) + n;
           if (m) { do { *ptr++ = *sp++; } while (--m); }
-          tl = this->ReadData(data, enddata, ptr, vl);
-          sp = data;
+          tl = this->ReadData(cp, ep, ptr, vl);
+          sp = cp;
           if (tl != vl) { return false; }
           }
         else
           {
-          tl = this->SkipData(data, enddata, vl);
+          tl = this->SkipData(cp, ep, vl);
           if (tl != vl) { return false; }
           }
         }
       }
     // copy data up to current buffer position
-    this->CopyBuffer(v, sp, data);
+    this->CopyBuffer(v, sp, cp);
     }
   else
     {
@@ -884,12 +884,12 @@ bool Decoder<E>::SkipElements(
       {
       unsigned int n = v->GetNumberOfValues();
       unsigned char *ptr = v->ReallocateByteData(n + l) + n;
-      tl = this->ReadData(data, enddata, ptr, l);
+      tl = this->ReadData(cp, ep, ptr, l);
       if (tl != l) { return false; }
       }
     else
       {
-      tl = this->SkipData(data, enddata, l);
+      tl = this->SkipData(cp, ep, l);
       if (tl != l) { return false; }
       }
     }

@@ -46,7 +46,7 @@ public:
 
   //! Internal method for filling the buffer, do not use.
   virtual bool FillBuffer(
-    const unsigned char* &data, const unsigned char* &enddata);
+    const unsigned char* &cp, const unsigned char* &ep);
 
 protected:
   vtkDICOMParser();
@@ -55,15 +55,15 @@ protected:
   virtual bool ReadFile(vtkDICOMMetaData *data, int idx);
 
   bool ReadMetaHeader(
-    const unsigned char* &data, const unsigned char* &enddata,
-    vtkDICOMMetaData *meta, int idx);
+    const unsigned char* &cp, const unsigned char* &ep,
+    vtkDICOMMetaData *data, int idx);
 
   bool ReadMetaData(
-    const unsigned char* &data, const unsigned char* &enddata,
-    vtkDICOMMetaData *meta, int idx);
+    const unsigned char* &cp, const unsigned char* &ep,
+    vtkDICOMMetaData *data, int idx);
 
   void ComputeFileOffset(
-    const unsigned char* data, const unsigned char* enddata);
+    const unsigned char* cp, const unsigned char* ep);
 
   char *FileName;
   vtkDICOMMetaData *MetaData;
