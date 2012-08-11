@@ -139,7 +139,11 @@ vtkDICOMValue::ValueTN<vtkDICOMSequenceItem,1>::ValueTN(
   this->NeedsFree = 1; // always dynamically allocate
   this->VL = 0;
   this->NumberOfValues = vn;
-  this->Data = new vtkDICOMSequenceItem[vn];
+  this->Data = this->LocalData;
+  if (vn > 0)
+    {
+    this->Data = new vtkDICOMSequenceItem[vn];
+    }
 }
 
 // Construct a list of values.
@@ -152,7 +156,11 @@ vtkDICOMValue::ValueTN<vtkDICOMValue,1>::ValueTN(
   this->NeedsFree = 1; // always dynamically allocate
   this->VL = 0;
   this->NumberOfValues = vn;
-  this->Data = new vtkDICOMValue[vn];
+  this->Data = this->LocalData;
+  if (vn > 0)
+    {
+    this->Data = new vtkDICOMValue[vn];
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -239,6 +247,38 @@ vtkDICOMValue *vtkDICOMValue::AllocateMultiplexData(
   ValueTN<vtkDICOMValue,1> *v = new ValueTN<vtkDICOMValue,1>(vr, vn);
   this->V = v;
   return v->Data;
+}
+
+//----------------------------------------------------------------------------
+unsigned char *vtkDICOMValue::ReallocateByteData(unsigned int vn)
+{
+  assert(this->V != 0);
+  assert(this->V->VR == vtkDICOMVR::OB || this->V->VR == vtkDICOMVR::UN);
+
+  unsigned int n = this->V->NumberOfValues;
+  unsigned char *ptr =
+    static_cast<const ValueT<unsigned char> *>(this->V)->Data;
+
+  Value *v = this->V;
+  const unsigned char *cptr = ptr;
+
+  // increment ref count before reallocating
+  v->ReferenceCount++;
+  ptr = this->AllocateByteData(v->VR, vn);
+  n = (n < vn ? n : vn);
+  if (n > 0) { memcpy(ptr, cptr, n); }
+  // this is the new V after reallocating
+  this->V->NumberOfValues = vn;
+  // indicate encapsulated contents
+  this->V->VL = 0xffffffff;
+
+  // decrement the refcount of the old V
+  if (--(v->ReferenceCount) == 0)
+    {
+    vtkDICOMValue::FreeValue(v);
+    }
+
+  return ptr;
 }
 
 //----------------------------------------------------------------------------

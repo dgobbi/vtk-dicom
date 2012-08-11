@@ -5,7 +5,7 @@
 #include "vtkDICOMVR.h"
 
 // type constants
-#define VTK_DICOM_ITEM   13 
+#define VTK_DICOM_ITEM   13
 #define VTK_DICOM_VALUE  14
 
 class vtkDICOMSequenceItem;
@@ -181,6 +181,15 @@ public:
   double *AllocateDoubleData(vtkDICOMVR vr, unsigned int vn);
   vtkDICOMSequenceItem *AllocateSequenceData(vtkDICOMVR vr, unsigned int vn);
   vtkDICOMValue *AllocateMultiplexData(vtkDICOMVR vr, unsigned int vn);
+
+  //! Reallocate data of type OB or UN.
+  /*!
+   *  Values of type OB or UN can hold encapsulated data.  When
+   *  building these values, it is useful to be able to extend
+   *  the internal data as needed.  After this method is called,
+   *  the NumberOfValues will be vn, and the VL will be 0xffffffff.
+   */
+  unsigned char *ReallocateByteData(unsigned int vn);
 
   //! Append value "i" to the supplied string.
   /*!

@@ -58,21 +58,31 @@ public:
   bool SkipElements(
     const unsigned char* &data, const unsigned char* &enddata,
     unsigned int l, vtkDICOMTag delimiter) {
-    unsigned int bytesRead;
-    return SkipElements(data, enddata, l, delimiter, bytesRead); }
+    return SkipElements(data, enddata, l, delimiter, 0); }
 
+  // overload of ReadElements that returns the number of bytes read
   virtual bool ReadElements(
     const unsigned char* &data, const unsigned char* &enddata,
     unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead) = 0;
 
+  // overload of SkipElements that copies skipped data into value "v".
   virtual bool SkipElements(
     const unsigned char* &data, const unsigned char* &enddata,
-    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead) = 0;
+    unsigned int l, vtkDICOMTag delimiter, vtkDICOMValue *v) = 0;
+
+  // copy bytes from sp to cp into value "v" (unless "v" is null).
+  void CopyBuffer(
+    vtkDICOMValue *v, const unsigned char *sp, const unsigned char *cp);
 
   // ensure that there are at least "n" chars left in buffer
   bool CheckBuffer(
     const unsigned char* &data, const unsigned char* &enddata,
     unsigned int n);
+
+  // an overload of CheckBuffer that also copies data into value "v".
+  bool CheckBuffer(
+    const unsigned char* &data, const unsigned char* &enddata,
+    unsigned int n, vtkDICOMValue *v, const unsigned char* &sp);
 
   // find an element within the current context, e.g. sequence.
   bool GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v);
@@ -147,7 +157,7 @@ public:
     const unsigned char* &data, const unsigned char* &enddata,
     unsigned int l, vtkDICOMTag delimiter) {
     unsigned int bytesRead;
-    return SkipElements(data, enddata, l, delimiter, bytesRead); }
+    return SkipElements(data, enddata, l, delimiter, 0); }
 
   // read l bytes of data, or until delimiter tag found
   bool ReadElements(
@@ -157,7 +167,7 @@ public:
   // skip l bytes of data, or skip until delimiter tag found
   bool SkipElements(
     const unsigned char* &data, const unsigned char* &enddata,
-    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
+    unsigned int l, vtkDICOMTag delimiter, vtkDICOMValue *v);
 
   // read the tag, vr, and vl and return the number of bytes read (will
   // return zero if an error occurred)
@@ -217,6 +227,20 @@ inline void DecoderBase::SetItem(vtkDICOMSequenceItem *i)
 }
 
 //----------------------------------------------------------------------------
+inline void DecoderBase::CopyBuffer(
+  vtkDICOMValue *v, const unsigned char *sp, const unsigned char *cp)
+{
+  // copy the contents of the buffer from "sp" to "cp"
+  if (v && cp != sp)
+    {
+    unsigned int m = static_cast<unsigned int>(cp - sp);
+    unsigned int n = v->GetNumberOfValues();
+    unsigned char *ptr = v->ReallocateByteData(n + m) + n;
+    do { *ptr++ = *sp++; } while (--m);
+    }
+}
+
+//----------------------------------------------------------------------------
 inline bool DecoderBase::CheckBuffer(
   const unsigned char* &data, const unsigned char* &enddata,
   unsigned int n)
@@ -227,7 +251,22 @@ inline bool DecoderBase::CheckBuffer(
     r = this->Parser->FillBuffer(data, enddata);
     r &= (data + n < enddata);
     }
-   return r;
+  return r;
+}
+
+inline bool DecoderBase::CheckBuffer(
+  const unsigned char* &data, const unsigned char* &enddata,
+  unsigned int n, vtkDICOMValue *v, const unsigned char* &sp)
+{
+  bool r = true;
+  if (data + n >= enddata)
+    {
+    this->CopyBuffer(v, sp, data);
+    r = this->Parser->FillBuffer(data, enddata);
+    r &= (data + n < enddata);
+    sp = data;
+    }
+  return r;
 }
 
 //----------------------------------------------------------------------------
@@ -529,24 +568,27 @@ unsigned int Decoder<E>::ReadElementValue(
     // if VR is UN then it is a sequence encoded as implicit LE
     if (vr == vtkDICOMVR::UN)
       {
-      v.Clear();
-      unsigned int il = 0;
+      v.AllocateByteData(vr, 0);
       this->ImplicitLE->SkipElements(
-        data, enddata, vl, vtkDICOMTag(HxFFFE,HxE0DD), il);
-      return il;
+        data, enddata, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
+      return v.GetNumberOfValues();
       }
-    else if (vr != vtkDICOMVR::SQ)
+    else if (vr == vtkDICOMVR::OB)
       {
-      // make sure unknown length elements are proper sequences
+      // make sure unknown length data is properly encapsulated
       if (!this->CheckBuffer(data, enddata, 8)) { return 0; }
       unsigned short g1 = Decoder<E>::GetInt16(data);
       unsigned short e1 = Decoder<E>::GetInt16(data + 2);
       if (g1 != HxFFFE || (e1 != HxE000 && e1 != HxE0DD)) { return 0; }
 
-      v.Clear();
-      unsigned int il = 0;
-      this->SkipElements(data, enddata, vl, vtkDICOMTag(HxFFFE,HxE0DD), il);
-      return il;
+      v.AllocateByteData(vr, 0);
+      this->SkipElements(
+        data, enddata, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
+      return v.GetNumberOfValues();
+      }
+    else if (vr != vtkDICOMVR::SQ)
+      {
+      return 0;
       }
     }
 
@@ -730,13 +772,15 @@ bool Decoder<E>::ReadElements(
 template<int E>
 bool Decoder<E>::SkipElements(
   const unsigned char* &data, const unsigned char* &enddata,
-  unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead)
+  unsigned int l, vtkDICOMTag delimiter, vtkDICOMValue *v)
 {
   if (l == HxFFFFFFFF)
     {
-    unsigned short group = 0x0000;
+    // save the current buffer position
+    const unsigned char *sp = data;
 
     // does delimiter specify a single group to read?
+    unsigned short group = 0x0000;
     if (delimiter.GetElement() == 0x0000)
       {
       group = delimiter.GetGroup();
@@ -745,7 +789,7 @@ bool Decoder<E>::SkipElements(
 
     for (;;)
       {
-      if (!this->CheckBuffer(data, enddata, 8)) { return false; }
+      if (!this->CheckBuffer(data, enddata, 8, v, sp)) { return false; }
       unsigned short g = Decoder<E>::GetInt16(data);
       unsigned short e = Decoder<E>::GetInt16(data + 2);
 
@@ -769,14 +813,12 @@ bool Decoder<E>::SkipElements(
         data += 4;
         if (vr.HasLongVL())
           {
-          if (!this->CheckBuffer(data, enddata, 4)) { return false; }
+          if (!this->CheckBuffer(data, enddata, 4, v, sp)) { return false; }
           vl = Decoder<E>::GetInt32(data);
           data += 4;
           tl += 4;
           }
         }
-
-      bytesRead += tl;
 
       if (g == delimiter.GetGroup() &&
           e == delimiter.GetElement())
@@ -786,6 +828,10 @@ bool Decoder<E>::SkipElements(
 
       if (vl == HxFFFFFFFF)
         {
+        // copy data up to current buffer position
+        this->CopyBuffer(v, sp, data);
+        sp = data;
+
         // use sequence delimiter
         vtkDICOMTag newdelim(HxFFFE, HxE0DD);
         if (g == HxFFFE && e == HxE000)
@@ -796,36 +842,55 @@ bool Decoder<E>::SkipElements(
         // skip internal segment until new delimiter found
         if (vr != vtkDICOMVR::UN)
           {
-          if (!this->SkipElements(data, enddata, vl, newdelim, bytesRead))
+          if (!this->SkipElements(data, enddata, vl, newdelim, v))
             {
             return false;
             }
           }
         // if VR is explicit UN, sequence is implicit LE
         else if (!this->ImplicitLE->SkipElements(
-                   data, enddata, vl, newdelim, bytesRead))
+                   data, enddata, vl, newdelim, v))
           {
           return false;
           }
+        sp = data;
         }
       else
         {
-        tl = this->SkipData(data, enddata, vl);
-        bytesRead += tl;
-        if (tl != vl)
+        if (v != 0 && vl > static_cast<unsigned int>(enddata - data))
           {
-          return false;
+          unsigned int m = static_cast<unsigned int>(data - sp);
+          unsigned int n = v->GetNumberOfValues();
+          unsigned char *ptr = v->ReallocateByteData(n + vl + m) + n;
+          if (m) { do { *ptr++ = *sp++; } while (--m); }
+          tl = this->ReadData(data, enddata, ptr, vl);
+          sp = data;
+          if (tl != vl) { return false; }
+          }
+        else
+          {
+          tl = this->SkipData(data, enddata, vl);
+          if (tl != vl) { return false; }
           }
         }
       }
+    // copy data up to current buffer position
+    this->CopyBuffer(v, sp, data);
     }
   else
     {
-    unsigned int tl = this->SkipData(data, enddata, l);
-    bytesRead += tl;
-    if (tl != l)
+    unsigned int tl;
+    if (v != 0)
       {
-      return false;
+      unsigned int n = v->GetNumberOfValues();
+      unsigned char *ptr = v->ReallocateByteData(n + l) + n;
+      tl = this->ReadData(data, enddata, ptr, l);
+      if (tl != l) { return false; }
+      }
+    else
+      {
+      tl = this->SkipData(data, enddata, l);
+      if (tl != l) { return false; }
       }
     }
 
