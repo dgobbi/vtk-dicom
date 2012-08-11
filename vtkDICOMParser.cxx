@@ -884,6 +884,9 @@ bool Decoder<E>::SkipElements(
       if (g == HxFFFE || this->ImplicitVR)
         {
         vl = Decoder<E>::GetInt32(cp);
+        // ignore vl in group length tags, it is corrupt in some files
+        // and we know that it should always have a value of "4".
+        if (e == 0x0000) { vl = 4; }
         cp += 4;
         }
       else
