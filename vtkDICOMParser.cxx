@@ -315,10 +315,10 @@ inline bool DecoderBase::CheckBuffer(
   unsigned int n)
 {
   bool r = true;
-  if (cp + n >= ep)
+  if (n > static_cast<unsigned int>(ep - cp))
     {
     r = this->Parser->FillBuffer(cp, ep);
-    r &= (cp + n < ep);
+    r &= (n <= static_cast<unsigned int>(ep - cp));
     }
   return r;
 }
@@ -328,11 +328,11 @@ inline bool DecoderBase::CheckBuffer(
   unsigned int n, vtkDICOMValue *v, const unsigned char* &sp)
 {
   bool r = true;
-  if (cp + n >= ep)
+  if (n > static_cast<unsigned int>(ep - cp))
     {
     this->CopyBuffer(v, sp, cp);
     r = this->Parser->FillBuffer(cp, ep);
-    r &= (cp + n < ep);
+    r &= (n <= static_cast<unsigned int>(ep - cp));
     sp = cp;
     }
   return r;
@@ -965,7 +965,7 @@ bool Decoder<E>::SkipElements(
     // up to current position cp into the value v
     this->CopyBuffer(v, sp, cp);
     }
-  else // l != 0xffffffff
+  else if (l != 0) // l != 0xffffffff
     {
     // skipped a fixed number of bytes
     unsigned int tl;
