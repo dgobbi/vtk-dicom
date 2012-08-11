@@ -16,97 +16,133 @@
 vtkStandardNewMacro(vtkDICOMParser);
 vtkCxxSetObjectMacro(vtkDICOMParser, MetaData, vtkDICOMMetaData);
 
-//----------------------------------------------------------------------------
-// Decode a byte stream as little-endian or big-endian
+/*----------------------------------------------------------------------------
+The top section of this file defines "Decoder" classes that parses the
+DICOM tags and decodes the values.  The decoder class hierarchy is as
+follows:
+
+DecoderBase (the base class)
+    Decoder<LE> (template specialization for little-endian decoding)
+        DefaultDecoder (decoder for implicit little-endian syntax)
+        LittleEndianDecoder (decoder for explicit little-endian syntax)
+    Decoder<GE> (template specialization for big-endian decoding)
+        BigEndianDecoder (decoder for explicit big-endian syntax)
+
+The vtkDICOMParser utilizes the DefaultDecoder, LittleEndianDecoder,
+or the BigEndianDecoder depending on the transfer syntax.
+----------------------------------------------------------------------------*/
 
 namespace {
 
-// useful constants
+// Useful constants to replace commonly-used literals.
 const unsigned short HxFFFE = 0xFFFE; // sequence group
 const unsigned short HxE000 = 0xE000; // item start
 const unsigned short HxE00D = 0xE00D; // item end
 const unsigned short HxE0DD = 0xE0DD; // sequence end
 const unsigned int HxFFFFFFFF = 0xFFFFFFFF; // unknown length
 
-// decoder has two specializations
+// The decoder has two specializations: little-endian, big-endian.
 const int LE = 0;
 const int BE = 1;
 
-// the decoder types
+// The decoder types that are available.
 class DefaultDecoder;
 class LittleEndianDecoder;
 class BigEndianDecoder;
 
-// base class for the decoder class template
+// The base class for the decoder classes.
 class DecoderBase
 {
 public:
-  // specify whether to use implicit VRs (default: explicit VRs)
+  // Whether to use implicit VRs (default: explicit VRs).
   void SetImplicitVR(bool i) { this->ImplicitVR = i; }
 
-  // set the Item member variable
+  // The Item member variable is set while a sequence is decoded.
   void SetItem(vtkDICOMSequenceItem *i);
 
-  // read l bytes of data, or until delimiter tag found
+  // Read l bytes of data, or until delimiter tag found.
+  // Set l to 0xffffffff to ignore length completely.
+  // If the delimiter is of the form (0xgggg,0x0000), ie. if the
+  // "element" part is zero, then the reading will stop before
+  // the first element that is not in the specified group.
   bool ReadElements(
     const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int l, vtkDICOMTag delimiter) {
+    unsigned int l, vtkDICOMTag delimiter)
+  {
     unsigned int bytesRead;
-    return ReadElements(cp, ep, l, delimiter, bytesRead); }
+    return ReadElements(cp, ep, l, delimiter, bytesRead);
+  }
 
-  // skip l bytes of data, or until delimiter tag found
+  // Skip l bytes of data, or until delimiter tag found.
+  // Set l to 0xffffffff to ignore length completely.
+  // If the delimiter is of the form (0xgggg,0x0000), ie. if the
+  // "element" part is zero, then the skip will stop before
+  // the first element that is not in the specified group.
   bool SkipElements(
     const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int l, vtkDICOMTag delimiter) {
-    return SkipElements(cp, ep, l, delimiter, 0); }
+    unsigned int l, vtkDICOMTag delimiter)
+  {
+    return SkipElements(cp, ep, l, delimiter, 0);
+  }
 
-  // overload of ReadElements that returns the number of bytes read
+  // A ReadElements that returns the number of bytes read.
   virtual bool ReadElements(
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead) = 0;
 
-  // overload of SkipElements that copies skipped data into value "v".
+  // A SkipElements that copies skipped bytes into value "v".
+  // This method is used when parsing encapsulated data, it simply
+  // reads the encapsulated data into the value as raw bytes. 
+  // If the parameter "v" is NULL, then it will be ignored.
   virtual bool SkipElements(
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter, vtkDICOMValue *v) = 0;
 
-  // copy bytes from sp to cp into value "v" (unless "v" is null).
+  // Copy bytes from sp to end marker cp into the value "v".
+  // If the parameter "v" is NULL, then it will be ignored.
   void CopyBuffer(
     vtkDICOMValue *v, const unsigned char *sp, const unsigned char *cp);
 
-  // ensure that there are at least "n" chars left in buffer
+  // If there are fewer than "n" bytes left in the buffer, then move
+  // any data that hasn't yet been parsed to the start of the buffer,
+  // and then read new data into the remainder of the buffer.
   bool CheckBuffer(
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int n);
 
-  // an overload of CheckBuffer that also copies data into value "v".
+  // This overload of CheckBuffer is used within SkipElements to
+  // automatically copy the skipped bytes into the value "v".
+  // If the parameter "v" is NULL, then it will be ignored.
   bool CheckBuffer(
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int n, vtkDICOMValue *v, const unsigned char* &sp);
 
-  // find an element within the current context, e.g. sequence.
+  // Find an element within the current context.  This is used
+  // by FindDictVR() to disambiguate VRs that could be either US
+  // or SS, or that could be either OB or OW.
   bool GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v);
   bool GetAttributeValue(vtkDICOMTag tag, unsigned short &u);
 
-  // get the dictionary VR (for implicit VR elements)
+  // Get the dictionary VR (for implicit VR elements).
+  // If the tag is not found, UN (unknown) will be returned.
   vtkDICOMVR FindDictVR(vtkDICOMTag tag);
 
 protected:
-  // constructor that initializes all of the members
+  // Constructor that initializes all of the members.
   DecoderBase(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
     Parser(parser), Item(0), MetaData(data), Index(idx), ImplicitVR(0) {}
 
-  // an implicit little-endian decoder
+  // an internal implicit little-endian decoder
   DefaultDecoder *ImplicitLE;
-  // the parser has the stream to read from
+  // the vtkDICOMParser::FillBuffer method is used to refill the buffer
   vtkDICOMParser *Parser;
-  // the item to read the data into (has priority over MetaData)
+  // the sequence item to read the data into while parsing a sequence
   vtkDICOMSequenceItem *Item;
   // the metadata object to read the data into
   vtkDICOMMetaData *MetaData;
-  // the index to use with the meta data
+  // the instance index to use with the meta data
   int Index;
-  // the VRs are implicit
+  // if this is set, then VRs are implicit
   bool ImplicitVR;
 };
 
@@ -115,12 +151,12 @@ template<int E>
 class Decoder : public DecoderBase
 {
 public:
-  // decode two, four, or eight bytes
+  // Decode two, four, or eight bytes as unsigned integers.
   static unsigned short GetInt16(const unsigned char* ip);
   static unsigned int GetInt32(const unsigned char* ip);
   static unsigned long long GetInt64(const unsigned char* ip);
 
-  // decode n values of the specified type
+  // Read from "ip" and write "n" decoded values into "v".
   static void GetValues(const unsigned char *ip, char *v, unsigned int n);
   static void GetValues(const unsigned char *ip, unsigned char *v,
                         unsigned int n);
@@ -133,95 +169,128 @@ public:
   static void GetValues(const unsigned char *ip, float *v, unsigned int n);
   static void GetValues(const unsigned char *ip, double *v, unsigned int n);
 
-  // read n values, re-filling the buffer as necessary, and return the
-  // number of bytes read.
+  // Read "n" values from the buffer into the provided pointer.
+  // The number of bytes that were read from the buffer will be returned.
+  // The buffer will be refilled as necessary.
   template<class T>
   unsigned int ReadData(
     const unsigned char* &cp, const unsigned char* &ep,
     T *ptr, unsigned int n);
 
-  // skip n bytes and return the number of bytes actually skipped
+  // Skip forward by "n" bytes.  The number of bytes skipped will be
+  // returned.  If the end of the file is reached before the operation,
+  // is complete, then the return value will be less than "n". 
   unsigned int SkipData(
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int n);
 
-  // read l bytes of data, or until delimiter tag found
+  // Read l bytes of data, or until delimiter tag found.
+  // Set l to 0xffffffff to ignore length completely.
+  // If the delimiter is of the form (0xgggg,0x0000), ie. if the
+  // "element" part is zero, then the reading will stop before
+  // the first element that is not in the specified group.
   bool ReadElements(
     const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int l, vtkDICOMTag delimiter) {
+    unsigned int l, vtkDICOMTag delimiter)
+  {
     unsigned int bytesRead;
-    return ReadElements(cp, ep, l, delimiter, bytesRead); }
+    return ReadElements(cp, ep, l, delimiter, bytesRead);
+  }
 
-  // skip l bytes of data, or until delimiter tag found
+  // Skip l bytes of data, or until delimiter tag found.
+  // Set l to 0xffffffff to ignore length completely.
+  // If the delimiter is of the form (0xgggg,0x0000), ie. if the
+  // "element" part is zero, then the skip will stop before
+  // the first element that is not in the specified group.
   bool SkipElements(
     const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int l, vtkDICOMTag delimiter) {
+    unsigned int l, vtkDICOMTag delimiter)
+  {
     unsigned int bytesRead;
-    return SkipElements(cp, ep, l, delimiter, 0); }
+    return SkipElements(cp, ep, l, delimiter, 0);
+  }
 
-  // read l bytes of data, or until delimiter tag found
+  // A ReadElements that returns the number of bytes read.
   bool ReadElements(
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
 
-  // skip l bytes of data, or skip until delimiter tag found
+  // A SkipElements that copies skipped bytes into value "v".
+  // This method is used when parsing encapsulated data, it simply
+  // reads the encapsulated data into the value as raw bytes. 
+  // If the parameter "v" is NULL, then it will be ignored.
   bool SkipElements(
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter, vtkDICOMValue *v);
 
-  // read the tag, vr, and vl and return the number of bytes read (will
-  // return zero if an error occurred)
+  // Read the vr and vl and return the number of bytes read
+  // (will return zero if an error occurred)
   unsigned int ReadElementHead(
     const unsigned char* &cp, const unsigned char* &ep,
     vtkDICOMTag tag, vtkDICOMVR &vr, unsigned int &vl);
 
-  // read one data element value of the specified vr and vl, where vl can
-  // be HxFFFFFFFF, and return the number of bytes read
+  // Read a value, given the vr and vl, where vl can be 0xffffffff
+  // for SQ, UN, or OB to indicate tag-delimited data.
+  // The number of bytes that were read will be returned.
   unsigned int ReadElementValue(
     const unsigned char* &cp, const unsigned char* &ep,
     vtkDICOMVR vr, unsigned int vl, vtkDICOMValue &v);
 
 protected:
-  Decoder() {};
   Decoder(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
     DecoderBase(parser, data, idx) {}
+
+private:
+  Decoder() {};
 };
 
 //----------------------------------------------------------------------------
+// The little-endian implicit-vr decoder.
 class DefaultDecoder : public Decoder<LE>
 {
 public:
   DefaultDecoder(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
-    Decoder<LE>(parser, data, idx) {
+    Decoder<LE>(parser, data, idx)
+  {
     this->ImplicitVR = true;
-    this->ImplicitLE = this; }
+    this->ImplicitLE = this;
+  }
 };
 
+// The little-endian explicit-vr decoder.
 class LittleEndianDecoder : public Decoder<LE>
 {
 public:
   LittleEndianDecoder(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
-    Decoder<LE>(parser, data, idx), ExtraDecoder(parser, data, idx) {
-    this->ImplicitLE = &this->ExtraDecoder; }
+    Decoder<LE>(parser, data, idx), ExtraDecoder(parser, data, idx)
+  {
+    this->ImplicitLE = &this->ExtraDecoder;
+  }
 
 private:
+  // an internal implicit little-endian decoder.
   DefaultDecoder ExtraDecoder;
 };
 
+// The big-endian explicit-vr decoder.
 class BigEndianDecoder : public Decoder<BE>
 {
 public:
   BigEndianDecoder(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
-    Decoder<BE>(parser, data, idx), ExtraDecoder(parser, data, idx) {
-    this->ImplicitLE = &this->ExtraDecoder; }
+    Decoder<BE>(parser, data, idx), ExtraDecoder(parser, data, idx)
+  {
+    this->ImplicitLE = &this->ExtraDecoder;
+  }
 
 private:
+  // an internal implicit little-endian decoder.
   DefaultDecoder ExtraDecoder;
 };
 
 //----------------------------------------------------------------------------
 inline void DecoderBase::SetItem(vtkDICOMSequenceItem *i)
 {
+  // ensure that "Item" is set for the ImplicitLE decoder, too
   this->Item = i;
   this->ImplicitLE->Item = i;
 }
@@ -230,7 +299,7 @@ inline void DecoderBase::SetItem(vtkDICOMSequenceItem *i)
 inline void DecoderBase::CopyBuffer(
   vtkDICOMValue *v, const unsigned char *sp, const unsigned char *cp)
 {
-  // copy the contents of the buffer from "sp" to "cp"
+  // append bytes from sp to cp into the supplied value "v"
   if (v && cp != sp)
     {
     unsigned int m = static_cast<unsigned int>(cp - sp);
@@ -274,6 +343,7 @@ bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v)
 {
   if (this->Item)
     {
+    // if "Item" is set, check the current sequence item
     vtkDICOMDataElementIterator iter = this->Item->GetData();
     vtkDICOMDataElementIterator iend = this->Item->GetDataEnd();
 
@@ -298,6 +368,7 @@ bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v)
 
 bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, unsigned short &u)
 {
+  // get the value as an unsigned short
   vtkDICOMValue v;
   if (this->GetAttributeValue(tag, v))
     {
@@ -316,7 +387,7 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
 
   if (tag.GetElement() == 0x0000)
     {
-    // group length element
+    // this is a group length element, which has VR of "UL"
     vr = vtkDICOMVR::UL;
     }
   else if (this->MetaData->FindDictEntry(tag, de))
@@ -324,6 +395,7 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
     vr = de.GetVR();
     if (vr == vtkDICOMVR::XS)
       {
+      // disambiguate tags that may be either "US" or "SS"
       unsigned short r;
       vr = vtkDICOMVR::US;
       if (this->GetAttributeValue(DC::PixelRepresentation, r))
@@ -333,6 +405,7 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
       }
     else if (vr == vtkDICOMVR::OX)
       {
+      // disambiguate tags that may be either "OB" or "OW"
       unsigned short s;
       vr = vtkDICOMVR::OW;
       if (tag.GetGroup() == 0x5400)
@@ -518,6 +591,7 @@ unsigned int Decoder<E>::ReadElementHead(
   const unsigned char* &cp, const unsigned char* &ep,
   vtkDICOMTag tag, vtkDICOMVR &vr, unsigned int &vl)
 {
+  // basic size is 4 bytes
   unsigned int l = 4;
 
   if (this->ImplicitVR)
@@ -525,7 +599,8 @@ unsigned int Decoder<E>::ReadElementHead(
     // implicit VR
     vr = this->FindDictVR(tag);
     vl = Decoder<E>::GetInt32(cp);
-    // force group length tags to have one 32-bit length value
+    // ignore vl in group length tags, it is corrupt in some files
+    // and we know that it should always have a value of "4".
     if (tag.GetElement() == 0x0000) { vl = 4; }
     cp += 4;
     }
@@ -537,11 +612,12 @@ unsigned int Decoder<E>::ReadElementHead(
     cp += 4;
     if (!vr.IsValid())
       {
-      // try to get VR from dictionary instead
+      // invalid vr, try to get VR from dictionary instead, assume
+      // than an implicitly-encoded VR somehow slipped into the data
       vr = this->FindDictVR(tag);
       vl = Decoder<E>::GetInt32(cp - 4);
       }
-    else if (vr.HasLongVL())
+    else if (vr.HasLongVL()) // for OB, OF, OW, SQ, UN, UT 
       {
       // check that buffer has 4 bytes for 32-bit VL
       if (!this->CheckBuffer(cp, ep, 4)) { return 0; }
@@ -565,9 +641,10 @@ unsigned int Decoder<E>::ReadElementValue(
   // handle elements of unknown length
   if (vl == HxFFFFFFFF)
     {
-    // if VR is UN then it is a sequence encoded as implicit LE
     if (vr == vtkDICOMVR::UN)
       {
+      // if VR is UN then it is a sequence encoded as implicit LE
+      // (see DICOM Part 5, Section 6.2.2, Unknown (UN) Value Representation
       v.AllocateByteData(vr, 0);
       this->ImplicitLE->SkipElements(
         cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
@@ -588,6 +665,7 @@ unsigned int Decoder<E>::ReadElementValue(
       }
     else if (vr != vtkDICOMVR::SQ)
       {
+      // only UN, OB, and SQ can have unknown length
       return 0;
       }
     }
@@ -787,6 +865,7 @@ bool Decoder<E>::SkipElements(
       delimiter = vtkDICOMTag(0x0000,0x0000);
       }
 
+    // skip until delimiter found
     for (;;)
       {
       if (!this->CheckBuffer(cp, ep, 8, v, sp)) { return false; }
@@ -801,6 +880,7 @@ bool Decoder<E>::SkipElements(
       unsigned int vl = 0;
       vtkDICOMVR vr;
 
+      // group and item delimiters are always decoded as implicit
       if (g == HxFFFE || this->ImplicitVR)
         {
         vl = Decoder<E>::GetInt32(cp);
@@ -808,6 +888,7 @@ bool Decoder<E>::SkipElements(
         }
       else
         {
+        // explicit VR
         vr = vtkDICOMVR(cp);
         vl = Decoder<E>::GetInt16(cp + 2);
         cp += 4;
@@ -848,6 +929,7 @@ bool Decoder<E>::SkipElements(
             }
           }
         // if VR is explicit UN, sequence is implicit LE
+        // (see DICOM Part 5, Section 6.2.2)
         else if (!this->ImplicitLE->SkipElements(
                    cp, ep, vl, newdelim, v))
           {
@@ -857,8 +939,12 @@ bool Decoder<E>::SkipElements(
         }
       else
         {
+        // fixed length element (vl != 0xffffffff)
         if (v != 0 && vl > static_cast<unsigned int>(ep - cp))
           {
+          // if vl is larger than number of bytes left in buffer,
+          // then copy data from save point "sp" up to "cp" into v,
+          // and read the value into "v".
           unsigned int m = static_cast<unsigned int>(cp - sp);
           unsigned int n = v->GetNumberOfValues();
           unsigned char *ptr = v->ReallocateByteData(n + vl + m) + n;
@@ -874,14 +960,18 @@ bool Decoder<E>::SkipElements(
           }
         }
       }
-    // copy data up to current buffer position
+
+    // the for(;;) loop is done, copy data from the save point sp
+    // up to current position cp into the value v
     this->CopyBuffer(v, sp, cp);
     }
-  else
+  else // l != 0xffffffff
     {
+    // skipped a fixed number of bytes
     unsigned int tl;
     if (v != 0)
       {
+      // read bytes into the value "v"
       unsigned int n = v->GetNumberOfValues();
       unsigned char *ptr = v->ReallocateByteData(n + l) + n;
       tl = this->ReadData(cp, ep, ptr, l);
@@ -889,6 +979,7 @@ bool Decoder<E>::SkipElements(
       }
     else
       {
+      // simply skip "l" bytes
       tl = this->SkipData(cp, ep, l);
       if (tl != l) { return false; }
       }
@@ -899,6 +990,7 @@ bool Decoder<E>::SkipElements(
 
 } // end anonymous namespace
 
+//----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 // Constructor
 vtkDICOMParser::vtkDICOMParser()
