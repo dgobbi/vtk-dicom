@@ -4,6 +4,7 @@
 #include <vtkObject.h>
 
 class vtkDICOMMetaData;
+class vtkUnsignedShortArray;
 
 //! A meta data reader for DICOM data.
 /*!
@@ -33,6 +34,13 @@ public:
   //! Set the instance index to use when storing metadata.
   vtkSetMacro(Index, int);
   int GetIndex() { return this->Index; }
+
+  //! Set specific metadata groups to read.
+  /*!
+   *  If group 0x0002 is present in the file, it will always be read.
+   */
+  void SetGroups(vtkUnsignedShortArray *groups);
+  vtkUnsignedShortArray *GetGroups() { return this->Groups; }
 
   //! Get the byte offset to the end of the metadata.
   /*!
@@ -89,6 +97,7 @@ protected:
 
   char *FileName;
   vtkDICOMMetaData *MetaData;
+  vtkUnsignedShortArray *Groups;
   std::istream *InputStream;
   std::streamsize BytesRead;
   vtkTypeInt64 FileOffset;

@@ -4,6 +4,7 @@
 #include "vtkDICOMSequenceItem.h"
 
 #include <vtkObjectFactory.h>
+#include <vtkUnsignedShortArray.h>
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -15,6 +16,7 @@
 
 vtkStandardNewMacro(vtkDICOMParser);
 vtkCxxSetObjectMacro(vtkDICOMParser, MetaData, vtkDICOMMetaData);
+vtkCxxSetObjectMacro(vtkDICOMParser, Groups, vtkUnsignedShortArray);
 
 /*----------------------------------------------------------------------------
 The top section of this file defines "Decoder" classes that parses the
@@ -97,6 +99,10 @@ public:
   virtual bool SkipElements(
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter, vtkDICOMValue *v) = 0;
+
+  // Peek ahead to see what the group of the next element is.
+  virtual unsigned short PeekGroup(
+    const unsigned char* &cp, const unsigned char* &ep);
 
   // Copy bytes from sp to end marker cp into the value "v".
   // If the parameter "v" is NULL, then it will be ignored.
@@ -235,6 +241,18 @@ public:
   unsigned int ReadElementValue(
     const unsigned char* &cp, const unsigned char* &ep,
     vtkDICOMVR vr, unsigned int vl, vtkDICOMValue &v);
+
+  // Peek ahead to see what the group of the next element is.
+  unsigned short PeekGroup(
+    const unsigned char* &cp, const unsigned char* &ep)
+  {
+    unsigned short g = 0;
+    if (this->CheckBuffer(cp, ep, 2))
+      {
+      g = Decoder<E>::GetInt16(cp);
+      }
+    return g;
+  }
 
 protected:
   Decoder(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
@@ -1000,6 +1018,7 @@ vtkDICOMParser::vtkDICOMParser()
 {
   this->FileName = NULL;
   this->MetaData = NULL;
+  this->Groups = NULL;
   this->InputStream = NULL;
   this->BytesRead = 0;
   this->FileOffset = 0;
@@ -1017,6 +1036,10 @@ vtkDICOMParser::~vtkDICOMParser()
   if (this->MetaData)
     {
     this->MetaData->Delete();
+    }
+  if (this->Groups)
+    {
+    this->Groups->Delete();
     }
 }
 
@@ -1165,7 +1188,50 @@ bool vtkDICOMParser::ReadMetaData(
     decoder = &decoderBE;
     }
 
-  decoder->ReadElements(cp, ep, HxFFFFFFFF, DC::PixelData);
+  vtkUnsignedShortArray *groups = this->Groups;
+
+  // read group-by-group
+  bool foundPixelData = false;
+  bool readFailure = false;
+  while (!foundPixelData && !readFailure)
+    {
+    unsigned int g = decoder->PeekGroup(cp, ep);
+
+    // if there is no data left to decode, then break
+    if (cp == ep) { break; }
+
+    // do we want to read or skip this group?
+    bool found = true;
+    if (groups)
+      {
+      found = false;
+      vtkIdType n = groups->GetNumberOfTuples();
+      for (vtkIdType i = 0; i < n && !found; i++)
+        {
+        found = (g == groups->GetValue(i));
+        }
+      }
+
+    // create a delimiter to read/skip only this group
+    vtkDICOMTag delimiter(g,0);
+
+    // check for PixelData group 0x7fe0, or obsolete 0x7fxx
+    if ((g & 0xff00) == 0x7f00)
+      {
+      // set delimiter to pixel data tag
+      delimiter = vtkDICOMTag(g, 0x0010);
+      foundPixelData = true;
+      }
+
+    if (found)
+      {
+      readFailure = !decoder->ReadElements(cp, ep, HxFFFFFFFF, delimiter);
+      }
+    else
+      {
+      readFailure = !decoder->SkipElements(cp, ep, HxFFFFFFFF, delimiter);
+      }
+    }
 
   this->ComputeFileOffset(cp, ep);
 
@@ -1237,4 +1303,5 @@ void vtkDICOMParser::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "MetaData: " << this->MetaData << "\n";
   os << indent << "Index: " << this->Index << "\n";
   os << indent << "BufferSize: " << this->BufferSize << "\n";
+  os << indent << "Groups: " << this->Groups << "\n";
 }
