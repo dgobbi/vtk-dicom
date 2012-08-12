@@ -5,6 +5,7 @@
 
 class vtkDICOMMetaData;
 class vtkUnsignedShortArray;
+class vtkDICOMParserInternalFriendship;
 
 //! A meta data reader for DICOM data.
 /*!
@@ -49,6 +50,9 @@ public:
    */
   vtkTypeInt64 GetFileOffset() { return this->FileOffset; }
 
+  //! Get the total file length (only valid after Update).
+  vtkTypeInt64 GetFileSize() { return this->FileSize; }
+
   //! Set the buffer size, the default is 8192 (8k).
   /*!
    *  A larger buffer size results in fewer IO calls.  The
@@ -60,7 +64,11 @@ public:
   //! Read the metadata from the file.
   void Update() { this->ReadFile(this->MetaData, this->Index); }
 
-  //! Internal method for filling the buffer, do not use.
+protected:
+  vtkDICOMParser();
+  ~vtkDICOMParser();
+
+  //! Internal method for filling the buffer.
   /*!
    *  This is an internal method that refills the buffer
    *  by reading data from the file.  The pointers cp and
@@ -74,9 +82,9 @@ public:
   virtual bool FillBuffer(
     const unsigned char* &cp, const unsigned char* &ep);
 
-protected:
-  vtkDICOMParser();
-  ~vtkDICOMParser();
+  //! Get the bytes remaining in the file.
+  virtual std::streamsize GetBytesRemaining(
+    const unsigned char *cp, const unsigned char *ep);
 
   //! Read the file into the provided metadata object.
   virtual bool ReadFile(vtkDICOMMetaData *data, int idx);
@@ -101,10 +109,14 @@ protected:
   std::istream *InputStream;
   std::streamsize BytesRead;
   vtkTypeInt64 FileOffset;
+  vtkTypeInt64 FileSize;
   char *Buffer;
   int BufferSize;
   int ChunkSize;
   int Index;
+
+  // used to share FillBuffer with internal classes
+  friend class vtkDICOMParserInternalFriendship;
 
 private:
   vtkDICOMParser(const vtkDICOMParser&);  // Not implemented.

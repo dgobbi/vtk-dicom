@@ -19,8 +19,8 @@ vtkCxxSetObjectMacro(vtkDICOMParser, MetaData, vtkDICOMMetaData);
 vtkCxxSetObjectMacro(vtkDICOMParser, Groups, vtkUnsignedShortArray);
 
 /*----------------------------------------------------------------------------
-The top section of this file defines "Decoder" classes that parses the
-DICOM tags and decodes the values.  The decoder class hierarchy is as
+The top section of this file defines "Decoder" classes that parse the
+DICOM tags and decode the values.  The decoder class hierarchy is as
 follows:
 
 DecoderBase (the base class)
@@ -33,6 +33,22 @@ DecoderBase (the base class)
 The vtkDICOMParser utilizes the DefaultDecoder, LittleEndianDecoder,
 or the BigEndianDecoder depending on the transfer syntax.
 ----------------------------------------------------------------------------*/
+
+class vtkDICOMParserInternalFriendship
+{
+public:
+  static bool FillBuffer(vtkDICOMParser *parser,
+    const unsigned char* &cp, const unsigned char* &ep)
+  {
+    return parser->FillBuffer(cp, ep);
+  }
+
+  static std::streamsize GetBytesRemaining(vtkDICOMParser *parser,
+    const unsigned char *cp, const unsigned char *ep)
+  {
+    return parser->GetBytesRemaining(cp, ep);
+  }
+};
 
 namespace {
 
@@ -335,7 +351,8 @@ inline bool DecoderBase::CheckBuffer(
   bool r = true;
   if (n > static_cast<unsigned int>(ep - cp))
     {
-    r = this->Parser->FillBuffer(cp, ep);
+    r = vtkDICOMParserInternalFriendship::FillBuffer(
+          this->Parser, cp, ep);
     r &= (n <= static_cast<unsigned int>(ep - cp));
     }
   return r;
@@ -349,7 +366,8 @@ inline bool DecoderBase::CheckBuffer(
   if (n > static_cast<unsigned int>(ep - cp))
     {
     this->CopyBuffer(v, sp, cp);
-    r = this->Parser->FillBuffer(cp, ep);
+    r = vtkDICOMParserInternalFriendship::FillBuffer(
+          this->Parser, cp, ep);
     r &= (n <= static_cast<unsigned int>(ep - cp));
     sp = cp;
     }
@@ -687,6 +705,18 @@ unsigned int Decoder<E>::ReadElementValue(
       return 0;
       }
     }
+  else if (static_cast<unsigned int>(ep - cp) < vl)
+    {
+    // value is larger than what remains in buffer,
+    // make sure there are enough bytes left in file
+    std::streamsize bytesRemaining =
+      vtkDICOMParserInternalFriendship::GetBytesRemaining(
+          this->Parser, cp, ep);
+    if (vl > bytesRemaining)
+      {
+      return 0;
+      }
+    }
 
   switch (vr.GetType())
     {
@@ -914,7 +944,7 @@ bool Decoder<E>::SkipElements(
       unsigned int vl = 0;
       vtkDICOMVR vr;
 
-      // group and item delimiters are always decoded as implicit
+      // sequence and item delimiters are always decoded as implicit
       if (g == HxFFFE || this->ImplicitVR)
         {
         vl = Decoder<E>::GetInt32(cp);
@@ -1039,6 +1069,7 @@ vtkDICOMParser::vtkDICOMParser()
   this->InputStream = NULL;
   this->BytesRead = 0;
   this->FileOffset = 0;
+  this->FileSize = 0;
   this->Buffer = NULL;
   this->BufferSize = 8192;
   this->ChunkSize = 0;
@@ -1089,6 +1120,8 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
     vtkErrorMacro("ReadFile: Can't open file " << this->FileName);
     return false;
     }
+
+  this->FileSize = fs.st_size;
 
   // Make sure that the file is readable.
   std::ifstream infile(this->FileName, ios::in | ios::binary);
@@ -1305,6 +1338,14 @@ bool vtkDICOMParser::FillBuffer(
 }
 
 //----------------------------------------------------------------------------
+std::streamsize vtkDICOMParser::GetBytesRemaining(
+  const unsigned char *cp, const unsigned char *ep)
+{
+  return static_cast<std::streamsize>(
+    this->FileSize - this->BytesRead + (ep - cp));
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMParser::ComputeFileOffset(
   const unsigned char* cp, const unsigned char* ep)
 {
@@ -1321,6 +1362,7 @@ void vtkDICOMParser::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "FileName: "
      << (this->FileName ? this->FileName : "(NULL)") << "\n";
   os << indent << "FileOffset: " << this->FileOffset << "\n";
+  os << indent << "FileSize: " << this->FileSize << "\n";
   os << indent << "MetaData: " << this->MetaData << "\n";
   os << indent << "Index: " << this->Index << "\n";
   os << indent << "BufferSize: " << this->BufferSize << "\n";
