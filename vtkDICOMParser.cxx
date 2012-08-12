@@ -90,38 +90,18 @@ public:
   // If the delimiter is of the form (0xgggg,0x0000), ie. if the
   // "element" part is zero, then the reading will stop before
   // the first element that is not in the specified group.
-  bool ReadElements(
+  virtual bool ReadElements(
     const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int l, vtkDICOMTag delimiter)
-  {
-    unsigned int bytesRead;
-    return ReadElements(cp, ep, l, delimiter, bytesRead);
-  }
+    unsigned int l, vtkDICOMTag delimiter) = 0;
 
   // Skip l bytes of data, or until delimiter tag found.
   // Set l to 0xffffffff to ignore length completely.
   // If the delimiter is of the form (0xgggg,0x0000), ie. if the
   // "element" part is zero, then the skip will stop before
   // the first element that is not in the specified group.
-  bool SkipElements(
-    const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int l, vtkDICOMTag delimiter)
-  {
-    return SkipElements(cp, ep, l, delimiter, 0);
-  }
-
-  // A ReadElements that returns the number of bytes read.
-  virtual bool ReadElements(
-    const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead) = 0;
-
-  // A SkipElements that copies skipped bytes into value "v".
-  // This method is used when parsing encapsulated data, it simply
-  // reads the encapsulated data into the value as raw bytes. 
-  // If the parameter "v" is NULL, then it will be ignored.
   virtual bool SkipElements(
     const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int l, vtkDICOMTag delimiter, vtkDICOMValue *v) = 0;
+    unsigned int l, vtkDICOMTag delimiter) = 0;
 
   // Peek ahead to see what the group of the next element is.
   virtual unsigned short PeekGroup(
@@ -235,7 +215,6 @@ public:
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter)
   {
-    unsigned int bytesRead;
     return SkipElements(cp, ep, l, delimiter, 0);
   }
 
