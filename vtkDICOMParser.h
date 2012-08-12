@@ -19,7 +19,7 @@ public:
   static vtkDICOMParser *New();
 
   //! VTK dynamic type information macro.
-  vtkTypeMacro(vtkDICOMParser, vtkObjectBase);
+  vtkTypeMacro(vtkDICOMParser, vtkObject);
 
   //! Print a summary of the contents of this object.
   void PrintSelf(ostream& os, vtkIndent indent);
