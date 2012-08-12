@@ -800,14 +800,10 @@ bool Decoder<E>::ReadElements(
   unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead)
 {
   unsigned int tl = 0;
-  unsigned short group = 0x0000;
 
   // does delimiter specify a single group to read?
-  if (delimiter.GetElement() == 0x0000)
-    {
-    group = delimiter.GetGroup();
-    delimiter = vtkDICOMTag(0x0000,0x0000);
-    }
+  unsigned short group = delimiter.GetGroup();
+  bool readGroup = (delimiter.GetElement() == 0x0000);
 
   while (tl < l || l == HxFFFFFFFF)
     {
@@ -818,7 +814,7 @@ bool Decoder<E>::ReadElements(
     vtkDICOMTag tag(g,e);
 
     // break if element is not in the chosen group
-    if (group && group != g) { break; }
+    if (readGroup && group != g) { break; }
 
     // read the VR and VL
     cp += 4;
@@ -828,7 +824,7 @@ bool Decoder<E>::ReadElements(
     tl += 4 + hl;
 
     // break if end of file or if delimiter
-    if (hl == 0 || tag == delimiter) { break; }
+    if (hl == 0 || (!readGroup && tag == delimiter)) { break; }
 
     // read the value
     vtkDICOMValue v;
@@ -876,12 +872,8 @@ bool Decoder<E>::SkipElements(
     const unsigned char *sp = cp;
 
     // does delimiter specify a single group to read?
-    unsigned short group = 0x0000;
-    if (delimiter.GetElement() == 0x0000)
-      {
-      group = delimiter.GetGroup();
-      delimiter = vtkDICOMTag(0x0000,0x0000);
-      }
+    unsigned short group = delimiter.GetGroup();
+    bool readGroup = (delimiter.GetElement() == 0x0000);
 
     // skip until delimiter found
     for (;;)
@@ -891,7 +883,7 @@ bool Decoder<E>::SkipElements(
       unsigned short e = Decoder<E>::GetInt16(cp + 2);
 
       // break if element is not in the chosen group
-      if (group && group != g) { break; }
+      if (readGroup && group != g) { break; }
 
       cp += 4;
       unsigned int tl = 8;
@@ -922,7 +914,8 @@ bool Decoder<E>::SkipElements(
           }
         }
 
-      if (g == delimiter.GetGroup() &&
+      if (!readGroup &&
+          g == delimiter.GetGroup() &&
           e == delimiter.GetElement())
         {
         break;
