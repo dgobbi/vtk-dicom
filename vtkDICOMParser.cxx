@@ -48,6 +48,13 @@ public:
   {
     return parser->GetBytesRemaining(cp, ep);
   }
+
+  static void ParseError(vtkDICOMParser *parser,
+    const unsigned char *cp, const unsigned char *ep, const char *message)
+  {
+    return parser->ParseError(cp, ep, message);
+  }
+
 };
 
 namespace {
@@ -656,7 +663,12 @@ unsigned int Decoder<E>::ReadElementHead(
     else if (vr.HasLongVL()) // for OB, OF, OW, SQ, UN, UT 
       {
       // check that buffer has 4 bytes for 32-bit VL
-      if (!this->CheckBuffer(cp, ep, 4)) { return 0; }
+      if (!this->CheckBuffer(cp, ep, 4))
+        {
+        vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
+          "Unexpected end of file.");
+        return 0;
+        }
       vl = Decoder<E>::GetInt32(cp);
       cp += 4;
       l += 4;
@@ -689,10 +701,20 @@ unsigned int Decoder<E>::ReadElementValue(
     else if (vr == vtkDICOMVR::OB)
       {
       // make sure unknown length data is properly encapsulated
-      if (!this->CheckBuffer(cp, ep, 8)) { return 0; }
+      if (!this->CheckBuffer(cp, ep, 8))
+        {
+        vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
+          "Unexpected end of file.");
+        return 0;
+        }
       unsigned short g1 = Decoder<E>::GetInt16(cp);
       unsigned short e1 = Decoder<E>::GetInt16(cp + 2);
-      if (g1 != HxFFFE || (e1 != HxE000 && e1 != HxE0DD)) { return 0; }
+      if (g1 != HxFFFE || (e1 != HxE000 && e1 != HxE0DD))
+        {
+        vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
+          "Encapsulated object is missing (FFFE,E000) tag.");
+        return 0;
+        }
 
       v.AllocateByteData(vr, 0);
       this->SkipElements(
@@ -702,6 +724,8 @@ unsigned int Decoder<E>::ReadElementValue(
     else if (vr != vtkDICOMVR::SQ)
       {
       // only UN, OB, and SQ can have unknown length
+      vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
+        "Illegal item length FFFFFFFF encountered.");
       return 0;
       }
     }
@@ -714,6 +738,8 @@ unsigned int Decoder<E>::ReadElementValue(
           this->Parser, cp, ep);
     if (vl > bytesRemaining)
       {
+      vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
+        "Item length exceeds the bytes remaining in file.");
       return 0;
       }
     }
@@ -886,7 +912,6 @@ bool Decoder<E>::ReadElements(
         }
       else
         {
-        // error or file truncation while reading value
         return false;
         }
       }
@@ -1352,6 +1377,15 @@ void vtkDICOMParser::ComputeFileOffset(
   // the offset is the number of bytes read minus
   // the number of bytes remaining in the buffer.
   this->FileOffset = this->BytesRead - (ep - cp);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMParser::ParseError(
+  const unsigned char* cp, const unsigned char* ep, const char* message)
+{
+  this->ComputeFileOffset(cp, ep);
+  vtkErrorMacro("At byte offset " << this->FileOffset << " in file "
+                << this->FileName << ": " << message);
 }
 
 //----------------------------------------------------------------------------

@@ -86,6 +86,10 @@ protected:
   virtual std::streamsize GetBytesRemaining(
     const unsigned char *cp, const unsigned char *ep);
 
+  //! Report an error while parsing the file.
+  virtual void ParseError(
+    const unsigned char *cp, const unsigned char *ep, const char *message);
+
   //! Read the file into the provided metadata object.
   virtual bool ReadFile(vtkDICOMMetaData *data, int idx);
 
