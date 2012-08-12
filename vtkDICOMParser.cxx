@@ -823,21 +823,45 @@ bool Decoder<E>::ReadElements(
     unsigned int hl = this->ReadElementHead(cp, ep, tag, vr, vl);
     tl += 4 + hl;
 
-    // break if end of file or if delimiter
-    if (hl == 0 || (!readGroup && tag == delimiter)) { break; }
+    // return false if could not read element
+    if (hl == 0) { return false; }
+
+    // break if delimiter found
+    if (!readGroup && tag == delimiter) { break; }
 
     // read the value
     vtkDICOMValue v;
+    unsigned int rl = 0;
     if (vr == vtkDICOMVR::UN && !this->ImplicitVR)
       {
       // if it was explicitly labeled 'UN' then check dictionary
       vr = this->FindDictVR(tag);
-      tl += this->ImplicitLE->ReadElementValue(cp, ep, vr, vl, v);
+      rl = this->ImplicitLE->ReadElementValue(cp, ep, vr, vl, v);
       }
     else
       {
-      tl += this->ReadElementValue(cp, ep, vr, vl, v);
+      rl = this->ReadElementValue(cp, ep, vr, vl, v);
       }
+
+    // was it a short read?
+    if (rl < vl && vl != HxFFFFFFFF)
+      {
+      unsigned int dl = vl - rl;
+      // is the difference small, and not due to buffer underrun?
+      if (dl <= 8 && this->CheckBuffer(cp, ep, dl))
+        {
+        // treat the difference as if it is padding
+        cp += dl;
+        rl = vl;
+        }
+      else
+        {
+        // error or file truncation while reading value
+        return false;
+        }
+      }
+
+    tl += rl;
 
     // store the value
     if (this->Item)
