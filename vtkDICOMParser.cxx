@@ -1176,6 +1176,10 @@ bool vtkDICOMParser::ReadMetaData(
   if (tsyntax == "") // try to guess the syntax
     {
     if (!decoder->CheckBuffer(cp, ep, 8)) { return false; }
+    if (cp[0] == 0x00 && cp[1] == 0x08)
+      {
+      decoder = &decoderBE;
+      }
     decoder->SetImplicitVR(!vtkDICOMVR(cp + 4).IsValid());
     }
   else if (tsyntax == "1.2.840.10008.1.2" ||  // Implicit LE
