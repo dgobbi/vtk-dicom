@@ -802,12 +802,9 @@ vtkDICOMValue *vtkDICOMValue::GetMultiplexData()
 
 //----------------------------------------------------------------------------
 template<class VT>
-void vtkDICOMValue::GetValuesT(VT *v, int si, int ci) const
+void vtkDICOMValue::GetValuesT(VT *v, unsigned int s, unsigned int c) const
 {
-  unsigned int s = static_cast<unsigned int>(si);
-  unsigned int c = static_cast<unsigned int>(ci);
-
-  assert(si >= 0 && ci >= 0 && (s + c) <= this->V->NumberOfValues);
+  assert((s + c) <= this->V->NumberOfValues);
 
   switch (this->V->Type)
     {
@@ -849,12 +846,9 @@ void vtkDICOMValue::GetValuesT(VT *v, int si, int ci) const
 
 template<>
 void vtkDICOMValue::GetValuesT<std::string>(
-  std::string *v, int si, int ci) const
+  std::string *v, unsigned int s, unsigned int c) const
 {
-  unsigned int s = static_cast<unsigned int>(si);
-  unsigned int c = static_cast<unsigned int>(ci);
-
-  assert(si >= 0 && ci >= 0 && (s + c) <= this->V->NumberOfValues);
+  assert((s + c) <= this->V->NumberOfValues);
 
   for (unsigned int i = 0; i < c; i++)
     {
@@ -866,49 +860,49 @@ void vtkDICOMValue::GetValuesT<std::string>(
 //----------------------------------------------------------------------------
 // These are interface methods that call the templated internal methods.
 void vtkDICOMValue::GetValues(
-  unsigned char *v, int s, int c) const
+  unsigned char *v, unsigned int s, unsigned int c) const
 {
   this->GetValuesT(v, s, c);
 }
 
 void vtkDICOMValue::GetValues(
-  short *v, int s, int c) const
+  short *v, unsigned int s, unsigned int c) const
 {
   this->GetValuesT(v, s, c);
 }
 
 void vtkDICOMValue::GetValues(
-  unsigned short *v, int s, int c) const
+  unsigned short *v, unsigned int s, unsigned int c) const
 {
   this->GetValuesT(v, s, c);
 }
 
 void vtkDICOMValue::GetValues(
-  int *v, int s, int c) const
+  int *v, unsigned int s, unsigned int c) const
 {
   this->GetValuesT(v, s, c);
 }
 
 void vtkDICOMValue::GetValues(
-  unsigned int *v, int s, int c) const
+  unsigned int *v, unsigned int s, unsigned int c) const
 {
   this->GetValuesT(v, s, c);
 }
 
 void vtkDICOMValue::GetValues(
-  float *v, int s, int c) const
+  float *v, unsigned int s, unsigned int c) const
 {
   this->GetValuesT(v, s, c);
 }
 
 void vtkDICOMValue::GetValues(
-  double *v, int s, int c) const
+  double *v, unsigned int s, unsigned int c) const
 {
   this->GetValuesT(v, s, c);
 }
 
 void vtkDICOMValue::GetValues(
-  std::string *v, int s, int c) const
+  std::string *v, unsigned int s, unsigned int c) const
 {
   this->GetValuesT(v, s, c);
 }
@@ -916,7 +910,7 @@ void vtkDICOMValue::GetValues(
 //----------------------------------------------------------------------------
 // Get one of the backslash-separated substrings, requires a text value.
 void vtkDICOMValue::Substring(
-  int i, const char *&start, const char *&end) const
+  unsigned int i, const char *&start, const char *&end) const
 {
   const char *cp = static_cast<const ValueT<char> *>(this->V)->Data;
   const char *ep = cp + this->V->VL;
@@ -949,7 +943,8 @@ void vtkDICOMValue::Substring(
 
 //----------------------------------------------------------------------------
 // Convert one value to text and add it to the supplied string
-void vtkDICOMValue::AppendValueToString(std::string& str, int i) const
+void vtkDICOMValue::AppendValueToString(
+  std::string& str, unsigned int i) const
 {
   const char *cp = 0;
   const char *dp = 0;
@@ -962,7 +957,7 @@ void vtkDICOMValue::AppendValueToString(std::string& str, int i) const
     return;
     }
 
-  assert(i >= 0 && i < static_cast<int>(this->V->NumberOfValues));
+  assert(i < this->V->NumberOfValues);
 
   switch (this->V->Type)
     {
@@ -1273,8 +1268,8 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
     else
       {
       std::string s;
-      int n = v.GetNumberOfValues();
-      for (int i = 0; i < n; i++)
+      unsigned int n = v.GetNumberOfValues();
+      for (unsigned int i = 0; i < n; i++)
         {
         s.append((i == 0 ? "" : ","));
         v.AppendValueToString(s, i);

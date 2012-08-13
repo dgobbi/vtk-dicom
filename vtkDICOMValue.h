@@ -120,8 +120,8 @@ public:
    *  - for sequences (SQ and XQ) the number of items in the sequence,
    *    including any delimeters, will be returned.
    */
-  int GetNumberOfValues() const {
-    return (this->V ? static_cast<int>(this->V->NumberOfValues) : 0); }
+  unsigned int GetNumberOfValues() const {
+    return (this->V ? this->V->NumberOfValues : 0); }
 
   //! Get "n" values, starting at position "i".
   /*!
@@ -130,14 +130,14 @@ public:
    *  decimal string) then conversion from text to a numerical value
    *  will be performed.
    */
-  void GetValues(unsigned char *v, int i, int n) const;
-  void GetValues(short *v, int i, int n) const;
-  void GetValues(unsigned short *v, int i, int n) const;
-  void GetValues(int *v, int i, int n) const;
-  void GetValues(unsigned int *v, int i, int n) const;
-  void GetValues(float *v, int i, int n) const;
-  void GetValues(double *v, int i, int n) const;
-  void GetValues(std::string *v, int i, int n) const;
+  void GetValues(unsigned char *v, unsigned int i, unsigned int n) const;
+  void GetValues(short *v, unsigned int i, unsigned int n) const;
+  void GetValues(unsigned short *v, unsigned int i, unsigned int n) const;
+  void GetValues(int *v, unsigned int i, unsigned int n) const;
+  void GetValues(unsigned int *v, unsigned int i, unsigned int n) const;
+  void GetValues(float *v, unsigned int i, unsigned int n) const;
+  void GetValues(double *v, unsigned int i, unsigned int n) const;
+  void GetValues(std::string *v, unsigned int i, unsigned int n) const;
 
   //! Get a pointer to the internal data array.
   /*!
@@ -198,7 +198,7 @@ public:
    *  to ST, LT, or UT, because the resulting string might be very
    *  long, and might contain special (i.e. non-printable) characters.
    */
-  void AppendValueToString(std::string &str, int i) const;
+  void AppendValueToString(std::string &str, unsigned int i) const;
 
   //! Override assignment operator for reference counting.
   vtkDICOMValue& operator=(const vtkDICOMValue& o) {
@@ -218,14 +218,14 @@ private:
 
   //! Internal templated GetValues() method.
   template<class OT>
-  void GetValuesT(OT *v, int s, int c) const;
+  void GetValuesT(OT *v, unsigned int s, unsigned int c) const;
 
   //! Internal templated value creation method.
   template<class T>
   void CreateValue(vtkDICOMVR vr, const T *data, unsigned int n);
 
   //! Get the start and end for the "i"th backslash-delimited value.
-  void Substring(int i, const char *&start, const char *&end) const;
+  void Substring(unsigned int i, const char *&start, const char *&end) const;
 
   //! The only data member: a pointer to the internal value.
   Value *V;

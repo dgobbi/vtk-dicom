@@ -151,7 +151,7 @@ const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
     const vtkDICOMValue *sptr = vptr->GetMultiplexData();
     if (sptr)
       {
-      assert(idx >= 0 && idx < vptr->GetNumberOfValues());
+      assert(idx >= 0 && idx < static_cast<int>(vptr->GetNumberOfValues()));
       vptr = &sptr[idx];
       }
     }
@@ -353,7 +353,7 @@ void vtkDICOMMetaData::SetAttributeValue(
   loc->Tag = tag;
   vtkDICOMValue *vptr = &loc->Value;
 
-  assert(idx >= 0 && idx < vptr->GetNumberOfValues());
+  assert(idx >= 0 && idx < static_cast<int>(vptr->GetNumberOfValues()));
 
   // first value for this attribute
   if (vptr->IsEmpty())
