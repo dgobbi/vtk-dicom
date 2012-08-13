@@ -1200,7 +1200,7 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
     }
   else if (vr == vtkDICOMVR::UN)
     {
-    os << "unknown[" << v.GetVL() << "]";
+    os << "unknown[" << v.GetNumberOfValues() << "]";
     }
   else if (vr == vtkDICOMVR::ST ||
            vr == vtkDICOMVR::LT ||
@@ -1226,7 +1226,7 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
   else if (vr == vtkDICOMVR::AT)
     {
     const unsigned short *usp = v.GetUShortData();
-    unsigned int m = v.GetVL()/2;
+    unsigned int m = v.GetNumberOfValues();
     if (usp)
       {
       for (unsigned int j = 0; j < m; j += 2)
@@ -1247,15 +1247,15 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
     }
   else if (vr == vtkDICOMVR::OB)
     {
-    os << "bytes[" << v.GetVL() << "]";
+    os << "bytes[" << v.GetNumberOfValues() << "]";
     }
   else if (vr == vtkDICOMVR::OW)
     {
-    os << "words[" << v.GetVL()/2 << "]";
+    os << "words[" << v.GetNumberOfValues() << "]";
     }
   else if (vr == vtkDICOMVR::OF)
     {
-    os << "floats[" << v.GetVL()/4 << "]";
+    os << "floats[" << v.GetNumberOfValues() << "]";
     }
   else
     {
@@ -1268,11 +1268,16 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
     else
       {
       std::string s;
-      unsigned int n = v.GetNumberOfValues();
+      unsigned int m = v.GetNumberOfValues();
+      unsigned int n = (m <= 16 ? m : 16);
       for (unsigned int i = 0; i < n; i++)
         {
         s.append((i == 0 ? "" : ","));
         v.AppendValueToString(s, i);
+        }
+      if (m > n)
+        {
+        s.append(",...");
         }
       os << s;
       }
