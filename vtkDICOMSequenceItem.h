@@ -48,10 +48,13 @@ public:
     this->L = 0; }
 
   //! Check if empty.
-  bool IsEmpty() { return (this->L == 0); }
+  bool IsEmpty() const { return (this->L == 0); }
 
   //! Add a data element to this item.
-  void AddDataElement(vtkDICOMTag tag, const vtkDICOMValue& v);
+  void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
+
+  //! Get a data element from this item.
+  bool GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue& v) const;
 
   //! Get the number of data elements.
   int GetNumberOfDataElements() const {

@@ -370,19 +370,7 @@ bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v)
 {
   if (this->Item)
     {
-    // if "Item" is set, check the current sequence item
-    vtkDICOMDataElementIterator iter = this->Item->GetData();
-    vtkDICOMDataElementIterator iend = this->Item->GetDataEnd();
-
-    while (iter != iend)
-      {
-      if (iter->GetTag() == tag)
-        {
-        v = iter->GetValue();
-        return true;
-        }
-      ++iter;
-      }
+    return this->Item->GetAttributeValue(tag, v);
     }
   else if (this->MetaData)
     {
@@ -908,7 +896,7 @@ bool Decoder<E>::ReadElements(
     // store the value
     if (this->Item)
       {
-      this->Item->AddDataElement(tag, v);
+      this->Item->SetAttributeValue(tag, v);
       }
     else if (this->Index == -1)
       {

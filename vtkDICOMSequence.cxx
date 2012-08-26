@@ -54,10 +54,11 @@ void vtkDICOMSequence::AddItem(const vtkDICOMSequenceItem& item)
   ptr[this->V->NumberOfValues++] = item;
 }
 
-void vtkDICOMSequence::SetItem(int i, const vtkDICOMSequenceItem& item)
+void vtkDICOMSequence::SetItem(
+  unsigned int i, const vtkDICOMSequenceItem& item)
 {
   assert(this->V != 0 && this->V->Type == VTK_DICOM_ITEM);
-  assert(i >= 0 && static_cast<unsigned int>(i) < this->V->NumberOfValues);
+  assert(i < this->V->NumberOfValues);
 
   vtkDICOMSequenceItem *ptr =
     static_cast<const ValueT<vtkDICOMSequenceItem> *>(this->V)->Data;
@@ -75,4 +76,15 @@ void vtkDICOMSequence::SetItem(int i, const vtkDICOMSequenceItem& item)
     }
 
   ptr[i] = item;
+}
+
+const vtkDICOMSequenceItem &vtkDICOMSequence::GetItem(unsigned int i) const
+{
+  assert(this->V != 0 && this->V->Type == VTK_DICOM_ITEM);
+  assert(i < this->V->NumberOfValues);
+
+  vtkDICOMSequenceItem *ptr =
+    static_cast<const ValueT<vtkDICOMSequenceItem> *>(this->V)->Data;
+
+  return ptr[i];
 }

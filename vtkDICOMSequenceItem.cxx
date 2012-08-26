@@ -19,7 +19,7 @@ void vtkDICOMSequenceItem::CopyList(const List *o, List *t)
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMSequenceItem::AddDataElement(
+void vtkDICOMSequenceItem::SetAttributeValue(
   vtkDICOMTag tag, const vtkDICOMValue& v)
 {
   // Make a container if we don't have one yet
@@ -36,16 +36,53 @@ void vtkDICOMSequenceItem::AddDataElement(
     this->L = t;
     }
 
-  // add element to the list
-  vtkDICOMDataElement *e = new vtkDICOMDataElement;
-  e->Tag = tag;
-  e->Value = v;
-  e->Next = &this->L->Tail;
-  e->Prev = e->Next->Prev;
-  e->Next->Prev = e;
-  e->Prev->Next = e;
+  // find the insert location in the linked list
+  vtkDICOMDataElement *tptr = &this->L->Tail;
+  do
+    {
+    tptr = tptr->Prev;
+    }
+  while (tag < tptr->GetTag());
 
-  this->L->NumberOfDataElements++;
+  if (tag == tptr->GetTag())
+    {
+    tptr->Value = v;
+    }
+  else
+    {
+    // create a new data element
+    vtkDICOMDataElement *e = new vtkDICOMDataElement;
+    e->Tag = tag;
+    e->Value = v;
+
+    e->Prev = tptr;
+    e->Next = tptr->Next;
+    e->Prev->Next = e;
+    e->Next->Prev = e;
+
+    this->L->NumberOfDataElements++;
+    }
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMSequenceItem::GetAttributeValue(
+  vtkDICOMTag tag, vtkDICOMValue& v) const
+{
+  if (this->L)
+    {
+    vtkDICOMDataElement *e = this->L->Head.Next;
+    vtkDICOMDataElement *tail = &this->L->Tail;
+    while (e != tail)
+      {
+      if (e->Tag == tag)
+        {
+        v = e->Value;
+        return true;
+        }
+      e = e->Next;
+      }
+    }
+  return false;
 }
 
 //----------------------------------------------------------------------------

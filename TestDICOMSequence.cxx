@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     {
     // add the first data element to the item
     vtkDICOMSequenceItem item;
-    item.AddDataElement(DC::SeriesInstanceUID,
+    item.SetAttributeValue(DC::SeriesInstanceUID,
       vtkDICOMValue(vtkDICOMVR::UI,
         "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
 
@@ -54,15 +54,15 @@ int main(int argc, char *argv[])
       // create a unique InstanceUID
       sprintf(instanceUID, instanceUIDFormat, 255+j);
       vtkDICOMSequenceItem item2;
-      item2.AddDataElement(DC::ReferencedSOPClassUID,
+      item2.SetAttributeValue(DC::ReferencedSOPClassUID,
         vtkDICOMValue(vtkDICOMVR::UI, classUID));
-      item2.AddDataElement(DC::ReferencedSOPInstanceUID,
+      item2.SetAttributeValue(DC::ReferencedSOPInstanceUID,
         vtkDICOMValue(vtkDICOMVR::UI, instanceUID));
       seq2.AddItem(item2);
       }
 
     // create the ReferencedInstanceSequence from the items
-    item.AddDataElement(DC::ReferencedInstanceSequence, seq2);
+    item.SetAttributeValue(DC::ReferencedInstanceSequence, seq2);
 
     // add this sequence-containing item to the original sequence
     seq.SetItem(i, item);
@@ -100,28 +100,22 @@ int main(int argc, char *argv[])
       vtkDICOMDataElementIterator iter2;
 
       // get the nested sequence
-      vtkDICOMValue v2 = iter->GetValue();
-      const vtkDICOMSequenceItem *ip2 = v2.GetSequenceData();
-      unsigned int m = v2.GetNumberOfValues();
+      vtkDICOMSequence v2 = iter->GetValue();
+      unsigned int m = v2.GetNumberOfItems();
       TestAssert(m == 10);
 
       // go through the 10 items in the sequence
       for (unsigned int j = 0; j < m; j++)
         {
         // check the two elements in each item
-        TestAssert(ip2[j].GetNumberOfDataElements() == 2);
-        iter2 = ip2[j].GetData();
-        TestAssert(iter2->GetTag() == DC::ReferencedSOPClassUID);
-        TestAssert(strcmp(iter2->GetValue().GetTextData(),
-          "1.2.840.10008.5.1.4.1.1.4") == 0);
-        ++iter2;
-        TestAssert(iter2->GetTag() == DC::ReferencedSOPInstanceUID);
+        const vtkDICOMSequenceItem &item = v2.GetItem(j);
+        TestAssert(item.GetNumberOfDataElements() == 2);
+        vtkDICOMValue v3;
+        item.GetAttributeValue(DC::ReferencedSOPClassUID, v3);
+        TestAssert(strcmp(v3.GetTextData(), "1.2.840.10008.5.1.4.1.1.4") == 0);
+        item.GetAttributeValue(DC::ReferencedSOPInstanceUID, v3);
         sprintf(instanceUID, instanceUIDFormat, 255+j);
-        TestAssert(strcmp(iter2->GetValue().GetTextData(),
-          instanceUID) == 0);
-        // make sure end of the element list has been reached
-        ++iter2;
-        TestAssert(iter2 == ip2[j].GetDataEnd());
+        TestAssert(strcmp(v3.GetTextData(), instanceUID) == 0);
         }
       }
     fullcount++;
