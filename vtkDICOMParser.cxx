@@ -136,6 +136,9 @@ public:
   // If the tag is not found, UN (unknown) will be returned.
   vtkDICOMVR FindDictVR(vtkDICOMTag tag);
 
+  // Get the last tag that was read.
+  vtkDICOMTag GetLastTag() { return this->LastTag; }
+
 protected:
   // Constructor that initializes all of the members.
   DecoderBase(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
@@ -153,6 +156,8 @@ protected:
   int Index;
   // if this is set, then VRs are implicit
   bool ImplicitVR;
+  // this is set to the last tag that was read.
+  vtkDICOMTag LastTag;
 };
 
 //----------------------------------------------------------------------------
@@ -188,7 +193,7 @@ public:
 
   // Skip forward by "n" bytes.  The number of bytes skipped will be
   // returned.  If the end of the file is reached before the operation,
-  // is complete, then the return value will be less than "n". 
+  // is complete, then the return value will be less than "n".
   unsigned int SkipData(
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int n);
@@ -225,7 +230,7 @@ public:
 
   // A SkipElements that copies skipped bytes into value "v".
   // This method is used when parsing encapsulated data, it simply
-  // reads the encapsulated data into the value as raw bytes. 
+  // reads the encapsulated data into the value as raw bytes.
   // If the parameter "v" is NULL, then it will be ignored.
   bool SkipElements(
     const unsigned char* &cp, const unsigned char* &ep,
@@ -639,7 +644,7 @@ unsigned int Decoder<E>::ReadElementHead(
       vr = this->FindDictVR(tag);
       vl = Decoder<E>::GetInt32(cp - 4);
       }
-    else if (vr.HasLongVL()) // for OB, OF, OW, SQ, UN, UT 
+    else if (vr.HasLongVL()) // for OB, OF, OW, SQ, UN, UT
       {
       // check that buffer has 4 bytes for 32-bit VL
       if (!this->CheckBuffer(cp, ep, 4))
@@ -861,6 +866,9 @@ bool Decoder<E>::ReadElements(
     // return false if could not read element
     if (hl == 0) { return false; }
 
+    // save this as the most recent tag
+    this->LastTag = tag;
+
     // break if delimiter found
     if (!readGroup && tag == delimiter) { break; }
 
@@ -972,12 +980,11 @@ bool Decoder<E>::SkipElements(
           }
         }
 
-      if (!readGroup &&
-          g == delimiter.GetGroup() &&
-          e == delimiter.GetElement())
-        {
-        break;
-        }
+      // save this as the most recent tag
+      this->LastTag = vtkDICOMTag(g, e);
+
+      // break if delimiter found
+      if (!readGroup && this->LastTag == delimiter) { break; }
 
       if (vl == HxFFFFFFFF)
         {
@@ -1078,6 +1085,7 @@ vtkDICOMParser::vtkDICOMParser()
   this->BufferSize = 8192;
   this->ChunkSize = 0;
   this->Index = -1;
+  this->PixelDataFound = false;
 }
 
 // Destructor
@@ -1108,8 +1116,19 @@ void vtkDICOMParser::SetBufferSize(int size)
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMParser::Update()
+{
+  this->ReadFile(this->MetaData, this->Index);
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
 {
+  // Mark pixel data as not found yet
+  this->PixelDataFound = false;
+  this->FileOffset = 0;
+  this->FileSize = 0;
+
   // Check that the file name has been set.
   if (!this->FileName)
     {
@@ -1291,6 +1310,8 @@ bool vtkDICOMParser::ReadMetaData(
       }
     }
 
+  this->PixelDataFound = (decoder->GetLastTag() == DC::PixelData);
+
   this->ComputeFileOffset(cp, ep);
 
   return true;
@@ -1374,6 +1395,8 @@ void vtkDICOMParser::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "FileName: "
      << (this->FileName ? this->FileName : "(NULL)") << "\n";
+  os << indent << "GetPixelDataFound: "
+     << (this->PixelDataFound ? "True\n" : "False\n");
   os << indent << "FileOffset: " << this->FileOffset << "\n";
   os << indent << "FileSize: " << this->FileSize << "\n";
   os << indent << "MetaData: " << this->MetaData << "\n";

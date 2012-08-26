@@ -43,6 +43,9 @@ public:
   void SetGroups(vtkUnsignedShortArray *groups);
   vtkUnsignedShortArray *GetGroups() { return this->Groups; }
 
+  //! This is true only if PixelData was found in the file.
+  bool GetPixelDataFound() { return this->PixelDataFound; }
+
   //! Get the byte offset to the end of the metadata.
   /*!
    *  After the metadata has been read, the file offset
@@ -62,7 +65,7 @@ public:
   int GetBufferSize() { return this->BufferSize; }
 
   //! Read the metadata from the file.
-  void Update() { this->ReadFile(this->MetaData, this->Index); }
+  virtual void Update();
 
 protected:
   vtkDICOMParser();
@@ -118,6 +121,7 @@ protected:
   int BufferSize;
   int ChunkSize;
   int Index;
+  bool PixelDataFound;
 
   // used to share FillBuffer with internal classes
   friend class vtkDICOMParserInternalFriendship;
