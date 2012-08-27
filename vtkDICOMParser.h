@@ -111,6 +111,7 @@ protected:
     const unsigned char* cp, const unsigned char* ep);
 
   char *FileName;
+  std::string TransferSyntax;
   vtkDICOMMetaData *MetaData;
   vtkUnsignedShortArray *Groups;
   std::istream *InputStream;

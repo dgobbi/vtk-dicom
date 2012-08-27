@@ -1181,6 +1181,13 @@ bool vtkDICOMParser::ReadMetaHeader(
   const unsigned char* &cp, const unsigned char* &ep,
   vtkDICOMMetaData *meta, int idx)
 {
+  bool tempMeta = false;
+  if (meta == 0)
+    {
+    meta = vtkDICOMMetaData::New();
+    tempMeta = true;
+    }
+
   LittleEndianDecoder decoder(this, meta, idx);
 
   // get the meta information group length
@@ -1203,9 +1210,21 @@ bool vtkDICOMParser::ReadMetaHeader(
       }
 
     decoder.ReadElements(cp, ep, l, vtkDICOMTag(g,0));
+
+    int i = (idx == -1 ? 0 : idx);
+    meta->GetAttributeValue(i, DC::TransferSyntaxUID, this->TransferSyntax);
+    }
+  else
+    {
+    this->TransferSyntax = "";
     }
 
   this->ComputeFileOffset(cp, ep);
+
+  if (tempMeta)
+    {
+    meta->Delete();
+    }
 
   return true;
 }
@@ -1230,15 +1249,13 @@ bool vtkDICOMParser::ReadMetaData(
       }
     }
 
-  std::string tsyntax;
-  int i = (idx == -1 ? 0 : idx);
-  this->MetaData->GetAttributeValue(i, DC::TransferSyntaxUID, tsyntax);
-
+  std::string &tsyntax = this->TransferSyntax;
   if (tsyntax == "") // try to guess the syntax
     {
     if (!decoder->CheckBuffer(cp, ep, 8)) { return false; }
     if (cp[0] == 0x00 && cp[1] == 0x08)
       {
+      tsyntax == "1.2.840.10008.1.2.2";
       decoder = &decoderBE;
       }
     decoder->SetImplicitVR(!vtkDICOMVR(cp + 4).IsValid());
@@ -1288,7 +1305,7 @@ bool vtkDICOMParser::ReadMetaData(
       foundPixelData = true;
       }
 
-    if (found)
+    if (found && meta)
       {
       readFailure = !decoder->ReadElements(cp, ep, HxFFFFFFFF, delimiter);
       }
