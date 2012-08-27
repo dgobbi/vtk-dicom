@@ -32,6 +32,7 @@ SET(LIB_SRCS
   vtkDICOMParser.cxx
   vtkDICOMSequence.cxx
   vtkDICOMSequenceItem.cxx
+  vtkDICOMSorter.cxx
   vtkDICOMValue.cxx
 )
 
@@ -52,3 +53,6 @@ TARGET_LINK_LIBRARIES(TestDICOMValue DataManager)
 
 ADD_EXECUTABLE(TestDICOMSequence TestDICOMSequence.cxx)
 TARGET_LINK_LIBRARIES(TestDICOMSequence DataManager)
+
+ADD_EXECUTABLE(TestDICOMSorter TestDICOMSorter.cxx)
+TARGET_LINK_LIBRARIES(TestDICOMSorter DataManager)
