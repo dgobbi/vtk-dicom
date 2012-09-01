@@ -65,9 +65,11 @@ void vtkDICOMSequenceItem::SetAttributeValue(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMSequenceItem::GetAttributeValue(
-  vtkDICOMTag tag, vtkDICOMValue& v) const
+const vtkDICOMValue &vtkDICOMSequenceItem::GetAttributeValue(
+  vtkDICOMTag tag) const
 {
+  static const vtkDICOMValue InvalidValue;
+
   if (this->L)
     {
     vtkDICOMDataElement *e = this->L->Head.Next;
@@ -76,13 +78,12 @@ bool vtkDICOMSequenceItem::GetAttributeValue(
       {
       if (e->Tag == tag)
         {
-        v = e->Value;
-        return true;
+        return e->Value;
         }
       e = e->Next;
       }
     }
-  return false;
+  return vtkDICOMValue::GetInvalidValue();
 }
 
 //----------------------------------------------------------------------------

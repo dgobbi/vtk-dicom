@@ -27,11 +27,11 @@ int main(int argc, char *argv[])
 
   { // test empty value
   vtkDICOMValue v;
-  TestAssert(v.IsEmpty());
+  TestAssert(!v.IsValid());
   v = vtkDICOMValue(vtkDICOMVR::SH, "hello", 5);
-  TestAssert(!v.IsEmpty());
+  TestAssert(v.IsValid());
   v.Clear();
-  TestAssert(v.IsEmpty());
+  TestAssert(!v.IsValid());
   }
 
   { // test VR and VL
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
   v = vtkDICOMValue(vtkDICOMVR::IS, ssi, 5);
   TestAssert(v.GetNumberOfValues() == 5);
   TestAssert(v.GetVL() == 12);
-  TestAssert(strcmp(v.GetTextData(), "1\\3\\-2\\60\\13") == 0);
+  TestAssert(strcmp(v.GetCharData(), "1\\3\\-2\\60\\13") == 0);
   // string values converted to numbers
   static const char *flts = "1\\2.5\\-1e-5\\-4.23460975"; 
   static const float flt[4] = { 1.0f, 2.5f, -1e-5f, -4.23460975f }; 
@@ -68,34 +68,34 @@ int main(int argc, char *argv[])
   v = vtkDICOMValue(vtkDICOMVR::ST, "he\\llo", 6);
   TestAssert(v.GetNumberOfValues() == 1);
   TestAssert(v.GetVL() == 6);
-  TestAssert(strcmp(v.GetTextData(), "he\\llo") == 0);
+  TestAssert(strcmp(v.GetCharData(), "he\\llo") == 0);
   v = vtkDICOMValue(vtkDICOMVR::LT, "he\\llo", 6);
   TestAssert(v.GetNumberOfValues() == 1);
   TestAssert(v.GetVL() == 6);
-  TestAssert(strcmp(v.GetTextData(), "he\\llo") == 0);
+  TestAssert(strcmp(v.GetCharData(), "he\\llo") == 0);
   v = vtkDICOMValue(vtkDICOMVR::UT, "he\\llo", 6);
   TestAssert(v.GetNumberOfValues() == 1);
   TestAssert(v.GetVL() == 6);
-  TestAssert(strcmp(v.GetTextData(), "he\\llo") == 0);
+  TestAssert(strcmp(v.GetCharData(), "he\\llo") == 0);
   // these data VRs should always report 1 value
   static const unsigned char uci[6] = { 1, 255, 12, 8, 9, 12 };
   v = vtkDICOMValue(vtkDICOMVR::UN, uci, 6);
-  TestAssert(v.GetNumberOfValues() == 1);
+  TestAssert(v.GetNumberOfValues() == 6);
   TestAssert(v.GetVL() == 6);
-  TestAssert(memcmp(v.GetByteData(), uci, 6) == 0);
+  TestAssert(memcmp(v.GetUnsignedCharData(), uci, 6) == 0);
   v = vtkDICOMValue(vtkDICOMVR::OB, uci, 6);
-  TestAssert(v.GetNumberOfValues() == 1);
+  TestAssert(v.GetNumberOfValues() == 6);
   TestAssert(v.GetVL() == 6);
-  TestAssert(memcmp(v.GetByteData(), uci, 6) == 0);
+  TestAssert(memcmp(v.GetUnsignedCharData(), uci, 6) == 0);
   static const short data[5] = { 1, 3, -2, 60, 13 };
   v = vtkDICOMValue(vtkDICOMVR::OW, data, 5);
-  TestAssert(v.GetNumberOfValues() == 1);
+  TestAssert(v.GetNumberOfValues() == 5);
   TestAssert(v.GetVL() == 10);
   TestAssert(memcmp(v.GetShortData(), data, 10) == 0);
-  TestAssert(memcmp(v.GetUShortData(), data, 10) == 0);
+  TestAssert(memcmp(v.GetUnsignedShortData(), data, 10) == 0);
   static const float fdata[5] = { 1.0, 3.5, -2.0, 6.0, 0.13 };
   v = vtkDICOMValue(vtkDICOMVR::OF, fdata, 5);
-  TestAssert(v.GetNumberOfValues() == 1);
+  TestAssert(v.GetNumberOfValues() == 5);
   TestAssert(v.GetVL() == 20);
   TestAssert(memcmp(v.GetFloatData(), fdata, 20) == 0);
   }
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
   static const double dbl[4] = { 1e200, -1e200, 1e-200, -1e-200 }; 
   static const char *dblt = "9.999999999e+99\\-9.999999999e+99\\0\\0";
   v = vtkDICOMValue(vtkDICOMVR::DS, dbl, 4);
-  TestAssert(strcmp(v.GetTextData(), dblt) == 0);
+  TestAssert(strcmp(v.GetCharData(), dblt) == 0);
   }
 
   { // test equality
@@ -245,9 +245,9 @@ int main(int argc, char *argv[])
   vptr[1] = vtkDICOMValue(vtkDICOMVR::DS, "1.4", 3);
   vptr[2] = vtkDICOMValue(vtkDICOMVR::DS, "-1e-5", 5);
   vptr = v.GetMultiplexData();
-  TestAssert(strcmp(vptr[0].GetTextData(),"1.3234") == 0);
-  TestAssert(strcmp(vptr[1].GetTextData(),"1.4 ") == 0); // padded to even
-  TestAssert(strcmp(vptr[2].GetTextData(),"-1e-5 ") == 0); // padded to even
+  TestAssert(strcmp(vptr[0].GetCharData(),"1.3234") == 0);
+  TestAssert(strcmp(vptr[1].GetCharData(),"1.4 ") == 0); // padded to even
+  TestAssert(strcmp(vptr[2].GetCharData(),"-1e-5 ") == 0); // padded to even
   vtkDICOMValue u;
   vtkDICOMValue *uptr = u.AllocateMultiplexData(vtkDICOMVR::DS, 3);
   uptr[0] = vtkDICOMValue(vtkDICOMVR::DS, "1.3234", 6);

@@ -29,8 +29,6 @@ void vtkDICOMSequence::AddItem(const vtkDICOMSequenceItem& item)
     // get next power of two that is greater than n
     nn = 1;
     do { nn <<= 1; } while (nn <= n);
-    // mark as growable for next time
-    this->V->VL = 0xffffffff;
     }
   // reallocate the array
   if (nn != 0)
@@ -50,6 +48,8 @@ void vtkDICOMSequence::AddItem(const vtkDICOMSequenceItem& item)
       }
     }
 
+  // mark as growable
+  this->V->VL = 0xffffffff;
   // add the item
   ptr[this->V->NumberOfValues++] = item;
 }

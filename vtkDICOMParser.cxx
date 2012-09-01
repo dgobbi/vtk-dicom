@@ -329,7 +329,7 @@ inline void DecoderBase::CopyBuffer(
     {
     unsigned int m = static_cast<unsigned int>(cp - sp);
     unsigned int n = v->GetNumberOfValues();
-    unsigned char *ptr = v->ReallocateByteData(n + m) + n;
+    unsigned char *ptr = v->ReallocateUnsignedCharData(n + m) + n;
     do { *ptr++ = *sp++; } while (--m);
     }
 }
@@ -368,17 +368,17 @@ inline bool DecoderBase::CheckBuffer(
 //----------------------------------------------------------------------------
 bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v)
 {
+  v.Clear();
   if (this->Item)
     {
-    return this->Item->GetAttributeValue(tag, v);
+    v = this->Item->GetAttributeValue(tag);
     }
   else if (this->MetaData)
     {
     int idx = (this->Index == -1 ? 0 : this->Index);
-    return this->MetaData->GetAttributeValue(idx, tag, v);
+    v = this->MetaData->GetAttributeValue(idx, tag);
     }
-
-  return false;
+  return v.IsValid();
 }
 
 bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, unsigned short &u)
@@ -665,7 +665,7 @@ unsigned int Decoder<E>::ReadElementValue(
       {
       // if VR is UN then it is a sequence encoded as implicit LE
       // (see DICOM Part 5, Section 6.2.2, Unknown (UN) Value Representation
-      v.AllocateByteData(vr, 0);
+      v.AllocateUnsignedCharData(vr, 0);
       this->ImplicitLE->SkipElements(
         cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
       return v.GetNumberOfValues();
@@ -688,7 +688,7 @@ unsigned int Decoder<E>::ReadElementValue(
         return 0;
         }
 
-      v.AllocateByteData(vr, 0);
+      v.AllocateUnsignedCharData(vr, 0);
       this->SkipElements(
         cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
       return v.GetNumberOfValues();
@@ -720,15 +720,15 @@ unsigned int Decoder<E>::ReadElementValue(
     {
     case VTK_CHAR:
       {
-      char *ptr = v.AllocateTextData(vr, vl);
+      char *ptr = v.AllocateCharData(vr, vl);
       l = this->ReadData(cp, ep, ptr, vl);
-      // AllocateTextData makes room for terminal null
+      // AllocateCharData makes room for terminal null
       if (l == 0 || ptr[l-1] != '\0') { ptr[l] = '\0'; }
       }
       break;
     case VTK_UNSIGNED_CHAR:
       {
-      unsigned char *ptr = v.AllocateByteData(vr, vl);
+      unsigned char *ptr = v.AllocateUnsignedCharData(vr, vl);
       l = this->ReadData(cp, ep, ptr, vl);
       }
       break;
@@ -742,21 +742,21 @@ unsigned int Decoder<E>::ReadElementValue(
     case VTK_UNSIGNED_SHORT:
       {
       unsigned int n = vl/sizeof(unsigned short);
-      unsigned short *ptr = v.AllocateUShortData(vr, n);
+      unsigned short *ptr = v.AllocateUnsignedShortData(vr, n);
       l = this->ReadData(cp, ep, ptr, n);
       }
       break;
     case VTK_INT:
       {
       unsigned int n = vl/sizeof(int);
-      int *ptr = v.AllocateLongData(vr, n);
+      int *ptr = v.AllocateIntData(vr, n);
       l = this->ReadData(cp, ep, ptr, n);
       }
       break;
     case VTK_UNSIGNED_INT:
       {
       unsigned int n = vl/sizeof(unsigned int);
-      unsigned int *ptr = v.AllocateULongData(vr, n);
+      unsigned int *ptr = v.AllocateUnsignedIntData(vr, n);
       l = this->ReadData(cp, ep, ptr, n);
       }
       break;
@@ -1014,7 +1014,7 @@ bool Decoder<E>::SkipElements(
           // and read the value into "v".
           unsigned int m = static_cast<unsigned int>(cp - sp);
           unsigned int n = v->GetNumberOfValues();
-          unsigned char *ptr = v->ReallocateByteData(n + vl + m) + n;
+          unsigned char *ptr = v->ReallocateUnsignedCharData(n + vl + m) + n;
           if (m) { do { *ptr++ = *sp++; } while (--m); }
           tl = this->ReadData(cp, ep, ptr, vl);
           sp = cp;
@@ -1040,7 +1040,7 @@ bool Decoder<E>::SkipElements(
       {
       // read bytes into the value "v"
       unsigned int n = v->GetNumberOfValues();
-      unsigned char *ptr = v->ReallocateByteData(n + l) + n;
+      unsigned char *ptr = v->ReallocateUnsignedCharData(n + l) + n;
       tl = this->ReadData(cp, ep, ptr, l);
       if (tl != l) { return false; }
       }
@@ -1212,7 +1212,8 @@ bool vtkDICOMParser::ReadMetaHeader(
     decoder.ReadElements(cp, ep, l, vtkDICOMTag(g,0));
 
     int i = (idx == -1 ? 0 : idx);
-    meta->GetAttributeValue(i, DC::TransferSyntaxUID, this->TransferSyntax);
+    this->TransferSyntax =
+      meta->GetAttributeValue(i, DC::TransferSyntaxUID).AsString();
     }
   else
     {

@@ -260,22 +260,25 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
     // Insert the file into the sorted list
     FileInfo fileInfo;
     fileInfo.FileName = fileName;
-    meta->GetAttributeValue(0, DC::StudyInstanceUID, fileInfo.StudyUID);
-    meta->GetAttributeValue(0, DC::SeriesInstanceUID, fileInfo.SeriesUID);
-    meta->GetAttributeValue(0, DC::InstanceNumber, fileInfo.InstanceNumber);
+    fileInfo.StudyUID = meta->GetAttributeValue(DC::StudyInstanceUID);
+    fileInfo.SeriesUID = meta->GetAttributeValue(DC::SeriesInstanceUID);
+    fileInfo.InstanceNumber =
+      meta->GetAttributeValue(DC::InstanceNumber).AsUnsignedInt();
 
-    const char *studyUID = fileInfo.StudyUID.GetTextData();
-    const char *seriesUID = fileInfo.SeriesUID.GetTextData();
+    const char *studyUID = fileInfo.StudyUID.GetCharData();
+    const char *seriesUID = fileInfo.SeriesUID.GetCharData();
+    studyUID = (studyUID ? studyUID : "");
+    seriesUID = (seriesUID ? seriesUID : "");
 
     bool foundSeries = false;
     for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
       {
       // compare studyId first, then seriesId
-      int c1 = this->CompareUIDs(studyUID, (*li)[0].StudyUID.GetTextData());
+      int c1 = this->CompareUIDs(studyUID, (*li)[0].StudyUID.GetCharData());
       int c2 = 0;
       if (c1 == 0)
         {
-        c2 = this->CompareUIDs(seriesUID, (*li)[0].SeriesUID.GetTextData());
+        c2 = this->CompareUIDs(seriesUID, (*li)[0].SeriesUID.GetCharData());
         }
       if (c1 == 0 && c2 == 0)
         {

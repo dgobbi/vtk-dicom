@@ -30,6 +30,12 @@ class vtkDICOMSequenceItem
       while (ptr != &this->Tail) {
         ptr = ptr->Next;
         delete ptr->Prev; } }
+
+
+  //! Get an invalid value
+  const vtkDICOMValue &InvalidValue() {
+    return this->Tail.GetValue(); }
+
   };
 
 public:
@@ -54,7 +60,7 @@ public:
   void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
 
   //! Get a data element from this item.
-  bool GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue& v) const;
+  const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag) const;
 
   //! Get the number of data elements.
   int GetNumberOfDataElements() const {

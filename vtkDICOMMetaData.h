@@ -57,29 +57,25 @@ public:
   //! Erase an attribute.
   void RemoveAttribute(vtkDICOMTag tag);
 
+  //! Get an attribute value.
+  /*!
+   *  The tag will usually be specified in one of these two ways:
+   *  GetAttributeValue(vtkDICOMTag(0x0008,0x1030)) or, using the
+   *  dictionary enum type, GetAttributeValue(DC::StudyDescription).
+   *  If the attribute is not present, then the returned value will
+   *  be invalid, i.e. v.IsValid() will be false.
+   */ 
+  const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag);
+
   //! Get an attribute value for the specified slice index.
   /*!
-   *  The value will be returned in the provided reference argument,
-   *  after conversion to the type of the reference argument.  For
-   *  example, if you supply a string, then numerical attribute values
-   *  will be converted to text and written to the string.  If the
-   *  attribute is stored as a decimal string or integer string, then
-   *  it can be converted to a numerical type.  To get the value without
-   *  any implicit conversion, get it directly as a vtkDICOMValue.
-   *  There are two ways that this method can be called:
-   *  GetAttributeValue(idx, Tag(0x0008,0x1030), v) or, using
-   *  DC::EnumType, GetAttributeValue(idx, DC::StudyDescription, v).
+   *  If this meta data object is used to hold the meta data for
+   *  multiple image instances, then use this method to get an
+   *  attribute value for a specific instance.  If the attribute
+   *  is not present, the value will be invalid, i.e. v.IsValid()
+   *  will be false.
    */
-  bool GetAttributeValue(int idx, vtkDICOMTag tag, vtkDICOMValue& v);
-  bool GetAttributeValue(int idx, vtkDICOMTag tag, short& v);
-  bool GetAttributeValue(int idx, vtkDICOMTag tag, unsigned short& v);
-  bool GetAttributeValue(int idx, vtkDICOMTag tag, int& v);
-  bool GetAttributeValue(int idx, vtkDICOMTag tag, unsigned int& v);
-  bool GetAttributeValue(int idx, vtkDICOMTag tag, float& v);
-  bool GetAttributeValue(int idx, vtkDICOMTag tag, double& v);
-  bool GetAttributeValue(int idx, vtkDICOMTag tag, std::string& v);
-  //bool GetAttributeValue(int idx, vtkDICOMTag tag, vtkMatrix4x4 *v);
-  //bool GetAttributeValue(int idx, vtkDICOMTag tag, vtkAbstractArray *v);
+  const vtkDICOMValue &GetAttributeValue(int idx, vtkDICOMTag tag);
 
   //! Set an attribute value for the image at index "idx".
   /*!
@@ -92,15 +88,11 @@ public:
   void SetAttributeValue(int idx, vtkDICOMTag tag, const vtkDICOMValue& v);
   void SetAttributeValue(int idx, vtkDICOMTag tag, double v);
   void SetAttributeValue(int idx, vtkDICOMTag tag, const std::string& v);
-  //void SetAttributeValue(int idx, vtkDICOMTag tag, vtkMatrix4x4 *v);
-  //void SetAttributeValue(int idx, vtkDICOMTag tag, vtkAbstractArray *v);
 
   //! Set the same attribute value for all images.
   void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
   void SetAttributeValue(vtkDICOMTag tag, double v);
   void SetAttributeValue(vtkDICOMTag tag, const std::string& v);
-  //void SetAttributeValue(vtkDICOMTag tag, vtkMatrix4x4 *v);
-  //void SetAttributeValue(vtkDICOMTag tag, vtkAbstractArray *v);
 
   //! Find the dictionary entry for the given tag.
   static bool FindDictEntry(vtkDICOMTag tag, vtkDICOMDictEntry& e);
@@ -128,7 +120,6 @@ protected:
   void SetAttributeValueT(int idx, vtkDICOMTag tag, T v);
 
 private:
-
   //! The number of DICOM files.
   int NumberOfInstances;
 

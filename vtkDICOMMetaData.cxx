@@ -160,68 +160,18 @@ const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMMetaData::GetAttributeValue(
-  int idx, vtkDICOMTag tag, vtkDICOMValue& v)
+const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(vtkDICOMTag tag)
 {
-  const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tag);
-  if (vptr) { v = *vptr; }
-  return (vptr != 0);
+  const vtkDICOMValue *vptr = this->FindAttributeValue(0, tag);
+  return (vptr ? *vptr : vtkDICOMValue::GetInvalidValue());
 }
 
-bool vtkDICOMMetaData::GetAttributeValue(
-  int idx, vtkDICOMTag tag, short &v)
+//----------------------------------------------------------------------------
+const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
+  int idx, vtkDICOMTag tag)
 {
   const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tag);
-  if (vptr) { vptr->GetValues(&v, 0, 1); }
-  return (vptr != 0);
-}
-
-bool vtkDICOMMetaData::GetAttributeValue(
-  int idx, vtkDICOMTag tag, unsigned short &v)
-{
-  const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tag);
-  if (vptr) { vptr->GetValues(&v, 0, 1); }
-  return (vptr != 0);
-}
-
-bool vtkDICOMMetaData::GetAttributeValue(
-  int idx, vtkDICOMTag tag, int &v)
-{
-  const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tag);
-  if (vptr) { vptr->GetValues(&v, 0, 1); }
-  return (vptr != 0);
-}
-
-bool vtkDICOMMetaData::GetAttributeValue(
-  int idx, vtkDICOMTag tag, unsigned int &v)
-{
-  const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tag);
-  if (vptr) { vptr->GetValues(&v, 0, 1); }
-  return (vptr != 0);
-}
-
-bool vtkDICOMMetaData::GetAttributeValue(
-  int idx, vtkDICOMTag tag, float &v)
-{
-  const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tag);
-  if (vptr) { vptr->GetValues(&v, 0, 1); }
-  return (vptr != 0);
-}
-
-bool vtkDICOMMetaData::GetAttributeValue(
-  int idx, vtkDICOMTag tag, double &v)
-{
-  const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tag);
-  if (vptr) { vptr->GetValues(&v, 0, 1); }
-  return (vptr != 0);
-}
-
-bool vtkDICOMMetaData::GetAttributeValue(
-  int idx, vtkDICOMTag tag, std::string &v)
-{
-  const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tag);
-  if (vptr) { vptr->GetValues(&v, 0, 1); }
-  return (vptr != 0);
+  return (vptr ? *vptr : vtkDICOMValue::GetInvalidValue());
 }
 
 //----------------------------------------------------------------------------
@@ -356,7 +306,7 @@ void vtkDICOMMetaData::SetAttributeValue(
   assert(idx >= 0 && idx < static_cast<int>(vptr->GetNumberOfValues()));
 
   // first value for this attribute
-  if (vptr->IsEmpty())
+  if (!vptr->IsValid())
     {
     *vptr = v;
     return;
@@ -450,9 +400,11 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
     // use the dictionary VR
     if (vr == vtkDICOMVR::XS)
       {
-      unsigned short r;
-      if (this->GetAttributeValue(idx, vtkDICOMTag(0x0028,0x0103), r))
+      const vtkDICOMValue &v = 
+        this->GetAttributeValue(idx, vtkDICOMTag(0x0028,0x0103));
+      if (v.IsValid())
         {
+        unsigned short r = v.AsUnsignedShort();
         vr = (r == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
         }
       else
@@ -463,11 +415,13 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
       }
     else if (vr == vtkDICOMVR::OX)
       {
-      unsigned short s;
       if (tag.GetGroup() == 0x5400)
         {
-        if (this->GetAttributeValue(idx, vtkDICOMTag(0x5400,0x1004), s))
+        const vtkDICOMValue &v =
+          this->GetAttributeValue(idx, vtkDICOMTag(0x5400,0x1004));
+        if (v.IsValid())
           {
+          unsigned short s = v.AsUnsignedShort();
           vr = (s > 8 ? vtkDICOMVR::OW : vtkDICOMVR::OB);
           }
         else
@@ -478,8 +432,11 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
         }
       else
         {
-        if (this->GetAttributeValue(idx, vtkDICOMTag(0x0028,0x0100), s))
+        const vtkDICOMValue &v =
+          this->GetAttributeValue(idx, vtkDICOMTag(0x0028,0x0100));
+        if (v.IsValid())
           {
+          unsigned short s = v.AsUnsignedShort();
           vr = (s > 8 ? vtkDICOMVR::OW : vtkDICOMVR::OB);
           }
         else

@@ -44,7 +44,7 @@ public:
   void SetItem(unsigned int i, const vtkDICOMSequenceItem& item);
 
   //! Get an item from the sequence.
-  const vtkDICOMSequenceItem& GetItem(unsigned int i) const; 
+  const vtkDICOMSequenceItem& GetItem(unsigned int i) const;
 
   //! Use base class copy constructor.
   vtkDICOMSequence(const vtkDICOMSequence& o) : vtkDICOMValue(o) {}

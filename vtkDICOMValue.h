@@ -96,8 +96,8 @@ public:
       this->FreeValue(this->V); }
     this->V = 0; }
 
-  //! Check whether this value is empty.
-  bool IsEmpty() const { return (this->V == 0); }
+  //! Check whether this value is valid, i.e. contains data.
+  bool IsValid() const { return (this->V != 0); }
 
   //! Get the VR, the representation of the data values.
   vtkDICOMVR GetVR() const { return (this->V ? this->V->VR : vtkDICOMVR()); }
@@ -139,9 +139,40 @@ public:
   void GetValues(double *v, unsigned int i, unsigned int n) const;
   void GetValues(std::string *v, unsigned int i, unsigned int n) const;
 
+  //! Get one scalar value or single string from the value.
+  /*!
+   *  Convert the i'th value to the desired type, if possible,
+   *  and returned it.  If the value is invalid, or conversion is
+   *  not possible, or the index is out of range, then the return
+   *  value will be zero (or an empty string).
+   */
+  unsigned char GetUnsignedChar(unsigned int i) const;
+  short GetShort(unsigned int i) const;
+  unsigned short GetUnsignedShort(unsigned int i) const;
+  int GetInt(unsigned int i) const;
+  unsigned int GetUnsignedInt(unsigned int i) const;
+  float GetFloat(unsigned int i) const;
+  double GetDouble(unsigned int i) const;
+  std::string GetString(unsigned int i) const;
+
+  //! Convert the value to a scalar value or string.
+  /*!
+   *  If the NumberOfValues is one, then the value is converted to
+   *  the desired type, if possible, and returned.  Otherwise the
+   *  return value is zero (or an empty string).
+   */
+  unsigned char AsUnsignedChar() const;
+  short AsShort() const;
+  unsigned short AsUnsignedShort() const;
+  int AsInt() const;
+  unsigned int AsUnsignedInt() const;
+  float AsFloat() const;
+  double AsDouble() const;
+  std::string AsString() const;
+
   //! Get a pointer to the internal data array.
   /*!
-   *  GetTextData will return a null-terminated string if VR is
+   *  GetCharData will return a null-terminated string if VR is
    *  AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT,
    *  with a possible trailing space if the VR is not UI (UID).
    *  The other methods will return a valid pointer if the the
@@ -153,12 +184,12 @@ public:
    *  counts as a single value, according to the DICOM standard.
    *  Returns NULL if the requested pointer type does not match the VR.
    */
-  const char *GetTextData() const;
-  const unsigned char *GetByteData() const;
+  const char *GetCharData() const;
+  const unsigned char *GetUnsignedCharData() const;
   const short *GetShortData() const;
-  const unsigned short *GetUShortData() const;
-  const int *GetLongData() const;
-  const unsigned int *GetULongData() const;
+  const unsigned short *GetUnsignedShortData() const;
+  const int *GetIntData() const;
+  const unsigned int *GetUnsignedIntData() const;
   const float *GetFloatData() const;
   const double *GetDoubleData() const;
   const vtkDICOMSequenceItem *GetSequenceData() const;
@@ -171,12 +202,12 @@ public:
    *  within the value object.  This method will not do any checks
    *  to ensure that the data type matches the VR.
    */
-  char *AllocateTextData(vtkDICOMVR vr, unsigned int vn);
-  unsigned char *AllocateByteData(vtkDICOMVR vr, unsigned int vn);
+  char *AllocateCharData(vtkDICOMVR vr, unsigned int vn);
+  unsigned char *AllocateUnsignedCharData(vtkDICOMVR vr, unsigned int vn);
   short *AllocateShortData(vtkDICOMVR vr, unsigned int vn);
-  unsigned short *AllocateUShortData(vtkDICOMVR vr, unsigned int vn);
-  int *AllocateLongData(vtkDICOMVR vr, unsigned int vn);
-  unsigned int *AllocateULongData(vtkDICOMVR vr, unsigned int vn);
+  unsigned short *AllocateUnsignedShortData(vtkDICOMVR vr, unsigned int vn);
+  int *AllocateIntData(vtkDICOMVR vr, unsigned int vn);
+  unsigned int *AllocateUnsignedIntData(vtkDICOMVR vr, unsigned int vn);
   float *AllocateFloatData(vtkDICOMVR vr, unsigned int vn);
   double *AllocateDoubleData(vtkDICOMVR vr, unsigned int vn);
   vtkDICOMSequenceItem *AllocateSequenceData(vtkDICOMVR vr, unsigned int vn);
@@ -189,7 +220,7 @@ public:
    *  the internal data as needed.  After this method is called,
    *  the NumberOfValues will be vn, and the VL will be 0xffffffff.
    */
-  unsigned char *ReallocateByteData(unsigned int vn);
+  unsigned char *ReallocateUnsignedCharData(unsigned int vn);
 
   //! Append value "i" to the supplied string.
   /*!
@@ -199,6 +230,9 @@ public:
    *  long, and might contain special (i.e. non-printable) characters.
    */
   void AppendValueToString(std::string &str, unsigned int i) const;
+
+  static const vtkDICOMValue &GetInvalidValue() {
+    return InvalidValue; }
 
   //! Override assignment operator for reference counting.
   vtkDICOMValue& operator=(const vtkDICOMValue& o) {
@@ -229,6 +263,9 @@ private:
 
   //! The only data member: a pointer to the internal value.
   Value *V;
+
+  //! An invalid value, for when one is needed.
+  static const vtkDICOMValue InvalidValue;
 
   // friend the one subclass.
   friend class vtkDICOMSequence;

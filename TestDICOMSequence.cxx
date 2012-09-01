@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     if (iter->GetTag() == DC::SeriesInstanceUID)
       {
       found1 = true;
-      TestAssert(strcmp(iter->GetValue().GetTextData(),
+      TestAssert(strcmp(iter->GetValue().GetCharData(),
         "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239") == 0);
       }
     // make sure ReferencedInstanceSequence was found
@@ -111,11 +111,11 @@ int main(int argc, char *argv[])
         const vtkDICOMSequenceItem &item = v2.GetItem(j);
         TestAssert(item.GetNumberOfDataElements() == 2);
         vtkDICOMValue v3;
-        item.GetAttributeValue(DC::ReferencedSOPClassUID, v3);
-        TestAssert(strcmp(v3.GetTextData(), "1.2.840.10008.5.1.4.1.1.4") == 0);
-        item.GetAttributeValue(DC::ReferencedSOPInstanceUID, v3);
+        v3 = item.GetAttributeValue(DC::ReferencedSOPClassUID);
+        TestAssert(strcmp(v3.GetCharData(), "1.2.840.10008.5.1.4.1.1.4") == 0);
+        v3 = item.GetAttributeValue(DC::ReferencedSOPInstanceUID);
         sprintf(instanceUID, instanceUIDFormat, 255+j);
-        TestAssert(strcmp(v3.GetTextData(), instanceUID) == 0);
+        TestAssert(strcmp(v3.GetCharData(), instanceUID) == 0);
         }
       }
     fullcount++;
