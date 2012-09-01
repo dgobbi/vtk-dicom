@@ -25,6 +25,7 @@ SET(LIB_SRCS
   vtkDICOMMetaData.cxx
   vtkDICOMDictionary.cxx
   vtkDICOMTag.cxx
+  vtkDICOMTagVector.cxx
   vtkDICOMVR.cxx
   vtkDICOMVM.cxx
   vtkDICOMDataElement.cxx

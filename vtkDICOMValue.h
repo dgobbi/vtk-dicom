@@ -3,6 +3,7 @@
 
 #include <vtkSystemIncludes.h>
 #include "vtkDICOMVR.h"
+#include "vtkDICOMTag.h"
 
 // type constants
 #define VTK_DICOM_ITEM   13
@@ -169,6 +170,7 @@ public:
   float AsFloat() const;
   double AsDouble() const;
   std::string AsString() const;
+  vtkDICOMTag AsTag() const;
 
   //! Get a pointer to the internal data array.
   /*!
@@ -267,8 +269,9 @@ private:
   //! An invalid value, for when one is needed.
   static const vtkDICOMValue InvalidValue;
 
-  // friend the one subclass.
+  // friend the subclasses.
   friend class vtkDICOMSequence;
+  friend class vtkDICOMTagVector;
 };
 
 ostream& operator<<(ostream& os, const vtkDICOMValue& v);

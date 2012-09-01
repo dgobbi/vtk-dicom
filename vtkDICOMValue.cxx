@@ -1070,6 +1070,21 @@ std::string vtkDICOMValue::AsString() const
   return v;
 }
 
+vtkDICOMTag vtkDICOMValue::AsTag() const
+{
+  unsigned int g = 0;
+  unsigned int e = 0;
+  if (this->V && this->V->VR == vtkDICOMVR::AT &&
+      this->V->NumberOfValues == 2)
+    {
+    const unsigned short *p =
+      static_cast<const ValueT<unsigned short> *>(this->V)->Data;
+    e = p[0];
+    g = p[1];
+    }
+  return vtkDICOMTag(g, e);
+}
+
 //----------------------------------------------------------------------------
 // Get one of the backslash-separated substrings, requires a text value.
 void vtkDICOMValue::Substring(
