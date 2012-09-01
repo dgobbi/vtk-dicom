@@ -20,7 +20,7 @@ public:
   vtkDICOMSequence() {}
 
   //! Construct a sequence of fixed size.
-  vtkDICOMSequence(unsigned int n) {
+  explicit vtkDICOMSequence(unsigned int n) {
     if (n) { this->AllocateSequenceData(vtkDICOMVR::SQ, n); } }
 
   //! Add an item to the sequence.
