@@ -1,7 +1,7 @@
-#include "vtkDICOMSequenceItem.h"
+#include "vtkDICOMItem.h"
 
 //----------------------------------------------------------------------------
-void vtkDICOMSequenceItem::CopyList(const List *o, List *t)
+void vtkDICOMItem::CopyList(const List *o, List *t)
 {
   vtkDICOMDataElement *ptr = o->Head.Next;
   while (ptr != &o->Tail)
@@ -19,7 +19,7 @@ void vtkDICOMSequenceItem::CopyList(const List *o, List *t)
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMSequenceItem::SetAttributeValue(
+void vtkDICOMItem::SetAttributeValue(
   vtkDICOMTag tag, const vtkDICOMValue& v)
 {
   // Make a container if we don't have one yet
@@ -65,7 +65,7 @@ void vtkDICOMSequenceItem::SetAttributeValue(
 }
 
 //----------------------------------------------------------------------------
-const vtkDICOMValue &vtkDICOMSequenceItem::GetAttributeValue(
+const vtkDICOMValue &vtkDICOMItem::GetAttributeValue(
   vtkDICOMTag tag) const
 {
   static const vtkDICOMValue InvalidValue;
@@ -87,7 +87,7 @@ const vtkDICOMValue &vtkDICOMSequenceItem::GetAttributeValue(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMSequenceItem::operator==(const vtkDICOMSequenceItem& ob) const
+bool vtkDICOMItem::operator==(const vtkDICOMItem& ob) const
 {
   List *t = this->L;
   List *o = ob.L;

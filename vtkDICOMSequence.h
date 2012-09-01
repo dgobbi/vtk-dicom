@@ -3,7 +3,7 @@
 
 #include "vtkDICOMValue.h"
 
-class vtkDICOMSequenceItem;
+class vtkDICOMItem;
 
 //! A value that is a sequence of items.
 /*!
@@ -29,7 +29,7 @@ public:
    *  the number of items in the sequence, but GetVL() will return
    *  the special value 0xffffffff.
    */
-  void AddItem(const vtkDICOMSequenceItem& item);
+  void AddItem(const vtkDICOMItem& item);
 
   //! Get the number of items in the sequence.
   unsigned int GetNumberOfItems() const {
@@ -41,10 +41,10 @@ public:
    *  This method can only be used if space as been allocated within
    *  the sequence, e.g. by specifying a size when calling the constructor.
    */
-  void SetItem(unsigned int i, const vtkDICOMSequenceItem& item);
+  void SetItem(unsigned int i, const vtkDICOMItem& item);
 
   //! Get an item from the sequence.
-  const vtkDICOMSequenceItem& GetItem(unsigned int i) const;
+  const vtkDICOMItem& GetItem(unsigned int i) const;
 
   //! Use base class copy constructor.
   vtkDICOMSequence(const vtkDICOMSequence& o) : vtkDICOMValue(o) {}

@@ -8,7 +8,7 @@
 #define VTK_DICOM_ITEM   13
 #define VTK_DICOM_VALUE  14
 
-class vtkDICOMSequenceItem;
+class vtkDICOMItem;
 class vtkDICOMSequence;
 
 //! A class to store attribute values for DICOM metadata.
@@ -64,7 +64,7 @@ public:
    *  - OB (other byte) or UN (unknown), use unsigned char.
    *  - OW, use either unsigned short or signed short.
    *  - AT, use two unsigned shorts per tag.
-   *  - SQ, use an array of vtkDICOMSequenceItem values.
+   *  - SQ, use an array of vtkDICOMItem values.
    */
   vtkDICOMValue(vtkDICOMVR vr, const char *data, unsigned int n);
   vtkDICOMValue(vtkDICOMVR vr, const unsigned char *data, unsigned int n);
@@ -75,7 +75,7 @@ public:
   vtkDICOMValue(vtkDICOMVR vr, const float *data, unsigned int n);
   vtkDICOMValue(vtkDICOMVR vr, const double *data, unsigned int n);
   vtkDICOMValue(
-    vtkDICOMVR vr, const vtkDICOMSequenceItem *data, unsigned int n);
+    vtkDICOMVR vr, const vtkDICOMItem *data, unsigned int n);
   vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMValue *data, unsigned int n);
   vtkDICOMValue(vtkDICOMVR vr, double v);
   vtkDICOMValue(vtkDICOMVR vr, const std::string& v);
@@ -192,7 +192,7 @@ public:
   const unsigned int *GetUnsignedIntData() const;
   const float *GetFloatData() const;
   const double *GetDoubleData() const;
-  const vtkDICOMSequenceItem *GetSequenceData() const;
+  const vtkDICOMItem *GetSequenceData() const;
   const vtkDICOMValue *GetMultiplexData() const;
   vtkDICOMValue *GetMultiplexData();
 
@@ -210,7 +210,7 @@ public:
   unsigned int *AllocateUnsignedIntData(vtkDICOMVR vr, unsigned int vn);
   float *AllocateFloatData(vtkDICOMVR vr, unsigned int vn);
   double *AllocateDoubleData(vtkDICOMVR vr, unsigned int vn);
-  vtkDICOMSequenceItem *AllocateSequenceData(vtkDICOMVR vr, unsigned int vn);
+  vtkDICOMItem *AllocateSequenceData(vtkDICOMVR vr, unsigned int vn);
   vtkDICOMValue *AllocateMultiplexData(vtkDICOMVR vr, unsigned int vn);
 
   //! Reallocate data of type OB or UN.

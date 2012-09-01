@@ -1,5 +1,5 @@
 #include "vtkDICOMSequence.h"
-#include "vtkDICOMSequenceItem.h"
+#include "vtkDICOMItem.h"
 #include "vtkDICOMDictionary.h"
 
 #include <sstream>
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
   for (int i = 0; i < 1; i++)
     {
     // add the first data element to the item
-    vtkDICOMSequenceItem item;
+    vtkDICOMItem item;
     item.SetAttributeValue(DC::SeriesInstanceUID,
       vtkDICOMValue(vtkDICOMVR::UI,
         "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
       {
       // create a unique InstanceUID
       sprintf(instanceUID, instanceUIDFormat, 255+j);
-      vtkDICOMSequenceItem item2;
+      vtkDICOMItem item2;
       item2.SetAttributeValue(DC::ReferencedSOPClassUID,
         vtkDICOMValue(vtkDICOMVR::UI, classUID));
       item2.SetAttributeValue(DC::ReferencedSOPInstanceUID,
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
   vtkDICOMDataElementIterator iter;
 
   // use a plain old pointer to go through items in sequence
-  const vtkDICOMSequenceItem *ip1 = seq.GetSequenceData();
+  const vtkDICOMItem *ip1 = seq.GetSequenceData();
 
   // test variables
   bool found1 = false;
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
       for (unsigned int j = 0; j < m; j++)
         {
         // check the two elements in each item
-        const vtkDICOMSequenceItem &item = v2.GetItem(j);
+        const vtkDICOMItem &item = v2.GetItem(j);
         TestAssert(item.GetNumberOfDataElements() == 2);
         vtkDICOMValue v3;
         v3 = item.GetAttributeValue(DC::ReferencedSOPClassUID);

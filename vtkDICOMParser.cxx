@@ -1,7 +1,7 @@
 #include "vtkDICOMParser.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMSequence.h"
-#include "vtkDICOMSequenceItem.h"
+#include "vtkDICOMItem.h"
 
 #include <vtkObjectFactory.h>
 #include <vtkUnsignedShortArray.h>
@@ -83,7 +83,7 @@ public:
   void SetImplicitVR(bool i) { this->ImplicitVR = i; }
 
   // The Item member variable is set while a sequence is decoded.
-  void SetItem(vtkDICOMSequenceItem *i);
+  void SetItem(vtkDICOMItem *i);
 
   // Read l bytes of data, or until delimiter tag found.
   // Set l to 0xffffffff to ignore length completely.
@@ -149,7 +149,7 @@ protected:
   // the vtkDICOMParser::FillBuffer method is used to refill the buffer
   vtkDICOMParser *Parser;
   // the sequence item to read the data into while parsing a sequence
-  vtkDICOMSequenceItem *Item;
+  vtkDICOMItem *Item;
   // the metadata object to read the data into
   vtkDICOMMetaData *MetaData;
   // the instance index to use with the meta data
@@ -313,7 +313,7 @@ private:
 };
 
 //----------------------------------------------------------------------------
-inline void DecoderBase::SetItem(vtkDICOMSequenceItem *i)
+inline void DecoderBase::SetItem(vtkDICOMItem *i)
 {
   // ensure that "Item" is set for the ImplicitLE decoder, too
   this->Item = i;
@@ -791,8 +791,8 @@ unsigned int Decoder<E>::ReadElementValue(
           {
           // read one item
           vtkDICOMTag endtag(HxFFFE, HxE00D);
-          vtkDICOMSequenceItem item;
-          vtkDICOMSequenceItem *olditem = this->Item;
+          vtkDICOMItem item;
+          vtkDICOMItem *olditem = this->Item;
           this->SetItem(&item);
           this->ReadElements(cp, ep, il, endtag, l);
           seq.AddItem(item);

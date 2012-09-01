@@ -31,7 +31,7 @@ SET(LIB_SRCS
   vtkDICOMDictEntry.cxx
   vtkDICOMParser.cxx
   vtkDICOMSequence.cxx
-  vtkDICOMSequenceItem.cxx
+  vtkDICOMItem.cxx
   vtkDICOMSorter.cxx
   vtkDICOMValue.cxx
 )

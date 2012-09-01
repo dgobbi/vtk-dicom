@@ -1,9 +1,9 @@
 #include "vtkDICOMSequence.h"
-#include "vtkDICOMSequenceItem.h"
+#include "vtkDICOMItem.h"
 
 #include <assert.h>
 
-void vtkDICOMSequence::AddItem(const vtkDICOMSequenceItem& item)
+void vtkDICOMSequence::AddItem(const vtkDICOMItem& item)
 {
   // if value is not a sequence, make it into a sequence
   if (this->V == 0 || this->V->Type != VTK_DICOM_ITEM)
@@ -13,8 +13,8 @@ void vtkDICOMSequence::AddItem(const vtkDICOMSequenceItem& item)
     this->V->VL = 0xffffffff;
     }
 
-  vtkDICOMSequenceItem *ptr =
-    static_cast<const ValueT<vtkDICOMSequenceItem> *>(this->V)->Data;
+  vtkDICOMItem *ptr =
+    static_cast<const ValueT<vtkDICOMItem> *>(this->V)->Data;
 
   unsigned int n = this->V->NumberOfValues;
   unsigned int nn = 0;
@@ -35,7 +35,7 @@ void vtkDICOMSequence::AddItem(const vtkDICOMSequenceItem& item)
     {
     Value *v = this->V;
     v->ReferenceCount++;
-    const vtkDICOMSequenceItem *cptr = ptr;
+    const vtkDICOMItem *cptr = ptr;
     ptr = this->AllocateSequenceData(vtkDICOMVR::SQ, nn);
     this->V->NumberOfValues = n;
     for (unsigned int i = 0; i < n; i++)
@@ -55,19 +55,19 @@ void vtkDICOMSequence::AddItem(const vtkDICOMSequenceItem& item)
 }
 
 void vtkDICOMSequence::SetItem(
-  unsigned int i, const vtkDICOMSequenceItem& item)
+  unsigned int i, const vtkDICOMItem& item)
 {
   assert(this->V != 0 && this->V->Type == VTK_DICOM_ITEM);
   assert(i < this->V->NumberOfValues);
 
-  vtkDICOMSequenceItem *ptr =
-    static_cast<const ValueT<vtkDICOMSequenceItem> *>(this->V)->Data;
+  vtkDICOMItem *ptr =
+    static_cast<const ValueT<vtkDICOMItem> *>(this->V)->Data;
 
   // reallocate the array if we aren't the sole owner
   if (this->V->ReferenceCount > 1)
     {
     unsigned int m = this->V->NumberOfValues;
-    const vtkDICOMSequenceItem *cptr = ptr;
+    const vtkDICOMItem *cptr = ptr;
     ptr = this->AllocateSequenceData(vtkDICOMVR::SQ, m);
     for (unsigned int j = 0; j < m; j++)
       {
@@ -78,13 +78,13 @@ void vtkDICOMSequence::SetItem(
   ptr[i] = item;
 }
 
-const vtkDICOMSequenceItem &vtkDICOMSequence::GetItem(unsigned int i) const
+const vtkDICOMItem &vtkDICOMSequence::GetItem(unsigned int i) const
 {
   assert(this->V != 0 && this->V->Type == VTK_DICOM_ITEM);
   assert(i < this->V->NumberOfValues);
 
-  vtkDICOMSequenceItem *ptr =
-    static_cast<const ValueT<vtkDICOMSequenceItem> *>(this->V)->Data;
+  vtkDICOMItem *ptr =
+    static_cast<const ValueT<vtkDICOMItem> *>(this->V)->Data;
 
   return ptr[i];
 }

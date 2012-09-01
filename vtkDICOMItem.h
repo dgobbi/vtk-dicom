@@ -1,5 +1,5 @@
-#ifndef __vtkDICOMSequenceItem_h
-#define __vtkDICOMSequenceItem_h
+#ifndef __vtkDICOMItem_h
+#define __vtkDICOMItem_h
 
 #include "vtkDICOMDataElement.h"
 
@@ -9,7 +9,7 @@
  *  essentially a data set of its own.  An item consists of
  *  zero or more data elements, each with a tag and value.
  */
-class vtkDICOMSequenceItem
+class vtkDICOMItem
 {
   //! A reference counted list container class.
   struct List
@@ -39,14 +39,14 @@ class vtkDICOMSequenceItem
   };
 
 public:
-  vtkDICOMSequenceItem() : L(0) {}
+  vtkDICOMItem() : L(0) {}
 
   //! Copy constructor does reference counting.
-  vtkDICOMSequenceItem(const vtkDICOMSequenceItem &o) : L(o.L) {
+  vtkDICOMItem(const vtkDICOMItem &o) : L(o.L) {
     if (this->L) { this->L->ReferenceCount++; } }
 
   //! Destructor does reference counting.
-  ~vtkDICOMSequenceItem() { this->Clear(); }
+  ~vtkDICOMItem() { this->Clear(); }
 
   //! Clear the data.
   void Clear() {
@@ -74,12 +74,12 @@ public:
   vtkDICOMDataElementIterator GetDataEnd() const {
     return (this->L ? &this->L->Tail : 0); }
 
-  bool operator==(const vtkDICOMSequenceItem& o) const;
-  bool operator!=(const vtkDICOMSequenceItem& o) const {
+  bool operator==(const vtkDICOMItem& o) const;
+  bool operator!=(const vtkDICOMItem& o) const {
     return !(*this == o); }
 
   //! Assignment operator does reference counting.
-  vtkDICOMSequenceItem &operator=(const vtkDICOMSequenceItem &o) {
+  vtkDICOMItem &operator=(const vtkDICOMItem &o) {
     if (this->L != o.L) {
       if (o.L) { o.L->ReferenceCount++; }
       if (this->L && --this->L->ReferenceCount == 0) { delete this->L; }
@@ -93,4 +93,4 @@ private:
   List *L;
 };
 
-#endif /* __vtkDICOMSequenceItem_h */
+#endif /* __vtkDICOMItem_h */

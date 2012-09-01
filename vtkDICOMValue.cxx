@@ -1,5 +1,5 @@
 #include "vtkDICOMValue.h"
-#include "vtkDICOMSequenceItem.h"
+#include "vtkDICOMItem.h"
 
 #include <vtkTypeTraits.h>
 
@@ -131,7 +131,7 @@ vtkDICOMValue::ValueTN<char,24>::ValueTN(vtkDICOMVR vr, unsigned int vn)
 
 // Construct a sequence of items.
 template<>
-vtkDICOMValue::ValueTN<vtkDICOMSequenceItem,1>::ValueTN(
+vtkDICOMValue::ValueTN<vtkDICOMItem,1>::ValueTN(
   vtkDICOMVR vr, unsigned int vn)
 {
   this->VR = vr; // better be SQ
@@ -142,7 +142,7 @@ vtkDICOMValue::ValueTN<vtkDICOMSequenceItem,1>::ValueTN(
   this->Data = this->LocalData;
   if (vn > 0)
     {
-    this->Data = new vtkDICOMSequenceItem[vn];
+    this->Data = new vtkDICOMItem[vn];
     }
 }
 
@@ -230,12 +230,12 @@ double *vtkDICOMValue::AllocateDoubleData(vtkDICOMVR vr, unsigned int vn)
   return v->Data;
 }
 
-vtkDICOMSequenceItem *vtkDICOMValue::AllocateSequenceData(
+vtkDICOMItem *vtkDICOMValue::AllocateSequenceData(
   vtkDICOMVR vr, unsigned int vn)
 {
   this->Clear();
-  ValueTN<vtkDICOMSequenceItem,1> *v =
-    new ValueTN<vtkDICOMSequenceItem,1>(vr, vn);
+  ValueTN<vtkDICOMItem,1> *v =
+    new ValueTN<vtkDICOMItem,1>(vr, vn);
   this->V = v;
   return v->Data;
 }
@@ -519,11 +519,11 @@ void vtkDICOMValue::CreateValue<char>(
 }
 
 template<>
-void vtkDICOMValue::CreateValue<vtkDICOMSequenceItem>(
-  vtkDICOMVR vr, const vtkDICOMSequenceItem *data, unsigned int n)
+void vtkDICOMValue::CreateValue<vtkDICOMItem>(
+  vtkDICOMVR vr, const vtkDICOMItem *data, unsigned int n)
 {
-  ValueTN<vtkDICOMSequenceItem,1> *v =
-    new ValueTN<vtkDICOMSequenceItem,1>(vr, n);
+  ValueTN<vtkDICOMItem,1> *v =
+    new ValueTN<vtkDICOMItem,1>(vr, n);
 
   for (unsigned int j = 0; j < n; j++)
     {
@@ -602,7 +602,7 @@ vtkDICOMValue::vtkDICOMValue(
 }
 
 vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const vtkDICOMSequenceItem *data, unsigned int n)
+  vtkDICOMVR vr, const vtkDICOMItem *data, unsigned int n)
 {
   this->CreateValue(vr, data, n);
 }
@@ -657,7 +657,7 @@ void vtkDICOMValue::FreeValue(Value *v)
         delete [] static_cast<ValueT<double> *>(v)->Data;
         break;
       case VTK_DICOM_ITEM:
-        delete [] static_cast<ValueT<vtkDICOMSequenceItem> *>(v)->Data;
+        delete [] static_cast<ValueT<vtkDICOMItem> *>(v)->Data;
         break;
       case VTK_DICOM_VALUE:
         delete [] static_cast<ValueT<vtkDICOMValue> *>(v)->Data;
@@ -767,12 +767,12 @@ const double *vtkDICOMValue::GetDoubleData() const
   return ptr;
 }
 
-const vtkDICOMSequenceItem *vtkDICOMValue::GetSequenceData() const
+const vtkDICOMItem *vtkDICOMValue::GetSequenceData() const
 {
-  const vtkDICOMSequenceItem *ptr = 0;
+  const vtkDICOMItem *ptr = 0;
   if (this->V && this->V->Type == VTK_DICOM_ITEM)
     {
-    ptr = static_cast<const ValueT<vtkDICOMSequenceItem> *>(this->V)->Data;
+    ptr = static_cast<const ValueT<vtkDICOMItem> *>(this->V)->Data;
     }
   return ptr;
 }
@@ -1268,17 +1268,17 @@ bool vtkDICOMValue::ValueT<T>::Compare(const Value *a, const Value *b)
 }
 
 template<>
-bool vtkDICOMValue::ValueT<vtkDICOMSequenceItem>::Compare(
+bool vtkDICOMValue::ValueT<vtkDICOMItem>::Compare(
   const Value *a, const Value *b)
 {
   bool r = true;
   unsigned int n = a->NumberOfValues; // do not use VL/sizeof()
   if (n != 0)
     {
-    const vtkDICOMSequenceItem *ap =
-      static_cast<const ValueT<vtkDICOMSequenceItem> *>(a)->Data;
-    const vtkDICOMSequenceItem *bp =
-      static_cast<const ValueT<vtkDICOMSequenceItem> *>(b)->Data;
+    const vtkDICOMItem *ap =
+      static_cast<const ValueT<vtkDICOMItem> *>(a)->Data;
+    const vtkDICOMItem *bp =
+      static_cast<const ValueT<vtkDICOMItem> *>(b)->Data;
     do { r &= (*ap++ == *bp++); } while (r && --n);
     }
   return r;
@@ -1338,7 +1338,7 @@ bool vtkDICOMValue::operator==(const vtkDICOMValue& o) const
             r = ValueT<double>::Compare(a, b);
             break;
           case VTK_DICOM_ITEM:
-            r = ValueT<vtkDICOMSequenceItem>::Compare(a, b);
+            r = ValueT<vtkDICOMItem>::Compare(a, b);
             break;
           case VTK_DICOM_VALUE:
             r = ValueT<vtkDICOMValue>::Compare(a, b);

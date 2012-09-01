@@ -38,7 +38,7 @@ private:
   // the classes that need to manipulate lists of elements
   friend class vtkDICOMDataElementIterator;
   friend class vtkDICOMMetaData;
-  friend class vtkDICOMSequenceItem;
+  friend class vtkDICOMItem;
 };
 
 //! A const iterator for a vtkDataElement list.
@@ -81,7 +81,7 @@ private:
   const vtkDICOMDataElement *Pointer;
 
   friend class vtkDICOMMetaData;
-  friend class vtkDICOMSequenceItem;
+  friend class vtkDICOMItem;
 };
 
 ostream& operator<<(ostream& os, const vtkDICOMDataElement& v);
