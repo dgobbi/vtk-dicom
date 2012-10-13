@@ -21,7 +21,7 @@ public:
   //! Construct a tag list of fixed size.
   explicit vtkDICOMTagVector(unsigned int n) {
     unsigned int m = 1;
-    while (m < n) { m <<= 1; } 
+    while (m < n) { m <<= 1; }
     this->AllocateUnsignedShortData(vtkDICOMVR::AT, 2*m);
     this->V->NumberOfValues = 2*m;
     this->V->VL = 4*m; }

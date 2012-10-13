@@ -64,7 +64,7 @@ public:
    *  dictionary enum type, GetAttributeValue(DC::StudyDescription).
    *  If the attribute is not present, then the returned value will
    *  be invalid, i.e. v.IsValid() will be false.
-   */ 
+   */
   const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag);
 
   //! Get an attribute value for the specified slice index.

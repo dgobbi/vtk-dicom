@@ -58,8 +58,8 @@ int main(int argc, char *argv[])
   TestAssert(v.GetVL() == 12);
   TestAssert(strcmp(v.GetCharData(), "1\\3\\-2\\60\\13") == 0);
   // string values converted to numbers
-  static const char *flts = "1\\2.5\\-1e-5\\-4.23460975"; 
-  static const float flt[4] = { 1.0f, 2.5f, -1e-5f, -4.23460975f }; 
+  static const char *flts = "1\\2.5\\-1e-5\\-4.23460975";
+  static const float flt[4] = { 1.0f, 2.5f, -1e-5f, -4.23460975f };
   v = vtkDICOMValue(vtkDICOMVR::FL, flts, strlen(flts));
   TestAssert(v.GetNumberOfValues() == 4);
   TestAssert(v.GetVL() == 16);
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 
   { // test getting numerical values
   vtkDICOMValue v;
-  static const float flt1[2] = { 1.0f, 2.5f }; 
+  static const float flt1[2] = { 1.0f, 2.5f };
   float flt2[2];
   short shrt[2];
   // store floats as doubles with VR=FD
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
   { // test getting text values
   vtkDICOMValue v;
   std::string sa[2];
-  static const float flt1[2] = { 1.0f, 2.5f }; 
+  static const float flt1[2] = { 1.0f, 2.5f };
   // store floats as doubles with VR=FD
   v = vtkDICOMValue(vtkDICOMVR::FD, flt1, 2);
   v.GetValues(sa, 0, 2);
@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
 
   { // test allowed range of decimal strings
   vtkDICOMValue v;
-  static const double dbl[4] = { 1e200, -1e200, 1e-200, -1e-200 }; 
+  static const double dbl[4] = { 1e200, -1e200, 1e-200, -1e-200 };
   static const char *dblt = "9.999999999e+99\\-9.999999999e+99\\0\\0";
   v = vtkDICOMValue(vtkDICOMVR::DS, dbl, 4);
   TestAssert(strcmp(v.GetCharData(), dblt) == 0);
@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
   { // test stream operator
   std::stringstream os;
   vtkDICOMValue v;
-  static const float flt1[2] = { 1.0f, 2.5f }; 
+  static const float flt1[2] = { 1.0f, 2.5f };
   // print the invalid value
   os << v;
   TestAssert(os.str() == "empty[0]");

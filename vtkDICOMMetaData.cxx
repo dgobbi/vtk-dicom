@@ -243,7 +243,7 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
     tptr = tptr->Prev;
     }
   while (tag < tptr->GetTag());
-  
+
   hptr->Prev = tptr;
   hptr->Next = tptr->Next;
   hptr->Prev->Next = hptr;
@@ -400,7 +400,7 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
     // use the dictionary VR
     if (vr == vtkDICOMVR::XS)
       {
-      const vtkDICOMValue &v = 
+      const vtkDICOMValue &v =
         this->GetAttributeValue(idx, vtkDICOMTag(0x0028,0x0103));
       if (v.IsValid())
         {
