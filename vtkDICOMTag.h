@@ -27,45 +27,31 @@ public:
   unsigned short GetElement() const { return this->Element; }
 
   //! Compute a hash value, used for accelerating lookups.
-  unsigned int ComputeHash() const
-  {
+  unsigned int ComputeHash() const {
     return (((this->Group >> 6) ^ this->Group) ^
-            ((this->Element >> 6) ^ this->Element));
-  }
+            ((this->Element >> 6) ^ this->Element)); }
 
-  inline bool operator==(const vtkDICOMTag& b) const
-  {
-    return (this->Group == b.Group && this->Element == b.Element);
-  }
+  bool operator==(const vtkDICOMTag& b) const {
+    return (this->Group == b.Group && this->Element == b.Element); }
 
-  inline bool operator!=(const vtkDICOMTag& b) const
-  {
-    return (this->Group != b.Group || this->Element != b.Element);
-  }
+  bool operator!=(const vtkDICOMTag& b) const {
+    return (this->Group != b.Group || this->Element != b.Element); }
 
-  inline bool operator<=(const vtkDICOMTag& b) const
-  {
+  bool operator<=(const vtkDICOMTag& b) const {
     return (static_cast<unsigned int>((this->Group << 16) | this->Element) <=
-            static_cast<unsigned int>((b.Group << 16) | b.Element));
-  }
+            static_cast<unsigned int>((b.Group << 16) | b.Element)); }
 
-  inline bool operator>=(const vtkDICOMTag& b) const
-  {
+  bool operator>=(const vtkDICOMTag& b) const {
     return (static_cast<unsigned int>((this->Group << 16) | this->Element) >=
-            static_cast<unsigned int>((b.Group << 16) | b.Element));
-  }
+            static_cast<unsigned int>((b.Group << 16) | b.Element)); }
 
-  inline bool operator<(const vtkDICOMTag& b) const
-  {
+  bool operator<(const vtkDICOMTag& b) const {
     return (static_cast<unsigned int>((this->Group << 16) | this->Element) <
-            static_cast<unsigned int>((b.Group << 16) | b.Element));
-  }
+            static_cast<unsigned int>((b.Group << 16) | b.Element)); }
 
-  inline bool operator>(const vtkDICOMTag& b) const
-  {
+  bool operator>(const vtkDICOMTag& b) const {
     return (static_cast<unsigned int>((this->Group << 16) | this->Element) >
-            static_cast<unsigned int>((b.Group << 16) | b.Element));
-  }
+            static_cast<unsigned int>((b.Group << 16) | b.Element)); }
 
 private:
   unsigned short Group;
