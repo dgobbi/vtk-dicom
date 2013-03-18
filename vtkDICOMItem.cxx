@@ -68,8 +68,6 @@ void vtkDICOMItem::SetAttributeValue(
 const vtkDICOMValue &vtkDICOMItem::GetAttributeValue(
   vtkDICOMTag tag) const
 {
-  static const vtkDICOMValue InvalidValue;
-
   if (this->L)
     {
     vtkDICOMDataElement *e = this->L->Head.Next;

@@ -30,12 +30,6 @@ class vtkDICOMItem
       while (ptr != &this->Tail) {
         ptr = ptr->Next;
         delete ptr->Prev; } }
-
-
-  //! Get an invalid value
-  const vtkDICOMValue &InvalidValue() {
-    return this->Tail.GetValue(); }
-
   };
 
 public:
