@@ -8,56 +8,47 @@
 class vtkDICOMTag
 {
 public:
-  vtkDICOMTag() : Group(0), Element(0) {}
+  vtkDICOMTag() : Key(0) {}
 
   //! Construct a tag from group, element numbers.
-  vtkDICOMTag(int group, int element) :
-    Group(static_cast<unsigned short>(group)) ,
-    Element(static_cast<unsigned short>(element)) {}
+  vtkDICOMTag(int group, int element) : Key((group << 16) | element) {}
 
   //! Construct a tag from an identifier from the DICOM dictionary.
-  vtkDICOMTag(DC::EnumType tag) :
-    Group(static_cast<unsigned short>(tag >> 16)) ,
-    Element(static_cast<unsigned short>(tag)) {}
+  vtkDICOMTag(DC::EnumType tag) : Key(tag) {}
 
   //! Get the 16-bit group identifier.
-  unsigned short GetGroup() const { return this->Group; }
+  unsigned short GetGroup() const {
+    return static_cast<unsigned short>(this->Key >> 16); }
 
   //! Get the 16-bit element identifier.
-  unsigned short GetElement() const { return this->Element; }
+  unsigned short GetElement() const {
+    return static_cast<unsigned short>(this->Key); }
 
   //! Compute a hash value, used for accelerating lookups.
   unsigned int ComputeHash() const {
-    return (((this->Group >> 6) ^ this->Group) ^
-            ((this->Element >> 6) ^ this->Element)); }
+    unsigned int h = (((this->Key >> 6) & 0xFFFF03FF) ^ this->Key);
+    return (h ^ (h >> 16)); }
 
   bool operator==(const vtkDICOMTag& b) const {
-    return (this->Group == b.Group && this->Element == b.Element); }
+    return (this->Key == b.Key); }
 
   bool operator!=(const vtkDICOMTag& b) const {
-    return (this->Group != b.Group || this->Element != b.Element); }
+    return (this->Key != b.Key); }
 
   bool operator<=(const vtkDICOMTag& b) const {
-    return (static_cast<unsigned int>((this->Group << 16) | this->Element) <=
-            static_cast<unsigned int>((b.Group << 16) | b.Element)); }
+    return (this->Key <= b.Key); }
 
   bool operator>=(const vtkDICOMTag& b) const {
-    return (static_cast<unsigned int>((this->Group << 16) | this->Element) >=
-            static_cast<unsigned int>((b.Group << 16) | b.Element)); }
+    return (this->Key >= b.Key); }
 
   bool operator<(const vtkDICOMTag& b) const {
-    return (static_cast<unsigned int>((this->Group << 16) | this->Element) <
-            static_cast<unsigned int>((b.Group << 16) | b.Element)); }
+    return (this->Key < b.Key); }
 
   bool operator>(const vtkDICOMTag& b) const {
-    return (static_cast<unsigned int>((this->Group << 16) | this->Element) >
-            static_cast<unsigned int>((b.Group << 16) | b.Element)); }
+    return (this->Key > b.Key); }
 
 private:
-  unsigned short Group;
-  unsigned short Element;
-
-  friend ostream& operator<<(ostream& o, const vtkDICOMTag& a);
+  unsigned int Key;
 };
 
 ostream& operator<<(ostream& o, const vtkDICOMTag& a);

@@ -7,7 +7,9 @@ ostream& operator<<(ostream& o, const vtkDICOMTag& a)
   // require including iomanip.h
 
   char text[12];
-  int t[2] = { a.GetGroup(), a.GetElement() };
+  int t[2];
+  t[0] = a.GetGroup();
+  t[1] = a.GetElement();
   char *cp = text;
   *cp++ = '(';
   for (int j = 0; j < 2; j++)
