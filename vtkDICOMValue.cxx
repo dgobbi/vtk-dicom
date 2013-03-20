@@ -4,6 +4,7 @@
 #include <vtkTypeTraits.h>
 
 #include <math.h>
+#include <float.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <assert.h>
