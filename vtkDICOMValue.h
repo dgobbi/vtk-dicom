@@ -26,9 +26,8 @@ class vtkDICOMValue
   struct Value
   {
     unsigned int   ReferenceCount;
-    vtkDICOMVR     VR;
     unsigned char  Type;
-    unsigned char  NeedsFree;
+    vtkDICOMVR     VR;
     unsigned int   VL;
     unsigned int   NumberOfValues;
 
@@ -39,18 +38,10 @@ class vtkDICOMValue
   template<class T>
   struct ValueT : Value
   {
-    T *Data;
+    T Data[1];
 
+    ValueT(vtkDICOMVR vr, unsigned int vn);
     static bool Compare(const Value *a, const Value *b);
-  };
-
-  //! The value class, subclassed to support local value storage.
-  template<class T, unsigned int N>
-  struct ValueTN : ValueT<T>
-  {
-    T LocalData[N];
-
-    ValueTN(vtkDICOMVR vr, unsigned int vl);
   };
 
 public:
@@ -75,8 +66,7 @@ public:
   vtkDICOMValue(vtkDICOMVR vr, const unsigned int *data, unsigned int n);
   vtkDICOMValue(vtkDICOMVR vr, const float *data, unsigned int n);
   vtkDICOMValue(vtkDICOMVR vr, const double *data, unsigned int n);
-  vtkDICOMValue(
-    vtkDICOMVR vr, const vtkDICOMItem *data, unsigned int n);
+  vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMItem *data, unsigned int n);
   vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMValue *data, unsigned int n);
   vtkDICOMValue(vtkDICOMVR vr, double v);
   vtkDICOMValue(vtkDICOMVR vr, const std::string& v);
@@ -249,6 +239,10 @@ public:
   bool operator!=(const vtkDICOMValue& o) const { return !(*this == o); }
 
 private:
+  //! Allocate an array of size vn for the specified vr
+  template<class T>
+  T *Allocate(vtkDICOMVR vr, unsigned int vn);
+
   //! Free the internal value.
   static void FreeValue(Value *v);
 

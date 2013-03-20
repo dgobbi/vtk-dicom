@@ -5,6 +5,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <assert.h>
 
 //----------------------------------------------------------------------------
@@ -68,185 +69,156 @@ void StringConversion(
 
 //----------------------------------------------------------------------------
 // Construct a numerical value.
-template<class T, unsigned int N>
-vtkDICOMValue::ValueTN<T,N>::ValueTN(vtkDICOMVR vr, unsigned int vn)
+template<class T>
+vtkDICOMValue::ValueT<T>::ValueT(vtkDICOMVR vr, unsigned int vn)
 {
   this->VR = vr;
   this->Type = static_cast<unsigned char>(vtkTypeTraits<T>::VTKTypeID());
-  this->NeedsFree = 0;
   this->VL = vn*sizeof(T);
   this->NumberOfValues = vn;
-  this->Data = this->LocalData;
-  int pad = (this->VL & 1);
-  this->VL += pad;
-
-  // clear the local array, just be tidy
-  for (unsigned int j = 0; j < N; j++)
-    {
-    this->LocalData[j] = 0;
-    }
-
-  // if local array is too small for the data, then allocate an array
-  if (vn > N)
-    {
-    this->Data = new T[vn + pad];
-    this->NeedsFree = 1;
-    }
 }
 
-// Construct a string value, always with 24 bytes of local storage.
+// Construct a string value.
 template<>
-vtkDICOMValue::ValueTN<char,24>::ValueTN(vtkDICOMVR vr, unsigned int vn)
+vtkDICOMValue::ValueT<char>::ValueT(vtkDICOMVR vr, unsigned int vn)
 {
-  int pad = (vn & 1);
   this->VR = vr;
   this->Type = VTK_CHAR;
-  this->NeedsFree = 0;
-  this->VL = vn + pad;
+  this->VL = vn + (vn & 1); // pad VL to make it even
   this->NumberOfValues = 1;
-  this->Data = this->LocalData;
+}
 
-  const unsigned int N = 24;
-
-  // clear the array variable, just to be tidy
-  for (unsigned int j = 0; j < N; j++)
-    {
-    this->LocalData[j] = 0;
-    }
-
-  // UI can be even-padded with null, others are even-padded with
-  // space so they might need a null in addition to the padding
-  if (vr != vtkDICOMVR::UI)
-    {
-    vn = this->VL;
-    }
-
-  // allocate enough space for a terminating null byte
-  if (vn + 1 > N)
-    {
-    this->Data = new char[vn + 1];
-    this->NeedsFree = 1;
-    }
+// Construct a "bytes" value.
+template<>
+vtkDICOMValue::ValueT<unsigned char>::ValueT(vtkDICOMVR vr, unsigned int vn)
+{
+  this->VR = vr;
+  this->Type = VTK_UNSIGNED_CHAR;
+  this->VL = vn + (vn & 1); // pad VL to make it even
+  this->NumberOfValues = vn;
 }
 
 // Construct a sequence of items.
 template<>
-vtkDICOMValue::ValueTN<vtkDICOMItem,1>::ValueTN(
-  vtkDICOMVR vr, unsigned int vn)
+vtkDICOMValue::ValueT<vtkDICOMItem>::ValueT(vtkDICOMVR vr, unsigned int vn)
 {
   this->VR = vr; // better be SQ
   this->Type = VTK_DICOM_ITEM;
-  this->NeedsFree = (vn != 0);
   this->VL = 0;
   this->NumberOfValues = vn;
-  this->Data = this->LocalData;
-  if (vn > 0)
+  vtkDICOMItem *dp = this->Data;
+  for (unsigned int i = 0; i < vn; i++)
     {
-    this->Data = new vtkDICOMItem[vn];
+    // call constructor manually with placement new
+    new(dp) vtkDICOMItem();
+    dp++;
     }
 }
 
 // Construct a list of values.
 template<>
-vtkDICOMValue::ValueTN<vtkDICOMValue,1>::ValueTN(
-  vtkDICOMVR vr, unsigned int vn)
+vtkDICOMValue::ValueT<vtkDICOMValue>::ValueT(vtkDICOMVR vr, unsigned int vn)
 {
   this->VR = vr;
   this->Type = VTK_DICOM_VALUE;
-  this->NeedsFree = 1; // always dynamically allocate
   this->VL = 0;
   this->NumberOfValues = vn;
-  this->Data = this->LocalData;
-  if (vn > 0)
+  vtkDICOMValue *dp = this->Data;
+  for (unsigned int i = 0; i < vn; i++)
     {
-    this->Data = new vtkDICOMValue[vn];
+    // call constructor manually with placement new
+    new(dp) vtkDICOMValue();
+    dp++;
     }
 }
 
 //----------------------------------------------------------------------------
-char *vtkDICOMValue::AllocateCharData(vtkDICOMVR vr, unsigned int vn)
+template<class T>
+T *vtkDICOMValue::Allocate(vtkDICOMVR vr, unsigned int vn)
 {
   this->Clear();
-  ValueTN<char,24> *v = new ValueTN<char,24>(vr, vn);
+  // Use C++ "placement new" to allocate a single block of memory that
+  // includes both the Value struct and the array of values.
+  void *vp = malloc(sizeof(Value) + vn*sizeof(T));
+  ValueT<T> *v = new(vp) ValueT<T>(vr, vn);
+  // Test the assumption that Data is at an offset of sizeof(Value)
+  assert(static_cast<char *>(static_cast<void *>(v->Data)) ==
+         static_cast<char *>(vp) + sizeof(Value));
   this->V = v;
   return v->Data;
 }
 
-unsigned char *vtkDICOMValue::AllocateUnsignedCharData(vtkDICOMVR vr, unsigned int vn)
+template<>
+char *vtkDICOMValue::Allocate<char>(vtkDICOMVR vr, unsigned int vn)
 {
   this->Clear();
-  ValueTN<unsigned char,24> *v = new ValueTN<unsigned char,24>(vr, vn);
+  // Strings of any type other than UI will be padded with spaces to
+  // give an even number of chars.  All strings (including UI) need one
+  // extra char for the null terminator to make them valid C strings.
+  unsigned int pad = (vn & (vr != vtkDICOMVR::UI));
+  // Use C++ "placement new" to allocate a single block of memory that
+  // includes both the Value struct and the array of values.
+  void *vp = malloc(sizeof(Value) + vn + pad + 1);
+  ValueT<char> *v = new(vp) ValueT<char>(vr, vn);
+  // Test the assumption that Data is at an offset of sizeof(Value)
+  assert(v->Data == static_cast<char *>(vp) + sizeof(Value));
   this->V = v;
   return v->Data;
+}
+
+char *vtkDICOMValue::AllocateCharData(vtkDICOMVR vr, unsigned int vn)
+{
+  return this->Allocate<char>(vr, vn);
+}
+
+unsigned char *vtkDICOMValue::AllocateUnsignedCharData(
+  vtkDICOMVR vr, unsigned int vn)
+{
+  return this->Allocate<unsigned char>(vr, vn);
 }
 
 short *vtkDICOMValue::AllocateShortData(vtkDICOMVR vr, unsigned int vn)
 {
-  this->Clear();
-  ValueTN<short,12> *v = new ValueTN<short,12>(vr, vn);
-  this->V = v;
-  return v->Data;
+  return this->Allocate<short>(vr, vn);
 }
 
 unsigned short *vtkDICOMValue::AllocateUnsignedShortData(
   vtkDICOMVR vr, unsigned int vn)
 {
-  this->Clear();
-  ValueTN<unsigned short,12> *v = new ValueTN<unsigned short,12>(vr, vn);
-  this->V = v;
-  return v->Data;
+  return this->Allocate<unsigned short>(vr, vn);
 }
 
 int *vtkDICOMValue::AllocateIntData(vtkDICOMVR vr, unsigned int vn)
 {
-  this->Clear();
-  ValueTN<int,6> *v = new ValueTN<int,6>(vr, vn);
-  this->V = v;
-  return v->Data;
+  return this->Allocate<int>(vr, vn);
 }
 
 unsigned int *vtkDICOMValue::AllocateUnsignedIntData(
   vtkDICOMVR vr, unsigned int vn)
 {
-  this->Clear();
-  ValueTN<unsigned int,6> *v = new ValueTN<unsigned int,6>(vr, vn);
-  this->V = v;
-  return v->Data;
+  return this->Allocate<unsigned int>(vr, vn);
 }
 
 float *vtkDICOMValue::AllocateFloatData(vtkDICOMVR vr, unsigned int vn)
 {
-  this->Clear();
-  ValueTN<float,6> *v = new ValueTN<float,6>(vr, vn);
-  this->V = v;
-  return v->Data;
+  return this->Allocate<float>(vr, vn);
 }
 
 double *vtkDICOMValue::AllocateDoubleData(vtkDICOMVR vr, unsigned int vn)
 {
-  this->Clear();
-  ValueTN<double,3> *v = new ValueTN<double,3>(vr, vn);
-  this->V = v;
-  return v->Data;
+  return this->Allocate<double>(vr, vn);
 }
 
 vtkDICOMItem *vtkDICOMValue::AllocateSequenceData(
   vtkDICOMVR vr, unsigned int vn)
 {
-  this->Clear();
-  ValueTN<vtkDICOMItem,1> *v =
-    new ValueTN<vtkDICOMItem,1>(vr, vn);
-  this->V = v;
-  return v->Data;
+  return this->Allocate<vtkDICOMItem>(vr, vn);
 }
 
 vtkDICOMValue *vtkDICOMValue::AllocateMultiplexData(
   vtkDICOMVR vr, unsigned int vn)
 {
-  this->Clear();
-  ValueTN<vtkDICOMValue,1> *v = new ValueTN<vtkDICOMValue,1>(vr, vn);
-  this->V = v;
-  return v->Data;
+  return this->Allocate<vtkDICOMValue>(vr, vn);
 }
 
 //----------------------------------------------------------------------------
@@ -522,30 +494,26 @@ template<>
 void vtkDICOMValue::CreateValue<vtkDICOMItem>(
   vtkDICOMVR vr, const vtkDICOMItem *data, unsigned int n)
 {
-  ValueTN<vtkDICOMItem,1> *v =
-    new ValueTN<vtkDICOMItem,1>(vr, n);
+  vtkDICOMItem *dp = this->AllocateSequenceData(vr, n);
 
   for (unsigned int j = 0; j < n; j++)
     {
-    v->Data[j] = data[j];
+    dp[j] = data[j];
     }
-
-  this->V = v;
 }
 
 template<>
 void vtkDICOMValue::CreateValue<vtkDICOMValue>(
   vtkDICOMVR vr, const vtkDICOMValue *data, unsigned int n)
 {
-  ValueTN<vtkDICOMValue,1> *v = new ValueTN<vtkDICOMValue,1>(vr, n);
+  vtkDICOMValue *dp = this->AllocateMultiplexData(vr, n);
   if (data)
     {
     for (unsigned int j = 0; j < n; j++)
       {
-      v->Data[j] = data[j];
+      dp[j] = data[j];
       }
     }
-  this->V = v;
 }
 
 //----------------------------------------------------------------------------
@@ -628,44 +596,31 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, const std::string& v)
 // be freed.  The constructor guarantees that Type is always set correctly.
 void vtkDICOMValue::FreeValue(Value *v)
 {
-  if (v && v->NeedsFree)
+  if (v)
     {
-    switch (v->Type)
+    if (v->Type == VTK_DICOM_ITEM)
       {
-      case VTK_CHAR:
-        delete [] static_cast<ValueT<char> *>(v)->Data;
-        break;
-      case VTK_UNSIGNED_CHAR:
-        delete [] static_cast<ValueT<unsigned char> *>(v)->Data;
-        break;
-      case VTK_SHORT:
-        delete [] static_cast<ValueT<short> *>(v)->Data;
-        break;
-      case VTK_UNSIGNED_SHORT:
-        delete [] static_cast<ValueT<unsigned short> *>(v)->Data;
-        break;
-      case VTK_INT:
-        delete [] static_cast<ValueT<int> *>(v)->Data;
-        break;
-      case VTK_UNSIGNED_INT:
-        delete [] static_cast<ValueT<unsigned int> *>(v)->Data;
-        break;
-      case VTK_FLOAT:
-        delete [] static_cast<ValueT<float> *>(v)->Data;
-        break;
-      case VTK_DOUBLE:
-        delete [] static_cast<ValueT<double> *>(v)->Data;
-        break;
-      case VTK_DICOM_ITEM:
-        delete [] static_cast<ValueT<vtkDICOMItem> *>(v)->Data;
-        break;
-      case VTK_DICOM_VALUE:
-        delete [] static_cast<ValueT<vtkDICOMValue> *>(v)->Data;
-        break;
+      vtkDICOMItem *dp = static_cast<ValueT<vtkDICOMItem> *>(v)->Data;
+      for (unsigned int i = 0; i < v->NumberOfValues; i++)
+        {
+        // placement new was used, so destructor must be called manually
+        dp->~vtkDICOMItem();
+        dp++;
+        }
       }
-    }
+    else if (v->Type == VTK_DICOM_VALUE)
+      {
+      vtkDICOMValue *dp = static_cast<ValueT<vtkDICOMValue> *>(v)->Data;
+      for (unsigned int i = 0; i < v->NumberOfValues; i++)
+        {
+        // placement new was used, so destructor must be called manually
+        dp->~vtkDICOMValue();
+        dp++;
+        }
+      }
 
-  delete v;
+    free(v);
+    }
 }
 
 //----------------------------------------------------------------------------
