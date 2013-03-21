@@ -4,6 +4,7 @@
 #include <vtkSystemIncludes.h>
 #include "vtkDICOMVR.h"
 #include "vtkDICOMTag.h"
+#include "vtkDICOMReferenceCount.h"
 
 // type constants
 #define VTK_DICOM_ITEM   13
@@ -25,7 +26,7 @@ class vtkDICOMValue
   //! A reference-counted value class.
   struct Value
   {
-    unsigned int   ReferenceCount;
+    vtkDICOMReferenceCount ReferenceCount;
     unsigned char  Type;
     vtkDICOMVR     VR;
     unsigned int   VL;
@@ -73,7 +74,7 @@ public:
 
   //! Copy constructor.
   vtkDICOMValue(const vtkDICOMValue &v) : V(v.V) {
-    if (this->V) { this->V->ReferenceCount++; } }
+    if (this->V) { ++(this->V->ReferenceCount); } }
 
   //! Default constructor, constructs an empty value.
   vtkDICOMValue() : V(0) {}
@@ -83,7 +84,7 @@ public:
 
   //! Clear the value.
   void Clear() {
-    if (this->V && --this->V->ReferenceCount == 0) {
+    if (this->V && --(this->V->ReferenceCount) == 0) {
       this->FreeValue(this->V); }
     this->V = 0; }
 
@@ -229,9 +230,9 @@ public:
   //! Override assignment operator for reference counting.
   vtkDICOMValue& operator=(const vtkDICOMValue& o) {
     if (this->V != o.V) {
-      if (o.V) { o.V->ReferenceCount++; }
+      if (o.V) { ++(o.V->ReferenceCount); }
       if (this->V) {
-        if (--this->V->ReferenceCount == 0) { this->FreeValue(this->V); } }
+        if (--(this->V->ReferenceCount) == 0) { this->FreeValue(this->V); } }
       this->V = o.V; }
     return *this; }
 

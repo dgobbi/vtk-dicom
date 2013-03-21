@@ -22,8 +22,9 @@ void vtkDICOMTagVector::AddTag(vtkDICOMTag tag)
     nn = 2*n;
     }
   // reallocate if not unique reference
-  else if (this->V->ReferenceCount > 1)
+  else if (this->V->ReferenceCount != 1)
     {
+    assert(this->V->ReferenceCount == 1);
     // get next power of two that is greater than n
     nn = 1;
     do { nn <<= 1; } while (nn <= n);
@@ -32,7 +33,7 @@ void vtkDICOMTagVector::AddTag(vtkDICOMTag tag)
   if (nn != 0)
     {
     Value *v = this->V;
-    v->ReferenceCount++;
+    ++(v->ReferenceCount);
     const unsigned short *cptr = ptr;
     ptr = this->AllocateUnsignedShortData(vtkDICOMVR::AT, nn);
     this->V->NumberOfValues = n;
@@ -60,8 +61,9 @@ void vtkDICOMTagVector::SetTag(unsigned int i, vtkDICOMTag tag)
     static_cast<ValueT<unsigned short> *>(this->V)->Data;
 
   // reallocate the array if we aren't the sole owner
-  if (this->V->ReferenceCount > 1)
+  if (this->V->ReferenceCount != 1)
     {
+    assert(this->V->ReferenceCount == 1);
     unsigned int m = this->V->NumberOfValues;
     const unsigned short *cptr = ptr;
     ptr = this->AllocateUnsignedShortData(vtkDICOMVR::SQ, m);

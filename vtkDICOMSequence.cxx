@@ -24,8 +24,9 @@ void vtkDICOMSequence::AddItem(const vtkDICOMItem& item)
     nn = 2*n;
     }
   // reallocate if not unique reference, or not yet growable
-  else if (this->V->ReferenceCount > 1 || this->V->VL != 0xffffffff)
+  else if (this->V->ReferenceCount != 1 || this->V->VL != 0xffffffff)
     {
+    assert(this->V->ReferenceCount == 1);
     // get next power of two that is greater than n
     nn = 1;
     do { nn <<= 1; } while (nn <= n);
@@ -34,7 +35,7 @@ void vtkDICOMSequence::AddItem(const vtkDICOMItem& item)
   if (nn != 0)
     {
     Value *v = this->V;
-    v->ReferenceCount++;
+    ++(v->ReferenceCount);
     const vtkDICOMItem *cptr = ptr;
     ptr = this->AllocateSequenceData(vtkDICOMVR::SQ, nn);
     this->V->NumberOfValues = n;
@@ -64,8 +65,9 @@ void vtkDICOMSequence::SetItem(
     static_cast<const ValueT<vtkDICOMItem> *>(this->V)->Data;
 
   // reallocate the array if we aren't the sole owner
-  if (this->V->ReferenceCount > 1)
+  if (this->V->ReferenceCount != 1)
     {
+    assert(this->V->ReferenceCount == 1);
     unsigned int m = this->V->NumberOfValues;
     const vtkDICOMItem *cptr = ptr;
     ptr = this->AllocateSequenceData(vtkDICOMVR::SQ, m);

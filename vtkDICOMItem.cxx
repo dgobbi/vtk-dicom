@@ -1,5 +1,7 @@
 #include "vtkDICOMItem.h"
 
+#include <assert.h>
+
 //----------------------------------------------------------------------------
 void vtkDICOMItem::CopyList(const List *o, List *t)
 {
@@ -28,8 +30,9 @@ void vtkDICOMItem::SetAttributeValue(
     this->L = new List;
     }
   // if we aren't the sole owner, copy before modifying
-  else if (this->L->ReferenceCount > 1)
+  else if (this->L->ReferenceCount != 1)
     {
+    assert(this->L->ReferenceCount == 1);
     List *t = new List;
     this->CopyList(this->L, t);
     this->Clear();

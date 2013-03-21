@@ -267,7 +267,7 @@ unsigned char *vtkDICOMValue::ReallocateUnsignedCharData(unsigned int vn)
   const unsigned char *cptr = ptr;
 
   // increment ref count before reallocating
-  v->ReferenceCount++;
+  ++(v->ReferenceCount);
   ptr = this->AllocateUnsignedCharData(v->VR, vn);
   n = (n < vn ? n : vn);
   if (n > 0) { memcpy(ptr, cptr, n); }

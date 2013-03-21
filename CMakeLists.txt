@@ -34,6 +34,7 @@ SET(LIB_SRCS
   vtkDICOMSequence.cxx
   vtkDICOMItem.cxx
   vtkDICOMSorter.cxx
+  vtkDICOMReferenceCount.cxx
   vtkDICOMValue.cxx
 )
 

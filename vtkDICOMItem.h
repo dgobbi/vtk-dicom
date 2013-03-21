@@ -2,6 +2,7 @@
 #define __vtkDICOMItem_h
 
 #include "vtkDICOMDataElement.h"
+#include "vtkDICOMReferenceCount.h"
 
 //! An item in a DICOM sequence (type SQ).
 /*!
@@ -14,7 +15,7 @@ class vtkDICOMItem
   //! A reference counted list container class.
   struct List
   {
-    unsigned int ReferenceCount;
+    vtkDICOMReferenceCount ReferenceCount;
     int NumberOfDataElements;
     vtkDICOMDataElement Head;
     vtkDICOMDataElement Tail;
@@ -37,14 +38,14 @@ public:
 
   //! Copy constructor does reference counting.
   vtkDICOMItem(const vtkDICOMItem &o) : L(o.L) {
-    if (this->L) { this->L->ReferenceCount++; } }
+    if (this->L) { ++(this->L->ReferenceCount); } }
 
   //! Destructor does reference counting.
   ~vtkDICOMItem() { this->Clear(); }
 
   //! Clear the data.
   void Clear() {
-    if (this->L && --this->L->ReferenceCount == 0) { delete this->L; }
+    if (this->L && --(this->L->ReferenceCount) == 0) { delete this->L; }
     this->L = 0; }
 
   //! Check if empty.
@@ -75,8 +76,8 @@ public:
   //! Assignment operator does reference counting.
   vtkDICOMItem &operator=(const vtkDICOMItem &o) {
     if (this->L != o.L) {
-      if (o.L) { o.L->ReferenceCount++; }
-      if (this->L && --this->L->ReferenceCount == 0) { delete this->L; }
+      if (o.L) { ++(o.L->ReferenceCount); }
+      if (this->L && --(this->L->ReferenceCount) == 0) { delete this->L; }
       this->L = o.L; }
     return *this; }
 
