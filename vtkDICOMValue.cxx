@@ -9,6 +9,8 @@
 #include <stddef.h>
 #include <assert.h>
 
+#include <new>
+
 //----------------------------------------------------------------------------
 // Use anonymous namespace to limit function scope to this file only
 namespace {
@@ -64,6 +66,35 @@ void StringConversion(
     {
     do { *v++ = 0; } while (--n);
     }
+}
+
+// custom allocator
+void *ValueMalloc(size_t size)
+{
+  void *vp = 0;
+  while ((vp = malloc(size)) == 0)
+    {
+    // for C++11, get_new_handler is preferred
+    std::new_handler global_handler = std::set_new_handler(0);
+    std::set_new_handler(global_handler);
+
+    if (global_handler)
+      {
+      global_handler();
+      }
+    else
+      {
+      throw std::bad_alloc();
+      }
+    }
+
+  return vp;
+}
+
+// custom deallocator
+void ValueFree(void *vp)
+{
+  free(vp);
 }
 
 } // end anonymous namespace
@@ -140,7 +171,7 @@ T *vtkDICOMValue::Allocate(vtkDICOMVR vr, unsigned int vn)
   this->Clear();
   // Use C++ "placement new" to allocate a single block of memory that
   // includes both the Value struct and the array of values.
-  void *vp = malloc(sizeof(Value) + vn*sizeof(T));
+  void *vp = ValueMalloc(sizeof(Value) + vn*sizeof(T));
   ValueT<T> *v = new(vp) ValueT<T>(vr, vn);
   // Test the assumption that Data is at an offset of sizeof(Value)
   assert(static_cast<char *>(static_cast<void *>(v->Data)) ==
@@ -159,7 +190,7 @@ char *vtkDICOMValue::Allocate<char>(vtkDICOMVR vr, unsigned int vn)
   unsigned int pad = (vn & (vr != vtkDICOMVR::UI));
   // Use C++ "placement new" to allocate a single block of memory that
   // includes both the Value struct and the array of values.
-  void *vp = malloc(sizeof(Value) + vn + pad + 1);
+  void *vp = ValueMalloc(sizeof(Value) + vn + pad + 1);
   ValueT<char> *v = new(vp) ValueT<char>(vr, vn);
   // Test the assumption that Data is at an offset of sizeof(Value)
   assert(v->Data == static_cast<char *>(vp) + sizeof(Value));
@@ -620,7 +651,7 @@ void vtkDICOMValue::FreeValue(Value *v)
         }
       }
 
-    free(v);
+    ValueFree(v);
     }
 }
 
