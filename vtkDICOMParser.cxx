@@ -538,7 +538,7 @@ void Decoder<E>::GetValues(
   do
     {
     u.i = Decoder<E>::GetInt32(ip);
-    *op++ = u.i;
+    *op++ = u.f;
     ip += 4;
     }
   while (--n);
