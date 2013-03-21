@@ -10,7 +10,7 @@ class vtkDICOMDictEntry
 {
 public:
 
-  // The struct that actually stores the vtkDICOMDictEnty information.
+  // The struct that actually stores the vtkDICOMDictEntry information.
   struct Internal
   {
     unsigned short Group;
