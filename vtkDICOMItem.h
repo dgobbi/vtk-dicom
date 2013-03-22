@@ -62,11 +62,11 @@ public:
     return (this->L ? this->L->NumberOfDataElements : 0); }
 
   //! Get an iterator for the list of data elements.
-  vtkDICOMDataElementIterator GetData() const {
+  vtkDICOMDataElementIterator GetDataElementIterator() const {
     return (this->L ? this->L->Head.Next : 0); }
 
   //! Get an end iterator for the list of data elements.
-  vtkDICOMDataElementIterator GetDataEnd() const {
+  vtkDICOMDataElementIterator GetDataElementIteratorEnd() const {
     return (this->L ? &this->L->Tail : 0); }
 
   bool operator==(const vtkDICOMItem& o) const;

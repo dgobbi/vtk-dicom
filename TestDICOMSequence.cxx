@@ -84,7 +84,9 @@ int main(int argc, char *argv[])
   int fullcount = 0;
 
   // go through the item in ReferencedSeriesSequence
-  for (iter = ip1->GetData(); iter != ip1->GetDataEnd(); ++iter)
+  for (iter = ip1->GetDataElementIterator();
+       iter != ip1->GetDataElementIteratorEnd();
+       ++iter)
     {
     // make sure SeriesInstanceUID was found
     if (iter->GetTag() == DC::SeriesInstanceUID)

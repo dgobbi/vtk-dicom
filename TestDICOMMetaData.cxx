@@ -54,8 +54,8 @@ int main(int argc, char *argv[])
       }
     }
 
-  vtkDICOMDataElementIterator iter = metaData->GetData();
-  vtkDICOMDataElementIterator iend = metaData->GetDataEnd();
+  vtkDICOMDataElementIterator iter = metaData->GetDataElementIterator();
+  vtkDICOMDataElementIterator iend = metaData->GetDataElementIteratorEnd();
   int counter = 0;
   while (iter != iend)
     {

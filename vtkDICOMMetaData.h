@@ -46,10 +46,12 @@ public:
     return this->NumberOfDataElements; }
 
   //! Get an iterator for the list of data elements.
-  vtkDICOMDataElementIterator GetData() { return this->Head.Next; }
+  vtkDICOMDataElementIterator GetDataElementIterator() {
+    return this->Head.Next; }
 
   //! Get an end iterator for the list of data elements.
-  vtkDICOMDataElementIterator GetDataEnd() { return &this->Tail; }
+  vtkDICOMDataElementIterator GetDataElementIteratorEnd() {
+    return &this->Tail; }
 
   //! Check whether an attribute is present in the metadata.
   bool HasAttribute(vtkDICOMTag tag);
