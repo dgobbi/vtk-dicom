@@ -59,30 +59,36 @@ public:
    *  - AT, use two unsigned shorts per tag.
    *  - SQ, use an array of vtkDICOMItem values.
    */
-  vtkDICOMValue(vtkDICOMVR vr, const char *data, unsigned int n);
-  vtkDICOMValue(vtkDICOMVR vr, const unsigned char *data, unsigned int n);
-  vtkDICOMValue(vtkDICOMVR vr, const short *data, unsigned int n);
-  vtkDICOMValue(vtkDICOMVR vr, const unsigned short *data, unsigned int n);
-  vtkDICOMValue(vtkDICOMVR vr, const int *data, unsigned int n);
-  vtkDICOMValue(vtkDICOMVR vr, const unsigned int *data, unsigned int n);
-  vtkDICOMValue(vtkDICOMVR vr, const float *data, unsigned int n);
-  vtkDICOMValue(vtkDICOMVR vr, const double *data, unsigned int n);
-  vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMItem *data, unsigned int n);
-  vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMValue *data, unsigned int n);
   vtkDICOMValue(vtkDICOMVR vr, double v);
   vtkDICOMValue(vtkDICOMVR vr, const std::string& v);
+  vtkDICOMValue(vtkDICOMVR vr,
+                const char *data, const char *end);
+  vtkDICOMValue(vtkDICOMVR vr,
+                const unsigned char *data, const unsigned char *end);
+  vtkDICOMValue(vtkDICOMVR vr,
+                const short *data, const short *end);
+  vtkDICOMValue(vtkDICOMVR vr,
+                const unsigned short *data, const unsigned short *end);
+  vtkDICOMValue(vtkDICOMVR vr,
+                const int *data, const int *end);
+  vtkDICOMValue(vtkDICOMVR vr,
+                const unsigned int *data, const unsigned int *end);
+  vtkDICOMValue(vtkDICOMVR vr,
+                const float *data, const float *end);
+  vtkDICOMValue(vtkDICOMVR vr,
+                const double *data, const double *end);
 
   //! Copy constructor.
   vtkDICOMValue(const vtkDICOMValue &v) : V(v.V) {
     if (this->V) { ++(this->V->ReferenceCount); } }
 
-  //! Default constructor, constructs an empty value.
+  //! Default constructor, constructs an invalid value.
   vtkDICOMValue() : V(0) {}
 
   //! Destructor releases the internal data array.
   ~vtkDICOMValue() { this->Clear(); }
 
-  //! Clear the value.
+  //! Clear the value, the result is an invalid value.
   void Clear() {
     if (this->V && --(this->V->ReferenceCount) == 0) {
       this->FreeValue(this->V); }
@@ -122,6 +128,7 @@ public:
    *  decimal string) then conversion from text to a numerical value
    *  will be performed.
    */
+  void GetValues(std::string *v, unsigned int i, unsigned int n) const;
   void GetValues(unsigned char *v, unsigned int i, unsigned int n) const;
   void GetValues(short *v, unsigned int i, unsigned int n) const;
   void GetValues(unsigned short *v, unsigned int i, unsigned int n) const;
@@ -129,7 +136,6 @@ public:
   void GetValues(unsigned int *v, unsigned int i, unsigned int n) const;
   void GetValues(float *v, unsigned int i, unsigned int n) const;
   void GetValues(double *v, unsigned int i, unsigned int n) const;
-  void GetValues(std::string *v, unsigned int i, unsigned int n) const;
 
   //! Get one scalar value or single string from the value.
   /*!
@@ -138,6 +144,7 @@ public:
    *  not possible, or the index is out of range, then the return
    *  value will be zero (or an empty string).
    */
+  std::string GetString(unsigned int i) const;
   unsigned char GetUnsignedChar(unsigned int i) const;
   short GetShort(unsigned int i) const;
   unsigned short GetUnsignedShort(unsigned int i) const;
@@ -145,7 +152,6 @@ public:
   unsigned int GetUnsignedInt(unsigned int i) const;
   float GetFloat(unsigned int i) const;
   double GetDouble(unsigned int i) const;
-  std::string GetString(unsigned int i) const;
 
   //! Convert the value to a scalar value or string.
   /*!
@@ -153,6 +159,7 @@ public:
    *  the desired type, if possible, and returned.  Otherwise the
    *  return value is zero (or an empty string).
    */
+  std::string AsString() const;
   unsigned char AsUnsignedChar() const;
   short AsShort() const;
   unsigned short AsUnsignedShort() const;
@@ -160,7 +167,6 @@ public:
   unsigned int AsUnsignedInt() const;
   float AsFloat() const;
   double AsDouble() const;
-  std::string AsString() const;
   vtkDICOMTag AsTag() const;
 
   //! Get a pointer to the internal data array.
@@ -253,7 +259,7 @@ private:
 
   //! Internal templated value creation method.
   template<class T>
-  void CreateValue(vtkDICOMVR vr, const T *data, unsigned int n);
+  void CreateValue(vtkDICOMVR vr, const T *data, const T *end);
 
   //! Get the start and end for the "i"th backslash-delimited value.
   void Substring(unsigned int i, const char *&start, const char *&end) const;

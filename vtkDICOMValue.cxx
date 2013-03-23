@@ -287,11 +287,14 @@ unsigned char *vtkDICOMValue::ReallocateUnsignedCharData(unsigned int vn)
 
 //----------------------------------------------------------------------------
 template<class T>
-void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, unsigned int n)
+void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, const T *end)
 {
   typedef vtkDICOMVR VR; // shorthand
 
-  const int vt = vtkTypeTraits<T>::VTKTypeID();
+  size_t size = end - data;
+  assert(size*sizeof(T) <= 0xffffffffu);
+  unsigned int n = static_cast<unsigned int>(size);
+  int vt = vtkTypeTraits<T>::VTKTypeID();
 
   this->V = 0;
 
@@ -423,9 +426,13 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, unsigned int n)
 
 template<>
 void vtkDICOMValue::CreateValue<char>(
-  vtkDICOMVR vr, const char *data, unsigned int m)
+  vtkDICOMVR vr, const char *data, const char *end)
 {
   typedef vtkDICOMVR VR;
+
+  size_t size = end - data;
+  assert(size <= 0xffffffffu);
+  unsigned int m = static_cast<unsigned int>(size);
 
   this->V = 0;
 
@@ -522,105 +529,67 @@ void vtkDICOMValue::CreateValue<char>(
     }
 }
 
-template<>
-void vtkDICOMValue::CreateValue<vtkDICOMItem>(
-  vtkDICOMVR vr, const vtkDICOMItem *data, unsigned int n)
-{
-  vtkDICOMItem *dp = this->AllocateSequenceData(vr, n);
-
-  for (unsigned int j = 0; j < n; j++)
-    {
-    dp[j] = data[j];
-    }
-}
-
-template<>
-void vtkDICOMValue::CreateValue<vtkDICOMValue>(
-  vtkDICOMVR vr, const vtkDICOMValue *data, unsigned int n)
-{
-  vtkDICOMValue *dp = this->AllocateMultiplexData(vr, n);
-  if (data)
-    {
-    for (unsigned int j = 0; j < n; j++)
-      {
-      dp[j] = data[j];
-      }
-    }
-}
-
 //----------------------------------------------------------------------------
 const vtkDICOMValue vtkDICOMValue::InvalidValue;
 
 //----------------------------------------------------------------------------
 // Constructor methods call the factory to create the right internal type.
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const char *data, unsigned int n)
-{
-  this->CreateValue(vr, data, n);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const unsigned char *data, unsigned int n)
-{
-  this->CreateValue(vr, data, n);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const short *data, unsigned int n)
-{
-  this->CreateValue(vr, data, n);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const unsigned short *data, unsigned int n)
-{
-  this->CreateValue(vr, data, n);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const int *data, unsigned int n)
-{
-  this->CreateValue(vr, data, n);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const unsigned int *data, unsigned int n)
-{
-  this->CreateValue(vr, data, n);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const float *data, unsigned int n)
-{
-  this->CreateValue(vr, data, n);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const double *data, unsigned int n)
-{
-  this->CreateValue(vr, data, n);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const vtkDICOMItem *data, unsigned int n)
-{
-  this->CreateValue(vr, data, n);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const vtkDICOMValue *data, unsigned int n)
-{
-  this->CreateValue(vr, data, n);
-}
-
 vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, double v)
 {
-  this->CreateValue(vr, &v, 1);
+  this->CreateValue(vr, &v, &v + 1);
 }
 
 vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, const std::string& v)
 {
-  this->CreateValue(vr, v.data(), static_cast<unsigned int>(v.size()));
+  this->CreateValue(vr, v.data(), v.data() + v.size());
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const char *data, const char *end)
+{
+  this->CreateValue(vr, data, end);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const unsigned char *data, const unsigned char *end)
+{
+  this->CreateValue(vr, data, end);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const short *data, const short *end)
+{
+  this->CreateValue(vr, data, end);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const unsigned short *data, const unsigned short *end)
+{
+  this->CreateValue(vr, data, end);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const int *data, const int *end)
+{
+  this->CreateValue(vr, data, end);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const unsigned int *data, const unsigned int *end)
+{
+  this->CreateValue(vr, data, end);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const float *data, const float *end)
+{
+  this->CreateValue(vr, data, end);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const double *data, const double *end)
+{
+  this->CreateValue(vr, data, end);
 }
 
 //----------------------------------------------------------------------------
