@@ -230,9 +230,6 @@ public:
    */
   void AppendValueToString(std::string &str, unsigned int i) const;
 
-  static const vtkDICOMValue &GetInvalidValue() {
-    return InvalidValue; }
-
   //! Override assignment operator for reference counting.
   vtkDICOMValue& operator=(const vtkDICOMValue& o) {
     if (this->V != o.V) {
@@ -266,9 +263,6 @@ private:
 
   //! The only data member: a pointer to the internal value.
   Value *V;
-
-  //! An invalid value, for when one is needed.
-  static const vtkDICOMValue InvalidValue;
 
   // friend the subclasses.
   friend class vtkDICOMSequence;

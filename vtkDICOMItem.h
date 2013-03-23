@@ -84,6 +84,9 @@ public:
 private:
   void CopyList(const List *o, List *t);
 
+  //! An invalid value, for when one is needed.
+  static const vtkDICOMValue InvalidValue;
+
   //! A linked list to hold the elements.
   List *L;
 };

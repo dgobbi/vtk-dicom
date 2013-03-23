@@ -530,9 +530,6 @@ void vtkDICOMValue::CreateValue<char>(
 }
 
 //----------------------------------------------------------------------------
-const vtkDICOMValue vtkDICOMValue::InvalidValue;
-
-//----------------------------------------------------------------------------
 // Constructor methods call the factory to create the right internal type.
 vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, double v)
 {

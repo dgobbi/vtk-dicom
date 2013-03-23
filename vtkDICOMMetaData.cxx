@@ -14,6 +14,10 @@ vtkStandardNewMacro(vtkDICOMMetaData);
 #define METADATA_HASH_SIZE 512
 
 //----------------------------------------------------------------------------
+// For use by methods that must return an invalid value
+const vtkDICOMValue vtkDICOMMetaData::InvalidValue;
+
+//----------------------------------------------------------------------------
 // Constructor
 vtkDICOMMetaData::vtkDICOMMetaData()
 {
@@ -163,7 +167,7 @@ const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
 const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(vtkDICOMTag tag)
 {
   const vtkDICOMValue *vptr = this->FindAttributeValue(0, tag);
-  return (vptr ? *vptr : vtkDICOMValue::GetInvalidValue());
+  return (vptr ? *vptr : vtkDICOMMetaData::InvalidValue);
 }
 
 //----------------------------------------------------------------------------
@@ -171,7 +175,7 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
   int idx, vtkDICOMTag tag)
 {
   const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tag);
-  return (vptr ? *vptr : vtkDICOMValue::GetInvalidValue());
+  return (vptr ? *vptr : vtkDICOMMetaData::InvalidValue);
 }
 
 //----------------------------------------------------------------------------

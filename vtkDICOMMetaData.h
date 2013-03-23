@@ -140,6 +140,9 @@ private:
   //! The lookup table for the dictionary.
   static vtkDICOMDictEntry::Internal *DictHashTable[DICT_HASH_TABLE_SIZE];
 
+  //! An invalid value, for when one is needed.
+  static const vtkDICOMValue InvalidValue;
+
   vtkDICOMMetaData(const vtkDICOMMetaData&);  // Not implemented.
   void operator=(const vtkDICOMMetaData&);  // Not implemented.
 };

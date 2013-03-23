@@ -3,6 +3,10 @@
 #include <assert.h>
 
 //----------------------------------------------------------------------------
+// For use by methods that must return an invalid value
+const vtkDICOMValue vtkDICOMItem::InvalidValue;
+
+//----------------------------------------------------------------------------
 void vtkDICOMItem::CopyList(const List *o, List *t)
 {
   vtkDICOMDataElement *ptr = o->Head.Next;
@@ -84,7 +88,7 @@ const vtkDICOMValue &vtkDICOMItem::GetAttributeValue(
       e = e->Next;
       }
     }
-  return vtkDICOMValue::GetInvalidValue();
+  return vtkDICOMItem::InvalidValue;
 }
 
 //----------------------------------------------------------------------------
