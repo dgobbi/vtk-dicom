@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     }
 
   // do the tests
-  unsigned int n = seq.GetNumberOfValues();
+  unsigned int n = seq.GetNumberOfItems();
   TestAssert(n == 1);
 
   // use iterator to go through the elements in each item

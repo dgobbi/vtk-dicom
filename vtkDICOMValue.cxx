@@ -1,5 +1,7 @@
 #include "vtkDICOMValue.h"
 #include "vtkDICOMItem.h"
+#include "vtkDICOMSequence.h"
+#include "vtkDICOMAttributeTags.h"
 
 #include <vtkTypeTraits.h>
 
@@ -165,6 +167,24 @@ vtkDICOMValue::ValueT<vtkDICOMValue>::ValueT(vtkDICOMVR vr, unsigned int vn)
 }
 
 //----------------------------------------------------------------------------
+vtkDICOMValue::vtkDICOMValue(const vtkDICOMSequence &s)
+{
+  this->V = s.V.V;
+  if (this->V) { ++(this->V->ReferenceCount); }
+}
+
+vtkDICOMValue::vtkDICOMValue(const vtkDICOMAttributeTags &s)
+{
+  this->V = s.V.V;
+  if (this->V) { ++(this->V->ReferenceCount); }
+}
+
+vtkDICOMValue& vtkDICOMValue::operator=(const vtkDICOMSequence& o)
+{
+  *this = o.V;
+  return *this;
+}
+
 template<class T>
 T *vtkDICOMValue::Allocate(vtkDICOMVR vr, unsigned int vn)
 {
@@ -620,6 +640,96 @@ void vtkDICOMValue::FreeValue(Value *v)
     ValueFree(v);
     }
 }
+
+//----------------------------------------------------------------------------
+template<class T>
+void vtkDICOMValue::AppendValue(vtkDICOMVR vr, const T &item)
+{
+  // create value if it doesn't exist yet
+  if (this->V == 0)
+    {
+    this->Allocate<T>(vr, 2);
+    this->V->NumberOfValues = 0;
+    this->V->VL = 0xffffffff;
+    }
+
+  T *ptr = static_cast<const vtkDICOMValue::ValueT<T> *>(this->V)->Data;
+
+  unsigned int n = this->V->NumberOfValues;
+  unsigned int nn = 0;
+  // reallocate if not unique reference, or not yet growable
+  assert(this->V->ReferenceCount == 1);
+  if (this->V->ReferenceCount != 1 || this->V->VL != 0xffffffff)
+    {
+    // get next power of two that is greater than n
+    nn = 1;
+    do { nn <<= 1; } while (nn <= n);
+    }
+  // reallocate if n is a power of two
+  else if (n > 1 && ((n - 1) & n) == 0)
+    {
+    nn = 2*n;
+    }
+  // reallocate the array
+  if (nn != 0)
+    {
+    vtkDICOMValue::Value *v = this->V;
+    ++(v->ReferenceCount);
+    const T *cptr = ptr;
+    ptr = this->Allocate<T>(vr, nn);
+    this->V->NumberOfValues = n;
+    for (unsigned int i = 0; i < n; i++)
+      {
+      ptr[i] = cptr[i];
+      }
+    if (--(v->ReferenceCount) == 0)
+      {
+      vtkDICOMValue::FreeValue(v);
+      }
+    }
+
+  // mark as growable
+  this->V->VL = 0xffffffff;
+  // add the item
+  ptr[this->V->NumberOfValues++] = item;
+}
+
+template void vtkDICOMValue::AppendValue<vtkDICOMItem>(
+  vtkDICOMVR vr, const vtkDICOMItem& item);
+
+template void vtkDICOMValue::AppendValue<unsigned short>(
+  vtkDICOMVR vr, const unsigned short& item);
+
+//----------------------------------------------------------------------------
+template<class T>
+void vtkDICOMValue::SetValue(unsigned int i, const T &item)
+{
+  assert(this->V != 0);
+  assert(i < this->V->NumberOfValues);
+
+  T *ptr = static_cast<const vtkDICOMValue::ValueT<T> *>(this->V)->Data;
+
+  // reallocate the array if we aren't the sole owner
+  assert(this->V->ReferenceCount == 1);
+  if (this->V->ReferenceCount != 1)
+    {
+    unsigned int m = this->V->NumberOfValues;
+    const T *cptr = ptr;
+    ptr = this->Allocate<T>(this->V->VR, m);
+    for (unsigned int j = 0; j < m; j++)
+      {
+      ptr[j] = cptr[j];
+      }
+    }
+
+  ptr[i] = item;
+}
+
+template void vtkDICOMValue::SetValue<vtkDICOMItem>(
+  unsigned int i, const vtkDICOMItem& item);
+
+template void vtkDICOMValue::SetValue<unsigned short>(
+  unsigned int i, const unsigned short& item);
 
 //----------------------------------------------------------------------------
 const char *vtkDICOMValue::GetCharData() const

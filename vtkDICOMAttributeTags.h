@@ -1,27 +1,27 @@
-#ifndef __vtkDICOMSequence_h
-#define __vtkDICOMSequence_h
+#ifndef __vtkDICOMAttributeTags_h
+#define __vtkDICOMAttributeTags_h
 
 #include "vtkDICOMValue.h"
 
-class vtkDICOMItem;
+class vtkDICOMTag;
 
 //! A sequence of items according to the SQ representation.
 /*!
  *  This class is for constructing and decoding sequences.
  *  There are two ways that sequences can be constructed:
  *  A fixed-size sequence can be created and then its items
- *  filled in with the SetItem() method, or, you can start
- *  with an empty sequence and use AddItem() to append items.
+ *  filled in with the SetTag() method, or, you can start
+ *  with an empty sequence and use AddTag() to append items.
  */
-class vtkDICOMSequence
+class vtkDICOMAttributeTags
 {
 public:
   //! Construct a growable sequence with no items.
-  vtkDICOMSequence() {}
+  vtkDICOMAttributeTags() {}
 
   //! Construct a sequence of fixed size.
-  explicit vtkDICOMSequence(unsigned int n) {
-    if (n) { this->V.AllocateSequenceData(vtkDICOMVR::SQ, n); } }
+  explicit vtkDICOMAttributeTags(unsigned int n) {
+    if (n) { this->V.AllocateUnsignedShortData(vtkDICOMVR::AT, 2*n); } }
 
   //! Clear a sequence, remove its contents and make it empty.
   void Clear() { this->V.Clear(); }
@@ -33,42 +33,40 @@ public:
    *  the special value 0xffffffff to indicate that this is a delimited
    *  sequence rather than a fixed-size sequence.
    */
-  void AddItem(const vtkDICOMItem& item) {
-    this->V.AppendValue(vtkDICOMVR::SQ, item); }
+  void AddTag(vtkDICOMTag item) {
+    this->V.AppendValue(vtkDICOMVR::AT, item.GetGroup());
+    this->V.AppendValue(vtkDICOMVR::AT, item.GetElement()); }
 
   //! Get the number of items in the sequence.
-  unsigned int GetNumberOfItems() const {
-    return this->V.GetNumberOfValues(); }
+  unsigned int GetNumberOfTags() const {
+    return this->V.GetNumberOfValues()/2; }
 
   //! Set an item in the sequence.
   /*!
    *  This method can only be used if space as been allocated within
    *  the sequence by specifying a size when calling the constructor.
    */
-  void SetItem(unsigned int i, const vtkDICOMItem& item) {
-    this->V.SetValue(i, item); }
+  void SetTag(unsigned int i, vtkDICOMTag item) {
+    this->V.SetValue(2*i, item.GetGroup());
+    this->V.SetValue(2*i+1, item.GetElement()); }
 
   //! Get an item from the sequence.
-  const vtkDICOMItem& GetItem(unsigned int i) const;
-
-  //! Get an iterator for the items in the sequence.
-  const vtkDICOMItem *GetSequenceData() const {
-    return this->V.GetSequenceData(); }
+  vtkDICOMTag GetTag(unsigned int i) const;
 
   //! Use value copy constructor
-  vtkDICOMSequence(const vtkDICOMSequence& o) : V(o.V) {}
+  vtkDICOMAttributeTags(const vtkDICOMAttributeTags& o) : V(o.V) {}
 
   //! Conversion from other value types is checked.
-  vtkDICOMSequence(const vtkDICOMValue& o) : V(o) {
-    if (o.GetVR() != vtkDICOMVR::SQ) { this->V.Clear(); } }
+  vtkDICOMAttributeTags(const vtkDICOMValue& o) : V(o) {
+    if (o.GetVR() != vtkDICOMVR::AT) { this->V.Clear(); } }
 
   //! Use base class assignment operator.
-  vtkDICOMSequence& operator=(const vtkDICOMSequence& o) {
+  vtkDICOMAttributeTags& operator=(const vtkDICOMAttributeTags& o) {
     this->V = o.V; return *this; }
 
   //! Assignment from other value types is checked
-  vtkDICOMSequence& operator=(const vtkDICOMValue& o) {
-    if (o.GetVR() == vtkDICOMVR::SQ) { this->V = o; return *this; }
+  vtkDICOMAttributeTags& operator=(const vtkDICOMValue& o) {
+    if (o.GetVR() == vtkDICOMVR::AT) { this->V = o; return *this; }
     else { this->V.Clear(); } }
 
 private:
@@ -77,4 +75,4 @@ private:
   vtkDICOMValue V;
 };
 
-#endif /* __vtkDICOMSequence_h */
+#endif /* __vtkDICOMAttributeTags_h */

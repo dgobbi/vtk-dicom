@@ -12,6 +12,7 @@
 
 class vtkDICOMItem;
 class vtkDICOMSequence;
+class vtkDICOMAttributeTags;
 
 //! A class to store attribute values for DICOM metadata.
 /*!
@@ -81,6 +82,12 @@ public:
   //! Copy constructor.
   vtkDICOMValue(const vtkDICOMValue &v) : V(v.V) {
     if (this->V) { ++(this->V->ReferenceCount); } }
+
+  //! Construct from a sequence.
+  vtkDICOMValue(const vtkDICOMSequence &v);
+
+  //! Construct from a list of attribute tags.
+  vtkDICOMValue(const vtkDICOMAttributeTags &v);
 
   //! Default constructor, constructs an invalid value.
   vtkDICOMValue() : V(0) {}
@@ -239,6 +246,8 @@ public:
       this->V = o.V; }
     return *this; }
 
+  vtkDICOMValue& operator=(const vtkDICOMSequence& o);
+
   bool operator==(const vtkDICOMValue& o) const;
   bool operator!=(const vtkDICOMValue& o) const { return !(*this == o); }
 
@@ -258,6 +267,14 @@ private:
   template<class T>
   void CreateValue(vtkDICOMVR vr, const T *data, const T *end);
 
+  //! Internal templated method to grow the value.
+  template<class T>
+  void AppendValue(vtkDICOMVR vr, const T &item);
+
+  //! Internal templated method to set a value.
+  template<class T>
+  void SetValue(unsigned int i, const T &item);
+
   //! Get the start and end for the "i"th backslash-delimited value.
   void Substring(unsigned int i, const char *&start, const char *&end) const;
 
@@ -266,7 +283,7 @@ private:
 
   // friend the subclasses.
   friend class vtkDICOMSequence;
-  friend class vtkDICOMTagVector;
+  friend class vtkDICOMAttributeTags;
 };
 
 ostream& operator<<(ostream& os, const vtkDICOMValue& v);
