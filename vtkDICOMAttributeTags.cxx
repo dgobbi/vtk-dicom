@@ -10,3 +10,8 @@ vtkDICOMTag vtkDICOMAttributeTags::GetTag(unsigned int i) const
 
   return vtkDICOMTag(ptr[2*i], ptr[2*i+1]);
 }
+
+ostream& operator<<(ostream& os, const vtkDICOMAttributeTags& v)
+{
+  return os << vtkDICOMValue(v);
+}

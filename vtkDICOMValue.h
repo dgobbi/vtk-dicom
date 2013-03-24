@@ -247,6 +247,7 @@ public:
     return *this; }
 
   vtkDICOMValue& operator=(const vtkDICOMSequence& o);
+  vtkDICOMValue& operator=(const vtkDICOMAttributeTags& o);
 
   bool operator==(const vtkDICOMValue& o) const;
   bool operator!=(const vtkDICOMValue& o) const { return !(*this == o); }

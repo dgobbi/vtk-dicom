@@ -10,3 +10,8 @@ const vtkDICOMItem &vtkDICOMSequence::GetItem(unsigned int i) const
 
   return ptr[i];
 }
+
+ostream& operator<<(ostream& os, const vtkDICOMSequence& v)
+{
+  return os << vtkDICOMValue(v);
+}

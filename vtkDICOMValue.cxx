@@ -173,15 +173,34 @@ vtkDICOMValue::vtkDICOMValue(const vtkDICOMSequence &s)
   if (this->V) { ++(this->V->ReferenceCount); }
 }
 
-vtkDICOMValue::vtkDICOMValue(const vtkDICOMAttributeTags &s)
-{
-  this->V = s.V.V;
-  if (this->V) { ++(this->V->ReferenceCount); }
-}
-
 vtkDICOMValue& vtkDICOMValue::operator=(const vtkDICOMSequence& o)
 {
   *this = o.V;
+  return *this;
+}
+
+vtkDICOMValue::vtkDICOMValue(const vtkDICOMAttributeTags &s)
+{
+  this->V = s.V.V;
+  if (this->V)
+    {
+    ++(this->V->ReferenceCount);
+    if (this->V->VL == 0xffffffffu)
+      {
+      // convert "growable" marker to "fixed size" marker
+      this->V->VL = 2*this->V->NumberOfValues;
+      }
+    }
+}
+
+vtkDICOMValue& vtkDICOMValue::operator=(const vtkDICOMAttributeTags& o)
+{
+  *this = o.V;
+  if (this->V && this->V->VL == 0xffffffffu)
+    {
+    // convert "growable" marker to "fixed size" marker
+    this->V->VL = 2*this->V->NumberOfValues;
+    }
   return *this;
 }
 

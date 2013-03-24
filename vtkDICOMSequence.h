@@ -28,7 +28,7 @@ public:
 
   //! Add an item to the sequence.
   /*!
-   *  After calling this method, GetNumberOfValues() will report
+   *  After calling this method, GetNumberOfItems() will report
    *  the number of items in the sequence, but GetVL() will return
    *  the special value 0xffffffff to indicate that this is a delimited
    *  sequence rather than a fixed-size sequence.
@@ -76,5 +76,7 @@ private:
 
   vtkDICOMValue V;
 };
+
+ostream& operator<<(ostream& os, const vtkDICOMSequence& v);
 
 #endif /* __vtkDICOMSequence_h */
