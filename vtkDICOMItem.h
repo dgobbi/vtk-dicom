@@ -34,6 +34,8 @@ class vtkDICOMItem
   };
 
 public:
+
+  //! Default constructor creates an empty item.
   vtkDICOMItem() : L(0) {}
 
   //! Copy constructor does reference counting.
