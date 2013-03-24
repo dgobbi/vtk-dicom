@@ -105,7 +105,7 @@ public:
 
   // Peek ahead to see what the group of the next element is.
   virtual unsigned short PeekGroup(
-    const unsigned char* &cp, const unsigned char* &ep);
+    const unsigned char* &cp, const unsigned char* &ep) = 0;
 
   // Copy bytes from sp to end marker cp into the value "v".
   // If the parameter "v" is NULL, then it will be ignored.
