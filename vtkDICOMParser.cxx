@@ -388,7 +388,7 @@ bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, unsigned short &u)
   vtkDICOMValue v;
   if (this->GetAttributeValue(tag, v))
     {
-    v.GetValues(&u, 0, 1);
+    u = v.AsShort();
     return true;
     }
 

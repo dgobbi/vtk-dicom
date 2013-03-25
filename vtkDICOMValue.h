@@ -127,22 +127,22 @@ public:
   unsigned int GetNumberOfValues() const {
     return (this->V ? this->V->NumberOfValues : 0); }
 
-  //! Get "n" values, starting at position "i".
+  //! Copy values into vb until ve is reached, starting at value "i".
   /*!
    *  Get one or more values, doing conversion from the stored type to
    *  the requested type.  If the VR is IS or DS (integer string or
    *  decimal string) then conversion from text to a numerical value
    *  will be performed.
    */
-  void GetValues(std::string *v, unsigned int i, unsigned int n) const;
-  void GetValues(unsigned char *v, unsigned int i, unsigned int n) const;
-  void GetValues(short *v, unsigned int i, unsigned int n) const;
-  void GetValues(unsigned short *v, unsigned int i, unsigned int n) const;
-  void GetValues(int *v, unsigned int i, unsigned int n) const;
-  void GetValues(unsigned int *v, unsigned int i, unsigned int n) const;
-  void GetValues(float *v, unsigned int i, unsigned int n) const;
-  void GetValues(double *v, unsigned int i, unsigned int n) const;
-  void GetValues(vtkDICOMTag *v, unsigned int i, unsigned int n) const;
+  void GetValues(std::string *vb, std::string *ve, unsigned int i=0) const;
+  void GetValues(unsigned char *vb, unsigned char *ve, unsigned int i=0) const;
+  void GetValues(short *vb, short *ve, unsigned int i=0) const;
+  void GetValues(unsigned short *vb, unsigned short *ve, unsigned int i=0) const;
+  void GetValues(int *vb, int *ve, unsigned int i=0) const;
+  void GetValues(unsigned int *vb, unsigned int *ve, unsigned int i=0) const;
+  void GetValues(float *vb, float *ve, unsigned int i=0) const;
+  void GetValues(double *vb, double *ve, unsigned int i=0) const;
+  void GetValues(vtkDICOMTag *vb, vtkDICOMTag *ve, unsigned int i=0) const;
 
   //! Get one scalar value or single string from the value.
   /*!
@@ -264,7 +264,7 @@ private:
 
   //! Internal templated GetValues() method.
   template<class OT>
-  void GetValuesT(OT *v, unsigned int s, unsigned int c) const;
+  void GetValuesT(OT *v, OT *ve, unsigned int s) const;
 
   //! Internal templated value creation method.
   template<class T>

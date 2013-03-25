@@ -112,37 +112,37 @@ int main(int argc, char *argv[])
   short shrt[2];
   // store floats as doubles with VR=FD
   v = vtkDICOMValue(vtkDICOMVR::FD, flt1, flt1 + 2);
-  v.GetValues(flt2, 0, 2);
+  v.GetValues(flt2, flt2 + 2, 0);
   TestAssert(flt1[0] == flt2[0] && flt1[1] == flt2[1]);
   flt2[0] = flt2[1] = 0;
-  v.GetValues(&flt2[0], 0, 1);
-  v.GetValues(&flt2[1], 1, 1);
+  v.GetValues(&flt2[0], &flt2[1], 0);
+  v.GetValues(&flt2[1], &flt2[2], 1);
   TestAssert(flt1[0] == flt2[0] && flt1[1] == flt2[1]);
-  v.GetValues(shrt, 0, 2);
+  v.GetValues(shrt, shrt + 2, 0);
   TestAssert(static_cast<int>(flt1[0]) == shrt[0]);
   TestAssert(static_cast<int>(flt1[1]) == shrt[1]);
   // store floats as decimal strings with VR=DS
   v = vtkDICOMValue(vtkDICOMVR::DS, flt1, flt1 + 2);
-  v.GetValues(flt2, 0, 2);
+  v.GetValues(flt2, flt2 + 2, 0);
   TestAssert(flt1[0] == flt2[0] && flt1[1] == flt2[1]);
   flt2[0] = flt2[1] = 0;
-  v.GetValues(&flt2[0], 0, 1);
-  v.GetValues(&flt2[1], 1, 1);
+  v.GetValues(&flt2[0], &flt2[1], 0);
+  v.GetValues(&flt2[1], &flt2[2], 1);
   TestAssert(flt1[0] == flt2[0] && flt1[1] == flt2[1]);
-  v.GetValues(shrt, 0, 2);
+  v.GetValues(shrt, shrt + 2, 0);
   TestAssert(static_cast<int>(flt1[0]) == shrt[0]);
   TestAssert(static_cast<int>(flt1[1]) == shrt[1]);
   // store floats as integer strings with VR=IS
   v = vtkDICOMValue(vtkDICOMVR::IS, flt1, flt1 + 2);
-  v.GetValues(flt2, 0, 2);
+  v.GetValues(flt2, flt2 + 2, 0);
   TestAssert(static_cast<float>(static_cast<int>(flt1[0])) == flt2[0] &&
              static_cast<float>(static_cast<int>(flt1[1])) == flt2[1]);
   flt2[0] = flt2[1] = 0;
-  v.GetValues(&flt2[0], 0, 1);
-  v.GetValues(&flt2[1], 1, 1);
+  v.GetValues(&flt2[0], &flt2[1], 0);
+  v.GetValues(&flt2[1], &flt2[2], 1);
   TestAssert(static_cast<float>(static_cast<int>(flt1[0])) == flt2[0] &&
              static_cast<float>(static_cast<int>(flt1[1])) == flt2[1]);
-  v.GetValues(shrt, 0, 2);
+  v.GetValues(shrt, shrt + 2, 0);
   TestAssert(static_cast<int>(flt1[0]) == shrt[0]);
   TestAssert(static_cast<int>(flt1[1]) == shrt[1]);
   }
@@ -153,31 +153,31 @@ int main(int argc, char *argv[])
   static const float flt1[2] = { 1.0f, 2.5f };
   // store floats as doubles with VR=FD
   v = vtkDICOMValue(vtkDICOMVR::FD, flt1, flt1 + 2);
-  v.GetValues(sa, 0, 2);
+  v.GetValues(sa, sa + 2, 0);
   TestAssert(sa[0] == "1.0" && sa[1] == "2.5");
   // store floats as text with VR=DS
   sa[0] = "";
   sa[1] = "";
   v = vtkDICOMValue(vtkDICOMVR::DS, flt1, flt1 + 2);
-  v.GetValues(sa, 0, 2);
+  v.GetValues(sa, sa + 2, 0);
   TestAssert(sa[0] == "1" && sa[1] == "2.5");
   // store floats as text with VR=IS
   sa[0] = "";
   sa[1] = "";
   v = vtkDICOMValue(vtkDICOMVR::IS, flt1, flt1 + 2);
-  v.GetValues(sa, 0, 2);
+  v.GetValues(sa, sa + 2, 0);
   TestAssert(sa[0] == "1" && sa[1] == "2");
   // get just the first value
   sa[0] = "";
   sa[1] = "";
   v = vtkDICOMValue(vtkDICOMVR::IS, flt1, flt1 + 2);
-  v.GetValues(sa, 0, 1);
+  v.GetValues(sa, sa + 1, 0);
   TestAssert(sa[0] == "1" && sa[1] == "");
   // get just the second value
   sa[0] = "";
   sa[1] = "";
   v = vtkDICOMValue(vtkDICOMVR::IS, flt1, flt1 + 2);
-  v.GetValues(sa, 1, 1);
+  v.GetValues(sa, sa + 1, 1);
   TestAssert(sa[0] == "2" && sa[1] == "");
   }
 

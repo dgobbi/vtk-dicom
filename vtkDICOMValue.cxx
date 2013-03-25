@@ -924,8 +924,10 @@ vtkDICOMValue *vtkDICOMValue::GetMultiplexData()
 
 //----------------------------------------------------------------------------
 template<class VT>
-void vtkDICOMValue::GetValuesT(VT *v, unsigned int s, unsigned int c) const
+void vtkDICOMValue::GetValuesT(VT *v, VT *ve, unsigned int s) const
 {
+  unsigned int c = static_cast<unsigned int>(ve - v);
+
   switch (this->V->Type)
     {
     case VTK_CHAR:
@@ -977,26 +979,26 @@ void vtkDICOMValue::GetValuesT(VT *v, unsigned int s, unsigned int c) const
 
 template<>
 void vtkDICOMValue::GetValuesT<std::string>(
-  std::string *v, unsigned int s, unsigned int c) const
+  std::string *v, std::string *ve, unsigned int s) const
 {
-  for (unsigned int i = 0; i < c; i++)
+  while (v != ve)
     {
     v->clear();
-    this->AppendValueToString(*v++, i+s);
+    this->AppendValueToString(*v++, s++);
     }
 }
 
 template<>
 void vtkDICOMValue::GetValuesT<vtkDICOMTag>(
-  vtkDICOMTag *v, unsigned int s, unsigned int c) const
+  vtkDICOMTag *v, vtkDICOMTag *ve, unsigned int s) const
 {
   if (this->V->Type == VTK_DICOM_TAG)
     {
     const vtkDICOMTag *ptr =
       static_cast<const ValueT<vtkDICOMTag> *>(this->V)->Data + s;
-    for (unsigned int i = 0; i < c; i++)
+    while (v != ve)
       {
-      v[i] = ptr[i];
+      *v++ = *ptr++;
       }
     }
 }
@@ -1004,66 +1006,66 @@ void vtkDICOMValue::GetValuesT<vtkDICOMTag>(
 //----------------------------------------------------------------------------
 // These are interface methods that call the templated internal methods.
 void vtkDICOMValue::GetValues(
-  unsigned char *v, unsigned int s, unsigned int c) const
+  unsigned char *v, unsigned char *ve, unsigned int s) const
 {
-  assert((s + c) <= this->V->NumberOfValues);
-  this->GetValuesT(v, s, c);
+  assert(static_cast<size_t>(ve - v + s) <= this->V->NumberOfValues);
+  this->GetValuesT(v, ve, s);
 }
 
 void vtkDICOMValue::GetValues(
-  short *v, unsigned int s, unsigned int c) const
+  short *v, short *ve, unsigned int s) const
 {
-  assert((s + c) <= this->V->NumberOfValues);
-  this->GetValuesT(v, s, c);
+  assert(static_cast<size_t>(ve - v + s) <= this->V->NumberOfValues);
+  this->GetValuesT(v, ve, s);
 }
 
 void vtkDICOMValue::GetValues(
-  unsigned short *v, unsigned int s, unsigned int c) const
+  unsigned short *v, unsigned short *ve, unsigned int s) const
 {
-  assert((s + c) <= this->V->NumberOfValues);
-  this->GetValuesT(v, s, c);
+  assert(static_cast<size_t>(ve - v + s) <= this->V->NumberOfValues);
+  this->GetValuesT(v, ve, s);
 }
 
 void vtkDICOMValue::GetValues(
-  int *v, unsigned int s, unsigned int c) const
+  int *v, int *ve, unsigned int s) const
 {
-  assert((s + c) <= this->V->NumberOfValues);
-  this->GetValuesT(v, s, c);
+  assert(static_cast<size_t>(ve - v + s) <= this->V->NumberOfValues);
+  this->GetValuesT(v, ve, s);
 }
 
 void vtkDICOMValue::GetValues(
-  unsigned int *v, unsigned int s, unsigned int c) const
+  unsigned int *v, unsigned int *ve, unsigned int s) const
 {
-  assert((s + c) <= this->V->NumberOfValues);
-  this->GetValuesT(v, s, c);
+  assert(static_cast<size_t>(ve - v + s) <= this->V->NumberOfValues);
+  this->GetValuesT(v, ve, s);
 }
 
 void vtkDICOMValue::GetValues(
-  float *v, unsigned int s, unsigned int c) const
+  float *v, float *ve, unsigned int s) const
 {
-  assert((s + c) <= this->V->NumberOfValues);
-  this->GetValuesT(v, s, c);
+  assert(static_cast<size_t>(ve - v + s) <= this->V->NumberOfValues);
+  this->GetValuesT(v, ve, s);
 }
 
 void vtkDICOMValue::GetValues(
-  double *v, unsigned int s, unsigned int c) const
+  double *v, double *ve, unsigned int s) const
 {
-  assert((s + c) <= this->V->NumberOfValues);
-  this->GetValuesT(v, s, c);
+  assert(static_cast<size_t>(ve - v + s) <= this->V->NumberOfValues);
+  this->GetValuesT(v, ve, s);
 }
 
 void vtkDICOMValue::GetValues(
-  std::string *v, unsigned int s, unsigned int c) const
+  std::string *v, std::string *ve, unsigned int s) const
 {
-  assert((s + c) <= this->V->NumberOfValues);
-  this->GetValuesT(v, s, c);
+  assert(static_cast<size_t>(ve - v + s) <= this->V->NumberOfValues);
+  this->GetValuesT(v, ve, s);
 }
 
 void vtkDICOMValue::GetValues(
-  vtkDICOMTag *v, unsigned int s, unsigned int c) const
+  vtkDICOMTag *v, vtkDICOMTag *ve, unsigned int s) const
 {
-  assert((s + c) <= this->V->NumberOfValues);
-  this->GetValuesT(v, s, c);
+  assert(static_cast<size_t>(ve - v + s) <= this->V->NumberOfValues);
+  this->GetValuesT(v, ve, s);
 }
 
 //----------------------------------------------------------------------------
@@ -1072,7 +1074,7 @@ unsigned char vtkDICOMValue::GetUnsignedChar(unsigned int i) const
   unsigned char v = 0;
   if (this->V && i < this->V->NumberOfValues)
     {
-    this->GetValuesT(&v, i, 1);
+    this->GetValuesT(&v, &v + 1, i);
     }
   return v;
 }
@@ -1082,7 +1084,7 @@ short vtkDICOMValue::GetShort(unsigned int i) const
   short v = 0;
   if (this->V && i < this->V->NumberOfValues)
     {
-    this->GetValuesT(&v, i, 1);
+    this->GetValuesT(&v, &v + 1, i);
     }
   return v;
 }
@@ -1092,7 +1094,7 @@ unsigned short vtkDICOMValue::GetUnsignedShort(unsigned int i) const
   unsigned short v = 0;
   if (this->V && i < this->V->NumberOfValues)
     {
-    this->GetValuesT(&v, i, 1);
+    this->GetValuesT(&v, &v + 1, i);
     }
   return v;
 }
@@ -1102,7 +1104,7 @@ int vtkDICOMValue::GetInt(unsigned int i) const
   int v = 0;
   if (this->V && i < this->V->NumberOfValues)
     {
-    this->GetValuesT(&v, i, 1);
+    this->GetValuesT(&v, &v + 1, i);
     }
   return v;
 }
@@ -1112,7 +1114,7 @@ unsigned int vtkDICOMValue::GetUnsignedInt(unsigned int i) const
   unsigned int v = 0;
   if (this->V && i < this->V->NumberOfValues)
     {
-    this->GetValuesT(&v, i, 1);
+    this->GetValuesT(&v, &v + 1, i);
     }
   return v;
 }
@@ -1122,7 +1124,7 @@ float vtkDICOMValue::GetFloat(unsigned int i) const
   float v = 0.0;
   if (this->V && i < this->V->NumberOfValues)
     {
-    this->GetValuesT(&v, i, 1);
+    this->GetValuesT(&v, &v + 1, i);
     }
   return v;
 }
@@ -1132,7 +1134,7 @@ double vtkDICOMValue::GetDouble(unsigned int i) const
   double v = 0.0;
   if (this->V && i < this->V->NumberOfValues)
     {
-    this->GetValuesT(&v, i, 1);
+    this->GetValuesT(&v, &v + 1, i);
     }
   return v;
 }
@@ -1153,7 +1155,7 @@ vtkDICOMTag vtkDICOMValue::GetTag(unsigned int i) const
   if (this->V && this->V->VR == vtkDICOMVR::AT &&
       this->V->NumberOfValues == 1)
     {
-    this->GetValuesT(&v, i, 1);
+    this->GetValuesT(&v, &v + 1, i);
     }
   return v;
 }
@@ -1164,7 +1166,7 @@ unsigned char vtkDICOMValue::AsUnsignedChar() const
   unsigned char v = 0;
   if (this->V && this->V->NumberOfValues == 1)
     {
-    this->GetValuesT(&v, 0, 1);
+    this->GetValuesT(&v, &v + 1, 0);
     }
   return v;
 }
@@ -1174,7 +1176,7 @@ short vtkDICOMValue::AsShort() const
   short v = 0;
   if (this->V && this->V->NumberOfValues == 1)
     {
-    this->GetValuesT(&v, 0, 1);
+    this->GetValuesT(&v, &v + 1, 0);
     }
   return v;
 }
@@ -1184,7 +1186,7 @@ unsigned short vtkDICOMValue::AsUnsignedShort() const
   unsigned short v = 0;
   if (this->V && this->V->NumberOfValues == 1)
     {
-    this->GetValuesT(&v, 0, 1);
+    this->GetValuesT(&v, &v + 1, 0);
     }
   return v;
 }
@@ -1194,7 +1196,7 @@ int vtkDICOMValue::AsInt() const
   int v = 0;
   if (this->V && this->V->NumberOfValues == 1)
     {
-    this->GetValuesT(&v, 0, 1);
+    this->GetValuesT(&v, &v + 1, 0);
     }
   return v;
 }
@@ -1204,7 +1206,7 @@ unsigned int vtkDICOMValue::AsUnsignedInt() const
   unsigned int v = 0;
   if (this->V && this->V->NumberOfValues == 1)
     {
-    this->GetValuesT(&v, 0, 1);
+    this->GetValuesT(&v, &v + 1, 0);
     }
   return v;
 }
@@ -1214,7 +1216,7 @@ float vtkDICOMValue::AsFloat() const
   float v = 0.0;
   if (this->V && this->V->NumberOfValues == 1)
     {
-    this->GetValuesT(&v, 0, 1);
+    this->GetValuesT(&v, &v + 1, 0);
     }
   return v;
 }
@@ -1224,7 +1226,7 @@ double vtkDICOMValue::AsDouble() const
   double v = 0.0;
   if (this->V && this->V->NumberOfValues == 1)
     {
-    this->GetValuesT(&v, 0, 1);
+    this->GetValuesT(&v, &v + 1, 0);
     }
   return v;
 }
@@ -1245,7 +1247,7 @@ vtkDICOMTag vtkDICOMValue::AsTag() const
   if (this->V && this->V->VR == vtkDICOMVR::AT &&
       this->V->NumberOfValues == 1)
     {
-    this->GetValuesT(&v, 0, 1);
+    this->GetValuesT(&v, &v + 1, 0);
     }
   return v;
 }
