@@ -7,12 +7,12 @@
 #include "vtkDICOMReferenceCount.h"
 
 // type constants
-#define VTK_DICOM_ITEM   13
-#define VTK_DICOM_VALUE  14
+#define VTK_DICOM_TAG    13
+#define VTK_DICOM_ITEM   14
+#define VTK_DICOM_VALUE  15
 
 class vtkDICOMItem;
 class vtkDICOMSequence;
-class vtkDICOMAttributeTags;
 
 //! A class to store attribute values for DICOM metadata.
 /*!
@@ -57,11 +57,12 @@ public:
    *  For these VRs, always use these types:
    *  - OB (other byte) or UN (unknown), use unsigned char.
    *  - OW, use either unsigned short or signed short.
-   *  - AT, use two unsigned shorts per tag.
+   *  - AT, use an array of vtkDICOMTag values.
    *  - SQ, use an array of vtkDICOMItem values.
    */
   vtkDICOMValue(vtkDICOMVR vr, double v);
   vtkDICOMValue(vtkDICOMVR vr, const std::string& v);
+  vtkDICOMValue(vtkDICOMVR vr, vtkDICOMTag v);
   vtkDICOMValue(vtkDICOMVR vr,
                 const char *data, const char *end);
   vtkDICOMValue(vtkDICOMVR vr,
@@ -78,6 +79,8 @@ public:
                 const float *data, const float *end);
   vtkDICOMValue(vtkDICOMVR vr,
                 const double *data, const double *end);
+  vtkDICOMValue(vtkDICOMVR vr,
+                const vtkDICOMTag *data, const vtkDICOMTag *end);
 
   //! Copy constructor.
   vtkDICOMValue(const vtkDICOMValue &v) : V(v.V) {
@@ -85,9 +88,6 @@ public:
 
   //! Construct from a sequence.
   vtkDICOMValue(const vtkDICOMSequence &v);
-
-  //! Construct from a list of attribute tags.
-  vtkDICOMValue(const vtkDICOMAttributeTags &v);
 
   //! Default constructor, constructs an invalid value.
   vtkDICOMValue() : V(0) {}
@@ -120,8 +120,7 @@ public:
    *  - for binary numerical data (FL, FD, SS, US, SL, UL, OF, OW, OB)
    *    the number of binary values will be returned.
    *  - for UN, the number of bytes will be returned.
-   *  - for attribute tags (VR is AT) the number of 16-bit values will
-   *    be returned, i.e. twice the number of (group,element) tags.
+   *  - for attribute tags (VR is AT) the number of tags will be returned.
    *  - for sequences (SQ and XQ) the number of items in the sequence,
    *    including any delimeters, will be returned.
    */
@@ -143,6 +142,7 @@ public:
   void GetValues(unsigned int *v, unsigned int i, unsigned int n) const;
   void GetValues(float *v, unsigned int i, unsigned int n) const;
   void GetValues(double *v, unsigned int i, unsigned int n) const;
+  void GetValues(vtkDICOMTag *v, unsigned int i, unsigned int n) const;
 
   //! Get one scalar value or single string from the value.
   /*!
@@ -159,6 +159,7 @@ public:
   unsigned int GetUnsignedInt(unsigned int i) const;
   float GetFloat(unsigned int i) const;
   double GetDouble(unsigned int i) const;
+  vtkDICOMTag GetTag(unsigned int i) const;
 
   //! Convert the value to a scalar value or string.
   /*!
@@ -198,6 +199,7 @@ public:
   const unsigned int *GetUnsignedIntData() const;
   const float *GetFloatData() const;
   const double *GetDoubleData() const;
+  const vtkDICOMTag *GetTagData() const;
   const vtkDICOMItem *GetSequenceData() const;
   const vtkDICOMValue *GetMultiplexData() const;
   vtkDICOMValue *GetMultiplexData();
@@ -216,6 +218,7 @@ public:
   unsigned int *AllocateUnsignedIntData(vtkDICOMVR vr, unsigned int vn);
   float *AllocateFloatData(vtkDICOMVR vr, unsigned int vn);
   double *AllocateDoubleData(vtkDICOMVR vr, unsigned int vn);
+  vtkDICOMTag *AllocateTagData(vtkDICOMVR vr, unsigned int vn);
   vtkDICOMItem *AllocateSequenceData(vtkDICOMVR vr, unsigned int vn);
   vtkDICOMValue *AllocateMultiplexData(vtkDICOMVR vr, unsigned int vn);
 
@@ -247,7 +250,6 @@ public:
     return *this; }
 
   vtkDICOMValue& operator=(const vtkDICOMSequence& o);
-  vtkDICOMValue& operator=(const vtkDICOMAttributeTags& o);
 
   bool operator==(const vtkDICOMValue& o) const;
   bool operator!=(const vtkDICOMValue& o) const { return !(*this == o); }
@@ -284,7 +286,6 @@ private:
 
   // friend the subclasses.
   friend class vtkDICOMSequence;
-  friend class vtkDICOMAttributeTags;
 };
 
 ostream& operator<<(ostream& os, const vtkDICOMValue& v);

@@ -179,7 +179,7 @@ const unsigned char vtkDICOMVR::TypeTable[32] = {
   VTK_VOID,           // Invalid
   VTK_CHAR,           // AE Application Entity
   VTK_CHAR,           // AS Age String
-  VTK_UNSIGNED_SHORT, // AT Attribute Tag
+  VTK_DICOM_TAG,      // AT Attribute Tag
   VTK_CHAR,           // CS Code String
   VTK_CHAR,           // DA Date
   VTK_CHAR,           // DS Decimal String

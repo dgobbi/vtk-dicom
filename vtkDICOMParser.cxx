@@ -182,6 +182,7 @@ public:
                         unsigned int n);
   static void GetValues(const unsigned char *ip, float *v, unsigned int n);
   static void GetValues(const unsigned char *ip, double *v, unsigned int n);
+  static void GetValues(const unsigned char *ip, vtkDICOMTag *v, unsigned int n);
 
   // Read "n" values from the buffer into the provided pointer.
   // The number of bytes that were read from the buffer will be returned.
@@ -559,6 +560,20 @@ void Decoder<E>::GetValues(
   while (--n);
 }
 
+template<int E>
+void Decoder<E>::GetValues(
+  const unsigned char *ip, vtkDICOMTag *op, unsigned int n)
+{
+  do
+    {
+    unsigned short g = Decoder<E>::GetInt16(ip);
+    unsigned short e = Decoder<E>::GetInt16(ip + 2);
+    *op++ = vtkDICOMTag(g, e);
+    ip += 4;
+    }
+  while (--n);
+}
+
 //----------------------------------------------------------------------------
 // Read "n" elements of type "T" into the supplied array pointer.
 template<int E>
@@ -771,6 +786,13 @@ unsigned int Decoder<E>::ReadElementValue(
       {
       unsigned int n = vl/sizeof(double);
       double *ptr = v.AllocateDoubleData(vr, n);
+      l = this->ReadData(cp, ep, ptr, n);
+      }
+      break;
+    case VTK_DICOM_TAG:
+      {
+      unsigned int n = vl/sizeof(vtkDICOMTag);
+      vtkDICOMTag *ptr = v.AllocateTagData(vr, n);
       l = this->ReadData(cp, ep, ptr, n);
       }
       break;
