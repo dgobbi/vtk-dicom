@@ -1423,7 +1423,7 @@ void vtkDICOMParser::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "FileName: "
      << (this->FileName ? this->FileName : "(NULL)") << "\n";
-  os << indent << "GetPixelDataFound: "
+  os << indent << "PixelDataFound: "
      << (this->PixelDataFound ? "True\n" : "False\n");
   os << indent << "FileOffset: " << this->FileOffset << "\n";
   os << indent << "FileSize: " << this->FileSize << "\n";
