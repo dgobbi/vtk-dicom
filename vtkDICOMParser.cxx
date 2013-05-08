@@ -5,6 +5,7 @@
 
 #include <vtkObjectFactory.h>
 #include <vtkUnsignedShortArray.h>
+#include <vtkErrorCode.h>
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -1096,6 +1097,7 @@ vtkDICOMParser::vtkDICOMParser()
   this->ChunkSize = 0;
   this->Index = -1;
   this->PixelDataFound = false;
+  this->ErrorCode = 0;
 }
 
 // Destructor
@@ -1142,6 +1144,7 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
   // Check that the file name has been set.
   if (!this->FileName)
     {
+    this->SetErrorCode(vtkErrorCode::NoFileNameError);
     vtkErrorMacro("ReadFile: No file name has been set");
     return false;
     }
@@ -1150,6 +1153,7 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
   struct stat fs;
   if (stat(this->FileName, &fs) != 0)
     {
+    this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
     vtkErrorMacro("ReadFile: Can't open file " << this->FileName);
     return false;
     }
@@ -1161,6 +1165,7 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
 
   if (infile.fail())
     {
+    this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
     vtkErrorMacro("ReadFile: Can't read the file " << this->FileName);
     return false;
     }
@@ -1367,6 +1372,7 @@ bool vtkDICOMParser::FillBuffer(
     }
   else if (this->InputStream->bad())
     {
+    this->SetErrorCode(vtkErrorCode::UnknownError);
     vtkErrorMacro("FillBuffer: error reading from file " << this->FileName);
     return false;
     }
@@ -1412,6 +1418,7 @@ void vtkDICOMParser::ParseError(
   const unsigned char* cp, const unsigned char* ep, const char* message)
 {
   this->ComputeFileOffset(cp, ep);
+  this->SetErrorCode(vtkErrorCode::FileFormatError);
   vtkErrorMacro("At byte offset " << this->FileOffset << " in file "
                 << this->FileName << ": " << message);
 }

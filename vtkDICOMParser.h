@@ -67,6 +67,9 @@ public:
   //! Read the metadata from the file.
   virtual void Update();
 
+  //! Get the error code.
+  unsigned long GetErrorCode() { return this->ErrorCode; }
+
 protected:
   vtkDICOMParser();
   ~vtkDICOMParser();
@@ -92,6 +95,9 @@ protected:
   //! Report an error while parsing the file.
   virtual void ParseError(
     const unsigned char *cp, const unsigned char *ep, const char *message);
+
+  //! Set the error code.
+  void SetErrorCode(unsigned long e) { this->ErrorCode = e; }
 
   //! Read the file into the provided metadata object.
   virtual bool ReadFile(vtkDICOMMetaData *data, int idx);
@@ -122,6 +128,7 @@ protected:
   int BufferSize;
   int ChunkSize;
   int Index;
+  unsigned long ErrorCode;
   bool PixelDataFound;
 
   // used to share FillBuffer with internal classes
