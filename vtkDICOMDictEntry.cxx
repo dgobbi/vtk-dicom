@@ -1,5 +1,8 @@
 #include "vtkDICOMDictEntry.h"
 
+const vtkDICOMDictionary::Entry vtkDICOMDictEntry::InvalidEntry = {
+  0, 0, 0, 0, 0, "" };
+
 ostream& operator<<(ostream& o, vtkDICOMDictEntry a)
 {
   if (a.I == 0)
