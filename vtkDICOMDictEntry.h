@@ -10,18 +10,35 @@
 class vtkDICOMDictEntry
 {
 public:
+  //! Construct an invalid DictEntry object.
   vtkDICOMDictEntry() : I(0) {}
 
+  //! Check whether the returned entry is valid.
+  bool IsValid() {
+    return (this->I != 0); }
+
+  //! Get the DICOM tag for this dictionary entry.
   vtkDICOMTag GetTag() {
-    return vtkDICOMTag(this->I->Group, this->I->Element); }
+    return (this->I == 0 ? vtkDICOMTag() :
+            vtkDICOMTag(this->I->Group, this->I->Element)); }
+
+  //! Get the VR for this dictionary entry.
   vtkDICOMVR GetVR() {
-    return vtkDICOMVR(static_cast<vtkDICOMVR::EnumType>(this->I->VR)); }
+    return (this->I == 0 ? vtkDICOMVR() :
+            vtkDICOMVR(static_cast<vtkDICOMVR::EnumType>(this->I->VR))); }
+
+  //! Get the VM for this dictionary entry.
   vtkDICOMVM GetVM() {
-    return vtkDICOMVM(static_cast<vtkDICOMVM::EnumType>(this->I->VM)); }
+    return (this->I == 0 ? vtkDICOMVM() :
+            vtkDICOMVM(static_cast<vtkDICOMVM::EnumType>(this->I->VM))); }
+
+  //! Get a human-readable name for this dictionary entry.
   const char *GetName() {
-    return this->I->Name; }
+    return (this->I == 0 ? "" : this->I->Name); }
+
+  //! Check whether this entry has been retired from the DICOM standard.
   bool IsRetired() {
-    return (this->I->Owner == 1); }
+    return (this->I == 0 ? false : (this->I->Owner == 1)); }
 
 private:
   vtkDICOMDictEntry(vtkDICOMDictionary::Entry *o) : I(o) {}

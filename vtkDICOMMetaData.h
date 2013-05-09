@@ -95,7 +95,8 @@ public:
 
   //! Find the dictionary entry for the given tag.
   static bool FindDictEntry(const vtkDICOMTag &tag, vtkDICOMDictEntry& e) {
-    return vtkDICOMDictionary::FindDictEntry(tag, e); }
+    e = vtkDICOMDictionary::FindDictEntry(tag);
+    return e.IsValid(); }
 
 protected:
   vtkDICOMMetaData();

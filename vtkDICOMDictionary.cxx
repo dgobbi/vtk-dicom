@@ -57,8 +57,7 @@ bool vtkDICOMDictionary::InitializeOnce()
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMDictionary::FindDictEntry(
-  const vtkDICOMTag &tag, vtkDICOMDictEntry &e)
+vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(const vtkDICOMTag &tag)
 {
   unsigned short group = tag.GetGroup();
   unsigned short element = tag.GetElement();
@@ -96,8 +95,7 @@ bool vtkDICOMDictionary::FindDictEntry(
         {
         if (hptr->Group == group && hptr->Element == element)
           {
-          e = vtkDICOMDictEntry(hptr);
-          return true;
+          return vtkDICOMDictEntry(hptr);
           }
         hptr++;
         }
@@ -107,8 +105,7 @@ bool vtkDICOMDictionary::FindDictEntry(
     }
 
   // not found in dictionary
-  e = vtkDICOMDictEntry();
-  return false;
+  return vtkDICOMDictEntry();
 }
 
 //----------------------------------------------------------------------------

@@ -11,7 +11,7 @@ class vtkDICOMDictionary
 {
 public:
   //! Find the dictionary entry for the given tag.
-  static bool FindDictEntry(const vtkDICOMTag &tag, vtkDICOMDictEntry &e);
+  static vtkDICOMDictEntry FindDictEntry(const vtkDICOMTag &tag);
 
   //! A tag type that is a POD that can be statically initialized.
   struct StaticTag
