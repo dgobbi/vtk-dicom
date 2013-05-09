@@ -16,6 +16,9 @@ public:
   //! Construct a tag from an identifier from the DICOM dictionary.
   vtkDICOMTag(DC::EnumType tag) : Key(tag) {}
 
+  //! Construct a tag object from a static tag.
+  vtkDICOMTag(vtkDICOMDictionary::StaticTag tag) : Key(tag.Key) {}
+
   //! Get the 16-bit group identifier.
   unsigned short GetGroup() const {
     return static_cast<unsigned short>(this->Key >> 16); }

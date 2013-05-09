@@ -366,32 +366,6 @@ void vtkDICOMMetaData::SetAttributeValue(
   this->SetAttributeValueT(idx, tag, v);
 }
 
-//----------------------------------------------------------------------------
-bool vtkDICOMMetaData::FindDictEntry(vtkDICOMTag tag, vtkDICOMDictEntry &e)
-{
-  unsigned int m = DICT_HASH_TABLE_SIZE - 1;
-  unsigned int i = (tag.ComputeHash() & m);
-  vtkDICOMDictEntry::Internal **htable = vtkDICOMMetaData::DictHashTable;
-  vtkDICOMDictEntry::Internal *hptr;
-
-  if (htable && (hptr = htable[i]) != NULL)
-    {
-    while (hptr->Group || hptr->Element || hptr->VR)
-      {
-      if (hptr->Group == tag.GetGroup() &&
-          hptr->Element == tag.GetElement())
-        {
-        e = vtkDICOMDictEntry(hptr);
-        return true;
-        }
-      hptr++;
-      }
-    }
-
-  e = vtkDICOMDictEntry();
-  return false;
-}
-
 // should only be called from SetAttributeValue
 vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
 {

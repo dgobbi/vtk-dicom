@@ -1,11 +1,147 @@
-#include "vtkDICOMMetaData.h"
+#include "vtkDICOMDictionary.h"
+#include "vtkDICOMVR.h"
+#include "vtkDICOMVM.h"
+#include "vtkDICOMTag.h"
+#include "vtkDICOMDictEntry.h"
+
 #include <string.h>
 
+//----------------------------------------------------------------------------
+// A helper class to delete static variables when program exits.
+class vtkDICOMDictionaryCleanup
+{
+public:
+  vtkDICOMDictionaryCleanup();
+  ~vtkDICOMDictionaryCleanup();
+};
+
+vtkDICOMDictionaryCleanup::vtkDICOMDictionaryCleanup()
+{
+}
+
+vtkDICOMDictionaryCleanup::~vtkDICOMDictionaryCleanup()
+{
+  if (vtkDICOMDictionary::InitializeOnce())
+    {
+    delete [] vtkDICOMDictionary::PrivateDictionaries;
+    vtkDICOMDictionary::PrivateDictionaries = 0;
+    }
+}
+
+// Destruction of this object when the program exits will cause
+// the private dictionary list of vtkDICOMDictionary to be deleted.
+static vtkDICOMDictionaryCleanup DictionaryCleanupInstance;
+
+//----------------------------------------------------------------------------
+vtkDICOMDictionary::Entry ***vtkDICOMDictionary::PrivateDictionaries;
+
+//----------------------------------------------------------------------------
+bool vtkDICOMDictionary::InitializeOnce()
+{
+  // In C++ the order of initialization of static members is undefined,
+  // whereas static variables in functions are always initialized the
+  // first time the function they are defined in is run.  So we use this
+  // predictability to make the initialization of our static members
+  // similarly predictable.
+
+  static bool initialized = false;
+
+  if (!initialized)
+    {
+    vtkDICOMDictionary::PrivateDictionaries = 0;
+    initialized = true;
+    return false;
+    }
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMDictionary::FindDictEntry(
+  const vtkDICOMTag &tag, vtkDICOMDictEntry &e)
+{
+  unsigned short group = tag.GetGroup();
+  unsigned short element = tag.GetElement();
+
+  // default to the standard dictionary
+  vtkDICOMDictionary::Entry **htable = vtkDICOMDictionary::DictHashTable;
+  vtkDICOMDictionary::Entry *hptr;
+
+  // for even group number, only search standard dictionary
+  vtkDICOMDictionary::Entry **empty = 0;
+  vtkDICOMDictionary::Entry ***tlist = &empty;
+
+  // for odd group number, only search the private dictionaries
+  if (group & 1)
+    {
+    vtkDICOMDictionary::InitializeOnce();
+    tlist = vtkDICOMDictionary::PrivateDictionaries;
+    htable = 0;
+    if (tlist)
+      {
+      htable = *tlist++;
+      }
+    }
+
+  // compute the hash table index
+  unsigned int m = DICT_HASH_TABLE_SIZE - 1;
+  unsigned int i = (tag.ComputeHash() & m);
+
+  // search the dictionary (or dictionaries)
+  while (htable)
+    {
+    if (htable && (hptr = htable[i]) != NULL)
+      {
+      while (hptr->Group || hptr->Element || hptr->VR)
+        {
+        if (hptr->Group == group && hptr->Element == element)
+          {
+          e = vtkDICOMDictEntry(hptr);
+          return true;
+          }
+        hptr++;
+        }
+      }
+
+    htable = *tlist++;
+    }
+
+  // not found in dictionary
+  e = vtkDICOMDictEntry();
+  return false;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMDictionary::AddPrivateDictionary(Entry **hashTable)
+{
+  vtkDICOMDictionary::InitializeOnce();
+  Entry ***tlist = vtkDICOMDictionary::PrivateDictionaries;
+  int n = 0;
+  if (tlist)
+    {
+    while (tlist[n]) { n++; }
+    }
+
+  Entry ***newlist = new Entry**[n+2];
+
+  for (int i = 0; i < n; i++)
+    {
+    newlist[i] = tlist[i];
+    }
+
+  newlist[n] = hashTable;
+  newlist[n+1] = 0;
+  vtkDICOMDictionary::PrivateDictionaries = newlist;
+
+  delete [] tlist;
+}
+
+//----------------------------------------------------------------------------
 namespace {
 
 typedef vtkDICOMVR VR;
 typedef vtkDICOMVM VM;
-typedef vtkDICOMDictEntry::Internal DictEntry;
+typedef vtkDICOMDictionary::Entry DictEntry;
 
 DictEntry DictRow0000[] = {
 { 0x0002, 0x0002, 0, VR::UI, VM::M1, "Media Storage SOP Class UID" },
@@ -6662,7 +6798,7 @@ DictEntry DictRow1023[] = {
 
 }
 
-DictEntry *vtkDICOMMetaData::DictHashTable[1024] = {
+DictEntry *vtkDICOMDictionary::DictHashTable[1024] = {
 DictRow0000,
 DictRow0001,
 DictRow0002,

@@ -4,23 +4,12 @@
 #include "vtkDICOMVR.h"
 #include "vtkDICOMVM.h"
 #include "vtkDICOMTag.h"
+#include "vtkDICOMDictionary.h"
 
 //! An entry in the DICOM dictionary.
 class vtkDICOMDictEntry
 {
 public:
-
-  // The struct that actually stores the vtkDICOMDictEntry information.
-  struct Internal
-  {
-    unsigned short Group;
-    unsigned short Element;
-    unsigned char  Owner;
-    unsigned char  VR;
-    unsigned short VM;
-    const char *Name;
-  };
-
   vtkDICOMDictEntry() : I(0) {}
 
   vtkDICOMTag GetTag() {
@@ -35,11 +24,12 @@ public:
     return (this->I->Owner == 1); }
 
 private:
-  vtkDICOMDictEntry(Internal *o) : I(o) {}
-  friend class vtkDICOMMetaData;
+  vtkDICOMDictEntry(vtkDICOMDictionary::Entry *o) : I(o) {}
+
+  friend class vtkDICOMDictionary;
   friend ostream& operator<<(ostream& o, vtkDICOMDictEntry a);
 
-  Internal *I;
+  vtkDICOMDictionary::Entry *I;
 };
 
 ostream& operator<<(ostream& o, vtkDICOMDictEntry a);

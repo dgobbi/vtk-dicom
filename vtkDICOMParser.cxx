@@ -929,7 +929,15 @@ bool Decoder<E>::ReadElements(
       {
       this->MetaData->SetAttributeValue(this->Index, tag, v);
       }
-    // cout << tag << " " << vr << " " << vl << " " << v << "\n";
+    /*
+    cout << tag << " " << vr << " " << vl << " " << v;
+    vtkDICOMDictEntry entry;
+    if (this->MetaData->FindDictEntry(tag, entry))
+      {
+      cout << " \"" << entry.GetName() << "\"";
+      }
+    cout << "\n";
+    */
     }
 
   bytesRead += tl;

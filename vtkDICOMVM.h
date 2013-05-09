@@ -23,10 +23,14 @@ public:
     M3T3N = 0x03FC,
     M3TN  = 0x03FF,
     M4    = 0x0404,
+    M5    = 0x0505,
     M6    = 0x0606,
     M6TN  = 0x06FF,
+    M8    = 0x0808,
     M9    = 0x0909,
     M16   = 0x1010,
+    M24   = 0x1818,
+    M256  = 0x8100
   };
 
   //! Construct an empty, invalid VM.
@@ -40,15 +44,18 @@ public:
 
   //! Get the minimum allowed number of values
   int GetMin() const {
-    return (this->Key >> 8); }
+    if ((this->Key & 0x8000) != 0) { return (this->Key & 0x7fff); } 
+    else { return (this->Key >> 8); } }
 
   //! Get the maximum allowed number of values, -1 if unlimited
   int GetMax() const {
-    return ((this->Key & 0x80) == 0 ? (this->Key & 0xff) : -1); }
+    if ((this->Key & 0x8000) != 0) { return (this->Key & 0x7fff); } 
+    else { return ((this->Key & 0x80) == 0 ? (this->Key & 0xff) : -1); } }
 
   //! Get the step between allowed values.
   int GetStep() const {
-    return ((this->Key & 0x80) == 0 ? 1 : ((-this->Key) & 0xff)); }
+    if ((this->Key & 0x8000) != 0) { return 1; } 
+    else { return ((this->Key & 0x80) == 0 ? 1 : ((-this->Key) & 0xff)); } }
 
   bool operator==(vtkDICOMVM b) const { return (this->Key == b.Key); }
   bool operator!=(vtkDICOMVM b) const { return (this->Key != b.Key); }

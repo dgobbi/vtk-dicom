@@ -1,6 +1,52 @@
 #ifndef __vtkDICOMDictionary_h
 #define __vtkDICOMDictionary_h
 
+class vtkDICOMTag;
+class vtkDICOMDictEntry;
+
+//! The size of the hash table for the dicom dictionary.
+#define DICT_HASH_TABLE_SIZE 1024
+
+class vtkDICOMDictionary
+{
+public:
+  //! Find the dictionary entry for the given tag.
+  static bool FindDictEntry(const vtkDICOMTag &tag, vtkDICOMDictEntry &e);
+
+  //! A tag type that is a POD that can be statically initialized.
+  struct StaticTag
+  {
+    unsigned int Key;
+  };
+
+  // The struct that actually stores the vtkDICOMDictEntry information.
+  struct Entry
+  {
+    unsigned short Group;
+    unsigned short Element;
+    unsigned char  Owner;
+    unsigned char  VR;
+    unsigned short VM;
+    const char    *Name;
+  };
+
+protected:
+  //! Called by subclasses to add private dictionaries.
+  static void AddPrivateDictionary(Entry **hashTable);
+
+private:
+  friend class vtkDICOMDictionaryCleanup;
+
+  //! A method to handle static initialization of PrivateDictionaries
+  static bool InitializeOnce();
+
+  //! The lookup table for the dictionary.
+  static Entry *DictHashTable[DICT_HASH_TABLE_SIZE];
+
+  //! A null-terminated list of private dictionaries.
+  static Entry ***PrivateDictionaries;
+};
+
 //! Tag values defined in the DICOM standard
 namespace DC
 {

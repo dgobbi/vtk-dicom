@@ -6,9 +6,6 @@
 #include "vtkDICOMDataElement.h"
 #include "vtkDICOMDictEntry.h"
 
-//! The size of the hash table for the dicom dictionary.
-#define DICT_HASH_TABLE_SIZE 1024
-
 //! A container class for DICOM metadata.
 /*!
  *  The vtkDICOMMetaData object stores DICOM metadata in a hash table
@@ -97,7 +94,8 @@ public:
   void SetAttributeValue(vtkDICOMTag tag, const std::string& v);
 
   //! Find the dictionary entry for the given tag.
-  static bool FindDictEntry(vtkDICOMTag tag, vtkDICOMDictEntry& e);
+  static bool FindDictEntry(const vtkDICOMTag &tag, vtkDICOMDictEntry& e) {
+    return vtkDICOMDictionary::FindDictEntry(tag, e); }
 
 protected:
   vtkDICOMMetaData();
@@ -136,9 +134,6 @@ private:
 
   //! The number of data elements.
   int NumberOfDataElements;
-
-  //! The lookup table for the dictionary.
-  static vtkDICOMDictEntry::Internal *DictHashTable[DICT_HASH_TABLE_SIZE];
 
   //! An invalid value, for when one is needed.
   static const vtkDICOMValue InvalidValue;
