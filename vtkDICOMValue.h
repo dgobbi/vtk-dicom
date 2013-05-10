@@ -33,7 +33,7 @@ class vtkDICOMValue
     unsigned int   VL;
     unsigned int   NumberOfValues;
 
-    Value() : ReferenceCount(1) {};
+    Value() : ReferenceCount(1) {}
   };
 
   //! The value class, subclassed to support values of different types.
