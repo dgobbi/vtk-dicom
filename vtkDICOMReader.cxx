@@ -34,6 +34,10 @@
 #include "vtkErrorCode.h"
 #include "vtkSmartPointer.h"
 
+#ifdef VTK_DICOM_USE_GDCM
+#include "gdcmImageReader.h"
+#endif
+
 #include "vtksys/SystemTools.hxx"
 #include "vtksys/ios/sstream"
 
@@ -629,6 +633,41 @@ bool vtkDICOMReader::ReadUncompressedFile(
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMReader::ReadCompressedFile(
+  const char *filename, int fileIdx, char *buffer, vtkIdType bufferSize)
+{
+#ifdef VTK_DICOM_USE_GDCM
+
+  gdcm::ImageReader reader;
+  reader.SetFileName(filename);
+  if(!reader.Read())
+    {
+    vtkErrorMacro("The GDCM ImageReader could not read the image.");
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
+    return false;
+    }
+
+  gdcm::Image &image = reader.GetImage();
+  if (static_cast<vtkIdType>(image.GetBufferLength()) != bufferSize)
+    {
+    vtkErrorMacro("The uncompressed image has the wrong size.");
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
+    return false;
+    }
+
+  image.GetBuffer(buffer);
+  return true;
+
+#else /* no GDCM, so no file decompression */
+
+  this->SetErrorCode(vtkErrorCode::FileFormatError);
+  vtkErrorMacro("DICOM file is compressed, cannot read.");
+  return false;
+
+#endif
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMReader::ReadOneFile(
   const char *filename, int fileIdx, char *buffer, vtkIdType bufferSize)
 {
@@ -639,14 +678,13 @@ bool vtkDICOMReader::ReadOneFile(
       transferSyntax == "1.2.840.10008.1.20"  ||  // Papyrus Implicit LE
       transferSyntax == "1.2.840.10008.1.2.1" ||  // Explicit LE
       transferSyntax == "1.2.840.10008.1.2.2" ||  // Explicit BE
-      transferSyntax == "1.2.840.113619.5.2")     // GE LE with BE data
+      transferSyntax == "1.2.840.113619.5.2"  ||  // GE LE with BE data
+      transferSyntax == "")
     {
     return this->ReadUncompressedFile(filename, fileIdx, buffer, bufferSize);
     }
 
-  this->SetErrorCode(vtkErrorCode::FileFormatError);
-  vtkErrorMacro("DICOM file is compressed, cannot read.");
-  return false;
+  return this->ReadCompressedFile(filename, fileIdx, buffer, bufferSize);
 }
 
 //----------------------------------------------------------------------------

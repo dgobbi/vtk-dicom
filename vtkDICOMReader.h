@@ -117,6 +117,11 @@ protected:
     const char *filename, int idx, char *buffer, vtkTypeInt64 bufferSize);
 
   // Description:
+  // Read an uncompressed DICOM file.
+  bool ReadCompressedFile(
+    const char *filename, int idx, char *buffer, vtkTypeInt64 bufferSize);
+
+  // Description:
   // Convert parser errors into reader errors.
   void RelayError(vtkObject *o, unsigned long e, void *data);
 
