@@ -222,6 +222,14 @@ public:
   vtkDICOMItem *AllocateSequenceData(vtkDICOMVR vr, unsigned int vn);
   vtkDICOMValue *AllocateMultiplexData(vtkDICOMVR vr, unsigned int vn);
 
+  //! Compute the number of backslash-separated string values.
+  /*!
+   *  After calling AllocateCharData and writing text into the allocated
+   *  space, this must be called to set the NumberOfValues according to
+   *  the number of backslash-separated string values that are present.
+   */
+  void ComputeNumberOfValuesForCharData();
+
   //! Reallocate data of type OB or UN.
   /*!
    *  Values of type OB or UN can hold encapsulated data.  When

@@ -740,6 +740,7 @@ unsigned int Decoder<E>::ReadElementValue(
       l = this->ReadData(cp, ep, ptr, vl);
       // AllocateCharData makes room for terminal null
       if (l == 0 || ptr[l-1] != '\0') { ptr[l] = '\0'; }
+      v.ComputeNumberOfValuesForCharData();
       }
       break;
     case VTK_UNSIGNED_CHAR:

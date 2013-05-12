@@ -290,6 +290,28 @@ vtkDICOMValue *vtkDICOMValue::AllocateMultiplexData(
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMValue::ComputeNumberOfValuesForCharData()
+{
+  if (this->V && this->V->Type == VTK_CHAR)
+    {
+    if (this->V->VR == vtkDICOMVR::LT ||
+        this->V->VR == vtkDICOMVR::ST ||
+        this->V->VR == vtkDICOMVR::UT)
+      {
+      this->V->NumberOfValues = 1;
+      }
+    else if (this->V->VL > 0)
+      {
+      const char *ptr = static_cast<const ValueT<char> *>(this->V)->Data;
+      unsigned int vl = this->V->VL;
+      unsigned int n = 1;
+      do { n += (*ptr++ == '\\'); } while (--vl);
+      this->V->NumberOfValues = n;
+      }
+    }
+}
+
+//----------------------------------------------------------------------------
 unsigned char *vtkDICOMValue::ReallocateUnsignedCharData(unsigned int vn)
 {
   assert(this->V != 0);
