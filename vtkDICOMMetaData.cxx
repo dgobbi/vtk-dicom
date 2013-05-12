@@ -307,7 +307,7 @@ void vtkDICOMMetaData::SetAttributeValue(
   loc->Tag = tag;
   vtkDICOMValue *vptr = &loc->Value;
 
-  assert(idx >= 0 && idx < static_cast<int>(vptr->GetNumberOfValues()));
+  assert(idx >= 0 && idx < this->NumberOfInstances);
 
   // first value for this attribute
   if (!vptr->IsValid())
