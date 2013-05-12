@@ -1,5 +1,6 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMSorter.h"
+#include "vtkDICOMReader.h"
 
 #include <vtkSmartPointer.h>
 #include <vtkStringArray.h>
@@ -54,10 +55,10 @@ int main(int argc, char *argv[])
       {
       cout << "  Series " << k << ":\n";
       vtkStringArray *a = sorter->GetFileNamesForSeries(k);
-      for (vtkIdType kk = 0; kk < a->GetNumberOfValues(); kk++)
-        {
-        cout << "    " << a->GetValue(kk) << "\n";
-        }
+      vtkDICOMReader *reader = vtkDICOMReader::New();
+      reader->SetFileNames(a);
+      reader->Update();
+      reader->Delete();
       }
     }
 

@@ -18,6 +18,11 @@ int main(int argc, char *argv[])
   const char * inputImageFileName =
     "/Volumes/Work/CAIN/Data/SFMRC/Fast_SPGR_2/IM-0007-0006.dcm";
 
+  if (argc > 1)
+    {
+    inputImageFileName = argv[1];
+    }
+
   gdcm::Reader tagreader;
   tagreader.SetFileName(inputImageFileName);
 
