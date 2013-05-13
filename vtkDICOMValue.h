@@ -24,6 +24,7 @@ class vtkDICOMSequence;
  */
 class vtkDICOMValue
 {
+private:
   //! A reference-counted value class.
   struct Value
   {
@@ -47,7 +48,6 @@ class vtkDICOMValue
   };
 
 public:
-
   //! Construct a new value from the data that is provided.
   /*!
    *  The data will be copied into the value, with conversion if
@@ -147,7 +147,7 @@ public:
   //! Get one scalar value or single string from the value.
   /*!
    *  Convert the i'th value to the desired type, if possible,
-   *  and returned it.  If the value is invalid, or conversion is
+   *  and return it.  If the value is invalid, or conversion is
    *  not possible, or the index is out of range, then the return
    *  value will be zero (or an empty string).
    */
@@ -208,7 +208,9 @@ public:
   /*!
    *  Allocate an array of the specified size (number of elements)
    *  within the value object.  This method will not do any checks
-   *  to ensure that the data type matches the VR.
+   *  to ensure that the data type matches the VR.  It is meant to
+   *  be an efficent way for the parser to allocate a value so that
+   *  the value's contents can be read in directly from a file.
    */
   char *AllocateCharData(vtkDICOMVR vr, unsigned int vn);
   unsigned char *AllocateUnsignedCharData(vtkDICOMVR vr, unsigned int vn);
@@ -257,8 +259,10 @@ public:
       this->V = o.V; }
     return *this; }
 
+  //! Assign a value from a sequence object.
   vtkDICOMValue& operator=(const vtkDICOMSequence& o);
 
+  //! Equality requires that all elements of the value are equal.
   bool operator==(const vtkDICOMValue& o) const;
   bool operator!=(const vtkDICOMValue& o) const { return !(*this == o); }
 
@@ -292,7 +296,7 @@ private:
   //! The only data member: a pointer to the internal value.
   Value *V;
 
-  // friend the subclasses.
+  // friend the sequence class, it requires AppendValue() and SetValue().
   friend class vtkDICOMSequence;
 };
 
