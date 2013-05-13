@@ -567,7 +567,29 @@ int vtkDICOMReader::RequestInformation(
   // the user with a 4x4 matrix that can transform VTK's data coordinates
   // into DICOM's patient coordinates, as defined in the DICOM standard
   // Part 3 Appendix C 7.6.2 "Image Plane Module".
-
+  int fileIndex = this->FileIndexArray->GetValue(0);
+  vtkDICOMValue pv = this->MetaData->GetAttributeValue(
+    fileIndex, DC::ImagePositionPatient);
+  vtkDICOMValue ov = this->MetaData->GetAttributeValue(
+    fileIndex, DC::ImageOrientationPatient);
+  if (pv.GetNumberOfValues() == 3 && ov.GetNumberOfValues() == 6)
+    {
+    double orient[6], normal[3], point[3];
+    pv.GetValues(point, point+3);
+    ov.GetValues(orient, orient+6);
+    vtkMath::Cross(&orient[0], &orient[3], normal);
+    double pm[16];
+    pm[0] = orient[0]; pm[1] = orient[3]; pm[2] = normal[0]; pm[3] = point[0];
+    pm[4] = orient[1]; pm[5] = orient[4]; pm[6] = normal[1]; pm[7] = point[1];
+    pm[8] = orient[2]; pm[9] = orient[5]; pm[10] = normal[2]; pm[11] = point[2];
+    pm[12] = 0.0; pm[13] = 0.0; pm[14] = 0.0; pm[15] = 1.0;
+    this->PatientMatrix->DeepCopy(pm);
+    }
+  else
+    {
+    this->PatientMatrix->Identity();
+    }
+ 
   // Set the output information.
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
   outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(),
