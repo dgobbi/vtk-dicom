@@ -1,21 +1,4 @@
-/*=========================================================================
-
-  Program:   Visualization Toolkit
-  Module:    TestDICOMDisplay.cxx
-
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
-
-=========================================================================*/
-// Test the vtkDICOMReader
-//
-// The command line arguments are:
-// -I        => run in interactive mode
+// Test the vtkDICOMReader by displaying an image.
 
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMSorter.h"
@@ -63,11 +46,32 @@ int main(int argc, char *argv[])
   sorter->SetInputFileNames(files);
   sorter->Update();
 
+  // find the series with the largest number of files
   int m = sorter->GetNumberOfStudies();
-  if (m == 0) { return 0; }
-  int k = sorter->GetFirstSeriesInStudy(0);
+  int studyIdx = 0;
+  int seriesIdx = 0;
+  int kmax = 0;
+  for (int i = 0; i < m; i++)
+    {
+    int fj = sorter->GetFirstSeriesInStudy(i);
+    int lj = fj + sorter->GetNumberOfSeriesInStudy(i);
+    for (int j = fj; j < lj; j++)
+      {
+      int k = sorter->GetFileNamesForSeries(j)->GetNumberOfValues();
+      if (k > kmax)
+        {
+        kmax = k;
+        seriesIdx = j;
+        studyIdx = i;
+        }
+      }
+    }
 
-  vtkStringArray *a = sorter->GetFileNamesForSeries(k);
+  // display the longest series
+  //vtkStringArray *a = sorter->GetFileNamesForSeries(seriesIdx);
+
+  // trust the user and display all the files, even if multiple series
+  vtkStringArray *a = sorter->GetOutputFileNames();
   vtkSmartPointer<vtkDICOMReader> reader =
     vtkSmartPointer<vtkDICOMReader>::New();
   reader->SetFileNames(a);
@@ -156,14 +160,15 @@ int main(int argc, char *argv[])
     }
 
   renWin->Render();
-  int retVal = vtkRegressionTestImage( renWin );
-  if ( retVal == vtkRegressionTester::DO_INTERACTOR )
-    {
-    iren->Start();
-    }
-  else
-    {
-    iren->Start();
-    }
-  return !retVal;
+  iren->Start();
+
+  // code for generating a regression image
+  //int retVal = vtkRegressionTestImage( renWin );
+  //if ( retVal == vtkRegressionTester::DO_INTERACTOR )
+  //  {
+  //  iren->Start();
+  //  }
+  // return !retVal;
+
+  return 0;
 }
