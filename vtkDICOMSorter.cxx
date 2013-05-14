@@ -302,11 +302,20 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
 
   // Sort each series by InstanceNumber
   int studyCount = 0;
+
   vtkDICOMValue lastStudyUID;
   for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
     {
     std::vector<FileInfo> &v = *li;
     std::sort(v.begin(), v.end(), CompareInstance);
+
+    // Is this a new study?
+    if (v[0].StudyUID != lastStudyUID)
+      {
+      lastStudyUID = v[0].StudyUID;
+      studyCount++;
+      }
+
     vtkSmartPointer<vtkStringArray> sa =
       vtkSmartPointer<vtkStringArray>::New();
     vtkIdType n = static_cast<vtkIdType>(v.size());
@@ -315,14 +324,7 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
       {
       sa->SetValue(i, v[i].FileName);
       }
-    this->AddSeriesFileNames(studyCount, sa);
-
-    // Is this a new study?
-    if (v[0].StudyUID != lastStudyUID)
-      {
-      lastStudyUID = v[0].StudyUID;
-      studyCount++;
-      }
+    this->AddSeriesFileNames(studyCount - 1, sa);
     }
 }
 
