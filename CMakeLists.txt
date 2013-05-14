@@ -63,3 +63,6 @@ TARGET_LINK_LIBRARIES(TestDICOMSorter DataManager)
 
 ADD_EXECUTABLE(TestDICOMReader TestDICOMReader.cxx)
 TARGET_LINK_LIBRARIES(TestDICOMReader DataManager)
+
+ADD_EXECUTABLE(TestDICOMDisplay TestDICOMDisplay.cxx)
+TARGET_LINK_LIBRARIES(TestDICOMDisplay DataManager vtkRendering)
