@@ -33,6 +33,7 @@
 #include "vtkCommand.h"
 #include "vtkErrorCode.h"
 #include "vtkSmartPointer.h"
+#include "vtkVersion.h"
 
 #ifdef VTK_DICOM_USE_GDCM
 #include "gdcmImageReader.h"
