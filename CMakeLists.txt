@@ -36,12 +36,14 @@ SET(LIB_SRCS
   vtkDICOMSorter.cxx
   vtkDICOMReferenceCount.cxx
   vtkDICOMValue.cxx
+  vtkNIFTIReader.cxx
+  vtkNIFTIWriter.cxx
 )
 
 ADD_DEFINITIONS(-DVTK_DICOM_USE_GDCM)
 
 ADD_LIBRARY(DataManager ${LIB_SRCS})
-TARGET_LINK_LIBRARIES(DataManager vtkIO gdcmMSFF)
+TARGET_LINK_LIBRARIES(DataManager vtkIO gdcmMSFF vtkzlib)
 
 ADD_EXECUTABLE(TestDICOMParser TestDICOMParser.cxx)
 TARGET_LINK_LIBRARIES(TestDICOMParser DataManager)
@@ -66,3 +68,6 @@ TARGET_LINK_LIBRARIES(TestDICOMReader DataManager)
 
 ADD_EXECUTABLE(TestDICOMDisplay TestDICOMDisplay.cxx)
 TARGET_LINK_LIBRARIES(TestDICOMDisplay DataManager vtkRendering)
+
+ADD_EXECUTABLE(TestNIFTIDisplay TestNIFTIDisplay.cxx)
+TARGET_LINK_LIBRARIES(TestNIFTIDisplay DataManager vtkRendering)
