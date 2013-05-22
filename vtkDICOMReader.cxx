@@ -1,18 +1,16 @@
 /*=========================================================================
 
-  Program:   Visualization Toolkit
-  Module:    vtkDICOMReader.cxx
+  Program: DICOM for VTK
 
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+  Copyright (c) 2012-2013 David Gobbi
   All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+  See Copyright.txt or http://www.cognitive-antics.net/bsd3.txt for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-
 #include "vtkDICOMReader.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMParser.h"
