@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
   vtkDICOMVR vrAT("AT");
   TestAssert(vrAT == vtkDICOMVR::AT);
   TestAssert(strcmp(vrAT.GetText(), "AT") == 0);
-  TestAssert(vrAT.GetType() == VTK_UNSIGNED_SHORT);
+  TestAssert(vrAT.GetType() == VTK_DICOM_TAG);
 
   vtkDICOMVR vrCS("CS");
   TestAssert(vrCS == vtkDICOMVR::CS);

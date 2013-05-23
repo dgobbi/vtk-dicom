@@ -11,15 +11,18 @@ endif(COMMAND CMAKE_POLICY)
 find_package(VTK)
 if(VTK_FOUND)
   include(${VTK_USE_FILE})
-endif(VTK_FOUND)
+endif()
 
 find_package(GDCM)
 if(NOT GDCM_DIR)
   message(FATAL_ERROR "Please set GDCM_DIR.")
-endif(NOT GDCM_DIR)
+endif()
 if(GDCM_FOUND)
   include(${GDCM_USE_FILE})
-endif(GDCM_FOUND)
+endif()
+
+option(BUILD_TESTING "Build the tests" ON)
+option(BUILD_EXAMPLES "Build the examples" OFF)
 
 set(LIB_SRCS
   vtkDICOMMetaData.cxx
@@ -45,20 +48,20 @@ add_definitions(-DVTK_DICOM_USE_GDCM)
 add_library(vtkDICOM ${LIB_SRCS})
 target_link_libraries(vtkDICOM vtkIO gdcmMSFF vtkzlib)
 
+if(BUILD_TESTING)
+  enable_testing()
+  add_subdirectory(Testing)
+endif()
+
+if(BUILD_EXAMPLES)
+  add_subdirectory(Examples)
+endif()
+
 add_executable(TestDICOMParser TestDICOMParser.cxx)
 target_link_libraries(TestDICOMParser vtkDICOM)
 
 add_executable(TestDICOMMetaData TestDICOMMetaData.cxx)
 target_link_libraries(TestDICOMMetaData vtkDICOM)
-
-add_executable(TestDICOMVR TestDICOMVR.cxx)
-target_link_libraries(TestDICOMVR vtkDICOM)
-
-add_executable(TestDICOMValue TestDICOMValue.cxx)
-target_link_libraries(TestDICOMValue vtkDICOM)
-
-add_executable(TestDICOMSequence TestDICOMSequence.cxx)
-target_link_libraries(TestDICOMSequence vtkDICOM)
 
 add_executable(TestDICOMSorter TestDICOMSorter.cxx)
 target_link_libraries(TestDICOMSorter vtkDICOM)
