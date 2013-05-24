@@ -17,7 +17,6 @@
 #include <vtkObject.h>
 
 #include "vtkDICOMDataElement.h"
-#include "vtkDICOMDictEntry.h"
 
 //! A container class for DICOM metadata.
 /*!
@@ -105,11 +104,6 @@ public:
   void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
   void SetAttributeValue(vtkDICOMTag tag, double v);
   void SetAttributeValue(vtkDICOMTag tag, const std::string& v);
-
-  //! Find the dictionary entry for the given tag.
-  static bool FindDictEntry(const vtkDICOMTag &tag, vtkDICOMDictEntry& e) {
-    e = vtkDICOMDictionary::FindDictEntry(tag);
-    return e.IsValid(); }
 
 protected:
   vtkDICOMMetaData();

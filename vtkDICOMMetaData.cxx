@@ -12,6 +12,7 @@
 
 =========================================================================*/
 #include "vtkDICOMMetaData.h"
+#include "vtkDICOMDictEntry.h"
 
 #include <vtkObjectFactory.h>
 #include <vtkMatrix4x4.h>
@@ -384,9 +385,9 @@ void vtkDICOMMetaData::SetAttributeValue(
 vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
 {
   vtkDICOMVR vr = vtkDICOMVR::UN;
-  vtkDICOMDictEntry e;
+  vtkDICOMDictEntry e = vtkDICOMDictionary::FindDictEntry(tag);
 
-  if (vtkDICOMMetaData::FindDictEntry(tag, e))
+  if (e.IsValid())
     {
     vr = e.GetVR();
     // use the dictionary VR

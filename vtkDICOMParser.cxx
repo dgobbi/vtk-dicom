@@ -12,6 +12,7 @@
 
 =========================================================================*/
 #include "vtkDICOMParser.h"
+#include "vtkDICOMDictEntry.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMItem.h"
@@ -412,7 +413,6 @@ bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, unsigned short &u)
 //----------------------------------------------------------------------------
 vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
 {
-  vtkDICOMDictEntry de;
   vtkDICOMVR vr = vtkDICOMVR::UN;
 
   if (tag.GetElement() == 0x0000)
@@ -420,36 +420,40 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
     // this is a group length element, which has VR of "UL"
     vr = vtkDICOMVR::UL;
     }
-  else if (this->MetaData->FindDictEntry(tag, de))
+  else
     {
-    vr = de.GetVR();
-    if (vr == vtkDICOMVR::XS)
+    vtkDICOMDictEntry de = vtkDICOMDictionary::FindDictEntry(tag);
+    if (de.IsValid())
       {
-      // disambiguate tags that may be either "US" or "SS"
-      unsigned short r;
-      vr = vtkDICOMVR::US;
-      if (this->GetAttributeValue(DC::PixelRepresentation, r))
+      vr = de.GetVR();
+      if (vr == vtkDICOMVR::XS)
         {
-        vr = (r == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
-        }
-      }
-    else if (vr == vtkDICOMVR::OX)
-      {
-      // disambiguate tags that may be either "OB" or "OW"
-      unsigned short s;
-      vr = vtkDICOMVR::OW;
-      if (tag.GetGroup() == 0x5400)
-        {
-        if (this->GetAttributeValue(DC::WaveformBitsAllocated, s))
+        // disambiguate tags that may be either "US" or "SS"
+        unsigned short r;
+        vr = vtkDICOMVR::US;
+        if (this->GetAttributeValue(DC::PixelRepresentation, r))
           {
-          vr = (s > 8 ? vtkDICOMVR::OW : vtkDICOMVR::OB);
+          vr = (r == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
           }
         }
-      else
+      else if (vr == vtkDICOMVR::OX)
         {
-        if (this->GetAttributeValue(DC::BitsAllocated, s))
+        // disambiguate tags that may be either "OB" or "OW"
+        unsigned short s;
+        vr = vtkDICOMVR::OW;
+        if (tag.GetGroup() == 0x5400)
           {
-          vr = (s > 8 ? vtkDICOMVR::OW : vtkDICOMVR::OB);
+          if (this->GetAttributeValue(DC::WaveformBitsAllocated, s))
+            {
+            vr = (s > 8 ? vtkDICOMVR::OW : vtkDICOMVR::OB);
+            }
+          }
+        else
+          {
+          if (this->GetAttributeValue(DC::BitsAllocated, s))
+            {
+            vr = (s > 8 ? vtkDICOMVR::OW : vtkDICOMVR::OB);
+            }
           }
         }
       }
