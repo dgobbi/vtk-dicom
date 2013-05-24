@@ -1,5 +1,9 @@
 include_directories(${DICOM_SOURCE_DIR})
 
+add_executable(TestDICOMDictionary TestDICOMDictionary.cxx)
+target_link_libraries(TestDICOMDictionary vtkDICOM)
+add_test(TestDICOMDictionary TestDICOMDictionary)
+
 add_executable(TestDICOMVM TestDICOMVM.cxx)
 target_link_libraries(TestDICOMVM vtkDICOM)
 add_test(TestDICOMVM TestDICOMVM)
