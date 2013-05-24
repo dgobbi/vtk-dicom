@@ -63,6 +63,7 @@ void vtkDICOMMetaData::Clear()
     delete [] htable;
     }
 
+  this->NumberOfDataElements = 0;
   this->NumberOfInstances = 1;
   this->Table = NULL;
   this->Head.Next = &this->Tail;

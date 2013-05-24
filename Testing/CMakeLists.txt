@@ -15,3 +15,9 @@ add_test(TestDICOMValue TestDICOMValue)
 add_executable(TestDICOMSequence TestDICOMSequence.cxx)
 target_link_libraries(TestDICOMSequence vtkDICOM)
 add_test(TestDICOMSequence TestDICOMSequence)
+
+add_executable(TestDICOMMetaData TestDICOMMetaData.cxx)
+target_link_libraries(TestDICOMMetaData vtkDICOM)
+add_test(TestDICOMMetaData TestDICOMMetaData)
+
+

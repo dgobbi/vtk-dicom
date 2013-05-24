@@ -60,9 +60,6 @@ endif()
 add_executable(TestDICOMParser TestDICOMParser.cxx)
 target_link_libraries(TestDICOMParser vtkDICOM)
 
-add_executable(TestDICOMMetaData TestDICOMMetaData.cxx)
-target_link_libraries(TestDICOMMetaData vtkDICOM)
-
 add_executable(TestDICOMSorter TestDICOMSorter.cxx)
 target_link_libraries(TestDICOMSorter vtkDICOM)
 
