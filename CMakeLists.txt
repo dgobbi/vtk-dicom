@@ -13,12 +13,17 @@ if(VTK_FOUND)
   include(${VTK_USE_FILE})
 endif()
 
-find_package(GDCM)
-if(NOT GDCM_DIR)
-  message(FATAL_ERROR "Please set GDCM_DIR.")
-endif()
-if(GDCM_FOUND)
-  include(${GDCM_USE_FILE})
+option(USE_GDCM "Use GDCM for image decompression" OFF)
+if(USE_GDCM)
+  find_package(GDCM)
+  if(NOT GDCM_DIR)
+    message(FATAL_ERROR "Please set GDCM_DIR.")
+  endif()
+  if(GDCM_FOUND)
+    include(${GDCM_USE_FILE})
+    add_definitions(-DVTK_DICOM_USE_GDCM)
+    set(GDCM_LIBS gdcmMSFF)
+  endif()
 endif()
 
 option(BUILD_TESTING "Build the tests" ON)
@@ -44,10 +49,8 @@ set(LIB_SRCS
   vtkNIFTIWriter.cxx
 )
 
-add_definitions(-DVTK_DICOM_USE_GDCM)
-
 add_library(vtkDICOM ${LIB_SRCS})
-target_link_libraries(vtkDICOM vtkIO gdcmMSFF vtkzlib)
+target_link_libraries(vtkDICOM vtkIO ${GDCM_LIBS} vtkzlib)
 
 if(BUILD_TESTING)
   enable_testing()
