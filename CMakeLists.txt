@@ -31,6 +31,7 @@ set(LIB_SRCS
   vtkDICOMVR.cxx
   vtkDICOMVM.cxx
   vtkDICOMDataElement.cxx
+  vtkDICOMDictHash.cxx
   vtkDICOMDictEntry.cxx
   vtkDICOMParser.cxx
   vtkDICOMReader.cxx

@@ -15,12 +15,18 @@
 #define __vtkDICOMTag_h
 
 #include <vtkSystemIncludes.h>
-#include "vtkDICOMDictionary.h"
+#include "vtkDICOMDictHash.h"
 
 //! A (group,element) identifier tag for DICOM attributes.
 class vtkDICOMTag
 {
 public:
+  //! A POD tag that can be statically initialized.
+  struct StaticTag
+  {
+    unsigned int Key;
+  };
+
   vtkDICOMTag() : Key(0) {}
 
   //! Construct a tag from group, element numbers.
@@ -30,7 +36,7 @@ public:
   vtkDICOMTag(DC::EnumType tag) : Key(tag) {}
 
   //! Construct a tag object from a static tag.
-  vtkDICOMTag(vtkDICOMDictionary::StaticTag tag) : Key(tag.Key) {}
+  vtkDICOMTag(StaticTag tag) : Key(tag.Key) {}
 
   //! Get the 16-bit group identifier.
   unsigned short GetGroup() const {

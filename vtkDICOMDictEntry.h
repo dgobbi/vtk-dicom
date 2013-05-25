@@ -17,12 +17,22 @@
 #include "vtkDICOMVR.h"
 #include "vtkDICOMVM.h"
 #include "vtkDICOMTag.h"
-#include "vtkDICOMDictionary.h"
 
 //! An entry in the DICOM dictionary.
 class vtkDICOMDictEntry
 {
 public:
+  // The struct that actually stores the vtkDICOMDictEntry information.
+  struct Entry
+  {
+    unsigned short Group;
+    unsigned short Element;
+    unsigned char  Owner;
+    unsigned char  VR;
+    unsigned short VM;
+    const char    *Name;
+  };
+
   //! Construct an invalid DictEntry object.
   vtkDICOMDictEntry() : I(&InvalidEntry) {}
 
@@ -51,14 +61,14 @@ public:
     return (this->I->Owner == 1); }
 
 private:
-  vtkDICOMDictEntry(const vtkDICOMDictionary::Entry *o) : I(o) {}
+  vtkDICOMDictEntry(const Entry *o) : I(o) {}
 
   friend class vtkDICOMDictionary;
   friend ostream& operator<<(ostream& o, vtkDICOMDictEntry a);
 
-  const vtkDICOMDictionary::Entry *I;
+  const Entry *I;
 
-  static const vtkDICOMDictionary::Entry InvalidEntry;
+  static const Entry InvalidEntry;
 };
 
 ostream& operator<<(ostream& o, vtkDICOMDictEntry a);

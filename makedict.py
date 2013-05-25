@@ -5,18 +5,23 @@ This program will read a text file generated from the DICOM data
 element regsistry table (DICOM Chapter 6 part 6) and will generate
 a hash table that can be used for dictionary lookups.
 
-Usage: python makedict.py nemadict.txt > vtkDICOMDictionary.cxx
-Usage: python makedict.py --header nemadict.txt > vtkDICOMDictionary.h
+Usage: python makedict.py nemadict.txt > vtkDICOMDictHash.cxx
+Usage: python makedict.py --header nemadict.txt > vtkDICOMDictHash.h
 
 """
 
 import sys
 
+header = \
+"""/*=========================================================================
+This is an automatically generated file.  Do not edit.
+=========================================================================*/"""
+
 if ((len(sys.argv) != 3 or sys.argv[1] != "--header") and
     (len(sys.argv) != 2 or sys.argv[1] == "--header")):
   sys.stderr.write(
-    """usage: python makedict.py nemadict.txt > vtkDICOMDictionary.cxx
-    python makedict.py --header nemadict.txt > vtkDICOMDictionary.h\n""")
+    """usage: python makedict.py nemadict.txt > vtkDICOMDictHash.cxx
+    python makedict.py --header nemadict.txt > vtkDICOMDictHash.h\n""")
   sys.exit(1)
 
 # read the file in one go
@@ -166,8 +171,10 @@ for te in ht:
 
 # write the output file
 if printheader:
-  print "#ifndef __vtkDICOMDictionary_h"
-  print "#define __vtkDICOMDictionary_h"
+  print header
+  print
+  print "#ifndef __vtkDICOMDictHash_h"
+  print "#define __vtkDICOMDictHash_h"
   print
   print "//! Tag values defined in the DICOM standard"
   print "namespace DC"
@@ -178,18 +185,19 @@ if printheader:
   print "};"
   print "} // end namespace DC"
   print
-  print "#endif /* __vtkDICOMDictionary_h */"
+  print "#endif /* __vtkDICOMDictHash_h */"
 
 else:
-  print "#include \"vtkDICOMMetaData.h\""
-  print "#include <string.h>"
+  print header
+  print
+  print "#include \"vtkDICOMDictionary.h\""
   print
 
   print "namespace {"
   print
   print "typedef vtkDICOMVR VR;"
   print "typedef vtkDICOMVM VM;"
-  print "typedef vtkDICOMDictEntry::Internal DictEntry;"
+  print "typedef vtkDICOMDictEntry::Entry DictEntry;"
   print
 
   ct = 0
@@ -203,7 +211,7 @@ else:
   print
 
   ct = 0
-  print "DictEntry *vtkDICOMMetaData::DictHashTable[1024] = {"
+  print "DictEntry *vtkDICOMDictionary::DictHashTable[1024] = {"
   for l in entry_list:
     print "DictRow%04d," % (ct,)
     ct = ct + 1

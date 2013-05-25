@@ -12,7 +12,7 @@
 
 =========================================================================*/
 #include "vtkDICOMMetaData.h"
-#include "vtkDICOMDictEntry.h"
+#include "vtkDICOMDictionary.h"
 
 #include <vtkObjectFactory.h>
 #include <vtkMatrix4x4.h>

@@ -12,7 +12,7 @@
 
 =========================================================================*/
 #include "vtkDICOMParser.h"
-#include "vtkDICOMDictEntry.h"
+#include "vtkDICOMDictionary.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMItem.h"
