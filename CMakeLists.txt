@@ -52,6 +52,8 @@ set(LIB_SRCS
 add_library(vtkDICOM ${LIB_SRCS})
 target_link_libraries(vtkDICOM vtkIO ${GDCM_LIBS} vtkzlib)
 
+add_subdirectory(Programs)
+
 if(BUILD_TESTING)
   enable_testing()
   add_subdirectory(Testing)
