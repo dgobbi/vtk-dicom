@@ -22,7 +22,7 @@ if(GDCM_FOUND)
 endif()
 
 option(BUILD_TESTING "Build the tests" ON)
-option(BUILD_EXAMPLES "Build the examples" OFF)
+option(BUILD_EXAMPLES "Build the examples" ON)
 
 set(LIB_SRCS
   vtkDICOMMetaData.cxx
@@ -57,18 +57,3 @@ endif()
 if(BUILD_EXAMPLES)
   add_subdirectory(Examples)
 endif()
-
-add_executable(TestDICOMParser TestDICOMParser.cxx)
-target_link_libraries(TestDICOMParser vtkDICOM)
-
-add_executable(TestDICOMSorter TestDICOMSorter.cxx)
-target_link_libraries(TestDICOMSorter vtkDICOM)
-
-add_executable(TestDICOMReader TestDICOMReader.cxx)
-target_link_libraries(TestDICOMReader vtkDICOM)
-
-add_executable(TestDICOMDisplay TestDICOMDisplay.cxx)
-target_link_libraries(TestDICOMDisplay vtkDICOM vtkRendering)
-
-add_executable(TestNIFTIDisplay TestNIFTIDisplay.cxx)
-target_link_libraries(TestNIFTIDisplay vtkDICOM vtkRendering)
