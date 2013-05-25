@@ -1331,6 +1331,7 @@ void vtkDICOMValue::AppendValueToString(
   double f = 0.0;
   int d = 0;
   unsigned int u = 0;
+  vtkDICOMTag a;
 
   if (this->V == 0)
     {
@@ -1342,7 +1343,14 @@ void vtkDICOMValue::AppendValueToString(
   switch (this->V->Type)
     {
     case VTK_CHAR:
-      this->Substring(i, cp, dp);
+      cp = static_cast<const ValueT<char> *>(this->V)->Data;
+      dp = cp + (i == 0 ? this->V->VL : 0);
+      if (this->V->VR != vtkDICOMVR::ST &&
+          this->V->VR != vtkDICOMVR::LT &&
+          this->V->VR != vtkDICOMVR::UT)
+        {
+        this->Substring(i, cp, dp);
+        }
       break;
     case VTK_UNSIGNED_CHAR:
       d = static_cast<const ValueT<unsigned char> *>(this->V)->Data[i];
@@ -1365,6 +1373,9 @@ void vtkDICOMValue::AppendValueToString(
     case VTK_DOUBLE:
       f = static_cast<const ValueT<double> *>(this->V)->Data[i];
       break;
+    case VTK_DICOM_TAG:
+      a = static_cast<const ValueT<vtkDICOMTag> *>(this->V)->Data[i];
+      break;
     }
 
   if (this->V->Type == VTK_CHAR)
@@ -1372,7 +1383,8 @@ void vtkDICOMValue::AppendValueToString(
     while (cp != dp && dp[-1] == '\0') { --dp; }
     str.append(cp, dp);
     }
-  else if (this->V->Type == VTK_FLOAT || this->V->Type == VTK_DOUBLE)
+  else if (this->V->Type == VTK_FLOAT ||
+           this->V->Type == VTK_DOUBLE)
     {
     // force consistent printing of "inf", "nan" regardless of platform
     if (isnan(f))
@@ -1434,7 +1446,11 @@ void vtkDICOMValue::AppendValueToString(
       str.append(text);
       }
     }
-  else
+  else if (this->V->Type == VTK_UNSIGNED_CHAR ||
+           this->V->Type == VTK_SHORT ||
+           this->V->Type == VTK_UNSIGNED_SHORT ||
+           this->V->Type == VTK_INT ||
+           this->V->Type == VTK_UNSIGNED_INT)
     {
     // simple code to convert an integer to a string
     char text[16];
@@ -1463,6 +1479,27 @@ void vtkDICOMValue::AppendValueToString(
       }
 
     str.append(&text[ti], &text[16]);
+    }
+  else if (this->V->Type == VTK_DICOM_TAG)
+    {
+    char text[12];
+    int t[2];
+    t[0] = a.GetGroup();
+    t[1] = a.GetElement();
+    char *cp = text;
+    *cp++ = '(';
+    for (int j = 0; j < 2; j++)
+      {
+      for (int i = 12; i >= 0; i -= 4)
+        {
+        char d = ((t[j] >> i) & 0x000F);
+        *cp++ = (d < 10 ? '0' + d : 'A' - 10 + d);
+        }
+      *cp++ = ',';
+      }
+    cp[-1] = ')';
+    *cp = '\0';
+    str.append(text, &text[11]);
     }
 }
 
