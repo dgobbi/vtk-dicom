@@ -15,6 +15,7 @@
 #include "vtkDICOMParser.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMDictionary.h"
+#include "vtkDICOMItem.h"
 
 #include <vtkSmartPointer.h>
 
@@ -22,12 +23,93 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define MAX_INDENT 24
+#define INDENT_SIZE 2
+
 // remove path portion of filename
 const char *basename(const char *filename)
 {
   const char *cp = filename + strlen(filename);
   while (cp != filename && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
   return cp;
+}
+
+// Print out one data element
+void printElement(const vtkDICOMDataElementIterator &iter, int depth)
+{
+  vtkDICOMTag tag = iter->GetTag();
+  int g = tag.GetGroup();
+  int e = tag.GetElement();
+  vtkDICOMValue v = iter->GetValue();
+  unsigned int vl = v.GetVL();
+  const char *vr = v.GetVR().GetText();
+  const char *name = "";
+  vtkDICOMDictEntry d = vtkDICOMDictionary::FindDictEntry(tag);
+  if (d.IsValid())
+    {
+    name = d.GetName();
+    }
+
+  // make an indentation string
+  if (INDENT_SIZE*depth > MAX_INDENT)
+    {
+    depth = MAX_INDENT/INDENT_SIZE;
+    }
+  static const char spaces[MAX_INDENT+1] = "                        ";
+  const char *indent = spaces + (MAX_INDENT - INDENT_SIZE*depth);
+
+  std::string s;
+  if (v.GetVR() == vtkDICOMVR::UN ||
+      v.GetVR() == vtkDICOMVR::SQ ||
+      v.GetVR() == vtkDICOMVR::LT ||
+      v.GetVR() == vtkDICOMVR::ST ||
+      v.GetVR() == vtkDICOMVR::UT)
+    {
+    s = "...";
+    }
+  else
+    {
+    unsigned int n = v.GetNumberOfValues();
+    for (unsigned int i = 0; i < n; i++)
+      {
+      size_t pos = 0;
+      v.AppendValueToString(s, i);
+      if (i < n - 1)
+        {
+        s.append("\\");
+        }
+      if (s.size() > 70)
+        {
+        s.resize(pos);
+        s.append("...");
+        break;
+        }
+      pos = s.size();
+      }
+    }
+
+  printf("%s(%04X,%04X) %s \"%s\" %u : [%s]\n",
+    indent, g, e, vr, name, vl, s.c_str());
+
+  if (v.GetVR() == vtkDICOMVR::SQ)
+    {
+    unsigned int m = v.GetNumberOfValues();
+    const vtkDICOMItem *items = v.GetSequenceData();
+    for (unsigned int j = 0; j < m; j++)
+      {
+      printf("%s%s---- SQ Item %04u ----\n",
+        indent, spaces+(MAX_INDENT - INDENT_SIZE), j+1);
+      vtkDICOMDataElementIterator siter =
+        items[j].GetDataElementIterator();
+      vtkDICOMDataElementIterator siterEnd =
+        items[j].GetDataElementIteratorEnd();
+
+      for (; siter != siterEnd; ++siter)
+        {
+        printElement(siter, depth+1);
+        }
+      }
+    }
 }
 
 // This program will dump all the metadata in the given file
@@ -61,53 +143,10 @@ int main(int argc, char *argv[])
       data->GetDataElementIterator();
     vtkDICOMDataElementIterator iterEnd =
       data->GetDataElementIteratorEnd();
+
     for (; iter != iterEnd; ++iter)
       {
-      vtkDICOMTag tag = iter->GetTag();
-      int g = tag.GetGroup();
-      int e = tag.GetElement();
-      vtkDICOMValue v = iter->GetValue();
-      unsigned int vl = v.GetVL();
-      const char *vr = v.GetVR().GetText();
-      const char *name = "";
-      vtkDICOMDictEntry d = vtkDICOMDictionary::FindDictEntry(tag);
-      if (d.IsValid())
-        {
-        name = d.GetName();
-        }
-
-      std::string s;
-      if (v.GetVR() == vtkDICOMVR::UN ||
-          v.GetVR() == vtkDICOMVR::SQ ||
-          v.GetVR() == vtkDICOMVR::LT ||
-          v.GetVR() == vtkDICOMVR::ST ||
-          v.GetVR() == vtkDICOMVR::UT)
-        {
-        s = "...";
-        }
-      else
-        {
-        unsigned int n = v.GetNumberOfValues();
-        for (unsigned int i = 0; i < n; i++)
-          {
-          size_t pos = 0;
-          v.AppendValueToString(s, i);
-          if (i < n - 1)
-            {
-            s.append("\\");
-            }
-          if (s.size() > 70)
-            {
-            s.resize(pos);
-            s.append("...");
-            break;
-            }
-          pos = s.size();
-          }
-        }
-
-      printf("(%04X,%04X) %s \"%s\" %u : [%s]\n",
-        g, e, vr, name, vl, s.c_str());
+      printElement(iter, 0);
       }
     }
 
