@@ -25,6 +25,7 @@
 
 #define MAX_INDENT 24
 #define INDENT_SIZE 2
+#define MAX_LENGTH 78
 
 // remove path portion of filename
 const char *basename(const char *filename)
@@ -60,15 +61,53 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
 
   std::string s;
   if (v.GetVR() == vtkDICOMVR::UN ||
-      v.GetVR() == vtkDICOMVR::SQ ||
-      v.GetVR() == vtkDICOMVR::LT ||
-      v.GetVR() == vtkDICOMVR::ST ||
-      v.GetVR() == vtkDICOMVR::UT)
+      v.GetVR() == vtkDICOMVR::SQ)
     {
-    s = "...";
+    // sequences are printed later
+    s = (vl > 0 ? "..." : "");
+    }
+  else if (v.GetVR() == vtkDICOMVR::LT ||
+           v.GetVR() == vtkDICOMVR::ST ||
+           v.GetVR() == vtkDICOMVR::UT)
+    {
+    // replace breaks with "\\", cap length to MAX_LENGTH
+    const char *cp = v.GetCharData();
+    unsigned int j = 0;
+    while (j < vl && cp[j] != '\0')
+      {
+      unsigned int k = j;
+      unsigned int m = j;
+      for (; j < vl && cp[j] != '\0'; j++)
+        {
+        m = j;
+        if (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f')
+          {
+          do { j++; }
+          while (j < vl && (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f'));
+          break;
+          }
+        m++;
+        }
+      if (j == vl)
+        {
+        while (m > 0 && cp[m-1] == ' ') { m--; }
+        }
+      if (k != 0)
+        {
+        s.append("\\\\");
+        }
+      s.append(&cp[k], m-k);
+      if (s.size() > MAX_LENGTH)
+        {
+        s.resize(MAX_LENGTH-4);
+        s.append("...");
+        break;
+        }
+      }
     }
   else
     {
+    // print any other VR via conversion to string
     unsigned int n = v.GetNumberOfValues();
     for (unsigned int i = 0; i < n; i++)
       {
@@ -78,7 +117,7 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
         {
         s.append("\\");
         }
-      if (s.size() > 70)
+      if (s.size() > MAX_LENGTH-4)
         {
         s.resize(pos);
         s.append("...");
