@@ -86,8 +86,28 @@ public:
   // Description:
   // Get a matrix to place the image within DICOM patient coords.
   // This matrix is constructed from the ImageOrientationPatient
-  // and ImagePositionPatient meta data attributes.
+  // and ImagePositionPatient meta data attributes.  See the
+  // SetMemoryRowOrder method for additional information.
   vtkMatrix4x4 *GetPatientMatrix() { return this->PatientMatrix; }
+
+  // Description:
+  // Enumeration for top-down vs. bottom-up ordering.
+  enum RowOrder { FileNative, TopDown, BottomUp };
+
+  // Description:
+  // Set the ordering of the image rows in memory.
+  // The native orientation of DICOM images is top-to-bottom.
+  // If the order is top to BottomUp (which is the default) then
+  // the images will be flipped when they are read from disk.
+  void SetMemoryRowOrder(int order);
+  void SetMemoryRowOrderToFileNative() {
+    this->SetMemoryRowOrder(FileNative); }
+  void SetMemoryRowOrderToTopDown() {
+    this->SetMemoryRowOrder(TopDown); }
+  void SetMemoryRowOrderToBottomUp() {
+    this->SetMemoryRowOrder(BottomUp); }
+  int GetMemoryRowOrder() { return this->MemoryRowOrder; }
+  const char *GetMemoryRowOrderAsString();
 
 protected:
   vtkDICOMReader();
@@ -152,6 +172,10 @@ protected:
   // Description:
   // An array to convert slice indices to input files
   vtkIntArray *FileIndexArray;
+
+  // Description:
+  // The row order to use when storing the data in memory.
+  int MemoryRowOrder;
 
 private:
   vtkDICOMReader(const vtkDICOMReader&);  // Not implemented.

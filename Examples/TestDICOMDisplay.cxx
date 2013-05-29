@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
   vtkStringArray *a = sorter->GetOutputFileNames();
   vtkSmartPointer<vtkDICOMReader> reader =
     vtkSmartPointer<vtkDICOMReader>::New();
+  reader->SetMemoryRowOrderToFileNative();
   reader->SetFileNames(a);
 
   double range[2];

@@ -58,6 +58,7 @@ vtkDICOMReader::vtkDICOMReader()
   this->FileOffsetArray = 0;
   this->MetaData = vtkDICOMMetaData::New();
   this->PatientMatrix = vtkMatrix4x4::New();
+  this->MemoryRowOrder = vtkDICOMReader::BottomUp;
 
   this->DataScalarType = VTK_SHORT;
   this->NumberOfScalarComponents = 1;
@@ -130,6 +131,9 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
     {
     os << " (none)\n";
     }
+
+  os << indent << "MemoryRowOrder: "
+     << this->GetMemoryRowOrderAsString() << "\n";
 }
 
 //----------------------------------------------------------------------------
@@ -154,6 +158,39 @@ void vtkDICOMErrorSilencer::Execute(vtkObject *, unsigned long, void *)
 }
 
 } // end anonymous namespace
+
+//----------------------------------------------------------------------------
+void vtkDICOMReader::SetMemoryRowOrder(int order)
+{
+  if (order >= 0 && order <= vtkDICOMReader::BottomUp)
+    {
+    if (order != this->MemoryRowOrder)
+      {
+      this->MemoryRowOrder = order;
+      this->Modified();
+      }
+    }
+}
+
+//----------------------------------------------------------------------------
+const char *vtkDICOMReader::GetMemoryRowOrderAsString()
+{
+  const char *text = "";
+  switch (this->MemoryRowOrder)
+    {
+    case vtkDICOMReader::FileNative:
+      text = "FileNative";
+      break;
+    case vtkDICOMReader::TopDown:
+      text = "TopDown";
+      break;
+    case vtkDICOMReader::BottomUp:
+      text = "BottomUp";
+      break;
+    }
+
+  return text;
+}
 
 //----------------------------------------------------------------------------
 int vtkDICOMReader::CanReadFile(const char *filename)
@@ -333,11 +370,14 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
   // - NumberOfEnergyWindows (0054,0011)
 
   // write out the sorted indices
+  bool flipImage = (this->MemoryRowOrder == vtkDICOMReader::BottomUp);
   sorted->SetNumberOfComponents(1);
   sorted->SetNumberOfValues(numFiles);
   for (int k = 0; k < numFiles; k++)
     {
-    sorted->SetValue(k, info[k].FileNumber);
+    int kflip = numFiles - k - 1;
+    kflip = (flipImage ? kflip : k);
+    sorted->SetValue(k, info[kflip].FileNumber);
     }
 
   this->DataSpacing[2] = spacingBetweenSlices;
@@ -576,6 +616,20 @@ int vtkDICOMReader::RequestInformation(
     double orient[6], normal[3], point[3];
     pv.GetValues(point, point+3);
     ov.GetValues(orient, orient+6);
+
+    if (this->MemoryRowOrder == vtkDICOMReader::BottomUp)
+      {
+      // calculate position of point at lower left
+      point[0] = point[0] + orient[3]*yspacing*(rows - 1);
+      point[1] = point[1] + orient[4]*yspacing*(rows - 1);
+      point[2] = point[2] + orient[5]*yspacing*(rows - 1);
+
+      // measure orientation from lower left corner upwards
+      orient[3] = -orient[3];
+      orient[4] = -orient[4];
+      orient[5] = -orient[5];
+      }
+
     vtkMath::Cross(&orient[0], &orient[3], normal);
     double pm[16];
     pm[0] = orient[0]; pm[1] = orient[3]; pm[2] = normal[0]; pm[3] = point[0];
@@ -588,7 +642,7 @@ int vtkDICOMReader::RequestInformation(
     {
     this->PatientMatrix->Identity();
     }
- 
+
   // Set the output information.
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
   outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(),
@@ -770,11 +824,18 @@ int vtkDICOMReader::RequestData(
   int scalarSize = data->GetScalarSize();
   int numComponents = data->GetNumberOfScalarComponents();
 
-  vtkIdType sliceSize = numComponents*scalarSize;
-  sliceSize *= extent[1] - extent[0] + 1;
-  sliceSize *= extent[3] - extent[2] + 1;
+  vtkIdType pixelSize = numComponents*scalarSize;
+  vtkIdType rowSize = pixelSize*(extent[1] - extent[0] + 1);
+  vtkIdType sliceSize = rowSize*(extent[3] - extent[2] + 1);
 
   this->InvokeEvent(vtkCommand::StartEvent);
+
+  bool flipImage = (this->MemoryRowOrder == vtkDICOMReader::BottomUp);
+  char *rowBuffer = 0;
+  if (flipImage)
+    {
+    rowBuffer = new char[rowSize];
+    }
 
   // loop through all files in the update extent
   for (size_t idx = 0; idx < files.size(); idx++)
@@ -788,14 +849,38 @@ int vtkDICOMReader::RequestData(
     int fileIdx = files[idx].FileIndex;
     int sliceIdx = files[idx].SliceIndex;
     int numSlices = files[idx].NumberOfSlices;
+    // reverse slices if flipImage
+    char *slicePtr = dataPtr + (sliceIdx - extent[4])*sliceSize;
 
     this->ComputeInternalFileName(fileIdx);
 
     // read the file into the output
     this->ReadOneFile(this->InternalFileName, fileIdx,
-                      dataPtr + (sliceIdx - extent[4])*sliceSize,
-                      numSlices*sliceSize);
+                      slicePtr, numSlices*sliceSize);
+
+    for (int sIdx = 0; sIdx < numSlices; sIdx++)
+      {
+      // flip the data if necessary
+      // NOTE: depending on SpacingBetweenSlices, multi-frame images
+      // like nuclear medicine images might have to be flipped back-to-front
+      if (flipImage)
+        {
+        int numRows = extent[3] - extent[2] + 1;
+        int halfRows = numRows/2;
+        for (int yIdx = 0; yIdx < halfRows; yIdx++)
+          {
+          char *row1 = slicePtr + yIdx*rowSize;
+          char *row2 = slicePtr + (numRows-yIdx-1)*rowSize;
+          memcpy(rowBuffer, row1, rowSize);
+          memcpy(row1, row2, rowSize);
+          memcpy(row2, rowBuffer, rowSize);
+          }
+        }
+      slicePtr += sliceSize;
+      }
     }
+
+  delete [] rowBuffer;
 
   this->UpdateProgress(1.0);
   this->InvokeEvent(vtkCommand::EndEvent);
