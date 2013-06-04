@@ -96,9 +96,9 @@ public:
 
   // Description:
   // Set the ordering of the image rows in memory.
-  // The native orientation of DICOM images is top-to-bottom.
-  // If the order is top to BottomUp (which is the default) then
+  // If the order is BottomUp (which is the default) then
   // the images will be flipped when they are read from disk.
+  // The native orientation of DICOM images is top-to-bottom.
   void SetMemoryRowOrder(int order);
   void SetMemoryRowOrderToFileNative() {
     this->SetMemoryRowOrder(FileNative); }

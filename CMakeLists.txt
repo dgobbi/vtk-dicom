@@ -45,6 +45,7 @@ set(LIB_SRCS
   vtkDICOMSorter.cxx
   vtkDICOMReferenceCount.cxx
   vtkDICOMValue.cxx
+  vtkDICOMToRAS.cxx
   vtkNIFTIReader.cxx
   vtkNIFTIWriter.cxx
 )
