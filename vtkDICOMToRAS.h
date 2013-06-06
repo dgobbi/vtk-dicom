@@ -59,6 +59,13 @@ public:
   vtkMatrix4x4 *GetRASMatrix() { return this->RASMatrix; }
 
   // Description:
+  // Update the RAS matrix without updating the output data.
+  // This requires that an input has been set, because the origin,
+  // spacing, and extent of the input data must be known in order
+  // to compute the matrix.
+  void UpdateMatrix();
+
+  // Description:
   // Specify whether the RAS matrix should include the position in its
   // final column (NIFTI style), or whether the final column should be
   // zero and the position instead used to compute a new Origin for the

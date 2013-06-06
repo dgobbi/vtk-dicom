@@ -248,6 +248,28 @@ void vtkDICOMToRAS::ComputeMatrix(
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMToRAS::UpdateMatrix()
+{
+  // This calls RequestInformation, which calls ComputeMatrix
+  this->UpdateInformation();
+  
+  const double *inElements = this->Matrix;
+  double *outElements = *this->RASMatrix->Element;
+
+  bool changed = false;
+  for (int i = 0; i < 16; i++)
+    {
+    changed |= (inElements[i] != outElements[i]);
+    }
+
+  // this ensures that the timestamp isn't changed unless values changed
+  if (changed)
+    {
+    this->RASMatrix->DeepCopy(this->Matrix);
+    }
+}
+
+//----------------------------------------------------------------------------
 int vtkDICOMToRAS::RequestInformation(
   vtkInformation* vtkNotUsed(request),
   vtkInformationVector** inputVector,
@@ -323,7 +345,20 @@ int vtkDICOMToRAS::RequestData(
   vtkInformationVector* outputVector)
 {
   // output the matrix that goes with the image
-  this->RASMatrix->DeepCopy(this->Matrix);
+  const double *inElements = this->Matrix;
+  double *outElements = *this->RASMatrix->Element;
+
+  bool changed = false;
+  for (int i = 0; i < 16; i++)
+    {
+    changed |= (inElements[i] != outElements[i]);
+    }
+
+  // this ensures that the timestamp isn't changed unless values changed
+  if (changed)
+    {
+    this->RASMatrix->DeepCopy(this->Matrix);
+    }
 
   return this->Superclass::RequestData(request, inputVector, outputVector);
 }
