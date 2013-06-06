@@ -102,6 +102,7 @@ protected:
 
   // Description:
   // Compute the RAS matrix and store it in this->Matrix.
+  // If extent doesn't start at zero, make it so that it does.
   // Also change the origin if RASMatrixHasPosition is Off.
   void ComputeMatrix(int extent[6], double spacing[3], double origin[3]);
 

@@ -20,6 +20,7 @@
 #include "vtkStreamingDemandDrivenPipeline.h"
 #include "vtkObjectFactory.h"
 #include "vtkSmartPointer.h"
+#include "vtkTemplateAliasMacro.h"
 
 vtkStandardNewMacro(vtkDICOMToRAS);
 vtkCxxSetObjectMacro(vtkDICOMToRAS, PatientMatrix, vtkMatrix4x4);
@@ -146,9 +147,19 @@ void vtkDICOMToRAS::CheckNeedToReorder()
     this->PatientMatrix->MultiplyPoint(vdir, vdir);
     }
 
-  // check whether reordering should be done
-  this->ReorderColumns = (this->AllowColumnReordering && hdir[0] > 0);
-  this->ReorderRows = (this->AllowRowReordering && vdir[1] > 0);
+  // do the DICOM-to-RAS sign changes
+  hdir[0] = -hdir[0];
+  hdir[1] = -hdir[1];
+  vdir[0] = -vdir[0];
+  vdir[1] = -vdir[1];
+
+  // for RAS, hdir should be right (+x) or anterior (+y)
+  this->ReorderColumns = (this->AllowColumnReordering &&
+                          hdir[0] + hdir[1] < 0);
+
+  // for RAS, vdir should be superior (+z) or anterior (+y)
+  this->ReorderRows = (this->AllowRowReordering &&
+                       vdir[1] + vdir[2] < 0);
 }
 
 //----------------------------------------------------------------------------
@@ -172,6 +183,9 @@ void vtkDICOMToRAS::ComputeMatrix(
     bounds[2*i] = extent[2*i]*spacing[i] + origin[i];
     bounds[2*i + 1] = extent[2*i + 1]*spacing[i] + origin[i];
     origin[i] = bounds[2*i + flip[i]];
+
+    extent[2*i+1] -= extent[2*i];
+    extent[2*i] = 0;
 
     if (flip[i])
       {
@@ -274,10 +288,9 @@ int vtkDICOMToRAS::RequestUpdateExtent(
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
   vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
 
-  int wholeExt[6];
-  int extent[6];
+  int wholeExt[6], inExt[6], outExt[6];
 
-  outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(), extent);
+  outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(), inExt);
   inInfo->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), wholeExt);
 
   int flip[3];
@@ -287,13 +300,18 @@ int vtkDICOMToRAS::RequestUpdateExtent(
 
   for (int i = 0; i < 3; i++)
     {
-    int offset = wholeExt[2*i + 1] - extent[2*i + 1];
-    int size = extent[2*i + 1] - extent[2*i] + 1;
-    extent[2*i] = offset;
-    extent[2*i + 1] = offset + size - 1;
+    int offset = outExt[2*i];
+    int size = outExt[2*i + 1] - outExt[2*i] + 1;
+    int wholeSize = wholeExt[2*i + 1] - wholeExt[2*i] + 1;
+    if (flip[i])
+      {
+      offset = wholeSize - size - offset;
+      }
+    inExt[2*i] = wholeExt[2*i] + offset;
+    inExt[2*i + 1] = inExt[2*i] + size - 1;
     }
 
-  inInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(), extent, 6);
+  inInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(), outExt, 6);
 
   return 1;
 }
@@ -311,16 +329,160 @@ int vtkDICOMToRAS::RequestData(
 }
 
 //----------------------------------------------------------------------------
+namespace {
+
+template<class T>
+void vtkDICOMToRASExecute(
+  const T *inPtr, T *outPtr, const int flip[3], int numComponents,
+  const int inExt[6], const int outExt[6], const int outExecuteExt[6],
+  vtkAlgorithm *progress)
+{
+  // size of region to execute over
+  int sizeX = outExecuteExt[1] - outExecuteExt[0] + 1;
+  int sizeY = outExecuteExt[3] - outExecuteExt[2] + 1;
+  int sizeZ = outExecuteExt[5] - outExecuteExt[4] + 1;
+
+  // output increments
+  vtkIdType outIncX = numComponents;
+  vtkIdType outIncY = outIncX*(outExt[1] - outExt[0] + 1);
+  vtkIdType outSkipY = outIncX*(outExt[1] - outExt[0] + 1 - sizeX);
+  vtkIdType outSkipZ = outIncY*(outExt[3] - outExt[2] + 1 - sizeY);
+
+  // input increments
+  vtkIdType inIncX = numComponents;
+  vtkIdType inIncY = inIncX*(inExt[1] - inExt[0] + 1);
+  vtkIdType inIncZ = inIncY*(inExt[3] - inExt[1] + 1);
+  if (flip[0])
+    {
+    inPtr += inIncX*(sizeX - 1);
+    inIncX = -inIncX;
+    }
+  if (flip[1])
+    {
+    inPtr += inIncY*(sizeY - 1);
+    inIncY = -inIncY;
+    }
+  if (flip[2])
+    {
+    inPtr += inIncZ*(sizeZ - 1);
+    inIncZ = -inIncZ;
+    }
+
+  // progress tracking
+  vtkIdType progressGoal = static_cast<vtkIdType>(sizeZ)*sizeY;
+  vtkIdType progressStep = (progressGoal + 49)/50;
+  vtkIdType progressCount = 0;
+
+  // loop through the data and rearrange it
+  const T *inPtrZ = inPtr;
+  for (int k = 0; k < sizeZ; k++)
+    {
+    const T *inPtrY = inPtrZ;
+    for (int j = 0; j < sizeY; j++)
+      {
+      if (progress != NULL && (progressCount % progressStep) == 0)
+        {
+        progress->UpdateProgress(progressCount*1.0/progressGoal);
+        }
+      progressCount++;
+
+      const T *inPtrX = inPtrY;
+      if (numComponents == 1)
+        {
+        for (int i = 0; i < sizeX; i++)
+          {
+          *outPtr++ = *inPtrX;
+          inPtrX += inIncX;
+          }
+        }
+      else
+        {
+        for (int i = 0; i < sizeX; i++)
+          {
+          int c = numComponents;
+          const T *inPtrC = inPtrX;
+          do { *outPtr++ = *inPtrC++; } while (--c);
+          inPtrX += inIncX;
+          }
+        }
+      inPtrY += inIncY;
+      outPtr += outSkipY;
+      }
+    inPtrZ += inIncZ;
+    outPtr += outSkipZ;
+    }
+}
+
+} // end anonymous namespace
+
+//----------------------------------------------------------------------------
 void vtkDICOMToRAS::ThreadedRequestData(
   vtkInformation *vtkNotUsed(request),
-  vtkInformationVector **vtkNotUsed(inputVector),
+  vtkInformationVector **inputVector,
   vtkInformationVector *vtkNotUsed(outputVector),
   vtkImageData ***inData,
   vtkImageData **outData,
-  int outExt[6], int threadId)
+  int outExecuteExt[6], int threadId)
 {
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+
+  int inWholeExt[6];
+  inInfo->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), inWholeExt);
+
   vtkImageData *input = inData[0][0];
   vtkImageData *output = outData[0];
 
-  // go through output, get appropriate pixel from input
+  int inExt[6], outExt[6];
+  input->GetExtent(inExt);
+  output->GetExtent(outExt);
+
+  int flip[3];
+  flip[0] = this->ReorderColumns;
+  flip[1] = this->ReorderRows;
+  flip[2] = flip[0] ^ flip[1];
+
+  int inExecuteExt[6];
+  for (int i = 0; i < 3; i++)
+    {
+    int offset = outExecuteExt[2*i];
+    int size = outExecuteExt[2*i + 1] - outExecuteExt[2*i] + 1;
+    int wholeSize = inWholeExt[2*i + 1] - inWholeExt[2*i] + 1;
+    if (flip[i])
+      {
+      offset = wholeSize - size - offset;
+      }
+    inExecuteExt[2*i] = inWholeExt[2*i] + offset;
+    inExecuteExt[2*i + 1] = inExecuteExt[2*i] + size - 1;
+    }
+
+  int numComponents = input->GetNumberOfScalarComponents();
+
+  void *inPtr = input->GetScalarPointerForExtent(inExecuteExt);
+  void *outPtr = output->GetScalarPointerForExtent(outExecuteExt);
+
+  int inScalarType = input->GetScalarType();
+  int outScalarType = output->GetScalarType();
+
+  // progress object if main thread
+  vtkAlgorithm *progress = ((threadId == 0) ? this : NULL);
+
+  // call the execute method
+  if (outScalarType == inScalarType)
+    {
+    switch (inScalarType)
+      {
+      vtkTemplateAliasMacro(
+        vtkDICOMToRASExecute(
+          static_cast<const VTK_TT *>(inPtr), static_cast<VTK_TT *>(outPtr),
+          flip, numComponents, inExt, outExt, outExecuteExt, progress));
+      default:
+        vtkErrorMacro("Execute: Unknown ScalarType");
+      }
+    }
+  else
+    {
+    vtkErrorMacro("ThreadedRequestData: output scalar type does not match "
+                  "input scalar type");
+    }
+
 }
