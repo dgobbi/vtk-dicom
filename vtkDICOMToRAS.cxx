@@ -223,9 +223,9 @@ void vtkDICOMToRAS::ComputeMatrix(
 
     vtkMatrix4x4::MultiplyPoint(matrix, offset, offset);
 
-    matrix[3] += offset[0];
-    matrix[7] += offset[1];
-    matrix[11] += offset[2];
+    matrix[3] = offset[0];
+    matrix[7] = offset[1];
+    matrix[11] = offset[2];
 
     origin[0] = 0.0;
     origin[1] = 0.0;
@@ -240,6 +240,10 @@ void vtkDICOMToRAS::ComputeMatrix(
     offset[2] = matrix[11];
     offset[3] = 1.0;
 
+    matrix[3] = 0.0;
+    matrix[7] = 0.0;
+    matrix[11] = 0.0;
+
     double inverse[16];
     vtkMatrix4x4::Invert(matrix, inverse);
     vtkMatrix4x4::MultiplyPoint(inverse, offset, offset);
@@ -247,10 +251,6 @@ void vtkDICOMToRAS::ComputeMatrix(
     origin[0] += offset[0];
     origin[1] += offset[1];
     origin[2] += offset[2];
-
-    matrix[3] = 0.0;
-    matrix[7] = 0.0;
-    matrix[11] = 0.0;
     }
 }
 
