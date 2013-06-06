@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
   TestAssert(metaData->GetNumberOfDataElements() == 1);
   metaData->Clear();
   TestAssert(metaData->GetNumberOfDataElements() == 0);
-  
+
   // test of multiple instances in a single meta data object
   metaData->SetNumberOfInstances(3);
   metaData->SetAttributeValue(DC::Modality, "CT");

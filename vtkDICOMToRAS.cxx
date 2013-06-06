@@ -252,7 +252,7 @@ void vtkDICOMToRAS::UpdateMatrix()
 {
   // This calls RequestInformation, which calls ComputeMatrix
   this->UpdateInformation();
-  
+
   const double *inElements = this->Matrix;
   double *outElements = *this->RASMatrix->Element;
 
