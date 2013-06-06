@@ -66,13 +66,14 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMReader>::New();
   reader->SetMemoryRowOrderToFileNative();
   reader->SetFileNames(a);
-  reader->Update();
 
   vtkSmartPointer<vtkDICOMToRAS> converter =
     vtkSmartPointer<vtkDICOMToRAS>::New();
   converter->SetInputConnection(reader->GetOutputPort());
-  converter->AllowRowReorderingOff();
-  converter->AllowColumnReorderingOff();
+  converter->SetPatientMatrix(reader->GetPatientMatrix());
+  //converter->RASMatrixHasPositionOff();
+  //converter->AllowRowReorderingOff();
+  //converter->AllowColumnReorderingOff();
   //converter->UpdateMatrix();
 
   vtkSmartPointer<vtkNIFTIWriter> writer =

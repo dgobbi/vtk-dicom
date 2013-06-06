@@ -5,3 +5,6 @@ target_link_libraries(dicomdump vtkDICOM)
 
 add_executable(dicomtonifti dicomtonifti.cxx)
 target_link_libraries(dicomtonifti vtkDICOM)
+
+add_executable(niftidump niftidump.cxx)
+target_link_libraries(niftidump vtkDICOM)
