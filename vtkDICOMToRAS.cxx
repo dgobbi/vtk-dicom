@@ -168,7 +168,14 @@ void vtkDICOMToRAS::ComputeMatrix(
 {
   double *matrix = this->Matrix;
 
-  vtkMatrix4x4::DeepCopy(matrix, this->PatientMatrix);
+  if (this->PatientMatrix)
+    {
+    vtkMatrix4x4::DeepCopy(matrix, this->PatientMatrix);
+    }
+  else
+    {
+    vtkMatrix4x4::Identity(matrix);
+    }
 
   // what corner of the input image will become the (0,0,0) corner
   // of the output image?
@@ -312,7 +319,7 @@ int vtkDICOMToRAS::RequestUpdateExtent(
 
   int wholeExt[6], inExt[6], outExt[6];
 
-  outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(), inExt);
+  outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(), outExt);
   inInfo->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), wholeExt);
 
   int flip[3];
@@ -386,7 +393,7 @@ void vtkDICOMToRASExecute(
   // input increments
   vtkIdType inIncX = numComponents;
   vtkIdType inIncY = inIncX*(inExt[1] - inExt[0] + 1);
-  vtkIdType inIncZ = inIncY*(inExt[3] - inExt[1] + 1);
+  vtkIdType inIncZ = inIncY*(inExt[3] - inExt[2] + 1);
   if (flip[0])
     {
     inPtr += inIncX*(sizeX - 1);
