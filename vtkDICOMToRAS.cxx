@@ -197,6 +197,7 @@ void vtkDICOMToRAS::ComputeMatrix(
     if (flip[i])
       {
       // reverse along columns for flips
+      origin[i] = -origin[i];
       matrix[i] = -matrix[i];
       matrix[4 + i] = -matrix[4 + i];
       matrix[8 + i] = -matrix[8 + i];
