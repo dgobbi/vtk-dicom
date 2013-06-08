@@ -1,0 +1,19 @@
+# This module is provided as DICOM_USE_FILE by DICOMConfig.cmake.  It can
+# be INCLUDEd in a project to load the needed compiler and linker settings.
+
+if(NOT DICOM_USE_FILE_INCLUDED)
+  set(DICOM_USE_FILE_INCLUDED 1)
+
+  # Update CMAKE_MODULE_PATH so includes work.
+  set(CMAKE_MODULE_PATH
+    ${CMAKE_MODULE_PATH}
+    ${DICOM_CMAKE_DIR})
+
+  # Add compiler flags needed to use DICOM.
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${DICOM_REQUIRED_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DICOM_REQUIRED_CXX_FLAGS}")
+
+  # Add include directories needed to use DICOM.
+  INCLUDE_DIRECTORIES(${DICOM_INCLUDE_DIRS})
+
+ENDIF(NOT DICOM_USE_FILE_INCLUDED)

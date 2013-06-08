@@ -1,0 +1,34 @@
+#-----------------------------------------------------------------------------
+#
+# DICOMConfig.cmake - cmake configuration file for external projects.
+#
+#-----------------------------------------------------------------------------
+@DICOM_CONFIG_CODE@
+
+# The C and C++ flags added to the cmake-configured flags.
+set(DICOM_REQUIRED_C_FLAGS "@DICOM_REQUIRED_C_FLAGS@")
+set(DICOM_REQUIRED_CXX_FLAGS "@DICOM_REQUIRED_CXX_FLAGS@")
+
+# The version number
+set(DICOM_MAJOR_VERSION "@DICOM_MAJOR_VERSION@")
+set(DICOM_MINOR_VERSION "@DICOM_MINOR_VERSION@")
+set(DICOM_BUILD_VERSION "@DICOM_BUILD_VERSION@")
+
+# Get the current directory
+get_filename_component(DICOM_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+# The location of the "use" file.
+set(DICOM_USE_FILE "${DICOM_CMAKE_DIR}/UseDICOM.cmake")
+
+# Our library dependencies (contains definitions for IMPORTED targets)
+if(NOT TARGET vtkDICOM AND NOT DICOM_BINARY_DIR)
+  include("${DICOM_CMAKE_DIR}/DICOMTargets.cmake")
+endif()
+
+# Compute paths
+get_filename_component(DICOM_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(DICOM_INCLUDE_DIRS "@INCLUDE_DIRS_CONFIG@")
+set(DICOM_LIBRARY_DIRS "@LIBRARY_DIRS_CONFIG@")
+
+# These are IMPORTED targets created by DICOMTargets.cmake
+set(DICOM_LIBRARIES @DICOM_LIBRARIES@)
