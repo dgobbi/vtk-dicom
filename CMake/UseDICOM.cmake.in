@@ -4,6 +4,27 @@
 if(NOT DICOM_USE_FILE_INCLUDED)
   set(DICOM_USE_FILE_INCLUDED 1)
 
+  # Dependencies
+  set(VTK_DIR ${DICOM_VTK_DIR})
+  find_package(VTK)
+  if(VTK_FOUND)
+    include(${VTK_USE_FILE})
+  else()
+    message(FATAL_ERROR
+      "VTK not found in DICOM_VTK_DIR=\"${DICOM_VTK_DIR}\".")
+  endif()
+
+  if(DICOM_USE_GDCM)
+    set(GDCM_DIR ${DICOM_GDCM_DIR})
+    find_package(GDCM)
+    if(GDCM_FOUND)
+      include(${GDCM_USE_FILE})
+    else()
+      message(FATAL_ERROR
+        "GDCM not found in DICOM_GDCM_DIR=\"${DICOM_GDCM_DIR}\".")
+    endif()
+  endif()
+
   # Update CMAKE_MODULE_PATH so includes work.
   set(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH}
