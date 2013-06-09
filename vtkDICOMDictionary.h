@@ -14,13 +14,14 @@
 #ifndef __vtkDICOMDictionary_h
 #define __vtkDICOMDictionary_h
 
+#include "vtkDICOMModule.h"
 #include "vtkDICOMDictEntry.h"
 #include "vtkDICOMDictHash.h"
 
 //! The size of the hash table for the dicom dictionary.
 #define DICT_HASH_TABLE_SIZE 1024
 
-class vtkDICOMDictionary
+class VTK_DICOM_EXPORT vtkDICOMDictionary
 {
 public:
   //! Find the dictionary entry for the given tag.

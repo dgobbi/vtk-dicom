@@ -15,9 +15,10 @@
 #define __vtkDICOMVM_h
 
 #include <vtkSystemIncludes.h>
+#include "vtkDICOMModule.h"
 
 //! VMs (Value Multiplicities)
-class vtkDICOMVM
+class VTK_DICOM_EXPORT vtkDICOMVM
 {
 public:
   enum EnumType
@@ -81,6 +82,6 @@ private:
   unsigned short Key;
 };
 
-ostream& operator<<(ostream& o, const vtkDICOMVM& a);
+VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMVM& a);
 
 #endif /* __vtkDICOMVM_h */

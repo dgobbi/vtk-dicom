@@ -14,12 +14,13 @@
 #ifndef __vtkDICOMDictEntry_h
 #define __vtkDICOMDictEntry_h
 
+#include "vtkDICOMModule.h"
 #include "vtkDICOMVR.h"
 #include "vtkDICOMVM.h"
 #include "vtkDICOMTag.h"
 
 //! An entry in the DICOM dictionary.
-class vtkDICOMDictEntry
+class VTK_DICOM_EXPORT vtkDICOMDictEntry
 {
 public:
   // The struct that actually stores the vtkDICOMDictEntry information.
@@ -71,6 +72,6 @@ private:
   static const Entry InvalidEntry;
 };
 
-ostream& operator<<(ostream& o, vtkDICOMDictEntry a);
+VTK_DICOM_EXPORT ostream& operator<<(ostream& o, vtkDICOMDictEntry a);
 
 #endif /* __vtkDICOMDictEntry_h */

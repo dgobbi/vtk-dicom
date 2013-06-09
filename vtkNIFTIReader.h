@@ -31,13 +31,14 @@
 #ifndef __vtkNIFTIReader_h
 #define __vtkNIFTIReader_h
 
-#include "vtkImageReader2.h"
+#include <vtkImageReader2.h>
+#include "vtkDICOMModule.h"
 
 class vtkMatrix4x4;
 struct nifti_1_header;
 
 //----------------------------------------------------------------------------
-class VTK_EXPORT vtkNIFTIReader : public vtkImageReader2
+class VTK_DICOM_EXPORT vtkNIFTIReader : public vtkImageReader2
 {
 public:
   // Description:

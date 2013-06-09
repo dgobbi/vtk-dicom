@@ -15,9 +15,10 @@
 #define __vtkDICOMVR_h
 
 #include <vtkSystemIncludes.h>
+#include "vtkDICOMModule.h"
 
 //! VRs (Value Representations)
-class vtkDICOMVR
+class VTK_DICOM_EXPORT vtkDICOMVR
 {
 public:
   //! The VR enum constants.
@@ -98,6 +99,6 @@ private:
   static const char TextTable[32][4];
 };
 
-ostream& operator<<(ostream& o, const vtkDICOMVR& a);
+VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMVR& a);
 
 #endif /* __vtkDICOMVR_h */

@@ -15,6 +15,7 @@
 #define __vtkDICOMParser_h
 
 #include <vtkObject.h>
+#include "vtkDICOMModule.h"
 
 class vtkDICOMMetaData;
 class vtkUnsignedShortArray;
@@ -25,7 +26,7 @@ class vtkDICOMParserInternalFriendship;
  *  This class provides routines for parsing a DICOM file
  *  and creating a vtkDICOMMetaData object.
  */
-class vtkDICOMParser : public vtkObject
+class VTK_DICOM_EXPORT vtkDICOMParser : public vtkObject
 {
 public:
   //! Create a new vtkDICOMParser instance.

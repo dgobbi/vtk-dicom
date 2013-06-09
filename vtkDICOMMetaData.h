@@ -15,7 +15,7 @@
 #define __vtkDICOMMetaData_h
 
 #include <vtkObject.h>
-
+#include "vtkDICOMModule.h"
 #include "vtkDICOMDataElement.h"
 
 //! A container class for DICOM metadata.
@@ -24,7 +24,7 @@
  *  for efficient access.  One vtkDICOMMetaData object can store the
  *  metadata for a series of DICOM images.
  */
-class vtkDICOMMetaData : public vtkObject
+class VTK_DICOM_EXPORT vtkDICOMMetaData : public vtkObject
 {
 public:
   //! Create a new vtkDICOMMetaData instance.

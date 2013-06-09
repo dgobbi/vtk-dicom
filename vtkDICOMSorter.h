@@ -15,6 +15,7 @@
 #define __vtkDICOMSorter_h
 
 #include <vtkObject.h>
+#include "vtkDICOMModule.h"
 
 class vtkStringArray;
 class vtkIntArray;
@@ -28,7 +29,7 @@ class vtkDICOMMetaData;
  *  SetInputFileName(), then other files in the same series will be found,
  *  and the series will be sorted by InstanceNumber.
  */
-class vtkDICOMSorter : public vtkObject
+class VTK_DICOM_EXPORT vtkDICOMSorter : public vtkObject
 {
 public:
   vtkTypeMacro(vtkDICOMSorter,vtkObject);

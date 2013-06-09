@@ -30,11 +30,12 @@
 #ifndef __vtkNIFTIWriter_h
 #define __vtkNIFTIWriter_h
 
-#include "vtkImageWriter.h"
+#include <vtkImageWriter.h>
+#include "vtkDICOMModule.h"
 
 class vtkMatrix4x4;
 
-class VTK_EXPORT vtkNIFTIWriter : public vtkImageWriter
+class VTK_DICOM_EXPORT vtkNIFTIWriter : public vtkImageWriter
 {
 public:
   // Description:

@@ -15,6 +15,7 @@
 #define __vtkDICOMReferenceCount_h
 
 #include <vtkSystemIncludes.h>
+#include "vtkDICOMModule.h"
 
 //! An object for holding an atomic reference count.
 /*!
@@ -22,7 +23,7 @@
  *  In order to safely access values from multiple threads, all
  *  operations that modify the reference count must be atomic.
  */
-class vtkDICOMReferenceCount
+class VTK_DICOM_EXPORT vtkDICOMReferenceCount
 {
 public:
   vtkDICOMReferenceCount(unsigned int i) : Counter(i) {};

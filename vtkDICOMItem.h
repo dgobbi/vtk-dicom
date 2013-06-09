@@ -14,6 +14,7 @@
 #ifndef __vtkDICOMItem_h
 #define __vtkDICOMItem_h
 
+#include "vtkDICOMModule.h"
 #include "vtkDICOMDataElement.h"
 #include "vtkDICOMReferenceCount.h"
 
@@ -23,7 +24,7 @@
  *  essentially a data set of its own.  An item consists of
  *  zero or more data elements, each with a tag and value.
  */
-class vtkDICOMItem
+class VTK_DICOM_EXPORT vtkDICOMItem
 {
   //! A reference counted list container class.
   struct List

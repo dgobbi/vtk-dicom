@@ -14,6 +14,7 @@
 #ifndef __vtkDICOMDataElement_h
 #define __vtkDICOMDataElement_h
 
+#include "vtkDICOMModule.h"
 #include "vtkDICOMTag.h"
 #include "vtkDICOMValue.h"
 
@@ -22,7 +23,7 @@
  *  The DataElement contains an encoded attribute value, along
  *  with the tag that identifies the attribute.
  */
-class vtkDICOMDataElement
+class VTK_DICOM_EXPORT vtkDICOMDataElement
 {
 public:
   vtkDICOMDataElement() : Tag(), Value(), Next(0), Prev(0) {}
@@ -55,7 +56,7 @@ private:
 };
 
 //! A const iterator for a vtkDataElement list.
-class vtkDICOMDataElementIterator
+class VTK_DICOM_EXPORT vtkDICOMDataElementIterator
 {
 public:
   vtkDICOMDataElementIterator() : Pointer(0) {}
@@ -97,6 +98,6 @@ private:
   friend class vtkDICOMItem;
 };
 
-ostream& operator<<(ostream& os, const vtkDICOMDataElement& v);
+VTK_DICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMDataElement& v);
 
 #endif /* __vtkDICOMDataElement_h */

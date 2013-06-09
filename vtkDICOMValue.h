@@ -15,6 +15,7 @@
 #define __vtkDICOMValue_h
 
 #include <vtkSystemIncludes.h>
+#include "vtkDICOMModule.h"
 #include "vtkDICOMVR.h"
 #include "vtkDICOMTag.h"
 #include "vtkDICOMReferenceCount.h"
@@ -35,7 +36,7 @@ class vtkDICOMSequence;
  *  data object.  To keep it lightweight, in terms of size, it has
  *  no virtual methods.
  */
-class vtkDICOMValue
+class VTK_DICOM_EXPORT vtkDICOMValue
 {
 private:
   //! A reference-counted value class.
@@ -313,6 +314,6 @@ private:
   friend class vtkDICOMSequence;
 };
 
-ostream& operator<<(ostream& os, const vtkDICOMValue& v);
+VTK_DICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMValue& v);
 
 #endif /* __vtkDICOMValue_h */

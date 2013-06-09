@@ -102,6 +102,7 @@ set(LIB_SRCS
 
 # Headers without a matching .cxx file are listed here
 set(LIB_HDRS
+  vtkDICOMModule.h
   vtkNIFTIHeader.h
 )
 

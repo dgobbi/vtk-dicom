@@ -15,10 +15,11 @@
 #define __vtkDICOMTag_h
 
 #include <vtkSystemIncludes.h>
+#include "vtkDICOMModule.h"
 #include "vtkDICOMDictHash.h"
 
 //! A (group,element) identifier tag for DICOM attributes.
-class vtkDICOMTag
+class VTK_DICOM_EXPORT vtkDICOMTag
 {
 public:
   //! A POD tag that can be statically initialized.
@@ -73,6 +74,6 @@ private:
   unsigned int Key;
 };
 
-ostream& operator<<(ostream& o, const vtkDICOMTag& a);
+VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMTag& a);
 
 #endif /* __vtkDICOMTag_h */

@@ -14,6 +14,7 @@
 #ifndef __vtkDICOMSequence_h
 #define __vtkDICOMSequence_h
 
+#include "vtkDICOMModule.h"
 #include "vtkDICOMValue.h"
 
 class vtkDICOMItem;
@@ -26,7 +27,7 @@ class vtkDICOMItem;
  *  filled in with the SetItem() method, or, you can start
  *  with an empty sequence and use AddItem() to append items.
  */
-class vtkDICOMSequence
+class VTK_DICOM_EXPORT vtkDICOMSequence
 {
 public:
   //! Construct a growable sequence with no items.
@@ -90,6 +91,6 @@ private:
   vtkDICOMValue V;
 };
 
-ostream& operator<<(ostream& os, const vtkDICOMSequence& v);
+VTK_DICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMSequence& v);
 
 #endif /* __vtkDICOMSequence_h */

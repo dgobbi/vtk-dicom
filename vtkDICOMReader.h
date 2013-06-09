@@ -21,8 +21,8 @@
 #ifndef __vtkDICOMReader_h
 #define __vtkDICOMReader_h
 
-//#include "vtkIODICOMModule.h" // For export macro
-#include "vtkImageReader2.h"
+#include <vtkImageReader2.h>
+#include "vtkDICOMModule.h"
 
 class vtkIntArray;
 class vtkTypeInt64Array;
@@ -31,7 +31,7 @@ class vtkDICOMMetaData;
 class vtkDICOMParser;
 
 //----------------------------------------------------------------------------
-class VTK_EXPORT vtkDICOMReader : public vtkImageReader2
+class VTK_DICOM_EXPORT vtkDICOMReader : public vtkImageReader2
 {
 public:
   // Description:
