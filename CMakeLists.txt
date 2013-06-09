@@ -1,7 +1,7 @@
 project(DICOM)
 
 # CMake version requirements
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.6.3)
 
 # Eliminate policy warnings
 if(COMMAND CMAKE_POLICY)
