@@ -23,7 +23,6 @@ if(USE_GDCM)
   endif()
   if(GDCM_FOUND)
     include(${GDCM_USE_FILE})
-    add_definitions(-DVTK_DICOM_USE_GDCM)
     set(GDCM_LIBS gdcmMSFF)
   endif()
 endif()
@@ -75,6 +74,17 @@ set(DICOM_INCLUDE_INSTALL_DEST ${CMAKE_INSTALL_PREFIX}${DICOM_INC_DIR})
 set(DICOM_DATA_INSTALL_DEST ${CMAKE_INSTALL_PREFIX}${DICOM_DATA_DIR})
 set(DICOM_CMAKE_INSTALL_DEST ${CMAKE_INSTALL_PREFIX}${DICOM_CMAKE_DIR})
 
+# Configuration header
+set(DICOM_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
+set(DICOM_BUILD_TESTING ${BUILD_TESTING})
+set(DICOM_USE_GDCM ${USE_GDCM})
+configure_file(CMake/vtkDICOMConfig.h.in
+  "${DICOM_BINARY_DIR}/vtkDICOMConfig.h" @ONLY)
+
+# Include directories
+set(DICOM_INCLUDE_DIRS "${DICOM_SOURCE_DIR}" "${DICOM_BINARY_DIR}")
+include_directories(${DICOM_INCLUDE_DIRS})
+
 # Create the main library
 set(LIB_NAME vtkDICOM)
 
@@ -104,6 +114,7 @@ set(LIB_SRCS
 set(LIB_HDRS
   vtkDICOMModule.h
   vtkNIFTIHeader.h
+  ${DICOM_BINARY_DIR}/vtkDICOMConfig.h
 )
 
 # Automatically find the header for each cxx file
@@ -160,7 +171,7 @@ export(PACKAGE DICOM)
 
 # Create the DICOMConfig.cmake and DICOMConfigVersion.cmake files
 # ... for the build tree
-set(INCLUDE_DIRS_CONFIG "${DICOM_SOURCE_DIR}")
+set(INCLUDE_DIRS_CONFIG ${DICOM_INCLUDE_DIRS})
 set(LIBRARY_DIRS_CONFIG "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 configure_file(CMake/DICOMConfig.cmake.in
   "${DICOM_BINARY_DIR}/DICOMConfig.cmake" @ONLY)

@@ -1,4 +1,4 @@
-include_directories(${DICOM_SOURCE_DIR})
+include_directories(${DICOM_INCLUDE_DIRS})
 
 add_executable(TestDICOMParser TestDICOMParser.cxx)
 target_link_libraries(TestDICOMParser vtkDICOM)

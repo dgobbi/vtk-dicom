@@ -26,6 +26,8 @@
  */
 class VTK_DICOM_EXPORT vtkDICOMItem
 {
+private:
+
   //! A reference counted list container class.
   struct List
   {

@@ -1,4 +1,4 @@
-include_directories(${DICOM_SOURCE_DIR})
+include_directories(${DICOM_INCLUDE_DIRS})
 
 set(PROGRAM_SRCS
   dicomdump.cxx
