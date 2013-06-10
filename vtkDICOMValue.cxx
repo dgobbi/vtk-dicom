@@ -1496,19 +1496,19 @@ void vtkDICOMValue::AppendValueToString(
     int t[2];
     t[0] = a.GetGroup();
     t[1] = a.GetElement();
-    char *cp = text;
-    *cp++ = '(';
+    char *tp = text;
+    *tp++ = '(';
     for (int j = 0; j < 2; j++)
       {
-      for (int i = 12; i >= 0; i -= 4)
+      for (int k = 12; k >= 0; k -= 4)
         {
-        char d = ((t[j] >> i) & 0x000F);
-        *cp++ = (d < 10 ? '0' + d : 'A' - 10 + d);
+        char c = ((t[j] >> k) & 0x000F);
+        *tp++ = (c < 10 ? '0' + c : 'A' - 10 + c);
         }
-      *cp++ = ',';
+      *tp++ = ',';
       }
-    cp[-1] = ')';
-    *cp = '\0';
+    tp[-1] = ')';
+    *tp = '\0';
     str.append(text, &text[11]);
     }
 }
