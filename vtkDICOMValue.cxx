@@ -434,7 +434,16 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, const T *end)
         }
       // use a precision that will use 16 characters maximum
       sprintf(cp, "%.10g", d);
-      cp += strlen(cp);
+      size_t dl = strlen(cp);
+      // look for extra leading zeros on exponent
+      if (dl >= 5 && (cp[dl-5] == 'e' || cp[dl-5] =='E') && cp[dl-3] == '0')
+        {
+        cp[dl-3] = cp[dl-2];
+        cp[dl-2] = cp[dl-1];
+        cp[dl-1] = '\0';
+        dl--;
+        }
+      cp += dl;
       *cp++ = '\\';
       }
     if (cp != dp) { --cp; }
