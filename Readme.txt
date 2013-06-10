@@ -5,7 +5,6 @@ All rights reserved.
 
 See Copyright.txt for more details.
 
-
-This package contains a set of classes for managing DICOM files
-and metadata from within VTK.  It is still under development, and
-is probably a few months away from being truly useful.
+This package contains a set of classes for managing DICOM
+files and metadata from within VTK, and some utility programs
+for interrogating and converting DICOM files.
