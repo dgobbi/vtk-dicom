@@ -33,7 +33,7 @@
 #include "vtkSmartPointer.h"
 #include "vtkVersion.h"
 
-#ifdef VTK_DICOM_USE_GDCM
+#ifdef DICOM_USE_GDCM
 #include "gdcmImageReader.h"
 #endif
 
@@ -711,7 +711,7 @@ bool vtkDICOMReader::ReadUncompressedFile(
 bool vtkDICOMReader::ReadCompressedFile(
   const char *filename, int fileIdx, char *buffer, vtkIdType bufferSize)
 {
-#ifdef VTK_DICOM_USE_GDCM
+#ifdef DICOM_USE_GDCM
 
   gdcm::ImageReader reader;
   reader.SetFileName(filename);
