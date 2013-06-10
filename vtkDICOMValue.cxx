@@ -1451,8 +1451,16 @@ void vtkDICOMValue::AppendValueToString(
       unsigned int tj = ti;
       while (tj > 1 && text[tj-1] == '0' && text[tj-2] != '.') { tj--; }
       while (text[ti] != '\0') { text[tj++] = text[ti++]; }
-      text[tj] = '\0';
 
+      // if exponent has three digits, clear the first if it is zero
+      if (tj >= 5 && text[tj-5] == 'e' && text[tj-3] == '0')
+        {
+        text[tj-3] = text[tj-2];
+        text[tj-2] = text[tj-1];
+        tj--;
+        }
+
+      text[tj] = '\0';
       str.append(text);
       }
     }
