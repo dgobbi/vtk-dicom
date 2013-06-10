@@ -36,17 +36,7 @@ private:
     vtkDICOMDataElement Head;
     vtkDICOMDataElement Tail;
 
-    List() : ReferenceCount(1), NumberOfDataElements(0) {
-      this->Head.Prev = 0;
-      this->Head.Next = &this->Tail;
-      this->Tail.Prev = &this->Head;
-      this->Tail.Next = 0; }
-
-    ~List() {
-      vtkDICOMDataElement *ptr = this->Head.Next;
-      while (ptr != &this->Tail) {
-        ptr = ptr->Next;
-        delete ptr->Prev; } }
+    List() : ReferenceCount(1) {}
   };
 
 public:
@@ -63,8 +53,7 @@ public:
 
   //! Clear the data.
   void Clear() {
-    if (this->L && --(this->L->ReferenceCount) == 0) { delete this->L; }
-    this->L = 0; }
+    if (this->L && --(this->L->ReferenceCount) == 0) { this->FreeList(); } }
 
   //! Check if empty.
   bool IsEmpty() const { return (this->L == 0); }
@@ -95,11 +84,12 @@ public:
   vtkDICOMItem &operator=(const vtkDICOMItem &o) {
     if (this->L != o.L) {
       if (o.L) { ++(o.L->ReferenceCount); }
-      if (this->L && --(this->L->ReferenceCount) == 0) { delete this->L; }
+      if (this->L && --(this->L->ReferenceCount) == 0) { this->FreeList(); }
       this->L = o.L; }
     return *this; }
 
 private:
+  void FreeList();
   void CopyList(const List *o, List *t);
 
   //! An invalid value, for when one is needed.

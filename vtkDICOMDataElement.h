@@ -41,13 +41,13 @@ public:
   bool operator!=(const vtkDICOMDataElement& o) const {
     return (this->Tag != o.Tag || this->Value != o.Value); }
 
-  // for storing elements in a linked list
-  vtkDICOMDataElement *Next;
-  vtkDICOMDataElement *Prev;
-
 private:
   vtkDICOMTag          Tag;
   vtkDICOMValue        Value;
+
+  // for storing elements in a linked list
+  vtkDICOMDataElement *Next;
+  vtkDICOMDataElement *Prev;
 
   // the classes that need to manipulate lists of elements
   friend class vtkDICOMDataElementIterator;

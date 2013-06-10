@@ -20,8 +20,27 @@
 const vtkDICOMValue vtkDICOMItem::InvalidValue;
 
 //----------------------------------------------------------------------------
+void vtkDICOMItem::FreeList()
+{
+  vtkDICOMDataElement *ptr = this->L->Head.Next;
+  vtkDICOMDataElement *tail = &this->L->Tail;
+  while (ptr != tail)
+    {
+    ptr = ptr->Next;
+    delete ptr->Prev;
+    }
+  delete this->L;
+  this->L = 0;
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMItem::CopyList(const List *o, List *t)
 {
+  t->Head.Prev = 0;
+  t->Head.Next = &t->Tail;
+  t->Tail.Prev = &t->Head;
+  t->Tail.Next = 0;
+
   vtkDICOMDataElement *ptr = o->Head.Next;
   while (ptr != &o->Tail)
     {
@@ -34,6 +53,7 @@ void vtkDICOMItem::CopyList(const List *o, List *t)
     e->Prev->Next = e;
     ptr = ptr->Next;
     }
+
   t->NumberOfDataElements = o->NumberOfDataElements;
 }
 
@@ -45,6 +65,11 @@ void vtkDICOMItem::SetAttributeValue(
   if (this->L == 0)
     {
     this->L = new List;
+    this->L->NumberOfDataElements = 0;
+    this->L->Head.Prev = 0;
+    this->L->Head.Next = &this->L->Tail;
+    this->L->Tail.Prev = &this->L->Head;
+    this->L->Tail.Next = 0;
     }
   // if we aren't the sole owner, copy before modifying
   else if (this->L->ReferenceCount != 1)
