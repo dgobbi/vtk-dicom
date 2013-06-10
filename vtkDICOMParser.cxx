@@ -492,14 +492,14 @@ inline unsigned short Decoder<BE>::GetInt16(const unsigned char *ip)
 template<>
 inline unsigned int Decoder<BE>::GetInt32(const unsigned char *ip)
 {
-  return ((((ip[0] << 8) + ip[1]) << 8) + ip[2] << 8) + ip[3];
+  return (((((ip[0] << 8) + ip[1]) << 8) + ip[2]) << 8) + ip[3];
 }
 
 template<>
 inline unsigned long long Decoder<BE>::GetInt64(const unsigned char *ip)
 {
-  long long a = ((((ip[0] << 8) + ip[1]) << 8) + ip[2]) << 8 + ip[3];
-  unsigned int b = ((((ip[4] << 8) + ip[5]) << 8) + ip[6]) << 8 + ip[7];
+  long long a = (((((ip[0] << 8) + ip[1]) << 8) + ip[2]) << 8) + ip[3];
+  unsigned int b = (((((ip[4] << 8) + ip[5]) << 8) + ip[6]) << 8) + ip[7];
   return (a << 32) + b;
 }
 
@@ -741,7 +741,7 @@ unsigned int Decoder<E>::ReadElementValue(
     std::streamsize bytesRemaining =
       vtkDICOMParserInternalFriendship::GetBytesRemaining(
           this->Parser, cp, ep);
-    if (vl > bytesRemaining)
+    if (static_cast<std::streamsize>(vl) > bytesRemaining)
       {
       vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
         "Item length exceeds the bytes remaining in file.");

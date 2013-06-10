@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkRenderWindowInteractor>::New();
   vtkSmartPointer<vtkInteractorStyleImage> style =
     vtkSmartPointer<vtkInteractorStyleImage>::New();
-  style->SetInteractionModeToImageSlicing();
+  style->SetInteractionModeToImage3D();
   vtkSmartPointer<vtkRenderWindow> renWin =
     vtkSmartPointer<vtkRenderWindow>::New();
   iren->SetRenderWindow(renWin);

@@ -19,7 +19,7 @@
 unsigned int vtkDICOMReferenceCount::operator--()
 {
   return static_cast<unsigned int>(
-    InterlockedDecrement(static_cast<LONG *>(&this->Counter)));
+    InterlockedDecrement(reinterpret_cast<LONG *>(&this->Counter)));
 }
 #endif
 
@@ -27,6 +27,6 @@ unsigned int vtkDICOMReferenceCount::operator--()
 unsigned int vtkDICOMReferenceCount::operator++()
 {
   return static_cast<unsigned int>(
-    InterlockedIncrement(static_cast<LONG *>(&this->Counter)));
+    InterlockedIncrement(reinterpret_cast<LONG *>(&this->Counter)));
 }
 #endif

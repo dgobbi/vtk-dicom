@@ -15,6 +15,7 @@
 #include "vtkDICOMItem.h"
 #include "vtkDICOMSequence.h"
 
+#include <vtkMath.h>
 #include <vtkTypeTraits.h>
 
 #include <math.h>
@@ -230,7 +231,7 @@ char *vtkDICOMValue::Allocate<char>(vtkDICOMVR vr, unsigned int vn)
   // Strings of any type other than UI will be padded with spaces to
   // give an even number of chars.  All strings (including UI) need one
   // extra char for the null terminator to make them valid C strings.
-  unsigned int pad = (vn & (vr != vtkDICOMVR::UI));
+  unsigned int pad = (vn & static_cast<unsigned int>(vr != vtkDICOMVR::UI));
   // Use C++ "placement new" to allocate a single block of memory that
   // includes both the Value struct and the array of values.
   void *vp = ValueMalloc(sizeof(Value) + vn + pad + 1);
@@ -332,7 +333,7 @@ unsigned char *vtkDICOMValue::ReallocateUnsignedCharData(unsigned int vn)
 
   unsigned int n = this->V->NumberOfValues;
   unsigned char *ptr =
-    static_cast<const ValueT<unsigned char> *>(this->V)->Data;
+    static_cast<ValueT<unsigned char> *>(this->V)->Data;
 
   Value *v = this->V;
   const unsigned char *cptr = ptr;
@@ -427,7 +428,7 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, const T *end)
         {
         d = -9.999999999e+99;
         }
-      else if (fabs(d) < 1e-99 || isnan(d))
+      else if (fabs(d) < 1e-99 || vtkMath::IsNan(d))
         {
         d = 0.0;
         }
@@ -740,7 +741,7 @@ void vtkDICOMValue::AppendValue(vtkDICOMVR vr, const T &item)
     this->V->VL = 0xffffffff;
     }
 
-  T *ptr = static_cast<const vtkDICOMValue::ValueT<T> *>(this->V)->Data;
+  T *ptr = static_cast<vtkDICOMValue::ValueT<T> *>(this->V)->Data;
 
   unsigned int n = this->V->NumberOfValues;
   unsigned int nn = 0;
@@ -794,7 +795,7 @@ void vtkDICOMValue::SetValue(unsigned int i, const T &item)
   assert(this->V != 0);
   assert(i < this->V->NumberOfValues);
 
-  T *ptr = static_cast<const vtkDICOMValue::ValueT<T> *>(this->V)->Data;
+  T *ptr = static_cast<vtkDICOMValue::ValueT<T> *>(this->V)->Data;
 
   // reallocate the array if we aren't the sole owner
   assert(this->V->ReferenceCount == 1);
@@ -1387,11 +1388,11 @@ void vtkDICOMValue::AppendValueToString(
            this->V->Type == VTK_DOUBLE)
     {
     // force consistent printing of "inf", "nan" regardless of platform
-    if (isnan(f))
+    if (vtkMath::IsNan(f))
       {
       str.append("nan");
       }
-    else if (isinf(f))
+    else if (vtkMath::IsInf(f))
       {
       str.append((f < 0) ? "-inf" : "inf");
       }
@@ -1637,7 +1638,8 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
       }
     else
       {
-      os << std::string(cp,dp);
+      std::string s = std::string(cp, dp);
+      os << s.c_str();
       }
     }
   else if (vr == vtkDICOMVR::AT)
@@ -1695,7 +1697,7 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
         {
         s.append(",...");
         }
-      os << s;
+      os << s.c_str();
       }
     }
 

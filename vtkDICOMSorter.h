@@ -111,7 +111,7 @@ private:
   void operator=(const vtkDICOMSorter&);  // Not implemented.
 
   class StringArrayVector;
-  class FileInfo;
+  struct FileInfo;
   class FileInfoVectorList;
 
   StringArrayVector *Series;

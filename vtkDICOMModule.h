@@ -6,7 +6,7 @@
 #include <vtkABI.h>
 #include "vtkDICOMConfig.h"
 
-#if defined(VTK_BUILD_SHARED_LIBS)
+#if defined(DICOM_BUILD_SHARED_LIBS)
 # if defined(vtkDICOM_EXPORTS)
 #  define VTK_DICOM_EXPORT VTK_ABI_EXPORT
 # else

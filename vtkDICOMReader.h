@@ -128,17 +128,17 @@ protected:
   // Description:
   // Read one file.  Specify the offset to the PixelData.
   bool ReadOneFile(
-    const char *filename, int idx, char *buffer, vtkTypeInt64 bufferSize);
+    const char *filename, int idx, char *buffer, vtkIdType bufferSize);
 
   // Description:
   // Read an uncompressed DICOM file.
   bool ReadUncompressedFile(
-    const char *filename, int idx, char *buffer, vtkTypeInt64 bufferSize);
+    const char *filename, int idx, char *buffer, vtkIdType bufferSize);
 
   // Description:
   // Read an uncompressed DICOM file.
   bool ReadCompressedFile(
-    const char *filename, int idx, char *buffer, vtkTypeInt64 bufferSize);
+    const char *filename, int idx, char *buffer, vtkIdType bufferSize);
 
   // Description:
   // Convert parser errors into reader errors.
