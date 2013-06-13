@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
   reader->SetFileName(argv[1]);
   reader->Update();
 
-  reader->Print(cout);
+  reader->PrintNIFTIHeader(cout);
 
   return rval;
 }

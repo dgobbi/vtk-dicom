@@ -51,6 +51,11 @@ public:
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
+  // Print the NIFTI header to the specified file (default: cout).
+  void PrintNIFTIHeader(ostream &os);
+  void PrintNIFTIHeader();
+
+  // Description:
   // Valid extensions for this file type.
   virtual const char* GetFileExtensions() {
     return ".nii .nii.gz .img .img.gz .hdr .hdr.gz"; }

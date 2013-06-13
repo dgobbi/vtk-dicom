@@ -222,6 +222,22 @@ void vtkNIFTIReaderSwapHeader(nifti_1_header *hdr)
 } // end anonymous namespace
 
 //----------------------------------------------------------------------------
+void vtkNIFTIReader::PrintNIFTIHeader(ostream& os)
+{
+  if (this->NIFTIHeader)
+    {
+    vtkNIFTIReaderPrintHeader(
+      this->NIFTIHeader, os, vtkIndent());
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkNIFTIReader::PrintNIFTIHeader()
+{
+  this->PrintNIFTIHeader(cout);
+}
+
+//----------------------------------------------------------------------------
 void vtkNIFTIReader::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
