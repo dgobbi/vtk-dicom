@@ -91,7 +91,8 @@ void dicomtonifti_usage(const char *command_name)
     "follow the right-hand rule.\n"
     "\n"
     "If batch mode is enabled, then the filenames will automatically be\n"
-    "generated from the series description in the DICOM meta data.\n"
+    "generated from the series description in the DICOM meta data:\n"
+    "\"PatientName/StudyDescription-StudyID/SeriesDescription.nii.gz\".\n"
   );
 }
 
@@ -319,12 +320,12 @@ std::string dicomtonifti_safe_string(const std::string& str)
       }
     else
       {
-      m = i;
+      m = i + 1;
       }
     out.push_back(c);
     }
 
-  out.resize(m + 1);
+  out.resize(m);
 
   if (out.size() == 0)
     {
