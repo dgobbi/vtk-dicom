@@ -78,6 +78,12 @@ public:
   //! Get the file names for a specific series.
   vtkStringArray *GetFileNamesForSeries(int i);
 
+  //! Get the error code.
+  unsigned long GetErrorCode() { return this->ErrorCode; }
+
+  //! Get the filename associated with the error code.
+  const char *GetInternalFileName() { return this->InternalFileName; }
+
 protected:
   vtkDICOMSorter();
   ~vtkDICOMSorter();
@@ -87,6 +93,8 @@ protected:
   vtkStringArray *OutputFileNames;
 
   vtkTimeStamp UpdateTime;
+  unsigned long ErrorCode;
+  char *InternalFileName;
 
   //! Fill the output filename array.
   virtual void Execute();
@@ -105,6 +113,17 @@ protected:
 
   //! Numerically compare two UIDs.
   static int CompareUIDs(const char *u1, const char *u2);
+
+  //! Description:
+  // Convert parser errors into sorter errors.
+  void RelayError(vtkObject *o, unsigned long e, void *data);
+
+  //! Description:
+  // Set the name of the file currently being operated on.
+  void SetInternalFileName(const char *fname);
+
+  //! Set the error code.
+  void SetErrorCode(unsigned long e) { this->ErrorCode = e; }
 
 private:
   vtkDICOMSorter(const vtkDICOMSorter&);  // Not implemented.

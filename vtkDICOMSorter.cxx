@@ -19,6 +19,8 @@
 #include <vtkSmartPointer.h>
 #include <vtkStringArray.h>
 #include <vtkIntArray.h>
+#include <vtkErrorCode.h>
+#include <vtkCommand.h>
 #include <vtkUnsignedShortArray.h>
 
 #include <string>
@@ -74,6 +76,8 @@ vtkDICOMSorter::vtkDICOMSorter()
   this->Series = new StringArrayVector;
   this->Studies = vtkIntArray::New();
   this->Studies->SetNumberOfComponents(2);
+  this->ErrorCode = 0;
+  this->InternalFileName = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -86,6 +90,10 @@ vtkDICOMSorter::~vtkDICOMSorter()
   if (this->InputFileNames)
     {
     this->InputFileNames->Delete();
+    }
+  if (this->InternalFileName)
+    {
+    delete [] this->InternalFileName;
     }
 
   this->OutputFileNames->Delete();
@@ -244,6 +252,9 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
   vtkSmartPointer<vtkDICOMParser> parser =
     vtkSmartPointer<vtkDICOMParser>::New();
 
+  parser->AddObserver(
+    vtkCommand::ErrorEvent, this, &vtkDICOMSorter::RelayError);
+
   groups->InsertNextValue(0x0020);
   parser->SetMetaData(meta);
   parser->SetGroups(groups);
@@ -255,6 +266,7 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
   for (vtkIdType j = 0; j < numberOfStrings; j++)
     {
     const std::string& fileName = input->GetValue(j);
+    this->SetInternalFileName(fileName.c_str());
 
     // Skip anything that is a directory
     if (vtksys::SystemTools::FileIsDirectory(fileName.c_str()))
@@ -263,10 +275,15 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
       }
 
     // Read the file metadata
+    this->SetInternalFileName(fileName.c_str());
     parser->SetFileName(fileName.c_str());
     parser->Update();
     if (!parser->GetPixelDataFound())
       {
+      if (!this->ErrorCode)
+        {
+        this->ErrorCode = parser->GetErrorCode();
+        }
       continue;
       }
 
@@ -348,29 +365,45 @@ void vtkDICOMSorter::Execute()
   this->OutputFileNames->Reset();
   this->Series->clear();
   this->Studies->Reset();
+  this->SetInputFileName(0);
+  this->ErrorCode = 0;
 
   if (this->InputFileName) // The input was a single file
     {
     if (!vtksys::SystemTools::FileExists(this->InputFileName))
       {
+      this->ErrorCode = vtkErrorCode::FileNotFoundError;
       vtkErrorMacro("File not found: " << this->InputFileName);
       return;
       }
     else if (vtksys::SystemTools::FileIsDirectory(this->InputFileName))
       {
+      this->ErrorCode = vtkErrorCode::CannotOpenFileError;
       vtkErrorMacro("Named file is a directory: " << this->InputFileName);
       return;
       }
 
     vtkDICOMParser *parser = vtkDICOMParser::New();
+    parser->AddObserver(
+      vtkCommand::ErrorEvent, this, &vtkDICOMSorter::RelayError);
+    this->SetInternalFileName(this->InputFileName);
     parser->SetFileName(this->InputFileName);
     parser->Update();
     int pixelDataFound = parser->GetPixelDataFound();
+    unsigned long errorCode = parser->GetErrorCode();
     parser->Delete();
 
     if (!pixelDataFound)
       {
-      vtkErrorMacro("Not a DICOM image: " << this->InputFileName);
+      if (!errorCode)
+        {
+        this->ErrorCode = vtkErrorCode::FileFormatError;
+        vtkErrorMacro("Not a DICOM image: " << this->InputFileName);
+        }
+      else if (!this->ErrorCode)
+        {
+        this->ErrorCode = errorCode;
+        }
       return;
       }
 
@@ -452,5 +485,54 @@ void vtkDICOMSorter::Update()
     {
     this->Execute();
     this->UpdateTime.Modified();
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMSorter::SetInternalFileName(const char *name)
+{
+  if (this->InternalFileName == NULL && name == NULL)
+    {
+    return;
+    }
+  if (this->InternalFileName != 0 && name != 0 &&
+      strcmp(this->InternalFileName, name) == 0)
+    {
+    return;
+    }
+  if (this->InternalFileName)
+    {
+    delete [] this->InternalFileName;
+    }
+  if (name)
+    {
+    size_t n = strlen(name) + 1;
+    char *cp1 =  new char[n];
+    const char *cp2 = (name);
+    this->InternalFileName = cp1;
+    do { *cp1++ = *cp2++; } while (--n);
+    }
+  else
+    {
+    this->InternalFileName = 0;
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMSorter::RelayError(vtkObject *o, unsigned long e, void *data)
+{
+  if (e == vtkCommand::ErrorEvent)
+    {
+    vtkDICOMParser *parser = vtkDICOMParser::SafeDownCast(o);
+    if (parser)
+      {
+      this->SetErrorCode(parser->GetErrorCode());
+      this->SetInternalFileName(parser->GetFileName());
+      }
+    vtkErrorMacro(<< static_cast<char *>(data));
+    }
+  else
+    {
+    this->InvokeEvent(e, data);
     }
 }
