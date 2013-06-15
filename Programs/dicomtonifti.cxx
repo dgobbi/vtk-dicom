@@ -162,6 +162,57 @@ void dicomtonifti_check_error(vtkObject *o)
   exit(1);
 }
 
+// Add a dicom file to the list, expand if wildcard
+void dicomtonifti_add_file(vtkStringArray *files, const char *filepath)
+{
+#ifdef _WIN32
+  bool ispattern = false;
+  bool skipnext = false;
+  size_t n = strlen(filepath);
+  for (size_t i = 0; i < n; i++)
+    {
+    if (!skipnext)
+      {
+      skipnext = (filepath[i] == '\\');
+      if (filepath[i] == '*' || filepath[i] == '?' || filepath[i] == '[')
+        {
+        ispattern = true;
+        break;
+        }
+      }
+    else
+      {
+      skipnext = false;
+      }
+    }
+
+  if (ispattern)
+    {
+    vtksys::Glob glob;
+    if (glob.FindFiles(filepath))
+      {
+      const std::vector<std::string> &globfiles = glob.GetFiles();
+      size_t m = globfiles.size();
+      for (size_t j = 0; j < m; j++)
+        {
+        files->InsertNextValue(globfiles[j]);
+        }
+      }
+    else
+      {
+      fprintf(stderr, "Could not match pattern: %s\n", filepath);
+      exit(1);
+      }
+    }
+  else
+    {
+    files->InsertNextValue(filepath);
+    }
+#else
+  files->InsertNextValue(filepath);
+#endif
+}
+
 // Read the options
 void dicomtonifti_read_options(
   int argc, char *argv[],
@@ -242,13 +293,13 @@ void dicomtonifti_read_options(
       }
     else
       {
-      files->InsertNextValue(arg);
+      dicomtonifti_add_file(files, arg);
       }
     }
 
   while (argi < argc)
     {
-    files->InsertNextValue(argv[argi++]);
+    dicomtonifti_add_file(files, argv[argi++]);
     }
 }
 
