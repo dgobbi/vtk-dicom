@@ -17,10 +17,11 @@
 #include "vtkDICOMReader.h"
 #include "vtkDICOMToRAS.h"
 #include "vtkNIFTIWriter.h"
-#include "vtkMatrix4x4.h"
-#include "vtkStringArray.h"
-#include "vtkIntArray.h"
 
+#include <vtkMatrix4x4.h>
+#include <vtkStringArray.h>
+#include <vtkIntArray.h>
+#include <vtkErrorCode.h>
 #include <vtkSmartPointer.h>
 
 #include <stdio.h>
@@ -46,6 +47,7 @@ void dicomtonifti_usage(const char *command_name)
     "  --no-qform              Don't include a qform in the NIFTI file.\n"
     "  --no-sform              Don't include an sform in the NIFTI file.\n"
     "  --batch                 Do multiple series at once.\n"
+    "  --verbose               Verbose error reporting.\n"
   );
   fprintf(stderr,
     "\n");
@@ -70,6 +72,67 @@ void dicomtonifti_usage(const char *command_name)
   );
 }
 
+// Print error
+void dicomtonifti_check_error(vtkObject *o)
+{
+  vtkDICOMReader *reader = vtkDICOMReader::SafeDownCast(o);
+  vtkDICOMSorter *sorter = vtkDICOMSorter::SafeDownCast(o);
+  vtkNIFTIWriter *writer = vtkNIFTIWriter::SafeDownCast(o);
+  const char *filename = 0;
+  unsigned long errorcode = 0;
+  if (writer)
+    {
+    filename = writer->GetFileName();
+    errorcode = writer->GetErrorCode();
+    }
+  else if (reader)
+    {
+    filename = reader->GetInternalFileName();
+    errorcode = reader->GetErrorCode();
+    }
+  else if (sorter)
+    {
+    filename = sorter->GetInternalFileName();
+    errorcode = sorter->GetErrorCode();
+    }
+  if (!filename)
+    {
+    filename = "";
+    }
+
+  switch(errorcode)
+    {
+    case vtkErrorCode::NoError:
+      return;
+    case vtkErrorCode::FileNotFoundError:
+      fprintf(stderr, "File not found: %s\n", filename);
+      break;
+    case vtkErrorCode::CannotOpenFileError:
+      fprintf(stderr, "Cannot open file: %s\n", filename);
+      break;
+    case vtkErrorCode::UnrecognizedFileTypeError:
+      fprintf(stderr, "Unrecognized file type: %s\n", filename);
+      break;
+    case vtkErrorCode::PrematureEndOfFileError:
+      fprintf(stderr, "File is truncated: %s\n", filename);
+      break;
+    case vtkErrorCode::FileFormatError:
+      fprintf(stderr, "Bad DICOM file: %s\n", filename);
+      break;
+    case vtkErrorCode::NoFileNameError:
+      fprintf(stderr, "Output filename could not be used: %s\n", filename);
+      break;
+    case vtkErrorCode::OutOfDiskSpaceError:
+      fprintf(stderr, "Out of disk space while writing file: %s\n", filename);
+      break;
+    default:
+      fprintf(stderr, "An unknown error occurred.\n");
+      break;
+    }
+
+  exit(1);
+}
+
 // Simple structure for command-line options
 struct dicomtonifti_options
 {
@@ -79,6 +142,7 @@ struct dicomtonifti_options
   bool no_qform;
   bool no_sform;
   bool batch;
+  bool verbose;
   const char *output;
 };
 
@@ -94,13 +158,14 @@ int main(int argc, char *argv[])
   options.no_qform = false;
   options.no_sform = false;
   options.batch = false;
+  options.verbose = false;
   options.output = 0;
 
   // for the list of input DICOM files
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();
 
-  // read the options from the command line 
+  // read the options from the command line
   int argi = 1;
   while (argi < argc)
     {
@@ -136,6 +201,10 @@ int main(int argc, char *argv[])
         {
         options.batch = true;
         }
+      else if (strcmp(arg, "--verbose") == 0)
+        {
+        options.verbose = true;
+        }
       else if (strncmp(arg, "-o", 2) == 0)
         {
         if (arg[2] != '\0')
@@ -166,6 +235,9 @@ int main(int argc, char *argv[])
     files->InsertNextValue(argv[argi++]);
     }
 
+  // silence VTK errors (we generate our own)
+  vtkObject::SetGlobalWarningDisplay(options.verbose);
+
   // the output (NIFTI file or directory)
   const char *outfile = options.output;
   if (!outfile)
@@ -188,6 +260,7 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMSorter>::New();
   sorter->SetInputFileNames(files);
   sorter->Update();
+  dicomtonifti_check_error(sorter);
   vtkStringArray *a = sorter->GetOutputFileNames();
 
   // read the files
@@ -195,6 +268,8 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMReader>::New();
   reader->SetMemoryRowOrderToFileNative();
   reader->SetFileNames(a);
+  reader->Update();
+  dicomtonifti_check_error(reader);
 
   // check if slices were reordered by the reader
   vtkIntArray *fileIndices = reader->GetFileIndexArray();
@@ -247,6 +322,7 @@ int main(int argc, char *argv[])
     }
   writer->SetInputConnection(converter->GetOutputPort());
   writer->Write();
+  dicomtonifti_check_error(writer);
 
   return rval;
 }
