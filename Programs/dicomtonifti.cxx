@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
 
   // check if slices were reordered by the reader
   vtkIntArray *fileIndices = reader->GetFileIndexArray();
-  vtkIdType maxId = fileIndices->GetMaxId() + 1;
+  vtkIdType maxId = fileIndices->GetMaxId();
   bool slicesReordered = (maxId > 0 &&
     fileIndices->GetValue(0) > fileIndices->GetValue(maxId));
 
