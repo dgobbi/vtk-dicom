@@ -57,6 +57,9 @@ void dicomtonifti_usage(const char *command_name)
   while (cp != command_name && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
 
   fprintf(stderr,
+    "%s %s (HEAD %8.8s, %s, %s)\n", cp,
+    DICOM_VERSION, DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
+  fprintf(stderr,
     "usage: %s -o file.nii file1.dcm [file2.dcm ...]\n", cp);
   fprintf(stderr,
     "       %s -o directory --batch file1.dcm [file2.dcm ...]\n", cp);
@@ -71,6 +74,7 @@ void dicomtonifti_usage(const char *command_name)
     "  --batch                 Do multiple series at once.\n"
     "  --silent                Do not echo output filenames.\n"
     "  --verbose               Verbose error reporting.\n"
+    "  --version               Print the version and exit.\n"
   );
   fprintf(stderr,
     "\n");
@@ -275,6 +279,15 @@ void dicomtonifti_read_options(
       else if (strcmp(arg, "--verbose") == 0)
         {
         options->verbose = true;
+        }
+      else if (strcmp(arg, "--version") == 0)
+        {
+        const char *cp = argv[0] + strlen(argv[0]);
+        while (cp != argv[0] && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
+        fprintf(stdout,
+          "%s %s (HEAD %8.8s, %s, %s)\n", cp, DICOM_VERSION,
+          DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
+        exit(0);
         }
       else if (strncmp(arg, "-o", 2) == 0)
         {

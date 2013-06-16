@@ -42,6 +42,39 @@ option(BUILD_PROGRAMS "Build some useful DICOM tools" ON)
 option(BUILD_TESTING "Build the tests" ON)
 option(BUILD_EXAMPLES "Build the examples" ON)
 
+# Store the git hash of the current head
+if(EXISTS "${DICOM_SOURCE_DIR}/.git/HEAD")
+  file(READ "${DICOM_SOURCE_DIR}/.git/HEAD" DICOM_SOURCE_VERSION)
+  if("${DICOM_SOURCE_VERSION}" MATCHES "^ref:")
+    string(REGEX REPLACE "^ref: *([^ \n\r]*).*" "\\1"
+      DICOM_GIT_REF "${DICOM_SOURCE_VERSION}")
+    file(READ "${DICOM_SOURCE_DIR}/.git/${DICOM_GIT_REF}"
+      DICOM_SOURCE_VERSION)
+    string(STRIP "${DICOM_SOURCE_VERSION}" DICOM_SOURCE_VERSION)
+  endif()
+endif()
+
+# Store the build date
+if(WIN32)
+  execute_process(COMMAND "cmd" " /c date /t" OUTPUT_VARIABLE DATE)
+  string(REGEX REPLACE "[^0-9]*(..).*" "\\1" MONTH "${DATE}")
+  set(MONTHS ""
+    "Jan" "Feb" "Mar" "Apr" "May" "Jun" "Jul" "Aug" "Sep" "Oct" "Nov" "Dec")
+  list(GET MONTHS "${MONTH}" MONTH)
+  string(REGEX REPLACE "[^/]*/(..)/(....).*" "\\1 ${MONTH} \\2"
+    DICOM_BUILD_DATE "${DATE}")
+  execute_process(COMMAND "cmd" " /c echo %TIME%" OUTPUT_VARIABLE TIME)
+  string(REGEX REPLACE "[^0-9]*(..:..:..).*" "\\1"
+    DICOM_BUILD_TIME "${TIME}")
+else()
+  execute_process(COMMAND "date" "+%d %b %Y/%H:%M:%S"
+    OUTPUT_VARIABLE DATE_TIME)
+  string(REGEX REPLACE "([^/]*)/.*" "\\1"
+    DICOM_BUILD_DATE "${DATE_TIME}")
+  string(REGEX REPLACE "[^/]*/([0-9:]*).*" "\\1"
+    DICOM_BUILD_TIME "${DATE_TIME}")
+endif()
+
 # Set up our directory structure for output libraries and binaries
 # (Note: these are the build locations, not the install locations)
 if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
