@@ -168,24 +168,27 @@ void dicomtonifti_add_file(vtkStringArray *files, const char *filepath)
 {
 #ifdef _WIN32
   bool ispattern = false;
-  bool skipnext = false;
+  bool hasbackslash = false;
   size_t n = strlen(filepath);
   for (size_t i = 0; i < n; i++)
     {
-    if (!skipnext)
+    if (filepath[i] == '*' || filepath[i] == '?' || filepath[i] == '[')
       {
-      skipnext = (filepath[i] == '\\');
-      if (filepath[i] == '*' || filepath[i] == '?' || filepath[i] == '[')
-        {
-        ispattern = true;
-        break;
-        }
+      ispattern = true;
       }
-    else
+    if (filepath[i] == '\\')
       {
-      skipnext = false;
+      hasbackslash = true;
       }
     }
+
+  std::string newpath = filepath;
+  if (hasbackslash)
+    {
+    // backslashes interfere with vtksys::Glob
+    vtksys::SystemTools::ConvertToUnixSlashes(newpath);
+    }
+  filepath = newpath.c_str();
 
   if (ispattern)
     {
