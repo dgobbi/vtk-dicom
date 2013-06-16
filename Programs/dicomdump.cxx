@@ -13,10 +13,12 @@
 =========================================================================*/
 
 #include "vtkDICOMParser.h"
+#include "vtkDICOMSorter.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMDictionary.h"
 #include "vtkDICOMItem.h"
 
+#include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
 
 #include <stdio.h>
@@ -51,6 +53,15 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
     name = d.GetName();
     }
 
+  // allow multiple values (i.e. for each image in series)
+  unsigned int vn = v.GetNumberOfValues();
+  vtkDICOMValue *vp = v.GetMultiplexData();
+  if (vp == 0)
+    {
+    vp = &v;
+    vn = 1;
+    }
+
   // make an indentation string
   if (INDENT_SIZE*depth > MAX_INDENT)
     {
@@ -59,93 +70,105 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
   static const char spaces[MAX_INDENT+1] = "                        ";
   const char *indent = spaces + (MAX_INDENT - INDENT_SIZE*depth);
 
-  std::string s;
-  if (v.GetVR() == vtkDICOMVR::UN ||
-      v.GetVR() == vtkDICOMVR::SQ)
+  for (unsigned int vi = 0; vi < vn; vi++)
     {
-    // sequences are printed later
-    s = (vl > 0 ? "..." : "");
-    }
-  else if (v.GetVR() == vtkDICOMVR::LT ||
-           v.GetVR() == vtkDICOMVR::ST ||
-           v.GetVR() == vtkDICOMVR::UT)
-    {
-    // replace breaks with "\\", cap length to MAX_LENGTH
-    const char *cp = v.GetCharData();
-    unsigned int j = 0;
-    while (j < vl && cp[j] != '\0')
+    v = vp[vi];
+    std::string s;
+    if (v.GetVR() == vtkDICOMVR::UN ||
+        v.GetVR() == vtkDICOMVR::SQ)
       {
-      unsigned int k = j;
-      unsigned int m = j;
-      for (; j < vl && cp[j] != '\0'; j++)
+      // sequences are printed later
+      s = (vl > 0 ? "..." : "");
+      }
+    else if (v.GetVR() == vtkDICOMVR::LT ||
+             v.GetVR() == vtkDICOMVR::ST ||
+             v.GetVR() == vtkDICOMVR::UT)
+      {
+      // replace breaks with "\\", cap length to MAX_LENGTH
+      const char *cp = v.GetCharData();
+      unsigned int j = 0;
+      while (j < vl && cp[j] != '\0')
         {
-        m = j;
-        if (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f')
+        unsigned int k = j;
+        unsigned int m = j;
+        for (; j < vl && cp[j] != '\0'; j++)
           {
-          do { j++; }
-          while (j < vl && (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f'));
+          m = j;
+          if (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f')
+            {
+            do { j++; }
+            while (j < vl && (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f'));
+            break;
+            }
+          m++;
+          }
+        if (j == vl)
+          {
+          while (m > 0 && cp[m-1] == ' ') { m--; }
+          }
+        if (k != 0)
+          {
+          s.append("\\\\");
+          }
+        s.append(&cp[k], m-k);
+        if (s.size() > MAX_LENGTH)
+          {
+          s.resize(MAX_LENGTH-4);
+          s.append("...");
           break;
           }
-        m++;
-        }
-      if (j == vl)
-        {
-        while (m > 0 && cp[m-1] == ' ') { m--; }
-        }
-      if (k != 0)
-        {
-        s.append("\\\\");
-        }
-      s.append(&cp[k], m-k);
-      if (s.size() > MAX_LENGTH)
-        {
-        s.resize(MAX_LENGTH-4);
-        s.append("...");
-        break;
         }
       }
-    }
-  else
-    {
-    // print any other VR via conversion to string
-    unsigned int n = v.GetNumberOfValues();
-    for (unsigned int i = 0; i < n; i++)
+    else
       {
-      size_t pos = 0;
-      v.AppendValueToString(s, i);
-      if (i < n - 1)
+      // print any other VR via conversion to string
+      unsigned int n = v.GetNumberOfValues();
+      for (unsigned int i = 0; i < n; i++)
         {
-        s.append("\\");
+        size_t pos = 0;
+        v.AppendValueToString(s, i);
+        if (i < n - 1)
+          {
+          s.append("\\");
+          }
+        if (s.size() > MAX_LENGTH-4)
+          {
+          s.resize(pos);
+          s.append("...");
+          break;
+          }
+        pos = s.size();
         }
-      if (s.size() > MAX_LENGTH-4)
-        {
-        s.resize(pos);
-        s.append("...");
-        break;
-        }
-      pos = s.size();
       }
-    }
 
-  printf("%s(%04X,%04X) %s \"%s\" %u : [%s]\n",
-    indent, g, e, vr, name, vl, s.c_str());
-
-  if (v.GetVR() == vtkDICOMVR::SQ)
-    {
-    unsigned int m = v.GetNumberOfValues();
-    const vtkDICOMItem *items = v.GetSequenceData();
-    for (unsigned int j = 0; j < m; j++)
+    if (vi == 0)
       {
-      printf("%s%s---- SQ Item %04u ----\n",
-        indent, spaces+(MAX_INDENT - INDENT_SIZE), j+1);
-      vtkDICOMDataElementIterator siter =
-        items[j].GetDataElementIterator();
-      vtkDICOMDataElementIterator siterEnd =
-        items[j].GetDataElementIteratorEnd();
+      printf("%s(%04X,%04X) %s \"%s\" :", indent, g, e, vr, name);
+      }
+    if (vn > 1)
+      {
+      printf("%s%s  %4.4u",
+        (vi == 0 ? " (multiple values)\n" : ""), indent, vi + 1); 
+      }
+    printf(" [%s] (%u bytes)\n", s.c_str(), v.GetVL());
 
-      for (; siter != siterEnd; ++siter)
+    if (v.GetVR() == vtkDICOMVR::SQ)
+      {
+      unsigned int m = v.GetNumberOfValues();
+      const vtkDICOMItem *items = v.GetSequenceData();
+      for (unsigned int j = 0; j < m; j++)
         {
-        printElement(siter, depth+1);
+        printf("%s%s---- SQ Item %04u ----\n",
+          indent, spaces+(MAX_INDENT - INDENT_SIZE), j+1);
+        vtkDICOMDataElementIterator siter =
+          items[j].GetDataElementIterator();
+        vtkDICOMDataElementIterator siterEnd =
+          items[j].GetDataElementIteratorEnd();
+
+        for (; siter != siterEnd; ++siter)
+          {
+          printElement(siter, depth+1);
+          }
         }
       }
     }
@@ -162,30 +185,60 @@ int main(int argc, char *argv[])
     return rval;
     }
 
-  vtkSmartPointer<vtkDICOMParser> parser =
-    vtkSmartPointer<vtkDICOMParser>::New();
+  vtkSmartPointer<vtkStringArray> files =
+    vtkSmartPointer<vtkStringArray>::New();
 
   for (int argi = 1; argi < argc; argi++)
     {
-    const char *filename = argv[argi];
-    printf("=========== %s =========\n", basename(filename));
+    files->InsertNextValue(argv[argi]);
+    }
 
-    vtkSmartPointer<vtkDICOMMetaData> data =
-      vtkSmartPointer<vtkDICOMMetaData>::New();
+  // sort the files by study and series
+  vtkSmartPointer<vtkDICOMSorter> sorter =
+    vtkSmartPointer<vtkDICOMSorter>::New();
+  sorter->SetInputFileNames(files);
+  sorter->Update();
 
-    parser->SetFileName(filename);
-    parser->SetMetaData(data);
+  vtkSmartPointer<vtkDICOMParser> parser =
+    vtkSmartPointer<vtkDICOMParser>::New();
 
-    parser->Update();
+  vtkSmartPointer<vtkDICOMMetaData> data =
+    vtkSmartPointer<vtkDICOMMetaData>::New();
+  parser->SetMetaData(data);
 
-    vtkDICOMDataElementIterator iter =
-      data->GetDataElementIterator();
-    vtkDICOMDataElementIterator iterEnd =
-      data->GetDataElementIteratorEnd();
-
-    for (; iter != iterEnd; ++iter)
+  int m = sorter->GetNumberOfStudies();
+  for (int j = 0; j < m; j++)
+    {
+    int k = sorter->GetFirstSeriesInStudy(j);
+    int n = sorter->GetNumberOfSeriesInStudy(j);
+    n += k;
+    for (; k < n; k++)
       {
-      printElement(iter, 0);
+      vtkStringArray *a = sorter->GetFileNamesForSeries(k);
+      vtkIdType l = a->GetNumberOfValues();
+      std::string fname = a->GetValue(0);
+      printf("=========== %s =========\n", basename(fname.c_str()));
+
+      data->Clear();
+      data->SetNumberOfInstances(static_cast<int>(l));
+
+      for (vtkIdType i = 0; i < l; i++)
+        {
+        fname = a->GetValue(i);
+        parser->SetIndex(i);
+        parser->SetFileName(fname.c_str());
+        parser->Update();
+        }
+
+      vtkDICOMDataElementIterator iter =
+        data->GetDataElementIterator();
+      vtkDICOMDataElementIterator iterEnd =
+        data->GetDataElementIteratorEnd();
+
+      for (; iter != iterEnd; ++iter)
+        {
+        printElement(iter, 0);
+        }
       }
     }
 
