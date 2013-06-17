@@ -50,20 +50,31 @@ struct dicomtonifti_options
   const char *output;
 };
 
-// The help for the application
-void dicomtonifti_usage(const char *command_name)
+
+// Print the version
+void dicomtonifti_version(FILE *file, const char *command_name)
 {
   const char *cp = command_name + strlen(command_name);
   while (cp != command_name && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
 
-  fprintf(stderr,
+  fprintf(file,
     "%s %s (HEAD %8.8s, %s, %s)\n", cp,
     DICOM_VERSION, DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
-  fprintf(stderr,
+}
+
+// Print the options
+void dicomtonifti_usage(FILE *file, const char *command_name)
+{
+  const char *cp = command_name + strlen(command_name);
+  while (cp != command_name && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
+
+  dicomtonifti_version(file, command_name);
+
+  fprintf(file,
     "usage: %s -o file.nii file1.dcm [file2.dcm ...]\n", cp);
-  fprintf(stderr,
+  fprintf(file,
     "       %s -o directory --batch file1.dcm [file2.dcm ...]\n", cp);
-  fprintf(stderr,
+  fprintf(file,
     "options:\n"
     "  -o <output.nii[.gz]>    The output file.\n"
     "  --no-slice-reordering   Never reorder the slices.\n"
@@ -75,10 +86,19 @@ void dicomtonifti_usage(const char *command_name)
     "  --silent                Do not echo output filenames.\n"
     "  --verbose               Verbose error reporting.\n"
     "  --version               Print the version and exit.\n"
+    "  --help                  Documentation for niftitodicom.\n"
   );
-  fprintf(stderr,
+}
+
+// Print the help
+void dicomtonifti_help(FILE *file, const char *command_name)
+{
+  dicomtonifti_usage(file, command_name);
+
+  fprintf(file,
     "\n");
-  fprintf(stderr,
+
+  fprintf(file,
     "This program will convert a DICOM series into a NIfTI file.\n"
     "\n"
     "It reads the DICOM Position and Orientation metadata, and uses this\n"
@@ -97,6 +117,7 @@ void dicomtonifti_usage(const char *command_name)
     "If batch mode is enabled, then the filenames will automatically be\n"
     "generated from the series description in the DICOM meta data:\n"
     "\"PatientName/StudyDescription-StudyID/SeriesDescription.nii.gz\".\n"
+    "\n"
   );
 }
 
@@ -282,11 +303,12 @@ void dicomtonifti_read_options(
         }
       else if (strcmp(arg, "--version") == 0)
         {
-        const char *cp = argv[0] + strlen(argv[0]);
-        while (cp != argv[0] && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
-        fprintf(stdout,
-          "%s %s (HEAD %8.8s, %s, %s)\n", cp, DICOM_VERSION,
-          DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
+        dicomtonifti_version(stdout, argv[0]);
+        exit(0);
+        }
+      else if (strcmp(arg, "--help") == 0)
+        {
+        dicomtonifti_help(stdout, argv[0]);
         exit(0);
         }
       else if (strncmp(arg, "-o", 2) == 0)
@@ -300,7 +322,7 @@ void dicomtonifti_read_options(
           if (argi + 1 >= argc)
             {
             fprintf(stderr, "A file must follow the \'-o\' flag\n");
-            dicomtonifti_usage(argv[0]);
+            dicomtonifti_usage(stderr, argv[0]);
             exit(1);
             }
           arg = argv[argi++];
@@ -380,7 +402,7 @@ std::string dicomtonifti_make_filename(
 
   return vtksys::SystemTools::JoinPath(sv);
 }
- 
+
 // Convert one DICOM series into one NIFTI file
 void dicomtonifti_convert_one(
   const dicomtonifti_options *options, vtkStringArray *a,
@@ -456,7 +478,7 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkStringArray>::New();
 
   dicomtonifti_options options;
-  dicomtonifti_read_options(argc, argv, &options, files); 
+  dicomtonifti_read_options(argc, argv, &options, files);
 
   // whether to silence VTK warnings and errors
   vtkObject::SetGlobalWarningDisplay(options.verbose);
@@ -466,7 +488,7 @@ int main(int argc, char *argv[])
   if (!outpath)
     {
     fprintf(stderr, "No output file was specified (\'-o\' <filename>).\n");
-    dicomtonifti_usage(argv[0]);
+    dicomtonifti_usage(stderr, argv[0]);
     exit(1);
     }
 
@@ -486,7 +508,7 @@ int main(int argc, char *argv[])
   if (files->GetNumberOfValues() == 0)
     {
     fprintf(stderr, "No input files were specified.\n");
-    dicomtonifti_usage(argv[0]);
+    dicomtonifti_usage(stderr, argv[0]);
     exit(1);
     }
 
