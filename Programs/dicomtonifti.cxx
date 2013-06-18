@@ -39,6 +39,9 @@
 // Simple structure for command-line options
 struct dicomtonifti_options
 {
+  bool compress;
+  bool recurse;
+  bool follow_symlinks;
   bool no_slice_reordering;
   bool no_row_reordering;
   bool no_column_reordering;
@@ -76,7 +79,10 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
     "       %s -o directory --batch file1.dcm [file2.dcm ...]\n", cp);
   fprintf(file,
     "options:\n"
-    "  -o <output.nii[.gz]>    The output file.\n"
+    "  -o <output.nii[.gz]>    The output file (or directory, if --batch).\n"
+    "  -z --compress           Compress output files.\n"
+    //"  -r --recurse            Recurse into subdirectories.\n"
+    //"  --follow-symlinks       Follow symbolic links when recursing.\n"
     "  --no-slice-reordering   Never reorder the slices.\n"
     "  --no-row-reordering     Never reorder the rows.\n"
     "  --no-column-reordering  Never reorder the columns.\n"
@@ -247,6 +253,9 @@ void dicomtonifti_read_options(
   int argc, char *argv[],
   dicomtonifti_options *options, vtkStringArray *files)
 {
+  options->recurse = false;
+  options->compress = false;
+  options->follow_symlinks = false;
   options->no_slice_reordering = false;
   options->no_row_reordering = false;
   options->no_column_reordering = false;
@@ -268,6 +277,18 @@ void dicomtonifti_read_options(
         {
         // stop processing switches
         break;
+        }
+      else if (strcmp(arg, "--recurse") == 0)
+        {
+        options->recurse = true;
+        }
+      else if (strcmp(arg, "--compress") == 0)
+        {
+        options->compress = true;
+        }
+      else if (strcmp(arg, "--follow-symlinks") == 0)
+        {
+        options->follow_symlinks = true;
         }
       else if (strcmp(arg, "--no-slice-reordering") == 0)
         {
@@ -311,23 +332,50 @@ void dicomtonifti_read_options(
         dicomtonifti_help(stdout, argv[0]);
         exit(0);
         }
-      else if (strncmp(arg, "-o", 2) == 0)
+      else if (arg[0] == '-' && arg[1] == '-')
         {
-        if (arg[2] != '\0')
+        fprintf(stderr, "\nUnrecognized option %s\n\n", arg);
+        dicomtonifti_usage(stderr, argv[0]);
+        exit(1);
+        }
+      else if (arg[0] == '-' && arg[1] != '-')
+        {
+        for (int argj = 1; arg[argj] != '\0'; argj++)
           {
-          arg += 2;
-          }
-        else
-          {
-          if (argi + 1 >= argc)
+          if (arg[argj] == 'z')
             {
-            fprintf(stderr, "A file must follow the \'-o\' flag\n");
+            options->compress = true;
+            }
+          else if (arg[argj] == 'r')
+            {
+            options->recurse = true;
+            }
+          else if (arg[argj] == 'o')
+            {
+            if (arg[argj+1] != '\0')
+              {
+              arg += argj+1;
+              }
+            else
+              {
+              if (argi + 1 >= argc)
+                {
+                fprintf(stderr, "\nA file must follow the \'-o\' flag\n\n");
+                dicomtonifti_usage(stderr, argv[0]);
+                exit(1);
+                }
+              arg = argv[argi++];
+              }
+            options->output = arg;
+            break;
+            }
+          else
+            {
+            fprintf(stderr, "\nUnrecognized \'%c\' in option %s\n\n", arg[argj], arg);
             dicomtonifti_usage(stderr, argv[0]);
             exit(1);
             }
-          arg = argv[argi++];
           }
-        options->output = arg;
         }
       }
     else
@@ -399,7 +447,7 @@ std::string dicomtonifti_make_filename(
 
   sv.push_back(patientID);
   sv.push_back(studyDesc + "-" + studyID);
-  sv.push_back(seriesDesc + ".nii.gz");
+  sv.push_back(seriesDesc + ".nii");
 
   return vtksys::SystemTools::JoinPath(sv);
 }
@@ -488,7 +536,7 @@ int main(int argc, char *argv[])
   const char *outpath = options.output;
   if (!outpath)
     {
-    fprintf(stderr, "No output file was specified (\'-o\' <filename>).\n");
+    fprintf(stderr, "\nNo output file was specified (\'-o\' <filename>).\n\n");
     dicomtonifti_usage(stderr, argv[0]);
     exit(1);
     }
@@ -508,7 +556,7 @@ int main(int argc, char *argv[])
   // make sure that input files were provided
   if (files->GetNumberOfValues() == 0)
     {
-    fprintf(stderr, "No input files were specified.\n");
+    fprintf(stderr, "\nNo input files were specified.\n\n");
     dicomtonifti_usage(stderr, argv[0]);
     exit(1);
     }
@@ -522,8 +570,20 @@ int main(int argc, char *argv[])
 
   if (!options.batch)
     {
+    std::string outfile = outpath;
+    if (options.compress)
+      {
+      size_t os = strlen(outpath);
+      if (os > 2 &&
+          (outpath[os-3] != '.' ||
+           tolower(outpath[os-2]) != 'g' ||
+           tolower(outpath[os-1]) != 'z'))
+        {
+        outfile.append(".gz");
+        }
+      }
     dicomtonifti_convert_one(
-      &options, sorter->GetOutputFileNames(), outpath);
+      &options, sorter->GetOutputFileNames(), outfile.c_str());
     }
   else
     {
@@ -552,6 +612,11 @@ int main(int argc, char *argv[])
         // generate a filename from the meta data
         std::string outfile =
           dicomtonifti_make_filename(outpath, meta);
+
+        if (options.compress)
+          {
+          outfile.append(".gz");
+          }
 
         // make the directory for the file
         if (k == sorter->GetFirstSeriesInStudy(j))
