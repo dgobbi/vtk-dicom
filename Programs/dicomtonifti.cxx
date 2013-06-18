@@ -395,7 +395,8 @@ std::string dicomtonifti_make_filename(
 
   std::vector<std::string> sv;
 
-  sv.push_back(outpath);
+  vtksys::SystemTools::SplitPath(outpath, sv);
+
   sv.push_back(patientID);
   sv.push_back(studyDesc + "-" + studyID);
   sv.push_back(seriesDesc + ".nii.gz");
