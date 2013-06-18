@@ -86,7 +86,7 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
     "  --silent                Do not echo output filenames.\n"
     "  --verbose               Verbose error reporting.\n"
     "  --version               Print the version and exit.\n"
-    "  --help                  Documentation for niftitodicom.\n"
+    "  --help                  Documentation for dicomtonifti.\n"
   );
 }
 
