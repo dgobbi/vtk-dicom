@@ -26,10 +26,12 @@
 #include <vtkSmartPointer.h>
 
 #include <vtksys/SystemTools.hxx>
+#include <vtksys/Directory.hxx>
 #include <vtksys/Glob.hxx>
 
 #include <string>
 #include <vector>
+#include <set>
 
 #include <stdio.h>
 #include <string.h>
@@ -81,8 +83,8 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
     "options:\n"
     "  -o <output.nii[.gz]>    The output file (or directory, if --batch).\n"
     "  -z --compress           Compress output files.\n"
-    //"  -r --recurse            Recurse into subdirectories.\n"
-    //"  --follow-symlinks       Follow symbolic links when recursing.\n"
+    "  -r --recurse            Recurse into subdirectories.\n"
+    "  --follow-symlinks       Follow symbolic links when recursing.\n"
     "  --no-slice-reordering   Never reorder the slices.\n"
     "  --no-row-reordering     Never reorder the rows.\n"
     "  --no-column-reordering  Never reorder the columns.\n"
@@ -519,48 +521,11 @@ void dicomtonifti_convert_one(
   dicomtonifti_check_error(writer);
 }
 
-// This program will convert DICOM to NIFTI
-int main(int argc, char *argv[])
+// Process a list of DICOM files
+void dicomtonifti_convert_files(
+  dicomtonifti_options *options, vtkStringArray *files,
+  const char *outpath)
 {
-  // for the list of input DICOM files
-  vtkSmartPointer<vtkStringArray> files =
-    vtkSmartPointer<vtkStringArray>::New();
-
-  dicomtonifti_options options;
-  dicomtonifti_read_options(argc, argv, &options, files);
-
-  // whether to silence VTK warnings and errors
-  vtkObject::SetGlobalWarningDisplay(options.verbose);
-
-  // the output (NIFTI file or directory)
-  const char *outpath = options.output;
-  if (!outpath)
-    {
-    fprintf(stderr, "\nNo output file was specified (\'-o\' <filename>).\n\n");
-    dicomtonifti_usage(stderr, argv[0]);
-    exit(1);
-    }
-
-  bool isDirectory = vtksys::SystemTools::FileIsDirectory(outpath);
-  if (options.batch && !isDirectory)
-    {
-    fprintf(stderr, "In batch mode, -o must give an existing directory.\n");
-    exit(1);
-    }
-  else if (!options.batch && isDirectory)
-    {
-    fprintf(stderr, "The -o option must give a file, not a directory.\n");
-    exit(1);
-    }
-
-  // make sure that input files were provided
-  if (files->GetNumberOfValues() == 0)
-    {
-    fprintf(stderr, "\nNo input files were specified.\n\n");
-    dicomtonifti_usage(stderr, argv[0]);
-    exit(1);
-    }
-
   // sort the files by study and series
   vtkSmartPointer<vtkDICOMSorter> sorter =
     vtkSmartPointer<vtkDICOMSorter>::New();
@@ -568,10 +533,10 @@ int main(int argc, char *argv[])
   sorter->Update();
   dicomtonifti_check_error(sorter);
 
-  if (!options.batch)
+  if (!options->batch)
     {
     std::string outfile = outpath;
-    if (options.compress)
+    if (options->compress)
       {
       size_t os = strlen(outpath);
       if (os > 2 &&
@@ -583,7 +548,7 @@ int main(int argc, char *argv[])
         }
       }
     dicomtonifti_convert_one(
-      &options, sorter->GetOutputFileNames(), outfile.c_str());
+      options, sorter->GetOutputFileNames(), outfile.c_str());
     }
   else
     {
@@ -613,7 +578,7 @@ int main(int argc, char *argv[])
         std::string outfile =
           dicomtonifti_make_filename(outpath, meta);
 
-        if (options.compress)
+        if (options->compress)
           {
           outfile.append(".gz");
           }
@@ -631,16 +596,139 @@ int main(int argc, char *argv[])
             }
           }
 
-        if (!options.silent)
+        if (!options->silent)
           {
           printf("%s\n", outfile.c_str());
           }
 
         // convert the file
-        dicomtonifti_convert_one(&options, a, outfile.c_str());
+        dicomtonifti_convert_one(options, a, outfile.c_str());
         }
       }
     }
+}
+
+// Process a list of files and directories
+void dicomtonifti_files_and_dirs(
+  dicomtonifti_options *options, vtkStringArray *files,
+  const char *outpath, std::set<std::string> *pastdirs)
+{
+  // look for directories among the files
+  vtkSmartPointer<vtkStringArray> directories =
+    vtkSmartPointer<vtkStringArray>::New();
+  vtkSmartPointer<vtkStringArray> newfiles =
+    vtkSmartPointer<vtkStringArray>::New();
+  vtkIdType n = files->GetNumberOfValues();
+  for (vtkIdType i = 0; i < n; i++)
+    {
+    std::string fname = files->GetValue(i);
+    size_t m = fname.size();
+    if ((m > 1 && (fname[m-1] == '/' || fname[m-1] == '\\')) ||
+        vtksys::SystemTools::FileIsDirectory(fname.c_str()))
+      {
+      if (pastdirs->size() == 0 ||
+          (options->recurse &&
+           (options->follow_symlinks ||
+            !vtksys::SystemTools::FileIsSymlink(fname.c_str()))))
+        {
+        directories->InsertNextValue(fname.c_str());
+        }
+      }
+    else
+      {
+      newfiles->InsertNextValue(fname.c_str());
+      }
+    }
+
+  if (newfiles->GetNumberOfValues() > 0)
+    {
+    dicomtonifti_convert_files(options, newfiles, outpath);
+    }
+
+  n = directories->GetNumberOfValues();
+  vtksys::Directory directory;
+  std::vector<std::string> pathparts;
+  for (vtkIdType i = 0; i < n; i++)
+    {
+    std::string dirname = directories->GetValue(i);
+
+    // avoid infinite recursion
+    std::string realpath = vtksys::SystemTools::GetRealPath(dirname.c_str());
+    if (pastdirs->count(realpath)) { continue; }
+    pastdirs->insert(pastdirs->end(), realpath);
+
+    if (!directory.Load(dirname.c_str()))
+      {
+      fprintf(stderr, "Could not open directory %s\n", dirname.c_str());
+      }
+    else
+      {
+      files->Initialize();
+      vtksys::SystemTools::SplitPath(directory.GetPath(), pathparts);
+      unsigned long nf = directory.GetNumberOfFiles();
+      for (unsigned long j = 0; j < nf; j++)
+        {
+        const char *dirfile = directory.GetFile(j);
+        if (dirfile[0] != '.')
+          {
+          pathparts.push_back(dirfile);
+          std::string fullpath = vtksys::SystemTools::JoinPath(pathparts);
+          files->InsertNextValue(fullpath);
+          pathparts.pop_back();
+          }
+        }
+      dicomtonifti_files_and_dirs(options, files, outpath, pastdirs);
+      }
+    }
+}
+
+// This program will convert DICOM to NIFTI
+int main(int argc, char *argv[])
+{
+  // for the list of input DICOM files
+  vtkSmartPointer<vtkStringArray> files =
+    vtkSmartPointer<vtkStringArray>::New();
+
+  dicomtonifti_options options;
+  dicomtonifti_read_options(argc, argv, &options, files);
+
+  // whether to silence VTK warnings and errors
+  vtkObject::SetGlobalWarningDisplay(options.verbose);
+
+  // the output (NIFTI file or directory)
+  const char *outpath = options.output;
+  if (!outpath)
+    {
+    fprintf(stderr,
+      "\nNo output file was specified (\'-o\' <filename>).\n\n");
+    dicomtonifti_usage(stderr, argv[0]);
+    exit(1);
+    }
+
+  bool isDirectory = vtksys::SystemTools::FileIsDirectory(outpath);
+  size_t l = strlen(outpath);
+  if (options.batch && !isDirectory)
+    {
+    fprintf(stderr, "In batch mode, -o must give an existing directory.\n");
+    exit(1);
+    }
+  else if (!options.batch && (isDirectory ||
+           (l > 0 && (outpath[l-1] == '/' || outpath[l-1] == '\\'))))
+    {
+    fprintf(stderr, "The -o option must give a file, not a directory.\n");
+    exit(1);
+    }
+
+  // make sure that input files were provided
+  if (files->GetNumberOfValues() == 0)
+    {
+    fprintf(stderr, "\nNo input files were specified.\n\n");
+    dicomtonifti_usage(stderr, argv[0]);
+    exit(1);
+    }
+
+  std::set<std::string> pastdirs;
+  dicomtonifti_files_and_dirs(&options, files, outpath, &pastdirs);
 
   return 0;
 }
