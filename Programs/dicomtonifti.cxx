@@ -84,15 +84,15 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
     "  -o <output.nii[.gz]>    The output file (or directory, if --batch).\n"
     "  -z --compress           Compress output files.\n"
     "  -r --recurse            Recurse into subdirectories.\n"
-    "  --follow-symlinks       Follow symbolic links when recursing.\n"
+    "  -b --batch              Do multiple series at once.\n"
+    "  -s --silent             Do not echo output filenames.\n"
+    "  -v --verbose            Verbose error reporting.\n"
+    "  -L --follow-symlinks    Follow symbolic links when recursing.\n"
     "  --no-slice-reordering   Never reorder the slices.\n"
     "  --no-row-reordering     Never reorder the rows.\n"
     "  --no-column-reordering  Never reorder the columns.\n"
     "  --no-qform              Don't include a qform in the NIFTI file.\n"
     "  --no-sform              Don't include an sform in the NIFTI file.\n"
-    "  --batch                 Do multiple series at once.\n"
-    "  --silent                Do not echo output filenames.\n"
-    "  --verbose               Verbose error reporting.\n"
     "  --version               Print the version and exit.\n"
     "  --help                  Documentation for dicomtonifti.\n"
   );
@@ -108,12 +108,14 @@ void dicomtonifti_help(FILE *file, const char *command_name)
 
   fprintf(file,
     "This program will convert a DICOM series into a NIfTI file.\n"
-    "\n"
+    "\n");
+  fprintf(file,
     "It reads the DICOM Position and Orientation metadata, and uses this\n"
     "information to generate qform and sform entries for the NIfTI header,\n"
     "after doing a conversion from the DICOM coordinate system to the NIfTI\n"
     "coordinate system.\n"
-    "\n"
+    "\n");
+  fprintf(file,
     "By default, it will also reorder the columns of the image so that\n"
     "columns with higher indices are further to the patient\'s right (or\n"
     "in the case of sagittal images, further anterior).  Likewise, rows\n"
@@ -121,12 +123,19 @@ void dicomtonifti_help(FILE *file, const char *command_name)
     "anterior for axial images).  Finally, it will reorder the slices\n"
     "so that the column direction, row direction, and slice direction\n"
     "follow the right-hand rule.\n"
-    "\n"
+    "\n");
+  fprintf(file,
     "If batch mode is enabled, then the filenames will automatically be\n"
     "generated from the series description in the DICOM meta data:\n"
-    "\"PatientName/StudyDescription-StudyID/SeriesDescription.nii.gz\".\n"
+    "\"PatientName/StudyDescription-ID/SeriesDescription_N.nii.gz\".\n"
     "\n"
-  );
+    "Here is an example of batch mode that recurses into subdirectories\n"
+    "and compresses the output files, putting the results in the current\n"
+    "directory:\n"
+    "\n"
+    "%s -brz -o . /path/to/dicom/files\n"
+    "\n",
+    command_name);
 }
 
 // Print error
@@ -351,6 +360,22 @@ void dicomtonifti_read_options(
           else if (arg[argj] == 'r')
             {
             options->recurse = true;
+            }
+          else if (arg[argj] == 'b')
+            {
+            options->batch = true;
+            }
+          else if (arg[argj] == 's')
+            {
+            options->silent = true;
+            }
+          else if (arg[argj] == 'v')
+            {
+            options->verbose = true;
+            }
+          else if (arg[argj] == 'L')
+            {
+            options->follow_symlinks = true;
             }
           else if (arg[argj] == 'o')
             {
