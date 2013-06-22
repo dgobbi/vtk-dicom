@@ -437,6 +437,8 @@ std::string dicomtonifti_make_filename(
     meta->GetAttributeValue(DC::StudyID).AsString());
   std::string seriesDesc = dicomtonifti_safe_string(
     meta->GetAttributeValue(DC::SeriesDescription).AsString());
+  std::string seriesNumber = dicomtonifti_safe_string(
+    meta->GetAttributeValue(DC::SeriesNumber).AsString());
 
   if (patientName != "UNKNOWN")
     {
@@ -449,7 +451,7 @@ std::string dicomtonifti_make_filename(
 
   sv.push_back(patientID);
   sv.push_back(studyDesc + "-" + studyID);
-  sv.push_back(seriesDesc + ".nii");
+  sv.push_back(seriesDesc + "_" + seriesNumber + ".nii");
 
   return vtksys::SystemTools::JoinPath(sv);
 }
