@@ -91,6 +91,7 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
     "  --no-slice-reordering   Never reorder the slices.\n"
     "  --no-row-reordering     Never reorder the rows.\n"
     "  --no-column-reordering  Never reorder the columns.\n"
+    "  --no-reordering         Never reorder slices, rows, or columns.\n"
     "  --no-qform              Don't include a qform in the NIFTI file.\n"
     "  --no-sform              Don't include an sform in the NIFTI file.\n"
     "  --version               Print the version and exit.\n"
@@ -311,6 +312,12 @@ void dicomtonifti_read_options(
         }
       else if (strcmp(arg, "--no-column-reordering") == 0)
         {
+        options->no_column_reordering = true;
+        }
+      else if (strcmp(arg, "--no-reordering") == 0)
+        {
+        options->no_slice_reordering = true;
+        options->no_row_reordering = true;
         options->no_column_reordering = true;
         }
       else if (strcmp(arg, "--no-qform") == 0)
