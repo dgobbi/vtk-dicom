@@ -130,8 +130,9 @@ void dicomtonifti_help(FILE *file, const char *command_name)
     "\n");
   fprintf(file,
     "It is also possible to reformat the images into the axial orientation\n"
-    "via the --reformat-to-axial option.  This option is mutually exclusive\n"
-    "with the no-reordering options.\n"
+    "via the --reformat-to-axial option  This option is mutually exclusive\n"
+    "with the no-reordering options.  The resulting orientation matrix will\n"
+    "be the identity matrix.\n"
     "\n");
   fprintf(file,
     "If batch mode is enabled, then the filenames will automatically be\n"
@@ -603,9 +604,9 @@ void dicomtonifti_convert_one(
       if (idim < 0)
         {
         idim = 3 - maxidx[(jdim+1)%3] - maxidx[(jdim+2)%3];
+        maxidx[jdim] = idim;
         double perm = (((3 + maxidx[2] - maxidx[0])%3) == 2 ? 1.0 : -1.0);
         value[jdim] = value[(jdim+1)%3]*value[(jdim+2)%3]*perm;
-        maxidx[jdim] = idim;
         }
       axes->SetElement(jdim, idim, value[jdim]);
       }
