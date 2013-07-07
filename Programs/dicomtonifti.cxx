@@ -20,6 +20,7 @@
 #include "vtkNIFTIWriter.h"
 
 #include <vtkMatrix4x4.h>
+#include <vtkImageReslice.h>
 #include <vtkStringArray.h>
 #include <vtkIntArray.h>
 #include <vtkErrorCode.h>
@@ -44,6 +45,7 @@ struct dicomtonifti_options
   bool compress;
   bool recurse;
   bool follow_symlinks;
+  bool reformat_to_axial;
   bool no_slice_reordering;
   bool no_row_reordering;
   bool no_column_reordering;
@@ -88,6 +90,7 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
     "  -s --silent             Do not echo output filenames.\n"
     "  -v --verbose            Verbose error reporting.\n"
     "  -L --follow-symlinks    Follow symbolic links when recursing.\n"
+    "  --reformat-to-axial     Reformat the image into axial orientation.\n"
     "  --no-slice-reordering   Never reorder the slices.\n"
     "  --no-row-reordering     Never reorder the rows.\n"
     "  --no-column-reordering  Never reorder the columns.\n"
@@ -124,6 +127,11 @@ void dicomtonifti_help(FILE *file, const char *command_name)
     "anterior for axial images).  Finally, it will reorder the slices\n"
     "so that the column direction, row direction, and slice direction\n"
     "follow the right-hand rule.\n"
+    "\n");
+  fprintf(file,
+    "It is also possible to reformat the images into the axial orientation\n"
+    "via the --reformat-to-axial option.  This option is mutually exclusive\n"
+    "with the no-reordering options.\n"
     "\n");
   fprintf(file,
     "If batch mode is enabled, then the filenames will automatically be\n"
@@ -268,6 +276,7 @@ void dicomtonifti_read_options(
   options->recurse = false;
   options->compress = false;
   options->follow_symlinks = false;
+  options->reformat_to_axial = false;
   options->no_slice_reordering = false;
   options->no_row_reordering = false;
   options->no_column_reordering = false;
@@ -301,6 +310,10 @@ void dicomtonifti_read_options(
       else if (strcmp(arg, "--follow-symlinks") == 0)
         {
         options->follow_symlinks = true;
+        }
+      else if (strcmp(arg, "--reformat-to-axial") == 0)
+        {
+        options->reformat_to_axial = true;
         }
       else if (strcmp(arg, "--no-slice-reordering") == 0)
         {
@@ -533,6 +546,79 @@ void dicomtonifti_convert_one(
   // if z is negative, slices were reordered by vtkDIOCOMToRAS
   slicesReordered ^= (checkMatrix->GetElement(2, 2) < -0.1);
 
+  // get the orientation matrix
+  vtkSmartPointer<vtkMatrix4x4> matrix =
+    vtkSmartPointer<vtkMatrix4x4>::New();
+  matrix->DeepCopy(converter->GetRASMatrix());
+
+  // reformat to axial if requested
+  vtkAlgorithmOutput *lastOutput = converter->GetOutputPort();
+  vtkSmartPointer<vtkImageReslice> reformat =
+    vtkSmartPointer<vtkImageReslice>::New();
+  vtkSmartPointer<vtkMatrix4x4> axes =
+    vtkSmartPointer<vtkMatrix4x4>::New();
+  if (options->reformat_to_axial)
+    {
+    // this becomes meaningless after reformatting
+    slicesReordered = false;
+
+    // create a permutation matrix
+    axes->DeepCopy(matrix);
+    axes->Invert();
+    int maxidx[3] = { -1, -1, -1 };
+    int value[3] = { 1.0, 1.0, 1.0 };
+    int prevmaxj = -1;
+    int prevmaxi = -1;
+    for (int kdim = 0; kdim < 2; kdim++)
+      {
+      int maxj = 0;
+      int maxi = 0;
+      double maxv = -0.0;
+      for (int jdim = 0; jdim < 3; jdim++)
+        {
+        if (jdim == prevmaxj) { continue; }
+        for (int idim = 0; idim < 3; idim++)
+          {
+          if (idim == prevmaxi) { continue; }
+          double v = axes->GetElement(jdim, idim);
+          if (v*v >= maxv)
+            {
+            maxi = idim;
+            maxj = jdim;
+            maxv = v*v;
+            }
+          }
+        }
+      maxidx[maxj] = maxi;
+      value[maxj] = (axes->GetElement(maxj, maxi) < 0 ? -1.0 : 1.0);
+      prevmaxj = maxj;
+      prevmaxi = maxi;
+      }
+
+    axes->Zero();
+    axes->SetElement(3, 3, 1.0);
+    for (int jdim = 0; jdim < 3; jdim++)
+      {
+      int idim = maxidx[jdim];
+      if (idim < 0)
+        {
+        idim = 3 - maxidx[(jdim+1)%3] - maxidx[(jdim+2)%3];
+        double perm = (((3 + maxidx[2] - maxidx[0])%3) == 2 ? 1.0 : -1.0);
+        value[jdim] = value[(jdim+1)%3]*value[(jdim+2)%3]*perm;
+        maxidx[jdim] = idim;
+        }
+      axes->SetElement(jdim, idim, value[jdim]);
+      }
+
+    // reformat with the permutated axes
+    reformat->SetResliceAxes(axes);
+    reformat->SetInputConnection(lastOutput);
+    lastOutput = reformat->GetOutputPort();
+
+    // factor out the permuted axes
+    vtkMatrix4x4::Multiply4x4(axes, matrix, matrix);
+    }
+
   // prepare the writer to write the image
   vtkSmartPointer<vtkNIFTIWriter> writer =
     vtkSmartPointer<vtkNIFTIWriter>::New();
@@ -544,13 +630,13 @@ void dicomtonifti_convert_one(
     }
   if (!options->no_qform)
     {
-    writer->SetQFormMatrix(converter->GetRASMatrix());
+    writer->SetQFormMatrix(matrix);
     }
   if (!options->no_sform)
     {
-    writer->SetSFormMatrix(converter->GetRASMatrix());
+    writer->SetSFormMatrix(matrix);
     }
-  writer->SetInputConnection(converter->GetOutputPort());
+  writer->SetInputConnection(lastOutput);
   writer->Write();
   dicomtonifti_check_error(writer);
 }

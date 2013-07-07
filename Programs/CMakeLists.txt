@@ -9,7 +9,7 @@ set(PROGRAM_SRCS
 foreach(src ${PROGRAM_SRCS})
   string(REGEX REPLACE "\\.(cxx|c|mm|m)$" "" prog ${src})
   add_executable(${prog} ${src})
-  target_link_libraries(${prog} vtkDICOM)
+  target_link_libraries(${prog} vtkImaging vtkDICOM)
   list(APPEND PROGRAM_EXES ${prog})
 endforeach()
 
