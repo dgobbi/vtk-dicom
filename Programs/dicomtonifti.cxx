@@ -617,7 +617,7 @@ void dicomtonifti_convert_one(
     lastOutput = reformat->GetOutputPort();
 
     // factor out the permuted axes
-    vtkMatrix4x4::Multiply4x4(axes, matrix, matrix);
+    vtkMatrix4x4::Multiply4x4(matrix, axes, matrix);
     }
 
   // prepare the writer to write the image
