@@ -337,7 +337,7 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
   for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
     {
     std::vector<FileInfo> &v = *li;
-    std::sort(v.begin(), v.end(), CompareInstance);
+    std::stable_sort(v.begin(), v.end(), CompareInstance);
 
     // Is this a new study?
     if (v[0].StudyUID != lastStudyUID)

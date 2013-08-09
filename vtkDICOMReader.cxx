@@ -342,15 +342,19 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
     }
 
   // sort by instance, and then by position
-  std::sort(info.begin(), info.end(), vtkDICOMReaderCompareInstance);
+  std::stable_sort(info.begin(), info.end(), vtkDICOMReaderCompareInstance);
   if (canSortByPosition)
     {
-    std::sort(info.begin(), info.end(), vtkDICOMReaderCompareLocation);
+    std::stable_sort(info.begin(), info.end(), vtkDICOMReaderCompareLocation);
     if (info.size() > 1)
       {
-      spacingBetweenSlices *=
+      double locDiff =
         (info.back().ComputedLocation - info.front().ComputedLocation)/
         static_cast<double>(info.size() - 1);
+      if (locDiff > 0)
+        {
+        spacingBetweenSlices *= locDiff;
+        }
       }
     }
 

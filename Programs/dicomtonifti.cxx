@@ -24,6 +24,7 @@
 #include <vtkStringArray.h>
 #include <vtkIntArray.h>
 #include <vtkErrorCode.h>
+#include <vtkSortFileNames.h>
 #include <vtkSmartPointer.h>
 
 #include <vtksys/SystemTools.hxx>
@@ -647,10 +648,18 @@ void dicomtonifti_convert_files(
   dicomtonifti_options *options, vtkStringArray *files,
   const char *outpath)
 {
+  // sort the files by filename first, as a fallback
+  vtkSmartPointer<vtkSortFileNames> presorter =
+    vtkSmartPointer<vtkSortFileNames>::New();
+  presorter->NumericSortOn();
+  presorter->IgnoreCaseOn();
+  presorter->SetInputFileNames(files);
+  presorter->Update();
+
   // sort the files by study and series
   vtkSmartPointer<vtkDICOMSorter> sorter =
     vtkSmartPointer<vtkDICOMSorter>::New();
-  sorter->SetInputFileNames(files);
+  sorter->SetInputFileNames(presorter->GetFileNames());
   sorter->Update();
   dicomtonifti_check_error(sorter);
 
