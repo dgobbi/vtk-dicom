@@ -355,6 +355,10 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
         {
         spacingBetweenSlices *= locDiff;
         }
+      else
+        {
+        canSortByPosition = false;
+        }
       }
     }
 
@@ -375,12 +379,13 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
 
   // write out the sorted indices
   bool flipImage = (this->MemoryRowOrder == vtkDICOMReader::BottomUp);
+  bool flipOrder = (flipImage && canSortByPosition);
   sorted->SetNumberOfComponents(1);
   sorted->SetNumberOfValues(numFiles);
   for (int k = 0; k < numFiles; k++)
     {
     int kflip = numFiles - k - 1;
-    kflip = (flipImage ? kflip : k);
+    kflip = (flipOrder ? kflip : k);
     sorted->SetValue(k, info[kflip].FileNumber);
     }
 
