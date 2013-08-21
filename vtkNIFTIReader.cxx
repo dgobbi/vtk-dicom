@@ -83,6 +83,59 @@ namespace { // anonymous namespace
 void vtkNIFTIReaderPrintHeader(
   nifti_1_header *hdr, ostream& os, vtkIndent indent)
 {
+  const char *datatypeName = "";
+  switch (hdr->datatype)
+    {
+    case NIFTI_TYPE_UINT8:
+      datatypeName = "uint8";
+      break;
+    case NIFTI_TYPE_INT16:
+      datatypeName = "int16";
+      break;
+    case NIFTI_TYPE_INT32:
+      datatypeName = "int32";
+      break;
+    case NIFTI_TYPE_FLOAT32:
+      datatypeName = "float32";
+      break;
+    case NIFTI_TYPE_COMPLEX64:
+      datatypeName = "complex64";
+      break;
+    case NIFTI_TYPE_FLOAT64:
+      datatypeName = "float64";
+      break;
+    case NIFTI_TYPE_RGB24:
+      datatypeName = "rgb24";
+      break;
+    case NIFTI_TYPE_INT8:
+      datatypeName = "int8";
+      break;
+    case NIFTI_TYPE_UINT16:
+      datatypeName = "uint16";
+      break;
+    case NIFTI_TYPE_UINT32:
+      datatypeName = "uint32";
+      break;
+    case NIFTI_TYPE_INT64:
+      datatypeName = "int64";
+      break;
+    case NIFTI_TYPE_UINT64:
+      datatypeName = "uint64";
+      break;
+    case NIFTI_TYPE_FLOAT128:
+      datatypeName = "float128";
+      break;
+    case NIFTI_TYPE_COMPLEX128:
+      datatypeName = "complex128";
+      break;
+    case NIFTI_TYPE_COMPLEX256:
+      datatypeName = "complex256";
+      break;
+    case NIFTI_TYPE_RGBA32:
+      datatypeName = "rgba32";
+      break;
+    }
+
   os << indent << "sizeof_hdr: " << hdr->sizeof_hdr << "\n";
   //os << "data_type: " << hdr->data_type << "\n";
   //os << "db_name: " << hdr->db_name << "\n";
@@ -102,7 +155,8 @@ void vtkNIFTIReaderPrintHeader(
   os << indent << "intent_p2: " << hdr->intent_p2 << "\n";
   os << indent << "intent_p3: " << hdr->intent_p3 << "\n";
   os << indent << "intent_code: " << hdr->intent_code << "\n";
-  os << indent << "datatype: " << hdr->datatype << "\n";
+  os << indent << "datatype: " << hdr->datatype
+     << " (" << datatypeName << ")\n";
   os << indent << "bitpix: " << hdr->bitpix << "\n";
   os << indent << "slice_start: " << hdr->slice_start << "\n";
   os << indent << "pixdim:";
