@@ -139,6 +139,7 @@ set(LIB_SRCS
   vtkDICOMReferenceCount.cxx
   vtkDICOMValue.cxx
   vtkDICOMToRAS.cxx
+  vtkNIFTIHeader.cxx
   vtkNIFTIReader.cxx
   vtkNIFTIWriter.cxx
 )
@@ -146,7 +147,6 @@ set(LIB_SRCS
 # Headers without a matching .cxx file are listed here
 set(LIB_HDRS
   vtkDICOMModule.h
-  vtkNIFTIHeader.h
   ${DICOM_BINARY_DIR}/vtkDICOMConfig.h
 )
 

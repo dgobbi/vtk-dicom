@@ -33,6 +33,7 @@
 
 // Header for NIFTI
 #include "vtkNIFTIHeader.h"
+#include "vtkNIFTIHeader_Private.h"
 
 // Header for zlib
 #include "vtk_zlib.h"
@@ -74,7 +75,10 @@ vtkNIFTIReader::~vtkNIFTIReader()
     {
     this->SFormMatrix->Delete();
     }
-  delete this->NIFTIHeader;
+  if (this->NIFTIHeader)
+    {
+    this->NIFTIHeader->Delete();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -280,8 +284,9 @@ void vtkNIFTIReader::PrintNIFTIHeader(ostream& os)
 {
   if (this->NIFTIHeader)
     {
-    vtkNIFTIReaderPrintHeader(
-      this->NIFTIHeader, os, vtkIndent());
+    nifti_1_header hdr;
+    this->GetNIFTIHeader()->GetHeader(&hdr);
+    vtkNIFTIReaderPrintHeader(&hdr, os, vtkIndent());
     }
 }
 
@@ -289,6 +294,16 @@ void vtkNIFTIReader::PrintNIFTIHeader(ostream& os)
 void vtkNIFTIReader::PrintNIFTIHeader()
 {
   this->PrintNIFTIHeader(cout);
+}
+
+//----------------------------------------------------------------------------
+vtkNIFTIHeader *vtkNIFTIReader::GetNIFTIHeader()
+{
+  if (!this->NIFTIHeader)
+    {
+    this->NIFTIHeader = vtkNIFTIHeader::New();
+    }
+  return this->NIFTIHeader;
 }
 
 //----------------------------------------------------------------------------
@@ -337,11 +352,6 @@ void vtkNIFTIReader::PrintSelf(ostream& os, vtkIndent indent)
     }
 
   os << indent << "NIFTIHeader:" << (this->NIFTIHeader ? "\n" : " (none)\n");
-  if (this->NIFTIHeader)
-    {
-    vtkNIFTIReaderPrintHeader(
-      this->NIFTIHeader, os, indent.GetNextIndent());
-    }
 }
 
 //----------------------------------------------------------------------------
@@ -477,10 +487,6 @@ int vtkNIFTIReader::RequestInformation(
 {
   // Clear the error indicator.
   this->SetErrorCode(vtkErrorCode::NoError);
-
-  // Delete the previously stored header
-  delete this->NIFTIHeader;
-  this->NIFTIHeader = 0;
 
   const char *filename = this->GetFileName();
 
@@ -1013,7 +1019,12 @@ int vtkNIFTIReader::RequestInformation(
     }
 
   // Save the header
-  this->NIFTIHeader = hdr;
+  if (!this->NIFTIHeader)
+    {
+    this->NIFTIHeader = vtkNIFTIHeader::New();
+    }
+  this->NIFTIHeader->SetHeader(hdr);
+  delete hdr;
 
   return 1;
 }

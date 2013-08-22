@@ -34,6 +34,7 @@
 #include "vtkDICOMModule.h"
 
 class vtkMatrix4x4;
+class vtkNIFTIHeader;
 
 class VTK_DICOM_EXPORT vtkNIFTIWriter : public vtkImageWriter
 {
@@ -92,6 +93,14 @@ public:
   void SetSFormMatrix(vtkMatrix4x4 *);
   vtkMatrix4x4 *GetSFormMatrix() { return this->SFormMatrix; }
 
+  // Description:
+  // Set the NIFTI header information to use when writing the file.
+  // The data dimensions and pixdim from the supplied header will be
+  // ignored.  Likewise, the QForm and SForm information in the supplied
+  // header will be ignored if you have called SetQFormMatrix() or
+  // SetSFormMatrix() to provide the orientation information for the file.
+  void SetNIFTIHeader(vtkNIFTIHeader *hdr);
+
 protected:
   vtkNIFTIWriter();
   ~vtkNIFTIWriter();
@@ -128,6 +137,10 @@ protected:
   // The orientation matrices for the NIFTI file.
   vtkMatrix4x4 *QFormMatrix;
   vtkMatrix4x4 *SFormMatrix;
+
+  // Description:
+  // The header information.
+  vtkNIFTIHeader *NIFTIHeader;
 
 private:
   vtkNIFTIWriter(const vtkNIFTIWriter&);  // Not implemented.

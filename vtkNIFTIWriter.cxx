@@ -32,6 +32,7 @@
 
 // Header for NIFTI
 #include "vtkNIFTIHeader.h"
+#include "vtkNIFTIHeader_Private.h"
 
 // Header for zlib
 #include "vtk_zlib.h"
@@ -41,6 +42,7 @@
 vtkStandardNewMacro(vtkNIFTIWriter);
 vtkCxxSetObjectMacro(vtkNIFTIWriter,QFormMatrix,vtkMatrix4x4);
 vtkCxxSetObjectMacro(vtkNIFTIWriter,SFormMatrix,vtkMatrix4x4);
+vtkCxxSetObjectMacro(vtkNIFTIWriter,NIFTIHeader,vtkNIFTIHeader);
 
 //----------------------------------------------------------------------------
 vtkNIFTIWriter::vtkNIFTIWriter()
@@ -54,6 +56,7 @@ vtkNIFTIWriter::vtkNIFTIWriter()
   this->QFac = 0.0;
   this->QFormMatrix = 0;
   this->SFormMatrix = 0;
+  this->NIFTIHeader = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -175,8 +178,82 @@ namespace {
 // - descrip and intent_name should be set, if known
 // - for RGB and RGBA images, header should be modified as necessary
 // - for complex images, header should be modified as necessary
+
 void vtkNIFTIWriterInitializeHeader(
-  nifti_1_header *hdr, vtkInformation *info)
+  nifti_1_header *hdr)
+{
+  hdr->sizeof_hdr = static_cast<int>(sizeof(nifti_1_header));
+  memset(hdr->data_type, '\0', sizeof(hdr->datatype)); // unused
+  memset(hdr->db_name, '\0', sizeof(hdr->db_name)); // unused
+  hdr->extents = 0; // unused
+  hdr->session_error = 0; // unused
+  hdr->regular = 0; // unused
+  hdr->dim_info = 0; // MR acquisition, phase, and slice directions
+
+  for (int i = 0; i < 8; i++)
+    {
+    hdr->dim[0] = 0;
+    }
+
+  hdr->intent_p1 = 0;
+  hdr->intent_p2 = 0;
+  hdr->intent_p3 = 0;
+  hdr->intent_code = 0;
+
+  hdr->datatype = 4;
+  hdr->bitpix = 16;
+
+  hdr->slice_start = 0;
+
+  for (int i = 0; i < 8; i++)
+    {
+    hdr->pixdim[0] = 0.0;
+    }
+
+  hdr->vox_offset = 352.0; // divisible by 16 for alignment
+  hdr->scl_slope = 1.0;
+  hdr->scl_inter = 0.0;
+  hdr->slice_end = 0;
+  hdr->slice_code = 0;
+  hdr->xyzt_units = 0;
+  hdr->cal_max = 0.0;
+  hdr->cal_min = 0.0;
+  hdr->slice_duration = 0;
+  hdr->toffset = 0;
+
+  hdr->glmax = 0; // unused
+  hdr->glmin = 0; // unused
+
+  memset(hdr->descrip, '\0', sizeof(hdr->descrip));
+  memset(hdr->aux_file, '\0', sizeof(hdr->aux_file));
+
+  hdr->qform_code = 0;
+  hdr->sform_code = 0;
+  hdr->quatern_b = 0.0;
+  hdr->quatern_c = 0.0;
+  hdr->quatern_d = 0.0;
+  hdr->qoffset_x = 0.0;
+  hdr->qoffset_y = 0.0;
+  hdr->qoffset_z = 0.0;
+
+  for (int i = 0; i < 4; i++)
+    {
+    hdr->srow_x[i] = 0.0;
+    hdr->srow_y[i] = 0.0;
+    hdr->srow_z[i] = 0.0;
+    }
+
+  memset(hdr->intent_name, '\0', sizeof(hdr->intent_name));
+
+  hdr->magic[0] = 'n';
+  hdr->magic[1] = '+';
+  hdr->magic[2] = '1';
+  hdr->magic[3] = '\0';
+}
+
+void vtkNIFTIWriterSetInformation(
+  nifti_1_header *hdr,
+  vtkInformation *info)
 {
   // get the scalar information
   vtkInformation *scalarInfo = vtkDataObject::GetActiveFieldInformation(
@@ -246,14 +323,6 @@ void vtkNIFTIWriterInitializeHeader(
   // number of spatial dimensions
   short spaceDim = (extent[4] == extent[5] ? 2 : 3);
 
-  hdr->sizeof_hdr = static_cast<int>(sizeof(nifti_1_header));
-  memset(hdr->data_type, '\0', sizeof(hdr->datatype)); // unused
-  memset(hdr->db_name, '\0', sizeof(hdr->db_name)); // unused
-  hdr->extents = 0; // unused
-  hdr->session_error = 0; // unused
-  hdr->regular = 0; // unused
-  hdr->dim_info = 0; // MR acquisition, phase, and slice directions
-
   hdr->dim[0] = (numComponents == 1 ? spaceDim : 5);
   hdr->dim[1] = static_cast<short>(extent[1] - extent[0] + 1);
   hdr->dim[2] = static_cast<short>(extent[3] - extent[2] + 1);
@@ -262,11 +331,6 @@ void vtkNIFTIWriterInitializeHeader(
   hdr->dim[5] = static_cast<short>(numComponents);
   hdr->dim[6] = 1;
   hdr->dim[7] = 1;
-
-  hdr->intent_p1 = 0;
-  hdr->intent_p2 = 0;
-  hdr->intent_p3 = 0;
-  hdr->intent_code = 0;
 
   hdr->datatype = datatype;
   hdr->bitpix = databits;
@@ -280,46 +344,6 @@ void vtkNIFTIWriterInitializeHeader(
   hdr->pixdim[5] = 1.0;
   hdr->pixdim[6] = 1.0;
   hdr->pixdim[7] = 1.0;
-
-  hdr->vox_offset = 352.0; // divisible by 16 for alignment
-  hdr->scl_slope = 1.0;
-  hdr->scl_inter = 0.0;
-  hdr->slice_end = 0;
-  hdr->slice_code = 0;
-  hdr->xyzt_units = 0;
-  hdr->cal_max = 0.0;
-  hdr->cal_min = 0.0;
-  hdr->slice_duration = 0;
-  hdr->toffset = 0;
-
-  hdr->glmax = 0; // unused
-  hdr->glmin = 0; // unused
-
-  memset(hdr->descrip, '\0', sizeof(hdr->descrip));
-  memset(hdr->aux_file, '\0', sizeof(hdr->aux_file));
-
-  hdr->qform_code = 0;
-  hdr->sform_code = 0;
-  hdr->quatern_b = 0.0;
-  hdr->quatern_c = 0.0;
-  hdr->quatern_d = 0.0;
-  hdr->qoffset_x = 0.0;
-  hdr->qoffset_y = 0.0;
-  hdr->qoffset_z = 0.0;
-
-  for (int i = 0; i < 4; i++)
-    {
-    hdr->srow_x[i] = 0.0;
-    hdr->srow_y[i] = 0.0;
-    hdr->srow_z[i] = 0.0;
-    }
-
-  memset(hdr->intent_name, '\0', sizeof(hdr->intent_name));
-
-  hdr->magic[0] = 'n';
-  hdr->magic[1] = '+';
-  hdr->magic[2] = '1';
-  hdr->magic[3] = '\0';
 }
 
 // Set the QForm from a 4x4 matrix
@@ -497,14 +521,31 @@ int vtkNIFTIWriter::RequestData(
 
   // create the header
   nifti_1_header hdr;
-  vtkNIFTIWriterInitializeHeader(&hdr, info);
+  if (this->NIFTIHeader)
+    {
+    this->NIFTIHeader->GetHeader(&hdr);
+    }
+  else
+    {
+    vtkNIFTIWriterInitializeHeader(&hdr);
+    }
+
+  // copy the image information into the header
+  vtkNIFTIWriterSetInformation(&hdr, info);
+
+  // set the header size
+  hdr.sizeof_hdr = static_cast<int>(sizeof(nifti_1_header));
 
   // modify magic number and voxel offset for .img files
   if (!singleFile)
     {
-    // change magic from "n+1" to "ni1"
-    hdr.magic[1] = 'i';
+    strncpy(hdr.magic, "ni1", 4);
     hdr.vox_offset = 0;
+    }
+  else
+    {
+    strncpy(hdr.magic, "n+1", 4);
+    hdr.vox_offset = 352;
     }
 
   // qfac dictates the slice ordering in the file
