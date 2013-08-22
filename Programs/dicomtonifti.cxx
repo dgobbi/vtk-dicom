@@ -19,8 +19,10 @@
 #include "vtkDICOMToRAS.h"
 #include "vtkNIFTIWriter.h"
 
+#include <vtkImageData.h>
 #include <vtkMatrix4x4.h>
 #include <vtkImageReslice.h>
+#include <vtkImageCast.h>
 #include <vtkStringArray.h>
 #include <vtkIntArray.h>
 #include <vtkErrorCode.h>
@@ -46,6 +48,7 @@ struct dicomtonifti_options
   bool compress;
   bool recurse;
   bool follow_symlinks;
+  bool fsl;
   bool reformat_to_axial;
   bool no_slice_reordering;
   bool no_row_reordering;
@@ -91,6 +94,7 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
     "  -s --silent             Do not echo output filenames.\n"
     "  -v --verbose            Verbose error reporting.\n"
     "  -L --follow-symlinks    Follow symbolic links when recursing.\n"
+    "  --fsl                   Reformat the image for use in FSL.\n"
     "  --reformat-to-axial     Reformat the image into axial orientation.\n"
     "  --no-slice-reordering   Never reorder the slices.\n"
     "  --no-row-reordering     Never reorder the rows.\n"
@@ -134,6 +138,14 @@ void dicomtonifti_help(FILE *file, const char *command_name)
     "via the --reformat-to-axial option  This option is mutually exclusive\n"
     "with the no-reordering options.  The resulting orientation matrix will\n"
     "be the identity matrix.\n"
+    "\n");
+  fprintf(file,
+    "If the output NIFTI files are to be used with the FMRIB FSL package,\n"
+    "then use the --fsl option to reformat the images to match the standard\n"
+    "FSL orientation: axial images with the slices arranged from inferior to\n"
+    "superior, column number increasing from right to left, and row number\n"
+    "increasing from posterior to anterior.  This will also convert the data\n"
+    "type from unsigned 16-bit to signed 16-bit if necessary.\n"
     "\n");
   fprintf(file,
     "If batch mode is enabled, then the filenames will automatically be\n"
@@ -278,6 +290,7 @@ void dicomtonifti_read_options(
   options->recurse = false;
   options->compress = false;
   options->follow_symlinks = false;
+  options->fsl = false;
   options->reformat_to_axial = false;
   options->no_slice_reordering = false;
   options->no_row_reordering = false;
@@ -312,6 +325,10 @@ void dicomtonifti_read_options(
       else if (strcmp(arg, "--follow-symlinks") == 0)
         {
         options->follow_symlinks = true;
+        }
+      else if (strcmp(arg, "--fsl") == 0)
+        {
+        options->fsl = true;
         }
       else if (strcmp(arg, "--reformat-to-axial") == 0)
         {
@@ -559,7 +576,8 @@ void dicomtonifti_convert_one(
     vtkSmartPointer<vtkImageReslice>::New();
   vtkSmartPointer<vtkMatrix4x4> axes =
     vtkSmartPointer<vtkMatrix4x4>::New();
-  if (options->reformat_to_axial)
+
+  if (options->reformat_to_axial || options->fsl)
     {
     // this becomes meaningless after reformatting
     slicesReordered = false;
@@ -612,6 +630,17 @@ void dicomtonifti_convert_one(
       axes->SetElement(jdim, idim, value[jdim]);
       }
 
+    // if fsl, use the fsl orientation
+    if (options->fsl)
+      {
+      double fslmat[16] = {
+        -1.0,  0.0,  0.0,  0.0,
+         0.0,  1.0,  0.0,  0.0,
+         0.0,  0.0, -1.0,  0.0,
+         0.0,  0.0,  0.0,  1.0 };
+
+      vtkMatrix4x4::Multiply4x4(*axes->Element, fslmat, *axes->Element);
+      }
     // reformat with the permutated axes
     reformat->SetResliceAxes(axes);
     reformat->SetInputConnection(lastOutput);
@@ -621,11 +650,53 @@ void dicomtonifti_convert_one(
     vtkMatrix4x4::Multiply4x4(matrix, axes, matrix);
     }
 
+  // convert to signed short if fsl
+  int scalarType = reader->GetOutput()->GetScalarType();
+  vtkSmartPointer<vtkImageCast> caster =
+    vtkSmartPointer<vtkImageCast>::New();
+  if (options->fsl && scalarType != VTK_UNSIGNED_CHAR &&
+      scalarType != VTK_SHORT && scalarType != VTK_FLOAT)
+    {
+    double outputType = scalarType;
+
+    if (scalarType == VTK_UNSIGNED_SHORT ||
+        scalarType == VTK_CHAR ||
+        scalarType == VTK_SIGNED_CHAR)
+      {
+      outputType = VTK_SHORT;
+      if (scalarType == VTK_UNSIGNED_SHORT)
+        {
+        // change to float if values greater than 32767 exist
+        const unsigned short *sptr = static_cast<const unsigned short *>(
+          reader->GetOutput()->GetScalarPointer());
+        vtkIdType n = reader->GetOutput()->GetNumberOfPoints();
+        n *= reader->GetOutput()->GetNumberOfScalarComponents();
+        for (vtkIdType i = 0; i < n; i++)
+          {
+          if (*sptr++ > 32767)
+            {
+            outputType = VTK_FLOAT;
+            break;
+            }
+          }
+        }
+      }
+    else
+      {
+      outputType = VTK_FLOAT;
+      }
+
+    caster->SetInputConnection(lastOutput);
+    caster->SetOutputScalarType(outputType);
+    lastOutput = caster->GetOutputPort();
+    }
+
   // prepare the writer to write the image
   vtkSmartPointer<vtkNIFTIWriter> writer =
     vtkSmartPointer<vtkNIFTIWriter>::New();
   writer->SetFileName(outfile);
-  if (options->no_slice_reordering && slicesReordered)
+  if ((options->no_slice_reordering && slicesReordered) ||
+      options->fsl)
     {
     // force NIFTI file to store images in original DICOM order
     writer->SetQFac(-1.0);
