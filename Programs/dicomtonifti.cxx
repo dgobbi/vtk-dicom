@@ -17,6 +17,7 @@
 #include "vtkDICOMReader.h"
 #include "vtkDICOMSorter.h"
 #include "vtkDICOMToRAS.h"
+#include "vtkNIFTIHeader.h"
 #include "vtkNIFTIWriter.h"
 
 #include <vtkImageData.h>
@@ -27,6 +28,7 @@
 #include <vtkIntArray.h>
 #include <vtkErrorCode.h>
 #include <vtkSortFileNames.h>
+#include <vtkImageHistogramStatistics.h>
 #include <vtkSmartPointer.h>
 
 #include <vtksys/SystemTools.hxx>
@@ -576,6 +578,7 @@ void dicomtonifti_convert_one(
     vtkSmartPointer<vtkImageReslice>::New();
   vtkSmartPointer<vtkMatrix4x4> axes =
     vtkSmartPointer<vtkMatrix4x4>::New();
+  int permutation[3] = { 0, 1, 2 };
 
   if (options->reformat_to_axial || options->fsl)
     {
@@ -627,6 +630,7 @@ void dicomtonifti_convert_one(
         double perm = (((3 + maxidx[2] - maxidx[0])%3) == 2 ? 1.0 : -1.0);
         value[jdim] = value[(jdim+1)%3]*value[(jdim+2)%3]*perm;
         }
+      permutation[jdim] = idim;
       axes->SetElement(jdim, idim, value[jdim]);
       }
 
@@ -691,9 +695,113 @@ void dicomtonifti_convert_one(
     lastOutput = caster->GetOutputPort();
     }
 
+  // prepare the NIFTI header information
+  vtkSmartPointer<vtkNIFTIHeader> hdr =
+    vtkSmartPointer<vtkNIFTIHeader>::New();
+  vtkDICOMMetaData *meta = reader->GetMetaData();
+
+  // the descrip is the date followed by the series description and ID
+  std::string date = meta->GetAttributeValue(DC::SeriesDate).AsString();
+  if (date.length() >= 8)
+    {
+    const char *months[13] = { "/   /", "/Jan/", "/Feb/", "/Mar/", "/Apr/",
+      "/May/", "/Jun/", "/Jul/", "/Aug/", "/Sep/", "/Nov/", "/Dec/" };
+    unsigned int month = (date[4] - '0')*10 + (date[5] - '0');
+    month = (month > 12 ? 0 : month);
+    date = date.substr(6, 2) + months[month] + date.substr(0, 4);
+    }
+  std::string descrip = date + " " +
+    meta->GetAttributeValue(DC::SeriesDescription).AsString() + ' ' +
+    meta->GetAttributeValue(DC::StudyID).AsString();
+  descrip = descrip.substr(0, 79);
+
+  // assume the units are millimetres/seconds
+  hdr->SetXYZTUnits(0xA);
+
+  // get the phase encoding direction
+  std::string phase =
+    meta->GetAttributeValue(vtkDICOMTag(0x0018,0x1312)).AsString();
+  if (phase == "COLUMN")
+    {
+    hdr->SetDimInfo((permutation[2] << 4) +
+                    (permutation[0] << 2) +
+                    (permutation[1]));
+    }
+  else if (phase == "ROW")
+    {
+    hdr->SetDimInfo((permutation[2] << 4) +
+                    (permutation[1] << 2) +
+                    (permutation[0]));
+    }
+  else if (phase == "OTHER")
+    {
+    hdr->SetDimInfo(permutation[2] << 4);
+    }
+
+  // get the scale information, if same for all slices
+  if (meta->HasAttribute(DC::RescaleSlope))
+    {
+    hdr->SetSclSlope(reader->GetRescaleSlope());
+    hdr->SetSclInter(reader->GetRescaleIntercept());
+    }
+
+  // compute a cal_min, cal_max
+  bool useWindowLevel = false;
+  if (meta->HasAttribute(DC::WindowWidth))
+    {
+    useWindowLevel = true;
+    double w = meta->GetAttributeValue(0, DC::WindowWidth).GetDouble(0);
+    double l = meta->GetAttributeValue(0, DC::WindowCenter).GetDouble(0);
+    int n = meta->GetNumberOfInstances();
+    for (int i = 1; i < n; i++)
+      {
+      double tw = meta->GetAttributeValue(i, DC::WindowWidth).GetDouble(0);
+      double tl = meta->GetAttributeValue(i, DC::WindowCenter).GetDouble(0);
+      if (tl != l || tw != w)
+        {
+        useWindowLevel = false;
+        break;
+        }
+      }
+    if (useWindowLevel)
+      {
+      double m = hdr->GetSclSlope();
+      double b = hdr->GetSclInter();
+      if (m == 0)
+         {
+         m = 1.0;
+         b = 0.0;
+         }
+      hdr->SetCalMin((l - 0.5*w)*m + b);
+      hdr->SetCalMax((l + 0.5*w)*m + b);
+      }
+    }
+  if (!useWindowLevel)
+    {
+    std::string photometric =
+      meta->GetAttributeValue(DC::PhotometricInterpretation).AsString();
+    if (photometric == "MONOCHROME1" || photometric == "MONOCHROME2")
+      {
+      // compute range rather than using DICOM window/level setting
+      vtkSmartPointer<vtkImageHistogramStatistics> histo =
+        vtkSmartPointer<vtkImageHistogramStatistics>::New();
+      histo->SetInputConnection(lastOutput);
+      histo->Update();
+      double hrange[2];
+      histo->GetAutoRange(hrange);
+      if (hrange[0] < hrange[1])
+        {
+        hdr->SetCalMin(hrange[0]);
+        hdr->SetCalMax(hrange[1]);
+        }
+      }
+    }
+
   // prepare the writer to write the image
   vtkSmartPointer<vtkNIFTIWriter> writer =
     vtkSmartPointer<vtkNIFTIWriter>::New();
+  writer->SetDescription(descrip.c_str());
+  writer->SetNIFTIHeader(hdr);
   writer->SetFileName(outfile);
   if ((options->no_slice_reordering && slicesReordered) ||
       options->fsl)
