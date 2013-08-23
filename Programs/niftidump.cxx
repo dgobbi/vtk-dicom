@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
     }
 
   static const char *intentCodes[25] = {
-    "unknown", "unknown", "correl", "ttest",
+    "none", "unknown", "correl", "ttest",
     "ftest", "zscore", "chisq", "beta",
     "binom", "gamma", "poisson", "normal",
     "ftest_nonc", "chisq_nonc", "logistic", "laplace",

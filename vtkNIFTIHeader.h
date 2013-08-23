@@ -46,6 +46,7 @@ public:
   // Description:
   // 
   enum IntentCodeEnum {
+    IntentNone = 0,
     IntentCorrel = 2,
     IntentTTest = 3,
     IntentFTest = 4,
@@ -102,7 +103,7 @@ public:
 
   // Description:
   // Get the offset to the pixel data within the file.
-  vtkIdType GetVoxOffset() { return this->VoxOffset; }
+  vtkTypeInt64 GetVoxOffset() { return this->VoxOffset; }
 
   // Description:
   // Get a null-terminated file descriptor, this usually gives the
@@ -121,7 +122,7 @@ public:
   // Description:
   // Get the nth dimension of the data, where GetDim(0) returns the
   // number of dimensions that are defined for the file.
-  int GetDim(int i) {
+  vtkTypeInt64 GetDim(int i) {
     return (i < 0 || i > 7 ? 0 : this->Dim[i]); }
 
   // Description:
@@ -177,9 +178,9 @@ public:
 
   // Description:
   // Get the slice range for the data.
-  vtkSetMacro(SliceStart, int);
+  vtkSetMacro(SliceStart, vtkTypeInt64);
   int GetSliceStart() { return this->SliceStart; }
-  vtkSetMacro(SliceEnd, int);
+  vtkSetMacro(SliceEnd, vtkTypeInt64);
   int GetSliceEnd() { return this->SliceEnd; }
 
   // Description:
@@ -251,8 +252,8 @@ public:
   void DeepCopy(vtkNIFTIHeader *o);
 
   // Description:
-  // Set the values from an existing nifti_1_header struct, or store
-  // the values in an existing nifti_1_header struct.
+  // Set the values from an existing nifti struct, or store
+  // the values in an existing nifti struct.
   void SetHeader(const nifti_1_header *hdr);
   void GetHeader(nifti_1_header *hdr);
 
@@ -261,10 +262,10 @@ protected:
   ~vtkNIFTIHeader();
 
   char Magic[12];
-  vtkIdType VoxOffset;
+  vtkTypeInt64 VoxOffset;
   int DataType;
   int BitPix;
-  int Dim[8];
+  vtkTypeInt64 Dim[8];
   double PixDim[8];
   int IntentCode;
   char IntentName[18];
@@ -277,8 +278,8 @@ protected:
   double CalMax;
   double SliceDuration;
   double TOffset;
-  int SliceStart;
-  int SliceEnd;
+  vtkTypeInt64 SliceStart;
+  vtkTypeInt64 SliceEnd;
   int SliceCode;
   int XYZTUnits;
   int DimInfo;
