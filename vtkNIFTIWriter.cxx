@@ -26,18 +26,20 @@
 #include "vtkMatrix4x4.h"
 #include "vtkMath.h"
 #include "vtkCommand.h"
+#include "vtkVersion.h"
 
 #include "vtksys/SystemTools.hxx"
 #include "vtksys/ios/sstream"
 
 // Header for NIFTI
 #include "vtkNIFTIHeader.h"
-#include "vtkNIFTIHeader_Private.h"
+#include "vtkNIFTIHeaderPrivate.h"
 
 // Header for zlib
 #include "vtk_zlib.h"
 
 #include <stdio.h>
+#include <string.h>
 
 vtkStandardNewMacro(vtkNIFTIWriter);
 vtkCxxSetObjectMacro(vtkNIFTIWriter,QFormMatrix,vtkMatrix4x4);
@@ -51,12 +53,14 @@ vtkNIFTIWriter::vtkNIFTIWriter()
   this->FileDimensionality = 3;
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
-  this->RescaleSlope = 1.0;
-  this->RescaleIntercept = 0.0;
   this->QFac = 0.0;
   this->QFormMatrix = 0;
   this->SFormMatrix = 0;
   this->NIFTIHeader = 0;
+  this->Description = new char[80];
+  // Default description is "VTKX.Y.Z"
+  strncpy(this->Description, "VTK", 3);
+  strncpy(&this->Description[3], vtkVersion::GetVTKVersion(), 77);
 }
 
 //----------------------------------------------------------------------------
@@ -70,6 +74,17 @@ vtkNIFTIWriter::~vtkNIFTIWriter()
     {
     this->SFormMatrix->Delete();
     }
+  delete [] this->Description;
+}
+
+//----------------------------------------------------------------------------
+vtkNIFTIHeader *vtkNIFTIWriter::GetNIFTIHeader()
+{
+  if (!this->NIFTIHeader)
+    {
+    this->NIFTIHeader = vtkNIFTIHeader::New();
+    }
+  return this->NIFTIHeader;
 }
 
 //----------------------------------------------------------------------------
@@ -77,10 +92,9 @@ void vtkNIFTIWriter::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 
+  os << indent << "Description: " << this->Description << "\n";
   os << indent << "TimeDimension: " << this->TimeDimension << "\n";
   os << indent << "TimeSpacing: " << this->TimeSpacing << "\n";
-  os << indent << "RescaleSlope: " << this->RescaleSlope << "\n";
-  os << indent << "RescaleIntercept: " << this->RescaleIntercept << "\n";
   os << indent << "QFac: " << this->QFac << "\n";
 
   os << indent << "QFormMatrix:";
@@ -107,7 +121,7 @@ void vtkNIFTIWriter::PrintSelf(ostream& os, vtkIndent indent)
     for (int i = 0; i < 16; i++)
       {
       os << " " << mat[i];
-     }
+      }
     os << "\n";
     }
   else
@@ -546,6 +560,12 @@ int vtkNIFTIWriter::RequestData(
     {
     strncpy(hdr.magic, "n+1", 4);
     hdr.vox_offset = 352;
+    }
+
+  // set the description
+  if (this->Description)
+    {
+    strncpy(hdr.descrip, this->Description, 80);
     }
 
   // qfac dictates the slice ordering in the file

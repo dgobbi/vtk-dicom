@@ -49,6 +49,12 @@ public:
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
+  // Set a short description (max 80 chars) of how the file was produced.
+  // The default description is "VTKX.Y" where X.Y is the VTK version.
+  vtkSetStringMacro(Description);
+  vtkGetStringMacro(Description);
+
+  // Description:
   // Set the time dimension to use in the NIFTI file (or zero if none).
   // The number of components of the input data must be divisible by the time
   // dimension if the time dimension is not set to zero.  The vector dimension
@@ -57,16 +63,6 @@ public:
   vtkSetMacro(TimeDimension, int);
   vtkGetMacro(TimeSpacing, double);
   vtkSetMacro(TimeSpacing, double);
-
-  // Description:
-  // Set the slope and intercept for calibrating the scalar values.
-  // Other programs that read the NIFTI file can use the equation
-  // v = u*RescaleSlope + RescaleIntercept to rescale the data to
-  // real values.
-  vtkSetMacro(RescaleSlope, double);
-  vtkGetMacro(RescaleSlope, double);
-  vtkSetMacro(RescaleIntercept, double);
-  vtkGetMacro(RescaleIntercept, double);
 
   // Description:
   // The QFac sets the ordering of the slices in the NIFTI file.
@@ -100,6 +96,7 @@ public:
   // header will be ignored if you have called SetQFormMatrix() or
   // SetSFormMatrix() to provide the orientation information for the file.
   void SetNIFTIHeader(vtkNIFTIHeader *hdr);
+  vtkNIFTIHeader *GetNIFTIHeader();
 
 protected:
   vtkNIFTIWriter();
@@ -125,11 +122,6 @@ protected:
   double TimeSpacing;
 
   // Description:
-  // Information for rescaling data to quantitative units.
-  double RescaleIntercept;
-  double RescaleSlope;
-
-  // Description:
   // Set to -1 when VTK slice order is opposite to NIFTI slice order.
   double QFac;
 
@@ -137,6 +129,10 @@ protected:
   // The orientation matrices for the NIFTI file.
   vtkMatrix4x4 *QFormMatrix;
   vtkMatrix4x4 *SFormMatrix;
+
+  // Description
+  // A description of how the file was produced.
+  char *Description;
 
   // Description:
   // The header information.

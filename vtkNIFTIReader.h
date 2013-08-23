@@ -26,7 +26,7 @@
 // This class was contributed to VTK by the Calgary Image Processing and
 // Analysis Centre (CIPAC).
 // .SECTION See Also
-// vtkNIFTIWriter
+// vtkNIFTIWriter, vtkNIFTIHeader
 
 #ifndef __vtkNIFTIReader_h
 #define __vtkNIFTIReader_h
@@ -49,11 +49,6 @@ public:
   // Description:
   // Print information about this object.
   virtual void PrintSelf(ostream& os, vtkIndent indent);
-
-  // Description:
-  // Print the NIFTI header to the specified file (default: cout).
-  void PrintNIFTIHeader(ostream &os);
-  void PrintNIFTIHeader();
 
   // Description:
   // Valid extensions for this file type.

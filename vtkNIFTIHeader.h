@@ -22,14 +22,12 @@
 // via the writer's SetSForm and SetQForm methods.  Also note that all
 // info like Dim, PixDim, DataType, etc. will be ignored by the writer
 // because this information must instead be taken from the vtkImageData
-// information.  One exception to this is that if the DataType specifies
-// that the data is complex, then the written file with also be complex
-// if the vtkImageData had two scalar components per pixel.
+// information.
 // .SECTION Thanks
 // This class was contributed to VTK by the Calgary Image Processing and
 // Analysis Centre (CIPAC).
 // .SECTION See Also
-// vtkNIFTIWriter
+// vtkNIFTIReader, vtkNIFTIWriter
 
 #ifndef __vtkNIFTIHeader_h
 #define __vtkNIFTIHeader_h
@@ -59,6 +57,12 @@ public:
   // Description:
   // Get the offset to the pixel data within the file.
   vtkIdType GetVoxOffset() { return this->VoxOffset; }
+
+  // Description:
+  // Get a null-terminated file descriptor, this usually gives the
+  // name of the software that wrote the file. It will have a maximum
+  // length of 80 characters.
+  const char *GetDescrip() { return this->Descrip; }
 
   // Description:
   // Get the data type.
@@ -150,13 +154,6 @@ public:
   int GetDimInfo() { return this->DimInfo; }
 
   // Description:
-  // Get a null-terminated file descriptor, this usually gives the
-  // name of the software tha wrote the file. It will have a maximum
-  // length of 80 characters.
-  void SetDescrip(const char *descrip);
-  const char *GetDescrip() { return this->Descrip; }
-
-  // Description:
   // Get an auxilliary file, e.g. a color table, that is associated
   // with this data.  The length of the filename must be a maximum of
   // 24 characters, and it will be assumed to be in the same directory
@@ -208,8 +205,8 @@ public:
   void DeepCopy(vtkNIFTIHeader *o);
 
   // Description:
-  // Set the values from an existing nifti_11 struct, or store
-  // the values in an existing nifti_1 struct.
+  // Set the values from an existing nifti_1_header struct, or store
+  // the values in an existing nifti_1_header struct.
   void SetHeader(const nifti_1_header *hdr);
   void GetHeader(nifti_1_header *hdr);
 

@@ -14,7 +14,7 @@ See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 =========================================================================*/
 
 #include "vtkNIFTIHeader.h"
-#include "vtkNIFTIHeader_Private.h"
+#include "vtkNIFTIHeaderPrivate.h"
 
 #include <vtkObjectFactory.h>
 
@@ -300,12 +300,6 @@ void vtkNIFTIHeader::SetStringValue(char *x, const char *y, size_t n)
 void vtkNIFTIHeader::SetIntentName(const char *val)
 {
   this->SetStringValue(this->IntentName, val, 16);
-}
-
-//----------------------------------------------------------------------------
-void vtkNIFTIHeader::SetDescrip(const char *val)
-{
-  this->SetStringValue(this->Descrip, val, 80);
 }
 
 //----------------------------------------------------------------------------
