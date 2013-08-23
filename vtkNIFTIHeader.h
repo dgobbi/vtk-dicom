@@ -16,13 +16,14 @@
 // .SECTION Description
 // This class stores the header of a NIfTI file in a VTK-friendly format.
 // By using this class, it is possible to specify the header information
-// that will be stored in a file written by the vtkNIFTIWriter.  Note that
-// the SForm and QForm orientation information in this class will be
+// that will be stored in a file written by the vtkNIFTIWriter.  Note
+// that the SForm and QForm orientation information in this class will be
 // ignored by the writer if an SForm and QForm have been explicitly set
 // via the writer's SetSForm and SetQForm methods.  Also note that all
 // info like Dim, PixDim, DataType, etc. will be ignored by the writer
 // because this information must instead be taken from the vtkImageData
-// information.
+// information.  Finally, note that the vtkNIFTIWriter will ignore the
+// Descrip field, since it has its own SetDescription method.
 // .SECTION Thanks
 // This class was contributed to VTK by the Calgary Image Processing and
 // Analysis Centre (CIPAC).
@@ -41,6 +42,51 @@ struct nifti_1_header;
 class VTK_DICOM_EXPORT vtkNIFTIHeader : public vtkObject
 {
 public:
+
+  // Description:
+  // 
+  enum IntentCodeEnum {
+    IntentCorrel = 2,
+    IntentTTest = 3,
+    IntentFTest = 4,
+    IntentZScore = 5,
+    IntentChiSQ = 6,
+    IntentBeta = 7,
+    IntentBinom = 8,
+    IntentGamma = 9,
+    IntentPoisson = 10,
+    IntentNormal = 11,
+    IntentFTestNonc = 12,
+    IntentChiSQNonc = 13,
+    IntentLogistic = 14,
+    IntentLaplace = 15,
+    IntentUniform = 16,
+    IntentTTestNonc = 17,
+    IntentWeibull = 18,
+    IntentChi = 19,
+    IntentInvGauss = 20,
+    IntentExtVal = 21,
+    IntentPVal = 22,
+    IntentLogPVal = 23,
+    IntentLog10PVal = 24,
+    IntentEstimate = 1001,
+    IntentLabel = 1002,
+    IntentNeuroName = 1003,
+    IntentGenMatrix = 1004,
+    IntentSymMatrix = 1005,
+    IntentDispVect = 1006,
+    IntentVector = 1007,
+    IntentPointSet = 1008,
+    IntentTriangle = 1009,
+    IntentQuaternion = 1010,
+    IntentDimless = 1011,
+    IntentTimeSeries = 2001,
+    IntentNodeIndex = 2002,
+    IntentRGBVector = 2003,
+    IntentRGBAVector = 2004,
+    IntentShape = 2005
+  };
+
   // Description:
   // Static method for construction.
   static vtkNIFTIHeader *New();

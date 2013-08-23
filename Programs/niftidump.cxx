@@ -112,9 +112,28 @@ int main(int argc, char *argv[])
     "uniform", "ttest_nonc", "weibull", "chi",
     "invgauss", "extval", "pval", "logpval",
     "log10pval" };
+  static const char *intentCodes1000[] = {
+    "unknown", "estimate", "label", "neuro_name",
+    "gen_matrix", "sym_matrix", "disp_vect", "vector",
+    "point_set", "triangle", "quaternion", "dimless" };
+  static const char *intentCodes2000[] = {
+    "unknown", "time_series", "node_index", "rgb_vector",
+    "rgba_vector", "shape" };
+
   short ic = hdr.intent_code;
-  ic = ((ic < 0 || ic > 24) ? 0 : ic);
-  const char *intentCode = intentCodes[ic];
+  const char *intentCode = "unknown";
+  if (ic >= 0 && ic <= 25)
+    {
+    intentCode = intentCodes[ic];
+    }
+  else if (ic >= 1000 && ic <= 1011)
+    {
+    intentCode = intentCodes1000[ic-1000];
+    }
+  else if (ic >= 2000 && ic <= 2005)
+    {
+    intentCode = intentCodes2000[ic-2000];
+    }
 
   const char *spaceUnits = "unknown";
   switch (hdr.xyzt_units & 0x7)
