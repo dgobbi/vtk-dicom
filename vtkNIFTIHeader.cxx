@@ -129,6 +129,7 @@ void vtkNIFTIHeader::SetHeader(const nifti_1_header *hdr)
 //----------------------------------------------------------------------------
 void vtkNIFTIHeader::GetHeader(nifti_1_header *hdr)
 {
+  hdr->sizeof_hdr = static_cast<int>(sizeof(nifti_1_header));
   strncpy(hdr->magic, this->Magic, sizeof(hdr->magic));
   memset(hdr->data_type, '\0', 10);
   memset(hdr->db_name, '\0', 18);
