@@ -51,6 +51,7 @@ vtkStandardNewMacro(vtkDICOMReader);
 //----------------------------------------------------------------------------
 vtkDICOMReader::vtkDICOMReader()
 {
+  this->NeedsRescale = 0;
   this->RescaleSlope = 1.0;
   this->RescaleIntercept = 0.0;
   this->Parser = 0;
@@ -599,13 +600,34 @@ int vtkDICOMReader::RequestInformation(
   // to be rescaled while it is being read
   this->RescaleSlope = 1.0;
   this->RescaleIntercept = 0.0;
+  this->NeedsRescale = false;
 
   if (this->MetaData->HasAttribute(DC::RescaleSlope))
     {
-    this->RescaleSlope =
-      this->MetaData->GetAttributeValue(DC::RescaleSlope).AsDouble();
-    this->RescaleIntercept =
-      this->MetaData->GetAttributeValue(DC::RescaleIntercept).AsDouble();
+    vtkDICOMMetaData *meta = this->MetaData;
+    int n = meta->GetNumberOfInstances();
+    double mMax = meta->GetAttributeValue(0, DC::RescaleSlope).AsDouble();
+    double bMax = meta->GetAttributeValue(0, DC::RescaleIntercept).AsDouble();
+    bool mismatch = false;
+
+    for (int i = 1; i < n; i++)
+      {
+      double m = meta->GetAttributeValue(i, DC::RescaleSlope).AsDouble();
+      double b = meta->GetAttributeValue(i, DC::RescaleIntercept).AsDouble();
+      if (m > mMax)
+        {
+        mMax = m;
+        mismatch = true;
+        }
+      if (b > bMax)
+        {
+        bMax = b;
+        mismatch = true;
+        }
+      }
+    this->NeedsRescale = mismatch;
+    this->RescaleIntercept = mMax;
+    this->RescaleSlope = bMax;
     }
 
   // === Image Orientation in DICOM files ===
@@ -664,6 +686,13 @@ int vtkDICOMReader::RequestInformation(
     outInfo, this->DataScalarType, this->NumberOfScalarComponents);
 
   return 1;
+}
+
+
+//----------------------------------------------------------------------------
+void vtkDICOMReader::RescaleBuffer(
+  int fileIdx, char *buffer, vtkIdType bufferSize)
+{
 }
 
 //----------------------------------------------------------------------------
@@ -866,6 +895,12 @@ int vtkDICOMReader::RequestData(
     // read the file into the output
     this->ReadOneFile(this->InternalFileName, fileIdx,
                       slicePtr, numSlices*sliceSize);
+
+    // rescale if Rescale was different for different files
+    if (this->NeedsRescale)
+      {
+      this->RescaleBuffer(fileIdx, slicePtr, numSlices*sliceSize);
+      }
 
     for (int sIdx = 0; sIdx < numSlices; sIdx++)
       {

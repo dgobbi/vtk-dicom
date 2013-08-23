@@ -141,6 +141,11 @@ protected:
     const char *filename, int idx, char *buffer, vtkIdType bufferSize);
 
   // Description:
+  // Rescale the data in the buffer.
+  void RescaleBuffer(
+    int idx, char *buffer, vtkIdType bufferSize);
+
+  // Description:
   // Convert parser errors into reader errors.
   void RelayError(vtkObject *o, unsigned long e, void *data);
 
@@ -176,6 +181,10 @@ protected:
   // Description:
   // The row order to use when storing the data in memory.
   int MemoryRowOrder;
+
+  // Description:
+  // This indicates that the data must be rescaled.
+  int NeedsRescale;
 
 private:
   vtkDICOMReader(const vtkDICOMReader&);  // Not implemented.
