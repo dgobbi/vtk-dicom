@@ -200,16 +200,24 @@ int main(int argc, char *argv[])
     }
 
   cout << "sizeof_hdr: " << hdr.sizeof_hdr << "\n";
+  cout << "vox_offset: " << hdr.vox_offset << "\n";
   //cout << "data_type: " << hdr.data_type << "\n";
   //cout << "db_name: " << hdr.db_name << "\n";
   //cout << "extents: " << hdr.extents << "\n";
   //cout << "session_error: " << hdr.session_error << "\n";
   //cout << "regular: " << static_cast<int>(hdr.regular) << "\n";
   cout.setf(std::ios::hex, std::ios::basefield);
-  cout << "dim_info: 0x" << static_cast<int>(hdr.dim_info)
-       << " (freq_dim=" << (hdr.dim_info & 0x3)
-       << ", phase_dim=" << ((hdr.dim_info >> 2) & 0x3)
-       << ", slice_dim=" << ((hdr.dim_info >> 4) & 0x3) << ")\n";
+  cout << "dim_info: 0x" << static_cast<int>(hdr.dim_info);
+  if (hdr.dim_info == 0)
+    {
+    cout << " (unknown)\n";
+    }
+  else
+    {
+    cout << " (freq_dim=" << (hdr.dim_info & 0x3)
+         << ", phase_dim=" << ((hdr.dim_info >> 2) & 0x3)
+         << ", slice_dim=" << ((hdr.dim_info >> 4) & 0x3) << ")\n";
+    }
   cout.unsetf(std::ios::hex);
   cout << "dim:";
   for (int i = 0; i < 8; i++)
@@ -217,33 +225,40 @@ int main(int argc, char *argv[])
     cout << " " << hdr.dim[i];
     }
   cout << "\n";
-  cout << "intent_p1: " << hdr.intent_p1 << "\n";
-  cout << "intent_p2: " << hdr.intent_p2 << "\n";
-  cout << "intent_p3: " << hdr.intent_p3 << "\n";
-  cout << "intent_code: " << hdr.intent_code
-       << " (" << intentCode << ")\n";
-  cout << "datatype: " << hdr.datatype
-     << " (" << datatypeName << ")\n";
-  cout << "bitpix: " << hdr.bitpix << "\n";
-  cout << "slice_start: " << hdr.slice_start << "\n";
   cout << "pixdim:";
   for (int i = 0; i < 8; i++)
     {
     cout << " " << hdr.pixdim[i];
     }
   cout << "\n";
-  cout << "vox_offset: " << hdr.vox_offset << "\n";
-  cout << "scl_slope: " << hdr.scl_slope << "\n";
-  cout << "scl_inter: " << hdr.scl_inter << "\n";
-  cout << "slice_end: " << hdr.slice_end << "\n";
-  cout << "slice_code: " << static_cast<int>(hdr.slice_code)
-       << " (" << sliceCode << ")\n";
   cout.setf(std::ios::hex, std::ios::basefield);
   cout << "xyzt_units: 0x" << static_cast<int>(hdr.xyzt_units)
        << " (" << spaceUnits << ", " << timeUnits << ")\n";
   cout.unsetf(std::ios::hex);
+  cout << "intent_code: " << hdr.intent_code
+       << " (" << intentCode << ")\n";
+  cout << "intent_name: \"";
+  for (size_t j = 0;
+       j < sizeof(hdr.intent_name) && hdr.intent_name[j] != '\0';
+       j++)
+    {
+    cout << (isprint(hdr.intent_name[j]) ? hdr.intent_name[j] : '?');
+    }
+  cout << "\"\n";
+  cout << "intent_p1: " << hdr.intent_p1 << "\n";
+  cout << "intent_p2: " << hdr.intent_p2 << "\n";
+  cout << "intent_p3: " << hdr.intent_p3 << "\n";
+  cout << "datatype: " << hdr.datatype
+     << " (" << datatypeName << ")\n";
+  cout << "bitpix: " << hdr.bitpix << "\n";
+  cout << "scl_slope: " << hdr.scl_slope << "\n";
+  cout << "scl_inter: " << hdr.scl_inter << "\n";
   cout << "cal_max: " << hdr.cal_max << "\n";
   cout << "cal_min: " << hdr.cal_min << "\n";
+  cout << "slice_code: " << static_cast<int>(hdr.slice_code)
+       << " (" << sliceCode << ")\n";
+  cout << "slice_start: " << hdr.slice_start << "\n";
+  cout << "slice_end: " << hdr.slice_end << "\n";
   cout << "slice_duration: " << hdr.slice_duration << "\n";
   cout << "toffset: " << hdr.toffset << "\n";
   cout << "descrip: \"";
@@ -286,14 +301,6 @@ int main(int argc, char *argv[])
     cout << " " << hdr.srow_z[i];
     }
   cout << "\n";
-  cout << "intent_name: \"";
-  for (size_t j = 0;
-       j < sizeof(hdr.intent_name) && hdr.intent_name[j] != '\0';
-       j++)
-    {
-    cout << (isprint(hdr.intent_name[j]) ? hdr.intent_name[j] : '?');
-    }
-  cout << "\"\n";
   cout << "magic: \"";
   for (size_t j = 0; j < sizeof(hdr.magic) && hdr.magic[j] != '\0'; j++)
     {
