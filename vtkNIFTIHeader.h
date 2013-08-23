@@ -37,6 +37,7 @@
 #include "vtkDICOMModule.h"
 
 struct nifti_1_header;
+struct nifti_2_header;
 
 //----------------------------------------------------------------------------
 class VTK_DICOM_EXPORT vtkNIFTIHeader : public vtkObject
@@ -296,6 +297,8 @@ public:
   // the values in an existing nifti struct.
   void SetHeader(const nifti_1_header *hdr);
   void GetHeader(nifti_1_header *hdr);
+  void SetHeader(const nifti_2_header *hdr);
+  void GetHeader(nifti_2_header *hdr);
 
 protected:
   vtkNIFTIHeader();

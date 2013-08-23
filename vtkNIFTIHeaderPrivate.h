@@ -85,7 +85,6 @@ struct nifti_1_header { /* NIFTI-1 usage         */  /*  offset  */
 typedef struct nifti_1_header nifti_1_header;
 
 
-#if 0
 /*! \struct nifti_2_header
     \brief Data structure defining the fields in the nifti2 header.
            This binary header should be found at the beginning of a valid
@@ -135,7 +134,6 @@ struct nifti_2_header { /* NIFTI-2 usage         */  /*  offset  */
 };                    /**** 540 bytes total ****/
 
 typedef struct nifti_2_header nifti_2_header;
-#endif
 
 /*---------------------------------------------------------------------------*/
 /* TYPE OF DATA (acceptable values for datatype field):

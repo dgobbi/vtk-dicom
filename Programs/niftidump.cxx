@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
   reader->SetFileName(argv[1]);
   reader->UpdateInformation();
 
-  nifti_1_header hdr;
+  nifti_2_header hdr;
   reader->GetNIFTIHeader()->GetHeader(&hdr);
 
   const char *datatypeName = "";

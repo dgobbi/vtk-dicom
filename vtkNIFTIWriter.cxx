@@ -61,7 +61,9 @@ vtkNIFTIWriter::vtkNIFTIWriter()
   this->QFac = 0.0;
   this->QFormMatrix = 0;
   this->SFormMatrix = 0;
+  this->OwnHeader = 0;
   this->NIFTIHeader = 0;
+  this->NIFTIVersion = 0;
   this->Description = new char[80];
   // Default description is "VTKX.Y.Z"
   strncpy(this->Description, "VTK", 3);
@@ -78,6 +80,10 @@ vtkNIFTIWriter::~vtkNIFTIWriter()
   if (this->SFormMatrix)
     {
     this->SFormMatrix->Delete();
+    }
+  if (this->OwnHeader)
+    {
+    this->OwnHeader->Delete();
     }
   if (this->NIFTIHeader)
     {
@@ -141,6 +147,7 @@ void vtkNIFTIWriter::PrintSelf(ostream& os, vtkIndent indent)
     }
 
   os << indent << "NIFTIHeader:" << (this->NIFTIHeader ? "\n" : " (none)\n");
+  os << indent << "NIFTIVersion: " << this->NIFTIVersion << "\n";
 }
 
 //----------------------------------------------------------------------------
@@ -206,91 +213,8 @@ namespace {
 // - for RGB and RGBA images, header should be modified as necessary
 // - for complex images, header should be modified as necessary
 
-void vtkNIFTIWriterInitializeHeader(
-  nifti_1_header *hdr)
-{
-  hdr->sizeof_hdr = static_cast<int>(sizeof(nifti_1_header));
-  memset(hdr->data_type, '\0', sizeof(hdr->datatype)); // unused
-  memset(hdr->db_name, '\0', sizeof(hdr->db_name)); // unused
-  hdr->extents = 0; // unused
-  hdr->session_error = 0; // unused
-  hdr->regular = 0; // unused
-  hdr->dim_info = 0; // MR acquisition, phase, and slice directions
-
-  for (int i = 0; i < 8; i++)
-    {
-    hdr->dim[0] = 0;
-    }
-
-  hdr->intent_p1 = 0;
-  hdr->intent_p2 = 0;
-  hdr->intent_p3 = 0;
-  hdr->intent_code = 0;
-
-  hdr->datatype = 4;
-  hdr->bitpix = 16;
-
-  hdr->slice_start = 0;
-
-  for (int i = 0; i < 8; i++)
-    {
-    hdr->pixdim[0] = 0.0;
-    }
-
-  hdr->vox_offset = 352.0; // divisible by 16 for alignment
-  hdr->scl_slope = 1.0;
-  hdr->scl_inter = 0.0;
-  hdr->slice_end = 0;
-  hdr->slice_code = 0;
-  hdr->xyzt_units = 0;
-  hdr->cal_max = 0.0;
-  hdr->cal_min = 0.0;
-  hdr->slice_duration = 0;
-  hdr->toffset = 0;
-
-  hdr->glmax = 0; // unused
-  hdr->glmin = 0; // unused
-
-  memset(hdr->descrip, '\0', sizeof(hdr->descrip));
-  memset(hdr->aux_file, '\0', sizeof(hdr->aux_file));
-
-  hdr->qform_code = 0;
-  hdr->sform_code = 0;
-  hdr->quatern_b = 0.0;
-  hdr->quatern_c = 0.0;
-  hdr->quatern_d = 0.0;
-  hdr->qoffset_x = 0.0;
-  hdr->qoffset_y = 0.0;
-  hdr->qoffset_z = 0.0;
-
-  for (int i = 0; i < 4; i++)
-    {
-    hdr->srow_x[i] = 0.0;
-    hdr->srow_y[i] = 0.0;
-    hdr->srow_z[i] = 0.0;
-    }
-
-  memset(hdr->intent_name, '\0', sizeof(hdr->intent_name));
-
-  hdr->magic[0] = 'n';
-  hdr->magic[1] = '+';
-  hdr->magic[2] = '1';
-  hdr->magic[3] = '\0';
-}
-
-double vtkNIFTIWriterFTZ(double d)
-{
-  // flush very small values to zero, to avoid having
-  // values appear as "-0" in the header.
-  if (fabs(d) < FLT_MIN)
-    {
-    d = 0.0;
-    }
-  return d;
-}
-
 void vtkNIFTIWriterSetInformation(
-  nifti_1_header *hdr,
+  nifti_2_header *hdr,
   vtkInformation *info)
 {
   // get the scalar information
@@ -359,14 +283,14 @@ void vtkNIFTIWriterSetInformation(
     }
 
   // number of spatial dimensions
-  short spaceDim = (extent[4] == extent[5] ? 2 : 3);
+  int spaceDim = (extent[4] == extent[5] ? 2 : 3);
 
   hdr->dim[0] = (numComponents == 1 ? spaceDim : 5);
-  hdr->dim[1] = static_cast<short>(extent[1] - extent[0] + 1);
-  hdr->dim[2] = static_cast<short>(extent[3] - extent[2] + 1);
-  hdr->dim[3] = static_cast<short>(extent[5] - extent[4] + 1);
+  hdr->dim[1] = extent[1] - extent[0] + 1;
+  hdr->dim[2] = extent[3] - extent[2] + 1;
+  hdr->dim[3] = extent[5] - extent[4] + 1;
   hdr->dim[4] = 1;
-  hdr->dim[5] = static_cast<short>(numComponents);
+  hdr->dim[5] = numComponents;
   hdr->dim[6] = 1;
   hdr->dim[7] = 1;
 
@@ -375,9 +299,9 @@ void vtkNIFTIWriterSetInformation(
 
   hdr->slice_start = 0;
   hdr->pixdim[0] = 0.0;
-  hdr->pixdim[1] = vtkNIFTIWriterFTZ(spacing[0]);
-  hdr->pixdim[2] = vtkNIFTIWriterFTZ(spacing[1]);
-  hdr->pixdim[3] = vtkNIFTIWriterFTZ(spacing[2]);
+  hdr->pixdim[1] = spacing[0];
+  hdr->pixdim[2] = spacing[1];
+  hdr->pixdim[3] = spacing[2];
   hdr->pixdim[4] = 1.0;
   hdr->pixdim[5] = 1.0;
   hdr->pixdim[6] = 1.0;
@@ -386,7 +310,7 @@ void vtkNIFTIWriterSetInformation(
 
 // Set the QForm from a 4x4 matrix
 void vtkNIFTIWriterSetQForm(
-  nifti_1_header *hdr, double mmat[16], double qfac)
+  nifti_2_header *hdr, double mmat[16], double qfac)
 {
   double rmat[3][3];
   rmat[0][0] = mmat[0];
@@ -420,17 +344,17 @@ void vtkNIFTIWriterSetQForm(
     }
 
   hdr->pixdim[0] = qfac;
-  hdr->quatern_b = vtkNIFTIWriterFTZ(quat[1]);
-  hdr->quatern_c = vtkNIFTIWriterFTZ(quat[2]);
-  hdr->quatern_d = vtkNIFTIWriterFTZ(quat[3]);
-  hdr->qoffset_x = vtkNIFTIWriterFTZ(mmat[3]);
-  hdr->qoffset_y = vtkNIFTIWriterFTZ(mmat[7]);
-  hdr->qoffset_z = vtkNIFTIWriterFTZ(mmat[11]);
+  hdr->quatern_b = quat[1];
+  hdr->quatern_c = quat[2];
+  hdr->quatern_d = quat[3];
+  hdr->qoffset_x = mmat[3];
+  hdr->qoffset_y = mmat[7];
+  hdr->qoffset_z = mmat[11];
 }
 
 // Set the SForm from a 4x4 matrix
 void vtkNIFTIWriterSetSForm(
-  nifti_1_header *hdr, double mmat[16], double qfac)
+  nifti_2_header *hdr, double mmat[16], double qfac)
 {
   if (qfac < 0)
     {
@@ -450,22 +374,22 @@ void vtkNIFTIWriterSetSForm(
     }
 
   // first row
-  hdr->srow_x[0] = vtkNIFTIWriterFTZ(mmat[0] * hdr->pixdim[1]);
-  hdr->srow_x[1] = vtkNIFTIWriterFTZ(mmat[1] * hdr->pixdim[2]);
-  hdr->srow_x[2] = vtkNIFTIWriterFTZ(mmat[2] * hdr->pixdim[3]);
-  hdr->srow_x[3] = vtkNIFTIWriterFTZ(mmat[3]);
+  hdr->srow_x[0] = mmat[0] * hdr->pixdim[1];
+  hdr->srow_x[1] = mmat[1] * hdr->pixdim[2];
+  hdr->srow_x[2] = mmat[2] * hdr->pixdim[3];
+  hdr->srow_x[3] = mmat[3];
 
   // second row
-  hdr->srow_y[0] = vtkNIFTIWriterFTZ(mmat[4] * hdr->pixdim[1]);
-  hdr->srow_y[1] = vtkNIFTIWriterFTZ(mmat[5] * hdr->pixdim[2]);
-  hdr->srow_y[2] = vtkNIFTIWriterFTZ(mmat[6] * hdr->pixdim[3]);
-  hdr->srow_y[3] = vtkNIFTIWriterFTZ(mmat[7]);
+  hdr->srow_y[0] = mmat[4] * hdr->pixdim[1];
+  hdr->srow_y[1] = mmat[5] * hdr->pixdim[2];
+  hdr->srow_y[2] = mmat[6] * hdr->pixdim[3];
+  hdr->srow_y[3] = mmat[7];
 
   // third row
-  hdr->srow_z[0] = vtkNIFTIWriterFTZ(mmat[8] * hdr->pixdim[1]);
-  hdr->srow_z[1] = vtkNIFTIWriterFTZ(mmat[9] * hdr->pixdim[2]);
-  hdr->srow_z[2] = vtkNIFTIWriterFTZ(mmat[10] * hdr->pixdim[3]);
-  hdr->srow_z[3] = vtkNIFTIWriterFTZ(mmat[11]);
+  hdr->srow_z[0] = mmat[8] * hdr->pixdim[1];
+  hdr->srow_z[1] = mmat[9] * hdr->pixdim[2];
+  hdr->srow_z[2] = mmat[10] * hdr->pixdim[3];
+  hdr->srow_z[3] = mmat[11];
 }
 
 void vtkNIFTIWriterMatrix(
@@ -494,6 +418,153 @@ void vtkNIFTIWriterMatrix(
 }
 
 } // end anonymous namespace
+
+//----------------------------------------------------------------------------
+int vtkNIFTIWriter::GenerateHeader(vtkInformation *info, bool singleFile)
+{
+  // create the header
+  nifti_2_header hdr;
+  int version = 0;
+  if (this->OwnHeader == 0)
+    {
+    this->OwnHeader = vtkNIFTIHeader::New();
+    }
+  else
+    {
+    this->OwnHeader->Initialize();
+    }
+  if (this->NIFTIHeader)
+    {
+    // use the header supplied by SetNIFTIHeader()
+    this->NIFTIHeader->GetHeader(&hdr);
+    version = hdr.magic[2] - '0';
+    }
+  else
+    {
+    // start with a blank header
+    this->OwnHeader->GetHeader(&hdr);
+    hdr.scl_slope = 1.0;
+    }
+
+  // copy the image information into the header
+  vtkNIFTIWriterSetInformation(&hdr, info);
+
+  // override the version if set via SetNIFTIVersion
+  if (this->NIFTIVersion != 0)
+    {
+    version = this->NIFTIVersion;
+    }
+
+  // set the rescale slope/intercept if not (0.0,0.0)
+  if (this->RescaleSlope != 0.0 || this->RescaleIntercept != 0.0)
+    {
+    hdr.scl_slope = this->RescaleSlope;
+    hdr.scl_inter = this->RescaleIntercept;
+    }
+
+  // set the header size
+  hdr.sizeof_hdr = (version == 2 ?
+                    static_cast<int>(sizeof(nifti_2_header)) :
+                    static_cast<int>(sizeof(nifti_1_header)));
+
+  // modify magic number and voxel offset for .img files
+  if (!singleFile)
+    {
+    strncpy(hdr.magic, (version == 2 ? "ni2" : "ni1"), 4);
+    hdr.vox_offset = 0;
+    }
+  else
+    {
+    strncpy(hdr.magic, (version == 2 ? "n+2" : "n+1"), 4);
+    hdr.vox_offset = (version == 2 ? 544 : 352);
+    }
+  if (version == 2)
+    {
+    // version 2 has four bytes for newline transfer checks
+    strncpy(&hdr.magic[4], "\r\n\032\n", 4);
+    }
+
+  // set the description
+  if (this->Description)
+    {
+    strncpy(hdr.descrip, this->Description, 80);
+    }
+
+  // qfac dictates the slice ordering in the file
+  double qfac = (this->QFac < 0 ? -1.0 : 1.0);
+
+  // origin must be incorporated into qform and sform
+  double origin[3];
+  info->Get(vtkDataObject::ORIGIN(), origin);
+
+  if (this->QFormMatrix ||
+      (origin[0] != 0 || origin[1] != 0 || origin[2] != 0))
+    {
+    hdr.qform_code = 1; // SCANNER_ANAT
+    double mat16[16];
+    vtkNIFTIWriterMatrix(mat16, this->QFormMatrix, origin);
+    vtkNIFTIWriterSetQForm(&hdr, mat16, qfac);
+    }
+
+  if (this->SFormMatrix)
+    {
+    hdr.sform_code = 2; // ALIGNED_ANAT
+    double mat16[16];
+    vtkNIFTIWriterMatrix(mat16, this->SFormMatrix, origin);
+    vtkNIFTIWriterSetSForm(&hdr, mat16, qfac);
+    }
+
+  // base dimension not counting vector dimension
+  int basedim = (hdr.dim[3] == 1 ? 2 : 3);
+
+  if (this->TimeDimension)
+    {
+    int tdim = this->TimeDimension;
+    if (hdr.dim[5] % tdim != 0)
+      {
+      vtkErrorMacro("Number of components in the image data must be "
+                    "divisible by the TimeDimension");
+      return 0;
+      }
+    hdr.pixdim[4] = this->TimeSpacing;
+    hdr.dim[4] = tdim;
+    hdr.dim[5] /= tdim;
+    hdr.dim[0] = (hdr.dim[5] > 1 ? 5 : 4);
+    basedim = 4;
+    }
+
+  if (hdr.dim[5] == 2 && hdr.datatype == NIFTI_TYPE_FLOAT32)
+    {
+    // float with 2 components becomes COMPLEX64
+    hdr.datatype = NIFTI_TYPE_COMPLEX64;
+    hdr.dim[0] = basedim;
+    hdr.dim[5] = 1;
+    }
+  else if (hdr.dim[5] == 2 && hdr.datatype == NIFTI_TYPE_FLOAT64)
+    {
+    // double with 2 components becomes COMPLEX128
+    hdr.datatype = NIFTI_TYPE_COMPLEX128;
+    hdr.dim[0] = basedim;
+    hdr.dim[5] = 1;
+    }
+  else if (hdr.dim[5] == 3 && hdr.datatype == NIFTI_TYPE_UINT8)
+    {
+    // unsigned char with 3 components becomes RGB24
+    hdr.datatype = NIFTI_TYPE_RGB24;
+    hdr.dim[0] = basedim;
+    hdr.dim[5] = 1;
+    }
+  else if (hdr.dim[5] == 4 && hdr.datatype == NIFTI_TYPE_UINT8)
+    {
+    // unsigned char with 4 components becomes RGBA32
+    hdr.datatype = NIFTI_TYPE_RGBA32;
+    hdr.dim[0] = basedim;
+    hdr.dim[5] = 1;
+    }
+
+  this->OwnHeader->SetHeader(&hdr);
+  return 1;
+}
 
 //----------------------------------------------------------------------------
 int vtkNIFTIWriter::RequestData(
@@ -556,6 +627,12 @@ int vtkNIFTIWriter::RequestData(
     singleFile = false;
     }
 
+  // generate the header information
+  if (this->GenerateHeader(info, singleFile) == 0)
+    {
+    return 0;
+    }
+
   // if file is not .nii, then get .hdr and .img filenames
   char *hdrname = vtkNIFTIWriter::ReplaceExtension(
     filename, ".img", ".hdr");
@@ -564,120 +641,23 @@ int vtkNIFTIWriter::RequestData(
 
   vtkDebugMacro(<< "Writing NIFTI file " << hdrname);
 
-  // create the header
-  nifti_1_header hdr;
-  if (this->NIFTIHeader)
+  // get either a NIFTIv1 or a NIFTIv2 header
+  nifti_1_header hdr1;
+  nifti_2_header hdr2;
+  void *hdrptr = 0;
+  size_t hdrsize = 0;
+  int version = this->OwnHeader->GetMagic()[2] - '0';
+  if (version == 2)
     {
-    this->NIFTIHeader->GetHeader(&hdr);
+    this->OwnHeader->GetHeader(&hdr2);
+    hdrptr = &hdr2;
+    hdrsize = sizeof(nifti_2_header);
     }
   else
     {
-    vtkNIFTIWriterInitializeHeader(&hdr);
-    }
-
-  // copy the image information into the header
-  vtkNIFTIWriterSetInformation(&hdr, info);
-
-  // set the rescale slope/intercept if not (0.0,0.0)
-  if (this->RescaleSlope != 0.0 || this->RescaleIntercept != 0.0)
-    {
-    hdr.scl_slope = this->RescaleSlope;
-    hdr.scl_inter = this->RescaleIntercept;
-    }
-
-  // set the header size
-  hdr.sizeof_hdr = static_cast<int>(sizeof(nifti_1_header));
-
-  // modify magic number and voxel offset for .img files
-  if (!singleFile)
-    {
-    strncpy(hdr.magic, "ni1", 4);
-    hdr.vox_offset = 0;
-    }
-  else
-    {
-    strncpy(hdr.magic, "n+1", 4);
-    hdr.vox_offset = 352;
-    }
-
-  // set the description
-  if (this->Description)
-    {
-    strncpy(hdr.descrip, this->Description, 80);
-    }
-
-  // qfac dictates the slice ordering in the file
-  double qfac = (this->QFac < 0 ? -1.0 : 1.0);
-
-  // origin must be incorporated into qform and sform
-  double origin[3];
-  data->GetOrigin(origin);
-
-  if (this->QFormMatrix ||
-      (origin[0] != 0 || origin[1] != 0 || origin[2] != 0))
-    {
-    hdr.qform_code = 1; // SCANNER_ANAT
-    double mat16[16];
-    vtkNIFTIWriterMatrix(mat16, this->QFormMatrix, origin);
-    vtkNIFTIWriterSetQForm(&hdr, mat16, qfac);
-    }
-
-  if (this->SFormMatrix)
-    {
-    hdr.sform_code = 2; // ALIGNED_ANAT
-    double mat16[16];
-    vtkNIFTIWriterMatrix(mat16, this->SFormMatrix, origin);
-    vtkNIFTIWriterSetSForm(&hdr, mat16, qfac);
-    }
-
-  // base dimension not counting vector dimension
-  short basedim = (hdr.dim[3] == 1 ? 2 : 3);
-
-  if (this->TimeDimension)
-    {
-    short tdim = static_cast<short>(this->TimeDimension);
-    if (hdr.dim[5] % tdim != 0)
-      {
-      vtkErrorMacro("Number of components in the image data must be "
-                    "divisible by the TimeDimension");
-      delete [] hdrname;
-      delete [] imgname;
-      return 0;
-      }
-    hdr.pixdim[4] = vtkNIFTIWriterFTZ(this->TimeSpacing);
-    hdr.dim[4] = tdim;
-    hdr.dim[5] /= tdim;
-    hdr.dim[0] = (hdr.dim[5] > 1 ? 5 : 4);
-    basedim = 4;
-    }
-
-  if (hdr.dim[5] == 2 && hdr.datatype == NIFTI_TYPE_FLOAT32)
-    {
-    // float with 2 components becomes COMPLEX64
-    hdr.datatype = NIFTI_TYPE_COMPLEX64;
-    hdr.dim[0] = basedim;
-    hdr.dim[5] = 1;
-    }
-  else if (hdr.dim[5] == 2 && hdr.datatype == NIFTI_TYPE_FLOAT64)
-    {
-    // double with 2 components becomes COMPLEX128
-    hdr.datatype = NIFTI_TYPE_COMPLEX128;
-    hdr.dim[0] = basedim;
-    hdr.dim[5] = 1;
-    }
-  else if (hdr.dim[5] == 3 && hdr.datatype == NIFTI_TYPE_UINT8)
-    {
-    // unsigned char with 3 components becomes RGB24
-    hdr.datatype = NIFTI_TYPE_RGB24;
-    hdr.dim[0] = basedim;
-    hdr.dim[5] = 1;
-    }
-  else if (hdr.dim[5] == 4 && hdr.datatype == NIFTI_TYPE_UINT8)
-    {
-    // unsigned char with 4 components becomes RGBA32
-    hdr.datatype = NIFTI_TYPE_RGBA32;
-    hdr.dim[0] = basedim;
-    hdr.dim[5] = 1;
+    this->OwnHeader->GetHeader(&hdr1);
+    hdrptr = &hdr1;
+    hdrsize = sizeof(nifti_1_header);
     }
 
   // try opening file
@@ -708,15 +688,15 @@ int vtkNIFTIWriter::RequestData(
   size_t bytesWritten = 0;
   if (isCompressed)
     {
-    unsigned int hsize = static_cast<unsigned int>(sizeof(nifti_1_header));
-    int code = gzwrite(file, &hdr, hsize);
+    unsigned int hsize = static_cast<unsigned int>(hdrsize);
+    int code = gzwrite(file, hdrptr, hsize);
     bytesWritten = (code < 0 ? 0 : code);
     }
   else
     {
-    bytesWritten = fwrite(&hdr, 1, sizeof(nifti_1_header), ufile);
+    bytesWritten = fwrite(hdrptr, 1, hdrsize, ufile);
     }
-  if (bytesWritten < sizeof(nifti_1_header))
+  if (bytesWritten < hdrsize)
     {
     vtkErrorMacro("Insufficient disk space to write file.");
     this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
@@ -724,18 +704,22 @@ int vtkNIFTIWriter::RequestData(
 
   if (singleFile && !this->ErrorCode)
     {
-    // write 4 bytes of padding to the .nii file
-    char padding[4] = { 0, 0, 0, 0 };
+    // write the padding between the header and the image to the .nii file
+    size_t padsize = (static_cast<size_t>(this->OwnHeader->GetVoxOffset()) -
+                      hdrsize);
+    char *padding = new char[padsize];
+    memset(padding, '\0', padsize);
     if (isCompressed)
       {
-      int code = gzwrite(file, padding, 4);
+      int code = gzwrite(file, padding, static_cast<unsigned int>(padsize));
       bytesWritten = (code < 0 ? 0 : code);
       }
     else
       {
-      bytesWritten = fwrite(padding, 1, 4, ufile);
+      bytesWritten = fwrite(padding, 1, padsize, ufile);
       }
-    if (bytesWritten < 4)
+    delete [] padding;
+    if (bytesWritten < padsize)
       {
       vtkErrorMacro("Insufficient disk space to write file.");
       this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
@@ -769,11 +753,11 @@ int vtkNIFTIWriter::RequestData(
   int swapBytes = 0;
   int scalarSize = data->GetScalarSize();
   int numComponents = data->GetNumberOfScalarComponents();
-  int outSizeX = hdr.dim[1];
-  int outSizeY = hdr.dim[2];
-  int outSizeZ = hdr.dim[3];
-  int timeDim = hdr.dim[4];
-  int vectorDim = hdr.dim[5];
+  int outSizeX = static_cast<int>(this->OwnHeader->GetDim(1));
+  int outSizeY = static_cast<int>(this->OwnHeader->GetDim(2));
+  int outSizeZ = static_cast<int>(this->OwnHeader->GetDim(3));
+  int timeDim = static_cast<int>(this->OwnHeader->GetDim(4));
+  int vectorDim = static_cast<int>(this->OwnHeader->GetDim(5));
 
   // for counting, include timeDim in vectorDim
   vectorDim *= timeDim;
@@ -790,7 +774,7 @@ int vtkNIFTIWriter::RequestData(
   // special increment to reverse the slices if needed
   vtkIdType sliceOffset = 0;
 
-  if (qfac < 0)
+  if (this->QFac < 0)
     {
     // put slices in reverse order
     sliceOffset = scalarSize*numComponents;

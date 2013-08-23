@@ -12,7 +12,7 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkNIFTIReader - Read NIfTI medical image files
+// .NAME vtkNIFTIReader - Read NIfTI-1 and NIfTI-2 medical image files
 // .SECTION Description
 // This class reads NIFTI files, either in .nii format or as separate
 // .img and .hdr files.  If the files are gzipped, then they will be
@@ -36,6 +36,8 @@
 
 class vtkNIFTIHeader;
 class vtkMatrix4x4;
+
+struct nifti_1_header;
 
 //----------------------------------------------------------------------------
 class VTK_DICOM_EXPORT vtkNIFTIReader : public vtkImageReader2
@@ -156,6 +158,10 @@ protected:
   // deleted by the caller.  Otherwise, the return value is NULL.
   static char *ReplaceExtension(
     const char *fname, const char *ext1, const char *ext2);
+
+  // Description:
+  // Check the version of the header.
+  static int CheckNIFTIVersion(const nifti_1_header *hdr);
 
   // Description:
   // Read the time dimension as if it was a vector dimension.

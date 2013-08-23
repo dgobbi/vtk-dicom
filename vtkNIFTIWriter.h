@@ -12,7 +12,7 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkNIFTIWriter - Write NIfTI medical image files
+// .NAME vtkNIFTIWriter - Write NIfTI-1 and NIfTI-2 medical image files
 // .SECTION Description
 // This class writes NIFTI files, either in .nii format or as separate
 // .img and .hdr files.  If told to write a file that ends in ".gz",
@@ -47,6 +47,14 @@ public:
   // Description:
   // Print information about this object.
   virtual void PrintSelf(ostream& os, vtkIndent indent);
+
+  // Description:
+  // Set the version number for the NIfTI file format to use.
+  // This can be 1, 2, or 0 (the default).  If set to zero, then it
+  // will save as NIfTI version 1 unless SetNIFTIHeader() provided
+  // header information from a NIfTI version 2 file.
+  vtkSetMacro(NIFTIVersion, int);
+  vtkGetMacro(NIFTIVersion, int);
 
   // Description:
   // Set a short description (max 80 chars) of how the file was produced.
@@ -115,6 +123,10 @@ protected:
   ~vtkNIFTIWriter();
 
   // Description:
+  // Generate the header information for the file.
+  int GenerateHeader(vtkInformation *info, bool singleFile);
+
+  // Description:
   // The main execution method, which writes the file.
   virtual int RequestData(vtkInformation *request,
                           vtkInformationVector** inputVector,
@@ -154,6 +166,8 @@ protected:
   // Description:
   // The header information.
   vtkNIFTIHeader *NIFTIHeader;
+  vtkNIFTIHeader *OwnHeader;
+  int NIFTIVersion;
 
 private:
   vtkNIFTIWriter(const vtkNIFTIWriter&);  // Not implemented.
