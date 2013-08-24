@@ -44,7 +44,7 @@ class VTK_DICOM_EXPORT vtkNIFTIHeader : public vtkObject
 public:
 
   // Description:
-  // 
+  // NIFTI intent codes.
   enum IntentCodeEnum {
     IntentNone = 0,
     IntentCorrel = 2,
@@ -86,6 +86,45 @@ public:
     IntentRGBVector = 2003,
     IntentRGBAVector = 2004,
     IntentShape = 2005
+  };
+
+  // Description:
+  // NIFTI transform codes.
+  enum XFormCodeEnum {
+    XFormUnkown = 0,
+    XFormScannerAnat = 1,
+    XFormAlignedAnat = 2,
+    XFormTalairach = 3,
+    XFormMNI152 = 4
+  };
+
+  // Description:
+  // NIFTI slice codes.
+  enum SliceCodeEnum {
+    SliceUnknown = 0,
+    SliceSeqInc = 1,
+    SliceSeqDec = 2,
+    SliceAltInc = 3,
+    SliceAltDec = 4,
+    SliceAltInc2 = 5,
+    SliceAltDec2 = 6
+  };
+
+  // Description:
+  // NIFTI unit codes.
+  enum UnitsXYZTEnum {
+    UnitsUnknown = 0,
+    UnitsMeter = 1,
+    UnitsMM = 2,
+    UnitsMicron = 3,
+    UnitsSpace = 7,
+    UnitsSec = 8,
+    UnitsMSec = 16,
+    UnitsUSec = 24,
+    UnitsHz = 32,
+    UnitsPPM = 40,
+    UnitsRads = 48,
+    UnitsTime = 56
   };
 
   // Description:
