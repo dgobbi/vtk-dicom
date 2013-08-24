@@ -32,6 +32,7 @@
 #include "vtkErrorCode.h"
 #include "vtkSmartPointer.h"
 #include "vtkVersion.h"
+#include "vtkTypeTraits.h"
 
 #ifdef DICOM_USE_GDCM
 #include "gdcmImageReader.h"
@@ -688,11 +689,93 @@ int vtkDICOMReader::RequestInformation(
   return 1;
 }
 
+namespace {
+
+//----------------------------------------------------------------------------
+// this rescales a series of data values
+template<class T>
+void vtkDICOMReaderRescaleBuffer(T *p, double m, double b, size_t bytecount)
+{
+  size_t n = bytecount/sizeof(T);
+  if (n > 0 && (m != 1.0 || b != 0.0))
+    {
+    double minval = vtkTypeTraits<T>::Min();
+    double maxval = vtkTypeTraits<T>::Max();
+    do
+      {
+      double val = (*p)*m + b;
+      if (val < minval)
+        {
+        val = minval;
+        }
+      if (val > maxval)
+        {
+        val = maxval;
+        }
+      *p++ = static_cast<T>(val);
+      }
+    while (--n);
+    }
+}
+
+} // end anonymous namespace
 
 //----------------------------------------------------------------------------
 void vtkDICOMReader::RescaleBuffer(
-  int fileIdx, char *buffer, vtkIdType bufferSize)
+  int fileIdx, void *buffer, vtkIdType bufferSize)
 {
+  vtkDICOMMetaData *meta = this->MetaData;
+  double m = meta->GetAttributeValue(fileIdx, DC::RescaleSlope).AsDouble();
+  double b = meta->GetAttributeValue(fileIdx, DC::RescaleIntercept).AsDouble();
+  double m0 = this->RescaleSlope;
+  double b0 = this->RescaleIntercept;
+
+  // scale down to match the global slope and intercept
+  b = (b - b0)/m0;
+  m = m/m0;
+
+  int bitsAllocated = meta->GetAttributeValue(DC::BitsAllocated).AsInt();
+  int pixelRep = meta->GetAttributeValue(DC::PixelRepresentation).AsInt();
+
+  if (bitsAllocated <= 8)
+    {
+    if (pixelRep == 0)
+      {
+      vtkDICOMReaderRescaleBuffer(
+        static_cast<unsigned char *>(buffer), m, b, bufferSize);
+      }
+    else
+      {
+      vtkDICOMReaderRescaleBuffer(
+        static_cast<signed char *>(buffer), m, b, bufferSize);
+      }
+    }
+  else if (bitsAllocated <= 16)
+    {
+    if (pixelRep == 0)
+      {
+      vtkDICOMReaderRescaleBuffer(
+        static_cast<unsigned short *>(buffer), m, b, bufferSize);
+      }
+    else
+      {
+      vtkDICOMReaderRescaleBuffer(
+        static_cast<short *>(buffer), m, b, bufferSize);
+      }
+    }
+  else if (bitsAllocated <= 32)
+    {
+    if (pixelRep == 0)
+      {
+      vtkDICOMReaderRescaleBuffer(
+        static_cast<unsigned int *>(buffer), m, b, bufferSize);
+      }
+    else
+      {
+      vtkDICOMReaderRescaleBuffer(
+        static_cast<int *>(buffer), m, b, bufferSize);
+      }
+    }
 }
 
 //----------------------------------------------------------------------------
