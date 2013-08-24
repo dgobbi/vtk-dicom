@@ -91,15 +91,15 @@ int main(int argc, char *argv[])
 
   // test iterating through the data elements
   vtkDICOMDataElementIterator iter =
-    metaData->GetDataElementIterator();
+    metaData->Begin();
   vtkDICOMDataElementIterator iterEnd =
-    metaData->GetDataElementIteratorEnd();
+    metaData->End();
   TestAssert(iter == iterEnd);
   metaData->SetAttributeValue(DC::Modality, "CT");
   const char *acquisitionTime = "20130126080000.000000+0700";
   metaData->SetAttributeValue(DC::AcquisitionDateTime, acquisitionTime);
-  iter = metaData->GetDataElementIterator();
-  iterEnd = metaData->GetDataElementIteratorEnd();
+  iter = metaData->Begin();
+  iterEnd = metaData->End();
   int n = metaData->GetNumberOfDataElements();
   TestAssert(n == 2);
   for (int i = 0; i < n; i++)
@@ -128,8 +128,8 @@ int main(int argc, char *argv[])
   metaData->SetAttributeValue(0, DC::Modality, "CT");
   metaData->SetAttributeValue(1, DC::Modality, "MR");
   metaData->SetAttributeValue(DC::AcquisitionDateTime, acquisitionTime);
-  iter = metaData->GetDataElementIterator();
-  iterEnd = metaData->GetDataElementIteratorEnd();
+  iter = metaData->Begin();
+  iterEnd = metaData->End();
   n = metaData->GetNumberOfDataElements();
   TestAssert(n == 2);
   for (int i = 0; i < n; i++)
@@ -152,6 +152,25 @@ int main(int argc, char *argv[])
     ++iter;
     }
   TestAssert(iter == iterEnd);
+  metaData->Clear();
+
+  // test the Find() method
+  metaData->SetNumberOfInstances(2);
+  metaData->SetAttributeValue(0, DC::Modality, "CT");
+  metaData->SetAttributeValue(1, DC::Modality, "MR");
+  metaData->SetAttributeValue(DC::AcquisitionDateTime, acquisitionTime);
+  iter = metaData->Find(DC::AcquisitionDateTime);
+  TestAssert(iter->GetValue().AsString() == acquisitionTime);
+  iter = metaData->Find(DC::Modality);
+  if (iter != metaData->End())
+    {
+    vtkDICOMValue v = iter->GetValue();
+    vtkDICOMValue *vp = v.GetMultiplexData();
+    TestAssert(vp[0].AsString() == "CT");
+    TestAssert(vp[1].AsString() == "MR");
+    }
+  iter = metaData->Find(DC::StudyDate);
+  TestAssert(iter == metaData->End());
   metaData->Clear();
 
   metaData->Delete();

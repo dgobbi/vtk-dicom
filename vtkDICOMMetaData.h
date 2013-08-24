@@ -55,12 +55,20 @@ public:
     return this->NumberOfDataElements; }
 
   //! Get an iterator for the list of data elements.
-  vtkDICOMDataElementIterator GetDataElementIterator() {
+  vtkDICOMDataElementIterator Begin() {
     return this->Head.Next; }
 
   //! Get an end iterator for the list of data elements.
-  vtkDICOMDataElementIterator GetDataElementIteratorEnd() {
+  vtkDICOMDataElementIterator End() {
     return &this->Tail; }
+
+  //! Get the iterator for a specific data element.
+  /*!
+   *  If the element was not found, then End() will be returned.
+   */
+  vtkDICOMDataElementIterator Find(vtkDICOMTag tag) {
+    vtkDICOMDataElement *e = this->FindDataElement(tag);
+    return (e != 0 ? e : &this->Tail); }
 
   //! Check whether an attribute is present in the metadata.
   bool HasAttribute(vtkDICOMTag tag);
@@ -142,9 +150,6 @@ private:
 
   //! The number of data elements.
   int NumberOfDataElements;
-
-  //! An invalid value, for when one is needed.
-  static const vtkDICOMValue InvalidValue;
 
   vtkDICOMMetaData(const vtkDICOMMetaData&);  // Not implemented.
   void operator=(const vtkDICOMMetaData&);  // Not implemented.

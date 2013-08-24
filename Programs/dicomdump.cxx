@@ -159,10 +159,8 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
         {
         printf("%s%s---- SQ Item %04u ----\n",
           indent, spaces+(MAX_INDENT - INDENT_SIZE), j+1);
-        vtkDICOMDataElementIterator siter =
-          items[j].GetDataElementIterator();
-        vtkDICOMDataElementIterator siterEnd =
-          items[j].GetDataElementIteratorEnd();
+        vtkDICOMDataElementIterator siter = items[j].Begin();
+        vtkDICOMDataElementIterator siterEnd = items[j].End();
 
         for (; siter != siterEnd; ++siter)
           {
@@ -237,10 +235,8 @@ int main(int argc, char *argv[])
         parser->Update();
         }
 
-      vtkDICOMDataElementIterator iter =
-        data->GetDataElementIterator();
-      vtkDICOMDataElementIterator iterEnd =
-        data->GetDataElementIteratorEnd();
+      vtkDICOMDataElementIterator iter = data->Begin();
+      vtkDICOMDataElementIterator iterEnd = data->End();
 
       for (; iter != iterEnd; ++iter)
         {
