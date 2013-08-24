@@ -712,7 +712,7 @@ void vtkDICOMReaderRescaleBuffer(T *p, double m, double b, size_t bytecount)
         {
         val = maxval;
         }
-      *p++ = static_cast<T>(val);
+      *p++ = static_cast<T>(vtkMath::Round(val));
       }
     while (--n);
     }
