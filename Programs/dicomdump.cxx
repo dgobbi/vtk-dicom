@@ -150,10 +150,9 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
       printf("%s%s  %4.4u",
         (vi == 0 ? " (multiple values)\n" : ""), indent, vi + 1); 
       }
-    printf(" [%s] (%u bytes)\n", s.c_str(), v.GetVL());
-
     if (v.GetVR() == vtkDICOMVR::SQ)
       {
+      printf(" (sequence)\n");
       unsigned int m = v.GetNumberOfValues();
       const vtkDICOMItem *items = v.GetSequenceData();
       for (unsigned int j = 0; j < m; j++)
@@ -170,6 +169,14 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
           printElement(siter, depth+1);
           }
         }
+      }
+    else if (v.GetVL() == 0xffffffffu)
+      {
+      printf(" [%s] (unknown)\n", s.c_str());
+      }
+    else
+      {
+      printf(" [%s] (%u bytes)\n", s.c_str(), v.GetVL());
       }
     }
 }
