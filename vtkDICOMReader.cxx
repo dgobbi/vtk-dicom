@@ -557,6 +557,10 @@ int vtkDICOMReader::RequestInformation(
     {
     scalarType = (pixelRepresentation ? VTK_SHORT : VTK_UNSIGNED_SHORT);
     }
+  else if (bitsAllocated == 32)
+    {
+    scalarType = (pixelRepresentation ? VTK_INT : VTK_UNSIGNED_INT);
+    }
   else
     {
     vtkErrorMacro("Unrecognized DICOM BitsAllocated value: " << bitsAllocated);
