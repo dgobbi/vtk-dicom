@@ -136,7 +136,7 @@ public:
    *  - for UN, the number of bytes will be returned.
    *  - for attribute tags (VR is AT) the number of tags will be returned.
    *  - for sequences (SQ and XQ) the number of items in the sequence,
-   *    including any delimeters, will be returned.
+   *    excluding any delimeters, will be returned.
    */
   unsigned int GetNumberOfValues() const {
     return (this->V ? this->V->NumberOfValues : 0); }
