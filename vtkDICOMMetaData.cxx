@@ -178,7 +178,7 @@ const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
 const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(vtkDICOMTag tag)
 {
   const vtkDICOMValue *vptr = this->FindAttributeValue(0, tag);
-  return (vptr ? *vptr : this->Tail.GetValue());
+  return (vptr ? *vptr : this->Tail.Value);
 }
 
 //----------------------------------------------------------------------------
@@ -186,7 +186,7 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
   int idx, vtkDICOMTag tag)
 {
   const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tag);
-  return (vptr ? *vptr : this->Tail.GetValue());
+  return (vptr ? *vptr : this->Tail.Value);
 }
 
 //----------------------------------------------------------------------------
