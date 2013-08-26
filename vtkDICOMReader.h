@@ -59,6 +59,9 @@ public:
 
   // Description:
   // Get an array that converts slice index to input file index.
+  // If the data has multiple scalar components, then this will
+  // be a two-dimensional array and calling array->GetComponent(i,j)
+  // will return the file index for slice i and scalar component j.
   // If you used SetFileNames() to provide a list of files to the reader,
   // use this array to find out which file provided which slice.
   vtkIntArray *GetFileIndexArray() { return this->FileIndexArray; }
@@ -72,9 +75,20 @@ public:
   vtkDICOMMetaData *GetMetaData() { return this->MetaData; }
 
   // Description:
+  // Read the time dimension as scalar components (default: Off).
+  // If this is on, then each time point will be stored as a scalar
+  // component in the image data.  If the data has both a time dimension
+  // and a vector dimension, then the number of components will be the
+  // product of these two dimensions, i.e. the components will store
+  // a sequence of vectors, one vector for each time point.
+  vtkGetMacro(TimeAsVector, int);
+  vtkSetMacro(TimeAsVector, int);
+  vtkBooleanMacro(TimeAsVector, int);
+
+  // Description:
   // Get the time dimension if the DICOM series has one.
-  int GetTimeDimension() { return 1; }
-  double GetTimeSpacing() { return 1.0; }
+  int GetTimeDimension() { return this->TimeDimension; }
+  double GetTimeSpacing() { return this->TimeSpacing; }
 
   // Description:
   // Get the slope and intercept for rescaling the scalar values.
@@ -185,6 +199,17 @@ protected:
   // Description:
   // This indicates that the data must be rescaled.
   int NeedsRescale;
+
+  // Description:
+  // The number of packed pixel components in the input file.
+  // This is for packed, rather than planar. components.
+  int NumberOfPackedComponents;
+
+  // Description:
+  // Time dimension variables.
+  int TimeAsVector;
+  int TimeDimension;
+  double TimeSpacing;
 
 private:
   vtkDICOMReader(const vtkDICOMReader&);  // Not implemented.

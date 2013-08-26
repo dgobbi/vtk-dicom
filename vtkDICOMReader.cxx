@@ -61,6 +61,10 @@ vtkDICOMReader::vtkDICOMReader()
   this->MetaData = vtkDICOMMetaData::New();
   this->PatientMatrix = vtkMatrix4x4::New();
   this->MemoryRowOrder = vtkDICOMReader::BottomUp;
+  this->NumberOfPackedComponents = 1;
+  this->TimeAsVector = 0;
+  this->TimeDimension = 0;
+  this->TimeSpacing = 1.0;
 
   this->DataScalarType = VTK_SHORT;
   this->NumberOfScalarComponents = 1;
@@ -114,6 +118,11 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
     }
 
   os << indent << "FileIndexArray: " << this->FileIndexArray << "\n";
+
+  os << indent << "TimeAsVector: "
+     << (this->TimeAsVector ? "On\n" : "Off\n");
+  os << indent << "TimeDimension: " << this->TimeDimension << "\n";
+  os << indent << "TimeSpacing: " << this->TimeSpacing << "\n";
 
   os << indent << "RescaleSlope: " << this->RescaleSlope << "\n";
   os << indent << "RescaleIntercept: " << this->RescaleIntercept << "\n";
@@ -250,10 +259,11 @@ struct vtkDICOMReaderFileInfo
 {
   int FileIndex;
   int SliceIndex;
+  int ComponentIndex;
   int NumberOfSlices;
 
-  vtkDICOMReaderFileInfo(int i, int j) :
-    FileIndex(i), SliceIndex(j), NumberOfSlices(1) {}
+  vtkDICOMReaderFileInfo(int i, int j, int k) :
+    FileIndex(i), SliceIndex(j), ComponentIndex(k), NumberOfSlices(1) {}
 };
 
 } // end anonymous namespace
@@ -345,14 +355,51 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
 
   // sort by instance, and then by position
   std::stable_sort(info.begin(), info.end(), vtkDICOMReaderCompareInstance);
-  if (canSortByPosition)
+  if (canSortByPosition && info.size() > 1)
     {
     std::stable_sort(info.begin(), info.end(), vtkDICOMReaderCompareLocation);
-    if (info.size() > 1)
+
+    // look for slices at the same location
+    std::vector<vtkDICOMReaderSortInfo>::iterator iter = info.begin();
+    std::vector<vtkDICOMReaderSortInfo>::iterator lastIter = iter;
+    int slicesPerLocation = 0;
+    int slicesAtThisLocation = 0;
+    while (iter != info.end())
+      {
+      ++iter;
+      slicesAtThisLocation++;
+      // use the tolerance built into CompareLocation
+      if (iter == info.end() ||
+          vtkDICOMReaderCompareLocation(*lastIter, *iter))
+        {
+        if (slicesPerLocation == 0)
+          {
+          slicesPerLocation = slicesAtThisLocation;
+          }
+        else if (slicesPerLocation != slicesAtThisLocation)
+          {
+          slicesPerLocation = -1;
+          }
+        slicesAtThisLocation = 0;
+        }
+      lastIter = iter;
+      }
+    this->TimeDimension = (slicesPerLocation > 0 ? slicesPerLocation : 0);
+    int locations = static_cast<int>(info.size());
+    if (slicesPerLocation > 0 && this->TimeAsVector)
+      {
+      locations /= slicesPerLocation;
+      }
+    else
+      {
+      slicesPerLocation = 1;
+      }
+
+    // recompute slice spacing from position info
       {
       double locDiff =
         (info.back().ComputedLocation - info.front().ComputedLocation)/
-        static_cast<double>(info.size() - 1);
+        static_cast<double>(locations - 1);
       if (locDiff > 0)
         {
         spacingBetweenSlices *= locDiff;
@@ -363,6 +410,15 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
         }
       }
     }
+
+  // For cardiac images, time sorting can be done with this tag:
+  // - TriggerTime (0018,1060)
+
+  // If the image has a StackID, then dimensional sorting
+  // might be possible with these tags:
+  // - TemporalPositionIndex (0020,9128) if present
+  // - StackID (0020,9056)
+  // - InStackPositionNumber (0020,9057)
 
   // If the multi-frame module is present, each file might have more than
   // one slice.  See DICOM Part 3 Appendix C 7.6.6 for details.
@@ -382,15 +438,22 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
   // write out the sorted indices
   bool flipImage = (this->MemoryRowOrder == vtkDICOMReader::BottomUp);
   bool flipOrder = (flipImage && canSortByPosition);
-  sorted->SetNumberOfComponents(1);
-  sorted->SetNumberOfValues(numFiles);
-  for (int k = 0; k < numFiles; k++)
+  int slicesPerLocation = (this->TimeAsVector ? this->TimeDimension : 1);
+  slicesPerLocation = (slicesPerLocation > 0 ? slicesPerLocation : 1);
+  int locations = static_cast<int>(info.size())/slicesPerLocation;
+  sorted->SetNumberOfComponents(slicesPerLocation);
+  sorted->SetNumberOfTuples(locations);
+  for (int loc = 0; loc < locations; loc++)
     {
-    int kflip = numFiles - k - 1;
-    kflip = (flipOrder ? kflip : k);
-    sorted->SetValue(k, info[kflip].FileNumber);
+    int l = (flipOrder ? locations - loc - 1 : loc);
+    for (int k = 0; k < slicesPerLocation; k++)
+      {
+      int i = l*slicesPerLocation + k;
+      sorted->SetComponent(loc, k, info[i].FileNumber);
+      }
     }
 
+  // save the slice spacing
   this->DataSpacing[2] = spacingBetweenSlices;
 }
 
@@ -416,6 +479,10 @@ int vtkDICOMReader::RequestInformation(
     this->DataExtent[5] = 0;
     }
   int numFiles = this->DataExtent[5] - this->DataExtent[4] + 1;
+
+  // Reset the time information
+  this->TimeDimension = 0;
+  this->TimeSpacing = 1.0;
 
   // Clear the meta data, prepare the parser.
   this->MetaData->Clear();
@@ -545,6 +612,8 @@ int vtkDICOMReader::RequestInformation(
     this->MetaData->GetAttributeValue(DC::PixelRepresentation).AsInt();
   int numComponents =
     this->MetaData->GetAttributeValue(DC::SamplesPerPixel).AsInt();
+  int planarConfiguration =
+    this->MetaData->GetAttributeValue(DC::PlanarConfiguration).AsInt();
 
   // datatype
   int scalarType = 0;
@@ -575,7 +644,10 @@ int vtkDICOMReader::RequestInformation(
     }
 
   this->DataScalarType = scalarType;
-  this->NumberOfScalarComponents = numComponents;
+  this->NumberOfPackedComponents =
+    (planarConfiguration ? 1 : numComponents);
+  this->NumberOfScalarComponents =
+    (numComponents * this->FileIndexArray->GetNumberOfComponents());
 
   // photometric interpretation
   // "MONOCHROME1" "MONOCHROME2"
@@ -642,7 +714,7 @@ int vtkDICOMReader::RequestInformation(
   // the user with a 4x4 matrix that can transform VTK's data coordinates
   // into DICOM's patient coordinates, as defined in the DICOM standard
   // Part 3 Appendix C 7.6.2 "Image Plane Module".
-  int fileIndex = this->FileIndexArray->GetValue(0);
+  int fileIndex = this->FileIndexArray->GetComponent(0, 0);
   vtkDICOMValue pv = this->MetaData->GetAttributeValue(
     fileIndex, DC::ImagePositionPatient);
   vtkDICOMValue ov = this->MetaData->GetAttributeValue(
@@ -918,18 +990,22 @@ int vtkDICOMReader::RequestData(
 
   // make a list of all the files inside the update extent
   std::vector<vtkDICOMReaderFileInfo> files;
+  int nComp = this->FileIndexArray->GetNumberOfComponents();
   for (int sIdx = extent[4]; sIdx <= extent[5]; sIdx++)
     {
-    int fileIdx = this->FileIndexArray->GetValue(sIdx);
-    std::vector<vtkDICOMReaderFileInfo>::iterator iter = files.begin();
-    while (iter != files.end() && iter->FileIndex != fileIdx) { ++iter; }
-    if (iter == files.end())
+    for (int cIdx = 0; cIdx < nComp; cIdx++)
       {
-      files.push_back(vtkDICOMReaderFileInfo(fileIdx, sIdx));
-      }
-    else
-      {
-      iter->NumberOfSlices++;
+      int fileIdx = this->FileIndexArray->GetComponent(sIdx, cIdx);
+      std::vector<vtkDICOMReaderFileInfo>::iterator iter = files.begin();
+      while (iter != files.end() && iter->FileIndex != fileIdx) { ++iter; }
+      if (iter == files.end())
+        {
+        files.push_back(vtkDICOMReaderFileInfo(fileIdx, sIdx, cIdx));
+        }
+      else
+        {
+        iter->NumberOfSlices++;
+        }
       }
     }
 
@@ -948,19 +1024,26 @@ int vtkDICOMReader::RequestData(
 
   int scalarSize = data->GetScalarSize();
   int numComponents = data->GetNumberOfScalarComponents();
+  int numFileComponents = this->NumberOfPackedComponents;
 
   vtkIdType pixelSize = numComponents*scalarSize;
   vtkIdType rowSize = pixelSize*(extent[1] - extent[0] + 1);
   vtkIdType sliceSize = rowSize*(extent[3] - extent[2] + 1);
+  vtkIdType filePixelSize = numFileComponents*scalarSize;
+  vtkIdType fileRowSize = filePixelSize*(extent[1] - extent[0] + 1);
+  vtkIdType fileSliceSize = fileRowSize*(extent[3] - extent[2] + 1);
 
   this->InvokeEvent(vtkCommand::StartEvent);
 
   bool flipImage = (this->MemoryRowOrder == vtkDICOMReader::BottomUp);
+  bool sliceToComponent = (this->TimeAsVector && this->TimeDimension > 1);
   char *rowBuffer = 0;
   if (flipImage)
     {
-    rowBuffer = new char[rowSize];
+    rowBuffer = new char[fileRowSize];
     }
+  char *fileBuffer = 0;
+  int lastNumSlices = -1;
 
   // loop through all files in the update extent
   for (size_t idx = 0; idx < files.size(); idx++)
@@ -973,24 +1056,37 @@ int vtkDICOMReader::RequestData(
     // get the index for this file
     int fileIdx = files[idx].FileIndex;
     int sliceIdx = files[idx].SliceIndex;
+    int componentIdx = files[idx].ComponentIndex;
     int numSlices = files[idx].NumberOfSlices;
-    // reverse slices if flipImage
-    char *slicePtr = dataPtr + (sliceIdx - extent[4])*sliceSize;
+
+    if (sliceToComponent && numSlices != lastNumSlices)
+      {
+      // allocate a buffer for planar-to-packed conversion
+      delete [] fileBuffer;
+      fileBuffer = new char[fileSliceSize*numSlices];
+      lastNumSlices = numSlices;
+      }
+
+    // the input (bufferPtr) and output (slicePtr) pointers
+    char *slicePtr = (dataPtr +
+                      (sliceIdx - extent[4])*sliceSize +
+                      componentIdx*filePixelSize);
+    char *bufferPtr = (sliceToComponent ? fileBuffer : slicePtr);
 
     this->ComputeInternalFileName(fileIdx);
 
     // read the file into the output
     this->ReadOneFile(this->InternalFileName, fileIdx,
-                      slicePtr, numSlices*sliceSize);
-
-    // rescale if Rescale was different for different files
-    if (this->NeedsRescale)
-      {
-      this->RescaleBuffer(fileIdx, slicePtr, numSlices*sliceSize);
-      }
+                      bufferPtr, numSlices*fileSliceSize);
 
     for (int sIdx = 0; sIdx < numSlices; sIdx++)
       {
+      // rescale if Rescale was different for different files
+      if (this->NeedsRescale)
+        {
+        this->RescaleBuffer(fileIdx, bufferPtr, sliceSize);
+        }
+
       // flip the data if necessary
       // NOTE: depending on SpacingBetweenSlices, multi-frame images
       // like nuclear medicine images might have to be flipped back-to-front
@@ -1000,18 +1096,35 @@ int vtkDICOMReader::RequestData(
         int halfRows = numRows/2;
         for (int yIdx = 0; yIdx < halfRows; yIdx++)
           {
-          char *row1 = slicePtr + yIdx*rowSize;
-          char *row2 = slicePtr + (numRows-yIdx-1)*rowSize;
+          char *row1 = bufferPtr + yIdx*rowSize;
+          char *row2 = bufferPtr + (numRows-yIdx-1)*rowSize;
           memcpy(rowBuffer, row1, rowSize);
           memcpy(row1, row2, rowSize);
           memcpy(row2, rowBuffer, rowSize);
           }
         }
-      slicePtr += sliceSize;
+
+      // convert planes into vector components
+      if (sliceToComponent)
+        {
+        const char *tmpInPtr = bufferPtr;
+        char *tmpOutPtr = slicePtr;
+        int m = sliceSize/pixelSize;
+        for (int i = 0; i < m; i++)
+          {
+          vtkIdType n = filePixelSize;
+          do { *tmpOutPtr++ = *tmpInPtr++; } while (--n);
+          tmpOutPtr += pixelSize - filePixelSize;
+          }
+        slicePtr += filePixelSize;
+        }
+
+      bufferPtr += sliceSize;
       }
     }
 
   delete [] rowBuffer;
+  delete [] fileBuffer;
 
   this->UpdateProgress(1.0);
   this->InvokeEvent(vtkCommand::EndEvent);
