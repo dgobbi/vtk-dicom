@@ -40,6 +40,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <float.h>
+#include <math.h>
 
 vtkStandardNewMacro(vtkNIFTIWriter);
 vtkCxxSetObjectMacro(vtkNIFTIWriter,QFormMatrix,vtkMatrix4x4);
@@ -265,6 +267,17 @@ void vtkNIFTIWriterInitializeHeader(
   hdr->magic[3] = '\0';
 }
 
+double vtkNIFTIWriterFTZ(double d)
+{
+  // flush very small values to zero, to avoid having
+  // values appear as "-0" in the header.
+  if (fabs(d) < FLT_MIN)
+    {
+    d = 0.0;
+    }
+  return d;
+}
+
 void vtkNIFTIWriterSetInformation(
   nifti_1_header *hdr,
   vtkInformation *info)
@@ -351,9 +364,9 @@ void vtkNIFTIWriterSetInformation(
 
   hdr->slice_start = 0;
   hdr->pixdim[0] = 0.0;
-  hdr->pixdim[1] = spacing[0];
-  hdr->pixdim[2] = spacing[1];
-  hdr->pixdim[3] = spacing[2];
+  hdr->pixdim[1] = vtkNIFTIWriterFTZ(spacing[0]);
+  hdr->pixdim[2] = vtkNIFTIWriterFTZ(spacing[1]);
+  hdr->pixdim[3] = vtkNIFTIWriterFTZ(spacing[2]);
   hdr->pixdim[4] = 1.0;
   hdr->pixdim[5] = 1.0;
   hdr->pixdim[6] = 1.0;
@@ -389,12 +402,12 @@ void vtkNIFTIWriterSetQForm(
     }
 
   hdr->pixdim[0] = qfac;
-  hdr->quatern_b = quat[1];
-  hdr->quatern_c = quat[2];
-  hdr->quatern_d = quat[3];
-  hdr->qoffset_x = mmat[3];
-  hdr->qoffset_y = mmat[7];
-  hdr->qoffset_z = mmat[11];
+  hdr->quatern_b = vtkNIFTIWriterFTZ(quat[1]);
+  hdr->quatern_c = vtkNIFTIWriterFTZ(quat[2]);
+  hdr->quatern_d = vtkNIFTIWriterFTZ(quat[3]);
+  hdr->qoffset_x = vtkNIFTIWriterFTZ(mmat[3]);
+  hdr->qoffset_y = vtkNIFTIWriterFTZ(mmat[7]);
+  hdr->qoffset_z = vtkNIFTIWriterFTZ(mmat[11]);
 }
 
 // Set the SForm from a 4x4 matrix
@@ -419,22 +432,22 @@ void vtkNIFTIWriterSetSForm(
     }
 
   // first row
-  hdr->srow_x[0] = mmat[0] * hdr->pixdim[1];
-  hdr->srow_x[1] = mmat[1] * hdr->pixdim[2];
-  hdr->srow_x[2] = mmat[2] * hdr->pixdim[3];
-  hdr->srow_x[3] = mmat[3];
+  hdr->srow_x[0] = vtkNIFTIWriterFTZ(mmat[0] * hdr->pixdim[1]);
+  hdr->srow_x[1] = vtkNIFTIWriterFTZ(mmat[1] * hdr->pixdim[2]);
+  hdr->srow_x[2] = vtkNIFTIWriterFTZ(mmat[2] * hdr->pixdim[3]);
+  hdr->srow_x[3] = vtkNIFTIWriterFTZ(mmat[3]);
 
   // second row
-  hdr->srow_y[0] = mmat[4] * hdr->pixdim[1];
-  hdr->srow_y[1] = mmat[5] * hdr->pixdim[2];
-  hdr->srow_y[2] = mmat[6] * hdr->pixdim[3];
-  hdr->srow_y[3] = mmat[7];
+  hdr->srow_y[0] = vtkNIFTIWriterFTZ(mmat[4] * hdr->pixdim[1]);
+  hdr->srow_y[1] = vtkNIFTIWriterFTZ(mmat[5] * hdr->pixdim[2]);
+  hdr->srow_y[2] = vtkNIFTIWriterFTZ(mmat[6] * hdr->pixdim[3]);
+  hdr->srow_y[3] = vtkNIFTIWriterFTZ(mmat[7]);
 
   // third row
-  hdr->srow_z[0] = mmat[8] * hdr->pixdim[1];
-  hdr->srow_z[1] = mmat[9] * hdr->pixdim[2];
-  hdr->srow_z[2] = mmat[10] * hdr->pixdim[3];
-  hdr->srow_z[3] = mmat[11];
+  hdr->srow_z[0] = vtkNIFTIWriterFTZ(mmat[8] * hdr->pixdim[1]);
+  hdr->srow_z[1] = vtkNIFTIWriterFTZ(mmat[9] * hdr->pixdim[2]);
+  hdr->srow_z[2] = vtkNIFTIWriterFTZ(mmat[10] * hdr->pixdim[3]);
+  hdr->srow_z[3] = vtkNIFTIWriterFTZ(mmat[11]);
 }
 
 void vtkNIFTIWriterMatrix(
@@ -606,7 +619,7 @@ int vtkNIFTIWriter::RequestData(
       delete [] imgname;
       return 0;
       }
-    hdr.pixdim[4] = this->TimeSpacing;
+    hdr.pixdim[4] = vtkNIFTIWriterFTZ(this->TimeSpacing);
     hdr.dim[4] = tdim;
     hdr.dim[5] /= tdim;
     hdr.dim[0] = (hdr.dim[5] > 1 ? 5 : 4);

@@ -19,9 +19,22 @@ See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 #include <vtkObjectFactory.h>
 
 #include <string.h>
+#include <float.h>
+#include <math.h>
 #include <ctype.h>
 
 vtkStandardNewMacro(vtkNIFTIHeader);
+
+//----------------------------------------------------------------------------
+namespace {
+
+// utility function to normalize floats that are close to zero
+double vtkNIFTIHeaderFTZ(double d)
+{
+  return (fabs(d) < FLT_MIN ? 0.0 : d);
+}
+
+} // end anonymous namespace
 
 //----------------------------------------------------------------------------
 vtkNIFTIHeader::vtkNIFTIHeader()
@@ -137,9 +150,9 @@ void vtkNIFTIHeader::GetHeader(nifti_1_header *hdr)
   hdr->session_error = 0;
   hdr->regular = 0;
   hdr->dim_info = this->DimInfo;
-  hdr->intent_p1 = this->IntentP1;
-  hdr->intent_p2 = this->IntentP2;
-  hdr->intent_p3 = this->IntentP3;
+  hdr->intent_p1 = vtkNIFTIHeaderFTZ(this->IntentP1);
+  hdr->intent_p2 = vtkNIFTIHeaderFTZ(this->IntentP2);
+  hdr->intent_p3 = vtkNIFTIHeaderFTZ(this->IntentP3);
   hdr->intent_code = static_cast<short>(this->IntentCode);
   hdr->datatype = static_cast<short>(this->DataType);
   hdr->bitpix = static_cast<short>(this->BitPix);
@@ -147,16 +160,16 @@ void vtkNIFTIHeader::GetHeader(nifti_1_header *hdr)
   for (int i = 0; i < 8; i++)
     {
     hdr->dim[i] = static_cast<short>(this->Dim[i]);
-    hdr->pixdim[i] = this->PixDim[i];
+    hdr->pixdim[i] = vtkNIFTIHeaderFTZ(this->PixDim[i]);
     }
   hdr->vox_offset = static_cast<float>(this->VoxOffset);
   strncpy(hdr->intent_name, this->IntentName, sizeof(hdr->intent_name));
-  hdr->scl_slope = this->SclSlope;
-  hdr->scl_inter = this->SclInter;
-  hdr->cal_min = this->CalMin;
-  hdr->cal_max = this->CalMax;
-  hdr->slice_duration = this->SliceDuration;
-  hdr->toffset = this->TOffset;
+  hdr->scl_slope = vtkNIFTIHeaderFTZ(this->SclSlope);
+  hdr->scl_inter = vtkNIFTIHeaderFTZ(this->SclInter);
+  hdr->cal_min = vtkNIFTIHeaderFTZ(this->CalMin);
+  hdr->cal_max = vtkNIFTIHeaderFTZ(this->CalMax);
+  hdr->slice_duration = vtkNIFTIHeaderFTZ(this->SliceDuration);
+  hdr->toffset = vtkNIFTIHeaderFTZ(this->TOffset);
   hdr->glmax = 0;
   hdr->glmin = 0;
   hdr->slice_end = this->SliceEnd;
@@ -166,17 +179,17 @@ void vtkNIFTIHeader::GetHeader(nifti_1_header *hdr)
   strncpy(hdr->aux_file, this->AuxFile, sizeof(hdr->aux_file));
   hdr->qform_code = static_cast<short>(this->QFormCode);
   hdr->sform_code = static_cast<short>(this->SFormCode);
-  hdr->quatern_b = this->QuaternB;
-  hdr->quatern_c = this->QuaternC;
-  hdr->quatern_d = this->QuaternD;
-  hdr->qoffset_x = this->QOffsetX;
-  hdr->qoffset_y = this->QOffsetY;
-  hdr->qoffset_z = this->QOffsetZ;
+  hdr->quatern_b = vtkNIFTIHeaderFTZ(this->QuaternB);
+  hdr->quatern_c = vtkNIFTIHeaderFTZ(this->QuaternC);
+  hdr->quatern_d = vtkNIFTIHeaderFTZ(this->QuaternD);
+  hdr->qoffset_x = vtkNIFTIHeaderFTZ(this->QOffsetX);
+  hdr->qoffset_y = vtkNIFTIHeaderFTZ(this->QOffsetY);
+  hdr->qoffset_z = vtkNIFTIHeaderFTZ(this->QOffsetZ);
   for (int i = 0; i < 4; i++)
     {
-    hdr->srow_x[i] = this->SRowX[i];
-    hdr->srow_y[i] = this->SRowY[i];
-    hdr->srow_z[i] = this->SRowZ[i];
+    hdr->srow_x[i] = vtkNIFTIHeaderFTZ(this->SRowX[i]);
+    hdr->srow_y[i] = vtkNIFTIHeaderFTZ(this->SRowY[i]);
+    hdr->srow_z[i] = vtkNIFTIHeaderFTZ(this->SRowZ[i]);
     }
 }
 
