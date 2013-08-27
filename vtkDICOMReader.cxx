@@ -227,6 +227,20 @@ int vtkDICOMReader::CanReadFile(const char *filename)
 //----------------------------------------------------------------------------
 namespace {
 
+// a class for storing multi-frame information
+struct vtkDICOMReaderFrameInfo
+{
+  int NumberOfFrames;
+  int NumberOfSlices;
+  int NumberOfTimeSlots;
+
+  vtkDICOMReaderFrameInfo() :
+    NumberOfFrames(0), NumberOfSlices(0), NumberOfTimeSlots(0) {}
+
+  vtkDICOMReaderFrameInfo(int i, int j, int k) :
+    NumberOfFrames(i), NumberOfSlices(j), NumberOfTimeSlots(k) {}
+};
+
 // a class and methods for sorting the files
 struct vtkDICOMReaderSortInfo
 {
@@ -320,6 +334,49 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
   vtkDICOMMetaData *meta = this->MetaData;
   int numFiles = meta->GetNumberOfInstances();
   std::vector<vtkDICOMReaderSortInfo> info(numFiles);
+  std::vector<vtkDICOMReaderFrameInfo> frameInfo(numFiles);
+
+  // check for multi-frame information
+  double frameTimeSpacing = 1.0;
+  for (int i = 0; i < numFiles; i++)
+    {
+    // check for multi-frame module
+    int numberOfFrames = meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
+    int numberOfSlices = 1;
+    int numberOfTimeSlots = 1;
+    if (numberOfFrames > 1)
+      {
+      vtkDICOMValue fip = meta->GetAttributeValue(i, DC::FrameIncrementPointer);
+      unsigned int n = fip.GetNumberOfValues();
+      for (unsigned int j = 0; j < n; j++)
+        {
+        vtkDICOMTag tag = fip.GetTag(j);
+        if (tag == DC::FrameTime)
+          {
+          frameTimeSpacing = meta->GetAttributeValue(i, tag).AsDouble();
+          }
+        else if (tag == DC::FrameTimeVector)
+          {
+          // get average interval time from time vector
+          vtkDICOMValue timeVector = meta->GetAttributeValue(i, tag);
+          unsigned int m = timeVector.GetNumberOfValues();
+          double timeSum = 0.0;
+          for (unsigned int k = 1; k < m; k++)
+            {
+            timeSum += timeVector.GetDouble(k);
+            }
+          if (timeSum > 0 && m > 1)
+            {
+            frameTimeSpacing = timeSum/(m - 1);
+            }
+          }
+        }
+      }
+    frameInfo[i] = vtkDICOMReaderFrameInfo(
+      numberOfFrames, numberOfSlices, numberOfTimeSlots);
+    }
+
+  // important position-related variables
   double checkNormal[3] = { 0.0, 0.0, 0.0 };
   bool canSortByPosition = true;
 
