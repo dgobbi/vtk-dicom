@@ -592,6 +592,9 @@ int vtkNIFTIWriter::RequestData(
     vtkNIFTIWriterSetSForm(&hdr, mat16, qfac);
     }
 
+  // base dimension not counting vector dimension
+  short basedim = (hdr.dim[3] == 1 ? 2 : 3);
+
   if (this->TimeDimension)
     {
     short tdim = static_cast<short>(this->TimeDimension);
@@ -606,34 +609,36 @@ int vtkNIFTIWriter::RequestData(
     hdr.pixdim[4] = this->TimeSpacing;
     hdr.dim[4] = tdim;
     hdr.dim[5] /= tdim;
+    hdr.dim[0] = (hdr.dim[5] > 1 ? 5 : 4);
+    basedim = 4;
     }
 
   if (hdr.dim[5] == 2 && hdr.datatype == NIFTI_TYPE_FLOAT32)
     {
     // float with 2 components becomes COMPLEX64
     hdr.datatype = NIFTI_TYPE_COMPLEX64;
-    hdr.dim[0] = (hdr.dim[3] == 1 ? 2 : 3);
+    hdr.dim[0] = basedim;
     hdr.dim[5] = 1;
     }
   else if (hdr.dim[5] == 2 && hdr.datatype == NIFTI_TYPE_FLOAT64)
     {
     // double with 2 components becomes COMPLEX128
     hdr.datatype = NIFTI_TYPE_COMPLEX128;
-    hdr.dim[0] = (hdr.dim[3] == 1 ? 2 : 3);
+    hdr.dim[0] = basedim;
     hdr.dim[5] = 1;
     }
   else if (hdr.dim[5] == 3 && hdr.datatype == NIFTI_TYPE_UINT8)
     {
     // unsigned char with 3 components becomes RGB24
     hdr.datatype = NIFTI_TYPE_RGB24;
-    hdr.dim[0] = (hdr.dim[3] == 1 ? 2 : 3);
+    hdr.dim[0] = basedim;
     hdr.dim[5] = 1;
     }
   else if (hdr.dim[5] == 4 && hdr.datatype == NIFTI_TYPE_UINT8)
     {
     // unsigned char with 4 components becomes RGBA32
     hdr.datatype = NIFTI_TYPE_RGBA32;
-    hdr.dim[0] = (hdr.dim[3] == 1 ? 2 : 3);
+    hdr.dim[0] = basedim;
     hdr.dim[5] = 1;
     }
 
