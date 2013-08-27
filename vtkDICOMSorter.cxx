@@ -340,7 +340,7 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
     std::stable_sort(v.begin(), v.end(), CompareInstance);
 
     // Is this a new study?
-    if (v[0].StudyUID != lastStudyUID)
+    if (studyCount == 0 || v[0].StudyUID != lastStudyUID)
       {
       lastStudyUID = v[0].StudyUID;
       studyCount++;
