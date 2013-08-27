@@ -283,6 +283,39 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
   // position increases along the direction given by cross product of
   // the ImageOrientationPatient vectors.
 
+  // For cardiac images, time sorting can be done with this tag:
+  // - TriggerTime (0018,1060)
+  // - CardiacNumberOfImages (0018,1090)
+
+  // For relaxometry, time sorting can be done with this tag:
+  // - EchoTime (0018,0091)
+
+  // For functional images, the following tags can be used:
+  // - NumberOfTemporalPositions (0020,0105)
+  // - TemporalPositionIdentifier (0020,0100)
+  // - TemporalResolution (0020,0110)
+
+  // If the image has a StackID, then dimensional sorting
+  // might be possible with these tags:
+  // - TemporalPositionIndex (0020,9128) if present
+  // - StackID (0020,9056)
+  // - InStackPositionNumber (0020,9057)
+
+  // If the multi-frame module is present, each file might have more than
+  // one slice.  See DICOM Part 3 Appendix C 7.6.6 for details.
+  // To identify the multi-frame module, look for these attributes:
+  // - NumberOfFrames (0028,0008)
+  // - FrameIncrementPointer (0028,0009)
+  // Usually frames are used for cine, but in nuclear medicine (NM) they
+  // are used to describe multi-dimensional files (Part 3 Appendix C 8.4.8):
+  // - NumberOfSlices (0054,0081)
+  // - NumberOfTimeSlots (0054,0071)
+  // - NumberOfRRIntervals (0054,0061)
+  // - NumberOfRotations (0054,0051)
+  // - NumberOfPhases (0054,0031)
+  // - NumberOfDetectors (0054,0021)
+  // - NumberOfEnergyWindows (0054,0011)
+
   vtkDICOMMetaData *meta = this->MetaData;
   int numFiles = meta->GetNumberOfInstances();
   std::vector<vtkDICOMReaderSortInfo> info(numFiles);
@@ -353,16 +386,18 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
     info[i] = vtkDICOMReaderSortInfo(i, j, location);
     }
 
-  // sort by instance, and then by position
+  // sort by instance first
   std::stable_sort(info.begin(), info.end(), vtkDICOMReaderCompareInstance);
-  if (canSortByPosition && info.size() > 1)
+
+  // sort by position, count the number of slices per location
+  int slicesPerLocation = 0;
+  if (canSortByPosition && numFiles > 1)
     {
     std::stable_sort(info.begin(), info.end(), vtkDICOMReaderCompareLocation);
 
     // look for slices at the same location
     std::vector<vtkDICOMReaderSortInfo>::iterator iter = info.begin();
     std::vector<vtkDICOMReaderSortInfo>::iterator lastIter = iter;
-    int slicesPerLocation = 0;
     int slicesAtThisLocation = 0;
     while (iter != info.end())
       {
@@ -384,87 +419,113 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
         }
       lastIter = iter;
       }
+    }
+  if (slicesPerLocation <= 0)
+    {
+    slicesPerLocation = numFiles;
+    }
 
-    // compute the number of unique locations
-    this->TimeDimension = (slicesPerLocation > 0 ? slicesPerLocation : 0);
-    int locations = static_cast<int>(info.size());
-    if (slicesPerLocation > 0 && this->TimeAsVector)
+  // get time information
+  int temporalPositions = 0;
+  int temporalSpacing = 1.0;
+  vtkDICOMTag timeTag;
+  if (meta->GetAttributeValue(DC::CardiacNumberOfImages).AsInt() > 1)
+    {
+    timeTag = DC::TriggerTime;
+    }
+  else if (meta->GetAttributeValue(DC::NumberOfTemporalPositions).AsInt() > 1)
+    {
+    timeTag = DC::TemporalPositionIdentifier;
+    temporalSpacing =
+      meta->GetAttributeValue(DC::TemporalResolution).AsDouble();
+    }
+  else if (meta->HasAttribute(DC::TemporalPositionIndex))
+    {
+    timeTag = DC::TemporalPositionIndex;
+    }
+  else if (meta->HasAttribute(DC::EchoTime))
+    {
+    timeTag = DC::EchoTime;
+    }
+  // if time information was found, count number of unique time points
+  if (timeTag.GetGroup() != 0)
+    {
+    std::vector<double> timeVec(slicesPerLocation);
+    for (int i = 0; i < slicesPerLocation; i++)
       {
-      locations /= slicesPerLocation;
+      timeVec[i] =
+        meta->GetAttributeValue(info[i].FileNumber, timeTag).AsDouble();
       }
-    else
+    double tMin = VTK_DOUBLE_MAX;
+    double tMax = VTK_DOUBLE_MIN;
+    for (int i = 0; i < slicesPerLocation; i++)
       {
-      slicesPerLocation = 1;
+      double d = timeVec[i];
+      tMin = (d > tMin ? tMin : d);
+      tMax = (d < tMax ? tMax : d);
+      bool u = true;
+      for (int j = 0; j < i; j++)
+        {
+        u &= !(fabs(timeVec[j] - d) < 1e-3);
+        }
+      temporalPositions += u;
       }
+    // compute temporalSpacing from the apparent time spacing
+    if (temporalPositions > 1)
+      {
+      temporalSpacing *= (tMax - tMin)/(temporalPositions - 1);
+      }
+    }
 
-    // recompute slice spacing from position info
-    double locDiff =
-      (info.back().ComputedLocation - info.front().ComputedLocation)/
-      static_cast<double>(locations - 1);
+  // compute the number of slices in the output image
+  int trueLocations = numFiles/slicesPerLocation;
+  int locations = trueLocations;
+  if (temporalPositions > 0 && this->TimeAsVector == 0)
+    {
+    locations *= temporalPositions;
+    }
+
+  // recompute slice spacing from position info
+  if (canSortByPosition)
+    {
+    double locDiff = 0;
+    if (locations > 1)
+      {
+      double firstLocation = info.front().ComputedLocation;
+      double finalLocation = info.back().ComputedLocation;
+      locDiff = (firstLocation - finalLocation)/(locations - 1);
+      }
     if (locDiff > 0)
       {
       spacingBetweenSlices *= locDiff;
       }
-    else
-      {
-      canSortByPosition = false;
-      }
     }
-  else
-    {
-    this->TimeDimension = (numFiles > 1 ? numFiles : 0);
-    }
-
-  // For cardiac images, time sorting can be done with this tag:
-  // - TriggerTime (0018,1060)
-  // - CardiacNumberOfImages (0018,1090)
-
-  // For functional images, the following tags can be used:
-  // - NumberOfTemporalPositions (0020,0105)
-  // - TemporalPositionIdentifier (0020,0100)
-  // - TemporalResolution (0020,0110)
-
-  // If the image has a StackID, then dimensional sorting
-  // might be possible with these tags:
-  // - TemporalPositionIndex (0020,9128) if present
-  // - StackID (0020,9056)
-  // - InStackPositionNumber (0020,9057)
-
-  // If the multi-frame module is present, each file might have more than
-  // one slice.  See DICOM Part 3 Appendix C 7.6.6 for details.
-  // To identify the multi-frame module, look for these attributes:
-  // - NumberOfFrames (0028,0008)
-  // - FrameIncrementPointer (0028,0009)
-  // Usually frames are used for cine, but in nuclear medicine (NM) they
-  // are used to describe multi-dimensional files (Part 3 Appendix C 8.4.8):
-  // - NumberOfSlices (0054,0081)
-  // - NumberOfTimeSlots (0054,0071)
-  // - NumberOfRRIntervals (0054,0061)
-  // - NumberOfRotations (0054,0051)
-  // - NumberOfPhases (0054,0031)
-  // - NumberOfDetectors (0054,0021)
-  // - NumberOfEnergyWindows (0054,0011)
 
   // write out the sorted indices
-  bool flipImage = (this->MemoryRowOrder == vtkDICOMReader::BottomUp);
-  bool flipOrder = (flipImage && canSortByPosition);
-  int slicesPerLocation = (this->TimeAsVector ? this->TimeDimension : 1);
-  slicesPerLocation = (slicesPerLocation > 0 ? slicesPerLocation : 1);
-  int locations = static_cast<int>(info.size())/slicesPerLocation;
-  sorted->SetNumberOfComponents(slicesPerLocation);
+  bool flipOrder = (this->MemoryRowOrder == vtkDICOMReader::BottomUp);
+  int filesPerOutputSlice = numFiles/locations;
+  int locationsPerTrueLocation = locations/trueLocations;
+  sorted->SetNumberOfComponents(filesPerOutputSlice);
   sorted->SetNumberOfTuples(locations);
   for (int loc = 0; loc < locations; loc++)
     {
-    int l = (flipOrder ? locations - loc - 1 : loc);
-    for (int k = 0; k < slicesPerLocation; k++)
+    int trueLoc = loc/locationsPerTrueLocation;
+    int j = loc - trueLoc*locationsPerTrueLocation;
+    if (flipOrder)
       {
-      int i = l*slicesPerLocation + k;
+      trueLoc = trueLocations - trueLoc - 1;
+      }
+    for (int k = 0; k < filesPerOutputSlice; k++)
+      {
+      int i = (trueLoc*locationsPerTrueLocation + j)*filesPerOutputSlice + k;
       sorted->SetComponent(loc, k, info[i].FileNumber);
       }
     }
 
-  // save the slice spacing
+  // save the slice spacing and time information
   this->DataSpacing[2] = spacingBetweenSlices;
+  this->TimeDimension = temporalPositions;
+  this->TimeSpacing = temporalSpacing;
 }
 
 //----------------------------------------------------------------------------
