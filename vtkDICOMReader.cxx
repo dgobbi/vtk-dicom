@@ -62,6 +62,7 @@ vtkDICOMReader::vtkDICOMReader()
   this->PatientMatrix = vtkMatrix4x4::New();
   this->MemoryRowOrder = vtkDICOMReader::BottomUp;
   this->NumberOfPackedComponents = 1;
+  this->NumberOfPlanarComponents = 1;
   this->TimeAsVector = 0;
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
@@ -717,6 +718,8 @@ int vtkDICOMReader::RequestInformation(
   this->DataScalarType = scalarType;
   this->NumberOfPackedComponents =
     (planarConfiguration ? 1 : numComponents);
+  this->NumberOfPlanarComponents =
+    (planarConfiguration ? numComponents : 1);
   this->NumberOfScalarComponents =
     (numComponents * this->FileIndexArray->GetNumberOfComponents());
 
@@ -728,8 +731,6 @@ int vtkDICOMReader::RequestInformation(
   // "YBR_PARTIAL_422" "YBR_PARTIAL_420" (use CCIR 601-2 to convert to RGB)
   // "YBR_ICT" "YBR_RCT" (use ISO 10918-1 to convert to RGB)
   // See DICOM Ch. 3 Appendix C 7.6.3.1.2 for equations
-
-  // planar configuration: 0 is packed, 1 is planar
 
   // endianness
   std::string transferSyntax =
@@ -993,7 +994,9 @@ bool vtkDICOMReader::ReadCompressedFile(
   gdcm::Image &image = reader.GetImage();
   if (static_cast<vtkIdType>(image.GetBufferLength()) != bufferSize)
     {
-    vtkErrorMacro("The uncompressed image has the wrong size.");
+    vtkErrorMacro(<< filename << ": The uncompressed image size is "
+                  << image.GetBufferLength() << " bytes, expected "
+                  << bufferSize << " bytes.");
     this->SetErrorCode(vtkErrorCode::FileFormatError);
     return false;
     }
@@ -1096,18 +1099,21 @@ int vtkDICOMReader::RequestData(
   int scalarSize = data->GetScalarSize();
   int numComponents = data->GetNumberOfScalarComponents();
   int numFileComponents = this->NumberOfPackedComponents;
+  int numPlanes = this->NumberOfPlanarComponents;
 
   vtkIdType pixelSize = numComponents*scalarSize;
   vtkIdType rowSize = pixelSize*(extent[1] - extent[0] + 1);
   vtkIdType sliceSize = rowSize*(extent[3] - extent[2] + 1);
   vtkIdType filePixelSize = numFileComponents*scalarSize;
   vtkIdType fileRowSize = filePixelSize*(extent[1] - extent[0] + 1);
-  vtkIdType fileSliceSize = fileRowSize*(extent[3] - extent[2] + 1);
+  vtkIdType filePlaneSize = fileRowSize*(extent[3] - extent[2] + 1);
+  vtkIdType fileSliceSize = filePlaneSize*numPlanes;
 
   this->InvokeEvent(vtkCommand::StartEvent);
 
   bool flipImage = (this->MemoryRowOrder == vtkDICOMReader::BottomUp);
   bool sliceToComponent = (this->TimeAsVector && this->TimeDimension > 1);
+  bool planarToPacked = (sliceToComponent || numPlanes > 1);
   char *rowBuffer = 0;
   if (flipImage)
     {
@@ -1130,7 +1136,7 @@ int vtkDICOMReader::RequestData(
     int componentIdx = files[idx].ComponentIndex;
     int numSlices = files[idx].NumberOfSlices;
 
-    if (sliceToComponent && numSlices != lastNumSlices)
+    if (planarToPacked && numSlices != lastNumSlices)
       {
       // allocate a buffer for planar-to-packed conversion
       delete [] fileBuffer;
@@ -1141,8 +1147,8 @@ int vtkDICOMReader::RequestData(
     // the input (bufferPtr) and output (slicePtr) pointers
     char *slicePtr = (dataPtr +
                       (sliceIdx - extent[4])*sliceSize +
-                      componentIdx*filePixelSize);
-    char *bufferPtr = (sliceToComponent ? fileBuffer : slicePtr);
+                      componentIdx*filePixelSize*numPlanes);
+    char *bufferPtr = (planarToPacked ? fileBuffer : slicePtr);
 
     this->ComputeInternalFileName(fileIdx);
 
@@ -1150,6 +1156,9 @@ int vtkDICOMReader::RequestData(
     this->ReadOneFile(this->InternalFileName, fileIdx,
                       bufferPtr, numSlices*fileSliceSize);
 
+    // iterate through all slices contained in the file
+    // NOTE: depending on SpacingBetweenSlices, multi-frame images like
+    // nuclear medicine images might have to be flipped back-to-front
     for (int sIdx = 0; sIdx < numSlices; sIdx++)
       {
       // rescale if Rescale was different for different files
@@ -1158,39 +1167,41 @@ int vtkDICOMReader::RequestData(
         this->RescaleBuffer(fileIdx, bufferPtr, sliceSize);
         }
 
-      // flip the data if necessary
-      // NOTE: depending on SpacingBetweenSlices, multi-frame images
-      // like nuclear medicine images might have to be flipped back-to-front
-      if (flipImage)
+      // iterate through all color planes in the slice
+      for (int pIdx = 0; pIdx < numPlanes; pIdx++)
         {
-        int numRows = extent[3] - extent[2] + 1;
-        int halfRows = numRows/2;
-        for (int yIdx = 0; yIdx < halfRows; yIdx++)
+        // flip the data if necessary
+        if (flipImage)
           {
-          char *row1 = bufferPtr + yIdx*rowSize;
-          char *row2 = bufferPtr + (numRows-yIdx-1)*rowSize;
-          memcpy(rowBuffer, row1, rowSize);
-          memcpy(row1, row2, rowSize);
-          memcpy(row2, rowBuffer, rowSize);
+          int numRows = extent[3] - extent[2] + 1;
+          int halfRows = numRows/2;
+          for (int yIdx = 0; yIdx < halfRows; yIdx++)
+            {
+            char *row1 = bufferPtr + yIdx*rowSize;
+            char *row2 = bufferPtr + (numRows-yIdx-1)*rowSize;
+            memcpy(rowBuffer, row1, rowSize);
+            memcpy(row1, row2, rowSize);
+            memcpy(row2, rowBuffer, rowSize);
+            }
           }
-        }
 
-      // convert planes into vector components
-      if (sliceToComponent)
-        {
-        const char *tmpInPtr = bufferPtr;
-        char *tmpOutPtr = slicePtr;
-        int m = sliceSize/pixelSize;
-        for (int i = 0; i < m; i++)
+        // convert planes into vector components
+        if (planarToPacked)
           {
-          vtkIdType n = filePixelSize;
-          do { *tmpOutPtr++ = *tmpInPtr++; } while (--n);
-          tmpOutPtr += pixelSize - filePixelSize;
+          const char *tmpInPtr = bufferPtr;
+          char *tmpOutPtr = slicePtr;
+          int m = sliceSize/pixelSize;
+          for (int i = 0; i < m; i++)
+            {
+            vtkIdType n = filePixelSize;
+            do { *tmpOutPtr++ = *tmpInPtr++; } while (--n);
+            tmpOutPtr += pixelSize - filePixelSize;
+            }
+          slicePtr += filePixelSize;
           }
-        slicePtr += filePixelSize;
-        }
 
-      bufferPtr += sliceSize;
+        bufferPtr += filePlaneSize;
+        }
       }
     }
 

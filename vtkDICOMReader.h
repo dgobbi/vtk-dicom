@@ -207,8 +207,12 @@ protected:
 
   // Description:
   // The number of packed pixel components in the input file.
-  // This is for packed, rather than planar. components.
+  // This is for packed, rather than planar, components.
   int NumberOfPackedComponents;
+
+  // Description:
+  // The number of color planes in the file.
+  int NumberOfPlanarComponents;
 
   // Description:
   // Time dimension variables.
