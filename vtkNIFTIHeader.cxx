@@ -317,6 +317,12 @@ void vtkNIFTIHeader::SetIntentName(const char *val)
 }
 
 //----------------------------------------------------------------------------
+void vtkNIFTIHeader::SetDescrip(const char *val)
+{
+  this->SetStringValue(this->Descrip, val, 80);
+}
+
+//----------------------------------------------------------------------------
 void vtkNIFTIHeader::SetAuxFile(const char *val)
 {
   this->SetStringValue(this->AuxFile, val, 24);

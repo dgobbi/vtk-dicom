@@ -145,12 +145,6 @@ public:
   vtkTypeInt64 GetVoxOffset() { return this->VoxOffset; }
 
   // Description:
-  // Get a null-terminated file descriptor, this usually gives the
-  // name of the software that wrote the file. It will have a maximum
-  // length of 80 characters.
-  const char *GetDescrip() { return this->Descrip; }
-
-  // Description:
   // Get the data type.
   int GetDataType() { return this->DataType; }
 
@@ -238,6 +232,13 @@ public:
   // and slice encode dimensions for MRI acquisitions.
   vtkSetMacro(DimInfo, int);
   int GetDimInfo() { return this->DimInfo; }
+
+  // Description:
+  // Get a null-terminated file descriptor, this usually gives the
+  // name of the software that wrote the file. It will have a maximum
+  // length of 80 characters.
+  void SetDescrip(const char *descrip);
+  const char *GetDescrip() { return this->Descrip; }
 
   // Description:
   // Get an auxilliary file, e.g. a color table, that is associated
