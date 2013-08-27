@@ -384,6 +384,8 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
         }
       lastIter = iter;
       }
+
+    // compute the number of unique locations
     this->TimeDimension = (slicesPerLocation > 0 ? slicesPerLocation : 0);
     int locations = static_cast<int>(info.size());
     if (slicesPerLocation > 0 && this->TimeAsVector)
@@ -396,23 +398,31 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
       }
 
     // recompute slice spacing from position info
+    double locDiff =
+      (info.back().ComputedLocation - info.front().ComputedLocation)/
+      static_cast<double>(locations - 1);
+    if (locDiff > 0)
       {
-      double locDiff =
-        (info.back().ComputedLocation - info.front().ComputedLocation)/
-        static_cast<double>(locations - 1);
-      if (locDiff > 0)
-        {
-        spacingBetweenSlices *= locDiff;
-        }
-      else
-        {
-        canSortByPosition = false;
-        }
+      spacingBetweenSlices *= locDiff;
       }
+    else
+      {
+      canSortByPosition = false;
+      }
+    }
+  else
+    {
+    this->TimeDimension = (numFiles > 1 ? numFiles : 0);
     }
 
   // For cardiac images, time sorting can be done with this tag:
   // - TriggerTime (0018,1060)
+  // - CardiacNumberOfImages (0018,1090)
+
+  // For functional images, the following tags can be used:
+  // - NumberOfTemporalPositions (0020,0105)
+  // - TemporalPositionIdentifier (0020,0100)
+  // - TemporalResolution (0020,0110)
 
   // If the image has a StackID, then dimensional sorting
   // might be possible with these tags:

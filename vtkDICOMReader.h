@@ -61,9 +61,14 @@ public:
   // Get an array that converts slice index to input file index.
   // If the data has multiple scalar components, then this will
   // be a two-dimensional array and calling array->GetComponent(i,j)
-  // will return the file index for slice i and scalar component j.
-  // If you used SetFileNames() to provide a list of files to the reader,
-  // use this array to find out which file provided which slice.
+  // will return the file index for slice i and scalar component j
+  // for monochrome images, or for slice i and scalar component 3*j
+  // for RGB images (or more precisely, at scalar component N*j where
+  // N is the SamplesPerPixel value from the DICOM metadata).  If the
+  // data has just one component, then use j=0. If you used SetFileNames()
+  // to provide a list of files to the reader, then use this array to
+  // find out which file provided which slice, or to index into the
+  // MetaData object to get the metadata for a particular slice.
   vtkIntArray *GetFileIndexArray() { return this->FileIndexArray; }
 
   // Description:
