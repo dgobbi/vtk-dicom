@@ -302,6 +302,10 @@ void vtkNIFTIHeader::PrintSelf(ostream& os, vtkIndent indent)
 //----------------------------------------------------------------------------
 void vtkNIFTIHeader::SetStringValue(char *x, const char *y, size_t n)
 {
+  if (y == 0)
+    {
+    y = "";
+    }
   if (strncmp(x, y, n) != 0)
     {
     strncpy(x, y, n);
