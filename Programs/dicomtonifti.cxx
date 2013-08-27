@@ -531,6 +531,7 @@ void dicomtonifti_convert_one(
   vtkSmartPointer<vtkDICOMReader> reader =
     vtkSmartPointer<vtkDICOMReader>::New();
   reader->SetMemoryRowOrderToFileNative();
+  reader->TimeAsVectorOn();
   reader->SetFileNames(a);
   reader->Update();
   dicomtonifti_check_error(reader);
@@ -715,8 +716,8 @@ void dicomtonifti_convert_one(
     meta->GetAttributeValue(DC::StudyID).AsString();
   descrip = descrip.substr(0, 79);
 
-  // assume the units are millimetres/seconds
-  hdr->SetXYZTUnits(0xA);
+  // assume the units are millimetres/milliseconds
+  hdr->SetXYZTUnits(0x12);
 
   // get the phase encoding direction
   std::string phase =
@@ -768,10 +769,10 @@ void dicomtonifti_convert_one(
       double m = hdr->GetSclSlope();
       double b = hdr->GetSclInter();
       if (m == 0)
-         {
-         m = 1.0;
-         b = 0.0;
-         }
+        {
+        m = 1.0;
+        b = 0.0;
+        }
       hdr->SetCalMin((l - 0.5*w)*m + b);
       hdr->SetCalMax((l + 0.5*w)*m + b);
       }
@@ -803,6 +804,11 @@ void dicomtonifti_convert_one(
   writer->SetDescription(descrip.c_str());
   writer->SetNIFTIHeader(hdr);
   writer->SetFileName(outfile);
+  if (reader->GetTimeDimension() > 1)
+    {
+    writer->SetTimeDimension(reader->GetTimeDimension());
+    writer->SetTimeSpacing(reader->GetTimeSpacing());
+    }
   if ((options->no_slice_reordering && slicesReordered) ||
       options->fsl)
     {
