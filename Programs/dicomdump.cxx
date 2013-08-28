@@ -30,7 +30,7 @@
 #define MAX_LENGTH 78
 
 // remove path portion of filename
-const char *basename(const char *filename)
+const char *fileBasename(const char *filename)
 {
   const char *cp = filename + strlen(filename);
   while (cp != filename && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
 
   if (argc < 2)
     {
-    printf("usage: %s file1.dcm [file2.dcm ...]\n", basename(argv[0]));
+    printf("usage: %s file1.dcm [file2.dcm ...]\n", fileBasename(argv[0]));
     return rval;
     }
 
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
       vtkStringArray *a = sorter->GetFileNamesForSeries(k);
       vtkIdType l = a->GetNumberOfValues();
       std::string fname = a->GetValue(0);
-      printf("=========== %s =========\n", basename(fname.c_str()));
+      printf("=========== %s =========\n", fileBasename(fname.c_str()));
 
       data->Clear();
       data->SetNumberOfInstances(static_cast<int>(l));

@@ -25,7 +25,7 @@
 #include <stdlib.h>
 
 // remove path portion of filename
-const char *basename(const char *filename)
+const char *niftidump_basename(const char *filename)
 {
   const char *cp = filename + strlen(filename);
   while (cp != filename && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
   if (argc < 2)
     {
-    printf("usage: %s file.nii\n", basename(argv[0]));
+    printf("usage: %s file.nii\n", niftidump_basename(argv[0]));
     return rval;
     }
 
