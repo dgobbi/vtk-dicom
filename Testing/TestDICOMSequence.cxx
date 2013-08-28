@@ -124,5 +124,51 @@ int main(int argc, char *argv[])
   // check that there were two elements in the ReferencedSeriesSequence item
   TestAssert(fullcount == 2);
 
+  // test appending to a sequence
+  vtkDICOMSequence seq3;
+
+  TestAssert(seq3.GetNumberOfItems() == 0);
+
+  vtkDICOMValue val3 = seq3;
+
+  TestAssert(val3.GetVR() == vtkDICOMVR::SQ);
+  TestAssert(val3.GetVL() == 0xffffffffu);
+  TestAssert(val3.GetNumberOfValues() == 0);
+
+  for (int i = 0; i < 1; i++)
+    {
+    vtkDICOMItem item;
+    item.SetAttributeValue(DC::SeriesInstanceUID,
+      vtkDICOMValue(vtkDICOMVR::UI,
+        "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
+    seq3.AddItem(item);
+    }
+
+  TestAssert(seq3.GetNumberOfItems() == 1);
+
+  // previously assigned value should be unchanged
+  TestAssert(val3.GetVR() == vtkDICOMVR::SQ);
+  TestAssert(val3.GetVL() == 0xffffffffu);
+  TestAssert(val3.GetNumberOfValues() == 0);
+
+  // update the value
+  val3 = seq3;
+
+  TestAssert(val3.GetVR() == vtkDICOMVR::SQ);
+  TestAssert(val3.GetVL() == 0xffffffffu);
+  TestAssert(val3.GetNumberOfValues() == 1);
+
+  seq3.Clear();
+
+  TestAssert(val3.GetVR() == vtkDICOMVR::SQ);
+  TestAssert(val3.GetVL() == 0xffffffffu);
+  TestAssert(val3.GetNumberOfValues() == 1);
+
+  val3 = seq3;
+
+  TestAssert(val3.GetVR() == vtkDICOMVR::SQ);
+  TestAssert(val3.GetVL() == 0xffffffffu);
+  TestAssert(val3.GetNumberOfValues() == 0);
+
   return rval;
 }

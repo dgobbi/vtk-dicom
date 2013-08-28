@@ -31,14 +31,16 @@ class VTK_DICOM_EXPORT vtkDICOMSequence
 {
 public:
   //! Construct a growable sequence with no items.
-  vtkDICOMSequence() {}
+  vtkDICOMSequence() {
+    this->V.AppendInit<vtkDICOMItem>(vtkDICOMVR::SQ); }
 
   //! Construct a sequence of fixed size.
   explicit vtkDICOMSequence(unsigned int n) {
-    if (n) { this->V.AllocateSequenceData(vtkDICOMVR::SQ, n); } }
+    this->V.AllocateSequenceData(vtkDICOMVR::SQ, n); }
 
   //! Clear a sequence, remove its contents and make it empty.
-  void Clear() { this->V.Clear(); }
+  void Clear() {
+    this->V.AppendInit<vtkDICOMItem>(vtkDICOMVR::SQ); }
 
   //! Add an item to the sequence.
   /*!
@@ -48,7 +50,7 @@ public:
    *  sequence rather than a fixed-size sequence.
    */
   void AddItem(const vtkDICOMItem& item) {
-    this->V.AppendValue(vtkDICOMVR::SQ, item); }
+    this->V.AppendValue(item); }
 
   //! Get the number of items in the sequence.
   unsigned int GetNumberOfItems() const {

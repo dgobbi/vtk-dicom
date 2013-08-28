@@ -51,6 +51,10 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
   if (d.IsValid())
     {
     name = d.GetName();
+    if (d.GetVR() != v.GetVR())
+      {
+      printf("VR mismatch! %s != %s %s\n", vr, d.GetVR().GetText(), name);
+      }
     }
 
   // allow multiple values (i.e. for each image in series)
@@ -148,13 +152,15 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
     if (vn > 1)
       {
       printf("%s%s  %4.4u",
-        (vi == 0 ? " (multiple values)\n" : ""), indent, vi + 1); 
+        (vi == 0 ? " (multiple values)\n" : ""), indent, vi + 1);
       }
     if (v.GetVR() == vtkDICOMVR::SQ)
       {
-      printf(" (sequence)\n");
       unsigned int m = v.GetNumberOfValues();
       const vtkDICOMItem *items = v.GetSequenceData();
+      printf(" (%u %s%s)\n",
+        m, (m == 1 ? "item" : "items"),
+       (v.GetVL() == 0xffffffffu ? ", delimited" : ""));
       for (unsigned int j = 0; j < m; j++)
         {
         printf("%s%s---- SQ Item %04u ----\n",
@@ -170,7 +176,7 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
       }
     else if (v.GetVL() == 0xffffffffu)
       {
-      printf(" [%s] (unknown)\n", s.c_str());
+      printf(" [%s] (delimited)\n", s.c_str());
       }
     else
       {

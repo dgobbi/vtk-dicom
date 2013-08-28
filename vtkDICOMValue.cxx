@@ -737,17 +737,27 @@ void vtkDICOMValue::FreeValue(Value *v)
     ValueFree(v);
     }
 }
+//----------------------------------------------------------------------------
+template<class T>
+void vtkDICOMValue::AppendInit(vtkDICOMVR vr)
+{
+  this->Clear();
+  this->Allocate<T>(vr, 2);
+  // mark as empty but growable
+  this->V->NumberOfValues = 0;
+  this->V->VL = 0xffffffff;
+}
+
+template void vtkDICOMValue::AppendInit<vtkDICOMItem>(vtkDICOMVR vr);
 
 //----------------------------------------------------------------------------
 template<class T>
-void vtkDICOMValue::AppendValue(vtkDICOMVR vr, const T &item)
+void vtkDICOMValue::AppendValue(const T &item)
 {
-  // create value if it doesn't exist yet
+  // do nothing if not initialized yet
   if (this->V == 0)
     {
-    this->Allocate<T>(vr, 2);
-    this->V->NumberOfValues = 0;
-    this->V->VL = 0xffffffff;
+    return;
     }
 
   T *ptr = static_cast<vtkDICOMValue::ValueT<T> *>(this->V)->Data;
@@ -755,7 +765,6 @@ void vtkDICOMValue::AppendValue(vtkDICOMVR vr, const T &item)
   unsigned int n = this->V->NumberOfValues;
   unsigned int nn = 0;
   // reallocate if not unique reference, or not yet growable
-  assert(this->V->ReferenceCount == 1);
   if (this->V->ReferenceCount != 1 || this->V->VL != 0xffffffff)
     {
     // get next power of two that is greater than n
@@ -773,7 +782,7 @@ void vtkDICOMValue::AppendValue(vtkDICOMVR vr, const T &item)
     vtkDICOMValue::Value *v = this->V;
     ++(v->ReferenceCount);
     const T *cptr = ptr;
-    ptr = this->Allocate<T>(vr, nn);
+    ptr = this->Allocate<T>(v->VR, nn);
     this->V->NumberOfValues = n;
     for (unsigned int i = 0; i < n; i++)
       {
@@ -792,10 +801,7 @@ void vtkDICOMValue::AppendValue(vtkDICOMVR vr, const T &item)
 }
 
 template void vtkDICOMValue::AppendValue<vtkDICOMItem>(
-  vtkDICOMVR vr, const vtkDICOMItem& item);
-
-template void vtkDICOMValue::AppendValue<unsigned short>(
-  vtkDICOMVR vr, const unsigned short& item);
+  const vtkDICOMItem& item);
 
 //----------------------------------------------------------------------------
 template<class T>
@@ -824,9 +830,6 @@ void vtkDICOMValue::SetValue(unsigned int i, const T &item)
 
 template void vtkDICOMValue::SetValue<vtkDICOMItem>(
   unsigned int i, const vtkDICOMItem& item);
-
-template void vtkDICOMValue::SetValue<unsigned short>(
-  unsigned int i, const unsigned short& item);
 
 //----------------------------------------------------------------------------
 const char *vtkDICOMValue::GetCharData() const

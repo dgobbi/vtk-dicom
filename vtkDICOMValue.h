@@ -296,9 +296,13 @@ private:
   template<class T>
   void CreateValue(vtkDICOMVR vr, const T *data, const T *end);
 
+  //! Internal templated method to initialize for future appends.
+  template<class T>
+  void AppendInit(vtkDICOMVR vr);
+
   //! Internal templated method to grow the value.
   template<class T>
-  void AppendValue(vtkDICOMVR vr, const T &item);
+  void AppendValue(const T &item);
 
   //! Internal templated method to set a value.
   template<class T>
