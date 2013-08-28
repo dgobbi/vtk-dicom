@@ -551,7 +551,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
       {
       double firstLocation = info.front().ComputedLocation;
       double finalLocation = info.back().ComputedLocation;
-      locDiff = (firstLocation - finalLocation)/(locations - 1);
+      locDiff = (finalLocation - firstLocation)/(locations - 1);
       }
     if (locDiff > 0)
       {
