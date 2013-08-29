@@ -84,6 +84,15 @@ public:
   //! Get the filename associated with the error code.
   const char *GetInternalFileName() { return this->InternalFileName; }
 
+  //! If this is On, files with no pixel data will be skipped.
+  /*!
+   *  This is On by default.  Some files, such as dicom directory files,
+   *  have metadata but have no images.  Usually we want to skip these.
+   */
+  vtkSetMacro(RequirePixelData, int);
+  vtkBooleanMacro(RequirePixelData, int);
+  int GetRequirePixelData() { return this->RequirePixelData; }
+
 protected:
   vtkDICOMSorter();
   ~vtkDICOMSorter();
@@ -91,6 +100,7 @@ protected:
   const char *InputFileName;
   vtkStringArray *InputFileNames;
   vtkStringArray *OutputFileNames;
+  int RequirePixelData;
 
   vtkTimeStamp UpdateTime;
   unsigned long ErrorCode;

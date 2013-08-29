@@ -207,6 +207,7 @@ int main(int argc, char *argv[])
   // sort the files by study and series
   vtkSmartPointer<vtkDICOMSorter> sorter =
     vtkSmartPointer<vtkDICOMSorter>::New();
+  sorter->RequirePixelDataOff();
   sorter->SetInputFileNames(files);
   sorter->Update();
 

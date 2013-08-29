@@ -78,6 +78,7 @@ vtkDICOMSorter::vtkDICOMSorter()
   this->Studies->SetNumberOfComponents(2);
   this->ErrorCode = 0;
   this->InternalFileName = 0;
+  this->RequirePixelData = 1;
 }
 
 //----------------------------------------------------------------------------
@@ -109,6 +110,9 @@ void vtkDICOMSorter::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "InputFileName: "
      << (inputFileName ? inputFileName : "(NULL)") << "\n";
   os << indent << "InputFileNames: (" << this->GetInputFileNames() << ")\n";
+
+  os << indent << "RequirePixelData: "
+     << (this->RequirePixelData ? "On\n" : "Off\n");
 
   os << indent << "NumberOfSeries: " << this->GetNumberOfSeries() << "\n";
   os << indent << "NumberOfStudies: " << this->GetNumberOfStudies() << "\n";
@@ -188,9 +192,15 @@ int vtkDICOMSorter::CompareUIDs(const char *u1, const char *u2)
 {
   int r = 0;
 
-  // if one or both are the empty string
-  if (*u1 == 0 || *u2 == 0)
+  if (u1 == 0 || u2 == 0)
     {
+    // if one or both are null
+    r = (u2 == 0 ? r : -1);
+    r = (u1 == 0 ? r : 1);
+    }
+  else if (*u1 == 0 || *u2 == 0)
+    {
+    // if one or both are the empty string
     r = (*u2 == 0 ? r : -1);
     r = (*u1 == 0 ? r : 1);
     }
@@ -284,7 +294,10 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
         {
         this->ErrorCode = parser->GetErrorCode();
         }
-      continue;
+      if (this->ErrorCode || this->RequirePixelData)
+        {
+        continue;
+        }
       }
 
     // Insert the file into the sorted list
@@ -297,8 +310,6 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
 
     const char *studyUID = fileInfo.StudyUID.GetCharData();
     const char *seriesUID = fileInfo.SeriesUID.GetCharData();
-    studyUID = (studyUID ? studyUID : "");
-    seriesUID = (seriesUID ? seriesUID : "");
 
     bool foundSeries = false;
     for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
