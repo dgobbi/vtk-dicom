@@ -72,6 +72,14 @@ public:
   vtkIntArray *GetFileIndexArray() { return this->FileIndexArray; }
 
   // Description:
+  // Get an array that converts slice index to frame index.
+  // The purpose of this array is to identify individual frames in
+  // multi-frame DICOM files.  The dimensions of this array are identical
+  // to the FileIndexArray.  Use FileIndexArray to identify the file,
+  // then use FrameIndexArray to identify the frame within that file.
+  vtkIntArray *GetFrameIndexArray() { return this->FrameIndexArray; }
+
+  // Description:
   // Get the meta data for the DICOM files.
   // The GetAttributeValue() method of vtkDICOMMataData takes an optional
   // index, which specifies the file to get the attribute from.  If you
@@ -196,6 +204,10 @@ protected:
   // Description:
   // An array to convert slice indices to input files
   vtkIntArray *FileIndexArray;
+
+  // Description:
+  // An array to convert slice indices to input frames
+  vtkIntArray *FrameIndexArray;
 
   // Description:
   // The row order to use when storing the data in memory.

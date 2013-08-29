@@ -57,6 +57,7 @@ vtkDICOMReader::vtkDICOMReader()
   this->RescaleIntercept = 0.0;
   this->Parser = 0;
   this->FileIndexArray = vtkIntArray::New();
+  this->FrameIndexArray = vtkIntArray::New();
   this->FileOffsetArray = 0;
   this->MetaData = vtkDICOMMetaData::New();
   this->PatientMatrix = vtkMatrix4x4::New();
@@ -93,6 +94,10 @@ vtkDICOMReader::~vtkDICOMReader()
     {
     this->FileIndexArray->Delete();
     }
+  if (this->FrameIndexArray)
+    {
+    this->FrameIndexArray->Delete();
+    }
   if (this->MetaData)
     {
     this->MetaData->Delete();
@@ -119,6 +124,7 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
     }
 
   os << indent << "FileIndexArray: " << this->FileIndexArray << "\n";
+  os << indent << "FrameIndexArray: " << this->FrameIndexArray << "\n";
 
   os << indent << "TimeAsVector: "
      << (this->TimeAsVector ? "On\n" : "Off\n");
@@ -227,46 +233,95 @@ int vtkDICOMReader::CanReadFile(const char *filename)
 //----------------------------------------------------------------------------
 namespace {
 
-// a class for storing multi-frame information
-struct vtkDICOMReaderFrameInfo
-{
-  int NumberOfFrames;
-  int NumberOfSlices;
-  int NumberOfTimeSlots;
-
-  vtkDICOMReaderFrameInfo() :
-    NumberOfFrames(0), NumberOfSlices(0), NumberOfTimeSlots(0) {}
-
-  vtkDICOMReaderFrameInfo(int i, int j, int k) :
-    NumberOfFrames(i), NumberOfSlices(j), NumberOfTimeSlots(k) {}
-};
-
 // a class and methods for sorting the files
 struct vtkDICOMReaderSortInfo
 {
   int FileNumber;
+  int FrameNumber;
   int InstanceNumber;
+  int StackID;
   double ComputedLocation;
+  double ComputedTime;
 
   vtkDICOMReaderSortInfo() :
-    FileNumber(0), InstanceNumber(0), ComputedLocation(0.0) {}
+    FileNumber(0), FrameNumber(0), InstanceNumber(0), StackID(0),
+    ComputedLocation(0.0), ComputedTime(0.0) {}
 
-  vtkDICOMReaderSortInfo(int i, int j, double l) :
-    FileNumber(i), InstanceNumber(j), ComputedLocation(l) {}
+  vtkDICOMReaderSortInfo(int i, int j, int k, int s, double l, double t) :
+    FileNumber(i), FrameNumber(j), InstanceNumber(k), StackID(s),
+    ComputedLocation(l), ComputedTime(t) {}
 };
 
+// for sorting by by instance number
 bool vtkDICOMReaderCompareInstance(
   const vtkDICOMReaderSortInfo &si1, const vtkDICOMReaderSortInfo &si2)
 {
   return (si1.InstanceNumber < si2.InstanceNumber);
 }
 
+// for sorting by spatial location
 bool vtkDICOMReaderCompareLocation(
   const vtkDICOMReaderSortInfo &si1, const vtkDICOMReaderSortInfo &si2)
 {
   // locations must differ by at least the tolerance
   const double locationTolerance = 1e-3;
   return (si1.ComputedLocation + locationTolerance < si2.ComputedLocation);
+}
+
+// compute spatial location from position and orientation
+double vtkDICOMReaderComputeLocation(
+  const vtkDICOMValue& pv, const vtkDICOMValue& ov,
+  double checkNormal[4], bool *checkPtr)
+{
+  double location = 0.0;
+
+  if (pv.GetNumberOfValues() != 3 || ov.GetNumberOfValues() != 6)
+    {
+    *checkPtr = false;
+    }
+
+  if (*checkPtr)
+    {
+    double orientation[6], normal[3], position[3];
+    pv.GetValues(position, position+3);
+    ov.GetValues(orientation, orientation+6);
+
+    // compute the cross product to get the slice normal
+    vtkMath::Cross(&orientation[0], &orientation[3], normal);
+    location = vtkMath::Dot(normal, position);
+
+    if (checkNormal[3] == 0)
+      {
+      // save the normal of the first slice for later checks
+      checkNormal[0] = normal[0];
+      checkNormal[1] = normal[1];
+      checkNormal[2] = normal[2];
+      checkNormal[3] = 1.0;
+      }
+    else
+      {
+      // make sure all slices have the same normal
+      double a = vtkMath::Dot(normal, checkNormal);
+      double b = vtkMath::Dot(normal, normal);
+      double c = vtkMath::Dot(checkNormal, checkNormal);
+      // compute the sine of the angle between the normals
+      // (actually compute the square of the sine, it's easier)
+      double d = 1.0;
+      if (b > 0 && c > 0)
+        {
+        d = 1.0 - (a*a)/(b*c);
+        }
+      // the tolerance is in radians (small angle approximation)
+      const double directionTolerance = 1e-3;
+      if (d > directionTolerance*directionTolerance)
+        {
+        // not all slices have the same normal
+        *checkPtr = false;
+        }
+      }
+    }
+
+  return location;
 }
 
 // a simple struct to provide info for each file to be read
@@ -333,54 +388,11 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
 
   vtkDICOMMetaData *meta = this->MetaData;
   int numFiles = meta->GetNumberOfInstances();
-  std::vector<vtkDICOMReaderSortInfo> info(numFiles);
-  std::vector<vtkDICOMReaderFrameInfo> frameInfo(numFiles);
-
-  // check for multi-frame information
-  double frameTimeSpacing = 1.0;
-  for (int i = 0; i < numFiles; i++)
-    {
-    // check for multi-frame module
-    int numberOfFrames = meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
-    int numberOfSlices = 1;
-    int numberOfTimeSlots = 1;
-    if (numberOfFrames > 1)
-      {
-      vtkDICOMValue fip = meta->GetAttributeValue(i, DC::FrameIncrementPointer);
-      unsigned int n = fip.GetNumberOfValues();
-      for (unsigned int j = 0; j < n; j++)
-        {
-        vtkDICOMTag tag = fip.GetTag(j);
-        if (tag == DC::FrameTime)
-          {
-          frameTimeSpacing = meta->GetAttributeValue(i, tag).AsDouble();
-          }
-        else if (tag == DC::FrameTimeVector)
-          {
-          // get average interval time from time vector
-          vtkDICOMValue timeVector = meta->GetAttributeValue(i, tag);
-          unsigned int m = timeVector.GetNumberOfValues();
-          double timeSum = 0.0;
-          for (unsigned int k = 1; k < m; k++)
-            {
-            timeSum += timeVector.GetDouble(k);
-            }
-          if (timeSum > 0 && m > 1)
-            {
-            frameTimeSpacing = timeSum/(m - 1);
-            }
-          }
-        }
-      }
-    frameInfo[i] = vtkDICOMReaderFrameInfo(
-      numberOfFrames, numberOfSlices, numberOfTimeSlots);
-    }
+  std::vector<vtkDICOMReaderSortInfo> info;
 
   // important position-related variables
-  double checkNormal[3] = { 0.0, 0.0, 0.0 };
+  double checkNormal[4] = { 0.0, 0.0, 0.0, 0.0 };
   bool canSortByPosition = true;
-
-  // we want to divide locations by this value before sorting
   double spacingBetweenSlices =
     meta->GetAttributeValue(DC::SpacingBetweenSlices).AsDouble();
   if (spacingBetweenSlices <= 0)
@@ -388,68 +400,100 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
     spacingBetweenSlices = 1.0;
     }
 
-  for (int i = 0; i < numFiles; i++)
+  if (meta->HasAttribute(DC::SharedFunctionalGroupsSequence))
     {
-    // check for valid Image Plane Module information
-    double location = 0;
-    vtkDICOMValue pv = meta->GetAttributeValue(i, DC::ImagePositionPatient);
-    vtkDICOMValue ov = meta->GetAttributeValue(i, DC::ImageOrientationPatient);
-    if (pv.GetNumberOfValues() == 3 && ov.GetNumberOfValues() == 6)
+    // files have enhanced frame information
+    canSortByPosition = false;
+    for (int i = 0; i < numFiles; i++)
       {
-      double orientation[6], normal[3], position[3];
-      pv.GetValues(position, position+3);
-      ov.GetValues(orientation, orientation+6);
-
-      // compute the cross product to get the slice normal
-      vtkMath::Cross(&orientation[0], &orientation[3], normal);
-      location = vtkMath::Dot(normal, position)/spacingBetweenSlices;
-
-      if (i == 0)
+      int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
+      int numberOfFrames =
+        meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
+      if (numberOfFrames <= 0)
         {
-        // save the normal of the first slice for later checks
-        checkNormal[0] = normal[0];
-        checkNormal[1] = normal[1];
-        checkNormal[2] = normal[2];
+        numberOfFrames = 1;
+        }
+      for (int k = 0; k < numberOfFrames; k++)
+        {
+        info.push_back(
+          vtkDICOMReaderSortInfo(i, inst, 0, 0, i, 0.0));
+        }
+      }
+    }
+  else
+    {
+    for (int i = 0; i < numFiles; i++)
+      {
+      // get the instance number
+      int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
+
+      // check for valid Image Plane Module information
+      double location = 0;
+      vtkDICOMValue pv = meta->GetAttributeValue(
+        i, DC::ImagePositionPatient);
+      vtkDICOMValue ov = meta->GetAttributeValue(
+        i, DC::ImageOrientationPatient);
+
+      location = vtkDICOMReaderComputeLocation(
+        pv, ov, checkNormal, &canSortByPosition);
+      location /= spacingBetweenSlices;
+
+      int numberOfFrames =
+        meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
+      if (numberOfFrames <= 1)
+        {
+        info.push_back(vtkDICOMReaderSortInfo(i, inst, 0, 0, location, 0.0));
         }
       else
         {
-        // make sure all slices have the same normal
-        double a = vtkMath::Dot(normal, checkNormal);
-        double b = vtkMath::Dot(normal, normal);
-        double c = vtkMath::Dot(checkNormal, checkNormal);
-        // compute the sine of the angle between the normals
-        // (actually compute the square of the sine, it's easier)
-        double d = 1.0;
-        if (b > 0 && c > 0)
+        // multi-frame image
+        double frameTimeSpacing = 1.0;
+        vtkDICOMValue timeVector;
+        vtkDICOMValue fip =
+          meta->GetAttributeValue(i, DC::FrameIncrementPointer);
+        unsigned int n = fip.GetNumberOfValues();
+        for (unsigned int j = 0; j < n; j++)
           {
-          d = 1.0 - (a*a)/(b*c);
+          vtkDICOMTag tag = fip.GetTag(j);
+          if (tag == DC::FrameTime)
+            {
+            frameTimeSpacing = meta->GetAttributeValue(i, tag).AsDouble();
+            }
+          else if (tag == DC::FrameTimeVector)
+            {
+            vtkDICOMValue v = meta->GetAttributeValue(i, tag);
+            if (static_cast<int>(v.GetNumberOfValues()) == numberOfFrames)
+              {
+              timeVector = v;
+              }
+            }
           }
-        // the tolerance is in radians (small angle approximation)
-        const double directionTolerance = 1e-3;
-        if (d > directionTolerance*directionTolerance)
+
+        double t = 0.0;
+        for (int k = 0; k < numberOfFrames; k++)
           {
-          // not all slices have the same normal
-          canSortByPosition = false;
+          if (k > 0)
+            {
+            if (static_cast<int>(timeVector.GetNumberOfValues()) > k)
+              {
+              frameTimeSpacing = timeVector.GetDouble(k);
+              }
+            t += frameTimeSpacing;
+            }
+          info.push_back(
+            vtkDICOMReaderSortInfo(i, inst, 0, 0, location, t));
           }
         }
       }
-    else
-      {
-      // Image Plane Module information is not present
-      canSortByPosition = false;
-      }
-
-    // get the instance number, build the vector for sorting
-    int j = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
-    info[i] = vtkDICOMReaderSortInfo(i, j, location);
     }
 
   // sort by instance first
   std::stable_sort(info.begin(), info.end(), vtkDICOMReaderCompareInstance);
 
   // sort by position, count the number of slices per location
+  int numSlices = static_cast<int>(info.size());
   int slicesPerLocation = 0;
-  if (canSortByPosition && numFiles > 1)
+  if (canSortByPosition && numSlices > 1)
     {
     std::stable_sort(info.begin(), info.end(), vtkDICOMReaderCompareLocation);
 
@@ -536,7 +580,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
     }
 
   // compute the number of slices in the output image
-  int trueLocations = numFiles/slicesPerLocation;
+  int trueLocations = numSlices/slicesPerLocation;
   int locations = trueLocations;
   if (temporalPositions > 0 && this->TimeAsVector == 0)
     {
@@ -561,7 +605,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
 
   // write out the sorted indices
   bool flipOrder = (this->MemoryRowOrder == vtkDICOMReader::BottomUp);
-  int filesPerOutputSlice = numFiles/locations;
+  int filesPerOutputSlice = numSlices/locations;
   int locationsPerTrueLocation = locations/trueLocations;
   sorted->SetNumberOfComponents(filesPerOutputSlice);
   sorted->SetNumberOfTuples(locations);
