@@ -51,7 +51,11 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
   if (d.IsValid())
     {
     name = d.GetName();
-    if (d.GetVR() != v.GetVR())
+    if (d.GetVR() != v.GetVR() &&
+        !(d.GetVR() == vtkDICOMVR::XS &&
+          (v.GetVR() == vtkDICOMVR::SS || v.GetVR() == vtkDICOMVR::US)) &&
+        !(d.GetVR() == vtkDICOMVR::OX &&
+          (v.GetVR() == vtkDICOMVR::OB || v.GetVR() == vtkDICOMVR::OW)))
       {
       printf("VR mismatch! %s != %s %s\n", vr, d.GetVR().GetText(), name);
       }
