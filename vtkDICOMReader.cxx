@@ -15,6 +15,8 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMParser.h"
 #include "vtkDICOMDictionary.h"
+#include "vtkDICOMSequence.h"
+#include "vtkDICOMItem.h"
 
 #include "vtkObjectFactory.h"
 #include "vtkImageData.h"
@@ -268,6 +270,37 @@ bool vtkDICOMReaderCompareLocation(
   return (si1.ComputedLocation + locationTolerance < si2.ComputedLocation);
 }
 
+// get an attribute value from a sequence in a sequence
+const vtkDICOMValue& vtkDICOMReaderGetAttributeValue(
+  const vtkDICOMSequence& seq, unsigned int i,
+  vtkDICOMTag stag, vtkDICOMTag vtag)
+{
+  vtkDICOMItem item;
+  if (i < seq.GetNumberOfItems())
+    {
+    vtkDICOMSequence tseq = seq.GetItem(i).GetAttributeValue(stag);
+    if (tseq.GetNumberOfItems() > 0)
+      {
+      item = tseq.GetItem(0);
+      }
+    }
+  return item.GetAttributeValue(vtag);
+}
+
+// get an attribute value for a particular frame
+const vtkDICOMValue& vtkDICOMReaderGetFrameAttributeValue(
+  const vtkDICOMSequence& frameSeq, const vtkDICOMSequence& sharedSeq,
+  unsigned int i, vtkDICOMTag stag, vtkDICOMTag vtag)
+{
+  const vtkDICOMValue& v =
+    vtkDICOMReaderGetAttributeValue(frameSeq, i, stag, vtag);
+  if (v.IsValid())
+    {
+    return v;
+    }
+  return vtkDICOMReaderGetAttributeValue(sharedSeq, 0, stag, vtag);
+}
+
 // compute spatial location from position and orientation
 double vtkDICOMReaderComputeLocation(
   const vtkDICOMValue& pv, const vtkDICOMValue& ov,
@@ -403,20 +436,40 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
   if (meta->HasAttribute(DC::SharedFunctionalGroupsSequence))
     {
     // files have enhanced frame information
-    canSortByPosition = false;
     for (int i = 0; i < numFiles; i++)
       {
       int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
       int numberOfFrames =
         meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
+      // need a more convenient way of dealing with sequences...
+      vtkDICOMSequence frameSeq =
+        meta->GetAttributeValue(i, DC::PerFrameFunctionalGroupsSequence);
+      vtkDICOMSequence sharedSeq =
+        meta->GetAttributeValue(i, DC::SharedFunctionalGroupsSequence);
+
       if (numberOfFrames <= 0)
         {
         numberOfFrames = 1;
         }
+
       for (int k = 0; k < numberOfFrames; k++)
         {
+        // check for valid Image Plane Module information
+        double location = 0;
+
+        vtkDICOMValue pv = vtkDICOMReaderGetFrameAttributeValue(
+          frameSeq, sharedSeq, k, DC::PlanePositionSequence,
+          DC::ImagePositionPatient);
+        vtkDICOMValue ov = vtkDICOMReaderGetFrameAttributeValue(
+          frameSeq, sharedSeq, k, DC::PlaneOrientationSequence,
+          DC::ImageOrientationPatient);
+
+        location = vtkDICOMReaderComputeLocation(
+          pv, ov, checkNormal, &canSortByPosition);
+        location /= spacingBetweenSlices;
+
         info.push_back(
-          vtkDICOMReaderSortInfo(i, inst, 0, 0, i, 0.0));
+          vtkDICOMReaderSortInfo(i, inst, 0, 0, location, 0.0));
         }
       }
     }
@@ -751,7 +804,19 @@ int vtkDICOMReader::RequestInformation(
   // pixel size
   double xspacing = 1.0;
   double yspacing = 1.0;
-  if (this->MetaData->HasAttribute(DC::PixelSpacing))
+  if (this->MetaData->HasAttribute(DC::SharedFunctionalGroupsSequence))
+    {
+    vtkDICOMSequence sharedSeq =
+      this->MetaData->GetAttributeValue(DC::SharedFunctionalGroupsSequence);
+    vtkDICOMValue v = vtkDICOMReaderGetAttributeValue(
+      sharedSeq, 0, DC::PixelMeasuresSequence, DC::PixelSpacing);
+    if (v.GetNumberOfValues() == 2)
+      {
+      xspacing = v.GetDouble(0);
+      yspacing = v.GetDouble(1);
+      }
+    }
+  else if (this->MetaData->HasAttribute(DC::PixelSpacing))
     {
     vtkDICOMValue v = this->MetaData->GetAttributeValue(DC::PixelSpacing);
     if (v.GetNumberOfValues() == 2)
