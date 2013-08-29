@@ -177,8 +177,8 @@ protected:
   void RelayError(vtkObject *o, unsigned long e, void *data);
 
   // Description:
-  // Sort the input files, put the sort in the supplied array.
-  void SortFiles(vtkIntArray *result);
+  // Sort the input files, put the sort in the supplied arrays.
+  void SortFiles(vtkIntArray *fileArray, vtkIntArray *frameArray);
 
   // Description:
   // Information for rescaling data to quantitative units.
