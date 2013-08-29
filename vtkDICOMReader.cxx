@@ -609,6 +609,21 @@ int vtkDICOMReader::RequestInformation(
     }
   int numFiles = this->DataExtent[5] - this->DataExtent[4] + 1;
 
+  if (numFiles <= 0)
+    {
+    if (this->FileNames)
+      {
+      vtkErrorMacro("No filenames were provided for reader.");
+      }
+    else
+      {
+      vtkErrorMacro("Bad DataExtent " << this->DataExtent[4]
+                    << "," << this->DataExtent[5] << ".");
+      }
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
+    return 0;
+    }
+
   // Reset the time information
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
