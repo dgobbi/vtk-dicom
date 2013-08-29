@@ -60,6 +60,11 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
       printf("VR mismatch! %s != %s %s\n", vr, d.GetVR().GetText(), name);
       }
     }
+  else if ((tag.GetGroup() & 0xFFFE) != 0 && tag.GetElement() == 0)
+    {
+    // group is even, element is zero
+    name = "Group Length";
+    }
 
   // allow multiple values (i.e. for each image in series)
   unsigned int vn = v.GetNumberOfValues();
