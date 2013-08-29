@@ -428,9 +428,15 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
   bool canSortByPosition = true;
   double spacingBetweenSlices =
     meta->GetAttributeValue(DC::SpacingBetweenSlices).AsDouble();
-  if (spacingBetweenSlices <= 0)
+  double spacingSign = 1.0;
+  if (spacingBetweenSlices == 0)
     {
     spacingBetweenSlices = 1.0;
+    }
+  else if (spacingBetweenSlices < 0)
+    {
+    spacingBetweenSlices = -spacingBetweenSlices;
+    spacingSign = -1.0;
     }
 
   if (meta->HasAttribute(DC::SharedFunctionalGroupsSequence))
@@ -502,6 +508,8 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
         // multi-frame image
         double frameTimeSpacing = 1.0;
         vtkDICOMValue timeVector;
+        vtkDICOMValue timeSlotVector;
+        vtkDICOMValue sliceVector;
         vtkDICOMValue fip =
           meta->GetAttributeValue(i, DC::FrameIncrementPointer);
         unsigned int n = fip.GetNumberOfValues();
@@ -509,32 +517,62 @@ void vtkDICOMReader::SortFiles(vtkIntArray *sorted)
           {
           vtkDICOMTag tag = fip.GetTag(j);
           if (tag == DC::FrameTime)
-            {
+            { // for CINE
             frameTimeSpacing = meta->GetAttributeValue(i, tag).AsDouble();
             }
           else if (tag == DC::FrameTimeVector)
-            {
-            vtkDICOMValue v = meta->GetAttributeValue(i, tag);
-            if (static_cast<int>(v.GetNumberOfValues()) == numberOfFrames)
-              {
-              timeVector = v;
-              }
+            { // for CINE
+            timeVector = meta->GetAttributeValue(i, tag);
             }
+          else if (tag == DC::TimeSlotVector)
+            { // for NM
+            timeSlotVector = meta->GetAttributeValue(i, tag);
+            }
+          else if (tag == DC::SliceVector)
+            { // for NM
+            sliceVector = meta->GetAttributeValue(i, tag);
+            }
+          // in dynamic NM, the total number of time frames is the
+          // sum of the number of frames in all collected phases,
+          // we do not support dynamic NM yet
           }
 
-        double t = 0.0;
-        for (int k = 0; k < numberOfFrames; k++)
+        if (timeSlotVector.IsValid() || sliceVector.IsValid())
           {
-          if (k > 0)
+          // tomographic NM
+          for (int k = 0; k < numberOfFrames; k++)
             {
-            if (static_cast<int>(timeVector.GetNumberOfValues()) > k)
+            double t = 0.0;
+            double frameloc = location;
+            if (k < static_cast<int>(timeSlotVector.GetNumberOfValues()))
               {
-              frameTimeSpacing = timeVector.GetDouble(k);
+              t = (timeSlotVector.GetDouble(k) - 1.0)*frameTimeSpacing;
               }
-            t += frameTimeSpacing;
+            if (k < static_cast<int>(sliceVector.GetNumberOfValues()))
+              {
+              frameloc += (sliceVector.GetDouble(k) - 1.0)*spacingSign;
+              }
+            info.push_back(
+              vtkDICOMReaderSortInfo(i, inst, 0, 0, frameloc, t));
             }
-          info.push_back(
-            vtkDICOMReaderSortInfo(i, inst, 0, 0, location, t));
+          }
+        else
+          {
+          // CINE
+          double t = 0.0;
+          for (int k = 0; k < numberOfFrames; k++)
+            {
+            if (k > 0)
+              {
+              if (k < static_cast<int>(timeVector.GetNumberOfValues()))
+                {
+                frameTimeSpacing = timeVector.GetDouble(k);
+                }
+              t += frameTimeSpacing;
+              }
+            info.push_back(
+              vtkDICOMReaderSortInfo(i, inst, 0, 0, location, t));
+            }
           }
         }
       }
