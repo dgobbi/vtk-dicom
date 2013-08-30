@@ -1329,7 +1329,38 @@ bool vtkDICOMReader::ReadUncompressedFile(
     return false;
     }
 
-  infile.read(buffer, bufferSize);
+  if (12 == this->MetaData->GetAttributeValue(
+        fileIdx, DC::BitsAllocated).AsInt())
+    {
+    // unpack 12 bits into 16 bits little endian
+    size_t fileSize = bufferSize/2 + (bufferSize+3)/4;
+    char *filePtr = buffer + (bufferSize - fileSize);
+    infile.read(filePtr, fileSize);
+
+    char *writePtr = buffer;
+    for (vtkIdType n = bufferSize/2; n > 0; n -= 2)
+      {
+      unsigned int a1 = static_cast<unsigned char>(filePtr[0]);
+      unsigned int a2 = static_cast<unsigned char>(filePtr[1]);
+      unsigned int b1 = (a1 << 4) | (a2 & 0x0f);
+      writePtr[0] = static_cast<char>(b1);
+      writePtr[1] = static_cast<char>(b1 >> 8);
+
+      if (n == 1) { break; }
+
+      unsigned int a3 = static_cast<unsigned char>(filePtr[2]);
+      unsigned int b2 = ((a3 & 0x0f) << 8) | (a2 & 0xf0) | (a3 >> 4);
+      writePtr[2] = static_cast<char>(b2);
+      writePtr[3] = static_cast<char>(b2 >> 8);
+
+      filePtr += 3;
+      writePtr += 4;
+      }
+    }
+  else
+    {
+    infile.read(buffer, bufferSize);
+    }
 
   if (infile.eof())
     {
