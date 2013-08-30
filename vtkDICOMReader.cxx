@@ -69,6 +69,7 @@ vtkDICOMReader::vtkDICOMReader()
   this->TimeAsVector = 0;
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
+  this->DesiredStackID[0] = '\0';
 
   this->DataScalarType = VTK_SHORT;
   this->NumberOfScalarComponents = 1;
@@ -125,6 +126,9 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
     os << "(none)\n";
     }
 
+  os << indent << "DesiredStackID: "
+     << (*this->DesiredStackID ? "(empty)" : this->DesiredStackID) << "\n";
+
   os << indent << "FileIndexArray: " << this->FileIndexArray << "\n";
   os << indent << "FrameIndexArray: " << this->FrameIndexArray << "\n";
 
@@ -154,6 +158,23 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "MemoryRowOrder: "
      << this->GetMemoryRowOrderAsString() << "\n";
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMReader::SetDesiredStackID(const char *stackId)
+{
+  if (stackId == 0)
+    {
+    stackId = "";
+    }
+
+  // the maximum length of a stackId is 16
+  if (strncmp(this->DesiredStackID, stackId, 16) != 0)
+    {
+    strncpy(this->DesiredStackID, stackId, 16);
+    this->DesiredStackID[17] = '\0';
+    this->Modified();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -382,7 +403,7 @@ struct vtkDICOMReaderFileInfo
   int FramesInFile; // total frames in file
   std::vector<vtkDICOMReaderFrameInfo> Frames; // the frames to read
 
-  vtkDICOMReaderFileInfo(int i) : FileIndex(i), FramesInFile(0) {}
+  vtkDICOMReaderFileInfo(int i, int n) : FileIndex(i), FramesInFile(n) {}
 };
 
 } // end anonymous namespace
@@ -460,6 +481,14 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 
   if (meta->HasAttribute(DC::SharedFunctionalGroupsSequence))
     {
+    // a special stackInfo for the desired stack
+    std::vector<vtkDICOMReaderSortInfo> stackInfo;
+    vtkDICOMValue firstStackId;
+    vtkDICOMValue desiredStackId =
+      vtkDICOMValue(vtkDICOMVR::SH, this->DesiredStackID);
+    double stackCheckNormal[4] = { 0.0, 0.0, 0.0, 0.0 };
+    bool canSortStackByIPP = true;
+
     // files have enhanced frame information
     for (int i = 0; i < numFiles; i++)
       {
@@ -473,20 +502,20 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       vtkDICOMSequence sharedSeq =
         meta->GetAttributeValue(i, DC::SharedFunctionalGroupsSequence);
 
-      // ways to get time information
-      bool hasStacks = false;
+      if (i == 0 && numberOfFrames > 0)
+        {
+        firstStackId = vtkDICOMReaderGetFrameAttributeValue(
+          frameSeq, sharedSeq, 0, DC::FrameContentSequence,
+          DC::StackID);
+        }
+
+      // attributes for getting time information
       vtkDICOMTag timeSequence;
       vtkDICOMTag timeTag;
 
       if (numberOfFrames > 0)
         {
-        if (vtkDICOMReaderGetFrameAttributeValue(
-              frameSeq, sharedSeq, 0, DC::FrameContentSequence,
-              DC::StackID).IsValid())
-          {
-          hasStacks = true;
-          }
-
+        // time information can come from these attributes
         if (vtkDICOMReaderGetFrameAttributeValue(
               frameSeq, sharedSeq, 0, DC::CardiacSynchronizationSequence,
               DC::NominalCardiacTriggerDelayTime).IsValid())
@@ -528,9 +557,14 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           frameSeq, sharedSeq, k, timeSequence, timeTag).AsDouble();
           }
 
+        // get the StackID
+        vtkDICOMValue stackId = vtkDICOMReaderGetFrameAttributeValue(
+          frameSeq, sharedSeq, k, DC::FrameContentSequence,
+          DC::StackID);
+
         // position: look for InStackPositionNumber
         int position = k;
-        if (hasStacks)
+        if (stackId.IsValid())
           {
           position = vtkDICOMReaderGetFrameAttributeValue(
             frameSeq, sharedSeq, k, DC::FrameContentSequence,
@@ -545,14 +579,35 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           frameSeq, sharedSeq, k, DC::PlaneOrientationSequence,
           DC::ImageOrientationPatient);
 
-        // compute location from orientation and IPP
-        double location = vtkDICOMReaderComputeLocation(
-          pv, ov, checkNormal, &canSortByIPP);
-        location /= spacingBetweenSlices;
+        // check if the StackId is the one the user specified
+        if (stackId == desiredStackId)
+          {
+          // compute location from orientation and IPP
+          double location = vtkDICOMReaderComputeLocation(
+            pv, ov, stackCheckNormal, &canSortStackByIPP);
+          location /= spacingBetweenSlices;
 
-        info.push_back(
-          vtkDICOMReaderSortInfo(i, k, inst, position, location, t));
+          stackInfo.push_back(
+            vtkDICOMReaderSortInfo(i, k, inst, position, location, t));
+          }
+        else if (stackId == firstStackId)
+          {
+          // compute location from orientation and IPP
+          double location = vtkDICOMReaderComputeLocation(
+            pv, ov, checkNormal, &canSortByIPP);
+          location /= spacingBetweenSlices;
+
+          info.push_back(
+            vtkDICOMReaderSortInfo(i, k, inst, position, location, t));
+          }
         }
+      }
+
+    // if frames with the desired stack ID were found, use them
+    if (stackInfo.size() > 0)
+      {
+      canSortByIPP = canSortStackByIPP;
+      info = stackInfo;
       }
     }
   else
@@ -745,7 +800,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     }
   if (slicesPerLocation <= 0)
     {
-    slicesPerLocation = numFiles;
+    slicesPerLocation = static_cast<int>(info.size());
     }
 
   // count number of unique time points
@@ -1404,16 +1459,14 @@ int vtkDICOMReader::RequestData(
         {
         if (iter == files.end())
           {
-          files.push_back(vtkDICOMReaderFileInfo(fileIdx));
+          int n = this->MetaData->GetAttributeValue(
+            fileIdx, DC::NumberOfFrames).AsInt();
+          n = (n > 0 ? n : 1);
+          files.push_back(vtkDICOMReaderFileInfo(fileIdx, n));
           iter = files.end();
           --iter;
           }
         iter->Frames.push_back(vtkDICOMReaderFrameInfo(frameIdx, sIdx, cIdx));
-        }
-      // increment the total FramesInFile even if outside update extent
-      if (iter != files.end())
-        {
-        iter->FramesInFile++;
         }
       }
     }

@@ -58,6 +58,14 @@ public:
   int CanReadFile(const char* filename);
 
   // Description:
+  // Set the Stack ID of the stack to load, for named stacks.
+  // If the series has multiple stacks, then by default the reader
+  // will only load the first stack.  This method allows you to select
+  // a different stack, if you know the DICOM StackID for the stack.
+  void SetDesiredStackID(const char *stackId);
+  const char *GetDesiredStackID() { return this->DesiredStackID; }
+
+  // Description:
   // Get an array that converts slice index to input file index.
   // If the data has multiple scalar components, then this will
   // be a two-dimensional array and calling array->GetComponent(i,j)
@@ -231,6 +239,10 @@ protected:
   int TimeAsVector;
   int TimeDimension;
   double TimeSpacing;
+
+  // Description:
+  // The stack to load.
+  char DesiredStackID[20];
 
 private:
   vtkDICOMReader(const vtkDICOMReader&);  // Not implemented.
