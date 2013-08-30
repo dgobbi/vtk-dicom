@@ -457,25 +457,6 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 
   // important time-related variables
   int temporalSpacing = 1.0;
-  vtkDICOMTag timeTag;
-  if (meta->GetAttributeValue(DC::CardiacNumberOfImages).AsInt() > 1)
-    {
-    timeTag = DC::TriggerTime;
-    }
-  else if (meta->GetAttributeValue(DC::NumberOfTemporalPositions).AsInt() > 1)
-    {
-    timeTag = DC::TemporalPositionIdentifier;
-    temporalSpacing =
-      meta->GetAttributeValue(DC::TemporalResolution).AsDouble();
-    }
-  else if (meta->HasAttribute(DC::TemporalPositionIndex))
-    {
-    timeTag = DC::TemporalPositionIndex;
-    }
-  else if (meta->HasAttribute(DC::EchoTime))
-    {
-    timeTag = DC::EchoTime;
-    }
 
   if (meta->HasAttribute(DC::SharedFunctionalGroupsSequence))
     {
@@ -485,24 +466,78 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
       int numberOfFrames =
         meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
+
       // need a more convenient way of dealing with sequences...
       vtkDICOMSequence frameSeq =
         meta->GetAttributeValue(i, DC::PerFrameFunctionalGroupsSequence);
       vtkDICOMSequence sharedSeq =
         meta->GetAttributeValue(i, DC::SharedFunctionalGroupsSequence);
 
-      if (numberOfFrames <= 0)
+      // ways to get time information
+      bool hasStacks = false;
+      vtkDICOMTag timeSequence;
+      vtkDICOMTag timeTag;
+
+      if (numberOfFrames > 0)
         {
-        numberOfFrames = 1;
+        if (vtkDICOMReaderGetFrameAttributeValue(
+              frameSeq, sharedSeq, 0, DC::FrameContentSequence,
+              DC::StackID).IsValid())
+          {
+          hasStacks = true;
+          }
+
+        if (vtkDICOMReaderGetFrameAttributeValue(
+              frameSeq, sharedSeq, 0, DC::CardiacSynchronizationSequence,
+              DC::NominalCardiacTriggerDelayTime).IsValid())
+          {
+          timeSequence = DC::CardiacSynchronizationSequence;
+          timeTag = DC::NominalCardiacTriggerDelayTime;
+          }
+        else if (vtkDICOMReaderGetFrameAttributeValue(
+                   frameSeq, sharedSeq, 0, DC::TemporalPositionSequence,
+                   DC::TemporalPositionTimeOffset).IsValid())
+          {
+          timeSequence = DC::TemporalPositionSequence;
+          timeTag = DC::TemporalPositionTimeOffset;
+          temporalSpacing = 1000.0; // convert seconds to milliseconds
+          }
+        else if (vtkDICOMReaderGetFrameAttributeValue(
+                  frameSeq, sharedSeq, 0, DC::FrameContentSequence,
+                  DC::TemporalPositionIndex).IsValid())
+          {
+          timeSequence = DC::FrameContentSequence;
+          timeTag = DC::TemporalPositionIndex;
+          }
+        else if (vtkDICOMReaderGetFrameAttributeValue(
+                  frameSeq, sharedSeq, 0, DC::MREchoSequence,
+                  DC::EffectiveEchoTime).IsValid())
+          {
+          timeSequence = DC::MREchoSequence;
+          timeTag = DC::EffectiveEchoTime;
+          }
         }
 
       for (int k = 0; k < numberOfFrames; k++)
         {
-        // check for valid Image Plane Module information
+        // time: use chosen time tag, if present
         double t = 0.0;
-        double location = 0.0;
-        int position = k;
+        if (timeTag.GetGroup() != 0)
+          {
+          t = vtkDICOMReaderGetFrameAttributeValue(
+          frameSeq, sharedSeq, k, timeSequence, timeTag).AsDouble();
+          }
 
+        // position: look for InStackPositionNumber
+        int position = k;
+        if (hasStacks)
+          {
+          position = vtkDICOMReaderGetFrameAttributeValue(
+            frameSeq, sharedSeq, k, DC::FrameContentSequence,
+            DC::InStackPositionNumber).AsInt();
+          }
+
+        // check for valid Image Plane Module information
         vtkDICOMValue pv = vtkDICOMReaderGetFrameAttributeValue(
           frameSeq, sharedSeq, k, DC::PlanePositionSequence,
           DC::ImagePositionPatient);
@@ -510,7 +545,8 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           frameSeq, sharedSeq, k, DC::PlaneOrientationSequence,
           DC::ImageOrientationPatient);
 
-        location = vtkDICOMReaderComputeLocation(
+        // compute location from orientation and IPP
+        double location = vtkDICOMReaderComputeLocation(
           pv, ov, checkNormal, &canSortByIPP);
         location /= spacingBetweenSlices;
 
@@ -521,6 +557,28 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     }
   else
     {
+    // ways to get time information
+    vtkDICOMTag timeTag;
+    if (meta->GetAttributeValue(DC::CardiacNumberOfImages).AsInt() > 1)
+      {
+      timeTag = DC::TriggerTime;
+      }
+    else if (meta->GetAttributeValue(
+              DC::NumberOfTemporalPositions).AsInt() > 1)
+      {
+      timeTag = DC::TemporalPositionIdentifier;
+      temporalSpacing =
+        meta->GetAttributeValue(DC::TemporalResolution).AsDouble();
+      }
+    else if (meta->HasAttribute(DC::TemporalPositionIndex))
+      {
+      timeTag = DC::TemporalPositionIndex;
+      }
+    else if (meta->HasAttribute(DC::EchoTime))
+      {
+      timeTag = DC::EchoTime;
+      }
+
     for (int i = 0; i < numFiles; i++)
       {
       // get the instance number
