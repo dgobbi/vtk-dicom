@@ -1442,8 +1442,7 @@ int vtkDICOMReader::RequestData(
   // make a list of all the files inside the update extent
   std::vector<vtkDICOMReaderFileInfo> files;
   int nComp = this->FileIndexArray->GetNumberOfComponents();
-  int nSlices = this->FileIndexArray->GetNumberOfTuples();
-  for (int sIdx = 0; sIdx < nSlices; sIdx++)
+  for (int sIdx = extent[4]; sIdx <= extent[5]; sIdx++)
     {
     for (int cIdx = 0; cIdx < nComp; cIdx++)
       {
@@ -1454,20 +1453,16 @@ int vtkDICOMReader::RequestData(
         {
         ++iter;
         }
-      // push the frame to the list only if slice is in update extent
-      if (sIdx >= extent[4] && sIdx <= extent[5])
+      if (iter == files.end())
         {
-        if (iter == files.end())
-          {
-          int n = this->MetaData->GetAttributeValue(
-            fileIdx, DC::NumberOfFrames).AsInt();
-          n = (n > 0 ? n : 1);
-          files.push_back(vtkDICOMReaderFileInfo(fileIdx, n));
-          iter = files.end();
-          --iter;
-          }
-        iter->Frames.push_back(vtkDICOMReaderFrameInfo(frameIdx, sIdx, cIdx));
+        int n = this->MetaData->GetAttributeValue(
+          fileIdx, DC::NumberOfFrames).AsInt();
+        n = (n > 0 ? n : 1);
+        files.push_back(vtkDICOMReaderFileInfo(fileIdx, n));
+        iter = files.end();
+        --iter;
         }
+      iter->Frames.push_back(vtkDICOMReaderFrameInfo(frameIdx, sIdx, cIdx));
       }
     }
 
