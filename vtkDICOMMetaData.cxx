@@ -218,6 +218,61 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
 }
 
 //----------------------------------------------------------------------------
+const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
+  int idx, int frame, const vtkDICOMTagPath &tagpath)
+{
+  // search PerFrame first
+  const vtkDICOMValue *seq =
+    this->FindAttributeValue(idx, DC::PerFrameFunctionalGroupsSequence);
+  for (int i = 0; i < 2; i++)
+    {
+    unsigned int f = (i == 0 ? frame : 0);
+    if (seq && f < seq->GetNumberOfValues())
+      {
+      // search for the item that matches the frame
+      const vtkDICOMItem *items = seq->GetSequenceData();
+      const vtkDICOMValue &v = items[f].GetAttributeValue(tagpath);
+      if (v.IsValid())
+        {
+        return v;
+        }
+      // search within all the sequences in the item
+      vtkDICOMDataElementIterator iter = items[f].Begin();
+      vtkDICOMDataElementIterator iterEnd = items[f].End();
+      while (iter != iterEnd)
+        {
+        const vtkDICOMValue &u = iter->GetValue();
+        if (u.GetNumberOfValues() == 1)
+          {
+          const vtkDICOMItem *item = u.GetSequenceData();
+          if (item)
+            {
+            const vtkDICOMValue &w = item->GetAttributeValue(tagpath);
+            if (w.IsValid())
+              {
+              return w;
+              }
+            }
+          }
+        ++iter;
+        }
+      }
+    // search Shared next
+    seq = this->FindAttributeValue(idx, DC::SharedFunctionalGroupsSequence);
+    }
+
+  // search root last of all
+  return this->GetAttributeValue(idx, tagpath);
+}
+
+//----------------------------------------------------------------------------
+const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
+  int idx, int frame, vtkDICOMTag tag)
+{
+  return this->GetAttributeValue(idx, frame, vtkDICOMTagPath(tag));
+}
+
+//----------------------------------------------------------------------------
 // Return a reference to the element within the hash table, which can
 // be used to insert a new value.
 vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(

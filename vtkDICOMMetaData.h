@@ -89,7 +89,7 @@ public:
   const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag);
   const vtkDICOMValue &GetAttributeValue(const vtkDICOMTagPath &p);
 
-  //! Get an attribute value for the specified slice index.
+  //! Get an attribute value for the specified file index.
   /*!
    *  If this meta data object is used to hold the meta data for
    *  multiple image instances, then use this method to get an
@@ -100,7 +100,20 @@ public:
   const vtkDICOMValue &GetAttributeValue(int idx, vtkDICOMTag tag);
   const vtkDICOMValue &GetAttributeValue(int idx, const vtkDICOMTagPath &p);
 
-  //! Set an attribute value for the image at index "idx".
+  //! Get an attribute value for the specified file and frame index.
+  /*!
+   *  For enhanced multi-frame DICOM files, much of the meta data is
+   *  stored per-frame.  This method will search for the attribute
+   *  in the PerFrameFunctionGroupSequence first, then in the
+   *  SharedFunctionalGroupsSequence, and finally in the root.
+   *  It can be used on either multi-frame or single-frame files.
+   *  The frame index is counted from zero to NumberOfFrames-1.
+   */
+  const vtkDICOMValue &GetAttributeValue(int idx, int frame, vtkDICOMTag tag);
+  const vtkDICOMValue &GetAttributeValue(
+    int idx, int frame, const vtkDICOMTagPath &p);
+
+  //! Set an attribute value for the image at file index "idx".
   /*!
    *  Except for the method that takes a vtkDICOMValue, these methods
    *  will use the dictionary to find the VR for the attribute, and will

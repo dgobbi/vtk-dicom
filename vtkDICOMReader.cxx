@@ -950,6 +950,10 @@ int vtkDICOMReader::RequestInformation(
   // holds the sorted order of the files.
   this->SortFiles(this->FileIndexArray, this->FrameIndexArray);
 
+  // Get the file and frame for the first slice
+  int fileIndex = this->FileIndexArray->GetComponent(0, 0);
+  int frameIndex = this->FileIndexArray->GetComponent(0, 0);
+
   // image dimensions
   int columns = this->MetaData->GetAttributeValue(DC::Columns).AsInt();
   int rows = this->MetaData->GetAttributeValue(DC::Rows).AsInt();
@@ -986,10 +990,17 @@ int vtkDICOMReader::RequestInformation(
   double yspacing = 1.0;
   if (this->MetaData->HasAttribute(DC::SharedFunctionalGroupsSequence))
     {
-    vtkDICOMValue v = this->MetaData->GetAttributeValue(
+    vtkDICOMValue v = this->MetaData->GetAttributeValue(fileIndex,
       vtkDICOMTagPath(DC::SharedFunctionalGroupsSequence, 0,
                       DC::PixelMeasuresSequence, 0,
                       DC::PixelSpacing));
+    if (!v.IsValid())
+      {
+      v = this->MetaData->GetAttributeValue(fileIndex,
+        vtkDICOMTagPath(DC::PerFrameFunctionalGroupsSequence, frameIndex,
+                        DC::PixelMeasuresSequence, 0,
+                        DC::PixelSpacing));
+      }
     if (v.GetNumberOfValues() == 2)
       {
       xspacing = v.GetDouble(0);
@@ -1147,11 +1158,10 @@ int vtkDICOMReader::RequestInformation(
   // the user with a 4x4 matrix that can transform VTK's data coordinates
   // into DICOM's patient coordinates, as defined in the DICOM standard
   // Part 3 Appendix C 7.6.2 "Image Plane Module".
-  int fileIndex = this->FileIndexArray->GetComponent(0, 0);
   vtkDICOMValue pv = this->MetaData->GetAttributeValue(
-    fileIndex, DC::ImagePositionPatient);
+    fileIndex, frameIndex, DC::ImagePositionPatient);
   vtkDICOMValue ov = this->MetaData->GetAttributeValue(
-    fileIndex, DC::ImageOrientationPatient);
+    fileIndex, frameIndex, DC::ImageOrientationPatient);
   if (pv.GetNumberOfValues() == 3 && ov.GetNumberOfValues() == 6)
     {
     double orient[6], normal[3], point[3];
