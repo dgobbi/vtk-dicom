@@ -1,6 +1,9 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMValue.h"
 #include "vtkDICOMDictionary.h"
+#include "vtkDICOMSequence.h"
+#include "vtkDICOMItem.h"
+#include "vtkDICOMTagPath.h"
 
 #include <sstream>
 
@@ -172,6 +175,72 @@ int main(int argc, char *argv[])
   iter = metaData->Find(DC::StudyDate);
   TestAssert(iter == metaData->End());
   metaData->Clear();
+
+  // ------
+  // test sequence access: some miscellaneous UIDs to use
+  const char *classUID = "1.2.840.10008.5.1.4.1.1.4";
+  const char *instanceUIDFormat =
+    "1.2.840.113619.2.176.2025.4110284.7408.1276101323.%i";
+  char instanceUID[54];
+
+  // create the ReferencedSeriesSequence
+  vtkDICOMSequence seq(1);
+
+  // only add one item to the outer sequence
+  for (int i = 0; i < 1; i++)
+    {
+    // add the first data element to the item
+    vtkDICOMItem item;
+    item.SetAttributeValue(DC::SeriesInstanceUID,
+      vtkDICOMValue(vtkDICOMVR::UI,
+        "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
+
+    // the second data element will be a nested sequence
+    vtkDICOMSequence seq2;
+
+    // add ten items to this sequence
+    for (int j = 0; j < 10; j++)
+      {
+      // create a unique InstanceUID
+      sprintf(instanceUID, instanceUIDFormat, 255+j);
+      vtkDICOMItem item2;
+      item2.SetAttributeValue(DC::ReferencedSOPClassUID,
+        vtkDICOMValue(vtkDICOMVR::UI, classUID));
+      item2.SetAttributeValue(DC::ReferencedSOPInstanceUID,
+        vtkDICOMValue(vtkDICOMVR::UI, instanceUID));
+      seq2.AddItem(item2);
+      }
+
+    // create the ReferencedInstanceSequence from the items
+    item.SetAttributeValue(DC::ReferencedInstanceSequence, seq2);
+
+    // add this sequence-containing item to the original sequence
+    seq.SetItem(i, item);
+    }
+
+  // test nested access with tag path
+  metaData->SetAttributeValue(DC::ReferencedSeriesSequence, seq);
+  vtkDICOMValue v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID));
+  TestAssert(v2.GetCharData() != 0);
+  if (v2.GetCharData())
+    {
+    TestAssert(
+      strcmp(v2.GetCharData(),
+             "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239") == 0);
+    }
+
+  // test access two levels deep
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::ReferencedInstanceSequence, 0,
+                    DC::ReferencedSOPClassUID));
+  TestAssert(v2.GetCharData() != 0);
+  if (v2.GetCharData())
+    {
+    TestAssert(strcmp(v2.GetCharData(), "1.2.840.10008.5.1.4.1.1.4") == 0);
+    }
 
   metaData->Delete();
 

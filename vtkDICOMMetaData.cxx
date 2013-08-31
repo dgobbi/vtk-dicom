@@ -13,6 +13,8 @@
 =========================================================================*/
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMDictionary.h"
+#include "vtkDICOMItem.h"
+#include "vtkDICOMTagPath.h"
 
 #include <vtkObjectFactory.h>
 #include <vtkMatrix4x4.h>
@@ -187,6 +189,32 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
 {
   const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tag);
   return (vptr ? *vptr : this->Tail.Value);
+}
+
+//----------------------------------------------------------------------------
+const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
+  int idx, const vtkDICOMTagPath &tagpath)
+{
+  const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tagpath.GetHead());
+  if (vptr != 0 && tagpath.HasTail())
+    {
+    unsigned int i = tagpath.GetIndex();
+    unsigned int n = vptr->GetNumberOfValues();
+    const vtkDICOMItem *items = vptr->GetSequenceData();
+    if (items != 0 && i < n)
+      {
+      return items[i].GetAttributeValue(tagpath.GetTail());
+      }
+    vptr = 0;
+    }
+  return (vptr ? *vptr : this->Tail.Value);
+}
+
+//----------------------------------------------------------------------------
+const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
+  const vtkDICOMTagPath &tagpath)
+{
+  return this->GetAttributeValue(0, tagpath);
 }
 
 //----------------------------------------------------------------------------

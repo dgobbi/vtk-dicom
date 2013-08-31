@@ -17,6 +17,7 @@
 #include "vtkDICOMDictionary.h"
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMItem.h"
+#include "vtkDICOMTagPath.h"
 
 #include "vtkObjectFactory.h"
 #include "vtkImageData.h"
@@ -298,35 +299,18 @@ bool vtkDICOMReaderCompareLocation(
   return (si1.ComputedLocation + locationTolerance < si2.ComputedLocation);
 }
 
-// get an attribute value from a sequence in a sequence
-const vtkDICOMValue& vtkDICOMReaderGetAttributeValue(
-  const vtkDICOMSequence& seq, unsigned int i,
-  vtkDICOMTag stag, vtkDICOMTag vtag)
-{
-  vtkDICOMItem item;
-  if (i < seq.GetNumberOfItems())
-    {
-    vtkDICOMSequence tseq = seq.GetItem(i).GetAttributeValue(stag);
-    if (tseq.GetNumberOfItems() > 0)
-      {
-      item = tseq.GetItem(0);
-      }
-    }
-  return item.GetAttributeValue(vtag);
-}
-
 // get an attribute value for a particular frame
 const vtkDICOMValue& vtkDICOMReaderGetFrameAttributeValue(
   const vtkDICOMSequence& frameSeq, const vtkDICOMSequence& sharedSeq,
   unsigned int i, vtkDICOMTag stag, vtkDICOMTag vtag)
 {
   const vtkDICOMValue& v =
-    vtkDICOMReaderGetAttributeValue(frameSeq, i, stag, vtag);
+    frameSeq.GetAttributeValue(i, vtkDICOMTagPath(stag, 0, vtag));
   if (v.IsValid())
     {
     return v;
     }
-  return vtkDICOMReaderGetAttributeValue(sharedSeq, 0, stag, vtag);
+  return sharedSeq.GetAttributeValue(0, vtkDICOMTagPath(stag, 0, vtag));
 }
 
 // compute spatial location from position and orientation
@@ -1002,10 +986,10 @@ int vtkDICOMReader::RequestInformation(
   double yspacing = 1.0;
   if (this->MetaData->HasAttribute(DC::SharedFunctionalGroupsSequence))
     {
-    vtkDICOMSequence sharedSeq =
-      this->MetaData->GetAttributeValue(DC::SharedFunctionalGroupsSequence);
-    vtkDICOMValue v = vtkDICOMReaderGetAttributeValue(
-      sharedSeq, 0, DC::PixelMeasuresSequence, DC::PixelSpacing);
+    vtkDICOMValue v = this->MetaData->GetAttributeValue(
+      vtkDICOMTagPath(DC::SharedFunctionalGroupsSequence, 0,
+                      DC::PixelMeasuresSequence, 0,
+                      DC::PixelSpacing));
     if (v.GetNumberOfValues() == 2)
       {
       xspacing = v.GetDouble(0);

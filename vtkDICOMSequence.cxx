@@ -16,6 +16,35 @@
 
 #include <assert.h>
 
+//----------------------------------------------------------------------------
+// For use by methods that must return an invalid value
+const vtkDICOMValue vtkDICOMSequence::InvalidValue;
+
+//----------------------------------------------------------------------------
+const vtkDICOMValue &vtkDICOMSequence::GetAttributeValue(
+    unsigned int i, vtkDICOMTag tag) const
+{
+  const vtkDICOMItem *ptr = this->V.GetSequenceData();
+  if (ptr != 0 && i < this->V.GetNumberOfValues())
+    {
+    return ptr[i].GetAttributeValue(tag);
+    }
+  return vtkDICOMSequence::InvalidValue;
+}
+
+//----------------------------------------------------------------------------
+const vtkDICOMValue &vtkDICOMSequence::GetAttributeValue(
+    unsigned int i, const vtkDICOMTagPath &tagpath) const
+{
+  const vtkDICOMItem *ptr = this->V.GetSequenceData();
+  if (ptr != 0 && i < this->V.GetNumberOfValues())
+    {
+    return ptr[i].GetAttributeValue(tagpath);
+    }
+  return vtkDICOMSequence::InvalidValue;
+}
+
+//----------------------------------------------------------------------------
 const vtkDICOMItem &vtkDICOMSequence::GetItem(unsigned int i) const
 {
   const vtkDICOMItem *ptr = this->V.GetSequenceData();
@@ -24,6 +53,7 @@ const vtkDICOMItem &vtkDICOMSequence::GetItem(unsigned int i) const
   return ptr[i];
 }
 
+//----------------------------------------------------------------------------
 ostream& operator<<(ostream& os, const vtkDICOMSequence& v)
 {
   return os << vtkDICOMValue(v);

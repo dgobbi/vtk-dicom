@@ -18,6 +18,8 @@
 #include "vtkDICOMDataElement.h"
 #include "vtkDICOMReferenceCount.h"
 
+class vtkDICOMTagPath;
+
 //! An item in a DICOM sequence (type SQ).
 /*!
  *  A DICOM sequence is a list of items, where each item is
@@ -63,6 +65,7 @@ public:
 
   //! Get a data element from this item.
   const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag) const;
+  const vtkDICOMValue &GetAttributeValue(const vtkDICOMTagPath &tag) const;
 
   //! Get the number of data elements.
   int GetNumberOfDataElements() const {

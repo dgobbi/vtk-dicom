@@ -1,6 +1,7 @@
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMItem.h"
 #include "vtkDICOMDictionary.h"
+#include "vtkDICOMTagPath.h"
 
 #include <sstream>
 
@@ -15,6 +16,24 @@ if (!(t)) \
   cout << __FILE__ << ":" << __LINE__ << "\n"; \
   cout.flush(); \
   rval |= 1; \
+}
+
+namespace {
+
+bool StringsEqual(const char *s1, const char *s2)
+{
+  bool result = true;
+  if (s1 != s2)
+    {
+    result = false;
+    if (s1 != 0 && s2 != 0)
+      {
+      result = (strcmp(s1, s2) == 0);
+      }
+    }
+  return result;
+}
+
 }
 
 int main(int argc, char *argv[])
@@ -90,8 +109,8 @@ int main(int argc, char *argv[])
     if (iter->GetTag() == DC::SeriesInstanceUID)
       {
       found1 = true;
-      TestAssert(strcmp(iter->GetValue().GetCharData(),
-        "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239") == 0);
+      TestAssert(StringsEqual(iter->GetValue().GetCharData(),
+        "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
       }
     // make sure ReferencedInstanceSequence was found
     if (iter->GetTag() == DC::ReferencedInstanceSequence)
@@ -112,10 +131,10 @@ int main(int argc, char *argv[])
         TestAssert(item.GetNumberOfDataElements() == 2);
         vtkDICOMValue v3;
         v3 = item.GetAttributeValue(DC::ReferencedSOPClassUID);
-        TestAssert(strcmp(v3.GetCharData(), "1.2.840.10008.5.1.4.1.1.4") == 0);
+        TestAssert(StringsEqual(v3.GetCharData(), "1.2.840.10008.5.1.4.1.1.4"));
         v3 = item.GetAttributeValue(DC::ReferencedSOPInstanceUID);
         sprintf(instanceUID, instanceUIDFormat, 255+j);
-        TestAssert(strcmp(v3.GetCharData(), instanceUID) == 0);
+        TestAssert(StringsEqual(v3.GetCharData(), instanceUID));
         }
       }
     fullcount++;
@@ -123,6 +142,17 @@ int main(int argc, char *argv[])
 
   // check that there were two elements in the ReferencedSeriesSequence item
   TestAssert(fullcount == 2);
+
+  // test direct access with GetAttributeValue
+  vtkDICOMValue v2 = seq.GetAttributeValue(0, DC::SeriesInstanceUID);
+  TestAssert(StringsEqual(v2.GetCharData(),
+                    "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
+
+  // test nested access with tag path
+  v2 = seq.GetAttributeValue(
+    0, vtkDICOMTagPath(DC::ReferencedInstanceSequence, 0,
+                       DC::ReferencedSOPClassUID));
+  TestAssert(StringsEqual(v2.GetCharData(), "1.2.840.10008.5.1.4.1.1.4"));
 
   // test appending to a sequence
   vtkDICOMSequence seq3;

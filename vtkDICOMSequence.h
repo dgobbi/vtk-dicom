@@ -18,6 +18,7 @@
 #include "vtkDICOMValue.h"
 
 class vtkDICOMItem;
+class vtkDICOMTagPath;
 
 //! A sequence of items according to the SQ representation.
 /*!
@@ -41,6 +42,12 @@ public:
   //! Clear a sequence, remove its contents and make it empty.
   void Clear() {
     this->V.AppendInit<vtkDICOMItem>(vtkDICOMVR::SQ); }
+
+  //! Get an a value from an item in the sequence.
+  const vtkDICOMValue &GetAttributeValue(
+    unsigned int i, vtkDICOMTag tag) const;
+  const vtkDICOMValue &GetAttributeValue(
+    unsigned int i, const vtkDICOMTagPath &p) const;
 
   //! Add an item to the sequence.
   /*!
@@ -91,6 +98,9 @@ private:
   friend class vtkDICOMValue;
 
   vtkDICOMValue V;
+
+  //! An invalid value, for when one is needed.
+  static const vtkDICOMValue InvalidValue;
 };
 
 VTK_DICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMSequence& v);

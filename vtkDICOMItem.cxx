@@ -12,6 +12,7 @@
 
 =========================================================================*/
 #include "vtkDICOMItem.h"
+#include "vtkDICOMTagPath.h"
 
 #include <assert.h>
 
@@ -124,6 +125,28 @@ const vtkDICOMValue &vtkDICOMItem::GetAttributeValue(
         return e->Value;
         }
       e = e->Next;
+      }
+    }
+  return vtkDICOMItem::InvalidValue;
+}
+
+//----------------------------------------------------------------------------
+const vtkDICOMValue &vtkDICOMItem::GetAttributeValue(
+  const vtkDICOMTagPath &tagpath) const
+{
+  const vtkDICOMValue &v = this->GetAttributeValue(tagpath.GetHead());
+  if (!tagpath.HasTail())
+    {
+    return v;
+    }
+  if (v.IsValid())
+    {
+    unsigned int i = tagpath.GetIndex();
+    unsigned int n = v.GetNumberOfValues();
+    const vtkDICOMItem *items = v.GetSequenceData();
+    if (items != 0 && i < n)
+      {
+      return items[i].GetAttributeValue(tagpath.GetTail());
       }
     }
   return vtkDICOMItem::InvalidValue;

@@ -18,6 +18,8 @@
 #include "vtkDICOMModule.h"
 #include "vtkDICOMDataElement.h"
 
+class vtkDICOMTagPath;
+
 //! A container class for DICOM metadata.
 /*!
  *  The vtkDICOMMetaData object stores DICOM metadata in a hash table
@@ -85,6 +87,7 @@ public:
    *  be invalid, i.e. v.IsValid() will be false.
    */
   const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag);
+  const vtkDICOMValue &GetAttributeValue(const vtkDICOMTagPath &p);
 
   //! Get an attribute value for the specified slice index.
   /*!
@@ -95,6 +98,7 @@ public:
    *  will be false.
    */
   const vtkDICOMValue &GetAttributeValue(int idx, vtkDICOMTag tag);
+  const vtkDICOMValue &GetAttributeValue(int idx, const vtkDICOMTagPath &p);
 
   //! Set an attribute value for the image at index "idx".
   /*!

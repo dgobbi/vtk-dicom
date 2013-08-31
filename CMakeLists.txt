@@ -126,6 +126,7 @@ set(LIB_SRCS
   vtkDICOMMetaData.cxx
   vtkDICOMDictionary.cxx
   vtkDICOMTag.cxx
+  vtkDICOMTagPath.cxx
   vtkDICOMVR.cxx
   vtkDICOMVM.cxx
   vtkDICOMDataElement.cxx
