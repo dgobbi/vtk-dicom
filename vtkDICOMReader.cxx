@@ -274,30 +274,34 @@ struct vtkDICOMReaderSortInfo
   vtkDICOMReaderSortInfo(int i, int j, int k, int s, double l, double t) :
     FileNumber(i), FrameNumber(j), InstanceNumber(k), PositionNumber(s),
     ComputedLocation(l), Time(t) {}
+
+  vtkDICOMReaderSortInfo(int i, int k) :
+    FileNumber(i), FrameNumber(0), InstanceNumber(k), PositionNumber(0),
+    ComputedLocation(0), Time(0) {}
+
+  // for sorting by by instance number
+  static bool CompareInstance(
+    const vtkDICOMReaderSortInfo &si1, const vtkDICOMReaderSortInfo &si2)
+  {
+    return (si1.InstanceNumber < si2.InstanceNumber);
+  }
+
+  // for sorting by position number
+  static bool ComparePosition(
+    const vtkDICOMReaderSortInfo &si1, const vtkDICOMReaderSortInfo &si2)
+  {
+    return (si1.PositionNumber < si2.PositionNumber);
+  }
+
+  // for sorting by spatial location
+  static bool CompareLocation(
+    const vtkDICOMReaderSortInfo &si1, const vtkDICOMReaderSortInfo &si2)
+  {
+    // locations must differ by at least the tolerance
+    const double locationTolerance = 1e-3;
+    return (si1.ComputedLocation + locationTolerance < si2.ComputedLocation);
+  }
 };
-
-// for sorting by by instance number
-bool vtkDICOMReaderCompareInstance(
-  const vtkDICOMReaderSortInfo &si1, const vtkDICOMReaderSortInfo &si2)
-{
-  return (si1.InstanceNumber < si2.InstanceNumber);
-}
-
-// for sorting by position number
-bool vtkDICOMReaderComparePosition(
-  const vtkDICOMReaderSortInfo &si1, const vtkDICOMReaderSortInfo &si2)
-{
-  return (si1.PositionNumber < si2.PositionNumber);
-}
-
-// for sorting by spatial location
-bool vtkDICOMReaderCompareLocation(
-  const vtkDICOMReaderSortInfo &si1, const vtkDICOMReaderSortInfo &si2)
-{
-  // locations must differ by at least the tolerance
-  const double locationTolerance = 1e-3;
-  return (si1.ComputedLocation + locationTolerance < si2.ComputedLocation);
-}
 
 // get an attribute value for a particular frame
 const vtkDICOMValue& vtkDICOMReaderGetFrameAttributeValue(
@@ -472,6 +476,21 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   int numFiles = meta->GetNumberOfInstances();
   std::vector<vtkDICOMReaderSortInfo> info;
 
+  // sort by instance first
+  for (int i = 0; i < numFiles; i++)
+    {
+    int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
+    info.push_back(vtkDICOMReaderSortInfo(i, inst));
+    }
+  std::stable_sort(info.begin(), info.end(),
+    vtkDICOMReaderSortInfo::CompareInstance);
+  std::vector<int> fileOrder(info.size());
+  for (int i = 0; i < numFiles; i++)
+    {
+    fileOrder[i] = info[i].FileNumber;
+    }
+  info.clear();
+
   // important position-related variables
   double checkOrientation[10] = {};
   bool canSortByIPP = true;
@@ -502,8 +521,9 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     bool canSortStackByIPP = true;
 
     // files have enhanced frame information
-    for (int i = 0; i < numFiles; i++)
+    for (int ii = 0; ii < numFiles; ii++)
       {
+      int i = fileOrder[ii];
       int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
       int numberOfFrames =
         meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
@@ -514,7 +534,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       vtkDICOMSequence sharedSeq =
         meta->GetAttributeValue(i, DC::SharedFunctionalGroupsSequence);
 
-      if (i == 0 && numberOfFrames > 0)
+      if (ii == 0 && numberOfFrames > 0)
         {
         firstStackId = vtkDICOMReaderGetFrameAttributeValue(
           frameSeq, sharedSeq, 0, DC::FrameContentSequence,
@@ -651,8 +671,10 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     int position = 0;
     double lastTime = 0.0;
 
-    for (int i = 0; i < numFiles; i++)
+    for (int ii = 0; ii < numFiles; ii++)
       {
+      int i = fileOrder[ii];
+
       // get the instance number
       int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
 
@@ -763,9 +785,6 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       }
     }
 
-  // sort by instance first
-  std::stable_sort(info.begin(), info.end(), vtkDICOMReaderCompareInstance);
-
   // sort by position, count the number of slices per location
   int numSlices = static_cast<int>(info.size());
   int slicesPerLocation = 0;
@@ -774,12 +793,12 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     if (canSortByIPP)
       {
       std::stable_sort(info.begin(), info.end(),
-        vtkDICOMReaderCompareLocation);
+        vtkDICOMReaderSortInfo::CompareLocation);
       }
     else
       {
       std::stable_sort(info.begin(), info.end(),
-        vtkDICOMReaderComparePosition);
+        vtkDICOMReaderSortInfo::ComparePosition);
       }
 
     // look for slices at the same location
@@ -794,11 +813,13 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       bool positionIncreased = false;
       if (canSortByIPP)
         {
-        positionIncreased = vtkDICOMReaderCompareLocation(*lastIter, *iter);
+        positionIncreased =
+          vtkDICOMReaderSortInfo::CompareLocation(*lastIter, *iter);
         }
       else
         {
-        positionIncreased = vtkDICOMReaderComparePosition(*lastIter, *iter);
+        positionIncreased =
+          vtkDICOMReaderSortInfo::ComparePosition(*lastIter, *iter);
         }
       if (iter == info.end() || positionIncreased)
         {
