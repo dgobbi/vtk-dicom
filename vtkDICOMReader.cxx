@@ -985,38 +985,11 @@ int vtkDICOMReader::RequestInformation(
   // DICOM uses a upper-left origin
   this->FileLowerLeft = 0;
 
-  // pixel size
-  double xspacing = 1.0;
-  double yspacing = 1.0;
-  if (this->MetaData->HasAttribute(DC::SharedFunctionalGroupsSequence))
-    {
-    vtkDICOMValue v = this->MetaData->GetAttributeValue(fileIndex,
-      vtkDICOMTagPath(DC::SharedFunctionalGroupsSequence, 0,
-                      DC::PixelMeasuresSequence, 0,
-                      DC::PixelSpacing));
-    if (!v.IsValid())
-      {
-      v = this->MetaData->GetAttributeValue(fileIndex,
-        vtkDICOMTagPath(DC::PerFrameFunctionalGroupsSequence, frameIndex,
-                        DC::PixelMeasuresSequence, 0,
-                        DC::PixelSpacing));
-      }
-    if (v.GetNumberOfValues() == 2)
-      {
-      xspacing = v.GetDouble(0);
-      yspacing = v.GetDouble(1);
-      }
-    }
-  else if (this->MetaData->HasAttribute(DC::PixelSpacing))
-    {
-    vtkDICOMValue v = this->MetaData->GetAttributeValue(DC::PixelSpacing);
-    if (v.GetNumberOfValues() == 2)
-      {
-      xspacing = v.GetDouble(0);
-      yspacing = v.GetDouble(1);
-      }
-    }
-  else if (this->MetaData->HasAttribute(DC::PixelAspectRatio))
+  // DataSpacing[2] was set in SortFiles, but pixel spacing is set here.
+  this->DataSpacing[0] = 1.0;
+  this->DataSpacing[1] = 1.0;
+
+  if (this->MetaData->HasAttribute(DC::PixelAspectRatio))
     {
     double ratio = 1.0;
     vtkDICOMValue v = this->MetaData->GetAttributeValue(DC::PixelAspectRatio);
@@ -1038,11 +1011,37 @@ int vtkDICOMReader::RequestInformation(
       }
     if (ratio > 0)
       {
-      xspacing = yspacing/ratio;
+      this->DataSpacing[0] = this->DataSpacing[1]/ratio;
       }
     }
-  this->DataSpacing[0] = xspacing;
-  this->DataSpacing[1] = yspacing;
+
+  if (this->MetaData->HasAttribute(DC::PixelSpacing))
+    {
+    vtkDICOMValue v = this->MetaData->GetAttributeValue(DC::PixelSpacing);
+    if (v.GetNumberOfValues() == 2)
+      {
+      v.GetValues(this->DataSpacing, this->DataSpacing + 2);
+      }
+    }
+
+  if (this->MetaData->HasAttribute(DC::SharedFunctionalGroupsSequence))
+    {
+    vtkDICOMValue v = this->MetaData->GetAttributeValue(fileIndex,
+      vtkDICOMTagPath(DC::SharedFunctionalGroupsSequence, 0,
+                      DC::PixelMeasuresSequence, 0,
+                      DC::PixelSpacing));
+    if (!v.IsValid())
+      {
+      v = this->MetaData->GetAttributeValue(fileIndex,
+        vtkDICOMTagPath(DC::PerFrameFunctionalGroupsSequence, frameIndex,
+                        DC::PixelMeasuresSequence, 0,
+                        DC::PixelSpacing));
+      }
+    if (v.GetNumberOfValues() == 2)
+      {
+      v.GetValues(this->DataSpacing, this->DataSpacing + 2);
+      }
+    }
 
   // offset is part of the transform, so set origin to zero
   this->DataOrigin[0] = 0.0;
@@ -1171,6 +1170,7 @@ int vtkDICOMReader::RequestInformation(
     if (this->MemoryRowOrder == vtkDICOMReader::BottomUp)
       {
       // calculate position of point at lower left
+      double yspacing = this->DataSpacing[1];
       point[0] = point[0] + orient[3]*yspacing*(rows - 1);
       point[1] = point[1] + orient[4]*yspacing*(rows - 1);
       point[2] = point[2] + orient[5]*yspacing*(rows - 1);
