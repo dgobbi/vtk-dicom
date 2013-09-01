@@ -598,17 +598,25 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           }
         }
 
+      // position counter
+      int position = 0;
+      double lastTime = 0.0;
+
       for (int k = 0; k < numberOfFrames; k++)
         {
-        // default position is frame number
-        int position = k;
-
         // time: use chosen time tag, if present
         double t = 0.0;
         if (timeTag.GetGroup() != 0)
           {
           t = vtkDICOMReaderGetFrameAttributeValue(
             frameSeq, sharedSeq, k, timeSequence, timeTag).AsDouble();
+          }
+
+        // adjust position only if time did not change
+        if (fabs(t - lastTime) < 1e-3 || k == 0)
+          {
+          position = k;
+          lastTime = t;
           }
 
         // get the StackID
@@ -749,7 +757,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           }
 
         // adjust position only if time did not change
-        if (fabs(t - lastTime) < 1e-3 || i == 0)
+        if (fabs(t - lastTime) < 1e-3 || ii == 0)
           {
           position = inst;
           lastTime = t;
