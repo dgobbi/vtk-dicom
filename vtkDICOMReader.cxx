@@ -1285,20 +1285,22 @@ int vtkDICOMReader::RequestInformation(
       {
       double m = meta->GetAttributeValue(i, DC::RescaleSlope).AsDouble();
       double b = meta->GetAttributeValue(i, DC::RescaleIntercept).AsDouble();
+      if (m != mMax || b != bMax)
+        {
+        mismatch = true;
+        }
       if (m > mMax)
         {
         mMax = m;
-        mismatch = true;
         }
       if (b > bMax)
         {
         bMax = b;
-        mismatch = true;
         }
       }
     this->NeedsRescale = mismatch;
-    this->RescaleIntercept = mMax;
-    this->RescaleSlope = bMax;
+    this->RescaleSlope = mMax;
+    this->RescaleIntercept = bMax;
     }
 
   // === Image Orientation in DICOM files ===
