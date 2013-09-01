@@ -71,6 +71,7 @@ vtkDICOMReader::vtkDICOMReader()
   this->NumberOfPackedComponents = 1;
   this->NumberOfPlanarComponents = 1;
   this->TimeAsVector = 0;
+  this->DesiredTimeIndex = -1;
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
   this->DesiredStackID[0] = '\0';
@@ -145,6 +146,7 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
      << (this->TimeAsVector ? "On\n" : "Off\n");
   os << indent << "TimeDimension: " << this->TimeDimension << "\n";
   os << indent << "TimeSpacing: " << this->TimeSpacing << "\n";
+  os << indent << "DesiredTimeIndex: " << this->DesiredTimeIndex << "\n";
 
   os << indent << "RescaleSlope: " << this->RescaleSlope << "\n";
   os << indent << "RescaleIntercept: " << this->RescaleIntercept << "\n";
@@ -942,9 +944,11 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     }
 
   // compute the number of slices in the output image
-  int trueLocations = numSlices/slicesPerLocation;
-  int locations = trueLocations;
-  if (temporalPositions > 0 && this->TimeAsVector == 0)
+  int spatialLocations = numSlices/slicesPerLocation;
+  int locations = spatialLocations;
+  if (temporalPositions > 0 &&
+      this->TimeAsVector == 0 &&
+      this->DesiredTimeIndex < 0)
     {
     locations *= temporalPositions;
     }
@@ -968,22 +972,36 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   // write out the sorted indices
   bool flipOrder = (this->MemoryRowOrder == vtkDICOMReader::BottomUp);
   int filesPerOutputSlice = numSlices/locations;
-  int locationsPerTrueLocation = locations/trueLocations;
-  files->SetNumberOfComponents(filesPerOutputSlice);
+  int locationsPerSpatialLocation = locations/spatialLocations;
+  int numberOfComponents = filesPerOutputSlice;
+  int desiredTimeIndex = this->DesiredTimeIndex;
+  if (desiredTimeIndex < 0)
+    {
+    desiredTimeIndex = 0;
+    }
+  else
+    {
+    desiredTimeIndex %= temporalPositions;
+    numberOfComponents /= temporalPositions;
+    }
+
+  files->SetNumberOfComponents(numberOfComponents);
   files->SetNumberOfTuples(locations);
-  frames->SetNumberOfComponents(filesPerOutputSlice);
+  frames->SetNumberOfComponents(numberOfComponents);
   frames->SetNumberOfTuples(locations);
+
   for (int loc = 0; loc < locations; loc++)
     {
-    int trueLoc = loc/locationsPerTrueLocation;
-    int j = loc - trueLoc*locationsPerTrueLocation;
+    int l = loc/locationsPerSpatialLocation;
+    int j = loc - l*locationsPerSpatialLocation;
     if (flipOrder)
       {
-      trueLoc = trueLocations - trueLoc - 1;
+      l = spatialLocations - l - 1;
       }
-    for (int k = 0; k < filesPerOutputSlice; k++)
+    for (int k = 0; k < numberOfComponents; k++)
       {
-      int i = (trueLoc*locationsPerTrueLocation + j)*filesPerOutputSlice + k;
+      int i = ((l*locationsPerSpatialLocation + j)*filesPerOutputSlice +
+               desiredTimeIndex*numberOfComponents + k);
       files->SetComponent(loc, k, info[i].FileNumber);
       frames->SetComponent(loc, k, info[i].FrameNumber);
       }

@@ -118,6 +118,11 @@ public:
   double GetTimeSpacing() { return this->TimeSpacing; }
 
   // Description:
+  // Set the desired time index (set to -1 for all).
+  vtkSetMacro(DesiredTimeIndex, int);
+  vtkGetMacro(DesiredTimeIndex, int);
+
+  // Description:
   // Get the slope and intercept for rescaling the scalar values.
   // These values allow calibration of the data to real values.
   // Use the equation v = u*RescaleSlope + RescaleIntercept.
@@ -248,6 +253,7 @@ protected:
   // Time dimension variables.
   int TimeAsVector;
   int TimeDimension;
+  int DesiredTimeIndex;
   double TimeSpacing;
 
   // Description:
