@@ -316,7 +316,7 @@ const vtkDICOMValue& vtkDICOMReaderGetFrameAttributeValue(
 // compute spatial location from position and orientation
 double vtkDICOMReaderComputeLocation(
   const vtkDICOMValue& pv, const vtkDICOMValue& ov,
-  double checkNormal[4], bool *checkPtr)
+  double checkOrientation[10], bool *checkPtr)
 {
   double location = 0.0;
 
@@ -332,34 +332,63 @@ double vtkDICOMReaderComputeLocation(
 
     // compute the cross product to get the slice normal
     vtkMath::Cross(&orientation[0], &orientation[3], normal);
+    vtkMath::Normalize(normal);
     location = vtkMath::Dot(normal, position);
 
-    if (checkNormal[3] == 0)
+    if (checkOrientation[9] == 0)
       {
-      // save the normal of the first slice for later checks
-      checkNormal[0] = normal[0];
-      checkNormal[1] = normal[1];
-      checkNormal[2] = normal[2];
-      checkNormal[3] = 1.0;
+      // save the orientation and position for later checks
+      for (int i = 0; i < 3; i++)
+        {
+        checkOrientation[i] = orientation[i];
+        checkOrientation[3+i] = orientation[3+i];
+        checkOrientation[6+i] = position[i];
+        }
+      // indicate that checkOrientation has been set
+      checkOrientation[9] = 1.0;
       }
     else
       {
-      // make sure all slices have the same normal
-      double a = vtkMath::Dot(normal, checkNormal);
-      double b = vtkMath::Dot(normal, normal);
-      double c = vtkMath::Dot(checkNormal, checkNormal);
-      // compute the sine of the angle between the normals
-      // (actually compute the square of the sine, it's easier)
-      double d = 1.0;
-      if (b > 0 && c > 0)
+      const double directionTolerance = 1e-4;
+      const double positionTolerance = 1e-3;
+      for (int i = 0; i < 2; i++)
         {
-        d = 1.0 - (a*a)/(b*c);
+        // make sure the orientation vectors stay the same
+        double *vec = &orientation[3*i];
+        double *checkVec = &checkOrientation[3*i];
+        double a = vtkMath::Dot(vec, checkVec);
+        double b = vtkMath::Dot(vec, vec);
+        double c = vtkMath::Dot(checkVec, checkVec);
+        // compute the sine of the angle between the normals
+        // (actually compute the square of the sine, it's easier)
+        double d = 1.0;
+        if (b > 0 && c > 0)
+          {
+          d = 1.0 - (a*a)/(b*c);
+          }
+        // the tolerance is in radians (small angle approximation)
+        if (d > directionTolerance*directionTolerance)
+          {
+          // not all slices have the same orientation
+          *checkPtr = false;
+          }
         }
-      // the tolerance is in radians (small angle approximation)
-      const double directionTolerance = 1e-3;
-      if (d > directionTolerance*directionTolerance)
+      // make sure the positions line up
+      double *checkPosition = &checkOrientation[6];
+      double v[3];
+      v[0] = position[0] - checkPosition[0];
+      v[1] = position[1] - checkPosition[1];
+      v[2] = position[2] - checkPosition[2];
+      double t = vtkMath::Dot(v, normal);
+      v[0] -= t*normal[0];
+      v[1] -= t*normal[1];
+      v[2] -= t*normal[2];
+      double d = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
+      // the position tolerance is in millimetres
+      if (d > (positionTolerance*positionTolerance +
+               t*t*directionTolerance*directionTolerance))
         {
-        // not all slices have the same normal
+        // positions don't line up along the normal
         *checkPtr = false;
         }
       }
@@ -444,7 +473,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   std::vector<vtkDICOMReaderSortInfo> info;
 
   // important position-related variables
-  double checkNormal[4] = { 0.0, 0.0, 0.0, 0.0 };
+  double checkOrientation[10] = {};
   bool canSortByIPP = true;
   double spacingBetweenSlices =
     meta->GetAttributeValue(DC::SpacingBetweenSlices).AsDouble();
@@ -568,6 +597,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           // compute location from orientation and IPP
           double location = vtkDICOMReaderComputeLocation(
             pv, ov, stackCheckNormal, &canSortStackByIPP);
+
           location /= spacingBetweenSlices;
 
           stackInfo.push_back(
@@ -577,7 +607,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           {
           // compute location from orientation and IPP
           double location = vtkDICOMReaderComputeLocation(
-            pv, ov, checkNormal, &canSortByIPP);
+            pv, ov, checkOrientation, &canSortByIPP);
           location /= spacingBetweenSlices;
 
           info.push_back(
@@ -634,7 +664,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
         i, DC::ImageOrientationPatient);
 
       location = vtkDICOMReaderComputeLocation(
-        pv, ov, checkNormal, &canSortByIPP);
+        pv, ov, checkOrientation, &canSortByIPP);
       location /= spacingBetweenSlices;
 
       int numberOfFrames =
