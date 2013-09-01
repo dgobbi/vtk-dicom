@@ -538,7 +538,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
         if (timeTag.GetGroup() != 0)
           {
           t = vtkDICOMReaderGetFrameAttributeValue(
-          frameSeq, sharedSeq, k, timeSequence, timeTag).AsDouble();
+            frameSeq, sharedSeq, k, timeSequence, timeTag).AsDouble();
           }
 
         // get the StackID
@@ -618,6 +618,10 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       timeTag = DC::EchoTime;
       }
 
+    // position counter
+    int position = 0;
+    double lastTime = 0.0;
+
     for (int i = 0; i < numFiles; i++)
       {
       // get the instance number
@@ -643,11 +647,12 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           {
           t = meta->GetAttributeValue(i, timeTag).AsDouble();
           }
-        int position = 0;
-        if (meta->HasAttribute(DC::StackID))
+
+        // adjust position only if time did not change
+        if (fabs(t - lastTime) < 1e-3 || i == 0)
           {
-          position =
-            meta->GetAttributeValue(i, DC::InStackPositionNumber).AsInt();
+          position = inst;
+          lastTime = t;
           }
 
         info.push_back(
@@ -694,7 +699,6 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
             {
             double t = 0.0;
             double frameloc = location;
-            int position = 0;
             if (k < static_cast<int>(timeSlotVector.GetNumberOfValues()))
               {
               t = (timeSlotVector.GetDouble(k) - 1.0)*frameTimeSpacing;
