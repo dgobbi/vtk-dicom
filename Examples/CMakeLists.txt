@@ -1,5 +1,11 @@
 include_directories(${DICOM_INCLUDE_DIRS})
 
+if(VTK_LIBRARIES)
+  set(VTK_LIBS) # VTK 6.x
+else()
+  set(VTK_LIBS vtkRendering) # VTK 5.x
+endif()
+
 add_executable(TestDICOMParser TestDICOMParser.cxx)
 target_link_libraries(TestDICOMParser vtkDICOM)
 
@@ -10,7 +16,7 @@ add_executable(TestDICOMReader TestDICOMReader.cxx)
 target_link_libraries(TestDICOMReader vtkDICOM)
 
 add_executable(TestDICOMDisplay TestDICOMDisplay.cxx)
-target_link_libraries(TestDICOMDisplay vtkDICOM vtkRendering)
+target_link_libraries(TestDICOMDisplay vtkDICOM ${VTK_LIBS})
 
 add_executable(TestNIFTIDisplay TestNIFTIDisplay.cxx)
-target_link_libraries(TestNIFTIDisplay vtkDICOM vtkRendering)
+target_link_libraries(TestNIFTIDisplay vtkDICOM ${VTK_LIBS})

@@ -6,10 +6,16 @@ set(PROGRAM_SRCS
   niftidump.cxx
 )
 
+if(VTK_LIBRARIES)
+  set(VTK_LIBS) # VTK 6.x
+else()
+  set(VTK_LIBS vtkImaging) # VTK 5.x
+endif()
+
 foreach(src ${PROGRAM_SRCS})
   string(REGEX REPLACE "\\.(cxx|c|mm|m)$" "" prog ${src})
   add_executable(${prog} ${src})
-  target_link_libraries(${prog} vtkImaging vtkDICOM)
+  target_link_libraries(${prog} vtkDICOM ${VTK_LIBS})
   list(APPEND PROGRAM_EXES ${prog})
 endforeach()
 

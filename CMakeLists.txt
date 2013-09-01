@@ -162,8 +162,13 @@ foreach(arg ${LIB_SRCS})
 endforeach()
 
 # Create the libary
+if(VTK_LIBRARIES)
+  set(VTK_LIBS ${VTK_LIBRARIES}) # VTK 6.x
+else()
+  set(VTK_LIBS vtkIO vtkzlib) # VTK 5.x
+endif()
 add_library(${LIB_NAME} ${LIB_SRCS})
-target_link_libraries(${LIB_NAME} vtkIO ${GDCM_LIBS} vtkzlib)
+target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${GDCM_LIBS})
 set(DICOM_LIBRARIES ${LIB_NAME})
 
 # Set the install rules for the library
