@@ -16,6 +16,7 @@
 #include "vtkImageReader2.h"
 #include "vtkSmartPointer.h"
 #include "vtkStringArray.h"
+#include "vtkIntArray.h"
 
 #include "vtkTestUtilities.h"
 #include "vtkRegressionTestImage.h"
@@ -75,6 +76,9 @@ int main(int argc, char *argv[])
   vtkSmartPointer<vtkDICOMReader> reader =
     vtkSmartPointer<vtkDICOMReader>::New();
   reader->SetMemoryRowOrderToFileNative();
+  //reader->TimeAsVectorOn();
+  //reader->SetDesiredTimeIndex(5);
+  //reader->SetDesiredStackID("1");
   reader->SetFileNames(a);
 
   double range[2];
@@ -137,7 +141,7 @@ int main(int argc, char *argv[])
 
     vtkCamera *camera = renderer->GetActiveCamera();
     camera->SetFocalPoint(point);
-    point[imageMapper->GetOrientation()] += 500.0;
+    point[imageMapper->GetOrientation()] -= 500.0;
     camera->SetPosition(point);
     if (imageMapper->GetOrientation() == 2)
       {
@@ -161,6 +165,28 @@ int main(int argc, char *argv[])
     }
 
   renWin->Render();
+
+  vtkStringArray *sarray = reader->GetStackIDs();
+  if (sarray->GetNumberOfValues())
+    {
+    cout << "StackIDs:";
+    for (vtkIdType ii = 0; ii < sarray->GetNumberOfValues(); ii++)
+      {
+      cout << " \"" << sarray->GetValue(ii) << "\"";
+      }
+    cout << "\n";
+    }
+  if (reader->GetTimeDimension() > 1)
+    {
+    cout << "TimeDimension: " << reader->GetTimeDimension() << "\n";
+    cout << "TimeSpacing: " << reader->GetTimeSpacing() << "\n";
+    }
+  if (reader->GetFileIndexArray()->GetNumberOfComponents() > 1)
+    {
+    cout << "VectorDimension: "
+         << reader->GetFileIndexArray()->GetNumberOfComponents() << "\n";
+    }
+
   iren->Start();
 
   // code for generating a regression image
