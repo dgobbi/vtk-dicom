@@ -26,6 +26,7 @@
 
 class vtkIntArray;
 class vtkTypeInt64Array;
+class vtkStringArray;
 class vtkMatrix4x4;
 class vtkDICOMMetaData;
 class vtkDICOMParser;
@@ -64,6 +65,11 @@ public:
   // a different stack, if you know the DICOM StackID for the stack.
   void SetDesiredStackID(const char *stackId);
   const char *GetDesiredStackID() { return this->DesiredStackID; }
+
+  // Description:
+  // Get a list of the stacks the present in the input files.
+  // A stack is a contiguous array of slices that form a volume.
+  vtkStringArray *GetStackIDs() { return this->StackIDs; }
 
   // Description:
   // Get an array that converts slice index to input file index.
@@ -216,6 +222,10 @@ protected:
   // Description:
   // An array to convert slice indices to input frames
   vtkIntArray *FrameIndexArray;
+
+  // Description:
+  // An array that holds the stack IDs.
+  vtkStringArray *StackIDs;
 
   // Description:
   // The row order to use when storing the data in memory.

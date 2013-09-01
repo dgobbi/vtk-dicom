@@ -31,6 +31,7 @@
 #include "vtkStreamingDemandDrivenPipeline.h"
 #include "vtkStringArray.h"
 #include "vtkMath.h"
+#include "vtkVariant.h"
 #include "vtkCommand.h"
 #include "vtkErrorCode.h"
 #include "vtkSmartPointer.h"
@@ -47,6 +48,7 @@
 #include <algorithm>
 #include <iostream>
 #include <math.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 
 
@@ -61,6 +63,7 @@ vtkDICOMReader::vtkDICOMReader()
   this->Parser = 0;
   this->FileIndexArray = vtkIntArray::New();
   this->FrameIndexArray = vtkIntArray::New();
+  this->StackIDs = vtkStringArray::New();
   this->FileOffsetArray = 0;
   this->MetaData = vtkDICOMMetaData::New();
   this->PatientMatrix = vtkMatrix4x4::New();
@@ -102,6 +105,10 @@ vtkDICOMReader::~vtkDICOMReader()
     {
     this->FrameIndexArray->Delete();
     }
+  if (this->StackIDs)
+    {
+    this->StackIDs->Delete();
+    }
   if (this->MetaData)
     {
     this->MetaData->Delete();
@@ -129,6 +136,7 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "DesiredStackID: "
      << (*this->DesiredStackID ? "(empty)" : this->DesiredStackID) << "\n";
+  os << "StackIDs: " << this->StackIDs << "\n";
 
   os << indent << "FileIndexArray: " << this->FileIndexArray << "\n";
   os << indent << "FrameIndexArray: " << this->FrameIndexArray << "\n";
@@ -396,6 +404,16 @@ double vtkDICOMReaderComputeLocation(
         *checkPtr = false;
         }
       }
+    if (*checkPtr == false)
+      {
+      // re-set the check orientation to the current stack
+      for (int i = 0; i < 3; i++)
+        {
+        checkOrientation[i] = orientation[i];
+        checkOrientation[3+i] = orientation[3+i];
+        checkOrientation[6+i] = position[i];
+        }
+      }
     }
 
   return location;
@@ -492,6 +510,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   info.clear();
 
   // important position-related variables
+  std::vector<size_t> volumeBreaks;
   double checkOrientation[10] = {};
   bool canSortByIPP = true;
   double spacingBetweenSlices =
@@ -517,7 +536,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     vtkDICOMValue firstStackId;
     vtkDICOMValue desiredStackId =
       vtkDICOMValue(vtkDICOMVR::SH, this->DesiredStackID);
-    double stackCheckNormal[4] = { 0.0, 0.0, 0.0, 0.0 };
+    double stackCheckNormal[10] = {};
     bool canSortStackByIPP = true;
 
     // files have enhanced frame information
@@ -581,6 +600,9 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 
       for (int k = 0; k < numberOfFrames; k++)
         {
+        // default position is frame number
+        int position = k;
+
         // time: use chosen time tag, if present
         double t = 0.0;
         if (timeTag.GetGroup() != 0)
@@ -594,10 +616,22 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           frameSeq, sharedSeq, k, DC::FrameContentSequence,
           DC::StackID);
 
-        // position: look for InStackPositionNumber
-        int position = k;
         if (stackId.IsValid())
           {
+          // append new StackIDs to this->StackIDs
+          vtkIdType stacksFound = this->StackIDs->GetNumberOfValues();
+          std::string stackName = stackId.AsString();
+          vtkIdType si;
+          for (si = 0; si < stacksFound; si++)
+            {
+            if (stackName == this->StackIDs->GetValue(si)) { break; }
+            }
+          if (si == stacksFound)
+            {
+            this->StackIDs->InsertNextValue(stackName);
+            }
+
+          // position: look for InStackPositionNumber
           position = vtkDICOMReaderGetFrameAttributeValue(
             frameSeq, sharedSeq, k, DC::FrameContentSequence,
             DC::InStackPositionNumber).AsInt();
@@ -629,6 +663,14 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           double location = vtkDICOMReaderComputeLocation(
             pv, ov, checkOrientation, &canSortByIPP);
           location /= spacingBetweenSlices;
+
+          // force output of one single volume
+          if ((ii > 0 || k > 0) && !firstStackId.IsValid() &&
+              pv.IsValid() && !canSortByIPP)
+            {
+            canSortByIPP = true;
+            volumeBreaks.push_back(info.size());
+            }
 
           info.push_back(
             vtkDICOMReaderSortInfo(i, k, inst, position, location, t));
@@ -688,6 +730,13 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       location = vtkDICOMReaderComputeLocation(
         pv, ov, checkOrientation, &canSortByIPP);
       location /= spacingBetweenSlices;
+
+      // force output of one single rectilinear volume
+      if (ii > 0 && !canSortByIPP && pv.IsValid())
+        {
+        canSortByIPP = true;
+        volumeBreaks.push_back(info.size());
+        }
 
       int numberOfFrames =
         meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
@@ -782,6 +831,27 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
             }
           }
         }
+      }
+    }
+
+  // extract just one volume if more than one found
+  if (volumeBreaks.size() > 0)
+    {
+    size_t stt = strtoul(this->DesiredStackID, 0, 10);
+    if (stt > volumeBreaks.size())
+      {
+      stt = 0;
+      }
+    volumeBreaks.push_back(info.size());
+    info.erase(info.begin() + volumeBreaks[stt], info.end());
+    if (stt > 0)
+      {
+      info.erase(info.begin(), info.begin() + volumeBreaks[stt-1]);
+      }
+    for (size_t k = 0; k < volumeBreaks.size(); k++)
+      {
+      vtkVariant var(k);
+      this->StackIDs->InsertNextValue(var.ToString());
       }
     }
 
@@ -1002,6 +1072,7 @@ int vtkDICOMReader::RequestInformation(
   // Files are read in the order provided, but they might have
   // to be re-sorted to create a proper volume.  The FileIndexArray
   // holds the sorted order of the files.
+  this->StackIDs->Initialize();
   this->SortFiles(this->FileIndexArray, this->FrameIndexArray);
 
   // Get the file and frame for the first slice
