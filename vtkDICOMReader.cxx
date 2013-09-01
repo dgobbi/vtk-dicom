@@ -324,8 +324,7 @@ double vtkDICOMReaderComputeLocation(
     {
     *checkPtr = false;
     }
-
-  if (*checkPtr)
+  else
     {
     double orientation[6], normal[3], position[3];
     pv.GetValues(position, position+3);
