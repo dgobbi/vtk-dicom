@@ -1323,8 +1323,8 @@ int vtkDICOMReader::RequestInformation(
   this->SwapBytes = bigEndian;
 #endif
 
-  // for PET this will be different for each file, so PET data will have
-  // to be rescaled while it is being read
+  // for CT and PET the rescale information might vary from file to file,
+  // in which case the data will have to be rescaled while being read
   this->RescaleSlope = 1.0;
   this->RescaleIntercept = 0.0;
   this->NeedsRescale = false;
@@ -1358,6 +1358,24 @@ int vtkDICOMReader::RequestInformation(
     this->RescaleSlope = mMax;
     this->RescaleIntercept = bMax;
     }
+
+  if (this->MetaData->HasAttribute(DC::SharedFunctionalGroupsSequence))
+    {
+    vtkDICOMValue mv = this->MetaData->GetAttributeValue(fileIndex,
+      vtkDICOMTagPath(DC::SharedFunctionalGroupsSequence, 0,
+                      DC::PixelValueTransformationSequence, 0,
+                      DC::RescaleSlope));
+    vtkDICOMValue bv = this->MetaData->GetAttributeValue(fileIndex,
+      vtkDICOMTagPath(DC::SharedFunctionalGroupsSequence, 0,
+                      DC::PixelValueTransformationSequence, 0,
+                      DC::RescaleIntercept));
+   if (mv.IsValid() && bv.IsValid())
+     {
+     this->NeedsRescale = false;
+     this->RescaleSlope = mv.AsDouble();
+     this->RescaleIntercept = bv.AsDouble();
+     }
+   }
 
   // === Image Orientation in DICOM files ===
   //
