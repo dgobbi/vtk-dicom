@@ -839,7 +839,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
               t += frameTimeSpacing;
               }
             info.push_back(
-              vtkDICOMReaderSortInfo(i, k, inst, 0, location, t));
+              vtkDICOMReaderSortInfo(i, k, inst, inst, location, t));
             }
           }
         }
