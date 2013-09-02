@@ -73,7 +73,7 @@ public:
 
   // Description:
   // Get an array that converts slice index to input file index.
-  // If the data has multiple scalar components, then this will
+  // If the reader has generated scalar components, then this will
   // be a two-dimensional array and calling array->GetComponent(i,j)
   // will return the file index for slice i and scalar component j
   // for monochrome images, or for slice i and scalar component 3*j
@@ -95,10 +95,11 @@ public:
 
   // Description:
   // Get the meta data for the DICOM files.
-  // The GetAttributeValue() method of vtkDICOMMataData takes an optional
-  // index, which specifies the file to get the attribute from.  If you
-  // have a slice index rather than a file index, then use the FileIndexArray
-  // to convert the slice index into a file index.
+  // The GetAttributeValue() method of vtkDICOMMataData takes optional
+  // file and frame indices, which specify the file and the frame within
+  // that file to get the attribute from.  If you have a slice index rather
+  // than a file index and frame index, then use the FileIndexArray and
+  // FrameIndexArray to convert the slice index into file and frame indices.
   vtkDICOMMetaData *GetMetaData() { return this->MetaData; }
 
   // Description:
@@ -188,7 +189,7 @@ protected:
     const char *filename, int idx, char *buffer, vtkIdType bufferSize);
 
   // Description:
-  // Read an uncompressed DICOM file.
+  // Read a compressed DICOM file.
   virtual bool ReadCompressedFile(
     const char *filename, int idx, char *buffer, vtkIdType bufferSize);
 
