@@ -846,24 +846,47 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       }
     }
 
-  // extract just one volume if more than one found
+  // orientation changes suggest that multiple volumes are present
   if (volumeBreaks.size() > 0)
     {
-    size_t stt = strtoul(this->DesiredStackID, 0, 10);
-    if (stt > volumeBreaks.size())
+    // count the number of unique positions
+    size_t pcount = 0;
+    for (size_t j = 0; j < info.size(); j++)
       {
-      stt = 0;
+      int p = info[j].PositionNumber;
+      size_t k;
+      for (k = 0; k < j; k++)
+        {
+        if (info[k].PositionNumber == p) { break; }
+        }
+      pcount += (k == j);
       }
-    volumeBreaks.push_back(info.size());
-    info.erase(info.begin() + volumeBreaks[stt], info.end());
-    if (stt > 0)
+
+    if (volumeBreaks.size() + 1 > pcount/2)
       {
-      info.erase(info.begin(), info.begin() + volumeBreaks[stt-1]);
+      // too many unique volumes would be created, assume
+      // that the acquisition was not rectilinear.
+      canSortByIPP = false;
       }
-    for (size_t k = 0; k < volumeBreaks.size(); k++)
+    else
       {
-      vtkVariant var(k);
-      this->StackIDs->InsertNextValue(var.ToString());
+      // load just one of the rectilinear stacks that are present
+      size_t stt = strtoul(this->DesiredStackID, 0, 10);
+      if (stt > volumeBreaks.size())
+        {
+        stt = 0;
+        }
+      volumeBreaks.push_back(info.size());
+      info.erase(info.begin() + volumeBreaks[stt], info.end());
+      if (stt > 0)
+        {
+        info.erase(info.begin(), info.begin() + volumeBreaks[stt-1]);
+        }
+      for (size_t k = 0; k < volumeBreaks.size(); k++)
+        {
+        vtkVariant var(k);
+        this->StackIDs->InsertNextValue(var.ToString());
+        }
       }
     }
 
