@@ -38,16 +38,16 @@ public:
   //! Print a summary of the contents of this object.
   void PrintSelf(ostream& os, vtkIndent indent);
 
-  //! Set the number of instances (i.e. files).
+  //! Get the number of instances (i.e. files).
   /*!
    *  We want to track the metadata from all of the files that
    *  make up the image volume that we have loaded into VTK.
-   *  The number of file instances must be set here before any
-   *  attributes are set.  All the files should be from the same
+   *  This method gives the number of files used to construct
+   *  this meta data.  All the files should be from the same
    *  series.
    */
-  void SetNumberOfInstances(int n);
   int GetNumberOfInstances() { return this->NumberOfInstances; }
+  void SetNumberOfInstances(int n);
 
   //! Clear the metadata, initialize the structure.
   void Clear();
