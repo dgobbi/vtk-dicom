@@ -67,7 +67,7 @@ public:
   const char *GetDesiredStackID() { return this->DesiredStackID; }
 
   // Description:
-  // Get a list of the stacks the present in the input files.
+  // Get a list of the stacks that are present in the input files.
   // A stack is a contiguous array of slices that form a volume.
   vtkStringArray *GetStackIDs() { return this->StackIDs; }
 
