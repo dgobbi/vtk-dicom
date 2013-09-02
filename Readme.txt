@@ -8,3 +8,6 @@ See Copyright.txt for more details.
 This package contains a set of classes for managing DICOM
 files and metadata from within VTK, and some utility programs
 for interrogating and converting DICOM files.
+
+More information can be found at the following website:
+http://www.cognitive-antics.net/vtk-dicom/
