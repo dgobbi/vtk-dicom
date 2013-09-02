@@ -197,7 +197,7 @@ protected:
 
   // Description:
   // Sort the input files, put the sort in the supplied arrays.
-  void SortFiles(vtkIntArray *fileArray, vtkIntArray *frameArray);
+  virtual void SortFiles(vtkIntArray *fileArray, vtkIntArray *frameArray);
 
   // Description:
   // Information for rescaling data to quantitative units.
