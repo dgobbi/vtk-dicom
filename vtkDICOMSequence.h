@@ -43,7 +43,7 @@ public:
   void Clear() {
     this->V.AppendInit<vtkDICOMItem>(vtkDICOMVR::SQ); }
 
-  //! Get an a value from an item in the sequence.
+  //! Get a value from an item in the sequence.
   const vtkDICOMValue &GetAttributeValue(
     unsigned int i, vtkDICOMTag tag) const;
   const vtkDICOMValue &GetAttributeValue(
@@ -74,22 +74,22 @@ public:
   //! Get an item from the sequence.
   const vtkDICOMItem& GetItem(unsigned int i) const;
 
-  //! Get an iterator for the items in the sequence.
+  //! Get a pointer to the items in the sequence.
   const vtkDICOMItem *GetSequenceData() const {
     return this->V.GetSequenceData(); }
 
-  //! Use value copy constructor
+  //! Copy constructor.
   vtkDICOMSequence(const vtkDICOMSequence& o) : V(o.V) {}
 
-  //! Conversion from other value types is checked.
+  //! Conversion from value to sequence is type checked.
   vtkDICOMSequence(const vtkDICOMValue& o) : V(o) {
     if (o.GetVR() != vtkDICOMVR::SQ) { this->V.Clear(); } }
 
-  //! Use base class assignment operator.
+  //! Assignment operator.
   vtkDICOMSequence& operator=(const vtkDICOMSequence& o) {
     this->V = o.V; return *this; }
 
-  //! Assignment from other value types is checked
+  //! Assignment from value to sequence is type checked.
   vtkDICOMSequence& operator=(const vtkDICOMValue& o) {
     if (o.GetVR() == vtkDICOMVR::SQ) { this->V = o; return *this; }
     else { this->V.Clear(); } }

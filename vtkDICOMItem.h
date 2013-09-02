@@ -61,6 +61,11 @@ public:
   bool IsEmpty() const { return (this->L == 0); }
 
   //! Add a data element to this item.
+  /*!
+   *  This method can only be used before the item has been added
+   *  to a sequence.  After the item has become part of a sequence,
+   *  it is frozen and cannot be modified.
+   */
   void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
 
   //! Get a data element from this item.
@@ -78,12 +83,6 @@ public:
   //! Get an end iterator for the list of data elements.
   vtkDICOMDataElementIterator End() const {
     return (this->L ? &this->L->Tail : 0); }
-
-  //! Get the iterator for a specific data element.
-  /*!
-   *  If the element was not found, then End() will be returned.
-   */
-  vtkDICOMDataElementIterator Find() const;
 
   bool operator==(const vtkDICOMItem& o) const;
   bool operator!=(const vtkDICOMItem& o) const {
