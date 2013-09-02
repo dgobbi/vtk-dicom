@@ -70,6 +70,7 @@ vtkDICOMReader::vtkDICOMReader()
   this->MemoryRowOrder = vtkDICOMReader::BottomUp;
   this->NumberOfPackedComponents = 1;
   this->NumberOfPlanarComponents = 1;
+  this->Sorting = 1;
   this->TimeAsVector = 0;
   this->DesiredTimeIndex = -1;
   this->TimeDimension = 0;
@@ -142,6 +143,7 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "FileIndexArray: " << this->FileIndexArray << "\n";
   os << indent << "FrameIndexArray: " << this->FrameIndexArray << "\n";
 
+  os << indent << "Sorting: " << (this->Sorting ? "On\n" : "Off\n");
   os << indent << "TimeAsVector: "
      << (this->TimeAsVector ? "On\n" : "Off\n");
   os << indent << "TimeDimension: " << this->TimeDimension << "\n";
@@ -1014,6 +1016,30 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMReader::NoSortFiles(vtkIntArray *files, vtkIntArray *frames)
+{
+  vtkDICOMMetaData *meta = this->MetaData;
+  int numFiles = meta->GetNumberOfInstances();
+
+  files->Initialize();
+  frames->Initialize();
+  files->SetNumberOfComponents(1);
+  frames->SetNumberOfComponents(1);
+
+  for (int i = 0; i < numFiles; i++)
+    {
+    int numFrames = meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
+    numFrames = (numFrames > 0 ? numFrames : 1);
+
+    for (int j = 0; j < numFrames; j++)
+      {
+      files->InsertNextValue(i);
+      frames->InsertNextValue(j);
+      }
+    }
+}
+
+//----------------------------------------------------------------------------
 int vtkDICOMReader::RequestInformation(
   vtkInformation* vtkNotUsed(request),
   vtkInformationVector** vtkNotUsed(inputVector),
@@ -1099,7 +1125,14 @@ int vtkDICOMReader::RequestInformation(
   // to be re-sorted to create a proper volume.  The FileIndexArray
   // holds the sorted order of the files.
   this->StackIDs->Initialize();
-  this->SortFiles(this->FileIndexArray, this->FrameIndexArray);
+  if (this->Sorting)
+    {
+    this->SortFiles(this->FileIndexArray, this->FrameIndexArray);
+    }
+  else
+    {
+    this->NoSortFiles(this->FileIndexArray, this->FrameIndexArray);
+    }
 
   // Get the file and frame for the first slice
   int fileIndex = this->FileIndexArray->GetComponent(0, 0);

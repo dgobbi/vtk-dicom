@@ -102,6 +102,12 @@ public:
   vtkDICOMMetaData *GetMetaData() { return this->MetaData; }
 
   // Description:
+  // If the files have been pre-sorted, the sorting can be disabled.
+  vtkGetMacro(Sorting, int);
+  vtkSetMacro(Sorting, int);
+  vtkBooleanMacro(Sorting, int)
+
+  // Description:
   // Read the time dimension as scalar components (default: Off).
   // If this is on, then each time point will be stored as a scalar
   // component in the image data.  If the data has both a time dimension
@@ -198,6 +204,14 @@ protected:
   // Description:
   // Sort the input files, put the sort in the supplied arrays.
   virtual void SortFiles(vtkIntArray *fileArray, vtkIntArray *frameArray);
+
+  // Description:
+  // Do not sort the files, just build the arrays.
+  void NoSortFiles(vtkIntArray *fileArray, vtkIntArray *frameArray);
+
+  // Description:
+  // Select whether to sort the files.
+  int Sorting;
 
   // Description:
   // Information for rescaling data to quantitative units.
