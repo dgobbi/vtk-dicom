@@ -179,22 +179,22 @@ protected:
 
   // Description:
   // Read one file.  Specify the offset to the PixelData.
-  bool ReadOneFile(
+  virtual bool ReadOneFile(
     const char *filename, int idx, char *buffer, vtkIdType bufferSize);
 
   // Description:
   // Read an uncompressed DICOM file.
-  bool ReadUncompressedFile(
+  virtual bool ReadUncompressedFile(
     const char *filename, int idx, char *buffer, vtkIdType bufferSize);
 
   // Description:
   // Read an uncompressed DICOM file.
-  bool ReadCompressedFile(
+  virtual bool ReadCompressedFile(
     const char *filename, int idx, char *buffer, vtkIdType bufferSize);
 
   // Description:
   // Rescale the data in the buffer.
-  void RescaleBuffer(
+  virtual void RescaleBuffer(
     int idx, void *buffer, vtkIdType bufferSize);
 
   // Description:
