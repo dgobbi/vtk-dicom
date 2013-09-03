@@ -538,9 +538,13 @@ void dicomtonifti_convert_one(
 
   // check if slices were reordered by the reader
   vtkIntArray *fileIndices = reader->GetFileIndexArray();
-  vtkIdType maxId = fileIndices->GetMaxId();
-  bool slicesReordered = (maxId > 0 &&
-    fileIndices->GetValue(0) > fileIndices->GetValue(maxId));
+  vtkIntArray *frameIndices = reader->GetFrameIndexArray();
+  vtkIdType maxId = fileIndices->GetNumberOfTuples() - 1;
+  int firstFile = fileIndices->GetComponent(0, 0);
+  int lastFile = fileIndices->GetComponent(maxId, 0);
+  int firstFrame = frameIndices->GetComponent(0, 0);
+  int lastFrame = frameIndices->GetComponent(maxId, 0);
+  bool slicesReordered = (lastFrame < firstFrame || lastFile < firstFile);
 
   // convert to NIFTI coordinate system
   vtkSmartPointer<vtkDICOMToRAS> converter =
@@ -720,8 +724,8 @@ void dicomtonifti_convert_one(
   hdr->SetXYZTUnits(0x12);
 
   // get the phase encoding direction
-  std::string phase =
-    meta->GetAttributeValue(vtkDICOMTag(0x0018,0x1312)).AsString();
+  std::string phase = meta->GetAttributeValue(
+    firstFile, firstFrame, vtkDICOMTag(0x0018,0x1312)).AsString();
   if (phase == "COLUMN")
     {
     hdr->SetDimInfo((permutation[2] << 4) +
@@ -740,7 +744,8 @@ void dicomtonifti_convert_one(
     }
 
   // get the scale information, if same for all slices
-  if (meta->HasAttribute(DC::RescaleSlope))
+  if (meta->GetAttributeValue(
+       firstFile, firstFrame, DC::RescaleSlope).IsValid())
     {
     hdr->SetSclSlope(reader->GetRescaleSlope());
     hdr->SetSclInter(reader->GetRescaleIntercept());
@@ -748,16 +753,21 @@ void dicomtonifti_convert_one(
 
   // compute a cal_min, cal_max
   bool useWindowLevel = false;
-  if (meta->HasAttribute(DC::WindowWidth))
+  if (meta->GetAttributeValue(
+       firstFile, firstFrame, DC::WindowWidth).IsValid())
     {
     useWindowLevel = true;
-    double w = meta->GetAttributeValue(0, DC::WindowWidth).GetDouble(0);
-    double l = meta->GetAttributeValue(0, DC::WindowCenter).GetDouble(0);
-    int n = meta->GetNumberOfInstances();
+    double w = meta->GetAttributeValue(
+      firstFile, firstFrame, DC::WindowWidth).GetDouble(0);
+    double l = meta->GetAttributeValue(
+      firstFile, firstFrame, DC::WindowCenter).GetDouble(0);
+    int n = fileIndices->GetNumberOfTuples();
     for (int i = 1; i < n; i++)
       {
-      double tw = meta->GetAttributeValue(i, DC::WindowWidth).GetDouble(0);
-      double tl = meta->GetAttributeValue(i, DC::WindowCenter).GetDouble(0);
+      int j = fileIndices->GetComponent(i, 0);
+      int k = frameIndices->GetComponent(i, 0);
+      double tw = meta->GetAttributeValue(j, k, DC::WindowWidth).GetDouble(0);
+      double tl = meta->GetAttributeValue(j, k, DC::WindowCenter).GetDouble(0);
       if (tl != l || tw != w)
         {
         useWindowLevel = false;
