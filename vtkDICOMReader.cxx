@@ -908,25 +908,27 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 
     // look for slices at the same location
     std::vector<vtkDICOMReaderSortInfo>::iterator iter = info.begin();
-    std::vector<vtkDICOMReaderSortInfo>::iterator lastIter = iter;
     int slicesAtThisLocation = 0;
     while (iter != info.end())
       {
-      ++iter;
+      std::vector<vtkDICOMReaderSortInfo>::iterator nextIter = iter + 1;
       slicesAtThisLocation++;
-      // use the tolerance built into CompareLocation
       bool positionIncreased = false;
-      if (canSortByIPP)
+      if (nextIter != info.end())
         {
-        positionIncreased =
-          vtkDICOMReaderSortInfo::CompareLocation(*lastIter, *iter);
+        // use the tolerance built into CompareLocation
+        if (canSortByIPP)
+          {
+          positionIncreased =
+            vtkDICOMReaderSortInfo::CompareLocation(*iter, *nextIter);
+          }
+        else
+          {
+          positionIncreased =
+            vtkDICOMReaderSortInfo::ComparePosition(*iter, *nextIter);
+          }
         }
-      else
-        {
-        positionIncreased =
-          vtkDICOMReaderSortInfo::ComparePosition(*lastIter, *iter);
-        }
-      if (iter == info.end() || positionIncreased)
+      if (nextIter == info.end() || positionIncreased)
         {
         if (slicesPerLocation == 0)
           {
@@ -938,7 +940,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           }
         slicesAtThisLocation = 0;
         }
-      lastIter = iter;
+      iter = nextIter;
       }
     }
   if (slicesPerLocation <= 0)
