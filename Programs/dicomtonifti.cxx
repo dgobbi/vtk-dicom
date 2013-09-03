@@ -426,7 +426,7 @@ void dicomtonifti_read_options(
               }
             else
               {
-              if (argi + 1 >= argc)
+              if (argi >= argc)
                 {
                 fprintf(stderr, "\nA file must follow the \'-o\' flag\n\n");
                 dicomtonifti_usage(stderr, argv[0]);
