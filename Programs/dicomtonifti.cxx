@@ -710,13 +710,13 @@ void dicomtonifti_convert_one(
   if (date.length() >= 8)
     {
     const char *months[13] = { "/   /", "/Jan/", "/Feb/", "/Mar/", "/Apr/",
-      "/May/", "/Jun/", "/Jul/", "/Aug/", "/Sep/", "/Nov/", "/Dec/" };
+      "/May/", "/Jun/", "/Jul/", "/Aug/", "/Sep/", "/Oct/", "/Nov/", "/Dec/" };
     unsigned int month = (date[4] - '0')*10 + (date[5] - '0');
     month = (month > 12 ? 0 : month);
     date = date.substr(6, 2) + months[month] + date.substr(0, 4);
     }
   std::string descrip = date + " " +
-    meta->GetAttributeValue(DC::SeriesDescription).AsString() + ' ' +
+    meta->GetAttributeValue(DC::SeriesDescription).AsString() + " " +
     meta->GetAttributeValue(DC::StudyID).AsString();
   descrip = descrip.substr(0, 79);
 
