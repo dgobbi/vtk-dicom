@@ -420,9 +420,27 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
     // this is a group length element, which has VR of "UL"
     vr = vtkDICOMVR::UL;
     }
+  else if ((tag.GetGroup() & 0x1) != 0 &&
+           tag.GetElement() >= 0x0010 && tag.GetElement() < 0x0100)
+    {
+    // this is a private creator tag
+    vr = vtkDICOMVR::LO;
+    }
   else
     {
-    vtkDICOMDictEntry de = vtkDICOMDictionary::FindDictEntry(tag);
+    vtkDICOMDictEntry de;
+    if ((tag.GetGroup() & 0x1) == 0)
+      {
+      de = vtkDICOMDictionary::FindDictEntry(tag);
+      }
+    else if (this->Item)
+      {
+      de = this->Item->FindDictEntry(tag);
+      }
+    else if (this->MetaData)
+      {
+      de = this->MetaData->FindDictEntry(tag);
+      }
     if (de.IsValid())
       {
       vr = de.GetVR();
