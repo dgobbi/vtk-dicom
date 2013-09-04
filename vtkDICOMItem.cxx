@@ -12,6 +12,7 @@
 
 =========================================================================*/
 #include "vtkDICOMItem.h"
+#include "vtkDICOMDictionary.h"
 #include "vtkDICOMTagPath.h"
 
 #include <assert.h>
@@ -150,6 +151,34 @@ const vtkDICOMValue &vtkDICOMItem::GetAttributeValue(
       }
     }
   return vtkDICOMItem::InvalidValue;
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMDictEntry vtkDICOMItem::FindDictEntry(vtkDICOMTag tag) const
+{
+  unsigned short group = tag.GetGroup();
+  unsigned short element = tag.GetElement();
+
+  // note that there is similar code in vtkDICOMMetaData
+  const char *dict = 0;
+  if (group & 1)
+    {
+    unsigned short creatorElement = element;
+    if (element > 0x00ffu)
+      {
+      creatorElement = (element >> 8);
+      element = (0x1000u | (element & 0x00ffu));
+      }
+    else
+      {
+      element = 0x0010u;
+      }
+    tag = vtkDICOMTag(group, element);
+    vtkDICOMTag creatorTag(group, creatorElement);
+    dict = this->GetAttributeValue(creatorTag).GetCharData();
+    }
+
+  return vtkDICOMDictionary::FindDictEntry(tag, dict);
 }
 
 //----------------------------------------------------------------------------

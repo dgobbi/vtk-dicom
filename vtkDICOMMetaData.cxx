@@ -534,6 +534,7 @@ vtkDICOMDictEntry vtkDICOMMetaData::FindDictEntry(vtkDICOMTag tag)
   unsigned short group = tag.GetGroup();
   unsigned short element = tag.GetElement();
 
+  // note that there is similar code in vtkDICOMItem
   const char *dict = 0;
   if (group & 1)
     {

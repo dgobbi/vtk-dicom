@@ -38,7 +38,8 @@ const char *fileBasename(const char *filename)
 
 // Print out one data element
 void printElement(
-  vtkDICOMMetaData *data, const vtkDICOMDataElementIterator &iter, int depth)
+  vtkDICOMMetaData *meta, const vtkDICOMItem *item,
+  const vtkDICOMDataElementIterator &iter, int depth)
 {
   vtkDICOMTag tag = iter->GetTag();
   int g = tag.GetGroup();
@@ -47,7 +48,15 @@ void printElement(
   unsigned int vl = v.GetVL();
   const char *vr = v.GetVR().GetText();
   const char *name = "";
-  vtkDICOMDictEntry d = data->FindDictEntry(tag);
+  vtkDICOMDictEntry d;
+  if (item)
+    {
+    d = item->FindDictEntry(tag);
+    }
+  else if (meta)
+    {
+    d = meta->FindDictEntry(tag);
+    }
   if (d.IsValid())
     {
     name = d.GetName();
@@ -179,7 +188,7 @@ void printElement(
 
         for (; siter != siterEnd; ++siter)
           {
-          printElement(data, siter, depth+1);
+          printElement(meta, &items[j], siter, depth+1);
           }
         }
       }
@@ -256,7 +265,7 @@ int main(int argc, char *argv[])
 
       for (; iter != iterEnd; ++iter)
         {
-        printElement(data, iter, 0);
+        printElement(data, 0, iter, 0);
         }
       }
     }

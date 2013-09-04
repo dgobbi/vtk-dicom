@@ -16,6 +16,7 @@
 
 #include "vtkDICOMModule.h"
 #include "vtkDICOMDataElement.h"
+#include "vtkDICOMDictEntry.h"
 #include "vtkDICOMReferenceCount.h"
 
 class vtkDICOMTagPath;
@@ -83,6 +84,14 @@ public:
   //! Get an end iterator for the list of data elements.
   vtkDICOMDataElementIterator End() const {
     return (this->L ? &this->L->Tail : 0); }
+
+  //! Look up a tag in the DICOM dictionary.
+  /*!
+   *  Unlike the method in vtkDICOMDictionary, this method can identify
+   *  the implementor of a private tag and look it up in the implementor's
+   *  dictionary.
+   */
+  vtkDICOMDictEntry FindDictEntry(vtkDICOMTag tag) const;
 
   bool operator==(const vtkDICOMItem& o) const;
   bool operator!=(const vtkDICOMItem& o) const {
