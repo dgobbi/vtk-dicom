@@ -15,7 +15,6 @@
 #include "vtkDICOMParser.h"
 #include "vtkDICOMSorter.h"
 #include "vtkDICOMMetaData.h"
-#include "vtkDICOMDictionary.h"
 #include "vtkDICOMItem.h"
 
 #include <vtkStringArray.h>
@@ -38,7 +37,8 @@ const char *fileBasename(const char *filename)
 }
 
 // Print out one data element
-void printElement(const vtkDICOMDataElementIterator &iter, int depth)
+void printElement(
+  vtkDICOMMetaData *data, const vtkDICOMDataElementIterator &iter, int depth)
 {
   vtkDICOMTag tag = iter->GetTag();
   int g = tag.GetGroup();
@@ -47,7 +47,7 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
   unsigned int vl = v.GetVL();
   const char *vr = v.GetVR().GetText();
   const char *name = "";
-  vtkDICOMDictEntry d = vtkDICOMDictionary::FindDictEntry(tag);
+  vtkDICOMDictEntry d = data->FindDictEntry(tag);
   if (d.IsValid())
     {
     name = d.GetName();
@@ -179,7 +179,7 @@ void printElement(const vtkDICOMDataElementIterator &iter, int depth)
 
         for (; siter != siterEnd; ++siter)
           {
-          printElement(siter, depth+1);
+          printElement(data, siter, depth+1);
           }
         }
       }
@@ -256,7 +256,7 @@ int main(int argc, char *argv[])
 
       for (; iter != iterEnd; ++iter)
         {
-        printElement(iter, 0);
+        printElement(data, iter, 0);
         }
       }
     }

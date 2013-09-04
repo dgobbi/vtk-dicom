@@ -464,7 +464,7 @@ void vtkDICOMMetaData::SetAttributeValue(
 vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
 {
   vtkDICOMVR vr = vtkDICOMVR::UN;
-  vtkDICOMDictEntry e = vtkDICOMDictionary::FindDictEntry(tag);
+  vtkDICOMDictEntry e = this->FindDictEntry(tag);
 
   if (e.IsValid())
     {
@@ -526,6 +526,33 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
     }
 
   return vr;
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMDictEntry vtkDICOMMetaData::FindDictEntry(vtkDICOMTag tag)
+{
+  unsigned short group = tag.GetGroup();
+  unsigned short element = tag.GetElement();
+
+  const char *dict = 0;
+  if (group & 1)
+    {
+    unsigned short creatorElement = element;
+    if (element > 0x00ffu)
+      {
+      creatorElement = (element >> 8);
+      element = (0x1000u | (element & 0x00ffu));
+      }
+    else
+      {
+      element = 0x0010u;
+      }
+    tag = vtkDICOMTag(group, element);
+    vtkDICOMTag creatorTag(group, creatorElement);
+    dict = this->GetAttributeValue(creatorTag).GetCharData();
+    }
+
+  return vtkDICOMDictionary::FindDictEntry(tag, dict);
 }
 
 //----------------------------------------------------------------------------

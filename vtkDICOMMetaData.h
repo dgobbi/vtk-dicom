@@ -17,6 +17,7 @@
 #include <vtkObject.h>
 #include "vtkDICOMModule.h"
 #include "vtkDICOMDataElement.h"
+#include "vtkDICOMDictEntry.h"
 
 class vtkDICOMTagPath;
 
@@ -129,6 +130,14 @@ public:
   void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
   void SetAttributeValue(vtkDICOMTag tag, double v);
   void SetAttributeValue(vtkDICOMTag tag, const std::string& v);
+
+  //! Look up a tag in the DICOM dictionary.
+  /*!
+   *  Unlike the method in vtkDICOMDictionary, this method can identify
+   *  the implementor of a private tag and look it up in the implementor's
+   *  dictionary.
+   */
+  vtkDICOMDictEntry FindDictEntry(vtkDICOMTag tag);
 
 protected:
   vtkDICOMMetaData();
