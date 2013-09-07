@@ -428,7 +428,7 @@ void Encoder<E>::PutValues(
   do
     {
     Encoder<E>::PutInt16(op, ip->GetGroup());
-    Encoder<E>::PutInt16(op, ip->GetElement());
+    Encoder<E>::PutInt16(op+2, ip->GetElement());
     ip++;
     op += 4;
     }
@@ -527,7 +527,7 @@ bool Encoder<E>::WriteDataElement(
     for (unsigned int i = 0; i < n && vl != HxFFFFFFFF; i++)
       {
       unsigned int ll = this->DataSize(ptr[i].Begin(), ptr[i].End());
-      vl = (ll != HxFFFFFFFF ? vl + ll : ll);
+      vl = (ll != HxFFFFFFFF ? vl + ll + 8: ll);
       }
     }
   else
@@ -1052,15 +1052,14 @@ unsigned int vtkDICOMCompiler::ComputePixelDataSize()
       {
       vl = (bitsAllocated == 32 ? 4 : 2);
       }
-    vl *= meta->GetAttributeValue(DC::SamplesPerPixel).AsUnsignedInt();
     vl *= meta->GetAttributeValue(DC::Columns).AsUnsignedInt();
     vl *= meta->GetAttributeValue(DC::Rows).AsUnsignedInt();
+    unsigned int m = meta->GetAttributeValue(
+      DC::SamplesPerPixel).AsUnsignedInt();
     unsigned int n = meta->GetAttributeValue(
       this->Index, DC::NumberOfFrames).AsUnsignedInt();
-    if (n > 1)
-      {
-      vl *= n;
-      }
+    vl *= ((m > 1) ? m : 1);
+    vl *= ((n > 1) ? n : 1);
     }
 
   return vl;
