@@ -872,6 +872,17 @@ unsigned int Decoder<E>::ReadElementValue(
           break;
           }
         }
+      if (vl != HxFFFFFFFF)
+        {
+        // create a sequence with vl != 0xffffffff
+        unsigned int n = seq.GetNumberOfItems();
+        vtkDICOMSequence seq2(n);
+        for (unsigned int i = 0; i < n; i++)
+          {
+          seq2.SetItem(i, seq.GetItem(i));
+          }
+        seq = seq2;
+        }
       v = seq;
       }
       break;
