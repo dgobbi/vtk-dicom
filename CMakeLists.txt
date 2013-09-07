@@ -133,6 +133,7 @@ set(LIB_SRCS
   vtkDICOMDictHash.cxx
   vtkDICOMDictEntry.cxx
   vtkDICOMParser.cxx
+  vtkDICOMCompiler.cxx
   vtkDICOMReader.cxx
   vtkDICOMSequence.cxx
   vtkDICOMItem.cxx
