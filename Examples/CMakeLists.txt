@@ -6,6 +6,9 @@ else()
   set(VTK_LIBS vtkRendering) # VTK 5.x
 endif()
 
+add_executable(TestDICOMCompiler TestDICOMCompiler.cxx)
+target_link_libraries(TestDICOMCompiler vtkDICOM)
+
 add_executable(TestDICOMParser TestDICOMParser.cxx)
 target_link_libraries(TestDICOMParser vtkDICOM)
 
