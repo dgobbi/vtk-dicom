@@ -110,16 +110,16 @@ int main(int argc, char *argv[])
     if (i == 0)
       {
       TestAssert(iter->GetTag() == DC::AcquisitionDateTime);
-      TestAssert(iter->GetValue().AsString() == acquisitionTime);
       TestAssert(iter->GetVR() == vtkDICOMVR::DT);
-      TestAssert(iter->GetVL() == 26);
+      TestAssert(iter->GetValue().GetVL() == 26);
+      TestAssert(iter->GetValue().AsString() == acquisitionTime);
       }
     else
       {
       TestAssert(iter->GetTag() == DC::Modality);
-      TestAssert(iter->GetValue().AsString() == "CT");
       TestAssert(iter->GetVR() == vtkDICOMVR::CS);
-      TestAssert(iter->GetVL() == 2);
+      TestAssert(iter->GetValue().GetVL() == 2);
+      TestAssert(iter->GetValue().AsString() == "CT");
       }
     ++iter;
     }

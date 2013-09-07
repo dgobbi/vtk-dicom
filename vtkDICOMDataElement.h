@@ -21,7 +21,10 @@
 //! A data element in a DICOM data set.
 /*!
  *  The DataElement contains an encoded attribute value, along
- *  with the tag that identifies the attribute.
+ *  with the tag that identifies the attribute.  The data elements
+ *  in a vtkDICOMMetaData object can be per-instance, with a different
+ *  value for each data set instance used to build the the meta data
+ *  for the image series.
  */
 class VTK_DICOM_EXPORT vtkDICOMDataElement
 {
@@ -30,10 +33,25 @@ public:
   vtkDICOMDataElement(const vtkDICOMTag& t, const vtkDICOMValue &v) :
     Tag(t), Value(v), Next(0), Prev(0) {}
 
+  //! Get the tag for this data element.
   vtkDICOMTag GetTag() const { return this->Tag; }
+
+  //! Get the VR for this data element.
   vtkDICOMVR GetVR() const { return this->Value.GetVR(); }
-  unsigned int GetVL() const { return this->Value.GetVL(); }
+
+  //! Check whether this data element carries per-instance values.
+  bool IsPerInstance() { return (this->Value.GetMultiplexData() != 0); }
+
+  //! Get the number of value instances in this data element.
+  int GetNumberOfInstances() { return this->Value.GetNumberOfValues(); }
+
+  //! Get the value of the data element, if not multi-valued.
   const vtkDICOMValue& GetValue() const { return this->Value; }
+
+  //! Get value instance i, if the data element is multi-valued.
+  const vtkDICOMValue& GetValue(int i) const {
+    const vtkDICOMValue *vptr = this->Value.GetMultiplexData();
+    return (vptr == 0 ? this->Value : vptr[i]); }
 
   bool operator==(const vtkDICOMDataElement& o) const {
     return (this->Tag == o.Tag && this->Value == o.Value); }
@@ -80,7 +98,7 @@ public:
     return vtkDICOMDataElementIterator(ptr); }
 
   const vtkDICOMDataElement *operator->() const { return this->Pointer; }
-  vtkDICOMDataElement operator*() const { return *this->Pointer; }
+  const vtkDICOMDataElement& operator*() const { return *this->Pointer; }
 
   bool operator==(const vtkDICOMDataElementIterator& it) const {
     return (this->Pointer == it.Pointer); }
