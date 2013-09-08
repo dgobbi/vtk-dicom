@@ -869,77 +869,14 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMCompiler::WritePixelDataHead()
-{
-  // the encoders to choose from
-  LittleEndianEncoder encoderLE(this, this->Index);
-  BigEndianEncoder encoderBE(this, this->Index);
-  EncoderBase *encoder = &encoderLE;
-
-  std::string &tsyntax = this->TransferSyntax;
-  if (tsyntax == "" || // If no meta header, use Implicit LE
-      tsyntax == "1.2.840.10008.1.2" ||  // Implicit LE
-      tsyntax == "1.2.840.10008.1.20")   // Papyrus Implicit LE
-    {
-    encoder->SetImplicitVR(true);
-    }
-  else if (tsyntax == "1.2.840.113619.5.2")  // GE LE with BE data
-    {
-    encoder->SetImplicitVR(true);
-    }
-  else if (tsyntax == "1.2.840.10008.1.2.2") // Explicit BE
-    {
-    encoder = &encoderBE;
-    }
-
-  vtkDICOMVR vr = vtkDICOMVR::OW;
-  int bitsAllocated = this->MetaData->GetAttributeValue(
-    DC::BitsAllocated).AsInt();
-  if ((bitsAllocated > 0 && bitsAllocated <= 8) || this->Compressed)
-    {
-    vr = vtkDICOMVR::OB;
-    }
-
-  if (this->KeepOriginalPixelDataVR)
-    {
-    int idx = (this->Index < 0 ? 0 : this->Index);
-    vtkDICOMVR vrOriginal = this->MetaData->GetAttributeValue(
-      idx, DC::PixelData).GetVR();
-    if (vrOriginal.IsValid())
-      {
-      vr = vrOriginal;
-      }
-    }
-
-  unsigned int vl = this->ComputePixelDataSize();
-
-  // write the data element head
-  char head[16];
-  unsigned int l = encoder->WriteElementHead(
-    reinterpret_cast<unsigned char *>(head),
-    vtkDICOMTag(0x7FE0,0x0010), vr, vl);
-  this->OutputStream->write(head, l);
-
-  return this->OutputStream->good();
-}
-
-//----------------------------------------------------------------------------
 void vtkDICOMCompiler::WritePixelData(const char *cp, vtkIdType size)
 {
-  this->WritePixelDataHead();
   this->OutputStream->write(cp, size);
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMCompiler::WriteFrame(const char *cp, vtkIdType size)
 {
-  if (this->FrameCounter == 0)
-    {
-    this->WritePixelDataHead();
-    }
-
-  this->FrameCounter++;
-
   if (this->Compressed)
     {
     // Compressed frames
@@ -972,6 +909,8 @@ void vtkDICOMCompiler::WriteFrame(const char *cp, vtkIdType size)
     // For uncompressed frames, write the data raw
     this->OutputStream->write(cp, size);
     }
+
+  this->FrameCounter++;
 }
 
 //----------------------------------------------------------------------------
@@ -1043,18 +982,53 @@ bool vtkDICOMCompiler::WriteMetaData(
     }
 
   // if last element is PixelData, don't write it yet
+  bool hasPixelData = false;
   if (iterEnd != iter)
     {
-    --iterEnd;
-    if (iterEnd->GetTag() != vtkDICOMTag(DC::PixelData))
+    vtkDICOMDataElementIterator finalElement = iterEnd;
+    --finalElement;
+    if (finalElement->GetTag() == vtkDICOMTag(DC::PixelData))
       {
-      ++iterEnd;
+      iterEnd = finalElement;
+      hasPixelData = true;
       }
     }
 
-  encoder->WriteElements(cp, ep, iter, iterEnd);
+  // write the meta data, get boolean status value
+  bool r = encoder->WriteElements(cp, ep, iter, iterEnd);
 
-  return true;
+  // write the PixelData element head
+  if (r && hasPixelData &&
+      (r = encoder->CheckBuffer(cp, ep, 12)) != false)
+    {
+    vtkDICOMVR vr = vtkDICOMVR::OW;
+    int bitsAllocated = this->MetaData->GetAttributeValue(
+      DC::BitsAllocated).AsInt();
+    if ((bitsAllocated > 0 && bitsAllocated <= 8) || this->Compressed)
+      {
+      vr = vtkDICOMVR::OB;
+      }
+
+    if (this->KeepOriginalPixelDataVR)
+      {
+      int idx = (this->Index < 0 ? 0 : this->Index);
+      vtkDICOMVR vrOriginal = this->MetaData->GetAttributeValue(
+        idx, DC::PixelData).GetVR();
+      if (vrOriginal.IsValid())
+        {
+        vr = vrOriginal;
+        }
+      }
+
+    unsigned int vl = this->ComputePixelDataSize();
+
+    // write the data element head
+    unsigned int l = encoder->WriteElementHead(
+      cp, vtkDICOMTag(DC::PixelData), vr, vl);
+    cp += l;
+    }
+
+  return r;
 }
 
 //----------------------------------------------------------------------------

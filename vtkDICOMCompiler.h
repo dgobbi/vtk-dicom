@@ -119,9 +119,6 @@ protected:
     unsigned char* &cp, unsigned char* &ep,
     vtkDICOMMetaData *data, int idx);
 
-  //! Write the pixel data head (0x7FE0,0x0010)
-  bool WritePixelDataHead();
-
   //! Compute the size of the pixel data (0xffffffff if compressed).
   unsigned int ComputePixelDataSize();
 
