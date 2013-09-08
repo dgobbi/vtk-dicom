@@ -22,6 +22,18 @@
 const vtkDICOMValue vtkDICOMItem::InvalidValue;
 
 //----------------------------------------------------------------------------
+vtkDICOMItem::vtkDICOMItem(int delimited)
+{
+  this->L = new List;
+  this->L->NumberOfDataElements = 0;
+  this->L->Delimited = (delimited != 0);
+  this->L->Head.Prev = 0;
+  this->L->Head.Next = &this->L->Tail;
+  this->L->Tail.Prev = &this->L->Head;
+  this->L->Tail.Next = 0;
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMItem::FreeList()
 {
   vtkDICOMDataElement *ptr = this->L->Head.Next;
@@ -57,6 +69,7 @@ void vtkDICOMItem::CopyList(const List *o, List *t)
     }
 
   t->NumberOfDataElements = o->NumberOfDataElements;
+  t->Delimited = o->Delimited;
 }
 
 //----------------------------------------------------------------------------
@@ -68,6 +81,7 @@ void vtkDICOMItem::SetAttributeValue(
     {
     this->L = new List;
     this->L->NumberOfDataElements = 0;
+    this->L->Delimited = 0;
     this->L->Head.Prev = 0;
     this->L->Head.Next = &this->L->Tail;
     this->L->Tail.Prev = &this->L->Head;

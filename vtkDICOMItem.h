@@ -34,18 +34,22 @@ private:
   //! A reference counted list container class.
   struct List
   {
-    vtkDICOMReferenceCount ReferenceCount;
-    int NumberOfDataElements;
     vtkDICOMDataElement Head;
     vtkDICOMDataElement Tail;
+    vtkDICOMReferenceCount ReferenceCount;
+    int NumberOfDataElements;
+    bool Delimited;
 
-    List() : ReferenceCount(1) {}
+    List() : Head(), Tail(), ReferenceCount(1) {}
   };
 
 public:
 
   //! Default constructor creates an empty item.
   vtkDICOMItem() : L(0) {}
+
+  //! Constructor with flag for delimited item.
+  explicit vtkDICOMItem(int delimited);
 
   //! Copy constructor does reference counting.
   vtkDICOMItem(const vtkDICOMItem &o) : L(o.L) {
@@ -60,6 +64,10 @@ public:
 
   //! Check if empty.
   bool IsEmpty() const { return (this->L == 0); }
+
+  //! Check if this was read as a delimited item.
+  bool IsDelimited() const {
+    return (this->L == 0 || this->L->Delimited != 0); }
 
   //! Add a data element to this item.
   /*!

@@ -616,8 +616,8 @@ bool Encoder<E>::WriteDataElement(
 
       for (unsigned int i = 0; i < n && r; i++)
         {
-        unsigned int il = HxFFFFFFFF;
-        if (vl != HxFFFFFFFF)
+        unsigned int il = 0xFFFFFFFF;
+        if (!ptr[i].IsDelimited())
           {
           // compute the bytes in the item
           il = this->DataSize(ptr[i].Begin(), ptr[i].End());

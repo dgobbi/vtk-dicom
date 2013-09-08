@@ -850,7 +850,7 @@ unsigned int Decoder<E>::ReadElementValue(
           {
           // read one item
           vtkDICOMTag endtag(HxFFFE, HxE00D);
-          vtkDICOMItem item;
+          vtkDICOMItem item(il == HxFFFFFFFF);
           vtkDICOMItem *olditem = this->Item;
           this->SetItem(&item);
           this->ReadElements(cp, ep, il, endtag, l);
