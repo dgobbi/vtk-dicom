@@ -687,10 +687,9 @@ bool Encoder<E>::WriteElements(
         }
       unsigned int l = this->DataSize(iter, groupEnd);
       // check for uncounted PixelData element size in 0x7FE0 group
-      if (l != HxFFFFFFFF && group == 0x7FE0 &&
-          iter->GetTag() != vtkDICOMTag(0x7FE0, 0x0010))
+      if (l != HxFFFFFFFF && group == 0x7FE0 && iter == groupEnd)
         {
-        // add the image size
+        // add the size of the missing PixelData element
         unsigned int pl =
           vtkDICOMCompilerInternalFriendship::ComputePixelDataSize(
             this->Compiler);
@@ -737,6 +736,7 @@ vtkDICOMCompiler::vtkDICOMCompiler()
   this->Index = 0;
   this->FrameCounter = 0;
   this->Compressed = 0;
+  this->KeepOriginalPixelDataVR = 0;
   this->ErrorCode = 0;
 }
 
@@ -892,16 +892,25 @@ bool vtkDICOMCompiler::WritePixelDataHead()
     encoder = &encoderBE;
     }
 
-  vtkDICOMVR vr = vtkDICOMVR::OB;
-  if (!this->Compressed)
+  vtkDICOMVR vr = vtkDICOMVR::OW;
+  int bitsAllocated = this->MetaData->GetAttributeValue(
+    DC::BitsAllocated).AsInt();
+  if ((bitsAllocated > 0 && bitsAllocated <= 8) || this->Compressed)
     {
-    int bitsAllocated =
-      this->MetaData->GetAttributeValue(DC::BitsAllocated).AsInt();
-    if (bitsAllocated > 8)
+    vr = vtkDICOMVR::OB;
+    }
+
+  if (this->KeepOriginalPixelDataVR)
+    {
+    int idx = (this->Index < 0 ? 0 : this->Index);
+    vtkDICOMVR vrOriginal = this->MetaData->GetAttributeValue(
+      idx, DC::PixelData).GetVR();
+    if (vrOriginal.IsValid())
       {
-      vr = vtkDICOMVR::OW;
+      vr = vrOriginal;
       }
     }
+
   unsigned int vl = this->ComputePixelDataSize();
 
   // write the data element head
@@ -1033,6 +1042,16 @@ bool vtkDICOMCompiler::WriteMetaData(
     ++iter;
     }
 
+  // if last element is PixelData, don't write it yet
+  if (iterEnd != iter)
+    {
+    --iterEnd;
+    if (iterEnd->GetTag() != vtkDICOMTag(DC::PixelData))
+      {
+      ++iterEnd;
+      }
+    }
+
   encoder->WriteElements(cp, ep, iter, iterEnd);
 
   return true;
@@ -1046,20 +1065,28 @@ unsigned int vtkDICOMCompiler::ComputePixelDataSize()
     {
     // compute the size
     vtkDICOMMetaData *meta = this->MetaData;
-    vl = 1;
     int bitsAllocated = meta->GetAttributeValue(DC::BitsAllocated).AsInt();
-    if (bitsAllocated > 8)
+    if (bitsAllocated > 0)
       {
-      vl = (bitsAllocated == 32 ? 4 : 2);
+      vl = meta->GetAttributeValue(DC::Columns).AsUnsignedInt();
+      vl *= meta->GetAttributeValue(DC::Rows).AsUnsignedInt();
+      unsigned int m = meta->GetAttributeValue(
+        DC::SamplesPerPixel).AsUnsignedInt();
+      unsigned int n = meta->GetAttributeValue(
+        this->Index, DC::NumberOfFrames).AsUnsignedInt();
+      vl *= ((m > 1) ? m : 1);
+      vl *= ((n > 1) ? n : 1);
+      if (bitsAllocated % 8 == 0)
+        {
+        vl *= bitsAllocated/8;
+        }
+      else
+        {
+        // this will only occur in ancient data
+        vl = (vl*bitsAllocated + 7)/8;
+        vl += (vl & 1); // make it even
+        }
       }
-    vl *= meta->GetAttributeValue(DC::Columns).AsUnsignedInt();
-    vl *= meta->GetAttributeValue(DC::Rows).AsUnsignedInt();
-    unsigned int m = meta->GetAttributeValue(
-      DC::SamplesPerPixel).AsUnsignedInt();
-    unsigned int n = meta->GetAttributeValue(
-      this->Index, DC::NumberOfFrames).AsUnsignedInt();
-    vl *= ((m > 1) ? m : 1);
-    vl *= ((n > 1) ? n : 1);
     }
 
   return vl;
@@ -1097,4 +1124,6 @@ void vtkDICOMCompiler::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "MetaData: " << this->MetaData << "\n";
   os << indent << "Index: " << this->Index << "\n";
   os << indent << "BufferSize: " << this->BufferSize << "\n";
+  os << indent << "KeepOriginalPixelDataVR: "
+     << (this->KeepOriginalPixelDataVR ? "On\n" : "Off\n");
 }

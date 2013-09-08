@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
   vtkSmartPointer<vtkDICOMCompiler> compiler =
     vtkSmartPointer<vtkDICOMCompiler>::New();
   compiler->SetMetaData(data);
+  compiler->KeepOriginalPixelDataVROn();
 
   int m = sorter->GetNumberOfStudies();
   for (int j = 0; j < m; j++)

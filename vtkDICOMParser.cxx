@@ -154,6 +154,9 @@ public:
   // Get the last tag that was read.
   vtkDICOMTag GetLastTag() { return this->LastTag; }
 
+  // Get the VR of the last data element.
+  vtkDICOMVR GetLastVR() { return this->LastVR; }
+
 protected:
   // Constructor that initializes all of the members.
   DecoderBase(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
@@ -173,6 +176,7 @@ protected:
   bool ImplicitVR;
   // this is set to the last tag that was read.
   vtkDICOMTag LastTag;
+  vtkDICOMVR  LastVR;
 };
 
 //----------------------------------------------------------------------------
@@ -926,6 +930,7 @@ bool Decoder<E>::ReadElements(
 
     // save this as the most recent tag
     this->LastTag = tag;
+    this->LastVR = vr;
 
     // break if delimiter found
     if (!readGroup && tag == delimiter) { break; }
@@ -1048,6 +1053,7 @@ bool Decoder<E>::SkipElements(
 
       // save this as the most recent tag
       this->LastTag = vtkDICOMTag(g, e);
+      this->LastVR = vr;
 
       // break if delimiter found
       if (!readGroup && this->LastTag == delimiter) { break; }
@@ -1399,6 +1405,20 @@ bool vtkDICOMParser::ReadMetaData(
     }
 
   this->PixelDataFound = (decoder->GetLastTag() == DC::PixelData);
+  if (meta && this->PixelDataFound)
+    {
+    // add the PixelData attribute, but make it empty
+    unsigned short x;
+    vtkDICOMValue v(decoder->GetLastVR(), &x, &x);
+    if (idx >= 0)
+      {
+      meta->SetAttributeValue(idx, DC::PixelData, v);
+      }
+    else
+      {
+      meta->SetAttributeValue(DC::PixelData, v);
+      }
+    }
 
   this->ComputeFileOffset(cp, ep);
 

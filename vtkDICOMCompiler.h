@@ -77,6 +77,15 @@ public:
   //! Get the IO error code.
   unsigned long GetErrorCode() { return this->ErrorCode; }
 
+  //! Use the original PixelData VR when writing pixel data element.
+  /*!
+   *  This is really only useful when cloning data sets.  It ensures
+   *  that the written data uses the same VR as the original data.
+   */
+  vtkSetMacro(KeepOriginalPixelDataVR, int);
+  vtkBooleanMacro(KeepOriginalPixelDataVR, int);
+  vtkGetMacro(KeepOriginalPixelDataVR, int);
+
 protected:
   vtkDICOMCompiler();
   ~vtkDICOMCompiler();
@@ -126,6 +135,7 @@ protected:
   int Index;
   int FrameCounter;
   int Compressed;
+  int KeepOriginalPixelDataVR;
   unsigned long ErrorCode;
 
   // used to share FlushBuffer with internal classes
