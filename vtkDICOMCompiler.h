@@ -22,7 +22,7 @@ class vtkDICOMCompilerInternalFriendship;
 
 //! A writer for DICOM meta data.
 /*!
- *  This class provides routines for compiling a a vtkDICOMMetaData
+ *  This class provides routines for compiling a vtkDICOMMetaData
  *  object into a DICOM file.
  */
 class VTK_DICOM_EXPORT vtkDICOMCompiler : public vtkObject
@@ -64,11 +64,11 @@ public:
   /*!
    *  This method assumes that the supplied buffer is already in
    *  the correct format (endianness, compression, fragments, etc)
-   *  and writes it out to the file as a PixelData element.
+   *  and writes it out to the file as the PixelData value.
    */
   virtual void WritePixelData(const char *cp, vtkIdType size);
 
-  //! Write one frame.
+  //! Write one frame to the end of the file.
   virtual void WriteFrame(const char *cp, vtkIdType size);
 
   //! Close the file.
