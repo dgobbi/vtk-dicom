@@ -215,7 +215,8 @@ T *vtkDICOMValue::Allocate(vtkDICOMVR vr, unsigned int vn)
   this->Clear();
   // Use C++ "placement new" to allocate a single block of memory that
   // includes both the Value struct and the array of values.
-  void *vp = ValueMalloc(sizeof(Value) + vn*sizeof(T));
+  unsigned int n = vn + !vn; // add one if zero
+  void *vp = ValueMalloc(sizeof(Value) + n*sizeof(T));
   ValueT<T> *v = new(vp) ValueT<T>(vr, vn);
   // Test the assumption that Data is at an offset of sizeof(Value)
   assert(static_cast<char *>(static_cast<void *>(v->Data)) ==
