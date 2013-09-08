@@ -76,6 +76,10 @@ vtkNIFTIWriter::~vtkNIFTIWriter()
     {
     this->SFormMatrix->Delete();
     }
+  if (this->NIFTIHeader)
+    {
+    this->NIFTIHeader->Delete();
+    }
   delete [] this->Description;
 }
 
@@ -896,6 +900,9 @@ int vtkNIFTIWriter::RequestData(
 
   this->UpdateProgress(1.0);
   this->InvokeEvent(vtkCommand::EndEvent);
+
+  delete [] hdrname;
+  delete [] imgname;
 
   return 1;
 }
