@@ -14,6 +14,7 @@
 #include "vtkDICOMSorter.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMParser.h"
+#include "vtkDICOMUtilities.h"
 
 #include <vtkObjectFactory.h>
 #include <vtkSmartPointer.h>
@@ -188,46 +189,6 @@ vtkStringArray *vtkDICOMSorter::GetFileNamesForSeries(int i)
 }
 
 //----------------------------------------------------------------------------
-int vtkDICOMSorter::CompareUIDs(const char *u1, const char *u2)
-{
-  int r = 0;
-
-  if (u1 == 0 || u2 == 0)
-    {
-    // if one or both are null
-    r = (u2 == 0 ? r : -1);
-    r = (u1 == 0 ? r : 1);
-    }
-  else if (*u1 == 0 || *u2 == 0)
-    {
-    // if one or both are the empty string
-    r = (*u2 == 0 ? r : -1);
-    r = (*u1 == 0 ? r : 1);
-    }
-  else
-    {
-    do
-      {
-      int i1 = 0;
-      int i2 = 0;
-      do { i1++; } while (isdigit(u1[i1]));
-      do { i2++; } while (isdigit(u2[i2]));
-      r = i1 - i2; // longer number wins
-      if (r == 0)
-        { // lexically compare numbers of the same length
-        do { r = *u1++ - *u2++; } while (r == 0 && --i1 != 0);
-        }
-      }
-    while (r == 0 && *u1 != 0 && *u2 != 0);
-    // convert r to sgn(r)
-    r = (r >= 0 ? r : -1);
-    r = (r <= 0 ? r : 1);
-    }
-
-  return r;
-}
-
-//----------------------------------------------------------------------------
 void vtkDICOMSorter::AddSeriesFileNames(int study, vtkStringArray *files)
 {
   vtkIdType n = this->Studies->GetNumberOfTuples();
@@ -315,11 +276,13 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
     for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
       {
       // compare studyId first, then seriesId
-      int c1 = this->CompareUIDs(studyUID, (*li)[0].StudyUID.GetCharData());
+      int c1 = vtkDICOMUtilities::CompareUIDs(
+        studyUID, (*li)[0].StudyUID.GetCharData());
       int c2 = 0;
       if (c1 == 0)
         {
-        c2 = this->CompareUIDs(seriesUID, (*li)[0].SeriesUID.GetCharData());
+        c2 = vtkDICOMUtilities::CompareUIDs(
+          seriesUID, (*li)[0].SeriesUID.GetCharData());
         }
       if (c1 == 0 && c2 == 0)
         {

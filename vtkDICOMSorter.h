@@ -121,9 +121,6 @@ protected:
    */
   void AddSeriesFileNames(int study, vtkStringArray *files);
 
-  //! Numerically compare two UIDs.
-  static int CompareUIDs(const char *u1, const char *u2);
-
   //! Description:
   // Convert parser errors into sorter errors.
   void RelayError(vtkObject *o, unsigned long e, void *data);

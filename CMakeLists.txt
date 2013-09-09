@@ -139,6 +139,7 @@ set(LIB_SRCS
   vtkDICOMItem.cxx
   vtkDICOMSorter.cxx
   vtkDICOMReferenceCount.cxx
+  vtkDICOMUtilities.cxx
   vtkDICOMValue.cxx
   vtkDICOMToRAS.cxx
   vtkNIFTIHeader.cxx
