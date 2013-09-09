@@ -119,7 +119,6 @@ int main(int argc, char *argv[])
 
         if (parser->GetPixelDataFound())
           {
-          vtkTypeInt64 tp[2];
           offsetArray->GetTupleValue(i, tp);
 
           std::streamoff offset = static_cast<std::streamoff>(tp[0]);
@@ -155,9 +154,9 @@ int main(int argc, char *argv[])
           while (f.good())
             {
             f.read(hashbuf, static_cast<std::streamsize>(sizeof(hashbuf)));
-            std::streamsize n = f.gcount();
+            std::streamsize c = f.gcount();
             vtksysMD5_Append(
-              hasher, reinterpret_cast<unsigned char *>(hashbuf), n);
+              hasher, reinterpret_cast<unsigned char *>(hashbuf), c);
             }
 
           vtksysMD5_FinalizeHex(hasher, hash[jj]);

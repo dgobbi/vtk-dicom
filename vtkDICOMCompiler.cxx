@@ -1011,7 +1011,6 @@ bool vtkDICOMCompiler::WriteMetaData(
 
     if (this->KeepOriginalPixelDataVR)
       {
-      int idx = (this->Index < 0 ? 0 : this->Index);
       vtkDICOMVR vrOriginal = this->MetaData->GetAttributeValue(
         idx, DC::PixelData).GetVR();
       if (vrOriginal.IsValid())
