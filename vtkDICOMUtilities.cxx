@@ -193,7 +193,7 @@ void vtkGenerateRandomBytes(char *bytes, vtkIdType n)
     }
   if (r != 0)
     {
-    r = CryptGenRandom(hProv, n, bytes);
+    r = CryptGenRandom(hProv, n, reinterpret_cast<BYTE *>(bytes));
     CryptReleaseContext(hProv, 0);
     }
 #else
@@ -255,7 +255,7 @@ void vtkDICOMUtilities::GenerateUIDs(vtkStringArray *uids, vtkIdType n)
     vtkIdType j = m;
     for (; j < m+i; j++)
       {
-      if (vtkDICOMUtilities::CompareUIDs(uids->GetValue(j), uid) < 0)
+      if (vtkDICOMUtilities::CompareUIDs(uids->GetValue(j), uid) > 0)
         {
         break;
         }
