@@ -89,6 +89,17 @@ public:
   vtkSetStringMacro(SourceApplicationEntityTitle);
   vtkGetStringMacro(SourceApplicationEntityTitle);
 
+  //! Set the Transfer Syntax UID.
+  /*!
+   *  The transfer syntax should be left at its default value of
+   *  1.2.840.10008.1.2.1 (uncompressed little-endian with explicit VR)
+   *  unless you are cloning the PixelData byte for byte from another
+   *  image, in which case you should use the transfer syntax from that
+   *  image.
+   */
+  vtkSetStringMacro(TransferSyntaxUID);
+  vtkGetStringMacro(TransferSyntaxUID);
+
   //! Set the metadata object to write to the file.
   void SetMetaData(vtkDICOMMetaData *);
   vtkDICOMMetaData *GetMetaData() { return this->MetaData; }
@@ -186,7 +197,7 @@ protected:
   char *ImplementationClassUID;
   char *ImplementationVersionName;
   char *SourceApplicationEntityTitle;
-  std::string TransferSyntax;
+  char *TransferSyntaxUID;
   vtkDICOMMetaData *MetaData;
   vtkStringArray *SeriesUIDs;
   std::ostream *OutputStream;

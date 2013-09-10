@@ -786,6 +786,7 @@ vtkDICOMCompiler::vtkDICOMCompiler()
   this->ImplementationClassUID = NULL;
   this->ImplementationVersionName = NULL;
   this->SourceApplicationEntityTitle = NULL;
+  this->TransferSyntaxUID = NULL;
   this->MetaData = NULL;
   this->OutputStream = NULL;
   this->Buffer = NULL;
@@ -809,6 +810,11 @@ vtkDICOMCompiler::vtkDICOMCompiler()
     vtkDICOMUtilities::GetDefaultImplementationVersionName();
   this->ImplementationVersionName = new char[strlen(impname) + 1];
   strcpy(this->ImplementationVersionName, impname);
+
+  // This is our default transfer syntax
+  const char *tsyntax = "1.2.840.10008.1.2.1";
+  this->TransferSyntaxUID = new char[strlen(tsyntax) + 1];
+  strcpy(this->TransferSyntaxUID, tsyntax);
 }
 
 //----------------------------------------------------------------------------
@@ -824,6 +830,7 @@ vtkDICOMCompiler::~vtkDICOMCompiler()
   delete [] this->ImplementationClassUID;
   delete [] this->ImplementationVersionName;
   delete [] this->SourceApplicationEntityTitle;
+  delete [] this->TransferSyntaxUID;
 
   if (this->MetaData)
     {
@@ -1031,12 +1038,18 @@ bool vtkDICOMCompiler::WriteMetaHeader(
   unsigned char* &cp, unsigned char* &ep,
   vtkDICOMMetaData *meta, int idx)
 {
+  // if no transfer syntax is set, do not write header
+  if (this->TransferSyntaxUID == 0)
+    {
+    return true;
+    }
+
+  // create the encoder
   LittleEndianEncoder encoder(this, idx);
 
   unsigned int l = 0; // length will be computed later
   unsigned char metaver[2] = { 0, 1 }; // meta header version
   const char *instanceUID = this->SOPInstanceUID;
-  const char *syntaxUID = 0;
   const char *implementationUID = this->ImplementationClassUID;
 
   // use the same class as the input meta data
@@ -1048,19 +1061,6 @@ bool vtkDICOMCompiler::WriteMetaHeader(
   if (instanceUID == 0)
     {
     instanceUID = this->SeriesUIDs->GetValue(idx);
-    }
-  if (syntaxUID)
-    {
-    this->TransferSyntax = syntaxUID;
-    }
-  else
-    {
-    this->TransferSyntax =
-      meta->GetAttributeValue(idx, DC::TransferSyntaxUID).AsString();
-    if (this->TransferSyntax == "")
-      {
-      this->TransferSyntax = "1.2.840.10008.1.2.1";
-      }
     }
   if (implementationUID == 0)
     {
@@ -1083,7 +1083,7 @@ bool vtkDICOMCompiler::WriteMetaHeader(
     vtkDICOMValue(vtkDICOMVR::UI, instanceUID));
   item.SetAttributeValue(
     DC::TransferSyntaxUID,
-    vtkDICOMValue(vtkDICOMVR::UI, this->TransferSyntax));
+    vtkDICOMValue(vtkDICOMVR::UI, this->TransferSyntaxUID));
   item.SetAttributeValue(
     DC::ImplementationClassUID,
     vtkDICOMValue(vtkDICOMVR::UI, implementationUID));
@@ -1127,7 +1127,8 @@ bool vtkDICOMCompiler::WriteMetaData(
   this->Compressed = false;
 
   // anything not listed here is assumed to be Explicit LE
-  std::string &tsyntax = this->TransferSyntax;
+  std::string tsyntax =
+    (this->TransferSyntaxUID ? this->TransferSyntaxUID : "");
   if (tsyntax == "" || // If no meta header, use Implicit LE
       tsyntax == "1.2.840.10008.1.2" ||  // Implicit LE
       tsyntax == "1.2.840.10008.1.20")   // Papyrus Implicit LE
@@ -1153,8 +1154,7 @@ bool vtkDICOMCompiler::WriteMetaData(
     }
   if (seriesUID == 0)
     {
-    seriesUID = this->SeriesUIDs->GetValue(
-      this->SeriesUIDs->GetMaxId());
+    seriesUID = this->SeriesUIDs->GetValue(this->SeriesUIDs->GetMaxId());
     }
   if (studyUID == 0 &&
       meta->GetAttributeValue(DC::StudyInstanceUID).AsString() == "")
@@ -1305,6 +1305,8 @@ void vtkDICOMCompiler::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "SourceApplicationEntityTitle: "
      << (this->SourceApplicationEntityTitle ?
          this->SourceApplicationEntityTitle : "(NULL)") << "\n";
+  os << indent << "TransferSyntaxUID: "
+     << (this->TransferSyntaxUID ? this->TransferSyntaxUID : "(NULL)") << "\n";
   os << indent << "MetaData: " << this->MetaData << "\n";
   os << indent << "Index: " << this->Index << "\n";
   os << indent << "BufferSize: " << this->BufferSize << "\n";
