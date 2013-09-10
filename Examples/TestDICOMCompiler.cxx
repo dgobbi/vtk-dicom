@@ -16,6 +16,7 @@
 #include "vtkDICOMSorter.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMCompiler.h"
+#include "vtkDICOMUtilities.h"
 
 #include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
@@ -114,6 +115,16 @@ int main(int argc, char *argv[])
         // write the DICOM series with the compiler
         fname = a->GetValue(i);
         compiler->SetFileName(outfile);
+        compiler->SetSOPInstanceUID(data->GetAttributeValue(
+          DC::SOPInstanceUID).GetCharData());
+        compiler->SetSeriesInstanceUID(data->GetAttributeValue(
+          DC::SeriesInstanceUID).GetCharData());
+        compiler->SetImplementationClassUID(data->GetAttributeValue(
+          DC::ImplementationClassUID).GetCharData());
+        compiler->SetImplementationVersionName(data->GetAttributeValue(
+          DC::ImplementationVersionName).GetCharData());
+        compiler->SetSourceApplicationEntityTitle(data->GetAttributeValue(
+          DC::SourceApplicationEntityTitle).GetCharData());
         compiler->SetIndex(idx);
         compiler->WriteHeader();
 

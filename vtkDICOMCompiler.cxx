@@ -114,6 +114,10 @@ public:
   void SetSeriesInstanceUID(const char *uid) {
     this->SeriesInstanceUID = uid; };
 
+  // Set the study UID to use.
+  void SetStudyInstanceUID(const char *uid) {
+    this->StudyInstanceUID = uid; };
+
   // Write the data element head, return the length (8 or 12)
   virtual unsigned int WriteElementHead(
     unsigned char* cp, vtkDICOMTag tag, vtkDICOMVR vr, unsigned int vl) = 0;
@@ -150,6 +154,7 @@ protected:
   // the instance UID and series UID
   const char *SOPInstanceUID;
   const char *SeriesInstanceUID;
+  const char *StudyInstanceUID;
   // the instance index to use with the meta data
   int Index;
   // the sequence depth
@@ -748,6 +753,15 @@ bool Encoder<E>::WriteElements(
           vtkDICOMValue(vtkDICOMVR::UI, this->SeriesInstanceUID)));
       ++iter;
       }
+    else if (this->Depth == 0 && this->StudyInstanceUID &&
+             iter->GetTag() == vtkDICOMTag(DC::StudyInstanceUID))
+      {
+      this->WriteDataElement(cp, ep,
+        vtkDICOMDataElement(
+          vtkDICOMTag(DC::StudyInstanceUID),
+          vtkDICOMValue(vtkDICOMVR::UI, this->StudyInstanceUID)));
+      ++iter;
+      }
     else
       {
       this->WriteDataElement(cp, ep, *iter);
@@ -1025,7 +1039,8 @@ bool vtkDICOMCompiler::WriteMetaHeader(
   const char *syntaxUID = 0;
   const char *implementationUID = this->ImplementationClassUID;
 
-    // use the same class as the input meta data
+  // use the same class as the input meta data
+  // Secondary Capture is 1.2.840.10008.5.1.4.1.1.7
   std::string classUIDString =
     meta->GetAttributeValue(DC::SOPClassUID).AsString();
   const char *classUID = classUIDString.c_str();
@@ -1046,7 +1061,6 @@ bool vtkDICOMCompiler::WriteMetaHeader(
       {
       this->TransferSyntax = "1.2.840.10008.1.2.1";
       }
-    syntaxUID = this->TransferSyntax.c_str();
     }
   if (implementationUID == 0)
     {
@@ -1069,7 +1083,7 @@ bool vtkDICOMCompiler::WriteMetaHeader(
     vtkDICOMValue(vtkDICOMVR::UI, instanceUID));
   item.SetAttributeValue(
     DC::TransferSyntaxUID,
-    vtkDICOMValue(vtkDICOMVR::UI, syntaxUID));
+    vtkDICOMValue(vtkDICOMVR::UI, this->TransferSyntax));
   item.SetAttributeValue(
     DC::ImplementationClassUID,
     vtkDICOMValue(vtkDICOMVR::UI, implementationUID));
@@ -1086,11 +1100,10 @@ bool vtkDICOMCompiler::WriteMetaHeader(
     {
     item.SetAttributeValue(
       DC::SourceApplicationEntityTitle,
-      vtkDICOMValue(vtkDICOMVR::SH,
+      vtkDICOMValue(vtkDICOMVR::AE,
                     this->SourceApplicationEntityTitle));
     }
 
-  this->TransferSyntax = "";
   vtkDICOMDataElementIterator iter = item.Begin();
   vtkDICOMDataElementIterator iterEnd = item.End();
 
@@ -1131,7 +1144,8 @@ bool vtkDICOMCompiler::WriteMetaData(
     }
 
   const char *instanceUID = this->SOPInstanceUID;
-  const char *seriesUID = this->SOPInstanceUID;
+  const char *seriesUID = this->SeriesInstanceUID;
+  const char *studyUID = this->StudyInstanceUID;
 
   if (instanceUID == 0)
     {
@@ -1142,9 +1156,15 @@ bool vtkDICOMCompiler::WriteMetaData(
     seriesUID = this->SeriesUIDs->GetValue(
       this->SeriesUIDs->GetMaxId());
     }
+  if (studyUID == 0 &&
+      meta->GetAttributeValue(DC::StudyInstanceUID).AsString() == "")
+    {
+    studyUID = vtkDICOMCompiler::StudyUID;
+    }
 
   encoder->SetSOPInstanceUID(instanceUID);
   encoder->SetSeriesInstanceUID(seriesUID);
+  encoder->SetStudyInstanceUID(studyUID);
 
   vtkDICOMDataElementIterator iter = meta->Begin();
   vtkDICOMDataElementIterator iterEnd = meta->End();
