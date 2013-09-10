@@ -1270,7 +1270,7 @@ int vtkDICOMReader::RequestInformation(
   // datatype
   int scalarType = 0;
 
-  if (bitsAllocated == 8)
+  if (bitsAllocated == 8 || bitsAllocated == 1)
     {
     scalarType = (pixelRepresentation ? VTK_SIGNED_CHAR : VTK_UNSIGNED_CHAR);
     }
@@ -1552,10 +1552,14 @@ bool vtkDICOMReader::ReadUncompressedFile(
     return false;
     }
 
-  if (12 == this->MetaData->GetAttributeValue(
-        fileIdx, DC::BitsAllocated).AsInt())
+  int bitsAllocated = this->MetaData->GetAttributeValue(
+    fileIdx, DC::BitsAllocated).AsInt();
+
+  if (bitsAllocated == 12)
     {
-    // unpack 12 bits into 16 bits little endian
+    // unpack 12 bits little endian into 16 bits little endian,
+    // the result will have to be swapped if machine is BE (the
+    // swapping is done at the end of this function)
     size_t fileSize = bufferSize/2 + (bufferSize+3)/4;
     char *filePtr = buffer + (bufferSize - fileSize);
     infile.read(filePtr, fileSize);
@@ -1578,6 +1582,36 @@ bool vtkDICOMReader::ReadUncompressedFile(
 
       filePtr += 3;
       writePtr += 4;
+      }
+    }
+  else if (bitsAllocated == 1)
+    {
+    // unpack 1 bit into 8 bits, source assumed to be either OB
+    // or little endian OW, never big endian OW
+    size_t fileSize = (bufferSize + 7)/8;
+    char *filePtr = buffer + (bufferSize - fileSize);
+    infile.read(filePtr, fileSize);
+
+    char *writePtr = buffer;
+    for (vtkIdType n = bufferSize/8; n > 0; n--)
+      {
+      unsigned int a = static_cast<unsigned char>(*filePtr);
+      for (int i = 0; i < 8; i++)
+        {
+        writePtr[i] = (a & 1);
+        a >>= 1;
+        }
+      filePtr++;
+      writePtr += 8;
+      }
+    size_t r = (bufferSize % 8);
+    if (r > 0)
+      {
+      unsigned int a = static_cast<unsigned char>(*filePtr);
+      for (size_t j = 0; j < r; j++)
+        {
+        writePtr[j] = (a & 1);
+        }
       }
     }
   else
