@@ -15,9 +15,11 @@
 #include "vtkDICOMDictionary.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMSequence.h"
+#include "vtkDICOMUtilities.h"
 #include "vtkDICOMItem.h"
 
 #include <vtkObjectFactory.h>
+#include <vtkStringArray.h>
 #include <vtkUnsignedShortArray.h>
 #include <vtkErrorCode.h>
 
@@ -38,6 +40,8 @@
 
 vtkStandardNewMacro(vtkDICOMCompiler);
 vtkCxxSetObjectMacro(vtkDICOMCompiler, MetaData, vtkDICOMMetaData);
+
+char vtkDICOMCompiler::StudyUID[64] = {};
 
 /*----------------------------------------------------------------------------
 The top section of this file defines "Encoder" classes that compile
@@ -102,6 +106,14 @@ public:
   // Whether to use implicit VRs (default: explicit VRs).
   void SetImplicitVR(bool i) { this->ImplicitVR = i; }
 
+  // Set the instance UID to use.
+  void SetSOPInstanceUID(const char *uid) {
+    this->SOPInstanceUID = uid; };
+
+  // Set the series UID to use.
+  void SetSeriesInstanceUID(const char *uid) {
+    this->SeriesInstanceUID = uid; };
+
   // Write the data element head, return the length (8 or 12)
   virtual unsigned int WriteElementHead(
     unsigned char* cp, vtkDICOMTag tag, vtkDICOMVR vr, unsigned int vl) = 0;
@@ -130,12 +142,18 @@ public:
 protected:
   // Constructor that initializes all of the members.
   EncoderBase(vtkDICOMCompiler *comp, int idx) :
-    Compiler(comp), Index(idx), ImplicitVR(0) {}
+    Compiler(comp), SOPInstanceUID(0), SeriesInstanceUID(0),
+    Index(idx), Depth(0), ImplicitVR(0) {}
 
   // the vtkDICOMCompiler::FlushBuffer method is used to refill the buffer
   vtkDICOMCompiler *Compiler;
+  // the instance UID and series UID
+  const char *SOPInstanceUID;
+  const char *SeriesInstanceUID;
   // the instance index to use with the meta data
   int Index;
+  // the sequence depth
+  int Depth;
   // if this is set, then VRs are implicit
   bool ImplicitVR;
 };
@@ -633,7 +651,9 @@ bool Encoder<E>::WriteDataElement(
         Encoder<E>::PutInt32(cp+4, il);
         cp += 8;
 
+        this->Depth++;
         r = this->WriteElements(cp, ep, ptr[i].Begin(), ptr[i].End());
+        this->Depth--;
 
         if (il == HxFFFFFFFF && r)
           {
@@ -710,6 +730,24 @@ bool Encoder<E>::WriteElements(
         ++iter;
         }
       }
+    else if (this->Depth == 0 && this->SOPInstanceUID &&
+             iter->GetTag() == vtkDICOMTag(DC::SOPInstanceUID))
+      {
+      this->WriteDataElement(cp, ep,
+        vtkDICOMDataElement(
+          vtkDICOMTag(DC::SOPInstanceUID),
+          vtkDICOMValue(vtkDICOMVR::UI, this->SOPInstanceUID)));
+      ++iter;
+      }
+    else if (this->Depth == 0 && this->SeriesInstanceUID &&
+             iter->GetTag() == vtkDICOMTag(DC::SeriesInstanceUID))
+      {
+      this->WriteDataElement(cp, ep,
+        vtkDICOMDataElement(
+          vtkDICOMTag(DC::SeriesInstanceUID),
+          vtkDICOMValue(vtkDICOMVR::UI, this->SeriesInstanceUID)));
+      ++iter;
+      }
     else
       {
       this->WriteDataElement(cp, ep, *iter);
@@ -728,6 +766,12 @@ bool Encoder<E>::WriteElements(
 vtkDICOMCompiler::vtkDICOMCompiler()
 {
   this->FileName = NULL;
+  this->SOPInstanceUID = NULL;
+  this->SeriesInstanceUID = NULL;
+  this->StudyInstanceUID = NULL;
+  this->ImplementationClassUID = NULL;
+  this->ImplementationVersionName = NULL;
+  this->SourceApplicationEntityTitle = NULL;
   this->MetaData = NULL;
   this->OutputStream = NULL;
   this->Buffer = NULL;
@@ -738,18 +782,42 @@ vtkDICOMCompiler::vtkDICOMCompiler()
   this->Compressed = 0;
   this->KeepOriginalPixelDataVR = 0;
   this->ErrorCode = 0;
+  this->SeriesUIDs = 0;
+
+  // This is our default implementation UID
+  const char *impuid =
+    vtkDICOMUtilities::GetDefaultImplementationClassUID();
+  this->ImplementationClassUID = new char[strlen(impuid) + 1];
+  strcpy(this->ImplementationClassUID, impuid);
+
+  // This is our default implementation name
+  const char *impname =
+    vtkDICOMUtilities::GetDefaultImplementationVersionName();
+  this->ImplementationVersionName = new char[strlen(impname) + 1];
+  strcpy(this->ImplementationVersionName, impname);
 }
 
+//----------------------------------------------------------------------------
 // Destructor
 vtkDICOMCompiler::~vtkDICOMCompiler()
 {
   this->Close();
 
   delete [] this->FileName;
+  delete [] this->SOPInstanceUID;
+  delete [] this->SeriesInstanceUID;
+  delete [] this->StudyInstanceUID;
+  delete [] this->ImplementationClassUID;
+  delete [] this->ImplementationVersionName;
+  delete [] this->SourceApplicationEntityTitle;
 
   if (this->MetaData)
     {
     this->MetaData->Delete();
+    }
+  if (this->SeriesUIDs)
+    {
+    this->SeriesUIDs->Delete();
     }
 }
 
@@ -769,6 +837,29 @@ void vtkDICOMCompiler::SetBufferSize(int size)
     {
     this->BufferSize = size;
     this->Modified();
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMCompiler::GenerateSeriesUIDs()
+{
+  if (this->SeriesUIDs == 0)
+    {
+    this->SeriesUIDs = vtkStringArray::New();
+    }
+
+  this->SeriesUIDs->Initialize();
+  if (this->MetaData)
+    {
+    vtkDICOMUtilities::GenerateUIDs(
+      this->SeriesUIDs, this->MetaData->GetNumberOfInstances() + 1);
+    }
+
+  // study UID is only generated once per session
+  if (vtkDICOMCompiler::StudyUID[0] == '\0')
+    {
+    std::string uid = vtkDICOMUtilities::GenerateUID();
+    strcpy(vtkDICOMCompiler::StudyUID, uid.c_str());
     }
 }
 
@@ -798,6 +889,14 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
     this->SetErrorCode(vtkErrorCode::NoFileNameError);
     vtkErrorMacro("WriteFile: No file name has been set");
     return false;
+    }
+
+  // Generate fresh UIDs if at index zero
+  if (idx == 0 || this->SeriesUIDs == 0 ||
+      this->SeriesUIDs->GetNumberOfValues() + 1 !=
+      data->GetNumberOfInstances())
+    {
+    this->GenerateSeriesUIDs();
     }
 
   // Remove the file if it exists, just in case it is a hard link
@@ -920,25 +1019,84 @@ bool vtkDICOMCompiler::WriteMetaHeader(
 {
   LittleEndianEncoder encoder(this, idx);
 
-  vtkDICOMDataElementIterator iter = meta->Begin();
-  vtkDICOMDataElementIterator iterEnd = meta->End();
+  unsigned int l = 0; // length will be computed later
+  unsigned char metaver[2] = { 0, 1 }; // meta header version
+  const char *instanceUID = this->SOPInstanceUID;
+  const char *syntaxUID = 0;
+  const char *implementationUID = this->ImplementationClassUID;
 
-  while (iter != iterEnd && iter->GetTag().GetGroup() == 0x0002)
+    // use the same class as the input meta data
+  std::string classUIDString =
+    meta->GetAttributeValue(DC::SOPClassUID).AsString();
+  const char *classUID = classUIDString.c_str();
+
+  if (instanceUID == 0)
     {
-    ++iter;
+    instanceUID = this->SeriesUIDs->GetValue(idx);
+    }
+  if (syntaxUID)
+    {
+    this->TransferSyntax = syntaxUID;
+    }
+  else
+    {
+    this->TransferSyntax =
+      meta->GetAttributeValue(idx, DC::TransferSyntaxUID).AsString();
+    if (this->TransferSyntax == "")
+      {
+      this->TransferSyntax = "1.2.840.10008.1.2.1";
+      }
+    syntaxUID = this->TransferSyntax.c_str();
+    }
+  if (implementationUID == 0)
+    {
+    implementationUID =
+      vtkDICOMUtilities::GetDefaultImplementationClassUID();
     }
 
-  iterEnd = iter;
-  iter = meta->Begin();
+  vtkDICOMItem item;
+  item.SetAttributeValue(
+    DC::FileMetaInformationGroupLength,
+    vtkDICOMValue(vtkDICOMVR::UL, l));
+  item.SetAttributeValue(
+    DC::FileMetaInformationVersion,
+    vtkDICOMValue(vtkDICOMVR::OB, metaver, metaver+2));
+  item.SetAttributeValue(
+    DC::MediaStorageSOPClassUID,
+    vtkDICOMValue(vtkDICOMVR::UI, classUID));
+  item.SetAttributeValue(
+    DC::MediaStorageSOPInstanceUID,
+    vtkDICOMValue(vtkDICOMVR::UI, instanceUID));
+  item.SetAttributeValue(
+    DC::TransferSyntaxUID,
+    vtkDICOMValue(vtkDICOMVR::UI, syntaxUID));
+  item.SetAttributeValue(
+    DC::ImplementationClassUID,
+    vtkDICOMValue(vtkDICOMVR::UI, implementationUID));
+
+  if (this->ImplementationVersionName)
+    {
+    item.SetAttributeValue(
+      DC::ImplementationVersionName,
+      vtkDICOMValue(vtkDICOMVR::SH,
+                    this->ImplementationVersionName));
+    }
+
+  if (this->SourceApplicationEntityTitle)
+    {
+    item.SetAttributeValue(
+      DC::SourceApplicationEntityTitle,
+      vtkDICOMValue(vtkDICOMVR::SH,
+                    this->SourceApplicationEntityTitle));
+    }
 
   this->TransferSyntax = "";
+  vtkDICOMDataElementIterator iter = item.Begin();
+  vtkDICOMDataElementIterator iterEnd = item.End();
 
   if (iter != iterEnd)
     {
-    int i = (idx == -1 ? 0 : idx);
     encoder.WriteElements(cp, ep, iter, iterEnd);
-    this->TransferSyntax =
-      meta->GetAttributeValue(i, DC::TransferSyntaxUID).AsString();
     }
 
   return true;
@@ -971,6 +1129,22 @@ bool vtkDICOMCompiler::WriteMetaData(
     {
     this->Compressed = true;
     }
+
+  const char *instanceUID = this->SOPInstanceUID;
+  const char *seriesUID = this->SOPInstanceUID;
+
+  if (instanceUID == 0)
+    {
+    instanceUID = this->SeriesUIDs->GetValue(idx);
+    }
+  if (seriesUID == 0)
+    {
+    seriesUID = this->SeriesUIDs->GetValue(
+      this->SeriesUIDs->GetMaxId());
+    }
+
+  encoder->SetSOPInstanceUID(instanceUID);
+  encoder->SetSeriesInstanceUID(seriesUID);
 
   vtkDICOMDataElementIterator iter = meta->Begin();
   vtkDICOMDataElementIterator iterEnd = meta->End();
@@ -1094,6 +1268,23 @@ void vtkDICOMCompiler::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "FileName: "
      << (this->FileName ? this->FileName : "(NULL)") << "\n";
+  os << indent << "SOPInstanceUID: "
+     << (this->SOPInstanceUID ? this->SOPInstanceUID : "(NULL)") << "\n";
+  os << indent << "SeriesInstanceUID: "
+     << (this->SeriesInstanceUID ? this->SeriesInstanceUID : "(NULL)")
+     << "\n";
+  os << indent << "StudyInstanceUID: "
+     << (this->StudyInstanceUID ? this->StudyInstanceUID : "(NULL)")
+     << "\n";
+  os << indent << "ImplementationClassUID: "
+     << (this->ImplementationClassUID ?
+         this->ImplementationClassUID : "(NULL)") << "\n";
+  os << indent << "ImplementationVersionName: "
+     << (this->ImplementationVersionName ?
+         this->ImplementationVersionName : "(NULL)") << "\n";
+  os << indent << "SourceApplicationEntityTitle: "
+     << (this->SourceApplicationEntityTitle ?
+         this->SourceApplicationEntityTitle : "(NULL)") << "\n";
   os << indent << "MetaData: " << this->MetaData << "\n";
   os << indent << "Index: " << this->Index << "\n";
   os << indent << "BufferSize: " << this->BufferSize << "\n";

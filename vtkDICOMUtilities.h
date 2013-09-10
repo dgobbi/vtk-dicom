@@ -39,6 +39,12 @@ public:
   //! Numerically compare two UIDs, returns -1, 0, or +1.
   static int CompareUIDs(const char *u1, const char *u2);
 
+  //! Get the default UID for this DICOM implementation.
+  static const char *GetDefaultImplementationClassUID();
+
+  //! Get the default version name for this DICOM implementation.
+  static const char *GetDefaultImplementationVersionName();
+
 protected:
   vtkDICOMUtilities();
   ~vtkDICOMUtilities();

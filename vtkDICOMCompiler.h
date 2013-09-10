@@ -17,6 +17,7 @@
 #include <vtkObject.h>
 #include "vtkDICOMModule.h"
 
+class vtkStringArray;
 class vtkDICOMMetaData;
 class vtkDICOMCompilerInternalFriendship;
 
@@ -40,6 +41,53 @@ public:
   //! Set the file name.
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
+
+  //! Set the SOP Instance UID.
+  /*!
+   *  If you do not supply a UID, a random UID will be generated.
+   *  Each DICOM file must have a globally unique UID.
+   */
+  vtkSetStringMacro(SOPInstanceUID);
+  vtkGetStringMacro(SOPInstanceUID);
+
+  //! Set the Series Instance UID.
+  /*!
+   *  If you do not supply a UID, a random UID will be generated.
+   *  Each DICOM series must have a globally unique UID.
+   */
+  vtkSetStringMacro(SeriesInstanceUID);
+  vtkGetStringMacro(SeriesInstanceUID);
+
+  //! Set the Study Instance UID.
+  /*!
+   *  If you do not supply a UID, a random UID will be generated.
+   *  Each DICOM study must have a globally unique UID.
+   */
+  vtkSetStringMacro(StudyInstanceUID);
+  vtkGetStringMacro(StudyInstanceUID);
+
+  //! Set the Implementation Class UID.
+  /*!
+   *  If you do not supply a UID, a default one will be used.
+   */
+  vtkSetStringMacro(ImplementationClassUID);
+  vtkGetStringMacro(ImplementationClassUID);
+
+  //! Set the Implementation Version Name.
+  /*!
+   *  If you do not supply a name, a default one will be used.
+   */
+  vtkSetStringMacro(ImplementationVersionName);
+  vtkGetStringMacro(ImplementationVersionName);
+
+  //! Set the Source Application Entity Title.
+  /*!
+   *  Provide a short name (16 chars max) for the network node that
+   *  is running the implementation.  The name should have no spaces
+   *  or punctuation and should consist only of letters and digits.
+   */
+  vtkSetStringMacro(SourceApplicationEntityTitle);
+  vtkGetStringMacro(SourceApplicationEntityTitle);
 
   //! Set the metadata object to write to the file.
   void SetMetaData(vtkDICOMMetaData *);
@@ -76,6 +124,15 @@ public:
 
   //! Get the IO error code.
   unsigned long GetErrorCode() { return this->ErrorCode; }
+
+  //! Generate a series UID and instance UIDs for the meta data.
+  /*!
+   *  This will be called automatically whenever you provide a
+   *  new meta data object for the compiler.  Note that new UIDs
+   *  will not be generated if you have already provided them with
+   *  SetSOPInstanceUID() and SetSeriesUID().
+   */
+  void GenerateSeriesUIDs();
 
   //! Use the original PixelData VR when writing pixel data element.
   /*!
@@ -123,8 +180,15 @@ protected:
   unsigned int ComputePixelDataSize();
 
   char *FileName;
+  char *SOPInstanceUID;
+  char *SeriesInstanceUID;
+  char *StudyInstanceUID;
+  char *ImplementationClassUID;
+  char *ImplementationVersionName;
+  char *SourceApplicationEntityTitle;
   std::string TransferSyntax;
   vtkDICOMMetaData *MetaData;
+  vtkStringArray *SeriesUIDs;
   std::ostream *OutputStream;
   char *Buffer;
   int BufferSize;
@@ -134,6 +198,8 @@ protected:
   int Compressed;
   int KeepOriginalPixelDataVR;
   unsigned long ErrorCode;
+
+  static char StudyUID[64];
 
   // used to share FlushBuffer with internal classes
   friend class vtkDICOMCompilerInternalFriendship;

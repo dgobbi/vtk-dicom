@@ -309,3 +309,21 @@ int vtkDICOMUtilities::CompareUIDs(const char *u1, const char *u2)
 
   return r;
 }
+
+//----------------------------------------------------------------------------
+const char *vtkDICOMUtilities::GetDefaultImplementationClassUID()
+{
+  return "2.25.190146791043182537444806132342625375407";
+}
+
+//----------------------------------------------------------------------------
+#define VTK_DICOM_VERSION_CREATOR2(name, x, y, z) \
+  name "_" #x "_" #y "_" #z
+#define VTK_DICOM_VERSION_CREATOR(name, x, y, z) \
+  VTK_DICOM_VERSION_CREATOR2(name, x, y, z)
+  
+const char *vtkDICOMUtilities::GetDefaultImplementationVersionName()
+{
+  return VTK_DICOM_VERSION_CREATOR("VTK_DICOM",
+    DICOM_MAJOR_VERSION, DICOM_MINOR_VERSION, DICOM_BUILD_VERSION);
+}
