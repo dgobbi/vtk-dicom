@@ -157,6 +157,10 @@ public:
   // Get the VR of the last data element.
   vtkDICOMVR GetLastVR() { return this->LastVR; }
 
+  // Check for attributes missing from this instance, that were present
+  // for instances in the series that were already parsed.
+  void HandleMissingAttributes(vtkDICOMTag tag);
+
 protected:
   // Constructor that initializes all of the members.
   DecoderBase(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
@@ -175,8 +179,10 @@ protected:
   // if this is set, then VRs are implicit
   bool ImplicitVR;
   // this is set to the last tag that was read.
-  vtkDICOMTag LastTag;
   vtkDICOMVR  LastVR;
+  vtkDICOMTag LastTag;
+  // this is set to the last tag written to this->MetaData
+  vtkDICOMTag LastWrittenTag;
 };
 
 //----------------------------------------------------------------------------
@@ -482,6 +488,40 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
     }
 
   return vr;
+}
+
+//----------------------------------------------------------------------------
+void DecoderBase::HandleMissingAttributes(vtkDICOMTag tag)
+{
+  // insert null values for any attributes that were present for other
+  // instances in this series but not present for this instance
+  vtkDICOMDataElementIterator iter = this->MetaData->Find(tag);
+  --iter;
+  if (iter->GetTag() != this->LastWrittenTag &&
+      iter->GetTag().GetGroup() != 0x0002)
+    {
+    int count = 0;
+    do
+      {
+      count++;
+      --iter;
+      }
+    while (iter->GetTag() != this->LastWrittenTag &&
+           iter->GetTag().GetGroup() != 0x0002);
+
+    vtkDICOMTag *missing = new vtkDICOMTag[count];
+    for (int i = 0; i < count; i++)
+      {
+      missing[i] = (++iter)->GetTag();
+      }
+    for (int i = 0; i < count; i++)
+      {
+      this->MetaData->SetAttributeValue(
+        this->Index, missing[i], vtkDICOMValue());
+      }
+    delete [] missing;
+    }
+  this->LastWrittenTag = tag;
 }
 
 //----------------------------------------------------------------------------
@@ -973,14 +1013,16 @@ bool Decoder<E>::ReadElements(
       {
       this->Item->SetAttributeValue(tag, v);
       }
-    else if (this->Index == -1)
+    else if (this->Index < 0)
       {
       this->MetaData->SetAttributeValue(tag, v);
       }
     else
       {
       this->MetaData->SetAttributeValue(this->Index, tag, v);
+      this->HandleMissingAttributes(tag);
       }
+
     /*
     cout << tag << " " << vr << " " << vl << " " << v;
     vtkDICOMDictEntry entry;
@@ -1191,7 +1233,18 @@ void vtkDICOMParser::SetBufferSize(int size)
 //----------------------------------------------------------------------------
 void vtkDICOMParser::Update()
 {
-  this->ReadFile(this->MetaData, this->Index);
+  int idx = -1;
+
+  // Use default idx of -1 if we are writing to the meta data object for
+  // the first time, or if the meta data is for only a single image.
+  if (this->MetaData &&
+      this->MetaData->GetNumberOfDataElements() > 0 &&
+      this->MetaData->GetNumberOfInstances() > 1)
+    {
+    idx = this->Index;
+    }
+
+  this->ReadFile(this->MetaData, idx);
 }
 
 //----------------------------------------------------------------------------
@@ -1413,6 +1466,7 @@ bool vtkDICOMParser::ReadMetaData(
     if (idx >= 0)
       {
       meta->SetAttributeValue(idx, DC::PixelData, v);
+      decoder->HandleMissingAttributes(DC::PixelData);
       }
     else
       {

@@ -515,6 +515,12 @@ bool Encoder<E>::WriteDataElement(
   vtkDICOMVR vr = v.GetVR();
   unsigned int vl = v.GetVL();
 
+  // do not write invalid values
+  if (!v.IsValid())
+    {
+    return true;
+    }
+
   // handle elements of unknown length
   if (vl == HxFFFFFFFF)
     {
@@ -1232,13 +1238,16 @@ unsigned int vtkDICOMCompiler::ComputePixelDataSize()
     {
     // compute the size
     vtkDICOMMetaData *meta = this->MetaData;
-    int bitsAllocated = meta->GetAttributeValue(DC::BitsAllocated).AsInt();
+    int bitsAllocated = meta->GetAttributeValue(
+      this->Index, DC::BitsAllocated).AsInt();
     if (bitsAllocated > 0)
       {
-      vl = meta->GetAttributeValue(DC::Columns).AsUnsignedInt();
-      vl *= meta->GetAttributeValue(DC::Rows).AsUnsignedInt();
+      vl = meta->GetAttributeValue(
+        this->Index, DC::Columns).AsUnsignedInt();
+      vl *= meta->GetAttributeValue(
+        this->Index, DC::Rows).AsUnsignedInt();
       unsigned int m = meta->GetAttributeValue(
-        DC::SamplesPerPixel).AsUnsignedInt();
+        this->Index, DC::SamplesPerPixel).AsUnsignedInt();
       unsigned int n = meta->GetAttributeValue(
         this->Index, DC::NumberOfFrames).AsUnsignedInt();
       vl *= ((m > 1) ? m : 1);

@@ -99,10 +99,8 @@ int main(int argc, char *argv[])
       for (int i = 0; i < l; i++)
         {
         // read the DICOM series with the parser
-        int idx = 0;
-        data->Clear();
         fname = a->GetValue(i);
-        parser->SetIndex(idx);
+        parser->SetIndex(i);
         parser->SetFileName(fname.c_str());
         parser->Update();
 
@@ -110,27 +108,31 @@ int main(int argc, char *argv[])
         tp[0] = parser->GetFileOffset();
         tp[1] = parser->GetFileSize();
         offsetArray->SetTupleValue(i, tp);
+        }
 
+      for (int i = 0; i < l; i++)
+        {
         // write the DICOM series with the compiler
         fname = a->GetValue(i);
         compiler->SetFileName(outfile);
         compiler->SetSOPInstanceUID(data->GetAttributeValue(
-          DC::SOPInstanceUID).GetCharData());
+          i, DC::SOPInstanceUID).GetCharData());
         compiler->SetTransferSyntaxUID(data->GetAttributeValue(
-          DC::TransferSyntaxUID).GetCharData());
+          i, DC::TransferSyntaxUID).GetCharData());
         compiler->SetSeriesInstanceUID(data->GetAttributeValue(
-          DC::SeriesInstanceUID).GetCharData());
+          i, DC::SeriesInstanceUID).GetCharData());
         compiler->SetImplementationClassUID(data->GetAttributeValue(
-          DC::ImplementationClassUID).GetCharData());
+          i, DC::ImplementationClassUID).GetCharData());
         compiler->SetImplementationVersionName(data->GetAttributeValue(
-          DC::ImplementationVersionName).GetCharData());
+          i, DC::ImplementationVersionName).GetCharData());
         compiler->SetSourceApplicationEntityTitle(data->GetAttributeValue(
-          DC::SourceApplicationEntityTitle).GetCharData());
-        compiler->SetIndex(idx);
+          i, DC::SourceApplicationEntityTitle).GetCharData());
+        compiler->SetIndex(i);
         compiler->WriteHeader();
 
         if (parser->GetPixelDataFound())
           {
+          vtkTypeInt64 tp[2];
           offsetArray->GetTupleValue(i, tp);
 
           std::streamoff offset = static_cast<std::streamoff>(tp[0]);
@@ -147,7 +149,6 @@ int main(int argc, char *argv[])
           }
 
         compiler->Close();
-
 
         // compare the md5 hash
         char hash[2][40];

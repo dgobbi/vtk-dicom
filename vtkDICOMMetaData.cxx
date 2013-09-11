@@ -403,13 +403,6 @@ void vtkDICOMMetaData::SetAttributeValue(
 
   assert(idx >= 0 && idx < this->NumberOfInstances);
 
-  // first value for this attribute
-  if (!vptr->IsValid())
-    {
-    *vptr = v;
-    return;
-    }
-
   // is this a sequence of values?
   vtkDICOMValue *sptr = vptr->GetMultiplexData();
   if (sptr)
