@@ -1611,6 +1611,7 @@ bool vtkDICOMReader::ReadUncompressedFile(
       for (size_t j = 0; j < r; j++)
         {
         writePtr[j] = (a & 1);
+        a >>= 1;
         }
       }
     }
