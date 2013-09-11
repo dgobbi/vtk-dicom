@@ -44,9 +44,7 @@ void printElement(
   vtkDICOMTag tag = iter->GetTag();
   int g = tag.GetGroup();
   int e = tag.GetElement();
-  vtkDICOMValue v = iter->GetValue();
-  unsigned int vl = v.GetVL();
-  const char *vr = v.GetVR().GetText();
+  vtkDICOMVR vr = iter->GetVR();
   const char *name = "";
   vtkDICOMDictEntry d;
   if (item)
@@ -60,13 +58,14 @@ void printElement(
   if (d.IsValid())
     {
     name = d.GetName();
-    if (d.GetVR() != v.GetVR() &&
+    if (d.GetVR() != vr &&
         !(d.GetVR() == vtkDICOMVR::XS &&
-          (v.GetVR() == vtkDICOMVR::SS || v.GetVR() == vtkDICOMVR::US)) &&
+          (vr == vtkDICOMVR::SS || vr == vtkDICOMVR::US)) &&
         !(d.GetVR() == vtkDICOMVR::OX &&
-          (v.GetVR() == vtkDICOMVR::OB || v.GetVR() == vtkDICOMVR::OW)))
+          (vr == vtkDICOMVR::OB || vr == vtkDICOMVR::OW)))
       {
-      printf("VR mismatch! %s != %s %s\n", vr, d.GetVR().GetText(), name);
+      printf("VR mismatch! %s != %s %s\n",
+             vr.GetText(), d.GetVR().GetText(), name);
       }
     }
   else if ((tag.GetGroup() & 0xFFFE) != 0 && tag.GetElement() == 0)
@@ -76,6 +75,7 @@ void printElement(
     }
 
   // allow multiple values (i.e. for each image in series)
+  vtkDICOMValue v = iter->GetValue();
   unsigned int vn = v.GetNumberOfValues();
   vtkDICOMValue *vp = v.GetMultiplexData();
   if (vp == 0)
@@ -95,6 +95,7 @@ void printElement(
   for (unsigned int vi = 0; vi < vn; vi++)
     {
     v = vp[vi];
+    unsigned int vl = v.GetVL();
     std::string s;
     if (v.GetVR() == vtkDICOMVR::UN ||
         v.GetVR() == vtkDICOMVR::SQ)
@@ -165,7 +166,7 @@ void printElement(
 
     if (vi == 0)
       {
-      printf("%s(%04X,%04X) %s \"%s\" :", indent, g, e, vr, name);
+      printf("%s(%04X,%04X) %s \"%s\" :", indent, g, e, vr.GetText(), name);
       }
     if (vn > 1)
       {
