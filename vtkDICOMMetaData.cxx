@@ -356,14 +356,21 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
 void vtkDICOMMetaData::SetAttributeValue(
   vtkDICOMTag tag, const vtkDICOMValue& v)
 {
-  vtkDICOMDataElement *loc = this->FindDataElementOrInsert(tag);
-  if (loc == 0)
+  if (v.IsValid())
     {
-    vtkErrorMacro("SetAttributeValue: tag group number must not be zero.");
-    return;
+    vtkDICOMDataElement *loc = this->FindDataElementOrInsert(tag);
+    if (loc == 0)
+      {
+      vtkErrorMacro("SetAttributeValue: tag group number must not be zero.");
+      return;
+      }
+    loc->Tag = tag;
+    loc->Value = v;
     }
-  loc->Tag = tag;
-  loc->Value = v;
+  else
+    {
+    this->RemoveAttribute(tag);
+    }
 }
 
 template<class T>
@@ -408,6 +415,19 @@ void vtkDICOMMetaData::SetAttributeValue(
   if (sptr)
     {
     sptr[idx] = v;
+    // if invalid value was added, make sure valid values remain
+    if (!v.IsValid())
+      {
+      bool valid = false;
+      for (int i = 0; i < this->NumberOfInstances; i++)
+        {
+        valid |= sptr[i].IsValid();
+        }
+      if (!valid)
+        {
+        this->RemoveAttribute(tag);
+        }
+      }
     }
   else if (v != *vptr)
     {
@@ -428,6 +448,10 @@ void vtkDICOMMetaData::SetAttributeValue(
         }
       }
     *vptr = l;
+    }
+  else if (!vptr->IsValid())
+    {
+    this->RemoveAttribute(tag);
     }
 }
 

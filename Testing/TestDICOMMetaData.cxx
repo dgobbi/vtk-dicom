@@ -242,6 +242,36 @@ int main(int argc, char *argv[])
     TestAssert(strcmp(v2.GetCharData(), "1.2.840.10008.5.1.4.1.1.4") == 0);
     }
 
+  metaData->Clear();
+
+  // ------
+  // Test setting invalid value attributes
+  metaData->SetNumberOfInstances(3);
+  metaData->SetAttributeValue(DC::Modality, "CT");
+  metaData->SetAttributeValue(DC::Modality, "MR");
+  TestAssert(metaData->GetNumberOfDataElements() == 1);
+  metaData->SetAttributeValue(DC::Modality, vtkDICOMValue());
+  TestAssert(metaData->GetNumberOfDataElements() == 0);
+  metaData->SetAttributeValue(0, DC::Modality, vtkDICOMValue());
+  TestAssert(metaData->GetNumberOfDataElements() == 0);
+  metaData->SetAttributeValue(DC::Modality, "MR");
+  metaData->SetAttributeValue(0, DC::Modality, "CT");
+  TestAssert(metaData->GetAttributeValue(0, DC::Modality).AsString() == "CT");
+  TestAssert(metaData->GetAttributeValue(1, DC::Modality).AsString() == "MR");
+  TestAssert(metaData->GetAttributeValue(2, DC::Modality).AsString() == "MR");
+  metaData->SetAttributeValue(1, DC::Modality, vtkDICOMValue());
+  TestAssert(metaData->GetAttributeValue(0, DC::Modality).AsString() == "CT");
+  TestAssert(metaData->GetAttributeValue(1, DC::Modality).IsValid() == false);
+  TestAssert(metaData->GetAttributeValue(2, DC::Modality).AsString() == "MR");
+  metaData->SetAttributeValue(0, DC::Modality, vtkDICOMValue());
+  metaData->SetAttributeValue(2, DC::Modality, vtkDICOMValue());
+  TestAssert(metaData->GetNumberOfDataElements() == 0);
+  metaData->SetAttributeValue(0, DC::Modality, "CT");
+  TestAssert(metaData->GetAttributeValue(0, DC::Modality).AsString() == "CT");
+  TestAssert(metaData->GetAttributeValue(1, DC::Modality).IsValid() == false);
+  TestAssert(metaData->GetAttributeValue(2, DC::Modality).IsValid() == false);
+  metaData->Clear();
+
   metaData->Delete();
 
   return rval;
