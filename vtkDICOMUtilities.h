@@ -19,7 +19,7 @@
 
 class vtkStringArray;
 
-//! Utility functions for use with DICOM classe.
+//! Utility functions for use with DICOM classes.
 class VTK_DICOM_EXPORT vtkDICOMUtilities
 {
 public:
