@@ -159,6 +159,22 @@ set(LIB_HDRS
   ${DICOM_BINARY_DIR}/vtkDICOMConfig.h
 )
 
+# Sources that are not vtkObjects that we want to wrap
+set(LIB_SPECIAL
+  vtkDICOMTag.cxx
+  vtkDICOMTagPath.cxx
+  vtkDICOMVR.cxx
+  vtkDICOMVM.cxx
+  vtkDICOMDictEntry.cxx
+  vtkDICOMDataElement.cxx
+  vtkDICOMSequence.cxx
+  vtkDICOMItem.cxx
+  vtkDICOMUtilities.cxx
+  vtkDICOMValue.cxx
+)
+
+set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
+
 # Automatically find the header for each cxx file
 foreach(arg ${LIB_SRCS})
   get_filename_component(src "${arg}" ABSOLUTE)
@@ -168,18 +184,62 @@ foreach(arg ${LIB_SRCS})
   endif()
 endforeach()
 
+# hierarchy file
+if(VTK_WRAP_PYTHON AND "${VTK_MAJOR_VERSION}" GREATER 5)
+  set(vtk-module vtkDICOM)
+  set(vtkDICOM_LINK_DEPENDS ${VTK_LIBRARIES})
+  include(${VTK_CMAKE_DIR}/vtkWrapHierarchy.cmake)
+  vtk_wrap_hierarchy(vtkDICOMHierarchy ${DICOM_BINARY_DIR} "${LIB_SRCS}")
+  set(KIT_HIERARCHY_FILE ${DICOM_BINARY_DIR}/vtkDICOMHierarchy.txt)
+  set(LIB_HIERARCHY_STAMP ${DICOM_BINARY_DIR}/vtkDICOMHierarchy.stamp)
+endif()
+
 # Create the libary
 if(VTK_LIBRARIES)
   set(VTK_LIBS ${VTK_LIBRARIES} vtkzlib) # VTK 6.x
 else()
   set(VTK_LIBS vtkIO vtkzlib) # VTK 5.x
 endif()
-add_library(${LIB_NAME} ${LIB_SRCS})
+add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_HIERARCHY_STAMP})
 target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${GDCM_LIBS})
 set(DICOM_LIBRARIES ${LIB_NAME})
 
+# Wrappers
+if(VTK_WRAP_PYTHON AND "${VTK_MAJOR_VERSION}" GREATER 5)
+  set(vtk-module ${LIB_NAME})
+  set(MODULE_PYTHON_NAME ${LIB_NAME}Python)
+  set(LIB_PYTHON_NAME ${LIB_NAME}PythonD)
+  set(LIB_PYTHON_NAME ${LIB_NAME}PythonD)
+  set(LIB_PYTHON_LIBS vtkCommonCorePythonD vtkIOImagePythonD)
+
+  if(VTK_PYTHON_INCLUDE_DIR)
+    include_directories("${VTK_PYTHON_INCLUDE_DIR}")
+  endif()
+  include(${VTK_CMAKE_DIR}/vtkWrapPython.cmake)
+  vtk_wrap_python3(${MODULE_PYTHON_NAME} LIB_PYTHON_SRCS "${LIB_SRCS}")
+  add_library(${LIB_PYTHON_NAME} ${LIB_PYTHON_SRCS} ${LIB_PYTHON_EXTRA_SRCS})
+  target_link_libraries(${LIB_PYTHON_NAME} ${LIB_NAME} ${LIB_PYTHON_LIBS})
+  # On Win32 and Mac, link python library now, on UNIX, don't
+  if(WIN32 OR APPLE)
+    target_link_libraries(${LIB_PYTHON_NAME} ${VTK_PYTHON_LIBRARIES})
+  endif()
+  if(KIT_PYTHON_DEPS)
+    add_dependencies(${LIB_PYTHON_NAME} ${KIT_PYTHON_DEPS})
+  endif()
+  add_library(${MODULE_PYTHON_NAME} MODULE ${MODULE_PYTHON_NAME}Init.cxx)
+  set_target_properties(${MODULE_PYTHON_NAME} PROPERTIES PREFIX "")
+  if(WIN32 AND NOT CYGWIN)
+    set_target_properties(${MODULE_PYTHON_NAME} PROPERTIES SUFFIX ".pyd")
+  endif()
+  target_link_libraries(${MODULE_PYTHON_NAME} ${LIB_PYTHON_NAME})
+  # On Win32 and Mac, link python library now, on UNIX, don't
+  if(WIN32 OR APPLE)
+    target_link_libraries(${MODULE_PYTHON_NAME} ${VTK_PYTHON_LIBRARIES})
+  endif()
+endif()
+
 # Set the install rules for the library
-install(TARGETS ${LIB_NAME}
+install(TARGETS ${LIB_NAME} ${LIB_PYTHON_NAME} ${MODULE_PYTHON_NAME}
   EXPORT DICOMTargets
   RUNTIME DESTINATION ${DICOM_RUNTIME_INSTALL_DEST} COMPONENT RuntimeLibraries
   LIBRARY DESTINATION ${DICOM_LIBRARY_INSTALL_DEST} COMPONENT RuntimeLibraries
