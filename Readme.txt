@@ -11,3 +11,4 @@ for interrogating and converting DICOM files.
 
 More information can be found at the following website:
 http://www.cognitive-antics.net/vtk-dicom/
+http://www.cognitive-antics.net/vtk-dicom/vtk-dicom.pdf
