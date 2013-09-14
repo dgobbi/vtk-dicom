@@ -272,6 +272,36 @@ int main(int argc, char *argv[])
   TestAssert(metaData->GetAttributeValue(2, DC::Modality).IsValid() == false);
   metaData->Clear();
 
+  // ------
+  // Test DeepCopy
+  metaData->SetNumberOfInstances(3);
+  metaData->SetAttributeValue(DC::Modality, "CT");
+  metaData->SetAttributeValue(0, DC::Modality, "MR");
+  metaData->SetAttributeValue(DC::AcquisitionDateTime, acquisitionTime);
+  
+  metaData->DeepCopy(metaData);
+  TestAssert(metaData->GetNumberOfInstances() == 3);
+  TestAssert(metaData->GetNumberOfDataElements() == 2);
+
+  vtkDICOMMetaData *mcopy = vtkDICOMMetaData::New();
+  mcopy->DeepCopy(metaData);
+  metaData->DeepCopy(mcopy);
+  mcopy->DeepCopy(metaData);
+  metaData->DeepCopy(mcopy);
+  mcopy->DeepCopy(metaData);
+  TestAssert(mcopy->GetNumberOfInstances() == 3);
+  TestAssert(mcopy->GetNumberOfDataElements() == 2);
+  TestAssert(mcopy->GetAttributeValue(0, DC::Modality).AsString() == "MR");
+  TestAssert(mcopy->GetAttributeValue(1, DC::Modality).AsString() == "CT");
+  TestAssert(mcopy->GetAttributeValue(
+    DC::AcquisitionDateTime).AsString() == acquisitionTime);
+
+  mcopy->Clear();
+  metaData->DeepCopy(mcopy);
+  TestAssert(metaData->GetNumberOfInstances() == 1);
+  TestAssert(metaData->GetNumberOfDataElements() == 0);
+  mcopy->Delete();
+
   metaData->Delete();
 
   return rval;

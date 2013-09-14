@@ -477,6 +477,85 @@ void vtkDICOMMetaData::SetAttributeValue(
   this->SetAttributeValueT(idx, tag, v);
 }
 
+//----------------------------------------------------------------------------
+void vtkDICOMMetaData::ShallowCopy(vtkDataObject *source)
+{
+  vtkDICOMMetaData *o = vtkDICOMMetaData::SafeDownCast(source);
+  if (o == this)
+    {
+    return;
+    }
+
+  if (o != 0)
+    {
+    this->Initialize();
+    this->NumberOfInstances = o->NumberOfInstances;
+
+    vtkDICOMDataElement **otable = o->Table;
+    if (otable != 0)
+      {
+      const vtkDICOMDataElement *iter = o->Head.Next;
+      const vtkDICOMDataElement *iterEnd = &o->Tail;
+      while (iter != iterEnd)
+        {
+        vtkDICOMDataElement *e = this->FindDataElementOrInsert(iter->Tag);
+        e->Tag = iter->Tag;
+        e->Value = iter->Value;
+        iter = iter->Next;
+        }
+      }
+    }
+
+  this->vtkDataObject::ShallowCopy(source);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMMetaData::DeepCopy(vtkDataObject *source)
+{
+  vtkDICOMMetaData *o = vtkDICOMMetaData::SafeDownCast(source);
+  if (o == this)
+    {
+    return;
+    }
+
+  if (o != 0)
+    {
+    this->Initialize();
+    this->NumberOfInstances = o->NumberOfInstances;
+
+    vtkDICOMDataElement **otable = o->Table;
+    if (otable != 0)
+      {
+      const vtkDICOMDataElement *iter = o->Head.Next;
+      const vtkDICOMDataElement *iterEnd = &o->Tail;
+      while (iter != iterEnd)
+        {
+        vtkDICOMDataElement *e = this->FindDataElementOrInsert(iter->Tag);
+        e->Tag = iter->Tag;
+        // if this is a per-instance element, then make a copy of it
+        const vtkDICOMValue *vptr = iter->Value.GetMultiplexData();
+        if (vptr == 0)
+          {
+          e->Value = iter->Value;
+          }
+        else
+          {
+          vtkDICOMValue *nvptr = e->Value.AllocateMultiplexData(
+            iter->Value.GetVR(), this->NumberOfInstances);
+          for (int i = 0; i < this->NumberOfInstances; i++)
+            {
+            nvptr[i] = vptr[i];
+            }
+          }
+        iter = iter->Next;
+        }
+      }
+    }
+
+  this->vtkDataObject::DeepCopy(source);
+}
+
+//----------------------------------------------------------------------------
 // should only be called from SetAttributeValue
 vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
 {

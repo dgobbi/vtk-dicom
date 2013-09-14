@@ -14,7 +14,7 @@
 #ifndef __vtkDICOMMetaData_h
 #define __vtkDICOMMetaData_h
 
-#include <vtkObject.h>
+#include <vtkDataObject.h>
 #include "vtkDICOMModule.h"
 #include "vtkDICOMDataElement.h"
 #include "vtkDICOMDictEntry.h"
@@ -27,14 +27,14 @@ class vtkDICOMTagPath;
  *  for efficient access.  One vtkDICOMMetaData object can store the
  *  metadata for a series of DICOM images.
  */
-class VTK_DICOM_EXPORT vtkDICOMMetaData : public vtkObject
+class VTK_DICOM_EXPORT vtkDICOMMetaData : public vtkDataObject
 {
 public:
   //! Create a new vtkDICOMMetaData instance.
   static vtkDICOMMetaData *New();
 
   //! VTK dynamic type information macro.
-  vtkTypeMacro(vtkDICOMMetaData, vtkObjectBase);
+  vtkTypeMacro(vtkDICOMMetaData, vtkDataObject);
 
   //! Print a summary of the contents of this object.
   void PrintSelf(ostream& os, vtkIndent indent);
@@ -52,6 +52,7 @@ public:
 
   //! Clear the metadata, initialize the structure.
   void Clear();
+  void Initialize() { this->Clear(); }
 
   //! Get the number of data elements that are present.
   int GetNumberOfDataElements() {
@@ -138,6 +139,10 @@ public:
    *  dictionary.
    */
   vtkDICOMDictEntry FindDictEntry(vtkDICOMTag tag);
+
+  //! DataObject interface function.
+  void ShallowCopy(vtkDataObject *source);
+  void DeepCopy(vtkDataObject *source);
 
 protected:
   vtkDICOMMetaData();
