@@ -134,6 +134,8 @@ void vtkNIFTIWriter::PrintSelf(ostream& os, vtkIndent indent)
     {
     os << " (none)\n";
     }
+
+  os << indent << "NIFTIHeader:" << (this->NIFTIHeader ? "\n" : " (none)\n");
 }
 
 //----------------------------------------------------------------------------
