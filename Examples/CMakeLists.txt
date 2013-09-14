@@ -18,8 +18,10 @@ target_link_libraries(TestDICOMSorter vtkDICOM)
 add_executable(TestDICOMReader TestDICOMReader.cxx)
 target_link_libraries(TestDICOMReader vtkDICOM)
 
+if(VTK_MAJOR_VERSION GREATER 5 OR VTK_MINOR_VERSION GREATER 9)
 add_executable(TestDICOMDisplay TestDICOMDisplay.cxx)
 target_link_libraries(TestDICOMDisplay vtkDICOM ${VTK_LIBS})
 
 add_executable(TestNIFTIDisplay TestNIFTIDisplay.cxx)
 target_link_libraries(TestNIFTIDisplay vtkDICOM ${VTK_LIBS})
+endif()
