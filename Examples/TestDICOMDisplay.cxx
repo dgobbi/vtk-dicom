@@ -18,9 +18,6 @@
 #include "vtkStringArray.h"
 #include "vtkIntArray.h"
 
-#include "vtkTestUtilities.h"
-#include "vtkRegressionTestImage.h"
-
 int main(int argc, char *argv[])
 {
   vtkSmartPointer<vtkRenderWindowInteractor> iren =
