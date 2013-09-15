@@ -76,6 +76,8 @@ public:
    *  it is frozen and cannot be modified.
    */
   void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
+  void SetAttributeValue(vtkDICOMTag tag, double v);
+  void SetAttributeValue(vtkDICOMTag tag, const std::string& v);
 
   //! Get a data element from this item.
   const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag) const;
@@ -116,6 +118,13 @@ public:
 private:
   void FreeList();
   void CopyList(const List *o, List *t);
+
+  //! Use the dictionary to get the VR.
+  vtkDICOMVR FindDictVR(vtkDICOMTag tag) const;
+
+  //! Internal templated SetAttributeValue method
+  template<class T>
+  void SetAttributeValueT(vtkDICOMTag tag, T v);
 
   //! An invalid value, for when one is needed.
   static const vtkDICOMValue InvalidValue;

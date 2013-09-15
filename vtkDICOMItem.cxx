@@ -126,6 +126,28 @@ void vtkDICOMItem::SetAttributeValue(
 }
 
 //----------------------------------------------------------------------------
+template<class T>
+void vtkDICOMItem::SetAttributeValueT(vtkDICOMTag tag, T v)
+{
+  vtkDICOMVR vr = this->FindDictVR(tag);
+  assert(vr != vtkDICOMVR::UN);
+  if (vr != vtkDICOMVR::UN)
+    {
+    this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
+    }
+}
+
+void vtkDICOMItem::SetAttributeValue(vtkDICOMTag tag, double v)
+{
+  this->SetAttributeValueT(tag, v);
+}
+
+void vtkDICOMItem::SetAttributeValue(vtkDICOMTag tag, const std::string& v)
+{
+  this->SetAttributeValueT(tag, v);
+}
+
+//----------------------------------------------------------------------------
 const vtkDICOMValue &vtkDICOMItem::GetAttributeValue(
   vtkDICOMTag tag) const
 {
@@ -165,6 +187,25 @@ const vtkDICOMValue &vtkDICOMItem::GetAttributeValue(
       }
     }
   return vtkDICOMItem::InvalidValue;
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMVR vtkDICOMItem::FindDictVR(vtkDICOMTag tag) const
+{
+  vtkDICOMVR vr = vtkDICOMVR::UN;
+  vtkDICOMDictEntry e = this->FindDictEntry(tag);
+
+  if (e.IsValid())
+    {
+    vr = e.GetVR();
+    // make sure the dict knows the concrete vr
+    if (vr == vtkDICOMVR::XS || vr == vtkDICOMVR::OX)
+      {
+      vr = vtkDICOMVR::UN;
+      }
+    }
+
+  return vr;
 }
 
 //----------------------------------------------------------------------------
