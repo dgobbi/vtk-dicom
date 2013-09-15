@@ -18,6 +18,9 @@ target_link_libraries(TestDICOMSorter vtkDICOM)
 add_executable(TestDICOMReader TestDICOMReader.cxx)
 target_link_libraries(TestDICOMReader vtkDICOM)
 
+add_executable(TestDICOMWriter TestDICOMWriter.cxx)
+target_link_libraries(TestDICOMWriter vtkDICOM)
+
 if(VTK_MAJOR_VERSION GREATER 5 OR VTK_MINOR_VERSION GREATER 9)
 add_executable(TestDICOMDisplay TestDICOMDisplay.cxx)
 target_link_libraries(TestDICOMDisplay vtkDICOM ${VTK_LIBS})

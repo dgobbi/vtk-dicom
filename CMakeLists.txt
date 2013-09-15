@@ -141,6 +141,7 @@ set(LIB_SRCS
   vtkDICOMReferenceCount.cxx
   vtkDICOMUtilities.cxx
   vtkDICOMValue.cxx
+  vtkDICOMWriter.cxx
   vtkDICOMToRAS.cxx
   vtkNIFTIHeader.cxx
   vtkNIFTIReader.cxx
