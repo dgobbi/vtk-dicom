@@ -1050,6 +1050,7 @@ void vtkDICOMCompiler::WriteFrame(const char *cp, vtkIdType size)
       cp += 2;
       }
     this->OutputStream->write(buf, size);
+    delete [] buf;
     }
   else
     {
