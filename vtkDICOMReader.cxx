@@ -1871,11 +1871,11 @@ int vtkDICOMReader::RequestData(
           int halfRows = numRows/2;
           for (int yIdx = 0; yIdx < halfRows; yIdx++)
             {
-            char *row1 = planePtr + yIdx*rowSize;
-            char *row2 = planePtr + (numRows-yIdx-1)*rowSize;
-            memcpy(rowBuffer, row1, rowSize);
-            memcpy(row1, row2, rowSize);
-            memcpy(row2, rowBuffer, rowSize);
+            char *row1 = planePtr + yIdx*fileRowSize;
+            char *row2 = planePtr + (numRows-yIdx-1)*fileRowSize;
+            memcpy(rowBuffer, row1, fileRowSize);
+            memcpy(row1, row2, fileRowSize);
+            memcpy(row2, rowBuffer, fileRowSize);
             }
           }
 
