@@ -712,15 +712,6 @@ bool vtkDICOMWriter::ValidateImagePixelModule(
     return false;
     }
 
-  if (numComponents == 2 ||
-      (numComponents > 2 && scalarType != VTK_UNSIGNED_CHAR))
-    {
-    vtkErrorMacro("Illegal number of components: "
-      << numComponents << " for scalar type " <<
-      vtkImageScalarTypeNameMacro(scalarType));
-    return false;
-    }
-
   if (rows > 65535 || cols > 65535)
     {
     vtkErrorMacro("Image dimensions " << rows << "x"
@@ -729,7 +720,7 @@ bool vtkDICOMWriter::ValidateImagePixelModule(
     }
 
   bool paletteColor = false;
-  if (numComponents >= 3)
+  if (numComponents >= 3 && scalarType == VTK_UNSIGNED_CHAR)
     {
     meta->SetAttributeValue(DC::SamplesPerPixel, 3);
     meta->SetAttributeValue(DC::PlanarConfiguration, 0);
@@ -927,10 +918,17 @@ int vtkDICOMWriter::RequestData(
   // write the image
   char *dataPtr = static_cast<char *>(data->GetScalarPointer());
 
+  int planarConfiguration =
+    meta->GetAttributeValue(DC::PlanarConfiguration).AsInt();
+  int samplesPerPixel =
+    meta->GetAttributeValue(DC::SamplesPerPixel).AsInt();
+  samplesPerPixel = (samplesPerPixel > 0 ? samplesPerPixel : 1);
+
+  int numFileComponents = (planarConfiguration ? 1 : samplesPerPixel);
+  int numPlanes = (planarConfiguration ? samplesPerPixel : 1);
   int scalarSize = data->GetScalarSize();
   int numComponents = data->GetNumberOfScalarComponents();
-  int numFileComponents = 1;
-  int numPlanes = 1;
+  samplesPerPixel = numComponents;
 
   vtkIdType pixelSize = numComponents*scalarSize;
   vtkIdType rowSize = pixelSize*(extent[1] - extent[0] + 1);
@@ -991,7 +989,7 @@ int vtkDICOMWriter::RequestData(
       // go to the correct position in image data
       char *slicePtr = (dataPtr +
                         (sliceIdx - extent[4])*sliceSize +
-                        componentIdx*filePixelSize*numPlanes);
+                        componentIdx*samplesPerPixel);
 
       // iterate through all color planes in the slice
       char *planePtr = framePtr;
