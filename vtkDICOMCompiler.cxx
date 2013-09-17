@@ -800,6 +800,7 @@ vtkDICOMCompiler::vtkDICOMCompiler()
   this->ChunkSize = 0;
   this->Index = 0;
   this->FrameCounter = 0;
+  this->BigEndian = 0;
   this->Compressed = 0;
   this->KeepOriginalPixelDataVR = 0;
   this->ErrorCode = 0;
@@ -1003,6 +1004,11 @@ void vtkDICOMCompiler::WritePixelData(const char *cp, vtkIdType size)
 //----------------------------------------------------------------------------
 void vtkDICOMCompiler::WriteFrame(const char *cp, vtkIdType size)
 {
+  union { char c[2]; short s; } endiancheck;
+  // this will set endiancheck.s to 1 on little endian architectures
+  endiancheck.c[0] = 1;
+  endiancheck.c[1] = 0;
+
   if (this->Compressed)
     {
     // Compressed frames
@@ -1029,6 +1035,21 @@ void vtkDICOMCompiler::WriteFrame(const char *cp, vtkIdType size)
       this->SetErrorCode(vtkErrorCode::FileFormatError);
       vtkErrorMacro("Writing compressed DICOM is not supported.");
       }
+    }
+  else if (((this->BigEndian != 0) ^ (endiancheck.s != 1)) &&
+           this->MetaData->GetAttributeValue(DC::BitsAllocated).AsInt() > 8)
+    {
+    // Swap bytes before writing
+    char *buf = new char[size];
+    char *dp = buf;
+    for (vtkIdType i = 0; i < size; i += 2)
+      {
+      dp[0] = cp[1];
+      dp[1] = cp[0];
+      dp += 2;
+      cp += 2;
+      }
+    this->OutputStream->write(buf, size);
     }
   else
     {
@@ -1131,6 +1152,7 @@ bool vtkDICOMCompiler::WriteMetaData(
   BigEndianEncoder encoderBE(this, idx);
   EncoderBase *encoder = &encoderLE;
   this->Compressed = false;
+  this->BigEndian = false;
 
   // anything not listed here is assumed to be Explicit LE
   std::string tsyntax =
@@ -1144,6 +1166,11 @@ bool vtkDICOMCompiler::WriteMetaData(
   else if (tsyntax == "1.2.840.10008.1.2.2") // Explicit BE
     {
     encoder = &encoderBE;
+    this->BigEndian = true;
+    }
+  else if (tsyntax == "1.2.840.113619.5.2")  // GE LE with BE data
+    {
+    this->BigEndian = true;
     }
   else if (tsyntax != "1.2.840.10008.1.2.1") // Explicit LE
     {

@@ -206,6 +206,7 @@ protected:
   int ChunkSize;
   int Index;
   int FrameCounter;
+  int BigEndian;
   int Compressed;
   int KeepOriginalPixelDataVR;
   unsigned long ErrorCode;
