@@ -941,6 +941,7 @@ int vtkDICOMWriter::RequestData(
   this->InvokeEvent(vtkCommand::StartEvent);
   this->UpdateProgress(0.0);
 
+  bool reverseSlices = false;
   bool flipImage = (this->MemoryRowOrder == vtkDICOMWriter::BottomUp);
   bool packedToPlanar = (filePixelSize != pixelSize);
   char *rowBuffer = 0;
@@ -958,7 +959,7 @@ int vtkDICOMWriter::RequestData(
   for (int fileIdx = 0; fileIdx < numFiles; fileIdx++)
     {
     // get the index for this file
-    int idx = (flipImage ? numFiles - fileIdx - 1 : fileIdx);
+    int idx = (reverseSlices ? numFiles - fileIdx - 1 : fileIdx);
     this->ComputeInternalFileName(fileIdx + 1);
     compiler->SetFileName(this->InternalFileName);
     compiler->SetIndex(fileIdx);
@@ -972,7 +973,7 @@ int vtkDICOMWriter::RequestData(
       this->UpdateProgress(static_cast<double>(fileIdx*numFrames + frameIdx)/
                            static_cast<double>(numFiles*numFrames));
 
-      int sIdx = (flipImage ? numFrames - frameIdx - 1 : frameIdx);
+      int sIdx = (reverseSlices ? numFrames - frameIdx - 1 : frameIdx);
       // get the slice and component for this frame
       int sliceIdx = idx*numFrames + sIdx;
       int componentIdx = 0;
