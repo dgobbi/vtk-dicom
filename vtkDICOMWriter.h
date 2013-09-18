@@ -27,6 +27,7 @@
 
 class vtkMatrix4x4;
 class vtkDICOMMetaData;
+class vtkDICOMGenerator;
 
 class VTK_DICOM_EXPORT vtkDICOMWriter : public vtkImageWriter
 {
@@ -160,6 +161,10 @@ protected:
   // Description:
   // The meta data.
   vtkDICOMMetaData *MetaData;
+
+  // Description:
+  // The modality-specific generator for the DICOM data object.
+  vtkDICOMGenerator *Generator;
 
   // Description:
   // Whether time is stored in slices or in scalar components.
