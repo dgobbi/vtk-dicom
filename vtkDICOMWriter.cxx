@@ -14,7 +14,7 @@
 #include "vtkDICOMWriter.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMCompiler.h"
-#include "vtkDICOMSCGenerator.h"
+#include "vtkDICOMMRGenerator.h"
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMItem.h"
 #include "vtkDICOMTagPath.h"
@@ -46,9 +46,9 @@ vtkCxxSetObjectMacro(vtkDICOMWriter,MetaData,vtkDICOMMetaData);
 vtkDICOMWriter::vtkDICOMWriter()
 {
   this->FileLowerLeft = 1;
-  this->FileDimensionality = 3;
+  this->FileDimensionality = 2;
   this->MetaData = 0;
-  this->Generator = vtkDICOMSCGenerator::New();
+  this->Generator = vtkDICOMMRGenerator::New();
   this->TimeAsVector = 0;
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;

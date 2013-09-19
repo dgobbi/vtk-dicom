@@ -134,6 +134,7 @@ set(LIB_SRCS
   vtkDICOMDictEntry.cxx
   vtkDICOMGenerator.cxx
   vtkDICOMSCGenerator.cxx
+  vtkDICOMMRGenerator.cxx
   vtkDICOMParser.cxx
   vtkDICOMCompiler.cxx
   vtkDICOMReader.cxx
