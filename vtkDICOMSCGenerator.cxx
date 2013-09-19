@@ -217,7 +217,7 @@ bool vtkDICOMSCGenerator::GenerateSCEquipmentModule(vtkDICOMMetaData *meta)
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMSCGenerator::GenerateSCInstance(
+bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
   vtkInformation *info, vtkDICOMMetaData *meta)
 {
   // get the scalar information
@@ -258,7 +258,7 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(
       !this->GenerateGeneralSeriesModule(meta) ||
       !this->GenerateGeneralStudyModule(meta) ||
       !this->GeneratePatientModule(meta) ||
-      !this->GenerateSCImageModule(meta) ||
+      !this->GenerateSCMultiFrameImageModule(meta, info) ||
       !this->GenerateSCEquipmentModule(meta))
     {
     return false;
@@ -268,7 +268,7 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
+bool vtkDICOMSCGenerator::GenerateSCInstance(
   vtkInformation *info, vtkDICOMMetaData *meta)
 {
   const char *SOPClass = "1.2.840.10008.5.1.4.1.1.3";
@@ -279,7 +279,7 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
       !this->GenerateGeneralSeriesModule(meta) ||
       !this->GenerateGeneralStudyModule(meta) ||
       !this->GeneratePatientModule(meta) ||
-      !this->GenerateSCMultiFrameImageModule(meta, info) ||
+      !this->GenerateSCImageModule(meta) ||
       !this->GenerateSCEquipmentModule(meta))
     {
     return false;
