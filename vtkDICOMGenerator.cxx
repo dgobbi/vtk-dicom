@@ -908,12 +908,14 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(
     }
   else
     {
-    meta->RemoveAttribute(DC::SamplesPerPixel);
-    meta->RemoveAttribute(DC::PlanarConfiguration);
-    std::string pm = meta->GetAttributeValue(
-      DC::PhotometricInterpretation).AsString();
-    if (pm == "PALETTE COLOR" &&
-        meta->HasAttribute(DC::RedPaletteColorLookupTableData))
+    std::string pm;
+    if (this->MetaData)
+      {
+      pm = this->MetaData->GetAttributeValue(
+        DC::PhotometricInterpretation).AsString();
+      }
+    if (pm == "PALETTE COLOR" && this->MetaData &&
+        this->MetaData->HasAttribute(DC::RedPaletteColorLookupTableData))
       {
       paletteColor = true;
       }
@@ -924,15 +926,22 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(
     meta->SetAttributeValue(DC::PhotometricInterpretation, pm);
     }
 
-  // Remove unless "PALETTE COLOR"
-  if (!paletteColor)
+  if (paletteColor && this->MetaData)
     {
-    meta->RemoveAttribute(DC::RedPaletteColorLookupTableDescriptor);
-    meta->RemoveAttribute(DC::GreenPaletteColorLookupTableDescriptor);
-    meta->RemoveAttribute(DC::BluePaletteColorLookupTableDescriptor);
-    meta->RemoveAttribute(DC::RedPaletteColorLookupTableData);
-    meta->RemoveAttribute(DC::GreenPaletteColorLookupTableData);
-    meta->RemoveAttribute(DC::BluePaletteColorLookupTableData);
+    static const DC::EnumType palette[] = {
+      DC::RedPaletteColorLookupTableDescriptor,
+      DC::GreenPaletteColorLookupTableDescriptor,
+      DC::BluePaletteColorLookupTableDescriptor,
+      DC::RedPaletteColorLookupTableData,
+      DC::GreenPaletteColorLookupTableData,
+      DC::BluePaletteColorLookupTableData,
+      DC::ItemDelimitationItem
+    };
+    for (int i = 0; palette[i] != DC::ItemDelimitationItem; i++)
+      {
+      meta->SetAttributeValue(palette[i],
+        this->MetaData->GetAttributeValue(palette[i]));
+      }
     }
 
   meta->SetAttributeValue(DC::Rows, rows);
@@ -949,7 +958,7 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(
     DC::PixelAspectRatio,
     vtkDICOMValue(vtkDICOMVR::IS, aspect, aspect+2));
 
-  // These can be easily added, but they are optional
+  // These can be easily added in the writer, but they are optional
   meta->RemoveAttribute(DC::SmallestImagePixelValue);
   meta->RemoveAttribute(DC::LargestImagePixelValue);
 
