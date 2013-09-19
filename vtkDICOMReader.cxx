@@ -516,7 +516,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   // important position-related variables
   std::vector<size_t> volumeBreaks;
   double checkOrientation[10] = {};
-  bool canSortByIPP = true;
+  bool canSortByLocation = true;
   double spacingBetweenSlices =
     meta->GetAttributeValue(DC::SpacingBetweenSlices).AsDouble();
   double spacingSign = 1.0;
@@ -551,7 +551,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       int numberOfFrames =
         meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
 
-      // need a more convenient way of dealing with sequences...
+      // from the MultiFrameFunctionalGroups module
       vtkDICOMSequence frameSeq =
         meta->GetAttributeValue(i, DC::PerFrameFunctionalGroupsSequence);
       vtkDICOMSequence sharedSeq =
@@ -673,14 +673,14 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           {
           // compute location from orientation and IPP
           double location = vtkDICOMReaderComputeLocation(
-            pv, ov, checkOrientation, &canSortByIPP);
+            pv, ov, checkOrientation, &canSortByLocation);
           location /= spacingBetweenSlices;
 
           // force output of one single volume
           if ((ii > 0 || k > 0) && !firstStackId.IsValid() &&
-              pv.IsValid() && !canSortByIPP)
+              pv.IsValid() && !canSortByLocation)
             {
-            canSortByIPP = true;
+            canSortByLocation = true;
             volumeBreaks.push_back(info.size());
             }
 
@@ -693,7 +693,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     // if frames with the desired stack ID were found, use them
     if (stackInfo.size() > 0)
       {
-      canSortByIPP = canSortStackByIPP;
+      canSortByLocation = canSortStackByIPP;
       info = stackInfo;
       }
     }
@@ -733,6 +733,8 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
 
       // check for valid Image Plane Module information
+      // (for NM this information is per-detector and is put in
+      // the Detector Information Sequence)
       double location = 0;
       vtkDICOMValue pv = meta->GetAttributeValue(
         i, DC::ImagePositionPatient);
@@ -740,13 +742,13 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
         i, DC::ImageOrientationPatient);
 
       location = vtkDICOMReaderComputeLocation(
-        pv, ov, checkOrientation, &canSortByIPP);
+        pv, ov, checkOrientation, &canSortByLocation);
       location /= spacingBetweenSlices;
 
       // force output of one single rectilinear volume
-      if (ii > 0 && !canSortByIPP && pv.IsValid())
+      if (ii > 0 && !canSortByLocation && pv.IsValid())
         {
-        canSortByIPP = true;
+        canSortByLocation = true;
         volumeBreaks.push_back(info.size());
         }
 
@@ -773,10 +775,11 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       else
         {
         // multi-frame image
-        double frameTimeSpacing = 1.0;
+        double frameTimeSpacing = 0;
         vtkDICOMValue timeVector;
         vtkDICOMValue timeSlotVector;
         vtkDICOMValue sliceVector;
+        vtkDICOMValue locationVector;
         vtkDICOMValue fip =
           meta->GetAttributeValue(i, DC::FrameIncrementPointer);
         unsigned int n = fip.GetNumberOfValues();
@@ -790,6 +793,11 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           else if (tag == DC::FrameTimeVector)
             { // for CINE
             timeVector = meta->GetAttributeValue(i, tag);
+            }
+          else if (tag == DC::SliceLocationVector)
+            { // generic
+            locationVector = meta->GetAttributeValue(i, tag);
+            canSortByLocation = true;
             }
           else if (tag == DC::TimeSlotVector)
             { // for NM
@@ -838,6 +846,11 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
                 }
               t += frameTimeSpacing;
               }
+            if (k < static_cast<int>(locationVector.GetNumberOfValues()))
+              {
+              location = locationVector.GetDouble(k);
+              location /= spacingBetweenSlices;
+              }
             info.push_back(
               vtkDICOMReaderSortInfo(i, k, inst, inst, location, t));
             }
@@ -866,7 +879,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       {
       // too many unique volumes would be created, assume
       // that the acquisition was not rectilinear.
-      canSortByIPP = false;
+      canSortByLocation = false;
       }
     else
       {
@@ -895,7 +908,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   int slicesPerLocation = 0;
   if (numSlices > 1)
     {
-    if (canSortByIPP)
+    if (canSortByLocation)
       {
       std::stable_sort(info.begin(), info.end(),
         vtkDICOMReaderSortInfo::CompareLocation);
@@ -917,7 +930,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       if (nextIter != info.end())
         {
         // use the tolerance built into CompareLocation
-        if (canSortByIPP)
+        if (canSortByLocation)
           {
           positionIncreased =
             vtkDICOMReaderSortInfo::CompareLocation(*iter, *nextIter);
@@ -981,7 +994,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     }
 
   // recompute slice spacing from position info
-  if (canSortByIPP)
+  if (canSortByLocation)
     {
     double locDiff = 0;
     if (locations > 1)
