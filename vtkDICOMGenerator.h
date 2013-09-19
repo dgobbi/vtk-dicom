@@ -59,9 +59,9 @@ public:
    *  this is off, then each slice will be put into a different data set.
    *  The latter is more likely to be compatible with older software.
    */
-  vtkGetMacro(MultiFrame, int);
   vtkSetMacro(MultiFrame, int);
   vtkBooleanMacro(MultiFrame, int);
+  vtkGetMacro(MultiFrame, int);
 
   //! Write scalar components as the time dimension (default: Off).
   /*!
@@ -69,9 +69,9 @@ public:
    *  component of the image data.  If it is off, then each block of N
    *  adjacent slices correspond to the N time slots of the time dimension.
    */
-  vtkGetMacro(TimeAsVector, int);
   vtkSetMacro(TimeAsVector, int);
   vtkBooleanMacro(TimeAsVector, int);
+  vtkGetMacro(TimeAsVector, int);
 
   //! Set the time dimension to use in the DICOM file (or zero if none).
   /*!
@@ -81,10 +81,10 @@ public:
    *  dimension.  This will be ignored if the SOP Class IOD does not permit
    *  a time dimension.
    */
-  vtkGetMacro(TimeDimension, int);
   vtkSetMacro(TimeDimension, int);
-  vtkGetMacro(TimeSpacing, double);
+  vtkGetMacro(TimeDimension, int);
   vtkSetMacro(TimeSpacing, double);
+  vtkGetMacro(TimeSpacing, double);
 
   //! Set the matrix that places the image in DICOM patient coords.
   /*!

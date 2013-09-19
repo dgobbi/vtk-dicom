@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkDICOMReader - Write DICOM image files.
-// .SECTION SeriesDescription
+// .NAME vtkDICOMWriter - Write DICOM image files.
+// .SECTION Description
 // This class writes a series of one or more DICOM files.  The default
 // behavior is to write a single multi-frame Secondary Capture file
 // with no modality-specific information.
@@ -53,9 +53,9 @@ public:
   // in a different scalar component of the image data.  If it is off,
   // the writer assumes that each block of N adjacent slices correspond
   // to the N time slots of the time dimension.
-  vtkGetMacro(TimeAsVector, int);
   vtkSetMacro(TimeAsVector, int);
   vtkBooleanMacro(TimeAsVector, int);
+  vtkGetMacro(TimeAsVector, int);
 
   // Description:
   // Set the time dimension to use in the DICOM file (or zero if none).
@@ -64,10 +64,10 @@ public:
   // will be set to the number of components divided by the time dimension.
   // This will be ignored if the SOP Class IOD does not permit a time
   // dimension.
-  vtkGetMacro(TimeDimension, int);
   vtkSetMacro(TimeDimension, int);
-  vtkGetMacro(TimeSpacing, double);
+  vtkGetMacro(TimeDimension, int);
   vtkSetMacro(TimeSpacing, double);
+  vtkGetMacro(TimeSpacing, double);
 
   // Description:
   // Set the matrix that places the image in DICOM patient coords.
