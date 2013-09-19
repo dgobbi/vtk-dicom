@@ -486,6 +486,54 @@ bool vtkDICOMGenerator::GenerateGeneralSeriesModule(vtkDICOMMetaData *meta)
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateGeneralEquipmentModule(vtkDICOMMetaData *meta)
+{
+  // required items: use simple read/write validation
+  static const DC::EnumType required[] = {
+    DC::Manufacturer,
+    DC::ItemDelimitationItem
+  };
+
+  for (int i = 0; required[i] != DC::ItemDelimitationItem; i++)
+    {
+    std::string val;
+    if (this->MetaData)
+      {
+      val = this->MetaData->GetAttributeValue(required[i]).AsString();
+      }
+    meta->SetAttributeValue(required[i], val);
+    }
+
+  // optional and conditional: direct copy of values with no checks
+  static const DC::EnumType optional[] = {
+    DC::InstitutionName,
+    DC::InstitutionAddress,
+    DC::StationName,
+    DC::InstitutionalDepartmentName,
+    DC::ManufacturerModelName,
+    DC::DeviceSerialNumber,
+    DC::SoftwareVersions,
+    DC::GantryID,
+    DC::SpatialResolution,
+    DC::DateOfLastCalibration,
+    DC::TimeOfLastCalibration,
+    DC::PixelPaddingValue, // 1C, mandatory if PixelPaddingRangeLimit
+    DC::ItemDelimitationItem
+  };
+
+  if (this->MetaData)
+    {
+    for (int i = 0; optional[i] != DC::ItemDelimitationItem; i++)
+      {
+      meta->SetAttributeValue(optional[i],
+        this->MetaData->GetAttributeValue(optional[i]));
+      }
+    }
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMGenerator::GenerateMultiFrameModule(
   vtkDICOMMetaData *meta, vtkInformation *info)
 {
@@ -961,6 +1009,55 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(
   // These can be easily added in the writer, but they are optional
   meta->RemoveAttribute(DC::SmallestImagePixelValue);
   meta->RemoveAttribute(DC::LargestImagePixelValue);
+
+  return true;
+}
+
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateImagePlaneModule(
+  vtkDICOMMetaData *meta, vtkInformation *info)
+{
+  // get the geometry of the image
+  int extent[6];
+  info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
+
+  double spacing[3], origin[3];
+  info->Get(vtkDataObject::SPACING(), spacing);
+  info->Get(vtkDataObject::ORIGIN(), origin);
+
+  // remove the PixelAspectRatio, it conflicts with PixelSpacing
+  meta->RemoveAttribute(DC::PixelAspectRatio);
+
+  meta->SetAttributeValue(
+    DC::PixelSpacing,
+    vtkDICOMValue(vtkDICOMVR::DS, spacing, spacing+2));
+
+  // this will have to account for image flip, if present
+  int n = meta->GetNumberOfInstances();
+  for (int i = 0; i < n; i++)
+    {
+    double position[3], orientation[6];
+    vtkDICOMGenerator::ComputePositionAndOrientation(
+      origin, this->PatientMatrix, position, orientation);
+
+    meta->SetAttributeValue(
+      i, DC::ImagePositionPatient,
+      vtkDICOMValue(vtkDICOMVR::DS, position, position+3));
+
+    meta->SetAttributeValue(
+      i, DC::ImageOrientationPatient,
+      vtkDICOMValue(vtkDICOMVR::DS, orientation, orientation+6));
+
+    // increment the origin by the slice spacing
+    origin[2] += spacing[2];
+    }
+
+  // the original SliceThickness should be used if it is still valid,
+  // i.e. if the slices are original slices rather than reformatted.
+  meta->SetAttributeValue(DC::SliceThickness, spacing[2]);
+
+  // DC::SliceLocation is an optional attribute, do not set
 
   return true;
 }
