@@ -129,16 +129,7 @@ bool vtkDICOMMRGenerator::GenerateMRMultiFrameImageModule(
     DC::ItemDelimitationItem
   };
 
-  if (this->MetaData)
-    {
-    for (int i = 0; optional[i] != DC::ItemDelimitationItem; i++)
-      {
-      meta->SetAttributeValue(optional[i],
-        this->MetaData->GetAttributeValue(optional[i]));
-      }
-    }
-
-  return true;
+  return this->CopyOptionalAttributes(optional, meta);
 }
 
 //----------------------------------------------------------------------------
@@ -167,17 +158,6 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *meta)
     DC::TriggerTime, // 2C, req'd for cardiac gating
     DC::ItemDelimitationItem
   };
-
-  for (int i = 0; required[i] != DC::ItemDelimitationItem; i++)
-    {
-    // Some are multi-valued so string get/set will not always work!!!!
-    std::string val;
-    if (this->MetaData)
-      {
-      val = this->MetaData->GetAttributeValue(required[i]).AsString();
-      }
-    meta->SetAttributeValue(required[i], val);
-    }
 
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
@@ -220,16 +200,8 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  if (this->MetaData)
-    {
-    for (int i = 0; optional[i] != DC::ItemDelimitationItem; i++)
-      {
-      meta->SetAttributeValue(optional[i],
-        this->MetaData->GetAttributeValue(optional[i]));
-      }
-    }
-
-  return true;
+  return (this->CopyRequiredAttributes(required, meta) &&
+          this->CopyOptionalAttributes(optional, meta));
 }
 
 //----------------------------------------------------------------------------

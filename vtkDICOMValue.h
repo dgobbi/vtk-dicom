@@ -96,6 +96,9 @@ public:
   vtkDICOMValue(vtkDICOMVR vr,
                 const vtkDICOMTag *data, const vtkDICOMTag *end);
 
+  //! Create an emtpy value.
+  explicit vtkDICOMValue(vtkDICOMVR vr);
+
   //! Copy constructor.
   vtkDICOMValue(const vtkDICOMValue &v) : V(v.V) {
     if (this->V) { ++(this->V->ReferenceCount); } }

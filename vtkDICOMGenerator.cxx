@@ -257,6 +257,64 @@ void vtkDICOMGenerator::ComputeDimensions(
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMGenerator::CopyRequiredAttributes(
+  const DC::EnumType *tags, vtkDICOMMetaData *meta)
+{
+  if (this->MetaData)
+    {
+    while (*tags != DC::ItemDelimitationItem)
+      {
+      vtkDICOMTag tag = *tags++;
+      vtkDICOMDataElementIterator iter = this->MetaData->Find(tag);
+      vtkDICOMDictEntry e = meta->FindDictEntry(tag);
+      if (iter != this->MetaData->End() &&
+          !iter->IsPerInstance())
+        {
+        meta->SetAttributeValue(tag, iter->GetValue());
+        }
+      else
+        {
+        // set the attribute to zero-length value.
+        meta->SetAttributeValue(tag, vtkDICOMValue(e.GetVR()));
+        }
+      }
+    }
+  else
+    {
+    while (*tags != DC::ItemDelimitationItem)
+      {
+      vtkDICOMTag tag = *tags++;
+      vtkDICOMDictEntry e = meta->FindDictEntry(tag);
+      meta->SetAttributeValue(tag, vtkDICOMValue(e.GetVR()));
+      }
+    }
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::CopyOptionalAttributes(
+  const DC::EnumType *tags, vtkDICOMMetaData *meta)
+{
+  if (this->MetaData)
+    {
+    while (*tags != DC::ItemDelimitationItem)
+      {
+      vtkDICOMTag tag = *tags++;
+      vtkDICOMDataElementIterator iter = this->MetaData->Find(tag);
+      vtkDICOMDictEntry e = meta->FindDictEntry(tag);
+      if (iter != this->MetaData->End() &&
+          !iter->IsPerInstance())
+        {
+        meta->SetAttributeValue(tag, iter->GetValue());
+        }
+      }
+    }
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMGenerator::GenerateSOPCommonModule(
   vtkDICOMMetaData *meta, const char *SOPClass)
 {
@@ -286,16 +344,7 @@ bool vtkDICOMGenerator::GenerateSOPCommonModule(
     DC::ItemDelimitationItem
   };
 
-  if (this->MetaData)
-    {
-    for (int i = 0; optional[i] != DC::ItemDelimitationItem; i++)
-      {
-      meta->SetAttributeValue(optional[i],
-        this->MetaData->GetAttributeValue(optional[i]));
-      }
-    }
-
-  return true;
+  return this->CopyOptionalAttributes(optional, meta);
 }
 
 //----------------------------------------------------------------------------
@@ -309,16 +358,6 @@ bool vtkDICOMGenerator::GeneratePatientModule(vtkDICOMMetaData *meta)
     DC::PatientSex,
     DC::ItemDelimitationItem
   };
-
-  for (int i = 0; required[i] != DC::ItemDelimitationItem; i++)
-    {
-    std::string val;
-    if (this->MetaData)
-      {
-      val = this->MetaData->GetAttributeValue(required[i]).AsString();
-      }
-    meta->SetAttributeValue(required[i], val);
-    }
 
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
@@ -343,16 +382,8 @@ bool vtkDICOMGenerator::GeneratePatientModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  if (this->MetaData)
-    {
-    for (int i = 0; optional[i] != DC::ItemDelimitationItem; i++)
-      {
-      meta->SetAttributeValue(optional[i],
-        this->MetaData->GetAttributeValue(optional[i]));
-      }
-    }
-
-  return true;
+  return (this->CopyRequiredAttributes(required, meta) &&
+          this->CopyOptionalAttributes(optional, meta));
 }
 
 //----------------------------------------------------------------------------
@@ -371,16 +402,6 @@ bool vtkDICOMGenerator::GenerateGeneralStudyModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  for (int i = 0; required[i] != DC::ItemDelimitationItem; i++)
-    {
-    std::string val;
-    if (this->MetaData)
-      {
-      val = this->MetaData->GetAttributeValue(required[i]).AsString();
-      }
-    meta->SetAttributeValue(required[i], val);
-    }
-
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
     DC::ReferringPhysicianIdentificationSequence,
@@ -397,16 +418,8 @@ bool vtkDICOMGenerator::GenerateGeneralStudyModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  if (this->MetaData)
-    {
-    for (int i = 0; optional[i] != DC::ItemDelimitationItem; i++)
-      {
-      meta->SetAttributeValue(optional[i],
-        this->MetaData->GetAttributeValue(optional[i]));
-      }
-    }
-
-  return true;
+  return (this->CopyRequiredAttributes(required, meta) &&
+          this->CopyOptionalAttributes(optional, meta));
 }
 
 //----------------------------------------------------------------------------
@@ -433,16 +446,6 @@ bool vtkDICOMGenerator::GenerateGeneralSeriesModule(vtkDICOMMetaData *meta)
     DC::SeriesNumber,
     DC::ItemDelimitationItem
   };
-
-  for (int i = 0; required[i] != DC::ItemDelimitationItem; i++)
-    {
-    std::string val;
-    if (this->MetaData)
-      {
-      val = meta->GetAttributeValue(required[i]).AsString();
-      }
-    meta->SetAttributeValue(required[i], val);
-    }
 
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
@@ -473,16 +476,8 @@ bool vtkDICOMGenerator::GenerateGeneralSeriesModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  if (this->MetaData)
-    {
-    for (int i = 0; optional[i] != DC::ItemDelimitationItem; i++)
-      {
-      meta->SetAttributeValue(optional[i],
-        this->MetaData->GetAttributeValue(optional[i]));
-      }
-    }
-
-  return true;
+  return (this->CopyRequiredAttributes(required, meta) &&
+          this->CopyOptionalAttributes(optional, meta));
 }
 
 //----------------------------------------------------------------------------
@@ -493,16 +488,6 @@ bool vtkDICOMGenerator::GenerateGeneralEquipmentModule(vtkDICOMMetaData *meta)
     DC::Manufacturer,
     DC::ItemDelimitationItem
   };
-
-  for (int i = 0; required[i] != DC::ItemDelimitationItem; i++)
-    {
-    std::string val;
-    if (this->MetaData)
-      {
-      val = this->MetaData->GetAttributeValue(required[i]).AsString();
-      }
-    meta->SetAttributeValue(required[i], val);
-    }
 
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
@@ -521,16 +506,8 @@ bool vtkDICOMGenerator::GenerateGeneralEquipmentModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  if (this->MetaData)
-    {
-    for (int i = 0; optional[i] != DC::ItemDelimitationItem; i++)
-      {
-      meta->SetAttributeValue(optional[i],
-        this->MetaData->GetAttributeValue(optional[i]));
-      }
-    }
-
-  return true;
+  return (this->CopyRequiredAttributes(required, meta) &&
+          this->CopyOptionalAttributes(optional, meta));
 }
 
 //----------------------------------------------------------------------------
@@ -810,6 +787,34 @@ bool vtkDICOMGenerator::GenerateGeneralImageModule(
     meta->SetAttributeValue(DC::InstanceNumber, 1);
     }
 
+  if (this->PatientMatrix)
+    {
+    meta->RemoveAttribute(DC::PatientOrientation);
+    }
+  else
+    {
+    // This is required on the condition that no matrix is provided
+    if (!meta->HasAttribute(DC::PatientOrientation))
+      {
+      meta->SetAttributeValue(DC::PatientOrientation, "");
+      }
+    }
+
+  // ContentDate is conditionally required, and we have no means to
+  // check for the conditions under which it would not be required.
+  if (!meta->HasAttribute(DC::ContentTime) ||
+      !meta->HasAttribute(DC::ContentDate))
+    {
+    char text[32];
+    time_t t;
+    time(&t);
+    strftime(text, sizeof(text), "%Y%m%d%H%M%S", localtime(&t));
+    text[8 + 6] = '\0';
+    meta->SetAttributeValue(DC::ContentTime, &text[8]);
+    text[8] = '\0';
+    meta->SetAttributeValue(DC::ContentDate, &text[0]);
+    }
+
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
     DC::PatientOrientation, // 2C, not set if Patient Matrix exists
@@ -839,44 +844,7 @@ bool vtkDICOMGenerator::GenerateGeneralImageModule(
     DC::ItemDelimitationItem
   };
 
-  if (this->MetaData)
-    {
-    for (int i = 0; optional[i] != DC::ItemDelimitationItem; i++)
-      {
-      meta->SetAttributeValue(optional[i],
-        this->MetaData->GetAttributeValue(optional[i]));
-      }
-    }
-
-  if (this->PatientMatrix)
-    {
-    meta->RemoveAttribute(DC::PatientOrientation);
-    }
-  else
-    {
-    // This is required on the condition that no matrix is provided
-    if (!meta->HasAttribute(DC::PatientOrientation))
-      {
-      meta->SetAttributeValue(DC::PatientOrientation, "");
-      }
-    }
-
-  // ContentDate is conditionally required, and we have no means to
-  // check for the conditions under which it would not be required.
-  if (!meta->HasAttribute(DC::ContentTime) ||
-      !meta->HasAttribute(DC::ContentDate))
-    {
-    char text[32];
-    time_t t;
-    time(&t);
-    strftime(text, sizeof(text), "%Y%m%d%H%M%S", localtime(&t));
-    text[8 + 6] = '\0';
-    meta->SetAttributeValue(DC::ContentTime, &text[8]);
-    text[8] = '\0';
-    meta->SetAttributeValue(DC::ContentDate, &text[0]);
-    }
-
-  return true;
+  return this->CopyOptionalAttributes(optional, meta);
 }
 
 //----------------------------------------------------------------------------

@@ -129,16 +129,7 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
     DC::ItemDelimitationItem
   };
 
-  if (this->MetaData)
-    {
-    for (int i = 0; optional[i] != DC::ItemDelimitationItem; i++)
-      {
-      meta->SetAttributeValue(optional[i],
-        this->MetaData->GetAttributeValue(optional[i]));
-      }
-    }
-
-  return true;
+  return this->CopyOptionalAttributes(optional, meta);
 }
 
 //----------------------------------------------------------------------------
@@ -158,16 +149,7 @@ bool vtkDICOMSCGenerator::GenerateSCImageModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  if (this->MetaData)
-    {
-    for (int i = 0; optional[i] != DC::ItemDelimitationItem; i++)
-      {
-      meta->SetAttributeValue(optional[i],
-        this->MetaData->GetAttributeValue(optional[i]));
-      }
-    }
-
-  return true;
+  return this->CopyOptionalAttributes(optional, meta);
 }
 
 //----------------------------------------------------------------------------
@@ -185,6 +167,13 @@ bool vtkDICOMSCGenerator::GenerateSCEquipmentModule(vtkDICOMMetaData *meta)
     }
   meta->SetAttributeValue(DC::ConversionType, ct);
 
+  // Modality is optional for Secondary Capture
+  std::string m = meta->GetAttributeValue(DC::Modality).AsString();
+  if (m == "" || m == "OT")
+    {
+    meta->RemoveAttribute(DC::Modality);
+    }
+
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
     DC::Modality,
@@ -197,23 +186,7 @@ bool vtkDICOMSCGenerator::GenerateSCEquipmentModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  if (this->MetaData)
-    {
-    for (int i = 0; optional[i] != DC::ItemDelimitationItem; i++)
-      {
-      meta->SetAttributeValue(optional[i],
-        this->MetaData->GetAttributeValue(optional[i]));
-      }
-    }
-
-  // Modality is optional for Secondary Capture
-  std::string m = meta->GetAttributeValue(DC::Modality).AsString();
-  if (m == "" || m == "OT")
-    {
-    meta->RemoveAttribute(DC::Modality);
-    }
-
-  return true;
+  return this->CopyOptionalAttributes(optional, meta);
 }
 
 //----------------------------------------------------------------------------

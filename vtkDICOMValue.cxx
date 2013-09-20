@@ -710,6 +710,67 @@ vtkDICOMValue::vtkDICOMValue(
 }
 
 //----------------------------------------------------------------------------
+vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
+{
+  typedef vtkDICOMVR VR;
+
+  this->V = 0;
+
+  if (vr == VR::AE || vr == VR::AS || vr == VR::CS ||
+      vr == VR::DA || vr == VR::DS || vr == VR::DT ||
+      vr == VR::IS || vr == VR::LO || vr == VR::PN ||
+      vr == VR::SH || vr == VR::TM || vr == VR::UI ||
+      vr == VR::ST || vr == VR::LT || vr == VR::UT)
+    {
+    this->AllocateCharData(vr, 0);
+    }
+  else if (vr == VR::OW || vr == VR::OX)
+    {
+    this->AllocateShortData(vr, 0);
+    }
+  else if (vr == VR::OF)
+    {
+    this->AllocateFloatData(vr, 0);
+    }
+  else if (vr == VR::UN)
+    {
+    this->AllocateUnsignedCharData(vr, 0);
+    }
+  else if (vr == VR::FD)
+    {
+    this->AllocateDoubleData(vr, 0);
+    }
+  else if (vr == VR::FL)
+    {
+    this->AllocateFloatData(vr, 0);
+    }
+  else if (vr == VR::UL)
+    {
+    this->AllocateUnsignedIntData(vr, 0);
+    }
+  else if (vr == VR::SL)
+    {
+    this->AllocateIntData(vr, 0);
+    }
+  else if (vr == VR::US)
+    {
+    this->AllocateUnsignedShortData(vr, 0);
+    }
+  else if (vr == VR::SS || vr == VR::XS)
+    {
+    this->AllocateShortData(vr, 0);
+    }
+  else if (vr == VR::AT)
+    {
+    this->AllocateTagData(vr, 0);
+    }
+  else if (vr == VR::SQ)
+    {
+    this->AllocateSequenceData(vr, 0);
+    }
+}
+
+//----------------------------------------------------------------------------
 // It is necessary to check the Type so that the correct information can
 // be freed.  The constructor guarantees that Type is always set correctly.
 void vtkDICOMValue::FreeValue(Value *v)

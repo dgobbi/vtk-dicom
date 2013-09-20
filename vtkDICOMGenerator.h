@@ -16,6 +16,7 @@
 
 #include <vtkObject.h>
 #include "vtkDICOMModule.h"
+#include "vtkDICOMDictHash.h"
 
 class vtkMatrix4x4;
 class vtkInformation;
@@ -142,6 +143,22 @@ protected:
   //! Generate The DICOM Multi-frame Functional Groups Module.
   virtual bool GenerateMultiFrameFunctionalGroupsModule(
     vtkDICOMMetaData *meta, vtkInformation *info);
+
+  //! Copy required attributes into the meta data.
+  /*!
+   *  Required attributes must be set, so if no value is available,
+   *  then an empty zero-length attribute will be created for them.
+   *  The list of tags must be terminated with DC::ItemDelimitationItem.
+   */
+  virtual bool CopyRequiredAttributes(
+    const DC::EnumType *tags, vtkDICOMMetaData *meta);
+
+  //! Copy optional attributes into the meta data.
+  /*!
+   *  The list of tags must be terminated with DC::ItemDelimitationItem.
+   */
+  virtual bool CopyOptionalAttributes(
+    const DC::EnumType *tags, vtkDICOMMetaData *meta);
 
   //! Compute aspect ratio from spacing.
   static void ComputeAspectRatio(const double spacing[2], int aspect[2]);
