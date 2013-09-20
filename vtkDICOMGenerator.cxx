@@ -18,6 +18,7 @@
 #include "vtkDICOMTagPath.h"
 
 #include "vtkObjectFactory.h"
+#include "vtkIntArray.h"
 #include "vtkImageData.h"
 #include "vtkInformation.h"
 #include "vtkMatrix4x4.h"
@@ -39,15 +40,21 @@ vtkDICOMGenerator::vtkDICOMGenerator()
 {
   this->MetaData = 0;
   this->MultiFrame = 0;
+  this->OriginAtBottom = 1;
   this->TimeAsVector = 0;
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
   this->PatientMatrix = 0;
+  this->SliceIndexArray = vtkIntArray::New();
 }
 
 //----------------------------------------------------------------------------
 vtkDICOMGenerator::~vtkDICOMGenerator()
 {
+  if (this->SliceIndexArray)
+    {
+    this->SliceIndexArray->Delete();
+    }
   if (this->PatientMatrix)
     {
     this->PatientMatrix->Delete();
@@ -69,9 +76,28 @@ void vtkDICOMGenerator::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 
-  os << indent << "MetaData:" << (this->MetaData ? "\n" : " (none)\n");
+  os << indent << "MetaData: ";
+  if (this->MetaData)
+    {
+    os << this->MetaData << "\n";
+    }
+  else
+    {
+    os << "(none)\n";
+    }
+  os << indent << "SliceIndexArray: ";
+  if (this->SliceIndexArray)
+    {
+    os << this->SliceIndexArray << "\n";
+    }
+  else
+    {
+    os << "(none)\n";
+    }
   os << indent << "MultiFrame: "
      << (this->MultiFrame ? "On\n" : "Off\n");
+  os << indent << "OriginAtBottom: "
+     << (this->OriginAtBottom ? "On\n" : "Off\n");
   os << indent << "TimeAsVector: "
      << (this->TimeAsVector ? "On\n" : "Off\n");
   os << indent << "TimeDimension: " << this->TimeDimension << "\n";
@@ -154,7 +180,7 @@ void vtkDICOMGenerator::ComputeAspectRatio(
 
 //----------------------------------------------------------------------------
 void vtkDICOMGenerator::ComputePositionAndOrientation(
-  const double origin[3], vtkMatrix4x4 *matrix,
+  const double origin[3], const double mmat[16],
   double position[3], double orientation[6])
 {
   // find new offset by multiplying the origin by the matrix
@@ -164,16 +190,7 @@ void vtkDICOMGenerator::ComputePositionAndOrientation(
   offset[2] = origin[2];
   offset[3] = 1.0;
 
-  double mmat[16];
-  if (matrix)
-    {
-    matrix->MultiplyPoint(offset, offset);
-    vtkMatrix4x4::DeepCopy(mmat, matrix);
-    }
-  else
-    {
-    vtkMatrix4x4::Identity(mmat);
-    }
+  vtkMatrix4x4::MultiplyPoint(mmat, offset, offset);
 
   position[0] = offset[0];
   position[1] = offset[1];
@@ -254,6 +271,53 @@ void vtkDICOMGenerator::ComputeDimensions(
   n *= (numTimeSlots ? numTimeSlots : 1);
   n *= (numComponents ? numComponents : 1);
   *nframes = n;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMGenerator::InitializeMetaData(
+  vtkInformation *info, vtkDICOMMetaData *meta)
+{
+  meta->Initialize();
+
+  // get dimensions of the data set: x,y,z,t,v
+  int nframes = 1;
+  int dims[5];
+  double spacing[5];
+  this->ComputeDimensions(info, &nframes, dims, spacing);
+  int numSlices = (dims[2] > 0 ? dims[2] : 1);
+  int numTimeSlots = (dims[3] > 0 ? dims[3] : 1);
+
+  // compute the SliceIndexArray
+  if (this->MultiFrame)
+    {
+    this->SliceIndexArray->SetNumberOfComponents(nframes);
+    this->SliceIndexArray->SetNumberOfTuples(1);
+    meta->SetNumberOfInstances(1);
+    }
+  else
+    {
+    this->SliceIndexArray->SetNumberOfComponents(1);
+    this->SliceIndexArray->SetNumberOfTuples(nframes);
+    meta->SetNumberOfInstances(nframes);
+    }
+
+  // Reversing slice ordering isn't necessary if the ImagePlane module
+  // is present, because then every file has an ImagePositionPatient,
+  // but if only a Location is present then slice ordering is critical.
+  bool reverseSlices = false;
+  int m = nframes/numSlices;
+  int n = m/numTimeSlots;
+  for (int i = 0; i < nframes; i++)
+    {
+    int sliceIdx = i/m;
+    sliceIdx = (reverseSlices ? (numSlices - sliceIdx - 1) : sliceIdx);
+    if (!this->TimeAsVector)
+      {
+      int timeIdx = (i % m)/n;
+      sliceIdx = sliceIdx*numTimeSlots + timeIdx;
+      }
+    this->SliceIndexArray->SetValue(i, sliceIdx);
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -994,6 +1058,37 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(
   info->Get(vtkDataObject::SPACING(), spacing);
   info->Get(vtkDataObject::ORIGIN(), origin);
 
+  double matrix[16] = {
+    1.0, 0.0, 0.0, 0.0, 
+    0.0, 1.0, 0.0, 0.0, 
+    0.0, 0.0, 1.0, 0.0, 
+    0.0, 0.0, 0.0, 1.0 };
+
+  if (this->PatientMatrix)
+    {
+    vtkMatrix4x4::DeepCopy(matrix, this->PatientMatrix);
+    }
+
+  if (this->OriginAtBottom)
+    {
+    // move origin to the correct corner
+    origin[1] -= spacing[1]*(extent[3] - extent[2]);
+    matrix[1] = -matrix[1];
+    matrix[5] = -matrix[5];
+    matrix[9] = -matrix[9];
+    // also need to do z to keep a right-hand coord transformation
+    spacing[2] = -spacing[2];
+    matrix[2] = -matrix[2];
+    matrix[6] = -matrix[6];
+    matrix[10] = -matrix[10];
+    }
+  int timeSlices = 1;
+  if (!this->TimeAsVector && this->TimeDimension > 0)
+    {
+    timeSlices = this->TimeDimension;
+    spacing[2] *= timeSlices;
+    }
+
   // remove the PixelAspectRatio, it conflicts with PixelSpacing
   meta->RemoveAttribute(DC::PixelAspectRatio);
 
@@ -1003,11 +1098,17 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(
 
   // this will have to account for image flip, if present
   int n = meta->GetNumberOfInstances();
+  double zorigin = origin[2];
   for (int i = 0; i < n; i++)
     {
+    int sliceIdx = this->SliceIndexArray->GetComponent(i, 0);
+    // remove the time from the slice index
+    sliceIdx /= timeSlices;
+    origin[2] = zorigin + sliceIdx*spacing[2];
+
     double position[3], orientation[6];
     vtkDICOMGenerator::ComputePositionAndOrientation(
-      origin, this->PatientMatrix, position, orientation);
+      origin, matrix, position, orientation);
 
     meta->SetAttributeValue(
       i, DC::ImagePositionPatient,
@@ -1016,14 +1117,11 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(
     meta->SetAttributeValue(
       i, DC::ImageOrientationPatient,
       vtkDICOMValue(vtkDICOMVR::DS, orientation, orientation+6));
-
-    // increment the origin by the slice spacing
-    origin[2] += spacing[2];
     }
 
   // the original SliceThickness should be used if it is still valid,
   // i.e. if the slices are original slices rather than reformatted.
-  meta->SetAttributeValue(DC::SliceThickness, spacing[2]);
+  meta->SetAttributeValue(DC::SliceThickness, fabs(spacing[2]));
 
   // DC::SliceLocation is an optional attribute, do not set
 

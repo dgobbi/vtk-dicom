@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
       vtkSmartPointer<vtkDICOMWriter> writer =
         vtkSmartPointer<vtkDICOMWriter>::New();
       writer->SetInputConnection(reader->GetOutputPort());
+      writer->SetPatientMatrix(reader->GetPatientMatrix());
       writer->SetMetaData(meta);
       //writer->SetMemoryRowOrderToFileNative();
       writer->SetFilePrefix("/tmp");

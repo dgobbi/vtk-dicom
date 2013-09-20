@@ -209,6 +209,7 @@ bool vtkDICOMMRGenerator::GenerateMRMultiFrameInstance(
   vtkInformation *info, vtkDICOMMetaData *meta)
 {
   const char *SOPClass = "1.2.840.10008.5.1.4.1.1.4.1";
+  this->InitializeMetaData(info, meta);
 
   if (!this->GenerateSOPCommonModule(meta, SOPClass) ||
       !this->GenerateImagePixelModule(meta, info) ||
@@ -231,6 +232,7 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(
   vtkInformation *info, vtkDICOMMetaData *meta)
 {
   const char *SOPClass = "1.2.840.10008.5.1.4.1.1.4";
+  this->InitializeMetaData(info, meta);
 
   if (!this->GenerateSOPCommonModule(meta, SOPClass) ||
       !this->GenerateImagePixelModule(meta, info) ||

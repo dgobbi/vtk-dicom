@@ -18,6 +18,7 @@
 #include "vtkDICOMModule.h"
 #include "vtkDICOMDictHash.h"
 
+class vtkIntArray;
 class vtkMatrix4x4;
 class vtkInformation;
 class vtkDICOMMetaData;
@@ -95,6 +96,18 @@ public:
   void SetPatientMatrix(vtkMatrix4x4 *);
   vtkMatrix4x4 *GetPatientMatrix() { return this->PatientMatrix; }
 
+  //! Let the generator know how the image is arranged in memory.
+  /*!
+   *  The generator needs to know how to interpret the geometry of
+   *  the image that is described in the vtkInformation object that
+   *  accompanies the image.  For example, VTK display coordinates
+   *  place the Origin at the lower left corner of the screen, while
+   *  DICOM assumes that images will be displayed with the "origin"
+   *  at the top left corner.  By default, OriginAtBottom is On.
+   */
+  vtkSetMacro(OriginAtBottom, int);
+  vtkGetMacro(OriginAtBottom, int);
+
   //! Set some meta data for the constructor to use as a hint.
   /*!
    *  The supplied meta data can provide some general properties
@@ -104,6 +117,15 @@ public:
    */
   void SetMetaData(vtkDICOMMetaData *);
   vtkDICOMMetaData *GetMetaData();
+
+  //! Get an array that maps file and frame to slice.
+  /*!
+   *  Once the generator has created the metadata, this array lets the
+   *  writer know which slice to write out as which frame in which file.
+   *  This will be a 2D array, with the file as the first index and the
+   *  frame as the second index.
+   */
+  vtkIntArray *GetSliceIndexArray() { return this->SliceIndexArray; }
 
 protected:
   vtkDICOMGenerator();
@@ -170,18 +192,34 @@ protected:
    *  the ImagePositionPatient and the ImageOrientationPatient.
    */
   static void ComputePositionAndOrientation(
-    const double origin[3], vtkMatrix4x4 *matrix,
+    const double origin[3], const double matrix[16],
     double position[3], double orientation[6]);
 
   //! Compute the dimensions.
-  void ComputeDimensions(
+  /*!
+   *  This will compute the dimensions of the data, given the information
+   *  supplied by the reader.
+   */
+  virtual void ComputeDimensions(
     vtkInformation *info, int *nframes, int dims[5], double spacing[5]);
+
+  //! Initialize the meta data and compute the slice index array.
+  /*!
+   *  This must be done before any of the meta data has been generated.
+   *  It creates a mapping between the files and frames that will be written,
+   *  and the slices that make up the image data.
+   */
+  virtual void InitializeMetaData(
+    vtkInformation *info, vtkDICOMMetaData *meta);
 
   //! The meta data.
   vtkDICOMMetaData *MetaData;
 
   //! Whether to prefer multi-frame files over single-frame.
   int MultiFrame;
+
+  //! Whether VTK image data is not top-to-bottom yet.
+  int OriginAtBottom;
 
   //! Whether time is stored in slices or in scalar components.
   int TimeAsVector;
@@ -192,6 +230,9 @@ protected:
 
   //! The orientation matrix for the DICOM file.
   vtkMatrix4x4 *PatientMatrix;
+
+  //! The file-and-frame to slice map.
+  vtkIntArray *SliceIndexArray;
 
 private:
   vtkDICOMGenerator(const vtkDICOMGenerator&);  // Not implemented.

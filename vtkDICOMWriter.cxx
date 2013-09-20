@@ -20,6 +20,7 @@
 #include "vtkDICOMTagPath.h"
 
 #include "vtkObjectFactory.h"
+#include "vtkIntArray.h"
 #include "vtkImageData.h"
 #include "vtkPointData.h"
 #include "vtkInformationVector.h"
@@ -287,22 +288,17 @@ int vtkDICOMWriter::RequestData(
     return 0;
     }
 
+  // Get the image dimensions
   int extent[6];
   info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
-  int numFiles = extent[5] - extent[4] + 1;
-  int numFrames = 1;
-  if (this->FileDimensionality > 2)
-    {
-    numFrames = numFiles;
-    numFiles = 1;
-    }
+  bool flipImage = (this->MemoryRowOrder == vtkDICOMWriter::BottomUp);
 
   vtkSmartPointer<vtkDICOMMetaData> meta =
     vtkSmartPointer<vtkDICOMMetaData>::New();
-  meta->SetNumberOfInstances(numFiles);
 
   // Generate the data
   this->Generator->SetMultiFrame(this->FileDimensionality > 2);
+  this->Generator->SetOriginAtBottom(flipImage);
   this->Generator->SetTimeAsVector(this->TimeAsVector);
   this->Generator->SetTimeDimension(this->TimeDimension);
   this->Generator->SetTimeSpacing(this->TimeSpacing);
@@ -312,6 +308,11 @@ int vtkDICOMWriter::RequestData(
     {
     return 0;
     }
+
+  // Get the map from file,frame to slice.
+  vtkIntArray *sliceMap = this->Generator->GetSliceIndexArray();
+  int numFiles = static_cast<int>(sliceMap->GetNumberOfTuples());
+  int numFrames = sliceMap->GetNumberOfComponents();
 
   // set the series description from the member variable
   if (this->SeriesDescription && this->SeriesDescription[0] != '\0')
@@ -362,8 +363,6 @@ int vtkDICOMWriter::RequestData(
   this->InvokeEvent(vtkCommand::StartEvent);
   this->UpdateProgress(0.0);
 
-  bool reverseSlices = false;
-  bool flipImage = (this->MemoryRowOrder == vtkDICOMWriter::BottomUp);
   bool packedToPlanar = (filePixelSize != pixelSize);
   char *rowBuffer = 0;
   if (flipImage)
@@ -380,7 +379,6 @@ int vtkDICOMWriter::RequestData(
   for (int fileIdx = 0; fileIdx < numFiles; fileIdx++)
     {
     // get the index for this file
-    int idx = (reverseSlices ? numFiles - fileIdx - 1 : fileIdx);
     this->ComputeInternalFileName(fileIdx + 1);
     compiler->SetFileName(this->InternalFileName);
     compiler->SetIndex(fileIdx);
@@ -394,10 +392,8 @@ int vtkDICOMWriter::RequestData(
       this->UpdateProgress(static_cast<double>(fileIdx*numFrames + frameIdx)/
                            static_cast<double>(numFiles*numFrames));
 
-      int sIdx = (reverseSlices ? numFrames - frameIdx - 1 : frameIdx);
-      // get the slice and component for this frame
-      int sliceIdx = idx*numFrames + sIdx;
-      int componentIdx = 0;
+      int sliceIdx = sliceMap->GetComponent(fileIdx, frameIdx);
+      int componentIdx = (numFiles*numFrames) % (extent[5] - extent[4] + 1);
 
       // pointer to the frame that will be written to the file
       char *framePtr = frameBuffer;

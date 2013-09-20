@@ -225,6 +225,8 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
     return false;
     }
 
+  this->InitializeMetaData(info, meta);
+
   if (!this->GenerateSOPCommonModule(meta, SOPClass) ||
       !this->GenerateImagePixelModule(meta, info) ||
       !this->GenerateGeneralImageModule(meta) ||
@@ -245,6 +247,7 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(
   vtkInformation *info, vtkDICOMMetaData *meta)
 {
   const char *SOPClass = "1.2.840.10008.5.1.4.1.1.3";
+  this->InitializeMetaData(info, meta);
 
   if (!this->GenerateSOPCommonModule(meta, SOPClass) ||
       !this->GenerateImagePixelModule(meta, info) ||
