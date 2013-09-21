@@ -239,6 +239,9 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
       !this->GenerateSCEquipmentModule(meta) ||
       !this->GenerateGeneralImageModule(meta) ||
       !this->GenerateImagePixelModule(meta, info) ||
+      // the Cine Module is added by GenerateSCMultiFrameImageModule
+      !this->GenerateDeviceModule(meta) ||
+      !this->GenerateSpecimenModule(meta) ||
       !this->GenerateSCMultiFrameImageModule(meta, info))
     {
     return false;
@@ -266,6 +269,8 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(
       !this->GenerateSCEquipmentModule(meta) ||
       !this->GenerateGeneralImageModule(meta) ||
       !this->GenerateImagePixelModule(meta, info) ||
+      !this->GenerateDeviceModule(meta) ||
+      !this->GenerateSpecimenModule(meta) ||
       !this->GenerateSCImageModule(meta))
     {
     return false;

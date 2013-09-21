@@ -175,6 +175,12 @@ protected:
   virtual bool GenerateMultiFrameModule(
     vtkDICOMMetaData *meta, vtkInformation *info);
 
+  //! Generate The DICOM Device Module.
+  virtual bool GenerateDeviceModule(vtkDICOMMetaData *meta);
+
+  //! Generate The DICOM Specimen Module.
+  virtual bool GenerateSpecimenModule(vtkDICOMMetaData *meta);
+
   //! Copy required attributes into the meta data.
   /*!
    *  Required attributes must be set, so if no value is available,

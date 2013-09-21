@@ -128,8 +128,10 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(
       !this->GenerateClinicalTrialSeriesModule(meta) ||
       !this->GenerateGeneralEquipmentModule(meta) ||
       !this->GenerateGeneralImageModule(meta) ||
-      !this->GenerateImagePixelModule(meta, info) ||
       !this->GenerateImagePlaneModule(meta, info) ||
+      !this->GenerateImagePixelModule(meta, info) ||
+      !this->GenerateDeviceModule(meta) ||
+      !this->GenerateSpecimenModule(meta) ||
       !this->GenerateMRImageModule(meta))
     {
     return false;

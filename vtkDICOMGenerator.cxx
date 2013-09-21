@@ -706,6 +706,37 @@ bool vtkDICOMGenerator::GenerateMultiFrameModule(
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateDeviceModule(vtkDICOMMetaData *meta)
+{
+  // direct copy of values with no checks
+  static const DC::EnumType tags[] = {
+    DC::DeviceSequence, // 1
+    DC::ItemDelimitationItem
+  };
+
+  return this->CopyOptionalAttributes(tags, meta);
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateSpecimenModule(vtkDICOMMetaData *meta)
+{
+  // direct copy of values with no checks
+  static const DC::EnumType tags[] = {
+
+    DC::ContainerIdentifier, // 1
+    DC::IssuerOfTheContainerIdentifierSequence, // 2
+    DC::AlternateContainerIdentifierSequence, // 3
+    DC::ContainerTypeCodeSequence, // 2
+    DC::ContainerDescription, // 3
+    DC::ContainerComponentSequence, // 3
+    DC::SpecimenDescriptionSequence, // 1
+    DC::ItemDelimitationItem
+  };
+
+  return this->CopyOptionalAttributes(tags, meta);
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMGenerator::GenerateGeneralImageModule(
   vtkDICOMMetaData *meta)
 {
