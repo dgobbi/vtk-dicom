@@ -16,12 +16,13 @@
 
 #include <vtkObject.h>
 #include "vtkDICOMModule.h"
-#include "vtkDICOMDictHash.h"
+#include "vtkDICOMTag.h"
 
 class vtkIntArray;
 class vtkMatrix4x4;
 class vtkInformation;
 class vtkDICOMMetaData;
+class vtkDICOMItem;
 
 //! Generate DICOM data series for specific IOD classes.
 /*!
@@ -162,10 +163,6 @@ protected:
   virtual bool GenerateMultiFrameModule(
     vtkDICOMMetaData *meta, vtkInformation *info);
 
-  //! Generate The DICOM Multi-frame Functional Groups Module.
-  virtual bool GenerateMultiFrameFunctionalGroupsModule(
-    vtkDICOMMetaData *meta, vtkInformation *info);
-
   //! Copy required attributes into the meta data.
   /*!
    *  Required attributes must be set, so if no value is available,
@@ -184,6 +181,11 @@ protected:
 
   //! Compute aspect ratio from spacing.
   static void ComputeAspectRatio(const double spacing[2], int aspect[2]);
+
+  //! Compute the matrix, needed for Position and Orientation.
+  void ComputeAdjustedMatrix(
+    vtkInformation *info, double matrix[16],
+    double origin[3], double spacing[3]);
 
   //! Compute the position and orientation for a slice.
   /*!
@@ -224,9 +226,19 @@ protected:
   //! Whether time is stored in slices or in scalar components.
   int TimeAsVector;
 
-  //! Time dimension to use in the file.
+  //! Time dimension suggested by the writer.
   int TimeDimension;
   double TimeSpacing;
+
+  //! The actual dimensions to write to the file.
+  /*!
+   *  The ordering of the dimensions is x,y,z,t followed by a vector
+   *  dimension that encompasses everything else.  These are set by
+   *  the InitializeMetaData() method.  The dimension is set to zero
+   *  for any dimensions that are not used.
+   */
+  int Dimensions[5];
+  double Spacing[5];
 
   //! The orientation matrix for the DICOM file.
   vtkMatrix4x4 *PatientMatrix;

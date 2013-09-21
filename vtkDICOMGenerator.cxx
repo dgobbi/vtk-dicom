@@ -46,6 +46,12 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->TimeSpacing = 1.0;
   this->PatientMatrix = 0;
   this->SliceIndexArray = vtkIntArray::New();
+
+  for (int i = 0; i < 5; i++)
+    {
+    this->Dimensions[i] = 0;
+    this->Spacing[i] = 0;
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -179,6 +185,42 @@ void vtkDICOMGenerator::ComputeAspectRatio(
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMGenerator::ComputeAdjustedMatrix(
+  vtkInformation *info, double matrix[16],
+  double origin[3], double spacing[3])
+{
+  // get the geometry of the image
+  int extent[6];
+  info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
+
+  info->Get(vtkDataObject::SPACING(), spacing);
+  info->Get(vtkDataObject::ORIGIN(), origin);
+
+  if (this->PatientMatrix)
+    {
+    vtkMatrix4x4::DeepCopy(matrix, this->PatientMatrix);
+    }
+  else
+    {
+    vtkMatrix4x4::Identity(matrix);
+    }
+
+  if (this->OriginAtBottom)
+    {
+    // move origin to the correct corner
+    origin[1] -= spacing[1]*(extent[3] - extent[2]);
+    matrix[1] = -matrix[1];
+    matrix[5] = -matrix[5];
+    matrix[9] = -matrix[9];
+    // also need to do z to keep a right-hand coord transformation
+    spacing[2] = -spacing[2];
+    matrix[2] = -matrix[2];
+    matrix[6] = -matrix[6];
+    matrix[10] = -matrix[10];
+    }
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMGenerator::ComputePositionAndOrientation(
   const double origin[3], const double mmat[16],
   double position[3], double orientation[6])
@@ -281,11 +323,10 @@ void vtkDICOMGenerator::InitializeMetaData(
 
   // get dimensions of the data set: x,y,z,t,v
   int nframes = 1;
-  int dims[5];
-  double spacing[5];
-  this->ComputeDimensions(info, &nframes, dims, spacing);
-  int numSlices = (dims[2] > 0 ? dims[2] : 1);
-  int numTimeSlots = (dims[3] > 0 ? dims[3] : 1);
+  this->ComputeDimensions(
+    info, &nframes, this->Dimensions, this->Spacing);
+  int numSlices = (this->Dimensions[2] > 0 ? this->Dimensions[2] : 1);
+  int numTimeSlots = (this->Dimensions[3] > 0 ? this->Dimensions[3] : 1);
 
   // compute the SliceIndexArray
   if (this->MultiFrame)
@@ -589,250 +630,6 @@ bool vtkDICOMGenerator::GenerateMultiFrameModule(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMGenerator::GenerateMultiFrameFunctionalGroupsModule(
-  vtkDICOMMetaData *meta, vtkInformation *info)
-{
-  // InstanceNumber is mandatory
-  meta->SetAttributeValue(DC::InstanceNumber, 1);
-
-  // ContentDate and ContentTime are mandatory
-  if (!meta->HasAttribute(DC::ContentTime) ||
-      !meta->HasAttribute(DC::ContentDate))
-    {
-    char text[32];
-    time_t t;
-    time(&t);
-    strftime(text, sizeof(text), "%Y%m%d%H%M%S", localtime(&t));
-    text[8 + 6] = '\0';
-    meta->SetAttributeValue(DC::ContentTime, &text[8]);
-    text[8] = '\0';
-    meta->SetAttributeValue(DC::ContentDate, &text[0]);
-    }
-
-  // NumberOfFrames is mandatory (obviously)
-  // set it to the number of slices times the number of components
-  // (consider each block of components that becomes an RGB pixel
-  // as one components)
-
-  // RepresentativeFrameNumber (optional)
-
-  // ConatenationUID
-  // SOPInstanceUIDOfConcatenationSource
-  // InConcatenationNumber
-  // InConcatenationTotalNumer (optional)
-
-  // Items for Shared Functional Groups and Per-frame Functional Groups
-  vtkDICOMItem sfgi;
-  vtkDICOMItem pffgi;
-
-  //-----
-  // PixelMeasuresSequence is tied to PlanePosition and PlaneOrientation
-  if (this->PatientMatrix)
-    {
-    // Get VTK image spacing
-    double spacing[3];
-    info->Get(vtkDataObject::SPACING(), spacing);
-
-    // Use existing slice thickness if present
-    double sliceThickness = 0.0;
-    if (meta->HasAttribute(DC::SharedFunctionalGroupsSequence))
-      {
-      sliceThickness = meta->GetAttributeValue(
-        vtkDICOMTagPath(DC::SharedFunctionalGroupsSequence, 0,
-                        DC::PixelMeasuresSequence, 0,
-                        DC::SliceThickness)).AsDouble();
-      }
-    else
-      {
-      sliceThickness = meta->GetAttributeValue(DC::SliceThickness).AsDouble();
-      }
-    // If no existing thickness, use slice spacing
-    if (sliceThickness == 0)
-      {
-      sliceThickness = spacing[2];
-      }
-
-    vtkDICOMItem pmi;
-    pmi.SetAttributeValue(
-      DC::PixelSpacing,
-      vtkDICOMValue(vtkDICOMVR::DS, spacing, spacing+2));
-    pmi.SetAttributeValue(DC::SliceThickness, sliceThickness);
-    vtkDICOMSequence pm(1);
-    pm.SetItem(0, pmi);
-    sfgi.SetAttributeValue(DC::PixelMeasuresSequence, pm);
-
-    // Remove conflicting attributes, just in case
-    meta->RemoveAttribute(DC::PixelAspectRatio);
-    meta->RemoveAttribute(DC::PixelSpacing);
-    meta->RemoveAttribute(DC::SliceThickness);
-    meta->RemoveAttribute(DC::SpacingBetweenSlices);
-    }
-
-  //-----
-  // FrameContentSequence, mandatory, always per-frame
-  for (;;) // loop over frames
-    {
-    // optional:
-    // DC::FrameAcquisitionNumber,
-    // DC::FrameReferenceDateTime,   // 1C (mandatory for ORIGINAL)
-    // DC::FrameAcquisitionDateTime, // 1C (ditto)
-    // DC::FrameAcquisitionDuration, // 1C (ditto)
-    // DC::CardiacCyclePosition,
-    // DC::RespiratoryCyclePosition,
-    // DC::DimensionIndexValues,  // 1C (mandatory if DimensionIndexSequence)
-    // DC::TemporalPositionIndex, // 1C (mandatory for PET)
-    // DC::StackID,               // 1C (mandatory for PET)
-    // DC::InStackPositionNumber, // 1C (mandatory if StackID)
-    // DC::FrameComments,
-    // DC::FrameLabel,
-    // DC::ItemDelimitationItem
-    }
-
-  //-----
-  // PlanePositionPatientSequence, mandatory, usually per-frame
-  for (;;) // loop over frames
-    {
-    // DC::ImagePositionPatient, // 1C, (mandatory for ORIGINAL)
-    }
-
-  //-----
-  // PlaneOrientationPatientSequence, mandatory, usually shared
-  if (0)
-    {
-    // DC::ImageOrientationPatient, // 1C, (mandatory for ORIGINAL)
-    }
-
-  //-----
-  // ReferencedImageSequence, required
-  if (0)
-    {
-    // DC::ReferencedFrameNumber,   // 1C (mandatory for per-frame references)
-    // DC::ReferencedSegmentNumber, // 1C (mutually exclusive with above)
-    // DC::PurposeOfReferenceCodeSequence, // 1
-    }
-
-  //-----
-  // DerivationImageSequence, required
-  if (0)
-    {
-    // DC::DerivationDescription,
-    // DC::DerivationCodeSequence, // 1
-    // DC::SourceImageSequence, // 2
-    }
-
-  //-----
-  // CardiacSynchronizationSequence, mandatory
-  if (0)
-    {
-    // DC::NominalPercentageOfCardiacPhase, // 1C
-    // DC::NominalCardiacTriggeDelayTime, // 1
-    // DC::ActualCardiacTriggerDelayTime, // 1C
-    // DC::NominalCardiacTriggerTimePriorToRPeak,
-    // DC::ActualCardiacTriggerTimePriorToRPeak,
-    // DC::IntervalsAcquired,
-    // DC::IntervalsRejected,
-    // DC::HeartRate,
-    // DC::RRIntervalTimeNominal, // 1C
-    // DC::LowRRValue,
-    // DC::HighRRValue,
-    }
-
-  //-----
-  // FrameAnatomySequence, mandatory
-  if (0)
-    {
-    // DC::FrameLaterality, // 1
-    // DC::AnatomicRegionSequence, // 1
-    }
-
-  //-----
-  // PixelValueTransformationSequence, mandatory
-  if (0)
-    {
-    // DC::RescaleIntercept, // 1
-    // DC::RescaleSlope, // 1
-    // DC::RescaleType, // 1
-    }
-
-  //-----
-  // FrameVOILUSequence, mandatory
-  if (0)
-    {
-    // DC::WindowCenter, // 1C (manditory if no VOILUTSequence)
-    // DC::WindowWidth, // 1C
-    // DC::WindowCenterWidthExplanation,
-    // DC::VOILUTFunction, // LINEAR or SIGMOID
-    // DC::VOILUTSequence // 1C (mandatory no WindowCenter/Width)
-    }
-
-  //-----
-  // RealWorldValueMappingSequence, mandatory
-  if (0)
-    {
-    // DC::RealWorldValueMappingSequence, // 1
-    // DC::RealWorldFirstValueMapped, // 1
-    // DC::RealWorldLastValueMapped, // 1
-    // DC::RealWorldValueIntercept, // 1C (mandatory if no LUT)
-    // DC::RealWorldValueSlope, // 1C
-    // DC::RealWorldValueLUTData, // 1C (mandatory if no Slope/Intercept)
-    // DC::LUTExplanation, // 1
-    // DC::LUTLabel, // 1
-    // DC::MeasurementUnitsCodeSequence, // 1
-    }
-
-  //-----
-  // ContrastBolusUsageSequence
-  //-----
-  // PixelintensityRelationshipLUTSequence
-  //-----
-  // FramePixelShiftSequence
-  //-----
-  // PatientOrientationInFrameSequence
-  //-----
-  // FrameDisplayShutterSequence
-  //-----
-  // RespiratorySynchronizationSequence
-  //-----
-  // IrradiationEventIdentificationSequence
-  //-----
-  // RadiopharmaceuticalUsageSequence
-  //-----
-  // PatientPhysiologicalStateSequence
-  //-----
-  // PlanePositionVolumeSequence
-  //-----
-  // PlaneOrientationVolumeSequence
-  //-----
-  // TemporalPositionSequence
-  //-----
-  // ImageDataTypeSequence
-  if (0)
-    {
-    // DC::DataType, // 1 with ultrasound-specific values
-    // DC::AliasedDataType, // 1 with values YES or NO
-    }
-  //-----
-  // DimensionOrganizationSequence, mandatory
-  if (0)
-    {
-    // DC::DimensionOrganizationUID
-    }
-  // DimensionOrganizationType
-  // DimensionIndexSequence, mandatory
-  if (0)
-    {
-    // DC::DimensionIndexPointer, // 1
-    // DC::DimensionIndexPrivateCreator, // 1C
-    // DC::FunctionalGroupPointer, // 1C
-    // DC::FunctionalGroupPrivateCreator, // 1C
-    // DC::DimensionOrganizationUID, // 1C
-    // DC::DimensionDescriptionLabel,
-    }
-
-  return true;
-}
-
-//----------------------------------------------------------------------------
 bool vtkDICOMGenerator::GenerateGeneralImageModule(
   vtkDICOMMetaData *meta)
 {
@@ -1045,43 +842,14 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(
   return true;
 }
 
-
 //----------------------------------------------------------------------------
 bool vtkDICOMGenerator::GenerateImagePlaneModule(
   vtkDICOMMetaData *meta, vtkInformation *info)
 {
-  // get the geometry of the image
-  int extent[6];
-  info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
-
   double spacing[3], origin[3];
-  info->Get(vtkDataObject::SPACING(), spacing);
-  info->Get(vtkDataObject::ORIGIN(), origin);
+  double matrix[16];
+  this->ComputeAdjustedMatrix(info, matrix, origin, spacing);
 
-  double matrix[16] = {
-    1.0, 0.0, 0.0, 0.0, 
-    0.0, 1.0, 0.0, 0.0, 
-    0.0, 0.0, 1.0, 0.0, 
-    0.0, 0.0, 0.0, 1.0 };
-
-  if (this->PatientMatrix)
-    {
-    vtkMatrix4x4::DeepCopy(matrix, this->PatientMatrix);
-    }
-
-  if (this->OriginAtBottom)
-    {
-    // move origin to the correct corner
-    origin[1] -= spacing[1]*(extent[3] - extent[2]);
-    matrix[1] = -matrix[1];
-    matrix[5] = -matrix[5];
-    matrix[9] = -matrix[9];
-    // also need to do z to keep a right-hand coord transformation
-    spacing[2] = -spacing[2];
-    matrix[2] = -matrix[2];
-    matrix[6] = -matrix[6];
-    matrix[10] = -matrix[10];
-    }
   int timeSlices = 1;
   if (!this->TimeAsVector && this->TimeDimension > 0)
     {
