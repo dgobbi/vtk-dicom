@@ -244,6 +244,45 @@ protected:
   //! Generate the DICOM VOI LUT Module.
   virtual bool GenerateVOILUTModule(vtkDICOMMetaData *source);
 
+  //! Generate the DICOM Multi-frame Functional Groups Module.
+  virtual bool GenerateMultiFrameFunctionalGroupsModule(
+    vtkDICOMMetaData *source);
+
+  //! Generate the DICOM Pixel Measures Macro (Functional).
+  virtual bool GeneratePixelMeasuresMacro(vtkDICOMMetaData *source);
+
+  //! Generate the DICOM Frame Content Macro (Functional).
+  virtual bool GenerateFrameContentMacro(vtkDICOMMetaData *source);
+
+  //! Generate the DICOM Plane Position Macro (Functional).
+  virtual bool GeneratePlanePositionMacro(vtkDICOMMetaData *source);
+
+  //! Generate the DICOM Plane Orientation Macro (Functional).
+  virtual bool GeneratePlaneOrientationMacro(vtkDICOMMetaData *source);
+
+  //! Generate the DICOM Referenced Image Macro (Functional).
+  virtual bool GenerateReferencedImageMacro(vtkDICOMMetaData *source);
+
+  //! Generate the DICOM Derivation Image Macro (Functional).
+  virtual bool GenerateDerivationImageMacro(vtkDICOMMetaData *source);
+
+  //! Generate the DICOM Cardiac Synchronization Macro (Functional).
+  virtual bool GenerateCardiacSynchronizationMacro(vtkDICOMMetaData *source);
+
+  //! Generate the DICOM Multi-frame Dimension Module.
+  virtual bool GenerateMultiFrameDimensionModule(vtkDICOMMetaData *source);
+
+  //! Create new item within the functional groups.
+  /*!
+   *  Add a new sequence under either the SharedFunctionalGroupsSequence or,
+   *  if a frame index is provided, to the PerFrameFunctionalGroupsSequence.
+   *  The new item within the newly created sequence is returned.  This
+   *  can only be used after GenerateMultiFrameFunctionalGroupsModule has
+   *  been called for the same vtkDICOMMetaData object.
+   */
+  vtkDICOMItem *NewFunctionalGroupItem(vtkDICOMTag tag);
+  vtkDICOMItem *NewFunctionalGroupItem(int frame, vtkDICOMTag tag);
+
   //! Copy required attributes into the meta data.
   /*!
    *  Required attributes must be set, so if no value is available,
@@ -388,6 +427,13 @@ protected:
 
   //! Map from frame to image min/max.
   vtkIntArray *RangeArray;
+
+  //! The data sets for the functional group module.
+  vtkDICOMItem *SharedFunctionalItem;
+  vtkDICOMItem *PerFrameFunctionalItems;
+
+  //! True if this is an enhanced data set converted from legacy
+  bool LegacyConverted;
 
 private:
   vtkDICOMGenerator(const vtkDICOMGenerator&);  // Not implemented.

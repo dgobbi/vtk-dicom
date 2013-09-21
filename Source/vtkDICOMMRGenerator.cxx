@@ -56,6 +56,99 @@ bool vtkDICOMMRGenerator::GenerateMRSeriesModule(vtkDICOMMetaData *source)
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMMRGenerator::GenerateMRMultiFrameImageModule(
+  vtkDICOMMetaData *source, vtkInformation *info)
+{
+  // The BurnedInAnnotation attribute is mandatory
+  std::string bia;
+  if (source)
+    {
+    bia = source->GetAttributeValue(
+      DC::BurnedInAnnotation).AsString();
+    }
+  if (bia != "YES")
+    {
+    bia = "NO";
+    }
+  vtkDICOMMetaData *meta = this->MetaData;
+  meta->SetAttributeValue(DC::BurnedInAnnotation, bia);
+
+  // These are mandatory, and must be set to these values
+  if (meta->GetAttributeValue(DC::BitsStored).AsInt() != 1)
+    {
+    meta->SetAttributeValue(DC::PresentationLUTShape, "IDENTITY");
+    meta->SetAttributeValue(DC::RescaleIntercept, 0.0);
+    meta->SetAttributeValue(DC::RescaleSlope, 1.0);
+    meta->SetAttributeValue(DC::RescaleType, "US");
+    }
+
+  // get dimensions of the data set: x,y,z,t,v
+  int nframes = 1;
+  int dims[5];
+  double spacing[5];
+  double origin[5];
+  this->ComputeDimensions(info, &nframes, dims, spacing, origin);
+
+  // set multi-frame information
+  meta->SetAttributeValue(DC::NumberOfFrames, nframes);
+
+  // build the FrameIncrementPointer and the vectors
+  vtkDICOMTag pointers[2];
+  int npointers = 0;
+  double *zvector = new double[nframes];
+  double *tvector = new double[nframes];
+
+  int vdim = (dims[4] > 0 ? dims[4] : 1);
+  int tdim = (dims[3] > 0 ? dims[3] : 1);
+  for (int f = 0; f < nframes; f++)
+    {
+    int t = (f / vdim) % tdim;
+    int z = f / (vdim * tdim);
+    zvector[f] = z*spacing[2];
+    tvector[f] = (t == 0 ? 0.0 : spacing[3]);
+    }
+
+  if (dims[3] > 0 || (dims[2] == 0 && nframes == 1))
+    {
+    pointers[npointers++] = DC::FrameTimeVector;
+    meta->SetAttributeValue(
+      DC::FrameTimeVector, vtkDICOMValue(vtkDICOMVR::DS, tvector, nframes));
+    }
+  if (dims[2] > 0)
+    {
+    pointers[npointers++] = DC::SliceLocationVector;
+    meta->SetAttributeValue(DC::SliceLocationVector,
+      vtkDICOMValue(vtkDICOMVR::DS, zvector, nframes));
+    }
+
+  meta->SetAttributeValue(
+    DC::FrameIncrementPointer,
+    vtkDICOMValue(vtkDICOMVR::AT, pointers, npointers));
+
+  meta->RemoveAttribute(DC::PixelAspectRatio);
+  meta->SetAttributeValue(
+    DC::PixelSpacing, vtkDICOMValue(vtkDICOMVR::DS, spacing, 2));
+
+  delete [] zvector;
+  delete [] tvector;
+
+  // optional and conditional: direct copy of values with no checks
+  static const DC::EnumType optional[] = {
+    DC::RecognizableVisualFeatures,
+    DC::Illumination,
+    DC::ReflectedAmbientLight,
+    DC::NominalScannedPixelSpacing, // 1C (mandatory if ConversionType is DF)
+    DC::PixelSpacingCalibrationType,
+    DC::PixelSpacingCalibrationDescription, // 1C
+    DC::DigitizingDeviceTransportDirection,
+    DC::RotationOfScannedFilm,
+    DC::ItemDelimitationItem
+  };
+
+  return this->CopyOptionalAttributes(optional, source);
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
 {
   // ImageType is specialized from GeneralImageModule,
@@ -198,6 +291,36 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMMRGenerator::GenerateMRMultiFrameInstance(vtkInformation *info)
+{
+  const char *SOPClass = "1.2.840.10008.5.1.4.1.1.4.1";
+  this->InitializeMetaData(info);
+
+  vtkDICOMMetaData *source = this->SourceMetaData;
+  if (!this->GenerateSOPCommonModule(source, SOPClass) ||
+      !this->GenerateImagePixelModule(source) ||
+      !this->GenerateMultiFrameFunctionalGroupsModule(source) ||
+      //!this->GenerateMultiFrameDimensionModule(source) ||
+      !this->GenerateGeneralImageModule(source) ||
+      !this->GenerateGeneralSeriesModule(source) ||
+      //!this->GenerateMRSeriesModule(source) ||
+      !this->GenerateGeneralStudyModule(source) ||
+      !this->GeneratePatientModule(source) ||
+      //!this->GenerateAcquisitonContextModule(source) ||
+      !this->GenerateMRImageModule(source) ||
+      //!this->GenerateEnhancedMRImageModule(source) ||
+      !this->GenerateGeneralEquipmentModule(source)
+      //!this->GenerateEnhancedEquipmentModule(source)
+      // many more mandatory modules
+      )
+    {
+    return false;
+    }
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMMRGenerator::GenerateMRInstance(vtkInformation *info)
 {
   this->SetPixelRestrictions(
@@ -239,11 +362,10 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(vtkInformation *info)
 //----------------------------------------------------------------------------
 bool vtkDICOMMRGenerator::GenerateInstance(vtkInformation *info)
 {
-  if (this->MultiFrame)
+  if (this->MultiFrame == 0)
     {
-    vtkErrorMacro("Enhanced Multi-Frame MR is not yet supported.");
-    return false;
+    return this->GenerateMRInstance(info);
     }
 
-  return this->GenerateMRInstance(info);
+  return this->GenerateMRMultiFrameInstance(info);
 }

@@ -24,6 +24,8 @@
  *  are being written out as derived images after being processed.
  *  The specific IOD classes supported are as follows:
  *  - MR Image, 1.2.840.10008.5.1.4.1.1.4
+ *  - Enhanced MR Image, 1.2.840.10008.5.1.4.1.1.4.1
+ *  - Enhanced MR Color Image, 1.2.840.10008.5.1.4.1.1.4.3
  */
 class VTK_DICOM_EXPORT vtkDICOMMRGenerator : public vtkDICOMGenerator
 {
@@ -53,8 +55,15 @@ protected:
   //! Generate the Image Module.
   virtual bool GenerateMRImageModule(vtkDICOMMetaData *source);
 
+  //! Generate the Multi-Frame Image Module.
+  virtual bool GenerateMRMultiFrameImageModule(
+    vtkDICOMMetaData *source, vtkInformation *info);
+
   //! Instantiate a DICOM Secondary Capture Image object.
   virtual bool GenerateMRInstance(vtkInformation *info);
+
+  //! Instantiate a DICOM Secondary Capture Image object.
+  virtual bool GenerateMRMultiFrameInstance(vtkInformation *info);
 
 private:
   vtkDICOMMRGenerator(const vtkDICOMMRGenerator&);  // Not implemented.

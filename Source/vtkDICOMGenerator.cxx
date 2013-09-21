@@ -61,6 +61,9 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->RangeArray = 0;
   this->PixelValueRange[0] = 0;
   this->PixelValueRange[1] = -1;
+  this->SharedFunctionalItem = 0;
+  this->PerFrameFunctionalItems = 0;
+  this->LegacyConverted = false;
 
   for (int i = 0; i < 5; i++)
     {
@@ -1341,6 +1344,397 @@ bool vtkDICOMGenerator::GenerateGeneralEquipmentModule(
 
   return (this->CopyRequiredAttributes(required, source) &&
           this->CopyOptionalAttributes(optional, source));
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMItem *vtkDICOMGenerator::NewFunctionalGroupItem(vtkDICOMTag tag)
+{
+  vtkDICOMValue s;
+  vtkDICOMItem *i = s.AllocateSequenceData(vtkDICOMVR::SQ, 1);
+  this->SharedFunctionalItem->SetAttributeValue(tag, s);
+  return i;
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMItem *vtkDICOMGenerator::NewFunctionalGroupItem(
+  int frame, vtkDICOMTag tag)
+{
+  vtkDICOMValue s;
+  vtkDICOMItem *i = s.AllocateSequenceData(vtkDICOMVR::SQ, 1);
+  this->PerFrameFunctionalItems[frame].SetAttributeValue(tag, s);
+  return i;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateMultiFrameFunctionalGroupsModule(
+  vtkDICOMMetaData *source)
+{
+  // This module is described in PS 3.3 Annex C.7.6.16
+  vtkDICOMMetaData *meta = this->MetaData;
+
+  // Get the number of frames (set in InitializeMetaData())
+  int nframes = this->NumberOfFrames;
+
+  // Items for Shared Functional Groups and Per-frame Functional Groups
+  vtkDICOMValue sfgs, pfgs;
+  vtkDICOMItem *sfgi = sfgs.AllocateSequenceData(vtkDICOMVR::SQ, 1);
+  vtkDICOMItem *pfgi = pfgs.AllocateSequenceData(vtkDICOMVR::SQ, nframes);
+  this->SharedFunctionalItem = sfgi;
+  this->PerFrameFunctionalItems = pfgi;
+
+  // These sequences will hold all the frame information
+  meta->SetAttributeValue(DC::SharedFunctionalGroupsSequence, sfgs);
+  meta->SetAttributeValue(DC::PerFrameFunctionalGroupsSequence, pfgs);
+
+  // InstanceNumber is mandatory
+  meta->SetAttributeValue(DC::InstanceNumber, 1);
+
+  // ContentDate and ContentTime are mandatory
+  if (!meta->HasAttribute(DC::ContentTime) ||
+      !meta->HasAttribute(DC::ContentDate))
+    {
+    // Get the timezone for generating timestamps (default is locale timezone)
+    const char *tz = 0;
+    if (source)
+      {
+      tz = source->GetAttributeValue(
+        DC::TimezoneOffsetFromUTC).GetCharData();
+      }
+    std::string dt = vtkDICOMUtilities::GenerateDateTime(tz);
+    meta->SetAttributeValue(DC::ContentDate, dt.substr(0, 8));
+    meta->SetAttributeValue(DC::ContentTime, dt.substr(8, 13));
+    }
+
+  // NumberOfFrames is mandatory (of course)
+  meta->SetAttributeValue(DC::NumberOfFrames, nframes);
+
+  // RepresentativeFrameNumber (optional)
+  vtkDICOMTag tag = DC::RepresentativeFrameNumber;
+  const vtkDICOMValue& v = source->GetAttributeValue(tag);
+  if (v.IsValid())
+    {
+    int i = v.AsInt();
+    if (i >= 0 && i < nframes)
+      {
+      meta->SetAttributeValue(tag, i);
+      }
+    }
+
+  // Specific to concatenations, unused
+  // DC::ConcatenationFrameOffsetNumber (1C)
+  // DC::ConatenationUID (1C)
+  // DC::SOPInstanceUIDOfConcatenationSource (1C)
+  // DC::InConcatenationNumber (1C)
+  // DC::InConcatenationTotalNumber (optional)
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+// Common functional group macros
+
+/* XXX Basic functionality missing XXX
+
+The CopyRequiredAttributes and CopyOptionalAttributes methods do not work
+for enhanced multi-frame data sets.
+
+Attributes are stored in sequences within the Shared or Per-frame sequences.
+Whether they are Shared or Per-frame is dictated by:
+1) policy (the standard dictates which one they go into)
+2) whether the values vary per-frame or not
+
+The quickest solution is to add an optional argument to the Copy methods
+that takes the sequence item that is to be added to.  This means that, for
+per-frame information, the Copy method would be called "n" times, which is
+not as efficient as calling it once and passing in an array.
+
+Another solution would be for the Copy method to actually create the
+sub-sequence.  I don't think this is workable, because this assumes that
+the copy method is the only code that puts attributes into the sequence,
+this doesn't work if there is a mix of mandatory, requried, and optional.
+
+A tricky thing is that empty items should not be added.  This means that
+the sequence should not be added to the data set until attributes have
+been added to its contents.
+*/
+
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateFrameContentMacro(vtkDICOMMetaData *)
+{
+  // Get the number of frames (set in InitializeMetaData())
+  int nframes = this->NumberOfFrames;
+
+  // Some are only mandatory if not LegacyConverted
+  static const DC::EnumType original[] = {
+    DC::FrameReferenceDateTime,   // 1C (mandatory for ORIGINAL)
+    DC::FrameAcquisitionDateTime, // 1C (ditto)
+    DC::FrameAcquisitionDuration, // 1C (ditto)
+  };
+
+  static const DC::EnumType optional[] = {
+    DC::FrameAcquisitionNumber,   // (optional)
+    DC::CardiacCyclePosition,
+    DC::RespiratoryCyclePosition,
+    DC::DimensionIndexValues,  // 1C (mandatory if DimensionIndexSequence)
+    DC::TemporalPositionIndex, // 1C (mandatory for PET)
+    DC::StackID,               // 1C (mandatory for PET)
+    DC::InStackPositionNumber, // 1C (mandatory if StackID)
+    DC::FrameComments,
+    DC::FrameLabel,
+    DC::ItemDelimitationItem
+  };
+
+  vtkDICOMItem **fci = new vtkDICOMItem *[nframes]; 
+  for (int i = 0; i < nframes; i++)
+    {
+    fci[i] = this->NewFunctionalGroupItem(i, DC::FrameContentSequence);
+    }
+
+  // copy the "mandatory for original" only if ORIGINAL
+  //this->CopyOptionalAttributes(original, source, fci);
+  //this->CopyOptionalAttributes(optional, source, fci);
+
+  // remove FrameContentSequence if its item is empty
+  // (even better: if empty, don't add it to begin with)
+
+  delete [] fci;
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GeneratePixelMeasuresMacro(vtkDICOMMetaData *)
+{
+  // Pixel Measures Macro is tied to PlanePosition and PlaneOrientation
+  vtkDICOMItem *pmi = this->NewFunctionalGroupItem(
+    DC::PixelMeasuresSequence);
+
+  double matrix[16], origin[3], spacing[3];
+  this->ComputeAdjustedMatrix(matrix, origin, spacing);
+
+  pmi->SetAttributeValue(
+    DC::PixelSpacing, vtkDICOMValue(vtkDICOMVR::DS, spacing, 2));
+  // Required if VolumetricProperties is VOLUME or SAMPLED
+  pmi->SetAttributeValue(DC::SliceThickness, fabs(spacing[2]));
+
+  // Remove conflicting attributes, just in case
+  vtkDICOMMetaData *meta = this->MetaData;
+  meta->RemoveAttribute(DC::PixelAspectRatio);
+  meta->RemoveAttribute(DC::PixelSpacing);
+  meta->RemoveAttribute(DC::SliceThickness);
+  meta->RemoveAttribute(DC::SpacingBetweenSlices);
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GeneratePlanePositionMacro(vtkDICOMMetaData *)
+{
+  // Plane Position Macro, usually per-frame, tied to Orientation
+  double matrix[16], origin[3], spacing[3];
+  this->ComputeAdjustedMatrix(matrix, origin, spacing);
+  double zorigin = origin[2];
+
+  int timeSlices = 1;
+  if (!this->TimeAsVector && this->Dimensions[3] > 0)
+    {
+    timeSlices = this->Dimensions[3];
+    }
+
+  // Get the number of frames (set in InitializeMetaData())
+  int nframes = this->NumberOfFrames;
+  for (int i = 0; i < nframes; i++)
+    {
+    int sliceIdx = this->SliceIndexArray->GetComponent(0, i);
+    // remove the time from the slice index
+    sliceIdx /= timeSlices;
+    origin[2] = zorigin + sliceIdx*spacing[2];
+
+    double position[3], orientation[6];
+    vtkDICOMGenerator::ComputePositionAndOrientation(
+      origin, matrix, position, orientation);
+
+    vtkDICOMItem *ppi = this->NewFunctionalGroupItem(
+      i, DC::PlanePositionSequence);
+
+    ppi->SetAttributeValue(
+      DC::ImagePositionPatient, vtkDICOMValue(vtkDICOMVR::DS, position, 3));
+    }
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GeneratePlaneOrientationMacro(vtkDICOMMetaData *)
+{
+  // Plane Orientation Macro, usually shared, tied to Position
+  double matrix[16], origin[3], spacing[3];
+  this->ComputeAdjustedMatrix(matrix, origin, spacing);
+
+  double position[3], orientation[6];
+  vtkDICOMGenerator::ComputePositionAndOrientation(
+    origin, matrix, position, orientation);
+
+  vtkDICOMItem *poi = this->NewFunctionalGroupItem(
+    DC::PlaneOrientationSequence);
+
+  poi->SetAttributeValue(
+    DC::ImageOrientationPatient,
+    vtkDICOMValue(vtkDICOMVR::DS, orientation, 6));
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateReferencedImageMacro(vtkDICOMMetaData *)
+{
+  // DC::ReferencedFrameNumber,   // 1C (mandatory for per-frame references)
+  // DC::ReferencedSegmentNumber, // 1C (mutually exclusive with above)
+  // DC::PurposeOfReferenceCodeSequence, // 1
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateDerivationImageMacro(vtkDICOMMetaData *)
+{
+  // DC::DerivationDescription,
+  // DC::DerivationCodeSequence, // 1
+  // DC::SourceImageSequence, // 2
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateCardiacSynchronizationMacro(vtkDICOMMetaData *)
+{
+  // DC::NominalPercentageOfCardiacPhase, // 1C
+  // DC::NominalCardiacTriggeDelayTime, // 1
+  // DC::ActualCardiacTriggerDelayTime, // 1C
+  // DC::NominalCardiacTriggerTimePriorToRPeak,
+  // DC::ActualCardiacTriggerTimePriorToRPeak,
+  // DC::IntervalsAcquired,
+  // DC::IntervalsRejected,
+  // DC::HeartRate,
+  // DC::RRIntervalTimeNominal, // 1C
+  // DC::LowRRValue,
+  // DC::HighRRValue,
+
+  return true;
+}
+
+/*
+  //-----
+  // FrameAnatomySequence, mandatory
+  if (0)
+    {
+    // DC::FrameLaterality, // 1
+    // DC::AnatomicRegionSequence, // 1
+    }
+
+  //-----
+  // PixelValueTransformationSequence, mandatory
+  if (0)
+    {
+    // DC::RescaleIntercept, // 1
+    // DC::RescaleSlope, // 1
+    // DC::RescaleType, // 1
+    }
+
+  //-----
+  // FrameVOILUTSequence, mandatory
+  if (0)
+    {
+    // DC::WindowCenter, // 1C (manditory if no VOILUTSequence)
+    // DC::WindowWidth, // 1C
+    // DC::WindowCenterWidthExplanation,
+    // DC::VOILUTFunction, // LINEAR or SIGMOID
+    // DC::VOILUTSequence // 1C (mandatory no WindowCenter/Width)
+    }
+
+  //-----
+  // RealWorldValueMappingSequence, mandatory
+  if (0)
+    {
+    // DC::RealWorldValueMappingSequence, // 1
+    // DC::RealWorldFirstValueMapped, // 1
+    // DC::RealWorldLastValueMapped, // 1
+    // DC::RealWorldValueIntercept, // 1C (mandatory if no LUT)
+    // DC::RealWorldValueSlope, // 1C
+    // DC::RealWorldValueLUTData, // 1C (mandatory if no Slope/Intercept)
+    // DC::LUTExplanation, // 1
+    // DC::LUTLabel, // 1
+    // DC::MeasurementUnitsCodeSequence, // 1
+    }
+
+  //-----
+  // ContrastBolusUsageSequence
+  //-----
+  // PixelintensityRelationshipLUTSequence
+  //-----
+  // FramePixelShiftSequence
+  //-----
+  // PatientOrientationInFrameSequence
+  //-----
+  // FrameDisplayShutterSequence
+  //-----
+  // RespiratorySynchronizationSequence
+  //-----
+  // IrradiationEventIdentificationSequence
+  //-----
+  // RadiopharmaceuticalUsageSequence
+  //-----
+  // PatientPhysiologicalStateSequence
+  //-----
+  // PlanePositionVolumeSequence
+  //-----
+  // PlaneOrientationVolumeSequence
+  //-----
+  // TemporalPositionSequence
+  //-----
+  // ImageDataTypeSequence
+  if (0)
+    {
+    // DC::DataType, // 1 with ultrasound-specific values
+    // DC::AliasedDataType, // 1 with values YES or NO
+    }
+  //-----
+  // DimensionOrganizationSequence, mandatory
+  if (0)
+    {
+    // DC::DimensionOrganizationUID
+    }
+  // DimensionOrganizationType
+  // DimensionIndexSequence, mandatory
+  if (0)
+    {
+    // DC::DimensionIndexPointer, // 1
+    // DC::DimensionIndexPrivateCreator, // 1C
+    // DC::FunctionalGroupPointer, // 1C
+    // DC::FunctionalGroupPrivateCreator, // 1C
+    // DC::DimensionOrganizationUID, // 1C
+    // DC::DimensionDescriptionLabel,
+    }
+*/
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateMultiFrameDimensionModule(vtkDICOMMetaData *)
+{
+  // This module is described in PS 3.3 Annex C.7.6.17
+
+  // DC::DimensionOrganization Sequence, // 1
+  // > DC::DimensionOrganizationUID // 1
+  // DC::DimensionOrganizationType, // 3, 3D or 3D_TEMPORAL
+  // DC::DimensionIndexSequence, // 1
+  // > DC::DimensionIndexPointer, // 1
+  // > DC::DimensionIndexPrivateCreator, // 1C
+  // > DC::FunctionalGroupPointer, // 1C, required if DimensionIndexPointer
+  // > DC::FunctionalGroupPrivateCreator, // 1C
+  // > DC::DimensionOrganizationUID, // 1C
+  // > DC::DimensionDescriptionLabel, // 3
+
+  return true;
 }
 
 //----------------------------------------------------------------------------
