@@ -231,7 +231,10 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
       !this->GenerateImagePixelModule(meta, info) ||
       !this->GenerateGeneralImageModule(meta) ||
       !this->GenerateGeneralSeriesModule(meta) ||
+      !this->GenerateClinicalTrialStudyModule(meta) ||
+      !this->GenerateClinicalTrialSubjectModule(meta) ||
       !this->GenerateGeneralStudyModule(meta) ||
+      !this->GeneratePatientStudyModule(meta) ||
       !this->GeneratePatientModule(meta) ||
       !this->GenerateSCMultiFrameImageModule(meta, info) ||
       !this->GenerateSCEquipmentModule(meta))
@@ -253,7 +256,10 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(
       !this->GenerateImagePixelModule(meta, info) ||
       !this->GenerateGeneralImageModule(meta) ||
       !this->GenerateGeneralSeriesModule(meta) ||
+      !this->GenerateClinicalTrialStudyModule(meta) ||
+      !this->GenerateClinicalTrialSubjectModule(meta) ||
       !this->GenerateGeneralStudyModule(meta) ||
+      !this->GeneratePatientStudyModule(meta) ||
       !this->GeneratePatientModule(meta) ||
       !this->GenerateSCImageModule(meta) ||
       !this->GenerateSCEquipmentModule(meta))

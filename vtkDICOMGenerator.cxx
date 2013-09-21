@@ -492,6 +492,26 @@ bool vtkDICOMGenerator::GeneratePatientModule(vtkDICOMMetaData *meta)
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateClinicalTrialSubjectModule(
+  vtkDICOMMetaData *meta)
+{
+  // direct copy of values with no checks
+  static const DC::EnumType tags[] = {
+    DC::ClinicalTrialSponsorName, // 1
+    DC::ClinicalTrialProtocolID,  // 1
+    DC::ClinicalTrialProtocolName,// 2
+    DC::ClinicalTrialSiteID,      // 2
+    DC::ClinicalTrialSubjectID,   // 1C
+    DC::ClinicalTrialSubjectReadingID, // 1C
+    DC::ClinicalTrialProtocolEthicsCommitteeName, // 1C
+    DC::ClinicalTrialProtocolEthicsCommitteeApprovalNumber, // 3
+    DC::ItemDelimitationItem
+  };
+
+  return this->CopyOptionalAttributes(tags, meta);
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMGenerator::GenerateGeneralStudyModule(vtkDICOMMetaData *meta)
 {
   // The StudyUID is mandatory and must be present, its presence
@@ -525,6 +545,47 @@ bool vtkDICOMGenerator::GenerateGeneralStudyModule(vtkDICOMMetaData *meta)
 
   return (this->CopyRequiredAttributes(required, meta) &&
           this->CopyOptionalAttributes(optional, meta));
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GeneratePatientStudyModule(
+  vtkDICOMMetaData *meta)
+{
+  // direct copy of values with no checks
+  static const DC::EnumType tags[] = {
+    DC::AdmittingDiagnosesDescription, // 3
+    DC::AdmittingDiagnosesCodeSequence, // 3
+    DC::PatientAge, // 3
+    DC::PatientSize, // 3
+    DC::PatientWeight, // 3
+    DC::PatientSizeCodeSequence, // 3
+    DC::Occupation, // 3
+    DC::AdditionalPatientHistory, // 3
+    DC::AdmissionID, // 3
+    DC::IssuerOfAdmissionIDSequence, // 3
+    DC::ServiceEpisodeID, // 3
+    DC::IssuerOfServiceEpisodeID, // 3
+    DC::ServiceEpisodeDescription, // 3
+    DC::PatientSexNeutered, // 2C
+    DC::ItemDelimitationItem
+  };
+
+  return this->CopyOptionalAttributes(tags, meta);
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateClinicalTrialStudyModule(
+  vtkDICOMMetaData *meta)
+{
+  // direct copy of values with no checks
+  static const DC::EnumType tags[] = {
+    DC::ClinicalTrialTimePointID, // 2
+    DC::ClinicalTrialTimePointDescription, // 3
+    DC::ConsentForClinicalTrialUseSequence, // 3
+    DC::ItemDelimitationItem
+  };
+
+  return this->CopyOptionalAttributes(tags, meta);
 }
 
 //----------------------------------------------------------------------------
@@ -583,6 +644,21 @@ bool vtkDICOMGenerator::GenerateGeneralSeriesModule(vtkDICOMMetaData *meta)
 
   return (this->CopyRequiredAttributes(required, meta) &&
           this->CopyOptionalAttributes(optional, meta));
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateClinicalTrialSeriesModule(
+  vtkDICOMMetaData *meta)
+{
+  // direct copy of values with no checks
+  static const DC::EnumType tags[] = {
+    DC::ClinicalTrialCoordinatingCenterName, // 2
+    DC::ClinicalTrialSeriesID, // 3
+    DC::ClinicalTrialSeriesDescription, // 3
+    DC::ItemDelimitationItem
+  };
+
+  return this->CopyOptionalAttributes(tags, meta);
 }
 
 //----------------------------------------------------------------------------

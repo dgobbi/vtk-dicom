@@ -123,7 +123,10 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(
       !this->GenerateImagePlaneModule(meta, info) ||
       !this->GenerateGeneralImageModule(meta) ||
       !this->GenerateGeneralSeriesModule(meta) ||
+      !this->GenerateClinicalTrialStudyModule(meta) ||
+      !this->GenerateClinicalTrialSubjectModule(meta) ||
       !this->GenerateGeneralStudyModule(meta) ||
+      !this->GeneratePatientStudyModule(meta) ||
       !this->GeneratePatientModule(meta) ||
       !this->GenerateMRImageModule(meta) ||
       !this->GenerateGeneralEquipmentModule(meta))

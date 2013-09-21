@@ -139,11 +139,23 @@ protected:
   //! Generate the DICOM Patient Module.
   virtual bool GeneratePatientModule(vtkDICOMMetaData *meta);
 
-  //! Generate the DICOM Study Module.
+  //! Generate the DICOM Clinical Trial Subject Module.
+  virtual bool GenerateClinicalTrialSubjectModule(vtkDICOMMetaData *meta);
+
+  //! Generate the DICOM General Study Module.
   virtual bool GenerateGeneralStudyModule(vtkDICOMMetaData *meta);
+
+  //! Generate the DICOM Patient Study Module.
+  virtual bool GeneratePatientStudyModule(vtkDICOMMetaData *meta);
+
+  //! Generate the DICOM Clinical Trial Study Module.
+  virtual bool GenerateClinicalTrialStudyModule(vtkDICOMMetaData *meta);
 
   //! Generate the DICOM Series Module.
   virtual bool GenerateGeneralSeriesModule(vtkDICOMMetaData *meta);
+
+  //! Generate the DICOM Clinical Trial Series Module.
+  virtual bool GenerateClinicalTrialSeriesModule(vtkDICOMMetaData *meta);
 
   //! Generate the DICOM Equipment Module.
   virtual bool GenerateGeneralEquipmentModule(vtkDICOMMetaData *meta);
