@@ -228,16 +228,18 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
   this->InitializeMetaData(info, meta);
 
   if (!this->GenerateSOPCommonModule(meta, SOPClass) ||
-      !this->GenerateImagePixelModule(meta, info) ||
-      !this->GenerateGeneralImageModule(meta) ||
-      !this->GenerateGeneralSeriesModule(meta) ||
-      !this->GenerateClinicalTrialStudyModule(meta) ||
+      !this->GeneratePatientModule(meta) ||
       !this->GenerateClinicalTrialSubjectModule(meta) ||
       !this->GenerateGeneralStudyModule(meta) ||
       !this->GeneratePatientStudyModule(meta) ||
-      !this->GeneratePatientModule(meta) ||
-      !this->GenerateSCMultiFrameImageModule(meta, info) ||
-      !this->GenerateSCEquipmentModule(meta))
+      !this->GenerateClinicalTrialStudyModule(meta) ||
+      !this->GenerateGeneralSeriesModule(meta) ||
+      !this->GenerateClinicalTrialSeriesModule(meta) ||
+      // optional General Equipment Module intentionally omitted
+      !this->GenerateSCEquipmentModule(meta) ||
+      !this->GenerateGeneralImageModule(meta) ||
+      !this->GenerateImagePixelModule(meta, info) ||
+      !this->GenerateSCMultiFrameImageModule(meta, info))
     {
     return false;
     }
@@ -253,16 +255,18 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(
   this->InitializeMetaData(info, meta);
 
   if (!this->GenerateSOPCommonModule(meta, SOPClass) ||
-      !this->GenerateImagePixelModule(meta, info) ||
-      !this->GenerateGeneralImageModule(meta) ||
-      !this->GenerateGeneralSeriesModule(meta) ||
-      !this->GenerateClinicalTrialStudyModule(meta) ||
+      !this->GeneratePatientModule(meta) ||
       !this->GenerateClinicalTrialSubjectModule(meta) ||
       !this->GenerateGeneralStudyModule(meta) ||
       !this->GeneratePatientStudyModule(meta) ||
-      !this->GeneratePatientModule(meta) ||
-      !this->GenerateSCImageModule(meta) ||
-      !this->GenerateSCEquipmentModule(meta))
+      !this->GenerateClinicalTrialStudyModule(meta) ||
+      !this->GenerateGeneralSeriesModule(meta) ||
+      !this->GenerateClinicalTrialSeriesModule(meta) ||
+      // optional GeneralEquipmentModule intentionally omitted
+      !this->GenerateSCEquipmentModule(meta) ||
+      !this->GenerateGeneralImageModule(meta) ||
+      !this->GenerateImagePixelModule(meta, info) ||
+      !this->GenerateSCImageModule(meta))
     {
     return false;
     }

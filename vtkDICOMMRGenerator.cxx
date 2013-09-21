@@ -119,17 +119,18 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(
   this->InitializeMetaData(info, meta);
 
   if (!this->GenerateSOPCommonModule(meta, SOPClass) ||
-      !this->GenerateImagePixelModule(meta, info) ||
-      !this->GenerateImagePlaneModule(meta, info) ||
-      !this->GenerateGeneralImageModule(meta) ||
-      !this->GenerateGeneralSeriesModule(meta) ||
-      !this->GenerateClinicalTrialStudyModule(meta) ||
+      !this->GeneratePatientModule(meta) ||
       !this->GenerateClinicalTrialSubjectModule(meta) ||
       !this->GenerateGeneralStudyModule(meta) ||
       !this->GeneratePatientStudyModule(meta) ||
-      !this->GeneratePatientModule(meta) ||
-      !this->GenerateMRImageModule(meta) ||
-      !this->GenerateGeneralEquipmentModule(meta))
+      !this->GenerateClinicalTrialStudyModule(meta) ||
+      !this->GenerateGeneralSeriesModule(meta) ||
+      !this->GenerateClinicalTrialSeriesModule(meta) ||
+      !this->GenerateGeneralEquipmentModule(meta) ||
+      !this->GenerateGeneralImageModule(meta) ||
+      !this->GenerateImagePixelModule(meta, info) ||
+      !this->GenerateImagePlaneModule(meta, info) ||
+      !this->GenerateMRImageModule(meta))
     {
     return false;
     }
