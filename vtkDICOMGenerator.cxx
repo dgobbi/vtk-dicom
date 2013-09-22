@@ -944,6 +944,29 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateContrastBolusModule(vtkDICOMMetaData *meta)
+{
+  // direct copy of values with no checks
+  static const DC::EnumType tags[] = {
+    DC::ContrastBolusAgent, // 2
+    DC::ContrastBolusAgentSequence, // 3
+    DC::ContrastBolusRoute, // 3
+    DC::ContrastBolusAdministrationRouteSequence, // 3
+    DC::ContrastBolusVolume, // 3
+    DC::ContrastBolusStartTime, // 3
+    DC::ContrastBolusStopTime, // 3
+    DC::ContrastBolusTotalDose, // 3
+    DC::ContrastFlowRate, // 3
+    DC::ContrastFlowDuration, // 3
+    DC::ContrastBolusIngredient, // 3
+    DC::ContrastBolusIngredientConcentration, // 3
+    DC::ItemDelimitationItem
+  };
+
+  return this->CopyOptionalAttributes(tags, meta);
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMGenerator::GenerateMultiFrameModule(
   vtkDICOMMetaData *meta, vtkInformation *info)
 {

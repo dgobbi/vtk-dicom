@@ -130,6 +130,7 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(
       !this->GenerateGeneralImageModule(meta) ||
       !this->GenerateImagePlaneModule(meta, info) ||
       !this->GenerateImagePixelModule(meta, info) ||
+      !this->GenerateContrastBolusModule(meta) ||
       !this->GenerateDeviceModule(meta) ||
       !this->GenerateSpecimenModule(meta) ||
       !this->GenerateMRImageModule(meta))

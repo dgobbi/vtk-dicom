@@ -171,6 +171,9 @@ protected:
   virtual bool GenerateImagePixelModule(
     vtkDICOMMetaData *meta, vtkInformation *info);
 
+  //! Generate The DICOM Contrast/Bolus Module.
+  virtual bool GenerateContrastBolusModule(vtkDICOMMetaData *meta);
+
   //! Generate The DICOM Multi-frame Module.
   virtual bool GenerateMultiFrameModule(
     vtkDICOMMetaData *meta, vtkInformation *info);
