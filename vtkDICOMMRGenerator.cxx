@@ -125,11 +125,12 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(
       !this->GeneratePatientStudyModule(meta) ||
       !this->GenerateClinicalTrialStudyModule(meta) ||
       !this->GenerateGeneralSeriesModule(meta) ||
+      !this->GenerateFrameOfReferenceModule(meta) ||
       !this->GenerateClinicalTrialSeriesModule(meta) ||
       !this->GenerateGeneralEquipmentModule(meta) ||
       !this->GenerateGeneralImageModule(meta) ||
-      !this->GenerateImagePlaneModule(meta, info) ||
-      !this->GenerateImagePixelModule(meta, info) ||
+      !this->GenerateImagePlaneModule(meta) ||
+      !this->GenerateImagePixelModule(meta) ||
       !this->GenerateContrastBolusModule(meta) ||
       !this->GenerateDeviceModule(meta) ||
       !this->GenerateSpecimenModule(meta) ||

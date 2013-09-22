@@ -157,6 +157,9 @@ protected:
   //! Generate the DICOM Clinical Trial Series Module.
   virtual bool GenerateClinicalTrialSeriesModule(vtkDICOMMetaData *meta);
 
+  //! Generate the DICOM Frame of Reference Module.
+  virtual bool GenerateFrameOfReferenceModule(vtkDICOMMetaData *meta);
+
   //! Generate the DICOM Equipment Module.
   virtual bool GenerateGeneralEquipmentModule(vtkDICOMMetaData *meta);
 
@@ -164,19 +167,16 @@ protected:
   virtual bool GenerateGeneralImageModule(vtkDICOMMetaData *meta);
 
   //! Generate the DICOM Plane Module.
-  virtual bool GenerateImagePlaneModule(
-    vtkDICOMMetaData *meta, vtkInformation *info);
+  virtual bool GenerateImagePlaneModule(vtkDICOMMetaData *meta);
 
   //! Generate the DICOM Pixel Module.
-  virtual bool GenerateImagePixelModule(
-    vtkDICOMMetaData *meta, vtkInformation *info);
+  virtual bool GenerateImagePixelModule(vtkDICOMMetaData *meta);
 
   //! Generate The DICOM Contrast/Bolus Module.
   virtual bool GenerateContrastBolusModule(vtkDICOMMetaData *meta);
 
   //! Generate The DICOM Multi-frame Module.
-  virtual bool GenerateMultiFrameModule(
-    vtkDICOMMetaData *meta, vtkInformation *info);
+  virtual bool GenerateMultiFrameModule(vtkDICOMMetaData *meta);
 
   //! Generate The DICOM Device Module.
   virtual bool GenerateDeviceModule(vtkDICOMMetaData *meta);
@@ -205,8 +205,7 @@ protected:
 
   //! Compute the matrix, needed for Position and Orientation.
   void ComputeAdjustedMatrix(
-    vtkInformation *info, double matrix[16],
-    double origin[3], double spacing[3]);
+    double matrix[16], double origin[3], double spacing[3]);
 
   //! Compute the position and orientation for a slice.
   /*!
@@ -224,7 +223,8 @@ protected:
    *  supplied by the reader.
    */
   virtual void ComputeDimensions(
-    vtkInformation *info, int *nframes, int dims[5], double spacing[5]);
+    vtkInformation *info, int *nframes, int dims[5],
+    double spacing[5], double origin[5]);
 
   //! Initialize the meta data and compute the slice index array.
   /*!
@@ -251,6 +251,31 @@ protected:
   int TimeDimension;
   double TimeSpacing;
 
+  //! The VTK scalar type of the data, set by InitializeMetaData().
+  int ScalarType;
+
+  //! The number of color components, for color scalars.
+  /*!
+   *  Scalars of type "unsigned char" are interpreted as colors by VTK
+   *  unless there is some indication that they should be interpreted
+   *  otherwise.  VTK color scalars come in these flavors: grayscale,
+   *  greyscale+alpha, RGB, and RGBA.  DICOM supports grayscale and
+   *  RGB, so alpha will be discarded when VTK images are written as
+   *  DICOM.  So if NumberOfColorComponents is 2, then only the first
+   *  component will be written to the file, and if NumberOfColorComponents
+   *  is 4, then only the first three components will be written.
+   */
+  int NumberOfColorComponents;
+
+  //! The number of frames.
+  /*!
+   *  If this is nonzero, then the DICOM file will be a multi-frame
+   *  file, overriding the MultiFrame variable.  Some SOP classes are
+   *  exclusively multi-frame while others are not.  The value of this
+   *  variable is computed InitializeMetaData().
+   */
+  int NumberOfFrames;
+
   //! The actual dimensions to write to the file.
   /*!
    *  The ordering of the dimensions is x,y,z,t followed by a vector
@@ -260,6 +285,7 @@ protected:
    */
   int Dimensions[5];
   double Spacing[5];
+  double Origin[5];
 
   //! The orientation matrix for the DICOM file.
   vtkMatrix4x4 *PatientMatrix;

@@ -16,6 +16,7 @@
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMItem.h"
 #include "vtkDICOMTagPath.h"
+#include "vtkDICOMUtilities.h"
 
 #include "vtkObjectFactory.h"
 #include "vtkIntArray.h"
@@ -41,6 +42,9 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->MetaData = 0;
   this->MultiFrame = 0;
   this->OriginAtBottom = 1;
+  this->ScalarType = 0;
+  this->NumberOfColorComponents = 1;
+  this->NumberOfFrames = 0;
   this->TimeAsVector = 0;
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
@@ -51,6 +55,7 @@ vtkDICOMGenerator::vtkDICOMGenerator()
     {
     this->Dimensions[i] = 0;
     this->Spacing[i] = 0;
+    this->Origin[i] = 0;
     }
 }
 
@@ -186,16 +191,8 @@ void vtkDICOMGenerator::ComputeAspectRatio(
 
 //----------------------------------------------------------------------------
 void vtkDICOMGenerator::ComputeAdjustedMatrix(
-  vtkInformation *info, double matrix[16],
-  double origin[3], double spacing[3])
+  double matrix[16], double origin[3], double spacing[3])
 {
-  // get the geometry of the image
-  int extent[6];
-  info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
-
-  info->Get(vtkDataObject::SPACING(), spacing);
-  info->Get(vtkDataObject::ORIGIN(), origin);
-
   if (this->PatientMatrix)
     {
     vtkMatrix4x4::DeepCopy(matrix, this->PatientMatrix);
@@ -205,10 +202,18 @@ void vtkDICOMGenerator::ComputeAdjustedMatrix(
     vtkMatrix4x4::Identity(matrix);
     }
 
+  spacing[0] = this->Spacing[0];
+  spacing[1] = this->Spacing[1];
+  spacing[2] = this->Spacing[2];
+
+  origin[0] = this->Origin[0];
+  origin[1] = this->Origin[1];
+  origin[2] = this->Origin[2];
+
   if (this->OriginAtBottom)
     {
     // move origin to the correct corner
-    origin[1] -= spacing[1]*(extent[3] - extent[2]);
+    origin[1] -= spacing[1]*(this->Dimensions[1] - 1);
     matrix[1] = -matrix[1];
     matrix[5] = -matrix[5];
     matrix[9] = -matrix[9];
@@ -248,7 +253,8 @@ void vtkDICOMGenerator::ComputePositionAndOrientation(
 
 //----------------------------------------------------------------------------
 void vtkDICOMGenerator::ComputeDimensions(
-  vtkInformation *info, int *nframes, int dims[5], double spacing[5])
+  vtkInformation *info, int *nframes, int dims[5],
+  double spacing[5], double origin[5])
 {
   // get the scalar information
   vtkInformation *scalarInfo = vtkDataObject::GetActiveFieldInformation(
@@ -295,7 +301,11 @@ void vtkDICOMGenerator::ComputeDimensions(
   // if unsigned char, assume scalars are colors, not vector components
   if (scalarType == VTK_UNSIGNED_CHAR)
     {
-    numComponents = 0;
+    numComponents /= this->NumberOfColorComponents;
+    if (numComponents < 2)
+      {
+      numComponents = 0;
+      }
     }
 
   dims[0] = extent[1] - extent[0] + 1;
@@ -304,8 +314,22 @@ void vtkDICOMGenerator::ComputeDimensions(
   dims[3] = numTimeSlots;
   dims[4] = numComponents;
 
-  // get the dimension spacing
   info->Get(vtkDataObject::SPACING(), spacing);
+  info->Get(vtkDataObject::ORIGIN(), origin);
+
+  // compute an adjusted origin
+  origin[0] += extent[0]*spacing[0];
+  origin[1] += extent[1]*spacing[1];
+  origin[2] += extent[2]*spacing[2];
+  origin[3] = 0;
+  origin[4] = 0;
+
+  // get the dimension spacing
+  if (!this->TimeAsVector && numTimeSlots > 1)
+    {
+    // adjust spacing for multiple temporal positions per spatial position
+    spacing[2] *= numTimeSlots;
+    }
   spacing[3] = this->TimeSpacing;
   spacing[4] = 0.0;
 
@@ -321,22 +345,30 @@ void vtkDICOMGenerator::InitializeMetaData(
 {
   meta->Initialize();
 
+  // get the scalar type
+  vtkInformation *scalarInfo = vtkDataObject::GetActiveFieldInformation(
+    info, vtkDataObject::FIELD_ASSOCIATION_POINTS,
+    vtkDataSetAttributes::SCALARS);
+  this->ScalarType = scalarInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE());
+
   // get dimensions of the data set: x,y,z,t,v
   int nframes = 1;
   this->ComputeDimensions(
-    info, &nframes, this->Dimensions, this->Spacing);
+    info, &nframes, this->Dimensions, this->Spacing, this->Origin);
   int numSlices = (this->Dimensions[2] > 0 ? this->Dimensions[2] : 1);
   int numTimeSlots = (this->Dimensions[3] > 0 ? this->Dimensions[3] : 1);
 
   // compute the SliceIndexArray
   if (this->MultiFrame)
     {
+    this->NumberOfFrames = nframes;
     this->SliceIndexArray->SetNumberOfComponents(nframes);
     this->SliceIndexArray->SetNumberOfTuples(1);
     meta->SetNumberOfInstances(1);
     }
   else
     {
+    this->NumberOfFrames = 0;
     this->SliceIndexArray->SetNumberOfComponents(1);
     this->SliceIndexArray->SetNumberOfTuples(nframes);
     meta->SetNumberOfInstances(nframes);
@@ -662,6 +694,35 @@ bool vtkDICOMGenerator::GenerateClinicalTrialSeriesModule(
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateFrameOfReferenceModule(vtkDICOMMetaData *meta)
+{
+  // the FrameOfReferenceUID is mandatory,
+  // the PositionReferenceIndicator is required
+
+  std::string uid;
+  std::string fid;
+
+  // Note that, depending on how the image has been manipulated,
+  // the frame of reference might have changed.
+  if (this->MetaData)
+    {
+    uid = this->MetaData->GetAttributeValue(
+      DC::FrameOfReferenceUID).AsString();
+    fid = this->MetaData->GetAttributeValue(
+      DC::PositionReferenceIndicator).AsString();
+    }
+  if (uid == "")
+    {
+    uid = vtkDICOMUtilities::GenerateUID();
+    }
+
+  meta->SetAttributeValue(DC::FrameOfReferenceUID, uid);
+  meta->SetAttributeValue(DC::PositionReferenceIndicator, fid);
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMGenerator::GenerateGeneralEquipmentModule(vtkDICOMMetaData *meta)
 {
   // required items: use simple read/write validation
@@ -755,18 +816,16 @@ bool vtkDICOMGenerator::GenerateGeneralImageModule(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMGenerator::GenerateImagePlaneModule(
-  vtkDICOMMetaData *meta, vtkInformation *info)
+bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *meta)
 {
   double spacing[3], origin[3];
   double matrix[16];
-  this->ComputeAdjustedMatrix(info, matrix, origin, spacing);
+  this->ComputeAdjustedMatrix(matrix, origin, spacing);
 
   int timeSlices = 1;
-  if (!this->TimeAsVector && this->TimeDimension > 0)
+  if (!this->TimeAsVector && this->Dimensions[4] > 0)
     {
-    timeSlices = this->TimeDimension;
-    spacing[2] *= timeSlices;
+    timeSlices = this->Dimensions[4];
     }
 
   // remove attributes that conflict with this module
@@ -810,32 +869,16 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMGenerator::GenerateImagePixelModule(
-  vtkDICOMMetaData *meta, vtkInformation *info)
+bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *meta)
 {
-  // get the scalar information
-  vtkInformation *scalarInfo = vtkDataObject::GetActiveFieldInformation(
-    info, vtkDataObject::FIELD_ASSOCIATION_POINTS,
-    vtkDataSetAttributes::SCALARS);
-
-  int extent[6];
-  info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
-
-  double spacing[3];
-  info->Get(vtkDataObject::SPACING(), spacing);
-
-  int scalarType = scalarInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE());
-  int numComponents = scalarInfo->Get(
-    vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
-
-  int rows = extent[3] - extent[2] + 1;
-  int cols = extent[1] - extent[0] + 1;
+  int rows = this->Dimensions[1];
+  int cols = this->Dimensions[0];
 
   // get the DICOM data type:
   short pixelbits = 0;
   short pixelrep = 0;
 
-  switch (scalarType)
+  switch (this->ScalarType)
     {
     case VTK_SIGNED_CHAR:
       pixelrep = 1;
@@ -866,7 +909,7 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(
   if (pixelbits == 0)
     {
     vtkErrorMacro("Illegal scalar type: " <<
-      vtkImageScalarTypeNameMacro(scalarType));
+      vtkImageScalarTypeNameMacro(this->ScalarType));
     return false;
     }
 
@@ -878,7 +921,7 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(
     }
 
   bool paletteColor = false;
-  if (numComponents >= 3 && scalarType == VTK_UNSIGNED_CHAR)
+  if (this->NumberOfColorComponents >= 3)
     {
     meta->SetAttributeValue(DC::SamplesPerPixel, 3);
     meta->SetAttributeValue(DC::PlanarConfiguration, 0);
@@ -931,7 +974,7 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(
 
   // This will be removed when PixelSpacing is set
   int aspect[2];
-  vtkDICOMGenerator::ComputeAspectRatio(spacing, aspect);
+  vtkDICOMGenerator::ComputeAspectRatio(this->Spacing, aspect);
   meta->SetAttributeValue(
     DC::PixelAspectRatio,
     vtkDICOMValue(vtkDICOMVR::IS, aspect, aspect+2));
@@ -967,15 +1010,14 @@ bool vtkDICOMGenerator::GenerateContrastBolusModule(vtkDICOMMetaData *meta)
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMGenerator::GenerateMultiFrameModule(
-  vtkDICOMMetaData *meta, vtkInformation *info)
+bool vtkDICOMGenerator::GenerateMultiFrameModule(vtkDICOMMetaData *meta)
 {
   meta->SetAttributeValue(
-    DC::NumberOfFrames, 1);
+    DC::NumberOfFrames, this->NumberOfFrames);
   meta->SetAttributeValue(
     DC::FrameIncrementPointer,
     vtkDICOMValue(vtkDICOMVR::AT, vtkDICOMTag(DC::FrameTime)));
-  meta->SetAttributeValue(DC::FrameTime, this->TimeSpacing);
+  meta->SetAttributeValue(DC::FrameTime, this->Spacing[4]);
 
   return true;
 }

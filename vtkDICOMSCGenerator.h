@@ -59,8 +59,7 @@ protected:
   virtual bool GenerateSCImageModule(vtkDICOMMetaData *meta);
 
   //! Generate the SC Multi-Frame Image Module.
-  virtual bool GenerateSCMultiFrameImageModule(
-    vtkDICOMMetaData *meta, vtkInformation *info);
+  virtual bool GenerateSCMultiFrameImageModule(vtkDICOMMetaData *meta);
 
   //! Instantiate a DICOM Secondary Capture Image object.
   virtual bool GenerateSCInstance(

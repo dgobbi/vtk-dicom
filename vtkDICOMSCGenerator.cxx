@@ -41,7 +41,7 @@ void vtkDICOMSCGenerator::PrintSelf(ostream& os, vtkIndent indent)
 
 //----------------------------------------------------------------------------
 bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
-  vtkDICOMMetaData *meta, vtkInformation *info)
+  vtkDICOMMetaData *meta)
 {
   // The BurnedInAnnotation attribute is mandatory
   std::string bia;
@@ -66,10 +66,9 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
     }
 
   // get dimensions of the data set: x,y,z,t,v
-  int nframes = 1;
-  int dims[5];
-  double spacing[5];
-  this->ComputeDimensions(info, &nframes, dims, spacing);
+  int nframes = this->NumberOfFrames;
+  int *dims = this->Dimensions;
+  double *spacing = this->Spacing;
 
   // set multi-frame information
   meta->SetAttributeValue(DC::NumberOfFrames, nframes);
@@ -104,6 +103,7 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
       vtkDICOMValue(vtkDICOMVR::DS, zvector, zvector+nframes));
     }
 
+  meta->RemoveAttribute(DC::FrameTime);
   meta->SetAttributeValue(
     DC::FrameIncrementPointer,
     vtkDICOMValue(vtkDICOMVR::AT, pointers, pointers+npointers));
@@ -135,7 +135,7 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
 //----------------------------------------------------------------------------
 bool vtkDICOMSCGenerator::GenerateSCImageModule(vtkDICOMMetaData *meta)
 {
-  // These are not set, because AspectRatio is used instead  
+  // These are not set, because AspectRatio is used instead
   // DC::PixelSpacing, // 1C
   // DC::PixelSpacingCalibrationType,
   // DC::PixelSpacingCalibrationDescription, // 1C
@@ -205,6 +205,7 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
   const char *SOPClass = 0;
   if (scalarType == VTK_UNSIGNED_CHAR)
     {
+    this->NumberOfColorComponents = numComponents;
     if (numComponents < 3)
       {
       SOPClass = "1.2.840.10008.5.1.4.1.1.7.2";
@@ -216,6 +217,7 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
     }
   else if (scalarType == VTK_UNSIGNED_SHORT)
     {
+    this->NumberOfColorComponents = 1;
     SOPClass = "1.2.840.10008.5.1.4.1.1.7.3";
     }
   else
@@ -238,11 +240,11 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
       // optional General Equipment Module intentionally omitted
       !this->GenerateSCEquipmentModule(meta) ||
       !this->GenerateGeneralImageModule(meta) ||
-      !this->GenerateImagePixelModule(meta, info) ||
+      !this->GenerateImagePixelModule(meta) ||
       // the Cine Module is added by GenerateSCMultiFrameImageModule
       !this->GenerateDeviceModule(meta) ||
       !this->GenerateSpecimenModule(meta) ||
-      !this->GenerateSCMultiFrameImageModule(meta, info))
+      !this->GenerateSCMultiFrameImageModule(meta))
     {
     return false;
     }
@@ -268,7 +270,7 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(
       // optional GeneralEquipmentModule intentionally omitted
       !this->GenerateSCEquipmentModule(meta) ||
       !this->GenerateGeneralImageModule(meta) ||
-      !this->GenerateImagePixelModule(meta, info) ||
+      !this->GenerateImagePixelModule(meta) ||
       !this->GenerateDeviceModule(meta) ||
       !this->GenerateSpecimenModule(meta) ||
       !this->GenerateSCImageModule(meta))
