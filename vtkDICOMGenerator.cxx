@@ -692,81 +692,20 @@ bool vtkDICOMGenerator::GenerateGeneralEquipmentModule(vtkDICOMMetaData *meta)
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMGenerator::GenerateMultiFrameModule(
-  vtkDICOMMetaData *meta, vtkInformation *info)
-{
-  meta->SetAttributeValue(
-    DC::NumberOfFrames, 1);
-  meta->SetAttributeValue(
-    DC::FrameIncrementPointer,
-    vtkDICOMValue(vtkDICOMVR::AT, vtkDICOMTag(DC::FrameTime)));
-  meta->SetAttributeValue(DC::FrameTime, this->TimeSpacing);
-
-  return true;
-}
-
-//----------------------------------------------------------------------------
-bool vtkDICOMGenerator::GenerateDeviceModule(vtkDICOMMetaData *meta)
-{
-  // direct copy of values with no checks
-  static const DC::EnumType tags[] = {
-    DC::DeviceSequence, // 1
-    DC::ItemDelimitationItem
-  };
-
-  return this->CopyOptionalAttributes(tags, meta);
-}
-
-//----------------------------------------------------------------------------
-bool vtkDICOMGenerator::GenerateSpecimenModule(vtkDICOMMetaData *meta)
-{
-  // direct copy of values with no checks
-  static const DC::EnumType tags[] = {
-
-    DC::ContainerIdentifier, // 1
-    DC::IssuerOfTheContainerIdentifierSequence, // 2
-    DC::AlternateContainerIdentifierSequence, // 3
-    DC::ContainerTypeCodeSequence, // 2
-    DC::ContainerDescription, // 3
-    DC::ContainerComponentSequence, // 3
-    DC::SpecimenDescriptionSequence, // 1
-    DC::ItemDelimitationItem
-  };
-
-  return this->CopyOptionalAttributes(tags, meta);
-}
-
-//----------------------------------------------------------------------------
 bool vtkDICOMGenerator::GenerateGeneralImageModule(
   vtkDICOMMetaData *meta)
 {
   // This module provides per-instance information
-  if (1) //this->FileDimensionality == 2)
+  int n = meta->GetNumberOfInstances();
+  for (int i = 0; i < n; i++)
     {
-    int nslices = meta->GetNumberOfInstances();
-    for (int i = 0; i < nslices; i++)
-      {
-      unsigned int instance = i + 1;
-      meta->SetAttributeValue(i, DC::InstanceNumber, instance);
-      }
-    }
-  else
-    {
-    meta->SetAttributeValue(DC::InstanceNumber, 1);
+    unsigned int instance = i + 1;
+    meta->SetAttributeValue(i, DC::InstanceNumber, instance);
     }
 
-  if (this->PatientMatrix)
-    {
-    meta->RemoveAttribute(DC::PatientOrientation);
-    }
-  else
-    {
-    // This is required on the condition that no matrix is provided
-    if (!meta->HasAttribute(DC::PatientOrientation))
-      {
-      meta->SetAttributeValue(DC::PatientOrientation, "");
-      }
-    }
+  // PatientInformation is required if no ImagePlane module is present,
+  // it will be overwritten if a real value is found
+  meta->SetAttributeValue(DC::PatientOrientation, "");
 
   // ContentDate is conditionally required, and we have no means to
   // check for the conditions under which it would not be required.
@@ -813,6 +752,61 @@ bool vtkDICOMGenerator::GenerateGeneralImageModule(
   };
 
   return this->CopyOptionalAttributes(optional, meta);
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateImagePlaneModule(
+  vtkDICOMMetaData *meta, vtkInformation *info)
+{
+  double spacing[3], origin[3];
+  double matrix[16];
+  this->ComputeAdjustedMatrix(info, matrix, origin, spacing);
+
+  int timeSlices = 1;
+  if (!this->TimeAsVector && this->TimeDimension > 0)
+    {
+    timeSlices = this->TimeDimension;
+    spacing[2] *= timeSlices;
+    }
+
+  // remove attributes that conflict with this module
+  meta->RemoveAttribute(DC::PixelAspectRatio);
+  meta->RemoveAttribute(DC::PatientOrientation);
+
+  meta->SetAttributeValue(
+    DC::PixelSpacing,
+    vtkDICOMValue(vtkDICOMVR::DS, spacing, spacing+2));
+
+  // this will have to account for image flip, if present
+  int n = meta->GetNumberOfInstances();
+  double zorigin = origin[2];
+  for (int i = 0; i < n; i++)
+    {
+    int sliceIdx = this->SliceIndexArray->GetComponent(i, 0);
+    // remove the time from the slice index
+    sliceIdx /= timeSlices;
+    origin[2] = zorigin + sliceIdx*spacing[2];
+
+    double position[3], orientation[6];
+    vtkDICOMGenerator::ComputePositionAndOrientation(
+      origin, matrix, position, orientation);
+
+    meta->SetAttributeValue(
+      i, DC::ImagePositionPatient,
+      vtkDICOMValue(vtkDICOMVR::DS, position, position+3));
+
+    meta->SetAttributeValue(
+      i, DC::ImageOrientationPatient,
+      vtkDICOMValue(vtkDICOMVR::DS, orientation, orientation+6));
+    }
+
+  // the original SliceThickness should be used if it is still valid,
+  // i.e. if the slices are original slices rather than reformatted.
+  meta->SetAttributeValue(DC::SliceThickness, fabs(spacing[2]));
+
+  // DC::SliceLocation is an optional attribute, do not set
+
+  return true;
 }
 
 //----------------------------------------------------------------------------
@@ -950,55 +944,46 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMGenerator::GenerateImagePlaneModule(
+bool vtkDICOMGenerator::GenerateMultiFrameModule(
   vtkDICOMMetaData *meta, vtkInformation *info)
 {
-  double spacing[3], origin[3];
-  double matrix[16];
-  this->ComputeAdjustedMatrix(info, matrix, origin, spacing);
-
-  int timeSlices = 1;
-  if (!this->TimeAsVector && this->TimeDimension > 0)
-    {
-    timeSlices = this->TimeDimension;
-    spacing[2] *= timeSlices;
-    }
-
-  // remove the PixelAspectRatio, it conflicts with PixelSpacing
-  meta->RemoveAttribute(DC::PixelAspectRatio);
-
   meta->SetAttributeValue(
-    DC::PixelSpacing,
-    vtkDICOMValue(vtkDICOMVR::DS, spacing, spacing+2));
-
-  // this will have to account for image flip, if present
-  int n = meta->GetNumberOfInstances();
-  double zorigin = origin[2];
-  for (int i = 0; i < n; i++)
-    {
-    int sliceIdx = this->SliceIndexArray->GetComponent(i, 0);
-    // remove the time from the slice index
-    sliceIdx /= timeSlices;
-    origin[2] = zorigin + sliceIdx*spacing[2];
-
-    double position[3], orientation[6];
-    vtkDICOMGenerator::ComputePositionAndOrientation(
-      origin, matrix, position, orientation);
-
-    meta->SetAttributeValue(
-      i, DC::ImagePositionPatient,
-      vtkDICOMValue(vtkDICOMVR::DS, position, position+3));
-
-    meta->SetAttributeValue(
-      i, DC::ImageOrientationPatient,
-      vtkDICOMValue(vtkDICOMVR::DS, orientation, orientation+6));
-    }
-
-  // the original SliceThickness should be used if it is still valid,
-  // i.e. if the slices are original slices rather than reformatted.
-  meta->SetAttributeValue(DC::SliceThickness, fabs(spacing[2]));
-
-  // DC::SliceLocation is an optional attribute, do not set
+    DC::NumberOfFrames, 1);
+  meta->SetAttributeValue(
+    DC::FrameIncrementPointer,
+    vtkDICOMValue(vtkDICOMVR::AT, vtkDICOMTag(DC::FrameTime)));
+  meta->SetAttributeValue(DC::FrameTime, this->TimeSpacing);
 
   return true;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateDeviceModule(vtkDICOMMetaData *meta)
+{
+  // direct copy of values with no checks
+  static const DC::EnumType tags[] = {
+    DC::DeviceSequence, // 1
+    DC::ItemDelimitationItem
+  };
+
+  return this->CopyOptionalAttributes(tags, meta);
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateSpecimenModule(vtkDICOMMetaData *meta)
+{
+  // direct copy of values with no checks
+  static const DC::EnumType tags[] = {
+
+    DC::ContainerIdentifier, // 1
+    DC::IssuerOfTheContainerIdentifierSequence, // 2
+    DC::AlternateContainerIdentifierSequence, // 3
+    DC::ContainerTypeCodeSequence, // 2
+    DC::ContainerDescription, // 3
+    DC::ContainerComponentSequence, // 3
+    DC::SpecimenDescriptionSequence, // 1
+    DC::ItemDelimitationItem
+  };
+
+  return this->CopyOptionalAttributes(tags, meta);
 }

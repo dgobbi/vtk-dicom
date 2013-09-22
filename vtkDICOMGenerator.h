@@ -163,12 +163,12 @@ protected:
   //! Generate the DICOM Image Module.
   virtual bool GenerateGeneralImageModule(vtkDICOMMetaData *meta);
 
-  //! Generate the DICOM Pixel Module.
-  virtual bool GenerateImagePixelModule(
-    vtkDICOMMetaData *meta, vtkInformation *info);
-
   //! Generate the DICOM Plane Module.
   virtual bool GenerateImagePlaneModule(
+    vtkDICOMMetaData *meta, vtkInformation *info);
+
+  //! Generate the DICOM Pixel Module.
+  virtual bool GenerateImagePixelModule(
     vtkDICOMMetaData *meta, vtkInformation *info);
 
   //! Generate The DICOM Multi-frame Module.
