@@ -377,7 +377,7 @@ void vtkDICOMGenerator::InitializeMetaData(
   // Reversing slice ordering isn't necessary if the ImagePlane module
   // is present, because then every file has an ImagePositionPatient,
   // but if only a Location is present then slice ordering is critical.
-  bool reverseSlices = false;
+  bool reverseSlices = (this->OriginAtBottom != 0);
   int m = nframes/numSlices;
   int n = m/numTimeSlots;
   for (int i = 0; i < nframes; i++)
