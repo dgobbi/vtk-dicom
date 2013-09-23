@@ -244,6 +244,14 @@ protected:
     vtkInformation *info, int *nframes, int dims[5],
     double spacing[5], double origin[5]);
 
+  //! Compute the range of the data.
+  /*!
+   *  If the image data is present, compute the range of all frames as
+   *  well as a suitable window/level for each frame.
+   */
+  virtual void ComputePixelValueRange(vtkInformation *info,
+    vtkIntArray *rangeArray, int seriesRange[2]);
+
   //! Initialize the meta data and compute the slice index array.
   /*!
    *  This must be done before any of the meta data has been generated.
@@ -313,7 +321,7 @@ protected:
   /*!
    *  This is computed in the InitializeMetaData method.
    */
-  double PixelValueRange[2];
+  int PixelValueRange[2];
 
   //! The orientation matrix for the DICOM file.
   vtkMatrix4x4 *PatientMatrix;

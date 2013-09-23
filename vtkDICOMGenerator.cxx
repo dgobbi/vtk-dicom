@@ -53,8 +53,8 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->TimeSpacing = 1.0;
   this->PatientMatrix = 0;
   this->SliceIndexArray = vtkIntArray::New();
-  this->PixelValueRange[0] = 0.0;
-  this->PixelValueRange[1] = 0.0;
+  this->PixelValueRange[0] = 0;
+  this->PixelValueRange[1] = 0;
 
   for (int i = 0; i < 5; i++)
     {
@@ -345,6 +345,29 @@ void vtkDICOMGenerator::ComputeDimensions(
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMGenerator::ComputePixelValueRange(
+  vtkInformation *info, vtkIntArray *, int seriesRange[2])
+{
+  // get the data and compute the range, this is tricky because the
+  // the vtkDataArray::GetRange() method computes the min/max for just
+  // one component, but we need min/max over all components
+  double range[2];
+  vtkImageData *data =
+    vtkImageData::SafeDownCast(info->Get(vtkDataObject::DATA_OBJECT()));
+  vtkDataArray *a = data->GetPointData()->GetScalars();
+  vtkIdType nt = a->GetNumberOfTuples();
+  vtkIdType nc = a->GetNumberOfComponents();
+  vtkDataArray *newArray = a->NewInstance();
+  newArray->SetNumberOfTuples(nt*nc);
+  newArray->SetVoidArray(a->GetVoidPointer(0), nt*nc, true);
+  newArray->GetRange(range);
+  newArray->Delete();
+
+  seriesRange[0] = static_cast<int>(range[0]);
+  seriesRange[1] = static_cast<int>(range[1]);
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMGenerator::InitializeMetaData(
   vtkInformation *info, vtkDICOMMetaData *meta)
 {
@@ -397,19 +420,7 @@ void vtkDICOMGenerator::InitializeMetaData(
     this->SliceIndexArray->SetValue(i, sliceIdx);
     }
 
-  // get the data and compute the range, this is tricky because the
-  // the vtkDataArray::GetRange() method computes the min/max for just
-  // one component, but we need min/max over all components
-  vtkImageData *data =
-    vtkImageData::SafeDownCast(info->Get(vtkDataObject::DATA_OBJECT()));
-  vtkDataArray *a = data->GetPointData()->GetScalars();
-  vtkIdType nt = a->GetNumberOfTuples();
-  vtkIdType nc = a->GetNumberOfComponents();
-  vtkDataArray *newArray = a->NewInstance();
-  newArray->SetNumberOfTuples(nt*nc);
-  newArray->SetVoidArray(a->GetVoidPointer(0), nt*nc, true);
-  newArray->GetRange(this->PixelValueRange);
-  newArray->Delete();
+  this->ComputePixelValueRange(info, 0, this->PixelValueRange);
 }
 
 //----------------------------------------------------------------------------
