@@ -15,13 +15,21 @@
 #include <vtkStringArray.h>
 #include "vtkDICOMUtilities.h"
 
+#include <vtksys/SystemTools.hxx>
+
 #include <string>
 #include <iostream>
 
+#include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 
-// needed for random number generation
+// needed for timezone
+#ifndef _WIN32
+#include <time.h>
+#endif
+
+// needed for random number generation and timezone
 #ifdef _WIN32
 #include <windows.h>
 #include <wincrypt.h>
@@ -311,6 +319,78 @@ int vtkDICOMUtilities::CompareUIDs(const char *u1, const char *u2)
 }
 
 //----------------------------------------------------------------------------
+std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
+{
+  // require a time with microsecond precision
+  // (though not necessarily microsecond accuracy)
+  double t = vtksys::SystemTools::GetTime();
+  char tzs[6] = { '+', '0', '0', '0', '0', '\0' };
+
+  // adjust for the time zone
+  const char *z = zone.c_str();
+  if (strlen(z) == 5 && (z[0] == '+' || z[0] == '-') &&
+      isdigit(z[1]) && isdigit(z[2]) && isdigit(z[3]) && isdigit(z[4]))
+    {
+    int zh = (z[1] - '0')*10 + (z[2] - '0');
+    int zm = (z[3] - '0')*10 + (z[4] - '0');
+    int zs = (zh*3600 + zm*60) * (z[0] == '-' ? -1 : +1);
+    t += zs;
+    }
+  else
+    {
+#ifdef _WIN32
+    TIME_ZONE_INFORMATION tzi;
+    GetTimeZoneInformation(tzi);
+    int zs = static_cast<int>(-tzi.Bias*60);
+#else
+    struct tm tmv;
+    time_t tod;
+    time(&tod);
+    localtime_r(&tod, &tmv);
+    int zs = static_cast<int>(tmv.tm_gmtoff);
+#endif
+    t += zs;
+    tzs[0] = (zs < 0 ? '-' : '+');
+    zs = (zs < 0 ? -zs : zs);
+    sprintf(&tzs[1], "%02d%02d", (zs/3600)%24, (zs%3600)/60);
+    z = tzs;
+    }
+
+  // separate time into days and seconds
+  int td = static_cast<int>(t/(24*3600));
+  double ts = t - td*24.0*3600.0;
+
+  // use algorithm from Henry F. Fliegel and Thomas C. Van Flandern
+  int ell = td + 2509157;
+  int n = (4 * ell) / 146097;
+  ell = ell - (146097 * n + 3) / 4;
+  int i = (4000 * (ell + 1)) / 1461001;
+  ell = ell - (1461 * i) / 4 + 31;
+  int j = (80 * ell) / 2447;
+  int d = ell - (2447 * j) / 80;
+  ell = j / 11;
+  int m = j + 2 - (12 * ell);
+  int y = 100 * (n - 49) + i + ell;
+  if (y > 9999)
+    {
+    y = 9999;
+    }
+
+  int S = static_cast<int>(ts);
+  int us = static_cast<int>((ts - S)*1000000.0);
+  int H = S/3600;
+  S -= H*3600;
+  int M = S/60;
+  S -= M*60;
+
+  char dt[32];
+  sprintf(dt, "%04d%02d%02d%02d%02d%02d.%06d%s",
+          y, m, d, H, M, S, us, z);
+
+  return dt;
+}
+
+//----------------------------------------------------------------------------
 const char *vtkDICOMUtilities::GetDefaultImplementationClassUID()
 {
   return "2.25.190146791043182537444806132342625375407";
@@ -321,7 +401,7 @@ const char *vtkDICOMUtilities::GetDefaultImplementationClassUID()
   name "_" #x "_" #y "_" #z
 #define VTK_DICOM_VERSION_CREATOR(name, x, y, z) \
   VTK_DICOM_VERSION_CREATOR2(name, x, y, z)
-  
+
 const char *vtkDICOMUtilities::GetDefaultImplementationVersionName()
 {
   return VTK_DICOM_VERSION_CREATOR("VTK_DICOM",

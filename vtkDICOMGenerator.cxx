@@ -28,7 +28,6 @@
 #include "vtkDataSetAttributes.h"
 #include "vtkSmartPointer.h"
 
-#include <time.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -466,22 +465,34 @@ bool vtkDICOMGenerator::GenerateSOPCommonModule(
     meta->SetAttributeValue(i, DC::SOPInstanceUID, uids->GetValue(i));
     }
 
+  // set the InstanceCreationDate and Time
+  std::string tz = "";
+  if (this->MetaData)
+    {
+    tz = this->MetaData->GetAttributeValue(
+      DC::TimezoneOffsetFromUTC).AsString();
+    }
+  std::string dt = vtkDICOMUtilities::GenerateDateTime(tz);
+  meta->SetAttributeValue(DC::InstanceCreationDate, dt.substr(0, 8));
+  meta->SetAttributeValue(DC::InstanceCreationTime, dt.substr(8, 13));
+  meta->SetAttributeValue(DC::TimezoneOffsetFromUTC, dt.substr(21, 5));
+
+  // These optional attributes should be left alone for now
+  // DC::InstanceCreatorUID
+  // DC::SOPInstanceStatus,        // caution
+  // DC::SOPAuthorizationDateTime, // caution
+  // DC::SOPAuthorizationComment,  // caution
+  // DC::AuthorizationEquipmentCertificationNumber,  // caution
+
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
     DC::SpecificCharacterSet,  // 1C
-    // DC::InstanceCreationDate,
-    // DC::InstanceCreationTime,
-    // DC::InstanceCreatorUID,
     DC::RelatedGeneralSOPClassUID, // set to original class if SC
     DC::OriginalSpecializedSOPClassUID, // set to original class if SC
     DC::CodingSchemeIdentificationSequence,
     DC::TimezoneOffsetFromUTC,
     DC::ContributingEquipmentSequence,
-    // DC::InstanceNumber,  // will written by General Image Module
-    // DC::SOPInstanceStatus,        // caution
-    // DC::SOPAuthorizationDateTime, // caution
-    // DC::SOPAuthorizationComment,  // caution
-    // DC::AuthorizationEquipmentCertificationNumber,  // caution
+    DC::InstanceNumber,  // will be overwritten by General Image Module
     DC::EncryptedAttributesSequence, // 1C, per-instance?
     DC::OriginalAttributesSequence,
     DC::HL7StructuredDocumentReferenceSequence, // 1C
@@ -779,17 +790,16 @@ bool vtkDICOMGenerator::GenerateGeneralImageModule(
 
   // ContentDate is conditionally required, and we have no means to
   // check for the conditions under which it would not be required.
-  if (!meta->HasAttribute(DC::ContentTime) ||
-      !meta->HasAttribute(DC::ContentDate))
+  if (this->MetaData == 0 ||
+      !this->MetaData->HasAttribute(DC::ContentTime) ||
+      !this->MetaData->HasAttribute(DC::ContentDate))
     {
-    char text[32];
-    time_t t;
-    time(&t);
-    strftime(text, sizeof(text), "%Y%m%d%H%M%S", localtime(&t));
-    text[8 + 6] = '\0';
-    meta->SetAttributeValue(DC::ContentTime, &text[8]);
-    text[8] = '\0';
-    meta->SetAttributeValue(DC::ContentDate, &text[0]);
+    // set the InstanceCreationDate and Time
+    std::string tz = meta->GetAttributeValue(
+      DC::TimezoneOffsetFromUTC).AsString();
+    std::string dt = vtkDICOMUtilities::GenerateDateTime(tz);
+    meta->SetAttributeValue(DC::ContentDate, dt.substr(0, 8));
+    meta->SetAttributeValue(DC::ContentTime, dt.substr(8, 13));
     }
 
   // optional and conditional: direct copy of values with no checks

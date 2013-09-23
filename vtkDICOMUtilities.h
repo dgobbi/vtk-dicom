@@ -39,6 +39,14 @@ public:
   //! Numerically compare two UIDs, returns -1, 0, or +1.
   static int CompareUIDs(const char *u1, const char *u2);
 
+  //! Generate a DICOM date time string in the given timezone.
+  /*!
+   *  The time zone is to be given in the DICOM format of
+   *  +HHMM or -HHMM where HH is the hour offset and MM is the
+   *  minute offset.  The sign is mandatory and cannot be omitted.
+   */
+  static std::string GenerateDateTime(const std::string& zone);
+
   //! Get the default UID for this DICOM implementation.
   static const char *GetDefaultImplementationClassUID();
 
