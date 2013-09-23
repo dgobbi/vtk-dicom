@@ -526,6 +526,8 @@ void vtkDICOMValue::CreateValue<vtkDICOMTag>(
   assert(size*4 <= 0xffffffffu);
   unsigned int n = static_cast<unsigned int>(size);
 
+  this->V = 0;
+
   if (vr == VR::AT)
     {
     vtkDICOMTag *ptr = this->AllocateTagData(vr, n);
