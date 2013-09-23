@@ -205,7 +205,11 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
   const char *SOPClass = 0;
   if (scalarType == VTK_UNSIGNED_CHAR)
     {
-    this->NumberOfColorComponents = numComponents;
+    this->SetPixelRestrictions(
+       RepresentationUnsigned,
+       BitsStored8,
+       numComponents);
+
     if (numComponents < 3)
       {
       SOPClass = "1.2.840.10008.5.1.4.1.1.7.2";
@@ -215,16 +219,14 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
       SOPClass = "1.2.840.10008.5.1.4.1.1.7.4";
       }
     }
-  else if (scalarType == VTK_UNSIGNED_SHORT)
-    {
-    this->NumberOfColorComponents = 1;
-    SOPClass = "1.2.840.10008.5.1.4.1.1.7.3";
-    }
   else
     {
-    vtkErrorMacro("DICOM Multi-Frame Secondary Capture files require "
-                  "unsigned char or unsigned short data");
-    return false;
+    this->SetPixelRestrictions(
+       RepresentationUnsigned,
+       BitsStored10 | BitsStored12 | BitsStored16,
+       1);
+
+    SOPClass = "1.2.840.10008.5.1.4.1.1.7.3";
     }
 
   this->InitializeMetaData(info, meta);
@@ -256,6 +258,11 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
 bool vtkDICOMSCGenerator::GenerateSCInstance(
   vtkInformation *info, vtkDICOMMetaData *meta)
 {
+  this->SetPixelRestrictions(
+    RepresentationUnsigned | RepresentationSigned,
+    BitsStored8 | BitsStored10 | BitsStored12 | BitsStored16,
+    1);
+
   const char *SOPClass = "1.2.840.10008.5.1.4.1.1.3";
   this->InitializeMetaData(info, meta);
 

@@ -115,6 +115,11 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *meta)
 bool vtkDICOMMRGenerator::GenerateMRInstance(
   vtkInformation *info, vtkDICOMMetaData *meta)
 {
+  this->SetPixelRestrictions(
+    RepresentationSigned | RepresentationUnsigned,
+    BitsStored12 | BitsStored16,
+    1);
+
   const char *SOPClass = "1.2.840.10008.5.1.4.1.1.4";
   this->InitializeMetaData(info, meta);
 

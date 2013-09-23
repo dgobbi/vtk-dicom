@@ -22,6 +22,7 @@
 #include "vtkStringArray.h"
 #include "vtkIntArray.h"
 #include "vtkImageData.h"
+#include "vtkPointData.h"
 #include "vtkInformation.h"
 #include "vtkMatrix4x4.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
@@ -43,6 +44,8 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->MultiFrame = 0;
   this->OriginAtBottom = 1;
   this->ScalarType = 0;
+  this->AllowedPixelRepresentation = 3;
+  this->AllowedBitsStored = 0xffffffffu;
   this->NumberOfColorComponents = 1;
   this->NumberOfFrames = 0;
   this->TimeAsVector = 0;
@@ -50,6 +53,8 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->TimeSpacing = 1.0;
   this->PatientMatrix = 0;
   this->SliceIndexArray = vtkIntArray::New();
+  this->PixelValueRange[0] = 0.0;
+  this->PixelValueRange[1] = 0.0;
 
   for (int i = 0; i < 5; i++)
     {
@@ -391,6 +396,20 @@ void vtkDICOMGenerator::InitializeMetaData(
       }
     this->SliceIndexArray->SetValue(i, sliceIdx);
     }
+
+  // get the data and compute the range, this is tricky because the
+  // the vtkDataArray::GetRange() method computes the min/max for just
+  // one component, but we need min/max over all components
+  vtkImageData *data =
+    vtkImageData::SafeDownCast(info->Get(vtkDataObject::DATA_OBJECT()));
+  vtkDataArray *a = data->GetPointData()->GetScalars();
+  vtkIdType nt = a->GetNumberOfTuples();
+  vtkIdType nc = a->GetNumberOfComponents();
+  vtkDataArray *newArray = a->NewInstance();
+  newArray->SetNumberOfTuples(nt*nc);
+  newArray->SetVoidArray(a->GetVoidPointer(0), nt*nc, true);
+  newArray->GetRange(this->PixelValueRange);
+  newArray->Delete();
 }
 
 //----------------------------------------------------------------------------
@@ -448,6 +467,16 @@ bool vtkDICOMGenerator::CopyOptionalAttributes(
     }
 
   return true;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMGenerator::SetPixelRestrictions(
+  unsigned int pixelRepresentation, unsigned int bitsStored,
+  int colorComponents)
+{
+  this->AllowedPixelRepresentation = pixelRepresentation;
+  this->AllowedBitsStored = bitsStored;
+  this->NumberOfColorComponents = colorComponents;
 }
 
 //----------------------------------------------------------------------------
@@ -659,6 +688,36 @@ bool vtkDICOMGenerator::GenerateGeneralSeriesModule(vtkDICOMMetaData *meta)
     }
   meta->SetAttributeValue(DC::Modality, m);
 
+  // Set pixel min/max information
+  if (this->ScalarType != VTK_INT && this->ScalarType != VTK_UNSIGNED_INT)
+    {
+    // Get the pixel VR
+    vtkDICOMVR pixelVR = vtkDICOMVR::US;
+    if (this->ScalarType == VTK_SIGNED_CHAR ||
+        this->ScalarType == VTK_SHORT)
+      {
+      pixelVR = vtkDICOMVR::SS;
+      }
+
+    // Force it to conform the VRs allowed by the SOP Class
+    if ((this->AllowedPixelRepresentation & RepresentationSigned) == 0)
+      {
+      pixelVR = vtkDICOMVR::US;
+      }
+    else if ((this->AllowedPixelRepresentation & RepresentationUnsigned) == 0)
+      {
+      pixelVR = vtkDICOMVR::SS;
+      }
+
+    // These are optional, but very nice to have
+    meta->SetAttributeValue(
+      DC::SmallestPixelValueInSeries,
+      vtkDICOMValue(pixelVR, this->PixelValueRange[0]));
+    meta->SetAttributeValue(
+      DC::LargestPixelValueInSeries,
+      vtkDICOMValue(pixelVR, this->PixelValueRange[1]));
+    }
+
   // required items: use simple read/write validation
   DC::EnumType required[] = {
     DC::SeriesNumber,
@@ -681,8 +740,8 @@ bool vtkDICOMGenerator::GenerateGeneralSeriesModule(vtkDICOMMetaData *meta)
     DC::RelatedSeriesSequence,
     DC::BodyPartExamined,
     DC::PatientPosition, // 2C
-    DC::SmallestPixelValueInSeries, // Needs re-writing from image data
-    DC::LargestPixelValueInSeries,  // Needs re-writing from image data
+    // DC::SmallestPixelValueInSeries, // done above
+    // DC::LargestPixelValueInSeries,  // done above
     DC::RequestAttributesSequence,
     DC::PerformedProcedureStepID,
     DC::PerformedProcedureStepStartDate,
@@ -936,6 +995,41 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *meta)
     return false;
     }
 
+  // modify the type based on what SOP allows
+  int storedbits = pixelbits;
+  if ((this->AllowedPixelRepresentation & (1 << pixelrep)) == 0)
+    {
+    // if data is signed but no negative values are present,
+    // then write as unsigned if SOP Class doesn't allow signed
+    if (pixelrep == 1 && this->PixelValueRange[0] >= 0)
+      {
+      pixelrep = 0;
+      }
+    else
+      {
+      vtkErrorMacro("This SOP class requires unsigned values.");
+      return false;
+      }
+    }
+  if ((this->AllowedBitsStored & (1 << (pixelbits-1))) == 0)
+    {
+    vtkErrorMacro("Illegal scalar type: " <<
+      vtkImageScalarTypeNameMacro(this->ScalarType));
+    }
+  // reduce BitsStored if the SOP class allows
+  unsigned int minv = static_cast<unsigned int>(-this->PixelValueRange[0]);
+  unsigned int maxv = static_cast<unsigned int>(this->PixelValueRange[1]);
+  for (int bi = pixelbits/2 + 1; bi < pixelbits; bi++)
+    {
+    if ((this->AllowedBitsStored & (1u << bi)) != 0 &&
+        ((pixelrep == 0 && maxv < (1u << (bi + 1))) ||
+         (pixelrep == 1 && maxv < (1u << bi) && minv <= (1u << bi))))
+      {
+      storedbits = bi + 1;
+      break;
+      }
+    }
+
   if (rows > 65535 || cols > 65535)
     {
     vtkErrorMacro("Image dimensions " << rows << "x"
@@ -991,16 +1085,19 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *meta)
   meta->SetAttributeValue(DC::Rows, rows);
   meta->SetAttributeValue(DC::Columns, cols);
   meta->SetAttributeValue(DC::BitsAllocated, pixelbits);
-  meta->SetAttributeValue(DC::BitsStored, pixelbits);
-  meta->SetAttributeValue(DC::HighBit, pixelbits-1);
+  meta->SetAttributeValue(DC::BitsStored, storedbits);
+  meta->SetAttributeValue(DC::HighBit, storedbits-1);
   meta->SetAttributeValue(DC::PixelRepresentation, pixelrep);
 
   // This will be removed when PixelSpacing is set
-  int aspect[2];
-  vtkDICOMGenerator::ComputeAspectRatio(this->Spacing, aspect);
-  meta->SetAttributeValue(
-    DC::PixelAspectRatio,
-    vtkDICOMValue(vtkDICOMVR::IS, aspect, aspect+2));
+  if (!meta->HasAttribute(DC::PixelSpacing))
+    {
+    int aspect[2];
+    vtkDICOMGenerator::ComputeAspectRatio(this->Spacing, aspect);
+    meta->SetAttributeValue(
+      DC::PixelAspectRatio,
+      vtkDICOMValue(vtkDICOMVR::IS, aspect, aspect+2));
+    }
 
   // These can be easily added in the writer, but they are optional
   meta->RemoveAttribute(DC::SmallestImagePixelValue);

@@ -132,6 +132,24 @@ protected:
   vtkDICOMGenerator();
   ~vtkDICOMGenerator();
 
+  //! Enumerated values for restricting pixel values.
+  enum {
+    RepresentationUnsigned = 1u,
+    RepresentationSigned = 2u,
+    BitsStored1 = 1u,
+    BitsStored6 = (1u << 5),
+    BitsStored8 = (1u << 7),
+    BitsStored10 = (1u << 9),
+    BitsStored12 = (1u << 11),
+    BitsStored16 = (1u << 15),
+    BitsStored32 = (1u << 31)
+  };
+    
+  //! Used by subclasses to place restrictions on the pixel type.
+  void SetPixelRestrictions(
+    unsigned int pixelRepresentation, unsigned int bitsStored,
+    int colorComponents);
+
   //! Generate the DICOM SOP Common Module.
   virtual bool GenerateSOPCommonModule(
     vtkDICOMMetaData *meta, const char *SOPClass);
@@ -267,6 +285,10 @@ protected:
    */
   int NumberOfColorComponents;
 
+  //! The permitted pixel representation and bits stored, as bitfields.
+  unsigned int AllowedPixelRepresentation;
+  unsigned int AllowedBitsStored;
+
   //! The number of frames.
   /*!
    *  If this is nonzero, then the DICOM file will be a multi-frame
@@ -286,6 +308,12 @@ protected:
   int Dimensions[5];
   double Spacing[5];
   double Origin[5];
+
+  //! The smallest and largest pixel values in the image data.
+  /*!
+   *  This is computed in the InitializeMetaData method.
+   */
+  double PixelValueRange[2];
 
   //! The orientation matrix for the DICOM file.
   vtkMatrix4x4 *PatientMatrix;
