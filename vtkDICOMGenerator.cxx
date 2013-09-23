@@ -866,13 +866,17 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *meta)
     meta->SetAttributeValue(
       i, DC::ImageOrientationPatient,
       vtkDICOMValue(vtkDICOMVR::DS, orientation, orientation+6));
+
+    // location is optional, but useful
+    double location = (position[0]*matrix[2] +
+                       position[1]*matrix[6] +
+                       position[2]*matrix[10]);
+    meta->SetAttributeValue(i, DC::SliceLocation, location);
     }
 
   // the original SliceThickness should be used if it is still valid,
   // i.e. if the slices are original slices rather than reformatted.
   meta->SetAttributeValue(DC::SliceThickness, fabs(spacing[2]));
-
-  // DC::SliceLocation is an optional attribute, do not set
 
   return true;
 }
