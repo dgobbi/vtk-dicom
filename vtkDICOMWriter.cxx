@@ -382,6 +382,10 @@ int vtkDICOMWriter::RequestData(
     this->ComputeInternalFileName(fileIdx + 1);
     compiler->SetFileName(this->InternalFileName);
     compiler->SetIndex(fileIdx);
+    compiler->SetSOPInstanceUID(
+      meta->GetAttributeValue(fileIdx, DC::SOPInstanceUID).GetCharData());
+    compiler->SetSeriesInstanceUID(
+      meta->GetAttributeValue(fileIdx, DC::SeriesInstanceUID).GetCharData());
     compiler->WriteHeader();
 
     // iterate through all frames in the file

@@ -19,6 +19,7 @@
 #include "vtkDICOMUtilities.h"
 
 #include "vtkObjectFactory.h"
+#include "vtkStringArray.h"
 #include "vtkIntArray.h"
 #include "vtkImageData.h"
 #include "vtkInformation.h"
@@ -439,7 +440,6 @@ bool vtkDICOMGenerator::CopyOptionalAttributes(
       {
       vtkDICOMTag tag = *tags++;
       vtkDICOMDataElementIterator iter = this->MetaData->Find(tag);
-      vtkDICOMDictEntry e = meta->FindDictEntry(tag);
       if (iter != this->MetaData->End() &&
           !iter->IsPerInstance())
         {
@@ -455,8 +455,16 @@ bool vtkDICOMGenerator::CopyOptionalAttributes(
 bool vtkDICOMGenerator::GenerateSOPCommonModule(
   vtkDICOMMetaData *meta, const char *SOPClass)
 {
-  // set the SOP class, allow the compiler to set the SOPInstanceUID
+  // set the SOP class UID and instance UIDs
   meta->SetAttributeValue(DC::SOPClassUID, SOPClass);
+  int n = meta->GetNumberOfInstances();
+  vtkSmartPointer<vtkStringArray> uids =
+    vtkSmartPointer<vtkStringArray>::New();
+  vtkDICOMUtilities::GenerateUIDs(uids, n);
+  for (int i = 0; i < n; i++)
+    {
+    meta->SetAttributeValue(i, DC::SOPInstanceUID, uids->GetValue(i));
+    }
 
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
@@ -467,14 +475,14 @@ bool vtkDICOMGenerator::GenerateSOPCommonModule(
     DC::RelatedGeneralSOPClassUID, // set to original class if SC
     DC::OriginalSpecializedSOPClassUID, // set to original class if SC
     DC::CodingSchemeIdentificationSequence,
-    // DC::TimezoneOffsetFromUTC,
+    DC::TimezoneOffsetFromUTC,
     DC::ContributingEquipmentSequence,
-    DC::InstanceNumber,  // will be re-written by General Image Module
+    // DC::InstanceNumber,  // will written by General Image Module
     // DC::SOPInstanceStatus,        // caution
     // DC::SOPAuthorizationDateTime, // caution
     // DC::SOPAuthorizationComment,  // caution
     // DC::AuthorizationEquipmentCertificationNumber,  // caution
-    DC::EncryptedAttributesSequence, // 1C
+    DC::EncryptedAttributesSequence, // 1C, per-instance?
     DC::OriginalAttributesSequence,
     DC::HL7StructuredDocumentReferenceSequence, // 1C
     DC::LongitudinalTemporalInformationModified,
@@ -623,8 +631,9 @@ bool vtkDICOMGenerator::GenerateClinicalTrialStudyModule(
 //----------------------------------------------------------------------------
 bool vtkDICOMGenerator::GenerateGeneralSeriesModule(vtkDICOMMetaData *meta)
 {
-  // The SeriesUID is mandatory and must be present, its presence
-  // is enforced in the vtkDICOMCompiler rather than here.
+  // The SeriesUID is mandatory and must be unique.
+  meta->SetAttributeValue(
+    DC::SeriesInstanceUID, vtkDICOMUtilities::GenerateUID());
 
   // The modality is mandatory, it cannot be left blank,
   // and it must agree with the SOP Class IOD.
@@ -806,7 +815,7 @@ bool vtkDICOMGenerator::GenerateGeneralImageModule(
     DC::LossyImageCompression,
     DC::LossyImageCompressionRatio,
     DC::LossyImageCompressionMethod,
-    DC::IconImageSequence, // obviously must change if present
+    // DC::IconImageSequence, // obviously must change if present
     DC::PresentationLUTShape,
     DC::IrradiationEventUID,
     DC::ItemDelimitationItem
