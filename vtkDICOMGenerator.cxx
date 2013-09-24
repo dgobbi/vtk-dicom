@@ -333,10 +333,11 @@ void vtkDICOMGenerator::ComputeDimensions(
   origin[4] = 0;
 
   // get the dimension spacing
-  if (!this->TimeAsVector && numTimeSlots > 1)
+  if (!this->TimeAsVector && numTimeSlots > 1 && numSlices > 1)
     {
     // adjust spacing for multiple temporal positions per spatial position
-    spacing[2] *= numTimeSlots;
+    spacing[2] *= (numTimeSlots*numSlices - 1);
+    spacing[2] /= (numSlices - 1);
     }
   spacing[3] = this->TimeSpacing;
   spacing[4] = 0.0;
@@ -402,9 +403,9 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *meta)
   this->SourceInstanceArray->SetNumberOfTuples(meta->GetNumberOfInstances());
 
   int timeSlices = 1;
-  if (!this->TimeAsVector && this->Dimensions[4] > 0)
+  if (!this->TimeAsVector && this->Dimensions[3] > 0)
     {
-    timeSlices = this->Dimensions[4];
+    timeSlices = this->Dimensions[3];
     }
 
   // for keeping track of which source instances have been matched
@@ -1085,9 +1086,9 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *meta)
   this->ComputeAdjustedMatrix(matrix, origin, spacing);
 
   int timeSlices = 1;
-  if (!this->TimeAsVector && this->Dimensions[4] > 0)
+  if (!this->TimeAsVector && this->Dimensions[3] > 0)
     {
-    timeSlices = this->Dimensions[4];
+    timeSlices = this->Dimensions[3];
     }
 
   // remove attributes that conflict with this module
