@@ -532,22 +532,34 @@ void vtkDICOMGenerator::InitializeMetaData(
   // is present, because then every file has an ImagePositionPatient,
   // but if only a Location is present then slice ordering is critical.
   bool reverseSlices = (this->OriginAtBottom != 0);
-  int m = nframes/numSlices;
-  int n = m/numTimeSlots;
-  for (int i = 0; i < nframes; i++)
+  for (int k = 0; k < 2; k++)
     {
-    int sliceIdx = i/m;
-    sliceIdx = (reverseSlices ? (numSlices - sliceIdx - 1) : sliceIdx);
-    if (!this->TimeAsVector)
+    int m = nframes/numSlices;
+    int n = m/numTimeSlots;
+    for (int i = 0; i < nframes; i++)
       {
-      int timeIdx = (i % m)/n;
-      sliceIdx = sliceIdx*numTimeSlots + timeIdx;
+      int sliceIdx = i/m;
+      sliceIdx = (reverseSlices ? (numSlices - sliceIdx - 1) : sliceIdx);
+      if (!this->TimeAsVector)
+        {
+        int timeIdx = (i % m)/n;
+        sliceIdx = sliceIdx*numTimeSlots + timeIdx;
+        }
+      this->SliceIndexArray->SetValue(i, sliceIdx);
       }
-    this->SliceIndexArray->SetValue(i, sliceIdx);
-    }
 
-  // Try to match each generated slice to an input slice
-  this->MatchInstances(meta);
+    // Try to match each generated slice to an input slice
+    this->MatchInstances(meta);
+
+    if (this->SourceInstanceArray &&
+        this->SourceInstanceArray->GetComponent(0, 0) >
+        this->SourceInstanceArray->GetComponent(nframes-1, 0))
+      {
+      reverseSlices = !reverseSlices;
+      continue;
+      }
+    break;
+    }
 
   this->ComputePixelValueRange(info, 0, this->PixelValueRange);
 }
