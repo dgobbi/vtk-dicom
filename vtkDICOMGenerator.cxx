@@ -428,7 +428,9 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *meta)
     vtkDICOMGenerator::ComputePositionAndOrientation(
       origin, matrix, position, orientation);
 
-    // find the matching input instance
+    // find the matching input instance, note that this only looks
+    // for matching slice position and is not guaranteed to order
+    // the 4th and 5th dimensions correctly
     bool foundOne = false;
     for (int j = 0; j < m; j++)
       {
