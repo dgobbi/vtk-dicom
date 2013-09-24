@@ -1125,12 +1125,32 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *meta)
     double location = (position[0]*matrix[2] +
                        position[1]*matrix[6] +
                        position[2]*matrix[10]);
+
+    // use the original value if possible, to avoid surprises
+    if (this->SourceInstanceArray && this->MetaData &&
+        this->MetaData->HasAttribute(DC::SliceLocation))
+      {
+      int j = this->SourceInstanceArray->GetComponent(i, 0);
+      location = this->MetaData->GetAttributeValue(
+        j, DC::SliceLocation).AsDouble();
+      }
+
     meta->SetAttributeValue(i, DC::SliceLocation, location);
     }
 
   // the original SliceThickness should be used if it is still valid,
   // i.e. if the slices are original slices rather than reformatted.
-  meta->SetAttributeValue(DC::SliceThickness, fabs(spacing[2]));
+  double thickness = 0;
+  if (this->SourceInstanceArray && this->MetaData)
+    {
+    thickness = this->MetaData->GetAttributeValue(
+      DC::SliceThickness).AsDouble();
+    }
+  if (thickness <= 0)
+    {
+    thickness = fabs(spacing[2]);
+    }
+  meta->SetAttributeValue(DC::SliceThickness, thickness);
 
   return true;
 }
