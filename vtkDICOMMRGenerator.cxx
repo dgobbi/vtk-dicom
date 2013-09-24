@@ -42,40 +42,107 @@ void vtkDICOMMRGenerator::PrintSelf(ostream& os, vtkIndent indent)
 //----------------------------------------------------------------------------
 bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *meta)
 {
-  // specialized from GeneralImageModule
-  // DC::ImageType,
+  // ImageType is specialized from GeneralImageModule,
+  // by adding a third value that is specific to MRI:
+  // MPR, T2 MAP, PHASE MAP, PHASE SUBTRACT, PROJECTION IMAGE,
+  // DIFFUSION MAP, VELOCITY MAP, MODULUS SUBTRACT, T1 MAP,
+  // DENSITY MAP, IMAGE ADDITION, OTHER
+  const char *it = 0;
+  if (this->MetaData)
+    {
+    it = this->MetaData->GetAttributeValue(DC::ImageType).GetCharData();
+    }
+  if (it == 0 || it[0] == '\0')
+    {
+    it = "DERIVED\\SECONDARY\\OTHER";
+    }
+  meta->SetAttributeValue(DC::ImageType, it);
 
-  // specialized from ImagePixelModule
-  // DC::SamplesPerPixel,
-  // DC::PhotometricInterpretation,
-  // DC::BitsAllocated
+  // These specialized from ImagePixelModule:
+  // SamplesPerPixel must be 1
+  // PhotometricInterpretation must be MONOCHROME1 or MONOCHROME2
+  // BitsAllocated must be 16
 
-  // mandatory, specific to MRI
-  // DC::ScanningSequence
-  // DC::SequenceVariant
+  // ScanningSequence and SequenceVariant are mandatory:
+  const char *ss = 0;
+  const char *sv = 0;
+  if (this->MetaData)
+    {
+    ss = this->MetaData->GetAttributeValue(DC::ScanningSequence).GetCharData();
+    sv = this->MetaData->GetAttributeValue(DC::SequenceVariant).GetCharData();
+    }
+  if (ss == 0 || ss[0] == '\0')
+    { // default to "research mode"
+    ss = "RM";
+    }
+  if (sv == 0 || sv[0] == '\0')
+    {
+    sv = "NONE";
+    }
+  meta->SetAttributeValue(DC::ScanningSequence, ss);
+  meta->SetAttributeValue(DC::SequenceVariant, sv);
+
+  // SpacingBetweenSlices is optional, but everyone uses it
+  meta->SetAttributeValue(DC::SpacingBetweenSlices, this->Spacing[2]);
+
+  if (this->MetaData)
+    {
+    // set this to the time dimension
+    if (this->MetaData->HasAttribute(DC::CardiacNumberOfImages))
+      {
+      meta->SetAttributeValue(DC::CardiacNumberOfImages, this->Dimensions[3]);
+      }
+    // keep this if data was not reformatted
+    if (this->SourceInstanceArray != 0)
+      {
+      const char *ped = this->MetaData->GetAttributeValue(
+        DC::InPlanePhaseEncodingDirection).GetCharData();
+      if (ped != 0 && ped[0] != '\0')
+        {
+        meta->SetAttributeValue(DC::InPlanePhaseEncodingDirection, ped);
+        }
+      }
+    }
+
+  // temporal information
+  if (this->Dimensions[3] > 1)
+    {
+    int n = meta->GetNumberOfInstances();
+    int nslices = (this->Dimensions[2] > 0 ? this->Dimensions[2] : 1);
+
+    for (int i = 0; i < n; i++)
+      {
+      int t = (i % (n / nslices)) / (n / (nslices*this->Dimensions[3]));
+      meta->SetAttributeValue(i, DC::TemporalPositionIdentifier, t + 1);
+      }
+    meta->SetAttributeValue(
+      DC::NumberOfTemporalPositions, this->Dimensions[3]);
+    meta->SetAttributeValue(
+      DC::TemporalResolution, this->Spacing[3]);
+    }
 
   // required items: use simple read/write validation
-  static const DC::EnumType required[] = {
+  DC::EnumType required[] = {
     DC::ScanOptions,
     DC::MRAcquisitionType,
-    DC::RepetitionTime, // 2C, not req'd if EP and not SK
     DC::EchoTime,
     DC::EchoTrainLength,
-    DC::InversionTime, // 2C, req'd if ScanningSequence is IR
-    DC::TriggerTime, // 2C, req'd for cardiac gating
     DC::ItemDelimitationItem
   };
 
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
+    DC::RepetitionTime, // 2C, not req'd if EP and not SK
+    DC::InversionTime, // 2C, req'd if ScanningSequence is IR
+    DC::TriggerTime, // 2C, req'd for cardiac gating
     DC::SequenceName,
     DC::AngioFlag,
     DC::NumberOfAverages,
     DC::ImagingFrequency,
     DC::ImagedNucleus,
-    // DC::EchoNumber, // can be per-instance
+    DC::EchoNumbers, // can be per-instance
     DC::MagneticFieldStrength,
-    // DC::SpacingBetweenSlices, // invalidated if reformatted
+    // DC::SpacingBetweenSlices, // see above
     DC::NumberOfPhaseEncodingSteps,
     DC::PercentSampling,
     DC::PercentPhaseFieldOfView,
@@ -89,12 +156,13 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *meta)
     DC::PVCRejection,
     DC::SkipBeats,
     DC::HeartRate,
-    // DC::CardiacNumberOfImages, // could be invalidated
+    // DC::CardiacNumberOfImages, // see above
     DC::TriggerWindow,
     DC::ReconstructionDiameter,
     DC::ReceiveCoilName,
     DC::TransmitCoilName,
-    // DC::InPlanePhaseEncodingDirection, // could be invalidated
+    DC::AcquisitionMatrix,
+    // DC::InPlanePhaseEncodingDirection, // see above
     DC::FlipAngle,
     DC::SAR,
     DC::VariableFlipAngleFlag,

@@ -768,8 +768,18 @@ bool vtkDICOMGenerator::GenerateClinicalTrialSubjectModule(
 //----------------------------------------------------------------------------
 bool vtkDICOMGenerator::GenerateGeneralStudyModule(vtkDICOMMetaData *meta)
 {
-  // The StudyUID is mandatory and must be present, its presence
-  // is enforced in the vtkDICOMCompiler rather than here.
+  // The StudyInstanceUID is mandatory.
+  std::string studyUID;
+  if (this->MetaData)
+    {
+    studyUID = this->MetaData->GetAttributeValue(
+      DC::StudyInstanceUID).AsString();
+    }
+  if (studyUID == "")
+    {
+    studyUID = vtkDICOMUtilities::GenerateUID();
+    }
+  meta->SetAttributeValue(DC::StudyInstanceUID, studyUID);
 
   // required items: use simple read/write validation
   static const DC::EnumType required[] = {
@@ -1220,6 +1230,8 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *meta)
     }
   else
     {
+    meta->SetAttributeValue(DC::SamplesPerPixel, 1);
+
     std::string pm;
     if (this->MetaData)
       {
