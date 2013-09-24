@@ -324,10 +324,6 @@ int vtkDICOMWriter::RequestData(
     meta->RemoveAttribute(DC::SeriesDescriptionCodeSequence);
     }
 
-  // correct the values of these attributes:
-  // DC::SmallestPixelValueInSeries
-  // DC::LargestPixelValueInSeries
-
   // add an empty PixelData to be filled in by the compiler
   unsigned short empty[1] = {};
   meta->SetAttributeValue(
