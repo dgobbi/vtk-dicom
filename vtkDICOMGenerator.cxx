@@ -52,6 +52,7 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->PatientMatrix = 0;
   this->SliceIndexArray = vtkIntArray::New();
   this->SourceInstanceArray = 0;
+  this->RangeArray = 0;
   this->PixelValueRange[0] = 0;
   this->PixelValueRange[1] = 0;
 
@@ -66,6 +67,10 @@ vtkDICOMGenerator::vtkDICOMGenerator()
 //----------------------------------------------------------------------------
 vtkDICOMGenerator::~vtkDICOMGenerator()
 {
+  if (this->RangeArray)
+    {
+    this->RangeArray->Delete();
+    }
   if (this->SourceInstanceArray)
     {
     this->SourceInstanceArray->Delete();
@@ -474,11 +479,51 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *meta)
 }
 
 //----------------------------------------------------------------------------
+namespace {
+
+template<class T>
+void vtkDICOMGeneratorComputeHistogram(
+  const T *ptr, vtkIdType n, int nComponents, int totalComponents,
+  vtkIdType *histogram)
+{
+  if (n > 0)
+    {
+    if (nComponents == totalComponents)
+      {
+      do { histogram[*ptr++]++; } while (--n > 0);
+      }
+    else if (nComponents == 1)
+      {
+      do
+        {
+        histogram[*ptr]++;
+        ptr += totalComponents;
+        n -= totalComponents;
+        }
+      while (n > 0);
+      }
+    else
+      {
+      do
+        {
+        int m = nComponents;
+        do { histogram[*ptr++]++; } while (--m > 0);
+        ptr += (totalComponents - nComponents);
+        n -= totalComponents;
+        }
+      while (n > 0);
+      }
+    }
+}
+
+} // end anonymous namespace
+
+//----------------------------------------------------------------------------
 void vtkDICOMGenerator::ComputePixelValueRange(
-  vtkInformation *info, vtkIntArray *, int seriesRange[2])
+  vtkInformation *info, int seriesRange[2])
 {
   // get the data and compute the range, this is tricky because the
-  // the vtkDataArray::GetRange() method computes the min/max for just
+  // vtkDataArray::GetRange() method computes the min/max for just
   // one component, but we need min/max over all components
   double range[2];
   vtkImageData *data =
@@ -494,6 +539,124 @@ void vtkDICOMGenerator::ComputePixelValueRange(
 
   seriesRange[0] = static_cast<int>(range[0]);
   seriesRange[1] = static_cast<int>(range[1]);
+
+  if (this->RangeArray)
+    {
+    this->RangeArray->Delete();
+    this->RangeArray = 0;
+    }
+
+  if (this->ScalarType == VTK_UNSIGNED_SHORT ||
+      this->ScalarType == VTK_SHORT || this->ScalarType == VTK_SIGNED_CHAR ||
+      this->ScalarType == VTK_UNSIGNED_CHAR)
+    {
+    vtkIdType *h = new vtkIdType[seriesRange[1] - seriesRange[0] + 1];
+    vtkIdType *histogram = h - seriesRange[0];
+
+    int npixels = nt*nc;
+    int npositions = (this->Dimensions[2] > 0 ? this->Dimensions[2] : 1);
+    int ntimes = (this->Dimensions[3] > 0 ? this->Dimensions[3] : 1);
+    int nvector = (this->Dimensions[4] > 0 ? this->Dimensions[4] : 1);
+    int sliceSize = npixels/(npositions*ntimes);
+    if (this->TimeAsVector)
+      {
+      sliceSize = npixels/npositions;
+      }
+
+    int nframes = this->SliceIndexArray->GetNumberOfComponents();
+    int ninstances = this->SliceIndexArray->GetNumberOfTuples();
+    int ntotal = nframes*ninstances;
+
+    this->RangeArray = vtkIntArray::New();
+    this->RangeArray->SetNumberOfComponents(4);
+    this->RangeArray->SetNumberOfTuples(ntotal);
+
+    for (int i = 0; i < ninstances; i++)
+      {
+      for (int j = 0; j < nframes; j++)
+        {
+        int k = i*nframes + j;
+        int idx = 0;
+        int s = this->SliceIndexArray->GetComponent(i, j);
+        int v = (k % (ntotal/npositions)) % (ntotal/(npositions*ntimes));
+        int n = nc/nvector;
+        idx += s*sliceSize;
+        if (this->TimeAsVector)
+          {
+          n /= ntimes;
+          int t = (k % (ntotal/npositions)) / (ntotal/(npositions*ntimes));
+          idx += t*(ntotal/npositions)*n;
+          }
+        idx += v*(ntotal/(npositions*ntimes))*n;
+
+        void *ptr = a->GetVoidPointer(idx);
+        for (int hi = seriesRange[0]; hi <= seriesRange[1]; hi++)
+          {
+          histogram[hi] = 0;
+          }
+
+        switch (this->ScalarType)
+          {
+          case VTK_UNSIGNED_SHORT:
+            vtkDICOMGeneratorComputeHistogram(
+              static_cast<unsigned short *>(ptr), sliceSize, n, nc, histogram);
+            break;
+          case VTK_SHORT:
+            vtkDICOMGeneratorComputeHistogram(
+              static_cast<short *>(ptr), sliceSize, n, nc, histogram);
+            break;
+          case VTK_UNSIGNED_CHAR:
+            vtkDICOMGeneratorComputeHistogram(
+              static_cast<unsigned char *>(ptr), sliceSize, n, nc, histogram);
+            break;
+          case VTK_SIGNED_CHAR:
+            vtkDICOMGeneratorComputeHistogram(
+              static_cast<signed char *>(ptr), sliceSize, n, nc, histogram);
+            break;
+          }
+
+        // compute the min/max from the histogram,
+        // also try to compute window/level as 99th percentile
+        vtkIdType sum = 0;
+        vtkIdType totalSum = (sliceSize/nc)*n;
+        vtkIdType lowSum = static_cast<int>(totalSum*0.01);
+        vtkIdType highSum = static_cast<int>(totalSum*0.99);
+        int lowVal = seriesRange[0];
+        int highVal = seriesRange[0];
+        int minVal = seriesRange[0] - 1;
+        int maxVal = seriesRange[0];
+        for (int hi = seriesRange[0]; hi <= seriesRange[1]; hi++)
+          {
+          vtkIdType b = histogram[hi];
+          sum += b;
+          lowVal = (sum > lowSum ? lowVal : hi);
+          highVal = (sum > highSum ? highVal : hi);
+          minVal = (sum > 0 ? minVal : hi);
+          maxVal = (b == 0 ? maxVal : hi);
+          }
+        if (minVal < maxVal)
+          {
+          minVal++;
+          }
+        // expand the window slightly, but keep within total range
+        int lowExpansion = static_cast<int>((highVal - lowVal)*0.1);
+        int highExpansion = static_cast<int>((highVal - lowVal)*0.1);
+        lowVal -= lowExpansion;
+        highVal += highExpansion;
+        lowVal = (lowVal >= seriesRange[0] ? lowVal : seriesRange[0]);
+        highVal = (highVal <= seriesRange[1] ? highVal : seriesRange[1]);
+
+        int tp[4];
+        tp[0] = minVal;
+        tp[1] = maxVal;
+        tp[2] = lowVal;
+        tp[3] = highVal;
+        this->RangeArray->SetTupleValue(k, tp);
+        }
+      }
+
+    delete [] h;
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -564,7 +727,7 @@ void vtkDICOMGenerator::InitializeMetaData(
     break;
     }
 
-  this->ComputePixelValueRange(info, 0, this->PixelValueRange);
+  this->ComputePixelValueRange(info, this->PixelValueRange);
 }
 
 //----------------------------------------------------------------------------
@@ -1298,7 +1461,7 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *meta)
   meta->SetAttributeValue(DC::HighBit, storedbits-1);
   meta->SetAttributeValue(DC::PixelRepresentation, pixelrep);
 
-  // This will be removed when PixelSpacing is set
+  // This cannot be set if PixelSpacing is set
   if (!meta->HasAttribute(DC::PixelSpacing))
     {
     int aspect[2];
@@ -1308,9 +1471,47 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *meta)
       vtkDICOMValue(vtkDICOMVR::IS, aspect, aspect+2));
     }
 
-  // These can be easily added in the writer, but they are optional
-  meta->RemoveAttribute(DC::SmallestImagePixelValue);
-  meta->RemoveAttribute(DC::LargestImagePixelValue);
+  // The Smallest/LargestPixelValue are optional, but nice to have
+  if (this->RangeArray)
+    {
+    // Get the pixel VR
+    vtkDICOMVR pixelVR = vtkDICOMVR::US;
+    if (this->ScalarType == VTK_SIGNED_CHAR ||
+        this->ScalarType == VTK_SHORT)
+      {
+      pixelVR = vtkDICOMVR::SS;
+      }
+
+    // Force it to conform the VRs allowed by the SOP Class
+    if ((this->AllowedPixelRepresentation & RepresentationSigned) == 0)
+      {
+      pixelVR = vtkDICOMVR::US;
+      }
+    else if ((this->AllowedPixelRepresentation & RepresentationUnsigned) == 0)
+      {
+      pixelVR = vtkDICOMVR::SS;
+      }
+
+    int n = meta->GetNumberOfInstances();
+    for (int i = 0; i < n; i++)
+      {
+      int nframes = (this->NumberOfFrames > 0 ? this->NumberOfFrames : 1);
+      int minVal = VTK_INT_MAX;
+      int maxVal = VTK_INT_MIN;
+      for (int j = 0; j < nframes; j++)
+        {
+        int v = this->RangeArray->GetComponent(i*nframes + j, 0);
+        minVal = (minVal <= v ? minVal : v);
+        v = this->RangeArray->GetComponent(i*nframes + j, 1);
+        maxVal = (maxVal >= v ? maxVal : v);
+        }
+
+      meta->SetAttributeValue(
+        i, DC::SmallestImagePixelValue, vtkDICOMValue(pixelVR, minVal));
+      meta->SetAttributeValue(
+        i, DC::LargestImagePixelValue, vtkDICOMValue(pixelVR, maxVal));
+      }
+    }
 
   return true;
 }

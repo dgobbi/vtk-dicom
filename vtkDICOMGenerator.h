@@ -249,8 +249,8 @@ protected:
    *  If the image data is present, compute the range of all frames as
    *  well as a suitable window/level for each frame.
    */
-  virtual void ComputePixelValueRange(vtkInformation *info,
-    vtkIntArray *rangeArray, int seriesRange[2]);
+  virtual void ComputePixelValueRange(
+    vtkInformation *info, int seriesRange[2]);
 
   virtual void MatchInstances(vtkDICOMMetaData *meta);
 
@@ -333,6 +333,9 @@ protected:
 
   //! Map from output files to input files.
   vtkIntArray *SourceInstanceArray;
+
+  //! Map from frame to image min/max.
+  vtkIntArray *RangeArray;
 
 private:
   vtkDICOMGenerator(const vtkDICOMGenerator&);  // Not implemented.
