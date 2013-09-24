@@ -32,8 +32,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <vector>
-
 vtkCxxSetObjectMacro(vtkDICOMGenerator,PatientMatrix,vtkMatrix4x4);
 vtkCxxSetObjectMacro(vtkDICOMGenerator,MetaData,vtkDICOMMetaData);
 
@@ -53,6 +51,7 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->TimeSpacing = 1.0;
   this->PatientMatrix = 0;
   this->SliceIndexArray = vtkIntArray::New();
+  this->SourceInstanceArray = 0;
   this->PixelValueRange[0] = 0;
   this->PixelValueRange[1] = 0;
 
@@ -67,6 +66,10 @@ vtkDICOMGenerator::vtkDICOMGenerator()
 //----------------------------------------------------------------------------
 vtkDICOMGenerator::~vtkDICOMGenerator()
 {
+  if (this->SourceInstanceArray)
+    {
+    this->SourceInstanceArray->Delete();
+    }
   if (this->SliceIndexArray)
     {
     this->SliceIndexArray->Delete();
@@ -324,8 +327,8 @@ void vtkDICOMGenerator::ComputeDimensions(
 
   // compute an adjusted origin
   origin[0] += extent[0]*spacing[0];
-  origin[1] += extent[1]*spacing[1];
-  origin[2] += extent[2]*spacing[2];
+  origin[1] += extent[2]*spacing[1];
+  origin[2] += extent[4]*spacing[2];
   origin[3] = 0;
   origin[4] = 0;
 
@@ -342,6 +345,129 @@ void vtkDICOMGenerator::ComputeDimensions(
   n *= (numTimeSlots ? numTimeSlots : 1);
   n *= (numComponents ? numComponents : 1);
   *nframes = n;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *meta)
+{
+  if (this->SourceInstanceArray)
+    {
+    this->SourceInstanceArray->Delete();
+    this->SourceInstanceArray = 0;
+    }
+
+  // make sure there is source data to compare with
+  if (!this->MetaData)
+    {
+    return;
+    }
+
+  double spacing[3], origin[3];
+  double matrix[16];
+  this->ComputeAdjustedMatrix(matrix, origin, spacing);
+  
+  // compare the orientation with the input slices
+  bool mismatch = false;
+  int m = this->MetaData->GetNumberOfInstances();
+  for (int j = 0; j < m && !mismatch; j++)
+    {
+    const vtkDICOMValue &o =
+      this->MetaData->GetAttributeValue(j, DC::ImageOrientationPatient);
+    if (o.GetNumberOfValues() != 6)
+      {
+      mismatch = true;
+      break;
+      }
+
+    double orientation[6];
+    o.GetValues(orientation, orientation+6);
+    for (int i = 0; i < 3; i++)
+      {
+      if (fabs(matrix[4*i] - orientation[i]) > 1e-4 ||
+          fabs(matrix[4*i + 1] - orientation[i + 3]) > 1e-4)
+        {
+        mismatch = true;
+        break;
+        }
+      }
+    }
+
+  if (mismatch)
+    {
+    return;
+    }
+
+  this->SourceInstanceArray = vtkIntArray::New();
+  this->SourceInstanceArray->SetNumberOfComponents(1);
+  this->SourceInstanceArray->SetNumberOfTuples(meta->GetNumberOfInstances());
+
+  int timeSlices = 1;
+  if (!this->TimeAsVector && this->Dimensions[4] > 0)
+    {
+    timeSlices = this->Dimensions[4];
+    }
+
+  // for keeping track of which source instances have been matched
+  bool *usedInstances = new bool[m];
+  for (int j = 0; j < m; j++)
+    {
+    usedInstances[j] = false;
+    }
+
+  int n = meta->GetNumberOfInstances();
+  double zorigin = origin[2];
+  for (int i = 0; i < n && !mismatch; i++)
+    {
+    int sliceIdx = this->SliceIndexArray->GetComponent(i, 0);
+    // remove the time from the slice index
+    sliceIdx /= timeSlices;
+    origin[2] = zorigin + sliceIdx*spacing[2];
+
+    double position[3], orientation[6];
+    vtkDICOMGenerator::ComputePositionAndOrientation(
+      origin, matrix, position, orientation);
+
+    // find the matching input instance
+    bool foundOne = false;
+    for (int j = 0; j < m; j++)
+      {
+      if (usedInstances[j])
+        {
+        continue;
+        }
+
+      const vtkDICOMValue &p =
+        this->MetaData->GetAttributeValue(j, DC::ImagePositionPatient);
+      if (p.GetNumberOfValues() == 3)
+        {
+        double r[3];
+        p.GetValues(r, r+3);
+        double dd = 0;
+        for (int k = 0; k < 3; k++)
+          {
+          double d = r[k] - position[k];
+          dd += d*d;
+          }
+        if (dd/(spacing[2]*spacing[2]) < 1e-8)
+          {
+          this->SourceInstanceArray->SetComponent(i, 0, j);
+          usedInstances[j] = true;
+          foundOne = true;
+          break;
+          }
+        }
+      }
+
+    mismatch = !foundOne;
+    }
+
+  delete [] usedInstances;
+
+  if (mismatch)
+    {
+    this->SourceInstanceArray->Delete();
+    this->SourceInstanceArray = 0;
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -420,6 +546,9 @@ void vtkDICOMGenerator::InitializeMetaData(
     this->SliceIndexArray->SetValue(i, sliceIdx);
     }
 
+  // Try to match each generated slice to an input slice
+  this->MatchInstances(meta);
+
   this->ComputePixelValueRange(info, 0, this->PixelValueRange);
 }
 
@@ -434,10 +563,21 @@ bool vtkDICOMGenerator::CopyRequiredAttributes(
       vtkDICOMTag tag = *tags++;
       vtkDICOMDataElementIterator iter = this->MetaData->Find(tag);
       vtkDICOMDictEntry e = meta->FindDictEntry(tag);
-      if (iter != this->MetaData->End() &&
-          !iter->IsPerInstance())
+      if (iter != this->MetaData->End())
         {
-        meta->SetAttributeValue(tag, iter->GetValue());
+        if (!iter->IsPerInstance())
+          {
+          meta->SetAttributeValue(tag, iter->GetValue());
+          }
+        else if (this->SourceInstanceArray)
+          {
+          int n = meta->GetNumberOfInstances();
+          for (int i = 0; i < n; i++)
+            {
+            int j = this->SourceInstanceArray->GetComponent(i, 0);
+            meta->SetAttributeValue(i, tag, iter->GetValue(j));
+            }
+          }
         }
       else
         {
@@ -469,10 +609,21 @@ bool vtkDICOMGenerator::CopyOptionalAttributes(
       {
       vtkDICOMTag tag = *tags++;
       vtkDICOMDataElementIterator iter = this->MetaData->Find(tag);
-      if (iter != this->MetaData->End() &&
-          !iter->IsPerInstance())
+      if (iter != this->MetaData->End())
         {
-        meta->SetAttributeValue(tag, iter->GetValue());
+        if (!iter->IsPerInstance())
+          {
+          meta->SetAttributeValue(tag, iter->GetValue());
+          }
+        else if (this->SourceInstanceArray)
+          {
+          int n = meta->GetNumberOfInstances();
+          for (int i = 0; i < n; i++)
+            {
+            int j = this->SourceInstanceArray->GetComponent(i, 0);
+            meta->SetAttributeValue(i, tag, iter->GetValue(j));
+            }
+          }
         }
       }
     }

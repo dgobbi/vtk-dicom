@@ -252,6 +252,8 @@ protected:
   virtual void ComputePixelValueRange(vtkInformation *info,
     vtkIntArray *rangeArray, int seriesRange[2]);
 
+  virtual void MatchInstances(vtkDICOMMetaData *meta);
+
   //! Initialize the meta data and compute the slice index array.
   /*!
    *  This must be done before any of the meta data has been generated.
@@ -328,6 +330,9 @@ protected:
 
   //! The file-and-frame to slice map.
   vtkIntArray *SliceIndexArray;
+
+  //! Map from output files to input files.
+  vtkIntArray *SourceInstanceArray;
 
 private:
   vtkDICOMGenerator(const vtkDICOMGenerator&);  // Not implemented.
