@@ -207,7 +207,9 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(
       !this->GenerateContrastBolusModule(meta) ||
       !this->GenerateDeviceModule(meta) ||
       !this->GenerateSpecimenModule(meta) ||
-      !this->GenerateMRImageModule(meta))
+      !this->GenerateMRImageModule(meta) ||
+      // Overlay Plane module is missing, it isn't used much
+      !this->GenerateVOILUTModule(meta))
     {
     return false;
     }

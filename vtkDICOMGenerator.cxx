@@ -1582,3 +1582,43 @@ bool vtkDICOMGenerator::GenerateSpecimenModule(vtkDICOMMetaData *meta)
 
   return this->CopyOptionalAttributes(tags, meta);
 }
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateVOILUTModule(vtkDICOMMetaData *meta)
+{
+  // no support for lookup tables yet, so just Window/Level
+
+  if (this->RangeArray &&
+      (this->ScalarType == VTK_SHORT ||
+       this->ScalarType == VTK_UNSIGNED_SHORT))
+    {
+    int n = meta->GetNumberOfInstances();
+    int m = static_cast<int>(this->RangeArray->GetNumberOfTuples()/n);
+    for (int i = 0; i < n; i++)
+      {
+      int lowVal = this->RangeArray->GetComponent(i*m, 2);
+      int highVal = this->RangeArray->GetComponent(i*m, 3);
+      // set a limit on how tight the window can be
+      if (highVal - lowVal < 20)
+        {
+        highVal = lowVal + 20;
+        }
+      // make sure that WindowCenter will be an integer
+      if ((highVal - lowVal) % 2 != 0)
+        {
+        if (lowVal > 0)
+          {
+          lowVal--;
+          }
+        else
+          {
+          highVal--;
+          }
+        }
+      meta->SetAttributeValue(i, DC::WindowCenter, 0.5*(highVal + lowVal));
+      meta->SetAttributeValue(i, DC::WindowWidth, 1.0*(highVal - lowVal));
+      }
+    }
+
+  return true;
+}

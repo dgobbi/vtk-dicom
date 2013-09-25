@@ -202,6 +202,9 @@ protected:
   //! Generate The DICOM Specimen Module.
   virtual bool GenerateSpecimenModule(vtkDICOMMetaData *meta);
 
+  //! Generate the VOI LUT Module.
+  virtual bool GenerateVOILUTModule(vtkDICOMMetaData *meta);
+
   //! Copy required attributes into the meta data.
   /*!
    *  Required attributes must be set, so if no value is available,
