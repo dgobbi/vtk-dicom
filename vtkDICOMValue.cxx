@@ -132,7 +132,7 @@ vtkDICOMValue::ValueT<char>::ValueT(vtkDICOMVR vr, unsigned int vn)
   this->VR = vr;
   this->Type = VTK_CHAR;
   this->VL = vn + (vn & 1); // pad VL to make it even
-  this->NumberOfValues = 1;
+  this->NumberOfValues = (vn > 0);
 }
 
 // Construct a "bytes" value.
@@ -309,13 +309,17 @@ void vtkDICOMValue::ComputeNumberOfValuesForCharData()
 {
   if (this->V && this->V->Type == VTK_CHAR)
     {
-    if (this->V->VR == vtkDICOMVR::LT ||
-        this->V->VR == vtkDICOMVR::ST ||
-        this->V->VR == vtkDICOMVR::UT)
+    if (this->V->VL == 0)
+      {
+      this->V->NumberOfValues = 0;
+      }
+    else if (this->V->VR == vtkDICOMVR::LT ||
+             this->V->VR == vtkDICOMVR::ST ||
+             this->V->VR == vtkDICOMVR::UT)
       {
       this->V->NumberOfValues = 1;
       }
-    else if (this->V->VL > 0)
+    else
       {
       const char *ptr = static_cast<const ValueT<char> *>(this->V)->Data;
       unsigned int vl = this->V->VL;
@@ -586,7 +590,7 @@ void vtkDICOMValue::CreateValue<char>(
     }
 
   // count the number of backslash-separated values
-  unsigned int n = 1;
+  unsigned int n = (m > 0);
   for (unsigned int i = 0; i < m; i++)
     {
     n += (data[i] == '\\');
