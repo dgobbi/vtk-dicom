@@ -721,6 +721,8 @@ void vtkDICOMGenerator::InitializeMetaData(
     // Try to match each generated slice to an input slice
     this->MatchInstances(meta);
 
+    // If MatchInstances generated a reversed array, try again (this
+    // keeps the same slice ordering as in the original file)
     if (this->SourceInstanceArray &&
         this->SourceInstanceArray->GetComponent(0, 0) >
         this->SourceInstanceArray->GetComponent(nframes-1, 0))
