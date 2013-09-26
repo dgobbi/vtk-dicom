@@ -57,6 +57,8 @@ vtkDICOMWriter::vtkDICOMWriter()
   this->PatientMatrix = 0;
   this->MemoryRowOrder = vtkDICOMWriter::BottomUp;
   this->SeriesDescription = 0;
+  this->ImageType = new char[24];
+  strcpy(this->ImageType, "DERIVED/SECONDARY/OTHER");
 }
 
 //----------------------------------------------------------------------------
@@ -75,6 +77,7 @@ vtkDICOMWriter::~vtkDICOMWriter()
     this->Generator->Delete();
     }
   delete [] this->SeriesDescription;
+  delete [] this->ImageType;
 }
 
 //----------------------------------------------------------------------------
@@ -89,6 +92,7 @@ void vtkDICOMWriter::PrintSelf(ostream& os, vtkIndent indent)
   this->Superclass::PrintSelf(os, indent);
 
   os << indent << "SeriesDescription: " << this->SeriesDescription << "\n";
+  os << indent << "ImageType: " << this->ImageType << "\n";
   os << indent << "MetaData: ";
   if (this->MetaData)
     {
@@ -166,64 +170,6 @@ const char *vtkDICOMWriter::GetMemoryRowOrderAsString()
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMWriter::ComputeAspectRatio(
-  const double spacing[2], int aspect[2])
-{
-  // compute aspect ratio to within one part in 1000
-  static const double primes[] = { // include 1
-    1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
-    31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
-    73, 79, 83, 89, 97, 101, 103, 107, 109, 113,
-    127, 131, 137, 139, 149, 151, 157, 163, 167, 173,
-    179, 181, 191, 193, 197, 199, 211, 223, 227, 229,
-    233, 239, 241, 251, 257, 263, 269, 271, 277, 281,
-    283, 293, 307, 311, 313, 317, 331, 337, 347, 349,
-    353, 359, 367, 373, 379, 383, 389, 397, 401, 409,
-    419, 421, 431, 433, 439, 443, 449, 457, 461, 463,
-    467, 479, 487, 491, 499, 503, 509, 521, 523, 541,
-    547, 557, 563, 569, 571, 577, 587, 593, 599, 601,
-    607, 613, 617, 619, 631, 641, 643, 647, 653, 659,
-    661, 673, 677, 683, 691, 701, 709, 719, 727, 733,
-    739, 743, 751, 757, 761, 769, 773, 787, 797, 809,
-    811, 821, 823, 827, 829, 839, 853, 857, 859, 863,
-    877, 881, 883, 887, 907, 911, 919, 929, 937, 941,
-    947, 953, 967, 971, 977, 983, 991, 997, 1009, 0
-  };
-
-  double a = spacing[1]/spacing[0];
-  int xaspect = 1;
-  int yaspect = 1;
-
-  double minrem = fabs(a - 1.0);
-  for (int j = 0; primes[j] != 0; j++)
-    {
-    int x = primes[j];
-    double b = a*x;
-    int y = static_cast<int>(b + 0.5);
-    double r = fabs(b - y);
-    if (r < minrem)
-      {
-      minrem = r;
-      yaspect = y;
-      xaspect = x;
-      }
-    y = x;
-    b = y/a;
-    x = static_cast<int>(b + 0.5);
-    r = fabs(b - x);
-    if (r < minrem)
-      {
-      minrem = r;
-      yaspect = y;
-      xaspect = x;
-      }
-    }
-
-  aspect[0] = yaspect;
-  aspect[1] = xaspect;
-}
-
-//----------------------------------------------------------------------------
 void vtkDICOMWriter::ComputeInternalFileName(int slice)
 {
   size_t n = 0;
@@ -264,6 +210,103 @@ void vtkDICOMWriter::ComputeInternalFileName(int slice)
 }
 
 //----------------------------------------------------------------------------
+int vtkDICOMWriter::GenerateMetaData(
+  vtkInformation *info, vtkDICOMMetaData *meta)
+{
+  if (!this->Generator)
+    {
+    vtkErrorMacro("No Generator was supplied, unable to create a DICOM "
+                  "data set");
+    return 0;
+    }
+
+  bool flipImage = (this->MemoryRowOrder == vtkDICOMWriter::BottomUp);
+
+  // Generate the meta data
+  this->Generator->SetMultiFrame(this->FileDimensionality > 2);
+  this->Generator->SetOriginAtBottom(flipImage);
+  this->Generator->SetTimeAsVector(this->TimeAsVector);
+  this->Generator->SetTimeDimension(this->TimeDimension);
+  this->Generator->SetTimeSpacing(this->TimeSpacing);
+  this->Generator->SetMetaData(this->MetaData);
+  this->Generator->SetPatientMatrix(this->PatientMatrix);
+  if (!this->Generator->GenerateInstance(info, meta))
+    {
+    return 0;
+    }
+
+  // set the series description from the member variable
+  if (this->SeriesDescription && this->SeriesDescription[0] != '\0')
+    {
+    char sd[65];
+    strncpy(sd, this->SeriesDescription, 64);
+    sd[64] = '\0';
+    meta->SetAttributeValue(DC::SeriesDescription, sd);
+    meta->RemoveAttribute(DC::SeriesDescriptionCodeSequence);
+    }
+
+  // set the image type from the member variable
+  if (this->ImageType && this->ImageType[0] != '\0')
+    {
+    const char *allowedTypes[] = {
+      "ORIGINAL\\PRIMARY", "DERIVED\\PRIMARY",
+      "ORIGINAL\\SECONDARY", "DERIVED\\SECONDARY",
+      0
+    };
+
+    char sd[256];
+    strncpy(sd, this->ImageType, 255);
+    sd[255] = '\0';
+    char *sdp = sd;
+    char *lsdp = sd;
+    while (*sdp != '\0')
+      {
+      char c = *sdp++;
+
+      if (((c < 'A' || c > 'Z') && (c < '0' || c > '9') &&
+           c != '_' && c != ' ') || (sdp - lsdp > 16))
+        {
+        vtkErrorMacro("Illegal ImageType: " << this->ImageType);
+        return 0;
+        }
+
+      if (*sdp == '/' || *sdp == '\\')
+        {
+        *sdp++ = '\\';
+        lsdp = sdp;
+        }
+      }
+
+    bool isAllowed = false;
+    for (const char **allowed = allowedTypes; *allowed != 0; allowed++)
+      {
+      size_t sl = strlen(*allowed);
+      if (strncmp(*allowed, sd, sl) == 0 && (sd[sl] == '\0' || sd[sl] == '\\'))
+        {
+        isAllowed = true;
+        break;
+        }
+      }
+    if (!isAllowed)
+      {
+      vtkErrorMacro("Illegal ImageType: " << this->ImageType << ", "
+                    "the first part must be ORIGINAL or DERIVED, the "
+                    "second part must be PRIMARY or SECONDARY");
+      return 0;
+      }
+
+    meta->SetAttributeValue(DC::ImageType, sd);
+    }
+
+  // add an empty PixelData to be filled in by the compiler
+  unsigned short empty[1] = {};
+  meta->SetAttributeValue(
+    DC::PixelData, vtkDICOMValue(vtkDICOMVR::OW, empty, empty));
+
+  return 1;
+}
+
+//----------------------------------------------------------------------------
 int vtkDICOMWriter::RequestData(
   vtkInformation* vtkNotUsed(request),
   vtkInformationVector** inputVector,
@@ -289,30 +332,11 @@ int vtkDICOMWriter::RequestData(
     return 0;
     }
 
-  if (!this->Generator)
-    {
-    vtkErrorMacro("No Generator was supplied, unable to create a DICOM "
-                  "data set");
-    return 0;
-    }
-
-  // Get the image dimensions
-  int extent[6];
-  info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
-  bool flipImage = (this->MemoryRowOrder == vtkDICOMWriter::BottomUp);
-
   vtkSmartPointer<vtkDICOMMetaData> meta =
     vtkSmartPointer<vtkDICOMMetaData>::New();
 
-  // Generate the data
-  this->Generator->SetMultiFrame(this->FileDimensionality > 2);
-  this->Generator->SetOriginAtBottom(flipImage);
-  this->Generator->SetTimeAsVector(this->TimeAsVector);
-  this->Generator->SetTimeDimension(this->TimeDimension);
-  this->Generator->SetTimeSpacing(this->TimeSpacing);
-  this->Generator->SetMetaData(this->MetaData);
-  this->Generator->SetPatientMatrix(this->PatientMatrix);
-  if (!this->Generator->GenerateInstance(info, meta))
+  // Generate the meta data to go with the image
+  if (!this->GenerateMetaData(info, meta))
     {
     return 0;
     }
@@ -322,27 +346,17 @@ int vtkDICOMWriter::RequestData(
   int numFiles = static_cast<int>(sliceMap->GetNumberOfTuples());
   int numFrames = sliceMap->GetNumberOfComponents();
 
-  // set the series description from the member variable
-  if (this->SeriesDescription && this->SeriesDescription[0] != '\0')
-    {
-    char sd[65];
-    strncpy(sd, this->SeriesDescription, 64);
-    sd[64] = '\0';
-    meta->SetAttributeValue(DC::SeriesDescription, sd);
-    meta->RemoveAttribute(DC::SeriesDescriptionCodeSequence);
-    }
-
-  // add an empty PixelData to be filled in by the compiler
-  unsigned short empty[1] = {};
-  meta->SetAttributeValue(
-    DC::PixelData, vtkDICOMValue(vtkDICOMVR::OW, empty, empty));
-
   vtkSmartPointer<vtkDICOMCompiler> compiler =
     vtkSmartPointer<vtkDICOMCompiler>::New();
   compiler->SetMetaData(meta);
 
+  // Get the image dimensions
+  int extent[6];
+  info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
+
   // write the image
   char *dataPtr = static_cast<char *>(data->GetScalarPointer());
+  bool flipImage = (this->MemoryRowOrder == vtkDICOMWriter::BottomUp);
 
   int planarConfiguration =
     meta->GetAttributeValue(DC::PlanarConfiguration).AsInt();

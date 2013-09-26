@@ -48,6 +48,16 @@ public:
   vtkGetStringMacro(SeriesDescription);
 
   // Description:
+  // Set the image type, using a series of DICOM code strings.
+  // This must follow the DICOM standard, an error will be generated
+  // if it doesn't.  The default value is DERIVED/SECONDARY/OTHER,
+  // where the forward-slashes will be replaced by backslashes when
+  // the attribute is written.  Set this to NULL if you wish to use
+  // the original ImageType.
+  vtkSetStringMacro(ImageType);
+  vtkGetStringMacro(ImageType);
+
+  // Description:
   // Write scalar components as the time dimension (default: Off).
   // If this is on, the writer assumes that each time slot is stored
   // in a different scalar component of the image data.  If it is off,
@@ -121,52 +131,15 @@ protected:
   void ComputeInternalFileName(int slice);
 
   // Description:
+  // Generate the meta data to be written for the files.
+  virtual int GenerateMetaData(vtkInformation *info,
+                               vtkDICOMMetaData *meta);
+
+  // Description:
   // The main execution method, which writes the file.
   virtual int RequestData(vtkInformation *request,
                           vtkInformationVector** inputVector,
                           vtkInformationVector* outputVector);
-
-  // Description:
-  // Validate the DICOM SOP Common Module.
-  bool ValidateSOPCommonModule(vtkDICOMMetaData *meta);
-
-  // Description:
-  // Validate the DICOM Patient Module.
-  bool ValidatePatientModule(vtkDICOMMetaData *meta);
-
-  // Description:
-  // Validate the DICOM Study Module.
-  bool ValidateGeneralStudyModule(vtkDICOMMetaData *meta);
-
-  // Description:
-  // Validate the DICOM Series Module.
-  bool ValidateGeneralSeriesModule(vtkDICOMMetaData *meta);
-
-  // Description:
-  // Validate the DICOM Image Module.
-  bool ValidateGeneralImageModule(vtkDICOMMetaData *meta);
-
-  // Description:
-  // Validate the DICOM Pixel Module.
-  bool ValidateImagePixelModule(
-    vtkDICOMMetaData *meta, vtkInformation *info);
-
-  // Description:
-  // Validate The DICOM Multi-frame Functional Groups Module
-  bool ValidateMultiFrameFunctionalGroupsModule(
-    vtkDICOMMetaData *meta, vtkInformation *info);
-
-  // Description:
-  // Validate the SC Image Module.
-  bool ValidateSCImageModule(vtkDICOMMetaData *meta);
-
-  // Description:
-  // Validate the SC Equipment Module.
-  bool ValidateSCEquipmentModule(vtkDICOMMetaData *meta);
-
-  // Description:
-  // Compute aspect ratio from spacing.
-  static void ComputeAspectRatio(const double spacing[2], int aspect[2]);
 
   // Description:
   // The meta data.
@@ -192,6 +165,10 @@ protected:
   // Description:
   // A description of how the file was produced.
   char *SeriesDescription;
+
+  // Description:
+  // The DICOM Image Type.
+  char *ImageType;
 
   // Description:
   // The row order to use when storing the data in memory.
