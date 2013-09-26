@@ -89,6 +89,17 @@ public:
   vtkSetMacro(TimeSpacing, double);
   vtkGetMacro(TimeSpacing, double);
 
+  //! Set the rescaling parameters, for example for CT.
+  /*!
+   *  CT, PET, and some other modalities require rescaling parameters
+   *  so that the integer pixel values can be converted into physical
+   *  units.
+   */
+  vtkSetMacro(RescaleIntercept, double);
+  vtkGetMacro(RescaleIntercept, double);
+  vtkSetMacro(RescaleSlope, double);
+  vtkGetMacro(RescaleSlope, double);
+
   //! Set the matrix that places the image in DICOM patient coords.
   /*!
    *  The 3x3 portion of the matrix must be orthonormal, and the
@@ -281,6 +292,10 @@ protected:
   //! Time dimension suggested by the writer.
   int TimeDimension;
   double TimeSpacing;
+
+  //! Data rescaling parameters.
+  double RescaleIntercept;
+  double RescaleSlope;
 
   //! The VTK scalar type of the data, set by InitializeMetaData().
   int ScalarType;

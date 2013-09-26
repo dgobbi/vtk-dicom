@@ -49,6 +49,8 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->TimeAsVector = 0;
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
+  this->RescaleIntercept = 0.0;
+  this->RescaleSlope = 1.0;
   this->PatientMatrix = 0;
   this->SliceIndexArray = vtkIntArray::New();
   this->SourceInstanceArray = 0;
@@ -126,6 +128,8 @@ void vtkDICOMGenerator::PrintSelf(ostream& os, vtkIndent indent)
      << (this->TimeAsVector ? "On\n" : "Off\n");
   os << indent << "TimeDimension: " << this->TimeDimension << "\n";
   os << indent << "TimeSpacing: " << this->TimeSpacing << "\n";
+  os << indent << "RescaleIntercept: " << this->RescaleIntercept << "\n";
+  os << indent << "RescaleSlope: " << this->RescaleSlope << "\n";
 
   os << indent << "PatientMatrix:";
   if (this->PatientMatrix)
@@ -1569,7 +1573,6 @@ bool vtkDICOMGenerator::GenerateSpecimenModule(vtkDICOMMetaData *meta)
 {
   // direct copy of values with no checks
   static const DC::EnumType tags[] = {
-
     DC::ContainerIdentifier, // 1
     DC::IssuerOfTheContainerIdentifierSequence, // 2
     DC::AlternateContainerIdentifierSequence, // 3
@@ -1588,7 +1591,8 @@ bool vtkDICOMGenerator::GenerateVOILUTModule(vtkDICOMMetaData *meta)
 {
   // no support for lookup tables yet, so just Window/Level
 
-  if (this->RangeArray &&
+  if (!meta->HasAttribute(DC::RescaleIntercept) &&
+      this->RangeArray &&
       (this->ScalarType == VTK_SHORT ||
        this->ScalarType == VTK_UNSIGNED_SHORT))
     {
@@ -1618,7 +1622,16 @@ bool vtkDICOMGenerator::GenerateVOILUTModule(vtkDICOMMetaData *meta)
       meta->SetAttributeValue(i, DC::WindowCenter, 0.5*(highVal + lowVal));
       meta->SetAttributeValue(i, DC::WindowWidth, 1.0*(highVal - lowVal));
       }
+
+    return true;
     }
 
-  return true;
+  // if data is real-valued like CT, then use original window/level
+  static const DC::EnumType tags[] = {
+    DC::WindowCenter,
+    DC::WindowWidth,
+    DC::ItemDelimitationItem
+  };
+
+  return this->CopyOptionalAttributes(tags, meta);
 }
