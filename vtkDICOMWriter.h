@@ -102,6 +102,16 @@ public:
   void SetMetaData(vtkDICOMMetaData *);
   vtkDICOMMetaData *GetMetaData();
 
+  // Description:
+  // Set the generator for image modality you wish to write.
+  // The generator combines the image information from VTK with the
+  // supplied MetaData to create the DICOM data series that will be
+  // written to disk.  The default generator will write a Secondary
+  // Capture series, rather than a series belonging to a specific
+  // imaging modality.
+  void SetGenerator(vtkDICOMGenerator *);
+  vtkDICOMGenerator *GetGenerator() { return this->Generator; }
+
 protected:
   vtkDICOMWriter();
   ~vtkDICOMWriter();

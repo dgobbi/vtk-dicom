@@ -14,7 +14,7 @@
 #include "vtkDICOMWriter.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMCompiler.h"
-#include "vtkDICOMMRGenerator.h"
+#include "vtkDICOMSCGenerator.h"
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMItem.h"
 #include "vtkDICOMTagPath.h"
@@ -42,6 +42,7 @@
 vtkStandardNewMacro(vtkDICOMWriter);
 vtkCxxSetObjectMacro(vtkDICOMWriter,PatientMatrix,vtkMatrix4x4);
 vtkCxxSetObjectMacro(vtkDICOMWriter,MetaData,vtkDICOMMetaData);
+vtkCxxSetObjectMacro(vtkDICOMWriter,Generator,vtkDICOMGenerator);
 
 //----------------------------------------------------------------------------
 vtkDICOMWriter::vtkDICOMWriter()
@@ -49,7 +50,7 @@ vtkDICOMWriter::vtkDICOMWriter()
   this->FileLowerLeft = 1;
   this->FileDimensionality = 2;
   this->MetaData = 0;
-  this->Generator = vtkDICOMMRGenerator::New();
+  this->Generator = vtkDICOMSCGenerator::New();
   this->TimeAsVector = 0;
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
@@ -285,6 +286,13 @@ int vtkDICOMWriter::RequestData(
     vtkErrorMacro("Write:Please specify either a FileName "
                   "or a file prefix and pattern");
     this->SetErrorCode(vtkErrorCode::NoFileNameError);
+    return 0;
+    }
+
+  if (!this->Generator)
+    {
+    vtkErrorMacro("No Generator was supplied, unable to create a DICOM "
+                  "data set");
     return 0;
     }
 
