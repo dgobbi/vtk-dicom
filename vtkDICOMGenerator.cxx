@@ -1628,8 +1628,11 @@ bool vtkDICOMGenerator::GenerateVOILUTModule(vtkDICOMMetaData *meta)
 
   // if data is real-valued like CT, then use original window/level
   static const DC::EnumType tags[] = {
-    DC::WindowCenter,
-    DC::WindowWidth,
+    DC::VOILUTSequence, // 1C, mutually exclusive with WindowCenter
+    DC::WindowCenter, // 1C, mutually exclusive with VOILUTSequence
+    DC::WindowWidth,  // 1C, mutually exclusive with VOILUTSequence
+    DC::WindowCenterWidthExplanation,
+    DC::VOILUTFunction,
     DC::ItemDelimitationItem
   };
 
