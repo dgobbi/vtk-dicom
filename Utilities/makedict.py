@@ -48,6 +48,35 @@ vms = {}
 htsize = 1024
 ht = [None]*htsize
 
+# look for repeating groups and repeat them
+i = 0
+rg = []
+while i < len(lines):
+  tag = lines[i].strip()
+  g, e = tag[1:10].split(',')
+  if g == "60xx" or g == "50xx":
+    rg.extend(lines[i:i+6])
+    i = i + 6
+  elif rg:
+    nb = []
+    for j in range(1,16):
+      k = 0
+      m = len(rg)
+      while k < m:
+        g, e = rg[k][1:10].split(',')
+        nb.append("(%s%02X,%s)\n" % (g[0:2], 2*j, e))
+        nb.append("%s %d\n" % (rg[k+1].strip(), j+1))
+        nb.append("%s%d\n" % (rg[k+2].strip(), j+1))
+        nb.append(rg[k+3])
+        nb.append(rg[k+4])
+        nb.append(rg[k+5])
+        k = k + 6
+    lines = lines[0:i] + nb + lines[i:]
+    i += 16*len(rg)
+    rg = []
+  else:
+    i = i + 6
+
 # iterate through all elements in the table
 j = 0
 i = 0
@@ -67,7 +96,7 @@ while i < n:
     ret = lines[i].encode('ascii').strip()
     i = i + 1
   except:
-    print "non-ascii character encounterd on line %d" % (i,)
+    print "non-ascii character encountered on line %d" % (i,)
     raise TypeError
 
   # replace "US or SS" with "XS"
