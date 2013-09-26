@@ -16,6 +16,7 @@
 #include "vtkDICOMSorter.h"
 #include "vtkDICOMReader.h"
 #include "vtkDICOMWriter.h"
+#include "vtkDICOMMRGenerator.h"
 
 #include <vtkSmartPointer.h>
 #include <vtkStringArray.h>
@@ -68,9 +69,13 @@ int main(int argc, char *argv[])
       reader->UpdateInformation();
       vtkDICOMMetaData *meta = reader->GetMetaData();
 
+      vtkSmartPointer<vtkDICOMMRGenerator> generator =
+        vtkSmartPointer<vtkDICOMMRGenerator>::New();
+
       vtkSmartPointer<vtkDICOMWriter> writer =
         vtkSmartPointer<vtkDICOMWriter>::New();
       writer->SetInputConnection(reader->GetOutputPort());
+      writer->SetGenerator(generator);
       writer->SetPatientMatrix(reader->GetPatientMatrix());
       writer->SetMetaData(meta);
       //writer->SetMemoryRowOrderToFileNative();
