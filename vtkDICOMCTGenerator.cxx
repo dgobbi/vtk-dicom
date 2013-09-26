@@ -145,7 +145,7 @@ bool vtkDICOMCTGenerator::GenerateCTInstance(
       !this->GenerateDeviceModule(meta) ||
       !this->GenerateSpecimenModule(meta) ||
       !this->GenerateCTImageModule(meta) ||
-      // Overlay Plane module is missing, it isn't used much
+      !this->GenerateOverlayPlaneModule(meta) ||
       !this->GenerateVOILUTModule(meta))
     {
     return false;

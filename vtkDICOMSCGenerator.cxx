@@ -280,7 +280,8 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(
       !this->GenerateImagePixelModule(meta) ||
       !this->GenerateDeviceModule(meta) ||
       !this->GenerateSpecimenModule(meta) ||
-      !this->GenerateSCImageModule(meta))
+      !this->GenerateSCImageModule(meta) ||
+      !this->GenerateOverlayPlaneModule(meta))
     {
     return false;
     }

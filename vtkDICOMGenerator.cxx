@@ -1589,6 +1589,50 @@ bool vtkDICOMGenerator::GenerateSpecimenModule(vtkDICOMMetaData *meta)
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateOverlayPlaneModule(vtkDICOMMetaData *meta)
+{
+  // direct copy of values with no checks
+  static const DC::EnumType basetags[] = {
+    DC::OverlayRows, // 1
+    DC::OverlayColumns, // 1
+    DC::OverlayType, // 1
+    DC::OverlayOrigin, // 1
+    DC::OverlayBitsAllocated, // 1
+    DC::OverlayBitPosition, // 1
+    DC::OverlayData, // 1
+    DC::OverlayDescription, // 3
+    DC::OverlaySubtype, // 3
+    DC::OverlayLabel, // 3
+    DC::ROIArea, // 3
+    DC::ROIMean, // 3
+    DC::ROIStandardDeviation, // 3
+    DC::ItemDelimitationItem
+  };
+
+  // overlay is a repeating group, it repeats 16 times
+  DC::EnumType tags[16];
+  for (int i = 0; i < 16; i++)
+    {
+    if (this->MetaData &&
+        this->MetaData->HasAttribute(vtkDICOMTag(0x6000 + i*2, 0x0010)))
+      {
+      for (int j = 0; j < 12; j++)
+        {
+        tags[j] = static_cast<DC::EnumType>(basetags[j] + i*0x20000);
+        }
+      tags[13] = DC::ItemDelimitationItem;
+
+      if (!this->CopyOptionalAttributes(tags, meta))
+        {
+        return false;
+        }
+      }
+    }
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMGenerator::GenerateVOILUTModule(vtkDICOMMetaData *meta)
 {
   // no support for lookup tables yet, so just Window/Level
