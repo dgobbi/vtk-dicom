@@ -15,8 +15,6 @@
 #include <vtkStringArray.h>
 #include "vtkDICOMUtilities.h"
 
-#include <vtksys/SystemTools.hxx>
-
 #include <string>
 #include <iostream>
 
@@ -24,12 +22,13 @@
 #include <string.h>
 #include <ctype.h>
 
-// needed for timezone
+// needed for gettimeofday
 #ifndef _WIN32
 #include <time.h>
+#include <sys/time.h>
 #endif
 
-// needed for random number generation and timezone
+// needed for random number generation and time
 #ifdef _WIN32
 #include <windows.h>
 #include <wincrypt.h>
@@ -321,44 +320,74 @@ int vtkDICOMUtilities::CompareUIDs(const char *u1, const char *u2)
 //----------------------------------------------------------------------------
 std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
 {
-  // require a time with microsecond precision
-  // (though not necessarily microsecond accuracy)
-  double t = vtksys::SystemTools::GetTime();
-  char tzs[6] = { '+', '0', '0', '0', '0', '\0' };
+  int zs = 0; // offset for local time in seconds
 
-  // adjust for the time zone
+  // get any time zone info that was supplied
   const char *z = zone.c_str();
   if (strlen(z) == 5 && (z[0] == '+' || z[0] == '-') &&
       isdigit(z[1]) && isdigit(z[2]) && isdigit(z[3]) && isdigit(z[4]))
     {
     int zh = (z[1] - '0')*10 + (z[2] - '0');
     int zm = (z[3] - '0')*10 + (z[4] - '0');
-    int zs = (zh*3600 + zm*60) * (z[0] == '-' ? -1 : +1);
-    t += zs;
+    zs = (zh*3600 + zm*60) * (z[0] == '-' ? -1 : +1);
     }
-  else
-    {
 #ifdef _WIN32
+  FILETIME ft;
+  GetSystemTimeAsFileTime(&ft);
+  long long t = (static_cast<long long>(ft.dwLowDateTime) +
+                 (static_cast<long long>(ft.dwHighDateTime) << 32));
+  if (z[0] == '\0')
+    {
     TIME_ZONE_INFORMATION tzi;
     GetTimeZoneInformation(&tzi);
-    int zs = static_cast<int>(-tzi.Bias*60);
+    SYSTEMTIME st;
+    FileTimeToSystemTime(&ft, &st);
+    SYSTEMTIME lst;
+    SystemTimeToTzSpecificLocalTime(&tzi, &st, &lst);
+    FILETIME lft;
+    SystemTimeToFileTime(&lst, &lft);
+    zs = static_cast<int>(((static_cast<long long>(lft.dwLowDateTime) +
+           (static_cast<long long>(lft.dwHighDateTime) << 32)) - t)/10000000);
+    }
+  // convert file time to unix time
+  t = t/10 - 11644473600000000ll;
 #else
+  struct timeval tv;
+  gettimeofday(&tv, 0);
+  long long t = (static_cast<long long>(tv.tv_sec)*1000000 +
+                 static_cast<long long>(tv.tv_usec));
+  if (z[0] == '\0')
+    {
+    static long long lastT = 0;
+    if (t - lastT > 1000000ll) 
+      {
+      // this is needed on some systems to set timezone info,
+      // because it might do I/O do it at most once per second
+      tzset();
+      lastT = t;
+      }
+    // use localtime to get the offset from utc
     struct tm tmv;
-    time_t tod;
-    time(&tod);
+    time_t tod = static_cast<time_t>(t/1000000);
     localtime_r(&tod, &tmv);
-    int zs = static_cast<int>(tmv.tm_gmtoff);
+    zs = static_cast<int>(tmv.tm_gmtoff);
+    }
 #endif
-    t += zs;
+  char tzs[6] = { '+', '0', '0', '0', '0', '\0' };
+  if (z[0] == '\0')
+    {
     tzs[0] = (zs < 0 ? '-' : '+');
     zs = (zs < 0 ? -zs : zs);
     sprintf(&tzs[1], "%02d%02d", (zs/3600)%24, (zs%3600)/60);
     z = tzs;
     }
 
+  // add the time zone offset
+  t += zs*1000000ll;
+
   // separate time into days and seconds
-  int td = static_cast<int>(t/(24*3600));
-  double ts = t - td*24.0*3600.0;
+  int td = static_cast<int>(t/86400000000ll);
+  long long tus = t - td*86400000000ll;
 
   // use algorithm from Henry F. Fliegel and Thomas C. Van Flandern
   int ell = td + 2509157;
@@ -376,8 +405,8 @@ std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
     y = 9999;
     }
 
-  int S = static_cast<int>(ts);
-  int us = static_cast<int>((ts - S)*1000000.0);
+  int S = static_cast<int>(tus/1000000);
+  int us = static_cast<int>(tus - S*1000000);
   int H = S/3600;
   S -= H*3600;
   int M = S/60;
