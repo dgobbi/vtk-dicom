@@ -54,6 +54,8 @@ vtkDICOMWriter::vtkDICOMWriter()
   this->TimeAsVector = 0;
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
+  this->RescaleIntercept = 0.0;
+  this->RescaleSlope = 1.0;
   this->PatientMatrix = 0;
   this->MemoryRowOrder = vtkDICOMWriter::BottomUp;
   this->SeriesDescription = 0;
@@ -115,6 +117,8 @@ void vtkDICOMWriter::PrintSelf(ostream& os, vtkIndent indent)
      << (this->TimeAsVector ? "On\n" : "Off\n");
   os << indent << "TimeDimension: " << this->TimeDimension << "\n";
   os << indent << "TimeSpacing: " << this->TimeSpacing << "\n";
+  os << indent << "RescaleIntercept: " << this->RescaleIntercept << "\n";
+  os << indent << "RescaleSlope: " << this->RescaleSlope << "\n";
 
   os << indent << "PatientMatrix:";
   if (this->PatientMatrix)
@@ -228,6 +232,8 @@ int vtkDICOMWriter::GenerateMetaData(
   this->Generator->SetTimeAsVector(this->TimeAsVector);
   this->Generator->SetTimeDimension(this->TimeDimension);
   this->Generator->SetTimeSpacing(this->TimeSpacing);
+  this->Generator->SetRescaleIntercept(this->RescaleIntercept);
+  this->Generator->SetRescaleSlope(this->RescaleSlope);
   this->Generator->SetMetaData(this->MetaData);
   this->Generator->SetPatientMatrix(this->PatientMatrix);
   if (!this->Generator->GenerateInstance(info, meta))

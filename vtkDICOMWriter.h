@@ -80,6 +80,17 @@ public:
   vtkGetMacro(TimeSpacing, double);
 
   // Description:
+  // Set the parameters to rescale integer pixel values into real values.
+  // These parameters are the intercept and slope int the equation v = m*x + b
+  // that converts the stored pixel values to real units such as Hounsfield
+  // units.  Most modalities (including MR) ignore these values, while certain
+  // modalities (such as CT) require them.
+  vtkSetMacro(RescaleIntercept, double);
+  vtkGetMacro(RescaleIntercept, double);
+  vtkSetMacro(RescaleSlope, double);
+  vtkGetMacro(RescaleSlope, double);
+
+  // Description:
   // Set the matrix that places the image in DICOM patient coords.
   // The 3x3 portion of the matrix must be orthonormal, and the
   // last column of the matrix is understood to be in millimetres.
@@ -157,6 +168,11 @@ protected:
   // Time dimension to use in the file.
   int TimeDimension;
   double TimeSpacing;
+
+  // Description:
+  // The parameters for rescaling the data to real values.
+  double RescaleIntercept;
+  double RescaleSlope;
 
   // Description:
   // The orientation matrix for the DICOM file.
