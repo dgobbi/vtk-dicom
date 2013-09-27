@@ -340,7 +340,7 @@ std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
     {
 #ifdef _WIN32
     TIME_ZONE_INFORMATION tzi;
-    GetTimeZoneInformation(tzi);
+    GetTimeZoneInformation(&tzi);
     int zs = static_cast<int>(-tzi.Bias*60);
 #else
     struct tm tmv;
