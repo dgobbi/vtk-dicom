@@ -47,15 +47,34 @@ public:
    */
   static std::string GenerateDateTime(const std::string& zone);
 
-  //! Get the default UID for this DICOM implementation.
-  static const char *GetDefaultImplementationClassUID();
+  //! Get the UID for this DICOM implementation.
+  static const char *GetImplementationClassUID();
 
-  //! Get the default version name for this DICOM implementation.
-  static const char *GetDefaultImplementationVersionName();
+  //! Set the UID for this DICOM implementation.
+  /*!
+   *  The supplied UID will be copied into a static storage area,
+   *  and used for all future calls to GetImplementationClassUID.
+   *  The ImplementationClassUID appears in the DICOM meta header.
+   */
+  static void SetImplementationClassUID(const char *uid);
+
+  //! Get the versioned name for this DICOM implementation.
+  static const char *GetImplementationVersionName();
+
+  //! Set the versioned name for this DICOM implementation.
+  /*!
+   *  The supplied name will be copied into a static storage area,
+   *  and used for all future calls to GetImplementationVersionName.
+   *  The ImplementationVersionName appears in the DICOM meta header.
+   */
+  static void SetImplementationVersionName(const char *name);
 
 protected:
   vtkDICOMUtilities();
   ~vtkDICOMUtilities();
+
+  static char ImplementationClassUID[65];
+  static char ImplementationVersionName[17];
 
 private:
   vtkDICOMUtilities(const vtkDICOMUtilities&);  // Not implemented.

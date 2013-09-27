@@ -420,9 +420,19 @@ std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
 }
 
 //----------------------------------------------------------------------------
-const char *vtkDICOMUtilities::GetDefaultImplementationClassUID()
+char vtkDICOMUtilities::ImplementationClassUID[65] =
+  "2.25.190146791043182537444806132342625375407";
+
+const char *vtkDICOMUtilities::GetImplementationClassUID()
 {
-  return "2.25.190146791043182537444806132342625375407";
+  return vtkDICOMUtilities::ImplementationClassUID;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMUtilities::SetImplementationClassUID(const char *uid)
+{
+  strncpy(vtkDICOMUtilities::ImplementationClassUID, uid, 64);
+  vtkDICOMUtilities::ImplementationClassUID[64] = '\0';
 }
 
 //----------------------------------------------------------------------------
@@ -431,8 +441,18 @@ const char *vtkDICOMUtilities::GetDefaultImplementationClassUID()
 #define VTK_DICOM_VERSION_CREATOR(name, x, y, z) \
   VTK_DICOM_VERSION_CREATOR2(name, x, y, z)
 
-const char *vtkDICOMUtilities::GetDefaultImplementationVersionName()
-{
-  return VTK_DICOM_VERSION_CREATOR("VTK_DICOM",
+char vtkDICOMUtilities::ImplementationVersionName[17] =
+  VTK_DICOM_VERSION_CREATOR("VTK_DICOM",
     DICOM_MAJOR_VERSION, DICOM_MINOR_VERSION, DICOM_BUILD_VERSION);
+
+const char *vtkDICOMUtilities::GetImplementationVersionName()
+{
+  return vtkDICOMUtilities::ImplementationVersionName;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMUtilities::SetImplementationVersionName(const char *name)
+{
+  strncpy(vtkDICOMUtilities::ImplementationVersionName, name, 16);
+  vtkDICOMUtilities::ImplementationVersionName[16] = '\0';
 }

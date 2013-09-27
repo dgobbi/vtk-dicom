@@ -808,13 +808,13 @@ vtkDICOMCompiler::vtkDICOMCompiler()
 
   // This is our default implementation UID
   const char *impuid =
-    vtkDICOMUtilities::GetDefaultImplementationClassUID();
+    vtkDICOMUtilities::GetImplementationClassUID();
   this->ImplementationClassUID = new char[strlen(impuid) + 1];
   strcpy(this->ImplementationClassUID, impuid);
 
   // This is our default implementation name
   const char *impname =
-    vtkDICOMUtilities::GetDefaultImplementationVersionName();
+    vtkDICOMUtilities::GetImplementationVersionName();
   this->ImplementationVersionName = new char[strlen(impname) + 1];
   strcpy(this->ImplementationVersionName, impname);
 
@@ -1093,7 +1093,7 @@ bool vtkDICOMCompiler::WriteMetaHeader(
   if (implementationUID == 0)
     {
     implementationUID =
-      vtkDICOMUtilities::GetDefaultImplementationClassUID();
+      vtkDICOMUtilities::GetImplementationClassUID();
     }
 
   vtkDICOMItem item;
