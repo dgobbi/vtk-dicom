@@ -55,7 +55,7 @@ public:
    *  +HHMM or -HHMM where HH is the hour offset and MM is the
    *  minute offset.  The sign is mandatory and cannot be omitted.
    */
-  static std::string GenerateDateTime(const std::string& zone);
+  static std::string GenerateDateTime(const char *zone);
 
   //! Get the UID for this DICOM implementation.
   static const char *GetImplementationClassUID();

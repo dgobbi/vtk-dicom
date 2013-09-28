@@ -471,15 +471,14 @@ int vtkDICOMUtilities::CompareUIDs(const char *u1, const char *u2)
 }
 
 //----------------------------------------------------------------------------
-std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
+std::string vtkDICOMUtilities::GenerateDateTime(const char *z)
 {
   long long zs = 0; // offset for local time in microseconds
 
   // get any timezone info that was supplied by the caller, if a timezone
   // was already generated for the data set we want to use it for generating
   // all time stamps for the data set
-  const char *z = zone.c_str();
-  if (strlen(z) == 5 && (z[0] == '+' || z[0] == '-') &&
+  if (z && strlen(z) == 5 && (z[0] == '+' || z[0] == '-') &&
       isdigit(z[1]) && isdigit(z[2]) && isdigit(z[3]) && isdigit(z[4]))
     {
     int zh = (z[1] - '0')*10 + (z[2] - '0');
@@ -495,7 +494,7 @@ std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
                  (static_cast<long long>(ft.dwHighDateTime) << 32));
 
   // get the current timezone offset by subtracting UTC from local time
-  if (z[0] == '\0')
+  if (z == 0 || z[0] == '\0')
     {
     TIME_ZONE_INFORMATION tzi;
     GetTimeZoneInformation(&tzi);
@@ -519,7 +518,7 @@ std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
   long long t = (tv.tv_sec*1000000ll + tv.tv_usec);
 
   // get the current time zone offset by calling localtime()
-  if (z[0] == '\0')
+  if (z == 0 || z[0] == '\0')
     {
     static long long lastT = 0;
     if (t - lastT > 1000000ll) 
@@ -539,7 +538,7 @@ std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
 
   // generate a new timezone offset string
   char tzs[6] = { '+', '0', '0', '0', '0', '\0' };
-  if (z[0] == '\0')
+  if (z == 0 || z[0] == '\0')
     {
     long long zst = zs/1000000;
     tzs[0] = (zst < 0 ? '-' : '+');

@@ -842,11 +842,11 @@ bool vtkDICOMGenerator::GenerateSOPCommonModule(
     }
 
   // set the InstanceCreationDate and Time
-  std::string tz = "";
+  const char *tz = 0;
   if (this->MetaData)
     {
     tz = this->MetaData->GetAttributeValue(
-      DC::TimezoneOffsetFromUTC).AsString();
+      DC::TimezoneOffsetFromUTC).GetCharData();
     }
   std::string dt = vtkDICOMUtilities::GenerateDateTime(tz);
   meta->SetAttributeValue(DC::InstanceCreationDate, dt.substr(0, 8));
@@ -1212,8 +1212,8 @@ bool vtkDICOMGenerator::GenerateGeneralImageModule(
       !this->MetaData->HasAttribute(DC::ContentDate))
     {
     // set the InstanceCreationDate and Time
-    std::string tz = meta->GetAttributeValue(
-      DC::TimezoneOffsetFromUTC).AsString();
+    const char *tz = meta->GetAttributeValue(
+      DC::TimezoneOffsetFromUTC).GetCharData();
     std::string dt = vtkDICOMUtilities::GenerateDateTime(tz);
     meta->SetAttributeValue(DC::ContentDate, dt.substr(0, 8));
     meta->SetAttributeValue(DC::ContentTime, dt.substr(8, 13));
