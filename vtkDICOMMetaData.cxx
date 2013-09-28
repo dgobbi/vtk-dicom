@@ -478,51 +478,10 @@ void vtkDICOMMetaData::SetAttributeValue(
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMMetaData::ShallowCopy(vtkDataObject *source)
+void vtkDICOMMetaData::CopyAttributes(vtkDICOMMetaData *o)
 {
-  vtkDICOMMetaData *o = vtkDICOMMetaData::SafeDownCast(source);
-  if (o == this)
+  if (o != 0 && o != this)
     {
-    return;
-    }
-
-  if (o != 0)
-    {
-    this->Initialize();
-    this->NumberOfInstances = o->NumberOfInstances;
-
-    vtkDICOMDataElement **otable = o->Table;
-    if (otable != 0)
-      {
-      const vtkDICOMDataElement *iter = o->Head.Next;
-      const vtkDICOMDataElement *iterEnd = &o->Tail;
-      while (iter != iterEnd)
-        {
-        vtkDICOMDataElement *e = this->FindDataElementOrInsert(iter->Tag);
-        e->Tag = iter->Tag;
-        e->Value = iter->Value;
-        iter = iter->Next;
-        }
-      }
-    }
-
-  this->vtkDataObject::ShallowCopy(source);
-}
-
-//----------------------------------------------------------------------------
-void vtkDICOMMetaData::DeepCopy(vtkDataObject *source)
-{
-  vtkDICOMMetaData *o = vtkDICOMMetaData::SafeDownCast(source);
-  if (o == this)
-    {
-    return;
-    }
-
-  if (o != 0)
-    {
-    this->Initialize();
-    this->NumberOfInstances = o->NumberOfInstances;
-
     vtkDICOMDataElement **otable = o->Table;
     if (otable != 0)
       {
@@ -538,7 +497,7 @@ void vtkDICOMMetaData::DeepCopy(vtkDataObject *source)
           {
           e->Value = iter->Value;
           }
-        else
+        else if (this->NumberOfInstances == o->NumberOfInstances)
           {
           vtkDICOMValue *nvptr = e->Value.AllocateMultiplexData(
             iter->Value.GetVR(), this->NumberOfInstances);
@@ -551,8 +510,38 @@ void vtkDICOMMetaData::DeepCopy(vtkDataObject *source)
         }
       }
     }
+}
 
-  this->vtkDataObject::DeepCopy(source);
+//----------------------------------------------------------------------------
+void vtkDICOMMetaData::ShallowCopy(vtkDataObject *source)
+{
+  vtkDICOMMetaData *o = vtkDICOMMetaData::SafeDownCast(source);
+  if (o != this)
+    {
+    this->Initialize();
+    if (o != 0)
+      {
+      this->NumberOfInstances = o->NumberOfInstances;
+      this->CopyAttributes(o);
+      }
+    this->vtkDataObject::ShallowCopy(source);
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMMetaData::DeepCopy(vtkDataObject *source)
+{
+  vtkDICOMMetaData *o = vtkDICOMMetaData::SafeDownCast(source);
+  if (o != this)
+    {
+    this->Initialize();
+    if (o != 0)
+      {
+      this->NumberOfInstances = o->NumberOfInstances;
+      this->CopyAttributes(o);
+      }
+    this->vtkDataObject::DeepCopy(source);
+    }
 }
 
 //----------------------------------------------------------------------------

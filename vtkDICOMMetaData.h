@@ -143,6 +143,16 @@ public:
   //! Use the dictionary to get the VR, return UN if not found.
   vtkDICOMVR FindDictVR(int idx, vtkDICOMTag tag);
 
+  //! Copy all the attributes from another MetaData object.
+  /*!
+   *  Copy attributes from the source meta data object into this one.
+   *  If the source has the same NumberOfInstances as this, then the
+   *  attributes are copied on an instance-by-instance basis.  Otherwise,
+   *  attributes are only copied from the source if they have the same
+   *  value for all instances.
+   */
+  void CopyAttributes(vtkDICOMMetaData *source);
+
   //! DataObject interface function.
   void ShallowCopy(vtkDataObject *source);
   void DeepCopy(vtkDataObject *source);
