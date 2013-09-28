@@ -320,22 +320,28 @@ int vtkDICOMUtilities::CompareUIDs(const char *u1, const char *u2)
 //----------------------------------------------------------------------------
 std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
 {
-  int zs = 0; // offset for local time in seconds
+  long long zs = 0; // offset for local time in microseconds
 
-  // get any time zone info that was supplied
+  // get any timezone info that was supplied by the caller, if a timezone
+  // was already generated for the data set we want to use it for generating
+  // all time stamps for the data set
   const char *z = zone.c_str();
   if (strlen(z) == 5 && (z[0] == '+' || z[0] == '-') &&
       isdigit(z[1]) && isdigit(z[2]) && isdigit(z[3]) && isdigit(z[4]))
     {
     int zh = (z[1] - '0')*10 + (z[2] - '0');
     int zm = (z[3] - '0')*10 + (z[4] - '0');
-    zs = (zh*3600 + zm*60) * (z[0] == '-' ? -1 : +1);
+    zs = (zh*3600 + zm*60) * (z[0] == '-' ? -1 : +1) * 1000000ll;
     }
+
 #ifdef _WIN32
+  // get the system time (UTC) on Windows
   FILETIME ft;
   GetSystemTimeAsFileTime(&ft);
   long long t = (static_cast<long long>(ft.dwLowDateTime) +
                  (static_cast<long long>(ft.dwHighDateTime) << 32));
+
+  // get the current timezone offset by subtracting UTC from local time
   if (z[0] == '\0')
     {
     TIME_ZONE_INFORMATION tzi;
@@ -346,16 +352,20 @@ std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
     SystemTimeToTzSpecificLocalTime(&tzi, &st, &lst);
     FILETIME lft;
     SystemTimeToFileTime(&lst, &lft);
-    zs = static_cast<int>(((static_cast<long long>(lft.dwLowDateTime) +
-           (static_cast<long long>(lft.dwHighDateTime) << 32)) - t)/10000000);
+    zs = (((static_cast<long long>(lft.dwLowDateTime) +
+            (static_cast<long long>(lft.dwHighDateTime) << 32)) - t)/10);
     }
+
   // convert file time to unix time
   t = t/10 - 11644473600000000ll;
+
 #else
+  // get the system time (UTC) on UNIX
   struct timeval tv;
   gettimeofday(&tv, 0);
-  long long t = (static_cast<long long>(tv.tv_sec)*1000000 +
-                 static_cast<long long>(tv.tv_usec));
+  long long t = (tv.tv_sec*1000000ll + tv.tv_usec);
+
+  // get the current time zone offset by calling localtime()
   if (z[0] == '\0')
     {
     static long long lastT = 0;
@@ -370,26 +380,32 @@ std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
     struct tm tmv;
     time_t tod = static_cast<time_t>(t/1000000);
     localtime_r(&tod, &tmv);
-    zs = static_cast<int>(tmv.tm_gmtoff);
+    zs = tmv.tm_gmtoff*1000000ll;
     }
 #endif
+
+  // generate a new timezone offset string
   char tzs[6] = { '+', '0', '0', '0', '0', '\0' };
   if (z[0] == '\0')
     {
-    tzs[0] = (zs < 0 ? '-' : '+');
-    zs = (zs < 0 ? -zs : zs);
-    sprintf(&tzs[1], "%02d%02d", (zs/3600)%24, (zs%3600)/60);
+    long long zst = zs/1000000;
+    tzs[0] = (zst < 0 ? '-' : '+');
+    zst = (zst < 0 ? -zst : zst);
+    sprintf(&tzs[1], "%02d%02d",
+            static_cast<int>((zst/3600)%24),
+            static_cast<int>((zst%3600)/60));
     z = tzs;
     }
 
-  // add the time zone offset
-  t += zs*1000000ll;
+  // add the time zone offset (in microseconds)
+  t += zs;
 
   // separate time into days and seconds
   int td = static_cast<int>(t/86400000000ll);
   long long tus = t - td*86400000000ll;
 
-  // use algorithm from Henry F. Fliegel and Thomas C. Van Flandern
+  // use algorithm from Henry F. Fliegel and Thomas C. Van Flandern,
+  // computes the current date according to Gregorian calendar
   int ell = td + 2509157;
   int n = (4 * ell) / 146097;
   ell = ell - (146097 * n + 3) / 4;
@@ -405,6 +421,7 @@ std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
     y = 9999;
     }
 
+  // convert microseconds to hours/minutes/seconds.microseconds
   int S = static_cast<int>(tus/1000000);
   int us = static_cast<int>(tus - S*1000000);
   int H = S/3600;
@@ -412,6 +429,7 @@ std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
   int M = S/60;
   S -= M*60;
 
+  // create a DICOM datetime string
   char dt[32];
   sprintf(dt, "%04d%02d%02d%02d%02d%02d.%06d%s",
           y, m, d, H, M, S, us, z);
