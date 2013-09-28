@@ -16,6 +16,7 @@
 
 #include <vtkSystemIncludes.h>
 #include "vtkDICOMModule.h"
+#include "vtkDICOMTag.h"
 
 class vtkStringArray;
 
@@ -24,17 +25,27 @@ class VTK_DICOM_EXPORT vtkDICOMUtilities
 {
 public:
 
-  //! Generate a random UID.
-  static std::string GenerateUID();
+  //! Set a UID prefix to use when generating UIDs.
+  /*!
+   *  This is optional, if you do not own a UID prefix then the publicly
+   *  available 2.25 prefix will be used as an alternative.
+   */
+  static void SetUIDPrefix(const char *prefix);
+  static const char *GetUIDPrefix();
+
+  //! Generate a UID for the provided tag.
+  static std::string GenerateUID(vtkDICOMTag tag);
 
   //! Generate a series of UIDs, sorted from low to high.
   /*!
+   *  Before passing the string array, call SetNumberOfValues() on
+   *  the array to specify the number of UIDs that you want to be
+   *  stored in it.  The stored UIDs will be sorted, low to high.
    *  The generated UIDs will be appended to the provided string array.
    *  Generating a batch of UIDs is more efficient than calling
-   *  GenerateUID() repeatedly.  As an added bonus, the returned UIDs
-   *  are sorted.
+   *  GenerateUID() repeatedly.
    */
-  static void GenerateUIDs(vtkStringArray *uids, vtkIdType n);
+  static void GenerateUIDs(vtkDICOMTag tag, vtkStringArray *uids);
 
   //! Numerically compare two UIDs, returns -1, 0, or +1.
   static int CompareUIDs(const char *u1, const char *u2);
@@ -73,6 +84,7 @@ protected:
   vtkDICOMUtilities();
   ~vtkDICOMUtilities();
 
+  static char UIDPrefix[64];
   static char ImplementationClassUID[65];
   static char ImplementationVersionName[17];
 

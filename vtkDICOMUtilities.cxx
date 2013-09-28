@@ -133,6 +133,33 @@ void vtkConvertHexToDecimal(const char *uuid, char *uid)
   strcpy(uid, cp);
 }
 
+// convert a byte into two hexadecimal digits
+inline void vtkGenerateHexDigits(unsigned char y, char cp[2])
+{
+  unsigned int z = (y >> 4);
+  for (int j = 0; j < 2; j++)
+    {
+    if ((z += '0') > '9')
+      {
+      z += ('A' - '0' - 10);
+      }
+    cp[j] = static_cast<char>(z);
+    z = (y & 0x0F);
+    }
+}
+
+// convert n bytes into 2*n hexadecimal digits
+void vtkConvertBytesToHex(const char *bytes, size_t n, char *cp)
+{
+  for (size_t i = 0; i < n; i++)
+    {
+    vtkGenerateHexDigits(*bytes, cp);
+    bytes++;
+    cp += 2;
+    }
+  *cp = '\0';
+}
+
 // generate a 36-character uuid from a 128-bit random number
 // (the supplied pointer must have 37 bytes of available space)
 void vtkConvertRandomToUUID(const char bytes[16], char *uuid)
@@ -160,17 +187,7 @@ void vtkConvertRandomToUUID(const char bytes[16], char *uuid)
       *cp++ = '-';
       }
 
-    unsigned int y = static_cast<unsigned char>(r[i]);
-    unsigned int z = (y >> 4);
-    for (int j = 0; j < 2; j++)
-      {
-      if ((z += '0') > '9')
-        {
-        z += ('A' - '0' - 10);
-        }
-      cp[j] = static_cast<char>(z);
-      z = (y & 0x0F);
-      }
+    vtkGenerateHexDigits(r[i], cp);
     cp += 2;
     }
 
@@ -219,55 +236,191 @@ void vtkGenerateRandomBytes(char *bytes, vtkIdType n)
     }
 }
 
+// to add a little bit of recognizability to UIDs
+char vtkDICOMTagToDigit(vtkDICOMTag tag)
+{
+  char d = '1';
+
+  if (tag == DC::SOPInstanceUID ||
+      tag == DC::MediaStorageSOPInstanceUID)
+    {
+    d = '2';
+    }
+  else if (tag == DC::SeriesInstanceUID ||
+           tag == DC::ConcatenationUID)
+    {
+    d = '3';
+    }
+  else if (tag == DC::StudyInstanceUID)
+    {
+    d = '4';
+    }
+  else if (tag == DC::FrameOfReferenceUID ||
+           tag == DC::VolumeFrameOfReferenceUID ||
+           tag == DC::SourceFrameOfReferenceUID ||
+           tag == DC::SynchronizationFrameOfReferenceUID ||
+           tag == DC::TableFrameOfReferenceUID)
+    {
+    d = '5';
+    }
+
+  return d;
+}
+
+// get the number of random bytes to generate after this prefix
+vtkIdType vtkRandomBytesForPrefix(const char *prefix)
+{ 
+  size_t n = strlen(prefix);
+  if (n > 0 && prefix[n-1] != '.')
+    {
+    n++;
+    }
+  n = 64 - n;
+  vtkIdType m = 0;
+  if (n > 40)
+    {
+    m = 16; // use 128 bit random number
+    }
+  else
+    {
+    m = 12; // use 96 bit random number
+    }
+    
+  return m;
+}
+
+// generate a prefixed UID using the provided random bytes
+void vtkGeneratePrefixedUID(
+  const char *r, vtkIdType m, const char *prefix, char d, char uid[64])
+{
+  size_t i = 0;
+  while (*prefix != '\0' && i < 62)
+    {
+    uid[i++] = *prefix++;
+    }
+  if (i > 0 && i < 62 && uid[i-1] != '.')
+    {
+    uid[i++] = '.';
+    }
+
+  char hexs[36];
+  vtkConvertBytesToHex(r, m, hexs);
+  char decs[40];
+  vtkConvertHexToDecimal(hexs, decs);
+
+  // generate the leading digit as the UID type
+  if (d >= '1' && d <= '9')
+    {
+    // decimal digits required to store an integer with N-1 bytes
+    static const int maxDigits[16] = {
+      3, 5, 8, 10, 13, 15, 17, 20, 22, 25, 27, 29, 32, 34, 37, 39
+    };
+
+    uid[i++] = d;
+    // add zeros so all uids will be the same length
+    size_t n = maxDigits[(m-1) & 0x0f];
+    for (size_t l = strlen(decs); l < n && i < 63; l++)
+      {
+      uid[i++] = '0';
+      }
+    }
+
+  const char *cp = decs;
+  while (i < 63 && *cp != '\0')
+    {
+    uid[i++] = *cp++;
+    }
+
+  while (i < 64)
+    {
+    uid[i++] = '\0';
+    }
+}
+
 } // end anonymous namespace
 
 //----------------------------------------------------------------------------
-std::string vtkDICOMUtilities::GenerateUID()
+std::string vtkDICOMUtilities::GenerateUID(vtkDICOMTag tag)
 {
-  // generate a 128-bit random number
-  char r[16];
-  vtkGenerateRandomBytes(r, 16);
+  const char *prefix = vtkDICOMUtilities::UIDPrefix;
+  char uid[64];
 
-  // convert to a hex uuid
-  char uuid[40];
-  vtkConvertRandomToUUID(r, uuid);
+  if (prefix[0] == '\0' ||
+      (prefix[0] == '2' && prefix[1] == '.' && prefix[2] == '2' &&
+       prefix[3] == '5' && (prefix[4] == '.' || prefix[4] == '\0')))
+    {
+    // generate a 128-bit random number
+    char r[16];
+    vtkGenerateRandomBytes(r, 16);
 
-  // convert the hex uuid into a DICOM UID with root 2.25
-  char uid[46];
-  vtkConvertUUIDToUID(uuid, uid);
+    // convert to a hex uuid
+    char uuid[40];
+    vtkConvertRandomToUUID(r, uuid);
+
+    // convert the hex uuid into a DICOM UID with root 2.25
+    vtkConvertUUIDToUID(uuid, uid);
+    }
+  else
+    {
+    // after prefix, add a "UID type" digit followed by random digits
+    char r[16];
+    vtkIdType m = vtkRandomBytesForPrefix(prefix);
+    vtkGenerateRandomBytes(r, m);
+    char d = vtkDICOMTagToDigit(tag);
+    vtkGeneratePrefixedUID(r, m, prefix, d, uid);
+    }
 
   return uid;
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMUtilities::GenerateUIDs(vtkStringArray *uids, vtkIdType n)
+void vtkDICOMUtilities::GenerateUIDs(vtkDICOMTag tag, vtkStringArray *uids)
 {
-  // read from random number generator
-  char *r = new char[n*16];
-  vtkGenerateRandomBytes(r, n*16);
+  const char *prefix = vtkDICOMUtilities::UIDPrefix;
 
-  vtkIdType m = uids->GetNumberOfValues();
+  bool useUUIDForUID =
+    (prefix[0] == '\0' ||
+      (prefix[0] == '2' && prefix[1] == '.' && prefix[2] == '2' &&
+       prefix[3] == '5' && (prefix[4] == '.' || prefix[4] == '\0')));
+
+  vtkIdType m = 16;
+  char d = '0';
+  if (!useUUIDForUID)
+    {
+    m = vtkRandomBytesForPrefix(prefix);
+    d = vtkDICOMTagToDigit(tag);
+    }
+
+  // read from random number generator
+  vtkIdType n = uids->GetNumberOfValues();
+  char *r = new char[n*m];
+  vtkGenerateRandomBytes(r, n*m);
+
   for (vtkIdType i = 0; i < n; i++)
     {
-    // convert to a hex uuid
-    char uuid[40];
-    vtkConvertRandomToUUID(r + i*16, uuid);
+    char uid[64];
 
-    // convert the hex uuid into a DICOM UID with root 2.25
-    char uid[46];
-    vtkConvertUUIDToUID(uuid, uid);
+    if (useUUIDForUID)
+      {
+      char uuid[40];
+      vtkConvertRandomToUUID(r + i*m, uuid);
+      vtkConvertUUIDToUID(uuid, uid);
+      }
+    else
+      {
+      vtkGeneratePrefixedUID(r + i*m, m, prefix, d, uid);
+      }
 
     // put uids into the array in order (simple insertion sort)
-    uids->InsertNextValue("");
-    vtkIdType j = m;
-    for (; j < m+i; j++)
+    vtkIdType j = 0;
+    for (; j < i; j++)
       {
       if (vtkDICOMUtilities::CompareUIDs(uids->GetValue(j), uid) > 0)
         {
         break;
         }
       }
-    for (vtkIdType k = m+i; k > j; --k)
+    for (vtkIdType k = i; k > j; --k)
       {
       uids->SetValue(k, uids->GetValue(k - 1));
       }
@@ -435,6 +588,21 @@ std::string vtkDICOMUtilities::GenerateDateTime(const std::string& zone)
           y, m, d, H, M, S, us, z);
 
   return dt;
+}
+
+//----------------------------------------------------------------------------
+char vtkDICOMUtilities::UIDPrefix[64] = "2.25.";
+
+const char *vtkDICOMUtilities::GetUIDPrefix()
+{
+  return vtkDICOMUtilities::UIDPrefix;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMUtilities::SetUIDPrefix(const char *uid)
+{
+  strncpy(vtkDICOMUtilities::UIDPrefix, uid, 63);
+  vtkDICOMUtilities::UIDPrefix[63] = '\0';
 }
 
 //----------------------------------------------------------------------------

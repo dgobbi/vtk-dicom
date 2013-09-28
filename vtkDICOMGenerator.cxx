@@ -834,7 +834,8 @@ bool vtkDICOMGenerator::GenerateSOPCommonModule(
   int n = meta->GetNumberOfInstances();
   vtkSmartPointer<vtkStringArray> uids =
     vtkSmartPointer<vtkStringArray>::New();
-  vtkDICOMUtilities::GenerateUIDs(uids, n);
+  uids->SetNumberOfValues(n);
+  vtkDICOMUtilities::GenerateUIDs(DC::SOPInstanceUID, uids);
   for (int i = 0; i < n; i++)
     {
     meta->SetAttributeValue(i, DC::SOPInstanceUID, uids->GetValue(i));
@@ -949,7 +950,7 @@ bool vtkDICOMGenerator::GenerateGeneralStudyModule(vtkDICOMMetaData *meta)
     }
   if (studyUID == "")
     {
-    studyUID = vtkDICOMUtilities::GenerateUID();
+    studyUID = vtkDICOMUtilities::GenerateUID(DC::StudyInstanceUID);
     }
   meta->SetAttributeValue(DC::StudyInstanceUID, studyUID);
 
@@ -1029,7 +1030,8 @@ bool vtkDICOMGenerator::GenerateGeneralSeriesModule(vtkDICOMMetaData *meta)
 {
   // The SeriesUID is mandatory and must be unique.
   meta->SetAttributeValue(
-    DC::SeriesInstanceUID, vtkDICOMUtilities::GenerateUID());
+    DC::SeriesInstanceUID,
+    vtkDICOMUtilities::GenerateUID(DC::SeriesInstanceUID));
 
   // The modality is mandatory, it cannot be left blank,
   // and it must agree with the SOP Class IOD.
@@ -1148,7 +1150,7 @@ bool vtkDICOMGenerator::GenerateFrameOfReferenceModule(vtkDICOMMetaData *meta)
     }
   if (uid == "")
     {
-    uid = vtkDICOMUtilities::GenerateUID();
+    uid = vtkDICOMUtilities::GenerateUID(DC::FrameOfReferenceUID);
     }
 
   meta->SetAttributeValue(DC::FrameOfReferenceUID, uid);
