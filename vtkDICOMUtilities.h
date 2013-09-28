@@ -28,7 +28,7 @@ public:
   //! Set a UID prefix to use when generating UIDs.
   /*!
    *  This is optional, if you do not own a UID prefix then the publicly
-   *  available 2.25 prefix will be used as an alternative.
+   *  available 2.25 prefix will be used.
    */
   static void SetUIDPrefix(const char *prefix);
   static const char *GetUIDPrefix();
@@ -41,7 +41,6 @@ public:
    *  Before passing the string array, call SetNumberOfValues() on
    *  the array to specify the number of UIDs that you want to be
    *  stored in it.  The stored UIDs will be sorted, low to high.
-   *  The generated UIDs will be appended to the provided string array.
    *  Generating a batch of UIDs is more efficient than calling
    *  GenerateUID() repeatedly.
    */
