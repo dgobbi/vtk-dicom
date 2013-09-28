@@ -272,5 +272,21 @@ int main(int argc, char *argv[])
   TestAssert(u == v);
   }
 
+  { // test AsString
+  vtkDICOMValue v;
+  v = vtkDICOMValue(vtkDICOMVR::US, "3\\2\\1");
+  TestAssert(v.GetNumberOfValues() == 3);
+  TestAssert(v.AsString() == "3\\2\\1");
+  TestAssert(v.AsInt() == 3);
+  v = vtkDICOMValue(vtkDICOMVR::IS, "3\\2\\1");
+  TestAssert(v.GetNumberOfValues() == 3);
+  TestAssert(v.AsString() == "3\\2\\1");
+  TestAssert(v.AsInt() == 3);
+  v = vtkDICOMValue(vtkDICOMVR::UT, "3\\2\\1");
+  TestAssert(v.GetNumberOfValues() == 1);
+  TestAssert(v.AsString() == "3\\2\\1");
+  TestAssert(v.AsInt() == 0);
+  }
+
   return rval;
 }

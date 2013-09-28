@@ -1280,7 +1280,7 @@ vtkDICOMTag vtkDICOMValue::GetTag(unsigned int i) const
 unsigned char vtkDICOMValue::AsUnsignedChar() const
 {
   unsigned char v = 0;
-  if (this->V && this->V->NumberOfValues == 1)
+  if (this->V && this->V->NumberOfValues >= 1)
     {
     this->GetValuesT(&v, &v + 1, 0);
     }
@@ -1290,7 +1290,7 @@ unsigned char vtkDICOMValue::AsUnsignedChar() const
 short vtkDICOMValue::AsShort() const
 {
   short v = 0;
-  if (this->V && this->V->NumberOfValues == 1)
+  if (this->V && this->V->NumberOfValues >= 1)
     {
     this->GetValuesT(&v, &v + 1, 0);
     }
@@ -1300,7 +1300,7 @@ short vtkDICOMValue::AsShort() const
 unsigned short vtkDICOMValue::AsUnsignedShort() const
 {
   unsigned short v = 0;
-  if (this->V && this->V->NumberOfValues == 1)
+  if (this->V && this->V->NumberOfValues >= 1)
     {
     this->GetValuesT(&v, &v + 1, 0);
     }
@@ -1310,7 +1310,7 @@ unsigned short vtkDICOMValue::AsUnsignedShort() const
 int vtkDICOMValue::AsInt() const
 {
   int v = 0;
-  if (this->V && this->V->NumberOfValues == 1)
+  if (this->V && this->V->NumberOfValues >= 1)
     {
     this->GetValuesT(&v, &v + 1, 0);
     }
@@ -1320,7 +1320,7 @@ int vtkDICOMValue::AsInt() const
 unsigned int vtkDICOMValue::AsUnsignedInt() const
 {
   unsigned int v = 0;
-  if (this->V && this->V->NumberOfValues == 1)
+  if (this->V && this->V->NumberOfValues >= 1)
     {
     this->GetValuesT(&v, &v + 1, 0);
     }
@@ -1330,7 +1330,7 @@ unsigned int vtkDICOMValue::AsUnsignedInt() const
 float vtkDICOMValue::AsFloat() const
 {
   float v = 0.0;
-  if (this->V && this->V->NumberOfValues == 1)
+  if (this->V && this->V->NumberOfValues >= 1)
     {
     this->GetValuesT(&v, &v + 1, 0);
     }
@@ -1340,7 +1340,7 @@ float vtkDICOMValue::AsFloat() const
 double vtkDICOMValue::AsDouble() const
 {
   double v = 0.0;
-  if (this->V && this->V->NumberOfValues == 1)
+  if (this->V && this->V->NumberOfValues >= 1)
     {
     this->GetValuesT(&v, &v + 1, 0);
     }
@@ -1349,10 +1349,33 @@ double vtkDICOMValue::AsDouble() const
 
 std::string vtkDICOMValue::AsString() const
 {
-  std::string v;
-  if (this->V && this->V->NumberOfValues == 1)
+  const char *cp = this->GetCharData();
+  if (cp)
     {
-    this->AppendValueToString(v, 0);
+    size_t l = this->V->VL;
+    while (l > 0 && (cp[l-1] == ' ' || cp[l-1] == '\0'))
+      {
+      l--;
+      }
+    return std::string(cp, l);
+    }
+
+  std::string v;
+  if (this->V && this->V->VR != vtkDICOMVR::UN &&
+      this->V->VR != vtkDICOMVR::SQ &&
+      this->V->VR != vtkDICOMVR::OW &&
+      this->V->VR != vtkDICOMVR::OB &&
+      this->V->VR != vtkDICOMVR::OF)
+    {
+    unsigned int n = this->V->NumberOfValues;
+    for (unsigned int i = 0; i < n; i++)
+      {
+      if (i > 0)
+        {
+        v.append("\\");
+        }
+      this->AppendValueToString(v, i);
+      }
     }
   return v;
 }
@@ -1361,7 +1384,7 @@ vtkDICOMTag vtkDICOMValue::AsTag() const
 {
   vtkDICOMTag v;
   if (this->V && this->V->VR == vtkDICOMVR::AT &&
-      this->V->NumberOfValues == 1)
+      this->V->NumberOfValues >= 1)
     {
     this->GetValuesT(&v, &v + 1, 0);
     }

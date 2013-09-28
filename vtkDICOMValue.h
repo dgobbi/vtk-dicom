@@ -180,9 +180,10 @@ public:
 
   //! Convert the value to a scalar value or string.
   /*!
-   *  If the NumberOfValues is one, then the value is converted to
-   *  the desired type, if possible, and returned.  Otherwise the
-   *  return value is zero (or an empty string).
+   *  The value is converted to the desired type, if possible, and returned.
+   *  Otherwise the return value is zero (or an empty string).  Conversion
+   *  to string always produces an empty string for values of type UN, SQ,
+   *  OB, OW, and OF.
    */
   std::string AsString() const;
   unsigned char AsUnsignedChar() const;
