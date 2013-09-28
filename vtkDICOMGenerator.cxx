@@ -746,7 +746,6 @@ bool vtkDICOMGenerator::CopyRequiredAttributes(
       {
       vtkDICOMTag tag = *tags++;
       vtkDICOMDataElementIterator iter = this->MetaData->Find(tag);
-      vtkDICOMDictEntry e = meta->FindDictEntry(tag);
       if (iter != this->MetaData->End())
         {
         if (!iter->IsPerInstance())
@@ -766,7 +765,11 @@ bool vtkDICOMGenerator::CopyRequiredAttributes(
       else
         {
         // set the attribute to zero-length value.
-        meta->SetAttributeValue(tag, vtkDICOMValue(e.GetVR()));
+        vtkDICOMVR vr = meta->FindDictVR(0, tag);
+        if (vr != vtkDICOMVR::UN)
+          {
+          meta->SetAttributeValue(tag, vtkDICOMValue(vr));
+          }
         }
       }
     }
@@ -775,8 +778,11 @@ bool vtkDICOMGenerator::CopyRequiredAttributes(
     while (*tags != DC::ItemDelimitationItem)
       {
       vtkDICOMTag tag = *tags++;
-      vtkDICOMDictEntry e = meta->FindDictEntry(tag);
-      meta->SetAttributeValue(tag, vtkDICOMValue(e.GetVR()));
+      vtkDICOMVR vr = meta->FindDictVR(0, tag);
+      if (vr != vtkDICOMVR::UN)
+        {
+        meta->SetAttributeValue(tag, vtkDICOMValue(vr));
+        }
       }
     }
 

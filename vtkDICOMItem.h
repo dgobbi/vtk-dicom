@@ -103,6 +103,9 @@ public:
    */
   vtkDICOMDictEntry FindDictEntry(vtkDICOMTag tag) const;
 
+  //! Use the dictionary to get the VR, returns UN on failure.
+  vtkDICOMVR FindDictVR(vtkDICOMTag tag) const;
+
   bool operator==(const vtkDICOMItem& o) const;
   bool operator!=(const vtkDICOMItem& o) const {
     return !(*this == o); }
@@ -118,9 +121,6 @@ public:
 private:
   void FreeList();
   void CopyList(const List *o, List *t);
-
-  //! Use the dictionary to get the VR.
-  vtkDICOMVR FindDictVR(vtkDICOMTag tag) const;
 
   //! Internal templated SetAttributeValue method
   template<class T>

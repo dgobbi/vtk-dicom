@@ -140,6 +140,9 @@ public:
    */
   vtkDICOMDictEntry FindDictEntry(vtkDICOMTag tag);
 
+  //! Use the dictionary to get the VR, return UN if not found.
+  vtkDICOMVR FindDictVR(int idx, vtkDICOMTag tag);
+
   //! DataObject interface function.
   void ShallowCopy(vtkDataObject *source);
   void DeepCopy(vtkDataObject *source);
@@ -156,9 +159,6 @@ protected:
 
   //! Find the attribute value for the specified image index.
   const vtkDICOMValue *FindAttributeValue(int idx, vtkDICOMTag tag);
-
-  //! Use the dictionary to get the VR.
-  vtkDICOMVR FindDictVR(int idx, vtkDICOMTag tag);
 
   //! Internal templated SetAttributeValue method
   template<class T>
