@@ -480,6 +480,10 @@ void vtkDICOMMetaData::SetAttributeValue(
 //----------------------------------------------------------------------------
 void vtkDICOMMetaData::CopyAttributes(vtkDICOMMetaData *o)
 {
+  // note: this method does not check for collisions between
+  // private tag blocks, so at most one of the two data sets
+  // can safely have private tags when this method is called.
+
   if (o != 0 && o != this)
     {
     vtkDICOMDataElement **otable = o->Table;
