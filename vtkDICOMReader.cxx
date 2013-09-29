@@ -1684,6 +1684,9 @@ bool vtkDICOMReader::ReadCompressedFile(
   return true;
 
 #else /* no GDCM, so no file decompression */
+  (void)filename;
+  (void)buffer;
+  (void)bufferSize;
 
   this->SetErrorCode(vtkErrorCode::FileFormatError);
   vtkErrorMacro("DICOM file is compressed, cannot read.");

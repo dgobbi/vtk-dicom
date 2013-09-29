@@ -39,7 +39,7 @@ bool StringsEqual(const char *s1, const char *s2)
 int main(int argc, char *argv[])
 {
   int rval = 0;
-  const char *exename = argv[0];
+  const char *exename = (argc > 0 ? argv[0] : "TestDICOMSequence");
 
   // remove path portion of exename
   const char *cp = exename + strlen(exename);
