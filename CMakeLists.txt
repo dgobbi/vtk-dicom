@@ -35,7 +35,7 @@ set(DICOM_SHORT_VERSION "${DICOM_MAJOR_VERSION}.${DICOM_MINOR_VERSION}")
 set(DICOM_VERSION "${DICOM_SHORT_VERSION}.${DICOM_BUILD_VERSION}")
 
 # Choose static or shared libraries.
-option(BUILD_SHARED_LIBS "Build shared libraries." ON)
+option(BUILD_SHARED_LIBS "Build shared libraries." OFF)
 
 # Which parts of the package to build
 option(BUILD_PROGRAMS "Build some useful DICOM tools" ON)
@@ -159,7 +159,7 @@ set(LIB_HDRS
   ${DICOM_BINARY_DIR}/vtkDICOMConfig.h
 )
 
-# Sources that are not vtkObjects that we want to wrap
+# Sources that are not vtkObjects
 set(LIB_SPECIAL
   vtkDICOMTag.cxx
   vtkDICOMTagPath.cxx
@@ -173,7 +173,7 @@ set(LIB_SPECIAL
   vtkDICOMValue.cxx
 )
 
-set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
+set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_EXCLUDE ON)
 
 # Automatically find the header for each cxx file
 foreach(arg ${LIB_SRCS})
@@ -186,6 +186,7 @@ endforeach()
 
 # hierarchy file
 if(VTK_WRAP_PYTHON AND "${VTK_MAJOR_VERSION}" GREATER 5)
+  set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
   set(vtk-module vtkDICOM)
   set(vtkDICOM_LINK_DEPENDS ${VTK_LIBRARIES})
   include(${VTK_CMAKE_DIR}/vtkWrapHierarchy.cmake)
@@ -205,12 +206,15 @@ target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${GDCM_LIBS})
 set(DICOM_LIBRARIES ${LIB_NAME})
 
 # Wrappers
-if(VTK_WRAP_PYTHON AND "${VTK_MAJOR_VERSION}" GREATER 5)
+if(VTK_WRAP_PYTHON)
   set(vtk-module ${LIB_NAME})
   set(MODULE_PYTHON_NAME ${LIB_NAME}Python)
   set(LIB_PYTHON_NAME ${LIB_NAME}PythonD)
-  set(LIB_PYTHON_NAME ${LIB_NAME}PythonD)
-  set(LIB_PYTHON_LIBS vtkCommonCorePythonD vtkIOImagePythonD)
+  if("${VTK_MAJOR_VERSION}" GREATER 5)
+    set(LIB_PYTHON_LIBS vtkCommonCorePythonD vtkIOImagePythonD)
+  else()
+    set(LIB_PYTHON_LIBS vtkCommonPythonD vtkIOPythonD)
+  endif()
 
   if(VTK_PYTHON_INCLUDE_DIR)
     include_directories("${VTK_PYTHON_INCLUDE_DIR}")
