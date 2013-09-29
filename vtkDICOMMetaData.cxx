@@ -489,16 +489,18 @@ void vtkDICOMMetaData::CopyAttributes(vtkDICOMMetaData *o)
       const vtkDICOMDataElement *iterEnd = &o->Tail;
       while (iter != iterEnd)
         {
-        vtkDICOMDataElement *e = this->FindDataElementOrInsert(iter->Tag);
-        e->Tag = iter->Tag;
         // if this is a per-instance element, then make a copy of it
         const vtkDICOMValue *vptr = iter->Value.GetMultiplexData();
         if (vptr == 0)
           {
+          vtkDICOMDataElement *e = this->FindDataElementOrInsert(iter->Tag);
+          e->Tag = iter->Tag;
           e->Value = iter->Value;
           }
         else if (this->NumberOfInstances == o->NumberOfInstances)
           {
+          vtkDICOMDataElement *e = this->FindDataElementOrInsert(iter->Tag);
+          e->Tag = iter->Tag;
           vtkDICOMValue *nvptr = e->Value.AllocateMultiplexData(
             iter->Value.GetVR(), this->NumberOfInstances);
           for (int i = 0; i < this->NumberOfInstances; i++)
