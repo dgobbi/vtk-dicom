@@ -42,6 +42,12 @@ option(BUILD_PROGRAMS "Build some useful DICOM tools" ON)
 option(BUILD_TESTING "Build the tests" ON)
 option(BUILD_EXAMPLES "Build the examples" ON)
 
+if(VTK_WRAP_PYTHON)
+  option(BUILD_PYTHON_WRAPPERS "Build python wrappers" ON)
+else()
+  unset(BUILD_PYTHON_WRAPPERS CACHE)
+endif()
+
 # Store the git hash of the current head
 if(EXISTS "${DICOM_SOURCE_DIR}/.git/HEAD")
   file(READ "${DICOM_SOURCE_DIR}/.git/HEAD" DICOM_SOURCE_VERSION)
@@ -185,7 +191,7 @@ foreach(arg ${LIB_SRCS})
 endforeach()
 
 # hierarchy file
-if(VTK_WRAP_PYTHON AND "${VTK_MAJOR_VERSION}" GREATER 5)
+if(BUILD_PYTHON_WRAPPERS AND "${VTK_MAJOR_VERSION}" GREATER 5)
   set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
   set(vtk-module vtkDICOM)
   set(vtkDICOM_LINK_DEPENDS ${VTK_LIBRARIES})
@@ -206,7 +212,7 @@ target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${GDCM_LIBS})
 set(DICOM_LIBRARIES ${LIB_NAME})
 
 # Wrappers
-if(VTK_WRAP_PYTHON)
+if(BUILD_PYTHON_WRAPPERS)
   set(vtk-module ${LIB_NAME})
   set(MODULE_PYTHON_NAME ${LIB_NAME}Python)
   set(LIB_PYTHON_NAME ${LIB_NAME}PythonD)
