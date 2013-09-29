@@ -8,13 +8,16 @@ if(COMMAND CMAKE_POLICY)
   cmake_policy(SET CMP0003 NEW)
 endif(COMMAND CMAKE_POLICY)
 
+# Allow custo cmake overrides
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
+
 # Look for a VTK build directory
 find_package(VTK)
 if(VTK_FOUND)
   include(${VTK_USE_FILE})
 endif()
 
-# GDCM is required for reading compressed DICOM images
+# GDCM or DCMTK are required for reading compressed DICOM images
 option(USE_GDCM "Use GDCM for image decompression" OFF)
 if(USE_GDCM)
   find_package(GDCM)
@@ -25,6 +28,17 @@ if(USE_GDCM)
     include(${GDCM_USE_FILE})
     set(GDCM_LIBS gdcmMSFF)
   endif()
+endif()
+
+option(USE_DCMTK "Use DCMTK for image decompression" ON)
+set(DCMTK_LIBS)
+if(USE_DCMTK)
+  find_package(DCMTK)
+  if(NOT DCMTK_FOUND)
+    message(FATAL_ERROR "DCMTK not found or incomplete.")
+  endif()
+  set(DCMTK_LIBS ${DCMTK_LIBRARIES})
+  include_directories(${DCMTK_INCLUDE_DIRS})
 endif()
 
 # Project version
@@ -117,6 +131,7 @@ set(DICOM_CMAKE_INSTALL_DEST ${CMAKE_INSTALL_PREFIX}${DICOM_CMAKE_DIR})
 set(DICOM_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
 set(DICOM_BUILD_TESTING ${BUILD_TESTING})
 set(DICOM_USE_GDCM ${USE_GDCM})
+set(DICOM_USE_DCMTK ${USE_DCMTK})
 configure_file(CMake/vtkDICOMConfig.h.in
   "${DICOM_BINARY_DIR}/vtkDICOMConfig.h" @ONLY)
 
@@ -208,7 +223,7 @@ else()
   set(VTK_LIBS vtkIO vtkzlib) # VTK 5.x
 endif()
 add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_HIERARCHY_STAMP})
-target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${GDCM_LIBS})
+target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS})
 set(DICOM_LIBRARIES ${LIB_NAME})
 
 # Wrappers

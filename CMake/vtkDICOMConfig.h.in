@@ -19,6 +19,7 @@
 #cmakedefine DICOM_BUILD_SHARED_LIBS
 #cmakedefine DICOM_BUILD_TESTING
 #cmakedefine DICOM_USE_GDCM
+#cmakedefine DICOM_USE_DCMTK
 
 /* Version number. */
 #define DICOM_MAJOR_VERSION @DICOM_MAJOR_VERSION@

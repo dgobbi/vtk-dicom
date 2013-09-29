@@ -42,6 +42,20 @@
 #include "gdcmImageReader.h"
 #endif
 
+#ifdef DICOM_USE_DCMTK
+#ifndef _WIN32
+#define HAVE_CONFIG_H
+#endif
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcrledrg.h"
+#include "dcmtk/dcmjpeg/djdecode.h"
+#ifndef _WIN32
+#undef HAVE_CONFIG_H
+#endif
+#endif
+
 #include "vtksys/SystemTools.hxx"
 #include "vtksys/ios/sstream"
 
@@ -86,11 +100,17 @@ vtkDICOMReader::vtkDICOMReader()
 #else
   this->SwapBytes = 0;
 #endif
+
+  DJDecoderRegistration::registerCodecs();
+  DcmRLEDecoderRegistration::registerCodecs();
 }
 
 //----------------------------------------------------------------------------
 vtkDICOMReader::~vtkDICOMReader()
 {
+  DcmRLEDecoderRegistration::cleanup();
+  DJDecoderRegistration::cleanup();
+
   if (this->Parser)
     {
     this->Parser->Delete();
@@ -1659,7 +1679,42 @@ bool vtkDICOMReader::ReadUncompressedFile(
 bool vtkDICOMReader::ReadCompressedFile(
   const char *filename, int, char *buffer, vtkIdType bufferSize)
 {
-#ifdef DICOM_USE_GDCM
+#ifdef DICOM_USE_DCMTK
+
+  DcmFileFormat *fileformat = new DcmFileFormat();
+  fileformat->loadFile(filename);
+  OFCondition status = fileformat->getDataset()->chooseRepresentation(
+    EXS_LittleEndianExplicit, NULL);
+
+  if (!status.good())
+    {
+    vtkErrorMacro("DCMTK error: " << status.text());
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
+    delete fileformat;
+    return false;
+    }
+
+  unsigned long count;
+  const Uint8 *pixelData;
+  status = fileformat->getDataset()->findAndGetUint8Array(
+    DCM_PixelData, pixelData, &count, OFTrue);
+
+  // will need to handle BitsAllocated = 12 and BitsAllocated = 1
+
+  if (static_cast<vtkIdType>(count) != bufferSize)
+    {
+    vtkErrorMacro(<< filename << ": The uncompressed image size is "
+                  << count << " bytes, expected " << bufferSize << " bytes.");
+    delete fileformat;
+    return false;
+    }
+
+  memcpy(buffer, pixelData, bufferSize);
+
+  delete fileformat;
+  return true;
+
+#elif DICOM_USE_GDCM
 
   gdcm::ImageReader reader;
   reader.SetFileName(filename);
@@ -1683,7 +1738,7 @@ bool vtkDICOMReader::ReadCompressedFile(
   image.GetBuffer(buffer);
   return true;
 
-#else /* no GDCM, so no file decompression */
+#else /* no DCMTK or GDCM, so no file decompression */
   (void)filename;
   (void)buffer;
   (void)bufferSize;
@@ -1702,6 +1757,8 @@ bool vtkDICOMReader::ReadOneFile(
   std::string transferSyntax = this->MetaData->GetAttributeValue(
     fileIdx, DC::TransferSyntaxUID).AsString();
 
+// temporarily force the use of DCMTK for everything
+#ifndef DICOM_USE_DCMTK
   if (transferSyntax == "1.2.840.10008.1.2"   ||  // Implicit LE
       transferSyntax == "1.2.840.10008.1.20"  ||  // Papyrus Implicit LE
       transferSyntax == "1.2.840.10008.1.2.1" ||  // Explicit LE
@@ -1711,6 +1768,7 @@ bool vtkDICOMReader::ReadOneFile(
     {
     return this->ReadUncompressedFile(filename, fileIdx, buffer, bufferSize);
     }
+#endif
 
   return this->ReadCompressedFile(filename, fileIdx, buffer, bufferSize);
 }
