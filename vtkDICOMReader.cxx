@@ -38,11 +38,7 @@
 #include "vtkVersion.h"
 #include "vtkTypeTraits.h"
 
-#ifdef DICOM_USE_GDCM
-#include "gdcmImageReader.h"
-#endif
-
-#ifdef DICOM_USE_DCMTK
+#if defined(DICOM_USE_DCMTK)
 #ifndef _WIN32
 #define HAVE_CONFIG_H
 #endif
@@ -51,9 +47,12 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcrledrg.h"
 #include "dcmtk/dcmjpeg/djdecode.h"
+#include "dcmtk/dcmjpls/djdecode.h"
 #ifndef _WIN32
 #undef HAVE_CONFIG_H
 #endif
+#elif defined(DICOM_USE_GDCM)
+#include "gdcmImageReader.h"
 #endif
 
 #include "vtksys/SystemTools.hxx"
@@ -64,7 +63,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-
 
 vtkStandardNewMacro(vtkDICOMReader);
 
@@ -101,15 +99,21 @@ vtkDICOMReader::vtkDICOMReader()
   this->SwapBytes = 0;
 #endif
 
+#ifdef DICOM_USE_DCMTK
   DJDecoderRegistration::registerCodecs();
+  DJLSDecoderRegistration::registerCodecs();
   DcmRLEDecoderRegistration::registerCodecs();
+#endif
 }
 
 //----------------------------------------------------------------------------
 vtkDICOMReader::~vtkDICOMReader()
 {
+#ifdef DICOM_USE_DCMTK
   DcmRLEDecoderRegistration::cleanup();
+  DJLSDecoderRegistration::registerCodecs();
   DJDecoderRegistration::cleanup();
+#endif
 
   if (this->Parser)
     {
@@ -1560,6 +1564,65 @@ void vtkDICOMReader::RescaleBuffer(
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMReader::UnpackBits(
+  const void *filePtr, void *buffer, vtkIdType bufferSize, int bits)
+{
+  if (bits == 12)
+    {
+    const unsigned char *readPtr =
+      static_cast<const unsigned char *>(filePtr);
+    unsigned char *writePtr =
+      static_cast<unsigned char *>(buffer);
+    for (vtkIdType n = bufferSize/2; n > 0; n -= 2)
+      {
+      unsigned int a1 = readPtr[0];
+      unsigned int a2 = readPtr[1];
+      unsigned int b1 = (a1 << 4) | (a2 & 0x0f);
+      writePtr[0] = static_cast<unsigned char>(b1);
+      writePtr[1] = static_cast<unsigned char>(b1 >> 8);
+
+      if (n == 1) { break; }
+
+      unsigned int a3 = readPtr[2];
+      unsigned int b2 = ((a3 & 0x0f) << 8) | (a2 & 0xf0) | (a3 >> 4);
+      writePtr[2] = static_cast<unsigned char>(b2);
+      writePtr[3] = static_cast<unsigned char>(b2 >> 8);
+
+      readPtr += 3;
+      writePtr += 4;
+      }
+    }
+  else if (bits == 1)
+    {
+    const unsigned char *readPtr =
+      static_cast<const unsigned char *>(filePtr);
+    unsigned char *writePtr =
+      static_cast<unsigned char *>(buffer);
+    for (vtkIdType n = bufferSize/8; n > 0; n--)
+      {
+      unsigned int a = *readPtr;
+      for (int i = 0; i < 8; i++)
+        {
+        writePtr[i] = (a & 1);
+        a >>= 1;
+        }
+      readPtr++;
+      writePtr += 8;
+      }
+    size_t r = (bufferSize % 8);
+    if (r > 0)
+      {
+      unsigned int a = *readPtr;
+      for (size_t j = 0; j < r; j++)
+        {
+        writePtr[j] = static_cast<unsigned char>(a & 1);
+        a >>= 1;
+        }
+      }
+    }
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMReader::ReadUncompressedFile(
   const char *filename, int fileIdx, char *buffer, vtkIdType bufferSize)
 {
@@ -1597,25 +1660,7 @@ bool vtkDICOMReader::ReadUncompressedFile(
     char *filePtr = buffer + (bufferSize - fileSize);
     infile.read(filePtr, fileSize);
 
-    char *writePtr = buffer;
-    for (vtkIdType n = bufferSize/2; n > 0; n -= 2)
-      {
-      unsigned int a1 = static_cast<unsigned char>(filePtr[0]);
-      unsigned int a2 = static_cast<unsigned char>(filePtr[1]);
-      unsigned int b1 = (a1 << 4) | (a2 & 0x0f);
-      writePtr[0] = static_cast<char>(b1);
-      writePtr[1] = static_cast<char>(b1 >> 8);
-
-      if (n == 1) { break; }
-
-      unsigned int a3 = static_cast<unsigned char>(filePtr[2]);
-      unsigned int b2 = ((a3 & 0x0f) << 8) | (a2 & 0xf0) | (a3 >> 4);
-      writePtr[2] = static_cast<char>(b2);
-      writePtr[3] = static_cast<char>(b2 >> 8);
-
-      filePtr += 3;
-      writePtr += 4;
-      }
+    vtkDICOMReader::UnpackBits(filePtr, buffer, bufferSize, bitsAllocated);
     }
   else if (bitsAllocated == 1)
     {
@@ -1625,28 +1670,7 @@ bool vtkDICOMReader::ReadUncompressedFile(
     char *filePtr = buffer + (bufferSize - fileSize);
     infile.read(filePtr, fileSize);
 
-    char *writePtr = buffer;
-    for (vtkIdType n = bufferSize/8; n > 0; n--)
-      {
-      unsigned int a = static_cast<unsigned char>(*filePtr);
-      for (int i = 0; i < 8; i++)
-        {
-        writePtr[i] = (a & 1);
-        a >>= 1;
-        }
-      filePtr++;
-      writePtr += 8;
-      }
-    size_t r = (bufferSize % 8);
-    if (r > 0)
-      {
-      unsigned int a = static_cast<unsigned char>(*filePtr);
-      for (size_t j = 0; j < r; j++)
-        {
-        writePtr[j] = (a & 1);
-        a >>= 1;
-        }
-      }
+    vtkDICOMReader::UnpackBits(filePtr, buffer, bufferSize, bitsAllocated);
     }
   else
     {
@@ -1677,9 +1701,9 @@ bool vtkDICOMReader::ReadUncompressedFile(
 
 //----------------------------------------------------------------------------
 bool vtkDICOMReader::ReadCompressedFile(
-  const char *filename, int, char *buffer, vtkIdType bufferSize)
+  const char *filename, int fileIdx, char *buffer, vtkIdType bufferSize)
 {
-#ifdef DICOM_USE_DCMTK
+#if defined(DICOM_USE_DCMTK)
 
   DcmFileFormat *fileformat = new DcmFileFormat();
   fileformat->loadFile(filename);
@@ -1698,23 +1722,38 @@ bool vtkDICOMReader::ReadCompressedFile(
   const Uint8 *pixelData;
   status = fileformat->getDataset()->findAndGetUint8Array(
     DCM_PixelData, pixelData, &count, OFTrue);
+  vtkIdType imageSize = static_cast<vtkIdType>(count);
 
-  // will need to handle BitsAllocated = 12 and BitsAllocated = 1
+  int bitsAllocated = this->MetaData->GetAttributeValue(
+    fileIdx, DC::BitsAllocated).AsInt();
 
-  if (static_cast<vtkIdType>(count) != bufferSize)
+  if (bitsAllocated == 12 && imageSize >= bufferSize/2 + (bufferSize+3)/4)
+    {
+    vtkDICOMReader::UnpackBits(pixelData, buffer, bufferSize, bitsAllocated);
+    }
+  else if (bitsAllocated == 1 && imageSize >= (bufferSize + 7)/8)
+    {
+    vtkDICOMReader::UnpackBits(pixelData, buffer, bufferSize, bitsAllocated);
+    }
+  else if (imageSize >= bufferSize)
+    {
+    memcpy(buffer, pixelData, bufferSize);
+    }
+  else
     {
     vtkErrorMacro(<< filename << ": The uncompressed image size is "
-                  << count << " bytes, expected " << bufferSize << " bytes.");
+                  << imageSize << " bytes, expected "
+                  << bufferSize << " bytes.");
     delete fileformat;
     return false;
     }
 
-  memcpy(buffer, pixelData, bufferSize);
-
   delete fileformat;
   return true;
 
-#elif DICOM_USE_GDCM
+#elif defined(DICOM_USE_GDCM)
+
+  (void)fileIdx;
 
   gdcm::ImageReader reader;
   reader.SetFileName(filename);
@@ -1726,7 +1765,7 @@ bool vtkDICOMReader::ReadCompressedFile(
     }
 
   gdcm::Image &image = reader.GetImage();
-  if (static_cast<vtkIdType>(image.GetBufferLength()) != bufferSize)
+  if (static_cast<vtkIdType>(image.GetBufferLength()) < bufferSize)
     {
     vtkErrorMacro(<< filename << ": The uncompressed image size is "
                   << image.GetBufferLength() << " bytes, expected "
@@ -1739,6 +1778,7 @@ bool vtkDICOMReader::ReadCompressedFile(
   return true;
 
 #else /* no DCMTK or GDCM, so no file decompression */
+
   (void)filename;
   (void)buffer;
   (void)bufferSize;
@@ -1757,8 +1797,6 @@ bool vtkDICOMReader::ReadOneFile(
   std::string transferSyntax = this->MetaData->GetAttributeValue(
     fileIdx, DC::TransferSyntaxUID).AsString();
 
-// temporarily force the use of DCMTK for everything
-#ifndef DICOM_USE_DCMTK
   if (transferSyntax == "1.2.840.10008.1.2"   ||  // Implicit LE
       transferSyntax == "1.2.840.10008.1.20"  ||  // Papyrus Implicit LE
       transferSyntax == "1.2.840.10008.1.2.1" ||  // Explicit LE
@@ -1768,7 +1806,6 @@ bool vtkDICOMReader::ReadOneFile(
     {
     return this->ReadUncompressedFile(filename, fileIdx, buffer, bufferSize);
     }
-#endif
 
   return this->ReadCompressedFile(filename, fileIdx, buffer, bufferSize);
 }

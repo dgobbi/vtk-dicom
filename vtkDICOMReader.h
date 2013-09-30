@@ -184,6 +184,11 @@ protected:
     const char *filename, int idx, char *buffer, vtkIdType bufferSize);
 
   // Description:
+  // Unpack 1 bit to 8 bits or 12 bits to 16 bits.
+  void UnpackBits(
+    const void *source, void *buffer, vtkIdType bufferSize, int bits);
+
+  // Description:
   // Read an uncompressed DICOM file.
   virtual bool ReadUncompressedFile(
     const char *filename, int idx, char *buffer, vtkIdType bufferSize);
