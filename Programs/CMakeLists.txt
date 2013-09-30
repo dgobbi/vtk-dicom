@@ -3,6 +3,7 @@ include_directories(${DICOM_INCLUDE_DIRS})
 set(PROGRAM_SRCS
   dicomdump.cxx
   dicomtonifti.cxx
+  niftitodicom.cxx
   niftidump.cxx
 )
 

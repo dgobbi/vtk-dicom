@@ -24,12 +24,14 @@
 
 vtkStandardNewMacro(vtkDICOMToRAS);
 vtkCxxSetObjectMacro(vtkDICOMToRAS, PatientMatrix, vtkMatrix4x4);
+vtkCxxSetObjectMacro(vtkDICOMToRAS, RASMatrix, vtkMatrix4x4);
 
 //----------------------------------------------------------------------------
 vtkDICOMToRAS::vtkDICOMToRAS()
 {
-  this->PatientMatrix = 0;
+  this->PatientMatrix = vtkMatrix4x4::New();
   this->RASMatrix = vtkMatrix4x4::New();
+  this->RASToDICOM = 0;
   this->RASMatrixHasPosition = 1;
   this->AllowColumnReordering = 1;
   this->AllowRowReordering = 1;
@@ -91,6 +93,8 @@ void vtkDICOMToRAS::PrintSelf(ostream& os, vtkIndent indent)
     os << " (none)\n";
     }
 
+  os << indent << "RASToDICOM: " << this->RASToDICOM << "\n";
+
   os << indent << "RASMatrixHasPosition: "
      << this->RASMatrixHasPosition << "\n";
 
@@ -99,6 +103,17 @@ void vtkDICOMToRAS::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "AllowRowReordering: "
      << this->AllowRowReordering << "\n";
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMToRAS::SetRASToDICOM(int val)
+{
+  val = (val != 0);
+  if (val != this->RASToDICOM)
+    {
+    this->RASToDICOM = val;
+    this->Modified();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -141,10 +156,12 @@ void vtkDICOMToRAS::CheckNeedToReorder()
   double vdir[4] = { 0.0, 1.0, 0.0, 0.0 };
 
   // convert row, column vectors into patient coords
-  if (this->PatientMatrix)
+  vtkMatrix4x4 *inputMatrix = (this->RASToDICOM  == 0 ?
+    this->PatientMatrix : this->RASMatrix);
+  if (inputMatrix)
     {
-    this->PatientMatrix->MultiplyPoint(hdir, hdir);
-    this->PatientMatrix->MultiplyPoint(vdir, vdir);
+    inputMatrix->MultiplyPoint(hdir, hdir);
+    inputMatrix->MultiplyPoint(vdir, vdir);
     }
 
   // do the DICOM-to-RAS sign changes
@@ -153,13 +170,26 @@ void vtkDICOMToRAS::CheckNeedToReorder()
   vdir[0] = -vdir[0];
   vdir[1] = -vdir[1];
 
-  // for RAS, hdir should be right (+x) or anterior (+y)
-  this->ReorderColumns = (this->AllowColumnReordering &&
-                          hdir[0] + hdir[1] < 0);
+  if (this->RASToDICOM)
+    {
+    // for DICOM, hdir should be left (+x) or posterior (+y)
+    this->ReorderColumns = (this->AllowColumnReordering &&
+                            hdir[0] + hdir[1] < 0);
 
-  // for RAS, vdir should be superior (+z) or anterior (+y)
-  this->ReorderRows = (this->AllowRowReordering &&
-                       vdir[1] + vdir[2] < 0);
+    // for RAS, vdir should be inferior (-z) or posterior (+y)
+    this->ReorderRows = (this->AllowRowReordering &&
+                         vdir[1] - vdir[2] < 0);
+    }
+  else
+    {
+    // for RAS, hdir should be right (+x) or anterior (+y)
+    this->ReorderColumns = (this->AllowColumnReordering &&
+                            hdir[0] + hdir[1] < 0);
+
+    // for RAS, vdir should be superior (+z) or anterior (+y)
+    this->ReorderRows = (this->AllowRowReordering &&
+                         vdir[1] + vdir[2] < 0);
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -168,9 +198,13 @@ void vtkDICOMToRAS::ComputeMatrix(
 {
   double *matrix = this->Matrix;
 
-  if (this->PatientMatrix)
+  if (this->PatientMatrix && this->RASToDICOM == 0)
     {
     vtkMatrix4x4::DeepCopy(matrix, this->PatientMatrix);
+    }
+  else if (this->RASMatrix && this->RASToDICOM != 0)
+    {
+    vtkMatrix4x4::DeepCopy(matrix, this->RASMatrix);
     }
   else
     {
@@ -213,7 +247,7 @@ void vtkDICOMToRAS::ComputeMatrix(
       }
     }
 
-  if (this->RASMatrixHasPosition)
+  if (this->RASMatrixHasPosition || this->RASToDICOM)
     {
     // origin moves into position (last column of matrix)
     double offset[4];
@@ -261,8 +295,26 @@ void vtkDICOMToRAS::UpdateMatrix()
   // This calls RequestInformation, which calls ComputeMatrix
   this->UpdateInformation();
 
+  vtkMatrix4x4 *outMatrix;
+  if (this->RASToDICOM == 0)
+    {
+    if (this->RASMatrix == 0)
+      {
+      this->RASMatrix = vtkMatrix4x4::New();
+      }
+    outMatrix = this->RASMatrix;
+    }
+  else
+    {
+    if (this->PatientMatrix == 0)
+      {
+      this->PatientMatrix = vtkMatrix4x4::New();
+      }
+    outMatrix = this->PatientMatrix;
+    }
+
   const double *inElements = this->Matrix;
-  double *outElements = *this->RASMatrix->Element;
+  double *outElements = *outMatrix->Element;
 
   bool changed = false;
   for (int i = 0; i < 16; i++)
@@ -273,7 +325,7 @@ void vtkDICOMToRAS::UpdateMatrix()
   // this ensures that the timestamp isn't changed unless values changed
   if (changed)
     {
-    this->RASMatrix->DeepCopy(this->Matrix);
+    outMatrix->DeepCopy(this->Matrix);
     }
 }
 
@@ -353,8 +405,26 @@ int vtkDICOMToRAS::RequestData(
   vtkInformationVector* outputVector)
 {
   // output the matrix that goes with the image
+  vtkMatrix4x4 *outMatrix = 0;
+  if (this->RASToDICOM == 0)
+    {
+    if (this->RASMatrix == 0)
+      {
+      this->RASMatrix = vtkMatrix4x4::New();
+      }
+    outMatrix = this->RASMatrix;
+    }
+  else
+    {
+    if (this->PatientMatrix == 0)
+      {
+      this->PatientMatrix = vtkMatrix4x4::New();
+      }
+    outMatrix = this->PatientMatrix;
+    }
+
   const double *inElements = this->Matrix;
-  double *outElements = *this->RASMatrix->Element;
+  double *outElements = *outMatrix->Element;
 
   bool changed = false;
   for (int i = 0; i < 16; i++)
@@ -365,7 +435,7 @@ int vtkDICOMToRAS::RequestData(
   // this ensures that the timestamp isn't changed unless values changed
   if (changed)
     {
-    this->RASMatrix->DeepCopy(this->Matrix);
+    outMatrix->DeepCopy(this->Matrix);
     }
 
   return this->Superclass::RequestData(request, inputVector, outputVector);

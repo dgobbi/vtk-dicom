@@ -26,7 +26,7 @@
 
 #define MAX_INDENT 24
 #define INDENT_SIZE 2
-#define MAX_LENGTH 78
+#define MAX_LENGTH 120
 
 // remove path portion of filename
 const char *fileBasename(const char *filename)

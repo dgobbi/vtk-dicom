@@ -45,6 +45,13 @@ public:
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
+  // Perform RAS to DICOM instead of DICOM to RAS.
+  void SetRASToDICOM(int v);
+  void RASToDICOMOn() { this->SetRASToDICOM(1); }
+  void RASToDICOMOff() { this->SetRASToDICOM(0); }
+  int GetRASToDICOM() { return this->RASToDICOM; }
+
+  // Description:
   // Get a matrix to place the image within DICOM patient coords.
   // This matrix is constructed from the ImageOrientationPatient
   // and ImagePositionPatient meta data attributes.  See the
@@ -56,6 +63,7 @@ public:
   // Get a matrix that follows the RAS convention that can be used
   // with the output image.  This matrix is only valid for the output
   // image, it is not valid for the input image.
+  void SetRASMatrix(vtkMatrix4x4 *matrix);
   vtkMatrix4x4 *GetRASMatrix() { return this->RASMatrix; }
 
   // Description:
@@ -133,6 +141,7 @@ protected:
   vtkMatrix4x4 *PatientMatrix;
   vtkMatrix4x4 *RASMatrix;
 
+  int RASToDICOM;
   int AllowColumnReordering;
   int AllowRowReordering;
   int RASMatrixHasPosition;
