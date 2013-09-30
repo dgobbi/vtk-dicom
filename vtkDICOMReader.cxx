@@ -111,7 +111,7 @@ vtkDICOMReader::~vtkDICOMReader()
 {
 #ifdef DICOM_USE_DCMTK
   DcmRLEDecoderRegistration::cleanup();
-  DJLSDecoderRegistration::registerCodecs();
+  DJLSDecoderRegistration::cleanup();
   DJDecoderRegistration::cleanup();
 #endif
 
