@@ -28,7 +28,7 @@ public:
   {
     unsigned short Group;
     unsigned short Element;
-    unsigned char  Owner;
+    unsigned char  Flags;
     unsigned char  VR;
     unsigned short VM;
     const char    *Name;
@@ -59,7 +59,7 @@ public:
 
   //! Check whether this entry has been retired from the DICOM standard.
   bool IsRetired() {
-    return (this->I->Owner == 1); }
+    return (this->I->Flags == 1); }
 
 private:
   vtkDICOMDictEntry(const Entry *o) : I(o) {}
