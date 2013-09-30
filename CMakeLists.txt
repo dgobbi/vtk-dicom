@@ -30,7 +30,7 @@ if(USE_GDCM)
   endif()
 endif()
 
-option(USE_DCMTK "Use DCMTK for image decompression" ON)
+option(USE_DCMTK "Use DCMTK for image decompression" OFF)
 set(DCMTK_LIBS)
 if(USE_DCMTK)
   find_package(DCMTK)
