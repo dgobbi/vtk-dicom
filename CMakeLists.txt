@@ -134,6 +134,8 @@ set(DICOM_USE_GDCM ${USE_GDCM})
 set(DICOM_USE_DCMTK ${USE_DCMTK})
 configure_file(CMake/vtkDICOMConfig.h.in
   "${DICOM_BINARY_DIR}/vtkDICOMConfig.h" @ONLY)
+configure_file(CMake/vtkDICOMBuild.h.in
+  "${DICOM_BINARY_DIR}/vtkDICOMBuild.h" @ONLY)
 
 # Include directories
 set(DICOM_INCLUDE_DIRS "${DICOM_SOURCE_DIR}" "${DICOM_BINARY_DIR}")
@@ -177,6 +179,7 @@ set(LIB_SRCS
 set(LIB_HDRS
   vtkDICOMModule.h
   vtkNIFTIHeaderPrivate.h
+  ${DICOM_BINARY_DIR}/vtkDICOMBuild.h
   ${DICOM_BINARY_DIR}/vtkDICOMConfig.h
 )
 

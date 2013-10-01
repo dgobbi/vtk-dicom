@@ -12,20 +12,12 @@
 
 =========================================================================*/
 
-#ifndef __vtkDICOMConfig_h
-#define __vtkDICOMConfig_h
+#ifndef __vtkDICOMBuild_h
+#define __vtkDICOMBuild_h
 
-/* Configuration information. */
-#cmakedefine DICOM_BUILD_SHARED_LIBS
-#cmakedefine DICOM_BUILD_TESTING
-#cmakedefine DICOM_USE_GDCM
-#cmakedefine DICOM_USE_DCMTK
-
-/* Version number. */
-#define DICOM_MAJOR_VERSION @DICOM_MAJOR_VERSION@
-#define DICOM_MINOR_VERSION @DICOM_MINOR_VERSION@
-#define DICOM_BUILD_VERSION @DICOM_BUILD_VERSION@
-#define DICOM_SHORT_VERSION "@DICOM_SHORT_VERSION@"
-#define DICOM_VERSION "@DICOM_VERSION@"
+/* Source and Build version info. */
+#define DICOM_SOURCE_VERSION "@DICOM_SOURCE_VERSION@"
+#define DICOM_BUILD_DATE "@DICOM_BUILD_DATE@"
+#define DICOM_BUILD_TIME "@DICOM_BUILD_TIME@"
 
 #endif
