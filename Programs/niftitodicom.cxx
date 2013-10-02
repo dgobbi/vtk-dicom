@@ -473,7 +473,7 @@ void niftitodicom_convert_one(
   vtkSmartPointer<vtkDICOMMetaData> meta =
     vtkSmartPointer<vtkDICOMMetaData>::New();
 
-  // reade the DICOM files
+  // read the DICOM files
   vtkSmartPointer<vtkDICOMReader> dicomReader =
     vtkSmartPointer<vtkDICOMReader>::New();
   dicomReader->TimeAsVectorOn();
@@ -483,6 +483,16 @@ void niftitodicom_convert_one(
     {
     dicomReader->UpdateInformation();
     meta->DeepCopy(dicomReader->GetMetaData());
+    }
+
+  // set the metadata supplied on the command line
+  if (options->series_description)
+    {
+    meta->SetAttributeValue(DC::SeriesDescription, options->series_description);
+    }
+  if (options->series_number)
+    {
+    meta->SetAttributeValue(DC::SeriesNumber, options->series_number);
     }
 
   // read the NIFTI file
