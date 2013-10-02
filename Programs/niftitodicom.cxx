@@ -504,18 +504,24 @@ void niftitodicom_convert_one(
   niftitodicom_check_error(reader);
   vtkAlgorithmOutput *lastOutput = reader->GetOutputPort();
 
+  // get the NIFTI header information
+  vtkNIFTIHeader *hdr = reader->GetNIFTIHeader();
+
   // check if slices were reordered by the reader
   bool slicesReordered = (reader->GetQFac() < 0);
 
   // get the matrix from the NIFTI file
   vtkMatrix4x4 *inputMatrix = 0;
+  int xformCode = 0;
   if (reader->GetQFormMatrix())
     {
     inputMatrix = reader->GetQFormMatrix();
+    xformCode = hdr->GetQFormCode();
     }
   else if (reader->GetSFormMatrix())
     {
     inputMatrix = reader->GetSFormMatrix();
+    xformCode = hdr->GetSFormCode();
     }
 
   // convert to NIFTI coordinate system
@@ -570,8 +576,19 @@ void niftitodicom_convert_one(
     lastOutput = caster->GetOutputPort();
     }
 
-  // prepare the NIFTI header information
-  vtkNIFTIHeader *hdr = reader->GetNIFTIHeader();
+  // mix in the NIFTI header information
+  if (xformCode == vtkNIFTIHeader::XFormTalairach)
+    {
+    meta->SetAttributeValue(DC::FrameOfReferenceUID, "1.2.840.10008.1.4.1.1");
+    }
+  else if (xformCode == vtkNIFTIHeader::XFormMNI152)
+    {
+    meta->SetAttributeValue(DC::FrameOfReferenceUID, "1.2.840.10008.1.4.1.15");
+    }
+  else if (xformCode != vtkNIFTIHeader::XFormScannerAnat)
+    {
+    meta->RemoveAttribute(DC::FrameOfReferenceUID);
+    }
 
   // make the generator
   vtkSmartPointer<vtkDICOMMRGenerator> mrgenerator =
