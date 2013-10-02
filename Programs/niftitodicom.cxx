@@ -564,12 +564,32 @@ void niftitodicom_convert_one(
   int scalarType = reader->GetOutput()->GetScalarType();
   vtkSmartPointer<vtkImageShiftScale> caster =
     vtkSmartPointer<vtkImageShiftScale>::New();
+
   if (scalarType != VTK_SHORT && scalarType != VTK_UNSIGNED_SHORT)
     {
+#if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
     if (scalarType == VTK_FLOAT || scalarType == VTK_DOUBLE)
       {
-      // compute maximum value, scale down to short
+      // compute range
+      vtkSmartPointer<vtkImageHistogramStatistics> histo =
+        vtkSmartPointer<vtkImageHistogramStatistics>::New();
+      histo->SetInputConnection(lastOutput);
+      histo->Update();
+      double minVal = fabs(histo->GetMinimum());
+      double maxVal = fabs(histo->GetMaximum());
+      if (minVal > 32768.0 || maxVal > 32767.0)
+        {
+        // scale down if out-of-range
+        double v = (maxVal > minVal ? maxVal : minVal);
+        caster->SetScale(32767.0/v);
+        }
+      else if (minVal < 2.047 && maxVal < 2.047)
+        {
+        // scale up by 1000 if values are very small
+        caster->SetScale(1000.0);
+        }
       }
+#endif
 
     caster->SetInputConnection(lastOutput);
     caster->SetOutputScalarType(VTK_SHORT);
