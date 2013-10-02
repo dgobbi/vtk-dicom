@@ -396,6 +396,13 @@ void vtkNIFTIWriterSetQForm(
 
   double quat[4];
   vtkMath::Matrix3x3ToQuaternion(rmat, quat);
+  if (quat[0] < 0)
+    {
+    quat[0] = -quat[0];
+    quat[1] = -quat[1];
+    quat[2] = -quat[2];
+    quat[3] = -quat[3];
+    }
 
   if (qfac < 0)
     {
