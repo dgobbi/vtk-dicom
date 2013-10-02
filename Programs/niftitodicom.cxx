@@ -52,6 +52,14 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+// Kinds of reformats
+enum MPREnum
+{
+  MPRAxial = 1,
+  MPRCoronal = 2,
+  MPRSagittal = 3
+};
+
 // Simple structure for command-line options
 struct niftitodicom_options
 {
@@ -60,6 +68,7 @@ struct niftitodicom_options
   const char *series_description;
   const char *series_number;
   const char *uid_prefix;
+  int mpr;
   bool silent;
   bool verbose;
   const char *output;
@@ -91,9 +100,12 @@ void niftitodicom_usage(FILE *file, const char *command_name)
   fprintf(file,
     "options:\n"
     "  -o directory            The output directory.\n"
-    "  -s --silent             Do not echo output filenames.\n"
+    "  -s --silent             Do not print anything while executing.\n"
     "  -v --verbose            Verbose error reporting.\n"
     "  --no-reordering         Never reorder slices, rows, or columns.\n"
+    "  --axial                 Produce axial slices.\n"
+    "  --coronal               Produce coronal slices.\n"
+    "  --sagittal              Produce satittal slices.\n"
     "  --series-description    Textual description of the series.\n"
     "  --series-number         The series number ot use.\n"
     "  --modality              The modality: MR or CT or SC.\n"
@@ -122,10 +134,17 @@ void niftitodicom_help(FILE *file, const char *command_name)
     "be copied from these DICOM files into the output DICOM files.\n"
     "\n");
   fprintf(file,
-    "Unless the --no-reordering option is provided, %s will use the\n"
-    "information in the NIfTI header to return the slices to the original\n"
-    "ordering (axial, sagittal, or coronal).\n"
-    "\n", command_name);
+    "Unless the --no-reordering option is provided, it will ensure that\n"
+    "the images are in the usual orientation (right is left, posterior is\n"
+    "down) by reordering the columns or rows as compared to the NIFTI file.\n"
+    "\n");
+  fprintf(file,
+    "If the NIFTI file is floating-point, then the data might be rescaled\n"
+    "when written to DICOM as 16-bit integers.  If any data values are too\n"
+    "large to fit into 16 bits, then all the data will be scaled down.  If\n"
+    "the data values all have a magnitude smaller than 2.05, then all the\n"
+    "data will be scaled up by a factor of 1000.\n" 
+    "\n");
 }
 
 // Print error
@@ -262,6 +281,7 @@ void niftitodicom_read_options(
   int argc, char *argv[],
   niftitodicom_options *options, vtkStringArray *files)
 {
+  options->mpr = 0;
   options->no_reordering = false;
   options->modality = 0;
   options->series_description = 0;
@@ -312,6 +332,18 @@ void niftitodicom_read_options(
           options->uid_prefix = argv[argi];
           }
         argi++;
+        }
+      else if (strcmp(arg, "--axial") == 0)
+        {
+        options->mpr = MPRAxial;
+        }
+      else if (strcmp(arg, "--coronal") == 0)
+        {
+        options->mpr = MPRCoronal;
+        }
+      else if (strcmp(arg, "--sagittal") == 0)
+        {
+        options->mpr = MPRSagittal;
         }
       else if (strcmp(arg, "--no-reordering") == 0)
         {
@@ -559,6 +591,104 @@ void niftitodicom_convert_one(
   vtkSmartPointer<vtkMatrix4x4> matrix =
     vtkSmartPointer<vtkMatrix4x4>::New();
   matrix->DeepCopy(converter->GetPatientMatrix());
+
+  // mpr reformat if requested
+  vtkSmartPointer<vtkImageReslice> reformat =
+    vtkSmartPointer<vtkImageReslice>::New();
+  vtkSmartPointer<vtkMatrix4x4> axes =
+    vtkSmartPointer<vtkMatrix4x4>::New();
+  int permutation[3] = { 0, 1, 2 };
+
+  if (options->mpr)
+    {
+    // this becomes meaningless after reformatting
+    slicesReordered = false;
+
+    // create a permutation matrix to make the slices axial
+    axes->DeepCopy(matrix);
+    axes->Invert();
+    int maxidx[3] = { -1, -1, -1 };
+    int value[3] = { 1.0, 1.0, 1.0 };
+    int prevmaxj = -1;
+    int prevmaxi = -1;
+    for (int kdim = 0; kdim < 2; kdim++)
+      {
+      int maxj = 0;
+      int maxi = 0;
+      double maxv = -0.0;
+      for (int jdim = 0; jdim < 3; jdim++)
+        {
+        if (jdim == prevmaxj) { continue; }
+        for (int idim = 0; idim < 3; idim++)
+          {
+          if (idim == prevmaxi) { continue; }
+          double v = axes->GetElement(jdim, idim);
+          if (v*v >= maxv)
+            {
+            maxi = idim;
+            maxj = jdim;
+            maxv = v*v;
+            }
+          }
+        }
+      maxidx[maxj] = maxi;
+      value[maxj] = (axes->GetElement(maxj, maxi) < 0 ? -1.0 : 1.0);
+      prevmaxj = maxj;
+      prevmaxi = maxi;
+      }
+
+    axes->Zero();
+    axes->SetElement(3, 3, 1.0);
+    for (int jdim = 0; jdim < 3; jdim++)
+      {
+      int idim = maxidx[jdim];
+      if (idim < 0)
+        {
+        idim = 3 - maxidx[(jdim+1)%3] - maxidx[(jdim+2)%3];
+        maxidx[jdim] = idim;
+        double perm = (((3 + maxidx[2] - maxidx[0])%3) == 2 ? 1.0 : -1.0);
+        value[jdim] = value[(jdim+1)%3]*value[(jdim+2)%3]*perm;
+        }
+      permutation[jdim] = idim;
+      axes->SetElement(jdim, idim, value[jdim]);
+      }
+
+    // change the permutation to the desired mpr
+    if (options->mpr == MPRCoronal)
+      {
+      double cmatrix[16] = {
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0,-1.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 1.0 };
+      vtkMatrix4x4::Multiply4x4(*axes->Element, cmatrix, *axes->Element);
+      int tperm[3] = { permutation[0], permutation[1], permutation[2] };
+      permutation[0] = tperm[0];
+      permutation[1] = tperm[2];
+      permutation[2] = tperm[1];
+      }
+    else if (options->mpr == MPRSagittal)
+      {
+      double smatrix[16] = {
+        0.0, 0.0,-1.0, 0.0,
+        1.0, 0.0, 0.0, 0.0,
+        0.0,-1.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 1.0 };
+      vtkMatrix4x4::Multiply4x4(*axes->Element, smatrix, *axes->Element);
+      int tperm[3] = { permutation[0], permutation[1], permutation[2] };
+      permutation[0] = tperm[1];
+      permutation[1] = tperm[2];
+      permutation[2] = tperm[0];
+      }
+
+    // reformat with the permutated axes
+    reformat->SetResliceAxes(axes);
+    reformat->SetInputConnection(lastOutput);
+    lastOutput = reformat->GetOutputPort();
+
+    // factor out the permuted axes
+    vtkMatrix4x4::Multiply4x4(matrix, axes, matrix);
+    }
 
   // convert to signed short if not short
   int scalarType = reader->GetOutput()->GetScalarType();
