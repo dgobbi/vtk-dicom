@@ -1210,20 +1210,6 @@ bool vtkDICOMGenerator::GenerateGeneralImageModule(
   // it will be overwritten if a real value is found
   meta->SetAttributeValue(DC::PatientOrientation, "");
 
-  // ContentDate is conditionally required, and we have no means to
-  // check for the conditions under which it would not be required.
-  if (this->MetaData == 0 ||
-      !this->MetaData->HasAttribute(DC::ContentTime) ||
-      !this->MetaData->HasAttribute(DC::ContentDate))
-    {
-    // set the InstanceCreationDate and Time
-    const char *tz = meta->GetAttributeValue(
-      DC::TimezoneOffsetFromUTC).GetCharData();
-    std::string dt = vtkDICOMUtilities::GenerateDateTime(tz);
-    meta->SetAttributeValue(DC::ContentDate, dt.substr(0, 8));
-    meta->SetAttributeValue(DC::ContentTime, dt.substr(8, 13));
-    }
-
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
     DC::PatientOrientation, // 2C, not set if Patient Matrix exists
