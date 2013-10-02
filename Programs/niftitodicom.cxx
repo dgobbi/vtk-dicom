@@ -143,7 +143,7 @@ void niftitodicom_help(FILE *file, const char *command_name)
     "when written to DICOM as 16-bit integers.  If any data values are too\n"
     "large to fit into 16 bits, then all the data will be scaled down.  If\n"
     "the data values all have a magnitude smaller than 2.05, then all the\n"
-    "data will be scaled up by a factor of 1000.\n" 
+    "data will be scaled up by a factor of 1000.\n"
     "\n");
 }
 

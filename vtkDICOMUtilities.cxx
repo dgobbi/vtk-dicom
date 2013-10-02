@@ -269,7 +269,7 @@ char vtkDICOMTagToDigit(vtkDICOMTag tag)
 
 // get the number of random bytes to generate after this prefix
 vtkIdType vtkRandomBytesForPrefix(const char *prefix)
-{ 
+{
   size_t n = strlen(prefix);
   if (n > 0 && prefix[n-1] != '.')
     {
@@ -285,7 +285,7 @@ vtkIdType vtkRandomBytesForPrefix(const char *prefix)
     {
     m = 12; // use 96 bit random number
     }
-    
+
   return m;
 }
 
@@ -359,6 +359,8 @@ std::string vtkDICOMUtilities::GenerateUID(vtkDICOMTag tag)
 
     // convert the hex uuid into a DICOM UID with root 2.25
     vtkConvertUUIDToUID(uuid, uid);
+    cerr << uuid << "\n";
+    cerr << uid << "\n";
     }
   else
     {
@@ -521,7 +523,7 @@ std::string vtkDICOMUtilities::GenerateDateTime(const char *z)
   if (z == 0 || z[0] == '\0')
     {
     static long long lastT = 0;
-    if (t - lastT > 1000000ll) 
+    if (t - lastT > 1000000ll)
       {
       // this is needed on some systems to set timezone info,
       // because it might do I/O do it at most once per second

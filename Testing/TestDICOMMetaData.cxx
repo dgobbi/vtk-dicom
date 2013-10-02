@@ -278,7 +278,7 @@ int main(int argc, char *argv[])
   metaData->SetAttributeValue(DC::Modality, "CT");
   metaData->SetAttributeValue(0, DC::Modality, "MR");
   metaData->SetAttributeValue(DC::AcquisitionDateTime, acquisitionTime);
-  
+
   metaData->DeepCopy(metaData);
   TestAssert(metaData->GetNumberOfInstances() == 3);
   TestAssert(metaData->GetNumberOfDataElements() == 2);

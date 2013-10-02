@@ -375,7 +375,7 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *meta)
   double spacing[3], origin[3];
   double matrix[16];
   this->ComputeAdjustedMatrix(matrix, origin, spacing);
-  
+
   // compare the orientation with the input slices
   bool mismatch = false;
   int m = this->MetaData->GetNumberOfInstances();

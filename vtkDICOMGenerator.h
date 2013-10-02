@@ -155,7 +155,7 @@ protected:
     BitsStored16 = (1u << 15),
     BitsStored32 = (1u << 31)
   };
-    
+
   //! Used by subclasses to place restrictions on the pixel type.
   void SetPixelRestrictions(
     unsigned int pixelRepresentation, unsigned int bitsStored,
