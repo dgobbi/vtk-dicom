@@ -857,7 +857,6 @@ bool vtkDICOMGenerator::GenerateSOPCommonModule(
   std::string dt = vtkDICOMUtilities::GenerateDateTime(tz);
   meta->SetAttributeValue(DC::InstanceCreationDate, dt.substr(0, 8));
   meta->SetAttributeValue(DC::InstanceCreationTime, dt.substr(8, 13));
-  meta->SetAttributeValue(DC::TimezoneOffsetFromUTC, dt.substr(21, 5));
 
   // These optional attributes should be left alone for now
   // DC::InstanceCreatorUID
@@ -1228,8 +1227,8 @@ bool vtkDICOMGenerator::GenerateGeneralImageModule(
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
     DC::PatientOrientation, // 2C, not set if Patient Matrix exists
-    DC::ContentDate, // 2C, might be per-instance, up to the microsecond
-    DC::ContentTime, // 2C, might be per-instance
+    DC::ContentDate, // 2C, might be per-instance
+    DC::ContentTime, // 2C, might be per-instance, up to the microsecond
     DC::ImageType, // must change for derived or reformatted images
     DC::AcquisitionNumber,
     DC::AcquisitionDate,
