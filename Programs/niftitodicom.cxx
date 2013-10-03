@@ -463,38 +463,7 @@ void niftitodicom_read_options(
     }
 }
 
-// Remove all characters but A-ZA-z0-9_ from a string
-std::string niftitodicom_safe_string(const std::string& str)
-{
-  std::string out;
-
-  size_t n = str.size();
-  size_t m = 0;
-  for (size_t i = 0; i < n; i++)
-    {
-    char c = str[i];
-    if (!isalnum(c))
-      {
-      c = '_';
-      }
-    else
-      {
-      m = i + 1;
-      }
-    out.push_back(c);
-    }
-
-  out.resize(m);
-
-  if (out.size() == 0)
-    {
-    out = "UNKNOWN";
-    }
-
-  return out;
-}
-
-// Convert one DICOM series into one NIFTI file
+// Convert one NIFTI file into a DICOM series
 void niftitodicom_convert_one(
   const niftitodicom_options *options,
   const char *filename,
@@ -505,7 +474,7 @@ void niftitodicom_convert_one(
   vtkSmartPointer<vtkDICOMMetaData> meta =
     vtkSmartPointer<vtkDICOMMetaData>::New();
 
-  // read the DICOM files
+  // read the DICOM files, if provided
   vtkSmartPointer<vtkDICOMReader> dicomReader =
     vtkSmartPointer<vtkDICOMReader>::New();
   dicomReader->TimeAsVectorOn();
