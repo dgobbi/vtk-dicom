@@ -359,8 +359,6 @@ std::string vtkDICOMUtilities::GenerateUID(vtkDICOMTag tag)
 
     // convert the hex uuid into a DICOM UID with root 2.25
     vtkConvertUUIDToUID(uuid, uid);
-    cerr << uuid << "\n";
-    cerr << uid << "\n";
     }
   else
     {

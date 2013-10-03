@@ -271,9 +271,21 @@ void niftitodicom_add_file(vtkStringArray *files, const char *filepath)
 // Check that a file has a NIFTI name
 bool isNIFTIFileName(const char *f)
 {
+  const char *suffixes[] = {
+    ".nii", ".nii.gz", ".hdr", ".hdr.gz", ".img", ".img.gz", 0
+  };
+
   size_t n = strlen(f);
-  return ((n > 4 && strcmp(f + n - 4, ".nii") == 0) ||
-          (n > 7 && strcmp(f + n - 7, ".nii.gz") == 0));
+  for (const char **s = suffixes; *s != 0; s++)
+    {
+    size_t m = strlen(*s);
+    if (n > m && strcmp(f + n - m, *s) == 0)
+      {
+      return true;
+      }
+    }
+
+  return false;
 }
 
 // Read the options
