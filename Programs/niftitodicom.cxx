@@ -749,6 +749,11 @@ void niftitodicom_convert_one(
     writer->SetTimeSpacing(reader->GetTimeSpacing());
     }
   writer->SetPatientMatrix(matrix);
+  if (reader->GetRescaleSlope() > 0)
+    {
+    writer->SetRescaleSlope(reader->GetRescaleSlope());
+    writer->SetRescaleIntercept(reader->GetRescaleIntercept());
+    }
   writer->SetInputConnection(lastOutput);
   writer->SetMemoryRowOrderToFileNative();
   writer->Write();
