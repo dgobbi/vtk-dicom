@@ -834,10 +834,17 @@ int main(int argc, char *argv[])
     exit(1);
     }
 
-  bool isDirectory = vtksys::SystemTools::FileIsDirectory(outpath);
-  if (!isDirectory)
+  if (vtksys::SystemTools::FileExists(outpath))
     {
-    fprintf(stderr, "option -o must give an existing directory.\n");
+    if (!vtksys::SystemTools::FileIsDirectory(outpath))
+      {
+      fprintf(stderr, "option -o must give a directory, not a file.\n");
+      exit(1);
+      }
+    }
+  else if (!vtksys::SystemTools::MakeDirectory(outpath))
+    {
+    fprintf(stderr, "Cannot create directory: %s\n", outpath);
     exit(1);
     }
 
