@@ -1353,9 +1353,15 @@ std::string vtkDICOMValue::AsString() const
   if (cp)
     {
     size_t l = this->V->VL;
-    while (l > 0 && (cp[l-1] == ' ' || cp[l-1] == '\0'))
+    vtkDICOMVR vr = this->V->VR;
+    if (vr != vtkDICOMVR::ST &&
+        vr != vtkDICOMVR::LT &&
+        vr != vtkDICOMVR::UT)
       {
-      l--;
+      while (l > 0 && (cp[l-1] == ' ' || cp[l-1] == '\0'))
+        {
+        l--;
+        }
       }
     return std::string(cp, l);
     }

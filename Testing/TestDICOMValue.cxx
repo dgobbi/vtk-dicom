@@ -284,7 +284,7 @@ int main(int argc, char *argv[])
   TestAssert(v.AsInt() == 3);
   v = vtkDICOMValue(vtkDICOMVR::UT, "3\\2\\1");
   TestAssert(v.GetNumberOfValues() == 1);
-  TestAssert(v.AsString() == "3\\2\\1");
+  TestAssert(v.AsString() == "3\\2\\1 ");
   TestAssert(v.AsInt() == 0);
   }
 
