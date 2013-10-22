@@ -1440,7 +1440,7 @@ bool vtkDICOMParser::ReadMetaData(
     vtkDICOMTag delimiter(g,0);
 
     // check for PixelData group 0x7fe0, or obsolete 0x7fxx
-    if ((g & 0xff00) == 0x7f00)
+    if ((g & 0xff01) == 0x7f00)
       {
       // set delimiter to pixel data tag
       delimiter = vtkDICOMTag(g, 0x0010);
