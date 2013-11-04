@@ -211,12 +211,13 @@ endforeach()
 # hierarchy file
 if(BUILD_PYTHON_WRAPPERS AND "${VTK_MAJOR_VERSION}" GREATER 5)
   set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
-  set(vtk-module vtkDICOM)
-  set(vtkDICOM_LINK_DEPENDS ${VTK_LIBRARIES})
+  set(vtk-module ${LIB_NAME})
+  set(MODULE_HIERARCHY_NAME ${LIB_NAME}Hierarchy)
+  set(${LIB_NAME}_LINK_DEPENDS ${VTK_LIBRARIES})
   include(${VTK_CMAKE_DIR}/vtkWrapHierarchy.cmake)
-  vtk_wrap_hierarchy(vtkDICOMHierarchy ${DICOM_BINARY_DIR} "${LIB_SRCS}")
-  set(KIT_HIERARCHY_FILE ${DICOM_BINARY_DIR}/vtkDICOMHierarchy.txt)
-  set(LIB_HIERARCHY_STAMP ${DICOM_BINARY_DIR}/vtkDICOMHierarchy.stamp)
+  vtk_wrap_hierarchy(${MODULE_HIERARCHY_NAME} ${DICOM_BINARY_DIR} "${LIB_SRCS}")
+  set(KIT_HIERARCHY_FILE ${DICOM_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.txt)
+  set(LIB_HIERARCHY_STAMP ${DICOM_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.stamp)
 endif()
 
 # Create the libary
