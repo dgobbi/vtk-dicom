@@ -957,8 +957,11 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
   unsigned char *cp = reinterpret_cast<unsigned char *>(this->Buffer);
   unsigned char *ep = cp + this->ChunkSize;
 
-  // only write the preamble if FileMetaInformation group is first
-  if (this->MetaData->Begin()->GetTag().GetGroup() == 0x0002)
+  // variable to keep track of return values
+  bool r = true;
+
+  // only write preamble and meta header if transfer syntax is set
+  if (this->TransferSyntaxUID != 0)
     {
     // write the preamble
     memset(cp, '\0', 128);
@@ -968,9 +971,9 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
     cp[2] = 'C';
     cp[3] = 'M';
     cp += 4;
-    }
 
-  bool r = this->WriteMetaHeader(cp, ep, data, idx);
+    r = this->WriteMetaHeader(cp, ep, data, idx);
+    }
   if (r)
     {
     r = this->WriteMetaData(cp, ep, data, idx);
