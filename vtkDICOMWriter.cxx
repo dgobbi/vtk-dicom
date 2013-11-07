@@ -349,6 +349,7 @@ int vtkDICOMWriter::RequestData(
 
   // Get the map from file,frame to slice.
   vtkIntArray *sliceMap = this->Generator->GetSliceIndexArray();
+  vtkIntArray *componentMap = this->Generator->GetComponentIndexArray();
   int numFiles = static_cast<int>(sliceMap->GetNumberOfTuples());
   int numFrames = sliceMap->GetNumberOfComponents();
 
@@ -374,7 +375,6 @@ int vtkDICOMWriter::RequestData(
   int numPlanes = (planarConfiguration ? samplesPerPixel : 1);
   int scalarSize = data->GetScalarSize();
   int numComponents = data->GetNumberOfScalarComponents();
-  samplesPerPixel = numComponents;
 
   vtkIdType pixelSize = numComponents*scalarSize;
   vtkIdType rowSize = pixelSize*(extent[1] - extent[0] + 1);
@@ -421,7 +421,7 @@ int vtkDICOMWriter::RequestData(
                            static_cast<double>(numFiles*numFrames));
 
       int sliceIdx = sliceMap->GetComponent(fileIdx, frameIdx);
-      int componentIdx = (numFiles*numFrames) % (extent[5] - extent[4] + 1);
+      int componentIdx = componentMap->GetComponent(fileIdx, frameIdx);
 
       // pointer to the frame that will be written to the file
       char *framePtr = frameBuffer;
@@ -435,7 +435,7 @@ int vtkDICOMWriter::RequestData(
       // go to the correct position in image data
       char *slicePtr = (dataPtr +
                         (sliceIdx - extent[4])*sliceSize +
-                        componentIdx*samplesPerPixel);
+                        componentIdx*samplesPerPixel*scalarSize);
 
       // iterate through all color planes in the slice
       char *planePtr = framePtr;

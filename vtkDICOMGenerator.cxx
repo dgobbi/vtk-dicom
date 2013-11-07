@@ -53,6 +53,7 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->RescaleSlope = 1.0;
   this->PatientMatrix = 0;
   this->SliceIndexArray = vtkIntArray::New();
+  this->ComponentIndexArray = vtkIntArray::New();
   this->SourceInstanceArray = 0;
   this->RangeArray = 0;
   this->PixelValueRange[0] = 0;
@@ -80,6 +81,10 @@ vtkDICOMGenerator::~vtkDICOMGenerator()
   if (this->SliceIndexArray)
     {
     this->SliceIndexArray->Delete();
+    }
+  if (this->ComponentIndexArray)
+    {
+    this->ComponentIndexArray->Delete();
     }
   if (this->PatientMatrix)
     {
@@ -115,6 +120,15 @@ void vtkDICOMGenerator::PrintSelf(ostream& os, vtkIndent indent)
   if (this->SliceIndexArray)
     {
     os << this->SliceIndexArray << "\n";
+    }
+  else
+    {
+    os << "(none)\n";
+    }
+  os << indent << "ComponentIndexArray: ";
+  if (this->ComponentIndexArray)
+    {
+    os << this->ComponentIndexArray << "\n";
     }
   else
     {
@@ -582,16 +596,17 @@ void vtkDICOMGenerator::ComputePixelValueRange(
         int k = i*nframes + j;
         int idx = 0;
         int s = this->SliceIndexArray->GetComponent(i, j);
-        int v = (k % (ntotal/npositions)) % (ntotal/(npositions*ntimes));
-        int n = nc/nvector;
+        int v = this->ComponentIndexArray->GetComponent(i, j);
+        int n = nc/nvector; // ntimes*samplesPerPixel
         idx += s*sliceSize;
         if (this->TimeAsVector)
           {
-          n /= ntimes;
-          int t = (k % (ntotal/npositions)) / (ntotal/(npositions*ntimes));
-          idx += t*(ntotal/npositions)*n;
+          n /= ntimes; // samplesPerPixel
+          int t = v/nvector;
+          v = v % nvector;
+          idx += t*nvector*n;
           }
-        idx += v*(ntotal/(npositions*ntimes))*n;
+        idx += v*n;
 
         void *ptr = a->GetVoidPointer(idx);
         for (int hi = seriesRange[0]; hi <= seriesRange[1]; hi++)
@@ -682,12 +697,15 @@ void vtkDICOMGenerator::InitializeMetaData(
   int numSlices = (this->Dimensions[2] > 0 ? this->Dimensions[2] : 1);
   int numTimeSlots = (this->Dimensions[3] > 0 ? this->Dimensions[3] : 1);
 
-  // compute the SliceIndexArray
+  // compute the SliceIndexArray, either use one multi-frame file to save
+  // the data or use a series of non-multi-frame files
   if (this->MultiFrame)
     {
     this->NumberOfFrames = nframes;
     this->SliceIndexArray->SetNumberOfComponents(nframes);
     this->SliceIndexArray->SetNumberOfTuples(1);
+    this->ComponentIndexArray->SetNumberOfComponents(nframes);
+    this->ComponentIndexArray->SetNumberOfTuples(1);
     meta->SetNumberOfInstances(1);
     }
   else
@@ -695,6 +713,8 @@ void vtkDICOMGenerator::InitializeMetaData(
     this->NumberOfFrames = 0;
     this->SliceIndexArray->SetNumberOfComponents(1);
     this->SliceIndexArray->SetNumberOfTuples(nframes);
+    this->ComponentIndexArray->SetNumberOfComponents(1);
+    this->ComponentIndexArray->SetNumberOfTuples(nframes);
     meta->SetNumberOfInstances(nframes);
     }
 
@@ -702,34 +722,55 @@ void vtkDICOMGenerator::InitializeMetaData(
   // is present, because then every file has an ImagePositionPatient,
   // but if only a Location is present then slice ordering is critical.
   bool reverseSlices = (this->OriginAtBottom != 0);
-  for (int k = 0; k < 2; k++)
+  // If switchDimensions is true, then the vector dimension (or time
+  // dimension) comes before the slice dimension in the files.
+  bool switchDimensions = false;
+  for (int k = 0; k < 4; k++)
     {
     int m = nframes/numSlices;
     int n = m/numTimeSlots;
     for (int i = 0; i < nframes; i++)
       {
-      int sliceIdx = i/m;
+      int componentIdx = (switchDimensions ? i / numSlices : i % m);
+      int sliceIdx = (switchDimensions ? i % numSlices : i / m);
       sliceIdx = (reverseSlices ? (numSlices - sliceIdx - 1) : sliceIdx);
       if (!this->TimeAsVector)
         {
-        int timeIdx = (i % m)/n;
+        int timeIdx = componentIdx / n;
+        componentIdx = componentIdx % n;
         sliceIdx = sliceIdx*numTimeSlots + timeIdx;
         }
       this->SliceIndexArray->SetValue(i, sliceIdx);
+      this->ComponentIndexArray->SetValue(i, componentIdx);
       }
 
     // Try to match each generated slice to an input slice
     this->MatchInstances(meta);
 
-    // If MatchInstances generated a reversed array, try again (this
-    // keeps the same slice ordering as in the original file)
-    if (this->SourceInstanceArray &&
-        this->SourceInstanceArray->GetComponent(0, 0) >
-        this->SourceInstanceArray->GetComponent(nframes-1, 0))
+    if (this->SourceInstanceArray)
       {
-      reverseSlices = !reverseSlices;
-      continue;
+      // If MatchInstances generated a reversed array, try again with
+      // the slices in the opposite order.
+      if (this->SourceInstanceArray->GetComponent(0, 0) >
+          this->SourceInstanceArray->GetComponent(nframes-1, 0))
+        {
+        reverseSlices = !reverseSlices;
+        continue;
+        }
+
+      // If MatchInstances generated a shuffled array, try again with
+      // a different dimension ordering.
+      for (int j = 1; j < nframes; j++)
+        {
+        if (this->SourceInstanceArray->GetComponent(j-1, 0) >
+            this->SourceInstanceArray->GetComponent(j, 0))
+          {
+          switchDimensions = !switchDimensions;
+          continue;
+          }
+        }
       }
+
     break;
     }
 

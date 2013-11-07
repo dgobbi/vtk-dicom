@@ -139,6 +139,15 @@ public:
    */
   vtkIntArray *GetSliceIndexArray() { return this->SliceIndexArray; }
 
+  //! Get an array that maps file and frame to component.
+  /*!
+   *  Once the generator has created the metadata, this array lets the
+   *  writer know which component to write out as which frame in which file.
+   *  This will be a 2D array, with the file as the first index and the
+   *  frame as the second index.
+   */
+  vtkIntArray *GetComponentIndexArray() { return this->ComponentIndexArray; }
+
 protected:
   vtkDICOMGenerator();
   ~vtkDICOMGenerator();
@@ -349,8 +358,9 @@ protected:
   //! The orientation matrix for the DICOM file.
   vtkMatrix4x4 *PatientMatrix;
 
-  //! The file-and-frame to slice map.
+  //! The file-and-frame to slice-and-component maps.
   vtkIntArray *SliceIndexArray;
+  vtkIntArray *ComponentIndexArray;
 
   //! Map from output files to input files.
   vtkIntArray *SourceInstanceArray;
