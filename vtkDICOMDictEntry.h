@@ -38,40 +38,39 @@ public:
   vtkDICOMDictEntry() : I(&InvalidEntry) {}
 
   //! Check whether the returned entry is valid.
-  bool IsValid() {
+  bool IsValid() const {
     return (this->I != &InvalidEntry); }
 
   //! Get the DICOM tag for this dictionary entry.
-  vtkDICOMTag GetTag() {
+  vtkDICOMTag GetTag() const {
     return vtkDICOMTag(this->I->Group, this->I->Element); }
 
   //! Get the VR for this dictionary entry.
-  vtkDICOMVR GetVR() {
+  vtkDICOMVR GetVR() const {
     return vtkDICOMVR(static_cast<vtkDICOMVR::EnumType>(this->I->VR)); }
 
   //! Get the VM for this dictionary entry.
-  vtkDICOMVM GetVM() {
+  vtkDICOMVM GetVM() const {
     return vtkDICOMVM(static_cast<vtkDICOMVM::EnumType>(this->I->VM)); }
 
   //! Get a human-readable name for this dictionary entry.
-  const char *GetName() {
+  const char *GetName() const {
     return this->I->Name; }
 
   //! Check whether this entry has been retired from the DICOM standard.
-  bool IsRetired() {
+  bool IsRetired() const {
     return (this->I->Flags == 1); }
 
 private:
   vtkDICOMDictEntry(const Entry *o) : I(o) {}
 
   friend class vtkDICOMDictionary;
-  friend ostream& operator<<(ostream& o, vtkDICOMDictEntry a);
 
   const Entry *I;
 
   static const Entry InvalidEntry;
 };
 
-VTK_DICOM_EXPORT ostream& operator<<(ostream& o, vtkDICOMDictEntry a);
+VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMDictEntry& a);
 
 #endif /* __vtkDICOMDictEntry_h */

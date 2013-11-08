@@ -16,9 +16,9 @@
 const vtkDICOMDictEntry::Entry vtkDICOMDictEntry::InvalidEntry = {
   0, 0, 0, 0, 0, "" };
 
-ostream& operator<<(ostream& o, vtkDICOMDictEntry a)
+ostream& operator<<(ostream& o, const vtkDICOMDictEntry& a)
 {
-  if (a.I == 0)
+  if (!a.IsValid())
     {
     o << "INVALID";
     }
