@@ -62,6 +62,12 @@ else()
   unset(BUILD_PYTHON_WRAPPERS CACHE)
 endif()
 
+if(VTK_WRAP_JAVA)
+  option(BUILD_JAVA_WRAPPERS "Build java wrappers" ON)
+else()
+  unset(BUILD_JAVA_WRAPPERS CACHE)
+endif()
+
 # Store the git hash of the current head
 if(EXISTS "${DICOM_SOURCE_DIR}/.git/HEAD")
   file(READ "${DICOM_SOURCE_DIR}/.git/HEAD" DICOM_SOURCE_VERSION)
@@ -190,7 +196,9 @@ set(LIB_SPECIAL
   vtkDICOMVR.cxx
   vtkDICOMVM.cxx
   vtkDICOMDictEntry.cxx
+  vtkDICOMDictionary.cxx
   vtkDICOMDataElement.cxx
+  vtkDICOMReferenceCount.cxx
   vtkDICOMSequence.cxx
   vtkDICOMItem.cxx
   vtkDICOMUtilities.cxx
@@ -209,15 +217,18 @@ foreach(arg ${LIB_SRCS})
 endforeach()
 
 # hierarchy file
-if(BUILD_PYTHON_WRAPPERS AND "${VTK_MAJOR_VERSION}" GREATER 5)
-  set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
-  set(vtk-module ${LIB_NAME})
-  set(MODULE_HIERARCHY_NAME ${LIB_NAME}Hierarchy)
-  set(${LIB_NAME}_LINK_DEPENDS ${VTK_LIBRARIES})
-  include(${VTK_CMAKE_DIR}/vtkWrapHierarchy.cmake)
-  vtk_wrap_hierarchy(${MODULE_HIERARCHY_NAME} ${DICOM_BINARY_DIR} "${LIB_SRCS}")
-  set(KIT_HIERARCHY_FILE ${DICOM_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.txt)
-  set(LIB_HIERARCHY_STAMP ${DICOM_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.stamp)
+if("${VTK_MAJOR_VERSION}" GREATER 5)
+  if(BUILD_PYTHON_WRAPPERS OR BUILD_JAVA_WRAPPERS)
+    set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
+    set(vtk-module ${LIB_NAME})
+    set(MODULE_HIERARCHY_NAME ${LIB_NAME}Hierarchy)
+    set(${LIB_NAME}_LINK_DEPENDS ${VTK_LIBRARIES})
+    include(${VTK_CMAKE_DIR}/vtkWrapHierarchy.cmake)
+    vtk_wrap_hierarchy(${MODULE_HIERARCHY_NAME} ${DICOM_BINARY_DIR}
+      "${LIB_SRCS}")
+    set(KIT_HIERARCHY_FILE ${DICOM_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.txt)
+    set(LIB_HIERARCHY_STAMP ${DICOM_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.stamp)
+  endif()
 endif()
 
 # Create the libary
@@ -267,8 +278,74 @@ if(BUILD_PYTHON_WRAPPERS)
   endif()
 endif()
 
+if(BUILD_JAVA_WRAPPERS)
+  find_package(Java REQUIRED)
+  find_package(JNI REQUIRED)
+
+  set(vtk-module ${LIB_NAME})
+  set(VTK_WRAP_JAVA3_INIT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+  set(VTK_JAVA_HOME ${CMAKE_CURRENT_BINARY_DIR}/java/vtkdicom)
+  make_directory(${VTK_JAVA_HOME})
+  set(LIB_JAVA_NAME ${LIB_NAME}Java)
+  if("${VTK_MAJOR_VERSION}" GREATER 5)
+    set(LIB_JAVA_LIBS vtkCommonCoreJava vtkIOImageJava)
+  else()
+    set(LIB_JAVA_LIBS vtkCommonJava vtkIOJava)
+  endif()
+
+  if(VTK_JAVA_INCLUDE_DIR)
+    include_directories("${VTK_JAVA_INCLUDE_DIR}")
+  else()
+    include_directories("${JAVA_INCLUDE_PATH}" "${JAVA_INCLUDE_PATH2}")
+  endif()
+  include(${VTK_CMAKE_DIR}/vtkWrapJava.cmake)
+  vtk_wrap_java3(${LIB_JAVA_NAME} LIB_JAVA_SRCS "${LIB_SRCS}")
+  add_library(${LIB_JAVA_NAME} SHARED ${LIB_JAVA_SRCS} ${LIB_JAVA_EXTRA_SRCS})
+  if(APPLE)
+    set_target_properties(${LIB_JAVA_NAME} PROPERTIES SUFFIX ".jnilib")
+  endif()
+  target_link_libraries(${LIB_JAVA_NAME} ${LIB_NAME} ${LIB_JAVA_LIBS})
+  add_dependencies(${LIB_JAVA_NAME} ${LIB_NAME})
+  if(KIT_JAVA_DEPS)
+    add_dependencies(${LIB_JAVA_NAME} ${KIT_JAVA_DEPS})
+  endif()
+
+  if(APPLE)
+    set(JAVAC_OPTIONS -J-Xmx512m)
+  endif()
+  if(NOT VTK_JAR_PATH)
+    set(VTK_JAR_PATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+  endif()
+
+  add_custom_target(${LIB_NAME}JavaJar ALL
+    DEPENDS ${VTK_JAR_PATH}/vtkdicom.jar)
+  add_custom_target(${LIB_NAME}JavaClasses ALL
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/java/javac_stamp.txt)
+  add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/java/javac_stamp.txt
+    DEPENDS ${LIB_JAVA_SRCS}
+    COMMAND ${JAVA_COMPILE} ${JAVAC_OPTIONS} -source 1.5
+      -classpath ${VTK_DIR}/java
+      -sourcepath ${VTK_DIR}/java/vtk/
+      -d ${CMAKE_CURRENT_BINARY_DIR}/java
+      ${CMAKE_CURRENT_BINARY_DIR}/java/vtkdicom/*.java
+    COMMAND ${CMAKE_COMMAND}
+      -E touch ${CMAKE_CURRENT_BINARY_DIR}/java/javac_stamp.txt
+    COMMENT "Compiling Java Classes"
+    )
+  add_custom_command(
+    COMMAND ${JAVA_ARCHIVE} -cvf  "${VTK_JAR_PATH}/vtkdicom.jar"
+    -C ${CMAKE_CURRENT_BINARY_DIR}/java
+    vtkdicom
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/java/javac_stamp.txt ${JAVA_LIBRARIES}
+    OUTPUT ${VTK_JAR_PATH}/vtkdicom.jar
+    COMMENT "Java Archive"
+    )
+endif()
+
 # Set the install rules for the library
-install(TARGETS ${LIB_NAME} ${LIB_PYTHON_NAME} ${MODULE_PYTHON_NAME}
+install(TARGETS
+  ${LIB_NAME} ${LIB_PYTHON_NAME} ${MODULE_PYTHON_NAME} ${LIB_JAVA_NAME}
   EXPORT DICOMTargets
   RUNTIME DESTINATION ${DICOM_RUNTIME_INSTALL_DEST} COMPONENT RuntimeLibraries
   LIBRARY DESTINATION ${DICOM_LIBRARY_INSTALL_DEST} COMPONENT RuntimeLibraries
