@@ -17,6 +17,8 @@
 #include <vtkObject.h>
 #include "vtkDICOMModule.h"
 
+#include <string>
+
 class vtkDICOMMetaData;
 class vtkUnsignedShortArray;
 class vtkDICOMParserInternalFriendship;
