@@ -91,8 +91,8 @@ public:
 
   //! Assignment from value to sequence is type checked.
   vtkDICOMSequence& operator=(const vtkDICOMValue& o) {
-    if (o.GetVR() == vtkDICOMVR::SQ) { this->V = o; return *this; }
-    else { this->V.Clear(); } }
+    if (o.GetVR() == vtkDICOMVR::SQ) { this->V = o; }
+    else { this->V.Clear(); } return *this; }
 
 private:
   friend class vtkDICOMValue;
