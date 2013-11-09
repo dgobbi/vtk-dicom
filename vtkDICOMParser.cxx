@@ -1397,7 +1397,7 @@ bool vtkDICOMParser::ReadMetaData(
     if (!decoder->CheckBuffer(cp, ep, 8)) { return false; }
     if (cp[0] == 0x00 && cp[1] == 0x08)
       {
-      tsyntax == "1.2.840.10008.1.2.2";
+      tsyntax = "1.2.840.10008.1.2.2";
       decoder = &decoderBE;
       }
     decoder->SetImplicitVR(!vtkDICOMVR(cp + 4).IsValid());
