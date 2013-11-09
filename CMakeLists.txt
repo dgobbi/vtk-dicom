@@ -63,7 +63,7 @@ else()
 endif()
 
 if(VTK_WRAP_JAVA)
-  option(BUILD_JAVA_WRAPPERS "Build java wrappers" ON)
+  option(BUILD_JAVA_WRAPPERS "Build java wrappers" OFF)
 else()
   unset(BUILD_JAVA_WRAPPERS CACHE)
 endif()
