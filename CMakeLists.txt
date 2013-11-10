@@ -290,7 +290,7 @@ if(BUILD_JAVA_WRAPPERS)
 
   set(vtk-module ${LIB_NAME})
   set(VTK_WRAP_JAVA3_INIT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-  set(VTK_JAVA_HOME ${CMAKE_CURRENT_BINARY_DIR}/java/vtkdicom)
+  set(VTK_JAVA_HOME ${CMAKE_CURRENT_BINARY_DIR}/java/vtk)
   make_directory(${VTK_JAVA_HOME})
   set(LIB_JAVA_NAME ${LIB_NAME}Java)
   if("${VTK_MAJOR_VERSION}" GREATER 5)
@@ -329,12 +329,12 @@ if(BUILD_JAVA_WRAPPERS)
     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/java/javac_stamp.txt)
   add_custom_command(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/java/javac_stamp.txt
-    DEPENDS ${LIB_JAVA_SRCS}
+    DEPENDS ${VTK_JAVA_DEPENDENCIES}
     COMMAND ${JAVA_COMPILE} ${JAVAC_OPTIONS} -source 1.5
       -classpath ${VTK_DIR}/java
       -sourcepath ${VTK_DIR}/java/vtk/
       -d ${CMAKE_CURRENT_BINARY_DIR}/java
-      ${CMAKE_CURRENT_BINARY_DIR}/java/vtkdicom/*.java
+      ${CMAKE_CURRENT_BINARY_DIR}/java/vtk/*.java
     COMMAND ${CMAKE_COMMAND}
       -E touch ${CMAKE_CURRENT_BINARY_DIR}/java/javac_stamp.txt
     COMMENT "Compiling Java Classes"
@@ -342,7 +342,7 @@ if(BUILD_JAVA_WRAPPERS)
   add_custom_command(
     COMMAND ${JAVA_ARCHIVE} -cvf  "${VTK_JAR_PATH}/vtkdicom.jar"
     -C ${CMAKE_CURRENT_BINARY_DIR}/java
-    vtkdicom
+    vtk
     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/java/javac_stamp.txt ${JAVA_LIBRARIES}
     OUTPUT ${VTK_JAR_PATH}/vtkdicom.jar
     COMMENT "Java Archive"
