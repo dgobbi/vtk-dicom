@@ -189,6 +189,11 @@ set(LIB_HDRS
   ${DICOM_BINARY_DIR}/vtkDICOMConfig.h
 )
 
+# Sources that are abstract
+set(LIB_ABSTRACT
+  vtkDICOMGenerator.cxx
+)
+
 # Sources that are not vtkObjects
 set(LIB_SPECIAL
   vtkDICOMTag.cxx
@@ -206,6 +211,7 @@ set(LIB_SPECIAL
 )
 
 set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_EXCLUDE ON)
+set_source_files_properties(${LIB_ABSTRACT} PROPERTIES ABSTRACT ON)
 
 # Automatically find the header for each cxx file
 foreach(arg ${LIB_SRCS})
