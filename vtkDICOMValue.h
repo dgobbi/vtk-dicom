@@ -20,6 +20,8 @@
 #include "vtkDICOMTag.h"
 #include "vtkDICOMReferenceCount.h"
 
+#include <string>
+
 // type constants
 #define VTK_DICOM_TAG    13
 #define VTK_DICOM_ITEM   14

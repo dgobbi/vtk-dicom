@@ -19,6 +19,8 @@
 #include "vtkDICOMDictEntry.h"
 #include "vtkDICOMReferenceCount.h"
 
+#include <string>
+
 class vtkDICOMTagPath;
 
 //! An item in a DICOM sequence (type SQ).

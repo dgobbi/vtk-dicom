@@ -18,6 +18,8 @@
 #include "vtkDICOMModule.h"
 #include "vtkDICOMTag.h"
 
+#include <string>
+
 class vtkStringArray;
 
 //! Utility functions for use with DICOM classes.

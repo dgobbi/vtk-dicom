@@ -19,6 +19,8 @@
 #include "vtkDICOMDataElement.h"
 #include "vtkDICOMDictEntry.h"
 
+#include <string>
+
 class vtkDICOMTagPath;
 
 //! A container class for DICOM metadata.
