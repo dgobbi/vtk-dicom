@@ -14,8 +14,11 @@
 // .NAME vtkDICOMWriter - Write DICOM image files.
 // .SECTION Description
 // This class writes a series of one or more DICOM files.  The default
-// behavior is to write a single multi-frame Secondary Capture file
-// with no modality-specific information.
+// behavior is to write a series of Secondary Capture files with no
+// modality-specific information.  To write other kinds of DICOM files,
+// use the SetGenerator() method to supply a generator for the type of
+// data set that you wish to write.  Currently, there are generators for
+// MR and CT data sets.
 // .SECTION Thanks
 // This class was contributed to VTK by David Gobbi.
 
