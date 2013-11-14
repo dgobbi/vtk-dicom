@@ -26,7 +26,7 @@ if(USE_GDCM)
   endif()
   if(GDCM_FOUND)
     include(${GDCM_USE_FILE})
-    set(GDCM_LIBS gdcmMSFF)
+    set(GDCM_LIBS gdcmMSFF gdcmIOD gdcmDSED gdcmDICT)
   endif()
 endif()
 
