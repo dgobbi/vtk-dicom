@@ -229,7 +229,7 @@ void vtkGenerateRandomBytes(char *bytes, vtkIdType n)
 #endif
   if (r == 0)
     {
-    memset(bytes, n, '\0');
+    memset(bytes, '\0', n);
     vtkGenericWarningMacro(
       "vtkDICOMUtilities::GenerateUID() failed to read from "
       "the random number generator");
