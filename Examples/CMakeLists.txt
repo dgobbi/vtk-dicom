@@ -1,6 +1,6 @@
 include_directories(${DICOM_INCLUDE_DIRS})
 
-if(VTK_LIBRARIES)
+if("${VTK_MAJOR_VERSION}" GREATER 5)
   set(VTK_LIBS vtkRenderingImage vtkInteractionStyle
       vtkRenderingOpenGL vtkRenderingFreeTypeOpenGL) # VTK 6.x
 else()

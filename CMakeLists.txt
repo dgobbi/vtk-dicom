@@ -150,6 +150,13 @@ include_directories(${DICOM_INCLUDE_DIRS})
 # Create the main library
 set(LIB_NAME vtkDICOM)
 
+# The library dependencies
+if("${VTK_MAJOR_VERSION}" GREATER 5)
+  set(VTK_LIBS vtkIOImage vtksys vtkzlib) # VTK 6.x
+else()
+  set(VTK_LIBS vtkIO vtkzlib) # VTK 5.x
+endif()
+
 # Sources in the current directory (library sources only!)
 set(LIB_SRCS
   vtkDICOMMetaData.cxx
@@ -228,7 +235,7 @@ if("${VTK_MAJOR_VERSION}" GREATER 5)
     set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
     set(vtk-module ${LIB_NAME})
     set(MODULE_HIERARCHY_NAME ${LIB_NAME}Hierarchy)
-    set(${LIB_NAME}_LINK_DEPENDS ${VTK_LIBRARIES})
+    set(${LIB_NAME}_LINK_DEPENDS ${VTK_LIBS})
     include(${VTK_CMAKE_DIR}/vtkWrapHierarchy.cmake)
     vtk_wrap_hierarchy(${MODULE_HIERARCHY_NAME} ${DICOM_BINARY_DIR}
       "${LIB_SRCS}")
@@ -238,11 +245,6 @@ if("${VTK_MAJOR_VERSION}" GREATER 5)
 endif()
 
 # Create the libary
-if(VTK_LIBRARIES)
-  set(VTK_LIBS vtkIOImage vtksys vtkzlib) # VTK 6.x
-else()
-  set(VTK_LIBS vtkIO vtkzlib) # VTK 5.x
-endif()
 add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_HIERARCHY_STAMP})
 target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS})
 set(DICOM_LIBRARIES ${LIB_NAME})

@@ -7,7 +7,7 @@ set(PROGRAM_SRCS
   niftidump.cxx
 )
 
-if(VTK_LIBRARIES)
+if("${VTK_MAJOR_VERSION}" GREATER 5)
   set(VTK_LIBS vtkImagingStatistics) # VTK 6.x
 else()
   set(VTK_LIBS vtkImaging) # VTK 5.x
