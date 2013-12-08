@@ -1,7 +1,8 @@
 include_directories(${DICOM_INCLUDE_DIRS})
 
 if(VTK_LIBRARIES)
-  set(VTK_LIBS) # VTK 6.x
+  set(VTK_LIBS vtkRenderingImage vtkInteractionStyle
+      vtkRenderingOpenGL vtkRenderingFreeTypeOpenGL) # VTK 6.x
 else()
   set(VTK_LIBS vtkRendering) # VTK 5.x
 endif()

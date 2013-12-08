@@ -8,7 +8,7 @@ set(PROGRAM_SRCS
 )
 
 if(VTK_LIBRARIES)
-  set(VTK_LIBS) # VTK 6.x
+  set(VTK_LIBS vtkImagingStatistics) # VTK 6.x
 else()
   set(VTK_LIBS vtkImaging) # VTK 5.x
 endif()
