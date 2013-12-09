@@ -1780,6 +1780,7 @@ bool vtkDICOMReader::ReadCompressedFile(
 #else /* no DCMTK or GDCM, so no file decompression */
 
   (void)filename;
+  (void)fileIdx;
   (void)buffer;
   (void)bufferSize;
 
