@@ -229,12 +229,7 @@ foreach(arg ${LIB_SRCS})
   endif()
 endforeach()
 
-# Create the libary
-add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_HIERARCHY_STAMP})
-target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS})
-set(DICOM_LIBRARIES ${LIB_NAME})
-
-# hierarchy file
+# Create the hierarchy file
 if("${VTK_MAJOR_VERSION}" GREATER 5)
   if(BUILD_PYTHON_WRAPPERS OR BUILD_JAVA_WRAPPERS)
     set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
@@ -248,6 +243,11 @@ if("${VTK_MAJOR_VERSION}" GREATER 5)
     set(LIB_HIERARCHY_STAMP ${DICOM_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.stamp)
   endif()
 endif()
+
+# Create the library
+add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_HIERARCHY_STAMP})
+target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS})
+set(DICOM_LIBRARIES ${LIB_NAME})
 
 # Wrappers
 if(BUILD_PYTHON_WRAPPERS)
