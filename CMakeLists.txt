@@ -157,6 +157,12 @@ else()
   set(VTK_LIBS vtkIO vtksys vtkzlib) # VTK 5.x
 endif()
 
+if(WIN32)
+  set(REFCOUNT_SRC vtkDICOMReferenceCount.cxx)
+else()
+  set(REFCOUNT_HDR vtkDICOMReferenceCount.h)
+endif()
+
 # Sources in the current directory (library sources only!)
 set(LIB_SRCS
   vtkDICOMMetaData.cxx
@@ -178,7 +184,7 @@ set(LIB_SRCS
   vtkDICOMSequence.cxx
   vtkDICOMItem.cxx
   vtkDICOMSorter.cxx
-  vtkDICOMReferenceCount.cxx
+  ${REFCOUNT_SRC}
   vtkDICOMUtilities.cxx
   vtkDICOMValue.cxx
   vtkDICOMWriter.cxx
@@ -191,6 +197,7 @@ set(LIB_SRCS
 # Headers without a matching .cxx file are listed here
 set(LIB_HDRS
   vtkDICOMModule.h
+  ${REFCOUNT_HDR}
   vtkNIFTIHeaderPrivate.h
   ${DICOM_BINARY_DIR}/vtkDICOMBuild.h
   ${DICOM_BINARY_DIR}/vtkDICOMConfig.h
@@ -210,7 +217,7 @@ set(LIB_SPECIAL
   vtkDICOMDictEntry.cxx
   vtkDICOMDictionary.cxx
   vtkDICOMDataElement.cxx
-  vtkDICOMReferenceCount.cxx
+  ${REFCOUNT_SRC}
   vtkDICOMSequence.cxx
   vtkDICOMItem.cxx
   vtkDICOMUtilities.cxx
