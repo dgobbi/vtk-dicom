@@ -361,9 +361,9 @@ int vtkDICOMWriter::GenerateMetaData(
     }
 
   // add an empty PixelData to be filled in by the compiler
-  unsigned short empty[1] = {};
+  unsigned short empty = 0;
   meta->SetAttributeValue(
-    DC::PixelData, vtkDICOMValue(vtkDICOMVR::OW, empty, empty));
+    DC::PixelData, vtkDICOMValue(vtkDICOMVR::OW, &empty, empty));
 
   return 1;
 }

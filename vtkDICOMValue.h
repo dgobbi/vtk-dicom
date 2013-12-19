@@ -90,6 +90,8 @@ public:
   vtkDICOMValue(vtkDICOMVR vr, const float *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const double *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMTag *data, size_t count);
+
+#ifndef REMOVE_DEPRECATED_METHODS
   vtkDICOMValue(vtkDICOMVR vr, const char *data, const char *end);
   vtkDICOMValue(vtkDICOMVR vr, const unsigned char *data,
     const unsigned char *end);
@@ -103,6 +105,7 @@ public:
   vtkDICOMValue(vtkDICOMVR vr, const double *data, const double *end);
   vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMTag *data,
     const vtkDICOMTag *end);
+#endif /* REMOVE_DEPRECATED_METHODS */
 
   //! Construct a string value with a specific character set.
   /*!
@@ -115,8 +118,10 @@ public:
                 const std::string& v);
   vtkDICOMValue(vtkDICOMVR vr, vtkDICOMCharacterSet cs,
                 const char *data, size_t l);
+#ifndef REMOVE_DEPRECATED_METHODS
   vtkDICOMValue(vtkDICOMVR vr, vtkDICOMCharacterSet cs,
                 const char *data, const char *end);
+#endif /* REMOVE_DEPRECATED_METHODS */
 
   //! Create an emtpy value.
   explicit vtkDICOMValue(vtkDICOMVR vr);
@@ -194,6 +199,7 @@ public:
   void GetValues(double *vb, size_t n, size_t i=0) const;
   void GetValues(vtkDICOMTag *vb, size_t n, size_t i=0) const;
 
+#ifndef REMOVE_DEPRECATED_METHODS
   //! Copy values into vb until ve is reached, starting at value "i".
   /*!
    *  Get one or more values, doing conversion from the stored type to
@@ -219,6 +225,7 @@ public:
     this->GetValues(vb, ve - vb, i); }
   void GetValues(vtkDICOMTag *vb, vtkDICOMTag *ve, size_t i=0) const {
     this->GetValues(vb, ve - vb, i); }
+#endif /* REMOVE_DEPRECATED_METHODS */
 
   //! Get one scalar value or single string from the value.
   /*!

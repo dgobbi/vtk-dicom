@@ -1532,8 +1532,8 @@ bool vtkDICOMParser::ReadMetaData(
   if (meta && this->PixelDataFound)
     {
     // add the PixelData attribute, but make it empty
-    unsigned short x;
-    vtkDICOMValue v(decoder->GetLastVR(), &x, &x);
+    unsigned short x = 0;
+    vtkDICOMValue v(decoder->GetLastVR(), &x, x);
     if (idx >= 0)
       {
       meta->SetAttributeValue(idx, DC::PixelData, v);

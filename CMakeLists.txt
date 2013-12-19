@@ -69,6 +69,8 @@ if(USE_DCMTK)
   include_directories(${DCMTK_INCLUDE_DIRS})
 endif()
 
+option(REMOVE_DEPRECATED_METHODS "Remove deprecated methods from source." ON)
+
 # Project version
 set(DICOM_MAJOR_VERSION 0)
 set(DICOM_MINOR_VERSION 4)

@@ -1137,7 +1137,7 @@ bool vtkDICOMCompiler::WriteMetaHeader(
     vtkDICOMValue(vtkDICOMVR::UL, l));
   item.SetAttributeValue(
     DC::FileMetaInformationVersion,
-    vtkDICOMValue(vtkDICOMVR::OB, metaver, metaver+2));
+    vtkDICOMValue(vtkDICOMVR::OB, metaver, 2));
   item.SetAttributeValue(
     DC::MediaStorageSOPClassUID,
     vtkDICOMValue(vtkDICOMVR::UI, classUID));

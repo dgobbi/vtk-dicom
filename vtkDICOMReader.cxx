@@ -384,8 +384,8 @@ double vtkDICOMReaderComputeLocation(
   else
     {
     double orientation[6], normal[3], position[3];
-    pv.GetValues(position, position+3);
-    ov.GetValues(orientation, orientation+6);
+    pv.GetValues(position, 3);
+    ov.GetValues(orientation, 6);
 
     // compute the cross product to get the slice normal
     vtkMath::Cross(&orientation[0], &orientation[3], normal);
@@ -1283,7 +1283,7 @@ int vtkDICOMReader::RequestInformation(
     vtkDICOMValue v = this->MetaData->GetAttributeValue(DC::PixelSpacing);
     if (v.GetNumberOfValues() == 2)
       {
-      v.GetValues(this->DataSpacing, this->DataSpacing + 2);
+      v.GetValues(this->DataSpacing, 2);
       }
     }
 
@@ -1302,7 +1302,7 @@ int vtkDICOMReader::RequestInformation(
       }
     if (v.GetNumberOfValues() == 2)
       {
-      v.GetValues(this->DataSpacing, this->DataSpacing + 2);
+      v.GetValues(this->DataSpacing, 2);
       }
     }
 
@@ -1447,8 +1447,8 @@ int vtkDICOMReader::RequestInformation(
   if (pv.GetNumberOfValues() == 3 && ov.GetNumberOfValues() == 6)
     {
     double orient[6], normal[3], point[3];
-    pv.GetValues(point, point+3);
-    ov.GetValues(orient, orient+6);
+    pv.GetValues(point, 3);
+    ov.GetValues(orient, 6);
 
     if (this->MemoryRowOrder == vtkDICOMReader::BottomUp)
       {

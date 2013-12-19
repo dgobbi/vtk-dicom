@@ -94,24 +94,24 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
     pointers[npointers++] = DC::FrameTimeVector;
     meta->SetAttributeValue(
       DC::FrameTimeVector,
-      vtkDICOMValue(vtkDICOMVR::DS, tvector, tvector+nframes));
+      vtkDICOMValue(vtkDICOMVR::DS, tvector, nframes));
     }
   if (dims[2] > 0)
     {
     pointers[npointers++] = DC::SliceLocationVector;
     meta->SetAttributeValue(DC::SliceLocationVector,
-      vtkDICOMValue(vtkDICOMVR::DS, zvector, zvector+nframes));
+      vtkDICOMValue(vtkDICOMVR::DS, zvector, nframes));
     }
 
   meta->RemoveAttribute(DC::FrameTime);
   meta->SetAttributeValue(
     DC::FrameIncrementPointer,
-    vtkDICOMValue(vtkDICOMVR::AT, pointers, pointers+npointers));
+    vtkDICOMValue(vtkDICOMVR::AT, pointers, npointers));
 
   meta->RemoveAttribute(DC::PixelAspectRatio);
   meta->SetAttributeValue(
     DC::PixelSpacing,
-    vtkDICOMValue(vtkDICOMVR::DS, spacing, spacing+2));
+    vtkDICOMValue(vtkDICOMVR::DS, spacing, 2));
 
   delete [] zvector;
   delete [] tvector;

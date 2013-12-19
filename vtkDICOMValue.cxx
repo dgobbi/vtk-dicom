@@ -733,6 +733,8 @@ vtkDICOMValue::vtkDICOMValue(
   this->CreateValue(vr, data, count);
 }
 
+#ifndef REMOVE_DEPRECATED_METHODS
+
 vtkDICOMValue::vtkDICOMValue(
   vtkDICOMVR vr, const char *data, const char *end)
 {
@@ -787,6 +789,8 @@ vtkDICOMValue::vtkDICOMValue(
   this->CreateValue(vr, data, end - data);
 }
 
+#endif /* REMOVE_DEPRECATED_METHODS */
+
 //----------------------------------------------------------------------------
 void vtkDICOMValue::CreateValueWithSpecificCharacterSet(
   vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, size_t l)
@@ -809,11 +813,15 @@ vtkDICOMValue::vtkDICOMValue(
   this->CreateValueWithSpecificCharacterSet(vr, cs, data, l);
 }
 
+#ifndef REMOVE_DEPRECATED_METHODS
+
 vtkDICOMValue::vtkDICOMValue(
   vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, const char *end)
 {
   this->CreateValueWithSpecificCharacterSet(vr, cs, data, end - data);
 }
+
+#endif /* REMOVE_DEPRECATED_METHODS */
 
 vtkDICOMValue::vtkDICOMValue(
   vtkDICOMVR vr, vtkDICOMCharacterSet cs, const std::string& v)
