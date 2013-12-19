@@ -90,24 +90,19 @@ public:
   vtkDICOMValue(vtkDICOMVR vr, const float *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const double *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMTag *data, size_t count);
-  vtkDICOMValue(vtkDICOMVR vr,
-                const char *data, const char *end);
-  vtkDICOMValue(vtkDICOMVR vr,
-                const unsigned char *data, const unsigned char *end);
-  vtkDICOMValue(vtkDICOMVR vr,
-                const short *data, const short *end);
-  vtkDICOMValue(vtkDICOMVR vr,
-                const unsigned short *data, const unsigned short *end);
-  vtkDICOMValue(vtkDICOMVR vr,
-                const int *data, const int *end);
-  vtkDICOMValue(vtkDICOMVR vr,
-                const unsigned int *data, const unsigned int *end);
-  vtkDICOMValue(vtkDICOMVR vr,
-                const float *data, const float *end);
-  vtkDICOMValue(vtkDICOMVR vr,
-                const double *data, const double *end);
-  vtkDICOMValue(vtkDICOMVR vr,
-                const vtkDICOMTag *data, const vtkDICOMTag *end);
+  vtkDICOMValue(vtkDICOMVR vr, const char *data, const char *end);
+  vtkDICOMValue(vtkDICOMVR vr, const unsigned char *data,
+    const unsigned char *end);
+  vtkDICOMValue(vtkDICOMVR vr, const short *data, const short *end);
+  vtkDICOMValue(vtkDICOMVR vr, const unsigned short *data,
+    const unsigned short *end);
+  vtkDICOMValue(vtkDICOMVR vr, const int *data, const int *end);
+  vtkDICOMValue(vtkDICOMVR vr, const unsigned int *data,
+    const unsigned int *end);
+  vtkDICOMValue(vtkDICOMVR vr, const float *data, const float *end);
+  vtkDICOMValue(vtkDICOMVR vr, const double *data, const double *end);
+  vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMTag *data,
+    const vtkDICOMTag *end);
 
   //! Construct a string value with a specific character set.
   /*!
@@ -182,23 +177,6 @@ public:
   unsigned int GetNumberOfValues() const {
     return (this->V ? this->V->NumberOfValues : 0); }
 
-  //! Copy values into vb until ve is reached, starting at value "i".
-  /*!
-   *  Get one or more values, doing conversion from the stored type to
-   *  the requested type.  If the VR is IS or DS (integer string or
-   *  decimal string) then conversion from text to a numerical value
-   *  will be performed.
-   */
-  void GetValues(std::string *vb, std::string *ve, size_t i=0) const;
-  void GetValues(unsigned char *vb, unsigned char *ve, size_t i=0) const;
-  void GetValues(short *vb, short *ve, size_t i=0) const;
-  void GetValues(unsigned short *vb, unsigned short *ve, size_t i=0) const;
-  void GetValues(int *vb, int *ve, size_t i=0) const;
-  void GetValues(unsigned int *vb, unsigned int *ve, size_t i=0) const;
-  void GetValues(float *vb, float *ve, size_t i=0) const;
-  void GetValues(double *vb, double *ve, size_t i=0) const;
-  void GetValues(vtkDICOMTag *vb, vtkDICOMTag *ve, size_t i=0) const;
-
   //! Copy "n" values into vb, starting at value "i".
   /*!
    *  Get one or more values, doing conversion from the stored type to
@@ -206,24 +184,41 @@ public:
    *  decimal string) then conversion from text to a numerical value
    *  will be performed.
    */
-  void GetValues(std::string *vb, size_t n, size_t i=0) const {
-    this->GetValues(vb, vb+n, i); }
-  void GetValues(unsigned char *vb, size_t n, size_t i=0) const {
-    this->GetValues(vb, vb+n, i); }
-  void GetValues(short *vb, size_t n, size_t i=0) const {
-    this->GetValues(vb, vb+n, i); }
-  void GetValues(unsigned short *vb, size_t n, size_t i=0) const {
-    this->GetValues(vb, vb+n, i); }
-  void GetValues(int *vb, size_t n, size_t i=0) const {
-    this->GetValues(vb, vb+n, i); }
-  void GetValues(unsigned int *vb, size_t n, size_t i=0) const {
-    this->GetValues(vb, vb+n, i); }
-  void GetValues(float *vb, size_t n, size_t i=0) const {
-    this->GetValues(vb, vb+n, i); }
-  void GetValues(double *vb, size_t n, size_t i=0) const {
-    this->GetValues(vb, vb+n, i); }
-  void GetValues(vtkDICOMTag *vb, size_t n, size_t i=0) const {
-    this->GetValues(vb, vb+n, i); }
+  void GetValues(std::string *vb, size_t n, size_t i=0) const;
+  void GetValues(unsigned char *vb, size_t n, size_t i=0) const;
+  void GetValues(short *vb, size_t n, size_t i=0) const;
+  void GetValues(unsigned short *vb, size_t n, size_t i=0) const;
+  void GetValues(int *vb, size_t n, size_t i=0) const;
+  void GetValues(unsigned int *vb, size_t n, size_t i=0) const;
+  void GetValues(float *vb, size_t n, size_t i=0) const;
+  void GetValues(double *vb, size_t n, size_t i=0) const;
+  void GetValues(vtkDICOMTag *vb, size_t n, size_t i=0) const;
+
+  //! Copy values into vb until ve is reached, starting at value "i".
+  /*!
+   *  Get one or more values, doing conversion from the stored type to
+   *  the requested type.  If the VR is IS or DS (integer string or
+   *  decimal string) then conversion from text to a numerical value
+   *  will be performed.
+   */
+  void GetValues(std::string *vb, std::string *ve, size_t i=0) const {
+    this->GetValues(vb, ve - vb, i); }
+  void GetValues(unsigned char *vb, unsigned char *ve, size_t i=0) const {
+    this->GetValues(vb, ve - vb, i); }
+  void GetValues(short *vb, short *ve, size_t i=0) const {
+    this->GetValues(vb, ve - vb, i); }
+  void GetValues(unsigned short *vb, unsigned short *ve, size_t i=0) const {
+    this->GetValues(vb, ve - vb, i); }
+  void GetValues(int *vb, int *ve, size_t i=0) const {
+    this->GetValues(vb, ve - vb, i); }
+  void GetValues(unsigned int *vb, unsigned int *ve, size_t i=0) const {
+    this->GetValues(vb, ve - vb, i); }
+  void GetValues(float *vb, float *ve, size_t i=0) const {
+    this->GetValues(vb, ve - vb, i); }
+  void GetValues(double *vb, double *ve, size_t i=0) const {
+    this->GetValues(vb, ve - vb, i); }
+  void GetValues(vtkDICOMTag *vb, vtkDICOMTag *ve, size_t i=0) const {
+    this->GetValues(vb, ve - vb, i); }
 
   //! Get one scalar value or single string from the value.
   /*!
@@ -368,11 +363,11 @@ private:
 
   //! Internal templated GetValues() method.
   template<class OT>
-  void GetValuesT(OT *v, OT *ve, size_t s) const;
+  void GetValuesT(OT *v, size_t count, size_t s) const;
 
   //! Internal templated value creation method.
   template<class T>
-  void CreateValue(vtkDICOMVR vr, const T *data, const T *end);
+  void CreateValue(vtkDICOMVR vr, const T *data, size_t count);
 
   //! Internal templated method to initialize for future appends.
   template<class T>
