@@ -146,6 +146,7 @@ configure_file(CMake/vtkDICOMBuild.h.in
 # Include directories
 set(DICOM_INCLUDE_DIRS "${DICOM_SOURCE_DIR}" "${DICOM_BINARY_DIR}")
 include_directories(${DICOM_INCLUDE_DIRS})
+set(VTK_WRAP_INCLUDE_DIRS ${DICOM_INCLUDE_DIRS} ${VTK_WRAP_INCLUDE_DIRS})
 
 # Create the main library
 set(LIB_NAME vtkDICOM)
