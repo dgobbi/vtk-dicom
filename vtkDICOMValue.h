@@ -81,6 +81,15 @@ public:
   vtkDICOMValue(vtkDICOMVR vr, double v);
   vtkDICOMValue(vtkDICOMVR vr, const std::string& v);
   vtkDICOMValue(vtkDICOMVR vr, vtkDICOMTag v);
+  vtkDICOMValue(vtkDICOMVR vr, const char *data, unsigned int count);
+  vtkDICOMValue(vtkDICOMVR vr, const unsigned char *data, unsigned int count);
+  vtkDICOMValue(vtkDICOMVR vr, const short *data, unsigned int count);
+  vtkDICOMValue(vtkDICOMVR vr, const unsigned short *data, unsigned int count);
+  vtkDICOMValue(vtkDICOMVR vr, const int *data, unsigned int count);
+  vtkDICOMValue(vtkDICOMVR vr, const unsigned int *data, unsigned int count);
+  vtkDICOMValue(vtkDICOMVR vr, const float *data, unsigned int count);
+  vtkDICOMValue(vtkDICOMVR vr, const double *data, unsigned int count);
+  vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMTag *data, unsigned int count);
   vtkDICOMValue(vtkDICOMVR vr,
                 const char *data, const char *end);
   vtkDICOMValue(vtkDICOMVR vr,
@@ -109,6 +118,8 @@ public:
    */
   vtkDICOMValue(vtkDICOMVR vr, vtkDICOMCharacterSet cs,
                 const std::string& v);
+  vtkDICOMValue(vtkDICOMVR vr, vtkDICOMCharacterSet cs,
+                const char *data, unsigned int l);
   vtkDICOMValue(vtkDICOMVR vr, vtkDICOMCharacterSet cs,
                 const char *data, const char *end);
 
@@ -187,6 +198,32 @@ public:
   void GetValues(float *vb, float *ve, unsigned int i=0) const;
   void GetValues(double *vb, double *ve, unsigned int i=0) const;
   void GetValues(vtkDICOMTag *vb, vtkDICOMTag *ve, unsigned int i=0) const;
+
+  //! Copy "n" values into vb, starting at value "i".
+  /*!
+   *  Get one or more values, doing conversion from the stored type to
+   *  the requested type.  If the VR is IS or DS (integer string or
+   *  decimal string) then conversion from text to a numerical value
+   *  will be performed.
+   */
+  void GetValues(std::string *vb, unsigned int n, unsigned int i=0) const {
+    this->GetValues(vb, vb+n, i); }
+  void GetValues(unsigned char *vb, unsigned int n, unsigned int i=0) const {
+    this->GetValues(vb, vb+n, i); }
+  void GetValues(short *vb, unsigned int n, unsigned int i=0) const {
+    this->GetValues(vb, vb+n, i); }
+  void GetValues(unsigned short *vb, unsigned int n, unsigned int i=0) const {
+    this->GetValues(vb, vb+n, i); }
+  void GetValues(int *vb, unsigned int n, unsigned int i=0) const {
+    this->GetValues(vb, vb+n, i); }
+  void GetValues(unsigned int *vb, unsigned int n, unsigned int i=0) const {
+    this->GetValues(vb, vb+n, i); }
+  void GetValues(float *vb, unsigned int n, unsigned int i=0) const {
+    this->GetValues(vb, vb+n, i); }
+  void GetValues(double *vb, unsigned int n, unsigned int i=0) const {
+    this->GetValues(vb, vb+n, i); }
+  void GetValues(vtkDICOMTag *vb, unsigned int n, unsigned int i=0) const {
+    this->GetValues(vb, vb+n, i); }
 
   //! Get one scalar value or single string from the value.
   /*!
@@ -357,7 +394,7 @@ private:
 
   //! Create a value from a string with a specific character set.
   void CreateValueWithSpecificCharacterSet(
-    vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, const char *end);
+    vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, unsigned int l);
 
   //! The only data member: a pointer to the internal value.
   Value *V;

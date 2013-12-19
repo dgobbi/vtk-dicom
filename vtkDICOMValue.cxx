@@ -685,6 +685,60 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, vtkDICOMTag v)
 }
 
 vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const char *data, unsigned int count)
+{
+  this->CreateValue(vr, data, data + count);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const unsigned char *data, unsigned int count)
+{
+  this->CreateValue(vr, data, data + count);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const short *data, unsigned int count)
+{
+  this->CreateValue(vr, data, data + count);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const unsigned short *data, unsigned int count)
+{
+  this->CreateValue(vr, data, data + count);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const int *data, unsigned int count)
+{
+  this->CreateValue(vr, data, data + count);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const unsigned int *data, unsigned int count)
+{
+  this->CreateValue(vr, data, data + count);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const float *data, unsigned int count)
+{
+  this->CreateValue(vr, data, data + count);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const double *data, unsigned int count)
+{
+  this->CreateValue(vr, data, data + count);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const vtkDICOMTag *data, unsigned int count)
+{
+  this->CreateValue(vr, data, data + count);
+}
+
+vtkDICOMValue::vtkDICOMValue(
   vtkDICOMVR vr, const char *data, const char *end)
 {
   this->CreateValue(vr, data, end);
@@ -740,9 +794,9 @@ vtkDICOMValue::vtkDICOMValue(
 
 //----------------------------------------------------------------------------
 void vtkDICOMValue::CreateValueWithSpecificCharacterSet(
-  vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, const char *end)
+  vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, unsigned int l)
 {
-  this->CreateValue(vr, data, end);
+  this->CreateValue(vr, data, l);
   if (vr.HasSpecificCharacterSet() && this->V)
     {
     this->V->CharacterSet = cs.GetKey();
@@ -755,16 +809,23 @@ void vtkDICOMValue::CreateValueWithSpecificCharacterSet(
 }
 
 vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, unsigned int l)
+{
+  this->CreateValueWithSpecificCharacterSet(vr, cs, data, l);
+}
+
+vtkDICOMValue::vtkDICOMValue(
   vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, const char *end)
 {
-  this->CreateValueWithSpecificCharacterSet(vr, cs, data, end);
+  this->CreateValueWithSpecificCharacterSet(
+    vr, cs, data, static_cast<unsigned int>(end - data));
 }
 
 vtkDICOMValue::vtkDICOMValue(
   vtkDICOMVR vr, vtkDICOMCharacterSet cs, const std::string& v)
 {
   this->CreateValueWithSpecificCharacterSet(
-    vr, cs, v.data(), v.data() + v.size());
+    vr, cs, v.data(), static_cast<unsigned int>(v.size()));
 }
 
 //----------------------------------------------------------------------------
