@@ -44,7 +44,13 @@ bool vtkDICOMMRGenerator::GenerateMRSeriesModule(vtkDICOMMetaData *meta)
 {
   meta->SetAttributeValue(DC::Modality, "MR");
 
-  return true;
+  // optional and conditional: direct copy of values with no checks
+  static const DC::EnumType optional[] = {
+    DC::ReferencedPerformedProcedureStepSequence, // 1C
+    DC::ItemDelimitationItem
+  };
+
+  return this->CopyOptionalAttributes(optional, meta);
 }
 
 //----------------------------------------------------------------------------
