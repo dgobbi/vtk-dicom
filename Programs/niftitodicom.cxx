@@ -688,6 +688,9 @@ void niftitodicom_convert_one(
       histo->Update();
       double minVal = fabs(histo->GetMinimum());
       double maxVal = fabs(histo->GetMaximum());
+      double autoRange[2];
+      histo->GetAutoRange(autoRange);
+
       if (minVal > 32768.0 || maxVal > 32767.0)
         {
         // scale down if out-of-range
@@ -698,6 +701,16 @@ void niftitodicom_convert_one(
         {
         // scale up by 1000 if values are very small
         caster->SetScale(1000.0);
+        }
+      else if (minVal < 20.47 && maxVal < 20.47)
+        {
+        // scale up by 100 if values are small
+        caster->SetScale(100.0);
+        }
+      else if (minVal < 204.7 && maxVal < 204.7)
+        {
+        // scale up by 10
+        caster->SetScale(10.0);
         }
       }
 #endif
