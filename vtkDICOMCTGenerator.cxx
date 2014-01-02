@@ -40,6 +40,14 @@ void vtkDICOMCTGenerator::PrintSelf(ostream& os, vtkIndent indent)
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMCTGenerator::GenerateCTSeriesModule(vtkDICOMMetaData *meta)
+{
+  meta->SetAttributeValue(DC::Modality, "CT");
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMCTGenerator::GenerateCTImageModule(vtkDICOMMetaData *meta)
 {
   // ImageType is specialized from GeneralImageModule,
@@ -144,6 +152,7 @@ bool vtkDICOMCTGenerator::GenerateCTInstance(
       !this->GenerateContrastBolusModule(meta) ||
       !this->GenerateDeviceModule(meta) ||
       !this->GenerateSpecimenModule(meta) ||
+      !this->GenerateCTSeriesModule(meta) ||
       !this->GenerateCTImageModule(meta) ||
       !this->GenerateOverlayPlaneModule(meta) ||
       !this->GenerateVOILUTModule(meta))

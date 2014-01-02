@@ -40,6 +40,14 @@ void vtkDICOMMRGenerator::PrintSelf(ostream& os, vtkIndent indent)
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMMRGenerator::GenerateMRSeriesModule(vtkDICOMMetaData *meta)
+{
+  meta->SetAttributeValue(DC::Modality, "MR");
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *meta)
 {
   // ImageType is specialized from GeneralImageModule,
@@ -207,6 +215,7 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(
       !this->GenerateContrastBolusModule(meta) ||
       !this->GenerateDeviceModule(meta) ||
       !this->GenerateSpecimenModule(meta) ||
+      !this->GenerateMRSeriesModule(meta) ||
       !this->GenerateMRImageModule(meta) ||
       !this->GenerateOverlayPlaneModule(meta) ||
       !this->GenerateVOILUTModule(meta))

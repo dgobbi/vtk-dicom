@@ -48,6 +48,9 @@ protected:
   vtkDICOMCTGenerator();
   ~vtkDICOMCTGenerator();
 
+  //! Generate the Series Module.
+  virtual bool GenerateCTSeriesModule(vtkDICOMMetaData *meta);
+
   //! Generate the Image Module.
   virtual bool GenerateCTImageModule(vtkDICOMMetaData *meta);
 
