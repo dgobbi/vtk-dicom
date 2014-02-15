@@ -129,7 +129,7 @@ protected:
     vtkDICOMMetaData *data, int idx);
 
   //! Compute the file offset to the current position.
-  void ComputeFileOffset(
+  std::streamsize GetBytesProcessed(
     const unsigned char* cp, const unsigned char* ep);
 
   char *FileName;

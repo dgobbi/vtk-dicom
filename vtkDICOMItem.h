@@ -40,6 +40,7 @@ private:
     vtkDICOMDataElement Tail;
     vtkDICOMReferenceCount ReferenceCount;
     int NumberOfDataElements;
+    unsigned int ByteOffset;
     bool Delimited;
 
     List() : Head(), Tail(), ReferenceCount(1) {}
@@ -51,7 +52,7 @@ public:
   vtkDICOMItem() : L(0) {}
 
   //! Constructor with flag for delimited item.
-  explicit vtkDICOMItem(int delimited);
+  explicit vtkDICOMItem(int delimited, unsigned int byteOffset=0);
 
   //! Copy constructor does reference counting.
   vtkDICOMItem(const vtkDICOMItem &o) : L(o.L) {
@@ -84,6 +85,15 @@ public:
   //! Get a data element from this item.
   const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag) const;
   const vtkDICOMValue &GetAttributeValue(const vtkDICOMTagPath &tag) const;
+
+  //! Get the offset of this item from the beginning of the file.
+  /*!
+   *  Some DICOM files, such as DICOMDIR files, index into sequences via
+   *  byte offsets into the file.  Because of this, it is necessary to
+   *  know the byte offset of each item in the sequence.
+   */
+  unsigned int GetByteOffset() const {
+    return (this->L == 0 ? 0 : this->L->ByteOffset); }
 
   //! Get the number of data elements.
   int GetNumberOfDataElements() const {

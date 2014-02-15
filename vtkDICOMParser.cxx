@@ -64,6 +64,12 @@ public:
     return parser->GetBytesRemaining(cp, ep);
   }
 
+  static std::streamsize GetBytesProcessed(vtkDICOMParser *parser,
+    const unsigned char *cp, const unsigned char *ep)
+  {
+    return parser->GetBytesProcessed(cp, ep);
+  }
+
   static void ParseError(vtkDICOMParser *parser,
     const unsigned char *cp, const unsigned char *ep, const char *message)
   {
@@ -140,6 +146,10 @@ public:
   bool CheckBuffer(
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int n, vtkDICOMValue *v, const unsigned char* &sp);
+
+  // Get the current byte offset from the start of the file.
+  unsigned int GetByteOffset(
+    const unsigned char *cp, const unsigned char *ep);
 
   // Find an element within the current context.  This is used
   // by FindDictVR() to disambiguate VRs that could be either US
@@ -389,6 +399,15 @@ inline bool DecoderBase::CheckBuffer(
     sp = cp;
     }
   return r;
+}
+
+//----------------------------------------------------------------------------
+inline unsigned int DecoderBase::GetByteOffset(
+  const unsigned char *cp, const unsigned char *ep)
+{
+  return static_cast<unsigned int>(
+    vtkDICOMParserInternalFriendship::GetBytesProcessed(
+      this->Parser, cp, ep));
 }
 
 //----------------------------------------------------------------------------
@@ -893,8 +912,10 @@ unsigned int Decoder<E>::ReadElementValue(
         if (g == HxFFFE && e == HxE000)
           {
           // read one item
+          unsigned int offset = this->GetByteOffset(cp, ep) - 8;
+          bool delimited = (il == HxFFFFFFFF);
           vtkDICOMTag endtag(HxFFFE, HxE00D);
-          vtkDICOMItem item(il == HxFFFFFFFF);
+          vtkDICOMItem item(delimited, offset);
           vtkDICOMItem *olditem = this->Item;
           this->SetItem(&item);
           this->ReadElements(cp, ep, il, endtag, l);
@@ -1361,7 +1382,7 @@ bool vtkDICOMParser::ReadMetaHeader(
     this->TransferSyntax = "";
     }
 
-  this->ComputeFileOffset(cp, ep);
+  this->FileOffset = this->GetBytesProcessed(cp, ep);
 
   if (tempMeta)
     {
@@ -1474,7 +1495,7 @@ bool vtkDICOMParser::ReadMetaData(
       }
     }
 
-  this->ComputeFileOffset(cp, ep);
+  this->FileOffset = this->GetBytesProcessed(cp, ep);
 
   return true;
 }
@@ -1534,19 +1555,19 @@ std::streamsize vtkDICOMParser::GetBytesRemaining(
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMParser::ComputeFileOffset(
+std::streamsize vtkDICOMParser::GetBytesProcessed(
   const unsigned char* cp, const unsigned char* ep)
 {
   // the offset is the number of bytes read minus
   // the number of bytes remaining in the buffer.
-  this->FileOffset = this->BytesRead - (ep - cp);
+  return this->BytesRead - (ep - cp);
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMParser::ParseError(
   const unsigned char* cp, const unsigned char* ep, const char* message)
 {
-  this->ComputeFileOffset(cp, ep);
+  this->FileOffset = this->GetBytesProcessed(cp, ep);
   this->SetErrorCode(vtkErrorCode::FileFormatError);
   vtkErrorMacro("At byte offset " << this->FileOffset << " in file "
                 << this->FileName << ": " << message);

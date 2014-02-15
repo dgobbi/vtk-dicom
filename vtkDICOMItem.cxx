@@ -22,10 +22,11 @@
 const vtkDICOMValue vtkDICOMItem::InvalidValue;
 
 //----------------------------------------------------------------------------
-vtkDICOMItem::vtkDICOMItem(int delimited)
+vtkDICOMItem::vtkDICOMItem(int delimited, unsigned int byteOffset)
 {
   this->L = new List;
   this->L->NumberOfDataElements = 0;
+  this->L->ByteOffset = byteOffset;
   this->L->Delimited = (delimited != 0);
   this->L->Head.Prev = 0;
   this->L->Head.Next = &this->L->Tail;

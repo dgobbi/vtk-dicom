@@ -182,8 +182,9 @@ void printElement(
        (v.GetVL() == 0xffffffffu ? ", delimited" : ""));
       for (unsigned int j = 0; j < m; j++)
         {
-        printf("%s%s---- SQ Item %04u ----\n",
-          indent, spaces+(MAX_INDENT - INDENT_SIZE), j+1);
+        printf("%s%s---- SQ Item %04u at offset %u ----\n",
+          indent, spaces+(MAX_INDENT - INDENT_SIZE), j+1,
+          items[j].GetByteOffset());
         vtkDICOMDataElementIterator siter = items[j].Begin();
         vtkDICOMDataElementIterator siterEnd = items[j].End();
 
