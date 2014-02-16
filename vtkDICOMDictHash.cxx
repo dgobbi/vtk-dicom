@@ -865,6 +865,7 @@ DictEntry DictRow0067[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0068[] = {
+{ 0x0004, 0x1410, 0, VR::US, VM::M1, "Record In-use Flag" },
 { 0x0014, 0x1010, 0, VR::ST, VM::M1, "Actual Environmental Conditions" },
 { 0x0018, 0x9214, 0, VR::CS, VM::M1, "Respiratory Cycle Position" },
 { 0x0018, 0x9604, 0, VR::FD, VM::M1, "Diffusion b-value XZ" },
@@ -1149,6 +1150,7 @@ DictEntry DictRow0083[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0084[] = {
+{ 0x0004, 0x1400, 0, VR::UL, VM::M1, "Offset of the Next Directory Record" },
 { 0x0024, 0x0071, 0, VR::FL, VM::M1, "Global Deviation Probability" },
 { 0x0044, 0x0011, 0, VR::LO, VM::M1, "Substance Administration Notes" },
 { 0x0052, 0x0007, 0, VR::FD, VM::M1, "OCT Optical Center Wavelength" },
@@ -1367,6 +1369,7 @@ DictEntry DictRow0099[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0100[] = {
+{ 0x0004, 0x1430, 0, VR::CS, VM::M1, "Directory Record Type" },
 { 0x0018, 0x9234, 0, VR::UL, VM::M1, "Spectroscopy Acquisition Phase Columns" },
 { 0x0020, 0x1004, 1, VR::IS, VM::M1, "Acquisitions in Study" },
 { 0x0054, 0x0031, 0, VR::US, VM::M1, "Number of Phases" },
@@ -1391,6 +1394,7 @@ DictEntry DictRow0101[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0102[] = {
+{ 0x0004, 0x1432, 0, VR::UI, VM::M1, "Private Record UID" },
 { 0x0018, 0x9236, 0, VR::CS, VM::M1, "Cardiac Cycle Position" },
 { 0x0040, 0x0027, 0, VR::SQ, VM::M1, "Order Filler Identifier Sequence" },
 { 0x0054, 0x0033, 0, VR::US, VM::M1, "Number of Frames in Phase" },
@@ -1539,6 +1543,7 @@ DictEntry DictRow0115[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0116[] = {
+{ 0x0004, 0x1420, 0, VR::UL, VM::M1, "Offset of Referenced Lower-Level Directory Entity" },
 { 0x0014, 0x1020, 0, VR::DA, VM::M1, "Expiry Date" },
 { 0x0022, 0x0057, 0, VR::FL, VM::M1, "Illumination Bandwidth" },
 { 0x0024, 0x0051, 0, VR::CS, VM::M1, "Excessive False Negatives Data Flag" },
@@ -2692,6 +2697,7 @@ DictEntry DictRow0255[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0256[] = {
+{ 0x0004, 0x1141, 0, VR::CS, VM::M1T8, "File-set Descriptor File ID" },
 { 0x0008, 0x010C, 0, VR::UI, VM::M1, "Coding Scheme UID" },
 { 0x0014, 0x4014, 0, VR::DS, VM::M1, "Element Dimension A" },
 { 0x0024, 0x0120, 0, VR::CS, VM::M1, "Screening Baseline Measured" },
@@ -2719,6 +2725,7 @@ DictEntry DictRow0258[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0259[] = {
+{ 0x0004, 0x1142, 0, VR::CS, VM::M1, "Specific Character Set of File-set Descriptor File" },
 { 0x0008, 0x010F, 0, VR::CS, VM::M1, "Context Identifier" },
 { 0x0014, 0x4017, 0, VR::DS, VM::M1, "Measured Beam Dimension A" },
 { 0x0018, 0x115E, 0, VR::DS, VM::M1, "Image and Fluoroscopy Area Dose Product" },
@@ -3177,6 +3184,7 @@ DictEntry DictRow0319[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0320[] = {
+{ 0x0004, 0x1510, 0, VR::UI, VM::M1, "Referenced SOP Class UID in File" },
 { 0x0018, 0x9314, 0, VR::SQ, VM::M1, "CT Reconstruction Sequence" },
 { 0x0040, 0x0515, 0, VR::SQ, VM::M1, "Alternate Container Identifier Sequence" },
 { 0x0040, 0x4001, 0, VR::CS, VM::M1, "General Purpose Scheduled Procedure Step Status" },
@@ -3186,6 +3194,7 @@ DictEntry DictRow0320[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0321[] = {
+{ 0x0004, 0x1511, 0, VR::UI, VM::M1, "Referenced SOP Instance UID in File" },
 { 0x0014, 0x4054, 0, VR::ST, VM::M1, "Coupling Technique" },
 { 0x0018, 0x9315, 0, VR::CS, VM::M1, "Reconstruction Algorithm" },
 { 0x0046, 0x0102, 0, VR::SQ, VM::M1, "Add Other Sequence" },
@@ -3195,6 +3204,7 @@ DictEntry DictRow0321[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0322[] = {
+{ 0x0004, 0x1512, 0, VR::UI, VM::M1, "Referenced Transfer Syntax UID in File" },
 { 0x0014, 0x4057, 0, VR::DS, VM::M1, "Coupling Velocity" },
 { 0x0018, 0x9316, 0, VR::CS, VM::M1, "Convolution Kernel Group" },
 { 0x0040, 0x4003, 0, VR::CS, VM::M1, "General Purpose Scheduled Procedure Step Priority" },
@@ -3278,6 +3288,7 @@ DictEntry DictRow0329[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0330[] = {
+{ 0x0004, 0x151a, 0, VR::UI, VM::M1TN, "Referenced Related General SOP Class UID in File" },
 { 0x0018, 0x5012, 0, VR::DS, VM::M1, "Focus Depth" },
 { 0x0040, 0xA385, 0, VR::SQ, VM::M1, "Pertinent Other Evidence Sequence" },
 { 0x0048, 0x0107, 0, VR::ST, VM::M1, "Optical Path Description" },
@@ -3334,6 +3345,7 @@ DictEntry DictRow0335[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0336[] = {
+{ 0x0004, 0x1500, 0, VR::CS, VM::M1T8, "Referenced File ID" },
 { 0x0014, 0x5004, 0, VR::IS, VM::M1, "LINAC Output" },
 { 0x0018, 0x9304, 0, VR::SQ, VM::M1, "CT Acquisition Details Sequence" },
 { 0x0040, 0x4011, 0, VR::DT, VM::M1, "Expected Completion Date Time" },
@@ -3368,6 +3380,7 @@ DictEntry DictRow0339[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0340[] = {
+{ 0x0004, 0x1504, 1, VR::UL, VM::M1, "MRDR Directory Record Offset" },
 { 0x0022, 0x1132, 0, VR::SQ, VM::M1, "Source of Lens Thickness Data Code Sequence" },
 { 0x0040, 0x4015, 0, VR::SQ, VM::M1, "Resulting General Purpose Performed Procedure Steps Sequence" },
 { 0x300A, 0x0198, 0, VR::SH, VM::M1, "Fixation Device Position" },
@@ -3636,6 +3649,7 @@ DictEntry DictRow0367[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0368[] = {
+{ 0x0004, 0x1130, 0, VR::CS, VM::M1, "File-set ID" },
 { 0x0018, 0x5028, 0, VR::DS, VM::M1, "Soft Tissue-focus Thermal Index" },
 { 0x0018, 0x9324, 0, VR::FD, VM::M1, "Estimated Dose Saving" },
 { 0x0018, 0x9734, 0, VR::SQ, VM::M1, "PET Table Dynamics Sequence" },
@@ -5228,6 +5242,7 @@ DictEntry DictRow0587[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0588[] = {
+{ 0x0004, 0x1200, 0, VR::UL, VM::M1, "Offset of the First Directory Record of the Root Directory Entity" },
 { 0x0018, 0x9014, 0, VR::CS, VM::M1, "Phase Contrast" },
 { 0x0018, 0x9404, 0, VR::FL, VM::M2, "Object Pixel Spacing in Center of Beam" },
 { 0x0054, 0x0211, 0, VR::US, VM::M1, "Number of Triggers in Phase" },
@@ -5242,6 +5257,7 @@ DictEntry DictRow0589[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0590[] = {
+{ 0x0004, 0x1202, 0, VR::UL, VM::M1, "Offset of the Last Directory Record of the Root Directory Entity" },
 { 0x0018, 0x9016, 0, VR::CS, VM::M1, "Spoiling" },
 { 0x0018, 0x9406, 0, VR::SQ, VM::M1, "Table Position Sequence" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5315,6 +5331,7 @@ DictEntry DictRow0603[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0604[] = {
+{ 0x0004, 0x1600, 1, VR::UL, VM::M1, "Number of References" },
 { 0x0018, 0x9004, 0, VR::CS, VM::M1, "Content Qualification" },
 { 0x300A, 0x029C, 0, VR::DS, VM::M1, "Source Applicator Wall Nominal Thickness" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5325,6 +5342,7 @@ DictEntry DictRow0605[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0606[] = {
+{ 0x0004, 0x1212, 0, VR::US, VM::M1, "File-set Consistency Flag" },
 { 0x0018, 0x9006, 0, VR::SQ, VM::M1, "MR Imaging Modifier Sequence" },
 { 0x0048, 0x021F, 0, VR::SL, VM::M1, "Column Position In Total Image Pixel Matrix" },
 { 0x0070, 0x0227, 0, VR::LO, VM::M1, "Font Name" },
@@ -5411,6 +5429,7 @@ DictEntry DictRow0619[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0620[] = {
+{ 0x0004, 0x1220, 0, VR::SQ, VM::M1, "Directory Record Sequence" },
 { 0x0018, 0x9034, 0, VR::CS, VM::M1, "Rectilinear Phase Encode Reordering" },
 { 0x0018, 0x9424, 0, VR::LT, VM::M1, "Acquisition Protocol Description" },
 { 0x0020, 0x1204, 0, VR::IS, VM::M1, "Number of Patient Related Instances" },

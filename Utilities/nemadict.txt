@@ -58,6 +58,120 @@ PrivateInformation
 OB
 1
 
+(0004,1130)
+File-set ID
+FileSetID
+CS
+1
+
+(0004,1141)
+File-set Descriptor File ID
+FileSetDescriptorFileID
+CS
+1-8
+
+(0004,1142)
+Specific Character Set of File-set Descriptor File
+SpecificCharacterSetOfFileSetDescriptorFile
+CS
+1
+
+(0004,1200)
+Offset of the First Directory Record of the Root Directory Entity
+OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity
+UL
+1
+
+(0004,1202)
+Offset of the Last Directory Record of the Root Directory Entity
+OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity
+UL
+1
+
+(0004,1212)
+File-set Consistency Flag
+FileSetConsistencyFlag
+US
+1
+
+(0004,1220)
+Directory Record Sequence
+DirectoryRecordSequence
+SQ
+1
+
+(0004,1400)
+Offset of the Next Directory Record
+OffsetOfTheNextDirectoryRecord
+UL
+1
+
+(0004,1410)
+Record In-use Flag
+RecordInUseFlag
+US
+1
+
+(0004,1420)
+Offset of Referenced Lower-Level Directory Entity
+OffsetOfReferencedLowerLevelDirectoryEntity
+UL
+1
+
+(0004,1430)
+Directory Record Type
+DirectoryRecordType
+CS
+1
+
+(0004,1432)
+Private Record UID
+PrivateRecordUID
+UI
+1
+
+(0004,1500)
+Referenced File ID
+ReferencedFileID
+CS
+1-8
+
+(0004,1504)
+MRDR Directory Record Offset
+MRDRDirectoryRecordOffset
+UL
+1
+RET
+(0004,1510)
+Referenced SOP Class UID in File
+ReferencedSOPClassUIDInFile
+UI
+1
+
+(0004,1511)
+Referenced SOP Instance UID in File
+ReferencedSOPInstanceUIDInFile
+UI
+1
+
+(0004,1512)
+Referenced Transfer Syntax UID in File
+ReferencedTransferSyntaxUIDInFile
+UI
+1
+
+(0004,151a)
+Referenced Related General SOP Class UID in File
+ReferencedRelatedGeneralSOPClassUIDInFile
+UI
+1-n
+
+(0004,1600)
+Number of References
+NumberOfReferences
+UL
+1
+RET
 (0008,0001)
 Length to End
 LengthToEnd
