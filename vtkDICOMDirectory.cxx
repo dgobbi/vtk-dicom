@@ -41,12 +41,40 @@
 vtkStandardNewMacro(vtkDICOMDirectory);
 
 //----------------------------------------------------------------------------
-// A vector of string arrays
+// Simple structs to hold directory information.
 
-class vtkDICOMDirectory::StringArrayVector
-  : public std::vector<vtkSmartPointer<vtkStringArray> >
+struct vtkDICOMDirectory::SeriesItem
 {
+  vtkDICOMItem Record;
+  vtkSmartPointer<vtkStringArray> Files;
 };
+
+struct vtkDICOMDirectory::StudyItem
+{
+  vtkDICOMItem Record;
+  vtkDICOMItem PatientRecord;
+  int FirstSeries;
+  int LastSeries;
+};
+
+struct vtkDICOMDirectory::PatientItem
+{
+  vtkDICOMItem Record;
+  int FirstStudy;
+  int LastStudy;
+};
+
+class vtkDICOMDirectory::SeriesVector
+  : public std::vector<vtkDICOMDirectory::SeriesItem>
+{};
+
+class vtkDICOMDirectory::StudyVector
+  : public std::vector<vtkDICOMDirectory::StudyItem>
+{};
+
+class vtkDICOMDirectory::PatientVector
+  : public std::vector<vtkDICOMDirectory::PatientItem>
+{};
 
 //----------------------------------------------------------------------------
 // Information used to sort DICOM files.
@@ -60,13 +88,16 @@ struct vtkDICOMDirectory::FileInfo
 struct vtkDICOMDirectory::SeriesInfo
 {
   // -- PATIENT --
+  vtkDICOMItem  PatientRecord;
   vtkDICOMValue PatientName;
   vtkDICOMValue PatientID;
   // -- STUDY --
+  vtkDICOMItem  StudyRecord;
   vtkDICOMValue StudyDate;
   vtkDICOMValue StudyTime;
   vtkDICOMValue StudyUID;
   // -- SERIES --
+  vtkDICOMItem  SeriesRecord;
   vtkDICOMValue SeriesUID;
   unsigned int SeriesNumber;
   std::vector<FileInfo> Files;
@@ -83,18 +114,15 @@ bool vtkDICOMDirectory::CompareInstance(
 
 class vtkDICOMDirectory::SeriesInfoList
   : public std::list<vtkDICOMDirectory::SeriesInfo>
-{
-};
+{};
 
 //----------------------------------------------------------------------------
 vtkDICOMDirectory::vtkDICOMDirectory()
 {
   this->DirectoryName = 0;
-  this->Series = new StringArrayVector;
-  this->Studies = vtkIntArray::New();
-  this->Studies->SetNumberOfComponents(2);
-  this->Patients = vtkIntArray::New();
-  this->Patients->SetNumberOfComponents(2);
+  this->Series = new SeriesVector;
+  this->Studies = new StudyVector;
+  this->Patients = new PatientVector;
   this->FileSetID = 0;
   this->ErrorCode = 0;
   this->InternalFileName = 0;
@@ -115,8 +143,8 @@ vtkDICOMDirectory::~vtkDICOMDirectory()
     }
 
   delete this->Series;
-  this->Studies->Delete();
-  this->Patients->Delete();
+  delete this->Studies;
+  delete this->Patients;
   delete [] this->FileSetID;
 }
 
@@ -169,74 +197,94 @@ int vtkDICOMDirectory::GetNumberOfSeries()
 }
 
 //----------------------------------------------------------------------------
+const vtkDICOMItem& vtkDICOMDirectory::GetSeriesRecord(int series)
+{
+  return (*this->Series)[series].Record;
+}
+
+//----------------------------------------------------------------------------
 int vtkDICOMDirectory::GetNumberOfStudies()
 {
-  return this->Studies->GetNumberOfTuples();
+  return static_cast<int>(this->Studies->size());
+}
+
+//----------------------------------------------------------------------------
+const vtkDICOMItem& vtkDICOMDirectory::GetStudyRecord(int study)
+{
+  return (*this->Studies)[study].Record;
+}
+
+//----------------------------------------------------------------------------
+const vtkDICOMItem& vtkDICOMDirectory::GetPatientRecordForStudy(int study)
+{
+  return (*this->Studies)[study].PatientRecord;
 }
 
 //----------------------------------------------------------------------------
 int vtkDICOMDirectory::GetFirstSeriesForStudy(int study)
 {
-  int tval[2];
-  this->Studies->GetTupleValue(study, tval);
-  return tval[0];
+  return (*this->Studies)[study].FirstSeries;
 }
 
 //----------------------------------------------------------------------------
 int vtkDICOMDirectory::GetLastSeriesForStudy(int study)
 {
-  int tval[2];
-  this->Studies->GetTupleValue(study, tval);
-  return tval[1];
+  return (*this->Studies)[study].LastSeries;
 }
 
 //----------------------------------------------------------------------------
 int vtkDICOMDirectory::GetNumberOfPatients()
 {
-  return this->Patients->GetNumberOfTuples();
+  return static_cast<int>(this->Patients->size());
+}
+
+//----------------------------------------------------------------------------
+const vtkDICOMItem& vtkDICOMDirectory::GetPatientRecord(int patient)
+{
+  return (*this->Patients)[patient].Record;
 }
 
 //----------------------------------------------------------------------------
 int vtkDICOMDirectory::GetFirstStudyForPatient(int patient)
 {
-  int tval[2];
-  this->Patients->GetTupleValue(patient, tval);
-  return tval[0];
+  return (*this->Patients)[patient].FirstStudy;
 }
 
 //----------------------------------------------------------------------------
 int vtkDICOMDirectory::GetLastStudyForPatient(int patient)
 {
-  int tval[2];
-  this->Patients->GetTupleValue(patient, tval);
-  return tval[1];
+  return (*this->Patients)[patient].LastStudy;
 }
 
 //----------------------------------------------------------------------------
 vtkStringArray *vtkDICOMDirectory::GetFileNamesForSeries(int i)
 {
-  return (*this->Series)[i];
+  return (*this->Series)[i].Files;
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMDirectory::AddSeriesFileNames(
-  int patient, int study, vtkStringArray *files)
+  int patient, int study, vtkStringArray *files,
+  const vtkDICOMItem& patientRecord,
+  const vtkDICOMItem& studyRecord,
+  const vtkDICOMItem& seriesRecord)
 {
-  vtkIdType m = this->Patients->GetNumberOfTuples();
-  vtkIdType n = this->Studies->GetNumberOfTuples();
-  int st[2];
+  int m = static_cast<int>(this->Patients->size());
+  int n = static_cast<int>(this->Studies->size());
+  int series = static_cast<int>(this->Series->size());
 
   if (study == n)
     {
-    st[0] = static_cast<int>(this->Series->size());
-    st[1] = st[0];
-    this->Studies->InsertNextTupleValue(st);
+    this->Studies->push_back(StudyItem());
+    StudyItem& item = this->Studies->back();
+    item.Record = studyRecord;
+    item.PatientRecord = patientRecord;
+    item.FirstSeries = series;
+    item.LastSeries = series;
     }
   else if (n >= 0 && study == n-1)
     {
-    this->Studies->GetTupleValue(study, st);
-    st[1] = static_cast<int>(this->Series->size());
-    this->Studies->SetTupleValue(study, st);
+    (*this->Studies)[study].LastSeries = series;
     }
   else
     {
@@ -246,15 +294,15 @@ void vtkDICOMDirectory::AddSeriesFileNames(
 
   if (patient == m)
     {
-    st[0] = study;
-    st[1] = st[0];
-    this->Patients->InsertNextTupleValue(st);
+    this->Patients->push_back(PatientItem());
+    PatientItem& item = this->Patients->back();
+    item.Record = patientRecord;
+    item.FirstStudy = study;
+    item.LastStudy = study;
     }
   else if (m >= 0 && patient == m-1)
     {
-    this->Patients->GetTupleValue(patient, st);
-    st[1] = study;
-    this->Patients->SetTupleValue(patient, st);
+    (*this->Patients)[patient].LastStudy = study;
     }
   else
     {
@@ -262,7 +310,76 @@ void vtkDICOMDirectory::AddSeriesFileNames(
     return;
     }
 
-  this->Series->push_back(files);
+  this->Series->push_back(SeriesItem());
+  SeriesItem& item = this->Series->back();
+  item.Record = seriesRecord;
+  item.Files = files;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMDirectory::FillSeriesRecord(
+  vtkDICOMItem *item, vtkDICOMMetaData *meta)
+{
+  static const DC::EnumType tags[] = {
+    DC::SeriesTime,
+    DC::Modality,
+    DC::SeriesDescription,
+    // DC::BodyPartExamined, // requires group 0018
+    DC::SeriesInstanceUID,
+    DC::SeriesNumber,
+    DC::ItemDelimitationItem
+  };
+
+  const DC::EnumType *tag = tags;
+  while (*tag != DC::ItemDelimitationItem)
+    {
+    item->SetAttributeValue(*tag, meta->GetAttributeValue(*tag));
+    tag++;
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMDirectory::FillStudyRecord(
+  vtkDICOMItem *item, vtkDICOMMetaData *meta)
+{
+  static const DC::EnumType tags[] = {
+    DC::StudyDate,
+    DC::StudyTime,
+    DC::ReferringPhysicianName,
+    DC::PatientAge,
+    DC::StudyInstanceUID,
+    DC::StudyID,
+    DC::AccessionNumber,
+    DC::StudyDescription,
+    DC::ItemDelimitationItem
+  };
+
+  const DC::EnumType *tag = tags;
+  while (*tag != DC::ItemDelimitationItem)
+    {
+    item->SetAttributeValue(*tag, meta->GetAttributeValue(*tag));
+    tag++;
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMDirectory::FillPatientRecord(
+  vtkDICOMItem *item, vtkDICOMMetaData *meta)
+{
+  static const DC::EnumType tags[] = {
+    DC::PatientName,
+    DC::PatientID,
+    DC::PatientBirthDate,
+    DC::PatientSex,
+    DC::ItemDelimitationItem
+  };
+
+  const DC::EnumType *tag = tags;
+  while (*tag != DC::ItemDelimitationItem)
+    {
+    item->SetAttributeValue(*tag, meta->GetAttributeValue(*tag));
+    tag++;
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -411,15 +528,17 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
     if (!foundSeries)
       {
-      SeriesInfo newSeries;
-      newSeries.PatientName = patientNameValue;
-      newSeries.PatientID = patientIDValue;
-      newSeries.StudyDate = studyDateValue;
-      newSeries.StudyUID = studyUIDValue;
-      newSeries.SeriesUID = seriesUIDValue;
-      newSeries.SeriesNumber = seriesNumber;
-      newSeries.Files.push_back(fileInfo);
-      sortedFiles.insert(li, newSeries);
+      li = sortedFiles.insert(li, SeriesInfo());
+      li->PatientName = patientNameValue;
+      li->PatientID = patientIDValue;
+      li->StudyDate = studyDateValue;
+      li->StudyUID = studyUIDValue;
+      li->SeriesUID = seriesUIDValue;
+      li->SeriesNumber = seriesNumber;
+      li->Files.push_back(fileInfo);
+      this->FillPatientRecord(&li->PatientRecord, meta);
+      this->FillStudyRecord(&li->StudyRecord, meta);
+      this->FillSeriesRecord(&li->SeriesRecord, meta);
       }
     }
 
@@ -429,6 +548,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
   vtkDICOMValue lastStudyUID;
   vtkDICOMValue lastPatientID;
+
   for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
     {
     SeriesInfo &v = *li;
@@ -456,7 +576,9 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       {
       sa->SetValue(i, v.Files[i].FileName);
       }
-    this->AddSeriesFileNames(patientCount-1, studyCount-1, sa);
+    this->AddSeriesFileNames(
+      patientCount-1, studyCount-1, sa,
+      v.PatientRecord, v.StudyRecord, v.SeriesRecord);
     }
 }
 
@@ -501,6 +623,9 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
   std::vector<std::pair<unsigned int, std::string> > offsetStack;
   int patientIdx = this->GetNumberOfPatients();
   int studyIdx = this->GetNumberOfStudies();
+  unsigned int patientItem = 0;
+  unsigned int studyItem = 0;
+  unsigned int seriesItem = 0;
 
   // List of filenames for the current series.
   vtkSmartPointer<vtkStringArray> fileNames =
@@ -537,7 +662,19 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
       entryType = items[j].GetAttributeValue(
         DC::DirectoryRecordType).AsString();
 
-      if (entryType == "IMAGE")
+      if (entryType == "PATIENT")
+        {
+        patientItem = j;
+        }
+      else if (entryType == "STUDY")
+        {
+        studyItem = j;
+        }
+      else if (entryType == "SERIES")
+        {
+        seriesItem = j;
+        }
+      else if (entryType == "IMAGE")
         {
         const vtkDICOMValue& fileID =
           items[j].GetAttributeValue(DC::ReferencedFileID);
@@ -573,7 +710,9 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
           }
         else if (entryType == "IMAGE")
           {
-          this->AddSeriesFileNames(patientIdx, studyIdx, fileNames);
+          this->AddSeriesFileNames(
+            patientIdx, studyIdx, fileNames,
+            items[patientItem], items[studyItem], items[seriesItem]);
           fileNames = vtkSmartPointer<vtkStringArray>::New();
           }
 
@@ -682,8 +821,8 @@ void vtkDICOMDirectory::Execute()
 {
   // Clear the output
   this->Series->clear();
-  this->Studies->Reset();
-  this->Patients->Reset();
+  this->Studies->clear();
+  this->Patients->clear();
   delete [] this->FileSetID;
   this->FileSetID = 0;
   this->ErrorCode = 0;

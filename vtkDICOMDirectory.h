@@ -20,6 +20,7 @@
 class vtkStringArray;
 class vtkIntArray;
 class vtkDICOMMetaData;
+class vtkDICOMItem;
 
 //! Get information about all DICOM files within a directory.
 /*!
@@ -65,11 +66,23 @@ public:
   //! Get the total number of series that were found.
   int GetNumberOfSeries();
 
+  //! Get the directory attributes for a series.
+  const vtkDICOMItem& GetSeriesRecord(int series);
+
   //! Get the number of studies that were found.
   int GetNumberOfStudies();
 
+  //! Get the directory attributes for a study.
+  const vtkDICOMItem& GetStudyRecord(int study);
+
+  //! Get the directory attributes for a patient.
+  const vtkDICOMItem& GetPatientRecordForStudy(int study);
+
   //! Get the number of patients that were found.
   int GetNumberOfPatients();
+
+  //! Get the directory attributes for a patient.
+  const vtkDICOMItem& GetPatientRecord(int patient);
 
   //! Get the first study for the patient.
   int GetFirstStudyForPatient(int patient);
@@ -119,6 +132,15 @@ protected:
   //! Fill the output filename array.
   virtual void Execute();
 
+  //! Fill series info from image metadata.
+  virtual void FillSeriesRecord(vtkDICOMItem *item, vtkDICOMMetaData *meta);
+
+  //! Fill study info from image metadata.
+  virtual void FillStudyRecord(vtkDICOMItem *item, vtkDICOMMetaData *meta);
+
+  //! Fill patient info from image metadata.
+  virtual void FillPatientRecord(vtkDICOMItem *item, vtkDICOMMetaData *meta);
+
   //! Sort the input string array
   virtual void SortFiles(vtkStringArray *input);
 
@@ -129,7 +151,11 @@ protected:
    *  to must also be provided, as a number that starts at zero
    *  and monotonically increases.
    */
-  void AddSeriesFileNames(int patient, int study, vtkStringArray *files);
+  void AddSeriesFileNames(
+    int patient, int study, vtkStringArray *files,
+    const vtkDICOMItem& patientRecord,
+    const vtkDICOMItem& studyRecord,
+    const vtkDICOMItem& seriesRecord);
 
   //! Convert parser errors into sorter errors.
   void RelayError(vtkObject *o, unsigned long e, void *data);
@@ -157,14 +183,19 @@ private:
   vtkDICOMDirectory(const vtkDICOMDirectory&);  // Not implemented.
   void operator=(const vtkDICOMDirectory&);  // Not implemented.
 
-  class StringArrayVector;
+  struct SeriesItem;
+  struct StudyItem;
+  struct PatientItem;
+  class SeriesVector;
+  class StudyVector;
+  class PatientVector;
   struct FileInfo;
   struct SeriesInfo;
   class SeriesInfoList;
 
-  StringArrayVector *Series;
-  vtkIntArray *Studies;
-  vtkIntArray *Patients;
+  SeriesVector *Series;
+  StudyVector *Studies;
+  PatientVector *Patients;
   char *FileSetID;
 
   //! Compare FileInfo entries by instance number
