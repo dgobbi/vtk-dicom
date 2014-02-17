@@ -53,7 +53,12 @@ class vtkDICOMDirectory::StringArrayVector
 
 struct vtkDICOMDirectory::FileInfo
 {
-  std::string FileName;
+  unsigned int InstanceNumber;
+  const char *FileName;
+};
+
+struct vtkDICOMDirectory::SeriesInfo
+{
   // -- PATIENT --
   vtkDICOMValue PatientName;
   vtkDICOMValue PatientID;
@@ -64,8 +69,7 @@ struct vtkDICOMDirectory::FileInfo
   // -- SERIES --
   vtkDICOMValue SeriesUID;
   unsigned int SeriesNumber;
-  // -- IMAGE --
-  unsigned int InstanceNumber;
+  std::vector<FileInfo> Files;
 };
 
 bool vtkDICOMDirectory::CompareInstance(
@@ -77,8 +81,8 @@ bool vtkDICOMDirectory::CompareInstance(
 //----------------------------------------------------------------------------
 // A temporary container class for use with stl algorithms
 
-class vtkDICOMDirectory::FileInfoVectorList
-  : public std::list<std::vector<vtkDICOMDirectory::FileInfo> >
+class vtkDICOMDirectory::SeriesInfoList
+  : public std::list<vtkDICOMDirectory::SeriesInfo>
 {
 };
 
@@ -280,8 +284,8 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   parser->SetMetaData(meta);
   parser->SetGroups(groups);
 
-  FileInfoVectorList sortedFiles;
-  FileInfoVectorList::iterator li;
+  SeriesInfoList sortedFiles;
+  SeriesInfoList::iterator li;
 
   vtkIdType numberOfStrings = input->GetNumberOfValues();
   for (vtkIdType j = 0; j < numberOfStrings; j++)
@@ -314,25 +318,31 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
     // Insert the file into the sorted list
     FileInfo fileInfo;
-    fileInfo.FileName = fileName;
-    fileInfo.PatientName = meta->GetAttributeValue(DC::PatientName);
-    fileInfo.PatientID = meta->GetAttributeValue(DC::PatientID);
-    fileInfo.StudyDate = meta->GetAttributeValue(DC::StudyDate);
-    fileInfo.StudyTime = meta->GetAttributeValue(DC::StudyTime);
-    fileInfo.StudyUID = meta->GetAttributeValue(DC::StudyInstanceUID);
-    fileInfo.SeriesUID = meta->GetAttributeValue(DC::SeriesInstanceUID);
-    fileInfo.SeriesNumber =
-      meta->GetAttributeValue(DC::SeriesNumber).AsUnsignedInt();
     fileInfo.InstanceNumber =
       meta->GetAttributeValue(DC::InstanceNumber).AsUnsignedInt();
+    fileInfo.FileName = fileName.c_str(); // stored in input StringArray
 
-    const char *patientName = fileInfo.PatientName.GetCharData();
-    const char *patientID = fileInfo.PatientID.GetCharData();
-    const char *studyDate = fileInfo.StudyDate.GetCharData();
-    const char *studyTime = fileInfo.StudyTime.GetCharData();
-    const char *studyUID = fileInfo.StudyUID.GetCharData();
-    const char *seriesUID = fileInfo.SeriesUID.GetCharData();
-    unsigned int seriesNumber = fileInfo.SeriesNumber;
+    const vtkDICOMValue& patientNameValue =
+      meta->GetAttributeValue(DC::PatientName);
+    const vtkDICOMValue& patientIDValue =
+      meta->GetAttributeValue(DC::PatientID);
+    const vtkDICOMValue& studyDateValue =
+      meta->GetAttributeValue(DC::StudyDate);
+    const vtkDICOMValue& studyTimeValue =
+      meta->GetAttributeValue(DC::StudyTime);
+    const vtkDICOMValue& studyUIDValue =
+      meta->GetAttributeValue(DC::StudyInstanceUID);
+    const vtkDICOMValue& seriesUIDValue =
+      meta->GetAttributeValue(DC::SeriesInstanceUID);
+    unsigned int seriesNumber =
+      meta->GetAttributeValue(DC::SeriesNumber).AsUnsignedInt();
+
+    const char *patientName = patientNameValue.GetCharData();
+    const char *patientID = patientIDValue.GetCharData();
+    const char *studyDate = studyDateValue.GetCharData();
+    const char *studyTime = studyTimeValue.GetCharData();
+    const char *studyUID = studyUIDValue.GetCharData();
+    const char *seriesUID = seriesUIDValue.GetCharData();
 
     patientName = (patientName ? patientName : "");
     patientID = (patientID ? patientID : "");
@@ -341,9 +351,9 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
       {
       // Compare patient, then study, then series.
-      const char *patientName2 = (*li)[0].PatientName.GetCharData();
+      const char *patientName2 = li->PatientName.GetCharData();
       patientName2 = (patientName2 ? patientName2 : "");
-      const char *patientID2 = (*li)[0].PatientID.GetCharData();
+      const char *patientID2 = li->PatientID.GetCharData();
       patientID2 = (patientID2 ? patientID2 : "");
       int c = strcmp(patientID, patientID2);
       if (c != 0 || patientID[0] == '\0')
@@ -355,18 +365,18 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       if (c == 0)
         {
         c = vtkDICOMUtilities::CompareUIDs(
-          studyUID, (*li)[0].StudyUID.GetCharData());
+          studyUID, li->StudyUID.GetCharData());
         if (c != 0 || studyUID == 0)
           {
           // Use UID to identify study, but use date to sort.
           int c2 = 0;
-          const char *studyDate2 = (*li)[0].StudyDate.GetCharData();
+          const char *studyDate2 = li->StudyDate.GetCharData();
           if (studyDate && studyDate2)
             {
             c2 = strcmp(studyDate, studyDate2);
             if (c2 == 0)
               {
-              const char *studyTime2 = (*li)[0].StudyTime.GetCharData();
+              const char *studyTime2 = li->StudyTime.GetCharData();
               if (studyTime && studyTime2)
                 {
                 c2 = strcmp(studyTime, studyTime2);
@@ -378,18 +388,18 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
         if (c == 0)
           {
           c = vtkDICOMUtilities::CompareUIDs(
-            seriesUID, (*li)[0].SeriesUID.GetCharData());
+            seriesUID, li->SeriesUID.GetCharData());
           if (c != 0 || seriesUID == 0)
             {
             // Use UID to identify series, but use series number to sort.
-            int c2 = (*li)[0].SeriesNumber - seriesNumber;
+            int c2 = li->SeriesNumber - seriesNumber;
             c = (c2 == 0 ? c : c2);
             }
           }
         }
       if (c == 0 && seriesUID != 0)
         {
-        (*li).push_back(fileInfo);
+        li->Files.push_back(fileInfo);
         foundSeries = true;
         break;
         }
@@ -401,8 +411,14 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
     if (!foundSeries)
       {
-      std::vector<FileInfo> newSeries;
-      newSeries.push_back(fileInfo);
+      SeriesInfo newSeries;
+      newSeries.PatientName = patientNameValue;
+      newSeries.PatientID = patientIDValue;
+      newSeries.StudyDate = studyDateValue;
+      newSeries.StudyUID = studyUIDValue;
+      newSeries.SeriesUID = seriesUIDValue;
+      newSeries.SeriesNumber = seriesNumber;
+      newSeries.Files.push_back(fileInfo);
       sortedFiles.insert(li, newSeries);
       }
     }
@@ -415,30 +431,30 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   vtkDICOMValue lastPatientID;
   for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
     {
-    std::vector<FileInfo> &v = *li;
-    std::stable_sort(v.begin(), v.end(), CompareInstance);
+    SeriesInfo &v = *li;
+    std::stable_sort(v.Files.begin(), v.Files.end(), CompareInstance);
 
     // Is this a new patient or a new study?
-    if (!lastPatientID.IsValid() || v[0].PatientID != lastPatientID)
+    if (!lastPatientID.IsValid() || v.PatientID != lastPatientID)
       {
-      lastPatientID = v[0].PatientID;
+      lastPatientID = v.PatientID;
       patientCount++;
-      lastStudyUID = v[0].StudyUID;
+      lastStudyUID = v.StudyUID;
       studyCount++;
       }
-    else if (!lastStudyUID.IsValid() || v[0].StudyUID != lastStudyUID)
+    else if (!lastStudyUID.IsValid() || v.StudyUID != lastStudyUID)
       {
-      lastStudyUID = v[0].StudyUID;
+      lastStudyUID = v.StudyUID;
       studyCount++;
       }
 
     vtkSmartPointer<vtkStringArray> sa =
       vtkSmartPointer<vtkStringArray>::New();
-    vtkIdType n = static_cast<vtkIdType>(v.size());
+    vtkIdType n = static_cast<vtkIdType>(v.Files.size());
     sa->SetNumberOfValues(n);
     for (vtkIdType i = 0; i < n; i++)
       {
-      sa->SetValue(i, v[i].FileName);
+      sa->SetValue(i, v.Files[i].FileName);
       }
     this->AddSeriesFileNames(patientCount-1, studyCount-1, sa);
     }

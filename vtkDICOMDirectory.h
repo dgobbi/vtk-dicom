@@ -159,7 +159,8 @@ private:
 
   class StringArrayVector;
   struct FileInfo;
-  class FileInfoVectorList;
+  struct SeriesInfo;
+  class SeriesInfoList;
 
   StringArrayVector *Series;
   vtkIntArray *Studies;
