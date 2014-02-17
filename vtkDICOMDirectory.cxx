@@ -739,6 +739,10 @@ void vtkDICOMDirectory::ProcessDirectory(
   // Find the path to the directory.
   std::vector<std::string> path;
   vtksys::SystemTools::SplitPath(dirname, path);
+  if (path.size() > 0 && path.back() == "")
+    {
+    path.pop_back();
+    }
 
   // Build the path to the DICOMDIR file.
   path.push_back("DICOMDIR");
