@@ -10,6 +10,9 @@ endif()
 add_executable(TestDICOMCompiler TestDICOMCompiler.cxx)
 target_link_libraries(TestDICOMCompiler vtkDICOM)
 
+add_executable(TestDICOMDirectory TestDICOMDirectory.cxx)
+target_link_libraries(TestDICOMDirectory vtkDICOM)
+
 add_executable(TestDICOMParser TestDICOMParser.cxx)
 target_link_libraries(TestDICOMParser vtkDICOM)
 
