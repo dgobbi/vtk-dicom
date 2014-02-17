@@ -246,6 +246,7 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
       }
 
     // Read the file metadata
+    meta->Initialize();
     this->SetInternalFileName(fileName.c_str());
     parser->SetFileName(fileName.c_str());
     parser->Update();
@@ -284,7 +285,7 @@ void vtkDICOMSorter::SortFiles(vtkStringArray *input)
         c2 = vtkDICOMUtilities::CompareUIDs(
           seriesUID, (*li)[0].SeriesUID.GetCharData());
         }
-      if (c1 == 0 && c2 == 0)
+      if (c1 == 0 && c2 == 0 && seriesUID != 0)
         {
         (*li).push_back(fileInfo);
         foundSeries = true;
