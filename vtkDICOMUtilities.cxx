@@ -22,6 +22,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include <sys/stat.h>
+
 // needed for gettimeofday
 #ifndef _WIN32
 #include <time.h>
@@ -587,6 +589,79 @@ std::string vtkDICOMUtilities::GenerateDateTime(const char *z)
           y, m, d, H, M, S, us, z);
 
   return dt;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
+{
+  char buffer[256];
+
+  struct stat fs;
+  if (filename == 0 || stat(filename, &fs) != 0)
+    {
+    return false;
+    }
+
+  std::streamsize size = fs.st_size;
+  if (size > static_cast<std::streamsize>(sizeof(buffer)))
+    {
+    size = static_cast<std::streamsize>(sizeof(buffer));
+    }
+
+  std::ifstream infile(filename, ios::in | ios::binary);
+
+  if (infile.fail())
+    {
+    return false;
+    }
+
+  infile.read(buffer, size);
+  size = infile.gcount();
+  infile.close();
+
+  const char *cp = buffer;
+
+  // Look for the magic number and the first meta header tag.
+  std::streamsize skip = 128;
+  for (int i = 0; i < 2; i++)
+    {
+    if (size > skip + 8)
+      {
+      cp = &buffer[skip];
+      if (cp[0] == 'D' && cp[1] == 'I' && cp[2] == 'C' && cp[3] == 'M' &&
+          cp[4] == 2 && cp[5] == 0 && cp[6] == 0 && cp[7] == 0)
+        {
+        return true;
+        }
+      }
+    // Some non-standard files have DICM at the beginning.
+    skip = 0;
+    }
+
+  // File must be a reasonable size.
+  if (size < 256)
+    {
+    return false;
+    }
+
+  cp = buffer;
+
+  // If no magic number found, look for a valid meta header.
+  if (cp[0] == 2 && cp[1] == 0 && cp[2] == 0 && cp[3] == 0 &&
+      cp[4] == 'U' && cp[5] == 'L' && cp[6] == 4 && cp[7] == 0)
+    {
+    return true;
+    }
+
+  // Finally, look for little-endian implicit ACR-NEMA.
+  if (cp[0] == 8 && cp[1] == 0 && cp[2] == 0 && cp[3] == 0 &&
+      cp[4] == 4 && cp[5] == 0 && cp[6] == 0 && cp[7] == 0 &&
+      cp[12] == 8 && cp[13] == 0 && (cp[14] != 0 || cp[15] != 0))
+    {
+    return true;
+    }
+
+  return false;
 }
 
 //----------------------------------------------------------------------------

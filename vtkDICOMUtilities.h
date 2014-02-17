@@ -59,6 +59,14 @@ public:
    */
   static std::string GenerateDateTime(const char *zone);
 
+  //! Check if the specified file is a DICOM file.
+  /*!
+   *  This will return true if the file exists, is readable, and
+   *  if it has the DICM magic number or if the first few bytes of
+   *  the file look like DICOM data elements.
+   */
+  static bool IsDICOMFile(const char *filename);
+
   //! Get the UID for this DICOM implementation.
   static const char *GetImplementationClassUID();
 
