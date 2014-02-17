@@ -54,10 +54,18 @@ class vtkDICOMDirectory::StringArrayVector
 struct vtkDICOMDirectory::FileInfo
 {
   std::string FileName;
+  // -- PATIENT --
+  vtkDICOMValue PatientName;
   vtkDICOMValue PatientID;
+  // -- STUDY --
+  vtkDICOMValue StudyDate;
+  vtkDICOMValue StudyTime;
   vtkDICOMValue StudyUID;
+  // -- SERIES --
   vtkDICOMValue SeriesUID;
-  int InstanceNumber;
+  unsigned int SeriesNumber;
+  // -- IMAGE --
+  unsigned int InstanceNumber;
 };
 
 bool vtkDICOMDirectory::CompareInstance(
@@ -266,8 +274,9 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   parser->AddObserver(
     vtkCommand::ErrorEvent, this, &vtkDICOMDirectory::RelayError);
 
+  groups->InsertNextValue(0x0008); // For study and series info.
   groups->InsertNextValue(0x0010); // For patient info.
-  groups->InsertNextValue(0x0020); // For study info.
+  groups->InsertNextValue(0x0020); // For study and series info.
   parser->SetMetaData(meta);
   parser->SetGroups(groups);
 
@@ -306,33 +315,76 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     // Insert the file into the sorted list
     FileInfo fileInfo;
     fileInfo.FileName = fileName;
+    fileInfo.PatientName = meta->GetAttributeValue(DC::PatientName);
     fileInfo.PatientID = meta->GetAttributeValue(DC::PatientID);
+    fileInfo.StudyDate = meta->GetAttributeValue(DC::StudyDate);
+    fileInfo.StudyTime = meta->GetAttributeValue(DC::StudyTime);
     fileInfo.StudyUID = meta->GetAttributeValue(DC::StudyInstanceUID);
     fileInfo.SeriesUID = meta->GetAttributeValue(DC::SeriesInstanceUID);
+    fileInfo.SeriesNumber =
+      meta->GetAttributeValue(DC::SeriesNumber).AsUnsignedInt();
     fileInfo.InstanceNumber =
       meta->GetAttributeValue(DC::InstanceNumber).AsUnsignedInt();
 
+    const char *patientName = fileInfo.PatientName.GetCharData();
     const char *patientID = fileInfo.PatientID.GetCharData();
+    const char *studyDate = fileInfo.StudyDate.GetCharData();
+    const char *studyTime = fileInfo.StudyTime.GetCharData();
     const char *studyUID = fileInfo.StudyUID.GetCharData();
     const char *seriesUID = fileInfo.SeriesUID.GetCharData();
+    unsigned int seriesNumber = fileInfo.SeriesNumber;
 
+    patientName = (patientName ? patientName : "");
     patientID = (patientID ? patientID : "");
 
     bool foundSeries = false;
     for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
       {
-      // compare patientId, then studyId, then seriesId
+      // Compare patient, then study, then series.
+      const char *patientName2 = (*li)[0].PatientName.GetCharData();
+      patientName2 = (patientName2 ? patientName2 : "");
       const char *patientID2 = (*li)[0].PatientID.GetCharData();
       patientID2 = (patientID2 ? patientID2 : "");
       int c = strcmp(patientID, patientID2);
+      if (c != 0 || patientID[0] == '\0')
+        {
+        // Use ID to identify patient, but use name to sort.
+        int c2 = strcmp(patientName, patientName2);
+        c = (c2 == 0 ? c : c2);
+        }
       if (c == 0)
         {
         c = vtkDICOMUtilities::CompareUIDs(
           studyUID, (*li)[0].StudyUID.GetCharData());
+        if (c != 0 || studyUID == 0)
+          {
+          // Use UID to identify study, but use date to sort.
+          int c2 = 0;
+          const char *studyDate2 = (*li)[0].StudyDate.GetCharData();
+          if (studyDate && studyDate2)
+            {
+            c2 = strcmp(studyDate, studyDate2);
+            if (c2 == 0)
+              {
+              const char *studyTime2 = (*li)[0].StudyTime.GetCharData();
+              if (studyTime && studyTime2)
+                {
+                c2 = strcmp(studyTime, studyTime2);
+                }
+              }
+            }
+          c = (c2 == 0 ? c : c2);
+          }
         if (c == 0)
           {
           c = vtkDICOMUtilities::CompareUIDs(
             seriesUID, (*li)[0].SeriesUID.GetCharData());
+          if (c != 0 || seriesUID == 0)
+            {
+            // Use UID to identify series, but use series number to sort.
+            int c2 = (*li)[0].SeriesNumber - seriesNumber;
+            c = (c2 == 0 ? c : c2);
+            }
           }
         }
       if (c == 0 && seriesUID != 0)
