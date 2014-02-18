@@ -408,10 +408,9 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   for (vtkIdType j = 0; j < numberOfStrings; j++)
     {
     const std::string& fileName = input->GetValue(j);
-    this->SetInternalFileName(fileName.c_str());
 
-    // Skip anything that is a directory
-    if (vtksys::SystemTools::FileIsDirectory(fileName.c_str()))
+    // Skip anything that does not look like a DICOM file.
+    if (!vtkDICOMUtilities::IsDICOMFile(fileName.c_str()))
       {
       continue;
       }
@@ -816,7 +815,7 @@ void vtkDICOMDirectory::ProcessDirectory(
           this->ProcessDirectory(fileString.c_str(), depth-1, files);
           }
         }
-      else if (vtkDICOMUtilities::IsDICOMFile(fileString.c_str()))
+      else
         {
         files->InsertNextValue(fileString);
         }
