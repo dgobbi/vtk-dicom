@@ -38,8 +38,8 @@ public:
 
   //! Set the input directory.
   /*!
-   *  Set the input directory.  If it has a DICOMDIR file, then the
-   *  contents of that file will be used as the directory.  Otherwise,
+   *  Set the input directory.  If it has a DICOMDIR file, then that
+   *  file will be scanned to get info about the directory.  Otherwise,
    *  the directory will be scanned for DICOM files.  The depth of the
    *  scan (how many subdirectories deep) can be controlled with the
    *  SetScanDepth() method.
@@ -51,7 +51,7 @@ public:
   /*!
    *  The default scan depth is 1, which scans only the given directory
    *  and no subdirectories.  A scan depth of zero means that the directory
-   *  must contain a DICOMDIR file.
+   *  will not be scanned unless it contains a DICOMDIR file.
    */
   vtkSetMacro(ScanDepth, int);
   int GetScanDepth() { return this->ScanDepth; };
@@ -75,7 +75,12 @@ public:
   //! Get the directory attributes for a study.
   const vtkDICOMItem& GetStudyRecord(int study);
 
-  //! Get the directory attributes for a patient.
+  //! Get the patient-related attributes for a specific study.
+  /*!
+   *  This returns a patient record, the same as GetPatientRecord(),
+   *  except that it returns the patient information as recorded
+   *  at the time of the study.
+   */
   const vtkDICOMItem& GetPatientRecordForStudy(int study);
 
   //! Get the number of patients that were found.
