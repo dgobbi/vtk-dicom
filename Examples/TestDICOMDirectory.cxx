@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
   for (int i = 0; i < n; i++)
     {
     const vtkDICOMItem& patientItem = ddir->GetPatientRecord(i);
-    cout << "Patient" << i << ": "
+    cout << "Patient " << i << ": "
          << patientItem.GetAttributeValue(DC::PatientID).AsString() << "\n";
     int j0 = ddir->GetFirstStudyForPatient(i);
     int j1 = ddir->GetLastStudyForPatient(i);
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
       {
       const vtkDICOMItem& studyItem = ddir->GetStudyRecord(j);
       const vtkDICOMItem& studyPItem = ddir->GetPatientRecordForStudy(j);
-      cout << " Study" << j << ": \""
+      cout << " Study " << j << ": \""
            << studyItem.GetAttributeValue(DC::StudyDescription).AsString()
            << "\" \""
            << studyPItem.GetAttributeValue(DC::PatientName).AsString()

@@ -634,6 +634,10 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
   // Path broken into components.
   std::vector<std::string> path;
   vtksys::SystemTools::SplitPath(dirname, path);
+  if (path.size() > 0 && path.back() == "")
+    {
+    path.pop_back();
+    }
   size_t pathDepth = path.size();
 
   // The entry type that is currently being processed.
@@ -680,9 +684,9 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
           items[j].GetAttributeValue(DC::ReferencedFileID);
 
         unsigned int m = fileID.GetNumberOfValues();
-        for (unsigned int j = 0; j < m; j++)
+        for (unsigned int k = 0; k < m; k++)
           {
-          path.push_back(fileID.GetString(j));
+          path.push_back(fileID.GetString(k));
           }
         fileNames->InsertNextValue(vtksys::SystemTools::JoinPath(path));
         path.resize(pathDepth);
