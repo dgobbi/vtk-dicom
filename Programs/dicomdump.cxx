@@ -73,7 +73,12 @@ void printElement(
     // group is even, element is zero
     name = "Group Length";
     }
-
+  else if ((tag.GetGroup() & 0x0001) != 0 &&
+           (tag.GetElement() & 0xFF00) == 0)
+    {
+    // group is odd, element is a creator element
+    name = "Private Creator";
+    }
   // allow multiple values (i.e. for each image in series)
   vtkDICOMValue v = iter->GetValue();
   unsigned int vn = v.GetNumberOfValues();
