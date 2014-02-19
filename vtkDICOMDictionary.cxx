@@ -16,6 +16,7 @@
 #include "vtkDICOMVM.h"
 #include "vtkDICOMTag.h"
 #include "vtkDICOMDictEntry.h"
+#include "vtkDICOMDictPrivate.h"
 
 #include <string.h>
 
@@ -90,21 +91,24 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
   unsigned short element = tag.GetElement();
 
   // default to the standard dictionary
+  unsigned int m = DICT_HASH_TABLE_SIZE - 1;
   vtkDICOMDictEntry::Entry **htable = vtkDICOMDictionary::DictHashTable;
   vtkDICOMDictEntry::Entry *hptr;
 
   // for odd group number, only search the private dictionary
-  if (group & 1)
+  if ((group & 1) != 0 && dict != 0)
     {
     vtkDICOMDictionary::InitializeOnce();
+    m = 15; // hash table size is 16 for private dict blocks
     char **names = vtkDICOMDictionary::PrivateDictionaryNames;
     htable = 0;
-    if (names && dict)
+    if (names)
       {
       for (int i = 0; names[i] != 0; i++)
         {
         size_t n = strlen(names[i]);
-        if (strncmp(names[i], dict, n) == 0)
+        if (strncmp(names[i], dict, n) == 0 &&
+            (dict[n] == '\0' || (dict[n] == ' ' && dict[n+1] == '\0')))
           {
           htable = vtkDICOMDictionary::PrivateDictionaries[i];
           break;
@@ -114,7 +118,6 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
     }
 
   // compute the hash table index
-  unsigned int m = DICT_HASH_TABLE_SIZE - 1;
   unsigned int i = (tag.ComputeHash() & m);
 
   if (htable && (hptr = htable[i]) != NULL)

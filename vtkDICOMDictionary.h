@@ -40,8 +40,7 @@ public:
   static vtkDICOMDictEntry FindDictEntry(
     const vtkDICOMTag tag, const char *privateDict);
 
-protected:
-  //! Called by subclasses to add private dictionaries.
+  //! Add the hash table for a private dictionary.
   static void AddPrivateDictionary(
     const char *name, vtkDICOMDictEntry::Entry **hashTable);
 

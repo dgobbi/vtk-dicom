@@ -217,18 +217,10 @@ vtkDICOMDictEntry vtkDICOMItem::FindDictEntry(vtkDICOMTag tag) const
 
   // note that there is similar code in vtkDICOMMetaData
   const char *dict = 0;
-  if (group & 1)
+  if ((group & 1) != 0 && element > 0x00ffu)
     {
-    unsigned short creatorElement = element;
-    if (element > 0x00ffu)
-      {
-      creatorElement = (element >> 8);
-      element = (0x1000u | (element & 0x00ffu));
-      }
-    else
-      {
-      element = 0x0010u;
-      }
+    unsigned short creatorElement = (element >> 8);
+    element &= 0x00ffu;
     tag = vtkDICOMTag(group, element);
     vtkDICOMTag creatorTag(group, creatorElement);
     dict = this->GetAttributeValue(creatorTag).GetCharData();

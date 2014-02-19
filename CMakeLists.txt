@@ -175,6 +175,7 @@ set(LIB_SRCS
   vtkDICOMDataElement.cxx
   vtkDICOMDictHash.cxx
   vtkDICOMDictEntry.cxx
+  vtkDICOMDictPrivate.cxx
   vtkDICOMDirectory.cxx
   vtkDICOMGenerator.cxx
   vtkDICOMSCGenerator.cxx
