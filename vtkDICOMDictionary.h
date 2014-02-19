@@ -20,6 +20,7 @@
 
 //! The size of the hash table for the dicom dictionary.
 #define DICT_HASH_TABLE_SIZE 1024
+#define DICT_PRIVATE_TABLE_SIZE 64
 
 //! Provide access to the DICOM tag dictionary.
 class VTK_DICOM_EXPORT vtkDICOMDictionary
@@ -46,16 +47,26 @@ public:
 
 private:
   friend class vtkDICOMDictionaryCleanup;
+  struct PrivateDict;
 
   //! A method to handle static initialization of PrivateDictionaries
   static bool InitializeOnce();
 
+  //! Compute a string hash for a DICOM text value.
+  /*!
+   *  The final trailing space will be stripped, if present.  The
+   *  resulting string will not be terminated if it fills all 64 bytes.
+   */
+  static unsigned int HashLongString(const char *lo, char stripped[64]);
+
+  //! Locate a private dictionary, given the name.
+  static vtkDICOMDictEntry::Entry **FindPrivateDict(const char *name);
+
   //! The lookup table for the dictionary.
   static vtkDICOMDictEntry::Entry *DictHashTable[DICT_HASH_TABLE_SIZE];
 
-  //! A null-terminated list of private dictionaries.
-  static vtkDICOMDictEntry::Entry ***PrivateDictionaries;
-  static char **PrivateDictionaryNames;
+  //! The lookup table for private dictionaries.
+  static PrivateDict *PrivateDictTable[DICT_PRIVATE_TABLE_SIZE];
 };
 
 #endif /* __vtkDICOMDictionary_h */
