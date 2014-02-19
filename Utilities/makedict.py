@@ -41,13 +41,13 @@ if privatedict:
 else:
   htsize = 1024
 
+# collect private dictionaries
+privatelines = {}
+
 # read the file in one go
 f = open(filename, 'r')
 lines = f.readlines()
 f.close()
-
-# collect private dictionaries
-privatelines = {}
 
 # look for repeating groups and repeat them
 i = 0
@@ -120,7 +120,7 @@ def makedict(lines):
       ret = lines[i].encode('ascii').strip()
       i = i + 1
     except:
-      print "non-ascii character encountered on line %d" % (i,)
+      sys.stderr.write("non-ascii character encountered on line %d\n" % (i,))
       raise TypeError
 
     # replace "US or SS" with "XS"
@@ -265,6 +265,10 @@ def printbody(entry_dict, classname):
   print "typedef vtkDICOMVM VM;"
   print "typedef vtkDICOMDictEntry::Entry DictEntry;"
   print
+  print "DictEntry DictEmptyRow[] = {"
+  print "{ 0, 0, 0, 0, 0, NULL }"
+  print "};"
+  print
 
   ct = 0
   dn = 0
@@ -273,10 +277,12 @@ def printbody(entry_dict, classname):
     ds = ""
     if len(entry_dict) > 1:
       ds = "%02d" % (dn,)
+      print "// %s" % (name,)
     for l in entry_list:
-      print "DictEntry Dict%sRow%0*d[] = {" % (ds,int(math.log10(htsize)+1),ct)
-      print l
-      print "};"
+      if l != "{ 0, 0, 0, 0, 0, NULL }":
+        print "DictEntry Dict%sRow%0*d[] = {" % (ds,int(math.log10(htsize)+1),ct)
+        print l
+        print "};"
       ct = ct + 1
   print
   ns = ""
@@ -287,14 +293,18 @@ def printbody(entry_dict, classname):
   ct = 0
   dn = 0
   for name, entry_list in entry_dict.items():
+    print
     dn = dn + 1
     ds = ""
     if len(entry_dict) > 1:
       ds = "%02d" % (dn,)
-    print
+      print "// %s" % (name,)
     print "DictEntry *%sDict%sHashTable[%d] = {" % (ns,ds,htsize)
     for l in entry_list:
-      print "Dict%sRow%0*d," % (ds,int(math.log10(htsize)+1),ct)
+      if l != "{ 0, 0, 0, 0, 0, NULL }":
+        print "Dict%sRow%0*d," % (ds,int(math.log10(htsize)+1),ct)
+      else:
+        print "DictEmptyRow,"
       ct = ct + 1
     print "};"
 
