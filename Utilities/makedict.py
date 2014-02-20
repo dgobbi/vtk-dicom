@@ -360,7 +360,17 @@ def printbody(entry_dict, classname):
     print
     print "%sInitializer::~%sInitializer()" % (classname,classname)
     print "{"
-    print "  --%sInitializerCounter;" % (classname,)
+    print "  if (--%sInitializerCounter == 0)" % (classname,)
+    print "    {"
+    dn = 0
+    for name, entry_list in entry_dict.items():
+      htsize = len(entry_list)
+      dn = dn + 1
+      ds = ""
+      if len(entry_dict) > 1:
+        ds = "%03d" % (dn,)
+      print "    vtkDICOMDictionary::RemovePrivateDictionary(\"%s\");" % (name)
+    print "    }"
     print "}"
 
 if privatedict:
