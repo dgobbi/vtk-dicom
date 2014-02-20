@@ -123,6 +123,12 @@ def makedict(lines):
       sys.stderr.write("non-ascii character encountered on line %d\n" % (i,))
       raise TypeError
 
+    # replace "Unknown" and "?" with ""
+    if name in ("Unknown", "unknown", "?"):
+      name = ""
+    if key in ("Unknown", "unknown", "?"):
+      key = ""
+
     # replace "US or SS" with "XS"
     if vr == "US or SS" or vr == "SS or US":
       vr = "XS"
@@ -179,7 +185,7 @@ def makedict(lines):
         ("%-39s = 0x%s%s, // %s %-5s %s" % (key, g, e, vr, vm, ret)).strip())
 
       element_list.append(
-        "{ 0x%s, 0x%s, %s, VR::%s, VM::%s, \"%s\" }," % (g, e, ret, vr, vm, name))
+        "{ 0x%s, 0x%s, %s, VR::%s, VM::%s, \"%s\" }," % (g, e, ret, vr, vm, key))
 
       # create a hash from group, element
       h = ((gi ^ (gi >> 6)) ^ (ei ^ (ei >> 6)))
