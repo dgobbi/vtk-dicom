@@ -264,6 +264,9 @@ def printhead(enum_dict, classname):
     print "};"
     print "} // end namespace DC"
   else:
+    print "// This must be included before the initializer is declared."
+    print "#include \"vtkDICOMDictionary.h\""
+    print
     print "// Initializer to add dict when header included."
     print "struct %sInitializer" % (classname,)
     print "{"

@@ -50,12 +50,12 @@ public:
   static void AddPrivateDictionary(
     const char *name, vtkDICOMDictEntry::Entry **hashTable, unsigned int n);
 
-private:
-  friend class vtkDICOMDictionaryCleanup;
-  struct PrivateDict;
+  //! Remove a private dictionary.
+  static void RemovePrivateDictionary(const char *name);
 
-  //! A method to handle static initialization of PrivateDictionaries
-  static bool InitializeOnce();
+private:
+  friend struct vtkDICOMDictionaryInitializer;
+  struct PrivateDict;
 
   //! Compute a string hash for a DICOM text value.
   /*!
@@ -78,5 +78,18 @@ private:
   //! The lookup table for private dictionaries.
   static PrivateDict *PrivateDictTable[DICT_PRIVATE_TABLE_SIZE];
 };
+
+//! Initializer (Schwarz counter).
+/*!
+ *  This ensures that the vtkDICOMDictionary module is initialized before
+ *  any other module that includes this header file.
+ */
+struct vtkDICOMDictionaryInitializer
+{
+  vtkDICOMDictionaryInitializer();
+  ~vtkDICOMDictionaryInitializer();
+};
+
+static vtkDICOMDictionaryInitializer vtkDICOMDictionaryInitializerInstance;
 
 #endif /* __vtkDICOMDictionary_h */
