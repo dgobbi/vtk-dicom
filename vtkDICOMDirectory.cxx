@@ -124,7 +124,6 @@ vtkDICOMDirectory::vtkDICOMDirectory()
   this->Studies = new StudyVector;
   this->Patients = new PatientVector;
   this->FileSetID = 0;
-  this->ErrorCode = 0;
   this->InternalFileName = 0;
   this->RequirePixelData = 1;
   this->ScanDepth = 1;
@@ -430,6 +429,16 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
         {
         continue;
         }
+      }
+
+    // Check for abort.
+    if (!this->AbortExecute)
+      {
+      this->UpdateProgress((j + 1.0)/numberOfStrings);
+      }
+    if (this->AbortExecute)
+      {
+      return;
       }
 
     // Insert the file into the sorted list
@@ -788,6 +797,16 @@ void vtkDICOMDirectory::ProcessDirectory(
     return;
     }
 
+  // Check for abort.
+  if (!this->AbortExecute)
+    {
+    this->UpdateProgress(0.0);
+    }
+  if (this->AbortExecute)
+    {
+    return;
+    }
+
   vtksys::Directory d;
   if (!d.Load(dirname))
     {
@@ -856,6 +875,16 @@ void vtkDICOMDirectory::Execute()
     vtkSmartPointer<vtkStringArray>::New();
   this->ProcessDirectory(this->DirectoryName, this->ScanDepth, files);
 
+  // Check for abort.
+  if (!this->AbortExecute)
+    {
+    this->UpdateProgress(0.0);
+    }
+  if (this->AbortExecute)
+    {
+    return;
+    }
+
   if (files->GetNumberOfValues() > 0)
     {
     this->SortFiles(files);
@@ -863,8 +892,10 @@ void vtkDICOMDirectory::Execute()
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMDirectory::Update()
+void vtkDICOMDirectory::Update(int)
 {
+  this->AbortExecute = 0;
+
   if (this->GetMTime() > this->UpdateTime.GetMTime())
     {
     this->Execute();

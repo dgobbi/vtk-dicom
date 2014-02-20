@@ -14,7 +14,7 @@
 #ifndef __vtkDICOMDirectory_h
 #define __vtkDICOMDirectory_h
 
-#include <vtkObject.h>
+#include <vtkAlgorithm.h>
 #include "vtkDICOMModule.h"
 
 class vtkStringArray;
@@ -29,10 +29,10 @@ class vtkDICOMItem;
  *  a list of DICOM file names as output, sorted by patient, study, series,
  *  and image.
  */
-class VTK_DICOM_EXPORT vtkDICOMDirectory : public vtkObject
+class VTK_DICOM_EXPORT vtkDICOMDirectory : public vtkAlgorithm
 {
 public:
-  vtkTypeMacro(vtkDICOMDirectory,vtkObject);
+  vtkTypeMacro(vtkDICOMDirectory,vtkAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
   static vtkDICOMDirectory *New();
 
@@ -61,7 +61,8 @@ public:
    * This method causes the directory to be read.  It must be called before
    * any of the Get methods.
    */
-  virtual void Update();
+  virtual void Update() { this->Update(0); };
+  virtual void Update(int);
 
   //! Get the total number of series that were found.
   int GetNumberOfSeries();
@@ -107,9 +108,6 @@ public:
   //! Get the file set ID.  This will be NULL unless a DICOMDIR was found.
   const char *GetFileSetID() { return this->FileSetID; }
 
-  //! Get the error code.
-  unsigned long GetErrorCode() { return this->ErrorCode; }
-
   //! Get the filename associated with the error code.
   const char *GetInternalFileName() { return this->InternalFileName; }
 
@@ -131,7 +129,6 @@ protected:
   int ScanDepth;
 
   vtkTimeStamp UpdateTime;
-  unsigned long ErrorCode;
   char *InternalFileName;
 
   //! Fill the output filename array.
