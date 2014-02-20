@@ -54,7 +54,10 @@ i = 0
 rg = []
 while i < len(lines):
   tag = lines[i].strip()
-  g, e = tag[1:10].split(',')
+  try:
+    g, e = tag[1:10].split(',')
+  except ValueError:
+    sys.stderr.write("exception: %s\n" % (tag))
   if g == "60xx" or g == "50xx":
     rg.extend(lines[i:i+6])
     i = i + 6
@@ -130,15 +133,15 @@ def makedict(lines):
       key = ""
 
     # replace "US or SS" with "XS"
-    if vr == "US or SS" or vr == "SS or US":
+    if vr in ("US or SS", "SS or US", "xs"):
       vr = "XS"
 
     # replace "OB or OW" with "OX"
-    if vr == "OB or OW" or vr == "OW or OB":
+    if vr in ("OB or OW", "OW or OB", "ox"):
       vr = "OX"
 
     # replace "see note" with "XX"
-    if vr == "" or vr == "see note":
+    if vr in ("", "see note"):
       vr = "XX"
 
     # replace mixed short with "OW"
@@ -180,7 +183,7 @@ def makedict(lines):
       gi = int(g, 16)
       ei = int(e, 16)
 
-    if key:
+    if key or privatedict:
       enum_list.append(
         ("%-39s = 0x%s%s, // %s %-5s %s" % (key, g, e, vr, vm, ret)).strip())
 
