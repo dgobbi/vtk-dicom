@@ -15,11 +15,14 @@ for filename in sys.argv[1:]:
     l = line.strip()
     if line[0] == '(':
       g = re.sub(r,r'\1',l)
+      e = re.sub(r,r'\3',l)
       if len(g) > 4:
         g0 = int(g[0:4],16)
         g1 = int(g[7:11],16)
         tail = re.sub(r,s[3:],l)
         for g in range(g0,g1+1,2):
           sys.stdout.write("(%04.4x" % (g,) + tail)
+      elif len(e) > 4:
+        continue
       else:
         sys.stdout.write(re.sub(r,s,l))

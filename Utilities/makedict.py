@@ -93,7 +93,7 @@ while i < len(lines):
         privatelines[creator] = lines[i:i+6]
     i = i + 6
 
-def makedict(lines):
+def makedict(lines, creator):
   # the tables that will be created
   enum_list = []
   element_list = []
@@ -127,9 +127,9 @@ def makedict(lines):
       raise TypeError
 
     # replace "Unknown" and "?" with ""
-    if name in ("Unknown", "unknown", "?"):
+    if name in ("Unknown", "Internal", "?"):
       name = ""
-    if key in ("Unknown", "unknown", "?"):
+    if key in ("Unknown", "Inernal", "?"):
       key = ""
 
     # replace "US or SS" with "XS"
@@ -221,9 +221,21 @@ def makedict(lines):
       k4 = k4 + 1
     maxl = max(maxl, l)
     minl = min(minl, l)
-    s = ""
+    newlist = []
     for idx in te:
-      s = s + element_list[idx] + "\n"
+      newlist.append(element_list[idx])
+    newlist.sort()
+    s = ""
+    lastitem = ""
+    for newitem in newlist:
+      if newitem[0:16] == lastitem[0:16]:
+        if newitem != lastitem:
+          sys.stderr.write("duplicate! \"" + creator + "\"\n")
+          sys.stderr.write(lastitem + "\n")
+          sys.stderr.write(newitem + "\n")
+        continue
+      s = s + newitem + "\n"
+      lastitem = newitem
     s = s + "{ 0, 0, 0, 0, 0, NULL }"
     entry_list.append(s)
     k = k + len(te) + 1
@@ -348,7 +360,7 @@ if privatedict:
   entry_dict = {}
 
   for name, lines in privatelines.items():
-    enum_list, entry_list = makedict(lines)
+    enum_list, entry_list = makedict(lines, name)
     enum_dict[name] = enum_list
     entry_dict[name] = entry_list
 
