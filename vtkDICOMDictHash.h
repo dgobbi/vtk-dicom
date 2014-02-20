@@ -1,5 +1,5 @@
 /*=========================================================================
-This is an automatically generated file.  Do not edit.
+This is an automatically generated file.  Include errata for any changes.
 =========================================================================*/
 
 #ifndef __vtkDICOMDictHash_h
