@@ -42,8 +42,13 @@ public:
     const vtkDICOMTag tag, const char *privateDict);
 
   //! Add the hash table for a private dictionary.
+  /*!
+   *  The name should be the text that appears in the PrivateCreator
+   *  element of the data set when this dictionary is used.  The value
+   *  of "n" is the size of the provided hash table.
+   */
   static void AddPrivateDictionary(
-    const char *name, vtkDICOMDictEntry::Entry **hashTable);
+    const char *name, vtkDICOMDictEntry::Entry **hashTable, unsigned int n);
 
 private:
   friend class vtkDICOMDictionaryCleanup;
@@ -60,7 +65,12 @@ private:
   static unsigned int HashLongString(const char *lo, char stripped[64]);
 
   //! Locate a private dictionary, given the name.
-  static vtkDICOMDictEntry::Entry **FindPrivateDict(const char *name);
+  /*!
+   *  This returns the hash table, and also returns the size of the
+   *  hash table in the second argument.
+   */
+  static vtkDICOMDictEntry::Entry **FindPrivateDict(
+    const char *name, unsigned int *tableSizePtr);
 
   //! The lookup table for the dictionary.
   static vtkDICOMDictEntry::Entry *DictHashTable[DICT_HASH_TABLE_SIZE];

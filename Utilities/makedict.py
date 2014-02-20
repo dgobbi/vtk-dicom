@@ -36,10 +36,7 @@ for arg in sys.argv[1:]:
     sys.exit(1)
 
 # the hash table, in PYTHON
-if privatedict:
-  htsize = 16
-else:
-  htsize = 1024
+htsize = 1024
 
 # collect private dictionaries
 privatelines = {}
@@ -101,6 +98,11 @@ def makedict(lines, creator):
 
   # a set to keep track of all VM strings encountered
   vms = {}
+
+  if privatedict:
+    htsize = int(len(lines)/24)
+    if htsize == 0:
+      htsize = 1
 
   ht = [None]*htsize
 
@@ -190,11 +192,11 @@ def makedict(lines, creator):
       element_list.append(
         "{ 0x%s, 0x%s, %s, VR::%s, VM::%s, \"%s\" }," % (g, e, ret, vr, vm, key))
 
-      # create a hash from group, element
+      # create a 16-bit hash from group, element
       h = ((gi ^ (gi >> 6)) ^ (ei ^ (ei >> 6)))
 
       # build the hash table
-      h = (h & (htsize-1))
+      h = (h % htsize)
       if ht[h] == None:
         ht[h] = []
 
@@ -291,13 +293,14 @@ def printbody(entry_dict, classname):
   print "};"
   print
 
-  ct = 0
   dn = 0
   for name, entry_list in entry_dict.items():
+    htsize = len(entry_list)
+    ct = 0
     dn = dn + 1
     ds = ""
     if len(entry_dict) > 1:
-      ds = "%02d" % (dn,)
+      ds = "%03d" % (dn,)
       print "// %s" % (name,)
     for l in entry_list:
       if l != "{ 0, 0, 0, 0, 0, NULL }":
@@ -311,14 +314,15 @@ def printbody(entry_dict, classname):
     print "}"
     ns = "vtkDICOMDictionary::"
 
-  ct = 0
   dn = 0
   for name, entry_list in entry_dict.items():
     print
+    htsize = len(entry_list)
+    ct = 0
     dn = dn + 1
     ds = ""
     if len(entry_dict) > 1:
-      ds = "%02d" % (dn,)
+      ds = "%03d" % (dn,)
       print "// %s" % (name,)
     print "DictEntry *%sDict%sHashTable[%d] = {" % (ns,ds,htsize)
     for l in entry_list:
@@ -341,12 +345,13 @@ def printbody(entry_dict, classname):
     print "    {"
     dn = 0
     for name, entry_list in entry_dict.items():
+      htsize = len(entry_list)
       dn = dn + 1
       ds = ""
       if len(entry_dict) > 1:
-        ds = "%02d" % (dn,)
+        ds = "%03d" % (dn,)
       print "    vtkDICOMDictionary::AddPrivateDictionary("
-      print "       \"%s\", Dict%sHashTable);" % (name,ds)
+      print "       \"%s\", Dict%sHashTable, %d);" % (name,ds,htsize)
     print "    }"
     print "}"
     print

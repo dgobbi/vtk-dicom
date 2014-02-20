@@ -49,8 +49,8 @@ public:
 
   //! Compute a hash value, used for accelerating lookups.
   unsigned int ComputeHash() const {
-    unsigned int h = (((this->Key >> 6) & 0xFFFF03FF) ^ this->Key);
-    return (h ^ (h >> 16)); }
+    unsigned int h = (((this->Key >> 6) & 0x03FF03FF) ^ this->Key);
+    return (h ^ (h << 16)) >> 16; }
 
   bool operator==(const vtkDICOMTag& b) const {
     return (this->Key == b.Key); }

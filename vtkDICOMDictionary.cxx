@@ -21,12 +21,11 @@
 #include <string.h>
 
 //----------------------------------------------------------------------------
-#define DICT_PRIVATE_HASH_SIZE 16
-
 struct vtkDICOMDictionary::PrivateDict
 {
   const char *Name;
   unsigned int Hash;
+  unsigned int DictHashTableSize;
   vtkDICOMDictEntry::Entry **DictHashTable;
 };
 
@@ -125,7 +124,7 @@ unsigned int vtkDICOMDictionary::HashLongString(
 
 //----------------------------------------------------------------------------
 vtkDICOMDictEntry::Entry **vtkDICOMDictionary::FindPrivateDict(
-  const char *name)
+  const char *name, unsigned int *tableSizePtr)
 {
   vtkDICOMDictionary::InitializeOnce();
 
@@ -144,12 +143,14 @@ vtkDICOMDictEntry::Entry **vtkDICOMDictionary::FindPrivateDict(
       {
       if (hptr->Hash == h && strncmp(hptr->Name, stripname, 64) == 0)
         {
+        *tableSizePtr = hptr->DictHashTableSize;
         return hptr->DictHashTable;
         }
       hptr++;
       }
     }
 
+  *tableSizePtr = 0;
   return 0;
 }
 
@@ -160,21 +161,26 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
   unsigned short group = tag.GetGroup();
   unsigned short element = tag.GetElement();
 
+  // compute the hash table index
+  unsigned int h = tag.ComputeHash();
+  unsigned int i = (h & (DICT_HASH_TABLE_SIZE - 1));
+
   // default to the standard dictionary
-  unsigned int m = DICT_HASH_TABLE_SIZE - 1;
   vtkDICOMDictEntry::Entry **htable = vtkDICOMDictionary::DictHashTable;
   vtkDICOMDictEntry::Entry *hptr;
 
   // for odd group number, only search the private dictionary
   if ((group & 1) != 0 && dict != 0)
     {
-    m = DICT_PRIVATE_HASH_SIZE - 1;
-    htable = vtkDICOMDictionary::FindPrivateDict(dict);
+    unsigned int m;
+    htable = vtkDICOMDictionary::FindPrivateDict(dict, &m);
+    if (htable)
+      {
+      i = (h % m);
+      }
     }
 
-  // compute the hash table index
-  unsigned int i = (tag.ComputeHash() & m);
-
+  // search the hash table
   if (htable && (hptr = htable[i]) != NULL)
     {
     while (hptr->Group || hptr->Element || hptr->VR)
@@ -193,7 +199,7 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
 
 //----------------------------------------------------------------------------
 void vtkDICOMDictionary::AddPrivateDictionary(
-  const char *name, vtkDICOMDictEntry::Entry **hashTable)
+  const char *name, vtkDICOMDictEntry::Entry **hashTable, unsigned int size)
 {
   vtkDICOMDictionary::InitializeOnce();
 
@@ -213,6 +219,7 @@ void vtkDICOMDictionary::AddPrivateDictionary(
     hptr = htable[i];
     hptr->Name = 0;
     hptr->Hash = 0;
+    hptr->DictHashTableSize = 0;
     hptr->DictHashTable = 0;
     } 
 
@@ -240,10 +247,12 @@ void vtkDICOMDictionary::AddPrivateDictionary(
 
   hptr->Name = stripname;
   hptr->Hash = h;
+  hptr->DictHashTableSize = size;
   hptr->DictHashTable = hashTable;
 
   hptr++;
   hptr->Name = 0;
   hptr->Hash = 0;
+  hptr->DictHashTableSize = 0;
   hptr->DictHashTable = 0;
 }
