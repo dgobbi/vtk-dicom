@@ -320,6 +320,7 @@ void vtkDICOMDirectory::FillSeriesRecord(
   vtkDICOMItem *item, vtkDICOMMetaData *meta)
 {
   static const DC::EnumType tags[] = {
+    DC::SpecificCharacterSet,
     DC::SeriesTime,
     DC::Modality,
     DC::SeriesDescription,
@@ -342,6 +343,7 @@ void vtkDICOMDirectory::FillStudyRecord(
   vtkDICOMItem *item, vtkDICOMMetaData *meta)
 {
   static const DC::EnumType tags[] = {
+    DC::SpecificCharacterSet,
     DC::StudyDate,
     DC::StudyTime,
     DC::ReferringPhysicianName,
@@ -366,6 +368,7 @@ void vtkDICOMDirectory::FillPatientRecord(
   vtkDICOMItem *item, vtkDICOMMetaData *meta)
 {
   static const DC::EnumType tags[] = {
+    DC::SpecificCharacterSet,
     DC::PatientName,
     DC::PatientID,
     DC::PatientBirthDate,
