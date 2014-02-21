@@ -10,5 +10,5 @@ files and metadata from within VTK, and some utility programs
 for interrogating and converting DICOM files.
 
 More information can be found at the following website:
-http://www.cognitive-antics.net/vtk-dicom/
-http://www.cognitive-antics.net/vtk-dicom/vtk-dicom.pdf
+http://dgobbi.github.io/vtk-dicom/doc/api/
+http://dgobbi.github.io/vtk-dicom/doc/vtk-dicom.pdf
