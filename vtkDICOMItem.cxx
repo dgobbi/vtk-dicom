@@ -109,8 +109,18 @@ void vtkDICOMItem::SetAttributeValue(
   if (tag == tptr->GetTag())
     {
     tptr->Value = v;
+    if (!v.IsValid())
+      {
+      tptr->Prev->Next = tptr->Next;
+      tptr->Next->Prev = tptr->Prev;
+      tptr->Next = 0;
+      tptr->Prev = 0;
+      delete tptr;
+
+      this->L->NumberOfDataElements--;
+      }
     }
-  else
+  else if (v.IsValid())
     {
     // create a new data element
     vtkDICOMDataElement *e = new vtkDICOMDataElement;
