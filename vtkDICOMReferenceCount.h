@@ -26,8 +26,8 @@
 class VTK_DICOM_EXPORT vtkDICOMReferenceCount
 {
 public:
-  vtkDICOMReferenceCount(unsigned int i) : Counter(i) {};
-  vtkDICOMReferenceCount() : Counter(0) {};
+  vtkDICOMReferenceCount(unsigned int i) : Counter(i) {}
+  vtkDICOMReferenceCount() : Counter(0) {}
 
   unsigned int operator--();
   unsigned int operator++();

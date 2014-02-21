@@ -435,7 +435,7 @@ public:
   vtkDICOMVM() : Key(0) {}
 
   //! Construct a VM from a VM enum constant.
-  vtkDICOMVM(EnumType vm) : Key(static_cast<unsigned short>(vm)) {};
+  vtkDICOMVM(EnumType vm) : Key(static_cast<unsigned short>(vm)) {}
 
   //! Check validity of this VM.
   bool IsValid() const { return (this->Key != 0); }

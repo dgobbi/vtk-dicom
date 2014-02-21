@@ -52,7 +52,7 @@ public:
    *  and vice versa.
    */
   void SetInputFileNames(vtkStringArray *input);
-  vtkStringArray *GetInputFileNames() { return this->InputFileNames; };
+  vtkStringArray *GetInputFileNames() { return this->InputFileNames; }
 
   //! Update the information about the files.
   /*!

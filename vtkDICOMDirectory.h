@@ -54,14 +54,14 @@ public:
    *  will not be scanned unless it contains a DICOMDIR file.
    */
   vtkSetMacro(ScanDepth, int);
-  int GetScanDepth() { return this->ScanDepth; };
+  int GetScanDepth() { return this->ScanDepth; }
 
   //! Update the information about the files.
   /*!
    * This method causes the directory to be read.  It must be called before
    * any of the Get methods.
    */
-  virtual void Update() { this->Update(0); };
+  virtual void Update() { this->Update(0); }
   virtual void Update(int);
 
   //! Get the total number of series that were found.
