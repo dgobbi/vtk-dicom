@@ -321,6 +321,7 @@ void vtkDICOMDirectory::FillSeriesRecord(
 {
   static const DC::EnumType tags[] = {
     DC::SpecificCharacterSet,
+    DC::SeriesDate,
     DC::SeriesTime,
     DC::Modality,
     DC::SeriesDescription,
