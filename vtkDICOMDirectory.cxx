@@ -435,10 +435,15 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
         }
       }
 
-    // Check for abort.
+    // Check for abort and update progress at 1% intervals
     if (!this->AbortExecute)
       {
-      this->UpdateProgress((j + 1.0)/numberOfStrings);
+      double progress = (j + 1.0)/numberOfStrings;
+      if (progress == 1.0 || progress > this->GetProgress() + 0.01)
+        {
+        progress = static_cast<int>(progress*100.0)/100.0;
+        this->UpdateProgress(progress);
+        }
       }
     if (this->AbortExecute)
       {
