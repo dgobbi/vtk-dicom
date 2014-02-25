@@ -489,11 +489,11 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       patientName2 = (patientName2 ? patientName2 : "");
       const char *patientID2 = li->PatientID.GetCharData();
       patientID2 = (patientID2 ? patientID2 : "");
-      int c = strcmp(patientID, patientID2);
+      int c = strcmp(patientID2, patientID);
       if (c != 0 || patientID[0] == '\0')
         {
         // Use ID to identify patient, but use name to sort.
-        int c2 = strcmp(patientName, patientName2);
+        int c2 = strcmp(patientName2, patientName);
         c = (c2 == 0 ? c : c2);
         }
       if (c == 0)
@@ -507,11 +507,11 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
           const char *studyDate2 = li->StudyDate.GetCharData();
           if (studyDate && studyDate2)
             {
-            c2 = strcmp(studyDate, studyDate2);
+            c2 = strcmp(studyDate2, studyDate);
             if (c2 == 0)
               {
               const char *studyTime2 = li->StudyTime.GetCharData();
-              if (studyTime && studyTime2)
+              if (studyTime2 && studyTime)
                 {
                 c2 = strcmp(studyTime, studyTime2);
                 }
