@@ -64,6 +64,18 @@ public:
   vtkGetMacro(TimeSpacing, double);
   vtkSetMacro(TimeSpacing, double);
 
+   // Description:
+   // Set the slope and intercept for calibrating the scalar values.
+   // Other programs that read the NIFTI file can use the equation
+   // v = u*RescaleSlope + RescaleIntercept to rescale the data to
+   // real values.  If both the slope and the intercept are zero,
+   // then the SclSlope and SclIntercept in the header info provided
+   // via SetNIFTIHeader() are used instead.
+   vtkSetMacro(RescaleSlope, double);
+   vtkGetMacro(RescaleSlope, double);
+   vtkSetMacro(RescaleIntercept, double);
+   vtkGetMacro(RescaleIntercept, double);
+
   // Description:
   // The QFac sets the ordering of the slices in the NIFTI file.
   // If QFac is -1, then the slice ordering in the file will be reversed
@@ -120,6 +132,11 @@ protected:
   // Time dimension to use in the file.
   int TimeDimension;
   double TimeSpacing;
+
+  // Description:
+  // Information for rescaling data to quantitative units.
+  double RescaleIntercept;
+  double RescaleSlope;
 
   // Description:
   // Set to -1 when VTK slice order is opposite to NIFTI slice order.

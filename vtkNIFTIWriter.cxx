@@ -55,6 +55,9 @@ vtkNIFTIWriter::vtkNIFTIWriter()
   this->FileDimensionality = 3;
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
+  // If slope,inter are 0,0 then default slope,inter of 1,0 is used
+  this->RescaleSlope = 0.0;
+  this->RescaleIntercept = 0.0;
   this->QFac = 0.0;
   this->QFormMatrix = 0;
   this->SFormMatrix = 0;
@@ -101,6 +104,8 @@ void vtkNIFTIWriter::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "Description: " << this->Description << "\n";
   os << indent << "TimeDimension: " << this->TimeDimension << "\n";
   os << indent << "TimeSpacing: " << this->TimeSpacing << "\n";
+  os << indent << "RescaleSlope: " << this->RescaleSlope << "\n";
+  os << indent << "RescaleIntercept: " << this->RescaleIntercept << "\n";
   os << indent << "QFac: " << this->QFac << "\n";
 
   os << indent << "QFormMatrix:";
@@ -572,6 +577,13 @@ int vtkNIFTIWriter::RequestData(
 
   // copy the image information into the header
   vtkNIFTIWriterSetInformation(&hdr, info);
+
+  // set the rescale slope/intercept if not (0.0,0.0)
+  if (this->RescaleSlope != 0.0 || this->RescaleIntercept != 0.0)
+    {
+    hdr.scl_slope = this->RescaleSlope;
+    hdr.scl_inter = this->RescaleIntercept;
+    }
 
   // set the header size
   hdr.sizeof_hdr = static_cast<int>(sizeof(nifti_1_header));
