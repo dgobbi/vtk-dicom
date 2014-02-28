@@ -40,10 +40,17 @@ private:
     vtkDICOMDataElement Tail;
     vtkDICOMReferenceCount ReferenceCount;
     int NumberOfDataElements;
+    vtkDICOMDataElement *DataElements;
     unsigned int ByteOffset;
     bool Delimited;
 
-    List() : Head(), Tail(), ReferenceCount(1) {}
+    List() : Head(), Tail(), ReferenceCount(1),
+             NumberOfDataElements(0), DataElements(0),
+             ByteOffset(0), Delimited(false)
+      {
+      this->Head.Next = &this->Tail;
+      this->Tail.Prev = &this->Head;
+      }
   };
 
 public:
@@ -133,7 +140,11 @@ public:
 
 private:
   void FreeList();
-  void CopyList(const List *o, List *t);
+  vtkDICOMDataElement *NewDataElement();
+  static void CopyList(const List *o, List *t);
+  static void CopyDataElements(
+    const vtkDICOMDataElement *begin, const vtkDICOMDataElement *end,
+    List *t);
 
   //! Internal templated SetAttributeValue method
   template<class T>

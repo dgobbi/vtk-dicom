@@ -25,25 +25,45 @@ const vtkDICOMValue vtkDICOMItem::InvalidValue;
 vtkDICOMItem::vtkDICOMItem(int delimited, unsigned int byteOffset)
 {
   this->L = new List;
-  this->L->NumberOfDataElements = 0;
   this->L->ByteOffset = byteOffset;
   this->L->Delimited = (delimited != 0);
-  this->L->Head.Prev = 0;
-  this->L->Head.Next = &this->L->Tail;
-  this->L->Tail.Prev = &this->L->Head;
-  this->L->Tail.Next = 0;
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMDataElement *vtkDICOMItem::NewDataElement()
+{
+  int n = this->L->NumberOfDataElements;
+
+  // if no data elements yet, then allocate four
+  if (this->L->DataElements == 0)
+    {
+    this->L->DataElements = new vtkDICOMDataElement[4];
+    }
+  // if n is a power of two, double allocated space
+  else if (n >= 4 && (n & (n-1)) == 0)
+    {
+    // but first check if a free element exists
+    do { --n; } while (n > 0 && this->L->DataElements[n].Next != 0);
+
+    if (this->L->DataElements[n].Next != 0)
+      {
+      // make a new, larger list
+      n = this->L->NumberOfDataElements;
+      vtkDICOMDataElement *oldptr = this->L->DataElements;
+      this->L->DataElements = new vtkDICOMDataElement[2*n];
+      vtkDICOMItem::CopyDataElements(
+        this->L->Head.Next, &this->L->Tail, this->L);
+      delete [] oldptr;
+      }
+    }
+
+  return &this->L->DataElements[n];
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMItem::FreeList()
 {
-  vtkDICOMDataElement *ptr = this->L->Head.Next;
-  vtkDICOMDataElement *tail = &this->L->Tail;
-  while (ptr != tail)
-    {
-    ptr = ptr->Next;
-    delete ptr->Prev;
-    }
+  delete [] this->L->DataElements;
   delete this->L;
   this->L = 0;
 }
@@ -51,26 +71,49 @@ void vtkDICOMItem::FreeList()
 //----------------------------------------------------------------------------
 void vtkDICOMItem::CopyList(const List *o, List *t)
 {
-  t->Head.Prev = 0;
-  t->Head.Next = &t->Tail;
-  t->Tail.Prev = &t->Head;
-  t->Tail.Next = 0;
+  t->ByteOffset = o->ByteOffset;
+  t->Delimited = o->Delimited;
 
-  vtkDICOMDataElement *ptr = o->Head.Next;
-  while (ptr != &o->Tail)
+  int n = o->NumberOfDataElements;
+  if (n > 0)
     {
-    vtkDICOMDataElement *e = new vtkDICOMDataElement;
+    // round up to power of two
+    int m = n - 1;
+    m |= m >> 1;
+    m |= m >> 2;
+    m |= m >> 4;
+    m |= m >> 8;
+    m |= m >> 16;
+    m += 1;
+
+    // allocate a minimum of 4 elements
+    if (m < 4) { m = 4; }
+    t->DataElements = new vtkDICOMDataElement[m];
+    vtkDICOMItem::CopyDataElements(o->Head.Next, &o->Tail, t);
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMItem::CopyDataElements(
+  const vtkDICOMDataElement *begin, const vtkDICOMDataElement *end, List *t)
+{
+  vtkDICOMDataElement *e = t->DataElements;
+  t->Head.Next = e;
+
+  const vtkDICOMDataElement *ptr = begin;
+  while (ptr != end)
+    {
     e->Tag = ptr->Tag;
     e->Value = ptr->Value;
-    e->Next = &t->Tail;
-    e->Prev = e->Next->Prev;
-    e->Next->Prev = e;
-    e->Prev->Next = e;
+    e->Next = e + 1;
+    e->Prev = e - 1;
     ptr = ptr->Next;
+    e++;
     }
 
-  t->NumberOfDataElements = o->NumberOfDataElements;
-  t->Delimited = o->Delimited;
+  t->Tail.Prev = e - 1;
+  t->Head.Next->Prev = &t->Head;
+  t->Tail.Prev->Next = &t->Tail;
 }
 
 //----------------------------------------------------------------------------
@@ -81,19 +124,14 @@ void vtkDICOMItem::SetAttributeValue(
   if (this->L == 0)
     {
     this->L = new List;
-    this->L->NumberOfDataElements = 0;
-    this->L->Delimited = 0;
-    this->L->Head.Prev = 0;
-    this->L->Head.Next = &this->L->Tail;
-    this->L->Tail.Prev = &this->L->Head;
-    this->L->Tail.Next = 0;
     }
   // if we aren't the sole owner, copy before modifying
   else if (this->L->ReferenceCount != 1)
     {
+    // assert, because this should never happen
     assert(this->L->ReferenceCount == 1);
     List *t = new List;
-    this->CopyList(this->L, t);
+    vtkDICOMItem::CopyList(this->L, t);
     this->Clear();
     this->L = t;
     }
@@ -111,19 +149,18 @@ void vtkDICOMItem::SetAttributeValue(
     tptr->Value = v;
     if (!v.IsValid())
       {
+      // setting a value to the invalid value causes deletion
       tptr->Prev->Next = tptr->Next;
       tptr->Next->Prev = tptr->Prev;
       tptr->Next = 0;
       tptr->Prev = 0;
-      delete tptr;
-
       this->L->NumberOfDataElements--;
       }
     }
   else if (v.IsValid())
     {
     // create a new data element
-    vtkDICOMDataElement *e = new vtkDICOMDataElement;
+    vtkDICOMDataElement *e = this->NewDataElement();
     e->Tag = tag;
     e->Value = v;
 
