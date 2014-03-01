@@ -810,11 +810,18 @@ int vtkNIFTIReader::RequestInformation(
     mmat[14] = 0.0;
     mmat[15] = 1.0;
 
+    // Set QFac to -1 if the determinant is negative, unless QFac
+    // has already been set by the qform information.
+    if (vtkMatrix4x4::Determinant(mmat) < 0 && hdr->qform_code == 0)
+      {
+      this->QFac = -1.0;
+      }
+
     if (this->QFac < 0)
       {
-      // If QFac is set to -1 (which only occurs if qform_code was set)
-      // then the slices will be reversed, and we must reverse the slice
-      // orientation vector (the third column of the matrix) to compensate.
+      // If QFac is set to -1 then the slices will be reversed, and we must
+      // reverse the slice orientation vector (the third column of the matrix)
+      // to compensate.
 
       // reverse the slice orientation vector
       mmat[2] = -mmat[2];
@@ -832,7 +839,7 @@ int vtkNIFTIReader::RequestInformation(
 
     if (this->SFormMatrix->Determinant() < 0)
       {
-      vtkWarningMacro("SFormMatrix has a negative determinant");
+      vtkWarningMacro("SFormMatrix is flipped compared to QFormMatrix");
       }
     }
 

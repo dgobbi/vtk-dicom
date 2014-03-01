@@ -120,11 +120,11 @@ public:
   // matrix can contain scaling information and can even (rarely) have
   // a negative determinant, i.e. a flip.  This matrix is modified slightly
   // as compared to the sform matrix stored in the NIFTI header: the pixdim
-  // pixel spacing is factored out.  Also, if qform_code is set and QFac is -1,
-  // then the VTK slices are in reverse order as compared to the NIFTI slices,
-  // hence as compared to the sform matrix stored in the header, the third
-  // column of this matrix is multiplied by -1 and the Z offset is shifted
-  // to compensate for the fact that the last slice has become the first.
+  // pixel spacing is factored out.  Also, if QFac is -1, then the VTK slices
+  // are in reverse order as compared to the NIFTI slices, hence as compared
+  // to the sform matrix stored in the header, the third column of this matrix
+  // is multiplied by -1 and the Z offset is shifted to compensate for the
+  // fact that the last slice has become the first.
   vtkMatrix4x4 *GetSFormMatrix() { return this->SFormMatrix; }
 
   // Description:
