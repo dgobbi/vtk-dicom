@@ -971,6 +971,12 @@ int vtkNIFTIReader::RequestData(
   vtkInformationVector** vtkNotUsed(inputVector),
   vtkInformationVector* outputVector)
 {
+  // check whether the reader is in an error state
+  if (this->GetErrorCode() != vtkErrorCode::NoError)
+    {
+    return 0;
+    }
+
   // which output port did the request come from
   int outputPort =
     request->Get(vtkDemandDrivenPipeline::FROM_OUTPUT_PORT());
