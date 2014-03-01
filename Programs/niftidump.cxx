@@ -14,7 +14,7 @@
 
 #include "vtkNIFTIReader.h"
 #include "vtkNIFTIHeader.h"
-#include "vtkNIFTIHeaderPrivate.h"
+#include "vtkNIFTIPrivate.h"
 #include "vtkMatrix4x4.h"
 #include "vtkStringArray.h"
 

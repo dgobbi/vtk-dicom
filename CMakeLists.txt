@@ -201,7 +201,7 @@ set(LIB_SRCS
 set(LIB_HDRS
   vtkDICOMModule.h
   ${REFCOUNT_HDR}
-  vtkNIFTIHeaderPrivate.h
+  vtkNIFTIPrivate.h
   ${DICOM_BINARY_DIR}/vtkDICOMBuild.h
   ${DICOM_BINARY_DIR}/vtkDICOMConfig.h
 )

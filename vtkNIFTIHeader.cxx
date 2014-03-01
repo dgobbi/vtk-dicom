@@ -14,7 +14,7 @@ See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 =========================================================================*/
 
 #include "vtkNIFTIHeader.h"
-#include "vtkNIFTIHeaderPrivate.h"
+#include "vtkNIFTIPrivate.h"
 
 #include <vtkObjectFactory.h>
 

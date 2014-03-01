@@ -33,7 +33,7 @@
 
 // Header for NIFTI
 #include "vtkNIFTIHeader.h"
-#include "vtkNIFTIHeaderPrivate.h"
+#include "vtkNIFTIPrivate.h"
 
 // Header for zlib
 #include "vtk_zlib.h"
