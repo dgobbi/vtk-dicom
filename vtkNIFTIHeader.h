@@ -213,9 +213,9 @@ public:
   // Description:
   // Get the slice range for the data.
   vtkSetMacro(SliceStart, vtkTypeInt64);
-  int GetSliceStart() { return this->SliceStart; }
+  vtkTypeInt64 GetSliceStart() { return this->SliceStart; }
   vtkSetMacro(SliceEnd, vtkTypeInt64);
-  int GetSliceEnd() { return this->SliceEnd; }
+  vtkTypeInt64 GetSliceEnd() { return this->SliceEnd; }
 
   // Description:
   // Get the slice code for the data.
