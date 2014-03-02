@@ -450,7 +450,8 @@ int vtkNIFTIReader::RequestInformation(
   bool canRead = false;
   int niftiVersion = 0;
   nifti_1_header *hdr1 = new nifti_1_header;
-  nifti_2_header *hdr2 = new nifti_2_header;
+  nifti_2_header hdr2obj;
+  nifti_2_header *hdr2 = &hdr2obj;
   int hsize = static_cast<int>(sizeof(nifti_1_header));
   int rsize = gzread(file, hdr1, hsize);
   if (rsize == hsize)
@@ -513,13 +514,12 @@ int vtkNIFTIReader::RequestInformation(
 
   if (!canRead)
     {
-    const char *message = (niftiVersion == -2 ?
+    const char *message = (niftiVersion <= -2 ?
                            "NIfTI header has newline corruption " :
                            "Bad NIfTI header in file ");
     vtkErrorMacro(<< message << hdrname);
     this->SetErrorCode(vtkErrorCode::UnrecognizedFileTypeError);
     delete [] hdrname;
-    delete hdr2;
     return 0;
     }
 
@@ -527,6 +527,12 @@ int vtkNIFTIReader::RequestInformation(
 
   // number of dimensions
   int ndim = hdr2->dim[0];
+  if (ndim < 0 || ndim > 7)
+    {
+    vtkErrorMacro("NIfTI image has illegal ndim of " << ndim);
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
+    return 0;
+    }
 
   // sanity checks
   for (int i = 0; i < 8; i++)
@@ -536,10 +542,23 @@ int vtkNIFTIReader::RequestInformation(
       {
       hdr2->pixdim[i] = 1.0;
       }
-    // dimensions greater than ndim have size of 1
     if (i > ndim)
       {
+      // dimensions greater than ndim have size of 1
       hdr2->dim[i] = 1;
+      }
+    else if (hdr2->dim[i] < 0)
+      {
+      vtkErrorMacro("NIfTI image dimension " << i << " is negative");
+      this->SetErrorCode(vtkErrorCode::FileFormatError);
+      return 0;
+      }
+    else if ((hdr2->dim[i] & 0x7fffffff) != hdr2->dim[i])
+      {
+      // dimension does not fit in signed int
+      vtkErrorMacro("NIfTI image dimension " << i << " is larger than int32");
+      this->SetErrorCode(vtkErrorCode::FileFormatError);
+      return 0;
       }
     }
 
@@ -557,7 +576,7 @@ int vtkNIFTIReader::RequestInformation(
     }
 
   // header might be extended, vox_offset says where data starts
-  this->SetHeaderSize(static_cast<int>(hdr2->vox_offset));
+  this->SetHeaderSize(static_cast<unsigned long>(hdr2->vox_offset));
 
   // endianness of data
   if (isLittleEndian)
@@ -636,12 +655,10 @@ int vtkNIFTIReader::RequestInformation(
     case 1:
       vtkErrorMacro("NIFTI files with one-bit-per-pixel not supported");
       this->SetErrorCode(vtkErrorCode::FileFormatError);
-      delete hdr2;
       return 0;
     default:
       vtkErrorMacro("Unrecognized NIFTI data type: " << hdr2->datatype);
       this->SetErrorCode(vtkErrorCode::FileFormatError);
-      delete hdr2;
       return 0;
     }
 
@@ -968,8 +985,6 @@ int vtkNIFTIReader::RequestInformation(
       vtkWarningMacro("SFormMatrix is flipped compared to QFormMatrix");
       }
     }
-
-  delete hdr2;
 
   return 1;
 }
