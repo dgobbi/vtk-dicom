@@ -7,7 +7,9 @@
 #include "vtkRenderWindow.h"
 #include "vtkRenderer.h"
 #include "vtkCamera.h"
+#include "vtkMatrix4x4.h"
 #include "vtkImageData.h"
+#include "vtkImageReslice.h"
 #include "vtkImageSliceMapper.h"
 #include "vtkImageProperty.h"
 #include "vtkImageSlice.h"
@@ -36,12 +38,32 @@ int main(int argc, char *argv[])
   vtkSmartPointer<vtkNIFTIReader> reader =
     vtkSmartPointer<vtkNIFTIReader>::New();
   reader->SetFileName(filename);
+  reader->Update();
+
+  vtkSmartPointer<vtkMatrix4x4> matrix =
+    vtkSmartPointer<vtkMatrix4x4>::New();
+  if (reader->GetQFormMatrix())
+    {
+    matrix->DeepCopy(reader->GetQFormMatrix());
+    matrix->Invert();
+    }
+  else if (reader->GetSFormMatrix())
+    {
+    matrix->DeepCopy(reader->GetSFormMatrix());
+    matrix->Invert();
+    }
+
+  vtkSmartPointer<vtkImageReslice> reslice =
+    vtkSmartPointer<vtkImageReslice>::New();
+  reslice->SetInputConnection(reader->GetOutputPort());
+  reslice->SetResliceAxes(matrix);
+  reslice->SetInterpolationModeToLinear();
+  reslice->Update();
 
   double range[2];
   int extent[6];
-  reader->Update();
-  reader->GetOutput()->GetScalarRange(range);
-  reader->GetOutput()->GetExtent(extent);
+  reslice->GetOutput()->GetScalarRange(range);
+  reslice->GetOutput()->GetExtent(extent);
 
   static double viewport[3][4] = {
     { 0.67, 0.0, 1.0, 0.5 },
@@ -58,7 +80,7 @@ int main(int argc, char *argv[])
       vtkSmartPointer<vtkImageSliceMapper>::New();
     if (i < 3)
       {
-      imageMapper->SetInputConnection(reader->GetOutputPort());
+      imageMapper->SetInputConnection(reslice->GetOutputPort());
       }
     imageMapper->SetOrientation(i % 3);
     imageMapper->SliceAtFocalPointOn();
