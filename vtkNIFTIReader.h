@@ -130,6 +130,17 @@ public:
   vtkMatrix4x4 *GetSFormMatrix() { return this->SFormMatrix; }
 
   // Description:
+  // This is off by default.  If it is on, and if the input file is
+  // an Analyze 7.5 file rather than a NIfTI file, then the "orient"
+  // field in the header will be used.  The orientation will be returned
+  // as the QFormMatrix.  In general, however, it is best to ignore
+  // the "orient" flag because for most files, it cannot be trusted to
+  // be set correctly.
+  vtkGetMacro(QFormFromAnalyze, int);
+  vtkSetMacro(QFormFromAnalyze, int);
+  vtkBooleanMacro(QFormFromAnalyze, int);
+
+  // Description:
   // Get the raw header information from the NIfTI file.
   vtkNIFTIHeader *GetNIFTIHeader();
 
@@ -168,8 +179,20 @@ protected:
   static bool CheckAnalyzeHeader(const nifti_1_header *hdr);
 
   // Description:
+  // Create a 3x3 matrix from the orientation enumerator.
+  // This also sets qfac to -1.0 if the orientation requires the slice
+  // order to be reversed.  The determinant of the matrix will always
+  // be positive.
+  static void SetAnalyzeOrientation(
+    int orient, double rmat[3][3], double *qfac);
+
+  // Description:
   // Read the time dimension as if it was a vector dimension.
   int TimeAsVector;
+
+  // Description:
+  // Use the Analyze "orient" field to set the QForm.
+  int QFormFromAnalyze;
 
   // Description:
   // Information for rescaling data to quantitative units.

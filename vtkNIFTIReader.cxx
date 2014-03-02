@@ -61,6 +61,7 @@ vtkNIFTIReader::vtkNIFTIReader()
   this->QFac = 1.0;
   this->QFormMatrix = 0;
   this->SFormMatrix = 0;
+  this->QFormFromAnalyze = 0;
   this->NIFTIHeader = 0;
 }
 
@@ -219,6 +220,9 @@ void vtkNIFTIReader::PrintSelf(ostream& os, vtkIndent indent)
     {
     os << " (none)\n";
     }
+
+  os << indent << "QFormFromAnalyze: "
+     << (this->QFormFromAnalyze ? "On\n" : "Off\n");
 
   os << indent << "NIFTIHeader:" << (this->NIFTIHeader ? "\n" : " (none)\n");
 }
@@ -393,6 +397,41 @@ int vtkNIFTIReader::CanReadFile(const char *filename)
 }
 
 //----------------------------------------------------------------------------
+void vtkNIFTIReader::SetAnalyzeOrientation(
+  int orient, double rmat[3][3], double *qfac)
+{
+  // This sets the orientation according to the obsolete "orient" field in
+  // the analyze header.  It is useless for files produced by any software
+  // other than Analyze itself, because it has been interpreted in so many
+  // contradictory ways.
+  static const double orientation[6][3][3] = {
+    { {-1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 }, { 0.0, 0.0,-1.0 } },
+    { {-1.0, 0.0, 0.0 }, { 0.0, 0.0, 1.0 }, { 0.0, 1.0, 0.0 } },
+    { { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 }, { 1.0, 0.0, 0.0 } },
+    { {-1.0, 0.0, 0.0 }, { 0.0,-1.0, 0.0 }, { 0.0, 0.0, 1.0 } },
+    { {-1.0, 0.0, 0.0 }, { 0.0, 0.0,-1.0 }, { 0.0,-1.0, 0.0 } },
+    { { 0.0, 1.0, 0.0 }, { 0.0, 0.0,-1.0 }, {-1.0, 0.0, 0.0 } }
+  };
+  static const double flip[6] = { -1.0, 1.0, -1.0,  1.0, -1.0, 1.0 };
+
+  if (orient > 5)
+    {
+    orient = 0;
+    }
+
+  *qfac = flip[orient];
+  const double (*mat)[3] = orientation[orient];
+
+  for (int i = 0; i < 3; i++)
+    {
+    for (int j = 0; j < 3; j++)
+      {
+      rmat[i][j] = mat[i][j];
+      }
+    }
+}
+
+//----------------------------------------------------------------------------
 int vtkNIFTIReader::RequestInformation(
   vtkInformation* vtkNotUsed(request),
   vtkInformationVector** vtkNotUsed(inputVector),
@@ -449,6 +488,7 @@ int vtkNIFTIReader::RequestInformation(
   // read and check the header
   bool canRead = false;
   int niftiVersion = 0;
+  int orient = 0; // Analyze 7.5 orientation
   nifti_1_header *hdr1 = new nifti_1_header;
   nifti_2_header hdr2obj;
   nifti_2_header *hdr2 = &hdr2obj;
@@ -479,6 +519,7 @@ int vtkNIFTIReader::RequestInformation(
       {
       // Analyze 7.5 file
       canRead = vtkNIFTIReader::CheckAnalyzeHeader(hdr1);
+      orient = reinterpret_cast<char *>(hdr1)[252];
       }
     }
 
@@ -863,68 +904,91 @@ int vtkNIFTIReader::RequestInformation(
 
   // Set the QFormMatrix from the quaternion data in the header.
   // See the long discussion above for more information.
-  if (niftiVersion > 0 && hdr2->qform_code > 0)
+  if ((niftiVersion > 0 && hdr2->qform_code > 0) ||
+      (niftiVersion == 0 && this->QFormFromAnalyze))
     {
     double mmat[16];
     double rmat[3][3];
     double quat[4];
+    double offset[3];
+    double qfac = 1.0;
 
-    quat[1] = hdr2->quatern_b;
-    quat[2] = hdr2->quatern_c;
-    quat[3] = hdr2->quatern_d;
-
-    quat[0] = 1.0 - quat[1]*quat[1] - quat[2]*quat[2] - quat[3]*quat[3];
-    if (quat[0] > 0.0)
+    if (niftiVersion > 0)
       {
-      quat[0] = sqrt(quat[0]);
+      quat[1] = hdr2->quatern_b;
+      quat[2] = hdr2->quatern_c;
+      quat[3] = hdr2->quatern_d;
+      offset[0] = hdr2->qoffset_x;
+      offset[0] = hdr2->qoffset_x;
+      offset[0] = hdr2->qoffset_x;
+
+      quat[0] = 1.0 - quat[1]*quat[1] - quat[2]*quat[2] - quat[3]*quat[3];
+      if (quat[0] > 0.0)
+        {
+        quat[0] = sqrt(quat[0]);
+        }
+      else
+        {
+        quat[0] = 0.0;
+        }
+
+      vtkMath::QuaternionToMatrix3x3(quat, rmat);
+
+      // If any matrix values are close to zero, then they should actually
+      // be zero but aren't due to limited numerical precision in the
+      // quaternion-to-matrix conversion.
+      const double tol = 2.384185791015625e-07; // 2**-22
+      for (int i = 0; i < 3; i++)
+        {
+        for (int j = 0; j < 3; j++)
+          {
+          if (fabs(rmat[i][j]) < tol)
+            {
+            rmat[i][j] = 0.0;
+            }
+          }
+        vtkMath::Normalize(rmat[i]);
+        }
+
+      vtkMath::QuaternionToMatrix3x3(quat, rmat);
+
+      qfac = ((hdr2->pixdim[0] < 0) ? -1.0 : 1.0);
       }
     else
       {
-      quat[0] = 0.0;
-      }
-
-    vtkMath::QuaternionToMatrix3x3(quat, rmat);
-
-    // If any matrix values are close to zero, then they should actually
-    // be zero but aren't due to limited numerical precision in the
-    // quaternion-to-matrix conversion.
-    const double tol = 2.384185791015625e-07; // 2**-22
-    for (int i = 0; i < 3; i++)
-      {
-      for (int j = 0; j < 3; j++)
-        {
-        if (fabs(rmat[i][j]) < tol)
-          {
-          rmat[i][j] = 0.0;
-          }
-        }
-      vtkMath::Normalize(rmat[i]);
+      // Analyze 7.5: use the "orient" field, and center the image
+      vtkNIFTIReader::SetAnalyzeOrientation(orient, rmat, &qfac);
+      double origin[3];
+      origin[0] = -0.5*hdr2->pixdim[1]*(hdr2->dim[1] - 1);
+      origin[1] = -0.5*hdr2->pixdim[2]*(hdr2->dim[2] - 1);
+      origin[2] = -0.5*hdr2->pixdim[3]*(hdr2->dim[3] - 1);
+      vtkMath::Multiply3x3(rmat, origin, offset);
       }
 
     // first row
     mmat[0] = rmat[0][0];
     mmat[1] = rmat[0][1];
     mmat[2] = rmat[0][2];
-    mmat[3] = hdr2->qoffset_x;
+    mmat[3] = offset[0];
 
     // second row
     mmat[4] = rmat[1][0];
     mmat[5] = rmat[1][1];
     mmat[6] = rmat[1][2];
-    mmat[7] = hdr2->qoffset_y;
+    mmat[7] = offset[1];
 
     // third row
     mmat[8] = rmat[2][0];
     mmat[9] = rmat[2][1];
     mmat[10] = rmat[2][2];
-    mmat[11] = hdr2->qoffset_z;
+    mmat[11] = offset[2];
 
     mmat[12] = 0.0;
     mmat[13] = 0.0;
     mmat[14] = 0.0;
     mmat[15] = 1.0;
 
-    this->QFac = ((hdr2->pixdim[0] < 0) ? -1.0 : 1.0);
+    this->QFac = qfac;
 
     if (this->QFac < 0)
       {
