@@ -79,7 +79,7 @@ public:
   // Description:
   // Get the time dimension that was stored in the NIFTI header.
   int GetTimeDimension() { return this->Dim[4]; }
-  int GetTimeSpacing() { return this->PixDim[4]; }
+  double GetTimeSpacing() { return this->PixDim[4]; }
 
   // Description:
   // Get the slope and intercept for rescaling the scalar values.
@@ -166,6 +166,14 @@ protected:
   // Description:
   // Check for Analyze 7.5 header.
   static bool CheckAnalyzeHeader(const nifti_1_header *hdr);
+
+  // Description:
+  // Create a 3x3 matrix from the orientation enumerator.
+  // This also sets qfac to -1.0 if the orientation requires the slice
+  // order to be reversed.  The determinant of the matrix will always
+  // be positive.
+  static void SetAnalyzeOrientation(
+    int orient, double rmat[3][3], double *qfac);
 
   // Description:
   // Read the time dimension as if it was a vector dimension.
