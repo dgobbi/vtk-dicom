@@ -164,6 +164,10 @@ protected:
   static int CheckNIFTIVersion(const nifti_1_header *hdr);
 
   // Description:
+  // Check for Analyze 7.5 header.
+  static bool CheckAnalyzeHeader(const nifti_1_header *hdr);
+
+  // Description:
   // Read the time dimension as if it was a vector dimension.
   int TimeAsVector;
 

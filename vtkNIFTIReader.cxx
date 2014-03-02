@@ -111,20 +111,23 @@ void vtkNIFTIReaderSwapHeader(nifti_1_header *hdr)
   vtkByteSwap::SwapVoidRange(&hdr->glmin,         1, 4);
 
   // All NIFTI-specific (meaning is totally different in Analyze 7.5)
-  vtkByteSwap::SwapVoidRange(&hdr->qform_code,    1, 2);
-  vtkByteSwap::SwapVoidRange(&hdr->sform_code,    1, 2);
-  vtkByteSwap::SwapVoidRange(&hdr->quatern_b,     1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->quatern_c,     1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->quatern_d,     1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->qoffset_x,     1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->qoffset_y,     1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->qoffset_z,     1, 4);
-  vtkByteSwap::SwapVoidRange(hdr->srow_x,         4, 4);
-  vtkByteSwap::SwapVoidRange(hdr->srow_y,         4, 4);
-  vtkByteSwap::SwapVoidRange(hdr->srow_z,         4, 4);
+  if (strncmp(hdr->magic, "ni1", 4) == 0 ||
+      strncmp(hdr->magic, "n+1", 4) == 0)
+    {
+    vtkByteSwap::SwapVoidRange(&hdr->qform_code,    1, 2);
+    vtkByteSwap::SwapVoidRange(&hdr->sform_code,    1, 2);
+    vtkByteSwap::SwapVoidRange(&hdr->quatern_b,     1, 4);
+    vtkByteSwap::SwapVoidRange(&hdr->quatern_c,     1, 4);
+    vtkByteSwap::SwapVoidRange(&hdr->quatern_d,     1, 4);
+    vtkByteSwap::SwapVoidRange(&hdr->qoffset_x,     1, 4);
+    vtkByteSwap::SwapVoidRange(&hdr->qoffset_y,     1, 4);
+    vtkByteSwap::SwapVoidRange(&hdr->qoffset_z,     1, 4);
+    vtkByteSwap::SwapVoidRange(hdr->srow_x,         4, 4);
+    vtkByteSwap::SwapVoidRange(hdr->srow_y,         4, 4);
+    vtkByteSwap::SwapVoidRange(hdr->srow_z,         4, 4);
+    }
 }
 
-// for the proposed nifti version 2 header
 void vtkNIFTIReaderSwapHeader(nifti_2_header *hdr)
 {
   vtkByteSwap::SwapVoidRange(&hdr->sizeof_hdr,    1, 4);
@@ -303,25 +306,24 @@ int vtkNIFTIReader::CheckNIFTIVersion(const nifti_1_header *hdr)
   // Check for NIFTIv2.  The NIFTIv2 magic number is stored where
   // the data_type appears in the NIFTIv1 header.
   if (hdr->data_type[0] == 'n' &&
-      (hdr->data_type[1] == '+' || hdr->data_type[1] == '1') &&
-      hdr->data_type[2] == '2' &&
+      (hdr->data_type[1] == '+' || hdr->data_type[1] == 'i') &&
+      (hdr->data_type[2] >= '2' && hdr->data_type[2] <= '9') &&
       hdr->data_type[3] == '\0')
     {
-    if (hdr->data_type[4] == '\r' &&
-        hdr->data_type[5] == '\n' &&
-        hdr->data_type[6] == '\032' &&
-        hdr->data_type[7] == '\n')
+    version = (hdr->data_type[2] - '0');
+
+    if (hdr->data_type[4] != '\r' ||
+        hdr->data_type[5] != '\n' ||
+        hdr->data_type[6] != '\032' ||
+        hdr->data_type[7] != '\n')
       {
-      version = 2;
-      }
-    else
-      {
-      version = -2;
+      // Indicate that file was corrupted by newline conversion
+      version = -version;
       }
     }
   // Check for NIFTIv1
   else if (hdr->magic[0] == 'n' &&
-      (hdr->magic[1] == '+' || hdr->magic[1] == '1') &&
+      (hdr->magic[1] == '+' || hdr->magic[1] == 'i') &&
       hdr->magic[2] == '1' &&
       hdr->magic[3] == '\0')
     {
@@ -329,6 +331,17 @@ int vtkNIFTIReader::CheckNIFTIVersion(const nifti_1_header *hdr)
     }
 
   return version;
+}
+
+//----------------------------------------------------------------------------
+bool vtkNIFTIReader::CheckAnalyzeHeader(const nifti_1_header *hdr)
+{
+  if (hdr->sizeof_hdr == 348 || // Analyze 7.5 header size
+      hdr->sizeof_hdr == 1543569408) // byte-swapped 348
+    {
+    return true;
+    }
+  return false;
 }
 
 //----------------------------------------------------------------------------
@@ -367,12 +380,10 @@ int vtkNIFTIReader::CanReadFile(const char *filename)
       // NIFTI file
       canRead = true;
       }
-    else if (version == 0 &&
-             (hdr.sizeof_hdr == 348 || // Analyze 7.5 header size
-              hdr.sizeof_hdr == 1543569408)) // byte-swapped 348
+    else if (version == 0)
       {
       // Analyze 7.5 file
-      canRead = true;
+      canRead = vtkNIFTIReader::CheckAnalyzeHeader(&hdr);
       }
     }
 
@@ -445,7 +456,7 @@ int vtkNIFTIReader::RequestInformation(
   if (rsize == hsize)
     {
     niftiVersion = vtkNIFTIReader::CheckNIFTIVersion(hdr1);
-    if (niftiVersion == 2)
+    if (niftiVersion >= 2)
       {
       // the header was a NIFTIv2 header
       int h2size = static_cast<int>(sizeof(nifti_2_header));
@@ -463,18 +474,16 @@ int vtkNIFTIReader::RequestInformation(
       // the header was a NIFTIv1 header
       canRead = true;
       }
-    else if (niftiVersion == 0 &&
-             (hdr1->sizeof_hdr == 348 || // Analyze 7.5 header size
-              hdr1->sizeof_hdr == 1543569408)) // byte-swapped 348
+    else if (niftiVersion == 0)
       {
       // Analyze 7.5 file
-      canRead = true;
+      canRead = vtkNIFTIReader::CheckAnalyzeHeader(hdr1);
       }
     }
 
   if (canRead)
     {
-    if (niftiVersion == 2)
+    if (niftiVersion >= 2)
       {
       if (NIFTI_NEEDS_SWAP(*hdr2))
         {
