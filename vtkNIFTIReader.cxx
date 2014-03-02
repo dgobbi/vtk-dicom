@@ -885,6 +885,22 @@ int vtkNIFTIReader::RequestInformation(
 
     vtkMath::QuaternionToMatrix3x3(quat, rmat);
 
+    // If any matrix values are close to zero, then they should actually
+    // be zero but aren't due to limited numerical precision in the
+    // quaternion-to-matrix conversion.
+    const double tol = 2.384185791015625e-07; // 2**-22
+    for (int i = 0; i < 3; i++)
+      {
+      for (int j = 0; j < 3; j++)
+        {
+        if (fabs(rmat[i][j]) < tol)
+          {
+          rmat[i][j] = 0.0;
+          }
+        }
+      vtkMath::Normalize(rmat[i]);
+      }
+
     // first row
     mmat[0] = rmat[0][0];
     mmat[1] = rmat[0][1];
