@@ -100,7 +100,19 @@ void vtkNIFTIHeader::Initialize()
 //----------------------------------------------------------------------------
 void vtkNIFTIHeader::SetHeader(const nifti_1_header *hdr)
 {
-  memcpy(this->Magic, hdr->magic, sizeof(hdr->magic));
+  // clear all fields (in case supplied header is Analyze 7.5)
+  this->Initialize();
+
+  // check if header is NIfTI (vs. Analyze 7.5)
+  bool isnifti = (hdr->magic[0] == 'n' &&
+                  (hdr->magic[1] == '+' || hdr->magic[1] == 'i') &&
+                  hdr->magic[2] == '1' &&
+                  hdr->magic[3] == '\0');
+
+  if (isnifti)
+    {
+    memcpy(this->Magic, hdr->magic, sizeof(hdr->magic));
+    }
   this->VoxOffset = static_cast<vtkTypeInt64>(hdr->vox_offset);
   this->DataType = hdr->datatype;
   this->BitPix = hdr->bitpix;
@@ -109,37 +121,46 @@ void vtkNIFTIHeader::SetHeader(const nifti_1_header *hdr)
     this->Dim[i] = hdr->dim[i];
     this->PixDim[i] = hdr->pixdim[i];
     }
-  this->IntentCode = hdr->intent_code;
-  strncpy(this->IntentName, hdr->intent_name, sizeof(hdr->intent_name));
-  this->IntentP1 = hdr->intent_p1;
-  this->IntentP2 = hdr->intent_p2;
-  this->IntentP3 = hdr->intent_p3;
-  this->SclSlope = hdr->scl_slope;
-  this->SclInter = hdr->scl_inter;
+  if (isnifti)
+    {
+    this->IntentCode = hdr->intent_code;
+    strncpy(this->IntentName, hdr->intent_name, sizeof(hdr->intent_name));
+    this->IntentP1 = hdr->intent_p1;
+    this->IntentP2 = hdr->intent_p2;
+    this->IntentP3 = hdr->intent_p3;
+    this->SclSlope = hdr->scl_slope;
+    this->SclInter = hdr->scl_inter;
+    }
   this->CalMin = hdr->cal_min;
   this->CalMax = hdr->cal_max;
-  this->SliceDuration = hdr->slice_duration;
-  this->TOffset = hdr->toffset;
-  this->SliceStart = hdr->slice_start;
-  this->SliceEnd = hdr->slice_end;
-  this->SliceCode = hdr->slice_code;
+  if (isnifti)
+    {
+    this->SliceDuration = hdr->slice_duration;
+    this->TOffset = hdr->toffset;
+    this->SliceStart = hdr->slice_start;
+    this->SliceEnd = hdr->slice_end;
+    this->SliceCode = hdr->slice_code;
+    }
   this->XYZTUnits = hdr->xyzt_units;
   this->DimInfo = hdr->dim_info;
   strncpy(this->Descrip, hdr->descrip, sizeof(hdr->descrip));
   strncpy(this->AuxFile, hdr->aux_file, sizeof(hdr->aux_file));
-  this->QFormCode = hdr->qform_code;
-  this->SFormCode = hdr->sform_code;
-  this->QuaternB = hdr->quatern_b;
-  this->QuaternC = hdr->quatern_c;
-  this->QuaternD = hdr->quatern_d;
-  this->QOffsetX = hdr->qoffset_x;
-  this->QOffsetY = hdr->qoffset_y;
-  this->QOffsetZ = hdr->qoffset_z;
-  for (int i = 0; i < 4; i++)
+  if (isnifti)
     {
-    this->SRowX[i] = hdr->srow_x[i];
-    this->SRowY[i] = hdr->srow_y[i];
-    this->SRowZ[i] = hdr->srow_z[i];
+    this->QFormCode = hdr->qform_code;
+    this->SFormCode = hdr->sform_code;
+    this->QuaternB = hdr->quatern_b;
+    this->QuaternC = hdr->quatern_c;
+    this->QuaternD = hdr->quatern_d;
+    this->QOffsetX = hdr->qoffset_x;
+    this->QOffsetY = hdr->qoffset_y;
+    this->QOffsetZ = hdr->qoffset_z;
+    for (int i = 0; i < 4; i++)
+      {
+      this->SRowX[i] = hdr->srow_x[i];
+      this->SRowY[i] = hdr->srow_y[i];
+      this->SRowZ[i] = hdr->srow_z[i];
+      }
     }
 }
 
