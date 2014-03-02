@@ -318,18 +318,9 @@ void vtkNIFTIHeader::DeepCopy(vtkNIFTIHeader *o)
 {
   if (o)
     {
-    if (o->Magic[2] == '2')
-      {
-      nifti_2_header hdr;
-      o->GetHeader(&hdr);
-      this->SetHeader(&hdr);
-      }
-    else
-      {
-      nifti_1_header hdr;
-      o->GetHeader(&hdr);
-      this->SetHeader(&hdr);
-      }
+    nifti_2_header hdr;
+    o->GetHeader(&hdr);
+    this->SetHeader(&hdr);
     }
   else
     {
