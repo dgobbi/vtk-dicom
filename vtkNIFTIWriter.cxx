@@ -438,6 +438,10 @@ int vtkNIFTIWriter::GenerateHeader(vtkInformation *info, bool singleFile)
     // use the header supplied by SetNIFTIHeader()
     this->NIFTIHeader->GetHeader(&hdr);
     version = hdr.magic[2] - '0';
+    if (version > 2)
+      {
+      version = 2;
+      }
     }
   else
     {
@@ -464,8 +468,8 @@ int vtkNIFTIWriter::GenerateHeader(vtkInformation *info, bool singleFile)
 
   // set the header size
   hdr.sizeof_hdr = (version == 2 ?
-                    static_cast<int>(sizeof(nifti_2_header)) :
-                    static_cast<int>(sizeof(nifti_1_header)));
+                    vtkNIFTIHeader::Nifti2HeaderSize :
+                    vtkNIFTIHeader::Nifti1HeaderSize);
 
   // modify magic number and voxel offset for .img files
   if (!singleFile)
@@ -651,13 +655,13 @@ int vtkNIFTIWriter::RequestData(
     {
     this->OwnHeader->GetHeader(&hdr2);
     hdrptr = &hdr2;
-    hdrsize = sizeof(nifti_2_header);
+    hdrsize = hdr2.sizeof_hdr;
     }
   else
     {
     this->OwnHeader->GetHeader(&hdr1);
     hdrptr = &hdr1;
-    hdrsize = sizeof(nifti_1_header);
+    hdrsize = hdr1.sizeof_hdr;
     }
 
   // try opening file

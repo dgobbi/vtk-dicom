@@ -129,6 +129,13 @@ public:
   };
 
   // Description:
+  // NIFTI header sizes.
+  enum HeaderSizeEnum {
+    Nifti1HeaderSize = 348,
+    Nifti2HeaderSize = 540
+  };
+
+  // Description:
   // Static method for construction.
   static vtkNIFTIHeader *New();
   vtkTypeMacro(vtkNIFTIHeader, vtkObject);

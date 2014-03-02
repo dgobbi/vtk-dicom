@@ -370,7 +370,7 @@ int vtkNIFTIReader::CanReadFile(const char *filename)
   // read and check the header
   bool canRead = false;
   nifti_1_header hdr;
-  int hsize = static_cast<int>(sizeof(nifti_1_header));
+  int hsize = vtkNIFTIHeader::Nifti1HeaderSize; // nifti_1 header size
   int rsize = gzread(file, &hdr, hsize);
   if (rsize == hsize)
     {
@@ -452,7 +452,7 @@ int vtkNIFTIReader::RequestInformation(
   nifti_1_header *hdr1 = new nifti_1_header;
   nifti_2_header hdr2obj;
   nifti_2_header *hdr2 = &hdr2obj;
-  int hsize = static_cast<int>(sizeof(nifti_1_header));
+  const int hsize = vtkNIFTIHeader::Nifti1HeaderSize;
   int rsize = gzread(file, hdr1, hsize);
   if (rsize == hsize)
     {
@@ -460,9 +460,9 @@ int vtkNIFTIReader::RequestInformation(
     if (niftiVersion >= 2)
       {
       // the header was a NIFTIv2 header
-      int h2size = static_cast<int>(sizeof(nifti_2_header));
+      const int h2size = vtkNIFTIHeader::Nifti2HeaderSize;
       // copy what was read into the NIFTIv1 header
-      memcpy(hdr2, hdr1, sizeof(nifti_1_header));
+      memcpy(hdr2, hdr1, hsize);
       // read the remainder of the NIFTIv2 header
       rsize = gzread(file, reinterpret_cast<char *>(hdr2)+hsize, h2size-hsize);
       if (rsize == h2size-hsize)

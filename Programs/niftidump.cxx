@@ -50,6 +50,11 @@ int main(int argc, char *argv[])
 
   nifti_2_header hdr;
   reader->GetNIFTIHeader()->GetHeader(&hdr);
+  int version = 0;
+  if (hdr.magic[2] >= '0' && hdr.magic[2] <= '9')
+    {
+    version = hdr.magic[2] - '0';
+    }
 
   const char *datatypeName = "";
   switch (hdr.datatype)
@@ -218,7 +223,9 @@ int main(int argc, char *argv[])
       }
     }
 
-  cout << "sizeof_hdr: " << hdr.sizeof_hdr << "\n";
+  cout << "sizeof_hdr: " << (version >= 2 ?
+                             vtkNIFTIHeader::Nifti2HeaderSize :
+                             vtkNIFTIHeader::Nifti1HeaderSize) << "\n";
   cout << "vox_offset: " << hdr.vox_offset << "\n";
   //cout << "data_type: " << hdr.data_type << "\n";
   //cout << "db_name: " << hdr.db_name << "\n";
@@ -254,32 +261,38 @@ int main(int argc, char *argv[])
   cout << "xyzt_units: 0x" << static_cast<int>(hdr.xyzt_units)
        << " (" << spaceUnits << ", " << timeUnits << ")\n";
   cout.unsetf(std::ios::hex);
-  cout << "intent_code: " << hdr.intent_code
-       << " (" << intentCode << ")\n";
-  cout << "intent_name: \"";
-  for (size_t j = 0;
-       j < sizeof(hdr.intent_name) && hdr.intent_name[j] != '\0';
-       j++)
+  if (version > 0)
     {
-    cout << (isprint(hdr.intent_name[j]) ? hdr.intent_name[j] : '?');
+    cout << "intent_code: " << hdr.intent_code
+         << " (" << intentCode << ")\n";
+    cout << "intent_name: \"";
+    for (size_t j = 0;
+         j < sizeof(hdr.intent_name) && hdr.intent_name[j] != '\0';
+         j++)
+      {
+      cout << (isprint(hdr.intent_name[j]) ? hdr.intent_name[j] : '?');
+      }
+    cout << "\"\n";
+    cout << "intent_p1: " << hdr.intent_p1 << "\n";
+    cout << "intent_p2: " << hdr.intent_p2 << "\n";
+    cout << "intent_p3: " << hdr.intent_p3 << "\n";
     }
-  cout << "\"\n";
-  cout << "intent_p1: " << hdr.intent_p1 << "\n";
-  cout << "intent_p2: " << hdr.intent_p2 << "\n";
-  cout << "intent_p3: " << hdr.intent_p3 << "\n";
   cout << "datatype: " << hdr.datatype
      << " (" << datatypeName << ")\n";
   cout << "bitpix: " << hdr.bitpix << "\n";
-  cout << "scl_slope: " << hdr.scl_slope << "\n";
-  cout << "scl_inter: " << hdr.scl_inter << "\n";
-  cout << "cal_max: " << hdr.cal_max << "\n";
-  cout << "cal_min: " << hdr.cal_min << "\n";
-  cout << "slice_code: " << static_cast<int>(hdr.slice_code)
-       << " (" << sliceCode << ")\n";
-  cout << "slice_start: " << hdr.slice_start << "\n";
-  cout << "slice_end: " << hdr.slice_end << "\n";
-  cout << "slice_duration: " << hdr.slice_duration << "\n";
-  cout << "toffset: " << hdr.toffset << "\n";
+  if (version > 0)
+    {
+    cout << "scl_slope: " << hdr.scl_slope << "\n";
+    cout << "scl_inter: " << hdr.scl_inter << "\n";
+    cout << "cal_max: " << hdr.cal_max << "\n";
+    cout << "cal_min: " << hdr.cal_min << "\n";
+    cout << "slice_code: " << static_cast<int>(hdr.slice_code)
+         << " (" << sliceCode << ")\n";
+    cout << "slice_start: " << hdr.slice_start << "\n";
+    cout << "slice_end: " << hdr.slice_end << "\n";
+    cout << "slice_duration: " << hdr.slice_duration << "\n";
+    cout << "toffset: " << hdr.toffset << "\n";
+    }
   cout << "descrip: \"";
   for (size_t j = 0; j < sizeof(hdr.descrip) && hdr.descrip[j] != '\0'; j++)
     {
@@ -292,40 +305,43 @@ int main(int argc, char *argv[])
     cout << (isprint(hdr.aux_file[j]) ? hdr.aux_file[j] : '?');
     }
   cout << "\"\n";
-  cout << "qform_code: " << hdr.qform_code
-       << " (" << xformCode[0] << ")\n";
-  cout << "sform_code: " << hdr.sform_code
-       << " (" << xformCode[1] << ")\n";
-  cout << "quatern_b: " << hdr.quatern_b << "\n";
-  cout << "quatern_c: " << hdr.quatern_c << "\n";
-  cout << "quatern_d: " << hdr.quatern_d << "\n";
-  cout << "qoffset_x: " << hdr.qoffset_x << "\n";
-  cout << "qoffset_y: " << hdr.qoffset_y << "\n";
-  cout << "qoffset_z: " << hdr.qoffset_z << "\n";
-  cout << "srow_x:";
-  for (int i = 0; i < 4; i++)
+  if (version > 0)
     {
-    cout << " " << hdr.srow_x[i];
+    cout << "qform_code: " << hdr.qform_code
+         << " (" << xformCode[0] << ")\n";
+    cout << "sform_code: " << hdr.sform_code
+         << " (" << xformCode[1] << ")\n";
+    cout << "quatern_b: " << hdr.quatern_b << "\n";
+    cout << "quatern_c: " << hdr.quatern_c << "\n";
+    cout << "quatern_d: " << hdr.quatern_d << "\n";
+    cout << "qoffset_x: " << hdr.qoffset_x << "\n";
+    cout << "qoffset_y: " << hdr.qoffset_y << "\n";
+    cout << "qoffset_z: " << hdr.qoffset_z << "\n";
+    cout << "srow_x:";
+    for (int i = 0; i < 4; i++)
+      {
+      cout << " " << hdr.srow_x[i];
+      }
+    cout << "\n";
+    cout << "srow_y:";
+    for (int i = 0; i < 4; i++)
+      {
+      cout << " " << hdr.srow_y[i];
+      }
+    cout << "\n";
+    cout << "srow_z:";
+    for (int i = 0; i < 4; i++)
+      {
+      cout << " " << hdr.srow_z[i];
+      }
+    cout << "\n";
+    cout << "magic: \"";
+    for (size_t j = 0; j < sizeof(hdr.magic) && hdr.magic[j] != '\0'; j++)
+      {
+      cout << (isprint(hdr.magic[j]) ? hdr.magic[j] : '?');
+      }
+    cout << "\"" << endl;
     }
-  cout << "\n";
-  cout << "srow_y:";
-  for (int i = 0; i < 4; i++)
-    {
-    cout << " " << hdr.srow_y[i];
-    }
-  cout << "\n";
-  cout << "srow_z:";
-  for (int i = 0; i < 4; i++)
-    {
-    cout << " " << hdr.srow_z[i];
-    }
-  cout << "\n";
-  cout << "magic: \"";
-  for (size_t j = 0; j < sizeof(hdr.magic) && hdr.magic[j] != '\0'; j++)
-    {
-    cout << (isprint(hdr.magic[j]) ? hdr.magic[j] : '?');
-    }
-  cout << "\"" << endl;
 
   return rval;
 }
