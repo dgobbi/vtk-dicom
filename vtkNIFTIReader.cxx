@@ -700,13 +700,13 @@ int vtkNIFTIReader::RequestInformation(
   // the user with a 4x4 matrix that can transform VTK's data coordinates
   // into NIFTI's intended coordinate system for the image.  NIFTI defines
   // these coordinate systems as:
-  // 1) NIFTI_XFORM_SCANNER_ANAT - equiv to DICOM Patient Coordinates
+  // 1) NIFTI_XFORM_SCANNER_ANAT - coordinate system of the imaging device
   // 2) NIFTI_XFORM_ALIGNED_ANAT - result of registration to another image
   // 3) NIFTI_XFORM_TALAIRACH - a brain-specific coordinate system
   // 4) NIFTI_XFORM_MNI_152 - a similar brain-specific coordinate system
   //
   // NIFTI images can store orientation in two ways:
-  // 1) via a quaternion (used to store the original DICOM info)
+  // 1) via a quaternion (orientation and offset, i.e. rigid-body)
   // 2) via a matrix (used to store e.g. the results of registration)
   //
   // A NIFTI file can have both a quaternion (qform) and matrix (xform)
@@ -719,9 +719,9 @@ int vtkNIFTIReader::RequestInformation(
   // -- Quaternion Representation --
   //
   // If the "quaternion" form is used, then the following equation
-  // defines the transformation from voxel indices to the equivalent
-  // of DICOM patient coordinates, where R is the rotation matrix
-  // computed from the quaternion components:
+  // defines the transformation from voxel indices to NIFTI's world
+  // coordinates, where R is the rotation matrix computed from the
+  // quaternion components:
   //
   //   [ x ]   [ R11 R12 R13 ] [ pixdim[1] * i        ]   [ qoffset_x ]
   //   [ y ] = [ R21 R22 R23 ] [ pixdim[2] * j        ] + [ qoffset_y ]
