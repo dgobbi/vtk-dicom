@@ -168,14 +168,6 @@ protected:
   static bool CheckAnalyzeHeader(const nifti_1_header *hdr);
 
   // Description:
-  // Create a 3x3 matrix from the orientation enumerator.
-  // This also sets qfac to -1.0 if the orientation requires the slice
-  // order to be reversed.  The determinant of the matrix will always
-  // be positive.
-  static void SetAnalyzeOrientation(
-    int orient, double rmat[3][3], double *qfac);
-
-  // Description:
   // Read the time dimension as if it was a vector dimension.
   int TimeAsVector;
 
