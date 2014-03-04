@@ -46,6 +46,7 @@ private:
   {
     vtkDICOMReferenceCount ReferenceCount;
     unsigned char  Type;
+    unsigned char  CharacterSet;
     vtkDICOMVR     VR;
     unsigned int   VL;
     unsigned int   NumberOfValues;

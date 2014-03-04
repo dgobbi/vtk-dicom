@@ -119,8 +119,9 @@ void ValueFree(void *vp)
 template<class T>
 vtkDICOMValue::ValueT<T>::ValueT(vtkDICOMVR vr, unsigned int vn)
 {
-  this->VR = vr;
   this->Type = static_cast<unsigned char>(vtkTypeTraits<T>::VTKTypeID());
+  this->CharacterSet = 0;
+  this->VR = vr;
   this->VL = vn*sizeof(T);
   this->NumberOfValues = vn;
 }
@@ -129,8 +130,9 @@ vtkDICOMValue::ValueT<T>::ValueT(vtkDICOMVR vr, unsigned int vn)
 template<>
 vtkDICOMValue::ValueT<char>::ValueT(vtkDICOMVR vr, unsigned int vn)
 {
-  this->VR = vr;
   this->Type = VTK_CHAR;
+  this->CharacterSet = 0;
+  this->VR = vr;
   this->VL = vn + (vn & 1); // pad VL to make it even
   this->NumberOfValues = (vn > 0);
 }
@@ -139,8 +141,9 @@ vtkDICOMValue::ValueT<char>::ValueT(vtkDICOMVR vr, unsigned int vn)
 template<>
 vtkDICOMValue::ValueT<unsigned char>::ValueT(vtkDICOMVR vr, unsigned int vn)
 {
-  this->VR = vr;
   this->Type = VTK_UNSIGNED_CHAR;
+  this->CharacterSet = 0;
+  this->VR = vr;
   this->VL = vn + (vn & 1); // pad VL to make it even
   this->NumberOfValues = vn;
 }
@@ -149,8 +152,9 @@ vtkDICOMValue::ValueT<unsigned char>::ValueT(vtkDICOMVR vr, unsigned int vn)
 template<>
 vtkDICOMValue::ValueT<vtkDICOMTag>::ValueT(vtkDICOMVR vr, unsigned int vn)
 {
-  this->VR = vr;
   this->Type = VTK_DICOM_TAG;
+  this->CharacterSet = 0;
+  this->VR = vr;
   this->VL = 4*vn;
   this->NumberOfValues = vn;
   vtkDICOMTag *dp = this->Data;
@@ -166,8 +170,9 @@ vtkDICOMValue::ValueT<vtkDICOMTag>::ValueT(vtkDICOMVR vr, unsigned int vn)
 template<>
 vtkDICOMValue::ValueT<vtkDICOMItem>::ValueT(vtkDICOMVR vr, unsigned int vn)
 {
-  this->VR = vr; // better be SQ
   this->Type = VTK_DICOM_ITEM;
+  this->CharacterSet = 0;
+  this->VR = vr; // better be SQ
   this->VL = 0;
   this->NumberOfValues = vn;
   vtkDICOMItem *dp = this->Data;
@@ -183,8 +188,9 @@ vtkDICOMValue::ValueT<vtkDICOMItem>::ValueT(vtkDICOMVR vr, unsigned int vn)
 template<>
 vtkDICOMValue::ValueT<vtkDICOMValue>::ValueT(vtkDICOMVR vr, unsigned int vn)
 {
-  this->VR = vr;
   this->Type = VTK_DICOM_VALUE;
+  this->CharacterSet = 0;
+  this->VR = vr;
   this->VL = 0;
   this->NumberOfValues = vn;
   vtkDICOMValue *dp = this->Data;
