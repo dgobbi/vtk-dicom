@@ -794,7 +794,7 @@ vtkDICOMCompiler::vtkDICOMCompiler()
   this->SourceApplicationEntityTitle = NULL;
   this->TransferSyntaxUID = NULL;
   this->MetaData = NULL;
-  this->OutputStream = NULL;
+  this->OutputFile = NULL;
   this->Buffer = NULL;
   this->BufferSize = 8192;
   this->ChunkSize = 0;
@@ -905,10 +905,10 @@ void vtkDICOMCompiler::WriteHeader()
 //----------------------------------------------------------------------------
 void vtkDICOMCompiler::Close()
 {
-  if (this->OutputStream)
+  if (this->OutputFile)
     {
-    delete this->OutputStream;
-    this->OutputStream = NULL;
+    fclose(this->OutputFile);
+    this->OutputFile = NULL;
     }
 }
 
@@ -939,12 +939,10 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
     unlink(this->FileName);
     }
 
-  this->OutputStream =
-    new std::ofstream(this->FileName, ios::out | ios::binary);
+  this->OutputFile = fopen(this->FileName, "wb");
 
-  if (this->OutputStream->fail())
+  if (this->OutputFile == 0)
     {
-    this->Close();
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
     vtkErrorMacro("WriteFile: Can't open the file " << this->FileName);
     return false;
@@ -1005,16 +1003,35 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
 //----------------------------------------------------------------------------
 void vtkDICOMCompiler::WritePixelData(const char *cp, vtkIdType size)
 {
-  this->OutputStream->write(cp, size);
+  if (this->OutputFile == 0)
+    {
+    return;
+    }
+
+  size_t n = fwrite(cp, 1, size, this->OutputFile);
+  if (n != static_cast<size_t>(size))
+    {
+    this->Close();
+    unlink(this->FileName);
+    this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
+    vtkErrorMacro("Error while writing file "
+                  << this->FileName << ": Out of disk space.");
+    }
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMCompiler::WriteFrame(const char *cp, vtkIdType size)
 {
+  if (this->OutputFile == 0)
+    {
+    return;
+    }
+
   union { char c[2]; short s; } endiancheck;
   // this will set endiancheck.s to 1 on little endian architectures
   endiancheck.c[0] = 1;
   endiancheck.c[1] = 0;
+  size_t n = 0;
 
   if (this->Compressed)
     {
@@ -1056,13 +1073,22 @@ void vtkDICOMCompiler::WriteFrame(const char *cp, vtkIdType size)
       dp += 2;
       cp += 2;
       }
-    this->OutputStream->write(buf, size);
+    n = fwrite(buf, 1, size, this->OutputFile);
     delete [] buf;
     }
   else
     {
     // For uncompressed frames, write the data raw
-    this->OutputStream->write(cp, size);
+    n = fwrite(cp, 1, size, this->OutputFile);
+    }
+
+  if (n != static_cast<size_t>(size))
+    {
+    this->Close();
+    unlink(this->FileName);
+    this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
+    vtkErrorMacro("Error while writing file "
+                  << this->FileName << ": Out of disk space.");
     }
 
   this->FrameCounter++;
@@ -1310,11 +1336,11 @@ bool vtkDICOMCompiler::FlushBuffer(
   const char *cp = reinterpret_cast<const char *>(ucp);
   char *dp = this->Buffer;
   ucp = reinterpret_cast<unsigned char *>(dp);
-  std::streamsize n = static_cast<std::streamsize>(cp - dp);
+  size_t n = cp - dp;
 
-  this->OutputStream->write(dp, n);
+  size_t m = fwrite(dp, 1, n, this->OutputFile);
 
-  return this->OutputStream->good();
+  return (n == m);
 }
 
 //----------------------------------------------------------------------------

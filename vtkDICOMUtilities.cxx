@@ -602,27 +602,30 @@ bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
     return false;
     }
 
-  std::streamsize size = fs.st_size;
-  if (size > static_cast<std::streamsize>(sizeof(buffer)))
+  off_t size = fs.st_size;
+  if (size > static_cast<off_t>(sizeof(buffer)))
     {
-    size = static_cast<std::streamsize>(sizeof(buffer));
+    size = static_cast<off_t>(sizeof(buffer));
     }
 
-  std::ifstream infile(filename, ios::in | ios::binary);
+  FILE *infile = fopen(filename, "rb");
 
-  if (infile.fail())
+  if (infile == 0)
     {
     return false;
     }
 
-  infile.read(buffer, size);
-  size = infile.gcount();
-  infile.close();
+  size_t rsize = fread(buffer, 1, size, infile);
+  fclose(infile);
+  if (rsize != static_cast<size_t>(size))
+    {
+    return false;
+    }
 
   const char *cp = buffer;
 
   // Look for the magic number and the first meta header tag.
-  std::streamsize skip = 128;
+  off_t skip = 128;
   for (int i = 0; i < 2; i++)
     {
     if (size > skip + 8)

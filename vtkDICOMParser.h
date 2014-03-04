@@ -18,6 +18,7 @@
 #include "vtkDICOMModule.h"
 
 #include <string>
+#include <stdio.h>
 
 class vtkDICOMMetaData;
 class vtkUnsignedShortArray;
@@ -105,7 +106,7 @@ protected:
     const unsigned char* &cp, const unsigned char* &ep);
 
   //! Get the bytes remaining in the file.
-  virtual std::streamsize GetBytesRemaining(
+  virtual vtkTypeInt64 GetBytesRemaining(
     const unsigned char *cp, const unsigned char *ep);
 
   //! Report an error while parsing the file.
@@ -129,15 +130,15 @@ protected:
     vtkDICOMMetaData *data, int idx);
 
   //! Compute the file offset to the current position.
-  std::streamsize GetBytesProcessed(
+  vtkTypeInt64 GetBytesProcessed(
     const unsigned char* cp, const unsigned char* ep);
 
   char *FileName;
   std::string TransferSyntax;
   vtkDICOMMetaData *MetaData;
   vtkUnsignedShortArray *Groups;
-  std::istream *InputStream;
-  std::streamsize BytesRead;
+  FILE *InputFile;
+  vtkTypeInt64 BytesRead;
   vtkTypeInt64 FileOffset;
   vtkTypeInt64 FileSize;
   char *Buffer;

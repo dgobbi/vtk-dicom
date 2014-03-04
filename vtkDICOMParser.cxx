@@ -58,13 +58,13 @@ public:
     return parser->FillBuffer(cp, ep);
   }
 
-  static std::streamsize GetBytesRemaining(vtkDICOMParser *parser,
+  static vtkTypeInt64 GetBytesRemaining(vtkDICOMParser *parser,
     const unsigned char *cp, const unsigned char *ep)
   {
     return parser->GetBytesRemaining(cp, ep);
   }
 
-  static std::streamsize GetBytesProcessed(vtkDICOMParser *parser,
+  static vtkTypeInt64 GetBytesProcessed(vtkDICOMParser *parser,
     const unsigned char *cp, const unsigned char *ep)
   {
     return parser->GetBytesProcessed(cp, ep);
@@ -819,10 +819,10 @@ unsigned int Decoder<E>::ReadElementValue(
     {
     // value is larger than what remains in buffer,
     // make sure there are enough bytes left in file
-    std::streamsize bytesRemaining =
+    vtkTypeInt64 bytesRemaining =
       vtkDICOMParserInternalFriendship::GetBytesRemaining(
           this->Parser, cp, ep);
-    if (static_cast<std::streamsize>(vl) > bytesRemaining)
+    if (static_cast<vtkTypeInt64>(vl) > bytesRemaining)
       {
       vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
         "Item length exceeds the bytes remaining in file.");
@@ -1212,7 +1212,7 @@ vtkDICOMParser::vtkDICOMParser()
   this->FileName = NULL;
   this->MetaData = NULL;
   this->Groups = NULL;
-  this->InputStream = NULL;
+  this->InputFile = NULL;
   this->BytesRead = 0;
   this->FileOffset = 0;
   this->FileSize = 0;
@@ -1296,18 +1296,16 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
   this->FileSize = fs.st_size;
 
   // Make sure that the file is readable.
-  std::ifstream infile(this->FileName, ios::in | ios::binary);
-
-  if (infile.fail())
+  this->InputFile = fopen(this->FileName, "rb");
+  if (this->InputFile == 0)
     {
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
     vtkErrorMacro("ReadFile: Can't read the file " << this->FileName);
     return false;
     }
 
-  this->InputStream = &infile;
-  this->BytesRead = 0;
   this->Buffer = new char [this->BufferSize + 8];
+  this->BytesRead = 0;
   // guard against anyone changing BufferSize while reading
   this->ChunkSize = this->BufferSize;
 
@@ -1332,8 +1330,8 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
   this->ReadMetaData(cp, ep, data, idx);
 
   delete [] this->Buffer;
-  this->InputStream = NULL;
-  infile.close();
+  fclose(this->InputFile);
+  this->InputFile = NULL;
 
   return true;
 }
@@ -1505,11 +1503,11 @@ bool vtkDICOMParser::FillBuffer(
   const unsigned char* &ucp, const unsigned char* &ep)
 {
   char *dp = this->Buffer;
-  std::streamsize n = static_cast<std::streamsize>(ep - ucp);
+  size_t n = ep - ucp;
   const char *cp = reinterpret_cast<const char *>(ucp);
 
   // number of bytes to read
-  std::streamsize nbytes = this->ChunkSize;
+  size_t nbytes = this->ChunkSize;
   if (n != 0)
     {
     // make sure read will not overflow the buffer
@@ -1520,23 +1518,22 @@ bool vtkDICOMParser::FillBuffer(
     // recycle unused buffer chars to head of buffer
     do { *dp++ = *cp++; } while (--n);
     }
-  else if (this->InputStream->bad())
+  else if (ferror(this->InputFile))
     {
     this->SetErrorCode(vtkErrorCode::UnknownError);
     vtkErrorMacro("FillBuffer: error reading from file " << this->FileName);
     return false;
     }
-  else if (this->InputStream->eof())
+  else if (feof(this->InputFile))
     {
     // if buffer is drained, and eof, then done
     return false;
     }
 
   // read at most n bytes
-  this->InputStream->read(dp, nbytes);
+  n = fread(dp, 1, nbytes, this->InputFile);
 
   // get number of chars read
-  n = this->InputStream->gcount();
   this->BytesRead += n;
 
   // ep is recycled chars plus newly read chars
@@ -1547,15 +1544,15 @@ bool vtkDICOMParser::FillBuffer(
 }
 
 //----------------------------------------------------------------------------
-std::streamsize vtkDICOMParser::GetBytesRemaining(
+vtkTypeInt64 vtkDICOMParser::GetBytesRemaining(
   const unsigned char *cp, const unsigned char *ep)
 {
-  return static_cast<std::streamsize>(
+  return static_cast<vtkTypeInt64>(
     this->FileSize - this->BytesRead + (ep - cp));
 }
 
 //----------------------------------------------------------------------------
-std::streamsize vtkDICOMParser::GetBytesProcessed(
+vtkTypeInt64 vtkDICOMParser::GetBytesProcessed(
   const unsigned char* cp, const unsigned char* ep)
 {
   // the offset is the number of bytes read minus

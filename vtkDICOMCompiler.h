@@ -17,6 +17,8 @@
 #include <vtkObject.h>
 #include "vtkDICOMModule.h"
 
+#include <stdio.h>
+
 class vtkStringArray;
 class vtkDICOMMetaData;
 class vtkDICOMCompilerInternalFriendship;
@@ -200,7 +202,7 @@ protected:
   char *TransferSyntaxUID;
   vtkDICOMMetaData *MetaData;
   vtkStringArray *SeriesUIDs;
-  std::ostream *OutputStream;
+  FILE *OutputFile;
   char *Buffer;
   int BufferSize;
   int ChunkSize;
