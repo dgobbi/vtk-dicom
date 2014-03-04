@@ -84,6 +84,10 @@ public:
   //! The VRs OB, OF, OW, SQ, UN, UT require a 32-bit VL.
   bool HasLongVL() const { return (((1 << this->Key) & 0x0a08e000) != 0); }
 
+  //! The VRs SH, LO, PN, ST, LT, and UT use SpecificCharacterSet.
+  bool HasSpecificCharacterSet() const {
+    return (((1 << this->Key) & 0x08231800) != 0); }
+
   bool operator==(vtkDICOMVR a) const { return (this->Key == a.Key); }
   bool operator!=(vtkDICOMVR a) const { return (this->Key != a.Key); }
   bool operator<=(vtkDICOMVR a) const { return (this->Key <= a.Key); }
