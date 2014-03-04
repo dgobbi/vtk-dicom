@@ -140,7 +140,7 @@ public:
 
 private:
   void FreeList();
-  vtkDICOMDataElement *NewDataElement();
+  vtkDICOMDataElement *NewDataElement(vtkDICOMDataElement **iter);
   static void CopyList(const List *o, List *t);
   static void CopyDataElements(
     const vtkDICOMDataElement *begin, const vtkDICOMDataElement *end,

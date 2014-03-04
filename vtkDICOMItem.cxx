@@ -30,7 +30,7 @@ vtkDICOMItem::vtkDICOMItem(int delimited, unsigned int byteOffset)
 }
 
 //----------------------------------------------------------------------------
-vtkDICOMDataElement *vtkDICOMItem::NewDataElement()
+vtkDICOMDataElement *vtkDICOMItem::NewDataElement(vtkDICOMDataElement **iter)
 {
   int n = this->L->NumberOfDataElements;
 
@@ -53,6 +53,15 @@ vtkDICOMDataElement *vtkDICOMItem::NewDataElement()
       this->L->DataElements = new vtkDICOMDataElement[2*n];
       vtkDICOMItem::CopyDataElements(
         this->L->Head.Next, &this->L->Tail, this->L);
+      if (iter)
+        {
+        // fix the address of the provided node, since it was re-alloced
+        vtkDICOMDataElement *tptr = *iter;
+        vtkDICOMDataElement *nptr = &this->L->Tail;
+        do { tptr = tptr->Next; nptr = nptr->Prev; }
+        while (tptr != &this->L->Tail);
+        *iter = nptr;
+        }
       delete [] oldptr;
       }
     }
@@ -160,7 +169,7 @@ void vtkDICOMItem::SetAttributeValue(
   else if (v.IsValid())
     {
     // create a new data element
-    vtkDICOMDataElement *e = this->NewDataElement();
+    vtkDICOMDataElement *e = this->NewDataElement(&tptr);
     e->Tag = tag;
     e->Value = v;
 
