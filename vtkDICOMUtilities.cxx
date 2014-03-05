@@ -16,7 +16,6 @@
 #include "vtkDICOMUtilities.h"
 
 #include <string>
-#include <iostream>
 
 #include <stdio.h>
 #include <string.h>
@@ -224,10 +223,13 @@ void vtkGenerateRandomBytes(char *bytes, vtkIdType n)
     }
 #else
   // use the "random" device on unix-like systems
-  std::ifstream infile("/dev/random", ios::in | ios::binary);
-  infile.read(bytes, n);
-  r = infile.good();
-  infile.close();
+  FILE *infile = fopen("/dev/random", "rb");
+  if (infile)
+    {
+    size_t m = fread(bytes, 1, n, infile);
+    r = (m == static_cast<size_t>(n));
+    fclose(infile);
+    }
 #endif
   if (r == 0)
     {
