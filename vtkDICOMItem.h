@@ -46,11 +46,7 @@ private:
 
     List() : Head(), Tail(), ReferenceCount(1),
              NumberOfDataElements(0), DataElements(0),
-             ByteOffset(0), Delimited(false)
-      {
-      this->Head.Next = &this->Tail;
-      this->Tail.Prev = &this->Head;
-      }
+             ByteOffset(0), Delimited(false) {}
   };
 
 public:

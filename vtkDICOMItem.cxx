@@ -25,6 +25,8 @@ const vtkDICOMValue vtkDICOMItem::InvalidValue;
 vtkDICOMItem::vtkDICOMItem(int delimited, unsigned int byteOffset)
 {
   this->L = new List;
+  this->L->Head.Next = &this->L->Tail;
+  this->L->Tail.Prev = &this->L->Head;
   this->L->ByteOffset = byteOffset;
   this->L->Delimited = (delimited != 0);
 }
@@ -133,6 +135,8 @@ void vtkDICOMItem::SetAttributeValue(
   if (this->L == 0)
     {
     this->L = new List;
+    this->L->Head.Next = &this->L->Tail;
+    this->L->Tail.Prev = &this->L->Head;
     }
   // if we aren't the sole owner, copy before modifying
   else if (this->L->ReferenceCount != 1)
