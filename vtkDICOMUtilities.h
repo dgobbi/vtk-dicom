@@ -15,6 +15,7 @@
 #define __vtkDICOMUtilities_h
 
 #include <vtkSystemIncludes.h>
+#include <vtkObject.h>
 #include "vtkDICOMModule.h"
 #include "vtkDICOMTag.h"
 
@@ -23,9 +24,11 @@
 class vtkStringArray;
 
 //! Utility functions for use with DICOM classes.
-class VTK_DICOM_EXPORT vtkDICOMUtilities
+class VTK_DICOM_EXPORT vtkDICOMUtilities : public vtkObject
 {
 public:
+  //! VTK dynamic type information macro.
+  vtkTypeMacro(vtkDICOMUtilities, vtkObject);
 
   //! Set a UID prefix to use when generating UIDs.
   /*!
