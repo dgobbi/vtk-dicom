@@ -172,6 +172,7 @@ set(LIB_SRCS
   vtkDICOMTagPath.cxx
   vtkDICOMVR.cxx
   vtkDICOMVM.cxx
+  vtkDICOMCharacterSet.cxx
   vtkDICOMDataElement.cxx
   vtkDICOMDictHash.cxx
   vtkDICOMDictEntry.cxx
@@ -217,6 +218,7 @@ set(LIB_SPECIAL
   vtkDICOMTagPath.cxx
   vtkDICOMVR.cxx
   vtkDICOMVM.cxx
+  vtkDICOMCharacterSet.cxx
   vtkDICOMDictEntry.cxx
   vtkDICOMDictionary.cxx
   vtkDICOMDataElement.cxx
