@@ -151,9 +151,9 @@ void printElement(
       {
       // print any other VR via conversion to string
       unsigned int n = v.GetNumberOfValues();
+      size_t pos = 0;
       for (unsigned int i = 0; i < n; i++)
         {
-        size_t pos = 0;
         v.AppendValueToString(s, i);
         if (i < n - 1)
           {
