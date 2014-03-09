@@ -93,21 +93,19 @@ public:
   //! Convert text from this encoding to UTF-8.
   /*!
    *  This will convert text to UTF-8, which is generally a lossless
-   *  process.  There are two things to watch out for.  First, the
-   *  Hebrew and Arabic characters are printed right-to-left.
-   *  Second, the Japanese, Korean, and Chinese languages are not
-   *  supported and characters from these languages will be printed
-   *  as unicode missing-character marks.
+   *  process for western languages but not for the CJK languages.
+   *  Characters that cannot be mapped to unicode, or whose place in
+   *  unicode is not known, will be printed as unicode missing-character
+   *  marks.
    */
   std::string ConvertToUTF8(const char *text, size_t l) const;
 
-  //! Convert text to this encoding from UTF-8.
-  //std::string ConvertFromUTF8(const char *text, size_t l, int *err) const;
-
   //! Check for bidirectional character sets.
   /*!
-   *  This is used to check for character sets that contain right-to-left,
-   *  because they may require special attention.
+   *  This is used to check for character sets that are likely to
+   *  contain characters that print right-to-left, specifically Hebrew
+   *  and Arabic.  Note that even though some parts of unicode fall
+   *  into this category, this flag is off for unicode and GB18030.
    */
   bool IsBiDirectional() const {
     return (this->Key == ISO_IR_127 || this->Key == ISO_IR_138); }
