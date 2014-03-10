@@ -187,8 +187,7 @@ void vtkDICOMItem::SetAttributeValue(
 }
 
 //----------------------------------------------------------------------------
-template<class T>
-void vtkDICOMItem::SetAttributeValueT(vtkDICOMTag tag, T v)
+void vtkDICOMItem::SetAttributeValue(vtkDICOMTag tag, double v)
 {
   vtkDICOMVR vr = this->FindDictVR(tag);
   assert(vr != vtkDICOMVR::UN);
@@ -198,14 +197,31 @@ void vtkDICOMItem::SetAttributeValueT(vtkDICOMTag tag, T v)
     }
 }
 
-void vtkDICOMItem::SetAttributeValue(vtkDICOMTag tag, double v)
-{
-  this->SetAttributeValueT(tag, v);
-}
-
 void vtkDICOMItem::SetAttributeValue(vtkDICOMTag tag, const std::string& v)
 {
-  this->SetAttributeValueT(tag, v);
+  vtkDICOMVR vr = this->FindDictVR(tag);
+  assert(vr != vtkDICOMVR::UN);
+  // note that there is similar code in vtkDICOMMetaData
+  if (vr.HasSpecificCharacterSet())
+    {
+    vtkDICOMValue vo = vtkDICOMValue(vr, v);
+    const vtkDICOMValue& vcs =
+      this->GetAttributeValue(DC::SpecificCharacterSet);
+    if (vcs.IsValid())
+      {
+      vtkDICOMCharacterSet cs = vtkDICOMCharacterSet(vcs.AsString());
+      if (cs != vtkDICOMCharacterSet::ISO_IR_6) // ISO_IR_6 is ASCII
+        {
+        vo.SetCharacterSetForCharData(cs);
+        vo.ComputeNumberOfValuesForCharData();
+        }
+      }
+    this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
+    }
+  else if (vr != vtkDICOMVR::UN)
+    {
+    this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
+    }
 }
 
 //----------------------------------------------------------------------------

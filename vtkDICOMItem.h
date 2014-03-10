@@ -80,7 +80,9 @@ public:
   /*!
    *  This method can only be used before the item has been added
    *  to a sequence.  After the item has become part of a sequence,
-   *  it is frozen and cannot be modified.
+   *  it is frozen and cannot be modified.  Note that if you specify
+   *  a string value, it must either be an ASCII string, or it must
+   *  be encoded in the SpecificCharacterSet for this item.
    */
   void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
   void SetAttributeValue(vtkDICOMTag tag, double v);
@@ -141,10 +143,6 @@ private:
   static void CopyDataElements(
     const vtkDICOMDataElement *begin, const vtkDICOMDataElement *end,
     List *t);
-
-  //! Internal templated SetAttributeValue method
-  template<class T>
-  void SetAttributeValueT(vtkDICOMTag tag, T v);
 
   //! An invalid value, for when one is needed.
   static const vtkDICOMValue InvalidValue;

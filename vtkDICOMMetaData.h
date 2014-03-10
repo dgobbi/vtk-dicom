@@ -124,6 +124,9 @@ public:
    *  attempt to convert the input data to the correct VR.  Strings and
    *  doubles will be converted to integer values where necessary, and
    *  numeric values will be converted to strings where necessary.
+   *  Note that if you specify a string value, it must either be an
+   *  ASCII string, or it must be encoded in the SpecificCharacterSet
+   *  for this data set.
    */
   void SetAttributeValue(int idx, vtkDICOMTag tag, const vtkDICOMValue& v);
   void SetAttributeValue(int idx, vtkDICOMTag tag, double v);
@@ -144,6 +147,10 @@ public:
 
   //! Use the dictionary to get the VR, return UN if not found.
   vtkDICOMVR FindDictVR(int idx, vtkDICOMTag tag);
+
+  //! Create a value from text in a specific character set.
+  vtkDICOMValue MakeValueWithSpecificCharacterSet(
+    vtkDICOMVR vr, const std::string& v);
 
   //! Copy all the attributes from another MetaData object.
   /*!
@@ -171,12 +178,6 @@ protected:
 
   //! Find the attribute value for the specified image index.
   const vtkDICOMValue *FindAttributeValue(int idx, vtkDICOMTag tag);
-
-  //! Internal templated SetAttributeValue method
-  template<class T>
-  void SetAttributeValueT(vtkDICOMTag tag, T v);
-  template<class T>
-  void SetAttributeValueT(int idx, vtkDICOMTag tag, T v);
 
 private:
   //! The number of DICOM files.
