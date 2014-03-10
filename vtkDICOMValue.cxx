@@ -311,6 +311,16 @@ vtkDICOMValue *vtkDICOMValue::AllocateMultiplexData(
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMValue::SetCharacterSetForCharData(
+  vtkDICOMCharacterSet cs)
+{
+  if (this->V && this->V->VR.HasSpecificCharacterSet())
+    {
+    this->V->CharacterSet = cs.GetKey();
+    }
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMValue::ComputeNumberOfValuesForCharData()
 {
   if (this->V && this->V->Type == VTK_CHAR)
@@ -328,9 +338,17 @@ void vtkDICOMValue::ComputeNumberOfValuesForCharData()
     else
       {
       const char *ptr = static_cast<const ValueT<char> *>(this->V)->Data;
-      unsigned int vl = this->V->VL;
       unsigned int n = 1;
-      do { n += (*ptr++ == '\\'); } while (--vl);
+      unsigned int vl = this->V->VL;
+      if (this->V->CharacterSet == 0)
+        {
+        do { n += (*ptr++ == '\\'); } while (--vl);
+        }
+      else
+        {
+        vtkDICOMCharacterSet cs = this->GetCharacterSet();
+        n += cs.CountBackslashes(ptr, vl);
+        }
       this->V->NumberOfValues = n;
       }
     }
@@ -1261,6 +1279,20 @@ double vtkDICOMValue::GetDouble(unsigned int i) const
   return v;
 }
 
+std::string vtkDICOMValue::GetUTF8String(unsigned int i) const
+{
+  if (this->V && this->V->CharacterSet != 0)
+    {
+    if (this->V && i < this->V->NumberOfValues)
+      {
+      std::string v;
+      this->AppendValueToUTF8String(v, i);
+      }
+    }
+
+  return this->GetString(i);
+}
+
 std::string vtkDICOMValue::GetString(unsigned int i) const
 {
   std::string v;
@@ -1353,6 +1385,29 @@ double vtkDICOMValue::AsDouble() const
   return v;
 }
 
+std::string vtkDICOMValue::AsUTF8String() const
+{
+  const char *cp = this->GetCharData();
+  if (cp)
+    {
+    vtkDICOMCharacterSet cs(this->V->CharacterSet);
+    size_t l = this->V->VL;
+    vtkDICOMVR vr = this->V->VR;
+    if (vr != vtkDICOMVR::ST &&
+        vr != vtkDICOMVR::LT &&
+        vr != vtkDICOMVR::UT)
+      {
+      while (l > 0 && (cp[l-1] == ' ' || cp[l-1] == '\0'))
+        {
+        l--;
+        }
+      }
+    return cs.ConvertToUTF8(cp, l);
+    }
+
+  return vtkDICOMValue::AsString();
+}
+
 std::string vtkDICOMValue::AsString() const
 {
   const char *cp = this->GetCharData();
@@ -1414,13 +1469,26 @@ void vtkDICOMValue::Substring(
 
   if (this->V->NumberOfValues > 1 && ++i > 0)
     {
-    dp = cp - 1;
-    do
+    if (this->V->CharacterSet == 0)
       {
-      cp = dp + 1;
-      do { dp++; } while (*dp != '\\' && dp != ep);
+      dp = cp - 1;
+      do
+        {
+        cp = dp + 1;
+        do { dp++; } while (*dp != '\\' && dp != ep);
+        }
+      while (--i != 0 && dp != ep);
       }
-    while (--i != 0 && dp != ep);
+    else
+      {
+      vtkDICOMCharacterSet cs(this->V->CharacterSet);
+      for (;;)
+        {
+        dp = cp + cs.NextBackslash(cp, ep);
+        if (--i == 0 || *dp != '\\') { break; }
+        cp = dp + 1;
+        }
+      }
     }
 
   // remove any spaces used as padding
@@ -1435,6 +1503,30 @@ void vtkDICOMValue::Substring(
 
   start = cp;
   end = dp;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMValue::AppendValueToUTF8String(
+  std::string& str, unsigned int i) const
+{
+  if (this->V && this->V->Type == VTK_CHAR &&
+      this->V->CharacterSet != 0)
+    {
+    const char *cp = static_cast<const ValueT<char> *>(this->V)->Data;
+    const char *dp = cp + (i == 0 ? this->V->VL : 0);
+    if (this->V->VR != vtkDICOMVR::ST &&
+        this->V->VR != vtkDICOMVR::LT &&
+        this->V->VR != vtkDICOMVR::UT)
+      {
+      this->Substring(i, cp, dp);
+      }
+    vtkDICOMCharacterSet cs(this->V->CharacterSet);
+    str += cs.ConvertToUTF8(cp, dp-cp);
+    }
+  else
+    {
+    this->AppendValueToString(str, i);
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -1814,7 +1906,7 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
       for (unsigned int i = 0; i < n; i++)
         {
         s.append((i == 0 ? "" : ","));
-        v.AppendValueToString(s, i);
+        v.AppendValueToUTF8String(s, i);
         }
       if (m > n)
         {

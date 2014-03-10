@@ -18,6 +18,7 @@
 #include "vtkDICOMModule.h"
 #include "vtkDICOMVR.h"
 #include "vtkDICOMTag.h"
+#include "vtkDICOMCharacterSet.h"
 #include "vtkDICOMReferenceCount.h"
 
 #include <string>
@@ -130,6 +131,17 @@ public:
   //! Get the VL, the length of the data in bytes (will always be even).
   unsigned int GetVL() const { return (this->V ? this->V->VL : 0); }
 
+  //! Get the character set for a text value.
+  /*!
+   *  String values are stored with their original encoding, as given
+   *  by the SpecificCharacterSet attribute of the data set that they
+   *  belong to.  This only applies to VRs of PN, SH, LO, ST, LT, and UT.
+   *  All other string values are always stored as plain ASCII with no
+   *  control characters.
+   */
+  vtkDICOMCharacterSet GetCharacterSet() const {
+    return (this->V ? this->V->CharacterSet : 0); }
+
   //! Get the value multiplicity.
   /*!
    *  The number of values has different interpretations for
@@ -171,6 +183,7 @@ public:
    *  not possible, or the index is out of range, then the return
    *  value will be zero (or an empty string).
    */
+  std::string GetUTF8String(unsigned int i) const;
   std::string GetString(unsigned int i) const;
   unsigned char GetUnsignedChar(unsigned int i) const;
   short GetShort(unsigned int i) const;
@@ -188,6 +201,7 @@ public:
    *  to string always produces an empty string for values of type UN, SQ,
    *  OB, OW, and OF.
    */
+  std::string AsUTF8String() const;
   std::string AsString() const;
   unsigned char AsUnsignedChar() const;
   short AsShort() const;
@@ -245,11 +259,21 @@ public:
   vtkDICOMItem *AllocateSequenceData(vtkDICOMVR vr, unsigned int vn);
   vtkDICOMValue *AllocateMultiplexData(vtkDICOMVR vr, unsigned int vn);
 
+  //! Set the character set for char data.
+  /*!
+   *  This will set the character set that will be used to interpret
+   *  the data inside a string value.  This method has no effect unless
+   *  the VR is PN, SH, LO, ST, LT, or UT.
+   */
+  void SetCharacterSetForCharData(vtkDICOMCharacterSet s);
+
   //! Compute the number of backslash-separated string values.
   /*!
    *  After calling AllocateCharData and writing text into the allocated
    *  space, this must be called to set the NumberOfValues according to
    *  the number of backslash-separated string values that are present.
+   *  If the text is not ASCII, this should be called after calling
+   *  SetCharacterSetForCharData().
    */
   void ComputeNumberOfValuesForCharData();
 
@@ -261,6 +285,13 @@ public:
    *  the NumberOfValues will be vn, and the VL will be 0xffffffff.
    */
   unsigned char *ReallocateUnsignedCharData(unsigned int vn);
+
+  //! Append value "i" to the supplied UTF8 string.
+  /*
+   *  String values will be converted from their native encoding
+   *  to UTF-8.
+   */
+  void AppendValueToUTF8String(std::string &str, unsigned int i) const;
 
   //! Append value "i" to the supplied string.
   /*!

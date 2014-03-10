@@ -167,6 +167,9 @@ public:
   // Get the VR of the last data element.
   vtkDICOMVR GetLastVR() { return this->LastVR; }
 
+  // Get the character set that is currently active.
+  vtkDICOMCharacterSet GetCharacterSet();
+
   // Check for attributes missing from this instance, that were present
   // for instances in the series that were already parsed.
   void HandleMissingAttributes(vtkDICOMTag tag);
@@ -174,7 +177,10 @@ public:
 protected:
   // Constructor that initializes all of the members.
   DecoderBase(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
-    Parser(parser), Item(0), MetaData(data), Index(idx), ImplicitVR(0) {}
+    Parser(parser), Item(0), MetaData(data),
+    ItemCharacterSet(vtkDICOMCharacterSet::Unknown),
+    CharacterSet(vtkDICOMCharacterSet::Unknown),
+    Index(idx), ImplicitVR(0) {}
 
   // an internal implicit little-endian decoder
   DefaultDecoder *ImplicitLE;
@@ -184,6 +190,10 @@ protected:
   vtkDICOMItem *Item;
   // the metadata object to read the data into
   vtkDICOMMetaData *MetaData;
+  // the character set for the Item data set
+  vtkDICOMCharacterSet ItemCharacterSet;
+  // the chraracter set for the meta data
+  vtkDICOMCharacterSet CharacterSet;
   // the instance index to use with the meta data
   int Index;
   // if this is set, then VRs are implicit
@@ -354,6 +364,8 @@ inline void DecoderBase::SetItem(vtkDICOMItem *i)
   // ensure that "Item" is set for the ImplicitLE decoder, too
   this->Item = i;
   this->ImplicitLE->Item = i;
+  this->ItemCharacterSet = vtkDICOMCharacterSet::Unknown;
+  this->ImplicitLE->ItemCharacterSet = vtkDICOMCharacterSet::Unknown;
 }
 
 //----------------------------------------------------------------------------
@@ -507,6 +519,39 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
     }
 
   return vr;
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMCharacterSet DecoderBase::GetCharacterSet()
+{
+  vtkDICOMCharacterSet cs;
+
+  if (this->Item)
+    {
+    if (this->ItemCharacterSet == vtkDICOMCharacterSet::Unknown)
+      {
+      const vtkDICOMValue& v =
+        this->Item->GetAttributeValue(DC::SpecificCharacterSet);
+      if (v.IsValid())
+        {
+        cs = vtkDICOMCharacterSet(v.AsString());
+        }
+      }
+    }
+  else if (this->MetaData)
+    {
+    if (this->CharacterSet == vtkDICOMCharacterSet::Unknown)
+      {
+      const vtkDICOMValue& v =
+        this->MetaData->GetAttributeValue(DC::SpecificCharacterSet);
+      if (v.IsValid())
+        {
+        cs = vtkDICOMCharacterSet(v.AsString());
+        }
+      }
+    }
+
+  return cs;
 }
 
 //----------------------------------------------------------------------------
@@ -838,6 +883,10 @@ unsigned int Decoder<E>::ReadElementValue(
       l = this->ReadData(cp, ep, ptr, vl);
       // AllocateCharData makes room for terminal null
       if (l == 0 || ptr[l-1] != '\0') { ptr[l] = '\0'; }
+      if (vr.HasSpecificCharacterSet())
+        {
+        v.SetCharacterSetForCharData(this->GetCharacterSet());
+        }
       v.ComputeNumberOfValuesForCharData();
       }
       break;

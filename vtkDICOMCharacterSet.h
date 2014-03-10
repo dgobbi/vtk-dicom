@@ -53,7 +53,8 @@ public:
     ISO_2022_IR_87  = 32, // part of ISO-2022-JP and ISO-2022-JP-2
     ISO_2022_IR_159 = 64, // part of ISO-2022-JP-2
     ISO_2022_IR_149 = 128, // part of ISO-2022-KR and ISO-2022-JP-2
-    ISO_2022   = 240 // mask for the bitfield that indicates ISO-2022
+    ISO_2022   = 240, // mask for the bitfield that indicates ISO-2022
+    Unknown    = 255  // signifies unknown character set
   };
 
   //! Construct an object that describes the default (ASCII) character set.
@@ -72,7 +73,7 @@ public:
    *  This generates an 8-bit code that uniquely identifies a DICOM
    *  character set plus its code extensions.
    */
-  vtkDICOMCharacterSet(const std::string& name);
+  explicit vtkDICOMCharacterSet(const std::string& name);
 
   //! Generate a SpecificCharacterSet value.
   /*!
@@ -104,11 +105,26 @@ public:
   /*!
    *  This is used to check for character sets that are likely to
    *  contain characters that print right-to-left, specifically Hebrew
-   *  and Arabic.  Note that even though some parts of unicode fall
+   *  and Arabic.  Note that even though some parts of unaicode fall
    *  into this category, this flag is off for unicode and GB18030.
    */
   bool IsBiDirectional() const {
     return (this->Key == ISO_IR_127 || this->Key == ISO_IR_138); }
+
+  //! Count the number of backslashes in an encodes string.
+  /*!
+   *  The backslash byte is sometimes present as half of a multibyte
+   *  character in the Japanese and Chinese encodings.  This method
+   *  skips these false backslashes and counts only real backslashes.
+   */
+  unsigned int CountBackslashes(const char *text, size_t l) const;
+
+  //! Get the offset to the next backslash, or to the end of the string.
+  /*!
+   *  In order to work properly, this method requires that its input is
+   *  either at the beginning of the string or just after a backslash.
+   */
+  size_t NextBackslash(const char *text, const char *end) const;
 
   bool operator==(vtkDICOMCharacterSet b) const { return (this->Key == b.Key); }
   bool operator!=(vtkDICOMCharacterSet b) const { return (this->Key != b.Key); }

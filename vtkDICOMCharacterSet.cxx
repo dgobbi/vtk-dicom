@@ -6239,6 +6239,130 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
 }
 
 //----------------------------------------------------------------------------
+size_t vtkDICOMCharacterSet::NextBackslash(
+  const char *text, const char *ep) const
+{
+  const char *cp = text;
+
+  if (this->Key == GB18030)
+    {
+    // ensure backslash isn't second part of a character
+    while (cp < ep && *cp != '\0')
+      {
+      if (static_cast<unsigned char>(*cp) >= 0x81)
+        {
+        cp++;
+        if (cp < ep && static_cast<unsigned char>(*cp) >= 0x21)
+          {
+          cp++;
+          } 
+        }
+      else if (*cp != '\\')
+        {
+        cp++;
+        }
+      else
+        {
+        break;
+        }
+      }
+    }
+  else if ((this->Key & ISO_2022) != 0)
+    {
+    // ensure backslash isn't part of a G0 multi-byte code
+    bool jp = false;
+    while (cp < ep && *cp != 0)
+      {
+      if (ep - cp > 3 && *cp == '\033')
+        {
+        cp++;
+        if (cp[0] == '$' && (cp[1] == 'B' || cp[1] == '@'))
+          {
+          // iso-2022-jp
+          cp += 2;
+          jp = true;
+          }
+        else if (ep - cp > 3 &&
+                 cp[0] == '$' && cp[1] == '(' && cp[2] != '\0')
+          {
+          // iso-2022 multibyte in G0
+          cp += 3;
+          jp = true;
+          }
+        else if (ep - cp > 3 &&
+                 cp[0] == '$' && cp[1] == ')' && cp[2] != '\0')
+          {
+          // iso-2022 multibyte in G1
+          cp += 3;
+          }
+        else if (cp[0] == '(' && cp[1] != '\0')
+          {
+          // iso-22022 single-byte in G0
+          cp += 2;
+          jp = false;
+          }
+        else if (cp[0] != '-' && cp[1] != '\0')
+          {
+          // iso-22022 single-byte in G1
+          cp += 2;
+          }
+        }
+      else if (jp)
+        {
+        cp++;
+        if (cp < ep && static_cast<unsigned char>(*cp) >= 0x21)
+          {
+          cp++;
+          }
+        }
+      else if (*cp != '\\')
+        {
+        cp++;
+        }
+      else
+        {
+        break;
+        }
+      }
+    }
+  else
+    {
+    // backslash is backslash
+    while (cp < ep && *cp != '\0')
+      {
+      if (*cp == '\\')
+        {
+        break;
+        }
+      cp++;
+      }
+    }
+
+  return (cp - text);
+}
+
+//----------------------------------------------------------------------------
+unsigned int vtkDICOMCharacterSet::CountBackslashes(
+  const char *text, size_t l) const
+{
+  unsigned int count = 0;
+  const char *cp = text;
+  const char *ep = text + l;
+
+  while (*cp != '\0')
+    {
+    cp += this->NextBackslash(cp, ep);
+    if (*cp == '\\')
+       {
+       cp++;
+       count++;
+       }
+     }
+
+  return count;
+}
+
+//----------------------------------------------------------------------------
 ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a)
 {
   std::string s = a.GetCharacterSetString();

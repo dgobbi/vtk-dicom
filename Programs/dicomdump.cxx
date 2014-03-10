@@ -154,7 +154,7 @@ void printElement(
       size_t pos = 0;
       for (unsigned int i = 0; i < n; i++)
         {
-        v.AppendValueToString(s, i);
+        v.AppendValueToUTF8String(s, i);
         if (i < n - 1)
           {
           s.append("\\");
