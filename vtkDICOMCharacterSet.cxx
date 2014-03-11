@@ -13,8 +13,8 @@
 =========================================================================*/
 #include "vtkDICOMCharacterSet.h"
 
-// To allow 32-bit unicode, instead of just 16-bit unicode.
-// #define DICOM_USE_UCHAR32
+// This turns on GB18030-2005, which uses 32-bit unicode codepoints
+#define DICOM_GB18030_2005
 
 //----------------------------------------------------------------------------
 namespace {
@@ -3909,9 +3909,9 @@ unsigned short CodePageGB18030[23940] = {
   0xE78A, 0xE78B, 0xE78C, 0x03B1, 0x03B2, 0x03B3, 0x03B4, 0x03B5, 0x03B6,
   0x03B7, 0x03B8, 0x03B9, 0x03BA, 0x03BB, 0x03BC, 0x03BD, 0x03BE, 0x03BF,
   0x03C0, 0x03C1, 0x03C3, 0x03C4, 0x03C5, 0x03C6, 0x03C7, 0x03C8, 0x03C9,
-  0xFE10, 0xFE12, 0xFE11, 0xFE13, 0xFE14, 0xFE15, 0xFE16, 0xFE35, 0xFE36,
+  0xE78D, 0xE78E, 0xE78F, 0xE790, 0xE791, 0xE792, 0xE793, 0xFE35, 0xFE36,
   0xFE39, 0xFE3A, 0xFE3F, 0xFE40, 0xFE3D, 0xFE3E, 0xFE41, 0xFE42, 0xFE43,
-  0xFE44, 0xFE17, 0xFE18, 0xFE3B, 0xFE3C, 0xFE37, 0xFE38, 0xFE31, 0xFE19,
+  0xFE44, 0xE794, 0xE795, 0xFE3B, 0xFE3C, 0xFE37, 0xFE38, 0xFE31, 0xE796,
   0xFE33, 0xFE34, 0xE797, 0xE798, 0xE799, 0xE79A, 0xE79B, 0xE79C, 0xE79D,
   0xE79E, 0xE79F, 0xE706, 0xE707, 0xE708, 0xE709, 0xE70A, 0xE70B, 0xE70C,
   0xE70D, 0xE70E, 0xE70F, 0xE710, 0xE711, 0xE712, 0xE713, 0xE714, 0xE715,
@@ -5752,15 +5752,15 @@ unsigned short CodePageGB18030[23940] = {
   0xE460, 0xE461, 0xE462, 0xE463, 0xE464, 0xE465, 0xE466, 0xE467, 0xFA0C,
   0xFA0D, 0xFA0E, 0xFA0F, 0xFA11, 0xFA13, 0xFA14, 0xFA18, 0xFA1F, 0xFA20,
   0xFA21, 0xFA23, 0xFA24, 0xFA27, 0xFA28, 0xFA29, 0x2E81, 0xE816, 0xE817,
-  0xE818, 0x2E84, 0x3473, 0x3447, 0x2E88, 0x2E8B, 0x9FB4, 0x359E, 0x361A,
-  0x360E, 0x2E8C, 0x2E97, 0x396E, 0x3918, 0x9FB5, 0x39CF, 0x39DF, 0x3A73,
-  0x39D0, 0x9FB6, 0x9FB7, 0x3B4E, 0x3C6E, 0x3CE0, 0x2EA7, 0xE831, 0x9FB8,
+  0xE818, 0x2E84, 0x3473, 0x3447, 0x2E88, 0x2E8B, 0xE81E, 0x359E, 0x361A,
+  0x360E, 0x2E8C, 0x2E97, 0x396E, 0x3918, 0xE826, 0x39CF, 0x39DF, 0x3A73,
+  0x39D0, 0xE82B, 0xE82C, 0x3B4E, 0x3C6E, 0x3CE0, 0x2EA7, 0xE831, 0xE832,
   0x2EAA, 0x4056, 0x415F, 0x2EAE, 0x4337, 0x2EB3, 0x2EB6, 0x2EB7, 0xE83B,
-  0x43B1, 0x43AC, 0x2EBB, 0x43DD, 0x44D6, 0x4661, 0x464C, 0x9FB9, 0x4723,
+  0x43B1, 0x43AC, 0x2EBB, 0x43DD, 0x44D6, 0x4661, 0x464C, 0xE843, 0x4723,
   0x4729, 0x477C, 0x478D, 0x2ECA, 0x4947, 0x497A, 0x497D, 0x4982, 0x4983,
-  0x4985, 0x4986, 0x499F, 0x499B, 0x49B7, 0x49B6, 0x9FBA, 0xE855, 0x4CA3,
+  0x4985, 0x4986, 0x499F, 0x499B, 0x49B7, 0x49B6, 0xE854, 0xE855, 0x4CA3,
   0x4C9F, 0x4CA0, 0x4CA1, 0x4C77, 0x4CA2, 0x4D13, 0x4D14, 0x4D15, 0x4D16,
-  0x4D17, 0x4D18, 0x4D19, 0x4DAE, 0x9FBB, 0xE468, 0xE469, 0xE46A, 0xE46B,
+  0x4D17, 0x4D18, 0x4D19, 0x4DAE, 0xE864, 0xE468, 0xE469, 0xE46A, 0xE46B,
   0xE46C, 0xE46D, 0xE46E, 0xE46F, 0xE470, 0xE471, 0xE472, 0xE473, 0xE474,
   0xE475, 0xE476, 0xE477, 0xE478, 0xE479, 0xE47A, 0xE47B, 0xE47C, 0xE47D,
   0xE47E, 0xE47F, 0xE480, 0xE481, 0xE482, 0xE483, 0xE484, 0xE485, 0xE486,
@@ -5831,18 +5831,21 @@ unsigned short LinearGB18030[412] = {
   0x9961, 0xFF5F,  0x99E2, 0xFFE6
 };
 
-#ifdef DICOM_USE_UCHAR32
-// Note: the GB18030 tables include many private codepoints in
-// the range U+E000..U+F8FF and it would be good to have a full
-// table to convert these private codepoints to standard codepoints
-// as unicode expands.  For now, we will hope that systems will
-// properly map the private codepoints to their fonts, and we
-// will just provide a very small 32-bit table to capture know codes
-// from gb-18030-2005.ucm that we couldn't fit into the 16-bit table.
-const unsigned int PrivateToStandard[12] = {
-  0xE816, 0x20087,  0xE817, 0x20089,  0xE818, 0x200CC, 0xE831, 0x215D7,
-  0xE83B, 0x2298F,  0xE855, 0x241FE
+#ifdef DICOM_GB18030_2005
+// Note: in the GB18030-2005 tables some codepoints in the private
+// range U+E000..U+F8FF migrated to standard unicode codepoints.
+// My understanding is that this allows more characters to be displayed
+// when the PUA is not mapped to GBK characters, but reduces the ability
+// of GB18030 to reversibly encode these private codepoints.
+const unsigned int PrivateToStandard[48] = {
+  0xE81E, 0x9FB4,  0xE826, 0x9FB5,  0xE82B, 0x9FB6,  0xE82C, 0x9FB7,
+  0xE832, 0x9FB8,  0xE843, 0x9FB9,  0xE854, 0x9FBA,  0xE864, 0x9FBB,
+  0xE78D, 0xFE10,  0xE78F, 0xFE11,  0xE78E, 0xFE12,  0xE790, 0xFE13,
+  0xE791, 0xFE14,  0xE792, 0xFE15,  0xE793, 0xFE16,  0xE794, 0xFE17,
+  0xE795, 0xFE18,  0xE796, 0xFE19,  0xE816, 0x20087, 0xE817, 0x20089,
+  0xE818, 0x200CC, 0xE831, 0x215D7, 0xE83B, 0x2298F, 0xE855, 0x241FE
 };
+#endif
 
 // Convert a unicode code point to UTF-8
 inline void UnicodeToUTF8(unsigned int code, std::string *s)
@@ -5862,7 +5865,6 @@ inline void UnicodeToUTF8(unsigned int code, std::string *s)
     s->push_back(0x80 | ((code >> 6) & 0x3F));
     s->push_back(0x80 | (code & 0x3F));
     }
-#ifdef DICOM_USE_UCHAR32
   else if (code <= 0x10FFFF)
     {
     s->push_back(0xF0 | (code >> 18));
@@ -5870,7 +5872,6 @@ inline void UnicodeToUTF8(unsigned int code, std::string *s)
     s->push_back(0x80 | ((code >> 6) & 0x3F));
     s->push_back(0x80 | (code & 0x3F));
     }
-#endif
 }
 
 } // end anonymous namespace
@@ -6076,7 +6077,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           a = (a - 0x81)*190 + (b - 0x40);
           code = CodePageGB18030[a];
           }
-        else if (a > 0x80 && a < 0xFF &&
+        else if (a > 0x80 && a < 0x90 &&
                  b >= '0' && b <= '9' &&
                  static_cast<unsigned char>(cp[0]) > 0x80 &&
                  static_cast<unsigned char>(cp[0]) < 0xFF &&
@@ -6087,29 +6088,50 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           unsigned short d = static_cast<unsigned char>(*cp++);
           a = (a - 0x81)*10 + (b - '0');
           b = (c - 0x81)*10 + (d - '0');
-          a = a*1260 + b;
-          // search linearly compressed table
-          size_t n = sizeof(LinearGB18030)/sizeof(short);
-          for (size_t i = 0;; i += 2)
+          unsigned int g = a*1260 + b;
+          if (g <= 0x99FB)
             {
-            if (i >= n || LinearGB18030[i] > a)
+            // search linearly compressed table
+            size_t n = sizeof(LinearGB18030)/sizeof(short);
+            for (size_t i = 0;; i += 2)
               {
-              code = LinearGB18030[i-1] + (a - LinearGB18030[i-2]);
-              // the table is only good for 16-bit codes
-              if (code > 0xFFFF) { code = 0xFFFD; }
-              break;
+              if (i >= n || LinearGB18030[i] > g)
+                {
+                code = LinearGB18030[i-1] + (g - LinearGB18030[i-2]);
+                break;
+                }
               }
             }
           }
-#ifdef DICOM_USE_UCHAR32
-        // convert private codes to new unicode standard codes
-        size_t n = sizeof(PrivateToStandard)/sizeof(int);
-        for (size_t i = 0; i < n; i += 2)
+        else if (a >= 0x90 && a < 0xFF &&
+                 b >= '0' && b <= '9' &&
+                 static_cast<unsigned char>(cp[0]) > 0x80 &&
+                 static_cast<unsigned char>(cp[0]) < 0xFF &&
+                 cp[1] >= '0' && cp[1] <= '9')
           {
-          if (code == PrivateToStandard[i])
+          // four-byte GB18030 to codes beyond 0xFFFF
+          unsigned short c = static_cast<unsigned char>(*cp++);
+          unsigned short d = static_cast<unsigned char>(*cp++);
+          a = (a - 0x90)*10 + (b - '0');
+          b = (c - 0x81)*10 + (d - '0');
+          unsigned int g = a*1260 + b;
+          if (g <= 0xFFFFF)
             {
-            code = PrivateToStandard[i+1];
-            break;
+            code = g + 0x10000;
+            }
+          }
+#ifdef DICOM_GB18030_2005
+        // convert some private codes to new unicode standard codes
+        if (code >= 0xE000 && code <= 0xF8FF)
+          {
+          size_t n = sizeof(PrivateToStandard)/sizeof(int);
+          for (size_t i = 0; i < n; i += 2)
+            {
+            if (code == PrivateToStandard[i])
+              {
+              code = PrivateToStandard[i+1];
+              break;
+              }
             }
           }
 #endif

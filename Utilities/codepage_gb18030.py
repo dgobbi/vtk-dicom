@@ -52,13 +52,12 @@ for l in lines:
         g = aa*1260 + bb
         m = m4
     if m.has_key(g):
-        if m[g] > 0xFFFF and u <= 0xFFFF:
-            # attempt to stay on BMP
+        if l[-1] == '1':
+            sys.stderr.write("duplicate: 0x%04X 0x%04X, 0x%04X\n" % (g,u,m[g]))
+            # prefer the original
             m[g] = u
-        elif l[-1] == '0' and u <= 0xFFFF:
-            # prefer the primary over the fallback
-            m[g] = u
-        #sys.stderr.write("duplicate: %d 0x%04X 0x%04X\n" % (g,u,m[g]))
+        else:
+            sys.stderr.write("duplicate: 0x%04X 0x%04X, 0x%04X\n" % (g,m[g],u))
     else:
         m[g] = u
 
