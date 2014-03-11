@@ -30,4 +30,7 @@ target_link_libraries(TestDICOMMetaData vtkDICOM)
 get_target_property(pth TestDICOMMetaData RUNTIME_OUTPUT_DIRECTORY)
 add_test(TestDICOMMetaData ${pth}/TestDICOMMetaData)
 
-
+add_executable(TestDICOMCharacterSet TestDICOMCharacterSet.cxx)
+target_link_libraries(TestDICOMCharacterSet vtkDICOM)
+get_target_property(pth TestDICOMCharacterSet RUNTIME_OUTPUT_DIRECTORY)
+add_test(TestDICOMCharacterSet ${pth}/TestDICOMCharacterSet)

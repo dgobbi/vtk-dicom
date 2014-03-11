@@ -1287,6 +1287,7 @@ std::string vtkDICOMValue::GetUTF8String(unsigned int i) const
       {
       std::string v;
       this->AppendValueToUTF8String(v, i);
+      return v;
       }
     }
 

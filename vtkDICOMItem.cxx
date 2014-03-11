@@ -216,7 +216,7 @@ void vtkDICOMItem::SetAttributeValue(vtkDICOMTag tag, const std::string& v)
         vo.ComputeNumberOfValuesForCharData();
         }
       }
-    this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
+    this->SetAttributeValue(tag, vo);
     }
   else if (vr != vtkDICOMVR::UN)
     {
