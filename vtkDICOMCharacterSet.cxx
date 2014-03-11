@@ -6401,5 +6401,5 @@ ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a)
     {
     s.insert(0, "ISO 2022 IR 6");
     }
-  return o << s;
+  return o << s.c_str();
 }
