@@ -152,7 +152,7 @@ unsigned short CodePagesISO8859[96][9] = {
 };
 
 // Code page for iso-2022-jp from java-ISO2022JP-1.3_P.ucm
-unsigned short CodePageISO2022JP[8836] = {
+unsigned short CodePageJISX0208[8836] = {
   0x3000, 0x3001, 0x3002, 0xFF0C, 0xFF0E, 0x30FB, 0xFF1A, 0xFF1B, 0xFF1F,
   0xFF01, 0x309B, 0x309C, 0x00B4, 0xFF40, 0x00A8, 0xFF3E, 0xFFE3, 0xFF3F,
   0x30FD, 0x30FE, 0x309D, 0x309E, 0x3003, 0x4EDD, 0x3005, 0x3006, 0x3007,
@@ -1138,7 +1138,7 @@ unsigned short CodePageISO2022JP[8836] = {
 };
 
 // Code page for iso-2022-jp-2 from JIS0212.TXT
-unsigned short CodePageISO2022JP2[8836] = {
+unsigned short CodePageJISX0212[8836] = {
   0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD,
   0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD,
   0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD,
@@ -2124,7 +2124,7 @@ unsigned short CodePageISO2022JP2[8836] = {
 };
 
 // Code page for iso-2022-kr from java-ISO2022KR-1.3_P.ucm
-unsigned short CodePageISO2022KR[8836] = {
+unsigned short CodePageKSX1001[8836] = {
   0x3000, 0x3001, 0x3002, 0x00B7, 0x2025, 0x2026, 0x00A8, 0x3003, 0x00AD,
   0x2015, 0x2225, 0xFF3C, 0x223C, 0x2018, 0x2019, 0x201C, 0x201D, 0x3014,
   0x3015, 0x3008, 0x3009, 0x300A, 0x300B, 0x300C, 0x300D, 0x300E, 0x300F,
@@ -6165,19 +6165,35 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
         while (i < j)
           {
           // convert two bytes into unicode
-          unsigned short a = static_cast<unsigned char>(text[i++]) - 0x21;
-          unsigned short b = static_cast<unsigned char>(text[i++]) - 0x21;
-          unsigned short code = 0xFFFD;
-          if (a < 94 && b < 94)
+          unsigned short code = static_cast<unsigned char>(text[i++]);
+          if (code >= 0x21 && code < 0x7F)
             {
-            if (charset == ISO_2022_IR_87)
+            unsigned short a = code - 0x21;
+            code = static_cast<unsigned char>(text[i++]);
+            if (code >= 0x21 && code < 0x7F)
               {
-              code = CodePageISO2022JP[a*94+b];
+              unsigned short b = code - 0x21;
+              if (charset == ISO_2022_IR_87)
+                {
+                code = CodePageJISX0208[a*94+b];
+                }
+              else
+                {
+                code = CodePageJISX0212[a*94+b];
+                }
               }
-            else
-              {
-              code = CodePageISO2022JP2[a*94+b];
-              }
+            }
+          else if (code >= 0xA1 && code <= 0xDF)
+            {
+            // most likely half-width katakana, which can be used in
+            // DICOM even though they are not permitted in iso-2022-jp
+            code += 0xFEC0;
+            }
+          else if (code > 0x7F)
+            {
+            // most likely Shift JIS codes, which are not permitted
+            // in DICOM or in iso-2022-jp
+            code = 0xFFFD;
             }
           UnicodeToUTF8(code, &s);
           }
@@ -6188,16 +6204,12 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
         while (i < j)
           {
           unsigned short code = static_cast<unsigned char>(text[i++]);
-          if (code > 0x7F)
+          if (code >= 0xA1 && code < 0xFF)
             {
             // convert two bytes into unicode
             unsigned short a = code - 0xA1;
             unsigned short b = static_cast<unsigned char>(text[i++]) - 0xA1;
-            code = 0xFFFD;
-            if (a < 94 && b < 94)
-              {
-              code = CodePageISO2022KR[a*94+b];
-              }
+            code = CodePageKSX1001[a*94+b];
             }
           UnicodeToUTF8(code, &s);
           }
@@ -6270,7 +6282,7 @@ size_t vtkDICOMCharacterSet::NextBackslash(
         if (cp < ep && static_cast<unsigned char>(*cp) >= 0x21)
           {
           cp++;
-          } 
+          }
         }
       else if (*cp != '\\')
         {
