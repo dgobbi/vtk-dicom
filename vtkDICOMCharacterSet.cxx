@@ -6324,13 +6324,13 @@ size_t vtkDICOMCharacterSet::NextBackslash(
           }
         else if (cp[0] == '(' && cp[1] != '\0')
           {
-          // iso-22022 single-byte in G0
+          // iso-2022 single-byte in G0
           cp += 2;
           jp = false;
           }
         else if (cp[0] != '-' && cp[1] != '\0')
           {
-          // iso-22022 single-byte in G1
+          // iso-2022 single-byte in G1
           cp += 2;
           }
         }
