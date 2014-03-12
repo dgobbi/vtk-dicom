@@ -6141,8 +6141,13 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
     }
   else if ((this->Key & ISO_2022) != 0)
     {
-    // Uses ISO-2022 escape codes to switch character sets
+    // Uses ISO-2022 escape codes to switch character sets.
+    // To get the character set that is active at the beginning of
+    // the string, remove all the bits in the ISO_2022 bitfield.
     unsigned char charset = this->Key ^ (this->Key & ISO_2022);
+
+    // loop through the string, looking for iso-2022 escape codes,
+    // and when an escape code is found, change the charset
     size_t i = 0;
     while (i < l)
       {
@@ -6154,7 +6159,8 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
         }
       if (charset < ISO_2022_OTHER)
         {
-        // convert characters up to the next escape
+        // indicates one of the single-byte character sets, convert
+        // characters up to the next escape code
         vtkDICOMCharacterSet cs(charset);
         s += cs.ConvertToUTF8(&text[i], j-i);
         }
@@ -6224,7 +6230,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           i += 2;
           }
         }
+
+      // Make sure we are at the escape code (or the end of string)
       i = j;
+
       // Get the escape code for the next segment
       if (text[i] == '\033')
         {
@@ -6243,6 +6252,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
             break;
             }
           }
+        // the escape code doesn't match a single-byte charset
         if (charset == 0xFF)
           {
           // look through multibyte charset escape codes
