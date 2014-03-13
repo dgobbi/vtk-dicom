@@ -719,34 +719,27 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
     else
       {
       // Pop the stack until the next offset is not zero.
-      while (offset == 0)
+      while (offset == 0 && offsetStack.size() > 0)
         {
-        if (entryType == "STUDY")
+        // Go down one directory level.
+        offset = offsetStack.back().first;
+        entryType = offsetStack.back().second;
+        offsetStack.pop_back();
+
+        if (entryType == "PATIENT")
           {
           patientIdx++;
           }
-        else if (entryType == "SERIES")
+        else if (entryType == "STUDY")
           {
           studyIdx++;
           }
-        else if (entryType == "IMAGE")
+        else if (entryType == "SERIES")
           {
           this->AddSeriesFileNames(
             patientIdx, studyIdx, fileNames,
             items[patientItem], items[studyItem], items[seriesItem]);
           fileNames = vtkSmartPointer<vtkStringArray>::New();
-          }
-
-        if (offsetStack.size() > 0)
-          {
-          // Go down one directory level.
-          offset = offsetStack.back().first;
-          entryType = offsetStack.back().second;
-          offsetStack.pop_back();
-          }
-        else
-          {
-          break;
           }
         }
       }
