@@ -100,6 +100,18 @@ public:
   vtkDICOMValue(vtkDICOMVR vr,
                 const vtkDICOMTag *data, const vtkDICOMTag *end);
 
+  //! Construct a string value with a specific character set.
+  /*!
+   *  This will set the character set that will be used to interpret
+   *  the data inside the string value.  The character set parameter
+   *  will be ignored unless the the VR is PN, SH, LO, ST, LT, or UT,
+   *  since all other VRs are restricted to ASCII.
+   */
+  vtkDICOMValue(vtkDICOMVR vr, vtkDICOMCharacterSet cs,
+                const std::string& v);
+  vtkDICOMValue(vtkDICOMVR vr, vtkDICOMCharacterSet cs,
+                const char *data, const char *end);
+
   //! Create an emtpy value.
   explicit vtkDICOMValue(vtkDICOMVR vr);
 
@@ -248,6 +260,8 @@ public:
    *  the value's contents can be read in directly from a file.
    */
   char *AllocateCharData(vtkDICOMVR vr, unsigned int vn);
+  char *AllocateCharData(
+    vtkDICOMVR vr, vtkDICOMCharacterSet cs, unsigned int vn);
   unsigned char *AllocateUnsignedCharData(vtkDICOMVR vr, unsigned int vn);
   short *AllocateShortData(vtkDICOMVR vr, unsigned int vn);
   unsigned short *AllocateUnsignedShortData(vtkDICOMVR vr, unsigned int vn);
@@ -259,21 +273,11 @@ public:
   vtkDICOMItem *AllocateSequenceData(vtkDICOMVR vr, unsigned int vn);
   vtkDICOMValue *AllocateMultiplexData(vtkDICOMVR vr, unsigned int vn);
 
-  //! Set the character set for char data.
-  /*!
-   *  This will set the character set that will be used to interpret
-   *  the data inside a string value.  This method has no effect unless
-   *  the VR is PN, SH, LO, ST, LT, or UT.
-   */
-  void SetCharacterSetForCharData(vtkDICOMCharacterSet s);
-
   //! Compute the number of backslash-separated string values.
   /*!
    *  After calling AllocateCharData and writing text into the allocated
    *  space, this must be called to set the NumberOfValues according to
    *  the number of backslash-separated string values that are present.
-   *  If the text is not ASCII, this should be called after calling
-   *  SetCharacterSetForCharData().
    */
   void ComputeNumberOfValuesForCharData();
 
@@ -348,6 +352,10 @@ private:
 
   //! Get the start and end for the "i"th backslash-delimited value.
   void Substring(unsigned int i, const char *&start, const char *&end) const;
+
+  //! Create a value from a string with a specific character set.
+  void CreateValueWithSpecificCharacterSet(
+    vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, const char *end);
 
   //! The only data member: a pointer to the internal value.
   Value *V;

@@ -254,6 +254,17 @@ char *vtkDICOMValue::AllocateCharData(vtkDICOMVR vr, unsigned int vn)
   return this->Allocate<char>(vr, vn);
 }
 
+char *vtkDICOMValue::AllocateCharData(
+  vtkDICOMVR vr, vtkDICOMCharacterSet cs, unsigned int vn)
+{
+  char *data = this->Allocate<char>(vr, vn);
+  if (vr.HasSpecificCharacterSet() && this->V)
+    {
+    this->V->CharacterSet = cs.GetKey();
+    }
+  return data;
+}
+
 unsigned char *vtkDICOMValue::AllocateUnsignedCharData(
   vtkDICOMVR vr, unsigned int vn)
 {
@@ -308,16 +319,6 @@ vtkDICOMValue *vtkDICOMValue::AllocateMultiplexData(
   vtkDICOMVR vr, unsigned int vn)
 {
   return this->Allocate<vtkDICOMValue>(vr, vn);
-}
-
-//----------------------------------------------------------------------------
-void vtkDICOMValue::SetCharacterSetForCharData(
-  vtkDICOMCharacterSet cs)
-{
-  if (this->V && this->V->VR.HasSpecificCharacterSet())
-    {
-    this->V->CharacterSet = cs.GetKey();
-    }
 }
 
 //----------------------------------------------------------------------------
@@ -735,6 +736,35 @@ vtkDICOMValue::vtkDICOMValue(
   vtkDICOMVR vr, const vtkDICOMTag *data, const vtkDICOMTag *end)
 {
   this->CreateValue(vr, data, end);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMValue::CreateValueWithSpecificCharacterSet(
+  vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, const char *end)
+{
+  this->CreateValue(vr, data, end);
+  if (vr.HasSpecificCharacterSet() && this->V)
+    {
+    this->V->CharacterSet = cs.GetKey();
+    // character set might change interpretation of backslashes
+    if (cs.GetKey() > vtkDICOMCharacterSet::ISO_IR_192)
+      {
+      this->ComputeNumberOfValuesForCharData();
+      }
+    }
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, const char *end)
+{
+  this->CreateValueWithSpecificCharacterSet(vr, cs, data, end);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, vtkDICOMCharacterSet cs, const std::string& v)
+{
+  this->CreateValueWithSpecificCharacterSet(
+    vr, cs, v.data(), v.data() + v.size());
 }
 
 //----------------------------------------------------------------------------

@@ -488,19 +488,14 @@ vtkDICOMValue vtkDICOMMetaData::MakeValueWithSpecificCharacterSet(
   vtkDICOMVR vr, const std::string& v)
 {
   // note that there is similar code in vtkDICOMItem
-  vtkDICOMValue vo = vtkDICOMValue(vr, v);
+  vtkDICOMCharacterSet cs; // defaults to ASCII
   const vtkDICOMValue& vcs =
     this->GetAttributeValue(DC::SpecificCharacterSet);
   if (vcs.IsValid())
     {
-    vtkDICOMCharacterSet cs = vtkDICOMCharacterSet(vcs.AsString());
-    if (cs != vtkDICOMCharacterSet::ISO_IR_6) // ISO_IR_6 is ASCII
-      {
-      vo.SetCharacterSetForCharData(cs);
-      vo.ComputeNumberOfValuesForCharData();
-      }
+    cs = vtkDICOMCharacterSet(vcs.AsString());
     }
-  return vo;
+  return vtkDICOMValue(vr, cs, v);
 }
 
 //----------------------------------------------------------------------------

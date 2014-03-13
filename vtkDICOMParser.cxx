@@ -879,14 +879,18 @@ unsigned int Decoder<E>::ReadElementValue(
     {
     case VTK_CHAR:
       {
-      char *ptr = v.AllocateCharData(vr, vl);
+      char *ptr;
+      if (vr.HasSpecificCharacterSet())
+        {
+        ptr = v.AllocateCharData(vr, this->GetCharacterSet(), vl);
+        }
+      else
+        {
+        ptr = v.AllocateCharData(vr, vl);
+        }
       l = this->ReadData(cp, ep, ptr, vl);
       // AllocateCharData makes room for terminal null
       if (l == 0 || ptr[l-1] != '\0') { ptr[l] = '\0'; }
-      if (vr.HasSpecificCharacterSet())
-        {
-        v.SetCharacterSetForCharData(this->GetCharacterSet());
-        }
       v.ComputeNumberOfValuesForCharData();
       }
       break;
