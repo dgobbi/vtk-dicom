@@ -15,8 +15,9 @@
 // .NAME vtkNIFTIReader - Read NIfTI-1 and NIfTI-2 medical image files
 // .SECTION Description
 // This class reads NIFTI files, either in .nii format or as separate
-// .img and .hdr files.  If the files are gzipped, then they will be
-// decompressed on-the-fly while they are being read.  Files that contain
+// .img and .hdr files.  If two files are used, then they can be passed
+// by using SetFileNames() instead of SetFileName().  Files ending in .gz
+// are decompressed on-the-fly while they are being read.  Files with
 // complex numbers or vector dimensions will be read as multi-component
 // images.  If a NIFTI file has a time dimension, then by default only the
 // first image in the time series will be read, but the TimeAsVector
@@ -148,6 +149,12 @@ protected:
   virtual int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
+
+  // Description:
+  // Doe a case-insensitive check for the given extension.
+  // The check will succeed if the filename ends in ".gz", and if the
+  // extension matches after removing the ".gz".
+  static bool CheckExtension(const char *fname, const char *ext);
 
   // Description:
   // Make a new filename by replacing extension "ext1" with "ext2".

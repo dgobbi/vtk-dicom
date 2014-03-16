@@ -26,6 +26,7 @@
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
+#include "vtkStringArray.h"
 #include "vtkVersion.h"
 
 #include "vtksys/SystemTools.hxx"
@@ -224,78 +225,99 @@ void vtkNIFTIReader::PrintSelf(ostream& os, vtkIndent indent)
 }
 
 //----------------------------------------------------------------------------
+bool vtkNIFTIReader::CheckExtension(
+  const char *filename, const char *ext)
+{
+  if (strlen(ext) == 4 && ext[0] == '.')
+    {
+    size_t n = strlen(filename);
+    if (n > 2 && filename[n-3] == '.' &&
+        tolower(filename[n-2]) == 'g' &&
+        tolower(filename[n-1]) == 'z')
+      {
+      n -= 3;
+      }
+    if (n > 3 && filename[n-4] == '.' &&
+        tolower(filename[n-3]) == tolower(ext[1]) &&
+        tolower(filename[n-2]) == tolower(ext[2]) &&
+        tolower(filename[n-1]) == tolower(ext[3]))
+      {
+      return true;
+      }
+    }
+  return false;
+}
+
+//----------------------------------------------------------------------------
 char *vtkNIFTIReader::ReplaceExtension(
   const char *filename, const char *ext1, const char *ext2)
 {
-  if (strlen(ext1) != 4 || ext1[0] != '.' ||
-      strlen(ext2) != 4 || ext2[0] != '.')
-    {
-    return 0;
-    }
+  char *newname = 0;
 
-  size_t n = strlen(filename);
-  size_t m = n;
-  char *newname = new char[n+4];
-  strcpy(newname, filename);
+  if (strlen(ext1) == 4 && ext1[0] == '.' &&
+      strlen(ext2) == 4 && ext2[0] == '.')
+    {
+    size_t n = strlen(filename);
+    size_t m = n;
+    newname = new char[n+4];
+    strcpy(newname, filename);
 
-  if (n > 2 && filename[n-3] == '.' &&
-      tolower(filename[n-2]) == 'g' &&
-      tolower(filename[n-1]) == 'z')
-    {
-    m -= 3;
-    }
-  if (m > 3 && filename[m-4] == '.' &&
-      tolower(filename[m-3]) == tolower(ext1[1]) &&
-      tolower(filename[m-2]) == tolower(ext1[2]) &&
-      tolower(filename[m-1]) == tolower(ext1[3]))
-    {
-    if (isupper(filename[m-3]))
+    // check for trailing .gz
+    if (n > 2 && filename[n-3] == '.' &&
+        tolower(filename[n-2]) == 'g' &&
+        tolower(filename[n-1]) == 'z')
       {
-      newname[m-3] = toupper(ext2[1]);
-      newname[m-2] = toupper(ext2[2]);
-      newname[m-1] = toupper(ext2[3]);
+      m = n - 3;
       }
-    else
-      {
-      newname[m-3] = tolower(ext2[1]);
-      newname[m-2] = tolower(ext2[2]);
-      newname[m-1] = tolower(ext2[3]);
-      }
-    }
 
-  // existence of file
-  for (int i = 0; i < 2; i++)
-    {
-    if (vtksys::SystemTools::FileExists(newname))
+    if (vtkNIFTIReader::CheckExtension(filename, ext1))
       {
-      return newname;
-      }
-    if (i == 0)
-      {
-      if (m < n)
+      // replace the extension
+      if (isupper(filename[m-3]))
         {
-        // try again without the ".gz"
-        newname[m] = '\0';
-        n = m;
+        newname[m-3] = toupper(ext2[1]);
+        newname[m-2] = toupper(ext2[2]);
+        newname[m-1] = toupper(ext2[3]);
         }
       else
         {
-        // try again with the ".gz"
-        newname[m] = '.';
-        newname[m+1] = 'g';
-        newname[m+2] = 'z';
-        newname[m+3] = '\0';
-        if (isupper(newname[m-3]))
+        newname[m-3] = tolower(ext2[1]);
+        newname[m-2] = tolower(ext2[2]);
+        newname[m-1] = tolower(ext2[3]);
+        }
+      }
+
+    // existence of file
+    for (int i = 0; i < 2; i++)
+      {
+      if (vtksys::SystemTools::FileExists(newname))
+        {
+        return newname;
+        }
+      if (i == 0)
+        {
+        if (m < n)
           {
-          newname[m+1] = toupper(newname[m+1]);
-          newname[m+2] = toupper(newname[m+2]);
+          // try again without the ".gz"
+          newname[m] = '\0';
+          n = m;
+          }
+        else
+          {
+          // try again with the ".gz"
+          newname[m] = '.';
+          newname[m+1] = (isupper(newname[m-3]) ? 'G' : 'g');
+          newname[m+2] = (isupper(newname[m-3]) ? 'Z' : 'z');
+          newname[m+3] = '\0';
           }
         }
       }
+
+    delete [] newname;
+    newname = 0;
     }
 
-  delete [] newname;
-  return 0;
+  return newname;
 }
 
 //----------------------------------------------------------------------------
@@ -414,17 +436,48 @@ int vtkNIFTIReader::RequestInformation(
   bool isLittleEndian = true;
 #endif
 
-  const char *filename = this->GetFileName();
 
-  if (!filename)
+  const char *filename = 0;
+  char *hdrname = 0;
+
+  if (this->FileNames)
+    {
+    vtkIdType n = this->FileNames->GetNumberOfValues();
+    int headers = 0;
+    for (int i = 0; i < 2; i++)
+      {
+      filename = this->FileNames->GetValue(i);
+      // this checks for .hdr and .hdr.gz, case insensitive
+      if (vtkNIFTIReader::CheckExtension(filename, ".hdr"))
+        {
+        headers++;
+        hdrname = new char[strlen(filename) + 1];
+        strcpy(hdrname, filename);
+        }
+      }
+    if (n != 2 || headers != 1)
+      {
+      vtkErrorMacro("There must be two files and one must be a .hdr file.");
+      return 0;
+      }
+    }
+  else
+    {
+    filename = this->GetFileName();
+    }
+
+  if (filename == 0)
     {
     vtkErrorMacro("A FileName must be provided");
     this->SetErrorCode(vtkErrorCode::NoFileNameError);
     return 0;
     }
 
-  char *hdrname = vtkNIFTIReader::ReplaceExtension(
-    filename, ".img", ".hdr");
+  if (hdrname == 0)
+    {
+    hdrname = vtkNIFTIReader::ReplaceExtension(
+      filename, ".img", ".hdr");
+    }
 
   if (hdrname == 0)
     {
@@ -607,59 +660,44 @@ int vtkNIFTIReader::RequestInformation(
   // offset is part of the transform, so set origin to zero
   this->SetDataOrigin(0.0, 0.0, 0.0);
 
-  // datatype
+  // map the NIFTI type to a VTK type and number of components
+  static const int typeMap[][3] = {
+    { NIFTI_TYPE_INT8, VTK_TYPE_INT8, 1},
+    { NIFTI_TYPE_UINT8, VTK_TYPE_UINT8, 1 },
+    { NIFTI_TYPE_INT16, VTK_TYPE_INT16, 1 },
+    { NIFTI_TYPE_UINT16, VTK_TYPE_UINT16, 1 },
+    { NIFTI_TYPE_INT32, VTK_TYPE_INT32, 1 },
+    { NIFTI_TYPE_UINT32, VTK_TYPE_UINT32, 1 },
+    { NIFTI_TYPE_INT64, VTK_TYPE_INT64, 1 },
+    { NIFTI_TYPE_UINT64, VTK_TYPE_UINT64, 1 },
+    { NIFTI_TYPE_FLOAT32, VTK_TYPE_FLOAT32, 1 },
+    { NIFTI_TYPE_FLOAT64, VTK_TYPE_FLOAT64, 1 },
+    { NIFTI_TYPE_COMPLEX64, VTK_TYPE_FLOAT32, 2 },
+    { NIFTI_TYPE_COMPLEX128, VTK_TYPE_FLOAT64, 2 },
+    { NIFTI_TYPE_RGB24, VTK_TYPE_UINT8, 3 },
+    { NIFTI_TYPE_RGBA32, VTK_TYPE_UINT8, 4 },
+    { 0, 0, 0 }
+  };
+
   int scalarType = 0;
-  int numComponents = 1;
-  switch(hdr2->datatype)
+  int numComponents = 0;
+
+  for (int i = 0; typeMap[2] != 0; i++)
     {
-    case NIFTI_TYPE_INT8:
-      scalarType = VTK_TYPE_INT8;
+    if (hdr2->datatype == typeMap[i][0])
+      {
+      scalarType = typeMap[i][1];
+      numComponents = typeMap[i][2];
       break;
-    case NIFTI_TYPE_UINT8:
-      scalarType = VTK_TYPE_UINT8;
-      break;
-    case NIFTI_TYPE_INT16:
-      scalarType = VTK_TYPE_INT16;
-      break;
-    case NIFTI_TYPE_UINT16:
-      scalarType = VTK_TYPE_UINT16;
-      break;
-    case NIFTI_TYPE_INT32:
-      scalarType = VTK_TYPE_INT32;
-      break;
-    case NIFTI_TYPE_UINT32:
-      scalarType = VTK_TYPE_UINT32;
-      break;
-    case NIFTI_TYPE_FLOAT32:
-      scalarType = VTK_TYPE_FLOAT32;
-      break;
-    case NIFTI_TYPE_FLOAT64:
-      scalarType = VTK_TYPE_FLOAT64;
-      break;
-    case NIFTI_TYPE_COMPLEX64:
-      scalarType = VTK_TYPE_FLOAT32;
-      numComponents = 2;
-      break;
-    case NIFTI_TYPE_COMPLEX128:
-      scalarType = VTK_TYPE_FLOAT64;
-      numComponents = 2;
-      break;
-    case NIFTI_TYPE_RGB24:
-      scalarType = VTK_TYPE_UINT8;
-      numComponents = 3;
-      break;
-    case NIFTI_TYPE_RGBA32:
-      scalarType = VTK_TYPE_UINT8;
-      numComponents = 4;
-      break;
-    case 1:
-      vtkErrorMacro("NIFTI files with one-bit-per-pixel not supported");
-      this->SetErrorCode(vtkErrorCode::FileFormatError);
-      return 0;
-    default:
-      vtkErrorMacro("Unrecognized NIFTI data type: " << hdr2->datatype);
-      this->SetErrorCode(vtkErrorCode::FileFormatError);
-      return 0;
+      }
+    }
+
+  // if loop finished without finding a match
+  if (numComponents == 0)
+    {
+    vtkErrorMacro("Unrecognized NIFTI data type: " << hdr2->datatype);
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
+    return 0;
     }
 
   // vector planes become vector components
@@ -1043,16 +1081,48 @@ int vtkNIFTIReader::RequestData(
 
   data->GetPointData()->GetScalars()->SetName("NIFTI");
 
-  const char *filename = this->GetFileName();
+  const char *filename = 0;
+  char *imgname = 0;
 
-  if (filename == NULL)
+  if (this->FileNames)
+    {
+    vtkIdType n = this->FileNames->GetNumberOfValues();
+    int headers = 0;
+    for (int i = 0; i < 2; i++)
+      {
+      filename = this->FileNames->GetValue(i);
+      // this checks for .hdr and .hdr.gz, case insensitive
+      if (vtkNIFTIReader::CheckExtension(filename, ".hdr"))
+        {
+        headers++;
+        }
+      else
+        {
+        imgname = new char[strlen(filename) + 1];
+        strcpy(imgname, filename);
+        }
+      }
+    if (n != 2 || headers != 1)
+      {
+      vtkErrorMacro("There must be two files and one must be a .hdr file.");
+      return 0;
+      }
+    }
+  else
+    {
+    filename = this->GetFileName();
+    }
+
+  if (filename == 0)
     {
     vtkErrorMacro("A FileName must be provided");
     return 0;
     }
 
-  char *imgname = vtkNIFTIReader::ReplaceExtension(
-    filename, ".hdr", ".img");
+  if (imgname == 0)
+    {
+    imgname = vtkNIFTIReader::ReplaceExtension(filename, ".hdr", ".img");
+    }
 
   if (imgname == 0)
     {
@@ -1141,6 +1211,8 @@ int vtkNIFTIReader::RequestData(
   int k = 0; // counter for slices
   unsigned char *ptr = dataPtr;
 
+  int errorCode = 0;
+
   while (!this->AbortExecute)
     {
     if (offset)
@@ -1148,15 +1220,10 @@ int vtkNIFTIReader::RequestData(
       int rval = gzseek(file, offset, SEEK_CUR);
       if (rval == -1)
         {
+        errorCode = vtkErrorCode::FileFormatError;
         if (gzeof(file))
           {
-          vtkErrorMacro("NIFTI file is truncated, some data is missing.");
-          this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
-          }
-        else
-          {
-          vtkErrorMacro("Error in NIFTI file, cannot read.");
-          this->SetErrorCode(vtkErrorCode::FileFormatError);
+          errorCode = vtkErrorCode::PrematureEndOfFileError;
           }
         break;
         }
@@ -1171,15 +1238,10 @@ int vtkNIFTIReader::RequestData(
     int code = gzread(file, rowBuffer, rowSize*scalarSize);
     if (code != rowSize*scalarSize)
       {
+      errorCode = vtkErrorCode::FileFormatError;
       if (gzeof(file))
         {
-        vtkErrorMacro("NIFTI file is truncated, some data is missing.");
-        this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
-        }
-      else
-        {
-        vtkErrorMacro("Error in NIFTI file, cannot read.");
-        this->SetErrorCode(vtkErrorCode::FileFormatError);
+        errorCode = vtkErrorCode::PrematureEndOfFileError;
         }
       break;
       }
@@ -1256,6 +1318,18 @@ int vtkNIFTIReader::RequestData(
     }
 
   gzclose(file);
+
+  if (errorCode)
+    {
+    const char *errorText = "Error in NIFTI file, cannot read.";
+    if (errorCode == vtkErrorCode::PrematureEndOfFileError)
+      {
+      errorText = "NIFTI file is truncated, some data is missing.";
+      }
+    this->SetErrorCode(errorCode);
+    vtkErrorMacro(<< errorText);
+    return 0;
+    }
 
   this->UpdateProgress(1.0);
   this->InvokeEvent(vtkCommand::EndEvent);

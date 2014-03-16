@@ -129,6 +129,30 @@ public:
   };
 
   // Description:
+  // NIFTI data types.
+  // Types RGB24 and RGB32 are represented in VTK as a multi-component
+  // unsigned char image.  Complex values are represented as two-component
+  // images.  The NIFTI types Float128 and Complex256 are not supported.
+  enum DataTypeEnum {
+    TypeUInt8 = 2,
+    TypeInt16 = 4,
+    TypeInt32 = 8,
+    TypeFloat32 = 16,
+    TypeComplex64 = 32,
+    TypeFloat64 = 64,
+    TypeRGB24 = 128,
+    TypeInt8 = 256,
+    TypeUInt16 = 512,
+    TypeUInt32 = 768,
+    TypeInt64 = 1024,
+    TypeUInt64 = 1280,
+    TypeFloat128 = 1536,
+    TypeComplex128 = 1792,
+    TypeComplex256 = 2048,
+    TypeRGBA32 = 2304
+  };
+
+  // Description:
   // NIFTI header sizes.
   enum HeaderSizeEnum {
     Nifti1HeaderSize = 348,

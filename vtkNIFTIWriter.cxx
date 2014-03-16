@@ -232,54 +232,46 @@ void vtkNIFTIWriterSetInformation(
   int numComponents = scalarInfo->Get(
     vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
 
-  // get the NIFTI data type:
+  // map VTK type to NIFTI type and bits
+  static const int typeMap[][3] = {
+#if VTK_TYPE_CHAR_IS_SIGNED
+    { VTK_CHAR, NIFTI_TYPE_INT8, 8 },
+#else
+    { VTK_CHAR, NIFTI_TYPE_UINT8, 8 },
+#endif
+    { VTK_SIGNED_CHAR, NIFTI_TYPE_INT8, 8 },
+    { VTK_UNSIGNED_CHAR, NIFTI_TYPE_UINT8, 8 },
+    { VTK_SHORT, NIFTI_TYPE_INT16, 16 },
+    { VTK_UNSIGNED_SHORT, NIFTI_TYPE_UINT16, 16 },
+    { VTK_INT, NIFTI_TYPE_INT32, 32 },
+    { VTK_UNSIGNED_INT, NIFTI_TYPE_UINT32, 32 },
+#if VTK_SIZEOF_LONG == 4
+    { VTK_LONG, NIFTI_TYPE_INT32, 32 },
+    { VTK_UNSIGNED_LONG, NIFTI_TYPE_UINT32, 32 },
+#else
+    { VTK_LONG, NIFTI_TYPE_INT64, 64 },
+    { VTK_UNSIGNED_LONG, NIFTI_TYPE_UINT64, 64 },
+#endif
+    { VTK_LONG_LONG, NIFTI_TYPE_INT64, 64 },
+    { VTK_UNSIGNED_LONG_LONG, NIFTI_TYPE_UINT64, 64 },
+    { VTK___INT64, NIFTI_TYPE_INT64, 64 },
+    { VTK_UNSIGNED___INT64, NIFTI_TYPE_UINT64, 64 },
+    { VTK_FLOAT, NIFTI_TYPE_FLOAT32, 32 },
+    { VTK_DOUBLE, NIFTI_TYPE_FLOAT64, 64 },
+    { 0, 0, 0 }
+  };
+
   short datatype = 0;
   short databits = 0;
 
-  switch (scalarType)
+  for (int i = 0; typeMap[2] != 0; i++)
     {
-    case VTK_CHAR:
-#if VTK_TYPE_CHAR_IS_SIGNED
-      datatype = NIFTI_TYPE_INT8;
-#else
-      datatype = NIFTI_TYPE_UINT8;
-#endif
-      databits = 8;
+    if (scalarType == typeMap[i][0])
+      {
+      datatype = typeMap[i][1];
+      databits = typeMap[i][2];
       break;
-    case VTK_SIGNED_CHAR:
-      datatype = NIFTI_TYPE_INT8;
-      databits = 8;
-      break;
-    case VTK_UNSIGNED_CHAR:
-      datatype = NIFTI_TYPE_UINT8;
-      databits = 8;
-      break;
-    case VTK_SHORT:
-      datatype = NIFTI_TYPE_INT16;
-      databits = 16;
-      break;
-    case VTK_UNSIGNED_SHORT:
-      datatype = NIFTI_TYPE_UINT16;
-      databits = 16;
-      break;
-    case VTK_INT:
-      datatype = NIFTI_TYPE_INT32;
-      databits = 32;
-      break;
-    case VTK_UNSIGNED_INT:
-      datatype = NIFTI_TYPE_UINT32;
-      databits = 32;
-      break;
-    case VTK_FLOAT:
-      datatype = NIFTI_TYPE_FLOAT32;
-      databits = 32;
-      break;
-    case VTK_DOUBLE:
-      datatype = NIFTI_TYPE_FLOAT64;
-      databits = 64;
-      break;
-    default:
-      break;
+      }
     }
 
   // number of spatial dimensions
@@ -452,6 +444,11 @@ int vtkNIFTIWriter::GenerateHeader(vtkInformation *info, bool singleFile)
 
   // copy the image information into the header
   vtkNIFTIWriterSetInformation(&hdr, info);
+  if (hdr.datatype == 0)
+    {
+    vtkErrorMacro("Illegal data type for NIFTI file.");
+    return 0;
+    }
 
   // override the version if set via SetNIFTIVersion
   if (this->NIFTIVersion != 0)
@@ -541,6 +538,7 @@ int vtkNIFTIWriter::GenerateHeader(vtkInformation *info, bool singleFile)
     {
     // float with 2 components becomes COMPLEX64
     hdr.datatype = NIFTI_TYPE_COMPLEX64;
+    hdr.bitpix = 64;
     hdr.dim[0] = basedim;
     hdr.dim[5] = 1;
     }
@@ -548,6 +546,7 @@ int vtkNIFTIWriter::GenerateHeader(vtkInformation *info, bool singleFile)
     {
     // double with 2 components becomes COMPLEX128
     hdr.datatype = NIFTI_TYPE_COMPLEX128;
+    hdr.bitpix = 32;
     hdr.dim[0] = basedim;
     hdr.dim[5] = 1;
     }
@@ -555,6 +554,7 @@ int vtkNIFTIWriter::GenerateHeader(vtkInformation *info, bool singleFile)
     {
     // unsigned char with 3 components becomes RGB24
     hdr.datatype = NIFTI_TYPE_RGB24;
+    hdr.bitpix = 24;
     hdr.dim[0] = basedim;
     hdr.dim[5] = 1;
     }
@@ -562,6 +562,7 @@ int vtkNIFTIWriter::GenerateHeader(vtkInformation *info, bool singleFile)
     {
     // unsigned char with 4 components becomes RGBA32
     hdr.datatype = NIFTI_TYPE_RGBA32;
+    hdr.bitpix = 32;
     hdr.dim[0] = basedim;
     hdr.dim[5] = 1;
     }
@@ -598,13 +599,6 @@ int vtkNIFTIWriter::RequestData(
 
   int extent[6];
   info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
-  if (extent[1] - extent[0] + 1 > VTK_SHORT_MAX ||
-      extent[3] - extent[2] + 1 > VTK_SHORT_MAX ||
-      extent[5] - extent[4] + 1 > VTK_SHORT_MAX)
-    {
-    vtkErrorMacro("Image too large to store in NIFTI-1 format");
-    return 0;
-    }
 
   // use compression if name ends in .gz
   bool isCompressed = false;
@@ -662,6 +656,13 @@ int vtkNIFTIWriter::RequestData(
     this->OwnHeader->GetHeader(&hdr1);
     hdrptr = &hdr1;
     hdrsize = hdr1.sizeof_hdr;
+    if (extent[1] - extent[0] + 1 > VTK_SHORT_MAX ||
+        extent[3] - extent[2] + 1 > VTK_SHORT_MAX ||
+        extent[5] - extent[4] + 1 > VTK_SHORT_MAX)
+      {
+      vtkErrorMacro("Image too large to store in NIFTI-1 format");
+      return 0;
+      }
     }
 
   // try opening file
@@ -702,7 +703,6 @@ int vtkNIFTIWriter::RequestData(
     }
   if (bytesWritten < hdrsize)
     {
-    vtkErrorMacro("Insufficient disk space to write file.");
     this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
     }
 
@@ -725,7 +725,6 @@ int vtkNIFTIWriter::RequestData(
     delete [] padding;
     if (bytesWritten < padsize)
       {
-      vtkErrorMacro("Insufficient disk space to write file.");
       this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
       }
     }
@@ -841,7 +840,6 @@ int vtkNIFTIWriter::RequestData(
       }
     if (bytesWritten < static_cast<size_t>(rowSize*scalarSize))
       {
-      vtkErrorMacro("Insufficient disk space to write file.");
       this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
       break;
       }
@@ -898,11 +896,10 @@ int vtkNIFTIWriter::RequestData(
   if (this->ErrorCode == vtkErrorCode::OutOfDiskSpaceError)
     {
     // erase the file, rather than leave a corrupt file on disk
-    vtkErrorMacro("Removing incomplete file " << imgname);
+    vtkErrorMacro("Out of disk space, removing incomplete file " << imgname);
     vtksys::SystemTools::RemoveFile(imgname);
     if (!singleFile)
       {
-      vtkErrorMacro("Removing file " << hdrname);
       vtksys::SystemTools::RemoveFile(hdrname);
       }
     }
