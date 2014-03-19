@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
       TestAssert(iter->GetTag() == DC::Modality);
       vtkDICOMValue v = iter->GetValue();
       TestAssert(v.GetNumberOfValues() == 2);
-      vtkDICOMValue *vp = v.GetMultiplexData();
+      const vtkDICOMValue *vp = v.GetMultiplexData();
       TestAssert(vp[0].AsString() == "CT");
       TestAssert(vp[1].AsString() == "MR");
       }
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
   if (iter != metaData->End())
     {
     vtkDICOMValue v = iter->GetValue();
-    vtkDICOMValue *vp = v.GetMultiplexData();
+    const vtkDICOMValue *vp = v.GetMultiplexData();
     TestAssert(vp[0].AsString() == "CT");
     TestAssert(vp[1].AsString() == "MR");
     }

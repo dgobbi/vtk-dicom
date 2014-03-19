@@ -249,10 +249,10 @@ int main(int argc, char *argv[])
   vptr[0] = vtkDICOMValue(vtkDICOMVR::DS, "1.3234");
   vptr[1] = vtkDICOMValue(vtkDICOMVR::DS, "1.4");
   vptr[2] = vtkDICOMValue(vtkDICOMVR::DS, "-1e-5");
-  vptr = v.GetMultiplexData();
-  TestAssert(strcmp(vptr[0].GetCharData(),"1.3234") == 0);
-  TestAssert(strcmp(vptr[1].GetCharData(),"1.4 ") == 0); // padded to even
-  TestAssert(strcmp(vptr[2].GetCharData(),"-1e-5 ") == 0); // padded to even
+  const vtkDICOMValue *vptr2 = v.GetMultiplexData();
+  TestAssert(strcmp(vptr2[0].GetCharData(),"1.3234") == 0);
+  TestAssert(strcmp(vptr2[1].GetCharData(),"1.4 ") == 0); // padded to even
+  TestAssert(strcmp(vptr2[2].GetCharData(),"-1e-5 ") == 0); // padded to even
   vtkDICOMValue u;
   vtkDICOMValue *uptr = u.AllocateMultiplexData(vtkDICOMVR::DS, 3);
   uptr[0] = vtkDICOMValue(vtkDICOMVR::DS, "1.3234");

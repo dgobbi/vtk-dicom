@@ -414,7 +414,7 @@ void vtkDICOMMetaData::SetAttributeValue(
   assert(idx >= 0 && idx < this->NumberOfInstances);
 
   // is this a sequence of values?
-  vtkDICOMValue *sptr = vptr->GetMultiplexData();
+  vtkDICOMValue *sptr = vtkDICOMValueFriendMetaData::GetMultiplex(vptr);
   if (sptr)
     {
     sptr[idx] = v;

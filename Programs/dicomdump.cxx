@@ -82,7 +82,7 @@ void printElement(
   // allow multiple values (i.e. for each image in series)
   vtkDICOMValue v = iter->GetValue();
   unsigned int vn = v.GetNumberOfValues();
-  vtkDICOMValue *vp = v.GetMultiplexData();
+  const vtkDICOMValue *vp = v.GetMultiplexData();
   if (vp == 0)
     {
     vp = &v;

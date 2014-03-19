@@ -1082,7 +1082,7 @@ const vtkDICOMValue *vtkDICOMValue::GetMultiplexData() const
   return ptr;
 }
 
-vtkDICOMValue *vtkDICOMValue::GetMultiplexData()
+vtkDICOMValue *vtkDICOMValue::GetMultiplex()
 {
   vtkDICOMValue *ptr = 0;
   if (this->V && this->V->Type == VTK_DICOM_VALUE)

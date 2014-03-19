@@ -249,7 +249,6 @@ public:
   const vtkDICOMTag *GetTagData() const;
   const vtkDICOMItem *GetSequenceData() const;
   const vtkDICOMValue *GetMultiplexData() const;
-  vtkDICOMValue *GetMultiplexData();
 
   //! Allocate space within a value object.
   /*!
@@ -350,6 +349,9 @@ private:
   template<class T>
   void SetValue(unsigned int i, const T &item);
 
+  //! Method used by vtkDICOMMetaData to change multiplexed value.
+  vtkDICOMValue *GetMultiplex();
+
   //! Get the start and end for the "i"th backslash-delimited value.
   void Substring(unsigned int i, const char *&start, const char *&end) const;
 
@@ -362,7 +364,22 @@ private:
 
   // friend the sequence class, it requires AppendValue() and SetValue().
   friend class vtkDICOMSequence;
+
+  // friend the meta data class, it requires GetMultiplex().
+  friend class vtkDICOMValueFriendMetaData;
 };
+
+//! @cond
+// This friendship class allows vtkDICOMMetaData to use exactly one
+// private method from vtkDICOMValue.
+class vtkDICOMValueFriendMetaData
+{
+  static vtkDICOMValue *GetMultiplex(vtkDICOMValue *v) {
+    return v->GetMultiplex(); }
+
+  friend class vtkDICOMMetaData;
+};
+//! @endcond
 
 VTK_DICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMValue& v);
 
