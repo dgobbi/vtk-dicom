@@ -176,10 +176,16 @@ set(VTK_WRAP_INCLUDE_DIRS ${DICOM_INCLUDE_DIRS} ${VTK_WRAP_INCLUDE_DIRS})
 set(LIB_NAME vtkDICOM)
 
 # The library dependencies
+set(KWSYS_LIBS vtksys)
 if("${VTK_MAJOR_VERSION}" GREATER 5)
-  set(VTK_LIBS vtkIOImage vtksys) # VTK 6.x
+  set(VTK_LIBS vtkCommonCore vtkIOImage) # VTK 6.x
+  # If vtkIOMPIImage is present, it has factories for vtkIOImage
+  list(FIND VTK_LIBRARIES vtkIOMPIImage TMP_INDEX)
+  if(TMP_INDEX GREATER -1)
+    set(VTK_LIBS ${VTK_LIBS} vtkIOMPIImage)
+  endif()
 else()
-  set(VTK_LIBS vtkIO vtksys) # VTK 5.x
+  set(VTK_LIBS vtkCommon vtkIO) # VTK 5.x
 endif()
 
 if(WIN32)
@@ -271,7 +277,7 @@ if("${VTK_MAJOR_VERSION}" GREATER 5)
     set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
     set(vtk-module ${LIB_NAME})
     set(MODULE_HIERARCHY_NAME ${LIB_NAME}Hierarchy)
-    set(${LIB_NAME}_LINK_DEPENDS ${VTK_LIBS})
+    set(${LIB_NAME}_LINK_DEPENDS ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS})
     include(${VTK_CMAKE_DIR}/vtkWrapHierarchy.cmake)
     vtk_wrap_hierarchy(${MODULE_HIERARCHY_NAME} ${DICOM_BINARY_DIR}
       "${LIB_SRCS}")
@@ -282,7 +288,7 @@ endif()
 
 # Create the library
 add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_HIERARCHY_STAMP})
-target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${ZLIB_LIBS}
+target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS}
   ${GDCM_LIBS} ${DCMTK_LIBS})
 set(DICOM_LIBRARIES ${LIB_NAME})
 
@@ -291,11 +297,10 @@ if(BUILD_PYTHON_WRAPPERS)
   set(vtk-module ${LIB_NAME})
   set(MODULE_PYTHON_NAME ${LIB_NAME}Python)
   set(LIB_PYTHON_NAME ${LIB_NAME}PythonD)
-  if("${VTK_MAJOR_VERSION}" GREATER 5)
-    set(LIB_PYTHON_LIBS vtkCommonCorePythonD vtkIOImagePythonD)
-  else()
-    set(LIB_PYTHON_LIBS vtkCommonPythonD vtkIOPythonD)
-  endif()
+  set(LIB_PYTHON_LIBS)
+  foreach(TMP_LIB ${VTK_LIBS})
+    set(LIB_PYTHON_LIBS ${LIB_PYTHON_LIBS} ${TMP_LIB}PythonD)
+  endforeach()
 
   if(VTK_PYTHON_INCLUDE_DIR)
     include_directories("${VTK_PYTHON_INCLUDE_DIR}")
@@ -332,11 +337,10 @@ if(BUILD_JAVA_WRAPPERS)
   set(VTK_JAVA_HOME ${CMAKE_CURRENT_BINARY_DIR}/java/vtk)
   make_directory(${VTK_JAVA_HOME})
   set(LIB_JAVA_NAME ${LIB_NAME}Java)
-  if("${VTK_MAJOR_VERSION}" GREATER 5)
-    set(LIB_JAVA_LIBS vtkCommonCoreJava vtkIOImageJava)
-  else()
-    set(LIB_JAVA_LIBS vtkCommonJava vtkIOJava)
-  endif()
+  set(LIB_JAVA_LIBS)
+  foreach(TMP_LIB ${VTK_LIBS})
+    set(LIB_JAVA_LIBS ${LIB_JAVA_LIBS} ${TMP_LIB}Java)
+  endforeach()
 
   if(VTK_JAVA_INCLUDE_DIR)
     include_directories("${VTK_JAVA_INCLUDE_DIR}")
