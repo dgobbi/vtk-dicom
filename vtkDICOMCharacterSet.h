@@ -17,6 +17,8 @@
 #include <vtkSystemIncludes.h>
 #include "vtkDICOMModule.h"
 
+#include <string>
+
 //! Character sets.
 /*!
  *  DICOM supports a fairly small number of single-byte and multi-byte
