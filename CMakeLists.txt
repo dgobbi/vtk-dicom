@@ -143,11 +143,13 @@ endif()
 
 # Set up our target directory structure for "make install"
 set(DICOM_BIN_DIR "/bin") # for executables and ".dll" libraries
-set(DICOM_LIB_DIR "/lib") # for unix/linux/osx shared libraries
-set(DICOM_ARC_DIR "/lib") # for static or ".lib" libraries
+if(NOT DICOM_LIB_DIR)
+  set(DICOM_LIB_DIR "/lib") # for unix/linux/osx shared libraries
+endif()
+set(DICOM_ARC_DIR "${DICOM_LIB_DIR}") # for static or ".lib" libraries
 set(DICOM_INC_DIR "/include") # for header files
 set(DICOM_DATA_DIR "/share/dicom-${DICOM_SHORT_VERSION}")
-set(DICOM_CMAKE_DIR "/lib/dicom-${DICOM_SHORT_VERSION}/cmake")
+set(DICOM_CMAKE_DIR "${DICOM_LIB_DIR}/dicom-${DICOM_SHORT_VERSION}/cmake")
 
 # Set the full paths to the install tree
 set(DICOM_RUNTIME_INSTALL_DEST ${CMAKE_INSTALL_PREFIX}${DICOM_BIN_DIR})
@@ -288,6 +290,8 @@ endif()
 
 # Create the library
 add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_HIERARCHY_STAMP})
+set_target_properties(${LIB_NAME} PROPERTIES
+  VERSION "${DICOM_VERSION}" SOVERSION "${DICOM_SHORT_VERSION}")
 target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS}
   ${GDCM_LIBS} ${DCMTK_LIBS})
 set(DICOM_LIBRARIES ${LIB_NAME})
@@ -295,8 +299,19 @@ set(DICOM_LIBRARIES ${LIB_NAME})
 # Wrappers
 if(BUILD_PYTHON_WRAPPERS)
   set(vtk-module ${LIB_NAME})
+  set(XY) # Get python version, e.g. 27 for python 2.7
+  if(vtkPython_LIBRARIES)
+    list(GET vtkPython_LIBRARIES 0 TMP_LIB_NAME)
+    get_filename_component(TMP_NAME "${TMP_LIB_NAME}" NAME)
+    string(REGEX REPLACE "^[^0-9]*([0-9])\\.*([0-9]).*$" "\\1\\2"
+      XY "${TMP_NAME}")
+    if(NOT XY)
+      set(XY)
+    endif()
+  endif()
   set(MODULE_PYTHON_NAME ${LIB_NAME}Python)
   set(LIB_PYTHON_NAME ${LIB_NAME}PythonD)
+  set(LIB_PYTHON_OUTPUT_NAME ${LIB_NAME}Python${XY}D)
   set(LIB_PYTHON_LIBS)
   foreach(TMP_LIB ${VTK_LIBS})
     set(LIB_PYTHON_LIBS ${LIB_PYTHON_LIBS} ${TMP_LIB}PythonD)
@@ -308,6 +323,9 @@ if(BUILD_PYTHON_WRAPPERS)
   include(${VTK_CMAKE_DIR}/vtkWrapPython.cmake)
   vtk_wrap_python3(${MODULE_PYTHON_NAME} LIB_PYTHON_SRCS "${LIB_SRCS}")
   add_library(${LIB_PYTHON_NAME} ${LIB_PYTHON_SRCS} ${LIB_PYTHON_EXTRA_SRCS})
+  set_target_properties(${LIB_PYTHON_NAME} PROPERTIES
+    VERSION "${DICOM_VERSION}" SOVERSION "${DICOM_SHORT_VERSION}"
+    OUTPUT_NAME "${LIB_PYTHON_OUTPUT_NAME}")
   target_link_libraries(${LIB_PYTHON_NAME} ${LIB_NAME} ${LIB_PYTHON_LIBS})
   # On Win32 and Mac, link python library now, on UNIX, don't
   if(WIN32 OR APPLE)
