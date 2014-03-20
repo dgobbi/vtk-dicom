@@ -12,9 +12,12 @@ endif(COMMAND CMAKE_POLICY)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 
 # Look for a VTK build directory
-find_package(VTK)
+find_package(VTK REQUIRED)
 if(VTK_FOUND)
   include(${VTK_USE_FILE})
+  if("${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}" LESS 5.8)
+    message(FATAL_ERROR "VTK 5.8 or later is required.")
+  endif()
 endif()
 
 # GDCM or DCMTK are required for reading compressed DICOM images
