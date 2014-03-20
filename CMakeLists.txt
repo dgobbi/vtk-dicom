@@ -18,6 +18,27 @@ if(VTK_FOUND)
   if("${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}" LESS 5.8)
     message(FATAL_ERROR "VTK 5.8 or later is required.")
   endif()
+  # Check if VTK set VTK_ZLIB_LIBRARIES
+  if(NOT VTK_ZLIB_LIBRARIES)
+    # VTK 6 doesn't set it, so search for vtkzlib directly
+    list(FIND VTK_LIBRARIES vtkzlib TMP_INDEX)
+    if(TMP_INDEX GREATER -1)
+      set(VTK_ZLIB_LIBRARIES vtkzlib)
+    endif()
+  endif()
+  if(VTK_ZLIB_LIBRARIES)
+    set(DICOM_USE_VTKZLIB ON)
+    set(ZLIB_LIBS ${VTK_ZLIB_LIBRARIES})
+  endif()
+endif()
+
+# Look for zlib
+if(NOT DICOM_USE_VTKZLIB)
+  find_package(ZLIB REQUIRED)
+  if(ZLIB_FOUND)
+    set(ZLIB_LIBS ${ZLIB_LIBRARIES})
+    include_directories("${ZLIB_INCLUDE_DIR}")
+  endif()
 endif()
 
 # GDCM or DCMTK are required for reading compressed DICOM images
@@ -156,9 +177,9 @@ set(LIB_NAME vtkDICOM)
 
 # The library dependencies
 if("${VTK_MAJOR_VERSION}" GREATER 5)
-  set(VTK_LIBS vtkIOImage vtksys vtkzlib) # VTK 6.x
+  set(VTK_LIBS vtkIOImage vtksys) # VTK 6.x
 else()
-  set(VTK_LIBS vtkIO vtksys vtkzlib) # VTK 5.x
+  set(VTK_LIBS vtkIO vtksys) # VTK 5.x
 endif()
 
 if(WIN32)
@@ -261,7 +282,8 @@ endif()
 
 # Create the library
 add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_HIERARCHY_STAMP})
-target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS})
+target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${ZLIB_LIBS}
+  ${GDCM_LIBS} ${DCMTK_LIBS})
 set(DICOM_LIBRARIES ${LIB_NAME})
 
 # Wrappers

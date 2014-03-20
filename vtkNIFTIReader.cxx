@@ -37,7 +37,11 @@
 #include "vtkNIFTIPrivate.h"
 
 // Header for zlib
+#ifdef DICOM_USE_VTKZLIB
 #include "vtk_zlib.h"
+#else
+#include "zlib.h"
+#endif
 
 #include <ctype.h>
 #include <string.h>
