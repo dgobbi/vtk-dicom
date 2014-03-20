@@ -128,10 +128,9 @@ void vtkDICOMItem::CopyDataElements(
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMItem::SetAttributeValue(
-  vtkDICOMTag tag, const vtkDICOMValue& v)
+vtkDICOMDataElement *vtkDICOMItem::FindDataElementOrInsert(vtkDICOMTag tag)
 {
-  // Make a container if we don't have one yet
+  // make a container if we don't have one yet
   if (this->L == 0)
     {
     this->L = new List;
@@ -141,8 +140,6 @@ void vtkDICOMItem::SetAttributeValue(
   // if we aren't the sole owner, copy before modifying
   else if (this->L->ReferenceCount != 1)
     {
-    // assert, because this should never happen
-    assert(this->L->ReferenceCount == 1);
     List *t = new List;
     vtkDICOMItem::CopyList(this->L, t);
     this->Clear();
@@ -157,12 +154,68 @@ void vtkDICOMItem::SetAttributeValue(
     }
   while (tag < tptr->GetTag());
 
-  if (tag == tptr->GetTag())
+  if (tag != tptr->GetTag())
     {
-    tptr->Value = v;
-    if (!v.IsValid())
+    // create a new data element
+    vtkDICOMDataElement *e = this->NewDataElement(&tptr);
+    e->Tag = tag;
+    e->Prev = tptr;
+    e->Next = tptr->Next;
+    e->Prev->Next = e;
+    e->Next->Prev = e;
+
+    tptr = e;
+    this->L->NumberOfDataElements++;
+    }
+
+  return tptr;
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMItem *vtkDICOMItem::FindItemOrInsert(
+  const vtkDICOMTagPath& tagpath, vtkDICOMTag *tagptr)
+{
+  vtkDICOMItem *item = 0;
+
+  if (tagpath.HasTail())
+    {
+    vtkDICOMTag tag = tagpath.GetHead();
+    vtkDICOMDataElement *tptr = this->FindDataElementOrInsert(tag);
+    vtkDICOMVR vr = tptr->Value.GetVR();
+    if (!vr.IsValid())
       {
-      // setting a value to the invalid value causes deletion
+      vr = this->FindDictVR(tag);
+      if (vr == vtkDICOMVR::UN)
+        {
+        // let it through if it isn't in the dictionary
+        vr = vtkDICOMVR::SQ;
+        }
+      }
+    // add the item to the sequences, or create a sequence
+    if (vr == vtkDICOMVR::SQ)
+      {
+      unsigned int i = tagpath.GetIndex();
+      unsigned int n = i+1;
+      unsigned int m = 0;
+      const vtkDICOMItem *oldItems = tptr->Value.GetSequenceData();
+      if (oldItems != 0)
+        {
+        m = tptr->Value.GetNumberOfValues();
+        n = (n > m ? n : m);
+        }
+      vtkDICOMValue seq;
+      vtkDICOMItem *items = seq.AllocateSequenceData(vtkDICOMVR::SQ, n);
+      // copy the old sequence into the new one (shallow copy)
+      for (unsigned int j = 0; j < m; j++)
+        {
+        items[j] = oldItems[j];
+        }
+      tptr->Value = seq;
+      item = items[i].FindItemOrInsert(tagpath.GetTail(), tagptr);
+      }
+    else if (!tptr->Value.IsValid())
+      {
+      // we just inserted a non-SQ value, remove it
       tptr->Prev->Next = tptr->Next;
       tptr->Next->Prev = tptr->Prev;
       tptr->Next = 0;
@@ -170,53 +223,103 @@ void vtkDICOMItem::SetAttributeValue(
       this->L->NumberOfDataElements--;
       }
     }
-  else if (v.IsValid())
+  else
     {
-    // create a new data element
-    vtkDICOMDataElement *e = this->NewDataElement(&tptr);
-    e->Tag = tag;
-    e->Value = v;
+    item = this;
+    *tagptr = tagpath.GetHead();
+    }
 
-    e->Prev = tptr;
-    e->Next = tptr->Next;
-    e->Prev->Next = e;
-    e->Next->Prev = e;
+  return item;
+}
 
-    this->L->NumberOfDataElements++;
+//----------------------------------------------------------------------------
+void vtkDICOMItem::SetAttributeValue(
+  vtkDICOMTag tag, const vtkDICOMValue& v)
+{
+  vtkDICOMDataElement *tptr = this->FindDataElementOrInsert(tag);
+
+  tptr->Value = v;
+
+  if (!v.IsValid())
+    {
+    // setting a value to the invalid value causes deletion
+    tptr->Prev->Next = tptr->Next;
+    tptr->Next->Prev = tptr->Prev;
+    tptr->Next = 0;
+    tptr->Prev = 0;
+    this->L->NumberOfDataElements--;
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMItem::SetAttributeValue(
+  const vtkDICOMTagPath& tagpath, const vtkDICOMValue& v)
+{
+  vtkDICOMTag tag;
+  vtkDICOMItem *item = this->FindItemOrInsert(tagpath, &tag);
+  // if item is NULL, the path was invalid
+  if (item)
+    {
+    item->SetAttributeValue(tag, v);
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMItem::SetAttributeValue(
+  const vtkDICOMTagPath& tagpath, double v)
+{
+  vtkDICOMTag tag;
+  vtkDICOMItem *item = this->FindItemOrInsert(tagpath, &tag);
+  assert(item != 0);
+  if (item)
+    {
+    vtkDICOMVR vr = item->FindDictVR(tag);
+    assert(vr != vtkDICOMVR::UN);
+    if (vr != vtkDICOMVR::UN)
+      {
+      this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
+      }
+    }
+}
+
+void vtkDICOMItem::SetAttributeValue(
+  const vtkDICOMTagPath& tagpath, const std::string& v)
+{
+  vtkDICOMTag tag;
+  vtkDICOMItem *item = this->FindItemOrInsert(tagpath, &tag);
+  assert(item != 0);
+  if (item)
+    {
+    vtkDICOMVR vr = item->FindDictVR(tag);
+    assert(vr != vtkDICOMVR::UN);
+    // note that there is similar code in vtkDICOMMetaData
+    if (vr.HasSpecificCharacterSet())
+      {
+      vtkDICOMCharacterSet cs; // defaults to ASCII
+      const vtkDICOMValue& vcs =
+        item->GetAttributeValue(DC::SpecificCharacterSet);
+      if (vcs.IsValid())
+        {
+        cs = vtkDICOMCharacterSet(vcs.AsString());
+        }
+      item->SetAttributeValue(tag, vtkDICOMValue(vr, cs, v));
+      }
+    else if (vr != vtkDICOMVR::UN)
+      {
+      item->SetAttributeValue(tag, vtkDICOMValue(vr, v));
+      }
     }
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMItem::SetAttributeValue(vtkDICOMTag tag, double v)
 {
-  vtkDICOMVR vr = this->FindDictVR(tag);
-  assert(vr != vtkDICOMVR::UN);
-  if (vr != vtkDICOMVR::UN)
-    {
-    this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
-    }
+  this->SetAttributeValue(vtkDICOMTagPath(tag), v);
 }
 
 void vtkDICOMItem::SetAttributeValue(vtkDICOMTag tag, const std::string& v)
 {
-  vtkDICOMVR vr = this->FindDictVR(tag);
-  assert(vr != vtkDICOMVR::UN);
-  // note that there is similar code in vtkDICOMMetaData
-  if (vr.HasSpecificCharacterSet())
-    {
-    vtkDICOMCharacterSet cs; // defaults to ASCII
-    const vtkDICOMValue& vcs =
-      this->GetAttributeValue(DC::SpecificCharacterSet);
-    if (vcs.IsValid())
-      {
-      cs = vtkDICOMCharacterSet(vcs.AsString());
-      }
-    this->SetAttributeValue(tag, vtkDICOMValue(vr, cs, v));
-    }
-  else if (vr != vtkDICOMVR::UN)
-    {
-    this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
-    }
+  this->SetAttributeValue(vtkDICOMTagPath(tag), v);
 }
 
 //----------------------------------------------------------------------------

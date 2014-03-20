@@ -245,6 +245,184 @@ int main(int argc, char *argv[])
   metaData->Clear();
 
   // ------
+  // test setting sequences via tagpath
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID),
+    vtkDICOMValue(vtkDICOMVR::UI,
+                  "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
+
+  for (int j = 0; j < 10; j++)
+    {
+    // create a unique InstanceUID
+    sprintf(instanceUID, instanceUIDFormat, 255+j);
+    metaData->SetAttributeValue(
+      vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                      DC::ReferencedInstanceSequence, j,
+                      DC::ReferencedSOPClassUID),
+      classUID);
+    metaData->SetAttributeValue(
+      vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                      DC::ReferencedInstanceSequence, j,
+                      DC::ReferencedSOPInstanceUID),
+      instanceUID);
+    }
+
+  // test nested access with tag path
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID));
+  TestAssert(v2.GetCharData() != 0);
+  if (v2.GetCharData())
+    {
+    TestAssert(
+      strcmp(v2.GetCharData(),
+             "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239") == 0);
+    }
+
+  // test access two levels deep
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::ReferencedInstanceSequence, 9,
+                    DC::ReferencedSOPClassUID));
+  TestAssert(v2.GetCharData() != 0);
+  if (v2.GetCharData())
+    {
+    TestAssert(strcmp(v2.GetCharData(), "1.2.840.10008.5.1.4.1.1.4") == 0);
+    }
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::ReferencedInstanceSequence, 8,
+                    DC::ReferencedSOPInstanceUID));
+  TestAssert(v2.GetCharData() != 0);
+  if (v2.GetCharData())
+    {
+    TestAssert(0 == strcmp(
+      v2.GetCharData(),
+      "1.2.840.113619.2.176.2025.4110284.7408.1276101323.263"));
+    }
+
+  metaData->Clear();
+
+  // ------
+  // if a non-sequence is used in a path, the call is ignored
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::SeriesInstanceUID, 0,
+                    DC::SeriesInstanceUID),
+    vtkDICOMValue(vtkDICOMVR::UI,
+                  "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
+  TestAssert(metaData->GetNumberOfDataElements() == 0);
+
+  // ------
+  // test using a non-sequence that already exists
+  metaData->SetAttributeValue(DC::SeriesInstanceUID,
+    "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239");
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::SeriesInstanceUID, 0,
+                    DC::SeriesInstanceUID),
+    vtkDICOMValue(vtkDICOMVR::UI,
+                  "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::SeriesInstanceUID, 0,
+                    DC::SeriesInstanceUID));
+  TestAssert(!v2.IsValid());
+  v2 = metaData->GetAttributeValue(vtkDICOMTagPath(DC::SeriesInstanceUID));
+  if (v2.GetCharData())
+    {
+    TestAssert(
+      strcmp(v2.GetCharData(),
+             "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239") == 0);
+    }
+
+  // test using a tag path with a private sequence
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(vtkDICOMTag(0x0009, 0x1013), 0,
+                    vtkDICOMTag(0x0009, 0x1014), 1,
+                    vtkDICOMTag(0x0009, 0x1015)),
+    vtkDICOMValue(vtkDICOMVR::UI, "1.2.840.113619.2.176.2025"));
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(vtkDICOMTag(0x0009, 0x1013), 0,
+                    vtkDICOMTag(0x0009, 0x1014), 1,
+                    vtkDICOMTag(0x0009, 0x1015)));
+  TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025");
+  // make sure the "skipped" item returns nothing
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(vtkDICOMTag(0x0009, 0x1013), 0,
+                    vtkDICOMTag(0x0009, 0x1014), 0,
+                    vtkDICOMTag(0x0009, 0x1015)));
+  TestAssert(!v2.IsValid());
+
+  metaData->Clear();
+
+  // ------
+  // Test setting tag paths with indices
+  metaData->SetNumberOfInstances(3);
+  metaData->SetAttributeValue(0,
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID),
+    "1.2.840.113619.2.176.2025.4110284.747");
+  metaData->SetAttributeValue(2,
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID),
+    "1.2.840.113619.2.176.2025.4110284.749");
+  v2 = metaData->GetAttributeValue(0,
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID));
+  TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025.4110284.747");
+  v2 = metaData->GetAttributeValue(1,
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID));
+  TestAssert(!v2.IsValid());
+  v2 = metaData->GetAttributeValue(2,
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID));
+  TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025.4110284.749");
+  // Set without index
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID),
+    "1.2.840.113619.2.176.2025.4110284.747");
+  for (int i = 0; i < 3; i++)
+    {
+    v2 = metaData->GetAttributeValue(i,
+      vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                      DC::SeriesInstanceUID));
+    TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025.4110284.747");
+    }
+
+  metaData->Clear();
+
+  // ------
+  // Test setting tag paths with indices after setting without indices
+  metaData->SetNumberOfInstances(3);
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID),
+    "1.2.840.113619.2.176.2025.4110284.747");
+  metaData->SetAttributeValue(1,
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID),
+    vtkDICOMValue());
+  metaData->SetAttributeValue(2,
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID),
+    "1.2.840.113619.2.176.2025.4110284.749");
+  v2 = metaData->GetAttributeValue(0,
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID));
+  TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025.4110284.747");
+  v2 = metaData->GetAttributeValue(1,
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID));
+  TestAssert(!v2.IsValid());
+  v2 = metaData->GetAttributeValue(2,
+    vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
+                    DC::SeriesInstanceUID));
+  TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025.4110284.749");
+
+  metaData->Clear();
+
+  // ------
   // Test setting invalid value attributes
   metaData->SetNumberOfInstances(3);
   metaData->SetAttributeValue(DC::Modality, "CT");

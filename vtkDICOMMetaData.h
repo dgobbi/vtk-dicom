@@ -137,6 +137,25 @@ public:
   void SetAttributeValue(vtkDICOMTag tag, double v);
   void SetAttributeValue(vtkDICOMTag tag, const std::string& v);
 
+  //! Set the attribute at the specified path.
+  /*!
+   *  The data element is inserted at the tail of the given path.  If the
+   *  path lies within a sequence that does not yet exist, then the sequence
+   *  will be created.  If an item index in the path points to an item that
+   *  does not exist, then that item will be created.
+   */
+  void SetAttributeValue(
+    int idx, const vtkDICOMTagPath& tag, const vtkDICOMValue& v);
+  void SetAttributeValue(
+    int idx, const vtkDICOMTagPath& tag, double v);
+  void SetAttributeValue(
+    int idx, const vtkDICOMTagPath& tag, const std::string& v);
+
+  //! Set the attribute value along this path for all images.
+  void SetAttributeValue(const vtkDICOMTagPath& tag, const vtkDICOMValue& v);
+  void SetAttributeValue(const vtkDICOMTagPath& tag, double v);
+  void SetAttributeValue(const vtkDICOMTagPath& tag, const std::string& v);
+
   //! Look up a tag in the DICOM dictionary.
   /*!
    *  Unlike the method in vtkDICOMDictionary, this method can identify
@@ -175,6 +194,14 @@ protected:
 
   //! Find a tag, value pair or insert a pair if not found.
   vtkDICOMDataElement *FindDataElementOrInsert(vtkDICOMTag tag);
+
+  //! Find or create the sequence at the head of the tagpath.
+  int FindItemsOrInsert(
+    int idx, bool useidx, const vtkDICOMTagPath& tagpath,
+    vtkDICOMItem *items[]);
+
+  //! Find a child item for a tag path, or insert if not there.
+  vtkDICOMItem *FindItemOrInsert(int idx, const vtkDICOMTagPath& tagpath);
 
   //! Find the attribute value for the specified image index.
   const vtkDICOMValue *FindAttributeValue(int idx, vtkDICOMTag tag);

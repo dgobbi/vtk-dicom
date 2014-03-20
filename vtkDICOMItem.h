@@ -78,15 +78,23 @@ public:
 
   //! Add a data element to this item.
   /*!
-   *  This method can only be used before the item has been added
-   *  to a sequence.  After the item has become part of a sequence,
-   *  it is frozen and cannot be modified.  Note that if you specify
-   *  a string value, it must either be an ASCII string, or it must
+   *  If you specify a string, it must either be an ASCII string, or it must
    *  be encoded in the SpecificCharacterSet for this item.
    */
   void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
   void SetAttributeValue(vtkDICOMTag tag, double v);
   void SetAttributeValue(vtkDICOMTag tag, const std::string& v);
+
+  //! Add a data element at the specified path.
+  /*!
+   *  The data element is inserted at the tail of the given path.  If the
+   *  path lies within a sequence that does not yet exist, then the sequence
+   *  will be created.  If an item index in the path points to an item that
+   *  does not exist, then that item will be created.
+   */
+  void SetAttributeValue(const vtkDICOMTagPath& tag, const vtkDICOMValue& v);
+  void SetAttributeValue(const vtkDICOMTagPath& tag, double v);
+  void SetAttributeValue(const vtkDICOMTagPath& tag, const std::string& v);
 
   //! Get a data element from this item.
   const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag) const;
@@ -143,6 +151,13 @@ private:
   static void CopyDataElements(
     const vtkDICOMDataElement *begin, const vtkDICOMDataElement *end,
     List *t);
+
+  //! Find a tag, value pair or insert a pair if not found.
+  vtkDICOMDataElement *FindDataElementOrInsert(vtkDICOMTag tag);
+
+  //! Find a child item for a tag path, or insert if not there.
+  vtkDICOMItem *FindItemOrInsert(
+    const vtkDICOMTagPath& tagpath, vtkDICOMTag *tagptr);
 
   //! An invalid value, for when one is needed.
   static const vtkDICOMValue InvalidValue;

@@ -352,6 +352,107 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
 }
 
 //----------------------------------------------------------------------------
+int vtkDICOMMetaData::FindItemsOrInsert(
+  int idx, bool useidx, const vtkDICOMTagPath& tagpath,
+  vtkDICOMItem *itemarray[])
+{
+  vtkDICOMTag tag = tagpath.GetHead();
+
+  vtkDICOMDataElement *loc = this->FindDataElementOrInsert(tag);
+  if (loc == 0)
+    {
+    vtkErrorMacro("SetAttributeValue: tag group number must not be zero.");
+    return 0;
+    }
+
+  loc->Tag = tag;
+  vtkDICOMValue *vptr = &loc->Value;
+  if (!vptr->IsValid())
+    {
+    vtkDICOMVR vr = this->FindDictVR(idx, tag);
+    if (vr != vtkDICOMVR::SQ && vr != vtkDICOMVR::UN)
+      {
+      // we just inserted a non-SQ value, remove it
+      this->RemoveAttribute(tag);
+      return 0;
+      }
+    }
+  else if (vptr->GetVR() != vtkDICOMVR::SQ)
+    {
+    return 0;
+    }
+
+  // is this a series of values?
+  int count = 1;
+  vtkDICOMValue *sptr = vtkDICOMValueFriendMetaData::GetMultiplex(vptr);
+  if (sptr != 0)
+    {
+    if (useidx)
+      {
+      assert(idx >= 0 && idx < this->NumberOfInstances);
+      sptr = &sptr[idx];
+      }
+    else
+      {
+      count = this->NumberOfInstances;
+      }
+    }
+  else if (useidx && this->NumberOfInstances > 1)
+    {
+    // create a multiplex
+    assert(idx >= 0 && idx < this->NumberOfInstances);
+    int n = this->NumberOfInstances;
+    vtkDICOMValue l;
+    sptr = l.AllocateMultiplexData(vtkDICOMVR::SQ, n);
+    for (int i = 0; i < n; i++)
+      {
+      if (i != idx)
+        {
+        sptr[i] = *vptr;
+        }
+      }
+    *vptr = l;
+    sptr = &sptr[idx];
+    }
+  else
+    {
+    sptr = vptr;
+    }
+
+  unsigned int i = tagpath.GetIndex();
+  for (int k = 0; k < count; k++)
+    {
+    unsigned int n = i+1;
+    unsigned int m = 0;
+    const vtkDICOMItem *oldItems = sptr[k].GetSequenceData();
+    if (oldItems != 0)
+      {
+      m = sptr[k].GetNumberOfValues();
+      n = (n > m ? n : m);
+      }
+    vtkDICOMValue seq;
+    vtkDICOMItem *items = seq.AllocateSequenceData(vtkDICOMVR::SQ, n);
+    // copy the old sequence into the new one (shallow copy)
+    for (unsigned int j = 0; j < m; j++)
+      {
+      items[j] = oldItems[j];
+      }
+    sptr[k] = seq;
+    itemarray[k] = &items[i];
+    }
+
+  return count;
+}
+
+vtkDICOMItem *vtkDICOMMetaData::FindItemOrInsert(
+  int idx, const vtkDICOMTagPath& tagpath)
+{
+  vtkDICOMItem *itemptr = 0;
+  this->FindItemsOrInsert(idx, true, tagpath, &itemptr);
+  return itemptr;
+}
+
+//----------------------------------------------------------------------------
 // Insert an attribute into the hash table
 void vtkDICOMMetaData::SetAttributeValue(
   vtkDICOMTag tag, const vtkDICOMValue& v)
@@ -480,6 +581,118 @@ void vtkDICOMMetaData::SetAttributeValue(
   else if (vr != vtkDICOMVR::UN)
     {
     this->SetAttributeValue(idx, tag, vtkDICOMValue(vr, v));
+    }
+}
+
+//----------------------------------------------------------------------------
+// Insert an attribute at a particular path
+void vtkDICOMMetaData::SetAttributeValue(
+  const vtkDICOMTagPath& tagpath, const vtkDICOMValue& v)
+{
+  if (tagpath.HasTail())
+    {
+    vtkDICOMItem **items = new vtkDICOMItem *[this->NumberOfInstances];
+    int n = this->FindItemsOrInsert(0, false, tagpath, items);
+    for (int i = 0; i < n; i++)
+      {
+      items[i]->SetAttributeValue(tagpath.GetTail(), v);
+      }
+    delete [] items;
+    }
+  else
+    {
+    this->SetAttributeValue(tagpath.GetHead(), v);
+    }
+}
+
+void vtkDICOMMetaData::SetAttributeValue(
+  const vtkDICOMTagPath& tagpath, double v)
+{
+  if (tagpath.HasTail())
+    {
+    vtkDICOMItem **items = new vtkDICOMItem *[this->NumberOfInstances];
+    int n = this->FindItemsOrInsert(0, false, tagpath, items);
+    for (int i = 0; i < n; i++)
+      {
+      items[i]->SetAttributeValue(tagpath.GetTail(), v);
+      }
+    delete [] items;
+    }
+  else
+    {
+    this->SetAttributeValue(tagpath.GetHead(), v);
+    }
+}
+
+void vtkDICOMMetaData::SetAttributeValue(
+  const vtkDICOMTagPath& tagpath, const std::string& v)
+{
+  if (tagpath.HasTail())
+    {
+    vtkDICOMItem **items = new vtkDICOMItem *[this->NumberOfInstances];
+    int n = this->FindItemsOrInsert(0, false, tagpath, items);
+    for (int i = 0; i < n; i++)
+      {
+      items[i]->SetAttributeValue(tagpath.GetTail(), v);
+      }
+    delete [] items;
+    }
+  else
+    {
+    this->SetAttributeValue(tagpath.GetHead(), v);
+    }
+}
+
+//----------------------------------------------------------------------------
+// Insert an attribute for a particular image
+void vtkDICOMMetaData::SetAttributeValue(
+  int idx, const vtkDICOMTagPath& tagpath, const vtkDICOMValue& v)
+{
+  if (tagpath.HasTail())
+    {
+    vtkDICOMItem *item = this->FindItemOrInsert(idx, tagpath);
+    if (item)
+      {
+      item->SetAttributeValue(tagpath.GetTail(), v);
+      }
+    }
+  else
+    {
+    this->SetAttributeValue(idx, tagpath.GetHead(), v);
+    }
+}
+
+void vtkDICOMMetaData::SetAttributeValue(
+  int idx, const vtkDICOMTagPath& tagpath, double v)
+{
+  if (tagpath.HasTail())
+    {
+    vtkDICOMItem *item = this->FindItemOrInsert(idx, tagpath);
+    if (item)
+      {
+      item->SetAttributeValue(tagpath.GetTail(), v);
+      }
+    }
+  else
+    {
+    this->SetAttributeValue(idx, tagpath.GetHead(), v);
+    }
+}
+
+void vtkDICOMMetaData::SetAttributeValue(
+  int idx, const vtkDICOMTagPath& tagpath, const std::string& v)
+{
+  if (tagpath.HasTail())
+    {
+    vtkDICOMItem *item = this->FindItemOrInsert(idx, tagpath);
+    if (item)
+      {
+      item->SetAttributeValue(tagpath.GetTail(), v);
+      }
+    }
+  else
+    {
+    this->SetAttributeValue(idx, tagpath.GetHead(), v);
     }
 }
 
