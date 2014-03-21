@@ -77,15 +77,27 @@ struct niftitodicom_options
 
 
 // Print the version
-void niftitodicom_version(FILE *file, const char *command_name)
+void niftitodicom_version(FILE *file, const char *command_name, bool verbose)
 {
   const char *cp = command_name + strlen(command_name);
   while (cp != command_name && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
 
-  fprintf(file,
-    "%s %s (HEAD %8.8s, %s, %s)\n", cp,
-    DICOM_VERSION, DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
+  if (!verbose)
+    {
+    fprintf(file, "%s %s\n", cp, DICOM_VERSION);
+    fprintf(file, "\n"
+      "Copyright (c) 2012-2014, David Gobbi.\n\n"
+      "This software is distributed under an open-source license.  See the\n"
+      "Copyright.txt file that comes with the vtk-dicom source distribution.\n");
+    }
+  else
+    {
+    fprintf(file,
+      "Head %8.8s, Built %s, %s\n",
+      DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
+    }
 }
+
 
 // Print the options
 void niftitodicom_usage(FILE *file, const char *command_name)
@@ -93,10 +105,9 @@ void niftitodicom_usage(FILE *file, const char *command_name)
   const char *cp = command_name + strlen(command_name);
   while (cp != command_name && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
 
-  niftitodicom_version(file, command_name);
-
   fprintf(file,
-    "usage: %s -o directory file.nii [file.dcm ...]\n", cp);
+    "usage:\n"
+    "  %s -o directory file.nii [file.dcm ...]\n\n", cp);
   fprintf(file,
     "options:\n"
     "  -o directory            The output directory.\n"
@@ -110,6 +121,8 @@ void niftitodicom_usage(FILE *file, const char *command_name)
     "  --series-number         The series number ot use.\n"
     "  --modality              The modality: MR or CT or SC.\n"
     "  --uid-prefix            A DICOM uid prefix (optional).\n"
+    "  --version               Print the version and exit.\n"
+    "  --build-version         Print source and build version.\n"
     "  --help                  Documentation for niftitodicom.\n"
   );
 }
@@ -371,7 +384,12 @@ void niftitodicom_read_options(
         }
       else if (strcmp(arg, "--version") == 0)
         {
-        niftitodicom_version(stdout, argv[0]);
+        niftitodicom_version(stdout, argv[0], false);
+        exit(0);
+        }
+      else if (strcmp(arg, "--build-version") == 0)
+        {
+        niftitodicom_version(stdout, argv[0], true);
         exit(0);
         }
       else if (strcmp(arg, "--help") == 0)

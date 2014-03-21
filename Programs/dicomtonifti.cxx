@@ -69,14 +69,25 @@ struct dicomtonifti_options
 
 
 // Print the version
-void dicomtonifti_version(FILE *file, const char *command_name)
+void dicomtonifti_version(FILE *file, const char *command_name, bool verbose)
 {
   const char *cp = command_name + strlen(command_name);
   while (cp != command_name && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
 
-  fprintf(file,
-    "%s %s (HEAD %8.8s, %s, %s)\n", cp,
-    DICOM_VERSION, DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
+  if (!verbose)
+    {
+    fprintf(file, "%s %s\n", cp, DICOM_VERSION);
+    fprintf(file, "\n"
+      "Copyright (c) 2012-2014, David Gobbi.\n\n"
+      "This software is distributed under an open-source license.  See the\n"
+      "Copyright.txt file that comes with the vtk-dicom source distribution.\n");
+    }
+  else
+    {
+    fprintf(file,
+      "Head %8.8s, Built %s, %s\n",
+      DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
+    }
 }
 
 // Print the options
@@ -85,12 +96,10 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
   const char *cp = command_name + strlen(command_name);
   while (cp != command_name && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
 
-  dicomtonifti_version(file, command_name);
-
   fprintf(file,
-    "usage: %s -o file.nii file1.dcm [file2.dcm ...]\n", cp);
-  fprintf(file,
-    "       %s -o directory --batch file1.dcm [file2.dcm ...]\n", cp);
+    "usage:\n"
+    "  %s -o file.nii file1.dcm [file2.dcm ...]\n\n"
+    "  %s -o directory --batch file1.dcm [file2.dcm ...]\n\n", cp, cp);
   fprintf(file,
     "options:\n"
     "  -o <output.nii[.gz]>    The output file (or directory, if --batch).\n"
@@ -109,6 +118,7 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
     "  --no-qform              Don't include a qform in the NIFTI file.\n"
     "  --no-sform              Don't include an sform in the NIFTI file.\n"
     "  --version               Print the version and exit.\n"
+    "  --build-version         Print source and build version.\n"
     "  --help                  Documentation for dicomtonifti.\n"
   );
 }
@@ -380,7 +390,12 @@ void dicomtonifti_read_options(
         }
       else if (strcmp(arg, "--version") == 0)
         {
-        dicomtonifti_version(stdout, argv[0]);
+        dicomtonifti_version(stdout, argv[0], false);
+        exit(0);
+        }
+      else if (strcmp(arg, "--build-version") == 0)
+        {
+        dicomtonifti_version(stdout, argv[0], true);
         exit(0);
         }
       else if (strcmp(arg, "--help") == 0)
