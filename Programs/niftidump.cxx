@@ -24,8 +24,36 @@
 #include <string.h>
 #include <stdlib.h>
 
+// print the version
+void printVersion(FILE *file, const char *cp)
+{
+  fprintf(file, "%s %s\n", cp, DICOM_VERSION);
+  fprintf(file, "\n"
+    "Copyright (c) 2012-2014, David Gobbi.\n\n"
+    "This software is distributed under an open-source license.  See the\n"
+    "Copyright.txt file that comes with the vtk-dicom source distribution.\n");
+}
+
+// print the help
+void printUsage(FILE *file, const char *cp)
+{
+  fprintf(file, "usage:\n"
+    "  %s file.nii[.gz]\n", cp);
+  fprintf(file, "options:\n"
+    "  --help      Print a brief help message.\n"
+    "  --version   Print the software version.\n");
+}
+
+// print the help
+void printHelp(FILE *file, const char *cp)
+{
+  printUsage(file, cp);
+  fprintf(file, "\n"
+    "Dump the header from a NIfTI file.\n");
+}
+
 // remove path portion of filename
-const char *niftidump_basename(const char *filename)
+const char *fileBasename(const char *filename)
 {
   const char *cp = filename + strlen(filename);
   while (cp != filename && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
@@ -39,7 +67,17 @@ int main(int argc, char *argv[])
 
   if (argc < 2)
     {
-    printf("usage: %s file.nii\n", niftidump_basename(argv[0]));
+    printUsage(stdout, fileBasename(argv[0]));
+    return rval;
+    }
+  else if (argc == 2 && strcmp(argv[1], "--help") == 0)
+    {
+    printHelp(stdout, fileBasename(argv[0]));
+    return rval;
+    }
+  else if (argc == 2 && strcmp(argv[1], "--version") == 0)
+    {
+    printVersion(stdout, fileBasename(argv[0]));
     return rval;
     }
 
