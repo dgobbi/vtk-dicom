@@ -268,7 +268,7 @@ def printhead(enum_dict, classname):
     print "#include \"vtkDICOMDictionary.h\""
     print
     print "// Initializer to add dict when header included."
-    print "struct %sInitializer" % (classname,)
+    print "struct VTK_DICOM_EXPORT %sInitializer" % (classname,)
     print "{"
     print "  %sInitializer();" % (classname,)
     print "  ~%sInitializer();" % (classname,)

@@ -84,7 +84,7 @@ private:
  *  This ensures that the vtkDICOMDictionary module is initialized before
  *  any other module that includes this header file.
  */
-struct vtkDICOMDictionaryInitializer
+struct VTK_DICOM_EXPORT vtkDICOMDictionaryInitializer
 {
   vtkDICOMDictionaryInitializer();
   ~vtkDICOMDictionaryInitializer();

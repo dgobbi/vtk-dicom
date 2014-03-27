@@ -9,7 +9,7 @@ This is an automatically generated file.  Include errata for any changes.
 #include "vtkDICOMDictionary.h"
 
 // Initializer to add dict when header included.
-struct vtkDICOMDictPrivateInitializer
+struct VTK_DICOM_EXPORT vtkDICOMDictPrivateInitializer
 {
   vtkDICOMDictPrivateInitializer();
   ~vtkDICOMDictPrivateInitializer();
