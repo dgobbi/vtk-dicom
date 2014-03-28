@@ -481,6 +481,11 @@ void vtkDICOMMetaData::SetAttributeValue(vtkDICOMTag tag, double v)
     {
     this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
     }
+  else
+    {
+    vtkErrorMacro("SetAttributeValue: could not find tag (" <<
+                  tag << ") in the dictionary");
+    }
 }
 
 void vtkDICOMMetaData::SetAttributeValue(vtkDICOMTag tag, const std::string& v)
@@ -494,6 +499,11 @@ void vtkDICOMMetaData::SetAttributeValue(vtkDICOMTag tag, const std::string& v)
   else if (vr != vtkDICOMVR::UN)
     {
     this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
+    }
+  else
+    {
+    vtkErrorMacro("SetAttributeValue: could not find tag (" <<
+                  tag << ") in the dictionary");
     }
 }
 
@@ -567,6 +577,11 @@ void vtkDICOMMetaData::SetAttributeValue(
     {
     this->SetAttributeValue(idx, tag, vtkDICOMValue(vr, v));
     }
+  else
+    {
+    vtkErrorMacro("SetAttributeValue: could not find tag (" <<
+                  tag << ") in the dictionary");
+    }
 }
 
 void vtkDICOMMetaData::SetAttributeValue(
@@ -581,6 +596,11 @@ void vtkDICOMMetaData::SetAttributeValue(
   else if (vr != vtkDICOMVR::UN)
     {
     this->SetAttributeValue(idx, tag, vtkDICOMValue(vr, v));
+    }
+  else
+    {
+    vtkErrorMacro("SetAttributeValue: could not find tag (" <<
+                  tag << ") in the dictionary");
     }
 }
 
@@ -843,11 +863,6 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
           }
         }
       }
-    }
-  else
-    {
-    vtkErrorMacro("SetAttributeValue: could not find tag (" <<
-                  tag << ") in the dictionary");
     }
 
   return vr;
