@@ -24,6 +24,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+#if defined(_WIN32)
+#include <windows.h>
+#endif
+
 #define MAX_INDENT 24
 #define INDENT_SIZE 2
 #define MAX_LENGTH 120
@@ -281,6 +285,12 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMMetaData>::New();
   parser->SetMetaData(data);
 
+#if defined(_WIN32)
+  // Temporarily switch the console to utf-8
+  UINT codePage = GetConsoleOutputCP();
+  SetConsoleOutputCP(65001);
+#endif
+
   int m = sorter->GetNumberOfStudies();
   for (int j = 0; j < m; j++)
     {
@@ -314,6 +324,11 @@ int main(int argc, char *argv[])
         }
       }
     }
+
+#if defined(_WIN32)
+  // Restore the console code page
+  SetConsoleOutputCP(codePage);
+#endif
 
   return rval;
 }
