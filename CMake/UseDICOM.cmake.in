@@ -25,6 +25,22 @@ if(NOT DICOM_USE_FILE_INCLUDED)
     endif()
   endif()
 
+  if(DICOM_USE_DCMTK)
+    find_package(DCMTK)
+    if(NOT DCMTK_FOUND)
+      message(FATAL_ERROR "DCMTK not found or incomplete.")
+    endif()
+    set(DCMTK_LIBS ${DCMTK_LIBRARIES})
+    include_directories(${DCMTK_INCLUDE_DIRS})
+  endif()
+
+  if(NOT DICOM_USE_VTKZLIB)
+    find_package(ZLIB REQUIRED)
+    if(ZLIB_FOUND)
+      include_directories("${ZLIB_INCLUDE_DIR}")
+    endif()
+  endif()
+
   # Update CMAKE_MODULE_PATH so includes work.
   set(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH}
@@ -35,6 +51,6 @@ if(NOT DICOM_USE_FILE_INCLUDED)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DICOM_REQUIRED_CXX_FLAGS}")
 
   # Add include directories needed to use DICOM.
-  INCLUDE_DIRECTORIES(${DICOM_INCLUDE_DIRS})
+  include_directories(${DICOM_INCLUDE_DIRS})
 
-ENDIF(NOT DICOM_USE_FILE_INCLUDED)
+endif(NOT DICOM_USE_FILE_INCLUDED)

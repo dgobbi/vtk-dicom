@@ -3,11 +3,6 @@ project(DICOM)
 # CMake version requirements
 cmake_minimum_required(VERSION 2.6.3)
 
-# Eliminate policy warnings
-if(COMMAND CMAKE_POLICY)
-  cmake_policy(SET CMP0003 NEW)
-endif(COMMAND CMAKE_POLICY)
-
 # Allow custo cmake overrides
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 
@@ -26,6 +21,7 @@ if(VTK_FOUND)
       set(VTK_ZLIB_LIBRARIES vtkzlib)
     endif()
   endif()
+  set(DICOM_USE_VTKZLIB OFF)
   if(VTK_ZLIB_LIBRARIES)
     set(DICOM_USE_VTKZLIB ON)
     set(ZLIB_LIBS ${VTK_ZLIB_LIBRARIES})
