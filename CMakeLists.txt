@@ -291,8 +291,16 @@ if("${VTK_MAJOR_VERSION}" GREATER 5)
   endif()
 endif()
 
-# Create the library
+# Create the library (VTK 6 includes VTK version in library name)
 add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_HIERARCHY_STAMP})
+if("${VTK_MAJOR_VERSION}" GREATER 5)
+  set(TMP_SUFFIX "-${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
+  if(DEFINED VTK_CUSTOM_LIBRARY_SUFFIX)
+    set(TMP_SUFFIX "${VTK_CUSTOM_LIBRARY_SUFFIX}")
+  endif()
+  set_target_properties(${LIB_NAME} PROPERTIES
+    OUTPUT_NAME ${LIB_NAME}${TMP_SUFFIX})
+endif()
 set_target_properties(${LIB_NAME} PROPERTIES
   VERSION "${DICOM_VERSION}" SOVERSION "${DICOM_SHORT_VERSION}")
 target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS}
