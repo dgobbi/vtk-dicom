@@ -3,7 +3,12 @@ project(DICOM)
 # CMake version requirements
 cmake_minimum_required(VERSION 2.6.3)
 
-# Allow custo cmake overrides
+# Use LINK_INTERFACE_LIBRARIES instead of INTERFACE_LINK_LIBRARIES
+if(CMAKE_VERSION GREATER 2.6.11)
+  cmake_policy(SET CMP0022 OLD)
+endif()
+
+# Allow custom cmake overrides
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 
 # Look for a VTK build directory
@@ -183,14 +188,14 @@ set(LIB_NAME vtkDICOM)
 # The library dependencies
 set(KWSYS_LIBS vtksys)
 if("${VTK_MAJOR_VERSION}" GREATER 5)
-  set(VTK_LIBS vtkCommonCore vtkIOImage) # VTK 6.x
+  set(VTK_LIBS vtkCommonCore vtkCommonDataModel vtkIOImage) # VTK 6.x
   # If vtkIOMPIImage is present, it has factories for vtkIOImage
   list(FIND VTK_LIBRARIES vtkIOMPIImage TMP_INDEX)
   if(TMP_INDEX GREATER -1)
     set(VTK_LIBS ${VTK_LIBS} vtkIOMPIImage)
   endif()
 else()
-  set(VTK_LIBS vtkCommon vtkIO) # VTK 5.x
+  set(VTK_LIBS vtkCommon vtkFiltering vtkIO) # VTK 5.x
 endif()
 
 if(WIN32)
@@ -307,6 +312,9 @@ set_target_properties(${LIB_NAME} PROPERTIES
   VERSION "${DICOM_VERSION}" SOVERSION "${DICOM_SHORT_VERSION}")
 target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS}
   ${GDCM_LIBS} ${DCMTK_LIBS})
+if(BUILD_SHARED_LIBS)
+  target_link_libraries(${LIB_NAME} LINK_INTERFACE_LIBRARIES ${VTK_LIBS})
+endif()
 set(DICOM_LIBRARIES ${LIB_NAME})
 
 # Wrappers
@@ -360,6 +368,7 @@ if(BUILD_PYTHON_WRAPPERS)
   if(WIN32 OR APPLE)
     target_link_libraries(${MODULE_PYTHON_NAME} ${VTK_PYTHON_LIBRARIES})
   endif()
+  set(DICOM_PYTHON_LIBRARIES ${LIB_PYTHON_NAME})
 endif()
 
 if(BUILD_JAVA_WRAPPERS)
@@ -424,6 +433,7 @@ if(BUILD_JAVA_WRAPPERS)
     OUTPUT ${VTK_JAR_PATH}/vtkdicom.jar
     COMMENT "Java Archive"
     )
+  set(DICOM_JAVA_LIBRARIES ${LIB_JAVA_NAME})
 endif()
 
 # Set the install rules for the library
@@ -459,6 +469,7 @@ endif()
 
 # Add all targets to the build-tree export set
 export(TARGETS ${DICOM_LIBRARIES}
+  ${DICOM_PYTHON_LIBRARIES} ${DICOM_JAVA_LIBRARIES}
   FILE "${DICOM_BINARY_DIR}/DICOMTargets.cmake")
 
 # Export the package for use from the build-tree

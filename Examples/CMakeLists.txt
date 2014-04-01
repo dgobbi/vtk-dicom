@@ -8,7 +8,7 @@ else()
 endif()
 
 add_executable(TestDICOMCompiler TestDICOMCompiler.cxx)
-target_link_libraries(TestDICOMCompiler vtkDICOM)
+target_link_libraries(TestDICOMCompiler vtkDICOM vtksys)
 
 add_executable(TestDICOMDirectory TestDICOMDirectory.cxx)
 target_link_libraries(TestDICOMDirectory vtkDICOM)

@@ -8,9 +8,9 @@ set(PROGRAM_SRCS
 )
 
 if("${VTK_MAJOR_VERSION}" GREATER 5)
-  set(VTK_LIBS vtkImagingStatistics) # VTK 6.x
+  set(VTK_LIBS vtkImagingStatistics vtksys) # VTK 6.x
 else()
-  set(VTK_LIBS vtkImaging) # VTK 5.x
+  set(VTK_LIBS vtkImaging vtksys) # VTK 5.x
 endif()
 
 foreach(src ${PROGRAM_SRCS})
