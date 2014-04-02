@@ -8,15 +8,16 @@ set(PROGRAM_SRCS
 )
 
 if("${VTK_MAJOR_VERSION}" GREATER 5)
-  set(VTK_LIBS vtkImagingStatistics vtksys) # VTK 6.x
+  set(VTK_IMAGING_LIBS vtkImagingStatistics) # VTK 6.x
 else()
-  set(VTK_LIBS vtkImaging vtksys) # VTK 5.x
+  set(VTK_IMAGING_LIBS vtkImaging) # VTK 5.x
 endif()
 
 foreach(src ${PROGRAM_SRCS})
   string(REGEX REPLACE "\\.(cxx|c|mm|m)$" "" prog ${src})
   add_executable(${prog} ${src})
-  target_link_libraries(${prog} vtkDICOM ${VTK_LIBS})
+  target_link_libraries(${prog} vtkDICOM
+    ${VTK_LIBS} ${VTK_IMAGING_LIBS} ${KWSYS_LIBS})
   list(APPEND PROGRAM_EXES ${prog})
 endforeach()
 
@@ -25,5 +26,3 @@ install(TARGETS ${PROGRAM_EXES}
   RUNTIME DESTINATION ${DICOM_RUNTIME_INSTALL_DEST} COMPONENT RuntimeLibraries
   LIBRARY DESTINATION ${DICOM_LIBRARY_INSTALL_DEST} COMPONENT RuntimeLibraries
   ARCHIVE DESTINATION ${DICOM_ARCHIVE_INSTALL_DEST} COMPONENT Development)
-
-
