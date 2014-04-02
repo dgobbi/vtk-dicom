@@ -23,7 +23,7 @@
 class VTK_DICOM_EXPORT vtkDICOMDictEntry
 {
 public:
-  // The struct that actually stores the vtkDICOMDictEntry information.
+  //! A struct to statically store DICOM dictionary entries.
   struct Entry
   {
     unsigned short Group;

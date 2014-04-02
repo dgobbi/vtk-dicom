@@ -113,7 +113,7 @@ public:
   bool IsBiDirectional() const {
     return (this->Key == ISO_IR_127 || this->Key == ISO_IR_138); }
 
-  //! Count the number of backslashes in an encodes string.
+  //! Count the number of backslashes in an encoded string.
   /*!
    *  The backslash byte is sometimes present as half of a multibyte
    *  character in the Japanese and Chinese encodings.  This method

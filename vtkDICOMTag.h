@@ -22,7 +22,7 @@
 class VTK_DICOM_EXPORT vtkDICOMTag
 {
 public:
-  //! A POD tag that can be statically initialized.
+  //! A struct that provides static storage for a DICOM tag.
   struct StaticTag
   {
     unsigned int Key;
