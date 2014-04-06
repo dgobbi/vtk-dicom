@@ -34,3 +34,15 @@ add_executable(TestDICOMCharacterSet TestDICOMCharacterSet.cxx)
 target_link_libraries(TestDICOMCharacterSet vtkDICOM ${VTK_LIBS})
 get_target_property(pth TestDICOMCharacterSet RUNTIME_OUTPUT_DIRECTORY)
 add_test(TestDICOMCharacterSet ${pth}/TestDICOMCharacterSet)
+
+if(BUILD_PYTHON_WRAPPERS)
+  if(NOT "${VTK_PYTHON_EXE}")
+    get_target_property(WRAP_PYTHON_PATH vtkWrapPython LOCATION)
+    get_filename_component(VTK_EXE_DIR ${WRAP_PYTHON_PATH} PATH)
+    find_program(VTK_PYTHON_EXE vtkpython "${VTK_EXE_DIR}")
+  endif()
+  add_test(TestDICOMPython "${VTK_PYTHON_EXE}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/TestDICOMPython.py")
+  set_tests_properties(TestDICOMPython PROPERTIES ENVIRONMENT
+    "PYTHONPATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+endif()
