@@ -22,6 +22,9 @@ endif()
 
 set(BASE_LIBS ${VTK_DICOM_LINK_TARGET} ${VTK_LIBS})
 
+add_executable(DICOMRewriter DICOMRewriter.cxx)
+target_link_libraries(DICOMRewriter vtkDICOM ${BASE_LIBS} ${KWSYS_LIBS})
+
 add_executable(TestDICOMCompiler TestDICOMCompiler.cxx)
 target_link_libraries(TestDICOMCompiler ${BASE_LIBS})
 
