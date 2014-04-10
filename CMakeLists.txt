@@ -418,6 +418,11 @@ if(BUILD_JAVA_WRAPPERS)
     set(VTK_JAVA_JAR "${vtkWrappingJava_RUNTIME_LIBRARY_DIRS}/vtk.jar")
   endif()
 
+  set(_sep ":")
+  if(WIN32)
+    set(_sep "\\;")
+  endif()
+
   add_custom_target(${LIB_NAME}JavaJar ALL
     DEPENDS ${VTK_JAR_PATH}/vtkdicom.jar)
   add_custom_target(${LIB_NAME}JavaClasses ALL
@@ -426,7 +431,7 @@ if(BUILD_JAVA_WRAPPERS)
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/java/javac_stamp.txt
     DEPENDS ${VTK_JAVA_DEPENDENCIES}
     COMMAND ${JAVA_COMPILE} ${JAVAC_OPTIONS} -source 1.5
-      -classpath ${VTK_DIR}/java
+      -classpath ${VTK_JAVA_JAR}${_sep}${VTK_DIR}/java
       -sourcepath ${VTK_DIR}/java/vtk/
       -d ${CMAKE_CURRENT_BINARY_DIR}/java
       ${CMAKE_CURRENT_BINARY_DIR}/java/vtk/*.java
