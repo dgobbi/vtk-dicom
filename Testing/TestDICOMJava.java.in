@@ -1,0 +1,40 @@
+import vtk.vtkDICOMReader;
+import vtk.vtkDICOMWriter;
+import vtk.vtkDICOMMetaData;
+import vtk.vtkObject;
+import vtk.vtkIntArray;
+import vtk.vtkJavaTesting;
+
+import java.io.File;
+
+public class TestDICOMJava {
+    public static void main(final String[] args) {
+        vtkJavaTesting.Initialize(args, false);
+        String sep = System.getProperty("file.separator");
+        String lname = System.mapLibraryName("vtkDICOMJava");
+        String lpath = "@CMAKE_LIBRARY_OUTPUT_DIRECTORY@";
+        String configs[] = {
+          "Release", "Debug", "RelWithDebInfo", "MinSizeRel", ""
+        };
+        int i;
+        for (i = 0; i < 5; i++) {
+          String config = configs[i];
+          String fullpath = lpath + sep;
+          if (config != "") {
+            fullpath = fullpath + config + sep;
+          }
+          fullpath = fullpath + lname;
+          if (new File(fullpath).exists() || config == "") {
+            Runtime.getRuntime().load(fullpath);
+            break;
+          }
+        }
+        System.out.println("Ran the vtk-dicom Java test.");
+        vtkDICOMReader reader = new vtkDICOMReader();
+        vtkDICOMWriter writer = new vtkDICOMWriter();
+        vtkDICOMMetaData meta = new vtkDICOMMetaData();
+        vtkIntArray a = new vtkIntArray();
+        vtkObject.JAVA_OBJECT_MANAGER.deleteAll();
+        System.out.println("Ran the vtk-dicom Java test.");
+    }
+}

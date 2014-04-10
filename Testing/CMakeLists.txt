@@ -46,3 +46,29 @@ if(BUILD_PYTHON_WRAPPERS)
   set_tests_properties(TestDICOMPython PROPERTIES ENVIRONMENT
     "PYTHONPATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 endif()
+
+if(BUILD_JAVA_WRAPPERS)
+  set(_sep ":")
+  if(WIN32)
+    set(_sep "\\;")
+  endif()
+  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/TestDICOMJava.java.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/TestDICOMJava.java" @ONLY)
+  add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/javac_test_stamp.txt
+    COMMAND ${JAVA_COMPILE} ${JAVAC_OPTIONS}
+    -classpath "${VTK_JAR_PATH}/vtkdicom.jar${_sep}${DICOM_BINARY_DIR}/java${_sep}${VTK_JAVA_JAR}"
+    -source 1.5 -sourcepath ${CMAKE_CURRENT_SOURCE_DIR}
+    -d ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}/TestDICOMJava.java
+    COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/javac_test_stamp.txt
+    DEPENDS "${VTK_JAR_PATH}/vtkdicom.jar"
+    "${CMAKE_CURRENT_BINARY_DIR}/TestDICOMJava.java"
+    COMMENT "Compiling Java Tests"
+    )
+  add_custom_target(DICOMJavaTests ALL DEPENDS
+    ${CMAKE_CURRENT_BINARY_DIR}/javac_test_stamp.txt ${JAVA_LIBRARIES})
+  add_test(TestDICOMJava "${JAVA_RUNTIME}"
+    -classpath "${VTK_JAR_PATH}/vtkdicom.jar${_sep}${DICOM_BINARY_DIR}/java${_sep}${VTK_JAVA_JAR}${_sep}${CMAKE_CURRENT_BINARY_DIR}"
+    TestDICOMJava)
+endif()
