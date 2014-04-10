@@ -143,6 +143,10 @@ int main(int argc, char *argv[])
   // check that there were two elements in the ReferencedSeriesSequence item
   TestAssert(fullcount == 2);
 
+  // check that both of the inserted elements were found
+  TestAssert(found1);
+  TestAssert(found2);
+
   // test direct access with GetAttributeValue
   vtkDICOMValue v2 = seq.GetAttributeValue(0, DC::SeriesInstanceUID);
   TestAssert(StringsEqual(v2.GetCharData(),
