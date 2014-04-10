@@ -10,6 +10,11 @@ for a in dir(vtkDICOMPython):
         setattr(vtk, a, getattr(vtkDICOMPython, a))
 
 m = vtk.vtkDICOMMetaData()
+
+if vtk.vtkVersion.GetVTKMajorVersion() < 6:
+    sys.stderr.write("This test requires VTK 6 or higher.\n");
+    sys.exit(0)
+
 m.SetAttributeValue(vtk.vtkDICOMTag(0x0008, 0x0005), 'ISO_IR 100')
 
 v = m.GetAttributeValue(vtk.vtkDICOMTag(0x0008, 0x0005))
