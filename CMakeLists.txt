@@ -4,7 +4,7 @@ project(DICOM)
 cmake_minimum_required(VERSION 2.6.3)
 
 # Use LINK_INTERFACE_LIBRARIES instead of INTERFACE_LINK_LIBRARIES
-if(2.8.12 VERSION_LESS CMAKE_VERSION)
+if(POLICY CMP0022)
   cmake_policy(SET CMP0022 OLD)
 endif()
 
