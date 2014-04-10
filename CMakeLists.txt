@@ -15,7 +15,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 find_package(VTK REQUIRED)
 if(VTK_FOUND)
   include(${VTK_USE_FILE})
-  if("${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}" LESS 5.8)
+  if("${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}" VERSION_LESS 5.8)
     message(FATAL_ERROR "VTK 5.8 or later is required.")
   endif()
   # Check if VTK set VTK_ZLIB_LIBRARIES
