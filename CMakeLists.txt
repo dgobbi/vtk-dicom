@@ -11,6 +11,9 @@ endif()
 # Allow custom cmake overrides
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 
+# Use ctest for dashboard submissions
+include(CTest)
+
 # Look for a VTK build directory
 find_package(VTK REQUIRED)
 if(VTK_FOUND)
