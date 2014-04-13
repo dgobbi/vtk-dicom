@@ -13,11 +13,16 @@ else()
   set(VTK_IMAGING_LIBS vtkImaging) # VTK 5.x
 endif()
 
+set(BASE_LIBS vtkDICOM ${VTK_LIBS})
+if(USE_DCMTK)
+ set(BASE_LIBS ${BASE_LIBS} ${DCMTK_charls_LIBRARY})
+endif()
+
 foreach(src ${PROGRAM_SRCS})
   string(REGEX REPLACE "\\.(cxx|c|mm|m)$" "" prog ${src})
   add_executable(${prog} ${src})
-  target_link_libraries(${prog} vtkDICOM
-    ${VTK_LIBS} ${VTK_IMAGING_LIBS} ${KWSYS_LIBS})
+  target_link_libraries(${prog} ${BASE_LIBS}
+    ${VTK_IMAGING_LIBS} ${KWSYS_LIBS})
   list(APPEND PROGRAM_EXES ${prog})
 endforeach()
 
