@@ -43,8 +43,14 @@ if(BUILD_PYTHON_WRAPPERS)
   endif()
   add_test(TestDICOMPython "${VTK_PYTHON_EXE}"
     "${CMAKE_CURRENT_SOURCE_DIR}/TestDICOMPython.py")
-  set_tests_properties(TestDICOMPython PROPERTIES ENVIRONMENT
-    "PYTHONPATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+  if(CMAKE_CONFIGURATION_TYPES)
+    set_tests_properties(TestDICOMPython PROPERTIES ENVIRONMENT
+      "PYTHONPATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}")
+    message(STATUS "configuration types!")
+  else()
+    set_tests_properties(TestDICOMPython PROPERTIES ENVIRONMENT
+      "PYTHONPATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+  endif()
 endif()
 
 if(BUILD_JAVA_WRAPPERS)
