@@ -293,7 +293,7 @@ if("${VTK_MAJOR_VERSION}" GREATER 5)
     set(vtk-module ${LIB_NAME})
     set(MODULE_HIERARCHY_NAME ${LIB_NAME}Hierarchy)
     set(${LIB_NAME}_LINK_DEPENDS ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS})
-    include(${VTK_CMAKE_DIR}/vtkWrapHierarchy.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/vtkWrapHierarchy.cmake)
     vtk_wrap_hierarchy(${MODULE_HIERARCHY_NAME} ${DICOM_BINARY_DIR}
       "${LIB_SRCS}")
     set(KIT_HIERARCHY_FILE ${DICOM_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.txt)

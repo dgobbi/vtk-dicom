@@ -62,7 +62,7 @@ if(BUILD_JAVA_WRAPPERS)
     -d ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/TestDICOMJava.java
     COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/javac_test_stamp.txt
-    DEPENDS "${VTK_JAR_PATH}/vtkdicom.jar"
+    DEPENDS vtkDICOMJavaJar
     "${CMAKE_CURRENT_BINARY_DIR}/TestDICOMJava.java"
     COMMENT "Compiling Java Tests"
     )
