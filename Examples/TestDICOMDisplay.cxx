@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
   sorter->SetInputFileNames(files);
   sorter->Update();
 
+#if 0
   // find the series with the largest number of files
   int m = sorter->GetNumberOfStudies();
   int studyIdx = 0;
@@ -67,6 +68,7 @@ int main(int argc, char *argv[])
 
   // display the longest series
   //vtkStringArray *a = sorter->GetFileNamesForSeries(seriesIdx);
+#endif
 
   // trust the user and display all the files, even if multiple series
   vtkStringArray *a = sorter->GetOutputFileNames();

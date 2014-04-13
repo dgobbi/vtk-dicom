@@ -530,15 +530,17 @@ bool Encoder<E>::WriteDataElement(
       // (see DICOM Part 5, Section 6.2.2, Unknown (UN) Value Representation)
       // if VR is OB then it is a sequence of fragments
       // (see DICOM Part 5, Annex A.4 and Table A.4-1)
-      const unsigned char *ptr = v.GetUnsignedCharData();
       vl = v.GetNumberOfValues();
       // force length to even
       assert((vl & 1) == 0);
       vl += (vl & 1);
+#ifndef NDEBUG
       // make sure sequence end delimiter is present
+      const unsigned char *ptr = v.GetUnsignedCharData();
       assert(vl > 4);
       assert(ptr[vl-4] + (ptr[vl-3] << 8) == HxFFFE &&
              ptr[vl-2] + (ptr[vl-1] << 8) == HxE0DD);
+#endif
       }
     else if (vr != vtkDICOMVR::SQ)
       {
