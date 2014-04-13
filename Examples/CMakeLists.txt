@@ -8,7 +8,7 @@ else()
 endif()
 
 set(BASE_LIBS vtkDICOM ${VTK_LIBS})
-if(USE_DCMTK)
+if(USE_DCMTK AND DCMTK_charls_LIBRARY)
  set(BASE_LIBS ${BASE_LIBS} ${DCMTK_charls_LIBRARY})
 endif()
 
