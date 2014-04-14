@@ -12,3 +12,6 @@ for interrogating and converting DICOM files.
 More information can be found at the following website:
 http://dgobbi.github.io/vtk-dicom/doc/api/
 http://dgobbi.github.io/vtk-dicom/doc/vtk-dicom.pdf
+
+A software quality dashboard is provided:
+http://my.cdash.org/index.php?project=vtk-dicom
