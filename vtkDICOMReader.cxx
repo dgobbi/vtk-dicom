@@ -1693,7 +1693,8 @@ bool vtkDICOMReader::ReadUncompressedFile(
   if (feof(infile) || resultSize != readSize)
     {
     this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
-    vtkErrorMacro("DICOM file is truncated, some data is missing.");
+    vtkErrorMacro("DICOM file is truncated, " <<
+      (readSize - resultSize) << " bytes are missing.");
     success = false;
     }
   else if (ferror(infile))
