@@ -1408,13 +1408,13 @@ int vtkDICOMReader::RequestInformation(
       vtkDICOMTagPath(DC::SharedFunctionalGroupsSequence, 0,
                       DC::PixelValueTransformationSequence, 0,
                       DC::RescaleIntercept));
-   if (mv.IsValid() && bv.IsValid())
-     {
-     this->NeedsRescale = false;
-     this->RescaleSlope = mv.AsDouble();
-     this->RescaleIntercept = bv.AsDouble();
-     }
-   }
+    if (mv.IsValid() && bv.IsValid())
+      {
+      this->NeedsRescale = false;
+      this->RescaleSlope = mv.AsDouble();
+      this->RescaleIntercept = bv.AsDouble();
+      }
+    }
 
   // === Image Orientation in DICOM files ===
   //
