@@ -694,7 +694,15 @@ void niftitodicom_convert_one(
   vtkSmartPointer<vtkImageShiftScale> caster =
     vtkSmartPointer<vtkImageShiftScale>::New();
 
-  if (scalarType != VTK_SHORT && scalarType != VTK_UNSIGNED_SHORT)
+  // whether to allow 8-bit DICOM
+  bool allowUnsignedChar = false;
+  if (options->modality && strcmp(options->modality, "SC") == 0)
+    {
+    allowUnsignedChar = true;
+    }
+
+  if (scalarType != VTK_SHORT && scalarType != VTK_UNSIGNED_SHORT &&
+      (scalarType != VTK_UNSIGNED_CHAR || !allowUnsignedChar))
     {
 #if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
     if (scalarType == VTK_FLOAT || scalarType == VTK_DOUBLE)

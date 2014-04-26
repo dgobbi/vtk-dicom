@@ -258,12 +258,27 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
 bool vtkDICOMSCGenerator::GenerateSCInstance(
   vtkInformation *info, vtkDICOMMetaData *meta)
 {
+  // get the scalar information
+  vtkInformation *scalarInfo = vtkDataObject::GetActiveFieldInformation(
+    info, vtkDataObject::FIELD_ASSOCIATION_POINTS,
+    vtkDataSetAttributes::SCALARS);
+
+  int scalarType = scalarInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE());
+  int numComponents = scalarInfo->Get(
+    vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
+  int samplesPerPixel = 1;
+
+  if (scalarType == VTK_UNSIGNED_CHAR)
+    {
+    samplesPerPixel = numComponents;
+    }
+
   this->SetPixelRestrictions(
     RepresentationUnsigned | RepresentationSigned,
     BitsStored8 | BitsStored10 | BitsStored12 | BitsStored16,
-    1);
+    samplesPerPixel);
 
-  const char *SOPClass = "1.2.840.10008.5.1.4.1.1.3";
+  const char *SOPClass = "1.2.840.10008.5.1.4.1.1.7";
   this->InitializeMetaData(info, meta);
 
   if (!this->GenerateSOPCommonModule(meta, SOPClass) ||
