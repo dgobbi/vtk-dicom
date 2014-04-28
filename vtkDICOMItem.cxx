@@ -384,6 +384,45 @@ vtkDICOMVR vtkDICOMItem::FindDictVR(vtkDICOMTag tag) const
 }
 
 //----------------------------------------------------------------------------
+vtkDICOMTag vtkDICOMItem::ResolvePrivateTag(
+  vtkDICOMTag ptag, const std::string& creator) const
+{
+  unsigned short g = ptag.GetGroup();
+  if ((g & 0x0001) == 0)
+    {
+    return ptag;
+    }
+
+  // if not resolved, the result will be (ffff,ffff)
+  vtkDICOMTag otag(0xFFFF, 0xFFFF);
+  vtkDICOMTag ctag(g, 0x0010);
+  vtkDICOMTag etag(g, 0x00FF);
+
+  vtkDICOMDataElementIterator iter = this->Begin();
+  vtkDICOMDataElementIterator iterEnd = this->End();
+
+  // search for the correct group
+  while (iter != iterEnd && iter->GetTag() < ctag)
+    {
+    iter++;
+    }
+  // look for private creator elements within the group
+  while (iter != iterEnd && iter->GetTag() <= etag)
+    {
+    ctag = iter->GetTag();
+    if (iter->GetValue().AsString() == creator)
+      {
+      otag = vtkDICOMTag(
+        g, (ctag.GetElement() << 8) | (ptag.GetElement() & 0x00FF));
+      break;
+      }
+    iter++;
+    }
+
+  return otag;
+}
+
+//----------------------------------------------------------------------------
 vtkDICOMDictEntry vtkDICOMItem::FindDictEntry(vtkDICOMTag tag) const
 {
   unsigned short group = tag.GetGroup();

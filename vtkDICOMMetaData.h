@@ -156,6 +156,18 @@ public:
   void SetAttributeValue(const vtkDICOMTagPath& tag, double v);
   void SetAttributeValue(const vtkDICOMTagPath& tag, const std::string& v);
 
+  //! Resolve a private tag, or return (ffff,ffff) if not resolved.
+  /*!
+   *  Private data elements are mobile, which means that different data
+   *  sets might store them at different locations.  Given a private
+   *  data element which has a tag of (gggg,xxee) according to its
+   *  dictionary, the first two element digits "xx" can change from one
+   *  data set to the next, and the data set must have a "Creator Element"
+   *  at (gggg,00xx) to allow the digits of "xx" to be resolved.  Please
+   *  read DICOM Part 5 Section 7.8 for additional information.
+   */
+  vtkDICOMTag ResolvePrivateTag(vtkDICOMTag ptag, const std::string& creator);
+
   //! Look up a tag in the DICOM dictionary.
   /*!
    *  Unlike the method in vtkDICOMDictionary, this method can identify
