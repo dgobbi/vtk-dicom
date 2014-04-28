@@ -886,11 +886,21 @@ vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTag(
   vtkDICOMDataElementIterator iter = this->Begin();
   vtkDICOMDataElementIterator iterEnd = this->End();
 
-  // search for the correct group
-  while (iter != iterEnd && iter->GetTag() < ctag)
+  vtkDICOMDataElement *e = this->FindDataElement(ctag);
+  if (e != 0)
     {
-    iter++;
+    // found (gggg,0010) in the hash table
+    iter = vtkDICOMDataElementIterator(e);
     }
+  else
+    {
+    // skip through list of elements until group is found
+    while (iter != iterEnd && iter->GetTag() < ctag)
+      {
+      iter++;
+      }
+    }
+
   // look for private creator elements within the group
   while (iter != iterEnd && iter->GetTag() <= etag)
     {
