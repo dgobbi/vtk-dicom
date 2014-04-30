@@ -134,6 +134,17 @@ public:
   vtkDICOMTag ResolvePrivateTag(
     vtkDICOMTag ptag, const std::string& creator) const;
 
+  //! Resolve a private tag, and add the creator to the data set.
+  /*!
+   *  This method works like ResolvePrivateTag, except that if the creator
+   *  is not found in the data set, it will be added.  It should be used to
+   *  resolve private tags that you plan to write to the data set.  The
+   *  returned tag will be (ffff,ffff) if there are no empty slots available
+   *  for the creator.  Every private group has 240 available slots.
+   */
+  vtkDICOMTag ResolvePrivateTagForWriting(
+    vtkDICOMTag ptag, const std::string& creator);
+
   //! Look up a tag in the DICOM dictionary.
   /*!
    *  Unlike the method in vtkDICOMDictionary, this method can identify

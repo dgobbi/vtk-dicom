@@ -897,7 +897,7 @@ vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTag(
     // skip through list of elements until group is found
     while (iter != iterEnd && iter->GetTag() < ctag)
       {
-      iter++;
+      ++iter;
       }
     }
 
@@ -911,7 +911,33 @@ vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTag(
         g, (ctag.GetElement() << 8) | (ptag.GetElement() & 0x00FF));
       break;
       }
-    iter++;
+    ++iter;
+    }
+
+  return otag;
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTagForWriting(
+  vtkDICOMTag ptag, const std::string& creator)
+{
+  vtkDICOMTag otag = this->ResolvePrivateTag(ptag, creator);
+  if (otag == vtkDICOMTag(0xFFFF, 0xFFFF))
+    {
+    unsigned short g = ptag.GetGroup();
+    for (unsigned short e = 0x0010; e <= 0x00FF; e++)
+      {
+      vtkDICOMTag ctag(g, e);
+      vtkDICOMDataElement *d = this->FindDataElementOrInsert(ctag);
+      if (!d->Value.IsValid())
+        {
+        // if an empty slot was found, use it for this creator
+        d->Tag = ctag;
+        d->Value = vtkDICOMValue(vtkDICOMVR::LO, creator);
+        otag = vtkDICOMTag(g, (e << 8) | (ptag.GetElement() & 0x00FF));
+        break;
+        }
+      }
     }
 
   return otag;
