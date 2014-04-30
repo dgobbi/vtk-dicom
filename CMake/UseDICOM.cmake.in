@@ -14,6 +14,17 @@ if(NOT DICOM_USE_FILE_INCLUDED)
       "VTK not found in DICOM_VTK_DIR=\"${DICOM_VTK_DIR}\".")
   endif()
 
+  if(DICOM_USE_GDCM AND NOT DICOM_BUILD_SHARED_LIBS AND NOT GDCM_FOUND)
+    set(GDCM_DIR "${DICOM_GDCM_DIR}")
+    find_package(GDCM)
+    if(GDCM_FOUND)
+      include(${GDCM_USE_FILE})
+    else()
+      message(FATAL_ERROR
+        "GDCM not found in DICOM_GDCM_DIR=\"${DICOM_GDCM_DIR}\".")
+    endif()
+  endif()
+
   # Update CMAKE_MODULE_PATH so includes work.
   set(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH}
