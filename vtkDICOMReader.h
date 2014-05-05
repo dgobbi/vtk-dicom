@@ -28,6 +28,7 @@ class vtkIntArray;
 class vtkTypeInt64Array;
 class vtkStringArray;
 class vtkMatrix4x4;
+class vtkMedicalImageProperties;
 class vtkDICOMMetaData;
 class vtkDICOMParser;
 
@@ -144,6 +145,10 @@ public:
   vtkMatrix4x4 *GetPatientMatrix() { return this->PatientMatrix; }
 
   // Description:
+  // Get a MedicalImageProperties object for this file.
+  vtkMedicalImageProperties *GetMedicalImageProperties();
+
+  // Description:
   // Enumeration for top-down vs. bottom-up ordering.
   enum RowOrder { FileNative, TopDown, BottomUp };
 
@@ -216,6 +221,10 @@ protected:
   void NoSortFiles(vtkIntArray *fileArray, vtkIntArray *frameArray);
 
   // Description:
+  // Update the medical image properties;
+  virtual void UpdateMedicalImageProperties();
+
+  // Description:
   // Select whether to sort the files.
   int Sorting;
 
@@ -231,6 +240,10 @@ protected:
   // Description:
   // The meta data for the image.
   vtkDICOMMetaData *MetaData;
+
+  // Description:
+  // The MedicalImageProperties, for compatibility with other readers.
+  vtkMedicalImageProperties *MedicalImageProperties;
 
   // Description:
   // The parser that is used to read the file.

@@ -28,6 +28,7 @@
 #include "vtkTypeInt64Array.h"
 #include "vtkByteSwap.h"
 #include "vtkMatrix4x4.h"
+#include "vtkMedicalImageProperties.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
 #include "vtkStringArray.h"
 #include "vtkMath.h"
@@ -99,6 +100,8 @@ vtkDICOMReader::vtkDICOMReader()
   this->SwapBytes = 0;
 #endif
 
+  this->MedicalImageProperties = 0;
+
 #ifdef DICOM_USE_DCMTK
   DJDecoderRegistration::registerCodecs();
   DJLSDecoderRegistration::registerCodecs();
@@ -143,6 +146,10 @@ vtkDICOMReader::~vtkDICOMReader()
     {
     this->PatientMatrix->Delete();
     }
+  if (this->MedicalImageProperties)
+    {
+    this->MedicalImageProperties->Delete();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -154,6 +161,16 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
   if (this->MetaData)
     {
     os << this->MetaData << "\n";
+    }
+  else
+    {
+    os << "(none)\n";
+    }
+
+  os << indent << "MedicalImageProperties: ";
+  if (this->MedicalImageProperties)
+    {
+    os << this->MedicalImageProperties << "\n";
     }
   else
     {
@@ -1460,6 +1477,12 @@ int vtkDICOMReader::RequestInformation(
     this->PatientMatrix->Identity();
     }
 
+  // Set the medical image properties
+  if (this->MedicalImageProperties)
+    {
+    this->UpdateMedicalImageProperties();
+    }
+
   // Set the output information.
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
   outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(),
@@ -2061,4 +2084,123 @@ void vtkDICOMReader::RelayError(vtkObject *o, unsigned long e, void *data)
     {
     this->InvokeEvent(e, data);
     }
+}
+
+//----------------------------------------------------------------------------
+vtkMedicalImageProperties *vtkDICOMReader::GetMedicalImageProperties()
+{
+  if (this->MedicalImageProperties == 0)
+    {
+    this->MedicalImageProperties = vtkMedicalImageProperties::New();
+    }
+  this->UpdateMedicalImageProperties();
+
+  return this->MedicalImageProperties;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMReader::UpdateMedicalImageProperties()
+{
+  vtkDICOMMetaData *meta = this->MetaData;
+  vtkMatrix4x4 *matrix = this->PatientMatrix;
+  vtkMedicalImageProperties *properties = this->MedicalImageProperties;
+
+  properties->SetPatientName(
+    meta->GetAttributeValue(DC::PatientName).GetCharData());
+  properties->SetPatientID(
+    meta->GetAttributeValue(DC::PatientID).GetCharData());
+  properties->SetPatientAge(
+    meta->GetAttributeValue(DC::PatientAge).GetCharData());
+  properties->SetPatientSex(
+    meta->GetAttributeValue(DC::PatientSex).GetCharData());
+  properties->SetPatientBirthDate(
+    meta->GetAttributeValue(DC::PatientBirthDate).GetCharData());
+  properties->SetStudyDate(
+    meta->GetAttributeValue(DC::StudyDate).GetCharData());
+  properties->SetAcquisitionDate(
+    meta->GetAttributeValue(DC::AcquisitionDate).GetCharData());
+  properties->SetStudyTime(
+    meta->GetAttributeValue(DC::StudyTime).GetCharData());
+  properties->SetAcquisitionTime(
+    meta->GetAttributeValue(DC::AcquisitionTime).GetCharData());
+  properties->SetImageDate(
+    meta->GetAttributeValue(DC::ContentDate).GetCharData());
+  properties->SetImageTime(
+    meta->GetAttributeValue(DC::ContentTime).GetCharData());
+  properties->SetImageNumber(
+    meta->GetAttributeValue(DC::InstanceNumber).GetCharData());
+  properties->SetSeriesNumber(
+    meta->GetAttributeValue(DC::SeriesNumber).GetCharData());
+  properties->SetSeriesDescription(
+    meta->GetAttributeValue(DC::SeriesDescription).GetCharData());
+  properties->SetStudyID(
+    meta->GetAttributeValue(DC::StudyID).GetCharData());
+  properties->SetStudyDescription(
+    meta->GetAttributeValue(DC::StudyDescription).GetCharData());
+  properties->SetModality(
+    meta->GetAttributeValue(DC::Modality).GetCharData());
+  properties->SetManufacturer(
+    meta->GetAttributeValue(DC::Manufacturer).GetCharData());
+  properties->SetManufacturerModelName(
+    meta->GetAttributeValue(DC::ManufacturerModelName).GetCharData());
+  properties->SetStationName(
+    meta->GetAttributeValue(DC::StationName).GetCharData());
+  properties->SetInstitutionName(
+    meta->GetAttributeValue(DC::InstitutionName).GetCharData());
+  properties->SetConvolutionKernel(
+    meta->GetAttributeValue(DC::ConvolutionKernel).GetCharData());
+  properties->SetSliceThickness(
+    meta->GetAttributeValue(DC::SliceThickness).GetCharData());
+  properties->SetKVP(
+    meta->GetAttributeValue(DC::KVP).GetCharData());
+  properties->SetGantryTilt(
+    meta->GetAttributeValue(DC::GantryAngle).GetCharData());
+  properties->SetEchoTime(
+    meta->GetAttributeValue(DC::EchoTime).GetCharData());
+  properties->SetEchoTrainLength(
+    meta->GetAttributeValue(DC::EchoTrainLength).GetCharData());
+  properties->SetRepetitionTime(
+    meta->GetAttributeValue(DC::RepetitionTime).GetCharData());
+  properties->SetExposureTime(
+    meta->GetAttributeValue(DC::ExposureTime).GetCharData());
+  properties->SetXRayTubeCurrent(
+    meta->GetAttributeValue(DC::XRayTubeCurrent).GetCharData());
+  properties->SetExposure(
+    meta->GetAttributeValue(DC::Exposure).GetCharData());
+
+  const vtkDICOMValue& center = meta->GetAttributeValue(DC::WindowCenter);
+  const vtkDICOMValue& width = meta->GetAttributeValue(DC::WindowWidth);
+
+  int n = static_cast<int>(center.GetNumberOfValues());
+  int m = static_cast<int>(width.GetNumberOfValues());
+  n = (m < n ? m : n);
+  properties->RemoveAllWindowLevelPresets();
+  for (int i = 0; i < n; i++)
+    {
+    properties->AddWindowLevelPreset(
+      center.GetDouble(i), width.GetDouble(i));
+    }
+
+  const vtkDICOMValue& comment =
+    meta->GetAttributeValue(DC::WindowCenterWidthExplanation);
+  m = comment.GetNumberOfValues();
+  m = (n < m ? n : m);
+  for (int j = 0; j < m; j++)
+    {
+    properties->SetNthWindowLevelPresetComment(
+      j, comment.GetString(j).c_str());
+    }
+
+  double dircos[6] = { 1.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
+  if (matrix)
+    {
+    for (int jj = 0; jj < 2; jj++)
+      {
+      for (int ii = 0; ii < 3; ii++)
+        {
+        dircos[ii + 3*jj] = matrix->GetElement(ii, jj);
+        }
+      }
+    }
+  properties->SetDirectionCosine(dircos);
 }
