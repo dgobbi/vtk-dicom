@@ -79,10 +79,6 @@ void vtkDICOMMetaData::SetNumberOfInstances(int n)
     }
   else
     {
-    if (n != this->NumberOfInstances)
-      {
-      this->Modified();
-      }
     this->NumberOfInstances = n;
     }
 }
