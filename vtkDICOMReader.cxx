@@ -2092,8 +2092,8 @@ vtkMedicalImageProperties *vtkDICOMReader::GetMedicalImageProperties()
   if (this->MedicalImageProperties == 0)
     {
     this->MedicalImageProperties = vtkMedicalImageProperties::New();
+    this->UpdateMedicalImageProperties();
     }
-  this->UpdateMedicalImageProperties();
 
   return this->MedicalImageProperties;
 }
