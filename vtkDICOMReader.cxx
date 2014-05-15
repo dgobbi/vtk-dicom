@@ -1647,7 +1647,96 @@ void vtkDICOMReader::UnpackBits(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMReader::ReadUncompressedFile(
+vtkIdType vtkDICOMReader::UnpackRLE(
+  const void *filePtr, void *buffer, vtkIdType bufferSize,
+  unsigned int fragmentSize)
+{
+  const signed char *inPtr = static_cast<const signed char *>(filePtr);
+  signed char *outPtr = static_cast<signed char *>(buffer);
+
+  // loop over all RLE segments
+  unsigned int n = vtkDICOMReader::UnpackUnsignedInt(inPtr);
+  vtkIdType segmentSize = bufferSize/n;
+  for (unsigned int i = 0; i < n; i++)
+    {
+    // get the offset for this segment
+    unsigned int offset = vtkDICOMReader::UnpackUnsignedInt(inPtr + (i+1)*4);
+    if (offset >= fragmentSize)
+      {
+      break;
+      }
+    // loop over the segment and decompress it
+    const signed char *cp = inPtr + offset;
+    signed char *dp = outPtr + i;
+    vtkIdType remaining = segmentSize;
+    while (remaining > 0 && offset < fragmentSize)
+      {
+      if (++offset == fragmentSize)
+        {
+        break;
+        }
+      // check the indicator byte (use short to avoid overflow)
+      short c = *cp++;
+      if (c >= 0)
+        {
+        // do a literal run
+        c = c + 1;
+        if (fragmentSize - offset < static_cast<unsigned int>(c))
+          {
+          // safety check: limit to the number available input bytes
+          c = static_cast<short>(fragmentSize - offset);
+          }
+        offset += c;
+        if (c > remaining)
+          {
+          // safety check: limit to the size of the output buffer
+          c = remaining;
+          }
+        remaining -= c;
+        do
+          {
+          *dp = *cp++;
+          dp += n;
+          }
+        while (--c);
+        }
+      else if (c > -128)
+        {
+        // do a replication run
+        c = 1 - c;
+        offset += 1;
+        if (c > remaining)
+          {
+          // safety check: limit to the size of the output buffer
+          c = remaining;
+          }
+        remaining -= c;
+        do
+          {
+          *dp = *cp;
+          dp += n;
+          }
+        while (--c);
+        cp++;
+        }
+      }
+    if (remaining > 0)
+      {
+      // short read, clear remainder of buffer
+      do
+        {
+        *dp = 0;
+        dp += n;
+        }
+      while (--remaining);
+      }
+    }
+
+  return bufferSize;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMReader::ReadFileNative(
   const char *filename, int fileIdx, char *buffer, vtkIdType bufferSize)
 {
   // get the offset to the PixelData in the file
@@ -1673,12 +1762,71 @@ bool vtkDICOMReader::ReadUncompressedFile(
     return false;
     }
 
+  std::string transferSyntax = this->MetaData->GetAttributeValue(
+    fileIdx, DC::TransferSyntaxUID).AsString();
+
   int bitsAllocated = this->MetaData->GetAttributeValue(
     fileIdx, DC::BitsAllocated).AsInt();
 
   size_t readSize = bufferSize;
   size_t resultSize = 0;
-  if (bitsAllocated == 12)
+  if (transferSyntax == "1.2.840.10008.1.2.5")
+    {
+    // assume the remainder of the file is all pixel data
+    readSize = static_cast<size_t>(
+      offsetAndSize[1] - offsetAndSize[0]);
+    if (readSize < 8)
+      {
+      readSize = 8;
+      }
+    char *rleBuffer = new char[readSize];
+    char *filePtr = rleBuffer;
+    resultSize = infile.Read(filePtr, readSize);
+    size_t bytesRemaining = resultSize;
+    vtkIdType bufferPos = 0;
+    vtkIdType frameSize = bufferSize;
+    bool isOffsetTable = true;
+    while (bytesRemaining >= 8 && bufferPos < bufferSize)
+      {
+      // get the item header
+      unsigned int tagkey = vtkDICOMReader::UnpackUnsignedInt(filePtr);
+      unsigned int length = vtkDICOMReader::UnpackUnsignedInt(filePtr + 4);
+      filePtr += 8;
+      bytesRemaining -= 8;
+      // make sure the tag is valid
+      if (tagkey != 0xE000FFFE)
+        {
+        break;
+        }
+      if (length > bytesRemaining)
+        {
+        // actual file size should have been at least this much larger
+        readSize += length - bytesRemaining;
+        length = bytesRemaining;
+        }
+      // first item is the offset table
+      if (isOffsetTable)
+        {
+        // length of offset table gives number of frames
+        if (length > 0)
+          {
+          frameSize = bufferSize / (length/4);
+          }
+        }
+      else
+        {
+        // unpack an RLE fragment
+        vtkDICOMReader::UnpackRLE(
+          filePtr, buffer + bufferPos, frameSize, length);
+        bufferPos += frameSize;
+        }
+      filePtr += length;
+      bytesRemaining -= length;
+      isOffsetTable = false;
+      }
+    delete [] rleBuffer;
+    }
+  else if (bitsAllocated == 12)
     {
     // unpack 12 bits little endian into 16 bits little endian,
     // the result will have to be swapped if machine is BE (the
@@ -1729,7 +1877,7 @@ bool vtkDICOMReader::ReadUncompressedFile(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMReader::ReadCompressedFile(
+bool vtkDICOMReader::ReadFileDelegated(
   const char *filename, int fileIdx, char *buffer, vtkIdType bufferSize)
 {
 #if defined(DICOM_USE_DCMTK)
@@ -1831,13 +1979,14 @@ bool vtkDICOMReader::ReadOneFile(
       transferSyntax == "1.2.840.10008.1.20"  ||  // Papyrus Implicit LE
       transferSyntax == "1.2.840.10008.1.2.1" ||  // Explicit LE
       transferSyntax == "1.2.840.10008.1.2.2" ||  // Explicit BE
+      transferSyntax == "1.2.840.10008.1.2.5" ||  // RLE compressed
       transferSyntax == "1.2.840.113619.5.2"  ||  // GE LE with BE data
       transferSyntax == "")
     {
-    return this->ReadUncompressedFile(filename, fileIdx, buffer, bufferSize);
+    return this->ReadFileNative(filename, fileIdx, buffer, bufferSize);
     }
 
-  return this->ReadCompressedFile(filename, fileIdx, buffer, bufferSize);
+  return this->ReadFileDelegated(filename, fileIdx, buffer, bufferSize);
 }
 
 //----------------------------------------------------------------------------
