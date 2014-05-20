@@ -57,7 +57,7 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->SourceInstanceArray = 0;
   this->RangeArray = 0;
   this->PixelValueRange[0] = 0;
-  this->PixelValueRange[1] = 0;
+  this->PixelValueRange[1] = -1;
 
   for (int i = 0; i < 5; i++)
     {
@@ -546,6 +546,20 @@ void vtkDICOMGenerator::ComputePixelValueRange(
   double range[2];
   vtkImageData *data =
     vtkImageData::SafeDownCast(info->Get(vtkDataObject::DATA_OBJECT()));
+  // if the extent is not the whole extent, then range cannot be computed
+  int extent[6], wholeExtent[6];
+  data->GetExtent(extent);
+  info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), wholeExtent);
+  for (int i = 0; i < 6; i++)
+    {
+    if (extent[i] != wholeExtent[i])
+      {
+      seriesRange[0] = 0;
+      seriesRange[1] = -1;
+      return;
+      }
+    }
+
   vtkDataArray *a = data->GetPointData()->GetScalars();
   vtkIdType nt = a->GetNumberOfTuples();
   vtkIdType nc = a->GetNumberOfComponents();
@@ -1114,12 +1128,15 @@ bool vtkDICOMGenerator::GenerateGeneralSeriesModule(vtkDICOMMetaData *meta)
       }
 
     // These are optional, but very nice to have
-    meta->SetAttributeValue(
-      DC::SmallestPixelValueInSeries,
-      vtkDICOMValue(pixelVR, this->PixelValueRange[0]));
-    meta->SetAttributeValue(
-      DC::LargestPixelValueInSeries,
-      vtkDICOMValue(pixelVR, this->PixelValueRange[1]));
+    if (this->PixelValueRange[0] <= this->PixelValueRange[1])
+      {
+      meta->SetAttributeValue(
+        DC::SmallestPixelValueInSeries,
+        vtkDICOMValue(pixelVR, this->PixelValueRange[0]));
+      meta->SetAttributeValue(
+        DC::LargestPixelValueInSeries,
+        vtkDICOMValue(pixelVR, this->PixelValueRange[1]));
+      }
     }
 
   // required items: use simple read/write validation
