@@ -527,7 +527,7 @@ void vtkDICOMWriter::Write()
   // call Modified to force update to execute
   this->Modified();
   this->UpdateInformation();
-  vtkInformation* inInfo = this->GetInputInformation(0, 0);
+  vtkInformation* inInfo = this->GetExecutive()->GetInputInformation(0, 0);
   int wholeExtent[6];
   inInfo->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), wholeExtent);
   // if streaming is on, write the slices one-at-a-time
@@ -547,7 +547,8 @@ void vtkDICOMWriter::Write()
         extent[4] = i;
         extent[5] = i;
         this->Modified();
-        vtkStreamingDemandDrivenPipeline::SetUpdateExtent(inInfo, extent);
+        inInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(),
+                    extent, 6);
         this->Update();
         }
       }
@@ -557,7 +558,8 @@ void vtkDICOMWriter::Write()
   else
     {
     // set update wholeExtent to whole wholeExtent
-    vtkStreamingDemandDrivenPipeline::SetUpdateExtent(inInfo, wholeExtent);
+    inInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(),
+                wholeExtent, 6);
     this->Update();
     }
 }
