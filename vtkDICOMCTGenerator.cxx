@@ -40,8 +40,9 @@ void vtkDICOMCTGenerator::PrintSelf(ostream& os, vtkIndent indent)
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMCTGenerator::GenerateCTSeriesModule(vtkDICOMMetaData *meta)
+bool vtkDICOMCTGenerator::GenerateCTSeriesModule(vtkDICOMMetaData *source)
 {
+  vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::Modality, "CT");
 
   // optional and conditional: direct copy of values with no checks
@@ -50,24 +51,25 @@ bool vtkDICOMCTGenerator::GenerateCTSeriesModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  return this->CopyOptionalAttributes(optional, meta);
+  return this->CopyOptionalAttributes(optional, source);
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMCTGenerator::GenerateCTImageModule(vtkDICOMMetaData *meta)
+bool vtkDICOMCTGenerator::GenerateCTImageModule(vtkDICOMMetaData *source)
 {
   // ImageType is specialized from GeneralImageModule,
   // by adding a third value that is specific to CT:
   // AXIAL or LOCALIZER
   const char *it = 0;
-  if (this->MetaData)
+  if (source)
     {
-    it = this->MetaData->GetAttributeValue(DC::ImageType).GetCharData();
+    it = source->GetAttributeValue(DC::ImageType).GetCharData();
     }
   if (it == 0 || it[0] == '\0')
     {
     it = "DERIVED\\SECONDARY\\AXIAL";
     }
+  vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::ImageType, it);
 
   // These specialized from ImagePixelModule:
@@ -126,13 +128,12 @@ bool vtkDICOMCTGenerator::GenerateCTImageModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  return (this->CopyRequiredAttributes(required, meta) &&
-          this->CopyOptionalAttributes(optional, meta));
+  return (this->CopyRequiredAttributes(required, source) &&
+          this->CopyOptionalAttributes(optional, source));
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMCTGenerator::GenerateCTInstance(
-  vtkInformation *info, vtkDICOMMetaData *meta)
+bool vtkDICOMCTGenerator::GenerateCTInstance(vtkInformation *info)
 {
   this->SetPixelRestrictions(
     RepresentationSigned | RepresentationUnsigned,
@@ -140,28 +141,29 @@ bool vtkDICOMCTGenerator::GenerateCTInstance(
     1);
 
   const char *SOPClass = "1.2.840.10008.5.1.4.1.1.2";
-  this->InitializeMetaData(info, meta);
+  this->InitializeMetaData(info);
 
-  if (!this->GenerateSOPCommonModule(meta, SOPClass) ||
-      !this->GeneratePatientModule(meta) ||
-      !this->GenerateClinicalTrialSubjectModule(meta) ||
-      !this->GenerateGeneralStudyModule(meta) ||
-      !this->GeneratePatientStudyModule(meta) ||
-      !this->GenerateClinicalTrialStudyModule(meta) ||
-      !this->GenerateGeneralSeriesModule(meta) ||
-      !this->GenerateFrameOfReferenceModule(meta) ||
-      !this->GenerateClinicalTrialSeriesModule(meta) ||
-      !this->GenerateGeneralEquipmentModule(meta) ||
-      !this->GenerateGeneralImageModule(meta) ||
-      !this->GenerateImagePlaneModule(meta) ||
-      !this->GenerateImagePixelModule(meta) ||
-      !this->GenerateContrastBolusModule(meta) ||
-      !this->GenerateDeviceModule(meta) ||
-      !this->GenerateSpecimenModule(meta) ||
-      !this->GenerateCTSeriesModule(meta) ||
-      !this->GenerateCTImageModule(meta) ||
-      !this->GenerateOverlayPlaneModule(meta) ||
-      !this->GenerateVOILUTModule(meta))
+  vtkDICOMMetaData *source = this->SourceMetaData;
+  if (!this->GenerateSOPCommonModule(source, SOPClass) ||
+      !this->GeneratePatientModule(source) ||
+      !this->GenerateClinicalTrialSubjectModule(source) ||
+      !this->GenerateGeneralStudyModule(source) ||
+      !this->GeneratePatientStudyModule(source) ||
+      !this->GenerateClinicalTrialStudyModule(source) ||
+      !this->GenerateGeneralSeriesModule(source) ||
+      !this->GenerateFrameOfReferenceModule(source) ||
+      !this->GenerateClinicalTrialSeriesModule(source) ||
+      !this->GenerateGeneralEquipmentModule(source) ||
+      !this->GenerateGeneralImageModule(source) ||
+      !this->GenerateImagePlaneModule(source) ||
+      !this->GenerateImagePixelModule(source) ||
+      !this->GenerateContrastBolusModule(source) ||
+      !this->GenerateDeviceModule(source) ||
+      !this->GenerateSpecimenModule(source) ||
+      !this->GenerateCTSeriesModule(source) ||
+      !this->GenerateCTImageModule(source) ||
+      !this->GenerateOverlayPlaneModule(source) ||
+      !this->GenerateVOILUTModule(source))
     {
     return false;
     }
@@ -170,8 +172,7 @@ bool vtkDICOMCTGenerator::GenerateCTInstance(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMCTGenerator::GenerateInstance(
-  vtkInformation *info, vtkDICOMMetaData *meta)
+bool vtkDICOMCTGenerator::GenerateInstance(vtkInformation *info)
 {
   if (this->MultiFrame)
     {
@@ -179,5 +180,5 @@ bool vtkDICOMCTGenerator::GenerateInstance(
     return false;
     }
 
-  return this->GenerateCTInstance(info, meta);
+  return this->GenerateCTInstance(info);
 }

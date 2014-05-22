@@ -188,8 +188,7 @@ protected:
 
   // Description:
   // Generate the meta data to be written for the files.
-  virtual int GenerateMetaData(vtkInformation *info,
-                               vtkDICOMMetaData *meta);
+  virtual int GenerateMetaData(vtkInformation *info);
 
   // Description:
   // The main execution method, which writes the file.

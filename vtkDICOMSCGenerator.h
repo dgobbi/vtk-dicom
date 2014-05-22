@@ -45,29 +45,26 @@ public:
    *  information for a vtkImageData object, it will populate the
    *  attributes of the supplied vtkDICOMMetaData object.
    */
-  virtual bool GenerateInstance(
-    vtkInformation *info, vtkDICOMMetaData *meta);
+  virtual bool GenerateInstance(vtkInformation *info);
 
 protected:
   vtkDICOMSCGenerator();
   ~vtkDICOMSCGenerator();
 
   //! Generate the SC Equipment Module.
-  virtual bool GenerateSCEquipmentModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateSCEquipmentModule(vtkDICOMMetaData *source);
 
   //! Generate the SC Image Module.
-  virtual bool GenerateSCImageModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateSCImageModule(vtkDICOMMetaData *source);
 
   //! Generate the SC Multi-Frame Image Module.
-  virtual bool GenerateSCMultiFrameImageModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateSCMultiFrameImageModule(vtkDICOMMetaData *source);
 
   //! Instantiate a DICOM Secondary Capture Image object.
-  virtual bool GenerateSCInstance(
-    vtkInformation *info, vtkDICOMMetaData *meta);
+  virtual bool GenerateSCInstance(vtkInformation *info);
 
   //! Instantiate a DICOM Secondary Capture Image object.
-  virtual bool GenerateSCMultiFrameInstance(
-    vtkInformation *info, vtkDICOMMetaData *meta);
+  virtual bool GenerateSCMultiFrameInstance(vtkInformation *info);
 
 private:
   vtkDICOMSCGenerator(const vtkDICOMSCGenerator&);  // Not implemented.

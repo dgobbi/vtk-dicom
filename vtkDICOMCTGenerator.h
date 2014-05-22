@@ -41,22 +41,20 @@ public:
    *  information for a vtkImageData object, it will populate the
    *  attributes of the supplied vtkDICOMMetaData object.
    */
-  virtual bool GenerateInstance(
-    vtkInformation *info, vtkDICOMMetaData *meta);
+  virtual bool GenerateInstance(vtkInformation *info);
 
 protected:
   vtkDICOMCTGenerator();
   ~vtkDICOMCTGenerator();
 
   //! Generate the Series Module.
-  virtual bool GenerateCTSeriesModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateCTSeriesModule(vtkDICOMMetaData *source);
 
   //! Generate the Image Module.
-  virtual bool GenerateCTImageModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateCTImageModule(vtkDICOMMetaData *source);
 
   //! Instantiate a DICOM Secondary Capture Image object.
-  virtual bool GenerateCTInstance(
-    vtkInformation *info, vtkDICOMMetaData *meta);
+  virtual bool GenerateCTInstance(vtkInformation *info);
 
 private:
   vtkDICOMCTGenerator(const vtkDICOMCTGenerator&);  // Not implemented.

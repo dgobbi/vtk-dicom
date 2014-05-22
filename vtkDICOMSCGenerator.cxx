@@ -41,19 +41,20 @@ void vtkDICOMSCGenerator::PrintSelf(ostream& os, vtkIndent indent)
 
 //----------------------------------------------------------------------------
 bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
-  vtkDICOMMetaData *meta)
+  vtkDICOMMetaData *source)
 {
   // The BurnedInAnnotation attribute is mandatory
   std::string bia;
-  if (this->MetaData)
+  if (source)
     {
-    bia = this->MetaData->GetAttributeValue(
+    bia = source->GetAttributeValue(
       DC::BurnedInAnnotation).AsString();
     }
   if (bia != "YES")
     {
     bia = "NO";
     }
+  vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::BurnedInAnnotation, bia);
 
   // These are mandatory, and must be set to these values
@@ -129,11 +130,11 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
     DC::ItemDelimitationItem
   };
 
-  return this->CopyOptionalAttributes(optional, meta);
+  return this->CopyOptionalAttributes(optional, source);
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMSCGenerator::GenerateSCImageModule(vtkDICOMMetaData *meta)
+bool vtkDICOMSCGenerator::GenerateSCImageModule(vtkDICOMMetaData *source)
 {
   // These are not set, because AspectRatio is used instead
   // DC::PixelSpacing, // 1C
@@ -149,22 +150,23 @@ bool vtkDICOMSCGenerator::GenerateSCImageModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  return this->CopyOptionalAttributes(optional, meta);
+  return this->CopyOptionalAttributes(optional, source);
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMSCGenerator::GenerateSCEquipmentModule(vtkDICOMMetaData *meta)
+bool vtkDICOMSCGenerator::GenerateSCEquipmentModule(vtkDICOMMetaData *source)
 {
   // ConversionType is a mandatory attribute
   std::string ct;
-  if (this->MetaData)
+  if (source)
     {
-    ct = this->MetaData->GetAttributeValue(DC::ConversionType).AsString();
+    ct = source->GetAttributeValue(DC::ConversionType).AsString();
     }
   if (ct == "")
     {
     ct = "WSD"; // workstation
     }
+  vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::ConversionType, ct);
 
   // Modality is optional for Secondary Capture
@@ -186,12 +188,11 @@ bool vtkDICOMSCGenerator::GenerateSCEquipmentModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  return this->CopyOptionalAttributes(optional, meta);
+  return this->CopyOptionalAttributes(optional, source);
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
-  vtkInformation *info, vtkDICOMMetaData *meta)
+bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(vtkInformation *info)
 {
   // get the scalar information
   vtkInformation *scalarInfo = vtkDataObject::GetActiveFieldInformation(
@@ -229,24 +230,25 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
     SOPClass = "1.2.840.10008.5.1.4.1.1.7.3";
     }
 
-  this->InitializeMetaData(info, meta);
+  this->InitializeMetaData(info);
 
-  if (!this->GenerateSOPCommonModule(meta, SOPClass) ||
-      !this->GeneratePatientModule(meta) ||
-      !this->GenerateClinicalTrialSubjectModule(meta) ||
-      !this->GenerateGeneralStudyModule(meta) ||
-      !this->GeneratePatientStudyModule(meta) ||
-      !this->GenerateClinicalTrialStudyModule(meta) ||
-      !this->GenerateGeneralSeriesModule(meta) ||
-      !this->GenerateClinicalTrialSeriesModule(meta) ||
+  vtkDICOMMetaData *source = this->SourceMetaData;
+  if (!this->GenerateSOPCommonModule(source, SOPClass) ||
+      !this->GeneratePatientModule(source) ||
+      !this->GenerateClinicalTrialSubjectModule(source) ||
+      !this->GenerateGeneralStudyModule(source) ||
+      !this->GeneratePatientStudyModule(source) ||
+      !this->GenerateClinicalTrialStudyModule(source) ||
+      !this->GenerateGeneralSeriesModule(source) ||
+      !this->GenerateClinicalTrialSeriesModule(source) ||
       // optional General Equipment Module intentionally omitted
-      !this->GenerateSCEquipmentModule(meta) ||
-      !this->GenerateGeneralImageModule(meta) ||
-      !this->GenerateImagePixelModule(meta) ||
+      !this->GenerateSCEquipmentModule(source) ||
+      !this->GenerateGeneralImageModule(source) ||
+      !this->GenerateImagePixelModule(source) ||
       // the Cine Module is added by GenerateSCMultiFrameImageModule
-      !this->GenerateDeviceModule(meta) ||
-      !this->GenerateSpecimenModule(meta) ||
-      !this->GenerateSCMultiFrameImageModule(meta))
+      !this->GenerateDeviceModule(source) ||
+      !this->GenerateSpecimenModule(source) ||
+      !this->GenerateSCMultiFrameImageModule(source))
     {
     return false;
     }
@@ -255,8 +257,7 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMSCGenerator::GenerateSCInstance(
-  vtkInformation *info, vtkDICOMMetaData *meta)
+bool vtkDICOMSCGenerator::GenerateSCInstance(vtkInformation *info)
 {
   // get the scalar information
   vtkInformation *scalarInfo = vtkDataObject::GetActiveFieldInformation(
@@ -279,24 +280,25 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(
     samplesPerPixel);
 
   const char *SOPClass = "1.2.840.10008.5.1.4.1.1.7";
-  this->InitializeMetaData(info, meta);
+  this->InitializeMetaData(info);
 
-  if (!this->GenerateSOPCommonModule(meta, SOPClass) ||
-      !this->GeneratePatientModule(meta) ||
-      !this->GenerateClinicalTrialSubjectModule(meta) ||
-      !this->GenerateGeneralStudyModule(meta) ||
-      !this->GeneratePatientStudyModule(meta) ||
-      !this->GenerateClinicalTrialStudyModule(meta) ||
-      !this->GenerateGeneralSeriesModule(meta) ||
-      !this->GenerateClinicalTrialSeriesModule(meta) ||
+  vtkDICOMMetaData *source = this->SourceMetaData;
+  if (!this->GenerateSOPCommonModule(source, SOPClass) ||
+      !this->GeneratePatientModule(source) ||
+      !this->GenerateClinicalTrialSubjectModule(source) ||
+      !this->GenerateGeneralStudyModule(source) ||
+      !this->GeneratePatientStudyModule(source) ||
+      !this->GenerateClinicalTrialStudyModule(source) ||
+      !this->GenerateGeneralSeriesModule(source) ||
+      !this->GenerateClinicalTrialSeriesModule(source) ||
       // optional GeneralEquipmentModule intentionally omitted
-      !this->GenerateSCEquipmentModule(meta) ||
-      !this->GenerateGeneralImageModule(meta) ||
-      !this->GenerateImagePixelModule(meta) ||
-      !this->GenerateDeviceModule(meta) ||
-      !this->GenerateSpecimenModule(meta) ||
-      !this->GenerateSCImageModule(meta) ||
-      !this->GenerateOverlayPlaneModule(meta))
+      !this->GenerateSCEquipmentModule(source) ||
+      !this->GenerateGeneralImageModule(source) ||
+      !this->GenerateImagePixelModule(source) ||
+      !this->GenerateDeviceModule(source) ||
+      !this->GenerateSpecimenModule(source) ||
+      !this->GenerateSCImageModule(source) ||
+      !this->GenerateOverlayPlaneModule(source))
     {
     return false;
     }
@@ -305,13 +307,12 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMSCGenerator::GenerateInstance(
-  vtkInformation *info, vtkDICOMMetaData *meta)
+bool vtkDICOMSCGenerator::GenerateInstance(vtkInformation *info)
 {
   if (this->MultiFrame == 0)
     {
-    return this->GenerateSCInstance(info, meta);
+    return this->GenerateSCInstance(info);
     }
 
-  return this->GenerateSCMultiFrameInstance(info, meta);
+  return this->GenerateSCMultiFrameInstance(info);
 }

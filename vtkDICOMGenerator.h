@@ -53,8 +53,14 @@ public:
    *  information for a vtkImageData object, it will populate the
    *  attributes of the supplied vtkDICOMMetaData object.
    */
-  virtual bool GenerateInstance(
-    vtkInformation *, vtkDICOMMetaData *) = 0;
+  virtual bool GenerateInstance(vtkInformation *) = 0;
+
+  //! Get the generated meta data.
+  /*!
+   *  Every time GenerateInstance() is called, it will generate a
+   *  new meta data object that can be retrieved with this method.
+   */
+  vtkDICOMMetaData *GetMetaData();
 
   //! Create a multi-frame object (default: Off).
   /*!
@@ -123,22 +129,22 @@ public:
   //! Let the generator know how to order the slices.
   /*!
    *  By default, the generator will try to keep the same slice order
-   *  as the meta data set by SetMetaData(), but if no ordering can be
+   *  as the meta data set by SetSourceMetaData(), but if no ordering can be
    *  discerned from the meta data, then the slices will be ordered
    *  according to this flag.
    */
   vtkSetMacro(ReverseSliceOrder, int);
   vtkGetMacro(ReverseSliceOrder, int);
 
-  //! Set some meta data for the constructor to use as a hint.
+  //! Set some meta data for the constructor to use as a source.
   /*!
    *  The supplied meta data can provide some general properties
    *  of the data set, such as the patient information and study
    *  information.  Only portions of the meta data that are permitted
    *  by the generated IOD will be included.
    */
-  void SetMetaData(vtkDICOMMetaData *);
-  vtkDICOMMetaData *GetMetaData();
+  void SetSourceMetaData(vtkDICOMMetaData *);
+  vtkDICOMMetaData *GetSourceMetaData();
 
   //! Get an array that maps file and frame to slice.
   /*!
@@ -185,58 +191,58 @@ protected:
     vtkDICOMMetaData *meta, const char *SOPClass);
 
   //! Generate the DICOM Patient Module.
-  virtual bool GeneratePatientModule(vtkDICOMMetaData *meta);
+  virtual bool GeneratePatientModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM Clinical Trial Subject Module.
-  virtual bool GenerateClinicalTrialSubjectModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateClinicalTrialSubjectModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM General Study Module.
-  virtual bool GenerateGeneralStudyModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateGeneralStudyModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM Patient Study Module.
-  virtual bool GeneratePatientStudyModule(vtkDICOMMetaData *meta);
+  virtual bool GeneratePatientStudyModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM Clinical Trial Study Module.
-  virtual bool GenerateClinicalTrialStudyModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateClinicalTrialStudyModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM Series Module.
-  virtual bool GenerateGeneralSeriesModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateGeneralSeriesModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM Clinical Trial Series Module.
-  virtual bool GenerateClinicalTrialSeriesModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateClinicalTrialSeriesModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM Frame of Reference Module.
-  virtual bool GenerateFrameOfReferenceModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateFrameOfReferenceModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM Equipment Module.
-  virtual bool GenerateGeneralEquipmentModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateGeneralEquipmentModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM Image Module.
-  virtual bool GenerateGeneralImageModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateGeneralImageModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM Plane Module.
-  virtual bool GenerateImagePlaneModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateImagePlaneModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM Pixel Module.
-  virtual bool GenerateImagePixelModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateImagePixelModule(vtkDICOMMetaData *source);
 
   //! Generate The DICOM Contrast/Bolus Module.
-  virtual bool GenerateContrastBolusModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateContrastBolusModule(vtkDICOMMetaData *source);
 
   //! Generate The DICOM Multi-frame Module.
-  virtual bool GenerateMultiFrameModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateMultiFrameModule(vtkDICOMMetaData *source);
 
   //! Generate The DICOM Device Module.
-  virtual bool GenerateDeviceModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateDeviceModule(vtkDICOMMetaData *source);
 
   //! Generate The DICOM Specimen Module.
-  virtual bool GenerateSpecimenModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateSpecimenModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM Overlay Plane Module.
-  virtual bool GenerateOverlayPlaneModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateOverlayPlaneModule(vtkDICOMMetaData *source);
 
   //! Generate the DICOM VOI LUT Module.
-  virtual bool GenerateVOILUTModule(vtkDICOMMetaData *meta);
+  virtual bool GenerateVOILUTModule(vtkDICOMMetaData *source);
 
   //! Copy required attributes into the meta data.
   /*!
@@ -245,14 +251,14 @@ protected:
    *  The list of tags must be terminated with DC::ItemDelimitationItem.
    */
   virtual bool CopyRequiredAttributes(
-    const DC::EnumType *tags, vtkDICOMMetaData *meta);
+    const DC::EnumType *tags, vtkDICOMMetaData *source);
 
   //! Copy optional attributes into the meta data.
   /*!
    *  The list of tags must be terminated with DC::ItemDelimitationItem.
    */
   virtual bool CopyOptionalAttributes(
-    const DC::EnumType *tags, vtkDICOMMetaData *meta);
+    const DC::EnumType *tags, vtkDICOMMetaData *source);
 
   //! Compute aspect ratio from spacing.
   static void ComputeAspectRatio(const double spacing[2], int aspect[2]);
@@ -288,7 +294,7 @@ protected:
   virtual void ComputePixelValueRange(
     vtkInformation *info, int seriesRange[2]);
 
-  virtual void MatchInstances(vtkDICOMMetaData *meta);
+  virtual void MatchInstances(vtkDICOMMetaData *source);
 
   //! Initialize the meta data and compute the slice index array.
   /*!
@@ -296,11 +302,13 @@ protected:
    *  It creates a mapping between the files and frames that will be written,
    *  and the slices that make up the image data.
    */
-  virtual void InitializeMetaData(
-    vtkInformation *info, vtkDICOMMetaData *meta);
+  virtual void InitializeMetaData(vtkInformation *info);
 
-  //! The meta data.
+  //! The generated meta data
   vtkDICOMMetaData *MetaData;
+
+  //! The source meta data.
+  vtkDICOMMetaData *SourceMetaData;
 
   //! Whether to prefer multi-frame files over single-frame.
   int MultiFrame;

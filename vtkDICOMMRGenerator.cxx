@@ -40,8 +40,9 @@ void vtkDICOMMRGenerator::PrintSelf(ostream& os, vtkIndent indent)
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMMRGenerator::GenerateMRSeriesModule(vtkDICOMMetaData *meta)
+bool vtkDICOMMRGenerator::GenerateMRSeriesModule(vtkDICOMMetaData *source)
 {
+  vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::Modality, "MR");
 
   // optional and conditional: direct copy of values with no checks
@@ -50,11 +51,11 @@ bool vtkDICOMMRGenerator::GenerateMRSeriesModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  return this->CopyOptionalAttributes(optional, meta);
+  return this->CopyOptionalAttributes(optional, source);
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *meta)
+bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
 {
   // ImageType is specialized from GeneralImageModule,
   // by adding a third value that is specific to MRI:
@@ -62,14 +63,15 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *meta)
   // DIFFUSION MAP, VELOCITY MAP, MODULUS SUBTRACT, T1 MAP,
   // DENSITY MAP, IMAGE ADDITION, OTHER
   const char *it = 0;
-  if (this->MetaData)
+  if (source)
     {
-    it = this->MetaData->GetAttributeValue(DC::ImageType).GetCharData();
+    it = source->GetAttributeValue(DC::ImageType).GetCharData();
     }
   if (it == 0 || it[0] == '\0')
     {
     it = "DERIVED\\SECONDARY\\OTHER";
     }
+  vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::ImageType, it);
 
   // These specialized from ImagePixelModule:
@@ -80,10 +82,10 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *meta)
   // ScanningSequence and SequenceVariant are mandatory:
   const char *ss = 0;
   const char *sv = 0;
-  if (this->MetaData)
+  if (source)
     {
-    ss = this->MetaData->GetAttributeValue(DC::ScanningSequence).GetCharData();
-    sv = this->MetaData->GetAttributeValue(DC::SequenceVariant).GetCharData();
+    ss = source->GetAttributeValue(DC::ScanningSequence).GetCharData();
+    sv = source->GetAttributeValue(DC::SequenceVariant).GetCharData();
     }
   if (ss == 0 || ss[0] == '\0')
     { // default to "research mode"
@@ -99,17 +101,17 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *meta)
   // SpacingBetweenSlices is optional, but everyone uses it
   meta->SetAttributeValue(DC::SpacingBetweenSlices, this->Spacing[2]);
 
-  if (this->MetaData)
+  if (source)
     {
     // set this to the time dimension
-    if (this->MetaData->HasAttribute(DC::CardiacNumberOfImages))
+    if (source->HasAttribute(DC::CardiacNumberOfImages))
       {
       meta->SetAttributeValue(DC::CardiacNumberOfImages, this->Dimensions[3]);
       }
     // keep this if data was not reformatted
-    if (this->SourceInstanceArray != 0)
+    if (this->SourceInstanceArray != 0 && source == this->SourceMetaData)
       {
-      const char *ped = this->MetaData->GetAttributeValue(
+      const char *ped = source->GetAttributeValue(
         DC::InPlanePhaseEncodingDirection).GetCharData();
       if (ped != 0 && ped[0] != '\0')
         {
@@ -189,13 +191,12 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *meta)
     DC::ItemDelimitationItem
   };
 
-  return (this->CopyRequiredAttributes(required, meta) &&
-          this->CopyOptionalAttributes(optional, meta));
+  return (this->CopyRequiredAttributes(required, source) &&
+          this->CopyOptionalAttributes(optional, source));
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMMRGenerator::GenerateMRInstance(
-  vtkInformation *info, vtkDICOMMetaData *meta)
+bool vtkDICOMMRGenerator::GenerateMRInstance(vtkInformation *info)
 {
   this->SetPixelRestrictions(
     RepresentationSigned | RepresentationUnsigned,
@@ -203,28 +204,29 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(
     1);
 
   const char *SOPClass = "1.2.840.10008.5.1.4.1.1.4";
-  this->InitializeMetaData(info, meta);
+  this->InitializeMetaData(info);
 
-  if (!this->GenerateSOPCommonModule(meta, SOPClass) ||
-      !this->GeneratePatientModule(meta) ||
-      !this->GenerateClinicalTrialSubjectModule(meta) ||
-      !this->GenerateGeneralStudyModule(meta) ||
-      !this->GeneratePatientStudyModule(meta) ||
-      !this->GenerateClinicalTrialStudyModule(meta) ||
-      !this->GenerateGeneralSeriesModule(meta) ||
-      !this->GenerateFrameOfReferenceModule(meta) ||
-      !this->GenerateClinicalTrialSeriesModule(meta) ||
-      !this->GenerateGeneralEquipmentModule(meta) ||
-      !this->GenerateGeneralImageModule(meta) ||
-      !this->GenerateImagePlaneModule(meta) ||
-      !this->GenerateImagePixelModule(meta) ||
-      !this->GenerateContrastBolusModule(meta) ||
-      !this->GenerateDeviceModule(meta) ||
-      !this->GenerateSpecimenModule(meta) ||
-      !this->GenerateMRSeriesModule(meta) ||
-      !this->GenerateMRImageModule(meta) ||
-      !this->GenerateOverlayPlaneModule(meta) ||
-      !this->GenerateVOILUTModule(meta))
+  vtkDICOMMetaData *source = this->SourceMetaData;
+  if (!this->GenerateSOPCommonModule(source, SOPClass) ||
+      !this->GeneratePatientModule(source) ||
+      !this->GenerateClinicalTrialSubjectModule(source) ||
+      !this->GenerateGeneralStudyModule(source) ||
+      !this->GeneratePatientStudyModule(source) ||
+      !this->GenerateClinicalTrialStudyModule(source) ||
+      !this->GenerateGeneralSeriesModule(source) ||
+      !this->GenerateFrameOfReferenceModule(source) ||
+      !this->GenerateClinicalTrialSeriesModule(source) ||
+      !this->GenerateGeneralEquipmentModule(source) ||
+      !this->GenerateGeneralImageModule(source) ||
+      !this->GenerateImagePlaneModule(source) ||
+      !this->GenerateImagePixelModule(source) ||
+      !this->GenerateContrastBolusModule(source) ||
+      !this->GenerateDeviceModule(source) ||
+      !this->GenerateSpecimenModule(source) ||
+      !this->GenerateMRSeriesModule(source) ||
+      !this->GenerateMRImageModule(source) ||
+      !this->GenerateOverlayPlaneModule(source) ||
+      !this->GenerateVOILUTModule(source))
     {
     return false;
     }
@@ -233,8 +235,7 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMMRGenerator::GenerateInstance(
-  vtkInformation *info, vtkDICOMMetaData *meta)
+bool vtkDICOMMRGenerator::GenerateInstance(vtkInformation *info)
 {
   if (this->MultiFrame)
     {
@@ -242,5 +243,5 @@ bool vtkDICOMMRGenerator::GenerateInstance(
     return false;
     }
 
-  return this->GenerateMRInstance(info, meta);
+  return this->GenerateMRInstance(info);
 }
