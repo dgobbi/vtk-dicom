@@ -1351,6 +1351,11 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *meta)
                        position[1]*matrix[6] +
                        position[2]*matrix[10]);
 
+    // keep sign of location the same as the dimension it tracks
+    int li = (fabs(matrix[6]) > fabs(matrix[2]) ? 6 : 2);
+    li = (fabs(matrix[10]) > fabs(matrix[li]) ? 10 : li);
+    location = (matrix[li] < 0 ? -location : location);
+
     // use the original value if possible, to avoid surprises
     if (this->SourceInstanceArray && this->MetaData &&
         this->MetaData->HasAttribute(DC::SliceLocation))
