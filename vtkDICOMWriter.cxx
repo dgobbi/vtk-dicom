@@ -59,6 +59,7 @@ vtkDICOMWriter::vtkDICOMWriter()
   this->RescaleSlope = 1.0;
   this->PatientMatrix = 0;
   this->MemoryRowOrder = vtkDICOMWriter::BottomUp;
+  this->FileSliceOrder = vtkDICOMWriter::RHR;
   this->SeriesDescription = 0;
   this->ImageType = new char[24];
   strcpy(this->ImageType, "DERIVED/SECONDARY/OTHER");
@@ -140,6 +141,8 @@ void vtkDICOMWriter::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "MemoryRowOrder: "
      << this->GetMemoryRowOrderAsString() << "\n";
+  os << indent << "FileSliceOrder: "
+     << this->GetFileSliceOrderAsString() << "\n";
   os << indent << "Streaming: "
      << (this->Streaming ? "On\n" : "Off\n");
 }
@@ -171,6 +174,42 @@ const char *vtkDICOMWriter::GetMemoryRowOrderAsString()
       break;
     case vtkDICOMWriter::BottomUp:
       text = "BottomUp";
+      break;
+    }
+
+  return text;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMWriter::SetFileSliceOrder(int order)
+{
+  if (order >= 0 && order <= vtkDICOMWriter::Reverse)
+    {
+    if (order != this->FileSliceOrder)
+      {
+      this->FileSliceOrder = order;
+      this->Modified();
+      }
+    }
+}
+
+//----------------------------------------------------------------------------
+const char *vtkDICOMWriter::GetFileSliceOrderAsString()
+{
+  const char *text = "";
+  switch (this->FileSliceOrder)
+    {
+    case vtkDICOMWriter::RHR:
+      text = "RHR";
+      break;
+    case vtkDICOMWriter::LHR:
+      text = "LHR";
+      break;
+    case vtkDICOMWriter::Same:
+      text = "Same";
+      break;
+    case vtkDICOMWriter::Reverse:
+      text = "Reverse";
       break;
     }
 
@@ -229,10 +268,24 @@ int vtkDICOMWriter::GenerateMetaData(
     }
 
   bool flipImage = (this->MemoryRowOrder == vtkDICOMWriter::BottomUp);
+  bool reverseSlices = flipImage;
+  if (this->FileSliceOrder == vtkDICOMWriter::LHR)
+    {
+    reverseSlices = !flipImage;
+    }
+  else if (this->FileSliceOrder == vtkDICOMWriter::Same)
+    {
+    reverseSlices = false;
+    }
+  else if (this->FileSliceOrder == vtkDICOMWriter::Reverse)
+    {
+    reverseSlices = true;
+    }
 
   // Generate the meta data
   this->Generator->SetMultiFrame(this->FileDimensionality > 2);
   this->Generator->SetOriginAtBottom(flipImage);
+  this->Generator->SetReverseSliceOrder(reverseSlices);
   this->Generator->SetTimeAsVector(this->TimeAsVector);
   this->Generator->SetTimeDimension(this->TimeDimension);
   this->Generator->SetTimeSpacing(this->TimeSpacing);

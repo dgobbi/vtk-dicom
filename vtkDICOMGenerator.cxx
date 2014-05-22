@@ -41,6 +41,7 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->MetaData = 0;
   this->MultiFrame = 0;
   this->OriginAtBottom = 1;
+  this->ReverseSliceOrder = 0;
   this->ScalarType = 0;
   this->AllowedPixelRepresentation = 3;
   this->AllowedBitsStored = 0xffffffffu;
@@ -138,6 +139,8 @@ void vtkDICOMGenerator::PrintSelf(ostream& os, vtkIndent indent)
      << (this->MultiFrame ? "On\n" : "Off\n");
   os << indent << "OriginAtBottom: "
      << (this->OriginAtBottom ? "On\n" : "Off\n");
+  os << indent << "ReverseSliceOrder: "
+     << (this->ReverseSliceOrder ? "On\n" : "Off\n");
   os << indent << "TimeAsVector: "
      << (this->TimeAsVector ? "On\n" : "Off\n");
   os << indent << "TimeDimension: " << this->TimeDimension << "\n";
@@ -735,7 +738,7 @@ void vtkDICOMGenerator::InitializeMetaData(
   // Reversing slice ordering isn't necessary if the ImagePlane module
   // is present, because then every file has an ImagePositionPatient,
   // but if only a Location is present then slice ordering is critical.
-  bool reverseSlices = (this->OriginAtBottom != 0);
+  bool reverseSlices = (this->ReverseSliceOrder != 0);
   // If switchDimensions is true, then the vector dimension (or time
   // dimension) comes before the slice dimension in the files.
   bool switchDimensions = false;

@@ -120,6 +120,16 @@ public:
   vtkSetMacro(OriginAtBottom, int);
   vtkGetMacro(OriginAtBottom, int);
 
+  //! Let the generator know how to order the slices.
+  /*!
+   *  By default, the generator will try to keep the same slice order
+   *  as the meta data set by SetMetaData(), but if no ordering can be
+   *  discerned from the meta data, then the slices will be ordered
+   *  according to this flag.
+   */
+  vtkSetMacro(ReverseSliceOrder, int);
+  vtkGetMacro(ReverseSliceOrder, int);
+
   //! Set some meta data for the constructor to use as a hint.
   /*!
    *  The supplied meta data can provide some general properties
@@ -297,6 +307,9 @@ protected:
 
   //! Whether VTK image data is not top-to-bottom yet.
   int OriginAtBottom;
+
+  //! Whether to reverse the slices as compared to input data.
+  int ReverseSliceOrder;
 
   //! Whether time is stored in slices or in scalar components.
   int TimeAsVector;

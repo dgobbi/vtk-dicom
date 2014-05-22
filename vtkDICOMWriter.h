@@ -120,6 +120,25 @@ public:
   const char *GetMemoryRowOrderAsString();
 
   // Description:
+  // Enumeration for file order.
+  enum SliceOrder { RHR, LHR, Same, Reverse };
+
+  // Description:
+  // Set the slice ordering of the files to be written.
+  // The default is RHR (right-hand-rule), which means that if your
+  // right thumb points along an image row, and your index finger points
+  // down a row (starting at the top left of the image), then a bent middle
+  // finger points in the direction of increasing slice index.  LHR is the
+  // reverse of this.  Same keeps files in the same order as VTK slices.
+  void SetFileSliceOrder(int order);
+  void SetFileSliceOrderToRHR() { this->SetFileSliceOrder(RHR); }
+  void SetFileSliceOrderToLHR() { this->SetFileSliceOrder(LHR); }
+  void SetFileSliceOrderToSame() { this->SetFileSliceOrder(Same); }
+  void SetFileSliceOrderToReverse() { this->SetFileSliceOrder(Reverse); }
+  int GetFileSliceOrder() { return this->FileSliceOrder; }
+  const char *GetFileSliceOrderAsString();
+
+  // Description:
   // Set the meta data to include with the file.
   // The supplied meta data is only used as a hint, the writer
   // will override attributes that aren't valid for the image.
@@ -211,6 +230,10 @@ protected:
   // The row order to use when storing the data in memory.
   int MemoryRowOrder;
 
+  // Description:
+  // The slice order to use when writing the files to disk.
+  int FileSliceOrder;
+ 
   // Description:
   // Whether to stream the data and write one file at a time.
   int Streaming;
