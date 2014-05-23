@@ -91,7 +91,15 @@ public:
 
   // Description:
   // Get the position of the first slice in millimeters.
-  double GetPositionSlice1() { return this->PositionSlice1; }
+  double GetStartPosition() { return this->StartPosition; }
+
+  // Description:
+  // Get the position of the final slice in millimeters.
+  double GetEndPosition() { return this->EndPosition; }
+
+  // Description:
+  // Get the location of the edge of a locator scan.
+  double GetZPosition() { return this->ZPosition; }
 
   // Description:
   // Get the data range, as stored in the file header.
@@ -195,6 +203,12 @@ protected:
     vtkInformationVector* outputVector);
 
   // Description:
+  // Read the voxel data.
+  virtual int RequestData(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector);
+
+  // Description:
   // Initialize the header information
   void InitializeHeader();
 
@@ -246,7 +260,9 @@ protected:
   double ScanDimensionsPhysical[3];
   double SliceThickness;
   double SliceIncrement;
-  double PositionSlice1;
+  double StartPosition;
+  double EndPosition;
+  double ZPosition;
   double DataRange[2];
   double MuScaling;
   int NumberOfSamples;
@@ -267,6 +283,9 @@ protected:
   double RescaleIntercept;
   double MuWater;
   char *RawHeader;
+
+  // The compression mode, if any.
+  int Compression;
 
 private:
   vtkScancoCTReader(const vtkScancoCTReader&);  // Not implemented.

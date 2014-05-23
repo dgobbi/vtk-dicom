@@ -19,7 +19,11 @@
 #include "vtkImageData.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
+#include "vtkPointData.h"
+#include "vtkDataArray.h"
+#include "vtkStringArray.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
+#include "vtkVersion.h"
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -61,7 +65,9 @@ void vtkScancoCTReader::InitializeHeader()
   this->ScannerID = 0;
   this->SliceThickness = 0;
   this->SliceIncrement = 0;
-  this->PositionSlice1 = 0;
+  this->StartPosition = 0;
+  this->EndPosition = 0;
+  this->ZPosition = 0;
   this->DataRange[0] = 0;
   this->DataRange[1] = 0;
   this->MuScaling = 1.0;
@@ -83,6 +89,8 @@ void vtkScancoCTReader::InitializeHeader()
   this->RescaleSlope = 1.0;
   this->RescaleIntercept = 0.0;
   this->MuWater = 0;
+
+  this->Compression = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -108,7 +116,9 @@ void vtkScancoCTReader::PrintSelf(ostream& os, vtkIndent indent)
      << this->ScanDimensionsPhysical[0] << " "
      << this->ScanDimensionsPhysical[1] << " "
      << this->ScanDimensionsPhysical[2] << "\n";
-  os << indent << "PositionSlice1: " << this->PositionSlice1 << " [mm]\n";
+  os << indent << "ZPosition: " << this->ZPosition << " [mm]\n";
+  os << indent << "StartPosition: " << this->StartPosition << " [mm]\n";
+  os << indent << "EndPosition: " << this->EndPosition << " [mm]\n";
   os << indent << "ReferenceLine: " << this->ReferenceLine << " [mm]\n";
   os << indent << "NumberOfSamples: " << this->NumberOfSamples << "\n";
   os << indent << "NumberOfProjections: " << this->NumberOfProjections << "\n";
@@ -310,21 +320,23 @@ int vtkScancoCTReader::ReadISQHeader(ifstream *file, unsigned long bytesRead)
     this->DataRange[1] = vtkScancoCTReader::DecodeInt(h); h += 4;
     this->MuScaling = vtkScancoCTReader::DecodeInt(h); h += 4;
     vtkScancoCTReader::StripString(this->PatientName, h, 40); h += 40;
-    /* double zpos = vtkScancoCTReader::DecodeInt(h)*1e-3; */ h += 4;
+    this->ZPosition = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
     /* unknown */ h += 4;
     this->SampleTime = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
     this->Energy = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
     this->Intensity = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
     this->ReferenceLine = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
-    /* double start = vtkScancoCTReader::DecodeInt(h)*1e-3; */ h += 4;
-    /* double end = vtkScancoCTReader::DecodeInt(h)*1e-3; */ h += 4;
+    this->StartPosition = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
+    this->EndPosition = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
     h += 88*4;
     }
   else // ISQ file or RSQ file
     {
     this->SliceThickness = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
     this->SliceIncrement = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
-    this->PositionSlice1 = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
+    this->StartPosition = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
+    this->EndPosition =
+      this->StartPosition + physdim[2]*1e-3*(pixdim[2] - 1)/pixdim[2];
     this->DataRange[0] = vtkScancoCTReader::DecodeInt(h); h += 4;
     this->DataRange[1] = vtkScancoCTReader::DecodeInt(h); h += 4;
     this->MuScaling = vtkScancoCTReader::DecodeInt(h); h += 4;
@@ -553,7 +565,7 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
     h += 4;
     }
 
-  // only uncompressed short and char are supported
+  // only short and char are supported
   if (dataType == 0x00020002)
     {
     this->SetDataScalarType(VTK_SHORT);
@@ -562,9 +574,27 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
     {
     this->SetDataScalarType(VTK_SIGNED_CHAR);
     }
+  else if (dataType == 0x00150001)
+    {
+    this->Compression = 0x00b2; // run-length compressed bits
+    this->SetDataScalarType(VTK_SIGNED_CHAR);
+    }
+  /* The dataType values for these are not known yet
+  else if (dataType == )
+    {
+    this->Compression = 0x00c2; // run-length compressed signed char
+    this->SetDataScalarType(VTK_SIGNED_CHAR);
+    }
+  else if (dataType == )
+    {
+    this->Compression = 0x00b1; // packed bits
+    this->SetDataScalarType(VTK_SIGNED_CHAR);
+    }
+  */
   else
     {
     vtkErrorMacro("Unrecognized data type in AIM file: " << dataType);
+    return 0;
     }
 
   this->SetNumberOfScalarComponents(1);
@@ -687,7 +717,9 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
         }
       else if (skey == "Position Slice 1 [um]")
         {
-        this->PositionSlice1 = strtod(value, 0)*1e-3;
+        this->StartPosition = strtod(value, 0)*1e-3;
+        this->EndPosition =
+          this->StartPosition + elementSize[2]*(structValues[5] - 1);
         }
       else if (skey == "No. samples")
         {
@@ -861,4 +893,239 @@ int vtkScancoCTReader::RequestInformation(
                this->DataExtent, 6);
 
   return returnValue;
+}
+
+//----------------------------------------------------------------------------
+int vtkScancoCTReader::RequestData(
+  vtkInformation* request,
+  vtkInformationVector** inputVector,
+  vtkInformationVector* outputVector)
+{
+  if (this->Compression == 0)
+    {
+    return this->Superclass::RequestData(request, inputVector, outputVector);
+    }
+
+  // check whether the reader is in an error state
+  if (this->GetErrorCode() != vtkErrorCode::NoError)
+    {
+    return 0;
+    }
+
+  // which output port did the request come from
+  int outputPort =
+    request->Get(vtkDemandDrivenPipeline::FROM_OUTPUT_PORT());
+
+  // for now, this reader has only one output
+  if (outputPort > 0)
+    {
+    return 1;
+    }
+
+  vtkInformation* outInfo = outputVector->GetInformationObject(0);
+
+  int extent[6];
+  outInfo->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
+
+  // get the data object, allocate memory
+  vtkImageData *data =
+    static_cast<vtkImageData *>(outInfo->Get(vtkDataObject::DATA_OBJECT()));
+#if VTK_MAJOR_VERSION >= 6
+  this->AllocateOutputData(data, outInfo, extent);
+#else
+  this->AllocateOutputData(data, extent);
+#endif
+
+  data->GetPointData()->GetScalars()->SetName("ImageFile");
+
+  const char *filename = 0;
+  if (this->FileNames && this->FileNames->GetNumberOfValues() == 1)
+    {
+    filename = this->FileNames->GetValue(0);
+    }
+  else
+    {
+    filename = this->GetFileName();
+    }
+
+  if (filename == 0)
+    {
+    vtkErrorMacro("A FileName must be provided");
+    return 0;
+    }
+
+  // get the pointer to the output
+  unsigned char *dataPtr =
+    static_cast<unsigned char *>(data->GetScalarPointer());
+
+  // open the file
+  ifstream infile(filename, ios::in | ios::binary);
+  if (!infile.good())
+    {
+    vtkErrorMacro("Cannot open file " << filename);
+    this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
+    return 0;
+    }
+
+  // seek to the data
+  infile.seekg(this->HeaderSize);
+
+  // get the size of the compressed data
+  int intSize = 4;
+  if (strcmp(this->Version, "AIMDATA_V030   ") == 0)
+    {
+    // header uses 64-bit ints (8 bytes)
+    intSize = 8;
+    }
+
+  // Dimensions of the data
+  int xsize = (extent[1] - extent[0] + 1);
+  int ysize = (extent[3] - extent[2] + 1);
+  int zsize = (extent[5] - extent[4] + 1);
+  size_t outSize = xsize;
+  outSize *= ysize;
+  outSize *= zsize;
+
+  // For the input (compressed) data
+  char *input = 0;
+  size_t size = 0;
+
+  if (this->Compression == 0x00b1)
+    {
+    // Compute the size of the binary packed data
+    size_t xinc = (xsize+1)/2;
+    size_t yinc = (ysize+1)/2;
+    size_t zinc = (zsize+1)/2;
+    size = xinc*yinc*zinc + 1;
+    input = new char[size];
+    infile.read(input, size);
+    }
+  else if (this->Compression == 0x00b2 ||
+           this->Compression == 0x00c2)
+    {
+    // Get the size of the compressed data
+    char head[8];
+    infile.read(head, intSize);
+    size = static_cast<unsigned int>(vtkScancoCTReader::DecodeInt(head));
+    if (intSize == 8)
+      {
+      // Read the high word of a 64-bit int
+      unsigned int high = vtkScancoCTReader::DecodeInt(head + 4);
+      size += (static_cast<vtkTypeUInt64>(high) << 32);
+      }
+    input = new char[size - intSize];
+    size -= intSize;
+    infile.read(input, size);
+    }
+
+  // confirm that enough data was read
+  size_t shortread = size - infile.gcount();
+  if (shortread != 0)
+    {
+    this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
+    vtkErrorMacro("File is truncated, " << shortread << " bytes are missing");
+    }
+
+  // Close the file
+  infile.close();
+
+  if (this->Compression == 0x00b1)
+    {
+    // Unpack binary data, each byte becomes a 2x2x2 block of voxels
+    size_t xinc = (xsize+1)/2;
+    size_t yinc = (ysize+1)/2;
+    unsigned char v = input[size-1];
+    v = (v == 0 ? 0x7f : v);
+    unsigned char bit = 0;
+    for (int i = 0; i < zsize; i++)
+      {
+      bit ^= (bit & 2);
+      for (int j = 0; j < ysize; j++)
+        {
+        char *inPtr = input + (i*yinc + j)*xinc;
+        bit ^= (bit & 1);
+        for (int k = 0; k < xsize; k++)
+          {
+          unsigned char c = *inPtr;
+          *dataPtr++ = ((c >> bit) & 1)*v;
+          inPtr += (bit & 1);
+          bit ^= 1;
+          }
+        bit ^= 2;
+        }
+      bit ^= 4;
+      }
+    }
+  else if (this->Compression == 0x00b2)
+    {
+    // Decompress binary run-lengths
+    bool flip = 0;
+    unsigned char v = input[flip];
+    char *inPtr = input + 2;
+    size -= 2;
+    if (size > 0)
+      {
+      do
+        {
+        unsigned char l = *inPtr++;
+        if (l == 255)
+          {
+          l = 254;
+          flip = !flip;
+          }
+        if (l > outSize)
+          {
+          l = outSize;
+          }
+        outSize -= l;
+        if (l > 0)
+          {
+          do
+            {
+            *dataPtr++ = v;
+            }
+          while (--l);
+          }
+        flip = !flip;
+        v = input[flip];
+        }
+      while (--size != 0 && outSize != 0);
+      }
+    }
+  else if (this->Compression == 0x00c2)
+    {
+    // Decompress 8-bit run-lengths
+    char *inPtr = input;
+    size /= 2;
+    if (size > 0)
+      {
+      do
+        {
+        unsigned char l = inPtr[0];
+        unsigned char v = inPtr[1];
+        inPtr += 2;
+        if (l > outSize)
+          {
+          l = outSize;
+          }
+        outSize -= l;
+        if (l > 0)
+          {
+          do
+            {
+            *dataPtr++ = v;
+            }
+          while (--l);
+          }
+        }
+      while (--size != 0 && outSize != 0);
+      }
+    }
+
+  delete [] input;
+
+  this->UpdateProgress(1.0);
+  this->InvokeEvent(vtkCommand::EndEvent);
+
+  return 1;
 }
