@@ -90,7 +90,7 @@ while i < len(lines):
         privatelines[creator] = lines[i:i+6]
     i = i + 6
 
-def makedict(lines, creator):
+def makedict(lines, creator="DICOM"):
   # the tables that will be created
   enum_list = []
   element_list = []
@@ -99,6 +99,7 @@ def makedict(lines, creator):
   # a set to keep track of all VM strings encountered
   vms = {}
 
+  htsize = 1024
   if privatedict:
     htsize = int(len(lines)/24)
     if htsize == 0:
@@ -131,7 +132,7 @@ def makedict(lines, creator):
     # replace "Unknown" and "?" with ""
     if name in ("Unknown", "Internal", "?"):
       name = ""
-    if key in ("Unknown", "Inernal", "?"):
+    if key in ("Unknown", "Internal", "?"):
       key = ""
 
     # replace "US or SS" with "XS"
@@ -150,12 +151,17 @@ def makedict(lines, creator):
     if len(vr) > 2:
       if vr.find("OW") >= 0:
         vr = "OW"
+        vm = "1"
       if vr.find("OB") >= 0:
         vr = "OB"
+        vm = "1"
 
     # replace 'RET' with 1 or 0
     if ret and not privatedict:
-      ret = "1"
+      if not printheader:
+        ret = {"RET":"1","DICONDE":"2","DICOS":"3"}[ret]
+      elif ret == "RET":
+        ret = "1"
     else:
       ret = "0"
 
@@ -180,8 +186,11 @@ def makedict(lines, creator):
     except:
       # replace 'x' (which means any digit) with zero
       #print "XXXXXX %s %s" % (tag, key)
-      g = g.replace('x','0')
-      e = e.replace('x','0')
+      g = g.replace('xx','00')
+      e = e.replace('xxxx','0000')
+      e = e.replace('xxx','000')
+      e = e.replace('xx','00')
+      e = e.replace('x','1')
       gi = int(g, 16)
       ei = int(e, 16)
 

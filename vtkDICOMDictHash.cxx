@@ -24,7 +24,6 @@ DictEntry DictRow0000[] = {
 { 0x0020, 0x0020, 0, VR::CS, VM::M2, "PatientOrientation" },
 { 0x0022, 0x0022, 0, VR::SQ, VM::M1, "RightImageSequence" },
 { 0x0024, 0x0024, 0, VR::SQ, VM::M1, "BackgroundIlluminationColorCodeSequence" },
-{ 0x0028, 0x0808, 1, VR::AT, VM::M1TN, "ImageDataLocation" },
 { 0x0032, 0x0032, 1, VR::DA, VM::M1, "StudyVerifiedDate" },
 { 0x0040, 0x1001, 0, VR::SH, VM::M1, "RequestedProcedureID" },
 { 0x0046, 0x0046, 0, VR::FD, VM::M1, "CornealSize" },
@@ -42,11 +41,12 @@ DictEntry DictRow0001[] = {
 { 0x0008, 0x1048, 0, VR::PN, VM::M1TN, "PhysiciansOfRecord" },
 { 0x0010, 0x1050, 1, VR::LO, VM::M1TN, "InsurancePlanIdentification" },
 { 0x0018, 0x9250, 0, VR::CS, VM::M1, "ArterialSpinLabelingContrast" },
+{ 0x0022, 0x1472, 0, VR::SQ, VM::M1, "RelevantOPTAttributesSequence" },
 { 0x0024, 0x0025, 0, VR::FL, VM::M1, "StimulusArea" },
 { 0x0032, 0x0033, 1, VR::TM, VM::M1, "StudyVerifiedTime" },
 { 0x0074, 0x1034, 0, VR::CS, VM::M1, "DoubleExposureFlag" },
 { 0x0400, 0x0401, 0, VR::SQ, VM::M1, "DigitalSignaturePurposeCodeSequence" },
-{ 0x3006, 0x00C4, 0, VR::CS, VM::M1, "FrameOfReferenceTransformationType" },
+{ 0x3006, 0x00C4, 1, VR::CS, VM::M1, "FrameOfReferenceTransformationType" },
 { 0x300A, 0x00C8, 0, VR::IS, VM::M1, "ReferenceImageNumber" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -67,6 +67,7 @@ DictEntry DictRow0003[] = {
 { 0x0002, 0x0001, 0, VR::OB, VM::M1, "FileMetaInformationVersion" },
 { 0x0018, 0x9252, 0, VR::LO, VM::M1, "ASLTechniqueDescription" },
 { 0x0022, 0x0021, 0, VR::SQ, VM::M1, "LeftImageSequence" },
+{ 0x0022, 0x1470, 0, VR::SQ, VM::M1, "OphthalmicThicknessMapQualityRatingSequence" },
 { 0x0032, 0x1070, 0, VR::LO, VM::M1, "RequestedContrastAgent" },
 { 0x0040, 0x1002, 0, VR::LO, VM::M1, "ReasonForTheRequestedProcedure" },
 { 0x0074, 0x1036, 0, VR::CS, VM::M1, "DoubleExposureOrdering" },
@@ -97,7 +98,7 @@ DictEntry DictRow0005[] = {
 { 0x0054, 0x1400, 1, VR::CS, VM::M1TN, "CountsIncluded" },
 { 0x0074, 0x1030, 0, VR::SQ, VM::M1, "DeliveryVerificationImageSequence" },
 { 0x0400, 0x0015, 0, VR::CS, VM::M1, "MACAlgorithm" },
-{ 0x3006, 0x00C0, 0, VR::SQ, VM::M1, "FrameOfReferenceRelationshipSequence" },
+{ 0x3006, 0x00C0, 1, VR::SQ, VM::M1, "FrameOfReferenceRelationshipSequence" },
 { 0x300A, 0x00CC, 0, VR::LO, VM::M1TN, "ImagingDeviceSpecificAcquisitionParameters" },
 { 0x4008, 0x0109, 1, VR::TM, VM::M1, "InterpretationTranscriptionTime" },
 { 0, 0, 0, 0, 0, NULL }
@@ -121,7 +122,7 @@ DictEntry DictRow0007[] = {
 { 0x0040, 0x1006, 1, VR::SH, VM::M1, "PlacerOrderNumberProcedure" },
 { 0x0054, 0x0053, 0, VR::US, VM::M1, "NumberOfFramesInRotation" },
 { 0x0074, 0x1032, 0, VR::CS, VM::M1, "VerificationImageTiming" },
-{ 0x3006, 0x00C2, 0, VR::UI, VM::M1, "RelatedFrameOfReferenceUID" },
+{ 0x3006, 0x00C2, 1, VR::UI, VM::M1, "RelatedFrameOfReferenceUID" },
 { 0x300A, 0x00CE, 0, VR::CS, VM::M1, "TreatmentDeliveryType" },
 { 0x4008, 0x010B, 1, VR::ST, VM::M1, "InterpretationText" },
 { 0, 0, 0, 0, 0, NULL }
@@ -129,7 +130,6 @@ DictEntry DictRow0007[] = {
 DictEntry DictRow0008[] = {
 { 0x0018, 0x0010, 0, VR::LO, VM::M1, "ContrastBolusAgent" },
 { 0x0018, 0x9259, 0, VR::CS, VM::M1, "ASLCrusherFlag" },
-{ 0x0028, 0x0800, 1, VR::CS, VM::M1TN, "CodeLabel" },
 { 0x0038, 0x0030, 1, VR::DA, VM::M1, "DischargeDate" },
 { 0x0040, 0x1009, 0, VR::SH, VM::M1, "ReportingPriority" },
 { 0x0072, 0x007A, 0, VR::US, VM::M1TN, "SelectorUSValue" },
@@ -149,15 +149,13 @@ DictEntry DictRow0009[] = {
 DictEntry DictRow0010[] = {
 { 0x0018, 0x0012, 0, VR::SQ, VM::M1, "ContrastBolusAgentSequence" },
 { 0x0018, 0x925B, 0, VR::LO, VM::M1, "ASLCrusherDescription" },
-{ 0x0028, 0x0802, 1, VR::US, VM::M1, "NumberOfTables" },
 { 0x0038, 0x0032, 1, VR::TM, VM::M1, "DischargeTime" },
 { 0x0072, 0x0078, 0, VR::UL, VM::M1TN, "SelectorULValue" },
 { 0x300A, 0x00C3, 0, VR::ST, VM::M1, "BeamDescription" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0011[] = {
-{ 0x0018, 0x925A, 0, VR::FD, VM::M1, "ASLCrusherFlow" },
-{ 0x0028, 0x0803, 1, VR::AT, VM::M1TN, "CodeTableLocation" },
+{ 0x0018, 0x925A, 0, VR::FD, VM::M1, "ASLCrusherFlowLimit" },
 { 0x0040, 0x100A, 0, VR::SQ, VM::M1, "ReasonForRequestedProcedureCodeSequence" },
 { 0x3008, 0x00C0, 0, VR::SQ, VM::M1, "RecordedCompensatorSequence" },
 { 0x300A, 0x00C2, 0, VR::LO, VM::M1, "BeamName" },
@@ -167,7 +165,6 @@ DictEntry DictRow0012[] = {
 { 0x0018, 0x0014, 0, VR::SQ, VM::M1, "ContrastBolusAdministrationRouteSequence" },
 { 0x0018, 0x925D, 0, VR::SQ, VM::M1, "ASLBolusCutoffTimingSequence" },
 { 0x0024, 0x0028, 0, VR::FL, VM::M1, "StimulusPresentationTime" },
-{ 0x0028, 0x0804, 1, VR::US, VM::M1, "BitsForCodeWord" },
 { 0x0072, 0x007E, 0, VR::SS, VM::M1TN, "SelectorSSValue" },
 { 0x4008, 0x0100, 1, VR::DA, VM::M1, "InterpretationRecordedDate" },
 { 0, 0, 0, 0, 0, NULL }
@@ -206,11 +203,14 @@ DictEntry DictRow0016[] = {
 { 0x0018, 0x9241, 0, VR::US, VM::M1, "GradientEchoTrainLength" },
 { 0x0020, 0x0030, 1, VR::DS, VM::M3, "ImagePosition" },
 { 0x0022, 0x0032, 0, VR::FL, VM::M2T2N, "ReferenceCoordinates" },
+{ 0x0022, 0x1463, 0, VR::FL, VM::M2, "AnatomicStructureReferencePoint" },
 { 0x0024, 0x0034, 0, VR::SQ, VM::M1, "VisualFieldCatchTrialSequence" },
+{ 0x0028, 0x0818, 1, VR::AT, VM::M1TN, "ImageDataLocation" },
 { 0x0040, 0x0440, 0, VR::SQ, VM::M1, "ProtocolContextSequence" },
 { 0x0040, 0x1011, 0, VR::SQ, VM::M1, "IntendedRecipientsOfResultsIdentificationSequence" },
 { 0x0070, 0x0060, 0, VR::SQ, VM::M1, "GraphicLayerSequence" },
 { 0x0072, 0x0062, 0, VR::CS, VM::M1TN, "SelectorCSValue" },
+{ 0x0074, 0x1025, 0, VR::CS, VM::M1, "AutosequenceFlag" },
 { 0x300A, 0x00D9, 0, VR::FL, VM::M1, "IsocenterToWedgeTrayDistance" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -245,6 +245,7 @@ DictEntry DictRow0018[] = {
 DictEntry DictRow0019[] = {
 { 0x0008, 0x001B, 0, VR::UI, VM::M1, "OriginalSpecializedSOPClassUID" },
 { 0x0022, 0x0031, 0, VR::SQ, VM::M1, "OphthalmicFrameLocationSequence" },
+{ 0x0022, 0x1460, 0, VR::FL, VM::M1, "OphthalmicThicknessMapThresholdQualityRating" },
 { 0x0024, 0x0037, 0, VR::CS, VM::M1, "PresentedVisualStimuliDataFlag" },
 { 0x0032, 0x1060, 0, VR::LO, VM::M1, "RequestedProcedureDescription" },
 { 0x0040, 0x1012, 0, VR::SQ, VM::M1, "ReasonForPerformedProcedureCodeSequence" },
@@ -256,6 +257,7 @@ DictEntry DictRow0019[] = {
 DictEntry DictRow0020[] = {
 { 0x0002, 0x0016, 0, VR::AE, VM::M1, "SourceApplicationEntityTitle" },
 { 0x0022, 0x0036, 0, VR::FL, VM::M1, "MaximumDepthDistortion" },
+{ 0x0022, 0x1467, 0, VR::FL, VM::M2, "RegisteredLocalizerTopLeftHandCorner" },
 { 0x0046, 0x0052, 0, VR::SQ, VM::M1, "AutorefractionLeftEyeSequence" },
 { 0x0054, 0x1001, 0, VR::CS, VM::M1, "Units" },
 { 0x0072, 0x0066, 0, VR::LO, VM::M1TN, "SelectorLOValue" },
@@ -264,9 +266,10 @@ DictEntry DictRow0020[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0021[] = {
-{ 0x0014, 0x1040, 0, VR::ST, VM::M1, "EnvironmentalConditions" },
+{ 0x0014, 0x1040, 2, VR::ST, VM::M1, "EnvironmentalConditions" },
 { 0x0020, 0x0035, 1, VR::DS, VM::M6, "ImageOrientation" },
 { 0x0022, 0x0037, 0, VR::FL, VM::M1, "AlongScanSpatialResolution" },
+{ 0x0022, 0x1466, 0, VR::CS, VM::M1, "RegisteredLocalizerUnits" },
 { 0x0054, 0x1000, 0, VR::CS, VM::M2, "SeriesType" },
 { 0x0074, 0x1020, 0, VR::SQ, VM::M1, "BeamTaskSequence" },
 { 0x0400, 0x0005, 0, VR::US, VM::M1, "MACIDNumber" },
@@ -275,6 +278,7 @@ DictEntry DictRow0021[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0022[] = {
+{ 0x0022, 0x1465, 0, VR::SQ, VM::M1, "RegistrationToLocalizerSequence" },
 { 0x0024, 0x0032, 0, VR::SQ, VM::M1, "FixationSequence" },
 { 0x0046, 0x0050, 0, VR::SQ, VM::M1, "AutorefractionRightEyeSequence" },
 { 0x0070, 0x0066, 0, VR::US, VM::M1, "GraphicLayerRecommendedDisplayGrayscaleValue" },
@@ -297,6 +301,7 @@ DictEntry DictRow0024[] = {
 { 0x0008, 0x0010, 1, VR::SH, VM::M1, "RecognitionCode" },
 { 0x0018, 0x1041, 0, VR::DS, VM::M1, "ContrastBolusVolume" },
 { 0x0028, 0x0030, 0, VR::DS, VM::M2, "PixelSpacing" },
+{ 0x0028, 0x0810, 1, VR::CS, VM::M1TN, "CodeLabel" },
 { 0x0038, 0x0020, 0, VR::DA, VM::M1, "AdmittingDate" },
 { 0x0040, 0x9211, 0, VR::XS, VM::M1, "RealWorldValueLastValueMapped" },
 { 0x0070, 0x0068, 0, VR::LO, VM::M1, "GraphicLayerDescription" },
@@ -324,6 +329,7 @@ DictEntry DictRow0026[] = {
 { 0x0018, 0x1043, 0, VR::TM, VM::M1, "ContrastBolusStopTime" },
 { 0x0022, 0x0038, 0, VR::FL, VM::M1, "MaximumAlongScanDistortion" },
 { 0x0028, 0x0032, 0, VR::DS, VM::M2, "ZoomCenter" },
+{ 0x0028, 0x0812, 1, VR::US, VM::M1, "NumberOfTables" },
 { 0x003A, 0x0020, 0, VR::SH, VM::M1, "MultiplexGroupLabel" },
 { 0x0072, 0x0068, 0, VR::LT, VM::M1, "SelectorLTValue" },
 { 0x300A, 0x00D3, 0, VR::CS, VM::M1, "WedgeType" },
@@ -334,6 +340,8 @@ DictEntry DictRow0027[] = {
 { 0x0008, 0x1052, 0, VR::SQ, VM::M1, "PerformingPhysicianIdentificationSequence" },
 { 0x0018, 0x1042, 0, VR::TM, VM::M1, "ContrastBolusStartTime" },
 { 0x0022, 0x0039, 0, VR::CS, VM::M1, "OphthalmicImageOrientation" },
+{ 0x0022, 0x1468, 0, VR::FL, VM::M2, "RegisteredLocalizerBottomRightHandCorner" },
+{ 0x0028, 0x0813, 1, VR::AT, VM::M1TN, "CodeTableLocation" },
 { 0x0040, 0x9212, 0, VR::FD, VM::M1TN, "RealWorldValueLUTData" },
 { 0x3008, 0x00D0, 0, VR::SQ, VM::M1, "RecordedBlockSequence" },
 { 0x300A, 0x00D2, 0, VR::IS, VM::M1, "WedgeNumber" },
@@ -345,11 +353,13 @@ DictEntry DictRow0028[] = {
 { 0x0018, 0x1045, 0, VR::IS, VM::M1, "SyringeCounts" },
 { 0x0024, 0x0038, 0, VR::US, VM::M1, "NumberOfVisualStimuli" },
 { 0x0028, 0x0034, 0, VR::IS, VM::M2, "PixelAspectRatio" },
+{ 0x0028, 0x0814, 1, VR::US, VM::M1, "BitsForCodeWord" },
 { 0x0072, 0x006E, 0, VR::ST, VM::M1, "SelectorSTValue" },
 { 0x300A, 0x00D5, 0, VR::IS, VM::M1, "WedgeAngle" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0029[] = {
+{ 0x0008, 0x0015, 0, VR::DT, VM::M1, "InstanceCoercionDateTime" },
 { 0x0018, 0x1044, 0, VR::DS, VM::M1, "ContrastBolusTotalDose" },
 { 0x0024, 0x0039, 0, VR::CS, VM::M1, "ExcessiveFixationLossesDataFlag" },
 { 0x0074, 0x1028, 0, VR::FD, VM::M1, "TableTopLateralAdjustedPosition" },
@@ -378,7 +388,7 @@ DictEntry DictRow0031[] = {
 };
 DictEntry DictRow0032[] = {
 { 0x0010, 0x0030, 0, VR::DA, VM::M1, "PatientBirthDate" },
-{ 0x0014, 0x0034, 0, VR::DS, VM::M1TN, "MaterialIsolationDiameter" },
+{ 0x0014, 0x0034, 2, VR::DS, VM::M1TN, "MaterialIsolationDiameter" },
 { 0x0018, 0x0038, 0, VR::CS, VM::M1, "InterventionStatus" },
 { 0x0018, 0x1079, 0, VR::DT, VM::M1, "RadiopharmaceuticalStopDateTime" },
 { 0x0020, 0x1041, 0, VR::DS, VM::M1, "SliceLocation" },
@@ -400,6 +410,7 @@ DictEntry DictRow0033[] = {
 { 0x0020, 0x1040, 0, VR::LO, VM::M1, "PositionReferenceIndicator" },
 { 0x0020, 0x9248, 0, VR::FL, VM::M1, "EndingRespiratoryAmplitude" },
 { 0x0022, 0x0003, 0, VR::US, VM::M1, "ImagePathFilterPassThroughWavelength" },
+{ 0x0022, 0x1452, 0, VR::XS, VM::M1, "MappedPixelValue" },
 { 0x0028, 0x0009, 0, VR::AT, VM::M1TN, "FrameIncrementPointer" },
 { 0x0040, 0xDB0C, 1, VR::UI, VM::M1, "TemplateExtensionOrganizationUID" },
 { 0x0070, 0x0051, 1, VR::US, VM::M2, "DisplayedAreaBottomRightHandCornerTrial" },
@@ -425,6 +436,7 @@ DictEntry DictRow0035[] = {
 { 0x0012, 0x0031, 0, VR::LO, VM::M1, "ClinicalTrialSiteName" },
 { 0x0022, 0x0001, 0, VR::US, VM::M1, "LightPathFilterPassThroughWavelength" },
 { 0x0022, 0x1040, 0, VR::SQ, VM::M1, "RefractiveSurgeryTypeCodeSequence" },
+{ 0x0022, 0x1450, 0, VR::SQ, VM::M1, "PixelValueMappingToCodedConceptSequence" },
 { 0x0032, 0x1050, 1, VR::DA, VM::M1, "StudyCompletionDate" },
 { 0x0038, 0x001B, 1, VR::TM, VM::M1, "ScheduledAdmissionTime" },
 { 0x0070, 0x0053, 0, VR::SL, VM::M2, "DisplayedAreaBottomRightHandCorner" },
@@ -434,7 +446,7 @@ DictEntry DictRow0035[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0036[] = {
-{ 0x0014, 0x0030, 0, VR::DS, VM::M1TN, "MaterialThickness" },
+{ 0x0014, 0x0030, 2, VR::DS, VM::M1TN, "MaterialThickness" },
 { 0x0022, 0x0006, 0, VR::SQ, VM::M1, "PatientEyeMovementCommandCodeSequence" },
 { 0x0038, 0x001C, 1, VR::DA, VM::M1, "ScheduledDischargeDate" },
 { 0x0046, 0x0062, 0, VR::FD, VM::M1, "NearPupillaryDistance" },
@@ -452,7 +464,7 @@ DictEntry DictRow0037[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0038[] = {
-{ 0x0014, 0x0032, 0, VR::DS, VM::M1TN, "MaterialPipeDiameter" },
+{ 0x0014, 0x0032, 2, VR::DS, VM::M1TN, "MaterialPipeDiameter" },
 { 0x0022, 0x0004, 0, VR::US, VM::M2, "ImagePathFilterPassBand" },
 { 0x0032, 0x1055, 1, VR::CS, VM::M1, "StudyComponentStatusID" },
 { 0x0038, 0x001E, 1, VR::LO, VM::M1, "ScheduledPatientInstitutionResidence" },
@@ -461,11 +473,13 @@ DictEntry DictRow0038[] = {
 { 0x0054, 0x0072, 0, VR::SQ, VM::M1, "TimeSlotInformationSequence" },
 { 0x0072, 0x0054, 0, VR::LO, VM::M1TN, "SelectorSequencePointerPrivateCreator" },
 { 0x2000, 0x00A4, 0, VR::SQ, VM::M1, "OtherMediaAvailableSequence" },
+{ 0x300A, 0x00EF, 0, VR::SH, VM::M1, "CompensatorTrayID" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0039[] = {
 { 0x0022, 0x0005, 0, VR::CS, VM::M1, "PatientEyeMovementCommanded" },
-{ 0x0022, 0x1044, 0, VR::SQ, VM::M1, "OphthalmicUltrasoundAxialMeasurementsTypeCodeSequence" },
+{ 0x0022, 0x1044, 0, VR::SQ, VM::M1, "OphthalmicUltrasoundMethodCodeSequence" },
+{ 0x0022, 0x1454, 0, VR::LO, VM::M1, "PixelValueMappingExplanation" },
 { 0x0054, 0x0073, 0, VR::DS, VM::M1, "TimeSlotTime" },
 { 0x300A, 0x00EE, 0, VR::CS, VM::M1, "CompensatorType" },
 { 0, 0, 0, 0, 0, NULL }
@@ -476,6 +490,7 @@ DictEntry DictRow0040[] = {
 { 0x0018, 0x1071, 0, VR::DS, VM::M1, "RadiopharmaceuticalVolume" },
 { 0x0020, 0x9241, 0, VR::FL, VM::M1, "NominalPercentageOfCardiacPhase" },
 { 0x0022, 0x000A, 0, VR::FL, VM::M1, "EmmetropicMagnification" },
+{ 0x0028, 0x0410, 1, VR::US, VM::M1, "RowsForNthOrderCoefficients" },
 { 0x0028, 0x1041, 0, VR::SS, VM::M1, "PixelIntensityRelationshipSign" },
 { 0x0038, 0x0010, 0, VR::LO, VM::M1, "AdmissionID" },
 { 0x0038, 0x0400, 0, VR::LO, VM::M1, "PatientInstitutionResidence" },
@@ -490,6 +505,7 @@ DictEntry DictRow0041[] = {
 { 0x0018, 0x1070, 0, VR::LO, VM::M1, "RadiopharmaceuticalRoute" },
 { 0x0018, 0x1460, 0, VR::DS, VM::M1, "TomoLayerHeight" },
 { 0x0022, 0x000B, 0, VR::FL, VM::M1, "IntraOcularPressure" },
+{ 0x0028, 0x0411, 1, VR::US, VM::M1, "ColumnsForNthOrderCoefficients" },
 { 0x0028, 0x1040, 0, VR::CS, VM::M1, "PixelIntensityRelationship" },
 { 0x0038, 0x0011, 1, VR::LO, VM::M1, "IssuerOfAdmissionID" },
 { 0x300A, 0x00E0, 0, VR::IS, VM::M1, "NumberOfCompensators" },
@@ -501,6 +517,7 @@ DictEntry DictRow0042[] = {
 { 0x0018, 0x1073, 0, VR::TM, VM::M1, "RadiopharmaceuticalStopTime" },
 { 0x0022, 0x0008, 0, VR::FL, VM::M1, "CylinderLensPower" },
 { 0x0028, 0x0002, 0, VR::US, VM::M1, "SamplesPerPixel" },
+{ 0x0028, 0x0412, 1, VR::LO, VM::M1TN, "CoefficientCoding" },
 { 0x003A, 0x0010, 0, VR::UL, VM::M1, "NumberOfWaveformSamples" },
 { 0x0040, 0xDB07, 1, VR::DT, VM::M1, "TemplateLocalVersion" },
 { 0x0070, 0x005A, 0, VR::SQ, VM::M1, "DisplayedAreaSelectionSequence" },
@@ -514,7 +531,9 @@ DictEntry DictRow0043[] = {
 { 0x0018, 0x0033, 1, VR::DS, VM::M1TN, "EnergyWindowTotalWidth" },
 { 0x0018, 0x1072, 0, VR::TM, VM::M1, "RadiopharmaceuticalStartTime" },
 { 0x0022, 0x0009, 0, VR::FL, VM::M1, "CylinderAxis" },
+{ 0x0022, 0x1458, 0, VR::SQ, VM::M1, "OphthalmicThicknessMapQualityThresholdSequence" },
 { 0x0028, 0x0003, 0, VR::US, VM::M1, "SamplesPerPixelUsed" },
+{ 0x0028, 0x0413, 1, VR::AT, VM::M1TN, "CoefficientCodingPointers" },
 { 0x0040, 0xDB06, 1, VR::DT, VM::M1, "TemplateVersion" },
 { 0x3008, 0x00E0, 0, VR::SQ, VM::M1, "TreatmentSummaryMeasuredDoseReferenceSequence" },
 { 0x300A, 0x00E2, 0, VR::DS, VM::M1, "TotalCompensatorTrayFactor" },
@@ -566,12 +585,13 @@ DictEntry DictRow0047[] = {
 };
 DictEntry DictRow0048[] = {
 { 0x0010, 0x0020, 0, VR::LO, VM::M1, "PatientID" },
-{ 0x0014, 0x0024, 0, VR::ST, VM::M1TN, "ComponentReferenceSystem" },
+{ 0x0014, 0x0024, 1, VR::ST, VM::M1TN, "ComponentReferenceSystem" },
 { 0x0018, 0x0028, 0, VR::DS, VM::M1, "InterventionDrugDose" },
 { 0x0018, 0x1069, 0, VR::DS, VM::M1, "TriggerTimeOffset" },
 { 0x0020, 0x0010, 0, VR::SH, VM::M1, "StudyID" },
 { 0x0022, 0x0012, 0, VR::FL, VM::M1, "StereoHorizontalPixelOffset" },
 { 0x0022, 0x1053, 0, VR::FL, VM::M1, "IOLPower" },
+{ 0x0022, 0x1443, 0, VR::SQ, VM::M1, "OphthalmicThicknessMappingNormalsSequence" },
 { 0x0038, 0x0008, 0, VR::CS, VM::M1, "VisitStatusID" },
 { 0x0046, 0x0076, 0, VR::FD, VM::M1, "KeratometricPower" },
 { 0x0070, 0x0040, 1, VR::IS, VM::M1, "ImageRotationRetired" },
@@ -582,7 +602,7 @@ DictEntry DictRow0048[] = {
 DictEntry DictRow0049[] = {
 { 0x0010, 0x0021, 0, VR::LO, VM::M1, "IssuerOfPatientID" },
 { 0x0010, 0x1060, 0, VR::PN, VM::M1, "PatientMotherBirthName" },
-{ 0x0014, 0x0025, 0, VR::ST, VM::M1TN, "ComponentManufacturingProcedure" },
+{ 0x0014, 0x0025, 2, VR::ST, VM::M1TN, "ComponentManufacturingProcedure" },
 { 0x0018, 0x0029, 0, VR::SQ, VM::M1, "InterventionDrugCodeSequence" },
 { 0x0018, 0x1068, 0, VR::DS, VM::M1, "MultiplexGroupTimeOffset" },
 { 0x0018, 0x9260, 0, VR::SQ, VM::M1, "ASLSlabSequence" },
@@ -643,6 +663,7 @@ DictEntry DictRow0053[] = {
 DictEntry DictRow0054[] = {
 { 0x0020, 0x0016, 1, VR::IS, VM::M1, "IntervalNumber" },
 { 0x0022, 0x0014, 0, VR::FL, VM::M1, "StereoRotation" },
+{ 0x0022, 0x1445, 0, VR::SQ, VM::M1, "RetinalThicknessDefinitionCodeSequence" },
 { 0x0024, 0x0012, 0, VR::CS, VM::M1, "VisualFieldShape" },
 { 0x0046, 0x0070, 0, VR::SQ, VM::M1, "KeratometryRightEyeSequence" },
 { 0x0054, 0x0062, 0, VR::SQ, VM::M1, "GatedInformationSequence" },
@@ -650,7 +671,7 @@ DictEntry DictRow0054[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0055[] = {
-{ 0x0014, 0x0023, 0, VR::ST, VM::M1TN, "CADFileFormat" },
+{ 0x0014, 0x0023, 1, VR::ST, VM::M1TN, "CADFileFormat" },
 { 0x0018, 0x106E, 0, VR::UL, VM::M1, "TriggerSamplePosition" },
 { 0x0020, 0x0017, 1, VR::IS, VM::M1, "TimeSlotNumber" },
 { 0x0022, 0x0015, 0, VR::SQ, VM::M1, "AcquisitionDeviceTypeCodeSequence" },
@@ -670,7 +691,6 @@ DictEntry DictRow0056[] = {
 { 0x0022, 0x001A, 0, VR::SQ, VM::M1, "ChannelDescriptionCodeSequence" },
 { 0x0028, 0x0010, 0, VR::US, VM::M1, "Rows" },
 { 0x0028, 0x0400, 1, VR::LO, VM::M1, "TransformLabel" },
-{ 0x0028, 0x0400, 1, VR::US, VM::M1, "RowsForNthOrderCoefficients" },
 { 0x0028, 0x1051, 0, VR::DS, VM::M1TN, "WindowWidth" },
 { 0x0032, 0x000A, 1, VR::CS, VM::M1, "StudyStatusID" },
 { 0, 0, 0, 0, 0, NULL }
@@ -686,7 +706,6 @@ DictEntry DictRow0057[] = {
 { 0x0022, 0x001B, 0, VR::SQ, VM::M1, "RefractiveStateSequence" },
 { 0x0028, 0x0011, 0, VR::US, VM::M1, "Columns" },
 { 0x0028, 0x0401, 1, VR::LO, VM::M1, "TransformVersionNumber" },
-{ 0x0028, 0x0401, 1, VR::US, VM::M1, "ColumnsForNthOrderCoefficients" },
 { 0x0028, 0x1050, 0, VR::DS, VM::M1TN, "WindowCenter" },
 { 0x0074, 0x100c, 0, VR::LO, VM::M1, "ContactDisplayName" },
 { 0x3008, 0x00F2, 0, VR::SQ, VM::M1, "RecordedRangeShifterSequence" },
@@ -703,7 +722,6 @@ DictEntry DictRow0058[] = {
 { 0x0022, 0x1059, 0, VR::FL, VM::M1, "OphthalmicAxialLengthVelocity" },
 { 0x0028, 0x0012, 1, VR::US, VM::M1, "Planes" },
 { 0x0028, 0x0402, 1, VR::US, VM::M1, "NumberOfTransformSteps" },
-{ 0x0028, 0x0402, 1, VR::LO, VM::M1TN, "CoefficientCoding" },
 { 0x0028, 0x1053, 0, VR::DS, VM::M1, "RescaleSlope" },
 { 0x2010, 0x00A8, 0, VR::CS, VM::M1, "DefaultSmoothingType" },
 { 0x300A, 0x00F3, 0, VR::FL, VM::M1, "TotalBlockTrayWaterEquivalentThickness" },
@@ -717,7 +735,6 @@ DictEntry DictRow0059[] = {
 { 0x0020, 0x9252, 0, VR::FD, VM::M1, "ActualCardiacTriggerDelayTime" },
 { 0x0022, 0x0019, 0, VR::SQ, VM::M1, "LensesCodeSequence" },
 { 0x0028, 0x0403, 1, VR::LO, VM::M1TN, "SequenceOfCompressedData" },
-{ 0x0028, 0x0403, 1, VR::AT, VM::M1TN, "CoefficientCodingPointers" },
 { 0x0028, 0x1052, 0, VR::DS, VM::M1, "RescaleIntercept" },
 { 0x0074, 0x100e, 0, VR::SQ, VM::M1, "ProcedureStepDiscontinuationReasonCodeSequence" },
 { 0x2010, 0x00A9, 0, VR::CS, VM::M1TN, "OtherSmoothingTypesAvailable" },
@@ -728,7 +745,7 @@ DictEntry DictRow0059[] = {
 };
 DictEntry DictRow0060[] = {
 { 0x0008, 0x0034, 1, VR::TM, VM::M1, "OverlayTime" },
-{ 0x0014, 0x0028, 0, VR::ST, VM::M1TN, "ComponentManufacturer" },
+{ 0x0014, 0x0028, 2, VR::ST, VM::M1TN, "ComponentManufacturer" },
 { 0x0018, 0x0024, 0, VR::SH, VM::M1, "SequenceName" },
 { 0x0018, 0x1065, 0, VR::DS, VM::M1TN, "FrameTimeVector" },
 { 0x0020, 0x9255, 0, VR::FD, VM::M1, "NominalRespiratoryTriggerDelayTime" },
@@ -791,7 +808,7 @@ DictEntry DictRow0064[] = {
 { 0x0066, 0x0027, 0, VR::SQ, VM::M1, "TriangleFanSequence" },
 { 0x1000, 0x0000, 1, VR::US, VM::M3, "EscapeTriplet" },
 { 0x3006, 0x0084, 0, VR::IS, VM::M1, "ReferencedROINumber" },
-{ 0x300A, 0x0088, 0, VR::FL, VM::M1, "BeamDosePointDepth" },
+{ 0x300A, 0x0088, 1, VR::FL, VM::M1, "BeamDosePointDepth" },
 { 0x5000, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue" },
 { 0x5002, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange2" },
 { 0x5010, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue9" },
@@ -801,7 +818,7 @@ DictEntry DictRow0064[] = {
 };
 DictEntry DictRow0065[] = {
 { 0x0010, 0x0050, 0, VR::SQ, VM::M1, "PatientInsurancePlanCodeSequence" },
-{ 0x0014, 0x0054, 0, VR::DS, VM::M1, "OuterDiameter" },
+{ 0x0014, 0x0054, 2, VR::DS, VM::M1, "OuterDiameter" },
 { 0x0018, 0x1019, 0, VR::LO, VM::M1TN, "SecondaryCaptureDeviceSoftwareVersions" },
 { 0x0018, 0x9601, 0, VR::SQ, VM::M1, "DiffusionBMatrixSequence" },
 { 0x0020, 0x0060, 0, VR::CS, VM::M1, "Laterality" },
@@ -820,7 +837,7 @@ DictEntry DictRow0065[] = {
 { 0x1000, 0x0001, 1, VR::US, VM::M3, "RunLengthTriplet" },
 { 0x2040, 0x0082, 1, VR::CS, VM::M1, "OverlayBackgroundDensity" },
 { 0x3006, 0x0085, 0, VR::SH, VM::M1, "ROIObservationLabel" },
-{ 0x300A, 0x0089, 0, VR::FL, VM::M1, "BeamDosePointEquivalentDepth" },
+{ 0x300A, 0x0089, 1, VR::FL, VM::M1, "BeamDosePointEquivalentDepth" },
 { 0x5000, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue" },
 { 0x5006, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation4" },
 { 0, 0, 0, 0, 0, NULL }
@@ -840,7 +857,7 @@ DictEntry DictRow0066[] = {
 { 0x0072, 0x0421, 0, VR::US, VM::M3, "EmptyImageBoxCIELabValue" },
 { 0x1000, 0x0002, 1, VR::US, VM::M1, "HuffmanTableSize" },
 { 0x3006, 0x0086, 0, VR::SQ, VM::M1, "RTROIIdentificationCodeSequence" },
-{ 0x300A, 0x008A, 0, VR::FL, VM::M1, "BeamDosePointSSD" },
+{ 0x300A, 0x008A, 1, VR::FL, VM::M1, "BeamDosePointSSD" },
 { 0x5000, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange" },
 { 0x5002, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue2" },
 { 0x5012, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue10" },
@@ -850,7 +867,7 @@ DictEntry DictRow0066[] = {
 };
 DictEntry DictRow0067[] = {
 { 0x0012, 0x0050, 0, VR::LO, VM::M1, "ClinicalTrialTimePointID" },
-{ 0x0014, 0x0056, 0, VR::DS, VM::M1, "InnerDiameter" },
+{ 0x0014, 0x0056, 2, VR::DS, VM::M1, "InnerDiameter" },
 { 0x0018, 0x101B, 1, VR::LO, VM::M1, "HardcopyDeviceManufacturerModelName" },
 { 0x0018, 0x9603, 0, VR::FD, VM::M1, "DiffusionBValueXY" },
 { 0x0020, 0x0062, 0, VR::CS, VM::M1, "ImageLaterality" },
@@ -865,15 +882,17 @@ DictEntry DictRow0067[] = {
 { 0x0076, 0x0034, 0, VR::CS, VM::M1, "ComponentTypeCodeSequence" },
 { 0x1000, 0x0003, 1, VR::US, VM::M3, "HuffmanTableTriplet" },
 { 0x2040, 0x0080, 1, VR::CS, VM::M1, "OverlayForegroundDensity" },
+{ 0x300A, 0x008B, 0, VR::CS, VM::M1, "BeamDoseMeaning" },
 { 0x5002, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue2" },
 { 0x5004, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation3" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0068[] = {
 { 0x0004, 0x1410, 0, VR::US, VM::M1, "RecordInUseFlag" },
-{ 0x0014, 0x1010, 0, VR::ST, VM::M1, "ActualEnvironmentalConditions" },
+{ 0x0014, 0x1010, 2, VR::ST, VM::M1, "ActualEnvironmentalConditions" },
 { 0x0018, 0x9214, 0, VR::CS, VM::M1, "RespiratoryCyclePosition" },
 { 0x0018, 0x9604, 0, VR::FD, VM::M1, "DiffusionBValueXZ" },
+{ 0x0022, 0x1436, 0, VR::SQ, VM::M1, "OphthalmicThicknessMapTypeCodeSequence" },
 { 0x0024, 0x0061, 0, VR::CS, VM::M1, "ExcessiveFalsePositivesDataFlag" },
 { 0x0040, 0x0005, 0, VR::TM, VM::M1, "ScheduledProcedureStepEndTime" },
 { 0x0044, 0x0001, 0, VR::ST, VM::M1, "ProductPackageIdentifier" },
@@ -883,6 +902,7 @@ DictEntry DictRow0068[] = {
 { 0x0072, 0x0427, 0, VR::SQ, VM::M1, "ReferencedFirstFrameSequence" },
 { 0x1000, 0x0004, 1, VR::US, VM::M1, "ShiftTableSize" },
 { 0x3006, 0x0080, 0, VR::SQ, VM::M1, "RTROIObservationsSequence" },
+{ 0x300A, 0x008C, 0, VR::SQ, VM::M1, "BeamDoseVerificationControlPointSequence" },
 { 0x5004, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue3" },
 { 0x5006, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange4" },
 { 0x5010, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor9" },
@@ -893,7 +913,7 @@ DictEntry DictRow0068[] = {
 };
 DictEntry DictRow0069[] = {
 { 0x0008, 0x9205, 0, VR::CS, VM::M1, "PixelPresentation" },
-{ 0x0014, 0x0050, 0, VR::CS, VM::M1, "ComponentShape" },
+{ 0x0014, 0x0050, 2, VR::CS, VM::M1, "ComponentShape" },
 { 0x0018, 0x9605, 0, VR::FD, VM::M1, "DiffusionBValueYY" },
 { 0x0024, 0x0060, 0, VR::US, VM::M1, "FalsePositivesQuantity" },
 { 0x0040, 0x0004, 0, VR::DA, VM::M1, "ScheduledProcedureStepEndDate" },
@@ -903,6 +923,7 @@ DictEntry DictRow0069[] = {
 { 0x0054, 0x0400, 0, VR::SH, VM::M1, "ImageID" },
 { 0x0076, 0x0032, 0, VR::SQ, VM::M1, "ComponentTypesSequence" },
 { 0x1000, 0x0005, 1, VR::US, VM::M3, "ShiftTableTriplet" },
+{ 0x300A, 0x008D, 0, VR::FL, VM::M1, "AverageBeamDosePointDepth" },
 { 0x5002, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation2" },
 { 0x5004, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue3" },
 { 0, 0, 0, 0, 0, NULL }
@@ -919,6 +940,7 @@ DictEntry DictRow0070[] = {
 { 0x0054, 0x0013, 0, VR::SQ, VM::M1, "EnergyWindowRangeSequence" },
 { 0x0066, 0x0021, 0, VR::OF, VM::M1, "VectorCoordinateData" },
 { 0x3006, 0x0082, 0, VR::IS, VM::M1, "ObservationNumber" },
+{ 0x300A, 0x008E, 0, VR::FL, VM::M1, "AverageBeamDosePointEquivalentDepth" },
 { 0x5004, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange3" },
 { 0x5006, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue4" },
 { 0x5010, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue9" },
@@ -929,7 +951,7 @@ DictEntry DictRow0070[] = {
 };
 DictEntry DictRow0071[] = {
 { 0x0008, 0x9207, 0, VR::CS, VM::M1, "VolumeBasedCalculationTechnique" },
-{ 0x0014, 0x0052, 0, VR::CS, VM::M1, "CurvatureType" },
+{ 0x0014, 0x0052, 2, VR::CS, VM::M1, "CurvatureType" },
 { 0x0018, 0x9217, 0, VR::FD, VM::M1, "VelocityEncodingMaximumValue" },
 { 0x0018, 0x9607, 0, VR::FD, VM::M1, "DiffusionBValueZZ" },
 { 0x0022, 0x1025, 0, VR::SQ, VM::M1, "VitreousStatusCodeSequence" },
@@ -943,6 +965,7 @@ DictEntry DictRow0071[] = {
 { 0x0072, 0x0034, 0, VR::CS, VM::M1, "ImageSetSelectorCategory" },
 { 0x0072, 0x0424, 0, VR::SQ, VM::M1, "StructuredDisplayTextBoxSequence" },
 { 0x0076, 0x0030, 0, VR::LO, VM::M1, "SurgicalTechnique" },
+{ 0x300A, 0x008F, 0, VR::FL, VM::M1, "AverageBeamDosePointSSD" },
 { 0x5000, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation" },
 { 0x5006, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue4" },
 { 0, 0, 0, 0, 0, NULL }
@@ -1037,7 +1060,7 @@ DictEntry DictRow0076[] = {
 };
 DictEntry DictRow0077[] = {
 { 0x0018, 0x1405, 0, VR::IS, VM::M1, "RelativeXRayExposure" },
-{ 0x0024, 0x0068, 0, VR::FL, VM::M1, "LocalizedDeviationfromNormal" },
+{ 0x0024, 0x0068, 0, VR::FL, VM::M1, "LocalizedDeviationFromNormal" },
 { 0x0044, 0x0008, 0, VR::LO, VM::M1TN, "ProductName" },
 { 0x0050, 0x001C, 0, VR::FD, VM::M1, "ContainerComponentLength" },
 { 0x0054, 0x0018, 0, VR::SH, VM::M1, "EnergyWindowName" },
@@ -1062,7 +1085,7 @@ DictEntry DictRow0078[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0079[] = {
-{ 0x0014, 0x3099, 0, VR::LT, VM::M1, "CalibrationNotes" },
+{ 0x0014, 0x3099, 2, VR::LT, VM::M1, "CalibrationNotes" },
 { 0x0018, 0x1017, 1, VR::LO, VM::M1, "HardcopyDeviceManufacturer" },
 { 0x0028, 0x0066, 1, VR::AT, VM::M1TN, "CompressionStepPointers" },
 { 0x0044, 0x000A, 0, VR::LO, VM::M1, "ProductLotIdentifier" },
@@ -1078,7 +1101,7 @@ DictEntry DictRow0079[] = {
 };
 DictEntry DictRow0080[] = {
 { 0x0010, 0x1000, 0, VR::LO, VM::M1TN, "OtherPatientIDs" },
-{ 0x0014, 0x0045, 0, VR::ST, VM::M1TN, "MaterialPropertiesFileFormat" },
+{ 0x0014, 0x0045, 1, VR::ST, VM::M1TN, "MaterialPropertiesFileFormatRetired" },
 { 0x0018, 0x1008, 0, VR::LO, VM::M1, "GantryID" },
 { 0x0018, 0x9200, 0, VR::CS, VM::M1, "MRSpectroscopyAcquisitionType" },
 { 0x0020, 0x9238, 0, VR::LO, VM::M1, "FunctionalGroupPrivateCreator" },
@@ -1086,6 +1109,7 @@ DictEntry DictRow0080[] = {
 { 0x0040, 0x0011, 0, VR::SH, VM::M1, "ScheduledProcedureStepLocation" },
 { 0x0042, 0x0013, 0, VR::SQ, VM::M1, "SourceInstanceSequence" },
 { 0x0052, 0x0003, 0, VR::FD, VM::M1, "BeamSpotSize" },
+{ 0x0066, 0x0037, 0, VR::FL, VM::M1, "RecommendedPointRadius" },
 { 0x0070, 0x0021, 0, VR::US, VM::M1, "NumberOfGraphicPoints" },
 { 0x1010, 0x0000, 1, VR::US, VM::M1TN, "ZonalMap" },
 { 0x5000, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue" },
@@ -1100,9 +1124,10 @@ DictEntry DictRow0081[] = {
 { 0x0010, 0x0040, 0, VR::CS, VM::M1, "PatientSex" },
 { 0x0010, 0x1001, 0, VR::PN, VM::M1TN, "OtherPatientNames" },
 { 0x0012, 0x0042, 0, VR::LO, VM::M1, "ClinicalTrialSubjectReadingID" },
-{ 0x0014, 0x0044, 0, VR::ST, VM::M1TN, "MaterialPropertiesFileID" },
+{ 0x0014, 0x0044, 2, VR::ST, VM::M1TN, "MaterialPropertiesDescription" },
 { 0x0020, 0x0070, 1, VR::LO, VM::M1, "ImageGeometryType" },
 { 0x0022, 0x1033, 0, VR::FL, VM::M1, "KeratometerIndex" },
+{ 0x0022, 0x1423, 0, VR::SQ, VM::M1, "AcquisitionMethodAlgorithmSequence" },
 { 0x0024, 0x0074, 0, VR::CS, VM::M1, "ShortTermFluctuationCalculated" },
 { 0x0040, 0x0010, 0, VR::SH, VM::M1TN, "ScheduledStationName" },
 { 0x0040, 0x0400, 0, VR::LT, VM::M1, "CommentsOnTheScheduledProcedureStep" },
@@ -1122,6 +1147,7 @@ DictEntry DictRow0081[] = {
 };
 DictEntry DictRow0082[] = {
 { 0x0010, 0x1002, 0, VR::SQ, VM::M1, "OtherPatientIDsSequence" },
+{ 0x0022, 0x1420, 0, VR::SQ, VM::M1, "AcquisitionMethodCodeSequence" },
 { 0x0024, 0x0077, 0, VR::FL, VM::M1, "ShortTermFluctuationProbability" },
 { 0x0032, 0x1020, 1, VR::LO, VM::M1, "ScheduledStudyLocation" },
 { 0x0042, 0x0011, 0, VR::OB, VM::M1, "EncapsulatedDocument" },
@@ -1138,7 +1164,7 @@ DictEntry DictRow0082[] = {
 };
 DictEntry DictRow0083[] = {
 { 0x0012, 0x0040, 0, VR::LO, VM::M1, "ClinicalTrialSubjectID" },
-{ 0x0014, 0x0046, 0, VR::LT, VM::M1, "MaterialNotes" },
+{ 0x0014, 0x0046, 2, VR::LT, VM::M1, "MaterialNotes" },
 { 0x0024, 0x0076, 0, VR::CS, VM::M1, "ShortTermFluctuationProbabilityCalculated" },
 { 0x0032, 0x1021, 1, VR::AE, VM::M1TN, "ScheduledStudyLocationAETitle" },
 { 0x0040, 0x0012, 0, VR::LO, VM::M1, "PreMedication" },
@@ -1186,7 +1212,7 @@ DictEntry DictRow0085[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0086[] = {
-{ 0x0014, 0x3080, 0, VR::OB, VM::M1, "BadPixelImage" },
+{ 0x0014, 0x3080, 2, VR::OB, VM::M1, "BadPixelImage" },
 { 0x0024, 0x0073, 0, VR::FL, VM::M1, "LocalizedDeviationProbability" },
 { 0x0044, 0x0013, 0, VR::SQ, VM::M1, "ProductParameterSequence" },
 { 0x0066, 0x0031, 0, VR::LO, VM::M1, "AlgorithmVersion" },
@@ -1198,7 +1224,7 @@ DictEntry DictRow0086[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0087[] = {
-{ 0x0014, 0x0042, 0, VR::ST, VM::M1TN, "MaterialGrade" },
+{ 0x0014, 0x0042, 2, VR::ST, VM::M1TN, "MaterialGrade" },
 { 0x0022, 0x1035, 0, VR::SQ, VM::M1, "SourceOfOphthalmicAxialLengthCodeSequence" },
 { 0x0024, 0x0072, 0, VR::CS, VM::M1, "LocalDeviationProbabilityNormalsFlag" },
 { 0x0042, 0x0014, 0, VR::LO, VM::M1TN, "ListOfMIMETypes" },
@@ -1243,6 +1269,7 @@ DictEntry DictRow0089[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0090[] = {
+{ 0x0008, 0x0053, 0, VR::CS, VM::M1, "QueryRetrieveView" },
 { 0x0018, 0x1002, 0, VR::UI, VM::M1, "DeviceUID" },
 { 0x0018, 0x1412, 0, VR::DS, VM::M1, "TargetExposureIndex" },
 { 0x0048, 0x0013, 0, VR::US, VM::M1, "NumberOfFocalPlanes" },
@@ -1311,6 +1338,7 @@ DictEntry DictRow0095[] = {
 { 0x0018, 0x1007, 0, VR::LO, VM::M1, "CassetteID" },
 { 0x0040, 0xDB73, 0, VR::UL, VM::M1TN, "ReferencedContentItemIdentifier" },
 { 0x0046, 0x0018, 0, VR::SQ, VM::M1, "CylinderSequence" },
+{ 0x0066, 0x0038, 0, VR::FL, VM::M1, "RecommendedLineThickness" },
 { 0x0068, 0x65A0, 0, VR::SQ, VM::M1, "TwoDLineCoordinatesSequence" },
 { 0x0078, 0x0026, 0, VR::SQ, VM::M1, "ReplacedImplantTemplateGroupSequence" },
 { 0x5018, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation13" },
@@ -1410,6 +1438,7 @@ DictEntry DictRow0102[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0103[] = {
+{ 0x0022, 0x1415, 0, VR::CS, VM::M1, "OphthalmicMappingDeviceType" },
 { 0x0024, 0x0042, 0, VR::US, VM::M1, "StimuliRetestingQuantity" },
 { 0x0040, 0x0026, 0, VR::SQ, VM::M1, "OrderPlacerIdentifierSequence" },
 { 0x0052, 0x0034, 0, VR::FD, VM::M1, "FirstALineLocation" },
@@ -1458,7 +1487,8 @@ DictEntry DictRow0107[] = {
 { 0x0008, 0x0062, 0, VR::UI, VM::M1TN, "SOPClassesInStudy" },
 { 0x0018, 0x0072, 0, VR::DS, VM::M1, "EffectiveDuration" },
 { 0x0022, 0x0048, 0, VR::FL, VM::M1, "AcrossScanSpatialResolution" },
-{ 0x0052, 0x0038, 0, VR::US, VM::M1, "NumberOfPaddedAlines" },
+{ 0x0022, 0x1009, 0, VR::CS, VM::M1, "OphthalmicAxialMeasurementsDeviceType" },
+{ 0x0052, 0x0038, 0, VR::US, VM::M1, "NumberOfPaddedALines" },
 { 0x0062, 0x0008, 0, VR::CS, VM::M1, "SegmentAlgorithmType" },
 { 0x0066, 0x000C, 0, VR::FL, VM::M1, "RecommendedPresentationOpacity" },
 { 0, 0, 0, 0, 0, NULL }
@@ -1499,6 +1529,7 @@ DictEntry DictRow0112[] = {
 { 0x0010, 0x1020, 0, VR::DS, VM::M1, "PatientSize" },
 { 0x0012, 0x0063, 0, VR::LO, VM::M1TN, "DeidentificationMethod" },
 { 0x0018, 0x9220, 0, VR::FD, VM::M1, "FrameAcquisitionDuration" },
+{ 0x0022, 0x1012, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthSequence" },
 { 0x0024, 0x0055, 0, VR::CS, VM::M1, "CatchTrialsDataFlag" },
 { 0x0028, 0x1408, 0, VR::OW, VM::M1, "BlendingLookupTableData" },
 { 0x0040, 0x0031, 0, VR::UT, VM::M1, "LocalNamespaceEntityID" },
@@ -1516,6 +1547,7 @@ DictEntry DictRow0113[] = {
 { 0x0024, 0x0054, 0, VR::FL, VM::M1, "FalsePositivesEstimate" },
 { 0x0046, 0x0036, 0, VR::CS, VM::M1, "VerticalPrismBase" },
 { 0x0050, 0x0020, 0, VR::LO, VM::M1, "DeviceDescription" },
+{ 0x0062, 0x0012, 0, VR::SQ, VM::M1, "UsedSegmentsSequence" },
 { 0x0066, 0x0016, 0, VR::OF, VM::M1, "PointCoordinatesData" },
 { 0x0072, 0x0002, 0, VR::SH, VM::M1, "HangingProtocolName" },
 { 0x0076, 0x0006, 0, VR::LO, VM::M1, "ImplantAssemblyTemplateVersion" },
@@ -1526,6 +1558,7 @@ DictEntry DictRow0114[] = {
 { 0x0024, 0x0057, 0, VR::CS, VM::M1, "TestPointNormalsDataFlag" },
 { 0x0032, 0x1000, 1, VR::DA, VM::M1, "ScheduledStudyStartDate" },
 { 0x0040, 0x0033, 0, VR::CS, VM::M1, "UniversalEntityIDType" },
+{ 0x0062, 0x0011, 0, VR::SQ, VM::M1, "SegmentedPropertyTypeModifierCodeSequence" },
 { 0x0066, 0x0015, 0, VR::UL, VM::M1, "NumberOfSurfacePoints" },
 { 0x0070, 0x0003, 0, VR::CS, VM::M1, "BoundingBoxAnnotationUnits" },
 { 0x0074, 0x1046, 0, VR::SQ, VM::M1, "IonMachineVerificationSequence" },
@@ -1549,7 +1582,7 @@ DictEntry DictRow0115[] = {
 };
 DictEntry DictRow0116[] = {
 { 0x0004, 0x1420, 0, VR::UL, VM::M1, "OffsetOfReferencedLowerLevelDirectoryEntity" },
-{ 0x0014, 0x1020, 0, VR::DA, VM::M1, "ExpiryDate" },
+{ 0x0014, 0x1020, 2, VR::DA, VM::M1, "ExpiryDate" },
 { 0x0022, 0x0057, 0, VR::FL, VM::M1, "IlluminationBandwidth" },
 { 0x0024, 0x0051, 0, VR::CS, VM::M1, "ExcessiveFalseNegativesDataFlag" },
 { 0x0028, 0x140C, 0, VR::SQ, VM::M1, "BlendingLUT2Sequence" },
@@ -1694,8 +1727,9 @@ DictEntry DictRow0127[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0128[] = {
-{ 0x0014, 0x2014, 0, VR::IS, VM::M1, "IndicationNumber" },
+{ 0x0014, 0x2014, 2, VR::IS, VM::M1, "IndicationNumber" },
 { 0x0040, 0x3001, 0, VR::LO, VM::M1, "ConfidentialityConstraintOnPatientDataDescription" },
+{ 0x0080, 0x0002, 0, VR::SQ, VM::M1, "SurfaceScanModeCodeSequence" },
 { 0x2010, 0x0010, 0, VR::ST, VM::M1, "ImageDisplayFormat" },
 { 0x2020, 0x0020, 0, VR::CS, VM::M1, "Polarity" },
 { 0x300A, 0x004B, 0, VR::FL, VM::M1, "SnoutPositionTolerance" },
@@ -1707,6 +1741,7 @@ DictEntry DictRow0128[] = {
 };
 DictEntry DictRow0129[] = {
 { 0x0060, 0x3020, 0, VR::UL, VM::M1TN, "HistogramData" },
+{ 0x0080, 0x0003, 0, VR::SQ, VM::M1, "RegistrationMethodCodeSequence" },
 { 0x3002, 0x0042, 0, VR::DS, VM::M1, "FluenceDataScale" },
 { 0x3006, 0x0046, 0, VR::IS, VM::M1, "NumberOfContourPoints" },
 { 0x3008, 0x0048, 0, VR::DS, VM::M1, "DoseRateDelivered" },
@@ -1714,7 +1749,7 @@ DictEntry DictRow0129[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0130[] = {
-{ 0x0014, 0x2016, 0, VR::SH, VM::M1, "IndicationLabel" },
+{ 0x0014, 0x2016, 2, VR::SH, VM::M1, "IndicationLabel" },
 { 0x3002, 0x0041, 0, VR::CS, VM::M1, "FluenceDataSource" },
 { 0x3006, 0x0045, 0, VR::DS, VM::M3, "ContourOffsetVector" },
 { 0x6002, 0x4000, 1, VR::LT, VM::M1, "OverlayComments2" },
@@ -1724,12 +1759,14 @@ DictEntry DictRow0130[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0131[] = {
+{ 0x0080, 0x0001, 0, VR::SQ, VM::M1, "SurfaceScanAcquisitionTypeCodeSequence" },
 { 0x3002, 0x0040, 0, VR::SQ, VM::M1, "FluenceMapSequence" },
 { 0x3006, 0x0044, 0, VR::DS, VM::M1, "ContourSlabThickness" },
 { 0x300A, 0x0048, 0, VR::SQ, VM::M1, "BeamLimitingDeviceToleranceSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0132[] = {
+{ 0x0080, 0x0006, 0, VR::US, VM::M1TN, "SurfacePointPresentationValueData" },
 { 0x300A, 0x004F, 0, VR::FL, VM::M1, "TableTopPitchAngleTolerance" },
 { 0x6000, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated" },
 { 0x6002, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition2" },
@@ -1738,14 +1775,16 @@ DictEntry DictRow0132[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0133[] = {
-{ 0x0014, 0x3050, 0, VR::OX, VM::M1, "DarkCurrentCounts" },
+{ 0x0014, 0x3050, 2, VR::OX, VM::M1, "DarkCurrentCounts" },
+{ 0x0080, 0x0007, 0, VR::US, VM::M3T3N, "SurfacePointColorCIELabValueData" },
 { 0x3004, 0x0040, 0, VR::DS, VM::M3, "DVHNormalizationPoint" },
 { 0x3006, 0x0042, 0, VR::CS, VM::M1, "ContourGeometricType" },
 { 0x300A, 0x004E, 0, VR::DS, VM::M1, "TableTopEccentricAngleTolerance" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0134[] = {
-{ 0x0014, 0x2012, 0, VR::SQ, VM::M1, "IndicationSequence" },
+{ 0x0014, 0x2012, 2, VR::SQ, VM::M1, "IndicationSequence" },
+{ 0x0080, 0x0004, 0, VR::FD, VM::M1, "ShotDurationTime" },
 { 0x6000, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition" },
 { 0x6002, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated2" },
 { 0x6006, 0x4000, 1, VR::LT, VM::M1, "OverlayComments4" },
@@ -1753,6 +1792,7 @@ DictEntry DictRow0134[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0135[] = {
+{ 0x0080, 0x0005, 0, VR::FD, VM::M1, "ShotOffsetTime" },
 { 0x3004, 0x0042, 0, VR::DS, VM::M1, "DVHNormalizationDoseValue" },
 { 0x3006, 0x0040, 0, VR::SQ, VM::M1, "ContourSequence" },
 { 0x300A, 0x004C, 0, VR::DS, VM::M1, "PatientSupportAngleTolerance" },
@@ -1760,7 +1800,7 @@ DictEntry DictRow0135[] = {
 };
 DictEntry DictRow0136[] = {
 { 0x0008, 0x0082, 0, VR::SQ, VM::M1, "InstitutionCodeSequence" },
-{ 0x0014, 0x201C, 0, VR::CS, VM::M1, "IndicationDisposition" },
+{ 0x0014, 0x201C, 2, VR::CS, VM::M1, "IndicationDisposition" },
 { 0x0018, 0x2010, 0, VR::DS, VM::M2, "NominalScannedPixelSpacing" },
 { 0x0020, 0x00AA, 1, VR::IS, VM::M1, "ReportNumber" },
 { 0x0040, 0x08EA, 0, VR::SQ, VM::M1, "MeasurementUnitsCodeSequence" },
@@ -1780,8 +1820,9 @@ DictEntry DictRow0137[] = {
 };
 DictEntry DictRow0138[] = {
 { 0x0008, 0x0080, 0, VR::LO, VM::M1, "InstitutionName" },
-{ 0x0014, 0x201E, 0, VR::SQ, VM::M1, "IndicationROISequence" },
+{ 0x0014, 0x201E, 2, VR::SQ, VM::M1, "IndicationROISequence" },
 { 0x0018, 0x0090, 0, VR::DS, VM::M1, "DataCollectionDiameter" },
+{ 0x0080, 0x0008, 0, VR::SQ, VM::M1, "UVMappingSequence" },
 { 0x600A, 0x4000, 1, VR::LT, VM::M1, "OverlayComments6" },
 { 0x600C, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition7" },
 { 0x600E, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated8" },
@@ -1791,12 +1832,13 @@ DictEntry DictRow0138[] = {
 DictEntry DictRow0139[] = {
 { 0x0008, 0x0081, 0, VR::ST, VM::M1, "InstitutionAddress" },
 { 0x0018, 0x0091, 0, VR::IS, VM::M1, "EchoTrainLength" },
+{ 0x0080, 0x0009, 0, VR::SH, VM::M1, "TextureLabel" },
 { 0x3008, 0x0042, 0, VR::DS, VM::M1, "SpecifiedMeterset" },
 { 0x300A, 0x0040, 0, VR::SQ, VM::M1, "ToleranceTableSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0140[] = {
-{ 0x0014, 0x2018, 0, VR::ST, VM::M1, "IndicationDescription" },
+{ 0x0014, 0x2018, 2, VR::ST, VM::M1, "IndicationDescription" },
 { 0x0028, 0x6120, 0, VR::SS, VM::M1, "TIDOffset" },
 { 0x3008, 0x0045, 0, VR::FL, VM::M1, "MetersetRateSet" },
 { 0x6008, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated5" },
@@ -1812,7 +1854,7 @@ DictEntry DictRow0141[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0142[] = {
-{ 0x0014, 0x201A, 0, VR::CS, VM::M1TN, "IndicationType" },
+{ 0x0014, 0x201A, 2, VR::CS, VM::M1TN, "IndicationType" },
 { 0x0018, 0x0094, 0, VR::DS, VM::M1, "PercentPhaseFieldOfView" },
 { 0x3006, 0x0049, 0, VR::IS, VM::M1TN, "AttachedContours" },
 { 0x3008, 0x0047, 0, VR::FL, VM::M1TN, "ScanSpotMetersetsDelivered" },
@@ -1832,7 +1874,8 @@ DictEntry DictRow0143[] = {
 };
 DictEntry DictRow0144[] = {
 { 0x0010, 0x2000, 0, VR::LO, VM::M1TN, "MedicalAlerts" },
-{ 0x0014, 0x2004, 0, VR::IS, VM::M1, "EvaluatorNumber" },
+{ 0x0014, 0x2004, 2, VR::IS, VM::M1, "EvaluatorNumber" },
+{ 0x0080, 0x0012, 0, VR::SQ, VM::M1, "ReferencedTextureSequence" },
 { 0x2000, 0x0010, 0, VR::IS, VM::M1, "NumberOfCopies" },
 { 0x2020, 0x0030, 0, VR::DS, VM::M1, "RequestedImageSize" },
 { 0x2030, 0x0020, 0, VR::LO, VM::M1, "TextString" },
@@ -1845,14 +1888,16 @@ DictEntry DictRow0144[] = {
 };
 DictEntry DictRow0145[] = {
 { 0x0012, 0x0081, 0, VR::LO, VM::M1, "ClinicalTrialProtocolEthicsCommitteeName" },
+{ 0x0080, 0x0013, 0, VR::SQ, VM::M1, "ReferencedSurfaceDataSequence" },
 { 0x3002, 0x0052, 0, VR::SH, VM::M1, "FluenceModeID" },
 { 0x3004, 0x0054, 0, VR::CS, VM::M1, "DVHVolumeUnits" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0146[] = {
 { 0x0012, 0x0082, 0, VR::LO, VM::M1, "ClinicalTrialProtocolEthicsCommitteeApprovalNumber" },
-{ 0x0014, 0x2006, 0, VR::PN, VM::M1, "EvaluatorName" },
+{ 0x0014, 0x2006, 2, VR::PN, VM::M1, "EvaluatorName" },
 { 0x0018, 0x0088, 0, VR::DS, VM::M1, "SpacingBetweenSlices" },
+{ 0x0080, 0x0010, 0, VR::OF, VM::M1TN, "UValueData" },
 { 0x3002, 0x0051, 0, VR::CS, VM::M1, "FluenceMode" },
 { 0x6006, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat4" },
 { 0x6012, 0x4000, 1, VR::LT, VM::M1, "OverlayComments10" },
@@ -1863,6 +1908,7 @@ DictEntry DictRow0146[] = {
 DictEntry DictRow0147[] = {
 { 0x0012, 0x0083, 0, VR::SQ, VM::M1, "ConsentForClinicalTrialUseSequence" },
 { 0x0018, 0x0089, 0, VR::IS, VM::M1, "NumberOfPhaseEncodingSteps" },
+{ 0x0080, 0x0011, 0, VR::OF, VM::M1TN, "VValueData" },
 { 0x3002, 0x0050, 0, VR::SQ, VM::M1, "PrimaryFluenceModeSequence" },
 { 0x3004, 0x0056, 0, VR::IS, VM::M1, "DVHNumberOfBins" },
 { 0x3008, 0x005A, 0, VR::IS, VM::M1, "NumberOfFractionsDelivered" },
@@ -1878,12 +1924,12 @@ DictEntry DictRow0148[] = {
 };
 DictEntry DictRow0149[] = {
 { 0x0012, 0x0085, 0, VR::CS, VM::M1, "ConsentForDistributionFlag" },
-{ 0x0014, 0x3040, 0, VR::SQ, VM::M1, "DarkCurrentSequence" },
+{ 0x0014, 0x3040, 2, VR::SQ, VM::M1, "DarkCurrentSequence" },
 { 0x3004, 0x0050, 0, VR::SQ, VM::M1, "DVHSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0150[] = {
-{ 0x0014, 0x2002, 0, VR::SQ, VM::M1, "EvaluatorSequence" },
+{ 0x0014, 0x2002, 2, VR::SQ, VM::M1, "EvaluatorSequence" },
 { 0x6002, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat2" },
 { 0x6010, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition9" },
 { 0x6012, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated10" },
@@ -1933,7 +1979,7 @@ DictEntry DictRow0155[] = {
 };
 DictEntry DictRow0156[] = {
 { 0x0008, 0x0096, 0, VR::SQ, VM::M1, "ReferringPhysicianIdentificationSequence" },
-{ 0x0014, 0x2008, 0, VR::IS, VM::M1, "EvaluationAttempt" },
+{ 0x0014, 0x2008, 2, VR::IS, VM::M1, "EvaluationAttempt" },
 { 0x0018, 0x0086, 0, VR::IS, VM::M1TN, "EchoNumbers" },
 { 0x0018, 0x2004, 0, VR::DS, VM::M1TN, "FrameSecondaryAngleVector" },
 { 0x0068, 0x6560, 0, VR::FD, VM::M2, "TwoDPointCoordinates" },
@@ -1970,7 +2016,7 @@ DictEntry DictRow0159[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0160[] = {
-{ 0x0014, 0x3075, 0, VR::DS, VM::M1, "FilterThicknessUsedInGainCalibration" },
+{ 0x0014, 0x3075, 2, VR::DS, VM::M1, "FilterThicknessUsedInGainCalibration" },
 { 0x0024, 0x0086, 0, VR::CS, VM::M1, "FovealSensitivityMeasured" },
 { 0x2000, 0x0020, 0, VR::CS, VM::M1, "PrintPriority" },
 { 0x2010, 0x0030, 0, VR::CS, VM::M1, "AnnotationDisplayFormatID" },
@@ -1979,44 +2025,44 @@ DictEntry DictRow0160[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0161[] = {
-{ 0x0014, 0x3074, 0, VR::LO, VM::M1, "FilterMaterialUsedInGainCalibration" },
+{ 0x0014, 0x3074, 2, VR::LO, VM::M1, "FilterMaterialUsedInGainCalibration" },
 { 0x0024, 0x0087, 0, VR::FL, VM::M1, "FovealSensitivity" },
 { 0x0060, 0x3000, 0, VR::SQ, VM::M1, "HistogramSequence" },
 { 0x3008, 0x0068, 0, VR::SQ, VM::M1, "CorrectedParameterSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0162[] = {
-{ 0x0014, 0x3077, 0, VR::TM, VM::M1, "TimeOfGainCalibration" },
+{ 0x0014, 0x3077, 2, VR::TM, VM::M1, "TimeOfGainCalibration" },
 { 0x0020, 0x0080, 1, VR::CS, VM::M1TN, "MaskingImage" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0163[] = {
-{ 0x0014, 0x3076, 0, VR::DA, VM::M1, "DateOfGainCalibration" },
+{ 0x0014, 0x3076, 2, VR::DA, VM::M1, "DateOfGainCalibration" },
 { 0x0024, 0x0085, 0, VR::SQ, VM::M1, "LocalizedDeviationProbabilitySequence" },
 { 0x0060, 0x3002, 0, VR::US, VM::M1, "HistogramNumberOfBins" },
 { 0x3008, 0x006A, 0, VR::FL, VM::M1, "CorrectionValue" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0164[] = {
-{ 0x0014, 0x2030, 0, VR::SQ, VM::M1, "IndicationPhysicalPropertySequence" },
-{ 0x0014, 0x3071, 0, VR::DS, VM::M1, "KVUsedInGainCalibration" },
+{ 0x0014, 0x2030, 2, VR::SQ, VM::M1, "IndicationPhysicalPropertySequence" },
+{ 0x0014, 0x3071, 2, VR::DS, VM::M1, "KVUsedInGainCalibration" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0165[] = {
-{ 0x0014, 0x3070, 0, VR::OX, VM::M1, "AirCounts" },
+{ 0x0014, 0x3070, 2, VR::OX, VM::M1, "AirCounts" },
 { 0x0024, 0x0083, 0, VR::SQ, VM::M1, "GlobalDeviationProbabilitySequence" },
 { 0x0060, 0x3004, 0, VR::XS, VM::M1, "HistogramFirstBinValue" },
 { 0x3004, 0x0060, 0, VR::SQ, VM::M1, "DVHReferencedROISequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0166[] = {
-{ 0x0014, 0x2032, 0, VR::SH, VM::M1, "PropertyLabel" },
-{ 0x0014, 0x3073, 0, VR::DS, VM::M1, "NumberOfFramesUsedForIntegration" },
+{ 0x0014, 0x2032, 2, VR::SH, VM::M1, "PropertyLabel" },
+{ 0x0014, 0x3073, 2, VR::DS, VM::M1, "NumberOfFramesUsedForIntegration" },
 { 0x0024, 0x0080, 0, VR::CS, VM::M1, "CorrectedLocalizedDeviationFromNormalProbabilityCalculated" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0167[] = {
-{ 0x0014, 0x3072, 0, VR::DS, VM::M1, "MAUsedInGainCalibration" },
+{ 0x0014, 0x3072, 2, VR::DS, VM::M1, "MAUsedInGainCalibration" },
 { 0x0024, 0x0081, 0, VR::FL, VM::M1, "CorrectedLocalizedDeviationFromNormalProbability" },
 { 0x0060, 0x3006, 0, VR::XS, VM::M1, "HistogramLastBinValue" },
 { 0x3004, 0x0062, 0, VR::CS, VM::M1, "DVHROIContributionType" },
@@ -2102,7 +2148,7 @@ DictEntry DictRow0180[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0181[] = {
-{ 0x0014, 0x3060, 0, VR::SQ, VM::M1, "GainCorrectionReferenceSequence" },
+{ 0x0014, 0x3060, 2, VR::SQ, VM::M1, "GainCorrectionReferenceSequence" },
 { 0x0024, 0x0093, 0, VR::CS, VM::M1, "StimulusResults" },
 { 0x3004, 0x0070, 0, VR::DS, VM::M1, "DVHMinimumDose" },
 { 0, 0, 0, 0, 0, NULL }
@@ -2180,6 +2226,7 @@ DictEntry DictRow0193[] = {
 { 0x2050, 0x0010, 0, VR::SQ, VM::M1, "PresentationLUTSequence" },
 { 0x2100, 0x0140, 1, VR::AE, VM::M1, "DestinationAE" },
 { 0x3002, 0x0003, 0, VR::LO, VM::M1, "RTImageName" },
+{ 0x3004, 0x0005, 0, VR::CS, VM::M1, "SpatialTransformOfDose" },
 { 0x300A, 0x000B, 0, VR::LO, VM::M1TN, "TreatmentSites" },
 { 0x6004, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed3" },
 { 0x6006, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue4" },
@@ -2217,7 +2264,7 @@ DictEntry DictRow0196[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0197[] = {
-{ 0x0014, 0x3011, 0, VR::DS, VM::M1, "InternalDetectorFrameTime" },
+{ 0x0014, 0x3011, 2, VR::DS, VM::M1, "InternalDetectorFrameTime" },
 { 0x0040, 0x2004, 0, VR::DA, VM::M1, "IssueDateOfImagingServiceRequest" },
 { 0x0046, 0x0080, 0, VR::SQ, VM::M1, "FlatKeratometricAxisSequence" },
 { 0x0076, 0x00B0, 0, VR::US, VM::M1, "Component2ReferencedMatingFeatureSetID" },
@@ -2229,7 +2276,7 @@ DictEntry DictRow0197[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0198[] = {
-{ 0x0014, 0x3012, 0, VR::DS, VM::M1, "NumberOfFramesIntegrated" },
+{ 0x0014, 0x3012, 2, VR::DS, VM::M1, "NumberOfFramesIntegrated" },
 { 0x0040, 0x2007, 1, VR::SH, VM::M1, "FillerOrderNumberImagingServiceRequestRetired" },
 { 0x3002, 0x0004, 0, VR::ST, VM::M1, "RTImageDescription" },
 { 0x3004, 0x0002, 0, VR::CS, VM::M1, "DoseUnits" },
@@ -2414,8 +2461,9 @@ DictEntry DictRow0215[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0216[] = {
-{ 0x0008, 0x3010, 0, VR::UI, VM::M1, "IrradiationEventUID" },
+{ 0x0008, 0x3010, 0, VR::UI, VM::M1TN, "IrradiationEventUID" },
 { 0x0018, 0x1082, 0, VR::IS, VM::M1, "HighRRValue" },
+{ 0x0018, 0x2041, 0, VR::SQ, VM::M1, "BiopsyTargetSequence" },
 { 0x0040, 0xA601, 1, VR::CS, VM::M1, "ObserverContextFlagTrial" },
 { 0x3008, 0x0010, 0, VR::SQ, VM::M1, "MeasuredDoseReferenceSequence" },
 { 0x300A, 0x0012, 0, VR::IS, VM::M1, "DoseReferenceNumber" },
@@ -2438,6 +2486,7 @@ DictEntry DictRow0218[] = {
 { 0x0008, 0x1090, 0, VR::LO, VM::M1, "ManufacturerModelName" },
 { 0x0018, 0x1080, 0, VR::CS, VM::M1, "BeatRejectionFlag" },
 { 0x0018, 0x1490, 0, VR::CS, VM::M1, "TomoType" },
+{ 0x0018, 0x2043, 0, VR::FL, VM::M2, "LocalizingCursorPosition" },
 { 0x0040, 0xA603, 1, VR::CS, VM::M1, "ProcedureContextFlagTrial" },
 { 0x3008, 0x0012, 0, VR::ST, VM::M1, "MeasuredDoseDescription" },
 { 0x300A, 0x0010, 0, VR::SQ, VM::M1, "DoseReferenceSequence" },
@@ -2450,6 +2499,7 @@ DictEntry DictRow0218[] = {
 DictEntry DictRow0219[] = {
 { 0x0018, 0x1081, 0, VR::IS, VM::M1, "LowRRValue" },
 { 0x0018, 0x1491, 0, VR::CS, VM::M1, "TomoClass" },
+{ 0x0018, 0x2042, 0, VR::UI, VM::M1, "TargetUID" },
 { 0x0078, 0x00A0, 0, VR::FD, VM::M4, "TwoDImplantTemplateGroupMemberMatchingAxes" },
 { 0x300A, 0x0401, 0, VR::SQ, VM::M1, "ReferencedSetupImageSequence" },
 { 0x601C, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue15" },
@@ -2458,6 +2508,7 @@ DictEntry DictRow0219[] = {
 };
 DictEntry DictRow0220[] = {
 { 0x0018, 0x1086, 0, VR::IS, VM::M1, "SkipBeats" },
+{ 0x0018, 0x2045, 0, VR::SH, VM::M1, "TargetLabel" },
 { 0x3008, 0x0014, 0, VR::CS, VM::M1, "MeasuredDoseType" },
 { 0x300A, 0x0016, 0, VR::LO, VM::M1, "DoseReferenceDescription" },
 { 0x5008, 0x2500, 1, VR::LO, VM::M1, "CurveLabel5" },
@@ -2467,6 +2518,7 @@ DictEntry DictRow0220[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0221[] = {
+{ 0x0018, 0x2044, 0, VR::FL, VM::M3, "CalculatedTargetPosition" },
 { 0x0046, 0x0098, 0, VR::SQ, VM::M1, "SubjectiveRefractionLeftEyeSequence" },
 { 0x0068, 0x6520, 0, VR::SQ, VM::M1, "PlanningLandmarkPlaneSequence" },
 { 0x6018, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed13" },
@@ -2475,6 +2527,7 @@ DictEntry DictRow0221[] = {
 };
 DictEntry DictRow0222[] = {
 { 0x0018, 0x1084, 0, VR::IS, VM::M1, "IntervalsRejected" },
+{ 0x3006, 0x0018, 0, VR::SQ, VM::M1, "PredecessorStructureSetSequence" },
 { 0x3008, 0x0016, 0, VR::DS, VM::M1, "MeasuredDoseValue" },
 { 0x300A, 0x0014, 0, VR::CS, VM::M1, "DoseReferenceStructureType" },
 { 0x500A, 0x2500, 1, VR::LO, VM::M1, "CurveLabel6" },
@@ -2486,6 +2539,7 @@ DictEntry DictRow0222[] = {
 DictEntry DictRow0223[] = {
 { 0x0018, 0x1085, 0, VR::LO, VM::M1, "PVCRejection" },
 { 0x0018, 0x1495, 0, VR::IS, VM::M1, "NumberOfTomosynthesisSourceImages" },
+{ 0x0018, 0x2046, 0, VR::FL, VM::M1, "DisplayedZValue" },
 { 0x300A, 0x0015, 0, VR::CS, VM::M1, "NominalBeamEnergyUnit" },
 { 0x6018, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue13" },
 { 0x601A, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed14" },
@@ -2602,7 +2656,7 @@ DictEntry DictRow0239[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0240[] = {
-{ 0x0014, 0x3024, 0, VR::DS, VM::M1, "HorizontalOffsetOfSensor" },
+{ 0x0014, 0x3024, 2, VR::DS, VM::M1, "HorizontalOffsetOfSensor" },
 { 0x0022, 0x1090, 0, VR::SQ, VM::M1, "IOLPowerSequence" },
 { 0x0070, 0x0083, 0, VR::TM, VM::M1, "PresentationCreationTime" },
 { 0x3002, 0x0032, 0, VR::DS, VM::M1, "MetersetExposure" },
@@ -2620,7 +2674,7 @@ DictEntry DictRow0241[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0242[] = {
-{ 0x0014, 0x3026, 0, VR::DS, VM::M1, "VerticalOffsetOfSensor" },
+{ 0x0014, 0x3026, 2, VR::DS, VM::M1, "VerticalOffsetOfSensor" },
 { 0x0020, 0x3402, 1, VR::CS, VM::M1, "ModifiedImageID" },
 { 0x0022, 0x1092, 0, VR::SQ, VM::M1, "LensConstantSequence" },
 { 0x0070, 0x0081, 0, VR::LO, VM::M1, "ContentDescription" },
@@ -2636,21 +2690,22 @@ DictEntry DictRow0243[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0244[] = {
-{ 0x0014, 0x3020, 0, VR::SQ, VM::M1, "DetectorTemperatureSequence" },
+{ 0x0014, 0x3020, 2, VR::SQ, VM::M1, "DetectorTemperatureSequence" },
 { 0x0020, 0x3404, 1, VR::LO, VM::M1, "ModifyingDeviceManufacturer" },
-{ 0x0022, 0x1094, 0, VR::LO, VM::M1, "LensConstantDescription" },
+{ 0x0022, 0x1094, 1, VR::LO, VM::M1, "LensConstantDescription" },
 { 0x0070, 0x0087, 0, VR::SQ, VM::M1, "AlternateContentDescriptionSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0245[] = {
 { 0x0020, 0x3405, 1, VR::TM, VM::M1, "ModifiedImageTime" },
+{ 0x0022, 0x1095, 0, VR::LO, VM::M1, "ImplantName" },
 { 0x0070, 0x0086, 0, VR::SQ, VM::M1, "ContentCreatorIdentificationCodeSequence" },
 { 0x0076, 0x0080, 0, VR::US, VM::M1, "Component1ReferencedMatingFeatureSetID" },
 { 0x3006, 0x0033, 0, VR::CS, VM::M1, "RTROIRelationship" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0246[] = {
-{ 0x0014, 0x3022, 0, VR::DS, VM::M1, "SensorName" },
+{ 0x0014, 0x3022, 2, VR::ST, VM::M1, "SensorName" },
 { 0x0020, 0x3406, 1, VR::LO, VM::M1, "ModifiedImageDescription" },
 { 0x0022, 0x1096, 0, VR::SQ, VM::M1, "KeratometryMeasurementTypeCodeSequence" },
 { 0x3002, 0x0034, 0, VR::DS, VM::M4, "DiaphragmPosition" },
@@ -2658,6 +2713,7 @@ DictEntry DictRow0246[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0247[] = {
+{ 0x0022, 0x1097, 0, VR::LO, VM::M1, "ImplantPartNumber" },
 { 0x0070, 0x0084, 0, VR::PN, VM::M1, "ContentCreatorName" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -2683,7 +2739,7 @@ DictEntry DictRow0251[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0252[] = {
-{ 0x0014, 0x3028, 0, VR::DS, VM::M1, "SensorTemperature" },
+{ 0x0014, 0x3028, 2, VR::DS, VM::M1, "SensorTemperature" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0253[] = {
@@ -2699,22 +2755,23 @@ DictEntry DictRow0254[] = {
 DictEntry DictRow0255[] = {
 { 0x3006, 0x0039, 0, VR::SQ, VM::M1, "ROIContourSequence" },
 { 0x3008, 0x0037, 0, VR::DS, VM::M1, "DeliveredSecondaryMeterset" },
+{ 0x300A, 0x0425, 0, VR::FL, VM::M1, "SourceToGeneralAccessoryDistance" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0256[] = {
 { 0x0004, 0x1141, 0, VR::CS, VM::M1T8, "FileSetDescriptorFileID" },
 { 0x0008, 0x010C, 0, VR::UI, VM::M1, "CodingSchemeUID" },
-{ 0x0014, 0x4014, 0, VR::DS, VM::M1, "ElementDimensionA" },
+{ 0x0014, 0x4014, 2, VR::DS, VM::M1, "ElementDimensionA" },
 { 0x0024, 0x0120, 0, VR::CS, VM::M1, "ScreeningBaselineMeasured" },
 { 0x0040, 0x0554, 0, VR::UI, VM::M1, "SpecimenUID" },
 { 0x0040, 0x4040, 0, VR::CS, VM::M1, "RawDataHandling" },
-{ 0x4010, 0x1051, 0, VR::LO, VM::M1, "ItineraryID" },
+{ 0x4010, 0x1051, 3, VR::LO, VM::M1, "ItineraryID" },
 { 0x5400, 0x1010, 0, VR::OX, VM::M1, "WaveformData" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0257[] = {
 { 0x0008, 0x010D, 0, VR::UI, VM::M1, "ContextGroupExtensionCreatorUID" },
-{ 0x0014, 0x4015, 0, VR::DS, VM::M1, "ElementDimensionB" },
+{ 0x0014, 0x4015, 2, VR::DS, VM::M1, "ElementDimensionB" },
 { 0x0040, 0x0555, 0, VR::SQ, VM::M1, "AcquisitionContextSequence" },
 { 0x0040, 0x4041, 0, VR::CS, VM::M1, "InputReadinessState" },
 { 0x0400, 0x0115, 0, VR::OB, VM::M1, "CertificateOfSigner" },
@@ -2723,25 +2780,26 @@ DictEntry DictRow0257[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0258[] = {
-{ 0x0014, 0x4016, 0, VR::DS, VM::M1, "ElementPitch" },
+{ 0x0014, 0x4016, 2, VR::DS, VM::M1, "ElementPitchA" },
 { 0x0024, 0x0122, 0, VR::SQ, VM::M1, "ScreeningBaselineMeasuredSequence" },
 { 0x0040, 0x0556, 0, VR::ST, VM::M1, "AcquisitionContextDescription" },
-{ 0x4010, 0x1053, 0, VR::LO, VM::M1, "ItineraryIDAssigningAuthority" },
+{ 0x4010, 0x1053, 3, VR::LO, VM::M1, "ItineraryIDAssigningAuthority" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0259[] = {
 { 0x0004, 0x1142, 0, VR::CS, VM::M1, "SpecificCharacterSetOfFileSetDescriptorFile" },
 { 0x0008, 0x010F, 0, VR::CS, VM::M1, "ContextIdentifier" },
-{ 0x0014, 0x4017, 0, VR::DS, VM::M1, "MeasuredBeamDimensionA" },
+{ 0x0014, 0x4017, 2, VR::DS, VM::M1, "MeasuredBeamDimensionA" },
 { 0x0018, 0x115E, 0, VR::DS, VM::M1, "ImageAndFluoroscopyAreaDoseProduct" },
-{ 0x4010, 0x1052, 0, VR::SH, VM::M1, "ItineraryIDType" },
+{ 0x4010, 0x1052, 3, VR::SH, VM::M1, "ItineraryIDType" },
 { 0x5002, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels2" },
 { 0x5002, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer2" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0260[] = {
 { 0x0002, 0x0102, 0, VR::OB, VM::M1, "PrivateInformation" },
-{ 0x0014, 0x4010, 0, VR::SQ, VM::M1, "TransmitTransducerSequence" },
+{ 0x0008, 0x0108, 3, VR::LT, VM::M1, "ExtendedCodeMeaning" },
+{ 0x0014, 0x4010, 2, VR::SQ, VM::M1, "TransmitTransducerSequence" },
 { 0x0018, 0x9351, 0, VR::FL, VM::M1, "CalciumScoringMassFactorPatient" },
 { 0x0024, 0x0124, 0, VR::CS, VM::M1, "ScreeningBaselineType" },
 { 0x0040, 0x0550, 1, VR::SQ, VM::M1, "SpecimenSequence" },
@@ -2750,15 +2808,15 @@ DictEntry DictRow0260[] = {
 { 0x0100, 0x0410, 0, VR::CS, VM::M1, "SOPInstanceStatus" },
 { 0x0400, 0x0110, 0, VR::CS, VM::M1, "CertificateType" },
 { 0x0400, 0x0500, 0, VR::SQ, VM::M1, "EncryptedAttributesSequence" },
-{ 0x4010, 0x1055, 0, VR::SH, VM::M1, "RouteIDAssigningAuthority" },
+{ 0x4010, 0x1055, 3, VR::SH, VM::M1, "RouteIDAssigningAuthority" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0261[] = {
-{ 0x0014, 0x4011, 0, VR::SQ, VM::M1, "ReceiveTransducerSequence" },
+{ 0x0014, 0x4011, 2, VR::SQ, VM::M1, "ReceiveTransducerSequence" },
 { 0x0018, 0x9740, 0, VR::US, VM::M1, "NumberOfSubsets" },
 { 0x0040, 0x0551, 0, VR::LO, VM::M1, "SpecimenIdentifier" },
 { 0x0046, 0x0147, 0, VR::FD, VM::M1, "CylinderPower" },
-{ 0x4010, 0x1054, 0, VR::SH, VM::M1, "RouteID" },
+{ 0x4010, 0x1054, 3, VR::SH, VM::M1, "RouteID" },
 { 0x5004, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels3" },
 { 0x5004, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer3" },
 { 0, 0, 0, 0, 0, NULL }
@@ -2766,7 +2824,7 @@ DictEntry DictRow0261[] = {
 DictEntry DictRow0262[] = {
 { 0x0002, 0x0100, 0, VR::UI, VM::M1, "PrivateInformationCreatorUID" },
 { 0x0008, 0x114B, 0, VR::SQ, VM::M1, "ReferencedRealWorldValueMappingInstanceSequence" },
-{ 0x0014, 0x4012, 0, VR::US, VM::M1, "NumberOfElements" },
+{ 0x0014, 0x4012, 2, VR::US, VM::M1, "NumberOfElements" },
 { 0x0018, 0x9353, 0, VR::FL, VM::M1, "EnergyWeightingFactor" },
 { 0x0024, 0x0126, 0, VR::FL, VM::M1, "ScreeningBaselineValue" },
 { 0x0040, 0x0552, 1, VR::SQ, VM::M1, "SpecimenDescriptionSequenceTrial" },
@@ -2776,13 +2834,13 @@ DictEntry DictRow0262[] = {
 DictEntry DictRow0263[] = {
 { 0x0008, 0x010B, 0, VR::CS, VM::M1, "ContextGroupExtensionFlag" },
 { 0x0008, 0x114A, 0, VR::SQ, VM::M1, "ReferencedInstanceSequence" },
-{ 0x0014, 0x4013, 0, VR::CS, VM::M1, "ElementShape" },
+{ 0x0014, 0x4013, 2, VR::CS, VM::M1, "ElementShape" },
 { 0x0018, 0x115A, 0, VR::CS, VM::M1, "RadiationMode" },
 { 0x0018, 0x9352, 0, VR::FL, VM::M3, "CalciumScoringMassFactorDevice" },
 { 0x0040, 0x0553, 1, VR::ST, VM::M1, "SpecimenDescriptionTrial" },
 { 0x0040, 0x1102, 0, VR::ST, VM::M1, "PersonAddress" },
 { 0x0046, 0x0145, 0, VR::SQ, VM::M1, "ReferencedRefractiveMeasurementsSequence" },
-{ 0x4010, 0x1056, 0, VR::CS, VM::M1, "InboundArrivalType" },
+{ 0x4010, 0x1056, 3, VR::CS, VM::M1, "InboundArrivalType" },
 { 0x5006, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels4" },
 { 0x5006, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer4" },
 { 0, 0, 0, 0, 0, NULL }
@@ -2791,16 +2849,17 @@ DictEntry DictRow0264[] = {
 { 0x0008, 0x0104, 0, VR::LO, VM::M1, "CodeMeaning" },
 { 0x0008, 0x1145, 1, VR::SQ, VM::M1, "ReferencedCurveSequence" },
 { 0x0008, 0x4000, 1, VR::LT, VM::M1, "IdentifyingComments" },
-{ 0x0014, 0x401C, 0, VR::DS, VM::M1, "MeasuredBandwidth" },
+{ 0x0014, 0x401C, 2, VR::DS, VM::M1, "MeasuredBandwidth" },
 { 0x0018, 0x1155, 0, VR::CS, VM::M1, "RadiationSetting" },
-{ 0x4010, 0x1059, 0, VR::CS, VM::M1, "CarrierIDAssigningAuthority" },
+{ 0x4010, 0x1059, 3, VR::CS, VM::M1, "CarrierIDAssigningAuthority" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0265[] = {
 { 0x0008, 0x0105, 0, VR::CS, VM::M1, "MappingResource" },
+{ 0x0014, 0x401D, 2, VR::DS, VM::M1, "ElementPitchB" },
 { 0x0018, 0x1154, 0, VR::DS, VM::M1, "AveragePulseWidth" },
 { 0x0018, 0x5050, 0, VR::IS, VM::M1, "DepthOfScanField" },
-{ 0x4010, 0x1058, 0, VR::SH, VM::M1, "CarrierID" },
+{ 0x4010, 0x1058, 3, VR::SH, VM::M1, "CarrierID" },
 { 0x5008, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels5" },
 { 0x5008, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer5" },
 { 0, 0, 0, 0, 0, NULL }
@@ -2819,15 +2878,16 @@ DictEntry DictRow0267[] = {
 };
 DictEntry DictRow0268[] = {
 { 0x0008, 0x0100, 0, VR::SH, VM::M1, "CodeValue" },
-{ 0x0014, 0x4018, 0, VR::DS, VM::M1, "MeasuredBeamDimensionB" },
+{ 0x0014, 0x4018, 2, VR::DS, VM::M1, "MeasuredBeamDimensionB" },
 { 0x0018, 0x1151, 0, VR::IS, VM::M1, "XRayTubeCurrent" },
 { 0x0018, 0x9749, 0, VR::SQ, VM::M1, "PETReconstructionSequence" },
 { 0x0028, 0x0120, 0, VR::XS, VM::M1, "PixelPaddingValue" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0269[] = {
+{ 0x0008, 0x0101, 3, VR::LO, VM::M1, "ExtendedCodeValue" },
 { 0x0008, 0x1140, 0, VR::SQ, VM::M1, "ReferencedImageSequence" },
-{ 0x0014, 0x4019, 0, VR::DS, VM::M1, "LocationOfMeasuredBeamDiameter" },
+{ 0x0014, 0x4019, 2, VR::DS, VM::M1, "LocationOfMeasuredBeamDiameter" },
 { 0x0018, 0x1150, 0, VR::IS, VM::M1, "ExposureTime" },
 { 0x0028, 0x0121, 0, VR::XS, VM::M1, "PixelPaddingRangeLimit" },
 { 0x500C, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels7" },
@@ -2836,13 +2896,13 @@ DictEntry DictRow0269[] = {
 };
 DictEntry DictRow0270[] = {
 { 0x0008, 0x0102, 0, VR::SH, VM::M1, "CodingSchemeDesignator" },
-{ 0x0014, 0x401A, 0, VR::DS, VM::M1, "NominalFrequency" },
+{ 0x0014, 0x401A, 2, VR::DS, VM::M1, "NominalFrequency" },
 { 0x0018, 0x1153, 0, VR::IS, VM::M1, "ExposureInuAs" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0271[] = {
 { 0x0008, 0x0103, 0, VR::SH, VM::M1, "CodingSchemeVersion" },
-{ 0x0014, 0x401B, 0, VR::DS, VM::M1, "MeasuredCenterFrequency" },
+{ 0x0014, 0x401B, 2, VR::DS, VM::M1, "MeasuredCenterFrequency" },
 { 0x0018, 0x1152, 0, VR::IS, VM::M1, "Exposure" },
 { 0x2110, 0x0099, 1, VR::SH, VM::M1, "PrintQueueID" },
 { 0x500E, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels8" },
@@ -2851,13 +2911,13 @@ DictEntry DictRow0271[] = {
 };
 DictEntry DictRow0272[] = {
 { 0x0010, 0x4000, 0, VR::LT, VM::M1, "PatientComments" },
-{ 0x0014, 0x4004, 0, VR::CS, VM::M1, "PulserType" },
+{ 0x0014, 0x4004, 2, VR::CS, VM::M1, "PulserType" },
 { 0x0018, 0x9345, 0, VR::FD, VM::M1, "CTDIvol" },
 { 0x0018, 0x9755, 0, VR::CS, VM::M1, "TimeOfFlightInformationUsed" },
 { 0x0040, 0x4050, 0, VR::DT, VM::M1, "PerformedProcedureStepStartDateTime" },
 { 0x0054, 0x1101, 0, VR::LO, VM::M1, "AttenuationCorrectionMethod" },
 { 0x4000, 0x0010, 1, VR::LT, VM::M1, "Arbitrary" },
-{ 0x4010, 0x1041, 0, VR::DT, VM::M1, "OOIOwnerCreationTime" },
+{ 0x4010, 0x1041, 3, VR::DT, VM::M1, "OOIOwnerCreationTime" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0273[] = {
@@ -2865,24 +2925,24 @@ DictEntry DictRow0273[] = {
 { 0x0040, 0x4051, 0, VR::DT, VM::M1, "PerformedProcedureStepEndDateTime" },
 { 0x0054, 0x1100, 0, VR::CS, VM::M1, "RandomsCorrectionMethod" },
 { 0x0400, 0x0105, 0, VR::DT, VM::M1, "DigitalSignatureDateTime" },
-{ 0x4010, 0x0001, 0, VR::CS, VM::M1, "LowEnergyDetectors" },
+{ 0x4010, 0x0001, 3, VR::CS, VM::M1, "LowEnergyDetectors" },
 { 0x5010, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels9" },
 { 0x5010, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer9" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0274[] = {
-{ 0x0014, 0x4006, 0, VR::LT, VM::M1, "PulserNotes" },
+{ 0x0014, 0x4006, 2, VR::LT, VM::M1, "PulserNotes" },
 { 0x0040, 0x4052, 0, VR::DT, VM::M1, "ProcedureStepCancellationDateTime" },
 { 0x0054, 0x1103, 0, VR::LO, VM::M1, "ReconstructionMethod" },
-{ 0x4010, 0x0002, 0, VR::CS, VM::M1, "HighEnergyDetectors" },
-{ 0x4010, 0x1043, 0, VR::FL, VM::M3, "OOISize" },
+{ 0x4010, 0x0002, 3, VR::CS, VM::M1, "HighEnergyDetectors" },
+{ 0x4010, 0x1043, 3, VR::FL, VM::M3, "OOISize" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0275[] = {
 { 0x0018, 0x9346, 0, VR::SQ, VM::M1, "CTDIPhantomTypeCodeSequence" },
 { 0x0018, 0x9756, 0, VR::CS, VM::M1, "ReconstructionType" },
 { 0x0054, 0x1102, 0, VR::CS, VM::M1, "DecayCorrection" },
-{ 0x4010, 0x1042, 0, VR::CS, VM::M1, "OOIType" },
+{ 0x4010, 0x1042, 3, VR::CS, VM::M1, "OOIType" },
 { 0x5012, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels10" },
 { 0x5012, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer10" },
 { 0, 0, 0, 0, 0, NULL }
@@ -2894,8 +2954,8 @@ DictEntry DictRow0276[] = {
 { 0x0054, 0x1105, 0, VR::LO, VM::M1, "ScatterCorrectionMethod" },
 { 0x0400, 0x0100, 0, VR::UI, VM::M1, "DigitalSignatureUID" },
 { 0x0400, 0x0510, 0, VR::UI, VM::M1, "EncryptedContentTransferSyntaxUID" },
-{ 0x4010, 0x0004, 0, VR::SQ, VM::M1, "DetectorGeometrySequence" },
-{ 0x4010, 0x1045, 0, VR::SQ, VM::M1, "BasisMaterialsCodeSequence" },
+{ 0x4010, 0x0004, 3, VR::SQ, VM::M1, "DetectorGeometrySequence" },
+{ 0x4010, 0x1045, 3, VR::SQ, VM::M1, "BasisMaterialsCodeSequence" },
 { 0x5400, 0x1004, 0, VR::US, VM::M1, "WaveformBitsAllocated" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -2903,7 +2963,7 @@ DictEntry DictRow0277[] = {
 { 0x0010, 0x0101, 0, VR::SQ, VM::M1, "PatientPrimaryLanguageCodeSequence" },
 { 0x0018, 0x9340, 0, VR::SQ, VM::M1, "ContrastAdministrationProfileSequence" },
 { 0x0054, 0x1104, 0, VR::LO, VM::M1, "DetectorLinesOfResponseUsed" },
-{ 0x4010, 0x1044, 0, VR::CS, VM::M1, "AcquisitionStatus" },
+{ 0x4010, 0x1044, 3, VR::CS, VM::M1, "AcquisitionStatus" },
 { 0x5014, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels11" },
 { 0x5014, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer11" },
 { 0, 0, 0, 0, 0, NULL }
@@ -2911,17 +2971,17 @@ DictEntry DictRow0277[] = {
 DictEntry DictRow0278[] = {
 { 0x0010, 0x0102, 0, VR::SQ, VM::M1, "PatientPrimaryLanguageModifierCodeSequence" },
 { 0x0010, 0x2180, 0, VR::SH, VM::M1, "Occupation" },
-{ 0x0014, 0x4002, 0, VR::SQ, VM::M1, "PulserEquipmentSequence" },
+{ 0x0014, 0x4002, 2, VR::SQ, VM::M1, "PulserEquipmentSequence" },
 { 0x0018, 0x9343, 0, VR::CS, VM::M1, "ContrastBolusAgentDetected" },
 { 0x2130, 0x00A0, 1, VR::SQ, VM::M1, "ProposedStudySequence" },
-{ 0x4010, 0x1047, 0, VR::SQ, VM::M1, "OOIOwnerSequence" },
+{ 0x4010, 0x1047, 3, VR::SQ, VM::M1, "OOIOwnerSequence" },
 { 0x5400, 0x1006, 0, VR::CS, VM::M1, "WaveformSampleInterpretation" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0279[] = {
 { 0x0008, 0x115A, 0, VR::UI, VM::M1TN, "SOPClassesSupported" },
 { 0x0018, 0x9342, 0, VR::CS, VM::M1, "ContrastBolusAgentAdministered" },
-{ 0x4010, 0x1046, 0, VR::CS, VM::M1, "PhantomType" },
+{ 0x4010, 0x1046, 3, VR::CS, VM::M1, "PhantomType" },
 { 0x5016, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels12" },
 { 0x5016, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer12" },
 { 0, 0, 0, 0, 0, NULL }
@@ -2929,7 +2989,7 @@ DictEntry DictRow0279[] = {
 DictEntry DictRow0280[] = {
 { 0x0008, 0x0114, 0, VR::ST, VM::M1, "CodingSchemeExternalID" },
 { 0x0008, 0x1155, 0, VR::UI, VM::M1, "ReferencedSOPInstanceUID" },
-{ 0x0014, 0x400C, 0, VR::LT, VM::M1, "ReceiverNotes" },
+{ 0x0014, 0x400C, 2, VR::LT, VM::M1, "ReceiverNotes" },
 { 0x0018, 0x1145, 0, VR::DS, VM::M1, "CenterOfRotationOffset" },
 { 0x0018, 0x4000, 1, VR::LT, VM::M1, "AcquisitionComments" },
 { 0, 0, 0, 0, 0, NULL }
@@ -2939,21 +2999,21 @@ DictEntry DictRow0281[] = {
 { 0x0018, 0x1144, 0, VR::DS, VM::M1, "AngularStep" },
 { 0x0018, 0x5040, 1, VR::DS, VM::M1, "TotalGain" },
 { 0x300A, 0x01D4, 0, VR::DS, VM::M1, "TableTopLongitudinalSetupDisplacement" },
-{ 0x4010, 0x1048, 0, VR::CS, VM::M1, "ScanType" },
+{ 0x4010, 0x1048, 3, VR::CS, VM::M1, "ScanType" },
 { 0x5018, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels13" },
 { 0x5018, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer13" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0282[] = {
 { 0x0008, 0x0116, 0, VR::ST, VM::M1, "CodingSchemeResponsibleOrganization" },
-{ 0x0014, 0x400E, 0, VR::SQ, VM::M1, "PreAmplifierEquipmentSequence" },
+{ 0x0014, 0x400E, 2, VR::SQ, VM::M1, "PreAmplifierEquipmentSequence" },
 { 0x0018, 0x1147, 0, VR::CS, VM::M1, "FieldOfViewShape" },
 { 0x5400, 0x100A, 0, VR::OX, VM::M1, "WaveformPaddingValue" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0283[] = {
 { 0x0008, 0x0117, 0, VR::UI, VM::M1, "ContextUID" },
-{ 0x0014, 0x400F, 0, VR::LT, VM::M1, "PreAmplifierNotes" },
+{ 0x0014, 0x400F, 2, VR::LT, VM::M1, "PreAmplifierNotes" },
 { 0x0018, 0x1146, 1, VR::DS, VM::M1TN, "RotationOffset" },
 { 0x300A, 0x01D6, 0, VR::DS, VM::M1, "TableTopLateralSetupDisplacement" },
 { 0x501A, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels14" },
@@ -2962,7 +3022,7 @@ DictEntry DictRow0283[] = {
 };
 DictEntry DictRow0284[] = {
 { 0x0008, 0x0110, 0, VR::SQ, VM::M1, "CodingSchemeIdentificationSequence" },
-{ 0x0014, 0x4008, 0, VR::SQ, VM::M1, "ReceiverEquipmentSequence" },
+{ 0x0014, 0x4008, 2, VR::SQ, VM::M1, "ReceiverEquipmentSequence" },
 { 0x0018, 0x1141, 1, VR::DS, VM::M1, "AngularPosition" },
 { 0x0018, 0x9759, 0, VR::CS, VM::M1, "AttenuationCorrected" },
 { 0, 0, 0, 0, 0, NULL }
@@ -2978,7 +3038,7 @@ DictEntry DictRow0285[] = {
 };
 DictEntry DictRow0286[] = {
 { 0x0008, 0x0112, 0, VR::LO, VM::M1, "CodingSchemeRegistry" },
-{ 0x0014, 0x400A, 0, VR::CS, VM::M1, "AmplifierType" },
+{ 0x0014, 0x400A, 2, VR::CS, VM::M1, "AmplifierType" },
 { 0x0018, 0x1143, 0, VR::DS, VM::M1, "ScanArc" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -2990,40 +3050,45 @@ DictEntry DictRow0287[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0288[] = {
-{ 0x0014, 0x4034, 0, VR::DS, VM::M1, "RectifierSmoothing" },
+{ 0x0014, 0x4034, 2, VR::DS, VM::M1, "RectifierSmoothing" },
 { 0x0018, 0x9765, 0, VR::CS, VM::M1, "RandomsCorrected" },
 { 0x0020, 0x4000, 0, VR::LT, VM::M1, "ImageComments" },
 { 0x0024, 0x0100, 0, VR::FL, VM::M1, "AgeCorrectedSensitivityDeviationProbabilityValue" },
+{ 0x4010, 0x1071, 3, VR::SQ, VM::M1, "QRMeasurementsSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0289[] = {
-{ 0x0014, 0x4035, 0, VR::SQ, VM::M1, "DACSequence" },
+{ 0x0014, 0x4035, 2, VR::SQ, VM::M1, "DACSequence" },
 { 0x0018, 0x9764, 0, VR::CS, VM::M1, "CountLossNormalizationCorrected" },
 { 0x0020, 0x0105, 0, VR::IS, VM::M1, "NumberOfTemporalPositions" },
+{ 0x4010, 0x1070, 3, VR::CS, VM::M1, "AITDeviceType" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0290[] = {
-{ 0x0014, 0x4036, 0, VR::CS, VM::M1, "DACType" },
+{ 0x0014, 0x4036, 2, VR::CS, VM::M1, "DACType" },
 { 0x0018, 0x9767, 0, VR::CS, VM::M1, "SensitivityCalibrated" },
 { 0x0024, 0x0102, 0, VR::CS, VM::M1, "GeneralizedDefectCorrectedSensitivityDeviationFlag" },
+{ 0x4010, 0x1073, 3, VR::FD, VM::M1, "SNRThreshold" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0291[] = {
 { 0x0018, 0x9766, 0, VR::CS, VM::M1, "NonUniformRadialSamplingCorrected" },
 { 0x0024, 0x0103, 0, VR::FL, VM::M1, "GeneralizedDefectCorrectedSensitivityDeviationValue" },
+{ 0x4010, 0x1072, 3, VR::SQ, VM::M1, "TargetMaterialSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0292[] = {
-{ 0x0014, 0x4030, 0, VR::SQ, VM::M1, "ReceiverSettingsSequence" },
+{ 0x0014, 0x4030, 2, VR::SQ, VM::M1, "ReceiverSettingsSequence" },
 { 0x0018, 0x9761, 0, VR::CS, VM::M1, "DeadTimeCorrected" },
 { 0x0020, 0x0100, 0, VR::IS, VM::M1, "TemporalPositionIdentifier" },
 { 0x0024, 0x0104, 0, VR::FL, VM::M1, "GeneralizedDefectCorrectedSensitivityDeviationProbabilityValue" },
 { 0x0028, 0x0108, 0, VR::XS, VM::M1, "SmallestPixelValueInSeries" },
 { 0x0400, 0x0520, 0, VR::OB, VM::M1, "EncryptedContent" },
+{ 0x4010, 0x1075, 3, VR::DS, VM::M1, "ImageScaleRepresentation" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0293[] = {
-{ 0x0014, 0x4031, 0, VR::DS, VM::M1, "AcquiredSoundpathLength" },
+{ 0x0014, 0x4031, 2, VR::DS, VM::M1, "AcquiredSoundpathLength" },
 { 0x0018, 0x9760, 0, VR::CS, VM::M1, "ScatterCorrected" },
 { 0x0024, 0x0105, 0, VR::FL, VM::M1, "MinimumSensitivityValue" },
 { 0x0028, 0x0109, 0, VR::XS, VM::M1, "LargestPixelValueInSeries" },
@@ -3031,46 +3096,53 @@ DictEntry DictRow0293[] = {
 };
 DictEntry DictRow0294[] = {
 { 0x0010, 0x21B0, 0, VR::LT, VM::M1, "AdditionalPatientHistory" },
-{ 0x0014, 0x4032, 0, VR::CS, VM::M1, "AcquisitionCompressionType" },
+{ 0x0014, 0x4032, 2, VR::CS, VM::M1, "AcquisitionCompressionType" },
 { 0x0018, 0x9763, 0, VR::CS, VM::M1, "PatientMotionCorrected" },
 { 0x0024, 0x0106, 0, VR::CS, VM::M1, "BlindSpotLocalized" },
+{ 0x4010, 0x1077, 3, VR::SQ, VM::M1, "ReferencedTDRInstanceSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0295[] = {
-{ 0x0014, 0x4033, 0, VR::IS, VM::M1, "AcquisitionSampleSize" },
+{ 0x0014, 0x4033, 2, VR::IS, VM::M1, "AcquisitionSampleSize" },
 { 0x0018, 0x9762, 0, VR::CS, VM::M1, "GantryMotionCorrected" },
 { 0x0022, 0x1140, 0, VR::CS, VM::M1, "OphthalmicAxialLengthMeasurementModified" },
 { 0x0024, 0x0107, 0, VR::FL, VM::M1, "BlindSpotXCoordinate" },
+{ 0x4010, 0x1076, 3, VR::SQ, VM::M1, "ReferencedPTOSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0296[] = {
-{ 0x0014, 0x403C, 0, VR::DS, VM::M1TN, "DACAmplitude" },
+{ 0x0014, 0x403C, 2, VR::DS, VM::M1TN, "DACAmplitude" },
 { 0x0024, 0x0108, 0, VR::FL, VM::M1, "BlindSpotYCoordinate" },
 { 0x0028, 0x0104, 1, VR::XS, VM::M1, "SmallestValidPixelValue" },
 { 0x0028, 0x4000, 1, VR::LT, VM::M1, "ImagePresentationComments" },
+{ 0x4010, 0x1079, 3, VR::SQ, VM::M1, "AnomalyLocatorIndicatorSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0297[] = {
 { 0x0008, 0x1164, 0, VR::SQ, VM::M1, "FrameExtractionSequence" },
 { 0x0028, 0x0105, 1, VR::XS, VM::M1, "LargestValidPixelValue" },
+{ 0x4010, 0x1078, 3, VR::ST, VM::M1, "PTOLocationDescription" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0298[] = {
 { 0x0008, 0x1167, 0, VR::UI, VM::M1, "MultiFrameSourceSOPInstanceUID" },
 { 0x0028, 0x0106, 0, VR::XS, VM::M1, "SmallestImagePixelValue" },
 { 0x0068, 0x64D0, 0, VR::FD, VM::M9, "ThreeDMatingAxes" },
+{ 0x4010, 0x107B, 3, VR::SQ, VM::M1, "PTORegionSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0299[] = {
 { 0x0028, 0x0107, 0, VR::XS, VM::M1, "LargestImagePixelValue" },
+{ 0x4010, 0x107A, 3, VR::FL, VM::M3, "AnomalyLocatorIndicator" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0300[] = {
 { 0x0008, 0x1161, 0, VR::UL, VM::M1TN, "SimpleFrameList" },
-{ 0x0014, 0x4038, 0, VR::DS, VM::M1TN, "DACGainPoints" },
+{ 0x0014, 0x4038, 2, VR::DS, VM::M1TN, "DACGainPoints" },
 { 0x0018, 0x9769, 0, VR::CS, VM::M1, "IterativeReconstructionMethod" },
 { 0x0028, 0x0100, 0, VR::US, VM::M1, "BitsAllocated" },
 { 0x0038, 0x0500, 0, VR::LO, VM::M1, "PatientState" },
+{ 0x4010, 0x107D, 3, VR::SQ, VM::M1, "SecondaryInspectionMethodSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0301[] = {
@@ -3078,11 +3150,12 @@ DictEntry DictRow0301[] = {
 { 0x0018, 0x1170, 0, VR::IS, VM::M1, "GeneratorPower" },
 { 0x0018, 0x9768, 0, VR::CS, VM::M1, "DetectorNormalizationCorrection" },
 { 0x0028, 0x0101, 0, VR::US, VM::M1, "BitsStored" },
+{ 0x4010, 0x107C, 3, VR::CS, VM::M1, "InspectionSelectionCriteria" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0302[] = {
 { 0x0008, 0x1163, 0, VR::FD, VM::M2, "TimeRange" },
-{ 0x0014, 0x403A, 0, VR::DS, VM::M1TN, "DACTimePoints" },
+{ 0x0014, 0x403A, 2, VR::DS, VM::M1TN, "DACTimePoints" },
 { 0x0028, 0x0102, 0, VR::US, VM::M1, "HighBit" },
 { 0x0038, 0x0502, 0, VR::SQ, VM::M1, "PatientClinicalTrialParticipationSequence" },
 { 0, 0, 0, 0, 0, NULL }
@@ -3090,21 +3163,22 @@ DictEntry DictRow0302[] = {
 DictEntry DictRow0303[] = {
 { 0x0008, 0x1162, 0, VR::UL, VM::M3T3N, "CalculatedFrameList" },
 { 0x0028, 0x0103, 0, VR::US, VM::M1, "PixelRepresentation" },
+{ 0x4010, 0x107E, 3, VR::DS, VM::M6, "PRCSToRCSOrientation" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0304[] = {
-{ 0x0014, 0x4024, 0, VR::DS, VM::M1, "ExcitationFrequency" },
+{ 0x0014, 0x4024, 2, VR::DS, VM::M1, "ExcitationFrequency" },
 { 0x0024, 0x0110, 0, VR::SQ, VM::M1, "VisualAcuityMeasurementSequence" },
 { 0x0100, 0x0424, 0, VR::LT, VM::M1, "SOPAuthorizationComment" },
-{ 0x4010, 0x1061, 0, VR::FL, VM::M3, "SourcePosition" },
+{ 0x4010, 0x1061, 3, VR::FL, VM::M3, "SourcePosition" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0305[] = {
-{ 0x4010, 0x1060, 0, VR::FL, VM::M3, "SourceOrientation" },
+{ 0x4010, 0x1060, 3, VR::FL, VM::M3, "SourceOrientation" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0306[] = {
-{ 0x0014, 0x4026, 0, VR::CS, VM::M1, "ModulationType" },
+{ 0x0014, 0x4026, 2, VR::CS, VM::M1, "ModulationType" },
 { 0x0022, 0x1155, 0, VR::FL, VM::M1, "SignalToNoiseRatio" },
 { 0x0024, 0x0112, 0, VR::SQ, VM::M1, "RefractiveParametersUsedOnPatientSequence" },
 { 0x0032, 0x4000, 1, VR::LT, VM::M1, "StudyComments" },
@@ -3113,14 +3187,14 @@ DictEntry DictRow0306[] = {
 };
 DictEntry DictRow0307[] = {
 { 0x0024, 0x0113, 0, VR::CS, VM::M1, "MeasurementLaterality" },
-{ 0x4010, 0x1062, 0, VR::FL, VM::M1, "BeltHeight" },
+{ 0x4010, 0x1062, 3, VR::FL, VM::M1, "BeltHeight" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0308[] = {
-{ 0x0014, 0x4020, 0, VR::SQ, VM::M1, "PulserSettingsSequence" },
+{ 0x0014, 0x4020, 2, VR::SQ, VM::M1, "PulserSettingsSequence" },
 { 0x0018, 0x9771, 0, VR::SQ, VM::M1, "PatientPhysiologicalStateSequence" },
 { 0x0020, 0x0110, 0, VR::DS, VM::M1, "TemporalResolution" },
-{ 0x0022, 0x1153, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthAcquisitionMethodCodeSequence" },
+{ 0x0022, 0x1153, 1, VR::SQ, VM::M1, "OphthalmicAxialLengthAcquisitionMethodCodeSequence" },
 { 0x0024, 0x0114, 0, VR::SQ, VM::M1, "OphthalmicPatientClinicalInformationLeftEyeSequence" },
 { 0x0040, 0x0560, 0, VR::SQ, VM::M1, "SpecimenDescriptionSequence" },
 { 0x0100, 0x0420, 0, VR::DT, VM::M1, "SOPAuthorizationDateTime" },
@@ -3131,15 +3205,15 @@ DictEntry DictRow0309[] = {
 { 0x0018, 0x9360, 0, VR::SQ, VM::M1, "CTAdditionalXRaySourceSequence" },
 { 0x0018, 0x9770, 0, VR::CS, VM::M1, "AttenuationCorrectionTemporalRelationship" },
 { 0x0024, 0x0115, 0, VR::SQ, VM::M1, "OphthalmicPatientClinicalInformationRightEyeSequence" },
-{ 0x4010, 0x1064, 0, VR::SQ, VM::M1, "AlgorithmRoutingCodeSequence" },
+{ 0x4010, 0x1064, 3, VR::SQ, VM::M1, "AlgorithmRoutingCodeSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0310[] = {
 { 0x0010, 0x21A0, 0, VR::CS, VM::M1, "SmokingStatus" },
-{ 0x0014, 0x4022, 0, VR::DS, VM::M1, "PulseWidth" },
+{ 0x0014, 0x4022, 2, VR::DS, VM::M1, "PulseWidth" },
 { 0x0040, 0x0562, 0, VR::SQ, VM::M1, "IssuerOfTheSpecimenIdentifierSequence" },
 { 0x2130, 0x0080, 1, VR::SQ, VM::M1, "PresentationLUTContentSequence" },
-{ 0x4010, 0x1067, 0, VR::CS, VM::M1, "TransportClassification" },
+{ 0x4010, 0x1067, 3, VR::CS, VM::M1, "TransportClassification" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0311[] = {
@@ -3151,12 +3225,12 @@ DictEntry DictRow0311[] = {
 DictEntry DictRow0312[] = {
 { 0x0024, 0x0118, 0, VR::FL, VM::M1, "FovealPointProbabilityValue" },
 { 0x0038, 0x4000, 0, VR::LT, VM::M1, "VisitComments" },
-{ 0x4010, 0x1069, 0, VR::FL, VM::M1, "TotalProcessingTime" },
+{ 0x4010, 0x1069, 3, VR::FL, VM::M1, "TotalProcessingTime" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0313[] = {
 { 0x0018, 0x1164, 0, VR::DS, VM::M2, "ImagerPixelSpacing" },
-{ 0x4010, 0x1068, 0, VR::LT, VM::M1, "OOITypeDescriptor" },
+{ 0x4010, 0x1068, 3, VR::LT, VM::M1, "OOITypeDescriptor" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0314[] = {
@@ -3168,87 +3242,91 @@ DictEntry DictRow0315[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0316[] = {
-{ 0x0014, 0x4028, 0, VR::DS, VM::M1, "Damping" },
+{ 0x0014, 0x4028, 2, VR::DS, VM::M1, "Damping" },
 { 0x0018, 0x1161, 0, VR::LO, VM::M1TN, "TypeOfFilters" },
 { 0x0028, 0x0110, 1, VR::XS, VM::M1, "SmallestImagePixelValueInPlane" },
 { 0x0038, 0x0100, 0, VR::SQ, VM::M1, "PertinentDocumentsSequence" },
+{ 0x4010, 0x106D, 3, VR::CS, VM::M1, "AdditionalScreeningPerformed" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0317[] = {
 { 0x0018, 0x1160, 0, VR::SH, VM::M1, "FilterType" },
 { 0x0028, 0x0111, 1, VR::XS, VM::M1, "LargestImagePixelValueInPlane" },
-{ 0x4010, 0x106C, 0, VR::OB, VM::M1, "DetectorCalibrationData" },
+{ 0x4010, 0x106C, 3, VR::OB, VM::M1, "DetectorCalibrationData" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0318[] = {
 { 0x0022, 0x1159, 0, VR::LO, VM::M1, "OphthalmicAxialLengthDataSourceDescription" },
+{ 0x4010, 0x106F, 3, VR::SQ, VM::M1, "AdditionalInspectionMethodSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0319[] = {
 { 0x0018, 0x1162, 0, VR::DS, VM::M1, "IntensifierSize" },
+{ 0x4010, 0x106E, 3, VR::CS, VM::M1, "AdditionalInspectionSelectionCriteria" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0320[] = {
 { 0x0004, 0x1510, 0, VR::UI, VM::M1, "ReferencedSOPClassUIDInFile" },
 { 0x0018, 0x9314, 0, VR::SQ, VM::M1, "CTReconstructionSequence" },
 { 0x0040, 0x0515, 0, VR::SQ, VM::M1, "AlternateContainerIdentifierSequence" },
-{ 0x0040, 0x4001, 0, VR::CS, VM::M1, "GeneralPurposeScheduledProcedureStepStatus" },
-{ 0x4010, 0x1010, 0, VR::US, VM::M1, "PotentialThreatObjectID" },
+{ 0x0040, 0x4001, 1, VR::CS, VM::M1, "GeneralPurposeScheduledProcedureStepStatus" },
+{ 0x4010, 0x1010, 3, VR::US, VM::M1, "PotentialThreatObjectID" },
 { 0x5010, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints9" },
 { 0x6000, 0x3000, 0, VR::OX, VM::M1, "OverlayData" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0321[] = {
 { 0x0004, 0x1511, 0, VR::UI, VM::M1, "ReferencedSOPInstanceUIDInFile" },
-{ 0x0014, 0x4054, 0, VR::ST, VM::M1, "CouplingTechnique" },
+{ 0x0014, 0x4054, 2, VR::ST, VM::M1, "CouplingTechnique" },
 { 0x0018, 0x9315, 0, VR::CS, VM::M1, "ReconstructionAlgorithm" },
+{ 0x0022, 0x1127, 0, VR::SQ, VM::M1, "LensThicknessSequence" },
 { 0x0046, 0x0102, 0, VR::SQ, VM::M1, "AddOtherSequence" },
 { 0x0054, 0x0500, 0, VR::CS, VM::M1, "SliceProgressionDirection" },
-{ 0x4010, 0x1011, 0, VR::SQ, VM::M1, "ThreatSequence" },
+{ 0x4010, 0x1011, 3, VR::SQ, VM::M1, "ThreatSequence" },
 { 0x5004, 0x0005, 1, VR::US, VM::M1, "CurveDimensions3" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0322[] = {
 { 0x0004, 0x1512, 0, VR::UI, VM::M1, "ReferencedTransferSyntaxUIDInFile" },
-{ 0x0014, 0x4057, 0, VR::DS, VM::M1, "CouplingVelocity" },
+{ 0x0014, 0x4057, 2, VR::DS, VM::M1, "CouplingVelocity" },
 { 0x0018, 0x9316, 0, VR::CS, VM::M1, "ConvolutionKernelGroup" },
-{ 0x0040, 0x4003, 0, VR::CS, VM::M1, "GeneralPurposeScheduledProcedureStepPriority" },
+{ 0x0040, 0x4003, 1, VR::CS, VM::M1, "GeneralPurposeScheduledProcedureStepPriority" },
 { 0x0046, 0x0101, 0, VR::SQ, VM::M1, "AddIntermediateSequence" },
-{ 0x4010, 0x1012, 0, VR::CS, VM::M1, "ThreatCategory" },
+{ 0x4010, 0x1012, 3, VR::CS, VM::M1, "ThreatCategory" },
 { 0x5012, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints10" },
 { 0x6002, 0x3000, 0, VR::OX, VM::M1, "OverlayData2" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0323[] = {
-{ 0x0014, 0x4056, 0, VR::ST, VM::M1, "CouplingMedium" },
+{ 0x0014, 0x4056, 2, VR::ST, VM::M1, "CouplingMedium" },
 { 0x0018, 0x9317, 0, VR::FD, VM::M2, "ReconstructionFieldOfView" },
 { 0x0022, 0x1125, 0, VR::SQ, VM::M1, "AnteriorChamberDepthDefinitionCodeSequence" },
-{ 0x0040, 0x4002, 0, VR::CS, VM::M1, "GeneralPurposePerformedProcedureStepStatus" },
+{ 0x0040, 0x4002, 1, VR::CS, VM::M1, "GeneralPurposePerformedProcedureStepStatus" },
 { 0x0046, 0x0100, 0, VR::SQ, VM::M1, "AddNearSequence" },
-{ 0x4010, 0x1013, 0, VR::LT, VM::M1, "ThreatCategoryDescription" },
+{ 0x4010, 0x1013, 3, VR::LT, VM::M1, "ThreatCategoryDescription" },
 { 0x5006, 0x0005, 1, VR::US, VM::M1, "CurveDimensions4" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0324[] = {
-{ 0x0014, 0x4051, 0, VR::SQ, VM::M1, "ReceiveTransducerSettingsSequence" },
+{ 0x0014, 0x4051, 2, VR::SQ, VM::M1, "ReceiveTransducerSettingsSequence" },
 { 0x0018, 0x1508, 0, VR::CS, VM::M1, "PositionerType" },
 { 0x0018, 0x9310, 0, VR::FD, VM::M1, "TableFeedPerRotation" },
 { 0x0022, 0x1122, 0, VR::FL, VM::M1, "IOLPowerForExactTargetRefraction" },
-{ 0x0040, 0x4005, 0, VR::DT, VM::M1, "ScheduledProcedureStepStartDateTime" },
-{ 0x4010, 0x1014, 0, VR::CS, VM::M1, "ATDAbilityAssessment" },
+{ 0x0040, 0x4005, 1, VR::DT, VM::M1, "ScheduledProcedureStepStartDateTime" },
+{ 0x4010, 0x1014, 3, VR::CS, VM::M1, "ATDAbilityAssessment" },
 { 0x5014, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints11" },
 { 0x6004, 0x3000, 0, VR::OX, VM::M1, "OverlayData3" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0325[] = {
-{ 0x0014, 0x4050, 0, VR::SQ, VM::M1, "TransmitTransducerSettingsSequence" },
+{ 0x0014, 0x4050, 2, VR::SQ, VM::M1, "TransmitTransducerSettingsSequence" },
 { 0x0018, 0x9311, 0, VR::FD, VM::M1, "SpiralPitchFactor" },
 { 0x0018, 0x9701, 0, VR::DT, VM::M1, "DecayCorrectionDateTime" },
 { 0x0040, 0x0100, 0, VR::SQ, VM::M1, "ScheduledProcedureStepSequence" },
-{ 0x0040, 0x4004, 0, VR::SQ, VM::M1, "ScheduledProcessingApplicationsCodeSequence" },
+{ 0x0040, 0x4004, 1, VR::SQ, VM::M1, "ScheduledProcessingApplicationsCodeSequence" },
 { 0x0046, 0x0106, 0, VR::FD, VM::M1, "ViewingDistance" },
 { 0x0048, 0x0108, 0, VR::SQ, VM::M1, "IlluminationColorCodeSequence" },
-{ 0x4010, 0x1015, 0, VR::CS, VM::M1, "ATDAssessmentFlag" },
+{ 0x4010, 0x1015, 3, VR::CS, VM::M1, "ATDAssessmentFlag" },
 { 0x5000, 0x0005, 1, VR::US, VM::M1, "CurveDimensions" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -3256,21 +3334,21 @@ DictEntry DictRow0326[] = {
 { 0x0018, 0x9312, 0, VR::SQ, VM::M1, "CTGeometrySequence" },
 { 0x0040, 0x0513, 0, VR::SQ, VM::M1, "IssuerOfTheContainerIdentifierSequence" },
 { 0x0040, 0x4007, 0, VR::SQ, VM::M1, "PerformedProcessingApplicationsCodeSequence" },
-{ 0x4010, 0x1016, 0, VR::FL, VM::M1, "ATDAssessmentProbability" },
+{ 0x4010, 0x1016, 3, VR::FL, VM::M1, "ATDAssessmentProbability" },
 { 0x5016, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints12" },
 { 0x6006, 0x3000, 0, VR::OX, VM::M1, "OverlayData4" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0327[] = {
 { 0x0010, 0x21D0, 0, VR::DA, VM::M1, "LastMenstrualDate" },
-{ 0x0014, 0x4052, 0, VR::DS, VM::M1, "IncidentAngle" },
+{ 0x0014, 0x4052, 2, VR::DS, VM::M1, "IncidentAngle" },
 { 0x0018, 0x9313, 0, VR::FD, VM::M3, "DataCollectionCenterPatient" },
 { 0x0022, 0x1121, 0, VR::FL, VM::M1, "IOLPowerForExactEmmetropia" },
 { 0x0040, 0x0512, 0, VR::LO, VM::M1, "ContainerIdentifier" },
-{ 0x0040, 0x4006, 0, VR::CS, VM::M1, "MultipleCopiesFlag" },
+{ 0x0040, 0x4006, 1, VR::CS, VM::M1, "MultipleCopiesFlag" },
 { 0x0046, 0x0104, 0, VR::FD, VM::M1, "AddPower" },
 { 0x0072, 0x0520, 0, VR::CS, VM::M1TN, "ThreeDRenderingType" },
-{ 0x4010, 0x1017, 0, VR::FL, VM::M1, "Mass" },
+{ 0x4010, 0x1017, 3, VR::FL, VM::M1, "Mass" },
 { 0x5002, 0x0005, 1, VR::US, VM::M1, "CurveDimensions2" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -3280,24 +3358,24 @@ DictEntry DictRow0328[] = {
 { 0x0040, 0x4009, 0, VR::SQ, VM::M1, "HumanPerformerCodeSequence" },
 { 0x0048, 0x0105, 0, VR::SQ, VM::M1, "OpticalPathSequence" },
 { 0x300A, 0x0184, 0, VR::LO, VM::M1, "PatientAdditionalPosition" },
-{ 0x4010, 0x1018, 0, VR::FL, VM::M1, "Density" },
+{ 0x4010, 0x1018, 3, VR::FL, VM::M1, "Density" },
 { 0x5018, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints13" },
 { 0x6008, 0x3000, 0, VR::OX, VM::M1, "OverlayData5" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0329[] = {
-{ 0x0014, 0x405C, 0, VR::ST, VM::M1, "DelayLawIdentifier" },
+{ 0x0014, 0x405C, 2, VR::ST, VM::M1, "DelayLawIdentifier" },
 { 0x4008, 0x0040, 1, VR::SH, VM::M1, "ResultsID" },
-{ 0x4010, 0x1019, 0, VR::FL, VM::M1, "ZEffective" },
+{ 0x4010, 0x1019, 3, VR::FL, VM::M1, "ZEffective" },
 { 0x500C, 0x0005, 1, VR::US, VM::M1, "CurveDimensions7" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0330[] = {
-{ 0x0004, 0x151a, 0, VR::UI, VM::M1TN, "ReferencedRelatedGeneralSOPClassUIDInFile" },
+{ 0x0004, 0x151A, 0, VR::UI, VM::M1TN, "ReferencedRelatedGeneralSOPClassUIDInFile" },
 { 0x0018, 0x5012, 0, VR::DS, VM::M1, "FocusDepth" },
 { 0x0040, 0xA385, 0, VR::SQ, VM::M1, "PertinentOtherEvidenceSequence" },
 { 0x0048, 0x0107, 0, VR::ST, VM::M1, "OpticalPathDescription" },
-{ 0x4010, 0x101A, 0, VR::SH, VM::M1, "BoardingPassID" },
+{ 0x4010, 0x101A, 3, VR::SH, VM::M1, "BoardingPassID" },
 { 0x501A, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints14" },
 { 0x600A, 0x3000, 0, VR::OX, VM::M1, "OverlayData6" },
 { 0, 0, 0, 0, 0, NULL }
@@ -3305,53 +3383,54 @@ DictEntry DictRow0330[] = {
 DictEntry DictRow0331[] = {
 { 0x0048, 0x0106, 0, VR::SH, VM::M1, "OpticalPathIdentifier" },
 { 0x4008, 0x0042, 1, VR::LO, VM::M1, "ResultsIDIssuer" },
-{ 0x4010, 0x101B, 0, VR::FL, VM::M3, "CenterOfMass" },
+{ 0x4010, 0x101B, 3, VR::FL, VM::M3, "CenterOfMass" },
 { 0x500E, 0x0005, 1, VR::US, VM::M1, "CurveDimensions8" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0332[] = {
 { 0x0008, 0x1100, 1, VR::SQ, VM::M1, "ReferencedResultsSequence" },
-{ 0x0014, 0x4059, 0, VR::DS, VM::M1, "CrystalCenterLocationZ" },
+{ 0x0014, 0x4059, 2, VR::DS, VM::M1, "ProbeCenterLocationZ" },
 { 0x0018, 0x1110, 0, VR::DS, VM::M1, "DistanceSourceToDetector" },
 { 0x0018, 0x1500, 0, VR::CS, VM::M1, "PositionerMotion" },
 { 0x0018, 0x9318, 0, VR::FD, VM::M3, "ReconstructionTargetCenterPatient" },
 { 0x300A, 0x0180, 0, VR::SQ, VM::M1, "PatientSetupSequence" },
-{ 0x4010, 0x101C, 0, VR::FL, VM::M3, "CenterOfPTO" },
+{ 0x4010, 0x101C, 3, VR::FL, VM::M3, "CenterOfPTO" },
 { 0x501C, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints15" },
 { 0x600C, 0x3000, 0, VR::OX, VM::M1, "OverlayData7" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0333[] = {
-{ 0x0014, 0x4058, 0, VR::DS, VM::M1, "CrystalCenterLocationX" },
+{ 0x0014, 0x4058, 2, VR::DS, VM::M1, "ProbeCenterLocationX" },
 { 0x0018, 0x1111, 0, VR::DS, VM::M1, "DistanceSourceToPatient" },
 { 0x0018, 0x9319, 0, VR::FD, VM::M1, "ReconstructionAngle" },
 { 0x0040, 0x0518, 0, VR::SQ, VM::M1, "ContainerTypeCodeSequence" },
 { 0x0048, 0x0100, 0, VR::SQ, VM::M1, "IlluminatorTypeCodeSequence" },
-{ 0x4010, 0x101D, 0, VR::FL, VM::M6TN, "BoundingPolygon" },
+{ 0x4010, 0x101D, 3, VR::FL, VM::M6TN, "BoundingPolygon" },
 { 0x5008, 0x0005, 1, VR::US, VM::M1, "CurveDimensions5" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0334[] = {
+{ 0x0022, 0x1128, 0, VR::SQ, VM::M1, "AnteriorChamberDepthSequence" },
 { 0x300A, 0x0182, 0, VR::IS, VM::M1, "PatientSetupNumber" },
-{ 0x4010, 0x101E, 0, VR::SH, VM::M1, "RouteSegmentStartLocationID" },
+{ 0x4010, 0x101E, 3, VR::SH, VM::M1, "RouteSegmentStartLocationID" },
 { 0x501E, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints16" },
 { 0x600E, 0x3000, 0, VR::OX, VM::M1, "OverlayData8" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0335[] = {
-{ 0x0014, 0x405A, 0, VR::DS, VM::M1, "SoundPathLength" },
+{ 0x0014, 0x405A, 2, VR::DS, VM::M1, "SoundPathLength" },
 { 0x0040, 0x051A, 0, VR::LO, VM::M1, "ContainerDescription" },
 { 0x0040, 0x8302, 0, VR::DS, VM::M1, "EntranceDoseInmGy" },
 { 0x0040, 0xA380, 1, VR::SQ, VM::M1, "ReportDetailSequenceTrial" },
 { 0x0048, 0x0102, 0, VR::DS, VM::M6, "ImageOrientationSlide" },
 { 0x300A, 0x0183, 0, VR::LO, VM::M1, "PatientSetupLabel" },
-{ 0x4010, 0x101F, 0, VR::SH, VM::M1, "RouteSegmentEndLocationID" },
+{ 0x4010, 0x101F, 3, VR::SH, VM::M1, "RouteSegmentEndLocationID" },
 { 0x500A, 0x0005, 1, VR::US, VM::M1, "CurveDimensions6" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0336[] = {
 { 0x0004, 0x1500, 0, VR::CS, VM::M1T8, "ReferencedFileID" },
-{ 0x0014, 0x5004, 0, VR::IS, VM::M1, "LINACOutput" },
+{ 0x0014, 0x5004, 2, VR::IS, VM::M1, "LINACOutput" },
 { 0x0018, 0x9304, 0, VR::SQ, VM::M1, "CTAcquisitionDetailsSequence" },
 { 0x0040, 0x4011, 0, VR::DT, VM::M1, "ExpectedCompletionDateTime" },
 { 0x0054, 0x0101, 0, VR::US, VM::M1, "NumberOfTimeSlices" },
@@ -3366,13 +3445,14 @@ DictEntry DictRow0337[] = {
 { 0x0040, 0x4010, 0, VR::DT, VM::M1, "ScheduledProcedureStepModificationDateTime" },
 { 0x0054, 0x0100, 0, VR::US, VM::M1TN, "TimeSliceVector" },
 { 0x0074, 0x0120, 0, VR::FD, VM::M1, "ContinuationStartMeterset" },
-{ 0x4010, 0x1001, 0, VR::SQ, VM::M1, "ThreatROIVoxelSequence" },
+{ 0x4010, 0x1001, 3, VR::SQ, VM::M1, "ThreatROIVoxelSequence" },
 { 0x5014, 0x0005, 1, VR::US, VM::M1, "CurveDimensions11" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0338[] = {
 { 0x0018, 0x9306, 0, VR::FD, VM::M1, "SingleCollimationWidth" },
 { 0x0018, 0x9716, 0, VR::FD, VM::M1, "StartRelativeDensityDifferenceThreshold" },
+{ 0x0022, 0x1134, 0, VR::SQ, VM::M1, "SourceOfRefractiveMeasurementsSequence" },
 { 0x5002, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints2" },
 { 0x6012, 0x3000, 0, VR::OX, VM::M1, "OverlayData10" },
 { 0, 0, 0, 0, 0, NULL }
@@ -3380,37 +3460,37 @@ DictEntry DictRow0338[] = {
 DictEntry DictRow0339[] = {
 { 0x0018, 0x9307, 0, VR::FD, VM::M1, "TotalCollimationWidth" },
 { 0x0018, 0x9717, 0, VR::FD, VM::M1, "StartCardiacTriggerCountThreshold" },
-{ 0x0022, 0x1135, 0, VR::SQ, VM::M1, "SourceOfRefractiveErrorDataCodeSequence" },
+{ 0x0022, 0x1135, 0, VR::SQ, VM::M1, "SourceOfRefractiveMeasurementsCodeSequence" },
 { 0x5016, 0x0005, 1, VR::US, VM::M1, "CurveDimensions12" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0340[] = {
 { 0x0004, 0x1504, 1, VR::UL, VM::M1, "MRDRDirectoryRecordOffset" },
 { 0x0022, 0x1132, 0, VR::SQ, VM::M1, "SourceOfLensThicknessDataCodeSequence" },
-{ 0x0040, 0x4015, 0, VR::SQ, VM::M1, "ResultingGeneralPurposePerformedProcedureStepsSequence" },
+{ 0x0040, 0x4015, 1, VR::SQ, VM::M1, "ResultingGeneralPurposePerformedProcedureStepsSequence" },
 { 0x300A, 0x0198, 0, VR::SH, VM::M1, "FixationDevicePosition" },
-{ 0x4010, 0x1004, 0, VR::FL, VM::M3, "ThreatROIBase" },
+{ 0x4010, 0x1004, 3, VR::FL, VM::M3, "ThreatROIBase" },
 { 0x5004, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints3" },
 { 0x6014, 0x3000, 0, VR::OX, VM::M1, "OverlayData11" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0341[] = {
-{ 0x0014, 0x4040, 0, VR::SQ, VM::M1, "PreAmplifierSettingsSequence" },
+{ 0x0014, 0x4040, 2, VR::SQ, VM::M1, "PreAmplifierSettingsSequence" },
 { 0x0018, 0x9301, 0, VR::SQ, VM::M1, "CTAcquisitionTypeSequence" },
 { 0x0022, 0x1133, 0, VR::SQ, VM::M1, "SourceOfAnteriorChamberDepthDataCodeSequence" },
 { 0x0040, 0x0500, 0, VR::SQ, VM::M1, "ScheduledSpecimenSequence" },
 { 0x0400, 0x0550, 0, VR::SQ, VM::M1, "ModifiedAttributesSequence" },
 { 0x300A, 0x0199, 0, VR::FL, VM::M1, "FixationDevicePitchAngle" },
-{ 0x4010, 0x1005, 0, VR::FL, VM::M3, "ThreatROIExtents" },
+{ 0x4010, 0x1005, 3, VR::FL, VM::M3, "ThreatROIExtents" },
 { 0x5010, 0x0005, 1, VR::US, VM::M1, "CurveDimensions9" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0342[] = {
-{ 0x0014, 0x5002, 0, VR::IS, VM::M1, "LINACEnergy" },
+{ 0x0014, 0x5002, 2, VR::IS, VM::M1, "LINACEnergy" },
 { 0x0018, 0x9302, 0, VR::CS, VM::M1, "AcquisitionType" },
 { 0x0022, 0x1130, 0, VR::FL, VM::M1, "LensThickness" },
 { 0x300A, 0x019A, 0, VR::FL, VM::M1, "FixationDeviceRollAngle" },
-{ 0x4010, 0x1006, 0, VR::OB, VM::M1, "ThreatROIBitmap" },
+{ 0x4010, 0x1006, 3, VR::OB, VM::M1, "ThreatROIBitmap" },
 { 0x5006, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints4" },
 { 0x6016, 0x3000, 0, VR::OX, VM::M1, "OverlayData12" },
 { 0, 0, 0, 0, 0, NULL }
@@ -3419,8 +3499,8 @@ DictEntry DictRow0343[] = {
 { 0x0010, 0x21C0, 0, VR::US, VM::M1, "PregnancyStatus" },
 { 0x0018, 0x9303, 0, VR::FD, VM::M1, "TubeAngle" },
 { 0x0022, 0x1131, 0, VR::FL, VM::M1, "AnteriorChamberDepth" },
-{ 0x0040, 0x4016, 0, VR::SQ, VM::M1, "ReferencedGeneralPurposeScheduledProcedureStepSequence" },
-{ 0x4010, 0x1007, 0, VR::SH, VM::M1, "RouteSegmentID" },
+{ 0x0040, 0x4016, 1, VR::SQ, VM::M1, "ReferencedGeneralPurposeScheduledProcedureStepSequence" },
+{ 0x4010, 0x1007, 3, VR::SH, VM::M1, "RouteSegmentID" },
 { 0x5012, 0x0005, 1, VR::US, VM::M1, "CurveDimensions10" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -3428,7 +3508,7 @@ DictEntry DictRow0344[] = {
 { 0x0018, 0x5000, 0, VR::SH, VM::M1TN, "OutputPower" },
 { 0x0040, 0x4019, 0, VR::SQ, VM::M1, "PerformedWorkitemCodeSequence" },
 { 0x300A, 0x0194, 0, VR::SH, VM::M1, "FixationDeviceLabel" },
-{ 0x4010, 0x1008, 0, VR::CS, VM::M1, "GantryType" },
+{ 0x4010, 0x1008, 3, VR::CS, VM::M1, "GantryType" },
 { 0x5008, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints5" },
 { 0x6018, 0x3000, 0, VR::OX, VM::M1, "OverlayData13" },
 { 0, 0, 0, 0, 0, NULL }
@@ -3437,13 +3517,13 @@ DictEntry DictRow0345[] = {
 { 0x0008, 0x1115, 0, VR::SQ, VM::M1, "ReferencedSeriesSequence" },
 { 0x0040, 0x4018, 0, VR::SQ, VM::M1, "ScheduledWorkitemCodeSequence" },
 { 0x4008, 0x0050, 1, VR::SQ, VM::M1, "ReferencedInterpretationSequence" },
-{ 0x4010, 0x1009, 0, VR::CS, VM::M1, "OOIOwnerType" },
+{ 0x4010, 0x1009, 3, VR::CS, VM::M1, "OOIOwnerType" },
 { 0x501C, 0x0005, 1, VR::US, VM::M1, "CurveDimensions15" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0346[] = {
 { 0x300A, 0x0196, 0, VR::ST, VM::M1, "FixationDeviceDescription" },
-{ 0x4010, 0x100A, 0, VR::SQ, VM::M1, "RouteSegmentSequence" },
+{ 0x4010, 0x100A, 3, VR::SQ, VM::M1, "RouteSegmentSequence" },
 { 0x500A, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints6" },
 { 0x601A, 0x3000, 0, VR::OX, VM::M1, "OverlayData14" },
 { 0, 0, 0, 0, 0, NULL }
@@ -3502,21 +3582,21 @@ DictEntry DictRow0352[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0353[] = {
-{ 0x0014, 0x4074, 0, VR::SH, VM::M1, "ProcedureVersion" },
+{ 0x0014, 0x4074, 2, VR::SH, VM::M1, "ProcedureVersion" },
 { 0x0018, 0x9335, 0, VR::FD, VM::M1, "DistanceSourceToDataCollectionCenter" },
 { 0x0018, 0x9725, 0, VR::CS, VM::M1, "DetectorGeometry" },
 { 0x0020, 0x930D, 0, VR::FD, VM::M1, "TemporalPositionTimeOffset" },
 { 0x0040, 0x4020, 0, VR::CS, VM::M1, "InputAvailabilityFlag" },
 { 0x0046, 0x0122, 0, VR::SQ, VM::M1, "VisualAcuityRightEyeSequence" },
 { 0x0400, 0x0564, 0, VR::LO, VM::M1, "SourceOfPreviousValues" },
-{ 0x4010, 0x1031, 0, VR::CS, VM::M1, "AlarmDecision" },
+{ 0x4010, 0x1031, 3, VR::CS, VM::M1, "AlarmDecision" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0354[] = {
 { 0x0018, 0x9726, 0, VR::FD, VM::M1, "TransverseDetectorSeparation" },
 { 0x0020, 0x5002, 1, VR::LO, VM::M1TN, "OriginalImageIdentificationNomenclature" },
 { 0x0020, 0x930E, 0, VR::SQ, VM::M1, "PlanePositionVolumeSequence" },
-{ 0x0040, 0x4023, 0, VR::UI, VM::M1, "ReferencedGeneralPurposeScheduledProcedureStepTransactionUID" },
+{ 0x0040, 0x4023, 1, VR::UI, VM::M1, "ReferencedGeneralPurposeScheduledProcedureStepTransactionUID" },
 { 0x0046, 0x0121, 0, VR::SQ, VM::M1, "VisualAcuityTypeCodeSequence" },
 { 0x5000, 0x0022, 1, VR::LO, VM::M1, "CurveDescription" },
 { 0x5002, 0x0020, 1, VR::CS, VM::M1, "TypeOfData2" },
@@ -3524,12 +3604,12 @@ DictEntry DictRow0354[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0355[] = {
-{ 0x0014, 0x4076, 0, VR::DA, VM::M1, "ProcedureCreationDate" },
+{ 0x0014, 0x4076, 2, VR::DA, VM::M1, "ProcedureCreationDate" },
 { 0x0018, 0x9337, 0, VR::US, VM::M1, "ContrastBolusAgentNumber" },
 { 0x0018, 0x9727, 0, VR::FD, VM::M1, "AxialDetectorDimension" },
 { 0x0020, 0x930F, 0, VR::SQ, VM::M1, "PlaneOrientationVolumeSequence" },
-{ 0x0040, 0x4022, 0, VR::SQ, VM::M1, "RelevantInformationSequence" },
-{ 0x4010, 0x1033, 0, VR::US, VM::M1, "NumberOfTotalObjects" },
+{ 0x0040, 0x4022, 1, VR::SQ, VM::M1, "RelevantInformationSequence" },
+{ 0x4010, 0x1033, 3, VR::US, VM::M1, "NumberOfTotalObjects" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0356[] = {
@@ -3540,14 +3620,14 @@ DictEntry DictRow0356[] = {
 { 0x0040, 0x4025, 0, VR::SQ, VM::M1, "ScheduledStationNameCodeSequence" },
 { 0x0400, 0x0561, 0, VR::SQ, VM::M1, "OriginalAttributesSequence" },
 { 0x300A, 0x01A8, 0, VR::SH, VM::M1, "ShieldingDevicePosition" },
-{ 0x4010, 0x1034, 0, VR::US, VM::M1, "NumberOfAlarmObjects" },
+{ 0x4010, 0x1034, 3, VR::US, VM::M1, "NumberOfAlarmObjects" },
 { 0x5004, 0x0020, 1, VR::CS, VM::M1, "TypeOfData3" },
 { 0x5006, 0x0022, 1, VR::LO, VM::M1, "CurveDescription4" },
 { 0x5014, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits11" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0357[] = {
-{ 0x0014, 0x4070, 0, VR::SQ, VM::M1, "CalibrationSettingsSequence" },
+{ 0x0014, 0x4070, 2, VR::SQ, VM::M1, "CalibrationSettingsSequence" },
 { 0x0018, 0x9721, 0, VR::FD, VM::M1, "TerminationRelativeDensityThreshold" },
 { 0x0020, 0x9309, 0, VR::FD, VM::M16, "VolumeToTransducerMappingMatrix" },
 { 0x0022, 0x1103, 0, VR::SQ, VM::M1, "RefractiveErrorBeforeRefractiveSurgeryCodeSequence" },
@@ -3569,7 +3649,7 @@ DictEntry DictRow0358[] = {
 };
 DictEntry DictRow0359[] = {
 { 0x0010, 0x21F0, 0, VR::LO, VM::M1, "PatientReligiousPreference" },
-{ 0x0014, 0x4072, 0, VR::ST, VM::M1, "CalibrationProcedure" },
+{ 0x0014, 0x4072, 2, VR::ST, VM::M1, "CalibrationProcedure" },
 { 0x0018, 0x9333, 0, VR::CS, VM::M1, "ConstantVolumeFlag" },
 { 0x0018, 0x9723, 0, VR::FD, VM::M1, "TerminationCardiacTriggerCountThreshold" },
 { 0x0022, 0x1101, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthMeasurementsSegmentNameCodeSequence" },
@@ -3577,7 +3657,7 @@ DictEntry DictRow0359[] = {
 { 0x0046, 0x0124, 0, VR::SQ, VM::M1, "VisualAcuityBothEyesOpenSequence" },
 { 0x0072, 0x0500, 0, VR::CS, VM::M1, "BlendingOperationType" },
 { 0x0400, 0x0562, 0, VR::DT, VM::M1, "AttributeModificationDateTime" },
-{ 0x4010, 0x1037, 0, VR::SQ, VM::M1, "PTORepresentationSequence" },
+{ 0x4010, 0x1037, 3, VR::SQ, VM::M1, "PTORepresentationSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0360[] = {
@@ -3587,7 +3667,7 @@ DictEntry DictRow0360[] = {
 { 0x0028, 0x5000, 1, VR::SQ, VM::M1, "BiPlaneAcquisitionSequence" },
 { 0x0040, 0x4029, 0, VR::SQ, VM::M1, "PerformedStationClassCodeSequence" },
 { 0x300A, 0x01A4, 0, VR::SH, VM::M1, "ShieldingDeviceLabel" },
-{ 0x4010, 0x1038, 0, VR::SQ, VM::M1, "ATDAssessmentSequence" },
+{ 0x4010, 0x1038, 3, VR::SQ, VM::M1, "ATDAssessmentSequence" },
 { 0x5008, 0x0020, 1, VR::CS, VM::M1, "TypeOfData5" },
 { 0x500A, 0x0022, 1, VR::LO, VM::M1, "CurveDescription6" },
 { 0x5018, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits13" },
@@ -3595,23 +3675,23 @@ DictEntry DictRow0360[] = {
 };
 DictEntry DictRow0361[] = {
 { 0x0008, 0x1125, 0, VR::SQ, VM::M1, "ReferencedVisitSequence" },
-{ 0x0014, 0x407C, 0, VR::TM, VM::M1TN, "CalibrationTime" },
+{ 0x0014, 0x407C, 2, VR::TM, VM::M1TN, "CalibrationTime" },
 { 0x0018, 0x1135, 0, VR::DS, VM::M1TN, "TableVerticalIncrement" },
 { 0x0040, 0x4028, 0, VR::SQ, VM::M1, "PerformedStationNameCodeSequence" },
-{ 0x4010, 0x1039, 0, VR::CS, VM::M1, "TIPType" },
+{ 0x4010, 0x1039, 3, VR::CS, VM::M1, "TIPType" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0362[] = {
 { 0x0018, 0x1136, 0, VR::DS, VM::M1TN, "TableLateralIncrement" },
 { 0x300A, 0x01A6, 0, VR::ST, VM::M1, "ShieldingDeviceDescription" },
-{ 0x4010, 0x103A, 0, VR::CS, VM::M1, "DICOSVersion" },
+{ 0x4010, 0x103A, 3, VR::CS, VM::M1, "DICOSVersion" },
 { 0x5008, 0x0022, 1, VR::LO, VM::M1, "CurveDescription5" },
 { 0x500A, 0x0020, 1, VR::CS, VM::M1, "TypeOfData6" },
 { 0x501A, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits14" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0363[] = {
-{ 0x0014, 0x407E, 0, VR::DA, VM::M1TN, "CalibrationDate" },
+{ 0x0014, 0x407E, 2, VR::DA, VM::M1TN, "CalibrationDate" },
 { 0x0018, 0x1137, 0, VR::DS, VM::M1TN, "TableLongitudinalIncrement" },
 { 0x0020, 0x9307, 0, VR::CS, VM::M1, "UltrasoundAcquisitionGeometry" },
 { 0x0068, 0x6490, 0, VR::FD, VM::M3, "ThreeDDegreeOfFreedomAxis" },
@@ -3630,7 +3710,7 @@ DictEntry DictRow0364[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0365[] = {
-{ 0x0014, 0x4078, 0, VR::DA, VM::M1, "ProcedureExpirationDate" },
+{ 0x0014, 0x4078, 2, VR::DA, VM::M1, "ProcedureExpirationDate" },
 { 0x0018, 0x1131, 0, VR::DS, VM::M1, "TableTraverse" },
 { 0x0018, 0x1521, 0, VR::DS, VM::M1TN, "PositionerSecondaryAngleIncrement" },
 { 0x0018, 0x9729, 0, VR::US, VM::M1, "RadiopharmaceuticalAgentNumber" },
@@ -3649,7 +3729,7 @@ DictEntry DictRow0366[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0367[] = {
-{ 0x0014, 0x407A, 0, VR::DA, VM::M1, "ProcedureLastModifiedDate" },
+{ 0x0014, 0x407A, 2, VR::DA, VM::M1, "ProcedureLastModifiedDate" },
 { 0x0028, 0x1103, 0, VR::XS, VM::M3, "BluePaletteColorLookupTableDescriptor" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -3658,23 +3738,23 @@ DictEntry DictRow0368[] = {
 { 0x0018, 0x5028, 0, VR::DS, VM::M1, "SoftTissueFocusThermalIndex" },
 { 0x0018, 0x9324, 0, VR::FD, VM::M1, "EstimatedDoseSaving" },
 { 0x0018, 0x9734, 0, VR::SQ, VM::M1, "PETTableDynamicsSequence" },
-{ 0x0040, 0x4031, 0, VR::SQ, VM::M1, "RequestedSubsequentWorkitemCodeSequence" },
+{ 0x0040, 0x4031, 1, VR::SQ, VM::M1, "RequestedSubsequentWorkitemCodeSequence" },
 { 0x300A, 0x01BC, 0, VR::DS, VM::M1, "SetupDeviceParameter" },
-{ 0x4010, 0x1020, 0, VR::CS, VM::M1, "RouteSegmentLocationIDType" },
+{ 0x4010, 0x1020, 3, VR::CS, VM::M1, "RouteSegmentLocationIDType" },
 { 0x5000, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits" },
 { 0x5010, 0x0020, 1, VR::CS, VM::M1, "TypeOfData9" },
 { 0x5012, 0x0022, 1, VR::LO, VM::M1, "CurveDescription10" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0369[] = {
-{ 0x0014, 0x4064, 0, VR::DS, VM::M1, "VelocityOfSound" },
+{ 0x0014, 0x4064, 2, VR::DS, VM::M1, "VelocityOfSound" },
 { 0x0018, 0x5029, 0, VR::DS, VM::M1, "SoftTissueSurfaceThermalIndex" },
 { 0x0018, 0x9325, 0, VR::SQ, VM::M1, "CTXRayDetailsSequence" },
 { 0x0018, 0x9735, 0, VR::SQ, VM::M1, "PETPositionSequence" },
 { 0x0040, 0x4030, 0, VR::SQ, VM::M1, "PerformedStationGeographicLocationCodeSequence" },
 { 0x0072, 0x0106, 0, VR::US, VM::M1, "NumberOfHorizontalPixels" },
 { 0x0072, 0x0516, 0, VR::CS, VM::M1, "ReformattingOperationInitialViewDirection" },
-{ 0x4010, 0x1021, 0, VR::CS, VM::M1TN, "AbortReason" },
+{ 0x4010, 0x1021, 3, VR::CS, VM::M1TN, "AbortReason" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0370[] = {
@@ -3689,10 +3769,10 @@ DictEntry DictRow0370[] = {
 DictEntry DictRow0371[] = {
 { 0x0018, 0x9327, 0, VR::FD, VM::M1, "TablePosition" },
 { 0x0018, 0x9737, 0, VR::SQ, VM::M1, "RadiopharmaceuticalUsageSequence" },
-{ 0x0040, 0x4032, 0, VR::SQ, VM::M1, "NonDICOMOutputCodeSequence" },
+{ 0x0040, 0x4032, 1, VR::SQ, VM::M1, "NonDICOMOutputCodeSequence" },
 { 0x0072, 0x0104, 0, VR::US, VM::M1, "NumberOfVerticalPixels" },
 { 0x0072, 0x0514, 0, VR::FD, VM::M1, "ReformattingInterval" },
-{ 0x4010, 0x1023, 0, VR::FL, VM::M1, "VolumeOfPTO" },
+{ 0x4010, 0x1023, 3, VR::FL, VM::M1, "VolumeOfPTO" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0372[] = {
@@ -3701,21 +3781,21 @@ DictEntry DictRow0372[] = {
 { 0x0046, 0x0137, 0, VR::FD, VM::M1, "DecimalVisualAcuity" },
 { 0x0070, 0x0101, 0, VR::DS, VM::M2, "PresentationPixelSpacing" },
 { 0x300A, 0x01B8, 0, VR::SH, VM::M1, "SetupDeviceLabel" },
-{ 0x4010, 0x1024, 0, VR::CS, VM::M1, "AbortFlag" },
+{ 0x4010, 0x1024, 3, VR::CS, VM::M1, "AbortFlag" },
 { 0x5004, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits3" },
 { 0x5014, 0x0020, 1, VR::CS, VM::M1, "TypeOfData11" },
 { 0x5016, 0x0022, 1, VR::LO, VM::M1, "CurveDescription12" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0373[] = {
-{ 0x0014, 0x4060, 0, VR::SQ, VM::M1, "GateSettingsSequence" },
+{ 0x0014, 0x4060, 2, VR::SQ, VM::M1, "GateSettingsSequence" },
 { 0x0018, 0x9321, 0, VR::SQ, VM::M1, "CTExposureSequence" },
 { 0x0040, 0x0520, 0, VR::SQ, VM::M1, "ContainerComponentSequence" },
 { 0x0040, 0x4034, 0, VR::SQ, VM::M1, "ScheduledHumanPerformersSequence" },
 { 0x0070, 0x0100, 0, VR::CS, VM::M1, "PresentationSizeMode" },
 { 0x0072, 0x0102, 0, VR::SQ, VM::M1, "NominalScreenDefinitionSequence" },
 { 0x0072, 0x0512, 0, VR::FD, VM::M1, "ReformattingThickness" },
-{ 0x4010, 0x1025, 0, VR::DT, VM::M1, "RouteSegmentStartTime" },
+{ 0x4010, 0x1025, 3, VR::DT, VM::M1, "RouteSegmentStartTime" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0374[] = {
@@ -3726,14 +3806,14 @@ DictEntry DictRow0374[] = {
 { 0x0046, 0x0135, 0, VR::SS, VM::M2, "VisualAcuityModifiers" },
 { 0x0070, 0x0103, 0, VR::FL, VM::M1, "PresentationPixelMagnificationRatio" },
 { 0x300A, 0x01BA, 0, VR::ST, VM::M1, "SetupDeviceDescription" },
-{ 0x4010, 0x1026, 0, VR::DT, VM::M1, "RouteSegmentEndTime" },
+{ 0x4010, 0x1026, 3, VR::DT, VM::M1, "RouteSegmentEndTime" },
 { 0x5006, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits4" },
 { 0x5014, 0x0022, 1, VR::LO, VM::M1, "CurveDescription11" },
 { 0x5016, 0x0020, 1, VR::CS, VM::M1, "TypeOfData12" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0375[] = {
-{ 0x0014, 0x4062, 0, VR::DS, VM::M1, "GateThreshold" },
+{ 0x0014, 0x4062, 2, VR::DS, VM::M1, "GateThreshold" },
 { 0x0018, 0x9323, 0, VR::CS, VM::M1, "ExposureModulationType" },
 { 0x0018, 0x9733, 0, VR::SQ, VM::M1, "PETDetectorMotionDetailsSequence" },
 { 0x0040, 0x4036, 0, VR::LO, VM::M1, "HumanPerformerOrganization" },
@@ -3741,14 +3821,14 @@ DictEntry DictRow0375[] = {
 { 0x0072, 0x0100, 0, VR::US, VM::M1, "NumberOfScreens" },
 { 0x0072, 0x0510, 0, VR::CS, VM::M1, "ReformattingOperationType" },
 { 0x2130, 0x00C0, 1, VR::SQ, VM::M1, "OriginalImageSequence" },
-{ 0x4010, 0x1027, 0, VR::CS, VM::M1, "TDRType" },
+{ 0x4010, 0x1027, 3, VR::CS, VM::M1, "TDRType" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0376[] = {
 { 0x0008, 0x1134, 0, VR::SQ, VM::M1, "ReferencedStereometricInstanceSequence" },
 { 0x0018, 0x5020, 0, VR::LO, VM::M1, "ProcessingFunction" },
 { 0x300A, 0x01B4, 0, VR::SQ, VM::M1, "SetupDeviceSequence" },
-{ 0x4010, 0x1028, 0, VR::CS, VM::M1, "InternationalRouteSegment" },
+{ 0x4010, 0x1028, 3, VR::CS, VM::M1, "InternationalRouteSegment" },
 { 0x5008, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits5" },
 { 0x5018, 0x0020, 1, VR::CS, VM::M1, "TypeOfData13" },
 { 0x501A, 0x0022, 1, VR::LO, VM::M1, "CurveDescription14" },
@@ -3757,14 +3837,14 @@ DictEntry DictRow0376[] = {
 DictEntry DictRow0377[] = {
 { 0x0018, 0x5021, 1, VR::LO, VM::M1, "PostprocessingFunction" },
 { 0x0072, 0x010E, 0, VR::US, VM::M1, "ApplicationMaximumRepaintTime" },
-{ 0x4010, 0x1029, 0, VR::LO, VM::M1TN, "ThreatDetectionAlgorithmandVersion" },
+{ 0x4010, 0x1029, 3, VR::LO, VM::M1TN, "ThreatDetectionAlgorithmandVersion" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0378[] = {
 { 0x0018, 0x5022, 0, VR::DS, VM::M1, "MechanicalIndex" },
 { 0x0046, 0x0139, 0, VR::LO, VM::M1, "OptotypeDetailedDefinition" },
 { 0x300A, 0x01B6, 0, VR::CS, VM::M1, "SetupDeviceType" },
-{ 0x4010, 0x102A, 0, VR::SH, VM::M1, "AssignedLocation" },
+{ 0x4010, 0x102A, 3, VR::SH, VM::M1, "AssignedLocation" },
 { 0x500A, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits6" },
 { 0x5018, 0x0022, 1, VR::LO, VM::M1, "CurveDescription13" },
 { 0x501A, 0x0020, 1, VR::CS, VM::M1, "TypeOfData14" },
@@ -3772,7 +3852,7 @@ DictEntry DictRow0378[] = {
 };
 DictEntry DictRow0379[] = {
 { 0x0072, 0x010C, 0, VR::US, VM::M1, "ScreenMinimumColorBitDepth" },
-{ 0x4010, 0x102B, 0, VR::DT, VM::M1, "AlarmDecisionTime" },
+{ 0x4010, 0x102B, 3, VR::DT, VM::M1, "AlarmDecisionTime" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0380[] = {
@@ -3837,6 +3917,7 @@ DictEntry DictRow0387[] = {
 };
 DictEntry DictRow0388[] = {
 { 0x0010, 0x2110, 0, VR::LO, VM::M1TN, "Allergies" },
+{ 0x0014, 0x4092, 2, VR::DS, VM::M1, "ChannelThreshold" },
 { 0x0018, 0x601C, 0, VR::UL, VM::M1, "RegionLocationMaxX1" },
 { 0x2000, 0x0510, 1, VR::SQ, VM::M1, "ReferencedStoredPrintSequence" },
 { 0x2010, 0x0110, 0, VR::CS, VM::M1, "EmptyImageDensity" },
@@ -3856,6 +3937,7 @@ DictEntry DictRow0390[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0391[] = {
+{ 0x0014, 0x4091, 2, VR::SQ, VM::M1, "ChannelSettingsSequence" },
 { 0x300A, 0x0148, 0, VR::FL, VM::M1, "HeadFixationAngle" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -3866,30 +3948,35 @@ DictEntry DictRow0392[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0393[] = {
+{ 0x0014, 0x409F, 2, VR::DS, VM::M1, "ChannelOverlap" },
 { 0x0018, 0x6011, 0, VR::SQ, VM::M1, "SequenceOfUltrasoundRegions" },
 { 0x0018, 0x7050, 0, VR::CS, VM::M1TN, "FilterMaterial" },
 { 0x300A, 0x0146, 0, VR::CS, VM::M1, "TableTopRollRotationDirection" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0394[] = {
+{ 0x0014, 0x409C, 2, VR::DS, VM::M1, "TranslationRateX" },
 { 0x0018, 0x6012, 0, VR::US, VM::M1, "RegionSpatialFormat" },
 { 0x0028, 0x6022, 0, VR::LO, VM::M1TN, "FrameOfInterestDescription" },
 { 0x500A, 0x3000, 1, VR::OX, VM::M1, "CurveData6" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0395[] = {
+{ 0x0014, 0x409D, 2, VR::DS, VM::M1, "TranslationRateY" },
 { 0x0018, 0x7052, 0, VR::DS, VM::M1TN, "FilterThicknessMinimum" },
 { 0x0028, 0x6023, 0, VR::CS, VM::M1TN, "FrameOfInterestType" },
 { 0x300A, 0x0144, 0, VR::FL, VM::M1, "TableTopRollAngle" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0396[] = {
+{ 0x0014, 0x409A, 2, VR::SQ, VM::M1, "ScannerSettingsSequence" },
 { 0x0018, 0x6014, 0, VR::US, VM::M1, "RegionDataType" },
 { 0x0040, 0xA340, 1, VR::SQ, VM::M1, "ProcedureContextSequenceTrial" },
 { 0x500C, 0x3000, 1, VR::OX, VM::M1, "CurveData7" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0397[] = {
+{ 0x0014, 0x409B, 2, VR::ST, VM::M1, "ScanProcedure" },
 { 0x0018, 0x7054, 0, VR::DS, VM::M1TN, "FilterThicknessMaximum" },
 { 0x3008, 0x0140, 0, VR::SQ, VM::M1, "RecordedSourceApplicatorSequence" },
 { 0x300A, 0x0142, 0, VR::CS, VM::M1, "TableTopPitchRotationDirection" },
@@ -3907,21 +3994,29 @@ DictEntry DictRow0399[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0400[] = {
+{ 0x0014, 0x4086, 2, VR::SQ, VM::M1, "ReceiveProbeSequence" },
 { 0x5010, 0x3000, 1, VR::OX, VM::M1, "CurveData9" },
 { 0x6000, 0x0010, 0, VR::US, VM::M1, "OverlayRows" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0401[] = {
+{ 0x0014, 0x4087, 2, VR::SQ, VM::M1, "ProbeDriveSettingsSequence" },
 { 0x0018, 0x7048, 0, VR::DS, VM::M1, "GridPeriod" },
 { 0x6000, 0x0011, 0, VR::US, VM::M1, "OverlayColumns" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0402[] = {
+{ 0x0014, 0x4084, 2, VR::DS, VM::M1, "ProbeInductance" },
 { 0x5012, 0x3000, 1, VR::OX, VM::M1, "CurveData10" },
 { 0x6000, 0x0012, 1, VR::US, VM::M1, "OverlayPlanes" },
 { 0, 0, 0, 0, 0, NULL }
 };
+DictEntry DictRow0403[] = {
+{ 0x0014, 0x4085, 2, VR::DS, VM::M1, "ProbeResistance" },
+{ 0, 0, 0, 0, 0, NULL }
+};
 DictEntry DictRow0404[] = {
+{ 0x0014, 0x4082, 2, VR::LT, VM::M1, "ProbeDriveNotes" },
 { 0x0040, 0xA358, 1, VR::SQ, VM::M1, "VerbalSourceIdentifierCodeSequenceTrial" },
 { 0x2000, 0x0500, 0, VR::SQ, VM::M1, "ReferencedFilmBoxSequence" },
 { 0x2010, 0x0100, 0, VR::CS, VM::M1, "BorderDensity" },
@@ -3932,15 +4027,22 @@ DictEntry DictRow0404[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0405[] = {
+{ 0x0014, 0x4083, 2, VR::SQ, VM::M1, "DriveProbeSequence" },
 { 0x0018, 0x704C, 0, VR::DS, VM::M1, "GridFocalDistance" },
 { 0x6000, 0x0015, 0, VR::IS, VM::M1, "NumberOfFramesInOverlay" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0406[] = {
+{ 0x0014, 0x4080, 2, VR::SQ, VM::M1, "ProbeDriveEquipmentSequence" },
 { 0x5016, 0x3000, 1, VR::OX, VM::M1, "CurveData12" },
 { 0, 0, 0, 0, 0, NULL }
 };
+DictEntry DictRow0407[] = {
+{ 0x0014, 0x4081, 2, VR::CS, VM::M1, "DriveType" },
+{ 0, 0, 0, 0, 0, NULL }
+};
 DictEntry DictRow0408[] = {
+{ 0x0014, 0x408E, 2, VR::DS, VM::M1, "UserSelectedOffsetY" },
 { 0x0018, 0x6000, 0, VR::DS, VM::M1, "Sensitivity" },
 { 0x0018, 0x7041, 0, VR::LT, VM::M1, "GridSpacingMaterial" },
 { 0x0028, 0x6030, 1, VR::US, VM::M1TN, "MaskPointers" },
@@ -3955,10 +4057,12 @@ DictEntry DictRow0409[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0410[] = {
+{ 0x0014, 0x408C, 2, VR::DS, VM::M1, "UserSelectedPhase" },
 { 0x501A, 0x3000, 1, VR::OX, VM::M1, "CurveData14" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0411[] = {
+{ 0x0014, 0x408D, 2, VR::DS, VM::M1, "UserSelectedOffsetX" },
 { 0x0018, 0x7042, 0, VR::DS, VM::M1, "GridThickness" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -3969,18 +4073,21 @@ DictEntry DictRow0412[] = {
 };
 DictEntry DictRow0413[] = {
 { 0x0008, 0x2111, 0, VR::ST, VM::M1, "DerivationDescription" },
+{ 0x0014, 0x408B, 2, VR::DS, VM::M1, "UserSelectedGainY" },
 { 0x0018, 0x7044, 0, VR::DS, VM::M1, "GridPitch" },
 { 0x3008, 0x0150, 0, VR::SQ, VM::M1, "RecordedChannelShieldSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0414[] = {
 { 0x0008, 0x2112, 0, VR::SQ, VM::M1, "SourceImageSequence" },
+{ 0x0014, 0x4088, 2, VR::DS, VM::M1, "BridgeResistors" },
 { 0x0040, 0x09F8, 1, VR::SQ, VM::M1, "VitalStainCodeSequenceTrial" },
 { 0x0040, 0xA352, 1, VR::PN, VM::M1, "VerbalSourceTrial" },
 { 0x501E, 0x3000, 1, VR::OX, VM::M1, "CurveData16" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0415[] = {
+{ 0x0014, 0x4089, 2, VR::DS, VM::M1, "ProbeOrientationAngle" },
 { 0x0018, 0x7046, 0, VR::IS, VM::M2, "GridAspectRatio" },
 { 0x0040, 0xA353, 1, VR::ST, VM::M1, "AddressTrial" },
 { 0x3008, 0x0152, 0, VR::IS, VM::M1, "ReferencedChannelShieldNumber" },
@@ -4125,6 +4232,7 @@ DictEntry DictRow0435[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0436[] = {
+{ 0x0014, 0x40A2, 2, VR::LO, VM::M1, "ImageQualityIndicatorSize" },
 { 0x0018, 0x602C, 0, VR::FD, VM::M1, "PhysicalDeltaX" },
 { 0x2010, 0x0120, 0, VR::US, VM::M1, "MinDensity" },
 { 0x2020, 0x0110, 0, VR::SQ, VM::M1, "BasicGrayscaleImageSequence" },
@@ -4142,6 +4250,7 @@ DictEntry DictRow0437[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0438[] = {
+{ 0x0014, 0x40A0, 2, VR::LO, VM::M1, "ImageQualityIndicatorType" },
 { 0x0018, 0x602E, 0, VR::FD, VM::M1, "PhysicalDeltaY" },
 { 0x6012, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord10" },
 { 0x6014, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables11" },
@@ -4149,6 +4258,7 @@ DictEntry DictRow0438[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0439[] = {
+{ 0x0014, 0x40A1, 2, VR::LO, VM::M1, "ImageQualityIndicatorMaterial" },
 { 0x6014, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation11" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -4471,6 +4581,7 @@ DictEntry DictRow0471[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0472[] = {
+{ 0x0008, 0x1196, 0, VR::US, VM::M1, "WarningReason" },
 { 0x0018, 0x3104, 0, VR::IS, VM::M1, "IVUSPullbackStopFrameNumber" },
 { 0x0018, 0x6041, 0, VR::SL, VM::M1, "TMLinePositionX1" },
 { 0x0018, 0x7000, 0, VR::CS, VM::M1, "DetectorConditionsNominalFlag" },
@@ -4541,6 +4652,7 @@ DictEntry DictRow0477[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0478[] = {
+{ 0x0008, 0x1190, 0, VR::UT, VM::M1, "RetrieveURL" },
 { 0x0018, 0x1180, 0, VR::SH, VM::M1, "CollimatorGridName" },
 { 0x0018, 0x3102, 0, VR::DS, VM::M1, "IVUSGatedRate" },
 { 0x0018, 0x7006, 0, VR::LT, VM::M1, "DetectorDescription" },
@@ -4719,6 +4831,7 @@ DictEntry DictRow0505[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0506[] = {
+{ 0x0018, 0x11A4, 0, VR::LO, VM::M1, "PaddleDescription" },
 { 0x0018, 0x7022, 0, VR::DS, VM::M2, "DetectorElementSpacing" },
 { 0x3008, 0x0136, 0, VR::IS, VM::M1, "SpecifiedNumberOfPulses" },
 { 0x300A, 0x0134, 0, VR::DS, VM::M1, "CumulativeMetersetWeight" },
@@ -4791,7 +4904,12 @@ DictEntry DictRow0517[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0518[] = {
+{ 0x0046, 0x0248, 0, VR::CS, VM::M1, "CornealPointEstimated" },
 { 0x0068, 0x63E0, 0, VR::SQ, VM::M1, "MatingFeatureSequence" },
+{ 0, 0, 0, 0, 0, NULL }
+};
+DictEntry DictRow0519[] = {
+{ 0x0046, 0x0249, 0, VR::FL, VM::M1, "AxialPower" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0520[] = {
@@ -4806,6 +4924,7 @@ DictEntry DictRow0521[] = {
 { 0x0018, 0x9440, 0, VR::SS, VM::M2, "CenterOfCircularExposureControlSensingRegion" },
 { 0x0022, 0x1262, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthQualityMetricSequence" },
 { 0x0040, 0x0241, 0, VR::AE, VM::M1, "PerformedStationAETitle" },
+{ 0x0046, 0x0247, 0, VR::FL, VM::M3, "CornealPointLocation" },
 { 0x0074, 0x1234, 0, VR::AE, VM::M1, "ReceivingAE" },
 { 0x300A, 0x02C8, 0, VR::DS, VM::M1, "FinalCumulativeTimeWeight" },
 { 0, 0, 0, 0, 0, NULL }
@@ -4813,6 +4932,7 @@ DictEntry DictRow0521[] = {
 DictEntry DictRow0522[] = {
 { 0x0018, 0x9053, 0, VR::FD, VM::M1T2, "ChemicalShiftReference" },
 { 0x0040, 0x0242, 0, VR::SH, VM::M1, "PerformedStationName" },
+{ 0x0046, 0x0244, 0, VR::SQ, VM::M1, "SourceImageCornealProcessedDataSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0523[] = {
@@ -4827,6 +4947,7 @@ DictEntry DictRow0523[] = {
 DictEntry DictRow0524[] = {
 { 0x0010, 0x2296, 0, VR::SQ, VM::M1, "BreedRegistryCodeSequence" },
 { 0x0040, 0x0244, 0, VR::DA, VM::M1, "PerformedProcedureStepStartDate" },
+{ 0x0046, 0x0242, 0, VR::CS, VM::M1, "CornealTopographyMapQualityEvaluation" },
 { 0x0070, 0x0274, 0, VR::CS, VM::M1, "TickAlignment" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -4842,6 +4963,7 @@ DictEntry DictRow0525[] = {
 DictEntry DictRow0526[] = {
 { 0x0010, 0x2294, 0, VR::SQ, VM::M1, "BreedRegistrationSequence" },
 { 0x0018, 0x9447, 0, VR::FL, VM::M1, "ColumnAngulationPatient" },
+{ 0x0022, 0x1265, 1, VR::SQ, VM::M1, "OphthalmicAxialLengthQualityMetricTypeCodeSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0527[] = {
@@ -4889,13 +5011,15 @@ DictEntry DictRow0535[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0536[] = {
+{ 0x0010, 0x0200, 0, VR::CS, VM::M1, "QualityControlSubject" },
 { 0x0018, 0x9041, 0, VR::LO, VM::M1, "ReceiveCoilManufacturerName" },
 { 0x0018, 0x9451, 0, VR::SQ, VM::M1, "FrameDetectorParametersSequence" },
-{ 0x0022, 0x1273, 0, VR::LO, VM::M1, "OphthalmicAxialLengthQualityMetricTypeDescription" },
+{ 0x0022, 0x1273, 1, VR::LO, VM::M1, "OphthalmicAxialLengthQualityMetricTypeDescription" },
 { 0x0040, 0x0250, 0, VR::DA, VM::M1, "PerformedProcedureStepEndDate" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0537[] = {
+{ 0x0010, 0x0201, 0, VR::SQ, VM::M1, "QualityControlSubjectTypeCodeSequence" },
 { 0x0040, 0x0251, 0, VR::TM, VM::M1, "PerformedProcedureStepEndTime" },
 { 0x0070, 0x0261, 0, VR::FL, VM::M1, "GapLength" },
 { 0x0074, 0x1224, 0, VR::SQ, VM::M1, "ReplacedProcedureStepSequence" },
@@ -4917,12 +5041,14 @@ DictEntry DictRow0540[] = {
 { 0x0018, 0x9045, 0, VR::SQ, VM::M1, "MultiCoilDefinitionSequence" },
 { 0x0018, 0x9455, 0, VR::SQ, VM::M1, "CalibrationSequence" },
 { 0x0040, 0x0254, 0, VR::LO, VM::M1, "PerformedProcedureStepDescription" },
+{ 0x0046, 0x0252, 0, VR::FL, VM::M1, "RelativeElevation" },
 { 0x0054, 0x1201, 0, VR::IS, VM::M2, "AxialMash" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0541[] = {
 { 0x0018, 0x9044, 0, VR::CS, VM::M1, "QuadratureReceiveCoil" },
 { 0x0040, 0x0255, 0, VR::LO, VM::M1, "PerformedProcedureTypeDescription" },
+{ 0x0046, 0x0253, 0, VR::FL, VM::M1, "CornealWavefront" },
 { 0x0054, 0x1200, 0, VR::DS, VM::M1, "AxialAcceptance" },
 { 0x0074, 0x1220, 1, VR::SQ, VM::M1, "RelatedProcedureStepSequence" },
 { 0, 0, 0, 0, 0, NULL }
@@ -4930,12 +5056,14 @@ DictEntry DictRow0541[] = {
 DictEntry DictRow0542[] = {
 { 0x0018, 0x9047, 0, VR::SH, VM::M1, "MultiCoilElementName" },
 { 0x0018, 0x9457, 0, VR::CS, VM::M1, "PlaneIdentification" },
+{ 0x0046, 0x0250, 0, VR::FL, VM::M1, "TangentialPower" },
 { 0x0054, 0x1203, 0, VR::DS, VM::M2, "DetectorElementSize" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0543[] = {
 { 0x0018, 0x9046, 0, VR::LO, VM::M1, "MultiCoilConfiguration" },
 { 0x0018, 0x9456, 0, VR::SQ, VM::M1, "ObjectThicknessSequence" },
+{ 0x0046, 0x0251, 0, VR::FL, VM::M1, "RefractivePower" },
 { 0x0054, 0x1202, 0, VR::IS, VM::M1, "TransverseMash" },
 { 0x0074, 0x1222, 1, VR::LO, VM::M1, "ProcedureStepRelationshipType" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5190,6 +5318,7 @@ DictEntry DictRow0582[] = {
 DictEntry DictRow0583[] = {
 { 0x0040, 0xA084, 0, VR::CS, VM::M1, "ObserverType" },
 { 0x0040, 0xA494, 0, VR::CS, VM::M1, "ArchiveRequested" },
+{ 0x0046, 0x0208, 0, VR::IS, VM::M2T2N, "VerticesOfTheOutlineOfPupil" },
 { 0x0068, 0x63A0, 0, VR::SQ, VM::M1, "MaterialsCodeSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -5197,6 +5326,7 @@ DictEntry DictRow0584[] = {
 { 0x0008, 0x9410, 0, VR::SQ, VM::M1, "ReferencedOtherPlaneSequence" },
 { 0x0018, 0x1608, 0, VR::IS, VM::M1, "ShutterLowerHorizontalEdge" },
 { 0x0018, 0x9010, 0, VR::CS, VM::M1, "FlowCompensation" },
+{ 0x0046, 0x0207, 0, VR::SQ, VM::M1, "CornealTopographyMapTypeCodeSequence" },
 { 0x0070, 0x0231, 0, VR::SQ, VM::M1, "TextStyleSequence" },
 { 0x300A, 0x0288, 0, VR::CS, VM::M1, "SourceMovementType" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5213,6 +5343,7 @@ DictEntry DictRow0586[] = {
 { 0x0018, 0x9402, 0, VR::FL, VM::M1, "DistanceSourceToIsocenter" },
 { 0x0022, 0x1220, 0, VR::SQ, VM::M1, "UltrasoundOphthalmicAxialLengthMeasurementsSequence" },
 { 0x0040, 0xA089, 1, VR::OB, VM::M1, "ObjectDirectoryBinaryIdentifierTrial" },
+{ 0x0046, 0x0205, 0, VR::FL, VM::M1, "EquivalentPupilRadius" },
 { 0x0070, 0x0233, 0, VR::SQ, VM::M1, "FillStyleSequence" },
 { 0x300A, 0x028A, 0, VR::IS, VM::M1, "NumberOfPulses" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5221,6 +5352,7 @@ DictEntry DictRow0587[] = {
 { 0x0018, 0x9403, 0, VR::FL, VM::M1, "DistanceObjectToTableTop" },
 { 0x0040, 0x0612, 0, VR::SQ, VM::M1, "SpecimenPreparationStepContentItemSequence" },
 { 0x0040, 0xA088, 0, VR::SQ, VM::M1, "VerifyingObserverIdentificationCodeSequence" },
+{ 0x0046, 0x0204, 0, VR::FL, VM::M1, "PupilCentroidYCoordinate" },
 { 0x0068, 0x63AC, 0, VR::SQ, VM::M1, "FixationMethodCodeSequence" },
 { 0x0070, 0x0232, 0, VR::SQ, VM::M1, "LineStyleSequence" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5229,6 +5361,7 @@ DictEntry DictRow0588[] = {
 { 0x0004, 0x1200, 0, VR::UL, VM::M1, "OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity" },
 { 0x0018, 0x9014, 0, VR::CS, VM::M1, "PhaseContrast" },
 { 0x0018, 0x9404, 0, VR::FL, VM::M2, "ObjectPixelSpacingInCenterOfBeam" },
+{ 0x0046, 0x0203, 0, VR::FL, VM::M1, "PupilCentroidXCoordinate" },
 { 0x0054, 0x0211, 0, VR::US, VM::M1, "NumberOfTriggersInPhase" },
 { 0x300A, 0x028C, 0, VR::DS, VM::M1, "PulseRepetitionInterval" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5236,6 +5369,7 @@ DictEntry DictRow0588[] = {
 DictEntry DictRow0589[] = {
 { 0x0018, 0x9015, 0, VR::CS, VM::M1, "TimeOfFlightContrast" },
 { 0x0018, 0x9405, 0, VR::SQ, VM::M1, "PositionerPositionSequence" },
+{ 0x0046, 0x0202, 0, VR::FL, VM::M2, "CornealVertexLocation" },
 { 0x0054, 0x0210, 0, VR::IS, VM::M1TN, "TriggerVector" },
 { 0x0070, 0x0234, 0, VR::SQ, VM::M1, "GraphicGroupSequence" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5244,6 +5378,7 @@ DictEntry DictRow0590[] = {
 { 0x0004, 0x1202, 0, VR::UL, VM::M1, "OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity" },
 { 0x0018, 0x9016, 0, VR::CS, VM::M1, "Spoiling" },
 { 0x0018, 0x9406, 0, VR::SQ, VM::M1, "TablePositionSequence" },
+{ 0x0046, 0x0201, 0, VR::CS, VM::M1, "CornealTopographySurface" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0591[] = {
@@ -5288,6 +5423,7 @@ DictEntry DictRow0598[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0599[] = {
+{ 0x0046, 0x0218, 0, VR::SQ, VM::M1, "SimulatedKeratometricCylinderSequence" },
 { 0x0068, 0x63B0, 0, VR::SQ, VM::M1, "MatingFeatureSetsSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -5304,6 +5440,7 @@ DictEntry DictRow0602[] = {
 { 0x0018, 0x9412, 0, VR::SQ, VM::M1, "XAXRFFrameCharacteristicsSequence" },
 { 0x0022, 0x1230, 0, VR::SQ, VM::M1, "UltrasoundSelectedOphthalmicAxialLengthSequence" },
 { 0x0028, 0x9422, 0, VR::SQ, VM::M1, "PixelIntensityRelationshipLUTSequence" },
+{ 0x0046, 0x0215, 0, VR::SQ, VM::M1, "MinimumKeratometricSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0603[] = {
@@ -5314,18 +5451,21 @@ DictEntry DictRow0603[] = {
 DictEntry DictRow0604[] = {
 { 0x0004, 0x1600, 1, VR::UL, VM::M1, "NumberOfReferences" },
 { 0x0018, 0x9004, 0, VR::CS, VM::M1, "ContentQualification" },
+{ 0x0046, 0x0213, 0, VR::FL, VM::M2, "MaximumCornealCurvatureLocation" },
 { 0x300A, 0x029C, 0, VR::DS, VM::M1, "SourceApplicatorWallNominalThickness" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0605[] = {
 { 0x0018, 0x9005, 0, VR::SH, VM::M1, "PulseSequenceName" },
+{ 0x0046, 0x0212, 0, VR::FL, VM::M1, "MaximumCornealCurvature" },
 { 0x0054, 0x0200, 0, VR::DS, VM::M1, "StartAngle" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0606[] = {
 { 0x0004, 0x1212, 0, VR::US, VM::M1, "FileSetConsistencyFlag" },
 { 0x0018, 0x9006, 0, VR::SQ, VM::M1, "MRImagingModifierSequence" },
-{ 0x0048, 0x021F, 0, VR::SL, VM::M1, "ColumnPositionInTotalImagePixelMatrix" },
+{ 0x0046, 0x0211, 0, VR::SQ, VM::M1, "MaximumCornealCurvatureSequence" },
+{ 0x0048, 0x021F, 0, VR::SL, VM::M1, "RowPositionInTotalImagePixelMatrix" },
 { 0x0070, 0x0227, 0, VR::LO, VM::M1, "FontName" },
 { 0x300A, 0x029E, 0, VR::DS, VM::M1, "SourceApplicatorWallNominalTransmission" },
 { 0x7FE0, 0x0040, 1, VR::OW, VM::M1, "CoefficientsSDDN" },
@@ -5333,7 +5473,8 @@ DictEntry DictRow0606[] = {
 };
 DictEntry DictRow0607[] = {
 { 0x0018, 0x9417, 0, VR::SQ, VM::M1, "FrameAcquisitionSequence" },
-{ 0x0048, 0x021E, 0, VR::SL, VM::M1, "RowPositionInTotalImagePixelMatrix" },
+{ 0x0046, 0x0210, 0, VR::SQ, VM::M1, "CornealTopographyMappingNormalsSequence" },
+{ 0x0048, 0x021E, 0, VR::SL, VM::M1, "ColumnPositionInTotalImagePixelMatrix" },
 { 0x0054, 0x0202, 0, VR::CS, VM::M1, "TypeOfDetectorMotion" },
 { 0x0070, 0x0226, 0, VR::UL, VM::M1, "CompoundGraphicInstanceID" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5377,7 +5518,9 @@ DictEntry DictRow0615[] = {
 DictEntry DictRow0616[] = {
 { 0x0018, 0x9030, 0, VR::FD, VM::M1, "TagSpacingFirstDimension" },
 { 0x0018, 0x9420, 0, VR::CS, VM::M1, "XRayReceptorType" },
+{ 0x0018, 0x9810, 0, VR::XS, VM::M1, "ZeroVelocityPixelValue" },
 { 0x0020, 0x1200, 0, VR::IS, VM::M1, "NumberOfPatientRelatedStudies" },
+{ 0x0046, 0x0227, 0, VR::FL, VM::M1, "AnalyzedArea" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0617[] = {
@@ -5399,6 +5542,7 @@ DictEntry DictRow0619[] = {
 { 0x0018, 0x9423, 0, VR::LO, VM::M1, "AcquisitionProtocolName" },
 { 0x0020, 0x0242, 0, VR::UI, VM::M1, "SOPInstanceUIDOfConcatenationSource" },
 { 0x0028, 0x9003, 0, VR::CS, VM::M1, "SignalDomainColumns" },
+{ 0x0046, 0x0224, 0, VR::FL, VM::M1, "CornealISValue" },
 { 0x0072, 0x0210, 0, VR::SQ, VM::M1, "SynchronizedScrollingSequence" },
 { 0x0072, 0x0600, 0, VR::SQ, VM::M1, "SortingOperationsSequence" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5427,6 +5571,7 @@ DictEntry DictRow0622[] = {
 DictEntry DictRow0623[] = {
 { 0x0018, 0x9037, 0, VR::CS, VM::M1, "CardiacSynchronizationTechnique" },
 { 0x0018, 0x9427, 0, VR::CS, VM::M1, "IntensifierActiveShape" },
+{ 0x0046, 0x0220, 0, VR::FL, VM::M1, "AverageCornealPower" },
 { 0x0072, 0x0214, 0, VR::SQ, VM::M1, "NavigationIndicatorSequence" },
 { 0x0072, 0x0604, 0, VR::CS, VM::M1, "SortingDirection" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5484,6 +5629,7 @@ DictEntry DictRow0630[] = {
 DictEntry DictRow0631[] = {
 { 0x0018, 0x980F, 0, VR::SQ, VM::M1, "TransducerApplicationCodeSequence" },
 { 0x003A, 0x0244, 0, VR::US, VM::M3, "ChannelRecommendedDisplayCIELabValue" },
+{ 0x0046, 0x0238, 0, VR::FL, VM::M1, "DecimalPotentialVisualAcuity" },
 { 0x0068, 0x6390, 0, VR::FD, VM::M1, "SurfaceModelScalingFactor" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -5500,6 +5646,7 @@ DictEntry DictRow0633[] = {
 { 0x0018, 0x9021, 0, VR::CS, VM::M1, "T2Preparation" },
 { 0x0018, 0x9801, 0, VR::FD, VM::M1TN, "DepthsOfFocus" },
 { 0x0040, 0x0620, 0, VR::SQ, VM::M1, "SpecimenLocalizationContentItemSequence" },
+{ 0x0046, 0x0236, 0, VR::FL, VM::M1, "KeratoconusPredictionIndex" },
 { 0x0072, 0x0202, 0, VR::US, VM::M1, "DisplaySetNumber" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -5516,19 +5663,21 @@ DictEntry DictRow0635[] = {
 { 0x0018, 0x9803, 0, VR::SQ, VM::M1, "ExcludedIntervalsSequence" },
 { 0x0022, 0x1211, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthMeasurementsSegmentalLengthSequence" },
 { 0x003A, 0x0248, 0, VR::FL, VM::M1, "AbsoluteChannelDisplayScale" },
+{ 0x0046, 0x0234, 0, VR::FL, VM::M1, "CornealEccentricityIndex" },
 { 0x0072, 0x0200, 0, VR::SQ, VM::M1, "DisplaySetsSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0636[] = {
 { 0x0018, 0x9024, 0, VR::CS, VM::M1, "SaturationRecovery" },
 { 0x0018, 0x9434, 0, VR::SQ, VM::M1, "ExposureControlSensingRegionsSequence" },
-{ 0x0018, 0x9804, 0, VR::DT, VM::M1, "ExclusionStartDatetime" },
+{ 0x0018, 0x9804, 0, VR::DT, VM::M1, "ExclusionStartDateTime" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0637[] = {
 { 0x0018, 0x9025, 0, VR::CS, VM::M1, "SpectrallySelectedSuppression" },
 { 0x0018, 0x9435, 0, VR::CS, VM::M1, "ExposureControlSensingRegionShape" },
 { 0x0018, 0x9805, 0, VR::FD, VM::M1, "ExclusionDuration" },
+{ 0x0046, 0x0232, 0, VR::FL, VM::M1, "SurfaceAsymmetryIndex" },
 { 0x0054, 0x0220, 0, VR::SQ, VM::M1, "ViewCodeSequence" },
 { 0x0072, 0x0206, 0, VR::LO, VM::M1, "DisplaySetPresentationGroupDescription" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5545,6 +5694,7 @@ DictEntry DictRow0639[] = {
 { 0x0018, 0x9027, 0, VR::CS, VM::M1, "SpatialPresaturation" },
 { 0x0018, 0x9437, 0, VR::SS, VM::M1, "ExposureControlSensingRegionRightVerticalEdge" },
 { 0x0018, 0x9807, 0, VR::SQ, VM::M1, "ImageDataTypeSequence" },
+{ 0x0046, 0x0230, 0, VR::FL, VM::M1, "SurfaceRegularityIndex" },
 { 0x0054, 0x0222, 0, VR::SQ, VM::M1, "ViewModifierCodeSequence" },
 { 0x0072, 0x0204, 0, VR::US, VM::M1, "DisplaySetPresentationGroup" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5610,7 +5760,7 @@ DictEntry DictRow0651[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0652[] = {
-{ 0x0014, 0x2210, 0, VR::OB, VM::M1, "CoordinateSystemAxisValues" },
+{ 0x0014, 0x2210, 2, VR::OB, VM::M1, "CoordinateSystemAxisValues" },
 { 0x2200, 0x0004, 0, VR::LT, VM::M1, "MediaDisposition" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -5627,7 +5777,7 @@ DictEntry DictRow0655[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0656[] = {
-{ 0x0014, 0x220C, 0, VR::CS, VM::M1, "CoordinateSystemAxisType" },
+{ 0x0014, 0x220C, 2, VR::CS, VM::M1, "CoordinateSystemAxisType" },
 { 0x0040, 0xA050, 0, VR::CS, VM::M1, "ContinuityOfContent" },
 { 0x3008, 0x0251, 0, VR::TM, VM::M1, "TreatmentTime" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5637,7 +5787,7 @@ DictEntry DictRow0657[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0658[] = {
-{ 0x0014, 0x220E, 0, VR::CS, VM::M1, "CoordinateSystemAxisUnits" },
+{ 0x0014, 0x220E, 2, VR::CS, VM::M1, "CoordinateSystemAxisUnits" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0659[] = {
@@ -5645,7 +5795,7 @@ DictEntry DictRow0659[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0660[] = {
-{ 0x0014, 0x2208, 0, VR::CS, VM::M1, "CoordinateSystemDataSetMapping" },
+{ 0x0014, 0x2208, 2, VR::CS, VM::M1, "CoordinateSystemDataSetMapping" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0661[] = {
@@ -5653,7 +5803,7 @@ DictEntry DictRow0661[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0662[] = {
-{ 0x0014, 0x220A, 0, VR::IS, VM::M1, "CoordinateSystemAxisNumber" },
+{ 0x0014, 0x220A, 2, VR::IS, VM::M1, "CoordinateSystemAxisNumber" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0663[] = {
@@ -5663,7 +5813,7 @@ DictEntry DictRow0663[] = {
 };
 DictEntry DictRow0664[] = {
 { 0x0008, 0x2218, 0, VR::SQ, VM::M1, "AnatomicRegionSequence" },
-{ 0x0014, 0x2204, 0, VR::SQ, VM::M1, "CoordinateSystemAxesSequence" },
+{ 0x0014, 0x2204, 2, VR::SQ, VM::M1, "CoordinateSystemAxesSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0665[] = {
@@ -5673,7 +5823,7 @@ DictEntry DictRow0665[] = {
 };
 DictEntry DictRow0666[] = {
 { 0x0010, 0x2202, 0, VR::SQ, VM::M1, "PatientSpeciesCodeSequence" },
-{ 0x0014, 0x2206, 0, VR::ST, VM::M1, "CoordinateSystemAxisDescription" },
+{ 0x0014, 0x2206, 2, VR::ST, VM::M1, "CoordinateSystemAxisDescription" },
 { 0x0018, 0xA002, 0, VR::DT, VM::M1, "ContributionDateTime" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -5684,7 +5834,7 @@ DictEntry DictRow0667[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0670[] = {
-{ 0x0014, 0x2202, 0, VR::IS, VM::M1, "CoordinateSystemNumberOfAxes" },
+{ 0x0014, 0x2202, 2, VR::IS, VM::M1, "CoordinateSystemNumberOfAxes" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0672[] = {
@@ -5743,7 +5893,7 @@ DictEntry DictRow0687[] = {
 };
 DictEntry DictRow0688[] = {
 { 0x0008, 0x2230, 0, VR::SQ, VM::M1, "PrimaryAnatomicStructureModifierSequence" },
-{ 0x0014, 0x222C, 0, VR::DS, VM::M1TN, "CoordinateSystemTransformTranslationMatrix" },
+{ 0x0014, 0x222C, 2, VR::DS, VM::M1TN, "CoordinateSystemTransformTranslationMatrix" },
 { 0x0040, 0xA070, 1, VR::SQ, VM::M1, "IdentifierCodeSequenceTrial" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -5752,7 +5902,7 @@ DictEntry DictRow0691[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0692[] = {
-{ 0x0014, 0x2228, 0, VR::CS, VM::M1, "TransformedAxisUnits" },
+{ 0x0014, 0x2228, 2, VR::CS, VM::M1, "TransformedAxisUnits" },
 { 0x0040, 0xA074, 1, VR::OB, VM::M1, "ObjectBinaryIdentifierTrial" },
 { 0x0068, 0x6350, 0, VR::US, VM::M1TN, "ImplantTemplate3DModelSurfaceNumber" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5762,22 +5912,22 @@ DictEntry DictRow0693[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0694[] = {
-{ 0x0014, 0x222A, 0, VR::DS, VM::M1TN, "CoordinateSystemTransformRotationAndScaleMatrix" },
+{ 0x0014, 0x222A, 2, VR::DS, VM::M1TN, "CoordinateSystemTransformRotationAndScaleMatrix" },
 { 0x0040, 0xA076, 1, VR::SQ, VM::M1, "DocumentingObserverIdentifierCodeSequenceTrial" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0696[] = {
-{ 0x0014, 0x2224, 0, VR::IS, VM::M1, "TransformNumberOfAxes" },
+{ 0x0014, 0x2224, 2, VR::IS, VM::M1, "TransformNumberOfAxes" },
 { 0x0040, 0xA078, 0, VR::SQ, VM::M1, "AuthorObserverSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0698[] = {
-{ 0x0014, 0x2226, 0, VR::IS, VM::M1TN, "TransformOrderOfAxes" },
+{ 0x0014, 0x2226, 2, VR::IS, VM::M1TN, "TransformOrderOfAxes" },
 { 0x0040, 0xA07A, 0, VR::SQ, VM::M1, "ParticipantSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0700[] = {
-{ 0x0014, 0x2220, 0, VR::SQ, VM::M1, "CoordinateSystemTransformSequence" },
+{ 0x0014, 0x2220, 2, VR::SQ, VM::M1, "CoordinateSystemTransformSequence" },
 { 0x0040, 0xA07C, 0, VR::SQ, VM::M1, "CustodialOrganizationSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -5786,7 +5936,7 @@ DictEntry DictRow0701[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0702[] = {
-{ 0x0014, 0x2222, 0, VR::ST, VM::M1, "TransformDescription" },
+{ 0x0014, 0x2222, 2, VR::ST, VM::M1, "TransformDescription" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0704[] = {
@@ -5947,6 +6097,7 @@ DictEntry DictRow0728[] = {
 DictEntry DictRow0729[] = {
 { 0x0008, 0x2258, 1, VR::ST, VM::M1, "AnatomicLocationOfExaminingInstrumentDescriptionTrial" },
 { 0x0018, 0x9083, 0, VR::SQ, VM::M1, "MetaboliteMapCodeSequence" },
+{ 0x300A, 0x021B, 0, VR::SH, VM::M1, "SourceModelID" },
 { 0x6014, 0x1301, 0, VR::IS, VM::M1, "ROIArea11" },
 { 0x6016, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation12" },
 { 0, 0, 0, 0, 0, NULL }
@@ -5980,6 +6131,7 @@ DictEntry DictRow0733[] = {
 DictEntry DictRow0734[] = {
 { 0x0018, 0x9084, 0, VR::SQ, VM::M1, "ChemicalShiftSequence" },
 { 0x0040, 0x0295, 0, VR::SQ, VM::M1, "MeasuringUnitsSequence" },
+{ 0x300A, 0x021C, 0, VR::LO, VM::M1, "SourceDescription" },
 { 0x6010, 0x1302, 0, VR::DS, VM::M1, "ROIMean9" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -6185,16 +6337,22 @@ DictEntry DictRow0786[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0788[] = {
+{ 0x0020, 0x9171, 0, VR::SQ, VM::M1, "UnassignedPerFrameConvertedAttributesSequence" },
 { 0x0028, 0x0720, 1, VR::US, VM::M1, "ZonalMapNumberFormat" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0789[] = {
+{ 0x0020, 0x9170, 0, VR::SQ, VM::M1, "UnassignedSharedConvertedAttributesSequence" },
 { 0x0028, 0x0721, 1, VR::AT, VM::M1TN, "ZonalMapLocation" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0790[] = {
 { 0x0028, 0x0722, 1, VR::US, VM::M1, "ZonalMapFormat" },
 { 0x0040, 0x074A, 0, VR::DS, VM::M1, "ZOffsetInSlideCoordinateSystem" },
+{ 0, 0, 0, 0, 0, NULL }
+};
+DictEntry DictRow0791[] = {
+{ 0x0020, 0x9172, 0, VR::SQ, VM::M1, "ConversionSourceAttributesSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0793[] = {
@@ -6213,6 +6371,7 @@ DictEntry DictRow0797[] = {
 };
 DictEntry DictRow0800[] = {
 { 0x0024, 0x0308, 0, VR::LO, VM::M1, "DataSetSource" },
+{ 0x0028, 0x0304, 0, VR::UI, VM::M1, "ReferencedColorPaletteInstanceUID" },
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0801[] = {
@@ -6846,10 +7005,16 @@ DictEntry DictRow0932[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0933[] = {
+{ 0x0040, 0xA161, 0, VR::FD, VM::M1TN, "FloatingPointValue" },
 { 0x300A, 0x0362, 0, VR::LO, VM::M1, "RangeShifterSetting" },
 { 0, 0, 0, 0, 0, NULL }
 };
+DictEntry DictRow0934[] = {
+{ 0x0040, 0xA162, 0, VR::SL, VM::M1TN, "RationalNumeratorValue" },
+{ 0, 0, 0, 0, 0, NULL }
+};
 DictEntry DictRow0935[] = {
+{ 0x0040, 0xA163, 0, VR::UL, VM::M1TN, "RationalDenominatorValue" },
 { 0x300A, 0x0360, 0, VR::SQ, VM::M1, "RangeShifterSettingsSequence" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -6874,7 +7039,7 @@ DictEntry DictRow0948[] = {
 { 0, 0, 0, 0, 0, NULL }
 };
 DictEntry DictRow0949[] = {
-{ 0x0040, 0xA171, 1, VR::UI, VM::M1, "ObservationUIDTrial" },
+{ 0x0040, 0xA171, 0, VR::UI, VM::M1, "ObservationUID" },
 { 0x300A, 0x0372, 0, VR::LO, VM::M1, "LateralSpreadingDeviceSetting" },
 { 0, 0, 0, 0, 0, NULL }
 };
@@ -7624,11 +7789,11 @@ DictRow0399,
 DictRow0400,
 DictRow0401,
 DictRow0402,
-DictEmptyRow,
+DictRow0403,
 DictRow0404,
 DictRow0405,
 DictRow0406,
-DictEmptyRow,
+DictRow0407,
 DictRow0408,
 DictRow0409,
 DictRow0410,
@@ -7740,7 +7905,7 @@ DictRow0515,
 DictRow0516,
 DictRow0517,
 DictRow0518,
-DictEmptyRow,
+DictRow0519,
 DictRow0520,
 DictRow0521,
 DictRow0522,
@@ -8012,7 +8177,7 @@ DictEmptyRow,
 DictRow0788,
 DictRow0789,
 DictRow0790,
-DictEmptyRow,
+DictRow0791,
 DictEmptyRow,
 DictRow0793,
 DictRow0794,
@@ -8155,7 +8320,7 @@ DictEmptyRow,
 DictRow0931,
 DictRow0932,
 DictRow0933,
-DictEmptyRow,
+DictRow0934,
 DictRow0935,
 DictEmptyRow,
 DictEmptyRow,

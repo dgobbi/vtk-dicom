@@ -1,0 +1,2597 @@
+1.2.840.10008.6.1.1
+2
+Anatomic Modifier
+1.2.840.10008.6.1.2
+4
+Anatomic Region
+1.2.840.10008.6.1.3
+5
+Transducer Approach
+1.2.840.10008.6.1.4
+6
+Transducer Orientation
+1.2.840.10008.6.1.5
+7
+Ultrasound Beam Path
+1.2.840.10008.6.1.6
+8
+Angiographic Interventional Devices
+1.2.840.10008.6.1.7
+9
+Image Guided Therapeutic Procedures
+1.2.840.10008.6.1.8
+10
+Interventional Drug
+1.2.840.10008.6.1.9
+11
+Route of Administration
+1.2.840.10008.6.1.10
+12
+Radiographic Contrast Agent
+1.2.840.10008.6.1.11
+13
+Radiographic Contrast Agent Ingredient
+1.2.840.10008.6.1.12
+18
+Isotopes in Radiopharmaceuticals
+1.2.840.10008.6.1.13
+19
+Patient Orientation
+1.2.840.10008.6.1.14
+20
+Patient Orientation Modifier
+1.2.840.10008.6.1.15
+21
+Patient Equipment Relationship
+1.2.840.10008.6.1.16
+23
+Cranio-caudad Angulation
+1.2.840.10008.6.1.17
+25
+Radiopharmaceuticals
+1.2.840.10008.6.1.18
+26
+Nuclear Medicine Projections
+1.2.840.10008.6.1.19
+29
+Acquisition Modality
+1.2.840.10008.6.1.20
+30
+DICOM Devices
+1.2.840.10008.6.1.21
+31
+Abstract Priors
+1.2.840.10008.6.1.22
+42
+Numeric Value Qualifier
+1.2.840.10008.6.1.23
+82
+Units of Measurement
+1.2.840.10008.6.1.24
+83
+Units for Real World Value Mapping
+1.2.840.10008.6.1.25
+220
+Level of Significance
+1.2.840.10008.6.1.26
+221
+Measurement Range Concepts
+1.2.840.10008.6.1.27
+222
+Normality Codes
+1.2.840.10008.6.1.28
+223
+Normal Range Values
+1.2.840.10008.6.1.29
+224
+Selection Method
+1.2.840.10008.6.1.30
+225
+Measurement Uncertainty Concepts
+1.2.840.10008.6.1.31
+226
+Population Statistical Descriptors
+1.2.840.10008.6.1.32
+227
+Sample Statistical Descriptors
+1.2.840.10008.6.1.33
+228
+Equation or Table
+1.2.840.10008.6.1.34
+230
+Yes-No
+1.2.840.10008.6.1.35
+240
+Present-Absent
+1.2.840.10008.6.1.36
+242
+Normal-Abnormal
+1.2.840.10008.6.1.37
+244
+Laterality
+1.2.840.10008.6.1.38
+250
+Positive-Negative
+1.2.840.10008.6.1.39
+251
+Severity of Complication
+1.2.840.10008.6.1.40
+270
+Observer Type
+1.2.840.10008.6.1.41
+271
+Observation Subject Class
+1.2.840.10008.6.1.42
+3000
+Audio Channel Source
+1.2.840.10008.6.1.43
+3001
+ECG Leads
+1.2.840.10008.6.1.44
+3003
+Hemodynamic Waveform Sources
+1.2.840.10008.6.1.45
+3010
+Cardiovascular Anatomic Locations
+1.2.840.10008.6.1.46
+3011
+Electrophysiology Anatomic Locations
+1.2.840.10008.6.1.47
+3014
+Coronary Artery Segments
+1.2.840.10008.6.1.48
+3015
+Coronary Arteries
+1.2.840.10008.6.1.49
+3019
+Cardiovascular Anatomic Location Modifiers
+1.2.840.10008.6.1.50
+3082
+(Retired)
+1.2.840.10008.6.1.51
+3090
+Time Synchronization Channel Types
+1.2.840.10008.6.1.52
+3101
+NM Procedural State Values
+1.2.840.10008.6.1.53
+3240
+Electrophysiology Measurement Functions and Techniques
+1.2.840.10008.6.1.54
+3241
+Hemodynamic Measurement Techniques
+1.2.840.10008.6.1.55
+3250
+Catheterization Procedure Phase
+1.2.840.10008.6.1.56
+3254
+Electrophysiology Procedure Phase
+1.2.840.10008.6.1.57
+3261
+Stress Protocols
+1.2.840.10008.6.1.58
+3262
+ECG Patient State Values
+1.2.840.10008.6.1.59
+3263
+Electrode Placement Values
+1.2.840.10008.6.1.60
+3264
+XYZ Electrode Placement Values
+1.2.840.10008.6.1.61
+3271
+Hemodynamic Physiological Challenges
+1.2.840.10008.6.1.62
+3335
+ECG Annotations
+1.2.840.10008.6.1.63
+3337
+Hemodynamic Annotations
+1.2.840.10008.6.1.64
+3339
+Electrophysiology Annotations
+1.2.840.10008.6.1.65
+3400
+Procedure Log Titles
+1.2.840.10008.6.1.66
+3401
+Types of Log Notes
+1.2.840.10008.6.1.67
+3402
+Patient Status and Events
+1.2.840.10008.6.1.68
+3403
+Percutaneous Entry
+1.2.840.10008.6.1.69
+3404
+Staff Actions
+1.2.840.10008.6.1.70
+3405
+Procedure Action Values
+1.2.840.10008.6.1.71
+3406
+Non-Coronary Transcatheter Interventions
+1.2.840.10008.6.1.72
+3407
+Purpose of Reference to Object
+1.2.840.10008.6.1.73
+3408
+Actions with Consumables
+1.2.840.10008.6.1.74
+3409
+Administration of Drugs/Contrast
+1.2.840.10008.6.1.75
+3410
+Numeric Parameters of Drugs/Contrast
+1.2.840.10008.6.1.76
+3411
+Intracoronary Devices
+1.2.840.10008.6.1.77
+3412
+Intervention Actions and Status
+1.2.840.10008.6.1.78
+3413
+Adverse Outcomes
+1.2.840.10008.6.1.79
+3414
+Procedure Urgency
+1.2.840.10008.6.1.80
+3415
+Cardiac Rhythms
+1.2.840.10008.6.1.81
+3416
+Respiration Rhythms
+1.2.840.10008.6.1.82
+3418
+Lesion Risk
+1.2.840.10008.6.1.83
+3419
+Findings Titles
+1.2.840.10008.6.1.84
+3421
+Procedure Action
+1.2.840.10008.6.1.85
+3422
+Device Use Actions
+1.2.840.10008.6.1.86
+3423
+Numeric Device Characteristics
+1.2.840.10008.6.1.87
+3425
+Intervention Parameters
+1.2.840.10008.6.1.88
+3426
+Consumables Parameters
+1.2.840.10008.6.1.89
+3427
+Equipment Events
+1.2.840.10008.6.1.90
+3428
+Imaging Procedures
+1.2.840.10008.6.1.91
+3429
+Catheterization Devices
+1.2.840.10008.6.1.92
+3430
+DateTime Qualifiers
+1.2.840.10008.6.1.93
+3440
+Peripheral Pulse Locations
+1.2.840.10008.6.1.94
+3441
+Patient assessments
+1.2.840.10008.6.1.95
+3442
+Peripheral Pulse Methods
+1.2.840.10008.6.1.96
+3446
+Skin Condition
+1.2.840.10008.6.1.97
+3448
+Airway Assessment
+1.2.840.10008.6.1.98
+3451
+Calibration Objects
+1.2.840.10008.6.1.99
+3452
+Calibration Methods
+1.2.840.10008.6.1.100
+3453
+Cardiac Volume Methods
+1.2.840.10008.6.1.101
+3455
+Index Methods
+1.2.840.10008.6.1.102
+3456
+Sub-segment Methods
+1.2.840.10008.6.1.103
+3458
+Contour Realignment
+1.2.840.10008.6.1.104
+3460
+Circumferential ExtenT
+1.2.840.10008.6.1.105
+3461
+Regional Extent
+1.2.840.10008.6.1.106
+3462
+Chamber Identification
+1.2.840.10008.6.1.107
+3465
+QA Reference MethodS
+1.2.840.10008.6.1.108
+3466
+Plane Identification
+1.2.840.10008.6.1.109
+3467
+Ejection Fraction
+1.2.840.10008.6.1.110
+3468
+ED Volume
+1.2.840.10008.6.1.111
+3469
+ES Volume
+1.2.840.10008.6.1.112
+3470
+Vessel Lumen Cross-Sectional Area Calculation Methods
+1.2.840.10008.6.1.113
+3471
+Estimated Volumes
+1.2.840.10008.6.1.114
+3472
+Cardiac Contraction Phase
+1.2.840.10008.6.1.115
+3480
+IVUS Procedure Phases
+1.2.840.10008.6.1.116
+3481
+IVUS Distance Measurements
+1.2.840.10008.6.1.117
+3482
+IVUS Area Measurements
+1.2.840.10008.6.1.118
+3483
+IVUS Longitudinal Measurements
+1.2.840.10008.6.1.119
+3484
+IVUS Indices and Ratios
+1.2.840.10008.6.1.120
+3485
+IVUS Volume Measurements
+1.2.840.10008.6.1.121
+3486
+Vascular Measurement Sites
+1.2.840.10008.6.1.122
+3487
+Intravascular Volumetric Regions
+1.2.840.10008.6.1.123
+3488
+Min/Max/Mean
+1.2.840.10008.6.1.124
+3489
+Calcium Distribution
+1.2.840.10008.6.1.125
+3491
+IVUS Lesion Morphologies
+1.2.840.10008.6.1.126
+3492
+Vascular Dissection Classifications
+1.2.840.10008.6.1.127
+3493
+IVUS Relative Stenosis Severities
+1.2.840.10008.6.1.128
+3494
+IVUS Non Morphological Findings
+1.2.840.10008.6.1.129
+3495
+IVUS Plaque Composition
+1.2.840.10008.6.1.130
+3496
+IVUS Fiducial Points
+1.2.840.10008.6.1.131
+3497
+IVUS Arterial Morphology
+1.2.840.10008.6.1.132
+3500
+Pressure Units
+1.2.840.10008.6.1.133
+3502
+Hemodynamic Resistance Units
+1.2.840.10008.6.1.134
+3503
+Indexed Hemodynamic Resistance Units
+1.2.840.10008.6.1.135
+3510
+Catheter Size Units
+1.2.840.10008.6.1.136
+3515
+Specimen Collection
+1.2.840.10008.6.1.137
+3520
+Blood Source Type
+1.2.840.10008.6.1.138
+3524
+Blood Gas Pressures
+1.2.840.10008.6.1.139
+3525
+Blood Gas Content
+1.2.840.10008.6.1.140
+3526
+Blood Gas Saturation
+1.2.840.10008.6.1.141
+3527
+Blood Base Excess
+1.2.840.10008.6.1.142
+3528
+Blood pH
+1.2.840.10008.6.1.143
+3529
+Arterial / Venous Content
+1.2.840.10008.6.1.144
+3530
+Oxygen Administration Actions
+1.2.840.10008.6.1.145
+3531
+Oxygen Administration
+1.2.840.10008.6.1.146
+3550
+Circulatory Support Actions
+1.2.840.10008.6.1.147
+3551
+Ventilation Actions
+1.2.840.10008.6.1.148
+3552
+Pacing Actions
+1.2.840.10008.6.1.149
+3553
+Circulatory Support
+1.2.840.10008.6.1.150
+3554
+Ventilation
+1.2.840.10008.6.1.151
+3555
+Pacing
+1.2.840.10008.6.1.152
+3560
+Blood Pressure Methods
+1.2.840.10008.6.1.153
+3600
+Relative times
+1.2.840.10008.6.1.154
+3602
+Hemodynamic Patient State
+1.2.840.10008.6.1.155
+3604
+Arterial lesion locations
+1.2.840.10008.6.1.156
+3606
+Arterial source locations
+1.2.840.10008.6.1.157
+3607
+Venous Source locations
+1.2.840.10008.6.1.158
+3608
+Atrial source locations
+1.2.840.10008.6.1.159
+3609
+Ventricular source locations
+1.2.840.10008.6.1.160
+3610
+Gradient Source Locations
+1.2.840.10008.6.1.161
+3611
+Pressure Measurements
+1.2.840.10008.6.1.162
+3612
+Blood Velocity Measurements
+1.2.840.10008.6.1.163
+3613
+Hemodynamic Time Measurements
+1.2.840.10008.6.1.164
+3614
+Valve Areas, non-Mitral
+1.2.840.10008.6.1.165
+3615
+Valve Areas
+1.2.840.10008.6.1.166
+3616
+Hemodynamic Period Measurements
+1.2.840.10008.6.1.167
+3617
+Valve Flows
+1.2.840.10008.6.1.168
+3618
+Hemodynamic Flows
+1.2.840.10008.6.1.169
+3619
+Hemodynamic Resistance Measurements
+1.2.840.10008.6.1.170
+3620
+Hemodynamic Ratios
+1.2.840.10008.6.1.171
+3621
+Fractional Flow Reserve
+1.2.840.10008.6.1.172
+3627
+Measurement Type
+1.2.840.10008.6.1.173
+3628
+Cardiac Output Methods
+1.2.840.10008.6.1.174
+3629
+Procedure Intent
+1.2.840.10008.6.1.175
+3630
+Cardiovascular Anatomic Locations
+1.2.840.10008.6.1.176
+3640
+Hypertension
+1.2.840.10008.6.1.177
+3641
+Hemodynamic Assessments
+1.2.840.10008.6.1.178
+3642
+Degree Findings
+1.2.840.10008.6.1.179
+3651
+Hemodynamic Measurement Phase
+1.2.840.10008.6.1.180
+3663
+Body Surface Area Equations
+1.2.840.10008.6.1.181
+3664
+Oxygen Consumption Equations and Tables
+1.2.840.10008.6.1.182
+3666
+P50 Equations
+1.2.840.10008.6.1.183
+3667
+Framingham Scores
+1.2.840.10008.6.1.184
+3668
+Framingham Tables
+1.2.840.10008.6.1.185
+3670
+ECG Procedure Types
+1.2.840.10008.6.1.186
+3671
+Reason for ECG Exam
+1.2.840.10008.6.1.187
+3672
+Pacemakers
+1.2.840.10008.6.1.188
+3673
+Diagnosis
+1.2.840.10008.6.1.189
+3675
+Other Filters
+1.2.840.10008.6.1.190
+3676
+Lead Measurement Technique
+1.2.840.10008.6.1.191
+3677
+Summary Codes ECG
+1.2.840.10008.6.1.192
+3678
+QT Correction Algorithms
+1.2.840.10008.6.1.193
+3679
+ECG Morphology Descriptions
+1.2.840.10008.6.1.194
+3680
+ECG Lead Noise Descriptions
+1.2.840.10008.6.1.195
+3681
+ECG Lead Noise Modifiers
+1.2.840.10008.6.1.196
+3682
+Probability
+1.2.840.10008.6.1.197
+3683
+Modifiers
+1.2.840.10008.6.1.198
+3684
+Trend
+1.2.840.10008.6.1.199
+3685
+Conjunctive Terms
+1.2.840.10008.6.1.200
+3686
+ECG Interpretive Statements
+1.2.840.10008.6.1.201
+3687
+Electrophysiology Waveform Durations
+1.2.840.10008.6.1.202
+3688
+Electrophysiology Waveform Voltages
+1.2.840.10008.6.1.203
+3700
+Cath Diagnosis
+1.2.840.10008.6.1.204
+3701
+Cardiac Valves and Tracts
+1.2.840.10008.6.1.205
+3703
+Wall Motion
+1.2.840.10008.6.1.206
+3704
+Myocardium Wall Morphology Findings
+1.2.840.10008.6.1.207
+3705
+Chamber Size
+1.2.840.10008.6.1.208
+3706
+Overall Contractility
+1.2.840.10008.6.1.209
+3707
+VSD Description
+1.2.840.10008.6.1.210
+3709
+Aortic Root Description
+1.2.840.10008.6.1.211
+3710
+Coronary Dominance
+1.2.840.10008.6.1.212
+3711
+Valvular Abnormalities
+1.2.840.10008.6.1.213
+3712
+Vessel Descriptors
+1.2.840.10008.6.1.214
+3713
+TIMI Flow Characteristics
+1.2.840.10008.6.1.215
+3714
+Thrombus
+1.2.840.10008.6.1.216
+3715
+Lesion Margin
+1.2.840.10008.6.1.217
+3716
+Severity
+1.2.840.10008.6.1.218
+3717
+Myocardial Wall Segments
+1.2.840.10008.6.1.219
+3718
+Myocardial Wall Segments in Projection
+1.2.840.10008.6.1.220
+3719
+Canadian Clinical Classification
+1.2.840.10008.6.1.221
+3720
+(Retired)
+1.2.840.10008.6.1.222
+3721
+Cardiovascular Surgeries
+1.2.840.10008.6.1.223
+3722
+Diabetic Therapy
+1.2.840.10008.6.1.224
+3723
+MI Types
+1.2.840.10008.6.1.225
+3724
+Smoking History
+1.2.840.10008.6.1.226
+3726
+Indications for Coronary Intervention
+1.2.840.10008.6.1.227
+3727
+Indications for Catheterization
+1.2.840.10008.6.1.228
+3728
+Cath Findings
+1.2.840.10008.6.1.229
+3729
+Admission Status
+1.2.840.10008.6.1.230
+3730
+Insurance Payor
+1.2.840.10008.6.1.231
+3733
+Primary Cause of Death
+1.2.840.10008.6.1.232
+3735
+Acute Coronary Syndrome Time Period
+1.2.840.10008.6.1.233
+3736
+NYHA Classification
+1.2.840.10008.6.1.234
+3737
+Non-Invasive Test - Ischemia
+1.2.840.10008.6.1.235
+3738
+Pre-Cath Angina Type
+1.2.840.10008.6.1.236
+3739
+Cath Procedure Type
+1.2.840.10008.6.1.237
+3740
+Thrombolytic Administration
+1.2.840.10008.6.1.238
+3741
+Medication Administration, Lab Visit
+1.2.840.10008.6.1.239
+3742
+Medication Administration, PCI
+1.2.840.10008.6.1.240
+3743
+Clopidogrel/Ticlopidine Administration
+1.2.840.10008.6.1.241
+3744
+EF Testing Method
+1.2.840.10008.6.1.242
+3745
+Calculation Method
+1.2.840.10008.6.1.243
+3746
+Percutaneous Entry Site
+1.2.840.10008.6.1.244
+3747
+Percutaneous Closure
+1.2.840.10008.6.1.245
+3748
+Angiographic EF Testing Method
+1.2.840.10008.6.1.246
+3749
+PCI Procedure Result
+1.2.840.10008.6.1.247
+3750
+Previously Dilated Lesion
+1.2.840.10008.6.1.248
+3752
+Guidewire Crossing
+1.2.840.10008.6.1.249
+3754
+Vascular Complications
+1.2.840.10008.6.1.250
+3755
+Cath Complications
+1.2.840.10008.6.1.251
+3756
+Cardiac Patient Risk Factors
+1.2.840.10008.6.1.252
+3757
+Cardiac Diagnostic Procedures
+1.2.840.10008.6.1.253
+3758
+Cardiovascular Family History
+1.2.840.10008.6.1.254
+3760
+Hypertension Therapy
+1.2.840.10008.6.1.255
+3761
+Antilipemic agents
+1.2.840.10008.6.1.256
+3762
+Antiarrhythmic agents
+1.2.840.10008.6.1.257
+3764
+Myocardial Infarction Therapies
+1.2.840.10008.6.1.258
+3769
+Concern Types
+1.2.840.10008.6.1.259
+3770
+Problem Status
+1.2.840.10008.6.1.260
+3772
+Health Status
+1.2.840.10008.6.1.261
+3773
+Use Status
+1.2.840.10008.6.1.262
+3774
+Social History
+1.2.840.10008.6.1.263
+3777
+Implanted Devices
+1.2.840.10008.6.1.264
+3802
+Plaque Structures
+1.2.840.10008.6.1.265
+3804
+Stenosis Measurement Methods
+1.2.840.10008.6.1.266
+3805
+Stenosis Types
+1.2.840.10008.6.1.267
+3806
+Stenosis Shape
+1.2.840.10008.6.1.268
+3807
+Volume Measurement Methods
+1.2.840.10008.6.1.269
+3808
+Aneurysm Types
+1.2.840.10008.6.1.270
+3809
+Associated Conditions
+1.2.840.10008.6.1.271
+3810
+Vascular Morphology
+1.2.840.10008.6.1.272
+3813
+Stent Findings
+1.2.840.10008.6.1.273
+3814
+Stent Composition
+1.2.840.10008.6.1.274
+3815
+Source of Vascular Finding
+1.2.840.10008.6.1.275
+3817
+Vascular Sclerosis Types
+1.2.840.10008.6.1.276
+3820
+Non-invasive Vascular Procedures
+1.2.840.10008.6.1.277
+3821
+Papillary Muscle Included/Excluded
+1.2.840.10008.6.1.278
+3823
+Respiratory Status
+1.2.840.10008.6.1.279
+3826
+Heart Rhythm
+1.2.840.10008.6.1.280
+3827
+Vessel Segments
+1.2.840.10008.6.1.281
+3829
+Pulmonary Arteries
+1.2.840.10008.6.1.282
+3831
+Stenosis Length
+1.2.840.10008.6.1.283
+3832
+Stenosis Grade
+1.2.840.10008.6.1.284
+3833
+Cardiac Ejection Fraction
+1.2.840.10008.6.1.285
+3835
+Cardiac Volume Measurements
+1.2.840.10008.6.1.286
+3836
+Time-based Perfusion Measurements
+1.2.840.10008.6.1.287
+3837
+Fiducial Feature
+1.2.840.10008.6.1.288
+3838
+Diameter Derivation
+1.2.840.10008.6.1.289
+3839
+Coronary Veins
+1.2.840.10008.6.1.290
+3840
+Pulmonary Veins
+1.2.840.10008.6.1.291
+3843
+Myocardial Subsegment
+1.2.840.10008.6.1.292
+4005
+Partial View Section for Mammography
+1.2.840.10008.6.1.293
+4009
+DX Anatomy Imaged
+1.2.840.10008.6.1.294
+4010
+DX View
+1.2.840.10008.6.1.295
+4011
+DX View Modifier
+1.2.840.10008.6.1.296
+4012
+Projection Eponymous Name
+1.2.840.10008.6.1.297
+4013
+Anatomic Region for Mammography
+1.2.840.10008.6.1.298
+4014
+View for Mammography
+1.2.840.10008.6.1.299
+4015
+View Modifier for Mammography
+1.2.840.10008.6.1.300
+4016
+Anatomic Region for Intra-Oral Radiography
+1.2.840.10008.6.1.301
+4017
+Anatomic Region Modifier for Intra-Oral Radiography
+1.2.840.10008.6.1.302
+4018
+(Permanent Dentition - Designation of Teeth)
+1.2.840.10008.6.1.303
+4019
+(Deciduous Dentition - Designation of Teeth)
+1.2.840.10008.6.1.304
+4020
+PET Radionuclide
+1.2.840.10008.6.1.305
+4021
+PET Radiopharmaceutical
+1.2.840.10008.6.1.306
+4028
+Craniofacial Anatomic Regions
+1.2.840.10008.6.1.307
+4030
+CT and MR Anatomy Imaged
+1.2.840.10008.6.1.308
+4031
+Common Anatomic Regions
+1.2.840.10008.6.1.309
+4032
+MR Spectroscopy Metabolites
+1.2.840.10008.6.1.310
+4033
+MR Proton Spectroscopy Metabolites
+1.2.840.10008.6.1.311
+4040
+Endoscopy Anatomic Regions
+1.2.840.10008.6.1.312
+4042
+XA/XRF Anatomy Imaged
+1.2.840.10008.6.1.313
+4050
+Drug or Contrast Agent Characteristics
+1.2.840.10008.6.1.314
+4051
+General Devices
+1.2.840.10008.6.1.315
+4052
+Phantom Devices
+1.2.840.10008.6.1.316
+4200
+Ophthalmic Imaging Agent
+1.2.840.10008.6.1.317
+4201
+Patient Eye Movement Command
+1.2.840.10008.6.1.318
+4202
+Ophthalmic Photography Acquisition Device
+1.2.840.10008.6.1.319
+4203
+Ophthalmic Photography Illumination
+1.2.840.10008.6.1.320
+4204
+Ophthalmic Filter
+1.2.840.10008.6.1.321
+4205
+Ophthalmic Lens
+1.2.840.10008.6.1.322
+4206
+Ophthalmic Channel Description
+1.2.840.10008.6.1.323
+4207
+Ophthalmic Image Position
+1.2.840.10008.6.1.324
+4208
+Mydriatic Agent
+1.2.840.10008.6.1.325
+4209
+Ophthalmic Anatomic Structure Imaged
+1.2.840.10008.6.1.326
+4210
+Ophthalmic Tomography Acquisition Device
+1.2.840.10008.6.1.327
+4211
+Ophthalmic OCT Anatomic Structure Imaged
+1.2.840.10008.6.1.328
+5000
+Languages
+1.2.840.10008.6.1.329
+5001
+Countries
+1.2.840.10008.6.1.330
+6000
+Overall Breast Composition
+1.2.840.10008.6.1.331
+6001
+Overall Breast Composition from BI-RADS®
+1.2.840.10008.6.1.332
+6002
+Change Since Last Mammogram or Prior Surgery
+1.2.840.10008.6.1.333
+6003
+Change Since Last Mammogram or Prior Surgery from BI-RADS®
+1.2.840.10008.6.1.334
+6004
+Mammography Characteristics of Shape
+1.2.840.10008.6.1.335
+6005
+Characteristics of Shape from BI-RADS®
+1.2.840.10008.6.1.336
+6006
+Mammography Characteristics of Margin
+1.2.840.10008.6.1.337
+6007
+Characteristics of Margin from BI-RADS®
+1.2.840.10008.6.1.338
+6008
+Density Modifier
+1.2.840.10008.6.1.339
+6009
+Density Modifier from BI-RADS®
+1.2.840.10008.6.1.340
+6010
+Mammography Calcification Types
+1.2.840.10008.6.1.341
+6011
+Calcification Types from BI-RADS®
+1.2.840.10008.6.1.342
+6012
+Calcification Distribution Modifier
+1.2.840.10008.6.1.343
+6013
+Calcification Distribution Modifier from BI-RADS®
+1.2.840.10008.6.1.344
+6014
+Mammography Single Image Finding
+1.2.840.10008.6.1.345
+6015
+Single Image Finding from BI-RADS®
+1.2.840.10008.6.1.346
+6016
+Mammography Composite Feature
+1.2.840.10008.6.1.347
+6017
+Composite Feature from BI-RADS®
+1.2.840.10008.6.1.348
+6018
+Clockface Location or Region
+1.2.840.10008.6.1.349
+6019
+Clockface Location or Region from BI-RADS®
+1.2.840.10008.6.1.350
+6020
+Quadrant Location
+1.2.840.10008.6.1.351
+6021
+Quadrant Location from BI-RADS®
+1.2.840.10008.6.1.352
+6022
+Side
+1.2.840.10008.6.1.353
+6023
+Side from BI-RADS®
+1.2.840.10008.6.1.354
+6024
+Depth
+1.2.840.10008.6.1.355
+6025
+Depth from BI-RADS®
+1.2.840.10008.6.1.356
+6026
+Mammography Assessment
+1.2.840.10008.6.1.357
+6027
+Assessment from BI-RADS®
+1.2.840.10008.6.1.358
+6028
+Mammography Recommended Follow-up
+1.2.840.10008.6.1.359
+6029
+Recommended Follow-up from BI-RADS®
+1.2.840.10008.6.1.360
+6030
+Mammography Pathology Codes
+1.2.840.10008.6.1.361
+6031
+Benign Pathology Codes from BI-RADS®
+1.2.840.10008.6.1.362
+6032
+High Risk Lesions Pathology Codes from BI-RADS®
+1.2.840.10008.6.1.363
+6033
+Malignant Pathology Codes from BI-RADS®
+1.2.840.10008.6.1.364
+6034
+Intended Use of CAD Output
+1.2.840.10008.6.1.365
+6035
+Composite Feature Relations
+1.2.840.10008.6.1.366
+6036
+Scope of Feature
+1.2.840.10008.6.1.367
+6037
+Mammography Quantitative Temporal Difference Type
+1.2.840.10008.6.1.368
+6038
+Mammography Qualitative Temporal Difference Type
+1.2.840.10008.6.1.369
+6039
+Nipple Characteristic
+1.2.840.10008.6.1.370
+6040
+Non-Lesion Object Type
+1.2.840.10008.6.1.371
+6041
+Mammography Image Quality Finding
+1.2.840.10008.6.1.372
+6042
+Status of Results
+1.2.840.10008.6.1.373
+6043
+Types of Mammography CAD Analysis
+1.2.840.10008.6.1.374
+6044
+Types of Image Quality Assessment
+1.2.840.10008.6.1.375
+6045
+Mammography Types of Quality Control Standard
+1.2.840.10008.6.1.376
+6046
+Units of Follow-up Interval
+1.2.840.10008.6.1.377
+6047
+CAD Processing and Findings Summary
+1.2.840.10008.6.1.378
+6048
+CAD Operating Point Axis Label
+1.2.840.10008.6.1.379
+6050
+Breast Procedure Reported
+1.2.840.10008.6.1.380
+6051
+Breast Procedure Reason
+1.2.840.10008.6.1.381
+6052
+Breast Imaging Report section title
+1.2.840.10008.6.1.382
+6053
+Breast Imaging Report Elements
+1.2.840.10008.6.1.383
+6054
+Breast Imaging Findings
+1.2.840.10008.6.1.384
+6055
+Breast Clinical Finding or Indicated Problem
+1.2.840.10008.6.1.385
+6056
+Associated Findings for Breast
+1.2.840.10008.6.1.386
+6057
+Ductography Findings for Breast
+1.2.840.10008.6.1.387
+6058
+Procedure Modifiers for Breast
+1.2.840.10008.6.1.388
+6059
+Breast Implant Types
+1.2.840.10008.6.1.389
+6060
+Breast Biopsy Techniques
+1.2.840.10008.6.1.390
+6061
+Breast Imaging Procedure Modifiers
+1.2.840.10008.6.1.391
+6062
+Interventional Procedure Complications
+1.2.840.10008.6.1.392
+6063
+Interventional Procedure Results
+1.2.840.10008.6.1.393
+6064
+Ultrasound Findings for Breast
+1.2.840.10008.6.1.394
+6065
+Instrument Approach
+1.2.840.10008.6.1.395
+6066
+Target Confirmation
+1.2.840.10008.6.1.396
+6067
+Fluid Color
+1.2.840.10008.6.1.397
+6068
+Tumor Stages from AJCC
+1.2.840.10008.6.1.398
+6069
+Nottingham Combined Histologic Grade
+1.2.840.10008.6.1.399
+6070
+Bloom-Richardson Histologic Grade
+1.2.840.10008.6.1.400
+6071
+Histologic Grading Method
+1.2.840.10008.6.1.401
+6072
+Breast Implant Findings
+1.2.840.10008.6.1.402
+6080
+Gynecological Hormones
+1.2.840.10008.6.1.403
+6081
+Breast Cancer Risk Factors
+1.2.840.10008.6.1.404
+6082
+Gynecological Procedures
+1.2.840.10008.6.1.405
+6083
+Procedures for Breast
+1.2.840.10008.6.1.406
+6084
+Mammoplasty Procedures
+1.2.840.10008.6.1.407
+6085
+Therapies for Breast
+1.2.840.10008.6.1.408
+6086
+Menopausal Phase
+1.2.840.10008.6.1.409
+6087
+General Risk Factors
+1.2.840.10008.6.1.410
+6088
+OB-GYN Maternal Risk Factors
+1.2.840.10008.6.1.411
+6089
+Substances
+1.2.840.10008.6.1.412
+6090
+Relative Usage, Exposure Amount
+1.2.840.10008.6.1.413
+6091
+Relative Frequency of Event Values
+1.2.840.10008.6.1.414
+6092
+Quantitative Concepts for Usage, Exposure
+1.2.840.10008.6.1.415
+6093
+Qualitative Concepts for Usage, Exposure Amount
+1.2.840.10008.6.1.416
+6094
+Qualitative Concepts for Usage, Exposure Frequency
+1.2.840.10008.6.1.417
+6095
+Numeric Properties of Procedures
+1.2.840.10008.6.1.418
+6096
+Pregnancy Status
+1.2.840.10008.6.1.419
+6097
+Side of Family
+1.2.840.10008.6.1.420
+6100
+Chest Component Categories
+1.2.840.10008.6.1.421
+6101
+Chest Finding or Feature
+1.2.840.10008.6.1.422
+6102
+Chest Finding or Feature Modifier
+1.2.840.10008.6.1.423
+6103
+Abnormal Lines Finding or Feature
+1.2.840.10008.6.1.424
+6104
+Abnormal Opacity Finding or Feature
+1.2.840.10008.6.1.425
+6105
+Abnormal Lucency Finding or Feature
+1.2.840.10008.6.1.426
+6106
+Abnormal Texture Finding or Feature
+1.2.840.10008.6.1.427
+6107
+Width Descriptor
+1.2.840.10008.6.1.428
+6108
+Chest Anatomic Structure Abnormal Distribution
+1.2.840.10008.6.1.429
+6109
+Radiographic Anatomy Finding or Feature
+1.2.840.10008.6.1.430
+6110
+Lung Anatomy Finding or Feature
+1.2.840.10008.6.1.431
+6111
+Bronchovascular Anatomy Finding or Feature
+1.2.840.10008.6.1.432
+6112
+Pleura Anatomy Finding or Feature
+1.2.840.10008.6.1.433
+6113
+Mediastinum Anatomy Finding or Feature
+1.2.840.10008.6.1.434
+6114
+Osseous Anatomy Finding or Feature
+1.2.840.10008.6.1.435
+6115
+Osseous Anatomy Modifiers
+1.2.840.10008.6.1.436
+6116
+Muscular Anatomy
+1.2.840.10008.6.1.437
+6117
+Vascular Anatomy
+1.2.840.10008.6.1.438
+6118
+Size Descriptor
+1.2.840.10008.6.1.439
+6119
+Chest Border Shape
+1.2.840.10008.6.1.440
+6120
+Chest Border Definition
+1.2.840.10008.6.1.441
+6121
+Chest Orientation Descriptor
+1.2.840.10008.6.1.442
+6122
+Chest Content Descriptor
+1.2.840.10008.6.1.443
+6123
+Chest Opacity Descriptor
+1.2.840.10008.6.1.444
+6124
+Location in Chest
+1.2.840.10008.6.1.445
+6125
+General Chest Location
+1.2.840.10008.6.1.446
+6126
+Location in Lung
+1.2.840.10008.6.1.447
+6127
+Segment Location in Lung
+1.2.840.10008.6.1.448
+6128
+Chest Distribution Descriptor
+1.2.840.10008.6.1.449
+6129
+Chest Site Involvement
+1.2.840.10008.6.1.450
+6130
+Severity Descriptor
+1.2.840.10008.6.1.451
+6131
+Chest Texture Descriptor
+1.2.840.10008.6.1.452
+6132
+Chest Calcification Descriptor
+1.2.840.10008.6.1.453
+6133
+Chest Quantitative Temporal Difference Type
+1.2.840.10008.6.1.454
+6134
+Qualitative Temporal Difference Type
+1.2.840.10008.6.1.455
+6135
+Image Quality Finding
+1.2.840.10008.6.1.456
+6136
+Chest Types of Quality Control Standard
+1.2.840.10008.6.1.457
+6137
+Types of CAD Analysis
+1.2.840.10008.6.1.458
+6138
+Chest Non-Lesion Object Type
+1.2.840.10008.6.1.459
+6139
+Non-Lesion Modifiers
+1.2.840.10008.6.1.460
+6140
+Calculation Methods
+1.2.840.10008.6.1.461
+6141
+Attenuation Coefficient Measurements
+1.2.840.10008.6.1.462
+6142
+Calculated Value
+1.2.840.10008.6.1.463
+6143
+Response Criteria
+1.2.840.10008.6.1.464
+6144
+RECIST Response Criteria
+1.2.840.10008.6.1.465
+6145
+Baseline Category
+1.2.840.10008.6.1.466
+6151
+Background echotexture
+1.2.840.10008.6.1.467
+6152
+Orientation
+1.2.840.10008.6.1.468
+6153
+Lesion boundary
+1.2.840.10008.6.1.469
+6154
+Echo pattern
+1.2.840.10008.6.1.470
+6155
+Posterior acoustic features
+1.2.840.10008.6.1.471
+6157
+Vascularity
+1.2.840.10008.6.1.472
+6158
+Correlation to Other Findings
+1.2.840.10008.6.1.473
+6159
+Malignancy Type
+1.2.840.10008.6.1.474
+6160
+Breast Primary Tumor Assessment from AJCC
+1.2.840.10008.6.1.475
+6161
+Clinical Regional Lymph Node Assessment for Breast
+1.2.840.10008.6.1.476
+6162
+Assessment of Metastasis for Breast
+1.2.840.10008.6.1.477
+6163
+Menstrual Cycle Phase
+1.2.840.10008.6.1.478
+6164
+Time Intervals
+1.2.840.10008.6.1.479
+6165
+Breast Linear Measurements
+1.2.840.10008.6.1.480
+6166
+CAD Geometry Secondary Graphical Representation
+1.2.840.10008.6.1.481
+7000
+Diagnostic Imaging Report Document Titles
+1.2.840.10008.6.1.482
+7001
+Diagnostic Imaging Report Headings
+1.2.840.10008.6.1.483
+7002
+Diagnostic Imaging Report Elements
+1.2.840.10008.6.1.484
+7003
+Diagnostic Imaging Report Purposes of Reference
+1.2.840.10008.6.1.485
+7004
+Waveform Purposes of Reference
+1.2.840.10008.6.1.486
+7005
+Contributing Equipment Purposes of Reference
+1.2.840.10008.6.1.487
+7006
+SR Document Purposes of Reference
+1.2.840.10008.6.1.488
+7007
+Signature Purpose
+1.2.840.10008.6.1.489
+7008
+Media Import
+1.2.840.10008.6.1.490
+7010
+Key Object Selection Document Title
+1.2.840.10008.6.1.491
+7011
+Rejected for Quality Reasons
+1.2.840.10008.6.1.492
+7012
+Best In Set
+1.2.840.10008.6.1.493
+7020
+Document Titles
+1.2.840.10008.6.1.494
+7100
+RCS Registration Method Type
+1.2.840.10008.6.1.495
+7101
+Brain Atlas Fiducials
+1.2.840.10008.6.1.496
+7150
+Segmentation Property Categories
+1.2.840.10008.6.1.497
+7151
+Segmentation Property Types
+1.2.840.10008.6.1.498
+7152
+Cardiac Structure Segmentation Types
+1.2.840.10008.6.1.499
+7153
+CNS Tissue Segmentation Types
+1.2.840.10008.6.1.500
+7154
+Abdominal Organ Segmentation Types
+1.2.840.10008.6.1.501
+7155
+Thoracic Tissue Segmentation Types
+1.2.840.10008.6.1.502
+7156
+Vascular Tissue Segmentation Types
+1.2.840.10008.6.1.503
+7157
+Device Segmentation Types
+1.2.840.10008.6.1.504
+7158
+Artifact Segmentation Types
+1.2.840.10008.6.1.505
+7159
+Lesion Segmentation Types
+1.2.840.10008.6.1.506
+7160
+Pelvic Organ Segmentation Types
+1.2.840.10008.6.1.507
+7161
+Physiology Segmentation Types
+1.2.840.10008.6.1.508
+7201
+Referenced Image Purposes of Reference
+1.2.840.10008.6.1.509
+7202
+Source Image Purposes of Reference
+1.2.840.10008.6.1.510
+7203
+Image Derivation
+1.2.840.10008.6.1.511
+7205
+Purpose Of Reference to Alternate Representation
+1.2.840.10008.6.1.512
+7210
+Related Series Purposes Of Reference
+1.2.840.10008.6.1.513
+7250
+Multi-frame Subset Type
+1.2.840.10008.6.1.514
+7450
+Person Roles
+1.2.840.10008.6.1.515
+7451
+Family Member
+1.2.840.10008.6.1.516
+7452
+Organizational Roles
+1.2.840.10008.6.1.517
+7453
+Performing Roles
+1.2.840.10008.6.1.518
+7454
+Species
+1.2.840.10008.6.1.519
+7455
+Sex
+1.2.840.10008.6.1.520
+7456
+Units of Measure for Age
+1.2.840.10008.6.1.521
+7460
+Units of Linear Measurement
+1.2.840.10008.6.1.522
+7461
+Units of Area Measurement
+1.2.840.10008.6.1.523
+7462
+Units of Volume Measurement
+1.2.840.10008.6.1.524
+7470
+Linear Measurements
+1.2.840.10008.6.1.525
+7471
+Area Measurements
+1.2.840.10008.6.1.526
+7472
+Volume Measurements
+1.2.840.10008.6.1.527
+7473
+General Area Calculation Methods
+1.2.840.10008.6.1.528
+7474
+General Volume Calculation Methods
+1.2.840.10008.6.1.529
+7480
+Breed
+1.2.840.10008.6.1.530
+7481
+Breed Registry
+1.2.840.10008.6.1.531
+9231
+Workitem Definition
+1.2.840.10008.6.1.532
+9232
+(Retired)
+1.2.840.10008.6.1.533
+9300
+Procedure Discontinuation Reasons
+1.2.840.10008.6.1.534
+10000
+Scope of Accumulation
+1.2.840.10008.6.1.535
+10001
+UID Types
+1.2.840.10008.6.1.536
+10002
+Irradiation Event Types
+1.2.840.10008.6.1.537
+10003
+Equipment Plane Identification
+1.2.840.10008.6.1.538
+10004
+Fluoro Modes
+1.2.840.10008.6.1.539
+10006
+X-Ray Filter Materials
+1.2.840.10008.6.1.540
+10007
+X-Ray Filter Types
+1.2.840.10008.6.1.541
+10008
+Dose Related Distance Measurements
+1.2.840.10008.6.1.542
+10009
+Measured/Calculated
+1.2.840.10008.6.1.543
+10010
+Dose Measurement Devices
+1.2.840.10008.6.1.544
+10011
+Effective Dose Evaluation Method
+1.2.840.10008.6.1.545
+10013
+CT Acquisition Type
+1.2.840.10008.6.1.546
+10014
+Contrast Imaging Technique
+1.2.840.10008.6.1.547
+10015
+CT Dose Reference Authorities
+1.2.840.10008.6.1.548
+10016
+Anode Target Material
+1.2.840.10008.6.1.549
+10017
+X-Ray Grid
+1.2.840.10008.6.1.550
+12001
+Ultrasound Protocol Types
+1.2.840.10008.6.1.551
+12002
+Ultrasound Protocol Stage Types
+1.2.840.10008.6.1.552
+12003
+OB-GYN Dates
+1.2.840.10008.6.1.553
+12004
+Fetal Biometry Ratios
+1.2.840.10008.6.1.554
+12005
+Fetal Biometry Measurements
+1.2.840.10008.6.1.555
+12006
+Fetal Long Bones Biometry Measurements
+1.2.840.10008.6.1.556
+12007
+Fetal Cranium
+1.2.840.10008.6.1.557
+12008
+OB-GYN Amniotic Sac
+1.2.840.10008.6.1.558
+12009
+Early Gestation Biometry Measurements
+1.2.840.10008.6.1.559
+12011
+Ultrasound Pelvis and Uterus
+1.2.840.10008.6.1.560
+12012
+OB Equations and Tables
+1.2.840.10008.6.1.561
+12013
+Gestational Age Equations and Tables
+1.2.840.10008.6.1.562
+12014
+OB Fetal Body Weight Equations and Tables
+1.2.840.10008.6.1.563
+12015
+Fetal Growth Equations and Tables
+1.2.840.10008.6.1.564
+12016
+Estimated Fetal Weight Percentile Equations and Tables
+1.2.840.10008.6.1.565
+12017
+Growth Distribution Rank
+1.2.840.10008.6.1.566
+12018
+OB-GYN Summary
+1.2.840.10008.6.1.567
+12019
+OB-GYN Fetus Summary
+1.2.840.10008.6.1.568
+12101
+Vascular Summary
+1.2.840.10008.6.1.569
+12102
+Temporal Periods Relating to Procedure or Therapy
+1.2.840.10008.6.1.570
+12103
+Vascular Ultrasound Anatomic Location
+1.2.840.10008.6.1.571
+12104
+Extracranial Arteries
+1.2.840.10008.6.1.572
+12105
+Intracranial Cerebral Vessels
+1.2.840.10008.6.1.573
+12106
+(unilateral)
+1.2.840.10008.6.1.574
+12107
+Upper Extremity Arteries
+1.2.840.10008.6.1.575
+12108
+Upper Extremity Veins
+1.2.840.10008.6.1.576
+12109
+Lower Extremity Arteries
+1.2.840.10008.6.1.577
+12110
+Lower Extremity Veins
+1.2.840.10008.6.1.578
+12111
+(lateral)
+1.2.840.10008.6.1.579
+12112
+(unilateral)
+1.2.840.10008.6.1.580
+12113
+(lateral)
+1.2.840.10008.6.1.581
+12114
+(unilateral)
+1.2.840.10008.6.1.582
+12115
+Renal Vessels
+1.2.840.10008.6.1.583
+12116
+Vessel Segment Modifiers
+1.2.840.10008.6.1.584
+12117
+Vessel Branch Modifiers
+1.2.840.10008.6.1.585
+12119
+Vascular Ultrasound Property
+1.2.840.10008.6.1.586
+12120
+Blood Velocity Measurements by Ultrasound
+1.2.840.10008.6.1.587
+12121
+Vascular Indices and Ratios
+1.2.840.10008.6.1.588
+12122
+Other Vascular Properties
+1.2.840.10008.6.1.589
+12123
+Carotid Ratios
+1.2.840.10008.6.1.590
+12124
+Renal Ratios
+1.2.840.10008.6.1.591
+12140
+Pelvic Vasculature Anatomical Location
+1.2.840.10008.6.1.592
+12141
+Fetal Vasculature Anatomical Location
+1.2.840.10008.6.1.593
+12200
+Echocardiography Left Ventricle
+1.2.840.10008.6.1.594
+12201
+Left Ventricle Linear
+1.2.840.10008.6.1.595
+12202
+Left Ventricle Volume
+1.2.840.10008.6.1.596
+12203
+Left Ventricle Other
+1.2.840.10008.6.1.597
+12204
+Echocardiography Right Ventricle
+1.2.840.10008.6.1.598
+12205
+Echocardiography Left Atrium
+1.2.840.10008.6.1.599
+12206
+Echocardiography Right Atrium
+1.2.840.10008.6.1.600
+12207
+Echocardiography Mitral Valve
+1.2.840.10008.6.1.601
+12208
+Echocardiography Tricuspid Valve
+1.2.840.10008.6.1.602
+12209
+Echocardiography Pulmonic Valve
+1.2.840.10008.6.1.603
+12210
+Echocardiography Pulmonary Artery
+1.2.840.10008.6.1.604
+12211
+Echocardiography Aortic Valve
+1.2.840.10008.6.1.605
+12212
+Echocardiography Aorta
+1.2.840.10008.6.1.606
+12214
+Echocardiography Pulmonary Veins
+1.2.840.10008.6.1.607
+12215
+Echocardiography Vena Cavae
+1.2.840.10008.6.1.608
+12216
+Echocardiography Hepatic Veins
+1.2.840.10008.6.1.609
+12217
+Echocardiography Cardiac Shunt
+1.2.840.10008.6.1.610
+12218
+Echocardiography Congenital
+1.2.840.10008.6.1.611
+12219
+Pulmonary Vein Modifiers
+1.2.840.10008.6.1.612
+12220
+Echocardiography Common Measurements
+1.2.840.10008.6.1.613
+12221
+Flow Direction
+1.2.840.10008.6.1.614
+12222
+Orifice Flow Properties
+1.2.840.10008.6.1.615
+12223
+Echocardiography Stroke Volume Origin
+1.2.840.10008.6.1.616
+12224
+Ultrasound Image Modes
+1.2.840.10008.6.1.617
+12226
+Echocardiography Image View
+1.2.840.10008.6.1.618
+12227
+Echocardiography Measurement Method
+1.2.840.10008.6.1.619
+12228
+Echocardiography Volume Methods
+1.2.840.10008.6.1.620
+12229
+Echocardiography Area Methods
+1.2.840.10008.6.1.621
+12230
+Gradient Methods
+1.2.840.10008.6.1.622
+12231
+Volume Flow Methods
+1.2.840.10008.6.1.623
+12232
+Myocardium Mass Methods
+1.2.840.10008.6.1.624
+12233
+Cardiac Phase
+1.2.840.10008.6.1.625
+12234
+Respiration State
+1.2.840.10008.6.1.626
+12235
+Mitral Valve Anatomic Sites
+1.2.840.10008.6.1.627
+12236
+Echo Anatomic Sites
+1.2.840.10008.6.1.628
+12237
+Echocardiography Anatomic Site Modifiers
+1.2.840.10008.6.1.629
+12238
+Wall Motion Scoring Schemes
+1.2.840.10008.6.1.630
+12239
+Cardiac Output Properties
+1.2.840.10008.6.1.631
+12240
+Left Ventricle Area
+1.2.840.10008.6.1.632
+12241
+Tricuspid Valve Finding Sites
+1.2.840.10008.6.1.633
+12242
+Aortic Valve Finding Sites
+1.2.840.10008.6.1.634
+12243
+Left Ventricle Finding Sites
+1.2.840.10008.6.1.635
+12244
+Congenital Finding Sites
+1.2.840.10008.6.1.636
+7162
+Surface Processing Algorithm Families
+1.2.840.10008.6.1.637
+3207
+Stress Test Procedure Phases
+1.2.840.10008.6.1.638
+3778
+Stages
+1.2.840.10008.6.1.735
+252
+S-M-L Size Descriptor
+1.2.840.10008.6.1.736
+3016
+Major Coronary Arteries
+1.2.840.10008.6.1.737
+3083
+Units of Radioactivity
+1.2.840.10008.6.1.738
+3102
+Rest-Stress
+1.2.840.10008.6.1.739
+3106
+PET Cardiology Protocols
+1.2.840.10008.6.1.740
+3107
+PET Cardiology Radiopharmaceuticals
+1.2.840.10008.6.1.741
+3108
+NM/PET Procedures
+1.2.840.10008.6.1.742
+3110
+Nuclear Cardiology Protocols
+1.2.840.10008.6.1.743
+3111
+Nuclear Cardiology Radiopharmaceuticals
+1.2.840.10008.6.1.744
+3112
+Attenuation Correction
+1.2.840.10008.6.1.745
+3113
+Types of Perfusion Defects
+1.2.840.10008.6.1.746
+3114
+Study Quality
+1.2.840.10008.6.1.747
+3115
+Stress Imaging Quality Issues
+1.2.840.10008.6.1.748
+3116
+NM Extracardiac Findings
+1.2.840.10008.6.1.749
+3117
+Attenuation Correction Methods
+1.2.840.10008.6.1.750
+3118
+Level of Risk
+1.2.840.10008.6.1.751
+3119
+LV Function
+1.2.840.10008.6.1.752
+3120
+Perfusion Findings
+1.2.840.10008.6.1.753
+3121
+Perfusion Morphology
+1.2.840.10008.6.1.754
+3122
+Ventricular Enlargement
+1.2.840.10008.6.1.755
+3200
+Stress Test Procedure
+1.2.840.10008.6.1.756
+3201
+Indications for Stress Test
+1.2.840.10008.6.1.757
+3202
+Chest Pain
+1.2.840.10008.6.1.758
+3203
+Exerciser Device
+1.2.840.10008.6.1.759
+3204
+Stress Agents
+1.2.840.10008.6.1.760
+3205
+Indications for Pharmacological Stress Test
+1.2.840.10008.6.1.761
+3206
+Non-invasive Cardiac Imaging Procedures
+1.2.840.10008.6.1.763
+3208
+Summary Codes Exercise ECG
+1.2.840.10008.6.1.764
+3209
+Summary Codes Stress Imaging
+1.2.840.10008.6.1.765
+3210
+Speed of Response
+1.2.840.10008.6.1.766
+3211
+BP Response
+1.2.840.10008.6.1.767
+3212
+Treadmill Speed
+1.2.840.10008.6.1.768
+3213
+Stress Hemodynamic Findings
+1.2.840.10008.6.1.769
+3215
+Perfusion Finding Method
+1.2.840.10008.6.1.770
+3217
+Comparison Finding
+1.2.840.10008.6.1.771
+3220
+Stress Symptoms
+1.2.840.10008.6.1.772
+3221
+Stress Test Termination Reasons
+1.2.840.10008.6.1.773
+3227
+QTc Measurements
+1.2.840.10008.6.1.774
+3228
+ECG Timing Measurements
+1.2.840.10008.6.1.775
+3229
+ECG Axis Measurements
+1.2.840.10008.6.1.776
+3230
+ECG Findings
+1.2.840.10008.6.1.777
+3231
+ST Segment Findings
+1.2.840.10008.6.1.778
+3232
+ST Segment Location
+1.2.840.10008.6.1.779
+3233
+ST Segment Morphology
+1.2.840.10008.6.1.780
+3234
+Ectopic Beat Morphology
+1.2.840.10008.6.1.781
+3235
+Perfusion Comparison Findings
+1.2.840.10008.6.1.782
+3236
+Tolerance Comparison Findings
+1.2.840.10008.6.1.783
+3237
+Wall Motion Comparison Findings
+1.2.840.10008.6.1.784
+3238
+Stress Scoring Scales
+1.2.840.10008.6.1.785
+3239
+Perceived Exertion Scales
+1.2.840.10008.6.1.786
+3463
+Ventricle Identification
+1.2.840.10008.6.1.787
+6200
+Colon Overall Assessment
+1.2.840.10008.6.1.788
+6201
+Colon Finding or Feature
+1.2.840.10008.6.1.789
+6202
+Colon Finding or Feature Modifier
+1.2.840.10008.6.1.790
+6203
+Colon Non-Lesion Object Type
+1.2.840.10008.6.1.791
+6204
+Anatomic Non-Colon Findings
+1.2.840.10008.6.1.792
+6205
+Clockface Location for Colon
+1.2.840.10008.6.1.793
+6206
+Recumbent Patient Orientation for Colon
+1.2.840.10008.6.1.794
+6207
+Colon Quantitative Temporal Difference Type
+1.2.840.10008.6.1.795
+6208
+Colon Types of Quality Control Standard
+1.2.840.10008.6.1.796
+6209
+Colon Morphology Descriptor
+1.2.840.10008.6.1.797
+6210
+Location in Intestinal Tract
+1.2.840.10008.6.1.798
+6211
+Attenuation Coefficient Descriptors
+1.2.840.10008.6.1.799
+6212
+Calculated Value for Colon Findings
+1.2.840.10008.6.1.800
+4214
+Ophthalmic Horizontal Directions
+1.2.840.10008.6.1.801
+4215
+Ophthalmic Vertical Directions
+1.2.840.10008.6.1.802
+4216
+Ophthalmic Visual Acuity Type
+1.2.840.10008.6.1.803
+3004
+Arterial Pulse Waveform
+1.2.840.10008.6.1.804
+3005
+Respiration Waveform
+1.2.840.10008.6.1.805
+12030
+Ultrasound Contrast/Bolus Agents
+1.2.840.10008.6.1.806
+12031
+Protocol Interval Events
+1.2.840.10008.6.1.807
+12032
+Transducer Scan Pattern
+1.2.840.10008.6.1.808
+12033
+Ultrasound Transducer Geometry
+1.2.840.10008.6.1.809
+12034
+Ultrasound Transducer Beam Steering
+1.2.840.10008.6.1.810
+12035
+Ultrasound Transducer Application
+1.2.840.10008.6.1.811
+50
+Instance Availability Status
+1.2.840.10008.6.1.812
+9301
+Modality PPS Discontinuation Reasons
+1.2.840.10008.6.1.813
+9302
+Media Import PPS Discontinuation Reasons
+1.2.840.10008.6.1.814
+7482
+DX Anatomy Imaged for Animals
+1.2.840.10008.6.1.815
+7483
+Common Anatomic Regions for Animals
+1.2.840.10008.6.1.816
+7484
+DX View for Animals
+1.2.840.10008.6.1.817
+7030
+Institutional Departments, Units and Services
+1.2.840.10008.6.1.818
+7009
+Purpose Of Reference to Predecessor Report
+1.2.840.10008.6.1.819
+4220
+Visual Fixation Quality During Acquisition
+1.2.840.10008.6.1.820
+4221
+Visual Fixation Quality Problem
+1.2.840.10008.6.1.821
+4222
+Ophthalmic Macular Grid Problem
+1.2.840.10008.6.1.822
+5002
+Organizations
+1.2.840.10008.6.1.823
+7486
+Mixed Breeds
+1.2.840.10008.6.1.824
+7040
+Broselow-Luten Pediatric Size Categories
+1.2.840.10008.6.1.825
+7042
+Calcium Scoring Patient Size Categories
+1.2.840.10008.6.1.826
+12245
+Cardiac Ultrasound Report Titles
+1.2.840.10008.6.1.827
+12246
+Cardiac Ultrasound Indication for Study
+1.2.840.10008.6.1.828
+12247
+Pediatric, Fetal and Congenital Cardiac Surgical Interventions
+1.2.840.10008.6.1.829
+12248
+Cardiac Ultrasound Summary Codes
+1.2.840.10008.6.1.830
+12249
+Cardiac Ultrasound Fetal Summary Codes
+1.2.840.10008.6.1.831
+12250
+Cardiac Ultrasound Common Linear Measurements
+1.2.840.10008.6.1.832
+12251
+Cardiac Ultrasound Linear Valve Measurements
+1.2.840.10008.6.1.833
+12252
+Cardiac Ultrasound Cardiac Function
+1.2.840.10008.6.1.834
+12253
+Cardiac Ultrasound Area Measurements
+1.2.840.10008.6.1.835
+12254
+Cardiac Ultrasound Hemodynamic Measurements
+1.2.840.10008.6.1.836
+12255
+Cardiac Ultrasound Myocardium Measurements
+1.2.840.10008.6.1.837
+12256
+Cardiac Ultrasound Common Linear Flow Measurements
+1.2.840.10008.6.1.838
+12257
+Cardiac Ultrasound Left Ventricle
+1.2.840.10008.6.1.839
+12258
+Cardiac Ultrasound Right Ventricle
+1.2.840.10008.6.1.840
+12259
+Cardiac Ultrasound Ventricles Measurements
+1.2.840.10008.6.1.841
+12260
+Cardiac Ultrasound Pulmonary Artery
+1.2.840.10008.6.1.842
+12261
+Cardiac Ultrasound Pulmonary Vein
+1.2.840.10008.6.1.843
+12262
+Cardiac Ultrasound Pulmonary Valve
+1.2.840.10008.6.1.844
+12263
+Cardiac Ultrasound Venous Return Pulmonary Measurements
+1.2.840.10008.6.1.845
+12264
+Cardiac Ultrasound Venous Return Systemic Measurements
+1.2.840.10008.6.1.846
+12265
+Cardiac Ultrasound Atria and Atrial Septum Measurements
+1.2.840.10008.6.1.847
+12266
+Cardiac Ultrasound Mitral Valve
+1.2.840.10008.6.1.848
+12267
+Cardiac Ultrasound Tricuspid Valve
+1.2.840.10008.6.1.849
+12268
+Cardiac Ultrasound Atrioventricular Valves Measurements
+1.2.840.10008.6.1.850
+12269
+Cardiac Ultrasound Interventricular Septum Measurements
+1.2.840.10008.6.1.851
+12270
+Cardiac Ultrasound Aortic Valve
+1.2.840.10008.6.1.852
+12271
+Cardiac Ultrasound Outflow Tracts Measurements
+1.2.840.10008.6.1.853
+12272
+Cardiac Ultrasound Semilunar Valves, Annulus and Sinuses Measurements
+1.2.840.10008.6.1.854
+12273
+Cardiac Ultrasound Aortic Sinotubular Junction
+1.2.840.10008.6.1.855
+12274
+Cardiac Ultrasound Aorta Measurements
+1.2.840.10008.6.1.856
+12275
+Cardiac Ultrasound Coronary Arteries Measurements
+1.2.840.10008.6.1.857
+12276
+Cardiac Ultrasound Aorto Pulmonary Connections Measurements
+1.2.840.10008.6.1.858
+12277
+Cardiac Ultrasound Pericardium and Pleura Measurements
+1.2.840.10008.6.1.859
+12279
+Cardiac Ultrasound Fetal General Measurements
+1.2.840.10008.6.1.860
+12280
+Cardiac Ultrasound Target Sites
+1.2.840.10008.6.1.861
+12281
+Cardiac Ultrasound Target Site Modifiers
+1.2.840.10008.6.1.862
+12282
+Cardiac Ultrasound Venous Return Systemic Finding Sites
+1.2.840.10008.6.1.863
+12283
+Cardiac Ultrasound Venous Return Pulmonary Finding Sites
+1.2.840.10008.6.1.864
+12284
+Cardiac Ultrasound Atria and Atrial Septum Finding Sites
+1.2.840.10008.6.1.865
+12285
+Cardiac Ultrasound Atrioventricular Valves Findiing Sites
+1.2.840.10008.6.1.866
+12286
+Cardiac Ultrasound Interventricular Septum Finding Sites
+1.2.840.10008.6.1.867
+12287
+Cardiac Ultrasound Ventricles Finding Sites
+1.2.840.10008.6.1.868
+12288
+Cardiac Ultrasound Outflow Tracts Finding Sites
+1.2.840.10008.6.1.869
+12289
+Cardiac Ultrasound Semilunar Valves, Annulus and Sinuses Finding Sites
+1.2.840.10008.6.1.870
+12290
+Cardiac Ultrasound Pulmonary Arteries Finding Sites
+1.2.840.10008.6.1.871
+12291
+Cardiac Ultrasound Aorta Finding Sites
+1.2.840.10008.6.1.872
+12292
+Cardiac Ultrasound Coronary Arteries Finding Sites
+1.2.840.10008.6.1.873
+12293
+Cardiac Ultrasound Aorto Pulmonary Connections Finding Sites
+1.2.840.10008.6.1.874
+12294
+Cardiac Ultrasound Pericardium and Pleura Finding Sites
+1.2.840.10008.6.1.876
+4230
+Ophthalmic Ultrasound Axial Measurements Type
+1.2.840.10008.6.1.877
+4231
+Lens Status
+1.2.840.10008.6.1.878
+4232
+Vitreous Status
+1.2.840.10008.6.1.879
+4233
+Ophthalmic Axial Length Measurements Segment Names
+1.2.840.10008.6.1.880
+4234
+Refractive Surgery Types
+1.2.840.10008.6.1.881
+4235
+Keratometry Descriptors
+1.2.840.10008.6.1.882
+4236
+IOL Calculation Formula
+1.2.840.10008.6.1.883
+4237
+Lens Constant Type
+1.2.840.10008.6.1.884
+4238
+Refractive Error Types
+1.2.840.10008.6.1.885
+4239
+Anterior Chamber Depth Definition
+1.2.840.10008.6.1.886
+4240
+Ophthalmic Measurement or Calculation Data Source
+1.2.840.10008.6.1.887
+4241
+Ophthalmic Axial Length Selection Method
+1.2.840.10008.6.1.888
+
+
+1.2.840.10008.6.1.889
+4243
+Ophthalmic Axial Length Quality Metric Type
+1.2.840.10008.6.1.890
+4244
+Ophthalmic Agent Concentration Units
+1.2.840.10008.6.1.891
+91
+Functional condition present during acquisition
+1.2.840.10008.6.1.892
+92
+Joint position during acquisition
+1.2.840.10008.6.1.893
+93
+Joint positioning method
+1.2.840.10008.6.1.894
+94
+Physical force applied during acquisition
+1.2.840.10008.6.1.895
+3690
+ECG Control Variables Numeric
+1.2.840.10008.6.1.896
+3691
+ECG Control Variables Text
+1.2.840.10008.6.1.897
+8120
+WSI Referenced Image Purposes of Reference
+1.2.840.10008.6.1.898
+8121
+WSI Microscopy Lens Type
+1.2.840.10008.6.1.899
+8122
+Microscopy Illuminator and Sensor Color
+1.2.840.10008.6.1.900
+8123
+Microscopy Illumination Method
+1.2.840.10008.6.1.901
+8124
+Microscopy Filter
+1.2.840.10008.6.1.902
+8125
+Microscopy Illuminator Type
+1.2.840.10008.6.1.903
+400
+Audit Event ID
+1.2.840.10008.6.1.904
+401
+Audit Event Type Code
+1.2.840.10008.6.1.905
+402
+Audit Active Participant Role ID Code
+1.2.840.10008.6.1.906
+403
+Security Alert Type Code
+1.2.840.10008.6.1.907
+404
+Audit Participant Object ID Type Code
+1.2.840.10008.6.1.908
+405
+Media Type Code
+1.2.840.10008.6.1.909
+4250
+Visual Field Static Perimetry Test Patterns
+1.2.840.10008.6.1.910
+4251
+Visual Field Static Perimetry Test Strategies
+1.2.840.10008.6.1.911
+4252
+Visual Field Static Perimetry Screening Test Modes
+1.2.840.10008.6.1.912
+4253
+Visual Field Static Perimetry Fixation Strategy
+1.2.840.10008.6.1.913
+4254
+Visual Field Static Perimetry Test Analysis Results
+1.2.840.10008.6.1.914
+4255
+Visual Field Illumination Color
+1.2.840.10008.6.1.915
+4256
+Visual Field Procedure Modifier
+1.2.840.10008.6.1.916
+4257
+Visual Field Global Index Name
+1.2.840.10008.6.1.917
+7180
+Abstract Multi-Dimensional Image Model Component Semantics
+1.2.840.10008.6.1.918
+7181
+Abstract Multi-Dimensional Image Model Component Units
+1.2.840.10008.6.1.919
+7182
+Abstract Multi-Dimensional Image Model Dimension Semantics
+1.2.840.10008.6.1.920
+7183
+Abstract Multi-Dimensional Image Model Dimension Units
+1.2.840.10008.6.1.921
+7184
+Abstract Multi-Dimensional Image Model Axis Direction
+1.2.840.10008.6.1.922
+7185
+Abstract Multi-Dimensional Image Model Axis Orientation
+1.2.840.10008.6.1.923
+7186
+Abstract Multi-Dimensional Image Model Qualitative Dimension Sample Semantics
+1.2.840.10008.6.1.924
+7320
+Planning Methods
+1.2.840.10008.6.1.925
+7050
+De-identification Method
+1.2.840.10008.6.1.926
+12118
+Measurement Orientation
+1.2.840.10008.6.1.927
+3689
+ECG Global Waveform Durations
+1.2.840.10008.6.1.930
+3692
+ICDs
+1.2.840.10008.6.1.931
+9241
+Radiotherapy General Workitem Definition
+1.2.840.10008.6.1.932
+9242
+Radiotherapy Acquisition Workitem Definition
+1.2.840.10008.6.1.933
+9243
+Radiotherapy Registration Workitem Definition
+1.2.840.10008.6.1.934
+3850
+Intravascular OCT Flush Agent
+1.2.840.10008.6.1.935
+10022
+Label Types
+1.2.840.10008.6.1.936
+4260
+Ophthalmic Mapping Units for Real World Value Mapping
+1.2.840.10008.6.1.937
+4261
+Ophthalmic Mapping Acquisition Method
+1.2.840.10008.6.1.938
+4262
+Retinal Thickness Definition
+1.2.840.10008.6.1.939
+4263
+Ophthalmic Thickness Map Value Type
+1.2.840.10008.6.1.940
+4264
+Ophthalmic Map Purposes of Reference
+1.2.840.10008.6.1.941
+4265
+Ophthalmic Thickness Deviation Categories
+1.2.840.10008.6.1.942
+4266
+Ophthalmic Anatomic Structure Reference Point
+1.2.840.10008.6.1.943
+3104
+Cardiac Synchronization Technique
+1.2.840.10008.6.1.944
+8130
+Staining Protocols
+1.2.840.10008.6.1.945
+4053
+CTDI Phantom Devices
+1.2.840.10008.6.1.946
+4054
+Quality Control Subjects
+1.2.840.10008.6.1.947
+10023
+Size Specific Dose Estimation Method for CT
+1.2.840.10008.6.1.948
+8131
+Pathology Imaging Protocols
+1.2.840.10008.6.1.949
+8132
+Magnification Selection
+1.2.840.10008.6.1.950
+8133
+Tissue Selection
+1.2.840.10008.6.1.951
+7464
+General Region of Interest Measurements
+1.2.840.10008.6.1.952
+7465
+Measurements Derived From Multiple ROI Measurements
+1.2.840.10008.6.1.953
+8201
+Surface Scan Acquisition Types
+1.2.840.10008.6.1.954
+8202
+Surface Scan Mode Types
+1.2.840.10008.6.1.956
+8203
+Surface Scan Registration Method Types
+1.2.840.10008.6.1.957
+27
+Basic Cardiac Views
+1.2.840.10008.6.1.958
+10033
+CT Reconstruction Algorithm
+1.2.840.10008.6.1.959
+10030
+Detector Types
+1.2.840.10008.6.1.960
+10031
+CR/DR Mechanical Configuration
+1.2.840.10008.6.1.961
+10032
+Projection X-Ray Acquisition Device Types
+1.2.840.10008.6.1.962
+7165
+Abstract Segmentation Types
+1.2.840.10008.6.1.963
+7166
+Common Tissue Segmentation Types
+1.2.840.10008.6.1.964
+7167
+Peripheral Nervous System Segmentation Types
+1.2.840.10008.6.1.965
+4267
+Corneal Topography Mapping Units for Real World Value Mapping
+1.2.840.10008.6.1.966
+4268
+Corneal Topography Map Value Type
+1.2.840.10008.6.1.967
+7140

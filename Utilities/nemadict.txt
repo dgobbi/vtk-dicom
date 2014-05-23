@@ -160,7 +160,7 @@ ReferencedTransferSyntaxUIDInFile
 UI
 1
 
-(0004,151a)
+(0004,151A)
 Referenced Related General SOP Class UID in File
 ReferencedRelatedGeneralSOPClassUIDInFile
 UI
@@ -218,6 +218,12 @@ TM
 Instance Creator UID
 InstanceCreatorUID
 UI
+1
+
+(0008,0015)
+Instance Coercion DateTime
+InstanceCoercionDateTime
+DT
 1
 
 (0008,0016)
@@ -358,6 +364,12 @@ QueryRetrieveLevel
 CS
 1
 
+(0008,0053)
+Query/Retrieve View
+QueryRetrieveView
+CS
+1
+
 (0008,0054)
 Retrieve AE Title
 RetrieveAETitle
@@ -460,6 +472,12 @@ CodeValue
 SH
 1
 
+(0008,0101)
+Extended Code Value
+ExtendedCodeValue
+LO
+1
+DICOS
 (0008,0102)
 Coding Scheme Designator
 CodingSchemeDesignator
@@ -496,6 +514,12 @@ ContextGroupLocalVersion
 DT
 1
 
+(0008,0108)
+Extended Code Meaning
+ExtendedCodeMeaning
+LT
+1
+DICOS
 (0008,010B)
 Context Group Extension Flag
 ContextGroupExtensionFlag
@@ -797,15 +821,27 @@ SQ
 1
 
 (0008,1167)
-Multi-Frame Source SOP Instance UID
+Multi-frame Source SOP Instance UID
 MultiFrameSourceSOPInstanceUID
 UI
+1
+
+(0008,1190)
+Retrieve URL
+RetrieveURL
+UT
 1
 
 (0008,1195)
 Transaction UID
 TransactionUID
 UI
+1
+
+(0008,1196)
+Warning Reason
+WarningReason
+US
 1
 
 (0008,1197)
@@ -1082,7 +1118,7 @@ SQ
 Irradiation Event UID
 IrradiationEventUID
 UI
-1
+1-n
 
 (0008,4000)
 Identifying Comments
@@ -1255,6 +1291,18 @@ SQ
 (0010,0102)
 Patient's Primary Language Modifier Code Sequence
 PatientPrimaryLanguageModifierCodeSequence
+SQ
+1
+
+(0010,0200)
+Quality Control Subject
+QualityControlSubject
+CS
+1
+
+(0010,0201)
+Quality Control Subject Type Code Sequence
+QualityControlSubjectTypeCodeSequence
 SQ
 1
 
@@ -1623,757 +1671,907 @@ CAD File Format
 CADFileFormat
 ST
 1-n
-
+RET
 (0014,0024)
 Component Reference System
 ComponentReferenceSystem
 ST
 1-n
-
+RET
 (0014,0025)
 Component Manufacturing Procedure
 ComponentManufacturingProcedure
 ST
 1-n
-
+DICONDE
 (0014,0028)
 Component Manufacturer
 ComponentManufacturer
 ST
 1-n
-
+DICONDE
 (0014,0030)
 Material Thickness
 MaterialThickness
 DS
 1-n
-
+DICONDE
 (0014,0032)
 Material Pipe Diameter
 MaterialPipeDiameter
 DS
 1-n
-
+DICONDE
 (0014,0034)
 Material Isolation Diameter
 MaterialIsolationDiameter
 DS
 1-n
-
+DICONDE
 (0014,0042)
 Material Grade
 MaterialGrade
 ST
 1-n
-
+DICONDE
 (0014,0044)
-Material Properties File ID
-MaterialPropertiesFileID
+Material Properties Description
+MaterialPropertiesDescription
 ST
 1-n
-
+DICONDE
 (0014,0045)
-Material Properties File Format
-MaterialPropertiesFileFormat
+Material Properties File Format (Retired)
+MaterialPropertiesFileFormatRetired
 ST
 1-n
-
+RET
 (0014,0046)
 Material Notes
 MaterialNotes
 LT
 1
-
+DICONDE
 (0014,0050)
 Component Shape
 ComponentShape
 CS
 1
-
+DICONDE
 (0014,0052)
 Curvature Type
 CurvatureType
 CS
 1
-
+DICONDE
 (0014,0054)
 Outer Diameter
 OuterDiameter
 DS
 1
-
+DICONDE
 (0014,0056)
 Inner Diameter
 InnerDiameter
 DS
 1
-
+DICONDE
 (0014,1010)
 Actual Environmental Conditions
 ActualEnvironmentalConditions
 ST
 1
-
+DICONDE
 (0014,1020)
 Expiry Date
 ExpiryDate
 DA
 1
-
+DICONDE
 (0014,1040)
 Environmental Conditions
 EnvironmentalConditions
 ST
 1
-
+DICONDE
 (0014,2002)
 Evaluator Sequence
 EvaluatorSequence
 SQ
 1
-
+DICONDE
 (0014,2004)
 Evaluator Number
 EvaluatorNumber
 IS
 1
-
+DICONDE
 (0014,2006)
 Evaluator Name
 EvaluatorName
 PN
 1
-
+DICONDE
 (0014,2008)
 Evaluation Attempt
 EvaluationAttempt
 IS
 1
-
+DICONDE
 (0014,2012)
 Indication Sequence
 IndicationSequence
 SQ
 1
-
+DICONDE
 (0014,2014)
 Indication Number
 IndicationNumber
 IS
 1
-
+DICONDE
 (0014,2016)
 Indication Label
 IndicationLabel
 SH
 1
-
+DICONDE
 (0014,2018)
 Indication Description
 IndicationDescription
 ST
 1
-
+DICONDE
 (0014,201A)
 Indication Type
 IndicationType
 CS
 1-n
-
+DICONDE
 (0014,201C)
 Indication Disposition
 IndicationDisposition
 CS
 1
-
+DICONDE
 (0014,201E)
 Indication ROI Sequence
 IndicationROISequence
 SQ
 1
-
+DICONDE
 (0014,2030)
 Indication Physical Property Sequence
 IndicationPhysicalPropertySequence
 SQ
 1
-
+DICONDE
 (0014,2032)
 Property Label
 PropertyLabel
 SH
 1
-
+DICONDE
 (0014,2202)
 Coordinate System Number of Axes
 CoordinateSystemNumberOfAxes
 IS
 1
-
+DICONDE
 (0014,2204)
 Coordinate System Axes Sequence
 CoordinateSystemAxesSequence
 SQ
 1
-
+DICONDE
 (0014,2206)
 Coordinate System Axis Description
 CoordinateSystemAxisDescription
 ST
 1
-
+DICONDE
 (0014,2208)
 Coordinate System Data Set Mapping
 CoordinateSystemDataSetMapping
 CS
 1
-
+DICONDE
 (0014,220A)
 Coordinate System Axis Number
 CoordinateSystemAxisNumber
 IS
 1
-
+DICONDE
 (0014,220C)
 Coordinate System Axis Type
 CoordinateSystemAxisType
 CS
 1
-
+DICONDE
 (0014,220E)
 Coordinate System Axis Units
 CoordinateSystemAxisUnits
 CS
 1
-
+DICONDE
 (0014,2210)
 Coordinate System Axis Values
 CoordinateSystemAxisValues
 OB
 1
-
+DICONDE
 (0014,2220)
 Coordinate System Transform Sequence
 CoordinateSystemTransformSequence
 SQ
 1
-
+DICONDE
 (0014,2222)
 Transform Description
 TransformDescription
 ST
 1
-
+DICONDE
 (0014,2224)
 Transform Number of Axes
 TransformNumberOfAxes
 IS
 1
-
+DICONDE
 (0014,2226)
 Transform Order of Axes
 TransformOrderOfAxes
 IS
 1-n
-
+DICONDE
 (0014,2228)
 Transformed Axis Units
 TransformedAxisUnits
 CS
 1
-
+DICONDE
 (0014,222A)
 Coordinate System Transform Rotation and Scale Matrix
 CoordinateSystemTransformRotationAndScaleMatrix
 DS
 1-n
-
+DICONDE
 (0014,222C)
 Coordinate System Transform Translation Matrix
 CoordinateSystemTransformTranslationMatrix
 DS
 1-n
-
+DICONDE
 (0014,3011)
 Internal Detector Frame Time
 InternalDetectorFrameTime
 DS
 1
-
+DICONDE
 (0014,3012)
 Number of Frames Integrated
 NumberOfFramesIntegrated
 DS
 1
-
+DICONDE
 (0014,3020)
 Detector Temperature Sequence
 DetectorTemperatureSequence
 SQ
 1
-
+DICONDE
 (0014,3022)
 Sensor Name
 SensorName
-DS
+ST
 1
-
+DICONDE
 (0014,3024)
 Horizontal Offset of Sensor
 HorizontalOffsetOfSensor
 DS
 1
-
+DICONDE
 (0014,3026)
 Vertical Offset of Sensor
 VerticalOffsetOfSensor
 DS
 1
-
+DICONDE
 (0014,3028)
 Sensor Temperature
 SensorTemperature
 DS
 1
-
+DICONDE
 (0014,3040)
 Dark Current Sequence
 DarkCurrentSequence
 SQ
 1
-
+DICONDE
 (0014,3050)
 Dark Current Counts
 DarkCurrentCounts
 OB or OW
 1
-
+DICONDE
 (0014,3060)
 Gain Correction Reference Sequence
 GainCorrectionReferenceSequence
 SQ
 1
-
+DICONDE
 (0014,3070)
 Air Counts
 AirCounts
 OB or OW
 1
-
+DICONDE
 (0014,3071)
 KV Used in Gain Calibration
 KVUsedInGainCalibration
 DS
 1
-
+DICONDE
 (0014,3072)
 MA Used in Gain Calibration
 MAUsedInGainCalibration
 DS
 1
-
+DICONDE
 (0014,3073)
 Number of Frames Used for Integration
 NumberOfFramesUsedForIntegration
 DS
 1
-
+DICONDE
 (0014,3074)
 Filter Material Used in Gain Calibration
 FilterMaterialUsedInGainCalibration
 LO
 1
-
+DICONDE
 (0014,3075)
 Filter Thickness Used in Gain Calibration
 FilterThicknessUsedInGainCalibration
 DS
 1
-
+DICONDE
 (0014,3076)
 Date of Gain Calibration
 DateOfGainCalibration
 DA
 1
-
+DICONDE
 (0014,3077)
 Time of Gain Calibration
 TimeOfGainCalibration
 TM
 1
-
+DICONDE
 (0014,3080)
 Bad Pixel Image
 BadPixelImage
 OB
 1
-
+DICONDE
 (0014,3099)
 Calibration Notes
 CalibrationNotes
 LT
 1
-
+DICONDE
 (0014,4002)
 Pulser Equipment Sequence
 PulserEquipmentSequence
 SQ
 1
-
+DICONDE
 (0014,4004)
 Pulser Type
 PulserType
 CS
 1
-
+DICONDE
 (0014,4006)
 Pulser Notes
 PulserNotes
 LT
 1
-
+DICONDE
 (0014,4008)
 Receiver Equipment Sequence
 ReceiverEquipmentSequence
 SQ
 1
-
+DICONDE
 (0014,400A)
 Amplifier Type
 AmplifierType
 CS
 1
-
+DICONDE
 (0014,400C)
 Receiver Notes
 ReceiverNotes
 LT
 1
-
+DICONDE
 (0014,400E)
 Pre-Amplifier Equipment Sequence
 PreAmplifierEquipmentSequence
 SQ
 1
-
+DICONDE
 (0014,400F)
 Pre-Amplifier Notes
 PreAmplifierNotes
 LT
 1
-
+DICONDE
 (0014,4010)
 Transmit Transducer Sequence
 TransmitTransducerSequence
 SQ
 1
-
+DICONDE
 (0014,4011)
 Receive Transducer Sequence
 ReceiveTransducerSequence
 SQ
 1
-
+DICONDE
 (0014,4012)
 Number of Elements
 NumberOfElements
 US
 1
-
+DICONDE
 (0014,4013)
 Element Shape
 ElementShape
 CS
 1
-
+DICONDE
 (0014,4014)
 Element Dimension A
 ElementDimensionA
 DS
 1
-
+DICONDE
 (0014,4015)
 Element Dimension B
 ElementDimensionB
 DS
 1
-
+DICONDE
 (0014,4016)
-Element Pitch
-ElementPitch
+Element Pitch A
+ElementPitchA
 DS
 1
-
+DICONDE
 (0014,4017)
 Measured Beam Dimension A
 MeasuredBeamDimensionA
 DS
 1
-
+DICONDE
 (0014,4018)
 Measured Beam Dimension B
 MeasuredBeamDimensionB
 DS
 1
-
+DICONDE
 (0014,4019)
 Location of Measured Beam Diameter
 LocationOfMeasuredBeamDiameter
 DS
 1
-
+DICONDE
 (0014,401A)
 Nominal Frequency
 NominalFrequency
 DS
 1
-
+DICONDE
 (0014,401B)
 Measured Center Frequency
 MeasuredCenterFrequency
 DS
 1
-
+DICONDE
 (0014,401C)
 Measured Bandwidth
 MeasuredBandwidth
 DS
 1
-
+DICONDE
+(0014,401D)
+Element Pitch B
+ElementPitchB
+DS
+1
+DICONDE
 (0014,4020)
 Pulser Settings Sequence
 PulserSettingsSequence
 SQ
 1
-
+DICONDE
 (0014,4022)
 Pulse Width
 PulseWidth
 DS
 1
-
+DICONDE
 (0014,4024)
 Excitation Frequency
 ExcitationFrequency
 DS
 1
-
+DICONDE
 (0014,4026)
 Modulation Type
 ModulationType
 CS
 1
-
+DICONDE
 (0014,4028)
 Damping
 Damping
 DS
 1
-
+DICONDE
 (0014,4030)
 Receiver Settings Sequence
 ReceiverSettingsSequence
 SQ
 1
-
+DICONDE
 (0014,4031)
 Acquired Soundpath Length
 AcquiredSoundpathLength
 DS
 1
-
+DICONDE
 (0014,4032)
 Acquisition Compression Type
 AcquisitionCompressionType
 CS
 1
-
+DICONDE
 (0014,4033)
 Acquisition Sample Size
 AcquisitionSampleSize
 IS
 1
-
+DICONDE
 (0014,4034)
 Rectifier Smoothing
 RectifierSmoothing
 DS
 1
-
+DICONDE
 (0014,4035)
 DAC Sequence
 DACSequence
 SQ
 1
-
+DICONDE
 (0014,4036)
 DAC Type
 DACType
 CS
 1
-
+DICONDE
 (0014,4038)
 DAC Gain Points
 DACGainPoints
 DS
 1-n
-
+DICONDE
 (0014,403A)
 DAC Time Points
 DACTimePoints
 DS
 1-n
-
+DICONDE
 (0014,403C)
 DAC Amplitude
 DACAmplitude
 DS
 1-n
-
+DICONDE
 (0014,4040)
 Pre-Amplifier Settings Sequence
 PreAmplifierSettingsSequence
 SQ
 1
-
+DICONDE
 (0014,4050)
 Transmit Transducer Settings Sequence
 TransmitTransducerSettingsSequence
 SQ
 1
-
+DICONDE
 (0014,4051)
 Receive Transducer Settings Sequence
 ReceiveTransducerSettingsSequence
 SQ
 1
-
+DICONDE
 (0014,4052)
 Incident Angle
 IncidentAngle
 DS
 1
-
+DICONDE
 (0014,4054)
 Coupling Technique
 CouplingTechnique
 ST
 1
-
+DICONDE
 (0014,4056)
 Coupling Medium
 CouplingMedium
 ST
 1
-
+DICONDE
 (0014,4057)
 Coupling Velocity
 CouplingVelocity
 DS
 1
-
+DICONDE
 (0014,4058)
-Crystal Center Location X
-CrystalCenterLocationX
+Probe Center Location X
+ProbeCenterLocationX
 DS
 1
-
+DICONDE
 (0014,4059)
-Crystal Center Location Z
-CrystalCenterLocationZ
+Probe Center Location Z
+ProbeCenterLocationZ
 DS
 1
-
+DICONDE
 (0014,405A)
 Sound Path Length
 SoundPathLength
 DS
 1
-
+DICONDE
 (0014,405C)
 Delay Law Identifier
 DelayLawIdentifier
 ST
 1
-
+DICONDE
 (0014,4060)
 Gate Settings Sequence
 GateSettingsSequence
 SQ
 1
-
+DICONDE
 (0014,4062)
 Gate Threshold
 GateThreshold
 DS
 1
-
+DICONDE
 (0014,4064)
 Velocity of Sound
 VelocityOfSound
 DS
 1
-
+DICONDE
 (0014,4070)
 Calibration Settings Sequence
 CalibrationSettingsSequence
 SQ
 1
-
+DICONDE
 (0014,4072)
 Calibration Procedure
 CalibrationProcedure
 ST
 1
-
+DICONDE
 (0014,4074)
 Procedure Version
 ProcedureVersion
 SH
 1
-
+DICONDE
 (0014,4076)
 Procedure Creation Date
 ProcedureCreationDate
 DA
 1
-
+DICONDE
 (0014,4078)
 Procedure Expiration Date
 ProcedureExpirationDate
 DA
 1
-
+DICONDE
 (0014,407A)
 Procedure Last Modified Date
 ProcedureLastModifiedDate
 DA
 1
-
+DICONDE
 (0014,407C)
 Calibration Time
 CalibrationTime
 TM
 1-n
-
+DICONDE
 (0014,407E)
 Calibration Date
 CalibrationDate
 DA
 1-n
-
+DICONDE
+(0014,4080)
+Probe Drive Equipment Sequence
+ProbeDriveEquipmentSequence
+SQ
+1
+DICONDE
+(0014,4081)
+Drive Type
+DriveType
+CS
+1
+DICONDE
+(0014,4082)
+Probe Drive Notes
+ProbeDriveNotes
+LT
+1
+DICONDE
+(0014,4083)
+Drive Probe Sequence
+DriveProbeSequence
+SQ
+1
+DICONDE
+(0014,4084)
+Probe Inductance
+ProbeInductance
+DS
+1
+DICONDE
+(0014,4085)
+Probe Resistance
+ProbeResistance
+DS
+1
+DICONDE
+(0014,4086)
+Receive Probe Sequence
+ReceiveProbeSequence
+SQ
+1
+DICONDE
+(0014,4087)
+Probe Drive Settings Sequence
+ProbeDriveSettingsSequence
+SQ
+1
+DICONDE
+(0014,4088)
+Bridge Resistors
+BridgeResistors
+DS
+1
+DICONDE
+(0014,4089)
+Probe Orientation Angle
+ProbeOrientationAngle
+DS
+1
+DICONDE
+(0014,408B)
+User Selected Gain Y
+UserSelectedGainY
+DS
+1
+DICONDE
+(0014,408C)
+User Selected Phase
+UserSelectedPhase
+DS
+1
+DICONDE
+(0014,408D)
+User Selected Offset X
+UserSelectedOffsetX
+DS
+1
+DICONDE
+(0014,408E)
+User Selected Offset Y
+UserSelectedOffsetY
+DS
+1
+DICONDE
+(0014,4091)
+Channel Settings Sequence
+ChannelSettingsSequence
+SQ
+1
+DICONDE
+(0014,4092)
+Channel Threshold
+ChannelThreshold
+DS
+1
+DICONDE
+(0014,409A)
+Scanner Settings Sequence
+ScannerSettingsSequence
+SQ
+1
+DICONDE
+(0014,409B)
+Scan Procedure
+ScanProcedure
+ST
+1
+DICONDE
+(0014,409C)
+Translation Rate X
+TranslationRateX
+DS
+1
+DICONDE
+(0014,409D)
+Translation Rate Y
+TranslationRateY
+DS
+1
+DICONDE
+(0014,409F)
+Channel Overlap
+ChannelOverlap
+DS
+1
+DICONDE
+(0014,40A0)
+Image Quality Indicator Type
+ImageQualityIndicatorType
+LO
+1
+DICONDE
+(0014,40A1)
+Image Quality Indicator Material
+ImageQualityIndicatorMaterial
+LO
+1
+DICONDE
+(0014,40A2)
+Image Quality Indicator Size
+ImageQualityIndicatorSize
+LO
+1
+DICONDE
 (0014,5002)
 LINAC Energy
 LINACEnergy
 IS
 1
-
+DICONDE
 (0014,5004)
 LINAC Output
 LINACOutput
 IS
 1
-
+DICONDE
 (0018,0010)
 Contrast/Bolus Agent
 ContrastBolusAgent
@@ -3358,6 +3556,12 @@ CompressionForce
 DS
 1
 
+(0018,11A4)
+Paddle Description
+PaddleDescription
+LO
+1
+
 (0018,1200)
 Date of Last Calibration
 DateOfLastCalibration
@@ -3812,6 +4016,42 @@ CS
 Rotation of Scanned Film
 RotationOfScannedFilm
 DS
+1
+
+(0018,2041)
+Biopsy Target Sequence
+BiopsyTargetSequence
+SQ
+1
+
+(0018,2042)
+Target UID
+TargetUID
+UI
+1
+
+(0018,2043)
+Localizing Cursor Position
+LocalizingCursorPosition
+FL
+2
+
+(0018,2044)
+Calculated Target Position
+CalculatedTargetPosition
+FL
+3
+
+(0018,2045)
+Target Label
+TargetLabel
+SH
+1
+
+(0018,2046)
+Displayed Z Value
+DisplayedZValue
+FL
 1
 
 (0018,3100)
@@ -5423,8 +5663,8 @@ CS
 1
 
 (0018,925A)
-ASL Crusher Flow
-ASLCrusherFlow
+ASL Crusher Flow Limit
+ASLCrusherFlowLimit
 FD
 1
 
@@ -6509,8 +6749,8 @@ SQ
 1
 
 (0018,9804)
-Exclusion Start Datetime
-ExclusionStartDatetime
+Exclusion Start DateTime
+ExclusionStartDateTime
 DT
 1
 
@@ -6574,6 +6814,12 @@ TransducerApplicationCodeSequence
 SQ
 1
 
+(0018,9810)
+Zero Velocity Pixel Value
+ZeroVelocityPixelValue
+US or SS
+1
+
 (0018,A001)
 Contributing Equipment Sequence
 ContributingEquipmentSequence
@@ -6581,7 +6827,7 @@ SQ
 1
 
 (0018,A002)
-Contribution Date Time
+Contribution DateTime
 ContributionDateTime
 DT
 1
@@ -6880,7 +7126,7 @@ NumberOfSeriesRelatedInstances
 IS
 1
 
-(0020,3100 to 31FF)
+(0020,31xx)
 Source Image IDs
 SourceImageIDs
 CS
@@ -7058,6 +7304,24 @@ AT
 Functional Group Pointer
 FunctionalGroupPointer
 AT
+1
+
+(0020,9170)
+Unassigned Shared Converted Attributes Sequence
+UnassignedSharedConvertedAttributesSequence
+SQ
+1
+
+(0020,9171)
+Unassigned Per-Frame Converted Attributes Sequence
+UnassignedPerFrameConvertedAttributesSequence
+SQ
+1
+
+(0020,9172)
+Conversion Source Attributes Sequence
+ConversionSourceAttributesSequence
+SQ
 1
 
 (0020,9213)
@@ -7600,10 +7864,22 @@ OphthalmicAxialMeasurementsLeftEyeSequence
 SQ
 1
 
+(0022,1009)
+Ophthalmic Axial Measurements Device Type
+OphthalmicAxialMeasurementsDeviceType
+CS
+1
+
 (0022,1010)
 Ophthalmic Axial Length Measurements Type
 OphthalmicAxialLengthMeasurementsType
 CS
+1
+
+(0022,1012)
+Ophthalmic Axial Length Sequence
+OphthalmicAxialLengthSequence
+SQ
 1
 
 (0022,1019)
@@ -7667,8 +7943,8 @@ SQ
 1
 
 (0022,1044)
-Ophthalmic Ultrasound Axial Measurements Type Code Sequence
-OphthalmicUltrasoundAxialMeasurementsTypeCodeSequence
+Ophthalmic Ultrasound Method Code Sequence
+OphthalmicUltrasoundMethodCodeSequence
 SQ
 1
 
@@ -7731,11 +8007,23 @@ Lens Constant Description
 LensConstantDescription
 LO
 1
+RET
+(0022,1095)
+Implant Name
+ImplantName
+LO
+1
 
 (0022,1096)
 Keratometry Measurement Type Code Sequence
 KeratometryMeasurementTypeCodeSequence
 SQ
+1
+
+(0022,1097)
+Implant Part Number
+ImplantPartNumber
+LO
 1
 
 (0022,1100)
@@ -7774,6 +8062,18 @@ AnteriorChamberDepthDefinitionCodeSequence
 SQ
 1
 
+(0022,1127)
+Lens Thickness Sequence
+LensThicknessSequence
+SQ
+1
+
+(0022,1128)
+Anterior Chamber Depth Sequence
+AnteriorChamberDepthSequence
+SQ
+1
+
 (0022,1130)
 Lens Thickness
 LensThickness
@@ -7798,9 +8098,15 @@ SourceOfAnteriorChamberDepthDataCodeSequence
 SQ
 1
 
+(0022,1134)
+Source of Refractive Measurements Sequence
+SourceOfRefractiveMeasurementsSequence
+SQ
+1
+
 (0022,1135)
-Source of Refractive Error Data Code Sequence
-SourceOfRefractiveErrorDataCodeSequence
+Source of Refractive Measurements Code Sequence
+SourceOfRefractiveMeasurementsCodeSequence
 SQ
 1
 
@@ -7821,7 +8127,7 @@ Ophthalmic Axial Length Acquisition Method Code Sequence
 OphthalmicAxialLengthAcquisitionMethodCodeSequence
 SQ
 1
-
+RET
 (0022,1155)
 Signal to Noise Ratio
 SignalToNoiseRatio
@@ -7900,12 +8206,18 @@ OphthalmicAxialLengthQualityMetricSequence
 SQ
 1
 
+(0022,1265)
+Ophthalmic Axial Length Quality Metric Type Code Sequence
+OphthalmicAxialLengthQualityMetricTypeCodeSequence
+SQ
+1
+RET
 (0022,1273)
-Ophthalmic Axial  Length Quality Metric Type Description
+Ophthalmic Axial Length Quality Metric Type Description
 OphthalmicAxialLengthQualityMetricTypeDescription
 LO
 1
-
+RET
 (0022,1300)
 Intraocular Lens Calculations Right Eye Sequence
 IntraocularLensCalculationsRightEyeSequence
@@ -7921,6 +8233,114 @@ SQ
 (0022,1330)
 Referenced Ophthalmic Axial Length Measurement QC Image Sequence
 ReferencedOphthalmicAxialLengthMeasurementQCImageSequence
+SQ
+1
+
+(0022,1415)
+Ophthalmic Mapping Device Type
+OphthalmicMappingDeviceType
+CS
+1
+
+(0022,1420)
+Acquisition Method Code Sequence
+AcquisitionMethodCodeSequence
+SQ
+1
+
+(0022,1423)
+Acquisition Method Algorithm Sequence
+AcquisitionMethodAlgorithmSequence
+SQ
+1
+
+(0022,1436)
+Ophthalmic Thickness Map Type Code Sequence
+OphthalmicThicknessMapTypeCodeSequence
+SQ
+1
+
+(0022,1443)
+Ophthalmic Thickness Mapping Normals Sequence
+OphthalmicThicknessMappingNormalsSequence
+SQ
+1
+
+(0022,1445)
+Retinal Thickness Definition Code Sequence
+RetinalThicknessDefinitionCodeSequence
+SQ
+1
+
+(0022,1450)
+Pixel Value Mapping to Coded Concept Sequence
+PixelValueMappingToCodedConceptSequence
+SQ
+1
+
+(0022,1452)
+Mapped Pixel Value
+MappedPixelValue
+US or SS
+1
+
+(0022,1454)
+Pixel Value Mapping Explanation
+PixelValueMappingExplanation
+LO
+1
+
+(0022,1458)
+Ophthalmic Thickness Map Quality Threshold Sequence
+OphthalmicThicknessMapQualityThresholdSequence
+SQ
+1
+
+(0022,1460)
+Ophthalmic Thickness Map Threshold Quality Rating
+OphthalmicThicknessMapThresholdQualityRating
+FL
+1
+
+(0022,1463)
+Anatomic Structure Reference Point
+AnatomicStructureReferencePoint
+FL
+2
+
+(0022,1465)
+Registration to Localizer Sequence
+RegistrationToLocalizerSequence
+SQ
+1
+
+(0022,1466)
+Registered Localizer Units
+RegisteredLocalizerUnits
+CS
+1
+
+(0022,1467)
+Registered Localizer Top Left Hand Corner
+RegisteredLocalizerTopLeftHandCorner
+FL
+2
+
+(0022,1468)
+Registered Localizer Bottom Right Hand Corner
+RegisteredLocalizerBottomRightHandCorner
+FL
+2
+
+(0022,1470)
+Ophthalmic Thickness Map Quality Rating Sequence
+OphthalmicThicknessMapQualityRatingSequence
+SQ
+1
+
+(0022,1472)
+Relevant OPT Attributes Sequence
+RelevantOPTAttributesSequence
 SQ
 1
 
@@ -8177,8 +8597,8 @@ SQ
 1
 
 (0024,0068)
-Localized Deviation from Normal
-LocalizedDeviationfromNormal
+Localized Deviation From Normal
+LocalizedDeviationFromNormal
 FL
 1
 
@@ -8878,6 +9298,12 @@ LongitudinalTemporalInformationModified
 CS
 1
 
+(0028,0304)
+Referenced Color Palette Instance UID
+ReferencedColorPaletteInstanceUID
+UI
+1
+
 (0028,0400)
 Transform Label
 TransformLabel
@@ -9119,7 +9545,7 @@ US or SS
 3
 
 (0028,1104)
-Alpha Palette Color Lookup Table Descriptor
+Alpha Palette ColorLookup Table Descriptor
 AlphaPaletteColorLookupTableDescriptor
 US
 3
@@ -9151,8 +9577,8 @@ UI
 (0028,1200)
 Gray Lookup Table Data
 GrayLookupTableData
-OW or US or SS
-1 1-n
+US or SS or OW
+1-n or 1
 RET
 (0028,1201)
 Red Palette Color Lookup Table Data
@@ -9385,8 +9811,8 @@ LO
 (0028,3006)
 LUT Data
 LUTData
-OW or US
-1 1-n
+US or OW
+1-n or 1
 
 (0028,3010)
 VOI LUT Sequence
@@ -10949,13 +11375,13 @@ TM
 1
 
 (0040,2006)
-Placer Order Number / Imaging Service Request (Retired)
+Placer Order Number Imaging Service Request (Retired)
 PlacerOrderNumberImagingServiceRequestRetired
 SH
 1
 RET
 (0040,2007)
-Filler Order Number / Imaging Service Request (Retired)
+Filler Order Number Imaging Service Request (Retired)
 FillerOrderNumberImagingServiceRequestRetired
 SH
 1
@@ -11007,37 +11433,37 @@ General Purpose Scheduled Procedure Step Status
 GeneralPurposeScheduledProcedureStepStatus
 CS
 1
-
+RET
 (0040,4002)
 General Purpose Performed Procedure Step Status
 GeneralPurposePerformedProcedureStepStatus
 CS
 1
-
+RET
 (0040,4003)
 General Purpose Scheduled Procedure Step Priority
 GeneralPurposeScheduledProcedureStepPriority
 CS
 1
-
+RET
 (0040,4004)
 Scheduled Processing Applications Code Sequence
 ScheduledProcessingApplicationsCodeSequence
 SQ
 1
-
+RET
 (0040,4005)
 Scheduled Procedure Step Start DateTime
 ScheduledProcedureStepStartDateTime
 DT
 1
-
+RET
 (0040,4006)
 Multiple Copies Flag
 MultipleCopiesFlag
 CS
 1
-
+RET
 (0040,4007)
 Performed Processing Applications Code Sequence
 PerformedProcessingApplicationsCodeSequence
@@ -11051,13 +11477,13 @@ SQ
 1
 
 (0040,4010)
-Scheduled Procedure Step Modification Date Time
+Scheduled Procedure Step Modification DateTime
 ScheduledProcedureStepModificationDateTime
 DT
 1
 
 (0040,4011)
-Expected Completion Date Time
+Expected Completion DateTime
 ExpectedCompletionDateTime
 DT
 1
@@ -11067,13 +11493,13 @@ Resulting General Purpose Performed Procedure Steps Sequence
 ResultingGeneralPurposePerformedProcedureStepsSequence
 SQ
 1
-
+RET
 (0040,4016)
 Referenced General Purpose Scheduled Procedure Step Sequence
 ReferencedGeneralPurposeScheduledProcedureStepSequence
 SQ
 1
-
+RET
 (0040,4018)
 Scheduled Workitem Code Sequence
 ScheduledWorkitemCodeSequence
@@ -11103,13 +11529,13 @@ Relevant Information Sequence
 RelevantInformationSequence
 SQ
 1
-
+RET
 (0040,4023)
 Referenced General Purpose Scheduled Procedure Step Transaction UID
 ReferencedGeneralPurposeScheduledProcedureStepTransactionUID
 UI
 1
-
+RET
 (0040,4025)
 Scheduled Station Name Code Sequence
 ScheduledStationNameCodeSequence
@@ -11151,13 +11577,13 @@ Requested Subsequent Workitem Code Sequence
 RequestedSubsequentWorkitemCodeSequence
 SQ
 1
-
+RET
 (0040,4032)
 Non-DICOM Output Code Sequence
 NonDICOMOutputCodeSequence
 SQ
 1
-
+RET
 (0040,4033)
 Output Information Sequence
 OutputInformationSequence
@@ -11339,13 +11765,13 @@ SQ
 1
 RET
 (0040,A030)
-Verification Date Time
+Verification DateTime
 VerificationDateTime
 DT
 1
 
 (0040,A032)
-Observation Date Time
+Observation DateTime
 ObservationDateTime
 DT
 1
@@ -11584,6 +12010,24 @@ TextValue
 UT
 1
 
+(0040,A161)
+Floating Point Value
+FloatingPointValue
+FD
+1-n
+
+(0040,A162)
+Rational Numerator Value
+RationalNumeratorValue
+SL
+1-n
+
+(0040,A163)
+Rational Denominator Value
+RationalDenominatorValue
+UL
+1-n
+
 (0040,A167)
 Observation Category Code Sequence (Trial)
 ObservationCategoryCodeSequenceTrial
@@ -11609,11 +12053,11 @@ SQ
 1
 
 (0040,A171)
-Observation UID (Trial)
-ObservationUIDTrial
+Observation UID
+ObservationUID
 UI
 1
-RET
+
 (0040,A172)
 Referenced Observation UID (Trial)
 ReferencedObservationUIDTrial
@@ -12442,6 +12886,186 @@ CylinderPower
 FD
 1
 
+(0046,0201)
+Corneal Topography Surface
+CornealTopographySurface
+CS
+1
+
+(0046,0202)
+Corneal Vertex Location
+CornealVertexLocation
+FL
+2
+
+(0046,0203)
+Pupil Centroid X-Coordinate
+PupilCentroidXCoordinate
+FL
+1
+
+(0046,0204)
+Pupil Centroid Y-Coordinate
+PupilCentroidYCoordinate
+FL
+1
+
+(0046,0205)
+Equivalent Pupil Radius
+EquivalentPupilRadius
+FL
+1
+
+(0046,0207)
+Corneal Topography Map Type Code Sequence
+CornealTopographyMapTypeCodeSequence
+SQ
+1
+
+(0046,0208)
+Vertices of the Outline of Pupil
+VerticesOfTheOutlineOfPupil
+IS
+2-2n
+
+(0046,0210)
+Corneal Topography Mapping Normals Sequence
+CornealTopographyMappingNormalsSequence
+SQ
+1
+
+(0046,0211)
+Maximum Corneal Curvature Sequence
+MaximumCornealCurvatureSequence
+SQ
+1
+
+(0046,0212)
+Maximum Corneal Curvature
+MaximumCornealCurvature
+FL
+1
+
+(0046,0213)
+Maximum Corneal Curvature Location
+MaximumCornealCurvatureLocation
+FL
+2
+
+(0046,0215)
+Minimum Keratometric Sequence
+MinimumKeratometricSequence
+SQ
+1
+
+(0046,0218)
+Simulated Keratometric Cylinder Sequence
+SimulatedKeratometricCylinderSequence
+SQ
+1
+
+(0046,0220)
+Average Corneal Power
+AverageCornealPower
+FL
+1
+
+(0046,0224)
+Corneal I-S Value
+CornealISValue
+FL
+1
+
+(0046,0227)
+Analyzed Area
+AnalyzedArea
+FL
+1
+
+(0046,0230)
+Surface Regularity Index
+SurfaceRegularityIndex
+FL
+1
+
+(0046,0232)
+Surface Asymmetry Index
+SurfaceAsymmetryIndex
+FL
+1
+
+(0046,0234)
+Corneal Eccentricity Index
+CornealEccentricityIndex
+FL
+1
+
+(0046,0236)
+Keratoconus Prediction Index
+KeratoconusPredictionIndex
+FL
+1
+
+(0046,0238)
+Decimal Potential Visual Acuity
+DecimalPotentialVisualAcuity
+FL
+1
+
+(0046,0242)
+Corneal Topography Map Quality Evaluation
+CornealTopographyMapQualityEvaluation
+CS
+1
+
+(0046,0244)
+Source Image Corneal Processed Data Sequence
+SourceImageCornealProcessedDataSequence
+SQ
+1
+
+(0046,0247)
+Corneal Point Location
+CornealPointLocation
+FL
+3
+
+(0046,0248)
+Corneal Point Estimated
+CornealPointEstimated
+CS
+1
+
+(0046,0249)
+Axial Power
+AxialPower
+FL
+1
+
+(0046,0250)
+Tangential Power
+TangentialPower
+FL
+1
+
+(0046,0251)
+Refractive Power
+RefractivePower
+FL
+1
+
+(0046,0252)
+Relative Elevation
+RelativeElevation
+FL
+1
+
+(0046,0253)
+Corneal Wavefront
+CornealWavefront
+FL
+1
+
 (0048,0001)
 Imaged Volume Width
 ImagedVolumeWidth
@@ -12611,14 +13235,14 @@ SQ
 1
 
 (0048,021E)
-Row Position In Total Image Pixel Matrix
-RowPositionInTotalImagePixelMatrix
+Column Position In Total Image Pixel Matrix
+ColumnPositionInTotalImagePixelMatrix
 SL
 1
 
 (0048,021F)
-Column Position In Total Image Pixel Matrix
-ColumnPositionInTotalImagePixelMatrix
+Row Position In Total Image Pixel Matrix
+RowPositionInTotalImagePixelMatrix
 SL
 1
 
@@ -12864,7 +13488,7 @@ US
 
 (0052,0038)
 Number of Padded A-lines
-NumberOfPaddedAlines
+NumberOfPaddedALines
 US
 1
 
@@ -12880,7 +13504,7 @@ RefractiveIndexApplied
 CS
 1
 
- (0054,0010)
+(0054,0010)
 Energy Window Vector
 EnergyWindowVector
 US
@@ -13492,6 +14116,18 @@ SegmentationFractionalType
 CS
 1
 
+(0062,0011)
+Segmented Property Type Modifier Code Sequence
+SegmentedPropertyTypeModifierCodeSequence
+SQ
+1
+
+(0062,0012)
+Used Segments Sequence
+UsedSegmentsSequence
+SQ
+1
+
 (0064,0002)
 Deformable Registration Sequence
 DeformableRegistrationSequence
@@ -13808,6 +14444,18 @@ SQ
 Algorithm Name
 AlgorithmName
 LO
+1
+
+(0066,0037)
+Recommended Point Radius
+RecommendedPointRadius
+FL
+1
+
+(0066,0038)
+Recommended Line Thickness
+RecommendedLineThickness
+FL
 1
 
 (0068,6210)
@@ -15586,6 +16234,12 @@ BeamOrderIndexTrial
 IS
 1
 RET
+(0074,1025)
+Autosequence Flag
+AutosequenceFlag
+CS
+1
+
 (0074,1026)
 Table Top Vertical Adjusted Position
 TableTopVerticalAdjustedPosition
@@ -16102,6 +16756,84 @@ ImplantTemplateGroupVariationDimensionRank
 US
 1
 
+(0080,0001)
+Surface Scan Acquisition Type Code Sequence
+SurfaceScanAcquisitionTypeCodeSequence
+SQ
+1
+
+(0080,0002)
+Surface Scan Mode Code Sequence
+SurfaceScanModeCodeSequence
+SQ
+1
+
+(0080,0003)
+Registration Method Code Sequence
+RegistrationMethodCodeSequence
+SQ
+1
+
+(0080,0004)
+Shot Duration Time
+ShotDurationTime
+FD
+1
+
+(0080,0005)
+Shot Offset Time
+ShotOffsetTime
+FD
+1
+
+(0080,0006)
+Surface Point Presentation Value Data
+SurfacePointPresentationValueData
+US
+1-n
+
+(0080,0007)
+Surface Point Color CIELab Value Data
+SurfacePointColorCIELabValueData
+US
+3-3n
+
+(0080,0008)
+UV Mapping Sequence
+UVMappingSequence
+SQ
+1
+
+(0080,0009)
+Texture Label
+TextureLabel
+SH
+1
+
+(0080,0010)
+U Value Data
+UValueData
+OF
+1-n
+
+(0080,0011)
+V Value Data
+VValueData
+OF
+1-n
+
+(0080,0012)
+Referenced Texture Sequence
+ReferencedTextureSequence
+SQ
+1
+
+(0080,0013)
+Referenced Surface Data Sequence
+ReferencedSurfaceDataSequence
+SQ
+1
+
 (0088,0130)
 Storage Media File-set ID
 StorageMediaFileSetID
@@ -16475,7 +17207,7 @@ SQ
 1
 
 (2000,0510)
-Referenced Stored Print  Sequence
+Referenced Stored Print Sequence
 ReferencedStoredPrintSequence
 SQ
 1
@@ -16799,7 +17531,7 @@ CS
 1
 
 (2050,0500)
-Referenced Presentation  LUT Sequence
+Referenced Presentation LUT Sequence
 ReferencedPresentationLUTSequence
 SQ
 1
@@ -17224,6 +17956,12 @@ DoseType
 CS
 1
 
+(3004,0005)
+Spatial Transform of Dose
+SpatialTransformOfDose
+CS
+1
+
 (3004,0006)
 Dose Comment
 DoseComment
@@ -17395,6 +18133,12 @@ SQ
 (3006,0016)
 Contour Image Sequence
 ContourImageSequence
+SQ
+1
+
+(3006,0018)
+Predecessor Structure Set Sequence
+PredecessorStructureSetSequence
 SQ
 1
 
@@ -17613,19 +18357,19 @@ Frame of Reference Relationship Sequence
 FrameOfReferenceRelationshipSequence
 SQ
 1
-
+RET
 (3006,00C2)
 Related Frame of Reference UID
 RelatedFrameOfReferenceUID
 UI
 1
-
+RET
 (3006,00C4)
 Frame of Reference Transformation Type
 FrameOfReferenceTransformationType
 CS
 1
-
+RET
 (3006,00C6)
 Frame of Reference Transformation Matrix
 FrameOfReferenceTransformationMatrix
@@ -18531,16 +19275,46 @@ Beam Dose Point Depth
 BeamDosePointDepth
 FL
 1
-
+RET
 (300A,0089)
 Beam Dose Point Equivalent Depth
 BeamDosePointEquivalentDepth
 FL
 1
-
+RET
 (300A,008A)
 Beam Dose Point SSD
 BeamDosePointSSD
+FL
+1
+RET
+(300A,008B)
+Beam Dose Meaning
+BeamDoseMeaning
+CS
+1
+
+(300A,008C)
+Beam Dose Verification Control Point Sequence
+BeamDoseVerificationControlPointSequence
+SQ
+1
+
+(300A,008D)
+Average Beam Dose Point Depth
+AverageBeamDosePointDepth
+FL
+1
+
+(300A,008E)
+Average Beam Dose Point Equivalent Depth
+AverageBeamDosePointEquivalentDepth
+FL
+1
+
+(300A,008F)
+Average Beam Dose Point SSD
+AverageBeamDosePointSSD
 FL
 1
 
@@ -18854,6 +19628,12 @@ IS
 Compensator Type
 CompensatorType
 CS
+1
+
+(300A,00EF)
+Compensator Tray ID
+CompensatorTrayID
+SH
 1
 
 (300A,00F0)
@@ -19406,6 +20186,18 @@ DS
 Active Source Length
 ActiveSourceLength
 DS
+1
+
+(300A,021B)
+Source Model ID
+SourceModelID
+SH
+1
+
+(300A,021C)
+Source Description
+SourceDescription
+LO
 1
 
 (300A,0222)
@@ -20212,6 +21004,12 @@ GeneralAccessoryNumber
 IS
 1
 
+(300A,0425)
+Source to General Accessory Distance
+SourceToGeneralAccessoryDistance
+FL
+1
+
 (300A,0431)
 Applicator Geometry Sequence
 ApplicatorGeometrySequence
@@ -20643,415 +21441,517 @@ Low Energy Detectors
 LowEnergyDetectors
 CS
 1
-
+DICOS
 (4010,0002)
 High Energy Detectors
 HighEnergyDetectors
 CS
 1
-
+DICOS
 (4010,0004)
 Detector Geometry Sequence
 DetectorGeometrySequence
 SQ
 1
-
+DICOS
 (4010,1001)
 Threat ROI Voxel Sequence
 ThreatROIVoxelSequence
 SQ
 1
-
+DICOS
 (4010,1004)
 Threat ROI Base
 ThreatROIBase
 FL
 3
-
+DICOS
 (4010,1005)
 Threat ROI Extents
 ThreatROIExtents
 FL
 3
-
+DICOS
 (4010,1006)
 Threat ROI Bitmap
 ThreatROIBitmap
 OB
 1
-
+DICOS
 (4010,1007)
 Route Segment ID
 RouteSegmentID
 SH
 1
-
+DICOS
 (4010,1008)
 Gantry Type
 GantryType
 CS
 1
-
+DICOS
 (4010,1009)
 OOI Owner Type
 OOIOwnerType
 CS
 1
-
+DICOS
 (4010,100A)
 Route Segment Sequence
 RouteSegmentSequence
 SQ
 1
-
+DICOS
 (4010,1010)
 Potential Threat Object ID
 PotentialThreatObjectID
 US
 1
-
+DICOS
 (4010,1011)
 Threat Sequence
 ThreatSequence
 SQ
 1
-
+DICOS
 (4010,1012)
 Threat Category
 ThreatCategory
 CS
 1
-
+DICOS
 (4010,1013)
 Threat Category Description
 ThreatCategoryDescription
 LT
 1
-
+DICOS
 (4010,1014)
 ATD Ability Assessment
 ATDAbilityAssessment
 CS
 1
-
+DICOS
 (4010,1015)
 ATD Assessment Flag
 ATDAssessmentFlag
 CS
 1
-
+DICOS
 (4010,1016)
 ATD Assessment Probability
 ATDAssessmentProbability
 FL
 1
-
+DICOS
 (4010,1017)
 Mass
 Mass
 FL
 1
-
+DICOS
 (4010,1018)
 Density
 Density
 FL
 1
-
+DICOS
 (4010,1019)
 Z Effective
 ZEffective
 FL
 1
-
+DICOS
 (4010,101A)
 Boarding Pass ID
 BoardingPassID
 SH
 1
-
+DICOS
 (4010,101B)
 Center of Mass
 CenterOfMass
 FL
 3
-
+DICOS
 (4010,101C)
 Center of PTO
 CenterOfPTO
 FL
 3
-
+DICOS
 (4010,101D)
 Bounding Polygon
 BoundingPolygon
 FL
 6-n
-
+DICOS
 (4010,101E)
 Route Segment Start Location ID
 RouteSegmentStartLocationID
 SH
 1
-
+DICOS
 (4010,101F)
 Route Segment End Location ID
 RouteSegmentEndLocationID
 SH
 1
-
+DICOS
 (4010,1020)
 Route Segment Location ID Type
 RouteSegmentLocationIDType
 CS
 1
-
+DICOS
 (4010,1021)
 Abort Reason
 AbortReason
 CS
 1-n
-
+DICOS
 (4010,1023)
 Volume of PTO
 VolumeOfPTO
 FL
 1
-
+DICOS
 (4010,1024)
 Abort Flag
 AbortFlag
 CS
 1
-
+DICOS
 (4010,1025)
 Route Segment Start Time
 RouteSegmentStartTime
 DT
 1
-
+DICOS
 (4010,1026)
 Route Segment End Time
 RouteSegmentEndTime
 DT
 1
-
+DICOS
 (4010,1027)
 TDR Type
 TDRType
 CS
 1
-
+DICOS
 (4010,1028)
 International Route Segment
 InternationalRouteSegment
 CS
 1
-
+DICOS
 (4010,1029)
 Threat Detection Algorithm and Version
 ThreatDetectionAlgorithmandVersion
 LO
 1-n
-
+DICOS
 (4010,102A)
 Assigned Location
 AssignedLocation
 SH
 1
-
+DICOS
 (4010,102B)
 Alarm Decision Time
 AlarmDecisionTime
 DT
 1
-
+DICOS
 (4010,1031)
 Alarm Decision
 AlarmDecision
 CS
 1
-
+DICOS
 (4010,1033)
 Number of Total Objects
 NumberOfTotalObjects
 US
 1
-
+DICOS
 (4010,1034)
 Number of Alarm Objects
 NumberOfAlarmObjects
 US
 1
-
+DICOS
 (4010,1037)
 PTO Representation Sequence
 PTORepresentationSequence
 SQ
 1
-
+DICOS
 (4010,1038)
 ATD Assessment Sequence
 ATDAssessmentSequence
 SQ
 1
-
+DICOS
 (4010,1039)
 TIP Type
 TIPType
 CS
 1
-
+DICOS
 (4010,103A)
 DICOS Version
 DICOSVersion
 CS
 1
-
+DICOS
 (4010,1041)
 OOI Owner Creation Time
 OOIOwnerCreationTime
 DT
 1
-
+DICOS
 (4010,1042)
 OOI Type
 OOIType
 CS
 1
-
+DICOS
 (4010,1043)
 OOI Size
 OOISize
 FL
 3
-
+DICOS
 (4010,1044)
 Acquisition Status
 AcquisitionStatus
 CS
 1
-
+DICOS
 (4010,1045)
 Basis Materials Code Sequence
 BasisMaterialsCodeSequence
 SQ
 1
-
+DICOS
 (4010,1046)
 Phantom Type
 PhantomType
 CS
 1
-
+DICOS
 (4010,1047)
 OOI Owner Sequence
 OOIOwnerSequence
 SQ
 1
-
+DICOS
 (4010,1048)
 Scan Type
 ScanType
 CS
 1
-
+DICOS
 (4010,1051)
 Itinerary ID
 ItineraryID
 LO
 1
-
+DICOS
 (4010,1052)
 Itinerary ID Type
 ItineraryIDType
 SH
 1
-
+DICOS
 (4010,1053)
 Itinerary ID Assigning Authority
 ItineraryIDAssigningAuthority
 LO
 1
-
+DICOS
 (4010,1054)
 Route ID
 RouteID
 SH
 1
-
+DICOS
 (4010,1055)
 Route ID Assigning Authority
 RouteIDAssigningAuthority
 SH
 1
-
+DICOS
 (4010,1056)
-Inbound  Arrival Type
+Inbound Arrival Type
 InboundArrivalType
 CS
 1
-
+DICOS
 (4010,1058)
 Carrier ID
 CarrierID
 SH
 1
-
+DICOS
 (4010,1059)
 Carrier ID Assigning Authority
 CarrierIDAssigningAuthority
 CS
 1
-
+DICOS
 (4010,1060)
 Source Orientation
 SourceOrientation
 FL
 3
-
+DICOS
 (4010,1061)
 Source Position
 SourcePosition
 FL
 3
-
+DICOS
 (4010,1062)
 Belt Height
 BeltHeight
 FL
 1
-
+DICOS
 (4010,1064)
 Algorithm Routing Code Sequence
 AlgorithmRoutingCodeSequence
 SQ
 1
-
+DICOS
 (4010,1067)
 Transport Classification
 TransportClassification
 CS
 1
-
+DICOS
 (4010,1068)
 OOI Type Descriptor
 OOITypeDescriptor
 LT
 1
-
+DICOS
 (4010,1069)
 Total Processing Time
 TotalProcessingTime
 FL
 1
-
+DICOS
 (4010,106C)
 Detector Calibration Data
 DetectorCalibrationData
 OB
 1
-
+DICOS
+(4010,106D)
+Additional Screening Performed
+AdditionalScreeningPerformed
+CS
+1
+DICOS
+(4010,106E)
+Additional Inspection Selection Criteria
+AdditionalInspectionSelectionCriteria
+CS
+1
+DICOS
+(4010,106F)
+Additional Inspection Method Sequence
+AdditionalInspectionMethodSequence
+SQ
+1
+DICOS
+(4010,1070)
+AIT Device Type
+AITDeviceType
+CS
+1
+DICOS
+(4010,1071)
+QR Measurements Sequence
+QRMeasurementsSequence
+SQ
+1
+DICOS
+(4010,1072)
+Target Material Sequence
+TargetMaterialSequence
+SQ
+1
+DICOS
+(4010,1073)
+SNR Threshold
+SNRThreshold
+FD
+1
+DICOS
+(4010,1075)
+Image Scale Representation
+ImageScaleRepresentation
+DS
+1
+DICOS
+(4010,1076)
+Referenced PTO Sequence
+ReferencedPTOSequence
+SQ
+1
+DICOS
+(4010,1077)
+Referenced TDR Instance Sequence
+ReferencedTDRInstanceSequence
+SQ
+1
+DICOS
+(4010,1078)
+PTO Location Description
+PTOLocationDescription
+ST
+1
+DICOS
+(4010,1079)
+Anomaly Locator Indicator Sequence
+AnomalyLocatorIndicatorSequence
+SQ
+1
+DICOS
+(4010,107A)
+Anomaly Locator Indicator
+AnomalyLocatorIndicator
+FL
+3
+DICOS
+(4010,107B)
+PTO Region Sequence
+PTORegionSequence
+SQ
+1
+DICOS
+(4010,107C)
+Inspection Selection Criteria
+InspectionSelectionCriteria
+CS
+1
+DICOS
+(4010,107D)
+Secondary Inspection Method Sequence
+SecondaryInspectionMethodSequence
+SQ
+1
+DICOS
+(4010,107E)
+PRCS to RCS Orientation
+PRCSToRCSOrientation
+DS
+6
+DICOS
 (4FFE,0001)
 MAC Parameters Sequence
 MACParametersSequence
@@ -21181,7 +22081,7 @@ RET
 (50xx,200C)
 Audio Sample Data
 AudioSampleData
-OW or OB
+OB or OW
 1
 RET
 (50xx,200E)
@@ -21211,7 +22111,7 @@ RET
 (50xx,3000)
 Curve Data
 CurveData
-OW or OB
+OB or OW
 1
 RET
 (5200,9229)
@@ -21523,7 +22423,7 @@ RET
 (7FE0,0010)
 Pixel Data
 PixelData
-OW or OB
+OB or OW
 1
 
 (7FE0,0020)
@@ -21547,7 +22447,7 @@ RET
 (7Fxx,0010)
 Variable Pixel Data
 VariablePixelData
-OW or OB
+OB or OW
 1
 RET
 (7Fxx,0011)
