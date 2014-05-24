@@ -126,7 +126,10 @@ size_t vtkDICOMFile::Read(char *data, size_t len)
     }
   return n;
 #else
-  return fread(data, 1, len, static_cast<FILE *>(this->Handle));
+  size_t n = fread(data, 1, len, static_cast<FILE *>(this->Handle));
+  this->Eof = (feof(static_cast<FILE *>(this->Handle)) != 0);
+  this->Error = (ferror(static_cast<FILE *>(this->Handle)) == 0 ? Good : Bad);
+  return n;
 #endif
 }
 
@@ -149,7 +152,9 @@ size_t vtkDICOMFile::Write(const char *data, size_t len)
     }
   return n;
 #else
-  return fwrite(data, 1, len, static_cast<FILE *>(this->Handle));
+  size_t n = fwrite(data, 1, len, static_cast<FILE *>(this->Handle));
+  this->Error = (ferror(static_cast<FILE *>(this->Handle)) == 0 ? Good : Bad);
+  return n;
 #endif
 }
 

@@ -22,6 +22,11 @@
 #endif
 
 //! A class that provides basic input/output operations.
+/*!
+ *  The purpose of this class is to centralize all of the I/O operations.
+ *  It is intended to use system-level I/O calls so that it can eventually
+ *  be used not only on files, but on sockets as well.
+ */
 class VTK_DICOM_EXPORT vtkDICOMFile
 {
 public:
