@@ -99,7 +99,11 @@ void vtkDICOMFile::Close()
     this->Handle = 0;
     }
 #else
-  fclose(static_cast<FILE *>(this->Handle));
+  if (this->Handle)
+    {
+    fclose(static_cast<FILE *>(this->Handle));
+    }
+  this->Handle = 0;
 #endif
 }
 
@@ -114,6 +118,7 @@ size_t vtkDICOMFile::Read(char *data, size_t len)
       {
       break;
       }
+    errno = 0;
     }
   if (n == 0)
     {
@@ -147,6 +152,7 @@ size_t vtkDICOMFile::Write(const char *data, size_t len)
       {
       break;
       }
+    errno = 0;
     }
   if (n == -1)
     {
