@@ -9545,7 +9545,7 @@ US or SS
 3
 
 (0028,1104)
-Alpha Palette ColorLookup Table Descriptor
+Alpha Palette Color Lookup Table Descriptor
 AlphaPaletteColorLookupTableDescriptor
 US
 3
