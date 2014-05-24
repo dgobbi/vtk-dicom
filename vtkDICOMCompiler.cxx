@@ -13,6 +13,7 @@
 =========================================================================*/
 #include "vtkDICOMCompiler.h"
 #include "vtkDICOMDictionary.h"
+#include "vtkDICOMFile.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMUtilities.h"
@@ -909,7 +910,8 @@ void vtkDICOMCompiler::Close()
 {
   if (this->OutputFile)
     {
-    fclose(this->OutputFile);
+    this->OutputFile->Close();
+    delete this->OutputFile;
     this->OutputFile = NULL;
     }
 }
@@ -941,12 +943,23 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
     unlink(this->FileName);
     }
 
-  this->OutputFile = fopen(this->FileName, "wb");
+  this->OutputFile = new vtkDICOMFile(this->FileName, vtkDICOMFile::Out);
 
-  if (this->OutputFile == 0)
+  if (this->OutputFile->GetError())
     {
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
-    vtkErrorMacro("WriteFile: Can't open the file " << this->FileName);
+    const char *errText = "Can't open the file ";
+    if (this->OutputFile->GetError() == vtkDICOMFile::Access)
+      {
+      errText = "No permission to write the file ";
+      }
+    else if (this->OutputFile->GetError() == vtkDICOMFile::IsDir)
+      {
+      errText = "The selected file is a directory ";
+      }
+    delete this->OutputFile;
+    this->OutputFile = 0;
+    vtkErrorMacro("WriteFile: " << errText << this->FileName);
     return false;
     }
 
@@ -1010,7 +1023,7 @@ void vtkDICOMCompiler::WritePixelData(const char *cp, vtkIdType size)
     return;
     }
 
-  size_t n = fwrite(cp, 1, size, this->OutputFile);
+  size_t n = this->OutputFile->Write(cp, size);
   if (n != static_cast<size_t>(size))
     {
     this->Close();
@@ -1075,13 +1088,13 @@ void vtkDICOMCompiler::WriteFrame(const char *cp, vtkIdType size)
       dp += 2;
       cp += 2;
       }
-    n = fwrite(buf, 1, size, this->OutputFile);
+    n = this->OutputFile->Write(buf, size);
     delete [] buf;
     }
   else
     {
     // For uncompressed frames, write the data raw
-    n = fwrite(cp, 1, size, this->OutputFile);
+    n = this->OutputFile->Write(cp, size);
     }
 
   if (n != static_cast<size_t>(size))
@@ -1340,7 +1353,7 @@ bool vtkDICOMCompiler::FlushBuffer(
   ucp = reinterpret_cast<unsigned char *>(dp);
   size_t n = cp - dp;
 
-  size_t m = fwrite(dp, 1, n, this->OutputFile);
+  size_t m = this->OutputFile->Write(dp, n);
 
   return (n == m);
 }

@@ -17,9 +17,9 @@
 #include <vtkObject.h>
 #include "vtkDICOMModule.h"
 
-#include <stdio.h>
 
 class vtkStringArray;
+class vtkDICOMFile;
 class vtkDICOMMetaData;
 class vtkDICOMCompilerInternalFriendship;
 
@@ -202,7 +202,7 @@ protected:
   char *TransferSyntaxUID;
   vtkDICOMMetaData *MetaData;
   vtkStringArray *SeriesUIDs;
-  FILE *OutputFile;
+  vtkDICOMFile *OutputFile;
   char *Buffer;
   int BufferSize;
   int ChunkSize;

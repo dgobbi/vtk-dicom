@@ -18,8 +18,8 @@
 #include "vtkDICOMModule.h"
 
 #include <string>
-#include <stdio.h>
 
+class vtkDICOMFile;
 class vtkDICOMMetaData;
 class vtkUnsignedShortArray;
 class vtkDICOMParserInternalFriendship;
@@ -137,7 +137,7 @@ protected:
   std::string TransferSyntax;
   vtkDICOMMetaData *MetaData;
   vtkUnsignedShortArray *Groups;
-  FILE *InputFile;
+  vtkDICOMFile *InputFile;
   vtkTypeInt64 BytesRead;
   vtkTypeInt64 FileOffset;
   vtkTypeInt64 FileSize;

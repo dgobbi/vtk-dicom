@@ -12,6 +12,7 @@
 
 =========================================================================*/
 #include "vtkDICOMReader.h"
+#include "vtkDICOMFile.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMParser.h"
 #include "vtkDICOMDictionary.h"
@@ -1655,30 +1656,21 @@ bool vtkDICOMReader::ReadUncompressedFile(
   vtkTypeInt64 offset = offsetAndSize[0];
 
   vtkDebugMacro("Opening DICOM file " << filename);
-  FILE *infile = fopen(filename, "rb");
+  vtkDICOMFile infile(filename, vtkDICOMFile::In);
 
-  if (infile == 0)
+  if (infile.GetError())
     {
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
     vtkErrorMacro("ReadFile: Can't read the file " << filename);
     return false;
     }
 
-  // fseek uses "long offset" which might be a 32-bit integer
-  int whence = SEEK_SET;
-  long chunksize = VTK_LONG_MAX/2 + 1; // 1GB if 32-bit long
-  while (offset)
+  if (!infile.Seek(offset))
     {
-    long chunk = static_cast<long>(offset % chunksize);
-    if (fseek(infile, chunk, whence) != 0)
-      {
-      this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
-      vtkErrorMacro("DICOM file is truncated, some data is missing.");
-      fclose(infile);
-      return false;
-      }
-    whence = SEEK_CUR;
-    offset -= chunk;
+    this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
+    vtkErrorMacro("DICOM file is truncated, some data is missing.");
+    infile.Close();
+    return false;
     }
 
   int bitsAllocated = this->MetaData->GetAttributeValue(
@@ -1693,7 +1685,7 @@ bool vtkDICOMReader::ReadUncompressedFile(
     // swapping is done at the end of this function)
     readSize = bufferSize/2 + (bufferSize+3)/4;
     char *filePtr = buffer + (bufferSize - readSize);
-    resultSize = fread(filePtr, 1, readSize, infile);
+    resultSize = infile.Read(filePtr, readSize);
 
     vtkDICOMReader::UnpackBits(filePtr, buffer, bufferSize, bitsAllocated);
     }
@@ -1703,24 +1695,24 @@ bool vtkDICOMReader::ReadUncompressedFile(
     // or little endian OW, never big endian OW
     readSize = (bufferSize + 7)/8;
     char *filePtr = buffer + (bufferSize - readSize);
-    resultSize = fread(filePtr, 1, readSize, infile);
+    resultSize = infile.Read(filePtr, readSize);
 
     vtkDICOMReader::UnpackBits(filePtr, buffer, bufferSize, bitsAllocated);
     }
   else
     {
-    resultSize = fread(buffer, 1, readSize, infile);
+    resultSize = infile.Read(buffer, readSize);
     }
 
   bool success = true;
-  if (feof(infile) || resultSize != readSize)
+  if (infile.EndOfFile() || resultSize != readSize)
     {
     this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
     vtkErrorMacro("DICOM file is truncated, " <<
       (readSize - resultSize) << " bytes are missing.");
     success = false;
     }
-  else if (ferror(infile))
+  else if (infile.GetError())
     {
     this->SetErrorCode(vtkErrorCode::FileFormatError);
     vtkErrorMacro("Error in DICOM file, cannot read.");
@@ -1732,7 +1724,7 @@ bool vtkDICOMReader::ReadUncompressedFile(
     vtkByteSwap::SwapVoidRange(buffer, bufferSize/scalarSize, scalarSize);
     }
 
-  fclose(infile);
+  infile.Close();
   return success;
 }
 

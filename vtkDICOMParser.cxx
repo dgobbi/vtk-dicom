@@ -13,6 +13,7 @@
 =========================================================================*/
 #include "vtkDICOMParser.h"
 #include "vtkDICOMDictionary.h"
+#include "vtkDICOMFile.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMItem.h"
@@ -1350,11 +1351,22 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
   this->FileSize = fs.st_size;
 
   // Make sure that the file is readable.
-  this->InputFile = fopen(this->FileName, "rb");
-  if (this->InputFile == 0)
+  this->InputFile = new vtkDICOMFile(this->FileName, vtkDICOMFile::In);
+  if (this->InputFile->GetError())
     {
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
-    vtkErrorMacro("ReadFile: Can't read the file " << this->FileName);
+    const char *errText = "Can't read the file ";
+    if (this->InputFile->GetError() == vtkDICOMFile::Access)
+      {
+      errText = "No permission to read the file ";
+      }
+    else if (this->InputFile->GetError() == vtkDICOMFile::IsDir)
+      {
+      errText = "The selected file is a directory ";
+      }
+    delete this->InputFile;
+    this->InputFile = 0;
+    vtkErrorMacro("ReadFile: " << errText << this->FileName);
     return false;
     }
 
@@ -1384,8 +1396,9 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
   this->ReadMetaData(cp, ep, data, idx);
 
   delete [] this->Buffer;
-  fclose(this->InputFile);
-  this->InputFile = NULL;
+  this->InputFile->Close();
+  delete this->InputFile;
+  this->InputFile = 0;
 
   return true;
 }
@@ -1572,20 +1585,20 @@ bool vtkDICOMParser::FillBuffer(
     // recycle unused buffer chars to head of buffer
     do { *dp++ = *cp++; } while (--n);
     }
-  else if (ferror(this->InputFile))
+  else if (this->InputFile->GetError())
     {
     this->SetErrorCode(vtkErrorCode::UnknownError);
     vtkErrorMacro("FillBuffer: error reading from file " << this->FileName);
     return false;
     }
-  else if (feof(this->InputFile))
+  else if (this->InputFile->EndOfFile())
     {
     // if buffer is drained, and eof, then done
     return false;
     }
 
   // read at most n bytes
-  n = fread(dp, 1, nbytes, this->InputFile);
+  n = this->InputFile->Read(dp, nbytes);
 
   // get number of chars read
   this->BytesRead += n;

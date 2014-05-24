@@ -14,6 +14,7 @@
 
 #include <vtkStringArray.h>
 #include "vtkDICOMUtilities.h"
+#include "vtkDICOMFile.h"
 
 #include <string>
 
@@ -223,12 +224,12 @@ void vtkGenerateRandomBytes(char *bytes, vtkIdType n)
     }
 #else
   // use the "random" device on unix-like systems
-  FILE *infile = fopen("/dev/random", "rb");
-  if (infile)
+  vtkDICOMFile infile("/dev/random", vtkDICOMFile::In);
+  if (infile.GetError() == 0)
     {
-    size_t m = fread(bytes, 1, n, infile);
+    size_t m = infile.Read(bytes, n);
     r = (m == static_cast<size_t>(n));
-    fclose(infile);
+    infile.Close();
     }
 #endif
   if (r == 0)
@@ -610,15 +611,15 @@ bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
     size = static_cast<off_t>(sizeof(buffer));
     }
 
-  FILE *infile = fopen(filename, "rb");
+  vtkDICOMFile infile(filename, vtkDICOMFile::In);
 
-  if (infile == 0)
+  if (infile.GetError() != 0)
     {
     return false;
     }
 
-  size_t rsize = fread(buffer, 1, size, infile);
-  fclose(infile);
+  size_t rsize = infile.Read(buffer, size);
+  infile.Close();
   if (rsize != static_cast<size_t>(size))
     {
     return false;
