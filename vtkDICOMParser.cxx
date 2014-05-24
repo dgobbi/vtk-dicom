@@ -1351,25 +1351,24 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
   this->FileSize = fs.st_size;
 
   // Make sure that the file is readable.
-  this->InputFile = new vtkDICOMFile(this->FileName, vtkDICOMFile::In);
-  if (this->InputFile->GetError())
+  vtkDICOMFile infile(this->FileName, vtkDICOMFile::In);
+  if (infile.GetError())
     {
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
     const char *errText = "Can't read the file ";
-    if (this->InputFile->GetError() == vtkDICOMFile::Access)
+    if (infile.GetError() == vtkDICOMFile::Access)
       {
       errText = "No permission to read the file ";
       }
-    else if (this->InputFile->GetError() == vtkDICOMFile::IsDir)
+    else if (infile.GetError() == vtkDICOMFile::IsDir)
       {
       errText = "The selected file is a directory ";
       }
-    delete this->InputFile;
-    this->InputFile = 0;
     vtkErrorMacro("ReadFile: " << errText << this->FileName);
     return false;
     }
 
+  this->InputFile = &infile;
   this->Buffer = new char [this->BufferSize + 8];
   this->BytesRead = 0;
   // guard against anyone changing BufferSize while reading
@@ -1396,9 +1395,8 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
   this->ReadMetaData(cp, ep, data, idx);
 
   delete [] this->Buffer;
-  this->InputFile->Close();
-  delete this->InputFile;
-  this->InputFile = 0;
+  infile.Close();
+  this->InputFile = NULL;
 
   return true;
 }
