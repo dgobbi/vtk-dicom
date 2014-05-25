@@ -198,7 +198,7 @@ void vtkDICOMFile::Close()
 }
 
 //----------------------------------------------------------------------------
-size_t vtkDICOMFile::Read(char *data, size_t len)
+size_t vtkDICOMFile::Read(unsigned char *data, size_t len)
 {
 #if defined(VTK_DICOM_POSIX_IO)
   ssize_t n;
@@ -253,7 +253,7 @@ size_t vtkDICOMFile::Read(char *data, size_t len)
 }
 
 //----------------------------------------------------------------------------
-size_t vtkDICOMFile::Write(const char *data, size_t len)
+size_t vtkDICOMFile::Write(const unsigned char *data, size_t len)
 {
 #if defined(VTK_DICOM_POSIX_IO)
   ssize_t n;

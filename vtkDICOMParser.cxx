@@ -1349,7 +1349,7 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
 
   this->InputFile = &infile;
   this->FileSize = infile.GetSize();
-  this->Buffer = new char [this->BufferSize + 8];
+  this->Buffer = new unsigned char [this->BufferSize + 8];
   this->BytesRead = 0;
   // guard against anyone changing BufferSize while reading
   this->ChunkSize = this->BufferSize;
@@ -1547,9 +1547,9 @@ bool vtkDICOMParser::ReadMetaData(
 bool vtkDICOMParser::FillBuffer(
   const unsigned char* &ucp, const unsigned char* &ep)
 {
-  char *dp = this->Buffer;
+  unsigned char *dp = this->Buffer;
   size_t n = ep - ucp;
-  const char *cp = reinterpret_cast<const char *>(ucp);
+  const unsigned char *cp = ucp;
 
   // number of bytes to read
   size_t nbytes = this->ChunkSize;
@@ -1582,8 +1582,8 @@ bool vtkDICOMParser::FillBuffer(
   this->BytesRead += n;
 
   // ep is recycled chars plus newly read chars
-  ep = reinterpret_cast<unsigned char *>(dp + n);
-  ucp = reinterpret_cast<unsigned char *>(this->Buffer);
+  ep = dp + n;
+  ucp = this->Buffer;
 
   return true;
 }

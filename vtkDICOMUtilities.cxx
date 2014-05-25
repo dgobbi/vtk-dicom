@@ -149,7 +149,7 @@ inline void vtkGenerateHexDigits(unsigned char y, char cp[2])
 }
 
 // convert n bytes into 2*n hexadecimal digits
-void vtkConvertBytesToHex(const char *bytes, size_t n, char *cp)
+void vtkConvertBytesToHex(const unsigned char *bytes, size_t n, char *cp)
 {
   for (size_t i = 0; i < n; i++)
     {
@@ -162,7 +162,7 @@ void vtkConvertBytesToHex(const char *bytes, size_t n, char *cp)
 
 // generate a 36-character uuid from a 128-bit random number
 // (the supplied pointer must have 37 bytes of available space)
-void vtkConvertRandomToUUID(const char bytes[16], char *uuid)
+void vtkConvertRandomToUUID(const unsigned char bytes[16], char *uuid)
 {
   // copy it so that we can modify it
   char r[16];
@@ -202,7 +202,7 @@ void vtkConvertUUIDToUID(const char *uuid, char *uid)
 }
 
 // read from the random number generator
-void vtkGenerateRandomBytes(char *bytes, vtkIdType n)
+void vtkGenerateRandomBytes(unsigned char *bytes, vtkIdType n)
 {
   int r = 0;
 #ifdef _WIN32
@@ -294,7 +294,8 @@ vtkIdType vtkRandomBytesForPrefix(const char *prefix)
 
 // generate a prefixed UID using the provided random bytes
 void vtkGeneratePrefixedUID(
-  const char *r, vtkIdType m, const char *prefix, char d, char uid[64])
+  const unsigned char *r, vtkIdType m, const char *prefix, char d,
+  char uid[64])
 {
   size_t i = 0;
   while (*prefix != '\0' && i < 62)
@@ -353,7 +354,7 @@ std::string vtkDICOMUtilities::GenerateUID(vtkDICOMTag tag)
        prefix[3] == '5' && (prefix[4] == '.' || prefix[4] == '\0')))
     {
     // generate a 128-bit random number
-    char r[16];
+    unsigned char r[16];
     vtkGenerateRandomBytes(r, 16);
 
     // convert to a hex uuid
@@ -366,7 +367,7 @@ std::string vtkDICOMUtilities::GenerateUID(vtkDICOMTag tag)
   else
     {
     // after prefix, add a "UID type" digit followed by random digits
-    char r[16];
+    unsigned char r[16];
     vtkIdType m = vtkRandomBytesForPrefix(prefix);
     vtkGenerateRandomBytes(r, m);
     char d = vtkDICOMTagToDigit(tag);
@@ -396,7 +397,7 @@ void vtkDICOMUtilities::GenerateUIDs(vtkDICOMTag tag, vtkStringArray *uids)
 
   // read from random number generator
   vtkIdType n = uids->GetNumberOfValues();
-  char *r = new char[n*m];
+  unsigned char *r = new unsigned char[n*m];
   vtkGenerateRandomBytes(r, n*m);
 
   for (vtkIdType i = 0; i < n; i++)
@@ -595,7 +596,7 @@ std::string vtkDICOMUtilities::GenerateDateTime(const char *z)
 //----------------------------------------------------------------------------
 bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
 {
-  char buffer[256];
+  unsigned char buffer[256];
 
   if (filename == 0)
     {
@@ -624,7 +625,7 @@ bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
     return false;
     }
 
-  const char *cp = buffer;
+  const unsigned char *cp = buffer;
 
   // Look for the magic number and the first meta header tag.
   size_t skip = 128;

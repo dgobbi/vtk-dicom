@@ -442,7 +442,7 @@ int vtkDICOMWriter::RequestData(
   compiler->SetMetaData(meta);
 
   // write the image
-  char *dataPtr = static_cast<char *>(
+  unsigned char *dataPtr = static_cast<unsigned char *>(
     data->GetScalarPointerForExtent(extent));
   bool flipImage = (this->MemoryRowOrder == vtkDICOMWriter::BottomUp);
 
@@ -469,15 +469,15 @@ int vtkDICOMWriter::RequestData(
   this->UpdateProgress(0.0);
 
   bool packedToPlanar = (filePixelSize != pixelSize);
-  char *rowBuffer = 0;
+  unsigned char *rowBuffer = 0;
   if (flipImage)
     {
-    rowBuffer = new char[fileRowSize];
+    rowBuffer = new unsigned char[fileRowSize];
     }
-  char *frameBuffer = 0;
+  unsigned char *frameBuffer = 0;
   if (flipImage || packedToPlanar)
     {
-    frameBuffer = new char[fileFrameSize];
+    frameBuffer = new unsigned char[fileFrameSize];
     }
 
   // loop through all files in the update extent
@@ -505,7 +505,7 @@ int vtkDICOMWriter::RequestData(
       int componentIdx = componentMap->GetComponent(fileIdx, frameIdx);
 
       // pointer to the frame that will be written to the file
-      char *framePtr = frameBuffer;
+      unsigned char *framePtr = frameBuffer;
 
       if (!framePtr)
         {
@@ -514,19 +514,19 @@ int vtkDICOMWriter::RequestData(
         }
 
       // go to the correct position in image data
-      char *slicePtr = (dataPtr +
-                        (sliceIdx - extent[4])*sliceSize +
-                        componentIdx*samplesPerPixel*scalarSize);
+      unsigned char *slicePtr =
+        (dataPtr + (sliceIdx - extent[4])*sliceSize +
+         componentIdx*samplesPerPixel*scalarSize);
 
       // iterate through all color planes in the slice
-      char *planePtr = framePtr;
+      unsigned char *planePtr = framePtr;
       for (int pIdx = 0; pIdx < numPlanes; pIdx++)
         {
         // convert scalar components to planes
         if (packedToPlanar)
           {
-          const char *tmpInPtr = slicePtr;
-          char *tmpOutPtr = planePtr;
+          const unsigned char *tmpInPtr = slicePtr;
+          unsigned char *tmpOutPtr = planePtr;
           int m = sliceSize/pixelSize;
           for (int i = 0; i < m; i++)
             {
@@ -548,8 +548,8 @@ int vtkDICOMWriter::RequestData(
           int halfRows = numRows/2;
           for (int yIdx = 0; yIdx < halfRows; yIdx++)
             {
-            char *row1 = planePtr + yIdx*fileRowSize;
-            char *row2 = planePtr + (numRows-yIdx-1)*fileRowSize;
+            unsigned char *row1 = planePtr + yIdx*fileRowSize;
+            unsigned char *row2 = planePtr + (numRows-yIdx-1)*fileRowSize;
             memcpy(rowBuffer, row1, fileRowSize);
             memcpy(row1, row2, fileRowSize);
             memcpy(row2, rowBuffer, fileRowSize);

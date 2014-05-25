@@ -71,14 +71,14 @@ public:
    *  The number of bytes read will be returned.
    *  A return value of zero indicates an error.
    */
-  size_t Read(char *data, size_t size);
+  size_t Read(unsigned char *data, size_t size);
 
   //! Write data to a file.
   /*!
    *  The number of bytes written will be returned.
    *  If it is less than the size requested, an error ocurred.
    */
-  size_t Write(const char *data, size_t size);
+  size_t Write(const unsigned char *data, size_t size);
 
   //! Go to a specific location in the file.
   /*!

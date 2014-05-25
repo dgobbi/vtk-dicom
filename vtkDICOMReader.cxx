@@ -1736,7 +1736,8 @@ vtkIdType vtkDICOMReader::UnpackRLE(
 
 //----------------------------------------------------------------------------
 bool vtkDICOMReader::ReadFileNative(
-  const char *filename, int fileIdx, char *buffer, vtkIdType bufferSize)
+  const char *filename, int fileIdx,
+  unsigned char *buffer, vtkIdType bufferSize)
 {
   // get the offset to the PixelData in the file
   vtkTypeInt64 offsetAndSize[2];
@@ -1778,8 +1779,8 @@ bool vtkDICOMReader::ReadFileNative(
       {
       readSize = 8;
       }
-    char *rleBuffer = new char[readSize];
-    char *filePtr = rleBuffer;
+    unsigned char *rleBuffer = new unsigned char[readSize];
+    unsigned char *filePtr = rleBuffer;
     resultSize = infile.Read(filePtr, readSize);
     size_t bytesRemaining = resultSize;
     vtkIdType bufferPos = 0;
@@ -1831,7 +1832,7 @@ bool vtkDICOMReader::ReadFileNative(
     // the result will have to be swapped if machine is BE (the
     // swapping is done at the end of this function)
     readSize = bufferSize/2 + (bufferSize+3)/4;
-    char *filePtr = buffer + (bufferSize - readSize);
+    unsigned char *filePtr = buffer + (bufferSize - readSize);
     resultSize = infile.Read(filePtr, readSize);
 
     vtkDICOMReader::UnpackBits(filePtr, buffer, bufferSize, bitsAllocated);
@@ -1841,7 +1842,7 @@ bool vtkDICOMReader::ReadFileNative(
     // unpack 1 bit into 8 bits, source assumed to be either OB
     // or little endian OW, never big endian OW
     readSize = (bufferSize + 7)/8;
-    char *filePtr = buffer + (bufferSize - readSize);
+    unsigned char *filePtr = buffer + (bufferSize - readSize);
     resultSize = infile.Read(filePtr, readSize);
 
     vtkDICOMReader::UnpackBits(filePtr, buffer, bufferSize, bitsAllocated);
@@ -1877,7 +1878,8 @@ bool vtkDICOMReader::ReadFileNative(
 
 //----------------------------------------------------------------------------
 bool vtkDICOMReader::ReadFileDelegated(
-  const char *filename, int fileIdx, char *buffer, vtkIdType bufferSize)
+  const char *filename, int fileIdx,
+  unsigned char *buffer, vtkIdType bufferSize)
 {
 #if defined(DICOM_USE_DCMTK)
 
@@ -1950,7 +1952,7 @@ bool vtkDICOMReader::ReadFileDelegated(
     return false;
     }
 
-  image.GetBuffer(buffer);
+  image.GetBuffer(reinterpret_cast<char *>(buffer));
   return true;
 
 #else /* no DCMTK or GDCM, so no file decompression */
@@ -1969,7 +1971,8 @@ bool vtkDICOMReader::ReadFileDelegated(
 
 //----------------------------------------------------------------------------
 bool vtkDICOMReader::ReadOneFile(
-  const char *filename, int fileIdx, char *buffer, vtkIdType bufferSize)
+  const char *filename, int fileIdx,
+  unsigned char *buffer, vtkIdType bufferSize)
 {
   std::string transferSyntax = this->MetaData->GetAttributeValue(
     fileIdx, DC::TransferSyntaxUID).AsString();
@@ -2061,7 +2064,8 @@ int vtkDICOMReader::RequestData(
 
   data->GetPointData()->GetScalars()->SetName("PixelData");
 
-  char *dataPtr = static_cast<char *>(data->GetScalarPointer());
+  unsigned char *dataPtr =
+    static_cast<unsigned char *>(data->GetScalarPointer());
 
   int scalarSize = data->GetScalarSize();
   int numComponents = data->GetNumberOfScalarComponents();
@@ -2080,12 +2084,12 @@ int vtkDICOMReader::RequestData(
 
   bool flipImage = (this->MemoryRowOrder == vtkDICOMReader::BottomUp);
   bool planarToPacked = (filePixelSize != pixelSize);
-  char *rowBuffer = 0;
+  unsigned char *rowBuffer = 0;
   if (flipImage)
     {
-    rowBuffer = new char[fileRowSize];
+    rowBuffer = new unsigned char[fileRowSize];
     }
-  char *fileBuffer = 0;
+  unsigned char *fileBuffer = 0;
   int framesInPreviousFile = -1;
 
   // loop through all files in the update extent
@@ -2109,7 +2113,7 @@ int vtkDICOMReader::RequestData(
       needBuffer = (sIdx != frames[sIdx].FrameIndex);
       }
 
-    char *bufferPtr = 0;
+    unsigned char *bufferPtr = 0;
 
     if (needBuffer)
       {
@@ -2117,7 +2121,7 @@ int vtkDICOMReader::RequestData(
         {
         // allocate a buffer for planar-to-packed conversion
         delete [] fileBuffer;
-        fileBuffer = new char[fileFrameSize*framesInFile];
+        fileBuffer = new unsigned char[fileFrameSize*framesInFile];
         framesInPreviousFile = numFrames;
         }
       bufferPtr = fileBuffer;
@@ -2143,11 +2147,11 @@ int vtkDICOMReader::RequestData(
       int sliceIdx = frames[sIdx].SliceIndex;
       int componentIdx = frames[sIdx].ComponentIndex;
       // go to the correct position in the input
-      char *framePtr = bufferPtr + frameIdx*fileFrameSize;
+      unsigned char *framePtr = bufferPtr + frameIdx*fileFrameSize;
       // go to the correct position in the output
-      char *slicePtr = (dataPtr +
-                        (sliceIdx - extent[4])*sliceSize +
-                        componentIdx*filePixelSize*numPlanes);
+      unsigned char *slicePtr =
+        (dataPtr + (sliceIdx - extent[4])*sliceSize +
+         componentIdx*filePixelSize*numPlanes);
 
       // rescale if Rescale was different for different files
       if (this->NeedsRescale)
@@ -2156,7 +2160,7 @@ int vtkDICOMReader::RequestData(
         }
 
       // iterate through all color planes in the slice
-      char *planePtr = framePtr;
+      unsigned char *planePtr = framePtr;
       for (int pIdx = 0; pIdx < numPlanes; pIdx++)
         {
         // flip the data if necessary
@@ -2166,8 +2170,8 @@ int vtkDICOMReader::RequestData(
           int halfRows = numRows/2;
           for (int yIdx = 0; yIdx < halfRows; yIdx++)
             {
-            char *row1 = planePtr + yIdx*fileRowSize;
-            char *row2 = planePtr + (numRows-yIdx-1)*fileRowSize;
+            unsigned char *row1 = planePtr + yIdx*fileRowSize;
+            unsigned char *row2 = planePtr + (numRows-yIdx-1)*fileRowSize;
             memcpy(rowBuffer, row1, fileRowSize);
             memcpy(row1, row2, fileRowSize);
             memcpy(row2, rowBuffer, fileRowSize);
@@ -2177,8 +2181,8 @@ int vtkDICOMReader::RequestData(
         // convert planes into vector components
         if (planarToPacked)
           {
-          const char *tmpInPtr = planePtr;
-          char *tmpOutPtr = slicePtr;
+          const unsigned char *tmpInPtr = planePtr;
+          unsigned char *tmpOutPtr = slicePtr;
           int m = sliceSize/pixelSize;
           for (int i = 0; i < m; i++)
             {

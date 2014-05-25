@@ -141,7 +141,7 @@ protected:
   vtkTypeInt64 BytesRead;
   vtkTypeInt64 FileOffset;
   vtkTypeInt64 FileSize;
-  char *Buffer;
+  unsigned char *Buffer;
   int BufferSize;
   int ChunkSize;
   int Index;

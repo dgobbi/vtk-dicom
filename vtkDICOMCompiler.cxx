@@ -974,11 +974,11 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
     return false;
     }
 
-  this->Buffer = new char [this->BufferSize];
+  this->Buffer = new unsigned char [this->BufferSize];
   // guard against anyone changing BufferSize while compiling the file
   this->ChunkSize = this->BufferSize;
 
-  unsigned char *cp = reinterpret_cast<unsigned char *>(this->Buffer);
+  unsigned char *cp = this->Buffer;
   unsigned char *ep = cp + this->ChunkSize;
 
   // variable to keep track of return values
@@ -1027,7 +1027,7 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMCompiler::WritePixelData(const char *cp, vtkIdType size)
+void vtkDICOMCompiler::WritePixelData(const unsigned char *cp, vtkIdType size)
 {
   if (this->OutputFile == 0)
     {
@@ -1046,7 +1046,7 @@ void vtkDICOMCompiler::WritePixelData(const char *cp, vtkIdType size)
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMCompiler::WriteFrame(const char *cp, vtkIdType size)
+void vtkDICOMCompiler::WriteFrame(const unsigned char *cp, vtkIdType size)
 {
   if (this->OutputFile == 0)
     {
@@ -1090,8 +1090,8 @@ void vtkDICOMCompiler::WriteFrame(const char *cp, vtkIdType size)
            this->MetaData->GetAttributeValue(DC::BitsAllocated).AsInt() > 8)
     {
     // Swap bytes before writing
-    char *buf = new char[size];
-    char *dp = buf;
+    unsigned char *buf = new unsigned char[size];
+    unsigned char *dp = buf;
     for (vtkIdType i = 0; i < size; i += 2)
       {
       dp[0] = cp[1];
@@ -1359,9 +1359,9 @@ unsigned int vtkDICOMCompiler::ComputePixelDataSize()
 bool vtkDICOMCompiler::FlushBuffer(
   unsigned char* &ucp, unsigned char* &)
 {
-  const char *cp = reinterpret_cast<const char *>(ucp);
-  char *dp = this->Buffer;
-  ucp = reinterpret_cast<unsigned char *>(dp);
+  const unsigned char *cp = ucp;
+  unsigned char *dp = this->Buffer;
+  ucp = dp;
   size_t n = cp - dp;
 
   size_t m = this->OutputFile->Write(dp, n);

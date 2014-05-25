@@ -144,7 +144,8 @@ int main(int argc, char *argv[])
           infile.read(buffer, size-offset);
           infile.close();
 
-          compiler->WritePixelData(buffer, size - offset);
+          compiler->WritePixelData(
+            reinterpret_cast<unsigned char *>(buffer), size - offset);
           delete [] buffer;
           }
 

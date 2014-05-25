@@ -186,7 +186,8 @@ protected:
   // Description:
   // Read one file.  Specify the offset to the PixelData.
   virtual bool ReadOneFile(
-    const char *filename, int idx, char *buffer, vtkIdType bufferSize);
+    const char *filename, int idx,
+    unsigned char *buffer, vtkIdType bufferSize);
 
   // Description:
   // Unpack one little-endian int.
@@ -208,12 +209,14 @@ protected:
   // Description:
   // Read an DICOM file directly.
   virtual bool ReadFileNative(
-    const char *filename, int idx, char *buffer, vtkIdType bufferSize);
+    const char *filename, int idx,
+    unsigned char *buffer, vtkIdType bufferSize);
 
   // Description:
   // Read a DICOM file via DCMTK or GDCM.
   virtual bool ReadFileDelegated(
-    const char *filename, int idx, char *buffer, vtkIdType bufferSize);
+    const char *filename, int idx,
+    unsigned char *buffer, vtkIdType bufferSize);
 
   // Description:
   // Rescale the data in the buffer.

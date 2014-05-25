@@ -127,10 +127,10 @@ public:
    *  the correct format (endianness, compression, fragments, etc)
    *  and writes it out to the file as the PixelData value.
    */
-  virtual void WritePixelData(const char *cp, vtkIdType size);
+  virtual void WritePixelData(const unsigned char *cp, vtkIdType size);
 
   //! Write one frame to the end of the file.
-  virtual void WriteFrame(const char *cp, vtkIdType size);
+  virtual void WriteFrame(const unsigned char *cp, vtkIdType size);
 
   //! Close the file.
   virtual void Close();
@@ -203,7 +203,7 @@ protected:
   vtkDICOMMetaData *MetaData;
   vtkStringArray *SeriesUIDs;
   vtkDICOMFile *OutputFile;
-  char *Buffer;
+  unsigned char *Buffer;
   int BufferSize;
   int ChunkSize;
   int Index;
