@@ -28,6 +28,14 @@
 #define VTK_DICOM_ITEM   14
 #define VTK_DICOM_VALUE  15
 
+// This adds an overflow byte for the "NumberOfValues" field, so that
+// "NumberOfValues" can effectively go as high as 2^40-1.  This means
+// that data elements that use delimiters, rather than fixed lengths,
+// can store up to one terabyte instead of being limited to four gigabytes.
+#if defined(__x86_64__) || defined(__ia64__) || defined(_M_X64)
+#define VTK_DICOM_USE_OVERFLOW_BYTE
+#endif
+
 class vtkDICOMItem;
 class vtkDICOMSequence;
 
@@ -48,6 +56,7 @@ private:
     vtkDICOMReferenceCount ReferenceCount;
     unsigned char  Type;
     unsigned char  CharacterSet;
+    unsigned char  Overflow;
     vtkDICOMVR     VR;
     unsigned int   VL;
     unsigned int   NumberOfValues;
@@ -61,7 +70,7 @@ private:
   {
     T Data[1];
 
-    ValueT(vtkDICOMVR vr, unsigned int vn);
+    ValueT(vtkDICOMVR vr, size_t vn);
     static bool Compare(const Value *a, const Value *b);
   };
 
@@ -179,8 +188,12 @@ public:
    *  - for sequences (SQ and XQ) the number of items in the sequence,
    *    excluding any delimeters, will be returned.
    */
-  unsigned int GetNumberOfValues() const {
-    return (this->V ? this->V->NumberOfValues : 0); }
+  size_t GetNumberOfValues() const {
+    return (this->V ? this->V->NumberOfValues
+#ifdef VTK_DICOM_USE_OVERFLOW_BYTE
+            + (static_cast<size_t>(this->V->Overflow) << 32)
+#endif
+            : 0); }
 
   //! Copy "n" values into vb, starting at value "i".
   /*!

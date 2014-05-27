@@ -114,13 +114,20 @@ void ValueFree(void *vp)
 
 } // end anonymous namespace
 
+#ifdef VTK_DICOM_USE_OVERFLOW_BYTE
+#define OVERFLOW_BYTE(vn) static_cast<unsigned char>(vn >> 32)
+#else
+#define OVERFLOW_BYTE(vn) 0
+#endif
+
 //----------------------------------------------------------------------------
 // Construct a numerical value.
 template<class T>
-vtkDICOMValue::ValueT<T>::ValueT(vtkDICOMVR vr, unsigned int vn)
+vtkDICOMValue::ValueT<T>::ValueT(vtkDICOMVR vr, size_t vn)
 {
   this->Type = static_cast<unsigned char>(vtkTypeTraits<T>::VTKTypeID());
   this->CharacterSet = 0;
+  this->Overflow = OVERFLOW_BYTE(vn);
   this->VR = vr;
   this->VL = vn*sizeof(T);
   this->NumberOfValues = vn;
@@ -128,21 +135,24 @@ vtkDICOMValue::ValueT<T>::ValueT(vtkDICOMVR vr, unsigned int vn)
 
 // Construct a string value.
 template<>
-vtkDICOMValue::ValueT<char>::ValueT(vtkDICOMVR vr, unsigned int vn)
+vtkDICOMValue::ValueT<char>::ValueT(vtkDICOMVR vr, size_t vn)
 {
+  vn += (vn & 1); // pad VL to make it even
   this->Type = VTK_CHAR;
   this->CharacterSet = 0;
+  this->Overflow = OVERFLOW_BYTE(vn);
   this->VR = vr;
-  this->VL = vn + (vn & 1); // pad VL to make it even
+  this->VL = vn;
   this->NumberOfValues = (vn > 0);
 }
 
 // Construct a "bytes" value.
 template<>
-vtkDICOMValue::ValueT<unsigned char>::ValueT(vtkDICOMVR vr, unsigned int vn)
+vtkDICOMValue::ValueT<unsigned char>::ValueT(vtkDICOMVR vr, size_t vn)
 {
   this->Type = VTK_UNSIGNED_CHAR;
   this->CharacterSet = 0;
+  this->Overflow = OVERFLOW_BYTE(vn);
   this->VR = vr;
   this->VL = vn + (vn & 1); // pad VL to make it even
   this->NumberOfValues = vn;
@@ -150,15 +160,16 @@ vtkDICOMValue::ValueT<unsigned char>::ValueT(vtkDICOMVR vr, unsigned int vn)
 
 // Construct a list of attribute tags.
 template<>
-vtkDICOMValue::ValueT<vtkDICOMTag>::ValueT(vtkDICOMVR vr, unsigned int vn)
+vtkDICOMValue::ValueT<vtkDICOMTag>::ValueT(vtkDICOMVR vr, size_t vn)
 {
   this->Type = VTK_DICOM_TAG;
   this->CharacterSet = 0;
+  this->Overflow = OVERFLOW_BYTE(vn);
   this->VR = vr;
   this->VL = 4*vn;
   this->NumberOfValues = vn;
   vtkDICOMTag *dp = this->Data;
-  for (unsigned int i = 0; i < vn; i++)
+  for (size_t i = 0; i < vn; i++)
     {
     // call constructor manually with placement new
     new(dp) vtkDICOMTag();
@@ -168,15 +179,16 @@ vtkDICOMValue::ValueT<vtkDICOMTag>::ValueT(vtkDICOMVR vr, unsigned int vn)
 
 // Construct a sequence of items.
 template<>
-vtkDICOMValue::ValueT<vtkDICOMItem>::ValueT(vtkDICOMVR vr, unsigned int vn)
+vtkDICOMValue::ValueT<vtkDICOMItem>::ValueT(vtkDICOMVR vr, size_t vn)
 {
   this->Type = VTK_DICOM_ITEM;
   this->CharacterSet = 0;
+  this->Overflow = OVERFLOW_BYTE(vn);
   this->VR = vr; // better be SQ
   this->VL = 0;
   this->NumberOfValues = vn;
   vtkDICOMItem *dp = this->Data;
-  for (unsigned int i = 0; i < vn; i++)
+  for (size_t i = 0; i < vn; i++)
     {
     // call constructor manually with placement new
     new(dp) vtkDICOMItem();
@@ -186,15 +198,16 @@ vtkDICOMValue::ValueT<vtkDICOMItem>::ValueT(vtkDICOMVR vr, unsigned int vn)
 
 // Construct a list of values.
 template<>
-vtkDICOMValue::ValueT<vtkDICOMValue>::ValueT(vtkDICOMVR vr, unsigned int vn)
+vtkDICOMValue::ValueT<vtkDICOMValue>::ValueT(vtkDICOMVR vr, size_t vn)
 {
   this->Type = VTK_DICOM_VALUE;
   this->CharacterSet = 0;
+  this->Overflow = OVERFLOW_BYTE(vn);
   this->VR = vr;
   this->VL = 0;
   this->NumberOfValues = vn;
   vtkDICOMValue *dp = this->Data;
-  for (unsigned int i = 0; i < vn; i++)
+  for (size_t i = 0; i < vn; i++)
     {
     // call constructor manually with placement new
     new(dp) vtkDICOMValue();
@@ -223,7 +236,23 @@ T *vtkDICOMValue::Allocate(vtkDICOMVR vr, size_t vn)
   // includes both the Value struct and the array of values.
   size_t n = vn + !vn; // add one if zero
   void *vp = ValueMalloc(sizeof(Value) + n*sizeof(T));
-  ValueT<T> *v = new(vp) ValueT<T>(vr, static_cast<unsigned int>(vn));
+  ValueT<T> *v = new(vp) ValueT<T>(vr, vn);
+  // Test the assumption that Data is at an offset of sizeof(Value)
+  assert(static_cast<char *>(static_cast<void *>(v->Data)) ==
+         static_cast<char *>(vp) + sizeof(Value));
+  this->V = v;
+  return v->Data;
+}
+
+template<>
+unsigned char *vtkDICOMValue::Allocate(vtkDICOMVR vr, size_t vn)
+{
+  this->Clear();
+  // Use C++ "placement new" to allocate a single block of memory that
+  // includes both the Value struct and the array of values.
+  size_t n = vn + !vn; // add one if zero
+  void *vp = ValueMalloc(sizeof(Value) + n);
+  ValueT<unsigned char> *v = new(vp) ValueT<unsigned char>(vr, vn);
   // Test the assumption that Data is at an offset of sizeof(Value)
   assert(static_cast<char *>(static_cast<void *>(v->Data)) ==
          static_cast<char *>(vp) + sizeof(Value));
@@ -242,7 +271,7 @@ char *vtkDICOMValue::Allocate<char>(vtkDICOMVR vr, size_t vn)
   // Use C++ "placement new" to allocate a single block of memory that
   // includes both the Value struct and the array of values.
   void *vp = ValueMalloc(sizeof(Value) + vn + pad + 1);
-  ValueT<char> *v = new(vp) ValueT<char>(vr, static_cast<unsigned int>(vn));
+  ValueT<char> *v = new(vp) ValueT<char>(vr, vn);
   // Test the assumption that Data is at an offset of sizeof(Value)
   assert(v->Data == static_cast<char *>(vp) + sizeof(Value));
   this->V = v;
@@ -362,7 +391,8 @@ unsigned char *vtkDICOMValue::ReallocateUnsignedCharData(size_t vn)
   assert(this->V->VR == vtkDICOMVR::OB || this->V->VR == vtkDICOMVR::UN);
   assert(vn < 0xffffffffu);
 
-  size_t n = this->V->NumberOfValues;
+  size_t n = this->V->NumberOfValues +
+    (static_cast<size_t>(this->V->Overflow) << 32);
   unsigned char *ptr =
     static_cast<ValueT<unsigned char> *>(this->V)->Data;
 
@@ -374,8 +404,6 @@ unsigned char *vtkDICOMValue::ReallocateUnsignedCharData(size_t vn)
   ptr = this->AllocateUnsignedCharData(v->VR, vn);
   n = (n < vn ? n : vn);
   if (n > 0) { memcpy(ptr, cptr, n); }
-  // this is the new V after reallocating
-  this->V->NumberOfValues = static_cast<unsigned int>(vn);
   // indicate encapsulated contents
   this->V->VL = 0xffffffff;
 

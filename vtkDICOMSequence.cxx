@@ -22,7 +22,7 @@ const vtkDICOMValue vtkDICOMSequence::InvalidValue;
 
 //----------------------------------------------------------------------------
 const vtkDICOMValue &vtkDICOMSequence::GetAttributeValue(
-    unsigned int i, vtkDICOMTag tag) const
+    size_t i, vtkDICOMTag tag) const
 {
   const vtkDICOMItem *ptr = this->V.GetSequenceData();
   if (ptr != 0 && i < this->V.GetNumberOfValues())
@@ -34,7 +34,7 @@ const vtkDICOMValue &vtkDICOMSequence::GetAttributeValue(
 
 //----------------------------------------------------------------------------
 const vtkDICOMValue &vtkDICOMSequence::GetAttributeValue(
-    unsigned int i, const vtkDICOMTagPath &tagpath) const
+    size_t i, const vtkDICOMTagPath &tagpath) const
 {
   const vtkDICOMItem *ptr = this->V.GetSequenceData();
   if (ptr != 0 && i < this->V.GetNumberOfValues())
@@ -45,7 +45,7 @@ const vtkDICOMValue &vtkDICOMSequence::GetAttributeValue(
 }
 
 //----------------------------------------------------------------------------
-const vtkDICOMItem &vtkDICOMSequence::GetItem(unsigned int i) const
+const vtkDICOMItem &vtkDICOMSequence::GetItem(size_t i) const
 {
   const vtkDICOMItem *ptr = this->V.GetSequenceData();
   assert(ptr != 0 && i < this->V.GetNumberOfValues());

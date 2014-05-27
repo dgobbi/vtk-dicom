@@ -110,7 +110,7 @@ public:
     this->StudyInstanceUID = uid; };
 
   // Write the data element head, return the length (8 or 12)
-  virtual unsigned int WriteElementHead(
+  virtual size_t WriteElementHead(
     unsigned char* cp, vtkDICOMTag tag, vtkDICOMVR vr, unsigned int vl) = 0;
 
   // Write all data elements between iter and iterend.
@@ -127,9 +127,11 @@ public:
   // If there are fewer than "n" bytes left in the buffer, then flush
   // the buffer and move the write pointer cp to the start of the buffer.
   bool CheckBuffer(
-    unsigned char* &cp, unsigned char* &ep, unsigned int n);
+    unsigned char* &cp, unsigned char* &ep, size_t n);
 
-  // Count the number of bytes required to write the specified data.
+  // Count the number of bytes required to write the specified data,
+  // returns 0xffffffff if size cannot be computed or is larger than
+  // can be stored in a 32-bit unsigned integer.
   unsigned int DataSize(
     vtkDICOMDataElementIterator iter,
     vtkDICOMDataElementIterator iterEnd);
@@ -165,28 +167,24 @@ public:
   static void PutInt64(unsigned char* ip, unsigned long long i);
 
   // Write "n" values from "v" into "ip".
-  static void PutValues(unsigned char *ip, const char *v, unsigned int n);
-  static void PutValues(unsigned char *ip, const unsigned char *v,
-                        unsigned int n);
-  static void PutValues(unsigned char *ip, const short *v, unsigned int n);
-  static void PutValues(unsigned char *ip, const unsigned short *v,
-                        unsigned int n);
-  static void PutValues(unsigned char *ip, const int *v, unsigned int n);
-  static void PutValues(unsigned char *ip, const unsigned int *v,
-                        unsigned int n);
-  static void PutValues(unsigned char *ip, const float *v, unsigned int n);
-  static void PutValues(unsigned char *ip, const double *v, unsigned int n);
-  static void PutValues(unsigned char *ip, const vtkDICOMTag *v,
-                        unsigned int n);
+  static void PutValues(unsigned char *ip, const char *v, size_t n);
+  static void PutValues(unsigned char *ip, const unsigned char *v, size_t n);
+  static void PutValues(unsigned char *ip, const short *v, size_t n);
+  static void PutValues(unsigned char *ip, const unsigned short *v, size_t n);
+  static void PutValues(unsigned char *ip, const int *v, size_t n);
+  static void PutValues(unsigned char *ip, const unsigned int *v, size_t n);
+  static void PutValues(unsigned char *ip, const float *v, size_t n);
+  static void PutValues(unsigned char *ip, const double *v, size_t n);
+  static void PutValues(unsigned char *ip, const vtkDICOMTag *v, size_t n);
 
   // Write "n" values into the buffer from the provided pointer.
   // The buffer will be flushed as necessary.
   template<class T>
   bool WriteData(
-    unsigned char* &cp, unsigned char* &ep, const T *ptr, unsigned int n);
+    unsigned char* &cp, unsigned char* &ep, const T *ptr, size_t n);
 
   // write the head of a data element, return length (8 or 12)
-  unsigned int WriteElementHead(
+  size_t WriteElementHead(
     unsigned char* cp, vtkDICOMTag tag, vtkDICOMVR vr, unsigned int vl);
 
   // write one data element
@@ -238,14 +236,14 @@ public:
 
 //----------------------------------------------------------------------------
 inline bool EncoderBase::CheckBuffer(
-  unsigned char* &cp, unsigned char* &ep, unsigned int n)
+  unsigned char* &cp, unsigned char* &ep, size_t n)
 {
   bool r = true;
-  if (n > static_cast<unsigned int>(ep - cp))
+  if (n > static_cast<size_t>(ep - cp))
     {
     r = vtkDICOMCompilerInternalFriendship::FlushBuffer(
           this->Compiler, cp, ep);
-    r &= (n <= static_cast<unsigned int>(ep - cp));
+    r &= (n <= static_cast<size_t>(ep - cp));
     }
   return r;
 }
@@ -265,12 +263,20 @@ unsigned int EncoderBase::DataSize(
 
     if (vr == vtkDICOMVR::SQ)
       {
-      unsigned int n = v.GetNumberOfValues();
+      size_t n = v.GetNumberOfValues();
       const vtkDICOMItem *ptr = v.GetSequenceData();
-      for (unsigned int i = 0; i < n && vl != HxFFFFFFFF; i++)
+      for (size_t i = 0; i < n && vl != HxFFFFFFFF; i++)
         {
         unsigned int ll = this->DataSize(ptr[i].Begin(), ptr[i].End());
-        vl = (ll != HxFFFFFFFF ? vl + ll + 8 : ll);
+        // check for overflow or ll == 0xffffffff
+        if (HxFFFFFFFF - vl <= ll || HxFFFFFFFF - vl - ll <= 8)
+          {
+          vl = HxFFFFFFFF;
+          }
+        else
+          {
+          vl += ll + 8;
+          }
         }
       }
 
@@ -284,13 +290,15 @@ unsigned int EncoderBase::DataSize(
     // force vl to even
     assert((vl & 1) == 0);
     vl += (vl & 1);
-    l += vl;
-    // add length of data element header
-    l += 8;
-    if (!this->ImplicitVR && vr.HasLongVL())
+    // get header size
+    unsigned int hl = (this->ImplicitVR || !vr.HasLongVL() ? 8 : 12);
+    // check for overflow
+    if (HxFFFFFFFF - l <= vl || HxFFFFFFFF - l - vl <= hl)
       {
-      l += 4;
+      l = HxFFFFFFFF;
+      break;
       }
+    l += vl + hl;
 
     ++iter;
     }
@@ -363,49 +371,49 @@ inline void Encoder<BE>::PutInt64(unsigned char *op, unsigned long long i)
 //----------------------------------------------------------------------------
 template<int E>
 void Encoder<E>::PutValues(
-  unsigned char *op, const char *ip, unsigned int n)
+  unsigned char *op, const char *ip, size_t n)
 {
   do { *op++ = static_cast<unsigned char>(*ip++); } while (--n);
 }
 
 template<int E>
 void Encoder<E>::PutValues(
-  unsigned char *op, const unsigned char *ip, unsigned int n)
+  unsigned char *op, const unsigned char *ip, size_t n)
 {
   do { *op++ = *ip++; } while (--n);
 }
 
 template<int E>
 void Encoder<E>::PutValues(
-  unsigned char *op, const short *ip, unsigned int n)
+  unsigned char *op, const short *ip, size_t n)
 {
   do { Encoder<E>::PutInt16(op, *ip); ip++; op += 2; } while (--n);
 }
 
 template<int E>
 void Encoder<E>::PutValues(
-  unsigned char *op, const unsigned short *ip, unsigned int n)
+  unsigned char *op, const unsigned short *ip, size_t n)
 {
   do { Encoder<E>::PutInt16(op, *ip); ip++; op += 2; } while (--n);
 }
 
 template<int E>
 void Encoder<E>::PutValues(
-  unsigned char *op, const int *ip, unsigned int n)
+  unsigned char *op, const int *ip, size_t n)
 {
   do { Encoder<E>::PutInt32(op, *ip); ip++; op += 4; } while (--n);
 }
 
 template<int E>
 void Encoder<E>::PutValues(
-  unsigned char *op, const unsigned int *ip, unsigned int n)
+  unsigned char *op, const unsigned int *ip, size_t n)
 {
   do { Encoder<E>::PutInt32(op, *ip); ip++; op += 4; } while (--n);
 }
 
 template<int E>
 void Encoder<E>::PutValues(
-  unsigned char *op, const float *ip, unsigned int n)
+  unsigned char *op, const float *ip, size_t n)
 {
   union { float f; unsigned int i; } u;
 
@@ -421,7 +429,7 @@ void Encoder<E>::PutValues(
 
 template<int E>
 void Encoder<E>::PutValues(
-  unsigned char *op, const double *ip, unsigned int n)
+  unsigned char *op, const double *ip, size_t n)
 {
   union { double d; unsigned long long l; } u;
 
@@ -437,7 +445,7 @@ void Encoder<E>::PutValues(
 
 template<int E>
 void Encoder<E>::PutValues(
-  unsigned char *op, const vtkDICOMTag *ip, unsigned int n)
+  unsigned char *op, const vtkDICOMTag *ip, size_t n)
 {
   do
     {
@@ -454,11 +462,11 @@ void Encoder<E>::PutValues(
 template<int E>
 template<class T>
 bool Encoder<E>::WriteData(
-  unsigned char* &cp, unsigned char* &ep, const T *ptr, unsigned int n)
+  unsigned char* &cp, unsigned char* &ep, const T *ptr, size_t n)
 {
   while (n != 0 && this->CheckBuffer(cp, ep, sizeof(T)))
     {
-    unsigned int m = static_cast<unsigned int>((ep - cp)/sizeof(T));
+    size_t m = (ep - cp)/sizeof(T);
     if (m > n) { m = n; }
     Encoder<E>::PutValues(cp, ptr, m);
     cp += m*sizeof(T);
@@ -471,11 +479,11 @@ bool Encoder<E>::WriteData(
 
 //----------------------------------------------------------------------------
 template<int E>
-unsigned int Encoder<E>::WriteElementHead(
+size_t Encoder<E>::WriteElementHead(
   unsigned char* cp, vtkDICOMTag tag, vtkDICOMVR vr, unsigned int vl)
 {
   const char *vrt = vr.GetText();
-  unsigned int hl = 8; // data element head length
+  size_t hl = 8; // data element head length
   Encoder<E>::PutInt16(cp, tag.GetGroup());
   Encoder<E>::PutInt16(cp+2, tag.GetElement());
   cp[4] = vrt[0];
@@ -523,7 +531,7 @@ bool Encoder<E>::WriteDataElement(
       // (see DICOM Part 5, Annex A.4 and Table A.4-1)
 #ifndef NDEBUG
       // make sure sequence end delimiter is present
-      unsigned int n = v.GetNumberOfValues();
+      size_t n = v.GetNumberOfValues();
       const unsigned char *ptr = v.GetUnsignedCharData();
       assert(n > 8);
       assert(ptr[n-8] + (ptr[n-7] << 8) == HxFFFE &&
@@ -543,12 +551,20 @@ bool Encoder<E>::WriteDataElement(
   else if (vr == vtkDICOMVR::SQ)
     {
     // compute the true vl for the sequence
-    unsigned int n = v.GetNumberOfValues();
+    size_t n = v.GetNumberOfValues();
     const vtkDICOMItem *ptr = v.GetSequenceData();
-    for (unsigned int i = 0; i < n && vl != HxFFFFFFFF; i++)
+    for (size_t i = 0; i < n && vl != HxFFFFFFFF; i++)
       {
       unsigned int ll = this->DataSize(ptr[i].Begin(), ptr[i].End());
-      vl = (ll != HxFFFFFFFF ? vl + ll + 8: ll);
+      // check for overflow or ll == 0xffffffff
+      if (HxFFFFFFFF - vl <= ll || HxFFFFFFFF - vl - ll <= 8)
+        {
+        vl = HxFFFFFFFF;
+        }
+      else
+        {
+        vl += ll + 8;
+        }
       }
     }
   else
@@ -577,7 +593,7 @@ bool Encoder<E>::WriteDataElement(
       break;
     case VTK_UNSIGNED_CHAR:
       {
-      unsigned int n = vl;
+      size_t n = vl;
       if (vl == HxFFFFFFFF)
         {
         n = v.GetNumberOfValues();
@@ -589,59 +605,59 @@ bool Encoder<E>::WriteDataElement(
       break;
     case VTK_SHORT:
       {
-      unsigned int n = vl/sizeof(short);
+      size_t n = vl/sizeof(short);
       const short *ptr = v.GetShortData();
       r = this->WriteData(cp, ep, ptr, n);
       }
       break;
     case VTK_UNSIGNED_SHORT:
       {
-      unsigned int n = vl/sizeof(unsigned short);
+      size_t n = vl/sizeof(unsigned short);
       const unsigned short *ptr = v.GetUnsignedShortData();
       r = this->WriteData(cp, ep, ptr, n);
       }
       break;
     case VTK_INT:
       {
-      unsigned int n = vl/sizeof(int);
+      size_t n = vl/sizeof(int);
       const int *ptr = v.GetIntData();
       r = this->WriteData(cp, ep, ptr, n);
       }
       break;
     case VTK_UNSIGNED_INT:
       {
-      unsigned int n = vl/sizeof(unsigned int);
+      size_t n = vl/sizeof(unsigned int);
       const unsigned int *ptr = v.GetUnsignedIntData();
       r = this->WriteData(cp, ep, ptr, n);
       }
       break;
     case VTK_FLOAT:
       {
-      unsigned int n = vl/sizeof(float);
+      size_t n = vl/sizeof(float);
       const float *ptr = v.GetFloatData();
       r = this->WriteData(cp, ep, ptr, n);
       }
       break;
     case VTK_DOUBLE:
       {
-      unsigned int n = vl/sizeof(double);
+      size_t n = vl/sizeof(double);
       const double *ptr = v.GetDoubleData();
       r = this->WriteData(cp, ep, ptr, n);
       }
       break;
     case VTK_DICOM_TAG:
       {
-      unsigned int n = vl/sizeof(vtkDICOMTag);
+      size_t n = vl/sizeof(vtkDICOMTag);
       const vtkDICOMTag *ptr = v.GetTagData();
       r = this->WriteData(cp, ep, ptr, n);
       }
       break;
     case VTK_DICOM_ITEM:
       {
-      unsigned int n = v.GetNumberOfValues();
+      size_t n = v.GetNumberOfValues();
       const vtkDICOMItem *ptr = v.GetSequenceData();
 
-      for (unsigned int i = 0; i < n && r; i++)
+      for (size_t i = 0; i < n && r; i++)
         {
         unsigned int il = 0xFFFFFFFF;
         if (!ptr[i].IsDelimited())
@@ -723,7 +739,15 @@ bool Encoder<E>::WriteElements(
           vtkDICOMCompilerInternalFriendship::ComputePixelDataSize(
             this->Compiler);
         unsigned int hl = (this->ImplicitVR ? 8 : 12);
-        l = (pl != HxFFFFFFFF ? l + pl + hl : pl);
+        // check for overflow
+        if (HxFFFFFFFF - l <= pl || HxFFFFFFFF - l - pl <= hl)
+          {
+          l = HxFFFFFFFF;
+          }
+        else
+          {
+          l += pl + hl;
+          }
         }
       if (l != HxFFFFFFFF)
         {
@@ -1285,7 +1309,7 @@ bool vtkDICOMCompiler::WriteMetaData(
     unsigned int vl = this->ComputePixelDataSize();
 
     // write the data element head
-    unsigned int l = encoder->WriteElementHead(
+    size_t l = encoder->WriteElementHead(
       cp, vtkDICOMTag(DC::PixelData), vr, vl);
     cp += l;
     }

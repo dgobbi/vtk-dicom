@@ -135,18 +135,17 @@ public:
   // any data that hasn't yet been parsed to the start of the buffer,
   // and then read new data into the remainder of the buffer.
   bool CheckBuffer(
-    const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int n);
+    const unsigned char* &cp, const unsigned char* &ep, size_t n);
 
   // This overload of CheckBuffer is used within SkipElements to
   // automatically copy the skipped bytes into the value "v".
   // If the parameter "v" is NULL, then it will be ignored.
   bool CheckBuffer(
-    const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int n, vtkDICOMValue *v, const unsigned char* &sp);
+    const unsigned char* &cp, const unsigned char* &ep, size_t n,
+    vtkDICOMValue *v, const unsigned char* &sp);
 
   // Get the current byte offset from the start of the file.
-  unsigned int GetByteOffset(
+  size_t GetByteOffset(
     const unsigned char *cp, const unsigned char *ep);
 
   // Find an element within the current context.  This is used
@@ -214,33 +213,28 @@ public:
   static unsigned long long GetInt64(const unsigned char* ip);
 
   // Read from "ip" and write "n" decoded values into "v".
-  static void GetValues(const unsigned char *ip, char *v, unsigned int n);
-  static void GetValues(const unsigned char *ip, unsigned char *v,
-                        unsigned int n);
-  static void GetValues(const unsigned char *ip, short *v, unsigned int n);
-  static void GetValues(const unsigned char *ip, unsigned short *v,
-                        unsigned int n);
-  static void GetValues(const unsigned char *ip, int *v, unsigned int n);
-  static void GetValues(const unsigned char *ip, unsigned int *v,
-                        unsigned int n);
-  static void GetValues(const unsigned char *ip, float *v, unsigned int n);
-  static void GetValues(const unsigned char *ip, double *v, unsigned int n);
-  static void GetValues(const unsigned char *ip, vtkDICOMTag *v, unsigned int n);
+  static void GetValues(const unsigned char *ip, char *v, size_t n);
+  static void GetValues(const unsigned char *ip, unsigned char *v, size_t n);
+  static void GetValues(const unsigned char *ip, short *v, size_t n);
+  static void GetValues(const unsigned char *ip, unsigned short *v, size_t n);
+  static void GetValues(const unsigned char *ip, int *v, size_t n);
+  static void GetValues(const unsigned char *ip, unsigned int *v, size_t n);
+  static void GetValues(const unsigned char *ip, float *v, size_t n);
+  static void GetValues(const unsigned char *ip, double *v, size_t n);
+  static void GetValues(const unsigned char *ip, vtkDICOMTag *v, size_t n);
 
   // Read "n" values from the buffer into the provided pointer.
   // The number of bytes that were read from the buffer will be returned.
   // The buffer will be refilled as necessary.
   template<class T>
-  unsigned int ReadData(
-    const unsigned char* &cp, const unsigned char* &ep,
-    T *ptr, unsigned int n);
+  size_t ReadData(
+    const unsigned char* &cp, const unsigned char* &ep, T *ptr, size_t n);
 
   // Skip forward by "n" bytes.  The number of bytes skipped will be
   // returned.  If the end of the file is reached before the operation,
   // is complete, then the return value will be less than "n".
-  unsigned int SkipData(
-    const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int n);
+  size_t SkipData(
+    const unsigned char* &cp, const unsigned char* &ep, size_t n);
 
   // Read l bytes of data, or until delimiter tag found.
   // Set l to 0xffffffff to ignore length completely.
@@ -251,7 +245,7 @@ public:
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter)
   {
-    unsigned int bytesRead;
+    size_t bytesRead;
     return ReadElements(cp, ep, l, delimiter, bytesRead);
   }
 
@@ -270,7 +264,7 @@ public:
   // A ReadElements that returns the number of bytes read.
   bool ReadElements(
     const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead);
+    unsigned int l, vtkDICOMTag delimiter, size_t &bytesRead);
 
   // A SkipElements that copies skipped bytes into value "v".
   // This method is used when parsing encapsulated data, it simply
@@ -282,14 +276,14 @@ public:
 
   // Read the vr and vl and return the number of bytes read
   // (will return zero if an error occurred)
-  unsigned int ReadElementHead(
+  size_t ReadElementHead(
     const unsigned char* &cp, const unsigned char* &ep,
     vtkDICOMTag tag, vtkDICOMVR &vr, unsigned int &vl);
 
   // Read a value, given the vr and vl, where vl can be 0xffffffff
   // for SQ, UN, or OB to indicate tag-delimited data.
   // The number of bytes that were read will be returned.
-  unsigned int ReadElementValue(
+  size_t ReadElementValue(
     const unsigned char* &cp, const unsigned char* &ep,
     vtkDICOMVR vr, unsigned int vl, vtkDICOMValue &v);
 
@@ -373,8 +367,8 @@ inline void DecoderBase::CopyBuffer(
   // append bytes from sp to cp into the supplied value "v"
   if (v && cp != sp)
     {
-    unsigned int m = static_cast<unsigned int>(cp - sp);
-    unsigned int n = v->GetNumberOfValues();
+    size_t m = cp - sp;
+    size_t n = v->GetNumberOfValues();
     unsigned char *ptr = v->ReallocateUnsignedCharData(n + m) + n;
     do { *ptr++ = *sp++; } while (--m);
     }
@@ -382,42 +376,40 @@ inline void DecoderBase::CopyBuffer(
 
 //----------------------------------------------------------------------------
 inline bool DecoderBase::CheckBuffer(
-  const unsigned char* &cp, const unsigned char* &ep,
-  unsigned int n)
+  const unsigned char* &cp, const unsigned char* &ep, size_t n)
 {
   bool r = true;
-  if (n > static_cast<unsigned int>(ep - cp))
+  if (n > static_cast<size_t>(ep - cp))
     {
     r = vtkDICOMParserInternalFriendship::FillBuffer(
           this->Parser, cp, ep);
-    r &= (n <= static_cast<unsigned int>(ep - cp));
+    r &= (n <= static_cast<size_t>(ep - cp));
     }
   return r;
 }
 
 inline bool DecoderBase::CheckBuffer(
-  const unsigned char* &cp, const unsigned char* &ep,
-  unsigned int n, vtkDICOMValue *v, const unsigned char* &sp)
+  const unsigned char* &cp, const unsigned char* &ep, size_t n,
+  vtkDICOMValue *v, const unsigned char* &sp)
 {
   bool r = true;
-  if (n > static_cast<unsigned int>(ep - cp))
+  if (n > static_cast<size_t>(ep - cp))
     {
     this->CopyBuffer(v, sp, cp);
     r = vtkDICOMParserInternalFriendship::FillBuffer(
           this->Parser, cp, ep);
-    r &= (n <= static_cast<unsigned int>(ep - cp));
+    r &= (n <= static_cast<size_t>(ep - cp));
     sp = cp;
     }
   return r;
 }
 
 //----------------------------------------------------------------------------
-inline unsigned int DecoderBase::GetByteOffset(
+inline size_t DecoderBase::GetByteOffset(
   const unsigned char *cp, const unsigned char *ep)
 {
-  return static_cast<unsigned int>(
-    vtkDICOMParserInternalFriendship::GetBytesProcessed(
-      this->Parser, cp, ep));
+  return vtkDICOMParserInternalFriendship::GetBytesProcessed(
+    this->Parser, cp, ep);
 }
 
 //----------------------------------------------------------------------------
@@ -603,8 +595,8 @@ template<>
 inline unsigned long long Decoder<LE>::GetInt64(const unsigned char *ip)
 {
   unsigned int a = ip[0] + (ip[1] << 8) + ((ip[2] + (ip[3] << 8)) << 16);
-  long long b = ip[4] + (ip[5] << 8) + ((ip[6] + (ip[7] << 8)) << 16);
-  return (b << 32) + a;
+  unsigned int b = ip[4] + (ip[5] << 8) + ((ip[6] + (ip[7] << 8)) << 16);
+  return (static_cast<unsigned long long>(b) << 32) + a;
 }
 
 template<>
@@ -622,29 +614,29 @@ inline unsigned int Decoder<BE>::GetInt32(const unsigned char *ip)
 template<>
 inline unsigned long long Decoder<BE>::GetInt64(const unsigned char *ip)
 {
-  long long a = (((((ip[0] << 8) + ip[1]) << 8) + ip[2]) << 8) + ip[3];
+  unsigned int a = (((((ip[0] << 8) + ip[1]) << 8) + ip[2]) << 8) + ip[3];
   unsigned int b = (((((ip[4] << 8) + ip[5]) << 8) + ip[6]) << 8) + ip[7];
-  return (a << 32) + b;
+  return (static_cast<unsigned long long>(a) << 32) + b;
 }
 
 //----------------------------------------------------------------------------
 template<int E>
 void Decoder<E>::GetValues(
-  const unsigned char *ip, char *op, unsigned int n)
+  const unsigned char *ip, char *op, size_t n)
 {
   do { *op++ = static_cast<char>(*ip++); } while (--n);
 }
 
 template<int E>
 void Decoder<E>::GetValues(
-  const unsigned char *ip, unsigned char *op, unsigned int n)
+  const unsigned char *ip, unsigned char *op, size_t n)
 {
   do { *op++ = *ip++; } while (--n);
 }
 
 template<int E>
 void Decoder<E>::GetValues(
-  const unsigned char *ip, short *op, unsigned int n)
+  const unsigned char *ip, short *op, size_t n)
 {
   do { *op++ = static_cast<short>(Decoder<E>::GetInt16(ip)); ip += 2; }
   while (--n);
@@ -652,14 +644,14 @@ void Decoder<E>::GetValues(
 
 template<int E>
 void Decoder<E>::GetValues(
-  const unsigned char *ip, unsigned short *op, unsigned int n)
+  const unsigned char *ip, unsigned short *op, size_t n)
 {
   do { *op++ = Decoder<E>::GetInt16(ip); ip += 2; } while (--n);
 }
 
 template<int E>
 void Decoder<E>::GetValues(
-  const unsigned char *ip, int *op, unsigned int n)
+  const unsigned char *ip, int *op, size_t n)
 {
   do { *op++ = static_cast<int>(Decoder<E>::GetInt32(ip)); ip += 4; }
   while (--n);
@@ -667,14 +659,14 @@ void Decoder<E>::GetValues(
 
 template<int E>
 void Decoder<E>::GetValues(
-  const unsigned char *ip, unsigned int *op, unsigned int n)
+  const unsigned char *ip, unsigned int *op, size_t n)
 {
   do { *op++ = Decoder<E>::GetInt32(ip); ip += 4; } while (--n);
 }
 
 template<int E>
 void Decoder<E>::GetValues(
-  const unsigned char *ip, float *op, unsigned int n)
+  const unsigned char *ip, float *op, size_t n)
 {
   union { float f; unsigned int i; } u;
 
@@ -689,7 +681,7 @@ void Decoder<E>::GetValues(
 
 template<int E>
 void Decoder<E>::GetValues(
-  const unsigned char *ip, double *op, unsigned int n)
+  const unsigned char *ip, double *op, size_t n)
 {
   union { double d; unsigned long long l; } u;
 
@@ -704,7 +696,7 @@ void Decoder<E>::GetValues(
 
 template<int E>
 void Decoder<E>::GetValues(
-  const unsigned char *ip, vtkDICOMTag *op, unsigned int n)
+  const unsigned char *ip, vtkDICOMTag *op, size_t n)
 {
   do
     {
@@ -720,14 +712,13 @@ void Decoder<E>::GetValues(
 // Read "n" elements of type "T" into the supplied array pointer.
 template<int E>
 template<class T>
-unsigned int Decoder<E>::ReadData(
-  const unsigned char* &cp, const unsigned char* &ep,
-  T *ptr, unsigned int n)
+size_t Decoder<E>::ReadData(
+  const unsigned char* &cp, const unsigned char* &ep, T *ptr, size_t n)
 {
-  unsigned int l = n*sizeof(T);
+  size_t l = n*sizeof(T);
   while (n != 0 && this->CheckBuffer(cp, ep, sizeof(T)))
     {
-    unsigned int m = static_cast<unsigned int>((ep - cp)/sizeof(T));
+    size_t m = (ep - cp)/sizeof(T);
     if (m > n) { m = n; }
     Decoder<E>::GetValues(cp, ptr, m);
     cp += m*sizeof(T);
@@ -741,14 +732,14 @@ unsigned int Decoder<E>::ReadData(
 //----------------------------------------------------------------------------
 // Skip "l" bytes in the buffer, return the number of bytes actually skipped
 template<int E>
-unsigned int Decoder<E>::SkipData(
-  const unsigned char* &cp, const unsigned char* &ep, unsigned int l)
+size_t Decoder<E>::SkipData(
+  const unsigned char* &cp, const unsigned char* &ep, size_t l)
 {
-  unsigned int n = l;
+  size_t n = l;
 
   while (n != 0 && this->CheckBuffer(cp, ep, 2))
     {
-    unsigned int m = static_cast<unsigned int>(ep - cp);
+    size_t m = ep - cp;
     if (m > n) { m = n; }
     cp += m;
     n -= m;
@@ -759,12 +750,12 @@ unsigned int Decoder<E>::SkipData(
 
 //----------------------------------------------------------------------------
 template<int E>
-unsigned int Decoder<E>::ReadElementHead(
+size_t Decoder<E>::ReadElementHead(
   const unsigned char* &cp, const unsigned char* &ep,
   vtkDICOMTag tag, vtkDICOMVR &vr, unsigned int &vl)
 {
   // basic size is 4 bytes
-  unsigned int l = 4;
+  size_t l = 4;
 
   if (this->ImplicitVR)
     {
@@ -809,11 +800,11 @@ unsigned int Decoder<E>::ReadElementHead(
 
 //----------------------------------------------------------------------------
 template<int E>
-unsigned int Decoder<E>::ReadElementValue(
+size_t Decoder<E>::ReadElementValue(
   const unsigned char* &cp, const unsigned char* &ep,
   vtkDICOMVR vr, unsigned int vl, vtkDICOMValue &v)
 {
-  unsigned int l = 0;
+  size_t l = 0;
 
   // handle elements of unknown length
   if (vl == HxFFFFFFFF)
@@ -858,7 +849,7 @@ unsigned int Decoder<E>::ReadElementValue(
       return 0;
       }
     }
-  else if (static_cast<unsigned int>(ep - cp) < vl)
+  else if (static_cast<size_t>(ep - cp) < static_cast<size_t>(vl))
     {
     // value is larger than what remains in buffer,
     // make sure there are enough bytes left in file
@@ -951,7 +942,7 @@ unsigned int Decoder<E>::ReadElementValue(
       {
       vtkDICOMSequence seq;
       l = 0;
-      while (l < vl)
+      while (l < static_cast<size_t>(vl) || vl == HxFFFFFFFF)
         {
         if (!this->CheckBuffer(cp, ep, 8)) { return l; }
         unsigned short g = Decoder<E>::GetInt16(cp);
@@ -980,20 +971,22 @@ unsigned int Decoder<E>::ReadElementValue(
           }
         else
           {
-          // non-item tag found
+          // non-item tag found, skip to end if vl is known
           if (vl != HxFFFFFFFF)
             {
-            l += this->SkipData(cp, ep, vl-l);
+            l += this->SkipData(cp, ep, static_cast<size_t>(vl) - l);
             }
           break;
           }
         }
       if (vl != HxFFFFFFFF)
         {
-        // create a sequence with vl != 0xffffffff
-        unsigned int n = seq.GetNumberOfItems();
+        // if vl != 0xffffffff, then the sequence was fixed-size rather
+        // than delimited, so let's make our own fixed-size sequence and
+        // copy all of the items into it
+        size_t n = seq.GetNumberOfItems();
         vtkDICOMSequence seq2(n);
-        for (unsigned int i = 0; i < n; i++)
+        for (size_t i = 0; i < n; i++)
           {
           seq2.SetItem(i, seq.GetItem(i));
           }
@@ -1011,15 +1004,15 @@ unsigned int Decoder<E>::ReadElementValue(
 template<int E>
 bool Decoder<E>::ReadElements(
   const unsigned char* &cp, const unsigned char* &ep,
-  unsigned int l, vtkDICOMTag delimiter, unsigned int &bytesRead)
+  unsigned int l, vtkDICOMTag delimiter, size_t &bytesRead)
 {
-  unsigned int tl = 0;
+  size_t tl = 0;
 
   // does delimiter specify a single group to read?
   unsigned short group = delimiter.GetGroup();
   bool readGroup = (delimiter.GetElement() == 0x0000);
 
-  while (tl < l || l == HxFFFFFFFF)
+  while (tl < static_cast<size_t>(l) || l == HxFFFFFFFF)
     {
     // read the tag
     if (!this->CheckBuffer(cp, ep, 8)) { break; }
@@ -1034,7 +1027,7 @@ bool Decoder<E>::ReadElements(
     cp += 4;
     vtkDICOMVR vr;
     unsigned int vl;
-    unsigned int hl = this->ReadElementHead(cp, ep, tag, vr, vl);
+    size_t hl = this->ReadElementHead(cp, ep, tag, vr, vl);
     tl += 4 + hl;
 
     // return false if could not read element
@@ -1049,7 +1042,7 @@ bool Decoder<E>::ReadElements(
 
     // read the value
     vtkDICOMValue v;
-    unsigned int rl = 0;
+    size_t rl = 0;
     if (vr == vtkDICOMVR::UN && !this->ImplicitVR)
       {
       // if it was explicitly labeled 'UN' then check dictionary
@@ -1062,9 +1055,9 @@ bool Decoder<E>::ReadElements(
       }
 
     // was it a short read?
-    if (rl < vl && vl != HxFFFFFFFF)
+    if (rl < static_cast<size_t>(vl) && vl != HxFFFFFFFF)
       {
-      unsigned int dl = vl - rl;
+      size_t dl = static_cast<size_t>(vl) - rl;
       // is the difference small, and not due to buffer underrun?
       if (dl <= 8 && this->CheckBuffer(cp, ep, dl))
         {
@@ -1137,7 +1130,7 @@ bool Decoder<E>::SkipElements(
       if (readGroup && group != g) { break; }
 
       cp += 4;
-      unsigned int tl = 8;
+      size_t tl = 8;
       unsigned int vl = 0;
       vtkDICOMVR vr;
 
@@ -1205,23 +1198,23 @@ bool Decoder<E>::SkipElements(
       else
         {
         // fixed length element (vl != 0xffffffff)
-        if (v != 0 && vl > static_cast<unsigned int>(ep - cp))
+        if (v != 0 && static_cast<size_t>(vl) > static_cast<size_t>(ep - cp))
           {
           // if vl is larger than number of bytes left in buffer,
           // then copy data from save point "sp" up to "cp" into v,
           // and read the value into "v".
-          unsigned int m = static_cast<unsigned int>(cp - sp);
-          unsigned int n = v->GetNumberOfValues();
+          size_t m = cp - sp;
+          size_t n = v->GetNumberOfValues();
           unsigned char *ptr = v->ReallocateUnsignedCharData(n + vl + m) + n;
           if (m) { do { *ptr++ = *sp++; } while (--m); }
           tl = this->ReadData(cp, ep, ptr, vl);
           sp = cp;
-          if (tl != vl) { return false; }
+          if (tl != static_cast<size_t>(vl)) { return false; }
           }
         else
           {
           tl = this->SkipData(cp, ep, vl);
-          if (tl != vl) { return false; }
+          if (tl != static_cast<size_t>(vl)) { return false; }
           }
         }
       }
@@ -1233,20 +1226,20 @@ bool Decoder<E>::SkipElements(
   else if (l != 0) // l != 0xffffffff
     {
     // skipped a fixed number of bytes
-    unsigned int tl;
+    size_t tl;
     if (v != 0)
       {
       // read bytes into the value "v"
-      unsigned int n = v->GetNumberOfValues();
+      size_t n = v->GetNumberOfValues();
       unsigned char *ptr = v->ReallocateUnsignedCharData(n + l) + n;
       tl = this->ReadData(cp, ep, ptr, l);
-      if (tl != l) { return false; }
+      if (tl != static_cast<size_t>(l)) { return false; }
       }
     else
       {
       // simply skip "l" bytes
       tl = this->SkipData(cp, ep, l);
-      if (tl != l) { return false; }
+      if (tl != static_cast<size_t>(l)) { return false; }
       }
     }
 

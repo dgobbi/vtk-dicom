@@ -45,9 +45,9 @@ public:
 
   //! Get a value from an item in the sequence.
   const vtkDICOMValue &GetAttributeValue(
-    unsigned int i, vtkDICOMTag tag) const;
+    size_t i, vtkDICOMTag tag) const;
   const vtkDICOMValue &GetAttributeValue(
-    unsigned int i, const vtkDICOMTagPath &p) const;
+    size_t i, const vtkDICOMTagPath &p) const;
 
   //! Add an item to the sequence.
   /*!
@@ -60,7 +60,7 @@ public:
     this->V.AppendValue(item); }
 
   //! Get the number of items in the sequence.
-  unsigned int GetNumberOfItems() const {
+  size_t GetNumberOfItems() const {
     return this->V.GetNumberOfValues(); }
 
   //! Set an item in the sequence.
@@ -68,11 +68,11 @@ public:
    *  This method can only be used if space as been allocated within
    *  the sequence by specifying a size when calling the constructor.
    */
-  void SetItem(unsigned int i, const vtkDICOMItem& item) {
+  void SetItem(size_t i, const vtkDICOMItem& item) {
     this->V.SetValue(i, item); }
 
   //! Get an item from the sequence.
-  const vtkDICOMItem& GetItem(unsigned int i) const;
+  const vtkDICOMItem& GetItem(size_t i) const;
 
   //! Get a pointer to the items in the sequence.
   const vtkDICOMItem *GetSequenceData() const {
