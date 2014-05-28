@@ -728,7 +728,7 @@ bool Encoder<E>::WriteElements(
           vtkDICOMCompilerInternalFriendship::ComputePixelDataSize(
             this->Compiler);
         unsigned int hl = (this->ImplicitVR ? 8 : 12);
-        l += (pl != HxFFFFFFFF ? l + pl + hl : pl);
+        l = (pl != HxFFFFFFFF ? l + pl + hl : pl);
         }
       if (l != HxFFFFFFFF)
         {
