@@ -531,18 +531,15 @@ bool Encoder<E>::WriteDataElement(
       // (see DICOM Part 5, Section 6.2.2, Unknown (UN) Value Representation)
       // if VR is OB then it is a sequence of fragments
       // (see DICOM Part 5, Annex A.4 and Table A.4-1)
-      vl = v.GetNumberOfValues();
-      // force length to even
-      assert((vl & 1) == 0);
-      vl += (vl & 1);
 #ifndef NDEBUG
       // make sure sequence end delimiter is present
+      unsigned int n = v.GetNumberOfValues();
       const unsigned char *ptr = v.GetUnsignedCharData();
-      assert(vl > 8);
-      assert(ptr[vl-8] + (ptr[vl-7] << 8) == HxFFFE &&
-             ptr[vl-6] + (ptr[vl-5] << 8) == HxE0DD);
-      assert(ptr[vl-4] + (ptr[vl-3] << 8) +
-             (ptr[vl-2] << 16) + (ptr[vl-1] << 24) == 0);
+      assert(n > 8);
+      assert(ptr[n-8] + (ptr[n-7] << 8) == HxFFFE &&
+             ptr[n-6] + (ptr[n-5] << 8) == HxE0DD);
+      assert(ptr[n-4] + (ptr[n-3] << 8) +
+             (ptr[n-2] << 16) + (ptr[n-1] << 24) == 0);
 #endif
       }
     else if (vr != vtkDICOMVR::SQ)
@@ -590,8 +587,14 @@ bool Encoder<E>::WriteDataElement(
       break;
     case VTK_UNSIGNED_CHAR:
       {
+      unsigned int n = vl;
+      if (vl == HxFFFFFFFF)
+        {
+        n = v.GetNumberOfValues();
+        n += (n & 1);
+        }
       const unsigned char *ptr = v.GetUnsignedCharData();
-      r = this->WriteData(cp, ep, ptr, vl);
+      r = this->WriteData(cp, ep, ptr, n);
       }
       break;
     case VTK_SHORT:
