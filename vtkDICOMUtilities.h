@@ -92,6 +92,25 @@ public:
    */
   static void SetImplementationVersionName(const char *name);
 
+  //! Unpack one little-endian int from a stream of bytes.
+  /*!
+   *  This is a very common operation that is required in many different
+   *  classes, so the code is centralized here.
+   */
+  static unsigned int UnpackUnsignedInt(const unsigned char *cp) {
+    return cp[0] + (cp[1] << 8) + (cp[2] << 16) + (cp[3] << 24); }
+
+  //! Pack one little-endian int into a stream of bytes.
+  /*!
+   *  This is a very common operation that is required in many different
+   *  classes, so the code is centralized here.
+   */
+  static void PackUnsignedInt(unsigned int i, unsigned char *cp) {
+    cp[0] = static_cast<unsigned char>(i);
+    cp[1] = static_cast<unsigned char>(i >> 8);
+    cp[2] = static_cast<unsigned char>(i >> 16);
+    cp[3] = static_cast<unsigned char>(i >> 24); }
+
 protected:
   vtkDICOMUtilities();
   ~vtkDICOMUtilities();

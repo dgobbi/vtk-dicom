@@ -18,6 +18,7 @@
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMUtilities.h"
 #include "vtkDICOMItem.h"
+#include "vtkDICOMImageCodec.h"
 
 #include <vtkObjectFactory.h>
 #include <vtkStringArray.h>
@@ -822,9 +823,11 @@ vtkDICOMCompiler::vtkDICOMCompiler()
   this->ChunkSize = 0;
   this->Index = 0;
   this->FrameCounter = 0;
-  this->BigEndian = 0;
-  this->Compressed = 0;
-  this->KeepOriginalPixelDataVR = 0;
+  this->FrameData = 0;
+  this->FrameLength = 0;
+  this->BigEndian = false;
+  this->Compressed = false;
+  this->KeepOriginalPixelDataVR = false;
   this->ErrorCode = 0;
   this->SeriesUIDs = 0;
 
@@ -927,12 +930,147 @@ void vtkDICOMCompiler::WriteHeader()
 //----------------------------------------------------------------------------
 void vtkDICOMCompiler::Close()
 {
+  if (this->Compressed && this->FrameCounter > 0)
+    {
+    this->WriteFragments();
+    }
+
   if (this->OutputFile)
     {
     this->OutputFile->Close();
     delete this->OutputFile;
     this->OutputFile = NULL;
     }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMCompiler::CloseAndRemove()
+{
+  if (this->Compressed && this->FrameCounter > 0)
+    {
+    this->FreeFragments();
+    }
+
+  if (this->OutputFile)
+    {
+    this->OutputFile->Close();
+    delete this->OutputFile;
+    this->OutputFile = NULL;
+    vtkDICOMFile::Remove(this->FileName);
+    }
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMCompiler::WriteFragments()
+{
+  bool fileError = false;
+
+  if (this->OutputFile && this->ErrorCode == 0)
+    {
+    // Compressed frames
+    unsigned int numFrames = this->FrameCounter;
+    size_t n = 0;
+
+    // Offset table:
+    // - Item tag (FFFE, E000)
+    // - Length of table in bytes (4 bytes)
+    // - Offsets to frames(4 bytes each)
+    unsigned int tableLength = 4*numFrames;
+    unsigned char *buffer = new unsigned char[8 + tableLength];
+    Encoder<LE>::PutInt16(buffer, HxFFFE);
+    Encoder<LE>::PutInt16(buffer+2, HxE000);
+    Encoder<LE>::PutInt32(buffer+4, tableLength);
+
+    const unsigned int maxOffset = HxFFFFFFFF - 1;
+    unsigned int offset = 0;
+    for (unsigned int i = 0; i < numFrames; i++)
+      {
+      Encoder<LE>::PutInt32(buffer + 8 + i*4, offset);
+      // make sure offsets don't exceed 32-bit limit
+      if (maxOffset - offset >= this->FrameLength[i])
+        {
+        offset += this->FrameLength[i];
+        }
+      else
+        {
+        tableLength = 0;
+        vtkDICOMUtilities::PackUnsignedInt(tableLength, buffer + 4);
+        break;
+        }
+      }
+
+    // write the offset table to the file
+    n = this->OutputFile->Write(buffer, tableLength + 8);
+    if (n < tableLength + 8)
+      {
+      fileError = true;
+      }
+
+    for (unsigned int i = 0; i < numFrames && !fileError; i++)
+      {
+      // Fragment value header
+      // - Item tag (FFFE, E000)
+      // - Length of item in bytes (4 bytes)
+      Encoder<LE>::PutInt16(buffer, HxFFFE);
+      Encoder<LE>::PutInt16(buffer+2, HxE000);
+      Encoder<LE>::PutInt32(buffer+4, this->FrameLength[i]);
+      n = this->OutputFile->Write(buffer, 8);
+      if (n < 8)
+        {
+        fileError = true;
+        break;
+        }
+
+      // - Fragment data
+      assert((this->FrameLength[i] & 1) == 0);
+      n = this->OutputFile->Write(this->FrameData[i], this->FrameLength[i]);
+      if (n < this->FrameLength[i])
+        {
+        fileError = true;
+        break;
+        }
+      }
+
+    if (!fileError)
+      {
+      // After final fragment:
+      // - Sequence delimiter tag (FFFE, E0DD)
+      // - Zero length
+      Encoder<LE>::PutInt16(buffer, HxFFFE);
+      Encoder<LE>::PutInt16(buffer+2, HxE0DD);
+      Encoder<LE>::PutInt32(buffer+4, 0);
+      n = this->OutputFile->Write(buffer, 8);
+      if (n < 8)
+        {
+        fileError = true;
+        }
+      }
+
+    delete [] buffer;
+    }
+
+  this->FreeFragments();
+
+  if (fileError)
+    {
+    this->DiskFullError();
+    }
+
+  return !fileError;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMCompiler::FreeFragments()
+{
+  unsigned int numFrames = this->FrameCounter;
+  for (unsigned int i = 0; i < numFrames; i++)
+    {
+    delete [] this->FrameData[i];
+    }
+  delete [] this->FrameData;
+  delete [] this->FrameLength;
+  this->FrameData = 0;
+  this->FrameCounter = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -1012,14 +1150,13 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
   // delete the file if an error occurred
   if (!r)
     {
-    this->Close();
-    vtkDICOMFile::Remove(this->FileName);
-
     if (this->GetErrorCode() == vtkErrorCode::NoError)
       {
-      this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
-      vtkErrorMacro("Error while writing file "
-                    << this->FileName << ": Out of disk space.");
+      this->DiskFullError();
+      }
+    else
+      {
+      this->CloseAndRemove();
       }
     }
 
@@ -1037,11 +1174,7 @@ void vtkDICOMCompiler::WritePixelData(const unsigned char *cp, vtkIdType size)
   size_t n = this->OutputFile->Write(cp, size);
   if (n != static_cast<size_t>(size))
     {
-    this->Close();
-    vtkDICOMFile::Remove(this->FileName);
-    this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
-    vtkErrorMacro("Error while writing file "
-                  << this->FileName << ": Out of disk space.");
+    this->DiskFullError();
     }
 }
 
@@ -1061,30 +1194,36 @@ void vtkDICOMCompiler::WriteFrame(const unsigned char *cp, vtkIdType size)
 
   if (this->Compressed)
     {
-    // Compressed frames
+    // if this is the first frame, do some set-up
+    if (this->FrameCounter == 0)
+      {
+      unsigned int numFrames =
+        this->MetaData->GetAttributeValue(DC::NumberOfFrames).AsUnsignedInt();
+      numFrames = (numFrames == 0 ? 1 : numFrames);
+      this->FrameData = new unsigned char *[numFrames];
+      this->FrameLength = new unsigned int[numFrames];
+      for (unsigned int i = 0; i < numFrames; i++)
+        {
+        this->FrameData[i] = 0;
+        this->FrameLength[i] = 0;
+        }
+      }
 
-    // Offset table:
-    // - Item tag (FFFE, E000)
-    // - Length of table in bytes (4 bytes)
-    // - Offset to frame 2 (4 bytes) ...
+    vtkDICOMImageCodec codec(this->TransferSyntaxUID);
+    size_t fl = 0;
+    unsigned char *fd = 0;
+    int errCode = codec.Encode(this->MetaData, cp, size, &fd, &fl);
+    this->FrameLength[this->FrameCounter] = static_cast<unsigned int>(fl);
+    this->FrameData[this->FrameCounter] = fd;
 
-    // Fragment
-    // - Item tag (FFFE, E000)
-    // - Length of item in bytes (4 bytes)
-    // - Fragment data
-
-    // After final fragment:
-    // - Sequence delimiter tag (FFFE, E0DD)
-    // - Empty size (4 bytes of zeros)
-
-    // The entire compressed PixelData must be buffered in memory
-    // in order for the offset table to be filled in.
-
-    if (this->ErrorCode == 0)
+    if (this->ErrorCode == 0 && errCode != vtkDICOMImageCodec::NoError)
       {
       this->SetErrorCode(vtkErrorCode::FileFormatError);
       vtkErrorMacro("Writing compressed DICOM is not supported.");
       }
+
+    // mark all data as accepted
+    n = size;
     }
   else if (((this->BigEndian != 0) ^ (endiancheck.s != 1)) &&
            this->MetaData->GetAttributeValue(DC::BitsAllocated).AsInt() > 8)
@@ -1110,11 +1249,7 @@ void vtkDICOMCompiler::WriteFrame(const unsigned char *cp, vtkIdType size)
 
   if (n != static_cast<size_t>(size))
     {
-    this->Close();
-    vtkDICOMFile::Remove(this->FileName);
-    this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
-    vtkErrorMacro("Error while writing file "
-                  << this->FileName << ": Out of disk space.");
+    this->DiskFullError();
     }
 
   this->FrameCounter++;
@@ -1375,6 +1510,15 @@ void vtkDICOMCompiler::CompileError(const char* message)
   this->SetErrorCode(vtkErrorCode::FileFormatError);
   vtkErrorMacro("Error while writing file "
                 << this->FileName << ": " << message);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMCompiler::DiskFullError()
+{
+  this->CloseAndRemove();
+  this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
+  vtkErrorMacro("Error while writing file "
+                << this->FileName << ": Out of disk space.");
 }
 
 //----------------------------------------------------------------------------

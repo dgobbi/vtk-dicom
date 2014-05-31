@@ -60,6 +60,7 @@ vtkDICOMWriter::vtkDICOMWriter()
   this->MemoryRowOrder = vtkDICOMWriter::BottomUp;
   this->FileSliceOrder = vtkDICOMWriter::RHR;
   this->SeriesDescription = 0;
+  this->TransferSyntaxUID = 0;
   this->ImageType = new char[24];
   strcpy(this->ImageType, "DERIVED/SECONDARY/OTHER");
   this->Streaming = 0;
@@ -80,6 +81,7 @@ vtkDICOMWriter::~vtkDICOMWriter()
     {
     this->Generator->Delete();
     }
+  delete [] this->TransferSyntaxUID;
   delete [] this->SeriesDescription;
   delete [] this->ImageType;
 }
@@ -97,6 +99,15 @@ void vtkDICOMWriter::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "SeriesDescription: " << this->SeriesDescription << "\n";
   os << indent << "ImageType: " << this->ImageType << "\n";
+  os << indent << "TransferSyntaxUID: ";
+  if (this->TransferSyntaxUID)
+    {
+    os << this->TransferSyntaxUID << "\n";
+    }
+  else
+    {
+    os << "(none)\n";
+    }
   os << indent << "MetaData: ";
   if (this->MetaData)
     {
@@ -439,6 +450,10 @@ int vtkDICOMWriter::RequestData(
 
   vtkSmartPointer<vtkDICOMCompiler> compiler =
     vtkSmartPointer<vtkDICOMCompiler>::New();
+  if (this->TransferSyntaxUID)
+    {
+    compiler->SetTransferSyntaxUID(this->TransferSyntaxUID);
+    }
   compiler->SetMetaData(meta);
 
   // write the image

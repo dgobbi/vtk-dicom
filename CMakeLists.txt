@@ -227,6 +227,7 @@ set(LIB_SRCS
   vtkDICOMDictPrivate.cxx
   vtkDICOMDirectory.cxx
   vtkDICOMGenerator.cxx
+  vtkDICOMImageCodec.cxx
   vtkDICOMSCGenerator.cxx
   vtkDICOMCTGenerator.cxx
   vtkDICOMMRGenerator.cxx
@@ -271,6 +272,7 @@ set(LIB_SPECIAL
   vtkDICOMDictEntry.cxx
   vtkDICOMDictionary.cxx
   vtkDICOMDataElement.cxx
+  vtkDICOMImageCodec.cxx
   ${REFCOUNT_SRC}
   vtkDICOMSequence.cxx
   vtkDICOMItem.cxx

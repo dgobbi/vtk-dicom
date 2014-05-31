@@ -190,21 +190,9 @@ protected:
     unsigned char *buffer, vtkIdType bufferSize);
 
   // Description:
-  // Unpack one little-endian int.
-  unsigned int UnpackUnsignedInt(const void *source) {
-    const unsigned char *cp = static_cast<const unsigned char *>(source);
-    return cp[0] + (cp[1] << 8) + (cp[2] << 16) + (cp[3] << 24); }
-
-  // Description:
   // Unpack 1 bit to 8 bits or 12 bits to 16 bits.
   void UnpackBits(
     const void *source, void *buffer, vtkIdType bufferSize, int bits);
-
-  // Description:
-  // Unpack run-length encoded data
-  vtkIdType UnpackRLE(
-    const void *source, void *buffer, vtkIdType bufferSize,
-    unsigned int fragmentSize);
 
   // Description:
   // Read an DICOM file directly.

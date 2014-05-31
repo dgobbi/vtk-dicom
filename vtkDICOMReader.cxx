@@ -19,6 +19,8 @@
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMItem.h"
 #include "vtkDICOMTagPath.h"
+#include "vtkDICOMImageCodec.h"
+#include "vtkDICOMUtilities.h"
 
 #include "vtkObjectFactory.h"
 #include "vtkImageData.h"
@@ -1646,95 +1648,6 @@ void vtkDICOMReader::UnpackBits(
 }
 
 //----------------------------------------------------------------------------
-vtkIdType vtkDICOMReader::UnpackRLE(
-  const void *filePtr, void *buffer, vtkIdType bufferSize,
-  unsigned int fragmentSize)
-{
-  const signed char *inPtr = static_cast<const signed char *>(filePtr);
-  signed char *outPtr = static_cast<signed char *>(buffer);
-
-  // loop over all RLE segments
-  unsigned int n = vtkDICOMReader::UnpackUnsignedInt(inPtr);
-  vtkIdType segmentSize = bufferSize/n;
-  for (unsigned int i = 0; i < n; i++)
-    {
-    // get the offset for this segment
-    unsigned int offset = vtkDICOMReader::UnpackUnsignedInt(inPtr + (i+1)*4);
-    if (offset >= fragmentSize)
-      {
-      break;
-      }
-    // loop over the segment and decompress it
-    const signed char *cp = inPtr + offset;
-    signed char *dp = outPtr + i;
-    vtkIdType remaining = segmentSize;
-    while (remaining > 0 && offset < fragmentSize)
-      {
-      if (++offset == fragmentSize)
-        {
-        break;
-        }
-      // check the indicator byte (use short to avoid overflow)
-      short c = *cp++;
-      if (c >= 0)
-        {
-        // do a literal run
-        c = c + 1;
-        if (fragmentSize - offset < static_cast<unsigned int>(c))
-          {
-          // safety check: limit to the number available input bytes
-          c = static_cast<short>(fragmentSize - offset);
-          }
-        offset += c;
-        if (c > remaining)
-          {
-          // safety check: limit to the size of the output buffer
-          c = remaining;
-          }
-        remaining -= c;
-        do
-          {
-          *dp = *cp++;
-          dp += n;
-          }
-        while (--c);
-        }
-      else if (c > -128)
-        {
-        // do a replication run
-        c = 1 - c;
-        offset += 1;
-        if (c > remaining)
-          {
-          // safety check: limit to the size of the output buffer
-          c = remaining;
-          }
-        remaining -= c;
-        do
-          {
-          *dp = *cp;
-          dp += n;
-          }
-        while (--c);
-        cp++;
-        }
-      }
-    if (remaining > 0)
-      {
-      // short read, clear remainder of buffer
-      do
-        {
-        *dp = 0;
-        dp += n;
-        }
-      while (--remaining);
-      }
-    }
-
-  return bufferSize;
-}
-
-//----------------------------------------------------------------------------
 bool vtkDICOMReader::ReadFileNative(
   const char *filename, int fileIdx,
   unsigned char *buffer, vtkIdType bufferSize)
@@ -1772,6 +1685,12 @@ bool vtkDICOMReader::ReadFileNative(
   size_t resultSize = 0;
   if (transferSyntax == "1.2.840.10008.1.2.5")
     {
+    vtkDICOMImageCodec codec(transferSyntax);
+
+    unsigned int numFrames = this->MetaData->GetAttributeValue(
+      fileIdx, DC::NumberOfFrames).AsUnsignedInt();
+    numFrames = (numFrames == 0 ? 1 : numFrames);
+
     // assume the remainder of the file is all pixel data
     readSize = static_cast<size_t>(
       offsetAndSize[1] - offsetAndSize[0]);
@@ -1784,13 +1703,13 @@ bool vtkDICOMReader::ReadFileNative(
     resultSize = infile.Read(filePtr, readSize);
     size_t bytesRemaining = resultSize;
     vtkIdType bufferPos = 0;
-    vtkIdType frameSize = bufferSize;
+    vtkIdType frameSize = bufferSize/numFrames;
     bool isOffsetTable = true;
     while (bytesRemaining >= 8 && bufferPos < bufferSize)
       {
       // get the item header
-      unsigned int tagkey = vtkDICOMReader::UnpackUnsignedInt(filePtr);
-      unsigned int length = vtkDICOMReader::UnpackUnsignedInt(filePtr + 4);
+      unsigned int tagkey = vtkDICOMUtilities::UnpackUnsignedInt(filePtr);
+      unsigned int length = vtkDICOMUtilities::UnpackUnsignedInt(filePtr + 4);
       filePtr += 8;
       bytesRemaining -= 8;
       // make sure the tag is valid
@@ -1805,19 +1724,11 @@ bool vtkDICOMReader::ReadFileNative(
         length = bytesRemaining;
         }
       // first item is the offset table
-      if (isOffsetTable)
-        {
-        // length of offset table gives number of frames
-        if (length > 0)
-          {
-          frameSize = bufferSize / (length/4);
-          }
-        }
-      else
+      if (!isOffsetTable)
         {
         // unpack an RLE fragment
-        vtkDICOMReader::UnpackRLE(
-          filePtr, buffer + bufferPos, frameSize, length);
+        codec.Decode(this->MetaData,
+          filePtr, length, buffer + bufferPos, frameSize);
         bufferPos += frameSize;
         }
       filePtr += length;

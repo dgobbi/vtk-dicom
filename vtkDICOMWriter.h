@@ -155,6 +155,15 @@ public:
   void SetGenerator(vtkDICOMGenerator *);
   vtkDICOMGenerator *GetGenerator() { return this->Generator; }
 
+  //! Set the Transfer Syntax UID.
+  /*!
+   *  Setting the transfer syntax is an experimental feature.  If not
+   *  set, the transfer syntax will be 1.2.840.10008.1.2.1 (uncompressed
+   *  little-endian with explicit VR).
+   */
+  vtkSetStringMacro(TransferSyntaxUID);
+  vtkGetStringMacro(TransferSyntaxUID);
+
   // Description:
   // Turn on streaming, to pass one slice though the pipeline at a time.
   // Streaming decreases memory usage for images with a large number of
@@ -221,6 +230,10 @@ protected:
   // Description:
   // A description of how the file was produced.
   char *SeriesDescription;
+
+  // Description:
+  // The transfer syntax to use when writing the data.
+  char *TransferSyntaxUID;
 
   // Description:
   // The DICOM Image Type.

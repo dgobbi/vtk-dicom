@@ -135,6 +135,13 @@ public:
   //! Close the file.
   virtual void Close();
 
+  //! Close the file and delete it.
+  /*!
+   *  This method should be called if, for any reason, the writing
+   *  of the file could not be completed.
+   */
+  virtual void CloseAndRemove();
+
   //! Get the IO error code.
   unsigned long GetErrorCode() { return this->ErrorCode; }
 
@@ -173,6 +180,9 @@ protected:
   //! Report an error while compiling the file.
   virtual void CompileError(const char *message);
 
+  //! React to "disk full" by deleting file and reporting error.
+  virtual void DiskFullError();
+
   //! Set the error code.
   void SetErrorCode(unsigned long e) { this->ErrorCode = e; }
 
@@ -189,6 +199,12 @@ protected:
     unsigned char* &cp, unsigned char* &ep,
     vtkDICOMMetaData *data, int idx);
 
+  //! Write the fragments of the compressed data
+  bool WriteFragments();
+
+  //! Free any fragments that are stored in memory.
+  void FreeFragments();
+
   //! Compute the size of the pixel data (0xffffffff if compressed).
   unsigned int ComputePixelDataSize();
 
@@ -204,13 +220,15 @@ protected:
   vtkStringArray *SeriesUIDs;
   vtkDICOMFile *OutputFile;
   unsigned char *Buffer;
+  unsigned char **FrameData;
+  unsigned int *FrameLength;
+  unsigned int FrameCounter;
   int BufferSize;
   int ChunkSize;
   int Index;
-  int FrameCounter;
-  int BigEndian;
-  int Compressed;
-  int KeepOriginalPixelDataVR;
+  bool BigEndian;
+  bool Compressed;
+  bool KeepOriginalPixelDataVR;
   unsigned long ErrorCode;
 
   static char StudyUID[64];
