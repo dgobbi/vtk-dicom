@@ -38,7 +38,7 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
     }
   else if (mode == Out)
     {
-    this->Handle = open(filename, O_WRONLY | O_CREAT, 000666);
+    this->Handle = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 000666);
     }
 
   if (this->Handle == -1)
