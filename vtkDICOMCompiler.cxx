@@ -954,11 +954,11 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
     {
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
     const char *errText = "Can't open the file ";
-    if (this->OutputFile->GetError() == vtkDICOMFile::Access)
+    if (this->OutputFile->GetError() == vtkDICOMFile::AccessDenied)
       {
       errText = "No permission to write the file ";
       }
-    else if (this->OutputFile->GetError() == vtkDICOMFile::IsDir)
+    else if (this->OutputFile->GetError() == vtkDICOMFile::IsDirectory)
       {
       errText = "The selected file is a directory ";
       }

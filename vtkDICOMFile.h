@@ -17,15 +17,17 @@
 #include <vtkSystemIncludes.h>
 #include "vtkDICOMModule.h"
 
-#if !defined(_WIN32)
+#if defined(_WIN32)
+#define VTK_DICOM_WIN32_IO
+#else
 #define VTK_DICOM_POSIX_IO
 #endif
 
 //! A class that provides basic input/output operations.
 /*!
  *  The purpose of this class is to centralize all of the I/O operations.
- *  It is intended to use system-level I/O calls so that it can eventually
- *  be used not only on files, but on sockets as well.
+ *  It uses system-level I/O calls so that it can eventually be used not
+ *  only on files, but on sockets as well.
  */
 class VTK_DICOM_EXPORT vtkDICOMFile
 {
@@ -40,10 +42,13 @@ public:
   //! Error codes.
   enum Code
   {
-    Good,
-    Bad,
-    Access,
-    IsDir
+    Good,              // no error
+    Bad,               // unspecified error
+    AccessDenied,      // file permission error
+    IsDirectory,       // can't open file: directory with that name exists
+    DirectoryNotFound, // one of the directories in the path doesn't exist
+    FileNotFound,      // requested file (or directory) doesn't exist
+    OutOfSpace         // disk full or quota exceeded
   };
 
   //! Typedef for a file offset.

@@ -1356,11 +1356,11 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
     {
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
     const char *errText = "Can't read the file ";
-    if (infile.GetError() == vtkDICOMFile::Access)
+    if (infile.GetError() == vtkDICOMFile::AccessDenied)
       {
       errText = "No permission to read the file ";
       }
-    else if (infile.GetError() == vtkDICOMFile::IsDir)
+    else if (infile.GetError() == vtkDICOMFile::IsDirectory)
       {
       errText = "The selected file is a directory ";
       }
