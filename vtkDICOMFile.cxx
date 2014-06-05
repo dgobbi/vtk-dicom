@@ -23,7 +23,15 @@
 #elif defined(VTK_DICOM_WIN32_IO)
 #include <windows.h>
 #else
+#ifdef _WIN32
+#include <io.h>
+#include <direct.h>
+#define _unlink unlink
+#else
+#include <unistd.h>
+#endif
 #include <stdio.h>
+#include <errno.h>
 #endif
 
 //----------------------------------------------------------------------------
@@ -100,8 +108,6 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
       }
     }
 
-  delete [] wideFilename;
-
   if (this->Handle == INVALID_HANDLE_VALUE)
     {
     DWORD errorCode = GetLastError();
@@ -109,6 +115,14 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
         errorCode == ERROR_SHARING_VIOLATION)
       {
       this->Error = AccessDenied;
+      if (wideFilename)
+        {
+        DWORD attr = GetFileAttributesW(wideFilename);
+        if ((attr & FILE_ATTRIBUTE_DIRECTORY) != 0)
+          {
+          this->Error = IsDirectory;
+          }
+        }
       }
     else if (errorCode == ERROR_DIRECTORY)
       {
@@ -127,6 +141,8 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
       this->Error = Bad;
       }
     }
+
+  delete [] wideFilename;
 #else
   this->Handle = 0;
   this->Error = 0;
@@ -290,7 +306,7 @@ size_t vtkDICOMFile::Write(const char *data, size_t len)
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMFile::Seek(Offset offset)
+bool vtkDICOMFile::SetPosition(Size offset)
 {
 #if defined(VTK_DICOM_POSIX_IO)
 #if defined(__linux__) && defined(_LARGEFILE64_SOURCE)
@@ -316,5 +332,112 @@ bool vtkDICOMFile::Seek(Offset offset)
   return true;
 #else
   return (fseek(static_cast<FILE *>(this->Handle), offset, SEEK_SET) == 0);
+#endif
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMFile::Size vtkDICOMFile::GetSize()
+{
+#if defined(VTK_DICOM_POSIX_IO)
+  struct stat fs;
+  if (fstat(this->Handle, &fs) != 0)
+    {
+    this->Error = Bad;
+    return static_cast<long long>(-1);
+    }
+  return fs.st_size;
+#elif defined(VTK_DICOM_WIN32_IO)
+  DWORD upperBits = 0;
+  DWORD lowerBits = GetFileSize(this->Handle, &upperBits);
+  if (lowerBits == INVALID_FILE_SIZE && GetLastError() != NO_ERROR)
+    {
+    this->Error = Bad;
+    return static_cast<long long>(-1);
+    }
+  return lowerBits | (static_cast<Size>(upperBits) << 32);
+#else
+  FILE *fp = static_cast<FILE *>(this->Handle);
+  long long size = -1;
+  fpos_t pos;
+  if (fgetpos(fp, &pos) == 0)
+    {
+    if (fseek(fp, 0, SEEK_END) == 0)
+      {
+      size = ftell(fp);
+      }
+    if (fsetpos(fp, &pos) != 0)
+      {
+      this->Error = Bad;
+      }
+    }
+  if (size == -1)
+    {
+    this->Error = Bad;
+    return 0;
+    }
+  return size;
+#endif
+}
+
+//----------------------------------------------------------------------------
+int vtkDICOMFile::Remove(const char *filename)
+{
+#if defined(VTK_DICOM_WIN32_IO)
+  int errorCode = 0;
+  WCHAR *wideFilename = 0;
+  int n = MultiByteToWideChar(
+    CP_UTF8, MB_ERR_INVALID_CHARS, filename, -1, NULL, 0);
+  if (n > 0)
+    {
+    wideFilename = new WCHAR[n];
+    n = MultiByteToWideChar(
+      CP_UTF8, MB_ERR_INVALID_CHARS, filename, -1, wideFilename, n);
+    if (!DeleteFileW(wideFilename))
+      {
+      DWORD lastError = GetLastError();
+      if (lastError == ERROR_ACCESS_DENIED ||
+          lastError == ERROR_SHARING_VIOLATION)
+        {
+        errorCode = AccessDenied;
+        }
+      else if (lastError == ERROR_FILE_NOT_FOUND)
+        {
+        errorCode = FileNotFound;
+        }
+      else if (lastError == ERROR_DIRECTORY)
+        {
+        errorCode = DirectoryNotFound;
+        }
+      else
+        {
+        errorCode = Bad;
+        }
+      }
+    delete [] wideFilename;
+    }
+  return errorCode;
+#else
+  int errorCode = 0;
+  if (unlink(filename) != 0)
+    {
+    int e = errno;
+    if (e == EACCES || e == EPERM)
+      {
+      errorCode = AccessDenied;
+      }
+    else if (e == ENOENT)
+      {
+      errorCode = FileNotFound;
+      }
+    else if (e == ENOTDIR)
+      {
+      errorCode = DirectoryNotFound;
+      }
+    else
+      {
+      errorCode = Bad;
+      }
+    }
+  return errorCode;
 #endif
 }

@@ -51,8 +51,8 @@ public:
     OutOfSpace         // disk full or quota exceeded
   };
 
-  //! Typedef for a file offset.
-  typedef long long Offset;
+  //! Typedef for a file size.
+  typedef unsigned long long Size;
 
   //! Construct the file object.
   /*!
@@ -80,17 +80,28 @@ public:
    */
   size_t Write(const char *data, size_t size);
 
-  //! Seek to a specific location in the file.
+  //! Go to a specific location in the file.
   /*!
-   *  The return value is false (1) if an error occurred.
+   *  The return value is false if an error occurred.
    */
-  bool Seek(Offset offset);
+  bool SetPosition(Size offset);
+
+  //! Check the size of the file.
+  Size GetSize();
 
   //! Check for the end-of-file indicator.
   bool EndOfFile() { return this->Eof; }
 
   //! Return an error indicator (zero if no error).
   int GetError() { return this->Error; }
+
+  //! Delete the specified file.
+  /*!
+   *  The return value is zero if successful, otherwise an error
+   *  code is returned.  This can be called on a file that is still
+   *  open, in which case the file will be deleted when closed.
+   */
+  static int Remove(const char *filename); 
 
 private:
 #ifdef VTK_DICOM_POSIX_IO

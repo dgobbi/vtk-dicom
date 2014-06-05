@@ -35,7 +35,6 @@
 #include <time.h>
 #include <math.h>
 #include <stdlib.h>
-#include <sys/stat.h>
 
 #include <vector>
 

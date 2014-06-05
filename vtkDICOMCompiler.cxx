@@ -25,16 +25,6 @@
 #include <vtkErrorCode.h>
 
 #include <ctype.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#if defined(_WIN32) && !defined(__CYGWIN__)
-#include <io.h>
-#include <direct.h>
-#define _unlink unlink
-#else
-#include <unistd.h> // unlink
-#endif
-
 #include <assert.h>
 
 #include <string>
@@ -940,14 +930,6 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
     this->GenerateSeriesUIDs();
     }
 
-  // Remove the file if it exists, just in case it is a hard link
-  // to a file elsewhere on the filesystem.
-  struct stat fs;
-  if (stat(this->FileName, &fs))
-    {
-    unlink(this->FileName);
-    }
-
   this->OutputFile = new vtkDICOMFile(this->FileName, vtkDICOMFile::Out);
 
   if (this->OutputFile->GetError())
@@ -1007,7 +989,7 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
   if (!r)
     {
     this->Close();
-    unlink(this->FileName);
+    vtkDICOMFile::Remove(this->FileName);
 
     if (this->GetErrorCode() == vtkErrorCode::NoError)
       {
@@ -1032,7 +1014,7 @@ void vtkDICOMCompiler::WritePixelData(const char *cp, vtkIdType size)
   if (n != static_cast<size_t>(size))
     {
     this->Close();
-    unlink(this->FileName);
+    vtkDICOMFile::Remove(this->FileName);
     this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
     vtkErrorMacro("Error while writing file "
                   << this->FileName << ": Out of disk space.");
@@ -1105,7 +1087,7 @@ void vtkDICOMCompiler::WriteFrame(const char *cp, vtkIdType size)
   if (n != static_cast<size_t>(size))
     {
     this->Close();
-    unlink(this->FileName);
+    vtkDICOMFile::Remove(this->FileName);
     this->SetErrorCode(vtkErrorCode::OutOfDiskSpaceError);
     vtkErrorMacro("Error while writing file "
                   << this->FileName << ": Out of disk space.");

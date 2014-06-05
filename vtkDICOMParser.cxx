@@ -23,9 +23,6 @@
 #include <vtkErrorCode.h>
 
 #include <ctype.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-
 #include <assert.h>
 
 #include <string>
@@ -1339,23 +1336,12 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
     return false;
     }
 
-  // Make sure that the file exists.
-  struct stat fs;
-  if (stat(this->FileName, &fs) != 0)
-    {
-    this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
-    vtkErrorMacro("ReadFile: Can't open file " << this->FileName);
-    return false;
-    }
-
-  this->FileSize = fs.st_size;
-
   // Make sure that the file is readable.
   vtkDICOMFile infile(this->FileName, vtkDICOMFile::In);
   if (infile.GetError())
     {
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
-    const char *errText = "Can't read the file ";
+    const char *errText = "Can't open the file ";
     if (infile.GetError() == vtkDICOMFile::AccessDenied)
       {
       errText = "No permission to read the file ";
@@ -1369,6 +1355,7 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
     }
 
   this->InputFile = &infile;
+  this->FileSize = infile.GetSize();
   this->Buffer = new char [this->BufferSize + 8];
   this->BytesRead = 0;
   // guard against anyone changing BufferSize while reading

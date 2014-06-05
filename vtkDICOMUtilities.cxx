@@ -22,8 +22,6 @@
 #include <string.h>
 #include <ctype.h>
 
-#include <sys/stat.h>
-
 // needed for gettimeofday
 #ifndef _WIN32
 #include <time.h>
@@ -599,16 +597,9 @@ bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
 {
   char buffer[256];
 
-  struct stat fs;
-  if (filename == 0 || stat(filename, &fs) != 0)
+  if (filename == 0)
     {
     return false;
-    }
-
-  off_t size = fs.st_size;
-  if (size > static_cast<off_t>(sizeof(buffer)))
-    {
-    size = static_cast<off_t>(sizeof(buffer));
     }
 
   vtkDICOMFile infile(filename, vtkDICOMFile::In);
@@ -617,6 +608,14 @@ bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
     {
     return false;
     }
+
+  // valid file should be at least 256 chars long (probably longer)
+  size_t size = infile.GetSize();
+  if (size < sizeof(buffer))
+    {
+    return 0;
+    }
+  size = sizeof(buffer);
 
   size_t rsize = infile.Read(buffer, size);
   infile.Close();
@@ -628,7 +627,7 @@ bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
   const char *cp = buffer;
 
   // Look for the magic number and the first meta header tag.
-  off_t skip = 128;
+  size_t skip = 128;
   for (int i = 0; i < 2; i++)
     {
     if (size > skip + 8)

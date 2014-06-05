@@ -64,7 +64,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include <sys/stat.h>
 
 vtkStandardNewMacro(vtkDICOMReader);
 
@@ -1754,7 +1753,7 @@ bool vtkDICOMReader::ReadFileNative(
     return false;
     }
 
-  if (!infile.Seek(offset))
+  if (!infile.SetPosition(offset))
     {
     this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
     vtkErrorMacro("DICOM file is truncated, some data is missing.");
