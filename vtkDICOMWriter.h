@@ -155,12 +155,11 @@ public:
   void SetGenerator(vtkDICOMGenerator *);
   vtkDICOMGenerator *GetGenerator() { return this->Generator; }
 
-  //! Set the Transfer Syntax UID.
-  /*!
-   *  Setting the transfer syntax is an experimental feature.  If not
-   *  set, the transfer syntax will be 1.2.840.10008.1.2.1 (uncompressed
-   *  little-endian with explicit VR).
-   */
+  // Description:
+  // Set the Transfer Syntax UID.
+  // Setting the transfer syntax is an experimental feature.  If not
+  // set, the transfer syntax will be 1.2.840.10008.1.2.1 (uncompressed
+  // little-endian with explicit VR).
   vtkSetStringMacro(TransferSyntaxUID);
   vtkGetStringMacro(TransferSyntaxUID);
 
