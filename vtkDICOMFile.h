@@ -86,7 +86,7 @@ public:
    */
   bool SetPosition(Size offset);
 
-  //! Check the size of the file.
+  //! Check the size of the file, returns ULLONG_MAX on error.
   Size GetSize();
 
   //! Check for the end-of-file indicator.
@@ -95,7 +95,7 @@ public:
   //! Return an error indicator (zero if no error).
   int GetError() { return this->Error; }
 
-  //! Delete the specified file.
+  //! Delete the specified file (static method).
   /*!
    *  The return value is zero if successful, otherwise an error
    *  code is returned.  This can be called on a file that is still

@@ -373,7 +373,6 @@ vtkDICOMFile::Size vtkDICOMFile::GetSize()
   if (size == -1)
     {
     this->Error = Bad;
-    return 0;
     }
   return size;
 #endif
