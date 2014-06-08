@@ -1275,9 +1275,14 @@ bool vtkDICOMCompiler::WriteMetaHeader(
   const char *implementationUID = this->ImplementationClassUID;
 
   // use the same class as the input meta data
-  // Secondary Capture is 1.2.840.10008.5.1.4.1.1.7
   std::string classUIDString =
     meta->GetAttributeValue(DC::SOPClassUID).AsString();
+  if (classUIDString == "")
+    {
+    // if not present (e.g. DICOMDIR) get it from the meta header
+    classUIDString =
+      meta->GetAttributeValue(DC::MediaStorageSOPClassUID).AsString();
+    }
   const char *classUID = classUIDString.c_str();
 
   if (instanceUID == 0)

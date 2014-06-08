@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     files->InsertNextValue(argv[argi]);
     }
 
-  const char *outfile = "/tmp/test.dcm";
+  const char *outfile = "/tmp/%s";
 
   // sort the files by study and series
   vtkSmartPointer<vtkDICOMSorter> sorter =
@@ -114,9 +114,17 @@ int main(int argc, char *argv[])
         {
         // write the DICOM series with the compiler
         fname = a->GetValue(i);
-        compiler->SetFileName(outfile);
-        compiler->SetSOPInstanceUID(data->GetAttributeValue(
-          i, DC::SOPInstanceUID).GetCharData());
+        char outpath[128];
+        sprintf(outpath, outfile, fileBasename(fname.c_str()));
+        compiler->SetFileName(outpath);
+        const char *instanceUID = data->GetAttributeValue(
+          i, DC::SOPInstanceUID).GetCharData();
+        if (instanceUID == 0)
+          {
+          instanceUID = data->GetAttributeValue(
+            i, DC::MediaStorageSOPInstanceUID).GetCharData();
+          }
+        compiler->SetSOPInstanceUID(instanceUID);
         compiler->SetTransferSyntaxUID(data->GetAttributeValue(
           i, DC::TransferSyntaxUID).GetCharData());
         compiler->SetSeriesInstanceUID(data->GetAttributeValue(
@@ -155,7 +163,7 @@ int main(int argc, char *argv[])
         char hash[2][40];
         for (int jj = 0; jj < 2; jj++)
           {
-          const char *fileToHash = outfile;
+          const char *fileToHash = outpath;
           if (jj == 0)
             {
             fileToHash = fname.c_str();
@@ -182,8 +190,11 @@ int main(int argc, char *argv[])
           {
           std::cerr << "Hash mismatch!\n";
           std::cerr << hash[0] << " " << fname.c_str() << "\n";
-          std::cerr << hash[1] << " " << outfile << "\n";
-          return 1;
+          std::cerr << hash[1] << " " << outpath << "\n";
+          }
+        else
+          {
+          std::cerr << "Matched for " << fname.c_str() << "\n";
           }
         }
       }
