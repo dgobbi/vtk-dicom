@@ -258,6 +258,13 @@ unsigned int EncoderBase::DataSize(
 
   while (iter != iterEnd)
     {
+    // skip retired LengthToEnd tag, it will be removed
+    if (iter->GetTag() == vtkDICOMTag(0x0008, 0x0001))
+      {
+      ++iter;
+      continue;
+      }
+
     const vtkDICOMValue &v = iter->GetValue(this->Index);
     vtkDICOMVR vr = v.GetVR();
     unsigned int vl = v.GetVL();
@@ -758,11 +765,11 @@ bool Encoder<E>::WriteElements(
             vtkDICOMTag(group, Hx0000),
             vtkDICOMValue(vtkDICOMVR::UL, l)));
         }
-      // check for and remove retired LengthToEnd tag
-      if (iter != iterEnd && iter->GetTag() == vtkDICOMTag(0x0008, 0x0001))
-        {
-        ++iter;
-        }
+      }
+    // check for and skip retired LengthToEnd tag
+    else if (iter->GetTag() == vtkDICOMTag(0x0008, 0x0001))
+      {
+      ++iter;
       }
     else if (this->Depth == 0 && this->SOPInstanceUID &&
              iter->GetTag() == vtkDICOMTag(DC::SOPInstanceUID))
