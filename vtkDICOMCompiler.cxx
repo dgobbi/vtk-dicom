@@ -1368,6 +1368,16 @@ bool vtkDICOMCompiler::WriteMetaHeader(
                     this->SourceApplicationEntityTitle));
     }
 
+  // keep private information stored in meta header
+  const char *creatorUID =
+    meta->GetAttributeValue(DC::PrivateInformationCreatorUID).GetCharData();
+  if (creatorUID)
+    {
+    item.SetAttributeValue(DC::PrivateInformationCreatorUID, creatorUID);
+    item.SetAttributeValue(DC::PrivateInformation,
+      meta->GetAttributeValue(DC::PrivateInformation));
+    }
+
   vtkDICOMDataElementIterator iter = item.Begin();
   vtkDICOMDataElementIterator iterEnd = item.End();
 
