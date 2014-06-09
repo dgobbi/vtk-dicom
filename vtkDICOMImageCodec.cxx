@@ -100,15 +100,28 @@ int vtkDICOMImageCodec::DecodeRLE(
   unsigned int n = vtkDICOMUtilities::UnpackUnsignedInt(inPtr);
   size_t segmentSize = destSize/n;
 
+  // get the samples per pixel (spp) and bytes per sample (bps)
+  unsigned int spp = image.SamplesPerPixel;
+  spp = (spp == 0 ? 1 : spp);
+  spp = (n % spp != 0 ? n : spp);
+  unsigned int bps = n/spp;
+
   // the amount to advance after each output byte
-  unsigned int outInc = (image.PlanarConfiguration ? 1 : n);
-  // the amount to advance advance after each segment
+  unsigned int outInc = (image.PlanarConfiguration ? bps : n);
+  // the amount to advance advance after each sample
   size_t segInc = (image.PlanarConfiguration ? segmentSize : 1);
+  segInc *= bps;
 
   // loop over all RLE segments
   for (unsigned int i = 0; i < n; i++)
     {
-    // get the offset for this segment
+    // sample position in pixel
+    unsigned int s = i / bps;
+    // byte position in sample
+    unsigned int b = i % bps;
+    // compute the offset into the output buffer for this segment
+    size_t outOffset = s*segInc + (bps - b - 1);
+    // get the offset into the input buffer for this segment
     unsigned int offset =
       vtkDICOMUtilities::UnpackUnsignedInt(inPtr + (i+1)*4);
     if (offset >= sourceSize)
@@ -118,7 +131,7 @@ int vtkDICOMImageCodec::DecodeRLE(
     // loop over the segment and decompress it
     const signed char *cp =
       reinterpret_cast<const signed char *>(inPtr + offset);
-    signed char *dp = reinterpret_cast<signed char *>(outPtr + i*segInc);
+    signed char *dp = reinterpret_cast<signed char *>(outPtr + outOffset);
     size_t remaining = segmentSize;
     while (remaining > 0 && offset < sourceSize)
       {
@@ -195,8 +208,14 @@ int vtkDICOMImageCodec::EncodeRLE(
 {
   int errorCode = NoError;
 
+  // get the samples per pixel (spp) and bytes per sample (bps)
+  unsigned int spp = image.SamplesPerPixel;
+  spp = (spp == 0 ? 1 : spp);
+  unsigned int bps = (image.BitsAllocated + 7)/8;
+  bps = (bps == 0 ? 1 : bps);
+
   // the number of segments
-  unsigned int n = (image.BitsAllocated + 7)/8*image.SamplesPerPixel;
+  unsigned int n = spp*bps;
   if (n == 0 || n > 15)
     {
     *destP = 0;
@@ -207,10 +226,11 @@ int vtkDICOMImageCodec::EncodeRLE(
   // number of bytes per segment
   size_t segmentSize = sourceSize/n;
 
-  // the amount to advance after each output byte
-  unsigned int inInc = (image.PlanarConfiguration ? 1 : n);
-  // the amount to advance advance after each segment
+  // the amount to advance after each input byte
+  unsigned int inInc = (image.PlanarConfiguration ? bps : n);
+  // the amount to advance advance after each sample
   size_t segInc = (image.PlanarConfiguration ? segmentSize : 1);
+  segInc *= bps;
 
   // allocate the destination buffer
   size_t destReserve = 4000;
@@ -233,8 +253,14 @@ int vtkDICOMImageCodec::EncodeRLE(
     {
     // write the offset into the table
     vtkDICOMUtilities::PackUnsignedInt(offset, dest + 4*(i + 1));
+    // sample position in pixel
+    unsigned int s = i / bps;
+    // byte position in sample
+    unsigned int b = i % bps;
+    // compute the offset into the input buffer for this segment
+    size_t inOffset = s*segInc + (bps - b - 1);
     const signed char *cp =
-      reinterpret_cast<const signed char *>(source + i*segInc);
+      reinterpret_cast<const signed char *>(source + inOffset);
     signed char *dp = reinterpret_cast<signed char *>(dest + offset);
 
     for (size_t j = 0; j < numrows; j++)
@@ -243,7 +269,7 @@ int vtkDICOMImageCodec::EncodeRLE(
       while (cp != ep)
         {
         short maxcount = 128;
-        ptrdiff_t remainder = ep - cp;
+        ptrdiff_t remainder = (ep - cp)/inInc;
         maxcount = (remainder < maxcount ? remainder : maxcount);
         short counter = maxcount;
         const signed char *sp = cp;
