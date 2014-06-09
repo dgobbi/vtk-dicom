@@ -1285,7 +1285,13 @@ int vtkDICOMReader::RequestInformation(
     vtkDICOMValue v = this->MetaData->GetAttributeValue(DC::PixelSpacing);
     if (v.GetNumberOfValues() == 2)
       {
-      v.GetValues(this->DataSpacing, 2);
+      double spacing[2];
+      v.GetValues(spacing, 2);
+      if (spacing[0] > 0 && spacing[1] > 0)
+        {
+        this->DataSpacing[0] = spacing[0];
+        this->DataSpacing[1] = spacing[1];
+        }
       }
     }
 
@@ -1304,7 +1310,13 @@ int vtkDICOMReader::RequestInformation(
       }
     if (v.GetNumberOfValues() == 2)
       {
-      v.GetValues(this->DataSpacing, 2);
+      double spacing[2];
+      v.GetValues(spacing, 2);
+      if (spacing[0] > 0 && spacing[1] > 0)
+        {
+        this->DataSpacing[0] = spacing[0];
+        this->DataSpacing[1] = spacing[1];
+        }
       }
     }
 
