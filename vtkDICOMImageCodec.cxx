@@ -112,6 +112,11 @@ int vtkDICOMImageCodec::DecodeRLE(
   size_t segInc = (image.PlanarConfiguration ? segmentSize : 1);
   segInc *= bps;
 
+  // this will set endiancheck.s to 1 on little endian architectures
+  union { char c[2]; short s; } endiancheck;
+  endiancheck.c[0] = 1;
+  endiancheck.c[1] = 0;
+
   // loop over all RLE segments
   for (unsigned int i = 0; i < n; i++)
     {
@@ -120,7 +125,11 @@ int vtkDICOMImageCodec::DecodeRLE(
     // byte position in sample
     unsigned int b = i % bps;
     // compute the offset into the output buffer for this segment
-    size_t outOffset = s*segInc + (bps - b - 1);
+    size_t outOffset = s*segInc + b; // big-endian
+    if (endiancheck.s == 1) // little-endian
+      {
+      outOffset = s*segInc + (bps - b - 1);
+      }
     // get the offset into the input buffer for this segment
     unsigned int offset =
       vtkDICOMUtilities::UnpackUnsignedInt(inPtr + (i+1)*4);
@@ -248,6 +257,12 @@ int vtkDICOMImageCodec::EncodeRLE(
   unsigned short rowlen = image.Columns;
   size_t numrows = sourceSize/(n*rowlen);
 
+  // this will set endiancheck.s to 1 on little endian architectures
+  union { char c[2]; short s; } endiancheck;
+  endiancheck.c[0] = 1;
+  endiancheck.c[1] = 0;
+
+  // loop over all RLE segments
   // write the segments
   for (unsigned int i = 0; i < n; i++)
     {
@@ -258,7 +273,11 @@ int vtkDICOMImageCodec::EncodeRLE(
     // byte position in sample
     unsigned int b = i % bps;
     // compute the offset into the input buffer for this segment
-    size_t inOffset = s*segInc + (bps - b - 1);
+    size_t inOffset = s*segInc + b; // big-endian
+    if (endiancheck.s == 1) // little-endian
+      {
+      inOffset = s*segInc + (bps - b - 1);
+      }
     const signed char *cp =
       reinterpret_cast<const signed char *>(source + inOffset);
     signed char *dp = reinterpret_cast<signed char *>(dest + offset);
