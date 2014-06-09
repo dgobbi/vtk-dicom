@@ -258,13 +258,6 @@ unsigned int EncoderBase::DataSize(
 
   while (iter != iterEnd)
     {
-    // skip retired LengthToEnd tag, it will be removed
-    if (iter->GetTag() == vtkDICOMTag(0x0008, 0x0001))
-      {
-      ++iter;
-      continue;
-      }
-
     const vtkDICOMValue &v = iter->GetValue(this->Index);
     vtkDICOMVR vr = v.GetVR();
     unsigned int vl = v.GetVL();
@@ -729,47 +722,84 @@ bool Encoder<E>::WriteElements(
 {
   while (iter != iterEnd)
     {
-    // check for group length tag
-    if (iter->GetTag().GetElement() == Hx0000)
+    // check for group length tag and length-to-end tag
+    if (iter->GetTag().GetElement() == Hx0000 ||
+        iter->GetTag() == vtkDICOMTag(0x0008, 0x0001))
       {
       unsigned short group = iter->GetTag().GetGroup();
-      vtkDICOMDataElementIterator groupEnd = ++iter;
-      while (groupEnd != iterEnd && groupEnd->GetTag().GetGroup() == group)
+      unsigned int groupLength = HxFFFFFFFF;
+      vtkDICOMDataElementIterator groupEnd = iter;
+      if (iter->GetTag().GetElement() == Hx0000)
         {
-        ++groupEnd;
+        groupEnd = ++iter;
+        while (groupEnd != iterEnd && groupEnd->GetTag().GetGroup() == group)
+          {
+          ++groupEnd;
+          }
+        groupLength = this->DataSize(iter, groupEnd);
         }
-      unsigned int l = this->DataSize(iter, groupEnd);
+      // check for retired LengthToEnd tag
+      unsigned int lengthToEnd = HxFFFFFFFF;
+      bool hadLengthToEnd = false;
+      if (group == 0x0008 && iter != iterEnd &&
+          iter->GetTag() == vtkDICOMTag(0x0008, 0x0001))
+        {
+        hadLengthToEnd = true;
+        lengthToEnd = this->DataSize(++iter, iterEnd);
+        }
       // check for uncounted PixelData element size in 0x7FE0 group
-      if (l != HxFFFFFFFF && group == 0x7FE0 && iter == groupEnd)
+      if (this->Depth == 0 &&
+          ((groupLength != HxFFFFFFFF && group == 0x7FE0 &&
+            iterEnd == groupEnd) || lengthToEnd != HxFFFFFFFF))
         {
         // add the size of the missing PixelData element
         unsigned int pl =
           vtkDICOMCompilerInternalFriendship::ComputePixelDataSize(
             this->Compiler);
         unsigned int hl = (this->ImplicitVR ? 8 : 12);
-        // check for overflow
-        if (HxFFFFFFFF - l <= pl || HxFFFFFFFF - l - pl <= hl)
+        // check for overflow of lengthToEnd
+        if (HxFFFFFFFF - lengthToEnd <= pl ||
+            HxFFFFFFFF - lengthToEnd - pl <= hl)
           {
-          l = HxFFFFFFFF;
+          lengthToEnd = HxFFFFFFFF;
           }
         else
           {
-          l += pl + hl;
+          lengthToEnd += pl + hl;
+          }
+        // check for overflow of groupLength
+        if (group == 0x7FE0)
+          {
+          if (HxFFFFFFFF - groupLength <= pl ||
+              HxFFFFFFFF - groupLength - pl <= hl)
+            {
+            groupLength = HxFFFFFFFF;
+            }
+          else
+            {
+            groupLength += pl + hl;
+            }
           }
         }
-      if (l != HxFFFFFFFF)
+      if (groupLength != HxFFFFFFFF)
         {
-        // write out group length tag with correct value
+        // subtract the size of LengthToEnd element if it is invalid
+        if (lengthToEnd == HxFFFFFFFF && hadLengthToEnd)
+          {
+          groupLength -= 12;
+          }
+        // write out group length with correct value
         this->WriteDataElement(cp, ep,
-          vtkDICOMDataElement(
-            vtkDICOMTag(group, Hx0000),
-            vtkDICOMValue(vtkDICOMVR::UL, l)));
+          vtkDICOMDataElement(vtkDICOMTag(group, 0x0000),
+            vtkDICOMValue(vtkDICOMVR::UL, groupLength)));
         }
-      }
-    // check for and skip retired LengthToEnd tag
-    else if (iter->GetTag() == vtkDICOMTag(0x0008, 0x0001))
-      {
-      ++iter;
+      if (lengthToEnd != HxFFFFFFFF)
+        {
+        // write out LengthToEnd with correct value
+        this->WriteDataElement(cp, ep,
+          vtkDICOMDataElement(vtkDICOMTag(0x0008, 0x0001),
+            vtkDICOMValue(vtkDICOMVR::UL, lengthToEnd)));
+        }
       }
     else if (this->Depth == 0 && this->SOPInstanceUID &&
              iter->GetTag() == vtkDICOMTag(DC::SOPInstanceUID))
