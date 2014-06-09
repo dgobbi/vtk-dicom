@@ -1440,7 +1440,7 @@ bool vtkDICOMCompiler::WriteMetaData(
   vtkDICOMDataElementIterator iterEnd = meta->End();
 
   // skip past the meta header
-  while (iter != iterEnd && iter->GetTag().GetGroup() == 0x0002)
+  while (iter != iterEnd && iter->GetTag().GetGroup() <= 0x0002)
     {
     ++iter;
     }
