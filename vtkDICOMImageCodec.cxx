@@ -15,7 +15,7 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMUtilities.h"
 
-#include <assert.h>
+#include <stddef.h>
 
 //----------------------------------------------------------------------------
 const char *vtkDICOMImageCodec::UIDs[16] = {
