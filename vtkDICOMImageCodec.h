@@ -57,6 +57,7 @@ public:
     UnknownError
   };
 
+  //! A struct to store basic image information for a codec
   struct ImageFormat
   {
     unsigned short Rows;
@@ -97,7 +98,7 @@ public:
    *  If the object is invalid, then an empty string is returned.
    */
 
-  //! Get the numerical code for this character set object.
+  //! Get the numerical identifier for this codec.
   unsigned char GetKey() const { return this->Key; }
 
   //! Decode a compressed image into the given destination buffer.
