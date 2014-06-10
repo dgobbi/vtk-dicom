@@ -159,9 +159,9 @@ public:
    *  This is really only useful when cloning data sets.  It ensures
    *  that the written data uses the same VR as the original data.
    */
-  vtkSetMacro(KeepOriginalPixelDataVR, int);
-  vtkBooleanMacro(KeepOriginalPixelDataVR, int);
-  vtkGetMacro(KeepOriginalPixelDataVR, int);
+  vtkSetMacro(KeepOriginalPixelDataVR, bool);
+  vtkBooleanMacro(KeepOriginalPixelDataVR, bool);
+  vtkGetMacro(KeepOriginalPixelDataVR, bool);
 
 protected:
   vtkDICOMCompiler();

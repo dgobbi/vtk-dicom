@@ -391,8 +391,7 @@ unsigned char *vtkDICOMValue::ReallocateUnsignedCharData(size_t vn)
   assert(this->V->VR == vtkDICOMVR::OB || this->V->VR == vtkDICOMVR::UN);
   assert(vn < 0xffffffffu);
 
-  size_t n = this->V->NumberOfValues +
-    (static_cast<size_t>(this->V->Overflow) << 32);
+  size_t n = this->GetNumberOfValues();
   unsigned char *ptr =
     static_cast<ValueT<unsigned char> *>(this->V)->Data;
 
