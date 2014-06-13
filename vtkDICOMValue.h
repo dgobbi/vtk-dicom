@@ -185,7 +185,7 @@ public:
    *    the number of binary values will be returned.
    *  - for UN, the number of bytes will be returned.
    *  - for attribute tags (VR is AT) the number of tags will be returned.
-   *  - for sequences (SQ and XQ) the number of items in the sequence,
+   *  - for sequences (SQ) the number of items in the sequence,
    *    excluding any delimeters, will be returned.
    */
   size_t GetNumberOfValues() const {
