@@ -3,14 +3,18 @@ include_directories(${DICOM_INCLUDE_DIRS})
 set(PROGRAM_SRCS
   dicomdump.cxx
   dicomtonifti.cxx
+  minctonifti.cxx
   niftitodicom.cxx
   niftidump.cxx
 )
 
 if("${VTK_MAJOR_VERSION}" GREATER 5)
   set(VTK_IMAGING_LIBS vtkImagingStatistics) # VTK 6.x
+  set(VTK_MINC_LIBS vtkIOMINC vtkInteractionStyle
+      vtkRenderingOpenGL vtkRenderingFreeTypeOpenGL)
 else()
   set(VTK_IMAGING_LIBS vtkImaging) # VTK 5.x
+  set(VTK_MINC_LIBS)
 endif()
 
 set(BASE_LIBS vtkDICOM ${VTK_LIBS})
@@ -21,8 +25,13 @@ endif()
 foreach(src ${PROGRAM_SRCS})
   string(REGEX REPLACE "\\.(cxx|c|mm|m)$" "" prog ${src})
   add_executable(${prog} ${src})
-  target_link_libraries(${prog} ${BASE_LIBS}
-    ${VTK_IMAGING_LIBS} ${KWSYS_LIBS})
+  if("${prog}" MATCHES "minc")
+    target_link_libraries(${prog} ${BASE_LIBS}
+      ${VTK_IMAGING_LIBS} ${VTK_MINC_LIBS} ${KWSYS_LIBS})
+  else()
+    target_link_libraries(${prog} ${BASE_LIBS}
+      ${VTK_IMAGING_LIBS} ${KWSYS_LIBS})
+  endif()
   list(APPEND PROGRAM_EXES ${prog})
 endforeach()
 
