@@ -157,11 +157,21 @@ set(DICOM_BIN_DIR "/bin") # for executables and ".dll" libraries
 if(NOT DICOM_LIB_DIR)
   set(DICOM_LIB_DIR "/lib") # for unix/linux/osx shared libraries
 endif()
-set(DICOM_ARC_DIR "${DICOM_LIB_DIR}") # for static or ".lib" libraries
-set(DICOM_INC_DIR "/include") # for header files
-set(DICOM_JAVA_DIR "/share/java")
-set(DICOM_DATA_DIR "/share/dicom-${DICOM_SHORT_VERSION}")
-set(DICOM_CMAKE_DIR "${DICOM_LIB_DIR}/dicom-${DICOM_SHORT_VERSION}/cmake")
+if(NOT DICOM_ARC_DIR)
+  set(DICOM_ARC_DIR "${DICOM_LIB_DIR}") # for static or ".lib" libraries
+endif()
+if(NOT DICOM_INC_DIR)
+  set(DICOM_INC_DIR "/include") # for header files
+endif()
+if(NOT DICOM_JAVA_DIR)
+  set(DICOM_JAVA_DIR "/share/java")
+endif()
+if(NOT DICOM_DATA_DIR)
+  set(DICOM_DATA_DIR "/share/dicom-${DICOM_SHORT_VERSION}")
+endif()
+if(NOT_DICOM_CMAKE_DIR)
+  set(DICOM_CMAKE_DIR "${DICOM_LIB_DIR}/dicom-${DICOM_SHORT_VERSION}/cmake")
+endif()
 
 # Set the full paths to the install tree
 set(DICOM_RUNTIME_INSTALL_DEST ${CMAKE_INSTALL_PREFIX}${DICOM_BIN_DIR})
