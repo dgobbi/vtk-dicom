@@ -8,6 +8,11 @@ if(POLICY CMP0022)
   cmake_policy(SET CMP0022 OLD)
 endif()
 
+# When CMake 3.0.0 is required, remove this block (see CMP0042).
+if(NOT DEFINED CMAKE_MACOSX_RPATH)
+  set(CMAKE_MACOSX_RPATH 0)
+endif()
+
 # Allow custom cmake overrides
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 
