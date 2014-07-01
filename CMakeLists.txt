@@ -415,6 +415,11 @@ if(BUILD_JAVA_WRAPPERS)
   find_package(Java REQUIRED)
   find_package(JNI REQUIRED)
 
+  set(VTK_JAVA_SOURCE_VERSION "1.5" CACHE STRING "javac source version")
+  set(VTK_JAVA_TARGET_VERSION "1.5" CACHE STRING "javac target version")
+  mark_as_advanced(VTK_JAVA_SOURCE_VERSION)
+  mark_as_advanced(VTK_JAVA_TARGET_VERSION)
+
   set(vtk-module ${LIB_NAME})
   set(VTK_WRAP_JAVA3_INIT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
   set(VTK_JAVA_HOME ${CMAKE_CURRENT_BINARY_DIR}/java/vtk)
@@ -471,7 +476,9 @@ if(BUILD_JAVA_WRAPPERS)
   add_custom_command(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/java/javac_stamp.txt
     DEPENDS ${VTK_JAVA_DEPENDENCIES}
-    COMMAND ${JAVA_COMPILE} ${JAVAC_OPTIONS} -source 1.5 -target 1.5
+    COMMAND ${JAVA_COMPILE} ${JAVAC_OPTIONS}
+      -source ${VTK_JAVA_SOURCE_VERSION}
+      -target ${VTK_JAVA_TARGET_VERSION}
       -classpath ${VTK_JAVA_JAR}${_sep}${VTK_DIR}/java
       -sourcepath ${VTK_DIR}/java/vtk/
       -d ${CMAKE_CURRENT_BINARY_DIR}/java

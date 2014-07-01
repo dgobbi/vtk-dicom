@@ -64,8 +64,10 @@ if(BUILD_JAVA_WRAPPERS)
   add_custom_command(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/javac_test_stamp.txt
     COMMAND ${JAVA_COMPILE} ${JAVAC_OPTIONS}
+    -source ${VTK_JAVA_SOURCE_VERSION}
+    -target ${VTK_JAVA_TARGET_VERSION}
     -classpath "${VTK_JAR_PATH}/vtkdicom.jar${_sep}${DICOM_BINARY_DIR}/java${_sep}${VTK_JAVA_JAR}"
-    -source 1.5 -sourcepath ${CMAKE_CURRENT_SOURCE_DIR}
+    -sourcepath ${CMAKE_CURRENT_SOURCE_DIR}
     -d ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/TestDICOMJava.java
     COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/javac_test_stamp.txt
