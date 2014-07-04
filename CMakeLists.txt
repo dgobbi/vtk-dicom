@@ -169,7 +169,7 @@ endif()
 if(NOT DICOM_DATA_DIR)
   set(DICOM_DATA_DIR "/share/dicom-${DICOM_SHORT_VERSION}")
 endif()
-if(NOT_DICOM_CMAKE_DIR)
+if(NOT DICOM_CMAKE_DIR)
   set(DICOM_CMAKE_DIR "${DICOM_LIB_DIR}/dicom-${DICOM_SHORT_VERSION}/cmake")
 endif()
 
