@@ -405,8 +405,11 @@ if(BUILD_PYTHON_WRAPPERS)
   if(CMAKE_VERSION VERSION_GREATER 2.8.8)
     set_target_properties(${MODULE_PYTHON_NAME} PROPERTIES NO_SONAME 1)
   endif()
-  target_link_libraries(${MODULE_PYTHON_NAME}
-    ${LIB_PYTHON_NAME} ${VTK_PYTHON_LIBRARIES})
+  target_link_libraries(${MODULE_PYTHON_NAME} ${LIB_PYTHON_NAME})
+  # On Win32 and Mac, link python library now, on UNIX, don't
+  if(WIN32 OR APPLE)
+    target_link_libraries(${MODULE_PYTHON_NAME} ${VTK_PYTHON_LIBRARIES})
+  endif()
   set(DICOM_PYTHON_LIBRARIES ${LIB_PYTHON_NAME})
 endif()
 
