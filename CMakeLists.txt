@@ -377,6 +377,8 @@ if(BUILD_PYTHON_WRAPPERS)
   if(VTK_PYTHON_INCLUDE_DIR)
     include_directories("${VTK_PYTHON_INCLUDE_DIR}")
   endif()
+  # Tell vtkWrapPython to locate the python libraries for us.
+  set(VTK_WRAP_PYTHON_FIND_LIBS ON)
   include(${VTK_CMAKE_DIR}/vtkWrapPython.cmake)
   vtk_wrap_python3(${MODULE_PYTHON_NAME} LIB_PYTHON_SRCS "${LIB_SRCS}")
   add_library(${LIB_PYTHON_NAME} ${LIB_PYTHON_SRCS} ${LIB_PYTHON_EXTRA_SRCS})
