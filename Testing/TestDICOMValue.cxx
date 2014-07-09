@@ -1,4 +1,6 @@
 #include "vtkDICOMValue.h"
+#include "vtkDICOMSequence.h"
+#include "vtkDICOMItem.h"
 
 #include <sstream>
 
@@ -286,6 +288,181 @@ int main(int argc, char *argv[])
   TestAssert(v.GetNumberOfValues() == 1);
   TestAssert(v.AsString() == "3\\2\\1 ");
   TestAssert(v.AsInt() == 0);
+  }
+
+  { // test Matches for query matching
+  vtkDICOMValue v;
+  vtkDICOMValue u;
+
+  // test comparison of null values
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "HELLO");
+  TestAssert(v.Matches(u));
+  TestAssert(u.Matches(v));
+
+  // test comparison of empty values
+  v = vtkDICOMValue(vtkDICOMVR::CS, "");
+  TestAssert(v.GetVL() == 0);
+  TestAssert(u.Matches(v));
+  TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "");
+  TestAssert(v.Matches(u));
+
+  // test comparison of identical values
+  v = vtkDICOMValue(vtkDICOMVR::CS, "HELLO");
+  u = vtkDICOMValue(vtkDICOMVR::CS, "HELLO");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "HEL");
+  TestAssert(!v.Matches(u));
+  v = vtkDICOMValue(vtkDICOMVR::US, 10);
+  u = vtkDICOMValue(vtkDICOMVR::US, 10);
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::US, 9);
+  TestAssert(!v.Matches(u));
+
+  // test wildcards
+  v = vtkDICOMValue(vtkDICOMVR::CS, "HELLO");
+  u = vtkDICOMValue(vtkDICOMVR::CS, "*");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "*LO");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "H?LLO");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "H*?LLO");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "H?LO");
+  TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "H*P");
+  TestAssert(!v.Matches(u));
+
+  // test multiple values in the query
+  v = vtkDICOMValue(vtkDICOMVR::UI, "10.3000.11.6");
+  u = vtkDICOMValue(vtkDICOMVR::UI, "10.3000.11.6\\10.3000.10.6");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::UI, "10.3000.10.6\\10.3000.11.6");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::UI, "10.3000.11.7\\10.3000.10.6");
+  TestAssert(!v.Matches(u));
+
+  // test multiple values in the value
+  v = vtkDICOMValue(vtkDICOMVR::CS, "HELLO\\THERE");
+  u = vtkDICOMValue(vtkDICOMVR::CS, "HELLO\\THERE");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "HELLO");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "THERE");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "ELLO\\THER");
+  TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "ELLO");
+  TestAssert(!v.Matches(u));
+
+  // test backslash on ST, LT, UT
+  v = vtkDICOMValue(vtkDICOMVR::UT, "HELLO\\THERE");
+  u = vtkDICOMValue(vtkDICOMVR::UT, "HELLO\\THERE");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::UT, "HELLO");
+  TestAssert(!v.Matches(u));
+
+  // test matches for binary data
+  static const short vals[3] = { 10, 11, 12 };
+  v = vtkDICOMValue(vtkDICOMVR::SS, vals, 3);
+  u = vtkDICOMValue(vtkDICOMVR::SS, 10);
+  TestAssert(v.Matches(u));
+  TestAssert(u.Matches(v));
+  u = vtkDICOMValue(vtkDICOMVR::SS, 11);
+  TestAssert(v.Matches(u));
+  TestAssert(u.Matches(v));
+  u = vtkDICOMValue(vtkDICOMVR::SS, 12);
+  TestAssert(v.Matches(u));
+  TestAssert(u.Matches(v));
+  u = vtkDICOMValue(vtkDICOMVR::SS, 13);
+  TestAssert(!v.Matches(u));
+  TestAssert(!u.Matches(v));
+
+  // test matches for binary data OW
+  v = vtkDICOMValue(vtkDICOMVR::OW, vals, 3);
+  u = vtkDICOMValue(vtkDICOMVR::OW, vals, 3);
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::OW, vals, 1);
+  TestAssert(!v.Matches(u));
+  TestAssert(!v.Matches(u));
+
+  // test date
+  v = vtkDICOMValue(vtkDICOMVR::DA, "20070125");
+  u = vtkDICOMValue(vtkDICOMVR::DA, "20070124");
+  TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::DA, "20070124-");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::DA, "20070124-20080124");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::DA, "20070126-20080124");
+  TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::DA, "-20070124");
+  TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::DA, "-20070126");
+  TestAssert(v.Matches(u));
+
+  // test time
+  v = vtkDICOMValue(vtkDICOMVR::TM, "114501.00");
+  u = vtkDICOMValue(vtkDICOMVR::TM, "114501");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::TM, "1145-");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::TM, "1146");
+  TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::TM, "-1146");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::TM, "0800-1146");
+  TestAssert(v.Matches(u));
+
+  // test sequences
+  vtkDICOMSequence su(1);
+  vtkDICOMItem item;
+  item.SetAttributeValue(DC::ImageType, "ORIGINAL");
+  item.SetAttributeValue(DC::StudyDate, "20070124-20080124");
+  item.SetAttributeValue(DC::StudyTime, "");
+  su.SetItem(0, item);
+  u = su;
+  vtkDICOMSequence sv;
+  v = sv;
+  TestAssert(!v.Matches(u));
+  vtkDICOMItem item1;
+  item1.SetAttributeValue(DC::ImageType, "DERIVED\\PRIMARY\\AXIAL");
+  item1.SetAttributeValue(DC::StudyDate, "20070513");
+  item1.SetAttributeValue(DC::StudyTime, "083045.210000");
+  sv.AddItem(item1);
+  v = sv;
+  TestAssert(!v.Matches(u));
+  vtkDICOMItem item2;
+  item2.SetAttributeValue(DC::ImageType, "ORIGINAL\\PRIMARY\\AXIAL");
+  item2.SetAttributeValue(DC::StudyDate, "20070513");
+  item2.SetAttributeValue(DC::StudyTime, "083045.210000");
+  sv.AddItem(item2);
+  v = sv;
+  TestAssert(v.Matches(u));
+  vtkDICOMSequence su2;
+  u = su2;
+  TestAssert(v.Matches(u));
+
+  // test comparisons of encoded strings
+  v = vtkDICOMValue(vtkDICOMVR::SH, vtkDICOMCharacterSet::ISO_IR_100,
+    "p\373ddle");
+  u = vtkDICOMValue(vtkDICOMVR::SH, vtkDICOMCharacterSet::ISO_IR_100,
+    "puddle");
+  TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::SH, vtkDICOMCharacterSet::ISO_IR_6,
+    "p?ddle");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::SH, vtkDICOMCharacterSet::ISO_IR_192,
+    "p\303\273ddle");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::SH, vtkDICOMCharacterSet::ISO_IR_100,
+    "puddle");
+  TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::SH, vtkDICOMCharacterSet::ISO_IR_6,
+    "p?ddle");
+  TestAssert(v.Matches(u));
   }
 
   return rval;
