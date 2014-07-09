@@ -2306,6 +2306,11 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
         }
       }
     }
+  else if (type == VTK_DICOM_TAG)
+    {
+    // Comparing tags between data sets should just always return "true"
+    match = true;
+    }
   else if (vr == vtkDICOMVR::OB || vr == vtkDICOMVR::UN)
     {
     // OB and UN must match exactly
