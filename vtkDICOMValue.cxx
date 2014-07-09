@@ -2252,8 +2252,8 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
           {
           // Convert pattern to UTF8 before matching
           pstr = value.AsUTF8String();
-          pattern = str.data();
-          pl = str.length();
+          pattern = pstr.data();
+          pl = pstr.length();
           }
         }
       if (vr == vtkDICOMVR::ST ||
