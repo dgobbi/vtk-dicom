@@ -2103,7 +2103,7 @@ void vtkDICOMValue::NormalizeDateTime(
     }
 
   const char *cp = input;
-  while (*tp != 0 && *cp != 0)
+  while (*tp != 0 && *cp != 0 && *cp != ' ')
     {
     *tp++ = *cp++;
     }
