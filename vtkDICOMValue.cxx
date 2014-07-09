@@ -2103,9 +2103,17 @@ void vtkDICOMValue::NormalizeDateTime(
     }
 
   const char *cp = input;
-  while (*tp != 0 && *cp != 0 && *cp != ' ')
+  while (*tp != 0 && *cp >= '0' && *cp <= '9')
     {
     *tp++ = *cp++;
+    }
+  if (*tp == '.' && *cp == '.')
+    {
+    *tp++ = *cp++;
+    while (*tp != 0 && *cp >= '0' && *cp <= '9')
+      {
+      *tp++ = *cp++;
+      }
     }
 
   if (vr == vtkDICOMVR::DT && (*cp == '-' || *cp == '+'))
