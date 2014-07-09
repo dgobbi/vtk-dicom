@@ -1945,10 +1945,10 @@ bool vtkDICOMValue::ValueT<T>::CompareEach(const Value *a, const Value *b)
         r = (*ap == *bp);
         bp++; 
         }
-      while (--m && r);
+      while (--m && !r);
       ap++;
       }
-    while (--n && r);
+    while (--n && !r);
     }
 
   return r;
