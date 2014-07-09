@@ -1835,9 +1835,9 @@ void vtkDICOMValue::AppendValueToString(
 template<class T>
 bool vtkDICOMValue::ValueT<T>::Compare(const Value *a, const Value *b)
 {
-  bool r = true;
+  bool r = (a->VL == b->VL);
   size_t n = a->VL/sizeof(T);
-  if (n != 0)
+  if (n != 0 && r)
     {
     const T *ap = static_cast<const ValueT<T> *>(a)->Data;
     const T *bp = static_cast<const ValueT<T> *>(b)->Data;
@@ -1850,16 +1850,18 @@ template<>
 bool vtkDICOMValue::ValueT<unsigned char>::Compare(
   const Value *a, const Value *b)
 {
-  bool r = true;
+  bool r = (a->VL == b->VL);
   size_t n = a->VL;
   if (a->VL == 0xFFFFFFFF)
     {
     n = a->NumberOfValues;
+    r &= (n == b->NumberOfValues);
 #ifdef VTK_DICOM_USE_OVERFLOW_BYTE
     n += (static_cast<size_t>(a->Overflow) << 32);
+    r &= (a->Overflow == b->Overflow);
 #endif
     }
-  if (n != 0)
+  if (n != 0 && r)
     {
     const unsigned char *ap =
       static_cast<const ValueT<unsigned char> *>(a)->Data;
@@ -1874,9 +1876,9 @@ template<>
 bool vtkDICOMValue::ValueT<vtkDICOMItem>::Compare(
   const Value *a, const Value *b)
 {
-  bool r = true;
   size_t n = a->NumberOfValues; // do not use VL/sizeof()
-  if (n != 0)
+  bool r = (n == b->NumberOfValues);
+  if (n != 0 && r)
     {
     const vtkDICOMItem *ap =
       static_cast<const ValueT<vtkDICOMItem> *>(a)->Data;
@@ -1891,9 +1893,9 @@ template<>
 bool vtkDICOMValue::ValueT<vtkDICOMValue>::Compare(
   const Value *a, const Value *b)
 {
-  bool r = true;
   size_t n = a->NumberOfValues; // do not use VL/sizeof()
-  if (n != 0)
+  bool r = (n == b->NumberOfValues);
+  if (n != 0 && r)
     {
     const vtkDICOMValue *ap =
       static_cast<const ValueT<vtkDICOMValue> *>(a)->Data;
@@ -2289,30 +2291,17 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
   else if (vr == vtkDICOMVR::OB || vr == vtkDICOMVR::UN)
     {
     // OB and UN must match exactly
-    if (this->V->VL == value.V->VL &&
-#ifdef VTK_DICOM_USE_OVERFLOW_BYTE
-        this->V->Overflow == value.V->Overflow &&
-#endif
-        this->V->NumberOfValues == value.V->NumberOfValues)
-      {
-      match = ValueT<unsigned char>::Compare(value.V, this->V);
-      }
+    match = ValueT<unsigned char>::Compare(value.V, this->V);
     }
   else if (vr == vtkDICOMVR::OW)
     {
     // OW must match exactly
-    if (this->V->VL == value.V->VL)
-      {
-      match = ValueT<short>::Compare(value.V, this->V);
-      }
+    match = ValueT<short>::Compare(value.V, this->V);
     }
   else if (vr == vtkDICOMVR::OF)
     {
     // OF must match exactly
-    if (this->V->VL == value.V->VL)
-      {
-      match = ValueT<float>::Compare(value.V, this->V);
-      }
+    match = ValueT<float>::Compare(value.V, this->V);
     }
   else if (type == VTK_SHORT || type == VTK_UNSIGNED_SHORT)
     {
@@ -2350,11 +2339,7 @@ bool vtkDICOMValue::operator==(const vtkDICOMValue& o) const
     r = false;
     if (a != 0 && b != 0)
       {
-      if (a->VR == b->VR && a->VL == b->VL && a->Type == b->Type &&
-#ifdef VTK_DICOM_USE_OVERFLOW_BYTE
-          a->Overflow == b->Overflow &&
-#endif
-          a->NumberOfValues == b->NumberOfValues)
+      if (a->VR == b->VR && a->VL == b->VL && a->Type == b->Type)
         {
         r = true;
         switch (a->Type)
