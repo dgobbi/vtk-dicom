@@ -2134,10 +2134,15 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
   - Numeric value comparisons can be templated
   */
 
-  if (value.V == 0 || value.V->VL == 0 ||
-      this->V == 0)
+  if (value.V == 0 || this->V == 0)
     {
-    // empty values always match
+    // invalid values always match
+    return true;
+    }
+
+  if (value.V->VL == 0 && value.V->VR != vtkDICOMVR::SQ)
+    {
+    // empty values match (for SQ, VL=0 doesn't mean empty)
     return true;
     }
 
@@ -2278,10 +2283,15 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
     }
   else if (type == VTK_DICOM_ITEM)
     {
-    // Match if any item matches
     vtkDICOMItem *item = static_cast<ValueT<vtkDICOMItem> *>(value.V)->Data;
-    if (value.GetNumberOfValues() >= 1)
+    if (value.GetNumberOfValues() == 0)
       {
+      // Match if query sequence was empty (should never happen)
+      match = true;
+      }
+    else
+      {
+      // Match if any item matches
       vtkDICOMItem *ip = static_cast<ValueT<vtkDICOMItem> *>(this->V)->Data;
       size_t n = this->GetNumberOfValues();
       for (size_t i = 0; i < n && !match; i++)
@@ -2298,7 +2308,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
             }
           else
             {
-            match &= ip->GetAttributeValue(tag).Matches(iter->GetValue());
+            match = ip->GetAttributeValue(tag).Matches(iter->GetValue());
             }
           ++iter;
           }
