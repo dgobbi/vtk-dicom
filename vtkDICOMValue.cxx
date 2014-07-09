@@ -1847,6 +1847,30 @@ bool vtkDICOMValue::ValueT<T>::Compare(const Value *a, const Value *b)
 }
 
 template<>
+bool vtkDICOMValue::ValueT<unsigned char>::Compare(
+  const Value *a, const Value *b)
+{
+  bool r = true;
+  size_t n = a->VL;
+  if (a->VL == 0xFFFFFFFF)
+    {
+    n = a->NumberOfValues;
+#ifdef VTK_DICOM_USE_OVERFLOW_BYTE
+    n += (static_cast<size_t>(a->Overflow) << 32);
+#endif
+    }
+  if (n != 0)
+    {
+    const unsigned char *ap =
+      static_cast<const ValueT<unsigned char> *>(a)->Data;
+    const unsigned char *bp =
+      static_cast<const ValueT<unsigned char> *>(b)->Data;
+    do { r &= (*ap++ == *bp++); } while (r && --n);
+    }
+  return r;
+}
+
+template<>
 bool vtkDICOMValue::ValueT<vtkDICOMItem>::Compare(
   const Value *a, const Value *b)
 {
@@ -1893,14 +1917,20 @@ bool vtkDICOMValue::operator==(const vtkDICOMValue& o) const
     if (a != 0 && b != 0)
       {
       if (a->VR == b->VR && a->VL == b->VL && a->Type == b->Type &&
-          a->NumberOfValues == b->NumberOfValues)
+          a->NumberOfValues == b->NumberOfValues
+#ifdef VTK_DICOM_USE_OVERFLOW_BYTE
+          && a->Overflow == b->Overflow
+#endif
+         )
         {
         r = true;
         switch (a->Type)
           {
           case VTK_CHAR:
-          case VTK_UNSIGNED_CHAR:
             r = ValueT<char>::Compare(a, b);
+            break;
+          case VTK_UNSIGNED_CHAR:
+            r = ValueT<unsigned char>::Compare(a, b);
             break;
           case VTK_SHORT:
           case VTK_UNSIGNED_SHORT:
