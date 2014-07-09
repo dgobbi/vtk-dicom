@@ -1847,6 +1847,24 @@ bool vtkDICOMValue::ValueT<T>::Compare(const Value *a, const Value *b)
 }
 
 template<>
+bool vtkDICOMValue::ValueT<char>::Compare(
+  const Value *a, const Value *b)
+{
+  bool r = (a->VL == b->VL);
+  r &= (a->CharacterSet == b->CharacterSet);
+  size_t n = a->VL;
+  if (n != 0 && r)
+    {
+    const unsigned char *ap =
+      static_cast<const ValueT<unsigned char> *>(a)->Data;
+    const unsigned char *bp =
+      static_cast<const ValueT<unsigned char> *>(b)->Data;
+    do { r &= (*ap++ == *bp++); } while (r && --n);
+    }
+  return r;
+}
+
+template<>
 bool vtkDICOMValue::ValueT<unsigned char>::Compare(
   const Value *a, const Value *b)
 {
