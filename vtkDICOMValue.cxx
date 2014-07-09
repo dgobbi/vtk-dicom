@@ -1830,8 +1830,8 @@ void vtkDICOMValue::AppendValueToString(
 
 //----------------------------------------------------------------------------
 // These compare functions can only be safely used within "operator=="
-// because they require a pre-check that VL is not zero and that a, b
-// are the correct type.
+// and "Matches()" because they require a pre-check that VL matches
+// and that a, b are the correct type.
 template<class T>
 bool vtkDICOMValue::ValueT<T>::Compare(const Value *a, const Value *b)
 {
@@ -1905,6 +1905,440 @@ bool vtkDICOMValue::ValueT<vtkDICOMValue>::Compare(
 }
 
 //----------------------------------------------------------------------------
+// This CompareEach template is more limited than the Compare template:
+// it can only be used for SS, US, SL, UL, FL, FD.  Its purpose it to
+// support the Matches() method, and it shouldn't be used anywhere else.
+template<class T>
+bool vtkDICOMValue::ValueT<T>::CompareEach(const Value *a, const Value *b)
+{
+  bool r = true;
+  if (a->NumberOfValues > 0 && b->NumberOfValues > 0)
+    {
+    size_t n = a->NumberOfValues;
+    const T *ap = static_cast<const ValueT<T> *>(a)->Data;
+    do
+      {
+      size_t m = b->NumberOfValues;
+      const T *bp = static_cast<const ValueT<T> *>(b)->Data;
+      do
+        {
+        r = (*ap == *bp);
+        bp++; 
+        }
+      while (--m && r);
+      ap++;
+      }
+    while (--n && r);
+    }
+
+  return r;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMValue::PatternMatches(
+    const char *pattern, const char *ep,
+    const char *val, const char *fp)
+{
+  // This performs simple ASCII or UTF8 case-sensitive matching.
+  // It uses the following simplified definition of UTF8:
+  // 0b1xxxxxxx [0b10xxxxxx...]
+  // In other words, a byte with its high bit set, followed by
+  // zero or more bytes with the high bit set and the next bit clear,
+  // are taken as one unicode codepoint.
+
+  const char *cp = pattern;
+  const char *dp = val;
+
+  while (cp != ep && dp != fp)
+    {
+    if (*cp == '*')
+      {
+      cp++;
+      // if '*' is the final character, it matches the remainder of val
+      if (cp == ep)
+        {
+        dp = fp;
+        }
+      else
+        {
+        while (dp != fp)
+          {
+          if (*cp == '?' || *dp == *cp)
+            {
+            // check if the remainder of val matches remainder of pattern
+            if (PatternMatches(cp, ep, dp, fp))
+              {
+              break;
+              }
+            }
+          // else let the "*" eat one more codepoint of "val"
+          if (static_cast<signed char>(*dp++) < 0)
+            {
+            while (dp != fp && (*dp & 0xC0) == 0x80)
+              {
+              dp++;
+              }
+            }
+          }
+        }
+      }
+    else if (*cp == '?')
+      {
+      // the '?' matches a whole codepoint, not just one character
+      cp++;
+      if (static_cast<signed char>(*dp++) < 0)
+        {
+        while (dp != fp && (*dp & 0xC0) == 0x80)
+          {
+          dp++;
+          }
+        }
+      }
+    else if (*cp == *dp)
+      {
+      // make sure the entire codepoint matches
+      cp++;
+      if (static_cast<signed char>(*dp++) < 0)
+        {
+        while (cp != ep && dp != fp && (*cp & 0xC0) == 0x80)
+          {
+          if (*dp != *cp)
+            {
+            return false;
+            }
+          cp++;
+          dp++;
+          }
+        }
+      }
+    else
+      {
+      return false;
+      }
+    }
+
+  // make sure we've reached the end of both the pattern and the value
+  return (cp == ep && dp == fp);
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMValue::PatternMatchesMulti(
+    const char *pattern, const char *pe,
+    const char *val, const char *ve)
+{
+  bool match = false;
+
+  const char *pp = pattern;
+  while (!match)
+    {
+    // get pattern value start and end
+    const char *pd = pp;
+    while (pd != pe && *pd != '\\') { pd++; }
+    const char *pf = pd;
+    // strip spaces
+    while (*pp == ' ') { pp++; }
+    while (pf != pp && pf[-1] == ' ') { --pf; }
+
+    const char *vp = val;
+    while (!match)
+      {
+      // get value start and end
+      const char *vd = vp;
+      while (vd != ve && *vd != '\\') { vd++; }
+      const char *vf = vd;
+      // strip whitespace
+      while (*vp == ' ') { vp++; }
+      while (vf != vp && vf[-1] == ' ') { --vf; }
+
+      match = vtkDICOMValue::PatternMatches(pp, pf, vp, vf);
+
+      // break if no values remain
+      if (*vd != '\\') { break; }
+      vp = vd + 1;
+      }
+
+    // break if no patterns remain
+    if (*pd != '\\') { break; }
+    pp = pd + 1;
+    }
+
+  return match;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMValue::NormalizeDateTime(
+  const char *input, char output[22], vtkDICOMVR vr)
+{
+  // use UNIX epoch as our arbitrary time base
+  static const char epoch[22] = "19700101000000.000000";
+  for (int i = 0; i < 22; i++)
+    {
+    output[i] = epoch[i];
+    }
+
+  char *tp = output;
+  if (vr == vtkDICOMVR::TM)
+    {
+    tp += 8;
+    }
+
+  const char *cp = input;
+  while (*tp != 0 && *cp != 0)
+    {
+    *tp++ = *cp++;
+    }
+
+  if (vr == vtkDICOMVR::DT && (*cp == '-' || *cp == '+'))
+    {
+    // adjust for the timezone offset
+    }
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
+{
+  /* Attribute matching:
+  1) Single Value Matching
+  2) List of UID Matching (match if any UIDs in query list match)
+  3) Universal Matching (if query value is empty)
+  4) Wild Card Matching (with * and ?)
+  5) Range Matching (range of dates, times, or numbers)
+  6) Sequence Matching (match if any items in sequence match)
+
+  Notes:
+  - Encoded strings should be converted to UTF8
+  - PN matches should be case-insensitive, ideally normalized
+  - All other queries are case-sensitive
+  - List can be used for more than just UIDs
+  - Dates should take timezone into account (use UTC)
+  - Numeric value comparisons can be templated
+  */
+
+  if (value.V == 0 || value.V->VL == 0 ||
+      this->V == 0)
+    {
+    // empty values always match
+    return true;
+    }
+
+  if (value.V->VR != this->V->VR)
+    {
+    // match is impossible if VRs differ
+    return false;
+    }
+
+  bool match = false;
+  vtkDICOMVR vr = this->V->VR;
+  int type = this->V->Type;
+
+  // First, do comparisons for string values
+  if (type == VTK_CHAR)
+    {
+    // Does the pattern string have wildcards?
+    bool wildcard = false;
+    const char *pattern = static_cast<const ValueT<char> *>(value.V)->Data;
+    size_t pl = 0;
+    while (pattern[pl] != '\0' && pl < value.V->VL)
+      {
+      char c = pattern[pl++];
+      wildcard |= (c == '*');
+      wildcard |= (c == '?');
+      }
+
+    // Get string value and remove any trailing nulls
+    const char *cp = static_cast<const ValueT<char> *>(this->V)->Data;
+    size_t l = this->V->VL;
+    while (l > 0 && cp[l-1] == '\0') { l--; }
+
+    if (!wildcard &&
+        (vr == vtkDICOMVR::DA ||
+         vr == vtkDICOMVR::TM ||
+         vr == vtkDICOMVR::DT))
+      {
+      // Find the position of the hyphen
+      size_t hp = 0;
+      while (hp < pl && pattern[hp] != '-') { hp++; }
+      if (vr == vtkDICOMVR::DT && hp + 4 < pl)
+        {
+        // Check if the hyphen was part of the timezone offset
+        if (pattern[hp+4] == '-')
+          {
+          hp += 4;
+          }
+        else if (pattern[hp+4] == '\0')
+          {
+          hp = 0;
+          }
+        }
+      // Get a pointer to the part of pattern after the hyphen
+      const char *dp = &pattern[hp];
+      bool hyphen = (*dp == '-');
+      dp += hyphen;
+
+      // Normalize the dates/times and compare
+      char r1[22], r2[22], d[22];
+      vtkDICOMValue::NormalizeDateTime(cp, d, vr);
+      r1[0] = '\0';
+      if (pattern[0] != '\0' && pattern[0] != '-')
+        {
+        vtkDICOMValue::NormalizeDateTime(pattern, r1, vr);
+        }
+      r2[0] = '\0';
+      if (dp[0] != '\0' && dp[0] != '-')
+        {
+        vtkDICOMValue::NormalizeDateTime(dp, r2, vr);
+        }
+
+      // Perform lexical comparison on normalized datetime
+      if (!hyphen)
+        {
+        match = (strcmp(d, r1) == 0);
+        }
+      else if (*r1 != '\0')
+        {
+        match = (strcmp(d, r1) >= 0);
+        }
+      else if (*r2 != '\0')
+        {
+        match = (strcmp(r2, d) >= 0);
+        }
+      else
+        {
+        match = (strcmp(r2, d) >= 0 && strcmp(d, r1) >= 0);
+        }
+      }
+    else
+      {
+      // Perform wildcard matching and list matching
+      std::string str;
+      std::string pstr;
+      if (vr.HasSpecificCharacterSet())
+        {
+        if (this->V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_6 &&
+            this->V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_192)
+          {
+          // Convert value to UTF8 before matching
+          str = this->AsUTF8String();
+          cp = str.data();
+          l = str.length();
+          }
+        if (value.V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_6 &&
+            value.V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_192)
+          {
+          // Convert pattern to UTF8 before matching
+          pstr = value.AsUTF8String();
+          pattern = str.data();
+          pl = str.length();
+          }
+        }
+      if (vr == vtkDICOMVR::ST ||
+          vr == vtkDICOMVR::LT ||
+          vr == vtkDICOMVR::UT)
+        {
+        match = vtkDICOMValue::PatternMatches(
+          pattern, pattern + pl, cp, cp + l);
+        }
+      else
+        {
+        match = vtkDICOMValue::PatternMatchesMulti(
+          pattern, pattern + pl, cp, cp + l);
+        }
+      }
+    }
+  else if (type == VTK_DICOM_VALUE)
+    {
+    // Match if any of the contained values match
+    vtkDICOMValue *vp = static_cast<ValueT<vtkDICOMValue> *>(this->V)->Data;
+    size_t vn = this->GetNumberOfValues();
+    for (size_t i = 0; i < vn && !match; i++)
+      {
+      match = vp->Matches(value);
+      vp++;
+      }
+    }
+  else if (type == VTK_DICOM_ITEM)
+    {
+    // Match if any item matches
+    vtkDICOMItem *item = static_cast<ValueT<vtkDICOMItem> *>(value.V)->Data;
+    if (value.GetNumberOfValues() >= 1)
+      {
+      vtkDICOMItem *ip = static_cast<ValueT<vtkDICOMItem> *>(this->V)->Data;
+      size_t n = this->GetNumberOfValues();
+      for (size_t i = 0; i < n && !match; i++)
+        {
+        vtkDICOMDataElementIterator iter = item->Begin();
+        vtkDICOMDataElementIterator iterEnd = item->End();
+        match = true;
+        while (match && iter != iterEnd)
+          {
+          vtkDICOMTag tag = iter->GetTag();
+          if (tag == DC::SpecificCharacterSet)
+            {
+            // Ignore, the values have CharacterSet embedded in them
+            }
+          else
+            {
+            match &= ip->GetAttributeValue(tag).Matches(iter->GetValue());
+            }
+          ++iter;
+          }
+        ip++;
+        }
+      }
+    }
+  else if (vr == vtkDICOMVR::OB || vr == vtkDICOMVR::UN)
+    {
+    // OB and UN must match exactly
+    if (this->V->VL == value.V->VL &&
+#ifdef VTK_DICOM_USE_OVERFLOW_BYTE
+        this->V->Overflow == value.V->Overflow &&
+#endif
+        this->V->NumberOfValues == value.V->NumberOfValues)
+      {
+      match = ValueT<unsigned char>::Compare(value.V, this->V);
+      }
+    }
+  else if (vr == vtkDICOMVR::OW)
+    {
+    // OW must match exactly
+    if (this->V->VL == value.V->VL)
+      {
+      match = ValueT<short>::Compare(value.V, this->V);
+      }
+    }
+  else if (vr == vtkDICOMVR::OF)
+    {
+    // OF must match exactly
+    if (this->V->VL == value.V->VL)
+      {
+      match = ValueT<float>::Compare(value.V, this->V);
+      }
+    }
+  else if (type == VTK_SHORT || type == VTK_UNSIGNED_SHORT)
+    {
+    // Match if any value matches
+    match = ValueT<short>::CompareEach(value.V, this->V);
+    }
+  else if (type == VTK_INT || type == VTK_UNSIGNED_INT)
+    {
+    // Match if any value matches
+    match = ValueT<int>::CompareEach(value.V, this->V);
+    }
+  else if (type == VTK_FLOAT)
+    {
+    // Match if any value matches
+    match = ValueT<float>::CompareEach(value.V, this->V);
+    }
+  else if (type == VTK_DOUBLE)
+    {
+    // Match if any value matches
+    match = ValueT<float>::CompareEach(value.V, this->V);
+    }
+
+  return match;
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMValue::operator==(const vtkDICOMValue& o) const
 {
   const vtkDICOMValue::Value *a = this->V;
@@ -1917,11 +2351,10 @@ bool vtkDICOMValue::operator==(const vtkDICOMValue& o) const
     if (a != 0 && b != 0)
       {
       if (a->VR == b->VR && a->VL == b->VL && a->Type == b->Type &&
-          a->NumberOfValues == b->NumberOfValues
 #ifdef VTK_DICOM_USE_OVERFLOW_BYTE
-          && a->Overflow == b->Overflow
+          a->Overflow == b->Overflow &&
 #endif
-         )
+          a->NumberOfValues == b->NumberOfValues)
         {
         r = true;
         switch (a->Type)

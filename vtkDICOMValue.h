@@ -72,6 +72,7 @@ private:
 
     ValueT(vtkDICOMVR vr, size_t vn);
     static bool Compare(const Value *a, const Value *b);
+    static bool CompareEach(const Value *a, const Value *b);
   };
 
 public:
@@ -357,6 +358,17 @@ public:
    */
   void AppendValueToString(std::string &str, size_t i) const;
 
+  //! Check if the value matches the specified find query value.
+  /*!
+   *  This method is used to during "find" requests, according to the rules
+   *  of DICOM Part 4.C.2.2.2 Attribute Matching.  The standard wildcards
+   *  "*" and "?" are supported, as well numeric ranges (for times and dates)
+   *  through the use of two values separated by "-".  Matches are case
+   *  sensitive, except when the VR is PN.  If the value has multiplicity,
+   *  then the match will succeed if any of the values match.
+   */
+  bool Matches(const vtkDICOMValue& value) const;
+
   //! Override assignment operator for reference counting.
   vtkDICOMValue& operator=(const vtkDICOMValue& o) {
     if (this->V != o.V) {
@@ -410,6 +422,18 @@ private:
   //! Create a value from a string with a specific character set.
   void CreateValueWithSpecificCharacterSet(
     vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, size_t l);
+
+  //! A simple string compare with wildcards "*" and "?".
+  static bool PatternMatches(
+    const char *pattern, const char *pe, const char *val, const char *ve);
+
+  //! Pattern matching with multiple backslash-delimited values.
+  static bool PatternMatchesMulti(
+    const char *pattern, const char *pe, const char *val, const char *ve);
+
+  //! Normalize a date, time, or datetime to UTC
+  static void NormalizeDateTime(
+    const char *input, char output[22], vtkDICOMVR vr);
 
   //! The only data member: a pointer to the internal value.
   Value *V;
