@@ -475,7 +475,70 @@ int vtkDICOMUtilities::CompareUIDs(const char *u1, const char *u2)
 }
 
 //----------------------------------------------------------------------------
+long long vtkDICOMUtilities::GetUTC(long long *offset)
+{
+#ifdef _WIN32
+
+  FILETIME ft;
+  GetSystemTimeAsFileTime(&ft);
+  long long t1 = (static_cast<long long>(ft.dwLowDateTime) +
+                  (static_cast<long long>(ft.dwHighDateTime) << 32));
+
+  if (offset)
+    {
+    // get the current timezone offset by subtracting UTC from local time
+    TIME_ZONE_INFORMATION tzi;
+    GetTimeZoneInformation(&tzi);
+    SYSTEMTIME st;
+    FileTimeToSystemTime(&ft, &st);
+    SYSTEMTIME lst;
+    SystemTimeToTzSpecificLocalTime(&tzi, &st, &lst);
+    FILETIME lft;
+    SystemTimeToFileTime(&lst, &lft);
+    *offset = (((static_cast<long long>(lft.dwLowDateTime) +
+                 (static_cast<long long>(lft.dwHighDateTime) << 32)) - t1)/10);
+    }
+
+  // convert file time to unix time
+  return t1/10 - 11644473600000000ll;
+
+#else
+
+  struct timeval tv;
+  gettimeofday(&tv, 0);
+  long long t = (tv.tv_sec*1000000ll + tv.tv_usec);
+  if (offset)
+    {
+    static long long lastT = 0;
+    if (t - lastT > 1000000ll)
+      {
+      // this is needed on some systems to set timezone info,
+      // because it might do I/O do it at most once per second
+      tzset();
+      lastT = t;
+      }
+    // use localtime to get the offset from utc
+    struct tm tmv;
+    time_t tod = static_cast<time_t>(t/1000000);
+    localtime_r(&tod, &tmv);
+    *offset = tmv.tm_gmtoff*1000000ll;
+    }
+
+  return t;
+
+#endif
+}
+
+//----------------------------------------------------------------------------
 std::string vtkDICOMUtilities::GenerateDateTime(const char *z)
+{
+  return vtkDICOMUtilities::GenerateDateTime(VTK_LONG_LONG_MIN, z);
+}
+
+//----------------------------------------------------------------------------
+// If "t" is VTK_LONG_LONG_MIN, this uses the current time instead of "t"
+std::string vtkDICOMUtilities::GenerateDateTime(
+  long long t, const char *z)
 {
   long long zs = 0; // offset for local time in microseconds
 
@@ -490,55 +553,21 @@ std::string vtkDICOMUtilities::GenerateDateTime(const char *z)
     zs = (zh*3600 + zm*60) * (z[0] == '-' ? -1 : +1) * 1000000ll;
     }
 
-#ifdef _WIN32
-  // get the system time (UTC) on Windows
-  FILETIME ft;
-  GetSystemTimeAsFileTime(&ft);
-  long long t = (static_cast<long long>(ft.dwLowDateTime) +
-                 (static_cast<long long>(ft.dwHighDateTime) << 32));
-
-  // get the current timezone offset by subtracting UTC from local time
-  if (z == 0 || z[0] == '\0')
+  if (z == 0 || z[0] == '\0' || t == VTK_LONG_LONG_MIN)
     {
-    TIME_ZONE_INFORMATION tzi;
-    GetTimeZoneInformation(&tzi);
-    SYSTEMTIME st;
-    FileTimeToSystemTime(&ft, &st);
-    SYSTEMTIME lst;
-    SystemTimeToTzSpecificLocalTime(&tzi, &st, &lst);
-    FILETIME lft;
-    SystemTimeToFileTime(&lst, &lft);
-    zs = (((static_cast<long long>(lft.dwLowDateTime) +
-            (static_cast<long long>(lft.dwHighDateTime) << 32)) - t)/10);
-    }
-
-  // convert file time to unix time
-  t = t/10 - 11644473600000000ll;
-
-#else
-  // get the system time (UTC) on UNIX
-  struct timeval tv;
-  gettimeofday(&tv, 0);
-  long long t = (tv.tv_sec*1000000ll + tv.tv_usec);
-
-  // get the current time zone offset by calling localtime()
-  if (z == 0 || z[0] == '\0')
-    {
-    static long long lastT = 0;
-    if (t - lastT > 1000000ll)
+    long long *zsp = 0;
+    if (z == 0 || z[0] == '\0')
       {
-      // this is needed on some systems to set timezone info,
-      // because it might do I/O do it at most once per second
-      tzset();
-      lastT = t;
+      zsp = &zs;
       }
-    // use localtime to get the offset from utc
-    struct tm tmv;
-    time_t tod = static_cast<time_t>(t/1000000);
-    localtime_r(&tod, &tmv);
-    zs = tmv.tm_gmtoff*1000000ll;
+
+    long long t1 = vtkDICOMUtilities::GetUTC(zsp);
+
+    if (t == VTK_LONG_LONG_MIN)
+      {
+      t = t1;
+      }
     }
-#endif
 
   // generate a new timezone offset string
   char tzs[6] = { '+', '0', '0', '0', '0', '\0' };
@@ -591,6 +620,99 @@ std::string vtkDICOMUtilities::GenerateDateTime(const char *z)
           y, m, d, H, M, S, us, z);
 
   return dt;
+}
+
+//----------------------------------------------------------------------------
+long long vtkDICOMUtilities::ConvertDateTime(const char *datetime)
+{
+  // first normalize the datetime string into the following format
+  const char *epoch = "19700101000000.000000+0000";
+  char normalized[27];
+  for (int i = 0; i < 27; i++)
+    {
+    normalized[i] = epoch[i];
+    }
+  char *tp = normalized;
+  const char *cp = datetime;
+  while (*tp != 0 && *cp >= '0' && *cp <= '9')
+    {
+    *tp++ = *cp++;
+    }
+  if (*tp == '.' && *cp == '.')
+    {
+    *tp++ = *cp++;
+    while (*tp != 0 && *cp >= '0' && *cp <= '9')
+      {
+      *tp++ = *cp++;
+      }
+    }
+  if (*cp == '-' || *cp == '+')
+    {
+    tp = normalized + 21;
+    *tp++ = *cp++;
+    while (*tp != 0 && *cp >= '0' && *cp <= '9')
+      {
+      *tp++ = *cp++;
+      }
+    }
+  else
+    {
+    // use local time zone
+    long long offset = 0;
+    vtkDICOMUtilities::GetUTC(&offset);
+    long zst = offset/1000000;
+    zst = (zst < 0 ? -zst : zst);
+    long H = (zst/3600)%24;
+    long M = (zst%3600)/60;
+
+    tp = &normalized[21];
+    tp[0] = (offset < 0 ? '-' : '+');
+    tp[1] = H/10 + '0'; 
+    tp[2] = H%10 + '0'; 
+    tp[3] = M/10 + '0'; 
+    tp[4] = M%10 + '0'; 
+    tp[5] = 0;
+    }
+
+  // convert normalized datetime to year, month, day etc.
+  // first, convert all digits (and only digits) to binary values
+  tp = normalized;
+  normalized[14] += '0';
+  normalized[21] += '0';
+  for (int i = 0; i < 26; i++)
+    {
+    normalized[i] -= '0';
+    }
+
+  int y = tp[0]*1000 + tp[1]*100 + tp[2]*10 + tp[3];
+  int m = tp[4]*10 + tp[5];
+  int d = tp[6]*10 + tp[7];
+  int H = tp[8]*10 + tp[9];
+  int M = tp[10]*10 + tp[11];
+  int S = tp[12]*10 + tp[13];
+  int us = tp[15]*100 + tp[16]*10 + tp[17];
+  us = us*1000 + tp[18]*100 + tp[19]*10 + tp[20];
+
+  // get the timezone offset, in seconds
+  int tzs = (tp[22]*600 + tp[23]*60 + tp[24]*10 + tp[25])*60;
+  if (tp[21] == '-')
+    {
+    tzs = -tzs;
+    }
+
+  // use algorithm from Henry F. Fliegel and Thomas C. Van Flandern
+  // to compute the day according to Gregorian calendar
+  long long jd = (1461 * (y + 4800 + (m - 14) / 12)) / 4
+     + (367 * (m - 2 - 12 * ((m - 14) / 12))) / 12
+     - (3 * ((y + 4900 + (m - 14) / 12) / 100)) / 4
+     + d - 32075;
+
+  // compute time (the UNIX epoch began on Julian day 2440588)
+  long long t = (jd - 2440588)*86400 + H*3600 + M*60 + S - tzs;
+
+  t = t*1000000 + us;
+
+  return t;
 }
 
 //----------------------------------------------------------------------------

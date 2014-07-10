@@ -58,9 +58,41 @@ public:
   /*!
    *  The time zone is to be given in the DICOM format of
    *  +HHMM or -HHMM where HH is the hour offset and MM is the
-   *  minute offset.  The sign is mandatory and cannot be omitted.
+   *  minute offset.  If no time zone is given, then local time
+   *  is used (according to the computer's time zone preferences).
    */
   static std::string GenerateDateTime(const char *zone);
+
+  //! Generate a DICOM date time string from long integer.
+  /*!
+   *  Given an integer number of microseconds since the UNIX epoch
+   *  (00:00:00 UTC on 1 Jan 1970), return a DICOM date time string
+   *  for the given time zone.  The time zone should be given in the
+   *  format +HHMM or -HHMM.  If no time zone is given, then the local
+   *  zone is used (according to the computer's time zone preferences).
+   */
+  static std::string GenerateDateTime(long long microsecs, const char *zone);
+
+  //! Convert a DICOM data time string into a long integer.
+  /*!
+   *  Given a DICOM date time string, generate a long integer that counts
+   *  microseconds since the UNIX epoch (00:00:00 UTC on 1 Jan 1970).
+   *  If the datetime string contains a timezone offset, then that timezone
+   *  is used to convert the time to UTC.  Otherwise, the local timezone
+   *  (according to the computer's timezone preferences) is used to
+   *  convert the time to UTC.  The return value is always intended to be
+   *  interpreted as a UTC time.
+   */
+  static long long ConvertDateTime(const char *datetime);
+
+  //! Get the current UTC time in microseconds and an offset to localtime.
+  /*!
+   *  The time is in microseconds since the UNIX epoch (00:00:00 UTC on
+   *  1 Jan 1970).  The offset can be added to the returned UTC time in
+   *  order to get the local time.  If you do not need the offset, you
+   *  can pass a null pointer.
+   */
+  static long long GetUTC(long long *offset);
 
   //! Check if the specified file is a DICOM file.
   /*!
