@@ -221,13 +221,7 @@ void vtkGenerateRandomBytes(unsigned char *bytes, vtkIdType n)
     CryptReleaseContext(hProv, 0);
     }
 #else
-  // use the "random" device on unix-like systems
-#ifdef __APPLE__
-  const char *randdev = "/dev/random";
-#else
-  const char *randdev = "/dev/urandom";
-#endif
-  vtkDICOMFile infile(randdev, vtkDICOMFile::In);
+  vtkDICOMFile infile("/dev/urandom", vtkDICOMFile::In);
   if (infile.GetError() == 0)
     {
     size_t m = infile.Read(bytes, n);
