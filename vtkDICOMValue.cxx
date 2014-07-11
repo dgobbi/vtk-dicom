@@ -2089,6 +2089,10 @@ bool vtkDICOMValue::PatternMatchesMulti(
 void vtkDICOMValue::NormalizeDateTime(
   const char *input, char output[22], vtkDICOMVR vr)
 {
+  // if the value is DT and has a timezone offset, we ignore it,
+  // because timezone adjustment is only done if it is negotiated
+  // as part of the query, otherwise timezones are ignored
+
   // use UNIX epoch as our arbitrary time base
   static const char epoch[22] = "19700101000000.000000";
   for (int i = 0; i < 22; i++)
@@ -2114,11 +2118,6 @@ void vtkDICOMValue::NormalizeDateTime(
       {
       *tp++ = *cp++;
       }
-    }
-
-  if (vr == vtkDICOMVR::DT && (*cp == '-' || *cp == '+'))
-    {
-    // adjust for the timezone offset
     }
 }
 
