@@ -486,8 +486,8 @@ long long vtkDICOMUtilities::GetUTC(long long *offset)
 
   FILETIME ft;
   GetSystemTimeAsFileTime(&ft);
-  long long t1 = (static_cast<long long>(ft.dwLowDateTime) +
-                  (static_cast<long long>(ft.dwHighDateTime) << 32));
+  long long t1 = ((static_cast<long long>(ft.dwHighDateTime) << 32) +
+                  static_cast<long long>(ft.dwLowDateTime));
 
   if (offset)
     {
@@ -500,8 +500,18 @@ long long vtkDICOMUtilities::GetUTC(long long *offset)
     SystemTimeToTzSpecificLocalTime(&tzi, &st, &lst);
     FILETIME lft;
     SystemTimeToFileTime(&lst, &lft);
-    *offset = (((static_cast<long long>(lft.dwLowDateTime) +
-                 (static_cast<long long>(lft.dwHighDateTime) << 32)) - t1)/10);
+    // round to the nearest second, since result has a bit of numerical error
+    long long tzo = ((static_cast<long long>(lft.dwHighDateTime) << 32) +
+                     static_cast<long long>(lft.dwLowDateTime) - t1);
+    if (tzo >= 0)
+      {
+      tzo = (tzo + 5000000)/10000000;
+      }
+    else
+      {
+      tzo = -((-tzo + 5000000)/10000000);
+      }
+    *offset = tzo*1000000;
     }
 
   // convert file time to unix time
