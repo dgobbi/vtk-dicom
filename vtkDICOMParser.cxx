@@ -1310,7 +1310,10 @@ void vtkDICOMParser::Update()
     }
 
   this->ReadFile(this->MetaData, idx);
-  this->MetaData->Modified();
+  if (this->MetaData)
+    {
+    this->MetaData->Modified();
+    }
 }
 
 //----------------------------------------------------------------------------
