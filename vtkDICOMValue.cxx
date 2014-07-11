@@ -2191,14 +2191,14 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
       // Find the position of the hyphen
       size_t hp = 0;
       while (hp < pl && pattern[hp] != '-') { hp++; }
-      if (vr == vtkDICOMVR::DT && hp + 4 < pl)
+      if (vr == vtkDICOMVR::DT && hp + 5 < pl)
         {
         // Check if the hyphen was part of the timezone offset
-        if (pattern[hp+4] == '-')
+        if (pattern[hp+5] == '-')
           {
-          hp += 4;
+          hp += 5;
           }
-        else if (pattern[hp+4] == '\0')
+        else if (hp != 4 && pattern[hp+5] == '\0')
           {
           hp = 0;
           }
