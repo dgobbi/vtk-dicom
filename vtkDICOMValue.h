@@ -428,20 +428,18 @@ private:
     const char *pattern, const char *pe, const char *val, const char *ve);
 
   //! Pattern matching with multiple backslash-delimited values.
-  static bool PatternMatchesMulti(
-    const char *pattern, const char *pe, const char *val, const char *ve);
+  static bool PatternMatchesMulti(const char *pattern, const char *val);
 
   //! Normalize a date, time, or datetime.
   static void NormalizeDateTime(
     const char *input, char output[22], vtkDICOMVR vr);
 
   //! Do matching on names, after notmalization.
-  static bool PatternMatchesPersonName(
-    const char *pattern, const char *pe, const char *val, const char *ve);
+  static bool PatternMatchesPersonName(const char *pattern, const char *val);
 
   //! Normalize a person's name.
   static void NormalizePersonName(
-    const char *input, const char *inEnd, char output[256], bool isquery);
+    const char *input, char output[256], bool isquery=false);
 
   //! The only data member: a pointer to the internal value.
   Value *V;

@@ -2043,8 +2043,7 @@ bool vtkDICOMValue::PatternMatches(
 
 //----------------------------------------------------------------------------
 bool vtkDICOMValue::PatternMatchesMulti(
-    const char *pattern, const char *pe,
-    const char *val, const char *ve)
+    const char *pattern, const char *val)
 {
   bool match = false;
 
@@ -2053,7 +2052,7 @@ bool vtkDICOMValue::PatternMatchesMulti(
     {
     // get pattern value start and end
     const char *pd = pp;
-    while (pd != pe && *pd != '\\') { pd++; }
+    while (*pd != '\0' && *pd != '\\') { pd++; }
     const char *pf = pd;
     // strip spaces
     while (*pp == ' ') { pp++; }
@@ -2064,7 +2063,7 @@ bool vtkDICOMValue::PatternMatchesMulti(
       {
       // get value start and end
       const char *vd = vp;
-      while (vd != ve && *vd != '\\') { vd++; }
+      while (*vd != '\0' && *vd != '\\') { vd++; }
       const char *vf = vd;
       // strip whitespace
       while (*vp == ' ') { vp++; }
@@ -2073,12 +2072,12 @@ bool vtkDICOMValue::PatternMatchesMulti(
       match = vtkDICOMValue::PatternMatches(pp, pf, vp, vf);
 
       // break if no values remain
-      if (*vd != '\\') { break; }
+      if (*vd == '\0') { break; }
       vp = vd + 1;
       }
 
     // break if no patterns remain
-    if (*pd != '\\') { break; }
+    if (*pd == '\0') { break; }
     pp = pd + 1;
     }
 
@@ -2087,8 +2086,7 @@ bool vtkDICOMValue::PatternMatchesMulti(
 
 //----------------------------------------------------------------------------
 bool vtkDICOMValue::PatternMatchesPersonName(
-    const char *pattern, const char *pe,
-    const char *val, const char *ve)
+    const char *pattern, const char *val)
 {
   bool match = false;
 
@@ -2099,30 +2097,28 @@ bool vtkDICOMValue::PatternMatchesPersonName(
   while (!match)
     {
     // normalize the pattern
-    const char *pd = pp;
-    while (pd != pe && *pd != '\\') { pd++; }
-    vtkDICOMValue::NormalizePersonName(pp, pd, normalizedPattern, true);
+    vtkDICOMValue::NormalizePersonName(pp, normalizedPattern, true);
 
     const char *vp = val;
     while (!match)
       {
       // normalize the name
-      const char *vd = vp;
-      while (vd != ve && *vd != '\\') { vd++; }
-      vtkDICOMValue::NormalizePersonName(vp, vd, normalizedName, false);
+      vtkDICOMValue::NormalizePersonName(vp, normalizedName);
 
       match = vtkDICOMValue::PatternMatches(
         normalizedPattern, normalizedPattern + strlen(normalizedPattern),
         normalizedName, normalizedName + strlen(normalizedName));
 
       // break if no values remain
-      if (*vd != '\\') { break; }
-      vp = vd + 1;
+      while (*vp != '\0' && *vp != '\\') { vp++; }
+      if (*vp == '\0') { break; }
+      vp++;
       }
 
     // break if no patterns remain
-    if (*pd != '\\') { break; }
-    pp = pd + 1;
+    while (*pp != '\0' && *pp != '\\') { pp++; }
+    if (*pp == '\0') { break; }
+    pp++;
     }
 
   return match;
@@ -2130,7 +2126,7 @@ bool vtkDICOMValue::PatternMatchesPersonName(
 
 //----------------------------------------------------------------------------
 void vtkDICOMValue::NormalizePersonName(
-  const char *input, const char *inEnd, char output[256], bool isquery)
+  const char *input, char output[256], bool isquery)
 {
   // this normalizes a PN so that it consists of three component groups
   // of five components each
@@ -2152,7 +2148,7 @@ void vtkDICOMValue::NormalizePersonName(
       // save start location
       char *componentStart = dp;
       // copy characters
-      while (cp != inEnd && *cp != '^' && *cp != '=' && *cp != '\\' &&
+      while (*cp != '^' && *cp != '=' && *cp != '\\' &&
              *cp != '\0' && dp != ep)
         {
         *dp++ = *cp++;
@@ -2180,7 +2176,7 @@ void vtkDICOMValue::NormalizePersonName(
         }
 
       // go to next component of input
-      if (cp != inEnd && *cp == '^') { cp++; }
+      if (*cp == '^') { cp++; }
       }
 
     // collapse repeated wildcards
@@ -2197,7 +2193,7 @@ void vtkDICOMValue::NormalizePersonName(
     if (i != 2) { *dp++ = '='; }
 
     // go to next component group of input
-    if (cp != inEnd && *cp == '=') { cp++; }
+    if (*cp == '=') { cp++; }
     }
 
   // collapse repeated wildcards
@@ -2380,7 +2376,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
           {
           // Convert value to UTF8 before matching
           str = this->AsUTF8String();
-          cp = str.data();
+          cp = str.c_str();
           l = str.length();
           }
         if (value.V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_6 &&
@@ -2388,14 +2384,13 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
           {
           // Convert pattern to UTF8 before matching
           pstr = value.AsUTF8String();
-          pattern = pstr.data();
+          pattern = pstr.c_str();
           pl = pstr.length();
           }
         }
       if (vr == vtkDICOMVR::PN)
         {
-        match = vtkDICOMValue::PatternMatchesPersonName(
-          pattern, pattern + pl, cp, cp + l);
+        match = vtkDICOMValue::PatternMatchesPersonName(pattern, cp);
         }
       else if (vr == vtkDICOMVR::ST ||
                vr == vtkDICOMVR::LT ||
@@ -2406,8 +2401,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
         }
       else
         {
-        match = vtkDICOMValue::PatternMatchesMulti(
-          pattern, pattern + pl, cp, cp + l);
+        match = vtkDICOMValue::PatternMatchesMulti(pattern, cp);
         }
       }
     }
