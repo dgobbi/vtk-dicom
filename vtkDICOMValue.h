@@ -431,9 +431,17 @@ private:
   static bool PatternMatchesMulti(
     const char *pattern, const char *pe, const char *val, const char *ve);
 
-  //! Normalize a date, time, or datetime to UTC
+  //! Normalize a date, time, or datetime.
   static void NormalizeDateTime(
     const char *input, char output[22], vtkDICOMVR vr);
+
+  //! Do matching on names, after notmalization.
+  static bool PatternMatchesPersonName(
+    const char *pattern, const char *pe, const char *val, const char *ve);
+
+  //! Normalize a person's name.
+  static void NormalizePersonName(
+    const char *input, const char *inEnd, char output[256], bool isquery);
 
   //! The only data member: a pointer to the internal value.
   Value *V;

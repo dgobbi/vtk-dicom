@@ -463,6 +463,25 @@ int main(int argc, char *argv[])
   u = vtkDICOMValue(vtkDICOMVR::SH, vtkDICOMCharacterSet::ISO_IR_6,
     "p?ddle");
   TestAssert(v.Matches(u));
+
+  // test comparisons of names
+  const char *names[] = {
+    "Gobbi", "Gobbi^David", "Gobbi^^Gregory^", "Gobbi^David^Gregory",
+    "Gobb", "Gobbi^Kevin"
+  };
+  v = vtkDICOMValue(vtkDICOMVR::PN, names[3]);
+  u = vtkDICOMValue(vtkDICOMVR::PN, names[0]);
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::PN, names[1]);
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::PN, names[2]);
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::PN, names[3]);
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::PN, names[4]);
+  TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::PN, names[5]);
+  TestAssert(!v.Matches(u));
   }
 
   return rval;

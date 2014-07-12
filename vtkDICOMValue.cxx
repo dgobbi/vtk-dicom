@@ -2086,6 +2086,135 @@ bool vtkDICOMValue::PatternMatchesMulti(
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMValue::PatternMatchesPersonName(
+    const char *pattern, const char *pe,
+    const char *val, const char *ve)
+{
+  bool match = false;
+
+  char normalizedPattern[256];
+  char normalizedName[256];
+
+  const char *pp = pattern;
+  while (!match)
+    {
+    // normalize the pattern
+    const char *pd = pp;
+    while (pd != pe && *pd != '\\') { pd++; }
+    vtkDICOMValue::NormalizePersonName(pp, pd, normalizedPattern, true);
+
+    const char *vp = val;
+    while (!match)
+      {
+      // normalize the name
+      const char *vd = vp;
+      while (vd != ve && *vd != '\\') { vd++; }
+      vtkDICOMValue::NormalizePersonName(vp, vd, normalizedName, false);
+
+      match = vtkDICOMValue::PatternMatches(
+        normalizedPattern, normalizedPattern + strlen(normalizedPattern),
+        normalizedName, normalizedName + strlen(normalizedName));
+
+      // break if no values remain
+      if (*vd != '\\') { break; }
+      vp = vd + 1;
+      }
+
+    // break if no patterns remain
+    if (*pd != '\\') { break; }
+    pp = pd + 1;
+    }
+
+  return match;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMValue::NormalizePersonName(
+  const char *input, const char *inEnd, char output[256], bool isquery)
+{
+  // this normalizes a PN so that it consists of three component groups
+  // of five components each
+
+  const char *cp = input;
+  char *dp = output;
+
+  // loop over component groups
+  for (int i = 0; i < 3; i++)
+    {
+    // set maximum length of extended component group to 85 bytes
+    // (because 85*3 + 1 == 256, and 85 > 64 where 64 is max for PN)
+    char *groupStart = dp;
+    char *ep = dp + 85;
+    
+    // loop over components
+    for (int j = 0; j < 5; j++)
+      {
+      // save start location
+      char *componentStart = dp;
+      // copy characters
+      while (cp != inEnd && *cp != '^' && *cp != '=' && *cp != '\\' &&
+             *cp != '\0' && dp != ep)
+        {
+        *dp++ = *cp++;
+        }
+
+      // strip trailing spaces and periods
+      while (dp != componentStart && (dp[-1] == ' ' || dp[-1] == '.'))
+        {
+        --dp;
+        }
+
+      if (dp != ep)
+        {
+        // if query, replace empty components with wildcard
+        if (isquery && dp == componentStart) { *dp++ = '*'; }
+
+        // mark end of component
+        if (j != 4) { *dp++ = '^'; }
+        }
+      else if (isquery && dp != componentStart)
+        {
+        // back up by one unicode code point, replace with wildcard
+        do { --dp; } while (dp != componentStart && (*dp & 0xC0) == 0x80);
+        *dp++ = '*';
+        }
+
+      // go to next component of input
+      if (cp != inEnd && *cp == '^') { cp++; }
+      }
+
+    // collapse repeated wildcards
+    if (isquery)
+      {
+      while (dp - groupStart > 2 && dp[-3] == '*' &&
+             dp[-2] == '^' && dp[-1] == '*')
+        {
+        dp -= 2;
+        }
+      }
+
+    // mark end of component group
+    if (i != 2) { *dp++ = '='; }
+
+    // go to next component group of input
+    if (cp != inEnd && *cp == '=') { cp++; }
+    }
+
+  // collapse repeated wildcards
+  if (isquery)
+    {
+    while (dp - output > 2 && dp[-3] == '*' &&
+           dp[-2] == '=' && dp[-1] == '*')
+      {
+      dp -= 2;
+      }
+    }
+
+  // terminate
+  *dp = '\0';
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMValue::NormalizeDateTime(
   const char *input, char output[22], vtkDICOMVR vr)
 {
@@ -2263,9 +2392,14 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
           pl = pstr.length();
           }
         }
-      if (vr == vtkDICOMVR::ST ||
-          vr == vtkDICOMVR::LT ||
-          vr == vtkDICOMVR::UT)
+      if (vr == vtkDICOMVR::PN)
+        {
+        match = vtkDICOMValue::PatternMatchesPersonName(
+          pattern, pattern + pl, cp, cp + l);
+        }
+      else if (vr == vtkDICOMVR::ST ||
+               vr == vtkDICOMVR::LT ||
+               vr == vtkDICOMVR::UT)
         {
         match = vtkDICOMValue::PatternMatches(
           pattern, pattern + pl, cp, cp + l);
