@@ -2211,7 +2211,7 @@ void vtkDICOMValue::NormalizePersonName(
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMValue::NormalizeDateTime(
+size_t vtkDICOMValue::NormalizeDateTime(
   const char *input, char output[22], vtkDICOMVR vr)
 {
   // if the value is DT and has a timezone offset, we ignore it,
@@ -2244,6 +2244,8 @@ void vtkDICOMValue::NormalizeDateTime(
       *tp++ = *cp++;
       }
     }
+
+  return static_cast<size_t>(tp - output);
 }
 
 //----------------------------------------------------------------------------
@@ -2334,34 +2336,36 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
 
       // Normalize the dates/times and compare
       char r1[22], r2[22], d[22];
+      size_t n1 = 0;
+      size_t n2 = 0;
       vtkDICOMValue::NormalizeDateTime(cp, d, vr);
       r1[0] = '\0';
       if (pattern[0] != '\0' && pattern[0] != '-')
         {
-        vtkDICOMValue::NormalizeDateTime(pattern, r1, vr);
+        n1 = vtkDICOMValue::NormalizeDateTime(pattern, r1, vr);
         }
       r2[0] = '\0';
       if (dp[0] != '\0' && dp[0] != '-')
         {
-        vtkDICOMValue::NormalizeDateTime(dp, r2, vr);
+        n2 = vtkDICOMValue::NormalizeDateTime(dp, r2, vr);
         }
 
       // Perform lexical comparison on normalized datetime
       if (!hyphen)
         {
-        match = (strcmp(d, r1) == 0);
+        match = (strncmp(d, r1, n1) == 0);
         }
       else if (*r1 != '\0')
         {
-        match = (strcmp(d, r1) >= 0);
+        match = (strncmp(d, r1, n1) >= 0);
         }
       else if (*r2 != '\0')
         {
-        match = (strcmp(r2, d) >= 0);
+        match = (strncmp(r2, d, n2) >= 0);
         }
       else
         {
-        match = (strcmp(r2, d) >= 0 && strcmp(d, r1) >= 0);
+        match = (strncmp(r2, d, n2) >= 0 && strncmp(d, r1, n1) >= 0);
         }
       }
     else

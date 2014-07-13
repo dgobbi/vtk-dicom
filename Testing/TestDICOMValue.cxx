@@ -392,6 +392,8 @@ int main(int argc, char *argv[])
   v = vtkDICOMValue(vtkDICOMVR::DA, "20070125");
   u = vtkDICOMValue(vtkDICOMVR::DA, "20070124");
   TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::DA, "2007");
+  TestAssert(v.Matches(u));
   u = vtkDICOMValue(vtkDICOMVR::DA, "20070124-");
   TestAssert(v.Matches(u));
   u = vtkDICOMValue(vtkDICOMVR::DA, "20070124-20080124");
@@ -406,6 +408,8 @@ int main(int argc, char *argv[])
   // test time
   v = vtkDICOMValue(vtkDICOMVR::TM, "114501.00");
   u = vtkDICOMValue(vtkDICOMVR::TM, "114501");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::TM, "11");
   TestAssert(v.Matches(u));
   u = vtkDICOMValue(vtkDICOMVR::TM, "1145-");
   TestAssert(v.Matches(u));

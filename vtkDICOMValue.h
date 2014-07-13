@@ -431,7 +431,12 @@ private:
   static bool PatternMatchesMulti(const char *pattern, const char *val);
 
   //! Normalize a date, time, or datetime.
-  static void NormalizeDateTime(
+  /*!
+   *  The return value is the number of characters that should be used for
+   *  comparison to the normalized datetime, everything past the maximum
+   *  significant character is zero (or, for dates, first day of January).
+   */
+  static size_t NormalizeDateTime(
     const char *input, char output[22], vtkDICOMVR vr);
 
   //! Do matching on names, after notmalization.
