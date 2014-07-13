@@ -348,6 +348,10 @@ int main(int argc, char *argv[])
   v = vtkDICOMValue(vtkDICOMVR::CS, "HELLO\\THERE");
   u = vtkDICOMValue(vtkDICOMVR::CS, "HELLO\\THERE");
   TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "THERE\\HELLO");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "HELLO\\THER");
+  TestAssert(!v.Matches(u));
   u = vtkDICOMValue(vtkDICOMVR::CS, "HELLO");
   TestAssert(v.Matches(u));
   u = vtkDICOMValue(vtkDICOMVR::CS, "THERE");
@@ -355,6 +359,23 @@ int main(int argc, char *argv[])
   u = vtkDICOMValue(vtkDICOMVR::CS, "ELLO\\THER");
   TestAssert(!v.Matches(u));
   u = vtkDICOMValue(vtkDICOMVR::CS, "ELLO");
+  TestAssert(!v.Matches(u));
+
+  // test string-encoded numbers
+  v = vtkDICOMValue(vtkDICOMVR::IS, "5\\6\\10");
+  u = vtkDICOMValue(vtkDICOMVR::IS, "5\\6\\10");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::IS, "5\\6");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::IS, "6\\10");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::IS, "5\\10");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::IS, "6");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::IS, "10\\5");
+  TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::IS, "6\\5");
   TestAssert(!v.Matches(u));
 
   // test backslash on ST, LT, UT
@@ -366,19 +387,28 @@ int main(int argc, char *argv[])
 
   // test matches for binary data
   static const short vals[3] = { 10, 11, 12 };
+  static const short vals2[2] = { 10, 11 };
+  static const short vals3[2] = { 10, 12 };
+  static const short vals4[2] = { 11, 10 };
   v = vtkDICOMValue(vtkDICOMVR::SS, vals, 3);
   u = vtkDICOMValue(vtkDICOMVR::SS, 10);
   TestAssert(v.Matches(u));
   TestAssert(u.Matches(v));
   u = vtkDICOMValue(vtkDICOMVR::SS, 11);
   TestAssert(v.Matches(u));
-  TestAssert(u.Matches(v));
+  TestAssert(!u.Matches(v));
   u = vtkDICOMValue(vtkDICOMVR::SS, 12);
   TestAssert(v.Matches(u));
-  TestAssert(u.Matches(v));
+  TestAssert(!u.Matches(v));
   u = vtkDICOMValue(vtkDICOMVR::SS, 13);
   TestAssert(!v.Matches(u));
   TestAssert(!u.Matches(v));
+  u = vtkDICOMValue(vtkDICOMVR::SS, vals2, 2);
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::SS, vals3, 2);
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::SS, vals4, 2);
+  TestAssert(!v.Matches(u));
 
   // test matches for binary data OW
   v = vtkDICOMValue(vtkDICOMVR::OW, vals, 3);

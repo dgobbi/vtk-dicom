@@ -1935,20 +1935,28 @@ bool vtkDICOMValue::ValueT<T>::CompareEach(const Value *a, const Value *b)
   if (a->NumberOfValues > 0 && b->NumberOfValues > 0)
     {
     size_t n = a->NumberOfValues;
+    size_t mm = b->NumberOfValues;
     const T *ap = static_cast<const ValueT<T> *>(a)->Data;
+    const T *bbp = static_cast<const ValueT<T> *>(b)->Data;
     do
       {
-      size_t m = b->NumberOfValues;
-      const T *bp = static_cast<const ValueT<T> *>(b)->Data;
+      size_t m = mm;
+      const T *bp = bbp;
       do
         {
         r = (*ap == *bp);
         bp++; 
         }
       while (--m && !r);
+      if (r)
+        {
+        // set new start for inner loop
+        bbp = bp;
+        mm = m;
+        }
       ap++;
       }
-    while (--n && !r);
+    while (--n && r);
     }
 
   return r;
@@ -2043,12 +2051,14 @@ bool vtkDICOMValue::PatternMatches(
 
 //----------------------------------------------------------------------------
 bool vtkDICOMValue::PatternMatchesMulti(
-    const char *pattern, const char *val)
+    const char *pattern, const char *val, vtkDICOMVR vr)
 {
-  bool match = false;
+  bool inclusive = (vr == vtkDICOMVR::UI);
+  bool ordered = (vr == vtkDICOMVR::IS || vr == vtkDICOMVR::DS);
+  bool match = !inclusive;
 
   const char *pp = pattern;
-  while (!match)
+  while (match ^ inclusive)
     {
     // get pattern value start and end
     const char *pd = pp;
@@ -2058,6 +2068,7 @@ bool vtkDICOMValue::PatternMatchesMulti(
     while (*pp == ' ') { pp++; }
     while (pf != pp && pf[-1] == ' ') { --pf; }
 
+    match = false;
     const char *vp = val;
     while (!match)
       {
@@ -2074,6 +2085,11 @@ bool vtkDICOMValue::PatternMatchesMulti(
       // break if no values remain
       if (*vd == '\0') { break; }
       vp = vd + 1;
+      }
+    if (match && ordered)
+      {
+      // set inner loop start to current position
+      val = vp;
       }
 
     // break if no patterns remain
@@ -2415,7 +2431,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
         }
       else
         {
-        match = vtkDICOMValue::PatternMatchesMulti(pattern, cp);
+        match = vtkDICOMValue::PatternMatchesMulti(pattern, cp, vr);
         }
       }
     }

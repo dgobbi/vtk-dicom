@@ -428,7 +428,8 @@ private:
     const char *pattern, const char *pe, const char *val, const char *ve);
 
   //! Pattern matching with multiple backslash-delimited values.
-  static bool PatternMatchesMulti(const char *pattern, const char *val);
+  static bool PatternMatchesMulti(
+    const char *pattern, const char *val, vtkDICOMVR vr);
 
   //! Normalize a date, time, or datetime.
   /*!
