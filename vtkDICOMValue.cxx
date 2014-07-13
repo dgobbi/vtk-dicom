@@ -2372,10 +2372,10 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
       if (vr == vtkDICOMVR::PN)
         {
         // Convert to lowercase UTF8 before matching
-        str = this->GetCharacterSet().ConvertToLowerCaseUTF8(cp, l);
+        str = this->GetCharacterSet().CaseFoldedUTF8(cp, l);
         cp = str.c_str();
         l = str.length();
-        pstr = value.GetCharacterSet().ConvertToLowerCaseUTF8(pattern, pl);
+        pstr = value.GetCharacterSet().CaseFoldedUTF8(pattern, pl);
         pattern = pstr.c_str();
         pl = pstr.length();
         }

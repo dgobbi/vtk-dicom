@@ -109,13 +109,13 @@ public:
    *  with latin1, latin2, latin3, latin4, and the corresponding parts of
    *  unicode.  It does not do greek or cyrillic.
    */
-  std::string ConvertToLowerCaseUTF8(const char *text, size_t l) const;
+  std::string CaseFoldedUTF8(const char *text, size_t l) const;
 
   //! Check for bidirectional character sets.
   /*!
    *  This is used to check for character sets that are likely to
    *  contain characters that print right-to-left, specifically Hebrew
-   *  and Arabic.  Note that even though some parts of unaicode fall
+   *  and Arabic.  Note that even though some parts of unicode fall
    *  into this category, this flag is off for unicode and GB18030.
    */
   bool IsBiDirectional() const {

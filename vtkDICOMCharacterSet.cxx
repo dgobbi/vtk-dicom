@@ -5949,10 +5949,12 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
   return code;
 }
 
-unsigned int ToLowerUnicode(unsigned int code)
+void CaseFoldUnicode(unsigned int code, std::string *s)
 {
   // This is limited to the basic latin code points (ISO 8859 1,2,3,4),
   // it does not cover any Cyrillic or Greek characters.
+  unsigned int code2 = 0;
+
   if (code <= 0x7f)
     {
     if (code >= 'A' && code <= 'Z')
@@ -5965,6 +5967,11 @@ unsigned int ToLowerUnicode(unsigned int code)
     if (code >= 0xC0 && code <= 0xDE)
       { // latin1 uppercase -> latin1 lowercase
       code += 0x20;
+      }
+    else if (code == 0xDF)
+      { // latin1 s-sharp -> lowercase ss
+      code = 's';
+      code2 = 's';
       }
     else if (code == 0xB5)
       { // latin1 micron -> greek lowercase mu
@@ -5980,6 +5987,7 @@ unsigned int ToLowerUnicode(unsigned int code)
     else if (code == 0x0130)
       { // I with dot becomes lowercase i
       code = 'i';
+      code2 = 0x0307;
       }
     else if (code >= 0x0132 && code <= 0x0137)
       { // IJ and various accented latin characters
@@ -5989,6 +5997,11 @@ unsigned int ToLowerUnicode(unsigned int code)
       { // various accented latin characters
       code += (code & 0x0001);
       }
+    else if (code == 0x0149)
+      { // 'n -> two separate characters
+      code = 0x02BC;
+      code2 = 'n';
+      }
     else if (code >= 0x014A && code <= 0x0177)
       { // eng and various accented latin characters
       code |= 0x0001;
@@ -5997,15 +6010,23 @@ unsigned int ToLowerUnicode(unsigned int code)
       { // uppercase y with diaeresis becomes lowercase y with diaeresis
       code = 0xFF;
       }
-    else if (code >= 0x179 && code <= 0x17E)
+    else if (code >= 0x0179 && code <= 0x017E)
       { // various accented latin characters
       code += (code & 0x0001);
       }
+    else if (code == 0x017F)
+      { // long s -> lowercase s
+      code = 's';
+      }
     }
 
-  return code;
-}
+  UnicodeToUTF8(code, s);
 
+  if (code2)
+    {
+    UnicodeToUTF8(code2, s);
+    }
+}
 
 } // end anonymous namespace
 
@@ -6409,7 +6430,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
 }
 
 //----------------------------------------------------------------------------
-std::string vtkDICOMCharacterSet::ConvertToLowerCaseUTF8(
+std::string vtkDICOMCharacterSet::CaseFoldedUTF8(
   const char *text, size_t l) const
 {
   std::string s;
@@ -6429,8 +6450,7 @@ std::string vtkDICOMCharacterSet::ConvertToLowerCaseUTF8(
   while (cp != ep)
     {
     unsigned int code = UTF8ToUnicode(&cp, ep);
-    code = ToLowerUnicode(code);
-    UnicodeToUTF8(code, &s);
+    CaseFoldUnicode(code, &s);
     }
 
   return s;
