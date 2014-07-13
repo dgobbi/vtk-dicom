@@ -103,11 +103,14 @@ public:
    */
   std::string ConvertToUTF8(const char *text, size_t l) const;
 
-  //! Convert text from this encoding to lowercase UTF-8.
+  //! Convert text into a form suitable for case-insensitive matching.
   /*!
-   *  This function is currently limited to the latin alphabet, so it works
-   *  with latin1, latin2, latin3, latin4, and the corresponding parts of
-   *  unicode.  It does not do greek or cyrillic.
+   *  This function will perform case normalization on a string by
+   *  converting it to lowercase, and by normalizing the forms of
+   *  lowercase characters that do not have an exact uppercase
+   *  equivalent.  In some cases, it might increase the length of
+   *  the string.  It covers modern European scripts (including Greek
+   *  and Cyrillic) and latin characters used in East Asian languages.
    */
   std::string CaseFoldedUTF8(const char *text, size_t l) const;
 

@@ -5951,9 +5951,11 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
 
 void CaseFoldUnicode(unsigned int code, std::string *s)
 {
-  // This is limited to the basic latin code points (ISO 8859 1,2,3,4),
-  // it does not cover any Cyrillic or Greek characters.
+  // This has been tested against the Unicode CaseFolding.txt
+  // list, but is not as comprehensive as that list.  Some sections
+  // of the table with rare or obsolete characters have been skipped.
   unsigned int code2 = 0;
+  unsigned int code3 = 0;
 
   if (code <= 0x7f)
     {
@@ -6019,12 +6021,125 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
       code = 's';
       }
     }
+  else if (code <= 0x037f)
+    {
+    // rare characters, skipped
+    }
+  else if (code <= 0x03ce)
+    {
+    // greek characters
+    if (code == 0x0386)
+      {
+      code = 0x03AC;
+      }
+    else if (code >= 0x0388 && code <= 0x038A)
+      {
+      code += 0x25;
+      }
+    else if (code == 0x038C)
+      {
+      code = 0x03CC;
+      }
+    else if (code >= 0x038E && code <= 0x038F)
+      {
+      code += 0x3F;
+      }
+    else if ((code >= 0x0391 && code <= 0x03A1) ||
+             (code >= 0x03A3 && code <= 0x03AB))
+      {
+      code += 0x20;
+      }
+    else if (code == 0x0390)
+      {
+      code = 0x03B9;
+      code2 = 0x0308;
+      code3 = 0x0301;
+      }
+    else if (code == 0x03B0)
+      {
+      code = 0x03C5;
+      code2 = 0x0308;
+      code3 = 0x0301;
+      }
+    else if (code == 0x03C2)
+      {
+      code += 0x01;
+      }
+    }
+  else if (code <= 0x03ff)
+    {
+    // rare characters, skipped
+    }
+  else if (code <= 0x1000)
+    { // cyrillic etc
+    if (code >= 0x0400 && code <= 0x040F)
+      {
+      code += 0x50;
+      }
+    else if (code >= 0x0410 && code <= 0x042F)
+      {
+      code += 0x20;
+      }
+    else if ((code >= 0x0460 && code <= 0x0481) ||
+             (code >= 0x048A && code <= 0x04BF))
+      {
+      code |= 0x0001;
+      }
+    else if (code == 0x04C0)
+      {
+      code = 0x04CF;
+      }
+    else if (code >= 0x04C1 && code <= 0x04CE)
+      {
+      code += (code & 0x0001);
+      }
+    else if (code >= 0x04D0 && code <= 0x052F)
+      {
+      code |= 0x0001;
+      }
+    else if (code >= 0x0531 && code <= 0x0556)
+      {
+      code += 0x30;
+      }
+    else if (code == 0x0587)
+      {
+      code = 0x0565;
+      code2 = 0x0582;
+      }
+    }
+  else if (code <= 0xff1f)
+    {
+    // rare characters, skipped
+    }
+  else if (code <= 0xffff)
+    {
+    if (code >= 0xFF21 && code <= 0xFF3A)
+      { // wide latin uppercase -> wide latin lowercase
+      code += 0x20;
+      }
+    }
+  else
+    {
+    if (code >= 0x10400 && code <= 0x10427 )
+      {
+      code += 0x28;
+      }
+    else if (code >= 0x118A0 && code <= 0x118BF)
+      {
+      code += 0x20;
+      }
+    }
 
   UnicodeToUTF8(code, s);
 
   if (code2)
     {
     UnicodeToUTF8(code2, s);
+
+    if (code3)
+      {
+      UnicodeToUTF8(code3, s);
+      }
     }
 }
 
