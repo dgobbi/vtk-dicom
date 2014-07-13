@@ -5964,7 +5964,7 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
     }
   else if (code <= 0xff)
     {
-    if (code >= 0xC0 && code <= 0xDE)
+    if (code >= 0xC0 && code <= 0xDE && code != 0xD7)
       { // latin1 uppercase -> latin1 lowercase
       code += 0x20;
       }
