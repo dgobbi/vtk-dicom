@@ -5934,7 +5934,7 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
             good = ((s & 0xC0) == 0x80);
             cp += good;
             code |= (s & 0x3F);
-            good &= (code >= 0x10FFFF);
+            good &= (code <= 0x10FFFF);
             }
           }
         }
