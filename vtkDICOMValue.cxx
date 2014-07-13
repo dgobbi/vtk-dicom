@@ -2369,13 +2369,23 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
       // Perform wildcard matching and list matching
       std::string str;
       std::string pstr;
-      if (vr.HasSpecificCharacterSet())
+      if (vr == vtkDICOMVR::PN)
+        {
+        // Convert to lowercase UTF8 before matching
+        str = this->GetCharacterSet().ConvertToLowerCaseUTF8(cp, l);
+        cp = str.c_str();
+        l = str.length();
+        pstr = value.GetCharacterSet().ConvertToLowerCaseUTF8(pattern, pl);
+        pattern = pstr.c_str();
+        pl = pstr.length();
+        }
+      else if (vr.HasSpecificCharacterSet())
         {
         if (this->V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_6 &&
             this->V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_192)
           {
           // Convert value to UTF8 before matching
-          str = this->AsUTF8String();
+          str = this->GetCharacterSet().ConvertToUTF8(cp, l);
           cp = str.c_str();
           l = str.length();
           }
@@ -2383,7 +2393,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
             value.V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_192)
           {
           // Convert pattern to UTF8 before matching
-          pstr = value.AsUTF8String();
+          pstr = value.GetCharacterSet().ConvertToUTF8(pattern, pl);
           pattern = pstr.c_str();
           pl = pstr.length();
           }

@@ -5874,6 +5874,139 @@ inline void UnicodeToUTF8(unsigned int code, std::string *s)
     }
 }
 
+inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
+{
+  const unsigned char *cp = reinterpret_cast<const unsigned char *>(*cpp);
+  const unsigned char *ep = reinterpret_cast<const unsigned char *>(cpEnd);
+  unsigned int code = 0;
+  if (cp != ep)
+    {
+    code = *cp++;
+    }
+
+  if ((code & 0x80) != 0)
+    {
+    bool good = false;
+    if (cp != ep)
+      {
+      if ((code & 0xE0) == 0xC0)
+        {
+        code &= 0x1F;
+        code <<= 6;
+        unsigned int s = *cp;
+        good = ((s & 0xC0) == 0x80);
+        cp += good;
+        code |= (s & 0x3F);
+        }
+      else if (cp+1 != ep)
+        {
+        if ((code & 0xF0) == 0xE0)
+          {
+          code &= 0x0F;
+          code <<= 6;
+          unsigned int s = *cp;
+          good = ((s & 0xC0) == 0x80);
+          cp += good;
+          code |= (s & 0x3F);
+          code <<= 6;
+          s = *cp;
+          good = ((s & 0xC0) == 0x80);
+          cp += good;
+          code |= (s & 0x3F);
+          code <<= 6;
+          }
+        else if (cp+2 != ep)
+          {
+          if ((code & 0xF8) == 0xF0)
+            {
+            code &= 0x07;
+            code <<= 6;
+            unsigned int s = *cp;
+            good = ((s & 0xC0) == 0x80);
+            cp += good;
+            code |= (s & 0x3F);
+            code <<= 6;
+            s = *cp;
+            good = ((s & 0xC0) == 0x80);
+            cp += good;
+            code |= (s & 0x3F);
+            code <<= 6;
+            s = *cp;
+            good = ((s & 0xC0) == 0x80);
+            cp += good;
+            code |= (s & 0x3F);
+            code <<= 6;
+            good &= (code >= 0x10FFFF);
+            }
+          }
+        }
+      }
+
+    code = (good ? code : 0xFFFD);
+    }
+
+  *cpp = reinterpret_cast<const char *>(cp);
+  return code;
+}
+
+unsigned int ToLowerUnicode(unsigned int code)
+{
+  // This is limited to the basic latin code points (ISO 8859 1,2,3,4),
+  // it does not cover any Cyrillic or Greek characters.
+  if (code <= 0x7f)
+    {
+    if (code >= 'A' && code <= 'Z')
+      { // ascii uppercase -> ascii lowercase
+      code += 0x20;
+      }
+    }
+  else if (code <= 0xff)
+    {
+    if (code >= 0xC0 && code <= 0xDE)
+      { // latin1 uppercase -> latin1 lowercase
+      code += 0x20;
+      }
+    else if (code == 0xB5)
+      { // latin1 micron -> greek lowercase mu
+      code = 0x03BC;
+      }
+    }
+  else if (code <= 0x017f)
+    {
+    if (code >= 0x0100 && code <= 0x012F)
+      { // various accented latin characters
+      code |= 0x0001;
+      }
+    else if (code == 0x0130)
+      { // I with dot becomes lowercase i
+      code = 'i';
+      }
+    else if (code >= 0x0132 && code <= 0x0137)
+      { // IJ and various accented latin characters
+      code |= 0x0001;
+      }
+    else if (code >= 0x139 && code <= 0x148)
+      { // various accented latin characters
+      code += (code & 0x0001);
+      }
+    else if (code >= 0x014A && code <= 0x0177)
+      { // eng and various accented latin characters
+      code |= 0x0001;
+      }
+    else if (code == 0x0178)
+      { // uppercase y with diaeresis becomes lowercase y with diaeresis
+      code = 0xFF;
+      }
+    else if (code >= 0x179 && code <= 0x17E)
+      { // various accented latin characters
+      code += (code & 0x0001);
+      }
+    }
+
+  return code;
+}
+
+
 } // end anonymous namespace
 
 //----------------------------------------------------------------------------
@@ -6270,6 +6403,34 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           }
         }
       }
+    }
+
+  return s;
+}
+
+//----------------------------------------------------------------------------
+std::string vtkDICOMCharacterSet::ConvertToLowerCaseUTF8(
+  const char *text, size_t l) const
+{
+  std::string s;
+  std::string t;
+
+  const char *cp = text;
+  const char *ep = text + l;
+
+  if (this->Key != ISO_IR_6 && // US-ASCII
+      this->Key != ISO_IR_192) // UTF-8
+    {
+    t = this->ConvertToUTF8(text, l);
+    cp = t.data();
+    ep = cp + t.length();
+    }
+
+  while (cp != ep)
+    {
+    unsigned int code = UTF8ToUnicode(&cp, ep);
+    code = ToLowerUnicode(code);
+    UnicodeToUTF8(code, &s);
     }
 
   return s;

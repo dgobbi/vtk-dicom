@@ -103,6 +103,14 @@ public:
    */
   std::string ConvertToUTF8(const char *text, size_t l) const;
 
+  //! Convert text from this encoding to lowercase UTF-8.
+  /*!
+   *  This function is currently limited to the latin alphabet, so it works
+   *  with latin1, latin2, latin3, latin4, and the corresponding parts of
+   *  unicode.  It does not do greek or cyrillic.
+   */
+  std::string ConvertToLowerCaseUTF8(const char *text, size_t l) const;
+
   //! Check for bidirectional character sets.
   /*!
    *  This is used to check for character sets that are likely to
