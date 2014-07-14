@@ -6068,8 +6068,8 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
     {
     // rare characters, skipped
     }
-  else if (code <= 0x1000)
-    { // cyrillic etc
+  else if (code <= 0x052f)
+    { // cyrillic
     if (code >= 0x0400 && code <= 0x040F)
       {
       code += 0x50;
@@ -6095,7 +6095,10 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
       {
       code |= 0x0001;
       }
-    else if (code >= 0x0531 && code <= 0x0556)
+    }
+  else if (code <= 0x1000)
+    { // armenian
+    if (code >= 0x0531 && code <= 0x0556)
       {
       code += 0x30;
       }
@@ -6103,6 +6106,49 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
       {
       code = 0x0565;
       code2 = 0x0582;
+      }
+    }
+  else if (code <= 0x10cf)
+    { // georgian
+    if ((code >= 0x10A0 && code <= 0x10C5) ||
+        code == 0x10C7 || code == 0x10CD)
+      {
+      code += 0x1C60;
+      }
+    }
+  else if (code <= 0x1fff)
+    {
+    // rare characters, skipped
+    }
+  else if (code <= 0x24ff)
+    { // symbols
+    if (code == 0x2126)
+      { // Ohm symbol becomes omega
+      code = 0x03C9;
+      }
+    else if (code == 0x212A)
+      { // Kelvin symbol becomes k
+      code = 'k';
+      }
+    else if (code == 0x212B)
+      { // Angstrom symbol becomes a with circle
+      code = 0xE5;
+      }
+    else if (code == 0x2132)
+      {
+      code = 0x214E;
+      }
+    else if (code >= 0x2160 && code <= 0x216F)
+      {
+      code += 0x10;
+      }
+    else if (code == 0x2183)
+      {
+      code += 0x01;
+      }
+    else if (code >= 0x24B6 && code <= 0x24CF)
+      {
+      code += 0x1a;
       }
     }
   else if (code <= 0xff1f)
