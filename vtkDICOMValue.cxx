@@ -2519,7 +2519,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
   else if (type == VTK_DOUBLE)
     {
     // Match if any value matches
-    match = ValueT<float>::CompareEach(value.V, this->V);
+    match = ValueT<double>::CompareEach(value.V, this->V);
     }
 
   return match;
