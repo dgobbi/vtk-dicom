@@ -2272,7 +2272,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
   2) List of UID Matching (match if any UIDs in query list match)
   3) Universal Matching (if query value is empty)
   4) Wild Card Matching (with * and ?)
-  5) Range Matching (range of dates, times, or numbers)
+  5) Range Matching (range of dates or times)
   6) Sequence Matching (match if any items in sequence match)
 
   Notes:
@@ -2280,7 +2280,6 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
   - PN matches should be case-insensitive, ideally normalized
   - All other queries are case-sensitive
   - List can be used for more than just UIDs
-  - Dates should take timezone into account (use UTC)
   - Numeric value comparisons can be templated
   */
 
