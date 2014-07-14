@@ -367,15 +367,21 @@ int main(int argc, char *argv[])
   TestAssert(v.Matches(u));
   u = vtkDICOMValue(vtkDICOMVR::IS, "5\\6");
   TestAssert(v.Matches(u));
+  TestAssert(!u.Matches(v));
   u = vtkDICOMValue(vtkDICOMVR::IS, "6\\10");
   TestAssert(v.Matches(u));
+  TestAssert(!u.Matches(v));
   u = vtkDICOMValue(vtkDICOMVR::IS, "5\\10");
   TestAssert(v.Matches(u));
+  TestAssert(!u.Matches(v));
   u = vtkDICOMValue(vtkDICOMVR::IS, "6");
   TestAssert(v.Matches(u));
+  TestAssert(!u.Matches(v));
   u = vtkDICOMValue(vtkDICOMVR::IS, "10\\5");
   TestAssert(!v.Matches(u));
+  TestAssert(!v.Matches(u));
   u = vtkDICOMValue(vtkDICOMVR::IS, "6\\5");
+  TestAssert(!v.Matches(u));
   TestAssert(!v.Matches(u));
 
   // test backslash on ST, LT, UT
@@ -393,7 +399,7 @@ int main(int argc, char *argv[])
   v = vtkDICOMValue(vtkDICOMVR::SS, vals, 3);
   u = vtkDICOMValue(vtkDICOMVR::SS, 10);
   TestAssert(v.Matches(u));
-  TestAssert(u.Matches(v));
+  TestAssert(!u.Matches(v));
   u = vtkDICOMValue(vtkDICOMVR::SS, 11);
   TestAssert(v.Matches(u));
   TestAssert(!u.Matches(v));
@@ -405,10 +411,13 @@ int main(int argc, char *argv[])
   TestAssert(!u.Matches(v));
   u = vtkDICOMValue(vtkDICOMVR::SS, vals2, 2);
   TestAssert(v.Matches(u));
+  TestAssert(!u.Matches(v));
   u = vtkDICOMValue(vtkDICOMVR::SS, vals3, 2);
   TestAssert(v.Matches(u));
+  TestAssert(!u.Matches(v));
   u = vtkDICOMValue(vtkDICOMVR::SS, vals4, 2);
   TestAssert(!v.Matches(u));
+  TestAssert(!u.Matches(v));
 
   // test matches for binary data OW
   v = vtkDICOMValue(vtkDICOMVR::OW, vals, 3);

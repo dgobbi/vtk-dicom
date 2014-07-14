@@ -1955,6 +1955,7 @@ bool vtkDICOMValue::ValueT<T>::CompareEach(const Value *a, const Value *b)
         mm = m;
         if (mm == 0)
           {
+          r = (n == 1);
           break;
           }
         }
