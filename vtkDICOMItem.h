@@ -121,6 +121,9 @@ public:
   vtkDICOMDataElementIterator End() const {
     return (this->L ? &this->L->Tail : 0); }
 
+  //! If this item matches the query, return matching attributes.
+  vtkDICOMItem Query(const vtkDICOMItem& query) const;
+
   //! Resolve a private tag, or return (ffff,ffff) if not resolved.
   /*!
    *  Private data elements are mobile, which means that different data
