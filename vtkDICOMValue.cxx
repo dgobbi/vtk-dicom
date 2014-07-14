@@ -1953,6 +1953,10 @@ bool vtkDICOMValue::ValueT<T>::CompareEach(const Value *a, const Value *b)
         // set new start for inner loop
         bbp = bp;
         mm = m;
+        if (mm == 0)
+          {
+          break;
+          }
         }
       ap++;
       }
