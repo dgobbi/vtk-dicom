@@ -6063,6 +6063,26 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
       {
       code += 0x01;
       }
+    else if (code == 0x03CF)
+      {
+      code = 0x03D7;
+      }
+    else if (code == 0x03D0)
+      {
+      code = 0x03B2;
+      }
+    else if (code == 0x03D1)
+      {
+      code = 0x03B8;
+      }
+    else if (code == 0x03D5)
+      {
+      code = 0x03C6;
+      }
+    else if (code == 0x03D6)
+      {
+      code = 0x03C0;
+      }
     }
   else if (code <= 0x052f)
     { // cyrillic
