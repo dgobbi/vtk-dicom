@@ -6019,13 +6019,13 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
       code = 's';
       }
     }
-  else if (code <= 0x037f)
+  else if (code <= 0x036f)
     {
     // rare characters, skipped
     }
-  else if (code <= 0x03ce)
+  else if (code <= 0x03ff)
     {
-    // greek characters
+    // greek characters, less common chars skipped
     if (code == 0x0386)
       {
       code = 0x03AC;
@@ -6063,10 +6063,6 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
       {
       code += 0x01;
       }
-    }
-  else if (code <= 0x03ff)
-    {
-    // rare characters, skipped
     }
   else if (code <= 0x052f)
     { // cyrillic
