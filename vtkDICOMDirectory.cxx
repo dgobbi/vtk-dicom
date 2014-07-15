@@ -60,8 +60,7 @@ struct vtkDICOMDirectory::StudyItem
 struct vtkDICOMDirectory::PatientItem
 {
   vtkDICOMItem Record;
-  int FirstStudy;
-  int LastStudy;
+  vtkSmartPointer<vtkIntArray> Studies;
 };
 
 class vtkDICOMDirectory::SeriesVector
@@ -244,15 +243,9 @@ const vtkDICOMItem& vtkDICOMDirectory::GetPatientRecord(int patient)
 }
 
 //----------------------------------------------------------------------------
-int vtkDICOMDirectory::GetFirstStudyForPatient(int patient)
+vtkIntArray *vtkDICOMDirectory::GetStudiesForPatient(int patient)
 {
-  return (*this->Patients)[patient].FirstStudy;
-}
-
-//----------------------------------------------------------------------------
-int vtkDICOMDirectory::GetLastStudyForPatient(int patient)
-{
-  return (*this->Patients)[patient].LastStudy;
+  return (*this->Patients)[patient].Studies;
 }
 
 //----------------------------------------------------------------------------
@@ -296,12 +289,25 @@ void vtkDICOMDirectory::AddSeriesFileNames(
     this->Patients->push_back(PatientItem());
     PatientItem& item = this->Patients->back();
     item.Record = patientRecord;
-    item.FirstStudy = study;
-    item.LastStudy = study;
+    item.Studies = vtkSmartPointer<vtkIntArray>::New();
+    item.Studies->InsertNextValue(study);
     }
   else if (m >= 0 && patient == m-1)
     {
-    (*this->Patients)[patient].LastStudy = study;
+    PatientItem& item = (*this->Patients)[patient];
+    vtkIdType nn = item.Studies->GetMaxId() + 1;
+    vtkIdType ii = 0;
+    for (; ii < nn; ii++)
+      {
+      if (study == item.Studies->GetValue(ii))
+        {
+        break;
+        }
+      }
+    if (ii == nn)
+      {
+      item.Studies->InsertNextValue(study);
+      }
     }
   else
     {

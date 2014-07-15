@@ -90,11 +90,16 @@ public:
   //! Get the directory attributes for a patient.
   const vtkDICOMItem& GetPatientRecord(int patient);
 
+  //! Get the studies for this patient.
+
+  vtkIntArray *GetStudiesForPatient(int patient);
+
+
   //! Get the first study for the patient.
-  int GetFirstStudyForPatient(int patient);
+  //int GetFirstStudyForPatient(int patient);
 
   //! Get the last study for a patient.
-  int GetLastStudyForPatient(int patient);
+  //int GetLastStudyForPatient(int patient);
 
   //! Get the first series in a particular study.
   int GetFirstSeriesForStudy(int study);

@@ -5,6 +5,7 @@
 
 #include <vtkSmartPointer.h>
 #include <vtkStringArray.h>
+#include <vtkIntArray.h>
 
 #include <sstream>
 
@@ -58,14 +59,15 @@ int main(int argc, char *argv[])
     const vtkDICOMItem& patientItem = ddir->GetPatientRecord(i);
     cout << "Patient " << i << ": "
          << patientItem.GetAttributeValue(DC::PatientID).AsString() << "\n";
-    int j0 = ddir->GetFirstStudyForPatient(i);
-    int j1 = ddir->GetLastStudyForPatient(i);
-    if (i == n-1)
+    vtkIntArray *studies = ddir->GetStudiesForPatient(i);
+    vtkIdType m = studies->GetMaxId() + 1;
+    if (i == n-1 && m > 0)
       {
-      TestAssert(j1 == ddir->GetNumberOfStudies() - 1);
+      TestAssert(studies->GetValue(m-1) == ddir->GetNumberOfStudies() - 1);
       }
-    for (int j = j0; j <= j1; j++)
+    for (vtkIdType jj = 0; jj < m; jj++)
       {
+      int j = studies->GetValue(jj);
       const vtkDICOMItem& studyItem = ddir->GetStudyRecord(j);
       const vtkDICOMItem& studyPItem = ddir->GetPatientRecordForStudy(j);
       cout << " Study " << j << ": \""
@@ -76,7 +78,7 @@ int main(int argc, char *argv[])
            << studyItem.GetAttributeValue(DC::StudyDate).AsString() << "\n";
       int k0 = ddir->GetFirstSeriesForStudy(j);
       int k1 = ddir->GetLastSeriesForStudy(j);
-      if (i == n-1 && j == j1)
+      if (i == n-1 && jj == m-1)
         {
         TestAssert(k1 == ddir->GetNumberOfSeries() - 1);
         }
