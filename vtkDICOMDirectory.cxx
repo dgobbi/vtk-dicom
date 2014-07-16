@@ -126,6 +126,7 @@ vtkDICOMDirectory::vtkDICOMDirectory()
   this->InternalFileName = 0;
   this->RequirePixelData = 1;
   this->ScanDepth = 1;
+  this->Query = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -144,6 +145,7 @@ vtkDICOMDirectory::~vtkDICOMDirectory()
   delete this->Studies;
   delete this->Patients;
   delete [] this->FileSetID;
+  delete this->Query;
 }
 
 //----------------------------------------------------------------------------
@@ -186,6 +188,21 @@ void vtkDICOMDirectory::SetDirectoryName(const char *name)
     this->DirectoryName = cp;
     }
   this->Modified();
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMDirectory::SetFindQuery(const vtkDICOMItem& item)
+{
+  if (this->Query != &item)
+    {
+    delete this->Query;
+    this->Query = 0;
+    if (!item.IsEmpty())
+      {
+      this->Query = new vtkDICOMItem;
+      *(this->Query) = item;
+      }
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -408,7 +425,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   groups->InsertNextValue(0x0010); // For patient info.
   groups->InsertNextValue(0x0020); // For study and series info.
   parser->SetMetaData(meta);
-  parser->SetGroups(groups);
+  //parser->SetGroups(groups);
 
   SeriesInfoList sortedFiles;
   SeriesInfoList::iterator li;
@@ -454,6 +471,16 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     if (this->AbortExecute)
       {
       return;
+      }
+
+    // Check if the file matches the query
+    if (this->Query)
+      {
+      vtkDICOMItem result = meta->Query(*this->Query);
+      if (result.IsEmpty())
+        {
+        continue;
+        }
       }
 
     // Insert the file into the sorted list

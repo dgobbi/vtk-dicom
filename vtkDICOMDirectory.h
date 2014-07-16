@@ -56,6 +56,9 @@ public:
   vtkSetMacro(ScanDepth, int);
   int GetScanDepth() { return this->ScanDepth; }
 
+  //! Specify a find query.
+  void SetFindQuery(const vtkDICOMItem& query);
+
   //! Update the information about the files.
   /*!
    * This method causes the directory to be read.  It must be called before
@@ -91,15 +94,7 @@ public:
   const vtkDICOMItem& GetPatientRecord(int patient);
 
   //! Get the studies for this patient.
-
   vtkIntArray *GetStudiesForPatient(int patient);
-
-
-  //! Get the first study for the patient.
-  //int GetFirstStudyForPatient(int patient);
-
-  //! Get the last study for a patient.
-  //int GetLastStudyForPatient(int patient);
 
   //! Get the first series in a particular study.
   int GetFirstSeriesForStudy(int study);
@@ -200,6 +195,7 @@ private:
   struct SeriesInfo;
   class SeriesInfoList;
 
+  vtkDICOMItem *Query;
   SeriesVector *Series;
   StudyVector *Studies;
   PatientVector *Patients;

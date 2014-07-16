@@ -68,6 +68,9 @@ public:
   vtkDICOMDataElementIterator End() {
     return &this->Tail; }
 
+  //! If this item matches the query, return matching attributes.
+  vtkDICOMItem Query(const vtkDICOMItem& query);
+
   //! Get the iterator for a specific data element.
   /*!
    *  If the element was not found, then End() will be returned.

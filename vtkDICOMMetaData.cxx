@@ -865,6 +865,68 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
 }
 
 //----------------------------------------------------------------------------
+vtkDICOMItem vtkDICOMMetaData::Query(const vtkDICOMItem& query)
+{
+  vtkDICOMItem result;
+
+  vtkDICOMDataElementIterator iter = query.Begin();
+  vtkDICOMDataElementIterator iterEnd = query.End();
+  for (; iter != iterEnd; ++iter)
+    {
+    vtkDICOMTag tag = iter->GetTag();
+    const vtkDICOMValue& p = iter->GetValue();
+
+    // Check for private tag
+    if ((tag.GetGroup() & 1) != 0)
+      {
+      unsigned short g = tag.GetGroup();
+      unsigned short e = tag.GetElement();
+      // Skip this element if it is a private creator element
+      if ((e & 0xFF00) == 0)
+        {
+        continue;
+        }
+      // Otherwise, get the private creator
+      vtkDICOMTag ctag(g, e >> 8);
+      std::string creator = query.GetAttributeValue(ctag).AsString();
+      if (creator.length() > 0)
+        {
+        // Use the private creator to resolve the tag
+        tag = this->ResolvePrivateTag(tag, creator);
+        g = tag.GetGroup();
+        e = tag.GetElement();
+        if (g && e)
+          {
+          // Add the creator to the result, if it isn't there yet
+          ctag = vtkDICOMTag(g, e >> 8);
+          result.SetAttributeValue(ctag,
+            vtkDICOMValue(vtkDICOMVR::LO, creator));
+          }
+        }
+      }
+
+    // Get the value to compare against the query
+    const vtkDICOMValue& v = this->GetAttributeValue(tag);
+
+    if (tag == DC::SpecificCharacterSet)
+      {
+      // Ignore, the values have CharacterSet embedded in them
+      }
+    else if (!v.Matches(p))
+      {
+      // If matching failed, clear result and return
+      result.Clear();
+      break;
+      }
+
+    // Add the matched value to the result
+    result.SetAttributeValue(tag, v);
+    }
+
+  return result;
+}
+
+//----------------------------------------------------------------------------
 vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTag(
   vtkDICOMTag ptag, const std::string& creator)
 {
