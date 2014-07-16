@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
         }
       for (int k = k0; k <= k1; k++)
         {
-        const vtkDICOMItem& seriesItem = ddir->GetSeriesRecord(j);
+        const vtkDICOMItem& seriesItem = ddir->GetSeriesRecord(k);
         cout << "  Series " << k << ": \""
              << seriesItem.GetAttributeValue(DC::SeriesDescription).AsString()
              << "\" "
