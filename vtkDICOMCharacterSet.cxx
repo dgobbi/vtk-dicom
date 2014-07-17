@@ -6025,22 +6025,16 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
     }
   else if (code <= 0x03ff)
     {
-    // greek characters, less common chars skipped
-    if (code == 0x0386)
+    // greek characters
+    if (code >= 0x0370 && code <= 0x038F)
       {
-      code = 0x03AC;
-      }
-    else if (code >= 0x0388 && code <= 0x038A)
-      {
-      code += 0x25;
-      }
-    else if (code == 0x038C)
-      {
-      code = 0x03CC;
-      }
-    else if (code >= 0x038E && code <= 0x038F)
-      {
-      code += 0x3F;
+      const static unsigned short table[32] = {
+        0x0371, 0x0371, 0x0373, 0x0373, 0x0374, 0x0375, 0x0377, 0x0377,
+        0x0378, 0x0379, 0x037A, 0x037B, 0x037C, 0x037D, 0x037E, 0x03F3,
+        0x0380, 0x0381, 0x0382, 0x0383, 0x0384, 0x0385, 0x03AC, 0x0387,
+        0x03AD, 0x03AE, 0x03AF, 0x038B, 0x03CC, 0x038D, 0x03CD, 0x03CE };
+
+      code = table[code - 0x0370];
       }
     else if ((code >= 0x0391 && code <= 0x03A1) ||
              (code >= 0x03A3 && code <= 0x03AB))
@@ -6063,25 +6057,24 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
       {
       code += 0x01;
       }
-    else if (code == 0x03CF)
+    else if (code >= 0x03CF && code <= 0x03D6)
       {
-      code = 0x03D7;
+      const static unsigned short table[8] = {
+        0x03D7, 0x03B2, 0x03B8, 0x03D2, 0x03D3, 0x03D4, 0x03C6, 0x03C0 };
+
+      code = table[code - 0x03CF];
       }
-    else if (code == 0x03D0)
+    else if (code >= 0x03D8 && code <= 0x03EF)
       {
-      code = 0x03B2;
+      code |= 0x0001;
       }
-    else if (code == 0x03D1)
+    else if (code >= 0x03F0 && code <= 0x03FF)
       {
-      code = 0x03B8;
-      }
-    else if (code == 0x03D5)
-      {
-      code = 0x03C6;
-      }
-    else if (code == 0x03D6)
-      {
-      code = 0x03C0;
+      const static unsigned short table[16] = {
+        0x03BA, 0x03C1, 0x03F2, 0x03F3, 0x03B8, 0x03B5, 0x03F6, 0x03F8,
+        0x03F8, 0x03F2, 0x03FB, 0x03FB, 0x03FC, 0x037B, 0x037C, 0x037D };
+
+      code = table[code - 0x03F0];
       }
     }
   else if (code <= 0x052f)
