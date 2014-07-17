@@ -3,7 +3,7 @@ import vtk.vtkDICOMWriter;
 import vtk.vtkDICOMMetaData;
 import vtk.vtkObject;
 import vtk.vtkIntArray;
-import vtk.vtkJavaTesting;
+//import vtk.vtkJavaTesting;
 import vtk.vtkSettings;
 
 import java.io.File;
@@ -45,7 +45,7 @@ public class TestDICOMJava {
         }
         catch (UnsatisfiedLinkError ee) {
           // try using VTK's own load function instead
-          vtkJavaTesting.Initialize(args, false);
+          //vtkJavaTesting.Initialize(args, false);
         }
 
         // load the vtkDICOMJava lib
