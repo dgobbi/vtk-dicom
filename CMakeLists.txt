@@ -462,9 +462,8 @@ if(BUILD_JAVA_WRAPPERS)
   if(NOT VTK_JAR_PATH)
     set(VTK_JAR_PATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
   endif()
-  if(NOT VTK_JAVA_JAR)
-    set(VTK_JAVA_JAR "${vtkWrappingJava_RUNTIME_LIBRARY_DIRS}/vtk.jar")
-  endif()
+  find_file(VTK_JAVA_JAR vtk.jar
+    PATHS ${vtkWrappingJava_RUNTIME_LIBRARY_DIRS})
 
   set(_sep ":")
   if(WIN32)
