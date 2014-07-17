@@ -464,6 +464,9 @@ if(BUILD_JAVA_WRAPPERS)
   endif()
   find_file(VTK_JAVA_JAR NAMES vtk.jar vtk6.jar vtk5.jar
     PATHS ${vtkWrappingJava_RUNTIME_LIBRARY_DIRS})
+  if(NOT VTK_JAVA_JAR)
+    message(FATAL_ERROR "VTK_JAVA_JAR must be set to the location of vtk.jar")
+  endif()
 
   set(_sep ":")
   if(WIN32)
