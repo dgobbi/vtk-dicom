@@ -51,6 +51,12 @@ if(BUILD_PYTHON_WRAPPERS)
     get_filename_component(VTK_EXE_DIR ${WRAP_PYTHON_PATH} PATH)
     find_program(VTK_PYTHON_EXE vtkpython "${VTK_EXE_DIR}")
   endif()
+  if(NOT "${VTK_PYTHON_EXE}")
+    # fall back to using python rather than vtkpython
+    find_package(PythonInterp QUIET)
+    mark_as_advanced(PYTHON_EXECUTABLE)
+    set(VTK_PYTHON_EXE ${PYTHON_EXECUTABLE})
+  endif()
   add_test(TestDICOMPython "${VTK_PYTHON_EXE}"
     "${CMAKE_CURRENT_SOURCE_DIR}/TestDICOMPython.py")
   if(NOT CMAKE_CONFIGURATION_TYPES)
