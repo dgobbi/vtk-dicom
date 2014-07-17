@@ -267,8 +267,12 @@ set(LIB_HDRS
   vtkDICOMModule.h
   ${REFCOUNT_HDR}
   vtkNIFTIPrivate.h
-  ${DICOM_BINARY_DIR}/vtkDICOMBuild.h
   ${DICOM_BINARY_DIR}/vtkDICOMConfig.h
+)
+
+# Internal headers (not installed)
+set(LIB_INTERNAL_HDRS
+  ${DICOM_BINARY_DIR}/vtkDICOMBuild.h
 )
 
 # Sources that are abstract
