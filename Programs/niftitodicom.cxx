@@ -607,7 +607,7 @@ void niftitodicom_convert_one(
     axes->DeepCopy(matrix);
     axes->Invert();
     int maxidx[3] = { -1, -1, -1 };
-    int value[3] = { 1.0, 1.0, 1.0 };
+    double value[3] = { 1.0, 1.0, 1.0 };
     int prevmaxj = -1;
     int prevmaxi = -1;
     for (int kdim = 0; kdim < 2; kdim++)
