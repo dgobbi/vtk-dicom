@@ -17,6 +17,7 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMParser.h"
 #include "vtkDICOMUtilities.h"
+#include "vtkDICOMVR.h"
 
 #include <vtkObjectFactory.h>
 #include <vtkSmartPointer.h>
@@ -411,9 +412,9 @@ void vtkDICOMDirectory::FillPatientRecord(
 //----------------------------------------------------------------------------
 void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 {
-  vtkSmartPointer<vtkUnsignedShortArray> groups =
-    vtkSmartPointer<vtkUnsignedShortArray>::New();
   vtkSmartPointer<vtkDICOMMetaData> meta =
+    vtkSmartPointer<vtkDICOMMetaData>::New();
+  vtkSmartPointer<vtkDICOMMetaData> query =
     vtkSmartPointer<vtkDICOMMetaData>::New();
   vtkSmartPointer<vtkDICOMParser> parser =
     vtkSmartPointer<vtkDICOMParser>::New();
@@ -421,11 +422,61 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   parser->AddObserver(
     vtkCommand::ErrorEvent, this, &vtkDICOMDirectory::RelayError);
 
-  groups->InsertNextValue(0x0008); // For study and series info.
-  groups->InsertNextValue(0x0010); // For patient info.
-  groups->InsertNextValue(0x0020); // For study and series info.
   parser->SetMetaData(meta);
-  //parser->SetGroups(groups);
+
+  // these are the attributes that must be part of the query
+  static const DC::EnumType requiredElements[] = {
+    // basic required information
+    DC::SpecificCharacterSet,
+    // series-level information
+    DC::SeriesDate,
+    DC::SeriesTime,
+    DC::Modality,
+    DC::SeriesDescription,
+    DC::BodyPartExamined,
+    DC::SeriesInstanceUID,
+    DC::SeriesNumber,
+    // study-level information
+    DC::StudyDate,
+    DC::StudyTime,
+    DC::ReferringPhysicianName,
+    DC::PatientAge,
+    DC::StudyInstanceUID,
+    DC::StudyID,
+    DC::AccessionNumber,
+    DC::StudyDescription,
+    // patient-level information
+    DC::PatientName,
+    DC::PatientID,
+    DC::PatientBirthDate,
+    DC::PatientSex,
+    // delimiter to mark end of list
+    DC::ItemDelimitationItem
+  };
+
+  for (const DC::EnumType *tagPtr = requiredElements;
+       *tagPtr != DC::ItemDelimitationItem;
+       ++tagPtr)
+    {
+    vtkDICOMVR vr = query->FindDictVR(0, *tagPtr);
+    query->SetAttributeValue(*tagPtr, vtkDICOMValue(vr));
+    }
+
+  if (this->Query)
+    {
+    // add elements that the user requested for the query
+    vtkDICOMDataElementIterator iter = this->Query->Begin();
+    vtkDICOMDataElementIterator iterEnd = this->Query->End();
+    while (iter != iterEnd)
+      {
+      query->SetAttributeValue(iter->GetTag(), iter->GetValue());
+      ++iter;
+      }
+    // use a buffer size equal to one disk block
+    parser->SetBufferSize(4096);
+    }
+
+  parser->SetQuery(query);
 
   SeriesInfoList sortedFiles;
   SeriesInfoList::iterator li;
@@ -476,8 +527,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     // Check if the file matches the query
     if (this->Query)
       {
-      vtkDICOMItem result = meta->Query(*this->Query);
-      if (result.IsEmpty())
+      if (!parser->GetQueryMatched())
         {
         continue;
         }
