@@ -53,12 +53,24 @@ public:
   vtkSetMacro(Index, int);
   int GetIndex() { return this->Index; }
 
-  //! Set specific metadata groups to read.
+  //! Set a query. Only matching data will be retrieved.
   /*!
-   *  If group 0x0002 is present in the file, it will always be read.
+   *  This can be used to scan a file for data that matches a given
+   *  query.  For more information on how matching is done, see the
+   *  vtkDICOMValue::Matches() method.
+   */  
+  void SetQuery(vtkDICOMMetaData *query);
+  vtkDICOMMetaData *GetQuery() { return this->Query; }
+
+  //! Set specific metadata groups to read (obsolete).
+  /*!
+   *  This method is obsolete, the SetQuery() method should be used instead.
    */
   void SetGroups(vtkUnsignedShortArray *groups);
   vtkUnsignedShortArray *GetGroups() { return this->Groups; }
+
+  //! This is true only if the file matched the query.
+  bool GetQueryMatched() { return this->QueryMatched; }
 
   //! This is true only if PixelData was found in the file.
   bool GetPixelDataFound() { return this->PixelDataFound; }
@@ -136,6 +148,7 @@ protected:
   char *FileName;
   std::string TransferSyntax;
   vtkDICOMMetaData *MetaData;
+  vtkDICOMMetaData *Query;
   vtkUnsignedShortArray *Groups;
   vtkDICOMFile *InputFile;
   vtkTypeInt64 BytesRead;
@@ -147,6 +160,7 @@ protected:
   int Index;
   unsigned long ErrorCode;
   bool PixelDataFound;
+  bool QueryMatched;
 
   // used to share FillBuffer with internal classes
   friend class vtkDICOMParserInternalFriendship;
