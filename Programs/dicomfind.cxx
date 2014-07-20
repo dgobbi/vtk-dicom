@@ -583,6 +583,7 @@ int main(int argc, char *argv[])
 
   // Write the header
   dicomfind_writeheader(query, cout);
+  cout.flush();
 
   // Write data for every input directory
   for (vtkIdType i = 0; i < a->GetNumberOfTuples(); i++)
@@ -595,6 +596,7 @@ int main(int argc, char *argv[])
     finder->Update();
 
     dicomfind_write(finder, query, cout);
+    cout.flush();
     }
 
   return rval;
