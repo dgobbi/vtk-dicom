@@ -579,11 +579,29 @@ int main(int argc, char *argv[])
     return 1;
     }
 
+  std::ostream *osp = &std::cout;
+  std::ofstream ofs;
+
+  if (ofile)
+    {
+    ofs.open(ofile,
+             std::ofstream::out |
+             std::ofstream::binary |
+             std::ofstream::trunc);
+
+    if (ofs.bad())
+      {
+      fprintf(stderr, "Unable to open output file %s.\n", ofile);
+      return 1;
+      }
+    osp = &ofs;
+    }
+
   vtkDICOMItem query = dicomfind_query(qfile);
 
   // Write the header
-  dicomfind_writeheader(query, cout);
-  cout.flush();
+  dicomfind_writeheader(query, *osp);
+  osp->flush();
 
   // Write data for every input directory
   for (vtkIdType i = 0; i < a->GetNumberOfTuples(); i++)
@@ -595,8 +613,8 @@ int main(int argc, char *argv[])
     finder->SetFindQuery(query);
     finder->Update();
 
-    dicomfind_write(finder, query, cout);
-    cout.flush();
+    dicomfind_write(finder, query, *osp);
+    osp->flush();
     }
 
   return rval;
