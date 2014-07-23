@@ -487,7 +487,7 @@ void vtkDICOMMetaData::SetAttributeValue(vtkDICOMTag tag, double v)
 void vtkDICOMMetaData::SetAttributeValue(vtkDICOMTag tag, const std::string& v)
 {
   vtkDICOMVR vr = this->FindDictVR(0, tag);
-  if (vr.HasSpecificCharacterSet())
+  if (vr.HasSpecificCharacterSet() && tag > DC::SpecificCharacterSet)
     {
     this->SetAttributeValue(tag,
       this->MakeValueWithSpecificCharacterSet(vr, v));
@@ -584,7 +584,7 @@ void vtkDICOMMetaData::SetAttributeValue(
   int idx, vtkDICOMTag tag, const std::string& v)
 {
   vtkDICOMVR vr = this->FindDictVR(idx, tag);
-  if (vr.HasSpecificCharacterSet())
+  if (vr.HasSpecificCharacterSet() && tag > DC::SpecificCharacterSet)
     {
     this->SetAttributeValue(idx, tag,
       this->MakeValueWithSpecificCharacterSet(vr, v));

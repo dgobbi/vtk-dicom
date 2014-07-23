@@ -869,7 +869,8 @@ size_t Decoder<E>::ReadElementValue(
     case VTK_CHAR:
       {
       char *ptr;
-      if (vr.HasSpecificCharacterSet())
+      if (vr.HasSpecificCharacterSet() &&
+          this->LastTag > DC::SpecificCharacterSet)
         {
         ptr = v.AllocateCharData(vr, this->GetCharacterSet(), vl);
         }
