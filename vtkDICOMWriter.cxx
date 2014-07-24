@@ -267,6 +267,13 @@ void vtkDICOMWriter::ComputeInternalFileName(int slice)
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMWriter::FreeInternalFileName()
+{
+  delete [] this->InternalFileName;
+  this->InternalFileName = 0;
+}
+
+//----------------------------------------------------------------------------
 int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
 {
   if (this->GeneratedMetaData)
@@ -583,6 +590,7 @@ int vtkDICOMWriter::RequestData(
 
   delete [] rowBuffer;
   delete [] frameBuffer;
+  this->FreeInternalFileName();
 
   this->UpdateProgress(1.0);
   this->InvokeEvent(vtkCommand::EndEvent);

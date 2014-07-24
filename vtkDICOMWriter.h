@@ -186,6 +186,10 @@ protected:
   void ComputeInternalFileName(int slice);
 
   // Description:
+  // Free the filename created by ComputeInternalFileName.
+  void FreeInternalFileName();
+
+  // Description:
   // Generate the meta data to be written for the files.
   virtual int GenerateMetaData(vtkInformation *info);
 
