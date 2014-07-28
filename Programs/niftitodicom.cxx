@@ -118,7 +118,7 @@ void niftitodicom_usage(FILE *file, const char *command_name)
     "  --coronal               Produce coronal slices.\n"
     "  --sagittal              Produce satittal slices.\n"
     "  --series-description    Textual description of the series.\n"
-    "  --series-number         The series number ot use.\n"
+    "  --series-number         The series number to use.\n"
     "  --modality              The modality: MR or CT or SC.\n"
     "  --uid-prefix            A DICOM uid prefix (optional).\n"
     "  --version               Print the version and exit.\n"
@@ -680,7 +680,7 @@ void niftitodicom_convert_one(
       permutation[2] = tperm[0];
       }
 
-    // reformat with the permutated axes
+    // reformat with the permuted axes
     reformat->SetResliceAxes(axes);
     reformat->SetInputConnection(lastOutput);
     lastOutput = reformat->GetOutputPort();
