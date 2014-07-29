@@ -16,6 +16,7 @@
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMItem.h"
 #include "vtkDICOMTagPath.h"
+#include "vtkDICOMMetaDataAdapter.h"
 
 #include "vtkObjectFactory.h"
 #include "vtkDataSetAttributes.h"
@@ -111,7 +112,8 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
     // keep this if data was not reformatted
     if (this->SourceInstanceArray != 0 && source == this->SourceMetaData)
       {
-      const char *ped = source->GetAttributeValue(
+      vtkDICOMMetaDataAdapter sourceAdapter(source);
+      const char *ped = sourceAdapter->GetAttributeValue(
         DC::InPlanePhaseEncodingDirection).GetCharData();
       if (ped != 0 && ped[0] != '\0')
         {
