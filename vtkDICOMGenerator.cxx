@@ -16,6 +16,7 @@
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMItem.h"
 #include "vtkDICOMTagPath.h"
+#include "vtkDICOMMetaDataAdapter.h"
 #include "vtkDICOMUtilities.h"
 
 #include "vtkObjectFactory.h"
@@ -395,7 +396,7 @@ void vtkDICOMGenerator::ComputeDimensions(
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *source)
+void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *sourcemeta)
 {
   if (this->SourceInstanceArray)
     {
@@ -403,11 +404,14 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *source)
     this->SourceInstanceArray = 0;
     }
 
-  // make sure there is source data to compare with
-  if (!source)
+  // make sure there is sourcemeta data to compare with
+  if (!sourcemeta)
     {
     return;
     }
+
+  // create an adapter to handle enhanced multi-frame source
+  vtkDICOMMetaDataAdapter source(sourcemeta);
 
   double spacing[3], origin[3];
   double matrix[16];
@@ -825,7 +829,37 @@ bool vtkDICOMGenerator::CopyRequiredAttributes(
 {
   vtkDICOMMetaData *meta = this->MetaData;
 
-  if (source)
+  if (source && source == this->SourceMetaData && this->SourceInstanceArray &&
+      source->HasAttribute(DC::PerFrameFunctionalGroupsSequence))
+    {
+    while (*tags != DC::ItemDelimitationItem)
+      {
+      vtkDICOMTag tag = *tags++;
+      vtkDICOMMetaDataAdapter sourceAdapter(source);
+      bool nonevalid = true;
+      int n = meta->GetNumberOfInstances();
+      for (int i = 0; i < n; i++)
+        {
+        int j = this->SourceInstanceArray->GetComponent(i, 0);
+        const vtkDICOMValue& v = sourceAdapter->GetAttributeValue(j, tag);
+        if (v.IsValid())
+          {
+          nonevalid = false;
+          meta->SetAttributeValue(i, tag, v);
+          }
+        }
+      if (nonevalid)
+        {
+        // set the attribute to zero-length value.
+        vtkDICOMVR vr = meta->FindDictVR(0, tag);
+        if (vr != vtkDICOMVR::UN)
+          {
+          meta->SetAttributeValue(tag, vtkDICOMValue(vr));
+          }
+        }
+      }
+    }
+  else if (source)
     {
     while (*tags != DC::ItemDelimitationItem)
       {
@@ -880,7 +914,26 @@ bool vtkDICOMGenerator::CopyOptionalAttributes(
 {
   vtkDICOMMetaData *meta = this->MetaData;
 
-  if (source)
+  if (source && source == this->SourceMetaData && this->SourceInstanceArray &&
+      source->HasAttribute(DC::PerFrameFunctionalGroupsSequence))
+    {
+    while (*tags != DC::ItemDelimitationItem)
+      {
+      vtkDICOMTag tag = *tags++;
+      vtkDICOMMetaDataAdapter sourceAdapter(source);
+      int n = meta->GetNumberOfInstances();
+      for (int i = 0; i < n; i++)
+        {
+        int j = this->SourceInstanceArray->GetComponent(i, 0);
+        const vtkDICOMValue& v = sourceAdapter->GetAttributeValue(j, tag);
+        if (v.IsValid())
+          {
+          meta->SetAttributeValue(i, tag, v);
+          }
+        }
+      }
+    }
+  else if (source)
     {
     while (*tags != DC::ItemDelimitationItem)
       {
@@ -1394,12 +1447,15 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *source)
     location = (matrix[li] < 0 ? -location : location);
 
     // use the original value if possible, to avoid surprises
-    if (this->SourceInstanceArray && source == this->SourceMetaData &&
-        source && source->HasAttribute(DC::SliceLocation))
+    if (this->SourceInstanceArray && source == this->SourceMetaData && source)
       {
-      int j = this->SourceInstanceArray->GetComponent(i, 0);
-      location = source->GetAttributeValue(
-        j, DC::SliceLocation).AsDouble();
+      vtkDICOMMetaDataAdapter sourceAdapter(source);
+      if (sourceAdapter->HasAttribute(DC::SliceLocation))
+        {
+        int j = this->SourceInstanceArray->GetComponent(i, 0);
+        location = sourceAdapter->GetAttributeValue(
+          j, DC::SliceLocation).AsDouble();
+        }
       }
 
     meta->SetAttributeValue(i, DC::SliceLocation, location);
@@ -1410,7 +1466,8 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *source)
   double thickness = 0;
   if (this->SourceInstanceArray && source == this->SourceMetaData && source)
     {
-    thickness = source->GetAttributeValue(
+    vtkDICOMMetaDataAdapter sourceAdapter(source);
+    thickness = sourceAdapter->GetAttributeValue(
       DC::SliceThickness).AsDouble();
     }
   if (thickness <= 0)

@@ -257,6 +257,7 @@ set(LIB_SRCS
   vtkDICOMValue.cxx
   vtkDICOMWriter.cxx
   vtkDICOMToRAS.cxx
+  vtkDICOMMetaDataAdapter.cxx
   vtkNIFTIHeader.cxx
   vtkNIFTIReader.cxx
   vtkNIFTIWriter.cxx
@@ -297,6 +298,7 @@ set(LIB_SPECIAL
   vtkDICOMItem.cxx
   vtkDICOMUtilities.cxx
   vtkDICOMValue.cxx
+  vtkDICOMMetaDataAdapter.cxx
 )
 
 set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_EXCLUDE ON)
