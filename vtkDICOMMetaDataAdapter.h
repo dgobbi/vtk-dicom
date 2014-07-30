@@ -26,6 +26,8 @@ class vtkDICOMValue;
  *  DICOM data set appear to be a series of data sets.  Whenever the
  *  caller requests and attribute from a specific instance, the attribute
  *  is instead pulled from the PerFrame item for a specific frame.
+ *  If constructed from a metadata object that is not an enhanced
+ *  multi-frame dataset, it simply acts as a pass-through.
  */
 class VTK_DICOM_EXPORT vtkDICOMMetaDataAdapter
 {
@@ -76,6 +78,7 @@ private:
   vtkDICOMMetaData *Meta;
   const vtkDICOMValue *PerFrame;
   const vtkDICOMValue *Shared;
+  vtkDICOMValue *NullValue;
   int NumberOfInstances;
 };
 

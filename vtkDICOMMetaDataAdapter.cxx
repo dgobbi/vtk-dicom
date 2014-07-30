@@ -24,6 +24,7 @@ vtkDICOMMetaDataAdapter::vtkDICOMMetaDataAdapter(vtkDICOMMetaData *meta)
   this->PerFrame = 0;
   this->Shared = 0;
   this->NumberOfInstances = 0;
+  this->NullValue = 0;
 
   if (meta)
     {
@@ -45,6 +46,8 @@ vtkDICOMMetaDataAdapter::vtkDICOMMetaDataAdapter(vtkDICOMMetaData *meta)
     {
     this->NumberOfInstances =
       meta->GetAttributeValue(DC::NumberOfFrames).AsInt();
+    // an invalid value to return when asked for NumberOfFrames
+    this->NullValue = new vtkDICOMValue();
     }
   else if (meta)
     {
@@ -61,6 +64,7 @@ vtkDICOMMetaDataAdapter::~vtkDICOMMetaDataAdapter()
     {
     this->Meta->Delete();
     }
+  delete this->NullValue;
 }
 
 //----------------------------------------------------------------------------
@@ -71,6 +75,12 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
 
   if (this->PerFrame)
     {
+    // if asked for NumberOfFrames, pretend that it isn't set
+    if (tag == DC::NumberOfFrames)
+      {
+      return *this->NullValue;
+      }
+
     // search PerFrameFunctionalGroupsSequence first,
     // then search SharedFunctionalGroupsSequence
     for (int i = 0; i < 2; i++)
