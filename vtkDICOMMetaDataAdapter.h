@@ -65,7 +65,7 @@ public:
   /*!
    *  For an enhanced multi-frame data, this will search the PerFrame
    *  attributes, then the Shared attributes, and finally the basic
-   *  data set attributes. 
+   *  data set attributes.
    */
   const vtkDICOMValue &GetAttributeValue(int idx, vtkDICOMTag tag) const;
 
