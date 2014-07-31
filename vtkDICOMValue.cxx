@@ -2473,7 +2473,10 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
           vtkDICOMTag tag = iter->GetTag();
           if (tag == DC::SpecificCharacterSet)
             {
-            // Ignore, the values have CharacterSet embedded in them
+            // The SpecificCharacterSet is always considered to match.  Its
+            // presence in the query describes the character encoding of the
+            // query, so that query strings can be converted to utf-8 at the
+            // point of comparison with the data set strings.
             }
           else
             {
