@@ -68,8 +68,27 @@ const char *dicomfind_basename(const char *filename)
 
 typedef vtkDICOMVR VR;
 
+// A class to identify a tag and possible a creator
+class QueryTag
+{
+public:
+  QueryTag() : m_tag(), m_creator() {}
+  QueryTag(const vtkDICOMTag& t) : m_tag(t), m_creator() {}
+  QueryTag(const vtkDICOMTag& t, const std::string& c)
+    : m_tag(t), m_creator(c) {}
+
+  vtkDICOMTag tag() const { return m_tag; }
+  const std::string& creator() const { return m_creator; }
+
+private:
+  vtkDICOMTag m_tag;
+  std::string m_creator;
+};
+
+typedef std::vector<QueryTag> QueryTagList;
+
 // Read a query file
-vtkDICOMItem dicomfind_query(const char *fname)
+vtkDICOMItem dicomfind_query(const char *fname, QueryTagList *ql)
 {
   ifstream f(fname);
   if (!f.good())
@@ -152,12 +171,13 @@ vtkDICOMItem dicomfind_query(const char *fname)
 
     vtkDICOMTag tag(key >> 16, key & 0xFFFF);
 
+    // add the tag to the list
+    ql->push_back(QueryTag(tag, creator));
+
     // if creator, then resolve the tag now
     if (creator.length() > 0)
       {
       tag = query.ResolvePrivateTagForWriting(tag, creator);
-      std::string c = query.GetAttributeValue(
-        vtkDICOMTag(0x0019, 0x0010)).AsString();
       }
 
     // read the DICOM vr
@@ -293,29 +313,21 @@ vtkDICOMItem dicomfind_query(const char *fname)
 }
 
 // Write the header
-void dicomfind_writeheader(const vtkDICOMItem& query, std::ostream& os)
+void dicomfind_writeheader(
+  const vtkDICOMItem& query, const QueryTagList *ql, std::ostream& os)
 {
-  vtkDICOMDataElementIterator iter;
-
   // print human-readable names for each tag
-  for (iter = query.Begin(); iter != query.End(); ++iter)
+  for (size_t i = 0; i < ql->size(); i++)
     {
     const char *name = "";
-    vtkDICOMTag tag = iter->GetTag();
-
-    // skip private creator elements
-    if ((tag.GetGroup() & 0x0001) == 1 &&
-        (tag.GetElement() & 0xFF00) == 0)
-      {
-      continue;
-      }
+    vtkDICOMTag tag = ql->at(i).tag();
 
     vtkDICOMDictEntry e = query.FindDictEntry(tag);
     if (e.IsValid())
       {
       name = e.GetName();
       }
-    if (iter != query.Begin())
+    if (i != 0)
       {
       os << ",";
       }
@@ -324,26 +336,18 @@ void dicomfind_writeheader(const vtkDICOMItem& query, std::ostream& os)
   os << "\r\n";
 
   // print the private creator
-  for (iter = query.Begin(); iter != query.End(); ++iter)
+  for (size_t i = 0; i < ql->size(); i++)
     {
-    vtkDICOMTag tag = iter->GetTag();
- 
-    // skip private creator elements
-    if ((tag.GetGroup() & 0x0001) == 1 &&
-        (tag.GetElement() & 0xFF00) == 0)
-      {
-      continue;
-      }
+    vtkDICOMTag tag = ql->at(i).tag();
 
     std::string creator = "DICOM";
 
     if ((tag.GetGroup() & 0x0001) == 1)
       {
-      vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
-      creator = query.GetAttributeValue(ctag).AsString();
+      creator = ql->at(i).creator();
       }
 
-    if (iter != query.Begin())
+    if (i != 0)
       {
       os << ",";
       }
@@ -352,20 +356,13 @@ void dicomfind_writeheader(const vtkDICOMItem& query, std::ostream& os)
   os << "\r\n";
 
   // print the tag as a hexadecimal number
-  for (iter = query.Begin(); iter != query.End(); ++iter)
+  for (size_t i = 0; i < ql->size(); i++)
     {
-    vtkDICOMTag tag = iter->GetTag();
- 
-    // skip private creator elements
-    if ((tag.GetGroup() & 0x0001) == 1 &&
-        (tag.GetElement() & 0xFF00) == 0)
-      {
-      continue;
-      }
+    vtkDICOMTag tag = ql->at(i).tag();
 
     char tagtext[16];
     sprintf(tagtext, "%04X%04X", tag.GetGroup(), tag.GetElement());
-    if (iter != query.Begin())
+    if (i != 0)
       {
       os << ",";
       }
@@ -374,16 +371,9 @@ void dicomfind_writeheader(const vtkDICOMItem& query, std::ostream& os)
   os << "\r\n";
 
   // print the VR
-  for (iter = query.Begin(); iter != query.End(); ++iter)
+  for (size_t i = 0; i < ql->size(); i++)
     {
-    vtkDICOMTag tag = iter->GetTag();
- 
-    // skip private creator elements
-    if ((tag.GetGroup() & 0x0001) == 1 &&
-        (tag.GetElement() & 0xFF00) == 0)
-      {
-      continue;
-      }
+    vtkDICOMTag tag = ql->at(i).tag();
 
     vtkDICOMDictEntry e = query.FindDictEntry(tag);
     const char *name = "";
@@ -391,7 +381,7 @@ void dicomfind_writeheader(const vtkDICOMItem& query, std::ostream& os)
       {
       name = e.GetVR().GetText();
       }
-    if (iter != query.Begin())
+    if (i != 0)
       {
       os << ",";
       }
@@ -447,8 +437,8 @@ std::string dicomfind_quote(const std::string& s)
 }
 
 // Write out the results
-void dicomfind_write(
-  vtkDICOMDirectory *finder, const vtkDICOMItem& query, std::ostream& os)
+void dicomfind_write(vtkDICOMDirectory *finder,
+  const vtkDICOMItem& query, const QueryTagList *ql, std::ostream& os)
 {
   for (int j = 0; j < finder->GetNumberOfStudies(); j++)
     {
@@ -472,19 +462,19 @@ void dicomfind_write(
       vtkDICOMDataElementIterator iter;
 
       // print the value of each tag
-      for (iter = result.Begin(); iter != result.End(); ++iter)
+      for (size_t i = 0; i < ql->size(); i++)
         {
-        vtkDICOMTag tag = iter->GetTag();
+        vtkDICOMTag tag = ql->at(i).tag();
+        std::string creator = ql->at(i).creator();
 
-        // skip private creator elements
-        if ((tag.GetGroup() & 0x0001) == 1 &&
-            (tag.GetElement() & 0xFF00) == 0)
+        // if creator, then resolve the tag now
+        if (creator.length() > 0)
           {
-          continue;
+          tag = meta->ResolvePrivateTagForWriting(tag, creator);
           }
 
-        const vtkDICOMValue& v = iter->GetValue();
-        if (iter != result.Begin())
+        const vtkDICOMValue& v = meta->GetAttributeValue(tag);
+        if (i != 0)
           {
           os << ",";
           }
@@ -499,10 +489,14 @@ void dicomfind_write(
           os << v;
           }
         else if (v.GetVR() == VR::DA ||
-                  v.GetVR() == VR::TM ||
-                  v.GetVR() == VR::DT)
+                 v.GetVR() == VR::TM ||
+                 v.GetVR() == VR::DT)
           {
           os << "\"" << dicomfind_date(v.AsString(), v.GetVR()) << "\"";
+          }
+        else if (v.GetVR() == VR::SQ)
+          {
+          // how should a sequence be printed out to the csv file?
           }
         else if (v.GetVL() != 0 && v.GetVL() != 0xFFFFFFFF)
           {
@@ -597,10 +591,12 @@ int main(int argc, char *argv[])
     osp = &ofs;
     }
 
-  vtkDICOMItem query = dicomfind_query(qfile);
+  // read the query file, create a query
+  QueryTagList qtlist;
+  vtkDICOMItem query = dicomfind_query(qfile, &qtlist);
 
   // Write the header
-  dicomfind_writeheader(query, *osp);
+  dicomfind_writeheader(query, &qtlist, *osp);
   osp->flush();
 
   // Write data for every input directory
@@ -613,7 +609,7 @@ int main(int argc, char *argv[])
     finder->SetFindQuery(query);
     finder->Update();
 
-    dicomfind_write(finder, query, *osp);
+    dicomfind_write(finder, query, &qtlist, *osp);
     osp->flush();
     }
 
