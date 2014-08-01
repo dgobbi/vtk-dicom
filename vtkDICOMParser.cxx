@@ -692,17 +692,30 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
 //----------------------------------------------------------------------------
 bool DecoderBase::QueryMatches(const vtkDICOMValue& v)
 {
-  // A query is always matched if:
+  // if VR is SQ, then the matching was done when the sequence items were
+  // parsed, and we just have to return the current value of QueryMatched
+  if (v.GetVR() == vtkDICOMVR::SQ)
+    {
+    return this->QueryMatched;
+    }
+
+  // a query match is automatically defined as "true" if:
   // 1) the element is SpecificCharacterSet, because this element exists to
   //    describe the character encoding of the query, not because it is to
   //    be matched (strings are converted to utf-8 prior to comparison)
   // 2) the element is a private creator element (group # is odd, element #
-  //    is between 0x10 and 0xFF)
-  return (v.Matches(this->Query->GetValue()) ||
-          this->Query->GetTag() == DC::SpecificCharacterSet ||
-          ((this->Query->GetTag().GetGroup() & 1) != 0 &&
-           this->Query->GetTag().GetElement() >= 0x0010 &&
-           this->Query->GetTag().GetElement() <= 0x00FF));
+  //    is between 0x10 and 0xFF) because these exist only to identify the
+  //    creator of the private elements that appear later
+  if (this->Query->GetTag() == DC::SpecificCharacterSet ||
+      ((this->Query->GetTag().GetGroup() & 1) != 0 &&
+      this->Query->GetTag().GetElement() >= 0x0010 &&
+      this->Query->GetTag().GetElement() <= 0x00FF))
+    {
+    return true;
+    }
+
+  // else use the "Matches" method of vtkDICOMValue
+  return v.Matches(this->Query->GetValue());
 }
 
 //----------------------------------------------------------------------------
@@ -1088,7 +1101,48 @@ size_t Decoder<E>::ReadElementValue(
           vtkDICOMItem item(delimited, offset);
           vtkDICOMItem *olditem = this->Item;
           this->SetItem(&item);
-          this->ReadElements(cp, ep, il, endtag, l);
+
+          if (this->HasQuery)
+            {
+            assert(this->Query != this->QueryEnd);
+
+            // save the current query state before going one level deeper
+            bool hasQuery = this->HasQuery;
+            bool queryMatched = this->QueryMatched;
+            vtkDICOMDataElementIterator query = this->Query;
+            vtkDICOMDataElementIterator queryEnd = this->QueryEnd;
+
+            // set default HasQuery to 'false' to match everything
+            this->HasQuery = false;
+
+            if (query->GetValue().GetNumberOfValues() > 0)
+              {
+              // if query sequence isn't empty, set HasQuery to 'true' and
+              // use the sequence item as the new data set query
+              const vtkDICOMItem *qitems = query->GetValue().GetSequenceData();
+              assert(qitems != 0);
+              this->HasQuery = true;
+              this->QueryMatched = true;
+              this->Query = qitems[0].Begin();
+              this->QueryEnd = qitems[0].End();
+
+              // initialize queryMatched to false at the start of seq
+              queryMatched &= (seq.GetNumberOfItems() > 0);
+              }
+
+            this->ReadElements(cp, ep, il, endtag, l);
+
+            // restore the query state
+            this->HasQuery = hasQuery;
+            this->QueryMatched |= queryMatched;
+            this->Query = query;
+            this->QueryEnd = queryEnd;
+            }
+          else
+            {
+            // if HasQuery is false, simply read the item
+            this->ReadElements(cp, ep, il, endtag, l);
+            }
           seq.AddItem(item);
           this->SetItem(olditem);
           }
@@ -1268,7 +1322,11 @@ bool Decoder<E>::ReadElements(
     if (this->HasQuery && !this->QueryMatches(v))
       {
       this->QueryMatched = false;
-      break;
+      // break only if the query fails at the root level
+      if (this->Item == 0)
+        {
+        break;
+        }
       }
     }
 
