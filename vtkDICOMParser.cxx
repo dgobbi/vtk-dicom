@@ -1760,7 +1760,8 @@ bool vtkDICOMParser::ReadMetaData(
   // read group-by-group
   bool foundPixelData = false;
   bool readFailure = false;
-  while (!foundPixelData && !readFailure)
+  bool queryFailure = false;
+  while (!foundPixelData && !readFailure && !queryFailure)
     {
     unsigned int g = decoder->PeekGroup(cp, ep);
 
@@ -1792,6 +1793,7 @@ bool vtkDICOMParser::ReadMetaData(
     if (found && meta)
       {
       readFailure = !decoder->ReadElements(cp, ep, HxFFFFFFFF, delimiter);
+      queryFailure = (this->Query && !decoder->GetQueryMatched());
       }
     else
       {
