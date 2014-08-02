@@ -532,6 +532,7 @@ install(FILES Copyright.txt
 
 # Subdirectories
 if(BUILD_PROGRAMS)
+  add_subdirectory(DicomCli)
   add_subdirectory(Programs)
 endif()
 

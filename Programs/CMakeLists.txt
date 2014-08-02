@@ -1,4 +1,8 @@
-include_directories(${DICOM_INCLUDE_DIRS})
+include_directories(
+  ${DICOM_INCLUDE_DIRS}
+  ${DICOM_SOURCE_DIR}/DicomCli
+  ${DICOM_BINARY_DIR}/DicomCli
+)
 
 set(PROGRAM_SRCS
   dicomdump.cxx
@@ -20,10 +24,12 @@ if(USE_DCMTK AND DCMTK_charls_LIBRARY)
  set(BASE_LIBS ${BASE_LIBS} ${DCMTK_charls_LIBRARY})
 endif()
 
+set(CLI_LIBS dicomcli)
+
 foreach(src ${PROGRAM_SRCS})
   string(REGEX REPLACE "\\.(cxx|c|mm|m)$" "" prog ${src})
   add_executable(${prog} ${src})
-  target_link_libraries(${prog} ${BASE_LIBS}
+  target_link_libraries(${prog} ${BASE_LIBS} ${CLI_LIBS}
     ${VTK_IMAGING_LIBS} ${KWSYS_LIBS})
   list(APPEND PROGRAM_EXES ${prog})
 endforeach()
