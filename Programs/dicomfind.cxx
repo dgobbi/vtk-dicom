@@ -273,9 +273,8 @@ void dicomfind_write(vtkDICOMDirectory *finder,
 
       parser->SetFileName(a->GetValue(0));
       parser->SetMetaData(meta);
+      parser->SetQueryItem(query);
       parser->Update();
-
-      vtkDICOMItem result = meta->Query(query);
 
       vtkDICOMDataElementIterator iter;
 
