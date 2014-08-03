@@ -14,6 +14,8 @@
 
 #include "readquery.h"
 
+#include "vtkDICOMSequence.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -21,6 +23,29 @@
 #include <iostream>
 
 typedef vtkDICOMVR VR;
+
+// Build a tagpath
+vtkDICOMTagPath path_append(const vtkDICOMTagPath& tpath, vtkDICOMTag tag)
+{
+  vtkDICOMTagPath result(tag);
+
+  if (tpath.GetHead() != vtkDICOMTag())
+    {
+    if (tpath.HasTail())
+      {
+      result = vtkDICOMTagPath(
+        tpath.GetHead(), tpath.GetIndex(),
+        tpath.GetTail().GetHead(), 0, tag);
+      }
+    else
+      {
+      result = vtkDICOMTagPath(
+        tpath.GetHead(), 0, tag);
+      }
+    }
+
+  return result;
+}
 
 // Read a query file
 vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
@@ -34,10 +59,11 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
 
   // Each query line is either:
   // # a comment
-  // GGGGEEEE         # a tag to be returned
-  // GGGGEEEE=PATTERN # a pattern that must match
-  // GGGGEEEE:VR=PATTERN # search pattern with explicit VR
+  // GGGGEEEE                  # a tag to be returned
+  // GGGGEEEE=PATTERN          # a pattern that must match
+  // GGGGEEEE:VR=PATTERN       # search pattern with explicit VR
   // [PRIVATE_CREATOR]GGGGEEEE # private tag with creator name
+  // GGGGEEEE\GGGGEEEE         # a tag nested within a sequence
 
   vtkDICOMItem query;
 
@@ -64,55 +90,97 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
       continue;
       }
 
-    // check for private creator in square brackets
-    size_t creatorStart = s;
-    size_t creatorEnd = s;
-    if (cp[s] == '[')
+    // read the tag path
+    vtkDICOMTagPath tagPath;
+    size_t tagDepth = 0;
+    size_t lineStart = s;
+    bool tagError = false;
+    while (!tagError && tagDepth < 3)
       {
-      s++;
-      creatorStart = s;
-      while (s < n && cp[s] != ']')
+      // check for private creator in square brackets
+      size_t creatorStart = s;
+      size_t creatorEnd = s;
+      if (cp[s] == '[')
+        {
+        s++;
+        creatorStart = s;
+        while (s < n && cp[s] != ']')
+          {
+          s++;
+          }
+        if (s == n)
+          {
+          fprintf(stderr, "Error %s line %d:\n", fname, lineNumber);
+          fprintf(stderr, "Block is missing the final \"]\".\n");
+          tagError = true;
+          continue;
+          }
+        creatorEnd = s;
+        s++;
+        }
+
+      std::string creator(&cp[creatorStart], creatorEnd - creatorStart);
+
+      // read the DICOM tag
+      size_t tagStart = s;
+      while (s < n && isalnum(cp[s]))
         {
         s++;
         }
-      if (s == n)
+      size_t tagEnd = s;
+      if (tagEnd - tagStart == 8)
         {
-        fprintf(stderr, "Error %s line %d:\n", fname, lineNumber);
-        fprintf(stderr, "Block is missing the final \"]\".\n");
-        continue;
+        char *cpe = const_cast<char *>(&cp[tagStart]);
+        key = strtoul(&cp[tagStart], &cpe, 16);
+        if (cpe - const_cast<char *>(&cp[tagStart]) != 8)
+          {
+          key = 0;
+          }
         }
-      creatorEnd = s;
-      s++;
-      }
 
-    std::string creator(&cp[creatorStart], creatorEnd - creatorStart);
+      vtkDICOMTag tag(key >> 16, key & 0xFFFF);
 
-    // read the DICOM tag
-    size_t tagStart = s;
-    while (s < n && isalnum(cp[s]))
-      {
-      s++;
-      }
-    size_t tagEnd = s;
-    if (tagEnd - tagStart == 8)
-      {
-      char *cpe = const_cast<char *>(&cp[tagStart]);
-      key = strtoul(&cp[tagStart], &cpe, 16);
-      if (cpe - const_cast<char *>(&cp[tagStart]) != 8)
+      // if creator, then resolve the tag now
+      if (creator.length() > 0)
         {
-        key = 0;
+        if (tagDepth == 0)
+          {
+          tag = query.ResolvePrivateTagForWriting(tag, creator);
+          }
+        else
+          {
+          vtkDICOMSequence seq = query.GetAttributeValue(tagPath);
+          vtkDICOMItem item = seq.GetItem(0);
+          tag = item.ResolvePrivateTagForWriting(tag, creator);
+          vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
+          vtkDICOMTagPath ctagPath = path_append(tagPath, ctag);
+          query.SetAttributeValue(ctagPath, creator);
+          }
+        }
+
+      // build the tag path
+      tagPath = path_append(tagPath, tag);
+
+      if (s < n && (cp[s] == '/' || cp[s] == '\\'))
+        {
+        // create an item for the next level of depth
+        if (!query.GetAttributeValue(tagPath).IsValid())
+          {
+          query.SetAttributeValue(tagPath, vtkDICOMSequence(1));
+          }
+        s++;
+        tagDepth++;
+        }
+      else
+        {
+        break;
         }
       }
 
-    vtkDICOMTag tag(key >> 16, key & 0xFFFF);
-
-    // add the tag to the list
-    ql->push_back(QueryTag(tag, creator));
-
-    // if creator, then resolve the tag now
-    if (creator.length() > 0)
+    // if an error occurred while reading tag, skip to next line
+    if (tagError || tagDepth > 2)
       {
-      tag = query.ResolvePrivateTagForWriting(tag, creator);
+      continue;
       }
 
     // read the DICOM vr
@@ -132,17 +200,28 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
         vr = vtkDICOMVR(&cp[vrStart]);
         if (!vr.IsValid() || vr == VR::OX || vr == VR::XS || vr == VR::UN)
           {
-          int m = static_cast<int>(vrEnd - tagStart);
+          int m = static_cast<int>(vrEnd - lineStart);
           m = (m > 40 ? 40 : m);
           fprintf(stderr, "Error %s line %d:\n", fname, lineNumber);
           fprintf(stderr, "Unrecognized DICOM VR \"%*.*s\"\n",
-             m, m, &cp[tagStart]);
+             m, m, &cp[lineStart]);
           }
         }
       }
 
+    // dig down into the tag path
+    const vtkDICOMItem *pitem = &query;
+    vtkDICOMTag tag = tagPath.GetHead();
+    vtkDICOMTagPath tmpPath = tagPath;
+    while (tmpPath.HasTail())
+      {
+      pitem = pitem->GetAttributeValue(tag).GetSequenceData();
+      tmpPath = tmpPath.GetTail();
+      tag = tmpPath.GetHead();
+      }
+
     // validate the tag and the vr against the dictionary
-    vtkDICOMVR dictvr = query.FindDictVR(tag);
+    vtkDICOMVR dictvr = pitem->FindDictVR(tag);
     if (!vr.IsValid())
       {
       vr = dictvr;
@@ -153,21 +232,22 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
           !(((dictvr == VR::OX && (vr == VR::OW || vr == VR::OB))) ||
             ((dictvr == VR::XS && (vr == VR::SS || vr == VR::US)))))
         {
-        int m = static_cast<int>(vrEnd - tagStart);
+        int m = static_cast<int>(vrEnd - lineStart);
         m = (m > 40 ? 40 : m);
         fprintf(stderr, "Error %s line %d:\n", fname, lineNumber);
         fprintf(stderr, "VR of \"%*.*s\" doesn't match dictionary VR of %s\n",
-           m, m, &cp[tagStart], dictvr.GetText());
+           m, m, &cp[lineStart], dictvr.GetText());
         }
       }
 
     if (!vr.IsValid() || vr == VR::UN)
       {
-      int m = static_cast<int>(tagEnd - tagStart);
+      int m = static_cast<int>(s - lineStart);
       m = (m > 40 ? 40 : m);
       fprintf(stderr, "Error %s line %d:\n", fname, lineNumber);
       fprintf(stderr, "Unrecognized DICOM tag \"%*.*s\"\n",
-              m, m, &cp[tagStart]);
+              m, m, &cp[lineStart]);
+      tagError = true;
       continue;
       }
 
@@ -221,7 +301,7 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
     if (valueStart == valueEnd)
       {
       // empty value (always matches, always retrieved)
-      query.SetAttributeValue(tag, vtkDICOMValue(vr));
+      query.SetAttributeValue(tagPath, vtkDICOMValue(vr));
       }
     else if (valueContainsQuotes)
       {
@@ -235,12 +315,18 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
           t++;
           }
         }
-      query.SetAttributeValue(tag, vtkDICOMValue(vr, sval));
+      query.SetAttributeValue(tagPath, vtkDICOMValue(vr, sval));
       }
     else
       {
-      query.SetAttributeValue(tag,
+      query.SetAttributeValue(tagPath,
         vtkDICOMValue(vr, &cp[valueStart], valueEnd - valueStart));
+      }
+
+    // add the tag path to the list
+    if (ql)
+      {
+      ql->push_back(tagPath);
       }
     }
 

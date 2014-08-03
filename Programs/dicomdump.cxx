@@ -17,6 +17,9 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMItem.h"
 
+// from dicomcli
+#include "readquery.h"
+
 #include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
 
@@ -48,6 +51,7 @@ void printUsage(FILE *file, const char *cp)
   fprintf(file, "usage:\n"
     "  %s file1.dcm [file2.dcm ...]\n\n", cp);
   fprintf(file, "options:\n"
+    "  -q <query.txt>  Provide a file that lists which elements to print.\n"
     "  --help      Print a brief help message.\n"
     "  --version   Print the software version.\n");
 }
@@ -247,6 +251,9 @@ int main(int argc, char *argv[])
 {
   int rval = 0;
 
+  // for the optional query file
+  const char *qfile = 0;
+
   if (argc < 2)
     {
     printUsage(stdout, fileBasename(argv[0]));
@@ -268,7 +275,51 @@ int main(int argc, char *argv[])
 
   for (int argi = 1; argi < argc; argi++)
     {
-    files->InsertNextValue(argv[argi]);
+    const char *arg = argv[argi];
+    if (strcmp(arg, "-q") == 0 || strcmp(arg, "-o") == 0)
+      {
+      if (argi + 1 == argc || argv[argi+1][0] == '-')
+        {
+        fprintf(stderr, "%s must be followed by a file.\n\n", arg);
+        printUsage(stderr, fileBasename(argv[0]));
+        return 1;
+        }
+
+      if (arg[1] == 'q')
+        {
+        qfile = argv[++argi];
+        }
+      else if (arg[1] == 'o')
+        {
+        fprintf(stderr, "unrecognized option %s.\n\n", arg);
+        return 1;
+        }
+      }
+    else if (arg[0] == '-')
+      {
+      fprintf(stderr, "unrecognized option %s.\n\n", arg);
+      printUsage(stderr, fileBasename(argv[0]));
+      return 1;
+      }
+    else
+      {
+      files->InsertNextValue(arg);
+      }
+    }
+
+  // read the query file, create a query
+  vtkDICOMMetaData *query = 0;
+  if (qfile)
+    {
+    vtkDICOMItem qitem = dicomcli_readquery(qfile);
+    vtkDICOMDataElementIterator iter = qitem.Begin();
+    vtkDICOMDataElementIterator iterEnd = qitem.End();
+    query = vtkDICOMMetaData::New();
+    while (iter != iterEnd)
+      {
+      query->SetAttributeValue(iter->GetTag(), iter->GetValue());
+      ++iter;
+      }
     }
 
   // sort the files by study and series
@@ -280,6 +331,10 @@ int main(int argc, char *argv[])
 
   vtkSmartPointer<vtkDICOMParser> parser =
     vtkSmartPointer<vtkDICOMParser>::New();
+  if (query)
+    {
+    parser->SetQuery(query);
+    }
 
   vtkSmartPointer<vtkDICOMMetaData> data =
     vtkSmartPointer<vtkDICOMMetaData>::New();
@@ -329,6 +384,11 @@ int main(int argc, char *argv[])
   // Restore the console code page
   SetConsoleOutputCP(codePage);
 #endif
+
+  if (query)
+    {
+    query->Delete();
+    }
 
   return rval;
 }

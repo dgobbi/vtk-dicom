@@ -78,73 +78,132 @@ void dicomfind_writeheader(
   // print human-readable names for each tag
   for (size_t i = 0; i < ql->size(); i++)
     {
-    const char *name = "";
-    vtkDICOMTag tag = ql->at(i).tag();
-
-    vtkDICOMDictEntry e = query.FindDictEntry(tag);
-    if (e.IsValid())
-      {
-      name = e.GetName();
-      }
     if (i != 0)
       {
       os << ",";
       }
-    os << name;
+    const vtkDICOMItem *pitem = &query;
+    vtkDICOMTagPath tagPath = ql->at(i);
+    for (;;)
+      {
+      vtkDICOMTag tag = tagPath.GetHead();
+      vtkDICOMDictEntry e = pitem->FindDictEntry(tag);
+      if (e.IsValid())
+        {
+        os << e.GetName();
+        }
+      if (!tagPath.HasTail())
+        {
+        break;
+        }
+      pitem = pitem->GetAttributeValue(tag).GetSequenceData();
+      tagPath = tagPath.GetTail();
+      os << "\\";
+      }
     }
   os << "\r\n";
 
   // print the private creator
   for (size_t i = 0; i < ql->size(); i++)
     {
-    vtkDICOMTag tag = ql->at(i).tag();
-
-    std::string creator = "DICOM";
-
-    if ((tag.GetGroup() & 0x0001) == 1)
-      {
-      creator = ql->at(i).creator();
-      }
-
     if (i != 0)
       {
       os << ",";
       }
-    os << creator.c_str();
+    const vtkDICOMItem *pitem = &query;
+    vtkDICOMTagPath tagPath = ql->at(i);
+    for (;;)
+      {
+      vtkDICOMTag tag = tagPath.GetHead();
+      std::string creator = "DICOM";
+      if ((tag.GetGroup() & 0x0001) == 1)
+        {
+        vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
+        creator = pitem->GetAttributeValue(ctag).AsString();
+        }
+      os << creator.c_str();
+      if (!tagPath.HasTail())
+        {
+        break;
+        }
+      pitem = pitem->GetAttributeValue(tag).GetSequenceData();
+      tagPath = tagPath.GetTail();
+      os << "\\";
+      }
     }
   os << "\r\n";
 
   // print the tag as a hexadecimal number
   for (size_t i = 0; i < ql->size(); i++)
     {
-    vtkDICOMTag tag = ql->at(i).tag();
-
-    char tagtext[16];
-    sprintf(tagtext, "%04X%04X", tag.GetGroup(), tag.GetElement());
     if (i != 0)
       {
       os << ",";
       }
-    os << tagtext;
+    const vtkDICOMItem *pitem = &query;
+    vtkDICOMTagPath tagPath = ql->at(i);
+    for (;;)
+      {
+      vtkDICOMTag tag = tagPath.GetHead();
+      unsigned short g = tag.GetGroup();
+      unsigned short e = tag.GetElement();
+      std::string creator;
+      if ((tag.GetGroup() & 0x0001) == 1)
+        {
+        vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
+        creator = pitem->GetAttributeValue(ctag).AsString();
+        if (creator.length() > 0)
+          {
+          // remove the creator portion of the element number
+          e &= 0x00FF;
+          }
+        }
+      char tagtext[16];
+      sprintf(tagtext, "%04X%04X", g, e);
+      os << tagtext;
+      if (!tagPath.HasTail())
+        {
+        break;
+        }
+      pitem = pitem->GetAttributeValue(tag).GetSequenceData();
+      tagPath = tagPath.GetTail();
+      os << "\\";
+      }
     }
   os << "\r\n";
 
   // print the VR
   for (size_t i = 0; i < ql->size(); i++)
     {
-    vtkDICOMTag tag = ql->at(i).tag();
-
-    vtkDICOMDictEntry e = query.FindDictEntry(tag);
-    const char *name = "";
-    if (e.IsValid())
-      {
-      name = e.GetVR().GetText();
-      }
     if (i != 0)
       {
       os << ",";
       }
-    os << name;
+    const vtkDICOMItem *pitem = &query;
+    vtkDICOMTagPath tagPath = ql->at(i);
+    vtkDICOMValue v = query.GetAttributeValue(tagPath);
+    if (v.IsValid())
+      {
+      os << v.GetVR().GetText();
+      }
+    else
+      {
+      for (;;)
+        {
+        vtkDICOMTag tag = tagPath.GetHead();
+        if (!tagPath.HasTail())
+          {
+          vtkDICOMDictEntry e = pitem->FindDictEntry(tag);
+          if (e.IsValid())
+            {
+            os << e.GetVR().GetText();
+            }
+          break;
+          }
+        pitem = pitem->GetAttributeValue(tag).GetSequenceData();
+        tagPath = tagPath.GetTail();
+        }
+      }
     }
   os << "\r\n";
 }
@@ -223,43 +282,81 @@ void dicomfind_write(vtkDICOMDirectory *finder,
       // print the value of each tag
       for (size_t i = 0; i < ql->size(); i++)
         {
-        vtkDICOMTag tag = ql->at(i).tag();
-        std::string creator = ql->at(i).creator();
-
-        // if creator, then resolve the tag now
-        if (creator.length() > 0)
-          {
-          tag = meta->ResolvePrivateTagForWriting(tag, creator);
-          }
-
-        const vtkDICOMValue& v = meta->GetAttributeValue(tag);
         if (i != 0)
           {
           os << ",";
           }
-        if (v.GetNumberOfValues() == 1 &&
-            (v.GetVR() == VR::SS ||
-             v.GetVR() == VR::US ||
-             v.GetVR() == VR::SL ||
-             v.GetVR() == VR::UL ||
-             v.GetVR() == VR::FL ||
-             v.GetVR() == VR::FD))
+
+        const vtkDICOMItem *qitem = &query;
+        const vtkDICOMItem *mitem = 0;
+        const vtkDICOMValue *vp = 0;
+        vtkDICOMTagPath tagPath = ql->at(i);
+        for (;;)
           {
-          os << v;
+          vtkDICOMTag tag = tagPath.GetHead();
+          std::string creator;
+          if ((tag.GetGroup() & 0x0001) == 1)
+            {
+            vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
+            creator = qitem->GetAttributeValue(ctag).AsString();
+            if (mitem)
+              {
+              tag = meta->ResolvePrivateTag(tag, creator);
+              }
+            else
+              {
+              tag = mitem->ResolvePrivateTag(tag, creator);
+              }
+            }
+          if (mitem)
+            {
+            vp = &mitem->GetAttributeValue(tag);
+            }
+          else
+            {
+            vp = &meta->GetAttributeValue(tag);
+            }
+          if (vp == 0 || !tagPath.HasTail())
+            {
+            break;
+            }
+          qitem = qitem->GetAttributeValue(
+            tagPath.GetHead()).GetSequenceData();
+          tagPath = tagPath.GetTail();
+          mitem = vp->GetSequenceData();
+          if (mitem == 0 || vp->GetNumberOfValues() == 0)
+            {
+            break;
+            }
           }
-        else if (v.GetVR() == VR::DA ||
-                 v.GetVR() == VR::TM ||
-                 v.GetVR() == VR::DT)
+
+        if (vp != 0)
           {
-          os << "\"" << dicomfind_date(v.AsString(), v.GetVR()) << "\"";
-          }
-        else if (v.GetVR() == VR::SQ)
-          {
-          // how should a sequence be printed out to the csv file?
-          }
-        else if (v.GetVL() != 0 && v.GetVL() != 0xFFFFFFFF)
-          {
-          os << "\"" << dicomfind_quote(v.AsUTF8String()) << "\"";
+          const vtkDICOMValue& v = *vp;
+          if (v.GetNumberOfValues() == 1 &&
+              (v.GetVR() == VR::SS ||
+               v.GetVR() == VR::US ||
+               v.GetVR() == VR::SL ||
+               v.GetVR() == VR::UL ||
+               v.GetVR() == VR::FL ||
+               v.GetVR() == VR::FD))
+            {
+            os << v;
+            }
+          else if (v.GetVR() == VR::DA ||
+                   v.GetVR() == VR::TM ||
+                   v.GetVR() == VR::DT)
+            {
+            os << "\"" << dicomfind_date(v.AsString(), v.GetVR()) << "\"";
+            }
+          else if (v.GetVR() == VR::SQ)
+            {
+            // how should a sequence be printed out to the csv file?
+            }
+          else if (v.GetVL() != 0 && v.GetVL() != 0xFFFFFFFF)
+            {
+            os << "\"" << dicomfind_quote(v.AsUTF8String()) << "\"";
+            }
           }
         }
       os << "\r\n";

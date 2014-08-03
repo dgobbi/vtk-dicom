@@ -15,29 +15,13 @@
 #define __readquery_h
 
 #include "vtkDICOMItem.h"
+#include "vtkDICOMTagPath.h"
 
 #include <vector>
 
-// A class to identify a tag and possible a creator
-class QueryTag
-{
-public:
-  QueryTag() : m_tag(), m_creator() {}
-  QueryTag(const vtkDICOMTag& t) : m_tag(t), m_creator() {}
-  QueryTag(const vtkDICOMTag& t, const std::string& c)
-    : m_tag(t), m_creator(c) {}
-
-  vtkDICOMTag tag() const { return m_tag; }
-  const std::string& creator() const { return m_creator; }
-
-private:
-  vtkDICOMTag m_tag;
-  std::string m_creator;
-};
-
-typedef std::vector<QueryTag> QueryTagList;
+typedef std::vector<vtkDICOMTagPath> QueryTagList;
 
 // Read a query file
-vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql);
+vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql=0);
 
 #endif /* __readquery_h */
