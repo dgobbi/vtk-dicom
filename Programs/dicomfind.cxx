@@ -315,6 +315,10 @@ void dicomfind_write(vtkDICOMDirectory *finder,
             {
             vp = &meta->GetAttributeValue(tag);
             }
+          if (vp && !vp->IsValid())
+            {
+            vp = 0;
+            }
           if (vp == 0 || !tagPath.HasTail())
             {
             break;
@@ -357,7 +361,13 @@ void dicomfind_write(vtkDICOMDirectory *finder,
             os << "\"" << dicomfind_quote(v.AsUTF8String()) << "\"";
             }
           }
+        else if (tagPath.GetHead() == DC::ReferencedFileID &&
+                 !tagPath.HasTail())
+          {
+          os << "\"" << dicomfind_quote(a->GetValue(0)) << "\"";
+          }
         }
+
       os << "\r\n";
       }
     }
