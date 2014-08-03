@@ -107,8 +107,9 @@ public:
   // The Item member variable is set while a sequence is decoded.
   void SetItem(vtkDICOMItem *i);
 
-  // The Item member variable is set while a sequence is decoded.
-  void SetQuery(vtkDICOMMetaData *q);
+  // The query with which to filter the data.
+  template<class T>
+  void SetQuery(T *q);
 
   // Read l bytes of data, or until delimiter tag found.
   // Set l to 0xffffffff to ignore length completely.
@@ -382,7 +383,8 @@ inline void DecoderBase::SetItem(vtkDICOMItem *i)
 }
 
 //----------------------------------------------------------------------------
-void DecoderBase::SetQuery(vtkDICOMMetaData *q)
+template<class T>
+void DecoderBase::SetQuery(T *q)
 {
   if (q)
     {
@@ -1487,6 +1489,7 @@ vtkDICOMParser::vtkDICOMParser()
   this->FileName = NULL;
   this->MetaData = NULL;
   this->Query = NULL;
+  this->QueryItem = NULL;
   this->Groups = NULL;
   this->InputFile = NULL;
   this->BytesRead = 0;
@@ -1505,6 +1508,7 @@ vtkDICOMParser::vtkDICOMParser()
 vtkDICOMParser::~vtkDICOMParser()
 {
   delete [] this->FileName;
+  delete this->QueryItem;
 
   if (this->MetaData)
     {
@@ -1518,6 +1522,18 @@ vtkDICOMParser::~vtkDICOMParser()
     {
     this->Groups->Delete();
     }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMParser::SetQueryItem(const vtkDICOMItem& query)
+{
+  if (this->Query)
+    {
+    this->Query->Delete();
+    this->Query = 0;
+    }
+  delete this->QueryItem;
+  this->QueryItem = new vtkDICOMItem(query);
 }
 
 //----------------------------------------------------------------------------
@@ -1725,15 +1741,28 @@ bool vtkDICOMParser::ReadMetaData(
     decoder = &decoderBE;
     }
 
-  decoder->SetQuery(this->Query);
+  // get the Query
+  vtkDICOMDataElementIterator iter;
+  vtkDICOMDataElementIterator iterEnd;
+  bool hasQuery = false;
+  if (this->Query)
+    {
+    iter = this->Query->Begin();
+    iterEnd = this->Query->End();
+    decoder->SetQuery(this->Query);
+    }
+  else if (this->QueryItem)
+    {
+    iter = this->QueryItem->Begin();
+    iterEnd = this->QueryItem->End();
+    decoder->SetQuery(this->QueryItem);
+    }
 
   // make a list of the groups of interest
   std::vector<unsigned short> groups;
-  if (this->Query)
+  if (hasQuery)
     {
     unsigned short lastg = 0;
-    vtkDICOMDataElementIterator iter = this->Query->Begin();
-    vtkDICOMDataElementIterator iterEnd = this->Query->End();
     while (iter != iterEnd)
       {
       unsigned short g = iter->GetTag().GetGroup();
@@ -1793,7 +1822,7 @@ bool vtkDICOMParser::ReadMetaData(
     if (found && meta)
       {
       readFailure = !decoder->ReadElements(cp, ep, HxFFFFFFFF, delimiter);
-      queryFailure = (this->Query && !decoder->GetQueryMatched());
+      queryFailure = (hasQuery && !decoder->GetQueryMatched());
       }
     else
       {
