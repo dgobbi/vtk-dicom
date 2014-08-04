@@ -4522,7 +4522,7 @@ DigitalSignaturesSequence               = 0xFFFAFFFA, // SQ M1    0
 DataSetTrailingPadding                  = 0xFFFCFFFC, // OB M1    0
 Item                                    = 0xFFFEE000, // XX M0    0
 ItemDelimitationItem                    = 0xFFFEE00D, // XX M0    0
-SequenceDelimitationItem                = 0xFFFEE0DD, // XX M0    0
+SequenceDelimitationItem                = 0xFFFEE0DD  // XX M0    0
 };
 } // end namespace DC
 

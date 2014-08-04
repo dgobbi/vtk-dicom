@@ -101,6 +101,9 @@ class BigEndianDecoder;
 class DecoderBase
 {
 public:
+  // Virtual destructor for completeness.
+  virtual ~DecoderBase() {}
+
   // Whether to use implicit VRs (default: explicit VRs).
   void SetImplicitVR(bool i) { this->ImplicitVR = i; }
 

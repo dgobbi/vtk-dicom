@@ -268,6 +268,10 @@ def printhead(enum_dict, classname):
     print "{"
     print "enum EnumType {"
     for enum_list in enum_dict.values():
+      # eliminate the "," for the last enum item
+      m = len(enum_list)
+      if m:
+         enum_list[m-1] = enum_list[m-1].replace(", //", "  //")
       for l in enum_list:
         print l
     print "};"

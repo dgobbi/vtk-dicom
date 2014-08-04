@@ -56,7 +56,7 @@ public:
     US = 0x1a, //!< Unsigned Short
     UT = 0x1b, //!< Unlimited Text
     OX = 0x1c, //!< Either OB or OW (for dict entries, not data elements)
-    XS = 0x1d, //!< Either SS or US (for dict entries, not data elements)
+    XS = 0x1d  //!< Either SS or US (for dict entries, not data elements)
   };
 
   //! Construct an empty, invalid VR.
