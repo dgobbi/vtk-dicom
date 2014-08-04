@@ -1536,7 +1536,11 @@ void vtkDICOMParser::SetQueryItem(const vtkDICOMItem& query)
     this->Query = 0;
     }
   delete this->QueryItem;
-  this->QueryItem = new vtkDICOMItem(query);
+  this->QueryItem = 0;
+  if (query.GetNumberOfDataElements() > 0)
+    {
+    this->QueryItem = new vtkDICOMItem(query);
+    }
 }
 
 //----------------------------------------------------------------------------
