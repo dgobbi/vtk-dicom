@@ -360,9 +360,9 @@ public:
 
   //! Check if the value matches the specified find query value.
   /*!
-   *  This method is used to during "find" requests, according to the rules
-   *  of DICOM Part 4.C.2.2.2 Attribute Matching.  The standard wildcards
-   *  "*" and "?" are supported, as well numeric ranges (for times and dates)
+   *  This method is used during "find" requests, according to the rules
+   *  of DICOM Part 4 C.2.2.2 Attribute Matching.  The standard wildcards
+   *  "*" and "?" are supported, as well as numeric ranges (for times and dates)
    *  through the use of two values separated by "-".  Matches are case
    *  sensitive, except when the VR is PN.  If the value has multiplicity,
    *  then the match will succeed if any of the values match.
