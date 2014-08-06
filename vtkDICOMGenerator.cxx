@@ -1386,6 +1386,7 @@ bool vtkDICOMGenerator::GenerateGeneralImageModule(
     // DC::IconImageSequence, // obviously must change if present
     DC::PresentationLUTShape,
     DC::IrradiationEventUID,
+    DC::RealWorldValueMappingSequence,
     DC::ItemDelimitationItem
   };
 
