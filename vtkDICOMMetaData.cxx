@@ -217,6 +217,8 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
 const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
   int idx, int frame, const vtkDICOMTagPath &tagpath)
 {
+  // for storing a pointer when attribute is found in a private sequence
+  const vtkDICOMValue *privateValue = 0;
   // search PerFrame first
   const vtkDICOMValue *seq =
     this->FindAttributeValue(idx, DC::PerFrameFunctionalGroupsSequence);
@@ -246,7 +248,17 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
             const vtkDICOMValue &w = item->GetAttributeValue(tagpath);
             if (w.IsValid())
               {
-              return w;
+              if ((iter->GetTag().GetGroup() & 1) == 0)
+                {
+                return w;
+                }
+              else if (privateValue == 0)
+                {
+                // if we found the attribute in a private sequence,
+                // then save but and keep searching to see if it will
+                // eventually be found somewhere public
+                privateValue = &w;
+                }
               }
             }
           }
@@ -258,7 +270,14 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
     }
 
   // search root last of all
-  return this->GetAttributeValue(idx, tagpath);
+  const vtkDICOMValue& v = this->GetAttributeValue(idx, tagpath);
+  if (privateValue && !v.IsValid())
+    {
+    // attributes found in private parts of the PerFrame or Shared are
+    // only returned if the attribute could not be found elsewhere
+    return *privateValue;
+    }
+  return v;
 }
 
 //----------------------------------------------------------------------------
