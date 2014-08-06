@@ -18,6 +18,7 @@
 #include "vtkDICOMDataElement.h"
 #include "vtkDICOMParser.h"
 #include "vtkDICOMMetaData.h"
+#include "vtkDICOMMetaDataAdapter.h"
 
 // from dicomcli
 #include "readquery.h"
@@ -276,7 +277,8 @@ void dicomfind_write(vtkDICOMDirectory *finder,
       parser->SetQueryItem(query);
       parser->Update();
 
-      vtkDICOMDataElementIterator iter;
+      // create an adapter, in case of enhanced IOD
+      vtkDICOMMetaDataAdapter adapter(meta);
 
       // print the value of each tag
       for (size_t i = 0; i < ql->size(); i++)
@@ -300,7 +302,7 @@ void dicomfind_write(vtkDICOMDirectory *finder,
             creator = qitem->GetAttributeValue(ctag).AsString();
             if (mitem)
               {
-              tag = meta->ResolvePrivateTag(tag, creator);
+              tag = adapter->ResolvePrivateTag(tag, creator);
               }
             else
               {
@@ -313,7 +315,7 @@ void dicomfind_write(vtkDICOMDirectory *finder,
             }
           else
             {
-            vp = &meta->GetAttributeValue(tag);
+            vp = &adapter->GetAttributeValue(tag);
             }
           if (vp && !vp->IsValid())
             {
@@ -459,6 +461,12 @@ int main(int argc, char *argv[])
   // read the query file, create a query
   QueryTagList qtlist;
   vtkDICOMItem query = dicomcli_readquery(qfile, &qtlist);
+
+  // always add the functional sequences for advanced files
+  query.SetAttributeValue(
+    DC::SharedFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
+  query.SetAttributeValue(
+    DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
   // Write the header
   dicomfind_writeheader(query, &qtlist, *osp);
