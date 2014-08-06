@@ -148,3 +148,73 @@ bool vtkDICOMMetaDataAdapter::HasAttribute(
   const vtkDICOMValue& v = this->GetAttributeValue(0, tag);
   return v.IsValid();
 }
+
+//----------------------------------------------------------------------------
+vtkDICOMTag vtkDICOMMetaDataAdapter::ResolvePrivateTag(
+  vtkDICOMTag ptag, const std::string& creator)
+{
+  vtkDICOMMetaData *meta = this->Meta;
+
+  if (this->PerFrame)
+    {
+    // search PerFrameFunctionalGroupsSequence first,
+    // then search SharedFunctionalGroupsSequence
+    for (int i = 0; i < 2; i++)
+      {
+      const vtkDICOMValue *seq = this->PerFrame;
+      unsigned int f = 0;
+
+      if (i == 1)
+        {
+        seq = this->Shared;
+        f = 0;
+        }
+
+      if (seq && f < seq->GetNumberOfValues())
+        {
+        // search for the item that matches the frame
+        const vtkDICOMItem *items = seq->GetSequenceData();
+        vtkDICOMTag tag = items[f].ResolvePrivateTag(ptag, creator);
+        if (tag != vtkDICOMTag(0xFFFF, 0xFFFF))
+          {
+          const vtkDICOMValue &v = items[f].GetAttributeValue(tag);
+          if (v.IsValid())
+            {
+            return tag;
+            }
+          }
+        // search within all the sequences in the item
+        vtkDICOMDataElementIterator iter = items[f].Begin();
+        vtkDICOMDataElementIterator iterEnd = items[f].End();
+        while (iter != iterEnd)
+          {
+          const vtkDICOMValue &u = iter->GetValue();
+          if (u.GetNumberOfValues() == 1)
+            {
+            const vtkDICOMItem *item = u.GetSequenceData();
+            if (item)
+              {
+              tag = item->ResolvePrivateTag(ptag, creator);
+              if (tag != vtkDICOMTag(0xFFFF, 0xFFFF))
+                {
+                const vtkDICOMValue &v = item->GetAttributeValue(tag);
+                if (v.IsValid())
+                  {
+                  return tag;
+                  }
+                }
+              }
+            }
+          ++iter;
+          }
+        }
+      }
+
+    // if it wasn't in a shared functional group
+    return meta->ResolvePrivateTag(ptag, creator);
+    }
+
+  // if no per-frame data, use file instance
+  return meta->ResolvePrivateTag(ptag, creator);
+}
+

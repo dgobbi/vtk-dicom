@@ -63,11 +63,19 @@ public:
 
   //! Get an attribute value for the specified file index.
   /*!
-   *  For an enhanced multi-frame data, this will search the PerFrame
+   *  For an enhanced multi-frame data set, this will search the PerFrame
    *  attributes, then the Shared attributes, and finally the basic
    *  data set attributes.
    */
   const vtkDICOMValue &GetAttributeValue(int idx, vtkDICOMTag tag) const;
+
+  //! Resolve a private tag.
+  /*!
+   *  For an enhanced multi-frame data set, this will search the PerFrame
+   *  attributes, then the Shared attributes, and finally the basic
+   *  data set attributes.
+   */
+  vtkDICOMTag ResolvePrivateTag(vtkDICOMTag ptag, const std::string& creator);
 
   //! Make the adapter look like a pointer (for convenience).
   const vtkDICOMMetaDataAdapter* operator->() const { return this; }
