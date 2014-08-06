@@ -302,11 +302,11 @@ void dicomfind_write(vtkDICOMDirectory *finder,
             creator = qitem->GetAttributeValue(ctag).AsString();
             if (mitem)
               {
-              tag = adapter->ResolvePrivateTag(tag, creator);
+              tag = mitem->ResolvePrivateTag(tag, creator);
               }
             else
               {
-              tag = mitem->ResolvePrivateTag(tag, creator);
+              tag = adapter->ResolvePrivateTag(tag, creator);
               }
             }
           if (mitem)
