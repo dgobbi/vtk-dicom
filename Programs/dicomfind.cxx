@@ -266,6 +266,10 @@ void dicomfind_write(vtkDICOMDirectory *finder,
     for (int k = k0; k <= k1; k++)
       {
       vtkStringArray *a = finder->GetFileNamesForSeries(k);
+      if (a->GetNumberOfValues() == 0)
+        {
+        continue;
+        }
 
       vtkSmartPointer<vtkDICOMMetaData> meta =
         vtkSmartPointer<vtkDICOMMetaData>::New();
