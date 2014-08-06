@@ -83,6 +83,7 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
 
     // search PerFrameFunctionalGroupsSequence first,
     // then search SharedFunctionalGroupsSequence
+    const vtkDICOMValue *privateValue = 0;
     for (int i = 0; i < 2; i++)
       {
       const vtkDICOMValue *seq = this->PerFrame;
@@ -117,7 +118,17 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
               const vtkDICOMValue &w = item->GetAttributeValue(tag);
               if (w.IsValid())
                 {
-                return w;
+                if ((iter->GetTag().GetGroup() & 1) == 0)
+                  {
+                  return w;
+                  }
+                else if (privateValue == 0)
+                  {
+                  // if we found the attribute in a private sequence,
+                  // then save but and keep searching to see if it will
+                  // eventually be found somewhere public
+                  privateValue = &w;
+                  }
                 }
               }
             }
@@ -126,8 +137,15 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
         }
       }
 
-    // if it wasn't in a shared functional group
-    return meta->GetAttributeValue(0, tag);
+    // if it wasn't in a PerFrame or Shared functional group
+    const vtkDICOMValue& v = meta->GetAttributeValue(0, tag);
+    if (privateValue && !v.IsValid())
+      {
+      // attributes found in private parts of the PerFrame or Shared are
+      // only returned if the attribute could not be found elsewhere
+      return *privateValue;
+      }
+    return v;
     }
 
   // if no per-frame data, use file instance
@@ -159,6 +177,7 @@ vtkDICOMTag vtkDICOMMetaDataAdapter::ResolvePrivateTag(
     {
     // search PerFrameFunctionalGroupsSequence first,
     // then search SharedFunctionalGroupsSequence
+    vtkDICOMTag tagFromPrivSeq(0xFFFF,0xFFFF);
     for (int i = 0; i < 2; i++)
       {
       const vtkDICOMValue *seq = this->PerFrame;
@@ -200,7 +219,18 @@ vtkDICOMTag vtkDICOMMetaDataAdapter::ResolvePrivateTag(
                 const vtkDICOMValue &v = item->GetAttributeValue(tag);
                 if (v.IsValid())
                   {
-                  return tag;
+                  if ((iter->GetTag().GetGroup() & 1) == 0)
+                    {
+                    return tag;
+                    }
+                  else if (tagFromPrivSeq == vtkDICOMTag(0xFFFF, 0xFFFF))
+                    {
+                    // if desired attribute was found within a private
+                    // sequence, we want to keep searching in case it
+                    // later appears within a public sequence (this matches
+                    // the behavior of GetAttributeValue)
+                    tagFromPrivSeq = tag;
+                    }
                   }
                 }
               }
@@ -210,8 +240,13 @@ vtkDICOMTag vtkDICOMMetaDataAdapter::ResolvePrivateTag(
         }
       }
 
-    // if it wasn't in a shared functional group
-    return meta->ResolvePrivateTag(ptag, creator);
+    // if it wasn't in a PerFrame or Shared functional group
+    vtkDICOMTag tag = meta->ResolvePrivateTag(ptag, creator);
+    if (tag == vtkDICOMTag(0xFFFF, 0xFFFF))
+      {
+      tag = tagFromPrivSeq;
+      }
+    return tag;
     }
 
   // if no per-frame data, use file instance
