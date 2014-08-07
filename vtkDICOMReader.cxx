@@ -485,6 +485,68 @@ double vtkDICOMReaderComputeLocation(
   return location;
 }
 
+// compute the spacing between slices
+double vtkDICOMReaderComputeSpacing(
+  const std::vector<vtkDICOMReaderSortInfo>& info,
+  int *missing)
+{
+  double a = 0;
+  double v = VTK_DOUBLE_MAX;
+  size_t m = VTK_UNSIGNED_INT_MAX;
+  int o = 0;
+
+  while (m != 0)
+    {
+    // compute the mean spacing and the variance in spacing
+    double s1 = 0.0;
+    double s2 = 0.0;
+    size_t n = 0;
+    o = 0;
+    for (size_t i = 1; i < info.size(); i++)
+      {
+      // first verify that locations aren't identical
+      if (vtkDICOMReaderSortInfo::CompareLocation(info[i-1], info[i]))
+        {
+        // compute the offset
+        double d = info[i].ComputedLocation - info[i-1].ComputedLocation;
+        // make sure offset is within std dev of average offset
+        if ((d - a)*(d - a) < v)
+          {
+          s1 += d;
+          s2 += d*d;
+          n++;
+          }
+        else
+          {
+          o++;
+          }
+        }
+      }
+
+    // no results!
+    if (n == 0)
+      {
+      break;
+      }
+
+    // compute the mean and std dev
+    a = s1 / n;
+    v = s2/n - a*a;
+
+    // break if within tolerance or if results haven't changed
+    if (v/(a*a) < 1e-6 || n == m)
+      {
+      break;
+      }
+
+    // save count to use as check
+    m = n;
+    }
+
+  *missing = o;
+  return a;
+}
+
 // a simple struct to provide info for each frame to be read
 struct vtkDICOMReaderFrameInfo
 {
@@ -1061,9 +1123,18 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     double locDiff = 0;
     if (locations > 1)
       {
-      double firstLocation = info.front().ComputedLocation;
-      double finalLocation = info.back().ComputedLocation;
-      locDiff = (finalLocation - firstLocation)/(locations - 1);
+      int missing = 0;
+      locDiff = vtkDICOMReaderComputeSpacing(info, &missing);
+      if (missing > 0)
+        {
+        vtkWarningMacro("Series has " << missing <<
+                        " gaps due to missing slices.");
+        }
+      if (locations > spatialLocations)
+        {
+        // squeeze time slices between spatial slices
+        locDiff *= spatialLocations*1.0/locations;
+        }
       }
     if (locDiff > 0)
       {
