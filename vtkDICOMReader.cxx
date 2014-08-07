@@ -375,7 +375,7 @@ const vtkDICOMValue& vtkDICOMReaderGetFrameAttributeValue(
 // compute spatial location from position and orientation
 double vtkDICOMReaderComputeLocation(
   const vtkDICOMValue& pv, const vtkDICOMValue& ov,
-  double checkOrientation[10], bool *checkPtr)
+  double checkOrientation[14], bool *checkPtr)
 {
   double location = 0.0;
 
@@ -402,6 +402,7 @@ double vtkDICOMReaderComputeLocation(
         checkOrientation[i] = orientation[i];
         checkOrientation[3+i] = orientation[3+i];
         checkOrientation[6+i] = position[i];
+        checkOrientation[10+i] = normal[i];
         }
       // indicate that checkOrientation has been set
       checkOrientation[9] = 1.0;
@@ -438,10 +439,25 @@ double vtkDICOMReaderComputeLocation(
       v[0] = position[0] - checkPosition[0];
       v[1] = position[1] - checkPosition[1];
       v[2] = position[2] - checkPosition[2];
-      double t = vtkMath::Dot(v, normal);
-      v[0] -= t*normal[0];
-      v[1] -= t*normal[1];
-      v[2] -= t*normal[2];
+
+      // set the check vector if it isn't set yet
+      if (checkOrientation[13] == 0 &&
+          v[0]*v[0] + v[1]*v[1] + v[2]*v[2] >
+          positionTolerance*positionTolerance)
+        {
+        double vdir = (vtkMath::Dot(v, normal) < 0 ? -1.0 : 1.0);
+        for (int i = 0; i < 3; i++)
+          {
+          checkOrientation[10+i] = vdir*v[i];
+          }
+        vtkMath::Normalize(&checkOrientation[10]);
+        }
+
+      // compare vector to check vector
+      double t = vtkMath::Dot(v, &checkOrientation[10]);
+      v[0] -= t*checkOrientation[10];
+      v[1] -= t*checkOrientation[11];
+      v[2] -= t*checkOrientation[12];
       double d = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
       // the position tolerance is in millimetres
       if (d > (positionTolerance*positionTolerance +
@@ -459,7 +475,10 @@ double vtkDICOMReaderComputeLocation(
         checkOrientation[i] = orientation[i];
         checkOrientation[3+i] = orientation[3+i];
         checkOrientation[6+i] = position[i];
+        checkOrientation[10+i] = normal[i];
         }
+      // mark the check vector as unset
+      checkOrientation[13] = 0;
       }
     }
 
@@ -558,7 +577,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 
   // important position-related variables
   std::vector<size_t> volumeBreaks;
-  double checkOrientation[10] = {};
+  double checkOrientation[14] = {};
   bool canSortByLocation = true;
   double spacingBetweenSlices =
     meta->GetAttributeValue(DC::SpacingBetweenSlices).AsDouble();
@@ -583,7 +602,7 @@ void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     vtkDICOMValue firstStackId;
     vtkDICOMValue desiredStackId =
       vtkDICOMValue(vtkDICOMVR::SH, this->DesiredStackID);
-    double stackCheckNormal[10] = {};
+    double stackCheckNormal[14] = {};
     bool canSortStackByIPP = true;
 
     // files have enhanced frame information
