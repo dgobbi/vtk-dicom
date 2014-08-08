@@ -1555,43 +1555,116 @@ int vtkDICOMReader::RequestInformation(
   // the user with a 4x4 matrix that can transform VTK's data coordinates
   // into DICOM's patient coordinates, as defined in the DICOM standard
   // Part 3 Appendix C 7.6.2 "Image Plane Module".
-  vtkDICOMValue pv = this->MetaData->GetAttributeValue(
-    fileIndex, frameIndex, DC::ImagePositionPatient);
-  vtkDICOMValue ov = this->MetaData->GetAttributeValue(
-    fileIndex, frameIndex, DC::ImageOrientationPatient);
-  if (pv.GetNumberOfValues() == 3 && ov.GetNumberOfValues() == 6)
+
+  vtkIdType numSlices = this->FileIndexArray->GetNumberOfTuples();
+  std::vector<double> points;
+  double centroid[3] = { 0.0, 0.0, 0.0 };
+  double orient[6] = { 1.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
+  double point[3] = { 0.0, 0.0, 0.0 };
+  double normal[3] = { 0.0, 0.0, 1.0 };
+
+  // go through the slices in reverse order, so we end on the first
+  for (vtkIdType iSlice = numSlices-1; iSlice >= 0; --iSlice)
     {
-    double orient[6], normal[3], point[3];
-    pv.GetValues(point, 3);
-    ov.GetValues(orient, 6);
-    vtkMath::Normalize(&orient[0]);
-    vtkMath::Normalize(&orient[3]);
-
-    if (this->MemoryRowOrder == vtkDICOMReader::BottomUp)
+    int iFile = this->FileIndexArray->GetComponent(iSlice, 0);
+    int iFrame = this->FrameIndexArray->GetComponent(iSlice, 0);
+    vtkDICOMValue pv = this->MetaData->GetAttributeValue(
+      iFile, iFrame, DC::ImagePositionPatient);
+    vtkDICOMValue ov = this->MetaData->GetAttributeValue(
+      fileIndex, frameIndex, DC::ImageOrientationPatient);
+    if (pv.GetNumberOfValues() == 3 && ov.GetNumberOfValues() == 6)
       {
-      // calculate position of point at lower left
-      double yspacing = this->DataSpacing[1];
-      point[0] = point[0] + orient[3]*yspacing*(rows - 1);
-      point[1] = point[1] + orient[4]*yspacing*(rows - 1);
-      point[2] = point[2] + orient[5]*yspacing*(rows - 1);
+      pv.GetValues(point, 3);
+      ov.GetValues(orient, 6);
+      vtkMath::Normalize(&orient[0]);
+      vtkMath::Normalize(&orient[3]);
+      vtkMath::Cross(&orient[0], &orient[3], normal);
+      vtkMath::Normalize(normal);
+      // re-orthogonalize x vector (improve precision)
+      vtkMath::Cross(&orient[3], normal, &orient[0]);
 
-      // measure orientation from lower left corner upwards
-      orient[3] = -orient[3];
-      orient[4] = -orient[4];
-      orient[5] = -orient[5];
+      if (this->MemoryRowOrder == vtkDICOMReader::BottomUp)
+        {
+        // calculate position of point at lower left
+        double yspacing = this->DataSpacing[1];
+        point[0] = point[0] + orient[3]*yspacing*(rows - 1);
+        point[1] = point[1] + orient[4]*yspacing*(rows - 1);
+        point[2] = point[2] + orient[5]*yspacing*(rows - 1);
+
+        orient[3] = -orient[3];
+        orient[4] = -orient[4];
+        orient[5] = -orient[5];
+        }
+
+      size_t ip = points.size();
+      points.resize(ip + 3);
+      for (int ii = 0; ii < 3; ii++)
+        {
+        centroid[ii] += point[ii];
+        points[ip+ii] = point[ii];
+        }
+      }
+    }
+
+  // compute Z vector by fitting points to a line
+  double vector[3] = { normal[0], normal[1], normal[2] };
+  size_t nPoints = points.size()/3;
+  if (nPoints > 0)
+    {
+    centroid[0] /= nPoints;
+    centroid[1] /= nPoints;
+    centroid[2] /= nPoints;
+
+    // use Jacobi to compute line of best fit
+    double storage[18] = {};
+    double *A[3] = { &storage[0], &storage[3], &storage[6] };
+    double *E[3] = { &storage[9], &storage[12], &storage[15] };
+    for (size_t iPoint = 0; iPoint < nPoints; iPoint++)
+      {
+      for (int ii = 0; ii < 3; ii++)
+        {
+        for (int jj = 0; jj < 3; jj++)
+          {
+          A[ii][jj] = ((points[3*iPoint + ii] - centroid[ii]) *
+                       (points[3*iPoint + jj] - centroid[jj]));
+          }
+        }
+      }
+    double eigenvalues[3];
+    vtkMath::Jacobi(A, eigenvalues, E);
+
+    // only use eigenvector if the points fit a line very precisely
+    if (eigenvalues[1]*eigenvalues[1] + eigenvalues[2]*eigenvalues[2] <
+        1e-6*eigenvalues[0]*eigenvalues[0])
+      {
+      // create the vector, dot(vector,normal) should be unity
+      double vdn = E[0][0]*normal[0] + E[1][0]*normal[1] + E[2][0]*normal[2];
+      if (vdn > 0)
+        {
+        vector[0] = E[0][0]/vdn;
+        vector[1] = E[1][0]/vdn;
+        vector[2] = E[2][0]/vdn;
+
+        // check difference between this vector and the normal
+        double vcn[3];
+        vtkMath::Cross(vector, normal, vcn);
+        if (vtkMath::Norm(vcn) < 1e-4)
+          {
+          // use normal (more precise) if they are the same
+          vector[0] = normal[0];
+          vector[1] = normal[1];
+          vector[2] = normal[2];
+          }
+        }
       }
 
-    // compute the normal from the given x and y vectors
-    vtkMath::Cross(&orient[0], &orient[3], normal);
-    vtkMath::Normalize(normal);
-    // re-orthogonalize x vector (improve precision)
-    vtkMath::Cross(&orient[3], normal, &orient[0]);
-
+    // build the patient matrix
     double pm[16];
-    pm[0] = orient[0]; pm[1] = orient[3]; pm[2] = normal[0]; pm[3] = point[0];
-    pm[4] = orient[1]; pm[5] = orient[4]; pm[6] = normal[1]; pm[7] = point[1];
-    pm[8] = orient[2]; pm[9] = orient[5]; pm[10] = normal[2]; pm[11] = point[2];
+    pm[0] = orient[0]; pm[1] = orient[3]; pm[2] = vector[0]; pm[3] = point[0];
+    pm[4] = orient[1]; pm[5] = orient[4]; pm[6] = vector[1]; pm[7] = point[1];
+    pm[8] = orient[2]; pm[9] = orient[5]; pm[10] = vector[2]; pm[11] = point[2];
     pm[12] = 0.0; pm[13] = 0.0; pm[14] = 0.0; pm[15] = 1.0;
+
     this->PatientMatrix->DeepCopy(pm);
     }
   else
