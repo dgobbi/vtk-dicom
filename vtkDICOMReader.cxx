@@ -1307,7 +1307,7 @@ int vtkDICOMReader::RequestInformation(
 
   // Get the file and frame for the first slice
   int fileIndex = this->FileIndexArray->GetComponent(0, 0);
-  int frameIndex = this->FileIndexArray->GetComponent(0, 0);
+  int frameIndex = this->FrameIndexArray->GetComponent(0, 0);
 
   // image dimensions
   int columns = this->MetaData->GetAttributeValue(DC::Columns).AsInt();
