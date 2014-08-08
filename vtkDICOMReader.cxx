@@ -519,8 +519,9 @@ double vtkDICOMReaderComputeSpacing(
         {
         // compute the offset
         double d = info[i].ComputedLocation - info[i-1].ComputedLocation;
-        // make sure offset is within std dev of average offset
-        if ((d - a)*(d - a) < v)
+        double dd = (d - a)*(d - a);
+        // make sure offset is within 3 sigma or 10% of average offset
+        if (dd < 0.01*a*a || dd < 9*v)
           {
           s1 += d;
           s2 += d*d;
@@ -539,7 +540,7 @@ double vtkDICOMReaderComputeSpacing(
       break;
       }
 
-    // compute the mean and std dev
+    // compute the mean and variance
     a = s1 / n;
     v = s2/n - a*a;
 
