@@ -10,6 +10,7 @@
 #include "vtkRenderer.h"
 #include "vtkCamera.h"
 #include "vtkImageData.h"
+#include "vtkImageReslice.h"
 #include "vtkImageSliceMapper.h"
 #include "vtkImageProperty.h"
 #include "vtkImageSlice.h"
@@ -17,6 +18,8 @@
 #include "vtkSmartPointer.h"
 #include "vtkStringArray.h"
 #include "vtkIntArray.h"
+#include "vtkMatrix4x4.h"
+#include "vtkMath.h"
 
 int main(int argc, char *argv[])
 {
@@ -72,6 +75,8 @@ int main(int argc, char *argv[])
 
   // trust the user and display all the files, even if multiple series
   vtkStringArray *a = sorter->GetOutputFileNames();
+  vtkSmartPointer<vtkImageReslice> reslice =
+    vtkSmartPointer<vtkImageReslice>::New();
   vtkSmartPointer<vtkDICOMReader> reader =
     vtkSmartPointer<vtkDICOMReader>::New();
   reader->SetMemoryRowOrderToFileNative();
@@ -85,6 +90,62 @@ int main(int argc, char *argv[])
   reader->Update();
   reader->GetOutput()->GetScalarRange(range);
   reader->GetOutput()->GetExtent(extent);
+
+  // get the output port to connect to the display pipeline
+  vtkAlgorithmOutput *portToDisplay = reader->GetOutputPort();
+
+  // check if the matrix indicates a tilted CT gantry
+  vtkSmartPointer<vtkMatrix4x4> pmat =
+    vtkSmartPointer<vtkMatrix4x4>::New();
+  pmat->DeepCopy(reader->GetPatientMatrix());
+  double xvec[4] = { 1.0, 0.0, 0.0, 0.0 };
+  double yvec[4] = { 0.0, 1.0, 0.0, 0.0 };
+  double zvec[4] = { 0.0, 0.0, 1.0, 0.0 };
+  pmat->MultiplyPoint(xvec, xvec);
+  pmat->MultiplyPoint(yvec, yvec);
+  pmat->MultiplyPoint(zvec, zvec);
+
+  // create slice normal and compare to zvec
+  double normal[3];
+  vtkMath::Cross(xvec, yvec, normal);
+  double checkvec[3];
+  vtkMath::Cross(zvec, normal, checkvec);
+  if (vtkMath::Norm(checkvec) > 1e-3)
+    {
+    // definite gantry tilt, the volume is trapezoid-shaped
+    vtkSmartPointer<vtkMatrix4x4> rmat =
+      vtkSmartPointer<vtkMatrix4x4>::New();
+    rmat->DeepCopy(pmat);
+    rmat->SetElement(0, 2, normal[0]);
+    rmat->SetElement(1, 2, normal[1]);
+    rmat->SetElement(2, 2, normal[2]);
+    pmat->Invert();
+    vtkMatrix4x4::Multiply4x4(pmat, rmat, rmat);
+
+    // pure shear matrix will have only one element that is different
+    // from the identity matrix:
+    double shear = rmat->GetElement(1, 2);
+    rmat->Identity();
+    rmat->SetElement(1, 2, shear);
+
+    double origin[3], spacing[3];
+    reader->GetOutput()->GetOrigin(origin);
+    reader->GetOutput()->GetSpacing(spacing);
+    // adjust the origin to centre the new volume on the old trapezoid
+    origin[1] -= shear*0.5*spacing[2]*(extent[5] - extent[4]);
+
+    // use vtkImageReslice to eliminate any shear
+    reslice->SetOutputOrigin(origin);
+    reslice->SetOutputSpacing(spacing);
+    reslice->SetOutputExtent(extent);
+    reslice->SetResliceAxes(rmat);
+    reslice->SetInputConnection(reader->GetOutputPort());
+    reslice->SetInterpolationModeToLinear();
+    reslice->Update();
+
+    // specify the port that the display pipeline will use
+    portToDisplay = reslice->GetOutputPort();
+    }
 
   static double viewport[3][4] = {
     { 0.67, 0.0, 1.0, 0.5 },
@@ -101,7 +162,7 @@ int main(int argc, char *argv[])
       vtkSmartPointer<vtkImageSliceMapper>::New();
     if (i < 3)
       {
-      imageMapper->SetInputConnection(reader->GetOutputPort());
+      imageMapper->SetInputConnection(portToDisplay);
       }
     imageMapper->SetOrientation(i % 3);
     imageMapper->SliceAtFocalPointOn();
