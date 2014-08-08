@@ -439,13 +439,13 @@ double vtkDICOMReaderComputeLocation(
       v[0] = position[0] - checkPosition[0];
       v[1] = position[1] - checkPosition[1];
       v[2] = position[2] - checkPosition[2];
+      double vdir = (vtkMath::Dot(v, normal) < 0 ? -1.0 : 1.0);
 
       // set the check vector if it isn't set yet
       if (checkOrientation[13] == 0 &&
           v[0]*v[0] + v[1]*v[1] + v[2]*v[2] >
           positionTolerance*positionTolerance)
         {
-        double vdir = (vtkMath::Dot(v, normal) < 0 ? -1.0 : 1.0);
         for (int i = 0; i < 3; i++)
           {
           checkOrientation[10+i] = vdir*v[i];
@@ -454,17 +454,27 @@ double vtkDICOMReaderComputeLocation(
         }
 
       // compare vector to check vector
-      double t = vtkMath::Dot(v, &checkOrientation[10]);
-      v[0] -= t*checkOrientation[10];
-      v[1] -= t*checkOrientation[11];
-      v[2] -= t*checkOrientation[12];
-      double d = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
+      double w = vtkMath::Norm(&checkOrientation[10]);
+      double t = vtkMath::Dot(v, &checkOrientation[10])/w;
+      double dv[3];
+      dv[0] = v[0] - t*checkOrientation[10];
+      dv[1] = v[1] - t*checkOrientation[11];
+      dv[2] = v[2] - t*checkOrientation[12];
+      double d = dv[0]*dv[0] + dv[1]*dv[1] + dv[2]*dv[2];
       // the position tolerance is in millimetres
       if (d > (positionTolerance*positionTolerance +
                t*t*directionTolerance*directionTolerance))
         {
         // positions don't line up along the normal
         *checkPtr = false;
+        }
+      else if (checkOrientation[13] != 0 && vtkMath::Norm(v) > w)
+        {
+        // use new vector as check vector if it is longer
+        for (int i = 0; i < 3; i++)
+          {
+          checkOrientation[10+i] = vdir*v[i];
+          }
         }
       }
     if (*checkPtr == false)
