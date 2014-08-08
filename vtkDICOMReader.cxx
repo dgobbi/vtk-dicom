@@ -1564,6 +1564,8 @@ int vtkDICOMReader::RequestInformation(
     double orient[6], normal[3], point[3];
     pv.GetValues(point, 3);
     ov.GetValues(orient, 6);
+    vtkMath::Normalize(&orient[0]);
+    vtkMath::Normalize(&orient[3]);
 
     if (this->MemoryRowOrder == vtkDICOMReader::BottomUp)
       {
@@ -1579,7 +1581,12 @@ int vtkDICOMReader::RequestInformation(
       orient[5] = -orient[5];
       }
 
+    // compute the normal from the given x and y vectors
     vtkMath::Cross(&orient[0], &orient[3], normal);
+    vtkMath::Normalize(normal);
+    // re-orthogonalize x vector (improve precision)
+    vtkMath::Cross(&orient[3], normal, &orient[0]);
+
     double pm[16];
     pm[0] = orient[0]; pm[1] = orient[3]; pm[2] = normal[0]; pm[3] = point[0];
     pm[4] = orient[1]; pm[5] = orient[4]; pm[6] = normal[1]; pm[7] = point[1];
