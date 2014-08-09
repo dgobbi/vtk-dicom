@@ -39,9 +39,21 @@ int main(int argc, char *argv[])
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();
 
+  const char *stackID = 0;
+
   for (int i = 1; i < argc; i++)
     {
-    files->InsertNextValue(argv[i]);
+    if (strcmp(argv[i], "--stack") == 0)
+      {
+      if (i+1 < argc)
+        {
+        stackID = argv[++i];
+        }
+      }
+    else
+      {
+      files->InsertNextValue(argv[i]);
+      }
     }
 
   sorter->SetInputFileNames(files);
@@ -82,7 +94,10 @@ int main(int argc, char *argv[])
   reader->SetMemoryRowOrderToFileNative();
   //reader->TimeAsVectorOn();
   //reader->SetDesiredTimeIndex(5);
-  //reader->SetDesiredStackID("1");
+  if (stackID)
+    {
+    reader->SetDesiredStackID(stackID);
+    }
   reader->SetFileNames(a);
 
   double range[2];
@@ -229,7 +244,7 @@ int main(int argc, char *argv[])
   vtkStringArray *sarray = reader->GetStackIDs();
   if (sarray->GetNumberOfValues())
     {
-    cout << "StackIDs:";
+    cout << "StackIDs (choose one with --stack):";
     for (vtkIdType ii = 0; ii < sarray->GetNumberOfValues(); ii++)
       {
       cout << " \"" << sarray->GetValue(ii) << "\"";
