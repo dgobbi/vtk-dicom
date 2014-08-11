@@ -110,7 +110,7 @@ void dicomtodicom_usage(FILE *file, const char *command_name)
     "  -v --verbose            Verbose error reporting.\n"
     "  --axial                 Produce axial slices.\n"
     "  --coronal               Produce coronal slices.\n"
-    "  --sagittal              Produce satittal slices.\n"
+    "  --sagittal              Produce sagittal slices.\n"
     "  --series-description    Textual description of the series.\n"
     "  --series-number         The series number to use.\n"
     "  --modality              The modality: MR or CT or SC.\n"
