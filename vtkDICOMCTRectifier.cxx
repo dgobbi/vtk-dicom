@@ -131,9 +131,18 @@ void vtkDICOMCTRectifier::ComputeMatrix(
 
   // compute the shear matrix
   vtkMatrix4x4 *matrix = this->Matrix;
-  matrix->DeepCopy(this->VolumeMatrix);
-  matrix->Invert();
-  vtkMatrix4x4::Multiply4x4(matrix, this->RectifiedMatrix, matrix);
+  if (this->Reverse)
+    {
+    matrix->DeepCopy(this->RectifiedMatrix);
+    matrix->Invert();
+    vtkMatrix4x4::Multiply4x4(matrix, this->VolumeMatrix, matrix);
+    }
+  else
+    {
+    matrix->DeepCopy(this->VolumeMatrix);
+    matrix->Invert();
+    vtkMatrix4x4::Multiply4x4(matrix, this->RectifiedMatrix, matrix);
+    }
 
   // compute the shear parameters for the volume
   double zdn = matrix->GetElement(2, 2);
@@ -150,6 +159,13 @@ void vtkDICOMCTRectifier::ComputeMatrix(
   matrix->SetElement(0, 3, pos[0]);
   matrix->SetElement(1, 3, pos[1]);
   matrix->SetElement(2, 3, pos[2]);
+
+  if (this->Reverse)
+    {
+    pos[0] = -pos[0];
+    pos[1] = -pos[1];
+    pos[2] = -pos[2];
+    }
 
   this->VolumeMatrix->MultiplyPoint(pos, pos);
   this->RectifiedMatrix->SetElement(0, 3, pos[0]);
