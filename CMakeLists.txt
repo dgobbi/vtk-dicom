@@ -210,14 +210,14 @@ set(LIB_NAME vtkDICOM)
 # The library dependencies
 set(KWSYS_LIBS vtksys)
 if("${VTK_MAJOR_VERSION}" GREATER 5)
-  set(VTK_LIBS vtkCommonCore vtkCommonDataModel vtkIOImage) # VTK 6.x
+  set(VTK_LIBS vtkCommonCore vtkCommonDataModel vtkImagingCore vtkIOImage)
   # If vtkIOMPIImage is present, it has factories for vtkIOImage
   list(FIND VTK_LIBRARIES vtkIOMPIImage TMP_INDEX)
   if(TMP_INDEX GREATER -1)
     set(VTK_LIBS ${VTK_LIBS} vtkIOMPIImage)
   endif()
 else()
-  set(VTK_LIBS vtkCommon vtkFiltering vtkIO) # VTK 5.x
+  set(VTK_LIBS vtkCommon vtkFiltering vtkImaging vtkIO) # VTK 5.x
 endif()
 
 if(WIN32)
@@ -257,6 +257,7 @@ set(LIB_SRCS
   vtkDICOMValue.cxx
   vtkDICOMWriter.cxx
   vtkDICOMToRAS.cxx
+  vtkDICOMCTRectifier.cxx
   vtkDICOMMetaDataAdapter.cxx
   vtkNIFTIHeader.cxx
   vtkNIFTIReader.cxx

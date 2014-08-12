@@ -3,6 +3,7 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMSorter.h"
 #include "vtkDICOMReader.h"
+#include "vtkDICOMCTRectifier.h"
 
 #include "vtkRenderWindowInteractor.h"
 #include "vtkInteractorStyleImage.h"
@@ -109,6 +110,7 @@ int main(int argc, char *argv[])
   // get the output port to connect to the display pipeline
   vtkAlgorithmOutput *portToDisplay = reader->GetOutputPort();
 
+#if 0
   // check if the matrix indicates a tilted CT gantry
   vtkSmartPointer<vtkMatrix4x4> pmat =
     vtkSmartPointer<vtkMatrix4x4>::New();
@@ -161,6 +163,14 @@ int main(int argc, char *argv[])
     // specify the port that the display pipeline will use
     portToDisplay = reslice->GetOutputPort();
     }
+#else
+  vtkSmartPointer<vtkDICOMCTRectifier> rect =
+    vtkSmartPointer<vtkDICOMCTRectifier>::New();
+  rect->SetVolumeMatrix(reader->GetPatientMatrix());
+  rect->SetInputConnection(reader->GetOutputPort());
+  rect->Update();
+  portToDisplay = rect->GetOutputPort();
+#endif
 
   static double viewport[3][4] = {
     { 0.67, 0.0, 1.0, 0.5 },

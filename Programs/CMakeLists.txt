@@ -16,7 +16,7 @@ set(PROGRAM_SRCS
 if("${VTK_MAJOR_VERSION}" GREATER 5)
   set(VTK_IMAGING_LIBS vtkImagingStatistics) # VTK 6.x
 else()
-  set(VTK_IMAGING_LIBS vtkImaging) # VTK 5.x
+  set(VTK_IMAGING_LIBS) # VTK 5.x
 endif()
 
 set(BASE_LIBS vtkDICOM ${VTK_LIBS})
