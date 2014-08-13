@@ -23,6 +23,9 @@
 #include "vtkStreamingDemandDrivenPipeline.h"
 #include "vtkObjectFactory.h"
 #include "vtkSmartPointer.h"
+#if VTK_MAJOR_VERSION >= 6 || VTK_MINOR_VERSION >= 10
+#include "vtkImageSincInterpolator.h"
+#endif
 
 vtkStandardNewMacro(vtkDICOMCTRectifier);
 vtkCxxSetObjectMacro(vtkDICOMCTRectifier, VolumeMatrix, vtkMatrix4x4);
@@ -257,12 +260,19 @@ int vtkDICOMCTRectifier::RequestData(
   vtkSmartPointer<vtkImageReslice> reslice =
     vtkSmartPointer<vtkImageReslice>::New();
   reslice->SetNumberOfThreads(this->GetNumberOfThreads());
-  reslice->SetInterpolationModeToCubic();
   reslice->SetResliceAxes(this->Matrix);
   reslice->SetOutputSpacing(spacing);
   reslice->SetOutputOrigin(origin);
   reslice->SetOutputExtent(extent);
+#if VTK_MAJOR_VERSION >= 6 || VTK_MINOR_VERSION >= 10
+  vtkSmartPointer<vtkImageSincInterpolator> interpolator =
+    vtkSmartPointer<vtkImageSincInterpolator>::New();
+  interpolator->SetWindowFunctionToBlackman();
+#else
+  reslice->SetInterpolationModeToCubic();
+#endif
 #if VTK_MAJOR_VERSION >= 6
+  reslice->SetInterpolator(interpolator);
   reslice->SetInputData(image);
   this->AllocateOutputData(outData, outInfo, extent);
   reslice->SetOutput(outData);
