@@ -574,7 +574,7 @@ void dicomtonifti_convert_one(
   // check for CT acquired with a tilted gantry
   vtkSmartPointer<vtkDICOMCTRectifier> rectifier =
     vtkSmartPointer<vtkDICOMCTRectifier>::New();
-  if (vtkDICOMCTRectifier::GetGantryDetectorTilt(patientMatrix) > 1e-2)
+  if (fabs(vtkDICOMCTRectifier::GetGantryDetectorTilt(patientMatrix)) > 1e-2)
     {
     // tilt is significant, so regrid as a rectangular volume
     rectifier->SetInputConnection(lastOutput);

@@ -492,7 +492,7 @@ void dicomtodicom_convert_one(
   if (options->mpr)
     {
     // check for CT acquired with a tilted gantry
-    if (vtkDICOMCTRectifier::GetGantryDetectorTilt(matrix) > 1e-2)
+    if (fabs(vtkDICOMCTRectifier::GetGantryDetectorTilt(matrix)) > 1e-2)
       {
       // tilt is significant, so regrid as a rectangular volume
       rectify->SetInputConnection(lastOutput);

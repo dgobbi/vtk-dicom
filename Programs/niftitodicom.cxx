@@ -755,7 +755,7 @@ void niftitodicom_convert_one(
   vtkSmartPointer<vtkDICOMCTRectifier> rectifier =
     vtkSmartPointer<vtkDICOMCTRectifier>::New();
   if (readerMatrix &&
-      vtkDICOMCTRectifier::GetGantryDetectorTilt(readerMatrix) > 0.01)
+      fabs(vtkDICOMCTRectifier::GetGantryDetectorTilt(readerMatrix)) > 0.01)
     {
     rectifier->SetInputConnection(lastOutput);
     rectifier->SetVolumeMatrix(readerMatrix);
