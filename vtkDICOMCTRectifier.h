@@ -66,6 +66,13 @@ public:
   // The input data must be set before this is called.
   void UpdateMatrix();
 
+  // Description:
+  // A static method to measure the tilt from a matrix.
+  // This can be used to see whether it is necessary to rectify the
+  // volume.  It returns the Gantry Detector Tilt angle, in degrees,
+  // as computed from the shear in the volume matrix.
+  static double GetGantryDetectorTilt(vtkMatrix4x4 *volumeMatrix);
+
 protected:
   vtkDICOMCTRectifier();
   ~vtkDICOMCTRectifier();

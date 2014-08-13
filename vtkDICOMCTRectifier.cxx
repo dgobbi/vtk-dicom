@@ -178,6 +178,22 @@ void vtkDICOMCTRectifier::ComputeMatrix(
 }
 
 //----------------------------------------------------------------------------
+double vtkDICOMCTRectifier::GetGantryDetectorTilt(vtkMatrix4x4 *matrix)
+{
+  double xvec[4] = { 1.0, 0.0, 0.0, 0.0 };
+  double yvec[4] = { 0.0, 1.0, 0.0, 0.0 };
+  double zvec[4] = { 0.0, 0.0, 1.0, 0.0 };
+  matrix->MultiplyPoint(xvec, xvec);
+  matrix->MultiplyPoint(yvec, yvec);
+  matrix->MultiplyPoint(zvec, zvec);
+  double normal[3], checkvec[3];
+  vtkMath::Cross(xvec, yvec, normal);
+  vtkMath::Cross(normal, zvec, checkvec);
+  double angle = atan2(vtkMath::Norm(checkvec), vtkMath::Dot(normal, zvec));
+  return vtkMath::DegreesFromRadians(angle);
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMCTRectifier::UpdateMatrix()
 {
   this->UpdateInformation();
