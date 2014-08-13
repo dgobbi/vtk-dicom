@@ -21,10 +21,12 @@
 #include "vtkDICOMMRGenerator.h"
 #include "vtkDICOMCTGenerator.h"
 #include "vtkDICOMToRAS.h"
+#include "vtkDICOMCTRectifier.h"
 #include "vtkDICOMUtilities.h"
 #include "vtkNIFTIHeader.h"
 #include "vtkNIFTIReader.h"
 
+#include <vtkVersion.h>
 #include <vtkImageData.h>
 #include <vtkMatrix4x4.h>
 #include <vtkImageReslice.h>
@@ -510,10 +512,12 @@ void niftitodicom_convert_one(
   dicomReader->TimeAsVectorOn();
   dicomReader->SetFileNames(a);
   dicomReader->SetMemoryRowOrderToFileNative();
+  vtkMatrix4x4 *readerMatrix = 0;
   if (a->GetNumberOfValues() > 0)
     {
     dicomReader->UpdateInformation();
     meta->DeepCopy(dicomReader->GetMetaData());
+    readerMatrix = dicomReader->GetPatientMatrix();
     }
 
   // set the metadata supplied on the command line
@@ -744,6 +748,40 @@ void niftitodicom_convert_one(
     caster->SetInputConnection(lastOutput);
     caster->SetOutputScalarType(VTK_SHORT);
     lastOutput = caster->GetOutputPort();
+    }
+
+  // check if requested to write as a CT tilted-gantry series via the
+  // series of files that were sent to the reader
+  vtkSmartPointer<vtkDICOMCTRectifier> rectifier =
+    vtkSmartPointer<vtkDICOMCTRectifier>::New();
+  if (readerMatrix &&
+      vtkDICOMCTRectifier::GetGantryDetectorTilt(readerMatrix) > 0.01)
+    {
+    rectifier->SetInputConnection(lastOutput);
+    rectifier->SetVolumeMatrix(readerMatrix);
+    rectifier->ReverseOn();
+    rectifier->UpdateMatrix();
+    vtkSmartPointer<vtkMatrix4x4> testMatrix =
+      vtkSmartPointer<vtkMatrix4x4>::New();
+    testMatrix->DeepCopy(rectifier->GetRectifiedMatrix());
+    testMatrix->Invert();
+    vtkMatrix4x4::Multiply4x4(testMatrix, matrix, testMatrix);
+    bool isIdentity = true;
+    for (int ii = 0; ii < 4; ii++)
+      {
+      for (int jj = 0; jj < 4; jj++)
+        {
+        double dd = testMatrix->GetElement(ii,jj) - (ii == jj);
+        isIdentity &= (fabs(dd) < 1e-3);
+        }
+      }
+    if (isIdentity)
+      {
+      // exactly the same orientation, so write like the reader's series
+      rectifier->Update();
+      lastOutput = rectifier->GetOutputPort();
+      matrix = readerMatrix;
+      }
     }
 
   // mix in the NIFTI header information

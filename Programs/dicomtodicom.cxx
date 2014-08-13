@@ -21,6 +21,7 @@
 #include "vtkDICOMMRGenerator.h"
 #include "vtkDICOMCTGenerator.h"
 #include "vtkDICOMToRAS.h"
+#include "vtkDICOMCTRectifier.h"
 #include "vtkDICOMUtilities.h"
 
 #include <vtkImageData.h>
@@ -482,12 +483,25 @@ void dicomtodicom_convert_one(
   // mpr reformat if requested
   vtkSmartPointer<vtkImageReslice> reformat =
     vtkSmartPointer<vtkImageReslice>::New();
+  vtkSmartPointer<vtkDICOMCTRectifier> rectify =
+    vtkSmartPointer<vtkDICOMCTRectifier>::New();
   vtkSmartPointer<vtkMatrix4x4> axes =
     vtkSmartPointer<vtkMatrix4x4>::New();
   int permutation[3] = { 0, 1, 2 };
 
   if (options->mpr)
     {
+    // check for CT acquired with a tilted gantry
+    if (vtkDICOMCTRectifier::GetGantryDetectorTilt(matrix) > 1e-2)
+      {
+      // tilt is significant, so regrid as a rectangular volume
+      rectify->SetInputConnection(lastOutput);
+      rectify->SetVolumeMatrix(matrix);
+      rectify->Update();
+      lastOutput = rectify->GetOutputPort();
+      matrix = rectify->GetRectifiedMatrix();
+      }
+
     // create a permutation matrix to make the slices axial
     axes->DeepCopy(matrix);
     axes->Invert();

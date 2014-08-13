@@ -18,9 +18,11 @@
 #include "vtkDICOMReader.h"
 #include "vtkDICOMSorter.h"
 #include "vtkDICOMToRAS.h"
+#include "vtkDICOMCTRectifier.h"
 #include "vtkNIFTIHeader.h"
 #include "vtkNIFTIWriter.h"
 
+#include <vtkVersion.h>
 #include <vtkImageData.h>
 #include <vtkMatrix4x4.h>
 #include <vtkImageReslice.h>
@@ -555,6 +557,10 @@ void dicomtonifti_convert_one(
   reader->Update();
   dicomtonifti_check_error(reader);
 
+  // get the output and the orientation matrix
+  vtkAlgorithmOutput *lastOutput = reader->GetOutputPort();
+  vtkMatrix4x4 *patientMatrix = reader->GetPatientMatrix();
+
   // check if slices were reordered by the reader
   vtkIntArray *fileIndices = reader->GetFileIndexArray();
   vtkIntArray *frameIndices = reader->GetFrameIndexArray();
@@ -565,11 +571,24 @@ void dicomtonifti_convert_one(
   int lastFrame = frameIndices->GetComponent(maxId, 0);
   bool slicesReordered = (lastFrame < firstFrame || lastFile < firstFile);
 
+  // check for CT acquired with a tilted gantry
+  vtkSmartPointer<vtkDICOMCTRectifier> rectifier =
+    vtkSmartPointer<vtkDICOMCTRectifier>::New();
+  if (vtkDICOMCTRectifier::GetGantryDetectorTilt(patientMatrix) > 1e-2)
+    {
+    // tilt is significant, so regrid as a rectangular volume
+    rectifier->SetInputConnection(lastOutput);
+    rectifier->SetVolumeMatrix(patientMatrix);
+    rectifier->Update();
+    lastOutput = rectifier->GetOutputPort();
+    patientMatrix = rectifier->GetRectifiedMatrix();
+    }
+
   // convert to NIFTI coordinate system
   vtkSmartPointer<vtkDICOMToRAS> converter =
     vtkSmartPointer<vtkDICOMToRAS>::New();
-  converter->SetInputConnection(reader->GetOutputPort());
-  converter->SetPatientMatrix(reader->GetPatientMatrix());
+  converter->SetInputConnection(lastOutput);
+  converter->SetPatientMatrix(patientMatrix);
   converter->SetAllowRowReordering(!options->no_row_reordering);
   converter->SetAllowColumnReordering(!options->no_column_reordering);
   converter->UpdateMatrix();
@@ -577,7 +596,7 @@ void dicomtonifti_convert_one(
   // check if slices have been reordered by vtkDICOMToRAS
   vtkSmartPointer<vtkMatrix4x4> checkMatrix =
     vtkSmartPointer<vtkMatrix4x4>::New();
-  checkMatrix->DeepCopy(reader->GetPatientMatrix());
+  checkMatrix->DeepCopy(patientMatrix);
   // undo the DICOM to NIFTI x = -x, y = -y conversion in check matrix
   for (int j = 0; j < 4; j++)
     {
@@ -597,7 +616,7 @@ void dicomtonifti_convert_one(
   matrix->DeepCopy(converter->GetRASMatrix());
 
   // reformat to axial if requested
-  vtkAlgorithmOutput *lastOutput = converter->GetOutputPort();
+  lastOutput = converter->GetOutputPort();
   vtkSmartPointer<vtkImageReslice> reformat =
     vtkSmartPointer<vtkImageReslice>::New();
   vtkSmartPointer<vtkMatrix4x4> axes =
