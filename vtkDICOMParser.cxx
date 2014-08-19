@@ -1812,7 +1812,7 @@ bool vtkDICOMParser::ReadMetaData(
         {
         ++giter;
         }
-      found = (*giter == g);
+      found = (giter != groups.end() && *giter == g);
       }
 
     // create a delimiter to read/skip only this group

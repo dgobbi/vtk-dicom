@@ -144,7 +144,7 @@ protected:
   // Constructor that initializes all of the members.
   EncoderBase(vtkDICOMCompiler *comp, int idx) :
     Compiler(comp), SOPInstanceUID(0), SeriesInstanceUID(0),
-    Index(idx), Depth(0), ImplicitVR(0) {}
+    StudyInstanceUID(0), Index(idx), Depth(0), ImplicitVR(0) {}
 
   // the vtkDICOMCompiler::FlushBuffer method is used to refill the buffer
   vtkDICOMCompiler *Compiler;
