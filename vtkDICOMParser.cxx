@@ -1754,12 +1754,14 @@ bool vtkDICOMParser::ReadMetaData(
   bool hasQuery = false;
   if (this->Query)
     {
+    hasQuery = true;
     iter = this->Query->Begin();
     iterEnd = this->Query->End();
     decoder->SetQuery(this->Query);
     }
   else if (this->QueryItem)
     {
+    hasQuery = true;
     iter = this->QueryItem->Begin();
     iterEnd = this->QueryItem->End();
     decoder->SetQuery(this->QueryItem);
