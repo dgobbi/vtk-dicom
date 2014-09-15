@@ -579,18 +579,16 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
     this->Compression = 0x00b2; // run-length compressed bits
     this->SetDataScalarType(VTK_SIGNED_CHAR);
     }
-  /* The dataType values for these are not known yet
-  else if (dataType == )
+  else if (dataType == 0x00080002)
     {
     this->Compression = 0x00c2; // run-length compressed signed char
     this->SetDataScalarType(VTK_SIGNED_CHAR);
     }
-  else if (dataType == )
+  else if (dataType == 0x00060001)
     {
     this->Compression = 0x00b1; // packed bits
     this->SetDataScalarType(VTK_SIGNED_CHAR);
     }
-  */
   else
     {
     vtkErrorMacro("Unrecognized data type in AIM file: " << dataType);
