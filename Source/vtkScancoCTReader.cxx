@@ -565,37 +565,63 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
     h += 4;
     }
 
-  // only short and char are supported
-  if (dataType == 0x00020002)
+  // number of components per pixel is 1 by default
+  int scalarType = VTK_UNSIGNED_CHAR;
+  int scalarComponents = 1;
+  this->Compression = 0;
+
+  // a limited selection of data types are supported
+  // (only 0x00010001 (char) and 0x00020002 (short) are fully tested)
+  switch (dataType)
     {
-    this->SetDataScalarType(VTK_SHORT);
-    }
-  else if (dataType == 0x00010001)
-    {
-    this->SetDataScalarType(VTK_SIGNED_CHAR);
-    }
-  else if (dataType == 0x00150001)
-    {
-    this->Compression = 0x00b2; // run-length compressed bits
-    this->SetDataScalarType(VTK_SIGNED_CHAR);
-    }
-  else if (dataType == 0x00080002)
-    {
-    this->Compression = 0x00c2; // run-length compressed signed char
-    this->SetDataScalarType(VTK_SIGNED_CHAR);
-    }
-  else if (dataType == 0x00060001)
-    {
-    this->Compression = 0x00b1; // packed bits
-    this->SetDataScalarType(VTK_SIGNED_CHAR);
-    }
-  else
-    {
-    vtkErrorMacro("Unrecognized data type in AIM file: " << dataType);
-    return 0;
+    case 0x00160001:
+      scalarType = VTK_UNSIGNED_CHAR;
+      break;
+    case 0x000d0001:
+      scalarType = VTK_UNSIGNED_CHAR;
+      break;
+    case 0x00120003:
+      scalarType = VTK_UNSIGNED_CHAR;
+      scalarComponents = 3;
+      break;
+    case 0x00010001:
+      scalarType = VTK_SIGNED_CHAR;
+      break;
+    case 0x00060003:
+      scalarType = VTK_SIGNED_CHAR;
+      scalarComponents = 3;
+      break;
+    case 0x00170002:
+      scalarType = VTK_UNSIGNED_SHORT;
+      break;
+    case 0x00020002:
+      scalarType = VTK_SHORT;
+      break;
+    case 0x00030004:
+      scalarType = VTK_INT;
+      break;
+    case 0x001a0004:
+      scalarType = VTK_FLOAT;
+      break;
+    case 0x00150001:
+      this->Compression = 0x00b2; // run-length compressed bits
+      scalarType = VTK_SIGNED_CHAR;
+      break;
+    case 0x00080002:
+      this->Compression = 0x00c2; // run-length compressed signed char
+      scalarType = VTK_SIGNED_CHAR;
+      break;
+    case 0x00060001:
+      this->Compression = 0x00b1; // packed bits
+      scalarType = VTK_SIGNED_CHAR;
+      break;
+    default:
+      vtkErrorMacro("Unrecognized data type in AIM file: " << dataType);
+      return 0;
     }
 
-  this->SetNumberOfScalarComponents(1);
+  this->SetDataScalarType(scalarType);
+  this->SetNumberOfScalarComponents(scalarComponents);
   this->SetDataByteOrderToLittleEndian();
   this->SetFileDimensionality(3);
 
