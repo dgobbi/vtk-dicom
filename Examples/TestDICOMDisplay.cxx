@@ -12,7 +12,7 @@
 #include "vtkCamera.h"
 #include "vtkImageData.h"
 #include "vtkImageReslice.h"
-#include "vtkImageSliceMapper.h"
+#include "vtkImageResliceMapper.h"
 #include "vtkImageProperty.h"
 #include "vtkImageSlice.h"
 #include "vtkImageReader2.h"
@@ -183,14 +183,15 @@ int main(int argc, char *argv[])
 
   for (int i = 2*(imageIs3D == 0); i < 3; i++)
     {
-    vtkSmartPointer<vtkImageSliceMapper> imageMapper =
-      vtkSmartPointer<vtkImageSliceMapper>::New();
+    vtkSmartPointer<vtkImageResliceMapper> imageMapper =
+      vtkSmartPointer<vtkImageResliceMapper>::New();
     if (i < 3)
       {
       imageMapper->SetInputConnection(portToDisplay);
       }
-    imageMapper->SetOrientation(i % 3);
+    imageMapper->SliceFacesCameraOn();
     imageMapper->SliceAtFocalPointOn();
+    imageMapper->ResampleToScreenPixelsOn();
 
     vtkSmartPointer<vtkImageSlice> image =
       vtkSmartPointer<vtkImageSlice>::New();
@@ -226,9 +227,9 @@ int main(int argc, char *argv[])
 
     vtkCamera *camera = renderer->GetActiveCamera();
     camera->SetFocalPoint(point);
-    point[imageMapper->GetOrientation()] -= 500.0;
+    point[i % 3] -= 500.0;
     camera->SetPosition(point);
-    if (imageMapper->GetOrientation() == 2)
+    if ((i % 3) == 2)
       {
       camera->SetViewUp(0.0, -1.0, 0.0);
       }
