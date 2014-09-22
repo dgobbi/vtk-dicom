@@ -396,8 +396,16 @@ if(BUILD_PYTHON_WRAPPERS)
   set_target_properties(${LIB_PYTHON_NAME} PROPERTIES
     VERSION "${DICOM_VERSION}" SOVERSION "${DICOM_SHORT_VERSION}"
     OUTPUT_NAME "${LIB_PYTHON_OUTPUT_NAME}")
-  target_link_libraries(${LIB_PYTHON_NAME}
-    ${LIB_NAME} ${LIB_PYTHON_LIBS} ${VTK_PYTHON_LIBRARIES})
+  target_link_libraries(${LIB_PYTHON_NAME} LINK_PUBLIC
+    ${LIB_NAME} ${LIB_PYTHON_LIBS})
+  # On Win32 and Mac, link python library non-private
+  if(WIN32 OR APPLE)
+    target_link_libraries(${LIB_PYTHON_NAME} LINK_PUBLIC
+      ${VTK_PYTHON_LIBRARIES})
+  else()
+    target_link_libraries(${LIB_PYTHON_NAME} LINK_PRIVATE
+      ${VTK_PYTHON_LIBRARIES})
+  endif()
   if(USE_DCMTK AND DCMTK_charls_LIBRARY)
     target_link_libraries(${LIB_PYTHON_NAME} ${DCMTK_charls_LIBRARY})
   endif()
@@ -413,10 +421,6 @@ if(BUILD_PYTHON_WRAPPERS)
     set_target_properties(${MODULE_PYTHON_NAME} PROPERTIES NO_SONAME 1)
   endif()
   target_link_libraries(${MODULE_PYTHON_NAME} ${LIB_PYTHON_NAME})
-  # On Win32 and Mac, link python library now, on UNIX, don't
-  if(WIN32 OR APPLE)
-    target_link_libraries(${MODULE_PYTHON_NAME} ${VTK_PYTHON_LIBRARIES})
-  endif()
   set(DICOM_PYTHON_LIBRARIES ${LIB_PYTHON_NAME})
 endif()
 
