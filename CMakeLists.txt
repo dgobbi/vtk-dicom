@@ -438,6 +438,7 @@ if(BUILD_JAVA_WRAPPERS)
   set(VTK_JAVA_HOME ${CMAKE_CURRENT_BINARY_DIR}/java/vtk)
   set(VTK_JAVA_MANIFEST ${CMAKE_CURRENT_BINARY_DIR}/java/manifest.txt)
   make_directory(${VTK_JAVA_HOME})
+  make_directory(${CMAKE_CURRENT_BINARY_DIR}/javajar/vtk)
   set(LIB_JAVA_NAME ${LIB_NAME}Java)
   set(LIB_JAVA_LIBS)
   foreach(TMP_LIB ${VTK_LIBS})
@@ -496,7 +497,7 @@ if(BUILD_JAVA_WRAPPERS)
       -target ${VTK_JAVA_TARGET_VERSION}
       -classpath ${VTK_JAVA_JAR}${_sep}${VTK_DIR}/java
       -sourcepath ${VTK_DIR}/java/vtk/
-      -d ${CMAKE_CURRENT_BINARY_DIR}/java
+      -d ${CMAKE_CURRENT_BINARY_DIR}/javajar
       ${CMAKE_CURRENT_BINARY_DIR}/java/vtk/*.java
     COMMAND ${CMAKE_COMMAND}
       -E touch ${CMAKE_CURRENT_BINARY_DIR}/java/javac_stamp.txt
@@ -507,7 +508,7 @@ if(BUILD_JAVA_WRAPPERS)
     COMMAND ${JAVA_ARCHIVE} -cvfm
       "${VTK_JAR_PATH}/vtkdicom.jar"
       ${VTK_JAVA_MANIFEST}
-      -C ${CMAKE_CURRENT_BINARY_DIR}/java
+      -C ${CMAKE_CURRENT_BINARY_DIR}/javajar
       vtk
     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/java/javac_stamp.txt ${JAVA_LIBRARIES}
     OUTPUT ${VTK_JAR_PATH}/vtkdicom.jar
