@@ -24,8 +24,14 @@ set(DICOM_USE_VTKZLIB "@DICOM_USE_VTKZLIB@")
 
 # Dependencies
 set(DICOM_VTK_DIR "@VTK_DIR@")
+if(NOT VTK_FOUND)
+  find_package(VTK PATHS "${DICOM_VTK_DIR}")
+endif()
 if(DICOM_USE_GDCM)
   set(DICOM_GDCM_DIR "@GDCM_DIR@")
+  if(NOT DICOM_BUILD_SHARED_LIBS AND NOT GDCM_FOUND)
+    find_package(GDCM PATHS "${DICOM_GDCM_DIR}")
+  endif()
 endif()
 
 # Get the current directory
