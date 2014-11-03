@@ -4,9 +4,9 @@ project(DICOM)
 cmake_minimum_required(VERSION 2.8.7)
 
 # Use LINK_INTERFACE_LIBRARIES instead of INTERFACE_LINK_LIBRARIES
-if(POLICY CMP0022)
-  cmake_policy(SET CMP0022 OLD)
-endif()
+#if(POLICY CMP0022)
+#  cmake_policy(SET CMP0022 OLD)
+#endif()
 
 # When CMake 3.0.0 is required, remove this block (see CMP0042).
 if(NOT DEFINED CMAKE_MACOSX_RPATH)
@@ -318,9 +318,11 @@ endforeach()
 if("${VTK_MAJOR_VERSION}" GREATER 5)
   if(BUILD_PYTHON_WRAPPERS OR BUILD_JAVA_WRAPPERS)
     set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
-    set(vtk-module ${LIB_NAME})
     set(MODULE_HIERARCHY_NAME ${LIB_NAME}Hierarchy)
-    set(${LIB_NAME}_LINK_DEPENDS ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS})
+    # The VTK 6 wrapping macros require vtk-module to be set
+    set(vtk-module ${LIB_NAME})
+    # _LINK_DEPENDS is a variable suffix from the VTK 6 module macros 
+    set(${vtk-module}_LINK_DEPENDS ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS})
     include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/vtkWrapHierarchy.cmake)
     vtk_wrap_hierarchy(${MODULE_HIERARCHY_NAME} ${DICOM_BINARY_DIR}
       "${LIB_SRCS}")
@@ -347,11 +349,9 @@ if(BUILD_PYTHON_WRAPPERS OR BUILD_JAVA_WRAPPERS AND
    NOT (CMAKE_VERSION VERSION_LESS 2.8))
   set_target_properties(${LIB_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
-target_link_libraries(${LIB_NAME} ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS}
-  ${GDCM_LIBS} ${DCMTK_LIBS})
-if(BUILD_SHARED_LIBS)
-  target_link_libraries(${LIB_NAME} LINK_INTERFACE_LIBRARIES ${VTK_LIBS})
-endif()
+target_link_libraries(${LIB_NAME} LINK_PUBLIC ${VTK_LIBS})
+target_link_libraries(${LIB_NAME} LINK_PRIVATE
+  ${KWSYS_LIBS} ${ZLIB_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS})
 set(DICOM_LIBRARIES ${LIB_NAME})
 
 # Wrappers
