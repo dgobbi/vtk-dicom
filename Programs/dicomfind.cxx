@@ -377,9 +377,9 @@ void dicomfind_write(vtkDICOMDirectory *finder,
         else if (tagPath.GetHead() == DC::NumberOfReferences &&
                  !tagPath.HasTail())
           {
-          // NumberOfReferences (0004,1600) is a retired attribute meant count the
-          // number of references to a file, but we hijack it and use it to report
-          // the number of files found for the series.
+          // NumberOfReferences (0004,1600) is a retired attribute meant to count
+          // the number of references to a file, but we hijack it and use it to
+          // report the number of files found for the series.
           os << "\"" << a->GetNumberOfValues() << "\"";
           }
         }
