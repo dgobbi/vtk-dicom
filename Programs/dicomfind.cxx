@@ -370,7 +370,17 @@ void dicomfind_write(vtkDICOMDirectory *finder,
         else if (tagPath.GetHead() == DC::ReferencedFileID &&
                  !tagPath.HasTail())
           {
+          // ReferencedFileID (0004,1500) is meant to be used in DICOMDIR files,
+          // but we hijack it to report the first file in the series.
           os << "\"" << dicomfind_quote(a->GetValue(0)) << "\"";
+          }
+        else if (tagPath.GetHead() == DC::NumberOfReferences &&
+                 !tagPath.HasTail())
+          {
+          // NumberOfReferences (0004,1600) is a retired attribute meant count the
+          // number of references to a file, but we hijack it and use it to report
+          // the number of files found for the series.
+          os << "\"" << a->GetNumberOfValues() << "\"";
           }
         }
 
