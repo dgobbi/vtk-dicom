@@ -72,7 +72,7 @@ const char *dicomfind_basename(const char *filename)
 
 typedef vtkDICOMVR VR;
 
-// Write the header
+// Write the header for a csv file
 void dicomfind_writeheader(
   const vtkDICOMItem& query, const QueryTagList *ql, std::ostream& os)
 {
@@ -255,7 +255,7 @@ std::string dicomfind_quote(const std::string& s)
   return r;
 }
 
-// Write out the results
+// Write out the results in csv format
 void dicomfind_write(vtkDICOMDirectory *finder,
   const vtkDICOMItem& query, const QueryTagList *ql, std::ostream& os)
 {
@@ -482,9 +482,12 @@ int main(int argc, char *argv[])
   query.SetAttributeValue(
     DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
-  // Write the header
-  dicomfind_writeheader(query, &qtlist, *osp);
-  osp->flush();
+  if (ofile)
+    {
+    // Write the header
+    dicomfind_writeheader(query, &qtlist, *osp);
+    osp->flush();
+    }
 
   // Write data for every input directory
   for (vtkIdType i = 0; i < a->GetNumberOfTuples(); i++)
@@ -496,7 +499,27 @@ int main(int argc, char *argv[])
     finder->SetFindQuery(query);
     finder->Update();
 
-    dicomfind_write(finder, query, &qtlist, *osp);
+    if (ofile)
+      {
+      dicomfind_write(finder, query, &qtlist, *osp);
+      }
+    else
+      {
+      for (int j = 0; j < finder->GetNumberOfStudies(); j++)
+        {
+        int k0 = finder->GetFirstSeriesForStudy(j);
+        int k1 = finder->GetLastSeriesForStudy(j);
+        for (int k = k0; k <= k1; k++)
+          {
+          vtkStringArray *sa = finder->GetFileNamesForSeries(k);
+          for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
+            {
+            *osp << sa->GetValue(kk) << "\n";
+            }
+          }
+        }
+      }
+
     osp->flush();
     }
 
