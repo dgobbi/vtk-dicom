@@ -311,7 +311,12 @@ int main(int argc, char *argv[])
   vtkDICOMMetaData *query = 0;
   if (qfile)
     {
-    vtkDICOMItem qitem = dicomcli_readquery(qfile);
+    vtkDICOMItem qitem;
+    if (!dicomcli_readquery(qfile, &qitem))
+      {
+      fprintf(stderr, "Can't open query file %s\n\n", qfile);
+      return 1;
+      }
     vtkDICOMDataElementIterator iter = qitem.Begin();
     vtkDICOMDataElementIterator iterEnd = qitem.End();
     query = vtkDICOMMetaData::New();

@@ -48,6 +48,7 @@ void dicomfind_usage(FILE *file, const char *cp)
   fprintf(file, "usage:\n"
     "  %s -q <query.txt> -o <data.csv> <directory>\n\n", cp);
   fprintf(file, "options:\n"
+    "  -k tag=value    Provide a key to be queried and matched.\n"
     "  -q <query.txt>  Provide a file to describe the find query.\n"
     "  -o <data.csv>   Provide a file for the query results.\n"
     "  --help          Print a brief help message.\n"
@@ -389,10 +390,30 @@ void dicomfind_write(vtkDICOMDirectory *finder,
     }
 }
 
+// Read a tag and its value from the command line.
+bool get_tag_val(char *arg, vtkDICOMTag *tag_ptr, char **val_ptr)
+{
+  char *cp = arg;
+  char *dp = cp;
+  unsigned short g = static_cast<unsigned short>(strtoul(cp, &cp, 16));
+  if (cp - dp != 4 || *cp++ != ',') { return false; }
+  dp = cp;
+  unsigned short e = static_cast<unsigned short>(strtoul(cp, &cp, 16));
+  if (cp - dp != 4 || (*cp != '\0' && *cp != '=')) { return false; }
+  *tag_ptr = vtkDICOMTag(g,e);
+  if (*cp == '=')
+    {
+    *val_ptr = ++cp;
+    }
+  return true;
+}
+
 // This program will dump all the metadata in the given file
 int main(int argc, char *argv[])
 {
   int rval = 0;
+  QueryTagList qtlist;
+  vtkDICOMItem query;
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
   const char *ofile = 0;
@@ -435,6 +456,34 @@ int main(int argc, char *argv[])
         ofile = argv[++argi];
         }
       }
+    else if (strcmp(arg, "-k") == 0)
+      {
+      vtkDICOMTag tag;
+      char *val = 0;
+      ++argi;
+      if (argi == argc || !get_tag_val(argv[argi], &tag, &val))
+        {
+        fprintf(stderr, "%s must be followed by gggg,eeee=value "
+                        "where gggg,eeee is a DICOM tag.\n\n", arg);
+        return 1;
+        }
+      vtkDICOMVR vr = query.FindDictVR(tag);
+      if (vr == vtkDICOMVR::UN)
+        {
+        fprintf(stderr, "%s was given tag %04.4x,%4.4x which is not in the "
+                        "DICOM dictionary.\n\n", arg, tag.GetGroup(), tag.GetElement());
+        return 1;
+        }
+      qtlist.push_back(vtkDICOMTagPath(tag));
+      if (val)
+        {
+        query.SetAttributeValue(tag, val);
+        }
+      else
+        {
+        query.SetAttributeValue(tag, vtkDICOMValue(vr));
+        }
+      }
     else if (arg[0] == '-')
       {
       fprintf(stderr, "unrecognized option %s.\n\n", arg);
@@ -445,13 +494,6 @@ int main(int argc, char *argv[])
       {
       a->InsertNextValue(arg);
       }
-    }
-
-  if (qfile == 0)
-    {
-    fprintf(stderr, "No query file.\n\n");
-    dicomfind_usage(stderr, dicomfind_basename(argv[0]));
-    return 1;
     }
 
   std::ostream *osp = &std::cout;
@@ -473,8 +515,11 @@ int main(int argc, char *argv[])
     }
 
   // read the query file, create a query
-  QueryTagList qtlist;
-  vtkDICOMItem query = dicomcli_readquery(qfile, &qtlist);
+  if (qfile && !dicomcli_readquery(qfile, &query, &qtlist))
+    {
+    fprintf(stderr, "Can't open query file %s\n\n", qfile);
+    return 1;
+    }
 
   // always add the functional sequences for advanced files
   query.SetAttributeValue(

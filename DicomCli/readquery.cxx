@@ -48,13 +48,12 @@ vtkDICOMTagPath path_append(const vtkDICOMTagPath& tpath, vtkDICOMTag tag)
 }
 
 // Read a query file
-vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
+bool dicomcli_readquery(const char *fname, vtkDICOMItem *query, QueryTagList *ql)
 {
   ifstream f(fname);
   if (!f.good())
     {
-    fprintf(stderr, "Can't open query file %s\n\n", fname);
-    exit(1);
+    return false;
     }
 
   // Each query line is either:
@@ -64,8 +63,6 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
   // GGGGEEEE:VR=PATTERN       # search pattern with explicit VR
   // [PRIVATE_CREATOR]GGGGEEEE # private tag with creator name
   // GGGGEEEE\GGGGEEEE         # a tag nested within a sequence
-
-  vtkDICOMItem query;
 
   int lineNumber = 0;
   while (f.good())
@@ -145,16 +142,16 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
         {
         if (tagDepth == 0)
           {
-          tag = query.ResolvePrivateTagForWriting(tag, creator);
+          tag = query->ResolvePrivateTagForWriting(tag, creator);
           }
         else
           {
-          vtkDICOMSequence seq = query.GetAttributeValue(tagPath);
+          vtkDICOMSequence seq = query->GetAttributeValue(tagPath);
           vtkDICOMItem item = seq.GetItem(0);
           tag = item.ResolvePrivateTagForWriting(tag, creator);
           vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
           vtkDICOMTagPath ctagPath = path_append(tagPath, ctag);
-          query.SetAttributeValue(ctagPath, creator);
+          query->SetAttributeValue(ctagPath, creator);
           }
         }
 
@@ -164,9 +161,9 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
       if (s < n && (cp[s] == '/' || cp[s] == '\\'))
         {
         // create an item for the next level of depth
-        if (!query.GetAttributeValue(tagPath).IsValid())
+        if (!query->GetAttributeValue(tagPath).IsValid())
           {
-          query.SetAttributeValue(tagPath, vtkDICOMSequence(1));
+          query->SetAttributeValue(tagPath, vtkDICOMSequence(1));
           }
         s++;
         tagDepth++;
@@ -210,7 +207,7 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
       }
 
     // dig down into the tag path
-    const vtkDICOMItem *pitem = &query;
+    const vtkDICOMItem *pitem = query;
     vtkDICOMTag tag = tagPath.GetHead();
     vtkDICOMTagPath tmpPath = tagPath;
     while (tmpPath.HasTail())
@@ -301,7 +298,7 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
     if (valueStart == valueEnd)
       {
       // empty value (always matches, always retrieved)
-      query.SetAttributeValue(tagPath, vtkDICOMValue(vr));
+      query->SetAttributeValue(tagPath, vtkDICOMValue(vr));
       }
     else if (valueContainsQuotes)
       {
@@ -315,11 +312,11 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
           t++;
           }
         }
-      query.SetAttributeValue(tagPath, vtkDICOMValue(vr, sval));
+      query->SetAttributeValue(tagPath, vtkDICOMValue(vr, sval));
       }
     else
       {
-      query.SetAttributeValue(tagPath,
+      query->SetAttributeValue(tagPath,
         vtkDICOMValue(vr, &cp[valueStart], valueEnd - valueStart));
       }
 
@@ -330,5 +327,5 @@ vtkDICOMItem dicomcli_readquery(const char *fname, QueryTagList *ql)
       }
     }
 
-  return query;
+  return true;
 }
