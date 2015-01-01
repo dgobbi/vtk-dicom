@@ -1945,7 +1945,7 @@ bool vtkDICOMValue::ValueT<T>::CompareEach(const Value *a, const Value *b)
       do
         {
         r = (*ap == *bp);
-        bp++; 
+        bp++;
         }
       while (--m && !r);
       if (r)
@@ -2048,6 +2048,12 @@ bool vtkDICOMValue::PatternMatches(
       {
       return false;
       }
+    }
+
+  // skip over any remaining '*' wildcards
+  while (cp != ep && *cp == '*')
+    {
+    cp++;
     }
 
   // make sure we've reached the end of both the pattern and the value
@@ -2162,7 +2168,7 @@ void vtkDICOMValue::NormalizePersonName(
     // (because 85*3 + 1 == 256, and 85 > 64 where 64 is max for PN)
     char *groupStart = dp;
     char *ep = dp + 85;
-    
+
     // loop over components
     for (int j = 0; j < 5; j++)
       {

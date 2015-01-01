@@ -334,6 +334,14 @@ int main(int argc, char *argv[])
   TestAssert(!v.Matches(u));
   u = vtkDICOMValue(vtkDICOMVR::CS, "H*P");
   TestAssert(!v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "HELL*");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "HELLO*");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "HELL?");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(vtkDICOMVR::CS, "HELLO?");
+  TestAssert(!v.Matches(u));
 
   // test multiple values in the query
   v = vtkDICOMValue(vtkDICOMVR::UI, "10.3000.11.6");
