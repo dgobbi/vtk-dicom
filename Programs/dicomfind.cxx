@@ -26,6 +26,13 @@
 #include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
 
+// includes for execvp
+#ifndef _WIN32
+#include <unistd.h>
+#include <sys/wait.h>
+#include <errno.h>
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -46,9 +53,11 @@ void dicomfind_version(FILE *file, const char *cp)
 void dicomfind_usage(FILE *file, const char *cp)
 {
   fprintf(file, "usage:\n"
-    "  %s -q <query.txt> -o <data.csv> <directory>\n\n", cp);
+    "  %s [options] <directory>\n\n", cp);
   fprintf(file, "options:\n"
     "  -k tag=value    Provide a key to be queried and matched.\n"
+    "  -exec ... +     Execute the given command for every series matched.\n"      
+    "  -exec ... \\;   Execute the given command for every file matched.\n"      
     "  -q <query.txt>  Provide a file to describe the find query.\n"
     "  -o <data.csv>   Provide a file for the query results.\n"
     "  --help          Print a brief help message.\n"
@@ -408,12 +417,97 @@ bool get_tag_val(char *arg, vtkDICOMTag *tag_ptr, char **val_ptr)
   return true;
 }
 
+// Execute a subprocess
+#ifndef _WIN32
+bool execute_command(const char *command, char *argv[])
+{
+  // flush the output
+  fflush(stdout);
+  fflush(stderr);
+
+  // fork a new process
+  pid_t command_pid = fork();
+  if (command_pid == -1)
+    {
+    fprintf(stderr, "Unable to create subprocess: %s\n", argv[0]);
+    }
+
+  // if fork() returned a pid, then this is the original process
+  if (command_pid != 0)
+    {
+    int command_status;
+    while (waitpid(command_pid, &command_status, 0) == static_cast<pid_t>(-1))
+      {
+      if (errno != EINTR)
+        {
+        fprintf(stderr, "Unknown error with subprocess: %s\n", argv[0]);
+        return false;
+        }
+      }
+    if (WIFEXITED(command_status))
+      {
+      if (WEXITSTATUS(command_status) != 0)
+        {
+        fprintf(stderr, "Subprocess returned negative result: %s\n", argv[0]);
+        }
+      return true;
+      }
+    else
+      {
+      fprintf(stderr, "Abnormal subprocess termination: %s\n", argv[0]);
+      }
+    }
+  else if (execvp(command, argv) == -1)
+    {
+    if (errno == ENOENT)
+      {
+      fprintf(stderr, "Executable not found: %s\n", argv[0]);
+      }
+    else if (errno == ENOEXEC)
+      {
+      fprintf(stderr, "File is not executable: %s\n", argv[0]);
+      }
+    else if (errno == EACCES)
+      {
+      fprintf(stderr, "Access (permission) error: %s\n", argv[0]);
+      }
+    else if (errno == E2BIG)
+      {
+      fprintf(stderr, "Command line to long for command: %s\n", argv[0]);
+      }
+    else if (errno == ENOMEM)
+      {
+      fprintf(stderr, "Out of memory while running command: %s\n", argv[0]);
+      }
+    else if (errno == EMFILE)
+      {
+      fprintf(stderr, "No more available file handles: %s\n", argv[0]);
+      }
+    else
+      {
+      fprintf(stderr, "Unknown error while running command: %s\n", argv[0]);
+      }
+
+    return false;
+    }
+
+  return true;
+}
+#else
+bool execute_command(const char *command, char *argv[])
+{
+  // no support for -exec on Windows, yet
+  return false;
+}
+#endif
+
 // This program will dump all the metadata in the given file
 int main(int argc, char *argv[])
 {
   int rval = 0;
   QueryTagList qtlist;
   vtkDICOMItem query;
+  std::vector<std::string> oplist;
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
   const char *ofile = 0;
@@ -470,8 +564,10 @@ int main(int argc, char *argv[])
       vtkDICOMVR vr = query.FindDictVR(tag);
       if (vr == vtkDICOMVR::UN)
         {
-        fprintf(stderr, "%s was given tag %04.4x,%4.4x which is not in the "
-                        "DICOM dictionary.\n\n", arg, tag.GetGroup(), tag.GetElement());
+        fprintf(stderr,
+                "%s was given tag %04.4x,%4.4x which is not in the "
+                "DICOM dictionary.\n\n",
+                arg, tag.GetGroup(), tag.GetElement());
         return 1;
         }
       qtlist.push_back(vtkDICOMTagPath(tag));
@@ -483,6 +579,30 @@ int main(int argc, char *argv[])
         {
         query.SetAttributeValue(tag, vtkDICOMValue(vr));
         }
+      }
+    else if (strcmp(arg, "-exec") == 0)
+      {
+      int argj = ++argi;
+      for (; argj < argc; argj++)
+        {
+        if (strcmp(argv[argj], ";") == 0 ||
+            strcmp(argv[argj], "+") == 0)
+          {
+          break;
+          }
+        }
+      if (argj == argc)
+        {
+        fprintf(stderr, "%s must be terminated with + or \\; "
+                "(plus or semicolon).\n\n",
+                arg);
+        return 1;
+        }
+      for (; argi <= argj; argi++)
+        {
+        oplist.push_back(argv[argi]);
+        }
+      argi++;
       }
     else if (arg[0] == '-')
       {
@@ -547,6 +667,87 @@ int main(int argc, char *argv[])
     if (ofile)
       {
       dicomfind_write(finder, query, &qtlist, *osp);
+      }
+    else if (!oplist.empty())
+      {
+      size_t subcount = 0;
+      for (size_t jj = 0; jj < oplist.size(); jj++)
+        {
+        subcount += (oplist[jj] == "{}");
+        }
+
+      for (int j = 0; j < finder->GetNumberOfStudies(); j++)
+        {
+        int k0 = finder->GetFirstSeriesForStudy(j);
+        int k1 = finder->GetLastSeriesForStudy(j);
+        for (int k = k0; k <= k1; k++)
+          {
+          vtkStringArray *sa = finder->GetFileNamesForSeries(k);
+
+          if (oplist.back() == ";")
+            {
+            // call program for each file
+            for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
+              {
+              size_t sub_argc = oplist.size() + subcount - 1;
+              char **sub_argv = new char *[sub_argc+1];
+
+              size_t ii = 0;
+              size_t nn = oplist.size()-1;
+              for (size_t jj = 0; jj < nn; jj++)
+                {
+                if (oplist[jj] == "{}")
+                  {
+                  sub_argv[ii++] = const_cast<char *>(sa->GetValue(kk).c_str());
+                  }
+                else
+                  {
+                  sub_argv[ii++] = const_cast<char *>(oplist[jj].c_str());
+                  }
+                }
+              sub_argv[ii] = 0;
+
+              if (!execute_command(sub_argv[0], sub_argv))
+                {
+                fprintf(stderr, "failure!");
+                }
+
+              delete [] sub_argv;
+              }
+            }
+          else
+            {
+            // call program for each series
+            size_t sub_argc = oplist.size() + subcount*sa->GetNumberOfTuples() - 1;
+            char **sub_argv = new char *[sub_argc+1];
+
+            size_t ii = 0;
+            size_t nn = oplist.size()-1;
+            for (size_t jj = 0; jj < nn; jj++)
+              {
+              if (oplist[jj] == "{}")
+                {
+                for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
+                  {
+                  sub_argv[ii++] = const_cast<char *>(sa->GetValue(kk).c_str());
+                  }
+                }
+              else
+                {
+                sub_argv[ii++] = const_cast<char *>(oplist[jj].c_str());
+                }
+              }
+            sub_argv[ii] = 0;
+
+            if (!execute_command(sub_argv[0], sub_argv))
+              {
+              fprintf(stderr, "failure!");
+              }
+
+            delete [] sub_argv;
+            }
+          }
+        }
       }
     else
       {
