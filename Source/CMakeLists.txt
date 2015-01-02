@@ -43,6 +43,7 @@ set(LIB_SRCS
   vtkDICOMParser.cxx
   vtkDICOMCompiler.cxx
   vtkDICOMReader.cxx
+  vtkDICOMSliceSorter.cxx
   vtkDICOMSequence.cxx
   vtkDICOMItem.cxx
   vtkDICOMSorter.cxx
