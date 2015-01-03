@@ -25,10 +25,10 @@
  *  character sets.  The only VRs that support these character sets are
  *  PN, LO, SH, ST, LT, and ST (all other text VRs must be ASCII). In
  *  total, there is one 7-bit encoding (ASCII), eleven 8-bit single-byte
- *  encodings, two unicode multi-byte ecodings (UTF-8 and GB18030), and
+ *  encodings, three variable-length encodings (UTF-8, GB18030, GBK), and
  *  three iso-2022 multi-byte encodings.  It is possible to use iso-2022
  *  escape codes to switch between any encodings except for UTF-8 and
- *  GB18030, although only a subset of the iso-2022 escape codes are
+ *  GB18030/GBK, although only a subset of the iso-2022 escape codes are
  *  supported by DICOM.
  */
 class VTK_DICOM_EXPORT vtkDICOMCharacterSet
@@ -50,7 +50,8 @@ public:
     ISO_IR_13  = 11, // JIS-X-0201,  katakana, japanese
     ISO_IR_14  = 12, // JIS-X-0201,  romaji, japanese
     ISO_IR_192 = 13, // UTF-8,       unicode
-    GB18030    = 14, // gb18030,     chinese
+    GB18030    = 14, // gb18030,     chinese with full unicode mapping
+    GBK        = 15, // gbk,         chinese without full unicode mapping
     ISO_2022_OTHER  = 16, // any non-multibyte ISO-2022 character set
     ISO_2022_IR_87  = 32, // part of ISO-2022-JP and ISO-2022-JP-2
     ISO_2022_IR_159 = 64, // part of ISO-2022-JP-2
@@ -66,7 +67,7 @@ public:
   /*!
    *  The code can be any of the enumerated code values.  The ISO_2022 codes
    *  are a bitfield and they can be combined with most other codes, but they
-   *  cannot be combined with ISO_IR_192 or GB18030.
+   *  cannot be combined with ISO_IR_192, GB18030, or GBK.
    */
   vtkDICOMCharacterSet(int k) : Key(static_cast<unsigned char>(k)) {}
 
@@ -119,7 +120,7 @@ public:
    *  This is used to check for character sets that are likely to
    *  contain characters that print right-to-left, specifically Hebrew
    *  and Arabic.  Note that even though some parts of unicode fall
-   *  into this category, this flag is off for unicode and GB18030.
+   *  into this category, this flag is off for unicode and GB18030/GBK.
    */
   bool IsBiDirectional() const {
     return (this->Key == ISO_IR_127 || this->Key == ISO_IR_138); }

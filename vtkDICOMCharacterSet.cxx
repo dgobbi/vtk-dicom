@@ -13,9 +13,6 @@
 =========================================================================*/
 #include "vtkDICOMCharacterSet.h"
 
-// This turns on GB18030-2005, which uses 32-bit unicode codepoints
-#define DICOM_GB18030_2005
-
 //----------------------------------------------------------------------------
 namespace {
 
@@ -41,7 +38,8 @@ const char *Charsets[16][3] = {
   { "ISO_IR 14",  "ISO 2022 IR 14",  "(J" }, // jis-x-0201, romaji
   { "ISO_IR 192", "",                ""   }, // unicode multibyte
   { "GB18030",    "",                ""   }, // chinese multibyte
-  { "", "", "" } }; // empty slot
+  { "GBK",        "",                ""   }, // subset of GB18030
+};
 
 // This table gives secondary character sets.
 const char *Extensions[4][3] = {
@@ -5831,7 +5829,6 @@ unsigned short LinearGB18030[412] = {
   0x9961, 0xFF5F,  0x99E2, 0xFFE6
 };
 
-#ifdef DICOM_GB18030_2005
 // Note: in the GB18030-2005 tables some codepoints in the private
 // range U+E000..U+F8FF migrated to standard unicode codepoints.
 // My understanding is that this allows more characters to be displayed
@@ -5845,7 +5842,6 @@ const unsigned int PrivateToStandard[48] = {
   0xE795, 0xFE18,  0xE796, 0xFE19,  0xE816, 0x20087, 0xE817, 0x20089,
   0xE818, 0x200CC, 0xE831, 0x215D7, 0xE83B, 0x2298F, 0xE855, 0x241FE
 };
-#endif
 
 // Convert a unicode code point to UTF-8
 inline void UnicodeToUTF8(unsigned int code, std::string *s)
@@ -6658,7 +6654,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
         }
       }
     }
-  else if (this->Key == GB18030) // Chinese unicode
+  else if (this->Key == GB18030 || this->Key == GBK)
     {
     // Chinese national encoding standard
     const char *cp = text;
@@ -6679,64 +6675,67 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           a = (a - 0x81)*190 + (b - 0x40);
           code = CodePageGB18030[a];
           }
-        else if (a > 0x80 && a < 0x90 &&
-                 b >= '0' && b <= '9' &&
-                 static_cast<unsigned char>(cp[0]) > 0x80 &&
-                 static_cast<unsigned char>(cp[0]) < 0xFF &&
-                 cp[1] >= '0' && cp[1] <= '9')
+        if (this->Key == GB18030)
           {
-          // four-byte character
-          unsigned short c = static_cast<unsigned char>(*cp++);
-          unsigned short d = static_cast<unsigned char>(*cp++);
-          a = (a - 0x81)*10 + (b - '0');
-          b = (c - 0x81)*10 + (d - '0');
-          unsigned int g = a*1260 + b;
-          if (g <= 0x99FB)
+          if (a > 0x80 && a < 0x90 &&
+              b >= '0' && b <= '9' &&
+              static_cast<unsigned char>(cp[0]) > 0x80 &&
+              static_cast<unsigned char>(cp[0]) < 0xFF &&
+              cp[1] >= '0' && cp[1] <= '9')
             {
-            // search linearly compressed table
-            size_t n = sizeof(LinearGB18030)/sizeof(short);
-            for (size_t i = 0;; i += 2)
+            // four-byte GB18030 character
+            unsigned short c = static_cast<unsigned char>(*cp++);
+            unsigned short d = static_cast<unsigned char>(*cp++);
+            a = (a - 0x81)*10 + (b - '0');
+            b = (c - 0x81)*10 + (d - '0');
+            unsigned int g = a*1260 + b;
+            if (g <= 0x99FB)
               {
-              if (i >= n || LinearGB18030[i] > g)
+              // search linearly compressed table
+              size_t n = sizeof(LinearGB18030)/sizeof(short);
+              for (size_t i = 0;; i += 2)
                 {
-                code = LinearGB18030[i-1] + (g - LinearGB18030[i-2]);
+                if (i >= n || LinearGB18030[i] > g)
+                  {
+                  code = LinearGB18030[i-1] + (g - LinearGB18030[i-2]);
+                  break;
+                  }
+                }
+              }
+            }
+          else if (a >= 0x90 && a < 0xFF &&
+                   b >= '0' && b <= '9' &&
+                   static_cast<unsigned char>(cp[0]) > 0x80 &&
+                   static_cast<unsigned char>(cp[0]) < 0xFF &&
+                   cp[1] >= '0' && cp[1] <= '9')
+            {
+            // four-byte GB18030 to codes beyond 0xFFFF
+            unsigned short c = static_cast<unsigned char>(*cp++);
+            unsigned short d = static_cast<unsigned char>(*cp++);
+            a = (a - 0x90)*10 + (b - '0');
+            b = (c - 0x81)*10 + (d - '0');
+            unsigned int g = a*1260 + b;
+            if (g <= 0xFFFFF)
+              {
+              code = g + 0x10000;
+              }
+            }
+          // convert some private codes to new unicode standard codes
+          // (do this only for GB18030, for GBK stay within the BMP for
+          // maximum font compatibility between GBK and Unicode)
+          if (code >= 0xE000 && code <= 0xF8FF)
+            {
+            size_t n = sizeof(PrivateToStandard)/sizeof(int);
+            for (size_t i = 0; i < n; i += 2)
+              {
+              if (code == PrivateToStandard[i])
+                {
+                code = PrivateToStandard[i+1];
                 break;
                 }
               }
             }
           }
-        else if (a >= 0x90 && a < 0xFF &&
-                 b >= '0' && b <= '9' &&
-                 static_cast<unsigned char>(cp[0]) > 0x80 &&
-                 static_cast<unsigned char>(cp[0]) < 0xFF &&
-                 cp[1] >= '0' && cp[1] <= '9')
-          {
-          // four-byte GB18030 to codes beyond 0xFFFF
-          unsigned short c = static_cast<unsigned char>(*cp++);
-          unsigned short d = static_cast<unsigned char>(*cp++);
-          a = (a - 0x90)*10 + (b - '0');
-          b = (c - 0x81)*10 + (d - '0');
-          unsigned int g = a*1260 + b;
-          if (g <= 0xFFFFF)
-            {
-            code = g + 0x10000;
-            }
-          }
-#ifdef DICOM_GB18030_2005
-        // convert some private codes to new unicode standard codes
-        if (code >= 0xE000 && code <= 0xF8FF)
-          {
-          size_t n = sizeof(PrivateToStandard)/sizeof(int);
-          for (size_t i = 0; i < n; i += 2)
-            {
-            if (code == PrivateToStandard[i])
-              {
-              code = PrivateToStandard[i+1];
-              break;
-              }
-            }
-          }
-#endif
         }
       UnicodeToUTF8(code, &s);
       }

@@ -1,11 +1,10 @@
 # =====
 # This script takes GB18030-BMP.TXT as an input and uses it to validate
-# the decoding of the GB18030 by vtkDICIOMCharacterSet. GB18030-BMP.TXT
+# the decoding of the GB18030 by vtkDICOMCharacterSet. GB18030-BMP.TXT
 # can be found in libiconv.
 # ====
 
 import sys
-import vtk
 from vtkDICOMPython import *
 
 fname = sys.argv[1]
@@ -13,7 +12,7 @@ fname = sys.argv[1]
 gb = vtkDICOMCharacterSet("GB18030")
 def g(x):
     return gb.ConvertToUTF8(x,len(x))
-fname = "/Volumes/Work/Packages/libiconv-1.14/tests/GB18030-BMP.TXT"
+
 f = open(fname, "r")
 l = f.readlines()
 
@@ -38,5 +37,8 @@ for i in l:
     x = i.split()
     a = int(x[0],16)
     b = int(x[1],16)
-    if b != u(g(s(a))):
-        print "mismatch", hex(a), hex(u(g(s(a)))), hex(b)
+    c = u(g(s(a)))
+    if c is None:
+        c = (u(g(s(a))[0:3]) << 16) + u(g(s(a))[3:6])
+    if b != c:
+        print "mismatch", hex(a), hex(c), hex(b)
