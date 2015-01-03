@@ -5950,8 +5950,7 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
 void CaseFoldUnicode(unsigned int code, std::string *s)
 {
   // This has been tested against the Unicode CaseFolding.txt
-  // list, but is not as comprehensive as that list.  Some sections
-  // of the table with rare or obsolete characters have been skipped.
+  // published on 2014-04-09 for Unicode 7.
   unsigned int code2 = 0;
   unsigned int code3 = 0;
 
@@ -6203,7 +6202,93 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
     }
   else if (code <= 0x1fff)
     {
-    // rare characters, skipped
+    // rare greek
+    if ((code >= 0x1F08 && code <= 0x1F0F) ||
+        (code >= 0x1F18 && code <= 0x1F1D) ||
+        (code >= 0x1F28 && code <= 0x1F2F) ||
+        (code >= 0x1F38 && code <= 0x1F3F) ||
+        (code >= 0x1F48 && code <= 0x1F4D))
+      {
+      code -= 0x08;
+      }
+    else if (code >= 0x1F50 && code <= 0x1F56 && (code & 0x1) == 0)
+      {
+      const static unsigned short table3[7] = {
+        0, 0, 0x0300, 0, 0x0301, 0, 0x0342 };
+
+      code3 = table3[code - 0x1F50];
+      code2 = 0x0313;
+      code = 0x03C5;
+      }
+    else if ((code >= 0x1F59 && code <= 0x1F5F && (code & 0x1) != 0) ||
+             (code >= 0x1F68 && code <= 0x1F6F))
+      {
+      code -= 0x08;
+      }
+    else if (code >= 0x1F80 && code <= 0x1FAF)
+      {
+      code2 = 0x03B9;
+      if (code <= 0x1F87) { code -= 0x80; }
+      else if (code <= 0x1F8F) { code -= 0x88; }
+      else if (code <= 0x1F97) { code -= 0x70; }
+      else if (code <= 0x1F9F) { code -= 0x78; }
+      else if (code <= 0x1FA7) { code -= 0x40; }
+      else { code -= 0x48; }
+      }
+    else if (code >= 0x1FB2 && code <= 0x1FFC)
+      {
+      const static unsigned short table[75] = {
+        0x1F70, 0x03B1, 0x03AC, 0x1FB5, 0x03B1, 0x03B1, 0x1FB0, 0x1FB1,
+        0x1F70, 0x1F71, 0x03B1, 0x1FBD, 0x03B9, 0x1FBF, 0x1FC0, 0x1FC1,
+        0x1F74, 0x03B7, 0x03AE, 0x1FC5, 0x03B7, 0x03B7, 0x1F72, 0x1F73,
+        0x1F74, 0x1F75, 0x03B7, 0x1FCD, 0x1FCE, 0x1FCF, 0x1FD0, 0x1FD1,
+        0x03B9, 0x03B9, 0x1FD4, 0x1FD5, 0x03B9, 0x03B9, 0x1FD0, 0x1FD1,
+        0x1F76, 0x1F77, 0x1FDC, 0x1FDD, 0x1FDE, 0x1FDF, 0x1FE0, 0x1FE1,
+        0x03C5, 0x03C5, 0x03C1, 0x1FE5, 0x03C5, 0x03C5, 0x1FE0, 0x1FE1,
+        0x1F7A, 0x1F7B, 0x1FE5, 0x1FED, 0x1FEE, 0x1FEF, 0x1FF0, 0x1FF1,
+        0x1F7C, 0x03C9, 0x03CE, 0x1FF5, 0x03C9, 0x03C9, 0x1F78, 0x1F79,
+        0x1F7C, 0x1F7D, 0x03C9 };
+
+      if (code <= 0x1FB4 ||
+          code == 0x1FBC || (code >= 0x1FC2 && code <= 0x1FC4) ||
+          code == 0x1FCC || (code >= 0x1FF2 && code <= 0x1FF4) ||
+          code == 0x1FFC)
+        {
+        code2 = 0x03B9;
+        }
+      else if (code == 0x1FB6 || code == 0x1FC6 || code == 0x1FD6 ||
+               code == 0x1FE6 || code == 0x1FF6)
+        {
+        code2 = 0x0342;
+        }
+      else if (code == 0x1FB6 || code == 0x1FB7 || code == 0x1FC7 ||
+               code == 0x1FF7)
+        {
+        code2 = 0x0342;
+        code3 = 0x03B9;
+        }
+      else if (code >= 0x1FD2 && code <= 0x1FD3)
+        {
+        code2 = 0x0308;
+        code3 = code - (0x1FD2 - 0x0300);
+        }
+      else if (code == 0x1FD7 || code == 0x1FE7)
+        {
+        code2 = 0x0308;
+        code3 = 0x0342;
+        }
+      else if (code >= 0x1FE2 && code <= 0x1FE3)
+        {
+        code2 = 0x0308;
+        code3 = code - (0x1FE2 - 0x0300);
+        }
+      else if (code == 0x1FE4)
+        {
+        code2 = 0x0313;
+        }
+
+      code = table[code - 0x1FB2];
+      }
     }
   else if (code <= 0x24ff)
     { // symbols
@@ -6236,9 +6321,128 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
       code += 0x1a;
       }
     }
-  else if (code <= 0xff1f)
+  else if (code <= 0x2cff)
     {
-    // rare characters, skipped
+    if (code >= 0x2C00 && code <= 0x2C2E)
+      { // glagolitic
+      code += 0x30;
+      }
+    else if (code >= 0x2C60 && code <= 0x2C7F)
+      { // rare latin
+      const static unsigned short table[32] = {
+        0x2C61, 0x2C61, 0x026B, 0x1D7D, 0x027D, 0x2C65, 0x2C66, 0x2C68,
+        0x2C68, 0x2C6A, 0x2C6A, 0x2C6C, 0x2C6C, 0x0251, 0x0271, 0x0250,
+        0x0252, 0x2C71, 0x2C73, 0x2C73, 0x2C74, 0x2C76, 0x2C76, 0x2C77,
+        0x2C78, 0x2C79, 0x2C7A, 0x2C7B, 0x2C7C, 0x2C7D, 0x023F, 0x0240 };
+
+      code = table[code - 0x2C60];
+      }
+    else if (code >= 0x2C80 && code <= 0x2CF3)
+      { // coptic
+      if (code <= 0x2CE3)
+        {
+        code |= 0x0001;
+        }
+      else if (code == 0x2CEB || code == 0x2CED || code == 0x2CF2)
+        {
+        code += 0x0001;
+        }
+      }
+    }
+  else if (code <= 0x9fff)
+    {
+    // cjk ideograms
+    }
+  else if (code <= 0xabff)
+    {
+    if ((code >= 0xA640 && code <= 0xA66D) ||
+        (code >= 0xA680 && code <= 0xA69B))
+      { // rare cyrillic
+      code |= 0x0001;
+      }
+    else if (code >= 0xA722 && code <= 0xA76F && code != 0xA730)
+      { // rare latin
+      code |= 0x0001;
+      }
+    else if (code >= 0xA779 && code <= 0xA77C)
+      {
+      code += (code & 0x0001);
+      }
+    else if (code == 0xA77D)
+      {
+      code = 0x1D79;
+      }
+    else if (code >= 0xA77E && code <= 0xA787)
+      {
+      code |= 0x0001;
+      }
+    else if (code == 0xA78B)
+      {
+      code += 0x0001;
+      }
+    else if (code == 0xA78D)
+      {
+      code = 0x0265;
+      }
+    else if (code >= 0xA790 && code <= 0xA7A9 && code != 0xA794)
+      {
+      code |= 0x0001;
+      }
+    else if (code >= 0xA7AA && code <= 0xA7B1)
+      {
+      const static unsigned short table[8] = {
+        0x0266, 0x025C, 0x0261, 0x026C, 0xA7AE, 0xA7AF, 0x029E, 0x0287 };
+      code = table[code - 0xA7AA];
+      }
+    }
+  else if (code <= 0xfaff)
+    {
+    // hangul, cjk, private use
+    }
+  else if (code <= 0xfbff)
+    {
+    if (code >= 0xFB00 && code <= 0xFB06)
+      { // latin ligatures
+      if (code <= 0xFB04)
+        {
+        if (code == 0xFB01)
+          {
+          code2 = 'i';
+          }
+        else if (code == 0xFB02)
+          {
+          code2 = 'l';
+          }
+        else
+          {
+          code2 = 'f';
+          if (code == 0xFB03)
+            {
+            code3 = 'i';
+            }
+          else if (code == 0xFB04)
+            {
+            code3 = 'l';
+            }
+          }
+        code = 'f';
+        }
+      else if (code <= 0xFB06)
+        {
+        code = 's';
+        code2 = 't';
+        }
+      }
+    else if (code >= 0xFB13 && code <= 0xFB17)
+      { // armenian ligatures
+      const static unsigned short table[5] = {
+        0x0574, 0x0574, 0x0574, 0x057E, 0x0574 };
+      const static unsigned short table2[5] = {
+        0x0576, 0x0565, 0x056B, 0x0576, 0x056D };
+
+      code2 = table2[code - 0xFB13];
+      code = table[code - 0xFB13];
+      }
     }
   else if (code <= 0xffff)
     {
