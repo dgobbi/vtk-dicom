@@ -58,11 +58,11 @@ bool dicomcli_readquery(const char *fname, vtkDICOMItem *query, QueryTagList *ql
 
   // Each query line is either:
   // # a comment
-  // GGGGEEEE                  # a tag to be returned
-  // GGGGEEEE=PATTERN          # a pattern that must match
-  // GGGGEEEE:VR=PATTERN       # search pattern with explicit VR
-  // [PRIVATE_CREATOR]GGGGEEEE # private tag with creator name
-  // GGGGEEEE\GGGGEEEE         # a tag nested within a sequence
+  // GGGG,EEEE                  # a tag to be returned
+  // GGGG,EEEE=PATTERN          # a pattern that must match
+  // GGGG,EEEE:VR=PATTERN       # search pattern with explicit VR
+  // [PRIVATE_CREATOR]GGGG,EEEE # private tag with creator name
+  // GGGG,EEEE\GGGG,EEEE         # a tag nested within a sequence
 
   int lineNumber = 0;
   while (f.good())
@@ -120,16 +120,24 @@ bool dicomcli_readquery(const char *fname, vtkDICOMItem *query, QueryTagList *ql
 
       // read the DICOM tag
       size_t tagStart = s;
-      while (s < n && isalnum(cp[s]))
+      bool hasComma = false;
+      while (s < n && (isalnum(cp[s]) || (cp[s] == ',' && !hasComma)))
         {
+        hasComma |= (cp[s] == ',');
         s++;
         }
       size_t tagEnd = s;
-      if (tagEnd - tagStart == 8)
+      if (tagEnd - tagStart == 8 + hasComma)
         {
         char *cpe = const_cast<char *>(&cp[tagStart]);
-        key = strtoul(&cp[tagStart], &cpe, 16);
-        if (cpe - const_cast<char *>(&cp[tagStart]) != 8)
+        key = strtoul(cpe, &cpe, 16);
+        size_t digitcount = cpe - const_cast<char *>(&cp[tagStart]);
+        if (digitcount == 4 && *cpe == ',')
+          {
+          key = (key << 16) | strtoul(cpe+1, &cpe, 16);
+          digitcount = cpe - const_cast<char *>(&cp[tagStart]) - 1;
+          }
+        if (digitcount != 8)
           {
           key = 0;
           }
