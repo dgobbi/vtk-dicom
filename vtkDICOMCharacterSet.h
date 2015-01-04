@@ -52,7 +52,7 @@ public:
     ISO_IR_192 = 13, // UTF-8,       unicode
     GB18030    = 14, // gb18030,     chinese with full unicode mapping
     GBK        = 15, // gbk,         chinese without full unicode mapping
-    ISO_2022_OTHER  = 16, // any non-multibyte ISO-2022 character set
+    ISO_2022_IR_58  = 16, // GB2312
     ISO_2022_IR_87  = 32, // part of ISO-2022-JP and ISO-2022-JP-2
     ISO_2022_IR_159 = 64, // part of ISO-2022-JP-2
     ISO_2022_IR_149 = 128, // part of ISO-2022-KR and ISO-2022-JP-2

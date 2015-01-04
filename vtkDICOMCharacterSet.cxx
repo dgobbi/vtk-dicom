@@ -41,9 +41,12 @@ const char *Charsets[16][3] = {
   { "GBK",        "",                ""   }, // subset of GB18030
 };
 
+// All secondary character sets have an enum constant greater than this
+const int ISO_2022_LOWBIT = 16;
+
 // This table gives secondary character sets.
 const char *Extensions[4][3] = {
-  { "", "", "" }, // placeholder for all single-byte iso-2022 charsets
+  { "ISO_IR 58",  "ISO 2022 IR 58",  "$)A" }, // GB2312, chinese
   { "ISO_IR 87",  "ISO 2022 IR 87",  "$B" },  // iso-2022-jp, japanese
   { "ISO_IR 159", "ISO 2022 IR 159", "$(D" }, // iso-2022-jp-2, japanese
   { "ISO_IR 149", "ISO 2022 IR 149", "$)C" } }; // iso-2022-kr, korean
@@ -6495,7 +6498,7 @@ vtkDICOMCharacterSet::vtkDICOMCharacterSet(const std::string& name)
     if (n == 0 && l > 0)
       {
       // find the initial character set
-      for (int i = 0; i < ISO_2022_OTHER && key == 0; i++)
+      for (int i = 0; i < ISO_2022_LOWBIT && key == 0; i++)
         {
         for (int j = 0; j < 2 && key == 0; j++)
           {
@@ -6505,7 +6508,7 @@ vtkDICOMCharacterSet::vtkDICOMCharacterSet(const std::string& name)
             key = i;
             if (j != 0)
               {
-              key |= ISO_2022_OTHER;
+              key |= ISO_2022;
               }
             }
           }
@@ -6520,7 +6523,7 @@ vtkDICOMCharacterSet::vtkDICOMCharacterSet(const std::string& name)
             strncmp(Extensions[k][1], cp, l) == 0)
           {
           // each extension is a bit in a bitfield
-          key |= (ISO_2022_OTHER << k);
+          key |= (ISO_2022_LOWBIT << k);
           break;
           }
         }
@@ -6546,12 +6549,16 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
     value += Charsets[base][extended];
     }
 
-  for (int k = 0; k < 4; k++)
+  // if ext is set to ISO_2022, there are no additional char sets
+  if (ext != ISO_2022)
     {
-    if ((ext & (ISO_2022_OTHER << k)) != 0)
+    for (int k = 0; k < 4; k++)
       {
-      value += "\\";
-      value += Extensions[k][1];
+      if ((ext & (ISO_2022_LOWBIT << k)) != 0)
+        {
+        value += "\\";
+        value += Extensions[k][1];
+        }
       }
     }
 
@@ -6758,12 +6765,31 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
         {
         if (text[j] == '\033') { break; }
         }
-      if (charset < ISO_2022_OTHER)
+      if (charset < ISO_2022_LOWBIT)
         {
         // indicates one of the single-byte character sets, convert
         // characters up to the next escape code
         vtkDICOMCharacterSet cs(charset);
         s += cs.ConvertToUTF8(&text[i], j-i);
+        }
+      else if (charset == ISO_2022_IR_58)
+        {
+        // GB2312 chinese encoding
+        while (i < j)
+          {
+          unsigned short code = static_cast<unsigned char>(text[i++]);
+          if (code >= 0xA1 && code < 0xFF)
+            {
+            unsigned short a = code - 0x81;
+            code = static_cast<unsigned char>(text[i++]);
+            if (code >= 0xA1 && code < 0xFF)
+              {
+              unsigned short b = code - 0x41;
+              code = CodePageGB18030[a*190 + b];
+              }
+            }
+          UnicodeToUTF8(code, &s);
+          }
         }
       else if (charset == ISO_2022_IR_87 ||
                charset == ISO_2022_IR_159)
@@ -6842,7 +6868,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
         if (i + 2 > l) { break; }
         charset = 0xFF; // indicate none found yet
         // look through single-byte charset escape codes
-        for (unsigned char k = 0; k < ISO_2022_OTHER; k++)
+        for (unsigned char k = 0; k < ISO_2022_LOWBIT; k++)
           {
           const char *escape = Charsets[k][2];
           size_t le = strlen(escape);
@@ -6863,7 +6889,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
             size_t le = strlen(escape);
             if (le > 0 && strncmp(&text[i], escape, le) == 0)
               {
-              charset = (ISO_2022_OTHER << k);
+              charset = (ISO_2022_LOWBIT << k);
               i += le;
               break;
               }
