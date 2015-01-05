@@ -6935,7 +6935,7 @@ size_t vtkDICOMCharacterSet::NextBackslash(
 {
   const char *cp = text;
 
-  if (this->Key == GB18030)
+  if (this->Key == GB18030 || this->Key == GBK)
     {
     // ensure backslash isn't second part of a character
     while (cp < ep && *cp != '\0')
