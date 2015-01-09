@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMCompiler_h
-#define __vtkDICOMCompiler_h
+#ifndef vtkDICOMCompiler_h
+#define vtkDICOMCompiler_h
 
 #include <vtkObject.h>
 #include "vtkDICOMModule.h"
@@ -241,4 +241,4 @@ private:
   void operator=(const vtkDICOMCompiler&);  // Not implemented.
 };
 
-#endif /* __vtkDICOMCompiler_h */
+#endif /* vtkDICOMCompiler_h */

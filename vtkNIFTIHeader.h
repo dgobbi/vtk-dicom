@@ -30,8 +30,8 @@
 // .SECTION See Also
 // vtkNIFTIReader, vtkNIFTIWriter
 
-#ifndef __vtkNIFTIHeader_h
-#define __vtkNIFTIHeader_h
+#ifndef vtkNIFTIHeader_h
+#define vtkNIFTIHeader_h
 
 #include <vtkObject.h>
 #include "vtkDICOMModule.h"
@@ -378,4 +378,4 @@ private:
   void operator=(const vtkNIFTIHeader&);  // Not implemented.
 };
 
-#endif // __vtkNIFTIHeader_h
+#endif // vtkNIFTIHeader_h

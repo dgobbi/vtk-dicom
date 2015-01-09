@@ -1,7 +1,7 @@
 /* Export macros for shared libraries */
 
-#ifndef __vtkDICOMModule_h
-#define __vtkDICOMModule_h
+#ifndef vtkDICOMModule_h
+#define vtkDICOMModule_h
 
 #include <vtkABI.h>
 #include "vtkDICOMConfig.h"

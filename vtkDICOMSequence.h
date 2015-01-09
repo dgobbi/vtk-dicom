@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMSequence_h
-#define __vtkDICOMSequence_h
+#ifndef vtkDICOMSequence_h
+#define vtkDICOMSequence_h
 
 #include "vtkDICOMModule.h"
 #include "vtkDICOMValue.h"
@@ -105,4 +105,4 @@ private:
 
 VTK_DICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMSequence& v);
 
-#endif /* __vtkDICOMSequence_h */
+#endif /* vtkDICOMSequence_h */

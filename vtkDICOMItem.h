@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMItem_h
-#define __vtkDICOMItem_h
+#ifndef vtkDICOMItem_h
+#define vtkDICOMItem_h
 
 #include "vtkDICOMModule.h"
 #include "vtkDICOMDataElement.h"
@@ -190,4 +190,4 @@ private:
   List *L;
 };
 
-#endif /* __vtkDICOMItem_h */
+#endif /* vtkDICOMItem_h */

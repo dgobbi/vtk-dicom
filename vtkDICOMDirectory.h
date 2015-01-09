@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMDirectory_h
-#define __vtkDICOMDirectory_h
+#ifndef vtkDICOMDirectory_h
+#define vtkDICOMDirectory_h
 
 #include <vtkAlgorithm.h>
 #include "vtkDICOMModule.h"

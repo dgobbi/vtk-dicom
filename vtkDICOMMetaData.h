@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMMetaData_h
-#define __vtkDICOMMetaData_h
+#ifndef vtkDICOMMetaData_h
+#define vtkDICOMMetaData_h
 
 #include <vtkDataObject.h>
 #include "vtkDICOMModule.h"
@@ -249,4 +249,4 @@ private:
   void operator=(const vtkDICOMMetaData&);  // Not implemented.
 };
 
-#endif /* __vtkDICOMMetaData_h */
+#endif /* vtkDICOMMetaData_h */

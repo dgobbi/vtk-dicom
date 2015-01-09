@@ -12,8 +12,8 @@
 
 =========================================================================*/
 
-#ifndef __vtkDICOMConfig_h
-#define __vtkDICOMConfig_h
+#ifndef vtkDICOMConfig_h
+#define vtkDICOMConfig_h
 
 /* Configuration information. */
 #cmakedefine DICOM_BUILD_SHARED_LIBS

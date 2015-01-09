@@ -2,8 +2,8 @@
 This is an automatically generated file.  Include errata for any changes.
 =========================================================================*/
 
-#ifndef __vtkDICOMDictHash_h
-#define __vtkDICOMDictHash_h
+#ifndef vtkDICOMDictHash_h
+#define vtkDICOMDictHash_h
 
 //! Tag values defined in the DICOM standard
 namespace DC
@@ -4526,4 +4526,4 @@ SequenceDelimitationItem                = 0xFFFEE0DD  // XX M0    0
 };
 } // end namespace DC
 
-#endif /* __vtkDICOMDictHash_h */
+#endif /* vtkDICOMDictHash_h */

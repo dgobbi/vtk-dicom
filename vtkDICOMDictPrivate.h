@@ -2,8 +2,8 @@
 This is an automatically generated file.  Include errata for any changes.
 =========================================================================*/
 
-#ifndef __vtkDICOMDictPrivate_h
-#define __vtkDICOMDictPrivate_h
+#ifndef vtkDICOMDictPrivate_h
+#define vtkDICOMDictPrivate_h
 
 // This must be included before the initializer is declared.
 #include "vtkDICOMDictionary.h"
@@ -19,4 +19,4 @@ struct VTK_DICOM_EXPORT vtkDICOMDictPrivateInitializer
 static vtkDICOMDictPrivateInitializer vtkDICOMDictPrivateInitializerInstance;
 //! @endcond
 
-#endif /* __vtkDICOMDictPrivate_h */
+#endif /* vtkDICOMDictPrivate_h */

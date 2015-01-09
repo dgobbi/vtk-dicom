@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMParser_h
-#define __vtkDICOMParser_h
+#ifndef vtkDICOMParser_h
+#define vtkDICOMParser_h
 
 #include <vtkObject.h>
 #include "vtkDICOMModule.h"
@@ -181,4 +181,4 @@ private:
   void operator=(const vtkDICOMParser&);  // Not implemented.
 };
 
-#endif /* __vtkDICOMParser_h */
+#endif /* vtkDICOMParser_h */

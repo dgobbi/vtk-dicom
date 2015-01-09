@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMImageCodec_h
-#define __vtkDICOMImageCodec_h
+#ifndef vtkDICOMImageCodec_h
+#define vtkDICOMImageCodec_h
 
 #include <vtkSystemIncludes.h>
 #include "vtkDICOMModule.h"
@@ -149,4 +149,4 @@ private:
 
 VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMImageCodec& a);
 
-#endif /* __vtkDICOMImageCodec_h */
+#endif /* vtkDICOMImageCodec_h */

@@ -22,8 +22,8 @@
 // .SECTION Thanks
 // This class was contributed to VTK by David Gobbi.
 
-#ifndef __vtkDICOMWriter_h
-#define __vtkDICOMWriter_h
+#ifndef vtkDICOMWriter_h
+#define vtkDICOMWriter_h
 
 #include <vtkImageWriter.h>
 #include "vtkDICOMModule.h"
@@ -258,4 +258,4 @@ private:
   void operator=(const vtkDICOMWriter&);  // Not implemented.
 };
 
-#endif // __vtkDICOMWriter_h
+#endif // vtkDICOMWriter_h

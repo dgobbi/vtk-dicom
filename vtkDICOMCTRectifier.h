@@ -17,8 +17,8 @@
 // into a rectangular volume.  This is often a necessary step prior to
 // volume rendering or other forms of 3D rendering.
 
-#ifndef __vtkDICOMCTRectifier_h
-#define __vtkDICOMCTRectifier_h
+#ifndef vtkDICOMCTRectifier_h
+#define vtkDICOMCTRectifier_h
 
 #include <vtkThreadedImageAlgorithm.h>
 #include "vtkDICOMModule.h"
@@ -108,4 +108,4 @@ private:
   void operator=(const vtkDICOMCTRectifier&);  // Not implemented.
 };
 
-#endif // __vtkDICOMCTRectifier_h
+#endif // vtkDICOMCTRectifier_h

@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMVM_h
-#define __vtkDICOMVM_h
+#ifndef vtkDICOMVM_h
+#define vtkDICOMVM_h
 
 #include <vtkSystemIncludes.h>
 #include "vtkDICOMModule.h"
@@ -468,4 +468,4 @@ private:
 
 VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMVM& a);
 
-#endif /* __vtkDICOMVM_h */
+#endif /* vtkDICOMVM_h */

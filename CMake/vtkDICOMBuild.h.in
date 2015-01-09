@@ -12,8 +12,8 @@
 
 =========================================================================*/
 
-#ifndef __vtkDICOMBuild_h
-#define __vtkDICOMBuild_h
+#ifndef vtkDICOMBuild_h
+#define vtkDICOMBuild_h
 
 /* Source and Build version info. */
 #define DICOM_SOURCE_VERSION "@DICOM_SOURCE_VERSION@"

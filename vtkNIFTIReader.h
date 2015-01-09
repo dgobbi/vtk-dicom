@@ -29,8 +29,8 @@
 // .SECTION See Also
 // vtkNIFTIWriter, vtkNIFTIHeader
 
-#ifndef __vtkNIFTIReader_h
-#define __vtkNIFTIReader_h
+#ifndef vtkNIFTIReader_h
+#define vtkNIFTIReader_h
 
 #include <vtkImageReader2.h>
 #include "vtkDICOMModule.h"
@@ -209,4 +209,4 @@ private:
   void operator=(const vtkNIFTIReader&);  // Not implemented.
 };
 
-#endif // __vtkNIFTIReader_h
+#endif // vtkNIFTIReader_h

@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMReferenceCount_h
-#define __vtkDICOMReferenceCount_h
+#ifndef vtkDICOMReferenceCount_h
+#define vtkDICOMReferenceCount_h
 
 #include <vtkSystemIncludes.h>
 #include "vtkDICOMModule.h"
@@ -63,4 +63,4 @@ inline unsigned int vtkDICOMReferenceCount::operator++()
 }
 #endif
 
-#endif /* __vtkDICOMReferenceCount_h */
+#endif /* vtkDICOMReferenceCount_h */

@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMUtilities_h
-#define __vtkDICOMUtilities_h
+#ifndef vtkDICOMUtilities_h
+#define vtkDICOMUtilities_h
 
 #include <vtkSystemIncludes.h>
 #include <vtkObject.h>
@@ -156,4 +156,4 @@ private:
   void operator=(const vtkDICOMUtilities&);  // Not implemented.
 };
 
-#endif /* __vtkDICOMUtilities_h */
+#endif /* vtkDICOMUtilities_h */

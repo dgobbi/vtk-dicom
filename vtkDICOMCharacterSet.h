@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMCharacterSet_h
-#define __vtkDICOMCharacterSet_h
+#ifndef vtkDICOMCharacterSet_h
+#define vtkDICOMCharacterSet_h
 
 #include <vtkSystemIncludes.h>
 #include "vtkDICOMModule.h"
@@ -153,4 +153,4 @@ private:
 
 VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a);
 
-#endif /* __vtkDICOMCharacterSet_h */
+#endif /* vtkDICOMCharacterSet_h */

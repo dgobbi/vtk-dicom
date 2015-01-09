@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMTagPath_h
-#define __vtkDICOMTagPath_h
+#ifndef vtkDICOMTagPath_h
+#define vtkDICOMTagPath_h
 
 #include <vtkSystemIncludes.h>
 #include "vtkDICOMModule.h"
@@ -69,4 +69,4 @@ private:
 
 VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMTagPath& a);
 
-#endif /* __vtkDICOMTagPath_h */
+#endif /* vtkDICOMTagPath_h */

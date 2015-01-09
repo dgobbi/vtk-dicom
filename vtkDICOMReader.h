@@ -18,8 +18,8 @@
 // .SECTION Thanks
 // This class was contributed to VTK by David Gobbi.
 
-#ifndef __vtkDICOMReader_h
-#define __vtkDICOMReader_h
+#ifndef vtkDICOMReader_h
+#define vtkDICOMReader_h
 
 #include <vtkImageReader2.h>
 #include "vtkDICOMModule.h"
@@ -301,4 +301,4 @@ private:
   void operator=(const vtkDICOMReader&);  // Not implemented.
 };
 
-#endif // __vtkDICOMReader_h
+#endif // vtkDICOMReader_h

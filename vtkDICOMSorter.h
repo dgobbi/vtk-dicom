@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMSorter_h
-#define __vtkDICOMSorter_h
+#ifndef vtkDICOMSorter_h
+#define vtkDICOMSorter_h
 
 #include <vtkObject.h>
 #include "vtkDICOMModule.h"

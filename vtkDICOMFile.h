@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMFile_h
-#define __vtkDICOMFile_h
+#ifndef vtkDICOMFile_h
+#define vtkDICOMFile_h
 
 #include <vtkSystemIncludes.h>
 #include "vtkDICOMModule.h"
@@ -113,4 +113,4 @@ private:
   bool Eof;
 };
 
-#endif /* __vtkDICOMFile_h */
+#endif /* vtkDICOMFile_h */

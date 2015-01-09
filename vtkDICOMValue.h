@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMValue_h
-#define __vtkDICOMValue_h
+#ifndef vtkDICOMValue_h
+#define vtkDICOMValue_h
 
 #include <vtkSystemIncludes.h>
 #include "vtkDICOMModule.h"
@@ -471,4 +471,4 @@ class vtkDICOMValueFriendMetaData
 
 VTK_DICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMValue& v);
 
-#endif /* __vtkDICOMValue_h */
+#endif /* vtkDICOMValue_h */

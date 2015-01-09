@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMMetaDataAdapter_h
-#define __vtkDICOMMetaDataAdapter_h
+#ifndef vtkDICOMMetaDataAdapter_h
+#define vtkDICOMMetaDataAdapter_h
 
 #include "vtkDICOMModule.h"
 #include "vtkDICOMTag.h"
@@ -90,4 +90,4 @@ private:
   int NumberOfInstances;
 };
 
-#endif /* __vtkDICOMMetaDataAdapter_h */
+#endif /* vtkDICOMMetaDataAdapter_h */

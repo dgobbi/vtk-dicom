@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMDictionary_h
-#define __vtkDICOMDictionary_h
+#ifndef vtkDICOMDictionary_h
+#define vtkDICOMDictionary_h
 
 #include "vtkDICOMModule.h"
 #include "vtkDICOMDictEntry.h"
@@ -92,4 +92,4 @@ struct VTK_DICOM_EXPORT vtkDICOMDictionaryInitializer
 
 static vtkDICOMDictionaryInitializer vtkDICOMDictionaryInitializerInstance;
 
-#endif /* __vtkDICOMDictionary_h */
+#endif /* vtkDICOMDictionary_h */

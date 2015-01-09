@@ -23,8 +23,8 @@
 // .SECTION Thanks
 // This class was contributed to VTK by David Gobbi.
 
-#ifndef __vtkDICOMToRAS_h
-#define __vtkDICOMToRAS_h
+#ifndef vtkDICOMToRAS_h
+#define vtkDICOMToRAS_h
 
 #include <vtkThreadedImageAlgorithm.h>
 #include "vtkDICOMModule.h"
@@ -154,4 +154,4 @@ private:
   void operator=(const vtkDICOMToRAS&);  // Not implemented.
 };
 
-#endif // __vtkDICOMToRAS_h
+#endif // vtkDICOMToRAS_h

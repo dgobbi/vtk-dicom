@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __vtkDICOMCTGenerator_h
-#define __vtkDICOMCTGenerator_h
+#ifndef vtkDICOMCTGenerator_h
+#define vtkDICOMCTGenerator_h
 
 #include "vtkDICOMModule.h"
 #include "vtkDICOMGenerator.h"
@@ -61,4 +61,4 @@ private:
   void operator=(const vtkDICOMCTGenerator&);  // Not implemented.
 };
 
-#endif // __vtkDICOMCTGenerator_h
+#endif // vtkDICOMCTGenerator_h
