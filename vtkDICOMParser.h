@@ -59,7 +59,7 @@ public:
    *  This can be used to scan a file for data that matches a given
    *  query.  For more information on how matching is done, see the
    *  vtkDICOMValue::Matches() method.
-   */  
+   */
   void SetQuery(vtkDICOMMetaData *query);
   vtkDICOMMetaData *GetQuery() { return this->Query; }
 
@@ -69,7 +69,7 @@ public:
    *  query.  For more information on how matching is done, see the
    *  vtkDICOMValue::Matches() method.  To clear the query, pass an
    *  empty item.
-   */  
+   */
   void SetQueryItem(const vtkDICOMItem& query);
 
   //! Set specific metadata groups to read (obsolete).

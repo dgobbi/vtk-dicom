@@ -101,7 +101,7 @@ public:
    *  code is returned.  This can be called on a file that is still
    *  open, in which case the file will be deleted when closed.
    */
-  static int Remove(const char *filename); 
+  static int Remove(const char *filename);
 
 private:
 #ifdef VTK_DICOM_POSIX_IO

@@ -61,11 +61,11 @@ int main(int argc, char *argv[])
   { // Test DateTime generation
   std::string s = DU::GenerateDateTime("-0600");
   long long l = DU::ConvertDateTime(s.c_str());
-  std::string t = DU::GenerateDateTime(l, "-0600"); 
+  std::string t = DU::GenerateDateTime(l, "-0600");
   TestAssert(s == t);
   s = DU::GenerateDateTime(0);
   l = DU::ConvertDateTime(s.c_str());
-  t = DU::GenerateDateTime(l, 0); 
+  t = DU::GenerateDateTime(l, 0);
   TestAssert(s == t);
   s = "20140710093855.874905-0600";
   l = DU::ConvertDateTime(s.c_str());

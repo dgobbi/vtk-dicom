@@ -676,10 +676,10 @@ long long vtkDICOMUtilities::ConvertDateTime(const char *datetime)
 
     tp = &normalized[21];
     tp[0] = (offset < 0 ? '-' : '+');
-    tp[1] = H/10 + '0'; 
-    tp[2] = H%10 + '0'; 
-    tp[3] = M/10 + '0'; 
-    tp[4] = M%10 + '0'; 
+    tp[1] = H/10 + '0';
+    tp[2] = H%10 + '0';
+    tp[3] = M/10 + '0';
+    tp[4] = M%10 + '0';
     tp[5] = 0;
     }
 

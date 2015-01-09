@@ -321,7 +321,7 @@ if("${VTK_MAJOR_VERSION}" GREATER 5)
     set(MODULE_HIERARCHY_NAME ${LIB_NAME}Hierarchy)
     # The VTK 6 wrapping macros require vtk-module to be set
     set(vtk-module ${LIB_NAME})
-    # _LINK_DEPENDS is a variable suffix from the VTK 6 module macros 
+    # _LINK_DEPENDS is a variable suffix from the VTK 6 module macros
     set(${vtk-module}_LINK_DEPENDS ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS})
     include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/vtkWrapHierarchy.cmake)
     vtk_wrap_hierarchy(${MODULE_HIERARCHY_NAME} ${DICOM_BINARY_DIR}

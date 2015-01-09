@@ -248,7 +248,7 @@ protected:
   // Description:
   // The slice order to use when writing the files to disk.
   int FileSliceOrder;
- 
+
   // Description:
   // Whether to stream the data and write one file at a time.
   int Streaming;
