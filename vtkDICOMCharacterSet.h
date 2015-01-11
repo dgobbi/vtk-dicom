@@ -47,15 +47,15 @@ public:
     ISO_IR_138 = 8,  // ISO-8859-8,  hebrew
     ISO_IR_148 = 9,  // ISO-8859-9,  latin5, turkish
     ISO_IR_166 = 10, // ISO-8859-11, thai
-    ISO_IR_13  = 11, // JIS-X-0201,  katakana, japanese
-    ISO_IR_14  = 12, // JIS-X-0201,  romaji, japanese
+    ISO_IR_13  = 11, // JIS X 0201,  katakana, japanese
+    ISO_IR_14  = 12, // JIS X 0201,  romaji, japanese
     ISO_IR_192 = 13, // UTF-8,       unicode
     GB18030    = 14, // gb18030,     chinese with full unicode mapping
     GBK        = 15, // gbk,         chinese without full unicode mapping
-    ISO_2022_IR_58  = 16, // GB2312
-    ISO_2022_IR_87  = 32, // part of ISO-2022-JP and ISO-2022-JP-2
-    ISO_2022_IR_159 = 64, // part of ISO-2022-JP-2
-    ISO_2022_IR_149 = 128, // part of ISO-2022-KR and ISO-2022-JP-2
+    ISO_2022_IR_58  = 16, // the GB2312 subset of ISO-2022-CN
+    ISO_2022_IR_87  = 32, // the JIS X 0208 subset of ISO-2022-JP
+    ISO_2022_IR_159 = 64, // the JIS X 0212 subset of ISO-2022-JP-2
+    ISO_2022_IR_149 = 128, // the KS X 1001 subset of ISO-2022-KR
     ISO_2022   = 240, // mask for the bitfield that indicates ISO-2022
     Unknown    = 255  // signifies unknown character set
   };
@@ -65,7 +65,7 @@ public:
 
   //! Construct a character set object from a given code.
   /*!
-   *  The code can be any of the enumerated code values.  The ISO_2022 codes
+   *  The code can be any of the enumerated code values.  The ISO 2022 codes
    *  are a bitfield and they can be combined with most other codes, but they
    *  cannot be combined with ISO_IR_192, GB18030, or GBK.
    */
