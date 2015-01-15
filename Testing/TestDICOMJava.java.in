@@ -3,9 +3,8 @@ import vtk.vtkDICOMWriter;
 import vtk.vtkDICOMMetaData;
 import vtk.vtkObject;
 import vtk.vtkIntArray;
-import vtk.vtkJavaTesting;
+//import vtk.vtkJavaTesting;
 import vtk.vtkSettings;
-import vtk.vtkLightKit;
 
 import java.io.File;
 
@@ -20,9 +19,7 @@ public class TestDICOMJava {
           };
           String vtk6libs[] = {
             "vtkCommonCoreJava", "vtkCommonDataModelJava",
-            "vtkIOImageJava", "vtkIOMPIImageJava",
-            "vtkRenderingCore", "vtkRenderingOpenGL",
-            "vtkRenderingFreeTypeOpenGL"
+            "vtkIOImageJava", "vtkIOMPIImageJava"
           };
           int cc;
           for (cc = 0; cc < kits.length; cc++) {
@@ -48,7 +45,7 @@ public class TestDICOMJava {
         }
         catch (UnsatisfiedLinkError ee) {
           // try using VTK's own load function instead
-          vtkJavaTesting.Initialize(args, false);
+          //vtkJavaTesting.Initialize(args, false);
         }
 
         // load the vtkDICOMJava lib
@@ -75,11 +72,6 @@ public class TestDICOMJava {
         vtkDICOMReader reader = new vtkDICOMReader();
         vtkDICOMWriter writer = new vtkDICOMWriter();
         vtkDICOMMetaData meta = new vtkDICOMMetaData();
-        vtkLightKit light = new vtkLightKit();
-        int iType = 1; // TFillLight
-        int jType = light.GetSubType(iType, 2); // Elevation
-        System.out.println(light.GetStringFromType(iType));
-        System.out.println(light.GetStringFromSubType(jType));
         writer.SetInputConnection(reader.GetOutputPort());
         vtkIntArray a = new vtkIntArray();
         vtkObject.JAVA_OBJECT_MANAGER.deleteAll();
