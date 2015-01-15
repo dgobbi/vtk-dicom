@@ -1767,6 +1767,33 @@ bool vtkDICOMParser::ReadMetaData(
     decoder->SetQuery(this->QueryItem);
     }
 
+  // query the meta header, which was already read
+  if (hasQuery)
+    {
+    bool matched = true;
+    vtkDICOMDataElementIterator metaIter = meta->Begin();
+    vtkDICOMDataElementIterator metaEnd = meta->End();
+    while (metaIter != metaEnd && iter != iterEnd &&
+           iter->GetTag().GetGroup() <= 0x0002)
+      {
+      if (metaIter->GetTag() == iter->GetTag())
+        {
+        matched &= metaIter->GetValue(this->Index).Matches(iter->GetValue());
+        ++iter;
+        ++metaIter;
+        }
+      else if (metaIter->GetTag() < iter->GetTag())
+        {
+        ++metaIter;
+        }
+      else
+        {
+        ++iter;
+        }
+      }
+    this->QueryMatched &= matched;
+    }
+
   // make a list of the groups of interest
   std::vector<unsigned short> groups;
   if (hasQuery)
@@ -1839,7 +1866,7 @@ bool vtkDICOMParser::ReadMetaData(
       }
     }
 
-  this->QueryMatched = decoder->GetQueryMatched();
+  this->QueryMatched &= decoder->GetQueryMatched();
   this->PixelDataFound = (decoder->GetLastTag() == DC::PixelData);
   if (meta && this->PixelDataFound)
     {
