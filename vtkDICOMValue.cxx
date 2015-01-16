@@ -2294,10 +2294,28 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
   - Numeric value comparisons can be templated
   */
 
-  if (value.GetNumberOfValues() == 0)
+  // keys with no value match (universal matching)
+  if (value.V == 0)
     {
-    // empty values match
     return true;
+    }
+  if (value.V->Type != VTK_DICOM_ITEM)
+    {
+    // for everything but sequences, check if the length is zero
+    if (value.V->VL == 0)
+      {
+      return true;
+      }
+    }
+  else if (value.GetNumberOfValues() > 0)
+    {
+    // for sequences, check whether the matching item is empty
+    const vtkDICOMItem *item =
+      static_cast<const ValueT<vtkDICOMItem> *>(value.V)->Data;
+    if (item->GetNumberOfDataElements() == 0)
+      {
+      return true;
+      }
     }
 
   if (this->V == 0 || this->V->VR != value.V->VR)
@@ -2452,40 +2470,29 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
     }
   else if (type == VTK_DICOM_ITEM)
     {
+    // Match if any item matches
     vtkDICOMItem *item = static_cast<ValueT<vtkDICOMItem> *>(value.V)->Data;
-    if (value.GetNumberOfValues() == 0)
+    vtkDICOMItem *ip = static_cast<ValueT<vtkDICOMItem> *>(this->V)->Data;
+    size_t n = this->GetNumberOfValues();
+    for (size_t i = 0; i < n && !match; i++)
       {
-      // Match if query sequence was empty (should never happen)
+      vtkDICOMDataElementIterator iter = item->Begin();
+      vtkDICOMDataElementIterator iterEnd = item->End();
       match = true;
-      }
-    else
-      {
-      // Match if any item matches
-      vtkDICOMItem *ip = static_cast<ValueT<vtkDICOMItem> *>(this->V)->Data;
-      size_t n = this->GetNumberOfValues();
-      for (size_t i = 0; i < n && !match; i++)
+      while (match && iter != iterEnd)
         {
-        vtkDICOMDataElementIterator iter = item->Begin();
-        vtkDICOMDataElementIterator iterEnd = item->End();
-        match = true;
-        while (match && iter != iterEnd)
+        vtkDICOMTag tag = iter->GetTag();
+        // The SpecificCharacterSet is always considered to match.  Its
+        // presence in the query describes the character encoding of the
+        // query, so that query strings can be converted to utf-8 at the
+        // point of comparison with the data set strings.
+        if (tag != DC::SpecificCharacterSet)
           {
-          vtkDICOMTag tag = iter->GetTag();
-          if (tag == DC::SpecificCharacterSet)
-            {
-            // The SpecificCharacterSet is always considered to match.  Its
-            // presence in the query describes the character encoding of the
-            // query, so that query strings can be converted to utf-8 at the
-            // point of comparison with the data set strings.
-            }
-          else
-            {
-            match = ip->GetAttributeValue(tag).Matches(iter->GetValue());
-            }
-          ++iter;
+          match = ip->GetAttributeValue(tag).Matches(iter->GetValue());
           }
-        ip++;
+        ++iter;
         }
+      ip++;
       }
     }
   else if (type == VTK_DICOM_TAG)
