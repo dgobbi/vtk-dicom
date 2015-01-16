@@ -111,8 +111,9 @@ public:
   void SetItem(vtkDICOMItem *i);
 
   // The query with which to filter the data.
-  template<class T>
-  void SetQuery(T *q);
+  void SetQuery(
+    const vtkDICOMDataElementIterator& iter,
+    const vtkDICOMDataElementIterator& iterEnd);
 
   // Read l bytes of data, or until delimiter tag found.
   // Set l to 0xffffffff to ignore length completely.
@@ -386,15 +387,16 @@ inline void DecoderBase::SetItem(vtkDICOMItem *i)
 }
 
 //----------------------------------------------------------------------------
-template<class T>
-void DecoderBase::SetQuery(T *q)
+void DecoderBase::SetQuery(
+  const vtkDICOMDataElementIterator& iter,
+  const vtkDICOMDataElementIterator& iterEnd)
 {
-  if (q)
+  if (iter != iterEnd)
     {
     this->HasQuery = true;
     this->QueryMatched = true;
-    this->Query = q->Begin();
-    this->QueryEnd = q->End();
+    this->Query = iter;
+    this->QueryEnd = iterEnd;
     }
   else
     {
@@ -628,32 +630,47 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
   if ((tag.GetGroup() & 1) == 0)
     {
     // check to see if the tag is listed in the query
-    vtkDICOMTag lasttag;
-    while (this->Query != this->QueryEnd &&
-           (lasttag = this->Query->GetTag()) < tag)
+    while (this->Query != this->QueryEnd && this->Query->GetTag() < tag)
       {
-      // this is a mismatch unless the query value matches a null value
-      vtkDICOMValue nullValue;
-      this->QueryMatched &= nullValue.Matches(this->Query->GetValue());
+      // this is a mismatch unless the query key:
+      // 1) is SpecificCharacterSet, which isn't used for matching
+      // 2) is a private creator key
+      // 3) provides universal matching (i.e. even a null value)
+      vtkDICOMTag qtag = this->Query->GetTag();
+      if (tag != DC::SpecificCharacterSet &&
+          ((qtag.GetGroup() & 1) == 0 ||
+           qtag.GetElement() < 0x0010 ||
+           qtag.GetElement() > 0x00FF))
+        {
+        vtkDICOMValue nullValue;
+        this->QueryMatched &= nullValue.Matches(this->Query->GetValue());
+        }
       ++this->Query;
       }
-    return (lasttag == tag);
+    return (this->Query != this->QueryEnd && this->Query->GetTag() == tag);
     }
 
-  // private tags require special handling
+  // the remainder of this function handles private tags
   unsigned short g = tag.GetGroup();
   unsigned short e = tag.GetElement();
 
   // first, make sure this private group is present in the query,
   // and ignore any elements before (gggg,0010)
   vtkDICOMTag gtag = vtkDICOMTag(g, 0x0010);
-  vtkDICOMTag ltag;
-  while (this->Query != this->QueryEnd &&
-         (ltag = this->Query->GetTag()) < gtag)
+  while (this->Query != this->QueryEnd && this->Query->GetTag() < gtag)
     {
+    vtkDICOMTag qtag = this->Query->GetTag();
+    if (tag != DC::SpecificCharacterSet &&
+        ((qtag.GetGroup() & 1) == 0 ||
+         qtag.GetElement() < 0x0010 ||
+         qtag.GetElement() > 0x00FF))
+      {
+      vtkDICOMValue nullValue;
+      this->QueryMatched &= nullValue.Matches(this->Query->GetValue());
+      }
     ++this->Query;
     }
-  if (ltag.GetGroup() != g)
+  if (this->Query == this->QueryEnd || this->Query->GetTag().GetGroup() != g)
     {
     return false;
     }
@@ -690,40 +707,45 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
     }
 
   // finally, look for the private tag at its resolved location
-  while (iter != this->QueryEnd && (ltag = iter->GetTag()) < tag)
+  while (iter != this->QueryEnd && iter->GetTag() < tag)
     {
     ++iter;
     }
-  return (ltag == tag);
+  return (iter != this->QueryEnd && iter->GetTag() == tag);
 }
 
 //----------------------------------------------------------------------------
 bool DecoderBase::QueryMatches(const vtkDICOMValue& v)
 {
-  // if VR is SQ, then the matching was done when the sequence items were
-  // parsed, and we just have to return the current value of QueryMatched
-  if (v.GetVR() == vtkDICOMVR::SQ)
+  bool matched = true;
+  if (v.GetVR() != vtkDICOMVR::SQ)
     {
-    return this->QueryMatched;
+    // a query match is automatically defined as "true" if:
+    // 1) the element is SpecificCharacterSet, because this element exists to
+    //    describe the character encoding of the query, not because it is to
+    //    be matched (strings are converted to utf-8 prior to comparison)
+    // 2) the element is a private creator element (group # is odd, element #
+    //    is between 0x10 and 0xFF) because these exist only to identify the
+    //    creator of the private elements that appear later
+    vtkDICOMTag qtag = this->Query->GetTag();
+    if (qtag != DC::SpecificCharacterSet &&
+        ((qtag.GetGroup() & 1) == 0 ||
+         qtag.GetElement() < 0x0010 ||
+         qtag.GetElement() > 0x00FF))
+      {
+      // if above conditions don't apply, check if the query key matches
+      matched = v.Matches(this->Query->GetValue());
+      }
+    }
+  else
+    {
+    // if VR is SQ, then the matching was done when the sequence items were
+    // parsed, and we just have to return the current value of QueryMatched
+    matched = this->QueryMatched;
     }
 
-  // a query match is automatically defined as "true" if:
-  // 1) the element is SpecificCharacterSet, because this element exists to
-  //    describe the character encoding of the query, not because it is to
-  //    be matched (strings are converted to utf-8 prior to comparison)
-  // 2) the element is a private creator element (group # is odd, element #
-  //    is between 0x10 and 0xFF) because these exist only to identify the
-  //    creator of the private elements that appear later
-  if (this->Query->GetTag() == DC::SpecificCharacterSet ||
-      ((this->Query->GetTag().GetGroup() & 1) != 0 &&
-      this->Query->GetTag().GetElement() >= 0x0010 &&
-      this->Query->GetTag().GetElement() <= 0x00FF))
-    {
-    return true;
-    }
-
-  // else use the "Matches" method of vtkDICOMValue
-  return v.Matches(this->Query->GetValue());
+  ++this->Query;
+  return matched;
 }
 
 //----------------------------------------------------------------------------
@@ -1760,19 +1782,23 @@ bool vtkDICOMParser::ReadMetaData(
     hasQuery = true;
     iter = this->Query->Begin();
     iterEnd = this->Query->End();
-    decoder->SetQuery(this->Query);
     }
   else if (this->QueryItem)
     {
     hasQuery = true;
     iter = this->QueryItem->Begin();
     iterEnd = this->QueryItem->End();
-    decoder->SetQuery(this->QueryItem);
     }
 
-  // query the meta header, which was already read
   if (hasQuery)
     {
+    // skip any elements in group zero
+    while (iter != iterEnd && iter->GetTag().GetGroup() < 0x0002)
+      {
+      ++iter;
+      }
+
+    // check the query against the meta header, which was already read
     bool matched = true;
     vtkDICOMDataElementIterator metaIter = meta->Begin();
     vtkDICOMDataElementIterator metaEnd = meta->End();
@@ -1791,13 +1817,16 @@ bool vtkDICOMParser::ReadMetaData(
         }
       else
         {
-        // this is a mismatch unless the query value matches a null value
+        // this is a mismatch unless the query key is for universal matching
         vtkDICOMValue nullValue;
         matched &= nullValue.Matches(iter->GetValue());
         ++iter;
         }
       }
     this->QueryMatched &= matched;
+
+    // set the query for the decoder so it can scan the rest of the file
+    decoder->SetQuery(iter, iterEnd);
     }
 
   // make a list of the groups of interest
@@ -1826,6 +1855,8 @@ bool vtkDICOMParser::ReadMetaData(
     std::sort(groups.begin(),groups.end());
     groups.erase(std::unique(groups.begin(),groups.end()), groups.end());
     }
+
+  // iterator for going through the groups to read
   std::vector<unsigned short>::iterator giter = groups.begin();
 
   // read group-by-group
