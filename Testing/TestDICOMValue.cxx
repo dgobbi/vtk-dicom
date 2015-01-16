@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
   // test comparison of null values
   TestAssert(v.Matches(u));
   u = vtkDICOMValue(vtkDICOMVR::CS, "HELLO");
-  TestAssert(v.Matches(u));
+  TestAssert(!v.Matches(u));
   TestAssert(u.Matches(v));
 
   // test comparison of empty values

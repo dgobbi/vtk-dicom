@@ -2294,19 +2294,13 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
   - Numeric value comparisons can be templated
   */
 
-  if (value.V == 0 || this->V == 0)
+  if (value.GetNumberOfValues() == 0)
     {
-    // invalid values always match
+    // empty values match
     return true;
     }
 
-  if (value.V->VL == 0 && value.V->VR != vtkDICOMVR::SQ)
-    {
-    // empty values match (for SQ, VL=0 doesn't mean empty)
-    return true;
-    }
-
-  if (value.V->VR != this->V->VR)
+  if (this->V == 0 || this->V->VR != value.V->VR)
     {
     // match is impossible if VRs differ
     return false;

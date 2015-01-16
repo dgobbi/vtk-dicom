@@ -632,6 +632,8 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
     while (this->Query != this->QueryEnd &&
            (lasttag = this->Query->GetTag()) < tag)
       {
+      // query values of non-zero length _must_ be matched
+      this->QueryMatched &= (this->Query->GetValue().GetNumberOfValues() == 0);
       ++this->Query;
       }
     return (lasttag == tag);
@@ -1788,6 +1790,7 @@ bool vtkDICOMParser::ReadMetaData(
         }
       else
         {
+        matched &= (iter->GetValue().GetNumberOfValues() == 0);
         ++iter;
         }
       }
