@@ -1372,6 +1372,25 @@ bool Decoder<E>::ReadElements(
       }
     }
 
+  if (readGroup && this->HasQuery && this->QueryMatched)
+    {
+    // advance the query iterator to the end of this group
+    while (this->Query != this->QueryEnd &&
+           this->Query->GetTag().GetGroup() <= delimiter.GetGroup())
+      {
+      // for query keys that weren't in the data set, only match if:
+      // 1) the key is SpecificCharacterSet (not used for matching), or
+      // 2) the key supports universal matching, i.e. will even match null
+      if (this->Query->GetTag() != DC::SpecificCharacterSet &&
+          (this->Query->GetTag().GetGroup() & 1) == 0)
+        {
+        vtkDICOMValue nullValue;
+        this->QueryMatched &= nullValue.Matches(this->Query->GetValue());
+        }
+      ++this->Query;
+      }
+    }
+
   bytesRead += tl;
 
   return true;
