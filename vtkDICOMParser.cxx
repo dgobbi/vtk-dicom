@@ -1156,6 +1156,21 @@ size_t Decoder<E>::ReadElementValue(
 
             this->ReadElements(cp, ep, il, endtag, l);
 
+            // for query keys in the sequence that remain, only match if:
+            // 1) the key is SpecificCharacterSet (not used for matching), or
+            // 2) the key supports universal matching (will match null)
+            while (this->Query != this->QueryEnd)
+              {
+              if (this->Query->GetTag() != DC::SpecificCharacterSet &&
+                  (this->Query->GetTag().GetGroup() & 1) == 0)
+                {
+                vtkDICOMValue nullValue;
+                this->QueryMatched &= nullValue.Matches(
+                  this->Query->GetValue());
+                }
+              ++this->Query;
+              }
+
             // restore the query state
             this->HasQuery = hasQuery;
             this->QueryMatched |= queryMatched;
