@@ -713,7 +713,7 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
 bool DecoderBase::QueryMatches(const vtkDICOMValue& v)
 {
   // private tags aren't properly handled yet, always match
-  if ((this->Query->GetTag().GetGroup() & 1) == 0)
+  if ((this->Query->GetTag().GetGroup() & 1) != 0)
     {
     return true;
     }
