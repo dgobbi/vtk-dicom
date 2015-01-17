@@ -182,6 +182,12 @@ public:
   // for instances in the series that were already parsed.
   void HandleMissingAttributes(vtkDICOMTag tag);
 
+  // Advance the query iterator (this->Query) to the given tag,
+  // and set this->QueryMatched to false if any unmatched query keys
+  // were found, unless the keys support universal matching (i.e. the
+  // key has no value), or unless the keys are private
+  void AdvanceQueryIterator(vtkDICOMTag tag);
+
   // Returns true if the query contains the given tag.
   bool QueryContains(vtkDICOMTag tag);
 
@@ -624,25 +630,32 @@ void DecoderBase::HandleMissingAttributes(vtkDICOMTag tag)
 }
 
 //----------------------------------------------------------------------------
+void DecoderBase::AdvanceQueryIterator(vtkDICOMTag tag)
+{
+  // advance the query iterator to the given tag
+  while (this->Query != this->QueryEnd && this->Query->GetTag() < tag)
+    {
+    // for query keys that weren't in the data set, only match if:
+    // 1) the key is SpecificCharacterSet (not used for matching), or
+    // 2) the key supports universal matching, i.e. will even match null
+    if (this->Query->GetTag() != DC::SpecificCharacterSet &&
+        (this->Query->GetTag().GetGroup() & 1) == 0)
+      {
+      vtkDICOMValue nullValue;
+      this->QueryMatched &= nullValue.Matches(this->Query->GetValue());
+      }
+    ++this->Query;
+    }
+}
+
+//----------------------------------------------------------------------------
 bool DecoderBase::QueryContains(vtkDICOMTag tag)
 {
   // if the tag isn't private
   if ((tag.GetGroup() & 1) == 0)
     {
     // advance the query iterator until the tag is found in the query
-    while (this->Query != this->QueryEnd && this->Query->GetTag() < tag)
-      {
-      // for query keys that weren't in the data set, only match if:
-      // 1) the key is SpecificCharacterSet (not used for matching), or
-      // 2) the key supports universal matching, i.e. will even match null
-      if (this->Query->GetTag() != DC::SpecificCharacterSet &&
-          (this->Query->GetTag().GetGroup() & 1) == 0)
-        {
-        vtkDICOMValue nullValue;
-        this->QueryMatched &= nullValue.Matches(this->Query->GetValue());
-        }
-      ++this->Query;
-      }
+    this->AdvanceQueryIterator(tag);
 
     // return true if the tag exists in the query
     return (this->Query != this->QueryEnd && this->Query->GetTag() == tag);
@@ -655,16 +668,7 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
   // first, make sure this private group is present in the query,
   // and ignore any elements before (gggg,0010)
   vtkDICOMTag gtag = vtkDICOMTag(g, 0x0010);
-  while (this->Query != this->QueryEnd && this->Query->GetTag() < gtag)
-    {
-    if (this->Query->GetTag() != DC::SpecificCharacterSet &&
-        (this->Query->GetTag().GetGroup() & 1) == 0)
-      {
-      vtkDICOMValue nullValue;
-      this->QueryMatched &= nullValue.Matches(this->Query->GetValue());
-      }
-    ++this->Query;
-    }
+  this->AdvanceQueryIterator(gtag);
   if (this->Query == this->QueryEnd || this->Query->GetTag().GetGroup() != g)
     {
     return false;
@@ -1159,20 +1163,8 @@ size_t Decoder<E>::ReadElementValue(
 
             this->ReadElements(cp, ep, il, endtag, l);
 
-            // for query keys in the sequence that remain, only match if:
-            // 1) the key is SpecificCharacterSet (not used for matching), or
-            // 2) the key supports universal matching (will match null)
-            while (this->Query != this->QueryEnd)
-              {
-              if (this->Query->GetTag() != DC::SpecificCharacterSet &&
-                  (this->Query->GetTag().GetGroup() & 1) == 0)
-                {
-                vtkDICOMValue nullValue;
-                this->QueryMatched &= nullValue.Matches(
-                  this->Query->GetValue());
-                }
-              ++this->Query;
-              }
+            // check query keys up to the end of the item
+            this->AdvanceQueryIterator(vtkDICOMTag(0xffff,0xffff));
 
             // restore the query state
             this->HasQuery = hasQuery;
@@ -1372,23 +1364,10 @@ bool Decoder<E>::ReadElements(
       }
     }
 
+  // if reading by group, advance the query to the next group
   if (readGroup && this->HasQuery && this->QueryMatched)
     {
-    // advance the query iterator to the end of this group
-    while (this->Query != this->QueryEnd &&
-           this->Query->GetTag().GetGroup() <= delimiter.GetGroup())
-      {
-      // for query keys that weren't in the data set, only match if:
-      // 1) the key is SpecificCharacterSet (not used for matching), or
-      // 2) the key supports universal matching, i.e. will even match null
-      if (this->Query->GetTag() != DC::SpecificCharacterSet &&
-          (this->Query->GetTag().GetGroup() & 1) == 0)
-        {
-        vtkDICOMValue nullValue;
-        this->QueryMatched &= nullValue.Matches(this->Query->GetValue());
-        }
-      ++this->Query;
-      }
+    this->AdvanceQueryIterator(vtkDICOMTag(group+1, 0x0000));
     }
 
   bytesRead += tl;
