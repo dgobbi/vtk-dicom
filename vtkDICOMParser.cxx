@@ -1126,7 +1126,8 @@ size_t Decoder<E>::ReadElementValue(
           vtkDICOMItem *olditem = this->Item;
           this->SetItem(&item);
 
-          if (this->HasQuery)
+          if (this->HasQuery &&
+              (this->Query->GetTag().GetGroup() & 1) == 0)
             {
             assert(this->Query != this->QueryEnd);
 
@@ -1144,14 +1145,16 @@ size_t Decoder<E>::ReadElementValue(
               // if query sequence isn't empty, set HasQuery to 'true' and
               // use the sequence item as the new data set query
               const vtkDICOMItem *qitems = query->GetValue().GetSequenceData();
-              assert(qitems != 0);
-              this->HasQuery = true;
-              this->QueryMatched = true;
-              this->Query = qitems[0].Begin();
-              this->QueryEnd = qitems[0].End();
+              if (qitems != 0 && qitems[0].GetNumberOfDataElements() != 0)
+                {
+                this->HasQuery = true;
+                this->QueryMatched = true;
+                this->Query = qitems[0].Begin();
+                this->QueryEnd = qitems[0].End();
 
-              // initialize queryMatched to false at the start of seq
-              queryMatched &= (seq.GetNumberOfItems() > 0);
+                // initialize queryMatched to false at the start of seq
+                queryMatched &= (seq.GetNumberOfItems() > 0);
+                }
               }
 
             this->ReadElements(cp, ep, il, endtag, l);
