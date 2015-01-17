@@ -629,24 +629,22 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
   // if the tag isn't private
   if ((tag.GetGroup() & 1) == 0)
     {
-    // check to see if the tag is listed in the query
+    // advance the query iterator until the tag is found in the query
     while (this->Query != this->QueryEnd && this->Query->GetTag() < tag)
       {
-      // this is a mismatch unless the query key:
-      // 1) is SpecificCharacterSet, which isn't used for matching
-      // 2) is a private creator key
-      // 3) provides universal matching (i.e. even a null value)
-      vtkDICOMTag qtag = this->Query->GetTag();
-      if (tag != DC::SpecificCharacterSet &&
-          ((qtag.GetGroup() & 1) == 0 ||
-           qtag.GetElement() < 0x0010 ||
-           qtag.GetElement() > 0x00FF))
+      // for query keys that weren't in the data set, only match if:
+      // 1) the key is SpecificCharacterSet (not used for matching), or
+      // 2) the key supports universal matching, i.e. will even match null
+      if (this->Query->GetTag() != DC::SpecificCharacterSet &&
+          (this->Query->GetTag().GetGroup() & 1) == 0)
         {
         vtkDICOMValue nullValue;
         this->QueryMatched &= nullValue.Matches(this->Query->GetValue());
         }
       ++this->Query;
       }
+
+    // return true if the tag exists in the query
     return (this->Query != this->QueryEnd && this->Query->GetTag() == tag);
     }
 
@@ -659,11 +657,8 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
   vtkDICOMTag gtag = vtkDICOMTag(g, 0x0010);
   while (this->Query != this->QueryEnd && this->Query->GetTag() < gtag)
     {
-    vtkDICOMTag qtag = this->Query->GetTag();
-    if (tag != DC::SpecificCharacterSet &&
-        ((qtag.GetGroup() & 1) == 0 ||
-         qtag.GetElement() < 0x0010 ||
-         qtag.GetElement() > 0x00FF))
+    if (this->Query->GetTag() != DC::SpecificCharacterSet &&
+        (this->Query->GetTag().GetGroup() & 1) == 0)
       {
       vtkDICOMValue nullValue;
       this->QueryMatched &= nullValue.Matches(this->Query->GetValue());
@@ -717,21 +712,20 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
 //----------------------------------------------------------------------------
 bool DecoderBase::QueryMatches(const vtkDICOMValue& v)
 {
+  // private tags aren't properly handled yet, always match
+  if ((this->Query->GetTag().GetGroup() & 1) == 0)
+    {
+    return true;
+    }
+
   bool matched = true;
+
   if (v.GetVR() != vtkDICOMVR::SQ)
     {
-    // a query match is automatically defined as "true" if:
-    // 1) the element is SpecificCharacterSet, because this element exists to
-    //    describe the character encoding of the query, not because it is to
-    //    be matched (strings are converted to utf-8 prior to comparison)
-    // 2) the element is a private creator element (group # is odd, element #
-    //    is between 0x10 and 0xFF) because these exist only to identify the
-    //    creator of the private elements that appear later
-    vtkDICOMTag qtag = this->Query->GetTag();
-    if (qtag != DC::SpecificCharacterSet &&
-        ((qtag.GetGroup() & 1) == 0 ||
-         qtag.GetElement() < 0x0010 ||
-         qtag.GetElement() > 0x00FF))
+    // a query match is always true for SpecificCharacterSet, because this
+    // element exists to describe the character encoding of the query, not
+    // because it is to be matched.
+    if (this->Query->GetTag() != DC::SpecificCharacterSet)
       {
       // if above conditions don't apply, check if the query key matches
       matched = v.Matches(this->Query->GetValue());
