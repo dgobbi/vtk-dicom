@@ -1618,12 +1618,12 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
 {
   // Mark pixel data as not found yet
   this->PixelDataFound = false;
-  this->QueryMatched = (this->Query != 0);
+  this->QueryMatched = (this->Query != 0 || this->QueryItem != 0);
   this->FileOffset = 0;
   this->FileSize = 0;
 
   // Query cannot be used with indexing
-  if (idx > 0 && this->Query)
+  if (idx > 0 && (this->Query != 0 || this->QueryItem != 0))
     {
     this->SetErrorCode(vtkErrorCode::UnknownError);
     vtkErrorMacro("ReadFile: Querying cannot be used when Index > 0");
@@ -2025,6 +2025,7 @@ void vtkDICOMParser::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "Index: " << this->Index << "\n";
   os << indent << "BufferSize: " << this->BufferSize << "\n";
   os << indent << "Query: " << this->Query << "\n";
+  os << indent << "QueryItem: " << this->QueryItem << "\n";
   os << indent << "QueryMatched: "
      << (this->QueryMatched ? "True\n" : "False\n");
   os << indent << "Groups: " << this->Groups << "\n";
