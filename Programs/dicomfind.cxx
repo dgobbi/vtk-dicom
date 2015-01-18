@@ -565,7 +565,7 @@ int main(int argc, char *argv[])
       if (vr == vtkDICOMVR::UN)
         {
         fprintf(stderr,
-                "%s was given tag %04.4x,%4.4x which is not in the "
+                "%s was given tag %4.4x,%4.4x which is not in the "
                 "DICOM dictionary.\n\n",
                 arg, tag.GetGroup(), tag.GetElement());
         return 1;

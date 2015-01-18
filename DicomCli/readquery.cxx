@@ -127,7 +127,7 @@ bool dicomcli_readquery(const char *fname, vtkDICOMItem *query, QueryTagList *ql
         s++;
         }
       size_t tagEnd = s;
-      if (tagEnd - tagStart == 8 + hasComma)
+      if (tagEnd - tagStart == 8 + static_cast<size_t>(hasComma))
         {
         char *cpe = const_cast<char *>(&cp[tagStart]);
         key = strtoul(cpe, &cpe, 16);
