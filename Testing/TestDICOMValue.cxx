@@ -492,12 +492,15 @@ int main(int argc, char *argv[])
   sv.AddItem(item2);
   v = sv;
   TestAssert(v.Matches(u));
+  vtkDICOMValue ve;
   vtkDICOMSequence su2;
   u = su2;
   TestAssert(v.Matches(u));
+  TestAssert(ve.Matches(u));
   su2.AddItem(vtkDICOMItem());
   u = su2;
   TestAssert(v.Matches(u));
+  TestAssert(ve.Matches(u));
 
   // test comparisons of encoded strings
   v = vtkDICOMValue(vtkDICOMVR::SH, vtkDICOMCharacterSet::ISO_IR_100,

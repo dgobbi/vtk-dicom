@@ -2307,15 +2307,12 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
       return true;
       }
     }
-  else if (value.GetNumberOfValues() > 0)
+  else if (value.GetNumberOfValues() == 0 ||
+           static_cast<const ValueT<vtkDICOMItem> *>(value.V)->Data
+             ->GetNumberOfDataElements() == 0)
     {
-    // for sequences, check whether the matching item is empty
-    const vtkDICOMItem *item =
-      static_cast<const ValueT<vtkDICOMItem> *>(value.V)->Data;
-    if (item->GetNumberOfDataElements() == 0)
-      {
-      return true;
-      }
+    // empty sequences match
+    return true;
     }
 
   if (this->V == 0 || this->V->VR != value.V->VR)
