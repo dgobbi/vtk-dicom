@@ -1895,38 +1895,51 @@ bool vtkDICOMParser::ReadMetaData(
 
   if (hasQuery)
     {
-    // skip any elements in group zero
+    // skip any elements in groups less than 0002
     while (iter != iterEnd && iter->GetTag().GetGroup() < 0x0002)
       {
       ++iter;
       }
 
-    // check the query against the meta header, which was already read
-    bool matched = true;
-    vtkDICOMDataElementIterator metaIter = meta->Begin();
-    vtkDICOMDataElementIterator metaEnd = meta->End();
-    while (metaIter != metaEnd && iter != iterEnd &&
-           iter->GetTag().GetGroup() <= 0x0002)
+    if (iter->GetTag() == vtkDICOMTag(0x0002,0x0000))
       {
-      if (metaIter->GetTag() == iter->GetTag())
+      // if FileMetaInformationGroupLength is set, assume that the
+      // query was read from a file and that we don't actually want
+      // to query the meta header
+      while (iter != iterEnd && iter->GetTag().GetGroup() <= 0x0002)
         {
-        matched &= metaIter->GetValue(this->Index).Matches(iter->GetValue());
-        ++iter;
-        ++metaIter;
-        }
-      else if (metaIter->GetTag() < iter->GetTag())
-        {
-        ++metaIter;
-        }
-      else
-        {
-        // this is a mismatch unless the query key is for universal matching
-        vtkDICOMValue nullValue;
-        matched &= nullValue.Matches(iter->GetValue());
         ++iter;
         }
       }
-    this->QueryMatched &= matched;
+    else
+      {
+      // check the query against the meta header, which was already read
+      bool matched = true;
+      vtkDICOMDataElementIterator metaIter = meta->Begin();
+      vtkDICOMDataElementIterator metaEnd = meta->End();
+      while (metaIter != metaEnd && iter != iterEnd &&
+             iter->GetTag().GetGroup() <= 0x0002)
+        {
+        if (metaIter->GetTag() == iter->GetTag())
+          {
+          matched &= metaIter->GetValue(this->Index).Matches(iter->GetValue());
+          ++iter;
+          ++metaIter;
+          }
+        else if (metaIter->GetTag() < iter->GetTag())
+          {
+          ++metaIter;
+          }
+        else
+          {
+          // this is a mismatch unless the query key is for universal matching
+          vtkDICOMValue nullValue;
+          matched &= nullValue.Matches(iter->GetValue());
+          ++iter;
+          }
+        }
+      this->QueryMatched &= matched;
+      }
 
     // set the query for the decoder so it can scan the rest of the file
     decoder->SetQuery(iter, iterEnd);
