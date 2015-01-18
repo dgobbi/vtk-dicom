@@ -227,6 +227,7 @@ protected:
   bool QueryMatched;
   vtkDICOMDataElementIterator Query;
   vtkDICOMDataElementIterator QueryEnd;
+  vtkDICOMDataElementIterator QuerySave;
   // this is set to the last tag that was read.
   vtkDICOMVR  LastVR;
   vtkDICOMTag LastTag;
@@ -403,6 +404,7 @@ void DecoderBase::SetQuery(
     this->QueryMatched = true;
     this->Query = iter;
     this->QueryEnd = iterEnd;
+    this->QuerySave = iter;
     }
   else
     {
@@ -669,6 +671,18 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
   // and ignore any elements before (gggg,0010)
   vtkDICOMTag gtag = vtkDICOMTag(g, 0x0010);
   this->AdvanceQueryIterator(gtag);
+
+  // save the query iterator
+  if (this->QuerySave->GetTag() >= gtag)
+    {
+    this->Query = this->QuerySave;
+    }
+  else
+    {
+    this->QuerySave = this->Query;
+    }
+
+  // if query doesn't contain any more keys in this group, return
   if (this->Query == this->QueryEnd || this->Query->GetTag().GetGroup() != g)
     {
     return false;
@@ -680,44 +694,46 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
     return true;
     }
 
-  // else search for the creator element within the query
-  vtkDICOMDataElementIterator iter = this->Query;
+  // search for the creator element within the query
   vtkDICOMTag ctag = vtkDICOMTag(g, e >> 8);
   const vtkDICOMValue& creator = this->MetaData->GetAttributeValue(ctag);
   if (creator.IsValid())
     {
     // maximum possible creator element is (gggg,00FF)
     gtag = vtkDICOMTag(g, 0x00FF);
-    while (iter != this->QueryEnd && iter->GetTag() <= gtag)
+    while (this->Query != this->QueryEnd && this->Query->GetTag() <= gtag)
       {
-      if (iter->GetValue() == creator)
+      if (this->Query->GetValue().Matches(creator))
         {
         tag = vtkDICOMTag(
-          g, (iter->GetTag().GetElement() << 8) | (e & 0x00FF));
+          g, (this->Query->GetTag().GetElement() << 8) | (e & 0x00FF));
         break;
         }
-      ++iter;
+      ++this->Query;
       }
     // if creator not found in query, tag obviously won't be found
-    if (iter == this->QueryEnd || iter->GetTag() > gtag)
+    if (this->Query == this->QueryEnd || this->Query->GetTag() > gtag)
       {
       return false;
       }
     }
 
   // finally, look for the private tag at its resolved location
-  while (iter != this->QueryEnd && iter->GetTag() < tag)
+  while (this->Query != this->QueryEnd && this->Query->GetTag() < tag)
     {
-    ++iter;
+    ++this->Query;
     }
-  return (iter != this->QueryEnd && iter->GetTag() == tag);
+
+  return (this->Query != this->QueryEnd && this->Query->GetTag() == tag);
 }
 
 //----------------------------------------------------------------------------
 bool DecoderBase::QueryMatches(const vtkDICOMValue& v)
 {
-  // private tags aren't properly handled yet, always match
-  if ((this->Query->GetTag().GetGroup() & 1) != 0)
+  // always match private creator tags
+  if ((this->Query->GetTag().GetGroup() & 1) != 0 &&
+      this->Query->GetTag().GetElement() >= 0x0010 &&
+      this->Query->GetTag().GetElement() <= 0x00ff)
     {
     return true;
     }
@@ -1139,6 +1155,7 @@ size_t Decoder<E>::ReadElementValue(
             bool queryMatched = this->QueryMatched;
             vtkDICOMDataElementIterator query = this->Query;
             vtkDICOMDataElementIterator queryEnd = this->QueryEnd;
+            vtkDICOMDataElementIterator querySave = this->QuerySave;
 
             // set default HasQuery to 'false' to match everything
             this->HasQuery = false;
@@ -1155,6 +1172,7 @@ size_t Decoder<E>::ReadElementValue(
                 this->QueryMatched = true;
                 this->Query = qitems[0].Begin();
                 this->QueryEnd = qitems[0].End();
+                this->QuerySave = this->Query;
 
                 // initialize queryMatched to false at the start of seq
                 queryMatched &= (seq.GetNumberOfItems() > 0);
@@ -1174,6 +1192,7 @@ size_t Decoder<E>::ReadElementValue(
             this->QueryMatched |= queryMatched;
             this->Query = query;
             this->QueryEnd = queryEnd;
+            this->QuerySave = querySave;
             }
           else
             {
