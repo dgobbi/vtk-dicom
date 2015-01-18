@@ -652,7 +652,7 @@ void DecoderBase::AdvanceQueryIterator(vtkDICOMTag tag)
       vtkDICOMValue nullValue;
       bool matched = nullValue.Matches(this->Query->GetValue());
 
-      // if query tag is private, need additional checks 
+      // if query tag is private, need additional checks
       if (!matched && (qtag.GetGroup() & 1) != 0)
         {
         // compute creator tag, and search for it
@@ -695,7 +695,7 @@ void DecoderBase::AdvanceQueryIterator(vtkDICOMTag tag)
             matched = this->MetaData->GetAttributeValue(qtag).Matches(
               this->Query->GetValue());
             }
-          } 
+          }
         }
 
       this->QueryMatched &= matched;
