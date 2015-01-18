@@ -667,16 +667,34 @@ void DecoderBase::AdvanceQueryIterator(vtkDICOMTag tag)
           {
           // if we already read the element, we already checked whether it
           // but if we didn't read it, then it doesn't exist, so don't match
-          vtkDICOMTag ptag = this->MetaData->ResolvePrivateTag(
-            qtag, iter->GetValue().AsString());
-          matched = (ptag != vtkDICOMTag(0xffff,0xffff) &&
-                     this->MetaData->HasAttribute(ptag));
+          if (this->Item)
+            {
+            vtkDICOMTag ptag = this->Item->ResolvePrivateTag(
+              qtag, iter->GetValue().AsString());
+            matched = (ptag != vtkDICOMTag(0xffff,0xffff) &&
+                       this->Item->GetAttributeValue(ptag).IsValid());
+            }
+          else
+            {
+            vtkDICOMTag ptag = this->MetaData->ResolvePrivateTag(
+              qtag, iter->GetValue().AsString());
+            matched = (ptag != vtkDICOMTag(0xffff,0xffff) &&
+                       this->MetaData->HasAttribute(ptag));
+            }
           }
         else
           {
           // query has a private tag with no creator!
-          matched = this->MetaData->GetAttributeValue(qtag).Matches(
-            this->Query->GetValue());
+          if (this->Item)
+            {
+            matched = this->Item->GetAttributeValue(qtag).Matches(
+              this->Query->GetValue());
+            }
+          else
+            {
+            matched = this->MetaData->GetAttributeValue(qtag).Matches(
+              this->Query->GetValue());
+            }
           } 
         }
 
@@ -729,7 +747,8 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
 
   // search for the creator element within the query
   vtkDICOMTag ctag = vtkDICOMTag(g, e >> 8);
-  const vtkDICOMValue& creator = this->MetaData->GetAttributeValue(ctag);
+  vtkDICOMValue creator;
+  this->GetAttributeValue(ctag, creator);
   if (creator.IsValid())
     {
     // maximum possible creator element is (gggg,00FF)
