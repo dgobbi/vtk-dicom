@@ -948,7 +948,8 @@ vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTagForWriting(
         {
         // if an empty slot was found, use it for this creator
         d->Tag = ctag;
-        d->Value = vtkDICOMValue(vtkDICOMVR::LO, creator);
+        d->Value = this->MakeValueWithSpecificCharacterSet(
+          vtkDICOMVR::LO, creator);
         otag = vtkDICOMTag(g, (e << 8) | (ptag.GetElement() & 0x00FF));
         break;
         }

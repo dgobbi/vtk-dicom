@@ -436,9 +436,17 @@ vtkDICOMTag vtkDICOMItem::ResolvePrivateTagForWriting(
       vtkDICOMDataElement *d = this->FindDataElementOrInsert(ctag);
       if (!d->Value.IsValid())
         {
+        // creator elements are LO, which uses SpecificCharacterSet
+        vtkDICOMCharacterSet cs; // defaults to ASCII
+        const vtkDICOMValue& vcs =
+          this->GetAttributeValue(DC::SpecificCharacterSet);
+        if (vcs.IsValid())
+          {
+          cs = vtkDICOMCharacterSet(vcs.AsString());
+          }
         // if an empty slot was found, use it for this creator
         d->Tag = ctag;
-        d->Value = vtkDICOMValue(vtkDICOMVR::LO, creator);
+        d->Value = vtkDICOMValue(vtkDICOMVR::LO, cs, creator);
         otag = vtkDICOMTag(g, (e << 8) | (ptag.GetElement() & 0x00FF));
         break;
         }
