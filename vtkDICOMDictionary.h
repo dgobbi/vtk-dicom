@@ -26,6 +26,17 @@
 class VTK_DICOM_EXPORT vtkDICOMDictionary
 {
 public:
+  struct Dict
+  {
+    const char *Name;
+    unsigned short HashSize;
+    unsigned short DataSize;
+    unsigned short *TagHashTable;
+    vtkDICOMDictEntry::Entry *Contents;
+  };
+
+  struct DictHashEntry;
+
   //! Find the dictionary entry for the given tag.
   static vtkDICOMDictEntry FindDictEntry(const vtkDICOMTag tag) {
     return vtkDICOMDictionary::FindDictEntry(tag, 0); }
@@ -47,15 +58,13 @@ public:
    *  element of the data set when this dictionary is used.  The value
    *  of "n" is the size of the provided hash table.
    */
-  static void AddPrivateDictionary(
-    const char *name, vtkDICOMDictEntry::Entry **hashTable, unsigned int n);
+  static void AddPrivateDictionary(Dict *dict);
 
   //! Remove a private dictionary.
   static void RemovePrivateDictionary(const char *name);
 
 private:
   friend struct vtkDICOMDictionaryInitializer;
-  struct PrivateDict;
 
   //! Compute a string hash for a DICOM text value.
   /*!
@@ -69,14 +78,13 @@ private:
    *  This returns the hash table, and also returns the size of the
    *  hash table in the second argument.
    */
-  static vtkDICOMDictEntry::Entry **FindPrivateDict(
-    const char *name, unsigned int *tableSizePtr);
+  static Dict *FindPrivateDict(const char *name);
 
   //! The lookup table for the dictionary.
-  static vtkDICOMDictEntry::Entry *DictHashTable[DICT_HASH_TABLE_SIZE];
+  static Dict DictData;
 
   //! The lookup table for private dictionaries.
-  static PrivateDict *PrivateDictTable[DICT_PRIVATE_TABLE_SIZE];
+  static DictHashEntry *PrivateDictTable[DICT_PRIVATE_TABLE_SIZE];
 };
 
 //! Initializer (Schwarz counter).

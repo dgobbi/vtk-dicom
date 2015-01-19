@@ -211,11 +211,13 @@ def makedict(lines, creator="DICOM"):
 
       # build the index table
       ht[h].append(j)
+      ht[h].append(ei)
       j = j + 1
 
   # debug: print all VM's that were found
   #print vms.keys()
 
+  """
   # create the C++ text for the hash table
   maxl = 0
   minl = j
@@ -250,17 +252,18 @@ def makedict(lines, creator="DICOM"):
     s = s + "{ 0, 0, 0, 0, 0, NULL }"
     entry_list.append(s)
     k = k + len(te) + 1
+  """
 
   # debug: print statistics about the hash table
   #print maxl, minl, k0, k4
-  return enum_list, entry_list
+  return enum_list, element_list, ht
 
 # write the output file
 def printhead(enum_dict, classname):
   print header
   print
-  print "#ifndef __%s_h" % (classname,)
-  print "#define __%s_h" % (classname,)
+  print "#ifndef %s_h" % (classname,)
+  print "#define %s_h" % (classname,)
   print
   if not privatedict:
     print "//! Tag values defined in the DICOM standard"
@@ -289,7 +292,7 @@ def printhead(enum_dict, classname):
     print
     print "static %sInitializer %sInitializerInstance;" % (classname,classname);
   print
-  print "#endif /* __%s_h */" % (classname,)
+  print "#endif /* %s_h */" % (classname,)
 
 def printbody(entry_dict, classname):
   print header
@@ -303,53 +306,85 @@ def printbody(entry_dict, classname):
   print "typedef vtkDICOMVR VR;"
   print "typedef vtkDICOMVM VM;"
   print "typedef vtkDICOMDictEntry::Entry DictEntry;"
-  print
-  print "DictEntry DictEmptyRow[] = {"
-  print "{ 0, 0, 0, 0, 0, NULL }"
-  print "};"
-  print
 
-  dn = 0
-  for name, entry_list in entry_dict.items():
-    htsize = len(entry_list)
-    ct = 0
-    dn = dn + 1
-    ds = ""
-    if len(entry_dict) > 1:
-      ds = "%03d" % (dn,)
-      print "// %s" % (name,)
-    for l in entry_list:
-      if l != "{ 0, 0, 0, 0, 0, NULL }":
-        print "DictEntry Dict%sRow%0*d[] = {" % (ds,int(math.log10(htsize)+1),ct)
-        print l
-        print "};"
-      ct = ct + 1
-  print
   ns = ""
   if not privatedict:
-    print "}"
     ns = "vtkDICOMDictionary::"
 
   dn = 0
-  for name, entry_list in entry_dict.items():
-    print
-    htsize = len(entry_list)
-    ct = 0
+  for name, (entry_list, tag_table) in entry_dict.items():
     dn = dn + 1
     ds = ""
+    print
     if len(entry_dict) > 1:
       ds = "%03d" % (dn,)
-      print "// %s" % (name,)
-    print "DictEntry *%sDict%sHashTable[%d] = {" % (ns,ds,htsize)
+      print "// ----- %s -----" % (name,)
+      print
+    print "DictEntry Dict%sContents[] = {" % (ds,)
     for l in entry_list:
-      if l != "{ 0, 0, 0, 0, 0, NULL }":
-        print "Dict%sRow%0*d," % (ds,int(math.log10(htsize)+1),ct)
+      print l
+    print "};"
+    print
+    print "unsigned short Dict%sTagHashTable[] = {" % (ds,)
+    i = 0
+    j = len(tag_table) + 1
+    for l in tag_table:
+      if l is None:
+        print "%5d," % (len(tag_table),),
+        i = i + 1
+        if i % 10 == 0:
+          print
       else:
-        print "DictEmptyRow,"
-      ct = ct + 1
+        print "%5d," % (j,),
+        i = i + 1
+        if i % 10 == 0:
+          print
+        j = j + len(l) + 1
+    print "%5d," % (0,),
+    i = i + 1
+    if i % 10 == 0:
+      print
+    for l in tag_table:
+      if not (l is None):
+        print "%5d," % (len(l)/2,),
+        i = i + 1
+        if i % 10 == 0:
+          print
+        for e in l:
+          print "%5d," % (e,),
+          i = i + 1
+          if i % 10 == 0:
+            print
+    if i % 10 != 0:
+      print
+    print "};"
+
+    if not privatedict:
+      print
+      print "} // end anonymous namespace"
+
+    print
+    if len(entry_dict) > 1:
+      ds = "%03d" % (dn,)
+    print "vtkDICOMDictionary::Dict %sDict%sData = {" % (ns,ds)
+    print "\"%s\"," % (name,)
+    print "%d," % (len(tag_table),)
+    print "%d," % (len(entry_list),)
+    print "Dict%sTagHashTable," % (ds,)
+    print "Dict%sContents" % (ds,)
     print "};"
 
   if privatedict:
+    print
+    print "vtkDICOMDictionary::Dict *PrivateDictData[] = {"
+    dn = 0
+    for name, (entry_list, tag_table) in entry_dict.items():
+      dn = dn + 1
+      print "&Dict%03dData," % (dn,),
+      if dn % 5 == 0:
+        print
+    print "NULL"
+    print "};"
     print
     print "} // end anonymous namespace"
     print
@@ -359,15 +394,10 @@ def printbody(entry_dict, classname):
     print "{"
     print "  if (%sInitializerCounter++ == 0)" % (classname,)
     print "    {"
-    dn = 0
-    for name, entry_list in entry_dict.items():
-      htsize = len(entry_list)
-      dn = dn + 1
-      ds = ""
-      if len(entry_dict) > 1:
-        ds = "%03d" % (dn,)
-      print "    vtkDICOMDictionary::AddPrivateDictionary("
-      print "       \"%s\", Dict%sHashTable, %d);" % (name,ds,htsize)
+    print "    for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != NULL; dp++)"
+    print "      {"
+    print "      vtkDICOMDictionary::AddPrivateDictionary(*dp);"
+    print "      }"
     print "    }"
     print "}"
     print
@@ -375,14 +405,10 @@ def printbody(entry_dict, classname):
     print "{"
     print "  if (--%sInitializerCounter == 0)" % (classname,)
     print "    {"
-    dn = 0
-    for name, entry_list in entry_dict.items():
-      htsize = len(entry_list)
-      dn = dn + 1
-      ds = ""
-      if len(entry_dict) > 1:
-        ds = "%03d" % (dn,)
-      print "    vtkDICOMDictionary::RemovePrivateDictionary(\"%s\");" % (name)
+    print "    for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != NULL; dp++)"
+    print "      {"
+    print "      vtkDICOMDictionary::RemovePrivateDictionary((*dp)->Name);"
+    print "      }"
     print "    }"
     print "}"
 
@@ -391,9 +417,9 @@ if privatedict:
   entry_dict = {}
 
   for name, lines in privatelines.items():
-    enum_list, entry_list = makedict(lines, name)
+    enum_list, entry_list, tag_table = makedict(lines, name)
     enum_dict[name] = enum_list
-    entry_dict[name] = entry_list
+    entry_dict[name] = (entry_list, tag_table)
 
   if printheader:
     printhead(enum_dict, privatedict)
@@ -401,14 +427,14 @@ if privatedict:
     printbody(entry_dict, privatedict)
 
 else:
-  enum_list, entry_list = makedict(lines)
+  enum_list, entry_list, tag_table = makedict(lines)
 
   classname = "vtkDICOMDictHash"
 
   if printheader:
     printhead({"DICOM" : enum_list}, classname)
   else:
-    printbody({"DICOM" : entry_list}, classname)
+    printbody({"DICOM" : (entry_list, tag_table)}, classname)
 
 # informative: these names represent a range of tag values
 """ keys with ranges

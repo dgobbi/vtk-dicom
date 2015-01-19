@@ -11,8403 +11,5633 @@ typedef vtkDICOMVR VR;
 typedef vtkDICOMVM VM;
 typedef vtkDICOMDictEntry::Entry DictEntry;
 
-DictEntry DictEmptyRow[] = {
-{ 0, 0, 0, 0, 0, NULL }
-};
-
-DictEntry DictRow0000[] = {
+DictEntry DictContents[] = {
+{ 0x0002, 0x0000, 0, VR::UL, VM::M1, "FileMetaInformationGroupLength" },
+{ 0x0002, 0x0001, 0, VR::OB, VM::M1, "FileMetaInformationVersion" },
 { 0x0002, 0x0002, 0, VR::UI, VM::M1, "MediaStorageSOPClassUID" },
+{ 0x0002, 0x0003, 0, VR::UI, VM::M1, "MediaStorageSOPInstanceUID" },
+{ 0x0002, 0x0010, 0, VR::UI, VM::M1, "TransferSyntaxUID" },
+{ 0x0002, 0x0012, 0, VR::UI, VM::M1, "ImplementationClassUID" },
+{ 0x0002, 0x0013, 0, VR::SH, VM::M1, "ImplementationVersionName" },
+{ 0x0002, 0x0016, 0, VR::AE, VM::M1, "SourceApplicationEntityTitle" },
+{ 0x0002, 0x0100, 0, VR::UI, VM::M1, "PrivateInformationCreatorUID" },
+{ 0x0002, 0x0102, 0, VR::OB, VM::M1, "PrivateInformation" },
+{ 0x0004, 0x1130, 0, VR::CS, VM::M1, "FileSetID" },
+{ 0x0004, 0x1141, 0, VR::CS, VM::M1T8, "FileSetDescriptorFileID" },
+{ 0x0004, 0x1142, 0, VR::CS, VM::M1, "SpecificCharacterSetOfFileSetDescriptorFile" },
+{ 0x0004, 0x1200, 0, VR::UL, VM::M1, "OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity" },
+{ 0x0004, 0x1202, 0, VR::UL, VM::M1, "OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity" },
+{ 0x0004, 0x1212, 0, VR::US, VM::M1, "FileSetConsistencyFlag" },
+{ 0x0004, 0x1220, 0, VR::SQ, VM::M1, "DirectoryRecordSequence" },
+{ 0x0004, 0x1400, 0, VR::UL, VM::M1, "OffsetOfTheNextDirectoryRecord" },
+{ 0x0004, 0x1410, 0, VR::US, VM::M1, "RecordInUseFlag" },
+{ 0x0004, 0x1420, 0, VR::UL, VM::M1, "OffsetOfReferencedLowerLevelDirectoryEntity" },
+{ 0x0004, 0x1430, 0, VR::CS, VM::M1, "DirectoryRecordType" },
+{ 0x0004, 0x1432, 0, VR::UI, VM::M1, "PrivateRecordUID" },
+{ 0x0004, 0x1500, 0, VR::CS, VM::M1T8, "ReferencedFileID" },
+{ 0x0004, 0x1504, 1, VR::UL, VM::M1, "MRDRDirectoryRecordOffset" },
+{ 0x0004, 0x1510, 0, VR::UI, VM::M1, "ReferencedSOPClassUIDInFile" },
+{ 0x0004, 0x1511, 0, VR::UI, VM::M1, "ReferencedSOPInstanceUIDInFile" },
+{ 0x0004, 0x1512, 0, VR::UI, VM::M1, "ReferencedTransferSyntaxUIDInFile" },
+{ 0x0004, 0x151A, 0, VR::UI, VM::M1TN, "ReferencedRelatedGeneralSOPClassUIDInFile" },
+{ 0x0004, 0x1600, 1, VR::UL, VM::M1, "NumberOfReferences" },
+{ 0x0008, 0x0001, 1, VR::UL, VM::M1, "LengthToEnd" },
+{ 0x0008, 0x0005, 0, VR::CS, VM::M1TN, "SpecificCharacterSet" },
+{ 0x0008, 0x0006, 0, VR::SQ, VM::M1, "LanguageCodeSequence" },
 { 0x0008, 0x0008, 0, VR::CS, VM::M2TN, "ImageType" },
+{ 0x0008, 0x0010, 1, VR::SH, VM::M1, "RecognitionCode" },
+{ 0x0008, 0x0012, 0, VR::DA, VM::M1, "InstanceCreationDate" },
+{ 0x0008, 0x0013, 0, VR::TM, VM::M1, "InstanceCreationTime" },
+{ 0x0008, 0x0014, 0, VR::UI, VM::M1, "InstanceCreatorUID" },
+{ 0x0008, 0x0015, 0, VR::DT, VM::M1, "InstanceCoercionDateTime" },
+{ 0x0008, 0x0016, 0, VR::UI, VM::M1, "SOPClassUID" },
+{ 0x0008, 0x0018, 0, VR::UI, VM::M1, "SOPInstanceUID" },
+{ 0x0008, 0x001A, 0, VR::UI, VM::M1TN, "RelatedGeneralSOPClassUID" },
+{ 0x0008, 0x001B, 0, VR::UI, VM::M1, "OriginalSpecializedSOPClassUID" },
+{ 0x0008, 0x0020, 0, VR::DA, VM::M1, "StudyDate" },
+{ 0x0008, 0x0021, 0, VR::DA, VM::M1, "SeriesDate" },
+{ 0x0008, 0x0022, 0, VR::DA, VM::M1, "AcquisitionDate" },
+{ 0x0008, 0x0023, 0, VR::DA, VM::M1, "ContentDate" },
+{ 0x0008, 0x0024, 1, VR::DA, VM::M1, "OverlayDate" },
+{ 0x0008, 0x0025, 1, VR::DA, VM::M1, "CurveDate" },
+{ 0x0008, 0x002A, 0, VR::DT, VM::M1, "AcquisitionDateTime" },
+{ 0x0008, 0x0030, 0, VR::TM, VM::M1, "StudyTime" },
+{ 0x0008, 0x0031, 0, VR::TM, VM::M1, "SeriesTime" },
+{ 0x0008, 0x0032, 0, VR::TM, VM::M1, "AcquisitionTime" },
+{ 0x0008, 0x0033, 0, VR::TM, VM::M1, "ContentTime" },
+{ 0x0008, 0x0034, 1, VR::TM, VM::M1, "OverlayTime" },
+{ 0x0008, 0x0035, 1, VR::TM, VM::M1, "CurveTime" },
+{ 0x0008, 0x0040, 1, VR::US, VM::M1, "DataSetType" },
+{ 0x0008, 0x0041, 1, VR::LO, VM::M1, "DataSetSubtype" },
+{ 0x0008, 0x0042, 1, VR::CS, VM::M1, "NuclearMedicineSeriesType" },
+{ 0x0008, 0x0050, 0, VR::SH, VM::M1, "AccessionNumber" },
+{ 0x0008, 0x0051, 0, VR::SQ, VM::M1, "IssuerOfAccessionNumberSequence" },
+{ 0x0008, 0x0052, 0, VR::CS, VM::M1, "QueryRetrieveLevel" },
+{ 0x0008, 0x0053, 0, VR::CS, VM::M1, "QueryRetrieveView" },
+{ 0x0008, 0x0054, 0, VR::AE, VM::M1TN, "RetrieveAETitle" },
+{ 0x0008, 0x0056, 0, VR::CS, VM::M1, "InstanceAvailability" },
+{ 0x0008, 0x0058, 0, VR::UI, VM::M1TN, "FailedSOPInstanceUIDList" },
+{ 0x0008, 0x0060, 0, VR::CS, VM::M1, "Modality" },
+{ 0x0008, 0x0061, 0, VR::CS, VM::M1TN, "ModalitiesInStudy" },
+{ 0x0008, 0x0062, 0, VR::UI, VM::M1TN, "SOPClassesInStudy" },
+{ 0x0008, 0x0064, 0, VR::CS, VM::M1, "ConversionType" },
+{ 0x0008, 0x0068, 0, VR::CS, VM::M1, "PresentationIntentType" },
+{ 0x0008, 0x0070, 0, VR::LO, VM::M1, "Manufacturer" },
+{ 0x0008, 0x0080, 0, VR::LO, VM::M1, "InstitutionName" },
+{ 0x0008, 0x0081, 0, VR::ST, VM::M1, "InstitutionAddress" },
+{ 0x0008, 0x0082, 0, VR::SQ, VM::M1, "InstitutionCodeSequence" },
+{ 0x0008, 0x0090, 0, VR::PN, VM::M1, "ReferringPhysicianName" },
+{ 0x0008, 0x0092, 0, VR::ST, VM::M1, "ReferringPhysicianAddress" },
+{ 0x0008, 0x0094, 0, VR::SH, VM::M1TN, "ReferringPhysicianTelephoneNumbers" },
+{ 0x0008, 0x0096, 0, VR::SQ, VM::M1, "ReferringPhysicianIdentificationSequence" },
+{ 0x0008, 0x0100, 0, VR::SH, VM::M1, "CodeValue" },
+{ 0x0008, 0x0101, 3, VR::LO, VM::M1, "ExtendedCodeValue" },
+{ 0x0008, 0x0102, 0, VR::SH, VM::M1, "CodingSchemeDesignator" },
+{ 0x0008, 0x0103, 0, VR::SH, VM::M1, "CodingSchemeVersion" },
+{ 0x0008, 0x0104, 0, VR::LO, VM::M1, "CodeMeaning" },
+{ 0x0008, 0x0105, 0, VR::CS, VM::M1, "MappingResource" },
+{ 0x0008, 0x0106, 0, VR::DT, VM::M1, "ContextGroupVersion" },
+{ 0x0008, 0x0107, 0, VR::DT, VM::M1, "ContextGroupLocalVersion" },
+{ 0x0008, 0x0108, 3, VR::LT, VM::M1, "ExtendedCodeMeaning" },
+{ 0x0008, 0x010B, 0, VR::CS, VM::M1, "ContextGroupExtensionFlag" },
+{ 0x0008, 0x010C, 0, VR::UI, VM::M1, "CodingSchemeUID" },
+{ 0x0008, 0x010D, 0, VR::UI, VM::M1, "ContextGroupExtensionCreatorUID" },
+{ 0x0008, 0x010F, 0, VR::CS, VM::M1, "ContextIdentifier" },
+{ 0x0008, 0x0110, 0, VR::SQ, VM::M1, "CodingSchemeIdentificationSequence" },
+{ 0x0008, 0x0112, 0, VR::LO, VM::M1, "CodingSchemeRegistry" },
+{ 0x0008, 0x0114, 0, VR::ST, VM::M1, "CodingSchemeExternalID" },
+{ 0x0008, 0x0115, 0, VR::ST, VM::M1, "CodingSchemeName" },
+{ 0x0008, 0x0116, 0, VR::ST, VM::M1, "CodingSchemeResponsibleOrganization" },
+{ 0x0008, 0x0117, 0, VR::UI, VM::M1, "ContextUID" },
+{ 0x0008, 0x0201, 0, VR::SH, VM::M1, "TimezoneOffsetFromUTC" },
+{ 0x0008, 0x1000, 1, VR::AE, VM::M1, "NetworkID" },
+{ 0x0008, 0x1010, 0, VR::SH, VM::M1, "StationName" },
+{ 0x0008, 0x1030, 0, VR::LO, VM::M1, "StudyDescription" },
+{ 0x0008, 0x1032, 0, VR::SQ, VM::M1, "ProcedureCodeSequence" },
+{ 0x0008, 0x103E, 0, VR::LO, VM::M1, "SeriesDescription" },
+{ 0x0008, 0x103F, 0, VR::SQ, VM::M1, "SeriesDescriptionCodeSequence" },
+{ 0x0008, 0x1040, 0, VR::LO, VM::M1, "InstitutionalDepartmentName" },
+{ 0x0008, 0x1048, 0, VR::PN, VM::M1TN, "PhysiciansOfRecord" },
 { 0x0008, 0x1049, 0, VR::SQ, VM::M1, "PhysiciansOfRecordIdentificationSequence" },
+{ 0x0008, 0x1050, 0, VR::PN, VM::M1TN, "PerformingPhysicianName" },
+{ 0x0008, 0x1052, 0, VR::SQ, VM::M1, "PerformingPhysicianIdentificationSequence" },
+{ 0x0008, 0x1060, 0, VR::PN, VM::M1TN, "NameOfPhysiciansReadingStudy" },
+{ 0x0008, 0x1062, 0, VR::SQ, VM::M1, "PhysiciansReadingStudyIdentificationSequence" },
+{ 0x0008, 0x1070, 0, VR::PN, VM::M1TN, "OperatorsName" },
+{ 0x0008, 0x1072, 0, VR::SQ, VM::M1, "OperatorIdentificationSequence" },
+{ 0x0008, 0x1080, 0, VR::LO, VM::M1TN, "AdmittingDiagnosesDescription" },
+{ 0x0008, 0x1084, 0, VR::SQ, VM::M1, "AdmittingDiagnosesCodeSequence" },
+{ 0x0008, 0x1090, 0, VR::LO, VM::M1, "ManufacturerModelName" },
+{ 0x0008, 0x1100, 1, VR::SQ, VM::M1, "ReferencedResultsSequence" },
+{ 0x0008, 0x1110, 0, VR::SQ, VM::M1, "ReferencedStudySequence" },
+{ 0x0008, 0x1111, 0, VR::SQ, VM::M1, "ReferencedPerformedProcedureStepSequence" },
+{ 0x0008, 0x1115, 0, VR::SQ, VM::M1, "ReferencedSeriesSequence" },
+{ 0x0008, 0x1120, 0, VR::SQ, VM::M1, "ReferencedPatientSequence" },
+{ 0x0008, 0x1125, 0, VR::SQ, VM::M1, "ReferencedVisitSequence" },
+{ 0x0008, 0x1130, 1, VR::SQ, VM::M1, "ReferencedOverlaySequence" },
+{ 0x0008, 0x1134, 0, VR::SQ, VM::M1, "ReferencedStereometricInstanceSequence" },
+{ 0x0008, 0x113A, 0, VR::SQ, VM::M1, "ReferencedWaveformSequence" },
+{ 0x0008, 0x1140, 0, VR::SQ, VM::M1, "ReferencedImageSequence" },
+{ 0x0008, 0x1145, 1, VR::SQ, VM::M1, "ReferencedCurveSequence" },
+{ 0x0008, 0x114A, 0, VR::SQ, VM::M1, "ReferencedInstanceSequence" },
+{ 0x0008, 0x114B, 0, VR::SQ, VM::M1, "ReferencedRealWorldValueMappingInstanceSequence" },
+{ 0x0008, 0x1150, 0, VR::UI, VM::M1, "ReferencedSOPClassUID" },
+{ 0x0008, 0x1155, 0, VR::UI, VM::M1, "ReferencedSOPInstanceUID" },
+{ 0x0008, 0x115A, 0, VR::UI, VM::M1TN, "SOPClassesSupported" },
+{ 0x0008, 0x1160, 0, VR::IS, VM::M1TN, "ReferencedFrameNumber" },
+{ 0x0008, 0x1161, 0, VR::UL, VM::M1TN, "SimpleFrameList" },
+{ 0x0008, 0x1162, 0, VR::UL, VM::M3T3N, "CalculatedFrameList" },
+{ 0x0008, 0x1163, 0, VR::FD, VM::M2, "TimeRange" },
+{ 0x0008, 0x1164, 0, VR::SQ, VM::M1, "FrameExtractionSequence" },
+{ 0x0008, 0x1167, 0, VR::UI, VM::M1, "MultiFrameSourceSOPInstanceUID" },
+{ 0x0008, 0x1190, 0, VR::UT, VM::M1, "RetrieveURL" },
+{ 0x0008, 0x1195, 0, VR::UI, VM::M1, "TransactionUID" },
+{ 0x0008, 0x1196, 0, VR::US, VM::M1, "WarningReason" },
+{ 0x0008, 0x1197, 0, VR::US, VM::M1, "FailureReason" },
+{ 0x0008, 0x1198, 0, VR::SQ, VM::M1, "FailedSOPSequence" },
+{ 0x0008, 0x1199, 0, VR::SQ, VM::M1, "ReferencedSOPSequence" },
+{ 0x0008, 0x1200, 0, VR::SQ, VM::M1, "StudiesContainingOtherReferencedInstancesSequence" },
+{ 0x0008, 0x1250, 0, VR::SQ, VM::M1, "RelatedSeriesSequence" },
+{ 0x0008, 0x2110, 1, VR::CS, VM::M1, "LossyImageCompressionRetired" },
+{ 0x0008, 0x2111, 0, VR::ST, VM::M1, "DerivationDescription" },
+{ 0x0008, 0x2112, 0, VR::SQ, VM::M1, "SourceImageSequence" },
+{ 0x0008, 0x2120, 0, VR::SH, VM::M1, "StageName" },
+{ 0x0008, 0x2122, 0, VR::IS, VM::M1, "StageNumber" },
+{ 0x0008, 0x2124, 0, VR::IS, VM::M1, "NumberOfStages" },
+{ 0x0008, 0x2127, 0, VR::SH, VM::M1, "ViewName" },
+{ 0x0008, 0x2128, 0, VR::IS, VM::M1, "ViewNumber" },
+{ 0x0008, 0x2129, 0, VR::IS, VM::M1, "NumberOfEventTimers" },
+{ 0x0008, 0x212A, 0, VR::IS, VM::M1, "NumberOfViewsInStage" },
+{ 0x0008, 0x2130, 0, VR::DS, VM::M1TN, "EventElapsedTimes" },
+{ 0x0008, 0x2132, 0, VR::LO, VM::M1TN, "EventTimerNames" },
+{ 0x0008, 0x2133, 0, VR::SQ, VM::M1, "EventTimerSequence" },
+{ 0x0008, 0x2134, 0, VR::FD, VM::M1, "EventTimeOffset" },
+{ 0x0008, 0x2135, 0, VR::SQ, VM::M1, "EventCodeSequence" },
+{ 0x0008, 0x2142, 0, VR::IS, VM::M1, "StartTrim" },
+{ 0x0008, 0x2143, 0, VR::IS, VM::M1, "StopTrim" },
+{ 0x0008, 0x2144, 0, VR::IS, VM::M1, "RecommendedDisplayFrameRate" },
+{ 0x0008, 0x2200, 1, VR::CS, VM::M1, "TransducerPosition" },
+{ 0x0008, 0x2204, 1, VR::CS, VM::M1, "TransducerOrientation" },
+{ 0x0008, 0x2208, 1, VR::CS, VM::M1, "AnatomicStructure" },
+{ 0x0008, 0x2218, 0, VR::SQ, VM::M1, "AnatomicRegionSequence" },
+{ 0x0008, 0x2220, 0, VR::SQ, VM::M1, "AnatomicRegionModifierSequence" },
+{ 0x0008, 0x2228, 0, VR::SQ, VM::M1, "PrimaryAnatomicStructureSequence" },
+{ 0x0008, 0x2229, 0, VR::SQ, VM::M1, "AnatomicStructureSpaceOrRegionSequence" },
+{ 0x0008, 0x2230, 0, VR::SQ, VM::M1, "PrimaryAnatomicStructureModifierSequence" },
+{ 0x0008, 0x2240, 1, VR::SQ, VM::M1, "TransducerPositionSequence" },
+{ 0x0008, 0x2242, 1, VR::SQ, VM::M1, "TransducerPositionModifierSequence" },
+{ 0x0008, 0x2244, 1, VR::SQ, VM::M1, "TransducerOrientationSequence" },
+{ 0x0008, 0x2246, 1, VR::SQ, VM::M1, "TransducerOrientationModifierSequence" },
+{ 0x0008, 0x2251, 1, VR::SQ, VM::M1, "AnatomicStructureSpaceOrRegionCodeSequenceTrial" },
+{ 0x0008, 0x2253, 1, VR::SQ, VM::M1, "AnatomicPortalOfEntranceCodeSequenceTrial" },
+{ 0x0008, 0x2255, 1, VR::SQ, VM::M1, "AnatomicApproachDirectionCodeSequenceTrial" },
+{ 0x0008, 0x2256, 1, VR::ST, VM::M1, "AnatomicPerspectiveDescriptionTrial" },
+{ 0x0008, 0x2257, 1, VR::SQ, VM::M1, "AnatomicPerspectiveCodeSequenceTrial" },
+{ 0x0008, 0x2258, 1, VR::ST, VM::M1, "AnatomicLocationOfExaminingInstrumentDescriptionTrial" },
+{ 0x0008, 0x2259, 1, VR::SQ, VM::M1, "AnatomicLocationOfExaminingInstrumentCodeSequenceTrial" },
+{ 0x0008, 0x225A, 1, VR::SQ, VM::M1, "AnatomicStructureSpaceOrRegionModifierCodeSequenceTrial" },
+{ 0x0008, 0x225C, 1, VR::SQ, VM::M1, "OnAxisBackgroundAnatomicStructureCodeSequenceTrial" },
+{ 0x0008, 0x3001, 0, VR::SQ, VM::M1, "AlternateRepresentationSequence" },
+{ 0x0008, 0x3010, 0, VR::UI, VM::M1TN, "IrradiationEventUID" },
+{ 0x0008, 0x4000, 1, VR::LT, VM::M1, "IdentifyingComments" },
+{ 0x0008, 0x9007, 0, VR::CS, VM::M4, "FrameType" },
+{ 0x0008, 0x9092, 0, VR::SQ, VM::M1, "ReferencedImageEvidenceSequence" },
+{ 0x0008, 0x9121, 0, VR::SQ, VM::M1, "ReferencedRawDataSequence" },
+{ 0x0008, 0x9123, 0, VR::UI, VM::M1, "CreatorVersionUID" },
+{ 0x0008, 0x9124, 0, VR::SQ, VM::M1, "DerivationImageSequence" },
+{ 0x0008, 0x9154, 0, VR::SQ, VM::M1, "SourceImageEvidenceSequence" },
+{ 0x0008, 0x9205, 0, VR::CS, VM::M1, "PixelPresentation" },
+{ 0x0008, 0x9206, 0, VR::CS, VM::M1, "VolumetricProperties" },
+{ 0x0008, 0x9207, 0, VR::CS, VM::M1, "VolumeBasedCalculationTechnique" },
+{ 0x0008, 0x9208, 0, VR::CS, VM::M1, "ComplexImageComponent" },
+{ 0x0008, 0x9209, 0, VR::CS, VM::M1, "AcquisitionContrast" },
+{ 0x0008, 0x9215, 0, VR::SQ, VM::M1, "DerivationCodeSequence" },
+{ 0x0008, 0x9237, 0, VR::SQ, VM::M1, "ReferencedPresentationStateSequence" },
+{ 0x0008, 0x9410, 0, VR::SQ, VM::M1, "ReferencedOtherPlaneSequence" },
+{ 0x0008, 0x9458, 0, VR::SQ, VM::M1, "FrameDisplaySequence" },
+{ 0x0008, 0x9459, 0, VR::FL, VM::M1, "RecommendedDisplayFrameRateInFloat" },
+{ 0x0008, 0x9460, 0, VR::CS, VM::M1, "SkipFrameRangeFlag" },
 { 0x0010, 0x0010, 0, VR::PN, VM::M1, "PatientName" },
+{ 0x0010, 0x0020, 0, VR::LO, VM::M1, "PatientID" },
+{ 0x0010, 0x0021, 0, VR::LO, VM::M1, "IssuerOfPatientID" },
+{ 0x0010, 0x0022, 0, VR::CS, VM::M1, "TypeOfPatientID" },
+{ 0x0010, 0x0024, 0, VR::SQ, VM::M1, "IssuerOfPatientIDQualifiersSequence" },
+{ 0x0010, 0x0030, 0, VR::DA, VM::M1, "PatientBirthDate" },
+{ 0x0010, 0x0032, 0, VR::TM, VM::M1, "PatientBirthTime" },
+{ 0x0010, 0x0040, 0, VR::CS, VM::M1, "PatientSex" },
+{ 0x0010, 0x0050, 0, VR::SQ, VM::M1, "PatientInsurancePlanCodeSequence" },
+{ 0x0010, 0x0101, 0, VR::SQ, VM::M1, "PatientPrimaryLanguageCodeSequence" },
+{ 0x0010, 0x0102, 0, VR::SQ, VM::M1, "PatientPrimaryLanguageModifierCodeSequence" },
+{ 0x0010, 0x0200, 0, VR::CS, VM::M1, "QualityControlSubject" },
+{ 0x0010, 0x0201, 0, VR::SQ, VM::M1, "QualityControlSubjectTypeCodeSequence" },
+{ 0x0010, 0x1000, 0, VR::LO, VM::M1TN, "OtherPatientIDs" },
+{ 0x0010, 0x1001, 0, VR::PN, VM::M1TN, "OtherPatientNames" },
+{ 0x0010, 0x1002, 0, VR::SQ, VM::M1, "OtherPatientIDsSequence" },
+{ 0x0010, 0x1005, 0, VR::PN, VM::M1, "PatientBirthName" },
+{ 0x0010, 0x1010, 0, VR::AS, VM::M1, "PatientAge" },
+{ 0x0010, 0x1020, 0, VR::DS, VM::M1, "PatientSize" },
+{ 0x0010, 0x1021, 0, VR::SQ, VM::M1, "PatientSizeCodeSequence" },
+{ 0x0010, 0x1030, 0, VR::DS, VM::M1, "PatientWeight" },
+{ 0x0010, 0x1040, 0, VR::LO, VM::M1, "PatientAddress" },
+{ 0x0010, 0x1050, 1, VR::LO, VM::M1TN, "InsurancePlanIdentification" },
+{ 0x0010, 0x1060, 0, VR::PN, VM::M1, "PatientMotherBirthName" },
+{ 0x0010, 0x1080, 0, VR::LO, VM::M1, "MilitaryRank" },
+{ 0x0010, 0x1081, 0, VR::LO, VM::M1, "BranchOfService" },
+{ 0x0010, 0x1090, 0, VR::LO, VM::M1, "MedicalRecordLocator" },
+{ 0x0010, 0x2000, 0, VR::LO, VM::M1TN, "MedicalAlerts" },
+{ 0x0010, 0x2110, 0, VR::LO, VM::M1TN, "Allergies" },
+{ 0x0010, 0x2150, 0, VR::LO, VM::M1, "CountryOfResidence" },
+{ 0x0010, 0x2152, 0, VR::LO, VM::M1, "RegionOfResidence" },
+{ 0x0010, 0x2154, 0, VR::SH, VM::M1TN, "PatientTelephoneNumbers" },
+{ 0x0010, 0x2160, 0, VR::SH, VM::M1, "EthnicGroup" },
+{ 0x0010, 0x2180, 0, VR::SH, VM::M1, "Occupation" },
+{ 0x0010, 0x21A0, 0, VR::CS, VM::M1, "SmokingStatus" },
+{ 0x0010, 0x21B0, 0, VR::LT, VM::M1, "AdditionalPatientHistory" },
+{ 0x0010, 0x21C0, 0, VR::US, VM::M1, "PregnancyStatus" },
+{ 0x0010, 0x21D0, 0, VR::DA, VM::M1, "LastMenstrualDate" },
+{ 0x0010, 0x21F0, 0, VR::LO, VM::M1, "PatientReligiousPreference" },
+{ 0x0010, 0x2201, 0, VR::LO, VM::M1, "PatientSpeciesDescription" },
+{ 0x0010, 0x2202, 0, VR::SQ, VM::M1, "PatientSpeciesCodeSequence" },
+{ 0x0010, 0x2203, 0, VR::CS, VM::M1, "PatientSexNeutered" },
+{ 0x0010, 0x2210, 0, VR::CS, VM::M1, "AnatomicalOrientationType" },
+{ 0x0010, 0x2292, 0, VR::LO, VM::M1, "PatientBreedDescription" },
+{ 0x0010, 0x2293, 0, VR::SQ, VM::M1, "PatientBreedCodeSequence" },
+{ 0x0010, 0x2294, 0, VR::SQ, VM::M1, "BreedRegistrationSequence" },
+{ 0x0010, 0x2295, 0, VR::LO, VM::M1, "BreedRegistrationNumber" },
+{ 0x0010, 0x2296, 0, VR::SQ, VM::M1, "BreedRegistryCodeSequence" },
+{ 0x0010, 0x2297, 0, VR::PN, VM::M1, "ResponsiblePerson" },
+{ 0x0010, 0x2298, 0, VR::CS, VM::M1, "ResponsiblePersonRole" },
+{ 0x0010, 0x2299, 0, VR::LO, VM::M1, "ResponsibleOrganization" },
+{ 0x0010, 0x4000, 0, VR::LT, VM::M1, "PatientComments" },
+{ 0x0010, 0x9431, 0, VR::FL, VM::M1, "ExaminedBodyThickness" },
+{ 0x0012, 0x0010, 0, VR::LO, VM::M1, "ClinicalTrialSponsorName" },
+{ 0x0012, 0x0020, 0, VR::LO, VM::M1, "ClinicalTrialProtocolID" },
+{ 0x0012, 0x0021, 0, VR::LO, VM::M1, "ClinicalTrialProtocolName" },
+{ 0x0012, 0x0030, 0, VR::LO, VM::M1, "ClinicalTrialSiteID" },
+{ 0x0012, 0x0031, 0, VR::LO, VM::M1, "ClinicalTrialSiteName" },
+{ 0x0012, 0x0040, 0, VR::LO, VM::M1, "ClinicalTrialSubjectID" },
+{ 0x0012, 0x0042, 0, VR::LO, VM::M1, "ClinicalTrialSubjectReadingID" },
+{ 0x0012, 0x0050, 0, VR::LO, VM::M1, "ClinicalTrialTimePointID" },
+{ 0x0012, 0x0051, 0, VR::ST, VM::M1, "ClinicalTrialTimePointDescription" },
+{ 0x0012, 0x0060, 0, VR::LO, VM::M1, "ClinicalTrialCoordinatingCenterName" },
+{ 0x0012, 0x0062, 0, VR::CS, VM::M1, "PatientIdentityRemoved" },
+{ 0x0012, 0x0063, 0, VR::LO, VM::M1TN, "DeidentificationMethod" },
+{ 0x0012, 0x0064, 0, VR::SQ, VM::M1, "DeidentificationMethodCodeSequence" },
+{ 0x0012, 0x0071, 0, VR::LO, VM::M1, "ClinicalTrialSeriesID" },
+{ 0x0012, 0x0072, 0, VR::LO, VM::M1, "ClinicalTrialSeriesDescription" },
+{ 0x0012, 0x0081, 0, VR::LO, VM::M1, "ClinicalTrialProtocolEthicsCommitteeName" },
+{ 0x0012, 0x0082, 0, VR::LO, VM::M1, "ClinicalTrialProtocolEthicsCommitteeApprovalNumber" },
+{ 0x0012, 0x0083, 0, VR::SQ, VM::M1, "ConsentForClinicalTrialUseSequence" },
+{ 0x0012, 0x0084, 0, VR::CS, VM::M1, "DistributionType" },
+{ 0x0012, 0x0085, 0, VR::CS, VM::M1, "ConsentForDistributionFlag" },
+{ 0x0014, 0x0023, 1, VR::ST, VM::M1TN, "CADFileFormat" },
+{ 0x0014, 0x0024, 1, VR::ST, VM::M1TN, "ComponentReferenceSystem" },
+{ 0x0014, 0x0025, 2, VR::ST, VM::M1TN, "ComponentManufacturingProcedure" },
+{ 0x0014, 0x0028, 2, VR::ST, VM::M1TN, "ComponentManufacturer" },
+{ 0x0014, 0x0030, 2, VR::DS, VM::M1TN, "MaterialThickness" },
+{ 0x0014, 0x0032, 2, VR::DS, VM::M1TN, "MaterialPipeDiameter" },
+{ 0x0014, 0x0034, 2, VR::DS, VM::M1TN, "MaterialIsolationDiameter" },
+{ 0x0014, 0x0042, 2, VR::ST, VM::M1TN, "MaterialGrade" },
+{ 0x0014, 0x0044, 2, VR::ST, VM::M1TN, "MaterialPropertiesDescription" },
+{ 0x0014, 0x0045, 1, VR::ST, VM::M1TN, "MaterialPropertiesFileFormatRetired" },
+{ 0x0014, 0x0046, 2, VR::LT, VM::M1, "MaterialNotes" },
+{ 0x0014, 0x0050, 2, VR::CS, VM::M1, "ComponentShape" },
+{ 0x0014, 0x0052, 2, VR::CS, VM::M1, "CurvatureType" },
+{ 0x0014, 0x0054, 2, VR::DS, VM::M1, "OuterDiameter" },
+{ 0x0014, 0x0056, 2, VR::DS, VM::M1, "InnerDiameter" },
+{ 0x0014, 0x1010, 2, VR::ST, VM::M1, "ActualEnvironmentalConditions" },
+{ 0x0014, 0x1020, 2, VR::DA, VM::M1, "ExpiryDate" },
+{ 0x0014, 0x1040, 2, VR::ST, VM::M1, "EnvironmentalConditions" },
+{ 0x0014, 0x2002, 2, VR::SQ, VM::M1, "EvaluatorSequence" },
+{ 0x0014, 0x2004, 2, VR::IS, VM::M1, "EvaluatorNumber" },
+{ 0x0014, 0x2006, 2, VR::PN, VM::M1, "EvaluatorName" },
+{ 0x0014, 0x2008, 2, VR::IS, VM::M1, "EvaluationAttempt" },
+{ 0x0014, 0x2012, 2, VR::SQ, VM::M1, "IndicationSequence" },
+{ 0x0014, 0x2014, 2, VR::IS, VM::M1, "IndicationNumber" },
+{ 0x0014, 0x2016, 2, VR::SH, VM::M1, "IndicationLabel" },
+{ 0x0014, 0x2018, 2, VR::ST, VM::M1, "IndicationDescription" },
+{ 0x0014, 0x201A, 2, VR::CS, VM::M1TN, "IndicationType" },
+{ 0x0014, 0x201C, 2, VR::CS, VM::M1, "IndicationDisposition" },
+{ 0x0014, 0x201E, 2, VR::SQ, VM::M1, "IndicationROISequence" },
+{ 0x0014, 0x2030, 2, VR::SQ, VM::M1, "IndicationPhysicalPropertySequence" },
+{ 0x0014, 0x2032, 2, VR::SH, VM::M1, "PropertyLabel" },
+{ 0x0014, 0x2202, 2, VR::IS, VM::M1, "CoordinateSystemNumberOfAxes" },
+{ 0x0014, 0x2204, 2, VR::SQ, VM::M1, "CoordinateSystemAxesSequence" },
+{ 0x0014, 0x2206, 2, VR::ST, VM::M1, "CoordinateSystemAxisDescription" },
+{ 0x0014, 0x2208, 2, VR::CS, VM::M1, "CoordinateSystemDataSetMapping" },
+{ 0x0014, 0x220A, 2, VR::IS, VM::M1, "CoordinateSystemAxisNumber" },
+{ 0x0014, 0x220C, 2, VR::CS, VM::M1, "CoordinateSystemAxisType" },
+{ 0x0014, 0x220E, 2, VR::CS, VM::M1, "CoordinateSystemAxisUnits" },
+{ 0x0014, 0x2210, 2, VR::OB, VM::M1, "CoordinateSystemAxisValues" },
+{ 0x0014, 0x2220, 2, VR::SQ, VM::M1, "CoordinateSystemTransformSequence" },
+{ 0x0014, 0x2222, 2, VR::ST, VM::M1, "TransformDescription" },
+{ 0x0014, 0x2224, 2, VR::IS, VM::M1, "TransformNumberOfAxes" },
+{ 0x0014, 0x2226, 2, VR::IS, VM::M1TN, "TransformOrderOfAxes" },
+{ 0x0014, 0x2228, 2, VR::CS, VM::M1, "TransformedAxisUnits" },
+{ 0x0014, 0x222A, 2, VR::DS, VM::M1TN, "CoordinateSystemTransformRotationAndScaleMatrix" },
+{ 0x0014, 0x222C, 2, VR::DS, VM::M1TN, "CoordinateSystemTransformTranslationMatrix" },
+{ 0x0014, 0x3011, 2, VR::DS, VM::M1, "InternalDetectorFrameTime" },
+{ 0x0014, 0x3012, 2, VR::DS, VM::M1, "NumberOfFramesIntegrated" },
+{ 0x0014, 0x3020, 2, VR::SQ, VM::M1, "DetectorTemperatureSequence" },
+{ 0x0014, 0x3022, 2, VR::ST, VM::M1, "SensorName" },
+{ 0x0014, 0x3024, 2, VR::DS, VM::M1, "HorizontalOffsetOfSensor" },
+{ 0x0014, 0x3026, 2, VR::DS, VM::M1, "VerticalOffsetOfSensor" },
+{ 0x0014, 0x3028, 2, VR::DS, VM::M1, "SensorTemperature" },
+{ 0x0014, 0x3040, 2, VR::SQ, VM::M1, "DarkCurrentSequence" },
+{ 0x0014, 0x3050, 2, VR::OX, VM::M1, "DarkCurrentCounts" },
+{ 0x0014, 0x3060, 2, VR::SQ, VM::M1, "GainCorrectionReferenceSequence" },
+{ 0x0014, 0x3070, 2, VR::OX, VM::M1, "AirCounts" },
+{ 0x0014, 0x3071, 2, VR::DS, VM::M1, "KVUsedInGainCalibration" },
+{ 0x0014, 0x3072, 2, VR::DS, VM::M1, "MAUsedInGainCalibration" },
+{ 0x0014, 0x3073, 2, VR::DS, VM::M1, "NumberOfFramesUsedForIntegration" },
+{ 0x0014, 0x3074, 2, VR::LO, VM::M1, "FilterMaterialUsedInGainCalibration" },
+{ 0x0014, 0x3075, 2, VR::DS, VM::M1, "FilterThicknessUsedInGainCalibration" },
+{ 0x0014, 0x3076, 2, VR::DA, VM::M1, "DateOfGainCalibration" },
+{ 0x0014, 0x3077, 2, VR::TM, VM::M1, "TimeOfGainCalibration" },
+{ 0x0014, 0x3080, 2, VR::OB, VM::M1, "BadPixelImage" },
+{ 0x0014, 0x3099, 2, VR::LT, VM::M1, "CalibrationNotes" },
+{ 0x0014, 0x4002, 2, VR::SQ, VM::M1, "PulserEquipmentSequence" },
+{ 0x0014, 0x4004, 2, VR::CS, VM::M1, "PulserType" },
+{ 0x0014, 0x4006, 2, VR::LT, VM::M1, "PulserNotes" },
+{ 0x0014, 0x4008, 2, VR::SQ, VM::M1, "ReceiverEquipmentSequence" },
+{ 0x0014, 0x400A, 2, VR::CS, VM::M1, "AmplifierType" },
+{ 0x0014, 0x400C, 2, VR::LT, VM::M1, "ReceiverNotes" },
+{ 0x0014, 0x400E, 2, VR::SQ, VM::M1, "PreAmplifierEquipmentSequence" },
+{ 0x0014, 0x400F, 2, VR::LT, VM::M1, "PreAmplifierNotes" },
+{ 0x0014, 0x4010, 2, VR::SQ, VM::M1, "TransmitTransducerSequence" },
+{ 0x0014, 0x4011, 2, VR::SQ, VM::M1, "ReceiveTransducerSequence" },
+{ 0x0014, 0x4012, 2, VR::US, VM::M1, "NumberOfElements" },
+{ 0x0014, 0x4013, 2, VR::CS, VM::M1, "ElementShape" },
+{ 0x0014, 0x4014, 2, VR::DS, VM::M1, "ElementDimensionA" },
+{ 0x0014, 0x4015, 2, VR::DS, VM::M1, "ElementDimensionB" },
+{ 0x0014, 0x4016, 2, VR::DS, VM::M1, "ElementPitchA" },
+{ 0x0014, 0x4017, 2, VR::DS, VM::M1, "MeasuredBeamDimensionA" },
+{ 0x0014, 0x4018, 2, VR::DS, VM::M1, "MeasuredBeamDimensionB" },
+{ 0x0014, 0x4019, 2, VR::DS, VM::M1, "LocationOfMeasuredBeamDiameter" },
+{ 0x0014, 0x401A, 2, VR::DS, VM::M1, "NominalFrequency" },
+{ 0x0014, 0x401B, 2, VR::DS, VM::M1, "MeasuredCenterFrequency" },
+{ 0x0014, 0x401C, 2, VR::DS, VM::M1, "MeasuredBandwidth" },
+{ 0x0014, 0x401D, 2, VR::DS, VM::M1, "ElementPitchB" },
+{ 0x0014, 0x4020, 2, VR::SQ, VM::M1, "PulserSettingsSequence" },
+{ 0x0014, 0x4022, 2, VR::DS, VM::M1, "PulseWidth" },
+{ 0x0014, 0x4024, 2, VR::DS, VM::M1, "ExcitationFrequency" },
+{ 0x0014, 0x4026, 2, VR::CS, VM::M1, "ModulationType" },
+{ 0x0014, 0x4028, 2, VR::DS, VM::M1, "Damping" },
+{ 0x0014, 0x4030, 2, VR::SQ, VM::M1, "ReceiverSettingsSequence" },
+{ 0x0014, 0x4031, 2, VR::DS, VM::M1, "AcquiredSoundpathLength" },
+{ 0x0014, 0x4032, 2, VR::CS, VM::M1, "AcquisitionCompressionType" },
+{ 0x0014, 0x4033, 2, VR::IS, VM::M1, "AcquisitionSampleSize" },
+{ 0x0014, 0x4034, 2, VR::DS, VM::M1, "RectifierSmoothing" },
+{ 0x0014, 0x4035, 2, VR::SQ, VM::M1, "DACSequence" },
+{ 0x0014, 0x4036, 2, VR::CS, VM::M1, "DACType" },
+{ 0x0014, 0x4038, 2, VR::DS, VM::M1TN, "DACGainPoints" },
+{ 0x0014, 0x403A, 2, VR::DS, VM::M1TN, "DACTimePoints" },
+{ 0x0014, 0x403C, 2, VR::DS, VM::M1TN, "DACAmplitude" },
+{ 0x0014, 0x4040, 2, VR::SQ, VM::M1, "PreAmplifierSettingsSequence" },
+{ 0x0014, 0x4050, 2, VR::SQ, VM::M1, "TransmitTransducerSettingsSequence" },
+{ 0x0014, 0x4051, 2, VR::SQ, VM::M1, "ReceiveTransducerSettingsSequence" },
+{ 0x0014, 0x4052, 2, VR::DS, VM::M1, "IncidentAngle" },
+{ 0x0014, 0x4054, 2, VR::ST, VM::M1, "CouplingTechnique" },
+{ 0x0014, 0x4056, 2, VR::ST, VM::M1, "CouplingMedium" },
+{ 0x0014, 0x4057, 2, VR::DS, VM::M1, "CouplingVelocity" },
+{ 0x0014, 0x4058, 2, VR::DS, VM::M1, "ProbeCenterLocationX" },
+{ 0x0014, 0x4059, 2, VR::DS, VM::M1, "ProbeCenterLocationZ" },
+{ 0x0014, 0x405A, 2, VR::DS, VM::M1, "SoundPathLength" },
+{ 0x0014, 0x405C, 2, VR::ST, VM::M1, "DelayLawIdentifier" },
+{ 0x0014, 0x4060, 2, VR::SQ, VM::M1, "GateSettingsSequence" },
+{ 0x0014, 0x4062, 2, VR::DS, VM::M1, "GateThreshold" },
+{ 0x0014, 0x4064, 2, VR::DS, VM::M1, "VelocityOfSound" },
+{ 0x0014, 0x4070, 2, VR::SQ, VM::M1, "CalibrationSettingsSequence" },
+{ 0x0014, 0x4072, 2, VR::ST, VM::M1, "CalibrationProcedure" },
+{ 0x0014, 0x4074, 2, VR::SH, VM::M1, "ProcedureVersion" },
+{ 0x0014, 0x4076, 2, VR::DA, VM::M1, "ProcedureCreationDate" },
+{ 0x0014, 0x4078, 2, VR::DA, VM::M1, "ProcedureExpirationDate" },
+{ 0x0014, 0x407A, 2, VR::DA, VM::M1, "ProcedureLastModifiedDate" },
+{ 0x0014, 0x407C, 2, VR::TM, VM::M1TN, "CalibrationTime" },
+{ 0x0014, 0x407E, 2, VR::DA, VM::M1TN, "CalibrationDate" },
+{ 0x0014, 0x4080, 2, VR::SQ, VM::M1, "ProbeDriveEquipmentSequence" },
+{ 0x0014, 0x4081, 2, VR::CS, VM::M1, "DriveType" },
+{ 0x0014, 0x4082, 2, VR::LT, VM::M1, "ProbeDriveNotes" },
+{ 0x0014, 0x4083, 2, VR::SQ, VM::M1, "DriveProbeSequence" },
+{ 0x0014, 0x4084, 2, VR::DS, VM::M1, "ProbeInductance" },
+{ 0x0014, 0x4085, 2, VR::DS, VM::M1, "ProbeResistance" },
+{ 0x0014, 0x4086, 2, VR::SQ, VM::M1, "ReceiveProbeSequence" },
+{ 0x0014, 0x4087, 2, VR::SQ, VM::M1, "ProbeDriveSettingsSequence" },
+{ 0x0014, 0x4088, 2, VR::DS, VM::M1, "BridgeResistors" },
+{ 0x0014, 0x4089, 2, VR::DS, VM::M1, "ProbeOrientationAngle" },
+{ 0x0014, 0x408B, 2, VR::DS, VM::M1, "UserSelectedGainY" },
+{ 0x0014, 0x408C, 2, VR::DS, VM::M1, "UserSelectedPhase" },
+{ 0x0014, 0x408D, 2, VR::DS, VM::M1, "UserSelectedOffsetX" },
+{ 0x0014, 0x408E, 2, VR::DS, VM::M1, "UserSelectedOffsetY" },
+{ 0x0014, 0x4091, 2, VR::SQ, VM::M1, "ChannelSettingsSequence" },
+{ 0x0014, 0x4092, 2, VR::DS, VM::M1, "ChannelThreshold" },
+{ 0x0014, 0x409A, 2, VR::SQ, VM::M1, "ScannerSettingsSequence" },
+{ 0x0014, 0x409B, 2, VR::ST, VM::M1, "ScanProcedure" },
+{ 0x0014, 0x409C, 2, VR::DS, VM::M1, "TranslationRateX" },
+{ 0x0014, 0x409D, 2, VR::DS, VM::M1, "TranslationRateY" },
+{ 0x0014, 0x409F, 2, VR::DS, VM::M1, "ChannelOverlap" },
+{ 0x0014, 0x40A0, 2, VR::LO, VM::M1, "ImageQualityIndicatorType" },
+{ 0x0014, 0x40A1, 2, VR::LO, VM::M1, "ImageQualityIndicatorMaterial" },
+{ 0x0014, 0x40A2, 2, VR::LO, VM::M1, "ImageQualityIndicatorSize" },
+{ 0x0014, 0x5002, 2, VR::IS, VM::M1, "LINACEnergy" },
+{ 0x0014, 0x5004, 2, VR::IS, VM::M1, "LINACOutput" },
+{ 0x0018, 0x0010, 0, VR::LO, VM::M1, "ContrastBolusAgent" },
+{ 0x0018, 0x0012, 0, VR::SQ, VM::M1, "ContrastBolusAgentSequence" },
+{ 0x0018, 0x0014, 0, VR::SQ, VM::M1, "ContrastBolusAdministrationRouteSequence" },
+{ 0x0018, 0x0015, 0, VR::CS, VM::M1, "BodyPartExamined" },
+{ 0x0018, 0x0020, 0, VR::CS, VM::M1TN, "ScanningSequence" },
+{ 0x0018, 0x0021, 0, VR::CS, VM::M1TN, "SequenceVariant" },
+{ 0x0018, 0x0022, 0, VR::CS, VM::M1TN, "ScanOptions" },
+{ 0x0018, 0x0023, 0, VR::CS, VM::M1, "MRAcquisitionType" },
+{ 0x0018, 0x0024, 0, VR::SH, VM::M1, "SequenceName" },
+{ 0x0018, 0x0025, 0, VR::CS, VM::M1, "AngioFlag" },
+{ 0x0018, 0x0026, 0, VR::SQ, VM::M1, "InterventionDrugInformationSequence" },
+{ 0x0018, 0x0027, 0, VR::TM, VM::M1, "InterventionDrugStopTime" },
+{ 0x0018, 0x0028, 0, VR::DS, VM::M1, "InterventionDrugDose" },
+{ 0x0018, 0x0029, 0, VR::SQ, VM::M1, "InterventionDrugCodeSequence" },
+{ 0x0018, 0x002A, 0, VR::SQ, VM::M1, "AdditionalDrugSequence" },
+{ 0x0018, 0x0030, 1, VR::LO, VM::M1TN, "Radionuclide" },
+{ 0x0018, 0x0031, 0, VR::LO, VM::M1, "Radiopharmaceutical" },
+{ 0x0018, 0x0032, 1, VR::DS, VM::M1, "EnergyWindowCenterline" },
+{ 0x0018, 0x0033, 1, VR::DS, VM::M1TN, "EnergyWindowTotalWidth" },
+{ 0x0018, 0x0034, 0, VR::LO, VM::M1, "InterventionDrugName" },
+{ 0x0018, 0x0035, 0, VR::TM, VM::M1, "InterventionDrugStartTime" },
+{ 0x0018, 0x0036, 0, VR::SQ, VM::M1, "InterventionSequence" },
+{ 0x0018, 0x0037, 1, VR::CS, VM::M1, "TherapyType" },
+{ 0x0018, 0x0038, 0, VR::CS, VM::M1, "InterventionStatus" },
+{ 0x0018, 0x0039, 1, VR::CS, VM::M1, "TherapyDescription" },
+{ 0x0018, 0x003A, 0, VR::ST, VM::M1, "InterventionDescription" },
+{ 0x0018, 0x0040, 0, VR::IS, VM::M1, "CineRate" },
+{ 0x0018, 0x0042, 0, VR::CS, VM::M1, "InitialCineRunState" },
+{ 0x0018, 0x0050, 0, VR::DS, VM::M1, "SliceThickness" },
+{ 0x0018, 0x0060, 0, VR::DS, VM::M1, "KVP" },
+{ 0x0018, 0x0070, 0, VR::IS, VM::M1, "CountsAccumulated" },
+{ 0x0018, 0x0071, 0, VR::CS, VM::M1, "AcquisitionTerminationCondition" },
+{ 0x0018, 0x0072, 0, VR::DS, VM::M1, "EffectiveDuration" },
+{ 0x0018, 0x0073, 0, VR::CS, VM::M1, "AcquisitionStartCondition" },
+{ 0x0018, 0x0074, 0, VR::IS, VM::M1, "AcquisitionStartConditionData" },
+{ 0x0018, 0x0075, 0, VR::IS, VM::M1, "AcquisitionTerminationConditionData" },
+{ 0x0018, 0x0080, 0, VR::DS, VM::M1, "RepetitionTime" },
+{ 0x0018, 0x0081, 0, VR::DS, VM::M1, "EchoTime" },
+{ 0x0018, 0x0082, 0, VR::DS, VM::M1, "InversionTime" },
+{ 0x0018, 0x0083, 0, VR::DS, VM::M1, "NumberOfAverages" },
+{ 0x0018, 0x0084, 0, VR::DS, VM::M1, "ImagingFrequency" },
+{ 0x0018, 0x0085, 0, VR::SH, VM::M1, "ImagedNucleus" },
+{ 0x0018, 0x0086, 0, VR::IS, VM::M1TN, "EchoNumbers" },
+{ 0x0018, 0x0087, 0, VR::DS, VM::M1, "MagneticFieldStrength" },
+{ 0x0018, 0x0088, 0, VR::DS, VM::M1, "SpacingBetweenSlices" },
+{ 0x0018, 0x0089, 0, VR::IS, VM::M1, "NumberOfPhaseEncodingSteps" },
+{ 0x0018, 0x0090, 0, VR::DS, VM::M1, "DataCollectionDiameter" },
+{ 0x0018, 0x0091, 0, VR::IS, VM::M1, "EchoTrainLength" },
+{ 0x0018, 0x0093, 0, VR::DS, VM::M1, "PercentSampling" },
+{ 0x0018, 0x0094, 0, VR::DS, VM::M1, "PercentPhaseFieldOfView" },
+{ 0x0018, 0x0095, 0, VR::DS, VM::M1, "PixelBandwidth" },
+{ 0x0018, 0x1000, 0, VR::LO, VM::M1, "DeviceSerialNumber" },
+{ 0x0018, 0x1002, 0, VR::UI, VM::M1, "DeviceUID" },
+{ 0x0018, 0x1003, 0, VR::LO, VM::M1, "DeviceID" },
+{ 0x0018, 0x1004, 0, VR::LO, VM::M1, "PlateID" },
+{ 0x0018, 0x1005, 0, VR::LO, VM::M1, "GeneratorID" },
+{ 0x0018, 0x1006, 0, VR::LO, VM::M1, "GridID" },
+{ 0x0018, 0x1007, 0, VR::LO, VM::M1, "CassetteID" },
+{ 0x0018, 0x1008, 0, VR::LO, VM::M1, "GantryID" },
+{ 0x0018, 0x1010, 0, VR::LO, VM::M1, "SecondaryCaptureDeviceID" },
+{ 0x0018, 0x1011, 1, VR::LO, VM::M1, "HardcopyCreationDeviceID" },
+{ 0x0018, 0x1012, 0, VR::DA, VM::M1, "DateOfSecondaryCapture" },
+{ 0x0018, 0x1014, 0, VR::TM, VM::M1, "TimeOfSecondaryCapture" },
+{ 0x0018, 0x1016, 0, VR::LO, VM::M1, "SecondaryCaptureDeviceManufacturer" },
+{ 0x0018, 0x1017, 1, VR::LO, VM::M1, "HardcopyDeviceManufacturer" },
+{ 0x0018, 0x1018, 0, VR::LO, VM::M1, "SecondaryCaptureDeviceManufacturerModelName" },
+{ 0x0018, 0x1019, 0, VR::LO, VM::M1TN, "SecondaryCaptureDeviceSoftwareVersions" },
+{ 0x0018, 0x101A, 1, VR::LO, VM::M1TN, "HardcopyDeviceSoftwareVersion" },
+{ 0x0018, 0x101B, 1, VR::LO, VM::M1, "HardcopyDeviceManufacturerModelName" },
+{ 0x0018, 0x1020, 0, VR::LO, VM::M1TN, "SoftwareVersions" },
+{ 0x0018, 0x1022, 0, VR::SH, VM::M1, "VideoImageFormatAcquired" },
+{ 0x0018, 0x1023, 0, VR::LO, VM::M1, "DigitalImageFormatAcquired" },
+{ 0x0018, 0x1030, 0, VR::LO, VM::M1, "ProtocolName" },
+{ 0x0018, 0x1040, 0, VR::LO, VM::M1, "ContrastBolusRoute" },
+{ 0x0018, 0x1041, 0, VR::DS, VM::M1, "ContrastBolusVolume" },
+{ 0x0018, 0x1042, 0, VR::TM, VM::M1, "ContrastBolusStartTime" },
+{ 0x0018, 0x1043, 0, VR::TM, VM::M1, "ContrastBolusStopTime" },
+{ 0x0018, 0x1044, 0, VR::DS, VM::M1, "ContrastBolusTotalDose" },
+{ 0x0018, 0x1045, 0, VR::IS, VM::M1, "SyringeCounts" },
+{ 0x0018, 0x1046, 0, VR::DS, VM::M1TN, "ContrastFlowRate" },
+{ 0x0018, 0x1047, 0, VR::DS, VM::M1TN, "ContrastFlowDuration" },
+{ 0x0018, 0x1048, 0, VR::CS, VM::M1, "ContrastBolusIngredient" },
+{ 0x0018, 0x1049, 0, VR::DS, VM::M1, "ContrastBolusIngredientConcentration" },
+{ 0x0018, 0x1050, 0, VR::DS, VM::M1, "SpatialResolution" },
+{ 0x0018, 0x1060, 0, VR::DS, VM::M1, "TriggerTime" },
+{ 0x0018, 0x1061, 0, VR::LO, VM::M1, "TriggerSourceOrType" },
+{ 0x0018, 0x1062, 0, VR::IS, VM::M1, "NominalInterval" },
+{ 0x0018, 0x1063, 0, VR::DS, VM::M1, "FrameTime" },
+{ 0x0018, 0x1064, 0, VR::LO, VM::M1, "CardiacFramingType" },
+{ 0x0018, 0x1065, 0, VR::DS, VM::M1TN, "FrameTimeVector" },
+{ 0x0018, 0x1066, 0, VR::DS, VM::M1, "FrameDelay" },
+{ 0x0018, 0x1067, 0, VR::DS, VM::M1, "ImageTriggerDelay" },
+{ 0x0018, 0x1068, 0, VR::DS, VM::M1, "MultiplexGroupTimeOffset" },
+{ 0x0018, 0x1069, 0, VR::DS, VM::M1, "TriggerTimeOffset" },
+{ 0x0018, 0x106A, 0, VR::CS, VM::M1, "SynchronizationTrigger" },
+{ 0x0018, 0x106C, 0, VR::US, VM::M2, "SynchronizationChannel" },
+{ 0x0018, 0x106E, 0, VR::UL, VM::M1, "TriggerSamplePosition" },
+{ 0x0018, 0x1070, 0, VR::LO, VM::M1, "RadiopharmaceuticalRoute" },
+{ 0x0018, 0x1071, 0, VR::DS, VM::M1, "RadiopharmaceuticalVolume" },
+{ 0x0018, 0x1072, 0, VR::TM, VM::M1, "RadiopharmaceuticalStartTime" },
+{ 0x0018, 0x1073, 0, VR::TM, VM::M1, "RadiopharmaceuticalStopTime" },
+{ 0x0018, 0x1074, 0, VR::DS, VM::M1, "RadionuclideTotalDose" },
+{ 0x0018, 0x1075, 0, VR::DS, VM::M1, "RadionuclideHalfLife" },
+{ 0x0018, 0x1076, 0, VR::DS, VM::M1, "RadionuclidePositronFraction" },
+{ 0x0018, 0x1077, 0, VR::DS, VM::M1, "RadiopharmaceuticalSpecificActivity" },
+{ 0x0018, 0x1078, 0, VR::DT, VM::M1, "RadiopharmaceuticalStartDateTime" },
+{ 0x0018, 0x1079, 0, VR::DT, VM::M1, "RadiopharmaceuticalStopDateTime" },
+{ 0x0018, 0x1080, 0, VR::CS, VM::M1, "BeatRejectionFlag" },
+{ 0x0018, 0x1081, 0, VR::IS, VM::M1, "LowRRValue" },
+{ 0x0018, 0x1082, 0, VR::IS, VM::M1, "HighRRValue" },
+{ 0x0018, 0x1083, 0, VR::IS, VM::M1, "IntervalsAcquired" },
+{ 0x0018, 0x1084, 0, VR::IS, VM::M1, "IntervalsRejected" },
+{ 0x0018, 0x1085, 0, VR::LO, VM::M1, "PVCRejection" },
+{ 0x0018, 0x1086, 0, VR::IS, VM::M1, "SkipBeats" },
+{ 0x0018, 0x1088, 0, VR::IS, VM::M1, "HeartRate" },
+{ 0x0018, 0x1090, 0, VR::IS, VM::M1, "CardiacNumberOfImages" },
+{ 0x0018, 0x1094, 0, VR::IS, VM::M1, "TriggerWindow" },
+{ 0x0018, 0x1100, 0, VR::DS, VM::M1, "ReconstructionDiameter" },
+{ 0x0018, 0x1110, 0, VR::DS, VM::M1, "DistanceSourceToDetector" },
+{ 0x0018, 0x1111, 0, VR::DS, VM::M1, "DistanceSourceToPatient" },
+{ 0x0018, 0x1114, 0, VR::DS, VM::M1, "EstimatedRadiographicMagnificationFactor" },
+{ 0x0018, 0x1120, 0, VR::DS, VM::M1, "GantryDetectorTilt" },
+{ 0x0018, 0x1121, 0, VR::DS, VM::M1, "GantryDetectorSlew" },
+{ 0x0018, 0x1130, 0, VR::DS, VM::M1, "TableHeight" },
+{ 0x0018, 0x1131, 0, VR::DS, VM::M1, "TableTraverse" },
+{ 0x0018, 0x1134, 0, VR::CS, VM::M1, "TableMotion" },
+{ 0x0018, 0x1135, 0, VR::DS, VM::M1TN, "TableVerticalIncrement" },
+{ 0x0018, 0x1136, 0, VR::DS, VM::M1TN, "TableLateralIncrement" },
+{ 0x0018, 0x1137, 0, VR::DS, VM::M1TN, "TableLongitudinalIncrement" },
+{ 0x0018, 0x1138, 0, VR::DS, VM::M1, "TableAngle" },
+{ 0x0018, 0x113A, 0, VR::CS, VM::M1, "TableType" },
+{ 0x0018, 0x1140, 0, VR::CS, VM::M1, "RotationDirection" },
+{ 0x0018, 0x1141, 1, VR::DS, VM::M1, "AngularPosition" },
+{ 0x0018, 0x1142, 0, VR::DS, VM::M1TN, "RadialPosition" },
+{ 0x0018, 0x1143, 0, VR::DS, VM::M1, "ScanArc" },
+{ 0x0018, 0x1144, 0, VR::DS, VM::M1, "AngularStep" },
+{ 0x0018, 0x1145, 0, VR::DS, VM::M1, "CenterOfRotationOffset" },
+{ 0x0018, 0x1146, 1, VR::DS, VM::M1TN, "RotationOffset" },
+{ 0x0018, 0x1147, 0, VR::CS, VM::M1, "FieldOfViewShape" },
+{ 0x0018, 0x1149, 0, VR::IS, VM::M1T2, "FieldOfViewDimensions" },
+{ 0x0018, 0x1150, 0, VR::IS, VM::M1, "ExposureTime" },
+{ 0x0018, 0x1151, 0, VR::IS, VM::M1, "XRayTubeCurrent" },
+{ 0x0018, 0x1152, 0, VR::IS, VM::M1, "Exposure" },
+{ 0x0018, 0x1153, 0, VR::IS, VM::M1, "ExposureInuAs" },
+{ 0x0018, 0x1154, 0, VR::DS, VM::M1, "AveragePulseWidth" },
+{ 0x0018, 0x1155, 0, VR::CS, VM::M1, "RadiationSetting" },
+{ 0x0018, 0x1156, 0, VR::CS, VM::M1, "RectificationType" },
+{ 0x0018, 0x115A, 0, VR::CS, VM::M1, "RadiationMode" },
+{ 0x0018, 0x115E, 0, VR::DS, VM::M1, "ImageAndFluoroscopyAreaDoseProduct" },
+{ 0x0018, 0x1160, 0, VR::SH, VM::M1, "FilterType" },
+{ 0x0018, 0x1161, 0, VR::LO, VM::M1TN, "TypeOfFilters" },
+{ 0x0018, 0x1162, 0, VR::DS, VM::M1, "IntensifierSize" },
+{ 0x0018, 0x1164, 0, VR::DS, VM::M2, "ImagerPixelSpacing" },
+{ 0x0018, 0x1166, 0, VR::CS, VM::M1TN, "Grid" },
+{ 0x0018, 0x1170, 0, VR::IS, VM::M1, "GeneratorPower" },
+{ 0x0018, 0x1180, 0, VR::SH, VM::M1, "CollimatorGridName" },
+{ 0x0018, 0x1181, 0, VR::CS, VM::M1, "CollimatorType" },
+{ 0x0018, 0x1182, 0, VR::IS, VM::M1T2, "FocalDistance" },
+{ 0x0018, 0x1183, 0, VR::DS, VM::M1T2, "XFocusCenter" },
+{ 0x0018, 0x1184, 0, VR::DS, VM::M1T2, "YFocusCenter" },
+{ 0x0018, 0x1190, 0, VR::DS, VM::M1TN, "FocalSpots" },
+{ 0x0018, 0x1191, 0, VR::CS, VM::M1, "AnodeTargetMaterial" },
+{ 0x0018, 0x11A0, 0, VR::DS, VM::M1, "BodyPartThickness" },
+{ 0x0018, 0x11A2, 0, VR::DS, VM::M1, "CompressionForce" },
+{ 0x0018, 0x11A4, 0, VR::LO, VM::M1, "PaddleDescription" },
+{ 0x0018, 0x1200, 0, VR::DA, VM::M1TN, "DateOfLastCalibration" },
+{ 0x0018, 0x1201, 0, VR::TM, VM::M1TN, "TimeOfLastCalibration" },
+{ 0x0018, 0x1210, 0, VR::SH, VM::M1TN, "ConvolutionKernel" },
+{ 0x0018, 0x1240, 1, VR::IS, VM::M1TN, "UpperLowerPixelValues" },
+{ 0x0018, 0x1242, 0, VR::IS, VM::M1, "ActualFrameDuration" },
+{ 0x0018, 0x1243, 0, VR::IS, VM::M1, "CountRate" },
+{ 0x0018, 0x1244, 0, VR::US, VM::M1, "PreferredPlaybackSequencing" },
+{ 0x0018, 0x1250, 0, VR::SH, VM::M1, "ReceiveCoilName" },
+{ 0x0018, 0x1251, 0, VR::SH, VM::M1, "TransmitCoilName" },
+{ 0x0018, 0x1260, 0, VR::SH, VM::M1, "PlateType" },
+{ 0x0018, 0x1261, 0, VR::LO, VM::M1, "PhosphorType" },
+{ 0x0018, 0x1300, 0, VR::DS, VM::M1, "ScanVelocity" },
+{ 0x0018, 0x1301, 0, VR::CS, VM::M1TN, "WholeBodyTechnique" },
+{ 0x0018, 0x1302, 0, VR::IS, VM::M1, "ScanLength" },
+{ 0x0018, 0x1310, 0, VR::US, VM::M4, "AcquisitionMatrix" },
+{ 0x0018, 0x1312, 0, VR::CS, VM::M1, "InPlanePhaseEncodingDirection" },
+{ 0x0018, 0x1314, 0, VR::DS, VM::M1, "FlipAngle" },
+{ 0x0018, 0x1315, 0, VR::CS, VM::M1, "VariableFlipAngleFlag" },
+{ 0x0018, 0x1316, 0, VR::DS, VM::M1, "SAR" },
+{ 0x0018, 0x1318, 0, VR::DS, VM::M1, "dBdt" },
+{ 0x0018, 0x1400, 0, VR::LO, VM::M1, "AcquisitionDeviceProcessingDescription" },
+{ 0x0018, 0x1401, 0, VR::LO, VM::M1, "AcquisitionDeviceProcessingCode" },
+{ 0x0018, 0x1402, 0, VR::CS, VM::M1, "CassetteOrientation" },
+{ 0x0018, 0x1403, 0, VR::CS, VM::M1, "CassetteSize" },
+{ 0x0018, 0x1404, 0, VR::US, VM::M1, "ExposuresOnPlate" },
+{ 0x0018, 0x1405, 0, VR::IS, VM::M1, "RelativeXRayExposure" },
+{ 0x0018, 0x1411, 0, VR::DS, VM::M1, "ExposureIndex" },
+{ 0x0018, 0x1412, 0, VR::DS, VM::M1, "TargetExposureIndex" },
+{ 0x0018, 0x1413, 0, VR::DS, VM::M1, "DeviationIndex" },
+{ 0x0018, 0x1450, 0, VR::DS, VM::M1, "ColumnAngulation" },
+{ 0x0018, 0x1460, 0, VR::DS, VM::M1, "TomoLayerHeight" },
+{ 0x0018, 0x1470, 0, VR::DS, VM::M1, "TomoAngle" },
+{ 0x0018, 0x1480, 0, VR::DS, VM::M1, "TomoTime" },
+{ 0x0018, 0x1490, 0, VR::CS, VM::M1, "TomoType" },
+{ 0x0018, 0x1491, 0, VR::CS, VM::M1, "TomoClass" },
+{ 0x0018, 0x1495, 0, VR::IS, VM::M1, "NumberOfTomosynthesisSourceImages" },
+{ 0x0018, 0x1500, 0, VR::CS, VM::M1, "PositionerMotion" },
+{ 0x0018, 0x1508, 0, VR::CS, VM::M1, "PositionerType" },
+{ 0x0018, 0x1510, 0, VR::DS, VM::M1, "PositionerPrimaryAngle" },
+{ 0x0018, 0x1511, 0, VR::DS, VM::M1, "PositionerSecondaryAngle" },
+{ 0x0018, 0x1520, 0, VR::DS, VM::M1TN, "PositionerPrimaryAngleIncrement" },
+{ 0x0018, 0x1521, 0, VR::DS, VM::M1TN, "PositionerSecondaryAngleIncrement" },
+{ 0x0018, 0x1530, 0, VR::DS, VM::M1, "DetectorPrimaryAngle" },
+{ 0x0018, 0x1531, 0, VR::DS, VM::M1, "DetectorSecondaryAngle" },
+{ 0x0018, 0x1600, 0, VR::CS, VM::M1T3, "ShutterShape" },
+{ 0x0018, 0x1602, 0, VR::IS, VM::M1, "ShutterLeftVerticalEdge" },
+{ 0x0018, 0x1604, 0, VR::IS, VM::M1, "ShutterRightVerticalEdge" },
+{ 0x0018, 0x1606, 0, VR::IS, VM::M1, "ShutterUpperHorizontalEdge" },
+{ 0x0018, 0x1608, 0, VR::IS, VM::M1, "ShutterLowerHorizontalEdge" },
+{ 0x0018, 0x1610, 0, VR::IS, VM::M2, "CenterOfCircularShutter" },
+{ 0x0018, 0x1612, 0, VR::IS, VM::M1, "RadiusOfCircularShutter" },
+{ 0x0018, 0x1620, 0, VR::IS, VM::M2T2N, "VerticesOfThePolygonalShutter" },
+{ 0x0018, 0x1622, 0, VR::US, VM::M1, "ShutterPresentationValue" },
+{ 0x0018, 0x1623, 0, VR::US, VM::M1, "ShutterOverlayGroup" },
+{ 0x0018, 0x1624, 0, VR::US, VM::M3, "ShutterPresentationColorCIELabValue" },
+{ 0x0018, 0x1700, 0, VR::CS, VM::M1T3, "CollimatorShape" },
+{ 0x0018, 0x1702, 0, VR::IS, VM::M1, "CollimatorLeftVerticalEdge" },
+{ 0x0018, 0x1704, 0, VR::IS, VM::M1, "CollimatorRightVerticalEdge" },
+{ 0x0018, 0x1706, 0, VR::IS, VM::M1, "CollimatorUpperHorizontalEdge" },
+{ 0x0018, 0x1708, 0, VR::IS, VM::M1, "CollimatorLowerHorizontalEdge" },
+{ 0x0018, 0x1710, 0, VR::IS, VM::M2, "CenterOfCircularCollimator" },
+{ 0x0018, 0x1712, 0, VR::IS, VM::M1, "RadiusOfCircularCollimator" },
+{ 0x0018, 0x1720, 0, VR::IS, VM::M2T2N, "VerticesOfThePolygonalCollimator" },
+{ 0x0018, 0x1800, 0, VR::CS, VM::M1, "AcquisitionTimeSynchronized" },
+{ 0x0018, 0x1801, 0, VR::SH, VM::M1, "TimeSource" },
+{ 0x0018, 0x1802, 0, VR::CS, VM::M1, "TimeDistributionProtocol" },
+{ 0x0018, 0x1803, 0, VR::LO, VM::M1, "NTPSourceAddress" },
+{ 0x0018, 0x2001, 0, VR::IS, VM::M1TN, "PageNumberVector" },
+{ 0x0018, 0x2002, 0, VR::SH, VM::M1TN, "FrameLabelVector" },
+{ 0x0018, 0x2003, 0, VR::DS, VM::M1TN, "FramePrimaryAngleVector" },
+{ 0x0018, 0x2004, 0, VR::DS, VM::M1TN, "FrameSecondaryAngleVector" },
+{ 0x0018, 0x2005, 0, VR::DS, VM::M1TN, "SliceLocationVector" },
+{ 0x0018, 0x2006, 0, VR::SH, VM::M1TN, "DisplayWindowLabelVector" },
+{ 0x0018, 0x2010, 0, VR::DS, VM::M2, "NominalScannedPixelSpacing" },
+{ 0x0018, 0x2020, 0, VR::CS, VM::M1, "DigitizingDeviceTransportDirection" },
+{ 0x0018, 0x2030, 0, VR::DS, VM::M1, "RotationOfScannedFilm" },
+{ 0x0018, 0x2041, 0, VR::SQ, VM::M1, "BiopsyTargetSequence" },
+{ 0x0018, 0x2042, 0, VR::UI, VM::M1, "TargetUID" },
+{ 0x0018, 0x2043, 0, VR::FL, VM::M2, "LocalizingCursorPosition" },
+{ 0x0018, 0x2044, 0, VR::FL, VM::M3, "CalculatedTargetPosition" },
+{ 0x0018, 0x2045, 0, VR::SH, VM::M1, "TargetLabel" },
+{ 0x0018, 0x2046, 0, VR::FL, VM::M1, "DisplayedZValue" },
+{ 0x0018, 0x3100, 0, VR::CS, VM::M1, "IVUSAcquisition" },
+{ 0x0018, 0x3101, 0, VR::DS, VM::M1, "IVUSPullbackRate" },
+{ 0x0018, 0x3102, 0, VR::DS, VM::M1, "IVUSGatedRate" },
+{ 0x0018, 0x3103, 0, VR::IS, VM::M1, "IVUSPullbackStartFrameNumber" },
+{ 0x0018, 0x3104, 0, VR::IS, VM::M1, "IVUSPullbackStopFrameNumber" },
+{ 0x0018, 0x3105, 0, VR::IS, VM::M1TN, "LesionNumber" },
+{ 0x0018, 0x4000, 1, VR::LT, VM::M1, "AcquisitionComments" },
+{ 0x0018, 0x5000, 0, VR::SH, VM::M1TN, "OutputPower" },
+{ 0x0018, 0x5010, 0, VR::LO, VM::M1TN, "TransducerData" },
+{ 0x0018, 0x5012, 0, VR::DS, VM::M1, "FocusDepth" },
+{ 0x0018, 0x5020, 0, VR::LO, VM::M1, "ProcessingFunction" },
+{ 0x0018, 0x5021, 1, VR::LO, VM::M1, "PostprocessingFunction" },
+{ 0x0018, 0x5022, 0, VR::DS, VM::M1, "MechanicalIndex" },
+{ 0x0018, 0x5024, 0, VR::DS, VM::M1, "BoneThermalIndex" },
+{ 0x0018, 0x5026, 0, VR::DS, VM::M1, "CranialThermalIndex" },
+{ 0x0018, 0x5027, 0, VR::DS, VM::M1, "SoftTissueThermalIndex" },
+{ 0x0018, 0x5028, 0, VR::DS, VM::M1, "SoftTissueFocusThermalIndex" },
+{ 0x0018, 0x5029, 0, VR::DS, VM::M1, "SoftTissueSurfaceThermalIndex" },
+{ 0x0018, 0x5030, 1, VR::DS, VM::M1, "DynamicRange" },
+{ 0x0018, 0x5040, 1, VR::DS, VM::M1, "TotalGain" },
+{ 0x0018, 0x5050, 0, VR::IS, VM::M1, "DepthOfScanField" },
+{ 0x0018, 0x5100, 0, VR::CS, VM::M1, "PatientPosition" },
+{ 0x0018, 0x5101, 0, VR::CS, VM::M1, "ViewPosition" },
+{ 0x0018, 0x5104, 0, VR::SQ, VM::M1, "ProjectionEponymousNameCodeSequence" },
+{ 0x0018, 0x5210, 1, VR::DS, VM::M6, "ImageTransformationMatrix" },
+{ 0x0018, 0x5212, 1, VR::DS, VM::M3, "ImageTranslationVector" },
+{ 0x0018, 0x6000, 0, VR::DS, VM::M1, "Sensitivity" },
+{ 0x0018, 0x6011, 0, VR::SQ, VM::M1, "SequenceOfUltrasoundRegions" },
+{ 0x0018, 0x6012, 0, VR::US, VM::M1, "RegionSpatialFormat" },
+{ 0x0018, 0x6014, 0, VR::US, VM::M1, "RegionDataType" },
+{ 0x0018, 0x6016, 0, VR::UL, VM::M1, "RegionFlags" },
+{ 0x0018, 0x6018, 0, VR::UL, VM::M1, "RegionLocationMinX0" },
+{ 0x0018, 0x601A, 0, VR::UL, VM::M1, "RegionLocationMinY0" },
+{ 0x0018, 0x601C, 0, VR::UL, VM::M1, "RegionLocationMaxX1" },
+{ 0x0018, 0x601E, 0, VR::UL, VM::M1, "RegionLocationMaxY1" },
+{ 0x0018, 0x6020, 0, VR::SL, VM::M1, "ReferencePixelX0" },
+{ 0x0018, 0x6022, 0, VR::SL, VM::M1, "ReferencePixelY0" },
+{ 0x0018, 0x6024, 0, VR::US, VM::M1, "PhysicalUnitsXDirection" },
+{ 0x0018, 0x6026, 0, VR::US, VM::M1, "PhysicalUnitsYDirection" },
+{ 0x0018, 0x6028, 0, VR::FD, VM::M1, "ReferencePixelPhysicalValueX" },
+{ 0x0018, 0x602A, 0, VR::FD, VM::M1, "ReferencePixelPhysicalValueY" },
+{ 0x0018, 0x602C, 0, VR::FD, VM::M1, "PhysicalDeltaX" },
+{ 0x0018, 0x602E, 0, VR::FD, VM::M1, "PhysicalDeltaY" },
+{ 0x0018, 0x6030, 0, VR::UL, VM::M1, "TransducerFrequency" },
+{ 0x0018, 0x6031, 0, VR::CS, VM::M1, "TransducerType" },
+{ 0x0018, 0x6032, 0, VR::UL, VM::M1, "PulseRepetitionFrequency" },
+{ 0x0018, 0x6034, 0, VR::FD, VM::M1, "DopplerCorrectionAngle" },
+{ 0x0018, 0x6036, 0, VR::FD, VM::M1, "SteeringAngle" },
+{ 0x0018, 0x6038, 1, VR::UL, VM::M1, "DopplerSampleVolumeXPositionRetired" },
+{ 0x0018, 0x6039, 0, VR::SL, VM::M1, "DopplerSampleVolumeXPosition" },
+{ 0x0018, 0x603A, 1, VR::UL, VM::M1, "DopplerSampleVolumeYPositionRetired" },
+{ 0x0018, 0x603B, 0, VR::SL, VM::M1, "DopplerSampleVolumeYPosition" },
+{ 0x0018, 0x603C, 1, VR::UL, VM::M1, "TMLinePositionX0Retired" },
+{ 0x0018, 0x603D, 0, VR::SL, VM::M1, "TMLinePositionX0" },
+{ 0x0018, 0x603E, 1, VR::UL, VM::M1, "TMLinePositionY0Retired" },
+{ 0x0018, 0x603F, 0, VR::SL, VM::M1, "TMLinePositionY0" },
+{ 0x0018, 0x6040, 1, VR::UL, VM::M1, "TMLinePositionX1Retired" },
+{ 0x0018, 0x6041, 0, VR::SL, VM::M1, "TMLinePositionX1" },
+{ 0x0018, 0x6042, 1, VR::UL, VM::M1, "TMLinePositionY1Retired" },
+{ 0x0018, 0x6043, 0, VR::SL, VM::M1, "TMLinePositionY1" },
+{ 0x0018, 0x6044, 0, VR::US, VM::M1, "PixelComponentOrganization" },
+{ 0x0018, 0x6046, 0, VR::UL, VM::M1, "PixelComponentMask" },
+{ 0x0018, 0x6048, 0, VR::UL, VM::M1, "PixelComponentRangeStart" },
+{ 0x0018, 0x604A, 0, VR::UL, VM::M1, "PixelComponentRangeStop" },
+{ 0x0018, 0x604C, 0, VR::US, VM::M1, "PixelComponentPhysicalUnits" },
+{ 0x0018, 0x604E, 0, VR::US, VM::M1, "PixelComponentDataType" },
+{ 0x0018, 0x6050, 0, VR::UL, VM::M1, "NumberOfTableBreakPoints" },
+{ 0x0018, 0x6052, 0, VR::UL, VM::M1TN, "TableOfXBreakPoints" },
+{ 0x0018, 0x6054, 0, VR::FD, VM::M1TN, "TableOfYBreakPoints" },
+{ 0x0018, 0x6056, 0, VR::UL, VM::M1, "NumberOfTableEntries" },
+{ 0x0018, 0x6058, 0, VR::UL, VM::M1TN, "TableOfPixelValues" },
+{ 0x0018, 0x605A, 0, VR::FL, VM::M1TN, "TableOfParameterValues" },
+{ 0x0018, 0x6060, 0, VR::FL, VM::M1TN, "RWaveTimeVector" },
+{ 0x0018, 0x7000, 0, VR::CS, VM::M1, "DetectorConditionsNominalFlag" },
+{ 0x0018, 0x7001, 0, VR::DS, VM::M1, "DetectorTemperature" },
+{ 0x0018, 0x7004, 0, VR::CS, VM::M1, "DetectorType" },
+{ 0x0018, 0x7005, 0, VR::CS, VM::M1, "DetectorConfiguration" },
+{ 0x0018, 0x7006, 0, VR::LT, VM::M1, "DetectorDescription" },
+{ 0x0018, 0x7008, 0, VR::LT, VM::M1, "DetectorMode" },
+{ 0x0018, 0x700A, 0, VR::SH, VM::M1, "DetectorID" },
+{ 0x0018, 0x700C, 0, VR::DA, VM::M1, "DateOfLastDetectorCalibration" },
+{ 0x0018, 0x700E, 0, VR::TM, VM::M1, "TimeOfLastDetectorCalibration" },
+{ 0x0018, 0x7010, 0, VR::IS, VM::M1, "ExposuresOnDetectorSinceLastCalibration" },
+{ 0x0018, 0x7011, 0, VR::IS, VM::M1, "ExposuresOnDetectorSinceManufactured" },
+{ 0x0018, 0x7012, 0, VR::DS, VM::M1, "DetectorTimeSinceLastExposure" },
+{ 0x0018, 0x7014, 0, VR::DS, VM::M1, "DetectorActiveTime" },
+{ 0x0018, 0x7016, 0, VR::DS, VM::M1, "DetectorActivationOffsetFromExposure" },
+{ 0x0018, 0x701A, 0, VR::DS, VM::M2, "DetectorBinning" },
+{ 0x0018, 0x7020, 0, VR::DS, VM::M2, "DetectorElementPhysicalSize" },
+{ 0x0018, 0x7022, 0, VR::DS, VM::M2, "DetectorElementSpacing" },
+{ 0x0018, 0x7024, 0, VR::CS, VM::M1, "DetectorActiveShape" },
+{ 0x0018, 0x7026, 0, VR::DS, VM::M1T2, "DetectorActiveDimensions" },
+{ 0x0018, 0x7028, 0, VR::DS, VM::M2, "DetectorActiveOrigin" },
+{ 0x0018, 0x702A, 0, VR::LO, VM::M1, "DetectorManufacturerName" },
+{ 0x0018, 0x702B, 0, VR::LO, VM::M1, "DetectorManufacturerModelName" },
+{ 0x0018, 0x7030, 0, VR::DS, VM::M2, "FieldOfViewOrigin" },
+{ 0x0018, 0x7032, 0, VR::DS, VM::M1, "FieldOfViewRotation" },
+{ 0x0018, 0x7034, 0, VR::CS, VM::M1, "FieldOfViewHorizontalFlip" },
+{ 0x0018, 0x7036, 0, VR::FL, VM::M2, "PixelDataAreaOriginRelativeToFOV" },
+{ 0x0018, 0x7038, 0, VR::FL, VM::M1, "PixelDataAreaRotationAngleRelativeToFOV" },
+{ 0x0018, 0x7040, 0, VR::LT, VM::M1, "GridAbsorbingMaterial" },
+{ 0x0018, 0x7041, 0, VR::LT, VM::M1, "GridSpacingMaterial" },
+{ 0x0018, 0x7042, 0, VR::DS, VM::M1, "GridThickness" },
+{ 0x0018, 0x7044, 0, VR::DS, VM::M1, "GridPitch" },
+{ 0x0018, 0x7046, 0, VR::IS, VM::M2, "GridAspectRatio" },
+{ 0x0018, 0x7048, 0, VR::DS, VM::M1, "GridPeriod" },
+{ 0x0018, 0x704C, 0, VR::DS, VM::M1, "GridFocalDistance" },
+{ 0x0018, 0x7050, 0, VR::CS, VM::M1TN, "FilterMaterial" },
+{ 0x0018, 0x7052, 0, VR::DS, VM::M1TN, "FilterThicknessMinimum" },
+{ 0x0018, 0x7054, 0, VR::DS, VM::M1TN, "FilterThicknessMaximum" },
+{ 0x0018, 0x7056, 0, VR::FL, VM::M1TN, "FilterBeamPathLengthMinimum" },
+{ 0x0018, 0x7058, 0, VR::FL, VM::M1TN, "FilterBeamPathLengthMaximum" },
+{ 0x0018, 0x7060, 0, VR::CS, VM::M1, "ExposureControlMode" },
+{ 0x0018, 0x7062, 0, VR::LT, VM::M1, "ExposureControlModeDescription" },
+{ 0x0018, 0x7064, 0, VR::CS, VM::M1, "ExposureStatus" },
+{ 0x0018, 0x7065, 0, VR::DS, VM::M1, "PhototimerSetting" },
+{ 0x0018, 0x8150, 0, VR::DS, VM::M1, "ExposureTimeInuS" },
+{ 0x0018, 0x8151, 0, VR::DS, VM::M1, "XRayTubeCurrentInuA" },
+{ 0x0018, 0x9004, 0, VR::CS, VM::M1, "ContentQualification" },
+{ 0x0018, 0x9005, 0, VR::SH, VM::M1, "PulseSequenceName" },
+{ 0x0018, 0x9006, 0, VR::SQ, VM::M1, "MRImagingModifierSequence" },
+{ 0x0018, 0x9008, 0, VR::CS, VM::M1, "EchoPulseSequence" },
+{ 0x0018, 0x9009, 0, VR::CS, VM::M1, "InversionRecovery" },
+{ 0x0018, 0x9010, 0, VR::CS, VM::M1, "FlowCompensation" },
+{ 0x0018, 0x9011, 0, VR::CS, VM::M1, "MultipleSpinEcho" },
+{ 0x0018, 0x9012, 0, VR::CS, VM::M1, "MultiPlanarExcitation" },
+{ 0x0018, 0x9014, 0, VR::CS, VM::M1, "PhaseContrast" },
+{ 0x0018, 0x9015, 0, VR::CS, VM::M1, "TimeOfFlightContrast" },
+{ 0x0018, 0x9016, 0, VR::CS, VM::M1, "Spoiling" },
+{ 0x0018, 0x9017, 0, VR::CS, VM::M1, "SteadyStatePulseSequence" },
+{ 0x0018, 0x9018, 0, VR::CS, VM::M1, "EchoPlanarPulseSequence" },
+{ 0x0018, 0x9019, 0, VR::FD, VM::M1, "TagAngleFirstAxis" },
+{ 0x0018, 0x9020, 0, VR::CS, VM::M1, "MagnetizationTransfer" },
+{ 0x0018, 0x9021, 0, VR::CS, VM::M1, "T2Preparation" },
+{ 0x0018, 0x9022, 0, VR::CS, VM::M1, "BloodSignalNulling" },
+{ 0x0018, 0x9024, 0, VR::CS, VM::M1, "SaturationRecovery" },
+{ 0x0018, 0x9025, 0, VR::CS, VM::M1, "SpectrallySelectedSuppression" },
+{ 0x0018, 0x9026, 0, VR::CS, VM::M1, "SpectrallySelectedExcitation" },
+{ 0x0018, 0x9027, 0, VR::CS, VM::M1, "SpatialPresaturation" },
+{ 0x0018, 0x9028, 0, VR::CS, VM::M1, "Tagging" },
+{ 0x0018, 0x9029, 0, VR::CS, VM::M1, "OversamplingPhase" },
+{ 0x0018, 0x9030, 0, VR::FD, VM::M1, "TagSpacingFirstDimension" },
+{ 0x0018, 0x9032, 0, VR::CS, VM::M1, "GeometryOfKSpaceTraversal" },
+{ 0x0018, 0x9033, 0, VR::CS, VM::M1, "SegmentedKSpaceTraversal" },
+{ 0x0018, 0x9034, 0, VR::CS, VM::M1, "RectilinearPhaseEncodeReordering" },
+{ 0x0018, 0x9035, 0, VR::FD, VM::M1, "TagThickness" },
+{ 0x0018, 0x9036, 0, VR::CS, VM::M1, "PartialFourierDirection" },
+{ 0x0018, 0x9037, 0, VR::CS, VM::M1, "CardiacSynchronizationTechnique" },
+{ 0x0018, 0x9041, 0, VR::LO, VM::M1, "ReceiveCoilManufacturerName" },
+{ 0x0018, 0x9042, 0, VR::SQ, VM::M1, "MRReceiveCoilSequence" },
+{ 0x0018, 0x9043, 0, VR::CS, VM::M1, "ReceiveCoilType" },
+{ 0x0018, 0x9044, 0, VR::CS, VM::M1, "QuadratureReceiveCoil" },
+{ 0x0018, 0x9045, 0, VR::SQ, VM::M1, "MultiCoilDefinitionSequence" },
+{ 0x0018, 0x9046, 0, VR::LO, VM::M1, "MultiCoilConfiguration" },
+{ 0x0018, 0x9047, 0, VR::SH, VM::M1, "MultiCoilElementName" },
+{ 0x0018, 0x9048, 0, VR::CS, VM::M1, "MultiCoilElementUsed" },
+{ 0x0018, 0x9049, 0, VR::SQ, VM::M1, "MRTransmitCoilSequence" },
+{ 0x0018, 0x9050, 0, VR::LO, VM::M1, "TransmitCoilManufacturerName" },
+{ 0x0018, 0x9051, 0, VR::CS, VM::M1, "TransmitCoilType" },
+{ 0x0018, 0x9052, 0, VR::FD, VM::M1T2, "SpectralWidth" },
+{ 0x0018, 0x9053, 0, VR::FD, VM::M1T2, "ChemicalShiftReference" },
+{ 0x0018, 0x9054, 0, VR::CS, VM::M1, "VolumeLocalizationTechnique" },
+{ 0x0018, 0x9058, 0, VR::US, VM::M1, "MRAcquisitionFrequencyEncodingSteps" },
+{ 0x0018, 0x9059, 0, VR::CS, VM::M1, "Decoupling" },
+{ 0x0018, 0x9060, 0, VR::CS, VM::M1T2, "DecoupledNucleus" },
+{ 0x0018, 0x9061, 0, VR::FD, VM::M1T2, "DecouplingFrequency" },
+{ 0x0018, 0x9062, 0, VR::CS, VM::M1, "DecouplingMethod" },
+{ 0x0018, 0x9063, 0, VR::FD, VM::M1T2, "DecouplingChemicalShiftReference" },
+{ 0x0018, 0x9064, 0, VR::CS, VM::M1, "KSpaceFiltering" },
+{ 0x0018, 0x9065, 0, VR::CS, VM::M1T2, "TimeDomainFiltering" },
+{ 0x0018, 0x9066, 0, VR::US, VM::M1T2, "NumberOfZeroFills" },
+{ 0x0018, 0x9067, 0, VR::CS, VM::M1, "BaselineCorrection" },
+{ 0x0018, 0x9069, 0, VR::FD, VM::M1, "ParallelReductionFactorInPlane" },
+{ 0x0018, 0x9070, 0, VR::FD, VM::M1, "CardiacRRIntervalSpecified" },
+{ 0x0018, 0x9073, 0, VR::FD, VM::M1, "AcquisitionDuration" },
+{ 0x0018, 0x9074, 0, VR::DT, VM::M1, "FrameAcquisitionDateTime" },
+{ 0x0018, 0x9075, 0, VR::CS, VM::M1, "DiffusionDirectionality" },
+{ 0x0018, 0x9076, 0, VR::SQ, VM::M1, "DiffusionGradientDirectionSequence" },
+{ 0x0018, 0x9077, 0, VR::CS, VM::M1, "ParallelAcquisition" },
+{ 0x0018, 0x9078, 0, VR::CS, VM::M1, "ParallelAcquisitionTechnique" },
+{ 0x0018, 0x9079, 0, VR::FD, VM::M1TN, "InversionTimes" },
+{ 0x0018, 0x9080, 0, VR::ST, VM::M1, "MetaboliteMapDescription" },
+{ 0x0018, 0x9081, 0, VR::CS, VM::M1, "PartialFourier" },
+{ 0x0018, 0x9082, 0, VR::FD, VM::M1, "EffectiveEchoTime" },
+{ 0x0018, 0x9083, 0, VR::SQ, VM::M1, "MetaboliteMapCodeSequence" },
+{ 0x0018, 0x9084, 0, VR::SQ, VM::M1, "ChemicalShiftSequence" },
+{ 0x0018, 0x9085, 0, VR::CS, VM::M1, "CardiacSignalSource" },
+{ 0x0018, 0x9087, 0, VR::FD, VM::M1, "DiffusionBValue" },
+{ 0x0018, 0x9089, 0, VR::FD, VM::M3, "DiffusionGradientOrientation" },
+{ 0x0018, 0x9090, 0, VR::FD, VM::M3, "VelocityEncodingDirection" },
+{ 0x0018, 0x9091, 0, VR::FD, VM::M1, "VelocityEncodingMinimumValue" },
+{ 0x0018, 0x9092, 0, VR::SQ, VM::M1, "VelocityEncodingAcquisitionSequence" },
+{ 0x0018, 0x9093, 0, VR::US, VM::M1, "NumberOfKSpaceTrajectories" },
+{ 0x0018, 0x9094, 0, VR::CS, VM::M1, "CoverageOfKSpace" },
+{ 0x0018, 0x9095, 0, VR::UL, VM::M1, "SpectroscopyAcquisitionPhaseRows" },
+{ 0x0018, 0x9096, 1, VR::FD, VM::M1, "ParallelReductionFactorInPlaneRetired" },
+{ 0x0018, 0x9098, 0, VR::FD, VM::M1T2, "TransmitterFrequency" },
+{ 0x0018, 0x9100, 0, VR::CS, VM::M1T2, "ResonantNucleus" },
+{ 0x0018, 0x9101, 0, VR::CS, VM::M1, "FrequencyCorrection" },
+{ 0x0018, 0x9103, 0, VR::SQ, VM::M1, "MRSpectroscopyFOVGeometrySequence" },
+{ 0x0018, 0x9104, 0, VR::FD, VM::M1, "SlabThickness" },
+{ 0x0018, 0x9105, 0, VR::FD, VM::M3, "SlabOrientation" },
+{ 0x0018, 0x9106, 0, VR::FD, VM::M3, "MidSlabPosition" },
+{ 0x0018, 0x9107, 0, VR::SQ, VM::M1, "MRSpatialSaturationSequence" },
+{ 0x0018, 0x9112, 0, VR::SQ, VM::M1, "MRTimingAndRelatedParametersSequence" },
+{ 0x0018, 0x9114, 0, VR::SQ, VM::M1, "MREchoSequence" },
+{ 0x0018, 0x9115, 0, VR::SQ, VM::M1, "MRModifierSequence" },
+{ 0x0018, 0x9117, 0, VR::SQ, VM::M1, "MRDiffusionSequence" },
+{ 0x0018, 0x9118, 0, VR::SQ, VM::M1, "CardiacSynchronizationSequence" },
+{ 0x0018, 0x9119, 0, VR::SQ, VM::M1, "MRAveragesSequence" },
+{ 0x0018, 0x9125, 0, VR::SQ, VM::M1, "MRFOVGeometrySequence" },
+{ 0x0018, 0x9126, 0, VR::SQ, VM::M1, "VolumeLocalizationSequence" },
+{ 0x0018, 0x9127, 0, VR::UL, VM::M1, "SpectroscopyAcquisitionDataColumns" },
+{ 0x0018, 0x9147, 0, VR::CS, VM::M1, "DiffusionAnisotropyType" },
+{ 0x0018, 0x9151, 0, VR::DT, VM::M1, "FrameReferenceDateTime" },
+{ 0x0018, 0x9152, 0, VR::SQ, VM::M1, "MRMetaboliteMapSequence" },
+{ 0x0018, 0x9155, 0, VR::FD, VM::M1, "ParallelReductionFactorOutOfPlane" },
+{ 0x0018, 0x9159, 0, VR::UL, VM::M1, "SpectroscopyAcquisitionOutOfPlanePhaseSteps" },
+{ 0x0018, 0x9166, 1, VR::CS, VM::M1, "BulkMotionStatus" },
+{ 0x0018, 0x9168, 0, VR::FD, VM::M1, "ParallelReductionFactorSecondInPlane" },
+{ 0x0018, 0x9169, 0, VR::CS, VM::M1, "CardiacBeatRejectionTechnique" },
+{ 0x0018, 0x9170, 0, VR::CS, VM::M1, "RespiratoryMotionCompensationTechnique" },
+{ 0x0018, 0x9171, 0, VR::CS, VM::M1, "RespiratorySignalSource" },
+{ 0x0018, 0x9172, 0, VR::CS, VM::M1, "BulkMotionCompensationTechnique" },
+{ 0x0018, 0x9173, 0, VR::CS, VM::M1, "BulkMotionSignalSource" },
+{ 0x0018, 0x9174, 0, VR::CS, VM::M1, "ApplicableSafetyStandardAgency" },
+{ 0x0018, 0x9175, 0, VR::LO, VM::M1, "ApplicableSafetyStandardDescription" },
+{ 0x0018, 0x9176, 0, VR::SQ, VM::M1, "OperatingModeSequence" },
+{ 0x0018, 0x9177, 0, VR::CS, VM::M1, "OperatingModeType" },
+{ 0x0018, 0x9178, 0, VR::CS, VM::M1, "OperatingMode" },
+{ 0x0018, 0x9179, 0, VR::CS, VM::M1, "SpecificAbsorptionRateDefinition" },
+{ 0x0018, 0x9180, 0, VR::CS, VM::M1, "GradientOutputType" },
+{ 0x0018, 0x9181, 0, VR::FD, VM::M1, "SpecificAbsorptionRateValue" },
+{ 0x0018, 0x9182, 0, VR::FD, VM::M1, "GradientOutput" },
+{ 0x0018, 0x9183, 0, VR::CS, VM::M1, "FlowCompensationDirection" },
+{ 0x0018, 0x9184, 0, VR::FD, VM::M1, "TaggingDelay" },
+{ 0x0018, 0x9185, 0, VR::ST, VM::M1, "RespiratoryMotionCompensationTechniqueDescription" },
+{ 0x0018, 0x9186, 0, VR::SH, VM::M1, "RespiratorySignalSourceID" },
+{ 0x0018, 0x9195, 1, VR::FD, VM::M1, "ChemicalShiftMinimumIntegrationLimitInHz" },
+{ 0x0018, 0x9196, 1, VR::FD, VM::M1, "ChemicalShiftMaximumIntegrationLimitInHz" },
+{ 0x0018, 0x9197, 0, VR::SQ, VM::M1, "MRVelocityEncodingSequence" },
+{ 0x0018, 0x9198, 0, VR::CS, VM::M1, "FirstOrderPhaseCorrection" },
+{ 0x0018, 0x9199, 0, VR::CS, VM::M1, "WaterReferencedPhaseCorrection" },
+{ 0x0018, 0x9200, 0, VR::CS, VM::M1, "MRSpectroscopyAcquisitionType" },
+{ 0x0018, 0x9214, 0, VR::CS, VM::M1, "RespiratoryCyclePosition" },
+{ 0x0018, 0x9217, 0, VR::FD, VM::M1, "VelocityEncodingMaximumValue" },
+{ 0x0018, 0x9218, 0, VR::FD, VM::M1, "TagSpacingSecondDimension" },
+{ 0x0018, 0x9219, 0, VR::SS, VM::M1, "TagAngleSecondAxis" },
+{ 0x0018, 0x9220, 0, VR::FD, VM::M1, "FrameAcquisitionDuration" },
+{ 0x0018, 0x9226, 0, VR::SQ, VM::M1, "MRImageFrameTypeSequence" },
+{ 0x0018, 0x9227, 0, VR::SQ, VM::M1, "MRSpectroscopyFrameTypeSequence" },
+{ 0x0018, 0x9231, 0, VR::US, VM::M1, "MRAcquisitionPhaseEncodingStepsInPlane" },
+{ 0x0018, 0x9232, 0, VR::US, VM::M1, "MRAcquisitionPhaseEncodingStepsOutOfPlane" },
+{ 0x0018, 0x9234, 0, VR::UL, VM::M1, "SpectroscopyAcquisitionPhaseColumns" },
+{ 0x0018, 0x9236, 0, VR::CS, VM::M1, "CardiacCyclePosition" },
+{ 0x0018, 0x9239, 0, VR::SQ, VM::M1, "SpecificAbsorptionRateSequence" },
+{ 0x0018, 0x9240, 0, VR::US, VM::M1, "RFEchoTrainLength" },
+{ 0x0018, 0x9241, 0, VR::US, VM::M1, "GradientEchoTrainLength" },
+{ 0x0018, 0x9250, 0, VR::CS, VM::M1, "ArterialSpinLabelingContrast" },
 { 0x0018, 0x9251, 0, VR::SQ, VM::M1, "MRArterialSpinLabelingSequence" },
+{ 0x0018, 0x9252, 0, VR::LO, VM::M1, "ASLTechniqueDescription" },
+{ 0x0018, 0x9253, 0, VR::US, VM::M1, "ASLSlabNumber" },
+{ 0x0018, 0x9254, 0, VR::FD, VM::M1, "ASLSlabThickness" },
+{ 0x0018, 0x9255, 0, VR::FD, VM::M3, "ASLSlabOrientation" },
+{ 0x0018, 0x9256, 0, VR::FD, VM::M3, "ASLMidSlabPosition" },
+{ 0x0018, 0x9257, 0, VR::CS, VM::M1, "ASLContext" },
+{ 0x0018, 0x9258, 0, VR::UL, VM::M1, "ASLPulseTrainDuration" },
+{ 0x0018, 0x9259, 0, VR::CS, VM::M1, "ASLCrusherFlag" },
+{ 0x0018, 0x925A, 0, VR::FD, VM::M1, "ASLCrusherFlowLimit" },
+{ 0x0018, 0x925B, 0, VR::LO, VM::M1, "ASLCrusherDescription" },
+{ 0x0018, 0x925C, 0, VR::CS, VM::M1, "ASLBolusCutoffFlag" },
+{ 0x0018, 0x925D, 0, VR::SQ, VM::M1, "ASLBolusCutoffTimingSequence" },
+{ 0x0018, 0x925E, 0, VR::LO, VM::M1, "ASLBolusCutoffTechnique" },
+{ 0x0018, 0x925F, 0, VR::UL, VM::M1, "ASLBolusCutoffDelayTime" },
+{ 0x0018, 0x9260, 0, VR::SQ, VM::M1, "ASLSlabSequence" },
+{ 0x0018, 0x9295, 0, VR::FD, VM::M1, "ChemicalShiftMinimumIntegrationLimitInppm" },
+{ 0x0018, 0x9296, 0, VR::FD, VM::M1, "ChemicalShiftMaximumIntegrationLimitInppm" },
+{ 0x0018, 0x9301, 0, VR::SQ, VM::M1, "CTAcquisitionTypeSequence" },
+{ 0x0018, 0x9302, 0, VR::CS, VM::M1, "AcquisitionType" },
+{ 0x0018, 0x9303, 0, VR::FD, VM::M1, "TubeAngle" },
+{ 0x0018, 0x9304, 0, VR::SQ, VM::M1, "CTAcquisitionDetailsSequence" },
+{ 0x0018, 0x9305, 0, VR::FD, VM::M1, "RevolutionTime" },
+{ 0x0018, 0x9306, 0, VR::FD, VM::M1, "SingleCollimationWidth" },
+{ 0x0018, 0x9307, 0, VR::FD, VM::M1, "TotalCollimationWidth" },
+{ 0x0018, 0x9308, 0, VR::SQ, VM::M1, "CTTableDynamicsSequence" },
+{ 0x0018, 0x9309, 0, VR::FD, VM::M1, "TableSpeed" },
+{ 0x0018, 0x9310, 0, VR::FD, VM::M1, "TableFeedPerRotation" },
+{ 0x0018, 0x9311, 0, VR::FD, VM::M1, "SpiralPitchFactor" },
+{ 0x0018, 0x9312, 0, VR::SQ, VM::M1, "CTGeometrySequence" },
+{ 0x0018, 0x9313, 0, VR::FD, VM::M3, "DataCollectionCenterPatient" },
+{ 0x0018, 0x9314, 0, VR::SQ, VM::M1, "CTReconstructionSequence" },
+{ 0x0018, 0x9315, 0, VR::CS, VM::M1, "ReconstructionAlgorithm" },
+{ 0x0018, 0x9316, 0, VR::CS, VM::M1, "ConvolutionKernelGroup" },
+{ 0x0018, 0x9317, 0, VR::FD, VM::M2, "ReconstructionFieldOfView" },
+{ 0x0018, 0x9318, 0, VR::FD, VM::M3, "ReconstructionTargetCenterPatient" },
+{ 0x0018, 0x9319, 0, VR::FD, VM::M1, "ReconstructionAngle" },
+{ 0x0018, 0x9320, 0, VR::SH, VM::M1, "ImageFilter" },
+{ 0x0018, 0x9321, 0, VR::SQ, VM::M1, "CTExposureSequence" },
+{ 0x0018, 0x9322, 0, VR::FD, VM::M2, "ReconstructionPixelSpacing" },
+{ 0x0018, 0x9323, 0, VR::CS, VM::M1, "ExposureModulationType" },
+{ 0x0018, 0x9324, 0, VR::FD, VM::M1, "EstimatedDoseSaving" },
+{ 0x0018, 0x9325, 0, VR::SQ, VM::M1, "CTXRayDetailsSequence" },
+{ 0x0018, 0x9326, 0, VR::SQ, VM::M1, "CTPositionSequence" },
+{ 0x0018, 0x9327, 0, VR::FD, VM::M1, "TablePosition" },
+{ 0x0018, 0x9328, 0, VR::FD, VM::M1, "ExposureTimeInms" },
+{ 0x0018, 0x9329, 0, VR::SQ, VM::M1, "CTImageFrameTypeSequence" },
+{ 0x0018, 0x9330, 0, VR::FD, VM::M1, "XRayTubeCurrentInmA" },
+{ 0x0018, 0x9332, 0, VR::FD, VM::M1, "ExposureInmAs" },
+{ 0x0018, 0x9333, 0, VR::CS, VM::M1, "ConstantVolumeFlag" },
+{ 0x0018, 0x9334, 0, VR::CS, VM::M1, "FluoroscopyFlag" },
+{ 0x0018, 0x9335, 0, VR::FD, VM::M1, "DistanceSourceToDataCollectionCenter" },
+{ 0x0018, 0x9337, 0, VR::US, VM::M1, "ContrastBolusAgentNumber" },
+{ 0x0018, 0x9338, 0, VR::SQ, VM::M1, "ContrastBolusIngredientCodeSequence" },
+{ 0x0018, 0x9340, 0, VR::SQ, VM::M1, "ContrastAdministrationProfileSequence" },
+{ 0x0018, 0x9341, 0, VR::SQ, VM::M1, "ContrastBolusUsageSequence" },
+{ 0x0018, 0x9342, 0, VR::CS, VM::M1, "ContrastBolusAgentAdministered" },
+{ 0x0018, 0x9343, 0, VR::CS, VM::M1, "ContrastBolusAgentDetected" },
+{ 0x0018, 0x9344, 0, VR::CS, VM::M1, "ContrastBolusAgentPhase" },
+{ 0x0018, 0x9345, 0, VR::FD, VM::M1, "CTDIvol" },
+{ 0x0018, 0x9346, 0, VR::SQ, VM::M1, "CTDIPhantomTypeCodeSequence" },
+{ 0x0018, 0x9351, 0, VR::FL, VM::M1, "CalciumScoringMassFactorPatient" },
+{ 0x0018, 0x9352, 0, VR::FL, VM::M3, "CalciumScoringMassFactorDevice" },
+{ 0x0018, 0x9353, 0, VR::FL, VM::M1, "EnergyWeightingFactor" },
+{ 0x0018, 0x9360, 0, VR::SQ, VM::M1, "CTAdditionalXRaySourceSequence" },
+{ 0x0018, 0x9401, 0, VR::SQ, VM::M1, "ProjectionPixelCalibrationSequence" },
+{ 0x0018, 0x9402, 0, VR::FL, VM::M1, "DistanceSourceToIsocenter" },
+{ 0x0018, 0x9403, 0, VR::FL, VM::M1, "DistanceObjectToTableTop" },
+{ 0x0018, 0x9404, 0, VR::FL, VM::M2, "ObjectPixelSpacingInCenterOfBeam" },
+{ 0x0018, 0x9405, 0, VR::SQ, VM::M1, "PositionerPositionSequence" },
+{ 0x0018, 0x9406, 0, VR::SQ, VM::M1, "TablePositionSequence" },
+{ 0x0018, 0x9407, 0, VR::SQ, VM::M1, "CollimatorShapeSequence" },
+{ 0x0018, 0x9410, 0, VR::CS, VM::M1, "PlanesInAcquisition" },
+{ 0x0018, 0x9412, 0, VR::SQ, VM::M1, "XAXRFFrameCharacteristicsSequence" },
+{ 0x0018, 0x9417, 0, VR::SQ, VM::M1, "FrameAcquisitionSequence" },
+{ 0x0018, 0x9420, 0, VR::CS, VM::M1, "XRayReceptorType" },
+{ 0x0018, 0x9423, 0, VR::LO, VM::M1, "AcquisitionProtocolName" },
+{ 0x0018, 0x9424, 0, VR::LT, VM::M1, "AcquisitionProtocolDescription" },
+{ 0x0018, 0x9425, 0, VR::CS, VM::M1, "ContrastBolusIngredientOpaque" },
+{ 0x0018, 0x9426, 0, VR::FL, VM::M1, "DistanceReceptorPlaneToDetectorHousing" },
+{ 0x0018, 0x9427, 0, VR::CS, VM::M1, "IntensifierActiveShape" },
+{ 0x0018, 0x9428, 0, VR::FL, VM::M1T2, "IntensifierActiveDimensions" },
+{ 0x0018, 0x9429, 0, VR::FL, VM::M2, "PhysicalDetectorSize" },
+{ 0x0018, 0x9430, 0, VR::FL, VM::M2, "PositionOfIsocenterProjection" },
+{ 0x0018, 0x9432, 0, VR::SQ, VM::M1, "FieldOfViewSequence" },
+{ 0x0018, 0x9433, 0, VR::LO, VM::M1, "FieldOfViewDescription" },
+{ 0x0018, 0x9434, 0, VR::SQ, VM::M1, "ExposureControlSensingRegionsSequence" },
+{ 0x0018, 0x9435, 0, VR::CS, VM::M1, "ExposureControlSensingRegionShape" },
+{ 0x0018, 0x9436, 0, VR::SS, VM::M1, "ExposureControlSensingRegionLeftVerticalEdge" },
+{ 0x0018, 0x9437, 0, VR::SS, VM::M1, "ExposureControlSensingRegionRightVerticalEdge" },
+{ 0x0018, 0x9438, 0, VR::SS, VM::M1, "ExposureControlSensingRegionUpperHorizontalEdge" },
+{ 0x0018, 0x9439, 0, VR::SS, VM::M1, "ExposureControlSensingRegionLowerHorizontalEdge" },
+{ 0x0018, 0x9440, 0, VR::SS, VM::M2, "CenterOfCircularExposureControlSensingRegion" },
+{ 0x0018, 0x9441, 0, VR::US, VM::M1, "RadiusOfCircularExposureControlSensingRegion" },
+{ 0x0018, 0x9442, 0, VR::SS, VM::M2TN, "VerticesOfThePolygonalExposureControlSensingRegion" },
+{ 0x0018, 0x9447, 0, VR::FL, VM::M1, "ColumnAngulationPatient" },
+{ 0x0018, 0x9449, 0, VR::FL, VM::M1, "BeamAngle" },
+{ 0x0018, 0x9451, 0, VR::SQ, VM::M1, "FrameDetectorParametersSequence" },
+{ 0x0018, 0x9452, 0, VR::FL, VM::M1, "CalculatedAnatomyThickness" },
+{ 0x0018, 0x9455, 0, VR::SQ, VM::M1, "CalibrationSequence" },
+{ 0x0018, 0x9456, 0, VR::SQ, VM::M1, "ObjectThicknessSequence" },
+{ 0x0018, 0x9457, 0, VR::CS, VM::M1, "PlaneIdentification" },
+{ 0x0018, 0x9461, 0, VR::FL, VM::M1T2, "FieldOfViewDimensionsInFloat" },
+{ 0x0018, 0x9462, 0, VR::SQ, VM::M1, "IsocenterReferenceSystemSequence" },
+{ 0x0018, 0x9463, 0, VR::FL, VM::M1, "PositionerIsocenterPrimaryAngle" },
+{ 0x0018, 0x9464, 0, VR::FL, VM::M1, "PositionerIsocenterSecondaryAngle" },
+{ 0x0018, 0x9465, 0, VR::FL, VM::M1, "PositionerIsocenterDetectorRotationAngle" },
+{ 0x0018, 0x9466, 0, VR::FL, VM::M1, "TableXPositionToIsocenter" },
+{ 0x0018, 0x9467, 0, VR::FL, VM::M1, "TableYPositionToIsocenter" },
+{ 0x0018, 0x9468, 0, VR::FL, VM::M1, "TableZPositionToIsocenter" },
+{ 0x0018, 0x9469, 0, VR::FL, VM::M1, "TableHorizontalRotationAngle" },
+{ 0x0018, 0x9470, 0, VR::FL, VM::M1, "TableHeadTiltAngle" },
+{ 0x0018, 0x9471, 0, VR::FL, VM::M1, "TableCradleTiltAngle" },
+{ 0x0018, 0x9472, 0, VR::SQ, VM::M1, "FrameDisplayShutterSequence" },
+{ 0x0018, 0x9473, 0, VR::FL, VM::M1, "AcquiredImageAreaDoseProduct" },
+{ 0x0018, 0x9474, 0, VR::CS, VM::M1, "CArmPositionerTabletopRelationship" },
+{ 0x0018, 0x9476, 0, VR::SQ, VM::M1, "XRayGeometrySequence" },
+{ 0x0018, 0x9477, 0, VR::SQ, VM::M1, "IrradiationEventIdentificationSequence" },
+{ 0x0018, 0x9504, 0, VR::SQ, VM::M1, "XRay3DFrameTypeSequence" },
+{ 0x0018, 0x9506, 0, VR::SQ, VM::M1, "ContributingSourcesSequence" },
+{ 0x0018, 0x9507, 0, VR::SQ, VM::M1, "XRay3DAcquisitionSequence" },
+{ 0x0018, 0x9508, 0, VR::FL, VM::M1, "PrimaryPositionerScanArc" },
+{ 0x0018, 0x9509, 0, VR::FL, VM::M1, "SecondaryPositionerScanArc" },
+{ 0x0018, 0x9510, 0, VR::FL, VM::M1, "PrimaryPositionerScanStartAngle" },
+{ 0x0018, 0x9511, 0, VR::FL, VM::M1, "SecondaryPositionerScanStartAngle" },
+{ 0x0018, 0x9514, 0, VR::FL, VM::M1, "PrimaryPositionerIncrement" },
+{ 0x0018, 0x9515, 0, VR::FL, VM::M1, "SecondaryPositionerIncrement" },
+{ 0x0018, 0x9516, 0, VR::DT, VM::M1, "StartAcquisitionDateTime" },
+{ 0x0018, 0x9517, 0, VR::DT, VM::M1, "EndAcquisitionDateTime" },
+{ 0x0018, 0x9524, 0, VR::LO, VM::M1, "ApplicationName" },
+{ 0x0018, 0x9525, 0, VR::LO, VM::M1, "ApplicationVersion" },
+{ 0x0018, 0x9526, 0, VR::LO, VM::M1, "ApplicationManufacturer" },
+{ 0x0018, 0x9527, 0, VR::CS, VM::M1, "AlgorithmType" },
+{ 0x0018, 0x9528, 0, VR::LO, VM::M1, "AlgorithmDescription" },
+{ 0x0018, 0x9530, 0, VR::SQ, VM::M1, "XRay3DReconstructionSequence" },
+{ 0x0018, 0x9531, 0, VR::LO, VM::M1, "ReconstructionDescription" },
+{ 0x0018, 0x9538, 0, VR::SQ, VM::M1, "PerProjectionAcquisitionSequence" },
+{ 0x0018, 0x9601, 0, VR::SQ, VM::M1, "DiffusionBMatrixSequence" },
+{ 0x0018, 0x9602, 0, VR::FD, VM::M1, "DiffusionBValueXX" },
+{ 0x0018, 0x9603, 0, VR::FD, VM::M1, "DiffusionBValueXY" },
+{ 0x0018, 0x9604, 0, VR::FD, VM::M1, "DiffusionBValueXZ" },
+{ 0x0018, 0x9605, 0, VR::FD, VM::M1, "DiffusionBValueYY" },
+{ 0x0018, 0x9606, 0, VR::FD, VM::M1, "DiffusionBValueYZ" },
+{ 0x0018, 0x9607, 0, VR::FD, VM::M1, "DiffusionBValueZZ" },
+{ 0x0018, 0x9701, 0, VR::DT, VM::M1, "DecayCorrectionDateTime" },
+{ 0x0018, 0x9715, 0, VR::FD, VM::M1, "StartDensityThreshold" },
+{ 0x0018, 0x9716, 0, VR::FD, VM::M1, "StartRelativeDensityDifferenceThreshold" },
+{ 0x0018, 0x9717, 0, VR::FD, VM::M1, "StartCardiacTriggerCountThreshold" },
+{ 0x0018, 0x9718, 0, VR::FD, VM::M1, "StartRespiratoryTriggerCountThreshold" },
+{ 0x0018, 0x9719, 0, VR::FD, VM::M1, "TerminationCountsThreshold" },
+{ 0x0018, 0x9720, 0, VR::FD, VM::M1, "TerminationDensityThreshold" },
+{ 0x0018, 0x9721, 0, VR::FD, VM::M1, "TerminationRelativeDensityThreshold" },
+{ 0x0018, 0x9722, 0, VR::FD, VM::M1, "TerminationTimeThreshold" },
+{ 0x0018, 0x9723, 0, VR::FD, VM::M1, "TerminationCardiacTriggerCountThreshold" },
+{ 0x0018, 0x9724, 0, VR::FD, VM::M1, "TerminationRespiratoryTriggerCountThreshold" },
+{ 0x0018, 0x9725, 0, VR::CS, VM::M1, "DetectorGeometry" },
+{ 0x0018, 0x9726, 0, VR::FD, VM::M1, "TransverseDetectorSeparation" },
+{ 0x0018, 0x9727, 0, VR::FD, VM::M1, "AxialDetectorDimension" },
+{ 0x0018, 0x9729, 0, VR::US, VM::M1, "RadiopharmaceuticalAgentNumber" },
+{ 0x0018, 0x9732, 0, VR::SQ, VM::M1, "PETFrameAcquisitionSequence" },
+{ 0x0018, 0x9733, 0, VR::SQ, VM::M1, "PETDetectorMotionDetailsSequence" },
+{ 0x0018, 0x9734, 0, VR::SQ, VM::M1, "PETTableDynamicsSequence" },
+{ 0x0018, 0x9735, 0, VR::SQ, VM::M1, "PETPositionSequence" },
+{ 0x0018, 0x9736, 0, VR::SQ, VM::M1, "PETFrameCorrectionFactorsSequence" },
+{ 0x0018, 0x9737, 0, VR::SQ, VM::M1, "RadiopharmaceuticalUsageSequence" },
+{ 0x0018, 0x9738, 0, VR::CS, VM::M1, "AttenuationCorrectionSource" },
+{ 0x0018, 0x9739, 0, VR::US, VM::M1, "NumberOfIterations" },
+{ 0x0018, 0x9740, 0, VR::US, VM::M1, "NumberOfSubsets" },
+{ 0x0018, 0x9749, 0, VR::SQ, VM::M1, "PETReconstructionSequence" },
+{ 0x0018, 0x9751, 0, VR::SQ, VM::M1, "PETFrameTypeSequence" },
+{ 0x0018, 0x9755, 0, VR::CS, VM::M1, "TimeOfFlightInformationUsed" },
+{ 0x0018, 0x9756, 0, VR::CS, VM::M1, "ReconstructionType" },
+{ 0x0018, 0x9758, 0, VR::CS, VM::M1, "DecayCorrected" },
+{ 0x0018, 0x9759, 0, VR::CS, VM::M1, "AttenuationCorrected" },
+{ 0x0018, 0x9760, 0, VR::CS, VM::M1, "ScatterCorrected" },
+{ 0x0018, 0x9761, 0, VR::CS, VM::M1, "DeadTimeCorrected" },
+{ 0x0018, 0x9762, 0, VR::CS, VM::M1, "GantryMotionCorrected" },
+{ 0x0018, 0x9763, 0, VR::CS, VM::M1, "PatientMotionCorrected" },
+{ 0x0018, 0x9764, 0, VR::CS, VM::M1, "CountLossNormalizationCorrected" },
+{ 0x0018, 0x9765, 0, VR::CS, VM::M1, "RandomsCorrected" },
+{ 0x0018, 0x9766, 0, VR::CS, VM::M1, "NonUniformRadialSamplingCorrected" },
+{ 0x0018, 0x9767, 0, VR::CS, VM::M1, "SensitivityCalibrated" },
+{ 0x0018, 0x9768, 0, VR::CS, VM::M1, "DetectorNormalizationCorrection" },
+{ 0x0018, 0x9769, 0, VR::CS, VM::M1, "IterativeReconstructionMethod" },
+{ 0x0018, 0x9770, 0, VR::CS, VM::M1, "AttenuationCorrectionTemporalRelationship" },
+{ 0x0018, 0x9771, 0, VR::SQ, VM::M1, "PatientPhysiologicalStateSequence" },
+{ 0x0018, 0x9772, 0, VR::SQ, VM::M1, "PatientPhysiologicalStateCodeSequence" },
+{ 0x0018, 0x9801, 0, VR::FD, VM::M1TN, "DepthsOfFocus" },
+{ 0x0018, 0x9803, 0, VR::SQ, VM::M1, "ExcludedIntervalsSequence" },
+{ 0x0018, 0x9804, 0, VR::DT, VM::M1, "ExclusionStartDateTime" },
+{ 0x0018, 0x9805, 0, VR::FD, VM::M1, "ExclusionDuration" },
+{ 0x0018, 0x9806, 0, VR::SQ, VM::M1, "USImageDescriptionSequence" },
+{ 0x0018, 0x9807, 0, VR::SQ, VM::M1, "ImageDataTypeSequence" },
+{ 0x0018, 0x9808, 0, VR::CS, VM::M1, "DataType" },
+{ 0x0018, 0x9809, 0, VR::SQ, VM::M1, "TransducerScanPatternCodeSequence" },
+{ 0x0018, 0x980B, 0, VR::CS, VM::M1, "AliasedDataType" },
+{ 0x0018, 0x980C, 0, VR::CS, VM::M1, "PositionMeasuringDeviceUsed" },
+{ 0x0018, 0x980D, 0, VR::SQ, VM::M1, "TransducerGeometryCodeSequence" },
+{ 0x0018, 0x980E, 0, VR::SQ, VM::M1, "TransducerBeamSteeringCodeSequence" },
+{ 0x0018, 0x980F, 0, VR::SQ, VM::M1, "TransducerApplicationCodeSequence" },
+{ 0x0018, 0x9810, 0, VR::XS, VM::M1, "ZeroVelocityPixelValue" },
+{ 0x0018, 0xA001, 0, VR::SQ, VM::M1, "ContributingEquipmentSequence" },
+{ 0x0018, 0xA002, 0, VR::DT, VM::M1, "ContributionDateTime" },
+{ 0x0018, 0xA003, 0, VR::ST, VM::M1, "ContributionDescription" },
+{ 0x0020, 0x000D, 0, VR::UI, VM::M1, "StudyInstanceUID" },
+{ 0x0020, 0x000E, 0, VR::UI, VM::M1, "SeriesInstanceUID" },
+{ 0x0020, 0x0010, 0, VR::SH, VM::M1, "StudyID" },
+{ 0x0020, 0x0011, 0, VR::IS, VM::M1, "SeriesNumber" },
+{ 0x0020, 0x0012, 0, VR::IS, VM::M1, "AcquisitionNumber" },
+{ 0x0020, 0x0013, 0, VR::IS, VM::M1, "InstanceNumber" },
+{ 0x0020, 0x0014, 1, VR::IS, VM::M1, "IsotopeNumber" },
+{ 0x0020, 0x0015, 1, VR::IS, VM::M1, "PhaseNumber" },
+{ 0x0020, 0x0016, 1, VR::IS, VM::M1, "IntervalNumber" },
+{ 0x0020, 0x0017, 1, VR::IS, VM::M1, "TimeSlotNumber" },
+{ 0x0020, 0x0018, 1, VR::IS, VM::M1, "AngleNumber" },
+{ 0x0020, 0x0019, 0, VR::IS, VM::M1, "ItemNumber" },
 { 0x0020, 0x0020, 0, VR::CS, VM::M2, "PatientOrientation" },
+{ 0x0020, 0x0022, 1, VR::IS, VM::M1, "OverlayNumber" },
+{ 0x0020, 0x0024, 1, VR::IS, VM::M1, "CurveNumber" },
+{ 0x0020, 0x0026, 1, VR::IS, VM::M1, "LUTNumber" },
+{ 0x0020, 0x0030, 1, VR::DS, VM::M3, "ImagePosition" },
+{ 0x0020, 0x0032, 0, VR::DS, VM::M3, "ImagePositionPatient" },
+{ 0x0020, 0x0035, 1, VR::DS, VM::M6, "ImageOrientation" },
+{ 0x0020, 0x0037, 0, VR::DS, VM::M6, "ImageOrientationPatient" },
+{ 0x0020, 0x0050, 1, VR::DS, VM::M1, "Location" },
+{ 0x0020, 0x0052, 0, VR::UI, VM::M1, "FrameOfReferenceUID" },
+{ 0x0020, 0x0060, 0, VR::CS, VM::M1, "Laterality" },
+{ 0x0020, 0x0062, 0, VR::CS, VM::M1, "ImageLaterality" },
+{ 0x0020, 0x0070, 1, VR::LO, VM::M1, "ImageGeometryType" },
+{ 0x0020, 0x0080, 1, VR::CS, VM::M1TN, "MaskingImage" },
+{ 0x0020, 0x00AA, 1, VR::IS, VM::M1, "ReportNumber" },
+{ 0x0020, 0x0100, 0, VR::IS, VM::M1, "TemporalPositionIdentifier" },
+{ 0x0020, 0x0105, 0, VR::IS, VM::M1, "NumberOfTemporalPositions" },
+{ 0x0020, 0x0110, 0, VR::DS, VM::M1, "TemporalResolution" },
+{ 0x0020, 0x0200, 0, VR::UI, VM::M1, "SynchronizationFrameOfReferenceUID" },
+{ 0x0020, 0x0242, 0, VR::UI, VM::M1, "SOPInstanceUIDOfConcatenationSource" },
+{ 0x0020, 0x1000, 1, VR::IS, VM::M1, "SeriesInStudy" },
+{ 0x0020, 0x1001, 1, VR::IS, VM::M1, "AcquisitionsInSeries" },
+{ 0x0020, 0x1002, 0, VR::IS, VM::M1, "ImagesInAcquisition" },
+{ 0x0020, 0x1003, 1, VR::IS, VM::M1, "ImagesInSeries" },
+{ 0x0020, 0x1004, 1, VR::IS, VM::M1, "AcquisitionsInStudy" },
+{ 0x0020, 0x1005, 1, VR::IS, VM::M1, "ImagesInStudy" },
+{ 0x0020, 0x1020, 1, VR::LO, VM::M1TN, "Reference" },
+{ 0x0020, 0x1040, 0, VR::LO, VM::M1, "PositionReferenceIndicator" },
+{ 0x0020, 0x1041, 0, VR::DS, VM::M1, "SliceLocation" },
+{ 0x0020, 0x1070, 1, VR::IS, VM::M1TN, "OtherStudyNumbers" },
+{ 0x0020, 0x1200, 0, VR::IS, VM::M1, "NumberOfPatientRelatedStudies" },
+{ 0x0020, 0x1202, 0, VR::IS, VM::M1, "NumberOfPatientRelatedSeries" },
+{ 0x0020, 0x1204, 0, VR::IS, VM::M1, "NumberOfPatientRelatedInstances" },
+{ 0x0020, 0x1206, 0, VR::IS, VM::M1, "NumberOfStudyRelatedSeries" },
+{ 0x0020, 0x1208, 0, VR::IS, VM::M1, "NumberOfStudyRelatedInstances" },
+{ 0x0020, 0x1209, 0, VR::IS, VM::M1, "NumberOfSeriesRelatedInstances" },
+{ 0x0020, 0x3100, 1, VR::CS, VM::M1TN, "SourceImageIDs" },
+{ 0x0020, 0x3401, 1, VR::CS, VM::M1, "ModifyingDeviceID" },
+{ 0x0020, 0x3402, 1, VR::CS, VM::M1, "ModifiedImageID" },
+{ 0x0020, 0x3403, 1, VR::DA, VM::M1, "ModifiedImageDate" },
+{ 0x0020, 0x3404, 1, VR::LO, VM::M1, "ModifyingDeviceManufacturer" },
+{ 0x0020, 0x3405, 1, VR::TM, VM::M1, "ModifiedImageTime" },
+{ 0x0020, 0x3406, 1, VR::LO, VM::M1, "ModifiedImageDescription" },
+{ 0x0020, 0x4000, 0, VR::LT, VM::M1, "ImageComments" },
+{ 0x0020, 0x5000, 1, VR::AT, VM::M1TN, "OriginalImageIdentification" },
+{ 0x0020, 0x5002, 1, VR::LO, VM::M1TN, "OriginalImageIdentificationNomenclature" },
+{ 0x0020, 0x9056, 0, VR::SH, VM::M1, "StackID" },
+{ 0x0020, 0x9057, 0, VR::UL, VM::M1, "InStackPositionNumber" },
+{ 0x0020, 0x9071, 0, VR::SQ, VM::M1, "FrameAnatomySequence" },
+{ 0x0020, 0x9072, 0, VR::CS, VM::M1, "FrameLaterality" },
+{ 0x0020, 0x9111, 0, VR::SQ, VM::M1, "FrameContentSequence" },
+{ 0x0020, 0x9113, 0, VR::SQ, VM::M1, "PlanePositionSequence" },
+{ 0x0020, 0x9116, 0, VR::SQ, VM::M1, "PlaneOrientationSequence" },
+{ 0x0020, 0x9128, 0, VR::UL, VM::M1, "TemporalPositionIndex" },
+{ 0x0020, 0x9153, 0, VR::FD, VM::M1, "NominalCardiacTriggerDelayTime" },
+{ 0x0020, 0x9154, 0, VR::FL, VM::M1, "NominalCardiacTriggerTimePriorToRPeak" },
+{ 0x0020, 0x9155, 0, VR::FL, VM::M1, "ActualCardiacTriggerTimePriorToRPeak" },
+{ 0x0020, 0x9156, 0, VR::US, VM::M1, "FrameAcquisitionNumber" },
+{ 0x0020, 0x9157, 0, VR::UL, VM::M1TN, "DimensionIndexValues" },
+{ 0x0020, 0x9158, 0, VR::LT, VM::M1, "FrameComments" },
+{ 0x0020, 0x9161, 0, VR::UI, VM::M1, "ConcatenationUID" },
+{ 0x0020, 0x9162, 0, VR::US, VM::M1, "InConcatenationNumber" },
+{ 0x0020, 0x9163, 0, VR::US, VM::M1, "InConcatenationTotalNumber" },
+{ 0x0020, 0x9164, 0, VR::UI, VM::M1, "DimensionOrganizationUID" },
+{ 0x0020, 0x9165, 0, VR::AT, VM::M1, "DimensionIndexPointer" },
+{ 0x0020, 0x9167, 0, VR::AT, VM::M1, "FunctionalGroupPointer" },
+{ 0x0020, 0x9170, 0, VR::SQ, VM::M1, "UnassignedSharedConvertedAttributesSequence" },
+{ 0x0020, 0x9171, 0, VR::SQ, VM::M1, "UnassignedPerFrameConvertedAttributesSequence" },
+{ 0x0020, 0x9172, 0, VR::SQ, VM::M1, "ConversionSourceAttributesSequence" },
+{ 0x0020, 0x9213, 0, VR::LO, VM::M1, "DimensionIndexPrivateCreator" },
+{ 0x0020, 0x9221, 0, VR::SQ, VM::M1, "DimensionOrganizationSequence" },
+{ 0x0020, 0x9222, 0, VR::SQ, VM::M1, "DimensionIndexSequence" },
+{ 0x0020, 0x9228, 0, VR::UL, VM::M1, "ConcatenationFrameOffsetNumber" },
+{ 0x0020, 0x9238, 0, VR::LO, VM::M1, "FunctionalGroupPrivateCreator" },
+{ 0x0020, 0x9241, 0, VR::FL, VM::M1, "NominalPercentageOfCardiacPhase" },
+{ 0x0020, 0x9245, 0, VR::FL, VM::M1, "NominalPercentageOfRespiratoryPhase" },
+{ 0x0020, 0x9246, 0, VR::FL, VM::M1, "StartingRespiratoryAmplitude" },
+{ 0x0020, 0x9247, 0, VR::CS, VM::M1, "StartingRespiratoryPhase" },
+{ 0x0020, 0x9248, 0, VR::FL, VM::M1, "EndingRespiratoryAmplitude" },
+{ 0x0020, 0x9249, 0, VR::CS, VM::M1, "EndingRespiratoryPhase" },
+{ 0x0020, 0x9250, 0, VR::CS, VM::M1, "RespiratoryTriggerType" },
+{ 0x0020, 0x9251, 0, VR::FD, VM::M1, "RRIntervalTimeNominal" },
+{ 0x0020, 0x9252, 0, VR::FD, VM::M1, "ActualCardiacTriggerDelayTime" },
+{ 0x0020, 0x9253, 0, VR::SQ, VM::M1, "RespiratorySynchronizationSequence" },
+{ 0x0020, 0x9254, 0, VR::FD, VM::M1, "RespiratoryIntervalTime" },
+{ 0x0020, 0x9255, 0, VR::FD, VM::M1, "NominalRespiratoryTriggerDelayTime" },
+{ 0x0020, 0x9256, 0, VR::FD, VM::M1, "RespiratoryTriggerDelayThreshold" },
+{ 0x0020, 0x9257, 0, VR::FD, VM::M1, "ActualRespiratoryTriggerDelayTime" },
+{ 0x0020, 0x9301, 0, VR::FD, VM::M3, "ImagePositionVolume" },
+{ 0x0020, 0x9302, 0, VR::FD, VM::M6, "ImageOrientationVolume" },
+{ 0x0020, 0x9307, 0, VR::CS, VM::M1, "UltrasoundAcquisitionGeometry" },
+{ 0x0020, 0x9308, 0, VR::FD, VM::M3, "ApexPosition" },
+{ 0x0020, 0x9309, 0, VR::FD, VM::M16, "VolumeToTransducerMappingMatrix" },
+{ 0x0020, 0x930A, 0, VR::FD, VM::M16, "VolumeToTableMappingMatrix" },
+{ 0x0020, 0x930C, 0, VR::CS, VM::M1, "PatientFrameOfReferenceSource" },
+{ 0x0020, 0x930D, 0, VR::FD, VM::M1, "TemporalPositionTimeOffset" },
+{ 0x0020, 0x930E, 0, VR::SQ, VM::M1, "PlanePositionVolumeSequence" },
+{ 0x0020, 0x930F, 0, VR::SQ, VM::M1, "PlaneOrientationVolumeSequence" },
+{ 0x0020, 0x9310, 0, VR::SQ, VM::M1, "TemporalPositionSequence" },
+{ 0x0020, 0x9311, 0, VR::CS, VM::M1, "DimensionOrganizationType" },
+{ 0x0020, 0x9312, 0, VR::UI, VM::M1, "VolumeFrameOfReferenceUID" },
+{ 0x0020, 0x9313, 0, VR::UI, VM::M1, "TableFrameOfReferenceUID" },
+{ 0x0020, 0x9421, 0, VR::LO, VM::M1, "DimensionDescriptionLabel" },
+{ 0x0020, 0x9450, 0, VR::SQ, VM::M1, "PatientOrientationInFrameSequence" },
+{ 0x0020, 0x9453, 0, VR::LO, VM::M1, "FrameLabel" },
+{ 0x0020, 0x9518, 0, VR::US, VM::M1TN, "AcquisitionIndex" },
+{ 0x0020, 0x9529, 0, VR::SQ, VM::M1, "ContributingSOPInstancesReferenceSequence" },
+{ 0x0020, 0x9536, 0, VR::US, VM::M1, "ReconstructionIndex" },
+{ 0x0022, 0x0001, 0, VR::US, VM::M1, "LightPathFilterPassThroughWavelength" },
+{ 0x0022, 0x0002, 0, VR::US, VM::M2, "LightPathFilterPassBand" },
+{ 0x0022, 0x0003, 0, VR::US, VM::M1, "ImagePathFilterPassThroughWavelength" },
+{ 0x0022, 0x0004, 0, VR::US, VM::M2, "ImagePathFilterPassBand" },
+{ 0x0022, 0x0005, 0, VR::CS, VM::M1, "PatientEyeMovementCommanded" },
+{ 0x0022, 0x0006, 0, VR::SQ, VM::M1, "PatientEyeMovementCommandCodeSequence" },
+{ 0x0022, 0x0007, 0, VR::FL, VM::M1, "SphericalLensPower" },
+{ 0x0022, 0x0008, 0, VR::FL, VM::M1, "CylinderLensPower" },
+{ 0x0022, 0x0009, 0, VR::FL, VM::M1, "CylinderAxis" },
+{ 0x0022, 0x000A, 0, VR::FL, VM::M1, "EmmetropicMagnification" },
+{ 0x0022, 0x000B, 0, VR::FL, VM::M1, "IntraOcularPressure" },
+{ 0x0022, 0x000C, 0, VR::FL, VM::M1, "HorizontalFieldOfView" },
+{ 0x0022, 0x000D, 0, VR::CS, VM::M1, "PupilDilated" },
+{ 0x0022, 0x000E, 0, VR::FL, VM::M1, "DegreeOfDilation" },
+{ 0x0022, 0x0010, 0, VR::FL, VM::M1, "StereoBaselineAngle" },
+{ 0x0022, 0x0011, 0, VR::FL, VM::M1, "StereoBaselineDisplacement" },
+{ 0x0022, 0x0012, 0, VR::FL, VM::M1, "StereoHorizontalPixelOffset" },
+{ 0x0022, 0x0013, 0, VR::FL, VM::M1, "StereoVerticalPixelOffset" },
+{ 0x0022, 0x0014, 0, VR::FL, VM::M1, "StereoRotation" },
+{ 0x0022, 0x0015, 0, VR::SQ, VM::M1, "AcquisitionDeviceTypeCodeSequence" },
+{ 0x0022, 0x0016, 0, VR::SQ, VM::M1, "IlluminationTypeCodeSequence" },
+{ 0x0022, 0x0017, 0, VR::SQ, VM::M1, "LightPathFilterTypeStackCodeSequence" },
+{ 0x0022, 0x0018, 0, VR::SQ, VM::M1, "ImagePathFilterTypeStackCodeSequence" },
+{ 0x0022, 0x0019, 0, VR::SQ, VM::M1, "LensesCodeSequence" },
+{ 0x0022, 0x001A, 0, VR::SQ, VM::M1, "ChannelDescriptionCodeSequence" },
+{ 0x0022, 0x001B, 0, VR::SQ, VM::M1, "RefractiveStateSequence" },
+{ 0x0022, 0x001C, 0, VR::SQ, VM::M1, "MydriaticAgentCodeSequence" },
+{ 0x0022, 0x001D, 0, VR::SQ, VM::M1, "RelativeImagePositionCodeSequence" },
+{ 0x0022, 0x001E, 0, VR::FL, VM::M1, "CameraAngleOfView" },
+{ 0x0022, 0x0020, 0, VR::SQ, VM::M1, "StereoPairsSequence" },
+{ 0x0022, 0x0021, 0, VR::SQ, VM::M1, "LeftImageSequence" },
 { 0x0022, 0x0022, 0, VR::SQ, VM::M1, "RightImageSequence" },
+{ 0x0022, 0x0030, 0, VR::FL, VM::M1, "AxialLengthOfTheEye" },
+{ 0x0022, 0x0031, 0, VR::SQ, VM::M1, "OphthalmicFrameLocationSequence" },
+{ 0x0022, 0x0032, 0, VR::FL, VM::M2T2N, "ReferenceCoordinates" },
+{ 0x0022, 0x0035, 0, VR::FL, VM::M1, "DepthSpatialResolution" },
+{ 0x0022, 0x0036, 0, VR::FL, VM::M1, "MaximumDepthDistortion" },
+{ 0x0022, 0x0037, 0, VR::FL, VM::M1, "AlongScanSpatialResolution" },
+{ 0x0022, 0x0038, 0, VR::FL, VM::M1, "MaximumAlongScanDistortion" },
+{ 0x0022, 0x0039, 0, VR::CS, VM::M1, "OphthalmicImageOrientation" },
+{ 0x0022, 0x0041, 0, VR::FL, VM::M1, "DepthOfTransverseImage" },
+{ 0x0022, 0x0042, 0, VR::SQ, VM::M1, "MydriaticAgentConcentrationUnitsSequence" },
+{ 0x0022, 0x0048, 0, VR::FL, VM::M1, "AcrossScanSpatialResolution" },
+{ 0x0022, 0x0049, 0, VR::FL, VM::M1, "MaximumAcrossScanDistortion" },
+{ 0x0022, 0x004E, 0, VR::DS, VM::M1, "MydriaticAgentConcentration" },
+{ 0x0022, 0x0055, 0, VR::FL, VM::M1, "IlluminationWaveLength" },
+{ 0x0022, 0x0056, 0, VR::FL, VM::M1, "IlluminationPower" },
+{ 0x0022, 0x0057, 0, VR::FL, VM::M1, "IlluminationBandwidth" },
+{ 0x0022, 0x0058, 0, VR::SQ, VM::M1, "MydriaticAgentSequence" },
+{ 0x0022, 0x1007, 0, VR::SQ, VM::M1, "OphthalmicAxialMeasurementsRightEyeSequence" },
+{ 0x0022, 0x1008, 0, VR::SQ, VM::M1, "OphthalmicAxialMeasurementsLeftEyeSequence" },
+{ 0x0022, 0x1009, 0, VR::CS, VM::M1, "OphthalmicAxialMeasurementsDeviceType" },
+{ 0x0022, 0x1010, 0, VR::CS, VM::M1, "OphthalmicAxialLengthMeasurementsType" },
+{ 0x0022, 0x1012, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthSequence" },
+{ 0x0022, 0x1019, 0, VR::FL, VM::M1, "OphthalmicAxialLength" },
+{ 0x0022, 0x1024, 0, VR::SQ, VM::M1, "LensStatusCodeSequence" },
+{ 0x0022, 0x1025, 0, VR::SQ, VM::M1, "VitreousStatusCodeSequence" },
+{ 0x0022, 0x1028, 0, VR::SQ, VM::M1, "IOLFormulaCodeSequence" },
+{ 0x0022, 0x1029, 0, VR::LO, VM::M1, "IOLFormulaDetail" },
+{ 0x0022, 0x1033, 0, VR::FL, VM::M1, "KeratometerIndex" },
+{ 0x0022, 0x1035, 0, VR::SQ, VM::M1, "SourceOfOphthalmicAxialLengthCodeSequence" },
+{ 0x0022, 0x1037, 0, VR::FL, VM::M1, "TargetRefraction" },
+{ 0x0022, 0x1039, 0, VR::CS, VM::M1, "RefractiveProcedureOccurred" },
+{ 0x0022, 0x1040, 0, VR::SQ, VM::M1, "RefractiveSurgeryTypeCodeSequence" },
+{ 0x0022, 0x1044, 0, VR::SQ, VM::M1, "OphthalmicUltrasoundMethodCodeSequence" },
+{ 0x0022, 0x1050, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthMeasurementsSequence" },
+{ 0x0022, 0x1053, 0, VR::FL, VM::M1, "IOLPower" },
+{ 0x0022, 0x1054, 0, VR::FL, VM::M1, "PredictedRefractiveError" },
+{ 0x0022, 0x1059, 0, VR::FL, VM::M1, "OphthalmicAxialLengthVelocity" },
+{ 0x0022, 0x1065, 0, VR::LO, VM::M1, "LensStatusDescription" },
+{ 0x0022, 0x1066, 0, VR::LO, VM::M1, "VitreousStatusDescription" },
+{ 0x0022, 0x1090, 0, VR::SQ, VM::M1, "IOLPowerSequence" },
+{ 0x0022, 0x1092, 0, VR::SQ, VM::M1, "LensConstantSequence" },
+{ 0x0022, 0x1093, 0, VR::LO, VM::M1, "IOLManufacturer" },
+{ 0x0022, 0x1094, 1, VR::LO, VM::M1, "LensConstantDescription" },
+{ 0x0022, 0x1095, 0, VR::LO, VM::M1, "ImplantName" },
+{ 0x0022, 0x1096, 0, VR::SQ, VM::M1, "KeratometryMeasurementTypeCodeSequence" },
+{ 0x0022, 0x1097, 0, VR::LO, VM::M1, "ImplantPartNumber" },
+{ 0x0022, 0x1100, 0, VR::SQ, VM::M1, "ReferencedOphthalmicAxialMeasurementsSequence" },
+{ 0x0022, 0x1101, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthMeasurementsSegmentNameCodeSequence" },
+{ 0x0022, 0x1103, 0, VR::SQ, VM::M1, "RefractiveErrorBeforeRefractiveSurgeryCodeSequence" },
+{ 0x0022, 0x1121, 0, VR::FL, VM::M1, "IOLPowerForExactEmmetropia" },
+{ 0x0022, 0x1122, 0, VR::FL, VM::M1, "IOLPowerForExactTargetRefraction" },
+{ 0x0022, 0x1125, 0, VR::SQ, VM::M1, "AnteriorChamberDepthDefinitionCodeSequence" },
+{ 0x0022, 0x1127, 0, VR::SQ, VM::M1, "LensThicknessSequence" },
+{ 0x0022, 0x1128, 0, VR::SQ, VM::M1, "AnteriorChamberDepthSequence" },
+{ 0x0022, 0x1130, 0, VR::FL, VM::M1, "LensThickness" },
+{ 0x0022, 0x1131, 0, VR::FL, VM::M1, "AnteriorChamberDepth" },
+{ 0x0022, 0x1132, 0, VR::SQ, VM::M1, "SourceOfLensThicknessDataCodeSequence" },
+{ 0x0022, 0x1133, 0, VR::SQ, VM::M1, "SourceOfAnteriorChamberDepthDataCodeSequence" },
+{ 0x0022, 0x1134, 0, VR::SQ, VM::M1, "SourceOfRefractiveMeasurementsSequence" },
+{ 0x0022, 0x1135, 0, VR::SQ, VM::M1, "SourceOfRefractiveMeasurementsCodeSequence" },
+{ 0x0022, 0x1140, 0, VR::CS, VM::M1, "OphthalmicAxialLengthMeasurementModified" },
+{ 0x0022, 0x1150, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthDataSourceCodeSequence" },
+{ 0x0022, 0x1153, 1, VR::SQ, VM::M1, "OphthalmicAxialLengthAcquisitionMethodCodeSequence" },
+{ 0x0022, 0x1155, 0, VR::FL, VM::M1, "SignalToNoiseRatio" },
+{ 0x0022, 0x1159, 0, VR::LO, VM::M1, "OphthalmicAxialLengthDataSourceDescription" },
+{ 0x0022, 0x1210, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthMeasurementsTotalLengthSequence" },
+{ 0x0022, 0x1211, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthMeasurementsSegmentalLengthSequence" },
+{ 0x0022, 0x1212, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthMeasurementsLengthSummationSequence" },
+{ 0x0022, 0x1220, 0, VR::SQ, VM::M1, "UltrasoundOphthalmicAxialLengthMeasurementsSequence" },
+{ 0x0022, 0x1225, 0, VR::SQ, VM::M1, "OpticalOphthalmicAxialLengthMeasurementsSequence" },
+{ 0x0022, 0x1230, 0, VR::SQ, VM::M1, "UltrasoundSelectedOphthalmicAxialLengthSequence" },
+{ 0x0022, 0x1250, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthSelectionMethodCodeSequence" },
+{ 0x0022, 0x1255, 0, VR::SQ, VM::M1, "OpticalSelectedOphthalmicAxialLengthSequence" },
+{ 0x0022, 0x1257, 0, VR::SQ, VM::M1, "SelectedSegmentalOphthalmicAxialLengthSequence" },
+{ 0x0022, 0x1260, 0, VR::SQ, VM::M1, "SelectedTotalOphthalmicAxialLengthSequence" },
+{ 0x0022, 0x1262, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthQualityMetricSequence" },
+{ 0x0022, 0x1265, 1, VR::SQ, VM::M1, "OphthalmicAxialLengthQualityMetricTypeCodeSequence" },
+{ 0x0022, 0x1273, 1, VR::LO, VM::M1, "OphthalmicAxialLengthQualityMetricTypeDescription" },
+{ 0x0022, 0x1300, 0, VR::SQ, VM::M1, "IntraocularLensCalculationsRightEyeSequence" },
+{ 0x0022, 0x1310, 0, VR::SQ, VM::M1, "IntraocularLensCalculationsLeftEyeSequence" },
+{ 0x0022, 0x1330, 0, VR::SQ, VM::M1, "ReferencedOphthalmicAxialLengthMeasurementQCImageSequence" },
+{ 0x0022, 0x1415, 0, VR::CS, VM::M1, "OphthalmicMappingDeviceType" },
+{ 0x0022, 0x1420, 0, VR::SQ, VM::M1, "AcquisitionMethodCodeSequence" },
+{ 0x0022, 0x1423, 0, VR::SQ, VM::M1, "AcquisitionMethodAlgorithmSequence" },
+{ 0x0022, 0x1436, 0, VR::SQ, VM::M1, "OphthalmicThicknessMapTypeCodeSequence" },
+{ 0x0022, 0x1443, 0, VR::SQ, VM::M1, "OphthalmicThicknessMappingNormalsSequence" },
+{ 0x0022, 0x1445, 0, VR::SQ, VM::M1, "RetinalThicknessDefinitionCodeSequence" },
+{ 0x0022, 0x1450, 0, VR::SQ, VM::M1, "PixelValueMappingToCodedConceptSequence" },
+{ 0x0022, 0x1452, 0, VR::XS, VM::M1, "MappedPixelValue" },
+{ 0x0022, 0x1454, 0, VR::LO, VM::M1, "PixelValueMappingExplanation" },
+{ 0x0022, 0x1458, 0, VR::SQ, VM::M1, "OphthalmicThicknessMapQualityThresholdSequence" },
+{ 0x0022, 0x1460, 0, VR::FL, VM::M1, "OphthalmicThicknessMapThresholdQualityRating" },
+{ 0x0022, 0x1463, 0, VR::FL, VM::M2, "AnatomicStructureReferencePoint" },
+{ 0x0022, 0x1465, 0, VR::SQ, VM::M1, "RegistrationToLocalizerSequence" },
+{ 0x0022, 0x1466, 0, VR::CS, VM::M1, "RegisteredLocalizerUnits" },
+{ 0x0022, 0x1467, 0, VR::FL, VM::M2, "RegisteredLocalizerTopLeftHandCorner" },
+{ 0x0022, 0x1468, 0, VR::FL, VM::M2, "RegisteredLocalizerBottomRightHandCorner" },
+{ 0x0022, 0x1470, 0, VR::SQ, VM::M1, "OphthalmicThicknessMapQualityRatingSequence" },
+{ 0x0022, 0x1472, 0, VR::SQ, VM::M1, "RelevantOPTAttributesSequence" },
+{ 0x0024, 0x0010, 0, VR::FL, VM::M1, "VisualFieldHorizontalExtent" },
+{ 0x0024, 0x0011, 0, VR::FL, VM::M1, "VisualFieldVerticalExtent" },
+{ 0x0024, 0x0012, 0, VR::CS, VM::M1, "VisualFieldShape" },
+{ 0x0024, 0x0016, 0, VR::SQ, VM::M1, "ScreeningTestModeCodeSequence" },
+{ 0x0024, 0x0018, 0, VR::FL, VM::M1, "MaximumStimulusLuminance" },
+{ 0x0024, 0x0020, 0, VR::FL, VM::M1, "BackgroundLuminance" },
+{ 0x0024, 0x0021, 0, VR::SQ, VM::M1, "StimulusColorCodeSequence" },
 { 0x0024, 0x0024, 0, VR::SQ, VM::M1, "BackgroundIlluminationColorCodeSequence" },
+{ 0x0024, 0x0025, 0, VR::FL, VM::M1, "StimulusArea" },
+{ 0x0024, 0x0028, 0, VR::FL, VM::M1, "StimulusPresentationTime" },
+{ 0x0024, 0x0032, 0, VR::SQ, VM::M1, "FixationSequence" },
+{ 0x0024, 0x0033, 0, VR::SQ, VM::M1, "FixationMonitoringCodeSequence" },
+{ 0x0024, 0x0034, 0, VR::SQ, VM::M1, "VisualFieldCatchTrialSequence" },
+{ 0x0024, 0x0035, 0, VR::US, VM::M1, "FixationCheckedQuantity" },
+{ 0x0024, 0x0036, 0, VR::US, VM::M1, "PatientNotProperlyFixatedQuantity" },
+{ 0x0024, 0x0037, 0, VR::CS, VM::M1, "PresentedVisualStimuliDataFlag" },
+{ 0x0024, 0x0038, 0, VR::US, VM::M1, "NumberOfVisualStimuli" },
+{ 0x0024, 0x0039, 0, VR::CS, VM::M1, "ExcessiveFixationLossesDataFlag" },
+{ 0x0024, 0x0040, 0, VR::CS, VM::M1, "ExcessiveFixationLosses" },
+{ 0x0024, 0x0042, 0, VR::US, VM::M1, "StimuliRetestingQuantity" },
+{ 0x0024, 0x0044, 0, VR::LT, VM::M1, "CommentsOnPatientPerformanceOfVisualField" },
+{ 0x0024, 0x0045, 0, VR::CS, VM::M1, "FalseNegativesEstimateFlag" },
+{ 0x0024, 0x0046, 0, VR::FL, VM::M1, "FalseNegativesEstimate" },
+{ 0x0024, 0x0048, 0, VR::US, VM::M1, "NegativeCatchTrialsQuantity" },
+{ 0x0024, 0x0050, 0, VR::US, VM::M1, "FalseNegativesQuantity" },
+{ 0x0024, 0x0051, 0, VR::CS, VM::M1, "ExcessiveFalseNegativesDataFlag" },
+{ 0x0024, 0x0052, 0, VR::CS, VM::M1, "ExcessiveFalseNegatives" },
+{ 0x0024, 0x0053, 0, VR::CS, VM::M1, "FalsePositivesEstimateFlag" },
+{ 0x0024, 0x0054, 0, VR::FL, VM::M1, "FalsePositivesEstimate" },
+{ 0x0024, 0x0055, 0, VR::CS, VM::M1, "CatchTrialsDataFlag" },
+{ 0x0024, 0x0056, 0, VR::US, VM::M1, "PositiveCatchTrialsQuantity" },
+{ 0x0024, 0x0057, 0, VR::CS, VM::M1, "TestPointNormalsDataFlag" },
+{ 0x0024, 0x0058, 0, VR::SQ, VM::M1, "TestPointNormalsSequence" },
+{ 0x0024, 0x0059, 0, VR::CS, VM::M1, "GlobalDeviationProbabilityNormalsFlag" },
+{ 0x0024, 0x0060, 0, VR::US, VM::M1, "FalsePositivesQuantity" },
+{ 0x0024, 0x0061, 0, VR::CS, VM::M1, "ExcessiveFalsePositivesDataFlag" },
+{ 0x0024, 0x0062, 0, VR::CS, VM::M1, "ExcessiveFalsePositives" },
+{ 0x0024, 0x0063, 0, VR::CS, VM::M1, "VisualFieldTestNormalsFlag" },
+{ 0x0024, 0x0064, 0, VR::SQ, VM::M1, "ResultsNormalsSequence" },
+{ 0x0024, 0x0065, 0, VR::SQ, VM::M1, "AgeCorrectedSensitivityDeviationAlgorithmSequence" },
+{ 0x0024, 0x0066, 0, VR::FL, VM::M1, "GlobalDeviationFromNormal" },
+{ 0x0024, 0x0067, 0, VR::SQ, VM::M1, "GeneralizedDefectSensitivityDeviationAlgorithmSequence" },
+{ 0x0024, 0x0068, 0, VR::FL, VM::M1, "LocalizedDeviationFromNormal" },
+{ 0x0024, 0x0069, 0, VR::LO, VM::M1, "PatientReliabilityIndicator" },
+{ 0x0024, 0x0070, 0, VR::FL, VM::M1, "VisualFieldMeanSensitivity" },
+{ 0x0024, 0x0071, 0, VR::FL, VM::M1, "GlobalDeviationProbability" },
+{ 0x0024, 0x0072, 0, VR::CS, VM::M1, "LocalDeviationProbabilityNormalsFlag" },
+{ 0x0024, 0x0073, 0, VR::FL, VM::M1, "LocalizedDeviationProbability" },
+{ 0x0024, 0x0074, 0, VR::CS, VM::M1, "ShortTermFluctuationCalculated" },
+{ 0x0024, 0x0075, 0, VR::FL, VM::M1, "ShortTermFluctuation" },
+{ 0x0024, 0x0076, 0, VR::CS, VM::M1, "ShortTermFluctuationProbabilityCalculated" },
+{ 0x0024, 0x0077, 0, VR::FL, VM::M1, "ShortTermFluctuationProbability" },
+{ 0x0024, 0x0078, 0, VR::CS, VM::M1, "CorrectedLocalizedDeviationFromNormalCalculated" },
+{ 0x0024, 0x0079, 0, VR::FL, VM::M1, "CorrectedLocalizedDeviationFromNormal" },
+{ 0x0024, 0x0080, 0, VR::CS, VM::M1, "CorrectedLocalizedDeviationFromNormalProbabilityCalculated" },
+{ 0x0024, 0x0081, 0, VR::FL, VM::M1, "CorrectedLocalizedDeviationFromNormalProbability" },
+{ 0x0024, 0x0083, 0, VR::SQ, VM::M1, "GlobalDeviationProbabilitySequence" },
+{ 0x0024, 0x0085, 0, VR::SQ, VM::M1, "LocalizedDeviationProbabilitySequence" },
+{ 0x0024, 0x0086, 0, VR::CS, VM::M1, "FovealSensitivityMeasured" },
+{ 0x0024, 0x0087, 0, VR::FL, VM::M1, "FovealSensitivity" },
+{ 0x0024, 0x0088, 0, VR::FL, VM::M1, "VisualFieldTestDuration" },
+{ 0x0024, 0x0089, 0, VR::SQ, VM::M1, "VisualFieldTestPointSequence" },
+{ 0x0024, 0x0090, 0, VR::FL, VM::M1, "VisualFieldTestPointXCoordinate" },
+{ 0x0024, 0x0091, 0, VR::FL, VM::M1, "VisualFieldTestPointYCoordinate" },
+{ 0x0024, 0x0092, 0, VR::FL, VM::M1, "AgeCorrectedSensitivityDeviationValue" },
+{ 0x0024, 0x0093, 0, VR::CS, VM::M1, "StimulusResults" },
+{ 0x0024, 0x0094, 0, VR::FL, VM::M1, "SensitivityValue" },
+{ 0x0024, 0x0095, 0, VR::CS, VM::M1, "RetestStimulusSeen" },
+{ 0x0024, 0x0096, 0, VR::FL, VM::M1, "RetestSensitivityValue" },
+{ 0x0024, 0x0097, 0, VR::SQ, VM::M1, "VisualFieldTestPointNormalsSequence" },
+{ 0x0024, 0x0098, 0, VR::FL, VM::M1, "QuantifiedDefect" },
+{ 0x0024, 0x0100, 0, VR::FL, VM::M1, "AgeCorrectedSensitivityDeviationProbabilityValue" },
+{ 0x0024, 0x0102, 0, VR::CS, VM::M1, "GeneralizedDefectCorrectedSensitivityDeviationFlag" },
+{ 0x0024, 0x0103, 0, VR::FL, VM::M1, "GeneralizedDefectCorrectedSensitivityDeviationValue" },
+{ 0x0024, 0x0104, 0, VR::FL, VM::M1, "GeneralizedDefectCorrectedSensitivityDeviationProbabilityValue" },
+{ 0x0024, 0x0105, 0, VR::FL, VM::M1, "MinimumSensitivityValue" },
+{ 0x0024, 0x0106, 0, VR::CS, VM::M1, "BlindSpotLocalized" },
+{ 0x0024, 0x0107, 0, VR::FL, VM::M1, "BlindSpotXCoordinate" },
+{ 0x0024, 0x0108, 0, VR::FL, VM::M1, "BlindSpotYCoordinate" },
+{ 0x0024, 0x0110, 0, VR::SQ, VM::M1, "VisualAcuityMeasurementSequence" },
+{ 0x0024, 0x0112, 0, VR::SQ, VM::M1, "RefractiveParametersUsedOnPatientSequence" },
+{ 0x0024, 0x0113, 0, VR::CS, VM::M1, "MeasurementLaterality" },
+{ 0x0024, 0x0114, 0, VR::SQ, VM::M1, "OphthalmicPatientClinicalInformationLeftEyeSequence" },
+{ 0x0024, 0x0115, 0, VR::SQ, VM::M1, "OphthalmicPatientClinicalInformationRightEyeSequence" },
+{ 0x0024, 0x0117, 0, VR::CS, VM::M1, "FovealPointNormativeDataFlag" },
+{ 0x0024, 0x0118, 0, VR::FL, VM::M1, "FovealPointProbabilityValue" },
+{ 0x0024, 0x0120, 0, VR::CS, VM::M1, "ScreeningBaselineMeasured" },
+{ 0x0024, 0x0122, 0, VR::SQ, VM::M1, "ScreeningBaselineMeasuredSequence" },
+{ 0x0024, 0x0124, 0, VR::CS, VM::M1, "ScreeningBaselineType" },
+{ 0x0024, 0x0126, 0, VR::FL, VM::M1, "ScreeningBaselineValue" },
+{ 0x0024, 0x0202, 0, VR::LO, VM::M1, "AlgorithmSource" },
+{ 0x0024, 0x0306, 0, VR::LO, VM::M1, "DataSetName" },
+{ 0x0024, 0x0307, 0, VR::LO, VM::M1, "DataSetVersion" },
+{ 0x0024, 0x0308, 0, VR::LO, VM::M1, "DataSetSource" },
+{ 0x0024, 0x0309, 0, VR::LO, VM::M1, "DataSetDescription" },
+{ 0x0024, 0x0317, 0, VR::SQ, VM::M1, "VisualFieldTestReliabilityGlobalIndexSequence" },
+{ 0x0024, 0x0320, 0, VR::SQ, VM::M1, "VisualFieldGlobalResultsIndexSequence" },
+{ 0x0024, 0x0325, 0, VR::SQ, VM::M1, "DataObservationSequence" },
+{ 0x0024, 0x0338, 0, VR::CS, VM::M1, "IndexNormalsFlag" },
+{ 0x0024, 0x0341, 0, VR::FL, VM::M1, "IndexProbability" },
+{ 0x0024, 0x0344, 0, VR::SQ, VM::M1, "IndexProbabilitySequence" },
+{ 0x0028, 0x0002, 0, VR::US, VM::M1, "SamplesPerPixel" },
+{ 0x0028, 0x0003, 0, VR::US, VM::M1, "SamplesPerPixelUsed" },
+{ 0x0028, 0x0004, 0, VR::CS, VM::M1, "PhotometricInterpretation" },
+{ 0x0028, 0x0005, 1, VR::US, VM::M1, "ImageDimensions" },
+{ 0x0028, 0x0006, 0, VR::US, VM::M1, "PlanarConfiguration" },
+{ 0x0028, 0x0008, 0, VR::IS, VM::M1, "NumberOfFrames" },
+{ 0x0028, 0x0009, 0, VR::AT, VM::M1TN, "FrameIncrementPointer" },
+{ 0x0028, 0x000A, 0, VR::AT, VM::M1TN, "FrameDimensionPointer" },
+{ 0x0028, 0x0010, 0, VR::US, VM::M1, "Rows" },
+{ 0x0028, 0x0011, 0, VR::US, VM::M1, "Columns" },
+{ 0x0028, 0x0012, 1, VR::US, VM::M1, "Planes" },
+{ 0x0028, 0x0014, 0, VR::US, VM::M1, "UltrasoundColorDataPresent" },
+{ 0x0028, 0x0030, 0, VR::DS, VM::M2, "PixelSpacing" },
+{ 0x0028, 0x0031, 0, VR::DS, VM::M2, "ZoomFactor" },
+{ 0x0028, 0x0032, 0, VR::DS, VM::M2, "ZoomCenter" },
+{ 0x0028, 0x0034, 0, VR::IS, VM::M2, "PixelAspectRatio" },
+{ 0x0028, 0x0040, 1, VR::CS, VM::M1, "ImageFormat" },
+{ 0x0028, 0x0050, 1, VR::LO, VM::M1TN, "ManipulatedImage" },
+{ 0x0028, 0x0051, 0, VR::CS, VM::M1TN, "CorrectedImage" },
+{ 0x0028, 0x005F, 1, VR::LO, VM::M1, "CompressionRecognitionCode" },
+{ 0x0028, 0x0060, 1, VR::CS, VM::M1, "CompressionCode" },
+{ 0x0028, 0x0061, 1, VR::SH, VM::M1, "CompressionOriginator" },
+{ 0x0028, 0x0062, 1, VR::LO, VM::M1, "CompressionLabel" },
+{ 0x0028, 0x0063, 1, VR::SH, VM::M1, "CompressionDescription" },
+{ 0x0028, 0x0065, 1, VR::CS, VM::M1TN, "CompressionSequence" },
+{ 0x0028, 0x0066, 1, VR::AT, VM::M1TN, "CompressionStepPointers" },
+{ 0x0028, 0x0068, 1, VR::US, VM::M1, "RepeatInterval" },
+{ 0x0028, 0x0069, 1, VR::US, VM::M1, "BitsGrouped" },
+{ 0x0028, 0x0070, 1, VR::US, VM::M1TN, "PerimeterTable" },
+{ 0x0028, 0x0071, 1, VR::XS, VM::M1, "PerimeterValue" },
+{ 0x0028, 0x0080, 1, VR::US, VM::M1, "PredictorRows" },
+{ 0x0028, 0x0081, 1, VR::US, VM::M1, "PredictorColumns" },
+{ 0x0028, 0x0082, 1, VR::US, VM::M1TN, "PredictorConstants" },
+{ 0x0028, 0x0090, 1, VR::CS, VM::M1, "BlockedPixels" },
+{ 0x0028, 0x0091, 1, VR::US, VM::M1, "BlockRows" },
+{ 0x0028, 0x0092, 1, VR::US, VM::M1, "BlockColumns" },
+{ 0x0028, 0x0093, 1, VR::US, VM::M1, "RowOverlap" },
+{ 0x0028, 0x0094, 1, VR::US, VM::M1, "ColumnOverlap" },
+{ 0x0028, 0x0100, 0, VR::US, VM::M1, "BitsAllocated" },
+{ 0x0028, 0x0101, 0, VR::US, VM::M1, "BitsStored" },
+{ 0x0028, 0x0102, 0, VR::US, VM::M1, "HighBit" },
+{ 0x0028, 0x0103, 0, VR::US, VM::M1, "PixelRepresentation" },
+{ 0x0028, 0x0104, 1, VR::XS, VM::M1, "SmallestValidPixelValue" },
+{ 0x0028, 0x0105, 1, VR::XS, VM::M1, "LargestValidPixelValue" },
+{ 0x0028, 0x0106, 0, VR::XS, VM::M1, "SmallestImagePixelValue" },
+{ 0x0028, 0x0107, 0, VR::XS, VM::M1, "LargestImagePixelValue" },
+{ 0x0028, 0x0108, 0, VR::XS, VM::M1, "SmallestPixelValueInSeries" },
+{ 0x0028, 0x0109, 0, VR::XS, VM::M1, "LargestPixelValueInSeries" },
+{ 0x0028, 0x0110, 1, VR::XS, VM::M1, "SmallestImagePixelValueInPlane" },
+{ 0x0028, 0x0111, 1, VR::XS, VM::M1, "LargestImagePixelValueInPlane" },
+{ 0x0028, 0x0120, 0, VR::XS, VM::M1, "PixelPaddingValue" },
+{ 0x0028, 0x0121, 0, VR::XS, VM::M1, "PixelPaddingRangeLimit" },
+{ 0x0028, 0x0200, 1, VR::US, VM::M1, "ImageLocation" },
+{ 0x0028, 0x0300, 0, VR::CS, VM::M1, "QualityControlImage" },
+{ 0x0028, 0x0301, 0, VR::CS, VM::M1, "BurnedInAnnotation" },
+{ 0x0028, 0x0302, 0, VR::CS, VM::M1, "RecognizableVisualFeatures" },
+{ 0x0028, 0x0303, 0, VR::CS, VM::M1, "LongitudinalTemporalInformationModified" },
+{ 0x0028, 0x0304, 0, VR::UI, VM::M1, "ReferencedColorPaletteInstanceUID" },
+{ 0x0028, 0x0400, 1, VR::LO, VM::M1, "TransformLabel" },
+{ 0x0028, 0x0401, 1, VR::LO, VM::M1, "TransformVersionNumber" },
+{ 0x0028, 0x0402, 1, VR::US, VM::M1, "NumberOfTransformSteps" },
+{ 0x0028, 0x0403, 1, VR::LO, VM::M1TN, "SequenceOfCompressedData" },
+{ 0x0028, 0x0404, 1, VR::AT, VM::M1TN, "DetailsOfCoefficients" },
+{ 0x0028, 0x0410, 1, VR::US, VM::M1, "RowsForNthOrderCoefficients" },
+{ 0x0028, 0x0411, 1, VR::US, VM::M1, "ColumnsForNthOrderCoefficients" },
+{ 0x0028, 0x0412, 1, VR::LO, VM::M1TN, "CoefficientCoding" },
+{ 0x0028, 0x0413, 1, VR::AT, VM::M1TN, "CoefficientCodingPointers" },
+{ 0x0028, 0x0700, 1, VR::LO, VM::M1, "DCTLabel" },
+{ 0x0028, 0x0701, 1, VR::CS, VM::M1TN, "DataBlockDescription" },
+{ 0x0028, 0x0702, 1, VR::AT, VM::M1TN, "DataBlock" },
+{ 0x0028, 0x0710, 1, VR::US, VM::M1, "NormalizationFactorFormat" },
+{ 0x0028, 0x0720, 1, VR::US, VM::M1, "ZonalMapNumberFormat" },
+{ 0x0028, 0x0721, 1, VR::AT, VM::M1TN, "ZonalMapLocation" },
+{ 0x0028, 0x0722, 1, VR::US, VM::M1, "ZonalMapFormat" },
+{ 0x0028, 0x0730, 1, VR::US, VM::M1, "AdaptiveMapFormat" },
+{ 0x0028, 0x0740, 1, VR::US, VM::M1, "CodeNumberFormat" },
+{ 0x0028, 0x0810, 1, VR::CS, VM::M1TN, "CodeLabel" },
+{ 0x0028, 0x0812, 1, VR::US, VM::M1, "NumberOfTables" },
+{ 0x0028, 0x0813, 1, VR::AT, VM::M1TN, "CodeTableLocation" },
+{ 0x0028, 0x0814, 1, VR::US, VM::M1, "BitsForCodeWord" },
+{ 0x0028, 0x0818, 1, VR::AT, VM::M1TN, "ImageDataLocation" },
+{ 0x0028, 0x0A02, 0, VR::CS, VM::M1, "PixelSpacingCalibrationType" },
+{ 0x0028, 0x0A04, 0, VR::LO, VM::M1, "PixelSpacingCalibrationDescription" },
+{ 0x0028, 0x1040, 0, VR::CS, VM::M1, "PixelIntensityRelationship" },
+{ 0x0028, 0x1041, 0, VR::SS, VM::M1, "PixelIntensityRelationshipSign" },
+{ 0x0028, 0x1050, 0, VR::DS, VM::M1TN, "WindowCenter" },
+{ 0x0028, 0x1051, 0, VR::DS, VM::M1TN, "WindowWidth" },
+{ 0x0028, 0x1052, 0, VR::DS, VM::M1, "RescaleIntercept" },
+{ 0x0028, 0x1053, 0, VR::DS, VM::M1, "RescaleSlope" },
+{ 0x0028, 0x1054, 0, VR::LO, VM::M1, "RescaleType" },
+{ 0x0028, 0x1055, 0, VR::LO, VM::M1TN, "WindowCenterWidthExplanation" },
+{ 0x0028, 0x1056, 0, VR::CS, VM::M1, "VOILUTFunction" },
+{ 0x0028, 0x1080, 1, VR::CS, VM::M1, "GrayScale" },
+{ 0x0028, 0x1090, 0, VR::CS, VM::M1, "RecommendedViewingMode" },
+{ 0x0028, 0x1100, 1, VR::XS, VM::M3, "GrayLookupTableDescriptor" },
+{ 0x0028, 0x1101, 0, VR::XS, VM::M3, "RedPaletteColorLookupTableDescriptor" },
+{ 0x0028, 0x1102, 0, VR::XS, VM::M3, "GreenPaletteColorLookupTableDescriptor" },
+{ 0x0028, 0x1103, 0, VR::XS, VM::M3, "BluePaletteColorLookupTableDescriptor" },
+{ 0x0028, 0x1104, 0, VR::US, VM::M3, "AlphaPaletteColorLookupTableDescriptor" },
+{ 0x0028, 0x1111, 1, VR::XS, VM::M4, "LargeRedPaletteColorLookupTableDescriptor" },
+{ 0x0028, 0x1112, 1, VR::XS, VM::M4, "LargeGreenPaletteColorLookupTableDescriptor" },
+{ 0x0028, 0x1113, 1, VR::XS, VM::M4, "LargeBluePaletteColorLookupTableDescriptor" },
+{ 0x0028, 0x1199, 0, VR::UI, VM::M1, "PaletteColorLookupTableUID" },
+{ 0x0028, 0x1200, 1, VR::OW, VM::M1, "GrayLookupTableData" },
+{ 0x0028, 0x1201, 0, VR::OW, VM::M1, "RedPaletteColorLookupTableData" },
+{ 0x0028, 0x1202, 0, VR::OW, VM::M1, "GreenPaletteColorLookupTableData" },
+{ 0x0028, 0x1203, 0, VR::OW, VM::M1, "BluePaletteColorLookupTableData" },
+{ 0x0028, 0x1204, 0, VR::OW, VM::M1, "AlphaPaletteColorLookupTableData" },
+{ 0x0028, 0x1211, 1, VR::OW, VM::M1, "LargeRedPaletteColorLookupTableData" },
+{ 0x0028, 0x1212, 1, VR::OW, VM::M1, "LargeGreenPaletteColorLookupTableData" },
+{ 0x0028, 0x1213, 1, VR::OW, VM::M1, "LargeBluePaletteColorLookupTableData" },
+{ 0x0028, 0x1214, 1, VR::UI, VM::M1, "LargePaletteColorLookupTableUID" },
+{ 0x0028, 0x1221, 0, VR::OW, VM::M1, "SegmentedRedPaletteColorLookupTableData" },
+{ 0x0028, 0x1222, 0, VR::OW, VM::M1, "SegmentedGreenPaletteColorLookupTableData" },
+{ 0x0028, 0x1223, 0, VR::OW, VM::M1, "SegmentedBluePaletteColorLookupTableData" },
+{ 0x0028, 0x1300, 0, VR::CS, VM::M1, "BreastImplantPresent" },
+{ 0x0028, 0x1350, 0, VR::CS, VM::M1, "PartialView" },
+{ 0x0028, 0x1351, 0, VR::ST, VM::M1, "PartialViewDescription" },
+{ 0x0028, 0x1352, 0, VR::SQ, VM::M1, "PartialViewCodeSequence" },
+{ 0x0028, 0x135A, 0, VR::CS, VM::M1, "SpatialLocationsPreserved" },
+{ 0x0028, 0x1401, 0, VR::SQ, VM::M1, "DataFrameAssignmentSequence" },
+{ 0x0028, 0x1402, 0, VR::CS, VM::M1, "DataPathAssignment" },
+{ 0x0028, 0x1403, 0, VR::US, VM::M1, "BitsMappedToColorLookupTable" },
+{ 0x0028, 0x1404, 0, VR::SQ, VM::M1, "BlendingLUT1Sequence" },
+{ 0x0028, 0x1405, 0, VR::CS, VM::M1, "BlendingLUT1TransferFunction" },
+{ 0x0028, 0x1406, 0, VR::FD, VM::M1, "BlendingWeightConstant" },
+{ 0x0028, 0x1407, 0, VR::US, VM::M3, "BlendingLookupTableDescriptor" },
+{ 0x0028, 0x1408, 0, VR::OW, VM::M1, "BlendingLookupTableData" },
+{ 0x0028, 0x140B, 0, VR::SQ, VM::M1, "EnhancedPaletteColorLookupTableSequence" },
+{ 0x0028, 0x140C, 0, VR::SQ, VM::M1, "BlendingLUT2Sequence" },
+{ 0x0028, 0x140D, 0, VR::CS, VM::M1, "BlendingLUT2TransferFunction" },
+{ 0x0028, 0x140E, 0, VR::CS, VM::M1, "DataPathID" },
+{ 0x0028, 0x140F, 0, VR::CS, VM::M1, "RGBLUTTransferFunction" },
+{ 0x0028, 0x1410, 0, VR::CS, VM::M1, "AlphaLUTTransferFunction" },
+{ 0x0028, 0x2000, 0, VR::OB, VM::M1, "ICCProfile" },
+{ 0x0028, 0x2110, 0, VR::CS, VM::M1, "LossyImageCompression" },
+{ 0x0028, 0x2112, 0, VR::DS, VM::M1TN, "LossyImageCompressionRatio" },
+{ 0x0028, 0x2114, 0, VR::CS, VM::M1TN, "LossyImageCompressionMethod" },
+{ 0x0028, 0x3000, 0, VR::SQ, VM::M1, "ModalityLUTSequence" },
+{ 0x0028, 0x3002, 0, VR::XS, VM::M3, "LUTDescriptor" },
+{ 0x0028, 0x3003, 0, VR::LO, VM::M1, "LUTExplanation" },
+{ 0x0028, 0x3004, 0, VR::LO, VM::M1, "ModalityLUTType" },
+{ 0x0028, 0x3006, 0, VR::OW, VM::M1, "LUTData" },
+{ 0x0028, 0x3010, 0, VR::SQ, VM::M1, "VOILUTSequence" },
+{ 0x0028, 0x3110, 0, VR::SQ, VM::M1, "SoftcopyVOILUTSequence" },
+{ 0x0028, 0x4000, 1, VR::LT, VM::M1, "ImagePresentationComments" },
+{ 0x0028, 0x5000, 1, VR::SQ, VM::M1, "BiPlaneAcquisitionSequence" },
+{ 0x0028, 0x6010, 0, VR::US, VM::M1, "RepresentativeFrameNumber" },
+{ 0x0028, 0x6020, 0, VR::US, VM::M1TN, "FrameNumbersOfInterest" },
+{ 0x0028, 0x6022, 0, VR::LO, VM::M1TN, "FrameOfInterestDescription" },
+{ 0x0028, 0x6023, 0, VR::CS, VM::M1TN, "FrameOfInterestType" },
+{ 0x0028, 0x6030, 1, VR::US, VM::M1TN, "MaskPointers" },
+{ 0x0028, 0x6040, 0, VR::US, VM::M1TN, "RWavePointer" },
+{ 0x0028, 0x6100, 0, VR::SQ, VM::M1, "MaskSubtractionSequence" },
+{ 0x0028, 0x6101, 0, VR::CS, VM::M1, "MaskOperation" },
+{ 0x0028, 0x6102, 0, VR::US, VM::M2T2N, "ApplicableFrameRange" },
+{ 0x0028, 0x6110, 0, VR::US, VM::M1TN, "MaskFrameNumbers" },
+{ 0x0028, 0x6112, 0, VR::US, VM::M1, "ContrastFrameAveraging" },
+{ 0x0028, 0x6114, 0, VR::FL, VM::M2, "MaskSubPixelShift" },
+{ 0x0028, 0x6120, 0, VR::SS, VM::M1, "TIDOffset" },
+{ 0x0028, 0x6190, 0, VR::ST, VM::M1, "MaskOperationExplanation" },
+{ 0x0028, 0x7FE0, 0, VR::UT, VM::M1, "PixelDataProviderURL" },
+{ 0x0028, 0x9001, 0, VR::UL, VM::M1, "DataPointRows" },
+{ 0x0028, 0x9002, 0, VR::UL, VM::M1, "DataPointColumns" },
+{ 0x0028, 0x9003, 0, VR::CS, VM::M1, "SignalDomainColumns" },
+{ 0x0028, 0x9099, 1, VR::US, VM::M1, "LargestMonochromePixelValue" },
+{ 0x0028, 0x9108, 0, VR::CS, VM::M1, "DataRepresentation" },
+{ 0x0028, 0x9110, 0, VR::SQ, VM::M1, "PixelMeasuresSequence" },
+{ 0x0028, 0x9132, 0, VR::SQ, VM::M1, "FrameVOILUTSequence" },
+{ 0x0028, 0x9145, 0, VR::SQ, VM::M1, "PixelValueTransformationSequence" },
+{ 0x0028, 0x9235, 0, VR::CS, VM::M1, "SignalDomainRows" },
+{ 0x0028, 0x9411, 0, VR::FL, VM::M1, "DisplayFilterPercentage" },
+{ 0x0028, 0x9415, 0, VR::SQ, VM::M1, "FramePixelShiftSequence" },
+{ 0x0028, 0x9416, 0, VR::US, VM::M1, "SubtractionItemID" },
+{ 0x0028, 0x9422, 0, VR::SQ, VM::M1, "PixelIntensityRelationshipLUTSequence" },
+{ 0x0028, 0x9443, 0, VR::SQ, VM::M1, "FramePixelDataPropertiesSequence" },
+{ 0x0028, 0x9444, 0, VR::CS, VM::M1, "GeometricalProperties" },
+{ 0x0028, 0x9445, 0, VR::FL, VM::M1, "GeometricMaximumDistortion" },
+{ 0x0028, 0x9446, 0, VR::CS, VM::M1TN, "ImageProcessingApplied" },
+{ 0x0028, 0x9454, 0, VR::CS, VM::M1, "MaskSelectionMode" },
+{ 0x0028, 0x9474, 0, VR::CS, VM::M1, "LUTFunction" },
+{ 0x0028, 0x9478, 0, VR::FL, VM::M1, "MaskVisibilityPercentage" },
+{ 0x0028, 0x9501, 0, VR::SQ, VM::M1, "PixelShiftSequence" },
+{ 0x0028, 0x9502, 0, VR::SQ, VM::M1, "RegionPixelShiftSequence" },
+{ 0x0028, 0x9503, 0, VR::SS, VM::M2T2N, "VerticesOfTheRegion" },
+{ 0x0028, 0x9505, 0, VR::SQ, VM::M1, "MultiFramePresentationSequence" },
+{ 0x0028, 0x9506, 0, VR::US, VM::M2T2N, "PixelShiftFrameRange" },
+{ 0x0028, 0x9507, 0, VR::US, VM::M2T2N, "LUTFrameRange" },
+{ 0x0028, 0x9520, 0, VR::DS, VM::M16, "ImageToEquipmentMappingMatrix" },
+{ 0x0028, 0x9537, 0, VR::CS, VM::M1, "EquipmentCoordinateSystemIdentification" },
+{ 0x0032, 0x000A, 1, VR::CS, VM::M1, "StudyStatusID" },
+{ 0x0032, 0x000C, 1, VR::CS, VM::M1, "StudyPriorityID" },
+{ 0x0032, 0x0012, 1, VR::LO, VM::M1, "StudyIDIssuer" },
 { 0x0032, 0x0032, 1, VR::DA, VM::M1, "StudyVerifiedDate" },
+{ 0x0032, 0x0033, 1, VR::TM, VM::M1, "StudyVerifiedTime" },
+{ 0x0032, 0x0034, 1, VR::DA, VM::M1, "StudyReadDate" },
+{ 0x0032, 0x0035, 1, VR::TM, VM::M1, "StudyReadTime" },
+{ 0x0032, 0x1000, 1, VR::DA, VM::M1, "ScheduledStudyStartDate" },
+{ 0x0032, 0x1001, 1, VR::TM, VM::M1, "ScheduledStudyStartTime" },
+{ 0x0032, 0x1010, 1, VR::DA, VM::M1, "ScheduledStudyStopDate" },
+{ 0x0032, 0x1011, 1, VR::TM, VM::M1, "ScheduledStudyStopTime" },
+{ 0x0032, 0x1020, 1, VR::LO, VM::M1, "ScheduledStudyLocation" },
+{ 0x0032, 0x1021, 1, VR::AE, VM::M1TN, "ScheduledStudyLocationAETitle" },
+{ 0x0032, 0x1030, 1, VR::LO, VM::M1, "ReasonForStudy" },
+{ 0x0032, 0x1031, 0, VR::SQ, VM::M1, "RequestingPhysicianIdentificationSequence" },
+{ 0x0032, 0x1032, 0, VR::PN, VM::M1, "RequestingPhysician" },
+{ 0x0032, 0x1033, 0, VR::LO, VM::M1, "RequestingService" },
+{ 0x0032, 0x1034, 0, VR::SQ, VM::M1, "RequestingServiceCodeSequence" },
+{ 0x0032, 0x1040, 1, VR::DA, VM::M1, "StudyArrivalDate" },
+{ 0x0032, 0x1041, 1, VR::TM, VM::M1, "StudyArrivalTime" },
+{ 0x0032, 0x1050, 1, VR::DA, VM::M1, "StudyCompletionDate" },
+{ 0x0032, 0x1051, 1, VR::TM, VM::M1, "StudyCompletionTime" },
+{ 0x0032, 0x1055, 1, VR::CS, VM::M1, "StudyComponentStatusID" },
+{ 0x0032, 0x1060, 0, VR::LO, VM::M1, "RequestedProcedureDescription" },
+{ 0x0032, 0x1064, 0, VR::SQ, VM::M1, "RequestedProcedureCodeSequence" },
+{ 0x0032, 0x1070, 0, VR::LO, VM::M1, "RequestedContrastAgent" },
+{ 0x0032, 0x4000, 1, VR::LT, VM::M1, "StudyComments" },
+{ 0x0038, 0x0004, 0, VR::SQ, VM::M1, "ReferencedPatientAliasSequence" },
+{ 0x0038, 0x0008, 0, VR::CS, VM::M1, "VisitStatusID" },
+{ 0x0038, 0x0010, 0, VR::LO, VM::M1, "AdmissionID" },
+{ 0x0038, 0x0011, 1, VR::LO, VM::M1, "IssuerOfAdmissionID" },
+{ 0x0038, 0x0014, 0, VR::SQ, VM::M1, "IssuerOfAdmissionIDSequence" },
+{ 0x0038, 0x0016, 0, VR::LO, VM::M1, "RouteOfAdmissions" },
+{ 0x0038, 0x001A, 1, VR::DA, VM::M1, "ScheduledAdmissionDate" },
+{ 0x0038, 0x001B, 1, VR::TM, VM::M1, "ScheduledAdmissionTime" },
+{ 0x0038, 0x001C, 1, VR::DA, VM::M1, "ScheduledDischargeDate" },
+{ 0x0038, 0x001D, 1, VR::TM, VM::M1, "ScheduledDischargeTime" },
+{ 0x0038, 0x001E, 1, VR::LO, VM::M1, "ScheduledPatientInstitutionResidence" },
+{ 0x0038, 0x0020, 0, VR::DA, VM::M1, "AdmittingDate" },
+{ 0x0038, 0x0021, 0, VR::TM, VM::M1, "AdmittingTime" },
+{ 0x0038, 0x0030, 1, VR::DA, VM::M1, "DischargeDate" },
+{ 0x0038, 0x0032, 1, VR::TM, VM::M1, "DischargeTime" },
+{ 0x0038, 0x0040, 1, VR::LO, VM::M1, "DischargeDiagnosisDescription" },
+{ 0x0038, 0x0044, 1, VR::SQ, VM::M1, "DischargeDiagnosisCodeSequence" },
+{ 0x0038, 0x0050, 0, VR::LO, VM::M1, "SpecialNeeds" },
+{ 0x0038, 0x0060, 0, VR::LO, VM::M1, "ServiceEpisodeID" },
+{ 0x0038, 0x0061, 1, VR::LO, VM::M1, "IssuerOfServiceEpisodeID" },
+{ 0x0038, 0x0062, 0, VR::LO, VM::M1, "ServiceEpisodeDescription" },
+{ 0x0038, 0x0064, 0, VR::SQ, VM::M1, "IssuerOfServiceEpisodeIDSequence" },
+{ 0x0038, 0x0100, 0, VR::SQ, VM::M1, "PertinentDocumentsSequence" },
+{ 0x0038, 0x0300, 0, VR::LO, VM::M1, "CurrentPatientLocation" },
+{ 0x0038, 0x0400, 0, VR::LO, VM::M1, "PatientInstitutionResidence" },
+{ 0x0038, 0x0500, 0, VR::LO, VM::M1, "PatientState" },
+{ 0x0038, 0x0502, 0, VR::SQ, VM::M1, "PatientClinicalTrialParticipationSequence" },
+{ 0x0038, 0x4000, 0, VR::LT, VM::M1, "VisitComments" },
+{ 0x003A, 0x0004, 0, VR::CS, VM::M1, "WaveformOriginality" },
+{ 0x003A, 0x0005, 0, VR::US, VM::M1, "NumberOfWaveformChannels" },
+{ 0x003A, 0x0010, 0, VR::UL, VM::M1, "NumberOfWaveformSamples" },
+{ 0x003A, 0x001A, 0, VR::DS, VM::M1, "SamplingFrequency" },
+{ 0x003A, 0x0020, 0, VR::SH, VM::M1, "MultiplexGroupLabel" },
+{ 0x003A, 0x0200, 0, VR::SQ, VM::M1, "ChannelDefinitionSequence" },
+{ 0x003A, 0x0202, 0, VR::IS, VM::M1, "WaveformChannelNumber" },
+{ 0x003A, 0x0203, 0, VR::SH, VM::M1, "ChannelLabel" },
+{ 0x003A, 0x0205, 0, VR::CS, VM::M1TN, "ChannelStatus" },
+{ 0x003A, 0x0208, 0, VR::SQ, VM::M1, "ChannelSourceSequence" },
+{ 0x003A, 0x0209, 0, VR::SQ, VM::M1, "ChannelSourceModifiersSequence" },
+{ 0x003A, 0x020A, 0, VR::SQ, VM::M1, "SourceWaveformSequence" },
+{ 0x003A, 0x020C, 0, VR::LO, VM::M1, "ChannelDerivationDescription" },
+{ 0x003A, 0x0210, 0, VR::DS, VM::M1, "ChannelSensitivity" },
+{ 0x003A, 0x0211, 0, VR::SQ, VM::M1, "ChannelSensitivityUnitsSequence" },
+{ 0x003A, 0x0212, 0, VR::DS, VM::M1, "ChannelSensitivityCorrectionFactor" },
+{ 0x003A, 0x0213, 0, VR::DS, VM::M1, "ChannelBaseline" },
+{ 0x003A, 0x0214, 0, VR::DS, VM::M1, "ChannelTimeSkew" },
+{ 0x003A, 0x0215, 0, VR::DS, VM::M1, "ChannelSampleSkew" },
+{ 0x003A, 0x0218, 0, VR::DS, VM::M1, "ChannelOffset" },
+{ 0x003A, 0x021A, 0, VR::US, VM::M1, "WaveformBitsStored" },
+{ 0x003A, 0x0220, 0, VR::DS, VM::M1, "FilterLowFrequency" },
+{ 0x003A, 0x0221, 0, VR::DS, VM::M1, "FilterHighFrequency" },
+{ 0x003A, 0x0222, 0, VR::DS, VM::M1, "NotchFilterFrequency" },
+{ 0x003A, 0x0223, 0, VR::DS, VM::M1, "NotchFilterBandwidth" },
+{ 0x003A, 0x0230, 0, VR::FL, VM::M1, "WaveformDataDisplayScale" },
+{ 0x003A, 0x0231, 0, VR::US, VM::M3, "WaveformDisplayBackgroundCIELabValue" },
+{ 0x003A, 0x0240, 0, VR::SQ, VM::M1, "WaveformPresentationGroupSequence" },
+{ 0x003A, 0x0241, 0, VR::US, VM::M1, "PresentationGroupNumber" },
+{ 0x003A, 0x0242, 0, VR::SQ, VM::M1, "ChannelDisplaySequence" },
+{ 0x003A, 0x0244, 0, VR::US, VM::M3, "ChannelRecommendedDisplayCIELabValue" },
+{ 0x003A, 0x0245, 0, VR::FL, VM::M1, "ChannelPosition" },
+{ 0x003A, 0x0246, 0, VR::CS, VM::M1, "DisplayShadingFlag" },
+{ 0x003A, 0x0247, 0, VR::FL, VM::M1, "FractionalChannelDisplayScale" },
+{ 0x003A, 0x0248, 0, VR::FL, VM::M1, "AbsoluteChannelDisplayScale" },
+{ 0x003A, 0x0300, 0, VR::SQ, VM::M1, "MultiplexedAudioChannelsDescriptionCodeSequence" },
+{ 0x003A, 0x0301, 0, VR::IS, VM::M1, "ChannelIdentificationCode" },
+{ 0x003A, 0x0302, 0, VR::CS, VM::M1, "ChannelMode" },
+{ 0x0040, 0x0001, 0, VR::AE, VM::M1TN, "ScheduledStationAETitle" },
+{ 0x0040, 0x0002, 0, VR::DA, VM::M1, "ScheduledProcedureStepStartDate" },
+{ 0x0040, 0x0003, 0, VR::TM, VM::M1, "ScheduledProcedureStepStartTime" },
+{ 0x0040, 0x0004, 0, VR::DA, VM::M1, "ScheduledProcedureStepEndDate" },
+{ 0x0040, 0x0005, 0, VR::TM, VM::M1, "ScheduledProcedureStepEndTime" },
+{ 0x0040, 0x0006, 0, VR::PN, VM::M1, "ScheduledPerformingPhysicianName" },
+{ 0x0040, 0x0007, 0, VR::LO, VM::M1, "ScheduledProcedureStepDescription" },
+{ 0x0040, 0x0008, 0, VR::SQ, VM::M1, "ScheduledProtocolCodeSequence" },
+{ 0x0040, 0x0009, 0, VR::SH, VM::M1, "ScheduledProcedureStepID" },
+{ 0x0040, 0x000A, 0, VR::SQ, VM::M1, "StageCodeSequence" },
+{ 0x0040, 0x000B, 0, VR::SQ, VM::M1, "ScheduledPerformingPhysicianIdentificationSequence" },
+{ 0x0040, 0x0010, 0, VR::SH, VM::M1TN, "ScheduledStationName" },
+{ 0x0040, 0x0011, 0, VR::SH, VM::M1, "ScheduledProcedureStepLocation" },
+{ 0x0040, 0x0012, 0, VR::LO, VM::M1, "PreMedication" },
+{ 0x0040, 0x0020, 0, VR::CS, VM::M1, "ScheduledProcedureStepStatus" },
+{ 0x0040, 0x0026, 0, VR::SQ, VM::M1, "OrderPlacerIdentifierSequence" },
+{ 0x0040, 0x0027, 0, VR::SQ, VM::M1, "OrderFillerIdentifierSequence" },
+{ 0x0040, 0x0031, 0, VR::UT, VM::M1, "LocalNamespaceEntityID" },
+{ 0x0040, 0x0032, 0, VR::UT, VM::M1, "UniversalEntityID" },
+{ 0x0040, 0x0033, 0, VR::CS, VM::M1, "UniversalEntityIDType" },
+{ 0x0040, 0x0035, 0, VR::CS, VM::M1, "IdentifierTypeCode" },
+{ 0x0040, 0x0036, 0, VR::SQ, VM::M1, "AssigningFacilitySequence" },
+{ 0x0040, 0x0039, 0, VR::SQ, VM::M1, "AssigningJurisdictionCodeSequence" },
+{ 0x0040, 0x003A, 0, VR::SQ, VM::M1, "AssigningAgencyOrDepartmentCodeSequence" },
+{ 0x0040, 0x0100, 0, VR::SQ, VM::M1, "ScheduledProcedureStepSequence" },
+{ 0x0040, 0x0220, 0, VR::SQ, VM::M1, "ReferencedNonImageCompositeSOPInstanceSequence" },
+{ 0x0040, 0x0241, 0, VR::AE, VM::M1, "PerformedStationAETitle" },
+{ 0x0040, 0x0242, 0, VR::SH, VM::M1, "PerformedStationName" },
+{ 0x0040, 0x0243, 0, VR::SH, VM::M1, "PerformedLocation" },
+{ 0x0040, 0x0244, 0, VR::DA, VM::M1, "PerformedProcedureStepStartDate" },
+{ 0x0040, 0x0245, 0, VR::TM, VM::M1, "PerformedProcedureStepStartTime" },
+{ 0x0040, 0x0250, 0, VR::DA, VM::M1, "PerformedProcedureStepEndDate" },
+{ 0x0040, 0x0251, 0, VR::TM, VM::M1, "PerformedProcedureStepEndTime" },
+{ 0x0040, 0x0252, 0, VR::CS, VM::M1, "PerformedProcedureStepStatus" },
+{ 0x0040, 0x0253, 0, VR::SH, VM::M1, "PerformedProcedureStepID" },
+{ 0x0040, 0x0254, 0, VR::LO, VM::M1, "PerformedProcedureStepDescription" },
+{ 0x0040, 0x0255, 0, VR::LO, VM::M1, "PerformedProcedureTypeDescription" },
+{ 0x0040, 0x0260, 0, VR::SQ, VM::M1, "PerformedProtocolCodeSequence" },
+{ 0x0040, 0x0261, 0, VR::CS, VM::M1, "PerformedProtocolType" },
+{ 0x0040, 0x0270, 0, VR::SQ, VM::M1, "ScheduledStepAttributesSequence" },
+{ 0x0040, 0x0275, 0, VR::SQ, VM::M1, "RequestAttributesSequence" },
+{ 0x0040, 0x0280, 0, VR::ST, VM::M1, "CommentsOnThePerformedProcedureStep" },
+{ 0x0040, 0x0281, 0, VR::SQ, VM::M1, "PerformedProcedureStepDiscontinuationReasonCodeSequence" },
+{ 0x0040, 0x0293, 0, VR::SQ, VM::M1, "QuantitySequence" },
+{ 0x0040, 0x0294, 0, VR::DS, VM::M1, "Quantity" },
+{ 0x0040, 0x0295, 0, VR::SQ, VM::M1, "MeasuringUnitsSequence" },
+{ 0x0040, 0x0296, 0, VR::SQ, VM::M1, "BillingItemSequence" },
+{ 0x0040, 0x0300, 0, VR::US, VM::M1, "TotalTimeOfFluoroscopy" },
+{ 0x0040, 0x0301, 0, VR::US, VM::M1, "TotalNumberOfExposures" },
+{ 0x0040, 0x0302, 0, VR::US, VM::M1, "EntranceDose" },
+{ 0x0040, 0x0303, 0, VR::US, VM::M1T2, "ExposedArea" },
+{ 0x0040, 0x0306, 0, VR::DS, VM::M1, "DistanceSourceToEntrance" },
+{ 0x0040, 0x0307, 1, VR::DS, VM::M1, "DistanceSourceToSupport" },
+{ 0x0040, 0x030E, 0, VR::SQ, VM::M1, "ExposureDoseSequence" },
+{ 0x0040, 0x0310, 0, VR::ST, VM::M1, "CommentsOnRadiationDose" },
+{ 0x0040, 0x0312, 0, VR::DS, VM::M1, "XRayOutput" },
+{ 0x0040, 0x0314, 0, VR::DS, VM::M1, "HalfValueLayer" },
+{ 0x0040, 0x0316, 0, VR::DS, VM::M1, "OrganDose" },
+{ 0x0040, 0x0318, 0, VR::CS, VM::M1, "OrganExposed" },
+{ 0x0040, 0x0320, 0, VR::SQ, VM::M1, "BillingProcedureStepSequence" },
+{ 0x0040, 0x0321, 0, VR::SQ, VM::M1, "FilmConsumptionSequence" },
+{ 0x0040, 0x0324, 0, VR::SQ, VM::M1, "BillingSuppliesAndDevicesSequence" },
+{ 0x0040, 0x0330, 1, VR::SQ, VM::M1, "ReferencedProcedureStepSequence" },
+{ 0x0040, 0x0340, 0, VR::SQ, VM::M1, "PerformedSeriesSequence" },
+{ 0x0040, 0x0400, 0, VR::LT, VM::M1, "CommentsOnTheScheduledProcedureStep" },
+{ 0x0040, 0x0440, 0, VR::SQ, VM::M1, "ProtocolContextSequence" },
+{ 0x0040, 0x0441, 0, VR::SQ, VM::M1, "ContentItemModifierSequence" },
+{ 0x0040, 0x0500, 0, VR::SQ, VM::M1, "ScheduledSpecimenSequence" },
+{ 0x0040, 0x050A, 1, VR::LO, VM::M1, "SpecimenAccessionNumber" },
+{ 0x0040, 0x0512, 0, VR::LO, VM::M1, "ContainerIdentifier" },
+{ 0x0040, 0x0513, 0, VR::SQ, VM::M1, "IssuerOfTheContainerIdentifierSequence" },
+{ 0x0040, 0x0515, 0, VR::SQ, VM::M1, "AlternateContainerIdentifierSequence" },
+{ 0x0040, 0x0518, 0, VR::SQ, VM::M1, "ContainerTypeCodeSequence" },
+{ 0x0040, 0x051A, 0, VR::LO, VM::M1, "ContainerDescription" },
+{ 0x0040, 0x0520, 0, VR::SQ, VM::M1, "ContainerComponentSequence" },
+{ 0x0040, 0x0550, 1, VR::SQ, VM::M1, "SpecimenSequence" },
+{ 0x0040, 0x0551, 0, VR::LO, VM::M1, "SpecimenIdentifier" },
+{ 0x0040, 0x0552, 1, VR::SQ, VM::M1, "SpecimenDescriptionSequenceTrial" },
+{ 0x0040, 0x0553, 1, VR::ST, VM::M1, "SpecimenDescriptionTrial" },
+{ 0x0040, 0x0554, 0, VR::UI, VM::M1, "SpecimenUID" },
+{ 0x0040, 0x0555, 0, VR::SQ, VM::M1, "AcquisitionContextSequence" },
+{ 0x0040, 0x0556, 0, VR::ST, VM::M1, "AcquisitionContextDescription" },
+{ 0x0040, 0x059A, 0, VR::SQ, VM::M1, "SpecimenTypeCodeSequence" },
+{ 0x0040, 0x0560, 0, VR::SQ, VM::M1, "SpecimenDescriptionSequence" },
+{ 0x0040, 0x0562, 0, VR::SQ, VM::M1, "IssuerOfTheSpecimenIdentifierSequence" },
+{ 0x0040, 0x0600, 0, VR::LO, VM::M1, "SpecimenShortDescription" },
+{ 0x0040, 0x0602, 0, VR::UT, VM::M1, "SpecimenDetailedDescription" },
+{ 0x0040, 0x0610, 0, VR::SQ, VM::M1, "SpecimenPreparationSequence" },
+{ 0x0040, 0x0612, 0, VR::SQ, VM::M1, "SpecimenPreparationStepContentItemSequence" },
+{ 0x0040, 0x0620, 0, VR::SQ, VM::M1, "SpecimenLocalizationContentItemSequence" },
+{ 0x0040, 0x06FA, 1, VR::LO, VM::M1, "SlideIdentifier" },
+{ 0x0040, 0x071A, 0, VR::SQ, VM::M1, "ImageCenterPointCoordinatesSequence" },
+{ 0x0040, 0x072A, 0, VR::DS, VM::M1, "XOffsetInSlideCoordinateSystem" },
+{ 0x0040, 0x073A, 0, VR::DS, VM::M1, "YOffsetInSlideCoordinateSystem" },
+{ 0x0040, 0x074A, 0, VR::DS, VM::M1, "ZOffsetInSlideCoordinateSystem" },
+{ 0x0040, 0x08D8, 1, VR::SQ, VM::M1, "PixelSpacingSequence" },
+{ 0x0040, 0x08DA, 1, VR::SQ, VM::M1, "CoordinateSystemAxisCodeSequence" },
+{ 0x0040, 0x08EA, 0, VR::SQ, VM::M1, "MeasurementUnitsCodeSequence" },
+{ 0x0040, 0x09F8, 1, VR::SQ, VM::M1, "VitalStainCodeSequenceTrial" },
 { 0x0040, 0x1001, 0, VR::SH, VM::M1, "RequestedProcedureID" },
+{ 0x0040, 0x1002, 0, VR::LO, VM::M1, "ReasonForTheRequestedProcedure" },
+{ 0x0040, 0x1003, 0, VR::SH, VM::M1, "RequestedProcedurePriority" },
+{ 0x0040, 0x1004, 0, VR::LO, VM::M1, "PatientTransportArrangements" },
+{ 0x0040, 0x1005, 0, VR::LO, VM::M1, "RequestedProcedureLocation" },
+{ 0x0040, 0x1006, 1, VR::SH, VM::M1, "PlacerOrderNumberProcedure" },
+{ 0x0040, 0x1007, 1, VR::SH, VM::M1, "FillerOrderNumberProcedure" },
+{ 0x0040, 0x1008, 0, VR::LO, VM::M1, "ConfidentialityCode" },
+{ 0x0040, 0x1009, 0, VR::SH, VM::M1, "ReportingPriority" },
+{ 0x0040, 0x100A, 0, VR::SQ, VM::M1, "ReasonForRequestedProcedureCodeSequence" },
+{ 0x0040, 0x1010, 0, VR::PN, VM::M1TN, "NamesOfIntendedRecipientsOfResults" },
+{ 0x0040, 0x1011, 0, VR::SQ, VM::M1, "IntendedRecipientsOfResultsIdentificationSequence" },
+{ 0x0040, 0x1012, 0, VR::SQ, VM::M1, "ReasonForPerformedProcedureCodeSequence" },
+{ 0x0040, 0x1060, 1, VR::LO, VM::M1, "RequestedProcedureDescriptionTrial" },
+{ 0x0040, 0x1101, 0, VR::SQ, VM::M1, "PersonIdentificationCodeSequence" },
+{ 0x0040, 0x1102, 0, VR::ST, VM::M1, "PersonAddress" },
+{ 0x0040, 0x1103, 0, VR::LO, VM::M1TN, "PersonTelephoneNumbers" },
+{ 0x0040, 0x1400, 0, VR::LT, VM::M1, "RequestedProcedureComments" },
+{ 0x0040, 0x2001, 1, VR::LO, VM::M1, "ReasonForTheImagingServiceRequest" },
+{ 0x0040, 0x2004, 0, VR::DA, VM::M1, "IssueDateOfImagingServiceRequest" },
+{ 0x0040, 0x2005, 0, VR::TM, VM::M1, "IssueTimeOfImagingServiceRequest" },
+{ 0x0040, 0x2006, 1, VR::SH, VM::M1, "PlacerOrderNumberImagingServiceRequestRetired" },
+{ 0x0040, 0x2007, 1, VR::SH, VM::M1, "FillerOrderNumberImagingServiceRequestRetired" },
+{ 0x0040, 0x2008, 0, VR::PN, VM::M1, "OrderEnteredBy" },
+{ 0x0040, 0x2009, 0, VR::SH, VM::M1, "OrderEntererLocation" },
+{ 0x0040, 0x2010, 0, VR::SH, VM::M1, "OrderCallbackPhoneNumber" },
+{ 0x0040, 0x2016, 0, VR::LO, VM::M1, "PlacerOrderNumberImagingServiceRequest" },
+{ 0x0040, 0x2017, 0, VR::LO, VM::M1, "FillerOrderNumberImagingServiceRequest" },
+{ 0x0040, 0x2400, 0, VR::LT, VM::M1, "ImagingServiceRequestComments" },
+{ 0x0040, 0x3001, 0, VR::LO, VM::M1, "ConfidentialityConstraintOnPatientDataDescription" },
+{ 0x0040, 0x4001, 1, VR::CS, VM::M1, "GeneralPurposeScheduledProcedureStepStatus" },
+{ 0x0040, 0x4002, 1, VR::CS, VM::M1, "GeneralPurposePerformedProcedureStepStatus" },
+{ 0x0040, 0x4003, 1, VR::CS, VM::M1, "GeneralPurposeScheduledProcedureStepPriority" },
+{ 0x0040, 0x4004, 1, VR::SQ, VM::M1, "ScheduledProcessingApplicationsCodeSequence" },
+{ 0x0040, 0x4005, 1, VR::DT, VM::M1, "ScheduledProcedureStepStartDateTime" },
+{ 0x0040, 0x4006, 1, VR::CS, VM::M1, "MultipleCopiesFlag" },
+{ 0x0040, 0x4007, 0, VR::SQ, VM::M1, "PerformedProcessingApplicationsCodeSequence" },
+{ 0x0040, 0x4009, 0, VR::SQ, VM::M1, "HumanPerformerCodeSequence" },
+{ 0x0040, 0x4010, 0, VR::DT, VM::M1, "ScheduledProcedureStepModificationDateTime" },
+{ 0x0040, 0x4011, 0, VR::DT, VM::M1, "ExpectedCompletionDateTime" },
+{ 0x0040, 0x4015, 1, VR::SQ, VM::M1, "ResultingGeneralPurposePerformedProcedureStepsSequence" },
+{ 0x0040, 0x4016, 1, VR::SQ, VM::M1, "ReferencedGeneralPurposeScheduledProcedureStepSequence" },
+{ 0x0040, 0x4018, 0, VR::SQ, VM::M1, "ScheduledWorkitemCodeSequence" },
+{ 0x0040, 0x4019, 0, VR::SQ, VM::M1, "PerformedWorkitemCodeSequence" },
+{ 0x0040, 0x4020, 0, VR::CS, VM::M1, "InputAvailabilityFlag" },
+{ 0x0040, 0x4021, 0, VR::SQ, VM::M1, "InputInformationSequence" },
+{ 0x0040, 0x4022, 1, VR::SQ, VM::M1, "RelevantInformationSequence" },
+{ 0x0040, 0x4023, 1, VR::UI, VM::M1, "ReferencedGeneralPurposeScheduledProcedureStepTransactionUID" },
+{ 0x0040, 0x4025, 0, VR::SQ, VM::M1, "ScheduledStationNameCodeSequence" },
+{ 0x0040, 0x4026, 0, VR::SQ, VM::M1, "ScheduledStationClassCodeSequence" },
+{ 0x0040, 0x4027, 0, VR::SQ, VM::M1, "ScheduledStationGeographicLocationCodeSequence" },
+{ 0x0040, 0x4028, 0, VR::SQ, VM::M1, "PerformedStationNameCodeSequence" },
+{ 0x0040, 0x4029, 0, VR::SQ, VM::M1, "PerformedStationClassCodeSequence" },
+{ 0x0040, 0x4030, 0, VR::SQ, VM::M1, "PerformedStationGeographicLocationCodeSequence" },
+{ 0x0040, 0x4031, 1, VR::SQ, VM::M1, "RequestedSubsequentWorkitemCodeSequence" },
+{ 0x0040, 0x4032, 1, VR::SQ, VM::M1, "NonDICOMOutputCodeSequence" },
+{ 0x0040, 0x4033, 0, VR::SQ, VM::M1, "OutputInformationSequence" },
+{ 0x0040, 0x4034, 0, VR::SQ, VM::M1, "ScheduledHumanPerformersSequence" },
+{ 0x0040, 0x4035, 0, VR::SQ, VM::M1, "ActualHumanPerformersSequence" },
+{ 0x0040, 0x4036, 0, VR::LO, VM::M1, "HumanPerformerOrganization" },
+{ 0x0040, 0x4037, 0, VR::PN, VM::M1, "HumanPerformerName" },
+{ 0x0040, 0x4040, 0, VR::CS, VM::M1, "RawDataHandling" },
+{ 0x0040, 0x4041, 0, VR::CS, VM::M1, "InputReadinessState" },
+{ 0x0040, 0x4050, 0, VR::DT, VM::M1, "PerformedProcedureStepStartDateTime" },
+{ 0x0040, 0x4051, 0, VR::DT, VM::M1, "PerformedProcedureStepEndDateTime" },
+{ 0x0040, 0x4052, 0, VR::DT, VM::M1, "ProcedureStepCancellationDateTime" },
+{ 0x0040, 0x8302, 0, VR::DS, VM::M1, "EntranceDoseInmGy" },
+{ 0x0040, 0x9094, 0, VR::SQ, VM::M1, "ReferencedImageRealWorldValueMappingSequence" },
+{ 0x0040, 0x9096, 0, VR::SQ, VM::M1, "RealWorldValueMappingSequence" },
+{ 0x0040, 0x9098, 0, VR::SQ, VM::M1, "PixelValueMappingCodeSequence" },
+{ 0x0040, 0x9210, 0, VR::SH, VM::M1, "LUTLabel" },
+{ 0x0040, 0x9211, 0, VR::XS, VM::M1, "RealWorldValueLastValueMapped" },
+{ 0x0040, 0x9212, 0, VR::FD, VM::M1TN, "RealWorldValueLUTData" },
+{ 0x0040, 0x9216, 0, VR::XS, VM::M1, "RealWorldValueFirstValueMapped" },
+{ 0x0040, 0x9224, 0, VR::FD, VM::M1, "RealWorldValueIntercept" },
+{ 0x0040, 0x9225, 0, VR::FD, VM::M1, "RealWorldValueSlope" },
+{ 0x0040, 0xA007, 1, VR::CS, VM::M1, "FindingsFlagTrial" },
+{ 0x0040, 0xA010, 0, VR::CS, VM::M1, "RelationshipType" },
+{ 0x0040, 0xA020, 1, VR::SQ, VM::M1, "FindingsSequenceTrial" },
+{ 0x0040, 0xA021, 1, VR::UI, VM::M1, "FindingsGroupUIDTrial" },
+{ 0x0040, 0xA022, 1, VR::UI, VM::M1, "ReferencedFindingsGroupUIDTrial" },
+{ 0x0040, 0xA023, 1, VR::DA, VM::M1, "FindingsGroupRecordingDateTrial" },
+{ 0x0040, 0xA024, 1, VR::TM, VM::M1, "FindingsGroupRecordingTimeTrial" },
+{ 0x0040, 0xA026, 1, VR::SQ, VM::M1, "FindingsSourceCategoryCodeSequenceTrial" },
+{ 0x0040, 0xA027, 0, VR::LO, VM::M1, "VerifyingOrganization" },
+{ 0x0040, 0xA028, 1, VR::SQ, VM::M1, "DocumentingOrganizationIdentifierCodeSequenceTrial" },
+{ 0x0040, 0xA030, 0, VR::DT, VM::M1, "VerificationDateTime" },
+{ 0x0040, 0xA032, 0, VR::DT, VM::M1, "ObservationDateTime" },
+{ 0x0040, 0xA040, 0, VR::CS, VM::M1, "ValueType" },
+{ 0x0040, 0xA043, 0, VR::SQ, VM::M1, "ConceptNameCodeSequence" },
+{ 0x0040, 0xA047, 1, VR::LO, VM::M1, "MeasurementPrecisionDescriptionTrial" },
+{ 0x0040, 0xA050, 0, VR::CS, VM::M1, "ContinuityOfContent" },
+{ 0x0040, 0xA057, 1, VR::CS, VM::M1TN, "UrgencyOrPriorityAlertsTrial" },
+{ 0x0040, 0xA060, 1, VR::LO, VM::M1, "SequencingIndicatorTrial" },
+{ 0x0040, 0xA066, 1, VR::SQ, VM::M1, "DocumentIdentifierCodeSequenceTrial" },
+{ 0x0040, 0xA067, 1, VR::PN, VM::M1, "DocumentAuthorTrial" },
+{ 0x0040, 0xA068, 1, VR::SQ, VM::M1, "DocumentAuthorIdentifierCodeSequenceTrial" },
+{ 0x0040, 0xA070, 1, VR::SQ, VM::M1, "IdentifierCodeSequenceTrial" },
+{ 0x0040, 0xA073, 0, VR::SQ, VM::M1, "VerifyingObserverSequence" },
+{ 0x0040, 0xA074, 1, VR::OB, VM::M1, "ObjectBinaryIdentifierTrial" },
+{ 0x0040, 0xA075, 0, VR::PN, VM::M1, "VerifyingObserverName" },
+{ 0x0040, 0xA076, 1, VR::SQ, VM::M1, "DocumentingObserverIdentifierCodeSequenceTrial" },
+{ 0x0040, 0xA078, 0, VR::SQ, VM::M1, "AuthorObserverSequence" },
+{ 0x0040, 0xA07A, 0, VR::SQ, VM::M1, "ParticipantSequence" },
+{ 0x0040, 0xA07C, 0, VR::SQ, VM::M1, "CustodialOrganizationSequence" },
+{ 0x0040, 0xA080, 0, VR::CS, VM::M1, "ParticipationType" },
+{ 0x0040, 0xA082, 0, VR::DT, VM::M1, "ParticipationDateTime" },
+{ 0x0040, 0xA084, 0, VR::CS, VM::M1, "ObserverType" },
+{ 0x0040, 0xA085, 1, VR::SQ, VM::M1, "ProcedureIdentifierCodeSequenceTrial" },
+{ 0x0040, 0xA088, 0, VR::SQ, VM::M1, "VerifyingObserverIdentificationCodeSequence" },
+{ 0x0040, 0xA089, 1, VR::OB, VM::M1, "ObjectDirectoryBinaryIdentifierTrial" },
+{ 0x0040, 0xA090, 1, VR::SQ, VM::M1, "EquivalentCDADocumentSequence" },
+{ 0x0040, 0xA0B0, 0, VR::US, VM::M2T2N, "ReferencedWaveformChannels" },
+{ 0x0040, 0xA110, 1, VR::DA, VM::M1, "DateOfDocumentOrVerbalTransactionTrial" },
+{ 0x0040, 0xA112, 1, VR::TM, VM::M1, "TimeOfDocumentCreationOrVerbalTransactionTrial" },
+{ 0x0040, 0xA120, 0, VR::DT, VM::M1, "DateTime" },
+{ 0x0040, 0xA121, 0, VR::DA, VM::M1, "Date" },
+{ 0x0040, 0xA122, 0, VR::TM, VM::M1, "Time" },
+{ 0x0040, 0xA123, 0, VR::PN, VM::M1, "PersonName" },
+{ 0x0040, 0xA124, 0, VR::UI, VM::M1, "UID" },
+{ 0x0040, 0xA125, 1, VR::CS, VM::M2, "ReportStatusIDTrial" },
+{ 0x0040, 0xA130, 0, VR::CS, VM::M1, "TemporalRangeType" },
+{ 0x0040, 0xA132, 0, VR::UL, VM::M1TN, "ReferencedSamplePositions" },
+{ 0x0040, 0xA136, 0, VR::US, VM::M1TN, "ReferencedFrameNumbers" },
+{ 0x0040, 0xA138, 0, VR::DS, VM::M1TN, "ReferencedTimeOffsets" },
+{ 0x0040, 0xA13A, 0, VR::DT, VM::M1TN, "ReferencedDateTime" },
+{ 0x0040, 0xA160, 0, VR::UT, VM::M1, "TextValue" },
+{ 0x0040, 0xA161, 0, VR::FD, VM::M1TN, "FloatingPointValue" },
+{ 0x0040, 0xA162, 0, VR::SL, VM::M1TN, "RationalNumeratorValue" },
+{ 0x0040, 0xA163, 0, VR::UL, VM::M1TN, "RationalDenominatorValue" },
+{ 0x0040, 0xA167, 1, VR::SQ, VM::M1, "ObservationCategoryCodeSequenceTrial" },
+{ 0x0040, 0xA168, 0, VR::SQ, VM::M1, "ConceptCodeSequence" },
+{ 0x0040, 0xA16A, 1, VR::ST, VM::M1, "BibliographicCitationTrial" },
+{ 0x0040, 0xA170, 0, VR::SQ, VM::M1, "PurposeOfReferenceCodeSequence" },
+{ 0x0040, 0xA171, 0, VR::UI, VM::M1, "ObservationUID" },
+{ 0x0040, 0xA172, 1, VR::UI, VM::M1, "ReferencedObservationUIDTrial" },
+{ 0x0040, 0xA173, 1, VR::CS, VM::M1, "ReferencedObservationClassTrial" },
+{ 0x0040, 0xA174, 1, VR::CS, VM::M1, "ReferencedObjectObservationClassTrial" },
+{ 0x0040, 0xA180, 0, VR::US, VM::M1, "AnnotationGroupNumber" },
+{ 0x0040, 0xA192, 1, VR::DA, VM::M1, "ObservationDateTrial" },
+{ 0x0040, 0xA193, 1, VR::TM, VM::M1, "ObservationTimeTrial" },
+{ 0x0040, 0xA194, 1, VR::CS, VM::M1, "MeasurementAutomationTrial" },
+{ 0x0040, 0xA195, 0, VR::SQ, VM::M1, "ModifierCodeSequence" },
+{ 0x0040, 0xA224, 1, VR::ST, VM::M1, "IdentificationDescriptionTrial" },
+{ 0x0040, 0xA290, 1, VR::CS, VM::M1, "CoordinatesSetGeometricTypeTrial" },
+{ 0x0040, 0xA296, 1, VR::SQ, VM::M1, "AlgorithmCodeSequenceTrial" },
+{ 0x0040, 0xA297, 1, VR::ST, VM::M1, "AlgorithmDescriptionTrial" },
+{ 0x0040, 0xA29A, 1, VR::SL, VM::M2T2N, "PixelCoordinatesSetTrial" },
+{ 0x0040, 0xA300, 0, VR::SQ, VM::M1, "MeasuredValueSequence" },
+{ 0x0040, 0xA301, 0, VR::SQ, VM::M1, "NumericValueQualifierCodeSequence" },
+{ 0x0040, 0xA307, 1, VR::PN, VM::M1, "CurrentObserverTrial" },
+{ 0x0040, 0xA30A, 0, VR::DS, VM::M1TN, "NumericValue" },
+{ 0x0040, 0xA313, 1, VR::SQ, VM::M1, "ReferencedAccessionSequenceTrial" },
+{ 0x0040, 0xA33A, 1, VR::ST, VM::M1, "ReportStatusCommentTrial" },
+{ 0x0040, 0xA340, 1, VR::SQ, VM::M1, "ProcedureContextSequenceTrial" },
+{ 0x0040, 0xA352, 1, VR::PN, VM::M1, "VerbalSourceTrial" },
+{ 0x0040, 0xA353, 1, VR::ST, VM::M1, "AddressTrial" },
+{ 0x0040, 0xA354, 1, VR::LO, VM::M1, "TelephoneNumberTrial" },
+{ 0x0040, 0xA358, 1, VR::SQ, VM::M1, "VerbalSourceIdentifierCodeSequenceTrial" },
+{ 0x0040, 0xA360, 0, VR::SQ, VM::M1, "PredecessorDocumentsSequence" },
+{ 0x0040, 0xA370, 0, VR::SQ, VM::M1, "ReferencedRequestSequence" },
+{ 0x0040, 0xA372, 0, VR::SQ, VM::M1, "PerformedProcedureCodeSequence" },
+{ 0x0040, 0xA375, 0, VR::SQ, VM::M1, "CurrentRequestedProcedureEvidenceSequence" },
+{ 0x0040, 0xA380, 1, VR::SQ, VM::M1, "ReportDetailSequenceTrial" },
+{ 0x0040, 0xA385, 0, VR::SQ, VM::M1, "PertinentOtherEvidenceSequence" },
+{ 0x0040, 0xA390, 0, VR::SQ, VM::M1, "HL7StructuredDocumentReferenceSequence" },
+{ 0x0040, 0xA402, 1, VR::UI, VM::M1, "ObservationSubjectUIDTrial" },
+{ 0x0040, 0xA403, 1, VR::CS, VM::M1, "ObservationSubjectClassTrial" },
+{ 0x0040, 0xA404, 1, VR::SQ, VM::M1, "ObservationSubjectTypeCodeSequenceTrial" },
+{ 0x0040, 0xA491, 0, VR::CS, VM::M1, "CompletionFlag" },
+{ 0x0040, 0xA492, 0, VR::LO, VM::M1, "CompletionFlagDescription" },
+{ 0x0040, 0xA493, 0, VR::CS, VM::M1, "VerificationFlag" },
+{ 0x0040, 0xA494, 0, VR::CS, VM::M1, "ArchiveRequested" },
+{ 0x0040, 0xA496, 0, VR::CS, VM::M1, "PreliminaryFlag" },
+{ 0x0040, 0xA504, 0, VR::SQ, VM::M1, "ContentTemplateSequence" },
+{ 0x0040, 0xA525, 0, VR::SQ, VM::M1, "IdenticalDocumentsSequence" },
+{ 0x0040, 0xA600, 1, VR::CS, VM::M1, "ObservationSubjectContextFlagTrial" },
+{ 0x0040, 0xA601, 1, VR::CS, VM::M1, "ObserverContextFlagTrial" },
+{ 0x0040, 0xA603, 1, VR::CS, VM::M1, "ProcedureContextFlagTrial" },
+{ 0x0040, 0xA730, 0, VR::SQ, VM::M1, "ContentSequence" },
+{ 0x0040, 0xA731, 1, VR::SQ, VM::M1, "RelationshipSequenceTrial" },
+{ 0x0040, 0xA732, 1, VR::SQ, VM::M1, "RelationshipTypeCodeSequenceTrial" },
+{ 0x0040, 0xA744, 1, VR::SQ, VM::M1, "LanguageCodeSequenceTrial" },
+{ 0x0040, 0xA992, 1, VR::ST, VM::M1, "UniformResourceLocatorTrial" },
+{ 0x0040, 0xB020, 0, VR::SQ, VM::M1, "WaveformAnnotationSequence" },
+{ 0x0040, 0xDB00, 0, VR::CS, VM::M1, "TemplateIdentifier" },
+{ 0x0040, 0xDB06, 1, VR::DT, VM::M1, "TemplateVersion" },
+{ 0x0040, 0xDB07, 1, VR::DT, VM::M1, "TemplateLocalVersion" },
+{ 0x0040, 0xDB0B, 1, VR::CS, VM::M1, "TemplateExtensionFlag" },
+{ 0x0040, 0xDB0C, 1, VR::UI, VM::M1, "TemplateExtensionOrganizationUID" },
+{ 0x0040, 0xDB0D, 1, VR::UI, VM::M1, "TemplateExtensionCreatorUID" },
+{ 0x0040, 0xDB73, 0, VR::UL, VM::M1TN, "ReferencedContentItemIdentifier" },
+{ 0x0040, 0xE001, 0, VR::ST, VM::M1, "HL7InstanceIdentifier" },
+{ 0x0040, 0xE004, 0, VR::DT, VM::M1, "HL7DocumentEffectiveTime" },
+{ 0x0040, 0xE006, 0, VR::SQ, VM::M1, "HL7DocumentTypeCodeSequence" },
+{ 0x0040, 0xE008, 0, VR::SQ, VM::M1, "DocumentClassCodeSequence" },
+{ 0x0040, 0xE010, 0, VR::UT, VM::M1, "RetrieveURI" },
+{ 0x0040, 0xE011, 0, VR::UI, VM::M1, "RetrieveLocationUID" },
+{ 0x0040, 0xE020, 0, VR::CS, VM::M1, "TypeOfInstances" },
+{ 0x0040, 0xE021, 0, VR::SQ, VM::M1, "DICOMRetrievalSequence" },
+{ 0x0040, 0xE022, 0, VR::SQ, VM::M1, "DICOMMediaRetrievalSequence" },
+{ 0x0040, 0xE023, 0, VR::SQ, VM::M1, "WADORetrievalSequence" },
+{ 0x0040, 0xE024, 0, VR::SQ, VM::M1, "XDSRetrievalSequence" },
+{ 0x0040, 0xE030, 0, VR::UI, VM::M1, "RepositoryUniqueID" },
+{ 0x0040, 0xE031, 0, VR::UI, VM::M1, "HomeCommunityID" },
+{ 0x0042, 0x0010, 0, VR::ST, VM::M1, "DocumentTitle" },
+{ 0x0042, 0x0011, 0, VR::OB, VM::M1, "EncapsulatedDocument" },
+{ 0x0042, 0x0012, 0, VR::LO, VM::M1, "MIMETypeOfEncapsulatedDocument" },
+{ 0x0042, 0x0013, 0, VR::SQ, VM::M1, "SourceInstanceSequence" },
+{ 0x0042, 0x0014, 0, VR::LO, VM::M1TN, "ListOfMIMETypes" },
+{ 0x0044, 0x0001, 0, VR::ST, VM::M1, "ProductPackageIdentifier" },
+{ 0x0044, 0x0002, 0, VR::CS, VM::M1, "SubstanceAdministrationApproval" },
+{ 0x0044, 0x0003, 0, VR::LT, VM::M1, "ApprovalStatusFurtherDescription" },
+{ 0x0044, 0x0004, 0, VR::DT, VM::M1, "ApprovalStatusDateTime" },
+{ 0x0044, 0x0007, 0, VR::SQ, VM::M1, "ProductTypeCodeSequence" },
+{ 0x0044, 0x0008, 0, VR::LO, VM::M1TN, "ProductName" },
+{ 0x0044, 0x0009, 0, VR::LT, VM::M1, "ProductDescription" },
+{ 0x0044, 0x000A, 0, VR::LO, VM::M1, "ProductLotIdentifier" },
+{ 0x0044, 0x000B, 0, VR::DT, VM::M1, "ProductExpirationDateTime" },
+{ 0x0044, 0x0010, 0, VR::DT, VM::M1, "SubstanceAdministrationDateTime" },
+{ 0x0044, 0x0011, 0, VR::LO, VM::M1, "SubstanceAdministrationNotes" },
+{ 0x0044, 0x0012, 0, VR::LO, VM::M1, "SubstanceAdministrationDeviceID" },
+{ 0x0044, 0x0013, 0, VR::SQ, VM::M1, "ProductParameterSequence" },
+{ 0x0044, 0x0019, 0, VR::SQ, VM::M1, "SubstanceAdministrationParameterSequence" },
+{ 0x0046, 0x0012, 0, VR::LO, VM::M1, "LensDescription" },
+{ 0x0046, 0x0014, 0, VR::SQ, VM::M1, "RightLensSequence" },
+{ 0x0046, 0x0015, 0, VR::SQ, VM::M1, "LeftLensSequence" },
+{ 0x0046, 0x0016, 0, VR::SQ, VM::M1, "UnspecifiedLateralityLensSequence" },
+{ 0x0046, 0x0018, 0, VR::SQ, VM::M1, "CylinderSequence" },
+{ 0x0046, 0x0028, 0, VR::SQ, VM::M1, "PrismSequence" },
+{ 0x0046, 0x0030, 0, VR::FD, VM::M1, "HorizontalPrismPower" },
+{ 0x0046, 0x0032, 0, VR::CS, VM::M1, "HorizontalPrismBase" },
+{ 0x0046, 0x0034, 0, VR::FD, VM::M1, "VerticalPrismPower" },
+{ 0x0046, 0x0036, 0, VR::CS, VM::M1, "VerticalPrismBase" },
+{ 0x0046, 0x0038, 0, VR::CS, VM::M1, "LensSegmentType" },
+{ 0x0046, 0x0040, 0, VR::FD, VM::M1, "OpticalTransmittance" },
+{ 0x0046, 0x0042, 0, VR::FD, VM::M1, "ChannelWidth" },
+{ 0x0046, 0x0044, 0, VR::FD, VM::M1, "PupilSize" },
 { 0x0046, 0x0046, 0, VR::FD, VM::M1, "CornealSize" },
+{ 0x0046, 0x0050, 0, VR::SQ, VM::M1, "AutorefractionRightEyeSequence" },
+{ 0x0046, 0x0052, 0, VR::SQ, VM::M1, "AutorefractionLeftEyeSequence" },
+{ 0x0046, 0x0060, 0, VR::FD, VM::M1, "DistancePupillaryDistance" },
+{ 0x0046, 0x0062, 0, VR::FD, VM::M1, "NearPupillaryDistance" },
+{ 0x0046, 0x0063, 0, VR::FD, VM::M1, "IntermediatePupillaryDistance" },
+{ 0x0046, 0x0064, 0, VR::FD, VM::M1, "OtherPupillaryDistance" },
+{ 0x0046, 0x0070, 0, VR::SQ, VM::M1, "KeratometryRightEyeSequence" },
+{ 0x0046, 0x0071, 0, VR::SQ, VM::M1, "KeratometryLeftEyeSequence" },
+{ 0x0046, 0x0074, 0, VR::SQ, VM::M1, "SteepKeratometricAxisSequence" },
+{ 0x0046, 0x0075, 0, VR::FD, VM::M1, "RadiusOfCurvature" },
+{ 0x0046, 0x0076, 0, VR::FD, VM::M1, "KeratometricPower" },
+{ 0x0046, 0x0077, 0, VR::FD, VM::M1, "KeratometricAxis" },
+{ 0x0046, 0x0080, 0, VR::SQ, VM::M1, "FlatKeratometricAxisSequence" },
+{ 0x0046, 0x0092, 0, VR::CS, VM::M1, "BackgroundColor" },
+{ 0x0046, 0x0094, 0, VR::CS, VM::M1, "Optotype" },
+{ 0x0046, 0x0095, 0, VR::CS, VM::M1, "OptotypePresentation" },
+{ 0x0046, 0x0097, 0, VR::SQ, VM::M1, "SubjectiveRefractionRightEyeSequence" },
+{ 0x0046, 0x0098, 0, VR::SQ, VM::M1, "SubjectiveRefractionLeftEyeSequence" },
+{ 0x0046, 0x0100, 0, VR::SQ, VM::M1, "AddNearSequence" },
+{ 0x0046, 0x0101, 0, VR::SQ, VM::M1, "AddIntermediateSequence" },
+{ 0x0046, 0x0102, 0, VR::SQ, VM::M1, "AddOtherSequence" },
+{ 0x0046, 0x0104, 0, VR::FD, VM::M1, "AddPower" },
+{ 0x0046, 0x0106, 0, VR::FD, VM::M1, "ViewingDistance" },
+{ 0x0046, 0x0121, 0, VR::SQ, VM::M1, "VisualAcuityTypeCodeSequence" },
+{ 0x0046, 0x0122, 0, VR::SQ, VM::M1, "VisualAcuityRightEyeSequence" },
+{ 0x0046, 0x0123, 0, VR::SQ, VM::M1, "VisualAcuityLeftEyeSequence" },
+{ 0x0046, 0x0124, 0, VR::SQ, VM::M1, "VisualAcuityBothEyesOpenSequence" },
+{ 0x0046, 0x0125, 0, VR::CS, VM::M1, "ViewingDistanceType" },
+{ 0x0046, 0x0135, 0, VR::SS, VM::M2, "VisualAcuityModifiers" },
+{ 0x0046, 0x0137, 0, VR::FD, VM::M1, "DecimalVisualAcuity" },
+{ 0x0046, 0x0139, 0, VR::LO, VM::M1, "OptotypeDetailedDefinition" },
+{ 0x0046, 0x0145, 0, VR::SQ, VM::M1, "ReferencedRefractiveMeasurementsSequence" },
+{ 0x0046, 0x0146, 0, VR::FD, VM::M1, "SpherePower" },
+{ 0x0046, 0x0147, 0, VR::FD, VM::M1, "CylinderPower" },
+{ 0x0046, 0x0201, 0, VR::CS, VM::M1, "CornealTopographySurface" },
+{ 0x0046, 0x0202, 0, VR::FL, VM::M2, "CornealVertexLocation" },
+{ 0x0046, 0x0203, 0, VR::FL, VM::M1, "PupilCentroidXCoordinate" },
+{ 0x0046, 0x0204, 0, VR::FL, VM::M1, "PupilCentroidYCoordinate" },
+{ 0x0046, 0x0205, 0, VR::FL, VM::M1, "EquivalentPupilRadius" },
+{ 0x0046, 0x0207, 0, VR::SQ, VM::M1, "CornealTopographyMapTypeCodeSequence" },
+{ 0x0046, 0x0208, 0, VR::IS, VM::M2T2N, "VerticesOfTheOutlineOfPupil" },
+{ 0x0046, 0x0210, 0, VR::SQ, VM::M1, "CornealTopographyMappingNormalsSequence" },
+{ 0x0046, 0x0211, 0, VR::SQ, VM::M1, "MaximumCornealCurvatureSequence" },
+{ 0x0046, 0x0212, 0, VR::FL, VM::M1, "MaximumCornealCurvature" },
+{ 0x0046, 0x0213, 0, VR::FL, VM::M2, "MaximumCornealCurvatureLocation" },
+{ 0x0046, 0x0215, 0, VR::SQ, VM::M1, "MinimumKeratometricSequence" },
+{ 0x0046, 0x0218, 0, VR::SQ, VM::M1, "SimulatedKeratometricCylinderSequence" },
+{ 0x0046, 0x0220, 0, VR::FL, VM::M1, "AverageCornealPower" },
+{ 0x0046, 0x0224, 0, VR::FL, VM::M1, "CornealISValue" },
+{ 0x0046, 0x0227, 0, VR::FL, VM::M1, "AnalyzedArea" },
+{ 0x0046, 0x0230, 0, VR::FL, VM::M1, "SurfaceRegularityIndex" },
+{ 0x0046, 0x0232, 0, VR::FL, VM::M1, "SurfaceAsymmetryIndex" },
+{ 0x0046, 0x0234, 0, VR::FL, VM::M1, "CornealEccentricityIndex" },
+{ 0x0046, 0x0236, 0, VR::FL, VM::M1, "KeratoconusPredictionIndex" },
+{ 0x0046, 0x0238, 0, VR::FL, VM::M1, "DecimalPotentialVisualAcuity" },
+{ 0x0046, 0x0242, 0, VR::CS, VM::M1, "CornealTopographyMapQualityEvaluation" },
+{ 0x0046, 0x0244, 0, VR::SQ, VM::M1, "SourceImageCornealProcessedDataSequence" },
+{ 0x0046, 0x0247, 0, VR::FL, VM::M3, "CornealPointLocation" },
+{ 0x0046, 0x0248, 0, VR::CS, VM::M1, "CornealPointEstimated" },
+{ 0x0046, 0x0249, 0, VR::FL, VM::M1, "AxialPower" },
+{ 0x0046, 0x0250, 0, VR::FL, VM::M1, "TangentialPower" },
+{ 0x0046, 0x0251, 0, VR::FL, VM::M1, "RefractivePower" },
+{ 0x0046, 0x0252, 0, VR::FL, VM::M1, "RelativeElevation" },
+{ 0x0046, 0x0253, 0, VR::FL, VM::M1, "CornealWavefront" },
+{ 0x0048, 0x0001, 0, VR::FL, VM::M1, "ImagedVolumeWidth" },
+{ 0x0048, 0x0002, 0, VR::FL, VM::M1, "ImagedVolumeHeight" },
+{ 0x0048, 0x0003, 0, VR::FL, VM::M1, "ImagedVolumeDepth" },
+{ 0x0048, 0x0006, 0, VR::UL, VM::M1, "TotalPixelMatrixColumns" },
+{ 0x0048, 0x0007, 0, VR::UL, VM::M1, "TotalPixelMatrixRows" },
+{ 0x0048, 0x0008, 0, VR::SQ, VM::M1, "TotalPixelMatrixOriginSequence" },
+{ 0x0048, 0x0010, 0, VR::CS, VM::M1, "SpecimenLabelInImage" },
+{ 0x0048, 0x0011, 0, VR::CS, VM::M1, "FocusMethod" },
+{ 0x0048, 0x0012, 0, VR::CS, VM::M1, "ExtendedDepthOfField" },
+{ 0x0048, 0x0013, 0, VR::US, VM::M1, "NumberOfFocalPlanes" },
+{ 0x0048, 0x0014, 0, VR::FL, VM::M1, "DistanceBetweenFocalPlanes" },
+{ 0x0048, 0x0015, 0, VR::US, VM::M3, "RecommendedAbsentPixelCIELabValue" },
+{ 0x0048, 0x0100, 0, VR::SQ, VM::M1, "IlluminatorTypeCodeSequence" },
+{ 0x0048, 0x0102, 0, VR::DS, VM::M6, "ImageOrientationSlide" },
+{ 0x0048, 0x0105, 0, VR::SQ, VM::M1, "OpticalPathSequence" },
+{ 0x0048, 0x0106, 0, VR::SH, VM::M1, "OpticalPathIdentifier" },
+{ 0x0048, 0x0107, 0, VR::ST, VM::M1, "OpticalPathDescription" },
+{ 0x0048, 0x0108, 0, VR::SQ, VM::M1, "IlluminationColorCodeSequence" },
+{ 0x0048, 0x0110, 0, VR::SQ, VM::M1, "SpecimenReferenceSequence" },
+{ 0x0048, 0x0111, 0, VR::DS, VM::M1, "CondenserLensPower" },
+{ 0x0048, 0x0112, 0, VR::DS, VM::M1, "ObjectiveLensPower" },
+{ 0x0048, 0x0113, 0, VR::DS, VM::M1, "ObjectiveLensNumericalAperture" },
+{ 0x0048, 0x0120, 0, VR::SQ, VM::M1, "PaletteColorLookupTableSequence" },
+{ 0x0048, 0x0200, 0, VR::SQ, VM::M1, "ReferencedImageNavigationSequence" },
+{ 0x0048, 0x0201, 0, VR::US, VM::M2, "TopLeftHandCornerOfLocalizerArea" },
+{ 0x0048, 0x0202, 0, VR::US, VM::M2, "BottomRightHandCornerOfLocalizerArea" },
+{ 0x0048, 0x0207, 0, VR::SQ, VM::M1, "OpticalPathIdentificationSequence" },
+{ 0x0048, 0x021A, 0, VR::SQ, VM::M1, "PlanePositionSlideSequence" },
+{ 0x0048, 0x021E, 0, VR::SL, VM::M1, "ColumnPositionInTotalImagePixelMatrix" },
+{ 0x0048, 0x021F, 0, VR::SL, VM::M1, "RowPositionInTotalImagePixelMatrix" },
+{ 0x0048, 0x0301, 0, VR::CS, VM::M1, "PixelOriginInterpretation" },
+{ 0x0050, 0x0004, 0, VR::CS, VM::M1, "CalibrationImage" },
+{ 0x0050, 0x0010, 0, VR::SQ, VM::M1, "DeviceSequence" },
+{ 0x0050, 0x0012, 0, VR::SQ, VM::M1, "ContainerComponentTypeCodeSequence" },
+{ 0x0050, 0x0013, 0, VR::FD, VM::M1, "ContainerComponentThickness" },
+{ 0x0050, 0x0014, 0, VR::DS, VM::M1, "DeviceLength" },
+{ 0x0050, 0x0015, 0, VR::FD, VM::M1, "ContainerComponentWidth" },
+{ 0x0050, 0x0016, 0, VR::DS, VM::M1, "DeviceDiameter" },
+{ 0x0050, 0x0017, 0, VR::CS, VM::M1, "DeviceDiameterUnits" },
+{ 0x0050, 0x0018, 0, VR::DS, VM::M1, "DeviceVolume" },
+{ 0x0050, 0x0019, 0, VR::DS, VM::M1, "InterMarkerDistance" },
+{ 0x0050, 0x001A, 0, VR::CS, VM::M1, "ContainerComponentMaterial" },
+{ 0x0050, 0x001B, 0, VR::LO, VM::M1, "ContainerComponentID" },
+{ 0x0050, 0x001C, 0, VR::FD, VM::M1, "ContainerComponentLength" },
+{ 0x0050, 0x001D, 0, VR::FD, VM::M1, "ContainerComponentDiameter" },
+{ 0x0050, 0x001E, 0, VR::LO, VM::M1, "ContainerComponentDescription" },
+{ 0x0050, 0x0020, 0, VR::LO, VM::M1, "DeviceDescription" },
+{ 0x0052, 0x0001, 0, VR::FL, VM::M1, "ContrastBolusIngredientPercentByVolume" },
+{ 0x0052, 0x0002, 0, VR::FD, VM::M1, "OCTFocalDistance" },
+{ 0x0052, 0x0003, 0, VR::FD, VM::M1, "BeamSpotSize" },
+{ 0x0052, 0x0004, 0, VR::FD, VM::M1, "EffectiveRefractiveIndex" },
+{ 0x0052, 0x0006, 0, VR::CS, VM::M1, "OCTAcquisitionDomain" },
+{ 0x0052, 0x0007, 0, VR::FD, VM::M1, "OCTOpticalCenterWavelength" },
+{ 0x0052, 0x0008, 0, VR::FD, VM::M1, "AxialResolution" },
+{ 0x0052, 0x0009, 0, VR::FD, VM::M1, "RangingDepth" },
+{ 0x0052, 0x0011, 0, VR::FD, VM::M1, "ALineRate" },
+{ 0x0052, 0x0012, 0, VR::US, VM::M1, "ALinesPerFrame" },
+{ 0x0052, 0x0013, 0, VR::FD, VM::M1, "CatheterRotationalRate" },
+{ 0x0052, 0x0014, 0, VR::FD, VM::M1, "ALinePixelSpacing" },
+{ 0x0052, 0x0016, 0, VR::SQ, VM::M1, "ModeOfPercutaneousAccessSequence" },
+{ 0x0052, 0x0025, 0, VR::SQ, VM::M1, "IntravascularOCTFrameTypeSequence" },
+{ 0x0052, 0x0026, 0, VR::CS, VM::M1, "OCTZOffsetApplied" },
+{ 0x0052, 0x0027, 0, VR::SQ, VM::M1, "IntravascularFrameContentSequence" },
+{ 0x0052, 0x0028, 0, VR::FD, VM::M1, "IntravascularLongitudinalDistance" },
+{ 0x0052, 0x0029, 0, VR::SQ, VM::M1, "IntravascularOCTFrameContentSequence" },
+{ 0x0052, 0x0030, 0, VR::SS, VM::M1, "OCTZOffsetCorrection" },
+{ 0x0052, 0x0031, 0, VR::CS, VM::M1, "CatheterDirectionOfRotation" },
+{ 0x0052, 0x0033, 0, VR::FD, VM::M1, "SeamLineLocation" },
+{ 0x0052, 0x0034, 0, VR::FD, VM::M1, "FirstALineLocation" },
+{ 0x0052, 0x0036, 0, VR::US, VM::M1, "SeamLineIndex" },
+{ 0x0052, 0x0038, 0, VR::US, VM::M1, "NumberOfPaddedALines" },
+{ 0x0052, 0x0039, 0, VR::CS, VM::M1, "InterpolationType" },
+{ 0x0052, 0x003A, 0, VR::CS, VM::M1, "RefractiveIndexApplied" },
+{ 0x0054, 0x0010, 0, VR::US, VM::M1TN, "EnergyWindowVector" },
+{ 0x0054, 0x0011, 0, VR::US, VM::M1, "NumberOfEnergyWindows" },
+{ 0x0054, 0x0012, 0, VR::SQ, VM::M1, "EnergyWindowInformationSequence" },
+{ 0x0054, 0x0013, 0, VR::SQ, VM::M1, "EnergyWindowRangeSequence" },
+{ 0x0054, 0x0014, 0, VR::DS, VM::M1, "EnergyWindowLowerLimit" },
+{ 0x0054, 0x0015, 0, VR::DS, VM::M1, "EnergyWindowUpperLimit" },
+{ 0x0054, 0x0016, 0, VR::SQ, VM::M1, "RadiopharmaceuticalInformationSequence" },
+{ 0x0054, 0x0017, 0, VR::IS, VM::M1, "ResidualSyringeCounts" },
+{ 0x0054, 0x0018, 0, VR::SH, VM::M1, "EnergyWindowName" },
+{ 0x0054, 0x0020, 0, VR::US, VM::M1TN, "DetectorVector" },
+{ 0x0054, 0x0021, 0, VR::US, VM::M1, "NumberOfDetectors" },
+{ 0x0054, 0x0022, 0, VR::SQ, VM::M1, "DetectorInformationSequence" },
+{ 0x0054, 0x0030, 0, VR::US, VM::M1TN, "PhaseVector" },
+{ 0x0054, 0x0031, 0, VR::US, VM::M1, "NumberOfPhases" },
+{ 0x0054, 0x0032, 0, VR::SQ, VM::M1, "PhaseInformationSequence" },
+{ 0x0054, 0x0033, 0, VR::US, VM::M1, "NumberOfFramesInPhase" },
+{ 0x0054, 0x0036, 0, VR::IS, VM::M1, "PhaseDelay" },
+{ 0x0054, 0x0038, 0, VR::IS, VM::M1, "PauseBetweenFrames" },
+{ 0x0054, 0x0039, 0, VR::CS, VM::M1, "PhaseDescription" },
+{ 0x0054, 0x0050, 0, VR::US, VM::M1TN, "RotationVector" },
+{ 0x0054, 0x0051, 0, VR::US, VM::M1, "NumberOfRotations" },
+{ 0x0054, 0x0052, 0, VR::SQ, VM::M1, "RotationInformationSequence" },
+{ 0x0054, 0x0053, 0, VR::US, VM::M1, "NumberOfFramesInRotation" },
+{ 0x0054, 0x0060, 0, VR::US, VM::M1TN, "RRIntervalVector" },
+{ 0x0054, 0x0061, 0, VR::US, VM::M1, "NumberOfRRIntervals" },
+{ 0x0054, 0x0062, 0, VR::SQ, VM::M1, "GatedInformationSequence" },
+{ 0x0054, 0x0063, 0, VR::SQ, VM::M1, "DataInformationSequence" },
+{ 0x0054, 0x0070, 0, VR::US, VM::M1TN, "TimeSlotVector" },
+{ 0x0054, 0x0071, 0, VR::US, VM::M1, "NumberOfTimeSlots" },
+{ 0x0054, 0x0072, 0, VR::SQ, VM::M1, "TimeSlotInformationSequence" },
+{ 0x0054, 0x0073, 0, VR::DS, VM::M1, "TimeSlotTime" },
+{ 0x0054, 0x0080, 0, VR::US, VM::M1TN, "SliceVector" },
+{ 0x0054, 0x0081, 0, VR::US, VM::M1, "NumberOfSlices" },
+{ 0x0054, 0x0090, 0, VR::US, VM::M1TN, "AngularViewVector" },
+{ 0x0054, 0x0100, 0, VR::US, VM::M1TN, "TimeSliceVector" },
+{ 0x0054, 0x0101, 0, VR::US, VM::M1, "NumberOfTimeSlices" },
+{ 0x0054, 0x0200, 0, VR::DS, VM::M1, "StartAngle" },
+{ 0x0054, 0x0202, 0, VR::CS, VM::M1, "TypeOfDetectorMotion" },
+{ 0x0054, 0x0210, 0, VR::IS, VM::M1TN, "TriggerVector" },
+{ 0x0054, 0x0211, 0, VR::US, VM::M1, "NumberOfTriggersInPhase" },
+{ 0x0054, 0x0220, 0, VR::SQ, VM::M1, "ViewCodeSequence" },
+{ 0x0054, 0x0222, 0, VR::SQ, VM::M1, "ViewModifierCodeSequence" },
+{ 0x0054, 0x0300, 0, VR::SQ, VM::M1, "RadionuclideCodeSequence" },
+{ 0x0054, 0x0302, 0, VR::SQ, VM::M1, "AdministrationRouteCodeSequence" },
+{ 0x0054, 0x0304, 0, VR::SQ, VM::M1, "RadiopharmaceuticalCodeSequence" },
+{ 0x0054, 0x0306, 0, VR::SQ, VM::M1, "CalibrationDataSequence" },
+{ 0x0054, 0x0308, 0, VR::US, VM::M1, "EnergyWindowNumber" },
+{ 0x0054, 0x0400, 0, VR::SH, VM::M1, "ImageID" },
+{ 0x0054, 0x0410, 0, VR::SQ, VM::M1, "PatientOrientationCodeSequence" },
+{ 0x0054, 0x0412, 0, VR::SQ, VM::M1, "PatientOrientationModifierCodeSequence" },
+{ 0x0054, 0x0414, 0, VR::SQ, VM::M1, "PatientGantryRelationshipCodeSequence" },
+{ 0x0054, 0x0500, 0, VR::CS, VM::M1, "SliceProgressionDirection" },
+{ 0x0054, 0x1000, 0, VR::CS, VM::M2, "SeriesType" },
+{ 0x0054, 0x1001, 0, VR::CS, VM::M1, "Units" },
+{ 0x0054, 0x1002, 0, VR::CS, VM::M1, "CountsSource" },
+{ 0x0054, 0x1004, 0, VR::CS, VM::M1, "ReprojectionMethod" },
+{ 0x0054, 0x1006, 0, VR::CS, VM::M1, "SUVType" },
+{ 0x0054, 0x1100, 0, VR::CS, VM::M1, "RandomsCorrectionMethod" },
+{ 0x0054, 0x1101, 0, VR::LO, VM::M1, "AttenuationCorrectionMethod" },
+{ 0x0054, 0x1102, 0, VR::CS, VM::M1, "DecayCorrection" },
+{ 0x0054, 0x1103, 0, VR::LO, VM::M1, "ReconstructionMethod" },
+{ 0x0054, 0x1104, 0, VR::LO, VM::M1, "DetectorLinesOfResponseUsed" },
+{ 0x0054, 0x1105, 0, VR::LO, VM::M1, "ScatterCorrectionMethod" },
+{ 0x0054, 0x1200, 0, VR::DS, VM::M1, "AxialAcceptance" },
+{ 0x0054, 0x1201, 0, VR::IS, VM::M2, "AxialMash" },
+{ 0x0054, 0x1202, 0, VR::IS, VM::M1, "TransverseMash" },
+{ 0x0054, 0x1203, 0, VR::DS, VM::M2, "DetectorElementSize" },
+{ 0x0054, 0x1210, 0, VR::DS, VM::M1, "CoincidenceWindowWidth" },
+{ 0x0054, 0x1220, 0, VR::CS, VM::M1TN, "SecondaryCountsType" },
+{ 0x0054, 0x1300, 0, VR::DS, VM::M1, "FrameReferenceTime" },
+{ 0x0054, 0x1310, 0, VR::IS, VM::M1, "PrimaryPromptsCountsAccumulated" },
+{ 0x0054, 0x1311, 0, VR::IS, VM::M1TN, "SecondaryCountsAccumulated" },
+{ 0x0054, 0x1320, 0, VR::DS, VM::M1, "SliceSensitivityFactor" },
+{ 0x0054, 0x1321, 0, VR::DS, VM::M1, "DecayFactor" },
+{ 0x0054, 0x1322, 0, VR::DS, VM::M1, "DoseCalibrationFactor" },
+{ 0x0054, 0x1323, 0, VR::DS, VM::M1, "ScatterFractionFactor" },
+{ 0x0054, 0x1324, 0, VR::DS, VM::M1, "DeadTimeFactor" },
+{ 0x0054, 0x1330, 0, VR::US, VM::M1, "ImageIndex" },
+{ 0x0054, 0x1400, 1, VR::CS, VM::M1TN, "CountsIncluded" },
+{ 0x0054, 0x1401, 1, VR::CS, VM::M1, "DeadTimeCorrectionFlag" },
+{ 0x0060, 0x3000, 0, VR::SQ, VM::M1, "HistogramSequence" },
+{ 0x0060, 0x3002, 0, VR::US, VM::M1, "HistogramNumberOfBins" },
+{ 0x0060, 0x3004, 0, VR::XS, VM::M1, "HistogramFirstBinValue" },
+{ 0x0060, 0x3006, 0, VR::XS, VM::M1, "HistogramLastBinValue" },
+{ 0x0060, 0x3008, 0, VR::US, VM::M1, "HistogramBinWidth" },
+{ 0x0060, 0x3010, 0, VR::LO, VM::M1, "HistogramExplanation" },
+{ 0x0060, 0x3020, 0, VR::UL, VM::M1TN, "HistogramData" },
+{ 0x0062, 0x0001, 0, VR::CS, VM::M1, "SegmentationType" },
+{ 0x0062, 0x0002, 0, VR::SQ, VM::M1, "SegmentSequence" },
+{ 0x0062, 0x0003, 0, VR::SQ, VM::M1, "SegmentedPropertyCategoryCodeSequence" },
+{ 0x0062, 0x0004, 0, VR::US, VM::M1, "SegmentNumber" },
+{ 0x0062, 0x0005, 0, VR::LO, VM::M1, "SegmentLabel" },
+{ 0x0062, 0x0006, 0, VR::ST, VM::M1, "SegmentDescription" },
+{ 0x0062, 0x0008, 0, VR::CS, VM::M1, "SegmentAlgorithmType" },
+{ 0x0062, 0x0009, 0, VR::LO, VM::M1, "SegmentAlgorithmName" },
+{ 0x0062, 0x000A, 0, VR::SQ, VM::M1, "SegmentIdentificationSequence" },
+{ 0x0062, 0x000B, 0, VR::US, VM::M1TN, "ReferencedSegmentNumber" },
+{ 0x0062, 0x000C, 0, VR::US, VM::M1, "RecommendedDisplayGrayscaleValue" },
+{ 0x0062, 0x000D, 0, VR::US, VM::M3, "RecommendedDisplayCIELabValue" },
+{ 0x0062, 0x000E, 0, VR::US, VM::M1, "MaximumFractionalValue" },
+{ 0x0062, 0x000F, 0, VR::SQ, VM::M1, "SegmentedPropertyTypeCodeSequence" },
+{ 0x0062, 0x0010, 0, VR::CS, VM::M1, "SegmentationFractionalType" },
+{ 0x0062, 0x0011, 0, VR::SQ, VM::M1, "SegmentedPropertyTypeModifierCodeSequence" },
+{ 0x0062, 0x0012, 0, VR::SQ, VM::M1, "UsedSegmentsSequence" },
+{ 0x0064, 0x0002, 0, VR::SQ, VM::M1, "DeformableRegistrationSequence" },
+{ 0x0064, 0x0003, 0, VR::UI, VM::M1, "SourceFrameOfReferenceUID" },
+{ 0x0064, 0x0005, 0, VR::SQ, VM::M1, "DeformableRegistrationGridSequence" },
+{ 0x0064, 0x0007, 0, VR::UL, VM::M3, "GridDimensions" },
+{ 0x0064, 0x0008, 0, VR::FD, VM::M3, "GridResolution" },
+{ 0x0064, 0x0009, 0, VR::OF, VM::M1, "VectorGridData" },
+{ 0x0064, 0x000F, 0, VR::SQ, VM::M1, "PreDeformationMatrixRegistrationSequence" },
+{ 0x0064, 0x0010, 0, VR::SQ, VM::M1, "PostDeformationMatrixRegistrationSequence" },
+{ 0x0066, 0x0001, 0, VR::UL, VM::M1, "NumberOfSurfaces" },
+{ 0x0066, 0x0002, 0, VR::SQ, VM::M1, "SurfaceSequence" },
+{ 0x0066, 0x0003, 0, VR::UL, VM::M1, "SurfaceNumber" },
+{ 0x0066, 0x0004, 0, VR::LT, VM::M1, "SurfaceComments" },
+{ 0x0066, 0x0009, 0, VR::CS, VM::M1, "SurfaceProcessing" },
+{ 0x0066, 0x000A, 0, VR::FL, VM::M1, "SurfaceProcessingRatio" },
+{ 0x0066, 0x000B, 0, VR::LO, VM::M1, "SurfaceProcessingDescription" },
+{ 0x0066, 0x000C, 0, VR::FL, VM::M1, "RecommendedPresentationOpacity" },
+{ 0x0066, 0x000D, 0, VR::CS, VM::M1, "RecommendedPresentationType" },
+{ 0x0066, 0x000E, 0, VR::CS, VM::M1, "FiniteVolume" },
+{ 0x0066, 0x0010, 0, VR::CS, VM::M1, "Manifold" },
+{ 0x0066, 0x0011, 0, VR::SQ, VM::M1, "SurfacePointsSequence" },
+{ 0x0066, 0x0012, 0, VR::SQ, VM::M1, "SurfacePointsNormalsSequence" },
+{ 0x0066, 0x0013, 0, VR::SQ, VM::M1, "SurfaceMeshPrimitivesSequence" },
+{ 0x0066, 0x0015, 0, VR::UL, VM::M1, "NumberOfSurfacePoints" },
+{ 0x0066, 0x0016, 0, VR::OF, VM::M1, "PointCoordinatesData" },
+{ 0x0066, 0x0017, 0, VR::FL, VM::M3, "PointPositionAccuracy" },
+{ 0x0066, 0x0018, 0, VR::FL, VM::M1, "MeanPointDistance" },
+{ 0x0066, 0x0019, 0, VR::FL, VM::M1, "MaximumPointDistance" },
+{ 0x0066, 0x001A, 0, VR::FL, VM::M6, "PointsBoundingBoxCoordinates" },
+{ 0x0066, 0x001B, 0, VR::FL, VM::M3, "AxisOfRotation" },
+{ 0x0066, 0x001C, 0, VR::FL, VM::M3, "CenterOfRotation" },
+{ 0x0066, 0x001E, 0, VR::UL, VM::M1, "NumberOfVectors" },
+{ 0x0066, 0x001F, 0, VR::US, VM::M1, "VectorDimensionality" },
+{ 0x0066, 0x0020, 0, VR::FL, VM::M1TN, "VectorAccuracy" },
+{ 0x0066, 0x0021, 0, VR::OF, VM::M1, "VectorCoordinateData" },
+{ 0x0066, 0x0023, 0, VR::OW, VM::M1, "TrianglePointIndexList" },
+{ 0x0066, 0x0024, 0, VR::OW, VM::M1, "EdgePointIndexList" },
+{ 0x0066, 0x0025, 0, VR::OW, VM::M1, "VertexPointIndexList" },
+{ 0x0066, 0x0026, 0, VR::SQ, VM::M1, "TriangleStripSequence" },
+{ 0x0066, 0x0027, 0, VR::SQ, VM::M1, "TriangleFanSequence" },
+{ 0x0066, 0x0028, 0, VR::SQ, VM::M1, "LineSequence" },
+{ 0x0066, 0x0029, 0, VR::OW, VM::M1, "PrimitivePointIndexList" },
+{ 0x0066, 0x002A, 0, VR::UL, VM::M1, "SurfaceCount" },
+{ 0x0066, 0x002B, 0, VR::SQ, VM::M1, "ReferencedSurfaceSequence" },
+{ 0x0066, 0x002C, 0, VR::UL, VM::M1, "ReferencedSurfaceNumber" },
+{ 0x0066, 0x002D, 0, VR::SQ, VM::M1, "SegmentSurfaceGenerationAlgorithmIdentificationSequence" },
+{ 0x0066, 0x002E, 0, VR::SQ, VM::M1, "SegmentSurfaceSourceInstanceSequence" },
+{ 0x0066, 0x002F, 0, VR::SQ, VM::M1, "AlgorithmFamilyCodeSequence" },
+{ 0x0066, 0x0030, 0, VR::SQ, VM::M1, "AlgorithmNameCodeSequence" },
+{ 0x0066, 0x0031, 0, VR::LO, VM::M1, "AlgorithmVersion" },
+{ 0x0066, 0x0032, 0, VR::LT, VM::M1, "AlgorithmParameters" },
+{ 0x0066, 0x0034, 0, VR::SQ, VM::M1, "FacetSequence" },
+{ 0x0066, 0x0035, 0, VR::SQ, VM::M1, "SurfaceProcessingAlgorithmIdentificationSequence" },
+{ 0x0066, 0x0036, 0, VR::LO, VM::M1, "AlgorithmName" },
+{ 0x0066, 0x0037, 0, VR::FL, VM::M1, "RecommendedPointRadius" },
+{ 0x0066, 0x0038, 0, VR::FL, VM::M1, "RecommendedLineThickness" },
+{ 0x0068, 0x6210, 0, VR::LO, VM::M1, "ImplantSize" },
+{ 0x0068, 0x6221, 0, VR::LO, VM::M1, "ImplantTemplateVersion" },
+{ 0x0068, 0x6222, 0, VR::SQ, VM::M1, "ReplacedImplantTemplateSequence" },
+{ 0x0068, 0x6223, 0, VR::CS, VM::M1, "ImplantType" },
+{ 0x0068, 0x6224, 0, VR::SQ, VM::M1, "DerivationImplantTemplateSequence" },
+{ 0x0068, 0x6225, 0, VR::SQ, VM::M1, "OriginalImplantTemplateSequence" },
+{ 0x0068, 0x6226, 0, VR::DT, VM::M1, "EffectiveDateTime" },
+{ 0x0068, 0x6230, 0, VR::SQ, VM::M1, "ImplantTargetAnatomySequence" },
+{ 0x0068, 0x6260, 0, VR::SQ, VM::M1, "InformationFromManufacturerSequence" },
+{ 0x0068, 0x6265, 0, VR::SQ, VM::M1, "NotificationFromManufacturerSequence" },
+{ 0x0068, 0x6270, 0, VR::DT, VM::M1, "InformationIssueDateTime" },
+{ 0x0068, 0x6280, 0, VR::ST, VM::M1, "InformationSummary" },
+{ 0x0068, 0x62A0, 0, VR::SQ, VM::M1, "ImplantRegulatoryDisapprovalCodeSequence" },
+{ 0x0068, 0x62A5, 0, VR::FD, VM::M1, "OverallTemplateSpatialTolerance" },
+{ 0x0068, 0x62C0, 0, VR::SQ, VM::M1, "HPGLDocumentSequence" },
+{ 0x0068, 0x62D0, 0, VR::US, VM::M1, "HPGLDocumentID" },
+{ 0x0068, 0x62D5, 0, VR::LO, VM::M1, "HPGLDocumentLabel" },
+{ 0x0068, 0x62E0, 0, VR::SQ, VM::M1, "ViewOrientationCodeSequence" },
+{ 0x0068, 0x62F0, 0, VR::FD, VM::M9, "ViewOrientationModifier" },
+{ 0x0068, 0x62F2, 0, VR::FD, VM::M1, "HPGLDocumentScaling" },
+{ 0x0068, 0x6300, 0, VR::OB, VM::M1, "HPGLDocument" },
+{ 0x0068, 0x6310, 0, VR::US, VM::M1, "HPGLContourPenNumber" },
+{ 0x0068, 0x6320, 0, VR::SQ, VM::M1, "HPGLPenSequence" },
+{ 0x0068, 0x6330, 0, VR::US, VM::M1, "HPGLPenNumber" },
+{ 0x0068, 0x6340, 0, VR::LO, VM::M1, "HPGLPenLabel" },
+{ 0x0068, 0x6345, 0, VR::ST, VM::M1, "HPGLPenDescription" },
+{ 0x0068, 0x6346, 0, VR::FD, VM::M2, "RecommendedRotationPoint" },
+{ 0x0068, 0x6347, 0, VR::FD, VM::M4, "BoundingRectangle" },
+{ 0x0068, 0x6350, 0, VR::US, VM::M1TN, "ImplantTemplate3DModelSurfaceNumber" },
+{ 0x0068, 0x6360, 0, VR::SQ, VM::M1, "SurfaceModelDescriptionSequence" },
+{ 0x0068, 0x6380, 0, VR::LO, VM::M1, "SurfaceModelLabel" },
+{ 0x0068, 0x6390, 0, VR::FD, VM::M1, "SurfaceModelScalingFactor" },
+{ 0x0068, 0x63A0, 0, VR::SQ, VM::M1, "MaterialsCodeSequence" },
+{ 0x0068, 0x63A4, 0, VR::SQ, VM::M1, "CoatingMaterialsCodeSequence" },
+{ 0x0068, 0x63A8, 0, VR::SQ, VM::M1, "ImplantTypeCodeSequence" },
+{ 0x0068, 0x63AC, 0, VR::SQ, VM::M1, "FixationMethodCodeSequence" },
+{ 0x0068, 0x63B0, 0, VR::SQ, VM::M1, "MatingFeatureSetsSequence" },
+{ 0x0068, 0x63C0, 0, VR::US, VM::M1, "MatingFeatureSetID" },
+{ 0x0068, 0x63D0, 0, VR::LO, VM::M1, "MatingFeatureSetLabel" },
+{ 0x0068, 0x63E0, 0, VR::SQ, VM::M1, "MatingFeatureSequence" },
+{ 0x0068, 0x63F0, 0, VR::US, VM::M1, "MatingFeatureID" },
+{ 0x0068, 0x6400, 0, VR::SQ, VM::M1, "MatingFeatureDegreeOfFreedomSequence" },
+{ 0x0068, 0x6410, 0, VR::US, VM::M1, "DegreeOfFreedomID" },
+{ 0x0068, 0x6420, 0, VR::CS, VM::M1, "DegreeOfFreedomType" },
+{ 0x0068, 0x6430, 0, VR::SQ, VM::M1, "TwoDMatingFeatureCoordinatesSequence" },
+{ 0x0068, 0x6440, 0, VR::US, VM::M1, "ReferencedHPGLDocumentID" },
+{ 0x0068, 0x6450, 0, VR::FD, VM::M2, "TwoDMatingPoint" },
+{ 0x0068, 0x6460, 0, VR::FD, VM::M4, "TwoDMatingAxes" },
+{ 0x0068, 0x6470, 0, VR::SQ, VM::M1, "TwoDDegreeOfFreedomSequence" },
+{ 0x0068, 0x6490, 0, VR::FD, VM::M3, "ThreeDDegreeOfFreedomAxis" },
+{ 0x0068, 0x64A0, 0, VR::FD, VM::M2, "RangeOfFreedom" },
+{ 0x0068, 0x64C0, 0, VR::FD, VM::M3, "ThreeDMatingPoint" },
+{ 0x0068, 0x64D0, 0, VR::FD, VM::M9, "ThreeDMatingAxes" },
+{ 0x0068, 0x64F0, 0, VR::FD, VM::M3, "TwoDDegreeOfFreedomAxis" },
+{ 0x0068, 0x6500, 0, VR::SQ, VM::M1, "PlanningLandmarkPointSequence" },
+{ 0x0068, 0x6510, 0, VR::SQ, VM::M1, "PlanningLandmarkLineSequence" },
+{ 0x0068, 0x6520, 0, VR::SQ, VM::M1, "PlanningLandmarkPlaneSequence" },
+{ 0x0068, 0x6530, 0, VR::US, VM::M1, "PlanningLandmarkID" },
+{ 0x0068, 0x6540, 0, VR::LO, VM::M1, "PlanningLandmarkDescription" },
+{ 0x0068, 0x6545, 0, VR::SQ, VM::M1, "PlanningLandmarkIdentificationCodeSequence" },
+{ 0x0068, 0x6550, 0, VR::SQ, VM::M1, "TwoDPointCoordinatesSequence" },
+{ 0x0068, 0x6560, 0, VR::FD, VM::M2, "TwoDPointCoordinates" },
+{ 0x0068, 0x6590, 0, VR::FD, VM::M3, "ThreeDPointCoordinates" },
+{ 0x0068, 0x65A0, 0, VR::SQ, VM::M1, "TwoDLineCoordinatesSequence" },
+{ 0x0068, 0x65B0, 0, VR::FD, VM::M4, "TwoDLineCoordinates" },
+{ 0x0068, 0x65D0, 0, VR::FD, VM::M6, "ThreeDLineCoordinates" },
+{ 0x0068, 0x65E0, 0, VR::SQ, VM::M1, "TwoDPlaneCoordinatesSequence" },
+{ 0x0068, 0x65F0, 0, VR::FD, VM::M4, "TwoDPlaneIntersection" },
+{ 0x0068, 0x6610, 0, VR::FD, VM::M3, "ThreeDPlaneOrigin" },
+{ 0x0068, 0x6620, 0, VR::FD, VM::M3, "ThreeDPlaneNormal" },
+{ 0x0070, 0x0001, 0, VR::SQ, VM::M1, "GraphicAnnotationSequence" },
+{ 0x0070, 0x0002, 0, VR::CS, VM::M1, "GraphicLayer" },
+{ 0x0070, 0x0003, 0, VR::CS, VM::M1, "BoundingBoxAnnotationUnits" },
+{ 0x0070, 0x0004, 0, VR::CS, VM::M1, "AnchorPointAnnotationUnits" },
+{ 0x0070, 0x0005, 0, VR::CS, VM::M1, "GraphicAnnotationUnits" },
+{ 0x0070, 0x0006, 0, VR::ST, VM::M1, "UnformattedTextValue" },
+{ 0x0070, 0x0008, 0, VR::SQ, VM::M1, "TextObjectSequence" },
+{ 0x0070, 0x0009, 0, VR::SQ, VM::M1, "GraphicObjectSequence" },
+{ 0x0070, 0x0010, 0, VR::FL, VM::M2, "BoundingBoxTopLeftHandCorner" },
+{ 0x0070, 0x0011, 0, VR::FL, VM::M2, "BoundingBoxBottomRightHandCorner" },
+{ 0x0070, 0x0012, 0, VR::CS, VM::M1, "BoundingBoxTextHorizontalJustification" },
+{ 0x0070, 0x0014, 0, VR::FL, VM::M2, "AnchorPoint" },
+{ 0x0070, 0x0015, 0, VR::CS, VM::M1, "AnchorPointVisibility" },
+{ 0x0070, 0x0020, 0, VR::US, VM::M1, "GraphicDimensions" },
+{ 0x0070, 0x0021, 0, VR::US, VM::M1, "NumberOfGraphicPoints" },
+{ 0x0070, 0x0022, 0, VR::FL, VM::M2TN, "GraphicData" },
+{ 0x0070, 0x0023, 0, VR::CS, VM::M1, "GraphicType" },
+{ 0x0070, 0x0024, 0, VR::CS, VM::M1, "GraphicFilled" },
+{ 0x0070, 0x0040, 1, VR::IS, VM::M1, "ImageRotationRetired" },
+{ 0x0070, 0x0041, 0, VR::CS, VM::M1, "ImageHorizontalFlip" },
+{ 0x0070, 0x0042, 0, VR::US, VM::M1, "ImageRotation" },
+{ 0x0070, 0x0050, 1, VR::US, VM::M2, "DisplayedAreaTopLeftHandCornerTrial" },
+{ 0x0070, 0x0051, 1, VR::US, VM::M2, "DisplayedAreaBottomRightHandCornerTrial" },
+{ 0x0070, 0x0052, 0, VR::SL, VM::M2, "DisplayedAreaTopLeftHandCorner" },
+{ 0x0070, 0x0053, 0, VR::SL, VM::M2, "DisplayedAreaBottomRightHandCorner" },
+{ 0x0070, 0x005A, 0, VR::SQ, VM::M1, "DisplayedAreaSelectionSequence" },
+{ 0x0070, 0x0060, 0, VR::SQ, VM::M1, "GraphicLayerSequence" },
+{ 0x0070, 0x0062, 0, VR::IS, VM::M1, "GraphicLayerOrder" },
+{ 0x0070, 0x0066, 0, VR::US, VM::M1, "GraphicLayerRecommendedDisplayGrayscaleValue" },
+{ 0x0070, 0x0067, 1, VR::US, VM::M3, "GraphicLayerRecommendedDisplayRGBValue" },
+{ 0x0070, 0x0068, 0, VR::LO, VM::M1, "GraphicLayerDescription" },
+{ 0x0070, 0x0080, 0, VR::CS, VM::M1, "ContentLabel" },
+{ 0x0070, 0x0081, 0, VR::LO, VM::M1, "ContentDescription" },
+{ 0x0070, 0x0082, 0, VR::DA, VM::M1, "PresentationCreationDate" },
+{ 0x0070, 0x0083, 0, VR::TM, VM::M1, "PresentationCreationTime" },
+{ 0x0070, 0x0084, 0, VR::PN, VM::M1, "ContentCreatorName" },
+{ 0x0070, 0x0086, 0, VR::SQ, VM::M1, "ContentCreatorIdentificationCodeSequence" },
+{ 0x0070, 0x0087, 0, VR::SQ, VM::M1, "AlternateContentDescriptionSequence" },
+{ 0x0070, 0x0100, 0, VR::CS, VM::M1, "PresentationSizeMode" },
+{ 0x0070, 0x0101, 0, VR::DS, VM::M2, "PresentationPixelSpacing" },
+{ 0x0070, 0x0102, 0, VR::IS, VM::M2, "PresentationPixelAspectRatio" },
+{ 0x0070, 0x0103, 0, VR::FL, VM::M1, "PresentationPixelMagnificationRatio" },
+{ 0x0070, 0x0207, 0, VR::LO, VM::M1, "GraphicGroupLabel" },
+{ 0x0070, 0x0208, 0, VR::ST, VM::M1, "GraphicGroupDescription" },
+{ 0x0070, 0x0209, 0, VR::SQ, VM::M1, "CompoundGraphicSequence" },
+{ 0x0070, 0x0226, 0, VR::UL, VM::M1, "CompoundGraphicInstanceID" },
+{ 0x0070, 0x0227, 0, VR::LO, VM::M1, "FontName" },
+{ 0x0070, 0x0228, 0, VR::CS, VM::M1, "FontNameType" },
+{ 0x0070, 0x0229, 0, VR::LO, VM::M1, "CSSFontName" },
+{ 0x0070, 0x0230, 0, VR::FD, VM::M1, "RotationAngle" },
+{ 0x0070, 0x0231, 0, VR::SQ, VM::M1, "TextStyleSequence" },
+{ 0x0070, 0x0232, 0, VR::SQ, VM::M1, "LineStyleSequence" },
+{ 0x0070, 0x0233, 0, VR::SQ, VM::M1, "FillStyleSequence" },
+{ 0x0070, 0x0234, 0, VR::SQ, VM::M1, "GraphicGroupSequence" },
+{ 0x0070, 0x0241, 0, VR::US, VM::M3, "TextColorCIELabValue" },
+{ 0x0070, 0x0242, 0, VR::CS, VM::M1, "HorizontalAlignment" },
+{ 0x0070, 0x0243, 0, VR::CS, VM::M1, "VerticalAlignment" },
+{ 0x0070, 0x0244, 0, VR::CS, VM::M1, "ShadowStyle" },
+{ 0x0070, 0x0245, 0, VR::FL, VM::M1, "ShadowOffsetX" },
+{ 0x0070, 0x0246, 0, VR::FL, VM::M1, "ShadowOffsetY" },
+{ 0x0070, 0x0247, 0, VR::US, VM::M3, "ShadowColorCIELabValue" },
+{ 0x0070, 0x0248, 0, VR::CS, VM::M1, "Underlined" },
+{ 0x0070, 0x0249, 0, VR::CS, VM::M1, "Bold" },
+{ 0x0070, 0x0250, 0, VR::CS, VM::M1, "Italic" },
+{ 0x0070, 0x0251, 0, VR::US, VM::M3, "PatternOnColorCIELabValue" },
+{ 0x0070, 0x0252, 0, VR::US, VM::M3, "PatternOffColorCIELabValue" },
+{ 0x0070, 0x0253, 0, VR::FL, VM::M1, "LineThickness" },
+{ 0x0070, 0x0254, 0, VR::CS, VM::M1, "LineDashingStyle" },
+{ 0x0070, 0x0255, 0, VR::UL, VM::M1, "LinePattern" },
+{ 0x0070, 0x0256, 0, VR::OB, VM::M1, "FillPattern" },
+{ 0x0070, 0x0257, 0, VR::CS, VM::M1, "FillMode" },
+{ 0x0070, 0x0258, 0, VR::FL, VM::M1, "ShadowOpacity" },
+{ 0x0070, 0x0261, 0, VR::FL, VM::M1, "GapLength" },
+{ 0x0070, 0x0262, 0, VR::FL, VM::M1, "DiameterOfVisibility" },
+{ 0x0070, 0x0273, 0, VR::FL, VM::M2, "RotationPoint" },
+{ 0x0070, 0x0274, 0, VR::CS, VM::M1, "TickAlignment" },
+{ 0x0070, 0x0278, 0, VR::CS, VM::M1, "ShowTickLabel" },
+{ 0x0070, 0x0279, 0, VR::CS, VM::M1, "TickLabelAlignment" },
+{ 0x0070, 0x0282, 0, VR::CS, VM::M1, "CompoundGraphicUnits" },
+{ 0x0070, 0x0284, 0, VR::FL, VM::M1, "PatternOnOpacity" },
+{ 0x0070, 0x0285, 0, VR::FL, VM::M1, "PatternOffOpacity" },
+{ 0x0070, 0x0287, 0, VR::SQ, VM::M1, "MajorTicksSequence" },
+{ 0x0070, 0x0288, 0, VR::FL, VM::M1, "TickPosition" },
+{ 0x0070, 0x0289, 0, VR::SH, VM::M1, "TickLabel" },
+{ 0x0070, 0x0294, 0, VR::CS, VM::M1, "CompoundGraphicType" },
+{ 0x0070, 0x0295, 0, VR::UL, VM::M1, "GraphicGroupID" },
+{ 0x0070, 0x0306, 0, VR::CS, VM::M1, "ShapeType" },
+{ 0x0070, 0x0308, 0, VR::SQ, VM::M1, "RegistrationSequence" },
+{ 0x0070, 0x0309, 0, VR::SQ, VM::M1, "MatrixRegistrationSequence" },
+{ 0x0070, 0x030A, 0, VR::SQ, VM::M1, "MatrixSequence" },
+{ 0x0070, 0x030C, 0, VR::CS, VM::M1, "FrameOfReferenceTransformationMatrixType" },
+{ 0x0070, 0x030D, 0, VR::SQ, VM::M1, "RegistrationTypeCodeSequence" },
+{ 0x0070, 0x030F, 0, VR::ST, VM::M1, "FiducialDescription" },
+{ 0x0070, 0x0310, 0, VR::SH, VM::M1, "FiducialIdentifier" },
+{ 0x0070, 0x0311, 0, VR::SQ, VM::M1, "FiducialIdentifierCodeSequence" },
+{ 0x0070, 0x0312, 0, VR::FD, VM::M1, "ContourUncertaintyRadius" },
+{ 0x0070, 0x0314, 0, VR::SQ, VM::M1, "UsedFiducialsSequence" },
+{ 0x0070, 0x0318, 0, VR::SQ, VM::M1, "GraphicCoordinatesDataSequence" },
+{ 0x0070, 0x031A, 0, VR::UI, VM::M1, "FiducialUID" },
+{ 0x0070, 0x031C, 0, VR::SQ, VM::M1, "FiducialSetSequence" },
+{ 0x0070, 0x031E, 0, VR::SQ, VM::M1, "FiducialSequence" },
+{ 0x0070, 0x0401, 0, VR::US, VM::M3, "GraphicLayerRecommendedDisplayCIELabValue" },
+{ 0x0070, 0x0402, 0, VR::SQ, VM::M1, "BlendingSequence" },
+{ 0x0070, 0x0403, 0, VR::FL, VM::M1, "RelativeOpacity" },
+{ 0x0070, 0x0404, 0, VR::SQ, VM::M1, "ReferencedSpatialRegistrationSequence" },
+{ 0x0070, 0x0405, 0, VR::CS, VM::M1, "BlendingPosition" },
+{ 0x0072, 0x0002, 0, VR::SH, VM::M1, "HangingProtocolName" },
+{ 0x0072, 0x0004, 0, VR::LO, VM::M1, "HangingProtocolDescription" },
+{ 0x0072, 0x0006, 0, VR::CS, VM::M1, "HangingProtocolLevel" },
+{ 0x0072, 0x0008, 0, VR::LO, VM::M1, "HangingProtocolCreator" },
+{ 0x0072, 0x000A, 0, VR::DT, VM::M1, "HangingProtocolCreationDateTime" },
+{ 0x0072, 0x000C, 0, VR::SQ, VM::M1, "HangingProtocolDefinitionSequence" },
+{ 0x0072, 0x000E, 0, VR::SQ, VM::M1, "HangingProtocolUserIdentificationCodeSequence" },
+{ 0x0072, 0x0010, 0, VR::LO, VM::M1, "HangingProtocolUserGroupName" },
+{ 0x0072, 0x0012, 0, VR::SQ, VM::M1, "SourceHangingProtocolSequence" },
+{ 0x0072, 0x0014, 0, VR::US, VM::M1, "NumberOfPriorsReferenced" },
+{ 0x0072, 0x0020, 0, VR::SQ, VM::M1, "ImageSetsSequence" },
+{ 0x0072, 0x0022, 0, VR::SQ, VM::M1, "ImageSetSelectorSequence" },
+{ 0x0072, 0x0024, 0, VR::CS, VM::M1, "ImageSetSelectorUsageFlag" },
+{ 0x0072, 0x0026, 0, VR::AT, VM::M1, "SelectorAttribute" },
+{ 0x0072, 0x0028, 0, VR::US, VM::M1, "SelectorValueNumber" },
+{ 0x0072, 0x0030, 0, VR::SQ, VM::M1, "TimeBasedImageSetsSequence" },
+{ 0x0072, 0x0032, 0, VR::US, VM::M1, "ImageSetNumber" },
+{ 0x0072, 0x0034, 0, VR::CS, VM::M1, "ImageSetSelectorCategory" },
+{ 0x0072, 0x0038, 0, VR::US, VM::M2, "RelativeTime" },
+{ 0x0072, 0x003A, 0, VR::CS, VM::M1, "RelativeTimeUnits" },
+{ 0x0072, 0x003C, 0, VR::SS, VM::M2, "AbstractPriorValue" },
+{ 0x0072, 0x003E, 0, VR::SQ, VM::M1, "AbstractPriorCodeSequence" },
+{ 0x0072, 0x0040, 0, VR::LO, VM::M1, "ImageSetLabel" },
+{ 0x0072, 0x0050, 0, VR::CS, VM::M1, "SelectorAttributeVR" },
+{ 0x0072, 0x0052, 0, VR::AT, VM::M1TN, "SelectorSequencePointer" },
+{ 0x0072, 0x0054, 0, VR::LO, VM::M1TN, "SelectorSequencePointerPrivateCreator" },
+{ 0x0072, 0x0056, 0, VR::LO, VM::M1, "SelectorAttributePrivateCreator" },
+{ 0x0072, 0x0060, 0, VR::AT, VM::M1TN, "SelectorATValue" },
+{ 0x0072, 0x0062, 0, VR::CS, VM::M1TN, "SelectorCSValue" },
+{ 0x0072, 0x0064, 0, VR::IS, VM::M1TN, "SelectorISValue" },
+{ 0x0072, 0x0066, 0, VR::LO, VM::M1TN, "SelectorLOValue" },
+{ 0x0072, 0x0068, 0, VR::LT, VM::M1, "SelectorLTValue" },
+{ 0x0072, 0x006A, 0, VR::PN, VM::M1TN, "SelectorPNValue" },
+{ 0x0072, 0x006C, 0, VR::SH, VM::M1TN, "SelectorSHValue" },
+{ 0x0072, 0x006E, 0, VR::ST, VM::M1, "SelectorSTValue" },
+{ 0x0072, 0x0070, 0, VR::UT, VM::M1, "SelectorUTValue" },
 { 0x0072, 0x0072, 0, VR::DS, VM::M1TN, "SelectorDSValue" },
+{ 0x0072, 0x0074, 0, VR::FD, VM::M1TN, "SelectorFDValue" },
+{ 0x0072, 0x0076, 0, VR::FL, VM::M1TN, "SelectorFLValue" },
+{ 0x0072, 0x0078, 0, VR::UL, VM::M1TN, "SelectorULValue" },
+{ 0x0072, 0x007A, 0, VR::US, VM::M1TN, "SelectorUSValue" },
+{ 0x0072, 0x007C, 0, VR::SL, VM::M1TN, "SelectorSLValue" },
+{ 0x0072, 0x007E, 0, VR::SS, VM::M1TN, "SelectorSSValue" },
+{ 0x0072, 0x0080, 0, VR::SQ, VM::M1, "SelectorCodeSequenceValue" },
+{ 0x0072, 0x0100, 0, VR::US, VM::M1, "NumberOfScreens" },
+{ 0x0072, 0x0102, 0, VR::SQ, VM::M1, "NominalScreenDefinitionSequence" },
+{ 0x0072, 0x0104, 0, VR::US, VM::M1, "NumberOfVerticalPixels" },
+{ 0x0072, 0x0106, 0, VR::US, VM::M1, "NumberOfHorizontalPixels" },
+{ 0x0072, 0x0108, 0, VR::FD, VM::M4, "DisplayEnvironmentSpatialPosition" },
+{ 0x0072, 0x010A, 0, VR::US, VM::M1, "ScreenMinimumGrayscaleBitDepth" },
+{ 0x0072, 0x010C, 0, VR::US, VM::M1, "ScreenMinimumColorBitDepth" },
+{ 0x0072, 0x010E, 0, VR::US, VM::M1, "ApplicationMaximumRepaintTime" },
+{ 0x0072, 0x0200, 0, VR::SQ, VM::M1, "DisplaySetsSequence" },
+{ 0x0072, 0x0202, 0, VR::US, VM::M1, "DisplaySetNumber" },
+{ 0x0072, 0x0203, 0, VR::LO, VM::M1, "DisplaySetLabel" },
+{ 0x0072, 0x0204, 0, VR::US, VM::M1, "DisplaySetPresentationGroup" },
+{ 0x0072, 0x0206, 0, VR::LO, VM::M1, "DisplaySetPresentationGroupDescription" },
+{ 0x0072, 0x0208, 0, VR::CS, VM::M1, "PartialDataDisplayHandling" },
+{ 0x0072, 0x0210, 0, VR::SQ, VM::M1, "SynchronizedScrollingSequence" },
+{ 0x0072, 0x0212, 0, VR::US, VM::M2TN, "DisplaySetScrollingGroup" },
+{ 0x0072, 0x0214, 0, VR::SQ, VM::M1, "NavigationIndicatorSequence" },
+{ 0x0072, 0x0216, 0, VR::US, VM::M1, "NavigationDisplaySet" },
+{ 0x0072, 0x0218, 0, VR::US, VM::M1TN, "ReferenceDisplaySets" },
+{ 0x0072, 0x0300, 0, VR::SQ, VM::M1, "ImageBoxesSequence" },
+{ 0x0072, 0x0302, 0, VR::US, VM::M1, "ImageBoxNumber" },
+{ 0x0072, 0x0304, 0, VR::CS, VM::M1, "ImageBoxLayoutType" },
+{ 0x0072, 0x0306, 0, VR::US, VM::M1, "ImageBoxTileHorizontalDimension" },
+{ 0x0072, 0x0308, 0, VR::US, VM::M1, "ImageBoxTileVerticalDimension" },
+{ 0x0072, 0x0310, 0, VR::CS, VM::M1, "ImageBoxScrollDirection" },
+{ 0x0072, 0x0312, 0, VR::CS, VM::M1, "ImageBoxSmallScrollType" },
+{ 0x0072, 0x0314, 0, VR::US, VM::M1, "ImageBoxSmallScrollAmount" },
+{ 0x0072, 0x0316, 0, VR::CS, VM::M1, "ImageBoxLargeScrollType" },
+{ 0x0072, 0x0318, 0, VR::US, VM::M1, "ImageBoxLargeScrollAmount" },
+{ 0x0072, 0x0320, 0, VR::US, VM::M1, "ImageBoxOverlapPriority" },
+{ 0x0072, 0x0330, 0, VR::FD, VM::M1, "CineRelativeToRealTime" },
+{ 0x0072, 0x0400, 0, VR::SQ, VM::M1, "FilterOperationsSequence" },
+{ 0x0072, 0x0402, 0, VR::CS, VM::M1, "FilterByCategory" },
+{ 0x0072, 0x0404, 0, VR::CS, VM::M1, "FilterByAttributePresence" },
+{ 0x0072, 0x0406, 0, VR::CS, VM::M1, "FilterByOperator" },
+{ 0x0072, 0x0420, 0, VR::US, VM::M3, "StructuredDisplayBackgroundCIELabValue" },
+{ 0x0072, 0x0421, 0, VR::US, VM::M3, "EmptyImageBoxCIELabValue" },
+{ 0x0072, 0x0422, 0, VR::SQ, VM::M1, "StructuredDisplayImageBoxSequence" },
+{ 0x0072, 0x0424, 0, VR::SQ, VM::M1, "StructuredDisplayTextBoxSequence" },
+{ 0x0072, 0x0427, 0, VR::SQ, VM::M1, "ReferencedFirstFrameSequence" },
+{ 0x0072, 0x0430, 0, VR::SQ, VM::M1, "ImageBoxSynchronizationSequence" },
+{ 0x0072, 0x0432, 0, VR::US, VM::M2TN, "SynchronizedImageBoxList" },
+{ 0x0072, 0x0434, 0, VR::CS, VM::M1, "TypeOfSynchronization" },
+{ 0x0072, 0x0500, 0, VR::CS, VM::M1, "BlendingOperationType" },
+{ 0x0072, 0x0510, 0, VR::CS, VM::M1, "ReformattingOperationType" },
+{ 0x0072, 0x0512, 0, VR::FD, VM::M1, "ReformattingThickness" },
+{ 0x0072, 0x0514, 0, VR::FD, VM::M1, "ReformattingInterval" },
+{ 0x0072, 0x0516, 0, VR::CS, VM::M1, "ReformattingOperationInitialViewDirection" },
+{ 0x0072, 0x0520, 0, VR::CS, VM::M1TN, "ThreeDRenderingType" },
+{ 0x0072, 0x0600, 0, VR::SQ, VM::M1, "SortingOperationsSequence" },
+{ 0x0072, 0x0602, 0, VR::CS, VM::M1, "SortByCategory" },
+{ 0x0072, 0x0604, 0, VR::CS, VM::M1, "SortingDirection" },
+{ 0x0072, 0x0700, 0, VR::CS, VM::M2, "DisplaySetPatientOrientation" },
+{ 0x0072, 0x0702, 0, VR::CS, VM::M1, "VOIType" },
+{ 0x0072, 0x0704, 0, VR::CS, VM::M1, "PseudoColorType" },
+{ 0x0072, 0x0705, 0, VR::SQ, VM::M1, "PseudoColorPaletteInstanceReferenceSequence" },
+{ 0x0072, 0x0706, 0, VR::CS, VM::M1, "ShowGrayscaleInverted" },
+{ 0x0072, 0x0710, 0, VR::CS, VM::M1, "ShowImageTrueSizeFlag" },
+{ 0x0072, 0x0712, 0, VR::CS, VM::M1, "ShowGraphicAnnotationFlag" },
+{ 0x0072, 0x0714, 0, VR::CS, VM::M1, "ShowPatientDemographicsFlag" },
+{ 0x0072, 0x0716, 0, VR::CS, VM::M1, "ShowAcquisitionTechniquesFlag" },
+{ 0x0072, 0x0717, 0, VR::CS, VM::M1, "DisplaySetHorizontalJustification" },
+{ 0x0072, 0x0718, 0, VR::CS, VM::M1, "DisplaySetVerticalJustification" },
+{ 0x0074, 0x0120, 0, VR::FD, VM::M1, "ContinuationStartMeterset" },
+{ 0x0074, 0x0121, 0, VR::FD, VM::M1, "ContinuationEndMeterset" },
+{ 0x0074, 0x1000, 0, VR::CS, VM::M1, "ProcedureStepState" },
+{ 0x0074, 0x1002, 0, VR::SQ, VM::M1, "ProcedureStepProgressInformationSequence" },
+{ 0x0074, 0x1004, 0, VR::DS, VM::M1, "ProcedureStepProgress" },
+{ 0x0074, 0x1006, 0, VR::ST, VM::M1, "ProcedureStepProgressDescription" },
+{ 0x0074, 0x1008, 0, VR::SQ, VM::M1, "ProcedureStepCommunicationsURISequence" },
+{ 0x0074, 0x100a, 0, VR::ST, VM::M1, "ContactURI" },
+{ 0x0074, 0x100c, 0, VR::LO, VM::M1, "ContactDisplayName" },
+{ 0x0074, 0x100e, 0, VR::SQ, VM::M1, "ProcedureStepDiscontinuationReasonCodeSequence" },
+{ 0x0074, 0x1020, 0, VR::SQ, VM::M1, "BeamTaskSequence" },
+{ 0x0074, 0x1022, 0, VR::CS, VM::M1, "BeamTaskType" },
+{ 0x0074, 0x1024, 1, VR::IS, VM::M1, "BeamOrderIndexTrial" },
+{ 0x0074, 0x1025, 0, VR::CS, VM::M1, "AutosequenceFlag" },
+{ 0x0074, 0x1026, 0, VR::FD, VM::M1, "TableTopVerticalAdjustedPosition" },
+{ 0x0074, 0x1027, 0, VR::FD, VM::M1, "TableTopLongitudinalAdjustedPosition" },
+{ 0x0074, 0x1028, 0, VR::FD, VM::M1, "TableTopLateralAdjustedPosition" },
+{ 0x0074, 0x102A, 0, VR::FD, VM::M1, "PatientSupportAdjustedAngle" },
+{ 0x0074, 0x102B, 0, VR::FD, VM::M1, "TableTopEccentricAdjustedAngle" },
+{ 0x0074, 0x102C, 0, VR::FD, VM::M1, "TableTopPitchAdjustedAngle" },
+{ 0x0074, 0x102D, 0, VR::FD, VM::M1, "TableTopRollAdjustedAngle" },
+{ 0x0074, 0x1030, 0, VR::SQ, VM::M1, "DeliveryVerificationImageSequence" },
+{ 0x0074, 0x1032, 0, VR::CS, VM::M1, "VerificationImageTiming" },
+{ 0x0074, 0x1034, 0, VR::CS, VM::M1, "DoubleExposureFlag" },
+{ 0x0074, 0x1036, 0, VR::CS, VM::M1, "DoubleExposureOrdering" },
+{ 0x0074, 0x1038, 1, VR::DS, VM::M1, "DoubleExposureMetersetTrial" },
+{ 0x0074, 0x103A, 1, VR::DS, VM::M4, "DoubleExposureFieldDeltaTrial" },
+{ 0x0074, 0x1040, 0, VR::SQ, VM::M1, "RelatedReferenceRTImageSequence" },
+{ 0x0074, 0x1042, 0, VR::SQ, VM::M1, "GeneralMachineVerificationSequence" },
+{ 0x0074, 0x1044, 0, VR::SQ, VM::M1, "ConventionalMachineVerificationSequence" },
+{ 0x0074, 0x1046, 0, VR::SQ, VM::M1, "IonMachineVerificationSequence" },
+{ 0x0074, 0x1048, 0, VR::SQ, VM::M1, "FailedAttributesSequence" },
+{ 0x0074, 0x104A, 0, VR::SQ, VM::M1, "OverriddenAttributesSequence" },
+{ 0x0074, 0x104C, 0, VR::SQ, VM::M1, "ConventionalControlPointVerificationSequence" },
+{ 0x0074, 0x104E, 0, VR::SQ, VM::M1, "IonControlPointVerificationSequence" },
+{ 0x0074, 0x1050, 0, VR::SQ, VM::M1, "AttributeOccurrenceSequence" },
+{ 0x0074, 0x1052, 0, VR::AT, VM::M1, "AttributeOccurrencePointer" },
+{ 0x0074, 0x1054, 0, VR::UL, VM::M1, "AttributeItemSelector" },
+{ 0x0074, 0x1056, 0, VR::LO, VM::M1, "AttributeOccurrencePrivateCreator" },
+{ 0x0074, 0x1057, 0, VR::IS, VM::M1TN, "SelectorSequencePointerItems" },
+{ 0x0074, 0x1200, 0, VR::CS, VM::M1, "ScheduledProcedureStepPriority" },
+{ 0x0074, 0x1202, 0, VR::LO, VM::M1, "WorklistLabel" },
+{ 0x0074, 0x1204, 0, VR::LO, VM::M1, "ProcedureStepLabel" },
+{ 0x0074, 0x1210, 0, VR::SQ, VM::M1, "ScheduledProcessingParametersSequence" },
+{ 0x0074, 0x1212, 0, VR::SQ, VM::M1, "PerformedProcessingParametersSequence" },
+{ 0x0074, 0x1216, 0, VR::SQ, VM::M1, "UnifiedProcedureStepPerformedProcedureSequence" },
+{ 0x0074, 0x1220, 1, VR::SQ, VM::M1, "RelatedProcedureStepSequence" },
+{ 0x0074, 0x1222, 1, VR::LO, VM::M1, "ProcedureStepRelationshipType" },
+{ 0x0074, 0x1224, 0, VR::SQ, VM::M1, "ReplacedProcedureStepSequence" },
+{ 0x0074, 0x1230, 0, VR::LO, VM::M1, "DeletionLock" },
+{ 0x0074, 0x1234, 0, VR::AE, VM::M1, "ReceivingAE" },
+{ 0x0074, 0x1236, 0, VR::AE, VM::M1, "RequestingAE" },
+{ 0x0074, 0x1238, 0, VR::LT, VM::M1, "ReasonForCancellation" },
+{ 0x0074, 0x1242, 0, VR::CS, VM::M1, "SCPStatus" },
+{ 0x0074, 0x1244, 0, VR::CS, VM::M1, "SubscriptionListStatus" },
+{ 0x0074, 0x1246, 0, VR::CS, VM::M1, "UnifiedProcedureStepListStatus" },
+{ 0x0074, 0x1324, 0, VR::UL, VM::M1, "BeamOrderIndex" },
+{ 0x0074, 0x1338, 0, VR::FD, VM::M1, "DoubleExposureMeterset" },
+{ 0x0074, 0x133A, 0, VR::FD, VM::M4, "DoubleExposureFieldDelta" },
+{ 0x0076, 0x0001, 0, VR::LO, VM::M1, "ImplantAssemblyTemplateName" },
+{ 0x0076, 0x0003, 0, VR::LO, VM::M1, "ImplantAssemblyTemplateIssuer" },
+{ 0x0076, 0x0006, 0, VR::LO, VM::M1, "ImplantAssemblyTemplateVersion" },
+{ 0x0076, 0x0008, 0, VR::SQ, VM::M1, "ReplacedImplantAssemblyTemplateSequence" },
+{ 0x0076, 0x000A, 0, VR::CS, VM::M1, "ImplantAssemblyTemplateType" },
+{ 0x0076, 0x000C, 0, VR::SQ, VM::M1, "OriginalImplantAssemblyTemplateSequence" },
+{ 0x0076, 0x000E, 0, VR::SQ, VM::M1, "DerivationImplantAssemblyTemplateSequence" },
+{ 0x0076, 0x0010, 0, VR::SQ, VM::M1, "ImplantAssemblyTemplateTargetAnatomySequence" },
+{ 0x0076, 0x0020, 0, VR::SQ, VM::M1, "ProcedureTypeCodeSequence" },
+{ 0x0076, 0x0030, 0, VR::LO, VM::M1, "SurgicalTechnique" },
+{ 0x0076, 0x0032, 0, VR::SQ, VM::M1, "ComponentTypesSequence" },
+{ 0x0076, 0x0034, 0, VR::CS, VM::M1, "ComponentTypeCodeSequence" },
+{ 0x0076, 0x0036, 0, VR::CS, VM::M1, "ExclusiveComponentType" },
+{ 0x0076, 0x0038, 0, VR::CS, VM::M1, "MandatoryComponentType" },
+{ 0x0076, 0x0040, 0, VR::SQ, VM::M1, "ComponentSequence" },
+{ 0x0076, 0x0055, 0, VR::US, VM::M1, "ComponentID" },
+{ 0x0076, 0x0060, 0, VR::SQ, VM::M1, "ComponentAssemblySequence" },
+{ 0x0076, 0x0070, 0, VR::US, VM::M1, "Component1ReferencedID" },
+{ 0x0076, 0x0080, 0, VR::US, VM::M1, "Component1ReferencedMatingFeatureSetID" },
+{ 0x0076, 0x0090, 0, VR::US, VM::M1, "Component1ReferencedMatingFeatureID" },
+{ 0x0076, 0x00A0, 0, VR::US, VM::M1, "Component2ReferencedID" },
+{ 0x0076, 0x00B0, 0, VR::US, VM::M1, "Component2ReferencedMatingFeatureSetID" },
+{ 0x0076, 0x00C0, 0, VR::US, VM::M1, "Component2ReferencedMatingFeatureID" },
+{ 0x0078, 0x0001, 0, VR::LO, VM::M1, "ImplantTemplateGroupName" },
+{ 0x0078, 0x0010, 0, VR::ST, VM::M1, "ImplantTemplateGroupDescription" },
+{ 0x0078, 0x0020, 0, VR::LO, VM::M1, "ImplantTemplateGroupIssuer" },
+{ 0x0078, 0x0024, 0, VR::LO, VM::M1, "ImplantTemplateGroupVersion" },
+{ 0x0078, 0x0026, 0, VR::SQ, VM::M1, "ReplacedImplantTemplateGroupSequence" },
+{ 0x0078, 0x0028, 0, VR::SQ, VM::M1, "ImplantTemplateGroupTargetAnatomySequence" },
+{ 0x0078, 0x002A, 0, VR::SQ, VM::M1, "ImplantTemplateGroupMembersSequence" },
+{ 0x0078, 0x002E, 0, VR::US, VM::M1, "ImplantTemplateGroupMemberID" },
+{ 0x0078, 0x0050, 0, VR::FD, VM::M3, "ThreeDImplantTemplateGroupMemberMatchingPoint" },
+{ 0x0078, 0x0060, 0, VR::FD, VM::M9, "ThreeDImplantTemplateGroupMemberMatchingAxes" },
+{ 0x0078, 0x0070, 0, VR::SQ, VM::M1, "ImplantTemplateGroupMemberMatching2DCoordinatesSequence" },
+{ 0x0078, 0x0090, 0, VR::FD, VM::M2, "TwoDImplantTemplateGroupMemberMatchingPoint" },
+{ 0x0078, 0x00A0, 0, VR::FD, VM::M4, "TwoDImplantTemplateGroupMemberMatchingAxes" },
+{ 0x0078, 0x00B0, 0, VR::SQ, VM::M1, "ImplantTemplateGroupVariationDimensionSequence" },
+{ 0x0078, 0x00B2, 0, VR::LO, VM::M1, "ImplantTemplateGroupVariationDimensionName" },
+{ 0x0078, 0x00B4, 0, VR::SQ, VM::M1, "ImplantTemplateGroupVariationDimensionRankSequence" },
+{ 0x0078, 0x00B6, 0, VR::US, VM::M1, "ReferencedImplantTemplateGroupMemberID" },
+{ 0x0078, 0x00B8, 0, VR::US, VM::M1, "ImplantTemplateGroupVariationDimensionRank" },
+{ 0x0080, 0x0001, 0, VR::SQ, VM::M1, "SurfaceScanAcquisitionTypeCodeSequence" },
+{ 0x0080, 0x0002, 0, VR::SQ, VM::M1, "SurfaceScanModeCodeSequence" },
+{ 0x0080, 0x0003, 0, VR::SQ, VM::M1, "RegistrationMethodCodeSequence" },
+{ 0x0080, 0x0004, 0, VR::FD, VM::M1, "ShotDurationTime" },
+{ 0x0080, 0x0005, 0, VR::FD, VM::M1, "ShotOffsetTime" },
+{ 0x0080, 0x0006, 0, VR::US, VM::M1TN, "SurfacePointPresentationValueData" },
+{ 0x0080, 0x0007, 0, VR::US, VM::M3T3N, "SurfacePointColorCIELabValueData" },
+{ 0x0080, 0x0008, 0, VR::SQ, VM::M1, "UVMappingSequence" },
+{ 0x0080, 0x0009, 0, VR::SH, VM::M1, "TextureLabel" },
+{ 0x0080, 0x0010, 0, VR::OF, VM::M1TN, "UValueData" },
+{ 0x0080, 0x0011, 0, VR::OF, VM::M1TN, "VValueData" },
+{ 0x0080, 0x0012, 0, VR::SQ, VM::M1, "ReferencedTextureSequence" },
+{ 0x0080, 0x0013, 0, VR::SQ, VM::M1, "ReferencedSurfaceDataSequence" },
+{ 0x0088, 0x0130, 0, VR::SH, VM::M1, "StorageMediaFileSetID" },
+{ 0x0088, 0x0140, 0, VR::UI, VM::M1, "StorageMediaFileSetUID" },
+{ 0x0088, 0x0200, 0, VR::SQ, VM::M1, "IconImageSequence" },
+{ 0x0088, 0x0904, 1, VR::LO, VM::M1, "TopicTitle" },
+{ 0x0088, 0x0906, 1, VR::ST, VM::M1, "TopicSubject" },
+{ 0x0088, 0x0910, 1, VR::LO, VM::M1, "TopicAuthor" },
+{ 0x0088, 0x0912, 1, VR::LO, VM::M1T32, "TopicKeywords" },
+{ 0x0100, 0x0410, 0, VR::CS, VM::M1, "SOPInstanceStatus" },
+{ 0x0100, 0x0420, 0, VR::DT, VM::M1, "SOPAuthorizationDateTime" },
+{ 0x0100, 0x0424, 0, VR::LT, VM::M1, "SOPAuthorizationComment" },
+{ 0x0100, 0x0426, 0, VR::LO, VM::M1, "AuthorizationEquipmentCertificationNumber" },
+{ 0x0400, 0x0005, 0, VR::US, VM::M1, "MACIDNumber" },
 { 0x0400, 0x0010, 0, VR::UI, VM::M1, "MACCalculationTransferSyntaxUID" },
+{ 0x0400, 0x0015, 0, VR::CS, VM::M1, "MACAlgorithm" },
+{ 0x0400, 0x0020, 0, VR::AT, VM::M1TN, "DataElementsSigned" },
+{ 0x0400, 0x0100, 0, VR::UI, VM::M1, "DigitalSignatureUID" },
+{ 0x0400, 0x0105, 0, VR::DT, VM::M1, "DigitalSignatureDateTime" },
+{ 0x0400, 0x0110, 0, VR::CS, VM::M1, "CertificateType" },
+{ 0x0400, 0x0115, 0, VR::OB, VM::M1, "CertificateOfSigner" },
+{ 0x0400, 0x0120, 0, VR::OB, VM::M1, "Signature" },
+{ 0x0400, 0x0305, 0, VR::CS, VM::M1, "CertifiedTimestampType" },
+{ 0x0400, 0x0310, 0, VR::OB, VM::M1, "CertifiedTimestamp" },
+{ 0x0400, 0x0401, 0, VR::SQ, VM::M1, "DigitalSignaturePurposeCodeSequence" },
+{ 0x0400, 0x0402, 0, VR::SQ, VM::M1, "ReferencedDigitalSignatureSequence" },
+{ 0x0400, 0x0403, 0, VR::SQ, VM::M1, "ReferencedSOPInstanceMACSequence" },
+{ 0x0400, 0x0404, 0, VR::OB, VM::M1, "MAC" },
+{ 0x0400, 0x0500, 0, VR::SQ, VM::M1, "EncryptedAttributesSequence" },
+{ 0x0400, 0x0510, 0, VR::UI, VM::M1, "EncryptedContentTransferSyntaxUID" },
+{ 0x0400, 0x0520, 0, VR::OB, VM::M1, "EncryptedContent" },
+{ 0x0400, 0x0550, 0, VR::SQ, VM::M1, "ModifiedAttributesSequence" },
+{ 0x0400, 0x0561, 0, VR::SQ, VM::M1, "OriginalAttributesSequence" },
+{ 0x0400, 0x0562, 0, VR::DT, VM::M1, "AttributeModificationDateTime" },
+{ 0x0400, 0x0563, 0, VR::LO, VM::M1, "ModifyingSystem" },
+{ 0x0400, 0x0564, 0, VR::LO, VM::M1, "SourceOfPreviousValues" },
+{ 0x0400, 0x0565, 0, VR::CS, VM::M1, "ReasonForTheAttributeModification" },
+{ 0x1000, 0x0000, 1, VR::US, VM::M3, "EscapeTriplet" },
+{ 0x1000, 0x0001, 1, VR::US, VM::M3, "RunLengthTriplet" },
+{ 0x1000, 0x0002, 1, VR::US, VM::M1, "HuffmanTableSize" },
+{ 0x1000, 0x0003, 1, VR::US, VM::M3, "HuffmanTableTriplet" },
+{ 0x1000, 0x0004, 1, VR::US, VM::M1, "ShiftTableSize" },
+{ 0x1000, 0x0005, 1, VR::US, VM::M3, "ShiftTableTriplet" },
+{ 0x1010, 0x0000, 1, VR::US, VM::M1TN, "ZonalMap" },
+{ 0x2000, 0x0010, 0, VR::IS, VM::M1, "NumberOfCopies" },
+{ 0x2000, 0x001E, 0, VR::SQ, VM::M1, "PrinterConfigurationSequence" },
+{ 0x2000, 0x0020, 0, VR::CS, VM::M1, "PrintPriority" },
+{ 0x2000, 0x0030, 0, VR::CS, VM::M1, "MediumType" },
+{ 0x2000, 0x0040, 0, VR::CS, VM::M1, "FilmDestination" },
+{ 0x2000, 0x0050, 0, VR::LO, VM::M1, "FilmSessionLabel" },
+{ 0x2000, 0x0060, 0, VR::IS, VM::M1, "MemoryAllocation" },
+{ 0x2000, 0x0061, 0, VR::IS, VM::M1, "MaximumMemoryAllocation" },
+{ 0x2000, 0x0062, 1, VR::CS, VM::M1, "ColorImagePrintingFlag" },
+{ 0x2000, 0x0063, 1, VR::CS, VM::M1, "CollationFlag" },
+{ 0x2000, 0x0065, 1, VR::CS, VM::M1, "AnnotationFlag" },
+{ 0x2000, 0x0067, 1, VR::CS, VM::M1, "ImageOverlayFlag" },
+{ 0x2000, 0x0069, 1, VR::CS, VM::M1, "PresentationLUTFlag" },
+{ 0x2000, 0x006A, 1, VR::CS, VM::M1, "ImageBoxPresentationLUTFlag" },
+{ 0x2000, 0x00A0, 0, VR::US, VM::M1, "MemoryBitDepth" },
+{ 0x2000, 0x00A1, 0, VR::US, VM::M1, "PrintingBitDepth" },
+{ 0x2000, 0x00A2, 0, VR::SQ, VM::M1, "MediaInstalledSequence" },
+{ 0x2000, 0x00A4, 0, VR::SQ, VM::M1, "OtherMediaAvailableSequence" },
+{ 0x2000, 0x00A8, 0, VR::SQ, VM::M1, "SupportedImageDisplayFormatsSequence" },
+{ 0x2000, 0x0500, 0, VR::SQ, VM::M1, "ReferencedFilmBoxSequence" },
+{ 0x2000, 0x0510, 1, VR::SQ, VM::M1, "ReferencedStoredPrintSequence" },
+{ 0x2010, 0x0010, 0, VR::ST, VM::M1, "ImageDisplayFormat" },
+{ 0x2010, 0x0030, 0, VR::CS, VM::M1, "AnnotationDisplayFormatID" },
+{ 0x2010, 0x0040, 0, VR::CS, VM::M1, "FilmOrientation" },
+{ 0x2010, 0x0050, 0, VR::CS, VM::M1, "FilmSizeID" },
+{ 0x2010, 0x0052, 0, VR::CS, VM::M1, "PrinterResolutionID" },
+{ 0x2010, 0x0054, 0, VR::CS, VM::M1, "DefaultPrinterResolutionID" },
+{ 0x2010, 0x0060, 0, VR::CS, VM::M1, "MagnificationType" },
+{ 0x2010, 0x0080, 0, VR::CS, VM::M1, "SmoothingType" },
+{ 0x2010, 0x00A6, 0, VR::CS, VM::M1, "DefaultMagnificationType" },
+{ 0x2010, 0x00A7, 0, VR::CS, VM::M1TN, "OtherMagnificationTypesAvailable" },
+{ 0x2010, 0x00A8, 0, VR::CS, VM::M1, "DefaultSmoothingType" },
+{ 0x2010, 0x00A9, 0, VR::CS, VM::M1TN, "OtherSmoothingTypesAvailable" },
+{ 0x2010, 0x0100, 0, VR::CS, VM::M1, "BorderDensity" },
+{ 0x2010, 0x0110, 0, VR::CS, VM::M1, "EmptyImageDensity" },
+{ 0x2010, 0x0120, 0, VR::US, VM::M1, "MinDensity" },
+{ 0x2010, 0x0130, 0, VR::US, VM::M1, "MaxDensity" },
+{ 0x2010, 0x0140, 0, VR::CS, VM::M1, "Trim" },
+{ 0x2010, 0x0150, 0, VR::ST, VM::M1, "ConfigurationInformation" },
+{ 0x2010, 0x0152, 0, VR::LT, VM::M1, "ConfigurationInformationDescription" },
+{ 0x2010, 0x0154, 0, VR::IS, VM::M1, "MaximumCollatedFilms" },
+{ 0x2010, 0x015E, 0, VR::US, VM::M1, "Illumination" },
+{ 0x2010, 0x0160, 0, VR::US, VM::M1, "ReflectedAmbientLight" },
+{ 0x2010, 0x0376, 0, VR::DS, VM::M2, "PrinterPixelSpacing" },
+{ 0x2010, 0x0500, 0, VR::SQ, VM::M1, "ReferencedFilmSessionSequence" },
+{ 0x2010, 0x0510, 0, VR::SQ, VM::M1, "ReferencedImageBoxSequence" },
+{ 0x2010, 0x0520, 0, VR::SQ, VM::M1, "ReferencedBasicAnnotationBoxSequence" },
+{ 0x2020, 0x0010, 0, VR::US, VM::M1, "ImageBoxPosition" },
+{ 0x2020, 0x0020, 0, VR::CS, VM::M1, "Polarity" },
+{ 0x2020, 0x0030, 0, VR::DS, VM::M1, "RequestedImageSize" },
+{ 0x2020, 0x0040, 0, VR::CS, VM::M1, "RequestedDecimateCropBehavior" },
+{ 0x2020, 0x0050, 0, VR::CS, VM::M1, "RequestedResolutionID" },
+{ 0x2020, 0x00A0, 0, VR::CS, VM::M1, "RequestedImageSizeFlag" },
 { 0x2020, 0x00A2, 0, VR::CS, VM::M1, "DecimateCropResult" },
+{ 0x2020, 0x0110, 0, VR::SQ, VM::M1, "BasicGrayscaleImageSequence" },
+{ 0x2020, 0x0111, 0, VR::SQ, VM::M1, "BasicColorImageSequence" },
+{ 0x2020, 0x0130, 1, VR::SQ, VM::M1, "ReferencedImageOverlayBoxSequence" },
+{ 0x2020, 0x0140, 1, VR::SQ, VM::M1, "ReferencedVOILUTBoxSequence" },
+{ 0x2030, 0x0010, 0, VR::US, VM::M1, "AnnotationPosition" },
+{ 0x2030, 0x0020, 0, VR::LO, VM::M1, "TextString" },
+{ 0x2040, 0x0010, 1, VR::SQ, VM::M1, "ReferencedOverlayPlaneSequence" },
+{ 0x2040, 0x0011, 1, VR::US, VM::M1T99, "ReferencedOverlayPlaneGroups" },
+{ 0x2040, 0x0020, 1, VR::SQ, VM::M1, "OverlayPixelDataSequence" },
+{ 0x2040, 0x0060, 1, VR::CS, VM::M1, "OverlayMagnificationType" },
+{ 0x2040, 0x0070, 1, VR::CS, VM::M1, "OverlaySmoothingType" },
+{ 0x2040, 0x0072, 1, VR::CS, VM::M1, "OverlayOrImageMagnification" },
+{ 0x2040, 0x0074, 1, VR::US, VM::M1, "MagnifyToNumberOfColumns" },
+{ 0x2040, 0x0080, 1, VR::CS, VM::M1, "OverlayForegroundDensity" },
+{ 0x2040, 0x0082, 1, VR::CS, VM::M1, "OverlayBackgroundDensity" },
+{ 0x2040, 0x0090, 1, VR::CS, VM::M1, "OverlayMode" },
+{ 0x2040, 0x0100, 1, VR::CS, VM::M1, "ThresholdDensity" },
+{ 0x2040, 0x0500, 1, VR::SQ, VM::M1, "ReferencedImageBoxSequenceRetired" },
+{ 0x2050, 0x0010, 0, VR::SQ, VM::M1, "PresentationLUTSequence" },
+{ 0x2050, 0x0020, 0, VR::CS, VM::M1, "PresentationLUTShape" },
+{ 0x2050, 0x0500, 0, VR::SQ, VM::M1, "ReferencedPresentationLUTSequence" },
+{ 0x2100, 0x0010, 1, VR::SH, VM::M1, "PrintJobID" },
+{ 0x2100, 0x0020, 0, VR::CS, VM::M1, "ExecutionStatus" },
+{ 0x2100, 0x0030, 0, VR::CS, VM::M1, "ExecutionStatusInfo" },
+{ 0x2100, 0x0040, 0, VR::DA, VM::M1, "CreationDate" },
+{ 0x2100, 0x0050, 0, VR::TM, VM::M1, "CreationTime" },
+{ 0x2100, 0x0070, 0, VR::AE, VM::M1, "Originator" },
+{ 0x2100, 0x0140, 1, VR::AE, VM::M1, "DestinationAE" },
+{ 0x2100, 0x0160, 0, VR::SH, VM::M1, "OwnerID" },
+{ 0x2100, 0x0170, 0, VR::IS, VM::M1, "NumberOfFilms" },
+{ 0x2100, 0x0500, 1, VR::SQ, VM::M1, "ReferencedPrintJobSequencePullStoredPrint" },
+{ 0x2110, 0x0010, 0, VR::CS, VM::M1, "PrinterStatus" },
+{ 0x2110, 0x0020, 0, VR::CS, VM::M1, "PrinterStatusInfo" },
+{ 0x2110, 0x0030, 0, VR::LO, VM::M1, "PrinterName" },
+{ 0x2110, 0x0099, 1, VR::SH, VM::M1, "PrintQueueID" },
+{ 0x2120, 0x0010, 1, VR::CS, VM::M1, "QueueStatus" },
+{ 0x2120, 0x0050, 1, VR::SQ, VM::M1, "PrintJobDescriptionSequence" },
+{ 0x2120, 0x0070, 1, VR::SQ, VM::M1, "ReferencedPrintJobSequence" },
+{ 0x2130, 0x0010, 1, VR::SQ, VM::M1, "PrintManagementCapabilitiesSequence" },
+{ 0x2130, 0x0015, 1, VR::SQ, VM::M1, "PrinterCharacteristicsSequence" },
+{ 0x2130, 0x0030, 1, VR::SQ, VM::M1, "FilmBoxContentSequence" },
+{ 0x2130, 0x0040, 1, VR::SQ, VM::M1, "ImageBoxContentSequence" },
+{ 0x2130, 0x0050, 1, VR::SQ, VM::M1, "AnnotationContentSequence" },
+{ 0x2130, 0x0060, 1, VR::SQ, VM::M1, "ImageOverlayBoxContentSequence" },
+{ 0x2130, 0x0080, 1, VR::SQ, VM::M1, "PresentationLUTContentSequence" },
+{ 0x2130, 0x00A0, 1, VR::SQ, VM::M1, "ProposedStudySequence" },
+{ 0x2130, 0x00C0, 1, VR::SQ, VM::M1, "OriginalImageSequence" },
+{ 0x2200, 0x0001, 0, VR::CS, VM::M1, "LabelUsingInformationExtractedFromInstances" },
+{ 0x2200, 0x0002, 0, VR::UT, VM::M1, "LabelText" },
+{ 0x2200, 0x0003, 0, VR::CS, VM::M1, "LabelStyleSelection" },
+{ 0x2200, 0x0004, 0, VR::LT, VM::M1, "MediaDisposition" },
+{ 0x2200, 0x0005, 0, VR::LT, VM::M1, "BarcodeValue" },
+{ 0x2200, 0x0006, 0, VR::CS, VM::M1, "BarcodeSymbology" },
+{ 0x2200, 0x0007, 0, VR::CS, VM::M1, "AllowMediaSplitting" },
+{ 0x2200, 0x0008, 0, VR::CS, VM::M1, "IncludeNonDICOMObjects" },
+{ 0x2200, 0x0009, 0, VR::CS, VM::M1, "IncludeDisplayApplication" },
+{ 0x2200, 0x000A, 0, VR::CS, VM::M1, "PreserveCompositeInstancesAfterMediaCreation" },
+{ 0x2200, 0x000B, 0, VR::US, VM::M1, "TotalNumberOfPiecesOfMediaCreated" },
+{ 0x2200, 0x000C, 0, VR::LO, VM::M1, "RequestedMediaApplicationProfile" },
+{ 0x2200, 0x000D, 0, VR::SQ, VM::M1, "ReferencedStorageMediaSequence" },
+{ 0x2200, 0x000E, 0, VR::AT, VM::M1TN, "FailureAttributes" },
+{ 0x2200, 0x000F, 0, VR::CS, VM::M1, "AllowLossyCompression" },
+{ 0x2200, 0x0020, 0, VR::CS, VM::M1, "RequestPriority" },
+{ 0x3002, 0x0002, 0, VR::SH, VM::M1, "RTImageLabel" },
+{ 0x3002, 0x0003, 0, VR::LO, VM::M1, "RTImageName" },
+{ 0x3002, 0x0004, 0, VR::ST, VM::M1, "RTImageDescription" },
+{ 0x3002, 0x000A, 0, VR::CS, VM::M1, "ReportedValuesOrigin" },
+{ 0x3002, 0x000C, 0, VR::CS, VM::M1, "RTImagePlane" },
+{ 0x3002, 0x000D, 0, VR::DS, VM::M3, "XRayImageReceptorTranslation" },
+{ 0x3002, 0x000E, 0, VR::DS, VM::M1, "XRayImageReceptorAngle" },
+{ 0x3002, 0x0010, 0, VR::DS, VM::M6, "RTImageOrientation" },
+{ 0x3002, 0x0011, 0, VR::DS, VM::M2, "ImagePlanePixelSpacing" },
+{ 0x3002, 0x0012, 0, VR::DS, VM::M2, "RTImagePosition" },
+{ 0x3002, 0x0020, 0, VR::SH, VM::M1, "RadiationMachineName" },
+{ 0x3002, 0x0022, 0, VR::DS, VM::M1, "RadiationMachineSAD" },
+{ 0x3002, 0x0024, 0, VR::DS, VM::M1, "RadiationMachineSSD" },
+{ 0x3002, 0x0026, 0, VR::DS, VM::M1, "RTImageSID" },
+{ 0x3002, 0x0028, 0, VR::DS, VM::M1, "SourceToReferenceObjectDistance" },
+{ 0x3002, 0x0029, 0, VR::IS, VM::M1, "FractionNumber" },
+{ 0x3002, 0x0030, 0, VR::SQ, VM::M1, "ExposureSequence" },
+{ 0x3002, 0x0032, 0, VR::DS, VM::M1, "MetersetExposure" },
+{ 0x3002, 0x0034, 0, VR::DS, VM::M4, "DiaphragmPosition" },
+{ 0x3002, 0x0040, 0, VR::SQ, VM::M1, "FluenceMapSequence" },
+{ 0x3002, 0x0041, 0, VR::CS, VM::M1, "FluenceDataSource" },
+{ 0x3002, 0x0042, 0, VR::DS, VM::M1, "FluenceDataScale" },
+{ 0x3002, 0x0050, 0, VR::SQ, VM::M1, "PrimaryFluenceModeSequence" },
+{ 0x3002, 0x0051, 0, VR::CS, VM::M1, "FluenceMode" },
+{ 0x3002, 0x0052, 0, VR::SH, VM::M1, "FluenceModeID" },
+{ 0x3004, 0x0001, 0, VR::CS, VM::M1, "DVHType" },
+{ 0x3004, 0x0002, 0, VR::CS, VM::M1, "DoseUnits" },
+{ 0x3004, 0x0004, 0, VR::CS, VM::M1, "DoseType" },
+{ 0x3004, 0x0005, 0, VR::CS, VM::M1, "SpatialTransformOfDose" },
+{ 0x3004, 0x0006, 0, VR::LO, VM::M1, "DoseComment" },
+{ 0x3004, 0x0008, 0, VR::DS, VM::M3, "NormalizationPoint" },
+{ 0x3004, 0x000A, 0, VR::CS, VM::M1, "DoseSummationType" },
+{ 0x3004, 0x000C, 0, VR::DS, VM::M2TN, "GridFrameOffsetVector" },
+{ 0x3004, 0x000E, 0, VR::DS, VM::M1, "DoseGridScaling" },
+{ 0x3004, 0x0010, 0, VR::SQ, VM::M1, "RTDoseROISequence" },
+{ 0x3004, 0x0012, 0, VR::DS, VM::M1, "DoseValue" },
+{ 0x3004, 0x0014, 0, VR::CS, VM::M1T3, "TissueHeterogeneityCorrection" },
+{ 0x3004, 0x0040, 0, VR::DS, VM::M3, "DVHNormalizationPoint" },
+{ 0x3004, 0x0042, 0, VR::DS, VM::M1, "DVHNormalizationDoseValue" },
+{ 0x3004, 0x0050, 0, VR::SQ, VM::M1, "DVHSequence" },
+{ 0x3004, 0x0052, 0, VR::DS, VM::M1, "DVHDoseScaling" },
+{ 0x3004, 0x0054, 0, VR::CS, VM::M1, "DVHVolumeUnits" },
+{ 0x3004, 0x0056, 0, VR::IS, VM::M1, "DVHNumberOfBins" },
+{ 0x3004, 0x0058, 0, VR::DS, VM::M2T2N, "DVHData" },
+{ 0x3004, 0x0060, 0, VR::SQ, VM::M1, "DVHReferencedROISequence" },
+{ 0x3004, 0x0062, 0, VR::CS, VM::M1, "DVHROIContributionType" },
+{ 0x3004, 0x0070, 0, VR::DS, VM::M1, "DVHMinimumDose" },
+{ 0x3004, 0x0072, 0, VR::DS, VM::M1, "DVHMaximumDose" },
+{ 0x3004, 0x0074, 0, VR::DS, VM::M1, "DVHMeanDose" },
+{ 0x3006, 0x0002, 0, VR::SH, VM::M1, "StructureSetLabel" },
+{ 0x3006, 0x0004, 0, VR::LO, VM::M1, "StructureSetName" },
+{ 0x3006, 0x0006, 0, VR::ST, VM::M1, "StructureSetDescription" },
+{ 0x3006, 0x0008, 0, VR::DA, VM::M1, "StructureSetDate" },
+{ 0x3006, 0x0009, 0, VR::TM, VM::M1, "StructureSetTime" },
+{ 0x3006, 0x0010, 0, VR::SQ, VM::M1, "ReferencedFrameOfReferenceSequence" },
+{ 0x3006, 0x0012, 0, VR::SQ, VM::M1, "RTReferencedStudySequence" },
+{ 0x3006, 0x0014, 0, VR::SQ, VM::M1, "RTReferencedSeriesSequence" },
+{ 0x3006, 0x0016, 0, VR::SQ, VM::M1, "ContourImageSequence" },
+{ 0x3006, 0x0018, 0, VR::SQ, VM::M1, "PredecessorStructureSetSequence" },
+{ 0x3006, 0x0020, 0, VR::SQ, VM::M1, "StructureSetROISequence" },
+{ 0x3006, 0x0022, 0, VR::IS, VM::M1, "ROINumber" },
+{ 0x3006, 0x0024, 0, VR::UI, VM::M1, "ReferencedFrameOfReferenceUID" },
+{ 0x3006, 0x0026, 0, VR::LO, VM::M1, "ROIName" },
+{ 0x3006, 0x0028, 0, VR::ST, VM::M1, "ROIDescription" },
+{ 0x3006, 0x002A, 0, VR::IS, VM::M3, "ROIDisplayColor" },
+{ 0x3006, 0x002C, 0, VR::DS, VM::M1, "ROIVolume" },
+{ 0x3006, 0x0030, 0, VR::SQ, VM::M1, "RTRelatedROISequence" },
+{ 0x3006, 0x0033, 0, VR::CS, VM::M1, "RTROIRelationship" },
+{ 0x3006, 0x0036, 0, VR::CS, VM::M1, "ROIGenerationAlgorithm" },
+{ 0x3006, 0x0038, 0, VR::LO, VM::M1, "ROIGenerationDescription" },
+{ 0x3006, 0x0039, 0, VR::SQ, VM::M1, "ROIContourSequence" },
+{ 0x3006, 0x0040, 0, VR::SQ, VM::M1, "ContourSequence" },
+{ 0x3006, 0x0042, 0, VR::CS, VM::M1, "ContourGeometricType" },
+{ 0x3006, 0x0044, 0, VR::DS, VM::M1, "ContourSlabThickness" },
+{ 0x3006, 0x0045, 0, VR::DS, VM::M3, "ContourOffsetVector" },
+{ 0x3006, 0x0046, 0, VR::IS, VM::M1, "NumberOfContourPoints" },
+{ 0x3006, 0x0048, 0, VR::IS, VM::M1, "ContourNumber" },
+{ 0x3006, 0x0049, 0, VR::IS, VM::M1TN, "AttachedContours" },
+{ 0x3006, 0x0050, 0, VR::DS, VM::M3T3N, "ContourData" },
+{ 0x3006, 0x0080, 0, VR::SQ, VM::M1, "RTROIObservationsSequence" },
+{ 0x3006, 0x0082, 0, VR::IS, VM::M1, "ObservationNumber" },
+{ 0x3006, 0x0084, 0, VR::IS, VM::M1, "ReferencedROINumber" },
+{ 0x3006, 0x0085, 0, VR::SH, VM::M1, "ROIObservationLabel" },
+{ 0x3006, 0x0086, 0, VR::SQ, VM::M1, "RTROIIdentificationCodeSequence" },
+{ 0x3006, 0x0088, 0, VR::ST, VM::M1, "ROIObservationDescription" },
+{ 0x3006, 0x00A0, 0, VR::SQ, VM::M1, "RelatedRTROIObservationsSequence" },
+{ 0x3006, 0x00A4, 0, VR::CS, VM::M1, "RTROIInterpretedType" },
+{ 0x3006, 0x00A6, 0, VR::PN, VM::M1, "ROIInterpreter" },
+{ 0x3006, 0x00B0, 0, VR::SQ, VM::M1, "ROIPhysicalPropertiesSequence" },
+{ 0x3006, 0x00B2, 0, VR::CS, VM::M1, "ROIPhysicalProperty" },
+{ 0x3006, 0x00B4, 0, VR::DS, VM::M1, "ROIPhysicalPropertyValue" },
+{ 0x3006, 0x00B6, 0, VR::SQ, VM::M1, "ROIElementalCompositionSequence" },
+{ 0x3006, 0x00B7, 0, VR::US, VM::M1, "ROIElementalCompositionAtomicNumber" },
+{ 0x3006, 0x00B8, 0, VR::FL, VM::M1, "ROIElementalCompositionAtomicMassFraction" },
+{ 0x3006, 0x00C0, 1, VR::SQ, VM::M1, "FrameOfReferenceRelationshipSequence" },
+{ 0x3006, 0x00C2, 1, VR::UI, VM::M1, "RelatedFrameOfReferenceUID" },
+{ 0x3006, 0x00C4, 1, VR::CS, VM::M1, "FrameOfReferenceTransformationType" },
+{ 0x3006, 0x00C6, 0, VR::DS, VM::M16, "FrameOfReferenceTransformationMatrix" },
+{ 0x3006, 0x00C8, 0, VR::LO, VM::M1, "FrameOfReferenceTransformationComment" },
+{ 0x3008, 0x0010, 0, VR::SQ, VM::M1, "MeasuredDoseReferenceSequence" },
+{ 0x3008, 0x0012, 0, VR::ST, VM::M1, "MeasuredDoseDescription" },
+{ 0x3008, 0x0014, 0, VR::CS, VM::M1, "MeasuredDoseType" },
+{ 0x3008, 0x0016, 0, VR::DS, VM::M1, "MeasuredDoseValue" },
+{ 0x3008, 0x0020, 0, VR::SQ, VM::M1, "TreatmentSessionBeamSequence" },
+{ 0x3008, 0x0021, 0, VR::SQ, VM::M1, "TreatmentSessionIonBeamSequence" },
+{ 0x3008, 0x0022, 0, VR::IS, VM::M1, "CurrentFractionNumber" },
+{ 0x3008, 0x0024, 0, VR::DA, VM::M1, "TreatmentControlPointDate" },
+{ 0x3008, 0x0025, 0, VR::TM, VM::M1, "TreatmentControlPointTime" },
+{ 0x3008, 0x002A, 0, VR::CS, VM::M1, "TreatmentTerminationStatus" },
+{ 0x3008, 0x002B, 0, VR::SH, VM::M1, "TreatmentTerminationCode" },
+{ 0x3008, 0x002C, 0, VR::CS, VM::M1, "TreatmentVerificationStatus" },
+{ 0x3008, 0x0030, 0, VR::SQ, VM::M1, "ReferencedTreatmentRecordSequence" },
+{ 0x3008, 0x0032, 0, VR::DS, VM::M1, "SpecifiedPrimaryMeterset" },
+{ 0x3008, 0x0033, 0, VR::DS, VM::M1, "SpecifiedSecondaryMeterset" },
+{ 0x3008, 0x0036, 0, VR::DS, VM::M1, "DeliveredPrimaryMeterset" },
+{ 0x3008, 0x0037, 0, VR::DS, VM::M1, "DeliveredSecondaryMeterset" },
+{ 0x3008, 0x003A, 0, VR::DS, VM::M1, "SpecifiedTreatmentTime" },
+{ 0x3008, 0x003B, 0, VR::DS, VM::M1, "DeliveredTreatmentTime" },
+{ 0x3008, 0x0040, 0, VR::SQ, VM::M1, "ControlPointDeliverySequence" },
+{ 0x3008, 0x0041, 0, VR::SQ, VM::M1, "IonControlPointDeliverySequence" },
+{ 0x3008, 0x0042, 0, VR::DS, VM::M1, "SpecifiedMeterset" },
+{ 0x3008, 0x0044, 0, VR::DS, VM::M1, "DeliveredMeterset" },
+{ 0x3008, 0x0045, 0, VR::FL, VM::M1, "MetersetRateSet" },
+{ 0x3008, 0x0046, 0, VR::FL, VM::M1, "MetersetRateDelivered" },
+{ 0x3008, 0x0047, 0, VR::FL, VM::M1TN, "ScanSpotMetersetsDelivered" },
+{ 0x3008, 0x0048, 0, VR::DS, VM::M1, "DoseRateDelivered" },
+{ 0x3008, 0x0050, 0, VR::SQ, VM::M1, "TreatmentSummaryCalculatedDoseReferenceSequence" },
+{ 0x3008, 0x0052, 0, VR::DS, VM::M1, "CumulativeDoseToDoseReference" },
+{ 0x3008, 0x0054, 0, VR::DA, VM::M1, "FirstTreatmentDate" },
+{ 0x3008, 0x0056, 0, VR::DA, VM::M1, "MostRecentTreatmentDate" },
+{ 0x3008, 0x005A, 0, VR::IS, VM::M1, "NumberOfFractionsDelivered" },
+{ 0x3008, 0x0060, 0, VR::SQ, VM::M1, "OverrideSequence" },
+{ 0x3008, 0x0061, 0, VR::AT, VM::M1, "ParameterSequencePointer" },
+{ 0x3008, 0x0062, 0, VR::AT, VM::M1, "OverrideParameterPointer" },
+{ 0x3008, 0x0063, 0, VR::IS, VM::M1, "ParameterItemIndex" },
+{ 0x3008, 0x0064, 0, VR::IS, VM::M1, "MeasuredDoseReferenceNumber" },
+{ 0x3008, 0x0065, 0, VR::AT, VM::M1, "ParameterPointer" },
+{ 0x3008, 0x0066, 0, VR::ST, VM::M1, "OverrideReason" },
+{ 0x3008, 0x0068, 0, VR::SQ, VM::M1, "CorrectedParameterSequence" },
+{ 0x3008, 0x006A, 0, VR::FL, VM::M1, "CorrectionValue" },
+{ 0x3008, 0x0070, 0, VR::SQ, VM::M1, "CalculatedDoseReferenceSequence" },
+{ 0x3008, 0x0072, 0, VR::IS, VM::M1, "CalculatedDoseReferenceNumber" },
+{ 0x3008, 0x0074, 0, VR::ST, VM::M1, "CalculatedDoseReferenceDescription" },
+{ 0x3008, 0x0076, 0, VR::DS, VM::M1, "CalculatedDoseReferenceDoseValue" },
+{ 0x3008, 0x0078, 0, VR::DS, VM::M1, "StartMeterset" },
+{ 0x3008, 0x007A, 0, VR::DS, VM::M1, "EndMeterset" },
+{ 0x3008, 0x0080, 0, VR::SQ, VM::M1, "ReferencedMeasuredDoseReferenceSequence" },
+{ 0x3008, 0x0082, 0, VR::IS, VM::M1, "ReferencedMeasuredDoseReferenceNumber" },
+{ 0x3008, 0x0090, 0, VR::SQ, VM::M1, "ReferencedCalculatedDoseReferenceSequence" },
+{ 0x3008, 0x0092, 0, VR::IS, VM::M1, "ReferencedCalculatedDoseReferenceNumber" },
+{ 0x3008, 0x00A0, 0, VR::SQ, VM::M1, "BeamLimitingDeviceLeafPairsSequence" },
+{ 0x3008, 0x00B0, 0, VR::SQ, VM::M1, "RecordedWedgeSequence" },
+{ 0x3008, 0x00C0, 0, VR::SQ, VM::M1, "RecordedCompensatorSequence" },
+{ 0x3008, 0x00D0, 0, VR::SQ, VM::M1, "RecordedBlockSequence" },
+{ 0x3008, 0x00E0, 0, VR::SQ, VM::M1, "TreatmentSummaryMeasuredDoseReferenceSequence" },
+{ 0x3008, 0x00F0, 0, VR::SQ, VM::M1, "RecordedSnoutSequence" },
+{ 0x3008, 0x00F2, 0, VR::SQ, VM::M1, "RecordedRangeShifterSequence" },
+{ 0x3008, 0x00F4, 0, VR::SQ, VM::M1, "RecordedLateralSpreadingDeviceSequence" },
+{ 0x3008, 0x00F6, 0, VR::SQ, VM::M1, "RecordedRangeModulatorSequence" },
+{ 0x3008, 0x0100, 0, VR::SQ, VM::M1, "RecordedSourceSequence" },
+{ 0x3008, 0x0105, 0, VR::LO, VM::M1, "SourceSerialNumber" },
+{ 0x3008, 0x0110, 0, VR::SQ, VM::M1, "TreatmentSessionApplicationSetupSequence" },
+{ 0x3008, 0x0116, 0, VR::CS, VM::M1, "ApplicationSetupCheck" },
+{ 0x3008, 0x0120, 0, VR::SQ, VM::M1, "RecordedBrachyAccessoryDeviceSequence" },
+{ 0x3008, 0x0122, 0, VR::IS, VM::M1, "ReferencedBrachyAccessoryDeviceNumber" },
+{ 0x3008, 0x0130, 0, VR::SQ, VM::M1, "RecordedChannelSequence" },
+{ 0x3008, 0x0132, 0, VR::DS, VM::M1, "SpecifiedChannelTotalTime" },
+{ 0x3008, 0x0134, 0, VR::DS, VM::M1, "DeliveredChannelTotalTime" },
+{ 0x3008, 0x0136, 0, VR::IS, VM::M1, "SpecifiedNumberOfPulses" },
+{ 0x3008, 0x0138, 0, VR::IS, VM::M1, "DeliveredNumberOfPulses" },
+{ 0x3008, 0x013A, 0, VR::DS, VM::M1, "SpecifiedPulseRepetitionInterval" },
+{ 0x3008, 0x013C, 0, VR::DS, VM::M1, "DeliveredPulseRepetitionInterval" },
+{ 0x3008, 0x0140, 0, VR::SQ, VM::M1, "RecordedSourceApplicatorSequence" },
+{ 0x3008, 0x0142, 0, VR::IS, VM::M1, "ReferencedSourceApplicatorNumber" },
+{ 0x3008, 0x0150, 0, VR::SQ, VM::M1, "RecordedChannelShieldSequence" },
+{ 0x3008, 0x0152, 0, VR::IS, VM::M1, "ReferencedChannelShieldNumber" },
+{ 0x3008, 0x0160, 0, VR::SQ, VM::M1, "BrachyControlPointDeliveredSequence" },
+{ 0x3008, 0x0162, 0, VR::DA, VM::M1, "SafePositionExitDate" },
+{ 0x3008, 0x0164, 0, VR::TM, VM::M1, "SafePositionExitTime" },
+{ 0x3008, 0x0166, 0, VR::DA, VM::M1, "SafePositionReturnDate" },
+{ 0x3008, 0x0168, 0, VR::TM, VM::M1, "SafePositionReturnTime" },
+{ 0x3008, 0x0200, 0, VR::CS, VM::M1, "CurrentTreatmentStatus" },
+{ 0x3008, 0x0202, 0, VR::ST, VM::M1, "TreatmentStatusComment" },
+{ 0x3008, 0x0220, 0, VR::SQ, VM::M1, "FractionGroupSummarySequence" },
+{ 0x3008, 0x0223, 0, VR::IS, VM::M1, "ReferencedFractionNumber" },
+{ 0x3008, 0x0224, 0, VR::CS, VM::M1, "FractionGroupType" },
+{ 0x3008, 0x0230, 0, VR::CS, VM::M1, "BeamStopperPosition" },
+{ 0x3008, 0x0240, 0, VR::SQ, VM::M1, "FractionStatusSummarySequence" },
+{ 0x3008, 0x0250, 0, VR::DA, VM::M1, "TreatmentDate" },
+{ 0x3008, 0x0251, 0, VR::TM, VM::M1, "TreatmentTime" },
+{ 0x300A, 0x0002, 0, VR::SH, VM::M1, "RTPlanLabel" },
+{ 0x300A, 0x0003, 0, VR::LO, VM::M1, "RTPlanName" },
+{ 0x300A, 0x0004, 0, VR::ST, VM::M1, "RTPlanDescription" },
+{ 0x300A, 0x0006, 0, VR::DA, VM::M1, "RTPlanDate" },
+{ 0x300A, 0x0007, 0, VR::TM, VM::M1, "RTPlanTime" },
+{ 0x300A, 0x0009, 0, VR::LO, VM::M1TN, "TreatmentProtocols" },
+{ 0x300A, 0x000A, 0, VR::CS, VM::M1, "PlanIntent" },
+{ 0x300A, 0x000B, 0, VR::LO, VM::M1TN, "TreatmentSites" },
+{ 0x300A, 0x000C, 0, VR::CS, VM::M1, "RTPlanGeometry" },
+{ 0x300A, 0x000E, 0, VR::ST, VM::M1, "PrescriptionDescription" },
+{ 0x300A, 0x0010, 0, VR::SQ, VM::M1, "DoseReferenceSequence" },
+{ 0x300A, 0x0012, 0, VR::IS, VM::M1, "DoseReferenceNumber" },
+{ 0x300A, 0x0013, 0, VR::UI, VM::M1, "DoseReferenceUID" },
+{ 0x300A, 0x0014, 0, VR::CS, VM::M1, "DoseReferenceStructureType" },
+{ 0x300A, 0x0015, 0, VR::CS, VM::M1, "NominalBeamEnergyUnit" },
+{ 0x300A, 0x0016, 0, VR::LO, VM::M1, "DoseReferenceDescription" },
+{ 0x300A, 0x0018, 0, VR::DS, VM::M3, "DoseReferencePointCoordinates" },
+{ 0x300A, 0x001A, 0, VR::DS, VM::M1, "NominalPriorDose" },
+{ 0x300A, 0x0020, 0, VR::CS, VM::M1, "DoseReferenceType" },
+{ 0x300A, 0x0021, 0, VR::DS, VM::M1, "ConstraintWeight" },
+{ 0x300A, 0x0022, 0, VR::DS, VM::M1, "DeliveryWarningDose" },
+{ 0x300A, 0x0023, 0, VR::DS, VM::M1, "DeliveryMaximumDose" },
+{ 0x300A, 0x0025, 0, VR::DS, VM::M1, "TargetMinimumDose" },
+{ 0x300A, 0x0026, 0, VR::DS, VM::M1, "TargetPrescriptionDose" },
+{ 0x300A, 0x0027, 0, VR::DS, VM::M1, "TargetMaximumDose" },
+{ 0x300A, 0x0028, 0, VR::DS, VM::M1, "TargetUnderdoseVolumeFraction" },
+{ 0x300A, 0x002A, 0, VR::DS, VM::M1, "OrganAtRiskFullVolumeDose" },
+{ 0x300A, 0x002B, 0, VR::DS, VM::M1, "OrganAtRiskLimitDose" },
+{ 0x300A, 0x002C, 0, VR::DS, VM::M1, "OrganAtRiskMaximumDose" },
+{ 0x300A, 0x002D, 0, VR::DS, VM::M1, "OrganAtRiskOverdoseVolumeFraction" },
+{ 0x300A, 0x0040, 0, VR::SQ, VM::M1, "ToleranceTableSequence" },
+{ 0x300A, 0x0042, 0, VR::IS, VM::M1, "ToleranceTableNumber" },
+{ 0x300A, 0x0043, 0, VR::SH, VM::M1, "ToleranceTableLabel" },
+{ 0x300A, 0x0044, 0, VR::DS, VM::M1, "GantryAngleTolerance" },
+{ 0x300A, 0x0046, 0, VR::DS, VM::M1, "BeamLimitingDeviceAngleTolerance" },
+{ 0x300A, 0x0048, 0, VR::SQ, VM::M1, "BeamLimitingDeviceToleranceSequence" },
+{ 0x300A, 0x004A, 0, VR::DS, VM::M1, "BeamLimitingDevicePositionTolerance" },
+{ 0x300A, 0x004B, 0, VR::FL, VM::M1, "SnoutPositionTolerance" },
+{ 0x300A, 0x004C, 0, VR::DS, VM::M1, "PatientSupportAngleTolerance" },
+{ 0x300A, 0x004E, 0, VR::DS, VM::M1, "TableTopEccentricAngleTolerance" },
+{ 0x300A, 0x004F, 0, VR::FL, VM::M1, "TableTopPitchAngleTolerance" },
+{ 0x300A, 0x0050, 0, VR::FL, VM::M1, "TableTopRollAngleTolerance" },
+{ 0x300A, 0x0051, 0, VR::DS, VM::M1, "TableTopVerticalPositionTolerance" },
+{ 0x300A, 0x0052, 0, VR::DS, VM::M1, "TableTopLongitudinalPositionTolerance" },
+{ 0x300A, 0x0053, 0, VR::DS, VM::M1, "TableTopLateralPositionTolerance" },
+{ 0x300A, 0x0055, 0, VR::CS, VM::M1, "RTPlanRelationship" },
+{ 0x300A, 0x0070, 0, VR::SQ, VM::M1, "FractionGroupSequence" },
+{ 0x300A, 0x0071, 0, VR::IS, VM::M1, "FractionGroupNumber" },
+{ 0x300A, 0x0072, 0, VR::LO, VM::M1, "FractionGroupDescription" },
+{ 0x300A, 0x0078, 0, VR::IS, VM::M1, "NumberOfFractionsPlanned" },
+{ 0x300A, 0x0079, 0, VR::IS, VM::M1, "NumberOfFractionPatternDigitsPerDay" },
+{ 0x300A, 0x007A, 0, VR::IS, VM::M1, "RepeatFractionCycleLength" },
+{ 0x300A, 0x007B, 0, VR::LT, VM::M1, "FractionPattern" },
+{ 0x300A, 0x0080, 0, VR::IS, VM::M1, "NumberOfBeams" },
+{ 0x300A, 0x0082, 0, VR::DS, VM::M3, "BeamDoseSpecificationPoint" },
+{ 0x300A, 0x0084, 0, VR::DS, VM::M1, "BeamDose" },
+{ 0x300A, 0x0086, 0, VR::DS, VM::M1, "BeamMeterset" },
+{ 0x300A, 0x0088, 1, VR::FL, VM::M1, "BeamDosePointDepth" },
+{ 0x300A, 0x0089, 1, VR::FL, VM::M1, "BeamDosePointEquivalentDepth" },
+{ 0x300A, 0x008A, 1, VR::FL, VM::M1, "BeamDosePointSSD" },
+{ 0x300A, 0x008B, 0, VR::CS, VM::M1, "BeamDoseMeaning" },
+{ 0x300A, 0x008C, 0, VR::SQ, VM::M1, "BeamDoseVerificationControlPointSequence" },
+{ 0x300A, 0x008D, 0, VR::FL, VM::M1, "AverageBeamDosePointDepth" },
+{ 0x300A, 0x008E, 0, VR::FL, VM::M1, "AverageBeamDosePointEquivalentDepth" },
+{ 0x300A, 0x008F, 0, VR::FL, VM::M1, "AverageBeamDosePointSSD" },
+{ 0x300A, 0x00A0, 0, VR::IS, VM::M1, "NumberOfBrachyApplicationSetups" },
+{ 0x300A, 0x00A2, 0, VR::DS, VM::M3, "BrachyApplicationSetupDoseSpecificationPoint" },
+{ 0x300A, 0x00A4, 0, VR::DS, VM::M1, "BrachyApplicationSetupDose" },
+{ 0x300A, 0x00B0, 0, VR::SQ, VM::M1, "BeamSequence" },
+{ 0x300A, 0x00B2, 0, VR::SH, VM::M1, "TreatmentMachineName" },
+{ 0x300A, 0x00B3, 0, VR::CS, VM::M1, "PrimaryDosimeterUnit" },
+{ 0x300A, 0x00B4, 0, VR::DS, VM::M1, "SourceAxisDistance" },
+{ 0x300A, 0x00B6, 0, VR::SQ, VM::M1, "BeamLimitingDeviceSequence" },
+{ 0x300A, 0x00B8, 0, VR::CS, VM::M1, "RTBeamLimitingDeviceType" },
+{ 0x300A, 0x00BA, 0, VR::DS, VM::M1, "SourceToBeamLimitingDeviceDistance" },
+{ 0x300A, 0x00BB, 0, VR::FL, VM::M1, "IsocenterToBeamLimitingDeviceDistance" },
+{ 0x300A, 0x00BC, 0, VR::IS, VM::M1, "NumberOfLeafJawPairs" },
+{ 0x300A, 0x00BE, 0, VR::DS, VM::M3TN, "LeafPositionBoundaries" },
+{ 0x300A, 0x00C0, 0, VR::IS, VM::M1, "BeamNumber" },
+{ 0x300A, 0x00C2, 0, VR::LO, VM::M1, "BeamName" },
+{ 0x300A, 0x00C3, 0, VR::ST, VM::M1, "BeamDescription" },
+{ 0x300A, 0x00C4, 0, VR::CS, VM::M1, "BeamType" },
+{ 0x300A, 0x00C6, 0, VR::CS, VM::M1, "RadiationType" },
+{ 0x300A, 0x00C7, 0, VR::CS, VM::M1, "HighDoseTechniqueType" },
+{ 0x300A, 0x00C8, 0, VR::IS, VM::M1, "ReferenceImageNumber" },
+{ 0x300A, 0x00CA, 0, VR::SQ, VM::M1, "PlannedVerificationImageSequence" },
+{ 0x300A, 0x00CC, 0, VR::LO, VM::M1TN, "ImagingDeviceSpecificAcquisitionParameters" },
+{ 0x300A, 0x00CE, 0, VR::CS, VM::M1, "TreatmentDeliveryType" },
+{ 0x300A, 0x00D0, 0, VR::IS, VM::M1, "NumberOfWedges" },
+{ 0x300A, 0x00D1, 0, VR::SQ, VM::M1, "WedgeSequence" },
+{ 0x300A, 0x00D2, 0, VR::IS, VM::M1, "WedgeNumber" },
+{ 0x300A, 0x00D3, 0, VR::CS, VM::M1, "WedgeType" },
+{ 0x300A, 0x00D4, 0, VR::SH, VM::M1, "WedgeID" },
+{ 0x300A, 0x00D5, 0, VR::IS, VM::M1, "WedgeAngle" },
+{ 0x300A, 0x00D6, 0, VR::DS, VM::M1, "WedgeFactor" },
+{ 0x300A, 0x00D7, 0, VR::FL, VM::M1, "TotalWedgeTrayWaterEquivalentThickness" },
+{ 0x300A, 0x00D8, 0, VR::DS, VM::M1, "WedgeOrientation" },
+{ 0x300A, 0x00D9, 0, VR::FL, VM::M1, "IsocenterToWedgeTrayDistance" },
+{ 0x300A, 0x00DA, 0, VR::DS, VM::M1, "SourceToWedgeTrayDistance" },
+{ 0x300A, 0x00DB, 0, VR::FL, VM::M1, "WedgeThinEdgePosition" },
+{ 0x300A, 0x00DC, 0, VR::SH, VM::M1, "BolusID" },
+{ 0x300A, 0x00DD, 0, VR::ST, VM::M1, "BolusDescription" },
+{ 0x300A, 0x00E0, 0, VR::IS, VM::M1, "NumberOfCompensators" },
+{ 0x300A, 0x00E1, 0, VR::SH, VM::M1, "MaterialID" },
+{ 0x300A, 0x00E2, 0, VR::DS, VM::M1, "TotalCompensatorTrayFactor" },
+{ 0x300A, 0x00E3, 0, VR::SQ, VM::M1, "CompensatorSequence" },
+{ 0x300A, 0x00E4, 0, VR::IS, VM::M1, "CompensatorNumber" },
+{ 0x300A, 0x00E5, 0, VR::SH, VM::M1, "CompensatorID" },
+{ 0x300A, 0x00E6, 0, VR::DS, VM::M1, "SourceToCompensatorTrayDistance" },
+{ 0x300A, 0x00E7, 0, VR::IS, VM::M1, "CompensatorRows" },
+{ 0x300A, 0x00E8, 0, VR::IS, VM::M1, "CompensatorColumns" },
+{ 0x300A, 0x00E9, 0, VR::DS, VM::M2, "CompensatorPixelSpacing" },
+{ 0x300A, 0x00EA, 0, VR::DS, VM::M2, "CompensatorPosition" },
+{ 0x300A, 0x00EB, 0, VR::DS, VM::M1TN, "CompensatorTransmissionData" },
+{ 0x300A, 0x00EC, 0, VR::DS, VM::M1TN, "CompensatorThicknessData" },
+{ 0x300A, 0x00ED, 0, VR::IS, VM::M1, "NumberOfBoli" },
+{ 0x300A, 0x00EE, 0, VR::CS, VM::M1, "CompensatorType" },
+{ 0x300A, 0x00EF, 0, VR::SH, VM::M1, "CompensatorTrayID" },
+{ 0x300A, 0x00F0, 0, VR::IS, VM::M1, "NumberOfBlocks" },
+{ 0x300A, 0x00F2, 0, VR::DS, VM::M1, "TotalBlockTrayFactor" },
+{ 0x300A, 0x00F3, 0, VR::FL, VM::M1, "TotalBlockTrayWaterEquivalentThickness" },
+{ 0x300A, 0x00F4, 0, VR::SQ, VM::M1, "BlockSequence" },
+{ 0x300A, 0x00F5, 0, VR::SH, VM::M1, "BlockTrayID" },
+{ 0x300A, 0x00F6, 0, VR::DS, VM::M1, "SourceToBlockTrayDistance" },
+{ 0x300A, 0x00F7, 0, VR::FL, VM::M1, "IsocenterToBlockTrayDistance" },
+{ 0x300A, 0x00F8, 0, VR::CS, VM::M1, "BlockType" },
+{ 0x300A, 0x00F9, 0, VR::LO, VM::M1, "AccessoryCode" },
+{ 0x300A, 0x00FA, 0, VR::CS, VM::M1, "BlockDivergence" },
+{ 0x300A, 0x00FB, 0, VR::CS, VM::M1, "BlockMountingPosition" },
+{ 0x300A, 0x00FC, 0, VR::IS, VM::M1, "BlockNumber" },
+{ 0x300A, 0x00FE, 0, VR::LO, VM::M1, "BlockName" },
+{ 0x300A, 0x0100, 0, VR::DS, VM::M1, "BlockThickness" },
+{ 0x300A, 0x0102, 0, VR::DS, VM::M1, "BlockTransmission" },
+{ 0x300A, 0x0104, 0, VR::IS, VM::M1, "BlockNumberOfPoints" },
+{ 0x300A, 0x0106, 0, VR::DS, VM::M2T2N, "BlockData" },
+{ 0x300A, 0x0107, 0, VR::SQ, VM::M1, "ApplicatorSequence" },
+{ 0x300A, 0x0108, 0, VR::SH, VM::M1, "ApplicatorID" },
+{ 0x300A, 0x0109, 0, VR::CS, VM::M1, "ApplicatorType" },
+{ 0x300A, 0x010A, 0, VR::LO, VM::M1, "ApplicatorDescription" },
+{ 0x300A, 0x010C, 0, VR::DS, VM::M1, "CumulativeDoseReferenceCoefficient" },
+{ 0x300A, 0x010E, 0, VR::DS, VM::M1, "FinalCumulativeMetersetWeight" },
+{ 0x300A, 0x0110, 0, VR::IS, VM::M1, "NumberOfControlPoints" },
+{ 0x300A, 0x0111, 0, VR::SQ, VM::M1, "ControlPointSequence" },
+{ 0x300A, 0x0112, 0, VR::IS, VM::M1, "ControlPointIndex" },
+{ 0x300A, 0x0114, 0, VR::DS, VM::M1, "NominalBeamEnergy" },
+{ 0x300A, 0x0115, 0, VR::DS, VM::M1, "DoseRateSet" },
+{ 0x300A, 0x0116, 0, VR::SQ, VM::M1, "WedgePositionSequence" },
+{ 0x300A, 0x0118, 0, VR::CS, VM::M1, "WedgePosition" },
+{ 0x300A, 0x011A, 0, VR::SQ, VM::M1, "BeamLimitingDevicePositionSequence" },
+{ 0x300A, 0x011C, 0, VR::DS, VM::M2T2N, "LeafJawPositions" },
+{ 0x300A, 0x011E, 0, VR::DS, VM::M1, "GantryAngle" },
+{ 0x300A, 0x011F, 0, VR::CS, VM::M1, "GantryRotationDirection" },
+{ 0x300A, 0x0120, 0, VR::DS, VM::M1, "BeamLimitingDeviceAngle" },
+{ 0x300A, 0x0121, 0, VR::CS, VM::M1, "BeamLimitingDeviceRotationDirection" },
+{ 0x300A, 0x0122, 0, VR::DS, VM::M1, "PatientSupportAngle" },
+{ 0x300A, 0x0123, 0, VR::CS, VM::M1, "PatientSupportRotationDirection" },
+{ 0x300A, 0x0124, 0, VR::DS, VM::M1, "TableTopEccentricAxisDistance" },
+{ 0x300A, 0x0125, 0, VR::DS, VM::M1, "TableTopEccentricAngle" },
+{ 0x300A, 0x0126, 0, VR::CS, VM::M1, "TableTopEccentricRotationDirection" },
+{ 0x300A, 0x0128, 0, VR::DS, VM::M1, "TableTopVerticalPosition" },
+{ 0x300A, 0x0129, 0, VR::DS, VM::M1, "TableTopLongitudinalPosition" },
+{ 0x300A, 0x012A, 0, VR::DS, VM::M1, "TableTopLateralPosition" },
+{ 0x300A, 0x012C, 0, VR::DS, VM::M3, "IsocenterPosition" },
+{ 0x300A, 0x012E, 0, VR::DS, VM::M3, "SurfaceEntryPoint" },
+{ 0x300A, 0x0130, 0, VR::DS, VM::M1, "SourceToSurfaceDistance" },
+{ 0x300A, 0x0134, 0, VR::DS, VM::M1, "CumulativeMetersetWeight" },
+{ 0x300A, 0x0140, 0, VR::FL, VM::M1, "TableTopPitchAngle" },
+{ 0x300A, 0x0142, 0, VR::CS, VM::M1, "TableTopPitchRotationDirection" },
+{ 0x300A, 0x0144, 0, VR::FL, VM::M1, "TableTopRollAngle" },
+{ 0x300A, 0x0146, 0, VR::CS, VM::M1, "TableTopRollRotationDirection" },
+{ 0x300A, 0x0148, 0, VR::FL, VM::M1, "HeadFixationAngle" },
+{ 0x300A, 0x014A, 0, VR::FL, VM::M1, "GantryPitchAngle" },
+{ 0x300A, 0x014C, 0, VR::CS, VM::M1, "GantryPitchRotationDirection" },
+{ 0x300A, 0x014E, 0, VR::FL, VM::M1, "GantryPitchAngleTolerance" },
+{ 0x300A, 0x0180, 0, VR::SQ, VM::M1, "PatientSetupSequence" },
+{ 0x300A, 0x0182, 0, VR::IS, VM::M1, "PatientSetupNumber" },
+{ 0x300A, 0x0183, 0, VR::LO, VM::M1, "PatientSetupLabel" },
+{ 0x300A, 0x0184, 0, VR::LO, VM::M1, "PatientAdditionalPosition" },
+{ 0x300A, 0x0190, 0, VR::SQ, VM::M1, "FixationDeviceSequence" },
+{ 0x300A, 0x0192, 0, VR::CS, VM::M1, "FixationDeviceType" },
+{ 0x300A, 0x0194, 0, VR::SH, VM::M1, "FixationDeviceLabel" },
+{ 0x300A, 0x0196, 0, VR::ST, VM::M1, "FixationDeviceDescription" },
+{ 0x300A, 0x0198, 0, VR::SH, VM::M1, "FixationDevicePosition" },
+{ 0x300A, 0x0199, 0, VR::FL, VM::M1, "FixationDevicePitchAngle" },
+{ 0x300A, 0x019A, 0, VR::FL, VM::M1, "FixationDeviceRollAngle" },
+{ 0x300A, 0x01A0, 0, VR::SQ, VM::M1, "ShieldingDeviceSequence" },
+{ 0x300A, 0x01A2, 0, VR::CS, VM::M1, "ShieldingDeviceType" },
+{ 0x300A, 0x01A4, 0, VR::SH, VM::M1, "ShieldingDeviceLabel" },
+{ 0x300A, 0x01A6, 0, VR::ST, VM::M1, "ShieldingDeviceDescription" },
+{ 0x300A, 0x01A8, 0, VR::SH, VM::M1, "ShieldingDevicePosition" },
+{ 0x300A, 0x01B0, 0, VR::CS, VM::M1, "SetupTechnique" },
+{ 0x300A, 0x01B2, 0, VR::ST, VM::M1, "SetupTechniqueDescription" },
+{ 0x300A, 0x01B4, 0, VR::SQ, VM::M1, "SetupDeviceSequence" },
+{ 0x300A, 0x01B6, 0, VR::CS, VM::M1, "SetupDeviceType" },
+{ 0x300A, 0x01B8, 0, VR::SH, VM::M1, "SetupDeviceLabel" },
+{ 0x300A, 0x01BA, 0, VR::ST, VM::M1, "SetupDeviceDescription" },
+{ 0x300A, 0x01BC, 0, VR::DS, VM::M1, "SetupDeviceParameter" },
+{ 0x300A, 0x01D0, 0, VR::ST, VM::M1, "SetupReferenceDescription" },
+{ 0x300A, 0x01D2, 0, VR::DS, VM::M1, "TableTopVerticalSetupDisplacement" },
+{ 0x300A, 0x01D4, 0, VR::DS, VM::M1, "TableTopLongitudinalSetupDisplacement" },
+{ 0x300A, 0x01D6, 0, VR::DS, VM::M1, "TableTopLateralSetupDisplacement" },
+{ 0x300A, 0x0200, 0, VR::CS, VM::M1, "BrachyTreatmentTechnique" },
+{ 0x300A, 0x0202, 0, VR::CS, VM::M1, "BrachyTreatmentType" },
+{ 0x300A, 0x0206, 0, VR::SQ, VM::M1, "TreatmentMachineSequence" },
+{ 0x300A, 0x0210, 0, VR::SQ, VM::M1, "SourceSequence" },
+{ 0x300A, 0x0212, 0, VR::IS, VM::M1, "SourceNumber" },
+{ 0x300A, 0x0214, 0, VR::CS, VM::M1, "SourceType" },
+{ 0x300A, 0x0216, 0, VR::LO, VM::M1, "SourceManufacturer" },
+{ 0x300A, 0x0218, 0, VR::DS, VM::M1, "ActiveSourceDiameter" },
+{ 0x300A, 0x021A, 0, VR::DS, VM::M1, "ActiveSourceLength" },
+{ 0x300A, 0x021B, 0, VR::SH, VM::M1, "SourceModelID" },
+{ 0x300A, 0x021C, 0, VR::LO, VM::M1, "SourceDescription" },
+{ 0x300A, 0x0222, 0, VR::DS, VM::M1, "SourceEncapsulationNominalThickness" },
+{ 0x300A, 0x0224, 0, VR::DS, VM::M1, "SourceEncapsulationNominalTransmission" },
+{ 0x300A, 0x0226, 0, VR::LO, VM::M1, "SourceIsotopeName" },
+{ 0x300A, 0x0228, 0, VR::DS, VM::M1, "SourceIsotopeHalfLife" },
+{ 0x300A, 0x0229, 0, VR::CS, VM::M1, "SourceStrengthUnits" },
+{ 0x300A, 0x022A, 0, VR::DS, VM::M1, "ReferenceAirKermaRate" },
+{ 0x300A, 0x022B, 0, VR::DS, VM::M1, "SourceStrength" },
+{ 0x300A, 0x022C, 0, VR::DA, VM::M1, "SourceStrengthReferenceDate" },
+{ 0x300A, 0x022E, 0, VR::TM, VM::M1, "SourceStrengthReferenceTime" },
+{ 0x300A, 0x0230, 0, VR::SQ, VM::M1, "ApplicationSetupSequence" },
+{ 0x300A, 0x0232, 0, VR::CS, VM::M1, "ApplicationSetupType" },
+{ 0x300A, 0x0234, 0, VR::IS, VM::M1, "ApplicationSetupNumber" },
+{ 0x300A, 0x0236, 0, VR::LO, VM::M1, "ApplicationSetupName" },
+{ 0x300A, 0x0238, 0, VR::LO, VM::M1, "ApplicationSetupManufacturer" },
+{ 0x300A, 0x0240, 0, VR::IS, VM::M1, "TemplateNumber" },
+{ 0x300A, 0x0242, 0, VR::SH, VM::M1, "TemplateType" },
+{ 0x300A, 0x0244, 0, VR::LO, VM::M1, "TemplateName" },
+{ 0x300A, 0x0250, 0, VR::DS, VM::M1, "TotalReferenceAirKerma" },
+{ 0x300A, 0x0260, 0, VR::SQ, VM::M1, "BrachyAccessoryDeviceSequence" },
+{ 0x300A, 0x0262, 0, VR::IS, VM::M1, "BrachyAccessoryDeviceNumber" },
+{ 0x300A, 0x0263, 0, VR::SH, VM::M1, "BrachyAccessoryDeviceID" },
+{ 0x300A, 0x0264, 0, VR::CS, VM::M1, "BrachyAccessoryDeviceType" },
+{ 0x300A, 0x0266, 0, VR::LO, VM::M1, "BrachyAccessoryDeviceName" },
+{ 0x300A, 0x026A, 0, VR::DS, VM::M1, "BrachyAccessoryDeviceNominalThickness" },
+{ 0x300A, 0x026C, 0, VR::DS, VM::M1, "BrachyAccessoryDeviceNominalTransmission" },
+{ 0x300A, 0x0280, 0, VR::SQ, VM::M1, "ChannelSequence" },
+{ 0x300A, 0x0282, 0, VR::IS, VM::M1, "ChannelNumber" },
+{ 0x300A, 0x0284, 0, VR::DS, VM::M1, "ChannelLength" },
+{ 0x300A, 0x0286, 0, VR::DS, VM::M1, "ChannelTotalTime" },
+{ 0x300A, 0x0288, 0, VR::CS, VM::M1, "SourceMovementType" },
+{ 0x300A, 0x028A, 0, VR::IS, VM::M1, "NumberOfPulses" },
+{ 0x300A, 0x028C, 0, VR::DS, VM::M1, "PulseRepetitionInterval" },
+{ 0x300A, 0x0290, 0, VR::IS, VM::M1, "SourceApplicatorNumber" },
+{ 0x300A, 0x0291, 0, VR::SH, VM::M1, "SourceApplicatorID" },
+{ 0x300A, 0x0292, 0, VR::CS, VM::M1, "SourceApplicatorType" },
+{ 0x300A, 0x0294, 0, VR::LO, VM::M1, "SourceApplicatorName" },
+{ 0x300A, 0x0296, 0, VR::DS, VM::M1, "SourceApplicatorLength" },
+{ 0x300A, 0x0298, 0, VR::LO, VM::M1, "SourceApplicatorManufacturer" },
+{ 0x300A, 0x029C, 0, VR::DS, VM::M1, "SourceApplicatorWallNominalThickness" },
+{ 0x300A, 0x029E, 0, VR::DS, VM::M1, "SourceApplicatorWallNominalTransmission" },
+{ 0x300A, 0x02A0, 0, VR::DS, VM::M1, "SourceApplicatorStepSize" },
+{ 0x300A, 0x02A2, 0, VR::IS, VM::M1, "TransferTubeNumber" },
+{ 0x300A, 0x02A4, 0, VR::DS, VM::M1, "TransferTubeLength" },
+{ 0x300A, 0x02B0, 0, VR::SQ, VM::M1, "ChannelShieldSequence" },
+{ 0x300A, 0x02B2, 0, VR::IS, VM::M1, "ChannelShieldNumber" },
+{ 0x300A, 0x02B3, 0, VR::SH, VM::M1, "ChannelShieldID" },
+{ 0x300A, 0x02B4, 0, VR::LO, VM::M1, "ChannelShieldName" },
+{ 0x300A, 0x02B8, 0, VR::DS, VM::M1, "ChannelShieldNominalThickness" },
+{ 0x300A, 0x02BA, 0, VR::DS, VM::M1, "ChannelShieldNominalTransmission" },
+{ 0x300A, 0x02C8, 0, VR::DS, VM::M1, "FinalCumulativeTimeWeight" },
+{ 0x300A, 0x02D0, 0, VR::SQ, VM::M1, "BrachyControlPointSequence" },
+{ 0x300A, 0x02D2, 0, VR::DS, VM::M1, "ControlPointRelativePosition" },
+{ 0x300A, 0x02D4, 0, VR::DS, VM::M3, "ControlPoint3DPosition" },
+{ 0x300A, 0x02D6, 0, VR::DS, VM::M1, "CumulativeTimeWeight" },
+{ 0x300A, 0x02E0, 0, VR::CS, VM::M1, "CompensatorDivergence" },
+{ 0x300A, 0x02E1, 0, VR::CS, VM::M1, "CompensatorMountingPosition" },
+{ 0x300A, 0x02E2, 0, VR::DS, VM::M1TN, "SourceToCompensatorDistance" },
+{ 0x300A, 0x02E3, 0, VR::FL, VM::M1, "TotalCompensatorTrayWaterEquivalentThickness" },
+{ 0x300A, 0x02E4, 0, VR::FL, VM::M1, "IsocenterToCompensatorTrayDistance" },
+{ 0x300A, 0x02E5, 0, VR::FL, VM::M1, "CompensatorColumnOffset" },
+{ 0x300A, 0x02E6, 0, VR::FL, VM::M1TN, "IsocenterToCompensatorDistances" },
+{ 0x300A, 0x02E7, 0, VR::FL, VM::M1, "CompensatorRelativeStoppingPowerRatio" },
+{ 0x300A, 0x02E8, 0, VR::FL, VM::M1, "CompensatorMillingToolDiameter" },
+{ 0x300A, 0x02EA, 0, VR::SQ, VM::M1, "IonRangeCompensatorSequence" },
+{ 0x300A, 0x02EB, 0, VR::LT, VM::M1, "CompensatorDescription" },
+{ 0x300A, 0x0302, 0, VR::IS, VM::M1, "RadiationMassNumber" },
+{ 0x300A, 0x0304, 0, VR::IS, VM::M1, "RadiationAtomicNumber" },
+{ 0x300A, 0x0306, 0, VR::SS, VM::M1, "RadiationChargeState" },
+{ 0x300A, 0x0308, 0, VR::CS, VM::M1, "ScanMode" },
+{ 0x300A, 0x030A, 0, VR::FL, VM::M2, "VirtualSourceAxisDistances" },
+{ 0x300A, 0x030C, 0, VR::SQ, VM::M1, "SnoutSequence" },
+{ 0x300A, 0x030D, 0, VR::FL, VM::M1, "SnoutPosition" },
+{ 0x300A, 0x030F, 0, VR::SH, VM::M1, "SnoutID" },
+{ 0x300A, 0x0312, 0, VR::IS, VM::M1, "NumberOfRangeShifters" },
+{ 0x300A, 0x0314, 0, VR::SQ, VM::M1, "RangeShifterSequence" },
+{ 0x300A, 0x0316, 0, VR::IS, VM::M1, "RangeShifterNumber" },
+{ 0x300A, 0x0318, 0, VR::SH, VM::M1, "RangeShifterID" },
+{ 0x300A, 0x0320, 0, VR::CS, VM::M1, "RangeShifterType" },
+{ 0x300A, 0x0322, 0, VR::LO, VM::M1, "RangeShifterDescription" },
+{ 0x300A, 0x0330, 0, VR::IS, VM::M1, "NumberOfLateralSpreadingDevices" },
+{ 0x300A, 0x0332, 0, VR::SQ, VM::M1, "LateralSpreadingDeviceSequence" },
+{ 0x300A, 0x0334, 0, VR::IS, VM::M1, "LateralSpreadingDeviceNumber" },
+{ 0x300A, 0x0336, 0, VR::SH, VM::M1, "LateralSpreadingDeviceID" },
+{ 0x300A, 0x0338, 0, VR::CS, VM::M1, "LateralSpreadingDeviceType" },
+{ 0x300A, 0x033A, 0, VR::LO, VM::M1, "LateralSpreadingDeviceDescription" },
+{ 0x300A, 0x033C, 0, VR::FL, VM::M1, "LateralSpreadingDeviceWaterEquivalentThickness" },
+{ 0x300A, 0x0340, 0, VR::IS, VM::M1, "NumberOfRangeModulators" },
+{ 0x300A, 0x0342, 0, VR::SQ, VM::M1, "RangeModulatorSequence" },
+{ 0x300A, 0x0344, 0, VR::IS, VM::M1, "RangeModulatorNumber" },
+{ 0x300A, 0x0346, 0, VR::SH, VM::M1, "RangeModulatorID" },
+{ 0x300A, 0x0348, 0, VR::CS, VM::M1, "RangeModulatorType" },
+{ 0x300A, 0x034A, 0, VR::LO, VM::M1, "RangeModulatorDescription" },
+{ 0x300A, 0x034C, 0, VR::SH, VM::M1, "BeamCurrentModulationID" },
+{ 0x300A, 0x0350, 0, VR::CS, VM::M1, "PatientSupportType" },
+{ 0x300A, 0x0352, 0, VR::SH, VM::M1, "PatientSupportID" },
+{ 0x300A, 0x0354, 0, VR::LO, VM::M1, "PatientSupportAccessoryCode" },
+{ 0x300A, 0x0356, 0, VR::FL, VM::M1, "FixationLightAzimuthalAngle" },
+{ 0x300A, 0x0358, 0, VR::FL, VM::M1, "FixationLightPolarAngle" },
+{ 0x300A, 0x035A, 0, VR::FL, VM::M1, "MetersetRate" },
+{ 0x300A, 0x0360, 0, VR::SQ, VM::M1, "RangeShifterSettingsSequence" },
+{ 0x300A, 0x0362, 0, VR::LO, VM::M1, "RangeShifterSetting" },
+{ 0x300A, 0x0364, 0, VR::FL, VM::M1, "IsocenterToRangeShifterDistance" },
+{ 0x300A, 0x0366, 0, VR::FL, VM::M1, "RangeShifterWaterEquivalentThickness" },
+{ 0x300A, 0x0370, 0, VR::SQ, VM::M1, "LateralSpreadingDeviceSettingsSequence" },
+{ 0x300A, 0x0372, 0, VR::LO, VM::M1, "LateralSpreadingDeviceSetting" },
+{ 0x300A, 0x0374, 0, VR::FL, VM::M1, "IsocenterToLateralSpreadingDeviceDistance" },
+{ 0x300A, 0x0380, 0, VR::SQ, VM::M1, "RangeModulatorSettingsSequence" },
+{ 0x300A, 0x0382, 0, VR::FL, VM::M1, "RangeModulatorGatingStartValue" },
+{ 0x300A, 0x0384, 0, VR::FL, VM::M1, "RangeModulatorGatingStopValue" },
+{ 0x300A, 0x0386, 0, VR::FL, VM::M1, "RangeModulatorGatingStartWaterEquivalentThickness" },
+{ 0x300A, 0x0388, 0, VR::FL, VM::M1, "RangeModulatorGatingStopWaterEquivalentThickness" },
+{ 0x300A, 0x038A, 0, VR::FL, VM::M1, "IsocenterToRangeModulatorDistance" },
+{ 0x300A, 0x0390, 0, VR::SH, VM::M1, "ScanSpotTuneID" },
+{ 0x300A, 0x0392, 0, VR::IS, VM::M1, "NumberOfScanSpotPositions" },
+{ 0x300A, 0x0394, 0, VR::FL, VM::M1TN, "ScanSpotPositionMap" },
+{ 0x300A, 0x0396, 0, VR::FL, VM::M1TN, "ScanSpotMetersetWeights" },
+{ 0x300A, 0x0398, 0, VR::FL, VM::M2, "ScanningSpotSize" },
+{ 0x300A, 0x039A, 0, VR::IS, VM::M1, "NumberOfPaintings" },
+{ 0x300A, 0x03A0, 0, VR::SQ, VM::M1, "IonToleranceTableSequence" },
+{ 0x300A, 0x03A2, 0, VR::SQ, VM::M1, "IonBeamSequence" },
+{ 0x300A, 0x03A4, 0, VR::SQ, VM::M1, "IonBeamLimitingDeviceSequence" },
+{ 0x300A, 0x03A6, 0, VR::SQ, VM::M1, "IonBlockSequence" },
+{ 0x300A, 0x03A8, 0, VR::SQ, VM::M1, "IonControlPointSequence" },
+{ 0x300A, 0x03AA, 0, VR::SQ, VM::M1, "IonWedgeSequence" },
+{ 0x300A, 0x03AC, 0, VR::SQ, VM::M1, "IonWedgePositionSequence" },
+{ 0x300A, 0x0401, 0, VR::SQ, VM::M1, "ReferencedSetupImageSequence" },
+{ 0x300A, 0x0402, 0, VR::ST, VM::M1, "SetupImageComment" },
+{ 0x300A, 0x0410, 0, VR::SQ, VM::M1, "MotionSynchronizationSequence" },
+{ 0x300A, 0x0412, 0, VR::FL, VM::M3, "ControlPointOrientation" },
+{ 0x300A, 0x0420, 0, VR::SQ, VM::M1, "GeneralAccessorySequence" },
+{ 0x300A, 0x0421, 0, VR::SH, VM::M1, "GeneralAccessoryID" },
+{ 0x300A, 0x0422, 0, VR::ST, VM::M1, "GeneralAccessoryDescription" },
+{ 0x300A, 0x0423, 0, VR::CS, VM::M1, "GeneralAccessoryType" },
+{ 0x300A, 0x0424, 0, VR::IS, VM::M1, "GeneralAccessoryNumber" },
+{ 0x300A, 0x0425, 0, VR::FL, VM::M1, "SourceToGeneralAccessoryDistance" },
+{ 0x300A, 0x0431, 0, VR::SQ, VM::M1, "ApplicatorGeometrySequence" },
+{ 0x300A, 0x0432, 0, VR::CS, VM::M1, "ApplicatorApertureShape" },
+{ 0x300A, 0x0433, 0, VR::FL, VM::M1, "ApplicatorOpening" },
+{ 0x300A, 0x0434, 0, VR::FL, VM::M1, "ApplicatorOpeningX" },
+{ 0x300A, 0x0435, 0, VR::FL, VM::M1, "ApplicatorOpeningY" },
+{ 0x300A, 0x0436, 0, VR::FL, VM::M1, "SourceToApplicatorMountingPositionDistance" },
+{ 0x300C, 0x0002, 0, VR::SQ, VM::M1, "ReferencedRTPlanSequence" },
+{ 0x300C, 0x0004, 0, VR::SQ, VM::M1, "ReferencedBeamSequence" },
+{ 0x300C, 0x0006, 0, VR::IS, VM::M1, "ReferencedBeamNumber" },
+{ 0x300C, 0x0007, 0, VR::IS, VM::M1, "ReferencedReferenceImageNumber" },
+{ 0x300C, 0x0008, 0, VR::DS, VM::M1, "StartCumulativeMetersetWeight" },
+{ 0x300C, 0x0009, 0, VR::DS, VM::M1, "EndCumulativeMetersetWeight" },
+{ 0x300C, 0x000A, 0, VR::SQ, VM::M1, "ReferencedBrachyApplicationSetupSequence" },
+{ 0x300C, 0x000C, 0, VR::IS, VM::M1, "ReferencedBrachyApplicationSetupNumber" },
+{ 0x300C, 0x000E, 0, VR::IS, VM::M1, "ReferencedSourceNumber" },
+{ 0x300C, 0x0020, 0, VR::SQ, VM::M1, "ReferencedFractionGroupSequence" },
+{ 0x300C, 0x0022, 0, VR::IS, VM::M1, "ReferencedFractionGroupNumber" },
+{ 0x300C, 0x0040, 0, VR::SQ, VM::M1, "ReferencedVerificationImageSequence" },
+{ 0x300C, 0x0042, 0, VR::SQ, VM::M1, "ReferencedReferenceImageSequence" },
+{ 0x300C, 0x0050, 0, VR::SQ, VM::M1, "ReferencedDoseReferenceSequence" },
+{ 0x300C, 0x0051, 0, VR::IS, VM::M1, "ReferencedDoseReferenceNumber" },
+{ 0x300C, 0x0055, 0, VR::SQ, VM::M1, "BrachyReferencedDoseReferenceSequence" },
+{ 0x300C, 0x0060, 0, VR::SQ, VM::M1, "ReferencedStructureSetSequence" },
+{ 0x300C, 0x006A, 0, VR::IS, VM::M1, "ReferencedPatientSetupNumber" },
+{ 0x300C, 0x0080, 0, VR::SQ, VM::M1, "ReferencedDoseSequence" },
+{ 0x300C, 0x00A0, 0, VR::IS, VM::M1, "ReferencedToleranceTableNumber" },
+{ 0x300C, 0x00B0, 0, VR::SQ, VM::M1, "ReferencedBolusSequence" },
+{ 0x300C, 0x00C0, 0, VR::IS, VM::M1, "ReferencedWedgeNumber" },
+{ 0x300C, 0x00D0, 0, VR::IS, VM::M1, "ReferencedCompensatorNumber" },
+{ 0x300C, 0x00E0, 0, VR::IS, VM::M1, "ReferencedBlockNumber" },
+{ 0x300C, 0x00F0, 0, VR::IS, VM::M1, "ReferencedControlPointIndex" },
+{ 0x300C, 0x00F2, 0, VR::SQ, VM::M1, "ReferencedControlPointSequence" },
+{ 0x300C, 0x00F4, 0, VR::IS, VM::M1, "ReferencedStartControlPointIndex" },
+{ 0x300C, 0x00F6, 0, VR::IS, VM::M1, "ReferencedStopControlPointIndex" },
+{ 0x300C, 0x0100, 0, VR::IS, VM::M1, "ReferencedRangeShifterNumber" },
+{ 0x300C, 0x0102, 0, VR::IS, VM::M1, "ReferencedLateralSpreadingDeviceNumber" },
+{ 0x300C, 0x0104, 0, VR::IS, VM::M1, "ReferencedRangeModulatorNumber" },
+{ 0x300E, 0x0002, 0, VR::CS, VM::M1, "ApprovalStatus" },
+{ 0x300E, 0x0004, 0, VR::DA, VM::M1, "ReviewDate" },
+{ 0x300E, 0x0005, 0, VR::TM, VM::M1, "ReviewTime" },
+{ 0x300E, 0x0008, 0, VR::PN, VM::M1, "ReviewerName" },
+{ 0x4000, 0x0010, 1, VR::LT, VM::M1, "Arbitrary" },
 { 0x4000, 0x4000, 1, VR::LT, VM::M1, "TextComments" },
+{ 0x4008, 0x0040, 1, VR::SH, VM::M1, "ResultsID" },
+{ 0x4008, 0x0042, 1, VR::LO, VM::M1, "ResultsIDIssuer" },
+{ 0x4008, 0x0050, 1, VR::SQ, VM::M1, "ReferencedInterpretationSequence" },
+{ 0x4008, 0x00FF, 1, VR::CS, VM::M1, "ReportProductionStatusTrial" },
+{ 0x4008, 0x0100, 1, VR::DA, VM::M1, "InterpretationRecordedDate" },
+{ 0x4008, 0x0101, 1, VR::TM, VM::M1, "InterpretationRecordedTime" },
+{ 0x4008, 0x0102, 1, VR::PN, VM::M1, "InterpretationRecorder" },
+{ 0x4008, 0x0103, 1, VR::LO, VM::M1, "ReferenceToRecordedSound" },
+{ 0x4008, 0x0108, 1, VR::DA, VM::M1, "InterpretationTranscriptionDate" },
+{ 0x4008, 0x0109, 1, VR::TM, VM::M1, "InterpretationTranscriptionTime" },
+{ 0x4008, 0x010A, 1, VR::PN, VM::M1, "InterpretationTranscriber" },
+{ 0x4008, 0x010B, 1, VR::ST, VM::M1, "InterpretationText" },
 { 0x4008, 0x010C, 1, VR::PN, VM::M1, "InterpretationAuthor" },
+{ 0x4008, 0x0111, 1, VR::SQ, VM::M1, "InterpretationApproverSequence" },
+{ 0x4008, 0x0112, 1, VR::DA, VM::M1, "InterpretationApprovalDate" },
+{ 0x4008, 0x0113, 1, VR::TM, VM::M1, "InterpretationApprovalTime" },
+{ 0x4008, 0x0114, 1, VR::PN, VM::M1, "PhysicianApprovingInterpretation" },
+{ 0x4008, 0x0115, 1, VR::LT, VM::M1, "InterpretationDiagnosisDescription" },
+{ 0x4008, 0x0117, 1, VR::SQ, VM::M1, "InterpretationDiagnosisCodeSequence" },
+{ 0x4008, 0x0118, 1, VR::SQ, VM::M1, "ResultsDistributionListSequence" },
+{ 0x4008, 0x0119, 1, VR::PN, VM::M1, "DistributionName" },
+{ 0x4008, 0x011A, 1, VR::LO, VM::M1, "DistributionAddress" },
+{ 0x4008, 0x0200, 1, VR::SH, VM::M1, "InterpretationID" },
+{ 0x4008, 0x0202, 1, VR::LO, VM::M1, "InterpretationIDIssuer" },
+{ 0x4008, 0x0210, 1, VR::CS, VM::M1, "InterpretationTypeID" },
+{ 0x4008, 0x0212, 1, VR::CS, VM::M1, "InterpretationStatusID" },
+{ 0x4008, 0x0300, 1, VR::ST, VM::M1, "Impressions" },
+{ 0x4008, 0x4000, 1, VR::ST, VM::M1, "ResultsComments" },
+{ 0x4010, 0x0001, 3, VR::CS, VM::M1, "LowEnergyDetectors" },
+{ 0x4010, 0x0002, 3, VR::CS, VM::M1, "HighEnergyDetectors" },
+{ 0x4010, 0x0004, 3, VR::SQ, VM::M1, "DetectorGeometrySequence" },
+{ 0x4010, 0x1001, 3, VR::SQ, VM::M1, "ThreatROIVoxelSequence" },
+{ 0x4010, 0x1004, 3, VR::FL, VM::M3, "ThreatROIBase" },
+{ 0x4010, 0x1005, 3, VR::FL, VM::M3, "ThreatROIExtents" },
+{ 0x4010, 0x1006, 3, VR::OB, VM::M1, "ThreatROIBitmap" },
+{ 0x4010, 0x1007, 3, VR::SH, VM::M1, "RouteSegmentID" },
+{ 0x4010, 0x1008, 3, VR::CS, VM::M1, "GantryType" },
+{ 0x4010, 0x1009, 3, VR::CS, VM::M1, "OOIOwnerType" },
+{ 0x4010, 0x100A, 3, VR::SQ, VM::M1, "RouteSegmentSequence" },
+{ 0x4010, 0x1010, 3, VR::US, VM::M1, "PotentialThreatObjectID" },
+{ 0x4010, 0x1011, 3, VR::SQ, VM::M1, "ThreatSequence" },
+{ 0x4010, 0x1012, 3, VR::CS, VM::M1, "ThreatCategory" },
+{ 0x4010, 0x1013, 3, VR::LT, VM::M1, "ThreatCategoryDescription" },
+{ 0x4010, 0x1014, 3, VR::CS, VM::M1, "ATDAbilityAssessment" },
+{ 0x4010, 0x1015, 3, VR::CS, VM::M1, "ATDAssessmentFlag" },
+{ 0x4010, 0x1016, 3, VR::FL, VM::M1, "ATDAssessmentProbability" },
+{ 0x4010, 0x1017, 3, VR::FL, VM::M1, "Mass" },
+{ 0x4010, 0x1018, 3, VR::FL, VM::M1, "Density" },
+{ 0x4010, 0x1019, 3, VR::FL, VM::M1, "ZEffective" },
+{ 0x4010, 0x101A, 3, VR::SH, VM::M1, "BoardingPassID" },
+{ 0x4010, 0x101B, 3, VR::FL, VM::M3, "CenterOfMass" },
+{ 0x4010, 0x101C, 3, VR::FL, VM::M3, "CenterOfPTO" },
+{ 0x4010, 0x101D, 3, VR::FL, VM::M6TN, "BoundingPolygon" },
+{ 0x4010, 0x101E, 3, VR::SH, VM::M1, "RouteSegmentStartLocationID" },
+{ 0x4010, 0x101F, 3, VR::SH, VM::M1, "RouteSegmentEndLocationID" },
+{ 0x4010, 0x1020, 3, VR::CS, VM::M1, "RouteSegmentLocationIDType" },
+{ 0x4010, 0x1021, 3, VR::CS, VM::M1TN, "AbortReason" },
+{ 0x4010, 0x1023, 3, VR::FL, VM::M1, "VolumeOfPTO" },
+{ 0x4010, 0x1024, 3, VR::CS, VM::M1, "AbortFlag" },
+{ 0x4010, 0x1025, 3, VR::DT, VM::M1, "RouteSegmentStartTime" },
+{ 0x4010, 0x1026, 3, VR::DT, VM::M1, "RouteSegmentEndTime" },
+{ 0x4010, 0x1027, 3, VR::CS, VM::M1, "TDRType" },
+{ 0x4010, 0x1028, 3, VR::CS, VM::M1, "InternationalRouteSegment" },
+{ 0x4010, 0x1029, 3, VR::LO, VM::M1TN, "ThreatDetectionAlgorithmandVersion" },
+{ 0x4010, 0x102A, 3, VR::SH, VM::M1, "AssignedLocation" },
+{ 0x4010, 0x102B, 3, VR::DT, VM::M1, "AlarmDecisionTime" },
+{ 0x4010, 0x1031, 3, VR::CS, VM::M1, "AlarmDecision" },
+{ 0x4010, 0x1033, 3, VR::US, VM::M1, "NumberOfTotalObjects" },
+{ 0x4010, 0x1034, 3, VR::US, VM::M1, "NumberOfAlarmObjects" },
+{ 0x4010, 0x1037, 3, VR::SQ, VM::M1, "PTORepresentationSequence" },
+{ 0x4010, 0x1038, 3, VR::SQ, VM::M1, "ATDAssessmentSequence" },
+{ 0x4010, 0x1039, 3, VR::CS, VM::M1, "TIPType" },
+{ 0x4010, 0x103A, 3, VR::CS, VM::M1, "DICOSVersion" },
+{ 0x4010, 0x1041, 3, VR::DT, VM::M1, "OOIOwnerCreationTime" },
+{ 0x4010, 0x1042, 3, VR::CS, VM::M1, "OOIType" },
+{ 0x4010, 0x1043, 3, VR::FL, VM::M3, "OOISize" },
+{ 0x4010, 0x1044, 3, VR::CS, VM::M1, "AcquisitionStatus" },
+{ 0x4010, 0x1045, 3, VR::SQ, VM::M1, "BasisMaterialsCodeSequence" },
+{ 0x4010, 0x1046, 3, VR::CS, VM::M1, "PhantomType" },
+{ 0x4010, 0x1047, 3, VR::SQ, VM::M1, "OOIOwnerSequence" },
+{ 0x4010, 0x1048, 3, VR::CS, VM::M1, "ScanType" },
+{ 0x4010, 0x1051, 3, VR::LO, VM::M1, "ItineraryID" },
+{ 0x4010, 0x1052, 3, VR::SH, VM::M1, "ItineraryIDType" },
+{ 0x4010, 0x1053, 3, VR::LO, VM::M1, "ItineraryIDAssigningAuthority" },
+{ 0x4010, 0x1054, 3, VR::SH, VM::M1, "RouteID" },
+{ 0x4010, 0x1055, 3, VR::SH, VM::M1, "RouteIDAssigningAuthority" },
+{ 0x4010, 0x1056, 3, VR::CS, VM::M1, "InboundArrivalType" },
+{ 0x4010, 0x1058, 3, VR::SH, VM::M1, "CarrierID" },
+{ 0x4010, 0x1059, 3, VR::CS, VM::M1, "CarrierIDAssigningAuthority" },
+{ 0x4010, 0x1060, 3, VR::FL, VM::M3, "SourceOrientation" },
+{ 0x4010, 0x1061, 3, VR::FL, VM::M3, "SourcePosition" },
+{ 0x4010, 0x1062, 3, VR::FL, VM::M1, "BeltHeight" },
+{ 0x4010, 0x1064, 3, VR::SQ, VM::M1, "AlgorithmRoutingCodeSequence" },
+{ 0x4010, 0x1067, 3, VR::CS, VM::M1, "TransportClassification" },
+{ 0x4010, 0x1068, 3, VR::LT, VM::M1, "OOITypeDescriptor" },
+{ 0x4010, 0x1069, 3, VR::FL, VM::M1, "TotalProcessingTime" },
+{ 0x4010, 0x106C, 3, VR::OB, VM::M1, "DetectorCalibrationData" },
+{ 0x4010, 0x106D, 3, VR::CS, VM::M1, "AdditionalScreeningPerformed" },
+{ 0x4010, 0x106E, 3, VR::CS, VM::M1, "AdditionalInspectionSelectionCriteria" },
+{ 0x4010, 0x106F, 3, VR::SQ, VM::M1, "AdditionalInspectionMethodSequence" },
+{ 0x4010, 0x1070, 3, VR::CS, VM::M1, "AITDeviceType" },
+{ 0x4010, 0x1071, 3, VR::SQ, VM::M1, "QRMeasurementsSequence" },
+{ 0x4010, 0x1072, 3, VR::SQ, VM::M1, "TargetMaterialSequence" },
+{ 0x4010, 0x1073, 3, VR::FD, VM::M1, "SNRThreshold" },
+{ 0x4010, 0x1075, 3, VR::DS, VM::M1, "ImageScaleRepresentation" },
+{ 0x4010, 0x1076, 3, VR::SQ, VM::M1, "ReferencedPTOSequence" },
+{ 0x4010, 0x1077, 3, VR::SQ, VM::M1, "ReferencedTDRInstanceSequence" },
+{ 0x4010, 0x1078, 3, VR::ST, VM::M1, "PTOLocationDescription" },
+{ 0x4010, 0x1079, 3, VR::SQ, VM::M1, "AnomalyLocatorIndicatorSequence" },
+{ 0x4010, 0x107A, 3, VR::FL, VM::M3, "AnomalyLocatorIndicator" },
+{ 0x4010, 0x107B, 3, VR::SQ, VM::M1, "PTORegionSequence" },
+{ 0x4010, 0x107C, 3, VR::CS, VM::M1, "InspectionSelectionCriteria" },
+{ 0x4010, 0x107D, 3, VR::SQ, VM::M1, "SecondaryInspectionMethodSequence" },
+{ 0x4010, 0x107E, 3, VR::DS, VM::M6, "PRCSToRCSOrientation" },
+{ 0x4FFE, 0x0001, 0, VR::SQ, VM::M1, "MACParametersSequence" },
+{ 0x5000, 0x0005, 1, VR::US, VM::M1, "CurveDimensions" },
+{ 0x5000, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints" },
+{ 0x5000, 0x0020, 1, VR::CS, VM::M1, "TypeOfData" },
+{ 0x5000, 0x0022, 1, VR::LO, VM::M1, "CurveDescription" },
+{ 0x5000, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits" },
+{ 0x5000, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels" },
+{ 0x5000, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation" },
+{ 0x5000, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue" },
+{ 0x5000, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue" },
+{ 0x5000, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange" },
+{ 0x5000, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor" },
+{ 0x5000, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue" },
+{ 0x5000, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue" },
+{ 0x5000, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer" },
+{ 0x5000, 0x2000, 1, VR::US, VM::M1, "AudioType" },
+{ 0x5000, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat" },
+{ 0x5000, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels" },
+{ 0x5000, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples" },
+{ 0x5000, 0x2008, 1, VR::UL, VM::M1, "SampleRate" },
+{ 0x5000, 0x200A, 1, VR::UL, VM::M1, "TotalTime" },
+{ 0x5000, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData" },
+{ 0x5000, 0x200E, 1, VR::LT, VM::M1, "AudioComments" },
+{ 0x5000, 0x2500, 1, VR::LO, VM::M1, "CurveLabel" },
+{ 0x5000, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence" },
+{ 0x5000, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup" },
+{ 0x5000, 0x3000, 1, VR::OX, VM::M1, "CurveData" },
+{ 0x5002, 0x0005, 1, VR::US, VM::M1, "CurveDimensions2" },
+{ 0x5002, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints2" },
+{ 0x5002, 0x0020, 1, VR::CS, VM::M1, "TypeOfData2" },
+{ 0x5002, 0x0022, 1, VR::LO, VM::M1, "CurveDescription2" },
+{ 0x5002, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits2" },
+{ 0x5002, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels2" },
+{ 0x5002, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation2" },
+{ 0x5002, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue2" },
+{ 0x5002, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue2" },
+{ 0x5002, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange2" },
+{ 0x5002, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor2" },
+{ 0x5002, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue2" },
+{ 0x5002, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue2" },
+{ 0x5002, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer2" },
+{ 0x5002, 0x2000, 1, VR::US, VM::M1, "AudioType2" },
+{ 0x5002, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat2" },
+{ 0x5002, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels2" },
+{ 0x5002, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples2" },
+{ 0x5002, 0x2008, 1, VR::UL, VM::M1, "SampleRate2" },
+{ 0x5002, 0x200A, 1, VR::UL, VM::M1, "TotalTime2" },
+{ 0x5002, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData2" },
+{ 0x5002, 0x200E, 1, VR::LT, VM::M1, "AudioComments2" },
+{ 0x5002, 0x2500, 1, VR::LO, VM::M1, "CurveLabel2" },
+{ 0x5002, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence2" },
+{ 0x5002, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup2" },
+{ 0x5002, 0x3000, 1, VR::OX, VM::M1, "CurveData2" },
+{ 0x5004, 0x0005, 1, VR::US, VM::M1, "CurveDimensions3" },
+{ 0x5004, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints3" },
+{ 0x5004, 0x0020, 1, VR::CS, VM::M1, "TypeOfData3" },
+{ 0x5004, 0x0022, 1, VR::LO, VM::M1, "CurveDescription3" },
+{ 0x5004, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits3" },
+{ 0x5004, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels3" },
+{ 0x5004, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation3" },
+{ 0x5004, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue3" },
+{ 0x5004, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue3" },
+{ 0x5004, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange3" },
+{ 0x5004, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor3" },
+{ 0x5004, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue3" },
+{ 0x5004, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue3" },
+{ 0x5004, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer3" },
+{ 0x5004, 0x2000, 1, VR::US, VM::M1, "AudioType3" },
+{ 0x5004, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat3" },
+{ 0x5004, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels3" },
+{ 0x5004, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples3" },
+{ 0x5004, 0x2008, 1, VR::UL, VM::M1, "SampleRate3" },
+{ 0x5004, 0x200A, 1, VR::UL, VM::M1, "TotalTime3" },
+{ 0x5004, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData3" },
+{ 0x5004, 0x200E, 1, VR::LT, VM::M1, "AudioComments3" },
+{ 0x5004, 0x2500, 1, VR::LO, VM::M1, "CurveLabel3" },
+{ 0x5004, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence3" },
+{ 0x5004, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup3" },
+{ 0x5004, 0x3000, 1, VR::OX, VM::M1, "CurveData3" },
+{ 0x5006, 0x0005, 1, VR::US, VM::M1, "CurveDimensions4" },
+{ 0x5006, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints4" },
+{ 0x5006, 0x0020, 1, VR::CS, VM::M1, "TypeOfData4" },
+{ 0x5006, 0x0022, 1, VR::LO, VM::M1, "CurveDescription4" },
+{ 0x5006, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits4" },
+{ 0x5006, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels4" },
+{ 0x5006, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation4" },
+{ 0x5006, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue4" },
+{ 0x5006, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue4" },
+{ 0x5006, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange4" },
+{ 0x5006, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor4" },
+{ 0x5006, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue4" },
+{ 0x5006, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue4" },
+{ 0x5006, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer4" },
+{ 0x5006, 0x2000, 1, VR::US, VM::M1, "AudioType4" },
+{ 0x5006, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat4" },
+{ 0x5006, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels4" },
+{ 0x5006, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples4" },
+{ 0x5006, 0x2008, 1, VR::UL, VM::M1, "SampleRate4" },
+{ 0x5006, 0x200A, 1, VR::UL, VM::M1, "TotalTime4" },
+{ 0x5006, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData4" },
+{ 0x5006, 0x200E, 1, VR::LT, VM::M1, "AudioComments4" },
+{ 0x5006, 0x2500, 1, VR::LO, VM::M1, "CurveLabel4" },
+{ 0x5006, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence4" },
+{ 0x5006, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup4" },
+{ 0x5006, 0x3000, 1, VR::OX, VM::M1, "CurveData4" },
+{ 0x5008, 0x0005, 1, VR::US, VM::M1, "CurveDimensions5" },
+{ 0x5008, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints5" },
+{ 0x5008, 0x0020, 1, VR::CS, VM::M1, "TypeOfData5" },
+{ 0x5008, 0x0022, 1, VR::LO, VM::M1, "CurveDescription5" },
+{ 0x5008, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits5" },
+{ 0x5008, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels5" },
+{ 0x5008, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation5" },
+{ 0x5008, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue5" },
+{ 0x5008, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue5" },
+{ 0x5008, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange5" },
+{ 0x5008, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor5" },
+{ 0x5008, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue5" },
+{ 0x5008, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue5" },
+{ 0x5008, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer5" },
+{ 0x5008, 0x2000, 1, VR::US, VM::M1, "AudioType5" },
+{ 0x5008, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat5" },
+{ 0x5008, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels5" },
+{ 0x5008, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples5" },
+{ 0x5008, 0x2008, 1, VR::UL, VM::M1, "SampleRate5" },
+{ 0x5008, 0x200A, 1, VR::UL, VM::M1, "TotalTime5" },
+{ 0x5008, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData5" },
+{ 0x5008, 0x200E, 1, VR::LT, VM::M1, "AudioComments5" },
+{ 0x5008, 0x2500, 1, VR::LO, VM::M1, "CurveLabel5" },
+{ 0x5008, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence5" },
+{ 0x5008, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup5" },
+{ 0x5008, 0x3000, 1, VR::OX, VM::M1, "CurveData5" },
+{ 0x500A, 0x0005, 1, VR::US, VM::M1, "CurveDimensions6" },
+{ 0x500A, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints6" },
+{ 0x500A, 0x0020, 1, VR::CS, VM::M1, "TypeOfData6" },
+{ 0x500A, 0x0022, 1, VR::LO, VM::M1, "CurveDescription6" },
+{ 0x500A, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits6" },
+{ 0x500A, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels6" },
+{ 0x500A, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation6" },
+{ 0x500A, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue6" },
+{ 0x500A, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue6" },
+{ 0x500A, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange6" },
+{ 0x500A, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor6" },
+{ 0x500A, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue6" },
+{ 0x500A, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue6" },
+{ 0x500A, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer6" },
+{ 0x500A, 0x2000, 1, VR::US, VM::M1, "AudioType6" },
+{ 0x500A, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat6" },
+{ 0x500A, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels6" },
+{ 0x500A, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples6" },
+{ 0x500A, 0x2008, 1, VR::UL, VM::M1, "SampleRate6" },
+{ 0x500A, 0x200A, 1, VR::UL, VM::M1, "TotalTime6" },
+{ 0x500A, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData6" },
+{ 0x500A, 0x200E, 1, VR::LT, VM::M1, "AudioComments6" },
+{ 0x500A, 0x2500, 1, VR::LO, VM::M1, "CurveLabel6" },
+{ 0x500A, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence6" },
+{ 0x500A, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup6" },
+{ 0x500A, 0x3000, 1, VR::OX, VM::M1, "CurveData6" },
+{ 0x500C, 0x0005, 1, VR::US, VM::M1, "CurveDimensions7" },
+{ 0x500C, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints7" },
+{ 0x500C, 0x0020, 1, VR::CS, VM::M1, "TypeOfData7" },
+{ 0x500C, 0x0022, 1, VR::LO, VM::M1, "CurveDescription7" },
+{ 0x500C, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits7" },
+{ 0x500C, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels7" },
+{ 0x500C, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation7" },
+{ 0x500C, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue7" },
+{ 0x500C, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue7" },
+{ 0x500C, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange7" },
+{ 0x500C, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor7" },
+{ 0x500C, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue7" },
+{ 0x500C, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue7" },
+{ 0x500C, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer7" },
+{ 0x500C, 0x2000, 1, VR::US, VM::M1, "AudioType7" },
+{ 0x500C, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat7" },
+{ 0x500C, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels7" },
+{ 0x500C, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples7" },
+{ 0x500C, 0x2008, 1, VR::UL, VM::M1, "SampleRate7" },
+{ 0x500C, 0x200A, 1, VR::UL, VM::M1, "TotalTime7" },
+{ 0x500C, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData7" },
+{ 0x500C, 0x200E, 1, VR::LT, VM::M1, "AudioComments7" },
+{ 0x500C, 0x2500, 1, VR::LO, VM::M1, "CurveLabel7" },
+{ 0x500C, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence7" },
+{ 0x500C, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup7" },
+{ 0x500C, 0x3000, 1, VR::OX, VM::M1, "CurveData7" },
+{ 0x500E, 0x0005, 1, VR::US, VM::M1, "CurveDimensions8" },
+{ 0x500E, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints8" },
+{ 0x500E, 0x0020, 1, VR::CS, VM::M1, "TypeOfData8" },
+{ 0x500E, 0x0022, 1, VR::LO, VM::M1, "CurveDescription8" },
+{ 0x500E, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits8" },
+{ 0x500E, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels8" },
+{ 0x500E, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation8" },
+{ 0x500E, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue8" },
+{ 0x500E, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue8" },
+{ 0x500E, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange8" },
+{ 0x500E, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor8" },
+{ 0x500E, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue8" },
+{ 0x500E, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue8" },
+{ 0x500E, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer8" },
+{ 0x500E, 0x2000, 1, VR::US, VM::M1, "AudioType8" },
+{ 0x500E, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat8" },
+{ 0x500E, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels8" },
+{ 0x500E, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples8" },
+{ 0x500E, 0x2008, 1, VR::UL, VM::M1, "SampleRate8" },
+{ 0x500E, 0x200A, 1, VR::UL, VM::M1, "TotalTime8" },
+{ 0x500E, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData8" },
+{ 0x500E, 0x200E, 1, VR::LT, VM::M1, "AudioComments8" },
+{ 0x500E, 0x2500, 1, VR::LO, VM::M1, "CurveLabel8" },
+{ 0x500E, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence8" },
+{ 0x500E, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup8" },
+{ 0x500E, 0x3000, 1, VR::OX, VM::M1, "CurveData8" },
+{ 0x5010, 0x0005, 1, VR::US, VM::M1, "CurveDimensions9" },
+{ 0x5010, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints9" },
+{ 0x5010, 0x0020, 1, VR::CS, VM::M1, "TypeOfData9" },
+{ 0x5010, 0x0022, 1, VR::LO, VM::M1, "CurveDescription9" },
+{ 0x5010, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits9" },
+{ 0x5010, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels9" },
+{ 0x5010, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation9" },
+{ 0x5010, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue9" },
+{ 0x5010, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue9" },
+{ 0x5010, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange9" },
+{ 0x5010, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor9" },
+{ 0x5010, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue9" },
+{ 0x5010, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue9" },
+{ 0x5010, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer9" },
+{ 0x5010, 0x2000, 1, VR::US, VM::M1, "AudioType9" },
+{ 0x5010, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat9" },
+{ 0x5010, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels9" },
+{ 0x5010, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples9" },
+{ 0x5010, 0x2008, 1, VR::UL, VM::M1, "SampleRate9" },
+{ 0x5010, 0x200A, 1, VR::UL, VM::M1, "TotalTime9" },
+{ 0x5010, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData9" },
+{ 0x5010, 0x200E, 1, VR::LT, VM::M1, "AudioComments9" },
+{ 0x5010, 0x2500, 1, VR::LO, VM::M1, "CurveLabel9" },
+{ 0x5010, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence9" },
+{ 0x5010, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup9" },
+{ 0x5010, 0x3000, 1, VR::OX, VM::M1, "CurveData9" },
+{ 0x5012, 0x0005, 1, VR::US, VM::M1, "CurveDimensions10" },
+{ 0x5012, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints10" },
+{ 0x5012, 0x0020, 1, VR::CS, VM::M1, "TypeOfData10" },
+{ 0x5012, 0x0022, 1, VR::LO, VM::M1, "CurveDescription10" },
+{ 0x5012, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits10" },
+{ 0x5012, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels10" },
+{ 0x5012, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation10" },
+{ 0x5012, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue10" },
+{ 0x5012, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue10" },
+{ 0x5012, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange10" },
+{ 0x5012, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor10" },
+{ 0x5012, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue10" },
+{ 0x5012, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue10" },
+{ 0x5012, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer10" },
+{ 0x5012, 0x2000, 1, VR::US, VM::M1, "AudioType10" },
+{ 0x5012, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat10" },
+{ 0x5012, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels10" },
+{ 0x5012, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples10" },
+{ 0x5012, 0x2008, 1, VR::UL, VM::M1, "SampleRate10" },
+{ 0x5012, 0x200A, 1, VR::UL, VM::M1, "TotalTime10" },
+{ 0x5012, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData10" },
+{ 0x5012, 0x200E, 1, VR::LT, VM::M1, "AudioComments10" },
+{ 0x5012, 0x2500, 1, VR::LO, VM::M1, "CurveLabel10" },
+{ 0x5012, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence10" },
+{ 0x5012, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup10" },
+{ 0x5012, 0x3000, 1, VR::OX, VM::M1, "CurveData10" },
+{ 0x5014, 0x0005, 1, VR::US, VM::M1, "CurveDimensions11" },
+{ 0x5014, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints11" },
+{ 0x5014, 0x0020, 1, VR::CS, VM::M1, "TypeOfData11" },
+{ 0x5014, 0x0022, 1, VR::LO, VM::M1, "CurveDescription11" },
+{ 0x5014, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits11" },
+{ 0x5014, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels11" },
+{ 0x5014, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation11" },
+{ 0x5014, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue11" },
+{ 0x5014, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue11" },
+{ 0x5014, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange11" },
+{ 0x5014, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor11" },
+{ 0x5014, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue11" },
+{ 0x5014, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue11" },
+{ 0x5014, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer11" },
+{ 0x5014, 0x2000, 1, VR::US, VM::M1, "AudioType11" },
+{ 0x5014, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat11" },
+{ 0x5014, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels11" },
+{ 0x5014, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples11" },
+{ 0x5014, 0x2008, 1, VR::UL, VM::M1, "SampleRate11" },
+{ 0x5014, 0x200A, 1, VR::UL, VM::M1, "TotalTime11" },
+{ 0x5014, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData11" },
+{ 0x5014, 0x200E, 1, VR::LT, VM::M1, "AudioComments11" },
+{ 0x5014, 0x2500, 1, VR::LO, VM::M1, "CurveLabel11" },
+{ 0x5014, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence11" },
+{ 0x5014, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup11" },
+{ 0x5014, 0x3000, 1, VR::OX, VM::M1, "CurveData11" },
+{ 0x5016, 0x0005, 1, VR::US, VM::M1, "CurveDimensions12" },
+{ 0x5016, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints12" },
+{ 0x5016, 0x0020, 1, VR::CS, VM::M1, "TypeOfData12" },
+{ 0x5016, 0x0022, 1, VR::LO, VM::M1, "CurveDescription12" },
+{ 0x5016, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits12" },
+{ 0x5016, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels12" },
+{ 0x5016, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation12" },
+{ 0x5016, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue12" },
+{ 0x5016, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue12" },
+{ 0x5016, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange12" },
+{ 0x5016, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor12" },
+{ 0x5016, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue12" },
+{ 0x5016, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue12" },
+{ 0x5016, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer12" },
+{ 0x5016, 0x2000, 1, VR::US, VM::M1, "AudioType12" },
+{ 0x5016, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat12" },
+{ 0x5016, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels12" },
+{ 0x5016, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples12" },
+{ 0x5016, 0x2008, 1, VR::UL, VM::M1, "SampleRate12" },
+{ 0x5016, 0x200A, 1, VR::UL, VM::M1, "TotalTime12" },
+{ 0x5016, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData12" },
+{ 0x5016, 0x200E, 1, VR::LT, VM::M1, "AudioComments12" },
+{ 0x5016, 0x2500, 1, VR::LO, VM::M1, "CurveLabel12" },
+{ 0x5016, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence12" },
+{ 0x5016, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup12" },
+{ 0x5016, 0x3000, 1, VR::OX, VM::M1, "CurveData12" },
+{ 0x5018, 0x0005, 1, VR::US, VM::M1, "CurveDimensions13" },
+{ 0x5018, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints13" },
+{ 0x5018, 0x0020, 1, VR::CS, VM::M1, "TypeOfData13" },
+{ 0x5018, 0x0022, 1, VR::LO, VM::M1, "CurveDescription13" },
+{ 0x5018, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits13" },
+{ 0x5018, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels13" },
+{ 0x5018, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation13" },
+{ 0x5018, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue13" },
+{ 0x5018, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue13" },
+{ 0x5018, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange13" },
+{ 0x5018, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor13" },
+{ 0x5018, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue13" },
+{ 0x5018, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue13" },
+{ 0x5018, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer13" },
+{ 0x5018, 0x2000, 1, VR::US, VM::M1, "AudioType13" },
+{ 0x5018, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat13" },
+{ 0x5018, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels13" },
+{ 0x5018, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples13" },
+{ 0x5018, 0x2008, 1, VR::UL, VM::M1, "SampleRate13" },
+{ 0x5018, 0x200A, 1, VR::UL, VM::M1, "TotalTime13" },
+{ 0x5018, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData13" },
+{ 0x5018, 0x200E, 1, VR::LT, VM::M1, "AudioComments13" },
+{ 0x5018, 0x2500, 1, VR::LO, VM::M1, "CurveLabel13" },
+{ 0x5018, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence13" },
+{ 0x5018, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup13" },
+{ 0x5018, 0x3000, 1, VR::OX, VM::M1, "CurveData13" },
+{ 0x501A, 0x0005, 1, VR::US, VM::M1, "CurveDimensions14" },
+{ 0x501A, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints14" },
+{ 0x501A, 0x0020, 1, VR::CS, VM::M1, "TypeOfData14" },
+{ 0x501A, 0x0022, 1, VR::LO, VM::M1, "CurveDescription14" },
+{ 0x501A, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits14" },
+{ 0x501A, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels14" },
+{ 0x501A, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation14" },
+{ 0x501A, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue14" },
+{ 0x501A, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue14" },
+{ 0x501A, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange14" },
+{ 0x501A, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor14" },
+{ 0x501A, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue14" },
+{ 0x501A, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue14" },
+{ 0x501A, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer14" },
+{ 0x501A, 0x2000, 1, VR::US, VM::M1, "AudioType14" },
+{ 0x501A, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat14" },
+{ 0x501A, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels14" },
+{ 0x501A, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples14" },
+{ 0x501A, 0x2008, 1, VR::UL, VM::M1, "SampleRate14" },
+{ 0x501A, 0x200A, 1, VR::UL, VM::M1, "TotalTime14" },
+{ 0x501A, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData14" },
+{ 0x501A, 0x200E, 1, VR::LT, VM::M1, "AudioComments14" },
+{ 0x501A, 0x2500, 1, VR::LO, VM::M1, "CurveLabel14" },
+{ 0x501A, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence14" },
+{ 0x501A, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup14" },
+{ 0x501A, 0x3000, 1, VR::OX, VM::M1, "CurveData14" },
+{ 0x501C, 0x0005, 1, VR::US, VM::M1, "CurveDimensions15" },
+{ 0x501C, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints15" },
+{ 0x501C, 0x0020, 1, VR::CS, VM::M1, "TypeOfData15" },
+{ 0x501C, 0x0022, 1, VR::LO, VM::M1, "CurveDescription15" },
+{ 0x501C, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits15" },
+{ 0x501C, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels15" },
+{ 0x501C, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation15" },
+{ 0x501C, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue15" },
+{ 0x501C, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue15" },
+{ 0x501C, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange15" },
+{ 0x501C, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor15" },
+{ 0x501C, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue15" },
+{ 0x501C, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue15" },
+{ 0x501C, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer15" },
+{ 0x501C, 0x2000, 1, VR::US, VM::M1, "AudioType15" },
+{ 0x501C, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat15" },
+{ 0x501C, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels15" },
+{ 0x501C, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples15" },
+{ 0x501C, 0x2008, 1, VR::UL, VM::M1, "SampleRate15" },
+{ 0x501C, 0x200A, 1, VR::UL, VM::M1, "TotalTime15" },
+{ 0x501C, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData15" },
+{ 0x501C, 0x200E, 1, VR::LT, VM::M1, "AudioComments15" },
+{ 0x501C, 0x2500, 1, VR::LO, VM::M1, "CurveLabel15" },
+{ 0x501C, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence15" },
+{ 0x501C, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup15" },
+{ 0x501C, 0x3000, 1, VR::OX, VM::M1, "CurveData15" },
+{ 0x501E, 0x0005, 1, VR::US, VM::M1, "CurveDimensions16" },
+{ 0x501E, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints16" },
+{ 0x501E, 0x0020, 1, VR::CS, VM::M1, "TypeOfData16" },
+{ 0x501E, 0x0022, 1, VR::LO, VM::M1, "CurveDescription16" },
+{ 0x501E, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits16" },
+{ 0x501E, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels16" },
+{ 0x501E, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation16" },
+{ 0x501E, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue16" },
+{ 0x501E, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue16" },
+{ 0x501E, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange16" },
+{ 0x501E, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor16" },
+{ 0x501E, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue16" },
+{ 0x501E, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue16" },
+{ 0x501E, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer16" },
+{ 0x501E, 0x2000, 1, VR::US, VM::M1, "AudioType16" },
+{ 0x501E, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat16" },
+{ 0x501E, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels16" },
+{ 0x501E, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples16" },
+{ 0x501E, 0x2008, 1, VR::UL, VM::M1, "SampleRate16" },
+{ 0x501E, 0x200A, 1, VR::UL, VM::M1, "TotalTime16" },
+{ 0x501E, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData16" },
+{ 0x501E, 0x200E, 1, VR::LT, VM::M1, "AudioComments16" },
+{ 0x501E, 0x2500, 1, VR::LO, VM::M1, "CurveLabel16" },
+{ 0x501E, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence16" },
+{ 0x501E, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup16" },
+{ 0x501E, 0x3000, 1, VR::OX, VM::M1, "CurveData16" },
+{ 0x5200, 0x9229, 0, VR::SQ, VM::M1, "SharedFunctionalGroupsSequence" },
+{ 0x5200, 0x9230, 0, VR::SQ, VM::M1, "PerFrameFunctionalGroupsSequence" },
+{ 0x5400, 0x0100, 0, VR::SQ, VM::M1, "WaveformSequence" },
+{ 0x5400, 0x0110, 0, VR::OX, VM::M1, "ChannelMinimumValue" },
+{ 0x5400, 0x0112, 0, VR::OX, VM::M1, "ChannelMaximumValue" },
+{ 0x5400, 0x1004, 0, VR::US, VM::M1, "WaveformBitsAllocated" },
+{ 0x5400, 0x1006, 0, VR::CS, VM::M1, "WaveformSampleInterpretation" },
+{ 0x5400, 0x100A, 0, VR::OX, VM::M1, "WaveformPaddingValue" },
+{ 0x5400, 0x1010, 0, VR::OX, VM::M1, "WaveformData" },
+{ 0x5600, 0x0010, 0, VR::OF, VM::M1, "FirstOrderPhaseCorrectionAngle" },
+{ 0x5600, 0x0020, 0, VR::OF, VM::M1, "SpectroscopyData" },
+{ 0x6000, 0x0010, 0, VR::US, VM::M1, "OverlayRows" },
+{ 0x6000, 0x0011, 0, VR::US, VM::M1, "OverlayColumns" },
+{ 0x6000, 0x0012, 1, VR::US, VM::M1, "OverlayPlanes" },
+{ 0x6000, 0x0015, 0, VR::IS, VM::M1, "NumberOfFramesInOverlay" },
+{ 0x6000, 0x0022, 0, VR::LO, VM::M1, "OverlayDescription" },
+{ 0x6000, 0x0040, 0, VR::CS, VM::M1, "OverlayType" },
+{ 0x6000, 0x0045, 0, VR::LO, VM::M1, "OverlaySubtype" },
+{ 0x6000, 0x0050, 0, VR::SS, VM::M2, "OverlayOrigin" },
+{ 0x6000, 0x0051, 0, VR::US, VM::M1, "ImageFrameOrigin" },
+{ 0x6000, 0x0052, 1, VR::US, VM::M1, "OverlayPlaneOrigin" },
+{ 0x6000, 0x0060, 1, VR::CS, VM::M1, "OverlayCompressionCode" },
+{ 0x6000, 0x0061, 1, VR::SH, VM::M1, "OverlayCompressionOriginator" },
+{ 0x6000, 0x0062, 1, VR::SH, VM::M1, "OverlayCompressionLabel" },
+{ 0x6000, 0x0063, 1, VR::CS, VM::M1, "OverlayCompressionDescription" },
+{ 0x6000, 0x0066, 1, VR::AT, VM::M1TN, "OverlayCompressionStepPointers" },
+{ 0x6000, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval" },
+{ 0x6000, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped" },
+{ 0x6000, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated" },
+{ 0x6000, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition" },
+{ 0x6000, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat" },
+{ 0x6000, 0x0200, 1, VR::US, VM::M1, "OverlayLocation" },
+{ 0x6000, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel" },
+{ 0x6000, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables" },
+{ 0x6000, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation" },
+{ 0x6000, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord" },
+{ 0x6000, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer" },
+{ 0x6000, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray" },
+{ 0x6000, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed" },
+{ 0x6000, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen" },
+{ 0x6000, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue" },
+{ 0x6000, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray" },
+{ 0x6000, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed" },
+{ 0x6000, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen" },
+{ 0x6000, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue" },
+{ 0x6000, 0x1301, 0, VR::IS, VM::M1, "ROIArea" },
+{ 0x6000, 0x1302, 0, VR::DS, VM::M1, "ROIMean" },
+{ 0x6000, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation" },
+{ 0x6000, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel" },
+{ 0x6000, 0x3000, 0, VR::OX, VM::M1, "OverlayData" },
+{ 0x6000, 0x4000, 1, VR::LT, VM::M1, "OverlayComments" },
+{ 0x6002, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval2" },
+{ 0x6002, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped2" },
+{ 0x6002, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated2" },
+{ 0x6002, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition2" },
+{ 0x6002, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat2" },
+{ 0x6002, 0x0200, 1, VR::US, VM::M1, "OverlayLocation2" },
+{ 0x6002, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel2" },
+{ 0x6002, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables2" },
+{ 0x6002, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation2" },
+{ 0x6002, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord2" },
+{ 0x6002, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer2" },
+{ 0x6002, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray2" },
+{ 0x6002, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed2" },
+{ 0x6002, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen2" },
+{ 0x6002, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue2" },
+{ 0x6002, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray2" },
+{ 0x6002, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed2" },
+{ 0x6002, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen2" },
+{ 0x6002, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue2" },
+{ 0x6002, 0x1301, 0, VR::IS, VM::M1, "ROIArea2" },
+{ 0x6002, 0x1302, 0, VR::DS, VM::M1, "ROIMean2" },
+{ 0x6002, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation2" },
+{ 0x6002, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel2" },
+{ 0x6002, 0x3000, 0, VR::OX, VM::M1, "OverlayData2" },
+{ 0x6002, 0x4000, 1, VR::LT, VM::M1, "OverlayComments2" },
+{ 0x6004, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval3" },
+{ 0x6004, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped3" },
+{ 0x6004, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated3" },
+{ 0x6004, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition3" },
+{ 0x6004, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat3" },
+{ 0x6004, 0x0200, 1, VR::US, VM::M1, "OverlayLocation3" },
+{ 0x6004, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel3" },
+{ 0x6004, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables3" },
+{ 0x6004, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation3" },
+{ 0x6004, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord3" },
+{ 0x6004, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer3" },
+{ 0x6004, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray3" },
+{ 0x6004, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed3" },
+{ 0x6004, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen3" },
+{ 0x6004, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue3" },
+{ 0x6004, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray3" },
+{ 0x6004, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed3" },
+{ 0x6004, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen3" },
+{ 0x6004, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue3" },
+{ 0x6004, 0x1301, 0, VR::IS, VM::M1, "ROIArea3" },
+{ 0x6004, 0x1302, 0, VR::DS, VM::M1, "ROIMean3" },
+{ 0x6004, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation3" },
+{ 0x6004, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel3" },
+{ 0x6004, 0x3000, 0, VR::OX, VM::M1, "OverlayData3" },
+{ 0x6004, 0x4000, 1, VR::LT, VM::M1, "OverlayComments3" },
+{ 0x6006, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval4" },
+{ 0x6006, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped4" },
+{ 0x6006, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated4" },
+{ 0x6006, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition4" },
+{ 0x6006, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat4" },
+{ 0x6006, 0x0200, 1, VR::US, VM::M1, "OverlayLocation4" },
+{ 0x6006, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel4" },
+{ 0x6006, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables4" },
+{ 0x6006, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation4" },
+{ 0x6006, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord4" },
+{ 0x6006, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer4" },
+{ 0x6006, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray4" },
+{ 0x6006, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed4" },
+{ 0x6006, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen4" },
+{ 0x6006, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue4" },
+{ 0x6006, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray4" },
+{ 0x6006, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed4" },
+{ 0x6006, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen4" },
+{ 0x6006, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue4" },
+{ 0x6006, 0x1301, 0, VR::IS, VM::M1, "ROIArea4" },
+{ 0x6006, 0x1302, 0, VR::DS, VM::M1, "ROIMean4" },
+{ 0x6006, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation4" },
+{ 0x6006, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel4" },
+{ 0x6006, 0x3000, 0, VR::OX, VM::M1, "OverlayData4" },
+{ 0x6006, 0x4000, 1, VR::LT, VM::M1, "OverlayComments4" },
+{ 0x6008, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval5" },
+{ 0x6008, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped5" },
+{ 0x6008, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated5" },
+{ 0x6008, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition5" },
+{ 0x6008, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat5" },
+{ 0x6008, 0x0200, 1, VR::US, VM::M1, "OverlayLocation5" },
+{ 0x6008, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel5" },
+{ 0x6008, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables5" },
+{ 0x6008, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation5" },
+{ 0x6008, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord5" },
+{ 0x6008, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer5" },
+{ 0x6008, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray5" },
+{ 0x6008, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed5" },
+{ 0x6008, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen5" },
+{ 0x6008, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue5" },
+{ 0x6008, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray5" },
+{ 0x6008, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed5" },
+{ 0x6008, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen5" },
+{ 0x6008, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue5" },
+{ 0x6008, 0x1301, 0, VR::IS, VM::M1, "ROIArea5" },
+{ 0x6008, 0x1302, 0, VR::DS, VM::M1, "ROIMean5" },
+{ 0x6008, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation5" },
+{ 0x6008, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel5" },
+{ 0x6008, 0x3000, 0, VR::OX, VM::M1, "OverlayData5" },
+{ 0x6008, 0x4000, 1, VR::LT, VM::M1, "OverlayComments5" },
+{ 0x600A, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval6" },
+{ 0x600A, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped6" },
+{ 0x600A, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated6" },
+{ 0x600A, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition6" },
+{ 0x600A, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat6" },
+{ 0x600A, 0x0200, 1, VR::US, VM::M1, "OverlayLocation6" },
+{ 0x600A, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel6" },
+{ 0x600A, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables6" },
+{ 0x600A, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation6" },
+{ 0x600A, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord6" },
+{ 0x600A, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer6" },
+{ 0x600A, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray6" },
+{ 0x600A, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed6" },
+{ 0x600A, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen6" },
+{ 0x600A, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue6" },
+{ 0x600A, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray6" },
+{ 0x600A, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed6" },
+{ 0x600A, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen6" },
+{ 0x600A, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue6" },
+{ 0x600A, 0x1301, 0, VR::IS, VM::M1, "ROIArea6" },
+{ 0x600A, 0x1302, 0, VR::DS, VM::M1, "ROIMean6" },
+{ 0x600A, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation6" },
+{ 0x600A, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel6" },
+{ 0x600A, 0x3000, 0, VR::OX, VM::M1, "OverlayData6" },
+{ 0x600A, 0x4000, 1, VR::LT, VM::M1, "OverlayComments6" },
+{ 0x600C, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval7" },
+{ 0x600C, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped7" },
+{ 0x600C, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated7" },
+{ 0x600C, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition7" },
+{ 0x600C, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat7" },
+{ 0x600C, 0x0200, 1, VR::US, VM::M1, "OverlayLocation7" },
+{ 0x600C, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel7" },
+{ 0x600C, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables7" },
+{ 0x600C, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation7" },
+{ 0x600C, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord7" },
+{ 0x600C, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer7" },
+{ 0x600C, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray7" },
+{ 0x600C, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed7" },
+{ 0x600C, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen7" },
+{ 0x600C, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue7" },
+{ 0x600C, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray7" },
+{ 0x600C, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed7" },
+{ 0x600C, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen7" },
+{ 0x600C, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue7" },
+{ 0x600C, 0x1301, 0, VR::IS, VM::M1, "ROIArea7" },
+{ 0x600C, 0x1302, 0, VR::DS, VM::M1, "ROIMean7" },
+{ 0x600C, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation7" },
+{ 0x600C, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel7" },
+{ 0x600C, 0x3000, 0, VR::OX, VM::M1, "OverlayData7" },
+{ 0x600C, 0x4000, 1, VR::LT, VM::M1, "OverlayComments7" },
+{ 0x600E, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval8" },
+{ 0x600E, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped8" },
+{ 0x600E, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated8" },
+{ 0x600E, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition8" },
+{ 0x600E, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat8" },
+{ 0x600E, 0x0200, 1, VR::US, VM::M1, "OverlayLocation8" },
+{ 0x600E, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel8" },
+{ 0x600E, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables8" },
+{ 0x600E, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation8" },
+{ 0x600E, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord8" },
+{ 0x600E, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer8" },
+{ 0x600E, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray8" },
+{ 0x600E, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed8" },
+{ 0x600E, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen8" },
+{ 0x600E, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue8" },
+{ 0x600E, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray8" },
+{ 0x600E, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed8" },
+{ 0x600E, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen8" },
+{ 0x600E, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue8" },
+{ 0x600E, 0x1301, 0, VR::IS, VM::M1, "ROIArea8" },
+{ 0x600E, 0x1302, 0, VR::DS, VM::M1, "ROIMean8" },
+{ 0x600E, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation8" },
+{ 0x600E, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel8" },
+{ 0x600E, 0x3000, 0, VR::OX, VM::M1, "OverlayData8" },
+{ 0x600E, 0x4000, 1, VR::LT, VM::M1, "OverlayComments8" },
+{ 0x6010, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval9" },
+{ 0x6010, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped9" },
+{ 0x6010, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated9" },
+{ 0x6010, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition9" },
+{ 0x6010, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat9" },
+{ 0x6010, 0x0200, 1, VR::US, VM::M1, "OverlayLocation9" },
+{ 0x6010, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel9" },
+{ 0x6010, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables9" },
+{ 0x6010, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation9" },
+{ 0x6010, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord9" },
+{ 0x6010, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer9" },
+{ 0x6010, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray9" },
+{ 0x6010, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed9" },
+{ 0x6010, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen9" },
+{ 0x6010, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue9" },
+{ 0x6010, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray9" },
+{ 0x6010, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed9" },
+{ 0x6010, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen9" },
+{ 0x6010, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue9" },
+{ 0x6010, 0x1301, 0, VR::IS, VM::M1, "ROIArea9" },
+{ 0x6010, 0x1302, 0, VR::DS, VM::M1, "ROIMean9" },
+{ 0x6010, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation9" },
+{ 0x6010, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel9" },
+{ 0x6010, 0x3000, 0, VR::OX, VM::M1, "OverlayData9" },
+{ 0x6010, 0x4000, 1, VR::LT, VM::M1, "OverlayComments9" },
+{ 0x6012, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval10" },
+{ 0x6012, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped10" },
+{ 0x6012, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated10" },
+{ 0x6012, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition10" },
+{ 0x6012, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat10" },
+{ 0x6012, 0x0200, 1, VR::US, VM::M1, "OverlayLocation10" },
+{ 0x6012, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel10" },
+{ 0x6012, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables10" },
+{ 0x6012, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation10" },
+{ 0x6012, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord10" },
+{ 0x6012, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer10" },
+{ 0x6012, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray10" },
+{ 0x6012, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed10" },
+{ 0x6012, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen10" },
+{ 0x6012, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue10" },
+{ 0x6012, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray10" },
+{ 0x6012, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed10" },
+{ 0x6012, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen10" },
+{ 0x6012, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue10" },
+{ 0x6012, 0x1301, 0, VR::IS, VM::M1, "ROIArea10" },
+{ 0x6012, 0x1302, 0, VR::DS, VM::M1, "ROIMean10" },
+{ 0x6012, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation10" },
+{ 0x6012, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel10" },
+{ 0x6012, 0x3000, 0, VR::OX, VM::M1, "OverlayData10" },
+{ 0x6012, 0x4000, 1, VR::LT, VM::M1, "OverlayComments10" },
+{ 0x6014, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval11" },
+{ 0x6014, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped11" },
+{ 0x6014, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated11" },
+{ 0x6014, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition11" },
+{ 0x6014, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat11" },
+{ 0x6014, 0x0200, 1, VR::US, VM::M1, "OverlayLocation11" },
+{ 0x6014, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel11" },
+{ 0x6014, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables11" },
+{ 0x6014, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation11" },
+{ 0x6014, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord11" },
+{ 0x6014, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer11" },
+{ 0x6014, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray11" },
+{ 0x6014, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed11" },
+{ 0x6014, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen11" },
+{ 0x6014, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue11" },
+{ 0x6014, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray11" },
+{ 0x6014, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed11" },
+{ 0x6014, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen11" },
+{ 0x6014, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue11" },
+{ 0x6014, 0x1301, 0, VR::IS, VM::M1, "ROIArea11" },
+{ 0x6014, 0x1302, 0, VR::DS, VM::M1, "ROIMean11" },
+{ 0x6014, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation11" },
+{ 0x6014, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel11" },
+{ 0x6014, 0x3000, 0, VR::OX, VM::M1, "OverlayData11" },
+{ 0x6014, 0x4000, 1, VR::LT, VM::M1, "OverlayComments11" },
+{ 0x6016, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval12" },
+{ 0x6016, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped12" },
+{ 0x6016, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated12" },
+{ 0x6016, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition12" },
+{ 0x6016, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat12" },
+{ 0x6016, 0x0200, 1, VR::US, VM::M1, "OverlayLocation12" },
+{ 0x6016, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel12" },
+{ 0x6016, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables12" },
+{ 0x6016, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation12" },
+{ 0x6016, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord12" },
+{ 0x6016, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer12" },
+{ 0x6016, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray12" },
+{ 0x6016, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed12" },
+{ 0x6016, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen12" },
+{ 0x6016, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue12" },
+{ 0x6016, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray12" },
+{ 0x6016, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed12" },
+{ 0x6016, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen12" },
+{ 0x6016, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue12" },
+{ 0x6016, 0x1301, 0, VR::IS, VM::M1, "ROIArea12" },
+{ 0x6016, 0x1302, 0, VR::DS, VM::M1, "ROIMean12" },
+{ 0x6016, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation12" },
+{ 0x6016, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel12" },
+{ 0x6016, 0x3000, 0, VR::OX, VM::M1, "OverlayData12" },
+{ 0x6016, 0x4000, 1, VR::LT, VM::M1, "OverlayComments12" },
+{ 0x6018, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval13" },
+{ 0x6018, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped13" },
+{ 0x6018, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated13" },
+{ 0x6018, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition13" },
+{ 0x6018, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat13" },
+{ 0x6018, 0x0200, 1, VR::US, VM::M1, "OverlayLocation13" },
+{ 0x6018, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel13" },
+{ 0x6018, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables13" },
+{ 0x6018, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation13" },
+{ 0x6018, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord13" },
+{ 0x6018, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer13" },
+{ 0x6018, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray13" },
+{ 0x6018, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed13" },
+{ 0x6018, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen13" },
+{ 0x6018, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue13" },
+{ 0x6018, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray13" },
+{ 0x6018, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed13" },
+{ 0x6018, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen13" },
+{ 0x6018, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue13" },
+{ 0x6018, 0x1301, 0, VR::IS, VM::M1, "ROIArea13" },
+{ 0x6018, 0x1302, 0, VR::DS, VM::M1, "ROIMean13" },
+{ 0x6018, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation13" },
+{ 0x6018, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel13" },
+{ 0x6018, 0x3000, 0, VR::OX, VM::M1, "OverlayData13" },
+{ 0x6018, 0x4000, 1, VR::LT, VM::M1, "OverlayComments13" },
+{ 0x601A, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval14" },
+{ 0x601A, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped14" },
+{ 0x601A, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated14" },
+{ 0x601A, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition14" },
+{ 0x601A, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat14" },
+{ 0x601A, 0x0200, 1, VR::US, VM::M1, "OverlayLocation14" },
+{ 0x601A, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel14" },
+{ 0x601A, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables14" },
+{ 0x601A, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation14" },
+{ 0x601A, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord14" },
+{ 0x601A, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer14" },
+{ 0x601A, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray14" },
+{ 0x601A, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed14" },
+{ 0x601A, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen14" },
+{ 0x601A, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue14" },
+{ 0x601A, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray14" },
+{ 0x601A, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed14" },
+{ 0x601A, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen14" },
+{ 0x601A, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue14" },
+{ 0x601A, 0x1301, 0, VR::IS, VM::M1, "ROIArea14" },
+{ 0x601A, 0x1302, 0, VR::DS, VM::M1, "ROIMean14" },
+{ 0x601A, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation14" },
+{ 0x601A, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel14" },
+{ 0x601A, 0x3000, 0, VR::OX, VM::M1, "OverlayData14" },
+{ 0x601A, 0x4000, 1, VR::LT, VM::M1, "OverlayComments14" },
+{ 0x601C, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval15" },
+{ 0x601C, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped15" },
+{ 0x601C, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated15" },
+{ 0x601C, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition15" },
+{ 0x601C, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat15" },
+{ 0x601C, 0x0200, 1, VR::US, VM::M1, "OverlayLocation15" },
+{ 0x601C, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel15" },
+{ 0x601C, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables15" },
+{ 0x601C, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation15" },
+{ 0x601C, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord15" },
+{ 0x601C, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer15" },
+{ 0x601C, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray15" },
+{ 0x601C, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed15" },
+{ 0x601C, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen15" },
+{ 0x601C, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue15" },
+{ 0x601C, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray15" },
+{ 0x601C, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed15" },
+{ 0x601C, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen15" },
+{ 0x601C, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue15" },
+{ 0x601C, 0x1301, 0, VR::IS, VM::M1, "ROIArea15" },
+{ 0x601C, 0x1302, 0, VR::DS, VM::M1, "ROIMean15" },
+{ 0x601C, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation15" },
+{ 0x601C, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel15" },
+{ 0x601C, 0x3000, 0, VR::OX, VM::M1, "OverlayData15" },
+{ 0x601C, 0x4000, 1, VR::LT, VM::M1, "OverlayComments15" },
+{ 0x601E, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval16" },
+{ 0x601E, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped16" },
+{ 0x601E, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated16" },
+{ 0x601E, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition16" },
+{ 0x601E, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat16" },
+{ 0x601E, 0x0200, 1, VR::US, VM::M1, "OverlayLocation16" },
+{ 0x601E, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel16" },
+{ 0x601E, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables16" },
+{ 0x601E, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation16" },
+{ 0x601E, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord16" },
+{ 0x601E, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer16" },
+{ 0x601E, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray16" },
+{ 0x601E, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed16" },
+{ 0x601E, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen16" },
+{ 0x601E, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue16" },
+{ 0x601E, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray16" },
+{ 0x601E, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed16" },
+{ 0x601E, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen16" },
+{ 0x601E, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue16" },
+{ 0x601E, 0x1301, 0, VR::IS, VM::M1, "ROIArea16" },
+{ 0x601E, 0x1302, 0, VR::DS, VM::M1, "ROIMean16" },
+{ 0x601E, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation16" },
+{ 0x601E, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel16" },
+{ 0x601E, 0x3000, 0, VR::OX, VM::M1, "OverlayData16" },
+{ 0x601E, 0x4000, 1, VR::LT, VM::M1, "OverlayComments16" },
+{ 0x7FE0, 0x0010, 0, VR::OX, VM::M1, "PixelData" },
+{ 0x7FE0, 0x0020, 1, VR::OW, VM::M1, "CoefficientsSDVN" },
+{ 0x7FE0, 0x0030, 1, VR::OW, VM::M1, "CoefficientsSDHN" },
+{ 0x7FE0, 0x0040, 1, VR::OW, VM::M1, "CoefficientsSDDN" },
+{ 0x7F00, 0x0010, 1, VR::OX, VM::M1, "VariablePixelData" },
+{ 0x7F00, 0x0011, 1, VR::US, VM::M1, "VariableNextDataGroup" },
+{ 0x7F00, 0x0020, 1, VR::OW, VM::M1, "VariableCoefficientsSDVN" },
+{ 0x7F00, 0x0030, 1, VR::OW, VM::M1, "VariableCoefficientsSDHN" },
+{ 0x7F00, 0x0040, 1, VR::OW, VM::M1, "VariableCoefficientsSDDN" },
 { 0xFFFA, 0xFFFA, 0, VR::SQ, VM::M1, "DigitalSignaturesSequence" },
 { 0xFFFC, 0xFFFC, 0, VR::OB, VM::M1, "DataSetTrailingPadding" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0001[] = {
-{ 0x0002, 0x0003, 0, VR::UI, VM::M1, "MediaStorageSOPInstanceUID" },
-{ 0x0008, 0x1048, 0, VR::PN, VM::M1TN, "PhysiciansOfRecord" },
-{ 0x0010, 0x1050, 1, VR::LO, VM::M1TN, "InsurancePlanIdentification" },
-{ 0x0018, 0x9250, 0, VR::CS, VM::M1, "ArterialSpinLabelingContrast" },
-{ 0x0022, 0x1472, 0, VR::SQ, VM::M1, "RelevantOPTAttributesSequence" },
-{ 0x0024, 0x0025, 0, VR::FL, VM::M1, "StimulusArea" },
-{ 0x0032, 0x0033, 1, VR::TM, VM::M1, "StudyVerifiedTime" },
-{ 0x0074, 0x1034, 0, VR::CS, VM::M1, "DoubleExposureFlag" },
-{ 0x0400, 0x0401, 0, VR::SQ, VM::M1, "DigitalSignaturePurposeCodeSequence" },
-{ 0x3006, 0x00C4, 1, VR::CS, VM::M1, "FrameOfReferenceTransformationType" },
-{ 0x300A, 0x00C8, 0, VR::IS, VM::M1, "ReferenceImageNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0002[] = {
-{ 0x0002, 0x0000, 0, VR::UL, VM::M1, "FileMetaInformationGroupLength" },
-{ 0x0012, 0x0010, 0, VR::LO, VM::M1, "ClinicalTrialSponsorName" },
-{ 0x0018, 0x9253, 0, VR::US, VM::M1, "ASLSlabNumber" },
-{ 0x0020, 0x0022, 1, VR::IS, VM::M1, "OverlayNumber" },
-{ 0x0022, 0x0020, 0, VR::SQ, VM::M1, "StereoPairsSequence" },
-{ 0x0040, 0x1003, 0, VR::SH, VM::M1, "RequestedProcedurePriority" },
-{ 0x0046, 0x0044, 0, VR::FD, VM::M1, "PupilSize" },
-{ 0x0072, 0x0070, 0, VR::UT, VM::M1, "SelectorUTValue" },
-{ 0x0400, 0x0402, 0, VR::SQ, VM::M1, "ReferencedDigitalSignatureSequence" },
-{ 0x2020, 0x00A0, 0, VR::CS, VM::M1, "RequestedImageSizeFlag" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0003[] = {
-{ 0x0002, 0x0001, 0, VR::OB, VM::M1, "FileMetaInformationVersion" },
-{ 0x0018, 0x9252, 0, VR::LO, VM::M1, "ASLTechniqueDescription" },
-{ 0x0022, 0x0021, 0, VR::SQ, VM::M1, "LeftImageSequence" },
-{ 0x0022, 0x1470, 0, VR::SQ, VM::M1, "OphthalmicThicknessMapQualityRatingSequence" },
-{ 0x0032, 0x1070, 0, VR::LO, VM::M1, "RequestedContrastAgent" },
-{ 0x0040, 0x1002, 0, VR::LO, VM::M1, "ReasonForTheRequestedProcedure" },
-{ 0x0074, 0x1036, 0, VR::CS, VM::M1, "DoubleExposureOrdering" },
-{ 0x0400, 0x0403, 0, VR::SQ, VM::M1, "ReferencedSOPInstanceMACSequence" },
-{ 0x3006, 0x00C6, 0, VR::DS, VM::M16, "FrameOfReferenceTransformationMatrix" },
-{ 0x300A, 0x00CA, 0, VR::SQ, VM::M1, "PlannedVerificationImageSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0004[] = {
-{ 0x0018, 0x9255, 0, VR::FD, VM::M3, "ASLSlabOrientation" },
-{ 0x0020, 0x0024, 1, VR::IS, VM::M1, "CurveNumber" },
-{ 0x0024, 0x0020, 0, VR::FL, VM::M1, "BackgroundLuminance" },
-{ 0x0040, 0x1005, 0, VR::LO, VM::M1, "RequestedProcedureLocation" },
-{ 0x0046, 0x0042, 0, VR::FD, VM::M1, "ChannelWidth" },
-{ 0x0054, 0x0050, 0, VR::US, VM::M1TN, "RotationVector" },
-{ 0x0054, 0x1401, 1, VR::CS, VM::M1, "DeadTimeCorrectionFlag" },
-{ 0x0072, 0x0076, 0, VR::FL, VM::M1TN, "SelectorFLValue" },
-{ 0x0400, 0x0404, 0, VR::OB, VM::M1, "MAC" },
-{ 0x4008, 0x0108, 1, VR::DA, VM::M1, "InterpretationTranscriptionDate" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0005[] = {
-{ 0x0018, 0x9254, 0, VR::FD, VM::M1, "ASLSlabThickness" },
-{ 0x0022, 0x1066, 0, VR::LO, VM::M1, "VitreousStatusDescription" },
-{ 0x0024, 0x0021, 0, VR::SQ, VM::M1, "StimulusColorCodeSequence" },
-{ 0x0040, 0x1004, 0, VR::LO, VM::M1, "PatientTransportArrangements" },
-{ 0x0054, 0x0051, 0, VR::US, VM::M1, "NumberOfRotations" },
-{ 0x0054, 0x1400, 1, VR::CS, VM::M1TN, "CountsIncluded" },
-{ 0x0074, 0x1030, 0, VR::SQ, VM::M1, "DeliveryVerificationImageSequence" },
-{ 0x0400, 0x0015, 0, VR::CS, VM::M1, "MACAlgorithm" },
-{ 0x3006, 0x00C0, 1, VR::SQ, VM::M1, "FrameOfReferenceRelationshipSequence" },
-{ 0x300A, 0x00CC, 0, VR::LO, VM::M1TN, "ImagingDeviceSpecificAcquisitionParameters" },
-{ 0x4008, 0x0109, 1, VR::TM, VM::M1, "InterpretationTranscriptionTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0006[] = {
-{ 0x0018, 0x9257, 0, VR::CS, VM::M1, "ASLContext" },
-{ 0x0020, 0x0026, 1, VR::IS, VM::M1, "LUTNumber" },
-{ 0x0022, 0x1065, 0, VR::LO, VM::M1, "LensStatusDescription" },
-{ 0x0032, 0x0034, 1, VR::DA, VM::M1, "StudyReadDate" },
-{ 0x0040, 0x1007, 1, VR::SH, VM::M1, "FillerOrderNumberProcedure" },
-{ 0x0046, 0x0040, 0, VR::FD, VM::M1, "OpticalTransmittance" },
-{ 0x0054, 0x0052, 0, VR::SQ, VM::M1, "RotationInformationSequence" },
-{ 0x0072, 0x0074, 0, VR::FD, VM::M1TN, "SelectorFDValue" },
-{ 0x0076, 0x0070, 0, VR::US, VM::M1, "Component1ReferencedID" },
-{ 0x4008, 0x010A, 1, VR::PN, VM::M1, "InterpretationTranscriber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0007[] = {
-{ 0x0018, 0x9256, 0, VR::FD, VM::M3, "ASLMidSlabPosition" },
-{ 0x0032, 0x0035, 1, VR::TM, VM::M1, "StudyReadTime" },
-{ 0x0040, 0x1006, 1, VR::SH, VM::M1, "PlacerOrderNumberProcedure" },
-{ 0x0054, 0x0053, 0, VR::US, VM::M1, "NumberOfFramesInRotation" },
-{ 0x0074, 0x1032, 0, VR::CS, VM::M1, "VerificationImageTiming" },
-{ 0x3006, 0x00C2, 1, VR::UI, VM::M1, "RelatedFrameOfReferenceUID" },
-{ 0x300A, 0x00CE, 0, VR::CS, VM::M1, "TreatmentDeliveryType" },
-{ 0x4008, 0x010B, 1, VR::ST, VM::M1, "InterpretationText" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0008[] = {
-{ 0x0018, 0x0010, 0, VR::LO, VM::M1, "ContrastBolusAgent" },
-{ 0x0018, 0x9259, 0, VR::CS, VM::M1, "ASLCrusherFlag" },
-{ 0x0038, 0x0030, 1, VR::DA, VM::M1, "DischargeDate" },
-{ 0x0040, 0x1009, 0, VR::SH, VM::M1, "ReportingPriority" },
-{ 0x0072, 0x007A, 0, VR::US, VM::M1TN, "SelectorUSValue" },
-{ 0x0078, 0x0070, 0, VR::SQ, VM::M1, "ImplantTemplateGroupMemberMatching2DCoordinatesSequence" },
-{ 0x4008, 0x4000, 1, VR::ST, VM::M1, "ResultsComments" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0009[] = {
-{ 0x0008, 0x0001, 1, VR::UL, VM::M1, "LengthToEnd" },
-{ 0x0008, 0x1040, 0, VR::LO, VM::M1, "InstitutionalDepartmentName" },
-{ 0x0018, 0x1050, 0, VR::DS, VM::M1, "SpatialResolution" },
-{ 0x0018, 0x9258, 0, VR::UL, VM::M1, "ASLPulseTrainDuration" },
-{ 0x0040, 0x1008, 0, VR::LO, VM::M1, "ConfidentialityCode" },
-{ 0x300A, 0x00C0, 0, VR::IS, VM::M1, "BeamNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0010[] = {
-{ 0x0018, 0x0012, 0, VR::SQ, VM::M1, "ContrastBolusAgentSequence" },
-{ 0x0018, 0x925B, 0, VR::LO, VM::M1, "ASLCrusherDescription" },
-{ 0x0038, 0x0032, 1, VR::TM, VM::M1, "DischargeTime" },
-{ 0x0072, 0x0078, 0, VR::UL, VM::M1TN, "SelectorULValue" },
-{ 0x300A, 0x00C3, 0, VR::ST, VM::M1, "BeamDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0011[] = {
-{ 0x0018, 0x925A, 0, VR::FD, VM::M1, "ASLCrusherFlowLimit" },
-{ 0x0040, 0x100A, 0, VR::SQ, VM::M1, "ReasonForRequestedProcedureCodeSequence" },
-{ 0x3008, 0x00C0, 0, VR::SQ, VM::M1, "RecordedCompensatorSequence" },
-{ 0x300A, 0x00C2, 0, VR::LO, VM::M1, "BeamName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0012[] = {
-{ 0x0018, 0x0014, 0, VR::SQ, VM::M1, "ContrastBolusAdministrationRouteSequence" },
-{ 0x0018, 0x925D, 0, VR::SQ, VM::M1, "ASLBolusCutoffTimingSequence" },
-{ 0x0024, 0x0028, 0, VR::FL, VM::M1, "StimulusPresentationTime" },
-{ 0x0072, 0x007E, 0, VR::SS, VM::M1TN, "SelectorSSValue" },
-{ 0x4008, 0x0100, 1, VR::DA, VM::M1, "InterpretationRecordedDate" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0013[] = {
-{ 0x0008, 0x0005, 0, VR::CS, VM::M1TN, "SpecificCharacterSet" },
-{ 0x0018, 0x0015, 0, VR::CS, VM::M1, "BodyPartExamined" },
-{ 0x0018, 0x925C, 0, VR::CS, VM::M1, "ASLBolusCutoffFlag" },
-{ 0x0074, 0x1038, 1, VR::DS, VM::M1, "DoubleExposureMetersetTrial" },
-{ 0x3006, 0x00C8, 0, VR::LO, VM::M1, "FrameOfReferenceTransformationComment" },
-{ 0x300A, 0x00C4, 0, VR::CS, VM::M1, "BeamType" },
-{ 0x4008, 0x0101, 1, VR::TM, VM::M1, "InterpretationRecordedTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0014[] = {
-{ 0x0008, 0x0006, 0, VR::SQ, VM::M1, "LanguageCodeSequence" },
-{ 0x0018, 0x925F, 0, VR::UL, VM::M1, "ASLBolusCutoffDelayTime" },
-{ 0x0068, 0x65F0, 0, VR::FD, VM::M4, "TwoDPlaneIntersection" },
-{ 0x0072, 0x007C, 0, VR::SL, VM::M1TN, "SelectorSLValue" },
-{ 0x300A, 0x00C7, 0, VR::CS, VM::M1, "HighDoseTechniqueType" },
-{ 0x4008, 0x0102, 1, VR::PN, VM::M1, "InterpretationRecorder" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0015[] = {
-{ 0x0018, 0x925E, 0, VR::LO, VM::M1, "ASLBolusCutoffTechnique" },
-{ 0x0074, 0x103A, 1, VR::DS, VM::M4, "DoubleExposureFieldDeltaTrial" },
-{ 0x300A, 0x00C6, 0, VR::CS, VM::M1, "RadiationType" },
-{ 0x300C, 0x00C0, 0, VR::IS, VM::M1, "ReferencedWedgeNumber" },
-{ 0x4008, 0x0103, 1, VR::LO, VM::M1, "ReferenceToRecordedSound" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0016[] = {
-{ 0x0002, 0x0012, 0, VR::UI, VM::M1, "ImplementationClassUID" },
-{ 0x0008, 0x0018, 0, VR::UI, VM::M1, "SOPInstanceUID" },
-{ 0x0018, 0x1049, 0, VR::DS, VM::M1, "ContrastBolusIngredientConcentration" },
-{ 0x0018, 0x9241, 0, VR::US, VM::M1, "GradientEchoTrainLength" },
-{ 0x0020, 0x0030, 1, VR::DS, VM::M3, "ImagePosition" },
-{ 0x0022, 0x0032, 0, VR::FL, VM::M2T2N, "ReferenceCoordinates" },
-{ 0x0022, 0x1463, 0, VR::FL, VM::M2, "AnatomicStructureReferencePoint" },
-{ 0x0024, 0x0034, 0, VR::SQ, VM::M1, "VisualFieldCatchTrialSequence" },
-{ 0x0028, 0x0818, 1, VR::AT, VM::M1TN, "ImageDataLocation" },
-{ 0x0040, 0x0440, 0, VR::SQ, VM::M1, "ProtocolContextSequence" },
-{ 0x0040, 0x1011, 0, VR::SQ, VM::M1, "IntendedRecipientsOfResultsIdentificationSequence" },
-{ 0x0070, 0x0060, 0, VR::SQ, VM::M1, "GraphicLayerSequence" },
-{ 0x0072, 0x0062, 0, VR::CS, VM::M1TN, "SelectorCSValue" },
-{ 0x0074, 0x1025, 0, VR::CS, VM::M1, "AutosequenceFlag" },
-{ 0x300A, 0x00D9, 0, VR::FL, VM::M1, "IsocenterToWedgeTrayDistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0017[] = {
-{ 0x0002, 0x0013, 0, VR::SH, VM::M1, "ImplementationVersionName" },
-{ 0x0010, 0x1040, 0, VR::LO, VM::M1, "PatientAddress" },
-{ 0x0018, 0x1048, 0, VR::CS, VM::M1, "ContrastBolusIngredient" },
-{ 0x0018, 0x9240, 0, VR::US, VM::M1, "RFEchoTrainLength" },
-{ 0x0020, 0x1070, 1, VR::IS, VM::M1TN, "OtherStudyNumbers" },
-{ 0x0024, 0x0035, 0, VR::US, VM::M1, "FixationCheckedQuantity" },
-{ 0x0040, 0x0441, 0, VR::SQ, VM::M1, "ContentItemModifierSequence" },
-{ 0x0040, 0x1010, 0, VR::PN, VM::M1TN, "NamesOfIntendedRecipientsOfResults" },
-{ 0x0040, 0x1400, 0, VR::LT, VM::M1, "RequestedProcedureComments" },
-{ 0x0054, 0x1004, 0, VR::CS, VM::M1, "ReprojectionMethod" },
-{ 0x0074, 0x1024, 1, VR::IS, VM::M1, "BeamOrderIndexTrial" },
-{ 0x300A, 0x00D8, 0, VR::DS, VM::M1, "WedgeOrientation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0018[] = {
-{ 0x0002, 0x0010, 0, VR::UI, VM::M1, "TransferSyntaxUID" },
-{ 0x0008, 0x001A, 0, VR::UI, VM::M1TN, "RelatedGeneralSOPClassUID" },
-{ 0x0020, 0x0032, 0, VR::DS, VM::M3, "ImagePositionPatient" },
-{ 0x0022, 0x0030, 0, VR::FL, VM::M1, "AxialLengthOfTheEye" },
-{ 0x0024, 0x0036, 0, VR::US, VM::M1, "PatientNotProperlyFixatedQuantity" },
-{ 0x0070, 0x0062, 0, VR::IS, VM::M1, "GraphicLayerOrder" },
-{ 0x0072, 0x0060, 0, VR::AT, VM::M1TN, "SelectorATValue" },
-{ 0x0074, 0x1027, 0, VR::FD, VM::M1, "TableTopLongitudinalAdjustedPosition" },
-{ 0x2010, 0x0080, 0, VR::CS, VM::M1, "SmoothingType" },
-{ 0x300A, 0x00DB, 0, VR::FL, VM::M1, "WedgeThinEdgePosition" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0019[] = {
-{ 0x0008, 0x001B, 0, VR::UI, VM::M1, "OriginalSpecializedSOPClassUID" },
-{ 0x0022, 0x0031, 0, VR::SQ, VM::M1, "OphthalmicFrameLocationSequence" },
-{ 0x0022, 0x1460, 0, VR::FL, VM::M1, "OphthalmicThicknessMapThresholdQualityRating" },
-{ 0x0024, 0x0037, 0, VR::CS, VM::M1, "PresentedVisualStimuliDataFlag" },
-{ 0x0032, 0x1060, 0, VR::LO, VM::M1, "RequestedProcedureDescription" },
-{ 0x0040, 0x1012, 0, VR::SQ, VM::M1, "ReasonForPerformedProcedureCodeSequence" },
-{ 0x0054, 0x1006, 0, VR::CS, VM::M1, "SUVType" },
-{ 0x0074, 0x1026, 0, VR::FD, VM::M1, "TableTopVerticalAdjustedPosition" },
-{ 0x300A, 0x00DA, 0, VR::DS, VM::M1, "SourceToWedgeTrayDistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0020[] = {
-{ 0x0002, 0x0016, 0, VR::AE, VM::M1, "SourceApplicationEntityTitle" },
-{ 0x0022, 0x0036, 0, VR::FL, VM::M1, "MaximumDepthDistortion" },
-{ 0x0022, 0x1467, 0, VR::FL, VM::M2, "RegisteredLocalizerTopLeftHandCorner" },
-{ 0x0046, 0x0052, 0, VR::SQ, VM::M1, "AutorefractionLeftEyeSequence" },
-{ 0x0054, 0x1001, 0, VR::CS, VM::M1, "Units" },
-{ 0x0072, 0x0066, 0, VR::LO, VM::M1TN, "SelectorLOValue" },
-{ 0x300A, 0x00DD, 0, VR::ST, VM::M1, "BolusDescription" },
-{ 0x4008, 0x0118, 1, VR::SQ, VM::M1, "ResultsDistributionListSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0021[] = {
-{ 0x0014, 0x1040, 2, VR::ST, VM::M1, "EnvironmentalConditions" },
-{ 0x0020, 0x0035, 1, VR::DS, VM::M6, "ImageOrientation" },
-{ 0x0022, 0x0037, 0, VR::FL, VM::M1, "AlongScanSpatialResolution" },
-{ 0x0022, 0x1466, 0, VR::CS, VM::M1, "RegisteredLocalizerUnits" },
-{ 0x0054, 0x1000, 0, VR::CS, VM::M2, "SeriesType" },
-{ 0x0074, 0x1020, 0, VR::SQ, VM::M1, "BeamTaskSequence" },
-{ 0x0400, 0x0005, 0, VR::US, VM::M1, "MACIDNumber" },
-{ 0x300A, 0x00DC, 0, VR::SH, VM::M1, "BolusID" },
-{ 0x4008, 0x0119, 1, VR::PN, VM::M1, "DistributionName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0022[] = {
-{ 0x0022, 0x1465, 0, VR::SQ, VM::M1, "RegistrationToLocalizerSequence" },
-{ 0x0024, 0x0032, 0, VR::SQ, VM::M1, "FixationSequence" },
-{ 0x0046, 0x0050, 0, VR::SQ, VM::M1, "AutorefractionRightEyeSequence" },
-{ 0x0070, 0x0066, 0, VR::US, VM::M1, "GraphicLayerRecommendedDisplayGrayscaleValue" },
-{ 0x0072, 0x0064, 0, VR::IS, VM::M1TN, "SelectorISValue" },
-{ 0x0076, 0x0060, 0, VR::SQ, VM::M1, "ComponentAssemblySequence" },
-{ 0x4008, 0x011A, 1, VR::LO, VM::M1, "DistributionAddress" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0023[] = {
-{ 0x0020, 0x0037, 0, VR::DS, VM::M6, "ImageOrientationPatient" },
-{ 0x0022, 0x0035, 0, VR::FL, VM::M1, "DepthSpatialResolution" },
-{ 0x0024, 0x0033, 0, VR::SQ, VM::M1, "FixationMonitoringCodeSequence" },
-{ 0x0032, 0x1064, 0, VR::SQ, VM::M1, "RequestedProcedureCodeSequence" },
-{ 0x0054, 0x1002, 0, VR::CS, VM::M1, "CountsSource" },
-{ 0x0070, 0x0067, 1, VR::US, VM::M3, "GraphicLayerRecommendedDisplayRGBValue" },
-{ 0x0074, 0x1022, 0, VR::CS, VM::M1, "BeamTaskType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0024[] = {
-{ 0x0008, 0x0010, 1, VR::SH, VM::M1, "RecognitionCode" },
-{ 0x0018, 0x1041, 0, VR::DS, VM::M1, "ContrastBolusVolume" },
-{ 0x0028, 0x0030, 0, VR::DS, VM::M2, "PixelSpacing" },
-{ 0x0028, 0x0810, 1, VR::CS, VM::M1TN, "CodeLabel" },
-{ 0x0038, 0x0020, 0, VR::DA, VM::M1, "AdmittingDate" },
-{ 0x0040, 0x9211, 0, VR::XS, VM::M1, "RealWorldValueLastValueMapped" },
-{ 0x0070, 0x0068, 0, VR::LO, VM::M1, "GraphicLayerDescription" },
-{ 0x0072, 0x006A, 0, VR::PN, VM::M1TN, "SelectorPNValue" },
-{ 0x0074, 0x102D, 0, VR::FD, VM::M1, "TableTopRollAdjustedAngle" },
-{ 0x0078, 0x0060, 0, VR::FD, VM::M9, "ThreeDImplantTemplateGroupMemberMatchingAxes" },
-{ 0x300A, 0x00D1, 0, VR::SQ, VM::M1, "WedgeSequence" },
-{ 0x4008, 0x0114, 1, VR::PN, VM::M1, "PhysicianApprovingInterpretation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0025[] = {
-{ 0x0008, 0x1050, 0, VR::PN, VM::M1TN, "PerformingPhysicianName" },
-{ 0x0018, 0x1040, 0, VR::LO, VM::M1, "ContrastBolusRoute" },
-{ 0x0018, 0x1450, 0, VR::DS, VM::M1, "ColumnAngulation" },
-{ 0x0028, 0x0031, 0, VR::DS, VM::M2, "ZoomFactor" },
-{ 0x0038, 0x0021, 0, VR::TM, VM::M1, "AdmittingTime" },
-{ 0x0040, 0x9210, 0, VR::SH, VM::M1, "LUTLabel" },
-{ 0x0074, 0x102C, 0, VR::FD, VM::M1, "TableTopPitchAdjustedAngle" },
-{ 0x300A, 0x00D0, 0, VR::IS, VM::M1, "NumberOfWedges" },
-{ 0x4008, 0x0115, 1, VR::LT, VM::M1, "InterpretationDiagnosisDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0026[] = {
-{ 0x0008, 0x0012, 0, VR::DA, VM::M1, "InstanceCreationDate" },
-{ 0x0018, 0x1043, 0, VR::TM, VM::M1, "ContrastBolusStopTime" },
-{ 0x0022, 0x0038, 0, VR::FL, VM::M1, "MaximumAlongScanDistortion" },
-{ 0x0028, 0x0032, 0, VR::DS, VM::M2, "ZoomCenter" },
-{ 0x0028, 0x0812, 1, VR::US, VM::M1, "NumberOfTables" },
-{ 0x003A, 0x0020, 0, VR::SH, VM::M1, "MultiplexGroupLabel" },
-{ 0x0072, 0x0068, 0, VR::LT, VM::M1, "SelectorLTValue" },
-{ 0x300A, 0x00D3, 0, VR::CS, VM::M1, "WedgeType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0027[] = {
-{ 0x0008, 0x0013, 0, VR::TM, VM::M1, "InstanceCreationTime" },
-{ 0x0008, 0x1052, 0, VR::SQ, VM::M1, "PerformingPhysicianIdentificationSequence" },
-{ 0x0018, 0x1042, 0, VR::TM, VM::M1, "ContrastBolusStartTime" },
-{ 0x0022, 0x0039, 0, VR::CS, VM::M1, "OphthalmicImageOrientation" },
-{ 0x0022, 0x1468, 0, VR::FL, VM::M2, "RegisteredLocalizerBottomRightHandCorner" },
-{ 0x0028, 0x0813, 1, VR::AT, VM::M1TN, "CodeTableLocation" },
-{ 0x0040, 0x9212, 0, VR::FD, VM::M1TN, "RealWorldValueLUTData" },
-{ 0x3008, 0x00D0, 0, VR::SQ, VM::M1, "RecordedBlockSequence" },
-{ 0x300A, 0x00D2, 0, VR::IS, VM::M1, "WedgeNumber" },
-{ 0x4008, 0x0117, 1, VR::SQ, VM::M1, "InterpretationDiagnosisCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0028[] = {
-{ 0x0008, 0x0014, 0, VR::UI, VM::M1, "InstanceCreatorUID" },
-{ 0x0018, 0x1045, 0, VR::IS, VM::M1, "SyringeCounts" },
-{ 0x0024, 0x0038, 0, VR::US, VM::M1, "NumberOfVisualStimuli" },
-{ 0x0028, 0x0034, 0, VR::IS, VM::M2, "PixelAspectRatio" },
-{ 0x0028, 0x0814, 1, VR::US, VM::M1, "BitsForCodeWord" },
-{ 0x0072, 0x006E, 0, VR::ST, VM::M1, "SelectorSTValue" },
-{ 0x300A, 0x00D5, 0, VR::IS, VM::M1, "WedgeAngle" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0029[] = {
-{ 0x0008, 0x0015, 0, VR::DT, VM::M1, "InstanceCoercionDateTime" },
-{ 0x0018, 0x1044, 0, VR::DS, VM::M1, "ContrastBolusTotalDose" },
-{ 0x0024, 0x0039, 0, VR::CS, VM::M1, "ExcessiveFixationLossesDataFlag" },
-{ 0x0074, 0x1028, 0, VR::FD, VM::M1, "TableTopLateralAdjustedPosition" },
-{ 0x300A, 0x00D4, 0, VR::SH, VM::M1, "WedgeID" },
-{ 0x4008, 0x0111, 1, VR::SQ, VM::M1, "InterpretationApproverSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0030[] = {
-{ 0x0008, 0x0016, 0, VR::UI, VM::M1, "SOPClassUID" },
-{ 0x0018, 0x1047, 0, VR::DS, VM::M1TN, "ContrastFlowDuration" },
-{ 0x0068, 0x65E0, 0, VR::SQ, VM::M1, "TwoDPlaneCoordinatesSequence" },
-{ 0x0072, 0x006C, 0, VR::SH, VM::M1TN, "SelectorSHValue" },
-{ 0x0074, 0x102B, 0, VR::FD, VM::M1, "TableTopEccentricAdjustedAngle" },
-{ 0x300A, 0x00D7, 0, VR::FL, VM::M1, "TotalWedgeTrayWaterEquivalentThickness" },
-{ 0x4008, 0x0112, 1, VR::DA, VM::M1, "InterpretationApprovalDate" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0031[] = {
-{ 0x0018, 0x1046, 0, VR::DS, VM::M1TN, "ContrastFlowRate" },
-{ 0x0040, 0x9216, 0, VR::XS, VM::M1, "RealWorldValueFirstValueMapped" },
-{ 0x0074, 0x102A, 0, VR::FD, VM::M1, "PatientSupportAdjustedAngle" },
-{ 0x300A, 0x00D6, 0, VR::DS, VM::M1, "WedgeFactor" },
-{ 0x300C, 0x00D0, 0, VR::IS, VM::M1, "ReferencedCompensatorNumber" },
-{ 0x4008, 0x0113, 1, VR::TM, VM::M1, "InterpretationApprovalTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0032[] = {
-{ 0x0010, 0x0030, 0, VR::DA, VM::M1, "PatientBirthDate" },
-{ 0x0014, 0x0034, 2, VR::DS, VM::M1TN, "MaterialIsolationDiameter" },
-{ 0x0018, 0x0038, 0, VR::CS, VM::M1, "InterventionStatus" },
-{ 0x0018, 0x1079, 0, VR::DT, VM::M1, "RadiopharmaceuticalStopDateTime" },
-{ 0x0020, 0x1041, 0, VR::DS, VM::M1, "SliceLocation" },
-{ 0x0020, 0x9249, 0, VR::CS, VM::M1, "EndingRespiratoryPhase" },
-{ 0x0022, 0x0002, 0, VR::US, VM::M2, "LightPathFilterPassBand" },
-{ 0x0028, 0x0008, 0, VR::IS, VM::M1, "NumberOfFrames" },
-{ 0x0032, 0x0012, 1, VR::LO, VM::M1, "StudyIDIssuer" },
-{ 0x003A, 0x001A, 0, VR::DS, VM::M1, "SamplingFrequency" },
-{ 0x0040, 0xDB0D, 1, VR::UI, VM::M1, "TemplateExtensionCreatorUID" },
-{ 0x0070, 0x0050, 1, VR::US, VM::M2, "DisplayedAreaTopLeftHandCornerTrial" },
-{ 0x0072, 0x0052, 0, VR::AT, VM::M1TN, "SelectorSequencePointer" },
-{ 0x2000, 0x00A2, 0, VR::SQ, VM::M1, "MediaInstalledSequence" },
-{ 0x300A, 0x00E9, 0, VR::DS, VM::M2, "CompensatorPixelSpacing" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0033[] = {
-{ 0x0018, 0x0039, 1, VR::CS, VM::M1, "TherapyDescription" },
-{ 0x0018, 0x1078, 0, VR::DT, VM::M1, "RadiopharmaceuticalStartDateTime" },
-{ 0x0020, 0x1040, 0, VR::LO, VM::M1, "PositionReferenceIndicator" },
-{ 0x0020, 0x9248, 0, VR::FL, VM::M1, "EndingRespiratoryAmplitude" },
-{ 0x0022, 0x0003, 0, VR::US, VM::M1, "ImagePathFilterPassThroughWavelength" },
-{ 0x0022, 0x1452, 0, VR::XS, VM::M1, "MappedPixelValue" },
-{ 0x0028, 0x0009, 0, VR::AT, VM::M1TN, "FrameIncrementPointer" },
-{ 0x0040, 0xDB0C, 1, VR::UI, VM::M1, "TemplateExtensionOrganizationUID" },
-{ 0x0070, 0x0051, 1, VR::US, VM::M2, "DisplayedAreaBottomRightHandCornerTrial" },
-{ 0x300A, 0x00E8, 0, VR::IS, VM::M1, "CompensatorColumns" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0034[] = {
-{ 0x0008, 0x002A, 0, VR::DT, VM::M1, "AcquisitionDateTime" },
-{ 0x0010, 0x0032, 0, VR::TM, VM::M1, "PatientBirthTime" },
-{ 0x0012, 0x0030, 0, VR::LO, VM::M1, "ClinicalTrialSiteID" },
-{ 0x0018, 0x003A, 0, VR::ST, VM::M1, "InterventionDescription" },
-{ 0x0028, 0x000A, 0, VR::AT, VM::M1TN, "FrameDimensionPointer" },
-{ 0x0032, 0x1051, 1, VR::TM, VM::M1, "StudyCompletionTime" },
-{ 0x0038, 0x001A, 1, VR::DA, VM::M1, "ScheduledAdmissionDate" },
-{ 0x0046, 0x0064, 0, VR::FD, VM::M1, "OtherPupillaryDistance" },
-{ 0x0070, 0x0052, 0, VR::SL, VM::M2, "DisplayedAreaTopLeftHandCorner" },
-{ 0x0072, 0x0050, 0, VR::CS, VM::M1, "SelectorAttributeVR" },
-{ 0x2000, 0x00A0, 0, VR::US, VM::M1, "MemoryBitDepth" },
-{ 0x300A, 0x00EB, 0, VR::DS, VM::M1TN, "CompensatorTransmissionData" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0035[] = {
-{ 0x0012, 0x0031, 0, VR::LO, VM::M1, "ClinicalTrialSiteName" },
-{ 0x0022, 0x0001, 0, VR::US, VM::M1, "LightPathFilterPassThroughWavelength" },
-{ 0x0022, 0x1040, 0, VR::SQ, VM::M1, "RefractiveSurgeryTypeCodeSequence" },
-{ 0x0022, 0x1450, 0, VR::SQ, VM::M1, "PixelValueMappingToCodedConceptSequence" },
-{ 0x0032, 0x1050, 1, VR::DA, VM::M1, "StudyCompletionDate" },
-{ 0x0038, 0x001B, 1, VR::TM, VM::M1, "ScheduledAdmissionTime" },
-{ 0x0070, 0x0053, 0, VR::SL, VM::M2, "DisplayedAreaBottomRightHandCorner" },
-{ 0x0076, 0x0055, 0, VR::US, VM::M1, "ComponentID" },
-{ 0x2000, 0x00A1, 0, VR::US, VM::M1, "PrintingBitDepth" },
-{ 0x300A, 0x00EA, 0, VR::DS, VM::M2, "CompensatorPosition" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0036[] = {
-{ 0x0014, 0x0030, 2, VR::DS, VM::M1TN, "MaterialThickness" },
-{ 0x0022, 0x0006, 0, VR::SQ, VM::M1, "PatientEyeMovementCommandCodeSequence" },
-{ 0x0038, 0x001C, 1, VR::DA, VM::M1, "ScheduledDischargeDate" },
-{ 0x0046, 0x0062, 0, VR::FD, VM::M1, "NearPupillaryDistance" },
-{ 0x0054, 0x0070, 0, VR::US, VM::M1TN, "TimeSlotVector" },
-{ 0x0072, 0x0056, 0, VR::LO, VM::M1, "SelectorAttributePrivateCreator" },
-{ 0x300A, 0x00ED, 0, VR::IS, VM::M1, "NumberOfBoli" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0037[] = {
-{ 0x0022, 0x0007, 0, VR::FL, VM::M1, "SphericalLensPower" },
-{ 0x0038, 0x001D, 1, VR::TM, VM::M1, "ScheduledDischargeTime" },
-{ 0x0046, 0x0063, 0, VR::FD, VM::M1, "IntermediatePupillaryDistance" },
-{ 0x0054, 0x0071, 0, VR::US, VM::M1, "NumberOfTimeSlots" },
-{ 0x300A, 0x00EC, 0, VR::DS, VM::M1TN, "CompensatorThicknessData" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0038[] = {
-{ 0x0014, 0x0032, 2, VR::DS, VM::M1TN, "MaterialPipeDiameter" },
-{ 0x0022, 0x0004, 0, VR::US, VM::M2, "ImagePathFilterPassBand" },
-{ 0x0032, 0x1055, 1, VR::CS, VM::M1, "StudyComponentStatusID" },
-{ 0x0038, 0x001E, 1, VR::LO, VM::M1, "ScheduledPatientInstitutionResidence" },
-{ 0x0040, 0xDB0B, 1, VR::CS, VM::M1, "TemplateExtensionFlag" },
-{ 0x0046, 0x0060, 0, VR::FD, VM::M1, "DistancePupillaryDistance" },
-{ 0x0054, 0x0072, 0, VR::SQ, VM::M1, "TimeSlotInformationSequence" },
-{ 0x0072, 0x0054, 0, VR::LO, VM::M1TN, "SelectorSequencePointerPrivateCreator" },
-{ 0x2000, 0x00A4, 0, VR::SQ, VM::M1, "OtherMediaAvailableSequence" },
-{ 0x300A, 0x00EF, 0, VR::SH, VM::M1, "CompensatorTrayID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0039[] = {
-{ 0x0022, 0x0005, 0, VR::CS, VM::M1, "PatientEyeMovementCommanded" },
-{ 0x0022, 0x1044, 0, VR::SQ, VM::M1, "OphthalmicUltrasoundMethodCodeSequence" },
-{ 0x0022, 0x1454, 0, VR::LO, VM::M1, "PixelValueMappingExplanation" },
-{ 0x0054, 0x0073, 0, VR::DS, VM::M1, "TimeSlotTime" },
-{ 0x300A, 0x00EE, 0, VR::CS, VM::M1, "CompensatorType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0040[] = {
-{ 0x0008, 0x0020, 0, VR::DA, VM::M1, "StudyDate" },
-{ 0x0018, 0x0030, 1, VR::LO, VM::M1TN, "Radionuclide" },
-{ 0x0018, 0x1071, 0, VR::DS, VM::M1, "RadiopharmaceuticalVolume" },
-{ 0x0020, 0x9241, 0, VR::FL, VM::M1, "NominalPercentageOfCardiacPhase" },
-{ 0x0022, 0x000A, 0, VR::FL, VM::M1, "EmmetropicMagnification" },
-{ 0x0028, 0x0410, 1, VR::US, VM::M1, "RowsForNthOrderCoefficients" },
-{ 0x0028, 0x1041, 0, VR::SS, VM::M1, "PixelIntensityRelationshipSign" },
-{ 0x0038, 0x0010, 0, VR::LO, VM::M1, "AdmissionID" },
-{ 0x0038, 0x0400, 0, VR::LO, VM::M1, "PatientInstitutionResidence" },
-{ 0x0078, 0x0050, 0, VR::FD, VM::M3, "ThreeDImplantTemplateGroupMemberMatchingPoint" },
-{ 0x300A, 0x00E1, 0, VR::SH, VM::M1, "MaterialID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0041[] = {
-{ 0x0008, 0x0021, 0, VR::DA, VM::M1, "SeriesDate" },
-{ 0x0008, 0x1060, 0, VR::PN, VM::M1TN, "NameOfPhysiciansReadingStudy" },
-{ 0x0018, 0x0031, 0, VR::LO, VM::M1, "Radiopharmaceutical" },
-{ 0x0018, 0x1070, 0, VR::LO, VM::M1, "RadiopharmaceuticalRoute" },
-{ 0x0018, 0x1460, 0, VR::DS, VM::M1, "TomoLayerHeight" },
-{ 0x0022, 0x000B, 0, VR::FL, VM::M1, "IntraOcularPressure" },
-{ 0x0028, 0x0411, 1, VR::US, VM::M1, "ColumnsForNthOrderCoefficients" },
-{ 0x0028, 0x1040, 0, VR::CS, VM::M1, "PixelIntensityRelationship" },
-{ 0x0038, 0x0011, 1, VR::LO, VM::M1, "IssuerOfAdmissionID" },
-{ 0x300A, 0x00E0, 0, VR::IS, VM::M1, "NumberOfCompensators" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0042[] = {
-{ 0x0008, 0x0022, 0, VR::DA, VM::M1, "AcquisitionDate" },
-{ 0x0018, 0x0032, 1, VR::DS, VM::M1, "EnergyWindowCenterline" },
-{ 0x0018, 0x1073, 0, VR::TM, VM::M1, "RadiopharmaceuticalStopTime" },
-{ 0x0022, 0x0008, 0, VR::FL, VM::M1, "CylinderLensPower" },
-{ 0x0028, 0x0002, 0, VR::US, VM::M1, "SamplesPerPixel" },
-{ 0x0028, 0x0412, 1, VR::LO, VM::M1TN, "CoefficientCoding" },
-{ 0x003A, 0x0010, 0, VR::UL, VM::M1, "NumberOfWaveformSamples" },
-{ 0x0040, 0xDB07, 1, VR::DT, VM::M1, "TemplateLocalVersion" },
-{ 0x0070, 0x005A, 0, VR::SQ, VM::M1, "DisplayedAreaSelectionSequence" },
-{ 0x2000, 0x00A8, 0, VR::SQ, VM::M1, "SupportedImageDisplayFormatsSequence" },
-{ 0x300A, 0x00E3, 0, VR::SQ, VM::M1, "CompensatorSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0043[] = {
-{ 0x0008, 0x0023, 0, VR::DA, VM::M1, "ContentDate" },
-{ 0x0008, 0x1062, 0, VR::SQ, VM::M1, "PhysiciansReadingStudyIdentificationSequence" },
-{ 0x0018, 0x0033, 1, VR::DS, VM::M1TN, "EnergyWindowTotalWidth" },
-{ 0x0018, 0x1072, 0, VR::TM, VM::M1, "RadiopharmaceuticalStartTime" },
-{ 0x0022, 0x0009, 0, VR::FL, VM::M1, "CylinderAxis" },
-{ 0x0022, 0x1458, 0, VR::SQ, VM::M1, "OphthalmicThicknessMapQualityThresholdSequence" },
-{ 0x0028, 0x0003, 0, VR::US, VM::M1, "SamplesPerPixelUsed" },
-{ 0x0028, 0x0413, 1, VR::AT, VM::M1TN, "CoefficientCodingPointers" },
-{ 0x0040, 0xDB06, 1, VR::DT, VM::M1, "TemplateVersion" },
-{ 0x3008, 0x00E0, 0, VR::SQ, VM::M1, "TreatmentSummaryMeasuredDoseReferenceSequence" },
-{ 0x300A, 0x00E2, 0, VR::DS, VM::M1, "TotalCompensatorTrayFactor" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0044[] = {
-{ 0x0008, 0x0024, 1, VR::DA, VM::M1, "OverlayDate" },
-{ 0x0018, 0x0034, 0, VR::LO, VM::M1, "InterventionDrugName" },
-{ 0x0018, 0x1075, 0, VR::DS, VM::M1, "RadionuclideHalfLife" },
-{ 0x0020, 0x9245, 0, VR::FL, VM::M1, "NominalPercentageOfRespiratoryPhase" },
-{ 0x0022, 0x000E, 0, VR::FL, VM::M1, "DegreeOfDilation" },
-{ 0x0028, 0x0004, 0, VR::CS, VM::M1, "PhotometricInterpretation" },
-{ 0x0038, 0x0014, 0, VR::SQ, VM::M1, "IssuerOfAdmissionIDSequence" },
-{ 0x0040, 0x9225, 0, VR::FD, VM::M1, "RealWorldValueSlope" },
-{ 0x300A, 0x00E5, 0, VR::SH, VM::M1, "CompensatorID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0045[] = {
-{ 0x0008, 0x0025, 1, VR::DA, VM::M1, "CurveDate" },
-{ 0x0018, 0x0035, 0, VR::TM, VM::M1, "InterventionDrugStartTime" },
-{ 0x0018, 0x1074, 0, VR::DS, VM::M1, "RadionuclideTotalDose" },
-{ 0x0020, 0x000D, 0, VR::UI, VM::M1, "StudyInstanceUID" },
-{ 0x0028, 0x0005, 1, VR::US, VM::M1, "ImageDimensions" },
-{ 0x0040, 0x9224, 0, VR::FD, VM::M1, "RealWorldValueIntercept" },
-{ 0x0040, 0xDB00, 0, VR::CS, VM::M1, "TemplateIdentifier" },
-{ 0x300A, 0x00E4, 0, VR::IS, VM::M1, "CompensatorNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0046[] = {
-{ 0x0018, 0x0036, 0, VR::SQ, VM::M1, "InterventionSequence" },
-{ 0x0018, 0x1077, 0, VR::DS, VM::M1, "RadiopharmaceuticalSpecificActivity" },
-{ 0x0020, 0x000E, 0, VR::UI, VM::M1, "SeriesInstanceUID" },
-{ 0x0020, 0x9247, 0, VR::CS, VM::M1, "StartingRespiratoryPhase" },
-{ 0x0022, 0x000C, 0, VR::FL, VM::M1, "HorizontalFieldOfView" },
-{ 0x0028, 0x0006, 0, VR::US, VM::M1, "PlanarConfiguration" },
-{ 0x0038, 0x0016, 0, VR::LO, VM::M1, "RouteOfAdmissions" },
-{ 0x0068, 0x65D0, 0, VR::FD, VM::M6, "ThreeDLineCoordinates" },
-{ 0x300A, 0x00E7, 0, VR::IS, VM::M1, "CompensatorRows" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0047[] = {
-{ 0x0018, 0x0037, 1, VR::CS, VM::M1, "TherapyType" },
-{ 0x0018, 0x1076, 0, VR::DS, VM::M1, "RadionuclidePositronFraction" },
-{ 0x0020, 0x9246, 0, VR::FL, VM::M1, "StartingRespiratoryAmplitude" },
-{ 0x0022, 0x000D, 0, VR::CS, VM::M1, "PupilDilated" },
-{ 0x300A, 0x00E6, 0, VR::DS, VM::M1, "SourceToCompensatorTrayDistance" },
-{ 0x300C, 0x00E0, 0, VR::IS, VM::M1, "ReferencedBlockNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0048[] = {
-{ 0x0010, 0x0020, 0, VR::LO, VM::M1, "PatientID" },
-{ 0x0014, 0x0024, 1, VR::ST, VM::M1TN, "ComponentReferenceSystem" },
-{ 0x0018, 0x0028, 0, VR::DS, VM::M1, "InterventionDrugDose" },
-{ 0x0018, 0x1069, 0, VR::DS, VM::M1, "TriggerTimeOffset" },
-{ 0x0020, 0x0010, 0, VR::SH, VM::M1, "StudyID" },
-{ 0x0022, 0x0012, 0, VR::FL, VM::M1, "StereoHorizontalPixelOffset" },
-{ 0x0022, 0x1053, 0, VR::FL, VM::M1, "IOLPower" },
-{ 0x0022, 0x1443, 0, VR::SQ, VM::M1, "OphthalmicThicknessMappingNormalsSequence" },
-{ 0x0038, 0x0008, 0, VR::CS, VM::M1, "VisitStatusID" },
-{ 0x0046, 0x0076, 0, VR::FD, VM::M1, "KeratometricPower" },
-{ 0x0070, 0x0040, 1, VR::IS, VM::M1, "ImageRotationRetired" },
-{ 0x0400, 0x0020, 0, VR::AT, VM::M1TN, "DataElementsSigned" },
-{ 0x300A, 0x00F9, 0, VR::LO, VM::M1, "AccessoryCode" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0049[] = {
-{ 0x0010, 0x0021, 0, VR::LO, VM::M1, "IssuerOfPatientID" },
-{ 0x0010, 0x1060, 0, VR::PN, VM::M1, "PatientMotherBirthName" },
-{ 0x0014, 0x0025, 2, VR::ST, VM::M1TN, "ComponentManufacturingProcedure" },
-{ 0x0018, 0x0029, 0, VR::SQ, VM::M1, "InterventionDrugCodeSequence" },
-{ 0x0018, 0x1068, 0, VR::DS, VM::M1, "MultiplexGroupTimeOffset" },
-{ 0x0018, 0x9260, 0, VR::SQ, VM::M1, "ASLSlabSequence" },
-{ 0x0020, 0x0011, 0, VR::IS, VM::M1, "SeriesNumber" },
-{ 0x0022, 0x0013, 0, VR::FL, VM::M1, "StereoVerticalPixelOffset" },
-{ 0x0046, 0x0077, 0, VR::FD, VM::M1, "KeratometricAxis" },
-{ 0x0070, 0x0041, 0, VR::CS, VM::M1, "ImageHorizontalFlip" },
-{ 0x0074, 0x1004, 0, VR::DS, VM::M1, "ProcedureStepProgress" },
-{ 0x300A, 0x00F8, 0, VR::CS, VM::M1, "BlockType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0050[] = {
-{ 0x0010, 0x0022, 0, VR::CS, VM::M1, "TypeOfPatientID" },
-{ 0x0012, 0x0020, 0, VR::LO, VM::M1, "ClinicalTrialProtocolID" },
-{ 0x0018, 0x002A, 0, VR::SQ, VM::M1, "AdditionalDrugSequence" },
-{ 0x0020, 0x0012, 0, VR::IS, VM::M1, "AcquisitionNumber" },
-{ 0x0022, 0x0010, 0, VR::FL, VM::M1, "StereoBaselineAngle" },
-{ 0x0024, 0x0016, 0, VR::SQ, VM::M1, "ScreeningTestModeCodeSequence" },
-{ 0x0032, 0x1041, 1, VR::TM, VM::M1, "StudyArrivalTime" },
-{ 0x0046, 0x0074, 0, VR::SQ, VM::M1, "SteepKeratometricAxisSequence" },
-{ 0x0070, 0x0042, 0, VR::US, VM::M1, "ImageRotation" },
-{ 0x0072, 0x0040, 0, VR::LO, VM::M1, "ImageSetLabel" },
-{ 0x300A, 0x00FB, 0, VR::CS, VM::M1, "BlockMountingPosition" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0051[] = {
-{ 0x0012, 0x0021, 0, VR::LO, VM::M1, "ClinicalTrialProtocolName" },
-{ 0x0018, 0x106A, 0, VR::CS, VM::M1, "SynchronizationTrigger" },
-{ 0x0020, 0x0013, 0, VR::IS, VM::M1, "InstanceNumber" },
-{ 0x0022, 0x0011, 0, VR::FL, VM::M1, "StereoBaselineDisplacement" },
-{ 0x0022, 0x1050, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthMeasurementsSequence" },
-{ 0x0032, 0x1040, 1, VR::DA, VM::M1, "StudyArrivalDate" },
-{ 0x0046, 0x0075, 0, VR::FD, VM::M1, "RadiusOfCurvature" },
-{ 0x0074, 0x1006, 0, VR::ST, VM::M1, "ProcedureStepProgressDescription" },
-{ 0x300A, 0x00FA, 0, VR::CS, VM::M1, "BlockDivergence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0052[] = {
-{ 0x0010, 0x0024, 0, VR::SQ, VM::M1, "IssuerOfPatientIDQualifiersSequence" },
-{ 0x0020, 0x0014, 1, VR::IS, VM::M1, "IsotopeNumber" },
-{ 0x0022, 0x0016, 0, VR::SQ, VM::M1, "IlluminationTypeCodeSequence" },
-{ 0x0024, 0x0010, 0, VR::FL, VM::M1, "VisualFieldHorizontalExtent" },
-{ 0x0054, 0x0060, 0, VR::US, VM::M1TN, "RRIntervalVector" },
-{ 0x2010, 0x00A6, 0, VR::CS, VM::M1, "DefaultMagnificationType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0053[] = {
-{ 0x0018, 0x106C, 0, VR::US, VM::M2, "SynchronizationChannel" },
-{ 0x0020, 0x0015, 1, VR::IS, VM::M1, "PhaseNumber" },
-{ 0x0022, 0x0017, 0, VR::SQ, VM::M1, "LightPathFilterTypeStackCodeSequence" },
-{ 0x0024, 0x0011, 0, VR::FL, VM::M1, "VisualFieldVerticalExtent" },
-{ 0x0054, 0x0061, 0, VR::US, VM::M1, "NumberOfRRIntervals" },
-{ 0x0074, 0x1000, 0, VR::CS, VM::M1, "ProcedureStepState" },
-{ 0x2010, 0x00A7, 0, VR::CS, VM::M1TN, "OtherMagnificationTypesAvailable" },
-{ 0x300A, 0x00FC, 0, VR::IS, VM::M1, "BlockNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0054[] = {
-{ 0x0020, 0x0016, 1, VR::IS, VM::M1, "IntervalNumber" },
-{ 0x0022, 0x0014, 0, VR::FL, VM::M1, "StereoRotation" },
-{ 0x0022, 0x1445, 0, VR::SQ, VM::M1, "RetinalThicknessDefinitionCodeSequence" },
-{ 0x0024, 0x0012, 0, VR::CS, VM::M1, "VisualFieldShape" },
-{ 0x0046, 0x0070, 0, VR::SQ, VM::M1, "KeratometryRightEyeSequence" },
-{ 0x0054, 0x0062, 0, VR::SQ, VM::M1, "GatedInformationSequence" },
-{ 0x0076, 0x0040, 0, VR::SQ, VM::M1, "ComponentSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0055[] = {
-{ 0x0014, 0x0023, 1, VR::ST, VM::M1TN, "CADFileFormat" },
-{ 0x0018, 0x106E, 0, VR::UL, VM::M1, "TriggerSamplePosition" },
-{ 0x0020, 0x0017, 1, VR::IS, VM::M1, "TimeSlotNumber" },
-{ 0x0022, 0x0015, 0, VR::SQ, VM::M1, "AcquisitionDeviceTypeCodeSequence" },
-{ 0x0022, 0x1054, 0, VR::FL, VM::M1, "PredictedRefractiveError" },
-{ 0x0046, 0x0071, 0, VR::SQ, VM::M1, "KeratometryLeftEyeSequence" },
-{ 0x0054, 0x0063, 0, VR::SQ, VM::M1, "DataInformationSequence" },
-{ 0x0074, 0x1002, 0, VR::SQ, VM::M1, "ProcedureStepProgressInformationSequence" },
-{ 0x300A, 0x00FE, 0, VR::LO, VM::M1, "BlockName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0056[] = {
-{ 0x0008, 0x0030, 0, VR::TM, VM::M1, "StudyTime" },
-{ 0x0018, 0x0020, 0, VR::CS, VM::M1TN, "ScanningSequence" },
-{ 0x0018, 0x1061, 0, VR::LO, VM::M1, "TriggerSourceOrType" },
-{ 0x0020, 0x0018, 1, VR::IS, VM::M1, "AngleNumber" },
-{ 0x0020, 0x9251, 0, VR::FD, VM::M1, "RRIntervalTimeNominal" },
-{ 0x0022, 0x001A, 0, VR::SQ, VM::M1, "ChannelDescriptionCodeSequence" },
-{ 0x0028, 0x0010, 0, VR::US, VM::M1, "Rows" },
-{ 0x0028, 0x0400, 1, VR::LO, VM::M1, "TransformLabel" },
-{ 0x0028, 0x1051, 0, VR::DS, VM::M1TN, "WindowWidth" },
-{ 0x0032, 0x000A, 1, VR::CS, VM::M1, "StudyStatusID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0057[] = {
-{ 0x0008, 0x0031, 0, VR::TM, VM::M1, "SeriesTime" },
-{ 0x0008, 0x1070, 0, VR::PN, VM::M1TN, "OperatorsName" },
-{ 0x0018, 0x0021, 0, VR::CS, VM::M1TN, "SequenceVariant" },
-{ 0x0018, 0x1060, 0, VR::DS, VM::M1, "TriggerTime" },
-{ 0x0018, 0x1470, 0, VR::DS, VM::M1, "TomoAngle" },
-{ 0x0020, 0x0019, 0, VR::IS, VM::M1, "ItemNumber" },
-{ 0x0020, 0x9250, 0, VR::CS, VM::M1, "RespiratoryTriggerType" },
-{ 0x0022, 0x001B, 0, VR::SQ, VM::M1, "RefractiveStateSequence" },
-{ 0x0028, 0x0011, 0, VR::US, VM::M1, "Columns" },
-{ 0x0028, 0x0401, 1, VR::LO, VM::M1, "TransformVersionNumber" },
-{ 0x0028, 0x1050, 0, VR::DS, VM::M1TN, "WindowCenter" },
-{ 0x0074, 0x100c, 0, VR::LO, VM::M1, "ContactDisplayName" },
-{ 0x3008, 0x00F2, 0, VR::SQ, VM::M1, "RecordedRangeShifterSequence" },
-{ 0x300A, 0x00F0, 0, VR::IS, VM::M1, "NumberOfBlocks" },
-{ 0x300C, 0x00F6, 0, VR::IS, VM::M1, "ReferencedStopControlPointIndex" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0058[] = {
-{ 0x0008, 0x0032, 0, VR::TM, VM::M1, "AcquisitionTime" },
-{ 0x0018, 0x0022, 0, VR::CS, VM::M1TN, "ScanOptions" },
-{ 0x0018, 0x1063, 0, VR::DS, VM::M1, "FrameTime" },
-{ 0x0020, 0x9253, 0, VR::SQ, VM::M1, "RespiratorySynchronizationSequence" },
-{ 0x0022, 0x0018, 0, VR::SQ, VM::M1, "ImagePathFilterTypeStackCodeSequence" },
-{ 0x0022, 0x1059, 0, VR::FL, VM::M1, "OphthalmicAxialLengthVelocity" },
-{ 0x0028, 0x0012, 1, VR::US, VM::M1, "Planes" },
-{ 0x0028, 0x0402, 1, VR::US, VM::M1, "NumberOfTransformSteps" },
-{ 0x0028, 0x1053, 0, VR::DS, VM::M1, "RescaleSlope" },
-{ 0x2010, 0x00A8, 0, VR::CS, VM::M1, "DefaultSmoothingType" },
-{ 0x300A, 0x00F3, 0, VR::FL, VM::M1, "TotalBlockTrayWaterEquivalentThickness" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0059[] = {
-{ 0x0008, 0x0033, 0, VR::TM, VM::M1, "ContentTime" },
-{ 0x0008, 0x1072, 0, VR::SQ, VM::M1, "OperatorIdentificationSequence" },
-{ 0x0018, 0x0023, 0, VR::CS, VM::M1, "MRAcquisitionType" },
-{ 0x0018, 0x1062, 0, VR::IS, VM::M1, "NominalInterval" },
-{ 0x0020, 0x9252, 0, VR::FD, VM::M1, "ActualCardiacTriggerDelayTime" },
-{ 0x0022, 0x0019, 0, VR::SQ, VM::M1, "LensesCodeSequence" },
-{ 0x0028, 0x0403, 1, VR::LO, VM::M1TN, "SequenceOfCompressedData" },
-{ 0x0028, 0x1052, 0, VR::DS, VM::M1, "RescaleIntercept" },
-{ 0x0074, 0x100e, 0, VR::SQ, VM::M1, "ProcedureStepDiscontinuationReasonCodeSequence" },
-{ 0x2010, 0x00A9, 0, VR::CS, VM::M1TN, "OtherSmoothingTypesAvailable" },
-{ 0x3008, 0x00F0, 0, VR::SQ, VM::M1, "RecordedSnoutSequence" },
-{ 0x300A, 0x00F2, 0, VR::DS, VM::M1, "TotalBlockTrayFactor" },
-{ 0x300C, 0x00F4, 0, VR::IS, VM::M1, "ReferencedStartControlPointIndex" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0060[] = {
-{ 0x0008, 0x0034, 1, VR::TM, VM::M1, "OverlayTime" },
-{ 0x0014, 0x0028, 2, VR::ST, VM::M1TN, "ComponentManufacturer" },
-{ 0x0018, 0x0024, 0, VR::SH, VM::M1, "SequenceName" },
-{ 0x0018, 0x1065, 0, VR::DS, VM::M1TN, "FrameTimeVector" },
-{ 0x0020, 0x9255, 0, VR::FD, VM::M1, "NominalRespiratoryTriggerDelayTime" },
-{ 0x0022, 0x001E, 0, VR::FL, VM::M1, "CameraAngleOfView" },
-{ 0x0024, 0x0018, 0, VR::FL, VM::M1, "MaximumStimulusLuminance" },
-{ 0x0028, 0x0014, 0, VR::US, VM::M1, "UltrasoundColorDataPresent" },
-{ 0x0028, 0x0404, 1, VR::AT, VM::M1TN, "DetailsOfCoefficients" },
-{ 0x0028, 0x1055, 0, VR::LO, VM::M1TN, "WindowCenterWidthExplanation" },
-{ 0x0038, 0x0004, 0, VR::SQ, VM::M1, "ReferencedPatientAliasSequence" },
-{ 0x300A, 0x00F5, 0, VR::SH, VM::M1, "BlockTrayID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0061[] = {
-{ 0x0008, 0x0035, 1, VR::TM, VM::M1, "CurveTime" },
-{ 0x0018, 0x0025, 0, VR::CS, VM::M1, "AngioFlag" },
-{ 0x0018, 0x1064, 0, VR::LO, VM::M1, "CardiacFramingType" },
-{ 0x0020, 0x9254, 0, VR::FD, VM::M1, "RespiratoryIntervalTime" },
-{ 0x0028, 0x1054, 0, VR::LO, VM::M1, "RescaleType" },
-{ 0x0074, 0x1008, 0, VR::SQ, VM::M1, "ProcedureStepCommunicationsURISequence" },
-{ 0x3008, 0x00F6, 0, VR::SQ, VM::M1, "RecordedRangeModulatorSequence" },
-{ 0x300A, 0x00F4, 0, VR::SQ, VM::M1, "BlockSequence" },
-{ 0x300C, 0x00F2, 0, VR::SQ, VM::M1, "ReferencedControlPointSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0062[] = {
-{ 0x0018, 0x0026, 0, VR::SQ, VM::M1, "InterventionDrugInformationSequence" },
-{ 0x0018, 0x1067, 0, VR::DS, VM::M1, "ImageTriggerDelay" },
-{ 0x0020, 0x9257, 0, VR::FD, VM::M1, "ActualRespiratoryTriggerDelayTime" },
-{ 0x0022, 0x001C, 0, VR::SQ, VM::M1, "MydriaticAgentCodeSequence" },
-{ 0x0028, 0x6190, 0, VR::ST, VM::M1, "MaskOperationExplanation" },
-{ 0x0032, 0x000C, 1, VR::CS, VM::M1, "StudyPriorityID" },
-{ 0x003A, 0x0004, 0, VR::CS, VM::M1, "WaveformOriginality" },
-{ 0x300A, 0x00F7, 0, VR::FL, VM::M1, "IsocenterToBlockTrayDistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0063[] = {
-{ 0x0018, 0x0027, 0, VR::TM, VM::M1, "InterventionDrugStopTime" },
-{ 0x0018, 0x1066, 0, VR::DS, VM::M1, "FrameDelay" },
-{ 0x0020, 0x9256, 0, VR::FD, VM::M1, "RespiratoryTriggerDelayThreshold" },
-{ 0x0022, 0x001D, 0, VR::SQ, VM::M1, "RelativeImagePositionCodeSequence" },
-{ 0x0028, 0x1056, 0, VR::CS, VM::M1, "VOILUTFunction" },
-{ 0x003A, 0x0005, 0, VR::US, VM::M1, "NumberOfWaveformChannels" },
-{ 0x0074, 0x100a, 0, VR::ST, VM::M1, "ContactURI" },
-{ 0x3008, 0x00F4, 0, VR::SQ, VM::M1, "RecordedLateralSpreadingDeviceSequence" },
-{ 0x300A, 0x00F6, 0, VR::DS, VM::M1, "SourceToBlockTrayDistance" },
-{ 0x300C, 0x00F0, 0, VR::IS, VM::M1, "ReferencedControlPointIndex" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0064[] = {
-{ 0x0010, 0x1010, 0, VR::AS, VM::M1, "PatientAge" },
-{ 0x0018, 0x1018, 0, VR::LO, VM::M1, "SecondaryCaptureDeviceManufacturerModelName" },
-{ 0x0020, 0x1020, 1, VR::LO, VM::M1TN, "Reference" },
-{ 0x0020, 0x9228, 0, VR::UL, VM::M1, "ConcatenationFrameOffsetNumber" },
-{ 0x0024, 0x0065, 0, VR::SQ, VM::M1, "AgeCorrectedSensitivityDeviationAlgorithmSequence" },
-{ 0x0028, 0x0069, 1, VR::US, VM::M1, "BitsGrouped" },
-{ 0x0032, 0x1032, 0, VR::PN, VM::M1, "RequestingPhysician" },
-{ 0x0040, 0x0001, 0, VR::AE, VM::M1TN, "ScheduledStationAETitle" },
-{ 0x0052, 0x0013, 0, VR::FD, VM::M1, "CatheterRotationalRate" },
-{ 0x0054, 0x0015, 0, VR::DS, VM::M1, "EnergyWindowUpperLimit" },
-{ 0x0066, 0x0027, 0, VR::SQ, VM::M1, "TriangleFanSequence" },
-{ 0x1000, 0x0000, 1, VR::US, VM::M3, "EscapeTriplet" },
-{ 0x3006, 0x0084, 0, VR::IS, VM::M1, "ReferencedROINumber" },
-{ 0x300A, 0x0088, 1, VR::FL, VM::M1, "BeamDosePointDepth" },
-{ 0x5000, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue" },
-{ 0x5002, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange2" },
-{ 0x5010, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue9" },
-{ 0x5014, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor11" },
-{ 0x5016, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0065[] = {
-{ 0x0010, 0x0050, 0, VR::SQ, VM::M1, "PatientInsurancePlanCodeSequence" },
-{ 0x0014, 0x0054, 2, VR::DS, VM::M1, "OuterDiameter" },
-{ 0x0018, 0x1019, 0, VR::LO, VM::M1TN, "SecondaryCaptureDeviceSoftwareVersions" },
-{ 0x0018, 0x9601, 0, VR::SQ, VM::M1, "DiffusionBMatrixSequence" },
-{ 0x0020, 0x0060, 0, VR::CS, VM::M1, "Laterality" },
-{ 0x0024, 0x0064, 0, VR::SQ, VM::M1, "ResultsNormalsSequence" },
-{ 0x0028, 0x0068, 1, VR::US, VM::M1, "RepeatInterval" },
-{ 0x0032, 0x1033, 0, VR::LO, VM::M1, "RequestingService" },
-{ 0x0044, 0x0004, 0, VR::DT, VM::M1, "ApprovalStatusDateTime" },
-{ 0x0048, 0x0008, 0, VR::SQ, VM::M1, "TotalPixelMatrixOriginSequence" },
-{ 0x0050, 0x0010, 0, VR::SQ, VM::M1, "DeviceSequence" },
-{ 0x0052, 0x0012, 0, VR::US, VM::M1, "ALinesPerFrame" },
-{ 0x0054, 0x0014, 0, VR::DS, VM::M1, "EnergyWindowLowerLimit" },
-{ 0x0066, 0x0026, 0, VR::SQ, VM::M1, "TriangleStripSequence" },
-{ 0x0072, 0x0032, 0, VR::US, VM::M1, "ImageSetNumber" },
-{ 0x0072, 0x0422, 0, VR::SQ, VM::M1, "StructuredDisplayImageBoxSequence" },
-{ 0x0076, 0x0036, 0, VR::CS, VM::M1, "ExclusiveComponentType" },
-{ 0x1000, 0x0001, 1, VR::US, VM::M3, "RunLengthTriplet" },
-{ 0x2040, 0x0082, 1, VR::CS, VM::M1, "OverlayBackgroundDensity" },
-{ 0x3006, 0x0085, 0, VR::SH, VM::M1, "ROIObservationLabel" },
-{ 0x300A, 0x0089, 1, VR::FL, VM::M1, "BeamDosePointEquivalentDepth" },
-{ 0x5000, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue" },
-{ 0x5006, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0066[] = {
-{ 0x0012, 0x0051, 0, VR::ST, VM::M1, "ClinicalTrialTimePointDescription" },
-{ 0x0018, 0x101A, 1, VR::LO, VM::M1TN, "HardcopyDeviceSoftwareVersion" },
-{ 0x0018, 0x9602, 0, VR::FD, VM::M1, "DiffusionBValueXX" },
-{ 0x0024, 0x0067, 0, VR::SQ, VM::M1, "GeneralizedDefectSensitivityDeviationAlgorithmSequence" },
-{ 0x0032, 0x1030, 1, VR::LO, VM::M1, "ReasonForStudy" },
-{ 0x0040, 0x0003, 0, VR::TM, VM::M1, "ScheduledProcedureStepStartTime" },
-{ 0x0044, 0x0007, 0, VR::SQ, VM::M1, "ProductTypeCodeSequence" },
-{ 0x0050, 0x0013, 0, VR::FD, VM::M1, "ContainerComponentThickness" },
-{ 0x0052, 0x0011, 0, VR::FD, VM::M1, "ALineRate" },
-{ 0x0054, 0x0017, 0, VR::IS, VM::M1, "ResidualSyringeCounts" },
-{ 0x0066, 0x0025, 0, VR::OW, VM::M1, "VertexPointIndexList" },
-{ 0x0072, 0x0421, 0, VR::US, VM::M3, "EmptyImageBoxCIELabValue" },
-{ 0x1000, 0x0002, 1, VR::US, VM::M1, "HuffmanTableSize" },
-{ 0x3006, 0x0086, 0, VR::SQ, VM::M1, "RTROIIdentificationCodeSequence" },
-{ 0x300A, 0x008A, 1, VR::FL, VM::M1, "BeamDosePointSSD" },
-{ 0x5000, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange" },
-{ 0x5002, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue2" },
-{ 0x5012, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue10" },
-{ 0x5014, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue11" },
-{ 0x5016, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0067[] = {
-{ 0x0012, 0x0050, 0, VR::LO, VM::M1, "ClinicalTrialTimePointID" },
-{ 0x0014, 0x0056, 2, VR::DS, VM::M1, "InnerDiameter" },
-{ 0x0018, 0x101B, 1, VR::LO, VM::M1, "HardcopyDeviceManufacturerModelName" },
-{ 0x0018, 0x9603, 0, VR::FD, VM::M1, "DiffusionBValueXY" },
-{ 0x0020, 0x0062, 0, VR::CS, VM::M1, "ImageLaterality" },
-{ 0x0024, 0x0066, 0, VR::FL, VM::M1, "GlobalDeviationFromNormal" },
-{ 0x0032, 0x1031, 0, VR::SQ, VM::M1, "RequestingPhysicianIdentificationSequence" },
-{ 0x0040, 0x0002, 0, VR::DA, VM::M1, "ScheduledProcedureStepStartDate" },
-{ 0x0050, 0x0012, 0, VR::SQ, VM::M1, "ContainerComponentTypeCodeSequence" },
-{ 0x0054, 0x0016, 0, VR::SQ, VM::M1, "RadiopharmaceuticalInformationSequence" },
-{ 0x0066, 0x0024, 0, VR::OW, VM::M1, "EdgePointIndexList" },
-{ 0x0072, 0x0030, 0, VR::SQ, VM::M1, "TimeBasedImageSetsSequence" },
-{ 0x0072, 0x0420, 0, VR::US, VM::M3, "StructuredDisplayBackgroundCIELabValue" },
-{ 0x0076, 0x0034, 0, VR::CS, VM::M1, "ComponentTypeCodeSequence" },
-{ 0x1000, 0x0003, 1, VR::US, VM::M3, "HuffmanTableTriplet" },
-{ 0x2040, 0x0080, 1, VR::CS, VM::M1, "OverlayForegroundDensity" },
-{ 0x300A, 0x008B, 0, VR::CS, VM::M1, "BeamDoseMeaning" },
-{ 0x5002, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue2" },
-{ 0x5004, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation3" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0068[] = {
-{ 0x0004, 0x1410, 0, VR::US, VM::M1, "RecordInUseFlag" },
-{ 0x0014, 0x1010, 2, VR::ST, VM::M1, "ActualEnvironmentalConditions" },
-{ 0x0018, 0x9214, 0, VR::CS, VM::M1, "RespiratoryCyclePosition" },
-{ 0x0018, 0x9604, 0, VR::FD, VM::M1, "DiffusionBValueXZ" },
-{ 0x0022, 0x1436, 0, VR::SQ, VM::M1, "OphthalmicThicknessMapTypeCodeSequence" },
-{ 0x0024, 0x0061, 0, VR::CS, VM::M1, "ExcessiveFalsePositivesDataFlag" },
-{ 0x0040, 0x0005, 0, VR::TM, VM::M1, "ScheduledProcedureStepEndTime" },
-{ 0x0044, 0x0001, 0, VR::ST, VM::M1, "ProductPackageIdentifier" },
-{ 0x0050, 0x0015, 0, VR::FD, VM::M1, "ContainerComponentWidth" },
-{ 0x0054, 0x0011, 0, VR::US, VM::M1, "NumberOfEnergyWindows" },
-{ 0x0066, 0x0023, 0, VR::OW, VM::M1, "TrianglePointIndexList" },
-{ 0x0072, 0x0427, 0, VR::SQ, VM::M1, "ReferencedFirstFrameSequence" },
-{ 0x1000, 0x0004, 1, VR::US, VM::M1, "ShiftTableSize" },
-{ 0x3006, 0x0080, 0, VR::SQ, VM::M1, "RTROIObservationsSequence" },
-{ 0x300A, 0x008C, 0, VR::SQ, VM::M1, "BeamDoseVerificationControlPointSequence" },
-{ 0x5004, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue3" },
-{ 0x5006, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange4" },
-{ 0x5010, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor9" },
-{ 0x5012, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue10" },
-{ 0x5014, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue11" },
-{ 0x5400, 0x0110, 0, VR::OX, VM::M1, "ChannelMinimumValue" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0069[] = {
-{ 0x0008, 0x9205, 0, VR::CS, VM::M1, "PixelPresentation" },
-{ 0x0014, 0x0050, 2, VR::CS, VM::M1, "ComponentShape" },
-{ 0x0018, 0x9605, 0, VR::FD, VM::M1, "DiffusionBValueYY" },
-{ 0x0024, 0x0060, 0, VR::US, VM::M1, "FalsePositivesQuantity" },
-{ 0x0040, 0x0004, 0, VR::DA, VM::M1, "ScheduledProcedureStepEndDate" },
-{ 0x0050, 0x0014, 0, VR::DS, VM::M1, "DeviceLength" },
-{ 0x0052, 0x0016, 0, VR::SQ, VM::M1, "ModeOfPercutaneousAccessSequence" },
-{ 0x0054, 0x0010, 0, VR::US, VM::M1TN, "EnergyWindowVector" },
-{ 0x0054, 0x0400, 0, VR::SH, VM::M1, "ImageID" },
-{ 0x0076, 0x0032, 0, VR::SQ, VM::M1, "ComponentTypesSequence" },
-{ 0x1000, 0x0005, 1, VR::US, VM::M3, "ShiftTableTriplet" },
-{ 0x300A, 0x008D, 0, VR::FL, VM::M1, "AverageBeamDosePointDepth" },
-{ 0x5002, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation2" },
-{ 0x5004, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue3" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0070[] = {
-{ 0x0008, 0x9206, 0, VR::CS, VM::M1, "VolumetricProperties" },
-{ 0x0018, 0x9606, 0, VR::FD, VM::M1, "DiffusionBValueYZ" },
-{ 0x0022, 0x1024, 0, VR::SQ, VM::M1, "LensStatusCodeSequence" },
-{ 0x0024, 0x0063, 0, VR::CS, VM::M1, "VisualFieldTestNormalsFlag" },
-{ 0x0032, 0x1034, 0, VR::SQ, VM::M1, "RequestingServiceCodeSequence" },
-{ 0x0040, 0x0007, 0, VR::LO, VM::M1, "ScheduledProcedureStepDescription" },
-{ 0x0044, 0x0003, 0, VR::LT, VM::M1, "ApprovalStatusFurtherDescription" },
-{ 0x0050, 0x0017, 0, VR::CS, VM::M1, "DeviceDiameterUnits" },
-{ 0x0054, 0x0013, 0, VR::SQ, VM::M1, "EnergyWindowRangeSequence" },
-{ 0x0066, 0x0021, 0, VR::OF, VM::M1, "VectorCoordinateData" },
-{ 0x3006, 0x0082, 0, VR::IS, VM::M1, "ObservationNumber" },
-{ 0x300A, 0x008E, 0, VR::FL, VM::M1, "AverageBeamDosePointEquivalentDepth" },
-{ 0x5004, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange3" },
-{ 0x5006, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue4" },
-{ 0x5010, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue9" },
-{ 0x5012, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor10" },
-{ 0x5016, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue12" },
-{ 0x5400, 0x0112, 0, VR::OX, VM::M1, "ChannelMaximumValue" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0071[] = {
-{ 0x0008, 0x9207, 0, VR::CS, VM::M1, "VolumeBasedCalculationTechnique" },
-{ 0x0014, 0x0052, 2, VR::CS, VM::M1, "CurvatureType" },
-{ 0x0018, 0x9217, 0, VR::FD, VM::M1, "VelocityEncodingMaximumValue" },
-{ 0x0018, 0x9607, 0, VR::FD, VM::M1, "DiffusionBValueZZ" },
-{ 0x0022, 0x1025, 0, VR::SQ, VM::M1, "VitreousStatusCodeSequence" },
-{ 0x0024, 0x0062, 0, VR::CS, VM::M1, "ExcessiveFalsePositives" },
-{ 0x0040, 0x0006, 0, VR::PN, VM::M1, "ScheduledPerformingPhysicianName" },
-{ 0x0044, 0x0002, 0, VR::CS, VM::M1, "SubstanceAdministrationApproval" },
-{ 0x0050, 0x0016, 0, VR::DS, VM::M1, "DeviceDiameter" },
-{ 0x0052, 0x0014, 0, VR::FD, VM::M1, "ALinePixelSpacing" },
-{ 0x0054, 0x0012, 0, VR::SQ, VM::M1, "EnergyWindowInformationSequence" },
-{ 0x0066, 0x0020, 0, VR::FL, VM::M1TN, "VectorAccuracy" },
-{ 0x0072, 0x0034, 0, VR::CS, VM::M1, "ImageSetSelectorCategory" },
-{ 0x0072, 0x0424, 0, VR::SQ, VM::M1, "StructuredDisplayTextBoxSequence" },
-{ 0x0076, 0x0030, 0, VR::LO, VM::M1, "SurgicalTechnique" },
-{ 0x300A, 0x008F, 0, VR::FL, VM::M1, "AverageBeamDosePointSSD" },
-{ 0x5000, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation" },
-{ 0x5006, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0072[] = {
-{ 0x0008, 0x0041, 1, VR::LO, VM::M1, "DataSetSubtype" },
-{ 0x0008, 0x1000, 1, VR::AE, VM::M1, "NetworkID" },
-{ 0x0008, 0x9208, 0, VR::CS, VM::M1, "ComplexImageComponent" },
-{ 0x0018, 0x1010, 0, VR::LO, VM::M1, "SecondaryCaptureDeviceID" },
-{ 0x0018, 0x1400, 0, VR::LO, VM::M1, "AcquisitionDeviceProcessingDescription" },
-{ 0x0018, 0x9218, 0, VR::FD, VM::M1, "TagSpacingSecondDimension" },
-{ 0x0028, 0x0061, 1, VR::SH, VM::M1, "CompressionOriginator" },
-{ 0x0040, 0x0009, 0, VR::SH, VM::M1, "ScheduledProcedureStepID" },
-{ 0x0048, 0x0001, 0, VR::FL, VM::M1, "ImagedVolumeWidth" },
-{ 0x0050, 0x0019, 0, VR::DS, VM::M1, "InterMarkerDistance" },
-{ 0x0066, 0x002F, 0, VR::SQ, VM::M1, "AlgorithmFamilyCodeSequence" },
-{ 0x3008, 0x0082, 0, VR::IS, VM::M1, "ReferencedMeasuredDoseReferenceNumber" },
-{ 0x300A, 0x0080, 0, VR::IS, VM::M1, "NumberOfBeams" },
-{ 0x5008, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue5" },
-{ 0x500A, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange6" },
-{ 0x5018, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue13" },
-{ 0x501C, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor15" },
-{ 0x501E, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0073[] = {
-{ 0x0008, 0x0040, 1, VR::US, VM::M1, "DataSetType" },
-{ 0x0008, 0x9209, 0, VR::CS, VM::M1, "AcquisitionContrast" },
-{ 0x0018, 0x0050, 0, VR::DS, VM::M1, "SliceThickness" },
-{ 0x0018, 0x1011, 1, VR::LO, VM::M1, "HardcopyCreationDeviceID" },
-{ 0x0018, 0x1401, 0, VR::LO, VM::M1, "AcquisitionDeviceProcessingCode" },
-{ 0x0018, 0x9219, 0, VR::SS, VM::M1, "TagAngleSecondAxis" },
-{ 0x0020, 0x9221, 0, VR::SQ, VM::M1, "DimensionOrganizationSequence" },
-{ 0x0028, 0x0060, 1, VR::CS, VM::M1, "CompressionCode" },
-{ 0x0040, 0x0008, 0, VR::SQ, VM::M1, "ScheduledProtocolCodeSequence" },
-{ 0x0050, 0x0018, 0, VR::DS, VM::M1, "DeviceVolume" },
-{ 0x0066, 0x002E, 0, VR::SQ, VM::M1, "SegmentSurfaceSourceInstanceSequence" },
-{ 0x0072, 0x003A, 0, VR::CS, VM::M1, "RelativeTimeUnits" },
-{ 0x5008, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue5" },
-{ 0x500E, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0074[] = {
-{ 0x0018, 0x1012, 0, VR::DA, VM::M1, "DateOfSecondaryCapture" },
-{ 0x0018, 0x1402, 0, VR::CS, VM::M1, "CassetteOrientation" },
-{ 0x0020, 0x9222, 0, VR::SQ, VM::M1, "DimensionIndexSequence" },
-{ 0x0022, 0x1028, 0, VR::SQ, VM::M1, "IOLFormulaCodeSequence" },
-{ 0x0028, 0x0063, 1, VR::SH, VM::M1, "CompressionDescription" },
-{ 0x0040, 0x000B, 0, VR::SQ, VM::M1, "ScheduledPerformingPhysicianIdentificationSequence" },
-{ 0x0048, 0x0003, 0, VR::FL, VM::M1, "ImagedVolumeDepth" },
-{ 0x0050, 0x001B, 0, VR::LO, VM::M1, "ContainerComponentID" },
-{ 0x0066, 0x002D, 0, VR::SQ, VM::M1, "SegmentSurfaceGenerationAlgorithmIdentificationSequence" },
-{ 0x3008, 0x0080, 0, VR::SQ, VM::M1, "ReferencedMeasuredDoseReferenceSequence" },
-{ 0x300A, 0x0082, 0, VR::DS, VM::M3, "BeamDoseSpecificationPoint" },
-{ 0x5008, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange5" },
-{ 0x500A, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue6" },
-{ 0x501A, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue14" },
-{ 0x501C, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue15" },
-{ 0x501E, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0075[] = {
-{ 0x0008, 0x0042, 1, VR::CS, VM::M1, "NuclearMedicineSeriesType" },
-{ 0x0018, 0x1403, 0, VR::CS, VM::M1, "CassetteSize" },
-{ 0x0022, 0x1029, 0, VR::LO, VM::M1, "IOLFormulaDetail" },
-{ 0x0028, 0x0062, 1, VR::LO, VM::M1, "CompressionLabel" },
-{ 0x0040, 0x000A, 0, VR::SQ, VM::M1, "StageCodeSequence" },
-{ 0x0048, 0x0002, 0, VR::FL, VM::M1, "ImagedVolumeHeight" },
-{ 0x0050, 0x001A, 0, VR::CS, VM::M1, "ContainerComponentMaterial" },
-{ 0x0066, 0x002C, 0, VR::UL, VM::M1, "ReferencedSurfaceNumber" },
-{ 0x0072, 0x0038, 0, VR::US, VM::M2, "RelativeTime" },
-{ 0x500A, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue6" },
-{ 0x500C, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0076[] = {
-{ 0x0018, 0x1014, 0, VR::TM, VM::M1, "TimeOfSecondaryCapture" },
-{ 0x0018, 0x1404, 0, VR::US, VM::M1, "ExposuresOnPlate" },
-{ 0x0024, 0x0069, 0, VR::LO, VM::M1, "PatientReliabilityIndicator" },
-{ 0x0028, 0x0065, 1, VR::CS, VM::M1TN, "CompressionSequence" },
-{ 0x0044, 0x0009, 0, VR::LT, VM::M1, "ProductDescription" },
-{ 0x0050, 0x001D, 0, VR::FD, VM::M1, "ContainerComponentDiameter" },
-{ 0x0066, 0x002B, 0, VR::SQ, VM::M1, "ReferencedSurfaceSequence" },
-{ 0x3006, 0x0088, 0, VR::ST, VM::M1, "ROIObservationDescription" },
-{ 0x300A, 0x0084, 0, VR::DS, VM::M1, "BeamDose" },
-{ 0x500C, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue7" },
-{ 0x500E, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange8" },
-{ 0x5018, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor13" },
-{ 0x501A, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue14" },
-{ 0x501C, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0077[] = {
-{ 0x0018, 0x1405, 0, VR::IS, VM::M1, "RelativeXRayExposure" },
-{ 0x0024, 0x0068, 0, VR::FL, VM::M1, "LocalizedDeviationFromNormal" },
-{ 0x0044, 0x0008, 0, VR::LO, VM::M1TN, "ProductName" },
-{ 0x0050, 0x001C, 0, VR::FD, VM::M1, "ContainerComponentLength" },
-{ 0x0054, 0x0018, 0, VR::SH, VM::M1, "EnergyWindowName" },
-{ 0x0066, 0x002A, 0, VR::UL, VM::M1, "SurfaceCount" },
-{ 0x0072, 0x003E, 0, VR::SQ, VM::M1, "AbstractPriorCodeSequence" },
-{ 0x500A, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation6" },
-{ 0x500C, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0078[] = {
-{ 0x0018, 0x1016, 0, VR::LO, VM::M1, "SecondaryCaptureDeviceManufacturer" },
-{ 0x0044, 0x000B, 0, VR::DT, VM::M1, "ProductExpirationDateTime" },
-{ 0x0048, 0x0007, 0, VR::UL, VM::M1, "TotalPixelMatrixRows" },
-{ 0x0066, 0x0029, 0, VR::OW, VM::M1, "PrimitivePointIndexList" },
-{ 0x300A, 0x0086, 0, VR::DS, VM::M1, "BeamMeterset" },
-{ 0x300C, 0x0080, 0, VR::SQ, VM::M1, "ReferencedDoseSequence" },
-{ 0x500C, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange7" },
-{ 0x500E, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue8" },
-{ 0x5018, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue13" },
-{ 0x501A, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor14" },
-{ 0x501E, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0079[] = {
-{ 0x0014, 0x3099, 2, VR::LT, VM::M1, "CalibrationNotes" },
-{ 0x0018, 0x1017, 1, VR::LO, VM::M1, "HardcopyDeviceManufacturer" },
-{ 0x0028, 0x0066, 1, VR::AT, VM::M1TN, "CompressionStepPointers" },
-{ 0x0044, 0x000A, 0, VR::LO, VM::M1, "ProductLotIdentifier" },
-{ 0x0048, 0x0006, 0, VR::UL, VM::M1, "TotalPixelMatrixColumns" },
-{ 0x0050, 0x001E, 0, VR::LO, VM::M1, "ContainerComponentDescription" },
-{ 0x0066, 0x0028, 0, VR::SQ, VM::M1, "LineSequence" },
-{ 0x0068, 0x65B0, 0, VR::FD, VM::M4, "TwoDLineCoordinates" },
-{ 0x0072, 0x003C, 0, VR::SS, VM::M2, "AbstractPriorValue" },
-{ 0x0076, 0x0038, 0, VR::CS, VM::M1, "MandatoryComponentType" },
-{ 0x5008, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation5" },
-{ 0x500E, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0080[] = {
-{ 0x0010, 0x1000, 0, VR::LO, VM::M1TN, "OtherPatientIDs" },
-{ 0x0014, 0x0045, 1, VR::ST, VM::M1TN, "MaterialPropertiesFileFormatRetired" },
-{ 0x0018, 0x1008, 0, VR::LO, VM::M1, "GantryID" },
-{ 0x0018, 0x9200, 0, VR::CS, VM::M1, "MRSpectroscopyAcquisitionType" },
-{ 0x0020, 0x9238, 0, VR::LO, VM::M1, "FunctionalGroupPrivateCreator" },
-{ 0x0024, 0x0075, 0, VR::FL, VM::M1, "ShortTermFluctuation" },
-{ 0x0040, 0x0011, 0, VR::SH, VM::M1, "ScheduledProcedureStepLocation" },
-{ 0x0042, 0x0013, 0, VR::SQ, VM::M1, "SourceInstanceSequence" },
-{ 0x0052, 0x0003, 0, VR::FD, VM::M1, "BeamSpotSize" },
-{ 0x0066, 0x0037, 0, VR::FL, VM::M1, "RecommendedPointRadius" },
-{ 0x0070, 0x0021, 0, VR::US, VM::M1, "NumberOfGraphicPoints" },
-{ 0x1010, 0x0000, 1, VR::US, VM::M1TN, "ZonalMap" },
-{ 0x5000, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue" },
-{ 0x5004, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor3" },
-{ 0x5006, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue4" },
-{ 0x5010, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue9" },
-{ 0x5012, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0081[] = {
-{ 0x0008, 0x0058, 0, VR::UI, VM::M1TN, "FailedSOPInstanceUIDList" },
-{ 0x0010, 0x0040, 0, VR::CS, VM::M1, "PatientSex" },
-{ 0x0010, 0x1001, 0, VR::PN, VM::M1TN, "OtherPatientNames" },
-{ 0x0012, 0x0042, 0, VR::LO, VM::M1, "ClinicalTrialSubjectReadingID" },
-{ 0x0014, 0x0044, 2, VR::ST, VM::M1TN, "MaterialPropertiesDescription" },
-{ 0x0020, 0x0070, 1, VR::LO, VM::M1, "ImageGeometryType" },
-{ 0x0022, 0x1033, 0, VR::FL, VM::M1, "KeratometerIndex" },
-{ 0x0022, 0x1423, 0, VR::SQ, VM::M1, "AcquisitionMethodAlgorithmSequence" },
-{ 0x0024, 0x0074, 0, VR::CS, VM::M1, "ShortTermFluctuationCalculated" },
-{ 0x0040, 0x0010, 0, VR::SH, VM::M1TN, "ScheduledStationName" },
-{ 0x0040, 0x0400, 0, VR::LT, VM::M1, "CommentsOnTheScheduledProcedureStep" },
-{ 0x0040, 0xA29A, 1, VR::SL, VM::M2T2N, "PixelCoordinatesSetTrial" },
-{ 0x0042, 0x0012, 0, VR::LO, VM::M1, "MIMETypeOfEncapsulatedDocument" },
-{ 0x0046, 0x0016, 0, VR::SQ, VM::M1, "UnspecifiedLateralityLensSequence" },
-{ 0x0052, 0x0002, 0, VR::FD, VM::M1, "OCTFocalDistance" },
-{ 0x0054, 0x0414, 0, VR::SQ, VM::M1, "PatientGantryRelationshipCodeSequence" },
-{ 0x0066, 0x0036, 0, VR::LO, VM::M1, "AlgorithmName" },
-{ 0x0070, 0x0020, 0, VR::US, VM::M1, "GraphicDimensions" },
-{ 0x0072, 0x0022, 0, VR::SQ, VM::M1, "ImageSetSelectorSequence" },
-{ 0x0072, 0x0432, 0, VR::US, VM::M2TN, "SynchronizedImageBoxList" },
-{ 0x0078, 0x0028, 0, VR::SQ, VM::M1, "ImplantTemplateGroupTargetAnatomySequence" },
-{ 0x5010, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue9" },
-{ 0x5016, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0082[] = {
-{ 0x0010, 0x1002, 0, VR::SQ, VM::M1, "OtherPatientIDsSequence" },
-{ 0x0022, 0x1420, 0, VR::SQ, VM::M1, "AcquisitionMethodCodeSequence" },
-{ 0x0024, 0x0077, 0, VR::FL, VM::M1, "ShortTermFluctuationProbability" },
-{ 0x0032, 0x1020, 1, VR::LO, VM::M1, "ScheduledStudyLocation" },
-{ 0x0042, 0x0011, 0, VR::OB, VM::M1, "EncapsulatedDocument" },
-{ 0x0046, 0x0015, 0, VR::SQ, VM::M1, "LeftLensSequence" },
-{ 0x0052, 0x0001, 0, VR::FL, VM::M1, "ContrastBolusIngredientPercentByVolume" },
-{ 0x0066, 0x0035, 0, VR::SQ, VM::M1, "SurfaceProcessingAlgorithmIdentificationSequence" },
-{ 0x0070, 0x0023, 0, VR::CS, VM::M1, "GraphicType" },
-{ 0x5002, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue2" },
-{ 0x5004, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue3" },
-{ 0x5006, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor4" },
-{ 0x5010, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange9" },
-{ 0x5012, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0083[] = {
-{ 0x0012, 0x0040, 0, VR::LO, VM::M1, "ClinicalTrialSubjectID" },
-{ 0x0014, 0x0046, 2, VR::LT, VM::M1, "MaterialNotes" },
-{ 0x0024, 0x0076, 0, VR::CS, VM::M1, "ShortTermFluctuationProbabilityCalculated" },
-{ 0x0032, 0x1021, 1, VR::AE, VM::M1TN, "ScheduledStudyLocationAETitle" },
-{ 0x0040, 0x0012, 0, VR::LO, VM::M1, "PreMedication" },
-{ 0x0042, 0x0010, 0, VR::ST, VM::M1, "DocumentTitle" },
-{ 0x0046, 0x0014, 0, VR::SQ, VM::M1, "RightLensSequence" },
-{ 0x0066, 0x0034, 0, VR::SQ, VM::M1, "FacetSequence" },
-{ 0x0070, 0x0022, 0, VR::FL, VM::M2TN, "GraphicData" },
-{ 0x0072, 0x0020, 0, VR::SQ, VM::M1, "ImageSetsSequence" },
-{ 0x0072, 0x0430, 0, VR::SQ, VM::M1, "ImageBoxSynchronizationSequence" },
-{ 0x0078, 0x002A, 0, VR::SQ, VM::M1, "ImplantTemplateGroupMembersSequence" },
-{ 0x2040, 0x0090, 1, VR::CS, VM::M1, "OverlayMode" },
-{ 0x5012, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue10" },
-{ 0x5014, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0084[] = {
-{ 0x0004, 0x1400, 0, VR::UL, VM::M1, "OffsetOfTheNextDirectoryRecord" },
-{ 0x0024, 0x0071, 0, VR::FL, VM::M1, "GlobalDeviationProbability" },
-{ 0x0044, 0x0011, 0, VR::LO, VM::M1, "SubstanceAdministrationNotes" },
-{ 0x0052, 0x0007, 0, VR::FD, VM::M1, "OCTOpticalCenterWavelength" },
-{ 0x5000, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor" },
-{ 0x5002, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue2" },
-{ 0x5004, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue3" },
-{ 0x5014, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue11" },
-{ 0x5016, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange12" },
-{ 0x5400, 0x0100, 0, VR::SQ, VM::M1, "WaveformSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0085[] = {
-{ 0x0008, 0x9215, 0, VR::SQ, VM::M1, "DerivationCodeSequence" },
-{ 0x0010, 0x1005, 0, VR::PN, VM::M1, "PatientBirthName" },
-{ 0x0022, 0x1037, 0, VR::FL, VM::M1, "TargetRefraction" },
-{ 0x0024, 0x0070, 0, VR::FL, VM::M1, "VisualFieldMeanSensitivity" },
-{ 0x0028, 0x9235, 0, VR::CS, VM::M1, "SignalDomainRows" },
-{ 0x0044, 0x0010, 0, VR::DT, VM::M1, "SubstanceAdministrationDateTime" },
-{ 0x0046, 0x0012, 0, VR::LO, VM::M1, "LensDescription" },
-{ 0x0050, 0x0004, 0, VR::CS, VM::M1, "CalibrationImage" },
-{ 0x0052, 0x0006, 0, VR::CS, VM::M1, "OCTAcquisitionDomain" },
-{ 0x0054, 0x0410, 0, VR::SQ, VM::M1, "PatientOrientationCodeSequence" },
-{ 0x0066, 0x0032, 0, VR::LT, VM::M1, "AlgorithmParameters" },
-{ 0x0070, 0x0024, 0, VR::CS, VM::M1, "GraphicFilled" },
-{ 0x0072, 0x0026, 0, VR::AT, VM::M1, "SelectorAttribute" },
-{ 0x5012, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation10" },
-{ 0x5014, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0086[] = {
-{ 0x0014, 0x3080, 2, VR::OB, VM::M1, "BadPixelImage" },
-{ 0x0024, 0x0073, 0, VR::FL, VM::M1, "LocalizedDeviationProbability" },
-{ 0x0044, 0x0013, 0, VR::SQ, VM::M1, "ProductParameterSequence" },
-{ 0x0066, 0x0031, 0, VR::LO, VM::M1, "AlgorithmVersion" },
-{ 0x5000, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue" },
-{ 0x5002, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor2" },
-{ 0x5006, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue4" },
-{ 0x5014, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange11" },
-{ 0x5016, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0087[] = {
-{ 0x0014, 0x0042, 2, VR::ST, VM::M1TN, "MaterialGrade" },
-{ 0x0022, 0x1035, 0, VR::SQ, VM::M1, "SourceOfOphthalmicAxialLengthCodeSequence" },
-{ 0x0024, 0x0072, 0, VR::CS, VM::M1, "LocalDeviationProbabilityNormalsFlag" },
-{ 0x0042, 0x0014, 0, VR::LO, VM::M1TN, "ListOfMIMETypes" },
-{ 0x0044, 0x0012, 0, VR::LO, VM::M1, "SubstanceAdministrationDeviceID" },
-{ 0x0052, 0x0004, 0, VR::FD, VM::M1, "EffectiveRefractiveIndex" },
-{ 0x0054, 0x0412, 0, VR::SQ, VM::M1, "PatientOrientationModifierCodeSequence" },
-{ 0x0066, 0x0030, 0, VR::SQ, VM::M1, "AlgorithmNameCodeSequence" },
-{ 0x0072, 0x0024, 0, VR::CS, VM::M1, "ImageSetSelectorUsageFlag" },
-{ 0x0072, 0x0434, 0, VR::CS, VM::M1, "TypeOfSynchronization" },
-{ 0x0076, 0x0020, 0, VR::SQ, VM::M1, "ProcedureTypeCodeSequence" },
-{ 0x0078, 0x002E, 0, VR::US, VM::M1, "ImplantTemplateGroupMemberID" },
-{ 0x5010, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation9" },
-{ 0x5016, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0088[] = {
-{ 0x0008, 0x0051, 0, VR::SQ, VM::M1, "IssuerOfAccessionNumberSequence" },
-{ 0x0008, 0x1010, 0, VR::SH, VM::M1, "StationName" },
-{ 0x0018, 0x1000, 0, VR::LO, VM::M1, "DeviceSerialNumber" },
-{ 0x0018, 0x5104, 0, VR::SQ, VM::M1, "ProjectionEponymousNameCodeSequence" },
-{ 0x0028, 0x0071, 1, VR::XS, VM::M1, "PerimeterValue" },
-{ 0x0038, 0x0061, 1, VR::LO, VM::M1, "IssuerOfServiceEpisodeID" },
-{ 0x0048, 0x0011, 0, VR::CS, VM::M1, "FocusMethod" },
-{ 0x3008, 0x0092, 0, VR::IS, VM::M1, "ReferencedCalculatedDoseReferenceNumber" },
-{ 0x5008, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue5" },
-{ 0x500C, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor7" },
-{ 0x500E, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue8" },
-{ 0x5018, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue13" },
-{ 0x501A, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0089[] = {
-{ 0x0008, 0x0050, 0, VR::SH, VM::M1, "AccessionNumber" },
-{ 0x0018, 0x0040, 0, VR::IS, VM::M1, "CineRate" },
-{ 0x0018, 0x1411, 0, VR::DS, VM::M1, "ExposureIndex" },
-{ 0x0028, 0x0070, 1, VR::US, VM::M1TN, "PerimeterTable" },
-{ 0x0038, 0x0060, 0, VR::LO, VM::M1, "ServiceEpisodeID" },
-{ 0x0048, 0x0010, 0, VR::CS, VM::M1, "SpecimenLabelInImage" },
-{ 0x0078, 0x0020, 0, VR::LO, VM::M1, "ImplantTemplateGroupIssuer" },
-{ 0x5018, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue13" },
-{ 0x501E, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0090[] = {
-{ 0x0008, 0x0053, 0, VR::CS, VM::M1, "QueryRetrieveView" },
-{ 0x0018, 0x1002, 0, VR::UI, VM::M1, "DeviceUID" },
-{ 0x0018, 0x1412, 0, VR::DS, VM::M1, "TargetExposureIndex" },
-{ 0x0048, 0x0013, 0, VR::US, VM::M1, "NumberOfFocalPlanes" },
-{ 0x0052, 0x0009, 0, VR::FD, VM::M1, "RangingDepth" },
-{ 0x3008, 0x0090, 0, VR::SQ, VM::M1, "ReferencedCalculatedDoseReferenceSequence" },
-{ 0x500A, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue6" },
-{ 0x500C, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue7" },
-{ 0x500E, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor8" },
-{ 0x5018, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange13" },
-{ 0x501A, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0091[] = {
-{ 0x0008, 0x0052, 0, VR::CS, VM::M1, "QueryRetrieveLevel" },
-{ 0x0018, 0x0042, 0, VR::CS, VM::M1, "InitialCineRunState" },
-{ 0x0018, 0x1003, 0, VR::LO, VM::M1, "DeviceID" },
-{ 0x0018, 0x1413, 0, VR::DS, VM::M1, "DeviationIndex" },
-{ 0x0022, 0x1039, 0, VR::CS, VM::M1, "RefractiveProcedureOccurred" },
-{ 0x0038, 0x0062, 0, VR::LO, VM::M1, "ServiceEpisodeDescription" },
-{ 0x0040, 0xA290, 1, VR::CS, VM::M1, "CoordinatesSetGeometricTypeTrial" },
-{ 0x0048, 0x0012, 0, VR::CS, VM::M1, "ExtendedDepthOfField" },
-{ 0x0052, 0x0008, 0, VR::FD, VM::M1, "AxialResolution" },
-{ 0x0072, 0x0028, 0, VR::US, VM::M1, "SelectorValueNumber" },
-{ 0x501A, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue14" },
-{ 0x501C, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0092[] = {
-{ 0x0018, 0x1004, 0, VR::LO, VM::M1, "PlateID" },
-{ 0x0018, 0x5100, 0, VR::CS, VM::M1, "PatientPosition" },
-{ 0x0024, 0x0079, 0, VR::FL, VM::M1, "CorrectedLocalizedDeviationFromNormal" },
-{ 0x0040, 0xA297, 1, VR::ST, VM::M1, "AlgorithmDescriptionTrial" },
-{ 0x0044, 0x0019, 0, VR::SQ, VM::M1, "SubstanceAdministrationParameterSequence" },
-{ 0x0048, 0x0015, 0, VR::US, VM::M3, "RecommendedAbsentPixelCIELabValue" },
-{ 0x5008, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor5" },
-{ 0x500A, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue6" },
-{ 0x500C, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue7" },
-{ 0x501C, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue15" },
-{ 0x501E, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0093[] = {
-{ 0x0008, 0x0054, 0, VR::AE, VM::M1TN, "RetrieveAETitle" },
-{ 0x0018, 0x1005, 0, VR::LO, VM::M1, "GeneratorID" },
-{ 0x0018, 0x5101, 0, VR::CS, VM::M1, "ViewPosition" },
-{ 0x0024, 0x0078, 0, VR::CS, VM::M1, "CorrectedLocalizedDeviationFromNormalCalculated" },
-{ 0x0038, 0x0064, 0, VR::SQ, VM::M1, "IssuerOfServiceEpisodeIDSequence" },
-{ 0x0040, 0xA296, 1, VR::SQ, VM::M1, "AlgorithmCodeSequenceTrial" },
-{ 0x0048, 0x0014, 0, VR::FL, VM::M1, "DistanceBetweenFocalPlanes" },
-{ 0x0078, 0x0024, 0, VR::LO, VM::M1, "ImplantTemplateGroupVersion" },
-{ 0x501A, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation14" },
-{ 0x501C, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0094[] = {
-{ 0x0018, 0x1006, 0, VR::LO, VM::M1, "GridID" },
-{ 0x5008, 0x0112, 1, VR::US, VM::M1TN, "CoordinateStartValue5" },
-{ 0x500A, 0x0110, 1, VR::US, VM::M1TN, "CurveDataDescriptor6" },
-{ 0x500E, 0x0114, 1, VR::US, VM::M1TN, "CoordinateStepValue8" },
-{ 0x501C, 0x0106, 1, VR::SH, VM::M1TN, "CurveRange15" },
-{ 0x501E, 0x0104, 1, VR::US, VM::M1TN, "MinimumCoordinateValue16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0095[] = {
-{ 0x0008, 0x0056, 0, VR::CS, VM::M1, "InstanceAvailability" },
-{ 0x0018, 0x1007, 0, VR::LO, VM::M1, "CassetteID" },
-{ 0x0040, 0xDB73, 0, VR::UL, VM::M1TN, "ReferencedContentItemIdentifier" },
-{ 0x0046, 0x0018, 0, VR::SQ, VM::M1, "CylinderSequence" },
-{ 0x0066, 0x0038, 0, VR::FL, VM::M1, "RecommendedLineThickness" },
-{ 0x0068, 0x65A0, 0, VR::SQ, VM::M1, "TwoDLineCoordinatesSequence" },
-{ 0x0078, 0x0026, 0, VR::SQ, VM::M1, "ReplacedImplantTemplateGroupSequence" },
-{ 0x5018, 0x0103, 1, VR::US, VM::M1, "DataValueRepresentation13" },
-{ 0x501E, 0x0105, 1, VR::US, VM::M1TN, "MaximumCoordinateValue16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0096[] = {
-{ 0x0010, 0x1030, 0, VR::DS, VM::M1, "PatientWeight" },
-{ 0x0020, 0x1000, 1, VR::IS, VM::M1, "SeriesInStudy" },
-{ 0x0024, 0x0045, 0, VR::CS, VM::M1, "FalseNegativesEstimateFlag" },
-{ 0x0040, 0x1060, 1, VR::LO, VM::M1, "RequestedProcedureDescriptionTrial" },
-{ 0x0052, 0x0033, 0, VR::FD, VM::M1, "SeamLineLocation" },
-{ 0x0062, 0x0003, 0, VR::SQ, VM::M1, "SegmentedPropertyCategoryCodeSequence" },
-{ 0x0064, 0x0005, 0, VR::SQ, VM::M1, "DeformableRegistrationGridSequence" },
-{ 0x0070, 0x0011, 0, VR::FL, VM::M2, "BoundingBoxBottomRightHandCorner" },
-{ 0x0070, 0x0401, 0, VR::US, VM::M3, "GraphicLayerRecommendedDisplayCIELabValue" },
-{ 0x0074, 0x1054, 0, VR::UL, VM::M1, "AttributeItemSelector" },
-{ 0x3006, 0x00A4, 0, VR::CS, VM::M1, "RTROIInterpretedType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0097[] = {
-{ 0x0008, 0x0068, 0, VR::CS, VM::M1, "PresentationIntentType" },
-{ 0x0012, 0x0072, 0, VR::LO, VM::M1, "ClinicalTrialSeriesDescription" },
-{ 0x0018, 0x9231, 0, VR::US, VM::M1, "MRAcquisitionPhaseEncodingStepsInPlane" },
-{ 0x0020, 0x1001, 1, VR::IS, VM::M1, "AcquisitionsInSeries" },
-{ 0x0022, 0x0042, 0, VR::SQ, VM::M1, "MydriaticAgentConcentrationUnitsSequence" },
-{ 0x0024, 0x0044, 0, VR::LT, VM::M1, "CommentsOnPatientPerformanceOfVisualField" },
-{ 0x0040, 0x0020, 0, VR::CS, VM::M1, "ScheduledProcedureStepStatus" },
-{ 0x0062, 0x0002, 0, VR::SQ, VM::M1, "SegmentSequence" },
-{ 0x0070, 0x0010, 0, VR::FL, VM::M2, "BoundingBoxTopLeftHandCorner" },
-{ 0x0072, 0x0012, 0, VR::SQ, VM::M1, "SourceHangingProtocolSequence" },
-{ 0x0072, 0x0402, 0, VR::CS, VM::M1, "FilterByCategory" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0098[] = {
-{ 0x0012, 0x0071, 0, VR::LO, VM::M1, "ClinicalTrialSeriesID" },
-{ 0x0018, 0x9232, 0, VR::US, VM::M1, "MRAcquisitionPhaseEncodingStepsOutOfPlane" },
-{ 0x0020, 0x1002, 0, VR::IS, VM::M1, "ImagesInAcquisition" },
-{ 0x0022, 0x0041, 0, VR::FL, VM::M1, "DepthOfTransverseImage" },
-{ 0x0032, 0x1010, 1, VR::DA, VM::M1, "ScheduledStudyStopDate" },
-{ 0x0052, 0x0031, 0, VR::CS, VM::M1, "CatheterDirectionOfRotation" },
-{ 0x0062, 0x0001, 0, VR::CS, VM::M1, "SegmentationType" },
-{ 0x0064, 0x0007, 0, VR::UL, VM::M3, "GridDimensions" },
-{ 0x0070, 0x0403, 0, VR::FL, VM::M1, "RelativeOpacity" },
-{ 0x0074, 0x1056, 0, VR::LO, VM::M1, "AttributeOccurrencePrivateCreator" },
-{ 0x3006, 0x00A6, 0, VR::PN, VM::M1, "ROIInterpreter" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0099[] = {
-{ 0x0020, 0x1003, 1, VR::IS, VM::M1, "ImagesInSeries" },
-{ 0x0024, 0x0046, 0, VR::FL, VM::M1, "FalseNegativesEstimate" },
-{ 0x0032, 0x1011, 1, VR::TM, VM::M1, "ScheduledStudyStopTime" },
-{ 0x0052, 0x0030, 0, VR::SS, VM::M1, "OCTZOffsetCorrection" },
-{ 0x0054, 0x0036, 0, VR::IS, VM::M1, "PhaseDelay" },
-{ 0x0066, 0x0004, 0, VR::LT, VM::M1, "SurfaceComments" },
-{ 0x0070, 0x0012, 0, VR::CS, VM::M1, "BoundingBoxTextHorizontalJustification" },
-{ 0x0070, 0x0402, 0, VR::SQ, VM::M1, "BlendingSequence" },
-{ 0x0072, 0x0010, 0, VR::LO, VM::M1, "HangingProtocolUserGroupName" },
-{ 0x0072, 0x0400, 0, VR::SQ, VM::M1, "FilterOperationsSequence" },
-{ 0x0074, 0x1057, 0, VR::IS, VM::M1TN, "SelectorSequencePointerItems" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0100[] = {
-{ 0x0004, 0x1430, 0, VR::CS, VM::M1, "DirectoryRecordType" },
-{ 0x0018, 0x9234, 0, VR::UL, VM::M1, "SpectroscopyAcquisitionPhaseColumns" },
-{ 0x0020, 0x1004, 1, VR::IS, VM::M1, "AcquisitionsInStudy" },
-{ 0x0054, 0x0031, 0, VR::US, VM::M1, "NumberOfPhases" },
-{ 0x0066, 0x0003, 0, VR::UL, VM::M1, "SurfaceNumber" },
-{ 0x0070, 0x0015, 0, VR::CS, VM::M1, "AnchorPointVisibility" },
-{ 0x0070, 0x0405, 0, VR::CS, VM::M1, "BlendingPosition" },
-{ 0x0074, 0x1050, 0, VR::SQ, VM::M1, "AttributeOccurrenceSequence" },
-{ 0x3006, 0x00A0, 0, VR::SQ, VM::M1, "RelatedRTROIObservationsSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0101[] = {
-{ 0x0020, 0x1005, 1, VR::IS, VM::M1, "ImagesInStudy" },
-{ 0x0022, 0x1007, 0, VR::SQ, VM::M1, "OphthalmicAxialMeasurementsRightEyeSequence" },
-{ 0x0024, 0x0040, 0, VR::CS, VM::M1, "ExcessiveFixationLosses" },
-{ 0x0052, 0x0036, 0, VR::US, VM::M1, "SeamLineIndex" },
-{ 0x0054, 0x0030, 0, VR::US, VM::M1TN, "PhaseVector" },
-{ 0x0062, 0x0006, 0, VR::ST, VM::M1, "SegmentDescription" },
-{ 0x0066, 0x0002, 0, VR::SQ, VM::M1, "SurfaceSequence" },
-{ 0x0070, 0x0014, 0, VR::FL, VM::M2, "AnchorPoint" },
-{ 0x0070, 0x0404, 0, VR::SQ, VM::M1, "ReferencedSpatialRegistrationSequence" },
-{ 0x0072, 0x0406, 0, VR::CS, VM::M1, "FilterByOperator" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0102[] = {
-{ 0x0004, 0x1432, 0, VR::UI, VM::M1, "PrivateRecordUID" },
-{ 0x0018, 0x9236, 0, VR::CS, VM::M1, "CardiacCyclePosition" },
-{ 0x0040, 0x0027, 0, VR::SQ, VM::M1, "OrderFillerIdentifierSequence" },
-{ 0x0054, 0x0033, 0, VR::US, VM::M1, "NumberOfFramesInPhase" },
-{ 0x0062, 0x0005, 0, VR::LO, VM::M1, "SegmentLabel" },
-{ 0x0064, 0x0003, 0, VR::UI, VM::M1, "SourceFrameOfReferenceUID" },
-{ 0x0066, 0x0001, 0, VR::UL, VM::M1, "NumberOfSurfaces" },
-{ 0x0074, 0x1052, 0, VR::AT, VM::M1, "AttributeOccurrencePointer" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0103[] = {
-{ 0x0022, 0x1415, 0, VR::CS, VM::M1, "OphthalmicMappingDeviceType" },
-{ 0x0024, 0x0042, 0, VR::US, VM::M1, "StimuliRetestingQuantity" },
-{ 0x0040, 0x0026, 0, VR::SQ, VM::M1, "OrderPlacerIdentifierSequence" },
-{ 0x0052, 0x0034, 0, VR::FD, VM::M1, "FirstALineLocation" },
-{ 0x0054, 0x0032, 0, VR::SQ, VM::M1, "PhaseInformationSequence" },
-{ 0x0062, 0x0004, 0, VR::US, VM::M1, "SegmentNumber" },
-{ 0x0064, 0x0002, 0, VR::SQ, VM::M1, "DeformableRegistrationSequence" },
-{ 0x0072, 0x0014, 0, VR::US, VM::M1, "NumberOfPriorsReferenced" },
-{ 0x0072, 0x0404, 0, VR::CS, VM::M1, "FilterByAttributePresence" },
-{ 0x0076, 0x0010, 0, VR::SQ, VM::M1, "ImplantAssemblyTemplateTargetAnatomySequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0104[] = {
-{ 0x0008, 0x0061, 0, VR::CS, VM::M1TN, "ModalitiesInStudy" },
-{ 0x0018, 0x0071, 0, VR::CS, VM::M1, "AcquisitionTerminationCondition" },
-{ 0x0018, 0x1030, 0, VR::LO, VM::M1, "ProtocolName" },
-{ 0x0028, 0x1410, 0, VR::CS, VM::M1, "AlphaLUTTransferFunction" },
-{ 0x0062, 0x000B, 0, VR::US, VM::M1TN, "ReferencedSegmentNumber" },
-{ 0x300A, 0x00A0, 0, VR::IS, VM::M1, "NumberOfBrachyApplicationSetups" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0105[] = {
-{ 0x0008, 0x0060, 0, VR::CS, VM::M1, "Modality" },
-{ 0x0018, 0x0070, 0, VR::IS, VM::M1, "CountsAccumulated" },
-{ 0x0018, 0x9239, 0, VR::SQ, VM::M1, "SpecificAbsorptionRateSequence" },
-{ 0x0028, 0x0040, 1, VR::CS, VM::M1, "ImageFormat" },
-{ 0x0038, 0x0050, 0, VR::LO, VM::M1, "SpecialNeeds" },
-{ 0x0052, 0x003A, 0, VR::CS, VM::M1, "RefractiveIndexApplied" },
-{ 0x0062, 0x000A, 0, VR::SQ, VM::M1, "SegmentIdentificationSequence" },
-{ 0x0066, 0x000E, 0, VR::CS, VM::M1, "FiniteVolume" },
-{ 0x0078, 0x0010, 0, VR::ST, VM::M1, "ImplantTemplateGroupDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0106[] = {
-{ 0x0018, 0x0073, 0, VR::CS, VM::M1, "AcquisitionStartCondition" },
-{ 0x0022, 0x0049, 0, VR::FL, VM::M1, "MaximumAcrossScanDistortion" },
-{ 0x0022, 0x1008, 0, VR::SQ, VM::M1, "OphthalmicAxialMeasurementsLeftEyeSequence" },
-{ 0x0052, 0x0039, 0, VR::CS, VM::M1, "InterpolationType" },
-{ 0x0062, 0x0009, 0, VR::LO, VM::M1, "SegmentAlgorithmName" },
-{ 0x0064, 0x000F, 0, VR::SQ, VM::M1, "PreDeformationMatrixRegistrationSequence" },
-{ 0x0066, 0x000D, 0, VR::CS, VM::M1, "RecommendedPresentationType" },
-{ 0x3008, 0x00A0, 0, VR::SQ, VM::M1, "BeamLimitingDeviceLeafPairsSequence" },
-{ 0x300A, 0x00A2, 0, VR::DS, VM::M3, "BrachyApplicationSetupDoseSpecificationPoint" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0107[] = {
-{ 0x0008, 0x0062, 0, VR::UI, VM::M1TN, "SOPClassesInStudy" },
-{ 0x0018, 0x0072, 0, VR::DS, VM::M1, "EffectiveDuration" },
-{ 0x0022, 0x0048, 0, VR::FL, VM::M1, "AcrossScanSpatialResolution" },
-{ 0x0022, 0x1009, 0, VR::CS, VM::M1, "OphthalmicAxialMeasurementsDeviceType" },
-{ 0x0052, 0x0038, 0, VR::US, VM::M1, "NumberOfPaddedALines" },
-{ 0x0062, 0x0008, 0, VR::CS, VM::M1, "SegmentAlgorithmType" },
-{ 0x0066, 0x000C, 0, VR::FL, VM::M1, "RecommendedPresentationOpacity" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0108[] = {
-{ 0x0018, 0x0075, 0, VR::IS, VM::M1, "AcquisitionTerminationConditionData" },
-{ 0x0054, 0x0039, 0, VR::CS, VM::M1, "PhaseDescription" },
-{ 0x0062, 0x000F, 0, VR::SQ, VM::M1, "SegmentedPropertyTypeCodeSequence" },
-{ 0x0064, 0x0009, 0, VR::OF, VM::M1, "VectorGridData" },
-{ 0x0066, 0x000B, 0, VR::LO, VM::M1, "SurfaceProcessingDescription" },
-{ 0x300A, 0x00A4, 0, VR::DS, VM::M1, "BrachyApplicationSetupDose" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0109[] = {
-{ 0x0008, 0x0064, 0, VR::CS, VM::M1, "ConversionType" },
-{ 0x0018, 0x0074, 0, VR::IS, VM::M1, "AcquisitionStartConditionData" },
-{ 0x0022, 0x004E, 0, VR::DS, VM::M1, "MydriaticAgentConcentration" },
-{ 0x0024, 0x0048, 0, VR::US, VM::M1, "NegativeCatchTrialsQuantity" },
-{ 0x0054, 0x0038, 0, VR::IS, VM::M1, "PauseBetweenFrames" },
-{ 0x0062, 0x000E, 0, VR::US, VM::M1, "MaximumFractionalValue" },
-{ 0x0064, 0x0008, 0, VR::FD, VM::M3, "GridResolution" },
-{ 0x0066, 0x000A, 0, VR::FL, VM::M1, "SurfaceProcessingRatio" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0110[] = {
-{ 0x0062, 0x000D, 0, VR::US, VM::M3, "RecommendedDisplayCIELabValue" },
-{ 0x0066, 0x0009, 0, VR::CS, VM::M1, "SurfaceProcessing" },
-{ 0x300C, 0x00A0, 0, VR::IS, VM::M1, "ReferencedToleranceTableNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0111[] = {
-{ 0x0046, 0x0028, 0, VR::SQ, VM::M1, "PrismSequence" },
-{ 0x0062, 0x000C, 0, VR::US, VM::M1, "RecommendedDisplayGrayscaleValue" },
-{ 0x0068, 0x6590, 0, VR::FD, VM::M3, "ThreeDPointCoordinates" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0112[] = {
-{ 0x0010, 0x1020, 0, VR::DS, VM::M1, "PatientSize" },
-{ 0x0012, 0x0063, 0, VR::LO, VM::M1TN, "DeidentificationMethod" },
-{ 0x0018, 0x9220, 0, VR::FD, VM::M1, "FrameAcquisitionDuration" },
-{ 0x0022, 0x1012, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthSequence" },
-{ 0x0024, 0x0055, 0, VR::CS, VM::M1, "CatchTrialsDataFlag" },
-{ 0x0028, 0x1408, 0, VR::OW, VM::M1, "BlendingLookupTableData" },
-{ 0x0040, 0x0031, 0, VR::UT, VM::M1, "LocalNamespaceEntityID" },
-{ 0x0066, 0x0017, 0, VR::FL, VM::M3, "PointPositionAccuracy" },
-{ 0x0070, 0x0001, 0, VR::SQ, VM::M1, "GraphicAnnotationSequence" },
-{ 0x0074, 0x1044, 0, VR::SQ, VM::M1, "ConventionalMachineVerificationSequence" },
-{ 0x3006, 0x00B4, 0, VR::DS, VM::M1, "ROIPhysicalPropertyValue" },
-{ 0x300A, 0x00B8, 0, VR::CS, VM::M1, "RTBeamLimitingDeviceType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0113[] = {
-{ 0x0010, 0x1021, 0, VR::SQ, VM::M1, "PatientSizeCodeSequence" },
-{ 0x0012, 0x0062, 0, VR::CS, VM::M1, "PatientIdentityRemoved" },
-{ 0x0020, 0x0050, 1, VR::DS, VM::M1, "Location" },
-{ 0x0024, 0x0054, 0, VR::FL, VM::M1, "FalsePositivesEstimate" },
-{ 0x0046, 0x0036, 0, VR::CS, VM::M1, "VerticalPrismBase" },
-{ 0x0050, 0x0020, 0, VR::LO, VM::M1, "DeviceDescription" },
-{ 0x0062, 0x0012, 0, VR::SQ, VM::M1, "UsedSegmentsSequence" },
-{ 0x0066, 0x0016, 0, VR::OF, VM::M1, "PointCoordinatesData" },
-{ 0x0072, 0x0002, 0, VR::SH, VM::M1, "HangingProtocolName" },
-{ 0x0076, 0x0006, 0, VR::LO, VM::M1, "ImplantAssemblyTemplateVersion" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0114[] = {
-{ 0x0022, 0x1010, 0, VR::CS, VM::M1, "OphthalmicAxialLengthMeasurementsType" },
-{ 0x0024, 0x0057, 0, VR::CS, VM::M1, "TestPointNormalsDataFlag" },
-{ 0x0032, 0x1000, 1, VR::DA, VM::M1, "ScheduledStudyStartDate" },
-{ 0x0040, 0x0033, 0, VR::CS, VM::M1, "UniversalEntityIDType" },
-{ 0x0062, 0x0011, 0, VR::SQ, VM::M1, "SegmentedPropertyTypeModifierCodeSequence" },
-{ 0x0066, 0x0015, 0, VR::UL, VM::M1, "NumberOfSurfacePoints" },
-{ 0x0070, 0x0003, 0, VR::CS, VM::M1, "BoundingBoxAnnotationUnits" },
-{ 0x0074, 0x1046, 0, VR::SQ, VM::M1, "IonMachineVerificationSequence" },
-{ 0x3006, 0x00B6, 0, VR::SQ, VM::M1, "ROIElementalCompositionSequence" },
-{ 0x300A, 0x00BA, 0, VR::DS, VM::M1, "SourceToBeamLimitingDeviceDistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0115[] = {
-{ 0x0012, 0x0060, 0, VR::LO, VM::M1, "ClinicalTrialCoordinatingCenterName" },
-{ 0x0020, 0x0052, 0, VR::UI, VM::M1, "FrameOfReferenceUID" },
-{ 0x0024, 0x0056, 0, VR::US, VM::M1, "PositiveCatchTrialsQuantity" },
-{ 0x0028, 0x140B, 0, VR::SQ, VM::M1, "EnhancedPaletteColorLookupTableSequence" },
-{ 0x0032, 0x1001, 1, VR::TM, VM::M1, "ScheduledStudyStartTime" },
-{ 0x0040, 0x0032, 0, VR::UT, VM::M1, "UniversalEntityID" },
-{ 0x0046, 0x0034, 0, VR::FD, VM::M1, "VerticalPrismPower" },
-{ 0x0062, 0x0010, 0, VR::CS, VM::M1, "SegmentationFractionalType" },
-{ 0x0070, 0x0002, 0, VR::CS, VM::M1, "GraphicLayer" },
-{ 0x3006, 0x00B7, 0, VR::US, VM::M1, "ROIElementalCompositionAtomicNumber" },
-{ 0x300A, 0x00BB, 0, VR::FL, VM::M1, "IsocenterToBeamLimitingDeviceDistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0116[] = {
-{ 0x0004, 0x1420, 0, VR::UL, VM::M1, "OffsetOfReferencedLowerLevelDirectoryEntity" },
-{ 0x0014, 0x1020, 2, VR::DA, VM::M1, "ExpiryDate" },
-{ 0x0022, 0x0057, 0, VR::FL, VM::M1, "IlluminationBandwidth" },
-{ 0x0024, 0x0051, 0, VR::CS, VM::M1, "ExcessiveFalseNegativesDataFlag" },
-{ 0x0028, 0x140C, 0, VR::SQ, VM::M1, "BlendingLUT2Sequence" },
-{ 0x0040, 0x0035, 0, VR::CS, VM::M1, "IdentifierTypeCode" },
-{ 0x0052, 0x0027, 0, VR::SQ, VM::M1, "IntravascularFrameContentSequence" },
-{ 0x0054, 0x0021, 0, VR::US, VM::M1, "NumberOfDetectors" },
-{ 0x0066, 0x0013, 0, VR::SQ, VM::M1, "SurfaceMeshPrimitivesSequence" },
-{ 0x0070, 0x0005, 0, VR::CS, VM::M1, "GraphicAnnotationUnits" },
-{ 0x0074, 0x1040, 0, VR::SQ, VM::M1, "RelatedReferenceRTImageSequence" },
-{ 0x0076, 0x0003, 0, VR::LO, VM::M1, "ImplantAssemblyTemplateIssuer" },
-{ 0x3006, 0x00B0, 0, VR::SQ, VM::M1, "ROIPhysicalPropertiesSequence" },
-{ 0x300A, 0x00BC, 0, VR::IS, VM::M1, "NumberOfLeafJawPairs" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0117[] = {
-{ 0x0022, 0x0056, 0, VR::FL, VM::M1, "IlluminationPower" },
-{ 0x0024, 0x0050, 0, VR::US, VM::M1, "FalseNegativesQuantity" },
-{ 0x0028, 0x140D, 0, VR::CS, VM::M1, "BlendingLUT2TransferFunction" },
-{ 0x0046, 0x0032, 0, VR::CS, VM::M1, "HorizontalPrismBase" },
-{ 0x0052, 0x0026, 0, VR::CS, VM::M1, "OCTZOffsetApplied" },
-{ 0x0054, 0x0020, 0, VR::US, VM::M1TN, "DetectorVector" },
-{ 0x0064, 0x0010, 0, VR::SQ, VM::M1, "PostDeformationMatrixRegistrationSequence" },
-{ 0x0066, 0x0012, 0, VR::SQ, VM::M1, "SurfacePointsNormalsSequence" },
-{ 0x0070, 0x0004, 0, VR::CS, VM::M1, "AnchorPointAnnotationUnits" },
-{ 0x0072, 0x0006, 0, VR::CS, VM::M1, "HangingProtocolLevel" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0118[] = {
-{ 0x0008, 0x103E, 0, VR::LO, VM::M1, "SeriesDescription" },
-{ 0x0018, 0x9226, 0, VR::SQ, VM::M1, "MRImageFrameTypeSequence" },
-{ 0x0022, 0x0055, 0, VR::FL, VM::M1, "IlluminationWaveLength" },
-{ 0x0024, 0x0053, 0, VR::CS, VM::M1, "FalsePositivesEstimateFlag" },
-{ 0x0028, 0x005F, 1, VR::LO, VM::M1, "CompressionRecognitionCode" },
-{ 0x0028, 0x140E, 0, VR::CS, VM::M1, "DataPathID" },
-{ 0x0052, 0x0025, 0, VR::SQ, VM::M1, "IntravascularOCTFrameTypeSequence" },
-{ 0x0066, 0x0011, 0, VR::SQ, VM::M1, "SurfacePointsSequence" },
-{ 0x0074, 0x1042, 0, VR::SQ, VM::M1, "GeneralMachineVerificationSequence" },
-{ 0x0076, 0x0001, 0, VR::LO, VM::M1, "ImplantAssemblyTemplateName" },
-{ 0x3006, 0x00B2, 0, VR::CS, VM::M1, "ROIPhysicalProperty" },
-{ 0x300A, 0x00BE, 0, VR::DS, VM::M3TN, "LeafPositionBoundaries" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0119[] = {
-{ 0x0008, 0x103F, 0, VR::SQ, VM::M1, "SeriesDescriptionCodeSequence" },
-{ 0x0008, 0x9237, 0, VR::SQ, VM::M1, "ReferencedPresentationStateSequence" },
-{ 0x0012, 0x0064, 0, VR::SQ, VM::M1, "DeidentificationMethodCodeSequence" },
-{ 0x0018, 0x9227, 0, VR::SQ, VM::M1, "MRSpectroscopyFrameTypeSequence" },
-{ 0x0024, 0x0052, 0, VR::CS, VM::M1, "ExcessiveFalseNegatives" },
-{ 0x0028, 0x140F, 0, VR::CS, VM::M1, "RGBLUTTransferFunction" },
-{ 0x0040, 0x0036, 0, VR::SQ, VM::M1, "AssigningFacilitySequence" },
-{ 0x0046, 0x0030, 0, VR::FD, VM::M1, "HorizontalPrismPower" },
-{ 0x0054, 0x0022, 0, VR::SQ, VM::M1, "DetectorInformationSequence" },
-{ 0x0066, 0x0010, 0, VR::CS, VM::M1, "Manifold" },
-{ 0x0070, 0x0006, 0, VR::ST, VM::M1, "UnformattedTextValue" },
-{ 0x0072, 0x0004, 0, VR::LO, VM::M1, "HangingProtocolDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0120[] = {
-{ 0x0008, 0x1030, 0, VR::LO, VM::M1, "StudyDescription" },
-{ 0x0018, 0x1020, 0, VR::LO, VM::M1TN, "SoftwareVersions" },
-{ 0x0018, 0x1800, 0, VR::CS, VM::M1, "AcquisitionTimeSynchronized" },
-{ 0x0028, 0x0051, 0, VR::CS, VM::M1TN, "CorrectedImage" },
-{ 0x0040, 0x0039, 0, VR::SQ, VM::M1, "AssigningJurisdictionCodeSequence" },
-{ 0x0066, 0x001F, 0, VR::US, VM::M1, "VectorDimensionality" },
-{ 0x0070, 0x0009, 0, VR::SQ, VM::M1, "GraphicObjectSequence" },
-{ 0x0074, 0x104C, 0, VR::SQ, VM::M1, "ConventionalControlPointVerificationSequence" },
-{ 0x0078, 0x0001, 0, VR::LO, VM::M1, "ImplantTemplateGroupName" },
-{ 0x300A, 0x00B0, 0, VR::SQ, VM::M1, "BeamSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0121[] = {
-{ 0x0008, 0x0070, 0, VR::LO, VM::M1, "Manufacturer" },
-{ 0x0018, 0x0060, 0, VR::DS, VM::M1, "KVP" },
-{ 0x0018, 0x1801, 0, VR::SH, VM::M1, "TimeSource" },
-{ 0x0028, 0x0050, 1, VR::LO, VM::M1TN, "ManipulatedImage" },
-{ 0x0028, 0x1401, 0, VR::SQ, VM::M1, "DataFrameAssignmentSequence" },
-{ 0x0038, 0x0040, 1, VR::LO, VM::M1, "DischargeDiagnosisDescription" },
-{ 0x0066, 0x001E, 0, VR::UL, VM::M1, "NumberOfVectors" },
-{ 0x0070, 0x0008, 0, VR::SQ, VM::M1, "TextObjectSequence" },
-{ 0x0072, 0x000A, 0, VR::DT, VM::M1, "HangingProtocolCreationDateTime" },
-{ 0x0076, 0x000E, 0, VR::SQ, VM::M1, "DerivationImplantAssemblyTemplateSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0122[] = {
-{ 0x0008, 0x1032, 0, VR::SQ, VM::M1, "ProcedureCodeSequence" },
-{ 0x0018, 0x1022, 0, VR::SH, VM::M1, "VideoImageFormatAcquired" },
-{ 0x0018, 0x1802, 0, VR::CS, VM::M1, "TimeDistributionProtocol" },
-{ 0x0028, 0x1402, 0, VR::CS, VM::M1, "DataPathAssignment" },
-{ 0x0052, 0x0029, 0, VR::SQ, VM::M1, "IntravascularOCTFrameContentSequence" },
-{ 0x0074, 0x104E, 0, VR::SQ, VM::M1, "IonControlPointVerificationSequence" },
-{ 0x3008, 0x00B0, 0, VR::SQ, VM::M1, "RecordedWedgeSequence" },
-{ 0x300A, 0x00B2, 0, VR::SH, VM::M1, "TreatmentMachineName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0123[] = {
-{ 0x0018, 0x1023, 0, VR::LO, VM::M1, "DigitalImageFormatAcquired" },
-{ 0x0018, 0x1803, 0, VR::LO, VM::M1, "NTPSourceAddress" },
-{ 0x0020, 0x9213, 0, VR::LO, VM::M1, "DimensionIndexPrivateCreator" },
-{ 0x0022, 0x0058, 0, VR::SQ, VM::M1, "MydriaticAgentSequence" },
-{ 0x0022, 0x1019, 0, VR::FL, VM::M1, "OphthalmicAxialLength" },
-{ 0x0028, 0x1403, 0, VR::US, VM::M1, "BitsMappedToColorLookupTable" },
-{ 0x0040, 0x003A, 0, VR::SQ, VM::M1, "AssigningAgencyOrDepartmentCodeSequence" },
-{ 0x0052, 0x0028, 0, VR::FD, VM::M1, "IntravascularLongitudinalDistance" },
-{ 0x0066, 0x001C, 0, VR::FL, VM::M3, "CenterOfRotation" },
-{ 0x0072, 0x0008, 0, VR::LO, VM::M1, "HangingProtocolCreator" },
-{ 0x0076, 0x000C, 0, VR::SQ, VM::M1, "OriginalImplantAssemblyTemplateSequence" },
-{ 0x300A, 0x00B3, 0, VR::CS, VM::M1, "PrimaryDosimeterUnit" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0124[] = {
-{ 0x0024, 0x0059, 0, VR::CS, VM::M1, "GlobalDeviationProbabilityNormalsFlag" },
-{ 0x0028, 0x1404, 0, VR::SQ, VM::M1, "BlendingLUT1Sequence" },
-{ 0x0066, 0x001B, 0, VR::FL, VM::M3, "AxisOfRotation" },
-{ 0x0074, 0x1048, 0, VR::SQ, VM::M1, "FailedAttributesSequence" },
-{ 0x3006, 0x00B8, 0, VR::FL, VM::M1, "ROIElementalCompositionAtomicMassFraction" },
-{ 0x300A, 0x00B4, 0, VR::DS, VM::M1, "SourceAxisDistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0125[] = {
-{ 0x0024, 0x0058, 0, VR::SQ, VM::M1, "TestPointNormalsSequence" },
-{ 0x0028, 0x1405, 0, VR::CS, VM::M1, "BlendingLUT1TransferFunction" },
-{ 0x0038, 0x0044, 1, VR::SQ, VM::M1, "DischargeDiagnosisCodeSequence" },
-{ 0x0066, 0x001A, 0, VR::FL, VM::M6, "PointsBoundingBoxCoordinates" },
-{ 0x0072, 0x000E, 0, VR::SQ, VM::M1, "HangingProtocolUserIdentificationCodeSequence" },
-{ 0x0076, 0x000A, 0, VR::CS, VM::M1, "ImplantAssemblyTemplateType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0126[] = {
-{ 0x0028, 0x1406, 0, VR::FD, VM::M1, "BlendingWeightConstant" },
-{ 0x0066, 0x0019, 0, VR::FL, VM::M1, "MaximumPointDistance" },
-{ 0x0074, 0x104A, 0, VR::SQ, VM::M1, "OverriddenAttributesSequence" },
-{ 0x300A, 0x00B6, 0, VR::SQ, VM::M1, "BeamLimitingDeviceSequence" },
-{ 0x300C, 0x00B0, 0, VR::SQ, VM::M1, "ReferencedBolusSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0127[] = {
-{ 0x0028, 0x1407, 0, VR::US, VM::M3, "BlendingLookupTableDescriptor" },
-{ 0x0046, 0x0038, 0, VR::CS, VM::M1, "LensSegmentType" },
-{ 0x0066, 0x0018, 0, VR::FL, VM::M1, "MeanPointDistance" },
-{ 0x0072, 0x000C, 0, VR::SQ, VM::M1, "HangingProtocolDefinitionSequence" },
-{ 0x0076, 0x0008, 0, VR::SQ, VM::M1, "ReplacedImplantAssemblyTemplateSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0128[] = {
-{ 0x0014, 0x2014, 2, VR::IS, VM::M1, "IndicationNumber" },
-{ 0x0040, 0x3001, 0, VR::LO, VM::M1, "ConfidentialityConstraintOnPatientDataDescription" },
-{ 0x0080, 0x0002, 0, VR::SQ, VM::M1, "SurfaceScanModeCodeSequence" },
-{ 0x2010, 0x0010, 0, VR::ST, VM::M1, "ImageDisplayFormat" },
-{ 0x2020, 0x0020, 0, VR::CS, VM::M1, "Polarity" },
-{ 0x300A, 0x004B, 0, VR::FL, VM::M1, "SnoutPositionTolerance" },
-{ 0x6000, 0x4000, 1, VR::LT, VM::M1, "OverlayComments" },
-{ 0x6004, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated3" },
-{ 0x6006, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition4" },
-{ 0x6014, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0129[] = {
-{ 0x0060, 0x3020, 0, VR::UL, VM::M1TN, "HistogramData" },
-{ 0x0080, 0x0003, 0, VR::SQ, VM::M1, "RegistrationMethodCodeSequence" },
-{ 0x3002, 0x0042, 0, VR::DS, VM::M1, "FluenceDataScale" },
-{ 0x3006, 0x0046, 0, VR::IS, VM::M1, "NumberOfContourPoints" },
-{ 0x3008, 0x0048, 0, VR::DS, VM::M1, "DoseRateDelivered" },
-{ 0x300A, 0x004A, 0, VR::DS, VM::M1, "BeamLimitingDevicePositionTolerance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0130[] = {
-{ 0x0014, 0x2016, 2, VR::SH, VM::M1, "IndicationLabel" },
-{ 0x3002, 0x0041, 0, VR::CS, VM::M1, "FluenceDataSource" },
-{ 0x3006, 0x0045, 0, VR::DS, VM::M3, "ContourOffsetVector" },
-{ 0x6002, 0x4000, 1, VR::LT, VM::M1, "OverlayComments2" },
-{ 0x6004, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition3" },
-{ 0x6006, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated4" },
-{ 0x6016, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0131[] = {
-{ 0x0080, 0x0001, 0, VR::SQ, VM::M1, "SurfaceScanAcquisitionTypeCodeSequence" },
-{ 0x3002, 0x0040, 0, VR::SQ, VM::M1, "FluenceMapSequence" },
-{ 0x3006, 0x0044, 0, VR::DS, VM::M1, "ContourSlabThickness" },
-{ 0x300A, 0x0048, 0, VR::SQ, VM::M1, "BeamLimitingDeviceToleranceSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0132[] = {
-{ 0x0080, 0x0006, 0, VR::US, VM::M1TN, "SurfacePointPresentationValueData" },
-{ 0x300A, 0x004F, 0, VR::FL, VM::M1, "TableTopPitchAngleTolerance" },
-{ 0x6000, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated" },
-{ 0x6002, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition2" },
-{ 0x6004, 0x4000, 1, VR::LT, VM::M1, "OverlayComments3" },
-{ 0x6010, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat9" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0133[] = {
-{ 0x0014, 0x3050, 2, VR::OX, VM::M1, "DarkCurrentCounts" },
-{ 0x0080, 0x0007, 0, VR::US, VM::M3T3N, "SurfacePointColorCIELabValueData" },
-{ 0x3004, 0x0040, 0, VR::DS, VM::M3, "DVHNormalizationPoint" },
-{ 0x3006, 0x0042, 0, VR::CS, VM::M1, "ContourGeometricType" },
-{ 0x300A, 0x004E, 0, VR::DS, VM::M1, "TableTopEccentricAngleTolerance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0134[] = {
-{ 0x0014, 0x2012, 2, VR::SQ, VM::M1, "IndicationSequence" },
-{ 0x0080, 0x0004, 0, VR::FD, VM::M1, "ShotDurationTime" },
-{ 0x6000, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition" },
-{ 0x6002, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated2" },
-{ 0x6006, 0x4000, 1, VR::LT, VM::M1, "OverlayComments4" },
-{ 0x6012, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0135[] = {
-{ 0x0080, 0x0005, 0, VR::FD, VM::M1, "ShotOffsetTime" },
-{ 0x3004, 0x0042, 0, VR::DS, VM::M1, "DVHNormalizationDoseValue" },
-{ 0x3006, 0x0040, 0, VR::SQ, VM::M1, "ContourSequence" },
-{ 0x300A, 0x004C, 0, VR::DS, VM::M1, "PatientSupportAngleTolerance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0136[] = {
-{ 0x0008, 0x0082, 0, VR::SQ, VM::M1, "InstitutionCodeSequence" },
-{ 0x0014, 0x201C, 2, VR::CS, VM::M1, "IndicationDisposition" },
-{ 0x0018, 0x2010, 0, VR::DS, VM::M2, "NominalScannedPixelSpacing" },
-{ 0x0020, 0x00AA, 1, VR::IS, VM::M1, "ReportNumber" },
-{ 0x0040, 0x08EA, 0, VR::SQ, VM::M1, "MeasurementUnitsCodeSequence" },
-{ 0x3008, 0x0041, 0, VR::SQ, VM::M1, "IonControlPointDeliverySequence" },
-{ 0x300A, 0x0043, 0, VR::SH, VM::M1, "ToleranceTableLabel" },
-{ 0x6008, 0x4000, 1, VR::LT, VM::M1, "OverlayComments5" },
-{ 0x600C, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated7" },
-{ 0x600E, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition8" },
-{ 0x601C, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0137[] = {
-{ 0x0018, 0x0093, 0, VR::DS, VM::M1, "PercentSampling" },
-{ 0x3008, 0x0040, 0, VR::SQ, VM::M1, "ControlPointDeliverySequence" },
-{ 0x300A, 0x0042, 0, VR::IS, VM::M1, "ToleranceTableNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0138[] = {
-{ 0x0008, 0x0080, 0, VR::LO, VM::M1, "InstitutionName" },
-{ 0x0014, 0x201E, 2, VR::SQ, VM::M1, "IndicationROISequence" },
-{ 0x0018, 0x0090, 0, VR::DS, VM::M1, "DataCollectionDiameter" },
-{ 0x0080, 0x0008, 0, VR::SQ, VM::M1, "UVMappingSequence" },
-{ 0x600A, 0x4000, 1, VR::LT, VM::M1, "OverlayComments6" },
-{ 0x600C, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition7" },
-{ 0x600E, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated8" },
-{ 0x601E, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0139[] = {
-{ 0x0008, 0x0081, 0, VR::ST, VM::M1, "InstitutionAddress" },
-{ 0x0018, 0x0091, 0, VR::IS, VM::M1, "EchoTrainLength" },
-{ 0x0080, 0x0009, 0, VR::SH, VM::M1, "TextureLabel" },
-{ 0x3008, 0x0042, 0, VR::DS, VM::M1, "SpecifiedMeterset" },
-{ 0x300A, 0x0040, 0, VR::SQ, VM::M1, "ToleranceTableSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0140[] = {
-{ 0x0014, 0x2018, 2, VR::ST, VM::M1, "IndicationDescription" },
-{ 0x0028, 0x6120, 0, VR::SS, VM::M1, "TIDOffset" },
-{ 0x3008, 0x0045, 0, VR::FL, VM::M1, "MetersetRateSet" },
-{ 0x6008, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated5" },
-{ 0x600A, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition6" },
-{ 0x600C, 0x4000, 1, VR::LT, VM::M1, "OverlayComments7" },
-{ 0x6018, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0141[] = {
-{ 0x3008, 0x0044, 0, VR::DS, VM::M1, "DeliveredMeterset" },
-{ 0x300A, 0x0046, 0, VR::DS, VM::M1, "BeamLimitingDeviceAngleTolerance" },
-{ 0x300C, 0x0040, 0, VR::SQ, VM::M1, "ReferencedVerificationImageSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0142[] = {
-{ 0x0014, 0x201A, 2, VR::CS, VM::M1TN, "IndicationType" },
-{ 0x0018, 0x0094, 0, VR::DS, VM::M1, "PercentPhaseFieldOfView" },
-{ 0x3006, 0x0049, 0, VR::IS, VM::M1TN, "AttachedContours" },
-{ 0x3008, 0x0047, 0, VR::FL, VM::M1TN, "ScanSpotMetersetsDelivered" },
-{ 0x6008, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition5" },
-{ 0x600A, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated6" },
-{ 0x600E, 0x4000, 1, VR::LT, VM::M1, "OverlayComments8" },
-{ 0x601A, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0143[] = {
-{ 0x0018, 0x0095, 0, VR::DS, VM::M1, "PixelBandwidth" },
-{ 0x3006, 0x0048, 0, VR::IS, VM::M1, "ContourNumber" },
-{ 0x3008, 0x0046, 0, VR::FL, VM::M1, "MetersetRateDelivered" },
-{ 0x300A, 0x0044, 0, VR::DS, VM::M1, "GantryAngleTolerance" },
-{ 0x300C, 0x0042, 0, VR::SQ, VM::M1, "ReferencedReferenceImageSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0144[] = {
-{ 0x0010, 0x2000, 0, VR::LO, VM::M1TN, "MedicalAlerts" },
-{ 0x0014, 0x2004, 2, VR::IS, VM::M1, "EvaluatorNumber" },
-{ 0x0080, 0x0012, 0, VR::SQ, VM::M1, "ReferencedTextureSequence" },
-{ 0x2000, 0x0010, 0, VR::IS, VM::M1, "NumberOfCopies" },
-{ 0x2020, 0x0030, 0, VR::DS, VM::M1, "RequestedImageSize" },
-{ 0x2030, 0x0020, 0, VR::LO, VM::M1, "TextString" },
-{ 0x2100, 0x0500, 1, VR::SQ, VM::M1, "ReferencedPrintJobSequencePullStoredPrint" },
-{ 0x6004, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat3" },
-{ 0x6010, 0x4000, 1, VR::LT, VM::M1, "OverlayComments9" },
-{ 0x6014, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated11" },
-{ 0x6016, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0145[] = {
-{ 0x0012, 0x0081, 0, VR::LO, VM::M1, "ClinicalTrialProtocolEthicsCommitteeName" },
-{ 0x0080, 0x0013, 0, VR::SQ, VM::M1, "ReferencedSurfaceDataSequence" },
-{ 0x3002, 0x0052, 0, VR::SH, VM::M1, "FluenceModeID" },
-{ 0x3004, 0x0054, 0, VR::CS, VM::M1, "DVHVolumeUnits" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0146[] = {
-{ 0x0012, 0x0082, 0, VR::LO, VM::M1, "ClinicalTrialProtocolEthicsCommitteeApprovalNumber" },
-{ 0x0014, 0x2006, 2, VR::PN, VM::M1, "EvaluatorName" },
-{ 0x0018, 0x0088, 0, VR::DS, VM::M1, "SpacingBetweenSlices" },
-{ 0x0080, 0x0010, 0, VR::OF, VM::M1TN, "UValueData" },
-{ 0x3002, 0x0051, 0, VR::CS, VM::M1, "FluenceMode" },
-{ 0x6006, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat4" },
-{ 0x6012, 0x4000, 1, VR::LT, VM::M1, "OverlayComments10" },
-{ 0x6014, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition11" },
-{ 0x6016, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0147[] = {
-{ 0x0012, 0x0083, 0, VR::SQ, VM::M1, "ConsentForClinicalTrialUseSequence" },
-{ 0x0018, 0x0089, 0, VR::IS, VM::M1, "NumberOfPhaseEncodingSteps" },
-{ 0x0080, 0x0011, 0, VR::OF, VM::M1TN, "VValueData" },
-{ 0x3002, 0x0050, 0, VR::SQ, VM::M1, "PrimaryFluenceModeSequence" },
-{ 0x3004, 0x0056, 0, VR::IS, VM::M1, "DVHNumberOfBins" },
-{ 0x3008, 0x005A, 0, VR::IS, VM::M1, "NumberOfFractionsDelivered" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0148[] = {
-{ 0x0012, 0x0084, 0, VR::CS, VM::M1, "DistributionType" },
-{ 0x6000, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat" },
-{ 0x6010, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated9" },
-{ 0x6012, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition10" },
-{ 0x6014, 0x4000, 1, VR::LT, VM::M1, "OverlayComments11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0149[] = {
-{ 0x0012, 0x0085, 0, VR::CS, VM::M1, "ConsentForDistributionFlag" },
-{ 0x0014, 0x3040, 2, VR::SQ, VM::M1, "DarkCurrentSequence" },
-{ 0x3004, 0x0050, 0, VR::SQ, VM::M1, "DVHSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0150[] = {
-{ 0x0014, 0x2002, 2, VR::SQ, VM::M1, "EvaluatorSequence" },
-{ 0x6002, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat2" },
-{ 0x6010, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition9" },
-{ 0x6012, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated10" },
-{ 0x6016, 0x4000, 1, VR::LT, VM::M1, "OverlayComments12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0151[] = {
-{ 0x3004, 0x0052, 0, VR::DS, VM::M1, "DVHDoseScaling" },
-{ 0x3006, 0x0050, 0, VR::DS, VM::M3T3N, "ContourData" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0152[] = {
-{ 0x0008, 0x0092, 0, VR::ST, VM::M1, "ReferringPhysicianAddress" },
-{ 0x0018, 0x0082, 0, VR::DS, VM::M1, "InversionTime" },
-{ 0x300A, 0x0053, 0, VR::DS, VM::M1, "TableTopLateralPositionTolerance" },
-{ 0x300C, 0x0055, 0, VR::SQ, VM::M1, "BrachyReferencedDoseReferenceSequence" },
-{ 0x600C, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat7" },
-{ 0x6018, 0x4000, 1, VR::LT, VM::M1, "OverlayComments13" },
-{ 0x601C, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated15" },
-{ 0x601E, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0153[] = {
-{ 0x0018, 0x0083, 0, VR::DS, VM::M1, "NumberOfAverages" },
-{ 0x0018, 0x2001, 0, VR::IS, VM::M1TN, "PageNumberVector" },
-{ 0x3008, 0x0050, 0, VR::SQ, VM::M1, "TreatmentSummaryCalculatedDoseReferenceSequence" },
-{ 0x300A, 0x0052, 0, VR::DS, VM::M1, "TableTopLongitudinalPositionTolerance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0154[] = {
-{ 0x0008, 0x0090, 0, VR::PN, VM::M1, "ReferringPhysicianName" },
-{ 0x0018, 0x0080, 0, VR::DS, VM::M1, "RepetitionTime" },
-{ 0x0018, 0x2002, 0, VR::SH, VM::M1TN, "FrameLabelVector" },
-{ 0x300A, 0x0051, 0, VR::DS, VM::M1, "TableTopVerticalPositionTolerance" },
-{ 0x600E, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat8" },
-{ 0x601A, 0x4000, 1, VR::LT, VM::M1, "OverlayComments14" },
-{ 0x601C, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition15" },
-{ 0x601E, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0155[] = {
-{ 0x0018, 0x0081, 0, VR::DS, VM::M1, "EchoTime" },
-{ 0x0018, 0x2003, 0, VR::DS, VM::M1TN, "FramePrimaryAngleVector" },
-{ 0x3008, 0x0052, 0, VR::DS, VM::M1, "CumulativeDoseToDoseReference" },
-{ 0x300A, 0x0050, 0, VR::FL, VM::M1, "TableTopRollAngleTolerance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0156[] = {
-{ 0x0008, 0x0096, 0, VR::SQ, VM::M1, "ReferringPhysicianIdentificationSequence" },
-{ 0x0014, 0x2008, 2, VR::IS, VM::M1, "EvaluationAttempt" },
-{ 0x0018, 0x0086, 0, VR::IS, VM::M1TN, "EchoNumbers" },
-{ 0x0018, 0x2004, 0, VR::DS, VM::M1TN, "FrameSecondaryAngleVector" },
-{ 0x0068, 0x6560, 0, VR::FD, VM::M2, "TwoDPointCoordinates" },
-{ 0x300C, 0x0051, 0, VR::IS, VM::M1, "ReferencedDoseReferenceNumber" },
-{ 0x6008, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat5" },
-{ 0x6018, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated13" },
-{ 0x601A, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition14" },
-{ 0x601C, 0x4000, 1, VR::LT, VM::M1, "OverlayComments15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0157[] = {
-{ 0x0018, 0x0087, 0, VR::DS, VM::M1, "MagneticFieldStrength" },
-{ 0x0018, 0x2005, 0, VR::DS, VM::M1TN, "SliceLocationVector" },
-{ 0x3004, 0x0058, 0, VR::DS, VM::M2T2N, "DVHData" },
-{ 0x3008, 0x0054, 0, VR::DA, VM::M1, "FirstTreatmentDate" },
-{ 0x300C, 0x0050, 0, VR::SQ, VM::M1, "ReferencedDoseReferenceSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0158[] = {
-{ 0x0008, 0x0094, 0, VR::SH, VM::M1TN, "ReferringPhysicianTelephoneNumbers" },
-{ 0x0018, 0x0084, 0, VR::DS, VM::M1, "ImagingFrequency" },
-{ 0x0018, 0x2006, 0, VR::SH, VM::M1TN, "DisplayWindowLabelVector" },
-{ 0x2000, 0x001E, 0, VR::SQ, VM::M1, "PrinterConfigurationSequence" },
-{ 0x300A, 0x0055, 0, VR::CS, VM::M1, "RTPlanRelationship" },
-{ 0x600A, 0x0110, 1, VR::CS, VM::M1, "OverlayFormat6" },
-{ 0x6018, 0x0102, 0, VR::US, VM::M1, "OverlayBitPosition13" },
-{ 0x601A, 0x0100, 0, VR::US, VM::M1, "OverlayBitsAllocated14" },
-{ 0x601E, 0x4000, 1, VR::LT, VM::M1, "OverlayComments16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0159[] = {
-{ 0x0018, 0x0085, 0, VR::SH, VM::M1, "ImagedNucleus" },
-{ 0x3008, 0x0056, 0, VR::DA, VM::M1, "MostRecentTreatmentDate" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0160[] = {
-{ 0x0014, 0x3075, 2, VR::DS, VM::M1, "FilterThicknessUsedInGainCalibration" },
-{ 0x0024, 0x0086, 0, VR::CS, VM::M1, "FovealSensitivityMeasured" },
-{ 0x2000, 0x0020, 0, VR::CS, VM::M1, "PrintPriority" },
-{ 0x2010, 0x0030, 0, VR::CS, VM::M1, "AnnotationDisplayFormatID" },
-{ 0x2030, 0x0010, 0, VR::US, VM::M1, "AnnotationPosition" },
-{ 0x2040, 0x0060, 1, VR::CS, VM::M1, "OverlayMagnificationType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0161[] = {
-{ 0x0014, 0x3074, 2, VR::LO, VM::M1, "FilterMaterialUsedInGainCalibration" },
-{ 0x0024, 0x0087, 0, VR::FL, VM::M1, "FovealSensitivity" },
-{ 0x0060, 0x3000, 0, VR::SQ, VM::M1, "HistogramSequence" },
-{ 0x3008, 0x0068, 0, VR::SQ, VM::M1, "CorrectedParameterSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0162[] = {
-{ 0x0014, 0x3077, 2, VR::TM, VM::M1, "TimeOfGainCalibration" },
-{ 0x0020, 0x0080, 1, VR::CS, VM::M1TN, "MaskingImage" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0163[] = {
-{ 0x0014, 0x3076, 2, VR::DA, VM::M1, "DateOfGainCalibration" },
-{ 0x0024, 0x0085, 0, VR::SQ, VM::M1, "LocalizedDeviationProbabilitySequence" },
-{ 0x0060, 0x3002, 0, VR::US, VM::M1, "HistogramNumberOfBins" },
-{ 0x3008, 0x006A, 0, VR::FL, VM::M1, "CorrectionValue" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0164[] = {
-{ 0x0014, 0x2030, 2, VR::SQ, VM::M1, "IndicationPhysicalPropertySequence" },
-{ 0x0014, 0x3071, 2, VR::DS, VM::M1, "KVUsedInGainCalibration" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0165[] = {
-{ 0x0014, 0x3070, 2, VR::OX, VM::M1, "AirCounts" },
-{ 0x0024, 0x0083, 0, VR::SQ, VM::M1, "GlobalDeviationProbabilitySequence" },
-{ 0x0060, 0x3004, 0, VR::XS, VM::M1, "HistogramFirstBinValue" },
-{ 0x3004, 0x0060, 0, VR::SQ, VM::M1, "DVHReferencedROISequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0166[] = {
-{ 0x0014, 0x2032, 2, VR::SH, VM::M1, "PropertyLabel" },
-{ 0x0014, 0x3073, 2, VR::DS, VM::M1, "NumberOfFramesUsedForIntegration" },
-{ 0x0024, 0x0080, 0, VR::CS, VM::M1, "CorrectedLocalizedDeviationFromNormalProbabilityCalculated" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0167[] = {
-{ 0x0014, 0x3072, 2, VR::DS, VM::M1, "MAUsedInGainCalibration" },
-{ 0x0024, 0x0081, 0, VR::FL, VM::M1, "CorrectedLocalizedDeviationFromNormalProbability" },
-{ 0x0060, 0x3006, 0, VR::XS, VM::M1, "HistogramLastBinValue" },
-{ 0x3004, 0x0062, 0, VR::CS, VM::M1, "DVHROIContributionType" },
-{ 0x300C, 0x006A, 0, VR::IS, VM::M1, "ReferencedPatientSetupNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0168[] = {
-{ 0x0018, 0x2030, 0, VR::DS, VM::M1, "RotationOfScannedFilm" },
-{ 0x0028, 0x0082, 1, VR::US, VM::M1TN, "PredictorConstants" },
-{ 0x0028, 0x2000, 0, VR::OB, VM::M1, "ICCProfile" },
-{ 0x3008, 0x0061, 0, VR::AT, VM::M1, "ParameterSequencePointer" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0169[] = {
-{ 0x0060, 0x3008, 0, VR::US, VM::M1, "HistogramBinWidth" },
-{ 0x3008, 0x0060, 0, VR::SQ, VM::M1, "OverrideSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0170[] = {
-{ 0x0028, 0x0080, 1, VR::US, VM::M1, "PredictorRows" },
-{ 0x3008, 0x0063, 0, VR::IS, VM::M1, "ParameterItemIndex" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0171[] = {
-{ 0x0028, 0x0081, 1, VR::US, VM::M1, "PredictorColumns" },
-{ 0x3008, 0x0062, 0, VR::AT, VM::M1, "OverrideParameterPointer" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0172[] = {
-{ 0x0028, 0x6100, 0, VR::SQ, VM::M1, "MaskSubtractionSequence" },
-{ 0x0068, 0x6550, 0, VR::SQ, VM::M1, "TwoDPointCoordinatesSequence" },
-{ 0x3008, 0x0065, 0, VR::AT, VM::M1, "ParameterPointer" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0173[] = {
-{ 0x0028, 0x6101, 0, VR::CS, VM::M1, "MaskOperation" },
-{ 0x3008, 0x0064, 0, VR::IS, VM::M1, "MeasuredDoseReferenceNumber" },
-{ 0x300C, 0x0060, 0, VR::SQ, VM::M1, "ReferencedStructureSetSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0174[] = {
-{ 0x0024, 0x0088, 0, VR::FL, VM::M1, "VisualFieldTestDuration" },
-{ 0x0028, 0x6102, 0, VR::US, VM::M2T2N, "ApplicableFrameRange" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0175[] = {
-{ 0x0024, 0x0089, 0, VR::SQ, VM::M1, "VisualFieldTestPointSequence" },
-{ 0x3008, 0x0066, 0, VR::ST, VM::M1, "OverrideReason" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0176[] = {
-{ 0x0024, 0x0096, 0, VR::FL, VM::M1, "RetestSensitivityValue" },
-{ 0x2000, 0x0030, 0, VR::CS, VM::M1, "MediumType" },
-{ 0x2020, 0x0010, 0, VR::US, VM::M1, "ImageBoxPosition" },
-{ 0x2040, 0x0070, 1, VR::CS, VM::M1, "OverlaySmoothingType" },
-{ 0x300A, 0x007B, 0, VR::LT, VM::M1, "FractionPattern" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0177[] = {
-{ 0x0024, 0x0097, 0, VR::SQ, VM::M1, "VisualFieldTestPointNormalsSequence" },
-{ 0x0060, 0x3010, 0, VR::LO, VM::M1, "HistogramExplanation" },
-{ 0x3004, 0x0074, 0, VR::DS, VM::M1, "DVHMeanDose" },
-{ 0x3008, 0x0078, 0, VR::DS, VM::M1, "StartMeterset" },
-{ 0x300A, 0x007A, 0, VR::IS, VM::M1, "RepeatFractionCycleLength" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0178[] = {
-{ 0x0024, 0x0094, 0, VR::FL, VM::M1, "SensitivityValue" },
-{ 0x2040, 0x0072, 1, VR::CS, VM::M1, "OverlayOrImageMagnification" },
-{ 0x300A, 0x0079, 0, VR::IS, VM::M1, "NumberOfFractionPatternDigitsPerDay" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0179[] = {
-{ 0x0024, 0x0095, 0, VR::CS, VM::M1, "RetestStimulusSeen" },
-{ 0x3008, 0x007A, 0, VR::DS, VM::M1, "EndMeterset" },
-{ 0x300A, 0x0078, 0, VR::IS, VM::M1, "NumberOfFractionsPlanned" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0180[] = {
-{ 0x0024, 0x0092, 0, VR::FL, VM::M1, "AgeCorrectedSensitivityDeviationValue" },
-{ 0x0076, 0x00C0, 0, VR::US, VM::M1, "Component2ReferencedMatingFeatureID" },
-{ 0x2040, 0x0074, 1, VR::US, VM::M1, "MagnifyToNumberOfColumns" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0181[] = {
-{ 0x0014, 0x3060, 2, VR::SQ, VM::M1, "GainCorrectionReferenceSequence" },
-{ 0x0024, 0x0093, 0, VR::CS, VM::M1, "StimulusResults" },
-{ 0x3004, 0x0070, 0, VR::DS, VM::M1, "DVHMinimumDose" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0182[] = {
-{ 0x0024, 0x0090, 0, VR::FL, VM::M1, "VisualFieldTestPointXCoordinate" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0183[] = {
-{ 0x0024, 0x0091, 0, VR::FL, VM::M1, "VisualFieldTestPointYCoordinate" },
-{ 0x3004, 0x0072, 0, VR::DS, VM::M1, "DVHMaximumDose" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0184[] = {
-{ 0x0018, 0x2020, 0, VR::CS, VM::M1, "DigitizingDeviceTransportDirection" },
-{ 0x0028, 0x0092, 1, VR::US, VM::M1, "BlockColumns" },
-{ 0x0028, 0x6114, 0, VR::FL, VM::M2, "MaskSubPixelShift" },
-{ 0x0040, 0x08DA, 1, VR::SQ, VM::M1, "CoordinateSystemAxisCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0185[] = {
-{ 0x0028, 0x0093, 1, VR::US, VM::M1, "RowOverlap" },
-{ 0x0068, 0x6545, 0, VR::SQ, VM::M1, "PlanningLandmarkIdentificationCodeSequence" },
-{ 0x3008, 0x0070, 0, VR::SQ, VM::M1, "CalculatedDoseReferenceSequence" },
-{ 0x300A, 0x0072, 0, VR::LO, VM::M1, "FractionGroupDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0186[] = {
-{ 0x0028, 0x0090, 1, VR::CS, VM::M1, "BlockedPixels" },
-{ 0x0040, 0x08D8, 1, VR::SQ, VM::M1, "PixelSpacingSequence" },
-{ 0x300A, 0x0071, 0, VR::IS, VM::M1, "FractionGroupNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0187[] = {
-{ 0x0028, 0x0091, 1, VR::US, VM::M1, "BlockRows" },
-{ 0x3008, 0x0072, 0, VR::IS, VM::M1, "CalculatedDoseReferenceNumber" },
-{ 0x300A, 0x0070, 0, VR::SQ, VM::M1, "FractionGroupSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0188[] = {
-{ 0x0028, 0x6110, 0, VR::US, VM::M1TN, "MaskFrameNumbers" },
-{ 0x0068, 0x6540, 0, VR::LO, VM::M1, "PlanningLandmarkDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0189[] = {
-{ 0x3008, 0x0074, 0, VR::ST, VM::M1, "CalculatedDoseReferenceDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0190[] = {
-{ 0x0024, 0x0098, 0, VR::FL, VM::M1, "QuantifiedDefect" },
-{ 0x0028, 0x0094, 1, VR::US, VM::M1, "ColumnOverlap" },
-{ 0x0028, 0x6112, 0, VR::US, VM::M1, "ContrastFrameAveraging" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0191[] = {
-{ 0x3008, 0x0076, 0, VR::DS, VM::M1, "CalculatedDoseReferenceDoseValue" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0192[] = {
-{ 0x0040, 0x2001, 1, VR::LO, VM::M1, "ReasonForTheImagingServiceRequest" },
-{ 0x3002, 0x0002, 0, VR::SH, VM::M1, "RTImageLabel" },
-{ 0x3004, 0x0004, 0, VR::CS, VM::M1, "DoseType" },
-{ 0x3006, 0x0006, 0, VR::ST, VM::M1, "StructureSetDescription" },
-{ 0x300A, 0x000A, 0, VR::CS, VM::M1, "PlanIntent" },
-{ 0x300C, 0x000C, 0, VR::IS, VM::M1, "ReferencedBrachyApplicationSetupNumber" },
-{ 0x5014, 0x2500, 1, VR::LO, VM::M1, "CurveLabel11" },
-{ 0x6004, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray3" },
-{ 0x6006, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen4" },
-{ 0x6014, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0193[] = {
-{ 0x2000, 0x0040, 0, VR::CS, VM::M1, "FilmDestination" },
-{ 0x2010, 0x0050, 0, VR::CS, VM::M1, "FilmSizeID" },
-{ 0x2050, 0x0010, 0, VR::SQ, VM::M1, "PresentationLUTSequence" },
-{ 0x2100, 0x0140, 1, VR::AE, VM::M1, "DestinationAE" },
-{ 0x3002, 0x0003, 0, VR::LO, VM::M1, "RTImageName" },
-{ 0x3004, 0x0005, 0, VR::CS, VM::M1, "SpatialTransformOfDose" },
-{ 0x300A, 0x000B, 0, VR::LO, VM::M1TN, "TreatmentSites" },
-{ 0x6004, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed3" },
-{ 0x6006, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0194[] = {
-{ 0x0010, 0x1090, 0, VR::LO, VM::M1, "MedicalRecordLocator" },
-{ 0x3004, 0x0006, 0, VR::LO, VM::M1, "DoseComment" },
-{ 0x3006, 0x0004, 0, VR::LO, VM::M1, "StructureSetName" },
-{ 0x300C, 0x000E, 0, VR::IS, VM::M1, "ReferencedSourceNumber" },
-{ 0x5016, 0x2500, 1, VR::LO, VM::M1, "CurveLabel12" },
-{ 0x6004, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen3" },
-{ 0x6006, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray4" },
-{ 0x6016, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0195[] = {
-{ 0x0078, 0x00B8, 0, VR::US, VM::M1, "ImplantTemplateGroupVariationDimensionRank" },
-{ 0x2010, 0x0052, 0, VR::CS, VM::M1, "PrinterResolutionID" },
-{ 0x300A, 0x0009, 0, VR::LO, VM::M1TN, "TreatmentProtocols" },
-{ 0x6004, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue3" },
-{ 0x6006, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0196[] = {
-{ 0x0018, 0x9296, 0, VR::FD, VM::M1, "ChemicalShiftMaximumIntegrationLimitInppm" },
-{ 0x0040, 0x2005, 0, VR::TM, VM::M1, "IssueTimeOfImagingServiceRequest" },
-{ 0x3006, 0x0002, 0, VR::SH, VM::M1, "StructureSetLabel" },
-{ 0x300A, 0x000E, 0, VR::ST, VM::M1, "PrescriptionDescription" },
-{ 0x300C, 0x0008, 0, VR::DS, VM::M1, "StartCumulativeMetersetWeight" },
-{ 0x5010, 0x2500, 1, VR::LO, VM::M1, "CurveLabel9" },
-{ 0x6000, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray" },
-{ 0x6002, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen2" },
-{ 0x6010, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel9" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0197[] = {
-{ 0x0014, 0x3011, 2, VR::DS, VM::M1, "InternalDetectorFrameTime" },
-{ 0x0040, 0x2004, 0, VR::DA, VM::M1, "IssueDateOfImagingServiceRequest" },
-{ 0x0046, 0x0080, 0, VR::SQ, VM::M1, "FlatKeratometricAxisSequence" },
-{ 0x0076, 0x00B0, 0, VR::US, VM::M1, "Component2ReferencedMatingFeatureSetID" },
-{ 0x2010, 0x0054, 0, VR::CS, VM::M1, "DefaultPrinterResolutionID" },
-{ 0x3004, 0x0001, 0, VR::CS, VM::M1, "DVHType" },
-{ 0x300C, 0x0009, 0, VR::DS, VM::M1, "EndCumulativeMetersetWeight" },
-{ 0x6000, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed" },
-{ 0x6002, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0198[] = {
-{ 0x0014, 0x3012, 2, VR::DS, VM::M1, "NumberOfFramesIntegrated" },
-{ 0x0040, 0x2007, 1, VR::SH, VM::M1, "FillerOrderNumberImagingServiceRequestRetired" },
-{ 0x3002, 0x0004, 0, VR::ST, VM::M1, "RTImageDescription" },
-{ 0x3004, 0x0002, 0, VR::CS, VM::M1, "DoseUnits" },
-{ 0x300A, 0x000C, 0, VR::CS, VM::M1, "RTPlanGeometry" },
-{ 0x300C, 0x000A, 0, VR::SQ, VM::M1, "ReferencedBrachyApplicationSetupSequence" },
-{ 0x300E, 0x0008, 0, VR::PN, VM::M1, "ReviewerName" },
-{ 0x5012, 0x2500, 1, VR::LO, VM::M1, "CurveLabel10" },
-{ 0x6000, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen" },
-{ 0x6002, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray2" },
-{ 0x6012, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0199[] = {
-{ 0x0018, 0x9295, 0, VR::FD, VM::M1, "ChemicalShiftMinimumIntegrationLimitInppm" },
-{ 0x0040, 0x2006, 1, VR::SH, VM::M1, "PlacerOrderNumberImagingServiceRequestRetired" },
-{ 0x0054, 0x0090, 0, VR::US, VM::M1TN, "AngularViewVector" },
-{ 0x6000, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue" },
-{ 0x6002, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0200[] = {
-{ 0x0040, 0x2009, 0, VR::SH, VM::M1, "OrderEntererLocation" },
-{ 0x3002, 0x000A, 0, VR::CS, VM::M1, "ReportedValuesOrigin" },
-{ 0x3004, 0x000C, 0, VR::DS, VM::M2TN, "GridFrameOffsetVector" },
-{ 0x300A, 0x0002, 0, VR::SH, VM::M1, "RTPlanLabel" },
-{ 0x300A, 0x0412, 0, VR::FL, VM::M3, "ControlPointOrientation" },
-{ 0x300C, 0x0004, 0, VR::SQ, VM::M1, "ReferencedBeamSequence" },
-{ 0x501C, 0x2500, 1, VR::LO, VM::M1, "CurveLabel15" },
-{ 0x600C, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray7" },
-{ 0x600E, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen8" },
-{ 0x601C, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0201[] = {
-{ 0x0008, 0x3001, 0, VR::SQ, VM::M1, "AlternateRepresentationSequence" },
-{ 0x0040, 0x2008, 0, VR::PN, VM::M1, "OrderEnteredBy" },
-{ 0x0078, 0x00B2, 0, VR::LO, VM::M1, "ImplantTemplateGroupVariationDimensionName" },
-{ 0x300A, 0x0003, 0, VR::LO, VM::M1, "RTPlanName" },
-{ 0x600C, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed7" },
-{ 0x600E, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0202[] = {
-{ 0x0008, 0x1080, 0, VR::LO, VM::M1TN, "AdmittingDiagnosesDescription" },
-{ 0x0018, 0x1090, 0, VR::IS, VM::M1, "CardiacNumberOfImages" },
-{ 0x0018, 0x1480, 0, VR::DS, VM::M1, "TomoTime" },
-{ 0x3004, 0x000E, 0, VR::DS, VM::M1, "DoseGridScaling" },
-{ 0x300A, 0x0410, 0, VR::SQ, VM::M1, "MotionSynchronizationSequence" },
-{ 0x300C, 0x0006, 0, VR::IS, VM::M1, "ReferencedBeamNumber" },
-{ 0x300E, 0x0004, 0, VR::DA, VM::M1, "ReviewDate" },
-{ 0x501E, 0x2500, 1, VR::LO, VM::M1, "CurveLabel16" },
-{ 0x600C, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen7" },
-{ 0x600E, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray8" },
-{ 0x601E, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0203[] = {
-{ 0x0078, 0x00B0, 0, VR::SQ, VM::M1, "ImplantTemplateGroupVariationDimensionSequence" },
-{ 0x300C, 0x0007, 0, VR::IS, VM::M1, "ReferencedReferenceImageNumber" },
-{ 0x300E, 0x0005, 0, VR::TM, VM::M1, "ReviewTime" },
-{ 0x600C, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue7" },
-{ 0x600E, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0204[] = {
-{ 0x3002, 0x000E, 0, VR::DS, VM::M1, "XRayImageReceptorAngle" },
-{ 0x3004, 0x0008, 0, VR::DS, VM::M3, "NormalizationPoint" },
-{ 0x300A, 0x0006, 0, VR::DA, VM::M1, "RTPlanDate" },
-{ 0x300E, 0x0002, 0, VR::CS, VM::M1, "ApprovalStatus" },
-{ 0x5018, 0x2500, 1, VR::LO, VM::M1, "CurveLabel13" },
-{ 0x6008, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray5" },
-{ 0x600A, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen6" },
-{ 0x6018, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0205[] = {
-{ 0x0068, 0x6530, 0, VR::US, VM::M1, "PlanningLandmarkID" },
-{ 0x0078, 0x00B6, 0, VR::US, VM::M1, "ReferencedImplantTemplateGroupMemberID" },
-{ 0x300A, 0x0007, 0, VR::TM, VM::M1, "RTPlanTime" },
-{ 0x6008, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed5" },
-{ 0x600A, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0206[] = {
-{ 0x0008, 0x1084, 0, VR::SQ, VM::M1, "AdmittingDiagnosesCodeSequence" },
-{ 0x0018, 0x1094, 0, VR::IS, VM::M1, "TriggerWindow" },
-{ 0x3002, 0x000C, 0, VR::CS, VM::M1, "RTImagePlane" },
-{ 0x3004, 0x000A, 0, VR::CS, VM::M1, "DoseSummationType" },
-{ 0x3006, 0x0008, 0, VR::DA, VM::M1, "StructureSetDate" },
-{ 0x300A, 0x0004, 0, VR::ST, VM::M1, "RTPlanDescription" },
-{ 0x300C, 0x0002, 0, VR::SQ, VM::M1, "ReferencedRTPlanSequence" },
-{ 0x501A, 0x2500, 1, VR::LO, VM::M1, "CurveLabel14" },
-{ 0x6008, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen5" },
-{ 0x600A, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray6" },
-{ 0x601A, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0207[] = {
-{ 0x0078, 0x00B4, 0, VR::SQ, VM::M1, "ImplantTemplateGroupVariationDimensionRankSequence" },
-{ 0x3002, 0x000D, 0, VR::DS, VM::M3, "XRayImageReceptorTranslation" },
-{ 0x3006, 0x0009, 0, VR::TM, VM::M1, "StructureSetTime" },
-{ 0x6008, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue5" },
-{ 0x600A, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0208[] = {
-{ 0x0046, 0x0095, 0, VR::CS, VM::M1, "OptotypePresentation" },
-{ 0x2040, 0x0011, 1, VR::US, VM::M1T99, "ReferencedOverlayPlaneGroups" },
-{ 0x3002, 0x0012, 0, VR::DS, VM::M2, "RTImagePosition" },
-{ 0x3004, 0x0014, 0, VR::CS, VM::M1T3, "TissueHeterogeneityCorrection" },
-{ 0x3006, 0x0016, 0, VR::SQ, VM::M1, "ContourImageSequence" },
-{ 0x300A, 0x001A, 0, VR::DS, VM::M1, "NominalPriorDose" },
-{ 0x5004, 0x2500, 1, VR::LO, VM::M1, "CurveLabel3" },
-{ 0x6004, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel3" },
-{ 0x6014, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray11" },
-{ 0x6016, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0209[] = {
-{ 0x0040, 0x2010, 0, VR::SH, VM::M1, "OrderCallbackPhoneNumber" },
-{ 0x0040, 0x2400, 0, VR::LT, VM::M1, "ImagingServiceRequestComments" },
-{ 0x0046, 0x0094, 0, VR::CS, VM::M1, "Optotype" },
-{ 0x2000, 0x0050, 0, VR::LO, VM::M1, "FilmSessionLabel" },
-{ 0x2010, 0x0040, 0, VR::CS, VM::M1, "FilmOrientation" },
-{ 0x2040, 0x0010, 1, VR::SQ, VM::M1, "ReferencedOverlayPlaneSequence" },
-{ 0x6014, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed11" },
-{ 0x6016, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0210[] = {
-{ 0x0010, 0x1080, 0, VR::LO, VM::M1, "MilitaryRank" },
-{ 0x0018, 0x1088, 0, VR::IS, VM::M1, "HeartRate" },
-{ 0x0046, 0x0097, 0, VR::SQ, VM::M1, "SubjectiveRefractionRightEyeSequence" },
-{ 0x3002, 0x0010, 0, VR::DS, VM::M6, "RTImageOrientation" },
-{ 0x3006, 0x0014, 0, VR::SQ, VM::M1, "RTReferencedSeriesSequence" },
-{ 0x300A, 0x0018, 0, VR::DS, VM::M3, "DoseReferencePointCoordinates" },
-{ 0x5006, 0x2500, 1, VR::LO, VM::M1, "CurveLabel4" },
-{ 0x6006, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel4" },
-{ 0x6014, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen11" },
-{ 0x6016, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0211[] = {
-{ 0x0010, 0x1081, 0, VR::LO, VM::M1, "BranchOfService" },
-{ 0x3002, 0x0011, 0, VR::DS, VM::M2, "ImagePlanePixelSpacing" },
-{ 0x6014, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue11" },
-{ 0x6016, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0212[] = {
-{ 0x3004, 0x0010, 0, VR::SQ, VM::M1, "RTDoseROISequence" },
-{ 0x3006, 0x0012, 0, VR::SQ, VM::M1, "RTReferencedStudySequence" },
-{ 0x5000, 0x2500, 1, VR::LO, VM::M1, "CurveLabel" },
-{ 0x6000, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel" },
-{ 0x6010, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray9" },
-{ 0x6012, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0213[] = {
-{ 0x0076, 0x00A0, 0, VR::US, VM::M1, "Component2ReferencedID" },
-{ 0x6010, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed9" },
-{ 0x6012, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0214[] = {
-{ 0x0040, 0x2017, 0, VR::LO, VM::M1, "FillerOrderNumberImagingServiceRequest" },
-{ 0x0054, 0x0081, 0, VR::US, VM::M1, "NumberOfSlices" },
-{ 0x3004, 0x0012, 0, VR::DS, VM::M1, "DoseValue" },
-{ 0x3006, 0x0010, 0, VR::SQ, VM::M1, "ReferencedFrameOfReferenceSequence" },
-{ 0x5002, 0x2500, 1, VR::LO, VM::M1, "CurveLabel2" },
-{ 0x6002, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel2" },
-{ 0x6010, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen9" },
-{ 0x6012, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0215[] = {
-{ 0x0040, 0x2016, 0, VR::LO, VM::M1, "PlacerOrderNumberImagingServiceRequest" },
-{ 0x0046, 0x0092, 0, VR::CS, VM::M1, "BackgroundColor" },
-{ 0x0054, 0x0080, 0, VR::US, VM::M1TN, "SliceVector" },
-{ 0x6010, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue9" },
-{ 0x6012, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0216[] = {
-{ 0x0008, 0x3010, 0, VR::UI, VM::M1TN, "IrradiationEventUID" },
-{ 0x0018, 0x1082, 0, VR::IS, VM::M1, "HighRRValue" },
-{ 0x0018, 0x2041, 0, VR::SQ, VM::M1, "BiopsyTargetSequence" },
-{ 0x0040, 0xA601, 1, VR::CS, VM::M1, "ObserverContextFlagTrial" },
-{ 0x3008, 0x0010, 0, VR::SQ, VM::M1, "MeasuredDoseReferenceSequence" },
-{ 0x300A, 0x0012, 0, VR::IS, VM::M1, "DoseReferenceNumber" },
-{ 0x300A, 0x0402, 0, VR::ST, VM::M1, "SetupImageComment" },
-{ 0x500C, 0x2500, 1, VR::LO, VM::M1, "CurveLabel7" },
-{ 0x600C, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel7" },
-{ 0x601C, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray15" },
-{ 0x601E, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0217[] = {
-{ 0x0018, 0x1083, 0, VR::IS, VM::M1, "IntervalsAcquired" },
-{ 0x0040, 0xA600, 1, VR::CS, VM::M1, "ObservationSubjectContextFlagTrial" },
-{ 0x300A, 0x0013, 0, VR::UI, VM::M1, "DoseReferenceUID" },
-{ 0x601C, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed15" },
-{ 0x601E, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0218[] = {
-{ 0x0008, 0x1090, 0, VR::LO, VM::M1, "ManufacturerModelName" },
-{ 0x0018, 0x1080, 0, VR::CS, VM::M1, "BeatRejectionFlag" },
-{ 0x0018, 0x1490, 0, VR::CS, VM::M1, "TomoType" },
-{ 0x0018, 0x2043, 0, VR::FL, VM::M2, "LocalizingCursorPosition" },
-{ 0x0040, 0xA603, 1, VR::CS, VM::M1, "ProcedureContextFlagTrial" },
-{ 0x3008, 0x0012, 0, VR::ST, VM::M1, "MeasuredDoseDescription" },
-{ 0x300A, 0x0010, 0, VR::SQ, VM::M1, "DoseReferenceSequence" },
-{ 0x500E, 0x2500, 1, VR::LO, VM::M1, "CurveLabel8" },
-{ 0x600E, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel8" },
-{ 0x601C, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen15" },
-{ 0x601E, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0219[] = {
-{ 0x0018, 0x1081, 0, VR::IS, VM::M1, "LowRRValue" },
-{ 0x0018, 0x1491, 0, VR::CS, VM::M1, "TomoClass" },
-{ 0x0018, 0x2042, 0, VR::UI, VM::M1, "TargetUID" },
-{ 0x0078, 0x00A0, 0, VR::FD, VM::M4, "TwoDImplantTemplateGroupMemberMatchingAxes" },
-{ 0x300A, 0x0401, 0, VR::SQ, VM::M1, "ReferencedSetupImageSequence" },
-{ 0x601C, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue15" },
-{ 0x601E, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0220[] = {
-{ 0x0018, 0x1086, 0, VR::IS, VM::M1, "SkipBeats" },
-{ 0x0018, 0x2045, 0, VR::SH, VM::M1, "TargetLabel" },
-{ 0x3008, 0x0014, 0, VR::CS, VM::M1, "MeasuredDoseType" },
-{ 0x300A, 0x0016, 0, VR::LO, VM::M1, "DoseReferenceDescription" },
-{ 0x5008, 0x2500, 1, VR::LO, VM::M1, "CurveLabel5" },
-{ 0x6008, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel5" },
-{ 0x6018, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray13" },
-{ 0x601A, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0221[] = {
-{ 0x0018, 0x2044, 0, VR::FL, VM::M3, "CalculatedTargetPosition" },
-{ 0x0046, 0x0098, 0, VR::SQ, VM::M1, "SubjectiveRefractionLeftEyeSequence" },
-{ 0x0068, 0x6520, 0, VR::SQ, VM::M1, "PlanningLandmarkPlaneSequence" },
-{ 0x6018, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed13" },
-{ 0x601A, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0222[] = {
-{ 0x0018, 0x1084, 0, VR::IS, VM::M1, "IntervalsRejected" },
-{ 0x3006, 0x0018, 0, VR::SQ, VM::M1, "PredecessorStructureSetSequence" },
-{ 0x3008, 0x0016, 0, VR::DS, VM::M1, "MeasuredDoseValue" },
-{ 0x300A, 0x0014, 0, VR::CS, VM::M1, "DoseReferenceStructureType" },
-{ 0x500A, 0x2500, 1, VR::LO, VM::M1, "CurveLabel6" },
-{ 0x600A, 0x1500, 0, VR::LO, VM::M1, "OverlayLabel6" },
-{ 0x6018, 0x1102, 1, VR::US, VM::M1, "OverlayDescriptorGreen13" },
-{ 0x601A, 0x1100, 1, VR::US, VM::M1, "OverlayDescriptorGray14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0223[] = {
-{ 0x0018, 0x1085, 0, VR::LO, VM::M1, "PVCRejection" },
-{ 0x0018, 0x1495, 0, VR::IS, VM::M1, "NumberOfTomosynthesisSourceImages" },
-{ 0x0018, 0x2046, 0, VR::FL, VM::M1, "DisplayedZValue" },
-{ 0x300A, 0x0015, 0, VR::CS, VM::M1, "NominalBeamEnergyUnit" },
-{ 0x6018, 0x1103, 1, VR::US, VM::M1, "OverlayDescriptorBlue13" },
-{ 0x601A, 0x1101, 1, VR::US, VM::M1, "OverlayDescriptorRed14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0224[] = {
-{ 0x2000, 0x0061, 0, VR::IS, VM::M1, "MaximumMemoryAllocation" },
-{ 0x3002, 0x0022, 0, VR::DS, VM::M1, "RadiationMachineSAD" },
-{ 0x3006, 0x0026, 0, VR::LO, VM::M1, "ROIName" },
-{ 0x300A, 0x002A, 0, VR::DS, VM::M1, "OrganAtRiskFullVolumeDose" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0225[] = {
-{ 0x2000, 0x0060, 0, VR::IS, VM::M1, "MemoryAllocation" },
-{ 0x2020, 0x0040, 0, VR::CS, VM::M1, "RequestedDecimateCropBehavior" },
-{ 0x2040, 0x0020, 1, VR::SQ, VM::M1, "OverlayPixelDataSequence" },
-{ 0x2100, 0x0160, 0, VR::SH, VM::M1, "OwnerID" },
-{ 0x300A, 0x002B, 0, VR::DS, VM::M1, "OrganAtRiskLimitDose" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0226[] = {
-{ 0x2000, 0x0063, 1, VR::CS, VM::M1, "CollationFlag" },
-{ 0x3002, 0x0020, 0, VR::SH, VM::M1, "RadiationMachineName" },
-{ 0x3006, 0x0024, 0, VR::UI, VM::M1, "ReferencedFrameOfReferenceUID" },
-{ 0x3008, 0x002A, 0, VR::CS, VM::M1, "TreatmentTerminationStatus" },
-{ 0x300A, 0x0028, 0, VR::DS, VM::M1, "TargetUnderdoseVolumeFraction" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0227[] = {
-{ 0x2000, 0x0062, 1, VR::CS, VM::M1, "ColorImagePrintingFlag" },
-{ 0x3008, 0x002B, 0, VR::SH, VM::M1, "TreatmentTerminationCode" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0228[] = {
-{ 0x2000, 0x0065, 1, VR::CS, VM::M1, "AnnotationFlag" },
-{ 0x3002, 0x0026, 0, VR::DS, VM::M1, "RTImageSID" },
-{ 0x3006, 0x0022, 0, VR::IS, VM::M1, "ROINumber" },
-{ 0x3008, 0x002C, 0, VR::CS, VM::M1, "TreatmentVerificationStatus" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0229[] = {
-{ 0x0076, 0x0090, 0, VR::US, VM::M1, "Component1ReferencedMatingFeatureID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0230[] = {
-{ 0x2000, 0x0067, 1, VR::CS, VM::M1, "ImageOverlayFlag" },
-{ 0x3002, 0x0024, 0, VR::DS, VM::M1, "RadiationMachineSSD" },
-{ 0x3006, 0x0020, 0, VR::SQ, VM::M1, "StructureSetROISequence" },
-{ 0x300A, 0x002C, 0, VR::DS, VM::M1, "OrganAtRiskMaximumDose" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0231[] = {
-{ 0x300A, 0x002D, 0, VR::DS, VM::M1, "OrganAtRiskOverdoseVolumeFraction" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0232[] = {
-{ 0x0028, 0x3000, 0, VR::SQ, VM::M1, "ModalityLUTSequence" },
-{ 0x2000, 0x0069, 1, VR::CS, VM::M1, "PresentationLUTFlag" },
-{ 0x3008, 0x0020, 0, VR::SQ, VM::M1, "TreatmentSessionBeamSequence" },
-{ 0x300A, 0x0022, 0, VR::DS, VM::M1, "DeliveryWarningDose" },
-{ 0x300A, 0x0432, 0, VR::CS, VM::M1, "ApplicatorApertureShape" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0233[] = {
-{ 0x3008, 0x0021, 0, VR::SQ, VM::M1, "TreatmentSessionIonBeamSequence" },
-{ 0x300A, 0x0023, 0, VR::DS, VM::M1, "DeliveryMaximumDose" },
-{ 0x300A, 0x0433, 0, VR::FL, VM::M1, "ApplicatorOpening" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0234[] = {
-{ 0x0028, 0x1080, 1, VR::CS, VM::M1, "GrayScale" },
-{ 0x0028, 0x3002, 0, VR::XS, VM::M3, "LUTDescriptor" },
-{ 0x3002, 0x0028, 0, VR::DS, VM::M1, "SourceToReferenceObjectDistance" },
-{ 0x3006, 0x002C, 0, VR::DS, VM::M1, "ROIVolume" },
-{ 0x3008, 0x0022, 0, VR::IS, VM::M1, "CurrentFractionNumber" },
-{ 0x300A, 0x0020, 0, VR::CS, VM::M1, "DoseReferenceType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0235[] = {
-{ 0x0028, 0x3003, 0, VR::LO, VM::M1, "LUTExplanation" },
-{ 0x0078, 0x0090, 0, VR::FD, VM::M2, "TwoDImplantTemplateGroupMemberMatchingPoint" },
-{ 0x2000, 0x006A, 1, VR::CS, VM::M1, "ImageBoxPresentationLUTFlag" },
-{ 0x3002, 0x0029, 0, VR::IS, VM::M1, "FractionNumber" },
-{ 0x300A, 0x0021, 0, VR::DS, VM::M1, "ConstraintWeight" },
-{ 0x300A, 0x0431, 0, VR::SQ, VM::M1, "ApplicatorGeometrySequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0236[] = {
-{ 0x0028, 0x3004, 0, VR::LO, VM::M1, "ModalityLUTType" },
-{ 0x3006, 0x002A, 0, VR::IS, VM::M3, "ROIDisplayColor" },
-{ 0x3008, 0x0024, 0, VR::DA, VM::M1, "TreatmentControlPointDate" },
-{ 0x300A, 0x0026, 0, VR::DS, VM::M1, "TargetPrescriptionDose" },
-{ 0x300A, 0x0436, 0, VR::FL, VM::M1, "SourceToApplicatorMountingPositionDistance" },
-{ 0x300C, 0x0020, 0, VR::SQ, VM::M1, "ReferencedFractionGroupSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0237[] = {
-{ 0x0040, 0xA224, 1, VR::ST, VM::M1, "IdentificationDescriptionTrial" },
-{ 0x0068, 0x6510, 0, VR::SQ, VM::M1, "PlanningLandmarkLineSequence" },
-{ 0x3008, 0x0025, 0, VR::TM, VM::M1, "TreatmentControlPointTime" },
-{ 0x300A, 0x0027, 0, VR::DS, VM::M1, "TargetMaximumDose" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0238[] = {
-{ 0x0028, 0x3006, 0, VR::OW, VM::M1, "LUTData" },
-{ 0x3006, 0x0028, 0, VR::ST, VM::M1, "ROIDescription" },
-{ 0x300A, 0x0434, 0, VR::FL, VM::M1, "ApplicatorOpeningX" },
-{ 0x300C, 0x0022, 0, VR::IS, VM::M1, "ReferencedFractionGroupNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0239[] = {
-{ 0x300A, 0x0025, 0, VR::DS, VM::M1, "TargetMinimumDose" },
-{ 0x300A, 0x0435, 0, VR::FL, VM::M1, "ApplicatorOpeningY" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0240[] = {
-{ 0x0014, 0x3024, 2, VR::DS, VM::M1, "HorizontalOffsetOfSensor" },
-{ 0x0022, 0x1090, 0, VR::SQ, VM::M1, "IOLPowerSequence" },
-{ 0x0070, 0x0083, 0, VR::TM, VM::M1, "PresentationCreationTime" },
-{ 0x3002, 0x0032, 0, VR::DS, VM::M1, "MetersetExposure" },
-{ 0x3006, 0x0036, 0, VR::CS, VM::M1, "ROIGenerationAlgorithm" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0241[] = {
-{ 0x0020, 0x3401, 1, VR::CS, VM::M1, "ModifyingDeviceID" },
-{ 0x0070, 0x0082, 0, VR::DA, VM::M1, "PresentationCreationDate" },
-{ 0x0072, 0x0080, 0, VR::SQ, VM::M1, "SelectorCodeSequenceValue" },
-{ 0x2010, 0x0060, 0, VR::CS, VM::M1, "MagnificationType" },
-{ 0x2020, 0x0050, 0, VR::CS, VM::M1, "RequestedResolutionID" },
-{ 0x2050, 0x0020, 0, VR::CS, VM::M1, "PresentationLUTShape" },
-{ 0x2100, 0x0170, 0, VR::IS, VM::M1, "NumberOfFilms" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0242[] = {
-{ 0x0014, 0x3026, 2, VR::DS, VM::M1, "VerticalOffsetOfSensor" },
-{ 0x0020, 0x3402, 1, VR::CS, VM::M1, "ModifiedImageID" },
-{ 0x0022, 0x1092, 0, VR::SQ, VM::M1, "LensConstantSequence" },
-{ 0x0070, 0x0081, 0, VR::LO, VM::M1, "ContentDescription" },
-{ 0x3002, 0x0030, 0, VR::SQ, VM::M1, "ExposureSequence" },
-{ 0x3008, 0x003A, 0, VR::DS, VM::M1, "SpecifiedTreatmentTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0243[] = {
-{ 0x0020, 0x3403, 1, VR::DA, VM::M1, "ModifiedImageDate" },
-{ 0x0022, 0x1093, 0, VR::LO, VM::M1, "IOLManufacturer" },
-{ 0x0070, 0x0080, 0, VR::CS, VM::M1, "ContentLabel" },
-{ 0x3008, 0x003B, 0, VR::DS, VM::M1, "DeliveredTreatmentTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0244[] = {
-{ 0x0014, 0x3020, 2, VR::SQ, VM::M1, "DetectorTemperatureSequence" },
-{ 0x0020, 0x3404, 1, VR::LO, VM::M1, "ModifyingDeviceManufacturer" },
-{ 0x0022, 0x1094, 1, VR::LO, VM::M1, "LensConstantDescription" },
-{ 0x0070, 0x0087, 0, VR::SQ, VM::M1, "AlternateContentDescriptionSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0245[] = {
-{ 0x0020, 0x3405, 1, VR::TM, VM::M1, "ModifiedImageTime" },
-{ 0x0022, 0x1095, 0, VR::LO, VM::M1, "ImplantName" },
-{ 0x0070, 0x0086, 0, VR::SQ, VM::M1, "ContentCreatorIdentificationCodeSequence" },
-{ 0x0076, 0x0080, 0, VR::US, VM::M1, "Component1ReferencedMatingFeatureSetID" },
-{ 0x3006, 0x0033, 0, VR::CS, VM::M1, "RTROIRelationship" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0246[] = {
-{ 0x0014, 0x3022, 2, VR::ST, VM::M1, "SensorName" },
-{ 0x0020, 0x3406, 1, VR::LO, VM::M1, "ModifiedImageDescription" },
-{ 0x0022, 0x1096, 0, VR::SQ, VM::M1, "KeratometryMeasurementTypeCodeSequence" },
-{ 0x3002, 0x0034, 0, VR::DS, VM::M4, "DiaphragmPosition" },
-{ 0x3006, 0x0030, 0, VR::SQ, VM::M1, "RTRelatedROISequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0247[] = {
-{ 0x0022, 0x1097, 0, VR::LO, VM::M1, "ImplantPartNumber" },
-{ 0x0070, 0x0084, 0, VR::PN, VM::M1, "ContentCreatorName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0248[] = {
-{ 0x0028, 0x3010, 0, VR::SQ, VM::M1, "VOILUTSequence" },
-{ 0x3008, 0x0030, 0, VR::SQ, VM::M1, "ReferencedTreatmentRecordSequence" },
-{ 0x300A, 0x0422, 0, VR::ST, VM::M1, "GeneralAccessoryDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0249[] = {
-{ 0x300A, 0x0423, 0, VR::CS, VM::M1, "GeneralAccessoryType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0250[] = {
-{ 0x0028, 0x1090, 0, VR::CS, VM::M1, "RecommendedViewingMode" },
-{ 0x3008, 0x0032, 0, VR::DS, VM::M1, "SpecifiedPrimaryMeterset" },
-{ 0x300A, 0x0420, 0, VR::SQ, VM::M1, "GeneralAccessorySequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0251[] = {
-{ 0x3008, 0x0033, 0, VR::DS, VM::M1, "SpecifiedSecondaryMeterset" },
-{ 0x300A, 0x0421, 0, VR::SH, VM::M1, "GeneralAccessoryID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0252[] = {
-{ 0x0014, 0x3028, 2, VR::DS, VM::M1, "SensorTemperature" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0253[] = {
-{ 0x0068, 0x6500, 0, VR::SQ, VM::M1, "PlanningLandmarkPointSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0254[] = {
-{ 0x3006, 0x0038, 0, VR::LO, VM::M1, "ROIGenerationDescription" },
-{ 0x3008, 0x0036, 0, VR::DS, VM::M1, "DeliveredPrimaryMeterset" },
-{ 0x300A, 0x0424, 0, VR::IS, VM::M1, "GeneralAccessoryNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0255[] = {
-{ 0x3006, 0x0039, 0, VR::SQ, VM::M1, "ROIContourSequence" },
-{ 0x3008, 0x0037, 0, VR::DS, VM::M1, "DeliveredSecondaryMeterset" },
-{ 0x300A, 0x0425, 0, VR::FL, VM::M1, "SourceToGeneralAccessoryDistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0256[] = {
-{ 0x0004, 0x1141, 0, VR::CS, VM::M1T8, "FileSetDescriptorFileID" },
-{ 0x0008, 0x010C, 0, VR::UI, VM::M1, "CodingSchemeUID" },
-{ 0x0014, 0x4014, 2, VR::DS, VM::M1, "ElementDimensionA" },
-{ 0x0024, 0x0120, 0, VR::CS, VM::M1, "ScreeningBaselineMeasured" },
-{ 0x0040, 0x0554, 0, VR::UI, VM::M1, "SpecimenUID" },
-{ 0x0040, 0x4040, 0, VR::CS, VM::M1, "RawDataHandling" },
-{ 0x4010, 0x1051, 3, VR::LO, VM::M1, "ItineraryID" },
-{ 0x5400, 0x1010, 0, VR::OX, VM::M1, "WaveformData" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0257[] = {
-{ 0x0008, 0x010D, 0, VR::UI, VM::M1, "ContextGroupExtensionCreatorUID" },
-{ 0x0014, 0x4015, 2, VR::DS, VM::M1, "ElementDimensionB" },
-{ 0x0040, 0x0555, 0, VR::SQ, VM::M1, "AcquisitionContextSequence" },
-{ 0x0040, 0x4041, 0, VR::CS, VM::M1, "InputReadinessState" },
-{ 0x0400, 0x0115, 0, VR::OB, VM::M1, "CertificateOfSigner" },
-{ 0x5000, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels" },
-{ 0x5000, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0258[] = {
-{ 0x0014, 0x4016, 2, VR::DS, VM::M1, "ElementPitchA" },
-{ 0x0024, 0x0122, 0, VR::SQ, VM::M1, "ScreeningBaselineMeasuredSequence" },
-{ 0x0040, 0x0556, 0, VR::ST, VM::M1, "AcquisitionContextDescription" },
-{ 0x4010, 0x1053, 3, VR::LO, VM::M1, "ItineraryIDAssigningAuthority" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0259[] = {
-{ 0x0004, 0x1142, 0, VR::CS, VM::M1, "SpecificCharacterSetOfFileSetDescriptorFile" },
-{ 0x0008, 0x010F, 0, VR::CS, VM::M1, "ContextIdentifier" },
-{ 0x0014, 0x4017, 2, VR::DS, VM::M1, "MeasuredBeamDimensionA" },
-{ 0x0018, 0x115E, 0, VR::DS, VM::M1, "ImageAndFluoroscopyAreaDoseProduct" },
-{ 0x4010, 0x1052, 3, VR::SH, VM::M1, "ItineraryIDType" },
-{ 0x5002, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels2" },
-{ 0x5002, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0260[] = {
-{ 0x0002, 0x0102, 0, VR::OB, VM::M1, "PrivateInformation" },
-{ 0x0008, 0x0108, 3, VR::LT, VM::M1, "ExtendedCodeMeaning" },
-{ 0x0014, 0x4010, 2, VR::SQ, VM::M1, "TransmitTransducerSequence" },
-{ 0x0018, 0x9351, 0, VR::FL, VM::M1, "CalciumScoringMassFactorPatient" },
-{ 0x0024, 0x0124, 0, VR::CS, VM::M1, "ScreeningBaselineType" },
-{ 0x0040, 0x0550, 1, VR::SQ, VM::M1, "SpecimenSequence" },
-{ 0x0040, 0x1101, 0, VR::SQ, VM::M1, "PersonIdentificationCodeSequence" },
-{ 0x0046, 0x0146, 0, VR::FD, VM::M1, "SpherePower" },
-{ 0x0100, 0x0410, 0, VR::CS, VM::M1, "SOPInstanceStatus" },
-{ 0x0400, 0x0110, 0, VR::CS, VM::M1, "CertificateType" },
-{ 0x0400, 0x0500, 0, VR::SQ, VM::M1, "EncryptedAttributesSequence" },
-{ 0x4010, 0x1055, 3, VR::SH, VM::M1, "RouteIDAssigningAuthority" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0261[] = {
-{ 0x0014, 0x4011, 2, VR::SQ, VM::M1, "ReceiveTransducerSequence" },
-{ 0x0018, 0x9740, 0, VR::US, VM::M1, "NumberOfSubsets" },
-{ 0x0040, 0x0551, 0, VR::LO, VM::M1, "SpecimenIdentifier" },
-{ 0x0046, 0x0147, 0, VR::FD, VM::M1, "CylinderPower" },
-{ 0x4010, 0x1054, 3, VR::SH, VM::M1, "RouteID" },
-{ 0x5004, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels3" },
-{ 0x5004, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer3" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0262[] = {
-{ 0x0002, 0x0100, 0, VR::UI, VM::M1, "PrivateInformationCreatorUID" },
-{ 0x0008, 0x114B, 0, VR::SQ, VM::M1, "ReferencedRealWorldValueMappingInstanceSequence" },
-{ 0x0014, 0x4012, 2, VR::US, VM::M1, "NumberOfElements" },
-{ 0x0018, 0x9353, 0, VR::FL, VM::M1, "EnergyWeightingFactor" },
-{ 0x0024, 0x0126, 0, VR::FL, VM::M1, "ScreeningBaselineValue" },
-{ 0x0040, 0x0552, 1, VR::SQ, VM::M1, "SpecimenDescriptionSequenceTrial" },
-{ 0x0040, 0x1103, 0, VR::LO, VM::M1TN, "PersonTelephoneNumbers" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0263[] = {
-{ 0x0008, 0x010B, 0, VR::CS, VM::M1, "ContextGroupExtensionFlag" },
-{ 0x0008, 0x114A, 0, VR::SQ, VM::M1, "ReferencedInstanceSequence" },
-{ 0x0014, 0x4013, 2, VR::CS, VM::M1, "ElementShape" },
-{ 0x0018, 0x115A, 0, VR::CS, VM::M1, "RadiationMode" },
-{ 0x0018, 0x9352, 0, VR::FL, VM::M3, "CalciumScoringMassFactorDevice" },
-{ 0x0040, 0x0553, 1, VR::ST, VM::M1, "SpecimenDescriptionTrial" },
-{ 0x0040, 0x1102, 0, VR::ST, VM::M1, "PersonAddress" },
-{ 0x0046, 0x0145, 0, VR::SQ, VM::M1, "ReferencedRefractiveMeasurementsSequence" },
-{ 0x4010, 0x1056, 3, VR::CS, VM::M1, "InboundArrivalType" },
-{ 0x5006, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels4" },
-{ 0x5006, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0264[] = {
-{ 0x0008, 0x0104, 0, VR::LO, VM::M1, "CodeMeaning" },
-{ 0x0008, 0x1145, 1, VR::SQ, VM::M1, "ReferencedCurveSequence" },
-{ 0x0008, 0x4000, 1, VR::LT, VM::M1, "IdentifyingComments" },
-{ 0x0014, 0x401C, 2, VR::DS, VM::M1, "MeasuredBandwidth" },
-{ 0x0018, 0x1155, 0, VR::CS, VM::M1, "RadiationSetting" },
-{ 0x4010, 0x1059, 3, VR::CS, VM::M1, "CarrierIDAssigningAuthority" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0265[] = {
-{ 0x0008, 0x0105, 0, VR::CS, VM::M1, "MappingResource" },
-{ 0x0014, 0x401D, 2, VR::DS, VM::M1, "ElementPitchB" },
-{ 0x0018, 0x1154, 0, VR::DS, VM::M1, "AveragePulseWidth" },
-{ 0x0018, 0x5050, 0, VR::IS, VM::M1, "DepthOfScanField" },
-{ 0x4010, 0x1058, 3, VR::SH, VM::M1, "CarrierID" },
-{ 0x5008, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels5" },
-{ 0x5008, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer5" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0266[] = {
-{ 0x0008, 0x0106, 0, VR::DT, VM::M1, "ContextGroupVersion" },
-{ 0x0068, 0x64F0, 0, VR::FD, VM::M3, "TwoDDegreeOfFreedomAxis" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0267[] = {
-{ 0x0008, 0x0107, 0, VR::DT, VM::M1, "ContextGroupLocalVersion" },
-{ 0x0018, 0x1156, 0, VR::CS, VM::M1, "RectificationType" },
-{ 0x500A, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels6" },
-{ 0x500A, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0268[] = {
-{ 0x0008, 0x0100, 0, VR::SH, VM::M1, "CodeValue" },
-{ 0x0014, 0x4018, 2, VR::DS, VM::M1, "MeasuredBeamDimensionB" },
-{ 0x0018, 0x1151, 0, VR::IS, VM::M1, "XRayTubeCurrent" },
-{ 0x0018, 0x9749, 0, VR::SQ, VM::M1, "PETReconstructionSequence" },
-{ 0x0028, 0x0120, 0, VR::XS, VM::M1, "PixelPaddingValue" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0269[] = {
-{ 0x0008, 0x0101, 3, VR::LO, VM::M1, "ExtendedCodeValue" },
-{ 0x0008, 0x1140, 0, VR::SQ, VM::M1, "ReferencedImageSequence" },
-{ 0x0014, 0x4019, 2, VR::DS, VM::M1, "LocationOfMeasuredBeamDiameter" },
-{ 0x0018, 0x1150, 0, VR::IS, VM::M1, "ExposureTime" },
-{ 0x0028, 0x0121, 0, VR::XS, VM::M1, "PixelPaddingRangeLimit" },
-{ 0x500C, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels7" },
-{ 0x500C, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0270[] = {
-{ 0x0008, 0x0102, 0, VR::SH, VM::M1, "CodingSchemeDesignator" },
-{ 0x0014, 0x401A, 2, VR::DS, VM::M1, "NominalFrequency" },
-{ 0x0018, 0x1153, 0, VR::IS, VM::M1, "ExposureInuAs" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0271[] = {
-{ 0x0008, 0x0103, 0, VR::SH, VM::M1, "CodingSchemeVersion" },
-{ 0x0014, 0x401B, 2, VR::DS, VM::M1, "MeasuredCenterFrequency" },
-{ 0x0018, 0x1152, 0, VR::IS, VM::M1, "Exposure" },
-{ 0x2110, 0x0099, 1, VR::SH, VM::M1, "PrintQueueID" },
-{ 0x500E, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels8" },
-{ 0x500E, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0272[] = {
-{ 0x0010, 0x4000, 0, VR::LT, VM::M1, "PatientComments" },
-{ 0x0014, 0x4004, 2, VR::CS, VM::M1, "PulserType" },
-{ 0x0018, 0x9345, 0, VR::FD, VM::M1, "CTDIvol" },
-{ 0x0018, 0x9755, 0, VR::CS, VM::M1, "TimeOfFlightInformationUsed" },
-{ 0x0040, 0x4050, 0, VR::DT, VM::M1, "PerformedProcedureStepStartDateTime" },
-{ 0x0054, 0x1101, 0, VR::LO, VM::M1, "AttenuationCorrectionMethod" },
-{ 0x4000, 0x0010, 1, VR::LT, VM::M1, "Arbitrary" },
-{ 0x4010, 0x1041, 3, VR::DT, VM::M1, "OOIOwnerCreationTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0273[] = {
-{ 0x0018, 0x9344, 0, VR::CS, VM::M1, "ContrastBolusAgentPhase" },
-{ 0x0040, 0x4051, 0, VR::DT, VM::M1, "PerformedProcedureStepEndDateTime" },
-{ 0x0054, 0x1100, 0, VR::CS, VM::M1, "RandomsCorrectionMethod" },
-{ 0x0400, 0x0105, 0, VR::DT, VM::M1, "DigitalSignatureDateTime" },
-{ 0x4010, 0x0001, 3, VR::CS, VM::M1, "LowEnergyDetectors" },
-{ 0x5010, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels9" },
-{ 0x5010, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer9" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0274[] = {
-{ 0x0014, 0x4006, 2, VR::LT, VM::M1, "PulserNotes" },
-{ 0x0040, 0x4052, 0, VR::DT, VM::M1, "ProcedureStepCancellationDateTime" },
-{ 0x0054, 0x1103, 0, VR::LO, VM::M1, "ReconstructionMethod" },
-{ 0x4010, 0x0002, 3, VR::CS, VM::M1, "HighEnergyDetectors" },
-{ 0x4010, 0x1043, 3, VR::FL, VM::M3, "OOISize" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0275[] = {
-{ 0x0018, 0x9346, 0, VR::SQ, VM::M1, "CTDIPhantomTypeCodeSequence" },
-{ 0x0018, 0x9756, 0, VR::CS, VM::M1, "ReconstructionType" },
-{ 0x0054, 0x1102, 0, VR::CS, VM::M1, "DecayCorrection" },
-{ 0x4010, 0x1042, 3, VR::CS, VM::M1, "OOIType" },
-{ 0x5012, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels10" },
-{ 0x5012, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0276[] = {
-{ 0x0018, 0x1149, 0, VR::IS, VM::M1T2, "FieldOfViewDimensions" },
-{ 0x0018, 0x9341, 0, VR::SQ, VM::M1, "ContrastBolusUsageSequence" },
-{ 0x0018, 0x9751, 0, VR::SQ, VM::M1, "PETFrameTypeSequence" },
-{ 0x0054, 0x1105, 0, VR::LO, VM::M1, "ScatterCorrectionMethod" },
-{ 0x0400, 0x0100, 0, VR::UI, VM::M1, "DigitalSignatureUID" },
-{ 0x0400, 0x0510, 0, VR::UI, VM::M1, "EncryptedContentTransferSyntaxUID" },
-{ 0x4010, 0x0004, 3, VR::SQ, VM::M1, "DetectorGeometrySequence" },
-{ 0x4010, 0x1045, 3, VR::SQ, VM::M1, "BasisMaterialsCodeSequence" },
-{ 0x5400, 0x1004, 0, VR::US, VM::M1, "WaveformBitsAllocated" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0277[] = {
-{ 0x0010, 0x0101, 0, VR::SQ, VM::M1, "PatientPrimaryLanguageCodeSequence" },
-{ 0x0018, 0x9340, 0, VR::SQ, VM::M1, "ContrastAdministrationProfileSequence" },
-{ 0x0054, 0x1104, 0, VR::LO, VM::M1, "DetectorLinesOfResponseUsed" },
-{ 0x4010, 0x1044, 3, VR::CS, VM::M1, "AcquisitionStatus" },
-{ 0x5014, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels11" },
-{ 0x5014, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0278[] = {
-{ 0x0010, 0x0102, 0, VR::SQ, VM::M1, "PatientPrimaryLanguageModifierCodeSequence" },
-{ 0x0010, 0x2180, 0, VR::SH, VM::M1, "Occupation" },
-{ 0x0014, 0x4002, 2, VR::SQ, VM::M1, "PulserEquipmentSequence" },
-{ 0x0018, 0x9343, 0, VR::CS, VM::M1, "ContrastBolusAgentDetected" },
-{ 0x2130, 0x00A0, 1, VR::SQ, VM::M1, "ProposedStudySequence" },
-{ 0x4010, 0x1047, 3, VR::SQ, VM::M1, "OOIOwnerSequence" },
-{ 0x5400, 0x1006, 0, VR::CS, VM::M1, "WaveformSampleInterpretation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0279[] = {
-{ 0x0008, 0x115A, 0, VR::UI, VM::M1TN, "SOPClassesSupported" },
-{ 0x0018, 0x9342, 0, VR::CS, VM::M1, "ContrastBolusAgentAdministered" },
-{ 0x4010, 0x1046, 3, VR::CS, VM::M1, "PhantomType" },
-{ 0x5016, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels12" },
-{ 0x5016, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0280[] = {
-{ 0x0008, 0x0114, 0, VR::ST, VM::M1, "CodingSchemeExternalID" },
-{ 0x0008, 0x1155, 0, VR::UI, VM::M1, "ReferencedSOPInstanceUID" },
-{ 0x0014, 0x400C, 2, VR::LT, VM::M1, "ReceiverNotes" },
-{ 0x0018, 0x1145, 0, VR::DS, VM::M1, "CenterOfRotationOffset" },
-{ 0x0018, 0x4000, 1, VR::LT, VM::M1, "AcquisitionComments" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0281[] = {
-{ 0x0008, 0x0115, 0, VR::ST, VM::M1, "CodingSchemeName" },
-{ 0x0018, 0x1144, 0, VR::DS, VM::M1, "AngularStep" },
-{ 0x0018, 0x5040, 1, VR::DS, VM::M1, "TotalGain" },
-{ 0x300A, 0x01D4, 0, VR::DS, VM::M1, "TableTopLongitudinalSetupDisplacement" },
-{ 0x4010, 0x1048, 3, VR::CS, VM::M1, "ScanType" },
-{ 0x5018, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels13" },
-{ 0x5018, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0282[] = {
-{ 0x0008, 0x0116, 0, VR::ST, VM::M1, "CodingSchemeResponsibleOrganization" },
-{ 0x0014, 0x400E, 2, VR::SQ, VM::M1, "PreAmplifierEquipmentSequence" },
-{ 0x0018, 0x1147, 0, VR::CS, VM::M1, "FieldOfViewShape" },
-{ 0x5400, 0x100A, 0, VR::OX, VM::M1, "WaveformPaddingValue" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0283[] = {
-{ 0x0008, 0x0117, 0, VR::UI, VM::M1, "ContextUID" },
-{ 0x0014, 0x400F, 2, VR::LT, VM::M1, "PreAmplifierNotes" },
-{ 0x0018, 0x1146, 1, VR::DS, VM::M1TN, "RotationOffset" },
-{ 0x300A, 0x01D6, 0, VR::DS, VM::M1, "TableTopLateralSetupDisplacement" },
-{ 0x501A, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels14" },
-{ 0x501A, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0284[] = {
-{ 0x0008, 0x0110, 0, VR::SQ, VM::M1, "CodingSchemeIdentificationSequence" },
-{ 0x0014, 0x4008, 2, VR::SQ, VM::M1, "ReceiverEquipmentSequence" },
-{ 0x0018, 0x1141, 1, VR::DS, VM::M1, "AngularPosition" },
-{ 0x0018, 0x9759, 0, VR::CS, VM::M1, "AttenuationCorrected" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0285[] = {
-{ 0x0008, 0x1150, 0, VR::UI, VM::M1, "ReferencedSOPClassUID" },
-{ 0x0018, 0x1140, 0, VR::CS, VM::M1, "RotationDirection" },
-{ 0x0018, 0x9758, 0, VR::CS, VM::M1, "DecayCorrected" },
-{ 0x300A, 0x01D0, 0, VR::ST, VM::M1, "SetupReferenceDescription" },
-{ 0x501C, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels15" },
-{ 0x501C, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0286[] = {
-{ 0x0008, 0x0112, 0, VR::LO, VM::M1, "CodingSchemeRegistry" },
-{ 0x0014, 0x400A, 2, VR::CS, VM::M1, "AmplifierType" },
-{ 0x0018, 0x1143, 0, VR::DS, VM::M1, "ScanArc" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0287[] = {
-{ 0x0018, 0x1142, 0, VR::DS, VM::M1TN, "RadialPosition" },
-{ 0x300A, 0x01D2, 0, VR::DS, VM::M1, "TableTopVerticalSetupDisplacement" },
-{ 0x501E, 0x0040, 1, VR::SH, VM::M1TN, "AxisLabels16" },
-{ 0x501E, 0x1001, 1, VR::CS, VM::M1, "CurveActivationLayer16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0288[] = {
-{ 0x0014, 0x4034, 2, VR::DS, VM::M1, "RectifierSmoothing" },
-{ 0x0018, 0x9765, 0, VR::CS, VM::M1, "RandomsCorrected" },
-{ 0x0020, 0x4000, 0, VR::LT, VM::M1, "ImageComments" },
-{ 0x0024, 0x0100, 0, VR::FL, VM::M1, "AgeCorrectedSensitivityDeviationProbabilityValue" },
-{ 0x4010, 0x1071, 3, VR::SQ, VM::M1, "QRMeasurementsSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0289[] = {
-{ 0x0014, 0x4035, 2, VR::SQ, VM::M1, "DACSequence" },
-{ 0x0018, 0x9764, 0, VR::CS, VM::M1, "CountLossNormalizationCorrected" },
-{ 0x0020, 0x0105, 0, VR::IS, VM::M1, "NumberOfTemporalPositions" },
-{ 0x4010, 0x1070, 3, VR::CS, VM::M1, "AITDeviceType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0290[] = {
-{ 0x0014, 0x4036, 2, VR::CS, VM::M1, "DACType" },
-{ 0x0018, 0x9767, 0, VR::CS, VM::M1, "SensitivityCalibrated" },
-{ 0x0024, 0x0102, 0, VR::CS, VM::M1, "GeneralizedDefectCorrectedSensitivityDeviationFlag" },
-{ 0x4010, 0x1073, 3, VR::FD, VM::M1, "SNRThreshold" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0291[] = {
-{ 0x0018, 0x9766, 0, VR::CS, VM::M1, "NonUniformRadialSamplingCorrected" },
-{ 0x0024, 0x0103, 0, VR::FL, VM::M1, "GeneralizedDefectCorrectedSensitivityDeviationValue" },
-{ 0x4010, 0x1072, 3, VR::SQ, VM::M1, "TargetMaterialSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0292[] = {
-{ 0x0014, 0x4030, 2, VR::SQ, VM::M1, "ReceiverSettingsSequence" },
-{ 0x0018, 0x9761, 0, VR::CS, VM::M1, "DeadTimeCorrected" },
-{ 0x0020, 0x0100, 0, VR::IS, VM::M1, "TemporalPositionIdentifier" },
-{ 0x0024, 0x0104, 0, VR::FL, VM::M1, "GeneralizedDefectCorrectedSensitivityDeviationProbabilityValue" },
-{ 0x0028, 0x0108, 0, VR::XS, VM::M1, "SmallestPixelValueInSeries" },
-{ 0x0400, 0x0520, 0, VR::OB, VM::M1, "EncryptedContent" },
-{ 0x4010, 0x1075, 3, VR::DS, VM::M1, "ImageScaleRepresentation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0293[] = {
-{ 0x0014, 0x4031, 2, VR::DS, VM::M1, "AcquiredSoundpathLength" },
-{ 0x0018, 0x9760, 0, VR::CS, VM::M1, "ScatterCorrected" },
-{ 0x0024, 0x0105, 0, VR::FL, VM::M1, "MinimumSensitivityValue" },
-{ 0x0028, 0x0109, 0, VR::XS, VM::M1, "LargestPixelValueInSeries" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0294[] = {
-{ 0x0010, 0x21B0, 0, VR::LT, VM::M1, "AdditionalPatientHistory" },
-{ 0x0014, 0x4032, 2, VR::CS, VM::M1, "AcquisitionCompressionType" },
-{ 0x0018, 0x9763, 0, VR::CS, VM::M1, "PatientMotionCorrected" },
-{ 0x0024, 0x0106, 0, VR::CS, VM::M1, "BlindSpotLocalized" },
-{ 0x4010, 0x1077, 3, VR::SQ, VM::M1, "ReferencedTDRInstanceSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0295[] = {
-{ 0x0014, 0x4033, 2, VR::IS, VM::M1, "AcquisitionSampleSize" },
-{ 0x0018, 0x9762, 0, VR::CS, VM::M1, "GantryMotionCorrected" },
-{ 0x0022, 0x1140, 0, VR::CS, VM::M1, "OphthalmicAxialLengthMeasurementModified" },
-{ 0x0024, 0x0107, 0, VR::FL, VM::M1, "BlindSpotXCoordinate" },
-{ 0x4010, 0x1076, 3, VR::SQ, VM::M1, "ReferencedPTOSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0296[] = {
-{ 0x0014, 0x403C, 2, VR::DS, VM::M1TN, "DACAmplitude" },
-{ 0x0024, 0x0108, 0, VR::FL, VM::M1, "BlindSpotYCoordinate" },
-{ 0x0028, 0x0104, 1, VR::XS, VM::M1, "SmallestValidPixelValue" },
-{ 0x0028, 0x4000, 1, VR::LT, VM::M1, "ImagePresentationComments" },
-{ 0x4010, 0x1079, 3, VR::SQ, VM::M1, "AnomalyLocatorIndicatorSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0297[] = {
-{ 0x0008, 0x1164, 0, VR::SQ, VM::M1, "FrameExtractionSequence" },
-{ 0x0028, 0x0105, 1, VR::XS, VM::M1, "LargestValidPixelValue" },
-{ 0x4010, 0x1078, 3, VR::ST, VM::M1, "PTOLocationDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0298[] = {
-{ 0x0008, 0x1167, 0, VR::UI, VM::M1, "MultiFrameSourceSOPInstanceUID" },
-{ 0x0028, 0x0106, 0, VR::XS, VM::M1, "SmallestImagePixelValue" },
-{ 0x0068, 0x64D0, 0, VR::FD, VM::M9, "ThreeDMatingAxes" },
-{ 0x4010, 0x107B, 3, VR::SQ, VM::M1, "PTORegionSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0299[] = {
-{ 0x0028, 0x0107, 0, VR::XS, VM::M1, "LargestImagePixelValue" },
-{ 0x4010, 0x107A, 3, VR::FL, VM::M3, "AnomalyLocatorIndicator" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0300[] = {
-{ 0x0008, 0x1161, 0, VR::UL, VM::M1TN, "SimpleFrameList" },
-{ 0x0014, 0x4038, 2, VR::DS, VM::M1TN, "DACGainPoints" },
-{ 0x0018, 0x9769, 0, VR::CS, VM::M1, "IterativeReconstructionMethod" },
-{ 0x0028, 0x0100, 0, VR::US, VM::M1, "BitsAllocated" },
-{ 0x0038, 0x0500, 0, VR::LO, VM::M1, "PatientState" },
-{ 0x4010, 0x107D, 3, VR::SQ, VM::M1, "SecondaryInspectionMethodSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0301[] = {
-{ 0x0008, 0x1160, 0, VR::IS, VM::M1TN, "ReferencedFrameNumber" },
-{ 0x0018, 0x1170, 0, VR::IS, VM::M1, "GeneratorPower" },
-{ 0x0018, 0x9768, 0, VR::CS, VM::M1, "DetectorNormalizationCorrection" },
-{ 0x0028, 0x0101, 0, VR::US, VM::M1, "BitsStored" },
-{ 0x4010, 0x107C, 3, VR::CS, VM::M1, "InspectionSelectionCriteria" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0302[] = {
-{ 0x0008, 0x1163, 0, VR::FD, VM::M2, "TimeRange" },
-{ 0x0014, 0x403A, 2, VR::DS, VM::M1TN, "DACTimePoints" },
-{ 0x0028, 0x0102, 0, VR::US, VM::M1, "HighBit" },
-{ 0x0038, 0x0502, 0, VR::SQ, VM::M1, "PatientClinicalTrialParticipationSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0303[] = {
-{ 0x0008, 0x1162, 0, VR::UL, VM::M3T3N, "CalculatedFrameList" },
-{ 0x0028, 0x0103, 0, VR::US, VM::M1, "PixelRepresentation" },
-{ 0x4010, 0x107E, 3, VR::DS, VM::M6, "PRCSToRCSOrientation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0304[] = {
-{ 0x0014, 0x4024, 2, VR::DS, VM::M1, "ExcitationFrequency" },
-{ 0x0024, 0x0110, 0, VR::SQ, VM::M1, "VisualAcuityMeasurementSequence" },
-{ 0x0100, 0x0424, 0, VR::LT, VM::M1, "SOPAuthorizationComment" },
-{ 0x4010, 0x1061, 3, VR::FL, VM::M3, "SourcePosition" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0305[] = {
-{ 0x4010, 0x1060, 3, VR::FL, VM::M3, "SourceOrientation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0306[] = {
-{ 0x0014, 0x4026, 2, VR::CS, VM::M1, "ModulationType" },
-{ 0x0022, 0x1155, 0, VR::FL, VM::M1, "SignalToNoiseRatio" },
-{ 0x0024, 0x0112, 0, VR::SQ, VM::M1, "RefractiveParametersUsedOnPatientSequence" },
-{ 0x0032, 0x4000, 1, VR::LT, VM::M1, "StudyComments" },
-{ 0x0100, 0x0426, 0, VR::LO, VM::M1, "AuthorizationEquipmentCertificationNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0307[] = {
-{ 0x0024, 0x0113, 0, VR::CS, VM::M1, "MeasurementLaterality" },
-{ 0x4010, 0x1062, 3, VR::FL, VM::M1, "BeltHeight" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0308[] = {
-{ 0x0014, 0x4020, 2, VR::SQ, VM::M1, "PulserSettingsSequence" },
-{ 0x0018, 0x9771, 0, VR::SQ, VM::M1, "PatientPhysiologicalStateSequence" },
-{ 0x0020, 0x0110, 0, VR::DS, VM::M1, "TemporalResolution" },
-{ 0x0022, 0x1153, 1, VR::SQ, VM::M1, "OphthalmicAxialLengthAcquisitionMethodCodeSequence" },
-{ 0x0024, 0x0114, 0, VR::SQ, VM::M1, "OphthalmicPatientClinicalInformationLeftEyeSequence" },
-{ 0x0040, 0x0560, 0, VR::SQ, VM::M1, "SpecimenDescriptionSequence" },
-{ 0x0100, 0x0420, 0, VR::DT, VM::M1, "SOPAuthorizationDateTime" },
-{ 0x0400, 0x0120, 0, VR::OB, VM::M1, "Signature" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0309[] = {
-{ 0x0018, 0x9360, 0, VR::SQ, VM::M1, "CTAdditionalXRaySourceSequence" },
-{ 0x0018, 0x9770, 0, VR::CS, VM::M1, "AttenuationCorrectionTemporalRelationship" },
-{ 0x0024, 0x0115, 0, VR::SQ, VM::M1, "OphthalmicPatientClinicalInformationRightEyeSequence" },
-{ 0x4010, 0x1064, 3, VR::SQ, VM::M1, "AlgorithmRoutingCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0310[] = {
-{ 0x0010, 0x21A0, 0, VR::CS, VM::M1, "SmokingStatus" },
-{ 0x0014, 0x4022, 2, VR::DS, VM::M1, "PulseWidth" },
-{ 0x0040, 0x0562, 0, VR::SQ, VM::M1, "IssuerOfTheSpecimenIdentifierSequence" },
-{ 0x2130, 0x0080, 1, VR::SQ, VM::M1, "PresentationLUTContentSequence" },
-{ 0x4010, 0x1067, 3, VR::CS, VM::M1, "TransportClassification" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0311[] = {
-{ 0x0018, 0x9772, 0, VR::SQ, VM::M1, "PatientPhysiologicalStateCodeSequence" },
-{ 0x0022, 0x1150, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthDataSourceCodeSequence" },
-{ 0x0024, 0x0117, 0, VR::CS, VM::M1, "FovealPointNormativeDataFlag" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0312[] = {
-{ 0x0024, 0x0118, 0, VR::FL, VM::M1, "FovealPointProbabilityValue" },
-{ 0x0038, 0x4000, 0, VR::LT, VM::M1, "VisitComments" },
-{ 0x4010, 0x1069, 3, VR::FL, VM::M1, "TotalProcessingTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0313[] = {
-{ 0x0018, 0x1164, 0, VR::DS, VM::M2, "ImagerPixelSpacing" },
-{ 0x4010, 0x1068, 3, VR::LT, VM::M1, "OOITypeDescriptor" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0314[] = {
-{ 0x0068, 0x64C0, 0, VR::FD, VM::M3, "ThreeDMatingPoint" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0315[] = {
-{ 0x0018, 0x1166, 0, VR::CS, VM::M1TN, "Grid" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0316[] = {
-{ 0x0014, 0x4028, 2, VR::DS, VM::M1, "Damping" },
-{ 0x0018, 0x1161, 0, VR::LO, VM::M1TN, "TypeOfFilters" },
-{ 0x0028, 0x0110, 1, VR::XS, VM::M1, "SmallestImagePixelValueInPlane" },
-{ 0x0038, 0x0100, 0, VR::SQ, VM::M1, "PertinentDocumentsSequence" },
-{ 0x4010, 0x106D, 3, VR::CS, VM::M1, "AdditionalScreeningPerformed" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0317[] = {
-{ 0x0018, 0x1160, 0, VR::SH, VM::M1, "FilterType" },
-{ 0x0028, 0x0111, 1, VR::XS, VM::M1, "LargestImagePixelValueInPlane" },
-{ 0x4010, 0x106C, 3, VR::OB, VM::M1, "DetectorCalibrationData" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0318[] = {
-{ 0x0022, 0x1159, 0, VR::LO, VM::M1, "OphthalmicAxialLengthDataSourceDescription" },
-{ 0x4010, 0x106F, 3, VR::SQ, VM::M1, "AdditionalInspectionMethodSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0319[] = {
-{ 0x0018, 0x1162, 0, VR::DS, VM::M1, "IntensifierSize" },
-{ 0x4010, 0x106E, 3, VR::CS, VM::M1, "AdditionalInspectionSelectionCriteria" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0320[] = {
-{ 0x0004, 0x1510, 0, VR::UI, VM::M1, "ReferencedSOPClassUIDInFile" },
-{ 0x0018, 0x9314, 0, VR::SQ, VM::M1, "CTReconstructionSequence" },
-{ 0x0040, 0x0515, 0, VR::SQ, VM::M1, "AlternateContainerIdentifierSequence" },
-{ 0x0040, 0x4001, 1, VR::CS, VM::M1, "GeneralPurposeScheduledProcedureStepStatus" },
-{ 0x4010, 0x1010, 3, VR::US, VM::M1, "PotentialThreatObjectID" },
-{ 0x5010, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints9" },
-{ 0x6000, 0x3000, 0, VR::OX, VM::M1, "OverlayData" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0321[] = {
-{ 0x0004, 0x1511, 0, VR::UI, VM::M1, "ReferencedSOPInstanceUIDInFile" },
-{ 0x0014, 0x4054, 2, VR::ST, VM::M1, "CouplingTechnique" },
-{ 0x0018, 0x9315, 0, VR::CS, VM::M1, "ReconstructionAlgorithm" },
-{ 0x0022, 0x1127, 0, VR::SQ, VM::M1, "LensThicknessSequence" },
-{ 0x0046, 0x0102, 0, VR::SQ, VM::M1, "AddOtherSequence" },
-{ 0x0054, 0x0500, 0, VR::CS, VM::M1, "SliceProgressionDirection" },
-{ 0x4010, 0x1011, 3, VR::SQ, VM::M1, "ThreatSequence" },
-{ 0x5004, 0x0005, 1, VR::US, VM::M1, "CurveDimensions3" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0322[] = {
-{ 0x0004, 0x1512, 0, VR::UI, VM::M1, "ReferencedTransferSyntaxUIDInFile" },
-{ 0x0014, 0x4057, 2, VR::DS, VM::M1, "CouplingVelocity" },
-{ 0x0018, 0x9316, 0, VR::CS, VM::M1, "ConvolutionKernelGroup" },
-{ 0x0040, 0x4003, 1, VR::CS, VM::M1, "GeneralPurposeScheduledProcedureStepPriority" },
-{ 0x0046, 0x0101, 0, VR::SQ, VM::M1, "AddIntermediateSequence" },
-{ 0x4010, 0x1012, 3, VR::CS, VM::M1, "ThreatCategory" },
-{ 0x5012, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints10" },
-{ 0x6002, 0x3000, 0, VR::OX, VM::M1, "OverlayData2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0323[] = {
-{ 0x0014, 0x4056, 2, VR::ST, VM::M1, "CouplingMedium" },
-{ 0x0018, 0x9317, 0, VR::FD, VM::M2, "ReconstructionFieldOfView" },
-{ 0x0022, 0x1125, 0, VR::SQ, VM::M1, "AnteriorChamberDepthDefinitionCodeSequence" },
-{ 0x0040, 0x4002, 1, VR::CS, VM::M1, "GeneralPurposePerformedProcedureStepStatus" },
-{ 0x0046, 0x0100, 0, VR::SQ, VM::M1, "AddNearSequence" },
-{ 0x4010, 0x1013, 3, VR::LT, VM::M1, "ThreatCategoryDescription" },
-{ 0x5006, 0x0005, 1, VR::US, VM::M1, "CurveDimensions4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0324[] = {
-{ 0x0014, 0x4051, 2, VR::SQ, VM::M1, "ReceiveTransducerSettingsSequence" },
-{ 0x0018, 0x1508, 0, VR::CS, VM::M1, "PositionerType" },
-{ 0x0018, 0x9310, 0, VR::FD, VM::M1, "TableFeedPerRotation" },
-{ 0x0022, 0x1122, 0, VR::FL, VM::M1, "IOLPowerForExactTargetRefraction" },
-{ 0x0040, 0x4005, 1, VR::DT, VM::M1, "ScheduledProcedureStepStartDateTime" },
-{ 0x4010, 0x1014, 3, VR::CS, VM::M1, "ATDAbilityAssessment" },
-{ 0x5014, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints11" },
-{ 0x6004, 0x3000, 0, VR::OX, VM::M1, "OverlayData3" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0325[] = {
-{ 0x0014, 0x4050, 2, VR::SQ, VM::M1, "TransmitTransducerSettingsSequence" },
-{ 0x0018, 0x9311, 0, VR::FD, VM::M1, "SpiralPitchFactor" },
-{ 0x0018, 0x9701, 0, VR::DT, VM::M1, "DecayCorrectionDateTime" },
-{ 0x0040, 0x0100, 0, VR::SQ, VM::M1, "ScheduledProcedureStepSequence" },
-{ 0x0040, 0x4004, 1, VR::SQ, VM::M1, "ScheduledProcessingApplicationsCodeSequence" },
-{ 0x0046, 0x0106, 0, VR::FD, VM::M1, "ViewingDistance" },
-{ 0x0048, 0x0108, 0, VR::SQ, VM::M1, "IlluminationColorCodeSequence" },
-{ 0x4010, 0x1015, 3, VR::CS, VM::M1, "ATDAssessmentFlag" },
-{ 0x5000, 0x0005, 1, VR::US, VM::M1, "CurveDimensions" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0326[] = {
-{ 0x0018, 0x9312, 0, VR::SQ, VM::M1, "CTGeometrySequence" },
-{ 0x0040, 0x0513, 0, VR::SQ, VM::M1, "IssuerOfTheContainerIdentifierSequence" },
-{ 0x0040, 0x4007, 0, VR::SQ, VM::M1, "PerformedProcessingApplicationsCodeSequence" },
-{ 0x4010, 0x1016, 3, VR::FL, VM::M1, "ATDAssessmentProbability" },
-{ 0x5016, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints12" },
-{ 0x6006, 0x3000, 0, VR::OX, VM::M1, "OverlayData4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0327[] = {
-{ 0x0010, 0x21D0, 0, VR::DA, VM::M1, "LastMenstrualDate" },
-{ 0x0014, 0x4052, 2, VR::DS, VM::M1, "IncidentAngle" },
-{ 0x0018, 0x9313, 0, VR::FD, VM::M3, "DataCollectionCenterPatient" },
-{ 0x0022, 0x1121, 0, VR::FL, VM::M1, "IOLPowerForExactEmmetropia" },
-{ 0x0040, 0x0512, 0, VR::LO, VM::M1, "ContainerIdentifier" },
-{ 0x0040, 0x4006, 1, VR::CS, VM::M1, "MultipleCopiesFlag" },
-{ 0x0046, 0x0104, 0, VR::FD, VM::M1, "AddPower" },
-{ 0x0072, 0x0520, 0, VR::CS, VM::M1TN, "ThreeDRenderingType" },
-{ 0x4010, 0x1017, 3, VR::FL, VM::M1, "Mass" },
-{ 0x5002, 0x0005, 1, VR::US, VM::M1, "CurveDimensions2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0328[] = {
-{ 0x0018, 0x1114, 0, VR::DS, VM::M1, "EstimatedRadiographicMagnificationFactor" },
-{ 0x0018, 0x5010, 0, VR::LO, VM::M1TN, "TransducerData" },
-{ 0x0040, 0x4009, 0, VR::SQ, VM::M1, "HumanPerformerCodeSequence" },
-{ 0x0048, 0x0105, 0, VR::SQ, VM::M1, "OpticalPathSequence" },
-{ 0x300A, 0x0184, 0, VR::LO, VM::M1, "PatientAdditionalPosition" },
-{ 0x4010, 0x1018, 3, VR::FL, VM::M1, "Density" },
-{ 0x5018, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints13" },
-{ 0x6008, 0x3000, 0, VR::OX, VM::M1, "OverlayData5" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0329[] = {
-{ 0x0014, 0x405C, 2, VR::ST, VM::M1, "DelayLawIdentifier" },
-{ 0x4008, 0x0040, 1, VR::SH, VM::M1, "ResultsID" },
-{ 0x4010, 0x1019, 3, VR::FL, VM::M1, "ZEffective" },
-{ 0x500C, 0x0005, 1, VR::US, VM::M1, "CurveDimensions7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0330[] = {
-{ 0x0004, 0x151A, 0, VR::UI, VM::M1TN, "ReferencedRelatedGeneralSOPClassUIDInFile" },
-{ 0x0018, 0x5012, 0, VR::DS, VM::M1, "FocusDepth" },
-{ 0x0040, 0xA385, 0, VR::SQ, VM::M1, "PertinentOtherEvidenceSequence" },
-{ 0x0048, 0x0107, 0, VR::ST, VM::M1, "OpticalPathDescription" },
-{ 0x4010, 0x101A, 3, VR::SH, VM::M1, "BoardingPassID" },
-{ 0x501A, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints14" },
-{ 0x600A, 0x3000, 0, VR::OX, VM::M1, "OverlayData6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0331[] = {
-{ 0x0048, 0x0106, 0, VR::SH, VM::M1, "OpticalPathIdentifier" },
-{ 0x4008, 0x0042, 1, VR::LO, VM::M1, "ResultsIDIssuer" },
-{ 0x4010, 0x101B, 3, VR::FL, VM::M3, "CenterOfMass" },
-{ 0x500E, 0x0005, 1, VR::US, VM::M1, "CurveDimensions8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0332[] = {
-{ 0x0008, 0x1100, 1, VR::SQ, VM::M1, "ReferencedResultsSequence" },
-{ 0x0014, 0x4059, 2, VR::DS, VM::M1, "ProbeCenterLocationZ" },
-{ 0x0018, 0x1110, 0, VR::DS, VM::M1, "DistanceSourceToDetector" },
-{ 0x0018, 0x1500, 0, VR::CS, VM::M1, "PositionerMotion" },
-{ 0x0018, 0x9318, 0, VR::FD, VM::M3, "ReconstructionTargetCenterPatient" },
-{ 0x300A, 0x0180, 0, VR::SQ, VM::M1, "PatientSetupSequence" },
-{ 0x4010, 0x101C, 3, VR::FL, VM::M3, "CenterOfPTO" },
-{ 0x501C, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints15" },
-{ 0x600C, 0x3000, 0, VR::OX, VM::M1, "OverlayData7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0333[] = {
-{ 0x0014, 0x4058, 2, VR::DS, VM::M1, "ProbeCenterLocationX" },
-{ 0x0018, 0x1111, 0, VR::DS, VM::M1, "DistanceSourceToPatient" },
-{ 0x0018, 0x9319, 0, VR::FD, VM::M1, "ReconstructionAngle" },
-{ 0x0040, 0x0518, 0, VR::SQ, VM::M1, "ContainerTypeCodeSequence" },
-{ 0x0048, 0x0100, 0, VR::SQ, VM::M1, "IlluminatorTypeCodeSequence" },
-{ 0x4010, 0x101D, 3, VR::FL, VM::M6TN, "BoundingPolygon" },
-{ 0x5008, 0x0005, 1, VR::US, VM::M1, "CurveDimensions5" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0334[] = {
-{ 0x0022, 0x1128, 0, VR::SQ, VM::M1, "AnteriorChamberDepthSequence" },
-{ 0x300A, 0x0182, 0, VR::IS, VM::M1, "PatientSetupNumber" },
-{ 0x4010, 0x101E, 3, VR::SH, VM::M1, "RouteSegmentStartLocationID" },
-{ 0x501E, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints16" },
-{ 0x600E, 0x3000, 0, VR::OX, VM::M1, "OverlayData8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0335[] = {
-{ 0x0014, 0x405A, 2, VR::DS, VM::M1, "SoundPathLength" },
-{ 0x0040, 0x051A, 0, VR::LO, VM::M1, "ContainerDescription" },
-{ 0x0040, 0x8302, 0, VR::DS, VM::M1, "EntranceDoseInmGy" },
-{ 0x0040, 0xA380, 1, VR::SQ, VM::M1, "ReportDetailSequenceTrial" },
-{ 0x0048, 0x0102, 0, VR::DS, VM::M6, "ImageOrientationSlide" },
-{ 0x300A, 0x0183, 0, VR::LO, VM::M1, "PatientSetupLabel" },
-{ 0x4010, 0x101F, 3, VR::SH, VM::M1, "RouteSegmentEndLocationID" },
-{ 0x500A, 0x0005, 1, VR::US, VM::M1, "CurveDimensions6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0336[] = {
-{ 0x0004, 0x1500, 0, VR::CS, VM::M1T8, "ReferencedFileID" },
-{ 0x0014, 0x5004, 2, VR::IS, VM::M1, "LINACOutput" },
-{ 0x0018, 0x9304, 0, VR::SQ, VM::M1, "CTAcquisitionDetailsSequence" },
-{ 0x0040, 0x4011, 0, VR::DT, VM::M1, "ExpectedCompletionDateTime" },
-{ 0x0054, 0x0101, 0, VR::US, VM::M1, "NumberOfTimeSlices" },
-{ 0x0074, 0x0121, 0, VR::FD, VM::M1, "ContinuationEndMeterset" },
-{ 0x5000, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints" },
-{ 0x6010, 0x3000, 0, VR::OX, VM::M1, "OverlayData9" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0337[] = {
-{ 0x0018, 0x9305, 0, VR::FD, VM::M1, "RevolutionTime" },
-{ 0x0018, 0x9715, 0, VR::FD, VM::M1, "StartDensityThreshold" },
-{ 0x0040, 0x4010, 0, VR::DT, VM::M1, "ScheduledProcedureStepModificationDateTime" },
-{ 0x0054, 0x0100, 0, VR::US, VM::M1TN, "TimeSliceVector" },
-{ 0x0074, 0x0120, 0, VR::FD, VM::M1, "ContinuationStartMeterset" },
-{ 0x4010, 0x1001, 3, VR::SQ, VM::M1, "ThreatROIVoxelSequence" },
-{ 0x5014, 0x0005, 1, VR::US, VM::M1, "CurveDimensions11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0338[] = {
-{ 0x0018, 0x9306, 0, VR::FD, VM::M1, "SingleCollimationWidth" },
-{ 0x0018, 0x9716, 0, VR::FD, VM::M1, "StartRelativeDensityDifferenceThreshold" },
-{ 0x0022, 0x1134, 0, VR::SQ, VM::M1, "SourceOfRefractiveMeasurementsSequence" },
-{ 0x5002, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints2" },
-{ 0x6012, 0x3000, 0, VR::OX, VM::M1, "OverlayData10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0339[] = {
-{ 0x0018, 0x9307, 0, VR::FD, VM::M1, "TotalCollimationWidth" },
-{ 0x0018, 0x9717, 0, VR::FD, VM::M1, "StartCardiacTriggerCountThreshold" },
-{ 0x0022, 0x1135, 0, VR::SQ, VM::M1, "SourceOfRefractiveMeasurementsCodeSequence" },
-{ 0x5016, 0x0005, 1, VR::US, VM::M1, "CurveDimensions12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0340[] = {
-{ 0x0004, 0x1504, 1, VR::UL, VM::M1, "MRDRDirectoryRecordOffset" },
-{ 0x0022, 0x1132, 0, VR::SQ, VM::M1, "SourceOfLensThicknessDataCodeSequence" },
-{ 0x0040, 0x4015, 1, VR::SQ, VM::M1, "ResultingGeneralPurposePerformedProcedureStepsSequence" },
-{ 0x300A, 0x0198, 0, VR::SH, VM::M1, "FixationDevicePosition" },
-{ 0x4010, 0x1004, 3, VR::FL, VM::M3, "ThreatROIBase" },
-{ 0x5004, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints3" },
-{ 0x6014, 0x3000, 0, VR::OX, VM::M1, "OverlayData11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0341[] = {
-{ 0x0014, 0x4040, 2, VR::SQ, VM::M1, "PreAmplifierSettingsSequence" },
-{ 0x0018, 0x9301, 0, VR::SQ, VM::M1, "CTAcquisitionTypeSequence" },
-{ 0x0022, 0x1133, 0, VR::SQ, VM::M1, "SourceOfAnteriorChamberDepthDataCodeSequence" },
-{ 0x0040, 0x0500, 0, VR::SQ, VM::M1, "ScheduledSpecimenSequence" },
-{ 0x0400, 0x0550, 0, VR::SQ, VM::M1, "ModifiedAttributesSequence" },
-{ 0x300A, 0x0199, 0, VR::FL, VM::M1, "FixationDevicePitchAngle" },
-{ 0x4010, 0x1005, 3, VR::FL, VM::M3, "ThreatROIExtents" },
-{ 0x5010, 0x0005, 1, VR::US, VM::M1, "CurveDimensions9" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0342[] = {
-{ 0x0014, 0x5002, 2, VR::IS, VM::M1, "LINACEnergy" },
-{ 0x0018, 0x9302, 0, VR::CS, VM::M1, "AcquisitionType" },
-{ 0x0022, 0x1130, 0, VR::FL, VM::M1, "LensThickness" },
-{ 0x300A, 0x019A, 0, VR::FL, VM::M1, "FixationDeviceRollAngle" },
-{ 0x4010, 0x1006, 3, VR::OB, VM::M1, "ThreatROIBitmap" },
-{ 0x5006, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints4" },
-{ 0x6016, 0x3000, 0, VR::OX, VM::M1, "OverlayData12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0343[] = {
-{ 0x0010, 0x21C0, 0, VR::US, VM::M1, "PregnancyStatus" },
-{ 0x0018, 0x9303, 0, VR::FD, VM::M1, "TubeAngle" },
-{ 0x0022, 0x1131, 0, VR::FL, VM::M1, "AnteriorChamberDepth" },
-{ 0x0040, 0x4016, 1, VR::SQ, VM::M1, "ReferencedGeneralPurposeScheduledProcedureStepSequence" },
-{ 0x4010, 0x1007, 3, VR::SH, VM::M1, "RouteSegmentID" },
-{ 0x5012, 0x0005, 1, VR::US, VM::M1, "CurveDimensions10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0344[] = {
-{ 0x0018, 0x5000, 0, VR::SH, VM::M1TN, "OutputPower" },
-{ 0x0040, 0x4019, 0, VR::SQ, VM::M1, "PerformedWorkitemCodeSequence" },
-{ 0x300A, 0x0194, 0, VR::SH, VM::M1, "FixationDeviceLabel" },
-{ 0x4010, 0x1008, 3, VR::CS, VM::M1, "GantryType" },
-{ 0x5008, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints5" },
-{ 0x6018, 0x3000, 0, VR::OX, VM::M1, "OverlayData13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0345[] = {
-{ 0x0008, 0x1115, 0, VR::SQ, VM::M1, "ReferencedSeriesSequence" },
-{ 0x0040, 0x4018, 0, VR::SQ, VM::M1, "ScheduledWorkitemCodeSequence" },
-{ 0x4008, 0x0050, 1, VR::SQ, VM::M1, "ReferencedInterpretationSequence" },
-{ 0x4010, 0x1009, 3, VR::CS, VM::M1, "OOIOwnerType" },
-{ 0x501C, 0x0005, 1, VR::US, VM::M1, "CurveDimensions15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0346[] = {
-{ 0x300A, 0x0196, 0, VR::ST, VM::M1, "FixationDeviceDescription" },
-{ 0x4010, 0x100A, 3, VR::SQ, VM::M1, "RouteSegmentSequence" },
-{ 0x500A, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints6" },
-{ 0x601A, 0x3000, 0, VR::OX, VM::M1, "OverlayData14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0347[] = {
-{ 0x0068, 0x64A0, 0, VR::FD, VM::M2, "RangeOfFreedom" },
-{ 0x501E, 0x0005, 1, VR::US, VM::M1, "CurveDimensions16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0348[] = {
-{ 0x0008, 0x1110, 0, VR::SQ, VM::M1, "ReferencedStudySequence" },
-{ 0x0018, 0x1100, 0, VR::DS, VM::M1, "ReconstructionDiameter" },
-{ 0x0018, 0x1510, 0, VR::DS, VM::M1, "PositionerPrimaryAngle" },
-{ 0x0018, 0x9308, 0, VR::SQ, VM::M1, "CTTableDynamicsSequence" },
-{ 0x0018, 0x9718, 0, VR::FD, VM::M1, "StartRespiratoryTriggerCountThreshold" },
-{ 0x0048, 0x0111, 0, VR::DS, VM::M1, "CondenserLensPower" },
-{ 0x300A, 0x0190, 0, VR::SQ, VM::M1, "FixationDeviceSequence" },
-{ 0x500C, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints7" },
-{ 0x601C, 0x3000, 0, VR::OX, VM::M1, "OverlayData15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0349[] = {
-{ 0x0008, 0x1111, 0, VR::SQ, VM::M1, "ReferencedPerformedProcedureStepSequence" },
-{ 0x0018, 0x1511, 0, VR::DS, VM::M1, "PositionerSecondaryAngle" },
-{ 0x0018, 0x9309, 0, VR::FD, VM::M1, "TableSpeed" },
-{ 0x0018, 0x9719, 0, VR::FD, VM::M1, "TerminationCountsThreshold" },
-{ 0x0048, 0x0110, 0, VR::SQ, VM::M1, "SpecimenReferenceSequence" },
-{ 0x5018, 0x0005, 1, VR::US, VM::M1, "CurveDimensions13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0350[] = {
-{ 0x0048, 0x0113, 0, VR::DS, VM::M1, "ObjectiveLensNumericalAperture" },
-{ 0x300A, 0x0192, 0, VR::CS, VM::M1, "FixationDeviceType" },
-{ 0x500E, 0x0010, 1, VR::US, VM::M1, "NumberOfPoints8" },
-{ 0x601E, 0x3000, 0, VR::OX, VM::M1, "OverlayData16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0351[] = {
-{ 0x0040, 0x050A, 1, VR::LO, VM::M1, "SpecimenAccessionNumber" },
-{ 0x0040, 0xA390, 0, VR::SQ, VM::M1, "HL7StructuredDocumentReferenceSequence" },
-{ 0x0048, 0x0112, 0, VR::DS, VM::M1, "ObjectiveLensPower" },
-{ 0x501A, 0x0005, 1, VR::US, VM::M1, "CurveDimensions14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0352[] = {
-{ 0x0018, 0x9334, 0, VR::CS, VM::M1, "FluoroscopyFlag" },
-{ 0x0018, 0x9724, 0, VR::FD, VM::M1, "TerminationRespiratoryTriggerCountThreshold" },
-{ 0x0020, 0x5000, 1, VR::AT, VM::M1TN, "OriginalImageIdentification" },
-{ 0x0020, 0x930C, 0, VR::CS, VM::M1, "PatientFrameOfReferenceSource" },
-{ 0x0040, 0x4021, 0, VR::SQ, VM::M1, "InputInformationSequence" },
-{ 0x0046, 0x0123, 0, VR::SQ, VM::M1, "VisualAcuityLeftEyeSequence" },
-{ 0x0400, 0x0565, 0, VR::CS, VM::M1, "ReasonForTheAttributeModification" },
-{ 0x5000, 0x0020, 1, VR::CS, VM::M1, "TypeOfData" },
-{ 0x5002, 0x0022, 1, VR::LO, VM::M1, "CurveDescription2" },
-{ 0x5010, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits9" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0353[] = {
-{ 0x0014, 0x4074, 2, VR::SH, VM::M1, "ProcedureVersion" },
-{ 0x0018, 0x9335, 0, VR::FD, VM::M1, "DistanceSourceToDataCollectionCenter" },
-{ 0x0018, 0x9725, 0, VR::CS, VM::M1, "DetectorGeometry" },
-{ 0x0020, 0x930D, 0, VR::FD, VM::M1, "TemporalPositionTimeOffset" },
-{ 0x0040, 0x4020, 0, VR::CS, VM::M1, "InputAvailabilityFlag" },
-{ 0x0046, 0x0122, 0, VR::SQ, VM::M1, "VisualAcuityRightEyeSequence" },
-{ 0x0400, 0x0564, 0, VR::LO, VM::M1, "SourceOfPreviousValues" },
-{ 0x4010, 0x1031, 3, VR::CS, VM::M1, "AlarmDecision" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0354[] = {
-{ 0x0018, 0x9726, 0, VR::FD, VM::M1, "TransverseDetectorSeparation" },
-{ 0x0020, 0x5002, 1, VR::LO, VM::M1TN, "OriginalImageIdentificationNomenclature" },
-{ 0x0020, 0x930E, 0, VR::SQ, VM::M1, "PlanePositionVolumeSequence" },
-{ 0x0040, 0x4023, 1, VR::UI, VM::M1, "ReferencedGeneralPurposeScheduledProcedureStepTransactionUID" },
-{ 0x0046, 0x0121, 0, VR::SQ, VM::M1, "VisualAcuityTypeCodeSequence" },
-{ 0x5000, 0x0022, 1, VR::LO, VM::M1, "CurveDescription" },
-{ 0x5002, 0x0020, 1, VR::CS, VM::M1, "TypeOfData2" },
-{ 0x5012, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0355[] = {
-{ 0x0014, 0x4076, 2, VR::DA, VM::M1, "ProcedureCreationDate" },
-{ 0x0018, 0x9337, 0, VR::US, VM::M1, "ContrastBolusAgentNumber" },
-{ 0x0018, 0x9727, 0, VR::FD, VM::M1, "AxialDetectorDimension" },
-{ 0x0020, 0x930F, 0, VR::SQ, VM::M1, "PlaneOrientationVolumeSequence" },
-{ 0x0040, 0x4022, 1, VR::SQ, VM::M1, "RelevantInformationSequence" },
-{ 0x4010, 0x1033, 3, VR::US, VM::M1, "NumberOfTotalObjects" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0356[] = {
-{ 0x0018, 0x1138, 0, VR::DS, VM::M1, "TableAngle" },
-{ 0x0018, 0x9330, 0, VR::FD, VM::M1, "XRayTubeCurrentInmA" },
-{ 0x0018, 0x9720, 0, VR::FD, VM::M1, "TerminationDensityThreshold" },
-{ 0x0020, 0x9308, 0, VR::FD, VM::M3, "ApexPosition" },
-{ 0x0040, 0x4025, 0, VR::SQ, VM::M1, "ScheduledStationNameCodeSequence" },
-{ 0x0400, 0x0561, 0, VR::SQ, VM::M1, "OriginalAttributesSequence" },
-{ 0x300A, 0x01A8, 0, VR::SH, VM::M1, "ShieldingDevicePosition" },
-{ 0x4010, 0x1034, 3, VR::US, VM::M1, "NumberOfAlarmObjects" },
-{ 0x5004, 0x0020, 1, VR::CS, VM::M1, "TypeOfData3" },
-{ 0x5006, 0x0022, 1, VR::LO, VM::M1, "CurveDescription4" },
-{ 0x5014, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0357[] = {
-{ 0x0014, 0x4070, 2, VR::SQ, VM::M1, "CalibrationSettingsSequence" },
-{ 0x0018, 0x9721, 0, VR::FD, VM::M1, "TerminationRelativeDensityThreshold" },
-{ 0x0020, 0x9309, 0, VR::FD, VM::M16, "VolumeToTransducerMappingMatrix" },
-{ 0x0022, 0x1103, 0, VR::SQ, VM::M1, "RefractiveErrorBeforeRefractiveSurgeryCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0358[] = {
-{ 0x0018, 0x113A, 0, VR::CS, VM::M1, "TableType" },
-{ 0x0018, 0x9332, 0, VR::FD, VM::M1, "ExposureInmAs" },
-{ 0x0018, 0x9722, 0, VR::FD, VM::M1, "TerminationTimeThreshold" },
-{ 0x0020, 0x930A, 0, VR::FD, VM::M16, "VolumeToTableMappingMatrix" },
-{ 0x0022, 0x1100, 0, VR::SQ, VM::M1, "ReferencedOphthalmicAxialMeasurementsSequence" },
-{ 0x0040, 0x4027, 0, VR::SQ, VM::M1, "ScheduledStationGeographicLocationCodeSequence" },
-{ 0x0046, 0x0125, 0, VR::CS, VM::M1, "ViewingDistanceType" },
-{ 0x0400, 0x0563, 0, VR::LO, VM::M1, "ModifyingSystem" },
-{ 0x5004, 0x0022, 1, VR::LO, VM::M1, "CurveDescription3" },
-{ 0x5006, 0x0020, 1, VR::CS, VM::M1, "TypeOfData4" },
-{ 0x5016, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0359[] = {
-{ 0x0010, 0x21F0, 0, VR::LO, VM::M1, "PatientReligiousPreference" },
-{ 0x0014, 0x4072, 2, VR::ST, VM::M1, "CalibrationProcedure" },
-{ 0x0018, 0x9333, 0, VR::CS, VM::M1, "ConstantVolumeFlag" },
-{ 0x0018, 0x9723, 0, VR::FD, VM::M1, "TerminationCardiacTriggerCountThreshold" },
-{ 0x0022, 0x1101, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthMeasurementsSegmentNameCodeSequence" },
-{ 0x0040, 0x4026, 0, VR::SQ, VM::M1, "ScheduledStationClassCodeSequence" },
-{ 0x0046, 0x0124, 0, VR::SQ, VM::M1, "VisualAcuityBothEyesOpenSequence" },
-{ 0x0072, 0x0500, 0, VR::CS, VM::M1, "BlendingOperationType" },
-{ 0x0400, 0x0562, 0, VR::DT, VM::M1, "AttributeModificationDateTime" },
-{ 0x4010, 0x1037, 3, VR::SQ, VM::M1, "PTORepresentationSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0360[] = {
-{ 0x0018, 0x1134, 0, VR::CS, VM::M1, "TableMotion" },
-{ 0x0018, 0x5030, 1, VR::DS, VM::M1, "DynamicRange" },
-{ 0x0028, 0x1104, 0, VR::US, VM::M3, "AlphaPaletteColorLookupTableDescriptor" },
-{ 0x0028, 0x5000, 1, VR::SQ, VM::M1, "BiPlaneAcquisitionSequence" },
-{ 0x0040, 0x4029, 0, VR::SQ, VM::M1, "PerformedStationClassCodeSequence" },
-{ 0x300A, 0x01A4, 0, VR::SH, VM::M1, "ShieldingDeviceLabel" },
-{ 0x4010, 0x1038, 3, VR::SQ, VM::M1, "ATDAssessmentSequence" },
-{ 0x5008, 0x0020, 1, VR::CS, VM::M1, "TypeOfData5" },
-{ 0x500A, 0x0022, 1, VR::LO, VM::M1, "CurveDescription6" },
-{ 0x5018, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0361[] = {
-{ 0x0008, 0x1125, 0, VR::SQ, VM::M1, "ReferencedVisitSequence" },
-{ 0x0014, 0x407C, 2, VR::TM, VM::M1TN, "CalibrationTime" },
-{ 0x0018, 0x1135, 0, VR::DS, VM::M1TN, "TableVerticalIncrement" },
-{ 0x0040, 0x4028, 0, VR::SQ, VM::M1, "PerformedStationNameCodeSequence" },
-{ 0x4010, 0x1039, 3, VR::CS, VM::M1, "TIPType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0362[] = {
-{ 0x0018, 0x1136, 0, VR::DS, VM::M1TN, "TableLateralIncrement" },
-{ 0x300A, 0x01A6, 0, VR::ST, VM::M1, "ShieldingDeviceDescription" },
-{ 0x4010, 0x103A, 3, VR::CS, VM::M1, "DICOSVersion" },
-{ 0x5008, 0x0022, 1, VR::LO, VM::M1, "CurveDescription5" },
-{ 0x500A, 0x0020, 1, VR::CS, VM::M1, "TypeOfData6" },
-{ 0x501A, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0363[] = {
-{ 0x0014, 0x407E, 2, VR::DA, VM::M1TN, "CalibrationDate" },
-{ 0x0018, 0x1137, 0, VR::DS, VM::M1TN, "TableLongitudinalIncrement" },
-{ 0x0020, 0x9307, 0, VR::CS, VM::M1, "UltrasoundAcquisitionGeometry" },
-{ 0x0068, 0x6490, 0, VR::FD, VM::M3, "ThreeDDegreeOfFreedomAxis" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0364[] = {
-{ 0x0008, 0x1120, 0, VR::SQ, VM::M1, "ReferencedPatientSequence" },
-{ 0x0018, 0x1130, 0, VR::DS, VM::M1, "TableHeight" },
-{ 0x0018, 0x1520, 0, VR::DS, VM::M1TN, "PositionerPrimaryAngleIncrement" },
-{ 0x0018, 0x9338, 0, VR::SQ, VM::M1, "ContrastBolusIngredientCodeSequence" },
-{ 0x0028, 0x1100, 1, VR::XS, VM::M3, "GrayLookupTableDescriptor" },
-{ 0x300A, 0x01A0, 0, VR::SQ, VM::M1, "ShieldingDeviceSequence" },
-{ 0x500C, 0x0020, 1, VR::CS, VM::M1, "TypeOfData7" },
-{ 0x500E, 0x0022, 1, VR::LO, VM::M1, "CurveDescription8" },
-{ 0x501C, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0365[] = {
-{ 0x0014, 0x4078, 2, VR::DA, VM::M1, "ProcedureExpirationDate" },
-{ 0x0018, 0x1131, 0, VR::DS, VM::M1, "TableTraverse" },
-{ 0x0018, 0x1521, 0, VR::DS, VM::M1TN, "PositionerSecondaryAngleIncrement" },
-{ 0x0018, 0x9729, 0, VR::US, VM::M1, "RadiopharmaceuticalAgentNumber" },
-{ 0x0020, 0x9301, 0, VR::FD, VM::M3, "ImagePositionVolume" },
-{ 0x0028, 0x1101, 0, VR::XS, VM::M3, "RedPaletteColorLookupTableDescriptor" },
-{ 0x0048, 0x0120, 0, VR::SQ, VM::M1, "PaletteColorLookupTableSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0366[] = {
-{ 0x0020, 0x9302, 0, VR::FD, VM::M6, "ImageOrientationVolume" },
-{ 0x0028, 0x1102, 0, VR::XS, VM::M3, "GreenPaletteColorLookupTableDescriptor" },
-{ 0x300A, 0x01A2, 0, VR::CS, VM::M1, "ShieldingDeviceType" },
-{ 0x500C, 0x0022, 1, VR::LO, VM::M1, "CurveDescription7" },
-{ 0x500E, 0x0020, 1, VR::CS, VM::M1, "TypeOfData8" },
-{ 0x501E, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0367[] = {
-{ 0x0014, 0x407A, 2, VR::DA, VM::M1, "ProcedureLastModifiedDate" },
-{ 0x0028, 0x1103, 0, VR::XS, VM::M3, "BluePaletteColorLookupTableDescriptor" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0368[] = {
-{ 0x0004, 0x1130, 0, VR::CS, VM::M1, "FileSetID" },
-{ 0x0018, 0x5028, 0, VR::DS, VM::M1, "SoftTissueFocusThermalIndex" },
-{ 0x0018, 0x9324, 0, VR::FD, VM::M1, "EstimatedDoseSaving" },
-{ 0x0018, 0x9734, 0, VR::SQ, VM::M1, "PETTableDynamicsSequence" },
-{ 0x0040, 0x4031, 1, VR::SQ, VM::M1, "RequestedSubsequentWorkitemCodeSequence" },
-{ 0x300A, 0x01BC, 0, VR::DS, VM::M1, "SetupDeviceParameter" },
-{ 0x4010, 0x1020, 3, VR::CS, VM::M1, "RouteSegmentLocationIDType" },
-{ 0x5000, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits" },
-{ 0x5010, 0x0020, 1, VR::CS, VM::M1, "TypeOfData9" },
-{ 0x5012, 0x0022, 1, VR::LO, VM::M1, "CurveDescription10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0369[] = {
-{ 0x0014, 0x4064, 2, VR::DS, VM::M1, "VelocityOfSound" },
-{ 0x0018, 0x5029, 0, VR::DS, VM::M1, "SoftTissueSurfaceThermalIndex" },
-{ 0x0018, 0x9325, 0, VR::SQ, VM::M1, "CTXRayDetailsSequence" },
-{ 0x0018, 0x9735, 0, VR::SQ, VM::M1, "PETPositionSequence" },
-{ 0x0040, 0x4030, 0, VR::SQ, VM::M1, "PerformedStationGeographicLocationCodeSequence" },
-{ 0x0072, 0x0106, 0, VR::US, VM::M1, "NumberOfHorizontalPixels" },
-{ 0x0072, 0x0516, 0, VR::CS, VM::M1, "ReformattingOperationInitialViewDirection" },
-{ 0x4010, 0x1021, 3, VR::CS, VM::M1TN, "AbortReason" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0370[] = {
-{ 0x0018, 0x9326, 0, VR::SQ, VM::M1, "CTPositionSequence" },
-{ 0x0018, 0x9736, 0, VR::SQ, VM::M1, "PETFrameCorrectionFactorsSequence" },
-{ 0x0040, 0x4033, 0, VR::SQ, VM::M1, "OutputInformationSequence" },
-{ 0x5002, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits2" },
-{ 0x5010, 0x0022, 1, VR::LO, VM::M1, "CurveDescription9" },
-{ 0x5012, 0x0020, 1, VR::CS, VM::M1, "TypeOfData10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0371[] = {
-{ 0x0018, 0x9327, 0, VR::FD, VM::M1, "TablePosition" },
-{ 0x0018, 0x9737, 0, VR::SQ, VM::M1, "RadiopharmaceuticalUsageSequence" },
-{ 0x0040, 0x4032, 1, VR::SQ, VM::M1, "NonDICOMOutputCodeSequence" },
-{ 0x0072, 0x0104, 0, VR::US, VM::M1, "NumberOfVerticalPixels" },
-{ 0x0072, 0x0514, 0, VR::FD, VM::M1, "ReformattingInterval" },
-{ 0x4010, 0x1023, 3, VR::FL, VM::M1, "VolumeOfPTO" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0372[] = {
-{ 0x0018, 0x9320, 0, VR::SH, VM::M1, "ImageFilter" },
-{ 0x0040, 0x4035, 0, VR::SQ, VM::M1, "ActualHumanPerformersSequence" },
-{ 0x0046, 0x0137, 0, VR::FD, VM::M1, "DecimalVisualAcuity" },
-{ 0x0070, 0x0101, 0, VR::DS, VM::M2, "PresentationPixelSpacing" },
-{ 0x300A, 0x01B8, 0, VR::SH, VM::M1, "SetupDeviceLabel" },
-{ 0x4010, 0x1024, 3, VR::CS, VM::M1, "AbortFlag" },
-{ 0x5004, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits3" },
-{ 0x5014, 0x0020, 1, VR::CS, VM::M1, "TypeOfData11" },
-{ 0x5016, 0x0022, 1, VR::LO, VM::M1, "CurveDescription12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0373[] = {
-{ 0x0014, 0x4060, 2, VR::SQ, VM::M1, "GateSettingsSequence" },
-{ 0x0018, 0x9321, 0, VR::SQ, VM::M1, "CTExposureSequence" },
-{ 0x0040, 0x0520, 0, VR::SQ, VM::M1, "ContainerComponentSequence" },
-{ 0x0040, 0x4034, 0, VR::SQ, VM::M1, "ScheduledHumanPerformersSequence" },
-{ 0x0070, 0x0100, 0, VR::CS, VM::M1, "PresentationSizeMode" },
-{ 0x0072, 0x0102, 0, VR::SQ, VM::M1, "NominalScreenDefinitionSequence" },
-{ 0x0072, 0x0512, 0, VR::FD, VM::M1, "ReformattingThickness" },
-{ 0x4010, 0x1025, 3, VR::DT, VM::M1, "RouteSegmentStartTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0374[] = {
-{ 0x0008, 0x113A, 0, VR::SQ, VM::M1, "ReferencedWaveformSequence" },
-{ 0x0018, 0x9322, 0, VR::FD, VM::M2, "ReconstructionPixelSpacing" },
-{ 0x0018, 0x9732, 0, VR::SQ, VM::M1, "PETFrameAcquisitionSequence" },
-{ 0x0040, 0x4037, 0, VR::PN, VM::M1, "HumanPerformerName" },
-{ 0x0046, 0x0135, 0, VR::SS, VM::M2, "VisualAcuityModifiers" },
-{ 0x0070, 0x0103, 0, VR::FL, VM::M1, "PresentationPixelMagnificationRatio" },
-{ 0x300A, 0x01BA, 0, VR::ST, VM::M1, "SetupDeviceDescription" },
-{ 0x4010, 0x1026, 3, VR::DT, VM::M1, "RouteSegmentEndTime" },
-{ 0x5006, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits4" },
-{ 0x5014, 0x0022, 1, VR::LO, VM::M1, "CurveDescription11" },
-{ 0x5016, 0x0020, 1, VR::CS, VM::M1, "TypeOfData12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0375[] = {
-{ 0x0014, 0x4062, 2, VR::DS, VM::M1, "GateThreshold" },
-{ 0x0018, 0x9323, 0, VR::CS, VM::M1, "ExposureModulationType" },
-{ 0x0018, 0x9733, 0, VR::SQ, VM::M1, "PETDetectorMotionDetailsSequence" },
-{ 0x0040, 0x4036, 0, VR::LO, VM::M1, "HumanPerformerOrganization" },
-{ 0x0070, 0x0102, 0, VR::IS, VM::M2, "PresentationPixelAspectRatio" },
-{ 0x0072, 0x0100, 0, VR::US, VM::M1, "NumberOfScreens" },
-{ 0x0072, 0x0510, 0, VR::CS, VM::M1, "ReformattingOperationType" },
-{ 0x2130, 0x00C0, 1, VR::SQ, VM::M1, "OriginalImageSequence" },
-{ 0x4010, 0x1027, 3, VR::CS, VM::M1, "TDRType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0376[] = {
-{ 0x0008, 0x1134, 0, VR::SQ, VM::M1, "ReferencedStereometricInstanceSequence" },
-{ 0x0018, 0x5020, 0, VR::LO, VM::M1, "ProcessingFunction" },
-{ 0x300A, 0x01B4, 0, VR::SQ, VM::M1, "SetupDeviceSequence" },
-{ 0x4010, 0x1028, 3, VR::CS, VM::M1, "InternationalRouteSegment" },
-{ 0x5008, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits5" },
-{ 0x5018, 0x0020, 1, VR::CS, VM::M1, "TypeOfData13" },
-{ 0x501A, 0x0022, 1, VR::LO, VM::M1, "CurveDescription14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0377[] = {
-{ 0x0018, 0x5021, 1, VR::LO, VM::M1, "PostprocessingFunction" },
-{ 0x0072, 0x010E, 0, VR::US, VM::M1, "ApplicationMaximumRepaintTime" },
-{ 0x4010, 0x1029, 3, VR::LO, VM::M1TN, "ThreatDetectionAlgorithmandVersion" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0378[] = {
-{ 0x0018, 0x5022, 0, VR::DS, VM::M1, "MechanicalIndex" },
-{ 0x0046, 0x0139, 0, VR::LO, VM::M1, "OptotypeDetailedDefinition" },
-{ 0x300A, 0x01B6, 0, VR::CS, VM::M1, "SetupDeviceType" },
-{ 0x4010, 0x102A, 3, VR::SH, VM::M1, "AssignedLocation" },
-{ 0x500A, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits6" },
-{ 0x5018, 0x0022, 1, VR::LO, VM::M1, "CurveDescription13" },
-{ 0x501A, 0x0020, 1, VR::CS, VM::M1, "TypeOfData14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0379[] = {
-{ 0x0072, 0x010C, 0, VR::US, VM::M1, "ScreenMinimumColorBitDepth" },
-{ 0x4010, 0x102B, 3, VR::DT, VM::M1, "AlarmDecisionTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0380[] = {
-{ 0x0008, 0x1130, 1, VR::SQ, VM::M1, "ReferencedOverlaySequence" },
-{ 0x0018, 0x1120, 0, VR::DS, VM::M1, "GantryDetectorTilt" },
-{ 0x0018, 0x1530, 0, VR::DS, VM::M1, "DetectorPrimaryAngle" },
-{ 0x0018, 0x5024, 0, VR::DS, VM::M1, "BoneThermalIndex" },
-{ 0x0018, 0x9328, 0, VR::FD, VM::M1, "ExposureTimeInms" },
-{ 0x0018, 0x9738, 0, VR::CS, VM::M1, "AttenuationCorrectionSource" },
-{ 0x0020, 0x9310, 0, VR::SQ, VM::M1, "TemporalPositionSequence" },
-{ 0x300A, 0x01B0, 0, VR::CS, VM::M1, "SetupTechnique" },
-{ 0x500C, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits7" },
-{ 0x501C, 0x0020, 1, VR::CS, VM::M1, "TypeOfData15" },
-{ 0x501E, 0x0022, 1, VR::LO, VM::M1, "CurveDescription16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0381[] = {
-{ 0x0018, 0x1121, 0, VR::DS, VM::M1, "GantryDetectorSlew" },
-{ 0x0018, 0x1531, 0, VR::DS, VM::M1, "DetectorSecondaryAngle" },
-{ 0x0018, 0x9329, 0, VR::SQ, VM::M1, "CTImageFrameTypeSequence" },
-{ 0x0018, 0x9739, 0, VR::US, VM::M1, "NumberOfIterations" },
-{ 0x0020, 0x9311, 0, VR::CS, VM::M1, "DimensionOrganizationType" },
-{ 0x0028, 0x1111, 1, VR::XS, VM::M4, "LargeRedPaletteColorLookupTableDescriptor" },
-{ 0x0072, 0x010A, 0, VR::US, VM::M1, "ScreenMinimumGrayscaleBitDepth" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0382[] = {
-{ 0x0018, 0x5026, 0, VR::DS, VM::M1, "CranialThermalIndex" },
-{ 0x0020, 0x9312, 0, VR::UI, VM::M1, "VolumeFrameOfReferenceUID" },
-{ 0x0028, 0x1112, 1, VR::XS, VM::M4, "LargeGreenPaletteColorLookupTableDescriptor" },
-{ 0x300A, 0x01B2, 0, VR::ST, VM::M1, "SetupTechniqueDescription" },
-{ 0x500E, 0x0030, 1, VR::SH, VM::M1TN, "AxisUnits8" },
-{ 0x501C, 0x0022, 1, VR::LO, VM::M1, "CurveDescription15" },
-{ 0x501E, 0x0020, 1, VR::CS, VM::M1, "TypeOfData16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0383[] = {
-{ 0x0018, 0x5027, 0, VR::DS, VM::M1, "SoftTissueThermalIndex" },
-{ 0x0020, 0x9313, 0, VR::UI, VM::M1, "TableFrameOfReferenceUID" },
-{ 0x0028, 0x1113, 1, VR::XS, VM::M4, "LargeBluePaletteColorLookupTableDescriptor" },
-{ 0x0072, 0x0108, 0, VR::FD, VM::M4, "DisplayEnvironmentSpatialPosition" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0384[] = {
-{ 0x0018, 0x6018, 0, VR::UL, VM::M1, "RegionLocationMinX0" },
-{ 0x5000, 0x3000, 1, VR::OX, VM::M1, "CurveData" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0385[] = {
-{ 0x0018, 0x7058, 0, VR::FL, VM::M1TN, "FilterBeamPathLengthMaximum" },
-{ 0x300A, 0x014E, 0, VR::FL, VM::M1, "GantryPitchAngleTolerance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0386[] = {
-{ 0x0018, 0x601A, 0, VR::UL, VM::M1, "RegionLocationMinY0" },
-{ 0x5002, 0x3000, 1, VR::OX, VM::M1, "CurveData2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0387[] = {
-{ 0x300A, 0x014C, 0, VR::CS, VM::M1, "GantryPitchRotationDirection" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0388[] = {
-{ 0x0010, 0x2110, 0, VR::LO, VM::M1TN, "Allergies" },
-{ 0x0014, 0x4092, 2, VR::DS, VM::M1, "ChannelThreshold" },
-{ 0x0018, 0x601C, 0, VR::UL, VM::M1, "RegionLocationMaxX1" },
-{ 0x2000, 0x0510, 1, VR::SQ, VM::M1, "ReferencedStoredPrintSequence" },
-{ 0x2010, 0x0110, 0, VR::CS, VM::M1, "EmptyImageDensity" },
-{ 0x2010, 0x0500, 0, VR::SQ, VM::M1, "ReferencedFilmSessionSequence" },
-{ 0x2110, 0x0010, 0, VR::CS, VM::M1, "PrinterStatus" },
-{ 0x2130, 0x0030, 1, VR::SQ, VM::M1, "FilmBoxContentSequence" },
-{ 0x5004, 0x3000, 1, VR::OX, VM::M1, "CurveData3" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0389[] = {
-{ 0x300A, 0x014A, 0, VR::FL, VM::M1, "GantryPitchAngle" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0390[] = {
-{ 0x0018, 0x601E, 0, VR::UL, VM::M1, "RegionLocationMaxY1" },
-{ 0x5006, 0x3000, 1, VR::OX, VM::M1, "CurveData4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0391[] = {
-{ 0x0014, 0x4091, 2, VR::SQ, VM::M1, "ChannelSettingsSequence" },
-{ 0x300A, 0x0148, 0, VR::FL, VM::M1, "HeadFixationAngle" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0392[] = {
-{ 0x0028, 0x6020, 0, VR::US, VM::M1TN, "FrameNumbersOfInterest" },
-{ 0x0068, 0x6470, 0, VR::SQ, VM::M1, "TwoDDegreeOfFreedomSequence" },
-{ 0x5008, 0x3000, 1, VR::OX, VM::M1, "CurveData5" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0393[] = {
-{ 0x0014, 0x409F, 2, VR::DS, VM::M1, "ChannelOverlap" },
-{ 0x0018, 0x6011, 0, VR::SQ, VM::M1, "SequenceOfUltrasoundRegions" },
-{ 0x0018, 0x7050, 0, VR::CS, VM::M1TN, "FilterMaterial" },
-{ 0x300A, 0x0146, 0, VR::CS, VM::M1, "TableTopRollRotationDirection" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0394[] = {
-{ 0x0014, 0x409C, 2, VR::DS, VM::M1, "TranslationRateX" },
-{ 0x0018, 0x6012, 0, VR::US, VM::M1, "RegionSpatialFormat" },
-{ 0x0028, 0x6022, 0, VR::LO, VM::M1TN, "FrameOfInterestDescription" },
-{ 0x500A, 0x3000, 1, VR::OX, VM::M1, "CurveData6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0395[] = {
-{ 0x0014, 0x409D, 2, VR::DS, VM::M1, "TranslationRateY" },
-{ 0x0018, 0x7052, 0, VR::DS, VM::M1TN, "FilterThicknessMinimum" },
-{ 0x0028, 0x6023, 0, VR::CS, VM::M1TN, "FrameOfInterestType" },
-{ 0x300A, 0x0144, 0, VR::FL, VM::M1, "TableTopRollAngle" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0396[] = {
-{ 0x0014, 0x409A, 2, VR::SQ, VM::M1, "ScannerSettingsSequence" },
-{ 0x0018, 0x6014, 0, VR::US, VM::M1, "RegionDataType" },
-{ 0x0040, 0xA340, 1, VR::SQ, VM::M1, "ProcedureContextSequenceTrial" },
-{ 0x500C, 0x3000, 1, VR::OX, VM::M1, "CurveData7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0397[] = {
-{ 0x0014, 0x409B, 2, VR::ST, VM::M1, "ScanProcedure" },
-{ 0x0018, 0x7054, 0, VR::DS, VM::M1TN, "FilterThicknessMaximum" },
-{ 0x3008, 0x0140, 0, VR::SQ, VM::M1, "RecordedSourceApplicatorSequence" },
-{ 0x300A, 0x0142, 0, VR::CS, VM::M1, "TableTopPitchRotationDirection" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0398[] = {
-{ 0x0018, 0x6016, 0, VR::UL, VM::M1, "RegionFlags" },
-{ 0x500E, 0x3000, 1, VR::OX, VM::M1, "CurveData8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0399[] = {
-{ 0x0018, 0x7056, 0, VR::FL, VM::M1TN, "FilterBeamPathLengthMinimum" },
-{ 0x3008, 0x0142, 0, VR::IS, VM::M1, "ReferencedSourceApplicatorNumber" },
-{ 0x300A, 0x0140, 0, VR::FL, VM::M1, "TableTopPitchAngle" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0400[] = {
-{ 0x0014, 0x4086, 2, VR::SQ, VM::M1, "ReceiveProbeSequence" },
-{ 0x5010, 0x3000, 1, VR::OX, VM::M1, "CurveData9" },
-{ 0x6000, 0x0010, 0, VR::US, VM::M1, "OverlayRows" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0401[] = {
-{ 0x0014, 0x4087, 2, VR::SQ, VM::M1, "ProbeDriveSettingsSequence" },
-{ 0x0018, 0x7048, 0, VR::DS, VM::M1, "GridPeriod" },
-{ 0x6000, 0x0011, 0, VR::US, VM::M1, "OverlayColumns" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0402[] = {
-{ 0x0014, 0x4084, 2, VR::DS, VM::M1, "ProbeInductance" },
-{ 0x5012, 0x3000, 1, VR::OX, VM::M1, "CurveData10" },
-{ 0x6000, 0x0012, 1, VR::US, VM::M1, "OverlayPlanes" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0403[] = {
-{ 0x0014, 0x4085, 2, VR::DS, VM::M1, "ProbeResistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0404[] = {
-{ 0x0014, 0x4082, 2, VR::LT, VM::M1, "ProbeDriveNotes" },
-{ 0x0040, 0xA358, 1, VR::SQ, VM::M1, "VerbalSourceIdentifierCodeSequenceTrial" },
-{ 0x2000, 0x0500, 0, VR::SQ, VM::M1, "ReferencedFilmBoxSequence" },
-{ 0x2010, 0x0100, 0, VR::CS, VM::M1, "BorderDensity" },
-{ 0x2010, 0x0510, 0, VR::SQ, VM::M1, "ReferencedImageBoxSequence" },
-{ 0x2020, 0x0130, 1, VR::SQ, VM::M1, "ReferencedImageOverlayBoxSequence" },
-{ 0x2100, 0x0010, 1, VR::SH, VM::M1, "PrintJobID" },
-{ 0x5014, 0x3000, 1, VR::OX, VM::M1, "CurveData11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0405[] = {
-{ 0x0014, 0x4083, 2, VR::SQ, VM::M1, "DriveProbeSequence" },
-{ 0x0018, 0x704C, 0, VR::DS, VM::M1, "GridFocalDistance" },
-{ 0x6000, 0x0015, 0, VR::IS, VM::M1, "NumberOfFramesInOverlay" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0406[] = {
-{ 0x0014, 0x4080, 2, VR::SQ, VM::M1, "ProbeDriveEquipmentSequence" },
-{ 0x5016, 0x3000, 1, VR::OX, VM::M1, "CurveData12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0407[] = {
-{ 0x0014, 0x4081, 2, VR::CS, VM::M1, "DriveType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0408[] = {
-{ 0x0014, 0x408E, 2, VR::DS, VM::M1, "UserSelectedOffsetY" },
-{ 0x0018, 0x6000, 0, VR::DS, VM::M1, "Sensitivity" },
-{ 0x0018, 0x7041, 0, VR::LT, VM::M1, "GridSpacingMaterial" },
-{ 0x0028, 0x6030, 1, VR::US, VM::M1TN, "MaskPointers" },
-{ 0x0040, 0xA354, 1, VR::LO, VM::M1, "TelephoneNumberTrial" },
-{ 0x0040, 0xA744, 1, VR::SQ, VM::M1, "LanguageCodeSequenceTrial" },
-{ 0x0068, 0x6460, 0, VR::FD, VM::M4, "TwoDMatingAxes" },
-{ 0x5018, 0x3000, 1, VR::OX, VM::M1, "CurveData13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0409[] = {
-{ 0x0018, 0x7040, 0, VR::LT, VM::M1, "GridAbsorbingMaterial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0410[] = {
-{ 0x0014, 0x408C, 2, VR::DS, VM::M1, "UserSelectedPhase" },
-{ 0x501A, 0x3000, 1, VR::OX, VM::M1, "CurveData14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0411[] = {
-{ 0x0014, 0x408D, 2, VR::DS, VM::M1, "UserSelectedOffsetX" },
-{ 0x0018, 0x7042, 0, VR::DS, VM::M1, "GridThickness" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0412[] = {
-{ 0x0008, 0x2110, 1, VR::CS, VM::M1, "LossyImageCompressionRetired" },
-{ 0x501C, 0x3000, 1, VR::OX, VM::M1, "CurveData15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0413[] = {
-{ 0x0008, 0x2111, 0, VR::ST, VM::M1, "DerivationDescription" },
-{ 0x0014, 0x408B, 2, VR::DS, VM::M1, "UserSelectedGainY" },
-{ 0x0018, 0x7044, 0, VR::DS, VM::M1, "GridPitch" },
-{ 0x3008, 0x0150, 0, VR::SQ, VM::M1, "RecordedChannelShieldSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0414[] = {
-{ 0x0008, 0x2112, 0, VR::SQ, VM::M1, "SourceImageSequence" },
-{ 0x0014, 0x4088, 2, VR::DS, VM::M1, "BridgeResistors" },
-{ 0x0040, 0x09F8, 1, VR::SQ, VM::M1, "VitalStainCodeSequenceTrial" },
-{ 0x0040, 0xA352, 1, VR::PN, VM::M1, "VerbalSourceTrial" },
-{ 0x501E, 0x3000, 1, VR::OX, VM::M1, "CurveData16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0415[] = {
-{ 0x0014, 0x4089, 2, VR::DS, VM::M1, "ProbeOrientationAngle" },
-{ 0x0018, 0x7046, 0, VR::IS, VM::M2, "GridAspectRatio" },
-{ 0x0040, 0xA353, 1, VR::ST, VM::M1, "AddressTrial" },
-{ 0x3008, 0x0152, 0, VR::IS, VM::M1, "ReferencedChannelShieldNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0416[] = {
-{ 0x0018, 0x6038, 1, VR::UL, VM::M1, "DopplerSampleVolumeXPositionRetired" },
-{ 0x6000, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel" },
-{ 0x6002, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables2" },
-{ 0x6004, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord3" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0417[] = {
-{ 0x0018, 0x6039, 0, VR::SL, VM::M1, "DopplerSampleVolumeXPosition" },
-{ 0x2130, 0x0015, 1, VR::SQ, VM::M1, "PrinterCharacteristicsSequence" },
-{ 0x6002, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0418[] = {
-{ 0x0018, 0x603A, 1, VR::UL, VM::M1, "DopplerSampleVolumeYPositionRetired" },
-{ 0x6000, 0x0022, 0, VR::LO, VM::M1, "OverlayDescription" },
-{ 0x6000, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables" },
-{ 0x6002, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel2" },
-{ 0x6006, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0419[] = {
-{ 0x0018, 0x603B, 0, VR::SL, VM::M1, "DopplerSampleVolumeYPosition" },
-{ 0x6000, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0420[] = {
-{ 0x0008, 0x2128, 0, VR::IS, VM::M1, "ViewNumber" },
-{ 0x0018, 0x603C, 1, VR::UL, VM::M1, "TMLinePositionX0Retired" },
-{ 0x2010, 0x0130, 0, VR::US, VM::M1, "MaxDensity" },
-{ 0x2010, 0x0520, 0, VR::SQ, VM::M1, "ReferencedBasicAnnotationBoxSequence" },
-{ 0x2100, 0x0020, 0, VR::CS, VM::M1, "ExecutionStatus" },
-{ 0x2110, 0x0030, 0, VR::LO, VM::M1, "PrinterName" },
-{ 0x2130, 0x0010, 1, VR::SQ, VM::M1, "PrintManagementCapabilitiesSequence" },
-{ 0x6000, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord" },
-{ 0x6004, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel3" },
-{ 0x6006, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0421[] = {
-{ 0x0008, 0x2129, 0, VR::IS, VM::M1, "NumberOfEventTimers" },
-{ 0x0018, 0x603D, 0, VR::SL, VM::M1, "TMLinePositionX0" },
-{ 0x3008, 0x0168, 0, VR::TM, VM::M1, "SafePositionReturnTime" },
-{ 0x6006, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0422[] = {
-{ 0x0008, 0x212A, 0, VR::IS, VM::M1, "NumberOfViewsInStage" },
-{ 0x0018, 0x603E, 1, VR::UL, VM::M1, "TMLinePositionY0Retired" },
-{ 0x6002, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord2" },
-{ 0x6004, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables3" },
-{ 0x6006, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0423[] = {
-{ 0x0018, 0x603F, 0, VR::SL, VM::M1, "TMLinePositionY0" },
-{ 0x6004, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation3" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0424[] = {
-{ 0x0008, 0x2124, 0, VR::IS, VM::M1, "NumberOfStages" },
-{ 0x0018, 0x6030, 0, VR::UL, VM::M1, "TransducerFrequency" },
-{ 0x0068, 0x6450, 0, VR::FD, VM::M2, "TwoDMatingPoint" },
-{ 0x0088, 0x0906, 1, VR::ST, VM::M1, "TopicSubject" },
-{ 0x6008, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel5" },
-{ 0x600A, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables6" },
-{ 0x600C, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0425[] = {
-{ 0x0018, 0x6031, 0, VR::CS, VM::M1, "TransducerType" },
-{ 0x3008, 0x0164, 0, VR::TM, VM::M1, "SafePositionExitTime" },
-{ 0x600A, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0426[] = {
-{ 0x0018, 0x6032, 0, VR::UL, VM::M1, "PulseRepetitionFrequency" },
-{ 0x0088, 0x0904, 1, VR::LO, VM::M1, "TopicTitle" },
-{ 0x6008, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables5" },
-{ 0x600A, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel6" },
-{ 0x600E, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0427[] = {
-{ 0x0008, 0x2127, 0, VR::SH, VM::M1, "ViewName" },
-{ 0x3008, 0x0166, 0, VR::DA, VM::M1, "SafePositionReturnDate" },
-{ 0x6008, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation5" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0428[] = {
-{ 0x0008, 0x2120, 0, VR::SH, VM::M1, "StageName" },
-{ 0x0018, 0x6034, 0, VR::FD, VM::M1, "DopplerCorrectionAngle" },
-{ 0x0040, 0xA360, 0, VR::SQ, VM::M1, "PredecessorDocumentsSequence" },
-{ 0x6008, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord5" },
-{ 0x600C, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel7" },
-{ 0x600E, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0429[] = {
-{ 0x3008, 0x0160, 0, VR::SQ, VM::M1, "BrachyControlPointDeliveredSequence" },
-{ 0x600E, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0430[] = {
-{ 0x0008, 0x2122, 0, VR::IS, VM::M1, "StageNumber" },
-{ 0x0018, 0x6036, 0, VR::FD, VM::M1, "SteeringAngle" },
-{ 0x600A, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord6" },
-{ 0x600C, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables7" },
-{ 0x600E, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0431[] = {
-{ 0x3008, 0x0162, 0, VR::DA, VM::M1, "SafePositionExitDate" },
-{ 0x600C, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0432[] = {
-{ 0x0018, 0x6028, 0, VR::FD, VM::M1, "ReferencePixelPhysicalValueX" },
-{ 0x6010, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel9" },
-{ 0x6012, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables10" },
-{ 0x6014, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0433[] = {
-{ 0x6012, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0434[] = {
-{ 0x0018, 0x602A, 0, VR::FD, VM::M1, "ReferencePixelPhysicalValueY" },
-{ 0x6010, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables9" },
-{ 0x6012, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel10" },
-{ 0x6016, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0435[] = {
-{ 0x6010, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation9" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0436[] = {
-{ 0x0014, 0x40A2, 2, VR::LO, VM::M1, "ImageQualityIndicatorSize" },
-{ 0x0018, 0x602C, 0, VR::FD, VM::M1, "PhysicalDeltaX" },
-{ 0x2010, 0x0120, 0, VR::US, VM::M1, "MinDensity" },
-{ 0x2020, 0x0110, 0, VR::SQ, VM::M1, "BasicGrayscaleImageSequence" },
-{ 0x2100, 0x0030, 0, VR::CS, VM::M1, "ExecutionStatusInfo" },
-{ 0x2110, 0x0020, 0, VR::CS, VM::M1, "PrinterStatusInfo" },
-{ 0x2120, 0x0010, 1, VR::CS, VM::M1, "QueueStatus" },
-{ 0x6010, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord9" },
-{ 0x6014, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel11" },
-{ 0x6016, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0437[] = {
-{ 0x2020, 0x0111, 0, VR::SQ, VM::M1, "BasicColorImageSequence" },
-{ 0x6016, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0438[] = {
-{ 0x0014, 0x40A0, 2, VR::LO, VM::M1, "ImageQualityIndicatorType" },
-{ 0x0018, 0x602E, 0, VR::FD, VM::M1, "PhysicalDeltaY" },
-{ 0x6012, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord10" },
-{ 0x6014, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables11" },
-{ 0x6016, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0439[] = {
-{ 0x0014, 0x40A1, 2, VR::LO, VM::M1, "ImageQualityIndicatorMaterial" },
-{ 0x6014, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0440[] = {
-{ 0x0008, 0x2134, 0, VR::FD, VM::M1, "EventTimeOffset" },
-{ 0x0018, 0x6020, 0, VR::SL, VM::M1, "ReferencePixelX0" },
-{ 0x0028, 0x2114, 0, VR::CS, VM::M1TN, "LossyImageCompressionMethod" },
-{ 0x0028, 0x6010, 0, VR::US, VM::M1, "RepresentativeFrameNumber" },
-{ 0x0068, 0x6440, 0, VR::US, VM::M1, "ReferencedHPGLDocumentID" },
-{ 0x6018, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel13" },
-{ 0x601A, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables14" },
-{ 0x601C, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0441[] = {
-{ 0x0008, 0x2135, 0, VR::SQ, VM::M1, "EventCodeSequence" },
-{ 0x0018, 0x7060, 0, VR::CS, VM::M1, "ExposureControlMode" },
-{ 0x0040, 0xA375, 0, VR::SQ, VM::M1, "CurrentRequestedProcedureEvidenceSequence" },
-{ 0x601A, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0442[] = {
-{ 0x0018, 0x6022, 0, VR::SL, VM::M1, "ReferencePixelY0" },
-{ 0x6018, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables13" },
-{ 0x601A, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel14" },
-{ 0x601E, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0443[] = {
-{ 0x0018, 0x7062, 0, VR::LT, VM::M1, "ExposureControlModeDescription" },
-{ 0x6018, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0444[] = {
-{ 0x0008, 0x2130, 0, VR::DS, VM::M1TN, "EventElapsedTimes" },
-{ 0x0018, 0x6024, 0, VR::US, VM::M1, "PhysicalUnitsXDirection" },
-{ 0x0018, 0x7065, 0, VR::DS, VM::M1, "PhototimerSetting" },
-{ 0x0028, 0x2110, 0, VR::CS, VM::M1, "LossyImageCompression" },
-{ 0x0040, 0xA370, 0, VR::SQ, VM::M1, "ReferencedRequestSequence" },
-{ 0x0088, 0x0912, 1, VR::LO, VM::M1T32, "TopicKeywords" },
-{ 0x6018, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord13" },
-{ 0x601C, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel15" },
-{ 0x601E, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0445[] = {
-{ 0x0018, 0x7064, 0, VR::CS, VM::M1, "ExposureStatus" },
-{ 0x601E, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0446[] = {
-{ 0x0008, 0x2132, 0, VR::LO, VM::M1TN, "EventTimerNames" },
-{ 0x0018, 0x6026, 0, VR::US, VM::M1, "PhysicalUnitsYDirection" },
-{ 0x0028, 0x2112, 0, VR::DS, VM::M1TN, "LossyImageCompressionRatio" },
-{ 0x0040, 0xA372, 0, VR::SQ, VM::M1, "PerformedProcedureCodeSequence" },
-{ 0x0088, 0x0130, 0, VR::SH, VM::M1, "StorageMediaFileSetID" },
-{ 0x0088, 0x0910, 1, VR::LO, VM::M1, "TopicAuthor" },
-{ 0x601A, 0x0804, 1, VR::US, VM::M1, "OverlayBitsForCodeWord14" },
-{ 0x601C, 0x0802, 1, VR::US, VM::M1, "OverlayNumberOfTables15" },
-{ 0x601E, 0x0800, 1, VR::CS, VM::M1TN, "OverlayCodeLabel16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0447[] = {
-{ 0x0008, 0x2133, 0, VR::SQ, VM::M1, "EventTimerSequence" },
-{ 0x601C, 0x0803, 1, VR::AT, VM::M1TN, "OverlayCodeTableLocation15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0448[] = {
-{ 0x300A, 0x010E, 0, VR::DS, VM::M1, "FinalCumulativeMetersetWeight" },
-{ 0x5000, 0x2000, 1, VR::US, VM::M1, "AudioType" },
-{ 0x5002, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat2" },
-{ 0x5004, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels3" },
-{ 0x5006, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples4" },
-{ 0x5008, 0x2008, 1, VR::UL, VM::M1, "SampleRate5" },
-{ 0x500A, 0x200A, 1, VR::UL, VM::M1, "TotalTime6" },
-{ 0x500C, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData7" },
-{ 0x500E, 0x200E, 1, VR::LT, VM::M1, "AudioComments8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0449[] = {
-{ 0x0010, 0x2154, 0, VR::SH, VM::M1TN, "PatientTelephoneNumbers" },
-{ 0x0018, 0x6058, 0, VR::UL, VM::M1TN, "TableOfPixelValues" },
-{ 0x2010, 0x0154, 0, VR::IS, VM::M1, "MaximumCollatedFilms" },
-{ 0x6000, 0x0040, 0, VR::CS, VM::M1, "OverlayType" },
-{ 0x6000, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0450[] = {
-{ 0x0018, 0x701A, 0, VR::DS, VM::M2, "DetectorBinning" },
-{ 0x300A, 0x010C, 0, VR::DS, VM::M1, "CumulativeDoseReferenceCoefficient" },
-{ 0x5000, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat" },
-{ 0x5002, 0x2000, 1, VR::US, VM::M1, "AudioType2" },
-{ 0x5004, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples3" },
-{ 0x5006, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels4" },
-{ 0x5008, 0x200A, 1, VR::UL, VM::M1, "TotalTime5" },
-{ 0x500A, 0x2008, 1, VR::UL, VM::M1, "SampleRate6" },
-{ 0x500C, 0x200E, 1, VR::LT, VM::M1, "AudioComments7" },
-{ 0x500E, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0451[] = {
-{ 0x0018, 0x605A, 0, VR::FL, VM::M1TN, "TableOfParameterValues" },
-{ 0x6002, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0452[] = {
-{ 0x300A, 0x010A, 0, VR::LO, VM::M1, "ApplicatorDescription" },
-{ 0x5000, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels" },
-{ 0x5002, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples2" },
-{ 0x5004, 0x2000, 1, VR::US, VM::M1, "AudioType3" },
-{ 0x5006, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat4" },
-{ 0x5008, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData5" },
-{ 0x500A, 0x200E, 1, VR::LT, VM::M1, "AudioComments6" },
-{ 0x500C, 0x2008, 1, VR::UL, VM::M1, "SampleRate7" },
-{ 0x500E, 0x200A, 1, VR::UL, VM::M1, "TotalTime8" },
-{ 0x6000, 0x0045, 0, VR::LO, VM::M1, "OverlaySubtype" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0453[] = {
-{ 0x0010, 0x2150, 0, VR::LO, VM::M1, "CountryOfResidence" },
-{ 0x2010, 0x0150, 0, VR::ST, VM::M1, "ConfigurationInformation" },
-{ 0x2040, 0x0100, 1, VR::CS, VM::M1, "ThresholdDensity" },
-{ 0x2050, 0x0500, 0, VR::SQ, VM::M1, "ReferencedPresentationLUTSequence" },
-{ 0x2100, 0x0040, 0, VR::DA, VM::M1, "CreationDate" },
-{ 0x6004, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer3" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0454[] = {
-{ 0x300A, 0x0108, 0, VR::SH, VM::M1, "ApplicatorID" },
-{ 0x5000, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples" },
-{ 0x5002, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels2" },
-{ 0x5004, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat3" },
-{ 0x5006, 0x2000, 1, VR::US, VM::M1, "AudioType4" },
-{ 0x5008, 0x200E, 1, VR::LT, VM::M1, "AudioComments5" },
-{ 0x500A, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData6" },
-{ 0x500C, 0x200A, 1, VR::UL, VM::M1, "TotalTime7" },
-{ 0x500E, 0x2008, 1, VR::UL, VM::M1, "SampleRate8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0455[] = {
-{ 0x0010, 0x2152, 0, VR::LO, VM::M1, "RegionOfResidence" },
-{ 0x0040, 0xA30A, 0, VR::DS, VM::M1TN, "NumericValue" },
-{ 0x2010, 0x0152, 0, VR::LT, VM::M1, "ConfigurationInformationDescription" },
-{ 0x300A, 0x0109, 0, VR::CS, VM::M1, "ApplicatorType" },
-{ 0x6006, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0456[] = {
-{ 0x0018, 0x7010, 0, VR::IS, VM::M1, "ExposuresOnDetectorSinceLastCalibration" },
-{ 0x300A, 0x0106, 0, VR::DS, VM::M2T2N, "BlockData" },
-{ 0x300C, 0x0100, 0, VR::IS, VM::M1, "ReferencedRangeShifterNumber" },
-{ 0x5000, 0x2008, 1, VR::UL, VM::M1, "SampleRate" },
-{ 0x5002, 0x200A, 1, VR::UL, VM::M1, "TotalTime2" },
-{ 0x5004, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData3" },
-{ 0x5006, 0x200E, 1, VR::LT, VM::M1, "AudioComments4" },
-{ 0x5008, 0x2000, 1, VR::US, VM::M1, "AudioType5" },
-{ 0x500A, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat6" },
-{ 0x500C, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels7" },
-{ 0x500E, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0457[] = {
-{ 0x0008, 0x2144, 0, VR::IS, VM::M1, "RecommendedDisplayFrameRate" },
-{ 0x0018, 0x6050, 0, VR::UL, VM::M1, "NumberOfTableBreakPoints" },
-{ 0x0018, 0x7011, 0, VR::IS, VM::M1, "ExposuresOnDetectorSinceManufactured" },
-{ 0x0068, 0x6430, 0, VR::SQ, VM::M1, "TwoDMatingFeatureCoordinatesSequence" },
-{ 0x3008, 0x0105, 0, VR::LO, VM::M1, "SourceSerialNumber" },
-{ 0x300A, 0x0107, 0, VR::SQ, VM::M1, "ApplicatorSequence" },
-{ 0x6008, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer5" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0458[] = {
-{ 0x0018, 0x7012, 0, VR::DS, VM::M1, "DetectorTimeSinceLastExposure" },
-{ 0x0040, 0xA307, 1, VR::PN, VM::M1, "CurrentObserverTrial" },
-{ 0x300A, 0x0104, 0, VR::IS, VM::M1, "BlockNumberOfPoints" },
-{ 0x300C, 0x0102, 0, VR::IS, VM::M1, "ReferencedLateralSpreadingDeviceNumber" },
-{ 0x5000, 0x200A, 1, VR::UL, VM::M1, "TotalTime" },
-{ 0x5002, 0x2008, 1, VR::UL, VM::M1, "SampleRate2" },
-{ 0x5004, 0x200E, 1, VR::LT, VM::M1, "AudioComments3" },
-{ 0x5006, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData4" },
-{ 0x5008, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat5" },
-{ 0x500A, 0x2000, 1, VR::US, VM::M1, "AudioType6" },
-{ 0x500C, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples7" },
-{ 0x500E, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0459[] = {
-{ 0x0018, 0x6052, 0, VR::UL, VM::M1TN, "TableOfXBreakPoints" },
-{ 0x2010, 0x015E, 0, VR::US, VM::M1, "Illumination" },
-{ 0x600A, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0460[] = {
-{ 0x0018, 0x7014, 0, VR::DS, VM::M1, "DetectorActiveTime" },
-{ 0x0040, 0xA301, 0, VR::SQ, VM::M1, "NumericValueQualifierCodeSequence" },
-{ 0x3008, 0x0100, 0, VR::SQ, VM::M1, "RecordedSourceSequence" },
-{ 0x300A, 0x0102, 0, VR::DS, VM::M1, "BlockTransmission" },
-{ 0x300C, 0x0104, 0, VR::IS, VM::M1, "ReferencedRangeModulatorNumber" },
-{ 0x5000, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData" },
-{ 0x5002, 0x200E, 1, VR::LT, VM::M1, "AudioComments2" },
-{ 0x5004, 0x2008, 1, VR::UL, VM::M1, "SampleRate3" },
-{ 0x5006, 0x200A, 1, VR::UL, VM::M1, "TotalTime4" },
-{ 0x5008, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels5" },
-{ 0x500A, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples6" },
-{ 0x500C, 0x2000, 1, VR::US, VM::M1, "AudioType7" },
-{ 0x500E, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0461[] = {
-{ 0x0018, 0x6054, 0, VR::FD, VM::M1TN, "TableOfYBreakPoints" },
-{ 0x0040, 0x059A, 0, VR::SQ, VM::M1, "SpecimenTypeCodeSequence" },
-{ 0x0040, 0xA300, 0, VR::SQ, VM::M1, "MeasuredValueSequence" },
-{ 0x600C, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0462[] = {
-{ 0x0008, 0x2143, 0, VR::IS, VM::M1, "StopTrim" },
-{ 0x0018, 0x1190, 0, VR::DS, VM::M1TN, "FocalSpots" },
-{ 0x0018, 0x7016, 0, VR::DS, VM::M1, "DetectorActivationOffsetFromExposure" },
-{ 0x300A, 0x0100, 0, VR::DS, VM::M1, "BlockThickness" },
-{ 0x5000, 0x200E, 1, VR::LT, VM::M1, "AudioComments" },
-{ 0x5002, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData2" },
-{ 0x5004, 0x200A, 1, VR::UL, VM::M1, "TotalTime3" },
-{ 0x5006, 0x2008, 1, VR::UL, VM::M1, "SampleRate4" },
-{ 0x5008, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples5" },
-{ 0x500A, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels6" },
-{ 0x500C, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat7" },
-{ 0x500E, 0x2000, 1, VR::US, VM::M1, "AudioType8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0463[] = {
-{ 0x0008, 0x2142, 0, VR::IS, VM::M1, "StartTrim" },
-{ 0x0018, 0x1191, 0, VR::CS, VM::M1, "AnodeTargetMaterial" },
-{ 0x0018, 0x6056, 0, VR::UL, VM::M1, "NumberOfTableEntries" },
-{ 0x0088, 0x0140, 0, VR::UI, VM::M1, "StorageMediaFileSetUID" },
-{ 0x600E, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0464[] = {
-{ 0x0018, 0x7008, 0, VR::LT, VM::M1, "DetectorMode" },
-{ 0x300A, 0x011E, 0, VR::DS, VM::M1, "GantryAngle" },
-{ 0x5010, 0x2000, 1, VR::US, VM::M1, "AudioType9" },
-{ 0x5012, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat10" },
-{ 0x5014, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels11" },
-{ 0x5016, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples12" },
-{ 0x5018, 0x2008, 1, VR::UL, VM::M1, "SampleRate13" },
-{ 0x501A, 0x200A, 1, VR::UL, VM::M1, "TotalTime14" },
-{ 0x501C, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData15" },
-{ 0x501E, 0x200E, 1, VR::LT, VM::M1, "AudioComments16" },
-{ 0x6000, 0x0051, 0, VR::US, VM::M1, "ImageFrameOrigin" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0465[] = {
-{ 0x0018, 0x6048, 0, VR::UL, VM::M1, "PixelComponentRangeStart" },
-{ 0x300A, 0x011F, 0, VR::CS, VM::M1, "GantryRotationDirection" },
-{ 0x6000, 0x0050, 0, VR::SS, VM::M2, "OverlayOrigin" },
-{ 0x6010, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer9" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0466[] = {
-{ 0x0018, 0x700A, 0, VR::SH, VM::M1, "DetectorID" },
-{ 0x300A, 0x011C, 0, VR::DS, VM::M2T2N, "LeafJawPositions" },
-{ 0x5010, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat9" },
-{ 0x5012, 0x2000, 1, VR::US, VM::M1, "AudioType10" },
-{ 0x5014, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples11" },
-{ 0x5016, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels12" },
-{ 0x5018, 0x200A, 1, VR::UL, VM::M1, "TotalTime13" },
-{ 0x501A, 0x2008, 1, VR::UL, VM::M1, "SampleRate14" },
-{ 0x501C, 0x200E, 1, VR::LT, VM::M1, "AudioComments15" },
-{ 0x501E, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0467[] = {
-{ 0x0018, 0x604A, 0, VR::UL, VM::M1, "PixelComponentRangeStop" },
-{ 0x6000, 0x0052, 1, VR::US, VM::M1, "OverlayPlaneOrigin" },
-{ 0x6012, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0468[] = {
-{ 0x0018, 0x700C, 0, VR::DA, VM::M1, "DateOfLastDetectorCalibration" },
-{ 0x300A, 0x011A, 0, VR::SQ, VM::M1, "BeamLimitingDevicePositionSequence" },
-{ 0x5010, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels9" },
-{ 0x5012, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples10" },
-{ 0x5014, 0x2000, 1, VR::US, VM::M1, "AudioType11" },
-{ 0x5016, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat12" },
-{ 0x5018, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData13" },
-{ 0x501A, 0x200E, 1, VR::LT, VM::M1, "AudioComments14" },
-{ 0x501C, 0x2008, 1, VR::UL, VM::M1, "SampleRate15" },
-{ 0x501E, 0x200A, 1, VR::UL, VM::M1, "TotalTime16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0469[] = {
-{ 0x0018, 0x604C, 0, VR::US, VM::M1, "PixelComponentPhysicalUnits" },
-{ 0x2010, 0x0140, 0, VR::CS, VM::M1, "Trim" },
-{ 0x2040, 0x0500, 1, VR::SQ, VM::M1, "ReferencedImageBoxSequenceRetired" },
-{ 0x2100, 0x0050, 0, VR::TM, VM::M1, "CreationTime" },
-{ 0x2120, 0x0070, 1, VR::SQ, VM::M1, "ReferencedPrintJobSequence" },
-{ 0x2130, 0x0060, 1, VR::SQ, VM::M1, "ImageOverlayBoxContentSequence" },
-{ 0x6014, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0470[] = {
-{ 0x0008, 0x1198, 0, VR::SQ, VM::M1, "FailedSOPSequence" },
-{ 0x0018, 0x700E, 0, VR::TM, VM::M1, "TimeOfLastDetectorCalibration" },
-{ 0x300A, 0x0118, 0, VR::CS, VM::M1, "WedgePosition" },
-{ 0x5010, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples9" },
-{ 0x5012, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels10" },
-{ 0x5014, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat11" },
-{ 0x5016, 0x2000, 1, VR::US, VM::M1, "AudioType12" },
-{ 0x5018, 0x200E, 1, VR::LT, VM::M1, "AudioComments13" },
-{ 0x501A, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData14" },
-{ 0x501C, 0x200A, 1, VR::UL, VM::M1, "TotalTime15" },
-{ 0x501E, 0x2008, 1, VR::UL, VM::M1, "SampleRate16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0471[] = {
-{ 0x0008, 0x1199, 0, VR::SQ, VM::M1, "ReferencedSOPSequence" },
-{ 0x0018, 0x604E, 0, VR::US, VM::M1, "PixelComponentDataType" },
-{ 0x6016, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0472[] = {
-{ 0x0008, 0x1196, 0, VR::US, VM::M1, "WarningReason" },
-{ 0x0018, 0x3104, 0, VR::IS, VM::M1, "IVUSPullbackStopFrameNumber" },
-{ 0x0018, 0x6041, 0, VR::SL, VM::M1, "TMLinePositionX1" },
-{ 0x0018, 0x7000, 0, VR::CS, VM::M1, "DetectorConditionsNominalFlag" },
-{ 0x300A, 0x0116, 0, VR::SQ, VM::M1, "WedgePositionSequence" },
-{ 0x5010, 0x2008, 1, VR::UL, VM::M1, "SampleRate9" },
-{ 0x5012, 0x200A, 1, VR::UL, VM::M1, "TotalTime10" },
-{ 0x5014, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData11" },
-{ 0x5016, 0x200E, 1, VR::LT, VM::M1, "AudioComments12" },
-{ 0x5018, 0x2000, 1, VR::US, VM::M1, "AudioType13" },
-{ 0x501A, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat14" },
-{ 0x501C, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels15" },
-{ 0x501E, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0473[] = {
-{ 0x0008, 0x1197, 0, VR::US, VM::M1, "FailureReason" },
-{ 0x0018, 0x3105, 0, VR::IS, VM::M1TN, "LesionNumber" },
-{ 0x0018, 0x6040, 1, VR::UL, VM::M1, "TMLinePositionX1Retired" },
-{ 0x0018, 0x7001, 0, VR::DS, VM::M1, "DetectorTemperature" },
-{ 0x0068, 0x6420, 0, VR::CS, VM::M1, "DegreeOfFreedomType" },
-{ 0x6018, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0474[] = {
-{ 0x0018, 0x1184, 0, VR::DS, VM::M1T2, "YFocusCenter" },
-{ 0x0018, 0x6043, 0, VR::SL, VM::M1, "TMLinePositionY1" },
-{ 0x3008, 0x0116, 0, VR::CS, VM::M1, "ApplicationSetupCheck" },
-{ 0x300A, 0x0114, 0, VR::DS, VM::M1, "NominalBeamEnergy" },
-{ 0x5010, 0x200A, 1, VR::UL, VM::M1, "TotalTime9" },
-{ 0x5012, 0x2008, 1, VR::UL, VM::M1, "SampleRate10" },
-{ 0x5014, 0x200E, 1, VR::LT, VM::M1, "AudioComments11" },
-{ 0x5016, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData12" },
-{ 0x5018, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat13" },
-{ 0x501A, 0x2000, 1, VR::US, VM::M1, "AudioType14" },
-{ 0x501C, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples15" },
-{ 0x501E, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0475[] = {
-{ 0x0008, 0x1195, 0, VR::UI, VM::M1, "TransactionUID" },
-{ 0x0018, 0x6042, 1, VR::UL, VM::M1, "TMLinePositionY1Retired" },
-{ 0x300A, 0x0115, 0, VR::DS, VM::M1, "DoseRateSet" },
-{ 0x601A, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0476[] = {
-{ 0x0018, 0x1182, 0, VR::IS, VM::M1T2, "FocalDistance" },
-{ 0x0018, 0x3100, 0, VR::CS, VM::M1, "IVUSAcquisition" },
-{ 0x0018, 0x7004, 0, VR::CS, VM::M1, "DetectorType" },
-{ 0x3008, 0x0110, 0, VR::SQ, VM::M1, "TreatmentSessionApplicationSetupSequence" },
-{ 0x300A, 0x0112, 0, VR::IS, VM::M1, "ControlPointIndex" },
-{ 0x5010, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData9" },
-{ 0x5012, 0x200E, 1, VR::LT, VM::M1, "AudioComments10" },
-{ 0x5014, 0x2008, 1, VR::UL, VM::M1, "SampleRate11" },
-{ 0x5016, 0x200A, 1, VR::UL, VM::M1, "TotalTime12" },
-{ 0x5018, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels13" },
-{ 0x501A, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples14" },
-{ 0x501C, 0x2000, 1, VR::US, VM::M1, "AudioType15" },
-{ 0x501E, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0477[] = {
-{ 0x0018, 0x1183, 0, VR::DS, VM::M1T2, "XFocusCenter" },
-{ 0x0018, 0x3101, 0, VR::DS, VM::M1, "IVUSPullbackRate" },
-{ 0x0018, 0x6044, 0, VR::US, VM::M1, "PixelComponentOrganization" },
-{ 0x0018, 0x7005, 0, VR::CS, VM::M1, "DetectorConfiguration" },
-{ 0x601C, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0478[] = {
-{ 0x0008, 0x1190, 0, VR::UT, VM::M1, "RetrieveURL" },
-{ 0x0018, 0x1180, 0, VR::SH, VM::M1, "CollimatorGridName" },
-{ 0x0018, 0x3102, 0, VR::DS, VM::M1, "IVUSGatedRate" },
-{ 0x0018, 0x7006, 0, VR::LT, VM::M1, "DetectorDescription" },
-{ 0x0040, 0xA313, 1, VR::SQ, VM::M1, "ReferencedAccessionSequenceTrial" },
-{ 0x300A, 0x0110, 0, VR::IS, VM::M1, "NumberOfControlPoints" },
-{ 0x5010, 0x200E, 1, VR::LT, VM::M1, "AudioComments9" },
-{ 0x5012, 0x200C, 1, VR::OX, VM::M1, "AudioSampleData10" },
-{ 0x5014, 0x200A, 1, VR::UL, VM::M1, "TotalTime11" },
-{ 0x5016, 0x2008, 1, VR::UL, VM::M1, "SampleRate12" },
-{ 0x5018, 0x2006, 1, VR::UL, VM::M1, "NumberOfSamples13" },
-{ 0x501A, 0x2004, 1, VR::US, VM::M1, "NumberOfChannels14" },
-{ 0x501C, 0x2002, 1, VR::US, VM::M1, "AudioSampleFormat15" },
-{ 0x501E, 0x2000, 1, VR::US, VM::M1, "AudioType16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0479[] = {
-{ 0x0018, 0x1181, 0, VR::CS, VM::M1, "CollimatorType" },
-{ 0x0018, 0x3103, 0, VR::IS, VM::M1, "IVUSPullbackStartFrameNumber" },
-{ 0x0018, 0x6046, 0, VR::UL, VM::M1, "PixelComponentMask" },
-{ 0x300A, 0x0111, 0, VR::SQ, VM::M1, "ControlPointSequence" },
-{ 0x601E, 0x1001, 0, VR::CS, VM::M1, "OverlayActivationLayer16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0480[] = {
-{ 0x0018, 0x7038, 0, VR::FL, VM::M1, "PixelDataAreaRotationAngleRelativeToFOV" },
-{ 0x300A, 0x012E, 0, VR::DS, VM::M3, "SurfaceEntryPoint" },
-{ 0x6000, 0x0061, 1, VR::SH, VM::M1, "OverlayCompressionOriginator" },
-{ 0x6008, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped5" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0481[] = {
-{ 0x6000, 0x0060, 1, VR::CS, VM::M1, "OverlayCompressionCode" },
-{ 0x6008, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval5" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0482[] = {
-{ 0x300A, 0x012C, 0, VR::DS, VM::M3, "IsocenterPosition" },
-{ 0x6000, 0x0063, 1, VR::CS, VM::M1, "OverlayCompressionDescription" },
-{ 0x600A, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0483[] = {
-{ 0x6000, 0x0062, 1, VR::SH, VM::M1, "OverlayCompressionLabel" },
-{ 0x600A, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0484[] = {
-{ 0x0020, 0x3100, 1, VR::CS, VM::M1TN, "SourceImageIDs" },
-{ 0x300A, 0x012A, 0, VR::DS, VM::M1, "TableTopLateralPosition" },
-{ 0x600C, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0485[] = {
-{ 0x2020, 0x0140, 1, VR::SQ, VM::M1, "ReferencedVOILUTBoxSequence" },
-{ 0x2130, 0x0050, 1, VR::SQ, VM::M1, "AnnotationContentSequence" },
-{ 0x600C, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0486[] = {
-{ 0x300A, 0x0128, 0, VR::DS, VM::M1, "TableTopVerticalPosition" },
-{ 0x600E, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0487[] = {
-{ 0x300A, 0x0129, 0, VR::DS, VM::M1, "TableTopLongitudinalPosition" },
-{ 0x6000, 0x0066, 1, VR::AT, VM::M1TN, "OverlayCompressionStepPointers" },
-{ 0x600E, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0488[] = {
-{ 0x0018, 0x7030, 0, VR::DS, VM::M2, "FieldOfViewOrigin" },
-{ 0x300A, 0x0126, 0, VR::CS, VM::M1, "TableTopEccentricRotationDirection" },
-{ 0x6000, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0489[] = {
-{ 0x0028, 0x6040, 0, VR::US, VM::M1TN, "RWavePointer" },
-{ 0x0068, 0x6410, 0, VR::US, VM::M1, "DegreeOfFreedomID" },
-{ 0x6000, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0490[] = {
-{ 0x0018, 0x7032, 0, VR::DS, VM::M1, "FieldOfViewRotation" },
-{ 0x300A, 0x0124, 0, VR::DS, VM::M1, "TableTopEccentricAxisDistance" },
-{ 0x6002, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0491[] = {
-{ 0x300A, 0x0125, 0, VR::DS, VM::M1, "TableTopEccentricAngle" },
-{ 0x6002, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0492[] = {
-{ 0x0018, 0x7034, 0, VR::CS, VM::M1, "FieldOfViewHorizontalFlip" },
-{ 0x0040, 0xA731, 1, VR::SQ, VM::M1, "RelationshipSequenceTrial" },
-{ 0x3008, 0x0120, 0, VR::SQ, VM::M1, "RecordedBrachyAccessoryDeviceSequence" },
-{ 0x300A, 0x0122, 0, VR::DS, VM::M1, "PatientSupportAngle" },
-{ 0x6004, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped3" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0493[] = {
-{ 0x0040, 0xA730, 0, VR::SQ, VM::M1, "ContentSequence" },
-{ 0x300A, 0x0123, 0, VR::CS, VM::M1, "PatientSupportRotationDirection" },
-{ 0x6004, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval3" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0494[] = {
-{ 0x0018, 0x7036, 0, VR::FL, VM::M2, "PixelDataAreaOriginRelativeToFOV" },
-{ 0x3008, 0x0122, 0, VR::IS, VM::M1, "ReferencedBrachyAccessoryDeviceNumber" },
-{ 0x300A, 0x0120, 0, VR::DS, VM::M1, "BeamLimitingDeviceAngle" },
-{ 0x6006, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0495[] = {
-{ 0x0040, 0xA732, 1, VR::SQ, VM::M1, "RelationshipTypeCodeSequenceTrial" },
-{ 0x300A, 0x0121, 0, VR::CS, VM::M1, "BeamLimitingDeviceRotationDirection" },
-{ 0x6006, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0496[] = {
-{ 0x0018, 0x7028, 0, VR::DS, VM::M2, "DetectorActiveOrigin" },
-{ 0x3008, 0x013C, 0, VR::DS, VM::M1, "DeliveredPulseRepetitionInterval" },
-{ 0x6018, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0497[] = {
-{ 0x6018, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0498[] = {
-{ 0x0018, 0x702A, 0, VR::LO, VM::M1, "DetectorManufacturerName" },
-{ 0x601A, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0499[] = {
-{ 0x0018, 0x702B, 0, VR::LO, VM::M1, "DetectorManufacturerModelName" },
-{ 0x601A, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0500[] = {
-{ 0x3008, 0x0138, 0, VR::IS, VM::M1, "DeliveredNumberOfPulses" },
-{ 0x4008, 0x00FF, 1, VR::CS, VM::M1, "ReportProductionStatusTrial" },
-{ 0x601C, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0501[] = {
-{ 0x0010, 0x2160, 0, VR::SH, VM::M1, "EthnicGroup" },
-{ 0x2010, 0x0160, 0, VR::US, VM::M1, "ReflectedAmbientLight" },
-{ 0x2100, 0x0070, 0, VR::AE, VM::M1, "Originator" },
-{ 0x2120, 0x0050, 1, VR::SQ, VM::M1, "PrintJobDescriptionSequence" },
-{ 0x2130, 0x0040, 1, VR::SQ, VM::M1, "ImageBoxContentSequence" },
-{ 0x601C, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0502[] = {
-{ 0x3008, 0x013A, 0, VR::DS, VM::M1, "SpecifiedPulseRepetitionInterval" },
-{ 0x601E, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0503[] = {
-{ 0x0028, 0x1199, 0, VR::UI, VM::M1, "PaletteColorLookupTableUID" },
-{ 0x0040, 0xA33A, 1, VR::ST, VM::M1, "ReportStatusCommentTrial" },
-{ 0x601E, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0504[] = {
-{ 0x0018, 0x7020, 0, VR::DS, VM::M2, "DetectorElementPhysicalSize" },
-{ 0x3008, 0x0134, 0, VR::DS, VM::M1, "DeliveredChannelTotalTime" },
-{ 0x6010, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped9" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0505[] = {
-{ 0x0018, 0x6060, 0, VR::FL, VM::M1TN, "RWaveTimeVector" },
-{ 0x0068, 0x6400, 0, VR::SQ, VM::M1, "MatingFeatureDegreeOfFreedomSequence" },
-{ 0x6010, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval9" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0506[] = {
-{ 0x0018, 0x11A4, 0, VR::LO, VM::M1, "PaddleDescription" },
-{ 0x0018, 0x7022, 0, VR::DS, VM::M2, "DetectorElementSpacing" },
-{ 0x3008, 0x0136, 0, VR::IS, VM::M1, "SpecifiedNumberOfPulses" },
-{ 0x300A, 0x0134, 0, VR::DS, VM::M1, "CumulativeMetersetWeight" },
-{ 0x6012, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0507[] = {
-{ 0x6012, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0508[] = {
-{ 0x0018, 0x11A2, 0, VR::DS, VM::M1, "CompressionForce" },
-{ 0x0018, 0x7024, 0, VR::CS, VM::M1, "DetectorActiveShape" },
-{ 0x0028, 0x3110, 0, VR::SQ, VM::M1, "SoftcopyVOILUTSequence" },
-{ 0x3008, 0x0130, 0, VR::SQ, VM::M1, "RecordedChannelSequence" },
-{ 0x6014, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0509[] = {
-{ 0x6014, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0510[] = {
-{ 0x0018, 0x11A0, 0, VR::DS, VM::M1, "BodyPartThickness" },
-{ 0x0018, 0x7026, 0, VR::DS, VM::M1T2, "DetectorActiveDimensions" },
-{ 0x3008, 0x0132, 0, VR::DS, VM::M1, "SpecifiedChannelTotalTime" },
-{ 0x300A, 0x0130, 0, VR::DS, VM::M1, "SourceToSurfaceDistance" },
-{ 0x6016, 0x0069, 1, VR::US, VM::M1, "OverlayBitsGrouped12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0511[] = {
-{ 0x6016, 0x0068, 1, VR::US, VM::M1, "OverlayRepeatInterval12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0512[] = {
-{ 0x0008, 0x9459, 0, VR::FL, VM::M1, "RecommendedDisplayFrameRateInFloat" },
-{ 0x0018, 0x1251, 0, VR::SH, VM::M1, "TransmitCoilName" },
-{ 0x0018, 0x9059, 0, VR::CS, VM::M1, "Decoupling" },
-{ 0x0018, 0x9449, 0, VR::FL, VM::M1, "BeamAngle" },
-{ 0x0070, 0x0278, 0, VR::CS, VM::M1, "ShowTickLabel" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0513[] = {
-{ 0x0008, 0x0201, 0, VR::SH, VM::M1, "TimezoneOffsetFromUTC" },
-{ 0x0008, 0x9458, 0, VR::SQ, VM::M1, "FrameDisplaySequence" },
-{ 0x0018, 0x1250, 0, VR::SH, VM::M1, "ReceiveCoilName" },
-{ 0x0018, 0x9058, 0, VR::US, VM::M1, "MRAcquisitionFrequencyEncodingSteps" },
-{ 0x0028, 0x9478, 0, VR::FL, VM::M1, "MaskVisibilityPercentage" },
-{ 0x0070, 0x0279, 0, VR::CS, VM::M1, "TickLabelAlignment" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0514[] = {
-{ 0x0010, 0x2298, 0, VR::CS, VM::M1, "ResponsiblePersonRole" },
-{ 0x0028, 0x0A02, 0, VR::CS, VM::M1, "PixelSpacingCalibrationType" },
-{ 0x003A, 0x0230, 0, VR::FL, VM::M1, "WaveformDataDisplayScale" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0515[] = {
-{ 0x0010, 0x2299, 0, VR::LO, VM::M1, "ResponsibleOrganization" },
-{ 0x003A, 0x0231, 0, VR::US, VM::M3, "WaveformDisplayBackgroundCIELabValue" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0516[] = {
-{ 0x0028, 0x0A04, 0, VR::LO, VM::M1, "PixelSpacingCalibrationDescription" },
-{ 0x4008, 0x0300, 1, VR::ST, VM::M1, "Impressions" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0517[] = {
-{ 0x0074, 0x1238, 0, VR::LT, VM::M1, "ReasonForCancellation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0518[] = {
-{ 0x0046, 0x0248, 0, VR::CS, VM::M1, "CornealPointEstimated" },
-{ 0x0068, 0x63E0, 0, VR::SQ, VM::M1, "MatingFeatureSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0519[] = {
-{ 0x0046, 0x0249, 0, VR::FL, VM::M1, "AxialPower" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0520[] = {
-{ 0x0010, 0x2292, 0, VR::LO, VM::M1, "PatientBreedDescription" },
-{ 0x0018, 0x9051, 0, VR::CS, VM::M1, "TransmitCoilType" },
-{ 0x0018, 0x9441, 0, VR::US, VM::M1, "RadiusOfCircularExposureControlSensingRegion" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0521[] = {
-{ 0x0010, 0x2293, 0, VR::SQ, VM::M1, "PatientBreedCodeSequence" },
-{ 0x0018, 0x9050, 0, VR::LO, VM::M1, "TransmitCoilManufacturerName" },
-{ 0x0018, 0x9440, 0, VR::SS, VM::M2, "CenterOfCircularExposureControlSensingRegion" },
-{ 0x0022, 0x1262, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthQualityMetricSequence" },
-{ 0x0040, 0x0241, 0, VR::AE, VM::M1, "PerformedStationAETitle" },
-{ 0x0046, 0x0247, 0, VR::FL, VM::M3, "CornealPointLocation" },
-{ 0x0074, 0x1234, 0, VR::AE, VM::M1, "ReceivingAE" },
-{ 0x300A, 0x02C8, 0, VR::DS, VM::M1, "FinalCumulativeTimeWeight" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0522[] = {
-{ 0x0018, 0x9053, 0, VR::FD, VM::M1T2, "ChemicalShiftReference" },
-{ 0x0040, 0x0242, 0, VR::SH, VM::M1, "PerformedStationName" },
-{ 0x0046, 0x0244, 0, VR::SQ, VM::M1, "SourceImageCornealProcessedDataSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0523[] = {
-{ 0x0018, 0x9052, 0, VR::FD, VM::M1T2, "SpectralWidth" },
-{ 0x0018, 0x9442, 0, VR::SS, VM::M2TN, "VerticesOfThePolygonalExposureControlSensingRegion" },
-{ 0x0022, 0x1260, 0, VR::SQ, VM::M1, "SelectedTotalOphthalmicAxialLengthSequence" },
-{ 0x0040, 0x0243, 0, VR::SH, VM::M1, "PerformedLocation" },
-{ 0x0070, 0x0273, 0, VR::FL, VM::M2, "RotationPoint" },
-{ 0x0074, 0x1236, 0, VR::AE, VM::M1, "RequestingAE" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0524[] = {
-{ 0x0010, 0x2296, 0, VR::SQ, VM::M1, "BreedRegistryCodeSequence" },
-{ 0x0040, 0x0244, 0, VR::DA, VM::M1, "PerformedProcedureStepStartDate" },
-{ 0x0046, 0x0242, 0, VR::CS, VM::M1, "CornealTopographyMapQualityEvaluation" },
-{ 0x0070, 0x0274, 0, VR::CS, VM::M1, "TickAlignment" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0525[] = {
-{ 0x0010, 0x2297, 0, VR::PN, VM::M1, "ResponsiblePerson" },
-{ 0x0018, 0x9054, 0, VR::CS, VM::M1, "VolumeLocalizationTechnique" },
-{ 0x0028, 0x9474, 0, VR::CS, VM::M1, "LUTFunction" },
-{ 0x0040, 0x0245, 0, VR::TM, VM::M1, "PerformedProcedureStepStartTime" },
-{ 0x0054, 0x1210, 0, VR::DS, VM::M1, "CoincidenceWindowWidth" },
-{ 0x0074, 0x1230, 0, VR::LO, VM::M1, "DeletionLock" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0526[] = {
-{ 0x0010, 0x2294, 0, VR::SQ, VM::M1, "BreedRegistrationSequence" },
-{ 0x0018, 0x9447, 0, VR::FL, VM::M1, "ColumnAngulationPatient" },
-{ 0x0022, 0x1265, 1, VR::SQ, VM::M1, "OphthalmicAxialLengthQualityMetricTypeCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0527[] = {
-{ 0x0010, 0x2295, 0, VR::LO, VM::M1, "BreedRegistrationNumber" },
-{ 0x7FE0, 0x0010, 0, VR::OX, VM::M1, "PixelData" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0528[] = {
-{ 0x0018, 0x9049, 0, VR::SQ, VM::M1, "MRTransmitCoilSequence" },
-{ 0x0020, 0x9071, 0, VR::SQ, VM::M1, "FrameAnatomySequence" },
-{ 0x003A, 0x0222, 0, VR::DS, VM::M1, "NotchFilterFrequency" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0529[] = {
-{ 0x0008, 0x1250, 0, VR::SQ, VM::M1, "RelatedSeriesSequence" },
-{ 0x0018, 0x1240, 1, VR::IS, VM::M1TN, "UpperLowerPixelValues" },
-{ 0x0018, 0x9048, 0, VR::CS, VM::M1, "MultiCoilElementUsed" },
-{ 0x003A, 0x0223, 0, VR::DS, VM::M1, "NotchFilterBandwidth" },
-{ 0x300A, 0x02D0, 0, VR::SQ, VM::M1, "BrachyControlPointSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0530[] = {
-{ 0x0018, 0x1243, 0, VR::IS, VM::M1, "CountRate" },
-{ 0x003A, 0x0220, 0, VR::DS, VM::M1, "FilterLowFrequency" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0531[] = {
-{ 0x0018, 0x1242, 0, VR::IS, VM::M1, "ActualFrameDuration" },
-{ 0x0020, 0x9072, 0, VR::CS, VM::M1, "FrameLaterality" },
-{ 0x003A, 0x0221, 0, VR::DS, VM::M1, "FilterHighFrequency" },
-{ 0x300A, 0x02D2, 0, VR::DS, VM::M1, "ControlPointRelativePosition" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0533[] = {
-{ 0x0018, 0x1244, 0, VR::US, VM::M1, "PreferredPlaybackSequencing" },
-{ 0x300A, 0x02D4, 0, VR::DS, VM::M3, "ControlPoint3DPosition" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0534[] = {
-{ 0x0068, 0x63F0, 0, VR::US, VM::M1, "MatingFeatureID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0535[] = {
-{ 0x300A, 0x02D6, 0, VR::DS, VM::M1, "CumulativeTimeWeight" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0536[] = {
-{ 0x0010, 0x0200, 0, VR::CS, VM::M1, "QualityControlSubject" },
-{ 0x0018, 0x9041, 0, VR::LO, VM::M1, "ReceiveCoilManufacturerName" },
-{ 0x0018, 0x9451, 0, VR::SQ, VM::M1, "FrameDetectorParametersSequence" },
-{ 0x0022, 0x1273, 1, VR::LO, VM::M1, "OphthalmicAxialLengthQualityMetricTypeDescription" },
-{ 0x0040, 0x0250, 0, VR::DA, VM::M1, "PerformedProcedureStepEndDate" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0537[] = {
-{ 0x0010, 0x0201, 0, VR::SQ, VM::M1, "QualityControlSubjectTypeCodeSequence" },
-{ 0x0040, 0x0251, 0, VR::TM, VM::M1, "PerformedProcedureStepEndTime" },
-{ 0x0070, 0x0261, 0, VR::FL, VM::M1, "GapLength" },
-{ 0x0074, 0x1224, 0, VR::SQ, VM::M1, "ReplacedProcedureStepSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0538[] = {
-{ 0x0018, 0x9043, 0, VR::CS, VM::M1, "ReceiveCoilType" },
-{ 0x0040, 0x0252, 0, VR::CS, VM::M1, "PerformedProcedureStepStatus" },
-{ 0x0070, 0x0262, 0, VR::FL, VM::M1, "DiameterOfVisibility" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0539[] = {
-{ 0x0018, 0x9042, 0, VR::SQ, VM::M1, "MRReceiveCoilSequence" },
-{ 0x0018, 0x9452, 0, VR::FL, VM::M1, "CalculatedAnatomyThickness" },
-{ 0x0040, 0x0253, 0, VR::SH, VM::M1, "PerformedProcedureStepID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0540[] = {
-{ 0x0018, 0x9045, 0, VR::SQ, VM::M1, "MultiCoilDefinitionSequence" },
-{ 0x0018, 0x9455, 0, VR::SQ, VM::M1, "CalibrationSequence" },
-{ 0x0040, 0x0254, 0, VR::LO, VM::M1, "PerformedProcedureStepDescription" },
-{ 0x0046, 0x0252, 0, VR::FL, VM::M1, "RelativeElevation" },
-{ 0x0054, 0x1201, 0, VR::IS, VM::M2, "AxialMash" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0541[] = {
-{ 0x0018, 0x9044, 0, VR::CS, VM::M1, "QuadratureReceiveCoil" },
-{ 0x0040, 0x0255, 0, VR::LO, VM::M1, "PerformedProcedureTypeDescription" },
-{ 0x0046, 0x0253, 0, VR::FL, VM::M1, "CornealWavefront" },
-{ 0x0054, 0x1200, 0, VR::DS, VM::M1, "AxialAcceptance" },
-{ 0x0074, 0x1220, 1, VR::SQ, VM::M1, "RelatedProcedureStepSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0542[] = {
-{ 0x0018, 0x9047, 0, VR::SH, VM::M1, "MultiCoilElementName" },
-{ 0x0018, 0x9457, 0, VR::CS, VM::M1, "PlaneIdentification" },
-{ 0x0046, 0x0250, 0, VR::FL, VM::M1, "TangentialPower" },
-{ 0x0054, 0x1203, 0, VR::DS, VM::M2, "DetectorElementSize" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0543[] = {
-{ 0x0018, 0x9046, 0, VR::LO, VM::M1, "MultiCoilConfiguration" },
-{ 0x0018, 0x9456, 0, VR::SQ, VM::M1, "ObjectThicknessSequence" },
-{ 0x0046, 0x0251, 0, VR::FL, VM::M1, "RefractivePower" },
-{ 0x0054, 0x1202, 0, VR::IS, VM::M1, "TransverseMash" },
-{ 0x0074, 0x1222, 1, VR::LO, VM::M1, "ProcedureStepRelationshipType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0544[] = {
-{ 0x0018, 0x9079, 0, VR::FD, VM::M1TN, "InversionTimes" },
-{ 0x0018, 0x9469, 0, VR::FL, VM::M1, "TableHorizontalRotationAngle" },
-{ 0x0028, 0x0200, 1, VR::US, VM::M1, "ImageLocation" },
-{ 0x003A, 0x0212, 0, VR::DS, VM::M1, "ChannelSensitivityCorrectionFactor" },
-{ 0x0070, 0x0258, 0, VR::FL, VM::M1, "ShadowOpacity" },
-{ 0x300A, 0x02E1, 0, VR::CS, VM::M1, "CompensatorMountingPosition" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0545[] = {
-{ 0x0018, 0x9078, 0, VR::CS, VM::M1, "ParallelAcquisitionTechnique" },
-{ 0x0018, 0x9468, 0, VR::FL, VM::M1, "TableZPositionToIsocenter" },
-{ 0x0020, 0x9450, 0, VR::SQ, VM::M1, "PatientOrientationInFrameSequence" },
-{ 0x003A, 0x0213, 0, VR::DS, VM::M1, "ChannelBaseline" },
-{ 0x300A, 0x02E0, 0, VR::CS, VM::M1, "CompensatorDivergence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0546[] = {
-{ 0x0020, 0x9453, 0, VR::LO, VM::M1, "FrameLabel" },
-{ 0x003A, 0x0210, 0, VR::DS, VM::M1, "ChannelSensitivity" },
-{ 0x300A, 0x02E3, 0, VR::FL, VM::M1, "TotalCompensatorTrayWaterEquivalentThickness" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0547[] = {
-{ 0x003A, 0x0211, 0, VR::SQ, VM::M1, "ChannelSensitivityUnitsSequence" },
-{ 0x300A, 0x02E2, 0, VR::DS, VM::M1TN, "SourceToCompensatorDistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0548[] = {
-{ 0x300A, 0x02E5, 0, VR::FL, VM::M1, "CompensatorColumnOffset" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0549[] = {
-{ 0x300A, 0x02E4, 0, VR::FL, VM::M1, "IsocenterToCompensatorTrayDistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0550[] = {
-{ 0x003A, 0x0214, 0, VR::DS, VM::M1, "ChannelTimeSkew" },
-{ 0x0068, 0x63C0, 0, VR::US, VM::M1, "MatingFeatureSetID" },
-{ 0x300A, 0x02E7, 0, VR::FL, VM::M1, "CompensatorRelativeStoppingPowerRatio" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0551[] = {
-{ 0x003A, 0x0215, 0, VR::DS, VM::M1, "ChannelSampleSkew" },
-{ 0x300A, 0x02E6, 0, VR::FL, VM::M1TN, "IsocenterToCompensatorDistances" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0552[] = {
-{ 0x0018, 0x9461, 0, VR::FL, VM::M1T2, "FieldOfViewDimensionsInFloat" },
-{ 0x0020, 0x0200, 0, VR::UI, VM::M1, "SynchronizationFrameOfReferenceUID" },
-{ 0x003A, 0x021A, 0, VR::US, VM::M1, "WaveformBitsStored" },
-{ 0x0040, 0x0260, 0, VR::SQ, VM::M1, "PerformedProtocolCodeSequence" },
-{ 0x0070, 0x0250, 0, VR::CS, VM::M1, "Italic" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0553[] = {
-{ 0x0018, 0x9070, 0, VR::FD, VM::M1, "CardiacRRIntervalSpecified" },
-{ 0x0040, 0x0261, 0, VR::CS, VM::M1, "PerformedProtocolType" },
-{ 0x0070, 0x0251, 0, VR::US, VM::M3, "PatternOnColorCIELabValue" },
-{ 0x300A, 0x02E8, 0, VR::FL, VM::M1, "CompensatorMillingToolDiameter" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0554[] = {
-{ 0x0018, 0x9073, 0, VR::FD, VM::M1, "AcquisitionDuration" },
-{ 0x0018, 0x9463, 0, VR::FL, VM::M1, "PositionerIsocenterPrimaryAngle" },
-{ 0x003A, 0x0218, 0, VR::DS, VM::M1, "ChannelOffset" },
-{ 0x0070, 0x0252, 0, VR::US, VM::M3, "PatternOffColorCIELabValue" },
-{ 0x300A, 0x02EB, 0, VR::LT, VM::M1, "CompensatorDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0555[] = {
-{ 0x0018, 0x9462, 0, VR::SQ, VM::M1, "IsocenterReferenceSystemSequence" },
-{ 0x0070, 0x0253, 0, VR::FL, VM::M1, "LineThickness" },
-{ 0x0074, 0x1216, 0, VR::SQ, VM::M1, "UnifiedProcedureStepPerformedProcedureSequence" },
-{ 0x300A, 0x02EA, 0, VR::SQ, VM::M1, "IonRangeCompensatorSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0556[] = {
-{ 0x0018, 0x9075, 0, VR::CS, VM::M1, "DiffusionDirectionality" },
-{ 0x0018, 0x9465, 0, VR::FL, VM::M1, "PositionerIsocenterDetectorRotationAngle" },
-{ 0x0070, 0x0254, 0, VR::CS, VM::M1, "LineDashingStyle" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0557[] = {
-{ 0x0018, 0x9074, 0, VR::DT, VM::M1, "FrameAcquisitionDateTime" },
-{ 0x0018, 0x9464, 0, VR::FL, VM::M1, "PositionerIsocenterSecondaryAngle" },
-{ 0x0028, 0x9454, 0, VR::CS, VM::M1, "MaskSelectionMode" },
-{ 0x0070, 0x0255, 0, VR::UL, VM::M1, "LinePattern" },
-{ 0x0074, 0x1210, 0, VR::SQ, VM::M1, "ScheduledProcessingParametersSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0558[] = {
-{ 0x0018, 0x9077, 0, VR::CS, VM::M1, "ParallelAcquisition" },
-{ 0x0018, 0x9467, 0, VR::FL, VM::M1, "TableYPositionToIsocenter" },
-{ 0x0024, 0x0202, 0, VR::LO, VM::M1, "AlgorithmSource" },
-{ 0x0070, 0x0256, 0, VR::OB, VM::M1, "FillPattern" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0559[] = {
-{ 0x0018, 0x9076, 0, VR::SQ, VM::M1, "DiffusionGradientDirectionSequence" },
-{ 0x0018, 0x9466, 0, VR::FL, VM::M1, "TableXPositionToIsocenter" },
-{ 0x0070, 0x0257, 0, VR::CS, VM::M1, "FillMode" },
-{ 0x0074, 0x1212, 0, VR::SQ, VM::M1, "PerformedProcessingParametersSequence" },
-{ 0x7FE0, 0x0030, 1, VR::OW, VM::M1, "CoefficientsSDHN" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0560[] = {
-{ 0x0018, 0x1261, 0, VR::LO, VM::M1, "PhosphorType" },
-{ 0x0018, 0x9069, 0, VR::FD, VM::M1, "ParallelReductionFactorInPlane" },
-{ 0x003A, 0x0202, 0, VR::IS, VM::M1, "WaveformChannelNumber" },
-{ 0x0070, 0x0248, 0, VR::CS, VM::M1, "Underlined" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0561[] = {
-{ 0x0018, 0x1260, 0, VR::SH, VM::M1, "PlateType" },
-{ 0x003A, 0x0203, 0, VR::SH, VM::M1, "ChannelLabel" },
-{ 0x0070, 0x0249, 0, VR::CS, VM::M1, "Bold" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0562[] = {
-{ 0x003A, 0x0200, 0, VR::SQ, VM::M1, "ChannelDefinitionSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0566[] = {
-{ 0x0020, 0x9057, 0, VR::UL, VM::M1, "InStackPositionNumber" },
-{ 0x0068, 0x63D0, 0, VR::LO, VM::M1, "MatingFeatureSetLabel" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0567[] = {
-{ 0x0020, 0x9056, 0, VR::SH, VM::M1, "StackID" },
-{ 0x0028, 0x7FE0, 0, VR::UT, VM::M1, "PixelDataProviderURL" },
-{ 0x003A, 0x0205, 0, VR::CS, VM::M1TN, "ChannelStatus" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0568[] = {
-{ 0x0018, 0x9061, 0, VR::FD, VM::M1T2, "DecouplingFrequency" },
-{ 0x0018, 0x9471, 0, VR::FL, VM::M1, "TableCradleTiltAngle" },
-{ 0x003A, 0x020A, 0, VR::SQ, VM::M1, "SourceWaveformSequence" },
-{ 0x0040, 0x0270, 0, VR::SQ, VM::M1, "ScheduledStepAttributesSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0569[] = {
-{ 0x0008, 0x9460, 0, VR::CS, VM::M1, "SkipFrameRangeFlag" },
-{ 0x0018, 0x9060, 0, VR::CS, VM::M1T2, "DecoupledNucleus" },
-{ 0x0018, 0x9470, 0, VR::FL, VM::M1, "TableHeadTiltAngle" },
-{ 0x0070, 0x0241, 0, VR::US, VM::M3, "TextColorCIELabValue" },
-{ 0x0074, 0x1204, 0, VR::LO, VM::M1, "ProcedureStepLabel" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0570[] = {
-{ 0x0018, 0x9063, 0, VR::FD, VM::M1T2, "DecouplingChemicalShiftReference" },
-{ 0x0018, 0x9473, 0, VR::FL, VM::M1, "AcquiredImageAreaDoseProduct" },
-{ 0x0028, 0x9443, 0, VR::SQ, VM::M1, "FramePixelDataPropertiesSequence" },
-{ 0x003A, 0x0208, 0, VR::SQ, VM::M1, "ChannelSourceSequence" },
-{ 0x0070, 0x0242, 0, VR::CS, VM::M1, "HorizontalAlignment" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0571[] = {
-{ 0x0018, 0x9062, 0, VR::CS, VM::M1, "DecouplingMethod" },
-{ 0x0018, 0x9472, 0, VR::SQ, VM::M1, "FrameDisplayShutterSequence" },
-{ 0x0022, 0x1250, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthSelectionMethodCodeSequence" },
-{ 0x003A, 0x0209, 0, VR::SQ, VM::M1, "ChannelSourceModifiersSequence" },
-{ 0x0070, 0x0243, 0, VR::CS, VM::M1, "VerticalAlignment" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0572[] = {
-{ 0x0018, 0x9065, 0, VR::CS, VM::M1T2, "TimeDomainFiltering" },
-{ 0x0022, 0x1257, 0, VR::SQ, VM::M1, "SelectedSegmentalOphthalmicAxialLengthSequence" },
-{ 0x0028, 0x9445, 0, VR::FL, VM::M1, "GeometricMaximumDistortion" },
-{ 0x0070, 0x0244, 0, VR::CS, VM::M1, "ShadowStyle" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0573[] = {
-{ 0x0018, 0x9064, 0, VR::CS, VM::M1, "KSpaceFiltering" },
-{ 0x0018, 0x9474, 0, VR::CS, VM::M1, "CArmPositionerTabletopRelationship" },
-{ 0x0028, 0x9444, 0, VR::CS, VM::M1, "GeometricalProperties" },
-{ 0x0040, 0x0275, 0, VR::SQ, VM::M1, "RequestAttributesSequence" },
-{ 0x0054, 0x1220, 0, VR::CS, VM::M1TN, "SecondaryCountsType" },
-{ 0x0070, 0x0245, 0, VR::FL, VM::M1, "ShadowOffsetX" },
-{ 0x0074, 0x1200, 0, VR::CS, VM::M1, "ScheduledProcedureStepPriority" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0574[] = {
-{ 0x0018, 0x9067, 0, VR::CS, VM::M1, "BaselineCorrection" },
-{ 0x0018, 0x9477, 0, VR::SQ, VM::M1, "IrradiationEventIdentificationSequence" },
-{ 0x0022, 0x1255, 0, VR::SQ, VM::M1, "OpticalSelectedOphthalmicAxialLengthSequence" },
-{ 0x003A, 0x020C, 0, VR::LO, VM::M1, "ChannelDerivationDescription" },
-{ 0x0070, 0x0246, 0, VR::FL, VM::M1, "ShadowOffsetY" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0575[] = {
-{ 0x0018, 0x9066, 0, VR::US, VM::M1T2, "NumberOfZeroFills" },
-{ 0x0018, 0x9476, 0, VR::SQ, VM::M1, "XRayGeometrySequence" },
-{ 0x0028, 0x9446, 0, VR::CS, VM::M1TN, "ImageProcessingApplied" },
-{ 0x0070, 0x0247, 0, VR::US, VM::M3, "ShadowColorCIELabValue" },
-{ 0x0074, 0x1202, 0, VR::LO, VM::M1, "WorklistLabel" },
-{ 0x7FE0, 0x0020, 1, VR::OW, VM::M1, "CoefficientsSDVN" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0576[] = {
-{ 0x0008, 0x1200, 0, VR::SQ, VM::M1, "StudiesContainingOtherReferencedInstancesSequence" },
-{ 0x0018, 0x1210, 0, VR::SH, VM::M1TN, "ConvolutionKernel" },
-{ 0x0018, 0x1600, 0, VR::CS, VM::M1T3, "ShutterShape" },
-{ 0x0018, 0x9018, 0, VR::CS, VM::M1, "EchoPlanarPulseSequence" },
-{ 0x0040, 0xA493, 0, VR::CS, VM::M1, "VerificationFlag" },
-{ 0x0048, 0x0201, 0, VR::US, VM::M2, "TopLeftHandCornerOfLocalizerArea" },
-{ 0x300A, 0x0280, 0, VR::SQ, VM::M1, "ChannelSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0577[] = {
-{ 0x0018, 0x9019, 0, VR::FD, VM::M1, "TagAngleFirstAxis" },
-{ 0x0028, 0x1221, 0, VR::OW, VM::M1, "SegmentedRedPaletteColorLookupTableData" },
-{ 0x0040, 0xA082, 0, VR::DT, VM::M1, "ParticipationDateTime" },
-{ 0x0040, 0xA492, 0, VR::LO, VM::M1, "CompletionFlagDescription" },
-{ 0x0048, 0x0200, 0, VR::SQ, VM::M1, "ReferencedImageNavigationSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0578[] = {
-{ 0x0018, 0x1602, 0, VR::IS, VM::M1, "ShutterLeftVerticalEdge" },
-{ 0x0028, 0x1222, 0, VR::OW, VM::M1, "SegmentedGreenPaletteColorLookupTableData" },
-{ 0x0040, 0xA491, 0, VR::CS, VM::M1, "CompletionFlag" },
-{ 0x300A, 0x0282, 0, VR::IS, VM::M1, "ChannelNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0579[] = {
-{ 0x0028, 0x1223, 0, VR::OW, VM::M1, "SegmentedBluePaletteColorLookupTableData" },
-{ 0x0040, 0xA080, 0, VR::CS, VM::M1, "ParticipationType" },
-{ 0x0048, 0x0202, 0, VR::US, VM::M2, "BottomRightHandCornerOfLocalizerArea" },
-{ 0x0068, 0x63A4, 0, VR::SQ, VM::M1, "CoatingMaterialsCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0580[] = {
-{ 0x0018, 0x1604, 0, VR::IS, VM::M1, "ShutterRightVerticalEdge" },
-{ 0x300A, 0x0284, 0, VR::DS, VM::M1, "ChannelLength" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0581[] = {
-{ 0x0040, 0xA496, 0, VR::CS, VM::M1, "PreliminaryFlag" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0582[] = {
-{ 0x0018, 0x1606, 0, VR::IS, VM::M1, "ShutterUpperHorizontalEdge" },
-{ 0x0040, 0xA085, 1, VR::SQ, VM::M1, "ProcedureIdentifierCodeSequenceTrial" },
-{ 0x0048, 0x0207, 0, VR::SQ, VM::M1, "OpticalPathIdentificationSequence" },
-{ 0x300A, 0x0286, 0, VR::DS, VM::M1, "ChannelTotalTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0583[] = {
-{ 0x0040, 0xA084, 0, VR::CS, VM::M1, "ObserverType" },
-{ 0x0040, 0xA494, 0, VR::CS, VM::M1, "ArchiveRequested" },
-{ 0x0046, 0x0208, 0, VR::IS, VM::M2T2N, "VerticesOfTheOutlineOfPupil" },
-{ 0x0068, 0x63A0, 0, VR::SQ, VM::M1, "MaterialsCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0584[] = {
-{ 0x0008, 0x9410, 0, VR::SQ, VM::M1, "ReferencedOtherPlaneSequence" },
-{ 0x0018, 0x1608, 0, VR::IS, VM::M1, "ShutterLowerHorizontalEdge" },
-{ 0x0018, 0x9010, 0, VR::CS, VM::M1, "FlowCompensation" },
-{ 0x0046, 0x0207, 0, VR::SQ, VM::M1, "CornealTopographyMapTypeCodeSequence" },
-{ 0x0070, 0x0231, 0, VR::SQ, VM::M1, "TextStyleSequence" },
-{ 0x300A, 0x0288, 0, VR::CS, VM::M1, "SourceMovementType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0585[] = {
-{ 0x0018, 0x9011, 0, VR::CS, VM::M1, "MultipleSpinEcho" },
-{ 0x0018, 0x9401, 0, VR::SQ, VM::M1, "ProjectionPixelCalibrationSequence" },
-{ 0x0040, 0x0610, 0, VR::SQ, VM::M1, "SpecimenPreparationSequence" },
-{ 0x0070, 0x0230, 0, VR::FD, VM::M1, "RotationAngle" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0586[] = {
-{ 0x0018, 0x9012, 0, VR::CS, VM::M1, "MultiPlanarExcitation" },
-{ 0x0018, 0x9402, 0, VR::FL, VM::M1, "DistanceSourceToIsocenter" },
-{ 0x0022, 0x1220, 0, VR::SQ, VM::M1, "UltrasoundOphthalmicAxialLengthMeasurementsSequence" },
-{ 0x0040, 0xA089, 1, VR::OB, VM::M1, "ObjectDirectoryBinaryIdentifierTrial" },
-{ 0x0046, 0x0205, 0, VR::FL, VM::M1, "EquivalentPupilRadius" },
-{ 0x0070, 0x0233, 0, VR::SQ, VM::M1, "FillStyleSequence" },
-{ 0x300A, 0x028A, 0, VR::IS, VM::M1, "NumberOfPulses" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0587[] = {
-{ 0x0018, 0x9403, 0, VR::FL, VM::M1, "DistanceObjectToTableTop" },
-{ 0x0040, 0x0612, 0, VR::SQ, VM::M1, "SpecimenPreparationStepContentItemSequence" },
-{ 0x0040, 0xA088, 0, VR::SQ, VM::M1, "VerifyingObserverIdentificationCodeSequence" },
-{ 0x0046, 0x0204, 0, VR::FL, VM::M1, "PupilCentroidYCoordinate" },
-{ 0x0068, 0x63AC, 0, VR::SQ, VM::M1, "FixationMethodCodeSequence" },
-{ 0x0070, 0x0232, 0, VR::SQ, VM::M1, "LineStyleSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0588[] = {
-{ 0x0004, 0x1200, 0, VR::UL, VM::M1, "OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity" },
-{ 0x0018, 0x9014, 0, VR::CS, VM::M1, "PhaseContrast" },
-{ 0x0018, 0x9404, 0, VR::FL, VM::M2, "ObjectPixelSpacingInCenterOfBeam" },
-{ 0x0046, 0x0203, 0, VR::FL, VM::M1, "PupilCentroidXCoordinate" },
-{ 0x0054, 0x0211, 0, VR::US, VM::M1, "NumberOfTriggersInPhase" },
-{ 0x300A, 0x028C, 0, VR::DS, VM::M1, "PulseRepetitionInterval" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0589[] = {
-{ 0x0018, 0x9015, 0, VR::CS, VM::M1, "TimeOfFlightContrast" },
-{ 0x0018, 0x9405, 0, VR::SQ, VM::M1, "PositionerPositionSequence" },
-{ 0x0046, 0x0202, 0, VR::FL, VM::M2, "CornealVertexLocation" },
-{ 0x0054, 0x0210, 0, VR::IS, VM::M1TN, "TriggerVector" },
-{ 0x0070, 0x0234, 0, VR::SQ, VM::M1, "GraphicGroupSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0590[] = {
-{ 0x0004, 0x1202, 0, VR::UL, VM::M1, "OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity" },
-{ 0x0018, 0x9016, 0, VR::CS, VM::M1, "Spoiling" },
-{ 0x0018, 0x9406, 0, VR::SQ, VM::M1, "TablePositionSequence" },
-{ 0x0046, 0x0201, 0, VR::CS, VM::M1, "CornealTopographySurface" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0591[] = {
-{ 0x0008, 0x9007, 0, VR::CS, VM::M4, "FrameType" },
-{ 0x0018, 0x9017, 0, VR::CS, VM::M1, "SteadyStatePulseSequence" },
-{ 0x0018, 0x9407, 0, VR::SQ, VM::M1, "CollimatorShapeSequence" },
-{ 0x0022, 0x1225, 0, VR::SQ, VM::M1, "OpticalOphthalmicAxialLengthMeasurementsSequence" },
-{ 0x0068, 0x63A8, 0, VR::SQ, VM::M1, "ImplantTypeCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0592[] = {
-{ 0x0018, 0x1200, 0, VR::DA, VM::M1TN, "DateOfLastCalibration" },
-{ 0x0018, 0x1610, 0, VR::IS, VM::M2, "CenterOfCircularShutter" },
-{ 0x0018, 0x9008, 0, VR::CS, VM::M1, "EchoPulseSequence" },
-{ 0x0070, 0x0229, 0, VR::LO, VM::M1, "CSSFontName" },
-{ 0x300A, 0x0290, 0, VR::IS, VM::M1, "SourceApplicatorNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0593[] = {
-{ 0x0018, 0x1201, 0, VR::TM, VM::M1TN, "TimeOfLastCalibration" },
-{ 0x0018, 0x9009, 0, VR::CS, VM::M1, "InversionRecovery" },
-{ 0x0020, 0x9421, 0, VR::LO, VM::M1, "DimensionDescriptionLabel" },
-{ 0x0070, 0x0228, 0, VR::CS, VM::M1, "FontNameType" },
-{ 0x300A, 0x0291, 0, VR::SH, VM::M1, "SourceApplicatorID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0594[] = {
-{ 0x0018, 0x1612, 0, VR::IS, VM::M1, "RadiusOfCircularShutter" },
-{ 0x300A, 0x0292, 0, VR::CS, VM::M1, "SourceApplicatorType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0595[] = {
-{ 0x0040, 0xA090, 1, VR::SQ, VM::M1, "EquivalentCDADocumentSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0596[] = {
-{ 0x300A, 0x0294, 0, VR::LO, VM::M1, "SourceApplicatorName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0598[] = {
-{ 0x300A, 0x0296, 0, VR::DS, VM::M1, "SourceApplicatorLength" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0599[] = {
-{ 0x0046, 0x0218, 0, VR::SQ, VM::M1, "SimulatedKeratometricCylinderSequence" },
-{ 0x0068, 0x63B0, 0, VR::SQ, VM::M1, "MatingFeatureSetsSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0600[] = {
-{ 0x0018, 0x9410, 0, VR::CS, VM::M1, "PlanesInAcquisition" },
-{ 0x300A, 0x0298, 0, VR::LO, VM::M1, "SourceApplicatorManufacturer" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0601[] = {
-{ 0x0040, 0x0600, 0, VR::LO, VM::M1, "SpecimenShortDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0602[] = {
-{ 0x0018, 0x9412, 0, VR::SQ, VM::M1, "XAXRFFrameCharacteristicsSequence" },
-{ 0x0022, 0x1230, 0, VR::SQ, VM::M1, "UltrasoundSelectedOphthalmicAxialLengthSequence" },
-{ 0x0028, 0x9422, 0, VR::SQ, VM::M1, "PixelIntensityRelationshipLUTSequence" },
-{ 0x0046, 0x0215, 0, VR::SQ, VM::M1, "MinimumKeratometricSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0603[] = {
-{ 0x0040, 0x0602, 0, VR::UT, VM::M1, "SpecimenDetailedDescription" },
-{ 0x0048, 0x021A, 0, VR::SQ, VM::M1, "PlanePositionSlideSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0604[] = {
-{ 0x0004, 0x1600, 1, VR::UL, VM::M1, "NumberOfReferences" },
-{ 0x0018, 0x9004, 0, VR::CS, VM::M1, "ContentQualification" },
-{ 0x0046, 0x0213, 0, VR::FL, VM::M2, "MaximumCornealCurvatureLocation" },
-{ 0x300A, 0x029C, 0, VR::DS, VM::M1, "SourceApplicatorWallNominalThickness" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0605[] = {
-{ 0x0018, 0x9005, 0, VR::SH, VM::M1, "PulseSequenceName" },
-{ 0x0046, 0x0212, 0, VR::FL, VM::M1, "MaximumCornealCurvature" },
-{ 0x0054, 0x0200, 0, VR::DS, VM::M1, "StartAngle" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0606[] = {
-{ 0x0004, 0x1212, 0, VR::US, VM::M1, "FileSetConsistencyFlag" },
-{ 0x0018, 0x9006, 0, VR::SQ, VM::M1, "MRImagingModifierSequence" },
-{ 0x0046, 0x0211, 0, VR::SQ, VM::M1, "MaximumCornealCurvatureSequence" },
-{ 0x0048, 0x021F, 0, VR::SL, VM::M1, "RowPositionInTotalImagePixelMatrix" },
-{ 0x0070, 0x0227, 0, VR::LO, VM::M1, "FontName" },
-{ 0x300A, 0x029E, 0, VR::DS, VM::M1, "SourceApplicatorWallNominalTransmission" },
-{ 0x7FE0, 0x0040, 1, VR::OW, VM::M1, "CoefficientsSDDN" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0607[] = {
-{ 0x0018, 0x9417, 0, VR::SQ, VM::M1, "FrameAcquisitionSequence" },
-{ 0x0046, 0x0210, 0, VR::SQ, VM::M1, "CornealTopographyMappingNormalsSequence" },
-{ 0x0048, 0x021E, 0, VR::SL, VM::M1, "ColumnPositionInTotalImagePixelMatrix" },
-{ 0x0054, 0x0202, 0, VR::CS, VM::M1, "TypeOfDetectorMotion" },
-{ 0x0070, 0x0226, 0, VR::UL, VM::M1, "CompoundGraphicInstanceID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0608[] = {
-{ 0x0018, 0x1620, 0, VR::IS, VM::M2T2N, "VerticesOfThePolygonalShutter" },
-{ 0x0018, 0x9428, 0, VR::FL, VM::M1T2, "IntensifierActiveDimensions" },
-{ 0x0020, 0x1208, 0, VR::IS, VM::M1, "NumberOfStudyRelatedInstances" },
-{ 0x0028, 0x1200, 1, VR::OW, VM::M1, "GrayLookupTableData" },
-{ 0x300A, 0x02A0, 0, VR::DS, VM::M1, "SourceApplicatorStepSize" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0609[] = {
-{ 0x0018, 0x9429, 0, VR::FL, VM::M2, "PhysicalDetectorSize" },
-{ 0x0020, 0x1209, 0, VR::IS, VM::M1, "NumberOfSeriesRelatedInstances" },
-{ 0x0028, 0x1201, 0, VR::OW, VM::M1, "RedPaletteColorLookupTableData" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0610[] = {
-{ 0x0018, 0x1622, 0, VR::US, VM::M1, "ShutterPresentationValue" },
-{ 0x0028, 0x1202, 0, VR::OW, VM::M1, "GreenPaletteColorLookupTableData" },
-{ 0x300A, 0x02A2, 0, VR::IS, VM::M1, "TransferTubeNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0611[] = {
-{ 0x0018, 0x1623, 0, VR::US, VM::M1, "ShutterOverlayGroup" },
-{ 0x0028, 0x1203, 0, VR::OW, VM::M1, "BluePaletteColorLookupTableData" },
-{ 0x0072, 0x0218, 0, VR::US, VM::M1TN, "ReferenceDisplaySets" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0612[] = {
-{ 0x0018, 0x1624, 0, VR::US, VM::M3, "ShutterPresentationColorCIELabValue" },
-{ 0x0028, 0x1204, 0, VR::OW, VM::M1, "AlphaPaletteColorLookupTableData" },
-{ 0x300A, 0x02A4, 0, VR::DS, VM::M1, "TransferTubeLength" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0615[] = {
-{ 0x0068, 0x6380, 0, VR::LO, VM::M1, "SurfaceModelLabel" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0616[] = {
-{ 0x0018, 0x9030, 0, VR::FD, VM::M1, "TagSpacingFirstDimension" },
-{ 0x0018, 0x9420, 0, VR::CS, VM::M1, "XRayReceptorType" },
-{ 0x0018, 0x9810, 0, VR::XS, VM::M1, "ZeroVelocityPixelValue" },
-{ 0x0020, 0x1200, 0, VR::IS, VM::M1, "NumberOfPatientRelatedStudies" },
-{ 0x0046, 0x0227, 0, VR::FL, VM::M1, "AnalyzedArea" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0617[] = {
-{ 0x0028, 0x9001, 0, VR::UL, VM::M1, "DataPointRows" },
-{ 0x0028, 0x9411, 0, VR::FL, VM::M1, "DisplayFilterPercentage" },
-{ 0x0040, 0x0220, 0, VR::SQ, VM::M1, "ReferencedNonImageCompositeSOPInstanceSequence" },
-{ 0x0072, 0x0212, 0, VR::US, VM::M2TN, "DisplaySetScrollingGroup" },
-{ 0x0072, 0x0602, 0, VR::CS, VM::M1, "SortByCategory" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0618[] = {
-{ 0x0018, 0x9032, 0, VR::CS, VM::M1, "GeometryOfKSpaceTraversal" },
-{ 0x0020, 0x1202, 0, VR::IS, VM::M1, "NumberOfPatientRelatedSeries" },
-{ 0x0028, 0x9002, 0, VR::UL, VM::M1, "DataPointColumns" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0619[] = {
-{ 0x0018, 0x9033, 0, VR::CS, VM::M1, "SegmentedKSpaceTraversal" },
-{ 0x0018, 0x9423, 0, VR::LO, VM::M1, "AcquisitionProtocolName" },
-{ 0x0020, 0x0242, 0, VR::UI, VM::M1, "SOPInstanceUIDOfConcatenationSource" },
-{ 0x0028, 0x9003, 0, VR::CS, VM::M1, "SignalDomainColumns" },
-{ 0x0046, 0x0224, 0, VR::FL, VM::M1, "CornealISValue" },
-{ 0x0072, 0x0210, 0, VR::SQ, VM::M1, "SynchronizedScrollingSequence" },
-{ 0x0072, 0x0600, 0, VR::SQ, VM::M1, "SortingOperationsSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0620[] = {
-{ 0x0004, 0x1220, 0, VR::SQ, VM::M1, "DirectoryRecordSequence" },
-{ 0x0018, 0x9034, 0, VR::CS, VM::M1, "RectilinearPhaseEncodeReordering" },
-{ 0x0018, 0x9424, 0, VR::LT, VM::M1, "AcquisitionProtocolDescription" },
-{ 0x0020, 0x1204, 0, VR::IS, VM::M1, "NumberOfPatientRelatedInstances" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0621[] = {
-{ 0x0018, 0x9035, 0, VR::FD, VM::M1, "TagThickness" },
-{ 0x0018, 0x9425, 0, VR::CS, VM::M1, "ContrastBolusIngredientOpaque" },
-{ 0x0028, 0x9415, 0, VR::SQ, VM::M1, "FramePixelShiftSequence" },
-{ 0x0072, 0x0216, 0, VR::US, VM::M1, "NavigationDisplaySet" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0622[] = {
-{ 0x0018, 0x9036, 0, VR::CS, VM::M1, "PartialFourierDirection" },
-{ 0x0018, 0x9426, 0, VR::FL, VM::M1, "DistanceReceptorPlaneToDetectorHousing" },
-{ 0x0020, 0x1206, 0, VR::IS, VM::M1, "NumberOfStudyRelatedSeries" },
-{ 0x0028, 0x9416, 0, VR::US, VM::M1, "SubtractionItemID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0623[] = {
-{ 0x0018, 0x9037, 0, VR::CS, VM::M1, "CardiacSynchronizationTechnique" },
-{ 0x0018, 0x9427, 0, VR::CS, VM::M1, "IntensifierActiveShape" },
-{ 0x0046, 0x0220, 0, VR::FL, VM::M1, "AverageCornealPower" },
-{ 0x0072, 0x0214, 0, VR::SQ, VM::M1, "NavigationIndicatorSequence" },
-{ 0x0072, 0x0604, 0, VR::CS, VM::M1, "SortingDirection" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0624[] = {
-{ 0x0018, 0x9028, 0, VR::CS, VM::M1, "Tagging" },
-{ 0x0018, 0x9438, 0, VR::SS, VM::M1, "ExposureControlSensingRegionUpperHorizontalEdge" },
-{ 0x0018, 0x9808, 0, VR::CS, VM::M1, "DataType" },
-{ 0x0070, 0x0209, 0, VR::SQ, VM::M1, "CompoundGraphicSequence" },
-{ 0x300A, 0x02B0, 0, VR::SQ, VM::M1, "ChannelShieldSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0625[] = {
-{ 0x0010, 0x9431, 0, VR::FL, VM::M1, "ExaminedBodyThickness" },
-{ 0x0018, 0x9029, 0, VR::CS, VM::M1, "OversamplingPhase" },
-{ 0x0018, 0x9439, 0, VR::SS, VM::M1, "ExposureControlSensingRegionLowerHorizontalEdge" },
-{ 0x0018, 0x9809, 0, VR::SQ, VM::M1, "TransducerScanPatternCodeSequence" },
-{ 0x0028, 0x1211, 1, VR::OW, VM::M1, "LargeRedPaletteColorLookupTableData" },
-{ 0x003A, 0x0242, 0, VR::SQ, VM::M1, "ChannelDisplaySequence" },
-{ 0x0070, 0x0208, 0, VR::ST, VM::M1, "GraphicGroupDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0626[] = {
-{ 0x0028, 0x1212, 1, VR::OW, VM::M1, "LargeGreenPaletteColorLookupTableData" },
-{ 0x003A, 0x0241, 0, VR::US, VM::M1, "PresentationGroupNumber" },
-{ 0x300A, 0x02B2, 0, VR::IS, VM::M1, "ChannelShieldNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0627[] = {
-{ 0x0018, 0x980B, 0, VR::CS, VM::M1, "AliasedDataType" },
-{ 0x0028, 0x1213, 1, VR::OW, VM::M1, "LargeBluePaletteColorLookupTableData" },
-{ 0x003A, 0x0240, 0, VR::SQ, VM::M1, "WaveformPresentationGroupSequence" },
-{ 0x0040, 0xA0B0, 0, VR::US, VM::M2T2N, "ReferencedWaveformChannels" },
-{ 0x0072, 0x0208, 0, VR::CS, VM::M1, "PartialDataDisplayHandling" },
-{ 0x300A, 0x02B3, 0, VR::SH, VM::M1, "ChannelShieldID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0628[] = {
-{ 0x0018, 0x980C, 0, VR::CS, VM::M1, "PositionMeasuringDeviceUsed" },
-{ 0x0028, 0x1214, 1, VR::UI, VM::M1, "LargePaletteColorLookupTableUID" },
-{ 0x003A, 0x0247, 0, VR::FL, VM::M1, "FractionalChannelDisplayScale" },
-{ 0x300A, 0x02B4, 0, VR::LO, VM::M1, "ChannelShieldName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0629[] = {
-{ 0x0018, 0x980D, 0, VR::SQ, VM::M1, "TransducerGeometryCodeSequence" },
-{ 0x003A, 0x0246, 0, VR::CS, VM::M1, "DisplayShadingFlag" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0630[] = {
-{ 0x0018, 0x980E, 0, VR::SQ, VM::M1, "TransducerBeamSteeringCodeSequence" },
-{ 0x003A, 0x0245, 0, VR::FL, VM::M1, "ChannelPosition" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0631[] = {
-{ 0x0018, 0x980F, 0, VR::SQ, VM::M1, "TransducerApplicationCodeSequence" },
-{ 0x003A, 0x0244, 0, VR::US, VM::M3, "ChannelRecommendedDisplayCIELabValue" },
-{ 0x0046, 0x0238, 0, VR::FL, VM::M1, "DecimalPotentialVisualAcuity" },
-{ 0x0068, 0x6390, 0, VR::FD, VM::M1, "SurfaceModelScalingFactor" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0632[] = {
-{ 0x0018, 0x9020, 0, VR::CS, VM::M1, "MagnetizationTransfer" },
-{ 0x0018, 0x9430, 0, VR::FL, VM::M2, "PositionOfIsocenterProjection" },
-{ 0x0022, 0x1212, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthMeasurementsLengthSummationSequence" },
-{ 0x0072, 0x0203, 0, VR::LO, VM::M1, "DisplaySetLabel" },
-{ 0x0074, 0x1244, 0, VR::CS, VM::M1, "SubscriptionListStatus" },
-{ 0x300A, 0x02B8, 0, VR::DS, VM::M1, "ChannelShieldNominalThickness" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0633[] = {
-{ 0x0018, 0x9021, 0, VR::CS, VM::M1, "T2Preparation" },
-{ 0x0018, 0x9801, 0, VR::FD, VM::M1TN, "DepthsOfFocus" },
-{ 0x0040, 0x0620, 0, VR::SQ, VM::M1, "SpecimenLocalizationContentItemSequence" },
-{ 0x0046, 0x0236, 0, VR::FL, VM::M1, "KeratoconusPredictionIndex" },
-{ 0x0072, 0x0202, 0, VR::US, VM::M1, "DisplaySetNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0634[] = {
-{ 0x0018, 0x9022, 0, VR::CS, VM::M1, "BloodSignalNulling" },
-{ 0x0018, 0x9432, 0, VR::SQ, VM::M1, "FieldOfViewSequence" },
-{ 0x0022, 0x1210, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthMeasurementsTotalLengthSequence" },
-{ 0x0074, 0x1246, 0, VR::CS, VM::M1, "UnifiedProcedureStepListStatus" },
-{ 0x300A, 0x02BA, 0, VR::DS, VM::M1, "ChannelShieldNominalTransmission" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0635[] = {
-{ 0x0018, 0x9433, 0, VR::LO, VM::M1, "FieldOfViewDescription" },
-{ 0x0018, 0x9803, 0, VR::SQ, VM::M1, "ExcludedIntervalsSequence" },
-{ 0x0022, 0x1211, 0, VR::SQ, VM::M1, "OphthalmicAxialLengthMeasurementsSegmentalLengthSequence" },
-{ 0x003A, 0x0248, 0, VR::FL, VM::M1, "AbsoluteChannelDisplayScale" },
-{ 0x0046, 0x0234, 0, VR::FL, VM::M1, "CornealEccentricityIndex" },
-{ 0x0072, 0x0200, 0, VR::SQ, VM::M1, "DisplaySetsSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0636[] = {
-{ 0x0018, 0x9024, 0, VR::CS, VM::M1, "SaturationRecovery" },
-{ 0x0018, 0x9434, 0, VR::SQ, VM::M1, "ExposureControlSensingRegionsSequence" },
-{ 0x0018, 0x9804, 0, VR::DT, VM::M1, "ExclusionStartDateTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0637[] = {
-{ 0x0018, 0x9025, 0, VR::CS, VM::M1, "SpectrallySelectedSuppression" },
-{ 0x0018, 0x9435, 0, VR::CS, VM::M1, "ExposureControlSensingRegionShape" },
-{ 0x0018, 0x9805, 0, VR::FD, VM::M1, "ExclusionDuration" },
-{ 0x0046, 0x0232, 0, VR::FL, VM::M1, "SurfaceAsymmetryIndex" },
-{ 0x0054, 0x0220, 0, VR::SQ, VM::M1, "ViewCodeSequence" },
-{ 0x0072, 0x0206, 0, VR::LO, VM::M1, "DisplaySetPresentationGroupDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0638[] = {
-{ 0x0018, 0x9026, 0, VR::CS, VM::M1, "SpectrallySelectedExcitation" },
-{ 0x0018, 0x9436, 0, VR::SS, VM::M1, "ExposureControlSensingRegionLeftVerticalEdge" },
-{ 0x0018, 0x9806, 0, VR::SQ, VM::M1, "USImageDescriptionSequence" },
-{ 0x0070, 0x0207, 0, VR::LO, VM::M1, "GraphicGroupLabel" },
-{ 0x0074, 0x1242, 0, VR::CS, VM::M1, "SCPStatus" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0639[] = {
-{ 0x0018, 0x9027, 0, VR::CS, VM::M1, "SpatialPresaturation" },
-{ 0x0018, 0x9437, 0, VR::SS, VM::M1, "ExposureControlSensingRegionRightVerticalEdge" },
-{ 0x0018, 0x9807, 0, VR::SQ, VM::M1, "ImageDataTypeSequence" },
-{ 0x0046, 0x0230, 0, VR::FL, VM::M1, "SurfaceRegularityIndex" },
-{ 0x0054, 0x0222, 0, VR::SQ, VM::M1, "ViewModifierCodeSequence" },
-{ 0x0072, 0x0204, 0, VR::US, VM::M1, "DisplaySetPresentationGroup" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0640[] = {
-{ 0x0008, 0x2200, 1, VR::CS, VM::M1, "TransducerPosition" },
-{ 0x0040, 0xA040, 0, VR::CS, VM::M1, "ValueType" },
-{ 0x2200, 0x0008, 0, VR::CS, VM::M1, "IncludeNonDICOMObjects" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0641[] = {
-{ 0x2200, 0x0009, 0, VR::CS, VM::M1, "IncludeDisplayApplication" },
-{ 0x3008, 0x0240, 0, VR::SQ, VM::M1, "FractionStatusSummarySequence" },
-{ 0x300A, 0x0242, 0, VR::SH, VM::M1, "TemplateType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0642[] = {
-{ 0x0088, 0x0200, 0, VR::SQ, VM::M1, "IconImageSequence" },
-{ 0x2200, 0x000A, 0, VR::CS, VM::M1, "PreserveCompositeInstancesAfterMediaCreation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0643[] = {
-{ 0x0040, 0xA043, 0, VR::SQ, VM::M1, "ConceptNameCodeSequence" },
-{ 0x2200, 0x000B, 0, VR::US, VM::M1, "TotalNumberOfPiecesOfMediaCreated" },
-{ 0x300A, 0x0240, 0, VR::IS, VM::M1, "TemplateNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0644[] = {
-{ 0x0008, 0x2204, 1, VR::CS, VM::M1, "TransducerOrientation" },
-{ 0x0068, 0x6360, 0, VR::SQ, VM::M1, "SurfaceModelDescriptionSequence" },
-{ 0x2200, 0x000C, 0, VR::LO, VM::M1, "RequestedMediaApplicationProfile" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0645[] = {
-{ 0x2200, 0x000D, 0, VR::SQ, VM::M1, "ReferencedStorageMediaSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0646[] = {
-{ 0x2200, 0x000E, 0, VR::AT, VM::M1TN, "FailureAttributes" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0647[] = {
-{ 0x0040, 0xA047, 1, VR::LO, VM::M1, "MeasurementPrecisionDescriptionTrial" },
-{ 0x2200, 0x000F, 0, VR::CS, VM::M1, "AllowLossyCompression" },
-{ 0x300A, 0x0244, 0, VR::LO, VM::M1, "TemplateName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0648[] = {
-{ 0x0008, 0x2208, 1, VR::CS, VM::M1, "AnatomicStructure" },
-{ 0x0010, 0x2210, 0, VR::CS, VM::M1, "AnatomicalOrientationType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0649[] = {
-{ 0x2200, 0x0001, 0, VR::CS, VM::M1, "LabelUsingInformationExtractedFromInstances" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0650[] = {
-{ 0x2200, 0x0002, 0, VR::UT, VM::M1, "LabelText" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0651[] = {
-{ 0x2200, 0x0003, 0, VR::CS, VM::M1, "LabelStyleSelection" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0652[] = {
-{ 0x0014, 0x2210, 2, VR::OB, VM::M1, "CoordinateSystemAxisValues" },
-{ 0x2200, 0x0004, 0, VR::LT, VM::M1, "MediaDisposition" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0653[] = {
-{ 0x2200, 0x0005, 0, VR::LT, VM::M1, "BarcodeValue" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0654[] = {
-{ 0x2200, 0x0006, 0, VR::CS, VM::M1, "BarcodeSymbology" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0655[] = {
-{ 0x2200, 0x0007, 0, VR::CS, VM::M1, "AllowMediaSplitting" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0656[] = {
-{ 0x0014, 0x220C, 2, VR::CS, VM::M1, "CoordinateSystemAxisType" },
-{ 0x0040, 0xA050, 0, VR::CS, VM::M1, "ContinuityOfContent" },
-{ 0x3008, 0x0251, 0, VR::TM, VM::M1, "TreatmentTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0657[] = {
-{ 0x3008, 0x0250, 0, VR::DA, VM::M1, "TreatmentDate" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0658[] = {
-{ 0x0014, 0x220E, 2, VR::CS, VM::M1, "CoordinateSystemAxisUnits" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0659[] = {
-{ 0x300A, 0x0250, 0, VR::DS, VM::M1, "TotalReferenceAirKerma" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0660[] = {
-{ 0x0014, 0x2208, 2, VR::CS, VM::M1, "CoordinateSystemDataSetMapping" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0661[] = {
-{ 0x0040, 0x9096, 0, VR::SQ, VM::M1, "RealWorldValueMappingSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0662[] = {
-{ 0x0014, 0x220A, 2, VR::IS, VM::M1, "CoordinateSystemAxisNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0663[] = {
-{ 0x0040, 0x9094, 0, VR::SQ, VM::M1, "ReferencedImageRealWorldValueMappingSequence" },
-{ 0x0040, 0xA057, 1, VR::CS, VM::M1TN, "UrgencyOrPriorityAlertsTrial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0664[] = {
-{ 0x0008, 0x2218, 0, VR::SQ, VM::M1, "AnatomicRegionSequence" },
-{ 0x0014, 0x2204, 2, VR::SQ, VM::M1, "CoordinateSystemAxesSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0665[] = {
-{ 0x0010, 0x2201, 0, VR::LO, VM::M1, "PatientSpeciesDescription" },
-{ 0x0018, 0xA001, 0, VR::SQ, VM::M1, "ContributingEquipmentSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0666[] = {
-{ 0x0010, 0x2202, 0, VR::SQ, VM::M1, "PatientSpeciesCodeSequence" },
-{ 0x0014, 0x2206, 2, VR::ST, VM::M1, "CoordinateSystemAxisDescription" },
-{ 0x0018, 0xA002, 0, VR::DT, VM::M1, "ContributionDateTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0667[] = {
-{ 0x0010, 0x2203, 0, VR::CS, VM::M1, "PatientSexNeutered" },
-{ 0x0018, 0xA003, 0, VR::ST, VM::M1, "ContributionDescription" },
-{ 0x0040, 0x9098, 0, VR::SQ, VM::M1, "PixelValueMappingCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0670[] = {
-{ 0x0014, 0x2202, 2, VR::IS, VM::M1, "CoordinateSystemNumberOfAxes" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0672[] = {
-{ 0x0008, 0x2220, 0, VR::SQ, VM::M1, "AnatomicRegionModifierSequence" },
-{ 0x0040, 0x06FA, 1, VR::LO, VM::M1, "SlideIdentifier" },
-{ 0x0040, 0xA060, 1, VR::LO, VM::M1, "SequencingIndicatorTrial" },
-{ 0x300A, 0x0263, 0, VR::SH, VM::M1, "BrachyAccessoryDeviceID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0673[] = {
-{ 0x0040, 0xB020, 0, VR::SQ, VM::M1, "WaveformAnnotationSequence" },
-{ 0x0068, 0x6345, 0, VR::ST, VM::M1, "HPGLPenDescription" },
-{ 0x300A, 0x0262, 0, VR::IS, VM::M1, "BrachyAccessoryDeviceNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0674[] = {
-{ 0x0068, 0x6346, 0, VR::FD, VM::M2, "RecommendedRotationPoint" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0675[] = {
-{ 0x0068, 0x6347, 0, VR::FD, VM::M4, "BoundingRectangle" },
-{ 0x300A, 0x0260, 0, VR::SQ, VM::M1, "BrachyAccessoryDeviceSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0676[] = {
-{ 0x0068, 0x6340, 0, VR::LO, VM::M1, "HPGLPenLabel" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0677[] = {
-{ 0x300A, 0x0266, 0, VR::LO, VM::M1, "BrachyAccessoryDeviceName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0678[] = {
-{ 0x0040, 0xA066, 1, VR::SQ, VM::M1, "DocumentIdentifierCodeSequenceTrial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0679[] = {
-{ 0x0040, 0xA067, 1, VR::PN, VM::M1, "DocumentAuthorTrial" },
-{ 0x300A, 0x0264, 0, VR::CS, VM::M1, "BrachyAccessoryDeviceType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0680[] = {
-{ 0x0008, 0x2228, 0, VR::SQ, VM::M1, "PrimaryAnatomicStructureSequence" },
-{ 0x0040, 0xA068, 1, VR::SQ, VM::M1, "DocumentAuthorIdentifierCodeSequenceTrial" },
-{ 0x2200, 0x0020, 0, VR::CS, VM::M1, "RequestPriority" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0681[] = {
-{ 0x0008, 0x2229, 0, VR::SQ, VM::M1, "AnatomicStructureSpaceOrRegionSequence" },
-{ 0x300A, 0x026A, 0, VR::DS, VM::M1, "BrachyAccessoryDeviceNominalThickness" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0687[] = {
-{ 0x300A, 0x026C, 0, VR::DS, VM::M1, "BrachyAccessoryDeviceNominalTransmission" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0688[] = {
-{ 0x0008, 0x2230, 0, VR::SQ, VM::M1, "PrimaryAnatomicStructureModifierSequence" },
-{ 0x0014, 0x222C, 2, VR::DS, VM::M1TN, "CoordinateSystemTransformTranslationMatrix" },
-{ 0x0040, 0xA070, 1, VR::SQ, VM::M1, "IdentifierCodeSequenceTrial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0691[] = {
-{ 0x0040, 0xA073, 0, VR::SQ, VM::M1, "VerifyingObserverSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0692[] = {
-{ 0x0014, 0x2228, 2, VR::CS, VM::M1, "TransformedAxisUnits" },
-{ 0x0040, 0xA074, 1, VR::OB, VM::M1, "ObjectBinaryIdentifierTrial" },
-{ 0x0068, 0x6350, 0, VR::US, VM::M1TN, "ImplantTemplate3DModelSurfaceNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0693[] = {
-{ 0x0040, 0xA075, 0, VR::PN, VM::M1, "VerifyingObserverName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0694[] = {
-{ 0x0014, 0x222A, 2, VR::DS, VM::M1TN, "CoordinateSystemTransformRotationAndScaleMatrix" },
-{ 0x0040, 0xA076, 1, VR::SQ, VM::M1, "DocumentingObserverIdentifierCodeSequenceTrial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0696[] = {
-{ 0x0014, 0x2224, 2, VR::IS, VM::M1, "TransformNumberOfAxes" },
-{ 0x0040, 0xA078, 0, VR::SQ, VM::M1, "AuthorObserverSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0698[] = {
-{ 0x0014, 0x2226, 2, VR::IS, VM::M1TN, "TransformOrderOfAxes" },
-{ 0x0040, 0xA07A, 0, VR::SQ, VM::M1, "ParticipantSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0700[] = {
-{ 0x0014, 0x2220, 2, VR::SQ, VM::M1, "CoordinateSystemTransformSequence" },
-{ 0x0040, 0xA07C, 0, VR::SQ, VM::M1, "CustodialOrganizationSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0701[] = {
-{ 0x7F00, 0x0040, 1, VR::OW, VM::M1, "VariableCoefficientsSDDN" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0702[] = {
-{ 0x0014, 0x2222, 2, VR::ST, VM::M1, "TransformDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0704[] = {
-{ 0x3008, 0x0200, 0, VR::CS, VM::M1, "CurrentTreatmentStatus" },
-{ 0x300A, 0x0202, 0, VR::CS, VM::M1, "BrachyTreatmentType" },
-{ 0x4FFE, 0x0001, 0, VR::SQ, VM::M1, "MACParametersSequence" },
-{ 0x600E, 0x1302, 0, VR::DS, VM::M1, "ROIMean8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0705[] = {
-{ 0x0008, 0x2240, 1, VR::SQ, VM::M1, "TransducerPositionSequence" },
-{ 0x600C, 0x1301, 0, VR::IS, VM::M1, "ROIArea7" },
-{ 0x600E, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0706[] = {
-{ 0x0018, 0x9098, 0, VR::FD, VM::M1T2, "TransmitterFrequency" },
-{ 0x3008, 0x0202, 0, VR::ST, VM::M1, "TreatmentStatusComment" },
-{ 0x300A, 0x0200, 0, VR::CS, VM::M1, "BrachyTreatmentTechnique" },
-{ 0x600C, 0x1302, 0, VR::DS, VM::M1, "ROIMean7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0707[] = {
-{ 0x0008, 0x2242, 1, VR::SQ, VM::M1, "TransducerPositionModifierSequence" },
-{ 0x600C, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation7" },
-{ 0x600E, 0x1301, 0, VR::IS, VM::M1, "ROIArea8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0708[] = {
-{ 0x300A, 0x0206, 0, VR::SQ, VM::M1, "TreatmentMachineSequence" },
-{ 0x600A, 0x1302, 0, VR::DS, VM::M1, "ROIMean6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0709[] = {
-{ 0x0008, 0x2244, 1, VR::SQ, VM::M1, "TransducerOrientationSequence" },
-{ 0x0068, 0x6320, 0, VR::SQ, VM::M1, "HPGLPenSequence" },
-{ 0x6008, 0x1301, 0, VR::IS, VM::M1, "ROIArea5" },
-{ 0x600A, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0710[] = {
-{ 0x0040, 0xA007, 1, VR::CS, VM::M1, "FindingsFlagTrial" },
-{ 0x6008, 0x1302, 0, VR::DS, VM::M1, "ROIMean5" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0711[] = {
-{ 0x0008, 0x2246, 1, VR::SQ, VM::M1, "TransducerOrientationModifierSequence" },
-{ 0x6008, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation5" },
-{ 0x600A, 0x1301, 0, VR::IS, VM::M1, "ROIArea6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0712[] = {
-{ 0x0018, 0x9092, 0, VR::SQ, VM::M1, "VelocityEncodingAcquisitionSequence" },
-{ 0x6006, 0x1302, 0, VR::DS, VM::M1, "ROIMean4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0713[] = {
-{ 0x0018, 0x9093, 0, VR::US, VM::M1, "NumberOfKSpaceTrajectories" },
-{ 0x6004, 0x1301, 0, VR::IS, VM::M1, "ROIArea3" },
-{ 0x6006, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0714[] = {
-{ 0x0018, 0x9090, 0, VR::FD, VM::M3, "VelocityEncodingDirection" },
-{ 0x0040, 0x0281, 0, VR::SQ, VM::M1, "PerformedProcedureStepDiscontinuationReasonCodeSequence" },
-{ 0x6004, 0x1302, 0, VR::DS, VM::M1, "ROIMean3" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0715[] = {
-{ 0x0018, 0x9091, 0, VR::FD, VM::M1, "VelocityEncodingMinimumValue" },
-{ 0x0040, 0x0280, 0, VR::ST, VM::M1, "CommentsOnThePerformedProcedureStep" },
-{ 0x6004, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation3" },
-{ 0x6006, 0x1301, 0, VR::IS, VM::M1, "ROIArea4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0716[] = {
-{ 0x0018, 0x9096, 1, VR::FD, VM::M1, "ParallelReductionFactorInPlaneRetired" },
-{ 0x6002, 0x1302, 0, VR::DS, VM::M1, "ROIMean2" },
-{ 0x7F00, 0x0030, 1, VR::OW, VM::M1, "VariableCoefficientsSDHN" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0717[] = {
-{ 0x6000, 0x1301, 0, VR::IS, VM::M1, "ROIArea" },
-{ 0x6002, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0718[] = {
-{ 0x0018, 0x9094, 0, VR::CS, VM::M1, "CoverageOfKSpace" },
-{ 0x6000, 0x1302, 0, VR::DS, VM::M1, "ROIMean" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0719[] = {
-{ 0x0018, 0x9095, 0, VR::UL, VM::M1, "SpectroscopyAcquisitionPhaseRows" },
-{ 0x6000, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation" },
-{ 0x6002, 0x1301, 0, VR::IS, VM::M1, "ROIArea2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0720[] = {
-{ 0x0008, 0x2251, 1, VR::SQ, VM::M1, "AnatomicStructureSpaceOrRegionCodeSequenceTrial" },
-{ 0x300A, 0x0212, 0, VR::IS, VM::M1, "SourceNumber" },
-{ 0x601E, 0x1302, 0, VR::DS, VM::M1, "ROIMean16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0721[] = {
-{ 0x0040, 0xA010, 0, VR::CS, VM::M1, "RelationshipType" },
-{ 0x601C, 0x1301, 0, VR::IS, VM::M1, "ROIArea15" },
-{ 0x601E, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0722[] = {
-{ 0x0008, 0x2253, 1, VR::SQ, VM::M1, "AnatomicPortalOfEntranceCodeSequenceTrial" },
-{ 0x0040, 0xA403, 1, VR::CS, VM::M1, "ObservationSubjectClassTrial" },
-{ 0x300A, 0x0210, 0, VR::SQ, VM::M1, "SourceSequence" },
-{ 0x601C, 0x1302, 0, VR::DS, VM::M1, "ROIMean15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0723[] = {
-{ 0x0018, 0x9089, 0, VR::FD, VM::M3, "DiffusionGradientOrientation" },
-{ 0x0040, 0xA402, 1, VR::UI, VM::M1, "ObservationSubjectUIDTrial" },
-{ 0x601C, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation15" },
-{ 0x601E, 0x1301, 0, VR::IS, VM::M1, "ROIArea16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0724[] = {
-{ 0x0008, 0x2255, 1, VR::SQ, VM::M1, "AnatomicApproachDirectionCodeSequenceTrial" },
-{ 0x300A, 0x0216, 0, VR::LO, VM::M1, "SourceManufacturer" },
-{ 0x601A, 0x1302, 0, VR::DS, VM::M1, "ROIMean14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0725[] = {
-{ 0x0040, 0xA404, 1, VR::SQ, VM::M1, "ObservationSubjectTypeCodeSequenceTrial" },
-{ 0x0068, 0x6330, 0, VR::US, VM::M1, "HPGLPenNumber" },
-{ 0x6018, 0x1301, 0, VR::IS, VM::M1, "ROIArea13" },
-{ 0x601A, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0726[] = {
-{ 0x0008, 0x2257, 1, VR::SQ, VM::M1, "AnatomicPerspectiveCodeSequenceTrial" },
-{ 0x300A, 0x0214, 0, VR::CS, VM::M1, "SourceType" },
-{ 0x6018, 0x1302, 0, VR::DS, VM::M1, "ROIMean13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0727[] = {
-{ 0x0008, 0x2256, 1, VR::ST, VM::M1, "AnatomicPerspectiveDescriptionTrial" },
-{ 0x6018, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation13" },
-{ 0x601A, 0x1301, 0, VR::IS, VM::M1, "ROIArea14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0728[] = {
-{ 0x0008, 0x2259, 1, VR::SQ, VM::M1, "AnatomicLocationOfExaminingInstrumentCodeSequenceTrial" },
-{ 0x0008, 0x9092, 0, VR::SQ, VM::M1, "ReferencedImageEvidenceSequence" },
-{ 0x0018, 0x9082, 0, VR::FD, VM::M1, "EffectiveEchoTime" },
-{ 0x0040, 0x0293, 0, VR::SQ, VM::M1, "QuantitySequence" },
-{ 0x300A, 0x021A, 0, VR::DS, VM::M1, "ActiveSourceLength" },
-{ 0x6016, 0x1302, 0, VR::DS, VM::M1, "ROIMean12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0729[] = {
-{ 0x0008, 0x2258, 1, VR::ST, VM::M1, "AnatomicLocationOfExaminingInstrumentDescriptionTrial" },
-{ 0x0018, 0x9083, 0, VR::SQ, VM::M1, "MetaboliteMapCodeSequence" },
-{ 0x300A, 0x021B, 0, VR::SH, VM::M1, "SourceModelID" },
-{ 0x6014, 0x1301, 0, VR::IS, VM::M1, "ROIArea11" },
-{ 0x6016, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0730[] = {
-{ 0x0018, 0x9080, 0, VR::ST, VM::M1, "MetaboliteMapDescription" },
-{ 0x300A, 0x0218, 0, VR::DS, VM::M1, "ActiveSourceDiameter" },
-{ 0x6014, 0x1302, 0, VR::DS, VM::M1, "ROIMean11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0731[] = {
-{ 0x0008, 0x225A, 1, VR::SQ, VM::M1, "AnatomicStructureSpaceOrRegionModifierCodeSequenceTrial" },
-{ 0x0018, 0x9081, 0, VR::CS, VM::M1, "PartialFourier" },
-{ 0x6014, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation11" },
-{ 0x6016, 0x1301, 0, VR::IS, VM::M1, "ROIArea12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0732[] = {
-{ 0x6012, 0x1302, 0, VR::DS, VM::M1, "ROIMean10" },
-{ 0x7F00, 0x0020, 1, VR::OW, VM::M1, "VariableCoefficientsSDVN" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0733[] = {
-{ 0x0008, 0x225C, 1, VR::SQ, VM::M1, "OnAxisBackgroundAnatomicStructureCodeSequenceTrial" },
-{ 0x0018, 0x9087, 0, VR::FD, VM::M1, "DiffusionBValue" },
-{ 0x0040, 0x0296, 0, VR::SQ, VM::M1, "BillingItemSequence" },
-{ 0x6010, 0x1301, 0, VR::IS, VM::M1, "ROIArea9" },
-{ 0x6012, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0734[] = {
-{ 0x0018, 0x9084, 0, VR::SQ, VM::M1, "ChemicalShiftSequence" },
-{ 0x0040, 0x0295, 0, VR::SQ, VM::M1, "MeasuringUnitsSequence" },
-{ 0x300A, 0x021C, 0, VR::LO, VM::M1, "SourceDescription" },
-{ 0x6010, 0x1302, 0, VR::DS, VM::M1, "ROIMean9" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0735[] = {
-{ 0x0018, 0x9085, 0, VR::CS, VM::M1, "CardiacSignalSource" },
-{ 0x0040, 0x0294, 0, VR::DS, VM::M1, "Quantity" },
-{ 0x6010, 0x1303, 0, VR::DS, VM::M1, "ROIStandardDeviation9" },
-{ 0x6012, 0x1301, 0, VR::IS, VM::M1, "ROIArea10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0736[] = {
-{ 0x0040, 0xA021, 1, VR::UI, VM::M1, "FindingsGroupUIDTrial" },
-{ 0x3008, 0x0220, 0, VR::SQ, VM::M1, "FractionGroupSummarySequence" },
-{ 0x300A, 0x0222, 0, VR::DS, VM::M1, "SourceEncapsulationNominalThickness" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0737[] = {
-{ 0x0040, 0xA020, 1, VR::SQ, VM::M1, "FindingsSequenceTrial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0738[] = {
-{ 0x0040, 0xA023, 1, VR::DA, VM::M1, "FindingsGroupRecordingDateTrial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0739[] = {
-{ 0x0040, 0xA022, 1, VR::UI, VM::M1, "ReferencedFindingsGroupUIDTrial" },
-{ 0x3008, 0x0223, 0, VR::IS, VM::M1, "ReferencedFractionNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0740[] = {
-{ 0x3008, 0x0224, 0, VR::CS, VM::M1, "FractionGroupType" },
-{ 0x300A, 0x0226, 0, VR::LO, VM::M1, "SourceIsotopeName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0741[] = {
-{ 0x0040, 0xA024, 1, VR::TM, VM::M1, "FindingsGroupRecordingTimeTrial" },
-{ 0x0068, 0x6300, 0, VR::OB, VM::M1, "HPGLDocument" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0742[] = {
-{ 0x0040, 0xA027, 0, VR::LO, VM::M1, "VerifyingOrganization" },
-{ 0x300A, 0x0224, 0, VR::DS, VM::M1, "SourceEncapsulationNominalTransmission" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0743[] = {
-{ 0x0040, 0xA026, 1, VR::SQ, VM::M1, "FindingsSourceCategoryCodeSequenceTrial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0744[] = {
-{ 0x300A, 0x022A, 0, VR::DS, VM::M1, "ReferenceAirKermaRate" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0745[] = {
-{ 0x0040, 0xA028, 1, VR::SQ, VM::M1, "DocumentingOrganizationIdentifierCodeSequenceTrial" },
-{ 0x300A, 0x022B, 0, VR::DS, VM::M1, "SourceStrength" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0746[] = {
-{ 0x300A, 0x0228, 0, VR::DS, VM::M1, "SourceIsotopeHalfLife" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0747[] = {
-{ 0x300A, 0x0229, 0, VR::CS, VM::M1, "SourceStrengthUnits" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0748[] = {
-{ 0x300A, 0x022E, 0, VR::TM, VM::M1, "SourceStrengthReferenceTime" },
-{ 0x7F00, 0x0010, 1, VR::OX, VM::M1, "VariablePixelData" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0749[] = {
-{ 0x7F00, 0x0011, 1, VR::US, VM::M1, "VariableNextDataGroup" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0750[] = {
-{ 0x0070, 0x0295, 0, VR::UL, VM::M1, "GraphicGroupID" },
-{ 0x300A, 0x022C, 0, VR::DA, VM::M1, "SourceStrengthReferenceDate" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0751[] = {
-{ 0x0070, 0x0294, 0, VR::CS, VM::M1, "CompoundGraphicType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0752[] = {
-{ 0x3008, 0x0230, 0, VR::CS, VM::M1, "BeamStopperPosition" },
-{ 0x300A, 0x0232, 0, VR::CS, VM::M1, "ApplicationSetupType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0753[] = {
-{ 0x0040, 0xA030, 0, VR::DT, VM::M1, "VerificationDateTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0754[] = {
-{ 0x0070, 0x0289, 0, VR::SH, VM::M1, "TickLabel" },
-{ 0x300A, 0x0230, 0, VR::SQ, VM::M1, "ApplicationSetupSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0755[] = {
-{ 0x0028, 0x9099, 1, VR::US, VM::M1, "LargestMonochromePixelValue" },
-{ 0x0040, 0xA032, 0, VR::DT, VM::M1, "ObservationDateTime" },
-{ 0x0070, 0x0288, 0, VR::FL, VM::M1, "TickPosition" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0756[] = {
-{ 0x300A, 0x0236, 0, VR::LO, VM::M1, "ApplicationSetupName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0757[] = {
-{ 0x0068, 0x6310, 0, VR::US, VM::M1, "HPGLContourPenNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0758[] = {
-{ 0x300A, 0x0234, 0, VR::IS, VM::M1, "ApplicationSetupNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0761[] = {
-{ 0x0070, 0x0282, 0, VR::CS, VM::M1, "CompoundGraphicUnits" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0762[] = {
-{ 0x300A, 0x0238, 0, VR::LO, VM::M1, "ApplicationSetupManufacturer" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0764[] = {
-{ 0x0070, 0x0287, 0, VR::SQ, VM::M1, "MajorTicksSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0766[] = {
-{ 0x0070, 0x0285, 0, VR::FL, VM::M1, "PatternOffOpacity" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0767[] = {
-{ 0x0070, 0x0284, 0, VR::FL, VM::M1, "PatternOnOpacity" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0768[] = {
-{ 0x0020, 0x9165, 0, VR::AT, VM::M1, "DimensionIndexPointer" },
-{ 0x4008, 0x0200, 1, VR::SH, VM::M1, "InterpretationID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0769[] = {
-{ 0x0020, 0x9164, 0, VR::UI, VM::M1, "DimensionOrganizationUID" },
-{ 0x0074, 0x1338, 0, VR::FD, VM::M1, "DoubleExposureMeterset" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0770[] = {
-{ 0x0020, 0x9167, 0, VR::AT, VM::M1, "FunctionalGroupPointer" },
-{ 0x0068, 0x62E0, 0, VR::SQ, VM::M1, "ViewOrientationCodeSequence" },
-{ 0x4008, 0x0202, 1, VR::LO, VM::M1, "InterpretationIDIssuer" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0771[] = {
-{ 0x0074, 0x133A, 0, VR::FD, VM::M4, "DoubleExposureFieldDelta" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0772[] = {
-{ 0x0018, 0x9159, 0, VR::UL, VM::M1, "SpectroscopyAcquisitionOutOfPlanePhaseSteps" },
-{ 0x0020, 0x9161, 0, VR::UI, VM::M1, "ConcatenationUID" },
-{ 0x0028, 0x0730, 1, VR::US, VM::M1, "AdaptiveMapFormat" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0774[] = {
-{ 0x0020, 0x9163, 0, VR::US, VM::M1, "InConcatenationTotalNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0775[] = {
-{ 0x0020, 0x9162, 0, VR::US, VM::M1, "InConcatenationNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0776[] = {
-{ 0x0018, 0x9155, 0, VR::FD, VM::M1, "ParallelReductionFactorOutOfPlane" },
-{ 0x0024, 0x0320, 0, VR::SQ, VM::M1, "VisualFieldGlobalResultsIndexSequence" },
-{ 0x0054, 0x1311, 0, VR::IS, VM::M1TN, "SecondaryCountsAccumulated" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0777[] = {
-{ 0x0054, 0x1310, 0, VR::IS, VM::M1, "PrimaryPromptsCountsAccumulated" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0780[] = {
-{ 0x0018, 0x9151, 0, VR::DT, VM::M1, "FrameReferenceDateTime" },
-{ 0x0040, 0x0340, 0, VR::SQ, VM::M1, "PerformedSeriesSequence" },
-{ 0x0400, 0x0310, 0, VR::OB, VM::M1, "CertifiedTimestamp" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0781[] = {
-{ 0x0024, 0x0325, 0, VR::SQ, VM::M1, "DataObservationSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0783[] = {
-{ 0x0018, 0x9152, 0, VR::SQ, VM::M1, "MRMetaboliteMapSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0784[] = {
-{ 0x0024, 0x0338, 0, VR::CS, VM::M1, "IndexNormalsFlag" },
-{ 0x0068, 0x62F2, 0, VR::FD, VM::M1, "HPGLDocumentScaling" },
-{ 0x4008, 0x0210, 1, VR::CS, VM::M1, "InterpretationTypeID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0786[] = {
-{ 0x0068, 0x62F0, 0, VR::FD, VM::M9, "ViewOrientationModifier" },
-{ 0x4008, 0x0212, 1, VR::CS, VM::M1, "InterpretationStatusID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0788[] = {
-{ 0x0020, 0x9171, 0, VR::SQ, VM::M1, "UnassignedPerFrameConvertedAttributesSequence" },
-{ 0x0028, 0x0720, 1, VR::US, VM::M1, "ZonalMapNumberFormat" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0789[] = {
-{ 0x0020, 0x9170, 0, VR::SQ, VM::M1, "UnassignedSharedConvertedAttributesSequence" },
-{ 0x0028, 0x0721, 1, VR::AT, VM::M1TN, "ZonalMapLocation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0790[] = {
-{ 0x0028, 0x0722, 1, VR::US, VM::M1, "ZonalMapFormat" },
-{ 0x0040, 0x074A, 0, VR::DS, VM::M1, "ZOffsetInSlideCoordinateSystem" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0791[] = {
-{ 0x0020, 0x9172, 0, VR::SQ, VM::M1, "ConversionSourceAttributesSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0793[] = {
-{ 0x0008, 0x9154, 0, VR::SQ, VM::M1, "SourceImageEvidenceSequence" },
-{ 0x0054, 0x1300, 0, VR::DS, VM::M1, "FrameReferenceTime" },
-{ 0x0400, 0x0305, 0, VR::CS, VM::M1, "CertifiedTimestampType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0794[] = {
-{ 0x0018, 0x9147, 0, VR::CS, VM::M1, "DiffusionAnisotropyType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0797[] = {
-{ 0x0074, 0x1324, 0, VR::UL, VM::M1, "BeamOrderIndex" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0800[] = {
-{ 0x0024, 0x0308, 0, VR::LO, VM::M1, "DataSetSource" },
-{ 0x0028, 0x0304, 0, VR::UI, VM::M1, "ReferencedColorPaletteInstanceUID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0801[] = {
-{ 0x0024, 0x0309, 0, VR::LO, VM::M1, "DataSetDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0802[] = {
-{ 0x0068, 0x62C0, 0, VR::SQ, VM::M1, "HPGLDocumentSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0804[] = {
-{ 0x0018, 0x9179, 0, VR::CS, VM::M1, "SpecificAbsorptionRateDefinition" },
-{ 0x0028, 0x0300, 0, VR::CS, VM::M1, "QualityControlImage" },
-{ 0x0028, 0x0710, 1, VR::US, VM::M1, "NormalizationFactorFormat" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0805[] = {
-{ 0x0018, 0x9178, 0, VR::CS, VM::M1, "OperatingMode" },
-{ 0x0028, 0x0301, 0, VR::CS, VM::M1, "BurnedInAnnotation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0806[] = {
-{ 0x0028, 0x0302, 0, VR::CS, VM::M1, "RecognizableVisualFeatures" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0807[] = {
-{ 0x0028, 0x0303, 0, VR::CS, VM::M1, "LongitudinalTemporalInformationModified" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0808[] = {
-{ 0x0018, 0x9175, 0, VR::LO, VM::M1, "ApplicableSafetyStandardDescription" },
-{ 0x0028, 0x9145, 0, VR::SQ, VM::M1, "PixelValueTransformationSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0809[] = {
-{ 0x0018, 0x9174, 0, VR::CS, VM::M1, "ApplicableSafetyStandardAgency" },
-{ 0x0054, 0x1330, 0, VR::US, VM::M1, "ImageIndex" },
-{ 0x5200, 0x9229, 0, VR::SQ, VM::M1, "SharedFunctionalGroupsSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0810[] = {
-{ 0x0018, 0x9177, 0, VR::CS, VM::M1, "OperatingModeType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0811[] = {
-{ 0x0018, 0x9176, 0, VR::SQ, VM::M1, "OperatingModeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0812[] = {
-{ 0x0018, 0x9171, 0, VR::CS, VM::M1, "RespiratorySignalSource" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0813[] = {
-{ 0x0018, 0x9170, 0, VR::CS, VM::M1, "RespiratoryMotionCompensationTechnique" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0814[] = {
-{ 0x0018, 0x9173, 0, VR::CS, VM::M1, "BulkMotionSignalSource" },
-{ 0x0024, 0x0306, 0, VR::LO, VM::M1, "DataSetName" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0815[] = {
-{ 0x0018, 0x9172, 0, VR::CS, VM::M1, "BulkMotionCompensationTechnique" },
-{ 0x0024, 0x0307, 0, VR::LO, VM::M1, "DataSetVersion" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0816[] = {
-{ 0x0020, 0x9155, 0, VR::FL, VM::M1, "ActualCardiacTriggerTimePriorToRPeak" },
-{ 0x5200, 0x9230, 0, VR::SQ, VM::M1, "PerFrameFunctionalGroupsSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0817[] = {
-{ 0x0020, 0x9154, 0, VR::FL, VM::M1, "NominalCardiacTriggerTimePriorToRPeak" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0818[] = {
-{ 0x0020, 0x9157, 0, VR::UL, VM::M1TN, "DimensionIndexValues" },
-{ 0x0068, 0x62D0, 0, VR::US, VM::M1, "HPGLDocumentID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0819[] = {
-{ 0x0020, 0x9156, 0, VR::US, VM::M1, "FrameAcquisitionNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0820[] = {
-{ 0x0018, 0x9169, 0, VR::CS, VM::M1, "CardiacBeatRejectionTechnique" },
-{ 0x0028, 0x0700, 1, VR::LO, VM::M1, "DCTLabel" },
-{ 0x0028, 0x1351, 0, VR::ST, VM::M1, "PartialViewDescription" },
-{ 0x0038, 0x0300, 0, VR::LO, VM::M1, "CurrentPatientLocation" },
-{ 0x003A, 0x0302, 0, VR::CS, VM::M1, "ChannelMode" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0821[] = {
-{ 0x0018, 0x9168, 0, VR::FD, VM::M1, "ParallelReductionFactorSecondInPlane" },
-{ 0x0028, 0x0701, 1, VR::CS, VM::M1TN, "DataBlockDescription" },
-{ 0x0028, 0x1350, 0, VR::CS, VM::M1, "PartialView" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0822[] = {
-{ 0x0020, 0x9153, 0, VR::FD, VM::M1, "NominalCardiacTriggerDelayTime" },
-{ 0x0028, 0x0702, 1, VR::AT, VM::M1TN, "DataBlock" },
-{ 0x003A, 0x0300, 0, VR::SQ, VM::M1, "MultiplexedAudioChannelsDescriptionCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0823[] = {
-{ 0x0028, 0x1352, 0, VR::SQ, VM::M1, "PartialViewCodeSequence" },
-{ 0x003A, 0x0301, 0, VR::IS, VM::M1, "ChannelIdentificationCode" },
-{ 0x0068, 0x62D5, 0, VR::LO, VM::M1, "HPGLDocumentLabel" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0824[] = {
-{ 0x0054, 0x1321, 0, VR::DS, VM::M1, "DecayFactor" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0825[] = {
-{ 0x0054, 0x1320, 0, VR::DS, VM::M1, "SliceSensitivityFactor" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0826[] = {
-{ 0x0054, 0x1323, 0, VR::DS, VM::M1, "ScatterFractionFactor" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0827[] = {
-{ 0x0018, 0x9166, 1, VR::CS, VM::M1, "BulkMotionStatus" },
-{ 0x0054, 0x1322, 0, VR::DS, VM::M1, "DoseCalibrationFactor" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0829[] = {
-{ 0x0020, 0x9158, 0, VR::LT, VM::M1, "FrameComments" },
-{ 0x0054, 0x1324, 0, VR::DS, VM::M1, "DeadTimeFactor" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0831[] = {
-{ 0x0024, 0x0317, 0, VR::SQ, VM::M1, "VisualFieldTestReliabilityGlobalIndexSequence" },
-{ 0x0028, 0x135A, 0, VR::CS, VM::M1, "SpatialLocationsPreserved" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0832[] = {
-{ 0x0018, 0x1314, 0, VR::DS, VM::M1, "FlipAngle" },
-{ 0x0018, 0x1704, 0, VR::IS, VM::M1, "CollimatorRightVerticalEdge" },
-{ 0x0018, 0x5210, 1, VR::DS, VM::M6, "ImageTransformationMatrix" },
-{ 0x300A, 0x0384, 0, VR::FL, VM::M1, "RangeModulatorGatingStopValue" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0833[] = {
-{ 0x0018, 0x1315, 0, VR::CS, VM::M1, "VariableFlipAngleFlag" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0834[] = {
-{ 0x0018, 0x1316, 0, VR::DS, VM::M1, "SAR" },
-{ 0x0018, 0x1706, 0, VR::IS, VM::M1, "CollimatorUpperHorizontalEdge" },
-{ 0x0018, 0x5212, 1, VR::DS, VM::M3, "ImageTranslationVector" },
-{ 0x0020, 0x9536, 0, VR::US, VM::M1, "ReconstructionIndex" },
-{ 0x300A, 0x0386, 0, VR::FL, VM::M1, "RangeModulatorGatingStartWaterEquivalentThickness" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0835[] = {
-{ 0x0040, 0x030E, 0, VR::SQ, VM::M1, "ExposureDoseSequence" },
-{ 0x0068, 0x62A0, 0, VR::SQ, VM::M1, "ImplantRegulatoryDisapprovalCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0836[] = {
-{ 0x0018, 0x1310, 0, VR::US, VM::M4, "AcquisitionMatrix" },
-{ 0x0018, 0x1700, 0, VR::CS, VM::M1T3, "CollimatorShape" },
-{ 0x0018, 0x9118, 0, VR::SQ, VM::M1, "CardiacSynchronizationSequence" },
-{ 0x0018, 0x9508, 0, VR::FL, VM::M1, "PrimaryPositionerScanArc" },
-{ 0x0048, 0x0301, 0, VR::CS, VM::M1, "PixelOriginInterpretation" },
-{ 0x300A, 0x0380, 0, VR::SQ, VM::M1, "RangeModulatorSettingsSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0837[] = {
-{ 0x0018, 0x9119, 0, VR::SQ, VM::M1, "MRAveragesSequence" },
-{ 0x0018, 0x9509, 0, VR::FL, VM::M1, "SecondaryPositionerScanArc" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0838[] = {
-{ 0x0018, 0x1312, 0, VR::CS, VM::M1, "InPlanePhaseEncodingDirection" },
-{ 0x0018, 0x1702, 0, VR::IS, VM::M1, "CollimatorLeftVerticalEdge" },
-{ 0x0068, 0x62A5, 0, VR::FD, VM::M1, "OverallTemplateSpatialTolerance" },
-{ 0x300A, 0x0382, 0, VR::FL, VM::M1, "RangeModulatorGatingStartValue" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0839[] = {
-{ 0x0040, 0x071A, 0, VR::SQ, VM::M1, "ImageCenterPointCoordinatesSequence" },
-{ 0x0040, 0xA180, 0, VR::US, VM::M1, "AnnotationGroupNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0840[] = {
-{ 0x0018, 0x9114, 0, VR::SQ, VM::M1, "MREchoSequence" },
-{ 0x0018, 0x9504, 0, VR::SQ, VM::M1, "XRay3DFrameTypeSequence" },
-{ 0x5600, 0x0010, 0, VR::OF, VM::M1, "FirstOrderPhaseCorrectionAngle" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0841[] = {
-{ 0x0018, 0x9115, 0, VR::SQ, VM::M1, "MRModifierSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0842[] = {
-{ 0x0018, 0x9506, 0, VR::SQ, VM::M1, "ContributingSourcesSequence" },
-{ 0x0040, 0x0307, 1, VR::DS, VM::M1, "DistanceSourceToSupport" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0843[] = {
-{ 0x0018, 0x9117, 0, VR::SQ, VM::M1, "MRDiffusionSequence" },
-{ 0x0018, 0x9507, 0, VR::SQ, VM::M1, "XRay3DAcquisitionSequence" },
-{ 0x0028, 0x9537, 0, VR::CS, VM::M1, "EquipmentCoordinateSystemIdentification" },
-{ 0x0040, 0x0306, 0, VR::DS, VM::M1, "DistanceSourceToEntrance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0844[] = {
-{ 0x0018, 0x1318, 0, VR::DS, VM::M1, "dBdt" },
-{ 0x0018, 0x1708, 0, VR::IS, VM::M1, "CollimatorLowerHorizontalEdge" },
-{ 0x0018, 0x8151, 0, VR::DS, VM::M1, "XRayTubeCurrentInuA" },
-{ 0x0020, 0x9128, 0, VR::UL, VM::M1, "TemporalPositionIndex" },
-{ 0x0040, 0x0301, 0, VR::US, VM::M1, "TotalNumberOfExposures" },
-{ 0x300A, 0x0388, 0, VR::FL, VM::M1, "RangeModulatorGatingStopWaterEquivalentThickness" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0845[] = {
-{ 0x0018, 0x8150, 0, VR::DS, VM::M1, "ExposureTimeInuS" },
-{ 0x0040, 0x0300, 0, VR::US, VM::M1, "TotalTimeOfFluoroscopy" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0846[] = {
-{ 0x0018, 0x9112, 0, VR::SQ, VM::M1, "MRTimingAndRelatedParametersSequence" },
-{ 0x0040, 0x0303, 0, VR::US, VM::M1T2, "ExposedArea" },
-{ 0x300A, 0x038A, 0, VR::FL, VM::M1, "IsocenterToRangeModulatorDistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0847[] = {
-{ 0x0040, 0x0302, 0, VR::US, VM::M1, "EntranceDose" },
-{ 0x0072, 0x0330, 0, VR::FD, VM::M1, "CineRelativeToRealTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0848[] = {
-{ 0x300A, 0x0394, 0, VR::FL, VM::M1TN, "ScanSpotPositionMap" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0849[] = {
-{ 0x0054, 0x0308, 0, VR::US, VM::M1, "EnergyWindowNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0850[] = {
-{ 0x0040, 0xA195, 0, VR::SQ, VM::M1, "ModifierCodeSequence" },
-{ 0x300A, 0x0396, 0, VR::FL, VM::M1TN, "ScanSpotMetersetWeights" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0851[] = {
-{ 0x0040, 0xA194, 1, VR::CS, VM::M1, "MeasurementAutomationTrial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0852[] = {
-{ 0x0018, 0x1300, 0, VR::DS, VM::M1, "ScanVelocity" },
-{ 0x0018, 0x1710, 0, VR::IS, VM::M2, "CenterOfCircularCollimator" },
-{ 0x0040, 0xA193, 1, VR::TM, VM::M1, "ObservationTimeTrial" },
-{ 0x300A, 0x0390, 0, VR::SH, VM::M1, "ScanSpotTuneID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0853[] = {
-{ 0x0018, 0x1301, 0, VR::CS, VM::M1TN, "WholeBodyTechnique" },
-{ 0x0040, 0x0318, 0, VR::CS, VM::M1, "OrganExposed" },
-{ 0x0040, 0xA192, 1, VR::DA, VM::M1, "ObservationDateTrial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0854[] = {
-{ 0x0018, 0x1302, 0, VR::IS, VM::M1, "ScanLength" },
-{ 0x0018, 0x1712, 0, VR::IS, VM::M1, "RadiusOfCircularCollimator" },
-{ 0x300A, 0x0392, 0, VR::IS, VM::M1, "NumberOfScanSpotPositions" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0856[] = {
-{ 0x0018, 0x9104, 0, VR::FD, VM::M1, "SlabThickness" },
-{ 0x0018, 0x9514, 0, VR::FL, VM::M1, "PrimaryPositionerIncrement" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0857[] = {
-{ 0x0018, 0x9105, 0, VR::FD, VM::M3, "SlabOrientation" },
-{ 0x0018, 0x9515, 0, VR::FL, VM::M1, "SecondaryPositionerIncrement" },
-{ 0x0040, 0x0314, 0, VR::DS, VM::M1, "HalfValueLayer" },
-{ 0x0054, 0x0300, 0, VR::SQ, VM::M1, "RadionuclideCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0858[] = {
-{ 0x0018, 0x9106, 0, VR::FD, VM::M3, "MidSlabPosition" },
-{ 0x0018, 0x9516, 0, VR::DT, VM::M1, "StartAcquisitionDateTime" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0859[] = {
-{ 0x0018, 0x9107, 0, VR::SQ, VM::M1, "MRSpatialSaturationSequence" },
-{ 0x0018, 0x9517, 0, VR::DT, VM::M1, "EndAcquisitionDateTime" },
-{ 0x0040, 0x0316, 0, VR::DS, VM::M1, "OrganDose" },
-{ 0x0054, 0x0302, 0, VR::SQ, VM::M1, "AdministrationRouteCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0860[] = {
-{ 0x0018, 0x9100, 0, VR::CS, VM::M1T2, "ResonantNucleus" },
-{ 0x0018, 0x9510, 0, VR::FL, VM::M1, "PrimaryPositionerScanStartAngle" },
-{ 0x0028, 0x9520, 0, VR::DS, VM::M16, "ImageToEquipmentMappingMatrix" },
-{ 0x300A, 0x0398, 0, VR::FL, VM::M2, "ScanningSpotSize" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0861[] = {
-{ 0x0018, 0x9101, 0, VR::CS, VM::M1, "FrequencyCorrection" },
-{ 0x0018, 0x9511, 0, VR::FL, VM::M1, "SecondaryPositionerScanStartAngle" },
-{ 0x0020, 0x9529, 0, VR::SQ, VM::M1, "ContributingSOPInstancesReferenceSequence" },
-{ 0x0040, 0x0310, 0, VR::ST, VM::M1, "CommentsOnRadiationDose" },
-{ 0x0054, 0x0304, 0, VR::SQ, VM::M1, "RadiopharmaceuticalCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0862[] = {
-{ 0x0022, 0x1330, 0, VR::SQ, VM::M1, "ReferencedOphthalmicAxialLengthMeasurementQCImageSequence" },
-{ 0x0028, 0x9132, 0, VR::SQ, VM::M1, "FrameVOILUTSequence" },
-{ 0x300A, 0x039A, 0, VR::IS, VM::M1, "NumberOfPaintings" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0863[] = {
-{ 0x0018, 0x9103, 0, VR::SQ, VM::M1, "MRSpectroscopyFOVGeometrySequence" },
-{ 0x0040, 0x0312, 0, VR::DS, VM::M1, "XRayOutput" },
-{ 0x0054, 0x0306, 0, VR::SQ, VM::M1, "CalibrationDataSequence" },
-{ 0x0072, 0x0320, 0, VR::US, VM::M1, "ImageBoxOverlapPriority" },
-{ 0xFFFE, 0xE0DD, 0, VR::XX, VM::M0, "SequenceDelimitationItem" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0864[] = {
-{ 0x300A, 0x03A4, 0, VR::SQ, VM::M1, "IonBeamLimitingDeviceSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0865[] = {
-{ 0x0070, 0x031C, 0, VR::SQ, VM::M1, "FiducialSetSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0866[] = {
-{ 0x300A, 0x03A6, 0, VR::SQ, VM::M1, "IonBlockSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0867[] = {
-{ 0x0068, 0x6280, 0, VR::ST, VM::M1, "InformationSummary" },
-{ 0x0070, 0x031E, 0, VR::SQ, VM::M1, "FiducialSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0868[] = {
-{ 0x0018, 0x1720, 0, VR::IS, VM::M2T2N, "VerticesOfThePolygonalCollimator" },
-{ 0x0018, 0x9528, 0, VR::LO, VM::M1, "AlgorithmDescription" },
-{ 0x0028, 0x1300, 0, VR::CS, VM::M1, "BreastImplantPresent" },
-{ 0x0028, 0x9108, 0, VR::CS, VM::M1, "DataRepresentation" },
-{ 0x300A, 0x03A0, 0, VR::SQ, VM::M1, "IonToleranceTableSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0869[] = {
-{ 0x0070, 0x0318, 0, VR::SQ, VM::M1, "GraphicCoordinatesDataSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0870[] = {
-{ 0x300A, 0x03A2, 0, VR::SQ, VM::M1, "IonBeamSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0871[] = {
-{ 0x0040, 0x073A, 0, VR::DS, VM::M1, "YOffsetInSlideCoordinateSystem" },
-{ 0x0070, 0x031A, 0, VR::UI, VM::M1, "FiducialUID" },
-{ 0x0072, 0x0318, 0, VR::US, VM::M1, "ImageBoxLargeScrollAmount" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0872[] = {
-{ 0x0008, 0x9124, 0, VR::SQ, VM::M1, "DerivationImageSequence" },
-{ 0x0018, 0x9524, 0, VR::LO, VM::M1, "ApplicationName" },
-{ 0x0024, 0x0341, 0, VR::FL, VM::M1, "IndexProbability" },
-{ 0x300A, 0x03AC, 0, VR::SQ, VM::M1, "IonWedgePositionSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0873[] = {
-{ 0x0018, 0x9525, 0, VR::LO, VM::M1, "ApplicationVersion" },
-{ 0x0040, 0x0324, 0, VR::SQ, VM::M1, "BillingSuppliesAndDevicesSequence" },
-{ 0x0070, 0x0314, 0, VR::SQ, VM::M1, "UsedFiducialsSequence" },
-{ 0x0072, 0x0316, 0, VR::CS, VM::M1, "ImageBoxLargeScrollType" },
-{ 0x0072, 0x0706, 0, VR::CS, VM::M1, "ShowGrayscaleInverted" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0874[] = {
-{ 0x0018, 0x9526, 0, VR::LO, VM::M1, "ApplicationManufacturer" },
-{ 0x0072, 0x0705, 0, VR::SQ, VM::M1, "PseudoColorPaletteInstanceReferenceSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0875[] = {
-{ 0x0018, 0x9527, 0, VR::CS, VM::M1, "AlgorithmType" },
-{ 0x0072, 0x0314, 0, VR::US, VM::M1, "ImageBoxSmallScrollAmount" },
-{ 0x0072, 0x0704, 0, VR::CS, VM::M1, "PseudoColorType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0876[] = {
-{ 0x0020, 0x9518, 0, VR::US, VM::M1TN, "AcquisitionIndex" },
-{ 0x0040, 0x0321, 0, VR::SQ, VM::M1, "FilmConsumptionSequence" },
-{ 0x0070, 0x0311, 0, VR::SQ, VM::M1, "FiducialIdentifierCodeSequence" },
-{ 0x300A, 0x03A8, 0, VR::SQ, VM::M1, "IonControlPointSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0877[] = {
-{ 0x0008, 0x9121, 0, VR::SQ, VM::M1, "ReferencedRawDataSequence" },
-{ 0x0024, 0x0344, 0, VR::SQ, VM::M1, "IndexProbabilitySequence" },
-{ 0x0040, 0x0320, 0, VR::SQ, VM::M1, "BillingProcedureStepSequence" },
-{ 0x0070, 0x0310, 0, VR::SH, VM::M1, "FiducialIdentifier" },
-{ 0x0072, 0x0312, 0, VR::CS, VM::M1, "ImageBoxSmallScrollType" },
-{ 0x0072, 0x0702, 0, VR::CS, VM::M1, "VOIType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0878[] = {
-{ 0x0022, 0x1300, 0, VR::SQ, VM::M1, "IntraocularLensCalculationsRightEyeSequence" },
-{ 0x300A, 0x03AA, 0, VR::SQ, VM::M1, "IonWedgeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0879[] = {
-{ 0x0008, 0x9123, 0, VR::UI, VM::M1, "CreatorVersionUID" },
-{ 0x0070, 0x0312, 0, VR::FD, VM::M1, "ContourUncertaintyRadius" },
-{ 0x0072, 0x0310, 0, VR::CS, VM::M1, "ImageBoxScrollDirection" },
-{ 0x0072, 0x0700, 0, VR::CS, VM::M2, "DisplaySetPatientOrientation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0880[] = {
-{ 0x0070, 0x030D, 0, VR::SQ, VM::M1, "RegistrationTypeCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0881[] = {
-{ 0x0070, 0x030C, 0, VR::CS, VM::M1, "FrameOfReferenceTransformationMatrixType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0882[] = {
-{ 0x0020, 0x9116, 0, VR::SQ, VM::M1, "PlaneOrientationSequence" },
-{ 0x0070, 0x030F, 0, VR::ST, VM::M1, "FiducialDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0884[] = {
-{ 0x0018, 0x9538, 0, VR::SQ, VM::M1, "PerProjectionAcquisitionSequence" },
-{ 0x0070, 0x0309, 0, VR::SQ, VM::M1, "MatrixRegistrationSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0885[] = {
-{ 0x0020, 0x9111, 0, VR::SQ, VM::M1, "FrameContentSequence" },
-{ 0x0028, 0x0740, 1, VR::US, VM::M1, "CodeNumberFormat" },
-{ 0x0040, 0xA992, 1, VR::ST, VM::M1, "UniformResourceLocatorTrial" },
-{ 0x0070, 0x0308, 0, VR::SQ, VM::M1, "RegistrationSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0887[] = {
-{ 0x0020, 0x9113, 0, VR::SQ, VM::M1, "PlanePositionSequence" },
-{ 0x0040, 0x072A, 0, VR::DS, VM::M1, "XOffsetInSlideCoordinateSystem" },
-{ 0x0070, 0x030A, 0, VR::SQ, VM::M1, "MatrixSequence" },
-{ 0x0072, 0x0308, 0, VR::US, VM::M1, "ImageBoxTileVerticalDimension" },
-{ 0x0072, 0x0718, 0, VR::CS, VM::M1, "DisplaySetVerticalJustification" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0888[] = {
-{ 0x0072, 0x0717, 0, VR::CS, VM::M1, "DisplaySetHorizontalJustification" },
-{ 0x5600, 0x0020, 0, VR::OF, VM::M1, "SpectroscopyData" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0889[] = {
-{ 0x0018, 0x9125, 0, VR::SQ, VM::M1, "MRFOVGeometrySequence" },
-{ 0x0028, 0x9505, 0, VR::SQ, VM::M1, "MultiFramePresentationSequence" },
-{ 0x0072, 0x0306, 0, VR::US, VM::M1, "ImageBoxTileHorizontalDimension" },
-{ 0x0072, 0x0716, 0, VR::CS, VM::M1, "ShowAcquisitionTechniquesFlag" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0890[] = {
-{ 0x0018, 0x9126, 0, VR::SQ, VM::M1, "VolumeLocalizationSequence" },
-{ 0x0028, 0x9506, 0, VR::US, VM::M2T2N, "PixelShiftFrameRange" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0891[] = {
-{ 0x0018, 0x9127, 0, VR::UL, VM::M1, "SpectroscopyAcquisitionDataColumns" },
-{ 0x0028, 0x9507, 0, VR::US, VM::M2T2N, "LUTFrameRange" },
-{ 0x0070, 0x0306, 0, VR::CS, VM::M1, "ShapeType" },
-{ 0x0072, 0x0304, 0, VR::CS, VM::M1, "ImageBoxLayoutType" },
-{ 0x0072, 0x0714, 0, VR::CS, VM::M1, "ShowPatientDemographicsFlag" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0892[] = {
-{ 0x0018, 0x9530, 0, VR::SQ, VM::M1, "XRay3DReconstructionSequence" },
-{ 0x0028, 0x9110, 0, VR::SQ, VM::M1, "PixelMeasuresSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0893[] = {
-{ 0x0018, 0x9531, 0, VR::LO, VM::M1, "ReconstructionDescription" },
-{ 0x0028, 0x9501, 0, VR::SQ, VM::M1, "PixelShiftSequence" },
-{ 0x0040, 0x0330, 1, VR::SQ, VM::M1, "ReferencedProcedureStepSequence" },
-{ 0x0072, 0x0302, 0, VR::US, VM::M1, "ImageBoxNumber" },
-{ 0x0072, 0x0712, 0, VR::CS, VM::M1, "ShowGraphicAnnotationFlag" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0894[] = {
-{ 0x0022, 0x1310, 0, VR::SQ, VM::M1, "IntraocularLensCalculationsLeftEyeSequence" },
-{ 0x0028, 0x9502, 0, VR::SQ, VM::M1, "RegionPixelShiftSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0895[] = {
-{ 0x0028, 0x9503, 0, VR::SS, VM::M2T2N, "VerticesOfTheRegion" },
-{ 0x0072, 0x0300, 0, VR::SQ, VM::M1, "ImageBoxesSequence" },
-{ 0x0072, 0x0710, 0, VR::CS, VM::M1, "ShowImageTrueSizeFlag" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0896[] = {
-{ 0x0068, 0x6260, 0, VR::SQ, VM::M1, "InformationFromManufacturerSequence" },
-{ 0x6008, 0x0200, 1, VR::US, VM::M1, "OverlayLocation5" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0897[] = {
-{ 0x300A, 0x0346, 0, VR::SH, VM::M1, "RangeModulatorID" },
 { 0xFFFE, 0xE000, 0, VR::XX, VM::M0, "Item" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0898[] = {
-{ 0x600A, 0x0200, 1, VR::US, VM::M1, "OverlayLocation6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0899[] = {
-{ 0x300A, 0x0344, 0, VR::IS, VM::M1, "RangeModulatorNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0900[] = {
-{ 0x600C, 0x0200, 1, VR::US, VM::M1, "OverlayLocation7" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0901[] = {
-{ 0x0068, 0x6265, 0, VR::SQ, VM::M1, "NotificationFromManufacturerSequence" },
-{ 0x300A, 0x0342, 0, VR::SQ, VM::M1, "RangeModulatorSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0902[] = {
-{ 0x600E, 0x0200, 1, VR::US, VM::M1, "OverlayLocation8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0903[] = {
-{ 0x300A, 0x0340, 0, VR::IS, VM::M1, "NumberOfRangeModulators" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0904[] = {
-{ 0x6000, 0x0200, 1, VR::US, VM::M1, "OverlayLocation" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0906[] = {
-{ 0x6002, 0x0200, 1, VR::US, VM::M1, "OverlayLocation2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0907[] = {
-{ 0x300A, 0x034C, 0, VR::SH, VM::M1, "BeamCurrentModulationID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0908[] = {
-{ 0x6004, 0x0200, 1, VR::US, VM::M1, "OverlayLocation3" },
 { 0xFFFE, 0xE00D, 0, VR::XX, VM::M0, "ItemDelimitationItem" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0909[] = {
-{ 0x300A, 0x034A, 0, VR::LO, VM::M1, "RangeModulatorDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0910[] = {
-{ 0x6006, 0x0200, 1, VR::US, VM::M1, "OverlayLocation4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0911[] = {
-{ 0x300A, 0x0348, 0, VR::CS, VM::M1, "RangeModulatorType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0912[] = {
-{ 0x0068, 0x6270, 0, VR::DT, VM::M1, "InformationIssueDateTime" },
-{ 0x6018, 0x0200, 1, VR::US, VM::M1, "OverlayLocation13" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0913[] = {
-{ 0x300A, 0x0356, 0, VR::FL, VM::M1, "FixationLightAzimuthalAngle" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0914[] = {
-{ 0x601A, 0x0200, 1, VR::US, VM::M1, "OverlayLocation14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0915[] = {
-{ 0x300A, 0x0354, 0, VR::LO, VM::M1, "PatientSupportAccessoryCode" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0916[] = {
-{ 0x601C, 0x0200, 1, VR::US, VM::M1, "OverlayLocation15" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0917[] = {
-{ 0x300A, 0x0352, 0, VR::SH, VM::M1, "PatientSupportID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0918[] = {
-{ 0x601E, 0x0200, 1, VR::US, VM::M1, "OverlayLocation16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0919[] = {
-{ 0x300A, 0x0350, 0, VR::CS, VM::M1, "PatientSupportType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0920[] = {
-{ 0x6010, 0x0200, 1, VR::US, VM::M1, "OverlayLocation9" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0922[] = {
-{ 0x6012, 0x0200, 1, VR::US, VM::M1, "OverlayLocation10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0924[] = {
-{ 0x6014, 0x0200, 1, VR::US, VM::M1, "OverlayLocation11" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0925[] = {
-{ 0x300A, 0x035A, 0, VR::FL, VM::M1, "MetersetRate" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0926[] = {
-{ 0x6016, 0x0200, 1, VR::US, VM::M1, "OverlayLocation12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0927[] = {
-{ 0x300A, 0x0358, 0, VR::FL, VM::M1, "FixationLightPolarAngle" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0929[] = {
-{ 0x300A, 0x0366, 0, VR::FL, VM::M1, "RangeShifterWaterEquivalentThickness" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0931[] = {
-{ 0x0040, 0xA167, 1, VR::SQ, VM::M1, "ObservationCategoryCodeSequenceTrial" },
-{ 0x300A, 0x0364, 0, VR::FL, VM::M1, "IsocenterToRangeShifterDistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0932[] = {
-{ 0x0040, 0xA160, 0, VR::UT, VM::M1, "TextValue" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0933[] = {
-{ 0x0040, 0xA161, 0, VR::FD, VM::M1TN, "FloatingPointValue" },
-{ 0x300A, 0x0362, 0, VR::LO, VM::M1, "RangeShifterSetting" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0934[] = {
-{ 0x0040, 0xA162, 0, VR::SL, VM::M1TN, "RationalNumeratorValue" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0935[] = {
-{ 0x0040, 0xA163, 0, VR::UL, VM::M1TN, "RationalDenominatorValue" },
-{ 0x300A, 0x0360, 0, VR::SQ, VM::M1, "RangeShifterSettingsSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0940[] = {
-{ 0x0040, 0xA168, 0, VR::SQ, VM::M1, "ConceptCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0942[] = {
-{ 0x0040, 0xA16A, 1, VR::ST, VM::M1, "BibliographicCitationTrial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0944[] = {
-{ 0x0040, 0xA174, 1, VR::CS, VM::M1, "ReferencedObjectObservationClassTrial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0947[] = {
-{ 0x300A, 0x0374, 0, VR::FL, VM::M1, "IsocenterToLateralSpreadingDeviceDistance" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0948[] = {
-{ 0x0040, 0xA170, 0, VR::SQ, VM::M1, "PurposeOfReferenceCodeSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0949[] = {
-{ 0x0040, 0xA171, 0, VR::UI, VM::M1, "ObservationUID" },
-{ 0x300A, 0x0372, 0, VR::LO, VM::M1, "LateralSpreadingDeviceSetting" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0950[] = {
-{ 0x0040, 0xA172, 1, VR::UI, VM::M1, "ReferencedObservationUIDTrial" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0951[] = {
-{ 0x0040, 0xA173, 1, VR::CS, VM::M1, "ReferencedObservationClassTrial" },
-{ 0x300A, 0x0370, 0, VR::SQ, VM::M1, "LateralSpreadingDeviceSettingsSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0960[] = {
-{ 0x0040, 0xE001, 0, VR::ST, VM::M1, "HL7InstanceIdentifier" },
-{ 0x0068, 0x6221, 0, VR::LO, VM::M1, "ImplantTemplateVersion" },
-{ 0x300A, 0x0306, 0, VR::SS, VM::M1, "RadiationChargeState" },
-{ 0x5008, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup5" },
-{ 0x5018, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence13" },
-{ 0x6008, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray5" },
-{ 0x600A, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0961[] = {
-{ 0x6008, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed5" },
-{ 0x600A, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0962[] = {
-{ 0x0068, 0x6223, 0, VR::CS, VM::M1, "ImplantType" },
-{ 0x300A, 0x0304, 0, VR::IS, VM::M1, "RadiationAtomicNumber" },
-{ 0x500A, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup6" },
-{ 0x501A, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence14" },
-{ 0x6008, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen5" },
-{ 0x600A, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0963[] = {
-{ 0x0068, 0x6222, 0, VR::SQ, VM::M1, "ReplacedImplantTemplateSequence" },
-{ 0x6008, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue5" },
-{ 0x600A, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed6" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0964[] = {
-{ 0x0068, 0x6225, 0, VR::SQ, VM::M1, "OriginalImplantTemplateSequence" },
-{ 0x300A, 0x0302, 0, VR::IS, VM::M1, "RadiationMassNumber" },
-{ 0x500C, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup7" },
-{ 0x501C, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence15" },
-{ 0x600C, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray7" },
-{ 0x600E, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0965[] = {
-{ 0x0040, 0xE004, 0, VR::DT, VM::M1, "HL7DocumentEffectiveTime" },
-{ 0x0068, 0x6224, 0, VR::SQ, VM::M1, "DerivationImplantTemplateSequence" },
-{ 0x600C, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed7" },
-{ 0x600E, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0966[] = {
-{ 0x0018, 0x9198, 0, VR::CS, VM::M1, "FirstOrderPhaseCorrection" },
-{ 0x500E, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup8" },
-{ 0x501E, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence16" },
-{ 0x600C, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen7" },
-{ 0x600E, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0967[] = {
-{ 0x0018, 0x9199, 0, VR::CS, VM::M1, "WaterReferencedPhaseCorrection" },
-{ 0x0040, 0xE006, 0, VR::SQ, VM::M1, "HL7DocumentTypeCodeSequence" },
-{ 0x0068, 0x6226, 0, VR::DT, VM::M1, "EffectiveDateTime" },
-{ 0x600C, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue7" },
-{ 0x600E, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed8" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0968[] = {
-{ 0x0018, 0x9196, 1, VR::FD, VM::M1, "ChemicalShiftMaximumIntegrationLimitInHz" },
-{ 0x5000, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup" },
-{ 0x5010, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence9" },
-{ 0x6000, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray" },
-{ 0x6002, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0969[] = {
-{ 0x0018, 0x9197, 0, VR::SQ, VM::M1, "MRVelocityEncodingSequence" },
-{ 0x0040, 0xE008, 0, VR::SQ, VM::M1, "DocumentClassCodeSequence" },
-{ 0x300A, 0x030F, 0, VR::SH, VM::M1, "SnoutID" },
-{ 0x6000, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed" },
-{ 0x6002, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0970[] = {
-{ 0x300A, 0x030C, 0, VR::SQ, VM::M1, "SnoutSequence" },
-{ 0x5002, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup2" },
-{ 0x5012, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence10" },
-{ 0x6000, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen" },
-{ 0x6002, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0971[] = {
-{ 0x0018, 0x9195, 1, VR::FD, VM::M1, "ChemicalShiftMinimumIntegrationLimitInHz" },
-{ 0x300A, 0x030D, 0, VR::FL, VM::M1, "SnoutPosition" },
-{ 0x6000, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue" },
-{ 0x6002, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed2" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0972[] = {
-{ 0x300A, 0x030A, 0, VR::FL, VM::M2, "VirtualSourceAxisDistances" },
-{ 0x5004, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup3" },
-{ 0x5014, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence11" },
-{ 0x6004, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray3" },
-{ 0x6006, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0973[] = {
-{ 0x6004, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed3" },
-{ 0x6006, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0974[] = {
-{ 0x300A, 0x0308, 0, VR::CS, VM::M1, "ScanMode" },
-{ 0x5006, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup4" },
-{ 0x5016, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence12" },
-{ 0x6004, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen3" },
-{ 0x6006, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0975[] = {
-{ 0x6004, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue3" },
-{ 0x6006, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed4" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0976[] = {
-{ 0x0040, 0xE011, 0, VR::UI, VM::M1, "RetrieveLocationUID" },
-{ 0x300A, 0x0316, 0, VR::IS, VM::M1, "RangeShifterNumber" },
-{ 0x5008, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence5" },
-{ 0x5018, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup13" },
-{ 0x6018, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray13" },
-{ 0x601A, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0977[] = {
-{ 0x0040, 0xA504, 0, VR::SQ, VM::M1, "ContentTemplateSequence" },
-{ 0x0040, 0xE010, 0, VR::UT, VM::M1, "RetrieveURI" },
-{ 0x0068, 0x6230, 0, VR::SQ, VM::M1, "ImplantTargetAnatomySequence" },
-{ 0x0068, 0x6620, 0, VR::FD, VM::M3, "ThreeDPlaneNormal" },
-{ 0x6018, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed13" },
-{ 0x601A, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0978[] = {
-{ 0x300A, 0x0314, 0, VR::SQ, VM::M1, "RangeShifterSequence" },
-{ 0x500A, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence6" },
-{ 0x501A, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup14" },
-{ 0x6018, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen13" },
-{ 0x601A, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0979[] = {
-{ 0x6018, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue13" },
-{ 0x601A, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed14" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0980[] = {
-{ 0x300A, 0x0312, 0, VR::IS, VM::M1, "NumberOfRangeShifters" },
-{ 0x500C, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence7" },
-{ 0x501C, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup15" },
-{ 0x601C, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray15" },
-{ 0x601E, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0981[] = {
-{ 0x0040, 0xA110, 1, VR::DA, VM::M1, "DateOfDocumentOrVerbalTransactionTrial" },
-{ 0x601C, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed15" },
-{ 0x601E, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0982[] = {
-{ 0x500E, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence8" },
-{ 0x501E, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup16" },
-{ 0x601C, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen15" },
-{ 0x601E, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0983[] = {
-{ 0x0040, 0xA112, 1, VR::TM, VM::M1, "TimeOfDocumentCreationOrVerbalTransactionTrial" },
-{ 0x601C, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue15" },
-{ 0x601E, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed16" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0984[] = {
-{ 0x0018, 0x9186, 0, VR::SH, VM::M1, "RespiratorySignalSourceID" },
-{ 0x5000, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence" },
-{ 0x5010, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup9" },
-{ 0x6010, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray9" },
-{ 0x6012, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0985[] = {
-{ 0x6010, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed9" },
-{ 0x6012, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0986[] = {
-{ 0x0018, 0x9184, 0, VR::FD, VM::M1, "TaggingDelay" },
-{ 0x5002, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence2" },
-{ 0x5012, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup10" },
-{ 0x6010, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen9" },
-{ 0x6012, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0987[] = {
-{ 0x0018, 0x9185, 0, VR::ST, VM::M1, "RespiratoryMotionCompensationTechniqueDescription" },
-{ 0x6010, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue9" },
-{ 0x6012, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed10" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0988[] = {
-{ 0x0018, 0x9182, 0, VR::FD, VM::M1, "GradientOutput" },
-{ 0x5004, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence3" },
-{ 0x5014, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup11" },
-{ 0x6014, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray11" },
-{ 0x6016, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0989[] = {
-{ 0x0018, 0x9183, 0, VR::CS, VM::M1, "FlowCompensationDirection" },
-{ 0x6014, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed11" },
-{ 0x6016, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0990[] = {
-{ 0x0018, 0x9180, 0, VR::CS, VM::M1, "GradientOutputType" },
-{ 0x300A, 0x0318, 0, VR::SH, VM::M1, "RangeShifterID" },
-{ 0x5006, 0x2600, 1, VR::SQ, VM::M1, "CurveReferencedOverlaySequence4" },
-{ 0x5016, 0x2610, 1, VR::US, VM::M1, "CurveReferencedOverlayGroup12" },
-{ 0x6014, 0x1202, 1, VR::US, VM::M1TN, "OverlaysGreen11" },
-{ 0x6016, 0x1200, 1, VR::US, VM::M1TN, "OverlaysGray12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0991[] = {
-{ 0x0018, 0x9181, 0, VR::FD, VM::M1, "SpecificAbsorptionRateValue" },
-{ 0x6014, 0x1203, 1, VR::US, VM::M1TN, "OverlaysBlue11" },
-{ 0x6016, 0x1201, 1, VR::US, VM::M1TN, "OverlaysRed12" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0992[] = {
-{ 0x0040, 0xA125, 1, VR::CS, VM::M2, "ReportStatusIDTrial" },
-{ 0x0040, 0xE021, 0, VR::SQ, VM::M1, "DICOMRetrievalSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0993[] = {
-{ 0x0040, 0xA124, 0, VR::UI, VM::M1, "UID" },
-{ 0x0040, 0xE020, 0, VR::CS, VM::M1, "TypeOfInstances" },
-{ 0x0068, 0x6610, 0, VR::FD, VM::M3, "ThreeDPlaneOrigin" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0994[] = {
-{ 0x0040, 0xE023, 0, VR::SQ, VM::M1, "WADORetrievalSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0995[] = {
-{ 0x0040, 0xE022, 0, VR::SQ, VM::M1, "DICOMMediaRetrievalSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0996[] = {
-{ 0x0040, 0xA121, 0, VR::DA, VM::M1, "Date" },
-{ 0x300A, 0x0322, 0, VR::LO, VM::M1, "RangeShifterDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0997[] = {
-{ 0x0040, 0xA120, 0, VR::DT, VM::M1, "DateTime" },
-{ 0x0040, 0xE024, 0, VR::SQ, VM::M1, "XDSRetrievalSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0998[] = {
-{ 0x0040, 0xA123, 0, VR::PN, VM::M1, "PersonName" },
-{ 0x300A, 0x0320, 0, VR::CS, VM::M1, "RangeShifterType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow0999[] = {
-{ 0x0040, 0xA122, 0, VR::TM, VM::M1, "Time" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1003[] = {
-{ 0x2010, 0x0376, 0, VR::DS, VM::M2, "PrinterPixelSpacing" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1008[] = {
-{ 0x0040, 0xA525, 0, VR::SQ, VM::M1, "IdenticalDocumentsSequence" },
-{ 0x0040, 0xE031, 0, VR::UI, VM::M1, "HomeCommunityID" },
-{ 0x300A, 0x0336, 0, VR::SH, VM::M1, "LateralSpreadingDeviceID" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1009[] = {
-{ 0x0040, 0xE030, 0, VR::UI, VM::M1, "RepositoryUniqueID" },
-{ 0x0068, 0x6210, 0, VR::LO, VM::M1, "ImplantSize" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1010[] = {
-{ 0x300A, 0x0334, 0, VR::IS, VM::M1, "LateralSpreadingDeviceNumber" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1011[] = {
-{ 0x0040, 0xA136, 0, VR::US, VM::M1TN, "ReferencedFrameNumbers" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1012[] = {
-{ 0x300A, 0x0332, 0, VR::SQ, VM::M1, "LateralSpreadingDeviceSequence" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1013[] = {
-{ 0x0040, 0xA130, 0, VR::CS, VM::M1, "TemporalRangeType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1014[] = {
-{ 0x300A, 0x0330, 0, VR::IS, VM::M1, "NumberOfLateralSpreadingDevices" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1015[] = {
-{ 0x0040, 0xA132, 0, VR::UL, VM::M1TN, "ReferencedSamplePositions" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1018[] = {
-{ 0x300A, 0x033C, 0, VR::FL, VM::M1, "LateralSpreadingDeviceWaterEquivalentThickness" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1020[] = {
-{ 0x300A, 0x033A, 0, VR::LO, VM::M1, "LateralSpreadingDeviceDescription" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1021[] = {
-{ 0x0040, 0xA138, 0, VR::DS, VM::M1TN, "ReferencedTimeOffsets" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1022[] = {
-{ 0x300A, 0x0338, 0, VR::CS, VM::M1, "LateralSpreadingDeviceType" },
-{ 0, 0, 0, 0, 0, NULL }
-};
-DictEntry DictRow1023[] = {
-{ 0x0040, 0xA13A, 0, VR::DT, VM::M1TN, "ReferencedDateTime" },
-{ 0, 0, 0, 0, 0, NULL }
+{ 0xFFFE, 0xE0DD, 0, VR::XX, VM::M0, "SequenceDelimitationItem" },
 };
 
-}
+unsigned short DictTagHashTable[] = {
+ 1025,  1062,  1085,  1106,  1127,  1148,  1171,  1192,  1209,  1224,
+ 1237,  1248,  1257,  1268,  1283,  1296,  1307,  1338,  1363,  1384,
+ 1403,  1420,  1439,  1454,  1469,  1494,  1513,  1530,  1551,  1566,
+ 1579,  1594,  1607,  1638,  1659,  1684,  1705,  1720,  1731,  1752,
+ 1763,  1786,  1807,  1830,  1853,  1872,  1889,  1908,  1921,  1948,
+ 1973,  1996,  2015,  2028,  2045,  2060,  2079,  2100,  2131,  2154,
+ 2181,  2206,  2225,  2242,  2263,  2302,  2349,  2390,  2429,  2472,
+ 2501,  2538,  2575,  2612,  2641,  2674,  2697,  2726,  2745,  2768,
+ 2793,  2828,  2875,  2904,  2935,  2956,  2987,  3006,  3035,  3062,
+ 3081,  3104,  3129,  3152,  3173,  3186,  3205,  3228,  3251,  3274,
+ 3297,  3316,  3337,  3354,  3375,  3388,  3407,  3426,  3441,  3454,
+ 3471,  3478,  3485,  3510,  3531,  3552,  3575,  3604,  3625,  3650,
+ 3675,  3696,  3717,  3734,  3759,  3772,  3785,  3796,  3807,  3828,
+ 3841,  3856,  3865,  3878,  3889,  3902,  3911,  3934,  3941,  3958,
+ 3969,  3984,  3991,  4008,  4019,  4042,  4051,  4070,  4083,  4094,
+ 4101,  4112,  4117,  4134,  4143,  4160,  4169,  4190,  4201,  4220,
+ 4225,  4238,  4247,  4252,  4261,  4266,  4275,  4282,  4293,  4302,
+ 4307,  4312,  4317,  4324,  4331,  4336,  4341,  4352,  4363,  4370,
+ 4377,  4384,  4391,  4394,  4399,  4408,  4417,  4424,  4431,  4436,
+ 4439,  4446,  4449,  4470,  4489,  4506,  4517,  4536,  4555,  4578,
+ 4589,  4610,  4623,  4646,  4657,  4674,  4685,  4708,  4719,  4740,
+ 4757,  4778,  4787,  4800,  4807,  4824,  4835,  4858,  4869,  4892,
+ 4907,  4924,  4935,  4952,  4965,  4974,  4985,  4996,  5001,  5010,
+ 5013,  5022,  5025,  5036,  5043,  5056,  5069,  5082,  5091,  5100,
+ 5105,  5116,  5131,  5144,  5153,  5162,  5173,  5184,  5189,  5196,
+ 5199,  5206,  5211,  5214,  5217,  5224,  5231,  5248,  5263,  5272,
+ 5287,  5312,  5327,  5342,  5365,  5378,  5393,  5398,  5407,  5418,
+ 5433,  5440,  5453,  5470,  5485,  5496,  5509,  5528,  5541,  5556,
+ 5567,  5578,  5593,  5602,  5615,  5624,  5637,  5644,  5653,  5664,
+ 5673,  5682,  5689,  5704,  5713,  5724,  5735,  5746,  5753,  5762,
+ 5767,  5780,  5791,  5800,  5807,  5816,  5819,  5830,  5835,  5852,
+ 5861,  5872,  5879,  5886,  5891,  5894,  5897,  5908,  5915,  5920,
+ 5925,  5940,  5957,  5974,  5989,  6006,  6025,  6038,  6059,  6076,
+ 6085,  6100,  6109,  6128,  6143,  6154,  6171,  6188,  6203,  6214,
+ 6223,  6238,  6255,  6270,  6283,  6296,  6307,  6316,  6321,  6340,
+ 6353,  6362,  6371,  6392,  6409,  6426,  6439,  6462,  6471,  6494,
+ 6515,  6536,  6547,  6560,  6569,  6588,  6603,  6616,  6621,  6642,
+ 6659,  6672,  6685,  6704,  6721,  6744,  6763,  6778,  6785,  6800,
+ 6805,  6828,  6843,  6858,  6867,  6872,  6877,  6882,  6885,  6904,
+ 6907,  6912,  6917,  6924,  6933,  6942,  6951,  6960,  6969,  6974,
+ 6981,  6988,  6995,  7002,  7005,  7022,  7029,  7034,  7037,  7054,
+ 7057,  7062,  7067,  7072,  7081,  7092,  7101,  7110,  7117,  7128,
+ 7133,  7154,  7163,  7174,  7179,  7194,  7201,  7212,  7219,  7232,
+ 7237,  7248,  7253,  7262,  7265,  7274,  7277,  7298,  7303,  7314,
+ 7319,  7336,  7345,  7354,  7359,  7378,  7383,  7402,  7407,  7426,
+ 7437,  7458,  7463,  7484,  7497,  7516,  7527,  7550,  7565,  7590,
+ 7597,  7624,  7633,  7658,  7669,  7692,  7701,  7722,  7729,  7750,
+ 7765,  7788,  7795,  7822,  7835,  7860,  7869,  7896,  7907,  7936,
+ 7947,  7956,  7961,  7968,  7973,  7980,  7987,  7992,  7999,  8006,
+ 8013,  8020,  8025,  8036,  8043,  8052,  8059,  8066,  8069,  8074,
+ 8079,  8086,  8099,  8104,  8111,  8118,  8125,  8136,  8139,  8150,
+ 8153,  8164,  8167,  8178,  8191,  8198,  8203,  8208,  8211,  8216,
+ 8219,  8226,  8243,  8250,  8263,  8272,  8285,  8292,  8297,  8304,
+ 8315,  8320,  1024,  8329,  8334,  8337,  8340,  8351,  8360,  8367,
+ 8374,  8385,  8396,  8405,  8416,  8429,  8440,  8447,  8452,  8455,
+ 8458,  8465,  8470,  8481,  8490,  8501,  8510,  8517,  8528,  8537,
+ 8548,  8557,  8564,  1024,  1024,  1024,  8567,  8572,  8579,  8588,
+ 8599,  8610,  8621,  8630,  8645,  8656,  8669,  8684,  8695,  8704,
+ 8713,  8718,  8721,  8730,  8739,  8752,  8761,  8776,  8789,  8802,
+ 8813,  8822,  8833,  8844,  8855,  8860,  8863,  1024,  8866,  8869,
+ 8874,  8879,  8882,  8891,  8896,  8905,  8912,  8927,  8938,  8949,
+ 8956,  8963,  8970,  1024,  1024,  8977,  8980,  8991,  9002,  9009,
+ 9024,  9033,  9042,  9051,  9062,  9073,  9088,  9095,  9108,  9117,
+ 9122,  9127,  9136,  9149,  9160,  9171,  9184,  9191,  9204,  9215,
+ 9228,  9235,  9242,  9247,  9254,  9261,  9264,  9267,  9274,  9279,
+ 9282,  9285,  9288,  9293,  9296,  9299,  9302,  9309,  9312,  9315,
+ 9318,  9321,  9324,  9327,  9332,  9337,  9342,  9349,  1024,  1024,
+ 9356,  1024,  9359,  9368,  9375,  9378,  9383,  9386,  9389,  9392,
+ 9397,  9404,  1024,  1024,  1024,  1024,  1024,  9409,  9412,  1024,
+ 1024,  9419,  9422,  9429,  9432,  1024,  9437,  1024,  9442,  1024,
+ 9447,  9452,  9455,  1024,  9458,  9467,  9474,  9483,  9490,  9495,
+ 9504,  9509,  9516,  9521,  9528,  9535,  9544,  9551,  9556,  9561,
+ 9568,  9575,  9582,  9591,  9600,  9607,  9616,  9623,  9630,  9643,
+ 9654,  9661,  9670,  9675,  9686,  9695,  9704,  9711,  9714,  9717,
+ 9722,  9727,  9732,  9737,  9740,  9743,  9748,  9751,  9754,  9759,
+ 9762,  9767,  9770,  9775,  9778,  9783,  9790,  9793,  9796,  1024,
+ 1024,  9799,  9802,  1024,  9805,  1024,  9808,  9811,  9814,  9819,
+ 9824,  9831,  9834,  1024,  9841,  9844,  9847,  9854,  1024,  1024,
+ 9857,  9864,  1024,  9867,  9870,  1024,  9877,  1024,  9882,  9887,
+ 9892,  9897,  1024,  9900,  9907,  1024,  1024,  9910,  1024,  1024,
+ 9913,  9918,  9921,  1024,  9924,  9931,  9936,  9939,  9942,  9947,
+ 9954,  9957,  9960,  9963,  9966,  9971,  9976,  9981,  9984,  9989,
+ 9992, 10003, 10010, 10017, 10024, 10027, 10030, 10033,  1024, 10038,
+ 1024, 10043, 10048, 10057, 10060, 10071, 10076, 10089, 10094, 10103,
+10108, 10115, 10118, 10123, 10132, 10145, 10150, 10157, 10162, 10165,
+10168, 10173, 10176, 10185, 10192,  1024, 10199, 10204, 10213, 10218,
+10227, 10236, 10247, 10254, 10265, 10268, 10271, 10274, 10279, 10290,
+10293, 10296, 10303, 10312, 10323, 10328, 10335, 10344, 10357, 10362,
+10371, 10374, 10377,  1024, 10382, 10387,  1024, 10396, 10407, 10412,
+10421, 10426, 10437, 10442, 10453, 10458, 10465, 10470, 10475, 10478,
+10481, 10484, 10489, 10492, 10495,  1024, 10498, 10501, 10504, 10509,
+10512, 10515, 10518, 10523, 10526, 10529, 10532, 10535, 10538, 10541,
+10544,  1024, 10547,  1024, 10550, 10553, 10556, 10559,  1024, 10562,
+ 1024, 10565, 10570, 10573, 10578, 10581,  1024,  1024,  1024,  1024,
+10586,  1024, 10589,  1024, 10592,  1024,  1024, 10595, 10598, 10601,
+10606, 10609,  1024,  1024,  1024,  1024,  1024,  1024,  1024,  1024,
+10614, 10629, 10634, 10647, 10654, 10667, 10676, 10687, 10698, 10709,
+10720, 10731, 10740, 10751, 10756, 10767, 10772, 10785, 10798, 10809,
+10814, 10825, 10832, 10841, 10848, 10859, 10864, 10875, 10882, 10893,
+10900, 10913, 10920, 10925, 10932, 10935, 10938, 10943, 10948, 10953,
+ 1024,  1024,  1024, 10956,  1024,  1024,  1024,  1024, 10959, 10966,
+10971, 10974, 10977, 10980, 10983, 10986,  1024,  1024, 10989,  1024,
+10992, 10995, 10998, 11001,     0,    18,     2,     2,    32,     8,
+  106,  4169,   205,    16,   935, 37457,  1151,    32,  1290,    34,
+ 1397,    36,  1684,    50,  1873,  4097,  2111,    70,  2620,   114,
+ 2816,    16,  2899,   162,  3542, 16384,  3555,   268,  4509, 65530,
+ 4510, 65532,    11,     3,     3,   105,  4168,   227,  4176,   934,
+37456,  1389,  5234,  1398,    37,  1685,    51,  2714,  4148,  2826,
+ 1025,  3059,   196,  3237,   200,    10,     0,     0,   258,    16,
+  937, 37459,  1152,    34,  1288,    32,  1875,  4099,  2110,    68,
+ 2619,   112,  2827,  1026,  2898,   160,    10,     1,     1,   936,
+37458,  1289,    33,  1388,  5232,  1706,  4208,  1874,  4098,  2715,
+ 4150,  2828,  1027,  3060,   198,  3238,   202,    10,   939, 37461,
+ 1153,    36,  1395,    32,  1877,  4101,  2109,    66,  2268,    80,
+ 2328,  5121,  2622,   118,  2829,  1028,  3551,   264,    11,   938,
+37460,  1329,  4198,  1396,    33,  1876,  4100,  2269,    81,  2327,
+ 5120,  2712,  4144,  2817,    21,  3057,   192,  3239,   204,  3552,
+  265,    10,   941, 37463,  1154,    38,  1328,  4197,  1686,    52,
+ 1879,  4103,  2108,    64,  2270,    82,  2621,   116,  2767,   112,
+ 3553,   266,     8,   940, 37462,  1687,    53,  1878,  4102,  2271,
+   83,  2713,  4146,  3058,   194,  3240,   206,  3554,   267,     7,
+  429,    16,   943, 37465,  1721,    48,  1881,  4105,  2624,   122,
+ 2783,   112,  3570, 16384,     6,    29,     1,   104,  4160,   512,
+ 4176,   942, 37464,  1880,  4104,  3231,   192,     5,   430,    18,
+  945, 37467,  1722,    50,  2623,   120,  3233,   195,     4,   944,
+37466,  1882,  4106,  3115,   192,  3232,   194,     5,   431,    20,
+  947, 37469,  1399,    40,  2626,   126,  3547,   256,     7,    30,
+    5,   432,    21,   946, 37468,  2716,  4152,  3061,   200,  3234,
+  196,  3548,   257,     6,    31,     6,   949, 37471,  2475, 26096,
+ 2625,   124,  3236,   199,  3549,   258,     5,   948, 37470,  2717,
+ 4154,  3235,   198,  3527,   192,  3550,   259,    15,     5,    18,
+   39,    24,   511,  4169,   933, 37441,  1155,    48,  1293,    50,
+ 1383,  5219,  1402,    52,  1571,  2072,  1839,  1088,  1884,  4113,
+ 2504,    96,  2612,    98,  2704,  4133,  3250,   217,    12,     6,
+   19,   226,  4160,   510,  4168,   932, 37440,  1180,  4208,  1403,
+   53,  1840,  1089,  1883,  4112,  1890,  5120,  2304,  4100,  2703,
+ 4132,  3249,   216,    10,     4,    16,    40,    26,  1156,    50,
+ 1291,    48,  1404,    54,  2505,    98,  2611,    96,  2706,  4135,
+ 2874,   128,  3252,   219,     9,    41,    27,  1292,    49,  1382,
+ 5216,  1405,    55,  1704,  4192,  1885,  4114,  2305,  4102,  2705,
+ 4134,  3251,   218,     8,     7,    22,  1295,    54,  1386,  5223,
+ 2113,    82,  2302,  4097,  2614,   102,  3254,   221,  3562,   280,
+    9,   295,  4160,  1157,    53,  1296,    55,  1385,  5222,  2301,
+ 4096,  2701,  4128,  2815,     5,  3253,   220,  3563,   281,     7,
+ 1384,  5221,  1400,    50,  2112,    80,  2506,   102,  2613,   100,
+ 2766,    96,  3564,   282,     7,  1158,    55,  1294,    53,  1401,
+   51,  1705,  4196,  2303,  4098,  2507,   103,  2702,  4130,    12,
+   33,    16,   503,  4161,  1503,    48,  1567,  2064,  1719,    32,
+ 1944, 37393,  2508,   104,  2616,   106,  2711,  4141,  2782,    96,
+ 3242,   209,  3559,   276,     9,   107,  4176,   502,  4160,   623,
+ 5200,  1504,    49,  1720,    33,  1943, 37392,  2710,  4140,  3241,
+  208,  3560,   277,     8,    34,    18,   505,  4163,  1297,    56,
+ 1505,    50,  1568,  2066,  1740,    32,  2615,   104,  3244,   211,
+   10,    35,    19,   108,  4178,   504,  4162,  1298,    57,  1387,
+ 5224,  1569,  2067,  1945, 37394,  3116,   208,  3243,   210,  3561,
+  279,     7,    36,    20,   507,  4165,  1406,    56,  1506,    52,
+ 1570,  2068,  2618,   110,  3246,   213,     6,    37,    21,   506,
+ 4164,  1407,    57,  2707,  4136,  3245,   212,  3556,   273,     7,
+   38,    22,   509,  4167,  2474, 26080,  2617,   108,  2709,  4139,
+ 3248,   215,  3557,   274,     6,   508,  4166,  1946, 37398,  2708,
+ 4138,  3247,   214,  3528,   208,  3558,   275,    15,   210,    48,
+  284,    52,   452,    56,   535,  4217,  1179,  4161,  1230, 37449,
+ 1260,     2,  1496,     8,  1683,    18,  1739,    26,  2063, 56077,
+ 2499,    80,  2608,    82,  2862,   162,  3264,   233,    10,   453,
+   57,   534,  4216,  1178,  4160,  1229, 37448,  1261,     3,  1379,
+ 5202,  1497,     9,  2062, 56076,  2500,    81,  3263,   232,    12,
+   48,    42,   211,    50,   261,    48,   454,    58,  1498,    10,
+ 1702,  4177,  1714,    26,  2117,   100,  2501,    82,  2607,    80,
+ 2860,   160,  3266,   235,    10,   262,    49,  1259,     1,  1322,
+ 4160,  1378,  5200,  1701,  4176,  1715,    27,  2502,    83,  2765,
+   85,  2861,   161,  3265,   234,     7,   282,    48,  1264,     6,
+ 1716,    28,  2115,    98,  2276,   112,  2610,    86,  3268,   237,
+    5,  1265,     7,  1717,    29,  2116,    99,  2277,   113,  3267,
+  236,    10,   283,    50,  1262,     4,  1703,  4181,  1718,    30,
+ 2061, 56075,  2114,    96,  2278,   114,  2609,    84,  2863,   164,
+ 3270,   239,     5,  1263,     5,  1323,  4164,  1380,  5204,  2279,
+  115,  3269,   238,    11,    42,    32,   444,    48,   527,  4209,
+ 1225, 37441,  1268,    10,  1554,  1040,  1575,  4161,  1710,    16,
+ 1732,  1024,  2781,    80,  3256,   225,    10,    43,    33,   109,
+ 4192,   445,    49,   526,  4208,   624,  5216,  1269,    11,  1555,
+ 1041,  1574,  4160,  1711,    17,  3255,   224,    11,    44,    34,
+  446,    50,   529,  4211,  1266,     8,  1491,     2,  1556,  1042,
+ 1738,    16,  2060, 56071,  2503,    90,  2864,   168,  3258,   227,
+   11,    45,    35,   110,  4194,   447,    51,   528,  4210,  1267,
+    9,  1381,  5208,  1492,     3,  1557,  1043,  2059, 56070,  3117,
+  224,  3257,   226,     9,    46,    36,   448,    52,   531,  4213,
+ 1226, 37445,  1272,    14,  1493,     4,  1712,    20,  1948, 37413,
+ 3260,   229,     8,    47,    37,   449,    53,   530,  4212,  1139,
+   13,  1494,     5,  1947, 37412,  2058, 56064,  3259,   228,     9,
+  450,    54,   533,  4215,  1140,    14,  1228, 37447,  1270,    12,
+ 1495,     6,  1713,    22,  2473, 26064,  3262,   231,     6,   451,
+   55,   532,  4214,  1227, 37446,  1271,    13,  3261,   230,  3529,
+  224,    13,   206,    32,   279,    36,   441,    40,   522,  4201,
+ 1141,    16,  1275,    18,  1325,  4179,  1376,  5187,  1709,     8,
+ 2122,   118,  2496,    64,  2818,    32,  3279,   249,    12,   207,
+   33,   228,  4192,   280,    37,   442,    41,   521,  4200,   950,
+37472,  1142,    17,  1276,    19,  2123,   119,  2497,    65,  2695,
+ 4100,  3278,   248,    11,   208,    34,   259,    32,   443,    42,
+ 1143,    18,  1273,    16,  1393,    22,  1700,  4161,  2120,   116,
+ 2498,    66,  2606,    64,  3281,   251,     9,   260,    33,   523,
+ 4202,  1144,    19,  1274,    17,  1324,  4176,  1699,  4160,  2121,
+  117,  2696,  4102,  3280,   250,     6,   209,    36,  1145,    20,
+ 1279,    22,  1390,    16,  2272,    96,  2875,   166,     8,   524,
+ 4204,  1146,    21,  1280,    23,  1391,    17,  2273,    97,  2693,
+ 4096,  2876,   167,  3282,   252,     7,  1147,    22,  1277,    20,
+ 1377,  5189,  1392,    18,  2118,   112,  2274,    98,  2764,    64,
+    9,   278,    35,   525,  4206,  1148,    23,  1278,    21,  1326,
+ 4180,  2119,   113,  2275,    99,  2694,  4098,  3283,   254,    10,
+   49,    48,   433,    32,   514,  4193,  1149,    24,  1232, 37457,
+ 1283,    26,  1499,    16,  1549,  1024,  1577,  4177,  1681,    10,
+   15,    50,    49,   111,  4208,   434,    33,   513,  4192,   625,
+ 5232,  1150,    25,  1231, 37456,  1284,    27,  1500,    17,  1550,
+ 1025,  1576,  4176,  2699,  4108,  3119,   242,  3271,   240,  3533,
+  246,    11,    51,    50,   435,    34,   516,  4195,  1234, 37459,
+ 1281,    24,  1327,  4185,  1501,    18,  1551,  1026,  1579,  4179,
+ 2877,   168,  3273,   243,    13,    52,    51,   112,  4210,   436,
+   35,   515,  4194,  1233, 37458,  1282,    25,  1552,  1027,  1578,
+ 4178,  2700,  4110,  2878,   169,  3118,   240,  3272,   242,  3532,
+  244,    12,    53,    52,   281,    40,   437,    36,   518,  4197,
+ 1236, 37461,  1287,    30,  1394,    24,  1502,    20,  1553,  1028,
+ 1581,  4181,  1708,     4,  3275,   245,     9,    54,    53,   438,
+   37,   517,  4196,  1235, 37460,  1580,  4180,  2697,  4104,  3121,
+  246,  3274,   244,  3531,   242,     8,   439,    38,   520,  4199,
+ 1238, 37463,  1285,    28,  1651, 24976,  1682,    12,  1736,     4,
+ 3277,   247,    10,   440,    39,   519,  4198,  1237, 37462,  1286,
+   29,  1582,  4182,  1737,     5,  2698,  4106,  3120,   244,  3276,
+  246,  3530,   240,    19,   222,  4112,   494,  4120,  1177,  4128,
+ 1223, 37416,  1429,   101,  1518,   105,  1696,  4146,  1774,     1,
+ 2233,    19,  2254,    21,  2391,    39,  2839,     0,  3044,   132,
+ 3210,   136,  3665,   260,  3693,   262,  3878,   276,  3928,   272,
+ 3955,   274,    23,   213,    80,   291,    84,   495,  4121,  1072,
+38401,  1161,    96,  1428,   100,  1517,   104,  1697,  4147,  2086,
+    4,  2181,     8,  2208,    16,  2232,    18,  2253,    20,  2390,
+   38,  2600,    50,  2665,  1058,  2762,    54,  2840,     1,  2914,
+  130,  3045,   133,  3211,   137,  3666,   261,  3742,   259,    20,
+  266,    81,   496,  4122,  1073, 38402,  1431,   103,  1694,  4144,
+ 1776,     3,  2087,     7,  2210,    19,  2231,    17,  2256,    23,
+ 2389,    37,  2664,  1057,  2841,     2,  3046,   134,  3212,   138,
+ 3667,   262,  3691,   260,  3904,   276,  3929,   274,  3954,   272,
+   19,   265,    80,   292,    86,   497,  4123,  1074, 38403,  1162,
+   98,  1430,   102,  1695,  4145,  1775,     2,  2209,    18,  2255,
+   22,  2388,    36,  2599,    48,  2663,  1056,  2761,    52,  2842,
+    3,  2913,   128,  3213,   139,  3692,   261,  3716,   259,    21,
+   18,  5136,   293,  4112,   920, 37396,  1075, 38404,  1375,  5174,
+ 1425,    97,  1778,     5,  2083,     1,  2212,    21,  2250,    17,
+ 2387,    35,  2667,  1063,  2843,     4,  3042,   128,  3214,   140,
+ 3717,   260,  3745,   262,  3876,   272,  3903,   274,  3930,   276,
+ 4077,   272,    14,   194, 37381,   289,    80,  1076, 38405,  1424,
+   96,  1777,     4,  2211,    20,  2235,    22,  2249,    16,  2296,
+ 1024,  2760,    50,  2844,     5,  3215,   141,  3690,   259,  3718,
+  261,    18,   195, 37382,  1077, 38406,  1314,  4132,  1427,    99,
+ 1698,  4148,  1780,     7,  2085,     3,  2214,    23,  2252,    19,
+ 2386,    33,  3043,   130,  3216,   142,  3719,   262,  3743,   260,
+ 3877,   274,  3902,   272,  3956,   276,  4078,   274,    18,   196,
+37383,   290,    82,   921, 37399,  1078, 38407,  1315,  4133,  1426,
+   98,  1779,     6,  2084,     2,  2213,    22,  2234,    20,  2251,
+   18,  2385,    32,  2601,    52,  2666,  1060,  2759,    48,  3217,
+  143,  3664,   259,  3744,   261,    18,    56,    65,    98,  4096,
+  197, 37384,   488,  4112,   614,  5120,   922, 37400,  1512,    97,
+ 1782,     9,  2176,     1,  2216,    25,  2399,    47,  3110,   130,
+ 3206,   128,  3769,   260,  3797,   262,  3982,   276,  4032,   272,
+ 4059,   274,    14,    55,    64,   198, 37385,   457,    80,   489,
+ 4113,   615,  5121,   923, 37401,  1221, 37409,  1511,    96,  1781,
+    8,  2215,    24,  2398,    46,  2603,    58,  3770,   261,  3846,
+  259,    16,   490,  4114,   616,  5122,  1222, 37410,  1316,  4136,
+ 1514,    99,  1784,    11,  2178,     3,  2218,    27,  2397,    45,
+ 3109,   128,  3207,   130,  3771,   262,  3795,   260,  4008,   276,
+ 4033,   274,  4058,   272,    11,    57,    66,   617,  5123,  1317,
+ 4137,  1513,    98,  1783,    10,  2177,     2,  2217,    26,  2396,
+   44,  2602,    56,  3796,   261,  3820,   259,    14,   491,  4116,
+  618,  5124,  1433,   105,  1515,   101,  2089,     9,  2220,    29,
+ 2395,    43,  3047,   136,  3208,   132,  3821,   260,  3849,   262,
+ 3980,   272,  4007,   274,  4034,   276,     9,   619,  5125,  1432,
+  104,  2088,     8,  2219,    28,  2257,    24,  2394,    42,  2605,
+   62,  3794,   259,  3822,   261,    11,   492,  4118,  2091,    11,
+ 2180,     7,  2393,    41,  3209,   134,  3524,   128,  3823,   262,
+ 3847,   260,  3981,   274,  4006,   272,  4060,   276,    12,   343,
+12441,   493,  4119,  1516,   102,  2090,    10,  2179,     6,  2221,
+   30,  2392,    40,  2472, 26032,  2604,    60,  2763,    56,  3768,
+  259,  3848,   261,    17,   218,  4096,   287,    69,   487,  4104,
+  919, 37376,  1224, 37432,  1439,   117,  1786,    17,  2081,    19,
+ 2225,     3,  2406,    55,  2492,    33,  2845,     0,  3670,   276,
+ 3720,   272,  3747,   274,  3873,   260,  3901,   262,    23,    64,
+   88,   212,    64,   219,  4097,   264,    66,   286,    68,  1163,
+  112,  1318,  4147,  1374,  5155,  1438,   116,  1785,    16,  1838,
+ 1024,  2020, 41626,  2080,    18,  2100,    22,  2224,     2,  2299,
+ 1044,  2405,    54,  2491,    32,  2595,    34,  2669,  1074,  2778,
+   40,  3874,   261,  3950,   259,    14,   220,  4098,  1373,  5152,
+ 1441,   119,  1692,  4128,  2079,    17,  2099,    21,  2223,     1,
+ 2404,    53,  2494,    35,  3696,   276,  3721,   274,  3746,   272,
+ 3875,   262,  3899,   260,    15,   263,    64,   288,    70,  1440,
+  118,  1693,  4129,  1787,    18,  2078,    16,  2098,    20,  2403,
+   52,  2493,    34,  2594,    32,  2668,  1072,  2779,    42,  2915,
+  144,  3900,   261,  3924,   259,    10,    17,  5120,  1435,   113,
+ 2093,    17,  2228,     7,  3668,   272,  3695,   274,  3722,   276,
+ 3925,   260,  3953,   262,  4076,   256,    15,   199, 37397,   221,
+ 4101,  1320,  4151,  1434,   112,  1661, 37429,  2092,    16,  2097,
+   18,  2207,     4,  2227,     6,  2297,  1040,  2402,    50,  2495,
+   36,  2597,    38,  3898,   259,  3926,   261,     9,   342, 12416,
+ 1437,   115,  2095,    19,  2401,    49,  3669,   274,  3694,   272,
+ 3748,   276,  3927,   262,  3951,   260,    14,   285,    66,  1319,
+ 4149,  1436,   114,  2082,    20,  2094,    18,  2226,     4,  2298,
+ 1042,  2400,    48,  2596,    36,  2670,  1076,  2758,    32,  2780,
+   46,  3872,   259,  3952,   261,    13,    59,    81,    99,  4112,
+  480,  4096,   699, 20740,  1520,   113,  1727,    97,  2183,    17,
+ 3112,   146,  3774,   276,  3824,   272,  3851,   274,  3977,   260,
+ 4005,   262,     9,    58,    80,   455,    64,   620,  5137,  1519,
+  112,  1726,    96,  2182,    16,  2775,    32,  3978,   261,  4054,
+  259,    11,    61,    83,   481,  4098,   621,  5138,  2185,    19,
+ 2230,     9,  3111,   144,  3800,   276,  3825,   274,  3850,   272,
+ 3979,   262,  4003,   260,    12,    60,    82,   456,    66,   482,
+ 4099,   622,  5139,  1321,  4153,  1728,    98,  2017, 41616,  2184,
+   18,  2229,     8,  2598,    40,  4004,   261,  4028,   259,    11,
+  483,  4100,   697, 20736,  1443,   121,  2019, 41623,  2096,    25,
+ 2187,    21,  3772,   272,  3799,   274,  3826,   276,  4029,   260,
+ 4057,   262,    10,    62,    84,   484,  4101,   698, 20737,  1442,
+  120,  1729,   100,  2018, 41622,  2186,    20,  2776,    36,  4002,
+  259,  4030,   261,     6,   485,  4102,  3773,   274,  3798,   272,
+ 3852,   276,  4031,   262,  4055,   260,     9,    63,    86,   486,
+ 4103,  2064, 56179,  2101,    24,  2407,    56,  2471, 26016,  2777,
+   38,  3976,   259,  4056,   261,    11,   225,  4144,  1171,  4096,
+ 1411,    69,  1886,  4192,  2243,    51,  2338,     3,  2355,     5,
+ 2487,    17,  2579,  1025,  2728,  4180,  3049,   164,    11,    69,
+  104,   272,   114,   927, 37425,  1172,  4097,  1300,    66,  1410,
+   68,  1788,    32,  2337,     2,  2486,    16,  2592,    18,  2660,
+ 1026,    11,   271,   113,   928, 37426,  1173,  4098,  1299,    65,
+ 1690,  4112,  2242,    49,  2336,     1,  2356,     7,  2581,  1027,
+ 2729,  4182,  3050,   166,    11,  1174,  4099,  1412,    70,  1691,
+ 4113,  2241,    48,  2265,    54,  2364,     4,  2488,    18,  2580,
+ 1026,  2591,    16,  2659,  1024,  2730,  4183,     9,    20,  5168,
+  929, 37428,  1175,  4100,  2262,    49,  2363,     3,  2490,    21,
+ 2583,  1029,  2726,  4176,  3048,   160,    10,  1176,  4101,  1308,
+ 4103,  1408,    64,  2245,    54,  2261,    48,  2341,     6,  2362,
+    2,  2489,    20,  2582,  1028,  2662,  1030,     8,    21,  5170,
+  930, 37430,  1790,    39,  2264,    51,  2340,     5,  2354,     3,
+ 2361,     1,  2727,  4178,    10,  1372,  5141,  1409,    66,  1789,
+   38,  2244,    52,  2263,    50,  2339,     4,  2353,     2,  2593,
+   20,  2661,  1028,  2757,    16,     6,    66,    97,   460,   113,
+  501,  4144,  1624,  5136,  2345,    11,  3218,   160,     9,    65,
+   96,   459,   112,   931, 37433,  1507,    64,  1725,    80,  2248,
+   58,  2344,    10,  2370,    14,  2774,    16,     9,   462,   115,
+ 1302,    73,  1309,  4104,  2247,    57,  2343,     9,  2359,    15,
+ 2369,    13,  3113,   160,  3219,   162,     7,    67,    98,   461,
+  114,  1301,    72,  1310,  4105,  2246,    56,  2342,     8,  2368,
+   12,     6,   464,   117,  2267,    57,  2349,    15,  2358,     9,
+ 2367,    11,  3220,   164,     8,    68,   100,   463,   116,  1303,
+   78,  1413,    72,  2266,    56,  2348,    14,  2357,     8,  2366,
+   10,     3,  2347,    13,  2365,     9,  3525,   160,     3,  2102,
+   40,  2346,    12,  2470, 26000,    12,   223,  4128,   269,    99,
+  924, 37408,  1312,  4114,  1419,    85,  1618,  5128,  1791,    49,
+ 2377,    23,  2478,     1,  2720,  4164,  3053,   180,  3226,   184,
+   10,   224,  4129,   268,    98,  1159,    80,  1418,    84,  2106,
+   54,  2222,    32,  2352,    18,  2376,    22,  2584,     2,  2752,
+    6,    10,  1311,  4112,  1421,    87,  1688,  4096,  1793,    51,
+ 2351,    17,  2375,    21,  2480,     3,  2721,  4166,  3054,   182,
+ 3227,   186,    11,   267,    96,  1160,    82,  1420,    86,  1619,
+ 5131,  1689,  4097,  1792,    50,  2105,    52,  2350,    16,  2479,
+    2,  3055,   183,  3228,   187,    14,    19,  5152,   294,  4128,
+ 1306,    87,  1415,    81,  1620,  5132,  1794,    53,  2238,    39,
+ 2259,    33,  2374,    19,  2482,     5,  2718,  4160,  2751,     3,
+ 3051,   176,  3229,   188,    10,  1305,    86,  1414,    80,  1621,
+ 5133,  2104,    50,  2237,    38,  2258,    32,  2360,    16,  2373,
+   18,  2481,     4,  2586,     6,    12,   102,  4158,   925, 37414,
+ 1304,    85,  1417,    83,  1510,    95,  1622,  5134,  2236,    37,
+ 2372,    17,  2719,  4162,  2750,     1,  3052,   178,  3230,   190,
+   12,   103,  4159,   200, 37431,   270,   100,   926, 37415,  1416,
+   82,  1623,  5135,  1795,    54,  2103,    48,  2260,    34,  2371,
+   16,  2483,     6,  2585,     4,    10,   100,  4144,   498,  4128,
+  657,  6144,  1509,    81,  1796,    57,  2384,    31,  2485,     9,
+ 2724,  4172,  2773,     1,  3221,   176,    10,    70,   112,   458,
+   96,   658,  6145,  1508,    80,  1611,  5121,  1723,    64,  2383,
+   30,  2484,     8,  2588,    10,  2756,    14,     8,   101,  4146,
+  499,  4130,   659,  6146,  1612,  5122,  2240,    41,  2725,  4174,
+ 3114,   176,  3222,   178,    12,   500,  4131,   660,  6147,  1220,
+37395,  1307,    88,  1313,  4121,  1613,  5123,  1797,    58,  2239,
+   40,  2382,    28,  2587,     8,  2755,    12,  3223,   179,     6,
+ 1423,    89,  1614,  5124,  2381,    27,  2722,  4168,  3056,   184,
+ 3224,   180,     6,  1422,    88,  1615,  5125,  1724,    68,  2380,
+   26,  2590,    14,  2754,    10,     5,  1616,  5126,  2379,    25,
+ 2723,  4170,  3225,   182,  3526,   176,     5,  1617,  5127,  2107,
+   56,  2378,    24,  2589,    12,  2753,     8,    10,   301,  8212,
+ 1902, 12289,  2792,     2,  2867,    16,  2894,    32,  3190,    75,
+ 4124, 16384,  4152,   256,  4178,   258,  4354,   272,     6,  2335,
+12320,  2793,     3,  2984,    66,  3038,    70,  3088,    72,  3189,
+   74,     7,   302,  8214,  2983,    65,  3037,    69,  4149, 16384,
+ 4153,   258,  4177,   256,  4379,   272,     4,  2791,     1,  2982,
+   64,  3036,    68,  3188,    72,     6,  2796,     6,  3193,    79,
+ 4102,   256,  4128,   258,  4174, 16384,  4304,   272,     5,   332,
+12368,  2797,     7,  3000,    64,  3035,    66,  3192,    78,     6,
+  300,  8210,  2794,     4,  4103,   258,  4127,   256,  4199, 16384,
+ 4329,   272,     4,  2795,     5,  3001,    66,  3034,    64,  3191,
+   76,    11,    73,   130,   305,  8220,   667,  8208,  1165,   170,
+ 1871,  2282,  3082,    65,  3185,    67,  4224, 16384,  4252,   256,
+ 4278,   258,  4454,   272,     3,   477,   147,  3081,    64,  3184,
+   66,     8,    71,   128,   306,  8222,   475,   144,  2798,     8,
+ 4249, 16384,  4253,   258,  4277,   256,  4479,   272,     5,    72,
+  129,   476,   145,  2799,     9,  3083,    66,  3183,    64,     7,
+  303,  8216,  1650, 24864,  3085,    69,  4202,   256,  4228,   258,
+ 4274, 16384,  4404,   272,     3,  3084,    68,  3187,    70,  3517,
+   64,     8,   304,  8218,   478,   148,  3040,    73,  3087,    71,
+ 4203,   258,  4227,   256,  4299, 16384,  4429,   272,     5,   479,
+  149,  3039,    72,  3086,    70,  3186,    68,  3518,    66,    11,
+  232,  8192,   297,  8196,  2802,    18,  2846,    16,  2895,    48,
+ 2905,    32,  2930,  1280,  4154,   272,  4324, 16384,  4352,   256,
+ 4378,   258,     4,   273,   129,  2803,    19,  2987,    82,  3004,
+   84,     9,   274,   130,   298,  8198,   473,   136,  2800,    16,
+ 2986,    81,  4179,   272,  4349, 16384,  4353,   258,  4377,   256,
+    6,   275,   131,   474,   137,  2801,    17,  2985,    80,  3005,
+   86,  3093,    90,     5,   276,   132,  4104,   272,  4302,   256,
+ 4328,   258,  4374, 16384,     3,   277,   133,   331, 12352,  3002,
+   80,     5,   296,  8194,  4129,   272,  4303,   258,  4327,   256,
+ 4399, 16384,     2,  3003,    82,  3041,    80,     8,    75,   146,
+  467,   130,  3197,    83,  3521,    85,  4254,   272,  4424, 16384,
+ 4452,   256,  4478,   258,     4,   468,   131,   661,  8193,  3089,
+   80,  3196,    82,     8,    74,   144,   465,   128,   662,  8194,
+ 3195,    81,  4279,   272,  4449, 16384,  4453,   258,  4477,   256,
+    4,   466,   129,   663,  8195,  3090,    82,  3194,    80,    10,
+   77,   150,   299,  8200,   471,   134,   664,  8196,  2469, 25952,
+ 3520,    81,  4204,   272,  4402,   256,  4428,   258,  4474, 16384,
+    5,   472,   135,   665,  8197,  3006,    88,  3091,    84,  3519,
+   80,     9,    76,   148,   469,   132,   666,  8198,  2847,    30,
+ 3198,    85,  4229,   272,  4403,   258,  4427,   256,  4499, 16384,
+    2,   470,   133,  3092,    86,     6,   339, 12405,  1448,   134,
+ 2848,    32,  2868,    48,  2904,    16,  2909,    96,     4,   338,
+12404,  1449,   135,  2329, 12288,  3101,   104,     2,   341, 12407,
+ 1164,   128,     4,   340, 12406,  1447,   133,  2330, 12290,  3102,
+  106,     2,   307,  8240,   335, 12401,     4,   334, 12400,  1446,
+  131,  2331, 12292,  3007,    96,     3,   308,  8242,   337, 12403,
+ 1444,   128,     5,   336, 12402,  1445,   129,  2332, 12294,  3008,
+   98,  3523,   106,     4,   669,  8240,  1523,   130,  1625,  8192,
+ 3095,    97,     2,  2333, 12296,  3094,    96,     2,  1521,   128,
+ 3097,    99,     2,  1522,   129,  3096,    98,     3,  1644, 24832,
+ 2468, 25936,  3099,   101,     3,  1645, 24833,  3098,   100,  3522,
+   96,     2,  1450,   136,  1646, 24834,     2,  1451,   137,  3100,
+  102,     5,  1458,   150,  2849,    48,  2893,    16,  2910,   112,
+ 3205,   123,     5,  1459,   151,  2334, 12304,  3011,   116,  3107,
+  120,  3204,   122,     3,  1456,   148,  2911,   114,  3203,   121,
+    3,  1457,   149,  3108,   122,  3202,   120,     3,  1454,   146,
+ 2772,   192,  2912,   116,     3,   333, 12384,  1455,   147,  3009,
+  112,     1,  1452,   144,     2,  1453,   145,  3010,   114,     4,
+  668,  8224,  1526,   146,  1649, 24852,  1870,  2266,     4,  1527,
+  147,  2467, 25925,  3103,   112,  3201,   114,     3,  1524,   144,
+ 1869,  2264,  3200,   113,     3,  1525,   145,  3104,   114,  3199,
+  112,     2,  1647, 24848,  2466, 25920,     1,  3105,   116,     3,
+ 1460,   152,  1528,   148,  1648, 24850,     1,  3106,   118,    10,
+ 1891,  8193,  2963,     2,  2990,     4,  3014,     6,  3159,    10,
+ 3513,    12,  3940,  9472,  4161,  4352,  4188,  4354,  4372,  5376,
+    9,  2850,    64,  2870,    80,  2918,    16,  2927,   320,  2964,
+    3,  2991,     5,  3160,    11,  4162,  4353,  4189,  4355,     8,
+  231,  4240,  2992,     6,  3013,     4,  3514,    14,  3966,  9472,
+ 4163,  4354,  4186,  4352,  4397,  5376,     5,  2790,   184,  2871,
+   82,  3158,     9,  4164,  4355,  4187,  4353,     9,   952, 37526,
+ 1893,  8197,  3012,     2,  3162,    14,  3510,     8,  3888,  9472,
+ 4111,  4352,  4138,  4354,  4322,  5376,     9,   324, 12305,  1892,
+ 8196,  2124,   128,  2771,   176,  2872,    84,  2988,     1,  3511,
+    9,  4112,  4353,  4139,  4355,    11,   325, 12306,  1895,  8199,
+ 2965,     4,  2989,     2,  3161,    12,  3512,    10,  3540,     8,
+ 3914,  9472,  4113,  4354,  4136,  4352,  4347,  5376,     5,   951,
+37525,  1894,  8198,  2282,   144,  4114,  4355,  4137,  4353,    10,
+ 1897,  8201,  2966,    10,  2995,    12,  3153,     2,  3493,  1042,
+ 3507,     4,  4044,  9472,  4261,  4352,  4288,  4354,  4472,  5376,
+    6,   185, 12289,  1896,  8200,  2787,   178,  3154,     3,  4262,
+ 4353,  4289,  4355,    11,   113,  4224,   544,  4240,   626,  5248,
+ 2996,    14,  3492,  1040,  3508,     6,  3538,     4,  4070,  9472,
+ 4263,  4354,  4286,  4352,  4497,  5376,     5,  2786,   176,  3509,
+    7,  3539,     5,  4264,  4355,  4287,  4353,     8,  2969,    14,
+ 2993,     8,  3156,     6,  3537,     2,  3992,  9472,  4211,  4352,
+ 4238,  4354,  4422,  5376,     5,  2465, 25904,  2789,   182,  3157,
+    7,  4212,  4353,  4239,  4355,    11,   114,  4228,   545,  4244,
+ 2967,    12,  2994,    10,  3015,     8,  3155,     4,  3506,     2,
+ 4018,  9472,  4213,  4354,  4236,  4352,  4447,  5376,     5,  2788,
+  180,  2968,    13,  3016,     9,  4214,  4355,  4237,  4353,    10,
+ 2127,   149,  2907,    17,  2972,    18,  2999,    20,  3020,    22,
+ 3170,    26,  3732,  9472,  4172,  5376,  4361,  4352,  4388,  4354,
+    8,  1898,  8208,  1901,  9216,  2126,   148,  2851,    80,  2869,
+   64,  2906,    16,  4362,  4353,  4389,  4355,    10,   229,  4224,
+  543,  4232,  2128,   151,  2970,    16,  3019,    20,  3169,    24,
+ 3758,  9472,  4197,  5376,  4363,  4354,  4386,  4352,     4,   230,
+ 4225,  2971,    17,  4364,  4355,  4387,  4353,     6,  2997,    16,
+ 3018,    18,  3680,  9472,  4122,  5376,  4311,  4352,  4338,  4354,
+    3,  2770,   160,  4312,  4353,  4339,  4355,     8,  1900,  8215,
+ 2281,   129,  2998,    18,  3017,    16,  3706,  9472,  4147,  5376,
+ 4313,  4354,  4336,  4352,     5,  1899,  8214,  2125,   146,  2280,
+  128,  4314,  4355,  4337,  4353,    11,   186, 12304,   538,  4226,
+  670,  8257,  2050, 42497,  3062,    16,  3164,    18,  3491,  1026,
+ 3836,  9472,  4272,  5376,  4461,  4352,  4488,  4354,     5,   539,
+ 4227,  2049, 42496,  3165,    19,  4462,  4353,  4489,  4355,    11,
+  115,  4240,   536,  4224,   627,  5264,   672,  8259,  2051, 42499,
+ 3063,    18,  3163,    16,  3862,  9472,  4297,  5376,  4463,  4354,
+ 4486,  4352,     7,   537,  4225,   628,  5265,   671,  8258,  2785,
+  160,  3490,  1025,  4464,  4355,  4487,  4353,     8,   542,  4230,
+  674,  8261,  3064,    20,  3168,    22,  3784,  9472,  4222,  5376,
+ 4411,  4352,  4438,  4354,     5,   673,  8260,  2129,   152,  2464,
+25888,  4412,  4353,  4439,  4355,     8,   540,  4228,  3021,    24,
+ 3065,    22,  3166,    20,  3810,  9472,  4247,  5376,  4413,  4354,
+ 4436,  4352,     6,   541,  4229,   629,  5269,   675,  8262,  3167,
+   21,  4414,  4355,  4437,  4353,     4,  2853,    97,  2974,    34,
+ 3025,    38,  3179,    42,     5,  2852,    96,  2896,    64,  2908,
+   32,  2928,   352,  3180,    43,     5,  2855,    99,  2973,    32,
+ 3024,    36,  3071,    42,  3178,    40,     2,  2854,    98,  3072,
+   43,     4,  2856,   101,  2976,    38,  3023,    34,  3073,    44,
+    1,  2769,   144,     4,  2857,   103,  2975,    36,  3022,    32,
+ 3181,    44,     1,  3182,    45,     5,  1629, 12288,  2858,   105,
+ 3066,    32,  3173,    34,  3501,  1074,     3,  3067,    33,  3174,
+   35,  3502,  1075,     6,  1583,  4224,  1630, 12290,  2977,    40,
+ 3028,    44,  3068,    34,  3171,    32,     6,  1631, 12291,  2784,
+  144,  2859,   106,  2978,    41,  3172,    33,  3500,  1073,     6,
+ 1632, 12292,  3027,    42,  3069,    36,  3176,    38,  3505,  1078,
+ 3515,    32,     4,  2016, 41508,  2463, 25872,  3070,    37,  3177,
+   39,     4,  1633, 12294,  3026,    40,  3503,  1076,  3516,    34,
+    2,  3175,    37,  3504,  1077,     5,   328, 12324,  1330,  4240,
+ 2512,   131,  2980,    50,  3031,    54,     7,  1188, 13313,  2511,
+  130,  2627,   128,  2873,    96,  2897,    80,  2919,    32,  2929,
+  368,     6,   329, 12326,  1189, 13314,  1331,  4242,  2510,   129,
+ 2979,    48,  3079,    58,     4,  1190, 13315,  1332,  4243,  2509,
+  128,  3080,    59,     4,   326, 12320,  1191, 13316,  1333,  4244,
+ 2515,   135,     5,  1192, 13317,  1334,  4245,  2514,   134,  2768,
+  128,  3030,    51,     5,   327, 12322,  1193, 13318,  1335,  4246,
+ 2981,    52,  3029,    48,     2,  1336,  4247,  2513,   132,     3,
+ 1634, 12304,  3074,    48,  3496,  1058,     1,  3497,  1059,     3,
+ 1584,  4240,  3075,    50,  3494,  1056,     2,  3076,    51,  3495,
+ 1057,     1,   330, 12328,     1,  2462, 25856,     3,  3032,    56,
+ 3077,    54,  3498,  1060,     3,  3033,    57,  3078,    55,  3499,
+ 1061,     8,    11,  4417,    88,   268,   356, 16404,  1476,   288,
+ 1853,  1364,  1934, 16448,  3624,  4177,  4082,  4112,     7,    89,
+  269,   357, 16405,  1854,  1365,  1935, 16449,  2822,   277,  3663,
+   64,  3671,  4097,     4,   358, 16406,  1477,   290,  1855,  1366,
+ 3626,  4179,     7,    12,  4418,    90,   271,   359, 16407,   577,
+ 4446,  3625,  4178,  3689,    64,  3697,  4097,    12,     9,   258,
+   86,   264,   352, 16400,   996, 37713,  1478,   292,  1849,  1360,
+ 1887,  4353,  2144,   326,  2811,  1040,  2821,   272,  2830,  1280,
+ 3628,  4181,     7,   353, 16401,  1102, 38720,  1850,  1361,  2145,
+  327,  3627,  4180,  3715,    64,  3723,  4097,     7,     8,   256,
+  128,  4427,   354, 16402,   998, 37715,  1479,   294,  1851,  1362,
+ 1889,  4355,    11,    87,   267,   127,  4426,   355, 16403,   576,
+ 4442,   997, 37714,  1852,  1363,  1888,  4354,  2143,   325,  3629,
+ 4182,  3741,    64,  3749,  4097,     6,    82,   260,   126,  4421,
+  187, 16384,   364, 16412,   574,  4437,  3631,  4185,     7,    83,
+  261,   365, 16413,   573,  4436,   696, 20560,  3630,  4184,  3767,
+   64,  3775,  4097,     2,    84,   262,  2461, 25840,     4,    85,
+  263,   575,  4438,  3793,    64,  3801,  4097,     5,    78,   256,
+  360, 16408,   570,  4433,  1103, 38729,  1541,   288,     7,    79,
+  257,   125,  4416,   361, 16409,   569,  4432,  1542,   289,  3819,
+   64,  3827,  4097,     3,    80,   258,   362, 16410,   572,  4435,
+    6,    81,   259,   363, 16411,   571,  4434,  2934,   153,  3845,
+   64,  3853,  4097,     8,   256, 16384,   345, 16388,   994, 37701,
+ 1105, 38741,  1936, 16464,  2307,  4353,  3541,    16,  3616,  4161,
+    7,   993, 37700,  1937, 16465,  2306,  4352,  2820,   261,  3571,
+    1,  3871,    64,  3879,  4097,     5,   346, 16390,  1938, 16466,
+ 2309,  4355,  3572,     2,  3618,  4163,     6,   995, 37702,  1106,
+38742,  2308,  4354,  3617,  4162,  3897,    64,  3905,  4097,     9,
+  568,  4425,   990, 37697,  1104, 38737,  2311,  4357,  2819,   256,
+ 2831,  1296,  3573,     4,  3620,  4165,  4079,  4100,     6,   214,
+  257,   989, 37696,  2310,  4356,  3619,  4164,  3923,    64,  3931,
+ 4097,     7,   215,   258,   238,  8576,   344, 16386,   992, 37699,
+ 2945,   160,  3622,  4167,  4080,  4102,     5,   131,  4442,   991,
+37698,  3621,  4166,  3949,    64,  3957,  4097,     5,    93,   276,
+  130,  4437,   349, 16396,   565,  4421,   682, 16384,     7,    94,
+  277,   564,  4420,   695, 20544,  3352,   468,  3623,  4168,  3975,
+   64,  3983,  4097,     4,    95,   278,   350, 16398,   567,  4423,
+ 4081,  4106,     6,    96,   279,   351, 16399,   566,  4422,  3353,
+  470,  4001,    64,  4009,  4097,     4,    91,   272,   347, 16392,
+  561,  4417,  1108, 38745,     6,   129,  4432,   560,  4416,  1107,
+38744,  3350,   464,  4027,    64,  4035,  4097,     3,    92,   274,
+  348, 16394,   563,  4419,     4,   562,  4418,  3351,   466,  4053,
+   64,  4061,  4097,     5,   375, 16436,  1114, 38757,  1194, 16384,
+ 1461,   256,  3644,  4209,     4,   376, 16437,  1113, 38756,  1167,
+  261,  3643,  4208,     4,   377, 16438,  1116, 38759,  1462,   258,
+ 3646,  4211,     3,  1115, 38758,  1463,   259,  3645,  4210,     7,
+  371, 16432,  1110, 38753,  1166,   256,  1464,   260,  1537,   264,
+ 2832,  1312,  3647,  4213,     4,   372, 16433,  1109, 38752,  1465,
+  261,  1538,   265,     5,   240,  8624,   373, 16434,  1112, 38755,
+ 1466,   262,  3649,  4215,     5,   374, 16435,  1111, 38754,  1351,
+ 4416,  1467,   263,  3648,  4214,     5,   380, 16444,  1468,   264,
+ 1533,   260,  1636, 16384,  3651,  4217,     3,   136,  4452,  1534,
+  261,  3650,  4216,     4,   137,  4455,  1535,   262,  2460, 25808,
+ 3653,  4219,     2,  1536,   263,  3652,  4218,     6,   133,  4449,
+  378, 16440,  1118, 38761,  1529,   256,  1733,  1280,  3655,  4221,
+    5,   132,  4448,   583,  4464,  1117, 38760,  1530,   257,  3654,
+ 4220,     4,   135,  4451,   379, 16442,  1531,   258,  1734,  1282,
+    3,   134,  4450,  1532,   259,  3656,  4222,     4,   368, 16420,
+ 1469,   272,  2813,  1060,  3633,  4193,     1,  3632,  4192,     5,
+  369, 16422,  1354,  4437,  1470,   274,  1707, 16384,  2814,  1062,
+    2,  1471,   275,  3634,  4194,     8,   366, 16416,  1120, 38769,
+ 1168,   272,  1353,  4435,  1472,   276,  1857,  1376,  2812,  1056,
+ 2823,   288,     4,   999, 37728,  1119, 38768,  1473,   277,  3635,
+ 4196,     5,   239,  8608,   367, 16418,  1858,  1378,  2944,   128,
+ 3636,  4199,     3,  1121, 38770,  1352,  4432,  1474,   279,     3,
+ 1475,   280,  1735, 16384,  3638,  4201,     2,   581,  4452,  3637,
+ 4200,     1,  2459, 25792,     1,   582,  4454,     5,   370, 16424,
+  579,  4449,  1539,   272,  1730,   256,  3640,  4205,     3,   578,
+ 4448,  1540,   273,  3639,  4204,     2,  1355,  4441,  3642,  4207,
+    2,   580,  4450,  3641,  4206,     7,    24,  5392,   966, 37652,
+ 1845,  1301,  1903, 16385,  3582,  4112,  3867,    16,  4123, 12288,
+    8,    25,  5393,   385, 16468,   967, 37653,  1343,  4391,  2132,
+  258,  2300,  1280,  3583,  4113,  3710,     5,     8,    26,  5394,
+  387, 16471,   968, 37654,  1905, 16387,  2131,   257,  3584,  4114,
+ 3893,    16,  4148, 12288,     7,   386, 16470,   969, 37655,  1342,
+ 4389,  1904, 16386,  2130,   256,  3585,  4115,  3736,     5,     8,
+  383, 16465,   631,  5384,   962, 37648,  1341,  4386,  1907, 16389,
+ 3586,  4116,  3919,    16,  4173, 12288,     9,   382, 16464,   963,
+37649,  1079, 38657,  1798,   256,  1906, 16388,  2134,   262,  2193,
+  264,  3587,  4117,  3658,     5,     6,   964, 37650,  1844,  1299,
+ 1909, 16391,  3588,  4118,  3945,    16,  4198, 12288,    10,   242,
+ 8656,   384, 16466,   965, 37651,  1340,  4385,  1843,  1298,  1908,
+16390,  2133,   260,  2676,  1312,  3589,  4119,  3684,     5,     8,
+  549,  4372,   684, 20496,  1910, 16393,  2190,   261,  3330,   388,
+ 3590,  4120,  3971,    16,  4223, 12288,     4,   391, 16476,  3543,
+   64,  3591,  4121,  3814,     5,     7,    27,  5402,   685, 20498,
+ 2037, 41861,  2192,   263,  3592,  4122,  3997,    16,  4248, 12288,
+    4,  2191,   262,  3544,    66,  3593,  4123,  3840,     5,     9,
+  116,  4352,   389, 16473,   547,  4368,   630,  5376,   970, 37656,
+ 3327,   384,  3594,  4124,  4023,    16,  4273, 12288,     7,   388,
+16472,   548,  4369,   971, 37657,  1846,  1304,  2188,   256,  3595,
+ 4125,  3762,     5,     5,  1344,  4392,  3328,   386,  3596,  4126,
+ 4049,    16,  4298, 12288,     8,   390, 16474,  1847,  1306,  1939,
+33538,  2036, 41856,  2189,   258,  3329,   387,  3597,  4127,  3788,
+    5,     8,    22,  5376,   428, 20484,   956, 37636,  1912, 16401,
+ 2284,   257,  2692,   289,  3659,    16,  4323, 12288,     7,   957,
+37637,  1080, 38677,  1911, 16400,  2283,   256,  2691,   288,  3574,
+ 4097,  3918,     5,     5,   958, 37638,  1081, 38678,  1349,  4404,
+ 3685,    16,  4348, 12288,     4,   959, 37639,  1082, 38679,  1350,
+ 4405,  3944,     5,     7,    23,  5380,  1347,  4402,  1913, 16405,
+ 3335,   408,  3575,  4100,  3711,    16,  4373, 12288,     8,   381,
+16448,   953, 37633,  1348,  4403,  1841,  1280,  2833,  1360,  3336,
+  409,  3576,  4101,  3866,     5,     7,   427, 20482,   954, 37634,
+ 1345,  4400,  3337,   410,  3577,  4102,  3737,    16,  4398, 12288,
+    6,   241,  8640,   955, 37635,  1346,  4401,  1914, 16406,  3578,
+ 4103,  3892,     5,     6,   683, 20480,  1916, 16409,  3333,   404,
+ 3579,  4104,  3763,    16,  4423, 12288,     5,   119,  4373,  1915,
+16408,  3545,    80,  3580,  4105,  4022,     5,     4,  3334,   406,
+ 3581,  4106,  3789,    16,  4448, 12288,     2,  2458, 25760,  4048,
+    5,     9,   117,  4368,   546,  4352,   632,  5392,   960, 37640,
+ 1083, 38680,  2195,   273,  3331,   400,  3815,    16,  4473, 12288,
+    6,   118,  4369,   633,  5393,   961, 37641,  1084, 38681,  2194,
+  272,  3970,     5,     4,  2197,   275,  3332,   402,  3841,    16,
+ 4498, 12288,     4,  1842,  1290,  2038, 41872,  2196,   274,  3996,
+    5,    10,   985, 37684,  1089, 38692,  1195, 20480,  1245, 37644,
+ 1918, 16417,  2137,   291,  2838,  1381,  3660,    32,  3687,    34,
+ 3870,    48,     8,   397, 16500,   986, 37685,  1090, 38693,  1246,
+37645,  1917, 16416,  2136,   290,  2837,  1380,  3609,  4145,     8,
+ 1091, 38694,  1196, 20482,  1247, 37646,  1920, 16419,  2135,   289,
+ 3661,    34,  3686,    32,  3896,    48,     6,   398, 16502,   987,
+37687,  1092, 38695,  1248, 37647,  1919, 16418,  3610,  4147,    11,
+  558,  4408,   982, 37680,  1085, 38688,  1242, 37640,  1921, 16421,
+ 2834,  1377,  3342,   424,  3611,  4148,  3712,    32,  3739,    34,
+ 3922,    48,     4,   395, 16496,  1086, 38689,  1243, 37641,  1339,
+ 4355,    11,   559,  4410,   983, 37682,  1087, 38690,  1244, 37642,
+ 1337,  4352,  1923, 16423,  2139,   293,  2836,  1379,  3713,    34,
+ 3738,    32,  3948,    48,    10,   243,  8688,   396, 16498,   984,
+37683,  1088, 38691,  1338,  4353,  1922, 16422,  2138,   292,  2671,
+ 1280,  2835,  1378,  3612,  4151,    10,   554,  4404,   694, 20528,
+ 1589,  4356,  1637, 20480,  1925, 16425,  3340,   420,  3613,  4152,
+ 3764,    32,  3791,    34,  3974,    48,     5,   121,  4389,   401,
+16508,   555,  4405,  1924, 16424,  3614,  4153,     6,   556,  4406,
+ 3341,   422,  3615,  4154,  3765,    34,  3790,    32,  4000,    48,
+    4,   402, 16510,   557,  4407,  1241, 37639,  2457, 25744,     9,
+  120,  4384,   552,  4400,   634,  5408,   988, 37688,  1585,  4352,
+ 3338,   416,  3816,    32,  3843,    34,  4026,    48,     7,   399,
+16504,   553,  4401,   635,  5409,  1093, 38697,  1239, 37633,  1586,
+ 4353,  2198,   288,     6,  1240, 37634,  1587,  4354,  3339,   418,
+ 3817,    34,  3842,    32,  4052,    48,     2,   400, 16506,  1588,
+ 4355,    10,    10,  4400,   692, 20520,   976, 37668,  1096, 38708,
+ 1927, 16433,  3349,   444,  3598,  4128,  3662,    48,  3868,    32,
+ 3895,    34,     8,   394, 16484,   693, 20521,   977, 37669,  1097,
+38709,  1926, 16432,  2631,   262,  2675,  1302,  3599,  4129,     6,
+  978, 37670,  1098, 38710,  1929, 16435,  3688,    48,  3869,    34,
+ 3894,    32,     6,   979, 37671,  1099, 38711,  1928, 16434,  2630,
+  260,  2674,  1300,  3600,  4131,     9,   972, 37664,  1931, 16437,
+ 2141,   311,  2517,   257,  3347,   440,  3601,  4132,  3714,    48,
+ 3920,    32,  3947,    34,     8,   392, 16480,   973, 37665,  1848,
+ 1312,  1930, 16436,  2516,   256,  2629,   258,  2673,  1298,  3602,
+ 4133,    11,   124,  4410,   974, 37666,  1094, 38706,  1933, 16439,
+ 2140,   309,  2519,   259,  3348,   442,  3603,  4134,  3740,    48,
+ 3921,    34,  3946,    32,     9,   393, 16482,   975, 37667,  1095,
+38707,  1932, 16438,  2518,   258,  2628,   256,  2672,  1296,  2946,
+  192,  3604,  4135,     7,   123,  4404,   686, 20512,  3345,   436,
+ 3605,  4136,  3766,    48,  3972,    32,  3999,    34,     3,   687,
+20513,  2635,   270,  3606,  4137,     7,   688, 20514,  2142,   313,
+ 3346,   438,  3607,  4138,  3792,    48,  3973,    34,  3998,    32,
+    2,  2634,   268,  3608,  4139,    11,   122,  4400,   550,  4384,
+  636,  5424,   689, 20516,   980, 37672,  1100, 38712,  1249, 37648,
+ 3343,   432,  3818,    48,  4024,    32,  4051,    34,     7,   551,
+ 4385,   637,  5425,   981, 37673,  1101, 38713,  1250, 37649,  1590,
+ 4369,  2633,   266,     7,   690, 20518,  1251, 37650,  1591,  4370,
+ 3344,   434,  3844,    48,  4025,    34,  4050,    32,     4,   691,
+20519,  1252, 37651,  1592,  4371,  2632,   264,     2,   707, 24600,
+ 3683, 12288,     2,   787, 28760,  3326,   334,     2,   708, 24602,
+ 3709, 12288,     1,  3325,   332,     9,   233,  8464,   418, 16530,
+  709, 24604,  2866,  1296,  2880,   272,  2890,  1280,  2931,    16,
+ 2940,    48,  3735, 12288,     1,  3324,   330,     2,   710, 24606,
+ 3761, 12288,     2,   417, 16529,  3323,   328,     3,  1639, 24608,
+ 2456, 25712,  3787, 12288,     4,   423, 16543,   703, 24593,   783,
+28752,  3322,   326,     4,   421, 16540,   704, 24594,  1640, 24610,
+ 3813, 12288,     4,   422, 16541,   784, 28754,  1641, 24611,  3321,
+  324,     4,   419, 16538,   705, 24596,  2027, 41792,  3839, 12288,
+    4,   420, 16539,   785, 28756,  3135,   320,  3320,   322,     2,
+  706, 24598,  3865, 12288,     3,   786, 28758,  3136,   322,  3319,
+  320,     3,   409, 16518,  3891, 12288,  4085,    16,     3,   410,
+16519,   781, 28744,  4086,    17,     3,   407, 16516,  3917, 12288,
+ 4087,    18,     1,   408, 16517,     8,   405, 16514,  2031, 41816,
+ 2865,  1280,  2879,   256,  2891,  1296,  2902,   304,  2921,    16,
+ 3943, 12288,     3,   406, 16515,   782, 28748,  4088,    21,     2,
+  403, 16512,  3969, 12288,     1,   404, 16513,     8,   416, 16526,
+  702, 24576,   777, 28737,  1642, 24624,  2030, 41812,  2055, 42820,
+ 2455, 25696,  3995, 12288,     1,   776, 28736,     2,   414, 16524,
+ 4021, 12288,     2,   415, 16525,   778, 28738,     2,   146,  8464,
+ 4047, 12288,     4,   147,  8465,   413, 16523,   779, 28740,  3137,
+  336,     5,   148,  8466,   411, 16520,  1872,  2552,  2028, 41810,
+ 4073, 12288,     4,   412, 16521,   780, 28742,  2029, 41811,  3138,
+  338,     4,   724, 24632,  4106,  2048,  4132,  2050,  4159,  2052,
+    3,   725, 24633,  2939,    21,  4133,  2051,     5,   726, 24634,
+ 4089,    34,  4107,  2050,  4131,  2048,  4184,  2052,     2,   727,
+24635,  4108,  2051,    10,   153,  8488,   728, 24636,  2882,   304,
+ 2892,  1312,  2922,    32,  2933,    48,  2938,    16,  4109,  2052,
+ 4156,  2048,  4182,  2050,     4,   154,  8489,   729, 24637,  3143,
+  360,  4183,  2051,     5,   155,  8490,   730, 24638,  4134,  2052,
+ 4157,  2050,  4181,  2048,     2,   731, 24639,  4158,  2051,     7,
+  151,  8484,   719, 24624,  2454, 25680,  2808,  2310,  4206,  2048,
+ 4232,  2050,  4259,  2052,     3,   720, 24625,  3141,   356,  4233,
+ 2051,     5,   721, 24626,  2807,  2308,  4207,  2050,  4231,  2048,
+ 4284,  2052,     3,   152,  8487,  3142,   358,  4208,  2051,     6,
+  149,  8480,   722, 24628,  2032, 41824,  4209,  2052,  4256,  2048,
+ 4282,  2050,     2,  3139,   352,  4283,  2051,     5,   150,  8482,
+  723, 24630,  4234,  2052,  4257,  2050,  4281,  2048,     2,  3140,
+  354,  4258,  2051,     4,   715, 24616,  4306,  2048,  4332,  2050,
+ 4359,  2052,     1,  4333,  2051,     4,   716, 24618,  4307,  2050,
+ 4331,  2048,  4384,  2052,     1,  4308,  2051,    10,   426, 16546,
+  717, 24620,  2881,   288,  2900,   272,  2923,    48,  2932,    32,
+ 2935,    16,  4309,  2052,  4356,  2048,  4382,  2050,     2,  2901,
+  273,  4383,  2051,     5,   424, 16544,   718, 24622,  4334,  2052,
+ 4357,  2050,  4381,  2048,     2,   425, 16545,  4358,  2051,     8,
+  159,  8500,   711, 24608,  1628,  8468,  1638, 24592,  2453, 25664,
+ 4406,  2048,  4432,  2050,  4459,  2052,     4,   160,  8501,   788,
+28768,  2035, 41845,  4433,  2051,     4,   712, 24610,  4407,  2050,
+ 4431,  2048,  4484,  2052,     2,   789, 28770,  4408,  2051,     9,
+  156,  8496,   713, 24612,   791, 28773,  1626,  8464,  2033, 41840,
+ 2810,  2322,  4409,  2052,  4456,  2048,  4482,  2050,     2,   790,
+28772,  4483,  2051,     9,   157,  8498,   714, 24614,  1627,  8466,
+ 2034, 41842,  2804,   304,  2809,  2320,  4434,  2052,  4457,  2050,
+ 4481,  2048,     2,   158,  8499,  4458,  2051,     9,  3293,   270,
+ 3672,  8192,  3699,  8194,  3726,  8196,  3753,  8198,  3780,  8200,
+ 3807,  8202,  3834,  8204,  3861,  8206,     5,   236,  8532,   746,
+24664,  2886,   340,  4090,    64,  4110,  4097,    10,   763, 28698,
+ 3292,   268,  3673,  8194,  3698,  8192,  3727,  8198,  3752,  8196,
+ 3781,  8202,  3806,  8200,  3835,  8206,  3860,  8204,     2,   747,
+24666,  4135,  4097,    10,  3291,   266,  3674,  8196,  3701,  8198,
+ 3724,  8192,  3751,  8194,  3782,  8204,  3809,  8206,  3832,  8200,
+ 3859,  8202,  4091,    69,     6,   234,  8528,  2884,   336,  2916,
+  256,  2920,  1280,  2924,    64,  4160,  4097,     9,  3289,   264,
+ 3675,  8198,  3700,  8196,  3725,  8194,  3750,  8192,  3783,  8206,
+ 3808,  8204,  3833,  8202,  3858,  8200,     5,   235,  8530,  2024,
+41738,  2885,   338,  3290,   265,  4185,  4097,    11,   758, 28688,
+ 3287,   262,  3534,   256,  3676,  8200,  3703,  8202,  3730,  8204,
+ 3757,  8206,  3776,  8192,  3803,  8194,  3830,  8196,  3857,  8198,
+    7,   163,  8516,   742, 24656,   759, 28689,  2452, 25648,  3123,
+  261,  3288,   263,  4210,  4097,    12,   760, 28690,  2023, 41735,
+ 3286,   260,  3535,   258,  3677,  8202,  3702,  8200,  3731,  8206,
+ 3756,  8204,  3777,  8194,  3802,  8192,  3831,  8198,  3856,  8196,
+    3,   743, 24658,  2887,   350,  4235,  4097,    13,   761, 28692,
+ 2022, 41729,  3122,   256,  3285,   258,  3536,   260,  3678,  8204,
+ 3705,  8206,  3728,  8200,  3755,  8202,  3778,  8196,  3805,  8198,
+ 3828,  8192,  3855,  8194,     4,   744, 24660,  1856,  1434,  2021,
+41728,  4260,  4097,    12,   162,  8515,   589,  4496,   762, 28694,
+ 3284,   256,  3679,  8206,  3704,  8204,  3729,  8202,  3754,  8200,
+ 3779,  8198,  3804,  8196,  3829,  8194,  3854,  8192,     5,   161,
+ 8514,   590,  4497,   745, 24662,  2805,   320,  4285,  4097,    11,
+  754, 28680,  3303,   286,  3880,  8192,  3907,  8194,  3934,  8196,
+ 3961,  8198,  3988,  8200,  4015,  8202,  4042,  8204,  4069,  8206,
+ 4093,    81,     4,   738, 24648,  3304,   287,  4092,    80,  4310,
+ 4097,    10,   755, 28682,  3302,   284,  3881,  8194,  3906,  8192,
+ 3935,  8198,  3960,  8196,  3989,  8202,  4014,  8200,  4043,  8206,
+ 4068,  8204,     3,   739, 24650,  4094,    82,  4335,  4097,    10,
+  756, 28684,  3301,   282,  3882,  8196,  3909,  8198,  3932,  8192,
+ 3959,  8194,  3990,  8204,  4017,  8206,  4040,  8200,  4067,  8202,
+    7,   740, 24652,  2883,   320,  2917,  1280,  2925,    80,  2937,
+  112,  2943,    96,  4360,  4097,    11,   142,  4504,   757, 28686,
+ 3300,   280,  3883,  8198,  3908,  8196,  3933,  8194,  3958,  8192,
+ 3991,  8206,  4016,  8204,  4041,  8202,  4066,  8200,     3,   143,
+ 4505,   741, 24654,  4385,  4097,    13,   140,  4502,   680, 12548,
+  733, 24641,   749, 28672,  3299,   278,  3884,  8200,  3911,  8202,
+ 3938,  8204,  3965,  8206,  3984,  8192,  4011,  8194,  4038,  8196,
+ 4065,  8198,     6,   141,  4503,   681, 12549,   732, 24640,   750,
+28673,  2451, 25632,  4410,  4097,    12,   588,  4484,   735, 24643,
+ 3125,   278,  3297,   276,  3885,  8202,  3910,  8200,  3939,  8206,
+ 3964,  8204,  3985,  8194,  4010,  8192,  4039,  8198,  4064,  8196,
+    4,   139,  4501,   734, 24642,  3298,   277,  4435,  4097,    13,
+  586,  4482,   676, 12544,   751, 28676,  3124,   272,  3296,   274,
+ 3886,  8204,  3913,  8206,  3936,  8200,  3963,  8202,  3986,  8196,
+ 4013,  8198,  4036,  8192,  4063,  8194,     5,   587,  4483,   677,
+12545,   736, 24644,   752, 28677,  4460,  4097,    14,   138,  4496,
+  584,  4480,   678, 12546,   753, 28678,  2025, 41747,  3294,   272,
+ 3887,  8206,  3912,  8204,  3937,  8202,  3962,  8200,  3987,  8198,
+ 4012,  8196,  4037,  8194,  4062,  8192,     5,   585,  4481,   679,
+12547,   737, 24646,  3295,   273,  4485,  4097,     4,   775, 28728,
+ 3316,   302,  4096,    97,  4201,   105,     2,  4095,    96,  4200,
+  104,     3,  3315,   300,  4098,    99,  4226,   105,     2,  4097,
+   98,  4225,   104,     3,  1187, 12544,  3314,   298,  4251,   105,
+    3,  2903,   320,  2942,    80,  4250,   104,     2,  3312,   296,
+ 4276,   105,     3,  3313,   297,  4099,   102,  4275,   104,     3,
+  771, 28720,  3311,   294,  4101,   105,     3,  1643, 24640,  2450,
+25616,  4100,   104,     3,   772, 28722,  3309,   292,  4126,   105,
+    2,  3310,   293,  4125,   104,     5,   773, 28724,  2053, 42801,
+ 3126,   288,  3307,   290,  4151,   105,     3,  2052, 42800,  3308,
+  291,  4150,   104,     4,   774, 28726,  3127,   290,  3305,   288,
+ 4176,   105,     3,  2054, 42802,  3306,   289,  4175,   104,     3,
+  768, 28712,  3134,   316,  4401,   105,     1,  4400,   104,     2,
+  769, 28714,  4426,   105,     2,   770, 28715,  4425,   104,     3,
+ 3132,   312,  3546,   255,  4451,   105,     6,   237,  8544,  2888,
+  352,  2926,   112,  2936,    80,  2941,    64,  4450,   104,     2,
+ 3133,   314,  4476,   105,     3,  1593,  4505,  2026, 41786,  4475,
+  104,     3,   764, 28704,  3130,   308,  4301,   105,     3,   748,
+24672,  2449, 25600,  4300,   104,     5,   593,  4516,   765, 28706,
+ 3131,   310,  3318,   308,  4326,   105,     1,  4325,   104,     5,
+  592,  4514,   766, 28708,  1635, 12560,  3128,   304,  4351,   105,
+    1,  4350,   104,     5,   591,  4512,   767, 28710,  3129,   306,
+ 3317,   304,  4376,   105,     1,  4375,   104,     5,   203, 37977,
+  602,  4689,   839, 36953,  1031, 37961,  2554,   632,     6,    97,
+  513,   202, 37976,   601,  4688,   838, 36952,  1672, 38008,  2555,
+  633,     3,   254,  8856,  1572,  2562,  1761,   560,     2,   255,
+ 8857,  1762,   561,     2,  1573,  2564,  3569,   768,     1,  2743,
+ 4664,     2,  2170,   584,  2447, 25568,     1,  2171,   585,     3,
+  248,  8850,   834, 36945,  1028, 37953,     8,   249,  8851,   833,
+36944,  1027, 37952,  1366,  4706,  1800,   577,  2169,   583,  2741,
+ 4660,  3414,   712,     3,   836, 36947,  1801,   578,  2168,   580,
+    6,   835, 36946,  1029, 37954,  1365,  4704,  1802,   579,  2552,
+  627,  2742,  4662,     4,   252,  8854,  1803,   580,  2167,   578,
+ 2553,   628,     6,   253,  8855,   837, 36948,  1671, 38004,  1804,
+  581,  2316,  4624,  2740,  4656,     3,   250,  8852,  1030, 37959,
+ 1367,  4709,     2,   251,  8853,  4500,    16,     3,   832, 36937,
+ 1199, 36977,  1759,   546,     5,   145,  4688,   597,  4672,   831,
+36936,  1760,   547,  3415,   720,     2,   599,  4675,  1757,   544,
+    4,   598,  4674,  1200, 36978,  1758,   545,  3416,   722,     2,
+  600,  4676,  3417,   724,     1,  2448, 25584,     1,  3418,   726,
+    5,   216,   512,   824, 36929,  1032, 37969,  1368,  4723,  1805,
+  592,     4,   217,   513,  1806,   593,  2550,   609,  2739,  4644,
+    3,   826, 36931,  1807,   594,  2551,   610,     3,   825, 36930,
+ 1033, 37970,  1808,   595,     5,   828, 36933,  1034, 37973,  1809,
+  596,  2174,   594,  2313,  4609,     5,   827, 36932,  1810,   597,
+ 2175,   595,  2312,  4608,  2737,  4640,     4,   830, 36935,  1036,
+37975,  2172,   592,  2315,  4611,     5,   829, 36934,  1035, 37974,
+ 2173,   593,  2314,  4610,  2738,  4642,     6,   856, 36985,  1045,
+37993,  1543,   512,  1751,   530,  2549,   600,  3420,   737,     5,
+  855, 36984,  1044, 37992,  1254, 37968,  1752,   531,  3419,   736,
+    3,  1255, 37971,  1749,   528,  3422,   739,     2,  1750,   529,
+ 3421,   738,     1,  3424,   741,     1,  3423,   740,     3,  1753,
+  532,  2445, 25536,  3426,   743,     2,  1754,   533,  3425,   742,
+    5,  1037, 37985,  1169,   512,  1756,   538,  1811,   608,  2541,
+  592,     4,   849, 36976,  1812,   609,  2542,   593,  3427,   744,
+    5,   850, 36979,  1039, 37987,  1755,   536,  2543,   594,  3429,
+  747,     4,  1038, 37986,  2544,   595,  2736,  4630,  3428,   746,
+    3,   852, 36981,  1041, 37989,  2545,   596,     5,   851, 36980,
+ 1040, 37988,  1670, 37972,  2546,   597,  2734,  4624,     4,   854,
+36983,  1043, 37991,  1480,   514,  2547,   598,     5,   853, 36982,
+ 1042, 37990,  2548,   599,  2735,  4626,  4502,    48,     4,   604,
+ 4705,   848, 36969,  1742,   514,  2539,   584,     3,   603,  4704,
+ 1743,   515,  2540,   585,     1,  1741,   512,     2,  1198, 36951,
+ 2446, 25552,     3,  1197, 36950,  1652, 32736,  1744,   517,     4,
+  841, 36961,  1047, 38001,  1747,   522,  1813,   624,     5,   204,
+37984,   840, 36960,  1046, 38000,  2532,   577,  2733,  4612,     5,
+  843, 36963,  1049, 38003,  1666, 37955,  1745,   520,  2533,   578,
+    5,   842, 36962,  1048, 38002,  1362,  4688,  1746,   521,  2534,
+  579,     4,   845, 36965,  1364,  4695,  1668, 37957,  2535,   580,
+    7,   844, 36964,  1050, 38004,  1667, 37956,  1814,   629,  2317,
+ 4640,  2536,   581,  2731,  4608,     5,   847, 36967,  1052, 38007,
+ 1363,  4693,  1748,   524,  2537,   582,     6,   846, 36966,  1051,
+38006,  1669, 37958,  2538,   583,  2732,  4610,  4501,    32,     7,
+  144,  4608,   596,  4624,   638,  5632,   806, 36888,  2044, 42131,
+ 2200,   513,  3390,   640,     5,   807, 36889,  1603,  4641,  1979,
+41090,  2043, 42130,  2199,   512,     4,   639,  5634,  1604,  4642,
+ 2042, 42129,  3391,   642,     4,  1605,  4643,  1978, 41088,  2201,
+  514,  2441, 25508,     2,   640,  5636,  3392,   644,     1,  2046,
+42134,     4,   641,  5638,  1981, 41093,  2202,   519,  3393,   646,
+    4,  1980, 41092,  2045, 42132,  2152,   520,  2440, 25504,     6,
+  201, 37904,   642,  5640,   799, 36880,  2151,   519,  2528,   561,
+ 3394,   648,     4,   800, 36881,  1000, 37889,  1861,  1552,  2527,
+  560,     7,   801, 36882,  1001, 37890,  1359,  4640,  1983, 41097,
+ 2150,   517,  2530,   563,  3395,   650,     6,  1002, 37891,  1862,
+ 1554,  1982, 41096,  2149,   516,  2443, 25516,  2529,   562,     6,
+   13,  4608,   802, 36884,  1003, 37892,  2148,   515,  2288,   529,
+ 3396,   652,     5,   803, 36885,  1004, 37893,  2147,   514,  2287,
+  528,  2531,   564,     4,    14,  4610,   804, 36886,  1005, 37894,
+ 2146,   513,     5,   188, 36871,   805, 36887,  1006, 37895,  1360,
+ 4645,  2442, 25512,     5,   594,  4608,   643,  5648,   797, 36872,
+ 2526,   553,  3397,   656,     5,   595,  4609,   798, 36873,  1253,
+37921,  2525,   552,  3398,   657,     2,   644,  5650,  3399,   658,
+    1,  1984, 41104,     1,  3400,   660,     1,  3401,   662,     2,
+ 2158,   536,  2444, 25520,     2,  1007, 37904,  3402,   664,     1,
+ 1859,  1536,     4,  1008, 37906,  1361,  4656,  1665, 37922,  2157,
+  533,     2,  1860,  1538,  2203,   538,     4,    28,  5632,   794,
+36868,  2156,   531,  3403,   668,     3,   795, 36869,  2155,   530,
+ 2285,   512,     7,    15,  4626,   796, 36870,  2154,   529,  2205,
+  543,  2524,   551,  3404,   670,  4503,    64,     5,  1009, 37911,
+ 2153,   528,  2204,   542,  2286,   514,  2523,   550,     5,   645,
+ 5664,  1016, 37928,  1185,  4616,  1594,  4608,  3405,   672,     3,
+ 1017, 37929,  1186,  4617,  1595,  4609,     3,   646,  5666,  1596,
+ 4610,  3406,   674,     3,   647,  5667,  1597,  4611,  2646,   536,
+    3,   648,  5668,  1598,  4612,  3407,   676,     1,  2438, 25472,
+    5,   817, 36912,  1010, 37920,  1135, 38928,  1181,  4608,  2161,
+  551,     5,  1653, 36865,  1662, 37905,  1799,   544,  2643,   530,
+ 2678,  1538,     3,   818, 36914,  1182,  4610,  1654, 36866,     7,
+  819, 36915,  1011, 37923,  1170,   578,  1655, 36867,  2160,   548,
+ 2642,   528,  2677,  1536,     4,    16,  4640,   820, 36916,  1012,
+37924,  1183,  4612,     4,   821, 36917,  1013, 37925,  1663, 37909,
+ 2645,   534,     4,   822, 36918,  1014, 37926,  1184,  4614,  1664,
+37910,     5,   823, 36919,  1015, 37927,  2159,   544,  2644,   532,
+ 2679,  1540,     5,   815, 36904,  1025, 37944,  1128, 38920,  2522,
+  521,  3408,   688,     7,   257, 37937,   816, 36905,  1026, 37945,
+ 1129, 38921,  1599,  4625,  1765,   578,  2521,   520,     3,  1600,
+ 4626,  1764,   577,  3409,   690,     6,  1130, 38923,  1601,  4627,
+ 1763,   576,  1985, 41136,  2641,   520,  3410,   691,     4,  1131,
+38924,  1602,  4628,  1769,   583,  3411,   692,     2,  1132, 38925,
+ 1768,   582,     2,  1133, 38926,  1767,   581,     4,  1134, 38927,
+ 1766,   580,  2166,   568,  2439, 25488,     6,   808, 36896,  1018,
+37936,  1358,  4626,  2638,   515,  2745,  4676,  3412,   696,     5,
+  809, 36897,  1122, 38913,  1863,  1568,  2165,   566,  2637,   514,
+    5,   810, 36898,  1019, 37938,  1356,  4624,  2746,  4678,  3413,
+  698,     6,  1020, 37939,  1123, 38915,  1357,  4625,  1770,   584,
+ 2164,   564,  2636,   512,     3,   811, 36900,  1021, 37940,  1124,
+38916,     6,   812, 36901,  1022, 37941,  1125, 38917,  2163,   562,
+ 2289,   544,  2640,   518,     5,   813, 36902,  1023, 37942,  1126,
+38918,  2520,   519,  2744,  4674,     6,   814, 36903,  1024, 37943,
+ 1127, 38919,  2162,   560,  2290,   546,  2639,   516,     3,   164,
+ 8704,  1961, 41024,  2954,     8,     3,  2955,     9,  3150,   576,
+ 3380,   578,     2,  2806,   512,  2956,    10,     3,  1962, 41027,
+ 2957,    11,  3379,   576,     3,   165,  8708,  2437, 25440,  2958,
+   12,     1,  2959,    13,     1,  2960,    14,     3,  1963, 41031,
+ 2961,    15,  3381,   580,     2,   166,  8712,   247,  8720,     1,
+ 2947,     1,     1,  2948,     2,     1,  2949,     3,     2,   316,
+ 8720,  2950,     4,     1,  2951,     5,     1,  2952,     6,     1,
+ 2953,     7,     3,   314,  8716,  1964, 41040,  3152,   593,     1,
+ 3151,   592,     1,   315,  8718,     1,  3382,   592,     1,   312,
+ 8712,     1,  1941, 37014,     1,   313,  8714,     2,  1940, 37012,
+ 1965, 41047,     2,   167,  8728,   310,  8708,     2,   244,  8705,
+ 1136, 40961,     3,   245,  8706,   311,  8710,  1137, 40962,     3,
+  246,  8707,  1138, 40963,  1942, 37016,     1,   309,  8706,     4,
+  168,  8736,  1864,  1786,  1966, 41056,  3385,   611,     3,  2057,
+45088,  2433, 25413,  3384,   610,     1,  2434, 25414,     2,  2435,
+25415,  3383,   608,     1,  2432, 25408,     1,  3387,   614,     1,
+ 1967, 41062,     2,  1968, 41063,  3386,   612,     3,   169,  8744,
+ 1969, 41064,  2962,    32,     2,   170,  8745,  3388,   618,     1,
+ 3389,   620,     3,   171,  8752,   323,  8748,  1970, 41072,     1,
+ 1971, 41075,     3,   321,  8744,  1972, 41076,  2436, 25424,     1,
+ 1973, 41077,     2,   322,  8746,  1974, 41078,     2,   319,  8740,
+ 1975, 41080,     2,   320,  8742,  1976, 41082,     2,   317,  8736,
+ 1977, 41084,     1,  4508,    64,     1,   318,  8738,     4,  3144,
+  512,  3355,   514,  3657,     1,  4295,  4866,     3,   172,  8768,
+ 4269,  4865,  4296,  4867,     4,   872, 37016,  3145,   514,  3354,
+  512,  4270,  4866,     3,   173,  8770,  4271,  4867,  4294,  4865,
+    2,  3356,   518,  4245,  4866,     4,   174,  8772,  2430, 25376,
+ 4219,  4865,  4246,  4867,     2,  1949, 40967,  4220,  4866,     3,
+  175,  8774,  4221,  4867,  4244,  4865,     2,   867, 37010,  4195,
+ 4866,     3,   868, 37011,  4169,  4865,  4196,  4867,     3,   865,
+37008,  1816,   641,  4170,  4866,     4,   866, 37009,  1815,   640,
+ 4171,  4867,  4194,  4865,     3,   871, 37014,  4145,  4866,  4507,
+   48,     2,  4119,  4865,  4146,  4867,     2,   869, 37012,  4120,
+ 4866,     3,   870, 37013,  4121,  4867,  4144,  4865,     3,   176,
+ 8785,  3358,   530,  4495,  4866,     3,  1950, 40976,  4469,  4865,
+ 4496,  4867,     4,   177,  8787,  2040, 41987,  3357,   528,  4470,
+ 4866,     4,   864, 37001,  2039, 41986,  4471,  4867,  4494,  4865,
+    3,   178,  8789,  3360,   534,  4445,  4866,     4,  2041, 41988,
+ 2431, 25392,  4419,  4865,  4446,  4867,     3,   180,  8791,  3359,
+  532,  4420,  4866,     3,   179,  8790,  4421,  4867,  4444,  4865,
+    6,   182,  8793,   189, 37010,   859, 36994,  1817,   659,  3362,
+  538,  4395,  4866,     5,   181,  8792,   860, 36995,  3363,   539,
+ 4369,  4865,  4396,  4867,     3,   857, 36992,  3361,   536,  4370,
+ 4866,     4,   183,  8794,   858, 36993,  4371,  4867,  4394,  4865,
+    2,  4345,  4866,  4506,    32,     5,   184,  8796,   863, 36999,
+ 1820,   662,  4319,  4865,  4346,  4867,     4,   861, 36996,  1819,
+  661,  3364,   540,  4320,  4866,     4,   862, 36997,  1818,   660,
+ 4321,  4867,  4344,  4865,     3,  1952, 40993,  3146,   544,  3365,
+  546,     1,  1951, 40992,     1,  1954, 40995,     2,  1953, 40994,
+ 3147,   547,     2,  3148,   548,  3367,   550,     2,  1955, 40996,
+ 2428, 25344,     2,  1957, 40999,  3366,   548,     1,  1956, 40998,
+    1,  3370,   554,     2,  1958, 41000,  3371,   555,     1,  3368,
+  552,     1,  3369,   553,     2,  3373,   558,  4504,    16,     1,
+ 4505,    17,     2,  2563,   661,  3372,   556,     1,  2562,   660,
+    2,  3149,   560,  3375,   562,     1,  1959, 41008,     2,  2561,
+  649,  3374,   560,     3,  1656, 37017,  1960, 41010,  2560,   648,
+    1,  3377,   566,     1,  2429, 25360,     1,  3376,   564,     1,
+ 2556,   642,     1,  3378,   568,     1,  2559,   647,     1,  2558,
+  645,     1,  2557,   644,     2,  1215, 37221,  3565,   512,     2,
+ 1214, 37220,  2748,  4920,     3,  1216, 37223,  2425, 25312,  3566,
+  514,     1,  2749,  4922,     3,   893, 37209,  1211, 37217,  1565,
+ 1840,     1,  1213, 37219,     1,  1212, 37218,     3,   892, 37205,
+ 1486,   800,  2320,  4881,     1,  2319,  4880,     3,   890, 37201,
+ 1837,   832,  2825,   784,     1,  1487,   805,     1,   891, 37202,
+    3,  1488,   824,  2427, 25330,  3567,   528,     2,  2426, 25328,
+ 3568,   530,     2,  1218, 37233,  1562,  1824,     2,  1217, 37232,
+ 1563,  1825,     2,  1564,  1826,  1868,  1866,     1,  1219, 37234,
+    3,   193, 37204,  2318,  4864,  2824,   773,     1,   889, 37191,
+    1,  2747,  4900,     2,  1483,   776,  1548,   772,     1,  1484,
+  777,     1,  2422, 25280,     3,   906, 37241,  1544,   768,  1561,
+ 1808,     2,   905, 37240,  1545,   769,     1,  1546,   770,     1,
+ 1547,   771,     2,   902, 37237,  1660, 37189,     3,   901, 37236,
+ 2326,  4912,  4074, 37417,     1,   904, 37239,     1,   903, 37238,
+    1,   898, 37233,     1,   897, 37232,     2,   900, 37235,  1481,
+  774,     2,   899, 37234,  1482,   775,     2,  1207, 37205,  4075,
+37424,     1,  1206, 37204,     2,  1209, 37207,  2423, 25296,     1,
+ 1208, 37206,     5,   896, 37225,  1558,  1792,  1608,  4945,  1731,
+  768,  1773,   770,     3,   895, 37224,  1559,  1793,  1607,  4944,
+    3,  1205, 37203,  1560,  1794,  1771,   768,     3,  1609,  4946,
+ 1772,   769,  2424, 25301,     1,  2322,  4897,     1,  2321,  4896,
+    1,  2324,  4899,     2,   894, 37222,  2323,  4898,     2,  1210,
+37208,  2325,  4900,     2,  1485,   791,  1610,  4954,     4,   610,
+ 4884,   651,  5892,   700, 21008,  3473,   900,     1,   611,  4885,
+    5,   612,  4886,   652,  5894,   701, 21010,  1258, 38198,  3474,
+  902,     2,  1827,   782,  2420, 25248,     6,   608,  4880,   649,
+ 5888,   884, 37144,  1056, 38152,  2206,   769,  3471,   896,     2,
+  885, 37145,  1057, 38153,     4,   609,  4882,   650,  5890,  2421,
+25253,  3472,   898,     2,  1865,  1818,  2011, 41344,     3,   881,
+37140,  1053, 38148,  4083,    16,     1,   882, 37141,     2,  1054,
+38150,  1826,   775,     4,   883, 37143,  1055, 38151,  1680, 38199,
+ 1825,   774,     6,   613,  4888,   653,  5896,   793, 33105,  1204,
+37160,  1822,   769,  3475,   904,     2,   792, 33104,  1821,   768,
+    3,   880, 37138,  1824,   771,  3476,   906,     2,  1823,   770,
+ 2658,   816,     1,  3479,   916,     1,  2295,   776,     2,  2015,
+41365,  3480,   918,     1,  2014, 41364,     4,   605,  4864,   654,
+ 5904,  2013, 41363,  3477,   912,     3,   606,  4865,  1832,   792,
+ 2012, 41362,     3,   607,  4866,   655,  5906,  3478,   914,     2,
+  876, 37124,  1060, 38164,     4,   877, 37125,  1061, 38165,  1830,
+  788,  2291,   768,     2,   878, 37126,  1062, 38166,     4,   879,
+37127,  1063, 38167,  1831,   790,  2292,   770,     4,   873, 37120,
+ 1058, 38160,  1679, 38176,  3481,   920,     5,   874, 37121,  1059,
+38161,  1257, 38185,  1828,   784,  2293,   772,     3,  1371,  4912,
+ 1659, 37170,  3482,   922,     5,   875, 37123,  1829,   786,  2294,
+  774,  2657,   800,  4513, 57565,     1,  3485,   932,     1,  2577,
+  796,     1,  3486,   934,     2,  2419, 25216,  2578,   798,     5,
+  656,  5920,  1068, 38184,  1606,  4864,  1657, 37128,  3483,   928,
+    1,  2575,   792,     1,  3484,   930,     3,  1867,  1850,  2576,
+  794,  2656,   792,     4,   192, 37156,  1064, 38180,  1489,   833,
+ 3489,   940,     5,  1065, 38181,  1835,   804,  2574,   788,  2655,
+  790,  2684,  1798,     2,  1066, 38182,  2683,  1797,     3,  1067,
+38183,  2654,   788,  2682,  1796,     4,  1256, 38168,  1834,   801,
+ 2572,   785,  3487,   936,     6,   190, 37153,  1490,   836,  1833,
+  800,  2571,   784,  2653,   786,  2681,  1794,     2,  1369,  4864,
+ 3488,   938,     4,   191, 37155,  2573,   786,  2652,   784,  2680,
+ 1792,     1,  2569,   781,     1,  2568,   780,     2,  1203, 37142,
+ 2570,   783,     2,  1071, 38200,  2566,   777,     4,  1201, 37137,
+ 1566,  1856,  2056, 43410,  2565,   776,     5,  1202, 37139,  1866,
+ 1834,  2567,   778,  2651,   776,  2690,  1816,     2,  2689,  1815,
+ 4084,    32,     4,   886, 37157,  1676, 38149,  2650,   774,  2688,
+ 1814,     2,   887, 37158,  1677, 38150,     5,   888, 37159,  1678,
+38151,  2564,   774,  2649,   772,  2687,  1812,     2,  1069, 38192,
+ 1658, 37136,     5,  1070, 38193,  1673, 38145,  1836,   816,  2648,
+  770,  2686,  1810,     2,  1370,  4880,  1674, 38146,     3,  1675,
+38147,  2647,   768,  2685,  1808,     2,  2416, 25184,  4205,   512,
+    2,  3454,   838,  4511, 57344,     1,  4230,   512,     1,  3453,
+  836,     1,  4255,   512,     2,  2417, 25189,  3452,   834,     1,
+ 4280,   512,     1,  3451,   832,     1,  4105,   512,     1,  4130,
+  512,     1,  3457,   844,     2,  4155,   512,  4512, 57357,     1,
+ 3456,   842,     1,  4180,   512,     1,  3455,   840,     2,  2418,
+25200,  4405,   512,     1,  3461,   854,     1,  4430,   512,     1,
+ 3460,   852,     1,  4455,   512,     1,  3459,   850,     1,  4480,
+  512,     1,  3458,   848,     1,  4305,   512,     1,  4330,   512,
+    1,  4355,   512,     1,  3463,   858,     1,  4380,   512,     1,
+ 3462,   856,     1,  3467,   870,     2,  2003, 41319,  3466,   868,
+    1,  1999, 41312,     2,  2000, 41313,  3465,   866,     1,  2001,
+41314,     2,  2002, 41315,  3464,   864,     1,  2004, 41320,     1,
+ 2005, 41322,     1,  2010, 41332,     1,  3470,   884,     1,  2006,
+41328,     2,  2007, 41329,  3469,   882,     1,  2008, 41330,     2,
+ 2009, 41331,  3468,   880,     7,  2065, 57345,  2409, 25121,  3432,
+  774,  3786,  9744,  3993,  9728,  4215,  4608,  4242,  4610,     2,
+ 4216,  4609,  4243,  4611,     6,  2411, 25123,  3431,   772,  3812,
+ 9744,  4019,  9728,  4217,  4610,  4240,  4608,     3,  2410, 25122,
+ 4218,  4611,  4241,  4609,     6,  2413, 25125,  3430,   770,  3838,
+ 9744,  4045,  9728,  4265,  4608,  4292,  4610,     4,  2066, 57348,
+ 2412, 25124,  4266,  4609,  4293,  4611,     5,   917, 37272,  3864,
+ 9744,  4071,  9728,  4267,  4610,  4290,  4608,     5,   918, 37273,
+ 2067, 57350,  2414, 25126,  4268,  4611,  4291,  4609,     5,   915,
+37270,  3682,  9744,  3889,  9728,  4115,  4608,  4142,  4610,     5,
+  916, 37271,  2068, 57352,  3437,   783,  4116,  4609,  4143,  4611,
+    5,  3435,   780,  3708,  9744,  3915,  9728,  4117,  4610,  4140,
+ 4608,     4,   914, 37269,  3436,   781,  4118,  4611,  4141,  4609,
+    5,  3434,   778,  3734,  9744,  3941,  9728,  4165,  4608,  4192,
+ 4610,     2,  4166,  4609,  4193,  4611,     5,  3433,   776,  3760,
+ 9744,  3967,  9728,  4167,  4610,  4190,  4608,     2,  4168,  4611,
+ 4191,  4609,     6,  2070, 57361,  3440,   790,  3785,  9728,  3994,
+ 9744,  4415,  4608,  4442,  4610,     6,  2047, 42244,  2069, 57360,
+ 2415, 25136,  2477, 26144,  4416,  4609,  4443,  4611,     5,  3439,
+  788,  3811,  9728,  4020,  9744,  4417,  4610,  4440,  4608,     2,
+ 4418,  4611,  4441,  4609,     5,  3438,   786,  3837,  9728,  4046,
+ 9744,  4465,  4608,  4492,  4610,     3,  1986, 41232,  4466,  4609,
+ 4493,  4611,     4,  3863,  9728,  4072,  9744,  4467,  4610,  4490,
+ 4608,     3,  1987, 41234,  4468,  4611,  4491,  4609,     5,   913,
+37254,  3681,  9728,  3890,  9744,  4315,  4608,  4342,  4610,     2,
+ 4316,  4609,  4343,  4611,     5,   911, 37252,  3707,  9728,  3916,
+ 9744,  4317,  4610,  4340,  4608,     3,   912, 37253,  4318,  4611,
+ 4341,  4609,     5,   909, 37250,  3733,  9728,  3942,  9744,  4365,
+ 4608,  4392,  4610,     3,   910, 37251,  4366,  4609,  4393,  4611,
+    6,   907, 37248,  3441,   792,  3759,  9728,  3968,  9744,  4367,
+ 4610,  4390,  4608,     3,   908, 37249,  4368,  4611,  4391,  4609,
+    2,  1993, 41253,  2072, 57377,     3,  1992, 41252,  2071, 57376,
+ 2476, 26128,     1,  2074, 57379,     1,  2073, 57378,     2,  1989,
+41249,  3443,   802,     2,  1988, 41248,  2075, 57380,     2,  1991,
+41251,  3442,   800,     1,  1990, 41250,     1,  2889,   886,     3,
+ 2048, 42277,  2077, 57393,  3447,   822,     2,  2076, 57392,  2408,
+25104,     1,  3446,   820,     1,  1996, 41270,     1,  3445,   818,
+    1,  1994, 41264,     1,  3444,   816,     1,  1995, 41266,     1,
+ 3450,   828,     1,  3449,   826,     1,  1997, 41272,     1,  3448,
+  824,     1,  1998, 41274,
+};
 
-DictEntry *vtkDICOMDictionary::DictHashTable[1024] = {
-DictRow0000,
-DictRow0001,
-DictRow0002,
-DictRow0003,
-DictRow0004,
-DictRow0005,
-DictRow0006,
-DictRow0007,
-DictRow0008,
-DictRow0009,
-DictRow0010,
-DictRow0011,
-DictRow0012,
-DictRow0013,
-DictRow0014,
-DictRow0015,
-DictRow0016,
-DictRow0017,
-DictRow0018,
-DictRow0019,
-DictRow0020,
-DictRow0021,
-DictRow0022,
-DictRow0023,
-DictRow0024,
-DictRow0025,
-DictRow0026,
-DictRow0027,
-DictRow0028,
-DictRow0029,
-DictRow0030,
-DictRow0031,
-DictRow0032,
-DictRow0033,
-DictRow0034,
-DictRow0035,
-DictRow0036,
-DictRow0037,
-DictRow0038,
-DictRow0039,
-DictRow0040,
-DictRow0041,
-DictRow0042,
-DictRow0043,
-DictRow0044,
-DictRow0045,
-DictRow0046,
-DictRow0047,
-DictRow0048,
-DictRow0049,
-DictRow0050,
-DictRow0051,
-DictRow0052,
-DictRow0053,
-DictRow0054,
-DictRow0055,
-DictRow0056,
-DictRow0057,
-DictRow0058,
-DictRow0059,
-DictRow0060,
-DictRow0061,
-DictRow0062,
-DictRow0063,
-DictRow0064,
-DictRow0065,
-DictRow0066,
-DictRow0067,
-DictRow0068,
-DictRow0069,
-DictRow0070,
-DictRow0071,
-DictRow0072,
-DictRow0073,
-DictRow0074,
-DictRow0075,
-DictRow0076,
-DictRow0077,
-DictRow0078,
-DictRow0079,
-DictRow0080,
-DictRow0081,
-DictRow0082,
-DictRow0083,
-DictRow0084,
-DictRow0085,
-DictRow0086,
-DictRow0087,
-DictRow0088,
-DictRow0089,
-DictRow0090,
-DictRow0091,
-DictRow0092,
-DictRow0093,
-DictRow0094,
-DictRow0095,
-DictRow0096,
-DictRow0097,
-DictRow0098,
-DictRow0099,
-DictRow0100,
-DictRow0101,
-DictRow0102,
-DictRow0103,
-DictRow0104,
-DictRow0105,
-DictRow0106,
-DictRow0107,
-DictRow0108,
-DictRow0109,
-DictRow0110,
-DictRow0111,
-DictRow0112,
-DictRow0113,
-DictRow0114,
-DictRow0115,
-DictRow0116,
-DictRow0117,
-DictRow0118,
-DictRow0119,
-DictRow0120,
-DictRow0121,
-DictRow0122,
-DictRow0123,
-DictRow0124,
-DictRow0125,
-DictRow0126,
-DictRow0127,
-DictRow0128,
-DictRow0129,
-DictRow0130,
-DictRow0131,
-DictRow0132,
-DictRow0133,
-DictRow0134,
-DictRow0135,
-DictRow0136,
-DictRow0137,
-DictRow0138,
-DictRow0139,
-DictRow0140,
-DictRow0141,
-DictRow0142,
-DictRow0143,
-DictRow0144,
-DictRow0145,
-DictRow0146,
-DictRow0147,
-DictRow0148,
-DictRow0149,
-DictRow0150,
-DictRow0151,
-DictRow0152,
-DictRow0153,
-DictRow0154,
-DictRow0155,
-DictRow0156,
-DictRow0157,
-DictRow0158,
-DictRow0159,
-DictRow0160,
-DictRow0161,
-DictRow0162,
-DictRow0163,
-DictRow0164,
-DictRow0165,
-DictRow0166,
-DictRow0167,
-DictRow0168,
-DictRow0169,
-DictRow0170,
-DictRow0171,
-DictRow0172,
-DictRow0173,
-DictRow0174,
-DictRow0175,
-DictRow0176,
-DictRow0177,
-DictRow0178,
-DictRow0179,
-DictRow0180,
-DictRow0181,
-DictRow0182,
-DictRow0183,
-DictRow0184,
-DictRow0185,
-DictRow0186,
-DictRow0187,
-DictRow0188,
-DictRow0189,
-DictRow0190,
-DictRow0191,
-DictRow0192,
-DictRow0193,
-DictRow0194,
-DictRow0195,
-DictRow0196,
-DictRow0197,
-DictRow0198,
-DictRow0199,
-DictRow0200,
-DictRow0201,
-DictRow0202,
-DictRow0203,
-DictRow0204,
-DictRow0205,
-DictRow0206,
-DictRow0207,
-DictRow0208,
-DictRow0209,
-DictRow0210,
-DictRow0211,
-DictRow0212,
-DictRow0213,
-DictRow0214,
-DictRow0215,
-DictRow0216,
-DictRow0217,
-DictRow0218,
-DictRow0219,
-DictRow0220,
-DictRow0221,
-DictRow0222,
-DictRow0223,
-DictRow0224,
-DictRow0225,
-DictRow0226,
-DictRow0227,
-DictRow0228,
-DictRow0229,
-DictRow0230,
-DictRow0231,
-DictRow0232,
-DictRow0233,
-DictRow0234,
-DictRow0235,
-DictRow0236,
-DictRow0237,
-DictRow0238,
-DictRow0239,
-DictRow0240,
-DictRow0241,
-DictRow0242,
-DictRow0243,
-DictRow0244,
-DictRow0245,
-DictRow0246,
-DictRow0247,
-DictRow0248,
-DictRow0249,
-DictRow0250,
-DictRow0251,
-DictRow0252,
-DictRow0253,
-DictRow0254,
-DictRow0255,
-DictRow0256,
-DictRow0257,
-DictRow0258,
-DictRow0259,
-DictRow0260,
-DictRow0261,
-DictRow0262,
-DictRow0263,
-DictRow0264,
-DictRow0265,
-DictRow0266,
-DictRow0267,
-DictRow0268,
-DictRow0269,
-DictRow0270,
-DictRow0271,
-DictRow0272,
-DictRow0273,
-DictRow0274,
-DictRow0275,
-DictRow0276,
-DictRow0277,
-DictRow0278,
-DictRow0279,
-DictRow0280,
-DictRow0281,
-DictRow0282,
-DictRow0283,
-DictRow0284,
-DictRow0285,
-DictRow0286,
-DictRow0287,
-DictRow0288,
-DictRow0289,
-DictRow0290,
-DictRow0291,
-DictRow0292,
-DictRow0293,
-DictRow0294,
-DictRow0295,
-DictRow0296,
-DictRow0297,
-DictRow0298,
-DictRow0299,
-DictRow0300,
-DictRow0301,
-DictRow0302,
-DictRow0303,
-DictRow0304,
-DictRow0305,
-DictRow0306,
-DictRow0307,
-DictRow0308,
-DictRow0309,
-DictRow0310,
-DictRow0311,
-DictRow0312,
-DictRow0313,
-DictRow0314,
-DictRow0315,
-DictRow0316,
-DictRow0317,
-DictRow0318,
-DictRow0319,
-DictRow0320,
-DictRow0321,
-DictRow0322,
-DictRow0323,
-DictRow0324,
-DictRow0325,
-DictRow0326,
-DictRow0327,
-DictRow0328,
-DictRow0329,
-DictRow0330,
-DictRow0331,
-DictRow0332,
-DictRow0333,
-DictRow0334,
-DictRow0335,
-DictRow0336,
-DictRow0337,
-DictRow0338,
-DictRow0339,
-DictRow0340,
-DictRow0341,
-DictRow0342,
-DictRow0343,
-DictRow0344,
-DictRow0345,
-DictRow0346,
-DictRow0347,
-DictRow0348,
-DictRow0349,
-DictRow0350,
-DictRow0351,
-DictRow0352,
-DictRow0353,
-DictRow0354,
-DictRow0355,
-DictRow0356,
-DictRow0357,
-DictRow0358,
-DictRow0359,
-DictRow0360,
-DictRow0361,
-DictRow0362,
-DictRow0363,
-DictRow0364,
-DictRow0365,
-DictRow0366,
-DictRow0367,
-DictRow0368,
-DictRow0369,
-DictRow0370,
-DictRow0371,
-DictRow0372,
-DictRow0373,
-DictRow0374,
-DictRow0375,
-DictRow0376,
-DictRow0377,
-DictRow0378,
-DictRow0379,
-DictRow0380,
-DictRow0381,
-DictRow0382,
-DictRow0383,
-DictRow0384,
-DictRow0385,
-DictRow0386,
-DictRow0387,
-DictRow0388,
-DictRow0389,
-DictRow0390,
-DictRow0391,
-DictRow0392,
-DictRow0393,
-DictRow0394,
-DictRow0395,
-DictRow0396,
-DictRow0397,
-DictRow0398,
-DictRow0399,
-DictRow0400,
-DictRow0401,
-DictRow0402,
-DictRow0403,
-DictRow0404,
-DictRow0405,
-DictRow0406,
-DictRow0407,
-DictRow0408,
-DictRow0409,
-DictRow0410,
-DictRow0411,
-DictRow0412,
-DictRow0413,
-DictRow0414,
-DictRow0415,
-DictRow0416,
-DictRow0417,
-DictRow0418,
-DictRow0419,
-DictRow0420,
-DictRow0421,
-DictRow0422,
-DictRow0423,
-DictRow0424,
-DictRow0425,
-DictRow0426,
-DictRow0427,
-DictRow0428,
-DictRow0429,
-DictRow0430,
-DictRow0431,
-DictRow0432,
-DictRow0433,
-DictRow0434,
-DictRow0435,
-DictRow0436,
-DictRow0437,
-DictRow0438,
-DictRow0439,
-DictRow0440,
-DictRow0441,
-DictRow0442,
-DictRow0443,
-DictRow0444,
-DictRow0445,
-DictRow0446,
-DictRow0447,
-DictRow0448,
-DictRow0449,
-DictRow0450,
-DictRow0451,
-DictRow0452,
-DictRow0453,
-DictRow0454,
-DictRow0455,
-DictRow0456,
-DictRow0457,
-DictRow0458,
-DictRow0459,
-DictRow0460,
-DictRow0461,
-DictRow0462,
-DictRow0463,
-DictRow0464,
-DictRow0465,
-DictRow0466,
-DictRow0467,
-DictRow0468,
-DictRow0469,
-DictRow0470,
-DictRow0471,
-DictRow0472,
-DictRow0473,
-DictRow0474,
-DictRow0475,
-DictRow0476,
-DictRow0477,
-DictRow0478,
-DictRow0479,
-DictRow0480,
-DictRow0481,
-DictRow0482,
-DictRow0483,
-DictRow0484,
-DictRow0485,
-DictRow0486,
-DictRow0487,
-DictRow0488,
-DictRow0489,
-DictRow0490,
-DictRow0491,
-DictRow0492,
-DictRow0493,
-DictRow0494,
-DictRow0495,
-DictRow0496,
-DictRow0497,
-DictRow0498,
-DictRow0499,
-DictRow0500,
-DictRow0501,
-DictRow0502,
-DictRow0503,
-DictRow0504,
-DictRow0505,
-DictRow0506,
-DictRow0507,
-DictRow0508,
-DictRow0509,
-DictRow0510,
-DictRow0511,
-DictRow0512,
-DictRow0513,
-DictRow0514,
-DictRow0515,
-DictRow0516,
-DictRow0517,
-DictRow0518,
-DictRow0519,
-DictRow0520,
-DictRow0521,
-DictRow0522,
-DictRow0523,
-DictRow0524,
-DictRow0525,
-DictRow0526,
-DictRow0527,
-DictRow0528,
-DictRow0529,
-DictRow0530,
-DictRow0531,
-DictEmptyRow,
-DictRow0533,
-DictRow0534,
-DictRow0535,
-DictRow0536,
-DictRow0537,
-DictRow0538,
-DictRow0539,
-DictRow0540,
-DictRow0541,
-DictRow0542,
-DictRow0543,
-DictRow0544,
-DictRow0545,
-DictRow0546,
-DictRow0547,
-DictRow0548,
-DictRow0549,
-DictRow0550,
-DictRow0551,
-DictRow0552,
-DictRow0553,
-DictRow0554,
-DictRow0555,
-DictRow0556,
-DictRow0557,
-DictRow0558,
-DictRow0559,
-DictRow0560,
-DictRow0561,
-DictRow0562,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictRow0566,
-DictRow0567,
-DictRow0568,
-DictRow0569,
-DictRow0570,
-DictRow0571,
-DictRow0572,
-DictRow0573,
-DictRow0574,
-DictRow0575,
-DictRow0576,
-DictRow0577,
-DictRow0578,
-DictRow0579,
-DictRow0580,
-DictRow0581,
-DictRow0582,
-DictRow0583,
-DictRow0584,
-DictRow0585,
-DictRow0586,
-DictRow0587,
-DictRow0588,
-DictRow0589,
-DictRow0590,
-DictRow0591,
-DictRow0592,
-DictRow0593,
-DictRow0594,
-DictRow0595,
-DictRow0596,
-DictEmptyRow,
-DictRow0598,
-DictRow0599,
-DictRow0600,
-DictRow0601,
-DictRow0602,
-DictRow0603,
-DictRow0604,
-DictRow0605,
-DictRow0606,
-DictRow0607,
-DictRow0608,
-DictRow0609,
-DictRow0610,
-DictRow0611,
-DictRow0612,
-DictEmptyRow,
-DictEmptyRow,
-DictRow0615,
-DictRow0616,
-DictRow0617,
-DictRow0618,
-DictRow0619,
-DictRow0620,
-DictRow0621,
-DictRow0622,
-DictRow0623,
-DictRow0624,
-DictRow0625,
-DictRow0626,
-DictRow0627,
-DictRow0628,
-DictRow0629,
-DictRow0630,
-DictRow0631,
-DictRow0632,
-DictRow0633,
-DictRow0634,
-DictRow0635,
-DictRow0636,
-DictRow0637,
-DictRow0638,
-DictRow0639,
-DictRow0640,
-DictRow0641,
-DictRow0642,
-DictRow0643,
-DictRow0644,
-DictRow0645,
-DictRow0646,
-DictRow0647,
-DictRow0648,
-DictRow0649,
-DictRow0650,
-DictRow0651,
-DictRow0652,
-DictRow0653,
-DictRow0654,
-DictRow0655,
-DictRow0656,
-DictRow0657,
-DictRow0658,
-DictRow0659,
-DictRow0660,
-DictRow0661,
-DictRow0662,
-DictRow0663,
-DictRow0664,
-DictRow0665,
-DictRow0666,
-DictRow0667,
-DictEmptyRow,
-DictEmptyRow,
-DictRow0670,
-DictEmptyRow,
-DictRow0672,
-DictRow0673,
-DictRow0674,
-DictRow0675,
-DictRow0676,
-DictRow0677,
-DictRow0678,
-DictRow0679,
-DictRow0680,
-DictRow0681,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictRow0687,
-DictRow0688,
-DictEmptyRow,
-DictEmptyRow,
-DictRow0691,
-DictRow0692,
-DictRow0693,
-DictRow0694,
-DictEmptyRow,
-DictRow0696,
-DictEmptyRow,
-DictRow0698,
-DictEmptyRow,
-DictRow0700,
-DictRow0701,
-DictRow0702,
-DictEmptyRow,
-DictRow0704,
-DictRow0705,
-DictRow0706,
-DictRow0707,
-DictRow0708,
-DictRow0709,
-DictRow0710,
-DictRow0711,
-DictRow0712,
-DictRow0713,
-DictRow0714,
-DictRow0715,
-DictRow0716,
-DictRow0717,
-DictRow0718,
-DictRow0719,
-DictRow0720,
-DictRow0721,
-DictRow0722,
-DictRow0723,
-DictRow0724,
-DictRow0725,
-DictRow0726,
-DictRow0727,
-DictRow0728,
-DictRow0729,
-DictRow0730,
-DictRow0731,
-DictRow0732,
-DictRow0733,
-DictRow0734,
-DictRow0735,
-DictRow0736,
-DictRow0737,
-DictRow0738,
-DictRow0739,
-DictRow0740,
-DictRow0741,
-DictRow0742,
-DictRow0743,
-DictRow0744,
-DictRow0745,
-DictRow0746,
-DictRow0747,
-DictRow0748,
-DictRow0749,
-DictRow0750,
-DictRow0751,
-DictRow0752,
-DictRow0753,
-DictRow0754,
-DictRow0755,
-DictRow0756,
-DictRow0757,
-DictRow0758,
-DictEmptyRow,
-DictEmptyRow,
-DictRow0761,
-DictRow0762,
-DictEmptyRow,
-DictRow0764,
-DictEmptyRow,
-DictRow0766,
-DictRow0767,
-DictRow0768,
-DictRow0769,
-DictRow0770,
-DictRow0771,
-DictRow0772,
-DictEmptyRow,
-DictRow0774,
-DictRow0775,
-DictRow0776,
-DictRow0777,
-DictEmptyRow,
-DictEmptyRow,
-DictRow0780,
-DictRow0781,
-DictEmptyRow,
-DictRow0783,
-DictRow0784,
-DictEmptyRow,
-DictRow0786,
-DictEmptyRow,
-DictRow0788,
-DictRow0789,
-DictRow0790,
-DictRow0791,
-DictEmptyRow,
-DictRow0793,
-DictRow0794,
-DictEmptyRow,
-DictEmptyRow,
-DictRow0797,
-DictEmptyRow,
-DictEmptyRow,
-DictRow0800,
-DictRow0801,
-DictRow0802,
-DictEmptyRow,
-DictRow0804,
-DictRow0805,
-DictRow0806,
-DictRow0807,
-DictRow0808,
-DictRow0809,
-DictRow0810,
-DictRow0811,
-DictRow0812,
-DictRow0813,
-DictRow0814,
-DictRow0815,
-DictRow0816,
-DictRow0817,
-DictRow0818,
-DictRow0819,
-DictRow0820,
-DictRow0821,
-DictRow0822,
-DictRow0823,
-DictRow0824,
-DictRow0825,
-DictRow0826,
-DictRow0827,
-DictEmptyRow,
-DictRow0829,
-DictEmptyRow,
-DictRow0831,
-DictRow0832,
-DictRow0833,
-DictRow0834,
-DictRow0835,
-DictRow0836,
-DictRow0837,
-DictRow0838,
-DictRow0839,
-DictRow0840,
-DictRow0841,
-DictRow0842,
-DictRow0843,
-DictRow0844,
-DictRow0845,
-DictRow0846,
-DictRow0847,
-DictRow0848,
-DictRow0849,
-DictRow0850,
-DictRow0851,
-DictRow0852,
-DictRow0853,
-DictRow0854,
-DictEmptyRow,
-DictRow0856,
-DictRow0857,
-DictRow0858,
-DictRow0859,
-DictRow0860,
-DictRow0861,
-DictRow0862,
-DictRow0863,
-DictRow0864,
-DictRow0865,
-DictRow0866,
-DictRow0867,
-DictRow0868,
-DictRow0869,
-DictRow0870,
-DictRow0871,
-DictRow0872,
-DictRow0873,
-DictRow0874,
-DictRow0875,
-DictRow0876,
-DictRow0877,
-DictRow0878,
-DictRow0879,
-DictRow0880,
-DictRow0881,
-DictRow0882,
-DictEmptyRow,
-DictRow0884,
-DictRow0885,
-DictEmptyRow,
-DictRow0887,
-DictRow0888,
-DictRow0889,
-DictRow0890,
-DictRow0891,
-DictRow0892,
-DictRow0893,
-DictRow0894,
-DictRow0895,
-DictRow0896,
-DictRow0897,
-DictRow0898,
-DictRow0899,
-DictRow0900,
-DictRow0901,
-DictRow0902,
-DictRow0903,
-DictRow0904,
-DictEmptyRow,
-DictRow0906,
-DictRow0907,
-DictRow0908,
-DictRow0909,
-DictRow0910,
-DictRow0911,
-DictRow0912,
-DictRow0913,
-DictRow0914,
-DictRow0915,
-DictRow0916,
-DictRow0917,
-DictRow0918,
-DictRow0919,
-DictRow0920,
-DictEmptyRow,
-DictRow0922,
-DictEmptyRow,
-DictRow0924,
-DictRow0925,
-DictRow0926,
-DictRow0927,
-DictEmptyRow,
-DictRow0929,
-DictEmptyRow,
-DictRow0931,
-DictRow0932,
-DictRow0933,
-DictRow0934,
-DictRow0935,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictRow0940,
-DictEmptyRow,
-DictRow0942,
-DictEmptyRow,
-DictRow0944,
-DictEmptyRow,
-DictEmptyRow,
-DictRow0947,
-DictRow0948,
-DictRow0949,
-DictRow0950,
-DictRow0951,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictRow0960,
-DictRow0961,
-DictRow0962,
-DictRow0963,
-DictRow0964,
-DictRow0965,
-DictRow0966,
-DictRow0967,
-DictRow0968,
-DictRow0969,
-DictRow0970,
-DictRow0971,
-DictRow0972,
-DictRow0973,
-DictRow0974,
-DictRow0975,
-DictRow0976,
-DictRow0977,
-DictRow0978,
-DictRow0979,
-DictRow0980,
-DictRow0981,
-DictRow0982,
-DictRow0983,
-DictRow0984,
-DictRow0985,
-DictRow0986,
-DictRow0987,
-DictRow0988,
-DictRow0989,
-DictRow0990,
-DictRow0991,
-DictRow0992,
-DictRow0993,
-DictRow0994,
-DictRow0995,
-DictRow0996,
-DictRow0997,
-DictRow0998,
-DictRow0999,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictRow1003,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictEmptyRow,
-DictRow1008,
-DictRow1009,
-DictRow1010,
-DictRow1011,
-DictRow1012,
-DictRow1013,
-DictRow1014,
-DictRow1015,
-DictEmptyRow,
-DictEmptyRow,
-DictRow1018,
-DictEmptyRow,
-DictRow1020,
-DictRow1021,
-DictRow1022,
-DictRow1023,
+} // end anonymous namespace
+
+vtkDICOMDictionary::Dict vtkDICOMDictionary::DictData = {
+"DICOM",
+1024,
+4514,
+DictTagHashTable,
+DictContents
 };
