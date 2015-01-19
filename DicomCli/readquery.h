@@ -23,11 +23,17 @@ typedef std::vector<vtkDICOMTagPath> QueryTagList;
 
 //! Read a query file, return 'true' on success.
 /*!
- *  The query file is read into the supplied vtkDICOMItem as a set of attribute
- *  values.  If the ordering within the file is important, then a QueryTagList can
- *  also be provided.  The tags will be pushed onto the QueryTagList in the same
- *  order as they are encountered in the file.
+ *  The query file is read into the supplied vtkDICOMItem as a set of
+ *  attribute values.  If the ordering within the file is important,
+ *  then a QueryTagList can also be provided.  The tags will be pushed
+ *  onto the QueryTagList in the same order as they are encountered in
+ *  the file.
  */
-bool dicomcli_readquery(const char *fname, vtkDICOMItem *query, QueryTagList *ql=0);
+bool dicomcli_readquery(
+  const char *fname, vtkDICOMItem *query, QueryTagList *ql=0);
+
+//! Read a single query key, return 'true' on success.
+bool dicomcli_readkey(
+  const char *key, vtkDICOMItem *query, QueryTagList *ql=0);
 
 #endif /* __readquery_h */

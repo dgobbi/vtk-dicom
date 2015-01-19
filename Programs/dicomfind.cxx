@@ -399,24 +399,6 @@ void dicomfind_write(vtkDICOMDirectory *finder,
     }
 }
 
-// Read a tag and its value from the command line.
-bool get_tag_val(char *arg, vtkDICOMTag *tag_ptr, char **val_ptr)
-{
-  char *cp = arg;
-  char *dp = cp;
-  unsigned short g = static_cast<unsigned short>(strtoul(cp, &cp, 16));
-  if (cp - dp != 4 || *cp++ != ',') { return false; }
-  dp = cp;
-  unsigned short e = static_cast<unsigned short>(strtoul(cp, &cp, 16));
-  if (cp - dp != 4 || (*cp != '\0' && *cp != '=')) { return false; }
-  *tag_ptr = vtkDICOMTag(g,e);
-  if (*cp == '=')
-    {
-    *val_ptr = ++cp;
-    }
-  return true;
-}
-
 // Execute a subprocess
 #ifndef _WIN32
 bool execute_command(const char *command, char *argv[])
@@ -553,31 +535,16 @@ int main(int argc, char *argv[])
     else if (strcmp(arg, "-k") == 0)
       {
       vtkDICOMTag tag;
-      char *val = 0;
       ++argi;
-      if (argi == argc || !get_tag_val(argv[argi], &tag, &val))
+      if (argi == argc)
         {
         fprintf(stderr, "%s must be followed by gggg,eeee=value "
                         "where gggg,eeee is a DICOM tag.\n\n", arg);
         return 1;
         }
-      vtkDICOMVR vr = query.FindDictVR(tag);
-      if (vr == vtkDICOMVR::UN)
+      if (!dicomcli_readkey(argv[argi], &query, &qtlist))
         {
-        fprintf(stderr,
-                "%s was given tag %4.4x,%4.4x which is not in the "
-                "DICOM dictionary.\n\n",
-                arg, tag.GetGroup(), tag.GetElement());
         return 1;
-        }
-      qtlist.push_back(vtkDICOMTagPath(tag));
-      if (val)
-        {
-        query.SetAttributeValue(tag, val);
-        }
-      else
-        {
-        query.SetAttributeValue(tag, vtkDICOMValue(vr));
         }
       }
     else if (strcmp(arg, "-exec") == 0)
@@ -637,7 +604,7 @@ int main(int argc, char *argv[])
   // read the query file, create a query
   if (qfile && !dicomcli_readquery(qfile, &query, &qtlist))
     {
-    fprintf(stderr, "Can't open query file %s\n\n", qfile);
+    fprintf(stderr, "Can't read query file %s\n\n", qfile);
     return 1;
     }
 
