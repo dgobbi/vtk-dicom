@@ -51,6 +51,7 @@ void printUsage(FILE *file, const char *cp)
   fprintf(file, "usage:\n"
     "  %s file1.dcm [file2.dcm ...]\n\n", cp);
   fprintf(file, "options:\n"
+    "  -k tag          Provide a key to be printed.\n"
     "  -q <query.txt>  Provide a file that lists which elements to print.\n"
     "  --help      Print a brief help message.\n"
     "  --version   Print the software version.\n");
@@ -253,6 +254,8 @@ int main(int argc, char *argv[])
 
   // for the optional query file
   const char *qfile = 0;
+  QueryTagList qtlist;
+  vtkDICOMItem query;
 
   if (argc < 2)
     {
@@ -295,6 +298,21 @@ int main(int argc, char *argv[])
         return 1;
         }
       }
+    else if (strcmp(arg, "-k") == 0)
+      {
+      vtkDICOMTag tag;
+      ++argi;
+      if (argi == argc)
+        {
+        fprintf(stderr, "%s must be followed by gggg,eeee=value "
+                        "where gggg,eeee is a DICOM tag.\n\n", arg);
+        return 1;
+        }
+      if (!dicomcli_readkey(argv[argi], &query, &qtlist))
+        {
+        return 1;
+        }
+      }
     else if (arg[0] == '-')
       {
       fprintf(stderr, "unrecognized option %s.\n\n", arg);
@@ -308,23 +326,10 @@ int main(int argc, char *argv[])
     }
 
   // read the query file, create a query
-  vtkDICOMMetaData *query = 0;
-  if (qfile)
+  if (qfile && !dicomcli_readquery(qfile, &query, &qtlist))
     {
-    vtkDICOMItem qitem;
-    if (!dicomcli_readquery(qfile, &qitem))
-      {
-      fprintf(stderr, "Can't open query file %s\n\n", qfile);
-      return 1;
-      }
-    vtkDICOMDataElementIterator iter = qitem.Begin();
-    vtkDICOMDataElementIterator iterEnd = qitem.End();
-    query = vtkDICOMMetaData::New();
-    while (iter != iterEnd)
-      {
-      query->SetAttributeValue(iter->GetTag(), iter->GetValue());
-      ++iter;
-      }
+    fprintf(stderr, "Can't read query file %s\n\n", qfile);
+    return 1;
     }
 
   // sort the files by study and series
@@ -336,10 +341,6 @@ int main(int argc, char *argv[])
 
   vtkSmartPointer<vtkDICOMParser> parser =
     vtkSmartPointer<vtkDICOMParser>::New();
-  if (query)
-    {
-    parser->SetQuery(query);
-    }
 
   vtkSmartPointer<vtkDICOMMetaData> data =
     vtkSmartPointer<vtkDICOMMetaData>::New();
@@ -375,12 +376,26 @@ int main(int argc, char *argv[])
         parser->Update();
         }
 
-      vtkDICOMDataElementIterator iter = data->Begin();
-      vtkDICOMDataElementIterator iterEnd = data->End();
-
-      for (; iter != iterEnd; ++iter)
+      if (query.GetNumberOfDataElements() > 0)
         {
-        printElement(data, 0, iter, 0);
+        for (size_t i = 0; i < qtlist.size(); i++)
+          {
+          vtkDICOMDataElementIterator iter = data->Find(qtlist[i].GetHead());
+          if (iter != data->End())
+            {
+            printElement(data, 0, iter, 0);
+            }
+          }
+        }
+      else
+        {
+        vtkDICOMDataElementIterator iter = data->Begin();
+        vtkDICOMDataElementIterator iterEnd = data->End();
+
+        for (; iter != iterEnd; ++iter)
+          {
+          printElement(data, 0, iter, 0);
+          }
         }
       }
     }
@@ -389,11 +404,6 @@ int main(int argc, char *argv[])
   // Restore the console code page
   SetConsoleOutputCP(codePage);
 #endif
-
-  if (query)
-    {
-    query->Delete();
-    }
 
   return rval;
 }
