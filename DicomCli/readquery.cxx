@@ -15,6 +15,7 @@
 #include "readquery.h"
 
 #include "vtkDICOMSequence.h"
+#include "vtkDICOMDictionary.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -102,7 +103,6 @@ bool dicomcli_readkey(
 {
   // read the tag path
   vtkDICOMTagPath tagPath;
-  unsigned int key = 0;
   size_t tagDepth = 0;
   size_t s = 0;
   size_t lineStart = s;
@@ -134,31 +134,47 @@ bool dicomcli_readkey(
     std::string creator(&cp[creatorStart], creatorEnd - creatorStart);
 
     // read the DICOM tag
+    vtkDICOMTag tag(0x0000,0x0000);
     size_t tagStart = s;
+    bool isHex = true;
     bool hasComma = false;
+    size_t commaPos= 0;
     while (s < n && (isalnum(cp[s]) || (cp[s] == ',' && !hasComma)))
       {
-      hasComma |= (cp[s] == ',');
+      if (cp[s] == ',')
+        {
+        hasComma = true;
+        commaPos = s - tagStart;
+        }
+      else if (!isxdigit(cp[s]))
+        {
+        isHex = false;
+        }
       s++;
       }
     size_t tagEnd = s;
-    if (tagEnd - tagStart == 8 + static_cast<size_t>(hasComma))
+    if (hasComma)
       {
-      char *cpe = const_cast<char *>(&cp[tagStart]);
-      key = strtoul(cpe, &cpe, 16);
-      size_t digitcount = cpe - const_cast<char *>(&cp[tagStart]);
-      if (digitcount == 4 && *cpe == ',')
+      if (isHex)
         {
-        key = (key << 16) | strtoul(cpe+1, &cpe, 16);
-        digitcount = cpe - const_cast<char *>(&cp[tagStart]) - 1;
-        }
-      if (digitcount != 8)
-        {
-        key = 0;
+        unsigned int group = strtoul(&cp[tagStart], NULL, 16);
+        unsigned int element = strtoul(&cp[commaPos+1], NULL, 16);
+        if (group < 0xFFFF && element < 0xFFFF)
+          {
+          tag = vtkDICOMTag(group, element);
+          }
         }
       }
-
-    vtkDICOMTag tag(key >> 16, key & 0xFFFF);
+    else
+      {
+      std::string key(&cp[tagStart], tagEnd - tagStart);
+      vtkDICOMDictEntry de = vtkDICOMDictionary::FindDictEntry(
+        key.c_str(), creator.c_str());
+      if (de.IsValid())
+        {
+        tag = de.GetTag();
+        }
+      }
 
     // if creator, then resolve the tag now
     if (creator.length() > 0)
