@@ -36,10 +36,41 @@ int main(int argc, char *argv[])
   TestAssert(name == e.GetName());
   TestAssert(e.IsRetired() == 0);
 
+  // test lookup via string
+  e = vtkDICOMDictionary::FindDictEntry(name.c_str());
+  TestAssert(e.IsValid());
+  TestAssert(e.GetTag() == DC::Modality);
+  TestAssert(e.GetVR() == vtkDICOMVR::CS);
+  TestAssert(e.GetVM() == vtkDICOMVM::M1);
+  TestAssert(name == e.GetName());
+  TestAssert(e.IsRetired() == 0);
+
   // test an invalid entry
   e = vtkDICOMDictionary::FindDictEntry(vtkDICOMTag(0x0002,0xFFFF));
   TestAssert(!e.IsValid());
+  e = vtkDICOMDictionary::FindDictEntry("Wombat");
+  TestAssert(!e.IsValid());
+  e = vtkDICOMDictionary::FindDictEntry("");
+  TestAssert(!e.IsValid());
   e = vtkDICOMDictEntry();
+  TestAssert(!e.IsValid());
+
+  // test private dictionary
+  vtkDICOMTag ptag(0x0019,0x0004);
+  std::string pkey = "CellSpacing"; 
+  e = vtkDICOMDictionary::FindDictEntry(ptag, "GEMS_ACQU_01");
+  TestAssert(e.IsValid());
+  TestAssert(e.GetTag() == ptag);
+  TestAssert(e.GetVR() == vtkDICOMVR::DS);
+  TestAssert(e.GetVM() == vtkDICOMVM::M1);
+  TestAssert(pkey == e.GetName());
+  e = vtkDICOMDictionary::FindDictEntry(pkey.c_str(), "GEMS_ACQU_01");
+  TestAssert(e.IsValid());
+  TestAssert(e.GetTag() == ptag);
+  TestAssert(e.GetVR() == vtkDICOMVR::DS);
+  TestAssert(e.GetVM() == vtkDICOMVM::M1);
+  TestAssert(pkey == e.GetName());
+  e = vtkDICOMDictionary::FindDictEntry("", "GEMS_ACQU_01");
   TestAssert(!e.IsValid());
 
   return rval;
