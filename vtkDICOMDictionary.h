@@ -32,6 +32,7 @@ public:
     unsigned short HashSize;
     unsigned short DataSize;
     unsigned short *TagHashTable;
+    unsigned short *KeyHashTable;
     vtkDICOMDictEntry::Entry *Contents;
   };
 
@@ -40,6 +41,10 @@ public:
   //! Find the dictionary entry for the given tag.
   static vtkDICOMDictEntry FindDictEntry(const vtkDICOMTag tag) {
     return vtkDICOMDictionary::FindDictEntry(tag, 0); }
+
+  //! Find the dictionary for the given key.
+  static vtkDICOMDictEntry FindDictEntry(const char *key) {
+    return vtkDICOMDictionary::FindDictEntry(key, 0); }
 
   //! Include a private dictionary when searching for the tag.
   /*!
@@ -51,6 +56,16 @@ public:
    */
   static vtkDICOMDictEntry FindDictEntry(
     const vtkDICOMTag tag, const char *privateDict);
+
+  //! Search for a private dictionary entry by key.
+  /*!
+   *  Warning: not all private dictionaries have normatively defined keys
+   *  associated with the tags they use.  Even for those that do, the keys
+   *  used by this library might not be accurate because it relies on
+   *  information collected from third parties.
+   */
+  static vtkDICOMDictEntry FindDictEntry(
+    const char *key, const char *privateDict);
 
   //! Add the hash table for a private dictionary.
   /*!

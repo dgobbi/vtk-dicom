@@ -73,11 +73,26 @@ unsigned short Dict001TagHashTable[] = {
     3,     5,     4,    26,    16,    39,    14,
 };
 
+unsigned short Dict001KeyHashTable[] = {
+   11,    18,    31,    40,    47,    62,    67,    76,    87,    96,
+    0,     3,     5, 36137,    12, 18279,    28,  6630,     6,     0,
+55552,     2, 57721,     7, 46030,     8, 56502,    24, 51641,    32,
+41019,     4,    19,  3831,    20, 19705,    22, 50732,    38, 61867,
+    3,    18, 35316,    34, 27782,    39, 26719,     7,    14, 11559,
+   15, 25981,    17, 22980,    27, 57843,    33,  8570,    36, 55696,
+   40, 35430,     2,     6, 26336,    10, 32688,     4,    11, 64683,
+   25, 19886,    30, 54318,    35, 57698,     5,    13, 46687,    21,
+42957,    29, 64739,    31, 49727,    42, 34927,     4,     3, 57077,
+    4, 45718,    23, 18702,    37, 58671,     5,     1, 12373,     9,
+17564,    16, 53502,    26, 54859,    41, 39245,
+};
+
 vtkDICOMDictionary::Dict Dict001Data = {
 "WG12 Supplement 43",
 10,
 43,
 Dict001TagHashTable,
+Dict001KeyHashTable,
 Dict001Contents
 };
 
@@ -200,11 +215,36 @@ unsigned short Dict002TagHashTable[] = {
     2,
 };
 
+unsigned short Dict002KeyHashTable[] = {
+   22,    22,    22,    22,    22,    22,    22,    23,    22,    22,
+   22,    22,    22,    26,    22,    22,   193,   196,   199,    22,
+   22,   202,     0,     1,     4, 52298,    83,     5,   244,     6,
+  244,     7,   244,     8,   244,     9,   244,    10,   244,    11,
+  244,    12,   244,    13,   244,    14,   244,    15,   244,    16,
+  244,    17,   244,    18,   244,    19,   244,    20,   244,    21,
+  244,    22,   244,    23,   244,    24,   244,    25,   244,    26,
+  244,    27,   244,    28,   244,    29,   244,    30,   244,    31,
+  244,    32,   244,    33,   244,    34,   244,    35,   244,    36,
+  244,    37,   244,    38,   244,    39,   244,    40,   244,    41,
+  244,    42,   244,    43,   244,    44,   244,    45,   244,    46,
+  244,    47,   244,    48,   244,    49,   244,    50,   244,    51,
+  244,    52,   244,    53,   244,    54,   244,    55,   244,    56,
+  244,    57,   244,    58,   244,    59,   244,    60,   244,    61,
+  244,    62,   244,    63,   244,    64,   244,    65,   244,    66,
+  244,    67,   244,    68,   244,    69,   244,    70,   244,    71,
+  244,    72,   244,    73,   244,    74,   244,    75,   244,    76,
+  244,    77,   244,    78,   244,    79,   244,    80,   244,    81,
+  244,    82,   244,    83,   244,    84,   244,    85,   244,    86,
+  244,    87,   244,     1,     1, 21489,     1,     0, 16559,     1,
+    3, 33829,     1,     2, 39299,
+};
+
 vtkDICOMDictionary::Dict Dict002Data = {
 "SVISION",
 22,
 88,
 Dict002TagHashTable,
+Dict002KeyHashTable,
 Dict002Contents
 };
 
@@ -218,11 +258,16 @@ unsigned short Dict003TagHashTable[] = {
     2,     0,     1,     0,    32,
 };
 
+unsigned short Dict003KeyHashTable[] = {
+    2,     0,     1,     0, 46679,
+};
+
 vtkDICOMDictionary::Dict Dict003Data = {
 "GEMS_XR3DCAL_01",
 1,
 1,
 Dict003TagHashTable,
+Dict003KeyHashTable,
 Dict003Contents
 };
 
@@ -253,11 +298,19 @@ unsigned short Dict004TagHashTable[] = {
     9,     6,    10,     9,    23,    13,    52,
 };
 
+unsigned short Dict004KeyHashTable[] = {
+    4,    11,    18,     0,     3,     7,  7122,    11, 27405,    13,
+20369,     3,     8, 62792,     9,  7122,    14, 49628,     9,     0,
+54497,     1, 54497,     2, 54497,     3, 54497,     4, 54497,     5,
+54497,     6, 54497,    10, 62792,    12, 33352,
+};
+
 vtkDICOMDictionary::Dict Dict004Data = {
 "GEMS_IMPS_01",
 3,
 15,
 Dict004TagHashTable,
+Dict004KeyHashTable,
 Dict004Contents
 };
 
@@ -272,11 +325,16 @@ unsigned short Dict005TagHashTable[] = {
     2,     0,     2,     0,     1,     1,     2,
 };
 
+unsigned short Dict005KeyHashTable[] = {
+    2,     0,     2,     0,   313,     1, 18129,
+};
+
 vtkDICOMDictionary::Dict Dict005Data = {
 "Applicare/Centricity Radiology Web/Version 2.0",
 1,
 2,
 Dict005TagHashTable,
+Dict005KeyHashTable,
 Dict005Contents
 };
 
@@ -290,11 +348,16 @@ unsigned short Dict006TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict006KeyHashTable[] = {
+    2,     0,     1,     0, 20925,
+};
+
 vtkDICOMDictionary::Dict Dict006Data = {
 "TOSHIBA_MEC_OT3",
 1,
 1,
 Dict006TagHashTable,
+Dict006KeyHashTable,
 Dict006Contents
 };
 
@@ -325,11 +388,19 @@ unsigned short Dict007TagHashTable[] = {
    18,     5,    48,     9,    16,    10,    32,
 };
 
+unsigned short Dict007KeyHashTable[] = {
+    4,    19,    26,     0,     7,     0,  9604,     5, 50206,     8,
+28385,     9,  8051,    10, 32519,    12, 11973,    13, 37559,     3,
+    2, 22841,     3, 26553,     6, 65027,     5,     1,  1793,     4,
+46267,     7, 48094,    11, 40911,    14,  4454,
+};
+
 vtkDICOMDictionary::Dict Dict007Data = {
 "GEIIS",
 3,
 15,
 Dict007TagHashTable,
+Dict007KeyHashTable,
 Dict007Contents
 };
 
@@ -343,11 +414,16 @@ unsigned short Dict008TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict008KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict008Data = {
 "Philips NM Private Group",
 1,
 1,
 Dict008TagHashTable,
+Dict008KeyHashTable,
 Dict008Contents
 };
 
@@ -372,11 +448,18 @@ unsigned short Dict009TagHashTable[] = {
    48,     8,   128,     9,   144,
 };
 
+unsigned short Dict009KeyHashTable[] = {
+    3,    16,     0,     6,     2, 47197,     3, 11003,     4, 17288,
+    5, 24179,     7, 22871,     9, 45537,     4,     0, 30578,     1,
+34512,     6,  2073,     8,  2693,
+};
+
 vtkDICOMDictionary::Dict Dict009Data = {
 "GEMS_ACRQA_1.0 BLOCK1",
 2,
 10,
 Dict009TagHashTable,
+Dict009KeyHashTable,
 Dict009Contents
 };
 
@@ -401,11 +484,18 @@ unsigned short Dict010TagHashTable[] = {
    48,     8,   128,     9,   144,
 };
 
+unsigned short Dict010KeyHashTable[] = {
+    3,    12,     0,     4,     1, 50831,     2, 56816,     6, 47230,
+    9, 21299,     6,     0, 50826,     3, 56820,     4, 56815,     5,
+ 3048,     7, 19512,     8, 15797,
+};
+
 vtkDICOMDictionary::Dict Dict010Data = {
 "GEMS_ACRQA_1.0 BLOCK3",
 2,
 10,
 Dict010TagHashTable,
+Dict010KeyHashTable,
 Dict010Contents
 };
 
@@ -430,11 +520,18 @@ unsigned short Dict011TagHashTable[] = {
    48,     8,   128,     9,   144,
 };
 
+unsigned short Dict011KeyHashTable[] = {
+    3,    16,     0,     6,     3, 39313,     4, 39314,     5, 39322,
+    6, 39504,     8, 39501,     9, 50834,     4,     0, 13365,     1,
+61229,     2, 39322,     7, 39496,
+};
+
 vtkDICOMDictionary::Dict Dict011Data = {
 "GEMS_ACRQA_1.0 BLOCK2",
 2,
 10,
 Dict011TagHashTable,
+Dict011KeyHashTable,
 Dict011Contents
 };
 
@@ -448,11 +545,16 @@ unsigned short Dict012TagHashTable[] = {
     2,     0,     1,     0,    32,
 };
 
+unsigned short Dict012KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict012Data = {
 "Siemens Ultrasound Miscellaneous",
 1,
 1,
 Dict012TagHashTable,
+Dict012KeyHashTable,
 Dict012Contents
 };
 
@@ -475,11 +577,18 @@ unsigned short Dict013TagHashTable[] = {
    32,
 };
 
+unsigned short Dict013KeyHashTable[] = {
+    3,    14,     0,     5,     2, 32124,     3, 26225,     4, 27422,
+    6, 51382,     7, 31679,     3,     0, 11477,     1,  4883,     5,
+22059,
+};
+
 vtkDICOMDictionary::Dict Dict013Data = {
 "SPI",
 2,
 8,
 Dict013TagHashTable,
+Dict013KeyHashTable,
 Dict013Contents
 };
 
@@ -499,11 +608,17 @@ unsigned short Dict014TagHashTable[] = {
   112,     4,   128,     5,   144,
 };
 
+unsigned short Dict014KeyHashTable[] = {
+    2,     0,     6,     0, 28858,     1, 22006,     2, 34576,     3,
+48358,     4,  4147,     5,  2273,
+};
+
 vtkDICOMDictionary::Dict Dict014Data = {
 "GE ??? From Adantage Review CS",
 1,
 6,
 Dict014TagHashTable,
+Dict014KeyHashTable,
 Dict014Contents
 };
 
@@ -527,11 +642,18 @@ unsigned short Dict015TagHashTable[] = {
     6,     8,     8,
 };
 
+unsigned short Dict015KeyHashTable[] = {
+    3,    14,     0,     5,     0, 29674,     1, 38594,     2, 32994,
+    4, 16903,     5, 39715,     4,     3, 51967,     6, 46764,     7,
+41050,     8,  4827,
+};
+
 vtkDICOMDictionary::Dict Dict015Data = {
 "SIEMENS SMS-AX  QUANT 1.0",
 2,
 9,
 Dict015TagHashTable,
+Dict015KeyHashTable,
 Dict015Contents
 };
 
@@ -550,11 +672,17 @@ unsigned short Dict016TagHashTable[] = {
    20,     4,    31,
 };
 
+unsigned short Dict016KeyHashTable[] = {
+    2,     0,     5,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict016Data = {
 "AgilityRuntime",
 1,
 5,
 Dict016TagHashTable,
+Dict016KeyHashTable,
 Dict016Contents
 };
 
@@ -675,11 +803,35 @@ unsigned short Dict017TagHashTable[] = {
     3,    16,    48,    45,   112,    72,   167,
 };
 
+unsigned short Dict017KeyHashTable[] = {
+   21,    21,    21,    21,    21,    22,    21,    21,    21,    21,
+   21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+   21,     0,    87,     0,   256,     1,   256,     2,   256,     3,
+  256,     4,   256,     5,   256,     6,   256,     7,   256,     8,
+  256,     9,   256,    10,   256,    11,   256,    12,   256,    13,
+  256,    14,   256,    15,   256,    16,   256,    17,   256,    18,
+  256,    19,   256,    20,   256,    21,   256,    22,   256,    23,
+  256,    24,   256,    25,   256,    26,   256,    27,   256,    28,
+  256,    29,   256,    30,   256,    31,   256,    32,   256,    33,
+  256,    34,   256,    35,   256,    36,   256,    37,   256,    38,
+  256,    39,   256,    40,   256,    41,   256,    42,   256,    43,
+  256,    44,   256,    45,   256,    46,   256,    47,   256,    48,
+  256,    49,   256,    50,   256,    51,   256,    52,   256,    53,
+  256,    54,   256,    55,   256,    56,   256,    57,   256,    58,
+  256,    59,   256,    60,   256,    61,   256,    62,   256,    63,
+  256,    64,   256,    65,   256,    66,   256,    67,   256,    68,
+  256,    69,   256,    70,   256,    71,   256,    72,   256,    73,
+  256,    74,   256,    75,   256,    76,   256,    77,   256,    78,
+  256,    79,   256,    80,   256,    81,   256,    82,   256,    83,
+  256,    84,   256,    85,   256,    86,   256,
+};
+
 vtkDICOMDictionary::Dict Dict017Data = {
 "SIEMENS RA GEN",
 21,
 87,
 Dict017TagHashTable,
+Dict017KeyHashTable,
 Dict017Contents
 };
 
@@ -720,11 +872,21 @@ unsigned short Dict018TagHashTable[] = {
    23,    11,    26,    21,    96,    22,   101,
 };
 
+unsigned short Dict018KeyHashTable[] = {
+    5,     6,     5,     5,     5,     0,    23,     0,  1076,     1,
+ 1076,     2,  1076,     3,  1076,     4,  1076,     5,  1076,     6,
+ 1076,     7,  1076,     8,  1076,     9,  1076,    10,  1076,    11,
+ 1076,    12,  1076,    13,  1076,    14,  1076,    15,  1076,    16,
+ 1076,    17,  1076,    18,  1076,    19,  1076,    20,  1076,    21,
+ 1076,    22,  1076,
+};
+
 vtkDICOMDictionary::Dict Dict018Data = {
 "Mayo/IBM Archive Project",
 5,
 23,
 Dict018TagHashTable,
+Dict018KeyHashTable,
 Dict018Contents
 };
 
@@ -738,11 +900,16 @@ unsigned short Dict019TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict019KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict019Data = {
 "SIEMENS SIENET",
 1,
 1,
 Dict019TagHashTable,
+Dict019KeyHashTable,
 Dict019Contents
 };
 
@@ -767,11 +934,18 @@ unsigned short Dict020TagHashTable[] = {
     8,    16,     9,    18,
 };
 
+unsigned short Dict020KeyHashTable[] = {
+    2,     3,     0,    10,     0,  2690,     1,  2690,     2,  2690,
+    3,  2690,     4,  2690,     5,  2690,     6,  2690,     7,  2690,
+    8,  2690,     9,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict020Data = {
 "MDS NORDION OTP ANATOMY MODELLING",
 2,
 10,
 Dict020TagHashTable,
+Dict020KeyHashTable,
 Dict020Contents
 };
 
@@ -849,11 +1023,29 @@ unsigned short Dict021TagHashTable[] = {
    48,
 };
 
+unsigned short Dict021KeyHashTable[] = {
+   14,    21,    32,    45,    56,    67,    72,    83,    88,    91,
+  106,   123,   128,     0,     3,    15, 18750,    34, 64578,    39,
+32164,     5,     7, 15305,    24,  2430,    31, 33953,    35, 64578,
+   45, 50410,     6,    13, 12473,    18, 61126,    27, 23933,    33,
+60557,    36, 64578,    48, 27405,     5,     0, 18273,     5, 18693,
+   16, 12582,    32,  3722,    37, 64578,     5,     8, 43319,    20,
+46767,    42,   705,    43, 61592,    50, 64194,     2,    17, 22979,
+   21,  3528,     5,    10,  5072,    22, 39637,    23, 48257,    28,
+32028,    49, 54883,     2,     1, 64381,    41, 11510,     1,     2,
+45702,     7,     4, 24838,     6, 35936,    25, 25223,    26, 49482,
+   38, 31116,    47, 10926,    51, 54032,     8,    11, 35176,    12,
+59432,    14, 19219,    19, 47031,    29, 19658,    30, 63494,    40,
+21358,    46, 53190,     2,     3, 19535,     9, 63047,     1,    44,
+25179,
+};
+
 vtkDICOMDictionary::Dict Dict021Data = {
 "SIEMENS CT APPL DATASET",
 13,
 52,
 Dict021TagHashTable,
+Dict021KeyHashTable,
 Dict021Contents
 };
 
@@ -873,11 +1065,17 @@ unsigned short Dict022TagHashTable[] = {
    48,     4,    64,     5,    80,
 };
 
+unsigned short Dict022KeyHashTable[] = {
+    2,     0,     6,     0, 11281,     1,  9244,     2, 20304,     3,
+53329,     4, 51292,     5,   912,
+};
+
 vtkDICOMDictionary::Dict Dict022Data = {
 "DCMTK_ANONYMIZER",
 1,
 6,
 Dict022TagHashTable,
+Dict022KeyHashTable,
 Dict022Contents
 };
 
@@ -892,11 +1090,16 @@ unsigned short Dict023TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict023KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict023Data = {
 "AGFA PACS Archive Mirroring 1.0",
 1,
 2,
 Dict023TagHashTable,
+Dict023KeyHashTable,
 Dict023Contents
 };
 
@@ -910,11 +1113,16 @@ unsigned short Dict024TagHashTable[] = {
     2,     0,     1,     0,   174,
 };
 
+unsigned short Dict024KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict024Data = {
 "syngoDynamics",
 1,
 1,
 Dict024TagHashTable,
+Dict024KeyHashTable,
 Dict024Contents
 };
 
@@ -932,11 +1140,17 @@ unsigned short Dict025TagHashTable[] = {
    17,
 };
 
+unsigned short Dict025KeyHashTable[] = {
+    2,     0,     4,     0, 13372,     1, 38040,     2, 45487,     3,
+60129,
+};
+
 vtkDICOMDictionary::Dict Dict025Data = {
 "SIEMENS SYNGO ULTRA-SOUND TOYON DATA STREAMING",
 1,
 4,
 Dict025TagHashTable,
+Dict025KeyHashTable,
 Dict025Contents
 };
 
@@ -1001,11 +1215,26 @@ unsigned short Dict026TagHashTable[] = {
    24,    19,    32,    35,    54,
 };
 
+unsigned short Dict026KeyHashTable[] = {
+   11,    26,    39,    50,    57,    68,    75,    80,    89,    96,
+    0,     7,     1, 36086,     2, 23138,     5, 28960,    21, 17752,
+   34, 50119,    39, 54239,    40, 28342,     6,     4, 33501,     6,
+52650,    16, 36587,    18, 59860,    29, 25241,    37, 55772,     5,
+    7, 21778,     8, 62923,    11, 42784,    17, 48369,    22, 16671,
+    3,    10, 13174,    19, 27477,    28,  6533,     5,     3, 24985,
+   24, 28937,    27, 49486,    30, 16010,    32, 41505,     3,     0,
+51216,    31,  1940,    35, 47955,     2,     9, 24438,    14, 47721,
+    4,    13, 61576,    20, 24940,    25, 14715,    26, 13206,     3,
+   23, 51261,    33, 22826,    38, 51158,     4,    12, 13438,    15,
+27534,    36,  9470,    41, 64398,
+};
+
 vtkDICOMDictionary::Dict Dict026Data = {
 "Hipaa Private Creator",
 10,
 42,
 Dict026TagHashTable,
+Dict026KeyHashTable,
 Dict026Contents
 };
 
@@ -1020,11 +1249,16 @@ unsigned short Dict027TagHashTable[] = {
     2,     0,     2,     0,     1,     1,     2,
 };
 
+unsigned short Dict027KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict027Data = {
 "GEMS_GNHD_01",
 1,
 2,
 Dict027TagHashTable,
+Dict027KeyHashTable,
 Dict027Contents
 };
 
@@ -1054,11 +1288,19 @@ unsigned short Dict028TagHashTable[] = {
    34,     9,    49,    13,    80,
 };
 
+unsigned short Dict028KeyHashTable[] = {
+    4,    13,    22,     0,     4,     1, 56789,     5, 44656,    12,
+16012,    13, 18347,     4,     2, 42936,     4, 30305,     6, 10408,
+    8, 15616,     6,     0, 32607,     3, 59716,     7, 17280,     9,
+48637,    10,  7137,    11,  7681,
+};
+
 vtkDICOMDictionary::Dict Dict028Data = {
 "PAPYRUS 3.0",
 3,
 14,
 Dict028TagHashTable,
+Dict028KeyHashTable,
 Dict028Contents
 };
 
@@ -1089,11 +1331,19 @@ unsigned short Dict029TagHashTable[] = {
    11,     5,    12,    12,    19,    13,    20,
 };
 
+unsigned short Dict029KeyHashTable[] = {
+    3,     3,     4,     0,    15,     0,  1793,     1,  1793,     2,
+ 1793,     3,  1793,     4,  1793,     5,  1793,     6,  1793,     7,
+ 1793,     8,  1793,     9,  1793,    10,  1793,    11,  1793,    12,
+ 1793,    13,  1793,    14,  1793,
+};
+
 vtkDICOMDictionary::Dict Dict029Data = {
 "ACUSON",
 3,
 15,
 Dict029TagHashTable,
+Dict029KeyHashTable,
 Dict029Contents
 };
 
@@ -1271,11 +1521,46 @@ unsigned short Dict030TagHashTable[] = {
   159,
 };
 
+unsigned short Dict030KeyHashTable[] = {
+   33,    33,    34,    33,   279,    33,    33,    33,    33,   282,
+   33,    33,   285,    33,    33,    33,   288,   291,    33,    33,
+   33,    33,   294,   299,    33,    33,   302,    33,    33,    33,
+  305,    33,    33,     0,   122,     0,   163,     1,   163,     2,
+  163,     3,   163,     5,   163,     6,   163,     7,   163,     8,
+  163,     9,   163,    10,   163,    11,   163,    14,   163,    15,
+  163,    16,   163,    17,   163,    18,   163,    19,   163,    20,
+  163,    21,   163,    22,   163,    23,   163,    24,   163,    25,
+  163,    26,   163,    27,   163,    28,   163,    30,   163,    31,
+  163,    32,   163,    33,   163,    34,   163,    35,   163,    36,
+  163,    37,   163,    38,   163,    39,   163,    40,   163,    41,
+  163,    42,   163,    43,   163,    45,   163,    46,   163,    48,
+  163,    49,   163,    50,   163,    51,   163,    52,   163,    53,
+  163,    54,   163,    55,   163,    56,   163,    57,   163,    58,
+  163,    59,   163,    60,   163,    61,   163,    62,   163,    63,
+  163,    64,   163,    65,   163,    66,   163,    67,   163,    68,
+  163,    69,   163,    70,   163,    71,   163,    72,   163,    73,
+  163,    74,   163,    75,   163,    76,   163,    77,   163,    78,
+  163,    79,   163,    80,   163,    81,   163,    82,   163,    83,
+  163,    84,   163,    85,   163,    86,   163,    87,   163,    88,
+  163,    89,   163,    90,   163,    91,   163,    92,   163,    93,
+  163,    94,   163,    95,   163,    96,   163,    97,   163,    98,
+  163,    99,   163,   100,   163,   101,   163,   102,   163,   103,
+  163,   104,   163,   105,   163,   106,   163,   107,   163,   108,
+  163,   109,   163,   110,   163,   111,   163,   112,   163,   113,
+  163,   114,   163,   115,   163,   116,   163,   117,   163,   118,
+  163,   120,   163,   121,   163,   122,   163,   123,   163,   124,
+  163,   125,   163,   126,   163,   127,   163,   131,   163,     1,
+   47,   272,     1,    13, 12852,     1,   119, 65276,     1,     4,
+ 1162,     1,    44, 10022,     2,    12, 60552,   130, 12997,     1,
+   29, 63520,     1,   128, 13009,     1,   129, 12992,
+};
+
 vtkDICOMDictionary::Dict Dict030Data = {
 "Philips MR Imaging DD 001",
 33,
 132,
 Dict030TagHashTable,
+Dict030KeyHashTable,
 Dict030Contents
 };
 
@@ -1384,11 +1669,33 @@ unsigned short Dict031TagHashTable[] = {
    63,    66,    73,
 };
 
+unsigned short Dict031KeyHashTable[] = {
+   19,    19,    19,    19,    20,    19,    19,    19,    19,    19,
+   19,    19,    19,    19,    19,    19,    19,    19,    19,     0,
+   77,     0,   283,     1,   283,     2,   283,     3,   283,     4,
+  283,     5,   283,     6,   283,     7,   283,     8,   283,     9,
+  283,    10,   283,    11,   283,    12,   283,    13,   283,    14,
+  283,    15,   283,    16,   283,    17,   283,    18,   283,    19,
+  283,    20,   283,    21,   283,    22,   283,    23,   283,    24,
+  283,    25,   283,    26,   283,    27,   283,    28,   283,    29,
+  283,    30,   283,    31,   283,    32,   283,    33,   283,    34,
+  283,    35,   283,    36,   283,    37,   283,    38,   283,    39,
+  283,    40,   283,    41,   283,    42,   283,    43,   283,    44,
+  283,    45,   283,    46,   283,    47,   283,    48,   283,    49,
+  283,    50,   283,    51,   283,    52,   283,    53,   283,    54,
+  283,    55,   283,    56,   283,    57,   283,    58,   283,    59,
+  283,    60,   283,    61,   283,    62,   283,    63,   283,    64,
+  283,    65,   283,    66,   283,    67,   283,    68,   283,    69,
+  283,    70,   283,    71,   283,    72,   283,    73,   283,    74,
+  283,    75,   283,    76,   283,
+};
+
 vtkDICOMDictionary::Dict Dict031Data = {
 "Philips MR Imaging DD 005",
 19,
 77,
 Dict031TagHashTable,
+Dict031KeyHashTable,
 Dict031Contents
 };
 
@@ -1506,11 +1813,35 @@ unsigned short Dict032TagHashTable[] = {
   149,
 };
 
+unsigned short Dict032KeyHashTable[] = {
+   21,    21,    21,    21,    21,    22,    21,    21,    21,    21,
+   21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
+   21,     0,    84,     0,   256,     1,   256,     2,   256,     3,
+  256,     4,   256,     5,   256,     6,   256,     7,   256,     8,
+  256,     9,   256,    10,   256,    11,   256,    12,   256,    13,
+  256,    14,   256,    15,   256,    16,   256,    17,   256,    18,
+  256,    19,   256,    20,   256,    21,   256,    22,   256,    23,
+  256,    24,   256,    25,   256,    26,   256,    27,   256,    28,
+  256,    29,   256,    30,   256,    31,   256,    32,   256,    33,
+  256,    34,   256,    35,   256,    36,   256,    37,   256,    38,
+  256,    39,   256,    40,   256,    41,   256,    42,   256,    43,
+  256,    44,   256,    45,   256,    46,   256,    47,   256,    48,
+  256,    49,   256,    50,   256,    51,   256,    52,   256,    53,
+  256,    54,   256,    55,   256,    56,   256,    57,   256,    58,
+  256,    59,   256,    60,   256,    61,   256,    62,   256,    63,
+  256,    64,   256,    65,   256,    66,   256,    67,   256,    68,
+  256,    69,   256,    70,   256,    71,   256,    72,   256,    73,
+  256,    74,   256,    75,   256,    76,   256,    77,   256,    78,
+  256,    79,   256,    80,   256,    81,   256,    82,   256,    83,
+  256,
+};
+
 vtkDICOMDictionary::Dict Dict032Data = {
 "Philips MR Imaging DD 004",
 21,
 84,
 Dict032TagHashTable,
+Dict032KeyHashTable,
 Dict032Contents
 };
 
@@ -1534,11 +1865,18 @@ unsigned short Dict033TagHashTable[] = {
    19,     5,    21,
 };
 
+unsigned short Dict033KeyHashTable[] = {
+    3,    10,     0,     3,     5, 52809,     7, 39616,     8,   327,
+    6,     0, 21818,     1, 59292,     2, 24821,     3, 29562,     4,
+40307,     6,  8320,
+};
+
 vtkDICOMDictionary::Dict Dict033Data = {
 "dcm4che/archive",
 2,
 9,
 Dict033TagHashTable,
+Dict033KeyHashTable,
 Dict033Contents
 };
 
@@ -1552,11 +1890,16 @@ unsigned short Dict034TagHashTable[] = {
     2,     0,     1,     0,    32,
 };
 
+unsigned short Dict034KeyHashTable[] = {
+    2,     0,     1,     0, 13593,
+};
+
 vtkDICOMDictionary::Dict Dict034Data = {
 "AMI Annotations_02",
 1,
 1,
 Dict034TagHashTable,
+Dict034KeyHashTable,
 Dict034Contents
 };
 
@@ -1594,11 +1937,21 @@ unsigned short Dict035TagHashTable[] = {
   128,
 };
 
+unsigned short Dict035KeyHashTable[] = {
+    6,    13,    24,    31,    42,     0,     3,     9, 28243,    12,
+  604,    13, 18237,     5,     1, 34665,     8, 38849,    14, 45848,
+   16, 51249,    19, 49421,     3,     2, 59423,     5, 18786,    10,
+43510,     5,     0, 30329,     3, 35119,     7, 13843,    17, 63235,
+   18, 55561,     4,     4, 56013,     6, 14605,    11, 26752,    15,
+65166,
+};
+
 vtkDICOMDictionary::Dict Dict035Data = {
 "TERARECON AQUARIUS",
 5,
 20,
 Dict035TagHashTable,
+Dict035KeyHashTable,
 Dict035Contents
 };
 
@@ -1614,11 +1967,16 @@ unsigned short Dict036TagHashTable[] = {
     2,     0,     3,     0,     8,     1,     9,     2,    16,
 };
 
+unsigned short Dict036KeyHashTable[] = {
+    2,     0,     3,     0, 47688,     1, 60908,     2, 33298,
+};
+
 vtkDICOMDictionary::Dict Dict036Data = {
 "TOSHIBA COMAPL OOG",
 1,
 3,
 Dict036TagHashTable,
+Dict036KeyHashTable,
 Dict036Contents
 };
 
@@ -1637,11 +1995,17 @@ unsigned short Dict037TagHashTable[] = {
     4,     4,     5,
 };
 
+unsigned short Dict037KeyHashTable[] = {
+    2,     0,     5,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict037Data = {
 "SYNARC_1.0",
 1,
 5,
 Dict037TagHashTable,
+Dict037KeyHashTable,
 Dict037Contents
 };
 
@@ -1686,11 +2050,22 @@ unsigned short Dict038TagHashTable[] = {
    48,    16,    65,    24,   128,
 };
 
+unsigned short Dict038KeyHashTable[] = {
+    7,    20,    25,    34,    53,    62,     0,     6,     0, 35114,
+    1, 13702,     3, 40185,     7, 54164,     9, 47455,    18, 36050,
+    2,    19, 60446,    21,   580,     4,     4, 40661,     8, 11539,
+   11, 42964,    13, 61601,     9,     2, 44916,     6, 23610,    12,
+42964,    15, 26722,    20, 37278,    22, 24101,    23, 17266,    24,
+35121,    25, 56132,     4,     5, 44806,    14, 54420,    16, 11486,
+   17, 30625,     1,    10, 16074,
+};
+
 vtkDICOMDictionary::Dict Dict038Data = {
 "LORAD Selenia",
 6,
 26,
 Dict038TagHashTable,
+Dict038KeyHashTable,
 Dict038Contents
 };
 
@@ -1835,11 +2210,42 @@ unsigned short Dict039TagHashTable[] = {
   106,    95,   234,    98,   240,
 };
 
+unsigned short Dict039KeyHashTable[] = {
+   26,    27,    34,    41,    64,    73,    78,    91,   100,   111,
+  118,   123,   128,   145,   150,   157,   162,   173,   182,   195,
+  206,   209,   220,   227,   244,   253,     0,     3,    62,  8330,
+   87, 62612,    96, 14512,     3,    59, 55789,    67, 53128,   105,
+39277,    11,    12, 10219,    15, 57370,    29, 21804,    44, 43838,
+   49, 44570,    51,  1483,    61, 11960,    78, 43485,    90, 23814,
+   92, 10602,   104, 18879,     4,    19, 34558,    36, 35941,    57,
+42811,    83, 22739,     2,    68, 58856,    88, 48239,     6,    17,
+  166,    39, 19259,    47, 31079,    65, 37943,    66, 23918,    75,
+23106,     4,     0, 45160,    32, 49118,    35, 63458,    72, 47123,
+    5,    14, 22983,    21, 60355,    56, 36080,    89, 64848,    95,
+58392,     3,    34, 57160,    70, 44028,    98, 29368,     2,    22,
+ 1229,    31, 10538,     2,     4, 26163,    30, 51598,     8,     5,
+55126,    10, 17014,    27, 26017,    33, 20995,    40, 15045,    81,
+31760,    99, 41015,   101, 47627,     2,     7, 29654,    63, 46948,
+    3,    45, 22567,    74, 11478,    94, 48542,     2,     6, 37501,
+   28, 37915,     5,    23,  2167,    53,  3961,    58, 46954,    76,
+46901,   103, 45696,     4,     2,  6754,     9,  1929,    25, 20215,
+  100, 31088,     6,    11, 46509,    13, 25619,    37, 53075,    48,
+ 4065,    52, 45385,    60, 64466,     5,    18, 53539,    24, 23225,
+   41, 24283,    42,  2845,    55,  2208,     1,    97, 64813,     5,
+    3, 25542,    71, 41019,    73, 33819,    77, 60947,   102, 56203,
+    3,    38, 36500,    80, 16148,    91, 53332,     8,     8,  4658,
+   26, 62230,    50, 56865,    54, 56478,    79, 51597,    82, 54046,
+   85,  2230,    86, 41421,     4,     1, 20165,    16, 48067,    64,
+35230,    84, 36048,     5,    20, 45793,    43,  6954,    46, 48060,
+   69, 34552,    93, 39921,
+};
+
 vtkDICOMDictionary::Dict Dict039Data = {
 "SIEMENS SYNGO LAYOUT PROTOCOL",
 26,
 106,
 Dict039TagHashTable,
+Dict039KeyHashTable,
 Dict039Contents
 };
 
@@ -1889,11 +2295,23 @@ unsigned short Dict040TagHashTable[] = {
     8,    11,    17,    16,    22,
 };
 
+unsigned short Dict040KeyHashTable[] = {
+    8,    19,    34,    41,    54,    61,    72,     0,     5,     0,
+17440,     4, 58616,     5, 45602,     8, 17233,    23,  3494,     7,
+    1, 15457,     6, 23800,    10, 22270,    11, 26369,    21, 47740,
+   28, 30434,    29, 62207,     3,    12, 37030,    16,  4692,    24,
+32889,     6,    13, 35098,    14, 21681,    15,  8264,    18, 21586,
+   20, 46594,    27, 32072,     3,    17, 17049,    22, 39418,    25,
+ 5089,     5,     2, 17705,     3, 37151,     7, 26048,     9, 62644,
+   19,  7037,     1,    26, 50311,
+};
+
 vtkDICOMDictionary::Dict Dict040Data = {
 "SIEMENS MR VA0  RAW",
 7,
 30,
 Dict040TagHashTable,
+Dict040KeyHashTable,
 Dict040Contents
 };
 
@@ -1916,11 +2334,18 @@ unsigned short Dict041TagHashTable[] = {
    32,
 };
 
+unsigned short Dict041KeyHashTable[] = {
+    3,    12,     0,     4,     0,   491,     1, 23314,     5, 53660,
+    7, 59338,     4,     2,  9329,     3, 23668,     4, 43715,     6,
+ 2715,
+};
+
 vtkDICOMDictionary::Dict Dict041Data = {
 "SIEMENS CM VA0  LAB",
 2,
 8,
 Dict041TagHashTable,
+Dict041KeyHashTable,
 Dict041Contents
 };
 
@@ -1940,11 +2365,17 @@ unsigned short Dict042TagHashTable[] = {
    64,     4,    80,     5,    96,
 };
 
+unsigned short Dict042KeyHashTable[] = {
+    2,     0,     6,     0, 62988,     1, 14080,     2, 17316,     3,
+ 9957,     4, 57101,     5, 19175,
+};
+
 vtkDICOMDictionary::Dict Dict042Data = {
 "http://www.gemedicalsystems.com/it_solutions/orthoview/2.1",
 1,
 6,
 Dict042TagHashTable,
+Dict042KeyHashTable,
 Dict042Contents
 };
 
@@ -1978,11 +2409,20 @@ unsigned short Dict043TagHashTable[] = {
     7,    14,    39,
 };
 
+unsigned short Dict043KeyHashTable[] = {
+    5,    10,    27,    32,     0,     2,    10, 47590,    11, 48427,
+    8,     1, 61946,     4, 15289,     6, 40128,    12,  1345,    13,
+ 1345,    14,  1345,    15,  1345,    16,  1345,     2,     7, 39889,
+    8, 53313,     5,     0, 17470,     2,  8454,     3,  4300,     5,
+33865,     9,  5481,
+};
+
 vtkDICOMDictionary::Dict Dict043Data = {
 "PHILIPS NM -Private",
 4,
 17,
 Dict043TagHashTable,
+Dict043KeyHashTable,
 Dict043Contents
 };
 
@@ -1997,11 +2437,16 @@ unsigned short Dict044TagHashTable[] = {
     2,     0,     2,     0,     1,     1,     2,
 };
 
+unsigned short Dict044KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict044Data = {
 "SIEMENS WH SR 1.0",
 1,
 2,
 Dict044TagHashTable,
+Dict044KeyHashTable,
 Dict044Contents
 };
 
@@ -2020,11 +2465,17 @@ unsigned short Dict045TagHashTable[] = {
     4,     4,     5,
 };
 
+unsigned short Dict045KeyHashTable[] = {
+    2,     0,     5,     0, 41459,     1, 43019,     2, 58786,     3,
+59452,     4, 23237,
+};
+
 vtkDICOMDictionary::Dict Dict045Data = {
 "PMOD_1",
 1,
 5,
 Dict045TagHashTable,
+Dict045KeyHashTable,
 Dict045Contents
 };
 
@@ -2047,11 +2498,18 @@ unsigned short Dict046TagHashTable[] = {
    48,
 };
 
+unsigned short Dict046KeyHashTable[] = {
+    3,    12,     0,     4,     2,  5374,     3,  2089,     4, 41645,
+    6, 47240,     4,     0, 58543,     1, 19194,     5, 46700,     7,
+ 8672,
+};
+
 vtkDICOMDictionary::Dict Dict046Data = {
 "SIEMENS MED MG",
 2,
 8,
 Dict046TagHashTable,
+Dict046KeyHashTable,
 Dict046Contents
 };
 
@@ -2065,11 +2523,16 @@ unsigned short Dict047TagHashTable[] = {
     2,     0,     1,     0,     2,
 };
 
+unsigned short Dict047KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict047Data = {
 "GEMS_CTHD_01",
 1,
 1,
 Dict047TagHashTable,
+Dict047KeyHashTable,
 Dict047Contents
 };
 
@@ -2100,11 +2563,19 @@ unsigned short Dict048TagHashTable[] = {
    36,     5,    50,    10,    70,    13,    84,
 };
 
+unsigned short Dict048KeyHashTable[] = {
+    4,    19,    26,     0,     7,     0, 12978,     1, 64356,     3,
+21303,     5, 39023,     6, 45243,     7, 37789,    13, 50453,     3,
+    2, 37948,     4, 45877,    11, 40760,     5,     8, 44388,     9,
+31640,    10, 23401,    12,   930,    14, 28078,
+};
+
 vtkDICOMDictionary::Dict Dict048Data = {
 "astm.org/diconde/iod/Component",
 3,
 15,
 Dict048TagHashTable,
+Dict048KeyHashTable,
 Dict048Contents
 };
 
@@ -2120,11 +2591,16 @@ unsigned short Dict049TagHashTable[] = {
     2,     0,     3,     0,     1,     1,     2,     2,     3,
 };
 
+unsigned short Dict049KeyHashTable[] = {
+    2,     0,     3,     0, 12284,     1, 65490,     2, 63351,
+};
+
 vtkDICOMDictionary::Dict Dict049Data = {
 "PMOD_GENPET",
 1,
 3,
 Dict049TagHashTable,
+Dict049KeyHashTable,
 Dict049Contents
 };
 
@@ -2139,11 +2615,16 @@ unsigned short Dict050TagHashTable[] = {
     2,     0,     2,     0,     2,     1,     3,
 };
 
+unsigned short Dict050KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict050Data = {
 "SHS MagicView 300",
 1,
 2,
 Dict050TagHashTable,
+Dict050KeyHashTable,
 Dict050Contents
 };
 
@@ -2166,11 +2647,17 @@ unsigned short Dict051TagHashTable[] = {
     7,
 };
 
+unsigned short Dict051KeyHashTable[] = {
+    2,     3,     0,     8,     0,  2690,     1,  2690,     2,  2690,
+    3,  2690,     4,  2690,     5,  2690,     6,  2690,     7,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict051Data = {
 "INTELERAD MEDICAL SYSTEMS INTELEVIEWER",
 2,
 8,
 Dict051TagHashTable,
+Dict051KeyHashTable,
 Dict051Contents
 };
 
@@ -2184,11 +2671,16 @@ unsigned short Dict052TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict052KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict052Data = {
 "SIEMENS IKM CKS CXRCAD FINDINGS",
 1,
 1,
 Dict052TagHashTable,
+Dict052KeyHashTable,
 Dict052Contents
 };
 
@@ -2204,11 +2696,16 @@ unsigned short Dict053TagHashTable[] = {
     2,     0,     3,     0,     0,     1,    16,     2,    32,
 };
 
+unsigned short Dict053KeyHashTable[] = {
+    2,     0,     3,     0, 35837,     1, 32153,     2, 28165,
+};
+
 vtkDICOMDictionary::Dict Dict053Data = {
 "SIEMENS NUMARIS II",
 1,
 3,
 Dict053TagHashTable,
+Dict053KeyHashTable,
 Dict053Contents
 };
 
@@ -2222,11 +2719,16 @@ unsigned short Dict054TagHashTable[] = {
     2,     0,     1,     0,   149,
 };
 
+unsigned short Dict054KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict054Data = {
 "REPORT_FROM_APP",
 1,
 1,
 Dict054TagHashTable,
+Dict054KeyHashTable,
 Dict054Contents
 };
 
@@ -2245,11 +2747,17 @@ unsigned short Dict055TagHashTable[] = {
   171,     4,   172,
 };
 
+unsigned short Dict055KeyHashTable[] = {
+    2,     0,     5,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict055Data = {
 "KINETDX",
 1,
 5,
 Dict055TagHashTable,
+Dict055KeyHashTable,
 Dict055Contents
 };
 
@@ -2307,11 +2815,25 @@ unsigned short Dict056TagHashTable[] = {
    96,
 };
 
+unsigned short Dict056KeyHashTable[] = {
+   10,    15,    24,    31,    42,    45,    54,    67,    78,     0,
+    2,    11, 49445,    16, 17348,     4,    14, 36824,    15, 51808,
+   19, 51459,    30, 27062,     3,     8, 50013,    22, 25206,    33,
+18590,     5,    13, 22823,    20, 42712,    24, 27242,    29, 13201,
+   31,  1822,     1,     9, 64438,     4,     2, 31084,    10, 57780,
+   21, 53780,    26, 44775,     6,     0, 39323,     1, 32346,     4,
+13971,    25, 10259,    28, 17018,    34, 20279,     5,     6, 16332,
+    7,  5363,    12, 34933,    23, 38400,    27,  6894,     6,     3,
+30378,     5, 50054,    17, 41488,    18,  2825,    32, 29462,    35,
+45859,
+};
+
 vtkDICOMDictionary::Dict Dict056Data = {
 "SIEMENS SYNGO WORKFLOW",
 9,
 36,
 Dict056TagHashTable,
+Dict056KeyHashTable,
 Dict056Contents
 };
 
@@ -2351,11 +2873,21 @@ unsigned short Dict057TagHashTable[] = {
    32,    17,    11,    21,     4,
 };
 
+unsigned short Dict057KeyHashTable[] = {
+    5,     6,     5,    49,     5,     0,    21,     0,  1076,     1,
+ 1076,     2,  1076,     3,  1076,     4,  1076,     5,  1076,     6,
+ 1076,     8,  1076,     9,  1076,    10,  1076,    11,  1076,    12,
+ 1076,    13,  1076,    14,  1076,    15,  1076,    16,  1076,    17,
+ 1076,    18,  1076,    19,  1076,    20,  1076,    21,  1076,     1,
+    7, 29497,
+};
+
 vtkDICOMDictionary::Dict Dict057Data = {
 "INTELERAD MEDICAL SYSTEMS",
 5,
 22,
 Dict057TagHashTable,
+Dict057KeyHashTable,
 Dict057Contents
 };
 
@@ -2369,11 +2901,16 @@ unsigned short Dict058TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict058KeyHashTable[] = {
+    2,     0,     1,     0, 62574,
+};
+
 vtkDICOMDictionary::Dict Dict058Data = {
 "SIEMENS SYNGO FUNCTION ASSIGNMENT",
 1,
 1,
 Dict058TagHashTable,
+Dict058KeyHashTable,
 Dict058Contents
 };
 
@@ -2387,11 +2924,16 @@ unsigned short Dict059TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict059KeyHashTable[] = {
+    2,     0,     1,     0, 60169,
+};
+
 vtkDICOMDictionary::Dict Dict059Data = {
 "FFP DATA",
 1,
 1,
 Dict059TagHashTable,
+Dict059KeyHashTable,
 Dict059Contents
 };
 
@@ -2405,11 +2947,16 @@ unsigned short Dict060TagHashTable[] = {
     2,     0,     1,     0,    32,
 };
 
+unsigned short Dict060KeyHashTable[] = {
+    2,     0,     1,     0, 42404,
+};
+
 vtkDICOMDictionary::Dict Dict060Data = {
 "astm.org/diconde/iod/ComponentStudy",
 1,
 1,
 Dict060TagHashTable,
+Dict060KeyHashTable,
 Dict060Contents
 };
 
@@ -2440,11 +2987,19 @@ unsigned short Dict061TagHashTable[] = {
    49,     5,    66,     8,    69,    12,    73,
 };
 
+unsigned short Dict061KeyHashTable[] = {
+    4,    15,    30,     0,     5,     0, 19335,     1, 45943,     4,
+18914,     5,  6914,     7, 27050,     7,     2, 13726,     3, 15923,
+    6, 49774,     8, 44222,    11, 58471,    12, 13080,    13, 52599,
+    3,     9, 53965,    10, 23987,    14, 50270,
+};
+
 vtkDICOMDictionary::Dict Dict061Data = {
 "SIEMENS SYNGO INDEX SERVICE",
 3,
 15,
 Dict061TagHashTable,
+Dict061KeyHashTable,
 Dict061Contents
 };
 
@@ -2460,11 +3015,16 @@ unsigned short Dict062TagHashTable[] = {
     2,     0,     3,     0,     1,     1,     2,     2,     3,
 };
 
+unsigned short Dict062KeyHashTable[] = {
+    2,     0,     3,     0, 33879,     1, 25569,     2, 33498,
+};
+
 vtkDICOMDictionary::Dict Dict062Data = {
 "http://www.gemedicalsystems.com/it_solutions/rad_pacs/",
 1,
 3,
 Dict062TagHashTable,
+Dict062KeyHashTable,
 Dict062Contents
 };
 
@@ -2478,11 +3038,16 @@ unsigned short Dict063TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict063KeyHashTable[] = {
+    2,     0,     1,     0, 20131,
+};
+
 vtkDICOMDictionary::Dict Dict063Data = {
 "SIEMENS CT APPL TMP DATAMODEL",
 1,
 1,
 Dict063TagHashTable,
+Dict063KeyHashTable,
 Dict063Contents
 };
 
@@ -2500,11 +3065,17 @@ unsigned short Dict064TagHashTable[] = {
    19,
 };
 
+unsigned short Dict064KeyHashTable[] = {
+    2,     0,     4,     0, 27389,     1, 33378,     2, 48795,     3,
+37159,
+};
+
 vtkDICOMDictionary::Dict Dict064Data = {
 "CTP",
 1,
 4,
 Dict064TagHashTable,
+Dict064KeyHashTable,
 Dict064Contents
 };
 
@@ -2520,11 +3091,16 @@ unsigned short Dict065TagHashTable[] = {
     2,     0,     3,     0,     1,     1,     2,     2,     3,
 };
 
+unsigned short Dict065KeyHashTable[] = {
+    2,     0,     3,     0, 23191,     1, 26418,     2, 15772,
+};
+
 vtkDICOMDictionary::Dict Dict065Data = {
 "PixelMed Publishing",
 1,
 3,
 Dict065TagHashTable,
+Dict065KeyHashTable,
 Dict065Contents
 };
 
@@ -2542,11 +3118,17 @@ unsigned short Dict066TagHashTable[] = {
    16,
 };
 
+unsigned short Dict066KeyHashTable[] = {
+    2,     0,     4,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,
+};
+
 vtkDICOMDictionary::Dict Dict066Data = {
 "POLYTRON-SMS 2.5",
 1,
 4,
 Dict066TagHashTable,
+Dict066KeyHashTable,
 Dict066Contents
 };
 
@@ -2561,11 +3143,16 @@ unsigned short Dict067TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict067KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict067Data = {
 "Philips Imaging DD 129",
 1,
 2,
 Dict067TagHashTable,
+Dict067KeyHashTable,
 Dict067Contents
 };
 
@@ -2579,11 +3166,16 @@ unsigned short Dict068TagHashTable[] = {
     2,     0,     1,     0,     3,
 };
 
+unsigned short Dict068KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict068Data = {
 "Philips Imaging DD 124",
 1,
 1,
 Dict068TagHashTable,
+Dict068KeyHashTable,
 Dict068Contents
 };
 
@@ -2597,11 +3189,16 @@ unsigned short Dict069TagHashTable[] = {
     2,     0,     1,     0,    32,
 };
 
+unsigned short Dict069KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict069Data = {
 "PMS-THORA-5.1",
 1,
 1,
 Dict069TagHashTable,
+Dict069KeyHashTable,
 Dict069Contents
 };
 
@@ -2677,11 +3274,28 @@ unsigned short Dict070TagHashTable[] = {
    34,    20,    58,    28,    71,    43,   128,
 };
 
+unsigned short Dict070KeyHashTable[] = {
+   13,    18,    31,    46,    12,    51,    80,    89,    92,    99,
+  106,   115,     0,     2,    41, 53829,    47, 19682,     6,     8,
+46790,    28, 33802,    31, 43286,    34, 24932,    36,  6780,    46,
+38169,     7,     0, 10791,    20,  3656,    29, 36980,    30, 30303,
+   45, 52743,    48, 58667,    49, 30833,     2,     9, 59494,    16,
+61000,    14,     3, 49160,     4,   448,    10, 28323,    12,   448,
+   13,   448,    14,   448,    18,   448,    19,   448,    21,   448,
+   26, 29911,    32, 23950,    38,   448,    43, 57003,    50,   448,
+    4,    17, 20285,    27, 38094,    37,  8067,    42, 65417,     1,
+   40, 47331,     3,     1, 32015,     7,  6130,    25, 56622,     3,
+    2, 53459,    15, 33835,    22, 37975,     4,     6, 53119,    11,
+52322,    23, 28440,    39, 16308,     5,     5, 31292,    24,   376,
+   33, 32387,    35, 59281,    44, 53248,
+};
+
 vtkDICOMDictionary::Dict Dict070Data = {
 "SIEMENS MED SMS USG S2000",
 12,
 51,
 Dict070TagHashTable,
+Dict070KeyHashTable,
 Dict070Contents
 };
 
@@ -2695,11 +3309,16 @@ unsigned short Dict071TagHashTable[] = {
     2,     0,     1,     0,   118,
 };
 
+unsigned short Dict071KeyHashTable[] = {
+    2,     0,     1,     0, 27329,
+};
+
 vtkDICOMDictionary::Dict Dict071Data = {
 "SIEMENS MED OCS SS VERSION INFO",
 1,
 1,
 Dict071TagHashTable,
+Dict071KeyHashTable,
 Dict071Contents
 };
 
@@ -2968,11 +3587,65 @@ unsigned short Dict072TagHashTable[] = {
    48,    10,
 };
 
+unsigned short Dict072KeyHashTable[] = {
+   52,    51,    51,    51,    55,    58,    61,    51,    64,    51,
+   67,    72,    75,    51,    51,    78,    51,    81,    51,    84,
+   51,    51,    89,    92,    51,    51,    95,   430,   435,   440,
+   51,   443,   446,   451,   454,   457,   460,    51,   463,    51,
+   51,   468,    51,   471,    51,   476,   481,    51,    51,   484,
+  487,     0,     1,    15, 49205,     1,    52, 45251,     1,    49,
+26013,     1,   134, 13413,     1,    56, 32778,     2,    19, 26538,
+   23,  7886,     1,     0, 27770,     1,    57, 34568,     1,    48,
+42947,     1,   136, 34507,     2,    47, 63887,   131, 27381,     1,
+   42,  5050,     1,    45,  7938,   167,     2,   105,     3,   105,
+    4,   105,     5,   105,     6,   105,    10,   105,    11,   105,
+   12,   105,    13,   105,    14,   105,    16,   105,    17,   105,
+   18,   105,    20,   105,    21,   105,    22,   105,    24,   105,
+   25,   105,    27,   105,    29,   105,    30,   105,    31,   105,
+   32,   105,    33,   105,    34,   105,    35,   105,    36,   105,
+   37,   105,    39,   105,    40,   105,    51,   105,    55,   105,
+   58,   105,    59,   105,    60,   105,    61,   105,    62,   105,
+   63,   105,    64,   105,    65,   105,    66,   105,    67,   105,
+   68,   105,    69,   105,    70,   105,    71,   105,    72,   105,
+   73,   105,    74,   105,    75,   105,    76,   105,    77,   105,
+   78,   105,    79,   105,    80,   105,    81,   105,    82,   105,
+   83,   105,    84,   105,    85,   105,    86,   105,    87,   105,
+   88,   105,    89,   105,    90,   105,    91,   105,    92,   105,
+   93,   105,    94,   105,    95,   105,    96,   105,    97,   105,
+   98,   105,    99,   105,   100,   105,   101,   105,   102,   105,
+  103,   105,   104,   105,   105,   105,   106,   105,   107,   105,
+  108,   105,   109,   105,   110,   105,   111,   105,   112,   105,
+  113,   105,   114,   105,   115,   105,   116,   105,   117,   105,
+  118,   105,   119,   105,   120,   105,   121,   105,   122,   105,
+  123,   105,   127,   105,   128,   105,   138,   105,   139,   105,
+  140,   105,   141,   105,   142,   105,   143,   105,   144,   105,
+  145,   105,   146,   105,   147,   105,   148,   105,   149,   105,
+  150,   105,   151,   105,   152,   105,   153,   105,   154,   105,
+  155,   105,   156,   105,   157,   105,   158,   105,   159,   105,
+  160,   105,   161,   105,   162,   105,   163,   105,   164,   105,
+  165,   105,   166,   105,   167,   105,   168,   105,   169,   105,
+  170,   105,   171,   105,   172,   105,   173,   105,   174,   105,
+  175,   105,   176,   105,   177,   105,   178,   105,   179,   105,
+  180,   105,   181,   105,   182,   105,   183,   105,   184,   105,
+  185,   105,   186,   105,   187,   105,   188,   105,   189,   105,
+  190,   105,   191,   105,   192,   105,   193,   105,   194,   105,
+  195,   105,   196,   105,   197,   105,   198,   105,   199,   105,
+  200,   105,   201,   105,   202,   105,   203,   105,   204,   105,
+    2,    28, 22321,   130, 47313,     2,   124, 65094,   135, 26652,
+    1,    26, 19353,     1,    46, 46735,     2,     8, 54762,    41,
+65232,     1,   137, 22149,     1,     7, 39133,     1,    54, 33941,
+    1,     9, 33264,     2,    43, 16811,   126, 54873,     1,    38,
+45463,     2,     1, 50864,    44, 11429,     2,   125, 61124,   132,
+21274,     1,   133, 15546,     1,    50, 63753,     2,    53, 55558,
+  129, 13317,
+};
+
 vtkDICOMDictionary::Dict Dict072Data = {
 "ELSCINT1",
 51,
 205,
 Dict072TagHashTable,
+Dict072KeyHashTable,
 Dict072Contents
 };
 
@@ -3050,11 +3723,27 @@ unsigned short Dict073TagHashTable[] = {
    84,
 };
 
+unsigned short Dict073KeyHashTable[] = {
+   13,    13,    13,    13,    13,    13,    13,    13,    13,    13,
+   13,    13,    14,     0,    52,     0,   413,     1,   413,     2,
+  413,     3,   413,     4,   413,     5,   413,     6,   413,     7,
+  413,     8,   413,     9,   413,    10,   413,    11,   413,    12,
+  413,    13,   413,    14,   413,    15,   413,    16,   413,    17,
+  413,    18,   413,    19,   413,    20,   413,    21,   413,    22,
+  413,    23,   413,    24,   413,    25,   413,    26,   413,    27,
+  413,    28,   413,    29,   413,    30,   413,    31,   413,    32,
+  413,    33,   413,    34,   413,    35,   413,    36,   413,    37,
+  413,    38,   413,    39,   413,    40,   413,    41,   413,    42,
+  413,    43,   413,    44,   413,    45,   413,    46,   413,    47,
+  413,    48,   413,    49,   413,    50,   413,    51,   413,
+};
+
 vtkDICOMDictionary::Dict Dict073Data = {
 "SIEMENS IMAGE SHADOW ATTRIBUTES",
 13,
 52,
 Dict073TagHashTable,
+Dict073KeyHashTable,
 Dict073Contents
 };
 
@@ -3210,11 +3899,41 @@ unsigned short Dict074TagHashTable[] = {
     3,     2,     2,    40,    46,    69,    75,
 };
 
+unsigned short Dict074KeyHashTable[] = {
+   28,    28,    28,    28,    28,    29,    28,    28,    28,    28,
+   28,    28,    28,    28,    28,    28,    28,    28,    28,    28,
+   28,    28,    28,    28,    28,    28,    28,    28,     0,   115,
+    0,   192,     1,   192,     2,   192,     3,   192,     4,   192,
+    5,   192,     6,   192,     7,   192,     8,   192,     9,   192,
+   10,   192,    11,   192,    12,   192,    13,   192,    14,   192,
+   15,   192,    16,   192,    17,   192,    18,   192,    19,   192,
+   20,   192,    21,   192,    22,   192,    23,   192,    24,   192,
+   25,   192,    26,   192,    27,   192,    28,   192,    29,   192,
+   30,   192,    31,   192,    32,   192,    33,   192,    34,   192,
+   35,   192,    36,   192,    37,   192,    38,   192,    39,   192,
+   40,   192,    41,   192,    42,   192,    43,   192,    44,   192,
+   45,   192,    46,   192,    47,   192,    48,   192,    49,   192,
+   50,   192,    51,   192,    52,   192,    53,   192,    54,   192,
+   55,   192,    56,   192,    57,   192,    58,   192,    59,   192,
+   60,   192,    61,   192,    62,   192,    63,   192,    64,   192,
+   65,   192,    66,   192,    67,   192,    68,   192,    69,   192,
+   70,   192,    71,   192,    72,   192,    73,   192,    74,   192,
+   75,   192,    76,   192,    77,   192,    78,   192,    79,   192,
+   80,   192,    81,   192,    82,   192,    83,   192,    84,   192,
+   85,   192,    86,   192,    87,   192,    88,   192,    89,   192,
+   90,   192,    91,   192,    92,   192,    93,   192,    94,   192,
+   95,   192,    96,   192,    97,   192,    98,   192,    99,   192,
+  100,   192,   101,   192,   102,   192,   103,   192,   104,   192,
+  105,   192,   106,   192,   107,   192,   108,   192,   109,   192,
+  110,   192,   111,   192,   112,   192,   113,   192,   114,   192,
+};
+
 vtkDICOMDictionary::Dict Dict074Data = {
 "Harmony R1.0",
 28,
 115,
 Dict074TagHashTable,
+Dict074KeyHashTable,
 Dict074Contents
 };
 
@@ -3364,11 +4083,43 @@ unsigned short Dict075TagHashTable[] = {
   161,    90,   163,   102,    32,
 };
 
+unsigned short Dict075KeyHashTable[] = {
+   28,    31,    34,    39,    44,    49,    52,    59,    66,   187,
+  190,   193,   198,   205,   208,   213,   222,   225,   230,   239,
+  246,   251,   254,   257,   260,   265,   270,     0,     1,     3,
+65353,     1,    34, 22595,     2,    35, 49158,    93,  5330,     2,
+    5,  1092,   102,  8508,     2,    20, 22179,    25,  1762,     1,
+    9, 32998,     3,     1, 60556,    19, 12646,    21, 31743,     3,
+    8, 58395,    96, 15519,   103, 30389,    60,    14, 62912,    27,
+ 7780,    31,   199,    32,   199,    33,   199,    37,   199,    38,
+  199,    39,   199,    40,   199,    41,   199,    42,   199,    43,
+  199,    44,   199,    45,   199,    46,   199,    47,   199,    48,
+  199,    49,   199,    50,   199,    51,   199,    52,   199,    53,
+  199,    54,   199,    55,   199,    56,   199,    57,   199,    58,
+  199,    59,   199,    60,   199,    61,   199,    62,   199,    63,
+  199,    64,   199,    65,   199,    66,   199,    67,   199,    68,
+  199,    69,   199,    70,   199,    71,   199,    72,   199,    73,
+  199,    74,   199,    75,   199,    76,   199,    77,   199,    78,
+  199,    79,   199,    80,   199,    81,   199,    82,   199,    83,
+  199,    84,   199,    85,   199,    86,   199,    87,   199,    88,
+  199,    89,   199,    90,   199,   107, 24568,     1,    10, 11321,
+    1,   109, 28241,     2,    30, 28488,   105, 19807,     3,    12,
+64695,    28, 41579,   101,  3956,     1,    97,  1052,     2,     7,
+49419,   108, 36443,     4,    22, 15786,    24, 42291,    91, 17681,
+  106, 31099,     1,    23, 15786,     2,    18, 40556,    92, 46051,
+    4,     0, 10709,    17, 25851,    29, 56699,    98,   637,     3,
+   11, 14909,    15, 54780,    26, 17638,     2,    13, 56958,   100,
+64169,     1,    94, 56373,     1,    16,  1821,     1,    36, 57882,
+    2,     4, 38421,     6, 33215,     2,    95, 54557,   104, 58780,
+    2,     2,  6573,    99, 52015,
+};
+
 vtkDICOMDictionary::Dict Dict075Data = {
 "FDMS 1.0",
 27,
 110,
 Dict075TagHashTable,
+Dict075KeyHashTable,
 Dict075Contents
 };
 
@@ -3404,11 +4155,20 @@ unsigned short Dict076TagHashTable[] = {
     3,     5,    50,    17,   115,    18,   128,
 };
 
+unsigned short Dict076KeyHashTable[] = {
+    5,    20,    29,    36,     0,     7,     1, 55738,     2, 33848,
+    3,  7385,     5, 36071,     7,   202,     8, 39832,    14, 44928,
+    4,     9, 34351,    10,  5121,    13, 47879,    17, 21316,     3,
+    4, 16002,    15, 12442,    18,  6226,     5,     0, 27920,     6,
+ 4904,    11, 55814,    12, 18719,    16, 29364,
+};
+
 vtkDICOMDictionary::Dict Dict076Data = {
 "SIEMENS SYNGO SOP CLASS PACKING",
 4,
 19,
 Dict076TagHashTable,
+Dict076KeyHashTable,
 Dict076Contents
 };
 
@@ -3459,11 +4219,23 @@ unsigned short Dict077TagHashTable[] = {
     5,    10,    10,    19,    19,    24,    24,
 };
 
+unsigned short Dict077KeyHashTable[] = {
+    8,    27,    38,    43,    52,    63,    72,     0,     9,     2,
+23541,     3, 64621,     5, 15315,     7, 29712,     9, 38540,    10,
+54419,    19, 65425,    20, 45071,    25, 31903,     5,    11, 54309,
+   12, 54309,    14, 65162,    29, 20811,    30, 50277,     2,    23,
+47351,    26,  7167,     4,     4, 41152,    21, 39325,    22, 29922,
+   24, 37131,     5,     8, 63469,    15, 55093,    17, 57653,    18,
+20993,    27, 40511,     4,     1, 44945,    13, 38115,    16, 34328,
+   28, 62273,     2,     0, 63104,     6, 28077,
+};
+
 vtkDICOMDictionary::Dict Dict077Data = {
 "Sound Technologies",
 7,
 31,
 Dict077TagHashTable,
+Dict077KeyHashTable,
 Dict077Contents
 };
 
@@ -3478,11 +4250,16 @@ unsigned short Dict078TagHashTable[] = {
     2,     0,     2,     0,     1,     1,     2,
 };
 
+unsigned short Dict078KeyHashTable[] = {
+    2,     0,     2,     0, 41086,     1, 58817,
+};
+
 vtkDICOMDictionary::Dict Dict078Data = {
 "PHILIPS XCT -Private",
 1,
 2,
 Dict078TagHashTable,
+Dict078KeyHashTable,
 Dict078Contents
 };
 
@@ -3501,11 +4278,17 @@ unsigned short Dict079TagHashTable[] = {
     3,     4,     4,
 };
 
+unsigned short Dict079KeyHashTable[] = {
+    2,     0,     5,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict079Data = {
 "Siemens: Thorax/Multix FD Image Stamp",
 1,
 5,
 Dict079TagHashTable,
+Dict079KeyHashTable,
 Dict079Contents
 };
 
@@ -3678,11 +4461,47 @@ unsigned short Dict080TagHashTable[] = {
   124,
 };
 
+unsigned short Dict080KeyHashTable[] = {
+   33,    46,    55,    66,    32,    77,    82,    85,    98,   109,
+  122,   129,   142,   157,   166,   175,   186,   193,   204,   213,
+  222,   235,   242,   253,   260,   265,   274,   287,   292,   297,
+  300,   307,     0,     6,    33, 35251,    50, 40244,    62, 54116,
+   65, 51121,   111,  5445,   124, 37360,     4,    19,  7355,    35,
+38470,    68, 45345,   115, 53281,     5,     9, 24073,    36, 51883,
+   56, 10145,    80, 54152,   126,  8926,     5,    23, 34894,    66,
+57086,    95, 10121,    97, 23637,   125, 60165,     2,   100, 18208,
+  108, 18208,     1,    31, 38952,     6,     8, 38831,    11, 63399,
+   16, 61753,    70, 33283,    91, 61385,    94, 27975,     5,    20,
+ 1944,    88, 19670,    99, 58054,   103, 48742,   118, 14388,     6,
+    1, 43210,    47, 26378,    69, 39063,    84, 42570,   104, 24089,
+  123, 45718,     3,     2, 43210,    43, 17551,    90, 64091,     6,
+    3, 43210,     7, 16577,    12, 15402,    54, 28475,    67, 33596,
+   85, 21231,     7,    17, 58401,    29, 32206,    75, 33754,    87,
+36602,    89, 11003,   113,  9947,   122, 22623,     4,     6, 47327,
+   24, 50119,    34, 31430,    38, 27171,     4,    37, 21133,    73,
+18554,    86, 18796,   114, 64065,     5,     0, 60873,    53, 10886,
+   77,  9216,   110,  1899,   127, 48217,     3,    41, 51821,    42,
+51445,    74, 48670,     5,    18, 43845,    39, 53311,    79, 36469,
+   83, 38364,    96,  3018,     4,     4, 56321,     5, 40073,    59,
+ 3396,    60, 61206,     4,    25, 63071,    27, 20602,    57, 64318,
+  101, 46799,     6,    10, 28546,    76,  6280,   106, 22537,   107,
+ 3593,   117, 36806,   121, 56432,     3,    22, 48690,    49, 44713,
+   71, 31808,     5,    32, 23358,    55, 53404,    63, 17111,    72,
+49102,   120, 41768,     3,    81, 11957,    98, 55050,   119, 36172,
+    2,    45, 27772,   105, 29082,     4,    52, 11616,    82, 59453,
+  102, 61602,   116,  9398,     6,    15, 37114,    28, 41065,    30,
+ 2857,    40,  3593,    64, 49200,    92, 55455,     2,    14, 10297,
+   78, 53885,     2,    44, 60398,    46, 38220,     1,   112, 18488,
+    3,    13, 10527,    26, 46196,    48, 57541,     6,    21, 37971,
+   51, 40209,    58,  3361,    61, 23490,    93, 52795,   109, 41029,
+};
+
 vtkDICOMDictionary::Dict Dict080Data = {
 "GEMS_PARM_01",
 32,
 128,
 Dict080TagHashTable,
+Dict080KeyHashTable,
 Dict080Contents
 };
 
@@ -3696,11 +4515,16 @@ unsigned short Dict081TagHashTable[] = {
     2,     0,     1,     0,     3,
 };
 
+unsigned short Dict081KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict081Data = {
 "MedIns HP Extensions",
 1,
 1,
 Dict081TagHashTable,
+Dict081KeyHashTable,
 Dict081Contents
 };
 
@@ -3719,11 +4543,17 @@ unsigned short Dict082TagHashTable[] = {
    19,     4,    20,
 };
 
+unsigned short Dict082KeyHashTable[] = {
+    2,     0,     5,     0,  2407,     1, 43679,     2, 11273,     3,
+31042,     4, 38436,
+};
+
 vtkDICOMDictionary::Dict Dict082Data = {
 "SIEMENS CM VA0  ACQU",
 1,
 5,
 Dict082TagHashTable,
+Dict082KeyHashTable,
 Dict082Contents
 };
 
@@ -3803,11 +4633,29 @@ unsigned short Dict083TagHashTable[] = {
    48,    46,   114,    50,   131,
 };
 
+unsigned short Dict083KeyHashTable[] = {
+   13,    14,    19,    13,    26,    31,    42,    49,    52,    59,
+   64,    67,    76,     0,     2,     0, 18633,    47, 44384,     3,
+    1, 29559,    37, 24699,    50, 25186,     2,    20, 64793,    38,
+  429,     5,     9,  6316,    12, 36374,    16, 43504,    17, 42363,
+   21, 64793,     3,     6, 24094,    22, 64793,    39, 29101,     1,
+   23, 64793,     3,    11,  4129,    48, 12415,    49, 32241,     2,
+   36, 24718,    40, 62032,     1,    27, 33743,     4,     7, 38534,
+    8, 53092,    14, 30710,    41, 25168,    28,     2,   413,     3,
+  413,     4,   413,     5, 33654,    10,   413,    13,   413,    15,
+  413,    18,   413,    19,   413,    24,   413,    25,   413,    26,
+  413,    28, 55567,    29,   413,    30,   413,    31,   413,    32,
+  413,    33,   413,    34,   413,    35,   413,    42,   413,    43,
+  413,    44,   413,    45,   413,    46,   413,    51,   413,    52,
+  413,    53,   413,
+};
+
 vtkDICOMDictionary::Dict Dict083Data = {
 "PHILIPS MR/LAST",
 13,
 54,
 Dict083TagHashTable,
+Dict083KeyHashTable,
 Dict083Contents
 };
 
@@ -3827,11 +4675,17 @@ unsigned short Dict084TagHashTable[] = {
     0,     4,     0,     5,     0,
 };
 
+unsigned short Dict084KeyHashTable[] = {
+    2,     0,     6,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,     5,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict084Data = {
 "AEGIS_DICOM_2.00",
 1,
 6,
 Dict084TagHashTable,
+Dict084KeyHashTable,
 Dict084Contents
 };
 
@@ -3850,11 +4704,17 @@ unsigned short Dict085TagHashTable[] = {
    19,     4,   113,
 };
 
+unsigned short Dict085KeyHashTable[] = {
+    2,     0,     5,     0, 39019,     1, 63309,     2, 20877,     3,
+ 2912,     4, 56459,
+};
+
 vtkDICOMDictionary::Dict Dict085Data = {
 "MeVis eD: Absolute Temporal Positions",
 1,
 5,
 Dict085TagHashTable,
+Dict085KeyHashTable,
 Dict085Contents
 };
 
@@ -3939,11 +4799,30 @@ unsigned short Dict086TagHashTable[] = {
    24,    31,    32,    45,    46,
 };
 
+unsigned short Dict086KeyHashTable[] = {
+   15,    26,    37,    40,    53,    62,    71,    76,    79,    90,
+  101,   114,   123,   136,     0,     5,    17, 25520,    33, 43847,
+   36, 13821,    42, 44792,    52,  3671,     5,    10, 64244,    12,
+25073,    34, 34545,    35, 22392,    54,  1443,     1,    23, 33850,
+    6,     1,  2169,    30, 20831,    38,  4278,    46, 33407,    47,
+26882,    53, 58180,     4,     3,  9468,     7, 17253,    29, 36090,
+   57, 54404,     4,     5, 16050,     9,  4594,    13, 20295,    43,
+38447,     2,    15,  6327,    32, 64876,     1,     0, 10636,     5,
+   16,  4753,    20, 45018,    25, 33098,    39, 27347,    50, 51466,
+    5,     4,  6494,     8,  6405,    18, 21594,    22, 33881,    31,
+51737,     6,    14,  4896,    37, 10849,    41, 18043,    44, 60947,
+   45, 58057,    48,  7335,     4,     6, 45430,    24, 16990,    55,
+26641,    56, 39012,     6,    11, 30494,    19, 31375,    21, 40469,
+   27, 58650,    40, 14388,    51, 47662,     4,     2, 23284,    26,
+ 7366,    28, 36730,    49, 30638,
+};
+
 vtkDICOMDictionary::Dict Dict086Data = {
 "NQLeft",
 14,
 58,
 Dict086TagHashTable,
+Dict086KeyHashTable,
 Dict086Contents
 };
 
@@ -3958,11 +4837,16 @@ unsigned short Dict087TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict087KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict087Data = {
 "SPI-P-Private_ICS Release 1;3",
 1,
 2,
 Dict087TagHashTable,
+Dict087KeyHashTable,
 Dict087Contents
 };
 
@@ -3992,11 +4876,19 @@ unsigned short Dict088TagHashTable[] = {
     0,     5,     5,     9,   162,
 };
 
+unsigned short Dict088KeyHashTable[] = {
+    3,     3,     4,     0,    14,     0,  1793,     1,  1793,     2,
+ 1793,     3,  1793,     4,  1793,     5,  1793,     6,  1793,     7,
+ 1793,     8,  1793,     9,  1793,    10,  1793,    11,  1793,    12,
+ 1793,    13,  1793,
+};
+
 vtkDICOMDictionary::Dict Dict088Data = {
 "SPI-P-Private_ICS Release 1;2",
 3,
 14,
 Dict088TagHashTable,
+Dict088KeyHashTable,
 Dict088Contents
 };
 
@@ -4030,11 +4922,19 @@ unsigned short Dict089TagHashTable[] = {
   209,    15,   213,
 };
 
+unsigned short Dict089KeyHashTable[] = {
+    4,     5,     4,     4,     0,    17,     0,  1345,     1,  1345,
+    2,  1345,     3,  1345,     4,  1345,     5,  1345,     6,  1345,
+    7,  1345,     8,  1345,     9,  1345,    10,  1345,    11,  1345,
+   12,  1345,    13,  1345,    14,  1345,    15,  1345,    16,  1345,
+};
+
 vtkDICOMDictionary::Dict Dict089Data = {
 "SPI-P-Private_ICS Release 1;1",
 4,
 17,
 Dict089TagHashTable,
+Dict089KeyHashTable,
 Dict089Contents
 };
 
@@ -4095,11 +4995,25 @@ unsigned short Dict090TagHashTable[] = {
    25,    21,    50,    29,    64,    38,   109,
 };
 
+unsigned short Dict090KeyHashTable[] = {
+   10,    17,    22,    33,    40,     9,    51,    60,    69,     0,
+    3,     3, 19163,    22, 57058,    33, 52563,     2,     4,  7656,
+   10,  5916,     5,     1, 20126,     6, 13546,     7, 42061,    14,
+  616,    29, 57506,     3,     5, 47280,    23, 36218,    30, 13690,
+    5,    13, 31241,    15, 15488,    24, 28108,    26,  6330,    31,
+37261,     4,     2, 32986,    21, 30287,    28, 16376,    32, 14732,
+    4,     0, 59579,     8,   744,     9,  8285,    12, 46149,    13,
+   11,   597,    16,   597,    17,   597,    18,   597,    19,   597,
+   20, 51643,    25, 38106,    27, 49299,    34,   597,    35,   597,
+   36,   597,    37,   597,    38,   597,
+};
+
 vtkDICOMDictionary::Dict Dict090Data = {
 "GEMS_GDXE_FALCON_04",
 9,
 39,
 Dict090TagHashTable,
+Dict090KeyHashTable,
 Dict090Contents
 };
 
@@ -4114,11 +5028,16 @@ unsigned short Dict091TagHashTable[] = {
     2,     0,     2,     0,    80,     1,    85,
 };
 
+unsigned short Dict091KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict091Data = {
 "SPI-P-Private_ICS Release 1;5",
 1,
 2,
 Dict091TagHashTable,
+Dict091KeyHashTable,
 Dict091Contents
 };
 
@@ -4141,11 +5060,17 @@ unsigned short Dict092TagHashTable[] = {
   221,
 };
 
+unsigned short Dict092KeyHashTable[] = {
+    2,     3,     0,     8,     0,  2690,     1,  2690,     2,  2690,
+    3,  2690,     4,  2690,     5,  2690,     6,  2690,     7,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict092Data = {
 "SPI-P-Private_ICS Release 1;4",
 2,
 8,
 Dict092TagHashTable,
+Dict092KeyHashTable,
 Dict092Contents
 };
 
@@ -4228,11 +5153,28 @@ unsigned short Dict093TagHashTable[] = {
   209,
 };
 
+unsigned short Dict093KeyHashTable[] = {
+   14,    14,    14,    14,    14,    15,    14,    14,    14,    14,
+   14,    14,    14,    14,     0,    56,     0,   384,     1,   384,
+    2,   384,     3,   384,     4,   384,     5,   384,     6,   384,
+    7,   384,     8,   384,     9,   384,    10,   384,    11,   384,
+   12,   384,    13,   384,    14,   384,    15,   384,    16,   384,
+   17,   384,    18,   384,    19,   384,    20,   384,    21,   384,
+   22,   384,    23,   384,    24,   384,    25,   384,    26,   384,
+   27,   384,    28,   384,    29,   384,    30,   384,    31,   384,
+   32,   384,    33,   384,    34,   384,    35,   384,    36,   384,
+   37,   384,    38,   384,    39,   384,    40,   384,    41,   384,
+   42,   384,    43,   384,    44,   384,    45,   384,    46,   384,
+   47,   384,    48,   384,    49,   384,    50,   384,    51,   384,
+   52,   384,    53,   384,    54,   384,    55,   384,
+};
+
 vtkDICOMDictionary::Dict Dict093Data = {
 "SPI-P-GV-CT Release 1",
 14,
 56,
 Dict093TagHashTable,
+Dict093KeyHashTable,
 Dict093Contents
 };
 
@@ -4246,11 +5188,16 @@ unsigned short Dict094TagHashTable[] = {
     2,     0,     1,     0,   149,
 };
 
+unsigned short Dict094KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict094Data = {
 "GEMS_ADWSoft_DPO1",
 1,
 1,
 Dict094TagHashTable,
+Dict094KeyHashTable,
 Dict094Contents
 };
 
@@ -4264,11 +5211,16 @@ unsigned short Dict095TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict095KeyHashTable[] = {
+    2,     0,     1,     0, 16313,
+};
+
 vtkDICOMDictionary::Dict Dict095Data = {
 "PHILIPS MR R5.5/PART",
 1,
 1,
 Dict095TagHashTable,
+Dict095KeyHashTable,
 Dict095Contents
 };
 
@@ -4312,11 +5264,21 @@ unsigned short Dict096TagHashTable[] = {
   146,    20,   148,
 };
 
+unsigned short Dict096KeyHashTable[] = {
+    6,     6,     6,     6,     6,     7,     0,    25,     0,   896,
+    1,   896,     2,   896,     3,   896,     4,   896,     5,   896,
+    6,   896,     7,   896,     8,   896,     9,   896,    10,   896,
+   11,   896,    12,   896,    13,   896,    14,   896,    15,   896,
+   16,   896,    17,   896,    18,   896,    19,   896,    20,   896,
+   21,   896,    22,   896,    23,   896,    24,   896,
+};
+
 vtkDICOMDictionary::Dict Dict096Data = {
 "Harmony R2.0",
 6,
 25,
 Dict096TagHashTable,
+Dict096KeyHashTable,
 Dict096Contents
 };
 
@@ -4344,11 +5306,19 @@ unsigned short Dict097TagHashTable[] = {
   115,
 };
 
+unsigned short Dict097KeyHashTable[] = {
+    4,    11,    18,     0,     3,     0, 31647,     4, 14406,     8,
+40564,     3,     7, 55920,     9, 58703,    11, 46256,     6,     1,
+56546,     2, 34437,     3,  7892,     5, 25265,     6, 29395,    10,
+48837,
+};
+
 vtkDICOMDictionary::Dict Dict097Data = {
 "AGFA_ADC_Compact",
 3,
 12,
 Dict097TagHashTable,
+Dict097KeyHashTable,
 Dict097Contents
 };
 
@@ -4474,11 +5444,38 @@ unsigned short Dict098TagHashTable[] = {
     3,    10,    10,    73,    97,    86,   160,
 };
 
+unsigned short Dict098KeyHashTable[] = {
+   23,    34,    43,    52,    61,    68,    73,    80,    91,   110,
+  125,   132,   147,   156,   163,   170,   181,   194,   203,   208,
+   22,   217,     0,     5,    16, 36504,    18, 59903,    24, 23236,
+   43, 16928,    68, 31898,     4,     1, 58843,    17,  1576,    21,
+44052,    38, 63476,     4,    33,  4259,    44, 62065,    45, 47424,
+   88, 34313,     4,     2, 54646,    13,  1484,    30, 11587,    85,
+59451,     3,    41, 29793,    46, 44453,    62, 19700,     2,    20,
+45479,    52, 40776,     3,    74, 35854,    75, 19672,    80, 36161,
+    5,    27,  2349,    29, 30028,    55, 62476,    58, 64973,    90,
+36092,     9,     4, 12104,    10, 18274,    14, 13112,    39, 41749,
+   60, 16435,    61, 25282,    72, 51807,    82, 27846,    89, 30043,
+    7,     3,  1491,    19, 14559,    28, 37620,    40, 33075,    53,
+61982,    78, 52382,    84, 34750,     3,     6, 13890,    65, 48790,
+   69, 56856,     7,    12,  2052,    26, 26413,    48, 43784,    51,
+22162,    70, 13578,    79, 56092,    86, 61452,     4,     0,  5254,
+   11, 42572,    31, 15319,    34, 46197,     3,     5,  3818,    32,
+25777,    67, 23020,     3,    49, 39397,    59, 15412,    63, 15167,
+    5,    15, 32603,    22, 41660,    25, 10106,    50, 49480,    87,
+ 4089,     6,     7,  1383,     9, 52768,    36, 34307,    56, 46547,
+   76, 58343,    83, 39351,     4,    37, 33027,    47, 35432,    57,
+54222,    66, 20733,     2,    35,  8541,    64, 46705,     4,    42,
+34489,    54, 10822,    73, 14709,    77, 65438,     4,     8, 12890,
+   23, 57624,    71, 40307,    81,  8487,
+};
+
 vtkDICOMDictionary::Dict Dict098Data = {
 "SIEMENS SMS-AX  ACQ 1.0",
 22,
 91,
 Dict098TagHashTable,
+Dict098KeyHashTable,
 Dict098Contents
 };
 
@@ -4492,11 +5489,16 @@ unsigned short Dict099TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict099KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict099Data = {
 "SPI-P-CTBE-Private Release 1",
 1,
 1,
 Dict099TagHashTable,
+Dict099KeyHashTable,
 Dict099Contents
 };
 
@@ -4522,11 +5524,18 @@ unsigned short Dict100TagHashTable[] = {
    24,     3,    48,     4,    50,    10,    71,
 };
 
+unsigned short Dict100KeyHashTable[] = {
+    3,    14,     0,     5,     0, 26340,     3, 65372,     5, 30143,
+    7,  4707,     8, 14752,     6,     1,   709,     2, 37114,     4,
+52867,     6, 10360,     9, 39678,    10, 25698,
+};
+
 vtkDICOMDictionary::Dict Dict100Data = {
 "SIEMENS SYNGO VOLUME",
 2,
 11,
 Dict100TagHashTable,
+Dict100KeyHashTable,
 Dict100Contents
 };
 
@@ -4561,11 +5570,20 @@ unsigned short Dict101TagHashTable[] = {
     6,    11,    10,    15,    14,
 };
 
+unsigned short Dict101KeyHashTable[] = {
+    5,    14,    23,    32,     0,     4,     8, 16128,     9, 62764,
+   11, 28713,    14, 29717,     4,     3, 34663,     7, 28958,    15,
+44513,    16,  1345,     4,     1, 39019,     2, 43264,     4, 14839,
+   17, 42686,     6,     0, 30268,     5, 41673,     6, 32295,    10,
+13916,    12, 26115,    13, 30243,
+};
+
 vtkDICOMDictionary::Dict Dict101Data = {
 "Applicare/RadWorks/Version 6.0",
 4,
 18,
 Dict101TagHashTable,
+Dict101KeyHashTable,
 Dict101Contents
 };
 
@@ -4595,11 +5613,19 @@ unsigned short Dict102TagHashTable[] = {
     2,    10,    99,    11,   100,
 };
 
+unsigned short Dict102KeyHashTable[] = {
+    4,    15,    26,     0,     5,     1, 36524,     3, 39824,     8,
+14396,    11, 40478,    13,  3310,     5,     2, 33151,     7,  3013,
+    9, 10554,    10, 11654,    12,  6207,     4,     0, 62573,     4,
+ 1793,     5,  1793,     6,  1793,
+};
+
 vtkDICOMDictionary::Dict Dict102Data = {
 "SIEMENS MED SP DXMG WH AWS 1",
 3,
 14,
 Dict102TagHashTable,
+Dict102KeyHashTable,
 Dict102Contents
 };
 
@@ -4613,11 +5639,16 @@ unsigned short Dict103TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict103KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict103Data = {
 "SIEMENS MR PS 04",
 1,
 1,
 Dict103TagHashTable,
+Dict103KeyHashTable,
 Dict103Contents
 };
 
@@ -4682,11 +5713,25 @@ unsigned short Dict104TagHashTable[] = {
    37,   132,     1,    38,   133,
 };
 
+unsigned short Dict104KeyHashTable[] = {
+   10,    11,    10,    10,    10,    10,    10,    10,    10,    10,
+    0,    42,     0,   538,     1,   538,     2,   538,     3,   538,
+    4,   538,     5,   538,     6,   538,     7,   538,     8,   538,
+    9,   538,    10,   538,    11,   538,    12,   538,    13,   538,
+   14,   538,    15,   538,    16,   538,    17,   538,    18,   538,
+   19,   538,    20,   538,    21,   538,    22,   538,    23,   538,
+   24,   538,    25,   538,    26,   538,    27,   538,    28,   538,
+   29,   538,    30,   538,    31,   538,    32,   538,    33,   538,
+   34,   538,    35,   538,    36,   538,    37,   538,    38,   538,
+   39,   538,    40,   538,    41,   538,
+};
+
 vtkDICOMDictionary::Dict Dict104Data = {
 "GEMS_Ultrasound_MovieGroup_001",
 10,
 42,
 Dict104TagHashTable,
+Dict104KeyHashTable,
 Dict104Contents
 };
 
@@ -4730,11 +5775,22 @@ unsigned short Dict105TagHashTable[] = {
   148,    19,   152,
 };
 
+unsigned short Dict105KeyHashTable[] = {
+    7,    10,    15,    20,    29,    34,     0,     1,     8, 43017,
+    2,     2, 10976,     7,  7936,     2,     5, 61703,    10, 44905,
+    4,     0, 28545,     1, 32318,     9, 21475,    12,  9350,     2,
+    3,  4527,    11, 17266,    14,     4, 25750,     6, 34953,    13,
+  896,    14,   896,    15,   896,    16,   896,    17,   896,    18,
+  896,    19,   896,    20,   896,    21,   896,    22,   896,    23,
+  896,    24,   896,
+};
+
 vtkDICOMDictionary::Dict Dict105Data = {
 "GEMS_DL_STUDY_01",
 6,
 25,
 Dict105TagHashTable,
+Dict105KeyHashTable,
 Dict105Contents
 };
 
@@ -4768,11 +5824,19 @@ unsigned short Dict106TagHashTable[] = {
    50,    16,    54,
 };
 
+unsigned short Dict106KeyHashTable[] = {
+    4,     5,     4,     4,     0,    17,     0,  1345,     1,  1345,
+    2,  1345,     3,  1345,     4,  1345,     5,  1345,     6,  1345,
+    7,  1345,     8,  1345,     9,  1345,    10,  1345,    11,  1345,
+   12,  1345,    13,  1345,    14,  1345,    15,  1345,    16,  1345,
+};
+
 vtkDICOMDictionary::Dict Dict106Data = {
 "Silhouette VRS 3.0",
 4,
 17,
 Dict106TagHashTable,
+Dict106KeyHashTable,
 Dict106Contents
 };
 
@@ -4828,11 +5892,24 @@ unsigned short Dict107TagHashTable[] = {
    11,    18,    19,    29,    51,    34,    59,
 };
 
+unsigned short Dict107KeyHashTable[] = {
+    9,    20,    27,    36,    45,    60,    67,    78,     0,     5,
+    1, 27335,    11,   583,    17, 53568,    21, 40558,    34, 32595,
+    3,     0, 42242,    15, 53572,    22, 53568,     4,    13, 42817,
+   20, 53572,    26, 11977,    33, 50881,     4,     7, 20081,    18,
+46207,    19, 20728,    25, 53028,     7,     3, 45979,    12, 58665,
+   14, 47563,    16, 20732,    23, 20728,    30, 40683,    32, 16305,
+    3,    27, 58817,    28, 13923,    31, 60808,     5,     4, 55260,
+    5, 34889,     6, 21006,     9, 59546,    29, 26193,     4,     2,
+42135,     8, 57866,    10, 63160,    24, 59770,
+};
+
 vtkDICOMDictionary::Dict Dict107Data = {
 "GEMS_HELIOS_01",
 8,
 35,
 Dict107TagHashTable,
+Dict107KeyHashTable,
 Dict107Contents
 };
 
@@ -4852,11 +5929,17 @@ unsigned short Dict108TagHashTable[] = {
    24,     4,    25,     5,    26,
 };
 
+unsigned short Dict108KeyHashTable[] = {
+    2,     0,     6,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,     5,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict108Data = {
 "Kodak Image Information",
 1,
 6,
 Dict108TagHashTable,
+Dict108KeyHashTable,
 Dict108Contents
 };
 
@@ -4921,11 +6004,26 @@ unsigned short Dict109TagHashTable[] = {
    26,    28,    16,    37,   115,
 };
 
+unsigned short Dict109KeyHashTable[] = {
+   10,    11,    70,    75,    10,    10,    80,    83,    88,    91,
+    0,    29,     4, 35411,     7,   538,    12,  8799,    15, 27400,
+   17,   538,    18,   538,    19,   538,    20,   538,    21,   538,
+   22,   538,    23,   538,    24,   538,    25,   538,    26,   538,
+   27,   538,    28,   538,    29,   538,    30,   538,    31,   538,
+   32,   538,    33,   538,    34,   538,    35,   538,    36,   538,
+   37,   538,    38,   538,    39,   538,    40,   538,    41,   538,
+    2,     0, 20941,     6, 60710,     2,    13,  6645,    14, 61018,
+    1,     8, 18761,     2,     3, 19628,    11, 22893,     1,    10,
+14739,     5,     1, 54924,     2, 33027,     5, 41101,     9, 60111,
+   16, 55308,
+};
+
 vtkDICOMDictionary::Dict Dict109Data = {
 "QUASAR_INTERNAL_USE",
 10,
 42,
 Dict109TagHashTable,
+Dict109KeyHashTable,
 Dict109Contents
 };
 
@@ -4939,11 +6037,16 @@ unsigned short Dict110TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
+unsigned short Dict110KeyHashTable[] = {
+    2,     0,     1,     0, 61012,
+};
+
 vtkDICOMDictionary::Dict Dict110Data = {
 "VEPRO BROKER 1.0",
 1,
 1,
 Dict110TagHashTable,
+Dict110KeyHashTable,
 Dict110Contents
 };
 
@@ -5017,11 +6120,28 @@ unsigned short Dict111TagHashTable[] = {
   164,    31,   168,
 };
 
+unsigned short Dict111KeyHashTable[] = {
+   13,    18,    21,    26,    31,    40,    83,    92,    97,   110,
+  115,    12,     0,     2,     2, 43780,     5, 49928,     1,    46,
+14008,     2,     6, 46428,    40, 54629,     2,    19, 28690,    22,
+22873,     4,     4,  9456,    15, 30062,    17,  3997,    45, 30921,
+   21,     1, 42167,     8,   448,     9,   448,    23,   448,    24,
+  448,    25,   448,    26,   448,    27,   448,    28,   448,    29,
+  448,    30,   448,    31,   448,    32,   448,    33,   448,    34,
+  448,    35,   448,    36,   448,    37,   448,    38,   448,    47,
+  448,    48,   448,     4,     7, 15434,    12, 38290,    18,  3500,
+   20, 50080,     2,    41, 44021,    42,  8225,     6,     0,  7614,
+    3, 56304,    10, 15293,    13, 47857,    14, 58536,    39, 38382,
+    2,    21, 37628,    43, 14537,     3,    11, 61334,    16, 37623,
+   44, 17235,
+};
+
 vtkDICOMDictionary::Dict Dict111Data = {
 "SIEMENS CT VA0  COAD",
 12,
 49,
 Dict111TagHashTable,
+Dict111KeyHashTable,
 Dict111Contents
 };
 
@@ -5036,11 +6156,16 @@ unsigned short Dict112TagHashTable[] = {
     2,     0,     2,     0,    16,     1,    18,
 };
 
+unsigned short Dict112KeyHashTable[] = {
+    2,     0,     2,     0, 54098,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict112Data = {
 "PHILIPS MR",
 1,
 2,
 Dict112TagHashTable,
+Dict112KeyHashTable,
 Dict112Contents
 };
 
@@ -5055,11 +6180,16 @@ unsigned short Dict113TagHashTable[] = {
     2,     0,     2,     0,     1,     1,     1,
 };
 
+unsigned short Dict113KeyHashTable[] = {
+    2,     0,     2,     0, 13670,     1, 58686,
+};
+
 vtkDICOMDictionary::Dict Dict113Data = {
 "MeVis BreastCare",
 1,
 2,
 Dict113TagHashTable,
+Dict113KeyHashTable,
 Dict113Contents
 };
 
@@ -5075,11 +6205,16 @@ unsigned short Dict114TagHashTable[] = {
     2,     0,     3,     0,    32,     1,    48,     2,   101,
 };
 
+unsigned short Dict114KeyHashTable[] = {
+    2,     0,     3,     0,  5381,     1, 38856,     2, 35369,
+};
+
 vtkDICOMDictionary::Dict Dict114Data = {
 "VEPRO VIF 3.0 DATA",
 1,
 3,
 Dict114TagHashTable,
+Dict114KeyHashTable,
 Dict114Contents
 };
 
@@ -5094,11 +6229,16 @@ unsigned short Dict115TagHashTable[] = {
     2,     0,     2,     0,    16,     1,    17,
 };
 
+unsigned short Dict115KeyHashTable[] = {
+    2,     0,     2,     0, 49969,     1, 42871,
+};
+
 vtkDICOMDictionary::Dict Dict115Data = {
 "MeVis eatDicom",
 1,
 2,
 Dict115TagHashTable,
+Dict115KeyHashTable,
 Dict115Contents
 };
 
@@ -5116,11 +6256,17 @@ unsigned short Dict116TagHashTable[] = {
    52,
 };
 
+unsigned short Dict116KeyHashTable[] = {
+    2,     0,     4,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,
+};
+
 vtkDICOMDictionary::Dict Dict116Data = {
 "DIGISCAN IMAGE",
 1,
 4,
 Dict116TagHashTable,
+Dict116KeyHashTable,
 Dict116Contents
 };
 
@@ -5148,11 +6294,18 @@ unsigned short Dict117TagHashTable[] = {
    21,
 };
 
+unsigned short Dict117KeyHashTable[] = {
+    3,     3,     4,     0,    12,     0,  1793,     1,  1793,     2,
+ 1793,     3,  1793,     4,  1793,     5,  1793,     6,  1793,     7,
+ 1793,     8,  1793,     9,  1793,    10,  1793,    11,  1793,
+};
+
 vtkDICOMDictionary::Dict Dict117Data = {
 "MITRA OBJECT UTF8 ATTRIBUTES 1.0",
 3,
 12,
 Dict117TagHashTable,
+Dict117KeyHashTable,
 Dict117Contents
 };
 
@@ -5171,11 +6324,17 @@ unsigned short Dict118TagHashTable[] = {
    73,     4,    80,
 };
 
+unsigned short Dict118KeyHashTable[] = {
+    2,     0,     5,     0, 43034,     1, 11238,     2, 39747,     3,
+62095,     4, 61439,
+};
+
 vtkDICOMDictionary::Dict Dict118Data = {
 "SIEMENS MED PT WAVEFORM",
 1,
 5,
 Dict118TagHashTable,
+Dict118KeyHashTable,
 Dict118Contents
 };
 
@@ -5196,11 +6355,17 @@ unsigned short Dict119TagHashTable[] = {
    65,     4,    66,     5,    67,     6,    68,
 };
 
+unsigned short Dict119KeyHashTable[] = {
+    2,     0,     7,     0, 15661,     1, 42008,     2, 36642,     3,
+56947,     4, 47546,     5,  5114,     6, 15221,
+};
+
 vtkDICOMDictionary::Dict Dict119Data = {
 "VEPRO BROKER 1.0 DATA REPLACE",
 1,
 7,
 Dict119TagHashTable,
+Dict119KeyHashTable,
 Dict119Contents
 };
 
@@ -5218,11 +6383,17 @@ unsigned short Dict120TagHashTable[] = {
     2,
 };
 
+unsigned short Dict120KeyHashTable[] = {
+    2,     0,     4,     0, 34914,     1, 54239,     2,  7216,     3,
+29214,
+};
+
 vtkDICOMDictionary::Dict Dict120Data = {
 "PHILIPS-MR-1",
 1,
 4,
 Dict120TagHashTable,
+Dict120KeyHashTable,
 Dict120Contents
 };
 
@@ -5236,11 +6407,16 @@ unsigned short Dict121TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict121KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict121Data = {
 "MERGE TECHNOLOGIES, INC.",
 1,
 1,
 Dict121TagHashTable,
+Dict121KeyHashTable,
 Dict121Contents
 };
 
@@ -5308,11 +6484,26 @@ unsigned short Dict122TagHashTable[] = {
   161,
 };
 
+unsigned short Dict122KeyHashTable[] = {
+   12,    19,    26,    39,    54,    63,    76,    83,    11,    92,
+  105,     0,     3,     1, 62974,     2, 57410,    22,  9919,     3,
+    4, 45120,    32, 32054,    40, 23116,     6,     9, 30257,    18,
+61493,    35,   489,    38,   489,    39,   489,    43,  4501,     7,
+   14, 37880,    15, 14341,    19, 47577,    20,  5047,    24, 33753,
+   27, 46926,    30, 37912,     4,    12, 52967,    28, 25311,    33,
+60864,    41, 45814,     6,     3, 15439,     5, 11201,     6, 23121,
+   23, 10028,    25, 18010,    29, 49193,     3,     7, 11638,     8,
+34507,    21, 52237,     4,    10, 11814,    16, 57729,    31, 60425,
+   36, 37902,     6,    11, 10558,    13, 34468,    17, 39944,    34,
+43682,    37,  7208,    42, 31645,     2,     0, 16882,    26, 16395,
+};
+
 vtkDICOMDictionary::Dict Dict122Data = {
 "SIEMENS DLR.01",
 11,
 44,
 Dict122TagHashTable,
+Dict122KeyHashTable,
 Dict122Contents
 };
 
@@ -5342,11 +6533,19 @@ unsigned short Dict123TagHashTable[] = {
   246,    10,   250,    11,   252,
 };
 
+unsigned short Dict123KeyHashTable[] = {
+    4,    11,    20,     0,     3,     1, 25528,     4, 25529,     6,
+38639,     4,     2, 25528,     5, 25529,     7, 59383,     8,  4337,
+    7,     0,  1793,     3, 25528,     9,  1793,    10,  1793,    11,
+ 1793,    12,  1793,    13,  1793,
+};
+
 vtkDICOMDictionary::Dict Dict123Data = {
 "Agfa ADC NX",
 3,
 14,
 Dict123TagHashTable,
+Dict123KeyHashTable,
 Dict123Contents
 };
 
@@ -5361,11 +6560,16 @@ unsigned short Dict124TagHashTable[] = {
     2,     0,     2,     0,    66,     1,   100,
 };
 
+unsigned short Dict124KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1, 50253,
+};
+
 vtkDICOMDictionary::Dict Dict124Data = {
 "Imaging Dynamics Company Ltd.",
 1,
 2,
 Dict124TagHashTable,
+Dict124KeyHashTable,
 Dict124Contents
 };
 
@@ -5431,11 +6635,25 @@ unsigned short Dict125TagHashTable[] = {
    38,    14,    48,    31,    97,    39,   123,
 };
 
+unsigned short Dict125KeyHashTable[] = {
+   10,    11,    10,    10,    10,    10,    10,    10,    10,    10,
+    0,    43,     0,   538,     1,   538,     2,   538,     3,   538,
+    4,   538,     5,   538,     6,   538,     7,   538,     8,   538,
+    9,   538,    10,   538,    11,   538,    12,   538,    13,   538,
+   14,   538,    15,   538,    16,   538,    17,   538,    18,   538,
+   19,   538,    20,   538,    21,   538,    22,   538,    23,   538,
+   24,   538,    25,   538,    26,   538,    27,   538,    28,   538,
+   29,   538,    30,   538,    31,   538,    32,   538,    33,   538,
+   34,   538,    35,   538,    36,   538,    37,   538,    38,   538,
+   39,   538,    40,   538,    41,   538,    42,   538,
+};
+
 vtkDICOMDictionary::Dict Dict125Data = {
 "SIEMENS DFR.01 ORIGINAL",
 10,
 43,
 Dict125TagHashTable,
+Dict125KeyHashTable,
 Dict125Contents
 };
 
@@ -5458,11 +6676,18 @@ unsigned short Dict126TagHashTable[] = {
    32,
 };
 
+unsigned short Dict126KeyHashTable[] = {
+    3,    14,     0,     5,     1, 54037,     2,  2052,     3, 14000,
+    4, 49381,     6, 41308,     3,     0, 27157,     5, 47677,     7,
+63795,
+};
+
 vtkDICOMDictionary::Dict Dict126Data = {
 "NQHeader",
 2,
 8,
 Dict126TagHashTable,
+Dict126KeyHashTable,
 Dict126Contents
 };
 
@@ -5488,11 +6713,18 @@ unsigned short Dict127TagHashTable[] = {
     4,     6,     6,     8,     8,    10,    16,
 };
 
+unsigned short Dict127KeyHashTable[] = {
+    3,    14,     0,     5,     2, 19826,     5,  5135,     7, 43736,
+    9,  7327,    10, 26198,     6,     0, 61182,     1,  2693,     3,
+50333,     4, 11706,     6, 20128,     8, 26367,
+};
+
 vtkDICOMDictionary::Dict Dict127Data = {
 "SIEMENS CT APPL PRESENTATION",
 2,
 11,
 Dict127TagHashTable,
+Dict127KeyHashTable,
 Dict127Contents
 };
 
@@ -5506,11 +6738,16 @@ unsigned short Dict128TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
+unsigned short Dict128KeyHashTable[] = {
+    2,     0,     1,     0, 41639,
+};
+
 vtkDICOMDictionary::Dict Dict128Data = {
 "SIEMENS SYNGO PRINT SERVICE",
 1,
 1,
 Dict128TagHashTable,
+Dict128KeyHashTable,
 Dict128Contents
 };
 
@@ -5570,11 +6807,25 @@ unsigned short Dict129TagHashTable[] = {
    16,    27,    27,    34,    52,
 };
 
+unsigned short Dict129KeyHashTable[] = {
+   10,    15,    24,     9,    29,    38,    41,    44,    49,     0,
+    2,    13, 26055,    32, 12560,     4,    10, 52680,    12,  4128,
+   30, 64516,    33, 12560,     2,    26, 38409,    34, 12560,     4,
+    0, 39390,    11, 24715,    16, 34851,    29, 44583,     1,    28,
+22803,     1,     1, 18783,     2,    27, 57127,    35, 28543,    22,
+    2,   597,     3,   597,     4,   597,     5,   597,     6,   597,
+    7,   597,     8,   597,     9,   597,    14,   597,    15,   597,
+   17,   597,    18,   597,    19,   597,    20,   597,    21,   597,
+   22,   597,    23,   597,    24, 41805,    25, 62398,    31, 12559,
+   36,   597,    37,   597,
+};
+
 vtkDICOMDictionary::Dict Dict129Data = {
 "Siemens: Thorax/Multix FD Raw Image Settings",
 9,
 38,
 Dict129TagHashTable,
+Dict129KeyHashTable,
 Dict129Contents
 };
 
@@ -5589,11 +6840,16 @@ unsigned short Dict130TagHashTable[] = {
     2,     0,     2,     0,    32,     1,    48,
 };
 
+unsigned short Dict130KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict130Data = {
 "SIEMENS CT VA0  ORI",
 1,
 2,
 Dict130TagHashTable,
+Dict130KeyHashTable,
 Dict130Contents
 };
 
@@ -5644,11 +6900,23 @@ unsigned short Dict131TagHashTable[] = {
    19,    10,    20,    19,    38,    28,    48,
 };
 
+unsigned short Dict131KeyHashTable[] = {
+    7,     7,     7,     7,     7,     8,     7,     0,    31,     0,
+  768,     1,   768,     2,   768,     3,   768,     4,   768,     5,
+  768,     6,   768,     7,   768,     8,   768,     9,   768,    10,
+  768,    11,   768,    12,   768,    13,   768,    14,   768,    15,
+  768,    16,   768,    17,   768,    18,   768,    19,   768,    20,
+  768,    21,   768,    22,   768,    23,   768,    24,   768,    25,
+  768,    26,   768,    27,   768,    28,   768,    29,   768,    30,
+  768,
+};
+
 vtkDICOMDictionary::Dict Dict131Data = {
 "Philips X-ray Imaging DD 001",
 7,
 31,
 Dict131TagHashTable,
+Dict131KeyHashTable,
 Dict131Contents
 };
 
@@ -5701,11 +6969,24 @@ unsigned short Dict132TagHashTable[] = {
    30,
 };
 
+unsigned short Dict132KeyHashTable[] = {
+    9,    12,    15,    24,    33,    48,    55,    68,     0,     1,
+   31,  2405,     1,    11, 29784,     4,     7, 61234,    18,  2577,
+   21, 38778,    29, 17481,     4,     6,  8938,    10, 53812,    16,
+63235,    30, 35654,     7,     0, 20679,     3, 49796,     4, 20192,
+    9, 23410,    19, 21279,    22, 65155,    24, 49781,     3,    13,
+42653,    20, 21279,    28, 38664,     6,     5, 16659,    12, 33931,
+   14, 36140,    15,  2854,    25, 53741,    27, 56426,     6,     1,
+13993,     2, 27100,     8,  4806,    17, 29646,    23, 27294,    26,
+10090,
+};
+
 vtkDICOMDictionary::Dict Dict132Data = {
 "SIEMENS SMS-AX  VIEW 1.0",
 8,
 32,
 Dict132TagHashTable,
+Dict132KeyHashTable,
 Dict132Contents
 };
 
@@ -5721,11 +7002,16 @@ unsigned short Dict133TagHashTable[] = {
     2,     0,     3,     0,    64,     1,     0,     2,    16,
 };
 
+unsigned short Dict133KeyHashTable[] = {
+    2,     0,     3,     0,  5381,     1,  5381,     2,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict133Data = {
 "SPI-P-Private_CDS Release 1",
 1,
 3,
 Dict133TagHashTable,
+Dict133KeyHashTable,
 Dict133Contents
 };
 
@@ -5740,11 +7026,16 @@ unsigned short Dict134TagHashTable[] = {
     2,     0,     2,     0,     2,     1,     4,
 };
 
+unsigned short Dict134KeyHashTable[] = {
+    2,     0,     2,     0, 11094,     1, 40989,
+};
+
 vtkDICOMDictionary::Dict Dict134Data = {
 "astm.org/diconde/iod/NdeCtImage",
 1,
 2,
 Dict134TagHashTable,
+Dict134KeyHashTable,
 Dict134Contents
 };
 
@@ -5760,11 +7051,16 @@ unsigned short Dict135TagHashTable[] = {
     2,     0,     3,     0,     1,     1,     2,     2,    80,
 };
 
+unsigned short Dict135KeyHashTable[] = {
+    2,     0,     3,     0, 53707,     1, 13892,     2, 40047,
+};
+
 vtkDICOMDictionary::Dict Dict135Data = {
 "SIEMENS SYNGO TIME POINT SERVICE",
 1,
 3,
 Dict135TagHashTable,
+Dict135KeyHashTable,
 Dict135Contents
 };
 
@@ -5800,11 +7096,20 @@ unsigned short Dict136TagHashTable[] = {
    18,     5,    22,    11,    34,    15,    38,
 };
 
+unsigned short Dict136KeyHashTable[] = {
+    5,    12,    25,    36,     0,     3,     2, 44737,     8, 42151,
+   15, 27761,     6,     1, 31297,     3, 45045,     5,  1398,    11,
+57093,    17, 60355,    18, 39508,     5,     0, 15915,     6, 18975,
+    9,  3500,    10,  1258,    13, 57898,     5,     4, 10843,     7,
+34643,    12, 62576,    14, 22972,    16, 58378,
+};
+
 vtkDICOMDictionary::Dict Dict136Data = {
 "Silhouette Line V1.0",
 4,
 19,
 Dict136TagHashTable,
+Dict136KeyHashTable,
 Dict136Contents
 };
 
@@ -5824,11 +7129,17 @@ unsigned short Dict137TagHashTable[] = {
     4,     4,     5,     5,     6,
 };
 
+unsigned short Dict137KeyHashTable[] = {
+    2,     0,     6,     0, 18148,     1, 54612,     2, 32372,     3,
+49930,     4, 60416,     5, 57991,
+};
+
 vtkDICOMDictionary::Dict Dict137Data = {
 "BrainLAB_BeamProfile",
 1,
 6,
 Dict137TagHashTable,
+Dict137KeyHashTable,
 Dict137Contents
 };
 
@@ -5857,11 +7168,19 @@ unsigned short Dict138TagHashTable[] = {
   117,    12,   153,
 };
 
+unsigned short Dict138KeyHashTable[] = {
+    4,    11,    28,     0,     3,     0, 38625,     5, 57718,     6,
+51679,     8,     1, 46199,     2, 12225,     3, 63476,     7, 45592,
+    8, 62295,     9, 25578,    11, 65296,    12,  6343,     2,     4,
+11441,    10, 32346,
+};
+
 vtkDICOMDictionary::Dict Dict138Data = {
 "astm.org/diconde/iod/NdeDxCalibrationData",
 3,
 13,
 Dict138TagHashTable,
+Dict138KeyHashTable,
 Dict138Contents
 };
 
@@ -5900,11 +7219,20 @@ unsigned short Dict139TagHashTable[] = {
    32,    20,   114,
 };
 
+unsigned short Dict139KeyHashTable[] = {
+    5,     6,     5,     5,     5,     0,    21,     0,  1076,     1,
+ 1076,     2,  1076,     3,  1076,     4,  1076,     5,  1076,     6,
+ 1076,     7,  1076,     8,  1076,     9,  1076,    10,  1076,    11,
+ 1076,    12,  1076,    13,  1076,    14,  1076,    15,  1076,    16,
+ 1076,    17,  1076,    18,  1076,    19,  1076,    20,  1076,
+};
+
 vtkDICOMDictionary::Dict Dict139Data = {
 "GEMS_XELPRV_01",
 5,
 21,
 Dict139TagHashTable,
+Dict139KeyHashTable,
 Dict139Contents
 };
 
@@ -5930,11 +7258,18 @@ unsigned short Dict140TagHashTable[] = {
    56,     6,    65,     7,    67,     9,    71,
 };
 
+unsigned short Dict140KeyHashTable[] = {
+    2,     3,     0,    11,     0,  2690,     1,  2690,     2,  2690,
+    3,  2690,     4,  2690,     5,  2690,     6,  2690,     7,  2690,
+    8,  2690,     9,  2690,    10,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict140Data = {
 "Philips MR Imaging DD 002",
 2,
 11,
 Dict140TagHashTable,
+Dict140KeyHashTable,
 Dict140Contents
 };
 
@@ -5953,11 +7288,17 @@ unsigned short Dict141TagHashTable[] = {
    81,     4,   101,
 };
 
+unsigned short Dict141KeyHashTable[] = {
+    2,     0,     5,     0,  5381,     1,  5381,     2, 38856,     3,
+ 5381,     4, 35369,
+};
+
 vtkDICOMDictionary::Dict Dict141Data = {
 "VEPRO VIM 5.0 DATA",
 1,
 5,
 Dict141TagHashTable,
+Dict141KeyHashTable,
 Dict141Contents
 };
 
@@ -5972,11 +7313,16 @@ unsigned short Dict142TagHashTable[] = {
     2,     0,     2,     0,    16,     1,    18,
 };
 
+unsigned short Dict142KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict142Data = {
 "SIEMENS DICOM",
 1,
 2,
 Dict142TagHashTable,
+Dict142KeyHashTable,
 Dict142Contents
 };
 
@@ -6229,11 +7575,63 @@ unsigned short Dict143TagHashTable[] = {
     9,
 };
 
+unsigned short Dict143KeyHashTable[] = {
+   49,    54,    63,    74,    48,    79,    48,   202,   209,   212,
+  219,   228,    48,   237,   246,   255,    48,   260,   267,   276,
+  291,   304,   309,   314,   325,   332,   347,   352,   359,   366,
+  369,   378,   381,   386,   391,   394,   403,   408,   413,   418,
+  427,   436,   445,   452,   457,    48,   462,   469,     0,     2,
+   11,  8351,    25, 59972,     4,    44, 53737,    78,  6329,    83,
+32298,    91, 16733,     5,    45, 53737,   132, 55071,   135, 21475,
+  137, 34121,   177,  3506,     2,    12, 39192,   143,   262,    61,
+    0,   112,     1,   112,     2,   112,     3,   112,     4,   112,
+    5,   112,     6,   112,     8,   112,     9,   112,    16,   112,
+   17,   112,    18,   112,    21,   112,    26,   112,    27,   112,
+   28,   112,    29,   112,    30,   112,    31,   112,    32,   112,
+   33,   112,    34,   112,    35,   112,    36,   112,    37,   112,
+   46,   112,    88,   112,    89,   112,    97,   112,    98,   112,
+   99,   112,   100,   112,   101,   112,   102,   112,   103,   112,
+  104,   112,   105,   112,   106,   112,   107,   112,   108,   112,
+  109,   112,   110,   112,   111,   112,   112,   112,   113,   112,
+  117,   112,   118,   112,   119,   112,   120,   112,   121,   112,
+  142, 64431,   171, 58299,   174, 30092,   182, 55962,   185,   112,
+  186,   112,   187,   112,   188,   112,   189,   112,   190,   112,
+  191,   112,     3,    76, 58709,   123, 37191,   170, 42277,     1,
+  154, 36278,     3,    48, 15633,    65,  8310,   165, 12054,     4,
+   24, 23903,    81, 33783,   131, 57246,   164, 48933,     4,    60,
+49166,    82, 33783,    87, 16033,   158,  9497,     4,    67, 35934,
+   77, 29587,   175, 21625,   184, 55817,     4,    15, 35141,    68,
+52033,    75, 48003,   129, 37058,     2,    47, 61274,    58, 17201,
+    3,    38, 19536,    71, 19536,   122, 34298,     4,    39, 19536,
+   72, 19536,    79, 56261,   147, 21636,     7,    54, 43008,    64,
+57274,    80, 56261,   138, 64340,   148, 26230,   151,  5806,   181,
+ 9816,     6,    85, 36987,   134, 47921,   139, 18792,   141, 57402,
+  149, 30824,   169,  2618,     2,    51, 18516,   140, 10440,     2,
+   14, 10317,    52, 18516,     5,    53, 13213,    86, 42247,   128,
+  647,   150, 28043,   173, 40160,     3,    62, 18752,   124, 64526,
+  160, 61222,     7,    59, 63660,    73, 60874,   145, 27165,   152,
+36640,   161,   280,   163, 24226,   167, 39932,     2,    50, 57583,
+  162,  4874,     3,    13, 14324,    49, 65054,    70,  8775,     3,
+   84, 14446,   133, 32527,   155, 61888,     1,   116, 20341,     4,
+    7, 35926,    22, 53574,   168, 59234,   172, 61886,     1,    74,
+  582,     2,    19, 49243,   156, 10745,     2,    90, 36132,   176,
+ 8000,     1,   127, 46133,     4,   125,   770,   126, 49125,   136,
+35673,   178, 20856,     2,   130, 56795,   144, 20792,     2,    40,
+38519,   180, 37748,     2,    23,  2927,    41, 38519,     4,    92,
+ 9390,    94, 59675,   114,  3992,   183, 14676,     4,    20,  9037,
+   42, 12661,    61,  8786,    93,  9390,     4,    43, 12661,    57,
+  380,   115, 56363,   153, 12270,     3,    55,  6785,   146,   256,
+  166, 28538,     2,    56, 30406,   179,  3051,     2,   157, 11571,
+  159, 26483,     3,    63, 22744,    69, 18696,    96, 48277,     3,
+   10,  8308,    66,  9976,    95, 31613,
+};
+
 vtkDICOMDictionary::Dict Dict143Data = {
 "SIEMENS MED NM",
 48,
 192,
 Dict143TagHashTable,
+Dict143KeyHashTable,
 Dict143Contents
 };
 
@@ -6252,11 +7650,17 @@ unsigned short Dict144TagHashTable[] = {
    19,     4,    32,
 };
 
+unsigned short Dict144KeyHashTable[] = {
+    2,     0,     5,     0, 44312,     1, 54102,     2, 52635,     3,
+56707,     4, 46298,
+};
+
 vtkDICOMDictionary::Dict Dict144Data = {
 "SPI-P-XSB-DCI Release 1",
 1,
 5,
 Dict144TagHashTable,
+Dict144KeyHashTable,
 Dict144Contents
 };
 
@@ -6280,11 +7684,18 @@ unsigned short Dict145TagHashTable[] = {
   170,     8,   255,
 };
 
+unsigned short Dict145KeyHashTable[] = {
+    3,    14,     0,     5,     0, 49113,     1, 59250,     4, 31811,
+    7,  4629,     8, 31809,     4,     2, 12784,     3, 28216,     5,
+61403,     6, 64780,
+};
+
 vtkDICOMDictionary::Dict Dict145Data = {
 "GEMS_AWSOFT_CD1",
 2,
 9,
 Dict145TagHashTable,
+Dict145KeyHashTable,
 Dict145Contents
 };
 
@@ -6307,11 +7718,18 @@ unsigned short Dict146TagHashTable[] = {
   114,
 };
 
+unsigned short Dict146KeyHashTable[] = {
+    3,    10,     0,     3,     2, 50782,     3,  2150,     7, 25706,
+    5,     0, 39947,     1, 35006,     4, 21409,     5, 53061,     6,
+25837,
+};
+
 vtkDICOMDictionary::Dict Dict146Data = {
 "GEMS_SEND_02",
 2,
 8,
 Dict146TagHashTable,
+Dict146KeyHashTable,
 Dict146Contents
 };
 
@@ -6466,11 +7884,44 @@ unsigned short Dict147TagHashTable[] = {
   136,   106,   164,   108,   193,
 };
 
+unsigned short Dict147KeyHashTable[] = {
+   29,    36,    45,    50,    57,    60,   173,   186,   191,   196,
+  201,   204,   215,   218,   227,   230,    28,    28,   233,   236,
+   28,   243,    28,   250,   255,   262,   269,   276,     0,     3,
+   30, 24377,    63, 44811,   103, 38496,     4,     1, 35576,    41,
+16777,    43, 46757,    88,  1988,     2,    20, 35942,    34, 54030,
+    3,     8,  1423,    23,  6512,    65, 31417,     1,    64,  8590,
+   56,     4,   192,    14, 42263,    28,   192,    36,   192,    37,
+  192,    38,   192,    44,   192,    45,   192,    46,   192,    47,
+  192,    48,   192,    49,   192,    50,   192,    51,   192,    52,
+  192,    53,   192,    54,   192,    55,   192,    56,   192,    57,
+  192,    58,   192,    59,   192,    60,   192,    62,   192,    68,
+  192,    69,   192,    71,   192,    72,   192,    73,   192,    74,
+  192,    75,   192,    77,   192,    78,   192,    79,   192,    80,
+  192,    82,   192,    84,   192,    90,   192,    92,   192,    93,
+  192,    94,   192,    95,   192,    96,   192,    97,   192,    98,
+  192,    99,   192,   100,   192,   101,   192,   102,   192,   105,
+  192,   106,   192,   107,   192,   108,   192,   109,   192,   110,
+  192,   111,   192,     6,    15, 55275,    18, 18387,    29, 44717,
+   66, 17412,    70, 36384,    81,  2284,     2,    26, 42908,    39,
+27637,     2,    42, 32101,    89,   466,     2,     2,  4087,    16,
+13901,     1,     5, 36851,     5,     7, 60451,    24, 33097,    27,
+46687,    31, 46674,    83, 65365,     1,    25, 10306,     4,     0,
+15597,    32, 42283,    35, 31801,    61, 41509,     1,   104, 45728,
+    1,    40, 63248,     1,    76, 21984,     3,    33, 47399,    67,
+61528,    87, 61616,     3,    10, 52293,    11, 23997,    13, 50698,
+    2,     6, 61947,   112, 11964,     3,    12,  8102,    85,  1406,
+   86, 38789,     3,     3, 61027,     9, 31559,    22, 20749,     3,
+   17, 22270,    21, 62453,   113, 31886,     2,    19,  4099,    91,
+54132,
+};
+
 vtkDICOMDictionary::Dict Dict147Data = {
 "Philips Imaging DD 001",
 28,
 114,
 Dict147TagHashTable,
+Dict147KeyHashTable,
 Dict147Contents
 };
 
@@ -6515,11 +7966,22 @@ unsigned short Dict148TagHashTable[] = {
    46,    18,    48,    25,    67,
 };
 
+unsigned short Dict148KeyHashTable[] = {
+    7,    14,    19,    30,    41,    62,     0,     3,    13, 33918,
+   14, 46706,    19, 31180,     2,     8, 28521,    11,  1435,     5,
+    2,  7441,     7, 60680,    12, 65040,    17, 44058,    23,  7441,
+    5,     5, 61214,    10, 13641,    20, 52174,    24, 43210,    25,
+46683,    10,     0, 39975,     1, 25103,     3, 28831,     4, 52585,
+    6, 61824,     9, 57072,    15,   106,    16,   247,    21, 17568,
+   22, 39681,     1,    18, 11917,
+};
+
 vtkDICOMDictionary::Dict Dict148Data = {
 "PRIVATE_CODE_STRING_1003",
 6,
 26,
 Dict148TagHashTable,
+Dict148KeyHashTable,
 Dict148Contents
 };
 
@@ -6554,11 +8016,20 @@ unsigned short Dict149TagHashTable[] = {
    16,     7,    32,    13,    48,
 };
 
+unsigned short Dict149KeyHashTable[] = {
+    5,    18,    29,    38,     0,     6,     2, 15391,     4, 46559,
+    9, 28228,    12, 25395,    14, 28393,    17, 55961,     5,     3,
+44263,     5, 20215,    13, 54913,    15, 42868,    16, 29260,     4,
+    0, 32400,     6,  6247,     7, 60059,    10, 55242,     3,     1,
+42862,     8, 29187,    11,  5010,
+};
+
 vtkDICOMDictionary::Dict Dict149Data = {
 "Applicare/Workflow/Version 1.0",
 4,
 18,
 Dict149TagHashTable,
+Dict149KeyHashTable,
 Dict149Contents
 };
 
@@ -6654,11 +8125,32 @@ unsigned short Dict150TagHashTable[] = {
   188,    32,   205,    48,   221,    60,   237,
 };
 
+unsigned short Dict150KeyHashTable[] = {
+   17,    30,    35,    40,    53,    60,    73,    82,    85,    96,
+  105,   118,   125,   144,   151,   162,     0,     6,     0, 25462,
+    2, 46957,     4, 44859,     5, 22893,    16,  1371,    61, 38281,
+    2,    17,  1371,    44,  3266,     2,    12, 36209,    49, 38424,
+    6,     3,  8913,     9,  5287,    23, 32156,    48, 36379,    55,
+31958,    64, 62811,     3,     7, 29470,    25, 53205,    29,  3175,
+    6,    26,  2785,    28, 24027,    37,  1122,    39, 16601,    42,
+25672,    53,  5543,     4,    34, 10577,    51, 10102,    57, 25943,
+   65, 38433,     1,    47, 36271,     5,     8, 13948,    11, 45693,
+   14, 61637,    60, 38388,    62, 31012,     4,     1, 10668,    27,
+46874,    36, 50141,    45, 57206,     6,     6,  8458,    18, 17145,
+   20, 45760,    35, 47204,    38, 20124,    52, 27911,     3,    50,
+24773,    59, 49536,    63, 40761,     9,    13, 11442,    22, 42625,
+   24, 47313,    30, 39219,    31, 10344,    43,   828,    54, 35815,
+   56,  9272,    66, 16808,     3,    15, 47500,    19, 64183,    21,
+25944,     5,    10, 22148,    32, 58788,    41, 65188,    46, 21951,
+   58, 41343,     2,    33, 11878,    40, 64903,
+};
+
 vtkDICOMDictionary::Dict Dict150Data = {
 "PRIVATE_CODE_STRING_1001",
 16,
 67,
 Dict150TagHashTable,
+Dict150KeyHashTable,
 Dict150Contents
 };
 
@@ -6674,11 +8166,16 @@ unsigned short Dict151TagHashTable[] = {
     2,     0,     3,     0,     1,     1,     2,     2,     3,
 };
 
+unsigned short Dict151KeyHashTable[] = {
+    2,     0,     3,     0, 38224,     1,  4934,     2, 28845,
+};
+
 vtkDICOMDictionary::Dict Dict151Data = {
 "SIEMENS MR EXTRACTED CSA HEADER",
 1,
 3,
 Dict151TagHashTable,
+Dict151KeyHashTable,
 Dict151Contents
 };
 
@@ -6692,11 +8189,16 @@ unsigned short Dict152TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict152KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict152Data = {
 "KRETZ_US",
 1,
 1,
 Dict152TagHashTable,
+Dict152KeyHashTable,
 Dict152Contents
 };
 
@@ -6714,11 +8216,17 @@ unsigned short Dict153TagHashTable[] = {
    32,
 };
 
+unsigned short Dict153KeyHashTable[] = {
+    2,     0,     4,     0, 55615,     1,  1134,     2, 52783,     3,
+ 5381,
+};
+
 vtkDICOMDictionary::Dict Dict153Data = {
 "GEIIS PACS",
 1,
 4,
 Dict153TagHashTable,
+Dict153KeyHashTable,
 Dict153Contents
 };
 
@@ -6802,11 +8310,30 @@ unsigned short Dict154TagHashTable[] = {
    66,    33,    84,
 };
 
+unsigned short Dict154KeyHashTable[] = {
+   15,    26,    35,    40,    47,    56,    67,    80,    83,    90,
+  101,   110,   123,   132,     0,     5,     5, 38757,    16,  9269,
+   38, 45289,    43, 43245,    52, 52652,     4,    10, 20935,    17,
+18785,    49, 33777,    50, 33625,     2,    19, 50658,    48, 28318,
+    3,     7, 58651,    14, 64490,    45, 59854,     4,     6, 35375,
+   15, 33440,    23, 16339,    46, 59854,     5,     0, 19129,    32,
+17646,    35, 34633,    55, 30010,    56,   384,     6,     1, 19129,
+    4, 54809,    21, 39015,    33, 25372,    36, 34633,    40, 64428,
+    1,    24, 19129,     3,     2,   982,    25, 19129,    54, 13312,
+    5,    18, 62573,    26, 19129,    37, 52804,    47, 32886,    53,
+62756,     4,    13, 44783,    22, 43122,    27, 19129,    51,  6121,
+    6,     8, 17182,    11, 26839,    20, 29203,    28, 19129,    34,
+16621,    42, 41582,     4,    12, 26839,    29, 19129,    39, 47510,
+   41, 13480,     5,     3, 42119,     9,  5523,    30, 19129,    31,
+19129,    44, 19091,
+};
+
 vtkDICOMDictionary::Dict Dict154Data = {
 "IMS s.r.l. Mammography Private Code",
 14,
 57,
 Dict154TagHashTable,
+Dict154KeyHashTable,
 Dict154Contents
 };
 
@@ -6827,11 +8354,17 @@ unsigned short Dict155TagHashTable[] = {
   115,     4,   116,     5,   117,     6,   118,
 };
 
+unsigned short Dict155KeyHashTable[] = {
+    2,     0,     7,     0,  6554,     1, 32298,     2,  9786,     3,
+13520,     4, 42980,     5, 61027,     6, 49975,
+};
+
 vtkDICOMDictionary::Dict Dict155Data = {
 "PRIVATE_CODE_STRING_0021",
 1,
 7,
 Dict155TagHashTable,
+Dict155KeyHashTable,
 Dict155Contents
 };
 
@@ -6855,11 +8388,18 @@ unsigned short Dict156TagHashTable[] = {
    52,     8,    81,
 };
 
+unsigned short Dict156KeyHashTable[] = {
+    2,     3,     0,     9,     0,  2690,     1,  2690,     2,  2690,
+    3,  2690,     4,  2690,     5,  2690,     6,  2690,     7,  2690,
+    8,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict156Data = {
 "SIEMENS CT VA0  IDE",
 2,
 9,
 Dict156TagHashTable,
+Dict156KeyHashTable,
 Dict156Contents
 };
 
@@ -6874,11 +8414,16 @@ unsigned short Dict157TagHashTable[] = {
     2,     0,     2,     0,     1,     1,     2,
 };
 
+unsigned short Dict157KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict157Data = {
 "SCHICK TECHNOLOGIES - Note List Creator ID",
 1,
 2,
 Dict157TagHashTable,
+Dict157KeyHashTable,
 Dict157Contents
 };
 
@@ -6903,11 +8448,18 @@ unsigned short Dict158TagHashTable[] = {
     3,     5,     5,     7,     7,
 };
 
+unsigned short Dict158KeyHashTable[] = {
+    3,    10,     0,     3,     0, 11301,     2, 55344,     6, 43030,
+    7,     1, 27558,     3, 31648,     4, 59397,     5, 44571,     7,
+43030,     8,  8393,     9, 49897,
+};
+
 vtkDICOMDictionary::Dict Dict158Data = {
 "Mortara_Inc",
 2,
 10,
 Dict158TagHashTable,
+Dict158KeyHashTable,
 Dict158Contents
 };
 
@@ -6921,11 +8473,16 @@ unsigned short Dict159TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict159KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict159Data = {
 "SIEMENS IKM CKS LUNGCAD BMK",
 1,
 1,
 Dict159TagHashTable,
+Dict159KeyHashTable,
 Dict159Contents
 };
 
@@ -6939,11 +8496,16 @@ unsigned short Dict160TagHashTable[] = {
     2,     0,     1,     0,    17,
 };
 
+unsigned short Dict160KeyHashTable[] = {
+    2,     0,     1,     0, 32165,
+};
+
 vtkDICOMDictionary::Dict Dict160Data = {
 "APEX_PRIVATE",
 1,
 1,
 Dict160TagHashTable,
+Dict160KeyHashTable,
 Dict160Contents
 };
 
@@ -6962,11 +8524,17 @@ unsigned short Dict161TagHashTable[] = {
     3,     4,     4,
 };
 
+unsigned short Dict161KeyHashTable[] = {
+    2,     0,     5,     0, 15853,     1, 29600,     2, 29884,     3,
+45147,     4, 23212,
+};
+
 vtkDICOMDictionary::Dict Dict161Data = {
 "PRIVATE_CODE_STRING_0019",
 1,
 5,
 Dict161TagHashTable,
+Dict161KeyHashTable,
 Dict161Contents
 };
 
@@ -7024,11 +8592,25 @@ unsigned short Dict162TagHashTable[] = {
    97,
 };
 
+unsigned short Dict162KeyHashTable[] = {
+   10,    19,    28,    35,    52,    55,    62,    73,    80,     0,
+    4,     3,  3082,     4, 19137,     7, 45401,    24,   359,     4,
+   14,  2944,    17, 34527,    23, 41013,    28, 34428,     3,     6,
+61657,    13, 63258,    15,  4429,     8,     8, 58859,    11, 57812,
+   18, 14868,    19, 17067,    20, 37869,    21, 38890,    26, 24565,
+   30, 35930,     1,     2, 40048,     3,    12,  6233,    27, 62295,
+   32, 24800,     5,     1, 19287,    16, 31616,    22, 17366,    25,
+ 3912,    35, 28040,     3,     0, 42997,     5,  1434,    33, 23047,
+    5,     9, 26279,    10,  4381,    29, 64383,    31, 40788,    34,
+23047,
+};
+
 vtkDICOMDictionary::Dict Dict162Data = {
 "GEMS_IMAG_01",
 9,
 36,
 Dict162TagHashTable,
+Dict162KeyHashTable,
 Dict162Contents
 };
 
@@ -7071,11 +8653,22 @@ unsigned short Dict163TagHashTable[] = {
    52,
 };
 
+unsigned short Dict163KeyHashTable[] = {
+    7,    14,    21,    32,    37,    44,     0,     3,     0,   440,
+    4, 43424,    13, 15121,     3,     2, 59017,    19, 26522,    23,
+16211,     5,     6, 48991,     9, 50385,    11, 50282,    17, 19110,
+   21, 14444,     2,     7, 64112,    16, 59439,     3,     3, 26152,
+   15, 15882,    22, 11167,     8,     1, 54427,     5, 51567,     8,
+40245,    10,  9726,    12, 10192,    14, 32295,    18, 38134,    20,
+60955,
+};
+
 vtkDICOMDictionary::Dict Dict163Data = {
 "Silhouette ROI V1.0",
 6,
 24,
 Dict163TagHashTable,
+Dict163KeyHashTable,
 Dict163Contents
 };
 
@@ -7119,11 +8712,21 @@ unsigned short Dict164TagHashTable[] = {
    20,    22,   241,
 };
 
+unsigned short Dict164KeyHashTable[] = {
+    6,     6,     6,     6,     6,     7,     0,    25,     0,   896,
+    1,   896,     2,   896,     3,   896,     4,   896,     5,   896,
+    6,   896,     7,   896,     8,   896,     9,   896,    10,   896,
+   11,   896,    12,   896,    13,   896,    14,   896,    15,   896,
+   16,   896,    17,   896,    18,   896,    19,   896,    20,   896,
+   21,   896,    22,   896,    23,   896,    24,   896,
+};
+
 vtkDICOMDictionary::Dict Dict164Data = {
 "DZDICOM 4.3.0",
 6,
 25,
 Dict164TagHashTable,
+Dict164KeyHashTable,
 Dict164Contents
 };
 
@@ -7194,11 +8797,26 @@ unsigned short Dict165TagHashTable[] = {
    10,    19,    23,    33,    43,    42,    52,
 };
 
+unsigned short Dict165KeyHashTable[] = {
+   11,    11,    12,    11,    11,    11,    11,    11,    11,    11,
+   11,     0,    47,     0,   489,     1,   489,     2,   489,     3,
+  489,     4,   489,     5,   489,     6,   489,     7,   489,     8,
+  489,     9,   489,    10,   489,    11,   489,    12,   489,    13,
+  489,    14,   489,    15,   489,    16,   489,    17,   489,    18,
+  489,    19,   489,    20,   489,    21,   489,    22,   489,    23,
+  489,    24,   489,    25,   489,    26,   489,    27,   489,    28,
+  489,    29,   489,    30,   489,    31,   489,    32,   489,    33,
+  489,    34,   489,    35,   489,    36,   489,    37,   489,    38,
+  489,    39,   489,    40,   489,    41,   489,    42,   489,    43,
+  489,    44,   489,    45,   489,    46,   489,
+};
+
 vtkDICOMDictionary::Dict Dict165Data = {
 "SIEMENS SERIES SHADOW ATTRIBUTES",
 11,
 47,
 Dict165TagHashTable,
+Dict165KeyHashTable,
 Dict165Contents
 };
 
@@ -7279,11 +8897,29 @@ unsigned short Dict166TagHashTable[] = {
    51,     2,     2,    22,    66,    36,   128,
 };
 
+unsigned short Dict166KeyHashTable[] = {
+   14,    23,    30,    35,    42,    55,    64,    81,    90,    13,
+   99,   104,   113,     0,     4,     4,  6124,    21, 15384,    33,
+40464,    39, 29960,     3,    22, 40246,    26, 50783,    28, 51927,
+    2,    11, 10897,    42,   701,     3,     5, 11365,    47, 34532,
+   52, 34532,     6,    27, 44382,    36, 46457,    46, 42412,    49,
+24130,    51, 42412,    54, 24130,     4,    32, 52141,    34, 46412,
+   37, 58468,    41, 21255,     8,     6, 15689,     9, 33890,    13,
+40614,    14, 47108,    23, 46174,    40, 14018,    45, 53487,    50,
+53487,     4,    15, 37666,    16, 60159,    29, 12774,    38, 31641,
+    4,    17, 60159,    19, 55364,    24, 50668,    25, 64477,     2,
+   10, 15638,    44, 56645,     4,    12,  4833,    20, 42580,    31,
+45638,    43, 26556,    11,     0,   413,     1,   413,     2,   413,
+    3,   413,     7, 18546,     8,   413,    18, 18348,    30, 27287,
+   35,  2927,    48,  9425,    53,  9425,
+};
+
 vtkDICOMDictionary::Dict Dict166Data = {
 "HOLOGIC, Inc.",
 13,
 55,
 Dict166TagHashTable,
+Dict166KeyHashTable,
 Dict166Contents
 };
 
@@ -7297,11 +8933,16 @@ unsigned short Dict167TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict167KeyHashTable[] = {
+    2,     0,     1,     0, 56990,
+};
+
 vtkDICOMDictionary::Dict Dict167Data = {
 "AMI StudyExtensions_01",
 1,
 1,
 Dict167TagHashTable,
+Dict167KeyHashTable,
 Dict167Contents
 };
 
@@ -7324,11 +8965,18 @@ unsigned short Dict168TagHashTable[] = {
    22,
 };
 
+unsigned short Dict168KeyHashTable[] = {
+    3,    14,     0,     5,     0, 61979,     1, 35007,     2, 51981,
+    3, 62791,     5, 45954,     3,     4, 37947,     6, 31633,     7,
+11277,
+};
+
 vtkDICOMDictionary::Dict Dict168Data = {
 "SPI-P-Private-DCI Release 1",
 2,
 8,
 Dict168TagHashTable,
+Dict168KeyHashTable,
 Dict168Contents
 };
 
@@ -7351,11 +8999,18 @@ unsigned short Dict169TagHashTable[] = {
   114,
 };
 
+unsigned short Dict169KeyHashTable[] = {
+    3,    10,     0,     3,     2, 50782,     3,  2150,     7, 25706,
+    5,     0, 39947,     1, 35006,     4, 21409,     5, 53061,     6,
+25837,
+};
+
 vtkDICOMDictionary::Dict Dict169Data = {
 "GEMS_FALCON_03",
 2,
 8,
 Dict169TagHashTable,
+Dict169KeyHashTable,
 Dict169Contents
 };
 
@@ -7455,11 +9110,33 @@ unsigned short Dict170TagHashTable[] = {
    70,    27,    81,    48,    99,
 };
 
+unsigned short Dict170KeyHashTable[] = {
+   18,    33,    40,    17,    47,    52,    59,    68,    83,    86,
+  125,   128,   141,   144,   153,   158,   161,     0,     7,     4,
+47023,    10, 27815,    24, 63967,    33, 36830,    37, 29604,    41,
+59008,    60, 31229,     3,     3, 12701,    23,  1784,    45,  1784,
+    3,     9, 14081,    18, 61210,    40, 42094,     2,    35, 28549,
+   48, 63007,     3,     1, 31834,     2, 10295,    19, 58540,     4,
+    7, 53689,    16, 41595,    56, 44200,    63, 17282,     7,     6,
+19367,    11, 28236,    20, 24960,    25, 23514,    44, 23514,    61,
+56139,    66, 58758,     1,    13, 18370,    19,     5,   316,     8,
+  316,    12, 49584,    15, 44958,    17, 25993,    26,   316,    27,
+  316,    28,   316,    29,   316,    30,   316,    31,   316,    32,
+  316,    38,   316,    39,   316,    42,  8101,    46, 19412,    57,
+  316,    58,   316,    64,   316,     1,     0, 20082,     6,    14,
+18896,    21, 15503,    50, 65221,    52,  5304,    62, 62384,    68,
+21166,     1,    53,  5304,     4,    43, 59684,    65, 57075,    67,
+48368,    69, 29927,     2,    51, 31528,    55, 23090,     1,    34,
+53329,     6,    22, 12610,    36, 36219,    47,  4145,    49,  8281,
+   54,  8863,    59, 36075,
+};
+
 vtkDICOMDictionary::Dict Dict170Data = {
 "SIEMENS CM VA0  CMS",
 17,
 70,
 Dict170TagHashTable,
+Dict170KeyHashTable,
 Dict170Contents
 };
 
@@ -7473,11 +9150,16 @@ unsigned short Dict171TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict171KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict171Data = {
 "PHILIPS MR/PART 7",
 1,
 1,
 Dict171TagHashTable,
+Dict171KeyHashTable,
 Dict171Contents
 };
 
@@ -7491,11 +9173,16 @@ unsigned short Dict172TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
+unsigned short Dict172KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict172Data = {
 "PHILIPS MR/PART 6",
 1,
 1,
 Dict172TagHashTable,
+Dict172KeyHashTable,
 Dict172Contents
 };
 
@@ -7696,11 +9383,52 @@ unsigned short Dict173TagHashTable[] = {
    39,    80,     2,    40,    81,    93,   163,
 };
 
+unsigned short Dict173KeyHashTable[] = {
+   38,    41,    48,    37,    53,    37,    37,    56,    63,    72,
+   83,    88,    93,    37,    98,   105,   110,   291,   302,   305,
+  310,    37,   313,   316,   319,    37,   324,   329,   334,   345,
+   37,    37,   348,   353,    37,   362,    37,     0,     1,    20,
+ 3208,     3,     9,  5920,   133, 25323,   134, 16095,     2,    19,
+16472,    27, 40461,     1,    64,   910,     3,    14, 64275,    60,
+52854,    74, 56271,     4,     5, 61600,    16, 48006,    59, 39477,
+  124, 27613,     5,     6, 12764,    12, 17237,    22, 31626,   105,
+46168,   149, 39408,     2,   104,  7780,   148,  7780,     2,     7,
+15220,    57, 32428,     2,    38, 22659,    54, 35310,     3,    18,
+21681,    62, 46837,    65, 40143,     2,     4, 25334,   117, 45934,
+   90,     2,   145,     3,   145,    11, 63371,    13,   145,    17,
+  145,    23,   145,    24,   145,    25,   145,    26,   145,    28,
+  145,    29,   145,    30,   145,    31,   145,    32,   145,    33,
+  145,    34,   145,    35,   145,    36,   145,    37,   145,    39,
+  145,    40,   145,    41,   145,    42,   145,    43,   145,    44,
+  145,    45,   145,    46,   145,    47,   145,    48,   145,    49,
+  145,    50,   145,    51,   145,    52,   145,    53,   145,    55,
+  145,    56,   145,    63,   145,    68,   145,    69,   145,    70,
+  145,    71,   145,    72,   145,    73,   145,    76,   145,    77,
+  145,    78,   145,    79,   145,    80,   145,    81,   145,    82,
+  145,    83,   145,    84,   145,    85,   145,    86,   145,    87,
+  145,    88,   145,    89,   145,    90,   145,    91,   145,    92,
+  145,    93,   145,    94,   145,    96,   145,   100,   145,   101,
+  145,   102,   145,   107,   145,   108,   145,   111, 15082,   113,
+  145,   115,   145,   119,   145,   120,   145,   121,   145,   122,
+  145,   123,   145,   125,   145,   126,   145,   136,   145,   137,
+  145,   138,   145,   139,   145,   140,   145,   141,   145,   142,
+  145,   143,   145,   144,   145,   145,   145,   146,   145,   147,
+  145,     5,     1, 34972,    66, 50169,    98, 16163,   109, 10027,
+  135, 27121,     1,   103, 56424,     2,    95, 59563,   129, 13362,
+    1,   118, 62188,     1,   150, 19151,     1,   127, 52155,     2,
+   15, 49740,   114, 21843,     2,    58, 61172,   112, 43230,     2,
+    0, 50781,   116, 43576,     5,     8, 26658,    61, 10146,    75,
+17184,   130, 24594,   131, 31054,     1,    97, 51915,     2,    10,
+43667,   132, 15635,     4,    21, 40187,    99, 17060,   106, 30803,
+  110, 42228,     2,    67, 16625,   128,  4770,
+};
+
 vtkDICOMDictionary::Dict Dict173Data = {
 "PHILIPS MR/PART",
 37,
 151,
 Dict173TagHashTable,
+Dict173KeyHashTable,
 Dict173Contents
 };
 
@@ -7871,11 +9599,47 @@ unsigned short Dict174TagHashTable[] = {
   129,    85,   162,   108,   194,   124,   237,
 };
 
+unsigned short Dict174KeyHashTable[] = {
+   32,    35,    38,    47,    60,    67,    74,    81,    31,    86,
+   99,   112,   119,   124,   133,   140,   151,   160,   167,   206,
+  221,   228,   237,   252,   261,   268,   277,   282,   295,   304,
+  311,     0,     1,    42, 59002,     1,    85, 43318,     4,     5,
+47876,     6, 38916,    56, 13495,    94, 34967,     6,     7, 60831,
+   62, 40101,    76, 33663,    90, 47064,   100, 37708,   125, 15488,
+    3,     0, 37843,    39, 56004,   115, 36828,     3,    16, 10759,
+   40, 46449,   104, 63912,     3,    13, 42921,    30, 45077,    77,
+21019,     2,     4, 55738,    89, 16592,     6,    41, 35473,    53,
+23269,    58, 43313,    81, 22938,    88, 20016,   124, 18142,     6,
+    9, 55056,    25, 30881,    55, 18814,    59, 37676,    82, 21958,
+   84, 55198,     3,    43, 21891,    61, 39486,   109, 62370,     2,
+   22, 18671,    66, 17166,     4,     1, 16063,    10, 29463,    92,
+14559,   106, 33593,     3,    33, 55724,    60, 35017,    78,  6744,
+    5,    11, 26168,    32, 37381,    73, 55306,    79,  2694,    83,
+12838,     4,    14, 62306,    18, 36187,   113, 56737,   114, 65024,
+    3,    34, 44519,    63, 58767,    65, 56236,    19,    26, 60544,
+   29,   173,    45,   173,    46,   173,    47,   173,    48,   173,
+   49,   173,    50,   173,    95, 31209,    97,   173,    98,   173,
+  101,   173,   102,   173,   108,   173,   110,   173,   116,   173,
+  117,   173,   119,   173,   126,   173,     7,     8, 38494,    19,
+33934,    86, 59387,    87,  6247,   107, 31015,   111, 50682,   123,
+28329,     3,    24, 40721,    72, 57738,   112, 52678,     4,    12,
+ 4665,    21, 20442,    54,  1238,    67, 15974,     7,     3, 30646,
+   44, 40032,    68, 22926,    69, 26208,    74, 50292,    93, 30378,
+   99,  8575,     4,    20, 10812,    64, 26687,   105, 45304,   121,
+59155,     3,    17,  7092,    57, 32316,   103, 44102,     4,    23,
+56966,    71, 33657,    91, 55371,   122, 34288,     2,     2, 56721,
+   31,  2799,     6,    27, 61512,    36, 53382,    52, 16611,    80,
+44833,   118, 30557,   120, 14744,     4,    28, 51445,    35, 35039,
+   75,  9209,    96, 18000,     3,    15, 34639,    38, 35425,    51,
+54186,     2,    37, 42177,    70, 54981,
+};
+
 vtkDICOMDictionary::Dict Dict174Data = {
 "GEMS_DL_IMG_01",
 31,
 127,
 Dict174TagHashTable,
+Dict174KeyHashTable,
 Dict174Contents
 };
 
@@ -7889,11 +9653,16 @@ unsigned short Dict175TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict175KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict175Data = {
 "ESOFT_DICOM_ECAT_OWNERCODE",
 1,
 1,
 Dict175TagHashTable,
+Dict175KeyHashTable,
 Dict175Contents
 };
 
@@ -7907,11 +9676,16 @@ unsigned short Dict176TagHashTable[] = {
     2,     0,     1,     0,   164,
 };
 
+unsigned short Dict176KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict176Data = {
 "KINETDX_GRAPHICS",
 1,
 1,
 Dict176TagHashTable,
+Dict176KeyHashTable,
 Dict176Contents
 };
 
@@ -8342,11 +10116,99 @@ unsigned short Dict177TagHashTable[] = {
     3,    89,    90,   173,   174,   318,    35,
 };
 
+unsigned short Dict177KeyHashTable[] = {
+   84,    95,   104,   119,   122,   133,   138,   149,   158,   177,
+  182,   189,   194,   201,   218,   227,   238,   243,   250,   257,
+  262,   275,   278,   283,   290,   301,   308,   315,   332,   349,
+  354,   359,   368,   377,   380,   393,   402,   415,   430,   433,
+  448,   459,   464,   469,   476,   487,   490,   495,   504,   515,
+  524,   531,   544,   551,   556,   559,   564,   581,   596,   607,
+  618,   631,   638,   647,   652,   663,   670,   681,   686,   693,
+  712,   719,   732,   745,   754,   767,   772,    83,   785,   790,
+  809,   816,   827,     0,     5,   165, 57679,   230, 33956,   277,
+ 9008,   302, 31021,   322,  1221,     4,   170, 42463,   206, 10553,
+  209, 10553,   258,  1976,     7,    10, 46138,   115, 14076,   171,
+42463,   243, 28314,   259,  1976,   286, 56505,   298, 21175,     1,
+  219,  5080,     5,   127,  7291,   194, 24445,   195,  2870,   282,
+ 7291,   321,  7291,     2,   166, 49733,   197, 28523,     5,    25,
+40380,    61, 21377,    77,  1034,   248, 14297,   263, 14297,     4,
+   13, 57544,    46,  9016,   103, 64860,   207, 23208,     9,     1,
+49477,    36, 17857,    90, 41118,   139, 47475,   193, 39885,   201,
+13146,   228, 54337,   308, 16880,   332,   719,     2,    82, 16810,
+  181, 61899,     3,   148,  2367,   159, 32920,   318, 12558,     2,
+  287, 58831,   303, 53198,     3,    29, 20564,    32, 30731,   215,
+ 7772,     8,    30, 31329,    80, 27157,   173, 28553,   185, 39231,
+  198, 18256,   208,  4028,   212, 19189,   307, 16883,     4,    18,
+35227,   122, 49953,   268, 24951,   299, 53494,     5,    66, 36882,
+   74, 43848,    99, 44055,   176, 13742,   300,  4692,     2,   157,
+36864,   226, 24431,     3,   110,  2330,   128, 26906,   213, 19293,
+    3,    68, 51280,   108, 18911,   178, 10999,     2,    28, 54383,
+   33, 33797,     6,    17, 63402,    23, 44104,    60, 55086,    72,
+19357,   120, 13858,   172, 63509,     1,   129, 55710,     2,    79,
+13873,   304, 58868,     3,    40, 19677,   155, 41634,   222, 52670,
+    5,    35, 62348,   138, 50919,   177, 17742,   211, 13466,   279,
+33950,     3,     3, 30246,    71, 26015,   144,  6170,     3,    21,
+ 9943,    81, 43807,   204, 24403,     8,     9, 44788,    41, 54119,
+   54, 29936,   123, 54542,   125,  8665,   182, 55427,   306, 63130,
+  309, 23784,     8,    27, 38046,    39, 64558,    73,  4253,   180,
+51049,   192, 46976,   221, 31375,   265,  6073,   272, 40996,     2,
+   31, 33841,   153, 30923,     2,   264, 60131,   331, 27765,     4,
+    2, 19323,    67, 31961,   271,  1954,   273, 39918,     4,    83,
+58110,   145,  6170,   175, 25510,   311, 28046,     1,    84, 42962,
+    6,    94, 40556,   113, 46616,   202, 64384,   294, 35916,   313,
+23853,   328, 29592,     4,    48,  4501,    87, 64861,   151, 19001,
+  223, 38001,     6,    19, 22980,    24, 40937,   112,  1507,   142,
+56448,   227, 24903,   334, 56206,     7,     8, 26548,    86, 65492,
+   92, 58315,    93, 25517,   245, 58315,   261, 58315,   274, 39279,
+    1,   250, 33788,     7,     4, 53312,    11, 32028,    89, 17595,
+  216, 47600,   241, 63275,   255, 63275,   312, 23856,     5,    76,
+23783,   124, 29726,   179, 32200,   326, 27884,   329,  1684,     2,
+   59, 57463,   131, 14953,     2,   146, 45195,   267, 36194,     3,
+    5,  8363,    47, 23206,    58, 20032,     5,   121, 17827,   203,
+ 4504,   224, 60061,   247, 17447,   257, 35945,     1,   187, 54108,
+    2,   119, 13302,   270, 52739,     4,   101, 63986,   162, 52208,
+  240, 10566,   253, 10566,     5,    43, 53845,    85, 32761,   200,
+  139,   214, 61077,   330, 17893,     4,    91, 11849,   143, 22136,
+  242, 13063,   254, 13063,     3,   186, 17539,   210, 28411,   316,
+48225,     6,    53, 21596,    97, 52902,   100, 23816,   289, 29323,
+  317, 48225,   320,  5925,     3,   109, 13208,   132,  4180,   140,
+23764,     2,    12, 34102,    75, 16446,     1,   295, 48339,     2,
+   42, 13290,   291,  8088,     8,    65, 51476,   116, 25473,   167,
+24334,   169, 25473,   217, 64620,   249, 25473,   269, 25473,   292,
+10363,     7,     0, 60003,    26, 15417,   156, 44370,   158,  1736,
+  276,  2698,   305, 62116,   325,  2698,     5,    38, 23297,    51,
+27584,   218, 22002,   285, 53710,   324, 53710,     5,    34, 23547,
+  118, 15348,   150, 23820,   191, 64951,   199, 27405,     6,   147,
+ 3568,   246, 31070,   262, 31070,   284, 49756,   288, 45481,   323,
+14701,     3,   114, 55638,   174, 22735,   333, 32182,     4,    20,
+59057,    98, 17796,   280, 23144,   310, 27032,     2,    57, 45218,
+  134,  8367,     5,    62, 26496,   106,  8984,   135,  8367,   229,
+13339,   260,  1954,     3,    88, 30265,   183, 51120,   327,  1810,
+    5,    78, 60839,   102, 13192,   141, 63577,   188, 49365,   278,
+27715,     2,    50, 44494,   275, 31953,     3,   111, 30065,   152,
+41063,   205, 17424,     9,   117, 38694,   154, 54179,   225,    64,
+  231,    64,   232,    64,   233,    64,   234,    64,   235,    64,
+  236,    64,     3,    64, 55013,   130,  7723,   283, 50676,     6,
+   56, 53371,   105, 18572,   107, 33056,   133, 12881,   196, 25037,
+  290, 26172,     6,    22, 27748,    37, 34158,    44, 54423,    70,
+31295,   281, 58963,   297, 58143,     4,     6, 35132,   104,  3548,
+  149, 64639,   190, 15373,     6,    49, 56192,    95, 60096,   160,
+30312,   163, 60096,   238, 60096,   251, 60096,     2,   126, 48648,
+  168, 61739,     6,    52, 12354,    55, 22653,    63, 14815,   137,
+10229,   189, 33406,   319,  1275,     2,   237, 52206,   296, 58418,
+    9,    14, 53797,    15, 48377,    96, 13794,   164, 13794,   184,
+59329,   239, 13794,   244, 31975,   252, 13794,   266,  9920,     3,
+    7, 43746,    69, 44146,   161, 15347,     5,    16,  4534,   136,
+10232,   220, 65022,   256, 38539,   314, 22873,     4,    45, 24549,
+  293, 56534,   301, 28745,   315, 25148,
+};
+
 vtkDICOMDictionary::Dict Dict177Data = {
 "GEMS_PETD_01",
 83,
 335,
 Dict177TagHashTable,
+Dict177KeyHashTable,
 Dict177Contents
 };
 
@@ -8360,11 +10222,16 @@ unsigned short Dict178TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict178KeyHashTable[] = {
+    2,     0,     1,     0,  1153,
+};
+
 vtkDICOMDictionary::Dict Dict178Data = {
 "ISI",
 1,
 1,
 Dict178TagHashTable,
+Dict178KeyHashTable,
 Dict178Contents
 };
 
@@ -8384,11 +10251,17 @@ unsigned short Dict179TagHashTable[] = {
    66,     4,    80,     5,    96,
 };
 
+unsigned short Dict179KeyHashTable[] = {
+    2,     0,     6,     0, 36029,     1, 30862,     2, 47516,     3,
+ 7535,     4,  2946,     5, 57117,
+};
+
 vtkDICOMDictionary::Dict Dict179Data = {
 "GEMS_DRS_1",
 1,
 6,
 Dict179TagHashTable,
+Dict179KeyHashTable,
 Dict179Contents
 };
 
@@ -8404,11 +10277,16 @@ unsigned short Dict180TagHashTable[] = {
     2,     0,     3,     0,     8,     1,     9,     2,    32,
 };
 
+unsigned short Dict180KeyHashTable[] = {
+    2,     0,     3,     0, 24894,     1, 47394,     2,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict180Data = {
 "TOSHIBA MDW NON-IMAGE",
 1,
 3,
 Dict180TagHashTable,
+Dict180KeyHashTable,
 Dict180Contents
 };
 
@@ -8422,11 +10300,16 @@ unsigned short Dict181TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict181KeyHashTable[] = {
+    2,     0,     1,     0, 18287,
+};
+
 vtkDICOMDictionary::Dict Dict181Data = {
 "SIEMENS MED OCS PUBLIC RT PLAN ATTRIBUTES",
 1,
 1,
 Dict181TagHashTable,
+Dict181KeyHashTable,
 Dict181Contents
 };
 
@@ -8446,11 +10329,17 @@ unsigned short Dict182TagHashTable[] = {
     5,     4,    10,     5,    12,
 };
 
+unsigned short Dict182KeyHashTable[] = {
+    2,     0,     6,     0, 32445,     1, 37354,     2, 23271,     3,
+48250,     4, 41986,     5, 50698,
+};
+
 vtkDICOMDictionary::Dict Dict182Data = {
 "DR Systems, Inc.",
 1,
 6,
 Dict182TagHashTable,
+Dict182KeyHashTable,
 Dict182Contents
 };
 
@@ -8469,11 +10358,17 @@ unsigned short Dict183TagHashTable[] = {
     4,     4,     5,
 };
 
+unsigned short Dict183KeyHashTable[] = {
+    2,     0,     5,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict183Data = {
 "SCHICK TECHNOLOGIES - Change Item Creator ID",
 1,
 5,
 Dict183TagHashTable,
+Dict183KeyHashTable,
 Dict183Contents
 };
 
@@ -8488,11 +10383,16 @@ unsigned short Dict184TagHashTable[] = {
     2,     0,     2,     0,    80,     1,    81,
 };
 
+unsigned short Dict184KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict184Data = {
 "SIEMENS AX INSPACE_EP",
 1,
 2,
 Dict184TagHashTable,
+Dict184KeyHashTable,
 Dict184Contents
 };
 
@@ -8526,11 +10426,19 @@ unsigned short Dict185TagHashTable[] = {
    35,    16,     2,
 };
 
+unsigned short Dict185KeyHashTable[] = {
+    4,     5,     4,     4,     0,    17,     0,  1345,     1,  1345,
+    2,  1345,     3,  1345,     4,  1345,     5,  1345,     6,  1345,
+    7,  1345,     8,  1345,     9,  1345,    10,  1345,    11,  1345,
+   12,  1345,    13,  1345,    14,  1345,    15,  1345,    16,  1345,
+};
+
 vtkDICOMDictionary::Dict Dict185Data = {
 "AGFA-AG_HPState",
 4,
 17,
 Dict185TagHashTable,
+Dict185KeyHashTable,
 Dict185Contents
 };
 
@@ -8574,11 +10482,21 @@ unsigned short Dict186TagHashTable[] = {
    28,    14,    77,
 };
 
+unsigned short Dict186KeyHashTable[] = {
+    6,     6,     6,     6,     6,     7,     0,    25,     0,   896,
+    1,   896,     2,   896,     3,   896,     4,   896,     5,   896,
+    6,   896,     7,   896,     8,   896,     9,   896,    10,   896,
+   11,   896,    12,   896,    13,   896,    14,   896,    15,   896,
+   16,   896,    17,   896,    18,   896,    19,   896,    20,   896,
+   21,   896,    22,   896,    23,   896,    24,   896,
+};
+
 vtkDICOMDictionary::Dict Dict186Data = {
 "SPI-P-Private_ICS Release 1",
 6,
 25,
 Dict186TagHashTable,
+Dict186KeyHashTable,
 Dict186Contents
 };
 
@@ -8593,11 +10511,16 @@ unsigned short Dict187TagHashTable[] = {
     2,     0,     2,     0,     2,     1,   255,
 };
 
+unsigned short Dict187KeyHashTable[] = {
+    2,     0,     2,     0,  3417,     1, 19578,
+};
+
 vtkDICOMDictionary::Dict Dict187Data = {
 "RadWorksTBR",
 1,
 2,
 Dict187TagHashTable,
+Dict187KeyHashTable,
 Dict187Contents
 };
 
@@ -8612,11 +10535,16 @@ unsigned short Dict188TagHashTable[] = {
     2,     0,     2,     0,    32,     1,    33,
 };
 
+unsigned short Dict188KeyHashTable[] = {
+    2,     0,     2,     0, 41743,     1, 65188,
+};
+
 vtkDICOMDictionary::Dict Dict188Data = {
 "SIEMENS SYNGO REGISTRATION",
 1,
 2,
 Dict188TagHashTable,
+Dict188KeyHashTable,
 Dict188Contents
 };
 
@@ -8631,11 +10559,16 @@ unsigned short Dict189TagHashTable[] = {
     2,     0,     2,     0,    16,     1,    32,
 };
 
+unsigned short Dict189KeyHashTable[] = {
+    2,     0,     2,     0, 44447,     1, 61807,
+};
+
 vtkDICOMDictionary::Dict Dict189Data = {
 "AMI Sequence AnnotElements_01",
 1,
 2,
 Dict189TagHashTable,
+Dict189KeyHashTable,
 Dict189Contents
 };
 
@@ -8655,11 +10588,17 @@ unsigned short Dict190TagHashTable[] = {
    64,     4,    80,     5,    96,
 };
 
+unsigned short Dict190KeyHashTable[] = {
+    2,     0,     6,     0,   273,     1, 34125,     2, 23230,     3,
+43808,     4, 20637,     5, 58956,
+};
+
 vtkDICOMDictionary::Dict Dict190Data = {
 "AMI ImageTransform_01",
 1,
 6,
 Dict190TagHashTable,
+Dict190KeyHashTable,
 Dict190Contents
 };
 
@@ -8677,11 +10616,17 @@ unsigned short Dict191TagHashTable[] = {
     4,
 };
 
+unsigned short Dict191KeyHashTable[] = {
+    2,     0,     4,     0, 22964,     1, 43950,     2, 14141,     3,
+50814,
+};
+
 vtkDICOMDictionary::Dict Dict191Data = {
 "SECTRA_ImageInfo_01",
 1,
 4,
 Dict191TagHashTable,
+Dict191KeyHashTable,
 Dict191Contents
 };
 
@@ -8696,11 +10641,16 @@ unsigned short Dict192TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict192KeyHashTable[] = {
+    2,     0,     2,     0, 34686,     1, 62403,
+};
+
 vtkDICOMDictionary::Dict Dict192Data = {
 "HMC - CT - ID",
 1,
 2,
 Dict192TagHashTable,
+Dict192KeyHashTable,
 Dict192Contents
 };
 
@@ -8724,11 +10674,18 @@ unsigned short Dict193TagHashTable[] = {
    96,     8,   112,
 };
 
+unsigned short Dict193KeyHashTable[] = {
+    3,    14,     0,     5,     0,  1907,     2, 57879,     3, 43406,
+    4, 38705,     7,  1822,     4,     1, 31499,     5, 58813,     6,
+58529,     8, 50948,
+};
+
 vtkDICOMDictionary::Dict Dict193Data = {
 "VEPRO DICOM RECEIVE DATA 1.0",
 2,
 9,
 Dict193TagHashTable,
+Dict193KeyHashTable,
 Dict193Contents
 };
 
@@ -8746,11 +10703,17 @@ unsigned short Dict194TagHashTable[] = {
    97,
 };
 
+unsigned short Dict194KeyHashTable[] = {
+    2,     0,     4,     0, 30661,     1, 26216,     2, 14933,     3,
+38438,
+};
+
 vtkDICOMDictionary::Dict Dict194Data = {
 "ADAC_IMG",
 1,
 4,
 Dict194TagHashTable,
+Dict194KeyHashTable,
 Dict194Contents
 };
 
@@ -8764,11 +10727,16 @@ unsigned short Dict195TagHashTable[] = {
     2,     0,     1,     0,    96,
 };
 
+unsigned short Dict195KeyHashTable[] = {
+    2,     0,     1,     0, 26191,
+};
+
 vtkDICOMDictionary::Dict Dict195Data = {
 "SIEMENS MEDCOM HEADER2",
 1,
 1,
 Dict195TagHashTable,
+Dict195KeyHashTable,
 Dict195Contents
 };
 
@@ -8788,11 +10756,17 @@ unsigned short Dict196TagHashTable[] = {
    24,     4,    25,     5,    32,
 };
 
+unsigned short Dict196KeyHashTable[] = {
+    2,     0,     6,     0, 35114,     1, 59790,     2, 20724,     3,
+22706,     4, 60438,     5,  8316,
+};
+
 vtkDICOMDictionary::Dict Dict196Data = {
 "SIEMENS CSA HEADER",
 1,
 6,
 Dict196TagHashTable,
+Dict196KeyHashTable,
 Dict196Contents
 };
 
@@ -8806,11 +10780,16 @@ unsigned short Dict197TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
+unsigned short Dict197KeyHashTable[] = {
+    2,     0,     1,     0, 24355,
+};
+
 vtkDICOMDictionary::Dict Dict197Data = {
 "MeVis eD: Geometry Information",
 1,
 1,
 Dict197TagHashTable,
+Dict197KeyHashTable,
 Dict197Contents
 };
 
@@ -8826,11 +10805,16 @@ unsigned short Dict198TagHashTable[] = {
     2,     0,     3,     0,     8,     1,     9,     2,    16,
 };
 
+unsigned short Dict198KeyHashTable[] = {
+    2,     0,     3,     0, 55998,     1, 22264,     2, 61455,
+};
+
 vtkDICOMDictionary::Dict Dict198Data = {
 "SIEMENS SYNGO 3D FUSION MATRIX",
 1,
 3,
 Dict198TagHashTable,
+Dict198KeyHashTable,
 Dict198Contents
 };
 
@@ -8889,11 +10873,25 @@ unsigned short Dict199TagHashTable[] = {
    57,    32,    64,
 };
 
+unsigned short Dict199KeyHashTable[] = {
+   10,    17,    22,    31,    42,    47,    58,    63,    80,     0,
+    3,     7, 31603,     9, 16494,    24, 32968,     2,     2, 26248,
+   16, 61980,     4,    21, 59878,    25, 32951,    26, 42158,    32,
+38107,     5,     4, 11968,    14, 62874,    19, 29732,    29, 43113,
+   31,  3434,     2,    15,  6018,    35, 41906,     5,     0, 64967,
+    8, 13624,    10, 57785,    33, 23514,    36, 38108,     2,     1,
+43614,    28,  9572,     8,     3, 20355,     5,  5792,    11, 42685,
+   12, 62486,    13, 44081,    18, 14700,    27, 39563,    30, 47454,
+    6,     6, 11454,    17, 57981,    20, 52173,    22, 34210,    23,
+ 3010,    34, 33871,
+};
+
 vtkDICOMDictionary::Dict Dict199Data = {
 "GEMS_3D_INTVL_01",
 9,
 37,
 Dict199TagHashTable,
+Dict199KeyHashTable,
 Dict199Contents
 };
 
@@ -8964,11 +10962,26 @@ unsigned short Dict200TagHashTable[] = {
    29,    21,    38,    34,    51,    42,    60,
 };
 
+unsigned short Dict200KeyHashTable[] = {
+   11,    11,    12,    11,    11,    11,    11,    11,    11,    11,
+   11,     0,    47,     0,   489,     1,   489,     2,   489,     3,
+  489,     4,   489,     5,   489,     6,   489,     7,   489,     8,
+  489,     9,   489,    10,   489,    11,   489,    12,   489,    13,
+  489,    14,   489,    15,   489,    16,   489,    17,   489,    18,
+  489,    19,   489,    20,   489,    21,   489,    22,   489,    23,
+  489,    24,   489,    25,   489,    26,   489,    27,   489,    28,
+  489,    29,   489,    30,   489,    31,   489,    32,   489,    33,
+  489,    34,   489,    35,   489,    36,   489,    37,   489,    38,
+  489,    39,   489,    40,   489,    41,   489,    42,   489,    43,
+  489,    44,   489,    45,   489,    46,   489,
+};
+
 vtkDICOMDictionary::Dict Dict200Data = {
 "Philips Imaging DD 002",
 11,
 47,
 Dict200TagHashTable,
+Dict200KeyHashTable,
 Dict200Contents
 };
 
@@ -9221,11 +11234,59 @@ unsigned short Dict201TagHashTable[] = {
   221,
 };
 
+unsigned short Dict201KeyHashTable[] = {
+   48,    48,    48,    48,    48,    49,    48,    48,    48,    48,
+   48,    48,    48,    48,    48,    48,    48,    48,    48,   432,
+   48,    48,    48,    48,    48,    48,    48,    48,    48,    48,
+   48,    48,    48,    48,    48,    48,    48,    48,    48,    48,
+   48,    48,    48,    48,    48,    48,    48,    48,     0,   191,
+    0,   112,     1,   112,     2,   112,     3,   112,     4,   112,
+    5,   112,     6,   112,     7,   112,     8,   112,     9,   112,
+   10,   112,    11,   112,    12,   112,    13,   112,    14,   112,
+   15,   112,    16,   112,    17,   112,    18,   112,    19,   112,
+   20,   112,    21,   112,    22,   112,    23,   112,    24,   112,
+   25,   112,    26,   112,    27,   112,    28,   112,    29,   112,
+   30,   112,    31,   112,    32,   112,    33,   112,    34,   112,
+   35,   112,    36,   112,    37,   112,    38,   112,    39,   112,
+   40,   112,    41,   112,    42,   112,    43,   112,    44,   112,
+   45,   112,    46,   112,    47,   112,    48,   112,    49,   112,
+   50,   112,    51,   112,    52,   112,    53,   112,    54,   112,
+   55,   112,    56,   112,    57,   112,    58,   112,    59,   112,
+   60,   112,    61,   112,    62,   112,    63,   112,    64,   112,
+   65,   112,    66,   112,    67,   112,    68,   112,    69,   112,
+   70,   112,    71,   112,    72,   112,    73,   112,    74,   112,
+   75,   112,    76,   112,    77,   112,    78,   112,    79,   112,
+   80,   112,    81,   112,    82,   112,    83,   112,    84,   112,
+   85,   112,    86,   112,    87,   112,    88,   112,    89,   112,
+   90,   112,    91,   112,    92,   112,    93,   112,    94,   112,
+   95,   112,    96,   112,    97,   112,    98,   112,    99,   112,
+  100,   112,   101,   112,   102,   112,   103,   112,   104,   112,
+  105,   112,   106,   112,   107,   112,   108,   112,   109,   112,
+  110,   112,   111,   112,   112,   112,   113,   112,   114,   112,
+  115,   112,   116,   112,   117,   112,   118,   112,   119,   112,
+  120,   112,   121,   112,   122,   112,   123,   112,   124,   112,
+  125,   112,   126,   112,   127,   112,   128,   112,   129,   112,
+  130,   112,   131,   112,   132,   112,   133,   112,   134,   112,
+  135,   112,   136,   112,   137,   112,   138,   112,   139,   112,
+  140,   112,   141,   112,   142,   112,   143,   112,   144,   112,
+  145,   112,   146,   112,   147,   112,   148,   112,   149,   112,
+  150,   112,   151,   112,   152,   112,   153,   112,   154,   112,
+  155,   112,   156,   112,   157,   112,   158,   112,   159,   112,
+  160,   112,   161,   112,   162,   112,   163,   112,   164,   112,
+  165,   112,   166,   112,   167,   112,   168,   112,   169,   112,
+  170,   112,   171,   112,   172,   112,   173,   112,   174,   112,
+  175,   112,   176,   112,   177,   112,   178,   112,   179,   112,
+  180,   112,   181,   112,   182,   112,   183,   112,   184,   112,
+  185,   112,   186,   112,   187,   112,   188,   112,   189,   112,
+  190,   112,     1,   191, 23302,
+};
+
 vtkDICOMDictionary::Dict Dict201Data = {
 "KONICA1.0",
 48,
 192,
 Dict201TagHashTable,
+Dict201KeyHashTable,
 Dict201Contents
 };
 
@@ -9241,11 +11302,16 @@ unsigned short Dict202TagHashTable[] = {
     2,     0,     3,     0,     1,     1,     2,     2,     3,
 };
 
+unsigned short Dict202KeyHashTable[] = {
+    2,     0,     3,     0,  6594,     1, 16899,     2, 47185,
+};
+
 vtkDICOMDictionary::Dict Dict202Data = {
 "Applicare/Centricity Radiology Web/Version 1.0",
 1,
 3,
 Dict202TagHashTable,
+Dict202KeyHashTable,
 Dict202Contents
 };
 
@@ -9260,11 +11326,16 @@ unsigned short Dict203TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict203KeyHashTable[] = {
+    2,     0,     2,     0, 63874,     1, 42024,
+};
+
 vtkDICOMDictionary::Dict Dict203Data = {
 "SIEMENS Ultrasound S2000",
 1,
 2,
 Dict203TagHashTable,
+Dict203KeyHashTable,
 Dict203Contents
 };
 
@@ -9283,11 +11354,17 @@ unsigned short Dict204TagHashTable[] = {
    64,     4,    80,
 };
 
+unsigned short Dict204KeyHashTable[] = {
+    2,     0,     5,     0, 21607,     1,  8318,     2, 31495,     3,
+ 9827,     4, 10266,
+};
+
 vtkDICOMDictionary::Dict Dict204Data = {
 "1.2.840.113708.794.1.1.2.0",
 1,
 5,
 Dict204TagHashTable,
+Dict204KeyHashTable,
 Dict204Contents
 };
 
@@ -9307,11 +11384,17 @@ unsigned short Dict205TagHashTable[] = {
    24,     4,    25,     5,    32,
 };
 
+unsigned short Dict205KeyHashTable[] = {
+    2,     0,     6,     0, 37939,     1,  1015,     2, 23549,     3,
+50395,     4, 21407,     5, 36005,
+};
+
 vtkDICOMDictionary::Dict Dict205Data = {
 "TOSHIBA MDW HEADER",
 1,
 6,
 Dict205TagHashTable,
+Dict205KeyHashTable,
 Dict205Contents
 };
 
@@ -9325,11 +11408,16 @@ unsigned short Dict206TagHashTable[] = {
     2,     0,     1,     0,     2,
 };
 
+unsigned short Dict206KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict206Data = {
 "GEMS_IQTB_IDEN_47",
 1,
 1,
 Dict206TagHashTable,
+Dict206KeyHashTable,
 Dict206Contents
 };
 
@@ -9573,11 +11661,62 @@ unsigned short Dict207TagHashTable[] = {
   146,   118,   172,
 };
 
+unsigned short Dict207KeyHashTable[] = {
+   47,    52,    63,    66,    71,    78,    83,    94,   105,   108,
+  125,   138,   149,   158,   165,   170,   175,   188,   195,   198,
+  205,   210,   215,   222,   229,   242,   253,   264,   269,   276,
+  289,   292,   297,   306,   309,   316,   321,    46,   328,   333,
+  344,   349,   352,   359,   368,   371,     0,     2,    16, 15897,
+   61,  5894,     5,    19, 54529,    75, 36940,    80, 41942,   105,
+14590,   164, 61911,     1,    73, 45958,     2,   136,  3141,   163,
+58563,     3,    34, 39031,    37, 61813,    83, 52716,     2,    31,
+43121,   153, 21013,     5,    11,  9694,    55, 14451,    59, 17559,
+   99,   826,   113, 49052,     5,    60, 37847,    78, 59313,   111,
+30108,   114, 49052,   148, 32483,     1,   115, 49052,     8,    24,
+ 9463,    40, 52759,    49, 29332,    79, 11697,    89, 13533,   116,
+49052,   151, 63843,   154, 52528,     6,    23, 16961,    25, 18827,
+   32, 32246,   117, 49052,   133, 34461,   155, 32032,     5,    74,
+35953,   100, 25041,   104,   251,   118, 49052,   134, 34461,     4,
+   39, 53636,   119, 49052,   135, 34461,   137, 18101,     3,    63,
+24817,   120, 49052,   167, 34461,     2,   121, 49052,   168, 34461,
+    2,   109, 63620,   122, 49052,     6,    17, 22359,    21,  9171,
+   56, 20680,    64, 14600,   102,  7602,   150, 17481,     3,   141,
+41325,   157, 48765,   165, 63157,     1,    50, 54793,     3,    88,
+55760,    95, 44419,   181, 28974,     2,   159, 48322,   160, 20200,
+    2,    27, 50779,    66, 43458,     3,    15, 48780,    22, 51587,
+  144, 41325,     3,     9,   200,   112, 34949,   123, 34460,     6,
+   47, 37355,    65,  4470,    76, 40118,    93, 31435,   124, 34460,
+  143, 41325,     5,    20, 40948,    33, 37673,    51, 50215,   125,
+34460,   149, 64167,     5,    48, 44691,    90, 24752,    98, 39383,
+  126, 34460,   170, 62472,     2,   110, 24844,   127, 34460,     3,
+  103,  8058,   128, 34460,   140, 41325,     6,    26,  7675,    35,
+ 7113,    71, 56247,    96, 30313,   129, 34460,   147, 11891,     1,
+  130, 34460,     2,    41,  7796,   131, 34460,     4,    77,  2480,
+  132, 34460,   142, 41325,   184, 13581,     1,    84, 11215,     3,
+  138, 26442,   139, 41325,   162, 45042,     2,   108,  3921,   166,
+33278,     3,    18, 27303,    30, 13611,   106, 63978,     2,   146,
+11886,   161, 14491,     5,    57, 51775,    69, 15389,    70, 15915,
+   87, 37279,   158, 22889,     2,    67, 55947,    72, 26324,     1,
+   68, 27488,     3,    86, 29990,    92, 42329,    94, 42413,     4,
+   10, 50449,   107, 62874,   145, 11898,   152, 54867,     1,    97,
+16190,    45,     0,   116,     1,   116,     2,   116,     3,   116,
+    4,   116,     5,   116,     6,   116,     7,   116,     8,   116,
+   12,   116,    13,   116,    14,   116,    28,   116,    29,   116,
+   36, 12378,    38,   116,    42,   116,    43,   116,    44,   116,
+   45,   116,    46,   116,    52, 15214,    53,   116,    54,   116,
+   58,   116,    62,   116,    81,   116,    82,   116,    85,   116,
+   91,  8285,   101,   116,   156,   116,   169,   116,   171,   116,
+  172,   116,   173,   116,   174,   116,   175,   116,   176,   116,
+  177,   116,   178,   116,   179,   116,   180,   116,   182,   116,
+  183,   116,
+};
+
 vtkDICOMDictionary::Dict Dict207Data = {
 "GEMS_ACQU_01",
 46,
 185,
 Dict207TagHashTable,
+Dict207KeyHashTable,
 Dict207Contents
 };
 
@@ -9593,11 +11732,16 @@ unsigned short Dict208TagHashTable[] = {
     2,     0,     3,     0,   273,     1,   274,     2,   275,
 };
 
+unsigned short Dict208KeyHashTable[] = {
+    2,     0,     3,     0, 39384,     1, 50015,     2, 35617,
+};
+
 vtkDICOMDictionary::Dict Dict208Data = {
 "GEMS_IT_US_REPORT",
 1,
 3,
 Dict208TagHashTable,
+Dict208KeyHashTable,
 Dict208Contents
 };
 
@@ -9612,11 +11756,16 @@ unsigned short Dict209TagHashTable[] = {
     2,     0,     2,     0,     1,     1,     2,
 };
 
+unsigned short Dict209KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict209Data = {
 "SCHICK TECHNOLOGIES - Change List Creator ID",
 1,
 2,
 Dict209TagHashTable,
+Dict209KeyHashTable,
 Dict209Contents
 };
 
@@ -9630,11 +11779,16 @@ unsigned short Dict210TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict210KeyHashTable[] = {
+    2,     0,     1,     0, 49839,
+};
+
 vtkDICOMDictionary::Dict Dict210Data = {
 "DLX_PATNT_01",
 1,
 1,
 Dict210TagHashTable,
+Dict210KeyHashTable,
 Dict210Contents
 };
 
@@ -9655,11 +11809,17 @@ unsigned short Dict211TagHashTable[] = {
    32,     4,    33,     5,    34,     6,    48,
 };
 
+unsigned short Dict211KeyHashTable[] = {
+    2,     0,     7,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,     5,  5381,     6,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict211Data = {
 "MEDIFACE",
 1,
 7,
 Dict211TagHashTable,
+Dict211KeyHashTable,
 Dict211Contents
 };
 
@@ -9678,11 +11838,17 @@ unsigned short Dict212TagHashTable[] = {
     8,     4,    10,
 };
 
+unsigned short Dict212KeyHashTable[] = {
+    2,     0,     5,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict212Data = {
 "MITRA OBJECT ATTRIBUTES 1.0",
 1,
 5,
 Dict212TagHashTable,
+Dict212KeyHashTable,
 Dict212Contents
 };
 
@@ -9713,11 +11879,19 @@ unsigned short Dict213TagHashTable[] = {
     5,     5,     6,    10,    11,    11,    12,
 };
 
+unsigned short Dict213KeyHashTable[] = {
+    4,    15,    26,     0,     5,     0, 60183,     3, 53078,     5,
+42565,     7, 38906,    13, 20593,     5,     1,  6502,     2, 56955,
+    6, 63876,    12, 18510,    14, 36387,     5,     4,  1793,     8,
+ 1793,     9,  1793,    10,  1793,    11, 39957,
+};
+
 vtkDICOMDictionary::Dict Dict213Data = {
 "SIEMENS MR DATAMAPPING ATTRIBUTES",
 3,
 15,
 Dict213TagHashTable,
+Dict213KeyHashTable,
 Dict213Contents
 };
 
@@ -9732,11 +11906,16 @@ unsigned short Dict214TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict214KeyHashTable[] = {
+    2,     0,     2,     0,  9074,     1, 54063,
+};
+
 vtkDICOMDictionary::Dict Dict214Data = {
 "SET WINDOW",
 1,
 2,
 Dict214TagHashTable,
+Dict214KeyHashTable,
 Dict214Contents
 };
 
@@ -9754,11 +11933,17 @@ unsigned short Dict215TagHashTable[] = {
    16,
 };
 
+unsigned short Dict215KeyHashTable[] = {
+    2,     0,     4,     0, 23288,     1,  4252,     2,  8898,     3,
+56982,
+};
+
 vtkDICOMDictionary::Dict Dict215Data = {
 "SIEMENS CSA NON-IMAGE",
 1,
 4,
 Dict215TagHashTable,
+Dict215KeyHashTable,
 Dict215Contents
 };
 
@@ -9777,11 +11962,17 @@ unsigned short Dict216TagHashTable[] = {
   149,     4,   170,
 };
 
+unsigned short Dict216KeyHashTable[] = {
+    2,     0,     5,     0, 64838,     1, 57371,     2, 51020,     3,
+56439,     4,  3007,
+};
+
 vtkDICOMDictionary::Dict Dict216Data = {
 "GEMS_ADWSoft_DPO",
 1,
 5,
 Dict216TagHashTable,
+Dict216KeyHashTable,
 Dict216Contents
 };
 
@@ -9796,11 +11987,16 @@ unsigned short Dict217TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict217KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict217Data = {
 "EMAGEON STUDY HOME",
 1,
 2,
 Dict217TagHashTable,
+Dict217KeyHashTable,
 Dict217Contents
 };
 
@@ -9814,11 +12010,16 @@ unsigned short Dict218TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict218KeyHashTable[] = {
+    2,     0,     1,     0, 11488,
+};
+
 vtkDICOMDictionary::Dict Dict218Data = {
 "SIEMENS MR IMA",
 1,
 1,
 Dict218TagHashTable,
+Dict218KeyHashTable,
 Dict218Contents
 };
 
@@ -9836,11 +12037,17 @@ unsigned short Dict219TagHashTable[] = {
    36,
 };
 
+unsigned short Dict219KeyHashTable[] = {
+    2,     0,     4,     0, 57271,     1, 58672,     2, 31573,     3,
+10602,
+};
+
 vtkDICOMDictionary::Dict Dict219Data = {
 "SIEMENS MED PT",
 1,
 4,
 Dict219TagHashTable,
+Dict219KeyHashTable,
 Dict219Contents
 };
 
@@ -9872,11 +12079,20 @@ unsigned short Dict220TagHashTable[] = {
    16,    15,    16,     3,     7,   245,    11,    18,    14,    16,
 };
 
+unsigned short Dict220KeyHashTable[] = {
+    5,    12,    27,    36,     0,     3,     3,  7491,    10, 64083,
+   11, 41095,     7,     0, 33576,     4, 62092,     5,  1345,     6,
+ 1345,     7, 54400,    13, 57916,    15, 57916,     4,     2, 21342,
+    8, 62349,     9,  5154,    14, 16675,     2,     1, 63268,    12,
+57262,
+};
+
 vtkDICOMDictionary::Dict Dict220Data = {
 "SIEMENS MED",
 4,
 16,
 Dict220TagHashTable,
+Dict220KeyHashTable,
 Dict220Contents
 };
 
@@ -9894,11 +12110,17 @@ unsigned short Dict221TagHashTable[] = {
   149,
 };
 
+unsigned short Dict221KeyHashTable[] = {
+    2,     0,     4,     0, 32690,     1, 52964,     2, 25569,     3,
+56439,
+};
+
 vtkDICOMDictionary::Dict Dict221Data = {
 "GEMS_AWSoft_SB1",
 1,
 4,
 Dict221TagHashTable,
+Dict221KeyHashTable,
 Dict221Contents
 };
 
@@ -9917,11 +12139,17 @@ unsigned short Dict222TagHashTable[] = {
    19,     4,    20,
 };
 
+unsigned short Dict222KeyHashTable[] = {
+    2,     0,     5,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict222Data = {
 "ShowcaseAppearance",
 1,
 5,
 Dict222TagHashTable,
+Dict222KeyHashTable,
 Dict222Contents
 };
 
@@ -9936,11 +12164,16 @@ unsigned short Dict223TagHashTable[] = {
     2,     0,     2,     0,     0,     1,    16,
 };
 
+unsigned short Dict223KeyHashTable[] = {
+    2,     0,     2,     0, 37695,     1, 43238,
+};
+
 vtkDICOMDictionary::Dict Dict223Data = {
 "SIEMENS SYNGO INSTANCE MANIFEST",
 1,
 2,
 Dict223TagHashTable,
+Dict223KeyHashTable,
 Dict223Contents
 };
 
@@ -9959,11 +12192,17 @@ unsigned short Dict224TagHashTable[] = {
    48,     4,    64,
 };
 
+unsigned short Dict224KeyHashTable[] = {
+    2,     0,     5,     0, 29682,     1, 54315,     2, 25024,     3,
+22907,     4, 29102,
+};
+
 vtkDICOMDictionary::Dict Dict224Data = {
 "Image (ID, Version, Size, Dump, GUID)",
 1,
 5,
 Dict224TagHashTable,
+Dict224KeyHashTable,
 Dict224Contents
 };
 
@@ -9979,11 +12218,16 @@ unsigned short Dict225TagHashTable[] = {
     2,     0,     3,     0,     1,     1,     2,     2,     3,
 };
 
+unsigned short Dict225KeyHashTable[] = {
+    2,     0,     3,     0, 65036,     1, 50363,     2, 42233,
+};
+
 vtkDICOMDictionary::Dict Dict225Data = {
 "SIEMENS SYNGO ENHANCED IDATASET API",
 1,
 3,
 Dict225TagHashTable,
+Dict225KeyHashTable,
 Dict225Contents
 };
 
@@ -10042,11 +12286,25 @@ unsigned short Dict226TagHashTable[] = {
    88,    35,   124,
 };
 
+unsigned short Dict226KeyHashTable[] = {
+   10,    19,    26,    33,    46,    55,    60,    71,    84,     0,
+    4,    12, 38433,    26, 17744,    31, 46356,    35, 23932,     3,
+   19,   115,    22,  9240,    27,  2338,     3,     5, 29810,     6,
+14081,    30, 64756,     6,     3, 54208,     4,  5810,     9, 57087,
+   17, 33498,    23,  9240,    33, 17644,     4,    10, 34482,    11,
+48147,    13, 46381,    25,  4607,     2,     0,   541,    34,  6300,
+    5,     2, 54945,     7,  2428,    20, 15833,    24, 15807,    36,
+24637,     6,     1, 40975,    14,  2067,    15, 33800,    21, 46590,
+   29, 23248,    32, 39210,     4,     8,  1963,    16, 11284,    18,
+56354,    28, 47290,
+};
+
 vtkDICOMDictionary::Dict Dict226Data = {
 "astm.org/diconde/iod/NdeUsEquipmentSettings",
 9,
 37,
 Dict226TagHashTable,
+Dict226KeyHashTable,
 Dict226Contents
 };
 
@@ -10106,11 +12364,25 @@ unsigned short Dict227TagHashTable[] = {
    39,    23,     9,    35,    23,
 };
 
+unsigned short Dict227KeyHashTable[] = {
+   10,    15,    26,    29,    38,    45,    50,     9,    55,     0,
+    2,     8, 28133,    10, 29015,     5,     4,  5611,    12, 36254,
+   14, 53928,    23, 13925,    25, 43599,     1,     3, 31911,     4,
+   11, 23377,    19, 53457,    20, 28071,    22, 11183,     3,     2,
+12872,     6, 29311,    32, 17438,     2,     5, 23635,     9, 50077,
+    2,    15, 39354,    21, 30775,    19,     0,   597,     1,   597,
+    7, 18032,    13,  4908,    16,   597,    17,   597,    18,   597,
+   24,   597,    26,   597,    27,   597,    28,   597,    29,  2819,
+   30,   597,    31,   597,    33,   597,    34,   597,    35,   597,
+   36,   597,    37,   597,
+};
+
 vtkDICOMDictionary::Dict Dict227Data = {
 "SIEMENS MR HEADER",
 9,
 38,
 Dict227TagHashTable,
+Dict227KeyHashTable,
 Dict227Contents
 };
 
@@ -10125,11 +12397,16 @@ unsigned short Dict228TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     3,
 };
 
+unsigned short Dict228KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict228Data = {
 "AGFA KOSD 1.0",
 1,
 2,
 Dict228TagHashTable,
+Dict228KeyHashTable,
 Dict228Contents
 };
 
@@ -10144,11 +12421,16 @@ unsigned short Dict229TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict229KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict229Data = {
 "Siemens: Thorax/Multix FD Version",
 1,
 2,
 Dict229TagHashTable,
+Dict229KeyHashTable,
 Dict229Contents
 };
 
@@ -10164,11 +12446,16 @@ unsigned short Dict230TagHashTable[] = {
     2,     0,     3,     0,     0,     1,     1,     2,    16,
 };
 
+unsigned short Dict230KeyHashTable[] = {
+    2,     0,     3,     0, 35975,     1, 30853,     2, 45649,
+};
+
 vtkDICOMDictionary::Dict Dict230Data = {
 "SPI-P-Private-DiDi Release 1",
 1,
 3,
 Dict230TagHashTable,
+Dict230KeyHashTable,
 Dict230Contents
 };
 
@@ -10209,11 +12496,21 @@ unsigned short Dict231TagHashTable[] = {
     7,     9,     9,    19,    19,    20,    20,
 };
 
+unsigned short Dict231KeyHashTable[] = {
+    6,    11,    22,    33,    48,     0,     2,    11, 51286,    17,
+38640,     5,     2,  3585,     5, 38095,     9, 30043,    16, 62279,
+   20, 11000,     5,     1, 50652,     7, 38972,    13, 16288,    15,
+31581,    22, 47877,     7,     0, 43028,     3, 12637,     4, 60784,
+    8,  5515,    12,  8649,    19, 35553,    21, 48854,     4,     6,
+29657,    10, 21706,    14,  5665,    18, 62037,
+};
+
 vtkDICOMDictionary::Dict Dict231Data = {
 "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0",
 5,
 23,
 Dict231TagHashTable,
+Dict231KeyHashTable,
 Dict231Contents
 };
 
@@ -10254,11 +12551,21 @@ unsigned short Dict232TagHashTable[] = {
   116,    10,    32,    15,     7,    19,     5,
 };
 
+unsigned short Dict232KeyHashTable[] = {
+    6,     9,    38,    45,    48,     0,     1,     0,  9552,    14,
+    1, 52158,     2, 47855,     4,  1076,     5,  1076,     6,  1076,
+    7,  1076,     8,  1076,     9,  1076,    11,  1076,    16,  1076,
+   18,  1076,    19,  1076,    21,  1076,    22,  1076,     3,     3,
+38732,    12, 56117,    13,  8552,     1,    15, 27924,     4,    10,
+59521,    14, 37080,    17, 59521,    20, 38629,
+};
+
 vtkDICOMDictionary::Dict Dict232Data = {
 "SIENET",
 5,
 23,
 Dict232TagHashTable,
+Dict232KeyHashTable,
 Dict232Contents
 };
 
@@ -10353,11 +12660,32 @@ unsigned short Dict233TagHashTable[] = {
    10,    24,    26,    62,   107,
 };
 
+unsigned short Dict233KeyHashTable[] = {
+   17,    30,    37,    48,    61,    74,    79,    88,    99,   108,
+  117,   126,   133,   146,   153,   160,     0,     6,     1, 25006,
+   27, 16835,    48, 19653,    57, 43598,    60,  6168,    65, 32173,
+    3,    10, 19598,    17, 55915,    23, 46048,     5,     0, 63822,
+   28, 44613,    34, 13320,    38, 17263,    52, 19111,     6,     4,
+35839,    14, 63822,    15, 21152,    46, 39447,    50, 21614,    63,
+41057,     6,    24,  8085,    30, 17422,    41, 63822,    47, 46112,
+   58, 15366,    59, 58686,     2,    45, 32228,    61, 59101,     4,
+   13, 15742,    29,  9172,    37, 59658,    51, 40280,     5,     7,
+49960,    25, 12637,    40, 24175,    42, 64528,    44, 59488,     4,
+    3, 42834,     5, 43746,    26, 26217,    56, 27776,     4,     2,
+50927,    22, 22229,    53, 26362,    55, 47332,     4,    16, 19945,
+   18, 56729,    19, 15718,    54, 37293,     3,     6, 35583,     9,
+ 5656,    36, 37146,     6,    11, 19811,    12,  5139,    31, 33608,
+   32, 52148,    33, 23859,    64, 10246,     3,    21, 12116,    39,
+39997,    62,  3620,     3,     8, 30941,    35, 54923,    43, 33329,
+    2,    20,  1119,    49, 38075,
+};
+
 vtkDICOMDictionary::Dict Dict233Data = {
 "TOSHIBA_MEC_CT3",
 16,
 66,
 Dict233TagHashTable,
+Dict233KeyHashTable,
 Dict233Contents
 };
 
@@ -10413,11 +12741,24 @@ unsigned short Dict234TagHashTable[] = {
     3,     5,    22,    15,    38,    25,    54,
 };
 
+unsigned short Dict234KeyHashTable[] = {
+    9,    12,    25,    38,    45,    62,    71,    74,     0,     1,
+    9, 26373,     6,     0, 56936,     4, 23663,     5, 20820,    15,
+47247,    21, 35296,    28, 15896,     6,    10, 10449,    14, 34369,
+   16, 19909,    17, 34844,    29, 50669,    33,  3970,     3,    11,
+10449,    18, 19607,    24, 49943,     8,     3, 39664,     7,  8923,
+   13, 34538,    20,  3896,    22, 54980,    25, 32271,    27, 39442,
+   34, 11948,     4,    19, 29824,    23, 48351,    30, 16993,    32,
+13453,     1,     6, 61183,     6,     1, 22910,     2, 25203,     8,
+17807,    12, 10484,    26, 59420,    31, 58449,
+};
+
 vtkDICOMDictionary::Dict Dict234Data = {
 "Silhouette Annot V1.0",
 8,
 35,
 Dict234TagHashTable,
+Dict234KeyHashTable,
 Dict234Contents
 };
 
@@ -10433,11 +12774,16 @@ unsigned short Dict235TagHashTable[] = {
     2,     0,     3,     0,     0,     1,     1,     2,    16,
 };
 
+unsigned short Dict235KeyHashTable[] = {
+    2,     0,     3,     0, 53811,     1, 23696,     2, 15583,
+};
+
 vtkDICOMDictionary::Dict Dict235Data = {
 "SIEMENS CT APPL MEASUREMENT",
 1,
 3,
 Dict235TagHashTable,
+Dict235KeyHashTable,
 Dict235Contents
 };
 
@@ -10470,11 +12816,20 @@ unsigned short Dict236TagHashTable[] = {
    38,
 };
 
+unsigned short Dict236KeyHashTable[] = {
+    5,    12,    17,    26,     0,     3,     2, 41992,     8, 29478,
+   11, 40991,     2,     1, 30822,     4, 12103,     4,    10,  6371,
+   12, 28278,    13,  6475,    14,  6722,     7,     0, 28442,     3,
+32499,     5, 37750,     6, 32579,     7, 16986,     9, 39199,    15,
+ 9629,
+};
+
 vtkDICOMDictionary::Dict Dict236Data = {
 "QCA Results",
 4,
 16,
 Dict236TagHashTable,
+Dict236KeyHashTable,
 Dict236Contents
 };
 
@@ -10488,11 +12843,16 @@ unsigned short Dict237TagHashTable[] = {
     2,     0,     1,     0,    36,
 };
 
+unsigned short Dict237KeyHashTable[] = {
+    2,     0,     1,     0, 35992,
+};
+
 vtkDICOMDictionary::Dict Dict237Data = {
 "RadWorksMarconi",
 1,
 1,
 Dict237TagHashTable,
+Dict237KeyHashTable,
 Dict237Contents
 };
 
@@ -10518,11 +12878,18 @@ unsigned short Dict238TagHashTable[] = {
     4,     5,    12,     7,    14,     9,    48,
 };
 
+unsigned short Dict238KeyHashTable[] = {
+    3,    10,     0,     3,     0, 39715,     4,  8446,     8, 31246,
+    8,     1, 51633,     2, 18046,     3, 18318,     5, 60858,     6,
+40047,     7, 40124,     9,  7577,    10,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict238Data = {
 "A.L.I. Technologies, Inc.",
 2,
 11,
 Dict238TagHashTable,
+Dict238KeyHashTable,
 Dict238Contents
 };
 
@@ -10536,11 +12903,16 @@ unsigned short Dict239TagHashTable[] = {
     2,     0,     1,     0,   152,
 };
 
+unsigned short Dict239KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict239Data = {
 "SEGAMI MIML",
 1,
 1,
 Dict239TagHashTable,
+Dict239KeyHashTable,
 Dict239Contents
 };
 
@@ -10555,11 +12927,16 @@ unsigned short Dict240TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict240KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict240Data = {
 "EMAGEON JPEG2K INFO",
 1,
 2,
 Dict240TagHashTable,
+Dict240KeyHashTable,
 Dict240Contents
 };
 
@@ -10577,11 +12954,17 @@ unsigned short Dict241TagHashTable[] = {
    32,
 };
 
+unsigned short Dict241KeyHashTable[] = {
+    2,     0,     4,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,
+};
+
 vtkDICOMDictionary::Dict Dict241Data = {
 "FOEM 1.0",
 1,
 4,
 Dict241TagHashTable,
+Dict241KeyHashTable,
 Dict241Contents
 };
 
@@ -10600,11 +12983,17 @@ unsigned short Dict242TagHashTable[] = {
    19,     4,   113,
 };
 
+unsigned short Dict242KeyHashTable[] = {
+    2,     0,     5,     0, 39019,     1, 63309,     2, 20877,     3,
+ 2912,     4, 56459,
+};
+
 vtkDICOMDictionary::Dict Dict242Data = {
 "MeVis eD: Timepoint Information",
 1,
 5,
 Dict242TagHashTable,
+Dict242KeyHashTable,
 Dict242Contents
 };
 
@@ -10625,11 +13014,17 @@ unsigned short Dict243TagHashTable[] = {
    34,     4,    36,     5,    38,     6,    40,
 };
 
+unsigned short Dict243KeyHashTable[] = {
+    2,     0,     7,     0, 10230,     1, 48680,     2, 59974,     3,
+15776,     4, 52933,     5, 36981,     6, 18637,
+};
+
 vtkDICOMDictionary::Dict Dict243Data = {
 "astm.org/diconde/iod/NdeCtDetector",
 1,
 7,
 Dict243TagHashTable,
+Dict243KeyHashTable,
 Dict243Contents
 };
 
@@ -10670,11 +13065,21 @@ unsigned short Dict244TagHashTable[] = {
     0,     3,     0,     8,    50,    17,   162,
 };
 
+unsigned short Dict244KeyHashTable[] = {
+    6,    19,    34,    43,    48,     0,     6,     4, 54599,     8,
+ 5045,    11, 63645,    14, 51201,    17, 64827,    21, 55242,     7,
+    1, 31818,     2,  2473,     3, 58886,     9, 36487,    18, 19203,
+   20, 13635,    22, 42102,     4,     0,  9733,     5, 57467,     7,
+19422,    12, 62343,     2,     6,  6227,    16, 52855,     4,    10,
+22109,    13, 58673,    15,  2774,    19, 11336,
+};
+
 vtkDICOMDictionary::Dict Dict244Data = {
 "PAPYRUS",
 5,
 23,
 Dict244TagHashTable,
+Dict244KeyHashTable,
 Dict244Contents
 };
 
@@ -10697,11 +13102,17 @@ unsigned short Dict245TagHashTable[] = {
    28,
 };
 
+unsigned short Dict245KeyHashTable[] = {
+    2,     3,     0,     8,     0,  2690,     1,  2690,     2,  2690,
+    3,  2690,     4,  2690,     5,  2690,     6,  2690,     7,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict245Data = {
 "Philips Imaging DD 070",
 2,
 8,
 Dict245TagHashTable,
+Dict245KeyHashTable,
 Dict245Contents
 };
 
@@ -10825,11 +13236,36 @@ unsigned short Dict246TagHashTable[] = {
    74,    65,   100,
 };
 
+unsigned short Dict246KeyHashTable[] = {
+   22,    22,    22,    22,    22,    22,    22,    22,    22,    22,
+   22,    22,    22,    23,    22,    22,    22,    22,    22,    22,
+   22,    22,     0,    89,     0,   244,     1,   244,     2,   244,
+    3,   244,     4,   244,     5,   244,     6,   244,     7,   244,
+    8,   244,     9,   244,    10,   244,    11,   244,    12,   244,
+   13,   244,    14,   244,    15,   244,    16,   244,    17,   244,
+   18,   244,    19,   244,    20,   244,    21,   244,    22,   244,
+   23,   244,    24,   244,    25,   244,    26,   244,    27,   244,
+   28,   244,    29,   244,    30,   244,    31,   244,    32,   244,
+   33,   244,    34,   244,    35,   244,    36,   244,    37,   244,
+   38,   244,    39,   244,    40,   244,    41,   244,    42,   244,
+   43,   244,    44,   244,    45,   244,    46,   244,    47,   244,
+   48,   244,    49,   244,    50,   244,    51,   244,    52,   244,
+   53,   244,    54,   244,    55,   244,    56,   244,    57,   244,
+   58,   244,    59,   244,    60,   244,    61,   244,    62,   244,
+   63,   244,    64,   244,    65,   244,    66,   244,    67,   244,
+   68,   244,    69,   244,    70,   244,    71,   244,    72,   244,
+   73,   244,    74,   244,    75,   244,    76,   244,    77,   244,
+   78,   244,    79,   244,    80,   244,    81,   244,    82,   244,
+   83,   244,    84,   244,    85,   244,    86,   244,    87,   244,
+   88,   244,
+};
+
 vtkDICOMDictionary::Dict Dict246Data = {
 "TOSHIBA_MEC_XA3",
 22,
 89,
 Dict246TagHashTable,
+Dict246KeyHashTable,
 Dict246Contents
 };
 
@@ -10843,11 +13279,16 @@ unsigned short Dict247TagHashTable[] = {
     2,     0,     1,     0,    72,
 };
 
+unsigned short Dict247KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict247Data = {
 "Philips Imaging DD 073",
 1,
 1,
 Dict247TagHashTable,
+Dict247KeyHashTable,
 Dict247Contents
 };
 
@@ -10862,11 +13303,16 @@ unsigned short Dict248TagHashTable[] = {
     2,     0,     2,     0,    49,     1,    50,
 };
 
+unsigned short Dict248KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict248Data = {
 "SEGAMI_HEADER",
 1,
 2,
 Dict248TagHashTable,
+Dict248KeyHashTable,
 Dict248Contents
 };
 
@@ -10980,11 +13426,36 @@ unsigned short Dict249TagHashTable[] = {
    67,    67,    87,
 };
 
+unsigned short Dict249KeyHashTable[] = {
+   21,    30,    37,    52,    63,    76,    83,    86,    93,    98,
+  101,   104,   115,   124,   135,   146,   155,   164,   179,   188,
+    0,     4,     0, 15815,     9, 46903,    40, 55330,    66, 38826,
+    3,     8, 34619,    55, 22548,    77, 27782,     7,    13, 35187,
+   16, 24690,    37, 34191,    39,   569,    54,  7608,    63, 37270,
+   64, 49039,     5,     4, 63269,    24, 45321,    62, 21815,    72,
+ 4148,    73,  4148,     6,     7, 55549,    20, 61348,    26,  4359,
+   31, 25864,    42, 54813,    80, 20141,     3,     2, 53407,    25,
+58879,    56, 58461,     1,    75,  1633,     3,     5, 34133,    65,
+28439,    79, 37944,     2,    28, 31641,    48,  8801,     1,    34,
+61160,     1,    78, 55747,     5,     6, 33772,    15, 37764,    30,
+45095,    35,  9233,    74,  3643,     4,    12, 27939,    18, 46163,
+   23, 26775,    70, 15438,     5,    27, 18228,    36, 12406,    38,
+18273,    52, 46177,    69, 27075,     5,    19, 20763,    32, 49574,
+   33, 13985,    41,  9941,    71, 65063,     4,    10, 33726,    17,
+22499,    21, 13930,    43, 44831,     4,     3, 19083,    29, 47386,
+   46, 41893,    50, 28917,     7,     1, 60420,    14, 17916,    44,
+12192,    51, 21094,    59, 19030,    60, 19030,    61, 41042,     4,
+   22, 53452,    47, 13022,    53, 17119,    76, 16309,     7,    11,
+60579,    45, 62823,    49,  8304,    57, 30649,    58, 30649,    67,
+14613,    68, 20712,
+};
+
 vtkDICOMDictionary::Dict Dict249Data = {
 "SIEMENS MR VA0  GEN",
 20,
 81,
 Dict249TagHashTable,
+Dict249KeyHashTable,
 Dict249Contents
 };
 
@@ -11000,11 +13471,16 @@ unsigned short Dict250TagHashTable[] = {
     2,     0,     3,     0,    65,     1,    66,     2,    67,
 };
 
+unsigned short Dict250KeyHashTable[] = {
+    2,     0,     3,     0,  5381,     1,  5381,     2,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict250Data = {
 "Silhouette Sequence Ids V1.0",
 1,
 3,
 Dict250TagHashTable,
+Dict250KeyHashTable,
 Dict250Contents
 };
 
@@ -11250,11 +13726,62 @@ unsigned short Dict251TagHashTable[] = {
   115,   121,   156,   127,   162,   161,   207,
 };
 
+unsigned short Dict251KeyHashTable[] = {
+   47,    52,    57,    64,    73,    82,    95,   100,   107,   124,
+  137,    46,   150,   167,   172,   185,   194,   199,   216,   227,
+  242,   245,    46,   248,   263,   274,   279,   290,   297,   304,
+  311,   318,   327,   332,   341,   358,   363,   372,   383,   396,
+  405,   410,   415,   420,   425,   446,     0,     2,    23, 56482,
+   78, 15074,     2,   127, 58597,   161, 41088,     3,    34, 56533,
+  151, 30717,   181,  5009,     4,     1, 55808,    28, 55081,    82,
+18145,   169, 35525,     4,     8,  5024,    84, 27582,   137, 35081,
+  155, 25791,     6,    89, 48042,    95, 39729,    98,  8595,   132,
+30286,   149, 49605,   183, 59086,     2,    67, 40371,   135, 63235,
+    3,    66, 64018,    99, 18804,   118, 52043,     8,    10,  3070,
+   17, 38003,    22, 51340,    54, 27675,    93, 65526,   124, 33905,
+  159, 40700,   178, 26599,     6,     9, 34174,    14, 30581,    35,
+59807,    90, 44196,   117, 33114,   138, 22684,     6,    32,  7343,
+   96, 31589,   105, 51524,   164, 22357,   166, 16944,   184, 16389,
+    8,     2, 37406,     4, 47784,    92, 60828,   115, 28525,   122,
+49892,   156, 52303,   162, 60016,   182, 32644,     2,   119, 24876,
+  180, 31772,     6,     0, 50550,     7, 51579,    40, 14128,    56,
+ 8011,   153, 43614,   167, 26374,     4,    52, 57737,    80, 12422,
+  143, 35243,   144, 18973,     2,    88, 64797,   150, 48302,     8,
+   16, 53335,    41, 39801,    45, 38343,    61, 15964,    62, 29733,
+   73, 59904,    94, 63328,   133, 29011,     5,    30, 49530,    49,
+ 3003,    55, 21451,    57, 44822,   108, 33539,     7,     3, 48846,
+   44, 50321,    69, 31903,    86,  2401,    91, 53923,   176, 53072,
+  177,  8968,     1,   112, 53756,     1,   103, 26308,     7,    48,
+31420,    85, 30923,   129, 13760,   154, 47149,   158, 19073,   160,
+61535,   170, 49957,     5,    27, 27102,    47, 49959,    77, 12774,
+   83,   136,   175,  5642,     2,    42, 23757,   125, 10215,     5,
+   29, 41157,   107, 17330,   123, 61997,   128,  7125,   174,  1252,
+    3,    11, 31947,    60,  3983,   116, 19102,     3,     6, 20143,
+   71, 29760,   113, 29310,     3,    46, 12757,   136, 12715,   185,
+   45,     3,    25, 59285,    37, 34506,    72,   400,     4,    19,
+40114,    36, 10353,   126, 40459,   141, 35827,     2,   130, 58755,
+  152, 48045,     4,     5, 41799,    18, 44768,    53, 42602,   102,
+61313,     8,    20, 47909,    24, 32183,    70,  9267,   109, 64735,
+  131, 51993,   147, 50497,   173, 58746,   186, 23786,     2,    74,
+65369,   148, 45908,     4,    13, 39455,    50,  1197,   120, 22981,
+  146, 60074,     5,    21, 28079,    39, 50879,    43, 49280,    63,
+10590,   172, 34462,     6,   104, 26173,   114, 34483,   142, 30973,
+  145, 17768,   163, 48279,   165, 52183,     4,    33, 34197,    51,
+47687,    58, 43436,   171, 28608,     2,   100, 45989,   139, 46416,
+    2,    68, 28947,   106, 64582,     2,    26, 11951,   101, 48524,
+    2,    65,  8653,   179, 22589,    10,    12, 41527,    75, 40921,
+   76, 34605,    81, 21648,    87, 38488,    97, 28261,   110, 13682,
+  111,  4959,   140, 32872,   157, 37739,     9,    15,  7812,    31,
+62464,    38, 65284,    59, 64265,    64, 24185,    79, 35636,   121,
+59841,   134, 25900,   168, 52241,
+};
+
 vtkDICOMDictionary::Dict Dict251Data = {
 "SIEMENS SYNGO ADVANCED PRESENTATION",
 46,
 187,
 Dict251TagHashTable,
+Dict251KeyHashTable,
 Dict251Contents
 };
 
@@ -11279,11 +13806,18 @@ unsigned short Dict252TagHashTable[] = {
     4,     6,    16,     8,    18,
 };
 
+unsigned short Dict252KeyHashTable[] = {
+    3,     8,     0,     2,     2, 49055,     4, 29247,     8,     0,
+30330,     1, 15454,     3, 18894,     5, 35767,     6,  2690,     7,
+ 2690,     8,  2690,     9,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict252Data = {
 "MITRA PRESENTATION 1.0",
 2,
 10,
 Dict252TagHashTable,
+Dict252KeyHashTable,
 Dict252Contents
 };
 
@@ -11301,11 +13835,17 @@ unsigned short Dict253TagHashTable[] = {
    64,
 };
 
+unsigned short Dict253KeyHashTable[] = {
+    2,     0,     4,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,
+};
+
 vtkDICOMDictionary::Dict Dict253Data = {
 "CAMTRONICS IP",
 1,
 4,
 Dict253TagHashTable,
+Dict253KeyHashTable,
 Dict253Contents
 };
 
@@ -11319,11 +13859,16 @@ unsigned short Dict254TagHashTable[] = {
     2,     0,     1,     0,    17,
 };
 
+unsigned short Dict254KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict254Data = {
 "GEMS_VXTL_USERDATA_01",
 1,
 1,
 Dict254TagHashTable,
+Dict254KeyHashTable,
 Dict254Contents
 };
 
@@ -11338,11 +13883,16 @@ unsigned short Dict255TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict255KeyHashTable[] = {
+    2,     0,     2,     0, 32122,     1, 63542,
+};
+
 vtkDICOMDictionary::Dict Dict255Data = {
 "MITRA OBJECT DOCUMENT 1.0",
 1,
 2,
 Dict255TagHashTable,
+Dict255KeyHashTable,
 Dict255Contents
 };
 
@@ -11418,11 +13968,27 @@ unsigned short Dict256TagHashTable[] = {
    34,    19,    58,    27,    71,    42,   128,
 };
 
+unsigned short Dict256KeyHashTable[] = {
+   12,    12,    12,    12,    12,    13,    12,    12,    12,    12,
+   12,    12,     0,    51,     0,   448,     1,   448,     2,   448,
+    3,   448,     4,   448,     5,   448,     6,   448,     7,   448,
+    8,   448,     9,   448,    10,   448,    11,   448,    12,   448,
+   13,   448,    14,   448,    15,   448,    16,   448,    17,   448,
+   18,   448,    19,   448,    20,   448,    21,   448,    22,   448,
+   23,   448,    24,   448,    25,   448,    26,   448,    27,   448,
+   28,   448,    29,   448,    30,   448,    31,   448,    32,   448,
+   33,   448,    34,   448,    35,   448,    36,   448,    37,   448,
+   38,   448,    39,   448,    40,   448,    41,   448,    42,   448,
+   43,   448,    44,   448,    45,   448,    46,   448,    47,   448,
+   48,   448,    49,   448,    50,   448,
+};
+
 vtkDICOMDictionary::Dict Dict256Data = {
 "SIEMENS MED SMS USG ANTARES",
 12,
 51,
 Dict256TagHashTable,
+Dict256KeyHashTable,
 Dict256Contents
 };
 
@@ -11440,11 +14006,17 @@ unsigned short Dict257TagHashTable[] = {
     9,
 };
 
+unsigned short Dict257KeyHashTable[] = {
+    2,     0,     4,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,
+};
+
 vtkDICOMDictionary::Dict Dict257Data = {
 "PI Private Block (0781:3000 - 0781:30FF)",
 1,
 4,
 Dict257TagHashTable,
+Dict257KeyHashTable,
 Dict257Contents
 };
 
@@ -11458,11 +14030,16 @@ unsigned short Dict258TagHashTable[] = {
     2,     0,     1,     0,    90,
 };
 
+unsigned short Dict258KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict258Data = {
 "SIEMENS MED MAMMO",
 1,
 1,
 Dict258TagHashTable,
+Dict258KeyHashTable,
 Dict258Contents
 };
 
@@ -11477,11 +14054,16 @@ unsigned short Dict259TagHashTable[] = {
     2,     0,     2,     0,     5,     1,     6,
 };
 
+unsigned short Dict259KeyHashTable[] = {
+    2,     0,     2,     0, 13551,     1,  2021,
+};
+
 vtkDICOMDictionary::Dict Dict259Data = {
 "PM",
 1,
 2,
 Dict259TagHashTable,
+Dict259KeyHashTable,
 Dict259Contents
 };
 
@@ -11512,11 +14094,19 @@ unsigned short Dict260TagHashTable[] = {
     6,     9,     9,    11,    17,    12,    18,
 };
 
+unsigned short Dict260KeyHashTable[] = {
+    4,    15,    26,     0,     5,     0, 19010,     3, 19011,     6,
+19012,    11, 59368,    14, 59369,     5,     1, 19010,     4, 19011,
+    7, 19012,     9, 59367,    12, 59368,     5,     2, 19010,     5,
+19011,     8, 19012,    10, 59367,    13, 59368,
+};
+
 vtkDICOMDictionary::Dict Dict260Data = {
 "MITRA MARKUP 1.0",
 3,
 15,
 Dict260TagHashTable,
+Dict260KeyHashTable,
 Dict260Contents
 };
 
@@ -11610,11 +14200,30 @@ unsigned short Dict261TagHashTable[] = {
   138,    62,   170,
 };
 
+unsigned short Dict261KeyHashTable[] = {
+   16,    16,    16,    16,    16,    17,    16,    16,    16,    16,
+   16,    16,    16,    16,    16,    16,     0,    65,     0,   336,
+    1,   336,     2,   336,     3,   336,     4,   336,     5,   336,
+    6,   336,     7,   336,     8,   336,     9,   336,    10,   336,
+   11,   336,    12,   336,    13,   336,    14,   336,    15,   336,
+   16,   336,    17,   336,    18,   336,    19,   336,    20,   336,
+   21,   336,    22,   336,    23,   336,    24,   336,    25,   336,
+   26,   336,    27,   336,    28,   336,    29,   336,    30,   336,
+   31,   336,    32,   336,    33,   336,    34,   336,    35,   336,
+   36,   336,    37,   336,    38,   336,    39,   336,    40,   336,
+   41,   336,    42,   336,    43,   336,    44,   336,    45,   336,
+   46,   336,    47,   336,    48,   336,    49,   336,    50,   336,
+   51,   336,    52,   336,    53,   336,    54,   336,    55,   336,
+   56,   336,    57,   336,    58,   336,    59,   336,    60,   336,
+   61,   336,    62,   336,    63,   336,    64,   336,
+};
+
 vtkDICOMDictionary::Dict Dict261Data = {
 "SIEMENS_FLCOMPACT_VA01A_PROC",
 16,
 65,
 Dict261TagHashTable,
+Dict261KeyHashTable,
 Dict261Contents
 };
 
@@ -11677,11 +14286,26 @@ unsigned short Dict262TagHashTable[] = {
    60,
 };
 
+unsigned short Dict262KeyHashTable[] = {
+   11,    20,    41,    48,    55,    64,    73,    80,    83,    94,
+    0,     4,     6,  5436,     7, 11509,    32, 60416,    38,  5252,
+   10,     0,   538,     4,   538,     8,   538,    19,   538,    20,
+49541,    21,   538,    22,   538,    23,   538,    31, 14019,    33,
+36595,     3,     9,  1877,    26, 33108,    37, 13373,     3,     1,
+12864,    15, 53848,    25, 52247,     4,     2, 12864,    13, 25685,
+   27, 47783,    29, 34891,     4,     3, 12864,    18,  5431,    28,
+54030,    34, 58238,     3,     5, 27696,    11, 33648,    16,  3307,
+    1,    10, 10480,     5,    12, 42879,    24, 46025,    30, 31048,
+   35, 13239,    36, 18043,     3,    14, 49027,    17, 18426,    39,
+37373,
+};
+
 vtkDICOMDictionary::Dict Dict262Data = {
 "Applicare/RadStore/Version 1.0",
 10,
 40,
 Dict262TagHashTable,
+Dict262KeyHashTable,
 Dict262Contents
 };
 
@@ -11727,11 +14351,22 @@ unsigned short Dict263TagHashTable[] = {
     8,    14,    14,    20,    20,    25,    48,
 };
 
+unsigned short Dict263KeyHashTable[] = {
+    7,     6,     6,    14,    21,    32,     0,     3,    10, 31545,
+   14, 21149,    21, 22206,     3,    22, 48236,    24, 64869,    26,
+59610,     5,     8, 65154,    11, 65278,    20, 39855,    23,   972,
+   25, 33061,    16,     0,   896,     1,   896,     2,   896,     3,
+  896,     4,   896,     5,   896,     6,   896,     7,   896,     9,
+35299,    12,   896,    13,   896,    15,   896,    16,   896,    17,
+  896,    18,   896,    19,   896,
+};
+
 vtkDICOMDictionary::Dict Dict263Data = {
 "Siemens: Thorax/Multix FD Post Processing",
 6,
 27,
 Dict263TagHashTable,
+Dict263KeyHashTable,
 Dict263Contents
 };
 
@@ -11804,11 +14439,27 @@ unsigned short Dict264TagHashTable[] = {
    38,
 };
 
+unsigned short Dict264KeyHashTable[] = {
+   13,    24,    37,    12,    44,    55,    72,    81,    90,    93,
+  104,   111,     0,     5,    21, 53771,    24, 17222,    26,  2266,
+   31, 56593,    35, 38108,     6,    14,  5406,    18, 64562,    30,
+35702,    32, 11776,    36, 31861,    37, 28310,     3,     9, 54931,
+   12, 25234,    25, 34793,     5,     7, 64473,    17, 15939,    39,
+30141,    43,  3441,    46, 32069,     8,     0,  3560,     3,   448,
+    4,   448,     5,   448,     6,   448,     8, 52917,    11, 38081,
+   22,   655,     4,     1, 62850,    28,  1633,    34,  4268,    41,
+29737,     4,    23, 12626,    44, 63963,    45, 45211,    47, 17597,
+    1,    27, 20796,     5,     2, 56970,    15,  6224,    19, 62661,
+   29, 52086,    40,  8572,     3,    13, 65523,    20, 21661,    33,
+ 8050,     4,    10, 38017,    16,  9669,    38, 11209,    42, 64854,
+};
+
 vtkDICOMDictionary::Dict Dict264Data = {
 "Applicare/RadWorks/Version 5.0",
 12,
 48,
 Dict264TagHashTable,
+Dict264KeyHashTable,
 Dict264Contents
 };
 
@@ -11838,11 +14489,19 @@ unsigned short Dict265TagHashTable[] = {
     9,    11,    23,    12,    24,
 };
 
+unsigned short Dict265KeyHashTable[] = {
+    3,     3,     4,     0,    14,     0,  1793,     1,  1793,     2,
+ 1793,     3,  1793,     4,  1793,     5,  1793,     6,  1793,     7,
+ 1793,     8,  1793,     9,  1793,    10,  1793,    11,  1793,    12,
+ 1793,    13,  1793,
+};
+
 vtkDICOMDictionary::Dict Dict265Data = {
 "Voxar 2.16.124.113543.6003.1999.12.20.12.5.0",
 3,
 14,
 Dict265TagHashTable,
+Dict265KeyHashTable,
 Dict265Contents
 };
 
@@ -11873,11 +14532,19 @@ unsigned short Dict266TagHashTable[] = {
     8,     6,    14,    10,    36,    13,    42,
 };
 
+unsigned short Dict266KeyHashTable[] = {
+    4,     9,    20,     0,     2,     1,  2708,     8, 37901,     5,
+    0, 31040,     2, 40270,     4, 41957,    11, 59670,    14, 30875,
+    8,     3,  7734,     5, 29325,     6,  5608,     7, 22791,     9,
+ 7361,    10, 48378,    12, 46000,    13, 53828,
+};
+
 vtkDICOMDictionary::Dict Dict266Data = {
 "astm.org/diconde/iod/NDEGeometry",
 3,
 15,
 Dict266TagHashTable,
+Dict266KeyHashTable,
 Dict266Contents
 };
 
@@ -11891,11 +14558,16 @@ unsigned short Dict267TagHashTable[] = {
     2,     0,     1,     0,  4097,
 };
 
+unsigned short Dict267KeyHashTable[] = {
+    2,     0,     1,     0, 32067,
+};
+
 vtkDICOMDictionary::Dict Dict267Data = {
 "GEMS_CT_VES_01",
 1,
 1,
 Dict267TagHashTable,
+Dict267KeyHashTable,
 Dict267Contents
 };
 
@@ -11924,11 +14596,19 @@ unsigned short Dict268TagHashTable[] = {
   144,    10,   192,
 };
 
+unsigned short Dict268KeyHashTable[] = {
+    4,    11,    26,     0,     3,     1, 46582,     4, 12351,     7,
+63734,     7,     3, 60456,     6, 18149,     8, 62246,     9, 60129,
+   10, 62402,    11, 54963,    12, 42673,     3,     0, 48221,     2,
+21215,     5, 65194,
+};
+
 vtkDICOMDictionary::Dict Dict268Data = {
 "AMI Sequence Annotations_01",
 3,
 13,
 Dict268TagHashTable,
+Dict268KeyHashTable,
 Dict268Contents
 };
 
@@ -11957,11 +14637,19 @@ unsigned short Dict269TagHashTable[] = {
   144,    10,   192,
 };
 
+unsigned short Dict269KeyHashTable[] = {
+    4,    13,    26,     0,     4,     1, 46582,     4, 12351,     7,
+63734,    12, 24028,     6,     3, 60456,     6, 18149,     8, 62246,
+    9, 60129,    10, 62402,    11, 58077,     3,     0, 48221,     2,
+21215,     5, 65194,
+};
+
 vtkDICOMDictionary::Dict Dict269Data = {
 "AMI Sequence Annotations_02",
 3,
 13,
 Dict269TagHashTable,
+Dict269KeyHashTable,
 Dict269Contents
 };
 
@@ -11975,11 +14663,16 @@ unsigned short Dict270TagHashTable[] = {
     2,     0,     1,     0,   103,
 };
 
+unsigned short Dict270KeyHashTable[] = {
+    2,     0,     1,     0, 59819,
+};
+
 vtkDICOMDictionary::Dict Dict270Data = {
 "GE LUT Asymmetry Parameter",
 1,
 1,
 Dict270TagHashTable,
+Dict270KeyHashTable,
 Dict270Contents
 };
 
@@ -11995,11 +14688,16 @@ unsigned short Dict271TagHashTable[] = {
     2,     0,     3,     0,     2,     1,     3,     2,     4,
 };
 
+unsigned short Dict271KeyHashTable[] = {
+    2,     0,     3,     0,  5381,     1,  5381,     2,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict271Data = {
 "ACUSON:1.2.840.113680.1.0:0910",
 1,
 3,
 Dict271TagHashTable,
+Dict271KeyHashTable,
 Dict271Contents
 };
 
@@ -12015,11 +14713,16 @@ unsigned short Dict272TagHashTable[] = {
     2,     0,     3,     0,    40,     1,    41,     2,    48,
 };
 
+unsigned short Dict272KeyHashTable[] = {
+    2,     0,     3,     0, 15453,     1, 28597,     2, 16855,
+};
+
 vtkDICOMDictionary::Dict Dict272Data = {
 "MATAKINA_10",
 1,
 3,
 Dict272TagHashTable,
+Dict272KeyHashTable,
 Dict272Contents
 };
 
@@ -12034,11 +14737,16 @@ unsigned short Dict273TagHashTable[] = {
     2,     0,     2,     0,     0,     1,    16,
 };
 
+unsigned short Dict273KeyHashTable[] = {
+    2,     0,     2,     0, 63916,     1, 10291,
+};
+
 vtkDICOMDictionary::Dict Dict273Data = {
 "SIEMENS CT VA0  OST",
 1,
 2,
 Dict273TagHashTable,
+Dict273KeyHashTable,
 Dict273Contents
 };
 
@@ -12056,11 +14764,17 @@ unsigned short Dict274TagHashTable[] = {
   193,
 };
 
+unsigned short Dict274KeyHashTable[] = {
+    2,     0,     4,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,
+};
+
 vtkDICOMDictionary::Dict Dict274Data = {
 "SIEMENS MED DISPLAY 0000",
 1,
 4,
 Dict274TagHashTable,
+Dict274KeyHashTable,
 Dict274Contents
 };
 
@@ -12078,11 +14792,17 @@ unsigned short Dict275TagHashTable[] = {
   162,
 };
 
+unsigned short Dict275KeyHashTable[] = {
+    2,     0,     4,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,
+};
+
 vtkDICOMDictionary::Dict Dict275Data = {
 "SIEMENS MED DISPLAY 0001",
 1,
 4,
 Dict275TagHashTable,
+Dict275KeyHashTable,
 Dict275Contents
 };
 
@@ -12115,11 +14835,19 @@ unsigned short Dict276TagHashTable[] = {
    22,
 };
 
+unsigned short Dict276KeyHashTable[] = {
+    4,     5,     4,     4,     0,    16,     0,  1345,     1,  1345,
+    2,  1345,     3,  1345,     4,  1345,     5,  1345,     6,  1345,
+    7,  1345,     8,  1345,     9,  1345,    10,  1345,    11,  1345,
+   12,  1345,    13,  1345,    14,  1345,    15,  1345,
+};
+
 vtkDICOMDictionary::Dict Dict276Data = {
 "Picker NM Private Group",
 4,
 16,
 Dict276TagHashTable,
+Dict276KeyHashTable,
 Dict276Contents
 };
 
@@ -12194,11 +14922,27 @@ unsigned short Dict277TagHashTable[] = {
    71,    43,   115,    49,   128,
 };
 
+unsigned short Dict277KeyHashTable[] = {
+   12,    12,    12,    12,    12,    13,    12,    12,    12,    12,
+   12,    12,     0,    50,     0,   448,     1,   448,     2,   448,
+    3,   448,     4,   448,     5,   448,     6,   448,     7,   448,
+    8,   448,     9,   448,    10,   448,    11,   448,    12,   448,
+   13,   448,    14,   448,    15,   448,    16,   448,    17,   448,
+   18,   448,    19,   448,    20,   448,    21,   448,    22,   448,
+   23,   448,    24,   448,    25,   448,    26,   448,    27,   448,
+   28,   448,    29,   448,    30,   448,    31,   448,    32,   448,
+   33,   448,    34,   448,    35,   448,    36,   448,    37,   448,
+   38,   448,    39,   448,    40,   448,    41,   448,    42,   448,
+   43,   448,    44,   448,    45,   448,    46,   448,    47,   448,
+   48,   448,    49,   448,
+};
+
 vtkDICOMDictionary::Dict Dict277Data = {
 "PHILIPS MR SPECTRO;1",
 12,
 50,
 Dict277TagHashTable,
+Dict277KeyHashTable,
 Dict277Contents
 };
 
@@ -12227,11 +14971,19 @@ unsigned short Dict278TagHashTable[] = {
    26,    11,    48,
 };
 
+unsigned short Dict278KeyHashTable[] = {
+    4,    11,    22,     0,     3,     3, 58772,     7, 14745,    11,
+15350,     5,     0,  2992,     1, 16576,     5,  4485,     9, 64617,
+   10, 17155,     5,     2, 57789,     4, 30474,     6, 61559,     8,
+63533,    12,  5016,
+};
+
 vtkDICOMDictionary::Dict Dict278Data = {
 "astm.org/diconde/iod/NdeIndication",
 3,
 13,
 Dict278TagHashTable,
+Dict278KeyHashTable,
 Dict278Contents
 };
 
@@ -12249,11 +15001,17 @@ unsigned short Dict279TagHashTable[] = {
     4,
 };
 
+unsigned short Dict279KeyHashTable[] = {
+    2,     0,     4,     0, 32034,     1,   571,     2,   675,     3,
+59601,
+};
+
 vtkDICOMDictionary::Dict Dict279Data = {
 "GEMS_LUNAR_RAW",
 1,
 4,
 Dict279TagHashTable,
+Dict279KeyHashTable,
 Dict279Contents
 };
 
@@ -12272,11 +15030,17 @@ unsigned short Dict280TagHashTable[] = {
     3,     4,     4,
 };
 
+unsigned short Dict280KeyHashTable[] = {
+    2,     0,     5,     0, 32298,     1, 37623,     2, 43901,     3,
+12186,     4, 50225,
+};
+
 vtkDICOMDictionary::Dict Dict280Data = {
 "PRIVATE_CODE_STRING_3007",
 1,
 5,
 Dict280TagHashTable,
+Dict280KeyHashTable,
 Dict280Contents
 };
 
@@ -12292,11 +15056,16 @@ unsigned short Dict281TagHashTable[] = {
     2,     0,     3,     0,    24,     1,    13,     2,    14,
 };
 
+unsigned short Dict281KeyHashTable[] = {
+    2,     0,     3,     0,  5381,     1,  5381,     2,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict281Data = {
 "SPI-P Release 2;1",
 1,
 3,
 Dict281TagHashTable,
+Dict281KeyHashTable,
 Dict281Contents
 };
 
@@ -12310,11 +15079,16 @@ unsigned short Dict282TagHashTable[] = {
     2,     0,     1,     0,    64,
 };
 
+unsigned short Dict282KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict282Data = {
 "ETIAM DICOMDIR",
 1,
 1,
 Dict282TagHashTable,
+Dict282KeyHashTable,
 Dict282Contents
 };
 
@@ -12332,11 +15106,17 @@ unsigned short Dict283TagHashTable[] = {
    35,
 };
 
+unsigned short Dict283KeyHashTable[] = {
+    2,     0,     4,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,
+};
+
 vtkDICOMDictionary::Dict Dict283Data = {
 "MAROTECH Inc.",
 1,
 4,
 Dict283TagHashTable,
+Dict283KeyHashTable,
 Dict283Contents
 };
 
@@ -12402,11 +15182,26 @@ unsigned short Dict284TagHashTable[] = {
    30,    28,    44,    36,    54,    38,    56,
 };
 
+unsigned short Dict284KeyHashTable[] = {
+   11,    22,    27,    34,    41,    54,    67,    84,    91,    98,
+    0,     5,     4, 33574,    12, 13246,    24, 20184,    33, 54636,
+   35, 57908,     2,    23, 37383,    36, 24211,     3,     7, 18367,
+   11, 11641,    32, 23650,     3,     0, 46473,     8, 25911,    21,
+52052,     6,     5, 42646,     9, 57401,    14, 42651,    15, 56814,
+   20,  1624,    37,  9588,     6,     3, 27090,    27, 36619,    34,
+59112,    38, 10952,    41, 37286,    42, 23716,     8,     6, 57008,
+   10, 28934,    17, 18720,    18, 29676,    22, 54963,    26, 12157,
+   39, 36489,    40,  5039,     3,    28, 14177,    29, 52157,    30,
+ 2699,     3,     1, 12111,    16, 11804,    19, 39911,     4,     2,
+64792,    13, 25123,    25, 15605,    31,  5242,
+};
+
 vtkDICOMDictionary::Dict Dict284Data = {
 "GEMS_DL_FRAME_01",
 10,
 43,
 Dict284TagHashTable,
+Dict284KeyHashTable,
 Dict284Contents
 };
 
@@ -12420,11 +15215,16 @@ unsigned short Dict285TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
+unsigned short Dict285KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict285Data = {
 "PHILIPS MR/PART 12",
 1,
 1,
 Dict285TagHashTable,
+Dict285KeyHashTable,
 Dict285Contents
 };
 
@@ -12574,11 +15374,43 @@ unsigned short Dict286TagHashTable[] = {
   112,    58,   130,    84,   165,
 };
 
+unsigned short Dict286KeyHashTable[] = {
+   28,    33,    42,    45,    52,    55,    72,    83,   100,   117,
+  120,   135,   140,   149,   156,   163,   172,   181,   190,   195,
+  210,   219,   234,   239,   244,   247,   260,     0,     2,    24,
+28844,    87, 24531,     4,    20, 59513,    22,  5850,    88, 24531,
+   90, 45840,     1,    54,  4490,     3,    13,  9536,    46, 32727,
+   59, 38117,     1,    11, 63711,     8,     3, 24170,    17, 26123,
+   31, 57059,    39,  8865,    51,  3355,    89, 13699,    98, 48488,
+   99, 51328,     5,    18, 15403,    19, 17379,    38, 25044,    55,
+33073,    57, 16130,     8,     2, 14045,    30, 39487,    33, 49986,
+   41, 40000,    60, 16129,    68, 21095,    92, 10134,    93, 20432,
+    8,     4, 22363,    35, 38248,    50, 49316,    61, 43222,    74,
+31642,    76, 43126,    96, 25900,   105, 40025,     1,    95,  9987,
+    7,     8, 53107,    10,   461,    26,  8059,    40, 25931,    66,
+45039,   100,  5402,   106, 44089,     2,    23, 60680,    48, 22988,
+    4,    27,  1292,    45,  1734,    79,  6661,    86, 24184,     3,
+   65, 33304,    80, 20878,   104, 14947,     3,     5, 25421,     7,
+57784,    44, 10424,     4,    12, 28958,    67, 18238,    84, 38442,
+  108,   762,     4,    49, 47510,    71, 43434,    85, 38442,   103,
+28630,     4,     6, 65467,    28, 53850,    36, 50261,    43, 34041,
+    2,    63, 59261,    69, 51891,     7,     0, 59648,    16, 35801,
+   29, 50727,    42, 24795,    52,  9907,    53, 15805,    97, 18889,
+    4,     1,  7248,    34, 34681,    56, 10420,    83,  7248,     7,
+   15, 29797,    47, 15814,    62, 61324,    78, 64286,   101, 56537,
+  102, 22097,   109, 28333,     2,    14, 26250,    64, 14219,     2,
+   58, 60031,    81, 57213,     1,    94,   714,     6,     9, 35463,
+   21, 15261,    32, 44383,    37,  8101,    91, 27008,   107, 55783,
+    7,    25,  1387,    70, 40665,    72,  8625,    73, 37772,    75,
+21681,    77, 33190,    82, 32601,
+};
+
 vtkDICOMDictionary::Dict Dict286Data = {
 "SIEMENS MR N3D",
 27,
 110,
 Dict286TagHashTable,
+Dict286KeyHashTable,
 Dict286Contents
 };
 
@@ -12598,11 +15430,17 @@ unsigned short Dict287TagHashTable[] = {
    22,     4,    23,     5,    24,
 };
 
+unsigned short Dict287KeyHashTable[] = {
+    2,     0,     6,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,     5,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict287Data = {
 "Camtronics image level data",
 1,
 6,
 Dict287TagHashTable,
+Dict287KeyHashTable,
 Dict287Contents
 };
 
@@ -12625,11 +15463,18 @@ unsigned short Dict288TagHashTable[] = {
    48,
 };
 
+unsigned short Dict288KeyHashTable[] = {
+    3,    12,     0,     4,     2,  5374,     3,  2089,     4, 41645,
+    6, 47240,     4,     0, 58543,     1, 19194,     5, 46700,     7,
+ 8672,
+};
+
 vtkDICOMDictionary::Dict Dict288Data = {
 "SIEMENS MED HG",
 2,
 8,
 Dict288TagHashTable,
+Dict288KeyHashTable,
 Dict288Contents
 };
 
@@ -12644,11 +15489,16 @@ unsigned short Dict289TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict289KeyHashTable[] = {
+    2,     0,     2,     0, 57350,     1, 38863,
+};
+
 vtkDICOMDictionary::Dict Dict289Data = {
 "BrainLAB_PatientSetup",
 1,
 2,
 Dict289TagHashTable,
+Dict289KeyHashTable,
 Dict289Contents
 };
 
@@ -12676,11 +15526,19 @@ unsigned short Dict290TagHashTable[] = {
    12,
 };
 
+unsigned short Dict290KeyHashTable[] = {
+    4,    15,    20,     0,     5,     1, 47704,     3, 16226,     4,
+39160,     5, 26884,    11, 51765,     2,     0, 13961,     2, 28629,
+    5,     6, 50807,     7, 61280,     8, 10943,     9, 55788,    10,
+16431,
+};
+
 vtkDICOMDictionary::Dict Dict290Data = {
 "GEMS_CT_CARDIAC_001",
 3,
 12,
 Dict290TagHashTable,
+Dict290KeyHashTable,
 Dict290Contents
 };
 
@@ -13006,11 +15864,78 @@ unsigned short Dict291TagHashTable[] = {
     3,    75,    20,   135,    83,   194,   146,
 };
 
+unsigned short Dict291KeyHashTable[] = {
+   63,    70,    75,    88,    93,   100,   109,   118,   131,   140,
+  153,   160,   165,   176,   179,   184,   189,   198,   203,   210,
+  215,   222,   227,   232,   251,   256,   267,   274,   281,   286,
+  289,   298,   303,   318,   327,   336,   343,   350,   375,   384,
+  393,   400,   409,   422,   433,   448,   465,   476,   493,   510,
+  533,   542,   545,   560,   571,   574,   577,   588,   593,   598,
+  611,   620,     0,     3,    38,   912,    71, 48703,   149, 10406,
+    2,    68, 58290,   178, 42106,     6,    64, 24020,    89,  4293,
+   92,  3412,   166,  8093,   183,  2663,   240, 46600,     2,    96,
+31672,   106,  2505,     3,   167, 47343,   176, 48332,   215, 39287,
+    4,     9, 57017,    41, 33438,    75, 40190,   103, 57241,     4,
+   14, 32160,    98, 32417,   172, 42874,   191,  2069,     6,     5,
+41710,    22, 41710,    43, 41710,   138,  4734,   146, 30376,   206,
+62753,     4,    54, 25751,    94, 39189,   168, 19455,   202, 57854,
+    6,     2, 32920,     7, 43669,    29, 22778,    61, 22778,   193,
+13428,   196, 48692,     3,    72, 62144,   104, 16671,   237,  3973,
+    2,   199, 21636,   216, 31439,     5,    37, 62153,   129,  4392,
+  137, 50229,   156,  6511,   219,  4392,     1,   165, 29373,     2,
+   73, 25054,   141, 43120,     2,   119, 20319,   208, 18993,     4,
+    0,   860,   113, 11683,   190, 53656,   225, 42117,     2,   136,
+30437,   186,  6272,     3,    48, 12034,   142,  3415,   242, 64817,
+    2,    62, 31277,    90, 40658,     3,    12,  5516,    65, 53859,
+  187, 25071,     2,   110, 39933,   188, 49755,     2,    52, 51695,
+  145, 18120,     9,    31, 21681,    91, 37941,   114, 42293,   162,
+26019,   185, 20494,   194, 19669,   227, 44373,   238, 65471,   243,
+62879,     2,    78, 14441,   214, 56194,     5,    13, 12289,    58,
+52669,    66, 12182,    97, 14307,   107, 30721,     3,    87, 32162,
+  192, 53403,   235, 18571,     3,   155, 24167,   163, 51047,   236,
+18571,     2,    82, 56109,   153, 10054,     1,   223, 23659,     4,
+  139, 42728,   158,  1256,   173, 43437,   180, 44534,     2,    63,
+ 1493,   115,  1210,     7,    20, 15076,    27, 15076,    51, 15076,
+   55,  9943,   213, 64370,   230, 15076,   234, 15076,     4,    16,
+40702,    45, 40702,   160, 37389,   224, 40702,     4,    53, 23372,
+   70, 60350,    79, 15440,   189, 28363,     3,   117, 61604,   123,
+36384,   222, 14785,     3,    80, 37134,   127, 15046,   244,  3045,
+   12,    17,  3491,    23,  3491,    77, 10357,   130, 58538,   140,
+26620,   152, 54002,   159, 32459,   161, 39380,   175, 22892,   209,
+16328,   220, 58538,   221,  3491,     4,     1, 33237,    47, 51769,
+  112, 37872,   116, 32497,     4,    24, 52426,    35, 24105,   171,
+63113,   231, 52426,     3,    76, 41810,   120, 63064,   125, 25720,
+    4,     6, 64620,   100, 57631,   111, 41335,   245, 27209,     6,
+   15, 14635,    74,  4705,   135, 39259,   144, 10299,   198,  3689,
+  204, 43883,     5,    11, 27074,    40, 35504,    85, 52542,   122,
+52544,   126, 48854,     7,    10, 25995,    93, 18613,   105, 59919,
+  109, 32322,   148,  4720,   151, 53792,   170,  8980,     8,    19,
+55988,    26, 55988,    28,  9609,    50, 55988,    59,  9609,   207,
+13514,   229, 55988,   233, 55988,     5,    21, 21745,    36, 59532,
+   84,  7275,   200, 25699,   217, 56398,     8,    18, 64062,    25,
+64062,    44, 25873,    49, 64062,   143, 62800,   177, 15193,   228,
+64062,   232, 64062,     8,     3, 60236,     8, 37855,    33, 18707,
+   86, 63895,    88, 55035,   121, 23237,   203, 44485,   210, 26926,
+   11,    56,    86,    60, 50800,   118, 38920,   132,    86,   150,
+   86,   184,  4830,   246,    86,   247,    86,   248,    86,   249,
+   86,   250,    86,     4,    32, 36689,    42, 63163,   182, 13479,
+  205, 47877,     1,   134,  9707,     7,    34,  3768,    39, 13821,
+   81,  3763,    95, 31403,   169, 30759,   226, 51868,   241, 11698,
+    5,    67, 61963,    99, 25257,   102, 17753,   131, 51407,   133,
+ 4686,     1,   181, 55576,     1,   164, 41124,     5,   157, 57050,
+  174, 56686,   197, 26859,   211, 45294,   239, 49006,     2,     4,
+22769,    69,  4538,     2,    30, 40159,   179, 50207,     6,    46,
+61369,   128,   892,   147, 15266,   154, 37381,   195, 26927,   218,
+  892,     4,    57, 25839,   101, 15002,   108, 12182,   201, 45004,
+    3,    83, 22299,   124, 37620,   212, 42165,
+};
+
 vtkDICOMDictionary::Dict Dict291Data = {
 "MMCPrivate",
 62,
 251,
 Dict291TagHashTable,
+Dict291KeyHashTable,
 Dict291Contents
 };
 
@@ -13026,11 +15951,16 @@ unsigned short Dict292TagHashTable[] = {
     2,     0,     3,     0,     0,     1,     1,     2,     2,
 };
 
+unsigned short Dict292KeyHashTable[] = {
+    2,     0,     3,     0, 31688,     1, 22546,     2, 45680,
+};
+
 vtkDICOMDictionary::Dict Dict292Data = {
 "IDEXX",
 1,
 3,
 Dict292TagHashTable,
+Dict292KeyHashTable,
 Dict292Contents
 };
 
@@ -13044,11 +15974,16 @@ unsigned short Dict293TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
+unsigned short Dict293KeyHashTable[] = {
+    2,     0,     1,     0,   610,
+};
+
 vtkDICOMDictionary::Dict Dict293Data = {
 "VEPRO DICOM TRANSFER 1.0",
 1,
 1,
 Dict293TagHashTable,
+Dict293KeyHashTable,
 Dict293Contents
 };
 
@@ -13174,11 +16109,38 @@ unsigned short Dict294TagHashTable[] = {
    70,   126,     2,    36,    50,    71,   127,
 };
 
+unsigned short Dict294KeyHashTable[] = {
+   23,    26,    29,    22,    42,    51,    56,    59,    68,    77,
+   84,    89,   100,   103,   182,   187,   190,   193,   200,    22,
+  203,   210,     0,     1,    66, 55256,     1,    46, 45844,     6,
+    1, 35179,    13, 30833,    34, 31670,    38, 40038,    47, 15123,
+   75, 57614,     4,    36, 50743,    45,  9506,    64, 16281,    89,
+ 2798,     2,    37, 50743,    44, 34210,     1,    39,  2271,     4,
+   22, 38763,    33, 32276,    50,  6018,    53,  2757,     4,    14,
+15219,    41, 19666,    54, 15219,    57, 44909,     3,     5, 26993,
+   71, 46040,    90, 50564,     2,     0, 32140,    35, 51923,     5,
+   42, 10189,    43, 51776,    49, 64475,    65, 25607,    86,   931,
+    1,    68,  5873,    39,     2,   244,     3,   244,     4,   244,
+    6,   244,     7,   244,     8,   244,    12,   244,    15,   244,
+   16,   244,    17,   244,    18,   244,    19,   244,    20,   244,
+   21,   244,    23,   244,    24,   244,    25,   244,    26,   244,
+   27,   244,    28,   244,    29,   244,    30,   244,    31,   244,
+   55,   244,    56,   244,    59,   244,    60,   244,    61,   244,
+   62,   244,    63,   244,    76,   244,    77,   244,    78,   244,
+   79,   244,    80,   244,    81,   244,    82,   244,    83,   244,
+   84,   244,     2,    73, 27306,    87, 24254,     1,    88, 28504,
+    1,     9, 37841,     3,    40, 52333,    51, 56765,    74, 11826,
+    1,    85, 19107,     3,    11, 56472,    58, 63277,    70,  6210,
+    7,    10,   418,    32, 21895,    48, 40169,    52, 40307,    67,
+47906,    69,  9376,    72, 28335,
+};
+
 vtkDICOMDictionary::Dict Dict294Data = {
 "SPI-P Release 1",
 22,
 91,
 Dict294TagHashTable,
+Dict294KeyHashTable,
 Dict294Contents
 };
 
@@ -13192,11 +16154,16 @@ unsigned short Dict295TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict295KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict295Data = {
 "Philips EV Imaging DD 022",
 1,
 1,
 Dict295TagHashTable,
+Dict295KeyHashTable,
 Dict295Contents
 };
 
@@ -13210,11 +16177,16 @@ unsigned short Dict296TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict296KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict296Data = {
 "TOSHIBA ENCRYPTED SR DATA",
 1,
 1,
 Dict296TagHashTable,
+Dict296KeyHashTable,
 Dict296Contents
 };
 
@@ -13228,11 +16200,16 @@ unsigned short Dict297TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict297KeyHashTable[] = {
+    2,     0,     1,     0, 38985,
+};
+
 vtkDICOMDictionary::Dict Dict297Data = {
 "SECTRA_OverlayInfo_01",
 1,
 1,
 Dict297TagHashTable,
+Dict297KeyHashTable,
 Dict297Contents
 };
 
@@ -13247,11 +16224,16 @@ unsigned short Dict298TagHashTable[] = {
     2,     0,     2,     0,    16,     1,    17,
 };
 
+unsigned short Dict298KeyHashTable[] = {
+    2,     0,     2,     0, 45003,     1, 22701,
+};
+
 vtkDICOMDictionary::Dict Dict298Data = {
 "SIEMENS CSA ENVELOPE",
 1,
 2,
 Dict298TagHashTable,
+Dict298KeyHashTable,
 Dict298Contents
 };
 
@@ -13430,11 +16412,46 @@ unsigned short Dict299TagHashTable[] = {
   191,   131,   223,
 };
 
+unsigned short Dict299KeyHashTable[] = {
+   33,    33,    34,    33,    33,    33,    33,    33,    33,    33,
+   33,    33,    33,    33,    33,    33,    33,    33,    33,    33,
+   33,    33,    33,    33,    33,    33,    33,    33,    33,    33,
+   33,    33,    33,     0,   133,     0,   163,     1,   163,     2,
+  163,     3,   163,     4,   163,     5,   163,     6,   163,     7,
+  163,     8,   163,     9,   163,    10,   163,    11,   163,    12,
+  163,    13,   163,    14,   163,    15,   163,    16,   163,    17,
+  163,    18,   163,    19,   163,    20,   163,    21,   163,    22,
+  163,    23,   163,    24,   163,    25,   163,    26,   163,    27,
+  163,    28,   163,    29,   163,    30,   163,    31,   163,    32,
+  163,    33,   163,    34,   163,    35,   163,    36,   163,    37,
+  163,    38,   163,    39,   163,    40,   163,    41,   163,    42,
+  163,    43,   163,    44,   163,    45,   163,    46,   163,    47,
+  163,    48,   163,    49,   163,    50,   163,    51,   163,    52,
+  163,    53,   163,    54,   163,    55,   163,    56,   163,    57,
+  163,    58,   163,    59,   163,    60,   163,    61,   163,    62,
+  163,    63,   163,    64,   163,    65,   163,    66,   163,    67,
+  163,    68,   163,    69,   163,    70,   163,    71,   163,    72,
+  163,    73,   163,    74,   163,    75,   163,    76,   163,    77,
+  163,    78,   163,    79,   163,    80,   163,    81,   163,    82,
+  163,    83,   163,    84,   163,    85,   163,    86,   163,    87,
+  163,    88,   163,    89,   163,    90,   163,    91,   163,    92,
+  163,    93,   163,    94,   163,    95,   163,    96,   163,    97,
+  163,    98,   163,    99,   163,   100,   163,   101,   163,   102,
+  163,   103,   163,   104,   163,   105,   163,   106,   163,   107,
+  163,   108,   163,   109,   163,   110,   163,   111,   163,   112,
+  163,   113,   163,   114,   163,   115,   163,   116,   163,   117,
+  163,   118,   163,   119,   163,   120,   163,   121,   163,   122,
+  163,   123,   163,   124,   163,   125,   163,   126,   163,   127,
+  163,   128,   163,   129,   163,   130,   163,   131,   163,   132,
+  163,
+};
+
 vtkDICOMDictionary::Dict Dict299Data = {
 "SIEMENS RA PLANE A",
 33,
 133,
 Dict299TagHashTable,
+Dict299KeyHashTable,
 Dict299Contents
 };
 
@@ -13613,11 +16630,46 @@ unsigned short Dict300TagHashTable[] = {
   191,   131,   223,
 };
 
+unsigned short Dict300KeyHashTable[] = {
+   33,    33,    34,    33,    33,    33,    33,    33,    33,    33,
+   33,    33,    33,    33,    33,    33,    33,    33,    33,    33,
+   33,    33,    33,    33,    33,    33,    33,    33,    33,    33,
+   33,    33,    33,     0,   133,     0,   163,     1,   163,     2,
+  163,     3,   163,     4,   163,     5,   163,     6,   163,     7,
+  163,     8,   163,     9,   163,    10,   163,    11,   163,    12,
+  163,    13,   163,    14,   163,    15,   163,    16,   163,    17,
+  163,    18,   163,    19,   163,    20,   163,    21,   163,    22,
+  163,    23,   163,    24,   163,    25,   163,    26,   163,    27,
+  163,    28,   163,    29,   163,    30,   163,    31,   163,    32,
+  163,    33,   163,    34,   163,    35,   163,    36,   163,    37,
+  163,    38,   163,    39,   163,    40,   163,    41,   163,    42,
+  163,    43,   163,    44,   163,    45,   163,    46,   163,    47,
+  163,    48,   163,    49,   163,    50,   163,    51,   163,    52,
+  163,    53,   163,    54,   163,    55,   163,    56,   163,    57,
+  163,    58,   163,    59,   163,    60,   163,    61,   163,    62,
+  163,    63,   163,    64,   163,    65,   163,    66,   163,    67,
+  163,    68,   163,    69,   163,    70,   163,    71,   163,    72,
+  163,    73,   163,    74,   163,    75,   163,    76,   163,    77,
+  163,    78,   163,    79,   163,    80,   163,    81,   163,    82,
+  163,    83,   163,    84,   163,    85,   163,    86,   163,    87,
+  163,    88,   163,    89,   163,    90,   163,    91,   163,    92,
+  163,    93,   163,    94,   163,    95,   163,    96,   163,    97,
+  163,    98,   163,    99,   163,   100,   163,   101,   163,   102,
+  163,   103,   163,   104,   163,   105,   163,   106,   163,   107,
+  163,   108,   163,   109,   163,   110,   163,   111,   163,   112,
+  163,   113,   163,   114,   163,   115,   163,   116,   163,   117,
+  163,   118,   163,   119,   163,   120,   163,   121,   163,   122,
+  163,   123,   163,   124,   163,   125,   163,   126,   163,   127,
+  163,   128,   163,   129,   163,   130,   163,   131,   163,   132,
+  163,
+};
+
 vtkDICOMDictionary::Dict Dict300Data = {
 "SIEMENS RA PLANE B",
 33,
 133,
 Dict300TagHashTable,
+Dict300KeyHashTable,
 Dict300Contents
 };
 
@@ -13675,11 +16727,24 @@ unsigned short Dict301TagHashTable[] = {
   120,
 };
 
+unsigned short Dict301KeyHashTable[] = {
+    9,     9,     9,     9,     9,     9,     9,     9,    10,     0,
+   36,     0,   597,     1,   597,     2,   597,     3,   597,     4,
+  597,     5,   597,     6,   597,     7,   597,     8,   597,     9,
+  597,    10,   597,    11,   597,    12,   597,    13,   597,    14,
+  597,    15,   597,    16,   597,    17,   597,    18,   597,    19,
+  597,    20,   597,    21,   597,    22,   597,    23,   597,    24,
+  597,    25,   597,    26,   597,    27,   597,    28,   597,    29,
+  597,    30,   597,    31,   597,    32,   597,    33,   597,    34,
+  597,    35,   597,
+};
+
 vtkDICOMDictionary::Dict Dict301Data = {
 "Silhouette V1.0",
 9,
 36,
 Dict301TagHashTable,
+Dict301KeyHashTable,
 Dict301Contents
 };
 
@@ -13702,11 +16767,18 @@ unsigned short Dict302TagHashTable[] = {
   128,
 };
 
+unsigned short Dict302KeyHashTable[] = {
+    3,    12,     0,     4,     0, 11839,     3,  4331,     4, 24079,
+    6, 21473,     4,     1, 52363,     2, 33949,     5, 37378,     7,
+11544,
+};
+
 vtkDICOMDictionary::Dict Dict302Data = {
 "GEMS_STDY_01",
 2,
 8,
 Dict302TagHashTable,
+Dict302KeyHashTable,
 Dict302Contents
 };
 
@@ -13726,11 +16798,17 @@ unsigned short Dict303TagHashTable[] = {
    32,     4,    49,     5,    52,
 };
 
+unsigned short Dict303KeyHashTable[] = {
+    2,     0,     6,     0, 57836,     1, 41744,     2, 43446,     3,
+34809,     4,  5381,     5,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict303Data = {
 "TOSHIBA COMAPL HEADER",
 1,
 6,
 Dict303TagHashTable,
+Dict303KeyHashTable,
 Dict303Contents
 };
 
@@ -13804,11 +16882,28 @@ unsigned short Dict304TagHashTable[] = {
    54,    46,   160,
 };
 
+unsigned short Dict304KeyHashTable[] = {
+   13,    20,    27,    36,    39,    42,    63,    74,    85,    94,
+  109,   116,     0,     3,    25, 10744,    35, 58191,    43, 54583,
+    3,     4, 30313,    24, 41971,    40,  6702,     4,     1,  2176,
+    5, 39709,    20, 19466,    33, 13437,     1,    30, 19931,     1,
+   19, 57962,    10,     8,   448,     9,   448,    12,   448,    18,
+  448,    21,   448,    23, 29520,    27, 30391,    46,   448,    47,
+  448,    48,   448,     5,     7, 25014,    10, 14936,    14,  8755,
+   15, 54423,    41, 35324,     5,    13, 38905,    22, 44521,    37,
+34198,    42, 45579,    44, 14767,     4,    11, 56374,    26, 44138,
+   34, 59955,    39, 15816,     7,     0, 14956,    17, 61100,    28,
+58822,    31, 45734,    32,  8928,    38,  8110,    45, 28974,     3,
+    6, 31335,    16, 65053,    36, 33834,     3,     2,  2235,     3,
+22546,    29, 33035,
+};
+
 vtkDICOMDictionary::Dict Dict304Data = {
 "SIEMENS CT VA0  GEN",
 12,
 49,
 Dict304TagHashTable,
+Dict304KeyHashTable,
 Dict304Contents
 };
 
@@ -13963,11 +17058,44 @@ unsigned short Dict305TagHashTable[] = {
   136,   106,   164,   108,   193,
 };
 
+unsigned short Dict305KeyHashTable[] = {
+   29,    36,    45,    50,    57,    60,   167,   180,   185,   190,
+  195,   200,   211,   214,   225,   228,    28,    28,   231,   234,
+   28,   241,    28,   250,   255,   262,   269,   276,     0,     3,
+   30, 24377,    63, 44811,   103, 38496,     4,     1, 35576,    41,
+16777,    43, 46757,    88,  1988,     2,    20, 35942,    34, 54030,
+    3,     8,  1423,    23,  6512,    65, 31417,     1,    64,  8590,
+   53,     4,   192,    14, 42263,    28,   192,    36,   192,    37,
+  192,    38,   192,    44,   192,    45,   192,    46,   192,    47,
+  192,    48,   192,    49,   192,    50,   192,    51,   192,    52,
+  192,    53,   192,    54,   192,    55,   192,    56,   192,    57,
+  192,    58,   192,    59,   192,    60,   192,    62,   192,    68,
+  192,    69,   192,    71,   192,    72,   192,    73,   192,    74,
+  192,    75,   192,    77,   192,    78,   192,    79,   192,    80,
+  192,    82,   192,    84,   192,    90,   192,    95,   192,    96,
+  192,    97,   192,    98,   192,    99,   192,   100,   192,   101,
+  192,   102,   192,   105,   192,   106,   192,   107,   192,   108,
+  192,   109,   192,   110,   192,   111,   192,     6,    15, 55275,
+   18, 18387,    29, 44717,    66, 17412,    70, 36384,    81,  2284,
+    2,    26, 42908,    39, 27637,     2,    42, 32101,    89,   466,
+    2,     2,  4087,    16, 13901,     2,     5, 36851,    93, 53798,
+    5,     7, 60451,    24, 33097,    27, 46687,    31, 46674,    83,
+65365,     1,    25, 10306,     5,     0, 15597,    32, 42283,    35,
+31801,    61, 41509,    92, 25023,     1,   104, 45728,     1,    40,
+63248,     1,    76, 21984,     3,    33, 47399,    67, 61528,    87,
+61616,     4,    10, 52293,    11, 23997,    13, 50698,    94,  3897,
+    2,     6, 61947,   112, 11964,     3,    12,  8102,    85,  1406,
+   86, 38789,     3,     3, 61027,     9, 31559,    22, 20749,     3,
+   17, 22270,    21, 62453,   113, 31886,     2,    19,  4099,    91,
+54132,
+};
+
 vtkDICOMDictionary::Dict Dict305Data = {
 "PHILIPS IMAGING DD 001",
 28,
 114,
 Dict305TagHashTable,
+Dict305KeyHashTable,
 Dict305Contents
 };
 
@@ -14052,11 +17180,30 @@ unsigned short Dict306TagHashTable[] = {
    12,    15,    16,    39,    40,
 };
 
+unsigned short Dict306KeyHashTable[] = {
+   15,    30,    39,    48,    59,    70,    81,    88,    95,   104,
+  111,   116,   121,   130,     0,     7,     2, 27348,     4, 19920,
+    6, 48991,     8, 51015,    26, 32550,    28, 30874,    56,   253,
+    4,    17, 19663,    19, 61288,    20, 40117,    36,   236,     4,
+   12, 14480,    30, 23061,    53, 13834,    55, 24163,     5,     7,
+37803,    14, 39755,    15, 51908,    23, 11449,    40, 58998,     5,
+   10, 28620,    31, 44605,    43, 59637,    46, 27550,    47, 64721,
+    5,     3, 13531,    29, 13689,    32,  1570,    39, 11952,    57,
+43811,     3,     0, 31826,     5, 10193,     9, 29777,     3,    16,
+25943,    21, 44009,    44, 45552,     4,    24, 51707,    35, 62850,
+   38, 48887,    49, 50450,     3,    25, 19513,    41, 39233,    42,
+37659,     2,    22, 37944,    34, 54356,     2,    37, 36032,    51,
+49892,     4,     1,  9052,    13, 55153,    18, 27794,    54, 51583,
+    7,    11, 19901,    27, 62713,    33, 46076,    45, 61617,    48,
+48239,    50, 30539,    52,  5900,
+};
+
 vtkDICOMDictionary::Dict Dict306Data = {
 "NQRight",
 14,
 58,
 Dict306TagHashTable,
+Dict306KeyHashTable,
 Dict306Contents
 };
 
@@ -14092,11 +17239,20 @@ unsigned short Dict307TagHashTable[] = {
     2,     6,     6,    11,    10,    15,    22,
 };
 
+unsigned short Dict307KeyHashTable[] = {
+    5,    16,    27,    38,     0,     5,     8, 36726,     9, 32196,
+   12, 65150,    14, 33309,    16,  1459,     5,     0,  1345,     1,
+ 1345,     3,  1345,     4,  1345,     5,  1345,     5,     2, 29291,
+    7, 28636,    11, 47317,    13, 27015,    17, 16824,     4,     6,
+15731,    10, 20181,    15, 39586,    18, 23879,
+};
+
 vtkDICOMDictionary::Dict Dict307Data = {
 "Siemens: Thorax/Multix FD Lab Settings",
 4,
 19,
 Dict307TagHashTable,
+Dict307KeyHashTable,
 Dict307Contents
 };
 
@@ -14114,11 +17270,17 @@ unsigned short Dict308TagHashTable[] = {
     4,
 };
 
+unsigned short Dict308KeyHashTable[] = {
+    2,     0,     4,     0, 10782,     1, 30123,     2, 57536,     3,
+ 6215,
+};
+
 vtkDICOMDictionary::Dict Dict308Data = {
 "V1",
 1,
 4,
 Dict308TagHashTable,
+Dict308KeyHashTable,
 Dict308Contents
 };
 
@@ -14143,11 +17305,18 @@ unsigned short Dict309TagHashTable[] = {
    20,     6,    24,     8,    26,
 };
 
+unsigned short Dict309KeyHashTable[] = {
+    3,     8,     0,     2,     0, 46582,     7, 51892,     8,     1,
+24382,     2, 21447,     3,  4591,     4, 59404,     5, 26113,     6,
+24559,     8, 24860,     9, 37752,
+};
+
 vtkDICOMDictionary::Dict Dict309Data = {
 "GEMS_SERS_01",
 2,
 10,
 Dict309TagHashTable,
+Dict309KeyHashTable,
 Dict309Contents
 };
 
@@ -14186,11 +17355,21 @@ unsigned short Dict310TagHashTable[] = {
    20,    18,    26,
 };
 
+unsigned short Dict310KeyHashTable[] = {
+    6,    13,    24,    33,    44,     0,     3,     4,  2464,    12,
+33598,    16, 57560,     5,     2, 58056,     8,   194,    10, 45651,
+   13, 33598,    18, 28212,     4,     1, 52992,     3, 39381,     7,
+ 5340,    14, 19553,     5,     5, 18592,     6, 27383,     9,  8997,
+   11, 64505,    17, 43502,     4,     0, 17865,    15, 57559,    19,
+61282,    20, 30908,
+};
+
 vtkDICOMDictionary::Dict Dict310Data = {
 "astm.org/diconde/iod/NdeUsEquipment",
 5,
 21,
 Dict310TagHashTable,
+Dict310KeyHashTable,
 Dict310Contents
 };
 
@@ -14214,11 +17393,18 @@ unsigned short Dict311TagHashTable[] = {
   128,     8,   144,
 };
 
+unsigned short Dict311KeyHashTable[] = {
+    3,    16,     0,     6,     1, 48847,     4, 34688,     5, 23543,
+    6, 25036,     7, 10610,     8, 51185,     3,     0, 47466,     2,
+15454,     3, 61568,
+};
+
 vtkDICOMDictionary::Dict Dict311Data = {
 "AMI ImageContext_01",
 2,
 9,
 Dict311TagHashTable,
+Dict311KeyHashTable,
 Dict311Contents
 };
 
@@ -14259,11 +17445,21 @@ unsigned short Dict312TagHashTable[] = {
    18,    14,    31,    15,    32,    20,    49,
 };
 
+unsigned short Dict312KeyHashTable[] = {
+    5,     6,     5,     5,     5,     0,    23,     0,  1076,     1,
+ 1076,     2,  1076,     3,  1076,     4,  1076,     5,  1076,     6,
+ 1076,     7,  1076,     8,  1076,     9,  1076,    10,  1076,    11,
+ 1076,    12,  1076,    13,  1076,    14,  1076,    15,  1076,    16,
+ 1076,    17,  1076,    18,  1076,    19,  1076,    20,  1076,    21,
+ 1076,    22,  1076,
+};
+
 vtkDICOMDictionary::Dict Dict312Data = {
 "SPI-P-XSB-VISUB Release 1",
 5,
 23,
 Dict312TagHashTable,
+Dict312KeyHashTable,
 Dict312Contents
 };
 
@@ -14286,11 +17482,17 @@ unsigned short Dict313TagHashTable[] = {
    38,
 };
 
+unsigned short Dict313KeyHashTable[] = {
+    2,     3,     0,     8,     0,  2690,     1,  2690,     2,  2690,
+    3,  2690,     4,  2690,     5,  2690,     6,  2690,     7,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict313Data = {
 "2.16.840.1.114059.1.1.6.1.50.1",
 2,
 8,
 Dict313TagHashTable,
+Dict313KeyHashTable,
 Dict313Contents
 };
 
@@ -14319,11 +17521,19 @@ unsigned short Dict314TagHashTable[] = {
    64,    12,    16,
 };
 
+unsigned short Dict314KeyHashTable[] = {
+    4,    21,    24,     0,     8,     2, 24945,     3, 22828,     4,
+ 5091,     7, 29365,     9, 16848,    10, 46268,    11, 59477,    12,
+10983,     1,     8, 29902,     4,     0, 22718,     1, 14455,     5,
+27226,     6, 23552,
+};
+
 vtkDICOMDictionary::Dict Dict314Data = {
 "SIEMENS RIS",
 3,
 13,
 Dict314TagHashTable,
+Dict314KeyHashTable,
 Dict314Contents
 };
 
@@ -14338,11 +17548,16 @@ unsigned short Dict315TagHashTable[] = {
     2,     0,     2,     0,     5,     1,     6,
 };
 
+unsigned short Dict315KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict315Data = {
 "GEMS_YMHD_01",
 1,
 2,
 Dict315TagHashTable,
+Dict315KeyHashTable,
 Dict315Contents
 };
 
@@ -14372,11 +17587,19 @@ unsigned short Dict316TagHashTable[] = {
     4,    11,    27,    12,    28,
 };
 
+unsigned short Dict316KeyHashTable[] = {
+    3,     3,     4,     0,    14,     0,  1793,     1,  1793,     2,
+ 1793,     3,  1793,     4,  1793,     5,  1793,     6,  1793,     7,
+ 1793,     8,  1793,     9,  1793,    10,  1793,    11,  1793,    12,
+ 1793,    13,  1793,
+};
+
 vtkDICOMDictionary::Dict Dict316Data = {
 "SPI-P-CTBE Release 1",
 3,
 14,
 Dict316TagHashTable,
+Dict316KeyHashTable,
 Dict316Contents
 };
 
@@ -14392,11 +17615,16 @@ unsigned short Dict317TagHashTable[] = {
     2,     0,     3,     0,   112,     1,   128,     2,   144,
 };
 
+unsigned short Dict317KeyHashTable[] = {
+    2,     0,     3,     0,  5381,     1,  5381,     2,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict317Data = {
 "ISG shadow",
 1,
 3,
 Dict317TagHashTable,
+Dict317KeyHashTable,
 Dict317Contents
 };
 
@@ -14412,11 +17640,16 @@ unsigned short Dict318TagHashTable[] = {
     2,     0,     3,     0,     1,     1,    11,     2,    12,
 };
 
+unsigned short Dict318KeyHashTable[] = {
+    2,     0,     3,     0, 32747,     1, 25219,     2, 15187,
+};
+
 vtkDICOMDictionary::Dict Dict318Data = {
 "METAEMOTION GINKGO RETINAL",
 1,
 3,
 Dict318TagHashTable,
+Dict318KeyHashTable,
 Dict318Contents
 };
 
@@ -14437,11 +17670,17 @@ unsigned short Dict319TagHashTable[] = {
     3,     4,    16,     5,   240,     6,   241,
 };
 
+unsigned short Dict319KeyHashTable[] = {
+    2,     0,     7,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,     5,  5381,     6,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict319Data = {
 "Riverain Medical",
 1,
 7,
 Dict319TagHashTable,
+Dict319KeyHashTable,
 Dict319Contents
 };
 
@@ -14464,11 +17703,18 @@ unsigned short Dict320TagHashTable[] = {
     4,
 };
 
+unsigned short Dict320KeyHashTable[] = {
+    3,    10,     0,     3,     0, 10150,     1, 32711,     3,  7563,
+    5,     2,   659,     4, 24599,     5,  1739,     6, 53528,     7,
+48140,
+};
+
 vtkDICOMDictionary::Dict Dict320Data = {
 "HOLOGIC",
 2,
 8,
 Dict320TagHashTable,
+Dict320KeyHashTable,
 Dict320Contents
 };
 
@@ -14493,11 +17739,18 @@ unsigned short Dict321TagHashTable[] = {
    48,     8,   128,     9,   144,
 };
 
+unsigned short Dict321KeyHashTable[] = {
+    3,    16,     0,     6,     2, 47197,     3, 11003,     4, 17288,
+    5, 24179,     7, 22871,     9, 45537,     4,     0, 30578,     1,
+34512,     6,  2073,     8,  2693,
+};
+
 vtkDICOMDictionary::Dict Dict321Data = {
 "GEMS_ACRQA_2.0 BLOCK1",
 2,
 10,
 Dict321TagHashTable,
+Dict321KeyHashTable,
 Dict321Contents
 };
 
@@ -14522,11 +17775,18 @@ unsigned short Dict322TagHashTable[] = {
    48,     8,   128,     9,   144,
 };
 
+unsigned short Dict322KeyHashTable[] = {
+    3,    16,     0,     6,     3, 39313,     4, 39314,     5, 39322,
+    6, 39504,     8, 39501,     9, 50834,     4,     0, 13365,     1,
+61229,     2, 39322,     7, 39496,
+};
+
 vtkDICOMDictionary::Dict Dict322Data = {
 "GEMS_ACRQA_2.0 BLOCK2",
 2,
 10,
 Dict322TagHashTable,
+Dict322KeyHashTable,
 Dict322Contents
 };
 
@@ -14554,11 +17814,19 @@ unsigned short Dict323TagHashTable[] = {
   128,
 };
 
+unsigned short Dict323KeyHashTable[] = {
+    4,    11,    20,     0,     3,     9, 57890,    10, 48391,    11,
+56553,     4,     4, 59722,     5,  2032,     7, 13008,     8, 54222,
+    5,     0, 55729,     1, 55732,     2, 59722,     3, 59725,     6,
+31486,
+};
+
 vtkDICOMDictionary::Dict Dict323Data = {
 "GEMS_ACRQA_2.0 BLOCK3",
 3,
 12,
 Dict323TagHashTable,
+Dict323KeyHashTable,
 Dict323Contents
 };
 
@@ -14577,11 +17845,17 @@ unsigned short Dict324TagHashTable[] = {
   236,     4,   237,
 };
 
+unsigned short Dict324KeyHashTable[] = {
+    2,     0,     5,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict324Data = {
 "GEMS_3DSTATE_001",
 1,
 5,
 Dict324TagHashTable,
+Dict324KeyHashTable,
 Dict324Contents
 };
 
@@ -14596,11 +17870,16 @@ unsigned short Dict325TagHashTable[] = {
     2,     0,     2,     0,   151,     1,   152,
 };
 
+unsigned short Dict325KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict325Data = {
 "SEGAMI__PAGE",
 1,
 2,
 Dict325TagHashTable,
+Dict325KeyHashTable,
 Dict325Contents
 };
 
@@ -14620,11 +17899,17 @@ unsigned short Dict326TagHashTable[] = {
     5,     4,     6,     5,     7,
 };
 
+unsigned short Dict326KeyHashTable[] = {
+    2,     0,     6,     0, 21271,     1, 27339,     2, 46675,     3,
+29452,     4, 43558,     5,  2159,
+};
+
 vtkDICOMDictionary::Dict Dict326Data = {
 "SECTRA_Ident_01",
 1,
 6,
 Dict326TagHashTable,
+Dict326KeyHashTable,
 Dict326Contents
 };
 
@@ -14643,11 +17928,17 @@ unsigned short Dict327TagHashTable[] = {
     4,     4,     6,
 };
 
+unsigned short Dict327KeyHashTable[] = {
+    2,     0,     5,     0,  5381,     1,  5381,     2,  5381,     3,
+ 5381,     4,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict327Data = {
 "STENTOR",
 1,
 5,
 Dict327TagHashTable,
+Dict327KeyHashTable,
 Dict327Contents
 };
 
@@ -14662,11 +17953,16 @@ unsigned short Dict328TagHashTable[] = {
     2,     0,     2,     0,     0,     1,    16,
 };
 
+unsigned short Dict328KeyHashTable[] = {
+    2,     0,     2,     0, 29682,     1, 54315,
+};
+
 vtkDICOMDictionary::Dict Dict328Data = {
 "ObjectModel (ID, Version, Place, PlaceDescription)",
 1,
 2,
 Dict328TagHashTable,
+Dict328KeyHashTable,
 Dict328Contents
 };
 
@@ -14684,11 +17980,17 @@ unsigned short Dict329TagHashTable[] = {
    23,
 };
 
+unsigned short Dict329KeyHashTable[] = {
+    2,     0,     4,     0, 48867,     1, 28839,     2, 21599,     3,
+41316,
+};
+
 vtkDICOMDictionary::Dict Dict329Data = {
 "SIEMENS CSA REPORT",
 1,
 4,
 Dict329TagHashTable,
+Dict329KeyHashTable,
 Dict329Contents
 };
 
@@ -14703,11 +18005,16 @@ unsigned short Dict330TagHashTable[] = {
     2,     0,     2,     0,    16,     1,    64,
 };
 
+unsigned short Dict330KeyHashTable[] = {
+    2,     0,     2,     0,  8283,     1, 22657,
+};
+
 vtkDICOMDictionary::Dict Dict330Data = {
 "astm.org/diconde/iod/ComponentSeries",
 1,
 2,
 Dict330TagHashTable,
+Dict330KeyHashTable,
 Dict330Contents
 };
 
@@ -14721,11 +18028,16 @@ unsigned short Dict331TagHashTable[] = {
     2,     0,     1,     0,   149,
 };
 
+unsigned short Dict331KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict331Data = {
 "GEMS_0039",
 1,
 1,
 Dict331TagHashTable,
+Dict331KeyHashTable,
 Dict331Contents
 };
 
@@ -14903,11 +18215,46 @@ unsigned short Dict332TagHashTable[] = {
   159,
 };
 
+unsigned short Dict332KeyHashTable[] = {
+   33,    33,    34,    33,   279,    33,    33,    33,    33,   282,
+   33,    33,   285,    33,    33,    33,   288,   291,    33,    33,
+   33,    33,   294,   299,    33,    33,   302,    33,    33,    33,
+  305,    33,    33,     0,   122,     0,   163,     1,   163,     2,
+  163,     3,   163,     5,   163,     6,   163,     7,   163,     8,
+  163,     9,   163,    10,   163,    11,   163,    14,   163,    15,
+  163,    16,   163,    17,   163,    18,   163,    19,   163,    20,
+  163,    21,   163,    22,   163,    23,   163,    24,   163,    25,
+  163,    26,   163,    27,   163,    28,   163,    30,   163,    31,
+  163,    32,   163,    33,   163,    34,   163,    35,   163,    36,
+  163,    37,   163,    38,   163,    39,   163,    40,   163,    41,
+  163,    42,   163,    43,   163,    45,   163,    46,   163,    48,
+  163,    49,   163,    50,   163,    51,   163,    52,   163,    53,
+  163,    54,   163,    55,   163,    56,   163,    57,   163,    58,
+  163,    59,   163,    60,   163,    61,   163,    62,   163,    63,
+  163,    64,   163,    65,   163,    66,   163,    67,   163,    68,
+  163,    69,   163,    70,   163,    71,   163,    72,   163,    73,
+  163,    74,   163,    75,   163,    76,   163,    77,   163,    78,
+  163,    79,   163,    80,   163,    81,   163,    82,   163,    83,
+  163,    84,   163,    85,   163,    86,   163,    87,   163,    88,
+  163,    89,   163,    90,   163,    91,   163,    92,   163,    93,
+  163,    94,   163,    95,   163,    96,   163,    97,   163,    98,
+  163,    99,   163,   100,   163,   101,   163,   102,   163,   103,
+  163,   104,   163,   105,   163,   106,   163,   107,   163,   108,
+  163,   109,   163,   110,   163,   111,   163,   112,   163,   113,
+  163,   114,   163,   115,   163,   116,   163,   117,   163,   118,
+  163,   120,   163,   121,   163,   122,   163,   123,   163,   124,
+  163,   125,   163,   126,   163,   127,   163,   131,   163,     1,
+   47,   272,     1,    13, 12852,     1,   119, 65276,     1,     4,
+ 1162,     1,    44, 10022,     2,    12, 60552,   130, 12997,     1,
+   29, 63520,     1,   128, 13009,     1,   129, 12992,
+};
+
 vtkDICOMDictionary::Dict Dict332Data = {
 "PHILIPS MR IMAGING DD 001",
 33,
 132,
 Dict332TagHashTable,
+Dict332KeyHashTable,
 Dict332Contents
 };
 
@@ -14938,11 +18285,19 @@ unsigned short Dict333TagHashTable[] = {
   203,    10,   216,    13,    30,    14,    39,
 };
 
+unsigned short Dict333KeyHashTable[] = {
+    4,    19,    30,     0,     7,     0, 17522,     4, 46597,     6,
+55930,     8, 56158,     9, 48685,    13, 37700,    14, 17131,     5,
+    1, 39670,     2, 58029,     5,  3197,     7, 61168,    12, 28578,
+    3,     3, 32292,    10, 25750,    11, 64700,
+};
+
 vtkDICOMDictionary::Dict Dict333Data = {
 "GE_GENESIS_REV3.0",
 3,
 15,
 Dict333TagHashTable,
+Dict333KeyHashTable,
 Dict333Contents
 };
 
@@ -14996,11 +18351,23 @@ unsigned short Dict334TagHashTable[] = {
   172,    26,   180,
 };
 
+unsigned short Dict334KeyHashTable[] = {
+    8,     8,     8,     8,     8,     9,     8,     8,     0,    33,
+    0,   672,     1,   672,     2,   672,     3,   672,     4,   672,
+    5,   672,     6,   672,     7,   672,     8,   672,     9,   672,
+   10,   672,    11,   672,    12,   672,    13,   672,    14,   672,
+   15,   672,    16,   672,    17,   672,    18,   672,    19,   672,
+   20,   672,    21,   672,    22,   672,    23,   672,    24,   672,
+   25,   672,    26,   672,    27,   672,    28,   672,    29,   672,
+   30,   672,    31,   672,    32,   672,
+};
+
 vtkDICOMDictionary::Dict Dict334Data = {
 "SPI-P-PCR Release 2",
 8,
 33,
 Dict334TagHashTable,
+Dict334KeyHashTable,
 Dict334Contents
 };
 
@@ -15014,11 +18381,16 @@ unsigned short Dict335TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
+unsigned short Dict335KeyHashTable[] = {
+    2,     0,     1,     0, 24862,
+};
+
 vtkDICOMDictionary::Dict Dict335Data = {
 "GEMS_PATI_01",
 1,
 1,
 Dict335TagHashTable,
+Dict335KeyHashTable,
 Dict335Contents
 };
 
@@ -15033,11 +18405,16 @@ unsigned short Dict336TagHashTable[] = {
     2,     0,     2,     0,    16,     1,    17,
 };
 
+unsigned short Dict336KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict336Data = {
 "GEMS_Ultrasound_ImageGroup_001",
 1,
 2,
 Dict336TagHashTable,
+Dict336KeyHashTable,
 Dict336Contents
 };
 
@@ -15085,11 +18462,23 @@ unsigned short Dict337TagHashTable[] = {
   114,
 };
 
+unsigned short Dict337KeyHashTable[] = {
+    8,    17,    22,    39,    46,    57,    66,     0,     4,    11,
+35385,    14, 32738,    20, 15744,    23,  2833,     2,     2, 23394,
+   25, 43057,     8,     1, 45729,     4, 26471,    13, 24852,    15,
+28330,    17, 25477,    18, 57640,    19, 27563,    22, 59116,     3,
+    3, 30681,     5, 26471,    12, 27571,     5,     0, 16087,     6,
+26471,    16, 62400,    24, 13467,    27, 18270,     4,     7, 26471,
+    9, 60922,    10, 17545,    26, 42545,     2,     8, 26471,    21,
+54018,
+};
+
 vtkDICOMDictionary::Dict Dict337Data = {
 "SIEMENS MEDCOM HEADER",
 7,
 28,
 Dict337TagHashTable,
+Dict337KeyHashTable,
 Dict337Contents
 };
 
@@ -15117,11 +18506,19 @@ unsigned short Dict338TagHashTable[] = {
   114,
 };
 
+unsigned short Dict338KeyHashTable[] = {
+    4,    19,    24,     0,     7,     0, 61324,     1, 10403,     2,
+22293,     3, 22293,     5, 22293,     7, 56753,     9, 42348,     2,
+    6, 43684,    10, 18092,     3,     4,  3197,     8, 51787,    11,
+51378,
+};
+
 vtkDICOMDictionary::Dict Dict338Data = {
 "SIEMENS SYNGO EVIDENCE DOCUMENT DATA",
 3,
 12,
 Dict338TagHashTable,
+Dict338KeyHashTable,
 Dict338Contents
 };
 
@@ -15141,11 +18538,17 @@ unsigned short Dict339TagHashTable[] = {
   141,     4,    76,     5,    77,
 };
 
+unsigned short Dict339KeyHashTable[] = {
+    2,     0,     6,     0, 47953,     1, 31225,     2,  4505,     3,
+ 7910,     4, 42914,     5, 39491,
+};
+
 vtkDICOMDictionary::Dict Dict339Data = {
 "GEMS_DL_SERIES_01",
 1,
 6,
 Dict339TagHashTable,
+Dict339KeyHashTable,
 Dict339Contents
 };
 
@@ -15174,11 +18577,19 @@ unsigned short Dict340TagHashTable[] = {
    28,    12,    33,
 };
 
+unsigned short Dict340KeyHashTable[] = {
+    3,     3,     4,     0,    13,     0,  1793,     1,  1793,     2,
+ 1793,     3,  1793,     4,  1793,     5,  1793,     6,  1793,     7,
+ 1793,     8,  1793,     9,  1793,    10,  1793,    11,  1793,    12,
+ 1793,
+};
+
 vtkDICOMDictionary::Dict Dict340Data = {
 "Canon Inc.",
 3,
 13,
 Dict340TagHashTable,
+Dict340KeyHashTable,
 Dict340Contents
 };
 
@@ -15548,11 +18959,87 @@ unsigned short Dict341TagHashTable[] = {
   206,     3,
 };
 
+unsigned short Dict341KeyHashTable[] = {
+   72,    77,    84,    99,   106,   109,   118,   121,   126,   137,
+  148,   169,   176,   181,   188,   201,   214,   217,   230,   243,
+  260,   265,   272,   285,   294,   303,   312,   325,   332,   339,
+  348,   357,   368,   375,   390,   393,   404,   411,   424,   437,
+  442,   445,   450,   461,   468,   475,   480,   493,   496,   501,
+  516,   523,   532,   537,   544,   551,   562,   585,   598,   601,
+  608,   615,   624,   629,   636,   641,   662,   671,   684,   689,
+  694,     0,     2,     6, 26075,   109, 50094,     3,    47, 14146,
+  117,  7211,   148, 26766,     7,    38, 21774,    64, 64118,   153,
+49179,   160, 11461,   171, 59351,   237, 35501,   244, 62800,     3,
+   78,  9822,   111, 18311,   138, 58592,     1,    92, 49789,     4,
+   19, 37122,   103,  1413,   122, 17733,   136, 32705,     1,    14,
+19200,     2,   144, 57481,   193, 38241,     5,    87, 51984,    95,
+61446,   142,  3279,   215, 63333,   241, 20434,     5,    81, 50186,
+  208,  5450,   232, 14810,   260,  5450,   277, 44294,    10,    20,
+45468,    58, 61001,    93, 10306,   174,  2308,   205,  2308,   220,
+ 8340,   251,  2308,   257,  2308,   258,  2308,   259,  2308,     3,
+    7, 26739,   227,  1424,   234,   643,     2,    32, 64318,   132,
+52039,     3,    10, 45043,   224, 17842,   252, 23663,     6,    41,
+12722,   164, 54241,   213,  3918,   243,  7989,   265, 48144,   271,
+63825,     6,    12, 45652,   146, 25779,   167, 52796,   182, 11501,
+  201, 32003,   216, 35112,     1,    57, 10728,     6,    31, 56100,
+   75, 15283,    80, 56287,   188, 12994,   189, 43496,   253, 63520,
+    6,    91, 34496,   124, 22628,   191, 47432,   266, 56411,   272,
+35228,   275, 51745,     8,    68, 35406,    86,  6725,    96, 37755,
+  139,  2515,   154, 65429,   187, 35984,   210, 10143,   226, 49705,
+    2,     8, 52541,   143, 13805,     3,    69, 24164,   125,  7963,
+  200, 50742,     6,    18, 36557,    48, 37043,   131, 46760,   190,
+59342,   264, 28780,   282, 25290,     4,   126, 45739,   169,  9613,
+  179, 35063,   278, 48398,     4,    61, 16183,    94, 57872,    99,
+31886,   104, 38411,     4,   133, 45159,   178, 10899,   221, 25601,
+  268, 10157,     6,    42, 22750,   118, 31391,   156,  1960,   202,
+27369,   247, 22750,   274,  3720,     3,    27, 64427,   147, 59592,
+  223, 11434,     3,    44, 33630,   110, 11534,   112, 58619,     4,
+  140,  6887,   152, 24595,   217, 46743,   273, 38504,     4,    37,
+23407,   134, 27825,   235, 44897,   245, 22079,     5,    74, 48641,
+   79,  5878,    89, 26988,   228, 63730,   236, 29602,     3,    36,
+62206,   129,   426,   230, 47151,     7,    85, 34545,   101, 64813,
+  127, 61499,   130,   426,   196,  6493,   254, 25412,   262, 28788,
+    1,    49, 56464,     5,     1, 27044,    54, 12653,    65, 51928,
+   88, 10719,   249, 23251,     3,   114, 64505,   168, 32443,   233,
+22499,     6,    29, 63819,    71, 65379,   102,   384,   106,  6975,
+  145, 33220,   285, 51908,     6,    98, 18035,   186, 41771,   206,
+37721,   209, 61688,   242, 29574,   261, 61688,     2,    33, 11839,
+  159, 18311,     1,    30, 45993,     2,   120,  1046,   157, 31924,
+    5,    25,  7905,    26, 40593,    83,  9507,   113, 25144,   211,
+50361,     3,   115,  3235,   166, 58193,   255, 48227,     3,    45,
+38372,    72, 43694,   158, 32040,     2,   172, 57287,   219,  4507,
+    6,    16, 36585,    51, 50052,   107, 56716,   135, 52919,   184,
+16728,   218, 43705,     1,    52, 64577,     2,   229, 60692,   270,
+19540,     7,     4, 12644,    17, 32691,    84, 12496,   173, 35363,
+  204, 35363,   250, 35363,   256, 35363,     3,    11, 25683,   121,
+11461,   161, 60670,     4,    13, 42342,    73, 47257,   119, 27465,
+  240, 23537,     2,    63, 31522,   192, 30080,     3,    23, 37876,
+  165, 43751,   276, 53207,     3,    55, 65202,    66,  7319,   281,
+  455,     5,   151, 47089,   177,  5467,   181, 19642,   183,  7141,
+  269,  1591,    11,     0,    75,    21,    75,    34,    75,    35,
+   75,    59, 25437,    97, 12701,   128, 38368,   170,    75,   198,
+12724,   203,    75,   207,  5097,     6,    22, 42983,    43, 26156,
+   90,  2966,   100, 14858,   197,  1014,   263, 14236,     1,   284,
+17032,     3,    67, 63355,   185, 52877,   246,  6736,     3,    24,
+26058,    77, 40413,   176, 62785,     4,    53, 59945,   194, 22362,
+  195, 20827,   225, 48303,     2,     5, 29830,    28,  4697,     3,
+    2, 28564,     9, 14635,   222, 64429,     2,    82, 60674,   137,
+25655,    10,    40, 23982,    50,  5061,   108,  4001,   116,  1804,
+  149, 37430,   150, 29504,   175, 61278,   214, 30832,   231, 63084,
+  238,  5700,     4,     3, 30450,   105, 20254,   141,  1874,   239,
+ 5700,     6,    15, 17267,    46, 29347,    60,  7617,    70, 21178,
+  212, 10119,   267,  3770,     2,    39,    67,   248, 41528,     2,
+   56, 58063,   279, 31775,    10,    62,  4257,    76, 48632,   123,
+59980,   155, 58778,   162, 25837,   163, 13351,   180, 36708,   199,
+47820,   280,  4548,   283, 16085,
+};
+
 vtkDICOMDictionary::Dict Dict341Data = {
 "GEMS_GENIE_1",
 71,
 286,
 Dict341TagHashTable,
+Dict341KeyHashTable,
 Dict341Contents
 };
 
@@ -15566,11 +19053,16 @@ unsigned short Dict342TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict342KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict342Data = {
 "SCHICK TECHNOLOGIES - Image Security Creator ID",
 1,
 1,
 Dict342TagHashTable,
+Dict342KeyHashTable,
 Dict342Contents
 };
 
@@ -15593,11 +19085,18 @@ unsigned short Dict343TagHashTable[] = {
     4,
 };
 
+unsigned short Dict343KeyHashTable[] = {
+    3,    10,     0,     3,     0, 10150,     1, 32711,     3,  7563,
+    5,     2,   659,     4, 24599,     5,  1739,     6, 53528,     7,
+48140,
+};
+
 vtkDICOMDictionary::Dict Dict343Data = {
 "Hologic",
 2,
 8,
 Dict343TagHashTable,
+Dict343KeyHashTable,
 Dict343Contents
 };
 
@@ -15615,11 +19114,17 @@ unsigned short Dict344TagHashTable[] = {
   131,
 };
 
+unsigned short Dict344KeyHashTable[] = {
+    2,     0,     4,     0,  1041,     1, 17883,     2, 49382,     3,
+22212,
+};
+
 vtkDICOMDictionary::Dict Dict344Data = {
 "GEMS_DL_PATNT_01",
 1,
 4,
 Dict344TagHashTable,
+Dict344KeyHashTable,
 Dict344Contents
 };
 
@@ -15639,11 +19144,17 @@ unsigned short Dict345TagHashTable[] = {
    22,     4,    24,     5,    32,
 };
 
+unsigned short Dict345KeyHashTable[] = {
+    2,     0,     6,     0, 10380,     1, 13079,     2, 65520,     3,
+47831,     4, 61993,     5, 25057,
+};
+
 vtkDICOMDictionary::Dict Dict345Data = {
 "SIEMENS SYNGO FRAME SET",
 1,
 6,
 Dict345TagHashTable,
+Dict345KeyHashTable,
 Dict345Contents
 };
 
@@ -15658,11 +19169,16 @@ unsigned short Dict346TagHashTable[] = {
     2,     0,     2,     0,     1,     1,     2,
 };
 
+unsigned short Dict346KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict346Data = {
 "SIEMENS MR CM 03",
 1,
 2,
 Dict346TagHashTable,
+Dict346KeyHashTable,
 Dict346Contents
 };
 
@@ -15717,11 +19233,24 @@ unsigned short Dict347TagHashTable[] = {
     2,    25,    18,    32,     3,
 };
 
+unsigned short Dict347KeyHashTable[] = {
+    9,    24,    29,    32,    41,    46,    69,    80,     0,     7,
+   14, 58537,    16, 45946,    17, 48094,    19, 21230,    23,  7052,
+   25, 62234,    26, 23691,     2,     7,  5028,    13, 63917,     1,
+   28, 17540,     4,     2, 23034,     5, 52342,     9,  2147,    22,
+26774,     2,     6, 21634,     8, 26515,    11,     0,   672,     1,
+  672,     4, 59934,    11, 17362,    15, 14011,    20, 14011,    21,
+53823,    29,   672,    30,   672,    31,   672,    32,   672,     5,
+    3, 58914,    10, 23634,    12, 20905,    18,  8220,    27, 43700,
+    2,    24,  9752,    33, 41207,
+};
+
 vtkDICOMDictionary::Dict Dict347Data = {
 "SIEMENS Ultrasound SC2000",
 8,
 34,
 Dict347TagHashTable,
+Dict347KeyHashTable,
 Dict347Contents
 };
 
@@ -15752,11 +19281,19 @@ unsigned short Dict348TagHashTable[] = {
     1,     1,     2,     8,     1,     9,     2,
 };
 
+unsigned short Dict348KeyHashTable[] = {
+    3,     3,     4,     0,    15,     0,  1793,     1,  1793,     2,
+ 1793,     3,  1793,     4,  1793,     5,  1793,     6,  1793,     7,
+ 1793,     8,  1793,     9,  1793,    10,  1793,    11,  1793,    12,
+ 1793,    13,  1793,    14,  1793,
+};
+
 vtkDICOMDictionary::Dict Dict348Data = {
 "TOSHIBA_MEC_1.0",
 3,
 15,
 Dict348TagHashTable,
+Dict348KeyHashTable,
 Dict348Contents
 };
 
@@ -15892,11 +19429,40 @@ unsigned short Dict349TagHashTable[] = {
   127,    52,   132,    72,   156,    89,   237,
 };
 
+unsigned short Dict349KeyHashTable[] = {
+   25,    34,    41,    48,    57,    72,    99,   106,   115,   122,
+  137,   150,   155,   166,   177,   188,   203,   208,   215,   222,
+  225,   234,   239,   244,     0,     4,    18, 32643,    30, 32428,
+   67, 38491,    76, 12598,     3,     0, 54820,    22, 17791,    33,
+36236,     3,     1, 15599,    56, 21625,    81, 53437,     4,     2,
+14339,    15, 14039,    36,  3076,    73,   504,     7,     8, 41868,
+   17, 63171,    43, 15739,    45, 22819,    47, 56385,    48, 34437,
+   57, 47881,    13,    23, 31537,    82,  1364,    88,   224,    89,
+  224,    90,   224,    91,   224,    92,   224,    93,   224,    94,
+  224,    95,   224,    96,   224,    97,   224,    98,   224,     3,
+   16,  6129,    60,  8306,    63, 56399,     4,     4, 20697,     9,
+29728,    52, 51690,    70, 37692,     3,     6, 27384,    25, 34982,
+   71, 37692,     7,    14,   957,    50, 24956,    54, 48451,    55,
+ 9151,    65, 18373,    66, 21393,    72, 37692,     6,    26, 24410,
+   41, 46616,    49, 18204,    51, 31665,    59, 43611,    68, 57016,
+    2,    31, 57123,    80, 62855,     5,    40, 39888,    74, 20171,
+   78,  6633,    83, 18164,    87, 61327,     5,     7, 14714,    20,
+55925,    27,  2425,    46, 37015,    84, 54838,     5,     3, 16928,
+   13, 46396,    28,  2425,    38, 45886,    85, 54838,     7,    24,
+44836,    29,  2425,    34, 60881,    44, 32946,    64, 31924,    75,
+ 3538,    86, 54838,     2,    10, 16235,    11, 16235,     3,    21,
+63286,    61,  2909,    62, 48963,     3,    32, 55115,    39, 33875,
+   58,  4338,     1,    69, 24121,     4,     5, 57926,    12, 17479,
+   53, 17321,    79, 63996,     2,    19, 41222,    37, 41269,     2,
+   42, 47470,    77, 50281,     1,    35, 60010,
+};
+
 vtkDICOMDictionary::Dict Dict349Data = {
 "SIEMENS MED SMS USG S2000 3D VOLUME",
 24,
 99,
 Dict349TagHashTable,
+Dict349KeyHashTable,
 Dict349Contents
 };
 
@@ -15919,11 +19485,17 @@ unsigned short Dict350TagHashTable[] = {
    16,
 };
 
+unsigned short Dict350KeyHashTable[] = {
+    2,     3,     0,     8,     0,  2690,     1,  2690,     2,  2690,
+    3,  2690,     4,  2690,     5,  2690,     6,  2690,     7,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict350Data = {
 "Picker MR Private Group",
 2,
 8,
 Dict350TagHashTable,
+Dict350KeyHashTable,
 Dict350Contents
 };
 
@@ -15977,11 +19549,24 @@ unsigned short Dict351TagHashTable[] = {
    30,    30,    38,
 };
 
+unsigned short Dict351KeyHashTable[] = {
+    9,    16,    25,    30,    39,    54,    65,    74,     0,     3,
+    3, 13387,    16, 55641,    20, 34838,     4,     1, 20351,     7,
+27958,    13, 11937,    29, 50357,     2,    10, 47590,    26,  9107,
+    4,    11, 33923,    12, 14362,    17, 56340,    27,  9107,     7,
+    2, 27489,     4, 31355,    18, 29372,    24, 41112,    25,  9107,
+   30, 63722,    31, 43544,     5,     0,  2382,     8, 22798,    14,
+46824,    19,  2244,    21, 13594,     4,    22, 46357,    23, 21176,
+   28, 64028,    32, 43512,     4,     5, 38493,     6,  2505,     9,
+42839,    15,  2168,
+};
+
 vtkDICOMDictionary::Dict Dict351Data = {
 "DLX_SERIE_01",
 8,
 33,
 Dict351TagHashTable,
+Dict351KeyHashTable,
 Dict351Contents
 };
 
@@ -15997,11 +19582,16 @@ unsigned short Dict352TagHashTable[] = {
     2,     0,     3,     0,    32,     1,    48,     2,    64,
 };
 
+unsigned short Dict352KeyHashTable[] = {
+    2,     0,     3,     0, 20335,     1, 35075,     2, 51556,
+};
+
 vtkDICOMDictionary::Dict Dict352Data = {
 "SIEMENS SYNGO ENCAPSULATED DOCUMENT DATA",
 1,
 3,
 Dict352TagHashTable,
+Dict352KeyHashTable,
 Dict352Contents
 };
 
@@ -16016,11 +19606,16 @@ unsigned short Dict353TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict353KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict353Data = {
 "1.2.840.113663.1",
 1,
 2,
 Dict353TagHashTable,
+Dict353KeyHashTable,
 Dict353Contents
 };
 
@@ -16034,11 +19629,16 @@ unsigned short Dict354TagHashTable[] = {
     2,     0,     1,     0,   118,
 };
 
+unsigned short Dict354KeyHashTable[] = {
+    2,     0,     1,     0, 57277,
+};
+
 vtkDICOMDictionary::Dict Dict354Data = {
 "SIEMENS MED OCS BEAM DISPLAY INFO",
 1,
 1,
 Dict354TagHashTable,
+Dict354KeyHashTable,
 Dict354Contents
 };
 
@@ -16067,11 +19667,19 @@ unsigned short Dict355TagHashTable[] = {
    25,     9,    26,
 };
 
+unsigned short Dict355KeyHashTable[] = {
+    3,     3,     4,     0,    13,     0,  1793,     1,  1793,     2,
+ 1793,     3,  1793,     4,  1793,     5,  1793,     6,  1793,     7,
+ 1793,     8,  1793,     9,  1793,    10,  1793,    11,  1793,    12,
+ 1793,
+};
+
 vtkDICOMDictionary::Dict Dict355Data = {
 "ULTRAVISUAL_TAG_SET1",
 3,
 13,
 Dict355TagHashTable,
+Dict355KeyHashTable,
 Dict355Contents
 };
 
@@ -16090,11 +19698,17 @@ unsigned short Dict356TagHashTable[] = {
    21,     4,    22,
 };
 
+unsigned short Dict356KeyHashTable[] = {
+    2,     0,     5,     0, 31017,     1, 29382,     2, 59316,     3,
+ 3814,     4, 62999,
+};
+
 vtkDICOMDictionary::Dict Dict356Data = {
 "Applicare/RadWorks/Version 6.0/Summary",
 1,
 5,
 Dict356TagHashTable,
+Dict356KeyHashTable,
 Dict356Contents
 };
 
@@ -16129,11 +19743,20 @@ unsigned short Dict357TagHashTable[] = {
    18,    14,     2,    16,   172,
 };
 
+unsigned short Dict357KeyHashTable[] = {
+    5,    16,    27,    36,     0,     5,     1, 41712,     4, 58922,
+    9, 60408,    10, 30091,    14,  4110,     5,     2, 25528,     6,
+36518,     8, 46390,    12, 59198,    13,  3512,     4,     0, 22975,
+    7, 60301,    11, 22234,    17, 10216,     4,     3,   999,     5,
+30462,    15, 58623,    16, 15157,
+};
+
 vtkDICOMDictionary::Dict Dict357Data = {
 "CARDIO-D.R. 1.0",
 4,
 18,
 Dict357TagHashTable,
+Dict357KeyHashTable,
 Dict357Contents
 };
 
@@ -16156,11 +19779,17 @@ unsigned short Dict358TagHashTable[] = {
     8,
 };
 
+unsigned short Dict358KeyHashTable[] = {
+    2,     3,     0,     8,     0,  2690,     1,  2690,     2,  2690,
+    3,  2690,     4,  2690,     5,  2690,     6,  2690,     7,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict358Data = {
 "LODOX_STATSCAN",
 2,
 8,
 Dict358TagHashTable,
+Dict358KeyHashTable,
 Dict358Contents
 };
 
@@ -16343,11 +19972,49 @@ unsigned short Dict359TagHashTable[] = {
   241,
 };
 
+unsigned short Dict359KeyHashTable[] = {
+   35,    40,    45,    54,    63,    76,    79,    88,   101,   106,
+  133,   140,   145,   150,   153,    34,   160,   169,   174,   185,
+  200,   211,   216,   225,   234,   249,   258,   263,   274,   283,
+  298,   307,   320,   331,     0,     2,     1, 63510,    38,  3301,
+    2,     6, 35038,   107,  7331,     4,    78, 56036,    79, 45074,
+  108,  7331,   120, 16677,     4,    15, 48809,    32,  3086,    56,
+ 2113,   109,  7331,     6,     7, 25658,    24, 54318,    26, 19401,
+   80, 18820,    90,  8372,   114, 35493,     1,    72,  7665,     4,
+   12, 62202,    17, 60436,    19, 51762,    35, 11973,     6,    22,
+49717,    25, 30605,    34, 24447,    89, 32632,    92, 33445,   101,
+34100,     2,    11, 48617,    86, 16705,    13,    68, 28757,    83,
+ 2998,   125,   158,   126,   158,   127,   158,   128,   158,   129,
+  158,   130,   158,   131,   158,   132,   158,   133,   158,   134,
+  158,   135,   158,     3,    27, 12984,    49, 50889,    95, 45468,
+    2,    44, 48937,    57,  4781,     2,    55, 38462,    67, 22890,
+    1,    16, 62862,     3,    13, 48160,    62, 24693,    82,   687,
+    4,     0, 27070,    36,  9274,    63, 55781,   124,  8594,     2,
+   33, 27282,    64, 24842,     5,    40,  8094,    53,  4326,    65,
+24842,   100, 59086,   104, 54155,     7,     2, 10056,    39, 64092,
+   46, 13274,    61, 43214,    66, 24842,    98, 44459,    99, 30707,
+    5,     5, 62561,    47, 19170,    48, 19170,    88, 57047,   111,
+ 6528,     2,   106, 47867,   110, 50471,     4,    18, 28406,    84,
+62931,    93,  7554,   105, 24826,     4,    21, 64390,    23, 39499,
+   31, 49309,    59, 31833,     7,     3,  7434,    45, 10278,    69,
+ 4209,    75, 43955,    77, 35866,    96, 42349,    97, 36703,     4,
+   20, 49441,    52, 60025,    74, 32986,    91, 18780,     2,    42,
+56309,   116, 14333,     5,    70, 52563,    71, 12134,   112, 64178,
+  117, 59788,   121, 54129,     4,    50, 52025,   113, 16602,   118,
+ 6879,   122, 54129,     7,     9,  4829,    10, 20555,    14, 37170,
+   51,  4530,    87, 56166,   119, 58788,   123, 54129,     4,    43,
+ 3909,    54,  9895,    85, 43583,    94, 60783,     6,    28,  5766,
+   41, 18464,    58, 40817,    60, 45391,    81, 54096,   102, 43809,
+    5,     4, 61508,     8, 31759,    29,  5766,    76,   781,   115,
+35522,     4,    30,  5766,    37,  4000,    73, 40721,   103, 65216,
+};
+
 vtkDICOMDictionary::Dict Dict359Data = {
 "SIEMENS MED SMS USG ANTARES 3D VOLUME",
 34,
 136,
 Dict359TagHashTable,
+Dict359KeyHashTable,
 Dict359Contents
 };
 
@@ -16365,11 +20032,17 @@ unsigned short Dict360TagHashTable[] = {
    19,
 };
 
+unsigned short Dict360KeyHashTable[] = {
+    2,     0,     4,     0, 51626,     1, 58780,     2, 40933,     3,
+25656,
+};
+
 vtkDICOMDictionary::Dict Dict360Data = {
 "1.2.840.113681",
 1,
 4,
 Dict360TagHashTable,
+Dict360KeyHashTable,
 Dict360Contents
 };
 
@@ -16415,11 +20088,22 @@ unsigned short Dict361TagHashTable[] = {
     3,     7,     1,    20,    19,    22,    21,
 };
 
+unsigned short Dict361KeyHashTable[] = {
+    6,     6,     7,    10,    15,    34,     0,     1,    15,  1277,
+    2,     9, 62724,    11, 23293,     9,     0, 39113,     1, 39113,
+    2, 39113,     3, 39113,     4, 39113,     5, 39113,     6, 43013,
+    7, 39113,     8, 39113,    15,    10,   896,    12,   896,    13,
+  896,    14,   896,    16,   896,    17,   896,    18,   896,    19,
+  896,    20,   896,    21,   896,    22,   896,    23,   896,    24,
+  896,    25,   896,    26,   896,
+};
+
 vtkDICOMDictionary::Dict Dict361Data = {
 "Philips PET Private Group",
 6,
 27,
 Dict361TagHashTable,
+Dict361KeyHashTable,
 Dict361Contents
 };
 
@@ -16433,11 +20117,16 @@ unsigned short Dict362TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
+unsigned short Dict362KeyHashTable[] = {
+    2,     0,     1,     0, 48361,
+};
+
 vtkDICOMDictionary::Dict Dict362Data = {
 "GEMS-IT/Centricity RA600/7.0",
 1,
 1,
 Dict362TagHashTable,
+Dict362KeyHashTable,
 Dict362Contents
 };
 
@@ -16451,11 +20140,16 @@ unsigned short Dict363TagHashTable[] = {
     2,     0,     1,     0,   173,
 };
 
+unsigned short Dict363KeyHashTable[] = {
+    2,     0,     1,     0,  1343,
+};
+
 vtkDICOMDictionary::Dict Dict363Data = {
 "syngoDynamics_Reporting",
 1,
 1,
 Dict363TagHashTable,
+Dict363KeyHashTable,
 Dict363Contents
 };
 
@@ -16520,11 +20214,25 @@ unsigned short Dict364TagHashTable[] = {
    14,   122,     1,    15,   123,
 };
 
+unsigned short Dict364KeyHashTable[] = {
+   10,    11,    10,    10,    10,    10,    10,    10,    10,    10,
+    0,    42,     0,   538,     1,   538,     2,   538,     3,   538,
+    4,   538,     5,   538,     6,   538,     7,   538,     8,   538,
+    9,   538,    10,   538,    11,   538,    12,   538,    13,   538,
+   14,   538,    15,   538,    16,   538,    17,   538,    18,   538,
+   19,   538,    20,   538,    21,   538,    22,   538,    23,   538,
+   24,   538,    25,   538,    26,   538,    27,   538,    28,   538,
+   29,   538,    30,   538,    31,   538,    32,   538,    33,   538,
+   34,   538,    35,   538,    36,   538,    37,   538,    38,   538,
+   39,   538,    40,   538,    41,   538,
+};
+
 vtkDICOMDictionary::Dict Dict364Data = {
 "Harmony R1.0 C3",
 10,
 42,
 Dict364TagHashTable,
+Dict364KeyHashTable,
 Dict364Contents
 };
 
@@ -16569,11 +20277,21 @@ unsigned short Dict365TagHashTable[] = {
     4,     8,     8,    20,   128,
 };
 
+unsigned short Dict365KeyHashTable[] = {
+    6,     6,     6,     6,     6,     7,     0,    26,     0,   896,
+    1,   896,     2,   896,     3,   896,     4,   896,     5,   896,
+    6,   896,     7,   896,     8,   896,     9,   896,    10,   896,
+   11,   896,    12,   896,    13,   896,    14,   896,    15,   896,
+   16,   896,    17,   896,    18,   896,    19,   896,    20,   896,
+   21,   896,    22,   896,    23,   896,    24,   896,    25,   896,
+};
+
 vtkDICOMDictionary::Dict Dict365Data = {
 "Harmony R1.0 C2",
 6,
 26,
 Dict365TagHashTable,
+Dict365KeyHashTable,
 Dict365Contents
 };
 
@@ -16588,11 +20306,16 @@ unsigned short Dict366TagHashTable[] = {
     2,     0,     2,     0,   151,     1,   152,
 };
 
+unsigned short Dict366KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict366Data = {
 "SEGAMI__MEMO",
 1,
 2,
 Dict366TagHashTable,
+Dict366KeyHashTable,
 Dict366Contents
 };
 
@@ -16633,11 +20356,21 @@ unsigned short Dict367TagHashTable[] = {
    20,     6,    16,    18,   112,    20,   129,
 };
 
+unsigned short Dict367KeyHashTable[] = {
+    6,    13,    32,    43,    52,     0,     3,    13, 51687,    14,
+27097,    22, 45525,     9,     0,  1076,     1,  1076,     2,  1076,
+    3,  1076,     4,  1076,     8, 55231,    12, 38311,    18, 11675,
+   20,  8895,     5,     5, 32065,     6, 14603,     7,  5691,    11,
+44669,    16, 15159,     4,     9,  1718,    10,  3287,    15,  8643,
+   17, 60595,     2,    19,    11,    21, 61985,
+};
+
 vtkDICOMDictionary::Dict Dict367Data = {
 "AGFA",
 5,
 23,
 Dict367TagHashTable,
+Dict367KeyHashTable,
 Dict367Contents
 };
 
@@ -16653,11 +20386,16 @@ unsigned short Dict368TagHashTable[] = {
     2,     0,     3,     0,     0,     1,     1,     2,     8,
 };
 
+unsigned short Dict368KeyHashTable[] = {
+    2,     0,     3,     0,  5381,     1,  5381,     2,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict368Data = {
 "Philips Imaging DD 067",
 1,
 3,
 Dict368TagHashTable,
+Dict368KeyHashTable,
 Dict368Contents
 };
 
@@ -16673,11 +20411,16 @@ unsigned short Dict369TagHashTable[] = {
     2,     0,     3,     0,     1,     1,     2,     2,     3,
 };
 
+unsigned short Dict369KeyHashTable[] = {
+    2,     0,     3,     0, 21796,     1, 55126,     2,  3155,
+};
+
 vtkDICOMDictionary::Dict Dict369Data = {
 "DLX_EXAMS_01",
 1,
 3,
 Dict369TagHashTable,
+Dict369KeyHashTable,
 Dict369Contents
 };
 
@@ -16691,11 +20434,16 @@ unsigned short Dict370TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict370KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict370Data = {
 "Philips Imaging DD 065",
 1,
 1,
 Dict370TagHashTable,
+Dict370KeyHashTable,
 Dict370Contents
 };
 
@@ -16709,11 +20457,16 @@ unsigned short Dict371TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
+unsigned short Dict371KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict371Data = {
 "GE_GROUP",
 1,
 1,
 Dict371TagHashTable,
+Dict371KeyHashTable,
 Dict371Contents
 };
 
@@ -16878,11 +20631,46 @@ unsigned short Dict372TagHashTable[] = {
    41,   103,   157,   107,   163,
 };
 
+unsigned short Dict372KeyHashTable[] = {
+   31,    42,    57,    66,    73,    82,    89,   102,   109,   116,
+  129,   136,   151,   168,   177,   180,   187,   198,   213,   220,
+  225,   230,   233,   240,   249,   260,   269,   276,   285,   292,
+    0,     5,    14, 63003,    34, 59272,    42, 18346,   107, 40120,
+  109,  2695,     7,     9, 14553,    21, 12281,    22, 55609,    39,
+24930,    80, 44987,   108, 50870,   115, 21303,     4,    37, 51280,
+   57, 22928,    75, 47370,    87, 29775,     3,    38, 56594,    92,
+32921,   110, 64945,     4,    11, 15993,    83, 52854,   119, 59702,
+  120, 64870,     3,    18, 55538,    74,  9937,   106,  6116,     6,
+   28, 41132,    30, 37852,    86, 28655,    98, 64940,    99, 20449,
+  102, 45142,     3,     2, 39182,    70, 22116,    79, 31994,     3,
+   15, 38338,    59, 63855,    78, 64737,     6,    24, 44260,    66,
+35149,    71, 16125,    84, 35081,    88, 23172,    95, 29826,     3,
+   23, 47389,    85, 50159,    96, 39694,     7,     8, 35602,    26,
+62788,    40, 44963,    58, 11424,    65, 13879,    97, 19679,   105,
+47578,     8,     5, 35345,    32, 25014,    43, 61289,    52,  7458,
+   68, 56884,    82,  1042,   100, 33063,   112, 46236,     4,    25,
+60671,    67, 12574,    72, 44321,   118, 43862,     1,   111,  3859,
+    3,    48, 52333,   113,  3419,   117, 35640,     5,    17,  2376,
+   51, 17297,    61, 37801,    62,  8879,   114, 26605,     7,     1,
+ 8887,    16, 29416,    20, 59193,    29, 57199,    45, 10138,    64,
+56789,    73, 17842,     3,    33, 51849,    76, 34273,    81,  7450,
+    2,    35, 28119,    46, 14224,     2,    60, 43195,   103, 44246,
+    1,   104, 25599,     3,    55,  8568,    69, 58022,    89, 45151,
+    4,    27,  5165,    31, 46851,    56, 55240,    93, 60044,     5,
+    3, 17849,     7, 56934,    36, 42885,    50, 50209,    94, 50709,
+    4,     4, 21876,    47, 25852,    53, 49039,    54, 47002,     3,
+   13, 46591,    63, 61594,    77, 19391,     4,    10, 30769,    12,
+38356,   101, 16832,   116, 15682,     3,     6, 52748,    41, 18671,
+   49, 44819,     6,     0, 62421,    19, 49434,    44,  8583,    90,
+50846,    91, 47471,   121, 32794,
+};
+
 vtkDICOMDictionary::Dict Dict372Data = {
 "SIEMENS SYNGO OBJECT GRAPHICS",
 30,
 122,
 Dict372TagHashTable,
+Dict372KeyHashTable,
 Dict372Contents
 };
 
@@ -16900,11 +20688,17 @@ unsigned short Dict373TagHashTable[] = {
    57,
 };
 
+unsigned short Dict373KeyHashTable[] = {
+    2,     0,     4,     0, 38317,     1, 44786,     2,  3122,     3,
+58849,
+};
+
 vtkDICOMDictionary::Dict Dict373Data = {
 "Visus Change",
 1,
 4,
 Dict373TagHashTable,
+Dict373KeyHashTable,
 Dict373Contents
 };
 
@@ -16967,11 +20761,26 @@ unsigned short Dict374TagHashTable[] = {
    70,
 };
 
+unsigned short Dict374KeyHashTable[] = {
+   11,    26,    33,    44,    53,    60,    63,    70,    79,    92,
+    0,     7,     6, 41126,    11, 30891,    20,  5783,    28, 10952,
+   29, 43087,    30, 64438,    33,  2123,     3,     3, 27834,    17,
+35901,    36,  3251,     5,    13, 44893,    15, 26509,    27, 24634,
+   37,  9290,    38, 58437,     4,     7, 33937,    10, 43658,    12,
+ 5276,    22, 36003,     3,     4, 20645,    31, 25023,    35,  8328,
+    1,     0, 22772,     3,     1, 39192,     9, 39583,    18, 26726,
+    4,     2, 18667,    16, 19828,    21, 33055,    32, 61400,     6,
+    5, 33514,     8, 42514,    19,  4884,    23,  8045,    25, 29741,
+   39, 22188,     4,    14, 33697,    24, 31822,    26,  7617,    34,
+62006,
+};
+
 vtkDICOMDictionary::Dict Dict374Data = {
 "SIEMENS ISI",
 10,
 40,
 Dict374TagHashTable,
+Dict374KeyHashTable,
 Dict374Contents
 };
 
@@ -16985,11 +20794,16 @@ unsigned short Dict375TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict375KeyHashTable[] = {
+    2,     0,     1,     0, 16313,
+};
+
 vtkDICOMDictionary::Dict Dict375Data = {
 "PHILIPS MR R5.6/PART",
 1,
 1,
 Dict375TagHashTable,
+Dict375KeyHashTable,
 Dict375Contents
 };
 
@@ -17004,11 +20818,16 @@ unsigned short Dict376TagHashTable[] = {
     2,     0,     2,     0,     1,     1,    11,
 };
 
+unsigned short Dict376KeyHashTable[] = {
+    2,     0,     2,     0, 32747,     1, 25219,
+};
+
 vtkDICOMDictionary::Dict Dict376Data = {
 "METAEMOTION GINKGO",
 1,
 2,
 Dict376TagHashTable,
+Dict376KeyHashTable,
 Dict376Contents
 };
 
@@ -17041,11 +20860,20 @@ unsigned short Dict377TagHashTable[] = {
   233,
 };
 
+unsigned short Dict377KeyHashTable[] = {
+    5,    12,    25,    30,     0,     3,     1, 36983,     6, 52136,
+   15, 21390,     6,     3,  1345,     4,  1345,     5,  1345,     7,
+ 1345,    10,  1345,    12,  4523,     2,     0, 28388,    13, 61904,
+    5,     2, 37980,     8, 32816,     9,  6103,    11, 53095,    14,
+54881,
+};
+
 vtkDICOMDictionary::Dict Dict377Data = {
 "GEMS_IDEN_01",
 4,
 16,
 Dict377TagHashTable,
+Dict377KeyHashTable,
 Dict377Contents
 };
 
@@ -17060,11 +20888,16 @@ unsigned short Dict378TagHashTable[] = {
     2,     0,     2,     0,     0,     1,     1,
 };
 
+unsigned short Dict378KeyHashTable[] = {
+    2,     0,     2,     0,  4400,     1, 40600,
+};
+
 vtkDICOMDictionary::Dict Dict378Data = {
 "SIEMENS MED ECAT FILE INFO",
 1,
 2,
 Dict378TagHashTable,
+Dict378KeyHashTable,
 Dict378Contents
 };
 
@@ -17078,11 +20911,16 @@ unsigned short Dict379TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict379KeyHashTable[] = {
+    2,     0,     1,     0, 45534,
+};
+
 vtkDICOMDictionary::Dict Dict379Data = {
 "SIEMENS CT APPL EVIDENCEDOCUMENT",
 1,
 1,
 Dict379TagHashTable,
+Dict379KeyHashTable,
 Dict379Contents
 };
 
@@ -17096,11 +20934,16 @@ unsigned short Dict380TagHashTable[] = {
     2,     0,     1,     0,   147,
 };
 
+unsigned short Dict380KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict380Data = {
 "Viewing Protocol",
 1,
 1,
 Dict380TagHashTable,
+Dict380KeyHashTable,
 Dict380Contents
 };
 
@@ -17148,11 +20991,22 @@ unsigned short Dict381TagHashTable[] = {
   121,
 };
 
+unsigned short Dict381KeyHashTable[] = {
+    7,     8,    17,    22,    25,    28,     7,     0,     4,    14,
+37250,    19, 22482,    23, 16263,    24,  6460,     2,     7, 59370,
+   26, 24515,     1,    27, 24515,     1,     6,  6820,    20,     0,
+  768,     1,   768,     2,   768,     3,   768,     4,   768,     5,
+  768,     8,   768,     9,   768,    10,   768,    11,   768,    12,
+  768,    13,   768,    15,   768,    16,   768,    17,   768,    18,
+10278,    20,   768,    21,   768,    22,   768,    25,   768,
+};
+
 vtkDICOMDictionary::Dict Dict381Data = {
 "SIEMENS DFR.01 MANIPULATED",
 7,
 28,
 Dict381TagHashTable,
+Dict381KeyHashTable,
 Dict381Contents
 };
 
@@ -17177,11 +21031,18 @@ unsigned short Dict382TagHashTable[] = {
     4,     7,     8,     9,    16,
 };
 
+unsigned short Dict382KeyHashTable[] = {
+    2,     3,     0,    10,     0,  2690,     1,  2690,     2,  2690,
+    3,  2690,     4,  2690,     5,  2690,     6,  2690,     7,  2690,
+    8,  2690,     9,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict382Data = {
 "BioPri",
 2,
 10,
 Dict382TagHashTable,
+Dict382KeyHashTable,
 Dict382Contents
 };
 
@@ -17195,11 +21056,16 @@ unsigned short Dict383TagHashTable[] = {
     2,     0,     1,     0,   143,
 };
 
+unsigned short Dict383KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict383Data = {
 "DL_INTERNAL_USE",
 1,
 1,
 Dict383TagHashTable,
+Dict383KeyHashTable,
 Dict383Contents
 };
 
@@ -17227,11 +21093,19 @@ unsigned short Dict384TagHashTable[] = {
    35,
 };
 
+unsigned short Dict384KeyHashTable[] = {
+    4,    13,    20,     0,     4,     0, 55697,     2, 31823,     3,
+41799,     5, 18347,     3,     1, 20465,     4, 27577,     8, 34399,
+    5,     6,  6979,     7, 51692,     9,  1793,    10,  1793,    11,
+ 1793,
+};
+
 vtkDICOMDictionary::Dict Dict384Data = {
 "Vital Images SW 3.4",
 3,
 12,
 Dict384TagHashTable,
+Dict384KeyHashTable,
 Dict384Contents
 };
 
@@ -17245,11 +21119,16 @@ unsigned short Dict385TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
+unsigned short Dict385KeyHashTable[] = {
+    2,     0,     1,     0, 13593,
+};
+
 vtkDICOMDictionary::Dict Dict385Data = {
 "AMI Annotations_01",
 1,
 1,
 Dict385TagHashTable,
+Dict385KeyHashTable,
 Dict385Contents
 };
 
@@ -17270,11 +21149,17 @@ unsigned short Dict386TagHashTable[] = {
    96,     4,   112,     5,   128,     6,   144,
 };
 
+unsigned short Dict386KeyHashTable[] = {
+    2,     0,     7,     0, 29792,     1, 38847,     2, 26264,     3,
+15853,     4,  6415,     5, 26303,     6,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict386Data = {
 "CAMTRONICS",
 1,
 7,
 Dict386TagHashTable,
+Dict386KeyHashTable,
 Dict386Contents
 };
 
@@ -17298,11 +21183,18 @@ unsigned short Dict387TagHashTable[] = {
     6,     7,     8,
 };
 
+unsigned short Dict387KeyHashTable[] = {
+    3,    14,     0,     5,     0, 22649,     2, 44142,     6,  2695,
+    7, 49484,     8, 19075,     4,     1, 17289,     3, 56459,     4,
+ 2345,     5, 36563,
+};
+
 vtkDICOMDictionary::Dict Dict387Data = {
 "Applicare/Print/Version 5.1",
 2,
 9,
 Dict387TagHashTable,
+Dict387KeyHashTable,
 Dict387Contents
 };
 
@@ -17326,11 +21218,18 @@ unsigned short Dict388TagHashTable[] = {
    98,     8,   157,
 };
 
+unsigned short Dict388KeyHashTable[] = {
+    3,    10,     0,     3,     1, 59666,     2, 15703,     5,    49,
+    6,     0, 52197,     3, 39312,     4, 17552,     6, 59865,     7,
+55937,     8,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict388Data = {
 "GEHC_CT_ADVAPP_001",
 2,
 9,
 Dict388TagHashTable,
+Dict388KeyHashTable,
 Dict388Contents
 };
 
@@ -17345,11 +21244,16 @@ unsigned short Dict389TagHashTable[] = {
     2,     0,     2,     0,     2,     1,     5,
 };
 
+unsigned short Dict389KeyHashTable[] = {
+    2,     0,     2,     0, 28839,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict389Data = {
 "NUD_PRIVATE",
 1,
 2,
 Dict389TagHashTable,
+Dict389KeyHashTable,
 Dict389Contents
 };
 
@@ -17378,11 +21282,19 @@ unsigned short Dict390TagHashTable[] = {
   117,    12,   153,
 };
 
+unsigned short Dict390KeyHashTable[] = {
+    4,    11,    28,     0,     3,     0, 38625,     5, 57718,     6,
+51679,     8,     1, 46199,     2, 12225,     3, 63476,     7, 45592,
+    8, 62295,     9, 25578,    11, 65296,    12,  6343,     2,     4,
+11441,    10, 32346,
+};
+
 vtkDICOMDictionary::Dict Dict390Data = {
 "astm.org/diconde/iod/NdeCtCalibrationData",
 3,
 13,
 Dict390TagHashTable,
+Dict390KeyHashTable,
 Dict390Contents
 };
 
@@ -17398,11 +21310,16 @@ unsigned short Dict391TagHashTable[] = {
     2,     0,     3,     0,     0,     1,     1,     2,     2,
 };
 
+unsigned short Dict391KeyHashTable[] = {
+    2,     0,     3,     0, 37493,     1, 64554,     2, 22050,
+};
+
 vtkDICOMDictionary::Dict Dict391Data = {
 "SPI-P-Private-CWS Release 1",
 1,
 3,
 Dict391TagHashTable,
+Dict391KeyHashTable,
 Dict391Contents
 };
 
@@ -17488,11 +21405,30 @@ unsigned short Dict392TagHashTable[] = {
    37,    27,    43,    28,    57,    54,   114,
 };
 
+unsigned short Dict392KeyHashTable[] = {
+   15,    14,    30,    41,    46,    55,    66,    77,    80,    89,
+  104,   117,   128,   139,     0,     7,    20, 21992,    28, 41629,
+   37, 11399,    38, 23957,    41, 31972,    49, 54066,    53, 43385,
+    5,     3,  5658,     9,   116,    33,  9817,    36, 12611,    46,
+ 1349,     2,    43, 22987,    47,  1349,     4,     0, 55307,    29,
+23388,    32, 13605,    54,  3927,     5,     2, 38866,    13, 16969,
+   27,  7648,    35, 54173,    48, 51812,     5,    14,  9563,    18,
+ 7896,    23,  3398,    39, 30833,    50, 32779,     1,    52, 54211,
+    4,     4, 14808,     5, 54160,    11, 53167,    51, 55423,     7,
+    8, 51074,    12, 19901,    19, 19593,    25, 14725,    34, 12345,
+   56, 31910,    57, 34634,     6,     7, 10576,    15, 31843,    21,
+40044,    26,  1259,    40, 21530,    58, 10684,     5,     6, 55067,
+   17, 52294,    24, 12895,    42, 17288,    44, 25538,     5,    10,
+53063,    22, 64056,    30, 13643,    31, 48519,    45,  9941,     3,
+    1, 25891,    16, 62312,    55, 38545,
+};
+
 vtkDICOMDictionary::Dict Dict392Data = {
 "GEMS_SENO_02",
 14,
 59,
 Dict392TagHashTable,
+Dict392KeyHashTable,
 Dict392Contents
 };
 
@@ -17527,11 +21463,20 @@ unsigned short Dict393TagHashTable[] = {
   229,    16,    33,    17,    53,
 };
 
+unsigned short Dict393KeyHashTable[] = {
+    4,     5,     4,     4,     0,    18,     0,  1345,     1,  1345,
+    2,  1345,     3,  1345,     4,  1345,     5,  1345,     6,  1345,
+    7,  1345,     8,  1345,     9,  1345,    10,  1345,    11,  1345,
+   12,  1345,    13,  1345,    14,  1345,    15,  1345,    16,  1345,
+   17,  1345,
+};
+
 vtkDICOMDictionary::Dict Dict393Data = {
 "BioPri3D",
 4,
 18,
 Dict393TagHashTable,
+Dict393KeyHashTable,
 Dict393Contents
 };
 
@@ -17546,11 +21491,16 @@ unsigned short Dict394TagHashTable[] = {
     2,     0,     2,     0,    16,     1,    96,
 };
 
+unsigned short Dict394KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict394Data = {
 "TOSHIBA_SR",
 1,
 2,
 Dict394TagHashTable,
+Dict394KeyHashTable,
 Dict394Contents
 };
 
@@ -17615,11 +21565,26 @@ unsigned short Dict395TagHashTable[] = {
   166,    26,   168,    36,   178,
 };
 
+unsigned short Dict395KeyHashTable[] = {
+   11,    18,    21,    30,    33,    44,    59,    78,    87,    98,
+    0,     3,    21,   683,    34, 37406,    38,  1273,     1,    35,
+37406,     4,    11,  8181,    16, 36070,    20, 33093,    36,  1604,
+    1,    37,  1604,     5,     8, 33106,    14, 18502,    30,  5375,
+   39, 52649,    40, 44922,     7,     7, 42513,     9, 23867,    12,
+64162,    18,  5431,    23, 57010,    24, 14300,    26, 13999,     9,
+    0, 19604,     6, 19982,    10, 23867,    17, 45265,    22,   160,
+   28, 33674,    29, 16171,    32,  7443,    33, 63244,     4,     4,
+27059,    13, 59773,    25, 62267,    31, 51876,     5,     3, 64513,
+    5, 36526,    15, 47133,    19, 15668,    41,  3971,     3,     1,
+ 1327,     2, 21712,    27, 32730,
+};
+
 vtkDICOMDictionary::Dict Dict395Data = {
 "DIDI TO PCR 1.1",
 10,
 42,
 Dict395TagHashTable,
+Dict395KeyHashTable,
 Dict395Contents
 };
 
@@ -17635,11 +21600,16 @@ unsigned short Dict396TagHashTable[] = {
     2,     0,     3,     0,     8,     1,     9,     2,    16,
 };
 
+unsigned short Dict396KeyHashTable[] = {
+    2,     0,     3,     0, 43745,     1, 50149,     2, 29355,
+};
+
 vtkDICOMDictionary::Dict Dict396Data = {
 "SIEMENS MEDCOM OOG",
 1,
 3,
 Dict396TagHashTable,
+Dict396KeyHashTable,
 Dict396Contents
 };
 
@@ -17660,11 +21630,17 @@ unsigned short Dict397TagHashTable[] = {
    34,     4,    36,     5,    38,     6,    40,
 };
 
+unsigned short Dict397KeyHashTable[] = {
+    2,     0,     7,     0, 10230,     1, 48680,     2, 59974,     3,
+15776,     4, 52933,     5, 36981,     6, 18637,
+};
+
 vtkDICOMDictionary::Dict Dict397Data = {
 "astm.org/diconde/iod/NdeDxDetector",
 1,
 7,
 Dict397TagHashTable,
+Dict397KeyHashTable,
 Dict397Contents
 };
 
@@ -17687,11 +21663,18 @@ unsigned short Dict398TagHashTable[] = {
   115,
 };
 
+unsigned short Dict398KeyHashTable[] = {
+    3,     8,     0,     2,     2, 27114,     4, 27115,     6,     0,
+ 2690,     1, 27113,     3, 27114,     5,  2690,     6,  2690,     7,
+ 2690,
+};
+
 vtkDICOMDictionary::Dict Dict398Data = {
 "PMTF INFORMATION DATA",
 2,
 8,
 Dict398TagHashTable,
+Dict398KeyHashTable,
 Dict398Contents
 };
 
@@ -17721,11 +21704,19 @@ unsigned short Dict399TagHashTable[] = {
    33,    10,   162,    11,   176,
 };
 
+unsigned short Dict399KeyHashTable[] = {
+    4,    11,    20,     0,     3,     1, 39180,     5,  6507,    11,
+ 1314,     4,     2, 44851,     7, 26503,    12, 48631,    13, 60405,
+    7,     0, 25411,     3,  1793,     4,  1793,     6,  1793,     8,
+11630,     9, 64128,    10, 34989,
+};
+
 vtkDICOMDictionary::Dict Dict399Data = {
 "SIEMENS MED DISPLAY",
 3,
 14,
 Dict399TagHashTable,
+Dict399KeyHashTable,
 Dict399Contents
 };
 
@@ -17739,11 +21730,16 @@ unsigned short Dict400TagHashTable[] = {
     2,     0,     1,     0,    32,
 };
 
+unsigned short Dict400KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict400Data = {
 "MITRA LINKED ATTRIBUTES 1.0",
 1,
 1,
 Dict400TagHashTable,
+Dict400KeyHashTable,
 Dict400Contents
 };
 
@@ -17819,11 +21815,28 @@ unsigned short Dict401TagHashTable[] = {
     3,     2,     2,    39,   144,    43,   160,
 };
 
+unsigned short Dict401KeyHashTable[] = {
+   13,    22,    33,    48,    53,    62,    75,    80,    89,    98,
+  101,   116,     0,     4,    19, 53727,    21, 19372,    27, 28941,
+   35,   628,     5,     5, 42010,    23, 41890,    25,  2962,    37,
+64040,    46, 27262,     7,     3, 43193,    10, 41728,    13, 11794,
+   29, 25378,    32, 44163,    41, 25319,    44, 63914,     2,    39,
+54720,    48, 49633,     4,     9, 59672,    14, 28586,    45, 44175,
+   50, 26649,     6,     1, 41595,     2, 29946,     7, 51384,     8,
+22308,    12, 46340,    36, 34914,     2,     6, 45236,    31, 39369,
+    4,     4, 37858,    11, 33774,    18, 18714,    28,  3995,     4,
+   16, 12023,    22, 41463,    26, 24344,    47,  4412,     1,    49,
+40900,     7,    15, 49024,    17, 44190,    30, 19355,    33, 17715,
+   34, 47126,    40, 25982,    42,  4651,     5,     0, 36276,    20,
+53281,    24, 38780,    38, 27303,    43,  2398,
+};
+
 vtkDICOMDictionary::Dict Dict401Data = {
 "BRIT Systems, Inc.",
 12,
 51,
 Dict401TagHashTable,
+Dict401KeyHashTable,
 Dict401Contents
 };
 
@@ -17847,11 +21860,18 @@ unsigned short Dict402TagHashTable[] = {
    65,     6,    67,
 };
 
+unsigned short Dict402KeyHashTable[] = {
+    3,     6,     0,     1,     0, 46419,     8,     1,  9940,     2,
+39263,     3,  2690,     4,  2690,     5,  2690,     6,  2690,     7,
+ 2690,     8,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict402Data = {
 "SIEMENS CT VA0  RAW",
 2,
 9,
 Dict402TagHashTable,
+Dict402KeyHashTable,
 Dict402Contents
 };
 
@@ -17877,11 +21897,18 @@ unsigned short Dict403TagHashTable[] = {
    38,     5,    48,     7,    50,     9,    52,
 };
 
+unsigned short Dict403KeyHashTable[] = {
+    2,     3,     0,    11,     0,  2690,     1,  2690,     2,  2690,
+    3,  2690,     4,  2690,     5,  2690,     6,  2690,     7,  2690,
+    8,  2690,     9,  2690,    10,  2690,
+};
+
 vtkDICOMDictionary::Dict Dict403Data = {
 "SIEMENS Selma",
 2,
 11,
 Dict403TagHashTable,
+Dict403KeyHashTable,
 Dict403Contents
 };
 
@@ -17904,11 +21931,18 @@ unsigned short Dict404TagHashTable[] = {
    32,
 };
 
+unsigned short Dict404KeyHashTable[] = {
+    3,    14,     0,     5,     2, 32124,     3, 26225,     4, 27422,
+    6, 51382,     7, 31679,     3,     0, 11477,     1,  4883,     5,
+22059,
+};
+
 vtkDICOMDictionary::Dict Dict404Data = {
 "SPI RELEASE 1",
 2,
 8,
 Dict404TagHashTable,
+Dict404KeyHashTable,
 Dict404Contents
 };
 
@@ -17922,11 +21956,16 @@ unsigned short Dict405TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
+unsigned short Dict405KeyHashTable[] = {
+    2,     0,     1,     0, 19490,
+};
+
 vtkDICOMDictionary::Dict Dict405Data = {
 "SIEMENS MI RWVM SUV",
 1,
 1,
 Dict405TagHashTable,
+Dict405KeyHashTable,
 Dict405Contents
 };
 
@@ -17940,11 +21979,16 @@ unsigned short Dict406TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
+unsigned short Dict406KeyHashTable[] = {
+    2,     0,     1,     0, 16081,
+};
+
 vtkDICOMDictionary::Dict Dict406Data = {
 "MeVis eD: Slice Information",
 1,
 1,
 Dict406TagHashTable,
+Dict406KeyHashTable,
 Dict406Contents
 };
 
@@ -17958,11 +22002,16 @@ unsigned short Dict407TagHashTable[] = {
     2,     0,     1,     0,     0,
 };
 
+unsigned short Dict407KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict407Data = {
 "Silhouette Graphics Export V1.0",
 1,
 1,
 Dict407TagHashTable,
+Dict407KeyHashTable,
 Dict407Contents
 };
 
@@ -17987,11 +22036,18 @@ unsigned short Dict408TagHashTable[] = {
     6,     7,    12,     8,    30,
 };
 
+unsigned short Dict408KeyHashTable[] = {
+    3,    16,     0,     6,     1,  9927,     2, 27929,     4, 48743,
+    6, 16595,     7,  4725,     9, 31977,     4,     0, 63837,     3,
+37779,     5,  7024,     8, 52604,
+};
+
 vtkDICOMDictionary::Dict Dict408Data = {
 "SPI-P Release 1;3",
 2,
 10,
 Dict408TagHashTable,
+Dict408KeyHashTable,
 Dict408Contents
 };
 
@@ -18010,11 +22066,17 @@ unsigned short Dict409TagHashTable[] = {
    30,     4,    31,
 };
 
+unsigned short Dict409KeyHashTable[] = {
+    2,     0,     5,     0, 45708,     1, 54613,     2, 35492,     3,
+ 5130,     4, 29411,
+};
+
 vtkDICOMDictionary::Dict Dict409Data = {
 "SPI-P Release 1;2",
 1,
 5,
 Dict409TagHashTable,
+Dict409KeyHashTable,
 Dict409Contents
 };
 
@@ -18072,11 +22134,25 @@ unsigned short Dict410TagHashTable[] = {
    67,
 };
 
+unsigned short Dict410KeyHashTable[] = {
+   10,    17,    28,    37,    46,    53,    60,    73,    82,     0,
+    3,    15, 46932,    17,  8856,    35, 11212,     5,     2, 44671,
+    4,  9145,    12, 32098,    24, 41094,    32, 30934,     4,    13,
+32360,    14, 19960,    29, 31596,    33, 41900,     4,     6,  6667,
+   18, 59073,    26, 41718,    34,  1232,     3,     8,  5277,    19,
+35807,    23,  3385,     3,     3, 37675,    16, 28095,    28, 21616,
+    6,     5, 18724,     7, 21428,     9, 46480,    11, 41731,    25,
+29169,    27, 40410,     4,    10, 46505,    21, 41931,    22, 59148,
+   31, 20070,     4,     0,   597,     1,   597,    20, 48384,    30,
+61285,
+};
+
 vtkDICOMDictionary::Dict Dict410Data = {
 "SPI-P Release 1;1",
 9,
 36,
 Dict410TagHashTable,
+Dict410KeyHashTable,
 Dict410Contents
 };
 
@@ -18145,11 +22221,27 @@ unsigned short Dict411TagHashTable[] = {
   161,    30,   193,
 };
 
+unsigned short Dict411KeyHashTable[] = {
+   12,    19,    28,    39,    46,    57,    64,    81,    86,    95,
+  102,     0,     3,     2, 23100,     5, 41019,    18, 21018,     4,
+    4, 27557,    16, 22232,    27,  3724,    41, 55232,     5,     7,
+41741,     9, 15824,    20, 57785,    26,  3117,    36,  8867,     3,
+   13, 30509,    31, 38778,    37, 11935,     5,     3, 36457,    21,
+31084,    22, 65349,    35, 36620,    39, 33115,     3,    25, 52937,
+   28, 43569,    33, 56331,     8,     0, 13102,    14, 60504,    17,
+57138,    19, 29057,    23, 36307,    30, 30369,    43,  3516,    44,
+42959,     2,     1, 48200,    24, 38681,     4,     8, 54879,    10,
+37715,    12, 30304,    29, 22788,     3,     6, 19171,    11, 12668,
+   34, 24222,     5,    15, 59795,    32, 22906,    38, 60592,    40,
+65156,    42, 43319,
+};
+
 vtkDICOMDictionary::Dict Dict411Data = {
 "SIEMENS MR VA0  COAD",
 11,
 45,
 Dict411TagHashTable,
+Dict411KeyHashTable,
 Dict411Contents
 };
 
@@ -18167,11 +22259,17 @@ unsigned short Dict412TagHashTable[] = {
   241,
 };
 
+unsigned short Dict412KeyHashTable[] = {
+    2,     0,     4,     0, 36602,     1,  9063,     2, 43679,     3,
+ 3674,
+};
+
 vtkDICOMDictionary::Dict Dict412Data = {
 "SIEMENS MR PHOENIX ATTRIBUTES",
 1,
 4,
 Dict412TagHashTable,
+Dict412KeyHashTable,
 Dict412Contents
 };
 
@@ -18297,11 +22395,38 @@ unsigned short Dict413TagHashTable[] = {
    52,    52,    77,    71,    97,    86,   119,
 };
 
+unsigned short Dict413KeyHashTable[] = {
+   23,    36,    43,    50,    57,    66,    79,    84,    91,   102,
+  109,   122,   131,   144,   161,   170,   179,   186,   195,   200,
+  207,   216,     0,     6,    36, 29983,    50, 56301,    68, 51320,
+   76, 39114,    88, 11717,    89, 60040,     3,     5, 42499,    46,
+44759,    49, 27616,     3,    56,  1868,    64, 21479,    70, 26533,
+    3,     2, 27949,    24, 58996,    75,  5647,     4,    51, 21667,
+   63, 44646,    66, 39858,    83, 33687,     6,     1, 63586,    11,
+28719,    13, 13271,    34, 33686,    62, 60482,    74,  6693,     2,
+   19, 48625,    86, 61494,     3,    10,  4305,    57, 40869,    71,
+31970,     5,     7, 28101,    18, 58772,    30, 17103,    42, 57804,
+   80, 46077,     3,    12, 17877,    17, 50667,    59, 31196,     6,
+   32, 47427,    35, 26540,    52, 26406,    54, 56584,    58, 20420,
+   78, 11880,     4,    40, 33078,    77, 58304,    79, 28370,    84,
+12393,     6,     3, 22860,    15, 22916,    44, 47361,    69, 10648,
+   82, 46261,    85, 36597,     8,     8, 63766,     9, 54215,    16,
+ 3026,    22, 59617,    33, 10648,    39,   526,    47, 36164,    65,
+33619,     4,    14, 63573,    25, 59127,    38, 17300,    41, 15372,
+    4,     6, 16100,    23, 48272,    29, 16327,    90, 29283,     3,
+    0, 14202,    26, 38212,    81, 24881,     4,    31, 40340,    45,
+44637,    53, 55402,    73, 53152,     2,    60, 47281,    67, 47477,
+    3,    20, 59542,    55, 24148,    72, 51315,     4,     4, 20168,
+   37, 39356,    43, 55644,    87, 13014,     5,    21, 48197,    27,
+ 8644,    28, 21659,    48, 20973,    61, 27169,
+};
+
 vtkDICOMDictionary::Dict Dict413Data = {
 "SIEMENS MR SDI 02",
 22,
 91,
 Dict413TagHashTable,
+Dict413KeyHashTable,
 Dict413Contents
 };
 
@@ -18340,11 +22465,21 @@ unsigned short Dict414TagHashTable[] = {
    66,    18,    69,
 };
 
+unsigned short Dict414KeyHashTable[] = {
+    6,    11,    24,    35,    40,     0,     2,     0, 20578,     9,
+14071,     6,     1, 47886,     5,  5586,     6, 47721,     8, 38662,
+   12,  7099,    17, 45734,     5,     2,  8025,     7,  6647,    11,
+59592,    14, 48367,    20, 40767,     2,     4, 24807,    10, 30333,
+    6,     3, 34702,    13, 48450,    15, 18300,    16, 26458,    18,
+33437,    19,  7781,
+};
+
 vtkDICOMDictionary::Dict Dict414Data = {
 "Biospace Med : EOS Tag",
 5,
 21,
 Dict414TagHashTable,
+Dict414KeyHashTable,
 Dict414Contents
 };
 
@@ -18359,11 +22494,16 @@ unsigned short Dict415TagHashTable[] = {
     2,     0,     2,     0,   160,     1,   176,
 };
 
+unsigned short Dict415KeyHashTable[] = {
+    2,     0,     2,     0, 10595,     1, 59936,
+};
+
 vtkDICOMDictionary::Dict Dict415Data = {
 "AMI ImageContextExt_01",
 1,
 2,
 Dict415TagHashTable,
+Dict415KeyHashTable,
 Dict415Contents
 };
 
@@ -18387,11 +22527,18 @@ unsigned short Dict416TagHashTable[] = {
    33,     7,    35,
 };
 
+unsigned short Dict416KeyHashTable[] = {
+    3,    12,     0,     4,     0,  2847,     1, 27748,     5,   520,
+    8, 63090,     5,     2, 27748,     3, 21260,     4, 21790,     6,
+36578,     7, 61475,
+};
+
 vtkDICOMDictionary::Dict Dict416Data = {
 "IMS s.r.l. Biopsy Private Code",
 2,
 9,
 Dict416TagHashTable,
+Dict416KeyHashTable,
 Dict416Contents
 };
 
@@ -18420,11 +22567,19 @@ unsigned short Dict417TagHashTable[] = {
     4,     6,     8,
 };
 
+unsigned short Dict417KeyHashTable[] = {
+    4,    11,    24,     0,     3,     3, 42834,     6, 48730,     9,
+41057,     6,     0, 54959,     2, 56490,     5, 39215,     8, 16545,
+   10, 18925,    12, 50502,     4,     1, 16744,     4, 45044,     7,
+26389,    11, 29707,
+};
+
 vtkDICOMDictionary::Dict Dict417Data = {
 "PMI Private Calibration Module Version 2.0",
 3,
 13,
 Dict417TagHashTable,
+Dict417KeyHashTable,
 Dict417Contents
 };
 
@@ -18502,11 +22657,29 @@ unsigned short Dict418TagHashTable[] = {
   178,
 };
 
+unsigned short Dict418KeyHashTable[] = {
+   14,    23,    34,    37,    44,    59,    70,    77,    84,    93,
+  102,   115,   124,     0,     4,     9, 16960,    12, 62525,    13,
+27694,    15, 56504,     5,     4, 28137,     8, 33470,    14, 31253,
+   26, 36280,    32, 52448,     1,    22, 24657,     3,    35, 41888,
+   40, 34899,    43, 27628,     7,     0, 23536,     2, 21641,    11,
+44166,    18,  2460,    24,  8555,    28, 58174,    42, 57357,     5,
+    1,  8395,    23, 14523,    27,  3115,    33, 30870,    51, 63077,
+    3,    29, 60196,    34, 27922,    45,  7881,     3,     6, 27247,
+   30,  1147,    31, 25804,     4,     5,  2811,    17, 57077,    36,
+35712,    37, 20225,     4,     3, 21371,    21, 54032,    39, 31321,
+   49, 16272,     6,     7,  3052,    19, 62140,    41, 32149,    46,
+10969,    47, 12042,    50, 14102,     4,    10, 52177,    20, 22758,
+   25, 53437,    48,  6476,     3,    16, 60624,    38, 27170,    44,
+ 8691,
+};
+
 vtkDICOMDictionary::Dict Dict418Data = {
 "GEMS_ADWSoft_3D1",
 13,
 52,
 Dict418TagHashTable,
+Dict418KeyHashTable,
 Dict418Contents
 };
 
@@ -18521,11 +22694,16 @@ unsigned short Dict419TagHashTable[] = {
     2,     0,     2,     0,    16,     1,    17,
 };
 
+unsigned short Dict419KeyHashTable[] = {
+    2,     0,     2,     0,  5381,     1,  5381,
+};
+
 vtkDICOMDictionary::Dict Dict419Data = {
 "INFINITT_FMX",
 1,
 2,
 Dict419TagHashTable,
+Dict419KeyHashTable,
 Dict419Contents
 };
 
@@ -18650,11 +22828,38 @@ unsigned short Dict420TagHashTable[] = {
    10,    15,    10,    63,    52,
 };
 
+unsigned short Dict420KeyHashTable[] = {
+   23,    22,    30,    35,    38,    41,    46,    22,    22,    49,
+   60,    63,    68,    71,   182,    22,   187,   190,   199,   204,
+  211,   218,     0,     3,     9, 64697,    68, 31059,    82, 22429,
+    2,    77, 38896,    81,   384,     1,    29, 48816,     1,    75,
+38018,     2,    87, 64227,    88, 42433,     1,    71, 43154,     5,
+   47, 13960,    50, 21304,    84, 15239,    85, 44728,    86, 38293,
+    1,    74, 37541,     2,    70,  8747,    72, 40916,     1,    14,
+ 4148,    55,     0,   244,     1,   244,     2,   244,     3,   244,
+    4,   244,     5,   244,     6,   244,     7,   244,     8,   244,
+   10, 34326,    15,   244,    16,   244,    17,   244,    18,   244,
+   19,   244,    20,   244,    21,   244,    22,   244,    23,   244,
+   25,   244,    26,   244,    27,   244,    28,   244,    32, 43292,
+   35,   244,    36,   244,    37,   244,    38,   244,    39,   244,
+   41,   244,    42,   244,    44,   244,    45,   244,    46,   244,
+   49, 12254,    53,   244,    54,   244,    55,   244,    56,   244,
+   57,   244,    58,   244,    59,   244,    60,   244,    61,   244,
+   62,   244,    63,   244,    64,   244,    65,   244,    66,   244,
+   67,   244,    73,   244,    78,   244,    79,   244,    80,   244,
+   89,   244,     2,    34, 35837,    76, 24426,     1,    11, 13091,
+    4,    30, 45892,    43,  7472,    51, 42752,    52, 47296,     2,
+   13, 21461,    69, 49618,     3,    12, 21242,    24, 64296,    31,
+54471,     3,    33, 31615,    48, 23427,    83, 51566,     1,    40,
+38678,
+};
+
 vtkDICOMDictionary::Dict Dict420Data = {
 "SIEMENS MR SDS 01",
 22,
 90,
 Dict420TagHashTable,
+Dict420KeyHashTable,
 Dict420Contents
 };
 
@@ -18717,11 +22922,25 @@ unsigned short Dict421TagHashTable[] = {
   144,
 };
 
+unsigned short Dict421KeyHashTable[] = {
+   11,    22,    10,    41,    46,    53,    58,    73,    80,    97,
+    0,     5,     0, 48889,     8, 48889,    11, 57789,    14, 39388,
+   32, 38082,     9,     1, 54238,     3,   538,     4,   538,     5,
+54238,     6, 43629,    12,   538,    30,   538,    31,   538,    39,
+24072,     2,    17, 20727,    22,  5371,     3,     2, 60451,    28,
+17765,    37,  4622,     2,    13, 38030,    24,   484,     7,     7,
+29851,    10, 16708,    16, 17133,    25, 51157,    26, 51157,    33,
+63178,    34, 38064,     3,    18, 59215,    20,  7225,    36, 42363,
+    8,     9, 13313,    19, 17294,    21, 34395,    23, 60666,    27,
+11843,    29, 12583,    35,  7363,    38, 46864,     1,    15, 13539,
+};
+
 vtkDICOMDictionary::Dict Dict421Data = {
 "GEMS_RELA_01",
 10,
 40,
 Dict421TagHashTable,
+Dict421KeyHashTable,
 Dict421Contents
 };
 
@@ -18754,11 +22973,20 @@ unsigned short Dict422TagHashTable[] = {
    75,
 };
 
+unsigned short Dict422KeyHashTable[] = {
+    5,    14,    23,    32,     0,     4,     1, 26579,     3, 61584,
+   11,  3543,    13, 64191,     4,     7,  8332,     8,  5470,    12,
+12064,    14, 33763,     4,     0, 33405,     5, 51241,     6,  1003,
+   15, 57346,     4,     2, 57038,     4, 48597,     9, 41713,    10,
+34279,
+};
+
 vtkDICOMDictionary::Dict Dict422Data = {
 "SIEMENS MR MRS 05",
 4,
 16,
 Dict422TagHashTable,
+Dict422KeyHashTable,
 Dict422Contents
 };
 
@@ -18803,11 +23031,22 @@ unsigned short Dict423TagHashTable[] = {
    14,    18,     5,    23,    11,
 };
 
+unsigned short Dict423KeyHashTable[] = {
+    7,     6,     6,    10,    17,    22,     0,     1,    10, 46293,
+    3,     7, 45798,     8, 22933,     9, 65233,     2,    11, 37275,
+   12, 10088,    20,     0,   896,     1,   896,     2,   896,     3,
+  896,     4,   896,     5,   896,     6,   896,    13,   896,    14,
+  896,    15,   896,    16,   896,    17,   896,    18,   896,    19,
+  896,    20,   896,    21,   896,    22,   896,    23,   896,    24,
+  896,    25,   896,
+};
+
 vtkDICOMDictionary::Dict Dict423Data = {
 "TOSHIBA_MEC_CT_1.0",
 6,
 26,
 Dict423TagHashTable,
+Dict423KeyHashTable,
 Dict423Contents
 };
 
@@ -18831,11 +23070,18 @@ unsigned short Dict424TagHashTable[] = {
    16,     7,    32,
 };
 
+unsigned short Dict424KeyHashTable[] = {
+    3,    14,     0,     5,     3, 32124,     4, 26225,     5, 27422,
+    7, 51382,     8, 31679,     4,     0,  2690,     1, 11477,     2,
+ 4883,     6, 22059,
+};
+
 vtkDICOMDictionary::Dict Dict424Data = {
 "SPI Release 1",
 2,
 9,
 Dict424TagHashTable,
+Dict424KeyHashTable,
 Dict424Contents
 };
 

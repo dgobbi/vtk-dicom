@@ -161,6 +161,68 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
 }
 
 //----------------------------------------------------------------------------
+vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
+  const char *key, const char *dictname)
+{
+  if (key == 0 || key[0] == '\0')
+    {
+    return vtkDICOMDictEntry();
+    }
+
+  char stripkey[64];
+  unsigned int h = vtkDICOMDictionary::HashLongString(key, stripkey);
+
+  // default to the standard dictionary
+  vtkDICOMDictionary::Dict *dict = &vtkDICOMDictionary::DictData;
+
+  // for odd group number, only search the private dictionary
+  if (dictname != 0 && dictname[0] != '\0')
+    {
+    dict = vtkDICOMDictionary::FindPrivateDict(dictname);
+    if (dict == 0)
+      {
+      // private dictionary not found
+      return vtkDICOMDictEntry();
+      }
+    }
+
+  unsigned short i = static_cast<unsigned short>(h % dict->HashSize);
+  unsigned short j = static_cast<unsigned short>(h / dict->HashSize);
+
+  // search the hash table
+  unsigned short *hptr = &dict->KeyHashTable[dict->KeyHashTable[i]];
+  vtkDICOMDictEntry::Entry *dptr = dict->Contents;
+  for (unsigned short n = *hptr; n != 0; --n)
+    {
+    ++hptr;
+    vtkDICOMDictEntry::Entry *entry = &dptr[*hptr];
+    ++hptr;
+    if (*hptr == j && strncmp(stripkey, entry->Name, 64) == 0)
+      {
+      return vtkDICOMDictEntry(entry);
+      }
+    }
+
+  if (dictname != 0 && dictname[0] != '\0')
+    {
+    // brute force search the entire dictionary, if hash lookup failed
+    // (in case people manually changed the key strings in the code,
+    // without re-running makedict.py to re-generate the hash table)
+    for (unsigned short k = 0; k < dict->DataSize; k++)
+      {
+      vtkDICOMDictEntry::Entry *entry = &dptr[k];
+      if (strncmp(stripkey, entry->Name, 64) == 0)
+        {
+        return vtkDICOMDictEntry(entry);
+        }
+      }
+    }
+
+  // not found in dictionary
+  return vtkDICOMDictEntry();
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMDictionary::AddPrivateDictionary(Dict *dict)
 {
   unsigned int m = DICT_PRIVATE_TABLE_SIZE - 1;

@@ -90,6 +90,16 @@ while i < len(lines):
         privatelines[creator] = lines[i:i+6]
     i = i + 6
 
+def hashstring(s):
+  """Compute a string hash based on the function "djb2".
+  Use at most 64 characters.
+  """
+  h = 5381
+  s = s[0:64]
+  for c in s:
+    h = ((h << 5) + h + ord(c)) & 0xffffffff
+  return h
+
 def makedict(lines, creator="DICOM"):
   # the tables that will be created
   enum_list = []
@@ -106,6 +116,7 @@ def makedict(lines, creator="DICOM"):
       htsize = 1
 
   ht = [None]*htsize
+  ht2 = [None]*htsize
 
   # iterate through all elements in the table
   j = 0
@@ -204,59 +215,31 @@ def makedict(lines, creator="DICOM"):
       # create a 16-bit hash from group, element
       h = ((gi ^ (gi >> 6)) ^ (ei ^ (ei >> 6)))
 
-      # build the hash table
+      # create a string hash
+      hkey = hashstring(key)
+
+      # build the hash tables
       h = (h % htsize)
       if ht[h] == None:
         ht[h] = []
+      h2 = (hkey % htsize)
+      if ht2[h2] == None:
+        ht2[h2] = []
 
       # build the index table
       ht[h].append(j)
       ht[h].append(ei)
+
+      ht2[h2].append(j)
+      ht2[h2].append((hkey//htsize) & 0xffff)
       j = j + 1
 
   # debug: print all VM's that were found
   #print vms.keys()
 
-  """
-  # create the C++ text for the hash table
-  maxl = 0
-  minl = j
-  k0 = 0
-  k4 = 0
-  k = 0
-  for te in ht:
-    if te == None:
-      te = []
-    l = len(te)
-    if l == 0:
-      k0 = k0 + 1
-    if l > 3:
-      k4 = k4 + 1
-    maxl = max(maxl, l)
-    minl = min(minl, l)
-    newlist = []
-    for idx in te:
-      newlist.append(element_list[idx])
-    newlist.sort()
-    s = ""
-    lastitem = ""
-    for newitem in newlist:
-      if newitem[0:16] == lastitem[0:16]:
-        if newitem != lastitem:
-          sys.stderr.write("duplicate! \"" + creator + "\"\n")
-          sys.stderr.write(lastitem + "\n")
-          sys.stderr.write(newitem + "\n")
-        continue
-      s = s + newitem + "\n"
-      lastitem = newitem
-    s = s + "{ 0, 0, 0, 0, 0, NULL }"
-    entry_list.append(s)
-    k = k + len(te) + 1
-  """
-
   # debug: print statistics about the hash table
   #print maxl, minl, k0, k4
-  return enum_list, element_list, ht
+  return enum_list, element_list, ht, ht2
 
 # write the output file
 def printhead(enum_dict, classname):
@@ -312,7 +295,7 @@ def printbody(entry_dict, classname):
     ns = "vtkDICOMDictionary::"
 
   dn = 0
-  for name, (entry_list, tag_table) in entry_dict.items():
+  for name, (entry_list, tag_table, key_table) in entry_dict.items():
     dn = dn + 1
     ds = ""
     print
@@ -324,40 +307,41 @@ def printbody(entry_dict, classname):
     for l in entry_list:
       print l
     print "};"
-    print
-    print "unsigned short Dict%sTagHashTable[] = {" % (ds,)
-    i = 0
-    j = len(tag_table) + 1
-    for l in tag_table:
-      if l is None:
-        print "%5d," % (len(tag_table),),
-        i = i + 1
-        if i % 10 == 0:
-          print
-      else:
-        print "%5d," % (j,),
-        i = i + 1
-        if i % 10 == 0:
-          print
-        j = j + len(l) + 1
-    print "%5d," % (0,),
-    i = i + 1
-    if i % 10 == 0:
+    for table,tagorkey in [(tag_table,"Tag"),(key_table,"Key")]:
       print
-    for l in tag_table:
-      if not (l is None):
-        print "%5d," % (len(l)/2,),
-        i = i + 1
-        if i % 10 == 0:
-          print
-        for e in l:
-          print "%5d," % (e,),
+      print "unsigned short Dict%s%sHashTable[] = {" % (ds,tagorkey)
+      i = 0
+      j = len(table) + 1
+      for l in table:
+        if l is None:
+          print "%5d," % (len(table),),
           i = i + 1
           if i % 10 == 0:
             print
-    if i % 10 != 0:
-      print
-    print "};"
+        else:
+          print "%5d," % (j,),
+          i = i + 1
+          if i % 10 == 0:
+            print
+          j = j + len(l) + 1
+      print "%5d," % (0,),
+      i = i + 1
+      if i % 10 == 0:
+        print
+      for l in table:
+        if not (l is None):
+          print "%5d," % (len(l)/2,),
+          i = i + 1
+          if i % 10 == 0:
+            print
+          for e in l:
+            print "%5d," % (e,),
+            i = i + 1
+            if i % 10 == 0:
+              print
+      if i % 10 != 0:
+        print
+      print "};"
 
     if not privatedict:
       print
@@ -371,6 +355,7 @@ def printbody(entry_dict, classname):
     print "%d," % (len(tag_table),)
     print "%d," % (len(entry_list),)
     print "Dict%sTagHashTable," % (ds,)
+    print "Dict%sKeyHashTable," % (ds,)
     print "Dict%sContents" % (ds,)
     print "};"
 
@@ -378,7 +363,7 @@ def printbody(entry_dict, classname):
     print
     print "vtkDICOMDictionary::Dict *PrivateDictData[] = {"
     dn = 0
-    for name, (entry_list, tag_table) in entry_dict.items():
+    for item in entry_dict.items():
       dn = dn + 1
       print "&Dict%03dData," % (dn,),
       if dn % 5 == 0:
@@ -417,9 +402,9 @@ if privatedict:
   entry_dict = {}
 
   for name, lines in privatelines.items():
-    enum_list, entry_list, tag_table = makedict(lines, name)
+    enum_list, entry_list, tag_table, key_table = makedict(lines, name)
     enum_dict[name] = enum_list
-    entry_dict[name] = (entry_list, tag_table)
+    entry_dict[name] = (entry_list, tag_table, key_table)
 
   if printheader:
     printhead(enum_dict, privatedict)
@@ -427,14 +412,14 @@ if privatedict:
     printbody(entry_dict, privatedict)
 
 else:
-  enum_list, entry_list, tag_table = makedict(lines)
+  enum_list, entry_list, tag_table, key_table = makedict(lines)
 
   classname = "vtkDICOMDictHash"
 
   if printheader:
     printhead({"DICOM" : enum_list}, classname)
   else:
-    printbody({"DICOM" : (entry_list, tag_table)}, classname)
+    printbody({"DICOM" : (entry_list, tag_table, key_table)}, classname)
 
 # informative: these names represent a range of tag values
 """ keys with ranges
