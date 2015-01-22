@@ -363,7 +363,17 @@ int main(int argc, char *argv[])
       vtkStringArray *a = sorter->GetFileNamesForSeries(k);
       vtkIdType l = a->GetNumberOfValues();
       std::string fname = a->GetValue(0);
-      printf("=========== %s =========\n", fileBasename(fname.c_str()));
+      if (l == 1)
+        {
+        printf("=========== %s =========\n", fileBasename(fname.c_str()));
+        }
+      else
+        {
+        printf("==== %s .. %s (%d files) ====\n",
+          fileBasename(fname.c_str()),
+          fileBasename(a->GetValue(l-1).c_str()),
+          static_cast<int>(l));
+        }
 
       data->Clear();
       data->SetNumberOfInstances(static_cast<int>(l));
