@@ -97,6 +97,11 @@ int main(int argc, char *argv[])
   TestAssert(strcmp(vrOB.GetText(), "OB") == 0);
   TestAssert(vrOB.GetType() == VTK_UNSIGNED_CHAR);
 
+  vtkDICOMVR vrOD("OD");
+  TestAssert(vrOD == vtkDICOMVR::OD);
+  TestAssert(strcmp(vrOD.GetText(), "OD") == 0);
+  TestAssert(vrOD.GetType() == VTK_DOUBLE);
+
   vtkDICOMVR vrOF("OF");
   TestAssert(vrOF == vtkDICOMVR::OF);
   TestAssert(strcmp(vrOF.GetText(), "OF") == 0);

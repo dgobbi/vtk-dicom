@@ -41,23 +41,24 @@ public:
     LO = 0x0b, //!< Long String
     LT = 0x0c, //!< Long Text
     OB = 0x0d, //!< Other Byte
-    OF = 0x0e, //!< Other Float
-    OW = 0x0f, //!< Other Word
-    PN = 0x10, //!< Personal Name
-    SH = 0x11, //!< Short String
-    SL = 0x12, //!< Signed Long
-    SQ = 0x13, //!< Sequence of Items
-    SS = 0x14, //!< Signed Short
-    ST = 0x15, //!< Short Text
-    TM = 0x16, //!< Time
-    UI = 0x17, //!< Unique Identifier
-    UL = 0x18, //!< Unsigned Long
-    UN = 0x19, //!< Unknown
-    UR = 0x1a, //!< URI or URL
-    US = 0x1b, //!< Unsigned Short
-    UT = 0x1c, //!< Unlimited Text
-    OX = 0x1d, //!< Either OB or OW (for dict entries, not data elements)
-    XS = 0x1e  //!< Either SS or US (for dict entries, not data elements)
+    OD = 0x0e, //!< Other Double
+    OF = 0x0f, //!< Other Float
+    OW = 0x10, //!< Other Word
+    PN = 0x11, //!< Personal Name
+    SH = 0x12, //!< Short String
+    SL = 0x13, //!< Signed Long
+    SQ = 0x14, //!< Sequence of Items
+    SS = 0x15, //!< Signed Short
+    ST = 0x16, //!< Short Text
+    TM = 0x17, //!< Time
+    UI = 0x18, //!< Unique Identifier
+    UL = 0x19, //!< Unsigned Long
+    UN = 0x1a, //!< Unknown
+    UR = 0x1b, //!< URI or URL
+    US = 0x1c, //!< Unsigned Short
+    UT = 0x1d, //!< Unlimited Text
+    OX = 0x1e, //!< Either OB or OW (for dict entries, not data elements)
+    XS = 0x1f  //!< Either SS or US (for dict entries, not data elements)
   };
 
   //! Construct an empty, invalid VR.
@@ -82,12 +83,12 @@ public:
   //! Get the two-character text for this VR.
   const char *GetText() const { return TextTable[this->Key]; }
 
-  //! The VRs OB, OF, OW, SQ, UN, UR, UT require a 32-bit VL.
-  bool HasLongVL() const { return (((1 << this->Key) & 0x1608e000) != 0); }
+  //! The VRs OB, OD, OF, OW, SQ, UN, UR, UT require a 32-bit VL.
+  bool HasLongVL() const { return (((1 << this->Key) & 0x2c11e000) != 0); }
 
   //! The VRs SH, LO, PN, ST, LT, and UT use SpecificCharacterSet.
   bool HasSpecificCharacterSet() const {
-    return (((1 << this->Key) & 0x10231800) != 0); }
+    return (((1 << this->Key) & 0x20461800) != 0); }
 
   bool operator==(vtkDICOMVR a) const { return (this->Key == a.Key); }
   bool operator!=(vtkDICOMVR a) const { return (this->Key != a.Key); }

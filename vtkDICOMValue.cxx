@@ -559,6 +559,11 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, size_t n)
     float *ptr = this->AllocateFloatData(vr, n*sizeof(T)/4);
     memcpy(ptr, data, n*sizeof(T));
     }
+  else if (vr == VR::OD)
+    {
+    double *ptr = this->AllocateDoubleData(vr, n*sizeof(T)/8);
+    memcpy(ptr, data, n*sizeof(T));
+    }
   else if (vr == VR::AT)
     {
     vtkDICOMTag *ptr = this->AllocateTagData(vr, n/2);
@@ -620,6 +625,11 @@ void vtkDICOMValue::CreateValue<char>(
   else if (vr == VR::OF)
     {
     float *ptr = this->AllocateFloatData(vr, m/4);
+    memcpy(ptr, data, m);
+    }
+  else if (vr == VR::OD)
+    {
+    double *ptr = this->AllocateDoubleData(vr, m/8);
     memcpy(ptr, data, m);
     }
   else if (vr == VR::UN || vr == VR::OB || vr == VR::OX)
@@ -880,6 +890,10 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
   else if (vr == VR::OF)
     {
     this->AllocateFloatData(vr, 0);
+    }
+  else if (vr == VR::OD)
+    {
+    this->AllocateDoubleData(vr, 0);
     }
   else if (vr == VR::UN)
     {
@@ -1543,7 +1557,8 @@ std::string vtkDICOMValue::AsString() const
       this->V->VR != vtkDICOMVR::SQ &&
       this->V->VR != vtkDICOMVR::OW &&
       this->V->VR != vtkDICOMVR::OB &&
-      this->V->VR != vtkDICOMVR::OF)
+      this->V->VR != vtkDICOMVR::OF &&
+      this->V->VR != vtkDICOMVR::OD)
     {
     size_t n = this->V->NumberOfValues;
     for (size_t i = 0; i < n; i++)
@@ -2514,6 +2529,11 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
     // OF must match exactly
     match = ValueT<float>::Compare(value.V, this->V);
     }
+  else if (vr == vtkDICOMVR::OD)
+    {
+    // OF must match exactly
+    match = ValueT<double>::Compare(value.V, this->V);
+    }
   else if (type == VTK_SHORT || type == VTK_UNSIGNED_SHORT)
     {
     // Match if any value matches
@@ -2660,6 +2680,10 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
   else if (vr == vtkDICOMVR::OF)
     {
     os << "floats[" << v.GetNumberOfValues() << "]";
+    }
+  else if (vr == vtkDICOMVR::OD)
+    {
+    os << "doubles[" << v.GetNumberOfValues() << "]";
     }
   else
     {

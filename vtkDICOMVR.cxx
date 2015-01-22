@@ -99,7 +99,7 @@ const unsigned char LXT[256] = { // LO LT
 const unsigned char OXT[256] = { // OB OF OW
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  0, 0, VR::OB, 0, 0, 0, VR::OF, 0, 0, 0, 0, 0, 0, 0, 0, 0, //  ABCDEFGHIJKLMNO
+  0, 0,VR::OB,0,VR::OD,0,VR::OF,0, 0, 0, 0, 0, 0, 0, 0, 0, // ABCDEFGHIJKLMNO
   0, 0, 0, 0, 0, 0, 0, VR::OW, 0, 0, 0, 0, 0, 0, 0, 0, // PQRSTUVWXYZ
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -203,6 +203,7 @@ const unsigned char vtkDICOMVR::TypeTable[32] = {
   VTK_CHAR,           // LO Long String
   VTK_CHAR,           // LT Long Text
   VTK_UNSIGNED_CHAR,  // OB Other Byte
+  VTK_DOUBLE,         // OD Other Double
   VTK_FLOAT,          // OF Other Float
   VTK_SHORT,          // OW Other Word
   VTK_CHAR,           // PN Personal Name
@@ -218,7 +219,6 @@ const unsigned char vtkDICOMVR::TypeTable[32] = {
   VTK_CHAR,           // UR URI or URL
   VTK_UNSIGNED_SHORT, // US Unsigned Short
   VTK_CHAR,           // UT Unlimited Text
-  VTK_VOID,           // Invalid
   VTK_VOID,           // Invalid
   VTK_VOID,           // Invalid
 };
@@ -238,6 +238,7 @@ const char vtkDICOMVR::TextTable[32][4] = {
   { 'L', 'O', 0, 0 }, // LO Long String
   { 'L', 'T', 0, 0 }, // LT Long Text
   { 'O', 'B', 0, 0 }, // OB Other Byte
+  { 'O', 'D', 0, 0 }, // OD Other Double
   { 'O', 'F', 0, 0 }, // OF Other Float
   { 'O', 'W', 0, 0 }, // OW Other Word
   { 'P', 'N', 0, 0 }, // PN Personal Name
@@ -255,5 +256,4 @@ const char vtkDICOMVR::TextTable[32][4] = {
   { 'U', 'T', 0, 0 }, // UT Unlimited Text
   { 'O', 'X', 0, 0 },     // Invalid
   { 'X', 'S', 0, 0 },     // Invalid
-  { 0, 0, 0, 0 },     // Invalid
 };
