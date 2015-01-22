@@ -93,10 +93,10 @@ public:
   explicit vtkDICOMImageCodec(const std::string& syntax);
 
   //! Get the transfer syntax for this codec.
-  std::string GetTransferSyntaxUID() const;
   /*!
    *  If the object is invalid, then an empty string is returned.
    */
+  std::string GetTransferSyntaxUID() const;
 
   //! Get the numerical identifier for this codec.
   unsigned char GetKey() const { return this->Key; }
