@@ -60,6 +60,11 @@ AMI ImageContext_01
 SIEMENS CSA REPORT
 -{ 0x0029, 0x0017, 0, VR::UI, VM::M1, "SCSOP InstanceUID" },
 +{ 0x0029, 0x0017, 0, VR::UI, VM::M1, "SCSOPInstanceUID" },
+GEMS_FUNCTOOL_01
+-{ 0x0051, 0x000c, 0, VR::SL, VM::M1, "WizardStateDataSize" },
+-{ 0x0051, 0x000d, 0, VR::OB, VM::M1, "WizardState" },
++{ 0x0051, 0x000c, 0, VR::LO, VM::M1, "AnalysisPackage" },
++{ 0x0051, 0x000e, 0, VR::SL, VM::M1, "Hidden" },
 
 =========================================================================*/
 
@@ -21860,22 +21865,22 @@ DictEntry Dict395Contents[] = {
 { 0x0051, 0x0009, 0, VR::SL, VM::M1, "WindowWidth" },
 { 0x0051, 0x000a, 0, VR::SL, VM::M1, "WindowLevel" },
 { 0x0051, 0x000b, 0, VR::FL, VM::M1, "BValue" },
-{ 0x0051, 0x000c, 0, VR::SL, VM::M1, "WizardStateDataSize" },
-{ 0x0051, 0x000d, 0, VR::OB, VM::M1, "WizardState" },
+{ 0x0051, 0x000c, 0, VR::LO, VM::M1, "AnalysisPackage" },
+{ 0x0051, 0x000e, 0, VR::SL, VM::M1, "Hidden" },
 };
 
 unsigned short Dict395TagHashTable[] = {
-    4,    15,    24,     0,     5,     0,     1,     3,     4,     6,
-    7,     9,    10,    12,    13,     4,     1,     2,     4,     5,
-    7,     8,    10,    11,     4,     2,     3,     5,     6,     8,
+    4,    13,    24,     0,     4,     0,     1,     3,     4,     6,
+    7,     9,    10,     5,     1,     2,     4,     5,     7,     8,
+   10,    11,    12,    14,     4,     2,     3,     5,     6,     8,
     9,    11,    12,
 };
 
 unsigned short Dict395KeyHashTable[] = {
     4,    13,    26,     0,     4,     1, 47300,     2,  1036,     4,
   613,     8, 10303,     6,     0, 16422,     3, 41508,     7,  6841,
-    9, 11292,    10, 16833,    11,  1177,     3,     5, 47485,     6,
-61795,    12, 56135,
+    9, 11292,    10, 16833,    12, 44688,     3,     5, 47485,     6,
+61795,    11, 40657,
 };
 
 vtkDICOMDictionary::Dict Dict395Data = {
