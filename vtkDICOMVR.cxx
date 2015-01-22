@@ -148,7 +148,7 @@ const unsigned char UXT[256] = { // UI UL UN US UT
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, VR::UI,0,0,VR::UL,0,VR::UN,0, //  ABCDEFGHIJKLMNO
-  0, 0, 0, VR::US, VR::UT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // PQRSTUVWXYZ
+  0, 0, VR::UR,VR::US,VR::UT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // PQRSTUVWXYZ
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -215,9 +215,9 @@ const unsigned char vtkDICOMVR::TypeTable[32] = {
   VTK_CHAR,           // UI UID
   VTK_UNSIGNED_INT,   // UL Unsigned Long
   VTK_UNSIGNED_CHAR,  // UN Unknown
+  VTK_CHAR,           // UR URI or URL
   VTK_UNSIGNED_SHORT, // US Unsigned Short
   VTK_CHAR,           // UT Unlimited Text
-  VTK_VOID,           // Invalid
   VTK_VOID,           // Invalid
   VTK_VOID,           // Invalid
   VTK_VOID,           // Invalid
@@ -250,10 +250,10 @@ const char vtkDICOMVR::TextTable[32][4] = {
   { 'U', 'I', 0, 0 }, // UI UID
   { 'U', 'L', 0, 0 }, // UL Unsigned Long
   { 'U', 'N', 0, 0 }, // UN Unknown
+  { 'U', 'R', 0, 0 }, // UR URI or URL
   { 'U', 'S', 0, 0 }, // US Unsigned Short
   { 'U', 'T', 0, 0 }, // UT Unlimited Text
   { 'O', 'X', 0, 0 },     // Invalid
   { 'X', 'S', 0, 0 },     // Invalid
-  { 0, 0, 0, 0 },     // Invalid
   { 0, 0, 0, 0 },     // Invalid
 };

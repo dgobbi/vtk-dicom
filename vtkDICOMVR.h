@@ -53,10 +53,11 @@ public:
     UI = 0x17, //!< Unique Identifier
     UL = 0x18, //!< Unsigned Long
     UN = 0x19, //!< Unknown
-    US = 0x1a, //!< Unsigned Short
-    UT = 0x1b, //!< Unlimited Text
-    OX = 0x1c, //!< Either OB or OW (for dict entries, not data elements)
-    XS = 0x1d  //!< Either SS or US (for dict entries, not data elements)
+    UR = 0x1a, //!< URI or URL
+    US = 0x1b, //!< Unsigned Short
+    UT = 0x1c, //!< Unlimited Text
+    OX = 0x1d, //!< Either OB or OW (for dict entries, not data elements)
+    XS = 0x1e  //!< Either SS or US (for dict entries, not data elements)
   };
 
   //! Construct an empty, invalid VR.
@@ -81,12 +82,12 @@ public:
   //! Get the two-character text for this VR.
   const char *GetText() const { return TextTable[this->Key]; }
 
-  //! The VRs OB, OF, OW, SQ, UN, UT require a 32-bit VL.
-  bool HasLongVL() const { return (((1 << this->Key) & 0x0a08e000) != 0); }
+  //! The VRs OB, OF, OW, SQ, UN, UR, UT require a 32-bit VL.
+  bool HasLongVL() const { return (((1 << this->Key) & 0x1608e000) != 0); }
 
   //! The VRs SH, LO, PN, ST, LT, and UT use SpecificCharacterSet.
   bool HasSpecificCharacterSet() const {
-    return (((1 << this->Key) & 0x08231800) != 0); }
+    return (((1 << this->Key) & 0x10231800) != 0); }
 
   bool operator==(vtkDICOMVR a) const { return (this->Key == a.Key); }
   bool operator!=(vtkDICOMVR a) const { return (this->Key != a.Key); }

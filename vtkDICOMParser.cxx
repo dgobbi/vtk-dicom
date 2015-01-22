@@ -1035,7 +1035,7 @@ size_t Decoder<E>::ReadElementHead(
       vr = this->FindDictVR(tag);
       vl = Decoder<E>::GetInt32(cp - 4);
       }
-    else if (vr.HasLongVL()) // for OB, OF, OW, SQ, UN, UT
+    else if (vr.HasLongVL()) // for OB, OF, OW, SQ, UN, UR, UT
       {
       // check that buffer has 4 bytes for 32-bit VL
       if (!this->CheckBuffer(cp, ep, 4))

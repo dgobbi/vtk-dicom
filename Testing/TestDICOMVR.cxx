@@ -157,6 +157,11 @@ int main(int argc, char *argv[])
   TestAssert(strcmp(vrUN.GetText(), "UN") == 0);
   TestAssert(vrUN.GetType() == VTK_UNSIGNED_CHAR);
 
+  vtkDICOMVR vrUR("UR");
+  TestAssert(vrUR == vtkDICOMVR::UR);
+  TestAssert(strcmp(vrUR.GetText(), "UR") == 0);
+  TestAssert(vrUR.GetType() == VTK_CHAR);
+
   vtkDICOMVR vrUS("US");
   TestAssert(vrUS == vtkDICOMVR::US);
   TestAssert(strcmp(vrUS.GetText(), "US") == 0);

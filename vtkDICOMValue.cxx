@@ -647,7 +647,8 @@ void vtkDICOMValue::CreateValue<char>(
   if (vr == VR::AE || vr == VR::AS || vr == VR::CS ||
       vr == VR::DA || vr == VR::DS || vr == VR::DT ||
       vr == VR::IS || vr == VR::LO || vr == VR::PN ||
-      vr == VR::SH || vr == VR::TM || vr == VR::UI)
+      vr == VR::SH || vr == VR::TM || vr == VR::UI ||
+      vr == VR::UR)
     {
     int pad = (m & 1);
     char *cp = this->AllocateCharData(vr, m);
@@ -867,7 +868,8 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
       vr == VR::DA || vr == VR::DS || vr == VR::DT ||
       vr == VR::IS || vr == VR::LO || vr == VR::PN ||
       vr == VR::SH || vr == VR::TM || vr == VR::UI ||
-      vr == VR::ST || vr == VR::LT || vr == VR::UT)
+      vr == VR::ST || vr == VR::LT || vr == VR::UT ||
+      vr == VR::UR)
     {
     this->AllocateCharData(vr, 0);
     }
