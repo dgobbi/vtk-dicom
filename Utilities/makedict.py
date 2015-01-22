@@ -155,7 +155,7 @@ def makedict(lines, creator="DICOM"):
       vr = "OX"
 
     # replace "see note" with "XX"
-    if vr in ("", "see note"):
+    if vr in ("", "see note", "See Note"):
       vr = "XX"
 
     # replace mixed short with "OW"

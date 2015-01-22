@@ -829,7 +829,7 @@ UI
 (0008,1190)
 Retrieve URL
 RetrieveURL
-UT
+UR
 1
 
 (0008,1195)
@@ -1103,7 +1103,7 @@ SQ
 1
 RET
 (0008,225C)
-OnAxis Background Anatomic Structure Code Sequence (Trial)
+On Axis Background Anatomic Structure Code Sequence (Trial)
 OnAxisBackgroundAnatomicStructureCodeSequenceTrial
 SQ
 1
@@ -1119,6 +1119,18 @@ Irradiation Event UID
 IrradiationEventUID
 UI
 1-n
+
+(0008,3011)
+Source Irradiation Event Sequence
+SourceIrradiationEventSequence
+SQ
+1
+
+(0008,3012)
+Radiopharmaceutical Administration Event UID
+RadiopharmaceuticalAdministrationEventUID
+UI
+1
 
 (0008,4000)
 Identifying Comments
@@ -1388,6 +1400,12 @@ LO
 Medical Record Locator
 MedicalRecordLocator
 LO
+1
+
+(0010,1100)
+Referenced Patient Photo Sequence
+ReferencedPatientPhotoSequence
+SQ
 1
 
 (0010,2000)
@@ -2572,6 +2590,198 @@ LINACOutput
 IS
 1
 DICONDE
+(0014,5100)
+Active Aperture
+ActiveAperture
+US
+1
+DICONDE
+(0014,5101)
+Total Aperture
+TotalAperture
+DS
+1
+DICONDE
+(0014,5102)
+Aperture Elevation
+ApertureElevation
+DS
+1
+DICONDE
+(0014,5103)
+Main Lobe Angle
+MainLobeAngle
+DS
+1
+DICONDE
+(0014,5104)
+Main Roof Angle
+MainRoofAngle
+DS
+1
+DICONDE
+(0014,5105)
+Connector Type
+ConnectorType
+CS
+1
+DICONDE
+(0014,5106)
+Wedge Model Number
+WedgeModelNumber
+SH
+1
+DICONDE
+(0014,5107)
+Wedge Angle Float
+WedgeAngleFloat
+DS
+1
+DICONDE
+(0014,5108)
+Wedge Roof Angle
+WedgeRoofAngle
+DS
+1
+DICONDE
+(0014,5109)
+Wedge Element 1 Position
+WedgeElement1Position
+CS
+1
+DICONDE
+(0014,510A)
+Wedge Material Velocity
+WedgeMaterialVelocity
+DS
+1
+DICONDE
+(0014,510B)
+Wedge Material
+WedgeMaterial
+SH
+1
+DICONDE
+(0014,510C)
+Wedge Offset Z
+WedgeOffsetZ
+DS
+1
+DICONDE
+(0014,510D)
+Wedge Origin Offset X
+WedgeOriginOffsetX
+DS
+1
+DICONDE
+(0014,510E)
+Wedge Time Delay
+WedgeTimeDelay
+DS
+1
+DICONDE
+(0014,510F)
+Wedge Name
+WedgeName
+SH
+1
+DICONDE
+(0014,5110)
+Wedge Manufacturer Name
+WedgeManufacturerName
+SH
+1
+DICONDE
+(0014,5111)
+Wedge Description
+WedgeDescription
+LO
+1
+DICONDE
+(0014,5112)
+Nominal Beam Angle
+NominalBeamAngle
+DS
+1
+DICONDE
+(0014,5113)
+Wedge Offset X
+WedgeOffsetX
+DS
+1
+DICONDE
+(0014,5114)
+Wedge Offset Y
+WedgeOffsetY
+DS
+1
+DICONDE
+(0014,5115)
+Wedge Total Length
+WedgeTotalLength
+DS
+1
+DICONDE
+(0014,5116)
+Wedge In Contact Length
+WedgeInContactLength
+DS
+1
+DICONDE
+(0014,5117)
+Wedge Front Gap
+WedgeFrontGap
+DS
+1
+DICONDE
+(0014,5118)
+Wedge Total Height
+WedgeTotalHeight
+DS
+1
+DICONDE
+(0014,5119)
+Wedge Front Height
+WedgeFrontHeight
+DS
+1
+DICONDE
+(0014,511A)
+Wedge Rear Height
+WedgeRearHeight
+DS
+1
+DICONDE
+(0014,511B)
+Wedge Total Width
+WedgeTotalWidth
+DS
+1
+DICONDE
+(0014,511C)
+Wedge In Contact Width
+WedgeInContactWidth
+DS
+1
+DICONDE
+(0014,511D)
+Wedge Chamfer Height
+WedgeChamferHeight
+DS
+1
+DICONDE
+(0014,511E)
+Wedge Curve
+WedgeCurve
+CS
+1
+DICONDE
+(0014,511F)
+Radius Along the Wedge
+RadiusAlongWedge
+DS
+1
+DICONDE
 (0018,0010)
 Contrast/Bolus Agent
 ContrastBolusAgent
@@ -2582,6 +2792,12 @@ LO
 Contrast/Bolus Agent Sequence
 ContrastBolusAgentSequence
 SQ
+1
+
+(0018,0013)
+Contrast/Bolus T1 Relaxivity
+ContrastBolusT1Relaxivity
+FL
 1
 
 (0018,0014)
@@ -3573,6 +3789,12 @@ Time of Last Calibration
 TimeOfLastCalibration
 TM
 1-n
+
+(0018,1202)
+DateTime of Last Calibration
+DateTimeOfLastCalibration
+DT
+1
 
 (0018,1210)
 Convolution Kernel
@@ -5716,6 +5938,18 @@ ChemicalShiftMaximumIntegrationLimitInppm
 FD
 1
 
+(0018,9297)
+Water Reference Acquisition
+WaterReferenceAcquisition
+CS
+1
+
+(0018,9298)
+Echo Peak Position
+EchoPeakPosition
+IS
+1
+
 (0018,9301)
 CT Acquisition Type Sequence
 CTAcquisitionTypeSequence
@@ -6388,6 +6622,18 @@ EndAcquisitionDateTime
 DT
 1
 
+(0018,9518)
+Primary Positioner Increment Sign
+PrimaryPositionerIncrementSign
+SS
+1
+
+(0018,9519)
+Secondary Positioner Increment Sign
+SecondaryPositionerIncrementSign
+SS
+1
+
 (0018,9524)
 Application Name
 ApplicationName
@@ -6434,6 +6680,120 @@ LO
 Per Projection Acquisition Sequence
 PerProjectionAcquisitionSequence
 SQ
+1
+
+(0018,9541)
+Detector Position Sequence
+DetectorPositionSequence
+SQ
+1
+
+(0018,9542)
+X-Ray Acquisition Dose Sequence
+XRayAcquisitionDoseSequence
+SQ
+1
+
+(0018,9543)
+X-Ray Source Isocenter Primary Angle
+XRaySourceIsocenterPrimaryAngle
+FD
+1
+
+(0018,9544)
+X-Ray Source Isocenter Secondary Angle
+XRaySourceIsocenterSecondaryAngle
+FD
+1
+
+(0018,9545)
+Breast Support Isocenter Primary Angle
+BreastSupportIsocenterPrimaryAngle
+FD
+1
+
+(0018,9546)
+Breast Support Isocenter Secondary Angle
+BreastSupportIsocenterSecondaryAngle
+FD
+1
+
+(0018,9547)
+Breast Support X Position to Isocenter
+BreastSupportXPositionToIsocenter
+FD
+1
+
+(0018,9548)
+Breast Support Y Position to Isocenter
+BreastSupportYPositionToIsocenter
+FD
+1
+
+(0018,9549)
+Breast Support Z Position to Isocenter
+BreastSupportZPositionToIsocenter
+FD
+1
+
+(0018,9550)
+Detector Isocenter Primary Angle
+DetectorIsocenterPrimaryAngle
+FD
+1
+
+(0018,9551)
+Detector Isocenter Secondary Angle
+DetectorIsocenterSecondaryAngle
+FD
+1
+
+(0018,9552)
+Detector X Position to Isocenter
+DetectorXPositionToIsocenter
+FD
+1
+
+(0018,9553)
+Detector Y Position to Isocenter
+DetectorYPositionToIsocenter
+FD
+1
+
+(0018,9554)
+Detector Z Position to Isocenter
+DetectorZPositionToIsocenter
+FD
+1
+
+(0018,9555)
+X-Ray Grid Sequence
+XRayGridSequence
+SQ
+1
+
+(0018,9556)
+X-Ray Filter Sequence
+XRayFilterSequence
+SQ
+1
+
+(0018,9557)
+Detector Active Area TLHC Position
+DetectorActiveAreaTLHCPosition
+FD
+3
+
+(0018,9558)
+Detector Active Area Orientation
+DetectorActiveAreaOrientation
+FD
+6
+
+(0018,9559)
+Positioner Primary Angle Direction
+PositionerPrimaryAngleDirection
+CS
 1
 
 (0018,9601)
@@ -7473,6 +7833,12 @@ Volume to Table Mapping Matrix
 VolumeToTableMappingMatrix
 FD
 16
+
+(0020,930B)
+Volume to Transducer Relationship
+VolumeToTransducerRelationship
+CS
+1
 
 (0020,930C)
 Patient Frame of Reference Source
@@ -9268,6 +9634,30 @@ PixelPaddingRangeLimit
 US or SS
 1
 
+(0028,0122)
+Float Pixel Padding Value
+FloatPixelPaddingValue
+FL
+1
+
+(0028,0123)
+Double Float Pixel Padding Value
+DoubleFloatPixelPaddingValue
+FD
+1
+
+(0028,0124)
+Float Pixel Padding Range Limit
+FloatPixelPaddingRangeLimit
+FL
+1
+
+(0028,0125)
+Double Float Pixel Padding Range Limit
+DoubleFloatPixelPaddingRangeLimit
+FD
+1
+
 (0028,0200)
 Image Location
 ImageLocation
@@ -9922,10 +10312,292 @@ MaskOperationExplanation
 ST
 1
 
+(0028,7000)
+Equipment Administrator Sequence
+EquipmentAdministratorSequence
+SQ
+1
+
+(0028,7001)
+Number of Display Subsystems
+NumberOfDisplaySubsystems
+US
+1
+
+(0028,7002)
+Current Configuration ID
+CurrentConfigurationID
+US
+1
+
+(0028,7003)
+Display Subsystem ID
+DisplaySubsystemID
+US
+1
+
+(0028,7004)
+Display Subsystem Name
+DisplaySubsystemName
+SH
+1
+
+(0028,7005)
+Display Subsystem Description
+DisplaySubsystemDescription
+LO
+1
+
+(0028,7006)
+System Status
+SystemStatus
+CS
+1
+
+(0028,7007)
+System Status Comment
+SystemStatusComment
+LO
+1
+
+(0028,7008)
+Target Luminance Characteristics Sequence
+TargetLuminanceCharacteristicsSequence
+SQ
+1
+
+(0028,7009)
+Luminance Characteristics ID
+LuminanceCharacteristicsID
+US
+1
+
+(0028,700A)
+Display Subsystem Configuration Sequence
+DisplaySubsystemConfigurationSequence
+SQ
+1
+
+(0028,700B)
+Configuration ID
+ConfigurationID
+US
+1
+
+(0028,700C)
+Configuration Name
+ConfigurationName
+SH
+1
+
+(0028,700D)
+Configuration Description
+ConfigurationDescription
+LO
+1
+
+(0028,700E)
+Referenced Target Luminance Characteristics ID
+ReferencedTargetLuminanceCharacteristicsID
+US
+1
+
+(0028,700F)
+QA Results Sequence
+QAResultsSequence
+SQ
+1
+
+(0028,7010)
+Display Subsystem QA Results Sequence
+DisplaySubsystemQAResultsSequence
+SQ
+1
+
+(0028,7011)
+Configuration QA Results Sequence
+ConfigurationQAResultsSequence
+SQ
+1
+
+(0028,7012)
+Measurement Equipment Sequence
+MeasurementEquipmentSequence
+SQ
+1
+
+(0028,7013)
+Measurement Functions
+MeasurementFunctions
+CS
+1-n
+
+(0028,7014)
+Measurement Equipment Type
+MeasurementEquipmentType
+CS
+1
+
+(0028,7015)
+Visual Evaluation Result Sequence
+VisualEvaluationResultSequence
+SQ
+1
+
+(0028,7016)
+Display Calibration Result Sequence
+DisplayCalibrationResultSequence
+SQ
+1
+
+(0028,7017)
+DDL Value
+DDLValue
+US
+1
+
+(0028,7018)
+CIExy White Point
+CIExyWhitePoint
+FL
+2
+
+(0028,7019)
+Display Function Type
+DisplayFunctionType
+CS
+1
+
+(0028,701A)
+Gamma Value
+GammaValue
+FL
+1
+
+(0028,701B)
+Number of Luminance Points
+NumberOfLuminancePoints
+US
+1
+
+(0028,701C)
+Luminance Response Sequence
+LuminanceResponseSequence
+SQ
+1
+
+(0028,701D)
+Target Minimum Luminance
+TargetMinimumLuminance
+FL
+1
+
+(0028,701E)
+Target Maximum Luminance
+TargetMaximumLuminance
+FL
+1
+
+(0028,701F)
+Luminance Value
+LuminanceValue
+FL
+1
+
+(0028,7020)
+Luminance Response Description
+LuminanceResponseDescription
+LO
+1
+
+(0028,7021)
+White Point Flag
+WhitePointFlag
+CS
+1
+
+(0028,7022)
+Display Device Type Code Sequence
+DisplayDeviceTypeCodeSequence
+SQ
+1
+
+(0028,7023)
+Display Subsystem Sequence
+DisplaySubsystemSequence
+SQ
+1
+
+(0028,7024)
+Luminance Result Sequence
+LuminanceResultSequence
+SQ
+1
+
+(0028,7025)
+Ambient Light Value Source
+AmbientLightValueSource
+CS
+1
+
+(0028,7026)
+Measured Characteristics
+MeasuredCharacteristics
+CS
+1-n
+
+(0028,7027)
+Luminance Uniformity Result Sequence
+LuminanceUniformityResultSequence
+SQ
+1
+
+(0028,7028)
+Visual Evaluation Test Sequence
+VisualEvaluationTestSequence
+SQ
+1
+
+(0028,7029)
+Test Result
+TestResult
+CS
+1
+
+(0028,702A)
+Test Result Comment
+TestResultComment
+LO
+1
+
+(0028,702B)
+Test Image Validation
+TestImageValidation
+CS
+1
+
+(0028,702C)
+Test Pattern Code Sequence
+TestPatternCodeSequence
+SQ
+1
+
+(0028,702D)
+Measurement Pattern Code Sequence
+MeasurementPatternCodeSequence
+SQ
+1
+
+(0028,702E)
+Visual Evaluation Method Code Sequence
+VisualEvaluationMethodCodeSequence
+SQ
+1
+
 (0028,7FE0)
 Pixel Data Provider URL
 PixelDataProviderURL
-UT
+UR
 1
 
 (0028,9001)
@@ -10394,6 +11066,18 @@ SQ
 Pertinent Documents Sequence
 PertinentDocumentsSequence
 SQ
+1
+
+(0038,0101)
+Pertinent Resources Sequence
+PertinentResourcesSequence
+SQ
+1
+
+(0038,0102)
+Resource Description
+ResourceDescription
+LO
 1
 
 (0038,0300)
@@ -11375,13 +12059,13 @@ TM
 1
 
 (0040,2006)
-Placer Order Number Imaging Service Request (Retired)
+Placer Order Number / Imaging Service Request (Retired)
 PlacerOrderNumberImagingServiceRequestRetired
 SH
 1
 RET
 (0040,2007)
-Filler Order Number Imaging Service Request (Retired)
+Filler Order Number / Imaging Service Request (Retired)
 FillerOrderNumberImagingServiceRequestRetired
 SH
 1
@@ -11457,7 +12141,7 @@ Scheduled Procedure Step Start DateTime
 ScheduledProcedureStepStartDateTime
 DT
 1
-RET
+
 (0040,4006)
 Multiple Copies Flag
 MultipleCopiesFlag
@@ -11650,6 +12334,12 @@ EntranceDoseInmGy
 DS
 1
 
+(0040,9092)
+Parametric Map Frame Type Sequence
+ParametricMapFrameTypeSequence
+SQ
+1
+
 (0040,9094)
 Referenced Image Real World Value Mapping Sequence
 ReferencedImageRealWorldValueMappingSequence
@@ -11690,6 +12380,12 @@ FD
 Real World Value First Value Mapped
 RealWorldValueFirstValueMapped
 US or SS
+1
+
+(0040,9220)
+Quantity Definition Sequence
+QuantityDefinitionSequence
+SQ
 1
 
 (0040,9224)
@@ -12427,7 +13123,7 @@ SQ
 (0040,E010)
 Retrieve URI
 RetrieveURI
-UT
+UR
 1
 
 (0040,E011)
@@ -12463,6 +13159,12 @@ SQ
 (0040,E024)
 XDS Retrieval Sequence
 XDSRetrievalSequence
+SQ
+1
+
+(0040,E025)
+WADO-RS Retrieval Sequence
+WADORSRetrievalSequence
 SQ
 1
 
@@ -13816,6 +14518,12 @@ SliceProgressionDirection
 CS
 1
 
+(0054,0501)
+Scan Progression Direction
+ScanProgressionDirection
+CS
+1
+
 (0054,1000)
 Series Type
 SeriesType
@@ -14457,6 +15165,30 @@ Recommended Line Thickness
 RecommendedLineThickness
 FL
 1
+
+(0066,0040)
+Long Primitive Point Index List
+LongPrimitivePointIndexList
+UL
+1-n
+
+(0066,0041)
+Long Triangle Point Index List
+LongTrianglePointIndexList
+UL
+3-3n
+
+(0066,0042)
+Long Edge Point Index List
+LongEdgePointIndexList
+UL
+2-2n
+
+(0066,0043)
+Long Vertex Point Index List
+LongVertexPointIndexList
+UL
+1-n
 
 (0068,6210)
 Implant Size
@@ -16198,19 +16930,19 @@ ProcedureStepCommunicationsURISequence
 SQ
 1
 
-(0074,100a)
+(0074,100A)
 Contact URI
 ContactURI
-ST
+UR
 1
 
-(0074,100c)
+(0074,100C)
 Contact Display Name
 ContactDisplayName
 LO
 1
 
-(0074,100e)
+(0074,100E)
 Procedure Step Discontinuation Reason Code Sequence
 ProcedureStepDiscontinuationReasonCodeSequence
 SQ
@@ -18352,6 +19084,12 @@ ROIElementalCompositionAtomicMassFraction
 FL
 1
 
+(3006,00B9)
+Additional RT ROI Identification Code Sequence
+AdditionalRTROIIdentificationCodeSequence
+SQ
+1
+
 (3006,00C0)
 Frame of Reference Relationship Sequence
 FrameOfReferenceRelationshipSequence
@@ -18872,6 +19610,24 @@ DA
 Safe Position Return Time
 SafePositionReturnTime
 TM
+1
+
+(3008,0171)
+Pulse Specific Brachy Control Point Delivered Sequence
+PulseSpecificBrachyControlPointDeliveredSequence
+SQ
+1
+
+(3008,0172)
+Pulse Number
+PulseNumber
+US
+1
+
+(3008,0173)
+Brachy Pulse Control Point Delivered Sequence
+BrachyPulseControlPointDeliveredSequence
+SQ
 1
 
 (3008,0200)
@@ -19420,6 +20176,12 @@ BeamType
 CS
 1
 
+(300A,00C5)
+Beam Delivery Duration Limit
+BeamDeliveryDurationLimit
+FD
+1
+
 (300A,00C6)
 Radiation Type
 RadiationType
@@ -19538,6 +20300,12 @@ SH
 Bolus Description
 BolusDescription
 ST
+1
+
+(300A,00DE)
+Effective Wedge Angle
+EffectiveWedgeAngle
+DS
 1
 
 (300A,00E0)
@@ -22420,6 +23188,18 @@ OverlayComments
 LT
 1
 RET
+(7FE0,0008)
+Float Pixel Data
+FloatPixelData
+OF
+1
+
+(7FE0,0009)
+Double Float Pixel Data
+DoubleFloatPixelData
+OD
+1
+
 (7FE0,0010)
 Pixel Data
 PixelData
@@ -22489,18 +23269,18 @@ OB
 (FFFE,E000)
 Item
 Item
-see note
+See Note
 0
 
 (FFFE,E00D)
 Item Delimitation Item
 ItemDelimitationItem
-see note
+See Note
 0
 
 (FFFE,E0DD)
 Sequence Delimitation Item
 SequenceDelimitationItem
-see note
+See Note
 0
 
