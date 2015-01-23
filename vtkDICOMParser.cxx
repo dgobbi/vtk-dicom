@@ -2003,45 +2003,55 @@ bool vtkDICOMParser::ReadMetaData(
     vtkDICOMTag delimiter(tag.GetGroup(), 0);
 
     // check for PixelData group 0x7fe0, or obsolete 0x7fxx
+    unsigned int l = HxFFFFFFFF;
     if ((tag.GetGroup() & 0xff01) == 0x7f00)
       {
-      // set delimiter to pixel data tag
-      delimiter = tag;
-      foundPixelData = true;
+      if (tag.GetElement() == 0x0000)
+        {
+        // have to read "group length" before pixel data
+        l = 12;
+        }
+      else
+        {
+        // set delimiter to pixel data tag
+        delimiter = tag;
+        foundPixelData = true;
+        }
       }
 
     if (found && meta)
       {
-      readFailure = !decoder->ReadElements(cp, ep, HxFFFFFFFF, delimiter);
+      readFailure = !decoder->ReadElements(cp, ep, l, delimiter);
       queryFailure = (hasQuery && !decoder->GetQueryMatched());
       }
     else
       {
-      readFailure = !decoder->SkipElements(cp, ep, HxFFFFFFFF, delimiter);
+      readFailure = !decoder->SkipElements(cp, ep, l, delimiter);
       }
     }
 
+  vtkDICOMTag lastTag = decoder->GetLastTag();
   this->FileOffset = this->GetBytesProcessed(cp, ep);
   this->QueryMatched &= decoder->FinishQuery();
-  this->PixelDataFound = (decoder->GetLastTag().GetGroup() == 0x7fe0);
+  this->PixelDataFound = (lastTag.GetGroup() == 0x7fe0 &&
+                          lastTag.GetElement() != 0x0000);
 
   if (meta && this->PixelDataFound)
     {
     // the last tag read will be PixelData (or an equivalent), and we
     // want to add it as an empty attribute because we did not read its
     // value (the FileOffset was saved so it can be read later)
-    vtkDICOMTag tag = decoder->GetLastTag();
     unsigned short x = 0;
     vtkDICOMValue v(decoder->GetLastVR(), &x, x);
 
     if (idx >= 0)
       {
-      meta->SetAttributeValue(idx, tag, v);
-      decoder->HandleMissingAttributes(tag);
+      meta->SetAttributeValue(idx, lastTag, v);
+      decoder->HandleMissingAttributes(lastTag);
       }
     else
       {
-      meta->SetAttributeValue(tag, v);
+      meta->SetAttributeValue(lastTag, v);
       }
     }
 
