@@ -133,8 +133,8 @@ public:
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter) = 0;
 
-  // Peek ahead to see what the group of the next element is.
-  virtual unsigned short PeekGroup(
+  // Peek ahead to see what the next element is.
+  virtual vtkDICOMTag Peek(
     const unsigned char* &cp, const unsigned char* &ep) = 0;
 
   // Copy bytes from sp to end marker cp into the value "v".
@@ -323,16 +323,18 @@ public:
     const unsigned char* &cp, const unsigned char* &ep,
     vtkDICOMVR vr, unsigned int vl, vtkDICOMValue &v);
 
-  // Peek ahead to see what the group of the next element is.
-  unsigned short PeekGroup(
+  // Peek ahead to see what the next element is.
+  vtkDICOMTag Peek(
     const unsigned char* &cp, const unsigned char* &ep)
   {
     unsigned short g = 0;
-    if (this->CheckBuffer(cp, ep, 2))
+    unsigned short e = 0;
+    if (this->CheckBuffer(cp, ep, 4))
       {
       g = Decoder<E>::GetInt16(cp);
+      e = Decoder<E>::GetInt16(cp + 2);
       }
-    return g;
+    return vtkDICOMTag(g, e);
   }
 
 protected:
@@ -1981,7 +1983,7 @@ bool vtkDICOMParser::ReadMetaData(
   bool queryFailure = (hasQuery && !this->QueryMatched);
   while (!foundPixelData && !readFailure && !queryFailure)
     {
-    unsigned int g = decoder->PeekGroup(cp, ep);
+    vtkDICOMTag tag = decoder->Peek(cp, ep);
 
     // if there is no data left to decode, then break
     if (cp == ep) { break; }
@@ -1990,21 +1992,21 @@ bool vtkDICOMParser::ReadMetaData(
     bool found = true;
     if (!groups.empty())
       {
-      while (giter != groups.end() && *giter < g)
+      while (giter != groups.end() && *giter < tag.GetGroup())
         {
         ++giter;
         }
-      found = (giter != groups.end() && *giter == g);
+      found = (giter != groups.end() && *giter == tag.GetGroup());
       }
 
     // create a delimiter to read/skip only this group
-    vtkDICOMTag delimiter(g,0);
+    vtkDICOMTag delimiter(tag.GetGroup(), 0);
 
     // check for PixelData group 0x7fe0, or obsolete 0x7fxx
-    if ((g & 0xff01) == 0x7f00)
+    if ((tag.GetGroup() & 0xff01) == 0x7f00)
       {
       // set delimiter to pixel data tag
-      delimiter = vtkDICOMTag(g, 0x0010);
+      delimiter = tag;
       foundPixelData = true;
       }
 
@@ -2019,25 +2021,29 @@ bool vtkDICOMParser::ReadMetaData(
       }
     }
 
+  this->FileOffset = this->GetBytesProcessed(cp, ep);
   this->QueryMatched &= decoder->FinishQuery();
-  this->PixelDataFound = (decoder->GetLastTag() == DC::PixelData);
+  this->PixelDataFound = (decoder->GetLastTag().GetGroup() == 0x7fe0);
+
   if (meta && this->PixelDataFound)
     {
-    // add the PixelData attribute, but make it empty
+    // the last tag read will be PixelData (or an equivalent), and we
+    // want to add it as an empty attribute because we did not read its
+    // value (the FileOffset was saved so it can be read later)
+    vtkDICOMTag tag = decoder->GetLastTag();
     unsigned short x = 0;
     vtkDICOMValue v(decoder->GetLastVR(), &x, x);
+
     if (idx >= 0)
       {
-      meta->SetAttributeValue(idx, DC::PixelData, v);
-      decoder->HandleMissingAttributes(DC::PixelData);
+      meta->SetAttributeValue(idx, tag, v);
+      decoder->HandleMissingAttributes(tag);
       }
     else
       {
-      meta->SetAttributeValue(DC::PixelData, v);
+      meta->SetAttributeValue(tag, v);
       }
     }
-
-  this->FileOffset = this->GetBytesProcessed(cp, ep);
 
   return true;
 }
