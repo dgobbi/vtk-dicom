@@ -1447,9 +1447,20 @@ int vtkDICOMReader::RequestInformation(
     {
     scalarType = (pixelRepresentation ? VTK_SHORT : VTK_UNSIGNED_SHORT);
     }
-  else if (bitsAllocated == 32)
+  else if (bitsAllocated == 32 &&
+           this->MetaData->HasAttribute(DC::PixelData))
     {
     scalarType = (pixelRepresentation ? VTK_INT : VTK_UNSIGNED_INT);
+    }
+  else if (bitsAllocated == 32 &&
+           this->MetaData->HasAttribute(DC::FloatPixelData))
+    {
+    scalarType = VTK_FLOAT;
+    }
+  else if (bitsAllocated == 64 &&
+           this->MetaData->HasAttribute(DC::DoubleFloatPixelData))
+    {
+    scalarType = VTK_DOUBLE;
     }
   else
     {
@@ -2258,7 +2269,8 @@ int vtkDICOMReader::RequestData(
          componentIdx*filePixelSize*numPlanes);
 
       // rescale if Rescale was different for different files
-      if (this->NeedsRescale)
+      if (this->NeedsRescale &&
+          this->MetaData->HasAttribute(DC::PixelData))
         {
         this->RescaleBuffer(fileIdx, bufferPtr, sliceSize);
         }
