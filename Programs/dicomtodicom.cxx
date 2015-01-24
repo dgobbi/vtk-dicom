@@ -17,7 +17,7 @@
 #include "vtkDICOMParser.h"
 #include "vtkDICOMReader.h"
 #include "vtkDICOMWriter.h"
-#include "vtkDICOMSorter.h"
+#include "vtkDICOMFileSorter.h"
 #include "vtkDICOMMRGenerator.h"
 #include "vtkDICOMCTGenerator.h"
 #include "vtkDICOMToRAS.h"
@@ -163,7 +163,7 @@ void dicomtodicom_help(FILE *file, const char *command_name)
 void dicomtodicom_check_error(vtkObject *o)
 {
   vtkDICOMReader *reader = vtkDICOMReader::SafeDownCast(o);
-  vtkDICOMSorter *sorter = vtkDICOMSorter::SafeDownCast(o);
+  vtkDICOMFileSorter *sorter = vtkDICOMFileSorter::SafeDownCast(o);
   vtkDICOMWriter *writer = vtkDICOMWriter::SafeDownCast(o);
   vtkDICOMParser *parser = vtkDICOMParser::SafeDownCast(o);
   const char *filename = 0;
@@ -667,8 +667,8 @@ void dicomtodicom_convert_files(
   presorter->Update();
 
   // sort the files by study and series
-  vtkSmartPointer<vtkDICOMSorter> sorter =
-    vtkSmartPointer<vtkDICOMSorter>::New();
+  vtkSmartPointer<vtkDICOMFileSorter> sorter =
+    vtkSmartPointer<vtkDICOMFileSorter>::New();
   sorter->SetInputFileNames(presorter->GetFileNames());
   sorter->Update();
   dicomtodicom_check_error(sorter);

@@ -1,7 +1,7 @@
 // Test the vtkDICOMReader by displaying an image.
 
 #include "vtkDICOMMetaData.h"
-#include "vtkDICOMSorter.h"
+#include "vtkDICOMFileSorter.h"
 #include "vtkDICOMReader.h"
 #include "vtkDICOMCTRectifier.h"
 
@@ -34,8 +34,8 @@ int main(int argc, char *argv[])
   iren->SetRenderWindow(renWin);
   iren->SetInteractorStyle(style);
 
-  vtkSmartPointer<vtkDICOMSorter> sorter =
-    vtkSmartPointer<vtkDICOMSorter>::New();
+  vtkSmartPointer<vtkDICOMFileSorter> sorter =
+    vtkSmartPointer<vtkDICOMFileSorter>::New();
 
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();
@@ -68,9 +68,9 @@ int main(int argc, char *argv[])
   int kmax = 0;
   for (int i = 0; i < m; i++)
     {
-    int fj = sorter->GetFirstSeriesInStudy(i);
-    int lj = fj + sorter->GetNumberOfSeriesInStudy(i);
-    for (int j = fj; j < lj; j++)
+    int fj = sorter->GetFirstSeriesForStudy(i);
+    int lj = sorter->GetLastSeriesForStudy(i);
+    for (int j = fj; j <= lj; j++)
       {
       int k = sorter->GetFileNamesForSeries(j)->GetNumberOfValues();
       if (k > kmax)

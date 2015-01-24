@@ -35,6 +35,7 @@ set(LIB_SRCS
   vtkDICOMDictEntry.cxx
   vtkDICOMDictPrivate.cxx
   vtkDICOMDirectory.cxx
+  vtkDICOMFileSorter.cxx
   vtkDICOMGenerator.cxx
   vtkDICOMImageCodec.cxx
   vtkDICOMSCGenerator.cxx

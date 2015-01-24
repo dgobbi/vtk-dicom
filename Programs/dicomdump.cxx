@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #include "vtkDICOMParser.h"
-#include "vtkDICOMSorter.h"
+#include "vtkDICOMFileSorter.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMItem.h"
 
@@ -333,8 +333,8 @@ int main(int argc, char *argv[])
     }
 
   // sort the files by study and series
-  vtkSmartPointer<vtkDICOMSorter> sorter =
-    vtkSmartPointer<vtkDICOMSorter>::New();
+  vtkSmartPointer<vtkDICOMFileSorter> sorter =
+    vtkSmartPointer<vtkDICOMFileSorter>::New();
   sorter->RequirePixelDataOff();
   sorter->SetInputFileNames(files);
   sorter->Update();
@@ -355,10 +355,9 @@ int main(int argc, char *argv[])
   int m = sorter->GetNumberOfStudies();
   for (int j = 0; j < m; j++)
     {
-    int k = sorter->GetFirstSeriesInStudy(j);
-    int n = sorter->GetNumberOfSeriesInStudy(j);
-    n += k;
-    for (; k < n; k++)
+    int k = sorter->GetFirstSeriesForStudy(j);
+    int kl = sorter->GetLastSeriesForStudy(j);
+    for (; k <= kl; k++)
       {
       vtkStringArray *a = sorter->GetFileNamesForSeries(k);
       vtkIdType l = a->GetNumberOfValues();

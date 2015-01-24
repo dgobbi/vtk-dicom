@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #include "vtkDICOMMetaData.h"
-#include "vtkDICOMSorter.h"
+#include "vtkDICOMFileSorter.h"
 #include "vtkDICOMReader.h"
 #include "vtkDICOMWriter.h"
 #include "vtkDICOMMRGenerator.h"
@@ -36,8 +36,8 @@ int main(int argc, char *argv[])
   while (cp != exename && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
   exename = cp;
 
-  vtkSmartPointer<vtkDICOMSorter> sorter =
-    vtkSmartPointer<vtkDICOMSorter>::New();
+  vtkSmartPointer<vtkDICOMFileSorter> sorter =
+    vtkSmartPointer<vtkDICOMFileSorter>::New();
 
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();
@@ -54,10 +54,9 @@ int main(int argc, char *argv[])
   for (int j = 0; j < m; j++)
     {
     cout << "Study" << j << ":\n";
-    int k = sorter->GetFirstSeriesInStudy(j);
-    int n = sorter->GetNumberOfSeriesInStudy(j);
-    n += k;
-    for (; k < n; k++)
+    int k = sorter->GetFirstSeriesForStudy(j);
+    int kl = sorter->GetLastSeriesForStudy(j);
+    for (; k <= kl; k++)
       {
       cout << "  Series " << k << ":\n";
       vtkStringArray *a = sorter->GetFileNamesForSeries(k);

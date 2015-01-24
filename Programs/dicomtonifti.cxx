@@ -16,7 +16,7 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMParser.h"
 #include "vtkDICOMReader.h"
-#include "vtkDICOMSorter.h"
+#include "vtkDICOMFileSorter.h"
 #include "vtkDICOMToRAS.h"
 #include "vtkDICOMCTRectifier.h"
 #include "vtkNIFTIHeader.h"
@@ -183,7 +183,7 @@ void dicomtonifti_help(FILE *file, const char *command_name)
 void dicomtonifti_check_error(vtkObject *o)
 {
   vtkDICOMReader *reader = vtkDICOMReader::SafeDownCast(o);
-  vtkDICOMSorter *sorter = vtkDICOMSorter::SafeDownCast(o);
+  vtkDICOMFileSorter *sorter = vtkDICOMFileSorter::SafeDownCast(o);
   vtkNIFTIWriter *writer = vtkNIFTIWriter::SafeDownCast(o);
   vtkDICOMParser *parser = vtkDICOMParser::SafeDownCast(o);
   const char *filename = 0;
@@ -892,8 +892,8 @@ void dicomtonifti_convert_files(
   presorter->Update();
 
   // sort the files by study and series
-  vtkSmartPointer<vtkDICOMSorter> sorter =
-    vtkSmartPointer<vtkDICOMSorter>::New();
+  vtkSmartPointer<vtkDICOMFileSorter> sorter =
+    vtkSmartPointer<vtkDICOMFileSorter>::New();
   sorter->SetInputFileNames(presorter->GetFileNames());
   sorter->Update();
   dicomtonifti_check_error(sorter);
@@ -926,10 +926,9 @@ void dicomtonifti_convert_files(
     int m = sorter->GetNumberOfStudies();
     for (int j = 0; j < m; j++)
       {
-      int k = sorter->GetFirstSeriesInStudy(j);
-      int n = sorter->GetNumberOfSeriesInStudy(j);
-      n += k;
-      for (; k < n; k++)
+      int k = sorter->GetFirstSeriesForStudy(j);
+      int kl = sorter->GetLastSeriesForStudy(j);
+      for (; k <= kl; k++)
         {
         // get metadata of first file
         vtkStringArray *a = sorter->GetFileNamesForSeries(k);
@@ -949,7 +948,7 @@ void dicomtonifti_convert_files(
           }
 
         // make the directory for the file
-        if (k == sorter->GetFirstSeriesInStudy(j))
+        if (k == sorter->GetFirstSeriesForStudy(j))
           {
           std::string dirname = vtksys::SystemTools::GetParentDirectory(
             outfile.c_str());
