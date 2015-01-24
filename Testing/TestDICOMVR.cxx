@@ -178,5 +178,45 @@ int main(int argc, char *argv[])
   TestAssert(vrUT.GetType() == VTK_CHAR);
   }
 
+  { // Test the attributes that are stored in bitfields
+  vtkDICOMVR vrs[] = {
+    vtkDICOMVR::XX, vtkDICOMVR::AE, vtkDICOMVR::AS, vtkDICOMVR::AT,
+    vtkDICOMVR::CS, vtkDICOMVR::DA, vtkDICOMVR::DS, vtkDICOMVR::DT,
+    vtkDICOMVR::FD, vtkDICOMVR::FL, vtkDICOMVR::IS, vtkDICOMVR::LO,
+    vtkDICOMVR::LT, vtkDICOMVR::OB, vtkDICOMVR::OD, vtkDICOMVR::OF,
+    vtkDICOMVR::OW, vtkDICOMVR::PN, vtkDICOMVR::SH, vtkDICOMVR::SL,
+    vtkDICOMVR::SQ, vtkDICOMVR::SS, vtkDICOMVR::ST, vtkDICOMVR::TM,
+    vtkDICOMVR::UI, vtkDICOMVR::UL, vtkDICOMVR::UN, vtkDICOMVR::UR,
+    vtkDICOMVR::US, vtkDICOMVR::UT, vtkDICOMVR::OX, vtkDICOMVR::XS,
+  };
+
+  // XX  AS  CS  DS  FD  IS  LT  OD  OW  SH  SQ  ST  UI  UN  US  OS
+  //   AE  AT  DA  DT  FL  LO  OB  OF  PN  SL  SS  TM  UL  UR  UT  XS
+  bool hasLongVL[] = {
+     0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,1,0,0,0,0,0,1,1,0,1,0,0
+  };
+  bool hasSpecificCharacterSet[] = {
+     0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0,1,0,0
+  };
+  bool hasTextValue[] = {
+     0,1,1,0,1,1,1,1,0,0,1,1,1,0,0,0,0,1,1,0,0,0,1,1,1,0,0,1,0,1,0,0
+  };
+  bool hasSingleValue[] = {
+     0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0
+  };
+  bool hasPadding[] = {
+     0,1,1,0,1,1,1,1,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,1,0,0,0,0
+  };
+
+  for (int i = 0; i < 32; i++)
+    {
+    TestAssert(hasLongVL[i] == vrs[i].HasLongVL());
+    TestAssert(hasSpecificCharacterSet[i] == vrs[i].HasSpecificCharacterSet());
+    TestAssert(hasTextValue[i] == vrs[i].HasTextValue());
+    TestAssert(hasSingleValue[i] == vrs[i].HasSingleValue());
+    TestAssert(hasPadding[i] == vrs[i].HasPadding());
+    }
+  }
+
   return rval;
 }
