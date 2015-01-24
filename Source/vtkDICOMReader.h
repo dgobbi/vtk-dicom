@@ -31,6 +31,7 @@ class vtkMatrix4x4;
 class vtkMedicalImageProperties;
 class vtkDICOMMetaData;
 class vtkDICOMParser;
+class vtkDICOMSliceSorter;
 
 //----------------------------------------------------------------------------
 class VTK_DICOM_EXPORT vtkDICOMReader : public vtkImageReader2
@@ -108,6 +109,13 @@ public:
   vtkGetMacro(Sorting, int);
   vtkSetMacro(Sorting, int);
   vtkBooleanMacro(Sorting, int)
+
+  // Description:
+  // Set a custom sorter to be used to sort files and frames into slices.
+  // The default sorter uses the attributes "ImagePositionPatient" and
+  // "ImageOrientationPatient" to spatially arrange the slices.
+  void SetSorter(vtkDICOMSliceSorter *sorter);
+  vtkDICOMSliceSorter *GetSorter() { return this->Sorter; }
 
   // Description:
   // Read the time dimension as scalar components (default: Off).
@@ -251,6 +259,10 @@ protected:
   // Description:
   // The parser that is used to read the file.
   vtkDICOMParser *Parser;
+
+  // Description:
+  // The sorter that orders the slices within the volume.
+  vtkDICOMSliceSorter *Sorter;
 
   // Description:
   // The offsets to the pixel data in each file.

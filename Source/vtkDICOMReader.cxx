@@ -69,6 +69,7 @@
 #include <stdlib.h>
 
 vtkStandardNewMacro(vtkDICOMReader);
+vtkCxxSetObjectMacro(vtkDICOMReader,Sorter,vtkDICOMSliceSorter);
 
 //----------------------------------------------------------------------------
 vtkDICOMReader::vtkDICOMReader()
@@ -77,6 +78,7 @@ vtkDICOMReader::vtkDICOMReader()
   this->RescaleSlope = 1.0;
   this->RescaleIntercept = 0.0;
   this->Parser = 0;
+  this->Sorter = vtkDICOMSliceSorter::New();
   this->FileIndexArray = vtkIntArray::New();
   this->FrameIndexArray = vtkIntArray::New();
   this->StackIDs = vtkStringArray::New();
@@ -124,6 +126,10 @@ vtkDICOMReader::~vtkDICOMReader()
   if (this->Parser)
     {
     this->Parser->Delete();
+    }
+  if (this->Sorter)
+    {
+    this->Sorter->Delete();
     }
   if (this->FileOffsetArray)
     {
@@ -174,6 +180,16 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
   if (this->MedicalImageProperties)
     {
     os << this->MedicalImageProperties << "\n";
+    }
+  else
+    {
+    os << "(none)\n";
+    }
+
+  os << indent << "Sorter: ";
+  if (this->Sorter)
+    {
+    os << this->Sorter << "\n";
     }
   else
     {
@@ -339,8 +355,7 @@ struct vtkDICOMReaderFileInfo
 //----------------------------------------------------------------------------
 void vtkDICOMReader::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 {
-  vtkSmartPointer<vtkDICOMSliceSorter> sorter =
-    vtkSmartPointer<vtkDICOMSliceSorter>::New();
+  vtkDICOMSliceSorter *sorter = this->Sorter;
 
   sorter->SetMetaData(this->MetaData);
   sorter->SetDesiredStackID(this->DesiredStackID);
@@ -470,7 +485,7 @@ int vtkDICOMReader::RequestInformation(
   // to be re-sorted to create a proper volume.  The FileIndexArray
   // holds the sorted order of the files.
   this->StackIDs->Initialize();
-  if (this->Sorting)
+  if (this->Sorting && this->Sorter)
     {
     this->SortFiles(this->FileIndexArray, this->FrameIndexArray);
     }
