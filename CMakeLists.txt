@@ -188,12 +188,6 @@ set(VTK_WRAP_INCLUDE_DIRS ${DICOM_INCLUDE_DIRS} ${VTK_WRAP_INCLUDE_DIRS})
 
 # Libraries
 set(DICOM_LIBRARIES vtkDICOM)
-if(BUILD_PYTHON_WRAPPERS)
-  set(DICOM_PYTHON_LIBRARIES vtkDICOMPythonD)
-endif()
-if(BUILD_JAVA_WRAPPERS)
-  set(DICOM_JAVA_LIBRARIES vtkDICOMJava)
-endif()
 
 # The library dependencies
 set(KWSYS_LIBS vtksys)
@@ -206,6 +200,36 @@ if("${VTK_MAJOR_VERSION}" GREATER 5)
   endif()
 else()
   set(VTK_LIBS vtkCommon vtkFiltering vtkImaging vtkIO) # VTK 5.x
+endif()
+
+# For the python wrappers
+if(BUILD_PYTHON_WRAPPERS)
+  set(DICOM_PYTHON_LIBRARIES vtkDICOMPythonD)
+endif()
+
+# For the java wrappers
+if(BUILD_JAVA_WRAPPERS)
+  find_package(Java REQUIRED)
+  find_package(JNI REQUIRED)
+
+  set(VTK_JAVA_SOURCE_VERSION "1.5" CACHE STRING "javac source version")
+  set(VTK_JAVA_TARGET_VERSION "1.5" CACHE STRING "javac target version")
+  mark_as_advanced(VTK_JAVA_SOURCE_VERSION)
+  mark_as_advanced(VTK_JAVA_TARGET_VERSION)
+
+  if(APPLE)
+    set(JAVAC_OPTIONS -J-Xmx512m)
+  endif()
+  if(NOT VTK_JAR_PATH)
+    set(VTK_JAR_PATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+  endif()
+  find_file(VTK_JAVA_JAR NAMES vtk.jar vtk6.jar vtk5.jar
+    PATHS ${vtkWrappingJava_RUNTIME_LIBRARY_DIRS})
+  if(NOT VTK_JAVA_JAR)
+    message(FATAL_ERROR "VTK_JAVA_JAR must be set to the location of vtk.jar")
+  endif()
+
+  set(DICOM_JAVA_LIBRARIES vtkDICOMJava)
 endif()
 
 # The main library

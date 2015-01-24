@@ -225,14 +225,6 @@ if(BUILD_PYTHON_WRAPPERS)
 endif()
 
 if(BUILD_JAVA_WRAPPERS)
-  find_package(Java REQUIRED)
-  find_package(JNI REQUIRED)
-
-  set(VTK_JAVA_SOURCE_VERSION "1.5" CACHE STRING "javac source version")
-  set(VTK_JAVA_TARGET_VERSION "1.5" CACHE STRING "javac target version")
-  mark_as_advanced(VTK_JAVA_SOURCE_VERSION)
-  mark_as_advanced(VTK_JAVA_TARGET_VERSION)
-
   set(vtk-module ${LIB_NAME})
   set(VTK_WRAP_JAVA3_INIT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
   set(VTK_JAVA_HOME ${CMAKE_CURRENT_BINARY_DIR}/java/vtk)
@@ -266,18 +258,6 @@ if(BUILD_JAVA_WRAPPERS)
   add_dependencies(${LIB_JAVA_NAME} ${LIB_NAME})
   if(KIT_JAVA_DEPS)
     add_dependencies(${LIB_JAVA_NAME} ${KIT_JAVA_DEPS})
-  endif()
-
-  if(APPLE)
-    set(JAVAC_OPTIONS -J-Xmx512m)
-  endif()
-  if(NOT VTK_JAR_PATH)
-    set(VTK_JAR_PATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-  endif()
-  find_file(VTK_JAVA_JAR NAMES vtk.jar vtk6.jar vtk5.jar
-    PATHS ${vtkWrappingJava_RUNTIME_LIBRARY_DIRS})
-  if(NOT VTK_JAVA_JAR)
-    message(FATAL_ERROR "VTK_JAVA_JAR must be set to the location of vtk.jar")
   endif()
 
   set(_sep ":")
