@@ -232,6 +232,13 @@ if(BUILD_JAVA_WRAPPERS)
   set(DICOM_JAVA_LIBRARIES vtkDICOMJava)
 endif()
 
+# Disable C and C++ deprecation warnings for MSVC 2005 and later
+if(MSVC_VERSION EQUAL 1400 OR MSVC_VERSION GREATER 1400 OR MSVC10)
+  add_definitions(-D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE
+                  -D_CRT_SECURE_NO_WARNINGS)
+  add_definitions(-D_SCL_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS)
+endif()
+
 # The main library
 add_subdirectory(Source)
 
