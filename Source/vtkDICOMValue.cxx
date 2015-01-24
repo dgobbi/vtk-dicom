@@ -1449,10 +1449,7 @@ std::string vtkDICOMValue::AsUTF8String() const
     {
     vtkDICOMCharacterSet cs(this->V->CharacterSet);
     size_t l = this->V->VL;
-    vtkDICOMVR vr = this->V->VR;
-    if (vr != vtkDICOMVR::ST &&
-        vr != vtkDICOMVR::LT &&
-        vr != vtkDICOMVR::UT)
+    if (this->V->VR.HasPadding())
       {
       while (l > 0 && (cp[l-1] == ' ' || cp[l-1] == '\0'))
         {
@@ -1471,10 +1468,7 @@ std::string vtkDICOMValue::AsString() const
   if (cp)
     {
     size_t l = this->V->VL;
-    vtkDICOMVR vr = this->V->VR;
-    if (vr != vtkDICOMVR::ST &&
-        vr != vtkDICOMVR::LT &&
-        vr != vtkDICOMVR::UT)
+    if (this->V->VR.HasPadding())
       {
       while (l > 0 && (cp[l-1] == ' ' || cp[l-1] == '\0'))
         {
@@ -1550,10 +1544,7 @@ void vtkDICOMValue::Substring(
     }
 
   // remove any spaces used as padding
-  vtkDICOMVR vr = this->V->VR;
-  if (vr != vtkDICOMVR::ST &&
-      vr != vtkDICOMVR::LT &&
-      vr != vtkDICOMVR::UT)
+  if (this->V->VR.HasPadding())
     {
     while (cp != dp && cp[0] == ' ') { cp++; }
     }
