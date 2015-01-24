@@ -56,8 +56,8 @@ void dicomfind_usage(FILE *file, const char *cp)
     "  %s [options] <directory>\n\n", cp);
   fprintf(file, "options:\n"
     "  -k tag=value    Provide a key to be queried and matched.\n"
-    "  -exec ... +     Execute the given command for every series matched.\n"      
-    "  -exec ... \\;   Execute the given command for every file matched.\n"      
+    "  -exec ... +     Execute the given command for every series matched.\n"
+    "  -exec ... \\;   Execute the given command for every file matched.\n"
     "  -q <query.txt>  Provide a file to describe the find query.\n"
     "  -o <data.csv>   Provide a file for the query results.\n"
     "  --help          Print a brief help message.\n"

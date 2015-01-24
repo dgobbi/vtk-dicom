@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
   // test private dictionary
   vtkDICOMTag ptag(0x0019,0x0004);
-  std::string pkey = "CellSpacing"; 
+  std::string pkey = "CellSpacing";
   e = vtkDICOMDictionary::FindDictEntry(ptag, "GEMS_ACQU_01");
   TestAssert(e.IsValid());
   TestAssert(e.GetTag() == ptag);
