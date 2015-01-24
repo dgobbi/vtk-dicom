@@ -101,22 +101,6 @@ public:
   vtkDICOMValue(vtkDICOMVR vr, const double *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMTag *data, size_t count);
 
-#ifndef REMOVE_DEPRECATED_METHODS
-  vtkDICOMValue(vtkDICOMVR vr, const char *data, const char *end);
-  vtkDICOMValue(vtkDICOMVR vr, const unsigned char *data,
-    const unsigned char *end);
-  vtkDICOMValue(vtkDICOMVR vr, const short *data, const short *end);
-  vtkDICOMValue(vtkDICOMVR vr, const unsigned short *data,
-    const unsigned short *end);
-  vtkDICOMValue(vtkDICOMVR vr, const int *data, const int *end);
-  vtkDICOMValue(vtkDICOMVR vr, const unsigned int *data,
-    const unsigned int *end);
-  vtkDICOMValue(vtkDICOMVR vr, const float *data, const float *end);
-  vtkDICOMValue(vtkDICOMVR vr, const double *data, const double *end);
-  vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMTag *data,
-    const vtkDICOMTag *end);
-#endif /* REMOVE_DEPRECATED_METHODS */
-
   //! Construct a string value with a specific character set.
   /*!
    *  This will set the character set that will be used to interpret
@@ -128,10 +112,6 @@ public:
                 const std::string& v);
   vtkDICOMValue(vtkDICOMVR vr, vtkDICOMCharacterSet cs,
                 const char *data, size_t l);
-#ifndef REMOVE_DEPRECATED_METHODS
-  vtkDICOMValue(vtkDICOMVR vr, vtkDICOMCharacterSet cs,
-                const char *data, const char *end);
-#endif /* REMOVE_DEPRECATED_METHODS */
 
   //! Create an emtpy value.
   explicit vtkDICOMValue(vtkDICOMVR vr);
@@ -212,34 +192,6 @@ public:
   void GetValues(float *vb, size_t n, size_t i=0) const;
   void GetValues(double *vb, size_t n, size_t i=0) const;
   void GetValues(vtkDICOMTag *vb, size_t n, size_t i=0) const;
-
-#ifndef REMOVE_DEPRECATED_METHODS
-  //! Copy values into vb until ve is reached, starting at value "i".
-  /*!
-   *  Get one or more values, doing conversion from the stored type to
-   *  the requested type.  If the VR is IS or DS (integer string or
-   *  decimal string) then conversion from text to a numerical value
-   *  will be performed.
-   */
-  void GetValues(std::string *vb, std::string *ve, size_t i=0) const {
-    this->GetValues(vb, ve - vb, i); }
-  void GetValues(unsigned char *vb, unsigned char *ve, size_t i=0) const {
-    this->GetValues(vb, ve - vb, i); }
-  void GetValues(short *vb, short *ve, size_t i=0) const {
-    this->GetValues(vb, ve - vb, i); }
-  void GetValues(unsigned short *vb, unsigned short *ve, size_t i=0) const {
-    this->GetValues(vb, ve - vb, i); }
-  void GetValues(int *vb, int *ve, size_t i=0) const {
-    this->GetValues(vb, ve - vb, i); }
-  void GetValues(unsigned int *vb, unsigned int *ve, size_t i=0) const {
-    this->GetValues(vb, ve - vb, i); }
-  void GetValues(float *vb, float *ve, size_t i=0) const {
-    this->GetValues(vb, ve - vb, i); }
-  void GetValues(double *vb, double *ve, size_t i=0) const {
-    this->GetValues(vb, ve - vb, i); }
-  void GetValues(vtkDICOMTag *vb, vtkDICOMTag *ve, size_t i=0) const {
-    this->GetValues(vb, ve - vb, i); }
-#endif /* REMOVE_DEPRECATED_METHODS */
 
   //! Get one scalar value or single string from the value.
   /*!

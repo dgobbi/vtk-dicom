@@ -21,7 +21,6 @@
 #cmakedefine DICOM_USE_GDCM
 #cmakedefine DICOM_USE_DCMTK
 #cmakedefine DICOM_USE_VTKZLIB
-#cmakedefine REMOVE_DEPRECATED_METHODS
 
 /* Version number. */
 #define DICOM_MAJOR_VERSION @DICOM_MAJOR_VERSION@

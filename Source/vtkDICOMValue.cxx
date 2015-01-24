@@ -771,64 +771,6 @@ vtkDICOMValue::vtkDICOMValue(
   this->CreateValue(vr, data, count);
 }
 
-#ifndef REMOVE_DEPRECATED_METHODS
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const char *data, const char *end)
-{
-  this->CreateValue(vr, data, end - data);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const unsigned char *data, const unsigned char *end)
-{
-  this->CreateValue(vr, data, end - data);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const short *data, const short *end)
-{
-  this->CreateValue(vr, data, end - data);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const unsigned short *data, const unsigned short *end)
-{
-  this->CreateValue(vr, data, end - data);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const int *data, const int *end)
-{
-  this->CreateValue(vr, data, end - data);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const unsigned int *data, const unsigned int *end)
-{
-  this->CreateValue(vr, data, end - data);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const float *data, const float *end)
-{
-  this->CreateValue(vr, data, end - data);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const double *data, const double *end)
-{
-  this->CreateValue(vr, data, end - data);
-}
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, const vtkDICOMTag *data, const vtkDICOMTag *end)
-{
-  this->CreateValue(vr, data, end - data);
-}
-
-#endif /* REMOVE_DEPRECATED_METHODS */
-
 //----------------------------------------------------------------------------
 void vtkDICOMValue::CreateValueWithSpecificCharacterSet(
   vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, size_t l)
@@ -850,16 +792,6 @@ vtkDICOMValue::vtkDICOMValue(
 {
   this->CreateValueWithSpecificCharacterSet(vr, cs, data, l);
 }
-
-#ifndef REMOVE_DEPRECATED_METHODS
-
-vtkDICOMValue::vtkDICOMValue(
-  vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, const char *end)
-{
-  this->CreateValueWithSpecificCharacterSet(vr, cs, data, end - data);
-}
-
-#endif /* REMOVE_DEPRECATED_METHODS */
 
 vtkDICOMValue::vtkDICOMValue(
   vtkDICOMVR vr, vtkDICOMCharacterSet cs, const std::string& v)
