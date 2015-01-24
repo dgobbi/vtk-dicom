@@ -652,11 +652,7 @@ void vtkDICOMValue::CreateValue<char>(
     }
 
   // convert input string to the specified VR
-  if (vr == VR::AE || vr == VR::AS || vr == VR::CS ||
-      vr == VR::DA || vr == VR::DS || vr == VR::DT ||
-      vr == VR::IS || vr == VR::LO || vr == VR::PN ||
-      vr == VR::SH || vr == VR::TM || vr == VR::UI ||
-      vr == VR::UR)
+  if (vr.HasTextValue())
     {
     int pad = (m & 1);
     char *cp = this->AllocateCharData(vr, m);
@@ -804,12 +800,7 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
 
   this->V = 0;
 
-  if (vr == VR::AE || vr == VR::AS || vr == VR::CS ||
-      vr == VR::DA || vr == VR::DS || vr == VR::DT ||
-      vr == VR::IS || vr == VR::LO || vr == VR::PN ||
-      vr == VR::SH || vr == VR::TM || vr == VR::UI ||
-      vr == VR::ST || vr == VR::LT || vr == VR::UT ||
-      vr == VR::UR)
+  if (vr.HasTextValue())
     {
     this->AllocateCharData(vr, 0);
     }

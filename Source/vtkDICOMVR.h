@@ -90,6 +90,10 @@ public:
   bool HasSpecificCharacterSet() const {
     return (((1 << this->Key) & 0x20461800) != 0); }
 
+  //! This is true for all VRs whose value is stored as text.
+  bool HasTextValue() const {
+    return (((1 << this->Key) & 0x29c61cf6) != 0); }
+
   //! The VRs ST, LT, and UT carry only one value.
   /*!
    * Specifically, this means that a backslash is not interpreted as a
