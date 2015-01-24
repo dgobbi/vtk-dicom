@@ -359,9 +359,7 @@ void vtkDICOMValue::ComputeNumberOfValuesForCharData()
       {
       this->V->NumberOfValues = 0;
       }
-    else if (this->V->VR == vtkDICOMVR::LT ||
-             this->V->VR == vtkDICOMVR::ST ||
-             this->V->VR == vtkDICOMVR::UT)
+    else if (this->V->VR.HasSingleValue())
       {
       this->V->NumberOfValues = 1;
       }
@@ -607,7 +605,7 @@ void vtkDICOMValue::CreateValue<char>(
   this->V = 0;
 
   // directly copy data into these VRs without conversion
-  if (vr == VR::ST || vr == VR::LT || vr == VR::UT)
+  if (vr.HasSingleValue())
     {
     int pad = (m & 1);
     char *ptr = this->AllocateCharData(vr, m + pad);
@@ -1563,9 +1561,7 @@ void vtkDICOMValue::AppendValueToUTF8String(
     {
     const char *cp = static_cast<const ValueT<char> *>(this->V)->Data;
     const char *dp = cp + (i == 0 ? this->V->VL : 0);
-    if (this->V->VR != vtkDICOMVR::ST &&
-        this->V->VR != vtkDICOMVR::LT &&
-        this->V->VR != vtkDICOMVR::UT)
+    if (!this->V->VR.HasSingleValue())
       {
       this->Substring(i, cp, dp);
       }
@@ -1602,9 +1598,7 @@ void vtkDICOMValue::AppendValueToString(
     case VTK_CHAR:
       cp = static_cast<const ValueT<char> *>(this->V)->Data;
       dp = cp + (i == 0 ? this->V->VL : 0);
-      if (this->V->VR != vtkDICOMVR::ST &&
-          this->V->VR != vtkDICOMVR::LT &&
-          this->V->VR != vtkDICOMVR::UT)
+      if (!this->V->VR.HasSingleValue())
         {
         this->Substring(i, cp, dp);
         }
@@ -2381,9 +2375,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
         {
         match = vtkDICOMValue::PatternMatchesPersonName(pattern, cp);
         }
-      else if (vr == vtkDICOMVR::ST ||
-               vr == vtkDICOMVR::LT ||
-               vr == vtkDICOMVR::UT)
+      else if (vr.HasSingleValue())
         {
         match = vtkDICOMValue::PatternMatches(
           pattern, pattern + pl, cp, cp + l);

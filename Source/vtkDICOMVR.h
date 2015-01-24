@@ -90,6 +90,15 @@ public:
   bool HasSpecificCharacterSet() const {
     return (((1 << this->Key) & 0x20461800) != 0); }
 
+  //! The VRs ST, LT, and UT carry only one value.
+  /*!
+   * Specifically, this means that a backslash is not interpreted as a
+   * value separator in these VRs. UR is not included, because backslash
+   * is an illegal character in UR.
+   */
+  bool HasSingleValue() const {
+    return (((1 << this->Key) & 0x20401000) != 0); }
+
   //! AE, AS, CS, DA, DS, DT, IS, LO, PN, SH, TM, UI, UR are padded.
   /*!
    *  These VRs might have padding that is removed before they are
