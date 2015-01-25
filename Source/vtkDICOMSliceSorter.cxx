@@ -22,6 +22,7 @@
 #include <vtkIntArray.h>
 #include <vtkMath.h>
 
+#include <algorithm>
 #include <string>
 
 #include <ctype.h>
