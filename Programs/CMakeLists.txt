@@ -7,6 +7,7 @@ include_directories(
 set(PROGRAM_SRCS
   dicomdump.cxx
   dicomfind.cxx
+  dicomtocsv.cxx
   dicomtodicom.cxx
   dicomtonifti.cxx
   niftitodicom.cxx
