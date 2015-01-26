@@ -21,8 +21,8 @@ target_link_libraries(TestDICOMDirectory ${BASE_LIBS})
 add_executable(TestDICOMParser TestDICOMParser.cxx)
 target_link_libraries(TestDICOMParser ${BASE_LIBS})
 
-add_executable(TestDICOMSorter TestDICOMSorter.cxx)
-target_link_libraries(TestDICOMSorter ${BASE_LIBS})
+add_executable(TestDICOMFileSorter TestDICOMFileSorter.cxx)
+target_link_libraries(TestDICOMFileSorter ${BASE_LIBS})
 
 add_executable(TestDICOMReader TestDICOMReader.cxx)
 target_link_libraries(TestDICOMReader ${BASE_LIBS})

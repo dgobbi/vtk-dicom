@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
   int m = sorter->GetNumberOfStudies();
   for (int j = 0; j < m; j++)
     {
-    cout << "Study" << j << ":\n";
+    cout << "Study " << j << ":\n";
     int k = sorter->GetFirstSeriesForStudy(j);
     int kl = sorter->GetLastSeriesForStudy(j);
     for (; k <= kl; k++)
