@@ -52,7 +52,15 @@ public:
    *  This can be used as alternative to setting a single input directory.
    */
   void SetFileNames(vtkStringArray *sa);
-  vtkStringArray *GetFileNames();
+  vtkStringArray *GetFileNames() { return this->FileNames; }
+
+  //! Set a pattern to match for the filenames.
+  /*!
+   *  For example "*.dcm" will match files ending with ".dcm".  The two
+   *  wildcards that are supported are "*" and "?".
+   */
+  void SetFilePattern(const char *pattern);
+  const char *GetFilePattern() { return this->FilePattern; }
 
   //! Set the scan depth to use when no DICOMDIR is found.
   /*!
@@ -133,6 +141,7 @@ protected:
 
   const char *DirectoryName;
   vtkStringArray *FileNames;
+  const char *FilePattern;
   int RequirePixelData;
   int ScanDepth;
 

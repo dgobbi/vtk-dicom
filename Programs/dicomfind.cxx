@@ -58,6 +58,7 @@ void dicomfind_usage(FILE *file, const char *cp)
     "  -k tag=value    Provide a key to be queried and matched.\n"
     "  -q <query.txt>  Provide a file to describe the find query.\n"
     "  -maxdepth n     Set the maximum directory depth.\n"
+    "  -name pattern   Set a pattern to match (with \"*\" or \"?\").\n"
     "  -exec ... +     Execute the given command for every series matched.\n"
     "  -exec ... \\;   Execute the given command for every file matched.\n"
     "  --help          Print a brief help message.\n"
@@ -171,6 +172,7 @@ int main(int argc, char *argv[])
 {
   int rval = 0;
   int scandepth = 8;
+  const char *pattern = "";
   QueryTagList qtlist;
   vtkDICOMItem query;
   std::vector<std::string> oplist;
@@ -221,6 +223,16 @@ int main(int argc, char *argv[])
         return 1;
         }
       scandepth = static_cast<int>(atol(argv[argi]));
+      }
+    else if (strcmp(arg, "-name") == 0)
+      {
+      ++argi;
+      if (argi == argc)
+        {
+        fprintf(stderr, "%s must be followed by an argument.\n\n", arg);
+        return 1;
+        }
+      pattern = argv[argi];
       }
     else if (strcmp(arg, "-exec") == 0)
       {
@@ -277,6 +289,7 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
     finder->SetFileNames(a);
+    finder->SetFilePattern(pattern);
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
     finder->Update();

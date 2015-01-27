@@ -121,6 +121,7 @@ vtkDICOMDirectory::vtkDICOMDirectory()
 {
   this->DirectoryName = 0;
   this->FileNames = 0;
+  this->FilePattern = 0;
   this->Series = new SeriesVector;
   this->Studies = new StudyVector;
   this->Patients = new PatientVector;
@@ -140,6 +141,7 @@ vtkDICOMDirectory::~vtkDICOMDirectory()
     }
 
   delete [] this->DirectoryName;
+  delete [] this->FilePattern;
   delete [] this->InternalFileName;
 
   delete this->Series;
@@ -155,6 +157,8 @@ void vtkDICOMDirectory::PrintSelf(ostream& os, vtkIndent indent)
   this->Superclass::PrintSelf(os, indent);
   const char *inputDirectory = this->GetDirectoryName();
   os << indent << "DirectoryName: "
+     << (inputDirectory ? inputDirectory : "(NULL)") << "\n";
+  os << indent << "FilePattern: "
      << (inputDirectory ? inputDirectory : "(NULL)") << "\n";
 
   os << indent << "FileNames: " << this->FileNames << "\n";
@@ -194,6 +198,27 @@ void vtkDICOMDirectory::SetDirectoryName(const char *name)
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMDirectory::SetFilePattern(const char *name)
+{
+  if (name == this->FilePattern ||
+      (name && this->FilePattern &&
+       strcmp(name, this->FilePattern) == 0))
+    {
+    return;
+    }
+
+  delete [] this->FilePattern;
+  this->FilePattern = 0;
+  if (name)
+    {
+    char *cp = new char[strlen(name) + 1];
+    strcpy(cp, name);
+    this->FilePattern = cp;
+    }
+  this->Modified();
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMDirectory::SetFileNames(vtkStringArray *sa)
 {
   if (sa != this->FileNames)
@@ -207,13 +232,8 @@ void vtkDICOMDirectory::SetFileNames(vtkStringArray *sa)
       sa->Register(this);
       }
     this->FileNames = sa;
+    this->Modified();
     }
-}
-
-//----------------------------------------------------------------------------
-vtkStringArray *vtkDICOMDirectory::GetFileNames()
-{
-  return this->FileNames;
 }
 
 //----------------------------------------------------------------------------
@@ -944,7 +964,9 @@ void vtkDICOMDirectory::ProcessDirectory(
           this->ProcessDirectory(fileString.c_str(), depth-1, files);
           }
         }
-      else
+      else if (this->FilePattern == 0 || this->FilePattern[0] == '\0' ||
+               vtkDICOMUtilities::PatternMatches(
+                 this->FilePattern, fileString.c_str()))
         {
         files->InsertNextValue(fileString);
         }
@@ -975,7 +997,9 @@ void vtkDICOMDirectory::Execute()
         {
         this->ProcessDirectory(fname.c_str(), this->ScanDepth, files);
         }
-      else
+      else if (this->FilePattern == 0 || this->FilePattern[0] == '\0' ||
+               vtkDICOMUtilities::PatternMatches(
+                 this->FilePattern, fname.c_str()))
         {
         files->InsertNextValue(fname);
         }
