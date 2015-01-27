@@ -853,3 +853,105 @@ void vtkDICOMUtilities::SetImplementationVersionName(const char *name)
   strncpy(vtkDICOMUtilities::ImplementationVersionName, name, 16);
   vtkDICOMUtilities::ImplementationVersionName[16] = '\0';
 }
+
+//----------------------------------------------------------------------------
+bool vtkDICOMUtilities::PatternMatches(
+    const char *pattern, size_t pl,
+    const char *val, size_t vl)
+{
+  // This performs simple ASCII or UTF8 case-sensitive matching.
+  // It uses the following simplified definition of UTF8:
+  // 0b1xxxxxxx [0b10xxxxxx...]
+  // In other words, a byte with its high bit set, followed by
+  // zero or more bytes with the high bit set and the next bit clear,
+  // are taken as one unicode codepoint.
+
+  const char *cp = pattern;
+  const char *ep = pattern + pl;
+  const char *dp = val;
+  const char *fp = val + vl;
+
+  while (cp != ep && dp != fp)
+    {
+    if (*cp == '*')
+      {
+      cp++;
+      // if '*' is the final character, it matches the remainder of val
+      if (cp == ep)
+        {
+        dp = fp;
+        }
+      else
+        {
+        while (dp != fp)
+          {
+          if (*cp == '?' || *dp == *cp)
+            {
+            // check if the remainder of val matches remainder of pattern
+            if (PatternMatches(cp, ep-cp, dp, fp-dp))
+              {
+              break;
+              }
+            }
+          // else let the "*" eat one more codepoint of "val"
+          if (static_cast<signed char>(*dp++) < 0)
+            {
+            while (dp != fp && (*dp & 0xC0) == 0x80)
+              {
+              dp++;
+              }
+            }
+          }
+        }
+      }
+    else if (*cp == '?')
+      {
+      // the '?' matches a whole codepoint, not just one character
+      cp++;
+      if (static_cast<signed char>(*dp++) < 0)
+        {
+        while (dp != fp && (*dp & 0xC0) == 0x80)
+          {
+          dp++;
+          }
+        }
+      }
+    else if (*cp == *dp)
+      {
+      // make sure the entire codepoint matches
+      cp++;
+      if (static_cast<signed char>(*dp++) < 0)
+        {
+        while (cp != ep && dp != fp && (*cp & 0xC0) == 0x80)
+          {
+          if (*dp != *cp)
+            {
+            return false;
+            }
+          cp++;
+          dp++;
+          }
+        }
+      }
+    else
+      {
+      return false;
+      }
+    }
+
+  // skip over any remaining '*' wildcards
+  while (cp != ep && *cp == '*')
+    {
+    cp++;
+    }
+
+  // make sure we've reached the end of both the pattern and the value
+  return (cp == ep && dp == fp);
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMUtilities::PatternMatches(const char *pattern, const char *val)
+{
+  return vtkDICOMUtilities::PatternMatches(
+    pattern, strlen(pattern), val, strlen(val));
+}

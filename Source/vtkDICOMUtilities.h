@@ -143,6 +143,18 @@ public:
     cp[2] = static_cast<unsigned char>(i >> 16);
     cp[3] = static_cast<unsigned char>(i >> 24); }
 
+  //! Return true if the pattern matches the given string (utf-8).
+  /*!
+   *  This performs simple matching with "*" and "?" as the only wildcard.
+   *  The input must either be ASCII or utf-8, and if it is utf-8, then
+   *  matching will be done codepoint by codepoint.
+   */
+  static bool PatternMatches(const char *pattern, const char *val);
+
+  //! Match patterns on non-terminated strings.
+  static bool PatternMatches(
+    const char *pattern, size_t pl, const char *val, size_t vl);
+
 protected:
   vtkDICOMUtilities();
   ~vtkDICOMUtilities();

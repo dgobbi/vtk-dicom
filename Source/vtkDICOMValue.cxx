@@ -14,6 +14,7 @@
 #include "vtkDICOMValue.h"
 #include "vtkDICOMItem.h"
 #include "vtkDICOMSequence.h"
+#include "vtkDICOMUtilities.h"
 
 #include <vtkMath.h>
 #include <vtkTypeTraits.h>
@@ -1893,99 +1894,6 @@ bool vtkDICOMValue::ValueT<T>::CompareEach(const Value *a, const Value *b)
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMValue::PatternMatches(
-    const char *pattern, const char *ep,
-    const char *val, const char *fp)
-{
-  // This performs simple ASCII or UTF8 case-sensitive matching.
-  // It uses the following simplified definition of UTF8:
-  // 0b1xxxxxxx [0b10xxxxxx...]
-  // In other words, a byte with its high bit set, followed by
-  // zero or more bytes with the high bit set and the next bit clear,
-  // are taken as one unicode codepoint.
-
-  const char *cp = pattern;
-  const char *dp = val;
-
-  while (cp != ep && dp != fp)
-    {
-    if (*cp == '*')
-      {
-      cp++;
-      // if '*' is the final character, it matches the remainder of val
-      if (cp == ep)
-        {
-        dp = fp;
-        }
-      else
-        {
-        while (dp != fp)
-          {
-          if (*cp == '?' || *dp == *cp)
-            {
-            // check if the remainder of val matches remainder of pattern
-            if (PatternMatches(cp, ep, dp, fp))
-              {
-              break;
-              }
-            }
-          // else let the "*" eat one more codepoint of "val"
-          if (static_cast<signed char>(*dp++) < 0)
-            {
-            while (dp != fp && (*dp & 0xC0) == 0x80)
-              {
-              dp++;
-              }
-            }
-          }
-        }
-      }
-    else if (*cp == '?')
-      {
-      // the '?' matches a whole codepoint, not just one character
-      cp++;
-      if (static_cast<signed char>(*dp++) < 0)
-        {
-        while (dp != fp && (*dp & 0xC0) == 0x80)
-          {
-          dp++;
-          }
-        }
-      }
-    else if (*cp == *dp)
-      {
-      // make sure the entire codepoint matches
-      cp++;
-      if (static_cast<signed char>(*dp++) < 0)
-        {
-        while (cp != ep && dp != fp && (*cp & 0xC0) == 0x80)
-          {
-          if (*dp != *cp)
-            {
-            return false;
-            }
-          cp++;
-          dp++;
-          }
-        }
-      }
-    else
-      {
-      return false;
-      }
-    }
-
-  // skip over any remaining '*' wildcards
-  while (cp != ep && *cp == '*')
-    {
-    cp++;
-    }
-
-  // make sure we've reached the end of both the pattern and the value
-  return (cp == ep && dp == fp);
-}
-
-//----------------------------------------------------------------------------
 bool vtkDICOMValue::PatternMatchesMulti(
     const char *pattern, const char *val, vtkDICOMVR vr)
 {
@@ -2016,7 +1924,7 @@ bool vtkDICOMValue::PatternMatchesMulti(
       while (*vp == ' ') { vp++; }
       while (vf != vp && vf[-1] == ' ') { --vf; }
 
-      match = vtkDICOMValue::PatternMatches(pp, pf, vp, vf);
+      match = vtkDICOMUtilities::PatternMatches(pp, pf-pp, vp, vf-vp);
 
       // break if no values remain
       if (*vd == '\0') { break; }
@@ -2057,9 +1965,9 @@ bool vtkDICOMValue::PatternMatchesPersonName(
       // normalize the name
       vtkDICOMValue::NormalizePersonName(vp, normalizedName);
 
-      match = vtkDICOMValue::PatternMatches(
-        normalizedPattern, normalizedPattern + strlen(normalizedPattern),
-        normalizedName, normalizedName + strlen(normalizedName));
+      match = vtkDICOMUtilities::PatternMatches(
+        normalizedPattern, strlen(normalizedPattern),
+        normalizedName, strlen(normalizedName));
 
       // break if no values remain
       while (*vp != '\0' && *vp != '\\') { vp++; }
@@ -2368,8 +2276,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
         }
       else if (vr.HasSingleValue())
         {
-        match = vtkDICOMValue::PatternMatches(
-          pattern, pattern + pl, cp, cp + l);
+        match = vtkDICOMUtilities::PatternMatches(pattern, pl, cp, l);
         }
       else
         {
