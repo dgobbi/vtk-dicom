@@ -55,6 +55,8 @@ void dicomfind_usage(FILE *file, const char *cp)
   fprintf(file, "usage:\n"
     "  %s [options] <directory>\n\n", cp);
   fprintf(file, "options:\n"
+    "  -L              Follow symbolic links (default).\n"
+    "  -P              Do not follow symbolic links.\n"
     "  -k tag=value    Provide a key to be queried and matched.\n"
     "  -q <query.txt>  Provide a file to describe the find query.\n"
     "  -maxdepth n     Set the maximum directory depth.\n"
@@ -172,6 +174,7 @@ int main(int argc, char *argv[])
 {
   int rval = 0;
   int scandepth = 8;
+  bool followSymlinks = true;
   const char *pattern = "";
   QueryTagList qtlist;
   vtkDICOMItem query;
@@ -199,7 +202,15 @@ int main(int argc, char *argv[])
   for (int argi = 1; argi < argc; argi++)
     {
     const char *arg = argv[argi];
-    if (strcmp(arg, "-k") == 0)
+    if (strcmp(arg, "-P") == 0)
+      {
+      followSymlinks = false;
+      }
+    else if (strcmp(arg, "-L") == 0)
+      {
+      followSymlinks = true;
+      }
+    else if (strcmp(arg, "-k") == 0)
       {
       vtkDICOMTag tag;
       ++argi;
@@ -292,6 +303,7 @@ int main(int argc, char *argv[])
     finder->SetFilePattern(pattern);
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
+    finder->SetFollowSymlinks(followSymlinks);
     finder->Update();
 
     if (!oplist.empty())

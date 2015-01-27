@@ -128,6 +128,7 @@ vtkDICOMDirectory::vtkDICOMDirectory()
   this->FileSetID = 0;
   this->InternalFileName = 0;
   this->RequirePixelData = 1;
+  this->FollowSymlinks = 1;
   this->ScanDepth = 1;
   this->Query = 0;
 }
@@ -167,6 +168,9 @@ void vtkDICOMDirectory::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "RequirePixelData: "
      << (this->RequirePixelData ? "On\n" : "Off\n");
+
+  os << indent << "FollowSymlinks: "
+     << (this->FollowSymlinks ? "On\n" : "Off\n");
 
   os << indent << "NumberOfSeries: " << this->GetNumberOfSeries() << "\n";
   os << indent << "NumberOfStudies: " << this->GetNumberOfStudies() << "\n";
@@ -957,7 +961,12 @@ void vtkDICOMDirectory::ProcessDirectory(
       path.push_back(d.GetFile(i));
       std::string fileString = vtksys::SystemTools::JoinPath(path);
       path.pop_back();
-      if (vtksys::SystemTools::FileIsDirectory(fileString.c_str()))
+      if (!this->FollowSymlinks &&
+          vtksys::SystemTools::FileIsSymlink(fileString.c_str()))
+        {
+        // Do nothing unless FollowSymlinks is On
+        }
+      else if (vtksys::SystemTools::FileIsDirectory(fileString.c_str()))
         {
         if (depth > 1)
           {

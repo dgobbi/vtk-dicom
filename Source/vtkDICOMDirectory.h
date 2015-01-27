@@ -135,6 +135,11 @@ public:
   vtkBooleanMacro(RequirePixelData, int);
   int GetRequirePixelData() { return this->RequirePixelData; }
 
+  //! If On (the default), symbolic links will not be followed.
+  vtkSetMacro(FollowSymlinks, int);
+  vtkBooleanMacro(FollowSymlinks, int);
+  int GetFollowSymlinks() { return this->FollowSymlinks; }
+
 protected:
   vtkDICOMDirectory();
   ~vtkDICOMDirectory();
@@ -143,6 +148,7 @@ protected:
   vtkStringArray *FileNames;
   const char *FilePattern;
   int RequirePixelData;
+  int FollowSymlinks;
   int ScanDepth;
 
   vtkTimeStamp UpdateTime;
