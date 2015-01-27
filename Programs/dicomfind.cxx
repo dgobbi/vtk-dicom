@@ -64,6 +64,7 @@ void dicomfind_usage(FILE *file, const char *cp)
     "  -q <query.txt>  Provide a file to describe the find query.\n"
     "  -maxdepth n     Set the maximum directory depth.\n"
     "  -name pattern   Set a pattern to match (with \"*\" or \"?\").\n"
+    "  -image          Restrict the search to files with PixelData.\n"
     "  -print          Print the filenames of all matched files (default).\n"
     "  -print0         Print the filenames with terminating null, for xargs.\n"
     "  -exec ... +     Execute the given command for every series matched.\n"
@@ -214,6 +215,7 @@ int main(int argc, char *argv[])
   vtkDICOMItem query;
   std::vector<std::string> exec_args;
   bool print0 = false;
+  bool requirePixelData = false;
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
   const char *qfile = 0;
@@ -279,6 +281,10 @@ int main(int argc, char *argv[])
         return 1;
         }
       pattern = argv[argi];
+      }
+    else if (strcmp(arg, "-image") == 0)
+      {
+      requirePixelData = true;
       }
     else if (strcmp(arg, "-print") == 0)
       {
@@ -347,6 +353,7 @@ int main(int argc, char *argv[])
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
     finder->SetFollowSymlinks(followSymlinks);
+    finder->SetRequirePixelData(requirePixelData);
     finder->Update();
 
     if (!exec_args.empty())
