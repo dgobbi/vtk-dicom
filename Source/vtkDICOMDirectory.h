@@ -47,6 +47,13 @@ public:
   void SetDirectoryName(const char *name);
   const char *GetDirectoryName() { return this->DirectoryName; }
 
+  //! Set a list of filenames (or files and directories) to read.
+  /*!
+   *  This can be used as alternative to setting a single input directory.
+   */
+  void SetFileNames(vtkStringArray *sa);
+  vtkStringArray *GetFileNames();
+
   //! Set the scan depth to use when no DICOMDIR is found.
   /*!
    *  The default scan depth is 1, which scans only the given directory
@@ -125,6 +132,7 @@ protected:
   ~vtkDICOMDirectory();
 
   const char *DirectoryName;
+  vtkStringArray *FileNames;
   int RequirePixelData;
   int ScanDepth;
 

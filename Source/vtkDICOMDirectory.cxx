@@ -120,6 +120,7 @@ class vtkDICOMDirectory::SeriesInfoList
 vtkDICOMDirectory::vtkDICOMDirectory()
 {
   this->DirectoryName = 0;
+  this->FileNames = 0;
   this->Series = new SeriesVector;
   this->Studies = new StudyVector;
   this->Patients = new PatientVector;
@@ -133,14 +134,13 @@ vtkDICOMDirectory::vtkDICOMDirectory()
 //----------------------------------------------------------------------------
 vtkDICOMDirectory::~vtkDICOMDirectory()
 {
-  if (this->DirectoryName)
+  if (this->FileNames)
     {
-    delete [] this->DirectoryName;
+    this->FileNames->Delete();
     }
-  if (this->InternalFileName)
-    {
-    delete [] this->InternalFileName;
-    }
+
+  delete [] this->DirectoryName;
+  delete [] this->InternalFileName;
 
   delete this->Series;
   delete this->Studies;
@@ -156,6 +156,8 @@ void vtkDICOMDirectory::PrintSelf(ostream& os, vtkIndent indent)
   const char *inputDirectory = this->GetDirectoryName();
   os << indent << "DirectoryName: "
      << (inputDirectory ? inputDirectory : "(NULL)") << "\n";
+
+  os << indent << "FileNames: " << this->FileNames << "\n";
 
   os << indent << "ScanDepth: " << this->ScanDepth << "\n";
 
@@ -189,6 +191,29 @@ void vtkDICOMDirectory::SetDirectoryName(const char *name)
     this->DirectoryName = cp;
     }
   this->Modified();
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMDirectory::SetFileNames(vtkStringArray *sa)
+{
+  if (sa != this->FileNames)
+    {
+    if (this->FileNames)
+      {
+      this->FileNames->Delete();
+      }
+    if (sa)
+      {
+      sa->Register(this);
+      }
+    this->FileNames = sa;
+    }
+}
+
+//----------------------------------------------------------------------------
+vtkStringArray *vtkDICOMDirectory::GetFileNames()
+{
+  return this->FileNames;
 }
 
 //----------------------------------------------------------------------------
@@ -938,27 +963,46 @@ void vtkDICOMDirectory::Execute()
   this->FileSetID = 0;
   this->ErrorCode = 0;
 
-  if (this->DirectoryName == 0)
-    {
-    // No directory is a valid input.  Return an empty output.
-    return;
-    }
-  else if (!vtksys::SystemTools::FileExists(this->DirectoryName))
-    {
-    this->ErrorCode = vtkErrorCode::FileNotFoundError;
-    vtkErrorMacro("Directory not found: " << this->DirectoryName);
-    return;
-    }
-  else if (!vtksys::SystemTools::FileIsDirectory(this->DirectoryName))
-    {
-    this->ErrorCode = vtkErrorCode::CannotOpenFileError;
-    vtkErrorMacro("Found a file, not a directory: " << this->DirectoryName);
-    return;
-    }
-
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();
-  this->ProcessDirectory(this->DirectoryName, this->ScanDepth, files);
+
+  if (this->FileNames)
+    {
+    for (vtkIdType i = 0; i < this->FileNames->GetNumberOfValues(); i++)
+      {
+      const std::string& fname = this->FileNames->GetValue(i);
+      if (vtksys::SystemTools::FileIsDirectory(fname.c_str()))
+        {
+        this->ProcessDirectory(fname.c_str(), this->ScanDepth, files);
+        }
+      else
+        {
+        files->InsertNextValue(fname);
+        }
+      }
+    }
+  else
+    {
+    if (this->DirectoryName == 0)
+      {
+      // No directory is a valid input.  Return an empty output.
+      return;
+      }
+    else if (!vtksys::SystemTools::FileExists(this->DirectoryName))
+      {
+      this->ErrorCode = vtkErrorCode::FileNotFoundError;
+      vtkErrorMacro("Directory not found: " << this->DirectoryName);
+      return;
+      }
+    else if (!vtksys::SystemTools::FileIsDirectory(this->DirectoryName))
+      {
+      this->ErrorCode = vtkErrorCode::CannotOpenFileError;
+      vtkErrorMacro("Found a file, not a directory: " << this->DirectoryName);
+      return;
+      }
+
+    this->ProcessDirectory(this->DirectoryName, this->ScanDepth, files);
+    }
 
   // Check for abort.
   if (!this->AbortExecute)

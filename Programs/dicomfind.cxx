@@ -57,6 +57,7 @@ void dicomfind_usage(FILE *file, const char *cp)
   fprintf(file, "options:\n"
     "  -k tag=value    Provide a key to be queried and matched.\n"
     "  -q <query.txt>  Provide a file to describe the find query.\n"
+    "  -maxdepth n     Set the maximum directory depth.\n"
     "  -exec ... +     Execute the given command for every series matched.\n"
     "  -exec ... \\;   Execute the given command for every file matched.\n"
     "  --help          Print a brief help message.\n"
@@ -169,6 +170,7 @@ bool execute_command(const char *command, char *argv[])
 int main(int argc, char *argv[])
 {
   int rval = 0;
+  int scandepth = 8;
   QueryTagList qtlist;
   vtkDICOMItem query;
   std::vector<std::string> oplist;
@@ -209,6 +211,16 @@ int main(int argc, char *argv[])
         {
         return 1;
         }
+      }
+    else if (strcmp(arg, "-maxdepth") == 0)
+      {
+      ++argi;
+      if (argi == argc)
+        {
+        fprintf(stderr, "%s must be followed by an argument.\n\n", arg);
+        return 1;
+        }
+      scandepth = static_cast<int>(atol(argv[argi]));
       }
     else if (strcmp(arg, "-exec") == 0)
       {
@@ -260,12 +272,12 @@ int main(int argc, char *argv[])
     DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
   // Write data for every input directory
-  for (vtkIdType i = 0; i < a->GetNumberOfTuples(); i++)
+  if (a->GetNumberOfTuples() > 0)
     {
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
-    finder->SetDirectoryName(a->GetValue(i));
-    finder->SetScanDepth(8);
+    finder->SetFileNames(a);
+    finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
     finder->Update();
 
