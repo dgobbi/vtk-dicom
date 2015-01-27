@@ -61,6 +61,8 @@ void dicomfind_usage(FILE *file, const char *cp)
     "  -q <query.txt>  Provide a file to describe the find query.\n"
     "  -maxdepth n     Set the maximum directory depth.\n"
     "  -name pattern   Set a pattern to match (with \"*\" or \"?\").\n"
+    "  -print          Print the filenames of all matched files (default).\n"
+    "  -print0         Print the filenames with terminating null, for xargs.\n"
     "  -exec ... +     Execute the given command for every series matched.\n"
     "  -exec ... \\;   Execute the given command for every file matched.\n"
     "  --help          Print a brief help message.\n"
@@ -178,7 +180,8 @@ int main(int argc, char *argv[])
   const char *pattern = "";
   QueryTagList qtlist;
   vtkDICOMItem query;
-  std::vector<std::string> oplist;
+  std::vector<std::string> exec_args;
+  bool print0 = false;
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
   const char *qfile = 0;
@@ -245,6 +248,14 @@ int main(int argc, char *argv[])
         }
       pattern = argv[argi];
       }
+    else if (strcmp(arg, "-print") == 0)
+      {
+      // do nothing, is default
+      }
+    else if (strcmp(arg, "-print0") == 0)
+      {
+      print0 = true;
+      }
     else if (strcmp(arg, "-exec") == 0)
       {
       int argj = ++argi;
@@ -265,7 +276,7 @@ int main(int argc, char *argv[])
         }
       for (; argi <= argj; argi++)
         {
-        oplist.push_back(argv[argi]);
+        exec_args.push_back(argv[argi]);
         }
       argi++;
       }
@@ -306,12 +317,12 @@ int main(int argc, char *argv[])
     finder->SetFollowSymlinks(followSymlinks);
     finder->Update();
 
-    if (!oplist.empty())
+    if (!exec_args.empty())
       {
       size_t subcount = 0;
-      for (size_t jj = 0; jj < oplist.size(); jj++)
+      for (size_t jj = 0; jj < exec_args.size(); jj++)
         {
-        subcount += (oplist[jj] == "{}");
+        subcount += (exec_args[jj] == "{}");
         }
 
       for (int j = 0; j < finder->GetNumberOfStudies(); j++)
@@ -322,25 +333,25 @@ int main(int argc, char *argv[])
           {
           vtkStringArray *sa = finder->GetFileNamesForSeries(k);
 
-          if (oplist.back() == ";")
+          if (exec_args.back() == ";")
             {
             // call program for each file
             for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
               {
-              size_t sub_argc = oplist.size() + subcount - 1;
+              size_t sub_argc = exec_args.size() + subcount - 1;
               char **sub_argv = new char *[sub_argc+1];
 
               size_t ii = 0;
-              size_t nn = oplist.size()-1;
+              size_t nn = exec_args.size()-1;
               for (size_t jj = 0; jj < nn; jj++)
                 {
-                if (oplist[jj] == "{}")
+                if (exec_args[jj] == "{}")
                   {
                   sub_argv[ii++] = const_cast<char *>(sa->GetValue(kk).c_str());
                   }
                 else
                   {
-                  sub_argv[ii++] = const_cast<char *>(oplist[jj].c_str());
+                  sub_argv[ii++] = const_cast<char *>(exec_args[jj].c_str());
                   }
                 }
               sub_argv[ii] = 0;
@@ -356,14 +367,14 @@ int main(int argc, char *argv[])
           else
             {
             // call program for each series
-            size_t sub_argc = oplist.size() + subcount*sa->GetNumberOfTuples() - 1;
+            size_t sub_argc = exec_args.size() + subcount*sa->GetNumberOfTuples() - 1;
             char **sub_argv = new char *[sub_argc+1];
 
             size_t ii = 0;
-            size_t nn = oplist.size()-1;
+            size_t nn = exec_args.size()-1;
             for (size_t jj = 0; jj < nn; jj++)
               {
-              if (oplist[jj] == "{}")
+              if (exec_args[jj] == "{}")
                 {
                 for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
                   {
@@ -372,7 +383,7 @@ int main(int argc, char *argv[])
                 }
               else
                 {
-                sub_argv[ii++] = const_cast<char *>(oplist[jj].c_str());
+                sub_argv[ii++] = const_cast<char *>(exec_args[jj].c_str());
                 }
               }
             sub_argv[ii] = 0;
@@ -393,12 +404,14 @@ int main(int argc, char *argv[])
         {
         int k0 = finder->GetFirstSeriesForStudy(j);
         int k1 = finder->GetLastSeriesForStudy(j);
+        char endchar = (print0 ? '\0' : '\n');
         for (int k = k0; k <= k1; k++)
           {
           vtkStringArray *sa = finder->GetFileNamesForSeries(k);
           for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
             {
-            std::cout << sa->GetValue(kk) << "\n";
+            std::cout << sa->GetValue(kk);
+            std::cout.put(endchar);
             }
           }
         }
