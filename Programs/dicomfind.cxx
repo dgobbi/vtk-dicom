@@ -26,11 +26,14 @@
 #include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
 
-// includes for execvp
 #ifndef _WIN32
+// includes for execvp
 #include <unistd.h>
 #include <sys/wait.h>
 #include <errno.h>
+#else
+// include for spawn
+#include <process.h>
 #endif
 
 #include <stdio.h>
@@ -166,8 +169,37 @@ bool execute_command(const char *command, char *argv[])
 #else
 bool execute_command(const char *command, char *argv[])
 {
-  // no support for -exec on Windows, yet
-  return false;
+  // flush the output
+  fflush(stdout);
+  fflush(stderr);
+
+  if (_spawnvp(_P_WAIT, command, argv) != 0)
+    {
+    if (errno == ENOENT)
+      {
+      fprintf(stderr, "Executable not found: %s\n", argv[0]);
+      }
+    else if (errno == ENOEXEC)
+      {
+      fprintf(stderr, "File is not executable: %s\n", argv[0]);
+      }
+    else if (errno == E2BIG)
+      {
+      fprintf(stderr, "Command line to long for command: %s\n", argv[0]);
+      }
+    else if (errno == ENOMEM)
+      {
+      fprintf(stderr, "Out of memory while running command: %s\n", argv[0]);
+      }
+    else
+      {
+      fprintf(stderr, "Unknown error while running command: %s\n", argv[0]);
+      }
+
+    return false;
+    }
+
+  return true;
 }
 #endif
 
