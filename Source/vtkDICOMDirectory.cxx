@@ -733,7 +733,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
 //----------------------------------------------------------------------------
 void vtkDICOMDirectory::ProcessDirectoryFile(
-  const char *dirname, vtkDICOMMetaData *meta)
+  const char *dirname, vtkDICOMMetaData *meta, vtkStringArray *files)
 {
   // Get the ID of this file set (informative only).
   if (meta->HasAttribute(DC::FileSetID))
@@ -868,9 +868,21 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
           }
         else if (entryType == "SERIES")
           {
-          this->AddSeriesFileNames(
-            patientIdx, studyIdx, fileNames,
-            items[patientItem], items[studyItem], items[seriesItem]);
+          if (files)
+            {
+            // Add series to the provided list of filenames
+            for (vtkIdType i = 0; i < fileNames->GetNumberOfValues(); i++)
+              {
+              files->InsertNextValue(fileNames->GetValue(i));
+              }
+            }
+          else
+            {
+            // Directly add the series to "this"
+            this->AddSeriesFileNames(
+              patientIdx, studyIdx, fileNames,
+              items[patientItem], items[studyItem], items[seriesItem]);
+            }
           fileNames = vtkSmartPointer<vtkStringArray>::New();
           }
         }
@@ -919,8 +931,16 @@ void vtkDICOMDirectory::ProcessDirectory(
       }
     else if (errorCode == 0)
       {
-      // Convert the DICOMDIR into a list of filenames.
-      this->ProcessDirectoryFile(dirname, meta);
+      if (this->Query || this->FileNames || depth > 0)
+        {
+        // Convert the DICOMDIR into a list of filenames.
+        this->ProcessDirectoryFile(dirname, meta, files);
+        }
+      else
+        {
+        // Directly process DICOMDIR, no need to re-sort the files later.
+        this->ProcessDirectoryFile(dirname, meta, 0);
+        }
       return;
       }
     }

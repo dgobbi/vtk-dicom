@@ -198,7 +198,7 @@ protected:
    *  DICOMDIR file should be parsed before this method is called.
    */
   void ProcessDirectoryFile(
-    const char *dirname, vtkDICOMMetaData *meta);
+    const char *dirname, vtkDICOMMetaData *meta, vtkStringArray *files);
 
   //! Process a directory, and subdirs to the specified depth.
   void ProcessDirectory(
