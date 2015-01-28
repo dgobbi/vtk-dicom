@@ -827,18 +827,23 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
         {
         seriesItem = j;
         }
-      else if (entryType == "IMAGE")
+      else if (entryType == "IMAGE" || !this->RequirePixelData)
         {
         const vtkDICOMValue& fileID =
           items[j].GetAttributeValue(DC::ReferencedFileID);
-
-        unsigned int m = fileID.GetNumberOfValues();
-        for (unsigned int k = 0; k < m; k++)
+        if (fileID.IsValid())
           {
-          path.push_back(fileID.GetString(k));
+          unsigned int m = fileID.GetNumberOfValues();
+          if (m > 0)
+            {
+            for (unsigned int k = 0; k < m; k++)
+              {
+              path.push_back(fileID.GetString(k));
+              }
+            fileNames->InsertNextValue(vtksys::SystemTools::JoinPath(path));
+            path.resize(pathDepth);
+            }
           }
-        fileNames->InsertNextValue(vtksys::SystemTools::JoinPath(path));
-        path.resize(pathDepth);
         }
       }
 
