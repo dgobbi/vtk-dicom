@@ -20,6 +20,7 @@
 // from dicomcli
 #include "readquery.h"
 
+#include <vtkSortFileNames.h>
 #include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
 
@@ -364,13 +365,21 @@ int main(int argc, char *argv[])
       std::string fname = a->GetValue(0);
       if (l == 1)
         {
-        printf("=========== %s =========\n", fileBasename(fname.c_str()));
+        printf("==== %s ====\n", fname.c_str());
         }
       else
         {
+        // print the first and last filenames (sorted)
+        vtkSmartPointer<vtkSortFileNames> fsort =
+          vtkSmartPointer<vtkSortFileNames>::New();
+        fsort->NumericSortOn();
+        fsort->IgnoreCaseOn();
+        fsort->GroupingOff();
+        fsort->SetInputFileNames(a);
+        fsort->Update();
         printf("==== %s .. %s (%d files) ====\n",
-          fileBasename(fname.c_str()),
-          fileBasename(a->GetValue(l-1).c_str()),
+          fsort->GetFileNames()->GetValue(0).c_str(),
+          fileBasename(fsort->GetFileNames()->GetValue(l-1).c_str()),
           static_cast<int>(l));
         }
 
