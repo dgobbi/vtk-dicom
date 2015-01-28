@@ -174,6 +174,12 @@ bool dicomcli_readkey(
         {
         tag = de.GetTag();
         }
+      else
+        {
+        fprintf(stderr, "Unrecognized key %s\n", key.c_str());
+        tagError = true;
+        continue;
+        }
       }
 
     // if creator, then resolve the tag now
@@ -240,6 +246,7 @@ bool dicomcli_readkey(
         m = (m > 40 ? 40 : m);
         fprintf(stderr, "Unrecognized DICOM VR \"%*.*s\"\n",
            m, m, &cp[lineStart]);
+        return false;
         }
       }
     }
@@ -327,6 +334,18 @@ bool dicomcli_readkey(
         }
       valueEnd = s;
       }
+    }
+  else if (s < n && !isspace(cp[s]))
+    {
+    if (isgraph(cp[s]))
+      {
+      fprintf(stderr, "Illegal character \"%c\" after tag.\n", cp[s]);
+      }
+    else
+      {
+      fprintf(stderr, "Illegal character after tag.\n");
+      }
+    return false;
     }
 
   // add the tag and value to the query data set
