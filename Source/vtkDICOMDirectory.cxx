@@ -902,46 +902,49 @@ void vtkDICOMDirectory::ProcessDirectory(
     path.pop_back();
     }
 
-  // Build the path to the DICOMDIR file.
-  path.push_back("DICOMDIR");
-  std::string dicomdir = vtksys::SystemTools::JoinPath(path);
-  path.pop_back();
-
-  // Check to see if the DICOMDIR file exists.
-  if (vtksys::SystemTools::FileExists(dicomdir.c_str(), true))
+  if (this->FileNames == 0 && depth == this->ScanDepth)
     {
-    vtkSmartPointer<vtkDICOMMetaData> meta =
-      vtkSmartPointer<vtkDICOMMetaData>::New();
-    vtkDICOMParser *parser = vtkDICOMParser::New();
-    parser->AddObserver(
-      vtkCommand::ErrorEvent, this, &vtkDICOMDirectory::RelayError);
-    parser->SetMetaData(meta);
-    this->SetInternalFileName(dicomdir.c_str());
-    parser->SetFileName(dicomdir.c_str());
-    parser->Update();
-    unsigned long errorCode = parser->GetErrorCode();
-    parser->Delete();
+    // Build the path to the DICOMDIR file.
+    path.push_back("DICOMDIR");
+    std::string dicomdir = vtksys::SystemTools::JoinPath(path);
+    path.pop_back();
 
-    if (errorCode && depth == 0)
+    // Check to see if the DICOMDIR file exists.
+    if (vtksys::SystemTools::FileExists(dicomdir.c_str(), true))
       {
-      // Only fail if depth is zero.  Otherwise, we can ignore the
-      // DICOMDIR and look for the DICOM files directly.
-      this->ErrorCode = errorCode;
-      return;
-      }
-    else if (errorCode == 0)
-      {
-      if (this->Query || this->FileNames || depth > 0)
+      vtkSmartPointer<vtkDICOMMetaData> meta =
+        vtkSmartPointer<vtkDICOMMetaData>::New();
+      vtkDICOMParser *parser = vtkDICOMParser::New();
+      parser->AddObserver(
+        vtkCommand::ErrorEvent, this, &vtkDICOMDirectory::RelayError);
+      parser->SetMetaData(meta);
+      this->SetInternalFileName(dicomdir.c_str());
+      parser->SetFileName(dicomdir.c_str());
+      parser->Update();
+      unsigned long errorCode = parser->GetErrorCode();
+      parser->Delete();
+
+      if (errorCode && depth == 0)
         {
-        // Convert the DICOMDIR into a list of filenames.
-        this->ProcessDirectoryFile(dirname, meta, files);
+        // Only fail if depth is zero.  Otherwise, we can ignore the
+        // DICOMDIR and look for the DICOM files directly.
+        this->ErrorCode = errorCode;
+        return;
         }
-      else
+      else if (errorCode == 0)
         {
-        // Directly process DICOMDIR, no need to re-sort the files later.
-        this->ProcessDirectoryFile(dirname, meta, 0);
+        if (this->Query)
+          {
+          // Convert the DICOMDIR into a list of filenames.
+          this->ProcessDirectoryFile(dirname, meta, files);
+          }
+        else
+          {
+          // Directly process DICOMDIR, no need to re-sort the files later.
+          this->ProcessDirectoryFile(dirname, meta, 0);
+          }
+        return;
         }
-      return;
       }
     }
 
@@ -976,9 +979,10 @@ void vtkDICOMDirectory::ProcessDirectory(
   unsigned long n = d.GetNumberOfFiles();
   for (unsigned long i = 0; i < n; i++)
     {
-    if (d.GetFile(i)[0] != '.')
+    const char *fname = d.GetFile(i);
+    if (fname[0] != '.' && strcmp(fname, "DICOMDIR") != 0)
       {
-      path.push_back(d.GetFile(i));
+      path.push_back(fname);
       std::string fileString = vtksys::SystemTools::JoinPath(path);
       path.pop_back();
       if (!this->FollowSymlinks &&
