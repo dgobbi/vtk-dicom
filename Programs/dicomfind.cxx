@@ -18,7 +18,6 @@
 #include "vtkDICOMDataElement.h"
 #include "vtkDICOMParser.h"
 #include "vtkDICOMMetaData.h"
-#include "vtkDICOMMetaDataAdapter.h"
 
 // from dicomcli
 #include "readquery.h"
