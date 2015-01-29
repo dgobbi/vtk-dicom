@@ -33,6 +33,8 @@
 #else
 // include for spawn
 #include <process.h>
+// include for getcwd
+#include <direct.h>
 #endif
 
 #include <stdio.h>
@@ -55,11 +57,11 @@ void dicomfind_version(FILE *file, const char *cp)
 void dicomfind_usage(FILE *file, const char *cp)
 {
   fprintf(file, "usage:\n"
-    "  %s [options] <directory>\n\n", cp);
+    "  %s [options] <directory> ...\n\n", cp);
   fprintf(file, "options:\n"
     "  -L              Follow symbolic links (default).\n"
     "  -P              Do not follow symbolic links.\n"
-    "  -k tag=value    Provide a key to be queried and matched.\n"
+    "  -k tag=value    Provide an attribute to be queried and matched.\n"
     "  -q <query.txt>  Provide a file to describe the find query.\n"
     "  -maxdepth n     Set the maximum directory depth.\n"
     "  -name pattern   Set a pattern to match (with \"*\" or \"?\").\n"
@@ -67,9 +69,17 @@ void dicomfind_usage(FILE *file, const char *cp)
     "  -print          Print the filenames of all matched files (default).\n"
     "  -print0         Print the filenames with terminating null, for xargs.\n"
     "  -exec ... +     Execute the given command for every series matched.\n"
-    "  -exec ... \\;   Execute the given command for every file matched.\n"
+    "  -exec ... %s    Execute the given command for every file matched.\n"
+    "  -execdir ... +  Go to directory and execute command on every series.\n"
+    "  -execdir ... %s Go to directory and execute command on every file.\n"
     "  --help          Print a brief help message.\n"
-    "  --version       Print the software version.\n");
+    "  --version       Print the software version.\n",
+#ifndef _WIN32
+    "\\;", "\\;"
+#else
+    "; ", "; "
+#endif
+    );
 }
 
 // print the help
@@ -77,7 +87,10 @@ void dicomfind_help(FILE *file, const char *cp)
 {
   dicomfind_usage(file, cp);
   fprintf(file, "\n"
-    "Locate DICOM files within nested directories.\n");
+    "This command can be used to locate DICOM files.  It shares many\n"
+    "features with the UNIX \"find\" command.  When searching for files\n"
+    "with a specific attribute (with \"-k\"), the tag can be specified\n"
+    "in the form GGGG,EEEE or with its canonical name e.g. Modality=MR.\n\n");
 }
 
 // remove path portion of filename
@@ -86,6 +99,18 @@ const char *dicomfind_basename(const char *filename)
   const char *cp = filename + strlen(filename);
   while (cp != filename && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
   return cp;
+}
+
+// get directory portion of filename
+std::string dicomfind_dirname(const char *filename)
+{
+  const char *cp = filename + strlen(filename);
+  while (cp != filename)
+    {
+    --cp;
+    if (cp[0] == '\\' || cp[0] == '/') { break; }
+    }
+  return std::string(filename, cp - filename);
 }
 
 typedef vtkDICOMVR VR;
@@ -203,6 +228,31 @@ bool execute_command(const char *command, char *argv[])
 }
 #endif
 
+#ifndef _WIN32
+int dicomfind_chdir(const char *dirname)
+{
+  return chdir(dirname);
+}
+#else
+int dicomfind_chdir(const char *dirname)
+{
+  // use _wchdir to allow paths longer than the 260 char limit
+  return _chdir(dirname);
+}
+#endif
+
+#ifndef _WIN32
+const char *dicomfind_getcwd(char *buffer, size_t bufsize)
+{
+  return getcwd(buffer, bufsize);
+}
+#else
+const char *dicomfind_getcwd(char *buffer, size_t bufsize)
+{
+  return _getcwd(buffer, bufsize);
+}
+#endif
+
 // This program will dump all the metadata in the given file
 int main(int argc, char *argv[])
 {
@@ -213,6 +263,7 @@ int main(int argc, char *argv[])
   QueryTagList qtlist;
   vtkDICOMItem query;
   std::vector<std::string> exec_args;
+  bool execdir = false;
   bool print0 = false;
   bool requirePixelData = false;
 
@@ -293,8 +344,13 @@ int main(int argc, char *argv[])
       {
       print0 = true;
       }
-    else if (strcmp(arg, "-exec") == 0)
+    else if (strcmp(arg, "-exec") == 0 ||
+             strcmp(arg, "-execdir") == 0)
       {
+      if (strcmp(arg, "-execdir") == 0)
+        {
+        execdir = true;
+        }
       int argj = ++argi;
       for (; argj < argc; argj++)
         {
@@ -342,6 +398,15 @@ int main(int argc, char *argv[])
   query.SetAttributeValue(
     DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
+  // Remember the current directory
+  std::string originalDir;
+  std::string currentSubdir;
+  if (execdir)
+    {
+    char buf[2048];
+    originalDir = dicomfind_getcwd(buf, 2048);
+    }
+
   // Write data for every input directory
   if (a->GetNumberOfTuples() > 0)
     {
@@ -385,7 +450,16 @@ int main(int argc, char *argv[])
                 {
                 if (exec_args[jj] == "{}")
                   {
-                  sub_argv[ii++] = const_cast<char *>(sa->GetValue(kk).c_str());
+                  if (execdir)
+                    {
+                    sub_argv[ii++] = const_cast<char *>(
+                      dicomfind_basename(sa->GetValue(kk).c_str()));
+                    }
+                  else
+                    {
+                    sub_argv[ii++] = const_cast<char *>(
+                      sa->GetValue(kk).c_str());
+                    }
                   }
                 else
                   {
@@ -394,6 +468,17 @@ int main(int argc, char *argv[])
                 }
               sub_argv[ii] = 0;
 
+              if (execdir)
+                {
+                std::string dirname =
+                  dicomfind_dirname(sa->GetValue(kk).c_str());
+                if (dirname != currentSubdir)
+                  {
+                  dicomfind_chdir(originalDir.c_str());
+                  dicomfind_chdir(dirname.c_str());
+                  }
+                }
+
               if (!execute_command(sub_argv[0], sub_argv))
                 {
                 fprintf(stderr, "failure!");
@@ -401,34 +486,121 @@ int main(int argc, char *argv[])
 
               delete [] sub_argv;
               }
+
+            if (execdir && currentSubdir != "")
+              {
+              dicomfind_chdir(originalDir.c_str());
+              }
             }
           else
             {
             // call program for each series
-            size_t sub_argc = exec_args.size() + subcount*sa->GetNumberOfTuples() - 1;
+            // for execdir, what if series is split across directories? need to
+            // call executable once per directory, using only the files in that
+            // directory.
+            size_t sub_argc = exec_args.size() +
+              subcount*sa->GetNumberOfTuples() - 1;
             char **sub_argv = new char *[sub_argc+1];
 
-            size_t ii = 0;
-            size_t nn = exec_args.size()-1;
-            for (size_t jj = 0; jj < nn; jj++)
+            // for execdir, keep a list of directories that are done
+            std::vector<std::string> done_dirs;
+            std::string doing_dir;
+            
+            bool notdone = true;
+
+            while (notdone)
               {
-              if (exec_args[jj] == "{}")
+              notdone = false;
+              if (execdir)
                 {
+                bool foundDirToProcess = false;
                 for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
                   {
-                  sub_argv[ii++] = const_cast<char *>(sa->GetValue(kk).c_str());
+                  std::string dirname =
+                    dicomfind_dirname(sa->GetValue(kk).c_str());
+                  if (!foundDirToProcess)
+                    {
+                    bool dirIsDone = false;
+                    for (size_t ll = 0; ll < done_dirs.size(); ll++)
+                      {
+                      if (dirname == done_dirs[ll])
+                        {
+                        dirIsDone = true;
+                        break;
+                        }
+                      }
+                    if (!dirIsDone)
+                      {
+                      foundDirToProcess = true;
+                      doing_dir = dirname;
+                      done_dirs.push_back(dirname);
+                      break;
+                      }
+                    }
+                  }
+                if (foundDirToProcess)
+                  {
+                  notdone = true;
+                  }
+                else
+                  {
+                  break;
                   }
                 }
-              else
+
+              size_t ii = 0;
+              size_t nn = exec_args.size()-1;
+              for (size_t jj = 0; jj < nn; jj++)
                 {
-                sub_argv[ii++] = const_cast<char *>(exec_args[jj].c_str());
+                if (exec_args[jj] == "{}")
+                  {
+                  if (execdir)
+                    {
+                    for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
+                      {
+                      std::string dirname =
+                        dicomfind_dirname(sa->GetValue(kk).c_str());
+                      if (dirname == doing_dir)
+                        {
+                        sub_argv[ii++] = const_cast<char *>(
+                          dicomfind_basename(sa->GetValue(kk).c_str()));
+                        }
+                      }
+                    }
+                  else
+                    {
+                    for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
+                      {
+                      sub_argv[ii++] = const_cast<char *>(
+                        sa->GetValue(kk).c_str());
+                      }
+                    }
+                  }
+                else
+                  {
+                  sub_argv[ii++] = const_cast<char *>(exec_args[jj].c_str());
+                  }
+                }
+              sub_argv[ii] = 0;
+
+              if (execdir)
+                {
+                if (doing_dir != currentSubdir)
+                  {
+                  dicomfind_chdir(originalDir.c_str());
+                  dicomfind_chdir(doing_dir.c_str());
+                  }
+                }
+
+              if (!execute_command(sub_argv[0], sub_argv))
+                {
+                fprintf(stderr, "failure!");
                 }
               }
-            sub_argv[ii] = 0;
 
-            if (!execute_command(sub_argv[0], sub_argv))
+            if (execdir && currentSubdir != "")
               {
-              fprintf(stderr, "failure!");
+              dicomfind_chdir(originalDir.c_str());
               }
 
             delete [] sub_argv;
