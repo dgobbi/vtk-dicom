@@ -13,7 +13,8 @@
 =========================================================================*/
 
 #include "vtkDICOMParser.h"
-#include "vtkDICOMFileSorter.h"
+#include "vtkDICOMDictionary.h"
+#include "vtkDICOMDirectory.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMItem.h"
 
@@ -207,11 +208,11 @@ void printElement(
         }
       }
 
-    if (vi == 0)
+    if (meta && vi == 0)
       {
       printf("%s(%04X,%04X) %s \"%s\" :", indent, g, e, vr.GetText(), name);
       }
-    if (vn > 1)
+    if (meta && vn > 1)
       {
       printf("%s%s  %4.4u",
         (vi == 0 ? " (multiple values)\n" : ""), indent, vi + 1);
@@ -244,6 +245,109 @@ void printElement(
     else
       {
       printf(" [%s] (%u bytes)\n", s.c_str(), v.GetVL());
+      }
+    }
+}
+
+void printElementFromTagPathRecurse(
+  const vtkDICOMItem *item, const vtkDICOMTagPath& tagPath,
+  const vtkDICOMTagPath& fullPath, int *count)
+{
+  vtkDICOMTag tag = tagPath.GetHead();
+
+  vtkDICOMDataElementIterator iter = item->Begin();
+  while (iter != item->End() && iter->GetTag() != tag)
+    {
+    ++iter;
+    }
+
+  if (iter != item->End())
+    {
+    if (tagPath.HasTail())
+      {
+      const vtkDICOMItem *items = iter->GetValue().GetSequenceData();
+      if (items)
+        {
+        size_t n = iter->GetValue().GetNumberOfValues();
+        for (size_t i = 0; i < n; i++)
+          {
+          printElementFromTagPathRecurse(
+            &items[i], tagPath.GetTail(), fullPath, count);
+          }
+        }
+      }
+    else
+      {
+      ++(*count);
+      fprintf(stdout, "  %04d", *count);
+      printElement(0, item, iter, 0);
+      }
+    }
+}
+
+void printElementFromTagPath(
+  vtkDICOMMetaData *data, const vtkDICOMTagPath& tagPath)
+{
+  int count = 0;
+  vtkDICOMTag tag = tagPath.GetHead();
+  vtkDICOMDataElementIterator iter = data->Find(tag);
+  if (iter != data->End())
+    {
+    if (tagPath.HasTail())
+      {
+      for (vtkDICOMTagPath p = tagPath; ; p = p.GetTail())
+        {
+        int g = p.GetHead().GetGroup();
+        int e = p.GetHead().GetElement();
+        if (p.HasTail())
+          {
+          printf("(%04X,%04X)\\", g, e);
+          }
+        else
+          {
+          vtkDICOMDictEntry entry =
+            vtkDICOMDictionary::FindDictEntry(p.GetHead());
+          vtkDICOMVR vr = entry.GetVR();
+          const char *name = entry.GetName();
+          name = (name ? name : "Unknown");
+          printf("(%04X,%04X) %s \"%s\" : (nested)\n",
+            g, e, vr.GetText(), name);
+          break;
+          }
+        }
+      if (iter->IsPerInstance())
+        {
+        for (int j = 0; j < iter->GetNumberOfInstances(); j++)
+          {
+          const vtkDICOMItem *items = iter->GetValue(j).GetSequenceData();
+          if (items)
+            {
+            size_t n = iter->GetValue().GetNumberOfValues();
+            for (size_t i = 0; i < n; i++)
+              {
+              printElementFromTagPathRecurse(
+                &items[i], tagPath.GetTail(), tagPath, &count);
+              }
+            }
+          }
+        }
+      else
+        {
+        const vtkDICOMItem *items = iter->GetValue().GetSequenceData();
+        if (items)
+          {
+          size_t n = iter->GetValue().GetNumberOfValues();
+          for (size_t i = 0; i < n; i++)
+            {
+            printElementFromTagPathRecurse(
+              &items[i], tagPath.GetTail(), tagPath, &count);
+            }
+          }
+        }
+      }
+    else
+      {
+      printElement(data, 0, iter, 0);
       }
     }
 }
@@ -334,10 +438,12 @@ int main(int argc, char *argv[])
     }
 
   // sort the files by study and series
-  vtkSmartPointer<vtkDICOMFileSorter> sorter =
-    vtkSmartPointer<vtkDICOMFileSorter>::New();
+  vtkSmartPointer<vtkDICOMDirectory> sorter =
+    vtkSmartPointer<vtkDICOMDirectory>::New();
   sorter->RequirePixelDataOff();
-  sorter->SetInputFileNames(files);
+  sorter->SetScanDepth(0);
+  sorter->SetFindQuery(query);
+  sorter->SetFileNames(files);
   sorter->Update();
 
   vtkSmartPointer<vtkDICOMParser> parser =
@@ -398,11 +504,7 @@ int main(int argc, char *argv[])
         {
         for (size_t i = 0; i < qtlist.size(); i++)
           {
-          vtkDICOMDataElementIterator iter = data->Find(qtlist[i].GetHead());
-          if (iter != data->End())
-            {
-            printElement(data, 0, iter, 0);
-            }
+          printElementFromTagPath(data, qtlist[i]);
           }
         }
       else
