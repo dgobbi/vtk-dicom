@@ -443,7 +443,7 @@ int main(int argc, char *argv[])
   sorter->RequirePixelDataOff();
   sorter->SetScanDepth(0);
   sorter->SetFindQuery(query);
-  sorter->SetFileNames(files);
+  sorter->SetInputFileNames(files);
   sorter->Update();
 
   vtkSmartPointer<vtkDICOMParser> parser =

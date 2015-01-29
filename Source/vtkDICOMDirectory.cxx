@@ -120,7 +120,7 @@ class vtkDICOMDirectory::SeriesInfoList
 vtkDICOMDirectory::vtkDICOMDirectory()
 {
   this->DirectoryName = 0;
-  this->FileNames = 0;
+  this->InputFileNames = 0;
   this->FilePattern = 0;
   this->Series = new SeriesVector;
   this->Studies = new StudyVector;
@@ -136,9 +136,9 @@ vtkDICOMDirectory::vtkDICOMDirectory()
 //----------------------------------------------------------------------------
 vtkDICOMDirectory::~vtkDICOMDirectory()
 {
-  if (this->FileNames)
+  if (this->InputFileNames)
     {
-    this->FileNames->Delete();
+    this->InputFileNames->Delete();
     }
 
   delete [] this->DirectoryName;
@@ -162,7 +162,7 @@ void vtkDICOMDirectory::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "FilePattern: "
      << (inputDirectory ? inputDirectory : "(NULL)") << "\n";
 
-  os << indent << "FileNames: " << this->FileNames << "\n";
+  os << indent << "FileNames: " << this->InputFileNames << "\n";
 
   os << indent << "ScanDepth: " << this->ScanDepth << "\n";
 
@@ -223,19 +223,19 @@ void vtkDICOMDirectory::SetFilePattern(const char *name)
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMDirectory::SetFileNames(vtkStringArray *sa)
+void vtkDICOMDirectory::SetInputFileNames(vtkStringArray *sa)
 {
-  if (sa != this->FileNames)
+  if (sa != this->InputFileNames)
     {
-    if (this->FileNames)
+    if (this->InputFileNames)
       {
-      this->FileNames->Delete();
+      this->InputFileNames->Delete();
       }
     if (sa)
       {
       sa->Register(this);
       }
-    this->FileNames = sa;
+    this->InputFileNames = sa;
     this->Modified();
     }
 }
@@ -907,7 +907,7 @@ void vtkDICOMDirectory::ProcessDirectory(
     path.pop_back();
     }
 
-  if (this->FileNames == 0 && depth == this->ScanDepth)
+  if (this->InputFileNames == 0 && depth == this->ScanDepth)
     {
     // Build the path to the DICOMDIR file.
     path.push_back("DICOMDIR");
@@ -1026,11 +1026,11 @@ void vtkDICOMDirectory::Execute()
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();
 
-  if (this->FileNames)
+  if (this->InputFileNames)
     {
-    for (vtkIdType i = 0; i < this->FileNames->GetNumberOfValues(); i++)
+    for (vtkIdType i = 0; i < this->InputFileNames->GetNumberOfValues(); i++)
       {
-      const std::string& fname = this->FileNames->GetValue(i);
+      const std::string& fname = this->InputFileNames->GetValue(i);
       if (vtksys::SystemTools::FileIsDirectory(fname.c_str()))
         {
         this->ProcessDirectory(fname.c_str(), this->ScanDepth, files);

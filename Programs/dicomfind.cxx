@@ -348,7 +348,7 @@ int main(int argc, char *argv[])
     {
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
-    finder->SetFileNames(a);
+    finder->SetInputFileNames(a);
     finder->SetFilePattern(pattern);
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);

@@ -51,8 +51,8 @@ public:
   /*!
    *  This can be used as alternative to setting a single input directory.
    */
-  void SetFileNames(vtkStringArray *sa);
-  vtkStringArray *GetFileNames() { return this->FileNames; }
+  void SetInputFileNames(vtkStringArray *sa);
+  vtkStringArray *GetInputFileNames() { return this->InputFileNames; }
 
   //! Set a pattern to match for the filenames.
   /*!
@@ -145,7 +145,7 @@ protected:
   ~vtkDICOMDirectory();
 
   const char *DirectoryName;
-  vtkStringArray *FileNames;
+  vtkStringArray *InputFileNames;
   const char *FilePattern;
   int RequirePixelData;
   int FollowSymlinks;
