@@ -55,8 +55,8 @@ void printUsage(FILE *file, const char *cp)
   fprintf(file, "options:\n"
     "  -k tag          Provide a key to be printed.\n"
     "  -q <query.txt>  Provide a file that lists which elements to print.\n"
-    "  --help      Print a brief help message.\n"
-    "  --version   Print the software version.\n");
+    "  --help          Print a brief help message.\n"
+    "  --version       Print the software version.\n");
 }
 
 // print the help
@@ -64,7 +64,15 @@ void printHelp(FILE *file, const char *cp)
 {
   printUsage(file, cp);
   fprintf(file, "\n"
-    "Dump the metadata from a DICOM series as text.\n");
+    "Dump the metadata from a DICOM series as text.  If only a few\n"
+    "attributes are to be dumped, then their tags can be given with \"-k\"\n"
+    "(the \"-k\" option can be repeated as many times as needed).  Tags can\n"
+    "given in hexadecimal GGGG,EEEE format, or in text format as specified\n"
+    "in the DICOM dictionary.  Alternately, the tags can be listed in a\n"
+    "query file given with the \"-q\" option (one tag per line).\n"
+    "Attributes nested within sequences can be specified by giving a tag\n"
+    "path e.g. \"-k Tag1/Tag2/Tag3\".  Either a forward slash or a backslash\n"
+    "can be used to separate the components of the path.\n\n");
 }
 
 // remove path portion of filename

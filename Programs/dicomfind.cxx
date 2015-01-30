@@ -90,7 +90,24 @@ void dicomfind_help(FILE *file, const char *cp)
     "This command can be used to locate DICOM files.  It shares many\n"
     "features with the UNIX \"find\" command.  When searching for files\n"
     "with a specific attribute (with \"-k\"), the tag can be specified\n"
-    "in the form GGGG,EEEE or with its canonical name e.g. Modality=MR.\n\n");
+    "in the form GGGG,EEEE or with its canonical name e.g. Modality=MR\n"
+    "from the DICOM dictionary.  Alternately, the tags can be listed in a\n"
+    "query file given with the \"-q\" option (one tag per line).\n"
+    "Attributes nested within sequences can be specified by giving a tag\n"
+    "path e.g. \"-k Tag1/Tag2/Tag3\".  Either a forward slash or a backslash\n"
+    "can be used to separate the components of the path.  Private tags\n"
+    "should be preceded by the private dictionary name in square brackets.\n"
+    "\n"
+    "The \"-exec\" and \"-execdir\" arguments cause dicomfind to run the\n"
+    "specified program on the found files.  For example, to dump each file\n"
+    "one would use \"-exec dicomdump {} \\;\" where each instance of {} will\n"
+    "be replaced by a found file, and \";\" indicates the end of the args\n"
+    "to dicomdump.  Alternately, if \"+\" is used to end the args, then the\n"
+    "program will be run on each DICOM series and {} will be replaced by all\n"
+    "files in the series.  The \"-execdir\" argument is similar, except that\n"
+    "it runs the program from within the directory of the file (or files),\n"
+    "and {} is replaced by just the filenames instead of with the full paths.\n\n");
+
 }
 
 // remove path portion of filename

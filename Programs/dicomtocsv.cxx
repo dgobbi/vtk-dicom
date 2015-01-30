@@ -60,7 +60,16 @@ void dicomtocsv_help(FILE *file, const char *cp)
 {
   dicomtocsv_usage(file, cp);
   fprintf(file, "\n"
-    "Dump selected metadata from a DICOM directory to a csv file.\n");
+    "Dump selected metadata from a DICOM directory to a csv file.\n"
+    "For each attribute to be extracted, the tag can be given with \"-k\"\n"
+    "(the \"-k\" option can be repeated as many times as needed).  Tags can\n"
+    "given in hexadecimal GGGG,EEEE format, or in text format as specified\n"
+    "in the DICOM dictionary.  Alternately, the tags can be listed in a\n"
+    "query file given with the \"-q\" option (one tag per line).\n"
+    "Attributes nested within sequences can be specified by giving a tag\n"
+    "path e.g. \"-k Tag1/Tag2/Tag3\".  Either a forward slash or a backslash\n"
+    "can be used to separate the components of the path.  Private tags\n"
+    "should be preceded by the private dictionary name in square brackets.\n\n");
 }
 
 // remove path portion of filename
