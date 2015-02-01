@@ -2382,14 +2382,10 @@ bool vtkDICOMValue::Matches(const std::string& value) const
 
   if (this->V)
     {
-    if (this->V->VR.HasSpecificCharacterSet())
+    if (this->V->VR.HasTextValue())
       {
       return this->Matches(vtkDICOMValue(
         this->V->VR, this->V->CharacterSet, value));
-      }
-    else if (this->V->VR.HasTextValue())
-      {
-      return this->Matches(vtkDICOMValue(this->V->VR, value));
       }
     else
       {
