@@ -2372,6 +2372,30 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMValue::Matches(const std::string& value) const
+{
+  if (this->V)
+    {
+    return this->Matches(vtkDICOMValue(
+      this->V->VR, this->V->CharacterSet, value));
+    }
+
+  // to support universal matching
+  return (value.length() == 0);
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMValue::Matches(double value) const
+{
+  if (this->V && this->V->VL > 0 && this->V->VR.HasNumericValue())
+    {
+    return this->Matches(vtkDICOMValue(this->V->VR, value));
+    }
+
+  return false;
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMValue::operator==(const vtkDICOMValue& o) const
 {
   const vtkDICOMValue::Value *a = this->V;

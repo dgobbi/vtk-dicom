@@ -321,6 +321,27 @@ public:
    */
   bool Matches(const vtkDICOMValue& value) const;
 
+  
+  //! Check if the value is equal to the specified string.
+  /*!
+   *  Note that matches to an empty string will always succeed due to
+   *  universal matching.  To check if a value is empty, you should
+   *  instead check to see if its VL is zero.  Padding spaces will
+   *  automatically be stripped before the comparison is done.  The
+   *  character set of the string is assumed to be the same as the
+   *  character set of the value that is being matched.
+   */
+  bool Matches(const std::string& v) const;
+
+  //! Check if the value is the specified numeric value.
+  /*!
+   *  This will return true only if the value has a numeric representation
+   *  (e.g. has a VR of IS, DS, US, UL, SS, SL, FL, FD) and is equal to the
+   *  specified number.  If the value multiplicity is greater than one,
+   *  then the match is true if at least one value matches.
+   */
+  bool Matches(double v) const;
+
   //! Override assignment operator for reference counting.
   vtkDICOMValue& operator=(const vtkDICOMValue& o) {
     if (this->V != o.V) {

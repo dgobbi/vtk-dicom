@@ -94,6 +94,14 @@ public:
   bool HasTextValue() const {
     return (((1 << this->Key) & 0x29c61cf6) != 0); }
 
+  //! This is true for for all VRs that store numbers.
+  /*!
+   *  The VRs included are IS, DS, US, UL, SS, SL, FL, FD.  The VRs
+   *  OB, OW, OF, and OD are not included.
+   */
+  bool HasNumericValue() const {
+    return (((1 << this->Key) & 0x12280740) != 0); }
+
   //! The VRs ST, LT, and UT carry only one value.
   /*!
    * Specifically, this means that a backslash is not interpreted as a

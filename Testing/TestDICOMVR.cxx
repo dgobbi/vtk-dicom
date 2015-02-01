@@ -201,6 +201,9 @@ int main(int argc, char *argv[])
   bool hasTextValue[] = {
      0,1,1,0,1,1,1,1,0,0,1,1,1,0,0,0,0,1,1,0,0,0,1,1,1,0,0,1,0,1,0,0
   };
+  bool hasNumericValue[] = {
+     0,0,0,0,0,0,1,0,1,1,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0,1,0,0,1,0,0,0
+  };
   bool hasSingleValue[] = {
      0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0
   };
@@ -213,6 +216,7 @@ int main(int argc, char *argv[])
     TestAssert(hasLongVL[i] == vrs[i].HasLongVL());
     TestAssert(hasSpecificCharacterSet[i] == vrs[i].HasSpecificCharacterSet());
     TestAssert(hasTextValue[i] == vrs[i].HasTextValue());
+    TestAssert(hasNumericValue[i] == vrs[i].HasNumericValue());
     TestAssert(hasSingleValue[i] == vrs[i].HasSingleValue());
     TestAssert(hasPadding[i] == vrs[i].HasPadding());
     }
