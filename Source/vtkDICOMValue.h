@@ -321,15 +321,15 @@ public:
    */
   bool Matches(const vtkDICOMValue& value) const;
 
-  
   //! Check if the value is equal to the specified string.
   /*!
    *  Note that matches to an empty string will always succeed due to
-   *  universal matching.  To check if a value is empty, you should
-   *  instead check to see if its VL is zero.  Padding spaces will
+   *  the universal matching rule.  To check if a value is empty, you
+   *  should instead check to see if its VL is zero.  Padding spaces will
    *  automatically be stripped before the comparison is done.  The
    *  character set of the string is assumed to be the same as the
-   *  character set of the value that is being matched.
+   *  character set of the value that is being matched.  This method
+   *  can be used to match numerical values in addition to text values.
    */
   bool Matches(const std::string& v) const;
 
