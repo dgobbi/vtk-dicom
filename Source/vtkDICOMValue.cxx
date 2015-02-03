@@ -1446,7 +1446,28 @@ std::string vtkDICOMValue::AsUTF8String() const
         l--;
         }
       }
-    return cs.ConvertToUTF8(cp, l);
+    if (this->V->VR.HasSingleValue())
+      {
+      return cs.ConvertToUTF8(cp, l);
+      }
+    else
+      {
+      // convert each value separately
+      const char *ep = cp + l;
+      std::string s;
+      while (cp != ep && *cp != '\0')
+        {
+        size_t n = cs.NextBackslash(cp, ep);
+        s.append(cs.ConvertToUTF8(cp, n));
+        cp += n;
+        if (cp != ep && *cp == '\\')
+          {
+          s.append(cp, 1);
+          cp++;
+          }
+        }
+      return s;
+      }
     }
 
   return vtkDICOMValue::AsString();
@@ -2257,7 +2278,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
             this->V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_192)
           {
           // Convert value to UTF8 before matching
-          str = this->GetCharacterSet().ConvertToUTF8(cp, l);
+          str = this->AsUTF8String();
           cp = str.c_str();
           l = str.length();
           }
@@ -2265,7 +2286,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
             value.V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_192)
           {
           // Convert pattern to UTF8 before matching
-          pstr = value.GetCharacterSet().ConvertToUTF8(pattern, pl);
+          pstr = value.AsUTF8String();
           pattern = pstr.c_str();
           pl = pstr.length();
           }
