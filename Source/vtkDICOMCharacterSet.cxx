@@ -6937,13 +6937,13 @@ size_t vtkDICOMCharacterSet::NextBackslash(
 
   if (this->Key == GB18030 || this->Key == GBK)
     {
-    // ensure backslash isn't second part of a character
-    while (cp < ep && *cp != '\0')
+    // ensure backslash isn't second part of a multi-byte character
+    while (cp != ep && *cp != '\0')
       {
       if (static_cast<unsigned char>(*cp) >= 0x81)
         {
         cp++;
-        if (cp < ep && static_cast<unsigned char>(*cp) >= 0x21)
+        if (cp != ep && static_cast<unsigned char>(*cp) >= 0x21)
           {
           cp++;
           }
@@ -6961,52 +6961,40 @@ size_t vtkDICOMCharacterSet::NextBackslash(
   else if ((this->Key & ISO_2022) != 0)
     {
     // ensure backslash isn't part of a G0 multi-byte code
-    bool jp = false;
-    while (cp < ep && *cp != 0)
+    bool multibyte = false;
+    while (cp != ep && *cp != '\0')
       {
-      if (ep - cp > 3 && *cp == '\033')
+      // look for iso 2022 escape code
+      if (*cp == '\033')
         {
         cp++;
-        if (cp[0] == '$' && (cp[1] == 'B' || cp[1] == '@'))
+        size_t l = 0;
+        while (cp + l != ep &&
+               static_cast<unsigned char>(cp[l]) >= 0x20 &&
+               static_cast<unsigned char>(cp[l]) <= 0x2f)
           {
-          // iso-2022-jp
-          cp += 2;
-          jp = true;
+          l++;
           }
-        else if (ep - cp > 3 &&
-                 cp[0] == '$' && cp[1] == '(' && cp[2] != '\0')
+        if (cp + l != ep &&
+            static_cast<unsigned char>(cp[l]) >= 0x40 &&
+            static_cast<unsigned char>(cp[l]) <= 0x7f)
           {
-          // iso-2022 multibyte in G0
-          cp += 3;
-          jp = true;
+          l++;
+          if ((l == 2 && cp[0] == '$') ||
+              (l == 3 && cp[0] == '$' && cp[1] == '('))
+            {
+            // G0 is designated to multibyte
+            multibyte = true;
+            }
+          else if (l == 2 && cp[0] == '(')
+            {
+            // G0 is designated to single byte
+            multibyte = false;
+            }
           }
-        else if (ep - cp > 3 &&
-                 cp[0] == '$' && cp[1] == ')' && cp[2] != '\0')
-          {
-          // iso-2022 multibyte in G1
-          cp += 3;
-          }
-        else if (cp[0] == '(' && cp[1] != '\0')
-          {
-          // iso-2022 single-byte in G0
-          cp += 2;
-          jp = false;
-          }
-        else if (cp[0] != '-' && cp[1] != '\0')
-          {
-          // iso-2022 single-byte in G1
-          cp += 2;
-          }
+        cp += l;
         }
-      else if (jp)
-        {
-        cp++;
-        if (cp < ep && static_cast<unsigned char>(*cp) >= 0x21)
-          {
-          cp++;
-          }
-        }
-      else if (*cp != '\\')
+      else if (multibyte || *cp != '\\')
         {
         cp++;
         }
@@ -7018,8 +7006,8 @@ size_t vtkDICOMCharacterSet::NextBackslash(
     }
   else
     {
-    // backslash is backslash
-    while (cp < ep && *cp != '\0')
+    // no special encoding, so backslash is backslash
+    while (cp != ep && *cp != '\0')
       {
       if (*cp == '\\')
         {
@@ -7040,15 +7028,15 @@ unsigned int vtkDICOMCharacterSet::CountBackslashes(
   const char *cp = text;
   const char *ep = text + l;
 
-  while (*cp != '\0')
+  while (cp != ep && *cp != '\0')
     {
     cp += this->NextBackslash(cp, ep);
-    if (*cp == '\\')
-       {
-       cp++;
-       count++;
-       }
-     }
+    if (cp != ep && *cp == '\\')
+      {
+      cp++;
+      count++;
+      }
+    }
 
   return count;
 }
