@@ -477,6 +477,8 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   static const DC::EnumType requiredElements[] = {
     // basic required information
     DC::SpecificCharacterSet,
+    // image-level information
+    DC::InstanceNumber,
     // series-level information
     DC::SeriesDate,
     DC::SeriesTime,
