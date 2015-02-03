@@ -290,6 +290,23 @@ int main(int argc, char *argv[])
   TestAssert(v.AsInt() == 0);
   }
 
+  { // test AsUTF8String
+  vtkDICOMValue v;
+  std::string s;
+  // backslash interpreted as backslash
+  v = vtkDICOMValue(
+    vtkDICOMVR::LO, vtkDICOMCharacterSet("ISO 2022 IR 13\\ISO 2022 IR 87"),
+    "\xd4\xcf\xc0\xde^\xc0\xdb\xb3\\\x1b$B;3ED\x1b(J^\x1b$BB@O:\x1b(J");
+  s = "\xef\xbe\x94\xef\xbe\x8f\xef\xbe\x80\xef\xbe\x9e^\xef\xbe\x80\xef\xbe\x9b\xef\xbd\xb3\\\xe5\xb1\xb1\xe7\x94\xb0^\xe5\xa4\xaa\xe9\x83\x8e";
+  TestAssert(v.AsUTF8String() == s);
+  // backslash interpreted according to character set
+  v = vtkDICOMValue(
+    vtkDICOMVR::LT, vtkDICOMCharacterSet("ISO 2022 IR 13\\ISO 2022 IR 87"),
+    "\xd4\xcf\xc0\xde^\xc0\xdb\xb3\\\x1b$B;3ED\x1b(J^\x1b$BB@O:\x1b(J");
+  s = "\xef\xbe\x94\xef\xbe\x8f\xef\xbe\x80\xef\xbe\x9e^\xef\xbe\x80\xef\xbe\x9b\xef\xbd\xb3\xc2\xa5\xe5\xb1\xb1\xe7\x94\xb0^\xe5\xa4\xaa\xe9\x83\x8e";
+  TestAssert(v.AsUTF8String() == s);
+  }
+
   { // test Matches for query matching
   vtkDICOMValue v;
   vtkDICOMValue u;
@@ -539,6 +556,48 @@ int main(int argc, char *argv[])
   TestAssert(!v.Matches(u));
   u = vtkDICOMValue(vtkDICOMVR::PN, names[5]);
   TestAssert(!v.Matches(u));
+
+  // test comparison with character sets
+  std::string s;
+  v = vtkDICOMValue(
+    vtkDICOMVR::LO, vtkDICOMCharacterSet("ISO 2022 IR 13\\ISO 2022 IR 87"),
+    "\xd4\xcf\xc0\xde^\xc0\xdb\xb3\\\x1b$B;3ED\x1b(J^\x1b$BB@O:\x1b(J");
+  u = vtkDICOMValue(
+    vtkDICOMVR::LO, vtkDICOMCharacterSet("ISO_IR 13"),
+    "\xd4\xcf\xc0\xde^\xc0\xdb\xb3");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(
+    vtkDICOMVR::LO, vtkDICOMCharacterSet("ISO 2022 IR 13\\ISO 2022 IR 87"),
+    "\x1b$B;3ED\x1b(J^\x1b$BB@O:\x1b(J");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(
+    vtkDICOMVR::LO, vtkDICOMCharacterSet("ISO_IR 192"),
+    "\xef\xbe\x94\xef\xbe\x8f\xef\xbe\x80\xef\xbe\x9e^\xef\xbe\x80\xef\xbe\x9b\xef\xbd\xb3");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(
+    vtkDICOMVR::LO, vtkDICOMCharacterSet("ISO_IR 192"),
+    "\xe5\xb1\xb1\xe7\x94\xb0^\xe5\xa4\xaa\xe9\x83\x8e");
+
+  // test comparison with character sets specifically for PN
+  v = vtkDICOMValue(
+    vtkDICOMVR::PN, vtkDICOMCharacterSet("ISO 2022 IR 13\\ISO 2022 IR 87"),
+    "\xd4\xcf\xc0\xde^\xc0\xdb\xb3\\\x1b$B;3ED\x1b(J^\x1b$BB@O:\x1b(J");
+  u = vtkDICOMValue(
+    vtkDICOMVR::PN, vtkDICOMCharacterSet("ISO_IR 13"),
+    "\xd4\xcf\xc0\xde^\xc0\xdb\xb3");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(
+    vtkDICOMVR::PN, vtkDICOMCharacterSet("ISO 2022 IR 13\\ISO 2022 IR 87"),
+    "\x1b$B;3ED\x1b(J^\x1b$BB@O:\x1b(J");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(
+    vtkDICOMVR::PN, vtkDICOMCharacterSet("ISO_IR 192"),
+    "\xef\xbe\x94\xef\xbe\x8f\xef\xbe\x80\xef\xbe\x9e^\xef\xbe\x80\xef\xbe\x9b\xef\xbd\xb3");
+  TestAssert(v.Matches(u));
+  u = vtkDICOMValue(
+    vtkDICOMVR::PN, vtkDICOMCharacterSet("ISO_IR 192"),
+    "\xe5\xb1\xb1\xe7\x94\xb0^\xe5\xa4\xaa\xe9\x83\x8e");
+  TestAssert(v.Matches(u));
   }
 
   return rval;
