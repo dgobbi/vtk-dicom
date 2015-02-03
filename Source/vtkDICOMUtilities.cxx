@@ -465,9 +465,19 @@ int vtkDICOMUtilities::CompareUIDs(const char *u1, const char *u2)
         }
       }
     while (r == 0 && *u1 != 0 && *u2 != 0);
-    // convert r to sgn(r)
-    r = (r >= 0 ? r : -1);
-    r = (r <= 0 ? r : 1);
+
+    if (r == 0)
+      {
+      // uid with remaining parts wins
+      r = (*u2 == 0 ? r : -1);
+      r = (*u1 == 0 ? r : 1);
+      }
+    else
+      {
+      // convert r to sgn(r)
+      r = (r >= 0 ? r : -1);
+      r = (r <= 0 ? r : 1);
+      }
     }
 
   return r;

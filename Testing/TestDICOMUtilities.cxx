@@ -33,6 +33,20 @@ int main(int argc, char *argv[])
 
   typedef vtkDICOMUtilities DU;
 
+  { // Test comparison of UIDs
+  const char *uid1 = "1.2.840.113619.2.334";
+  const char *uid2 = "1.2.840.113619.2.334.3";
+  const char *uid3 = "1.2.840.113619.2.334.4";
+  const char *uid4 = "1.2.840.113619.2.334.12";
+  TestAssert(DU::CompareUIDs(uid1, uid1) == 0);
+  TestAssert(DU::CompareUIDs(uid1, uid2) == -1);
+  TestAssert(DU::CompareUIDs(uid2, uid3) == -1);
+  TestAssert(DU::CompareUIDs(uid3, uid4) == -1);
+  TestAssert(DU::CompareUIDs(uid2, uid1) == 1);
+  TestAssert(DU::CompareUIDs(uid3, uid2) == 1);
+  TestAssert(DU::CompareUIDs(uid4, uid3) == 1);
+  }
+
   { // Test UID generation with 2.25 prefix
   std::string uid = DU::GenerateUID(DC::FrameOfReferenceUID);
   TestAssert(strncmp(uid.data(), "2.25.", 5) == 0);
