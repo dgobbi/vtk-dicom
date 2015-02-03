@@ -444,15 +444,9 @@ int vtkDICOMUtilities::CompareUIDs(const char *u1, const char *u2)
     r = (u2 == 0 ? r : -1);
     r = (u1 == 0 ? r : 1);
     }
-  else if (*u1 == 0 || *u2 == 0)
-    {
-    // if one or both are the empty string
-    r = (*u2 == 0 ? r : -1);
-    r = (*u1 == 0 ? r : 1);
-    }
   else
     {
-    do
+    while (r == 0 && *u1 != 0 && *u2 != 0)
       {
       int i1 = 0;
       int i2 = 0;
@@ -464,7 +458,6 @@ int vtkDICOMUtilities::CompareUIDs(const char *u1, const char *u2)
         do { r = *u1++ - *u2++; } while (r == 0 && --i1 != 0);
         }
       }
-    while (r == 0 && *u1 != 0 && *u2 != 0);
 
     if (r == 0)
       {
