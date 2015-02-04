@@ -2210,11 +2210,13 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
       wildcard |= (c == '*');
       wildcard |= (c == '?');
       }
+    while (pl > 0 && pattern[pl-1] == ' ') { pl--; }
 
-    // Get string value and remove any trailing nulls
+    // Get string value and remove any trailing nulls and spaces
     const char *cp = static_cast<const ValueT<char> *>(this->V)->Data;
     size_t l = this->V->VL;
     while (l > 0 && cp[l-1] == '\0') { l--; }
+    while (l > 0 && cp[l-1] == ' ') { l--; }
 
     if (!wildcard &&
         (vr == vtkDICOMVR::DA ||
