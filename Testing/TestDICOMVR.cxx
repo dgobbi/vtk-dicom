@@ -207,9 +207,6 @@ int main(int argc, char *argv[])
   bool hasSingleValue[] = {
      0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0
   };
-  bool hasPadding[] = {
-     0,1,1,0,1,1,1,1,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,1,0,0,0,0
-  };
 
   for (int i = 0; i < 32; i++)
     {
@@ -218,7 +215,6 @@ int main(int argc, char *argv[])
     TestAssert(hasTextValue[i] == vrs[i].HasTextValue());
     TestAssert(hasNumericValue[i] == vrs[i].HasNumericValue());
     TestAssert(hasSingleValue[i] == vrs[i].HasSingleValue());
-    TestAssert(hasPadding[i] == vrs[i].HasPadding());
     }
   }
 

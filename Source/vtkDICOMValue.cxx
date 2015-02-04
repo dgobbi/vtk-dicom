@@ -1439,15 +1439,10 @@ std::string vtkDICOMValue::AsUTF8String() const
     {
     vtkDICOMCharacterSet cs(this->V->CharacterSet);
     size_t l = this->V->VL;
-    if (this->V->VR.HasPadding())
-      {
-      while (l > 0 && (cp[l-1] == ' ' || cp[l-1] == '\0'))
-        {
-        l--;
-        }
-      }
+    while (l > 0 && cp[l-1] == '\0') { l--; }
     if (this->V->VR.HasSingleValue())
       {
+      while (l > 0 && cp[l-1] == ' ') { l--; }
       return cs.ConvertToUTF8(cp, l);
       }
     else
@@ -1458,7 +1453,10 @@ std::string vtkDICOMValue::AsUTF8String() const
       while (cp != ep && *cp != '\0')
         {
         size_t n = cs.NextBackslash(cp, ep);
-        s.append(cs.ConvertToUTF8(cp, n));
+        while (n > 0 && *cp == ' ') { cp++; n--; }
+        size_t m = n;
+        while (m > 0 && cp[m-1] == ' ') { m--; }
+        s.append(cs.ConvertToUTF8(cp, m));
         cp += n;
         if (cp != ep && *cp == '\\')
           {
@@ -1479,14 +1477,34 @@ std::string vtkDICOMValue::AsString() const
   if (cp)
     {
     size_t l = this->V->VL;
-    if (this->V->VR.HasPadding())
+    while (l > 0 && cp[l-1] == '\0') { l--; }
+    if (this->V->VR.HasSingleValue())
       {
-      while (l > 0 && (cp[l-1] == ' ' || cp[l-1] == '\0'))
-        {
-        l--;
-        }
+      while (l > 0 && cp[l-1] == ' ') { l--; }
+      return std::string(cp, l);
       }
-    return std::string(cp, l);
+    else
+      {
+      // convert each value separately
+      vtkDICOMCharacterSet cs(this->V->CharacterSet);
+      const char *ep = cp + l;
+      std::string s;
+      while (cp != ep && *cp != '\0')
+        {
+        size_t n = cs.NextBackslash(cp, ep);
+        while (n > 0 && *cp == ' ') { cp++; n--; }
+        size_t m = n;
+        while (m > 0 && cp[m-1] == ' ') { m--; }
+        s.append(cp, m);
+        cp += n;
+        if (cp != ep && *cp == '\\')
+          {
+          s.append(cp, 1);
+          cp++;
+          }
+        }
+      return s;
+      }
     }
 
   std::string v;
@@ -1555,7 +1573,7 @@ void vtkDICOMValue::Substring(
     }
 
   // remove any spaces used as padding
-  if (this->V->VR.HasPadding())
+  if (!this->V->VR.HasSingleValue())
     {
     while (cp != dp && cp[0] == ' ') { cp++; }
     }

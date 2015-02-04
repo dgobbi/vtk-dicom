@@ -111,14 +111,6 @@ public:
   bool HasSingleValue() const {
     return (((1 << this->Key) & 0x20401000) != 0); }
 
-  //! AE, AS, CS, DA, DS, DT, IS, LO, PN, SH, TM, UI, UR are padded.
-  /*!
-   *  These VRs might have padding that is removed before they are
-   *  converted into a string.
-   */
-  bool HasPadding() const {
-    return (((1 << this->Key) & 0x09860cf6) != 0); }
-
   bool operator==(vtkDICOMVR a) const { return (this->Key == a.Key); }
   bool operator!=(vtkDICOMVR a) const { return (this->Key != a.Key); }
   bool operator<=(vtkDICOMVR a) const { return (this->Key <= a.Key); }
