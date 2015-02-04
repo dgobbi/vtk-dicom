@@ -314,6 +314,16 @@ int main(int argc, char *argv[])
       {
       followSymlinks = true;
       }
+    else if (strcmp(arg, "-q") == 0)
+      {
+      if (argi + 1 == argc || argv[argi+1][0] == '-')
+        {
+        fprintf(stderr, "%s must be followed by a file.\n\n", arg);
+        dicomfind_usage(stderr, dicomfind_basename(argv[0]));
+        return 1;
+        }
+      qfile = argv[++argi];
+      }
     else if (strcmp(arg, "-k") == 0)
       {
       vtkDICOMTag tag;
