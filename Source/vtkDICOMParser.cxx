@@ -1446,16 +1446,10 @@ bool Decoder<E>::ReadElements(
     cout << "\n";
     */
 
-    // check if the value matches the query, a mismatched value will
-    // be the final value that is read by the parser
+    // check if the value matches the query
     if (this->HasQuery && !this->QueryMatches(v))
       {
       this->QueryMatched = false;
-      // break only if the query fails at the root level
-      if (this->Item == 0)
-        {
-        break;
-        }
       }
     }
 
