@@ -76,6 +76,10 @@ class vtkDICOMDirectory::PatientVector
   : public std::vector<vtkDICOMDirectory::PatientItem>
 {};
 
+class vtkDICOMDirectory::VisitedVector
+  : public std::vector<std::string>
+{};
+
 //----------------------------------------------------------------------------
 // Information used to sort DICOM files.
 
@@ -125,6 +129,7 @@ vtkDICOMDirectory::vtkDICOMDirectory()
   this->Series = new SeriesVector;
   this->Studies = new StudyVector;
   this->Patients = new PatientVector;
+  this->Visited = new VisitedVector;
   this->FileSetID = 0;
   this->InternalFileName = 0;
   this->RequirePixelData = 1;
@@ -148,6 +153,7 @@ vtkDICOMDirectory::~vtkDICOMDirectory()
   delete this->Series;
   delete this->Studies;
   delete this->Patients;
+  delete this->Visited;
   delete [] this->FileSetID;
   delete this->Query;
 }
@@ -901,6 +907,16 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
 void vtkDICOMDirectory::ProcessDirectory(
   const char *dirname, int depth, vtkStringArray *files)
 {
+  // Check if the directory has been visited yet.  This avoids infinite
+  // recursion when following circular links.
+  std::string realname = vtksys::SystemTools::GetRealPath(dirname);
+  if (std::binary_search(
+        this->Visited->begin(), this->Visited->end(), realname))
+    {
+    return;
+    }
+  this->Visited->push_back(realname);
+
   // Find the path to the directory.
   std::vector<std::string> path;
   vtksys::SystemTools::SplitPath(dirname, path);
@@ -1021,6 +1037,7 @@ void vtkDICOMDirectory::Execute()
   this->Series->clear();
   this->Studies->clear();
   this->Patients->clear();
+  this->Visited->clear();
   delete [] this->FileSetID;
   this->FileSetID = 0;
   this->ErrorCode = 0;

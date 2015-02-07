@@ -217,11 +217,13 @@ private:
   struct FileInfo;
   struct SeriesInfo;
   class SeriesInfoList;
+  class VisitedVector;
 
   vtkDICOMItem *Query;
   SeriesVector *Series;
   StudyVector *Studies;
   PatientVector *Patients;
+  VisitedVector *Visited;
   char *FileSetID;
 
   //! Compare FileInfo entries by instance number

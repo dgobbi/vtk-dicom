@@ -41,6 +41,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <limits>
 #include <iostream>
 
 // print the version
@@ -274,7 +275,7 @@ const char *dicomfind_getcwd(char *buffer, size_t bufsize)
 int main(int argc, char *argv[])
 {
   int rval = 0;
-  int scandepth = 8;
+  int scandepth = std::numeric_limits<int>::max();
   bool followSymlinks = true;
   const char *pattern = "";
   QueryTagList qtlist;
