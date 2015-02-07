@@ -224,6 +224,13 @@ protected:
   void RelayError(vtkObject *o, unsigned long e, void *data);
 
   // Description:
+  // Verify that the files can be composed into a volume.
+  // This is called after SortFiles has been called.  It should invoke an
+  // error event and return zero upon failure.
+  virtual bool ValidateStructure(
+    vtkIntArray *fileArray, vtkIntArray *frameArray);
+
+  // Description:
   // Sort the input files, put the sort in the supplied arrays.
   virtual void SortFiles(vtkIntArray *fileArray, vtkIntArray *frameArray);
 

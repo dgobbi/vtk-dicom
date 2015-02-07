@@ -400,6 +400,121 @@ void vtkDICOMReader::NoSortFiles(vtkIntArray *files, vtkIntArray *frames)
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMReader::ValidateStructure(
+  vtkIntArray *fileArray, vtkIntArray *frameArray)
+{
+  // The reader requires the following mandatory attributes
+  static const DC::EnumType imagePixelAttribs[] = {
+    DC::SamplesPerPixel, // missing in old ACR-NEMA files
+    DC::Rows,
+    DC::Columns,
+    DC::BitsAllocated,
+    DC::ItemDelimitationItem
+  };
+
+  vtkDICOMMetaData *meta = this->MetaData;
+  for (const DC::EnumType *tags = imagePixelAttribs;
+       *tags != DC::ItemDelimitationItem;
+       tags++)
+    {
+    vtkDICOMDataElementIterator iter = meta->Find(*tags);
+    if (iter != meta->End())
+      {
+      if (iter->IsPerInstance())
+        {
+        vtkDICOMDictEntry de = meta->FindDictEntry(*tags);
+        this->SetErrorCode(vtkErrorCode::FileFormatError);
+        vtkErrorMacro("Inconsistent pixel info for " << de.GetTag()
+                      << " \"" << de.GetName() << "\"");
+        return false;
+        }
+      else if (*tags == DC::Rows && iter->GetValue().AsInt() <= 0)
+        {
+        this->SetErrorCode(vtkErrorCode::FileFormatError);
+        vtkErrorMacro("Declared number of rows is zero!");
+        return false;
+        }
+      else if (*tags == DC::Columns && iter->GetValue().AsInt() <= 0)
+        {
+        this->SetErrorCode(vtkErrorCode::FileFormatError);
+        vtkErrorMacro("Declared number of columns is zero!");
+        return false;
+        }
+      else if (*tags == DC::BitsAllocated)
+        {
+        int bitsAllocated = iter->GetValue().AsInt();
+        if (bitsAllocated != 1 && bitsAllocated != 8 &&
+            bitsAllocated != 12 && bitsAllocated != 16 &&
+            bitsAllocated != 32 && bitsAllocated != 64)
+          {
+          this->SetErrorCode(vtkErrorCode::FileFormatError);
+          vtkErrorMacro("Illegal BitsAllocated value: " << bitsAllocated);
+          return false;
+          }
+        }
+      }
+    else if (*tags != DC::SamplesPerPixel)
+      {
+      vtkDICOMDictEntry de = meta->FindDictEntry(*tags);
+      this->SetErrorCode(vtkErrorCode::FileFormatError);
+      vtkErrorMacro("Missing pixel info " << de.GetTag()
+                    << " \"" << de.GetName() << "\"");
+      return false;
+      }
+    }
+
+  // Verify that the needed files are all present
+  int numComponents = fileArray->GetNumberOfComponents();
+  vtkIdType numSlices = fileArray->GetNumberOfTuples();
+  if (numSlices != frameArray->GetNumberOfTuples() ||
+      numComponents != fileArray->GetNumberOfComponents())
+    {
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
+    vtkErrorMacro("Critical failure in file sorting!");
+    return false;
+    }
+
+  int numFiles = meta->GetNumberOfInstances();
+  int maxFrames = 0;
+  for (vtkIdType i = 0; i < numSlices; i++)
+    {
+    for (int j = 0; j < numComponents; j++)
+      {
+      int fileIndex = fileArray->GetComponent(i, j);
+      int frameIndex = frameArray->GetComponent(i, j);
+
+      if (fileIndex < 0 || fileIndex >= numFiles)
+        {
+        this->SetErrorCode(vtkErrorCode::FileFormatError);
+        vtkErrorMacro("File index " << fileIndex << " is out of range!");
+        return false;
+        }
+      
+      int numFrames =
+        meta->GetAttributeValue(fileIndex, DC::NumberOfFrames).AsInt();
+      numFrames = (numFrames == 0 ? 1 : numFrames);
+      maxFrames = (numFrames > maxFrames ? numFrames : maxFrames);
+
+      if (frameIndex < 0 || frameIndex >= numFrames)
+        {
+        this->SetErrorCode(vtkErrorCode::FileFormatError);
+        vtkErrorMacro("Frame index " << frameIndex << " is out of range!");
+        return false;
+        }
+      }
+    }
+
+  if (numSlices * numComponents != maxFrames * numFiles)
+    {
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
+    vtkErrorMacro("Multidimensional consistency error (missing files?)");
+    return false;
+    }
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
 int vtkDICOMReader::RequestInformation(
   vtkInformation* vtkNotUsed(request),
   vtkInformationVector** vtkNotUsed(inputVector),
@@ -424,6 +539,7 @@ int vtkDICOMReader::RequestInformation(
 
   if (numFiles <= 0)
     {
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
     if (this->FileNames)
       {
       vtkErrorMacro("No filenames were provided for reader.");
@@ -433,8 +549,10 @@ int vtkDICOMReader::RequestInformation(
       vtkErrorMacro("Bad DataExtent " << this->DataExtent[4]
                     << "," << this->DataExtent[5] << ".");
       }
-    this->SetErrorCode(vtkErrorCode::FileFormatError);
-    return 0;
+
+    // Reset the data extent to legal values
+    this->DataExtent[4] = 0;
+    this->DataExtent[5] = 0;
     }
 
   // Reset the time information
@@ -443,7 +561,10 @@ int vtkDICOMReader::RequestInformation(
 
   // Clear the meta data, prepare the parser.
   this->MetaData->Clear();
-  this->MetaData->SetNumberOfInstances(numFiles);
+  if (numFiles > 0)
+    {
+    this->MetaData->SetNumberOfInstances(numFiles);
+    }
 
   if (this->Parser)
     {
@@ -471,7 +592,7 @@ int vtkDICOMReader::RequestInformation(
 
     if (this->Parser->GetErrorCode())
       {
-      return 0;
+      break;
       }
 
     // save the offset to the pixel data
@@ -485,13 +606,26 @@ int vtkDICOMReader::RequestInformation(
   // to be re-sorted to create a proper volume.  The FileIndexArray
   // holds the sorted order of the files.
   this->StackIDs->Initialize();
-  if (this->Sorting && this->Sorter)
+  if (this->GetErrorCode() == vtkErrorCode::NoError)
     {
-    this->SortFiles(this->FileIndexArray, this->FrameIndexArray);
+    if (this->Sorting && this->Sorter)
+      {
+      this->SortFiles(this->FileIndexArray, this->FrameIndexArray);
+      }
+    else
+      {
+      this->NoSortFiles(this->FileIndexArray, this->FrameIndexArray);
+      }
+
+    // Verify the consistency of the data, e.g. verify that the dimensions
+    // and data type are the same for all files.
+    this->ValidateStructure(this->FileIndexArray, this->FrameIndexArray);
     }
-  else
+
+  if (this->GetErrorCode() != vtkErrorCode::NoError)
     {
-    this->NoSortFiles(this->FileIndexArray, this->FrameIndexArray);
+    // Last chance to bail out
+    return false;
     }
 
   // Get the file and frame for the first slice
@@ -617,34 +751,35 @@ int vtkDICOMReader::RequestInformation(
   // datatype
   int scalarType = 0;
 
-  if (bitsAllocated == 8 || bitsAllocated == 1)
+  if (bitsAllocated <= 8)
     {
     scalarType = (pixelRepresentation ? VTK_SIGNED_CHAR : VTK_UNSIGNED_CHAR);
     }
-  else if (bitsAllocated == 16 || bitsAllocated == 12)
+  else if (bitsAllocated <= 16)
     {
     scalarType = (pixelRepresentation ? VTK_SHORT : VTK_UNSIGNED_SHORT);
     }
-  else if (bitsAllocated == 32 &&
-           this->MetaData->HasAttribute(DC::PixelData))
+  else if (bitsAllocated <= 32)
     {
-    scalarType = (pixelRepresentation ? VTK_INT : VTK_UNSIGNED_INT);
+    if (this->MetaData->HasAttribute(DC::FloatPixelData))
+      {
+      scalarType = VTK_FLOAT;
+      }
+    else
+      {
+      scalarType = (pixelRepresentation ? VTK_INT : VTK_UNSIGNED_INT);
+      }
     }
-  else if (bitsAllocated == 32 &&
-           this->MetaData->HasAttribute(DC::FloatPixelData))
+  else if (bitsAllocated <= 64)
     {
-    scalarType = VTK_FLOAT;
-    }
-  else if (bitsAllocated == 64 &&
-           this->MetaData->HasAttribute(DC::DoubleFloatPixelData))
-    {
-    scalarType = VTK_DOUBLE;
-    }
-  else
-    {
-    vtkErrorMacro("Unrecognized DICOM BitsAllocated value: " << bitsAllocated);
-    this->SetErrorCode(vtkErrorCode::FileFormatError);
-    return 0;
+    if (this->MetaData->HasAttribute(DC::DoubleFloatPixelData))
+      {
+      scalarType = VTK_DOUBLE;
+      }
+    else
+      {
+      scalarType = (pixelRepresentation ? VTK_TYPE_INT64: VTK_TYPE_UINT64);
+      }
     }
 
   // number of components
@@ -1293,7 +1428,7 @@ int vtkDICOMReader::RequestData(
   // check whether the reader is in an error state
   if (this->GetErrorCode() != vtkErrorCode::NoError)
     {
-    return 0;
+    return false;
     }
 
   // which output port did the request come from
@@ -1515,8 +1650,19 @@ void vtkDICOMReader::RelayError(vtkObject *o, unsigned long e, void *data)
       {
       this->SetErrorCode(parser->GetErrorCode());
       }
+    else
+      {
+      this->SetErrorCode(vtkErrorCode::UnknownError);
+      }
 
-    vtkErrorMacro(<< static_cast<char *>(data));
+    if (data)
+      {
+      vtkErrorMacro(<< static_cast<char *>(data));
+      }
+    else
+      {
+      vtkErrorMacro(<< "An unknown error ocurred!");
+      }
     }
   else
     {
