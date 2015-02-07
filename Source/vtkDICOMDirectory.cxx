@@ -105,6 +105,7 @@ struct vtkDICOMDirectory::SeriesInfo
   vtkDICOMValue SeriesUID;
   unsigned int SeriesNumber;
   std::vector<FileInfo> Files;
+  bool QueryMatched;
 };
 
 bool vtkDICOMDirectory::CompareInstance(
@@ -171,6 +172,10 @@ void vtkDICOMDirectory::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "FileNames: " << this->InputFileNames << "\n";
 
   os << indent << "ScanDepth: " << this->ScanDepth << "\n";
+
+  os << indent << "FindLevel: "
+     << (this->FindLevel == vtkDICOMDirectory::IMAGE ?
+         "IMAGE\n" : "SERIES\n");
 
   os << indent << "RequirePixelData: "
      << (this->RequirePixelData ? "On\n" : "Off\n");
@@ -258,6 +263,24 @@ void vtkDICOMDirectory::SetFindQuery(const vtkDICOMItem& item)
       this->Query = new vtkDICOMItem;
       *(this->Query) = item;
       }
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMDirectory::SetFindLevel(int level)
+{
+  if (level < vtkDICOMDirectory::SERIES)
+    {
+    level = vtkDICOMDirectory::SERIES;
+    }
+  if (level > vtkDICOMDirectory::IMAGE)
+    {
+    level = vtkDICOMDirectory::IMAGE;
+    }
+  if (level != this->FindLevel)
+    {
+    this->FindLevel = level;
+    this->Modified();
     }
 }
 
@@ -582,12 +605,10 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       }
 
     // Check if the file matches the query
-    if (this->Query)
+    bool queryMatched = (!this->Query || parser->GetQueryMatched());
+    if (!queryMatched && this->FindLevel == vtkDICOMDirectory::IMAGE)
       {
-      if (!parser->GetQueryMatched())
-        {
-        continue;
-        }
+      continue;
       }
 
     // Insert the file into the sorted list
@@ -674,6 +695,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       if (c == 0 && seriesUID != 0)
         {
         li->Files.push_back(fileInfo);
+        li->QueryMatched |= queryMatched;
         foundSeries = true;
         break;
         }
@@ -693,6 +715,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       li->SeriesUID = seriesUIDValue;
       li->SeriesNumber = seriesNumber;
       li->Files.push_back(fileInfo);
+      li->QueryMatched = queryMatched;
       this->FillPatientRecord(&li->PatientRecord, meta);
       this->FillStudyRecord(&li->StudyRecord, meta);
       this->FillSeriesRecord(&li->SeriesRecord, meta);
@@ -709,6 +732,9 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
     {
     SeriesInfo &v = *li;
+    if (!v.QueryMatched) { continue; }
+
+    // Sort files by InstanceNumber
     std::stable_sort(v.Files.begin(), v.Files.end(), CompareInstance);
 
     // Is this a new patient or a new study?

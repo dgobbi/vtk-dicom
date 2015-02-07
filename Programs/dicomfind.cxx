@@ -67,6 +67,7 @@ void dicomfind_usage(FILE *file, const char *cp)
     "  -maxdepth n     Set the maximum directory depth.\n"
     "  -name pattern   Set a pattern to match (with \"*\" or \"?\").\n"
     "  -image          Restrict the search to files with PixelData.\n"
+    "  -series         Find all files in series if even one file matches.\n"
     "  -print          Print the filenames of all matched files (default).\n"
     "  -print0         Print the filenames with terminating null, for xargs.\n"
     "  -exec ... +     Execute the given command for every series matched.\n"
@@ -284,6 +285,7 @@ int main(int argc, char *argv[])
   bool execdir = false;
   bool print0 = false;
   bool requirePixelData = false;
+  bool findSeries = false;
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
   const char *qfile = 0;
@@ -363,6 +365,10 @@ int main(int argc, char *argv[])
     else if (strcmp(arg, "-image") == 0)
       {
       requirePixelData = true;
+      }
+    else if (strcmp(arg, "-series") == 0)
+      {
+      findSeries = true;
       }
     else if (strcmp(arg, "-print") == 0)
       {
@@ -446,6 +452,8 @@ int main(int argc, char *argv[])
     finder->SetFindQuery(query);
     finder->SetFollowSymlinks(followSymlinks);
     finder->SetRequirePixelData(requirePixelData);
+    finder->SetFindLevel(
+      findSeries ? vtkDICOMDirectory::SERIES : vtkDICOMDirectory::IMAGE);
     finder->Update();
 
     if (!exec_args.empty())

@@ -1709,14 +1709,6 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
   this->FileOffset = 0;
   this->FileSize = 0;
 
-  // Query cannot be used with indexing
-  if (idx > 0 && (this->Query != 0 || this->QueryItem != 0))
-    {
-    this->SetErrorCode(vtkErrorCode::UnknownError);
-    vtkErrorMacro("ReadFile: Querying cannot be used when Index > 0");
-    return false;
-    }
-
   // Check that the file name has been set.
   if (!this->FileName)
     {
@@ -1975,7 +1967,9 @@ bool vtkDICOMParser::ReadMetaData(
   bool foundPixelData = false;
   bool readFailure = false;
   bool queryFailure = (hasQuery && !this->QueryMatched);
-  while (!foundPixelData && !readFailure && !queryFailure)
+  bool bailOnQueryFailure = (meta && meta->GetNumberOfInstances() == 1);
+  while (!foundPixelData && !readFailure &&
+         (!queryFailure || !bailOnQueryFailure))
     {
     vtkDICOMTag tag = decoder->Peek(cp, ep);
 

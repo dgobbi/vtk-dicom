@@ -36,6 +36,11 @@ public:
   void PrintSelf(ostream& os, vtkIndent indent);
   static vtkDICOMDirectory *New();
 
+  //! Levels within the DICOM information model.
+  enum {
+    PATIENT, STUDY, SERIES, IMAGE, FRAME
+  };
+
   //! Set the input directory.
   /*!
    *  Set the input directory.  If it has a DICOMDIR file, then that
@@ -73,6 +78,18 @@ public:
 
   //! Specify a find query.
   void SetFindQuery(const vtkDICOMItem& query);
+
+  //! Specify the find level.
+  /*!
+   *  If this is Series, then the whole series will be found if a single
+   *  file in the series matches the query.  Only IMAGE and SERIES are
+   *  allowed.  Note that IMAGE is inclusive of any single file, whether
+   *  or not the contained data is an image.
+   */
+  void SetFindLevel(int level);
+  void SetFindLevelToImage() { this->SetFindLevel(IMAGE); }
+  void SetFindLevelToSeries() { this->SetFindLevel(SERIES); }
+  int GetFindLevel() { return this->FindLevel; }
 
   //! Update the information about the files.
   /*!
@@ -220,6 +237,7 @@ private:
   class VisitedVector;
 
   vtkDICOMItem *Query;
+  int FindLevel;
   SeriesVector *Series;
   StudyVector *Studies;
   PatientVector *Patients;
