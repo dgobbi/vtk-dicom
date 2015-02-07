@@ -934,12 +934,18 @@ void vtkDICOMDirectory::ProcessDirectory(
   // Check if the directory has been visited yet.  This avoids infinite
   // recursion when following circular links.
   std::string realname = vtksys::SystemTools::GetRealPath(dirname);
-  if (std::binary_search(
-        this->Visited->begin(), this->Visited->end(), realname))
+  std::vector<std::string>::iterator viter =
+    std::lower_bound(this->Visited->begin(), this->Visited->end(), realname);
+  if (viter == this->Visited->end() || *viter < realname)
     {
+    // Add this directory to the "visited" list.
+    this->Visited->insert(viter, realname);
+    }
+  else
+    {
+    // This directory has already been visited.
     return;
     }
-  this->Visited->push_back(realname);
 
   // Find the path to the directory.
   std::vector<std::string> path;
