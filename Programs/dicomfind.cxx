@@ -284,6 +284,7 @@ int main(int argc, char *argv[])
   std::vector<std::string> exec_args;
   bool execdir = false;
   bool print0 = false;
+  bool forcePrint = false;
   bool requirePixelData = false;
   bool findSeries = false;
 
@@ -372,10 +373,11 @@ int main(int argc, char *argv[])
       }
     else if (strcmp(arg, "-print") == 0)
       {
-      // do nothing, is default
+      forcePrint = true;
       }
     else if (strcmp(arg, "-print0") == 0)
       {
+      forcePrint = true;
       print0 = true;
       }
     else if (strcmp(arg, "-exec") == 0 ||
@@ -456,19 +458,33 @@ int main(int argc, char *argv[])
       findSeries ? vtkDICOMDirectory::SERIES : vtkDICOMDirectory::IMAGE);
     finder->Update();
 
-    if (!exec_args.empty())
+    // Count the number of times {} appears in exec args
+    size_t subcount = 0;
+    for (size_t jj = 0; jj < exec_args.size(); jj++)
       {
-      size_t subcount = 0;
-      for (size_t jj = 0; jj < exec_args.size(); jj++)
-        {
-        subcount += (exec_args[jj] == "{}");
-        }
+      subcount += (exec_args[jj] == "{}");
+      }
 
-      for (int j = 0; j < finder->GetNumberOfStudies(); j++)
+    for (int j = 0; j < finder->GetNumberOfStudies(); j++)
+      {
+      int k0 = finder->GetFirstSeriesForStudy(j);
+      int k1 = finder->GetLastSeriesForStudy(j);
+
+      for (int k = k0; k <= k1; k++)
         {
-        int k0 = finder->GetFirstSeriesForStudy(j);
-        int k1 = finder->GetLastSeriesForStudy(j);
-        for (int k = k0; k <= k1; k++)
+        if (exec_args.empty() || forcePrint)
+          {
+          char endchar = (print0 ? '\0' : '\n');
+          vtkStringArray *sa = finder->GetFileNamesForSeries(k);
+          for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
+            {
+            std::cout << sa->GetValue(kk);
+            std::cout.put(endchar);
+            }
+          std::cout.flush();
+          }
+
+        if (!exec_args.empty())
           {
           vtkStringArray *sa = finder->GetFileNamesForSeries(k);
 
@@ -644,26 +660,6 @@ int main(int argc, char *argv[])
           }
         }
       }
-    else
-      {
-      for (int j = 0; j < finder->GetNumberOfStudies(); j++)
-        {
-        int k0 = finder->GetFirstSeriesForStudy(j);
-        int k1 = finder->GetLastSeriesForStudy(j);
-        char endchar = (print0 ? '\0' : '\n');
-        for (int k = k0; k <= k1; k++)
-          {
-          vtkStringArray *sa = finder->GetFileNamesForSeries(k);
-          for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
-            {
-            std::cout << sa->GetValue(kk);
-            std::cout.put(endchar);
-            }
-          }
-        }
-      }
-
-    std::cout.flush();
     }
 
   return rval;
