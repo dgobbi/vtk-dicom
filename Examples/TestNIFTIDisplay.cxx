@@ -16,6 +16,7 @@
 #include "vtkImageReader2.h"
 #include "vtkSmartPointer.h"
 #include "vtkStringArray.h"
+#include "vtkErrorCode.h"
 
 int main(int argc, char *argv[])
 {
@@ -39,6 +40,11 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkNIFTIReader>::New();
   reader->SetFileName(filename);
   reader->Update();
+
+  if (reader->GetErrorCode() != vtkErrorCode::NoError)
+    {
+    return 1;
+    }
 
   vtkSmartPointer<vtkMatrix4x4> matrix =
     vtkSmartPointer<vtkMatrix4x4>::New();

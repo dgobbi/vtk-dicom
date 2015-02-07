@@ -21,6 +21,7 @@
 #include "vtkIntArray.h"
 #include "vtkMatrix4x4.h"
 #include "vtkMath.h"
+#include "vtkErrorCode.h"
 
 int main(int argc, char *argv[])
 {
@@ -104,6 +105,12 @@ int main(int argc, char *argv[])
   double range[2];
   int extent[6];
   reader->Update();
+
+  if (reader->GetErrorCode() != vtkErrorCode::NoError)
+    {
+    return 1;
+    }
+
   reader->GetOutput()->GetScalarRange(range);
   reader->GetOutput()->GetExtent(extent);
 
