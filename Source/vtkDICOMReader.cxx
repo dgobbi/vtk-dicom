@@ -475,7 +475,6 @@ bool vtkDICOMReader::ValidateStructure(
     }
 
   int numFiles = meta->GetNumberOfInstances();
-  int maxFrames = 0;
   for (vtkIdType i = 0; i < numSlices; i++)
     {
     for (int j = 0; j < numComponents; j++)
@@ -489,11 +488,10 @@ bool vtkDICOMReader::ValidateStructure(
         vtkErrorMacro("File index " << fileIndex << " is out of range!");
         return false;
         }
-      
+
       int numFrames =
         meta->GetAttributeValue(fileIndex, DC::NumberOfFrames).AsInt();
       numFrames = (numFrames == 0 ? 1 : numFrames);
-      maxFrames = (numFrames > maxFrames ? numFrames : maxFrames);
 
       if (frameIndex < 0 || frameIndex >= numFrames)
         {
@@ -502,13 +500,6 @@ bool vtkDICOMReader::ValidateStructure(
         return false;
         }
       }
-    }
-
-  if (numSlices * numComponents != maxFrames * numFiles)
-    {
-    this->SetErrorCode(vtkErrorCode::FileFormatError);
-    vtkErrorMacro("Multidimensional consistency error (missing files?)");
-    return false;
     }
 
   return true;
