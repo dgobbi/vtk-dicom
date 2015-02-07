@@ -261,30 +261,245 @@ int dicomfind_chdir(const char *dirname)
 #endif
 
 #ifndef _WIN32
-const char *dicomfind_getcwd(char *buffer, size_t bufsize)
+std::string dicomfind_getcwd()
 {
-  return getcwd(buffer, bufsize);
+  char buffer[2048];
+  return getcwd(buffer, sizeof(buffer));
 }
 #else
-const char *dicomfind_getcwd(char *buffer, size_t bufsize)
+std::string dicomfind_getcwd()
 {
-  return _getcwd(buffer, bufsize);
+  char buffer[2048];
+  return _getcwd(buffer, sizeof(buffer));
 }
 #endif
+
+// The type used to store an operation
+struct Operation
+{
+  Operation(const char *type) : Type(type) {}
+
+  std::string Type;
+  std::vector<std::string> Args;
+};
+
+// Apply the given operations to the given list of files
+void dicomfind_operations(
+  std::vector<Operation>& operationList, vtkStringArray *sa,
+  const std::string& originalDir)
+{
+  for (std::vector<Operation>::iterator op = operationList.begin();
+       op != operationList.end();
+       ++op)
+    {
+    if (op->Type == "-print" || op->Type == "-print0")
+      {
+      char endchar = (op->Type == "-print0" ? '\0' : '\n');
+      for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
+        {
+        std::cout << sa->GetValue(kk);
+        std::cout.put(endchar);
+        }
+      std::cout.flush();
+      }
+    else if (op->Type == "-exec" || op->Type == "-execdir")
+      {
+      bool execdir = (op->Type == "-execdir");
+
+      // Count the number of times {} appears in exec args
+      size_t subcount = 0;
+      for (size_t jj = 0; jj < op->Args.size(); jj++)
+        {
+        subcount += (op->Args[jj] == "{}");
+        }
+
+      // remember the current subdirectory
+      std::string currentSubdir;
+
+      if (op->Args.back() == ";")
+        {
+        // call program for each file
+        for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
+          {
+          size_t sub_argc = op->Args.size() + subcount - 1;
+          char **sub_argv = new char *[sub_argc+1];
+
+          size_t ii = 0;
+          size_t nn = op->Args.size()-1;
+          for (size_t jj = 0; jj < nn; jj++)
+            {
+            if (op->Args[jj] == "{}")
+              {
+              if (execdir)
+                {
+                sub_argv[ii++] = const_cast<char *>(
+                  dicomfind_basename(sa->GetValue(kk).c_str()));
+                }
+              else
+                {
+                sub_argv[ii++] = const_cast<char *>(
+                  sa->GetValue(kk).c_str());
+                }
+              }
+            else
+              {
+              sub_argv[ii++] = const_cast<char *>(op->Args[jj].c_str());
+              }
+            }
+          sub_argv[ii] = 0;
+
+          if (execdir)
+            {
+            std::string dirname =
+              dicomfind_dirname(sa->GetValue(kk).c_str());
+            if (dirname != currentSubdir)
+              {
+              dicomfind_chdir(originalDir.c_str());
+              dicomfind_chdir(dirname.c_str());
+              }
+            }
+
+          if (!execute_command(sub_argv[0], sub_argv))
+            {
+            fprintf(stderr, "failure!");
+            }
+
+          delete [] sub_argv;
+          }
+
+        if (execdir && currentSubdir != "")
+          {
+          dicomfind_chdir(originalDir.c_str());
+          }
+        }
+      else
+        {
+        // call program for each series
+        // for execdir, what if series is split across directories?
+        // need to call executable once per directory, using only
+        // the files in that directory.
+        size_t sub_argc = op->Args.size() +
+          subcount*sa->GetNumberOfTuples() - 1;
+        char **sub_argv = new char *[sub_argc+1];
+
+        // for execdir, keep a list of directories that are done
+        std::vector<std::string> done_dirs;
+        std::string doing_dir;
+        
+        bool notdone = true;
+
+        while (notdone)
+          {
+          notdone = false;
+          if (execdir)
+            {
+            bool foundDirToProcess = false;
+            for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
+              {
+              std::string dirname =
+                dicomfind_dirname(sa->GetValue(kk).c_str());
+              if (!foundDirToProcess)
+                {
+                bool dirIsDone = false;
+                for (size_t ll = 0; ll < done_dirs.size(); ll++)
+                  {
+                  if (dirname == done_dirs[ll])
+                    {
+                    dirIsDone = true;
+                    break;
+                    }
+                  }
+                if (!dirIsDone)
+                  {
+                  foundDirToProcess = true;
+                  doing_dir = dirname;
+                  done_dirs.push_back(dirname);
+                  break;
+                  }
+                }
+              }
+            if (foundDirToProcess)
+              {
+              notdone = true;
+              }
+            else
+              {
+              break;
+              }
+            }
+
+          size_t ii = 0;
+          size_t nn = op->Args.size()-1;
+          for (size_t jj = 0; jj < nn; jj++)
+            {
+            if (op->Args[jj] == "{}")
+              {
+              if (execdir)
+                {
+                for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
+                  {
+                  std::string dirname =
+                    dicomfind_dirname(sa->GetValue(kk).c_str());
+                  if (dirname == doing_dir)
+                    {
+                    sub_argv[ii++] = const_cast<char *>(
+                      dicomfind_basename(sa->GetValue(kk).c_str()));
+                    }
+                  }
+                }
+              else
+                {
+                for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
+                  {
+                  sub_argv[ii++] = const_cast<char *>(
+                    sa->GetValue(kk).c_str());
+                  }
+                }
+              }
+            else
+              {
+              sub_argv[ii++] = const_cast<char *>(op->Args[jj].c_str());
+              }
+            }
+          sub_argv[ii] = 0;
+
+          if (execdir)
+            {
+            if (doing_dir != currentSubdir)
+              {
+              dicomfind_chdir(originalDir.c_str());
+              dicomfind_chdir(doing_dir.c_str());
+              }
+            }
+
+          if (!execute_command(sub_argv[0], sub_argv))
+            {
+            fprintf(stderr, "failure!");
+            }
+          }
+
+        if (execdir && currentSubdir != "")
+          {
+          dicomfind_chdir(originalDir.c_str());
+          }
+
+        delete [] sub_argv;
+        }
+      }
+    }
+}
 
 // This program will dump all the metadata in the given file
 int main(int argc, char *argv[])
 {
+  std::vector<Operation> operationList;
+
   int rval = 0;
   int scandepth = std::numeric_limits<int>::max();
   bool followSymlinks = true;
   const char *pattern = "";
   QueryTagList qtlist;
   vtkDICOMItem query;
-  std::vector<std::string> exec_args;
-  bool execdir = false;
-  bool print0 = false;
-  bool forcePrint = false;
   bool requirePixelData = false;
   bool findSeries = false;
 
@@ -371,22 +586,15 @@ int main(int argc, char *argv[])
       {
       findSeries = true;
       }
-    else if (strcmp(arg, "-print") == 0)
+    else if (strcmp(arg, "-print") == 0 ||
+             strcmp(arg, "-print0") == 0)
       {
-      forcePrint = true;
-      }
-    else if (strcmp(arg, "-print0") == 0)
-      {
-      forcePrint = true;
-      print0 = true;
+      operationList.push_back(arg);
       }
     else if (strcmp(arg, "-exec") == 0 ||
              strcmp(arg, "-execdir") == 0)
       {
-      if (strcmp(arg, "-execdir") == 0)
-        {
-        execdir = true;
-        }
+      operationList.push_back(arg);
       int argj = ++argi;
       for (; argj < argc; argj++)
         {
@@ -405,9 +613,9 @@ int main(int argc, char *argv[])
         }
       for (; argi <= argj; argi++)
         {
-        exec_args.push_back(argv[argi]);
+        operationList.back().Args.push_back(argv[argi]);
         }
-      argi++;
+      argi = argj;
       }
     else if (arg[0] == '-')
       {
@@ -419,6 +627,12 @@ int main(int argc, char *argv[])
       {
       a->InsertNextValue(arg);
       }
+    }
+
+  // if no operations were specified, default to "print"
+  if (operationList.empty())
+    {
+    operationList.push_back("-print");
     }
 
   // read the query file, create a query
@@ -435,13 +649,7 @@ int main(int argc, char *argv[])
     DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
   // Remember the current directory
-  std::string originalDir;
-  std::string currentSubdir;
-  if (execdir)
-    {
-    char buf[2048];
-    originalDir = dicomfind_getcwd(buf, 2048);
-    }
+  std::string originalDir = dicomfind_getcwd();
 
   // Write data for every input directory
   if (a->GetNumberOfTuples() > 0)
@@ -458,13 +666,6 @@ int main(int argc, char *argv[])
       findSeries ? vtkDICOMDirectory::SERIES : vtkDICOMDirectory::IMAGE);
     finder->Update();
 
-    // Count the number of times {} appears in exec args
-    size_t subcount = 0;
-    for (size_t jj = 0; jj < exec_args.size(); jj++)
-      {
-      subcount += (exec_args[jj] == "{}");
-      }
-
     for (int j = 0; j < finder->GetNumberOfStudies(); j++)
       {
       int k0 = finder->GetFirstSeriesForStudy(j);
@@ -472,192 +673,8 @@ int main(int argc, char *argv[])
 
       for (int k = k0; k <= k1; k++)
         {
-        if (exec_args.empty() || forcePrint)
-          {
-          char endchar = (print0 ? '\0' : '\n');
-          vtkStringArray *sa = finder->GetFileNamesForSeries(k);
-          for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
-            {
-            std::cout << sa->GetValue(kk);
-            std::cout.put(endchar);
-            }
-          std::cout.flush();
-          }
-
-        if (!exec_args.empty())
-          {
-          vtkStringArray *sa = finder->GetFileNamesForSeries(k);
-
-          if (exec_args.back() == ";")
-            {
-            // call program for each file
-            for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
-              {
-              size_t sub_argc = exec_args.size() + subcount - 1;
-              char **sub_argv = new char *[sub_argc+1];
-
-              size_t ii = 0;
-              size_t nn = exec_args.size()-1;
-              for (size_t jj = 0; jj < nn; jj++)
-                {
-                if (exec_args[jj] == "{}")
-                  {
-                  if (execdir)
-                    {
-                    sub_argv[ii++] = const_cast<char *>(
-                      dicomfind_basename(sa->GetValue(kk).c_str()));
-                    }
-                  else
-                    {
-                    sub_argv[ii++] = const_cast<char *>(
-                      sa->GetValue(kk).c_str());
-                    }
-                  }
-                else
-                  {
-                  sub_argv[ii++] = const_cast<char *>(exec_args[jj].c_str());
-                  }
-                }
-              sub_argv[ii] = 0;
-
-              if (execdir)
-                {
-                std::string dirname =
-                  dicomfind_dirname(sa->GetValue(kk).c_str());
-                if (dirname != currentSubdir)
-                  {
-                  dicomfind_chdir(originalDir.c_str());
-                  dicomfind_chdir(dirname.c_str());
-                  }
-                }
-
-              if (!execute_command(sub_argv[0], sub_argv))
-                {
-                fprintf(stderr, "failure!");
-                }
-
-              delete [] sub_argv;
-              }
-
-            if (execdir && currentSubdir != "")
-              {
-              dicomfind_chdir(originalDir.c_str());
-              }
-            }
-          else
-            {
-            // call program for each series
-            // for execdir, what if series is split across directories? need to
-            // call executable once per directory, using only the files in that
-            // directory.
-            size_t sub_argc = exec_args.size() +
-              subcount*sa->GetNumberOfTuples() - 1;
-            char **sub_argv = new char *[sub_argc+1];
-
-            // for execdir, keep a list of directories that are done
-            std::vector<std::string> done_dirs;
-            std::string doing_dir;
-            
-            bool notdone = true;
-
-            while (notdone)
-              {
-              notdone = false;
-              if (execdir)
-                {
-                bool foundDirToProcess = false;
-                for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
-                  {
-                  std::string dirname =
-                    dicomfind_dirname(sa->GetValue(kk).c_str());
-                  if (!foundDirToProcess)
-                    {
-                    bool dirIsDone = false;
-                    for (size_t ll = 0; ll < done_dirs.size(); ll++)
-                      {
-                      if (dirname == done_dirs[ll])
-                        {
-                        dirIsDone = true;
-                        break;
-                        }
-                      }
-                    if (!dirIsDone)
-                      {
-                      foundDirToProcess = true;
-                      doing_dir = dirname;
-                      done_dirs.push_back(dirname);
-                      break;
-                      }
-                    }
-                  }
-                if (foundDirToProcess)
-                  {
-                  notdone = true;
-                  }
-                else
-                  {
-                  break;
-                  }
-                }
-
-              size_t ii = 0;
-              size_t nn = exec_args.size()-1;
-              for (size_t jj = 0; jj < nn; jj++)
-                {
-                if (exec_args[jj] == "{}")
-                  {
-                  if (execdir)
-                    {
-                    for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
-                      {
-                      std::string dirname =
-                        dicomfind_dirname(sa->GetValue(kk).c_str());
-                      if (dirname == doing_dir)
-                        {
-                        sub_argv[ii++] = const_cast<char *>(
-                          dicomfind_basename(sa->GetValue(kk).c_str()));
-                        }
-                      }
-                    }
-                  else
-                    {
-                    for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
-                      {
-                      sub_argv[ii++] = const_cast<char *>(
-                        sa->GetValue(kk).c_str());
-                      }
-                    }
-                  }
-                else
-                  {
-                  sub_argv[ii++] = const_cast<char *>(exec_args[jj].c_str());
-                  }
-                }
-              sub_argv[ii] = 0;
-
-              if (execdir)
-                {
-                if (doing_dir != currentSubdir)
-                  {
-                  dicomfind_chdir(originalDir.c_str());
-                  dicomfind_chdir(doing_dir.c_str());
-                  }
-                }
-
-              if (!execute_command(sub_argv[0], sub_argv))
-                {
-                fprintf(stderr, "failure!");
-                }
-              }
-
-            if (execdir && currentSubdir != "")
-              {
-              dicomfind_chdir(originalDir.c_str());
-              }
-
-            delete [] sub_argv;
-            }
-          }
+        vtkStringArray *sa = finder->GetFileNamesForSeries(k);
+        dicomfind_operations(operationList, sa, originalDir);
         }
       }
     }
