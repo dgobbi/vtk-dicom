@@ -427,7 +427,6 @@ void vtkDICOMDirectory::FillSeriesRecord(
     DC::SeriesTime,
     DC::Modality,
     DC::SeriesDescription,
-    // DC::BodyPartExamined, // requires group 0018
     DC::SeriesInstanceUID,
     DC::SeriesNumber,
     DC::ItemDelimitationItem
@@ -505,31 +504,30 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   // these are the attributes that must be part of the query
   static const DC::EnumType requiredElements[] = {
     // basic required information
-    DC::SpecificCharacterSet,
+    DC::SpecificCharacterSet, // 1C
     // image-level information
-    DC::InstanceNumber,
+    DC::InstanceNumber,       // 1
     // series-level information
-    DC::SeriesDate,
-    DC::SeriesTime,
-    DC::Modality,
-    DC::SeriesDescription,
-    DC::BodyPartExamined,
-    DC::SeriesInstanceUID,
-    DC::SeriesNumber,
+    DC::SeriesDate,           // 3
+    DC::SeriesTime,           // 3
+    DC::Modality,             // 1
+    DC::SeriesDescription,    // 3
+    DC::SeriesInstanceUID,    // 1
+    DC::SeriesNumber,         // 1
     // study-level information
-    DC::StudyDate,
-    DC::StudyTime,
-    DC::ReferringPhysicianName,
-    DC::PatientAge,
-    DC::StudyInstanceUID,
-    DC::StudyID,
-    DC::AccessionNumber,
-    DC::StudyDescription,
+    DC::StudyDate,            // 1
+    DC::StudyTime,            // 1
+    DC::ReferringPhysicianName, // 3
+    DC::PatientAge,           // 3
+    DC::StudyInstanceUID,     // 1
+    DC::StudyID,              // 1
+    DC::AccessionNumber,      // 2
+    DC::StudyDescription,     // 2
     // patient-level information
-    DC::PatientName,
-    DC::PatientID,
-    DC::PatientBirthDate,
-    DC::PatientSex,
+    DC::PatientName,          // 2
+    DC::PatientID,            // 1
+    DC::PatientBirthDate,     // 3
+    DC::PatientSex,           // 3
     // delimiter to mark end of list
     DC::ItemDelimitationItem
   };
