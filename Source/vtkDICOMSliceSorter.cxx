@@ -895,9 +895,15 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       iter = nextIter;
       }
     }
-  if (slicesPerLocation <= 0)
+  if (slicesPerLocation == 0)
     {
-    slicesPerLocation = static_cast<int>(info.size());
+    slicesPerLocation = 1;
+    }
+  else if (slicesPerLocation == -1)
+    {
+    slicesPerLocation = 1;
+    vtkWarningMacro("Multidimensional series appears to be missing slices,"
+                    " representation will be inaccurate.");
     }
 
   // count number of unique time points
