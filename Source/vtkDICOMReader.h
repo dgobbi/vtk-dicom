@@ -217,7 +217,7 @@ protected:
   // Description:
   // Rescale the data in the buffer.
   virtual void RescaleBuffer(
-    int idx, void *buffer, vtkIdType bufferSize);
+    int fileIdx, int frameIdx, void *buffer, vtkIdType bufferSize);
 
   // Description:
   // Convert parser errors into reader errors.

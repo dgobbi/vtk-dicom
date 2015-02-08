@@ -624,9 +624,12 @@ int vtkDICOMReader::RequestInformation(
   int frameIndex = this->FrameIndexArray->GetComponent(0, 0);
 
   // image dimensions
-  int columns = this->MetaData->GetAttributeValue(DC::Columns).AsInt();
-  int rows = this->MetaData->GetAttributeValue(DC::Rows).AsInt();
-  int slices = static_cast<int>(this->FileIndexArray->GetNumberOfTuples());
+  int columns = this->MetaData->GetAttributeValue(
+    fileIndex, DC::Columns).AsInt();
+  int rows = this->MetaData->GetAttributeValue(
+    fileIndex, DC::Rows).AsInt();
+  int slices = static_cast<int>(
+    this->FileIndexArray->GetNumberOfTuples());
 
   int extent[6];
   extent[0] = 0;
@@ -658,69 +661,42 @@ int vtkDICOMReader::RequestInformation(
   this->DataSpacing[0] = 1.0;
   this->DataSpacing[1] = 1.0;
 
-  if (this->MetaData->HasAttribute(DC::PixelAspectRatio))
+  // Set spacing from PixelAspectRatio
+  double ratio = 1.0;
+  vtkDICOMValue pixelAspectRatio = this->MetaData->GetAttributeValue(
+    fileIndex, frameIndex, DC::PixelAspectRatio);
+  if (pixelAspectRatio.GetNumberOfValues() == 2)
     {
-    double ratio = 1.0;
-    vtkDICOMValue v = this->MetaData->GetAttributeValue(DC::PixelAspectRatio);
-    if (v.GetNumberOfValues() == 2)
+    // use double, even though data is stored as integer strings
+    double ya = pixelAspectRatio.GetDouble(0);
+    double xa = pixelAspectRatio.GetDouble(1);
+    if (xa > 0)
       {
-      // use double, even though data is stored as integer strings
-      double ya = v.GetDouble(0);
-      double xa = v.GetDouble(1);
-      if (xa > 0)
-        {
-        ratio = ya/xa;
-        }
-      }
-    else
-      {
-      // ratio should be expressed as two values,
-      // so this is only to support incorrect files
-      ratio = v.AsDouble();
-      }
-    if (ratio > 0)
-      {
-      this->DataSpacing[0] = this->DataSpacing[1]/ratio;
+      ratio = ya/xa;
       }
     }
-
-  if (this->MetaData->HasAttribute(DC::PixelSpacing))
+  else if (pixelAspectRatio.GetNumberOfValues() == 1)
     {
-    vtkDICOMValue v = this->MetaData->GetAttributeValue(DC::PixelSpacing);
-    if (v.GetNumberOfValues() == 2)
-      {
-      double spacing[2];
-      v.GetValues(spacing, 2);
-      if (spacing[0] > 0 && spacing[1] > 0)
-        {
-        this->DataSpacing[0] = spacing[0];
-        this->DataSpacing[1] = spacing[1];
-        }
-      }
+    // ratio should be expressed as two values,
+    // so this is only to support incorrect files
+    ratio = pixelAspectRatio.AsDouble();
+    }
+  if (ratio > 0)
+    {
+    this->DataSpacing[0] = this->DataSpacing[1]/ratio;
     }
 
-  if (this->MetaData->HasAttribute(DC::SharedFunctionalGroupsSequence))
+  // Set spacing from PixelSpacing
+  vtkDICOMValue pixelSpacing = this->MetaData->GetAttributeValue(
+    fileIndex, frameIndex, DC::PixelSpacing);
+  if (pixelSpacing.GetNumberOfValues() == 2)
     {
-    vtkDICOMValue v = this->MetaData->GetAttributeValue(fileIndex,
-      vtkDICOMTagPath(DC::SharedFunctionalGroupsSequence, 0,
-                      DC::PixelMeasuresSequence, 0,
-                      DC::PixelSpacing));
-    if (!v.IsValid())
+    double spacing[2];
+    pixelSpacing.GetValues(spacing, 2);
+    if (spacing[0] > 0 && spacing[1] > 0)
       {
-      v = this->MetaData->GetAttributeValue(fileIndex,
-        vtkDICOMTagPath(DC::PerFrameFunctionalGroupsSequence, frameIndex,
-                        DC::PixelMeasuresSequence, 0,
-                        DC::PixelSpacing));
-      }
-    if (v.GetNumberOfValues() == 2)
-      {
-      double spacing[2];
-      v.GetValues(spacing, 2);
-      if (spacing[0] > 0 && spacing[1] > 0)
-        {
-        this->DataSpacing[0] = spacing[0];
-        this->DataSpacing[1] = spacing[1];
-        }
+      this->DataSpacing[0] = spacing[0];
+      this->DataSpacing[1] = spacing[1];
       }
     }
 
@@ -730,14 +706,14 @@ int vtkDICOMReader::RequestInformation(
   this->DataOrigin[2] = 0.0;
 
   // get information related to the data type
-  int bitsAllocated =
-    this->MetaData->GetAttributeValue(DC::BitsAllocated).AsInt();
-  int pixelRepresentation =
-    this->MetaData->GetAttributeValue(DC::PixelRepresentation).AsInt();
-  int numComponents =
-    this->MetaData->GetAttributeValue(DC::SamplesPerPixel).AsInt();
-  int planarConfiguration =
-    this->MetaData->GetAttributeValue(DC::PlanarConfiguration).AsInt();
+  int bitsAllocated = this->MetaData->GetAttributeValue(
+    fileIndex, DC::BitsAllocated).AsInt();
+  int pixelRepresentation = this->MetaData->GetAttributeValue(
+    fileIndex, DC::PixelRepresentation).AsInt();
+  int numComponents = this->MetaData->GetAttributeValue(
+    fileIndex, DC::SamplesPerPixel).AsInt();
+  int planarConfiguration = this->MetaData->GetAttributeValue(
+    fileIndex, DC::PlanarConfiguration).AsInt();
 
   // datatype
   int scalarType = 0;
@@ -752,7 +728,8 @@ int vtkDICOMReader::RequestInformation(
     }
   else if (bitsAllocated <= 32)
     {
-    if (this->MetaData->HasAttribute(DC::FloatPixelData))
+    if (this->MetaData->GetAttributeValue(
+          fileIndex, DC::FloatPixelData).IsValid())
       {
       scalarType = VTK_FLOAT;
       }
@@ -763,7 +740,8 @@ int vtkDICOMReader::RequestInformation(
     }
   else if (bitsAllocated <= 64)
     {
-    if (this->MetaData->HasAttribute(DC::DoubleFloatPixelData))
+    if (this->MetaData->GetAttributeValue(
+          fileIndex, DC::DoubleFloatPixelData).IsValid())
       {
       scalarType = VTK_DOUBLE;
       }
@@ -797,8 +775,8 @@ int vtkDICOMReader::RequestInformation(
   // See DICOM Ch. 3 Appendix C 7.6.3.1.2 for equations
 
   // endianness
-  std::string transferSyntax =
-    this->MetaData->GetAttributeValue(DC::TransferSyntaxUID).AsString();
+  std::string transferSyntax = this->MetaData->GetAttributeValue(
+    fileIndex, DC::TransferSyntaxUID).AsString();
 
   bool bigEndian = (transferSyntax == "1.2.840.10008.1.2.2" ||
                     transferSyntax == "1.2.840.113619.5.2");
@@ -815,52 +793,45 @@ int vtkDICOMReader::RequestInformation(
   this->RescaleIntercept = 0.0;
   this->NeedsRescale = false;
 
-  if (this->MetaData->HasAttribute(DC::RescaleSlope))
+  if (this->MetaData->GetAttributeValue(
+        fileIndex, frameIndex, DC::RescaleSlope).IsValid() &&
+      this->MetaData->GetAttributeValue(
+        fileIndex, frameIndex, DC::RescaleIntercept).IsValid())
     {
-    vtkDICOMMetaData *meta = this->MetaData;
-    int n = meta->GetNumberOfInstances();
-    double mMax = meta->GetAttributeValue(0, DC::RescaleSlope).AsDouble();
-    double bMax = meta->GetAttributeValue(0, DC::RescaleIntercept).AsDouble();
     bool mismatch = false;
+    double mMax = VTK_DOUBLE_MIN;
+    double bMax = VTK_DOUBLE_MIN;
 
-    for (int i = 1; i < n; i++)
+    vtkIdType numSlices = this->FileIndexArray->GetNumberOfTuples();
+    for (vtkIdType iSlice = 0; iSlice < numSlices; iSlice++)
       {
-      double m = meta->GetAttributeValue(i, DC::RescaleSlope).AsDouble();
-      double b = meta->GetAttributeValue(i, DC::RescaleIntercept).AsDouble();
-      if (m != mMax || b != bMax)
+      int numComp = this->FileIndexArray->GetNumberOfComponents();
+      for (int iComp = 0; iComp < numComp; iComp++)
         {
-        mismatch = true;
-        }
-      if (m > mMax)
-        {
-        mMax = m;
-        }
-      if (b > bMax)
-        {
-        bMax = b;
+        int iFile = this->FileIndexArray->GetComponent(iSlice, iComp);
+        int iFrame = this->FrameIndexArray->GetComponent(iSlice, iComp);
+
+        double m = this->MetaData->GetAttributeValue(
+          iFile, iFrame, DC::RescaleSlope).AsDouble();
+        double b = this->MetaData->GetAttributeValue(
+          iFile, iFrame, DC::RescaleIntercept).AsDouble();
+        if ((iSlice != 0 || iComp != 0) && (m != mMax || b != bMax))
+          {
+          mismatch = true;
+          }
+        if (m > mMax)
+          {
+          mMax = m;
+          }
+        if (b > bMax)
+          {
+          bMax = b;
+          }
         }
       }
     this->NeedsRescale = mismatch;
     this->RescaleSlope = mMax;
     this->RescaleIntercept = bMax;
-    }
-
-  if (this->MetaData->HasAttribute(DC::SharedFunctionalGroupsSequence))
-    {
-    vtkDICOMValue mv = this->MetaData->GetAttributeValue(fileIndex,
-      vtkDICOMTagPath(DC::SharedFunctionalGroupsSequence, 0,
-                      DC::PixelValueTransformationSequence, 0,
-                      DC::RescaleSlope));
-    vtkDICOMValue bv = this->MetaData->GetAttributeValue(fileIndex,
-      vtkDICOMTagPath(DC::SharedFunctionalGroupsSequence, 0,
-                      DC::PixelValueTransformationSequence, 0,
-                      DC::RescaleIntercept));
-    if (mv.IsValid() && bv.IsValid())
-      {
-      this->NeedsRescale = false;
-      this->RescaleSlope = mv.AsDouble();
-      this->RescaleIntercept = bv.AsDouble();
-      }
     }
 
   // === Image Orientation in DICOM files ===
@@ -1040,11 +1011,13 @@ void vtkDICOMReaderRescaleBuffer(T *p, double m, double b, size_t bytecount)
 
 //----------------------------------------------------------------------------
 void vtkDICOMReader::RescaleBuffer(
-  int fileIdx, void *buffer, vtkIdType bufferSize)
+  int fileIdx, int frameIdx, void *buffer, vtkIdType bufferSize)
 {
   vtkDICOMMetaData *meta = this->MetaData;
-  double m = meta->GetAttributeValue(fileIdx, DC::RescaleSlope).AsDouble();
-  double b = meta->GetAttributeValue(fileIdx, DC::RescaleIntercept).AsDouble();
+  double m = meta->GetAttributeValue(
+    fileIdx, frameIdx, DC::RescaleSlope).AsDouble();
+  double b = meta->GetAttributeValue(
+    fileIdx, frameIdx, DC::RescaleIntercept).AsDouble();
   double m0 = this->RescaleSlope;
   double b0 = this->RescaleIntercept;
 
@@ -1052,8 +1025,10 @@ void vtkDICOMReader::RescaleBuffer(
   b = (b - b0)/m0;
   m = m/m0;
 
-  int bitsAllocated = meta->GetAttributeValue(DC::BitsAllocated).AsInt();
-  int pixelRep = meta->GetAttributeValue(DC::PixelRepresentation).AsInt();
+  int bitsAllocated = meta->GetAttributeValue(
+    fileIdx, DC::BitsAllocated).AsInt();
+  int pixelRep = meta->GetAttributeValue(
+    fileIdx, DC::PixelRepresentation).AsInt();
 
   if (bitsAllocated <= 8)
     {
@@ -1186,6 +1161,12 @@ bool vtkDICOMReader::ReadFileNative(
   std::string transferSyntax = this->MetaData->GetAttributeValue(
     fileIdx, DC::TransferSyntaxUID).AsString();
 
+  // this will set endiancheck.s to 1 on big endian architectures
+  union { char c[2]; short s; } endianCheck = { { 0, 1 } };
+  bool memoryBigEndian = (endianCheck.s == 1);
+  bool fileBigEndian = (transferSyntax == "1.2.840.10008.1.2.2" ||
+                        transferSyntax == "1.2.840.113619.5.2");
+
   int bitsAllocated = this->MetaData->GetAttributeValue(
     fileIdx, DC::BitsAllocated).AsInt();
 
@@ -1285,7 +1266,7 @@ bool vtkDICOMReader::ReadFileNative(
     vtkErrorMacro("Error in DICOM file, cannot read.");
     success = false;
     }
-  else if (this->SwapBytes)
+  else if (fileBigEndian != memoryBigEndian)
     {
     int scalarSize = vtkDataArray::GetDataTypeSize(this->DataScalarType);
     vtkByteSwap::SwapVoidRange(buffer, bufferSize/scalarSize, scalarSize);
@@ -1574,9 +1555,9 @@ int vtkDICOMReader::RequestData(
 
       // rescale if Rescale was different for different files
       if (this->NeedsRescale &&
-          this->MetaData->HasAttribute(DC::PixelData))
+          this->MetaData->GetAttributeValue(fileIdx, DC::PixelData).IsValid())
         {
-        this->RescaleBuffer(fileIdx, bufferPtr, sliceSize);
+        this->RescaleBuffer(fileIdx, frameIdx, bufferPtr, sliceSize);
         }
 
       // iterate through all color planes in the slice
