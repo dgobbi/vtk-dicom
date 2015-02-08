@@ -403,67 +403,12 @@ void vtkDICOMReader::NoSortFiles(vtkIntArray *files, vtkIntArray *frames)
 bool vtkDICOMReader::ValidateStructure(
   vtkIntArray *fileArray, vtkIntArray *frameArray)
 {
-  // The reader requires the following mandatory attributes
-  static const DC::EnumType imagePixelAttribs[] = {
-    DC::SamplesPerPixel, // missing in old ACR-NEMA files
-    DC::Rows,
-    DC::Columns,
-    DC::BitsAllocated,
-    DC::ItemDelimitationItem
-  };
-
   vtkDICOMMetaData *meta = this->MetaData;
-  for (const DC::EnumType *tags = imagePixelAttribs;
-       *tags != DC::ItemDelimitationItem;
-       tags++)
-    {
-    vtkDICOMDataElementIterator iter = meta->Find(*tags);
-    if (iter != meta->End())
-      {
-      if (iter->IsPerInstance())
-        {
-        vtkDICOMDictEntry de = meta->FindDictEntry(*tags);
-        this->SetErrorCode(vtkErrorCode::FileFormatError);
-        vtkErrorMacro("Inconsistent pixel info for " << de.GetTag()
-                      << " \"" << de.GetName() << "\"");
-        return false;
-        }
-      else if (*tags == DC::Rows && iter->GetValue().AsInt() <= 0)
-        {
-        this->SetErrorCode(vtkErrorCode::FileFormatError);
-        vtkErrorMacro("Declared number of rows is zero!");
-        return false;
-        }
-      else if (*tags == DC::Columns && iter->GetValue().AsInt() <= 0)
-        {
-        this->SetErrorCode(vtkErrorCode::FileFormatError);
-        vtkErrorMacro("Declared number of columns is zero!");
-        return false;
-        }
-      else if (*tags == DC::BitsAllocated)
-        {
-        int bitsAllocated = iter->GetValue().AsInt();
-        if (bitsAllocated != 1 && bitsAllocated != 8 &&
-            bitsAllocated != 12 && bitsAllocated != 16 &&
-            bitsAllocated != 32 && bitsAllocated != 64)
-          {
-          this->SetErrorCode(vtkErrorCode::FileFormatError);
-          vtkErrorMacro("Illegal BitsAllocated value: " << bitsAllocated);
-          return false;
-          }
-        }
-      }
-    else if (*tags != DC::SamplesPerPixel)
-      {
-      vtkDICOMDictEntry de = meta->FindDictEntry(*tags);
-      this->SetErrorCode(vtkErrorCode::FileFormatError);
-      vtkErrorMacro("Missing pixel info " << de.GetTag()
-                    << " \"" << de.GetName() << "\"");
-      return false;
-      }
-    }
+  int numFiles = meta->GetNumberOfInstances();
+  std::vector<int> usedFiles(numFiles);
+  std::fill(usedFiles.begin(), usedFiles.end(), static_cast<int>(0));
 
-  // Verify that the needed files are all present
+  // Validate the range of indexes the sorted arrays
   int numComponents = fileArray->GetNumberOfComponents();
   vtkIdType numSlices = fileArray->GetNumberOfTuples();
   if (numSlices != frameArray->GetNumberOfTuples() ||
@@ -474,7 +419,6 @@ bool vtkDICOMReader::ValidateStructure(
     return false;
     }
 
-  int numFiles = meta->GetNumberOfInstances();
   for (vtkIdType i = 0; i < numSlices; i++)
     {
     for (int j = 0; j < numComponents; j++)
@@ -489,6 +433,8 @@ bool vtkDICOMReader::ValidateStructure(
         return false;
         }
 
+      usedFiles[fileIndex]++;
+
       int numFrames =
         meta->GetAttributeValue(fileIndex, DC::NumberOfFrames).AsInt();
       numFrames = (numFrames == 0 ? 1 : numFrames);
@@ -497,6 +443,78 @@ bool vtkDICOMReader::ValidateStructure(
         {
         this->SetErrorCode(vtkErrorCode::FileFormatError);
         vtkErrorMacro("Frame index " << frameIndex << " is out of range!");
+        return false;
+        }
+      }
+    }
+
+  // The reader requires the following mandatory attributes
+  static const DC::EnumType imagePixelAttribs[] = {
+    DC::SamplesPerPixel, // missing in old ACR-NEMA files
+    DC::Rows,
+    DC::Columns,
+    DC::BitsAllocated,
+    DC::ItemDelimitationItem
+  };
+
+  for (const DC::EnumType *tags = imagePixelAttribs;
+       *tags != DC::ItemDelimitationItem;
+       tags++)
+    {
+    int firstValue = 0;
+
+    for (int fileIndex = 0; fileIndex < numFiles; fileIndex++)
+      {
+      if (usedFiles[fileIndex] == 0) { continue; }
+
+      const char *errorText = 0;
+      vtkDICOMValue v = meta->GetAttributeValue(fileIndex, *tags);
+      int i = 1;
+      if (v.IsValid())
+        {
+        i = v.AsInt();
+        }
+      else if (*tags != DC::SamplesPerPixel)
+        {
+        // Some ACR-NEMA files do not contain SamplesPerPixel, all
+        // other tags must be present
+        errorText = "Missing pixel info ";
+        }
+
+      if (firstValue == 0)
+        {
+        firstValue = i;
+        }
+      else if (firstValue != i)
+        {
+        errorText = "Inconsistent pixel info ";
+        }
+
+      if (i <= 0 ||
+          (*tags == DC::BitsAllocated &&
+           i != 1 && i != 8 && i != 12 && i != 16 && i != 32 && i != 64))
+        {
+        errorText = "Illegal value ";
+        }
+
+      if (errorText)
+        {
+        this->ComputeInternalFileName(this->DataExtent[4] + fileIndex);
+        this->Parser->SetFileName(this->InternalFileName);
+        vtkDICOMDictEntry de = meta->FindDictEntry(*tags);
+        this->SetErrorCode(vtkErrorCode::FileFormatError);
+        if (v.IsValid())
+          {
+          vtkErrorMacro(<< errorText << i << " for " << de.GetTag()
+                        << " \"" << de.GetName() << "\" in "
+                        << this->InternalFileName);
+          }
+        else
+          {
+          vtkErrorMacro(<< errorText << "for " << de.GetTag()
+                        << " \"" << de.GetName() << "\" in"
+                        << this->InternalFileName);
+          }
         return false;
         }
       }
