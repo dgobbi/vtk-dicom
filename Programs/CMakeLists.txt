@@ -12,6 +12,8 @@ set(PROGRAM_SRCS
   dicomtonifti.cxx
   niftitodicom.cxx
   niftidump.cxx
+  scancotodicom.cxx
+  scancodump.cxx
 )
 
 if("${VTK_MAJOR_VERSION}" GREATER 5)
