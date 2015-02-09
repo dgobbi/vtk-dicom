@@ -1027,18 +1027,24 @@ size_t Decoder<E>::ReadElementHead(
   else
     {
     // explicit VR
+    bool implicit = false;
     vr = vtkDICOMVR(cp);
     vl = Decoder<E>::GetInt16(cp + 2);
     cp += 4;
     if (!vr.IsValid())
       {
-      // invalid vr, try to get VR from dictionary instead, assume
-      // than an implicitly-encoded VR somehow slipped into the data
+      // invalid vr, try to get VR from dictionary instead
       vr = this->FindDictVR(tag);
-      vl = Decoder<E>::GetInt32(cp - 4);
+      if (cp[-4] < 'A' || cp[-4] > 'Z' || cp[-3] < 'A' || cp[-3] > 'Z')
+        {
+        // if VR is badly formed, assume implicit encoding for this element
+        implicit = true;
+        vl = Decoder<E>::GetInt32(cp - 4);
+        }
       }
-    else if (vr.HasLongVL()) // for OB, OD, OF, OW, SQ, UN, UR, UT
+    if (!implicit && vr.HasLongVL())
       {
+      // for OB, OD, OF, OW, SQ, UC, UN, UR, UT
       // check that buffer has 4 bytes for 32-bit VL
       if (!this->CheckBuffer(cp, ep, 4))
         {
