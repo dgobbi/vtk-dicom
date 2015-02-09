@@ -85,15 +85,15 @@ public:
   const char *GetText() const { return TextTable[this->Key]; }
 
   //! The VRs OB, OD, OF, OW, SQ, UC, UN, UR, UT require a 32-bit VL.
-  bool HasLongVL() const { return (((1 << this->Key) & 0x5911e000) != 0); }
+  bool HasLongVL() const { return (((1u << this->Key) & 0x5911e000u) != 0); }
 
   //! The VRs SH, LO, PN, ST, LT, UC, and UT use SpecificCharacterSet.
   bool HasSpecificCharacterSet() const {
-    return (((1 << this->Key) & 0x41461800) != 0); }
+    return (((1u << this->Key) & 0x41461800u) != 0); }
 
   //! This is true for all VRs whose value is stored as text.
   bool HasTextValue() const {
-    return (((1 << this->Key) & 0x53c61cf6) != 0); }
+    return (((1u << this->Key) & 0x53c61cf6u) != 0); }
 
   //! This is true for for all VRs that store numbers.
   /*!
@@ -101,7 +101,7 @@ public:
    *  OB, OW, OF, and OD are not included.
    */
   bool HasNumericValue() const {
-    return (((1 << this->Key) & 0x24280740) != 0); }
+    return (((1u << this->Key) & 0x24280740u) != 0); }
 
   //! The VRs ST, LT, and UT carry only one value.
   /*!
@@ -110,7 +110,7 @@ public:
    * is an illegal character in UR.
    */
   bool HasSingleValue() const {
-    return (((1 << this->Key) & 0x40401000) != 0); }
+    return (((1u << this->Key) & 0x40401000u) != 0); }
 
   bool operator==(vtkDICOMVR a) const { return (this->Key == a.Key); }
   bool operator!=(vtkDICOMVR a) const { return (this->Key != a.Key); }
