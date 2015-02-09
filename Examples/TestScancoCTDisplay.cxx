@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
       point[i % 3] += 500.0;
       }
     camera->SetPosition(point);
-    if ((i % 3) == 2 && !imageIs3D)
+    if ((i % 3) == 2)
       {
       camera->SetViewUp(0.0, +1.0, 0.0);
       }
