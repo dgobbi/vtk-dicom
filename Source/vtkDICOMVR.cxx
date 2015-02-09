@@ -147,7 +147,7 @@ const unsigned char TXT[256] = { // TM
 const unsigned char UXT[256] = { // UI UL UN US UT
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, VR::UI,0,0,VR::UL,0,VR::UN,0, //  ABCDEFGHIJKLMNO
+  0,0,0,VR::UC,0,0,0,0,0,VR::UI,0,0,VR::UL,0,VR::UN,0, //  ABCDEFGHIJKLMNO
   0, 0, VR::UR,VR::US,VR::UT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // PQRSTUVWXYZ
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -188,7 +188,7 @@ const unsigned char *vtkDICOMVR::VRTable[256] = {
   XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,
 };
 
-const unsigned char vtkDICOMVR::TypeTable[32] = {
+const unsigned char vtkDICOMVR::TypeTable[33] = {
   VTK_VOID,           // Invalid
   VTK_CHAR,           // AE Application Entity
   VTK_CHAR,           // AS Age String
@@ -213,6 +213,7 @@ const unsigned char vtkDICOMVR::TypeTable[32] = {
   VTK_SHORT,          // SS Signed Short
   VTK_CHAR,           // ST Short Text
   VTK_CHAR,           // TM Time
+  VTK_CHAR,           // UC Unlimited Characters
   VTK_CHAR,           // UI UID
   VTK_UNSIGNED_INT,   // UL Unsigned Long
   VTK_UNSIGNED_CHAR,  // UN Unknown
@@ -223,7 +224,7 @@ const unsigned char vtkDICOMVR::TypeTable[32] = {
   VTK_VOID,           // Invalid
 };
 
-const char vtkDICOMVR::TextTable[32][4] = {
+const char vtkDICOMVR::TextTable[33][4] = {
   { 0, 0, 0, 0 },     // Invalid
   { 'A', 'E', 0, 0 }, // AE Application Entity
   { 'A', 'S', 0, 0 }, // AS Age String
@@ -248,6 +249,7 @@ const char vtkDICOMVR::TextTable[32][4] = {
   { 'S', 'S', 0, 0 }, // SS Signed Short
   { 'S', 'T', 0, 0 }, // ST Short Text
   { 'T', 'M', 0, 0 }, // TM Time
+  { 'U', 'C', 0, 0 }, // UC Unlimited Characters
   { 'U', 'I', 0, 0 }, // UI UID
   { 'U', 'L', 0, 0 }, // UL Unsigned Long
   { 'U', 'N', 0, 0 }, // UN Unknown

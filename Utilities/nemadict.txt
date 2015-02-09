@@ -580,6 +580,30 @@ ContextUID
 UI
 1
 
+(0008,0118)
+Mapping Resource UID
+MappingResourceUID
+UI
+1
+
+(0008,0119)
+Long Code Value
+LongCodeValue
+UC
+1
+
+(0008,0120)
+URN Code Value
+URNCodeValue
+UR
+1
+
+(0008,0121)
+Equivalent Code Sequence
+EquivalentCodeSequence
+SQ
+1
+
 (0008,0201)
 Timezone Offset From UTC
 TimezoneOffsetFromUTC

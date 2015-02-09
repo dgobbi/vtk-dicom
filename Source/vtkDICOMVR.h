@@ -51,14 +51,15 @@ public:
     SS = 0x15, //!< Signed Short
     ST = 0x16, //!< Short Text
     TM = 0x17, //!< Time
-    UI = 0x18, //!< Unique Identifier
-    UL = 0x19, //!< Unsigned Long
-    UN = 0x1a, //!< Unknown
-    UR = 0x1b, //!< URI or URL
-    US = 0x1c, //!< Unsigned Short
-    UT = 0x1d, //!< Unlimited Text
-    OX = 0x1e, //!< Either OB or OW (for dict entries, not data elements)
-    XS = 0x1f  //!< Either SS or US (for dict entries, not data elements)
+    UC = 0x18, //!< Unlimited Characters
+    UI = 0x19, //!< Unique Identifier
+    UL = 0x1a, //!< Unsigned Long
+    UN = 0x1b, //!< Unknown
+    UR = 0x1c, //!< URI or URL
+    US = 0x1d, //!< Unsigned Short
+    UT = 0x1e, //!< Unlimited Text
+    OX = 0x1f, //!< Either OB or OW (for dict entries, not data elements)
+    XS = 0x20  //!< Either SS or US (for dict entries, not data elements)
   };
 
   //! Construct an empty, invalid VR.
@@ -83,16 +84,16 @@ public:
   //! Get the two-character text for this VR.
   const char *GetText() const { return TextTable[this->Key]; }
 
-  //! The VRs OB, OD, OF, OW, SQ, UN, UR, UT require a 32-bit VL.
-  bool HasLongVL() const { return (((1 << this->Key) & 0x2c11e000) != 0); }
+  //! The VRs OB, OD, OF, OW, SQ, UC, UN, UR, UT require a 32-bit VL.
+  bool HasLongVL() const { return (((1 << this->Key) & 0x5911e000) != 0); }
 
-  //! The VRs SH, LO, PN, ST, LT, and UT use SpecificCharacterSet.
+  //! The VRs SH, LO, PN, ST, LT, UC, and UT use SpecificCharacterSet.
   bool HasSpecificCharacterSet() const {
-    return (((1 << this->Key) & 0x20461800) != 0); }
+    return (((1 << this->Key) & 0x41461800) != 0); }
 
   //! This is true for all VRs whose value is stored as text.
   bool HasTextValue() const {
-    return (((1 << this->Key) & 0x29c61cf6) != 0); }
+    return (((1 << this->Key) & 0x53c61cf6) != 0); }
 
   //! This is true for for all VRs that store numbers.
   /*!
@@ -100,7 +101,7 @@ public:
    *  OB, OW, OF, and OD are not included.
    */
   bool HasNumericValue() const {
-    return (((1 << this->Key) & 0x12280740) != 0); }
+    return (((1 << this->Key) & 0x24280740) != 0); }
 
   //! The VRs ST, LT, and UT carry only one value.
   /*!
@@ -109,7 +110,7 @@ public:
    * is an illegal character in UR.
    */
   bool HasSingleValue() const {
-    return (((1 << this->Key) & 0x20401000) != 0); }
+    return (((1 << this->Key) & 0x40401000) != 0); }
 
   bool operator==(vtkDICOMVR a) const { return (this->Key == a.Key); }
   bool operator!=(vtkDICOMVR a) const { return (this->Key != a.Key); }
@@ -122,8 +123,8 @@ private:
   unsigned char Key;
 
   static const unsigned char *VRTable[256];
-  static const unsigned char TypeTable[32];
-  static const char TextTable[32][4];
+  static const unsigned char TypeTable[33];
+  static const char TextTable[33][4];
 };
 
 VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMVR& a);
