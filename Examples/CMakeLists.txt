@@ -36,4 +36,7 @@ target_link_libraries(TestDICOMDisplay ${BASE_LIBS} ${VTK_RENDERING_LIBS})
 
 add_executable(TestNIFTIDisplay TestNIFTIDisplay.cxx)
 target_link_libraries(TestNIFTIDisplay ${BASE_LIBS} ${VTK_RENDERING_LIBS})
+
+add_executable(TestScancoCTDisplay TestScancoCTDisplay.cxx)
+target_link_libraries(TestScancoCTDisplay ${BASE_LIBS} ${VTK_RENDERING_LIBS})
 endif()
