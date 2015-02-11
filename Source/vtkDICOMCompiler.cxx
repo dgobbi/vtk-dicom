@@ -1420,6 +1420,7 @@ bool vtkDICOMCompiler::WriteMetaData(
     }
   else if (tsyntax == "1.2.840.113619.5.2")  // GE LE with BE data
     {
+    encoder->SetImplicitVR(true);
     this->BigEndian = true;
     }
   else if (tsyntax != "1.2.840.10008.1.2.1") // Explicit LE
