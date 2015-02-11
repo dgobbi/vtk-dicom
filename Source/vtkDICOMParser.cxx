@@ -1514,10 +1514,24 @@ bool Decoder<E>::SkipElements(
       else
         {
         // explicit VR
+        bool implicit = false;
         vr = vtkDICOMVR(cp);
         vl = Decoder<E>::GetInt16(cp + 2);
         cp += 4;
-        if (vr.HasLongVL())
+        if (!vr.IsValid())
+          {
+          // invalid vr, try to get VR from dictionary instead
+          vr = this->FindDictVR(vtkDICOMTag(g,e));
+          // check that vr was composed of reasonable chars
+          if (cp[-4] <= 0x20 || cp[-4] >= 0x7f ||
+              cp[-3] <= 0x20 || cp[-3] >= 0x7f)
+            {
+            // assume an implicitly coded element slipped into the data
+            implicit = true;
+            vl = Decoder<E>::GetInt32(cp - 4);
+            }
+          }
+        if (!implicit && vr.HasLongVL())
           {
           if (!this->CheckBuffer(cp, ep, 4, v, sp)) { return false; }
           vl = Decoder<E>::GetInt32(cp);
@@ -1863,7 +1877,8 @@ bool vtkDICOMParser::ReadMetaData(
     decoder->SetImplicitVR(!vtkDICOMVR(cp + 4).IsValid());
     }
   else if (tsyntax == "1.2.840.10008.1.2" ||  // Implicit LE
-           tsyntax == "1.2.840.10008.1.20")   // Papyrus Implicit LE
+           tsyntax == "1.2.840.10008.1.20" || // Papyrus Implicit LE
+           tsyntax == "1.2.840.113619.5.2")   // GE Implicit LE
     {
     decoder->SetImplicitVR(true);
     }
