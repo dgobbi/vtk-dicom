@@ -69,6 +69,13 @@ int main(int argc, char *argv[])
   TestAssert(v.GetNumberOfValues() == 4);
   TestAssert(v.GetVL() == 16);
   TestAssert(memcmp(v.GetFloatData(), flt, 16) == 0);
+  // string values converted to tags
+  static const char *tagstring = "(ff00,0123)\\(0FA2,0001)";
+  v = vtkDICOMValue(vtkDICOMVR::AT, tagstring, strlen(tagstring));
+  TestAssert(v.GetNumberOfValues() == 2);
+  TestAssert(v.GetVL() == 8);
+  TestAssert(v.GetTag(0) == vtkDICOMTag(0xff00,0x0123));
+  TestAssert(v.GetTag(1) == vtkDICOMTag(0x0fa2,0x0001));
   // these text VRs should always report 1 value
   const char *hp = "he\\llo";
   size_t sl = strlen(hp);

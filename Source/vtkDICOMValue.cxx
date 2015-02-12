@@ -38,6 +38,14 @@ void NumericalConversion(IT *u, OT *v, size_t n)
   if (n != 0) { do { *v++ = static_cast<OT>(*u++); } while (--n); }
 }
 
+// Check for hexadecimal digits, plain ASCII (don't use locale)
+bool IsHexDigit(char c)
+{
+  return ((c >= '0' && c <= '9') ||
+          (c >= 'A' && c <= 'F') ||
+          (c >= 'a' && c <= 'f'));
+}
+
 // The input is a list of one or more numerical string values separated
 // by backslashes, for example "1.23435\85234.0\2345.22".  Convert "n"
 // values to type OT, starting at the "i"th backslash-separated value.
@@ -81,6 +89,40 @@ void StringConversion(
   else if (n > 0)
     {
     do { *v++ = 0; } while (--n);
+    }
+}
+
+// specialize conversion for vtkDICOMTag
+void StringConversionAT(const char *cp, vtkDICOMTag *v, size_t i, size_t n)
+{
+  for (size_t j = 0; j < i && *cp != '\0'; j++)
+    {
+    bool bk = false;
+    do
+      {
+      bk = (*cp == '\\');
+      cp++;
+      }
+    while (!bk && *cp != '\0');
+    }
+
+  for (size_t k = 0; k < n && *cp != '\0'; k++)
+    {
+    while (!IsHexDigit(*cp) && *cp != '\\' && *cp != '\0')  { cp++; }
+    const char *dp = cp;
+    while (IsHexDigit(*dp)) { dp++; }
+    while (!IsHexDigit(*dp) && *dp != '\\' && *dp != '\0')  { dp++; }
+    unsigned short g = static_cast<unsigned short>(strtol(cp, NULL, 16));
+    unsigned short e = static_cast<unsigned short>(strtol(dp, NULL, 16));
+    *v++ = vtkDICOMTag(g, e);
+
+    bool bk = false;
+    do
+      {
+      bk = (*cp == '\\');
+      cp++;
+      }
+    while (!bk && *cp != '\0');
     }
 }
 
@@ -692,6 +734,11 @@ void vtkDICOMValue::CreateValue<char>(
     {
     short *ptr = this->AllocateShortData(vr, n);
     StringConversion(data, VR::IS, ptr, 0, n);
+    }
+  else if (vr == VR::AT)
+    {
+    vtkDICOMTag *ptr = this->AllocateTagData(vr, n);
+    StringConversionAT(data, ptr, 0, n);
     }
 }
 
