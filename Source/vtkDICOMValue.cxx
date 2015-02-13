@@ -93,19 +93,8 @@ void StringConversion(
 }
 
 // specialize conversion for vtkDICOMTag
-void StringConversionAT(const char *cp, vtkDICOMTag *v, size_t i, size_t n)
+void StringConversionAT(const char *cp, vtkDICOMTag *v, size_t n)
 {
-  for (size_t j = 0; j < i && *cp != '\0'; j++)
-    {
-    bool bk = false;
-    do
-      {
-      bk = (*cp == '\\');
-      cp++;
-      }
-    while (!bk && *cp != '\0');
-    }
-
   for (size_t k = 0; k < n && *cp != '\0'; k++)
     {
     while (!IsHexDigit(*cp) && *cp != '\\' && *cp != '\0')  { cp++; }
@@ -738,7 +727,7 @@ void vtkDICOMValue::CreateValue<char>(
   else if (vr == VR::AT)
     {
     vtkDICOMTag *ptr = this->AllocateTagData(vr, n);
-    StringConversionAT(data, ptr, 0, n);
+    StringConversionAT(data, ptr, n);
     }
 }
 
@@ -1401,7 +1390,7 @@ vtkDICOMTag vtkDICOMValue::GetTag(size_t i) const
 {
   vtkDICOMTag v;
   if (this->V && this->V->VR == vtkDICOMVR::AT &&
-      this->V->NumberOfValues == 1)
+      i < this->V->NumberOfValues)
     {
     this->GetValuesT(&v, 1, i);
     }
