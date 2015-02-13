@@ -30,6 +30,9 @@ target_link_libraries(TestDICOMReader ${BASE_LIBS})
 add_executable(TestDICOMWriter TestDICOMWriter.cxx)
 target_link_libraries(TestDICOMWriter ${BASE_LIBS})
 
+add_executable(TestDICOMRealWorldValue TestDICOMRealWorldValue.cxx)
+target_link_libraries(TestDICOMRealWorldValue ${BASE_LIBS})
+
 if(VTK_MAJOR_VERSION GREATER 5 OR VTK_MINOR_VERSION GREATER 9)
 add_executable(TestDICOMDisplay TestDICOMDisplay.cxx)
 target_link_libraries(TestDICOMDisplay ${BASE_LIBS} ${VTK_RENDERING_LIBS})
