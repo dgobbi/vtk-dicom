@@ -20,6 +20,9 @@
 // For use by methods that must return an invalid value
 const vtkDICOMValue vtkDICOMSequence::InvalidValue;
 
+// For use by methods that must return an empty item
+const vtkDICOMItem vtkDICOMSequence::EmptyItem;
+
 //----------------------------------------------------------------------------
 const vtkDICOMValue &vtkDICOMSequence::GetAttributeValue(
     size_t i, vtkDICOMTag tag) const
@@ -48,9 +51,11 @@ const vtkDICOMValue &vtkDICOMSequence::GetAttributeValue(
 const vtkDICOMItem &vtkDICOMSequence::GetItem(size_t i) const
 {
   const vtkDICOMItem *ptr = this->V.GetSequenceData();
-  assert(ptr != 0 && i < this->V.GetNumberOfValues());
-
-  return ptr[i];
+  if (ptr != 0 && i < this->V.GetNumberOfValues())
+    {
+    return ptr[i];
+    }
+  return vtkDICOMSequence::EmptyItem;
 }
 
 //----------------------------------------------------------------------------

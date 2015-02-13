@@ -101,6 +101,8 @@ private:
 
   //! An invalid value, for when one is needed.
   static const vtkDICOMValue InvalidValue;
+  //! An empty item, for when one is needed.
+  static const vtkDICOMItem EmptyItem;
 };
 
 VTK_DICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMSequence& v);
