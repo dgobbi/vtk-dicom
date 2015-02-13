@@ -91,6 +91,7 @@ public:
   vtkDICOMValue(vtkDICOMVR vr, double v);
   vtkDICOMValue(vtkDICOMVR vr, const std::string& v);
   vtkDICOMValue(vtkDICOMVR vr, vtkDICOMTag v);
+  vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMItem& v);
   vtkDICOMValue(vtkDICOMVR vr, const char *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const unsigned char *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const short *data, size_t count);
@@ -100,6 +101,7 @@ public:
   vtkDICOMValue(vtkDICOMVR vr, const float *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const double *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMTag *data, size_t count);
+  vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMItem *data, size_t count);
 
   //! Construct a string value with a specific character set.
   /*!

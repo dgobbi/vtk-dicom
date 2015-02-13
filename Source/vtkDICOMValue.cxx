@@ -627,6 +627,26 @@ void vtkDICOMValue::CreateValue<vtkDICOMTag>(
 }
 
 template<>
+void vtkDICOMValue::CreateValue<vtkDICOMItem>(
+  vtkDICOMVR vr, const vtkDICOMItem *data, size_t n)
+{
+  typedef vtkDICOMVR VR; // shorthand
+
+  assert(n*4 < 0xffffffffu);
+
+  this->V = 0;
+
+  if (vr == VR::SQ)
+    {
+    vtkDICOMItem *ptr = this->AllocateSequenceData(vr, n);
+    for (size_t i = 0; i < n; i++)
+      {
+      ptr[i] = data[i];
+      }
+    }
+}
+
+template<>
 void vtkDICOMValue::CreateValue<char>(
   vtkDICOMVR vr, const char *data, size_t m)
 {
@@ -748,6 +768,11 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, vtkDICOMTag v)
   this->CreateValue(vr, &v, 1);
 }
 
+vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMItem& v)
+{
+  this->CreateValue(vr, &v, 1);
+}
+
 vtkDICOMValue::vtkDICOMValue(
   vtkDICOMVR vr, const char *data, size_t count)
 {
@@ -798,6 +823,12 @@ vtkDICOMValue::vtkDICOMValue(
 
 vtkDICOMValue::vtkDICOMValue(
   vtkDICOMVR vr, const vtkDICOMTag *data, size_t count)
+{
+  this->CreateValue(vr, data, count);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const vtkDICOMItem *data, size_t count)
 {
   this->CreateValue(vr, data, count);
 }
