@@ -66,11 +66,14 @@ int main(int argc, char *argv[])
   else if (argc == 1)
     {
     // create a real world value mapping sequence by hand
+    // 1) use Unified Code for Units of Measure (UCUM), version 1.9
+    // 2) the CodeMeaning should be a copy of CodeValue unless:
+    // 2a) CodeValue=1, in which case use CodeMeaning=unity
     vtkDICOMItem unitsItem;
     unitsItem.SetAttributeValue(DC::CodeValue, "m2/s");
     unitsItem.SetAttributeValue(DC::CodingSchemeDesignator, "UCUM");
-    unitsItem.SetAttributeValue(DC::CodingSchemeVersion, "1.4");
-    unitsItem.SetAttributeValue(DC::CodeMeaning, "square meters per second");
+    unitsItem.SetAttributeValue(DC::CodingSchemeVersion, "1.9");
+    unitsItem.SetAttributeValue(DC::CodeMeaning, "m2/s");
 
     vtkDICOMItem mappingItem;
     mappingItem.SetAttributeValue(DC::LUTExplanation, "Hot Metal");
