@@ -122,6 +122,9 @@ public:
   vtkDICOMValue(const vtkDICOMValue &v) : V(v.V) {
     if (this->V) { ++(this->V->ReferenceCount); } }
 
+  //! Construct from a tag.
+  vtkDICOMValue(vtkDICOMTag v);
+
   //! Construct from an item.
   vtkDICOMValue(const vtkDICOMItem &v);
 

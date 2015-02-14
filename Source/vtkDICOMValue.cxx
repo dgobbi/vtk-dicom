@@ -784,6 +784,11 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, vtkDICOMTag v)
   this->CreateValue(vr, &v, 1);
 }
 
+vtkDICOMValue::vtkDICOMValue(vtkDICOMTag v)
+{
+  this->CreateValue(vtkDICOMVR::AT, &v, 1);
+}
+
 vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMItem& v)
 {
   this->CreateValue(vr, &v, 1);
