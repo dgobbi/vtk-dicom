@@ -758,7 +758,20 @@ void vtkDICOMValue::CreateValue<char>(
 // Constructor methods call the factory to create the right internal type.
 vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, double v)
 {
-  this->CreateValue(vr, &v, 1);
+  if (vr == vtkDICOMVR::AT)
+    {
+    // This constructor will be called if e.g. DC::FrameTime is passed
+    // as the second parameter, because the compiler will prefer to
+    // conver the enum type to "double" rather than to vtkDICOMTag.
+    unsigned int i = static_cast<unsigned int>(v);
+    vtkDICOMTag t(static_cast<unsigned short>(i >> 16),
+                  static_cast<unsigned short>(i));
+    this->CreateValue(vr, &t, 1);
+    }
+  else
+    {
+    this->CreateValue(vr, &v, 1);
+    }
 }
 
 vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, const std::string& v)

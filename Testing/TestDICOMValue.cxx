@@ -76,6 +76,11 @@ int main(int argc, char *argv[])
   TestAssert(v.GetVL() == 8);
   TestAssert(v.GetTag(0) == vtkDICOMTag(0xff00,0x0123));
   TestAssert(v.GetTag(1) == vtkDICOMTag(0x0fa2,0x0001));
+  // tags constructed from enums
+  v = vtkDICOMValue(vtkDICOMVR::AT, DC::FrameTimeVector);
+  TestAssert(v.GetNumberOfValues() == 1);
+  TestAssert(v.GetVL() == 4);
+  TestAssert(v.AsTag() == vtkDICOMTag(0x0018,0x1065));
   // these text VRs should always report 1 value
   const char *hp = "he\\llo";
   size_t sl = strlen(hp);
