@@ -100,31 +100,26 @@ int main(int argc, char *argv[])
 
   if (meta->HasAttribute(DC::RealWorldValueMappingSequence))
     {
-    std::string lutName =
-      meta->GetAttributeValue(vtkDICOMTagPath(
-        DC::RealWorldValueMappingSequence, 0,
-        DC::LUTLabel)).AsString();
+    vtkDICOMSequence mappingSequence =
+      meta->GetAttributeValue(DC::RealWorldValueMappingSequence);
+    vtkDICOMItem mappingItem = mappingSequence.GetItem(0);
 
-    std::string units =
-      meta->GetAttributeValue(vtkDICOMTagPath(
-        DC::RealWorldValueMappingSequence, 0,
-        DC::MeasurementUnitsCodeSequence, 0,
-        DC::CodeValue)).AsString();
+    std::string lutName =
+      mappingItem.GetAttributeValue(DC::LUTLabel).AsString();
+
+    std::string units = mappingItem.GetAttributeValue(vtkDICOMTagPath(
+      DC::MeasurementUnitsCodeSequence, 0, DC::CodeValue)).AsString();
 
     double range[2];
-    range[0] = meta->GetAttributeValue(vtkDICOMTagPath(
-                 DC::RealWorldValueMappingSequence, 0,
-                 DC::RealWorldValueFirstValueMapped)).AsDouble();
-    range[1] = meta->GetAttributeValue(vtkDICOMTagPath(
-                 DC::RealWorldValueMappingSequence, 0,
-                 DC::RealWorldValueLastValueMapped)).AsDouble();
+    range[0] = mappingItem.GetAttributeValue(
+      DC::RealWorldValueFirstValueMapped).AsDouble();
+    range[1] = mappingItem.GetAttributeValue(
+      DC::RealWorldValueLastValueMapped).AsDouble();
 
-    double slope = meta->GetAttributeValue(vtkDICOMTagPath(
-                     DC::RealWorldValueMappingSequence, 0,
-                     DC::RealWorldValueSlope)).AsDouble();
-    double inter = meta->GetAttributeValue(vtkDICOMTagPath(
-                     DC::RealWorldValueMappingSequence, 0,
-                     DC::RealWorldValueIntercept)).AsDouble();
+    double slope = mappingItem.GetAttributeValue(
+      DC::RealWorldValueSlope).AsDouble();
+    double inter = mappingItem.GetAttributeValue(
+      DC::RealWorldValueIntercept).AsDouble();
 
     cout << "Map pixel values in the range " << range[0] << ", " << range[1] << endl;
     cout << "through the equation y = " << slope << " * x + " << inter << endl;
