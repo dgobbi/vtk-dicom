@@ -122,6 +122,9 @@ public:
   vtkDICOMValue(const vtkDICOMValue &v) : V(v.V) {
     if (this->V) { ++(this->V->ReferenceCount); } }
 
+  //! Construct from an item.
+  vtkDICOMValue(const vtkDICOMItem &v);
+
   //! Construct from a sequence.
   vtkDICOMValue(const vtkDICOMSequence &v);
 
@@ -195,7 +198,7 @@ public:
   void GetValues(double *vb, size_t n, size_t i=0) const;
   void GetValues(vtkDICOMTag *vb, size_t n, size_t i=0) const;
 
-  //! Get one scalar value or single string from the value.
+  //! Get one scalar, string, tag or item from the value.
   /*!
    *  Convert the i'th value to the desired type, if possible,
    *  and return it.  If the value is invalid, or conversion is
@@ -212,8 +215,9 @@ public:
   float GetFloat(size_t i) const;
   double GetDouble(size_t i) const;
   vtkDICOMTag GetTag(size_t i) const;
+  const vtkDICOMItem& GetItem(size_t i) const;
 
-  //! Convert the value to a scalar value or string.
+  //! Get the value as a scalar, string, tag, or item.
   /*!
    *  The value is converted to the desired type, if possible, and returned.
    *  Otherwise the return value is zero (or an empty string).  Conversion
@@ -230,6 +234,7 @@ public:
   float AsFloat() const;
   double AsDouble() const;
   vtkDICOMTag AsTag() const;
+  const vtkDICOMItem& AsItem() const;
 
   //! Get a pointer to the internal data array.
   /*!
@@ -424,6 +429,9 @@ private:
 
   //! The only data member: a pointer to the internal value.
   Value *V;
+
+  //! An empty item, for when one is needed.
+  static const vtkDICOMItem EmptyItem;
 
   // friend the sequence class, it requires AppendValue() and SetValue().
   friend class vtkDICOMSequence;

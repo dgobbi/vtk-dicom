@@ -27,6 +27,9 @@
 
 #include <new>
 
+// For use by methods that must return an empty item
+const vtkDICOMItem vtkDICOMValue::EmptyItem;
+
 //----------------------------------------------------------------------------
 // Use anonymous namespace to limit function scope to this file only
 namespace {
@@ -773,6 +776,11 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMItem& v)
   this->CreateValue(vr, &v, 1);
 }
 
+vtkDICOMValue::vtkDICOMValue(const vtkDICOMItem& v)
+{
+  this->CreateValue(vtkDICOMVR::SQ, &v, 1);
+}
+
 vtkDICOMValue::vtkDICOMValue(
   vtkDICOMVR vr, const char *data, size_t count)
 {
@@ -1428,6 +1436,18 @@ vtkDICOMTag vtkDICOMValue::GetTag(size_t i) const
   return v;
 }
 
+const vtkDICOMItem& vtkDICOMValue::GetItem(size_t i) const
+{
+  if (this->V && this->V->Type == VTK_DICOM_ITEM &&
+      i < this->V->NumberOfValues)
+    {
+    const vtkDICOMItem *ptr =
+      static_cast<const ValueT<vtkDICOMItem> *>(this->V)->Data;
+    return ptr[i];
+    }
+  return vtkDICOMValue::EmptyItem;
+}
+
 //----------------------------------------------------------------------------
 unsigned char vtkDICOMValue::AsUnsignedChar() const
 {
@@ -1604,6 +1624,11 @@ vtkDICOMTag vtkDICOMValue::AsTag() const
     this->GetValuesT(&v, 1, 0);
     }
   return v;
+}
+
+const vtkDICOMItem& vtkDICOMValue::AsItem() const
+{
+  return this->GetItem(0);
 }
 
 //----------------------------------------------------------------------------

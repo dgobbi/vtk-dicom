@@ -66,19 +66,16 @@ int main(int argc, char *argv[])
   else if (argc == 1)
     {
     // create a real world value mapping sequence by hand
-    vtkDICOMSequence unitsSequence;
     vtkDICOMItem unitsItem;
     unitsItem.SetAttributeValue(DC::CodeValue, "m2/s");
     unitsItem.SetAttributeValue(DC::CodingSchemeDesignator, "UCUM");
     unitsItem.SetAttributeValue(DC::CodingSchemeVersion, "1.4");
     unitsItem.SetAttributeValue(DC::CodeMeaning, "square meters per second");
-    unitsSequence.AddItem(unitsItem);
 
-    vtkDICOMSequence mappingSequence;
     vtkDICOMItem mappingItem;
     mappingItem.SetAttributeValue(DC::LUTExplanation, "Hot Metal");
     mappingItem.SetAttributeValue(DC::MeasurementUnitsCodeSequence,
-      unitsSequence);
+      vtkDICOMValue(vtkDICOMVR::SQ, unitsItem));
     mappingItem.SetAttributeValue(DC::LUTLabel, "HOT_METAL");
     // need to explicitly define the VR for these, because it depends
     // on whether the PixelRepresentation is signed or unsigned
@@ -88,10 +85,9 @@ int main(int argc, char *argv[])
                                   vtkDICOMValue(vtkDICOMVR::US, 4095));
     mappingItem.SetAttributeValue(DC::RealWorldValueIntercept, 0.234);
     mappingItem.SetAttributeValue(DC::RealWorldValueSlope, 0.438);
-    mappingSequence.AddItem(mappingItem);
 
     meta->SetAttributeValue(DC::RealWorldValueMappingSequence,
-      mappingSequence);
+      vtkDICOMValue(vtkDICOMVR::SQ, mappingItem));
     }
   else
     {
@@ -100,9 +96,8 @@ int main(int argc, char *argv[])
 
   if (meta->HasAttribute(DC::RealWorldValueMappingSequence))
     {
-    vtkDICOMSequence mappingSequence =
-      meta->GetAttributeValue(DC::RealWorldValueMappingSequence);
-    vtkDICOMItem mappingItem = mappingSequence.GetItem(0);
+    const vtkDICOMItem& mappingItem =
+      meta->GetAttributeValue(DC::RealWorldValueMappingSequence).GetItem(0);
 
     std::string lutName =
       mappingItem.GetAttributeValue(DC::LUTLabel).AsString();
