@@ -599,12 +599,28 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, size_t n)
     }
   else if (vr == VR::AT)
     {
-    vtkDICOMTag *ptr = this->AllocateTagData(vr, n/2);
-    for (size_t i = 0; i < n; i += 2)
+    if (sizeof(T) > 2)
       {
-      unsigned short g = static_cast<unsigned short>(data[i]);
-      unsigned short e = static_cast<unsigned short>(data[i+1]);
-      ptr[i/2] = vtkDICOMTag(g,e);
+      // subsequent values represent 32-bit keys
+      vtkDICOMTag *ptr = this->AllocateTagData(vr, n);
+      for (size_t i = 0; i < n; i++)
+        {
+        unsigned int k = static_cast<unsigned int>(data[i]);
+        unsigned short g = static_cast<unsigned short>(k >> 16);
+        unsigned short e = static_cast<unsigned short>(k);
+        ptr[i] = vtkDICOMTag(g,e);
+        }
+      }
+    else
+      {
+      // subsequent values represent group,element pairs
+      vtkDICOMTag *ptr = this->AllocateTagData(vr, n/2);
+      for (size_t i = 0; i < n; i += 2)
+        {
+        unsigned short g = static_cast<unsigned short>(data[i]);
+        unsigned short e = static_cast<unsigned short>(data[i+1]);
+        ptr[i/2] = vtkDICOMTag(g,e);
+        }
       }
     }
 }
@@ -758,20 +774,7 @@ void vtkDICOMValue::CreateValue<char>(
 // Constructor methods call the factory to create the right internal type.
 vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, double v)
 {
-  if (vr == vtkDICOMVR::AT)
-    {
-    // This constructor will be called if e.g. DC::FrameTime is passed
-    // as the second parameter, because the compiler will prefer to
-    // conver the enum type to "double" rather than to vtkDICOMTag.
-    unsigned int i = static_cast<unsigned int>(v);
-    vtkDICOMTag t(static_cast<unsigned short>(i >> 16),
-                  static_cast<unsigned short>(i));
-    this->CreateValue(vr, &t, 1);
-    }
-  else
-    {
-    this->CreateValue(vr, &v, 1);
-    }
+  this->CreateValue(vr, &v, 1);
 }
 
 vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr, const std::string& v)
