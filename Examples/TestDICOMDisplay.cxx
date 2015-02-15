@@ -4,6 +4,7 @@
 #include "vtkDICOMFileSorter.h"
 #include "vtkDICOMReader.h"
 #include "vtkDICOMCTRectifier.h"
+#include "vtkDICOMApplyPalette.h"
 
 #include "vtkRenderWindowInteractor.h"
 #include "vtkInteractorStyleImage.h"
@@ -117,6 +118,13 @@ int main(int argc, char *argv[])
   // get the output port to connect to the display pipeline
   vtkAlgorithmOutput *portToDisplay = reader->GetOutputPort();
 
+  vtkSmartPointer<vtkDICOMApplyPalette> palette =
+    vtkSmartPointer<vtkDICOMApplyPalette>::New();
+  palette->SetInputConnection(reader->GetOutputPort());
+  palette->Update();
+  palette->GetOutput()->GetScalarRange(range);
+  portToDisplay = palette->GetOutputPort();
+
 #if 0
   // check if the matrix indicates a tilted CT gantry
   vtkSmartPointer<vtkMatrix4x4> pmat =
@@ -174,7 +182,7 @@ int main(int argc, char *argv[])
   vtkSmartPointer<vtkDICOMCTRectifier> rect =
     vtkSmartPointer<vtkDICOMCTRectifier>::New();
   rect->SetVolumeMatrix(reader->GetPatientMatrix());
-  rect->SetInputConnection(reader->GetOutputPort());
+  rect->SetInputConnection(portToDisplay);
   rect->Update();
   portToDisplay = rect->GetOutputPort();
 #endif

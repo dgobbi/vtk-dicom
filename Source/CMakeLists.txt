@@ -52,6 +52,7 @@ set(LIB_SRCS
   vtkDICOMUtilities.cxx
   vtkDICOMValue.cxx
   vtkDICOMWriter.cxx
+  vtkDICOMApplyPalette.cxx
   vtkDICOMToRAS.cxx
   vtkDICOMCTRectifier.cxx
   vtkDICOMMetaDataAdapter.cxx
