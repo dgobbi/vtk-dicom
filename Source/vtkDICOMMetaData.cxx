@@ -20,6 +20,7 @@
 #include <vtkInformationDataObjectKey.h>
 #include <vtkMatrix4x4.h>
 #include <vtkAbstractArray.h>
+#include <vtkIntArray.h>
 
 #include <assert.h>
 #include <vector>
@@ -42,12 +43,22 @@ vtkDICOMMetaData::vtkDICOMMetaData()
   this->Head.Next = &this->Tail;
   this->Tail.Prev = &this->Head;
   this->Tail.Next = NULL;
+  this->FileIndexArray = NULL;
+  this->FrameIndexArray = NULL;
 }
 
 // Destructor
 vtkDICOMMetaData::~vtkDICOMMetaData()
 {
   this->Clear();
+  if (this->FileIndexArray)
+    {
+    this->FileIndexArray->Delete();
+    }
+  if (this->FrameIndexArray)
+    {
+    this->FrameIndexArray->Delete();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -82,6 +93,42 @@ void vtkDICOMMetaData::SetNumberOfInstances(int n)
   else
     {
     this->NumberOfInstances = n;
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMMetaData::SetFileIndexArray(vtkIntArray *a)
+{
+  if (this->FileIndexArray != a)
+    {
+    if (this->FileIndexArray)
+      {
+      this->FileIndexArray->Delete();
+      }
+    this->FileIndexArray = a;
+    if (this->FileIndexArray)
+      {
+      this->FileIndexArray->Register(this);
+      }
+    this->Modified();
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMMetaData::SetFrameIndexArray(vtkIntArray *a)
+{
+  if (this->FrameIndexArray != a)
+    {
+    if (this->FrameIndexArray)
+      {
+      this->FrameIndexArray->Delete();
+      }
+    this->FrameIndexArray = a;
+    if (this->FrameIndexArray)
+      {
+      this->FrameIndexArray->Register(this);
+      }
+    this->Modified();
     }
 }
 
@@ -990,4 +1037,6 @@ void vtkDICOMMetaData::PrintSelf(ostream& os, vtkIndent indent)
      << this->NumberOfInstances << "\n";
   os << indent << "NumberOfDataElements: "
      << this->NumberOfDataElements << "\n";
+  os << indent << "FileIndexArray: " << this->FileIndexArray << "\n";
+  os << indent << "FrameIndexArray: " << this->FrameIndexArray << "\n";
 }

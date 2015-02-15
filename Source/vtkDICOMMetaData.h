@@ -22,6 +22,7 @@
 #include <string>
 
 class vtkInformationDataObjectKey;
+class vtkIntArray;
 class vtkDICOMTagPath;
 
 //! A container class for DICOM metadata.
@@ -195,6 +196,14 @@ public:
   vtkDICOMValue MakeValueWithSpecificCharacterSet(
     vtkDICOMVR vr, const std::string& v);
 
+  //! Set the array to convert slice, component indices to file index.
+  void SetFileIndexArray(vtkIntArray *fileArray);
+  vtkIntArray *GetFileIndexArray() { return this->FileIndexArray; }
+
+  //! Set the array to convert slice, component indices to frame index.
+  void SetFrameIndexArray(vtkIntArray *frameArray);
+  vtkIntArray *GetFrameIndexArray() { return this->FrameIndexArray; }
+
   //! Copy all the attributes from another MetaData object.
   /*!
    *  Copy attributes from the source meta data object into this one.
@@ -249,6 +258,12 @@ private:
 
   //! The number of data elements.
   int NumberOfDataElements;
+
+  //! An array to map slices and components to files.
+  vtkIntArray *FileIndexArray;
+
+  //! An array to map slices and components to frames.
+  vtkIntArray *FrameIndexArray;
 
   vtkDICOMMetaData(const vtkDICOMMetaData&);  // Not implemented.
   void operator=(const vtkDICOMMetaData&);  // Not implemented.
