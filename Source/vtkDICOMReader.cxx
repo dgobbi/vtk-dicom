@@ -993,6 +993,8 @@ int vtkDICOMReader::RequestInformation(
   vtkDataObject::SetPointDataActiveScalarInfo(
     outInfo, this->DataScalarType, this->NumberOfScalarComponents);
 
+  outInfo->Set(vtkDICOMMetaData::META_DATA(), this->MetaData);
+
   return 1;
 }
 
