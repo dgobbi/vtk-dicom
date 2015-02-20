@@ -26,6 +26,16 @@ set(DICOM_USE_VTKZLIB "@DICOM_USE_VTKZLIB@")
 set(DICOM_VTK_DIR "@VTK_DIR@")
 if(NOT VTK_FOUND)
   find_package(VTK PATHS "${DICOM_VTK_DIR}")
+else()
+  get_filename_component(tmp1 "${DICOM_VTK_DIR}" REALPATH)
+  get_filename_component(tmp2 "${VTK_DIR}" REALPATH)
+  if(NOT "${tmp1}" STREQUAL "${tmp2}")
+    message(WARNING
+      "Mismatch for VTK between vtk-dicom and current project: "
+      "DICOM_DIR=${DICOM_DIR} "
+      "VTK_DICOM_DIR=${DICOM_VTK_DIR} "
+      "VTK_DIR=${VTK_DIR}")
+  endif()
 endif()
 if(DICOM_USE_GDCM)
   set(DICOM_GDCM_DIR "@GDCM_DIR@")
