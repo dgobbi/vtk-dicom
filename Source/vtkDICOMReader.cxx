@@ -1482,7 +1482,12 @@ int vtkDICOMReader::RequestData(
   this->AllocateOutputData(data, extent);
 #endif
 
+  // label the scalars as "PixelData"
   data->GetPointData()->GetScalars()->SetName("PixelData");
+
+  // add the meta data to the data set
+  vtkInformation *dataInfo = data->GetInformation();
+  dataInfo->Set(vtkDICOMMetaData::META_DATA(), this->MetaData);
 
   unsigned char *dataPtr =
     static_cast<unsigned char *>(data->GetScalarPointer());

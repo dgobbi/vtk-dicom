@@ -101,7 +101,10 @@ int vtkDICOMApplyPalette::RequestInformation(
 
   if (meta)
     {
-    outInfo->Set(vtkDICOMMetaData::META_DATA(), meta);
+    vtkSmartPointer<vtkDICOMMetaData> outMeta =
+      vtkSmartPointer<vtkDICOMMetaData>::New();
+    outMeta->ShallowCopy(meta);
+    outInfo->Set(vtkDICOMMetaData::META_DATA(), outMeta);
     }
 
   vtkDataObject::SetPointDataActiveScalarInfo(
@@ -124,6 +127,16 @@ int vtkDICOMApplyPalette::RequestData(
   vtkImageData *outData =
     static_cast<vtkImageData *>(outInfo->Get(vtkDataObject::DATA_OBJECT()));
 
+  vtkDICOMMetaData *meta = vtkDICOMMetaData::SafeDownCast(
+    outInfo->Get(vtkDICOMMetaData::META_DATA()));
+
+  // copy the meta data to the output
+  if (meta)
+    {
+    vtkInformation *dataInfo = outData->GetInformation();
+    dataInfo->Set(vtkDICOMMetaData::META_DATA(), meta);
+    }
+
   if (this->Bypass)
     {
     outData->CopyStructure(inData);
@@ -131,9 +144,6 @@ int vtkDICOMApplyPalette::RequestData(
     }
   else
     {
-    vtkDICOMMetaData *meta = vtkDICOMMetaData::SafeDownCast(
-      inInfo->Get(vtkDICOMMetaData::META_DATA()));
-
     vtkSmartPointer<vtkImageData> image =
       vtkSmartPointer<vtkImageData>::New();
     image->CopyStructure(inData);
