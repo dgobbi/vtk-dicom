@@ -76,10 +76,26 @@ void vtkDICOMMetaData::Clear()
     }
 
   this->NumberOfDataElements = 0;
-  this->NumberOfInstances = 1;
   this->Table = NULL;
   this->Head.Next = &this->Tail;
   this->Tail.Prev = &this->Head;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMMetaData::Initialize()
+{
+  this->Clear();
+  this->NumberOfInstances = 1;
+  if (this->FileIndexArray)
+    {
+    this->FileIndexArray->Delete();
+    this->FileIndexArray = 0;
+    }
+  if (this->FrameIndexArray)
+    {
+    this->FrameIndexArray->Delete();
+    this->FrameIndexArray = 0;
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -847,6 +863,8 @@ void vtkDICOMMetaData::ShallowCopy(vtkDataObject *source)
       {
       this->NumberOfInstances = o->NumberOfInstances;
       this->CopyAttributes(o);
+      this->SetFileIndexArray(o->FileIndexArray);
+      this->SetFrameIndexArray(o->FrameIndexArray);
       }
     this->vtkDataObject::ShallowCopy(source);
     }
@@ -863,6 +881,16 @@ void vtkDICOMMetaData::DeepCopy(vtkDataObject *source)
       {
       this->NumberOfInstances = o->NumberOfInstances;
       this->CopyAttributes(o);
+      if (o->FileIndexArray)
+        {
+        this->FileIndexArray = vtkIntArray::New();
+        this->FileIndexArray->DeepCopy(o->FileIndexArray);
+        }
+      if (o->FrameIndexArray)
+        {
+        this->FrameIndexArray = vtkIntArray::New();
+        this->FrameIndexArray->DeepCopy(o->FrameIndexArray);
+        }
       }
     this->vtkDataObject::DeepCopy(source);
     }

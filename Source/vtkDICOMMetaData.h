@@ -54,9 +54,11 @@ public:
   int GetNumberOfInstances() { return this->NumberOfInstances; }
   void SetNumberOfInstances(int n);
 
-  //! Clear the metadata, initialize the structure.
+  //! Remove all data elements.
   void Clear();
-  void Initialize() { this->Clear(); }
+
+  //! Remove all data elements and initialize all members.
+  void Initialize();
 
   //! Get the number of data elements that are present.
   int GetNumberOfDataElements() {

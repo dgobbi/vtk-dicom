@@ -569,7 +569,7 @@ int vtkDICOMReader::RequestInformation(
   this->TimeSpacing = 1.0;
 
   // Clear the meta data, prepare the parser.
-  this->MetaData->Clear();
+  this->MetaData->Initialize();
   if (numFiles > 0)
     {
     this->MetaData->SetNumberOfInstances(numFiles);

@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
   TestAssert(metaData->GetNumberOfInstances() == 3);
   metaData->RemoveAttribute(DC::Modality);
   TestAssert(metaData->GetNumberOfDataElements() == 0);
-  metaData->Clear();
+  metaData->Initialize();
   TestAssert(metaData->GetNumberOfInstances() == 1);
 
   // test iterating through the data elements
@@ -474,7 +474,7 @@ int main(int argc, char *argv[])
   TestAssert(mcopy->GetAttributeValue(
     DC::AcquisitionDateTime).AsString() == acquisitionTime);
 
-  mcopy->Clear();
+  mcopy->Initialize();
   metaData->DeepCopy(mcopy);
   TestAssert(metaData->GetNumberOfInstances() == 1);
   TestAssert(metaData->GetNumberOfDataElements() == 0);
