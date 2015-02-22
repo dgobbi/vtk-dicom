@@ -245,6 +245,10 @@ protected:
   //! Find the attribute value for the specified image index.
   const vtkDICOMValue *FindAttributeValue(int idx, vtkDICOMTag tag);
 
+  //! Find the attribute value for the specified image index.
+  const vtkDICOMValue *FindAttributeValue(
+    int idx, const vtkDICOMTagPath& tagpath);
+
 private:
   //! The number of DICOM files.
   int NumberOfInstances;

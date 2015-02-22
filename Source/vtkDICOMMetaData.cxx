@@ -238,6 +238,29 @@ const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
 }
 
 //----------------------------------------------------------------------------
+const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
+  int idx, const vtkDICOMTagPath& tagpath)
+{
+  const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tagpath.GetHead());
+  if (vptr != 0 && tagpath.HasTail())
+    {
+    unsigned int i = tagpath.GetIndex();
+    unsigned int n = vptr->GetNumberOfValues();
+    const vtkDICOMItem *items = vptr->GetSequenceData();
+    vptr = 0;
+    if (items != 0 && i < n)
+      {
+      vptr = &items[i].GetAttributeValue(tagpath.GetTail());
+      if (!vptr->IsValid())
+        {
+        vptr = 0;
+        }
+      }
+    }
+  return vptr;
+}
+
+//----------------------------------------------------------------------------
 const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(vtkDICOMTag tag)
 {
   const vtkDICOMValue *vptr = this->FindAttributeValue(0, tag);
@@ -254,28 +277,18 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
 
 //----------------------------------------------------------------------------
 const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
-  int idx, const vtkDICOMTagPath &tagpath)
+  const vtkDICOMTagPath &tagpath)
 {
-  const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tagpath.GetHead());
-  if (vptr != 0 && tagpath.HasTail())
-    {
-    unsigned int i = tagpath.GetIndex();
-    unsigned int n = vptr->GetNumberOfValues();
-    const vtkDICOMItem *items = vptr->GetSequenceData();
-    if (items != 0 && i < n)
-      {
-      return items[i].GetAttributeValue(tagpath.GetTail());
-      }
-    vptr = 0;
-    }
+  const vtkDICOMValue *vptr = this->FindAttributeValue(0, tagpath);
   return (vptr ? *vptr : this->Tail.Value);
 }
 
 //----------------------------------------------------------------------------
 const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
-  const vtkDICOMTagPath &tagpath)
+  int idx, const vtkDICOMTagPath &tagpath)
 {
-  return this->GetAttributeValue(0, tagpath);
+  const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tagpath);
+  return (vptr ? *vptr : this->Tail.Value);
 }
 
 //----------------------------------------------------------------------------
@@ -341,10 +354,10 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
     }
 
   // search root last of all
-  const vtkDICOMValue &v = this->GetAttributeValue(idx, tagpath);
+  const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tagpath);
 
   // try private value (see above) if attribute wasn't found
-  const vtkDICOMValue *vptr = (v.IsValid() ? &v : privateValue);
+  vptr = (vptr ? vptr : privateValue);
 
   return (vptr ? *vptr : this->Tail.Value);
 }
