@@ -229,8 +229,15 @@ const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
     const vtkDICOMValue *sptr = vptr->GetMultiplexData();
     if (sptr)
       {
-      assert(idx >= 0 && idx < static_cast<int>(vptr->GetNumberOfValues()));
-      vptr = &sptr[idx];
+      size_t n = vptr->GetNumberOfValues();
+      vptr = 0;
+      if (idx >= 0 && static_cast<size_t>(idx) < n)
+        {
+        if (sptr[idx].IsValid())
+          {
+          vptr = &sptr[idx];
+          }
+        }
       }
     }
 
