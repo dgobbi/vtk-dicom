@@ -110,6 +110,8 @@ public:
 
   //! Get an attribute value for the specified file and frame index.
   /*!
+   *  In order to get the file and frame index for a particular slice
+   *  of a volume, use the GetFileIndex() and GetFrameIndex() methods.
    *  For enhanced multi-frame DICOM files, much of the meta data is
    *  stored per-frame.  This method will search for the attribute
    *  in the PerFrameFunctionGroupSequence first, then in the
@@ -120,6 +122,28 @@ public:
   const vtkDICOMValue &GetAttributeValue(int idx, int frame, vtkDICOMTag tag);
   const vtkDICOMValue &GetAttributeValue(
     int idx, int frame, const vtkDICOMTagPath &p);
+
+  //! Get the file index for the given image slice and component.
+  /*!
+   *  This takes into account the way the files were sorted to create
+   *  the volume (as given by the FileIndexArray).  For multi-component
+   *  images, supply both the component of interest, and the total number
+   *  of components.  The return value will be -1 if an index is out of
+   *  range.
+   */
+  int GetFileIndex(int sliceIdx, int compIdx, int numComps);
+  int GetFileIndex(int sliceIdx);
+
+  //! Get the frame index for the given image slice and component.
+  /*!
+   *  This takes into account the way the framess were sorted to create
+   *  the volume (as given by the FileIndexArray).  For multi-component
+   *  images, supply both the component of interest, and the total number
+   *  of components.  The return value will be -1 if an index is out of
+   *  range.
+   */
+  int GetFrameIndex(int sliceIdx, int compIdx, int numComps);
+  int GetFrameIndex(int sliceIdx);
 
   //! Set an attribute value for the image at file index "idx".
   /*!

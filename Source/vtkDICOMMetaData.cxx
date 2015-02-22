@@ -313,7 +313,9 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
   const vtkDICOMValue *privateValue = 0;
 
   // search PerFrame and then Shared functional sequences, if present
-  for (int i = 0; i < 2; i++)
+  // (if frame is "-1", then only search SharedFunctionalGroups)
+  int istart = (frame < 0 ? 1 : 0);
+  for (int i = istart; i < 2; i++)
     {
     // we only need the frame number for the PerFrame sequence
     size_t f = (i == 0 ? frame : 0);
@@ -374,6 +376,60 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
   int idx, int frame, vtkDICOMTag tag)
 {
   return this->GetAttributeValue(idx, frame, vtkDICOMTagPath(tag));
+}
+
+//----------------------------------------------------------------------------
+int vtkDICOMMetaData::GetFileIndex(int sliceIdx)
+{
+  if (this->FileIndexArray == 0 || sliceIdx < 0 ||
+      sliceIdx >= this->FileIndexArray->GetNumberOfTuples())
+    {
+    return -1;
+    }
+
+  int n = this->FileIndexArray->GetNumberOfComponents();
+  return this->FileIndexArray->GetValue(sliceIdx*n);
+}
+
+//----------------------------------------------------------------------------
+int vtkDICOMMetaData::GetFileIndex(int sliceIdx, int compIdx, int numComp)
+{
+  if (this->FileIndexArray == 0 || sliceIdx < 0 ||
+      sliceIdx >= this->FileIndexArray->GetNumberOfTuples() ||
+      compIdx < 0 || compIdx >= numComp)
+    {
+    return -1;
+    }
+
+  int n = this->FileIndexArray->GetNumberOfComponents();
+  return this->FileIndexArray->GetValue(sliceIdx*n + compIdx*n/numComp);
+}
+
+//----------------------------------------------------------------------------
+int vtkDICOMMetaData::GetFrameIndex(int sliceIdx)
+{
+  if (this->FrameIndexArray == 0 || sliceIdx < 0 ||
+      sliceIdx >= this->FrameIndexArray->GetNumberOfTuples())
+    {
+    return -1;
+    }
+
+  int n = this->FrameIndexArray->GetNumberOfComponents();
+  return this->FrameIndexArray->GetValue(sliceIdx*n);
+}
+
+//----------------------------------------------------------------------------
+int vtkDICOMMetaData::GetFrameIndex(int sliceIdx, int compIdx, int numComp)
+{
+  if (this->FrameIndexArray == 0 || sliceIdx < 0 ||
+      sliceIdx >= this->FrameIndexArray->GetNumberOfTuples() ||
+      compIdx < 0 || compIdx >= numComp)
+    {
+    return -1;
+    }
+
+  int n = this->FrameIndexArray->GetNumberOfComponents();
+  return this->FrameIndexArray->GetValue(sliceIdx*n + compIdx*n/numComp);
 }
 
 //----------------------------------------------------------------------------
