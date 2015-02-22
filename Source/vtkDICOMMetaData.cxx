@@ -282,14 +282,22 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
 const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
   int idx, int frame, const vtkDICOMTagPath &tagpath)
 {
-  // for storing a pointer when attribute is found in a private sequence
+  // if either of these is present in an enhanced DICOM file, then they
+  // will be searched before the root is searched
+  const DC::EnumType fgs[2] = {
+    DC::PerFrameFunctionalGroupsSequence,
+    DC::SharedFunctionalGroupsSequence
+  };
+
+  // for temporarily saving location to private value (see below)
   const vtkDICOMValue *privateValue = 0;
-  // search PerFrame first
-  const vtkDICOMValue *seq =
-    this->FindAttributeValue(idx, DC::PerFrameFunctionalGroupsSequence);
+
+  // search PerFrame and then Shared functional sequences, if present
   for (int i = 0; i < 2; i++)
     {
-    unsigned int f = (i == 0 ? frame : 0);
+    // we only need the frame number for the PerFrame sequence
+    size_t f = (i == 0 ? frame : 0);
+    const vtkDICOMValue *seq = this->FindAttributeValue(idx, fgs[i]);
     if (seq && f < seq->GetNumberOfValues())
       {
       // search for the item that matches the frame
@@ -330,19 +338,15 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
         ++iter;
         }
       }
-    // search Shared next
-    seq = this->FindAttributeValue(idx, DC::SharedFunctionalGroupsSequence);
     }
 
   // search root last of all
-  const vtkDICOMValue& v = this->GetAttributeValue(idx, tagpath);
-  if (privateValue && !v.IsValid())
-    {
-    // attributes found in private parts of the PerFrame or Shared are
-    // only returned if the attribute could not be found elsewhere
-    return *privateValue;
-    }
-  return v;
+  const vtkDICOMValue &v = this->GetAttributeValue(idx, tagpath);
+
+  // try private value (see above) if attribute wasn't found
+  const vtkDICOMValue *vptr = (v.IsValid() ? &v : privateValue);
+
+  return (vptr ? *vptr : this->Tail.Value);
 }
 
 //----------------------------------------------------------------------------
