@@ -25,6 +25,8 @@
 #include "vtkPointData.h"
 #include "vtkLookupTable.h"
 #include "vtkImageMapToColors.h"
+#include "vtkAlgorithmOutput.h"
+#include "vtkTrivialProducer.h"
 #include "vtkSmartPointer.h"
 #include "vtkVersion.h"
 
@@ -70,24 +72,48 @@ int vtkDICOMApplyPalette::RequestInformation(
   int numComponents =
     scalarInfo->Get(vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
 
+  vtkDICOMMetaData *meta = 0;
+  if (inInfo->Has(vtkDICOMMetaData::META_DATA()))
+    {
+    // Get the meta data from upstream
+    meta = vtkDICOMMetaData::SafeDownCast(
+      inInfo->Get(vtkDICOMMetaData::META_DATA()));
+    }
+  else
+    {
+    // If SetInputData was used, the meta data is attached to the data
+    vtkAlgorithmOutput *inputConnection = this->GetInputConnection(0, 0);
+    if (inputConnection)
+      {
+      vtkAlgorithm *producer = inputConnection->GetProducer();
+      if (producer && vtkTrivialProducer::SafeDownCast(producer))
+        {
+        vtkDataObject *inputData = producer->GetOutputDataObject(0);
+        if (inputData)
+          {
+          vtkInformation *dataInfo = inputData->GetInformation();
+          if (dataInfo->Has(vtkDICOMMetaData::META_DATA()))
+            {
+            meta = vtkDICOMMetaData::SafeDownCast(
+              dataInfo->Get(vtkDICOMMetaData::META_DATA()));
+            }
+          }
+        }
+      }
+    }
+
   // Bypass unless photometric is PALETTE_COLOR
   this->Bypass = true;
 
   // Modify the information
-  vtkDICOMMetaData *meta = 0;
-  if (inInfo->Has(vtkDICOMMetaData::META_DATA()))
+  if (meta)
     {
-    meta = vtkDICOMMetaData::SafeDownCast(
-      inInfo->Get(vtkDICOMMetaData::META_DATA()));
-    if (meta)
+    if (meta->GetAttributeValue(DC::PhotometricInterpretation)
+          .Matches("PALETTE?COLOR"))
       {
-      if (meta->GetAttributeValue(DC::PhotometricInterpretation)
-            .Matches("PALETTE?COLOR"))
-        {
-        this->Bypass = false;
-        scalarType = VTK_UNSIGNED_CHAR;
-        numComponents *= 3;
-        }
+      this->Bypass = false;
+      scalarType = VTK_UNSIGNED_CHAR;
+      numComponents *= 3;
       }
     }
 
