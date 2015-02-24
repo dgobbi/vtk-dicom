@@ -22,6 +22,7 @@
 
 class vtkLookupTable;
 class vtkDICOMMetaData;
+class vtkDICOMPerFilePalette;
 
 //----------------------------------------------------------------------------
 class VTK_DICOM_EXPORT vtkDICOMApplyPalette
@@ -36,6 +37,12 @@ public:
   // Description:
   // Print information about this object.
   virtual void PrintSelf(ostream& os, vtkIndent indent);
+
+  // Description:
+  // Generate the lookup table for the specified image in the series.
+  // Usually, it will be the same for all images.
+  static void FillLookupTable(
+    vtkDICOMMetaData *meta, int fileIndex, vtkLookupTable *table);
 
 protected:
   vtkDICOMApplyPalette();
@@ -55,13 +62,8 @@ protected:
     vtkImageData **outData, int ext[6], int id);
 
   // Description:
-  // Generate the lookup table for the specified image in the series.
-  void FillLookupTable(
-    vtkDICOMMetaData *meta, int fileIndex, vtkLookupTable *table);
-
-  // Description:
-  // Whether to bypass the filter.
-  bool Bypass;
+  // Container for the lookup tables used.
+  vtkDICOMPerFilePalette *Palette;
 
 private:
   vtkDICOMApplyPalette(const vtkDICOMApplyPalette&);  // Not implemented.

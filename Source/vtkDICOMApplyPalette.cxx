@@ -30,19 +30,42 @@
 #include "vtkSmartPointer.h"
 #include "vtkVersion.h"
 
+#include "vtkTemplateAliasMacro.h"
+// turn off types that never occur in DICOM palette images
+# undef VTK_USE_INT64
+# define VTK_USE_INT64 0
+# undef VTK_USE_UINT64
+# define VTK_USE_UINT64 0
+# undef VTK_USE_INT32
+# define VTK_USE_INT32 0
+# undef VTK_USE_UINT32
+# define VTK_USE_UINT32 0
+# undef VTK_USE_FLOAT64
+# define VTK_USE_FLOAT64 0
+# undef VTK_USE_FLOAT32
+# define VTK_USE_FLOAT32 0
+
 #include <math.h>
 
+#include <vector>
+
 vtkStandardNewMacro(vtkDICOMApplyPalette);
+
+class vtkDICOMPerFilePalette :
+  public std::vector<vtkSmartPointer<vtkLookupTable> >
+{
+};
 
 //----------------------------------------------------------------------------
 vtkDICOMApplyPalette::vtkDICOMApplyPalette()
 {
-  this->Bypass = true;
+  this->Palette = 0;
 }
 
 //----------------------------------------------------------------------------
 vtkDICOMApplyPalette::~vtkDICOMApplyPalette()
 {
+  delete this->Palette;
 }
 
 //----------------------------------------------------------------------------
@@ -50,6 +73,90 @@ void vtkDICOMApplyPalette::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }
+
+//----------------------------------------------------------------------------
+
+namespace {
+
+template<class T>
+void vtkDICOMApplyPalletteExecute(
+  vtkDICOMApplyPalette *self, vtkImageData *inData, T *inPtr0,
+  vtkImageData *outData, unsigned char *outPtr0, int extent[6],
+  vtkDICOMPerFilePalette *palette, int id)
+{
+  vtkInformation *dataInfo = outData->GetInformation();
+  vtkDICOMMetaData *meta = vtkDICOMMetaData::SafeDownCast(
+    dataInfo->Get(vtkDICOMMetaData::META_DATA()));
+
+  vtkIdType inIncX, inIncY, inIncZ;
+  inData->GetIncrements(inIncX, inIncY, inIncZ);
+  vtkIdType outIncX, outIncY, outIncZ;
+  outData->GetIncrements(outIncX, outIncY, outIncZ);
+  int inputComponents = inData->GetNumberOfScalarComponents();
+  int outputComponents = outData->GetNumberOfScalarComponents();
+
+  // target for progress tracking
+  vtkIdType target = inputComponents;
+  target *= extent[5] - extent[4] + 1;
+  target *= extent[3] - extent[2] + 1;
+  vtkIdType progress = 0;
+
+  for (int c = 0; c < inputComponents; c++)
+    {
+    T *inPtrC = inPtr0 + c;
+    unsigned char *outPtrC = outPtr0 + 3*c;
+
+    for (int zIdx = extent[4]; zIdx <= extent[5]; zIdx++)
+      {
+      int i = meta->GetFileIndex(zIdx, c, inputComponents);
+      i = (i >= 0 ? i : 0);
+      vtkLookupTable *table = (*(palette))[i];
+      double range[2];
+      table->GetTableRange(range);
+      int firstValueMapped = static_cast<int>(range[0]);
+      int maxIdx = static_cast<int>(range[1]) - firstValueMapped;
+      if (maxIdx >= table->GetNumberOfColors())
+        {
+        maxIdx = table->GetNumberOfColors() - 1;
+        }
+      const unsigned char *rgba = table->GetPointer(0);
+      T *inPtrZ = inPtrC + (zIdx - extent[4])*inIncZ;
+      unsigned char *outPtrZ = outPtrC + (zIdx - extent[4])*outIncZ;
+
+      for (int yIdx = extent[2]; yIdx <= extent[3]; yIdx++)
+        {
+        T *inPtr = inPtrZ + inIncY*(yIdx - extent[2]);
+        unsigned char *outPtr = outPtrZ + outIncY*(yIdx - extent[2]);
+
+        // in base thread, report progress every 2% of the way to 100%
+        if (id == 0)
+          {
+          ++progress;
+          vtkIdType icount = progress*50/target;
+          if (progress == icount*target/50)
+            {
+            self->UpdateProgress(progress*1.0/target);
+            }
+          }
+
+        for (int xIdx = extent[0]; xIdx <= extent[1]; xIdx++)
+          {
+          int idx = inPtr[0] - firstValueMapped;
+          idx = (idx >= 0 ? idx : 0);
+          idx = (idx <= maxIdx ? idx : maxIdx);
+          const unsigned char *rgb = rgba + 4*idx;
+          outPtr[0] = rgb[0];
+          outPtr[1] = rgb[1];
+          outPtr[2] = rgb[2];
+          inPtr += inputComponents;
+          outPtr += outputComponents;
+          }
+        }
+      }
+    }
+}
+
+} // end anonymous namespace
 
 //----------------------------------------------------------------------------
 int vtkDICOMApplyPalette::RequestInformation(
@@ -103,7 +210,8 @@ int vtkDICOMApplyPalette::RequestInformation(
     }
 
   // Bypass unless photometric is PALETTE_COLOR
-  this->Bypass = true;
+  delete this->Palette;
+  this->Palette = 0;
 
   // Modify the information
   if (meta)
@@ -111,7 +219,7 @@ int vtkDICOMApplyPalette::RequestInformation(
     if (meta->GetAttributeValue(DC::PhotometricInterpretation)
           .Matches("PALETTE?COLOR"))
       {
-      this->Bypass = false;
+      this->Palette = new vtkDICOMPerFilePalette;
       scalarType = VTK_UNSIGNED_CHAR;
       numComponents *= 3;
       }
@@ -141,7 +249,7 @@ int vtkDICOMApplyPalette::RequestInformation(
 
 //----------------------------------------------------------------------------
 int vtkDICOMApplyPalette::RequestData(
-  vtkInformation* vtkNotUsed(request),
+  vtkInformation* request,
   vtkInformationVector** inputVector,
   vtkInformationVector* outputVector)
 {
@@ -163,55 +271,60 @@ int vtkDICOMApplyPalette::RequestData(
     dataInfo->Set(vtkDICOMMetaData::META_DATA(), meta);
     }
 
-  if (this->Bypass)
+  if (meta == 0 || this->Palette == 0)
     {
     outData->CopyStructure(inData);
     outData->GetPointData()->PassData(inData->GetPointData());
+    return 1;
     }
-  else
+
+  // build the lookup tables for all files that make up the volume
+  int n = meta->GetNumberOfInstances();
+  this->Palette->resize(n);
+  for (int i = 0; i < n; i++)
     {
-    vtkSmartPointer<vtkImageData> image =
-      vtkSmartPointer<vtkImageData>::New();
-    image->CopyStructure(inData);
-    image->GetPointData()->PassData(inData->GetPointData());
-
-    vtkSmartPointer<vtkLookupTable> table =
-        vtkSmartPointer<vtkLookupTable>::New();
-
-    this->FillLookupTable(meta, 0, table);
-
-    vtkSmartPointer<vtkImageMapToColors> colors =
-      vtkSmartPointer<vtkImageMapToColors>::New();
-    colors->SetOutputFormatToRGB();
-    colors->SetLookupTable(table);
-    colors->SetNumberOfThreads(this->GetNumberOfThreads());
-
-#if (VTK_MAJOR_VERSION > 5)
-    colors->SetInputData(image);
-    this->AllocateOutputData(outData, outInfo, image->GetExtent());
-    colors->SetOutput(outData);
-    colors->Update();
-#else
-    colors->SetInput(image);
-    colors->Update();
-    outData->CopyStructure(colors->GetOutput());
-    outData->GetPointData()->PassData(colors->GetOutput()->GetPointData());
-#endif
+    (*(this->Palette))[i] = vtkSmartPointer<vtkLookupTable>::New();
+    this->FillLookupTable(meta, i, (*(this->Palette))[i]);
     }
 
-  return 1;
+  // allow the superclass to call the ThreadedRequestData method
+  int rval = this->Superclass::RequestData(
+    request, inputVector, outputVector);
+
+  this->Palette->clear();
+
+  return rval;
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMApplyPalette::ThreadedRequestData(
     vtkInformation *vtkNotUsed(request),
-    vtkInformationVector **vtkNotUsed(inputVector),
-    vtkInformationVector *vtkNotUsed(outputVector),
-    vtkImageData ***vtkNotUsed(inData),
-    vtkImageData **vtkNotUsed(outData),
-    int vtkNotUsed(extent)[6], int vtkNotUsed(id))
+    vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector,
+    vtkImageData ***,
+    vtkImageData **,
+    int extent[6], int id)
 {
-  // this will never be called
+  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+  vtkImageData *inData =
+    vtkImageData::SafeDownCast(inInfo->Get(vtkDataObject::DATA_OBJECT()));
+
+  vtkInformation *outInfo = outputVector->GetInformationObject(0);
+  vtkImageData *outData =
+    static_cast<vtkImageData *>(outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
+  int scalarType = inData->GetScalarType();
+  void *inVoidPtr = inData->GetScalarPointerForExtent(extent);
+  void *outVoidPtr = outData->GetScalarPointerForExtent(extent);
+
+  switch (scalarType)
+    {
+    vtkTemplateAliasMacro(
+      vtkDICOMApplyPalletteExecute(
+        this, inData, static_cast<VTK_TT *>(inVoidPtr), outData,
+        static_cast<unsigned char *>(outVoidPtr), extent,
+        this->Palette, id));
+    }
 }
 
 //----------------------------------------------------------------------------
