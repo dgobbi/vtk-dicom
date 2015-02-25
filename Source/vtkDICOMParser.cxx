@@ -1206,6 +1206,7 @@ size_t Decoder<E>::ReadElementValue(
       break;
     case VTK_DICOM_ITEM:
       {
+      vtkDICOMTag tag = this->LastTag;
       vtkDICOMSequence seq;
       l = 0;
       while (l < static_cast<size_t>(vl) || vl == HxFFFFFFFF)
@@ -1312,6 +1313,10 @@ size_t Decoder<E>::ReadElementValue(
         seq = seq2;
         }
       v = seq;
+
+      // reset the tag and VR as we step out of the sequence
+      this->LastTag = tag;
+      this->LastVR = vr;
       }
       break;
     }
