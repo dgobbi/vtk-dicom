@@ -17,7 +17,7 @@
 #ifndef vtkDICOMApplyPalette_h
 #define vtkDICOMApplyPalette_h
 
-#include <vtkThreadedImageAlgorithm.h>
+#include "vtkDICOMAlgorithm.h"
 #include "vtkDICOMModule.h"
 
 class vtkLookupTable;
@@ -25,14 +25,13 @@ class vtkDICOMMetaData;
 class vtkDICOMPerFilePalette;
 
 //----------------------------------------------------------------------------
-class VTK_DICOM_EXPORT vtkDICOMApplyPalette
-  : public vtkThreadedImageAlgorithm
+class VTK_DICOM_EXPORT vtkDICOMApplyPalette : public vtkDICOMAlgorithm
 {
 public:
   // Description:
   // Static method for construction.
   static vtkDICOMApplyPalette *New();
-  vtkTypeMacro(vtkDICOMApplyPalette, vtkThreadedImageAlgorithm);
+  vtkTypeMacro(vtkDICOMApplyPalette, vtkDICOMAlgorithm);
 
   // Description:
   // Print information about this object.

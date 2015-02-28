@@ -12,6 +12,7 @@
 
 =========================================================================*/
 #include "vtkDICOMReader.h"
+#include "vtkDICOMAlgorithm.h"
 #include "vtkDICOMFile.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMParser.h"
@@ -993,7 +994,9 @@ int vtkDICOMReader::RequestInformation(
   vtkDataObject::SetPointDataActiveScalarInfo(
     outInfo, this->DataScalarType, this->NumberOfScalarComponents);
 
-  outInfo->Set(vtkDICOMMetaData::META_DATA(), this->MetaData);
+  outInfo->Set(vtkDICOMAlgorithm::META_DATA(), this->MetaData);
+  outInfo->Set(vtkDICOMAlgorithm::PATIENT_MATRIX(),
+               *this->PatientMatrix->Element, 16);
 
   return 1;
 }
@@ -1487,7 +1490,9 @@ int vtkDICOMReader::RequestData(
 
   // add the meta data to the data set
   vtkInformation *dataInfo = data->GetInformation();
-  dataInfo->Set(vtkDICOMMetaData::META_DATA(), this->MetaData);
+  dataInfo->Set(vtkDICOMAlgorithm::META_DATA(), this->MetaData);
+  dataInfo->Set(vtkDICOMAlgorithm::PATIENT_MATRIX(),
+                *this->PatientMatrix->Element, 16);
 
   unsigned char *dataPtr =
     static_cast<unsigned char *>(data->GetScalarPointer());

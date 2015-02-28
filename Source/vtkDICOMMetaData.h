@@ -21,7 +21,6 @@
 
 #include <string>
 
-class vtkInformationDataObjectKey;
 class vtkIntArray;
 class vtkDICOMTagPath;
 
@@ -243,10 +242,6 @@ public:
   //! DataObject interface function.
   void ShallowCopy(vtkDataObject *source);
   void DeepCopy(vtkDataObject *source);
-
-  // Description:
-  // The information key for the meta data.
-  static vtkInformationDataObjectKey *META_DATA();
 
 protected:
   vtkDICOMMetaData();

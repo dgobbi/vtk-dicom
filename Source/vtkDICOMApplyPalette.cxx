@@ -13,7 +13,6 @@
 =========================================================================*/
 #include "vtkDICOMApplyPalette.h"
 #include "vtkDICOMMetaData.h"
-#include "vtkDICOMReader.h"
 
 #include "vtkObjectFactory.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
@@ -79,14 +78,14 @@ void vtkDICOMApplyPalette::PrintSelf(ostream& os, vtkIndent indent)
 namespace {
 
 template<class T>
-void vtkDICOMApplyPalletteExecute(
+void vtkDICOMApplyPaletteExecute(
   vtkDICOMApplyPalette *self, vtkImageData *inData, T *inPtr0,
   vtkImageData *outData, unsigned char *outPtr0, int extent[6],
   vtkDICOMPerFilePalette *palette, int id)
 {
   vtkInformation *dataInfo = outData->GetInformation();
   vtkDICOMMetaData *meta = vtkDICOMMetaData::SafeDownCast(
-    dataInfo->Get(vtkDICOMMetaData::META_DATA()));
+    dataInfo->Get(vtkDICOMAlgorithm::META_DATA()));
 
   vtkIdType inIncX, inIncY, inIncZ;
   inData->GetIncrements(inIncX, inIncY, inIncZ);
@@ -160,89 +159,44 @@ void vtkDICOMApplyPalletteExecute(
 
 //----------------------------------------------------------------------------
 int vtkDICOMApplyPalette::RequestInformation(
-  vtkInformation* vtkNotUsed(request),
+  vtkInformation* request,
   vtkInformationVector** inputVector,
   vtkInformationVector* outputVector)
 {
+  this->Superclass::RequestInformation(request, inputVector, outputVector);
+
+  // Get the scalar information
   vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
-
-  int extent[6];
-  inInfo->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
-
-  double spacing[3], origin[3];
-  inInfo->Get(vtkDataObject::SPACING(), spacing);
-  inInfo->Get(vtkDataObject::ORIGIN(), origin);
-
   vtkInformation *scalarInfo = vtkDataObject::GetActiveFieldInformation(inInfo,
     vtkDataObject::FIELD_ASSOCIATION_POINTS, vtkDataSetAttributes::SCALARS);
   int scalarType = scalarInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE());
   int numComponents =
     scalarInfo->Get(vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
 
-  vtkDICOMMetaData *meta = 0;
-  if (inInfo->Has(vtkDICOMMetaData::META_DATA()))
-    {
-    // Get the meta data from upstream
-    meta = vtkDICOMMetaData::SafeDownCast(
-      inInfo->Get(vtkDICOMMetaData::META_DATA()));
-    }
-  else
-    {
-    // If SetInputData was used, the meta data is attached to the data
-    vtkAlgorithmOutput *inputConnection = this->GetInputConnection(0, 0);
-    if (inputConnection)
-      {
-      vtkAlgorithm *producer = inputConnection->GetProducer();
-      if (producer && vtkTrivialProducer::SafeDownCast(producer))
-        {
-        vtkDataObject *inputData = producer->GetOutputDataObject(0);
-        if (inputData)
-          {
-          vtkInformation *dataInfo = inputData->GetInformation();
-          if (dataInfo->Has(vtkDICOMMetaData::META_DATA()))
-            {
-            meta = vtkDICOMMetaData::SafeDownCast(
-              dataInfo->Get(vtkDICOMMetaData::META_DATA()));
-            }
-          }
-        }
-      }
-    }
+  // Get the meta data
+  vtkInformation *metaInfo = this->GetMetaDataInformation(inputVector, 0, 0);
+  vtkDICOMMetaData *meta = vtkDICOMMetaData::SafeDownCast(
+      metaInfo->Get(vtkDICOMAlgorithm::META_DATA()));
 
   // Bypass unless photometric is PALETTE_COLOR
   delete this->Palette;
   this->Palette = 0;
 
   // Modify the information
-  if (meta)
+  if (meta &&
+      meta->GetAttributeValue(DC::PhotometricInterpretation)
+        .Matches("PALETTE?COLOR"))
     {
-    if (meta->GetAttributeValue(DC::PhotometricInterpretation)
-          .Matches("PALETTE?COLOR"))
-      {
-      this->Palette = new vtkDICOMPerFilePalette;
-      scalarType = VTK_UNSIGNED_CHAR;
-      numComponents *= 3;
-      }
+    // By setting Palette, we let RequestData know that there is a palette
+    this->Palette = new vtkDICOMPerFilePalette;
+    scalarType = VTK_UNSIGNED_CHAR;
+    numComponents *= 3;
+
+    // Set the output information.
+    vtkInformation* outInfo = outputVector->GetInformationObject(0);
+    vtkDataObject::SetPointDataActiveScalarInfo(
+      outInfo, scalarType, numComponents);
     }
-
-  // Set the output information.
-  vtkInformation* outInfo = outputVector->GetInformationObject(0);
-  outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(),
-               extent, 6);
-
-  outInfo->Set(vtkDataObject::SPACING(), spacing, 3);
-  outInfo->Set(vtkDataObject::ORIGIN(), origin, 3);
-
-  if (meta)
-    {
-    vtkSmartPointer<vtkDICOMMetaData> outMeta =
-      vtkSmartPointer<vtkDICOMMetaData>::New();
-    outMeta->ShallowCopy(meta);
-    outInfo->Set(vtkDICOMMetaData::META_DATA(), outMeta);
-    }
-
-  vtkDataObject::SetPointDataActiveScalarInfo(
-    outInfo, scalarType, numComponents);
 
   return 1;
 }
@@ -253,32 +207,27 @@ int vtkDICOMApplyPalette::RequestData(
   vtkInformationVector** inputVector,
   vtkInformationVector* outputVector)
 {
-  vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
-  vtkImageData *inData =
-    vtkImageData::SafeDownCast(inInfo->Get(vtkDataObject::DATA_OBJECT()));
-
-  vtkInformation *outInfo = outputVector->GetInformationObject(0);
-  vtkImageData *outData =
-    static_cast<vtkImageData *>(outInfo->Get(vtkDataObject::DATA_OBJECT()));
-
+  // Get the meta data
+  vtkInformation *metaInfo = this->GetMetaDataInformation(inputVector, 0, 0);
   vtkDICOMMetaData *meta = vtkDICOMMetaData::SafeDownCast(
-    outInfo->Get(vtkDICOMMetaData::META_DATA()));
+      metaInfo->Get(vtkDICOMAlgorithm::META_DATA()));
 
-  // copy the meta data to the output
-  if (meta)
-    {
-    vtkInformation *dataInfo = outData->GetInformation();
-    dataInfo->Set(vtkDICOMMetaData::META_DATA(), meta);
-    }
-
+  // Passthrough if there is no palette to apply
   if (meta == 0 || this->Palette == 0)
     {
+    vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
+    vtkInformation *outInfo = outputVector->GetInformationObject(0);
+    vtkImageData *inData =
+      vtkImageData::SafeDownCast(inInfo->Get(vtkDataObject::DATA_OBJECT()));
+    vtkImageData *outData =
+      static_cast<vtkImageData *>(outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
     outData->CopyStructure(inData);
     outData->GetPointData()->PassData(inData->GetPointData());
     return 1;
     }
 
-  // build the lookup tables for all files that make up the volume
+  // Build the lookup tables for all files that make up the volume
   int n = meta->GetNumberOfInstances();
   this->Palette->resize(n);
   for (int i = 0; i < n; i++)
@@ -287,7 +236,7 @@ int vtkDICOMApplyPalette::RequestData(
     this->FillLookupTable(meta, i, (*(this->Palette))[i]);
     }
 
-  // allow the superclass to call the ThreadedRequestData method
+  // Allow the superclass to call the ThreadedRequestData method
   int rval = this->Superclass::RequestData(
     request, inputVector, outputVector);
 
@@ -320,7 +269,7 @@ void vtkDICOMApplyPalette::ThreadedRequestData(
   switch (scalarType)
     {
     vtkTemplateAliasMacro(
-      vtkDICOMApplyPalletteExecute(
+      vtkDICOMApplyPaletteExecute(
         this, inData, static_cast<VTK_TT *>(inVoidPtr), outData,
         static_cast<unsigned char *>(outVoidPtr), extent,
         this->Palette, id));

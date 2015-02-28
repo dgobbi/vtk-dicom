@@ -17,7 +17,6 @@
 #include "vtkDICOMTagPath.h"
 
 #include <vtkObjectFactory.h>
-#include <vtkInformationDataObjectKey.h>
 #include <vtkMatrix4x4.h>
 #include <vtkAbstractArray.h>
 #include <vtkIntArray.h>
@@ -27,7 +26,6 @@
 #include <utility>
 
 vtkStandardNewMacro(vtkDICOMMetaData);
-vtkInformationKeyMacro(vtkDICOMMetaData, META_DATA, DataObject);
 
 // The hash table size, must be a power of two
 #define METADATA_HASH_SIZE 512
