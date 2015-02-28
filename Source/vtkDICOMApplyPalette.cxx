@@ -196,6 +196,22 @@ int vtkDICOMApplyPalette::RequestInformation(
     vtkInformation* outInfo = outputVector->GetInformationObject(0);
     vtkDataObject::SetPointDataActiveScalarInfo(
       outInfo, scalarType, numComponents);
+
+    // Modify the meta data, the image has become an RGB image
+    vtkDICOMMetaData *outMeta = vtkDICOMMetaData::SafeDownCast(
+      outInfo->Get(vtkDICOMAlgorithm::META_DATA()));
+    outMeta->SetAttributeValue(DC::SamplesPerPixel, 3);
+    outMeta->SetAttributeValue(DC::PhotometricInterpretation, "RGB");
+    outMeta->SetAttributeValue(DC::PixelRepresentation, 0);
+    outMeta->SetAttributeValue(DC::BitsAllocated, 8);
+    outMeta->SetAttributeValue(DC::BitsStored, 8);
+    outMeta->SetAttributeValue(DC::HighBit, 7);
+    outMeta->RemoveAttribute(DC::RedPaletteColorLookupTableDescriptor);
+    outMeta->RemoveAttribute(DC::GreenPaletteColorLookupTableDescriptor);
+    outMeta->RemoveAttribute(DC::BluePaletteColorLookupTableDescriptor);
+    outMeta->RemoveAttribute(DC::RedPaletteColorLookupTableData);
+    outMeta->RemoveAttribute(DC::GreenPaletteColorLookupTableData);
+    outMeta->RemoveAttribute(DC::BluePaletteColorLookupTableData);
     }
 
   return 1;
