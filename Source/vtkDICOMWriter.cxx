@@ -12,6 +12,7 @@
 
 =========================================================================*/
 #include "vtkDICOMWriter.h"
+#include "vtkDICOMAlgorithm.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMCompiler.h"
 #include "vtkDICOMSCGenerator.h"
@@ -27,6 +28,8 @@
 #include "vtkInformation.h"
 #include "vtkByteSwap.h"
 #include "vtkMatrix4x4.h"
+#include "vtkTrivialProducer.h"
+#include "vtkAlgorithmOutput.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
 #include "vtkCommand.h"
 #include "vtkErrorCode.h"
@@ -289,6 +292,7 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
     return 0;
     }
 
+  // Check whether image is stored top-to-bottom or bottom-to-top
   bool flipImage = (this->MemoryRowOrder == vtkDICOMWriter::BottomUp);
   bool reverseSlices = flipImage;
   if (this->FileSliceOrder == vtkDICOMWriter::LHR)
@@ -304,6 +308,46 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
     reverseSlices = true;
     }
 
+  // Get the meta data from the pipeline if not given explicitly
+  vtkDICOMMetaData *inMeta = this->MetaData;
+  vtkMatrix4x4 *inMatrix = this->PatientMatrix;
+  vtkInformation *metaInfo = info;
+  if (inMeta == 0 || inMatrix == 0)
+    {
+    // this code is needed for when SetInputData was used
+    vtkAlgorithmOutput *sourceConnection = this->GetInputConnection(0, 0);
+    if (sourceConnection)
+      {
+      vtkAlgorithm *producer = sourceConnection->GetProducer();
+      if (producer && vtkTrivialProducer::SafeDownCast(producer))
+        {
+        vtkDataObject *inputData = producer->GetOutputDataObject(0);
+        if (inputData)
+          {
+          metaInfo = inputData->GetInformation();
+          }
+        }
+      }
+    }
+  if (inMeta == 0)
+    {
+    inMeta = vtkDICOMMetaData::SafeDownCast(
+      metaInfo->Get(vtkDICOMAlgorithm::META_DATA()));
+    }
+  if (inMatrix == 0)
+    {
+    double *elements = metaInfo->Get(vtkDICOMAlgorithm::PATIENT_MATRIX());
+    if (elements)
+      {
+      inMatrix = vtkMatrix4x4::New();
+      inMatrix->DeepCopy(elements);
+      }
+    }
+  else
+    {
+    inMatrix->Register(0);
+    }
+
   // Generate the meta data
   this->Generator->SetMultiFrame(this->FileDimensionality > 2);
   this->Generator->SetOriginAtBottom(flipImage);
@@ -313,8 +357,12 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
   this->Generator->SetTimeSpacing(this->TimeSpacing);
   this->Generator->SetRescaleIntercept(this->RescaleIntercept);
   this->Generator->SetRescaleSlope(this->RescaleSlope);
-  this->Generator->SetSourceMetaData(this->MetaData);
-  this->Generator->SetPatientMatrix(this->PatientMatrix);
+  this->Generator->SetSourceMetaData(inMeta);
+  this->Generator->SetPatientMatrix(inMatrix);
+  if (inMatrix)
+    {
+    inMatrix->Delete();
+    }
   if (!this->Generator->GenerateInstance(info))
     {
     return 0;
