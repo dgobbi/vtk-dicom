@@ -1269,14 +1269,47 @@ void vtkDICOMCompiler::WriteFrame(const unsigned char *cp, vtkIdType size)
            this->MetaData->GetAttributeValue(DC::BitsAllocated).AsInt() > 8)
     {
     // Swap bytes before writing
+    int scalarSize =
+      (this->MetaData->GetAttributeValue(DC::BitsAllocated).AsInt() + 7)/8;
     unsigned char *buf = new unsigned char[size];
     unsigned char *dp = buf;
-    for (vtkIdType i = 0; i < size; i += 2)
+    if (scalarSize == 2)
       {
-      dp[0] = cp[1];
-      dp[1] = cp[0];
-      dp += 2;
-      cp += 2;
+      for (vtkIdType i = 0; i < size; i += 2)
+        {
+        dp[0] = cp[1];
+        dp[1] = cp[0];
+        dp += 2;
+        cp += 2;
+        }
+      }
+    else if (scalarSize == 4)
+      {
+      for (vtkIdType i = 0; i < size; i += 4)
+        {
+        dp[0] = cp[3];
+        dp[1] = cp[2];
+        dp[2] = cp[1];
+        dp[3] = cp[0];
+        dp += 4;
+        cp += 4;
+        }
+      }
+    else if (scalarSize == 8)
+      {
+      for (vtkIdType i = 0; i < size; i += 8)
+        {
+        dp[0] = cp[7];
+        dp[1] = cp[6];
+        dp[2] = cp[5];
+        dp[3] = cp[4];
+        dp[4] = cp[3];
+        dp[5] = cp[2];
+        dp[6] = cp[1];
+        dp[7] = cp[0];
+        dp += 8;
+        cp += 8;
+        }
       }
     n = this->OutputFile->Write(buf, size);
     delete [] buf;
