@@ -12,6 +12,7 @@
 
 =========================================================================*/
 #include "vtkDICOMCTRectifier.h"
+#include "vtkDICOMMetaData.h"
 
 #include "vtkImageData.h"
 #include "vtkMatrix4x4.h"
@@ -110,9 +111,10 @@ void vtkDICOMCTRectifier::SetReverse(int val)
 
 //----------------------------------------------------------------------------
 void vtkDICOMCTRectifier::ComputeMatrix(
-  int extent[6], double spacing[3], double origin[3])
+  const double volumeMatrix[16], const int extent[6],
+  double spacing[3], double origin[3])
 {
-  if (this->VolumeMatrix == 0)
+  if (volumeMatrix == 0)
     {
     this->RectifiedMatrix->Identity();
     this->Matrix->Identity();
@@ -122,13 +124,13 @@ void vtkDICOMCTRectifier::ComputeMatrix(
   // get the first two columns of the volume matrix
   double xvec[4] = { 1.0, 0.0, 0.0, 0.0 };
   double yvec[4] = { 0.0, 1.0, 0.0, 0.0 };
-  this->VolumeMatrix->MultiplyPoint(xvec, xvec);
-  this->VolumeMatrix->MultiplyPoint(yvec, yvec);
+  vtkMatrix4x4::MultiplyPoint(volumeMatrix, xvec, xvec);
+  vtkMatrix4x4::MultiplyPoint(volumeMatrix, yvec, yvec);
 
   // create the rectified matrix
   double normal[3];
   vtkMath::Cross(xvec, yvec, normal);
-  this->RectifiedMatrix->DeepCopy(this->VolumeMatrix);
+  this->RectifiedMatrix->DeepCopy(volumeMatrix);
   this->RectifiedMatrix->SetElement(0, 2, normal[0]);
   this->RectifiedMatrix->SetElement(1, 2, normal[1]);
   this->RectifiedMatrix->SetElement(2, 2, normal[2]);
@@ -139,11 +141,13 @@ void vtkDICOMCTRectifier::ComputeMatrix(
     {
     matrix->DeepCopy(this->RectifiedMatrix);
     matrix->Invert();
-    vtkMatrix4x4::Multiply4x4(matrix, this->VolumeMatrix, matrix);
+    double elements[16];
+    vtkMatrix4x4::Multiply4x4(*matrix->Element, volumeMatrix, elements);
+    matrix->DeepCopy(elements);
     }
   else
     {
-    matrix->DeepCopy(this->VolumeMatrix);
+    matrix->DeepCopy(volumeMatrix);
     matrix->Invert();
     vtkMatrix4x4::Multiply4x4(matrix, this->RectifiedMatrix, matrix);
     }
@@ -171,7 +175,7 @@ void vtkDICOMCTRectifier::ComputeMatrix(
     pos[2] = -pos[2];
     }
 
-  this->VolumeMatrix->MultiplyPoint(pos, pos);
+  vtkMatrix4x4::MultiplyPoint(volumeMatrix, pos, pos);
   this->RectifiedMatrix->SetElement(0, 3, pos[0]);
   this->RectifiedMatrix->SetElement(1, 3, pos[1]);
   this->RectifiedMatrix->SetElement(2, 3, pos[2]);
@@ -201,10 +205,13 @@ void vtkDICOMCTRectifier::UpdateMatrix()
 
 //----------------------------------------------------------------------------
 int vtkDICOMCTRectifier::RequestInformation(
-  vtkInformation* vtkNotUsed(request),
+  vtkInformation* request,
   vtkInformationVector** inputVector,
   vtkInformationVector* outputVector)
 {
+  this->Superclass::RequestInformation(request, inputVector, outputVector);
+
+  vtkInformation *metaInfo = this->GetMetaDataInformation(inputVector, 0, 0);
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
   vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
 
@@ -214,11 +221,42 @@ int vtkDICOMCTRectifier::RequestInformation(
   inInfo->Get(vtkDataObject::SPACING(), spacing);
   inInfo->Get(vtkDataObject::ORIGIN(), origin);
 
-  this->ComputeMatrix(extent, spacing, origin);
+  double *volumeMatrix;
+  if (this->VolumeMatrix)
+    {
+    // If a VolumeMatrix was provided, then use it.
+    volumeMatrix = *this->VolumeMatrix->Element;
+    }
+  else
+    {
+    // Otherwise, try to get the patient matrix from the pipeline.
+    volumeMatrix = metaInfo->Get(vtkDICOMAlgorithm::PATIENT_MATRIX());
+    }
 
+  // Compute the shear matrix and the new spacing and origin.
+  this->ComputeMatrix(volumeMatrix, extent, spacing, origin);
+
+  // Write the new patient matrix to the pipeline.
+  double *outMatrix = *this->RectifiedMatrix->Element;
+  if (this->Reverse)
+    {
+    outMatrix = volumeMatrix;
+    }
+  if (outMatrix)
+    {
+    outInfo->Set(vtkDICOMAlgorithm::PATIENT_MATRIX(), outMatrix, 16);
+    }
+
+  // The spacing and origin may have changed.
   outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent, 6);
   outInfo->Set(vtkDataObject::SPACING(), spacing, 3);
   outInfo->Set(vtkDataObject::ORIGIN(), origin, 3);
+
+  // Note that, after execution, the ImagePositionPatient in the META_DATA
+  // will no longer be correct, but we assume that it will be ignored because,
+  // within VTK, the PatientMatrix, Extent, Spacing, and Origin are used to
+  // describe the geometry of the volume.  The writer, for example, always
+  // re-generates the ImagePositionPatient from the VTK volume information.
 
   return 1;
 }
@@ -262,6 +300,8 @@ int vtkDICOMCTRectifier::RequestData(
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
   vtkImageData *outData =
     static_cast<vtkImageData *>(outInfo->Get(vtkDataObject::DATA_OBJECT()));
+
+  this->CopyMetaDataToOutputData(outInfo, outData);
 
   vtkSmartPointer<vtkImageData> image =
     vtkSmartPointer<vtkImageData>::New();

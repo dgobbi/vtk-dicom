@@ -20,19 +20,19 @@
 #ifndef vtkDICOMCTRectifier_h
 #define vtkDICOMCTRectifier_h
 
-#include <vtkThreadedImageAlgorithm.h>
+#include "vtkDICOMAlgorithm.h"
 #include "vtkDICOMModule.h"
 
 class vtkMatrix4x4;
 
 //----------------------------------------------------------------------------
-class VTK_DICOM_EXPORT vtkDICOMCTRectifier : public vtkThreadedImageAlgorithm
+class VTK_DICOM_EXPORT vtkDICOMCTRectifier : public vtkDICOMAlgorithm
 {
 public:
   // Description:
   // Static method for construction.
   static vtkDICOMCTRectifier *New();
-  vtkTypeMacro(vtkDICOMCTRectifier, vtkThreadedImageAlgorithm);
+  vtkTypeMacro(vtkDICOMCTRectifier, vtkDICOMAlgorithm);
 
   // Description:
   // Print information about this object.
@@ -78,8 +78,12 @@ protected:
   ~vtkDICOMCTRectifier();
 
   // Description:
-  // Compute the rectified matrix.
-  void ComputeMatrix(int extent[6], double spacing[3], double origin[3]);
+  // Compute the rectified matrix from the given volume matrix.
+  // The extent, spacing, and origin of the image must also be given,
+  // and they will be adjusted as necessary.
+  void ComputeMatrix(
+    const double matrix[16], const int extent[6], double spacing[3],
+    double origin[3]);
 
   virtual int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
