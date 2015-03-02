@@ -3571,7 +3571,7 @@ const char *vtkDICOMUtilities::GetUIDName(const char *uid)
   return result;
 }
 
-unsigned short vtkDICOMUtilities::GetContextID(const char *uid)
+unsigned short vtkDICOMUtilities::GetCIDFromUID(const char *uid)
 {
   unsigned short result = 0;
   UIDTableEntry *table = GetUIDTableEntry(uid);

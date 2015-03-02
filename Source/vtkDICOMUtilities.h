@@ -159,7 +159,7 @@ public:
   static const char *GetUIDName(const char *uid);
 
   //! Get the CID from the UID.
-  unsigned short GetContextID(const char *uid);
+  unsigned short GetCIDFromUID(const char *uid);
 
 protected:
   vtkDICOMUtilities();
