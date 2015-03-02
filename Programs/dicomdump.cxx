@@ -265,7 +265,7 @@ void printElement(
         }
       else
         {
-        printf(" [%s] (delimited)\n", s.c_str());
+        printf(" [...] (delimited)\n");
         }
       }
     else
@@ -279,10 +279,10 @@ void printElement(
         {
         printf(" [%s] {%s} (%u bytes)\n", s.c_str(), uidName, vl);
         }
-      else if (depth == 0 &&
-               (tag == DC::PixelData ||
-                tag == DC::FloatPixelData ||
-                tag == DC::DoubleFloatPixelData))
+      else if (vr == vtkDICOMVR::OB ||
+               vr == vtkDICOMVR::OW ||
+               vr == vtkDICOMVR::OF ||
+               vr == vtkDICOMVR::OD)
         {
         printf(" [%s] (%u bytes)\n", (vl == 0 ? "" : "..."), vl);
         }
