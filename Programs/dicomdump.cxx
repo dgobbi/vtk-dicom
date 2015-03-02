@@ -17,6 +17,7 @@
 #include "vtkDICOMDirectory.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMItem.h"
+#include "vtkDICOMUtilities.h"
 
 // from dicomcli
 #include "readquery.h"
@@ -252,7 +253,19 @@ void printElement(
       }
     else
       {
-      printf(" [%s] (%u bytes)\n", s.c_str(), v.GetVL());
+      const char *uidName = "";
+      if (v.GetVR() == vtkDICOMVR::UI)
+        {
+        uidName = vtkDICOMUtilities::GetUIDName(s.c_str());
+        }
+      if (uidName[0] != '\0')
+        {
+        printf(" [%s] {%s} (%u bytes)\n", s.c_str(), uidName, v.GetVL());
+        }
+      else
+        {
+        printf(" [%s] (%u bytes)\n", s.c_str(), v.GetVL());
+        }
       }
     }
 }

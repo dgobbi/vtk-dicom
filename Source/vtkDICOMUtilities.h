@@ -155,6 +155,12 @@ public:
   static bool PatternMatches(
     const char *pattern, size_t pl, const char *val, size_t vl);
 
+  //! Get the name associated with the given UID.
+  static const char *GetUIDName(const char *uid);
+
+  //! Get the CID from the UID.
+  unsigned short GetContextID(const char *uid);
+
 protected:
   vtkDICOMUtilities();
   ~vtkDICOMUtilities();

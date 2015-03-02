@@ -63,6 +63,11 @@ set(LIB_SRCS
   vtkScancoCTReader.cxx
 )
 
+# Sources that have no header files
+set(LIB_EXTRA_SRCS
+  vtkDICOMUtilitiesUIDTable.cxx
+)
+
 # Headers without a matching .cxx file are listed here
 set(LIB_HDRS
   vtkDICOMModule.h
@@ -137,7 +142,7 @@ if(DEFINED VTK_CUSTOM_LIBRARY_SUFFIX)
 endif()
 
 # Create the library
-add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_HIERARCHY_STAMP})
+add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_EXTRA_SRCS} ${LIB_HIERARCHY_STAMP})
 if("${VTK_MAJOR_VERSION}" GREATER 5)
   set_target_properties(${LIB_NAME} PROPERTIES
     OUTPUT_NAME ${LIB_NAME}${LIB_NAME_SUFFIX})

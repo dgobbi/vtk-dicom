@@ -1,0 +1,4239 @@
+# UID Values ====================================================
+1.2.840.10008.1.1
+Verification SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.1.2
+Implicit VR Little Endian: Default Transfer Syntax for DICOM
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.1
+Explicit VR Little Endian
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.1.99
+Deflated Explicit VR Little Endian
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.2
+Explicit VR Big Endian (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.50
+JPEG Baseline (Process 1): Default Transfer Syntax for Lossy JPEG 8 Bit Image Compression
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.51
+JPEG Extended (Process 2 & 4): Default Transfer Syntax for Lossy JPEG 12 Bit Image Compression (Process 4 only)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.52
+JPEG Extended (Process 3 & 5) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.53
+JPEG Spectral Selection, Non-Hierarchical (Process 6 & 8) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.54
+JPEG Spectral Selection, Non-Hierarchical (Process 7 & 9) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.55
+JPEG Full Progression, Non-Hierarchical (Process 10 & 12) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.56
+JPEG Full Progression, Non-Hierarchical (Process 11 & 13) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.57
+JPEG Lossless, Non-Hierarchical (Process 14)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.58
+JPEG Lossless, Non-Hierarchical (Process 15) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.59
+JPEG Extended, Hierarchical (Process 16 & 18) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.60
+JPEG Extended, Hierarchical (Process 17 & 19) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.61
+JPEG Spectral Selection, Hierarchical (Process 20 & 22) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.62
+JPEG Spectral Selection, Hierarchical (Process 21 & 23) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.63
+JPEG Full Progression, Hierarchical (Process 24 & 26) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.64
+JPEG Full Progression, Hierarchical (Process 25 & 27) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.65
+JPEG Lossless, Hierarchical (Process 28) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.66
+JPEG Lossless, Hierarchical (Process 29) (Retired)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.70
+JPEG Lossless, Non-Hierarchical, First-Order Prediction (Process 14 [Selection Value 1]): Default Transfer Syntax for Lossless JPEG Image Compression
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.80
+JPEG-LS Lossless Image Compression
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.81
+JPEG-LS Lossy (Near-Lossless) Image Compression
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.90
+JPEG 2000 Image Compression (Lossless Only)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.91
+JPEG 2000 Image Compression
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.92
+JPEG 2000 Part 2 Multi-component Image Compression (Lossless Only)
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.93
+JPEG 2000 Part 2 Multi-component Image Compression
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.94
+JPIP Referenced
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.95
+JPIP Referenced Deflate
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.100
+MPEG2 Main Profile @ Main Level
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.101
+MPEG2 Main Profile @ High Level
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.102
+MPEG-4 AVC/H.264 High Profile / Level 4.1
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.103
+MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.5
+RLE Lossless
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.6.1
+RFC 2557 MIME encapsulation
+Transfer Syntax
+PS3.10
+1.2.840.10008.1.2.6.2
+XML Encoding
+Transfer Syntax
+PS3.10
+1.2.840.10008.1.3.10
+Media Storage Directory Storage
+SOP Class
+PS3.4
+1.2.840.10008.1.4.1.1
+Talairach Brain Atlas Frame of Reference
+Well-known frame of reference
+Talairach J. and Tournoux P. Co-Planar stereotactic atlas of the human brain. Stutgart: Georg Thieme Verlag, 1988.
+1.2.840.10008.1.4.1.2
+SPM2 T1 Frame of Reference
+Well-known frame of reference
+SPM2 /templates/T1.mnc
+1.2.840.10008.1.4.1.3
+SPM2 T2 Frame of Reference
+Well-known frame of reference
+SPM2 /templates/T2.mnc
+1.2.840.10008.1.4.1.4
+SPM2 PD Frame of Reference
+Well-known frame of reference
+SPM2 /templates/PD.mnc
+1.2.840.10008.1.4.1.5
+SPM2 EPI Frame of Reference
+Well-known frame of reference
+SPM2 /templates/EPI.mnc
+1.2.840.10008.1.4.1.6
+SPM2 FIL T1 Frame of Reference
+Well-known frame of reference
+SPM2 /templates/filT1.mnc
+1.2.840.10008.1.4.1.7
+SPM2 PET Frame of Reference
+Well-known frame of reference
+SPM2 /templates/PET.mnc
+1.2.840.10008.1.4.1.8
+SPM2 TRANSM Frame of Reference
+Well-known frame of reference
+SPM2 /templates/Transm.mnc
+1.2.840.10008.1.4.1.9
+SPM2 SPECT Frame of Reference
+Well-known frame of reference
+SPM2 /templates/SPECT.mnc
+1.2.840.10008.1.4.1.10
+SPM2 GRAY Frame of Reference
+Well-known frame of reference
+SPM2 /apriori/gray.mnc
+1.2.840.10008.1.4.1.11
+SPM2 WHITE Frame of Reference
+Well-known frame of reference
+SPM2 /apriori/white.mnc
+1.2.840.10008.1.4.1.12
+SPM2 CSF Frame of Reference
+Well-known frame of reference
+SPM2 /apriori/csf.mnc
+1.2.840.10008.1.4.1.13
+SPM2 BRAINMASK Frame of Reference
+Well-known frame of reference
+SPM2 /apriori/brainmask.mnc
+1.2.840.10008.1.4.1.14
+SPM2 AVG305T1 Frame of Reference
+Well-known frame of reference
+SPM2 /canonical/avg305T1.mnc
+1.2.840.10008.1.4.1.15
+SPM2 AVG152T1 Frame of Reference
+Well-known frame of reference
+SPM2 /canonical/avg152T1.mnc
+1.2.840.10008.1.4.1.16
+SPM2 AVG152T2 Frame of Reference
+Well-known frame of reference
+SPM2 /canonical/avg152T2.mnc
+1.2.840.10008.1.4.1.17
+SPM2 AVG152PD Frame of Reference
+Well-known frame of reference
+SPM2 /canonical/avg152PD.mnc
+1.2.840.10008.1.4.1.18
+SPM2 SINGLESUBJT1 Frame of Reference
+Well-known frame of reference
+SPM2 /canonical/single_subj_T1.mnc
+1.2.840.10008.1.4.2.1
+ICBM 452 T1 Frame of Reference
+Well-known frame of reference
+ICBM452 T1 Atlas
+1.2.840.10008.1.4.2.2
+ICBM Single Subject MRI Frame of Reference
+Well-known frame of reference
+ICBM Single Subject MRI Anatomical Template
+1.2.840.10008.1.5.1
+Hot Iron Color Palette SOP Instance
+Well-known SOP Instance
+PS 3.6
+1.2.840.10008.1.5.2
+PET Color Palette SOP Instance
+Well-known SOP Instance
+PS 3.6
+1.2.840.10008.1.5.3
+Hot Metal Blue Color Palette SOP Instance
+Well-known SOP Instance
+PS 3.6
+1.2.840.10008.1.5.4
+PET 20 Step Color Palette SOP Instance
+Well-known SOP Instance
+PS 3.6
+1.2.840.10008.1.9
+Basic Study Content Notification SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.1.20.1
+Storage Commitment Push Model SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.1.20.1.1
+Storage Commitment Push Model SOP Instance
+Well-known SOP Instance
+PS3.4
+1.2.840.10008.1.20.2
+Storage Commitment Pull Model SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.1.20.2.1
+Storage Commitment Pull Model SOP Instance (Retired)
+Well-known SOP Instance
+PS3.4
+1.2.840.10008.1.40
+Procedural Event Logging SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.1.40.1
+Procedural Event Logging SOP Instance
+Well-known SOP Instance
+PS3.4
+1.2.840.10008.1.42
+Substance Administration Logging SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.1.42.1
+Substance Administration Logging SOP Instance
+Well-known SOP Instance
+PS3.4
+1.2.840.10008.2.6.1
+DICOM UID Registry
+DICOM UIDs as a Coding Scheme
+PS 3.6
+1.2.840.10008.2.16.4
+DICOM Controlled Terminology
+Coding Scheme
+PS3.16
+1.2.840.10008.3.1.1.1
+DICOM Application Context Name
+Application Context Name
+PS3.7
+1.2.840.10008.3.1.2.1.1
+Detached Patient Management SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.3.1.2.1.4
+Detached Patient Management Meta SOP Class (Retired)
+Meta SOP Class
+PS3.4
+1.2.840.10008.3.1.2.2.1
+Detached Visit Management SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.3.1.2.3.1
+Detached Study Management SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.3.1.2.3.2
+Study Component Management SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.3.1.2.3.3
+Modality Performed Procedure Step SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.3.1.2.3.4
+Modality Performed Procedure Step Retrieve SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.3.1.2.3.5
+Modality Performed Procedure Step Notification SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.3.1.2.5.1
+Detached Results Management SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.3.1.2.5.4
+Detached Results Management Meta SOP Class (Retired)
+Meta SOP Class
+PS3.4
+1.2.840.10008.3.1.2.5.5
+Detached Study Management Meta SOP Class (Retired)
+Meta SOP Class
+PS3.4
+1.2.840.10008.3.1.2.6.1
+Detached Interpretation Management SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.4.2
+Storage Service Class
+Service Class
+PS3.4
+1.2.840.10008.5.1.1.1
+Basic Film Session SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.2
+Basic Film Box SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.4
+Basic Grayscale Image Box SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.4.1
+Basic Color Image Box SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.4.2
+Referenced Image Box SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.9
+Basic Grayscale Print Management Meta SOP Class
+Meta SOP Class
+PS3.4
+1.2.840.10008.5.1.1.9.1
+Referenced Grayscale Print Management Meta SOP Class (Retired)
+Meta SOP Class
+PS3.4
+1.2.840.10008.5.1.1.14
+Print Job SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.15
+Basic Annotation Box SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.16
+Printer SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.16.376
+Printer Configuration Retrieval SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.17
+Printer SOP Instance
+Well-known Printer SOP Instance
+PS3.4
+1.2.840.10008.5.1.1.17.376
+Printer Configuration Retrieval SOP Instance
+Well-known Printer SOP Instance
+PS3.4
+1.2.840.10008.5.1.1.18
+Basic Color Print Management Meta SOP Class
+Meta SOP Class
+PS3.4
+1.2.840.10008.5.1.1.18.1
+Referenced Color Print Management Meta SOP Class (Retired)
+Meta SOP Class
+PS3.4
+1.2.840.10008.5.1.1.22
+VOI LUT Box SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.23
+Presentation LUT SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.24
+Image Overlay Box SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.24.1
+Basic Print Image Overlay Box SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.25
+Print Queue SOP Instance (Retired)
+Well-known Print Queue SOP Instance
+PS3.4
+1.2.840.10008.5.1.1.26
+Print Queue Management SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.27
+Stored Print Storage SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.29
+Hardcopy Grayscale Image Storage SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.30
+Hardcopy Color Image Storage SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.31
+Pull Print Request SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.32
+Pull Stored Print Management Meta SOP Class (Retired)
+Meta SOP Class
+PS3.4
+1.2.840.10008.5.1.1.33
+Media Creation Management SOP Class UID
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.40
+Display System SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.1.40.1
+Display System SOP Instance
+Well-known SOP Instance
+PS3.4
+1.2.840.10008.5.1.4.1.1.1
+Computed Radiography Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.1.1
+Digital X-Ray Image Storage - For Presentation
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.1.1.1
+Digital X-Ray Image Storage - For Processing
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.1.2
+Digital Mammography X-Ray Image Storage - For Presentation
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.1.2.1
+Digital Mammography X-Ray Image Storage - For Processing
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.1.3
+Digital Intra-Oral X-Ray Image Storage - For Presentation
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.1.3.1
+Digital Intra-Oral X-Ray Image Storage - For Processing
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.2
+CT Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.2.1
+Enhanced CT Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.2.2
+Legacy Converted Enhanced CT Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.3
+Ultrasound Multi-frame Image Storage (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.3.1
+Ultrasound Multi-frame Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.4
+MR Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.4.1
+Enhanced MR Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.4.2
+MR Spectroscopy Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.4.3
+Enhanced MR Color Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.4.4
+Legacy Converted Enhanced MR Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.5
+Nuclear Medicine Image Storage (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.6
+Ultrasound Image Storage (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.6.1
+Ultrasound Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.6.2
+Enhanced US Volume Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.7
+Secondary Capture Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.7.1
+Multi-frame Single Bit Secondary Capture Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.7.2
+Multi-frame Grayscale Byte Secondary Capture Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.7.3
+Multi-frame Grayscale Word Secondary Capture Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.7.4
+Multi-frame True Color Secondary Capture Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.8
+Standalone Overlay Storage (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9
+Standalone Curve Storage (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.1
+Waveform Storage - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.1.1
+12-lead ECG Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.1.2
+General ECG Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.1.3
+Ambulatory ECG Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.2.1
+Hemodynamic Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.3.1
+Cardiac Electrophysiology Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.4.1
+Basic Voice Audio Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.4.2
+General Audio Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.5.1
+Arterial Pulse Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.6.1
+Respiratory Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.10
+Standalone Modality LUT Storage (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.11
+Standalone VOI LUT Storage (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.11.1
+Grayscale Softcopy Presentation State Storage SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.11.2
+Color Softcopy Presentation State Storage SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.11.3
+Pseudo-Color Softcopy Presentation State Storage SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.11.4
+Blending Softcopy Presentation State Storage SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.11.5
+XA/XRF Grayscale Softcopy Presentation State Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.12.1
+X-Ray Angiographic Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.12.1.1
+Enhanced XA Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.12.2
+X-Ray Radiofluoroscopic Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.12.2.1
+Enhanced XRF Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.12.3
+X-Ray Angiographic Bi-Plane Image Storage (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.13.1.1
+X-Ray 3D Angiographic Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.13.1.2
+X-Ray 3D Craniofacial Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.13.1.3
+Breast Tomosynthesis Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.13.1.4
+Breast Projection X-Ray Image Storage - For Presentation
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.13.1.5
+Breast Projection X-Ray Image Storage - For Processing
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.14.1
+Intravascular Optical Coherence Tomography Image Storage - For Presentation
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.14.2
+Intravascular Optical Coherence Tomography Image Storage - For Processing
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.20
+Nuclear Medicine Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.30
+Parametric Map Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.66
+Raw Data Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.66.1
+Spatial Registration Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.66.2
+Spatial Fiducials Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.66.3
+Deformable Spatial Registration Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.66.4
+Segmentation Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.66.5
+Surface Segmentation Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.67
+Real World Value Mapping Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.68.1
+Surface Scan Mesh Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.68.2
+Surface Scan Point Cloud Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1
+VL Image Storage - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.2
+VL Multi-frame Image Storage - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.1
+VL Endoscopic Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.1.1
+Video Endoscopic Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.2
+VL Microscopic Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.2.1
+Video Microscopic Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.3
+VL Slide-Coordinates Microscopic Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.4
+VL Photographic Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.4.1
+Video Photographic Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.5.1
+Ophthalmic Photography 8 Bit Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.5.2
+Ophthalmic Photography 16 Bit Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.5.3
+Stereometric Relationship Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.5.4
+Ophthalmic Tomography Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.6
+VL Whole Slide Microscopy Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.78.1
+Lensometry Measurements Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.78.2
+Autorefraction Measurements Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.78.3
+Keratometry Measurements Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.78.4
+Subjective Refraction Measurements Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.78.5
+Visual Acuity Measurements Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.78.6
+Spectacle Prescription Report Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.78.7
+Ophthalmic Axial Measurements Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.78.8
+Intraocular Lens Calculations Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.79.1
+Macular Grid Thickness and Volume Report Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.80.1
+Ophthalmic Visual Field Static Perimetry Measurements Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.81.1
+Ophthalmic Thickness Map Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.82.1
+Corneal Topography Map Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.1
+Text SR Storage - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.2
+Audio SR Storage - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.3
+Detail SR Storage - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.4
+Comprehensive SR Storage - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.11
+Basic Text SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.22
+Enhanced SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.33
+Comprehensive SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.34
+Comprehensive 3D SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.40
+Procedure Log Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.50
+Mammography CAD SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.59
+Key Object Selection Document Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.65
+Chest CAD SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.67
+X-Ray Radiation Dose SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.68
+Radiopharmaceutical Radiation Dose SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.69
+Colon CAD SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.70
+Implantation Plan SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.104.1
+Encapsulated PDF Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.104.2
+Encapsulated CDA Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.128
+Positron Emission Tomography Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.128.1
+Legacy Converted Enhanced PET Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.129
+Standalone PET Curve Storage (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.130
+Enhanced PET Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.131
+Basic Structured Display Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.1
+RT Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.2
+RT Dose Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.3
+RT Structure Set Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.4
+RT Beams Treatment Record Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.5
+RT Plan Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.6
+RT Brachy Treatment Record Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.7
+RT Treatment Summary Record Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.8
+RT Ion Plan Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.9
+RT Ion Beams Treatment Record Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.501.1
+DICOS CT Image Storage
+SOP Class
+DICOS
+1.2.840.10008.5.1.4.1.1.501.2.1
+DICOS Digital X-Ray Image Storage - For Presentation
+SOP Class
+DICOS
+1.2.840.10008.5.1.4.1.1.501.2.2
+DICOS Digital X-Ray Image Storage - For Processing
+SOP Class
+DICOS
+1.2.840.10008.5.1.4.1.1.501.3
+DICOS Threat Detection Report Storage
+SOP Class
+DICOS
+1.2.840.10008.5.1.4.1.1.501.4
+DICOS 2D AIT Storage
+SOP Class
+DICOS
+1.2.840.10008.5.1.4.1.1.501.5
+DICOS 3D AIT Storage
+SOP Class
+DICOS
+1.2.840.10008.5.1.4.1.1.501.6
+DICOS Quadrupole Resonance (QR) Storage
+SOP Class
+DICOS
+1.2.840.10008.5.1.4.1.1.601.1
+Eddy Current Image Storage
+SOP Class
+DICONDE ASTM E2934
+1.2.840.10008.5.1.4.1.1.601.2
+Eddy Current Multi-frame Image Storage
+SOP Class
+DICONDE ASTM E2934
+1.2.840.10008.5.1.4.1.2.1.1
+Patient Root Query/Retrieve Information Model - FIND
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.2.1.2
+Patient Root Query/Retrieve Information Model - MOVE
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.2.1.3
+Patient Root Query/Retrieve Information Model - GET
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.2.2.1
+Study Root Query/Retrieve Information Model - FIND
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.2.2.2
+Study Root Query/Retrieve Information Model - MOVE
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.2.2.3
+Study Root Query/Retrieve Information Model - GET
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.2.3.1
+Patient/Study Only Query/Retrieve Information Model - FIND (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.2.3.2
+Patient/Study Only Query/Retrieve Information Model - MOVE (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.2.3.3
+Patient/Study Only Query/Retrieve Information Model - GET (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.2.4.2
+Composite Instance Root Retrieve - MOVE
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.2.4.3
+Composite Instance Root Retrieve - GET
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.2.5.3
+Composite Instance Retrieve Without Bulk Data - GET
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.31
+Modality Worklist Information Model - FIND
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.32
+General Purpose Worklist Management Meta SOP Class (Retired)
+Meta SOP Class
+PS3.4
+1.2.840.10008.5.1.4.32.1
+General Purpose Worklist Information Model - FIND (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.32.2
+General Purpose Scheduled Procedure Step SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.32.3
+General Purpose Performed Procedure Step SOP Class (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.33
+Instance Availability Notification SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.1
+RT Beams Delivery Instruction Storage - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.2
+RT Conventional Machine Verification - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.3
+RT Ion Machine Verification - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.4
+Unified Worklist and Procedure Step Service Class - Trial (Retired)
+Service Class
+PS3.4
+1.2.840.10008.5.1.4.34.4.1
+Unified Procedure Step - Push SOP Class - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.4.2
+Unified Procedure Step - Watch SOP Class - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.4.3
+Unified Procedure Step - Pull SOP Class - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.4.4
+Unified Procedure Step - Event SOP Class - Trial (Retired)
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.5
+UPS Global Subscription SOP Instance
+Well-known SOP Instance
+PS3.4
+1.2.840.10008.5.1.4.34.5.1
+UPS Filtered Global Subscription SOP Instance
+Well-known SOP Instance
+PS3.4
+1.2.840.10008.5.1.4.34.6
+Unified Worklist and Procedure Step Service Class
+Service Class
+PS3.4
+1.2.840.10008.5.1.4.34.6.1
+Unified Procedure Step - Push SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.6.2
+Unified Procedure Step - Watch SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.6.3
+Unified Procedure Step - Pull SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.6.4
+Unified Procedure Step - Event SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.7
+RT Beams Delivery Instruction Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.8
+RT Conventional Machine Verification
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.9
+RT Ion Machine Verification
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.37.1
+General Relevant Patient Information Query
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.37.2
+Breast Imaging Relevant Patient Information Query
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.37.3
+Cardiac Relevant Patient Information Query
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.38.1
+Hanging Protocol Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.38.2
+Hanging Protocol Information Model - FIND
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.38.3
+Hanging Protocol Information Model - MOVE
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.38.4
+Hanging Protocol Information Model - GET
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.39.1
+Color Palette Storage
+Transfer
+PS3.4
+1.2.840.10008.5.1.4.39.2
+Color Palette Information Model - FIND
+Query/Retrieve
+PS3.4
+1.2.840.10008.5.1.4.39.3
+Color Palette Information Model - MOVE
+Query/Retrieve
+PS3.4
+1.2.840.10008.5.1.4.39.4
+Color Palette Information Model - GET
+Query/Retrieve
+PS3.4
+1.2.840.10008.5.1.4.41
+Product Characteristics Query SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.42
+Substance Approval Query SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.43.1
+Generic Implant Template Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.43.2
+Generic Implant Template Information Model - FIND
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.43.3
+Generic Implant Template Information Model - MOVE
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.43.4
+Generic Implant Template Information Model - GET
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.44.1
+Implant Assembly Template Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.44.2
+Implant Assembly Template Information Model - FIND
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.44.3
+Implant Assembly Template Information Model - MOVE
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.44.4
+Implant Assembly Template Information Model - GET
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.45.1
+Implant Template Group Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.45.2
+Implant Template Group Information Model - FIND
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.45.3
+Implant Template Group Information Model - MOVE
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.45.4
+Implant Template Group Information Model - GET
+SOP Class
+PS3.4
+1.2.840.10008.7.1.1
+Native DICOM Model
+Application Hosting Model
+PS3.19
+1.2.840.10008.7.1.2
+Abstract Multi-Dimensional Image Model
+Application Hosting Model
+PS3.19
+1.2.840.10008.8.1.1
+DICOM Content Mapping Resource
+Mapping Resource
+PS3.16
+1.2.840.10008.15.0.3.1
+dicomDeviceName
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.2
+dicomDescription
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.3
+dicomManufacturer
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.4
+dicomManufacturerModelName
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.5
+dicomSoftwareVersion
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.6
+dicomVendorData
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.7
+dicomAETitle
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.8
+dicomNetworkConnectionReference
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.9
+dicomApplicationCluster
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.10
+dicomAssociationInitiator
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.11
+dicomAssociationAcceptor
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.12
+dicomHostname
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.13
+dicomPort
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.14
+dicomSOPClass
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.15
+dicomTransferRole
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.16
+dicomTransferSyntax
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.17
+dicomPrimaryDeviceType
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.18
+dicomRelatedDeviceReference
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.19
+dicomPreferredCalledAETitle
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.20
+dicomTLSCyphersuite
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.21
+dicomAuthorizedNodeCertificateReference
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.22
+dicomThisNodeCertificateReference
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.23
+dicomInstalled
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.24
+dicomStationName
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.25
+dicomDeviceSerialNumber
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.26
+dicomInstitutionName
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.27
+dicomInstitutionAddress
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.28
+dicomInstitutionDepartmentName
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.29
+dicomIssuerOfPatientID
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.30
+dicomPreferredCallingAETitle
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.3.31
+dicomSupportedCharacterSet
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.4.1
+dicomConfigurationRoot
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.4.2
+dicomDevicesRoot
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.4.3
+dicomUniqueAETitlesRegistryRoot
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.4.4
+dicomDevice
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.4.5
+dicomNetworkAE
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.4.6
+dicomNetworkConnection
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.4.7
+dicomUniqueAETitle
+LDAP OID
+PS3.15
+1.2.840.10008.15.0.4.8
+dicomTransferCapability
+LDAP OID
+PS3.15
+1.2.840.10008.15.1.1
+Universal Coordinated Time
+Synchronization Frame of Reference
+PS3.3
+# Frames of Reference ================================================
+1.2.840.10008.1.4.1.1
+Talairach Brain Atlas Frame of Reference
+Talairach J. and Tournoux P. Co-Planar stereotactic atlas of the human brain. Stutgart: Georg Thieme Verlag, 1988.
+1.2.840.10008.1.4.1.2
+SPM2 T1 Frame of Reference
+SPM2 /templates/T1.mnc
+1.2.840.10008.1.4.1.3
+SPM2 T2 Frame of Reference
+SPM2 /templates/T2.mnc
+1.2.840.10008.1.4.1.4
+SPM2 PD Frame of Reference
+SPM2 /templates/PD.mnc
+1.2.840.10008.1.4.1.5
+SPM2 EPI Frame of Reference
+SPM2 /templates/EPI.mnc
+1.2.840.10008.1.4.1.6
+SPM2 FIL T1 Frame of Reference
+SPM2 /templates/filT1.mnc
+1.2.840.10008.1.4.1.7
+SPM2 PET Frame of Reference
+SPM2 /templates/PET.mnc
+1.2.840.10008.1.4.1.8
+SPM2 TRANSM Frame of Reference
+SPM2 /templates/Transm.mnc
+1.2.840.10008.1.4.1.9
+SPM2 SPECT Frame of Reference
+SPM2 /templates/SPECT.mnc
+1.2.840.10008.1.4.1.10
+SPM2 GRAY Frame of Reference
+SPM2 /apriori/gray.mnc
+1.2.840.10008.1.4.1.11
+SPM2 WHITE Frame of Reference
+SPM2 /apriori/white.mnc
+1.2.840.10008.1.4.1.12
+SPM2 CSF Frame of Reference
+SPM2 /apriori/csf.mnc
+1.2.840.10008.1.4.1.13
+SPM2 BRAINMASK Frame of Reference
+SPM2 /apriori/brainmask.mnc
+1.2.840.10008.1.4.1.14
+SPM2 AVG305T1 Frame of Reference
+SPM2 /canonical/avg305T1.mnc
+1.2.840.10008.1.4.1.15
+SPM2 AVG152T1 Frame of Reference
+SPM2 /canonical/avg152T1.mnc
+1.2.840.10008.1.4.1.16
+SPM2 AVG152T2 Frame of Reference
+SPM2 /canonical/avg152T2.mnc
+1.2.840.10008.1.4.1.17
+SPM2 AVG152PD Frame of Reference
+SPM2 /canonical/avg152PD.mnc
+1.2.840.10008.1.4.1.18
+SPM2 SINGLESUBJT1 Frame of Reference
+SPM2 /canonical/single_subj_T1.mnc
+1.2.840.10008.1.4.2.1
+ICBM 452 T1 Frame of Reference
+ICBM452 T1 Atlas
+1.2.840.10008.1.4.2.2
+ICBM Single Subject MRI Frame of Reference
+ICBM Single Subject MRI Anatomical Template
+# Context Group UID Values ================================================
+1.2.840.10008.6.1.1
+CID 2
+Anatomic Modifier
+1.2.840.10008.6.1.2
+CID 4
+Anatomic Region
+1.2.840.10008.6.1.3
+CID 5
+Transducer Approach
+1.2.840.10008.6.1.4
+CID 6
+Transducer Orientation
+1.2.840.10008.6.1.5
+CID 7
+Ultrasound Beam Path
+1.2.840.10008.6.1.6
+CID 8
+Angiographic Interventional Devices
+1.2.840.10008.6.1.7
+CID 9
+Image Guided Therapeutic Procedures
+1.2.840.10008.6.1.8
+CID 10
+Interventional Drug
+1.2.840.10008.6.1.9
+CID 11
+Route of Administration
+1.2.840.10008.6.1.10
+CID 12
+Radiographic Contrast Agent
+1.2.840.10008.6.1.11
+CID 13
+Radiographic Contrast Agent Ingredient
+1.2.840.10008.6.1.12
+CID 18
+Isotopes in Radiopharmaceuticals
+1.2.840.10008.6.1.13
+CID 19
+Patient Orientation
+1.2.840.10008.6.1.14
+CID 20
+Patient Orientation Modifier
+1.2.840.10008.6.1.15
+CID 21
+Patient Equipment Relationship
+1.2.840.10008.6.1.16
+CID 23
+Cranio-Caudad Angulation
+1.2.840.10008.6.1.17
+CID 25
+Radiopharmaceuticals
+1.2.840.10008.6.1.18
+CID 26
+Nuclear Medicine Projections
+1.2.840.10008.6.1.19
+CID 29
+Acquisition Modality
+1.2.840.10008.6.1.20
+CID 30
+DICOM Devices
+1.2.840.10008.6.1.21
+CID 31
+Abstract Priors
+1.2.840.10008.6.1.22
+CID 42
+Numeric Value Qualifier
+1.2.840.10008.6.1.23
+CID 82
+Units of Measurement
+1.2.840.10008.6.1.24
+CID 83
+Units for Real World Value Mapping
+1.2.840.10008.6.1.25
+CID 220
+Level of Significance
+1.2.840.10008.6.1.26
+CID 221
+Measurement Range Concepts
+1.2.840.10008.6.1.27
+CID 222
+Normality Codes
+1.2.840.10008.6.1.28
+CID 223
+Normal Range Values
+1.2.840.10008.6.1.29
+CID 224
+Selection Method
+1.2.840.10008.6.1.30
+CID 225
+Measurement Uncertainty Concepts
+1.2.840.10008.6.1.31
+CID 226
+Population Statistical Descriptors
+1.2.840.10008.6.1.32
+CID 227
+Sample Statistical Descriptors
+1.2.840.10008.6.1.33
+CID 228
+Equation or Table
+1.2.840.10008.6.1.34
+CID 230
+Yes-No
+1.2.840.10008.6.1.35
+CID 240
+Present-Absent
+1.2.840.10008.6.1.36
+CID 242
+Normal-Abnormal
+1.2.840.10008.6.1.37
+CID 244
+Laterality
+1.2.840.10008.6.1.38
+CID 250
+Positive-Negative
+1.2.840.10008.6.1.39
+CID 251
+Severity of Complication
+1.2.840.10008.6.1.40
+CID 270
+Observer Type
+1.2.840.10008.6.1.41
+CID 271
+Observation Subject Class
+1.2.840.10008.6.1.42
+CID 3000
+Audio Channel Source
+1.2.840.10008.6.1.43
+CID 3001
+ECG Leads
+1.2.840.10008.6.1.44
+CID 3003
+Hemodynamic Waveform Sources
+1.2.840.10008.6.1.45
+CID 3010
+Cardiovascular Anatomic Locations
+1.2.840.10008.6.1.46
+CID 3011
+Electrophysiology Anatomic Locations
+1.2.840.10008.6.1.47
+CID 3014
+Coronary Artery Segments
+1.2.840.10008.6.1.48
+CID 3015
+Coronary Arteries
+1.2.840.10008.6.1.49
+CID 3019
+Cardiovascular Anatomic Location Modifiers
+1.2.840.10008.6.1.50
+CID 3082
+Cardiology Units of Measurement (Retired)
+1.2.840.10008.6.1.51
+CID 3090
+Time Synchronization Channel Types
+1.2.840.10008.6.1.52
+CID 3101
+Cardiac Procedural State Values
+1.2.840.10008.6.1.53
+CID 3240
+Electrophysiology Measurement Functions and Techniques
+1.2.840.10008.6.1.54
+CID 3241
+Hemodynamic Measurement Techniques
+1.2.840.10008.6.1.55
+CID 3250
+Catheterization Procedure Phase
+1.2.840.10008.6.1.56
+CID 3254
+Electrophysiology Procedure Phase
+1.2.840.10008.6.1.57
+CID 3261
+Stress Protocols
+1.2.840.10008.6.1.58
+CID 3262
+ECG Patient State Values
+1.2.840.10008.6.1.59
+CID 3263
+Electrode Placement Values
+1.2.840.10008.6.1.60
+CID 3264
+XYZ Electrode Placement Values (Retired)
+1.2.840.10008.6.1.61
+CID 3271
+Hemodynamic Physiological Challenges
+1.2.840.10008.6.1.62
+CID 3335
+ECG Annotations
+1.2.840.10008.6.1.63
+CID 3337
+Hemodynamic Annotations
+1.2.840.10008.6.1.64
+CID 3339
+Electrophysiology Annotations
+1.2.840.10008.6.1.65
+CID 3400
+Procedure Log Titles
+1.2.840.10008.6.1.66
+CID 3401
+Types of Log Notes
+1.2.840.10008.6.1.67
+CID 3402
+Patient Status and Events
+1.2.840.10008.6.1.68
+CID 3403
+Percutaneous Entry
+1.2.840.10008.6.1.69
+CID 3404
+Staff Actions
+1.2.840.10008.6.1.70
+CID 3405
+Procedure Action Values
+1.2.840.10008.6.1.71
+CID 3406
+Non-coronary Transcatheter Interventions
+1.2.840.10008.6.1.72
+CID 3407
+Purpose of Reference to Object
+1.2.840.10008.6.1.73
+CID 3408
+Actions With Consumables
+1.2.840.10008.6.1.74
+CID 3409
+Administration of Drugs/Contrast
+1.2.840.10008.6.1.75
+CID 3410
+Numeric Parameters of Drugs/Contrast
+1.2.840.10008.6.1.76
+CID 3411
+Intracoronary Devices
+1.2.840.10008.6.1.77
+CID 3412
+Intervention Actions and Status
+1.2.840.10008.6.1.78
+CID 3413
+Adverse Outcomes
+1.2.840.10008.6.1.79
+CID 3414
+Procedure Urgency
+1.2.840.10008.6.1.80
+CID 3415
+Cardiac Rhythms
+1.2.840.10008.6.1.81
+CID 3416
+Respiration Rhythms
+1.2.840.10008.6.1.82
+CID 3418
+Lesion Risk
+1.2.840.10008.6.1.83
+CID 3419
+Findings Titles
+1.2.840.10008.6.1.84
+CID 3421
+Procedure Action
+1.2.840.10008.6.1.85
+CID 3422
+Device Use Actions
+1.2.840.10008.6.1.86
+CID 3423
+Numeric Device Characteristics
+1.2.840.10008.6.1.87
+CID 3425
+Intervention Parameters
+1.2.840.10008.6.1.88
+CID 3426
+Consumables Parameters
+1.2.840.10008.6.1.89
+CID 3427
+Equipment Events
+1.2.840.10008.6.1.90
+CID 3428
+Imaging Procedures
+1.2.840.10008.6.1.91
+CID 3429
+Catheterization Devices
+1.2.840.10008.6.1.92
+CID 3430
+DateTime Qualifiers
+1.2.840.10008.6.1.93
+CID 3440
+Peripheral Pulse Locations
+1.2.840.10008.6.1.94
+CID 3441
+Patient Assessments
+1.2.840.10008.6.1.95
+CID 3442
+Peripheral Pulse Methods
+1.2.840.10008.6.1.96
+CID 3446
+Skin Condition
+1.2.840.10008.6.1.97
+CID 3448
+Airway Assessment
+1.2.840.10008.6.1.98
+CID 3451
+Calibration Objects
+1.2.840.10008.6.1.99
+CID 3452
+Calibration Methods
+1.2.840.10008.6.1.100
+CID 3453
+Cardiac Volume Methods
+1.2.840.10008.6.1.101
+CID 3455
+Index Methods
+1.2.840.10008.6.1.102
+CID 3456
+Sub-segment Methods
+1.2.840.10008.6.1.103
+CID 3458
+Contour Realignment
+1.2.840.10008.6.1.104
+CID 3460
+Circumferential Extent
+1.2.840.10008.6.1.105
+CID 3461
+Regional Extent
+1.2.840.10008.6.1.106
+CID 3462
+Chamber Identification
+1.2.840.10008.6.1.107
+CID 3465
+QA Reference Methods
+1.2.840.10008.6.1.108
+CID 3466
+Plane Identification
+1.2.840.10008.6.1.109
+CID 3467
+Ejection Fraction
+1.2.840.10008.6.1.110
+CID 3468
+ED Volume
+1.2.840.10008.6.1.111
+CID 3469
+ES Volume
+1.2.840.10008.6.1.112
+CID 3470
+Vessel Lumen Cross-sectional Area Calculation Methods
+1.2.840.10008.6.1.113
+CID 3471
+Estimated Volumes
+1.2.840.10008.6.1.114
+CID 3472
+Cardiac Contraction Phase
+1.2.840.10008.6.1.115
+CID 3480
+IVUS Procedure Phases
+1.2.840.10008.6.1.116
+CID 3481
+IVUS Distance Measurements
+1.2.840.10008.6.1.117
+CID 3482
+IVUS Area Measurements
+1.2.840.10008.6.1.118
+CID 3483
+IVUS Longitudinal Measurements
+1.2.840.10008.6.1.119
+CID 3484
+IVUS Indices and Ratios
+1.2.840.10008.6.1.120
+CID 3485
+IVUS Volume Measurements
+1.2.840.10008.6.1.121
+CID 3486
+Vascular Measurement Sites
+1.2.840.10008.6.1.122
+CID 3487
+Intravascular Volumetric Regions
+1.2.840.10008.6.1.123
+CID 3488
+Min/Max/Mean
+1.2.840.10008.6.1.124
+CID 3489
+Calcium Distribution
+1.2.840.10008.6.1.125
+CID 3491
+IVUS Lesion Morphologies
+1.2.840.10008.6.1.126
+CID 3492
+Vascular Dissection Classifications
+1.2.840.10008.6.1.127
+CID 3493
+IVUS Relative Stenosis Severities
+1.2.840.10008.6.1.128
+CID 3494
+IVUS Non Morphological Findings
+1.2.840.10008.6.1.129
+CID 3495
+IVUS Plaque Composition
+1.2.840.10008.6.1.130
+CID 3496
+IVUS Fiducial Points
+1.2.840.10008.6.1.131
+CID 3497
+IVUS Arterial Morphology
+1.2.840.10008.6.1.132
+CID 3500
+Pressure Units
+1.2.840.10008.6.1.133
+CID 3502
+Hemodynamic Resistance Units
+1.2.840.10008.6.1.134
+CID 3503
+Indexed Hemodynamic Resistance Units
+1.2.840.10008.6.1.135
+CID 3510
+Catheter Size Units
+1.2.840.10008.6.1.136
+CID 3515
+Specimen Collection
+1.2.840.10008.6.1.137
+CID 3520
+Blood Source Type
+1.2.840.10008.6.1.138
+CID 3524
+Blood Gas Pressures
+1.2.840.10008.6.1.139
+CID 3525
+Blood Gas Content
+1.2.840.10008.6.1.140
+CID 3526
+Blood Gas Saturation
+1.2.840.10008.6.1.141
+CID 3527
+Blood Base Excess
+1.2.840.10008.6.1.142
+CID 3528
+Blood pH
+1.2.840.10008.6.1.143
+CID 3529
+Arterial / Venous Content
+1.2.840.10008.6.1.144
+CID 3530
+Oxygen Administration Actions
+1.2.840.10008.6.1.145
+CID 3531
+Oxygen Administration
+1.2.840.10008.6.1.146
+CID 3550
+Circulatory Support Actions
+1.2.840.10008.6.1.147
+CID 3551
+Ventilation Actions
+1.2.840.10008.6.1.148
+CID 3552
+Pacing Actions
+1.2.840.10008.6.1.149
+CID 3553
+Circulatory Support
+1.2.840.10008.6.1.150
+CID 3554
+Ventilation
+1.2.840.10008.6.1.151
+CID 3555
+Pacing
+1.2.840.10008.6.1.152
+CID 3560
+Blood Pressure Methods
+1.2.840.10008.6.1.153
+CID 3600
+Relative Times
+1.2.840.10008.6.1.154
+CID 3602
+Hemodynamic Patient State
+1.2.840.10008.6.1.155
+CID 3604
+Arterial Lesion Locations
+1.2.840.10008.6.1.156
+CID 3606
+Arterial Source Locations
+1.2.840.10008.6.1.157
+CID 3607
+Venous Source Locations
+1.2.840.10008.6.1.158
+CID 3608
+Atrial Source Locations
+1.2.840.10008.6.1.159
+CID 3609
+Ventricular Source Locations
+1.2.840.10008.6.1.160
+CID 3610
+Gradient Source Locations
+1.2.840.10008.6.1.161
+CID 3611
+Pressure Measurements
+1.2.840.10008.6.1.162
+CID 3612
+Blood Velocity Measurements
+1.2.840.10008.6.1.163
+CID 3613
+Hemodynamic Time Measurements
+1.2.840.10008.6.1.164
+CID 3614
+Valve Areas, Non-mitral
+1.2.840.10008.6.1.165
+CID 3615
+Valve Areas
+1.2.840.10008.6.1.166
+CID 3616
+Hemodynamic Period Measurements
+1.2.840.10008.6.1.167
+CID 3617
+Valve Flows
+1.2.840.10008.6.1.168
+CID 3618
+Hemodynamic Flows
+1.2.840.10008.6.1.169
+CID 3619
+Hemodynamic Resistance Measurements
+1.2.840.10008.6.1.170
+CID 3620
+Hemodynamic Ratios
+1.2.840.10008.6.1.171
+CID 3621
+Fractional Flow Reserve
+1.2.840.10008.6.1.172
+CID 3627
+Measurement Type
+1.2.840.10008.6.1.173
+CID 3628
+Cardiac Output Methods
+1.2.840.10008.6.1.174
+CID 3629
+Procedure Intent
+1.2.840.10008.6.1.175
+CID 3630
+Cardiovascular Anatomic Locations
+1.2.840.10008.6.1.176
+CID 3640
+Hypertension
+1.2.840.10008.6.1.177
+CID 3641
+Hemodynamic Assessments
+1.2.840.10008.6.1.178
+CID 3642
+Degree Findings
+1.2.840.10008.6.1.179
+CID 3651
+Hemodynamic Measurement Phase
+1.2.840.10008.6.1.180
+CID 3663
+Body Surface Area Equations
+1.2.840.10008.6.1.181
+CID 3664
+Oxygen Consumption Equations and Tables
+1.2.840.10008.6.1.182
+CID 3666
+P50 Equations
+1.2.840.10008.6.1.183
+CID 3667
+Framingham Scores
+1.2.840.10008.6.1.184
+CID 3668
+Framingham Tables
+1.2.840.10008.6.1.185
+CID 3670
+ECG Procedure Types
+1.2.840.10008.6.1.186
+CID 3671
+Reason for ECG Exam
+1.2.840.10008.6.1.187
+CID 3672
+Pacemakers
+1.2.840.10008.6.1.188
+CID 3673
+Diagnosis (Retired)
+1.2.840.10008.6.1.189
+CID 3675
+Other Filters (Retired)
+1.2.840.10008.6.1.190
+CID 3676
+Lead Measurement Technique
+1.2.840.10008.6.1.191
+CID 3677
+Summary Codes ECG
+1.2.840.10008.6.1.192
+CID 3678
+Qt Correction Algorithms
+1.2.840.10008.6.1.193
+CID 3679
+ECG Morphology Descriptions (Retired)
+1.2.840.10008.6.1.194
+CID 3680
+ECG Lead Noise Descriptions
+1.2.840.10008.6.1.195
+CID 3681
+ECG Lead Noise Modifiers (Retired)
+1.2.840.10008.6.1.196
+CID 3682
+Probability (Retired)
+1.2.840.10008.6.1.197
+CID 3683
+Modifiers (Retired)
+1.2.840.10008.6.1.198
+CID 3684
+Trend (Retired)
+1.2.840.10008.6.1.199
+CID 3685
+Conjunctive Terms (Retired)
+1.2.840.10008.6.1.200
+CID 3686
+ECG Interpretive Statements (Retired)
+1.2.840.10008.6.1.201
+CID 3687
+Electrophysiology Waveform Durations
+1.2.840.10008.6.1.202
+CID 3688
+Electrophysiology Waveform Voltages
+1.2.840.10008.6.1.203
+CID 3700
+Cath Diagnosis
+1.2.840.10008.6.1.204
+CID 3701
+Cardiac Valves and Tracts
+1.2.840.10008.6.1.205
+CID 3703
+Wall Motion
+1.2.840.10008.6.1.206
+CID 3704
+Myocardium Wall Morphology Findings
+1.2.840.10008.6.1.207
+CID 3705
+Chamber Size
+1.2.840.10008.6.1.208
+CID 3706
+Overall Contractility
+1.2.840.10008.6.1.209
+CID 3707
+VSD Description
+1.2.840.10008.6.1.210
+CID 3709
+Aortic Root Description
+1.2.840.10008.6.1.211
+CID 3710
+Coronary Dominance
+1.2.840.10008.6.1.212
+CID 3711
+Valvular Abnormalities
+1.2.840.10008.6.1.213
+CID 3712
+Vessel Descriptors
+1.2.840.10008.6.1.214
+CID 3713
+TIMI Flow Characteristics
+1.2.840.10008.6.1.215
+CID 3714
+Thrombus
+1.2.840.10008.6.1.216
+CID 3715
+Lesion Margin
+1.2.840.10008.6.1.217
+CID 3716
+Severity
+1.2.840.10008.6.1.218
+CID 3717
+Myocardial Wall Segments
+1.2.840.10008.6.1.219
+CID 3718
+Myocardial Wall Segments in Projection
+1.2.840.10008.6.1.220
+CID 3719
+Canadian Clinical Classification
+1.2.840.10008.6.1.221
+CID 3720
+Cardiac History Dates (Retired)
+1.2.840.10008.6.1.222
+CID 3721
+Cardiovascular Surgeries
+1.2.840.10008.6.1.223
+CID 3722
+Diabetic Therapy
+1.2.840.10008.6.1.224
+CID 3723
+MI Types
+1.2.840.10008.6.1.225
+CID 3724
+Smoking History
+1.2.840.10008.6.1.226
+CID 3726
+Indications for Coronary Intervention
+1.2.840.10008.6.1.227
+CID 3727
+Indications for Catheterization
+1.2.840.10008.6.1.228
+CID 3728
+Cath Findings
+1.2.840.10008.6.1.229
+CID 3729
+Admission Status
+1.2.840.10008.6.1.230
+CID 3730
+Insurance Payor
+1.2.840.10008.6.1.231
+CID 3733
+Primary Cause of Death
+1.2.840.10008.6.1.232
+CID 3735
+Acute Coronary Syndrome Time Period
+1.2.840.10008.6.1.233
+CID 3736
+NYHA Classification
+1.2.840.10008.6.1.234
+CID 3737
+Non-invasive Test - Ischemia
+1.2.840.10008.6.1.235
+CID 3738
+Pre-Cath Angina Type
+1.2.840.10008.6.1.236
+CID 3739
+Cath Procedure Type
+1.2.840.10008.6.1.237
+CID 3740
+Thrombolytic Administration
+1.2.840.10008.6.1.238
+CID 3741
+Medication Administration, Lab Visit
+1.2.840.10008.6.1.239
+CID 3742
+Medication Administration, PCI
+1.2.840.10008.6.1.240
+CID 3743
+Clopidogrel/ticlopidine Administration
+1.2.840.10008.6.1.241
+CID 3744
+EF Testing Method
+1.2.840.10008.6.1.242
+CID 3745
+Calculation Method
+1.2.840.10008.6.1.243
+CID 3746
+Percutaneous Entry Site
+1.2.840.10008.6.1.244
+CID 3747
+Percutaneous Closure
+1.2.840.10008.6.1.245
+CID 3748
+Angiographic EF Testing Method
+1.2.840.10008.6.1.246
+CID 3749
+PCI Procedure Result
+1.2.840.10008.6.1.247
+CID 3750
+Previously Dilated Lesion
+1.2.840.10008.6.1.248
+CID 3752
+Guidewire Crossing
+1.2.840.10008.6.1.249
+CID 3754
+Vascular Complications
+1.2.840.10008.6.1.250
+CID 3755
+Cath Complications
+1.2.840.10008.6.1.251
+CID 3756
+Cardiac Patient Risk Factors
+1.2.840.10008.6.1.252
+CID 3757
+Cardiac Diagnostic Procedures
+1.2.840.10008.6.1.253
+CID 3758
+Cardiovascular Family History
+1.2.840.10008.6.1.254
+CID 3760
+Hypertension Therapy
+1.2.840.10008.6.1.255
+CID 3761
+Antilipemic Agents
+1.2.840.10008.6.1.256
+CID 3762
+Antiarrhythmic Agents
+1.2.840.10008.6.1.257
+CID 3764
+Myocardial Infarction Therapies
+1.2.840.10008.6.1.258
+CID 3769
+Concern Types
+1.2.840.10008.6.1.259
+CID 3770
+Problem Status
+1.2.840.10008.6.1.260
+CID 3772
+Health Status
+1.2.840.10008.6.1.261
+CID 3773
+Use Status
+1.2.840.10008.6.1.262
+CID 3774
+Social History
+1.2.840.10008.6.1.263
+CID 3777
+Implanted Devices
+1.2.840.10008.6.1.264
+CID 3802
+Plaque Structures
+1.2.840.10008.6.1.265
+CID 3804
+Stenosis Measurement Methods
+1.2.840.10008.6.1.266
+CID 3805
+Stenosis Types
+1.2.840.10008.6.1.267
+CID 3806
+Stenosis Shape
+1.2.840.10008.6.1.268
+CID 3807
+Volume Measurement Methods
+1.2.840.10008.6.1.269
+CID 3808
+Aneurysm Types
+1.2.840.10008.6.1.270
+CID 3809
+Associated Conditions
+1.2.840.10008.6.1.271
+CID 3810
+Vascular Morphology
+1.2.840.10008.6.1.272
+CID 3813
+Stent Findings
+1.2.840.10008.6.1.273
+CID 3814
+Stent Composition
+1.2.840.10008.6.1.274
+CID 3815
+Source of Vascular Finding
+1.2.840.10008.6.1.275
+CID 3817
+Vascular Sclerosis Types
+1.2.840.10008.6.1.276
+CID 3820
+Non-invasive Vascular Procedures
+1.2.840.10008.6.1.277
+CID 3821
+Papillary Muscle Included/excluded
+1.2.840.10008.6.1.278
+CID 3823
+Respiratory Status
+1.2.840.10008.6.1.279
+CID 3826
+Heart Rhythm
+1.2.840.10008.6.1.280
+CID 3827
+Vessel Segments
+1.2.840.10008.6.1.281
+CID 3829
+Pulmonary Arteries
+1.2.840.10008.6.1.282
+CID 3831
+Stenosis Length
+1.2.840.10008.6.1.283
+CID 3832
+Stenosis Grade
+1.2.840.10008.6.1.284
+CID 3833
+Cardiac Ejection Fraction
+1.2.840.10008.6.1.285
+CID 3835
+Cardiac Volume Measurements
+1.2.840.10008.6.1.286
+CID 3836
+Time-based Perfusion Measurements
+1.2.840.10008.6.1.287
+CID 3837
+Fiducial Feature
+1.2.840.10008.6.1.288
+CID 3838
+Diameter Derivation
+1.2.840.10008.6.1.289
+CID 3839
+Coronary Veins
+1.2.840.10008.6.1.290
+CID 3840
+Pulmonary Veins
+1.2.840.10008.6.1.291
+CID 3843
+Myocardial Subsegment
+1.2.840.10008.6.1.292
+CID 4005
+Partial View Section for Mammography
+1.2.840.10008.6.1.293
+CID 4009
+DX Anatomy Imaged
+1.2.840.10008.6.1.294
+CID 4010
+DX View
+1.2.840.10008.6.1.295
+CID 4011
+DX View Modifier
+1.2.840.10008.6.1.296
+CID 4012
+Projection Eponymous Name
+1.2.840.10008.6.1.297
+CID 4013
+Anatomic Region for Mammography
+1.2.840.10008.6.1.298
+CID 4014
+View for Mammography
+1.2.840.10008.6.1.299
+CID 4015
+View Modifier for Mammography
+1.2.840.10008.6.1.300
+CID 4016
+Anatomic Region for Intra-oral Radiography
+1.2.840.10008.6.1.301
+CID 4017
+Anatomic Region Modifier for Intra-oral Radiography
+1.2.840.10008.6.1.302
+CID 4018
+Primary Anatomic Structure for Intra-oral Radiography (permanent Dentition - Designation of Teeth)
+1.2.840.10008.6.1.303
+CID 4019
+Primary Anatomic Structure for Intra-oral Radiography (Deciduous Dentition - Designation of Teeth)
+1.2.840.10008.6.1.304
+CID 4020
+PET Radionuclide
+1.2.840.10008.6.1.305
+CID 4021
+PET Radiopharmaceutical
+1.2.840.10008.6.1.306
+CID 4028
+Craniofacial Anatomic Regions
+1.2.840.10008.6.1.307
+CID 4030
+CT, MR and PET Anatomy Imaged
+1.2.840.10008.6.1.308
+CID 4031
+Common Anatomic Regions
+1.2.840.10008.6.1.309
+CID 4032
+MR Spectroscopy Metabolites
+1.2.840.10008.6.1.310
+CID 4033
+MR Proton Spectroscopy Metabolites
+1.2.840.10008.6.1.311
+CID 4040
+Endoscopy Anatomic Regions
+1.2.840.10008.6.1.312
+CID 4042
+XA/XRF Anatomy Imaged
+1.2.840.10008.6.1.313
+CID 4050
+Drug Or Contrast Agent Characteristics
+1.2.840.10008.6.1.314
+CID 4051
+General Devices
+1.2.840.10008.6.1.315
+CID 4052
+Phantom Devices
+1.2.840.10008.6.1.316
+CID 4200
+Ophthalmic Imaging Agent
+1.2.840.10008.6.1.317
+CID 4201
+Patient Eye Movement Command
+1.2.840.10008.6.1.318
+CID 4202
+Ophthalmic Photography Acquisition Device
+1.2.840.10008.6.1.319
+CID 4203
+Ophthalmic Photography Illumination
+1.2.840.10008.6.1.320
+CID 4204
+Ophthalmic Filter
+1.2.840.10008.6.1.321
+CID 4205
+Ophthalmic Lens
+1.2.840.10008.6.1.322
+CID 4206
+Ophthalmic Channel Description
+1.2.840.10008.6.1.323
+CID 4207
+Ophthalmic Image Position
+1.2.840.10008.6.1.324
+CID 4208
+Mydriatic Agent
+1.2.840.10008.6.1.325
+CID 4209
+Ophthalmic Anatomic Structure Imaged
+1.2.840.10008.6.1.326
+CID 4210
+Ophthalmic Tomography Acquisition Device
+1.2.840.10008.6.1.327
+CID 4211
+Ophthalmic OCT Anatomic Structure Imaged
+1.2.840.10008.6.1.328
+CID 5000
+Languages
+1.2.840.10008.6.1.329
+CID 5001
+Countries
+1.2.840.10008.6.1.330
+CID 6000
+Overall Breast Composition
+1.2.840.10008.6.1.331
+CID 6001
+Overall Breast Composition From BI-RADS(R)
+1.2.840.10008.6.1.332
+CID 6002
+Change Since Last Mammogram Or Prior Surgery
+1.2.840.10008.6.1.333
+CID 6003
+Change Since Last Mammogram Or Prior Surgery From BI-RADS(R)
+1.2.840.10008.6.1.334
+CID 6004
+Mammography Characteristics of Shape
+1.2.840.10008.6.1.335
+CID 6005
+Characteristics of Shape From BI-RADS(R)
+1.2.840.10008.6.1.336
+CID 6006
+Mammography Characteristics of Margin
+1.2.840.10008.6.1.337
+CID 6007
+Characteristics of Margin From BI-RADS(R)
+1.2.840.10008.6.1.338
+CID 6008
+Density Modifier
+1.2.840.10008.6.1.339
+CID 6009
+Density Modifier From BI-RADS(R)
+1.2.840.10008.6.1.340
+CID 6010
+Mammography Calcification Types
+1.2.840.10008.6.1.341
+CID 6011
+Calcification Types From BI-RADS(R)
+1.2.840.10008.6.1.342
+CID 6012
+Calcification Distribution Modifier
+1.2.840.10008.6.1.343
+CID 6013
+Calcification Distribution Modifier From BI-RADS(R)
+1.2.840.10008.6.1.344
+CID 6014
+Mammography Single Image Finding
+1.2.840.10008.6.1.345
+CID 6015
+Single Image Finding From BI-RADS(R)
+1.2.840.10008.6.1.346
+CID 6016
+Mammography Composite Feature
+1.2.840.10008.6.1.347
+CID 6017
+Composite Feature From BI-RADS(R)
+1.2.840.10008.6.1.348
+CID 6018
+Clockface Location or Region
+1.2.840.10008.6.1.349
+CID 6019
+Clockface Location Or Region From BI-RADS(R)
+1.2.840.10008.6.1.350
+CID 6020
+Quadrant Location
+1.2.840.10008.6.1.351
+CID 6021
+Quadrant Location From BI-RADS(R)
+1.2.840.10008.6.1.352
+CID 6022
+Side
+1.2.840.10008.6.1.353
+CID 6023
+Side From BI-RADS(R)
+1.2.840.10008.6.1.354
+CID 6024
+Depth
+1.2.840.10008.6.1.355
+CID 6025
+Depth From BI-RADS(R)
+1.2.840.10008.6.1.356
+CID 6026
+Mammography Assessment
+1.2.840.10008.6.1.357
+CID 6027
+Assessment From BI-RADS(R)
+1.2.840.10008.6.1.358
+CID 6028
+Mammography Recommended Follow-up
+1.2.840.10008.6.1.359
+CID 6029
+Recommended Follow-up From BI-RADS(R)
+1.2.840.10008.6.1.360
+CID 6030
+Mammography Pathology Codes
+1.2.840.10008.6.1.361
+CID 6031
+Benign Pathology Codes From BI-RADS(R)
+1.2.840.10008.6.1.362
+CID 6032
+High Risk Lesions Pathology Codes From BI-RADS(R)
+1.2.840.10008.6.1.363
+CID 6033
+Malignant Pathology Codes From BI-RADS(R)
+1.2.840.10008.6.1.364
+CID 6034
+Intended Use of CAD Output
+1.2.840.10008.6.1.365
+CID 6035
+Composite Feature Relations
+1.2.840.10008.6.1.366
+CID 6036
+Scope of Feature
+1.2.840.10008.6.1.367
+CID 6037
+Mammography Quantitative Temporal Difference Type
+1.2.840.10008.6.1.368
+CID 6038
+Mammography Qualitative Temporal Difference Type
+1.2.840.10008.6.1.369
+CID 6039
+Nipple Characteristic
+1.2.840.10008.6.1.370
+CID 6040
+Non-lesion Object Type
+1.2.840.10008.6.1.371
+CID 6041
+Mammography Image Quality Finding
+1.2.840.10008.6.1.372
+CID 6042
+Status of Results
+1.2.840.10008.6.1.373
+CID 6043
+Types of Mammography CAD Analysis
+1.2.840.10008.6.1.374
+CID 6044
+Types of Image Quality Assessment
+1.2.840.10008.6.1.375
+CID 6045
+Mammography Types of Quality Control Standard
+1.2.840.10008.6.1.376
+CID 6046
+Units of Follow-up Interval
+1.2.840.10008.6.1.377
+CID 6047
+CAD Processing and Findings Summary
+1.2.840.10008.6.1.378
+CID 6048
+CAD Operating Point Axis Label
+1.2.840.10008.6.1.379
+CID 6050
+Breast Procedure Reported
+1.2.840.10008.6.1.380
+CID 6051
+Breast Procedure Reason
+1.2.840.10008.6.1.381
+CID 6052
+Breast Imaging Report Section Title
+1.2.840.10008.6.1.382
+CID 6053
+Breast Imaging Report Elements
+1.2.840.10008.6.1.383
+CID 6054
+Breast Imaging Findings
+1.2.840.10008.6.1.384
+CID 6055
+Breast Clinical Finding Or Indicated Problem
+1.2.840.10008.6.1.385
+CID 6056
+Associated Findings for Breast
+1.2.840.10008.6.1.386
+CID 6057
+Ductography Findings for Breast
+1.2.840.10008.6.1.387
+CID 6058
+Procedure Modifiers for Breast
+1.2.840.10008.6.1.388
+CID 6059
+Breast Implant Types
+1.2.840.10008.6.1.389
+CID 6060
+Breast Biopsy Techniques
+1.2.840.10008.6.1.390
+CID 6061
+Breast Imaging Procedure Modifiers
+1.2.840.10008.6.1.391
+CID 6062
+Interventional Procedure Complications
+1.2.840.10008.6.1.392
+CID 6063
+Interventional Procedure Results
+1.2.840.10008.6.1.393
+CID 6064
+Ultrasound Findings for Breast
+1.2.840.10008.6.1.394
+CID 6065
+Instrument Approach
+1.2.840.10008.6.1.395
+CID 6066
+Target Confirmation
+1.2.840.10008.6.1.396
+CID 6067
+Fluid Color
+1.2.840.10008.6.1.397
+CID 6068
+Tumor Stages From AJCC
+1.2.840.10008.6.1.398
+CID 6069
+Nottingham Combined Histologic Grade
+1.2.840.10008.6.1.399
+CID 6070
+Bloom-Richardson Histologic Grade
+1.2.840.10008.6.1.400
+CID 6071
+Histologic Grading Method
+1.2.840.10008.6.1.401
+CID 6072
+Breast Implant Findings
+1.2.840.10008.6.1.402
+CID 6080
+Gynecological Hormones
+1.2.840.10008.6.1.403
+CID 6081
+Breast Cancer Risk Factors
+1.2.840.10008.6.1.404
+CID 6082
+Gynecological Procedures
+1.2.840.10008.6.1.405
+CID 6083
+Procedures for Breast
+1.2.840.10008.6.1.406
+CID 6084
+Mammoplasty Procedures
+1.2.840.10008.6.1.407
+CID 6085
+Therapies for Breast
+1.2.840.10008.6.1.408
+CID 6086
+Menopausal Phase
+1.2.840.10008.6.1.409
+CID 6087
+General Risk Factors
+1.2.840.10008.6.1.410
+CID 6088
+OB-GYN Maternal Risk Factors
+1.2.840.10008.6.1.411
+CID 6089
+Substances
+1.2.840.10008.6.1.412
+CID 6090
+Relative Usage, Exposure Amount
+1.2.840.10008.6.1.413
+CID 6091
+Relative Frequency of Event Values
+1.2.840.10008.6.1.414
+CID 6092
+Quantitative Concepts for Usage, Exposure
+1.2.840.10008.6.1.415
+CID 6093
+Qualitative Concepts for Usage, Exposure Amount
+1.2.840.10008.6.1.416
+CID 6094
+Qualitative Concepts for Usage, Exposure Frequency
+1.2.840.10008.6.1.417
+CID 6095
+Numeric Properties of Procedures
+1.2.840.10008.6.1.418
+CID 6096
+Pregnancy Status
+1.2.840.10008.6.1.419
+CID 6097
+Side of Family
+1.2.840.10008.6.1.420
+CID 6100
+Chest Component Categories
+1.2.840.10008.6.1.421
+CID 6101
+Chest Finding Or Feature
+1.2.840.10008.6.1.422
+CID 6102
+Chest Finding Or Feature Modifier
+1.2.840.10008.6.1.423
+CID 6103
+Abnormal Lines Finding Or Feature
+1.2.840.10008.6.1.424
+CID 6104
+Abnormal Opacity Finding Or Feature
+1.2.840.10008.6.1.425
+CID 6105
+Abnormal Lucency Finding Or Feature
+1.2.840.10008.6.1.426
+CID 6106
+Abnormal Texture Finding Or Feature
+1.2.840.10008.6.1.427
+CID 6107
+Width Descriptor
+1.2.840.10008.6.1.428
+CID 6108
+Chest Anatomic Structure Abnormal Distribution
+1.2.840.10008.6.1.429
+CID 6109
+Radiographic Anatomy Finding Or Feature
+1.2.840.10008.6.1.430
+CID 6110
+Lung Anatomy Finding Or Feature
+1.2.840.10008.6.1.431
+CID 6111
+Bronchovascular Anatomy Finding Or Feature
+1.2.840.10008.6.1.432
+CID 6112
+Pleura Anatomy Finding Or Feature
+1.2.840.10008.6.1.433
+CID 6113
+Mediastinum Anatomy Finding Or Feature
+1.2.840.10008.6.1.434
+CID 6114
+Osseous Anatomy Finding Or Feature
+1.2.840.10008.6.1.435
+CID 6115
+Osseous Anatomy Modifiers
+1.2.840.10008.6.1.436
+CID 6116
+Muscular Anatomy
+1.2.840.10008.6.1.437
+CID 6117
+Vascular Anatomy
+1.2.840.10008.6.1.438
+CID 6118
+Size Descriptor
+1.2.840.10008.6.1.439
+CID 6119
+Chest Border Shape
+1.2.840.10008.6.1.440
+CID 6120
+Chest Border Definition
+1.2.840.10008.6.1.441
+CID 6121
+Chest Orientation Descriptor
+1.2.840.10008.6.1.442
+CID 6122
+Chest Content Descriptor
+1.2.840.10008.6.1.443
+CID 6123
+Chest Opacity Descriptor
+1.2.840.10008.6.1.444
+CID 6124
+Location in Chest
+1.2.840.10008.6.1.445
+CID 6125
+General Chest Location
+1.2.840.10008.6.1.446
+CID 6126
+Location in Lung
+1.2.840.10008.6.1.447
+CID 6127
+Segment Location in Lung
+1.2.840.10008.6.1.448
+CID 6128
+Chest Distribution Descriptor
+1.2.840.10008.6.1.449
+CID 6129
+Chest Site Involvement
+1.2.840.10008.6.1.450
+CID 6130
+Severity Descriptor
+1.2.840.10008.6.1.451
+CID 6131
+Chest Texture Descriptor
+1.2.840.10008.6.1.452
+CID 6132
+Chest Calcification Descriptor
+1.2.840.10008.6.1.453
+CID 6133
+Chest Quantitative Temporal Difference Type
+1.2.840.10008.6.1.454
+CID 6134
+Chest Qualitative Temporal Difference Type
+1.2.840.10008.6.1.455
+CID 6135
+Image Quality Finding
+1.2.840.10008.6.1.456
+CID 6136
+Chest Types of Quality Control Standard
+1.2.840.10008.6.1.457
+CID 6137
+Types of CAD Analysis
+1.2.840.10008.6.1.458
+CID 6138
+Chest Non-lesion Object Type
+1.2.840.10008.6.1.459
+CID 6139
+Non-lesion Modifiers
+1.2.840.10008.6.1.460
+CID 6140
+Calculation Methods
+1.2.840.10008.6.1.461
+CID 6141
+Attenuation Coefficient Measurements
+1.2.840.10008.6.1.462
+CID 6142
+Calculated Value
+1.2.840.10008.6.1.463
+CID 6143
+Lesion Response
+1.2.840.10008.6.1.464
+CID 6144
+RECIST Defined Lesion Response
+1.2.840.10008.6.1.465
+CID 6145
+Baseline Category
+1.2.840.10008.6.1.466
+CID 6151
+Background Echotexture
+1.2.840.10008.6.1.467
+CID 6152
+Orientation
+1.2.840.10008.6.1.468
+CID 6153
+Lesion Boundary
+1.2.840.10008.6.1.469
+CID 6154
+Echo Pattern
+1.2.840.10008.6.1.470
+CID 6155
+Posterior Acoustic Features
+1.2.840.10008.6.1.471
+CID 6157
+Vascularity
+1.2.840.10008.6.1.472
+CID 6158
+Correlation to Other Findings
+1.2.840.10008.6.1.473
+CID 6159
+Malignancy Type
+1.2.840.10008.6.1.474
+CID 6160
+Breast Primary Tumor Assessment From AJCC
+1.2.840.10008.6.1.475
+CID 6161
+Clinical Regional Lymph Node Assessment for Breast
+1.2.840.10008.6.1.476
+CID 6162
+Assessment of Metastasis for Breast
+1.2.840.10008.6.1.477
+CID 6163
+Menstrual Cycle Phase
+1.2.840.10008.6.1.478
+CID 6164
+Time Intervals
+1.2.840.10008.6.1.479
+CID 6165
+Breast Linear Measurements
+1.2.840.10008.6.1.480
+CID 6166
+CAD Geometry Secondary Graphical Representation
+1.2.840.10008.6.1.481
+CID 7000
+Diagnostic Imaging Report Document Titles
+1.2.840.10008.6.1.482
+CID 7001
+Diagnostic Imaging Report Headings
+1.2.840.10008.6.1.483
+CID 7002
+Diagnostic Imaging Report Elements
+1.2.840.10008.6.1.484
+CID 7003
+Diagnostic Imaging Report Purposes of Reference
+1.2.840.10008.6.1.485
+CID 7004
+Waveform Purposes of Reference
+1.2.840.10008.6.1.486
+CID 7005
+Contributing Equipment Purposes of Reference
+1.2.840.10008.6.1.487
+CID 7006
+SR Document Purposes of Reference
+1.2.840.10008.6.1.488
+CID 7007
+Signature Purpose
+1.2.840.10008.6.1.489
+CID 7008
+Media Import
+1.2.840.10008.6.1.490
+CID 7010
+Key Object Selection Document Title
+1.2.840.10008.6.1.491
+CID 7011
+Rejected for Quality Reasons
+1.2.840.10008.6.1.492
+CID 7012
+Best in Set
+1.2.840.10008.6.1.493
+CID 7020
+Document Titles
+1.2.840.10008.6.1.494
+CID 7100
+RCS Registration Method Type
+1.2.840.10008.6.1.495
+CID 7101
+Brain Atlas Fiducials
+1.2.840.10008.6.1.496
+CID 7150
+Segmentation Property Categories
+1.2.840.10008.6.1.497
+CID 7151
+Segmentation Property Types
+1.2.840.10008.6.1.498
+CID 7152
+Cardiac Structure Segmentation Types
+1.2.840.10008.6.1.499
+CID 7153
+CNS Tissue Segmentation Types
+1.2.840.10008.6.1.500
+CID 7154
+Abdominal Organ Segmentation Types
+1.2.840.10008.6.1.501
+CID 7155
+Thoracic Tissue Segmentation Types
+1.2.840.10008.6.1.502
+CID 7156
+Vascular Tissue Segmentation Types
+1.2.840.10008.6.1.503
+CID 7157
+Device Segmentation Types
+1.2.840.10008.6.1.504
+CID 7158
+Artifact Segmentation Types
+1.2.840.10008.6.1.505
+CID 7159
+Lesion Segmentation Types
+1.2.840.10008.6.1.506
+CID 7160
+Pelvic Organ Segmentation Types
+1.2.840.10008.6.1.507
+CID 7161
+Physiology Segmentation Types
+1.2.840.10008.6.1.508
+CID 7201
+Referenced Image Purposes of Reference
+1.2.840.10008.6.1.509
+CID 7202
+Source Image Purposes of Reference
+1.2.840.10008.6.1.510
+CID 7203
+Image Derivation
+1.2.840.10008.6.1.511
+CID 7205
+Purpose of Reference to Alternate Representation
+1.2.840.10008.6.1.512
+CID 7210
+Related Series Purposes of Reference
+1.2.840.10008.6.1.513
+CID 7250
+Multi-Frame Subset Type
+1.2.840.10008.6.1.514
+CID 7450
+Person Roles
+1.2.840.10008.6.1.515
+CID 7451
+Family Member
+1.2.840.10008.6.1.516
+CID 7452
+Organizational Roles
+1.2.840.10008.6.1.517
+CID 7453
+Performing Roles
+1.2.840.10008.6.1.518
+CID 7454
+Species
+1.2.840.10008.6.1.519
+CID 7455
+Sex
+1.2.840.10008.6.1.520
+CID 7456
+Units of Measure for Age
+1.2.840.10008.6.1.521
+CID 7460
+Units of Linear Measurement
+1.2.840.10008.6.1.522
+CID 7461
+Units of Area Measurement
+1.2.840.10008.6.1.523
+CID 7462
+Units of Volume Measurement
+1.2.840.10008.6.1.524
+CID 7470
+Linear Measurements
+1.2.840.10008.6.1.525
+CID 7471
+Area Measurements
+1.2.840.10008.6.1.526
+CID 7472
+Volume Measurements
+1.2.840.10008.6.1.527
+CID 7473
+General Area Calculation Methods
+1.2.840.10008.6.1.528
+CID 7474
+General Volume Calculation Methods
+1.2.840.10008.6.1.529
+CID 7480
+Breed
+1.2.840.10008.6.1.530
+CID 7481
+Breed Registry
+1.2.840.10008.6.1.531
+CID 9231
+Workitem Definition
+1.2.840.10008.6.1.532
+CID 9232
+Non-DICOM Output Types (Retired)
+1.2.840.10008.6.1.533
+CID 9300
+Procedure Discontinuation Reasons
+1.2.840.10008.6.1.534
+CID 10000
+Scope of Accumulation
+1.2.840.10008.6.1.535
+CID 10001
+UID Types
+1.2.840.10008.6.1.536
+CID 10002
+Irradiation Event Types
+1.2.840.10008.6.1.537
+CID 10003
+Equipment Plane Identification
+1.2.840.10008.6.1.538
+CID 10004
+Fluoro Modes
+1.2.840.10008.6.1.539
+CID 10006
+X-Ray Filter Materials
+1.2.840.10008.6.1.540
+CID 10007
+X-Ray Filter Types
+1.2.840.10008.6.1.541
+CID 10008
+Dose Related Distance Measurements
+1.2.840.10008.6.1.542
+CID 10009
+Measured/calculated
+1.2.840.10008.6.1.543
+CID 10010
+Dose Measurement Devices
+1.2.840.10008.6.1.544
+CID 10011
+Effective Dose Evaluation Method
+1.2.840.10008.6.1.545
+CID 10013
+CT Acquisition Type
+1.2.840.10008.6.1.546
+CID 10014
+Contrast Imaging Technique
+1.2.840.10008.6.1.547
+CID 10015
+CT Dose Reference Authorities
+1.2.840.10008.6.1.548
+CID 10016
+Anode Target Material
+1.2.840.10008.6.1.549
+CID 10017
+X-Ray Grid
+1.2.840.10008.6.1.550
+CID 12001
+Ultrasound Protocol Types
+1.2.840.10008.6.1.551
+CID 12002
+Ultrasound Protocol Stage Types
+1.2.840.10008.6.1.552
+CID 12003
+OB-GYN Dates
+1.2.840.10008.6.1.553
+CID 12004
+Fetal Biometry Ratios
+1.2.840.10008.6.1.554
+CID 12005
+Fetal Biometry Measurements
+1.2.840.10008.6.1.555
+CID 12006
+Fetal Long Bones Biometry Measurements
+1.2.840.10008.6.1.556
+CID 12007
+Fetal Cranium
+1.2.840.10008.6.1.557
+CID 12008
+OB-GYN Amniotic Sac
+1.2.840.10008.6.1.558
+CID 12009
+Early Gestation Biometry Measurements
+1.2.840.10008.6.1.559
+CID 12011
+Ultrasound Pelvis and Uterus
+1.2.840.10008.6.1.560
+CID 12012
+OB Equations and Tables
+1.2.840.10008.6.1.561
+CID 12013
+Gestational Age Equations and Tables
+1.2.840.10008.6.1.562
+CID 12014
+OB Fetal Body Weight Equations and Tables
+1.2.840.10008.6.1.563
+CID 12015
+Fetal Growth Equations and Tables
+1.2.840.10008.6.1.564
+CID 12016
+Estimated Fetal Weight Percentile Equations and Tables
+1.2.840.10008.6.1.565
+CID 12017
+Growth Distribution Rank
+1.2.840.10008.6.1.566
+CID 12018
+OB-GYN Summary
+1.2.840.10008.6.1.567
+CID 12019
+OB-GYN Fetus Summary
+1.2.840.10008.6.1.568
+CID 12101
+Vascular Summary
+1.2.840.10008.6.1.569
+CID 12102
+Temporal Periods Relating to Procedure or Therapy
+1.2.840.10008.6.1.570
+CID 12103
+Vascular Ultrasound Anatomic Location
+1.2.840.10008.6.1.571
+CID 12104
+Extracranial Arteries
+1.2.840.10008.6.1.572
+CID 12105
+Intracranial Cerebral Vessels
+1.2.840.10008.6.1.573
+CID 12106
+Intracranial Cerebral Vessels (unilateral)
+1.2.840.10008.6.1.574
+CID 12107
+Upper Extremity Arteries
+1.2.840.10008.6.1.575
+CID 12108
+Upper Extremity Veins
+1.2.840.10008.6.1.576
+CID 12109
+Lower Extremity Arteries
+1.2.840.10008.6.1.577
+CID 12110
+Lower Extremity Veins
+1.2.840.10008.6.1.578
+CID 12111
+Abdominal Arteries (lateral)
+1.2.840.10008.6.1.579
+CID 12112
+Abdominal Arteries (unilateral)
+1.2.840.10008.6.1.580
+CID 12113
+Abdominal Veins (lateral)
+1.2.840.10008.6.1.581
+CID 12114
+Abdominal Veins (unilateral)
+1.2.840.10008.6.1.582
+CID 12115
+Renal Vessels
+1.2.840.10008.6.1.583
+CID 12116
+Vessel Segment Modifiers
+1.2.840.10008.6.1.584
+CID 12117
+Vessel Branch Modifiers
+1.2.840.10008.6.1.585
+CID 12119
+Vascular Ultrasound Property
+1.2.840.10008.6.1.586
+CID 12120
+Blood Velocity Measurements by Ultrasound
+1.2.840.10008.6.1.587
+CID 12121
+Vascular Indices and Ratios
+1.2.840.10008.6.1.588
+CID 12122
+Other Vascular Properties
+1.2.840.10008.6.1.589
+CID 12123
+Carotid Ratios
+1.2.840.10008.6.1.590
+CID 12124
+Renal Ratios
+1.2.840.10008.6.1.591
+CID 12140
+Pelvic Vasculature Anatomical Location
+1.2.840.10008.6.1.592
+CID 12141
+Fetal Vasculature Anatomical Location
+1.2.840.10008.6.1.593
+CID 12200
+Echocardiography Left Ventricle
+1.2.840.10008.6.1.594
+CID 12201
+Left Ventricle Linear
+1.2.840.10008.6.1.595
+CID 12202
+Left Ventricle Volume
+1.2.840.10008.6.1.596
+CID 12203
+Left Ventricle Other
+1.2.840.10008.6.1.597
+CID 12204
+Echocardiography Right Ventricle
+1.2.840.10008.6.1.598
+CID 12205
+Echocardiography Left Atrium
+1.2.840.10008.6.1.599
+CID 12206
+Echocardiography Right Atrium
+1.2.840.10008.6.1.600
+CID 12207
+Echocardiography Mitral Valve
+1.2.840.10008.6.1.601
+CID 12208
+Echocardiography Tricuspid Valve
+1.2.840.10008.6.1.602
+CID 12209
+Echocardiography Pulmonic Valve
+1.2.840.10008.6.1.603
+CID 12210
+Echocardiography Pulmonary Artery
+1.2.840.10008.6.1.604
+CID 12211
+Echocardiography Aortic Valve
+1.2.840.10008.6.1.605
+CID 12212
+Echocardiography Aorta
+1.2.840.10008.6.1.606
+CID 12214
+Echocardiography Pulmonary Veins
+1.2.840.10008.6.1.607
+CID 12215
+Echocardiography Vena Cavae
+1.2.840.10008.6.1.608
+CID 12216
+Echocardiography Hepatic Veins
+1.2.840.10008.6.1.609
+CID 12217
+Echocardiography Cardiac Shunt
+1.2.840.10008.6.1.610
+CID 12218
+Echocardiography Congenital
+1.2.840.10008.6.1.611
+CID 12219
+Pulmonary Vein Modifiers
+1.2.840.10008.6.1.612
+CID 12220
+Echocardiography Common Measurements
+1.2.840.10008.6.1.613
+CID 12221
+Flow Direction
+1.2.840.10008.6.1.614
+CID 12222
+Orifice Flow Properties
+1.2.840.10008.6.1.615
+CID 12223
+Echocardiography Stroke Volume Origin
+1.2.840.10008.6.1.616
+CID 12224
+Ultrasound Image Modes
+1.2.840.10008.6.1.617
+CID 12226
+Echocardiography Image View
+1.2.840.10008.6.1.618
+CID 12227
+Echocardiography Measurement Method
+1.2.840.10008.6.1.619
+CID 12228
+Echocardiography Volume Methods
+1.2.840.10008.6.1.620
+CID 12229
+Echocardiography Area Methods
+1.2.840.10008.6.1.621
+CID 12230
+Gradient Methods
+1.2.840.10008.6.1.622
+CID 12231
+Volume Flow Methods
+1.2.840.10008.6.1.623
+CID 12232
+Myocardium Mass Methods
+1.2.840.10008.6.1.624
+CID 12233
+Cardiac Phase
+1.2.840.10008.6.1.625
+CID 12234
+Respiration State
+1.2.840.10008.6.1.626
+CID 12235
+Mitral Valve Anatomic Sites
+1.2.840.10008.6.1.627
+CID 12236
+Echo Anatomic Sites
+1.2.840.10008.6.1.628
+CID 12237
+Echocardiography Anatomic Site Modifiers
+1.2.840.10008.6.1.629
+CID 12238
+Wall Motion Scoring Schemes
+1.2.840.10008.6.1.630
+CID 12239
+Cardiac Output Properties
+1.2.840.10008.6.1.631
+CID 12240
+Left Ventricle Area
+1.2.840.10008.6.1.632
+CID 12241
+Tricuspid Valve Finding Sites
+1.2.840.10008.6.1.633
+CID 12242
+Aortic Valve Finding Sites
+1.2.840.10008.6.1.634
+CID 12243
+Left Ventricle Finding Sites
+1.2.840.10008.6.1.635
+CID 12244
+Congenital Finding Sites
+1.2.840.10008.6.1.636
+CID 7162
+Surface Processing Algorithm Families
+1.2.840.10008.6.1.637
+CID 3207
+Stress Test Procedure Phases
+1.2.840.10008.6.1.638
+CID 3778
+Stages
+1.2.840.10008.6.1.735
+CID 252
+S-M-L Size Descriptor
+1.2.840.10008.6.1.736
+CID 3016
+Major Coronary Arteries
+1.2.840.10008.6.1.737
+CID 3083
+Units of Radioactivity
+1.2.840.10008.6.1.738
+CID 3102
+Rest-Stress
+1.2.840.10008.6.1.739
+CID 3106
+PET Cardiology Protocols
+1.2.840.10008.6.1.740
+CID 3107
+PET Cardiology Radiopharmaceuticals
+1.2.840.10008.6.1.741
+CID 3108
+NM/PET Procedures
+1.2.840.10008.6.1.742
+CID 3110
+Nuclear Cardiology Protocols
+1.2.840.10008.6.1.743
+CID 3111
+Nuclear Cardiology Radiopharmaceuticals
+1.2.840.10008.6.1.744
+CID 3112
+Attenuation Correction
+1.2.840.10008.6.1.745
+CID 3113
+Types of Perfusion Defects
+1.2.840.10008.6.1.746
+CID 3114
+Study Quality
+1.2.840.10008.6.1.747
+CID 3115
+Stress Imaging Quality Issues
+1.2.840.10008.6.1.748
+CID 3116
+NM Extracardiac Findings
+1.2.840.10008.6.1.749
+CID 3117
+Attenuation Correction Methods
+1.2.840.10008.6.1.750
+CID 3118
+Level of Risk
+1.2.840.10008.6.1.751
+CID 3119
+LV Function
+1.2.840.10008.6.1.752
+CID 3120
+Perfusion Findings
+1.2.840.10008.6.1.753
+CID 3121
+Perfusion Morphology
+1.2.840.10008.6.1.754
+CID 3122
+Ventricular Enlargement
+1.2.840.10008.6.1.755
+CID 3200
+Stress Test Procedure
+1.2.840.10008.6.1.756
+CID 3201
+Indications for Stress Test
+1.2.840.10008.6.1.757
+CID 3202
+Chest Pain
+1.2.840.10008.6.1.758
+CID 3203
+Exerciser Device
+1.2.840.10008.6.1.759
+CID 3204
+Stress Agents
+1.2.840.10008.6.1.760
+CID 3205
+Indications for Pharmacological Stress Test
+1.2.840.10008.6.1.761
+CID 3206
+Non-invasive Cardiac Imaging Procedures
+1.2.840.10008.6.1.763
+CID 3208
+Summary Codes Exercise ECG
+1.2.840.10008.6.1.764
+CID 3209
+Summary Codes Stress Imaging
+1.2.840.10008.6.1.765
+CID 3210
+Speed of Response
+1.2.840.10008.6.1.766
+CID 3211
+BP Response
+1.2.840.10008.6.1.767
+CID 3212
+Treadmill Speed
+1.2.840.10008.6.1.768
+CID 3213
+Stress Hemodynamic Findings
+1.2.840.10008.6.1.769
+CID 3215
+Perfusion Finding Method
+1.2.840.10008.6.1.770
+CID 3217
+Comparison Finding
+1.2.840.10008.6.1.771
+CID 3220
+Stress Symptoms
+1.2.840.10008.6.1.772
+CID 3221
+Stress Test Termination Reasons
+1.2.840.10008.6.1.773
+CID 3227
+QTc Measurements
+1.2.840.10008.6.1.774
+CID 3228
+ECG Timing Measurements
+1.2.840.10008.6.1.775
+CID 3229
+ECG Axis Measurements
+1.2.840.10008.6.1.776
+CID 3230
+ECG Findings
+1.2.840.10008.6.1.777
+CID 3231
+ST Segment Findings
+1.2.840.10008.6.1.778
+CID 3232
+ST Segment Location
+1.2.840.10008.6.1.779
+CID 3233
+ST Segment Morphology
+1.2.840.10008.6.1.780
+CID 3234
+Ectopic Beat Morphology
+1.2.840.10008.6.1.781
+CID 3235
+Perfusion Comparison Findings
+1.2.840.10008.6.1.782
+CID 3236
+Tolerance Comparison Findings
+1.2.840.10008.6.1.783
+CID 3237
+Wall Motion Comparison Findings
+1.2.840.10008.6.1.784
+CID 3238
+Stress Scoring Scales
+1.2.840.10008.6.1.785
+CID 3239
+Perceived Exertion Scales
+1.2.840.10008.6.1.786
+CID 3463
+Ventricle Identification
+1.2.840.10008.6.1.787
+CID 6200
+Colon Overall Assessment
+1.2.840.10008.6.1.788
+CID 6201
+Colon Finding Or Feature
+1.2.840.10008.6.1.789
+CID 6202
+Colon Finding Or Feature Modifier
+1.2.840.10008.6.1.790
+CID 6203
+Colon Non-lesion Object Type
+1.2.840.10008.6.1.791
+CID 6204
+Anatomic Non-colon Findings
+1.2.840.10008.6.1.792
+CID 6205
+Clockface Location for Colon
+1.2.840.10008.6.1.793
+CID 6206
+Recumbent Patient Orientation for Colon
+1.2.840.10008.6.1.794
+CID 6207
+Colon Quantitative Temporal Difference Type
+1.2.840.10008.6.1.795
+CID 6208
+Colon Types of Quality Control Standard
+1.2.840.10008.6.1.796
+CID 6209
+Colon Morphology Descriptor
+1.2.840.10008.6.1.797
+CID 6210
+Location in Intestinal Tract
+1.2.840.10008.6.1.798
+CID 6211
+Colon CAD Material Description
+1.2.840.10008.6.1.799
+CID 6212
+Calculated Value for Colon Findings
+1.2.840.10008.6.1.800
+CID 4214
+Ophthalmic Horizontal Directions
+1.2.840.10008.6.1.801
+CID 4215
+Ophthalmic Vertical Directions
+1.2.840.10008.6.1.802
+CID 4216
+Ophthalmic Visual Acuity Type
+1.2.840.10008.6.1.803
+CID 3004
+Arterial Pulse Waveform
+1.2.840.10008.6.1.804
+CID 3005
+Respiration Waveform
+1.2.840.10008.6.1.805
+CID 12030
+Ultrasound Contrast/Bolus Agents
+1.2.840.10008.6.1.806
+CID 12031
+Protocol Interval Events
+1.2.840.10008.6.1.807
+CID 12032
+Transducer Scan Pattern
+1.2.840.10008.6.1.808
+CID 12033
+Ultrasound Transducer Geometry
+1.2.840.10008.6.1.809
+CID 12034
+Ultrasound Transducer Beam Steering
+1.2.840.10008.6.1.810
+CID 12035
+Ultrasound Transducer Application
+1.2.840.10008.6.1.811
+CID 50
+Instance Availability Status
+1.2.840.10008.6.1.812
+CID 9301
+Modality PPS Discontinuation Reasons
+1.2.840.10008.6.1.813
+CID 9302
+Media Import PPS Discontinuation Reasons
+1.2.840.10008.6.1.814
+CID 7482
+DX Anatomy Imaged for Animals
+1.2.840.10008.6.1.815
+CID 7483
+Common Anatomic Regions for Animals
+1.2.840.10008.6.1.816
+CID 7484
+DX View for Animals
+1.2.840.10008.6.1.817
+CID 7030
+Institutional Departments, Units and Services
+1.2.840.10008.6.1.818
+CID 7009
+Purpose of Reference to Predecessor Report
+1.2.840.10008.6.1.819
+CID 4220
+Visual Fixation Quality During Acquisition
+1.2.840.10008.6.1.820
+CID 4221
+Visual Fixation Quality Problem
+1.2.840.10008.6.1.821
+CID 4222
+Ophthalmic Macular Grid Problem
+1.2.840.10008.6.1.822
+CID 5002
+Organizations
+1.2.840.10008.6.1.823
+CID 7486
+Mixed Breeds
+1.2.840.10008.6.1.824
+CID 7040
+Broselow-Luten Pediatric Size Categories
+1.2.840.10008.6.1.825
+CID 7042
+Calcium Scoring Patient Size Categories
+1.2.840.10008.6.1.826
+CID 12245
+Cardiac Ultrasound Report Titles
+1.2.840.10008.6.1.827
+CID 12246
+Cardiac Ultrasound Indication for Study
+1.2.840.10008.6.1.828
+CID 12247
+Pediatric, Fetal and Congenital Cardiac Surgical Interventions
+1.2.840.10008.6.1.829
+CID 12248
+Cardiac Ultrasound Summary Codes
+1.2.840.10008.6.1.830
+CID 12249
+Cardiac Ultrasound Fetal Summary Codes
+1.2.840.10008.6.1.831
+CID 12250
+Cardiac Ultrasound Common Linear Measurements
+1.2.840.10008.6.1.832
+CID 12251
+Cardiac Ultrasound Linear Valve Measurements
+1.2.840.10008.6.1.833
+CID 12252
+Cardiac Ultrasound Cardiac Function
+1.2.840.10008.6.1.834
+CID 12253
+Cardiac Ultrasound Area Measurements
+1.2.840.10008.6.1.835
+CID 12254
+Cardiac Ultrasound Hemodynamic Measurements
+1.2.840.10008.6.1.836
+CID 12255
+Cardiac Ultrasound Myocardium Measurements
+1.2.840.10008.6.1.837
+1.2.840.10008.6.1.838
+CID 12257
+Cardiac Ultrasound Left Ventricle
+1.2.840.10008.6.1.839
+CID 12258
+Cardiac Ultrasound Right Ventricle
+1.2.840.10008.6.1.840
+CID 12259
+Cardiac Ultrasound Ventricles Measurements
+1.2.840.10008.6.1.841
+CID 12260
+Cardiac Ultrasound Pulmonary Artery
+1.2.840.10008.6.1.842
+CID 12261
+Cardiac Ultrasound Pulmonary Vein
+1.2.840.10008.6.1.843
+CID 12262
+Cardiac Ultrasound Pulmonary Valve
+1.2.840.10008.6.1.844
+CID 12263
+Cardiac Ultrasound Venous Return Pulmonary Measurements
+1.2.840.10008.6.1.845
+CID 12264
+Cardiac Ultrasound Venous Return Systemic Measurements
+1.2.840.10008.6.1.846
+CID 12265
+Cardiac Ultrasound Atria and Atrial Septum Measurements
+1.2.840.10008.6.1.847
+CID 12266
+Cardiac Ultrasound Mitral Valve
+1.2.840.10008.6.1.848
+CID 12267
+Cardiac Ultrasound Tricuspid Valve
+1.2.840.10008.6.1.849
+CID 12268
+Cardiac Ultrasound Atrioventricular Valves Measurements
+1.2.840.10008.6.1.850
+CID 12269
+Cardiac Ultrasound Interventricular Septum Measurements
+1.2.840.10008.6.1.851
+CID 12270
+Cardiac Ultrasound Aortic Valve
+1.2.840.10008.6.1.852
+CID 12271
+Cardiac Ultrasound Outflow Tracts Measurements
+1.2.840.10008.6.1.853
+CID 12272
+Cardiac Ultrasound Semilunar Valves, Annulate and Sinuses Measurements
+1.2.840.10008.6.1.854
+CID 12273
+Cardiac Ultrasound Aortic Sinotubular Junction
+1.2.840.10008.6.1.855
+CID 12274
+Cardiac Ultrasound Aorta Measurements
+1.2.840.10008.6.1.856
+CID 12275
+Cardiac Ultrasound Coronary Arteries Measurements
+1.2.840.10008.6.1.857
+CID 12276
+Cardiac Ultrasound Aorto Pulmonary Connections Measurements
+1.2.840.10008.6.1.858
+CID 12277
+Cardiac Ultrasound Pericardium and Pleura Measurements
+1.2.840.10008.6.1.859
+CID 12279
+Cardiac Ultrasound Fetal General Measurements
+1.2.840.10008.6.1.860
+CID 12280
+Cardiac Ultrasound Target Sites
+1.2.840.10008.6.1.861
+CID 12281
+Cardiac Ultrasound Target Site Modifiers
+1.2.840.10008.6.1.862
+CID 12282
+Cardiac Ultrasound Venous Return Systemic Finding Sites
+1.2.840.10008.6.1.863
+CID 12283
+Cardiac Ultrasound Venous Return Pulmonary Finding Sites
+1.2.840.10008.6.1.864
+CID 12284
+Cardiac Ultrasound Atria and Atrial Septum Finding Sites
+1.2.840.10008.6.1.865
+CID 12285
+Cardiac Ultrasound Atrioventricular Valves Finding Sites
+1.2.840.10008.6.1.866
+CID 12286
+Cardiac Ultrasound Interventricular Septum Finding Sites
+1.2.840.10008.6.1.867
+CID 12287
+Cardiac Ultrasound Ventricles Finding Sites
+1.2.840.10008.6.1.868
+CID 12288
+Cardiac Ultrasound Outflow Tracts Finding Sites
+1.2.840.10008.6.1.869
+CID 12289
+Cardiac Ultrasound Semilunar Valves, Annulate and Sinuses Finding Sites
+1.2.840.10008.6.1.870
+CID 12290
+Cardiac Ultrasound Pulmonary Arteries Finding Sites
+1.2.840.10008.6.1.871
+CID 12291
+Cardiac Ultrasound Aorta Finding Sites
+1.2.840.10008.6.1.872
+CID 12292
+Cardiac Ultrasound Coronary Arteries Finding Sites
+1.2.840.10008.6.1.873
+CID 12293
+Cardiac Ultrasound Aortopulmonary Connections Finding Sites
+1.2.840.10008.6.1.874
+CID 12294
+Cardiac Ultrasound Pericardium and Pleura Finding Sites
+1.2.840.10008.6.1.876
+CID 4230
+Ophthalmic Ultrasound Axial Measurements Type
+1.2.840.10008.6.1.877
+CID 4231
+Lens Status
+1.2.840.10008.6.1.878
+CID 4232
+Vitreous Status
+1.2.840.10008.6.1.879
+CID 4233
+Ophthalmic Axial Length Measurements Segment Names
+1.2.840.10008.6.1.880
+CID 4234
+Refractive Surgery Types
+1.2.840.10008.6.1.881
+CID 4235
+Keratometry Descriptors
+1.2.840.10008.6.1.882
+CID 4236
+IOL Calculation Formula
+1.2.840.10008.6.1.883
+CID 4237
+Lens Constant Type
+1.2.840.10008.6.1.884
+CID 4238
+Refractive Error Types
+1.2.840.10008.6.1.885
+CID 4239
+Anterior Chamber Depth Definition
+1.2.840.10008.6.1.886
+CID 4240
+Ophthalmic Measurement Or Calculation Data Source
+1.2.840.10008.6.1.887
+CID 4241
+Ophthalmic Axial Length Selection Method
+1.2.840.10008.6.1.888
+
+
+1.2.840.10008.6.1.889
+CID 4243
+Ophthalmic Axial Length Quality Metric Type
+1.2.840.10008.6.1.890
+CID 4244
+Ophthalmic Agent Concentration Units
+1.2.840.10008.6.1.891
+CID 91
+Functional Condition Present During Acquisition
+1.2.840.10008.6.1.892
+CID 92
+Joint Position During Acquisition
+1.2.840.10008.6.1.893
+CID 93
+Joint Positioning Method
+1.2.840.10008.6.1.894
+CID 94
+Physical Force Applied During Acquisition
+1.2.840.10008.6.1.895
+CID 3690
+ECG Control Variables Numeric
+1.2.840.10008.6.1.896
+CID 3691
+ECG Control Variables Text
+1.2.840.10008.6.1.897
+CID 8120
+WSI Referenced Image Purposes of Reference
+1.2.840.10008.6.1.898
+CID 8121
+Microscopy Lens Type
+1.2.840.10008.6.1.899
+CID 8122
+Microscopy Illuminator and Sensor Color
+1.2.840.10008.6.1.900
+CID 8123
+Microscopy Illumination Method
+1.2.840.10008.6.1.901
+CID 8124
+Microscopy Filter
+1.2.840.10008.6.1.902
+CID 8125
+Microscopy Illuminator Type
+1.2.840.10008.6.1.903
+CID 400
+Audit Event ID
+1.2.840.10008.6.1.904
+CID 401
+Audit Event Type Code
+1.2.840.10008.6.1.905
+CID 402
+Audit Active Participant Role ID Code
+1.2.840.10008.6.1.906
+CID 403
+Security Alert Type Code
+1.2.840.10008.6.1.907
+CID 404
+Audit Participant Object ID Type Code
+1.2.840.10008.6.1.908
+CID 405
+Media Type Code
+1.2.840.10008.6.1.909
+CID 4250
+Visual Field Static Perimetry Test Patterns
+1.2.840.10008.6.1.910
+CID 4251
+Visual Field Static Perimetry Test Strategies
+1.2.840.10008.6.1.911
+CID 4252
+Visual Field Static Perimetry Screening Test Modes
+1.2.840.10008.6.1.912
+CID 4253
+Visual Field Static Perimetry Fixation Strategy
+1.2.840.10008.6.1.913
+CID 4254
+Visual Field Static Perimetry Test Analysis Results
+1.2.840.10008.6.1.914
+CID 4255
+Visual Field Illumination Color
+1.2.840.10008.6.1.915
+CID 4256
+Visual Field Procedure Modifier
+1.2.840.10008.6.1.916
+CID 4257
+Visual Field Global Index Name
+1.2.840.10008.6.1.917
+CID 7180
+Abstract Multi-dimensional Image Model Component Semantics
+1.2.840.10008.6.1.918
+CID 7181
+Abstract Multi-dimensional Image Model Component Units
+1.2.840.10008.6.1.919
+CID 7182
+Abstract Multi-dimensional Image Model Dimension Semantics
+1.2.840.10008.6.1.920
+CID 7183
+Abstract Multi-dimensional Image Model Dimension Units
+1.2.840.10008.6.1.921
+CID 7184
+Abstract Multi-dimensional Image Model Axis Direction
+1.2.840.10008.6.1.922
+CID 7185
+Abstract Multi-dimensional Image Model Axis Orientation
+1.2.840.10008.6.1.923
+CID 7186
+Abstract Multi-dimensional Image Model Qualitative Dimension Sample Semantics
+1.2.840.10008.6.1.924
+CID 7320
+Planning Methods
+1.2.840.10008.6.1.925
+CID 7050
+De-identification Method
+1.2.840.10008.6.1.926
+CID 12118
+Measurement Orientation
+1.2.840.10008.6.1.927
+CID 3689
+ECG Global Waveform Durations
+1.2.840.10008.6.1.930
+CID 3692
+ICDs
+1.2.840.10008.6.1.931
+CID 9241
+Radiotherapy General Workitem Definition
+1.2.840.10008.6.1.932
+CID 9242
+Radiotherapy Acquisition Workitem Definition
+1.2.840.10008.6.1.933
+CID 9243
+Radiotherapy Registration Workitem Definition
+1.2.840.10008.6.1.934
+CID 3850
+Intravascular OCT Flush Agent
+1.2.840.10008.6.1.935
+CID 10022
+Label Types
+1.2.840.10008.6.1.936
+CID 4260
+Ophthalmic Mapping Units for Real World Value Mapping
+1.2.840.10008.6.1.937
+CID 4261
+Ophthalmic Mapping Acquisition Method
+1.2.840.10008.6.1.938
+CID 4262
+Retinal Thickness Definition
+1.2.840.10008.6.1.939
+CID 4263
+Ophthalmic Thickness Map Value Type
+1.2.840.10008.6.1.940
+CID 4264
+Ophthalmic Map Purposes of Reference
+1.2.840.10008.6.1.941
+CID 4265
+Ophthalmic Thickness Deviation Categories
+1.2.840.10008.6.1.942
+CID 4266
+Ophthalmic Anatomic Structure Reference Point
+1.2.840.10008.6.1.943
+CID 3104
+Cardiac Synchronization Technique
+1.2.840.10008.6.1.944
+CID 8130
+Staining Protocols
+1.2.840.10008.6.1.945
+
+
+1.2.840.10008.6.1.946
+
+
+1.2.840.10008.6.1.947
+CID 10023
+Size Specific Dose Estimation Method for CT
+1.2.840.10008.6.1.948
+CID 8131
+Pathology Imaging Protocols
+1.2.840.10008.6.1.949
+CID 8132
+Magnification Selection
+1.2.840.10008.6.1.950
+CID 8133
+Tissue Selection
+1.2.840.10008.6.1.951
+CID 7464
+General Region of Interest Measurement Modifiers
+1.2.840.10008.6.1.952
+CID 7465
+Measurements Derived From Multiple ROI Measurements
+1.2.840.10008.6.1.953
+CID 8201
+Surface Scan Acquisition Types
+1.2.840.10008.6.1.954
+CID 8202
+Surface Scan Mode Types
+1.2.840.10008.6.1.956
+CID 8203
+Surface Scan Registration Method Types
+1.2.840.10008.6.1.957
+CID 27
+Basic Cardiac Views
+1.2.840.10008.6.1.958
+CID 10033
+CT Reconstruction Algorithm
+1.2.840.10008.6.1.959
+CID 10030
+Detector Types
+1.2.840.10008.6.1.960
+CID 10031
+CR/DR Mechanical Configuration
+1.2.840.10008.6.1.961
+CID 10032
+Projection X-Ray Acquisition Device Types
+1.2.840.10008.6.1.962
+CID 7165
+Abstract Segmentation Types
+1.2.840.10008.6.1.963
+CID 7166
+Common Tissue Segmentation Types
+1.2.840.10008.6.1.964
+CID 7167
+Peripheral Nervous System Segmentation Types
+1.2.840.10008.6.1.965
+CID 4267
+Corneal Topography Mapping Units for Real World Value Mapping
+1.2.840.10008.6.1.966
+CID 4268
+Corneal Topography Map Value Type
+1.2.840.10008.6.1.967
+CID 7140
+Brain Structures for Volumetric Measurements
+1.2.840.10008.6.1.968
+CID 7220
+RT Dose Derivation
+1.2.840.10008.6.1.969
+CID 7221
+RT Dose Purpose of Reference
+1.2.840.10008.6.1.970
+CID 7215
+Spectroscopy Purpose of Reference
+1.2.840.10008.6.1.971
+CID 9250
+Scheduled Processing Parameter Concept Codes for RT Treatment
+1.2.840.10008.6.1.972
+CID 10040
+Radiopharmaceutical Organ Dose Reference Authority
+1.2.840.10008.6.1.973
+CID 10041
+Source of Radioisotope Activity Information
+1.2.840.10008.6.1.975
+CID 10043
+Intravenous Extravasation Symptoms
+1.2.840.10008.6.1.976
+CID 10044
+Radiosensitive Organs
+1.2.840.10008.6.1.977
+CID 10045
+Radiopharmaceutical Patient State
+1.2.840.10008.6.1.978
+CID 10046
+GFR Measurements
+1.2.840.10008.6.1.979
+CID 10047
+GFR Measurement Methods
+1.2.840.10008.6.1.980
+CID 8300
+Visual Evaluation Methods
+1.2.840.10008.6.1.981
+CID 8301
+Test Pattern Codes
+1.2.840.10008.6.1.982
+CID 8302
+Measurement Pattern Codes
+1.2.840.10008.6.1.983
+CID 8303
+Display Device Type
+1.2.840.10008.6.1.984
+CID 85
+SUV Units
+1.2.840.10008.6.1.985
+CID 4100
+T1 Measurement Methods
+1.2.840.10008.6.1.986
+CID 4101
+Tracer Kinetic Models
+1.2.840.10008.6.1.987
+CID 4102
+Perfusion Measurement Methods
+1.2.840.10008.6.1.988
+CID 4103
+Arterial Input Function Measurement Methods
+1.2.840.10008.6.1.989
+CID 4104
+Bolus Arrival Time Derivation Methods
+1.2.840.10008.6.1.990
+CID 4105
+Perfusion Analysis Methods
+1.2.840.10008.6.1.991
+CID 4106
+Quantitative Methods used for Perfusion And Tracer Kinetic Models
+1.2.840.10008.6.1.992
+CID 4107
+Tracer Kinetic Model Parameters
+1.2.840.10008.6.1.993
+CID 4108
+Perfusion Model Parameters
+1.2.840.10008.6.1.994
+CID 4109
+Model-Independent Dynamic Contrast Analysis Parameters
+1.2.840.10008.6.1.995
+CID 4110
+Tracer Kinetic Modeling Covariates
+1.2.840.10008.6.1.996
+CID 4111
+Contrast Characteristics
+1.2.840.10008.6.1.997
+CID 7021
+Measurement Report Document Titles
+1.2.840.10008.6.1.998
+CID 100
+Quantitative Diagnostic Imaging Procedures
+1.2.840.10008.6.1.999
+CID 7466
+PET Region of Interest Measurements
+1.2.840.10008.6.1.1000
+CID 7467
+Grey Level Co-occurrence Matrix Measurements
+1.2.840.10008.6.1.1001
+CID 7468
+Texture Measurements
+1.2.840.10008.6.1.1002
+CID 6146
+Time Point Types
+1.2.840.10008.6.1.1003
+CID 7469
+Generic Intensity and Size Measurements
+1.2.840.10008.6.1.1004
+CID 6147
+Response Criteria
+1.2.840.10008.6.1.1005
+CID 12020
+Fetal Biometry Anatomic Sites
+1.2.840.10008.6.1.1006
+CID 12021
+Fetal Long Bone Anatomic Sites
+1.2.840.10008.6.1.1007
+CID 12022
+Fetal Cranium Bone Anatomic Sites
+1.2.840.10008.6.1.1008
+CID 12023
+Pelvis and Uterus Anatomic Sites
+1.2.840.10008.6.1.1009
+CID 7222
+Parametric Map Derivation Image Purpose of Reference
+1.2.840.10008.6.1.1010
+CID 9000
+Physical Quantity Descriptors
+1.2.840.10008.6.1.1011
+CID 7600
+Lymph Node Anatomic Sites
+1.2.840.10008.6.1.1012
+CID 7601
+Head and Neck Cancer Anatomic Sites
+1.2.840.10008.6.1.1013
+CID 7701
+Fiber Tracts In Brainstem
+1.2.840.10008.6.1.1014
+CID 7702
+Projection and Thalamic Fibers
+1.2.840.10008.6.1.1015
+CID 7703
+Association Fibers
+1.2.840.10008.6.1.1016
+CID 7704
+Limbic System Tracts
+1.2.840.10008.6.1.1017
+CID 7705
+Commissural Fibers
+1.2.840.10008.6.1.1018
+CID 7706
+Cranial Nerves
+1.2.840.10008.6.1.1019
+CID 7707
+Spinal Cord Fibers
+1.2.840.10008.6.1.1020
+CID 7710
+Tractography Anatomic Sites
