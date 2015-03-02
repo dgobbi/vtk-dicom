@@ -87,7 +87,8 @@ const char *fileBasename(const char *filename)
 // Print out one data element
 void printElement(
   vtkDICOMMetaData *meta, const vtkDICOMItem *item,
-  const vtkDICOMDataElementIterator &iter, int depth)
+  const vtkDICOMDataElementIterator &iter, int depth,
+  unsigned int pixelDataVL)
 {
   vtkDICOMTag tag = iter->GetTag();
   int g = tag.GetGroup();
@@ -149,16 +150,22 @@ void printElement(
     {
     v = vp[vi];
     unsigned int vl = v.GetVL();
+    if (tag == DC::PixelData ||
+        tag == DC::FloatPixelData ||
+        tag == DC::DoubleFloatPixelData)
+      {
+      vl = (depth == 0 && vl == 0 ? pixelDataVL : v.GetVL());
+      }
     std::string s;
-    if (v.GetVR() == vtkDICOMVR::UN ||
-        v.GetVR() == vtkDICOMVR::SQ)
+    if (vr == vtkDICOMVR::UN ||
+        vr == vtkDICOMVR::SQ)
       {
       // sequences are printed later
       s = (vl > 0 ? "..." : "");
       }
-    else if (v.GetVR() == vtkDICOMVR::LT ||
-             v.GetVR() == vtkDICOMVR::ST ||
-             v.GetVR() == vtkDICOMVR::UT)
+    else if (vr == vtkDICOMVR::LT ||
+             vr == vtkDICOMVR::ST ||
+             vr == vtkDICOMVR::UT)
       {
       // replace breaks with "\\", cap length to MAX_LENGTH
       const char *cp = v.GetCharData();
@@ -226,45 +233,62 @@ void printElement(
       printf("%s%s  %4.4u",
         (vi == 0 ? " (multiple values)\n" : ""), indent, vi + 1);
       }
-    if (v.GetVR() == vtkDICOMVR::SQ)
+    if (vr == vtkDICOMVR::SQ)
       {
-      unsigned int m = v.GetNumberOfValues();
+      size_t m = v.GetNumberOfValues();
       const vtkDICOMItem *items = v.GetSequenceData();
       printf(" (%u %s%s)\n",
-        m, (m == 1 ? "item" : "items"),
-       (v.GetVL() == 0xffffffffu ? ", delimited" : ""));
-      for (unsigned int j = 0; j < m; j++)
+        static_cast<unsigned int>(m), (m == 1 ? "item" : "items"),
+        (vl == 0xffffffffu ? ", delimited" : ""));
+      for (size_t j = 0; j < m; j++)
         {
         printf("%s%s---- SQ Item %04u at offset %u ----\n",
-          indent, spaces+(MAX_INDENT - INDENT_SIZE), j+1,
+          indent, spaces+(MAX_INDENT - INDENT_SIZE),
+          static_cast<unsigned int>(j+1),
           items[j].GetByteOffset());
         vtkDICOMDataElementIterator siter = items[j].Begin();
         vtkDICOMDataElementIterator siterEnd = items[j].End();
 
         for (; siter != siterEnd; ++siter)
           {
-          printElement(meta, &items[j], siter, depth+1);
+          printElement(meta, &items[j], siter, depth+1, pixelDataVL);
           }
         }
       }
-    else if (v.GetVL() == 0xffffffffu)
+    else if (vl == 0xffffffffu)
       {
-      printf(" [%s] (delimited)\n", s.c_str());
+      if (tag == DC::PixelData ||
+          tag == DC::FloatPixelData ||
+          tag == DC::DoubleFloatPixelData)
+        {
+        printf(" [...] (compressed)\n");
+        }
+      else
+        {
+        printf(" [%s] (delimited)\n", s.c_str());
+        }
       }
     else
       {
       const char *uidName = "";
-      if (v.GetVR() == vtkDICOMVR::UI)
+      if (vr == vtkDICOMVR::UI)
         {
         uidName = vtkDICOMUtilities::GetUIDName(s.c_str());
         }
       if (uidName[0] != '\0')
         {
-        printf(" [%s] {%s} (%u bytes)\n", s.c_str(), uidName, v.GetVL());
+        printf(" [%s] {%s} (%u bytes)\n", s.c_str(), uidName, vl);
+        }
+      else if (depth == 0 &&
+               (tag == DC::PixelData ||
+                tag == DC::FloatPixelData ||
+                tag == DC::DoubleFloatPixelData))
+        {
+        printf(" [%s] (%u bytes)\n", (vl == 0 ? "" : "..."), vl);
         }
       else
         {
-        printf(" [%s] (%u bytes)\n", s.c_str(), v.GetVL());
+        printf(" [%s] (%u bytes)\n", s.c_str(), vl);
         }
       }
     }
@@ -301,13 +325,14 @@ void printElementFromTagPathRecurse(
       {
       ++(*count);
       fprintf(stdout, "  %04d", *count);
-      printElement(0, item, iter, 0);
+      printElement(0, item, iter, 0, 0);
       }
     }
 }
 
 void printElementFromTagPath(
-  vtkDICOMMetaData *data, const vtkDICOMTagPath& tagPath)
+  vtkDICOMMetaData *data, const vtkDICOMTagPath& tagPath,
+  unsigned int pixelDataVL)
 {
   int count = 0;
   vtkDICOMTag tag = tagPath.GetHead();
@@ -368,7 +393,7 @@ void printElementFromTagPath(
       }
     else
       {
-      printElement(data, 0, iter, 0);
+      printElement(data, 0, iter, 0, pixelDataVL);
       }
     }
 }
@@ -513,19 +538,21 @@ int main(int argc, char *argv[])
       data->Clear();
       data->SetNumberOfInstances(static_cast<int>(l));
 
+      unsigned int pixelDataVL = 0;
       for (vtkIdType i = 0; i < l; i++)
         {
         fname = a->GetValue(i);
         parser->SetIndex(i);
         parser->SetFileName(fname.c_str());
         parser->Update();
+        pixelDataVL = parser->GetPixelDataVL();
         }
 
       if (query.GetNumberOfDataElements() > 0)
         {
         for (size_t i = 0; i < qtlist.size(); i++)
           {
-          printElementFromTagPath(data, qtlist[i]);
+          printElementFromTagPath(data, qtlist[i], pixelDataVL);
           }
         }
       else
@@ -535,7 +562,7 @@ int main(int argc, char *argv[])
 
         for (; iter != iterEnd; ++iter)
           {
-          printElement(data, 0, iter, 0);
+          printElement(data, 0, iter, 0, pixelDataVL);
           }
         }
       }

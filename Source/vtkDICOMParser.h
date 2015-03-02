@@ -85,6 +85,9 @@ public:
   //! This is true only if PixelData was found in the file.
   bool GetPixelDataFound() { return this->PixelDataFound; }
 
+  //! Get the VL for the PixelData, will be 0xffffffff if compressed.
+  unsigned int GetPixelDataVL() { return this->PixelDataVL; }
+
   //! Get the byte offset to the end of the metadata.
   /*!
    *  After the metadata has been read, the file offset
@@ -169,9 +172,10 @@ protected:
   int BufferSize;
   int ChunkSize;
   int Index;
-  unsigned long ErrorCode;
+  unsigned int PixelDataVL;
   bool PixelDataFound;
   bool QueryMatched;
+  unsigned long ErrorCode;
 
   // used to share FillBuffer with internal classes
   friend class vtkDICOMParserInternalFriendship;

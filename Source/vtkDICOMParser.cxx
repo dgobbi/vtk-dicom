@@ -175,6 +175,9 @@ public:
   // Get the VR of the last data element.
   vtkDICOMVR GetLastVR() { return this->LastVR; }
 
+  // Get the VL of the last data element.
+  unsigned int GetLastVL() { return this->LastVL; }
+
   // Get the character set that is currently active.
   vtkDICOMCharacterSet GetCharacterSet();
 
@@ -207,7 +210,8 @@ protected:
     ItemCharacterSet(vtkDICOMCharacterSet::Unknown),
     CharacterSet(vtkDICOMCharacterSet::Unknown),
     Index(idx), ImplicitVR(false),
-    HasQuery(false), QueryMatched(false) {}
+    HasQuery(false), QueryMatched(false),
+    LastVL(0) {}
 
   // an internal implicit little-endian decoder
   DefaultDecoder *ImplicitLE;
@@ -232,8 +236,9 @@ protected:
   vtkDICOMDataElementIterator QueryEnd;
   vtkDICOMDataElementIterator QuerySave;
   // this is set to the last tag that was read.
-  vtkDICOMVR  LastVR;
   vtkDICOMTag LastTag;
+  vtkDICOMVR  LastVR;
+  unsigned int LastVL;
   // this is set to the last tag written to this->MetaData
   vtkDICOMTag LastWrittenTag;
 };
@@ -1317,6 +1322,7 @@ size_t Decoder<E>::ReadElementValue(
       // reset the tag and VR as we step out of the sequence
       this->LastTag = tag;
       this->LastVR = vr;
+      this->LastVL = vl;
       }
       break;
     }
@@ -1360,6 +1366,7 @@ bool Decoder<E>::ReadElements(
     // save this as the most recent tag
     this->LastTag = tag;
     this->LastVR = vr;
+    this->LastVL = vl;
 
     // break if delimiter found
     if (!readGroup && tag == delimiter) { break; }
@@ -1548,6 +1555,7 @@ bool Decoder<E>::SkipElements(
       // save this as the most recent tag
       this->LastTag = vtkDICOMTag(g, e);
       this->LastVR = vr;
+      this->LastVL = vl;
 
       // break if delimiter found
       if (!readGroup && this->LastTag == delimiter) { break; }
@@ -1653,6 +1661,7 @@ vtkDICOMParser::vtkDICOMParser()
   this->BufferSize = 8192;
   this->ChunkSize = 0;
   this->Index = -1;
+  this->PixelDataVL = 0;
   this->PixelDataFound = false;
   this->QueryMatched = false;
   this->ErrorCode = 0;
@@ -2051,6 +2060,7 @@ bool vtkDICOMParser::ReadMetaData(
   this->QueryMatched &= decoder->FinishQuery();
   this->PixelDataFound = (lastTag.GetGroup() == 0x7fe0 &&
                           lastTag.GetElement() != 0x0000);
+  this->PixelDataVL = 0;
 
   if (meta && this->PixelDataFound)
     {
@@ -2059,6 +2069,7 @@ bool vtkDICOMParser::ReadMetaData(
     // value (the FileOffset was saved so it can be read later)
     unsigned short x = 0;
     vtkDICOMValue v(decoder->GetLastVR(), &x, x);
+    this->PixelDataVL = decoder->GetLastVL();
 
     if (idx >= 0)
       {
@@ -2155,6 +2166,7 @@ void vtkDICOMParser::PrintSelf(ostream& os, vtkIndent indent)
      << (this->FileName ? this->FileName : "(NULL)") << "\n";
   os << indent << "PixelDataFound: "
      << (this->PixelDataFound ? "True\n" : "False\n");
+  os << indent << "PixelDataVL: " << this->PixelDataVL << "\n";
   os << indent << "FileOffset: " << this->FileOffset << "\n";
   os << indent << "FileSize: " << this->FileSize << "\n";
   os << indent << "MetaData: " << this->MetaData << "\n";
