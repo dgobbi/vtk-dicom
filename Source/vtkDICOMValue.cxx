@@ -903,7 +903,7 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
     }
   else if (vr == VR::OW || vr == VR::OX)
     {
-    this->AllocateShortData(vr, 0);
+    this->AllocateShortData(VR::OW, 0);
     }
   else if (vr == VR::OF)
     {
@@ -913,7 +913,7 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
     {
     this->AllocateDoubleData(vr, 0);
     }
-  else if (vr == VR::UN)
+  else if (vr == VR::OB || vr == VR::UN)
     {
     this->AllocateUnsignedCharData(vr, 0);
     }
@@ -939,7 +939,7 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
     }
   else if (vr == VR::SS || vr == VR::XS)
     {
-    this->AllocateShortData(vr, 0);
+    this->AllocateShortData(VR::SS, 0);
     }
   else if (vr == VR::AT)
     {
