@@ -264,6 +264,16 @@ bool dicomcli_readkey(
 
   // validate the tag and the vr against the dictionary
   vtkDICOMVR dictvr = pitem->FindDictVR(tag);
+  // the above method returns UN for OX and XS if it cannot resolve them
+  if (dictvr == VR::UN)
+    {
+    // try again, taking a more direct approach
+    vtkDICOMDictEntry e = pitem->FindDictEntry(tag);
+    if (e.IsValid())
+      {
+      dictvr = e.GetVR();
+      }
+    }
   if (!vr.IsValid())
     {
     vr = dictvr;
@@ -356,7 +366,7 @@ bool dicomcli_readkey(
     }
   else if (valueContainsQuotes)
     {
-    // convert "" to "
+    // convert "" to ", which is the rule for csv files
     std::string sval;
     for (size_t t = valueStart; t < valueEnd; t++)
       {
