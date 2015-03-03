@@ -15,7 +15,6 @@
 #include "vtkDICOMMetaData.h"
 
 #include "vtkObjectFactory.h"
-#include "vtkStreamingDemandDrivenPipeline.h"
 #include "vtkDataSetAttributes.h"
 #include "vtkImageData.h"
 #include "vtkInformationVector.h"
@@ -23,9 +22,6 @@
 #include "vtkIntArray.h"
 #include "vtkPointData.h"
 #include "vtkLookupTable.h"
-#include "vtkImageMapToColors.h"
-#include "vtkAlgorithmOutput.h"
-#include "vtkTrivialProducer.h"
 #include "vtkSmartPointer.h"
 #include "vtkVersion.h"
 
