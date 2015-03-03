@@ -905,25 +905,17 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
     {
     this->AllocateShortData(VR::OW, 0);
     }
-  else if (vr == VR::OF)
+  else if (vr == VR::OF || vr == VR::FL)
     {
     this->AllocateFloatData(vr, 0);
     }
-  else if (vr == VR::OD)
+  else if (vr == VR::OD || vr == VR::FD)
     {
     this->AllocateDoubleData(vr, 0);
     }
   else if (vr == VR::OB || vr == VR::UN)
     {
     this->AllocateUnsignedCharData(vr, 0);
-    }
-  else if (vr == VR::FD)
-    {
-    this->AllocateDoubleData(vr, 0);
-    }
-  else if (vr == VR::FL)
-    {
-    this->AllocateFloatData(vr, 0);
     }
   else if (vr == VR::UL)
     {
