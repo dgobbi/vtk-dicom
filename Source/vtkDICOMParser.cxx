@@ -483,7 +483,7 @@ bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v)
     {
     v = this->Item->GetAttributeValue(tag);
     }
-  else if (this->MetaData)
+  if (!v.IsValid() && this->MetaData)
     {
     int idx = (this->Index == -1 ? 0 : this->Index);
     v = this->MetaData->GetAttributeValue(idx, tag);
@@ -577,34 +577,20 @@ vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
 //----------------------------------------------------------------------------
 vtkDICOMCharacterSet DecoderBase::GetCharacterSet()
 {
-  vtkDICOMCharacterSet cs;
+  vtkDICOMCharacterSet *csp = (this->Item ?
+                               &this->ItemCharacterSet :
+                               &this->CharacterSet);
 
-  if (this->Item)
+  if (*csp == vtkDICOMCharacterSet::Unknown)
     {
-    if (this->ItemCharacterSet == vtkDICOMCharacterSet::Unknown)
+    vtkDICOMValue v;
+    if (this->GetAttributeValue(DC::SpecificCharacterSet, v))
       {
-      const vtkDICOMValue& v =
-        this->Item->GetAttributeValue(DC::SpecificCharacterSet);
-      if (v.IsValid())
-        {
-        cs = vtkDICOMCharacterSet(v.AsString());
-        }
-      }
-    }
-  else if (this->MetaData)
-    {
-    if (this->CharacterSet == vtkDICOMCharacterSet::Unknown)
-      {
-      const vtkDICOMValue& v =
-        this->MetaData->GetAttributeValue(DC::SpecificCharacterSet);
-      if (v.IsValid())
-        {
-        cs = vtkDICOMCharacterSet(v.AsString());
-        }
+      *csp = vtkDICOMCharacterSet(v.AsString());
       }
     }
 
-  return cs;
+  return *csp;
 }
 
 //----------------------------------------------------------------------------
