@@ -277,7 +277,7 @@ void vtkDICOMItem::SetAttributeValue(
     assert(vr != vtkDICOMVR::UN);
     if (vr != vtkDICOMVR::UN)
       {
-      this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
+      item->SetAttributeValue(tag, vtkDICOMValue(vr, v));
       }
     }
 }
