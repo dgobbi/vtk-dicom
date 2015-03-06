@@ -595,6 +595,29 @@ int vtkDICOMMetaData::FindItemsOrInsert(
       {
       items[j] = oldItems[j];
       }
+    // Get the character set and default VR for XS
+    vtkDICOMCharacterSet cs = vtkDICOMCharacterSet::ISO_IR_6;
+    vtkDICOMVR vrForXS = vtkDICOMVR::US;
+    if (n > m)
+      {
+      const vtkDICOMValue& vcs =
+        this->GetAttributeValue(DC::SpecificCharacterSet);
+      if (vcs.IsValid())
+        {
+        cs = vtkDICOMCharacterSet(vcs.AsString());
+        }
+      const vtkDICOMValue &v = this->GetAttributeValue(
+        DC::PixelRepresentation);
+      if (v.IsValid())
+        {
+        vrForXS = (v.AsUnsignedShort() == 0 ?
+                   vtkDICOMVR::US : vtkDICOMVR::SS);
+        }
+      }
+    for (unsigned int j = m; j < n; j++)
+      {
+      items[j] = vtkDICOMItem(cs, vrForXS);
+      }
     sptr[k] = seq;
     itemarray[k] = &items[i];
     }
@@ -987,14 +1010,15 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
     // use the dictionary VR
     if (vr == vtkDICOMVR::XS)
       {
+      vr = vtkDICOMVR::US;
       const vtkDICOMValue &v =
-        this->GetAttributeValue(idx, vtkDICOMTag(0x0028,0x0103));
+        this->GetAttributeValue(idx, DC::PixelRepresentation);
       if (v.IsValid())
         {
         unsigned short r = v.AsUnsignedShort();
         vr = (r == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
         }
-      else
+      else if (tag > DC::PixelRepresentation)
         {
         vtkErrorMacro("SetAttributeValue: could not look up vr for (" <<
                       tag << ") because PixelRepresentation is not set.");
@@ -1002,10 +1026,11 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
       }
     else if (vr == vtkDICOMVR::OX)
       {
+      vr = vtkDICOMVR::OW;
       if (tag.GetGroup() == 0x5400)
         {
         const vtkDICOMValue &v =
-          this->GetAttributeValue(idx, vtkDICOMTag(0x5400,0x1004));
+          this->GetAttributeValue(idx, DC::WaveformBitsAllocated);
         if (v.IsValid())
           {
           unsigned short s = v.AsUnsignedShort();
@@ -1020,7 +1045,7 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
       else
         {
         const vtkDICOMValue &v =
-          this->GetAttributeValue(idx, vtkDICOMTag(0x0028,0x0100));
+          this->GetAttributeValue(idx, DC::BitsAllocated);
         if (v.IsValid())
           {
           unsigned short s = v.AsUnsignedShort();

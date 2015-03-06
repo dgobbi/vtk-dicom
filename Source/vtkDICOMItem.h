@@ -22,6 +22,7 @@
 #include <string>
 
 class vtkDICOMTagPath;
+class vtkDICOMMetaData;
 
 //! An item in a DICOM sequence (type SQ).
 /*!
@@ -43,10 +44,14 @@ private:
     vtkDICOMDataElement *DataElements;
     unsigned int ByteOffset;
     bool Delimited;
+    vtkDICOMCharacterSet CharacterSet;
+    vtkDICOMVR VRForXS;
 
     List() : Head(), Tail(), ReferenceCount(1),
              NumberOfDataElements(0), DataElements(0),
-             ByteOffset(0), Delimited(false) {}
+             ByteOffset(0), Delimited(false),
+             CharacterSet(vtkDICOMCharacterSet::ISO_IR_6),
+             VRForXS(vtkDICOMVR::US) {}
   };
 
 public:
@@ -54,8 +59,25 @@ public:
   //! Default constructor creates an empty item.
   vtkDICOMItem() : L(0) {}
 
-  //! Constructor with flag for delimited item.
-  explicit vtkDICOMItem(int delimited, unsigned int byteOffset=0);
+  //! Constructor that takes certain properties from the data set.
+  /*!
+   *  Specifically, this checks the values of SpecificCharacterSet (so that
+   *  the item knows what character set to use), of PixelRepresentation (so
+   *  that the item knows whether to resolve a VR of XS to US or SS, and of
+   *  BitsAllocated (so that the item knows whether to resolve a VR of OX
+   *  to OB or OW).  This is the preferred constructor for vtkDICOMItem.
+   */
+  explicit vtkDICOMItem(vtkDICOMMetaData *meta);
+
+  //! Constructor with flag for delimitation and offset.
+  /*!
+   *  This constructor is used by the parser to record where the item
+   *  was in the file, whether the item was delimited, and what the
+   *  character set and default VR for XS are.
+   */
+  explicit vtkDICOMItem(
+    vtkDICOMCharacterSet cs, vtkDICOMVR vrForXS,
+    int delimited=0, unsigned int byteOffset=0);
 
   //! Copy constructor does reference counting.
   vtkDICOMItem(const vtkDICOMItem &o) : L(o.L) {

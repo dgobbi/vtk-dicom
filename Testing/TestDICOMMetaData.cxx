@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
   for (int i = 0; i < 1; i++)
     {
     // add the first data element to the item
-    vtkDICOMItem item;
+    vtkDICOMItem item(metaData);
     item.SetAttributeValue(DC::SeriesInstanceUID,
       vtkDICOMValue(vtkDICOMVR::UI,
         "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
       {
       // create a unique InstanceUID
       sprintf(instanceUID, instanceUIDFormat, 255+j);
-      vtkDICOMItem item2;
+      vtkDICOMItem item2(metaData);
       item2.SetAttributeValue(DC::ReferencedSOPClassUID,
         vtkDICOMValue(vtkDICOMVR::UI, classUID));
       item2.SetAttributeValue(DC::ReferencedSOPInstanceUID,
@@ -301,6 +301,88 @@ int main(int argc, char *argv[])
       v2.GetCharData(),
       "1.2.840.113619.2.176.2025.4110284.7408.1276101323.263"));
     }
+
+  metaData->Clear();
+
+  // ------
+  // test inheritance of XS=US,SS and CharacterSet
+
+  // first, check default XS=US
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
+                    DC::RealWorldValueLastValueMapped), 4095);
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
+                    DC::RealWorldValueLastValueMapped));
+  TestAssert(v2.GetVR() == vtkDICOMVR::US);
+
+  // next, check default CharacterSet=ISO_IR_6
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
+                    DC::LUTExplanation), "Too Hot");
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
+                    DC::LUTExplanation));
+  TestAssert(v2.GetCharacterSet() == vtkDICOMCharacterSet::ISO_IR_6);
+
+  metaData->Clear();
+
+  // next, check inheritance of XS=SS
+  metaData->SetAttributeValue(DC::BitsAllocated, 16);
+  metaData->SetAttributeValue(DC::PixelRepresentation, 1);
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
+                    DC::RealWorldValueLastValueMapped), 4095);
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
+                    DC::RealWorldValueLastValueMapped));
+  TestAssert(v2.GetVR() == vtkDICOMVR::SS);
+
+  // two levels deep
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::IconImageSequence, 0,
+                    DC::RealWorldValueMappingSequence, 0,
+                    DC::RealWorldValueLastValueMapped), 4095);
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::IconImageSequence, 0,
+                    DC::RealWorldValueMappingSequence, 0,
+                    DC::RealWorldValueLastValueMapped));
+  TestAssert(v2.GetVR() == vtkDICOMVR::SS);
+
+  metaData->Clear();
+
+  // check inheritance of ISO_IR_100
+  metaData->SetAttributeValue(DC::SpecificCharacterSet, "ISO_IR 100");
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
+                    DC::LUTExplanation), "Too Hot");
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
+                    DC::LUTExplanation));
+  TestAssert(v2.GetCharacterSet() == vtkDICOMCharacterSet::ISO_IR_100);
+
+  // override with new item-specific character set
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
+                    DC::SpecificCharacterSet), "\\ISO 2022 IR 149");
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
+                    DC::LUTExplanation), "Too Hot");
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
+                    DC::LUTExplanation));
+  TestAssert(v2.GetCharacterSet() == vtkDICOMCharacterSet::ISO_2022_IR_149);
+
+  // two levels deep
+  metaData->SetAttributeValue(
+    vtkDICOMTagPath(DC::IconImageSequence, 0,
+                    DC::RealWorldValueMappingSequence, 0,
+                    DC::LUTExplanation), "Too Hot");
+  v2 = metaData->GetAttributeValue(
+    vtkDICOMTagPath(DC::IconImageSequence, 0,
+                    DC::RealWorldValueMappingSequence, 0,
+                    DC::LUTExplanation));
+  TestAssert(v2.GetCharacterSet() == vtkDICOMCharacterSet::ISO_IR_100);
 
   metaData->Clear();
 

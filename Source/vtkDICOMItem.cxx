@@ -14,6 +14,7 @@
 #include "vtkDICOMItem.h"
 #include "vtkDICOMDictionary.h"
 #include "vtkDICOMTagPath.h"
+#include "vtkDICOMMetaData.h"
 
 #include <assert.h>
 
@@ -22,13 +23,40 @@
 const vtkDICOMValue vtkDICOMItem::InvalidValue;
 
 //----------------------------------------------------------------------------
-vtkDICOMItem::vtkDICOMItem(int delimited, unsigned int byteOffset)
+vtkDICOMItem::vtkDICOMItem(vtkDICOMMetaData *meta)
+{
+  this->L = new List;
+  this->L->Head.Next = &this->L->Tail;
+  this->L->Tail.Prev = &this->L->Head;
+  if (meta)
+    {
+    const vtkDICOMValue& vcs =
+      meta->GetAttributeValue(DC::SpecificCharacterSet);
+    if (vcs.IsValid())
+      {
+      this->L->CharacterSet = vtkDICOMCharacterSet(vcs.AsString());
+      }
+    const vtkDICOMValue &v = meta->GetAttributeValue(DC::PixelRepresentation);
+    if (v.IsValid())
+      {
+      this->L->VRForXS = (v.AsUnsignedShort() == 0 ?
+                          vtkDICOMVR::US : vtkDICOMVR::SS);
+      }
+    }
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMItem::vtkDICOMItem(
+  vtkDICOMCharacterSet cs, vtkDICOMVR vrForXS,
+  int delimited, unsigned int byteOffset)
 {
   this->L = new List;
   this->L->Head.Next = &this->L->Tail;
   this->L->Tail.Prev = &this->L->Head;
   this->L->ByteOffset = byteOffset;
   this->L->Delimited = (delimited != 0);
+  this->L->CharacterSet = cs;
+  this->L->VRForXS = vrForXS;
 }
 
 //----------------------------------------------------------------------------
@@ -210,6 +238,30 @@ vtkDICOMItem *vtkDICOMItem::FindItemOrInsert(
         {
         items[j] = oldItems[j];
         }
+      // Get the character set and default VR for XS
+      vtkDICOMCharacterSet cs = this->L->CharacterSet;
+      vtkDICOMVR vrForXS = this->L->VRForXS;
+      if (n > m)
+        {
+        const vtkDICOMValue& vcs =
+          this->GetAttributeValue(DC::SpecificCharacterSet);
+        if (vcs.IsValid())
+          {
+          cs = vtkDICOMCharacterSet(vcs.AsString());
+          }
+        const vtkDICOMValue &v = this->GetAttributeValue(
+          DC::PixelRepresentation);
+        if (v.IsValid())
+          {
+          vrForXS = (v.AsUnsignedShort() == 0 ?
+                     vtkDICOMVR::US : vtkDICOMVR::SS);
+          }
+        }
+      for (unsigned int j = m; j < n; j++)
+        {
+        // Inherit properties that originally came from parent data set
+        items[j] = vtkDICOMItem(cs, vrForXS);
+        }
       tptr->Value = seq;
       item = items[i].FindItemOrInsert(tagpath.GetTail(), tagptr);
       }
@@ -295,7 +347,7 @@ void vtkDICOMItem::SetAttributeValue(
     // note that there is similar code in vtkDICOMMetaData
     if (vr.HasSpecificCharacterSet())
       {
-      vtkDICOMCharacterSet cs; // defaults to ASCII
+      vtkDICOMCharacterSet cs = item->L->CharacterSet;
       const vtkDICOMValue& vcs =
         item->GetAttributeValue(DC::SpecificCharacterSet);
       if (vcs.IsValid())
@@ -373,10 +425,32 @@ vtkDICOMVR vtkDICOMItem::FindDictVR(vtkDICOMTag tag) const
   if (e.IsValid())
     {
     vr = e.GetVR();
-    // make sure the dict knows the concrete vr
-    if (vr == vtkDICOMVR::XS || vr == vtkDICOMVR::OX)
+    // use the dictionary VR
+    if (vr == vtkDICOMVR::XS)
       {
-      vr = vtkDICOMVR::UN;
+      const vtkDICOMValue &v =
+        this->GetAttributeValue(DC::PixelRepresentation);
+      if (v.IsValid())
+        {
+        unsigned short r = v.AsUnsignedShort();
+        vr = (r == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
+        }
+      else
+        {
+        vr = (this->L ? this->L->VRForXS : vtkDICOMVR::US);
+        }
+      }
+    else if (vr == vtkDICOMVR::OX)
+      {
+      vr = vtkDICOMVR::OW;
+      vtkDICOMTag reftag = (tag.GetGroup() == 0x5400 ?
+                            DC::WaveformBitsAllocated :
+                            DC::BitsAllocated);
+      const vtkDICOMValue& v = this->GetAttributeValue(reftag);
+      if (v.IsValid() && v.AsUnsignedShort() <= 8)
+        {
+        vr = vtkDICOMVR::OB;
+        }
       }
     }
 
@@ -437,7 +511,7 @@ vtkDICOMTag vtkDICOMItem::ResolvePrivateTagForWriting(
       if (!d->Value.IsValid())
         {
         // creator elements are LO, which uses SpecificCharacterSet
-        vtkDICOMCharacterSet cs; // defaults to ASCII
+        vtkDICOMCharacterSet cs = this->L->CharacterSet;
         const vtkDICOMValue& vcs =
           this->GetAttributeValue(DC::SpecificCharacterSet);
         if (vcs.IsValid())

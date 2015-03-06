@@ -97,6 +97,189 @@ class DefaultDecoder;
 class LittleEndianDecoder;
 class BigEndianDecoder;
 
+//----------------------------------------------------------------------------
+// Class that caches info about the current sequence item
+class DecoderContext
+{
+public:
+  // Construct the base info from the meta data.
+  DecoderContext(vtkDICOMMetaData *meta, int index) :
+    Prev(0), Item(0), MetaData(meta), Index(index),
+    CurrentTag(0,0), CharacterSet(vtkDICOMCharacterSet::Unknown),
+    VRForXS(vtkDICOMVR::XX) {}
+
+  // Construct from the current item.
+  DecoderContext(vtkDICOMItem *item) :
+    Prev(0), Item(item), MetaData(0), Index(0),
+    CurrentTag(0,0), CharacterSet(vtkDICOMCharacterSet::Unknown),
+    VRForXS(vtkDICOMVR::XX) {}
+
+  // Find an element within the current context.  This is used
+  // by FindDictVR() to disambiguate VRs that could be either US
+  // or SS, or that could be either OB or OW.
+  const vtkDICOMValue& GetAttributeValue(vtkDICOMTag tag);
+
+  // Get the dictionary VR (for implicit VR elements).
+  // If the tag is not found, UN (unknown) will be returned.
+  vtkDICOMVR FindDictVR(vtkDICOMTag tag);
+
+  // Get the character set that is currently active.
+  vtkDICOMCharacterSet GetCharacterSet();
+
+  // Get the VR to use for XS by checking PixelRepresentation.
+  vtkDICOMVR GetVRForXS();
+
+  // Set the previous context.
+  void SetPrev(DecoderContext *context) { this->Prev = context; }
+  DecoderContext *GetPrev() { return this->Prev; }
+
+  // Get the current item.
+  vtkDICOMItem *GetItem() { return this->Item; }
+
+  // Set the current tag position for the context.
+  void SetCurrentTag(vtkDICOMTag tag) { this->CurrentTag = tag; }
+
+private:
+  DecoderContext *Prev;
+  vtkDICOMItem *Item;
+  vtkDICOMMetaData *MetaData;
+  int Index;
+  vtkDICOMTag CurrentTag;
+  vtkDICOMCharacterSet CharacterSet;
+  vtkDICOMVR VRForXS;
+};
+
+//----------------------------------------------------------------------------
+const vtkDICOMValue& DecoderContext::GetAttributeValue(vtkDICOMTag tag)
+{
+  if (this->Item)
+    {
+    return this->Item->GetAttributeValue(tag);
+    }
+  else
+    {
+    int idx = (this->Index == -1 ? 0 : this->Index);
+    return this->MetaData->GetAttributeValue(idx, tag);
+    }
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMCharacterSet DecoderContext::GetCharacterSet()
+{
+  vtkDICOMCharacterSet cs = this->CharacterSet;
+  if (cs == vtkDICOMCharacterSet::Unknown)
+    {
+    const vtkDICOMValue& v =
+      this->GetAttributeValue(DC::SpecificCharacterSet);
+    if (v.IsValid())
+      {
+      cs = vtkDICOMCharacterSet(v.AsString());
+      }
+    else if (this->Prev)
+      {
+      cs = this->Prev->GetCharacterSet();
+      }
+    else
+      {
+      cs = vtkDICOMCharacterSet::ISO_IR_6;
+      }
+    if (this->CurrentTag > DC::SpecificCharacterSet)
+      {
+      this->CharacterSet = cs;
+      }
+    }
+
+  return cs;
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMVR DecoderContext::GetVRForXS()
+{
+  vtkDICOMVR vr = this->VRForXS;
+  if (vr == vtkDICOMVR::XX)
+    {
+    const vtkDICOMValue& v =
+      this->GetAttributeValue(DC::PixelRepresentation);
+    if (v.IsValid())
+      {
+      vr = (v.AsUnsignedShort() == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
+      }
+    else if (this->Prev)
+      {
+      vr = this->Prev->GetVRForXS();
+      }
+    else
+      {
+      vr = vtkDICOMVR::US;
+      }
+    if (this->CurrentTag > DC::PixelRepresentation)
+      {
+      this->VRForXS = vr;
+      }
+    }
+  return vr;
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMVR DecoderContext::FindDictVR(vtkDICOMTag tag)
+{
+  vtkDICOMVR vr = vtkDICOMVR::UN;
+
+  if (tag.GetElement() == 0x0000)
+    {
+    // this is a group length element, which has VR of "UL"
+    vr = vtkDICOMVR::UL;
+    }
+  else if ((tag.GetGroup() & 0x1) != 0 &&
+           tag.GetElement() >= 0x0010 && tag.GetElement() < 0x0100)
+    {
+    // this is a private creator tag
+    vr = vtkDICOMVR::LO;
+    }
+  else
+    {
+    vtkDICOMDictEntry de;
+    if ((tag.GetGroup() & 0x1) == 0)
+      {
+      de = vtkDICOMDictionary::FindDictEntry(tag);
+      }
+    else if (this->Item)
+      {
+      de = this->Item->FindDictEntry(tag);
+      }
+    else if (this->MetaData)
+      {
+      de = this->MetaData->FindDictEntry(tag);
+      }
+    if (de.IsValid())
+      {
+      vr = de.GetVR();
+      if (vr == vtkDICOMVR::XS)
+        {
+        // disambiguate tags that may be either "US" or "SS"
+        this->CurrentTag = tag;
+        vr = this->GetVRForXS();
+        }
+      else if (vr == vtkDICOMVR::OX)
+        {
+        // disambiguate tags that may be either "OB" or "OW"
+        vr = vtkDICOMVR::OW;
+        vtkDICOMTag reftag = (tag.GetGroup() == 0x5400 ?
+                              DC::WaveformBitsAllocated :
+                              DC::BitsAllocated);
+        const vtkDICOMValue& v = this->GetAttributeValue(reftag);
+        if (v.IsValid() && v.AsUnsignedShort() <= 8)
+          {
+          vr = vtkDICOMVR::OB;
+          }
+        }
+      }
+    }
+
+  return vr;
+}
+
+//----------------------------------------------------------------------------
 // The base class for the decoder classes.
 class DecoderBase
 {
@@ -107,8 +290,11 @@ public:
   // Whether to use implicit VRs (default: explicit VRs).
   void SetImplicitVR(bool i) { this->ImplicitVR = i; }
 
-  // The Item member variable is set while a sequence is decoded.
-  void SetItem(vtkDICOMItem *i);
+  // Set the current item context.
+  void PushContext(DecoderContext *context, vtkDICOMTag tag);
+
+  // Pop the current item context.
+  void PopContext();
 
   // The query with which to filter the data.
   void SetQuery(
@@ -159,16 +345,6 @@ public:
   size_t GetByteOffset(
     const unsigned char *cp, const unsigned char *ep);
 
-  // Find an element within the current context.  This is used
-  // by FindDictVR() to disambiguate VRs that could be either US
-  // or SS, or that could be either OB or OW.
-  bool GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v);
-  bool GetAttributeValue(vtkDICOMTag tag, unsigned short &u);
-
-  // Get the dictionary VR (for implicit VR elements).
-  // If the tag is not found, UN (unknown) will be returned.
-  vtkDICOMVR FindDictVR(vtkDICOMTag tag);
-
   // Get the last tag that was read.
   vtkDICOMTag GetLastTag() { return this->LastTag; }
 
@@ -177,9 +353,6 @@ public:
 
   // Get the VL of the last data element.
   unsigned int GetLastVL() { return this->LastVL; }
-
-  // Get the character set that is currently active.
-  vtkDICOMCharacterSet GetCharacterSet();
 
   // Check for attributes missing from this instance, that were present
   // for instances in the series that were already parsed.
@@ -206,25 +379,23 @@ public:
 protected:
   // Constructor that initializes all of the members.
   DecoderBase(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
-    Parser(parser), Item(0), MetaData(data),
-    ItemCharacterSet(vtkDICOMCharacterSet::Unknown),
-    CharacterSet(vtkDICOMCharacterSet::Unknown),
+    Parser(parser), BaseContext(data,idx), Item(0), MetaData(data),
     Index(idx), ImplicitVR(false),
     HasQuery(false), QueryMatched(false),
-    LastVL(0) {}
+    LastVL(0) { this->Context = &this->BaseContext; }
 
   // an internal implicit little-endian decoder
   DefaultDecoder *ImplicitLE;
   // the vtkDICOMParser::FillBuffer method is used to refill the buffer
   vtkDICOMParser *Parser;
+  // the current context (info about the current item being parsed)
+  DecoderContext *Context;
+  // the base context.
+  DecoderContext BaseContext;
   // the sequence item to read the data into while parsing a sequence
   vtkDICOMItem *Item;
   // the metadata object to read the data into
   vtkDICOMMetaData *MetaData;
-  // the character set for the Item data set
-  vtkDICOMCharacterSet ItemCharacterSet;
-  // the chraracter set for the meta data
-  vtkDICOMCharacterSet CharacterSet;
   // the instance index to use with the meta data
   int Index;
   // if this is set, then VRs are implicit
@@ -394,13 +565,26 @@ private:
 };
 
 //----------------------------------------------------------------------------
-inline void DecoderBase::SetItem(vtkDICOMItem *i)
+inline void DecoderBase::PushContext(DecoderContext *context, vtkDICOMTag tag)
 {
   // ensure that "Item" is set for the ImplicitLE decoder, too
-  this->Item = i;
-  this->ImplicitLE->Item = i;
-  this->ItemCharacterSet = vtkDICOMCharacterSet::Unknown;
-  this->ImplicitLE->ItemCharacterSet = vtkDICOMCharacterSet::Unknown;
+  this->Item = context->GetItem();
+  this->ImplicitLE->Item = context->GetItem();
+
+  // save the current position in the current context
+  this->Context->SetCurrentTag(tag);
+
+  // push the new context
+  context->SetPrev(this->Context);
+  this->Context = context;
+}
+
+//----------------------------------------------------------------------------
+inline void DecoderBase::PopContext()
+{
+  this->Context = this->Context->GetPrev();
+  this->Item = this->Context->GetItem();
+  this->ImplicitLE->Item = this->Context->GetItem();
 }
 
 //----------------------------------------------------------------------------
@@ -473,124 +657,6 @@ inline size_t DecoderBase::GetByteOffset(
 {
   return vtkDICOMParserInternalFriendship::GetBytesProcessed(
     this->Parser, cp, ep);
-}
-
-//----------------------------------------------------------------------------
-bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, vtkDICOMValue &v)
-{
-  v.Clear();
-  if (this->Item)
-    {
-    v = this->Item->GetAttributeValue(tag);
-    }
-  if (!v.IsValid() && this->MetaData)
-    {
-    int idx = (this->Index == -1 ? 0 : this->Index);
-    v = this->MetaData->GetAttributeValue(idx, tag);
-    }
-  return v.IsValid();
-}
-
-bool DecoderBase::GetAttributeValue(vtkDICOMTag tag, unsigned short &u)
-{
-  // get the value as an unsigned short
-  vtkDICOMValue v;
-  if (this->GetAttributeValue(tag, v))
-    {
-    u = v.AsShort();
-    return true;
-    }
-
-  return false;
-}
-
-//----------------------------------------------------------------------------
-vtkDICOMVR DecoderBase::FindDictVR(vtkDICOMTag tag)
-{
-  vtkDICOMVR vr = vtkDICOMVR::UN;
-
-  if (tag.GetElement() == 0x0000)
-    {
-    // this is a group length element, which has VR of "UL"
-    vr = vtkDICOMVR::UL;
-    }
-  else if ((tag.GetGroup() & 0x1) != 0 &&
-           tag.GetElement() >= 0x0010 && tag.GetElement() < 0x0100)
-    {
-    // this is a private creator tag
-    vr = vtkDICOMVR::LO;
-    }
-  else
-    {
-    vtkDICOMDictEntry de;
-    if ((tag.GetGroup() & 0x1) == 0)
-      {
-      de = vtkDICOMDictionary::FindDictEntry(tag);
-      }
-    else if (this->Item)
-      {
-      de = this->Item->FindDictEntry(tag);
-      }
-    else if (this->MetaData)
-      {
-      de = this->MetaData->FindDictEntry(tag);
-      }
-    if (de.IsValid())
-      {
-      vr = de.GetVR();
-      if (vr == vtkDICOMVR::XS)
-        {
-        // disambiguate tags that may be either "US" or "SS"
-        unsigned short r;
-        vr = vtkDICOMVR::US;
-        if (this->GetAttributeValue(DC::PixelRepresentation, r))
-          {
-          vr = (r == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
-          }
-        }
-      else if (vr == vtkDICOMVR::OX)
-        {
-        // disambiguate tags that may be either "OB" or "OW"
-        unsigned short s;
-        vr = vtkDICOMVR::OW;
-        if (tag.GetGroup() == 0x5400)
-          {
-          if (this->GetAttributeValue(DC::WaveformBitsAllocated, s))
-            {
-            vr = (s > 8 ? vtkDICOMVR::OW : vtkDICOMVR::OB);
-            }
-          }
-        else
-          {
-          if (this->GetAttributeValue(DC::BitsAllocated, s))
-            {
-            vr = (s > 8 ? vtkDICOMVR::OW : vtkDICOMVR::OB);
-            }
-          }
-        }
-      }
-    }
-
-  return vr;
-}
-
-//----------------------------------------------------------------------------
-vtkDICOMCharacterSet DecoderBase::GetCharacterSet()
-{
-  vtkDICOMCharacterSet *csp = (this->Item ?
-                               &this->ItemCharacterSet :
-                               &this->CharacterSet);
-
-  if (*csp == vtkDICOMCharacterSet::Unknown)
-    {
-    vtkDICOMValue v;
-    if (this->GetAttributeValue(DC::SpecificCharacterSet, v))
-      {
-      *csp = vtkDICOMCharacterSet(v.AsString());
-      }
-    }
-
-  return *csp;
 }
 
 //----------------------------------------------------------------------------
@@ -740,8 +806,7 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
 
   // search for the creator element within the query
   vtkDICOMTag ctag = vtkDICOMTag(g, e >> 8);
-  vtkDICOMValue creator;
-  this->GetAttributeValue(ctag, creator);
+  vtkDICOMValue creator = this->Context->GetAttributeValue(ctag);
   if (creator.IsValid())
     {
     // maximum possible creator element is (gggg,00FF)
@@ -1008,7 +1073,7 @@ size_t Decoder<E>::ReadElementHead(
   if (this->ImplicitVR)
     {
     // implicit VR
-    vr = this->FindDictVR(tag);
+    vr = this->Context->FindDictVR(tag);
     vl = Decoder<E>::GetInt32(cp);
     // ignore vl in group length tags, it is corrupt in some files
     // and we know that it should always have a value of "4".
@@ -1025,7 +1090,7 @@ size_t Decoder<E>::ReadElementHead(
     if (!vr.IsValid())
       {
       // invalid vr, try to get VR from dictionary instead
-      vr = this->FindDictVR(tag);
+      vr = this->Context->FindDictVR(tag);
       if (cp[-4] <= 0x20 || cp[-4] >= 0x7f ||
           cp[-3] <= 0x20 || cp[-3] >= 0x7f)
         {
@@ -1128,7 +1193,7 @@ size_t Decoder<E>::ReadElementValue(
       if (vr.HasSpecificCharacterSet() &&
           this->LastTag > DC::SpecificCharacterSet)
         {
-        ptr = v.AllocateCharData(vr, this->GetCharacterSet(), vl);
+        ptr = v.AllocateCharData(vr, this->Context->GetCharacterSet(), vl);
         }
       else
         {
@@ -1215,9 +1280,11 @@ size_t Decoder<E>::ReadElementValue(
           unsigned int offset = this->GetByteOffset(cp, ep) - 8;
           bool delimited = (il == HxFFFFFFFF);
           vtkDICOMTag endtag(HxFFFE, HxE00D);
-          vtkDICOMItem item(delimited, offset);
-          vtkDICOMItem *olditem = this->Item;
-          this->SetItem(&item);
+          vtkDICOMItem item(this->Context->GetCharacterSet(),
+                            this->Context->GetVRForXS(),
+                            delimited, offset);
+          DecoderContext context(&item);
+          this->PushContext(&context, tag);
 
           if (this->HasQuery)
             {
@@ -1273,7 +1340,7 @@ size_t Decoder<E>::ReadElementValue(
             this->ReadElements(cp, ep, il, endtag, l);
             }
           seq.AddItem(item);
-          this->SetItem(olditem);
+          this->PopContext();
           }
         else if (g == HxFFFE && e == HxE0DD)
           {
@@ -1400,7 +1467,7 @@ bool Decoder<E>::ReadElements(
     if (vr == vtkDICOMVR::UN && !this->ImplicitVR)
       {
       // if it was explicitly labeled 'UN' then check dictionary
-      vr = this->FindDictVR(tag);
+      vr = this->Context->FindDictVR(tag);
       rl = this->ImplicitLE->ReadElementValue(cp, ep, vr, vl, v);
       }
     else
@@ -1519,7 +1586,7 @@ bool Decoder<E>::SkipElements(
         if (!vr.IsValid())
           {
           // invalid vr, try to get VR from dictionary instead
-          vr = this->FindDictVR(vtkDICOMTag(g,e));
+          vr = this->Context->FindDictVR(vtkDICOMTag(g,e));
           // check that vr was composed of reasonable chars
           if (cp[-4] <= 0x20 || cp[-4] >= 0x7f ||
               cp[-3] <= 0x20 || cp[-3] >= 0x7f)
