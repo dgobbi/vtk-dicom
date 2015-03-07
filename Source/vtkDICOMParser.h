@@ -28,7 +28,10 @@ class vtkDICOMParserInternalFriendship;
 //! A meta data reader for DICOM data.
 /*!
  *  This class provides routines for parsing a DICOM file
- *  and creating a vtkDICOMMetaData object.
+ *  and creating a vtkDICOMMetaData object.  It stops parsing
+ *  the file as soon as it finds the PixelData, and the byte
+ *  offset of the PixelData within the file can be retrieved
+ *  with GetFileOffset().
  */
 class VTK_DICOM_EXPORT vtkDICOMParser : public vtkObject
 {
