@@ -6516,13 +6516,18 @@ vtkDICOMCharacterSet::vtkDICOMCharacterSet(const std::string& name)
       }
     else if (l > 0)
       {
-      // find the extension sets
+      // set the extensions as bits in the ISO_2022 bitfield
       for (int k = 0; k < 4; k++)
         {
         if (l == strlen(Extensions[k][1]) &&
             strncmp(Extensions[k][1], cp, l) == 0)
           {
-          // each extension is a bit in a bitfield
+          // if the whole ISO_2022 bitfield is set, clear it
+          if ((key & ISO_2022) == ISO_2022)
+            {
+            key ^= ISO_2022;
+            }
+          // set each specifc extension as a bit in the bitfield
           key |= (ISO_2022_LOWBIT << k);
           break;
           }
