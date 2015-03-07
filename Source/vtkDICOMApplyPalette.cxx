@@ -55,6 +55,7 @@ class vtkDICOMPerFilePalette :
 vtkDICOMApplyPalette::vtkDICOMApplyPalette()
 {
   this->Palette = 0;
+  this->IsSupplemental = false;
 }
 
 //----------------------------------------------------------------------------
@@ -77,7 +78,7 @@ template<class T>
 void vtkDICOMApplyPaletteExecute(
   vtkDICOMApplyPalette *self, vtkImageData *inData, T *inPtr0,
   vtkImageData *outData, unsigned char *outPtr0, int extent[6],
-  vtkDICOMPerFilePalette *palette, int id)
+  vtkDICOMPerFilePalette *palette, bool supplemental, int id)
 {
   vtkInformation *dataInfo = outData->GetInformation();
   vtkDICOMMetaData *meta = vtkDICOMMetaData::SafeDownCast(
@@ -104,6 +105,7 @@ void vtkDICOMApplyPaletteExecute(
     for (int zIdx = extent[4]; zIdx <= extent[5]; zIdx++)
       {
       int i = meta->GetFileIndex(zIdx, c, inputComponents);
+      int f = meta->GetFrameIndex(zIdx, c, inputComponents);
       i = (i >= 0 ? i : 0);
       vtkLookupTable *table = (*(palette))[i];
       double range[2];
@@ -117,6 +119,51 @@ void vtkDICOMApplyPaletteExecute(
       const unsigned char *rgba = table->GetPointer(0);
       T *inPtrZ = inPtrC + (zIdx - extent[4])*inIncZ;
       unsigned char *outPtrZ = outPtrC + (zIdx - extent[4])*outIncZ;
+
+      // for monochrome mapping when palette is supplemental
+      bool monochrome = false;
+      double windowCenter = 0.0;
+      double windowScale = 1.0;
+      if (supplemental)
+        {
+        // check if this frame is specifically monochrome
+        monochrome = meta->GetAttributeValue(
+          i, f, DC::PixelPresentation).Matches("MONOCHROME*");
+
+        // use the window that is suggested in the data
+        const vtkDICOMValue& wc =
+          meta->GetAttributeValue(i, f, DC::WindowCenter);
+        const vtkDICOMValue& ww =
+          meta->GetAttributeValue(i, f, DC::WindowWidth);
+        double windowWidth = 0.0;
+        if (wc.IsValid() && ww.IsValid())
+          {
+          windowCenter = wc.AsDouble();
+          windowWidth = ww.AsDouble();
+          }
+
+        // for CT images, the rescaling must be taken into account
+        const vtkDICOMValue& rs =
+          meta->GetAttributeValue(i, f, DC::RescaleSlope);
+        const vtkDICOMValue& ri =
+          meta->GetAttributeValue(i, f, DC::RescaleIntercept);
+        if (rs.IsValid() && ri.IsValid())
+          {
+          double slope = rs.AsDouble();
+          double inter = ri.AsDouble();
+          if (slope > 0)
+            {
+            windowWidth = windowWidth / slope;
+            windowCenter = (windowCenter - inter) / slope;
+            }
+          }
+
+        // a scale parameter is more efficient and convenient
+        if (windowWidth > 0)
+          {
+          windowScale = 255.0/windowWidth;
+          }
+        }
 
       for (int yIdx = extent[2]; yIdx <= extent[3]; yIdx++)
         {
@@ -137,12 +184,27 @@ void vtkDICOMApplyPaletteExecute(
         for (int xIdx = extent[0]; xIdx <= extent[1]; xIdx++)
           {
           int idx = inPtr[0] - firstValueMapped;
-          idx = (idx >= 0 ? idx : 0);
-          idx = (idx <= maxIdx ? idx : maxIdx);
-          const unsigned char *rgb = rgba + 4*idx;
-          outPtr[0] = rgb[0];
-          outPtr[1] = rgb[1];
-          outPtr[2] = rgb[2];
+          if (monochrome || (supplemental && idx < 0))
+            {
+            // use monochrome
+            double fidx = (inPtr[0] - windowCenter)*windowScale + 127.5;
+            fidx = (fidx >= 0.0 ? fidx : 0.0);
+            fidx = (fidx <= 255.0 ? fidx : 255.0);
+            int gray = static_cast<int>(fidx + 0.5);
+            outPtr[0] = gray;
+            outPtr[1] = gray;
+            outPtr[2] = gray;
+            }
+          else
+            {
+            // use color
+            idx = (idx >= 0 ? idx : 0);
+            idx = (idx <= maxIdx ? idx : maxIdx);
+            const unsigned char *rgb = rgba + 4*idx;
+            outPtr[0] = rgb[0];
+            outPtr[1] = rgb[1];
+            outPtr[2] = rgb[2];
+            }
           inPtr += inputComponents;
           outPtr += outputComponents;
           }
@@ -178,10 +240,16 @@ int vtkDICOMApplyPalette::RequestInformation(
   delete this->Palette;
   this->Palette = 0;
 
+  // Check the PixelPresentation (enhanced files)
+  const vtkDICOMValue& v = meta->GetAttributeValue(DC::PixelPresentation);
+  this->IsSupplemental = (v.Matches("COLOR") ||
+                          v.Matches("MIXED") ||
+                          v.Matches("TRUE_COLOR"));
+
   // Modify the information
-  if (meta &&
-      meta->GetAttributeValue(DC::PhotometricInterpretation)
-        .Matches("PALETTE?COLOR"))
+  if (meta && meta->GetAttributeValue(DC::SamplesPerPixel).Matches(1) &&
+      (meta->GetAttributeValue(DC::PhotometricInterpretation)
+         .Matches("PALETTE?COLOR") || this->IsSupplemental))
     {
     // By setting Palette, we let RequestData know that there is a palette
     this->Palette = new vtkDICOMPerFilePalette;
@@ -284,7 +352,7 @@ void vtkDICOMApplyPalette::ThreadedRequestData(
       vtkDICOMApplyPaletteExecute(
         this, inData, static_cast<VTK_TT *>(inVoidPtr), outData,
         static_cast<unsigned char *>(outVoidPtr), extent,
-        this->Palette, id));
+        this->Palette, this->IsSupplemental, id));
     }
 }
 
