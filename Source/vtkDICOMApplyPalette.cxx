@@ -13,6 +13,7 @@
 =========================================================================*/
 #include "vtkDICOMApplyPalette.h"
 #include "vtkDICOMMetaData.h"
+#include "vtkDICOMLookupTable.h"
 
 #include "vtkObjectFactory.h"
 #include "vtkDataSetAttributes.h"
@@ -21,7 +22,6 @@
 #include "vtkInformation.h"
 #include "vtkIntArray.h"
 #include "vtkPointData.h"
-#include "vtkLookupTable.h"
 #include "vtkSmartPointer.h"
 #include "vtkVersion.h"
 
@@ -47,7 +47,7 @@
 vtkStandardNewMacro(vtkDICOMApplyPalette);
 
 class vtkDICOMPerFilePalette :
-  public std::vector<vtkSmartPointer<vtkLookupTable> >
+  public std::vector<vtkSmartPointer<vtkDICOMLookupTable> >
 {
 };
 
@@ -107,7 +107,7 @@ void vtkDICOMApplyPaletteExecute(
       int i = meta->GetFileIndex(zIdx, c, inputComponents);
       int f = meta->GetFrameIndex(zIdx, c, inputComponents);
       i = (i >= 0 ? i : 0);
-      vtkLookupTable *table = (*(palette))[i];
+      vtkDICOMLookupTable *table = (*(palette))[i];
       double range[2];
       table->GetTableRange(range);
       int firstValueMapped = static_cast<int>(range[0]);
@@ -312,8 +312,8 @@ int vtkDICOMApplyPalette::RequestData(
   this->Palette->resize(n);
   for (int i = 0; i < n; i++)
     {
-    (*(this->Palette))[i] = vtkSmartPointer<vtkLookupTable>::New();
-    this->FillLookupTable(meta, i, (*(this->Palette))[i]);
+    (*(this->Palette))[i] = vtkSmartPointer<vtkDICOMLookupTable>::New();
+    (*(this->Palette))[i]->BuildImagePalette(meta, i);
     }
 
   // Allow the superclass to call the ThreadedRequestData method
@@ -353,101 +353,5 @@ void vtkDICOMApplyPalette::ThreadedRequestData(
         this, inData, static_cast<VTK_TT *>(inVoidPtr), outData,
         static_cast<unsigned char *>(outVoidPtr), extent,
         this->Palette, this->IsSupplemental, id));
-    }
-}
-
-//----------------------------------------------------------------------------
-void vtkDICOMApplyPalette::FillLookupTable(
-  vtkDICOMMetaData *meta, int fileIndex, vtkLookupTable *table)
-{
-  const DC::EnumType descTag[] = {
-    DC::RedPaletteColorLookupTableDescriptor,
-    DC::GreenPaletteColorLookupTableDescriptor,
-    DC::BluePaletteColorLookupTableDescriptor,
-    DC::AlphaPaletteColorLookupTableDescriptor
-  };
-  const DC::EnumType dataTag[] = {
-    DC::RedPaletteColorLookupTableData,
-    DC::GreenPaletteColorLookupTableData,
-    DC::BluePaletteColorLookupTableData,
-    DC::AlphaPaletteColorLookupTableData
-  };
-
-  int isSigned = meta->GetAttributeValue(
-    fileIndex, DC::PixelRepresentation).AsInt();
-  int minValue = VTK_INT_MAX;
-  int maxValue = VTK_INT_MIN;
-  int firstValue[4] = { 0, 0, 0, 0 };
-  int lastValue[4] = { 0, 0, 0, 0 };
-  double divisor[4] = { 255.0, 255.0, 255.0, 255.0 };
-  const unsigned short *spp[4] = { 0, 0, 0, 0 };
-  const unsigned char *cpp[4] = { 0, 0, 0, 0 };
-  for (int j = 0; j < 4; j++)
-    {
-    const vtkDICOMValue& v = meta->GetAttributeValue(
-      fileIndex, descTag[j]);
-    // Descriptor must have three values
-    if (v.GetNumberOfValues() == 3)
-      {
-      // First value is number of entries in the table
-      int n = v.GetUnsignedShort(0);
-      n = (n == 0 ? 65536 : n);
-
-      // Second value is the first pixel value that is mapped
-      unsigned short f = v.GetUnsignedShort(1);
-      firstValue[j] = (isSigned ? static_cast<short>(f) : f);
-
-      // Compute the last pixel value that is mapped
-      lastValue[j] = firstValue[j] + n - 1;
-      minValue = (firstValue[j] < minValue ? firstValue[j] : minValue);
-      maxValue = (lastValue[j] > maxValue ? lastValue[j] : maxValue);
-
-      // Third value is the number of bits per lookup table entry
-      int nbits = v.GetUnsignedShort(2);
-      divisor[j] = (nbits == 0 ? 1.0 : (1u << nbits) - 1.0);
-
-      // Get the lookup table data and confirm its size
-      const vtkDICOMValue& d = meta->GetAttributeValue(
-        fileIndex, dataTag[j]);
-      if (d.GetVL() >= static_cast<unsigned int>(2*n))
-        {
-        spp[j] = d.GetUnsignedShortData();
-        }
-      else if (d.GetVL() >= static_cast<unsigned int>(n))
-        {
-        cpp[j] = d.GetUnsignedCharData();
-        if (cpp[j] == 0)
-          {
-          cpp[j] = reinterpret_cast<const unsigned char *>(
-            d.GetUnsignedShortData());
-          }
-        }
-      }
-    }
-
-  if (maxValue > minValue)
-    {
-    // Generate the lookup table
-    table->SetRange(minValue, maxValue);
-    table->SetNumberOfColors(maxValue - minValue + 1);
-    for (int i = minValue; i <= maxValue; i++)
-      {
-      double rgba[4] = { 0.0, 0.0, 0.0, 1.0 };
-      for (int j = 0; j < 4; j++)
-        {
-        int k = i - firstValue[j];
-        k = (i >= firstValue[j] ? k : 0);
-        k = (i <= lastValue[j] ? k : lastValue[j] - firstValue[j]);
-        if (spp[j])
-          {
-          rgba[j] = spp[j][k] / divisor[j];
-          }
-        else if (cpp[j])
-          {
-          rgba[j] = cpp[j][k] / divisor[j];
-          }
-        }
-      table->SetTableValue(i - minValue, rgba);
-      }
     }
 }

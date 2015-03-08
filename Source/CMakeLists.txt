@@ -53,6 +53,7 @@ set(LIB_SRCS
   vtkDICOMValue.cxx
   vtkDICOMWriter.cxx
   vtkDICOMAlgorithm.cxx
+  vtkDICOMLookupTable.cxx
   vtkDICOMApplyPalette.cxx
   vtkDICOMToRAS.cxx
   vtkDICOMCTRectifier.cxx
