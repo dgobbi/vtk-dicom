@@ -88,36 +88,47 @@ void vtkDICOMLookupTable::BuildStandardPalette(const std::string& cs)
     }
   else if (cs == "PET")
     {
-    // algorithmically create the table, this does not have corrections
-    // to make it exactly match the numerical table from the standard
+    // algorithmically create the table, this uses linear segments that
+    // have been fit to the numerical data in the standard table
     int n = this->GetNumberOfColors();
     unsigned char *cptr = this->WritePointer(0, n);
     double rgba[4] = { 0.0, 0.0, 0.0, 1.0 };
     for (int i = 0; i < n; i++)
       {
       double x = static_cast<double>(i)/(n - 1);
-      if (x < 0.25)
+      if (x < 0.2475252060520769 - 0.5/(n - 1))
         {
-        rgba[1] = 2.0*x;
-        rgba[2] = 2.0*x;
+        rgba[1] = 2.024199843871975*x - 0.001028608164577255;
+        rgba[2] = 2.0*x - 0.00392156862745098;
         }
-      else if (x < 0.5)
+      else if (x < 0.2475252060520769 + 0.5/(n - 1))
         {
-        rgba[0] = 2.0*x - 0.5;
-        rgba[1] = 1.0 - 2.0*x;
-        rgba[2] = 2.0*x;
+        rgba[1] = 0.5;
+        rgba[2] = 2.0*x - 0.00392156862745098;
         }
-      else if (x < 0.75)
+      else if (x < 0.5019607843137255)
         {
-        rgba[0] = 2.0*x - 0.5;
-        rgba[1] = 2.0*x - 1.0;
-        rgba[2] = 3.0 - 4.0*x;
+        rgba[0] = 1.9792076771653557*x -0.49153398564149964;
+        rgba[1] = -1.9765567765567764*x + 0.9892594986712628;
+        rgba[2] = 2.0*x - 0.00392156862745098;
+        }
+      else if (x < 0.5029411764705882)
+        {
+        rgba[0] = 1.9792076771653557*x -0.49153398564149964;
+        rgba[1] = -1.9765567765567764*x + 0.9892594986712628;
+        rgba[2] = 1.0;
+        }
+      else if (x < 0.7531036189872085)
+        {
+        rgba[0] = 1.9792076771653557*x -0.49153398564149964;
+        rgba[1] = 2.0*x - 1.00392156862745;
+        rgba[2] = -4.0*x + 3.011764705882353;
         }
       else if (x < 1.0)
         {
         rgba[0] = 1.0;
-        rgba[1] = 2.0*x - 1.0;
-        rgba[2] = 4.0*x - 3.0;
+        rgba[1] = 2.0*x - 1.00392156862745;
+        rgba[2] = 4.0428344791115824*x - 3.045323047251687;
         }
       else
         {
@@ -135,7 +146,7 @@ void vtkDICOMLookupTable::BuildStandardPalette(const std::string& cs)
     }
   else if (cs == "HOT_METAL_BLUE")
     {
-    // algorithmically create the table
+    // algorithmically create the "hot metal blue" table
     int n = this->GetNumberOfColors();
     unsigned char *cptr = this->WritePointer(0, n);
     double rgba[4] = { 0.0, 0.0, 0.0, 1.0 };
