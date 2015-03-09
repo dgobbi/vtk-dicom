@@ -23,8 +23,6 @@
 #include <vtkLookupTable.h>
 #include "vtkDICOMModule.h"
 
-#include <string>
-
 class vtkDICOMMetaData;
 
 //----------------------------------------------------------------------------
@@ -44,7 +42,7 @@ public:
   // Build the a standard lookup table, given a code string.
   // The supported code strings are HOT_IRON, HOT_METAL_BLUE, PET,
   // and PET_20_STEP.  This does not set the range of the table.
-  void BuildStandardPalette(const std::string& cs);
+  void BuildStandardPalette(const char *name);
 
   // Description:
   // Build the lookup table from the supplied meta data.

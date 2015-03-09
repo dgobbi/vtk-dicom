@@ -16,6 +16,8 @@
 
 #include <vtkObjectFactory.h>
 
+#include <string.h>
+
 vtkStandardNewMacro(vtkDICOMLookupTable);
 
 //----------------------------------------------------------------------------
@@ -35,9 +37,13 @@ void vtkDICOMLookupTable::PrintSelf(ostream& os, vtkIndent indent)
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMLookupTable::BuildStandardPalette(const std::string& cs)
+void vtkDICOMLookupTable::BuildStandardPalette(const char *cs)
 {
-  if (cs == "HOT_IRON")
+  if (cs == 0)
+    {
+    vtkErrorMacro("Null string passed to BuildStandardPalette()!");
+    }
+  else if (strcmp(cs, "HOT_IRON") == 0)
     {
     // use small adjustments to exactly match the DICOM hot iron table,
     // while still maintaining the ability to create a table of any size
@@ -86,7 +92,7 @@ void vtkDICOMLookupTable::BuildStandardPalette(const std::string& cs)
       }
     this->Modified();
     }
-  else if (cs == "PET")
+  else if (strcmp(cs, "PET") == 0)
     {
     // algorithmically create the table, this uses linear segments that
     // have been fit to the numerical data in the standard table
@@ -144,7 +150,7 @@ void vtkDICOMLookupTable::BuildStandardPalette(const std::string& cs)
       }
     this->Modified();
     }
-  else if (cs == "HOT_METAL_BLUE")
+  else if (strcmp(cs, "HOT_METAL_BLUE") == 0)
     {
     // algorithmically create the "hot metal blue" table
     int n = this->GetNumberOfColors();
@@ -211,7 +217,7 @@ void vtkDICOMLookupTable::BuildStandardPalette(const std::string& cs)
       }
     this->Modified();
     }
-  else if (cs == "PET_20_STEP")
+  else if (strcmp(cs, "PET_20_STEP") == 0)
     {
     // segment the table into 20 steps
     double values[20][4] = {
