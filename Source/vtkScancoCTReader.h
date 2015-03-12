@@ -28,8 +28,8 @@
 // .SECTION Thanks
 // Created at the Calgary Image Processing and Analysis Centre (CIPAC).
 
-#ifndef __vtkScancoCTReader_h
-#define __vtkScancoCTReader_h
+#ifndef vtkScancoCTReader_h
+#define vtkScancoCTReader_h
 
 #include <vtkImageReader2.h>
 #include "vtkDICOMModule.h"
@@ -292,4 +292,4 @@ private:
   void operator=(const vtkScancoCTReader&);  // Not implemented.
 };
 
-#endif // __vtkScancoCTReader_h
+#endif // vtkScancoCTReader_h
