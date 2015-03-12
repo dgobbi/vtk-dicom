@@ -135,7 +135,7 @@ public:
 
   //! Get the frame index for the given image slice and component.
   /*!
-   *  This takes into account the way the framess were sorted to create
+   *  This takes into account the way the frames were sorted to create
    *  the volume (as given by the FileIndexArray).  For multi-component
    *  images, supply both the component of interest, and the total number
    *  of components.  The return value will be -1 if an index is out of
