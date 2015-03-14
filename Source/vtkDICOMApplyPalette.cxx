@@ -236,20 +236,29 @@ int vtkDICOMApplyPalette::RequestInformation(
   vtkDICOMMetaData *meta = vtkDICOMMetaData::SafeDownCast(
       metaInfo->Get(vtkDICOMAlgorithm::META_DATA()));
 
-  // Bypass unless photometric is PALETTE_COLOR
+  // Bypass unless there is a palette to apply
   delete this->Palette;
   this->Palette = 0;
+  this->IsSupplemental = 0;
+  bool hasPalette = false;
 
-  // Check the PixelPresentation (enhanced files)
-  const vtkDICOMValue& v = meta->GetAttributeValue(DC::PixelPresentation);
-  this->IsSupplemental = (v.Matches("COLOR") ||
-                          v.Matches("MIXED") ||
-                          v.Matches("TRUE_COLOR"));
+  if (meta && meta->GetAttributeValue(DC::SamplesPerPixel).Matches(1))
+    {
+    // Check if PhotometricInterpretation is PALETTE_COLOR
+    const vtkDICOMValue& u = meta->GetAttributeValue(
+      DC::PhotometricInterpretation);
+    hasPalette = u.Matches("PALETTE?COLOR");
+
+    // Check the PixelPresentation (enhanced files)
+    const vtkDICOMValue& v = meta->GetAttributeValue(DC::PixelPresentation);
+    this->IsSupplemental = (v.Matches("COLOR") ||
+                            v.Matches("MIXED") ||
+                            v.Matches("TRUE_COLOR"));
+    hasPalette |= this->IsSupplemental;
+    }
 
   // Modify the information
-  if (meta && meta->GetAttributeValue(DC::SamplesPerPixel).Matches(1) &&
-      (meta->GetAttributeValue(DC::PhotometricInterpretation)
-         .Matches("PALETTE?COLOR") || this->IsSupplemental))
+  if (hasPalette)
     {
     // By setting Palette, we let RequestData know that there is a palette
     this->Palette = new vtkDICOMPerFilePalette;
