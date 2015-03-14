@@ -761,9 +761,12 @@ void dicomtonifti_convert_one(
   // assume the units are millimetres/milliseconds
   hdr->SetXYZTUnits(0x12);
 
+  // the index for the first file/frame of interest
+  vtkDICOMIndex firstIdx(firstFile, firstFrame);
+
   // get the phase encoding direction
   std::string phase = meta->GetAttributeValue(
-    firstFile, firstFrame, vtkDICOMTag(0x0018,0x1312)).AsString();
+    firstIdx, vtkDICOMTag(0x0018,0x1312)).AsString();
   if (phase == "COLUMN")
     {
     hdr->SetDimInfo((permutation[2] << 4) +
@@ -783,7 +786,7 @@ void dicomtonifti_convert_one(
 
   // get the scale information, if same for all slices
   if (meta->GetAttributeValue(
-       firstFile, firstFrame, DC::RescaleSlope).IsValid())
+       firstIdx, DC::RescaleSlope).IsValid())
     {
     hdr->SetSclSlope(reader->GetRescaleSlope());
     hdr->SetSclInter(reader->GetRescaleIntercept());
@@ -792,20 +795,21 @@ void dicomtonifti_convert_one(
   // compute a cal_min, cal_max
   bool useWindowLevel = false;
   if (meta->GetAttributeValue(
-       firstFile, firstFrame, DC::WindowWidth).IsValid())
+       firstIdx, DC::WindowWidth).IsValid())
     {
     useWindowLevel = true;
     double w = meta->GetAttributeValue(
-      firstFile, firstFrame, DC::WindowWidth).GetDouble(0);
+      firstIdx, DC::WindowWidth).GetDouble(0);
     double l = meta->GetAttributeValue(
-      firstFile, firstFrame, DC::WindowCenter).GetDouble(0);
+      firstIdx, DC::WindowCenter).GetDouble(0);
     int n = fileIndices->GetNumberOfTuples();
     for (int i = 1; i < n; i++)
       {
       int j = fileIndices->GetComponent(i, 0);
       int k = frameIndices->GetComponent(i, 0);
-      double tw = meta->GetAttributeValue(j, k, DC::WindowWidth).GetDouble(0);
-      double tl = meta->GetAttributeValue(j, k, DC::WindowCenter).GetDouble(0);
+      vtkDICOMIndex idx(j, k);
+      double tw = meta->GetAttributeValue(idx, DC::WindowWidth).GetDouble(0);
+      double tl = meta->GetAttributeValue(idx, DC::WindowCenter).GetDouble(0);
       if (tl != l || tw != w)
         {
         useWindowLevel = false;

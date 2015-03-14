@@ -641,6 +641,7 @@ int vtkDICOMReader::RequestInformation(
   // Get the file and frame for the first slice
   int fileIndex = this->FileIndexArray->GetComponent(0, 0);
   int frameIndex = this->FrameIndexArray->GetComponent(0, 0);
+  vtkDICOMIndex idx(fileIndex, frameIndex);
 
   // image dimensions
   int columns = this->MetaData->GetAttributeValue(
@@ -683,7 +684,7 @@ int vtkDICOMReader::RequestInformation(
   // Set spacing from PixelAspectRatio
   double ratio = 1.0;
   vtkDICOMValue pixelAspectRatio = this->MetaData->GetAttributeValue(
-    fileIndex, frameIndex, DC::PixelAspectRatio);
+    idx, DC::PixelAspectRatio);
   if (pixelAspectRatio.GetNumberOfValues() == 2)
     {
     // use double, even though data is stored as integer strings
@@ -707,7 +708,7 @@ int vtkDICOMReader::RequestInformation(
 
   // Set spacing from PixelSpacing
   vtkDICOMValue pixelSpacing = this->MetaData->GetAttributeValue(
-    fileIndex, frameIndex, DC::PixelSpacing);
+    idx, DC::PixelSpacing);
   if (pixelSpacing.GetNumberOfValues() == 2)
     {
     double spacing[2];
@@ -813,9 +814,9 @@ int vtkDICOMReader::RequestInformation(
   this->NeedsRescale = false;
 
   if (this->MetaData->GetAttributeValue(
-        fileIndex, frameIndex, DC::RescaleSlope).IsValid() &&
+        idx, DC::RescaleSlope).IsValid() &&
       this->MetaData->GetAttributeValue(
-        fileIndex, frameIndex, DC::RescaleIntercept).IsValid())
+        idx, DC::RescaleIntercept).IsValid())
     {
     bool mismatch = false;
     double mMax = VTK_DOUBLE_MIN;
@@ -829,11 +830,12 @@ int vtkDICOMReader::RequestInformation(
         {
         int iFile = this->FileIndexArray->GetComponent(iSlice, iComp);
         int iFrame = this->FrameIndexArray->GetComponent(iSlice, iComp);
+        vtkDICOMIndex idx = vtkDICOMIndex(iFile, iFrame);
 
         double m = this->MetaData->GetAttributeValue(
-          iFile, iFrame, DC::RescaleSlope).AsDouble();
+          idx, DC::RescaleSlope).AsDouble();
         double b = this->MetaData->GetAttributeValue(
-          iFile, iFrame, DC::RescaleIntercept).AsDouble();
+          idx, DC::RescaleIntercept).AsDouble();
         if ((iSlice != 0 || iComp != 0) && (m != mMax || b != bMax))
           {
           mismatch = true;
@@ -873,10 +875,11 @@ int vtkDICOMReader::RequestInformation(
     {
     int iFile = this->FileIndexArray->GetComponent(iSlice, 0);
     int iFrame = this->FrameIndexArray->GetComponent(iSlice, 0);
+    vtkDICOMIndex iidx(iFile, iFrame);
     vtkDICOMValue pv = this->MetaData->GetAttributeValue(
-      iFile, iFrame, DC::ImagePositionPatient);
+      iidx, DC::ImagePositionPatient);
     vtkDICOMValue ov = this->MetaData->GetAttributeValue(
-      fileIndex, frameIndex, DC::ImageOrientationPatient);
+      iidx, DC::ImageOrientationPatient);
     if (pv.GetNumberOfValues() == 3 && ov.GetNumberOfValues() == 6)
       {
       pv.GetValues(point, 3);
@@ -1037,10 +1040,11 @@ void vtkDICOMReader::RescaleBuffer(
   int fileIdx, int frameIdx, void *buffer, vtkIdType bufferSize)
 {
   vtkDICOMMetaData *meta = this->MetaData;
+  vtkDICOMIndex idx(fileIdx, frameIdx);
   double m = meta->GetAttributeValue(
-    fileIdx, frameIdx, DC::RescaleSlope).AsDouble();
+    idx, DC::RescaleSlope).AsDouble();
   double b = meta->GetAttributeValue(
-    fileIdx, frameIdx, DC::RescaleIntercept).AsDouble();
+    idx, DC::RescaleIntercept).AsDouble();
   double m0 = this->RescaleSlope;
   double b0 = this->RescaleIntercept;
 

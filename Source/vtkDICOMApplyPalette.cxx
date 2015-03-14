@@ -104,8 +104,8 @@ void vtkDICOMApplyPaletteExecute(
 
     for (int zIdx = extent[4]; zIdx <= extent[5]; zIdx++)
       {
-      int i = meta->GetFileIndex(zIdx, c, inputComponents);
-      int f = meta->GetFrameIndex(zIdx, c, inputComponents);
+      vtkDICOMIndex mIdx = meta->GetIndex(zIdx, c, inputComponents);
+      int i = mIdx.GetFileIndex();
       i = (i >= 0 ? i : 0);
       vtkDICOMLookupTable *table = (*(palette))[i];
       double range[2];
@@ -128,13 +128,13 @@ void vtkDICOMApplyPaletteExecute(
         {
         // check if this frame is specifically monochrome
         monochrome = meta->GetAttributeValue(
-          i, f, DC::PixelPresentation).Matches("MONOCHROME*");
+          mIdx, DC::PixelPresentation).Matches("MONOCHROME*");
 
         // use the window that is suggested in the data
         const vtkDICOMValue& wc =
-          meta->GetAttributeValue(i, f, DC::WindowCenter);
+          meta->GetAttributeValue(mIdx, DC::WindowCenter);
         const vtkDICOMValue& ww =
-          meta->GetAttributeValue(i, f, DC::WindowWidth);
+          meta->GetAttributeValue(mIdx, DC::WindowWidth);
         double windowWidth = 0.0;
         if (wc.IsValid() && ww.IsValid())
           {
@@ -144,9 +144,9 @@ void vtkDICOMApplyPaletteExecute(
 
         // for CT images, the rescaling must be taken into account
         const vtkDICOMValue& rs =
-          meta->GetAttributeValue(i, f, DC::RescaleSlope);
+          meta->GetAttributeValue(mIdx, DC::RescaleSlope);
         const vtkDICOMValue& ri =
-          meta->GetAttributeValue(i, f, DC::RescaleIntercept);
+          meta->GetAttributeValue(mIdx, DC::RescaleIntercept);
         if (rs.IsValid() && ri.IsValid())
           {
           double slope = rs.AsDouble();
