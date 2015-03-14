@@ -78,6 +78,10 @@ public:
   const vtkDICOMItem *GetSequenceData() const {
     return this->V.GetSequenceData(); }
 
+  //! Check that the sequence was constructed from a valid value.
+  bool IsValid() const {
+    return this->V.IsValid(); }
+
   //! Copy constructor.
   vtkDICOMSequence(const vtkDICOMSequence& o) : V(o.V) {}
 
