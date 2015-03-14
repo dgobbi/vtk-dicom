@@ -298,8 +298,11 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
 
 //----------------------------------------------------------------------------
 const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
-  int idx, int frame, const vtkDICOMTagPath &tagpath)
+  vtkDICOMIndex idx1, const vtkDICOMTagPath &tagpath)
 {
+  int idx = idx1.GetFileIndex();
+  int frame = idx1.GetFrameIndex();
+
   // if either of these is present in an enhanced DICOM file, then they
   // will be searched before the root is searched
   const DC::EnumType fgs[2] = {
@@ -371,63 +374,79 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
 
 //----------------------------------------------------------------------------
 const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
+  vtkDICOMIndex idx, vtkDICOMTag tag)
+{
+  return GetAttributeValue(idx, vtkDICOMTagPath(tag));
+}
+
+//----------------------------------------------------------------------------
+const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
+  int idx, int frame, const vtkDICOMTagPath &tagpath)
+{
+  return GetAttributeValue(vtkDICOMIndex(idx, frame), tagpath);
+}
+
+//----------------------------------------------------------------------------
+const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
   int idx, int frame, vtkDICOMTag tag)
 {
   return this->GetAttributeValue(idx, frame, vtkDICOMTagPath(tag));
 }
 
 //----------------------------------------------------------------------------
-int vtkDICOMMetaData::GetFileIndex(int sliceIdx)
+vtkDICOMIndex vtkDICOMMetaData::GetIndex(int sliceIdx)
 {
-  if (this->FileIndexArray == 0 || sliceIdx < 0 ||
-      sliceIdx >= this->FileIndexArray->GetNumberOfTuples())
+  if (this->FileIndexArray == 0 || this->FrameIndexArray == 0 ||
+      sliceIdx < 0 || sliceIdx >= this->FileIndexArray->GetNumberOfTuples())
     {
-    return -1;
+    return vtkDICOMIndex(-1, -1);
     }
 
   int n = this->FileIndexArray->GetNumberOfComponents();
-  return this->FileIndexArray->GetValue(sliceIdx*n);
+  int i = this->FileIndexArray->GetValue(sliceIdx*n);
+  int j = this->FrameIndexArray->GetValue(sliceIdx*n);
+  return vtkDICOMIndex(i, j);
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMIndex vtkDICOMMetaData::GetIndex(
+  int sliceIdx, int compIdx, int numComp)
+{
+  if (this->FileIndexArray == 0 || this->FrameIndexArray == 0 ||
+      sliceIdx < 0 || sliceIdx >= this->FileIndexArray->GetNumberOfTuples() ||
+      compIdx < 0 || compIdx >= numComp)
+    {
+    return vtkDICOMIndex(-1, -1);
+    }
+
+  int n = this->FileIndexArray->GetNumberOfComponents();
+  int i = this->FileIndexArray->GetValue(sliceIdx*n + compIdx*n/numComp);
+  int j = this->FileIndexArray->GetValue(sliceIdx*n + compIdx*n/numComp);
+  return vtkDICOMIndex(i, j);
+}
+
+//----------------------------------------------------------------------------
+int vtkDICOMMetaData::GetFileIndex(int sliceIdx)
+{
+  return this->GetIndex(sliceIdx).GetFileIndex();
 }
 
 //----------------------------------------------------------------------------
 int vtkDICOMMetaData::GetFileIndex(int sliceIdx, int compIdx, int numComp)
 {
-  if (this->FileIndexArray == 0 || sliceIdx < 0 ||
-      sliceIdx >= this->FileIndexArray->GetNumberOfTuples() ||
-      compIdx < 0 || compIdx >= numComp)
-    {
-    return -1;
-    }
-
-  int n = this->FileIndexArray->GetNumberOfComponents();
-  return this->FileIndexArray->GetValue(sliceIdx*n + compIdx*n/numComp);
+  return this->GetIndex(sliceIdx, compIdx, numComp).GetFileIndex();
 }
 
 //----------------------------------------------------------------------------
 int vtkDICOMMetaData::GetFrameIndex(int sliceIdx)
 {
-  if (this->FrameIndexArray == 0 || sliceIdx < 0 ||
-      sliceIdx >= this->FrameIndexArray->GetNumberOfTuples())
-    {
-    return -1;
-    }
-
-  int n = this->FrameIndexArray->GetNumberOfComponents();
-  return this->FrameIndexArray->GetValue(sliceIdx*n);
+  return this->GetIndex(sliceIdx).GetFrameIndex();
 }
 
 //----------------------------------------------------------------------------
 int vtkDICOMMetaData::GetFrameIndex(int sliceIdx, int compIdx, int numComp)
 {
-  if (this->FrameIndexArray == 0 || sliceIdx < 0 ||
-      sliceIdx >= this->FrameIndexArray->GetNumberOfTuples() ||
-      compIdx < 0 || compIdx >= numComp)
-    {
-    return -1;
-    }
-
-  int n = this->FrameIndexArray->GetNumberOfComponents();
-  return this->FrameIndexArray->GetValue(sliceIdx*n + compIdx*n/numComp);
+  return this->GetIndex(sliceIdx, compIdx, numComp).GetFrameIndex();
 }
 
 //----------------------------------------------------------------------------

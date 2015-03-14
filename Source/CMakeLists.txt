@@ -25,6 +25,7 @@ set(LIB_SRCS
   vtkDICOMMetaData.cxx
   vtkDICOMDictionary.cxx
   vtkDICOMFile.cxx
+  vtkDICOMIndex.cxx
   vtkDICOMTag.cxx
   vtkDICOMTagPath.cxx
   vtkDICOMVR.cxx
@@ -90,6 +91,7 @@ set(LIB_ABSTRACT
 # Sources that are not vtkObjects
 set(LIB_SPECIAL
   vtkDICOMFile.cxx
+  vtkDICOMIndex.cxx
   vtkDICOMTag.cxx
   vtkDICOMTagPath.cxx
   vtkDICOMVR.cxx

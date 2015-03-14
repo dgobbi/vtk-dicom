@@ -18,6 +18,7 @@
 #include "vtkDICOMModule.h"
 #include "vtkDICOMDataElement.h"
 #include "vtkDICOMDictEntry.h"
+#include "vtkDICOMIndex.h"
 
 #include <string>
 
@@ -106,6 +107,30 @@ public:
    */
   const vtkDICOMValue &GetAttributeValue(int idx, vtkDICOMTag tag);
   const vtkDICOMValue &GetAttributeValue(int idx, const vtkDICOMTagPath &p);
+
+  //! Get an attribute value for the specified (file,frame) index.
+  /*!
+   *  This is a convenient method for getting attributes from either a
+   *  enhanced multi-frame file, a concatenation of such files, or from
+   *  a standard series of files.  For enhaned files, this method will
+   *  search for the attribute in the PerFrameFunctionGroupSequence first,
+   *  then in the SharedFunctionalGroupsSequence, and finally in the root.
+   *  In order to get the (file,frame) index for a particular slice
+   *  of a volume, use the GetIndex() method.
+   */
+  const vtkDICOMValue &GetAttributeValue(vtkDICOMIndex idx, vtkDICOMTag tag);
+  const vtkDICOMValue &GetAttributeValue(
+    vtkDICOMIndex idx, const vtkDICOMTagPath &p);
+
+  //! Get the (file,frame) index for the given image slice and component.
+  /*!
+   *  This takes into account the way the files were sorted to create
+   *  the volume.  For multi-component images, supply both the component
+   *  of interest, and the total number of components.  The return value
+   *  will be (-1,-1) if an index is out of range.
+   */
+  vtkDICOMIndex GetIndex(int sliceIdx, int compIdx, int numComps);
+  vtkDICOMIndex GetIndex(int sliceIdx);
 
   //! Get an attribute value for the specified file and frame index.
   /*!
