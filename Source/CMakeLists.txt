@@ -55,6 +55,7 @@ set(LIB_SRCS
   vtkDICOMAlgorithm.cxx
   vtkDICOMLookupTable.cxx
   vtkDICOMApplyPalette.cxx
+  vtkDICOMApplyRealWorldMapping.cxx
   vtkDICOMToRAS.cxx
   vtkDICOMCTRectifier.cxx
   vtkDICOMMetaDataAdapter.cxx
