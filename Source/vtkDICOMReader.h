@@ -142,8 +142,7 @@ public:
   // RescaleIntercept values for different slices, then it will
   // adjust the pixel values so that they can all use the same
   // slope and intercept.  This is a lossy process, so you might
-  // want to turn it off and use vtkDICOMApplyRealWorldMapping
-  // to rescale the data.
+  // want to turn it off and use vtkDICOMApplyRescale instead.
   vtkGetMacro(AutoRescale, int);
   vtkSetMacro(AutoRescale, int);
   vtkBooleanMacro(AutoRescale, int);

@@ -11,25 +11,28 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkDICOMApplyRealWorldMapping - Convert pixels to real-world values.
+// .NAME vtkDICOMApplyRescale - Convert pixels to real-world values.
 // .SECTION Description
 // This filter uses the information in the DICOM meta data to convert the
-// pixel values to real-world values with known units.
+// pixel values to real-world values with known units.  It uses the DICOM
+// RealWorldValueMapping attributes, if present, otherwise it uses the
+// RescaleSlope and RescaleIntercept.  If no mapping information is present,
+// then the pixels are simply converted to floating-point.
 
-#ifndef vtkDICOMApplyRealWorldMapping_h
-#define vtkDICOMApplyRealWorldMapping_h
+#ifndef vtkDICOMApplyRescale_h
+#define vtkDICOMApplyRescale_h
 
 #include "vtkDICOMAlgorithm.h"
 #include "vtkDICOMModule.h"
 
 class vtkDICOMRealWorldMapping;
 
-class VTK_DICOM_EXPORT vtkDICOMApplyRealWorldMapping :
+class VTK_DICOM_EXPORT vtkDICOMApplyRescale :
   public vtkDICOMAlgorithm
 {
 public:
-  static vtkDICOMApplyRealWorldMapping *New();
-  vtkTypeMacro(vtkDICOMApplyRealWorldMapping, vtkDICOMAlgorithm);
+  static vtkDICOMApplyRescale *New();
+  vtkTypeMacro(vtkDICOMApplyRescale, vtkDICOMAlgorithm);
 
   // Description:
   // Print information about this object.
@@ -46,8 +49,8 @@ public:
     return this->OutputScalarType; }
 
 protected:
-  vtkDICOMApplyRealWorldMapping();
-  ~vtkDICOMApplyRealWorldMapping();
+  vtkDICOMApplyRescale();
+  ~vtkDICOMApplyRescale();
 
   virtual int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
@@ -66,8 +69,8 @@ protected:
   int OutputScalarType;
 
 private:
-  vtkDICOMApplyRealWorldMapping(const vtkDICOMApplyRealWorldMapping&);  // Not implemented.
-  void operator=(const vtkDICOMApplyRealWorldMapping&);  // Not implemented.
+  vtkDICOMApplyRescale(const vtkDICOMApplyRescale&);  // Not implemented.
+  void operator=(const vtkDICOMApplyRescale&);  // Not implemented.
 };
 
-#endif // vtkDICOMApplyRealWorldMapping_h
+#endif // vtkDICOMApplyRescale_h

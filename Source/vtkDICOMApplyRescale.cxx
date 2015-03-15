@@ -11,7 +11,7 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkDICOMApplyRealWorldMapping.h"
+#include "vtkDICOMApplyRescale.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMItem.h"
 
@@ -46,7 +46,7 @@
 
 #include <vector>
 
-vtkStandardNewMacro(vtkDICOMApplyRealWorldMapping);
+vtkStandardNewMacro(vtkDICOMApplyRescale);
 
 //----------------------------------------------------------------------------
 // A struct to hold the mapping
@@ -61,20 +61,20 @@ public:
 };
 
 //----------------------------------------------------------------------------
-vtkDICOMApplyRealWorldMapping::vtkDICOMApplyRealWorldMapping()
+vtkDICOMApplyRescale::vtkDICOMApplyRescale()
 {
   this->OutputScalarType = VTK_DOUBLE;
   this->Mapping = 0;
 }
 
 //----------------------------------------------------------------------------
-vtkDICOMApplyRealWorldMapping::~vtkDICOMApplyRealWorldMapping()
+vtkDICOMApplyRescale::~vtkDICOMApplyRescale()
 {
   delete [] this->Mapping;
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMApplyRealWorldMapping::SetOutputScalarType(int t)
+void vtkDICOMApplyRescale::SetOutputScalarType(int t)
 {
   if (t != this->OutputScalarType && (t == VTK_DOUBLE || t == VTK_FLOAT))
     {
@@ -84,7 +84,7 @@ void vtkDICOMApplyRealWorldMapping::SetOutputScalarType(int t)
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMApplyRealWorldMapping::PrintSelf(ostream& os, vtkIndent indent)
+void vtkDICOMApplyRescale::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
   os << indent << this->OutputScalarType << "\n";
@@ -95,8 +95,8 @@ void vtkDICOMApplyRealWorldMapping::PrintSelf(ostream& os, vtkIndent indent)
 namespace {
 
 template<class T, class F>
-void vtkDICOMApplyRealWorldMappingExecute(
-  vtkDICOMApplyRealWorldMapping *self, vtkImageData *inData, T *inPtr0,
+void vtkDICOMApplyRescaleExecute(
+  vtkDICOMApplyRescale *self, vtkImageData *inData, T *inPtr0,
   vtkImageData *outData, F *outPtr0, vtkDICOMRealWorldMapping *mapArray,
   int extent[6], int id)
 {
@@ -211,7 +211,7 @@ void vtkDICOMApplyRealWorldMappingExecute(
 } // end anonymous namespace
 
 //----------------------------------------------------------------------------
-int vtkDICOMApplyRealWorldMapping::RequestInformation(
+int vtkDICOMApplyRescale::RequestInformation(
   vtkInformation* request,
   vtkInformationVector** inputVector,
   vtkInformationVector* outputVector)
@@ -238,7 +238,7 @@ int vtkDICOMApplyRealWorldMapping::RequestInformation(
 }
 
 //----------------------------------------------------------------------------
-int vtkDICOMApplyRealWorldMapping::RequestData(
+int vtkDICOMApplyRescale::RequestData(
   vtkInformation* request,
   vtkInformationVector** inputVector,
   vtkInformationVector* outputVector)
@@ -365,7 +365,7 @@ int vtkDICOMApplyRealWorldMapping::RequestData(
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMApplyRealWorldMapping::ThreadedRequestData(
+void vtkDICOMApplyRescale::ThreadedRequestData(
     vtkInformation *vtkNotUsed(request),
     vtkInformationVector **inputVector,
     vtkInformationVector *outputVector,
@@ -392,7 +392,7 @@ void vtkDICOMApplyRealWorldMapping::ThreadedRequestData(
     switch (scalarType)
       {
       vtkTemplateAliasMacro(
-        vtkDICOMApplyRealWorldMappingExecute(
+        vtkDICOMApplyRescaleExecute(
           this, inData, static_cast<VTK_TT *>(inVoidPtr), outData,
           static_cast<float *>(outVoidPtr), this->Mapping, extent, id));
       }
@@ -402,7 +402,7 @@ void vtkDICOMApplyRealWorldMapping::ThreadedRequestData(
     switch (scalarType)
       {
       vtkTemplateAliasMacro(
-        vtkDICOMApplyRealWorldMappingExecute(
+        vtkDICOMApplyRescaleExecute(
           this, inData, static_cast<VTK_TT *>(inVoidPtr), outData,
           static_cast<double *>(outVoidPtr), this->Mapping, extent, id));
       }
