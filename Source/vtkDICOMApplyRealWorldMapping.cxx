@@ -339,12 +339,10 @@ int vtkDICOMApplyRealWorldMapping::RequestData(
       }
     }
 
-  // Passthrough data is already floating-point
+  // Passthrough if data is already floating-point
   int rval = 1;
   if (scalarType == VTK_DOUBLE || scalarType == VTK_FLOAT)
     {
-    vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
-    vtkInformation *outInfo = outputVector->GetInformationObject(0);
     vtkImageData *inData =
       vtkImageData::SafeDownCast(inInfo->Get(vtkDataObject::DATA_OBJECT()));
     vtkImageData *outData =
