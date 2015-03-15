@@ -638,6 +638,10 @@ int vtkDICOMReader::RequestInformation(
     return false;
     }
 
+  // Set the indexing arrays for the meta data
+  this->MetaData->SetFileIndexArray(this->FileIndexArray);
+  this->MetaData->SetFrameIndexArray(this->FrameIndexArray);
+
   // Get the file and frame for the first slice
   int fileIndex = this->FileIndexArray->GetComponent(0, 0);
   int frameIndex = this->FrameIndexArray->GetComponent(0, 0);
