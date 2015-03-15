@@ -15,8 +15,6 @@
 // .SECTION Description
 // This class reads a series of DICOM files into a vtkImageData object,
 // and also provides access to the DICOM meta data for each file.
-// .SECTION Thanks
-// This class was contributed to VTK by David Gobbi.
 
 #ifndef vtkDICOMReader_h
 #define vtkDICOMReader_h
@@ -137,6 +135,18 @@ public:
   // Set the desired time index (set to -1 for all).
   vtkSetMacro(DesiredTimeIndex, int);
   vtkGetMacro(DesiredTimeIndex, int);
+
+  // Description:
+  // Turn off automatic rescaling of intensity values.
+  // By default, of the reader sees different RescaleSlope and
+  // RescaleIntercept values for different slices, then it will
+  // adjust the pixel values so that they can all use the same
+  // slope and intercept.  This is a lossy process, so you might
+  // want to turn it off and use vtkDICOMApplyRealWorldMapping
+  // to rescale the data.
+  vtkGetMacro(AutoRescale, int);
+  vtkSetMacro(AutoRescale, int);
+  vtkBooleanMacro(AutoRescale, int);
 
   // Description:
   // Get the slope and intercept for rescaling the scalar values.
@@ -294,6 +304,7 @@ protected:
   // Description:
   // This indicates that the data must be rescaled.
   int NeedsRescale;
+  int AutoRescale;
 
   // Description:
   // The number of packed pixel components in the input file.

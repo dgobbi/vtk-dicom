@@ -75,6 +75,7 @@ vtkCxxSetObjectMacro(vtkDICOMReader,Sorter,vtkDICOMSliceSorter);
 //----------------------------------------------------------------------------
 vtkDICOMReader::vtkDICOMReader()
 {
+  this->AutoRescale = 1;
   this->NeedsRescale = 0;
   this->RescaleSlope = 1.0;
   this->RescaleIntercept = 0.0;
@@ -211,6 +212,8 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "TimeSpacing: " << this->TimeSpacing << "\n";
   os << indent << "DesiredTimeIndex: " << this->DesiredTimeIndex << "\n";
 
+  os << indent << "AutoRescale: "
+     << (this->AutoRescale ? "On\n" : "Off\n");
   os << indent << "RescaleSlope: " << this->RescaleSlope << "\n";
   os << indent << "RescaleIntercept: " << this->RescaleIntercept << "\n";
 
@@ -811,7 +814,8 @@ int vtkDICOMReader::RequestInformation(
 #endif
 
   // for CT and PET the rescale information might vary from file to file,
-  // in which case the data will have to be rescaled while being read
+  // in which case the data will be rescaled while being read if the
+  // AutoRescale option is set.
   this->RescaleSlope = 1.0;
   this->RescaleIntercept = 0.0;
   this->NeedsRescale = false;
@@ -852,7 +856,7 @@ int vtkDICOMReader::RequestInformation(
           }
         }
       }
-    this->NeedsRescale = mismatch;
+    this->NeedsRescale = (mismatch && this->AutoRescale);
     this->RescaleSlope = mMax;
     this->RescaleIntercept = bMax;
     }
