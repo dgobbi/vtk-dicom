@@ -105,6 +105,8 @@ void vtkDICOMApplyRealWorldMappingExecute(
   vtkIdType outIncX, outIncY, outIncZ;
   outData->GetIncrements(outIncX, outIncY, outIncZ);
   int numComponents = inData->GetNumberOfScalarComponents();
+  int wholeExtent[6];
+  outData->GetExtent(wholeExtent);
 
   // target for progress tracking
   vtkIdType target = numComponents;
@@ -115,7 +117,7 @@ void vtkDICOMApplyRealWorldMappingExecute(
   for (int c = 0; c < numComponents; c++)
     {
     T *inPtrC = inPtr0 + c;
-    F *outPtrC = outPtr0 + 3*c;
+    F *outPtrC = outPtr0 + c;
 
     for (int zIdx = extent[4]; zIdx <= extent[5]; zIdx++)
       {
@@ -124,7 +126,7 @@ void vtkDICOMApplyRealWorldMappingExecute(
       T last = vtkTypeTraits<T>::Max();
       if (mapArray)
         {
-        mapping = &mapArray[(zIdx - extent[4])*numComponents + c];
+        mapping = &mapArray[(zIdx - wholeExtent[4])*numComponents + c];
         if (mapping->First > static_cast<int>(first))
           {
           first = static_cast<T>(mapping->First);
@@ -249,10 +251,10 @@ int vtkDICOMApplyRealWorldMapping::RequestData(
   int numComponents =
     scalarInfo->Get(vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
 
-  // Get the update extent from the output port
+  // Get the whole extent from the output port
   int extent[6];
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
-  outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(), extent);
+  outInfo->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
 
   // Get the meta data
   vtkInformation *metaInfo = this->GetMetaDataInformation(inputVector, 0, 0);
