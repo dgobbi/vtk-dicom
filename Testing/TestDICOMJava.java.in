@@ -19,7 +19,8 @@ public class TestDICOMJava {
           };
           String vtk6libs[] = {
             "vtkCommonCoreJava", "vtkCommonDataModelJava",
-            "vtkIOImageJava", "vtkIOMPIImageJava"
+            "vtkCommonExecutionModelJava", "vtkIOImageJava",
+            "vtkIOMPIImageJava"
           };
           int cc;
           for (cc = 0; cc < kits.length; cc++) {
