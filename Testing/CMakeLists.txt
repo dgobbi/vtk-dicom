@@ -30,6 +30,11 @@ target_link_libraries(TestDICOMSequence ${BASE_LIBS})
 get_target_property(pth TestDICOMSequence RUNTIME_OUTPUT_DIRECTORY)
 add_test(TestDICOMSequence ${pth}/TestDICOMSequence)
 
+add_executable(TestDICOMItem TestDICOMItem.cxx)
+target_link_libraries(TestDICOMItem ${BASE_LIBS})
+get_target_property(pth TestDICOMItem RUNTIME_OUTPUT_DIRECTORY)
+add_test(TestDICOMItem ${pth}/TestDICOMItem)
+
 add_executable(TestDICOMMetaData TestDICOMMetaData.cxx)
 target_link_libraries(TestDICOMMetaData ${BASE_LIBS})
 get_target_property(pth TestDICOMMetaData RUNTIME_OUTPUT_DIRECTORY)
