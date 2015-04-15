@@ -322,7 +322,7 @@ void vtkDICOMItem::SetAttributeValue(
 {
   vtkDICOMTag tag;
   vtkDICOMItem *item = this->FindItemOrInsert(tagpath, &tag);
-  assert(item != 0);
+  // if item is NULL, the path was invalid
   if (item)
     {
     vtkDICOMVR vr = item->FindDictVR(tag);
@@ -339,7 +339,7 @@ void vtkDICOMItem::SetAttributeValue(
 {
   vtkDICOMTag tag;
   vtkDICOMItem *item = this->FindItemOrInsert(tagpath, &tag);
-  assert(item != 0);
+  // if item is NULL, the path was invalid
   if (item)
     {
     vtkDICOMVR vr = item->FindDictVR(tag);
