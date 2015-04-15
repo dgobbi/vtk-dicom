@@ -345,7 +345,7 @@ void vtkDICOMItem::SetAttributeValue(
     vtkDICOMVR vr = item->FindDictVR(tag);
     assert(vr != vtkDICOMVR::UN);
     // note that there is similar code in vtkDICOMMetaData
-    if (vr.HasSpecificCharacterSet())
+    if (vr.HasSpecificCharacterSet() && item->L != 0)
       {
       vtkDICOMCharacterSet cs = item->L->CharacterSet;
       const vtkDICOMValue& vcs =
