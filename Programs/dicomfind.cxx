@@ -31,8 +31,9 @@
 #include <sys/wait.h>
 #include <errno.h>
 #else
-// include for spawn
+// includes for spawn
 #include <process.h>
+#include <errno.h>
 // include for getcwd
 #include <direct.h>
 #endif
