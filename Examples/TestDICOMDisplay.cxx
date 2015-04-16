@@ -1,7 +1,7 @@
 // Test the vtkDICOMReader by displaying an image.
 
 #include "vtkDICOMMetaData.h"
-#include "vtkDICOMFileSorter.h"
+#include "vtkDICOMDirectory.h"
 #include "vtkDICOMReader.h"
 #include "vtkDICOMCTRectifier.h"
 #include "vtkDICOMApplyPalette.h"
@@ -36,9 +36,6 @@ int main(int argc, char *argv[])
   iren->SetRenderWindow(renWin);
   iren->SetInteractorStyle(style);
 
-  vtkSmartPointer<vtkDICOMFileSorter> sorter =
-    vtkSmartPointer<vtkDICOMFileSorter>::New();
-
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();
 
@@ -59,10 +56,14 @@ int main(int argc, char *argv[])
       }
     }
 
+  // find all DICOM files supplied by the user
+  vtkSmartPointer<vtkDICOMDirectory> sorter =
+    vtkSmartPointer<vtkDICOMDirectory>::New();
+  sorter->RequirePixelDataOn();
+  sorter->SetScanDepth(1);
   sorter->SetInputFileNames(files);
   sorter->Update();
 
-#if 0
   // find the series with the largest number of files
   int m = sorter->GetNumberOfStudies();
   int studyIdx = 0;
@@ -85,11 +86,7 @@ int main(int argc, char *argv[])
     }
 
   // display the longest series
-  //vtkStringArray *a = sorter->GetFileNamesForSeries(seriesIdx);
-#endif
-
-  // trust the user and display all the files, even if multiple series
-  vtkStringArray *a = sorter->GetOutputFileNames();
+  vtkStringArray *a = sorter->GetFileNamesForSeries(seriesIdx);
   vtkSmartPointer<vtkImageReslice> reslice =
     vtkSmartPointer<vtkImageReslice>::New();
   vtkSmartPointer<vtkDICOMReader> reader =
@@ -125,67 +122,12 @@ int main(int argc, char *argv[])
   palette->GetOutput()->GetScalarRange(range);
   portToDisplay = palette->GetOutputPort();
 
-#if 0
-  // check if the matrix indicates a tilted CT gantry
-  vtkSmartPointer<vtkMatrix4x4> pmat =
-    vtkSmartPointer<vtkMatrix4x4>::New();
-  pmat->DeepCopy(reader->GetPatientMatrix());
-  double xvec[4] = { 1.0, 0.0, 0.0, 0.0 };
-  double yvec[4] = { 0.0, 1.0, 0.0, 0.0 };
-  double zvec[4] = { 0.0, 0.0, 1.0, 0.0 };
-  pmat->MultiplyPoint(xvec, xvec);
-  pmat->MultiplyPoint(yvec, yvec);
-  pmat->MultiplyPoint(zvec, zvec);
-
-  // create slice normal and compare to zvec
-  double normal[3];
-  vtkMath::Cross(xvec, yvec, normal);
-  double checkvec[3];
-  vtkMath::Cross(zvec, normal, checkvec);
-  if (vtkMath::Norm(checkvec) > 1e-3)
-    {
-    // definite gantry tilt, the volume is trapezoid-shaped
-    vtkSmartPointer<vtkMatrix4x4> rmat =
-      vtkSmartPointer<vtkMatrix4x4>::New();
-    rmat->DeepCopy(pmat);
-    rmat->SetElement(0, 2, normal[0]);
-    rmat->SetElement(1, 2, normal[1]);
-    rmat->SetElement(2, 2, normal[2]);
-    pmat->Invert();
-    vtkMatrix4x4::Multiply4x4(pmat, rmat, rmat);
-
-    // pure shear matrix will have only one element that is different
-    // from the identity matrix:
-    double shear = rmat->GetElement(1, 2);
-    rmat->Identity();
-    rmat->SetElement(1, 2, shear);
-
-    double origin[3], spacing[3];
-    reader->GetOutput()->GetOrigin(origin);
-    reader->GetOutput()->GetSpacing(spacing);
-    // adjust the origin to centre the new volume on the old trapezoid
-    origin[1] -= shear*0.5*spacing[2]*(extent[5] - extent[4]);
-
-    // use vtkImageReslice to eliminate any shear
-    reslice->SetOutputOrigin(origin);
-    reslice->SetOutputSpacing(spacing);
-    reslice->SetOutputExtent(extent);
-    reslice->SetResliceAxes(rmat);
-    reslice->SetInputConnection(reader->GetOutputPort());
-    reslice->SetInterpolationModeToLinear();
-    reslice->Update();
-
-    // specify the port that the display pipeline will use
-    portToDisplay = reslice->GetOutputPort();
-    }
-#else
   vtkSmartPointer<vtkDICOMCTRectifier> rect =
     vtkSmartPointer<vtkDICOMCTRectifier>::New();
   rect->SetVolumeMatrix(reader->GetPatientMatrix());
   rect->SetInputConnection(portToDisplay);
   rect->Update();
   portToDisplay = rect->GetOutputPort();
-#endif
 
   static double viewport[3][4] = {
     { 0.67, 0.0, 1.0, 0.5 },
