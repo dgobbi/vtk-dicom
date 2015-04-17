@@ -66,7 +66,6 @@ int main(int argc, char *argv[])
 
   // find the series with the largest number of files
   int m = sorter->GetNumberOfStudies();
-  int studyIdx = 0;
   int seriesIdx = 0;
   int kmax = 0;
   for (int i = 0; i < m; i++)
@@ -80,7 +79,6 @@ int main(int argc, char *argv[])
         {
         kmax = k;
         seriesIdx = j;
-        studyIdx = i;
         }
       }
     }
