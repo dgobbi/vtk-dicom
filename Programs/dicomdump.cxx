@@ -20,6 +20,7 @@
 #include "vtkDICOMUtilities.h"
 
 // from dicomcli
+#include "mainmacro.h"
 #include "readquery.h"
 
 #include <vtkSortFileNames.h>
@@ -399,7 +400,7 @@ void printElementFromTagPath(
 }
 
 // This program will dump all the metadata in the given file
-int main(int argc, char *argv[])
+MAINMACRO(argc, argv)
 {
   int rval = 0;
 

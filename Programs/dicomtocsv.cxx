@@ -21,6 +21,7 @@
 #include "vtkDICOMMetaDataAdapter.h"
 
 // from dicomcli
+#include "mainmacro.h"
 #include "readquery.h"
 
 #include <vtkStringArray.h>
@@ -400,7 +401,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
 }
 
 // This program will dump all the metadata in the given file
-int main(int argc, char *argv[])
+MAINMACRO(argc, argv)
 {
   int rval = 0;
   QueryTagList qtlist;

@@ -43,6 +43,9 @@
 #include <ctype.h>
 #include <limits.h>
 
+// from dicomcli
+#include "mainmacro.h"
+
 // The file types
 enum {
   SCANCO_ISQ,    // standard CT scan
@@ -683,7 +686,7 @@ void scancotodicom_convert_one(
 }
 
 // This program will convert ScancoCT to DICOM
-int main(int argc, char *argv[])
+MAINMACRO(argc, argv)
 {
   // for the list of input DICOM files
   vtkSmartPointer<vtkStringArray> files =

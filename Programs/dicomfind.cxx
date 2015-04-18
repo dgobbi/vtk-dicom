@@ -20,6 +20,7 @@
 #include "vtkDICOMMetaData.h"
 
 // from dicomcli
+#include "mainmacro.h"
 #include "readquery.h"
 
 #include <vtkStringArray.h>
@@ -491,7 +492,7 @@ void dicomfind_operations(
 }
 
 // This program will dump all the metadata in the given file
-int main(int argc, char *argv[])
+MAINMACRO(argc, argv)
 {
   std::vector<Operation> operationList;
 

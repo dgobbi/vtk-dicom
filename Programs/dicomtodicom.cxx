@@ -46,6 +46,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+// from dicomcli
+#include "mainmacro.h"
+
 // Kinds of reformats
 enum MPREnum
 {
@@ -678,7 +681,7 @@ void dicomtodicom_convert_files(
 }
 
 // This program will convert DICOM to DICOM
-int main(int argc, char *argv[])
+MAINMACRO(argc, argv)
 {
   // for the list of input DICOM files
   vtkSmartPointer<vtkStringArray> files =

@@ -50,6 +50,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+// from dicomcli
+#include "mainmacro.h"
+
 // Simple structure for command-line options
 struct dicomtonifti_options
 {
@@ -1047,7 +1050,7 @@ void dicomtonifti_files_and_dirs(
 }
 
 // This program will convert DICOM to NIFTI
-int main(int argc, char *argv[])
+MAINMACRO(argc, argv)
 {
   // for the list of input DICOM files
   vtkSmartPointer<vtkStringArray> files =

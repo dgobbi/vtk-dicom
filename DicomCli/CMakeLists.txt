@@ -3,6 +3,7 @@ include_directories(${DICOM_INCLUDE_DIRS})
 set(LIB_NAME dicomcli)
 
 set(LIB_SRCS
+  mainmacro.cxx
   readquery.cxx
 )
 
