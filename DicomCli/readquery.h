@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#ifndef __readquery_h
-#define __readquery_h
+#ifndef readquery_h
+#define readquery_h
 
 #include "vtkDICOMItem.h"
 #include "vtkDICOMTagPath.h"
@@ -36,4 +36,4 @@ bool dicomcli_readquery(
 bool dicomcli_readkey(
   const char *key, vtkDICOMItem *query, QueryTagList *ql=0);
 
-#endif /* __readquery_h */
+#endif /* readquery_h */
