@@ -138,7 +138,7 @@ bool dicomcli_readkey(
     size_t tagStart = s;
     bool isHex = true;
     bool hasComma = false;
-    size_t commaPos= 0;
+    size_t commaPos = 0;
     while (s < n && (isalnum(cp[s]) || (cp[s] == ',' && !hasComma)))
       {
       if (cp[s] == ',')
@@ -158,7 +158,7 @@ bool dicomcli_readkey(
       if (isHex)
         {
         unsigned int group = strtoul(&cp[tagStart], NULL, 16);
-        unsigned int element = strtoul(&cp[commaPos+1], NULL, 16);
+        unsigned int element = strtoul(&cp[tagStart+commaPos+1], NULL, 16);
         if (group < 0xFFFF && element < 0xFFFF)
           {
           tag = vtkDICOMTag(group, element);
