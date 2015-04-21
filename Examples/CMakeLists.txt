@@ -2,7 +2,12 @@ include_directories(${DICOM_INCLUDE_DIRS})
 
 if("${VTK_MAJOR_VERSION}" GREATER 5)
   set(VTK_RENDERING_LIBS vtkRenderingImage vtkInteractionStyle
-      vtkRenderingOpenGL vtkRenderingFreeTypeOpenGL) # VTK 6.x
+      vtkRenderingOpenGL vtkRenderingFreeType) # VTK 6.x
+  # If vtkRenderingFreeTypeOpenGL is present, it must be linked
+  list(FIND VTK_LIBRARIES vtkRenderingFreeTypeOpenGL TMP_INDEX)
+  if(TMP_INDEX GREATER -1)
+    set(VTK_RENDERING_LIBS ${VTK_RENDERING_LIBS} vtkRenderingFreeTypeOpenGL)
+  endif()
 else()
   set(VTK_RENDERING_LIBS vtkRendering) # VTK 5.x
 endif()
