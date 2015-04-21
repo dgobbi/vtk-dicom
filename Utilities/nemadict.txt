@@ -8734,6 +8734,78 @@ RelevantOPTAttributesSequence
 SQ
 1
 
+(0022,1512)
+Transformation Method Code Sequence
+TransformationMethodCodeSequence
+SQ
+1
+
+(0022,1513)
+Transformation Algorithm Sequence
+TransformationAlgorithmSequence
+SQ
+1
+
+(0022,1515)
+Ophthalmic Axial Length Method
+OphthalmicAxialLengthMethod
+CS
+1
+
+(0022,1517)
+Ophthalmic FOV
+OphthalmicFOV
+FL
+1
+
+(0022,1518)
+Two Dimensional to Three Dimensional Map Sequence
+TwoDimensionalToThreeDimensionalMapSequence
+SQ
+1
+
+(0022,1525)
+Wide Field Ophthalmic Photography Quality Rating Sequence
+WideFieldOphthalmicPhotographyQualityRatingSequence
+SQ
+1
+
+(0022,1526)
+Wide Field Ophthalmic Photography Quality Threshold Sequence
+WideFieldOphthalmicPhotographyQualityThresholdSequence
+SQ
+1
+
+(0022,1527)
+Wide Field Ophthalmic Photography  Threshold Quality Rating
+WideFieldOphthalmicPhotographyThresholdQualityRating
+FL
+1
+
+(0022,1528)
+X Coordinates Center Pixel View Angle
+XCoordinatesCenterPixelViewAngle
+FL
+1
+
+(0022,1529)
+Y Coordinates Center Pixel View Angle
+YCoordinatesCenterPixelViewAngle
+FL
+1
+
+(0022,1530)
+Number of Map Points
+NumberOfMapPoints
+UL
+1
+
+(0022,1531)
+Two Dimensional to Three Dimensional Map Data
+TwoDimensionalToThreeDimensionalMapData
+OF
+1
+
 (0024,0010)
 Visual Field Horizontal Extent
 VisualFieldHorizontalExtent
@@ -20710,6 +20782,24 @@ SourceToSurfaceDistance
 DS
 1
 
+(300A,0131)
+Average Beam Dose Point Source to External Contour Surface Distance
+AverageBeamDosePointSourceToExternalContourSurfaceDistance
+FL
+1
+
+(300A,0132)
+Source to External Contour Distance
+SourceToExternalContourDistance
+FL
+1
+
+(300A,0133)
+External Contour Entry Point
+ExternalContourEntryPoint
+FL
+3
+
 (300A,0134)
 Cumulative Meterset Weight
 CumulativeMetersetWeight
@@ -21836,6 +21926,54 @@ FL
 Source to Applicator Mounting Position Distance
 SourceToApplicatorMountingPositionDistance
 FL
+1
+
+(300A,0440)
+Number of Block Slab Items
+NumberOfBlockSlabItems
+IS
+1
+
+(300A,0441)
+Block Slab Sequence
+BlockSlabSequence
+SQ
+1
+
+(300A,0442)
+Block Slab Thickness
+BlockSlabThickness
+DS
+1
+
+(300A,0443)
+Block Slab Number
+BlockSlabNumber
+US
+1
+
+(300A,0450)
+Device Motion Control Sequence
+DeviceMotionControlSequence
+SQ
+1
+
+(300A,0451)
+Device Motion Execution Mode
+DeviceMotionExecutionMode
+CS
+1
+
+(300A,0452)
+Device Motion Observation Mode
+DeviceMotionObservationMode
+CS
+1
+
+(300A,0453)
+Device Motion Parameter Code Sequence
+DeviceMotionParameterCodeSequence
+SQ
 1
 
 (300C,0002)

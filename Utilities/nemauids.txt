@@ -791,6 +791,14 @@ PS3.4
 Ophthalmic Tomography Image Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.5.5
+Wide Field Ophthalmic Photography Stereographic Projection Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.5.6
+Wide Field Ophthalmic Photography 3D Coordinates Image Storage
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.77.1.6
 VL Whole Slide Microscopy Image Storage
 SOP Class
@@ -1263,6 +1271,102 @@ PS3.19
 DICOM Content Mapping Resource
 Mapping Resource
 PS3.16
+1.2.840.10008.9.1
+Imaging Report
+Document TemplateID
+PS3.20
+1.2.840.10008.9.2
+Clinical Information
+Section TemplateID
+PS3.20
+1.2.840.10008.9.3
+Imaging Procedure Description
+Section TemplateID
+PS3.20
+1.2.840.10008.9.4
+Comparison Study
+Section TemplateID
+PS3.20
+1.2.840.10008.9.5
+Impression
+Section TemplateID
+PS3.20
+1.2.840.10008.9.6
+Addendum
+Section TemplateID
+PS3.20
+1.2.840.10008.9.7
+Request
+Section TemplateID
+PS3.20
+1.2.840.10008.9.8
+Radiation Exposure and Protection Information
+Section TemplateID
+PS3.20
+1.2.840.10008.9.9
+Fetus Findings
+Section TemplateID
+PS3.20
+1.2.840.10008.9.10
+Labeled Subsection
+Section TemplateID
+PS3.20
+1.2.840.10008.9.11
+Communication of Actionable Findings
+Section TemplateID
+PS3.20
+1.2.840.10008.9.12
+Recommendation
+Section TemplateID
+PS3.20
+1.2.840.10008.9.13
+Procedural Medication
+Entry TemplateID
+PS3.20
+1.2.840.10008.9.14
+Procedure Technique
+Entry TemplateID
+PS3.20
+1.2.840.10008.9.15
+Image Quality
+Entry TemplateID
+PS3.20
+1.2.840.10008.9.16
+Study Act
+Entry TemplateID
+PS3.20
+1.2.840.10008.9.17
+Series Act
+Entry TemplateID
+PS3.20
+1.2.840.10008.9.18
+SOP Instance Observation
+Entry TemplateID
+PS3.20
+1.2.840.10008.9.19
+Section Text
+Element Set TemplateID
+PS3.20
+1.2.840.10008.9.20
+General Header
+Element Set TemplateID
+PS3.20
+1.2.840.10008.9.21
+Imaging Header
+Element Set TemplateID
+PS3.20
+1.2.840.10008.9.22
+Parent Document
+Element Set TemplateID
+PS3.20
+1.2.840.10008.9.23
+General Section Entries
+Element Set TemplateID
+PS3.20
+1.2.840.10008.9.24
+Imaging Addendum Report
+Document TemplateID
+PS3.20
 1.2.840.10008.15.0.3.1
 dicomDeviceName
 LDAP OID
@@ -4237,3 +4341,30 @@ Spinal Cord Fibers
 1.2.840.10008.6.1.1020
 CID 7710
 Tractography Anatomic Sites
+1.2.840.10008.6.1.1021
+CID 4025
+Primary Anatomic Structure for Intra-oral Radiography
+1.2.840.10008.6.1.1022
+CID 4026
+Primary Anatomic Structure for Intra-oral and Craniofacial Radiography
+1.2.840.10008.6.1.1023
+CID 9401
+IEC6127 Device Position Parameters
+1.2.840.10008.6.1.1024
+CID 9402
+IEC6127 Gantry Position Parameters
+1.2.840.10008.6.1.1025
+CID 9403
+IEC6127 Patient Support Position Parameters
+1.2.840.10008.6.1.1026
+CID 7035
+Actionable Finding Classification
+1.2.840.10008.6.1.1027
+CID 7036
+Image Quality Assessment
+1.2.840.10008.6.1.1028
+CID 10050
+Summary Radiation Exposure Quantities
+1.2.840.10008.6.1.1029
+CID 4245
+Wide Field Ophthalmic Photography Transformation Method
