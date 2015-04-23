@@ -183,9 +183,12 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
       vtkSmartPointer<vtkDICOMParser> parser =
         vtkSmartPointer<vtkDICOMParser>::New();
 
-      parser->SetMetaData(meta);
+      int n = a->GetNumberOfValues();
+      meta->SetNumberOfInstances(n);
       parser->SetQueryItem(query);
-      for (int ii = 0; ii < a->GetNumberOfValues(); ii++)
+      parser->SetMetaData(meta);
+
+      for (int ii = 0; ii < n; ii++)
         {
         parser->SetIndex(ii);
         parser->SetFileName(a->GetValue(ii));
@@ -207,7 +210,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
         const vtkDICOMItem *mitem = 0;
         const vtkDICOMValue *vp = 0;
         vtkDICOMTagPath tagPath = ql->at(i);
-        for (int ii = 0; ii < adapter->GetNumberOfInstances(); ii++)
+        for (int ii = 0; ii < n; ii++)
           {
           for (;;)
             {
