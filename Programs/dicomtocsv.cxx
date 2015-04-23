@@ -422,12 +422,9 @@ MAINMACRO(argc, argv)
   query.SetAttributeValue(
     DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
-  if (ofile)
-    {
-    // Write the header
-    dicomtocsv_writeheader(query, &qtlist, *osp);
-    osp->flush();
-    }
+  // Write the header
+  dicomtocsv_writeheader(query, &qtlist, *osp);
+  osp->flush();
 
   // Write data for every input directory
   for (vtkIdType i = 0; i < a->GetNumberOfTuples(); i++)
