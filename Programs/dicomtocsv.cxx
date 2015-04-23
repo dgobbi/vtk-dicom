@@ -53,6 +53,9 @@ void dicomtocsv_usage(FILE *file, const char *cp)
     "  -q <query.txt>  Provide a file to describe the find query.\n"
     "  -o <data.csv>   Provide a file for the query results.\n"
     "  --first-nonzero Search series for first nonzero value of each key.\n"
+    "  --study         Print one row for each study.\n"
+    "  --series        Print one row for each series (default).\n"
+    "  --image         Print one row for each image.\n"
     "  --help          Print a brief help message.\n"
     "  --version       Print the software version.\n");
 }
@@ -166,12 +169,26 @@ std::string dicomtocsv_quote(const std::string& s)
 // Write out the results in csv format
 void dicomtocsv_write(vtkDICOMDirectory *finder,
   const vtkDICOMItem& query, const QueryTagList *ql, std::ostream& os,
-  bool firstNonZero)
+  int level, bool firstNonZero)
 {
   for (int j = 0; j < finder->GetNumberOfStudies(); j++)
     {
     int k0 = finder->GetFirstSeriesForStudy(j);
     int k1 = finder->GetLastSeriesForStudy(j);
+    int numberOfFiles = 1;
+
+    if (level < 3 && k1 > k0)
+      {
+      // if level is "study", only look at one series
+      numberOfFiles = 0;
+      for (int k = k0; k <= k1; k++)
+        {
+        vtkStringArray *a = finder->GetFileNamesForSeries(k);
+        numberOfFiles += a->GetNumberOfValues();
+        }
+      k1 = k0;
+      }
+
     for (int k = k0; k <= k1; k++)
       {
       vtkStringArray *a = finder->GetFileNamesForSeries(k);
@@ -180,23 +197,27 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
         continue;
         }
 
+      if (level == 3)
+        {
+        // at series level, this is the number of files
+        numberOfFiles = a->GetNumberOfValues();
+        }
+
       vtkSmartPointer<vtkDICOMMetaData> meta =
         vtkSmartPointer<vtkDICOMMetaData>::New();
       vtkSmartPointer<vtkDICOMParser> parser =
         vtkSmartPointer<vtkDICOMParser>::New();
 
-      int n = a->GetNumberOfValues();
-      if (!firstNonZero)
-        {
-        // if not searching for first nonzero value, we only need 1st file
-        n = 1;
-        }
-
-      meta->SetNumberOfInstances(n);
       parser->SetQueryItem(query);
       parser->SetMetaData(meta);
 
-      for (int ii = 0; ii < n; ii++)
+      if (level >= 4 || firstNonZero)
+        {
+        // need to parse all files
+        meta->SetNumberOfInstances(a->GetNumberOfValues());
+        }
+
+      for (int ii = 0; ii < meta->GetNumberOfInstances(); ii++)
         {
         parser->SetIndex(ii);
         parser->SetFileName(a->GetValue(ii));
@@ -206,119 +227,129 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
       // create an adapter, in case of enhanced IOD
       vtkDICOMMetaDataAdapter adapter(meta);
 
-      // print the value of each tag
-      for (size_t i = 0; i < ql->size(); i++)
+      // this loop is only for the "image" level
+      int m = (level >= 4 ? meta->GetNumberOfInstances() : 1);
+      for (int jj = 0; jj < m; jj++)
         {
-        if (i != 0)
+        // print the value of each tag
+        for (size_t i = 0; i < ql->size(); i++)
           {
-          os << ",";
-          }
-
-        const vtkDICOMItem *qitem = &query;
-        const vtkDICOMItem *mitem = 0;
-        const vtkDICOMValue *vp = 0;
-        vtkDICOMTagPath tagPath = ql->at(i);
-        for (int ii = 0; ii < n; ii++)
-          {
-          for (;;)
+          if (i != 0)
             {
-            vtkDICOMTag tag = tagPath.GetHead();
-            std::string creator;
-            if ((tag.GetGroup() & 0x0001) == 1)
+            os << ",";
+            }
+
+          const vtkDICOMItem *qitem = &query;
+          const vtkDICOMItem *mitem = 0;
+          const vtkDICOMValue *vp = 0;
+          vtkDICOMTagPath tagPath = ql->at(i);
+
+          // this loop is only needed if firstNonZero is set
+          int n = (firstNonZero ? meta->GetNumberOfInstances() : 1);
+          n = (level >= 4 ? jj+1 : n);
+          for (int ii = jj; ii < n; ii++)
+            {
+            for (;;)
               {
-              vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
-              creator = qitem->GetAttributeValue(ctag).AsString();
+              vtkDICOMTag tag = tagPath.GetHead();
+              std::string creator;
+              if ((tag.GetGroup() & 0x0001) == 1)
+                {
+                vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
+                creator = qitem->GetAttributeValue(ctag).AsString();
+                if (mitem)
+                  {
+                  tag = mitem->ResolvePrivateTag(tag, creator);
+                  }
+                else
+                  {
+                  tag = adapter->ResolvePrivateTag(tag, creator);
+                  }
+                }
               if (mitem)
                 {
-                tag = mitem->ResolvePrivateTag(tag, creator);
+                vp = &mitem->GetAttributeValue(tag);
                 }
               else
                 {
-                tag = adapter->ResolvePrivateTag(tag, creator);
+                vp = &adapter->GetAttributeValue(ii, tag);
+                }
+              if (vp && !vp->IsValid())
+                {
+                vp = 0;
+                }
+              if (vp == 0 || !tagPath.HasTail())
+                {
+                break;
+                }
+              qitem = qitem->GetAttributeValue(
+                tagPath.GetHead()).GetSequenceData();
+              tagPath = tagPath.GetTail();
+              mitem = vp->GetSequenceData();
+              if (mitem == 0 || vp->GetNumberOfValues() == 0)
+                {
+                break;
                 }
               }
-            if (mitem)
+            // If numerical value is zero, keep going until non-zero because
+            // the zero value is of little interest
+            if (vp != 0)
               {
-              vp = &mitem->GetAttributeValue(tag);
-              }
-            else
-              {
-              vp = &adapter->GetAttributeValue(ii, tag);
-              }
-            if (vp && !vp->IsValid())
-              {
-              vp = 0;
-              }
-            if (vp == 0 || !tagPath.HasTail())
-              {
-              break;
-              }
-            qitem = qitem->GetAttributeValue(
-              tagPath.GetHead()).GetSequenceData();
-            tagPath = tagPath.GetTail();
-            mitem = vp->GetSequenceData();
-            if (mitem == 0 || vp->GetNumberOfValues() == 0)
-              {
-              break;
+              if (!vp->GetVR().HasNumericValue() || vp->AsDouble() != 0.0)
+                {
+                break;
+                }
               }
             }
-          // If numerical value is zero, keep going until non-zero because
-          // the zero value is of little interest
+
           if (vp != 0)
             {
-            if (!vp->GetVR().HasNumericValue() || vp->AsDouble() != 0.0)
+            const vtkDICOMValue& v = *vp;
+            if (v.GetNumberOfValues() == 1 &&
+                (v.GetVR() == VR::SS ||
+                 v.GetVR() == VR::US ||
+                 v.GetVR() == VR::SL ||
+                 v.GetVR() == VR::UL ||
+                 v.GetVR() == VR::FL ||
+                 v.GetVR() == VR::FD))
               {
-              break;
+              os << v;
+              }
+            else if (v.GetVR() == VR::DA ||
+                     v.GetVR() == VR::TM ||
+                     v.GetVR() == VR::DT)
+              {
+              os << "\"" << dicomtocsv_date(v.AsString(), v.GetVR()) << "\"";
+              }
+            else if (v.GetVR() == VR::SQ)
+              {
+              // how should a sequence be printed out to the csv file?
+              }
+            else if (v.GetVL() != 0 && v.GetVL() != 0xFFFFFFFF)
+              {
+              os << "\"" << dicomtocsv_quote(v.AsUTF8String()) << "\"";
               }
             }
+          else if (tagPath.GetHead() == DC::ReferencedFileID &&
+                   !tagPath.HasTail())
+            {
+            // ReferencedFileID (0004,1500) is meant to be used in DICOMDIR,
+            // but we hijack it to report the first file in the series.
+            os << "\"" << dicomtocsv_quote(a->GetValue(jj)) << "\"";
+            }
+          else if (tagPath.GetHead() == DC::NumberOfReferences &&
+                   !tagPath.HasTail())
+            {
+            // NumberOfReferences (0004,1600) is a retired attribute meant
+            // to count the number of references to a file, but we hijack
+            // it and use it to report the number of files found for the
+            // series.
+            os << "\"" << numberOfFiles << "\"";
+            }
           }
 
-        if (vp != 0)
-          {
-          const vtkDICOMValue& v = *vp;
-          if (v.GetNumberOfValues() == 1 &&
-              (v.GetVR() == VR::SS ||
-               v.GetVR() == VR::US ||
-               v.GetVR() == VR::SL ||
-               v.GetVR() == VR::UL ||
-               v.GetVR() == VR::FL ||
-               v.GetVR() == VR::FD))
-            {
-            os << v;
-            }
-          else if (v.GetVR() == VR::DA ||
-                   v.GetVR() == VR::TM ||
-                   v.GetVR() == VR::DT)
-            {
-            os << "\"" << dicomtocsv_date(v.AsString(), v.GetVR()) << "\"";
-            }
-          else if (v.GetVR() == VR::SQ)
-            {
-            // how should a sequence be printed out to the csv file?
-            }
-          else if (v.GetVL() != 0 && v.GetVL() != 0xFFFFFFFF)
-            {
-            os << "\"" << dicomtocsv_quote(v.AsUTF8String()) << "\"";
-            }
-          }
-        else if (tagPath.GetHead() == DC::ReferencedFileID &&
-                 !tagPath.HasTail())
-          {
-          // ReferencedFileID (0004,1500) is meant to be used in DICOMDIR files,
-          // but we hijack it to report the first file in the series.
-          os << "\"" << dicomtocsv_quote(a->GetValue(0)) << "\"";
-          }
-        else if (tagPath.GetHead() == DC::NumberOfReferences &&
-                 !tagPath.HasTail())
-          {
-          // NumberOfReferences (0004,1600) is a retired attribute meant to count
-          // the number of references to a file, but we hijack it and use it to
-          // report the number of files found for the series.
-          os << "\"" << a->GetNumberOfValues() << "\"";
-          }
+        os << "\r\n";
         }
-
-      os << "\r\n";
       }
     }
 }
@@ -331,6 +362,7 @@ MAINMACRO(argc, argv)
   vtkDICOMItem query;
   std::vector<std::string> oplist;
   bool firstNonZero = false;
+  int level = 3; // default to series level
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
   const char *ofile = 0;
@@ -392,6 +424,18 @@ MAINMACRO(argc, argv)
       {
       firstNonZero = true;
       }
+    else if (strcmp(arg, "--study") == 0)
+      {
+      level = 2;
+      }
+    else if (strcmp(arg, "--series") == 0)
+      {
+      level = 3;
+      }
+    else if (strcmp(arg, "--image") == 0)
+      {
+      level = 4;
+      }
     else if (arg[0] == '-')
       {
       fprintf(stderr, "unrecognized option %s.\n\n", arg);
@@ -449,7 +493,7 @@ MAINMACRO(argc, argv)
     finder->SetFindQuery(query);
     finder->Update();
 
-    dicomtocsv_write(finder, query, &qtlist, *osp, firstNonZero);
+    dicomtocsv_write(finder, query, &qtlist, *osp, level, firstNonZero);
 
     osp->flush();
     }
