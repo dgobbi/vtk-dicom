@@ -52,6 +52,7 @@ void dicomtocsv_usage(FILE *file, const char *cp)
     "  -k tag=value    Provide a key to be queried and matched.\n"
     "  -q <query.txt>  Provide a file to describe the find query.\n"
     "  -o <data.csv>   Provide a file for the query results.\n"
+    "  --first-nonzero Search series for first nonzero value of each key.\n"
     "  --help          Print a brief help message.\n"
     "  --version       Print the software version.\n");
 }
@@ -164,7 +165,8 @@ std::string dicomtocsv_quote(const std::string& s)
 
 // Write out the results in csv format
 void dicomtocsv_write(vtkDICOMDirectory *finder,
-  const vtkDICOMItem& query, const QueryTagList *ql, std::ostream& os)
+  const vtkDICOMItem& query, const QueryTagList *ql, std::ostream& os,
+  bool firstNonZero)
 {
   for (int j = 0; j < finder->GetNumberOfStudies(); j++)
     {
@@ -184,6 +186,12 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
         vtkSmartPointer<vtkDICOMParser>::New();
 
       int n = a->GetNumberOfValues();
+      if (!firstNonZero)
+        {
+        // if not searching for first nonzero value, we only need 1st file
+        n = 1;
+        }
+
       meta->SetNumberOfInstances(n);
       parser->SetQueryItem(query);
       parser->SetMetaData(meta);
@@ -322,6 +330,7 @@ MAINMACRO(argc, argv)
   QueryTagList qtlist;
   vtkDICOMItem query;
   std::vector<std::string> oplist;
+  bool firstNonZero = false;
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
   const char *ofile = 0;
@@ -378,6 +387,10 @@ MAINMACRO(argc, argv)
         {
         return 1;
         }
+      }
+    else if (strcmp(arg, "--first-nonzero") == 0)
+      {
+      firstNonZero = true;
       }
     else if (arg[0] == '-')
       {
@@ -436,7 +449,7 @@ MAINMACRO(argc, argv)
     finder->SetFindQuery(query);
     finder->Update();
 
-    dicomtocsv_write(finder, query, &qtlist, *osp);
+    dicomtocsv_write(finder, query, &qtlist, *osp, firstNonZero);
 
     osp->flush();
     }
