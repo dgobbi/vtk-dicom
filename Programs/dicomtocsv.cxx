@@ -183,10 +183,14 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
       vtkSmartPointer<vtkDICOMParser> parser =
         vtkSmartPointer<vtkDICOMParser>::New();
 
-      parser->SetFileName(a->GetValue(0));
       parser->SetMetaData(meta);
       parser->SetQueryItem(query);
-      parser->Update();
+      for (int ii = 0; ii < a->GetNumberOfValues(); ii++)
+        {
+        parser->SetIndex(ii);
+        parser->SetFileName(a->GetValue(ii));
+        parser->Update();
+        }
 
       // create an adapter, in case of enhanced IOD
       vtkDICOMMetaDataAdapter adapter(meta);
@@ -203,46 +207,58 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
         const vtkDICOMItem *mitem = 0;
         const vtkDICOMValue *vp = 0;
         vtkDICOMTagPath tagPath = ql->at(i);
-        for (;;)
+        for (int ii = 0; ii < adapter->GetNumberOfInstances(); ii++)
           {
-          vtkDICOMTag tag = tagPath.GetHead();
-          std::string creator;
-          if ((tag.GetGroup() & 0x0001) == 1)
+          for (;;)
             {
-            vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
-            creator = qitem->GetAttributeValue(ctag).AsString();
+            vtkDICOMTag tag = tagPath.GetHead();
+            std::string creator;
+            if ((tag.GetGroup() & 0x0001) == 1)
+              {
+              vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
+              creator = qitem->GetAttributeValue(ctag).AsString();
+              if (mitem)
+                {
+                tag = mitem->ResolvePrivateTag(tag, creator);
+                }
+              else
+                {
+                tag = adapter->ResolvePrivateTag(tag, creator);
+                }
+              }
             if (mitem)
               {
-              tag = mitem->ResolvePrivateTag(tag, creator);
+              vp = &mitem->GetAttributeValue(tag);
               }
             else
               {
-              tag = adapter->ResolvePrivateTag(tag, creator);
+              vp = &adapter->GetAttributeValue(ii, tag);
+              }
+            if (vp && !vp->IsValid())
+              {
+              vp = 0;
+              }
+            if (vp == 0 || !tagPath.HasTail())
+              {
+              break;
+              }
+            qitem = qitem->GetAttributeValue(
+              tagPath.GetHead()).GetSequenceData();
+            tagPath = tagPath.GetTail();
+            mitem = vp->GetSequenceData();
+            if (mitem == 0 || vp->GetNumberOfValues() == 0)
+              {
+              break;
               }
             }
-          if (mitem)
+          // If numerical value is zero, keep going until non-zero because
+          // the zero value is of little interest
+          if (vp != 0)
             {
-            vp = &mitem->GetAttributeValue(tag);
-            }
-          else
-            {
-            vp = &adapter->GetAttributeValue(tag);
-            }
-          if (vp && !vp->IsValid())
-            {
-            vp = 0;
-            }
-          if (vp == 0 || !tagPath.HasTail())
-            {
-            break;
-            }
-          qitem = qitem->GetAttributeValue(
-            tagPath.GetHead()).GetSequenceData();
-          tagPath = tagPath.GetTail();
-          mitem = vp->GetSequenceData();
-          if (mitem == 0 || vp->GetNumberOfValues() == 0)
-            {
-            break;
+            if (!vp->GetVR().HasNumericValue() || vp->AsDouble() != 0.0)
+              {
+              break;
+              }
             }
           }
 
