@@ -18,6 +18,7 @@
 #include "vtkDICOMDataElement.h"
 #include "vtkDICOMParser.h"
 #include "vtkDICOMMetaData.h"
+#include "vtkDICOMDictionary.h"
 
 // from dicomcli
 #include "mainmacro.h"
@@ -26,12 +27,17 @@
 #include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
 
+#include <vtksys/SystemTools.hxx>
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include <limits>
 #include <iostream>
+#include <map>
+#include <utility>
 
 // print the version
 void dicompull_version(FILE *file, const char *cp)
@@ -53,8 +59,9 @@ void dicompull_usage(FILE *file, const char *cp)
     "  -P              Do not follow symbolic links.\n"
     "  -k tag=value    Provide an attribute to be queried and matched.\n"
     "  -q <query.txt>  Provide a file to describe the find query.\n"
+    "  -o <directory>  Directory to place the files into.\n"
     "  -maxdepth n     Set the maximum directory depth.\n"
-    "  -name pattern   Set a pattern to match (with \"*\" or \"?\").\n"
+    "  -name pattern   Set file names to match (with \"*\" or \"?\").\n"
     "  -image          Restrict the search to files with PixelData.\n"
     "  -series         Find all files in series if even one file matches.\n"
     "  --help          Print a brief help message.\n"
@@ -67,16 +74,28 @@ void dicompull_help(FILE *file, const char *cp)
 {
   dicompull_usage(file, cp);
   fprintf(file, "\n"
-    "This command can be used to locate DICOM files.  It shares many\n"
-    "features with the UNIX \"find\" command.  When searching for files\n"
-    "with a specific attribute (with \"-k\"), the tag can be specified\n"
-    "in the form GGGG,EEEE or with its canonical name e.g. Modality=MR\n"
-    "from the DICOM dictionary.  Alternately, the tags can be listed in a\n"
-    "query file given with the \"-q\" option (one tag per line).\n"
-    "Attributes nested within sequences can be specified by giving a tag\n"
-    "path e.g. \"-k Tag1/Tag2/Tag3\".  Either a forward slash or a backslash\n"
-    "can be used to separate the components of the path.  Private tags\n"
-    "should be preceded by the private dictionary name in square brackets.\n"
+    "Find dicom files in one directory and copy them to a new directory.\n"
+    "\n"
+    "The output directory given with \"-o\" can use DICOM attributes, by\n"
+    "naming those attributes within curly braces.  For example, consider\n"
+    "\"{PatientID}/{StudyDescription}/{SeriesDescription}-{SeriesNumber}\"\n"
+    "or something similar to produce a hierarchichal directory structure.\n"
+    "The attributes used in the path should be from the following list:\n"
+    "  PatientID, PatientName, PatientBirthDate, PatientSex,\n"
+    "  StudyID, StudyDescription, StudyDate, StudyTime, StudyInstanceUID,\n"
+    "  SeriesNumber, SeriesDescription, SeriesInstanceUID,\n"
+    "  Modality, AccessionNumber.\n"
+    "\n"
+    "The files to be copied are specified with search keys, which take the\n"
+    "form \"-k key=value\" where keys can either use the standard names given\n"
+    "in the DICOM dictionary, e.g. Modality or SeriesDescription, or can be\n"
+    "in the form GGGG,EEEE with hexadecimal group and element values.  The\n"
+    "tags can also be listed in a query file with the \"-q\" option (one tag\n"
+    "per line). Private tags should be preceded by the private dictionary\n"
+    "name in square brackets.\n"
+    "\n"
+    "The values used for \"-k key=value\" can use the wildcards * and ?, and\n"
+    "can also use date ranges of the form \"19990103-19990105\".\n"
     "\n"
   );
 }
@@ -103,14 +122,122 @@ std::string dicompull_dirname(const char *filename)
 
 typedef vtkDICOMVR VR;
 
-// The type used to store an operation
-struct Operation
+std::string dicompull_cleanup(const std::string& input)
 {
-  Operation(const char *type) : Type(type) {}
+  std::string::const_iterator a = input.begin();
+  std::string::const_iterator b = a;
+  std::string s;
+  while (a != input.end())
+    {
+    while (a != input.end() && isgraph(*a) &&
+           (!ispunct(*a) || *a == '.' || *a == '-' || *a == '+'))
+      {
+      ++a;
+      }
+    s.append(b, a);
+    b = a;
+    while (a != input.end() && (!isgraph(*a) ||
+           (ispunct(*a) && *a != '.' && *a != '-' && *a != '+')))
+      {
+      ++a;
+      }
+    if (b != a && b != input.begin() && a != input.end())
+      {
+      s.append("_");
+      }
+    b = a;
+    }
 
-  std::string Type;
-  std::vector<std::string> Args;
-};
+  return s;
+}
+
+std::string dicompull_makedirname(
+  vtkDICOMDirectory *finder, int study, int series, const char *outdir)
+{
+  std::string s;
+  std::string key;
+  std::string val;
+  vtkDICOMValue v;
+
+  const char *cp = outdir;
+  const char *dp = cp;
+  const char *bp = 0;
+  while (*cp != '\0')
+    {
+    while (*cp != '{' && *cp != '}' && *cp != '\0') { cp++; }
+    if (*cp == '}')
+      {
+      fprintf(stderr, "Missing \'{\': %s\n", outdir);
+      exit(1);
+      }
+    if (*cp == '{')
+      {
+      bp = cp;
+      while (*cp != '}' && *cp != '\0') { cp++; }
+      if (*cp != '}')
+        {
+        fprintf(stderr, "Unmatched \'{\': %s\n", outdir);
+        exit(1);
+        }
+      else
+        {
+        s.append(dp, bp);
+        bp++;
+        key.assign(bp, cp);
+        cp++;
+        dp = cp;
+        v.Clear();
+        vtkDICOMTag tag;
+        if (key.length() > 0)
+          {
+          vtkDICOMDictEntry de = vtkDICOMDictionary::FindDictEntry(key.c_str());
+          if (de.IsValid())
+            {
+            tag = de.GetTag();
+            }
+          else
+            {
+            fprintf(stderr, "Unrecognized key %s\n", key.c_str());
+            exit(1);
+            }
+          }
+        if (finder)
+          {
+          if (!v.IsValid())
+            {
+            v = finder->GetStudyRecord(study).GetAttributeValue(tag);
+            }
+          if (!v.IsValid())
+            {
+            v = finder->GetPatientRecordForStudy(study).GetAttributeValue(tag);
+            }
+          if (!v.IsValid())
+            {
+            v = finder->GetSeriesRecord(series).GetAttributeValue(tag);
+            }
+          }
+        if (v.IsValid())
+          {
+          val.assign(dicompull_cleanup(v.AsString()));
+          }
+        else if (finder)
+          {
+          fprintf(stderr, "Sorry, key %s cannot be in output directory.\n",
+                  key.c_str());
+          exit(1);
+          }
+        if (val.empty())
+          {
+          val = "Empty";
+          }
+        s.append(val);
+        }
+      }
+    }
+  s.append(dp, cp);
+
+  return s;
+}
 
 // This program will find and copy dicom files
 MAINMACRO(argc, argv)
@@ -123,6 +250,7 @@ MAINMACRO(argc, argv)
   vtkDICOMItem query;
   bool requirePixelData = false;
   bool findSeries = false;
+  std::string outdir;
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
   const char *qfile = 0;
@@ -179,6 +307,18 @@ MAINMACRO(argc, argv)
         return 1;
         }
       }
+    else if (strcmp(arg, "-o") == 0)
+      {
+      vtkDICOMTag tag;
+      ++argi;
+      if (argi == argc || argv[argi][0] == '-')
+        {
+        fprintf(stderr, "%s must be followed by an output directory.\n\n",
+                arg);
+        return 1;
+        }
+      outdir = argv[argi];
+      }
     else if (strcmp(arg, "-maxdepth") == 0)
       {
       ++argi;
@@ -219,6 +359,17 @@ MAINMACRO(argc, argv)
       }
     }
 
+  // output directory is mandatory
+  if (outdir.empty())
+    {
+    fprintf(stderr,
+      "\nNo output directory was specified (-o <directory>).\n\n");
+    exit(1);
+    }
+
+  // do a dry run to make sure outdir string is valid
+  dicompull_makedirname(NULL, 0, 0, outdir.c_str());
+
   // read the query file, create a query
   if (qfile && !dicomcli_readquery(qfile, &query, &qtlist))
     {
@@ -231,6 +382,10 @@ MAINMACRO(argc, argv)
     DC::SharedFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
   query.SetAttributeValue(
     DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
+
+  // Create a map of all directories written to.  The count is the
+  // number of series that have been written to the directory.
+  std::map<std::string, int> dircount;
 
   // Write data for every input directory
   if (a->GetNumberOfTuples() > 0)
@@ -255,7 +410,35 @@ MAINMACRO(argc, argv)
       for (int k = k0; k <= k1; k++)
         {
         vtkStringArray *sa = finder->GetFileNamesForSeries(k);
-        // do stuff here
+        // create the directory name
+        std::string dirname =
+          dicompull_makedirname(finder, j, k, outdir.c_str());
+        std::map<std::string,int>::iterator mi = dircount.find(dirname);
+        int si = 1;
+        if (mi != dircount.end())
+          {
+          si = mi->second + 1;
+          mi->second = si;
+          }
+        else
+          {
+          dircount[dirname] = si;
+          if (!vtksys::SystemTools::MakeDirectory(dirname.c_str()))
+            {
+            fprintf(stderr, "Cannot create directory: %s\n",
+                    dirname.c_str());
+            exit(1);
+            }
+          }
+        for (vtkIdType i = 0; i < sa->GetNumberOfValues(); i++)
+          {
+          // copy the file
+          char dname[16];
+          sprintf(dname, "/IM-%04.4d-%04.4d.dcm",
+                  si, static_cast<int>(i+1));
+          vtksys::SystemTools::CopyFileIfDifferent(
+            sa->GetValue(i), dirname + dname);
+          }
         }
       }
     }
