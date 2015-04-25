@@ -383,6 +383,17 @@ MAINMACRO(argc, argv)
   query.SetAttributeValue(
     DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
+  // Separator between directory and file
+  const char *sep = (outdir.empty() ? "" : "//");
+#ifdef _WIN32
+  for (std::string::const_iterator si = outdir.begin();
+       si != outdir.end(); ++si)
+    {
+    if (*si == '/') { sep = "/"; }
+    else if (*si == '\\') { sep = "\\"; }
+    }
+#endif
+
   // Create a map of all directories written to.  The count is the
   // number of series that have been written to the directory.
   std::map<std::string, int> dircount;
@@ -433,11 +444,12 @@ MAINMACRO(argc, argv)
         for (vtkIdType i = 0; i < sa->GetNumberOfValues(); i++)
           {
           // copy the file
-          char dname[16];
-          sprintf(dname, "/IM-%04.4d-%04.4d.dcm",
-                  si, static_cast<int>(i+1));
+          char fname[32];
+          sprintf(fname, "%sIM-%04d-%04d.dcm",
+                  sep, si, static_cast<int>(i+1));
+          std::string fullname = dirname + fname;
           vtksys::SystemTools::CopyFileIfDifferent(
-            sa->GetValue(i), dirname + dname);
+            sa->GetValue(i).c_str(), fullname.c_str());
           }
         }
       }
