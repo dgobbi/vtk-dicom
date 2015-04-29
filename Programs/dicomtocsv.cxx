@@ -366,7 +366,12 @@ MAINMACRO(argc, argv)
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
   const char *ofile = 0;
-  const char *qfile = 0;
+
+  // always query the functional sequences for advanced files
+  query.SetAttributeValue(
+    DC::SharedFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
+  query.SetAttributeValue(
+    DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
   if (argc < 2)
     {
@@ -398,7 +403,12 @@ MAINMACRO(argc, argv)
 
       if (arg[1] == 'q')
         {
-        qfile = argv[++argi];
+        const char *qfile = argv[++argi];
+        if (!dicomcli_readquery(qfile, &query, &qtlist))
+          {
+          fprintf(stderr, "Can't read query file %s\n\n", qfile);
+          return 1;
+          }
         }
       else if (arg[1] == 'o')
         {
@@ -465,19 +475,6 @@ MAINMACRO(argc, argv)
       }
     osp = &ofs;
     }
-
-  // read the query file, create a query
-  if (qfile && !dicomcli_readquery(qfile, &query, &qtlist))
-    {
-    fprintf(stderr, "Can't read query file %s\n\n", qfile);
-    return 1;
-    }
-
-  // always add the functional sequences for advanced files
-  query.SetAttributeValue(
-    DC::SharedFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
-  query.SetAttributeValue(
-    DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
   // Write the header
   dicomtocsv_writeheader(query, &qtlist, *osp);

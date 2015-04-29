@@ -506,7 +506,12 @@ MAINMACRO(argc, argv)
   bool findSeries = false;
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
-  const char *qfile = 0;
+
+  // always query the functional sequences for advanced files
+  query.SetAttributeValue(
+    DC::SharedFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
+  query.SetAttributeValue(
+    DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
   if (argc < 2)
     {
@@ -543,7 +548,12 @@ MAINMACRO(argc, argv)
         dicomfind_usage(stderr, dicomfind_basename(argv[0]));
         return 1;
         }
-      qfile = argv[++argi];
+      const char *qfile = argv[++argi];
+      if (!dicomcli_readquery(qfile, &query, &qtlist))
+        {
+        fprintf(stderr, "Can't read query file %s\n\n", qfile);
+        return 1;
+        }
       }
     else if (strcmp(arg, "-k") == 0)
       {
@@ -636,19 +646,6 @@ MAINMACRO(argc, argv)
     {
     operationList.push_back("-print");
     }
-
-  // read the query file, create a query
-  if (qfile && !dicomcli_readquery(qfile, &query, &qtlist))
-    {
-    fprintf(stderr, "Can't read query file %s\n\n", qfile);
-    return 1;
-    }
-
-  // always add the functional sequences for advanced files
-  query.SetAttributeValue(
-    DC::SharedFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
-  query.SetAttributeValue(
-    DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
   // Remember the current directory
   std::string originalDir = dicomfind_getcwd();

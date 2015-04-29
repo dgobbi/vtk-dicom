@@ -405,7 +405,6 @@ MAINMACRO(argc, argv)
   int rval = 0;
 
   // for the optional query file
-  const char *qfile = 0;
   QueryTagList qtlist;
   vtkDICOMItem query;
 
@@ -442,7 +441,12 @@ MAINMACRO(argc, argv)
 
       if (arg[1] == 'q')
         {
-        qfile = argv[++argi];
+        const char *qfile = argv[++argi];
+        if (!dicomcli_readquery(qfile, &query, &qtlist))
+          {
+          fprintf(stderr, "Can't read query file %s\n\n", qfile);
+          return 1;
+          }
         }
       else if (arg[1] == 'o')
         {
@@ -475,13 +479,6 @@ MAINMACRO(argc, argv)
       {
       files->InsertNextValue(arg);
       }
-    }
-
-  // read the query file, create a query
-  if (qfile && !dicomcli_readquery(qfile, &query, &qtlist))
-    {
-    fprintf(stderr, "Can't read query file %s\n\n", qfile);
-    return 1;
     }
 
   // sort the files by study and series
