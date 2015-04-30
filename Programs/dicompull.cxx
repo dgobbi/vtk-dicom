@@ -216,7 +216,7 @@ std::string dicompull_makedirname(
           }
         if (v.IsValid())
           {
-          val.assign(dicompull_cleanup(v.AsString()));
+          val.assign(dicompull_cleanup(v.AsUTF8String()));
           }
         else if (finder)
           {
