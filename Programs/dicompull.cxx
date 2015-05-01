@@ -129,13 +129,15 @@ std::string dicompull_cleanup(const std::string& input)
   std::string s;
   while (a != input.end())
     {
-    while (a != input.end() && isgraph(*a) && !ispunct(*a))
+    while (a != input.end() &&
+           ((*a & 0x80) == 0) && isgraph(*a) && !ispunct(*a))
       {
       ++a;
       }
     s.append(b, a);
     b = a;
-    while (a != input.end() && (!isgraph(*a) || ispunct(*a)))
+    while (a != input.end() &&
+           (((*a & 0x80) != 0) || !isgraph(*a) || ispunct(*a)))
       {
       ++a;
       }
