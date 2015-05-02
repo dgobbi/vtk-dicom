@@ -352,6 +352,45 @@ vtkStringArray *vtkDICOMDirectory::GetFileNamesForSeries(int i)
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMDirectory::AddSeriesForQuery(
+  vtkStringArray *files, vtkStringArray *fileNames,
+  const vtkDICOMItem& patientRecord,
+  const vtkDICOMItem& studyRecord,
+  const vtkDICOMItem& seriesRecord)
+{
+  const vtkDICOMItem *record[3] = {
+    &patientRecord, &studyRecord, &seriesRecord
+  };
+
+  bool matched = true;
+  if (this->Query)
+    {
+    for (int k = 0; k < 3 && matched; k++)
+      {
+      vtkDICOMDataElementIterator iter;
+      for (iter = record[k]->Begin(); iter != record[k]->End(); ++iter)
+        {
+        const vtkDICOMValue& v =
+          this->Query->GetAttributeValue(iter->GetTag());
+        if (v.IsValid() && !iter->GetValue().Matches(v))
+          {
+          matched = false;
+          break;
+          }
+        }
+      }
+    }
+
+  if (matched)
+    {
+    for (vtkIdType i = 0; i < fileNames->GetNumberOfValues(); i++)
+      {
+      files->InsertNextValue(fileNames->GetValue(i));
+      }
+    }
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMDirectory::AddSeriesFileNames(
   int patient, int study, vtkStringArray *files,
   const vtkDICOMItem& patientRecord,
@@ -909,10 +948,9 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
           if (files)
             {
             // Add series to the provided list of filenames
-            for (vtkIdType i = 0; i < fileNames->GetNumberOfValues(); i++)
-              {
-              files->InsertNextValue(fileNames->GetValue(i));
-              }
+            this->AddSeriesForQuery(
+              files, fileNames,
+              items[patientItem], items[studyItem], items[seriesItem]);
             }
           else
             {
