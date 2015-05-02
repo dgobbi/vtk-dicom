@@ -137,6 +137,7 @@ vtkDICOMDirectory::vtkDICOMDirectory()
   this->FollowSymlinks = 1;
   this->ScanDepth = 1;
   this->Query = 0;
+  this->FindLevel = vtkDICOMDirectory::IMAGE;
 }
 
 //----------------------------------------------------------------------------
