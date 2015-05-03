@@ -16,7 +16,6 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMItem.h"
 #include "vtkDICOMDataElement.h"
-#include "vtkDICOMParser.h"
 #include "vtkDICOMMetaData.h"
 
 // from dicomcli
