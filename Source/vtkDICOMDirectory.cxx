@@ -842,7 +842,6 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
   vtkSQLQuery *q = dbase->GetQueryInstance();
   vtkSQLQuery *qs = dbase->GetQueryInstance();
   vtkSQLQuery *qi = dbase->GetQueryInstance();
-  vtkDICOMItem seriesItem;
 
   enum {
     ST_PK,ST_DATE,ST_DATEOFBIRTH,ST_MODALITY,ST_NAME,
@@ -937,13 +936,13 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
       SE_SERIESDICOMUID,SE_SERIESDESCRIPTION
     };
 
-    std::string qstring =
+    std::string seriesQuery =
       "select Z_PK,ZID,ZDATE,ZSERIESSOPCLASSUID,ZMODALITY,ZNAME,"
       "ZSERIESDICOMUID,ZSERIESDESCRIPTION from ZSERIES"
       " where ZSTUDY is \"" + zstudy + "\""
       " order by ZID";
 
-    if (!qs->SetQuery(qstring.c_str()) || !qs->Execute())
+    if (!qs->SetQuery(seriesQuery.c_str()) || !qs->Execute())
       {
       vtkErrorMacro("Badly structured ZSERIES table: " << fname);
       q->Delete();
@@ -985,12 +984,12 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
         DC::Modality, qs->DataValue(SE_MODALITY).ToString());
 
       enum { ZFRAMEID, ZPATHNUMBER, ZPATHSTRING };
-      std::string qstring =
+      std::string imageQuery =
         "select ZFRAMEID,ZPATHNUMBER,ZPATHSTRING from ZIMAGE"
         " where ZSERIES is \"" + zseries + "\""
         " order by ZINSTANCENUMBER";
 
-      if (!qi->SetQuery(qstring.c_str()) || !qi->Execute())
+      if (!qi->SetQuery(imageQuery.c_str()) || !qi->Execute())
         {
         vtkErrorMacro("Badly structured ZIMAGE table: " << fname);
         q->Delete();
