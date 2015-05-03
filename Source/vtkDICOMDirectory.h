@@ -234,6 +234,9 @@ protected:
   void ProcessDirectory(
     const char *dirname, int depth, vtkStringArray *files);
 
+  //! Process an OsiriX sqlite database file.
+  void ProcessOsirixDatabase(const char *fname, vtkStringArray *files);
+
 private:
   vtkDICOMDirectory(const vtkDICOMDirectory&);  // Not implemented.
   void operator=(const vtkDICOMDirectory&);  // Not implemented.

@@ -27,6 +27,9 @@
 #include <vtkCommand.h>
 #include <vtkUnsignedShortArray.h>
 
+#include <vtkSQLiteDatabase.h>
+#include <vtkSQLQuery.h>
+
 #include <string>
 #include <vector>
 #include <list>
@@ -804,6 +807,244 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMDirectory::ProcessOsirixDatabase(
+  const char *fname, vtkStringArray *files)
+{
+  // Open the database
+  vtkSmartPointer<vtkSQLiteDatabase> dbase =
+    vtkSmartPointer<vtkSQLiteDatabase>::New();
+  dbase->SetDatabaseFileName(fname);
+  if (!dbase->Open("", vtkSQLiteDatabase::USE_EXISTING))
+    {
+    vtkErrorMacro("Unable to open database file " << fname);
+    return;
+    }
+
+  // Make sure this is an OsiriX database file.
+  vtkStringArray *tables = dbase->GetTables();
+  int count = 0;
+  for (vtkIdType i = 0; i < tables->GetNumberOfValues(); i++)
+    {
+    std::string s = tables->GetValue(i);
+    count += (s == "ZSTUDY" || s == "ZSERIES" || s == "ZIMAGE");
+    }
+  if (count != 3)
+    {
+    return;
+    }
+
+  // Path broken into components.
+  std::vector<std::string> path;
+  vtksys::SystemTools::SplitPath(fname, path);
+  path.pop_back();
+  path.push_back("DATABASE.noindex");
+
+  vtkSQLQuery *q = dbase->GetQueryInstance();
+  vtkSQLQuery *qs = dbase->GetQueryInstance();
+  vtkSQLQuery *qi = dbase->GetQueryInstance();
+  vtkDICOMItem seriesItem;
+
+  enum {
+    ST_PK,ST_DATE,ST_DATEOFBIRTH,ST_MODALITY,ST_NAME,
+    ST_INSTITUTIONNAME,ST_STUDYNAME,ST_ID,ST_STUDYINSTANCEUID,
+    ST_ACCESSIONNUMBER,ST_PATIENTSEX,ST_PATIENTID
+  };
+
+  if (!q->SetQuery("select Z_PK,ZDATE,ZDATEOFBIRTH,ZMODALITY,ZNAME,"
+                   "ZINSTITUTIONNAME,ZSTUDYNAME,ZID,ZSTUDYINSTANCEUID,"
+                   "ZACCESSIONNUMBER,ZPATIENTSEX,ZPATIENTID from ZSTUDY"
+                   " order by ZDATE") ||
+      !q->Execute())
+    {
+    vtkErrorMacro("Badly structured ZSTUDY table: " << fname);
+    q->Delete();
+    qs->Delete();
+    qi->Delete();
+    return;
+    }
+
+  while (q->NextRow())
+    {
+    vtkDICOMItem patientItem;
+    vtkDICOMItem studyItem;
+    std::string zstudy = q->DataValue(ST_PK).ToString();
+    std::string name = q->DataValue(ST_NAME).ToString();
+    std::replace(name.begin(), name.end(), ' ', '^');
+    std::string patientID = q->DataValue(ST_NAME).ToString();
+
+    // Seconds between our time base and database time base
+    const double timediff = 978307200.0;
+    double studySeconds = q->DataValue(ST_DATE).ToDouble();
+    double birthSeconds = q->DataValue(ST_DATEOFBIRTH).ToDouble();
+    std::string studyDT = vtkDICOMUtilities::GenerateDateTime(
+      static_cast<long long>((studySeconds + timediff)*1e6), NULL);
+    std::string birthDT = vtkDICOMUtilities::GenerateDateTime(
+      static_cast<long long>((birthSeconds + timediff)*1e6), NULL);
+
+    patientItem.SetAttributeValue(
+      DC::SpecificCharacterSet, vtkDICOMCharacterSet::ISO_IR_192);
+    patientItem.SetAttributeValue(DC::PatientName, name);
+    patientItem.SetAttributeValue(DC::PatientID, patientID);
+    patientItem.SetAttributeValue(DC::PatientBirthDate, birthDT.substr(0, 8));
+    patientItem.SetAttributeValue(
+      DC::PatientSex, q->DataValue(ST_PATIENTSEX).ToString());
+
+    studyItem.SetAttributeValue(
+      DC::SpecificCharacterSet, vtkDICOMCharacterSet::ISO_IR_192);
+    studyItem.SetAttributeValue(
+      DC::StudyDescription, q->DataValue(ST_STUDYNAME).ToString());
+    studyItem.SetAttributeValue(
+      DC::StudyID, q->DataValue(ST_ID).ToString());
+    studyItem.SetAttributeValue(
+      DC::StudyInstanceUID, q->DataValue(ST_STUDYINSTANCEUID).ToString());
+    studyItem.SetAttributeValue(
+      DC::InstitutionName, q->DataValue(ST_INSTITUTIONNAME).ToString());
+    studyItem.SetAttributeValue(
+      DC::AccessionNumber, q->DataValue(ST_ACCESSIONNUMBER).ToString());
+    studyItem.SetAttributeValue(DC::StudyDate, studyDT.substr(0,8));
+    studyItem.SetAttributeValue(DC::StudyTime, studyDT.substr(8,13));
+
+    int studyIdx = this->GetNumberOfStudies();
+    int patientIdx;
+    int firstUnusedPatientIdx = this->GetNumberOfPatients();
+    // Loop until corrent patientIdx is found
+    for (patientIdx = 0; patientIdx < firstUnusedPatientIdx; patientIdx++)
+      {
+      const vtkDICOMItem& pitem = this->GetPatientRecord(patientIdx);
+      const vtkDICOMValue& vid = pitem.GetAttributeValue(DC::PatientID);
+      if (vid.IsValid() && vid.GetVL() > 0)
+        {
+        if (patientID.length() > 0 && vid.Matches(patientID.c_str()))
+          {
+          break;
+          }
+        }
+      else // Use PatientName if PatientID is empty
+        {
+        const vtkDICOMValue& vna = pitem.GetAttributeValue(DC::PatientName);
+        if (vna.IsValid() && vna.GetVL() > 0)
+          {
+          if (name.length() > 0 && vna.Matches(name.c_str()))
+            {
+            break;
+            }
+          }
+        }
+      }
+
+    enum {
+      SE_PK,SE_ID,SE_DATE,SE_SERIESSOPCLASSUID,SE_MODALITY,SE_NAME,
+      SE_SERIESDICOMUID,SE_SERIESDESCRIPTION
+    };
+
+    std::string qstring =
+      "select Z_PK,ZID,ZDATE,ZSERIESSOPCLASSUID,ZMODALITY,ZNAME,"
+      "ZSERIESDICOMUID,ZSERIESDESCRIPTION from ZSERIES"
+      " where ZSTUDY is \"" + zstudy + "\""
+      " order by ZID";
+
+    if (!qs->SetQuery(qstring.c_str()) || !qs->Execute())
+      {
+      vtkErrorMacro("Badly structured ZSERIES table: " << fname);
+      q->Delete();
+      qs->Delete();
+      qi->Delete();
+      return;
+      }
+
+    while (qs->NextRow())
+      {
+      vtkDICOMItem seriesItem;
+      std::string zseries = qs->DataValue(SE_PK).ToString();
+      double seriesSeconds = qs->DataValue(SE_DATE).ToDouble();
+      std::string seriesDT = vtkDICOMUtilities::GenerateDateTime(
+        static_cast<long long>((seriesSeconds + timediff)*1e6), NULL);
+      std::string seriesUID = qs->DataValue(SE_SERIESDICOMUID).ToString();
+      // Remove anything before the UID
+      size_t k = 0;
+      while (k < seriesUID.length() &&
+             (seriesUID[k] <= '0' || seriesUID[k] >= '9'))
+        {
+        k++;
+        }
+      if (k > 0)
+        {
+        seriesUID = seriesUID.substr(k, seriesUID.length()-k);
+        }
+
+      seriesItem.SetAttributeValue(
+        DC::SpecificCharacterSet, vtkDICOMCharacterSet::ISO_IR_192);
+      seriesItem.SetAttributeValue(
+        DC::SeriesDescription, qs->DataValue(SE_SERIESDESCRIPTION).ToString());
+      seriesItem.SetAttributeValue(
+        DC::SeriesNumber, qs->DataValue(SE_ID).ToString());
+      seriesItem.SetAttributeValue(DC::SeriesInstanceUID, seriesUID);
+      seriesItem.SetAttributeValue(DC::SeriesDate, seriesDT.substr(0,8));
+      seriesItem.SetAttributeValue(DC::SeriesTime, seriesDT.substr(8,13));
+      seriesItem.SetAttributeValue(
+        DC::Modality, qs->DataValue(SE_MODALITY).ToString());
+
+      enum { ZFRAMEID, ZPATHNUMBER, ZPATHSTRING };
+      std::string qstring =
+        "select ZFRAMEID,ZPATHNUMBER,ZPATHSTRING from ZIMAGE"
+        " where ZSERIES is \"" + zseries + "\""
+        " order by ZINSTANCENUMBER";
+
+      if (!qi->SetQuery(qstring.c_str()) || !qi->Execute())
+        {
+        vtkErrorMacro("Badly structured ZIMAGE table: " << fname);
+        q->Delete();
+        qs->Delete();
+        qi->Delete();
+        return;
+        }
+
+      vtkSmartPointer<vtkStringArray> fileNames =
+        vtkSmartPointer<vtkStringArray>::New();
+
+      std::string lastpath;
+      while (qi->NextRow())
+        {
+        std::string fpath = qi->DataValue(ZPATHSTRING).ToString();
+        if (fpath.length() == 0)
+          {
+          path.push_back("10000");
+          path.push_back(
+            qi->DataValue(ZPATHNUMBER).ToString() + ".dcm");
+          fpath = vtksys::SystemTools::JoinPath(path);
+          path.pop_back();
+          path.pop_back();
+          }
+        if (fpath != lastpath)
+          {
+          fileNames->InsertNextValue(fpath);
+          lastpath = fpath;
+          }
+        }
+
+      if (this->Query)
+        {
+        // Add series to the provided list of filenames
+        this->AddSeriesForQuery(
+          files, fileNames,
+          patientItem, studyItem, seriesItem);
+        }
+      else
+        {
+        // Directly add the series to "this"
+        this->AddSeriesFileNames(
+          patientIdx, studyIdx, fileNames,
+          patientItem, studyItem, seriesItem);
+        }
+      }
+    }
+
+  q->Delete();
+  qs->Delete();
+  qi->Delete();
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMDirectory::ProcessDirectoryFile(
   const char *dirname, vtkDICOMMetaData *meta, vtkStringArray *files)
 {
@@ -1122,6 +1363,10 @@ void vtkDICOMDirectory::Execute()
       if (vtksys::SystemTools::FileIsDirectory(fname.c_str()))
         {
         this->ProcessDirectory(fname.c_str(), this->ScanDepth, files);
+        }
+      else if (vtkDICOMUtilities::PatternMatches("*.sql", fname.c_str()))
+        {
+        this->ProcessOsirixDatabase(fname.c_str(), files);
         }
       else if (this->FilePattern == 0 || this->FilePattern[0] == '\0' ||
                vtkDICOMUtilities::PatternMatches(

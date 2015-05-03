@@ -190,14 +190,14 @@ set(DICOM_LIBRARIES vtkDICOM)
 # The library dependencies
 set(KWSYS_LIBS vtksys)
 if("${VTK_MAJOR_VERSION}" GREATER 5)
-  set(VTK_LIBS vtkCommonCore vtkCommonDataModel vtkImagingCore vtkIOImage)
+  set(VTK_LIBS vtkCommonCore vtkCommonDataModel vtkImagingCore vtkIOImage vtkIOSQL)
   # If vtkIOMPIImage is present, it has factories for vtkIOImage
   list(FIND VTK_LIBRARIES vtkIOMPIImage TMP_INDEX)
   if(TMP_INDEX GREATER -1)
     set(VTK_LIBS ${VTK_LIBS} vtkIOMPIImage)
   endif()
 else()
-  set(VTK_LIBS vtkCommon vtkFiltering vtkImaging vtkIO) # VTK 5.x
+  set(VTK_LIBS vtkCommon vtkFiltering vtkImaging vtkIO vtkInfovis) # VTK 5.x
 endif()
 
 # For the python wrappers
