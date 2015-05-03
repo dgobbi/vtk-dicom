@@ -31,6 +31,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <limits>
 #include <iostream>
 
 // print the version
@@ -358,6 +359,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
 MAINMACRO(argc, argv)
 {
   int rval = 0;
+  int scandepth = std::numeric_limits<int>::max();
   QueryTagList qtlist;
   vtkDICOMItem query;
   std::vector<std::string> oplist;
@@ -481,12 +483,12 @@ MAINMACRO(argc, argv)
   osp->flush();
 
   // Write data for every input directory
-  for (vtkIdType i = 0; i < a->GetNumberOfTuples(); i++)
+  if (a->GetNumberOfTuples() > 0)
     {
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
-    finder->SetDirectoryName(a->GetValue(i));
-    finder->SetScanDepth(8);
+    finder->SetInputFileNames(a);
+    finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
     finder->Update();
 
