@@ -199,18 +199,8 @@ protected:
     const vtkDICOMItem& studyRecord,
     const vtkDICOMItem& seriesRecord);
 
-  //! Add a series for querying.
-  /*!
-   *  This method is called for a series for which some of the
-   *  meta data is already known, e.g. because it was listed in
-   *  a dicomdir file.  If the records match the current query,
-   *  then the series file names will be added to "outfiles".
-   */
-  void AddSeriesForQuery(
-    vtkStringArray *outFiles, vtkStringArray *seriesFiles,
-    const vtkDICOMItem& patientRecord,
-    const vtkDICOMItem& studyRecord,
-    const vtkDICOMItem& seriesRecord);
+  //! Returns false if the record doesn't match the query.
+  bool MatchesQuery(const vtkDICOMItem& record);
 
   //! Convert parser errors into sorter errors.
   void RelayError(vtkObject *o, unsigned long e, void *data);

@@ -355,42 +355,26 @@ vtkStringArray *vtkDICOMDirectory::GetFileNamesForSeries(int i)
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMDirectory::AddSeriesForQuery(
-  vtkStringArray *files, vtkStringArray *fileNames,
-  const vtkDICOMItem& patientRecord,
-  const vtkDICOMItem& studyRecord,
-  const vtkDICOMItem& seriesRecord)
+bool vtkDICOMDirectory::MatchesQuery(const vtkDICOMItem& record)
 {
-  const vtkDICOMItem *record[3] = {
-    &patientRecord, &studyRecord, &seriesRecord
-  };
-
   bool matched = true;
+
   if (this->Query)
     {
-    for (int k = 0; k < 3 && matched; k++)
+    vtkDICOMDataElementIterator iter;
+    for (iter = record.Begin(); iter != record.End(); ++iter)
       {
-      vtkDICOMDataElementIterator iter;
-      for (iter = record[k]->Begin(); iter != record[k]->End(); ++iter)
+      const vtkDICOMValue& v =
+        this->Query->GetAttributeValue(iter->GetTag());
+      if (v.IsValid() && !iter->GetValue().Matches(v))
         {
-        const vtkDICOMValue& v =
-          this->Query->GetAttributeValue(iter->GetTag());
-        if (v.IsValid() && !iter->GetValue().Matches(v))
-          {
-          matched = false;
-          break;
-          }
+        matched = false;
+        break;
         }
       }
     }
 
-  if (matched)
-    {
-    for (vtkIdType i = 0; i < fileNames->GetNumberOfValues(); i++)
-      {
-      files->InsertNextValue(fileNames->GetValue(i));
-      }
-    }
+  return matched;
 }
 
 //----------------------------------------------------------------------------
@@ -888,6 +872,11 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
     patientItem.SetAttributeValue(
       DC::PatientSex, q->DataValue(ST_PATIENTSEX).ToString());
 
+    if (!this->MatchesQuery(patientItem))
+      {
+      continue;
+      }
+
     studyItem.SetAttributeValue(
       DC::SpecificCharacterSet, vtkDICOMCharacterSet::ISO_IR_192);
     studyItem.SetAttributeValue(
@@ -902,6 +891,11 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
       DC::AccessionNumber, q->DataValue(ST_ACCESSIONNUMBER).ToString());
     studyItem.SetAttributeValue(DC::StudyDate, studyDT.substr(0,8));
     studyItem.SetAttributeValue(DC::StudyTime, studyDT.substr(8,13));
+
+    if (!this->MatchesQuery(studyItem))
+      {
+      continue;
+      }
 
     int studyIdx = this->GetNumberOfStudies();
     int patientIdx;
@@ -983,6 +977,11 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
       seriesItem.SetAttributeValue(
         DC::Modality, qs->DataValue(SE_MODALITY).ToString());
 
+      if (!this->MatchesQuery(seriesItem))
+        {
+        continue;
+        }
+
       enum { ZFRAMEID, ZPATHNUMBER, ZPATHSTRING };
       std::string imageQuery =
         "select ZFRAMEID,ZPATHNUMBER,ZPATHSTRING from ZIMAGE"
@@ -1024,9 +1023,10 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
       if (this->Query)
         {
         // Add series to the provided list of filenames
-        this->AddSeriesForQuery(
-          files, fileNames,
-          patientItem, studyItem, seriesItem);
+        for (vtkIdType i = 0; i < fileNames->GetNumberOfValues(); i++)
+          {
+          files->InsertNextValue(fileNames->GetValue(i));
+          }
         }
       else
         {
@@ -1188,9 +1188,15 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
           if (files)
             {
             // Add series to the provided list of filenames
-            this->AddSeriesForQuery(
-              files, fileNames,
-              items[patientItem], items[studyItem], items[seriesItem]);
+            if (this->MatchesQuery(items[patientItem]) &&
+                this->MatchesQuery(items[studyItem]) &&
+                this->MatchesQuery(items[seriesItem]))
+              {
+              for (vtkIdType i = 0; i < fileNames->GetNumberOfValues(); i++)
+                {
+                files->InsertNextValue(fileNames->GetValue(i));
+                }
+              }
             }
           else
             {
