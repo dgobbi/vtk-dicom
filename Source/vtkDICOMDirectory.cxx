@@ -415,7 +415,7 @@ void vtkDICOMDirectory::AddSeriesFileNames(
     item.Studies = vtkSmartPointer<vtkIntArray>::New();
     item.Studies->InsertNextValue(study);
     }
-  else if (m >= 0 && patient == m-1)
+  else if (m >= 0 && patient <= m-1)
     {
     PatientItem& item = (*this->Patients)[patient];
     vtkIdType nn = item.Studies->GetMaxId() + 1;
@@ -1006,9 +1006,12 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
         std::string fpath = qi->DataValue(ZPATHSTRING).ToString();
         if (fpath.length() == 0)
           {
-          path.push_back("10000");
-          path.push_back(
-            qi->DataValue(ZPATHNUMBER).ToString() + ".dcm");
+          vtkTypeInt64 fnum = qi->DataValue(ZPATHNUMBER).ToTypeInt64();
+          vtkTypeInt64 dnum = (fnum/10000 + 1)*10000;
+          vtkVariant fv(fnum);
+          vtkVariant dv(dnum);
+          path.push_back(dv.ToString());
+          path.push_back(fv.ToString() + ".dcm");
           fpath = vtksys::SystemTools::JoinPath(path);
           path.pop_back();
           path.pop_back();
