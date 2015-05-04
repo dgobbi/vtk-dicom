@@ -371,7 +371,8 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
         if (p)
           {
           count += numberOfFiles;
-          double progress = count/total;
+          double progress = (static_cast<double>(count)/
+                             static_cast<double>(total));
           p->Execute(NULL, vtkCommand::ProgressEvent, &progress);
           }
         }
@@ -434,8 +435,9 @@ void ProgressObserver::Execute(vtkObject *, unsigned long e, void *vp)
         {
         if (progress == 0)
           {
+          const char *dots[] = { ".  ", ".. ", "..." };
           this->Anim = (this->Anim + 1) % 3;
-          std::cout << "\r" << this->Text << (&"..."[this->Anim]);
+          std::cout << "\r" << this->Text << dots[this->Anim];
           std::cout.flush();
           this->LastTime = t;
           }
