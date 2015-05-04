@@ -174,8 +174,20 @@ std::string dicomtocsv_quote(const std::string& s)
 // Write out the results in csv format
 void dicomtocsv_write(vtkDICOMDirectory *finder,
   const vtkDICOMItem& query, const QueryTagList *ql, std::ostream& os,
-  int level, bool firstNonZero)
+  int level, bool firstNonZero, vtkCommand *p)
 {
+  // for keeping track of progress
+  vtkIdType count = 0.0;
+  vtkIdType total = 0.0;
+  if (p)
+    {
+    for (int k = 0; k < finder->GetNumberOfSeries(); k++)
+      {
+      total += finder->GetFileNamesForSeries(k)->GetNumberOfValues();
+      }
+    p->Execute(NULL, vtkCommand::StartEvent, NULL);
+    }
+
   for (int j = 0; j < finder->GetNumberOfStudies(); j++)
     {
     int k0 = finder->GetFirstSeriesForStudy(j);
@@ -354,8 +366,21 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
           }
 
         os << "\r\n";
+
+        // report progress
+        if (p)
+          {
+          count += numberOfFiles;
+          double progress = count/total;
+          p->Execute(NULL, vtkCommand::ProgressEvent, &progress);
+          }
         }
       }
+    }
+
+  if (p)
+    {
+    p->Execute(NULL, vtkCommand::EndEvent, NULL);
     }
 }
 
@@ -367,19 +392,23 @@ public:
   vtkTypeMacro(ProgressObserver,vtkCommand);
   virtual void Execute(
     vtkObject *caller, unsigned long eventId, void *callData);
+  void SetText(const char *text) { this->Text = text; }
 protected:
-  ProgressObserver() : Stage(0), Anim(0), LastTime(0), Delta(0.2) {}
+  ProgressObserver() : Stage(0), Anim(0), LastTime(0), Text("") {}
   ProgressObserver(const ProgressObserver& c) : vtkCommand(c) {}
   void operator=(const ProgressObserver&) {}
   int Stage;
   int Anim;
   double LastTime;
-  double Delta;
+  const char *Text;
 };
 
 void ProgressObserver::Execute(vtkObject *, unsigned long e, void *vp)
 {
+  const double initial = 2.0; // time until first report
+  const double delta = 0.1; // time between reports
   double t = vtkTimerLog::GetUniversalTime();
+
   if (e == vtkCommand::StartEvent)
     {
     this->LastTime = t;
@@ -393,25 +422,25 @@ void ProgressObserver::Execute(vtkObject *, unsigned long e, void *vp)
 
     if (this->Stage == 0)
       {
-      if (t - this->LastTime > 2.0)
+      if (t - this->LastTime > initial)
         {
         this->Stage = 1;
         }
       }
-    if (t - this->LastTime > this->Delta)
+    if (t - this->LastTime > delta)
       {
       if (this->Stage == 1)
         {
         if (progress == 0)
           {
           this->Anim = (this->Anim + 1) % 3;
-          std::cout << "\rScanning" << (&"..."[this->Anim]); 
+          std::cout << "\r" << this->Text << (&"..."[this->Anim]);
           std::cout.flush();
           this->LastTime = t;
           }
         else
           {
-          std::cout << "\rScanning " << progress << "%";
+          std::cout << "\r" << this->Text << " " << progress << "%";
           std::cout.flush();
           this->LastTime = t;
           }
@@ -422,7 +451,7 @@ void ProgressObserver::Execute(vtkObject *, unsigned long e, void *vp)
     {
     if (this->Stage > 0)
       {
-      std::cout << "\rScanning 100%";
+      std::cout << "\r" << this->Text << " 100%";
       std::cout << std::endl;
       }
     }
@@ -567,6 +596,7 @@ MAINMACRO(argc, argv)
     if (ofile)
       {
       p = vtkSmartPointer<ProgressObserver>::New();
+      p->SetText("Scanning");
       finder->AddObserver(vtkCommand::ProgressEvent, p);
       finder->AddObserver(vtkCommand::StartEvent, p);
       finder->AddObserver(vtkCommand::EndEvent, p);
@@ -576,7 +606,12 @@ MAINMACRO(argc, argv)
     finder->SetFindQuery(query);
     finder->Update();
 
-    dicomtocsv_write(finder, query, &qtlist, *osp, level, firstNonZero);
+    if (ofile)
+      {
+      p->SetText("Writing");
+      }
+    dicomtocsv_write(
+      finder, query, &qtlist, *osp, level, firstNonZero, p);
 
     osp->flush();
     }
