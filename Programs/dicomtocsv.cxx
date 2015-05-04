@@ -424,6 +424,7 @@ void ProgressObserver::Execute(vtkObject *, unsigned long e, void *vp)
       {
       if (t - this->LastTime > initial)
         {
+        std::cout << "\r                                   ";
         this->Stage = 1;
         }
       }
