@@ -1357,6 +1357,8 @@ void vtkDICOMDirectory::Execute()
   this->FileSetID = 0;
   this->ErrorCode = 0;
 
+  this->InvokeEvent(vtkCommand::StartEvent);
+
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();
 
@@ -1418,6 +1420,8 @@ void vtkDICOMDirectory::Execute()
     {
     this->SortFiles(files);
     }
+
+  this->InvokeEvent(vtkCommand::EndEvent);
 }
 
 //----------------------------------------------------------------------------

@@ -24,6 +24,8 @@
 #include "mainmacro.h"
 #include "readquery.h"
 
+#include <vtkCommand.h>
+#include <vtkTimerLog.h>
 #include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
 
@@ -33,6 +35,8 @@
 
 #include <limits>
 #include <iostream>
+
+namespace {
 
 // print the version
 void dicomtocsv_version(FILE *file, const char *cp)
@@ -355,6 +359,77 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
     }
 }
 
+// Capture progress events
+class ProgressObserver : public vtkCommand
+{
+public:
+  static ProgressObserver *New() { return new ProgressObserver; }
+  vtkTypeMacro(ProgressObserver,vtkCommand);
+  virtual void Execute(
+    vtkObject *caller, unsigned long eventId, void *callData);
+protected:
+  ProgressObserver() : Stage(0), Anim(0), LastTime(0), Delta(0.2) {}
+  ProgressObserver(const ProgressObserver& c) : vtkCommand(c) {}
+  void operator=(const ProgressObserver&) {}
+  int Stage;
+  int Anim;
+  double LastTime;
+  double Delta;
+};
+
+void ProgressObserver::Execute(vtkObject *, unsigned long e, void *vp)
+{
+  double t = vtkTimerLog::GetUniversalTime();
+  if (e == vtkCommand::StartEvent)
+    {
+    this->LastTime = t;
+    this->Stage = 0;
+    this->Anim = 0;
+    }
+  else if (e == vtkCommand::ProgressEvent)
+    {
+    double *dp = static_cast<double *>(vp);
+    int progress = static_cast<int>((*dp)*100.0 + 0.5);
+
+    if (this->Stage == 0)
+      {
+      if (t - this->LastTime > 2.0)
+        {
+        this->Stage = 1;
+        }
+      }
+    if (t - this->LastTime > this->Delta)
+      {
+      if (this->Stage == 1)
+        {
+        if (progress == 0)
+          {
+          this->Anim = (this->Anim + 1) % 3;
+          std::cout << "\rScanning" << (&"..."[this->Anim]); 
+          std::cout.flush();
+          this->LastTime = t;
+          }
+        else
+          {
+          std::cout << "\rScanning " << progress << "%";
+          std::cout.flush();
+          this->LastTime = t;
+          }
+        }
+      }
+    }
+  else if (e == vtkCommand::EndEvent)
+    {
+    if (this->Stage > 0)
+      {
+      std::cout << "\rScanning 100%";
+      std::cout << std::endl;
+      }
+    }
+}
+
+} // end anonymous namespace
+
 // This program will dump all the metadata in the given file
 MAINMACRO(argc, argv)
 {
@@ -485,8 +560,17 @@ MAINMACRO(argc, argv)
   // Write data for every input directory
   if (a->GetNumberOfTuples() > 0)
     {
+    vtkSmartPointer<ProgressObserver> p;
+
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
+    if (ofile)
+      {
+      p = vtkSmartPointer<ProgressObserver>::New();
+      finder->AddObserver(vtkCommand::ProgressEvent, p);
+      finder->AddObserver(vtkCommand::StartEvent, p);
+      finder->AddObserver(vtkCommand::EndEvent, p);
+      }
     finder->SetInputFileNames(a);
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
