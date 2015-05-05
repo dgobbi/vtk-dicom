@@ -1044,7 +1044,9 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
       seriesItem.SetAttributeValue(
         DC::SpecificCharacterSet, vtkDICOMCharacterSet::ISO_IR_192);
       seriesItem.SetAttributeValue(
-        DC::SeriesDescription, se->col[SE_SERIESDESCRIPTION].ToString());
+        DC::SeriesDescription, se->col[SE_NAME].ToString());
+      seriesItem.SetAttributeValue(
+        DC::ProtocolName, se->col[SE_SERIESDESCRIPTION].ToString());
       seriesItem.SetAttributeValue(
         DC::SeriesNumber, se->col[SE_ID].ToString());
       seriesItem.SetAttributeValue(DC::SeriesInstanceUID, seriesUID);
