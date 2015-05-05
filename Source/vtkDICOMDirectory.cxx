@@ -791,6 +791,16 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 }
 
 //----------------------------------------------------------------------------
+namespace {
+
+// Trivial structs needed by ProcessOsirixDatabase
+struct StudyRow { vtkVariant col[12]; };
+struct SeriesRow { vtkVariant col[8]; };
+struct ImageRow { vtkVariant col[4]; };
+
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMDirectory::ProcessOsirixDatabase(
   const char *fname, vtkStringArray *files)
 {
@@ -817,22 +827,38 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
     return;
     }
 
-  // Path broken into components.
+  // Create the path to DATABASE.noindex, where .dcm files are stored
   std::vector<std::string> path;
   vtksys::SystemTools::SplitPath(fname, path);
   path.pop_back();
   path.push_back("DATABASE.noindex");
 
   vtkSQLQuery *q = dbase->GetQueryInstance();
-  vtkSQLQuery *qs = dbase->GetQueryInstance();
-  vtkSQLQuery *qi = dbase->GetQueryInstance();
 
+  // Indices to columns in the study table
   enum {
-    ST_PK,ST_DATE,ST_DATEOFBIRTH,ST_MODALITY,ST_NAME,
-    ST_INSTITUTIONNAME,ST_STUDYNAME,ST_ID,ST_STUDYINSTANCEUID,
-    ST_ACCESSIONNUMBER,ST_PATIENTSEX,ST_PATIENTID
+    ST_PK, ST_DATE, ST_DATEOFBIRTH, ST_MODALITY, ST_NAME,
+    ST_INSTITUTIONNAME, ST_STUDYNAME, ST_ID, ST_STUDYINSTANCEUID,
+    ST_ACCESSIONNUMBER, ST_PATIENTSEX, ST_PATIENTID, ST_NCOLS
   };
 
+  // Indices to columns in the series table
+  enum {
+    SE_PK, SE_ID, SE_DATE, SE_SERIESSOPCLASSUID, SE_MODALITY,
+    SE_NAME, SE_SERIESDICOMUID, SE_SERIESDESCRIPTION, SE_NCOLS
+  };
+
+  // Indices to columns in the image table
+  enum {
+    IM_INSTANCENUMBER, IM_FRAMEID, IM_PATHNUMBER, IM_PATHSTRING, IM_NCOLS
+  };
+
+  // These vectors will hold the tables
+  std::vector<StudyRow> studyTable;
+  std::vector<SeriesRow> seriesTable;
+  std::vector<ImageRow> imageTable;
+
+  // Read the study table
   if (!q->SetQuery("select Z_PK,ZDATE,ZDATEOFBIRTH,ZMODALITY,ZNAME,"
                    "ZINSTITUTIONNAME,ZSTUDYNAME,ZID,ZSTUDYINSTANCEUID,"
                    "ZACCESSIONNUMBER,ZPATIENTSEX,ZPATIENTID from ZSTUDY"
@@ -841,24 +867,80 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
     {
     vtkErrorMacro("Badly structured ZSTUDY table: " << fname);
     q->Delete();
-    qs->Delete();
-    qi->Delete();
     return;
     }
 
   while (q->NextRow())
     {
+    studyTable.push_back(StudyRow());
+    StudyRow *row = &studyTable.back();
+    for (int k = 0; k < ST_NCOLS; k++)
+      {
+      row->col[k] = q->DataValue(k);
+      }
+    }
+
+  // Read the series table
+  if (!q->SetQuery("select Z_PK,ZID,ZDATE,ZSERIESSOPCLASSUID,"
+                   "ZMODALITY,ZNAME,ZSERIESDICOMUID,ZSERIESDESCRIPTION,"
+                   "ZSTUDY from ZSERIES order by ZSTUDY,ZID") ||
+      !q->Execute())
+    {
+    vtkErrorMacro("Badly structured ZSERIES table: " << fname);
+    q->Delete();
+    return;
+    }
+
+  std::vector<vtkTypeInt64> zseriesVec;
+  while (q->NextRow())
+    {
+    seriesTable.push_back(SeriesRow());
+    SeriesRow *row = &seriesTable.back();
+    for (int k = 0; k < SE_NCOLS; k++)
+      {
+      row->col[k] = q->DataValue(k);
+      }
+    zseriesVec.push_back(q->DataValue(SE_NCOLS).ToTypeInt64());
+    }
+
+  // Read the image table
+  if (!q->SetQuery("select ZINSTANCENUMBER,ZFRAMEID,ZPATHNUMBER,"
+                   "ZPATHSTRING,ZSERIES from ZIMAGE order by"
+                   " ZSERIES,ZINSTANCENUMBER") ||
+      !q->Execute())
+    {
+    vtkErrorMacro("Badly structured IMAGE table: " << fname);
+    q->Delete();
+    return;
+    }
+
+  std::vector<vtkTypeInt64> zimageVec;
+  while (q->NextRow())
+    {
+    imageTable.push_back(ImageRow());
+    ImageRow *row = &imageTable.back();
+    for (int k = 0; k < IM_NCOLS; k++)
+      {
+      row->col[k] = q->DataValue(k);
+      }
+    zimageVec.push_back(q->DataValue(IM_NCOLS).ToTypeInt64());
+    }
+
+  // Go through all of the studies
+  for (std::vector<StudyRow>::iterator st = studyTable.begin();
+       st != studyTable.end(); ++st)
+    {
     vtkDICOMItem patientItem;
     vtkDICOMItem studyItem;
-    std::string zstudy = q->DataValue(ST_PK).ToString();
-    std::string name = q->DataValue(ST_NAME).ToString();
+    vtkTypeInt64 zstudy = st->col[ST_PK].ToTypeInt64();
+    std::string name = st->col[ST_NAME].ToString();
     std::replace(name.begin(), name.end(), ' ', '^');
-    std::string patientID = q->DataValue(ST_NAME).ToString();
+    std::string patientID = st->col[ST_NAME].ToString();
 
     // Seconds between our time base and database time base
     const double timediff = 978307200.0;
-    double studySeconds = q->DataValue(ST_DATE).ToDouble();
-    double birthSeconds = q->DataValue(ST_DATEOFBIRTH).ToDouble();
+    double studySeconds = st->col[ST_DATE].ToDouble();
+    double birthSeconds = st->col[ST_DATEOFBIRTH].ToDouble();
     std::string studyDT = vtkDICOMUtilities::GenerateDateTime(
       static_cast<long long>((studySeconds + timediff)*1e6), NULL);
     std::string birthDT = vtkDICOMUtilities::GenerateDateTime(
@@ -870,7 +952,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
     patientItem.SetAttributeValue(DC::PatientID, patientID);
     patientItem.SetAttributeValue(DC::PatientBirthDate, birthDT.substr(0, 8));
     patientItem.SetAttributeValue(
-      DC::PatientSex, q->DataValue(ST_PATIENTSEX).ToString());
+      DC::PatientSex, st->col[ST_PATIENTSEX].ToString());
 
     if (!this->MatchesQuery(patientItem))
       {
@@ -880,15 +962,15 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
     studyItem.SetAttributeValue(
       DC::SpecificCharacterSet, vtkDICOMCharacterSet::ISO_IR_192);
     studyItem.SetAttributeValue(
-      DC::StudyDescription, q->DataValue(ST_STUDYNAME).ToString());
+      DC::StudyDescription, st->col[ST_STUDYNAME].ToString());
     studyItem.SetAttributeValue(
-      DC::StudyID, q->DataValue(ST_ID).ToString());
+      DC::StudyID, st->col[ST_ID].ToString());
     studyItem.SetAttributeValue(
-      DC::StudyInstanceUID, q->DataValue(ST_STUDYINSTANCEUID).ToString());
+      DC::StudyInstanceUID, st->col[ST_STUDYINSTANCEUID].ToString());
     studyItem.SetAttributeValue(
-      DC::InstitutionName, q->DataValue(ST_INSTITUTIONNAME).ToString());
+      DC::InstitutionName, st->col[ST_INSTITUTIONNAME].ToString());
     studyItem.SetAttributeValue(
-      DC::AccessionNumber, q->DataValue(ST_ACCESSIONNUMBER).ToString());
+      DC::AccessionNumber, st->col[ST_ACCESSIONNUMBER].ToString());
     studyItem.SetAttributeValue(DC::StudyDate, studyDT.substr(0,8));
     studyItem.SetAttributeValue(DC::StudyTime, studyDT.substr(8,13));
 
@@ -925,34 +1007,28 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
         }
       }
 
-    enum {
-      SE_PK,SE_ID,SE_DATE,SE_SERIESSOPCLASSUID,SE_MODALITY,SE_NAME,
-      SE_SERIESDICOMUID,SE_SERIESDESCRIPTION
-    };
+    // Search for the first series in the study
+    std::vector<vtkTypeInt64>::iterator zseriesVecIter =
+      std::lower_bound(zseriesVec.begin(), zseriesVec.end(), zstudy);
+    size_t seIdx = std::distance(zseriesVec.begin(), zseriesVecIter);
 
-    std::string seriesQuery =
-      "select Z_PK,ZID,ZDATE,ZSERIESSOPCLASSUID,ZMODALITY,ZNAME,"
-      "ZSERIESDICOMUID,ZSERIESDESCRIPTION from ZSERIES"
-      " where ZSTUDY is \"" + zstudy + "\""
-      " order by ZID";
-
-    if (!qs->SetQuery(seriesQuery.c_str()) || !qs->Execute())
+    // Go through all of the series in the study
+    for (std::vector<SeriesRow>::iterator se = seriesTable.begin() + seIdx;
+         se != seriesTable.end(); ++se)
       {
-      vtkErrorMacro("Badly structured ZSERIES table: " << fname);
-      q->Delete();
-      qs->Delete();
-      qi->Delete();
-      return;
-      }
+      // Break when we find a series that isn't part of the study
+      if (*zseriesVecIter > zstudy)
+        {
+        break;
+        }
+      ++zseriesVecIter;
 
-    while (qs->NextRow())
-      {
       vtkDICOMItem seriesItem;
-      std::string zseries = qs->DataValue(SE_PK).ToString();
-      double seriesSeconds = qs->DataValue(SE_DATE).ToDouble();
+      vtkTypeInt64 zseries = se->col[SE_PK].ToTypeInt64();
+      double seriesSeconds = se->col[SE_DATE].ToDouble();
       std::string seriesDT = vtkDICOMUtilities::GenerateDateTime(
         static_cast<long long>((seriesSeconds + timediff)*1e6), NULL);
-      std::string seriesUID = qs->DataValue(SE_SERIESDICOMUID).ToString();
+      std::string seriesUID = se->col[SE_SERIESDICOMUID].ToString();
       // Remove anything before the UID
       size_t k = 0;
       while (k < seriesUID.length() &&
@@ -968,45 +1044,45 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
       seriesItem.SetAttributeValue(
         DC::SpecificCharacterSet, vtkDICOMCharacterSet::ISO_IR_192);
       seriesItem.SetAttributeValue(
-        DC::SeriesDescription, qs->DataValue(SE_SERIESDESCRIPTION).ToString());
+        DC::SeriesDescription, se->col[SE_SERIESDESCRIPTION].ToString());
       seriesItem.SetAttributeValue(
-        DC::SeriesNumber, qs->DataValue(SE_ID).ToString());
+        DC::SeriesNumber, se->col[SE_ID].ToString());
       seriesItem.SetAttributeValue(DC::SeriesInstanceUID, seriesUID);
       seriesItem.SetAttributeValue(DC::SeriesDate, seriesDT.substr(0,8));
       seriesItem.SetAttributeValue(DC::SeriesTime, seriesDT.substr(8,13));
       seriesItem.SetAttributeValue(
-        DC::Modality, qs->DataValue(SE_MODALITY).ToString());
+        DC::Modality, se->col[SE_MODALITY].ToString());
 
       if (!this->MatchesQuery(seriesItem))
         {
         continue;
         }
 
-      enum { ZFRAMEID, ZPATHNUMBER, ZPATHSTRING };
-      std::string imageQuery =
-        "select ZFRAMEID,ZPATHNUMBER,ZPATHSTRING from ZIMAGE"
-        " where ZSERIES is \"" + zseries + "\""
-        " order by ZINSTANCENUMBER";
-
-      if (!qi->SetQuery(imageQuery.c_str()) || !qi->Execute())
-        {
-        vtkErrorMacro("Badly structured ZIMAGE table: " << fname);
-        q->Delete();
-        qs->Delete();
-        qi->Delete();
-        return;
-        }
-
       vtkSmartPointer<vtkStringArray> fileNames =
         vtkSmartPointer<vtkStringArray>::New();
 
       std::string lastpath;
-      while (qi->NextRow())
+
+      // Search for the first image in the series
+      std::vector<vtkTypeInt64>::iterator zimageVecIter =
+        std::lower_bound(zimageVec.begin(), zimageVec.end(), zseries);
+      size_t imIdx = std::distance(zimageVec.begin(), zimageVecIter);
+
+      // Go through all of the images in the series
+      for (std::vector<ImageRow>::iterator im = imageTable.begin() + imIdx;
+           im != imageTable.end(); ++im)
         {
-        std::string fpath = qi->DataValue(ZPATHSTRING).ToString();
+        // Break when we find a series that isn't part of the study
+        if (*zimageVecIter > zseries)
+          {
+          break;
+          }
+        ++zimageVecIter;
+
+        std::string fpath = im->col[IM_PATHSTRING].ToString();
         if (fpath.length() == 0)
           {
-          vtkTypeInt64 fnum = qi->DataValue(ZPATHNUMBER).ToTypeInt64();
+          vtkTypeInt64 fnum = im->col[IM_PATHNUMBER].ToTypeInt64();
           vtkTypeInt64 dnum = (fnum/10000 + 1)*10000;
           vtkVariant fv(fnum);
           vtkVariant dv(dnum);
@@ -1042,8 +1118,6 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
     }
 
   q->Delete();
-  qs->Delete();
-  qi->Delete();
 }
 
 //----------------------------------------------------------------------------
