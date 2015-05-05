@@ -858,6 +858,10 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
   std::vector<SeriesRow> seriesTable;
   std::vector<ImageRow> imageTable;
 
+  // Acquire a shared lock while reading the three tables, to ensure that
+  // the three tables are consistent with each other.
+  q->BeginTransaction();
+
   // Read the study table
   if (!q->SetQuery("select Z_PK,ZDATE,ZDATEOFBIRTH,ZMODALITY,ZNAME,"
                    "ZINSTITUTIONNAME,ZSTUDYNAME,ZID,ZSTUDYINSTANCEUID,"
@@ -866,6 +870,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
       !q->Execute())
     {
     vtkErrorMacro("Badly structured ZSTUDY table: " << fname);
+    q->CommitTransaction();
     q->Delete();
     return;
     }
@@ -887,6 +892,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
       !q->Execute())
     {
     vtkErrorMacro("Badly structured ZSERIES table: " << fname);
+    q->CommitTransaction();
     q->Delete();
     return;
     }
@@ -910,6 +916,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
       !q->Execute())
     {
     vtkErrorMacro("Badly structured IMAGE table: " << fname);
+    q->CommitTransaction();
     q->Delete();
     return;
     }
@@ -925,6 +932,13 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
       }
     zimageVec.push_back(q->DataValue(IM_NCOLS).ToTypeInt64());
     }
+
+  // Close the database and delete it by setting the smart pointer to NULL.
+  // Calling CommitTransaction doesn't write anything, because only SELECT
+  // has been used.  Instead, it just releases the shared lock.
+  q->CommitTransaction();
+  q->Delete();
+  dbase = NULL;
 
   // Go through all of the studies
   for (std::vector<StudyRow>::iterator st = studyTable.begin();
@@ -1118,8 +1132,6 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
         }
       }
     }
-
-  q->Delete();
 }
 
 //----------------------------------------------------------------------------
