@@ -203,10 +203,11 @@ public:
 
   //! Get one scalar, string, tag or item from the value.
   /*!
-   *  Convert the i'th value to the desired type, if possible,
-   *  and return it.  If the value is invalid, or conversion is
-   *  not possible, or the index is out of range, then the return
-   *  value will be zero (or an empty string).
+   *  Convert the i'th value to the desired type, if possible, and return
+   *  it.  If the value is invalid, or conversion is not possible, or the
+   *  index is out of range, then the return value will be zero (or an
+   *  empty string).  Trailing spaces are always removed from strings.
+   *  Leading spaces are removed unless the VR is ST, LT, or UT.
    */
   std::string GetUTF8String(size_t i) const;
   std::string GetString(size_t i) const;
@@ -225,7 +226,8 @@ public:
    *  The value is converted to the desired type, if possible, and returned.
    *  Otherwise the return value is zero (or an empty string).  Conversion
    *  to string always produces an empty string for values of type UN, SQ,
-   *  OB, OW, and OF.
+   *  OB, OW, and OF.  Trailing spaces are always removed from strings.
+   *  Leading spaces are removed unless the VR is ST, LT, or UT.
    */
   std::string AsUTF8String() const;
   std::string AsString() const;

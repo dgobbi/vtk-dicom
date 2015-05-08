@@ -1734,8 +1734,14 @@ void vtkDICOMValue::AppendValueToString(
     case VTK_CHAR:
       cp = static_cast<const ValueT<char> *>(this->V)->Data;
       dp = cp + (i == 0 ? this->V->VL : 0);
-      if (!this->V->VR.HasSingleValue())
+      if (this->V->VR.HasSingleValue())
         {
+        // strip trailing spaces
+        while (dp != cp && dp[-1] == ' ') { --dp; }
+        }
+      else
+        {
+        // get just one of the values, strip leading & trailing spaces
         this->Substring(i, cp, dp);
         }
       break;
