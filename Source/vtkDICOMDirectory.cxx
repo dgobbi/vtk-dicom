@@ -1312,7 +1312,7 @@ void vtkDICOMDirectory::ProcessDirectory(
   std::string realname = vtksys::SystemTools::GetRealPath(dirname);
   std::vector<std::string>::iterator viter =
     std::lower_bound(this->Visited->begin(), this->Visited->end(), realname);
-  if (viter == this->Visited->end() || *viter < realname)
+  if (viter == this->Visited->end() || *viter != realname)
     {
     // Add this directory to the "visited" list.
     this->Visited->insert(viter, realname);
