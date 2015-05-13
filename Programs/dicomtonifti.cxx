@@ -28,6 +28,7 @@
 #include <vtkMatrix4x4.h>
 #include <vtkImageReslice.h>
 #include <vtkImageCast.h>
+#include <vtkImageExtractComponents.h>
 #include <vtkStringArray.h>
 #include <vtkIntArray.h>
 #include <vtkErrorCode.h>
@@ -70,6 +71,7 @@ struct dicomtonifti_options
   bool batch;
   bool silent;
   bool verbose;
+  int volume;
   const char *output;
 };
 
@@ -123,6 +125,7 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
     "  --no-reordering         Never reorder slices, rows, or columns.\n"
     "  --no-qform              Don't include a qform in the NIFTI file.\n"
     "  --no-sform              Don't include an sform in the NIFTI file.\n"
+    "  --volume N              Set the volume to output (starts at 0).\n"
     "  --version               Print the version and exit.\n"
     "  --build-version         Print source and build version.\n"
     "  --help                  Documentation for dicomtonifti.\n"
@@ -329,6 +332,7 @@ void dicomtonifti_read_options(
   options->batch = false;
   options->silent = false;
   options->verbose = false;
+  options->volume = -1;
   options->output = 0;
 
   // read the options from the command line
@@ -400,6 +404,17 @@ void dicomtonifti_read_options(
       else if (strcmp(arg, "--verbose") == 0)
         {
         options->verbose = true;
+        }
+      else if (strcmp(arg, "--volume") == 0)
+        {
+        if (argi >= argc || argv[argi][0] == '-')
+          {
+          fprintf(stderr, "\nA number must follow \'--volume\'\n\n");
+          dicomtonifti_usage(stderr, argv[0]);
+          exit(1);
+          }
+        arg = argv[argi++];
+        options->volume = atoi(arg);
         }
       else if (strcmp(arg, "--version") == 0)
         {
@@ -615,6 +630,24 @@ void dicomtonifti_convert_one(
   // get the output and the orientation matrix
   vtkAlgorithmOutput *lastOutput = reader->GetOutputPort();
   vtkMatrix4x4 *patientMatrix = reader->GetPatientMatrix();
+
+  // extract just one volume, if requested
+  vtkSmartPointer<vtkImageExtractComponents> extract =
+    vtkSmartPointer<vtkImageExtractComponents>::New();
+  extract->SetInputConnection(lastOutput);
+  if (options->volume >= 0)
+    {
+    if (reader->GetOutput()->GetNumberOfScalarComponents() <= options->volume)
+      {
+      fprintf(stderr, "Only %d volumes, but --volume %d used.\n",
+              reader->GetOutput()->GetNumberOfScalarComponents(),
+              options->volume);
+      exit(1);
+      }
+    extract->SetComponents(options->volume);
+    extract->Update();
+    lastOutput = extract->GetOutputPort();
+    }
 
   // check if slices were reordered by the reader
   vtkIntArray *fileIndices = reader->GetFileIndexArray();
@@ -909,7 +942,8 @@ void dicomtonifti_convert_one(
   writer->SetDescription(descrip.c_str());
   writer->SetNIFTIHeader(hdr);
   writer->SetFileName(outfile);
-  if (reader->GetTimeDimension() > 1)
+  if (reader->GetTimeDimension() > 1 &&
+      options->volume < 0)
     {
     writer->SetTimeDimension(reader->GetTimeDimension());
     writer->SetTimeSpacing(reader->GetTimeSpacing());
