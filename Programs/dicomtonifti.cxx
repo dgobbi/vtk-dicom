@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #include "vtkDICOMBuild.h"
+#include "vtkDICOMDictionary.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMParser.h"
 #include "vtkDICOMReader.h"
@@ -114,7 +115,7 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
     "  -s --silent             Do not echo output filenames.\n"
     "  -v --verbose            Verbose error reporting.\n"
     "  -L --follow-symlinks    Follow symbolic links when recursing.\n"
-    "  --fsl                   Reformat the image for use in FSL.\n"
+    "  --fsl                   Format axial image for use in FSL.\n"
     "  --reformat-to-axial     Reformat the image into axial orientation.\n"
     "  --no-slice-reordering   Never reorder the slices.\n"
     "  --no-row-reordering     Never reorder the rows.\n"
@@ -169,15 +170,22 @@ void dicomtonifti_help(FILE *file, const char *command_name)
     "type from unsigned 16-bit to signed 16-bit if necessary.\n"
     "\n");
   fprintf(file,
-    "If batch mode is enabled, then the filenames will automatically be\n"
-    "generated from the series description in the DICOM meta data:\n"
-    "\"PatientName/StudyDescription-ID/SeriesDescription_N.nii.gz\".\n"
+    "If batch mode is selected, the output file given with \"-o\" can be\n"
+    "constructed from DICOM attributes, by providing the attribute names\n"
+    "within curly braces.  For example, consider the following:\n"
+    "\"{PatientID}-{StudyDate}/{SeriesDescription}-{SeriesNumber}.nii\"\n"
+    "or something similar to produce a hierarchichal directory structure.\n"
+    "The attributes used in the path should be from the following list:\n"
+    "  PatientID, PatientName, PatientBirthDate, PatientSex,\n"
+    "  StudyID, StudyDescription, StudyDate, StudyTime, StudyInstanceUID,\n"
+    "  SeriesNumber, SeriesDescription, SeriesInstanceUID,\n"
+    "  Modality, AccessionNumber.\n"
     "\n"
     "Here is an example of batch mode that recurses into subdirectories\n"
     "and compresses the output files, putting the results in the current\n"
     "directory:\n"
     "\n"
-    "%s -brz -o . /path/to/dicom/files\n"
+    "%s -brz -o {SeriesDescription}-{SeriesNumber}.nii /path/to/dicom/files\n"
     "\n",
     command_name);
 }
@@ -482,68 +490,112 @@ void dicomtonifti_read_options(
     }
 }
 
-// Remove all characters but A-ZA-z0-9_ from a string
-std::string dicomtonifti_safe_string(const std::string& str)
+// Remove all characters but A-Za-z0-9_ from a string
+std::string dicomtonifti_safe_string(const std::string& input)
 {
-  std::string out;
-
-  size_t n = str.size();
-  size_t m = 0;
-  for (size_t i = 0; i < n; i++)
+  std::string::const_iterator a = input.begin();
+  std::string::const_iterator b = a;
+  std::string s;
+  while (a != input.end())
     {
-    char c = str[i];
-    if (!isalnum(c))
+    while (a != input.end() &&
+           ((*a & 0x80) == 0) && isgraph(*a) && !ispunct(*a))
       {
-      c = '_';
+      ++a;
       }
-    else
+    s.append(b, a);
+    b = a;
+    while (a != input.end() &&
+           (((*a & 0x80) != 0) || !isgraph(*a) || ispunct(*a)))
       {
-      m = i + 1;
+      ++a;
       }
-    out.push_back(c);
+    if (b != a && b != input.begin() && a != input.end())
+      {
+      s.append("_");
+      }
+    b = a;
     }
 
-  out.resize(m);
-
-  if (out.size() == 0)
-    {
-    out = "UNKNOWN";
-    }
-
-  return out;
+  return s;
 }
 
 // Generate an output filename from meta data
 std::string dicomtonifti_make_filename(
-  const char *outpath, vtkDICOMMetaData *meta)
+  const char *outfile, vtkDICOMMetaData *meta)
 {
-  std::string patientName = dicomtonifti_safe_string(
-    meta->GetAttributeValue(DC::PatientName).AsString());
-  std::string patientID = dicomtonifti_safe_string(
-    meta->GetAttributeValue(DC::PatientID).AsString());
-  std::string studyDesc = dicomtonifti_safe_string(
-    meta->GetAttributeValue(DC::StudyDescription).AsString());
-  std::string studyID = dicomtonifti_safe_string(
-    meta->GetAttributeValue(DC::StudyID).AsString());
-  std::string seriesDesc = dicomtonifti_safe_string(
-    meta->GetAttributeValue(DC::SeriesDescription).AsString());
-  std::string seriesNumber = dicomtonifti_safe_string(
-    meta->GetAttributeValue(DC::SeriesNumber).AsString());
+  std::string s;
+  std::string key;
+  std::string val;
+  vtkDICOMValue v;
 
-  if (patientName != "UNKNOWN")
+  const char *cp = outfile;
+  const char *dp = cp;
+  const char *bp = 0;
+  while (*cp != '\0')
     {
-    patientID = patientName;
+    while (*cp != '{' && *cp != '}' && *cp != '\0') { cp++; }
+    if (*cp == '}')
+      {
+      fprintf(stderr, "Missing \'{\': %s\n", outfile);
+      exit(1);
+      }
+    if (*cp == '{')
+      {
+      bp = cp;
+      while (*cp != '}' && *cp != '\0') { cp++; }
+      if (*cp != '}')
+        {
+        fprintf(stderr, "Unmatched \'{\': %s\n", outfile);
+        exit(1);
+        }
+      else
+        {
+        s.append(dp, bp);
+        bp++;
+        key.assign(bp, cp);
+        cp++;
+        dp = cp;
+        v.Clear();
+        vtkDICOMTag tag;
+        if (key.length() > 0)
+          {
+          vtkDICOMDictEntry de = vtkDICOMDictionary::FindDictEntry(key.c_str());
+          if (de.IsValid())
+            {
+            tag = de.GetTag();
+            }
+          else
+            {
+            fprintf(stderr, "Unrecognized key %s\n", key.c_str());
+            exit(1);
+            }
+          }
+        if (meta)
+          {
+          v = meta->GetAttributeValue(tag);
+          }
+        if (v.IsValid())
+          {
+          val.assign(dicomtonifti_safe_string(v.AsUTF8String()));
+          }
+        else if (meta)
+          {
+          fprintf(stderr, "Sorry, key %s not found.\n",
+                  key.c_str());
+          exit(1);
+          }
+        if (val.empty())
+          {
+          val = "Empty";
+          }
+        s.append(val);
+        }
+      }
     }
+  s.append(dp, cp);
 
-  std::vector<std::string> sv;
-
-  vtksys::SystemTools::SplitPath(outpath, sv);
-
-  sv.push_back(patientID);
-  sv.push_back(studyDesc + "-" + studyID);
-  sv.push_back(seriesDesc + "_" + seriesNumber + ".nii");
-
-  return vtksys::SystemTools::JoinPath(sv);
+  return s;
 }
 
 // Convert one DICOM series into one NIFTI file
@@ -1074,10 +1126,17 @@ MAINMACRO(argc, argv)
 
   bool isDirectory = vtksys::SystemTools::FileIsDirectory(outpath);
   size_t l = strlen(outpath);
-  if (options.batch && !isDirectory)
+  std::string tmp;
+  if (options.batch && isDirectory)
     {
-    fprintf(stderr, "In batch mode, -o must give an existing directory.\n");
-    exit(1);
+    std::vector<std::string> sv;
+    vtksys::SystemTools::SplitPath(outpath, sv);
+
+    sv.push_back(
+      "{PatientID}-{StudyDate}-{SeriesDescription}-{SeriesNumber}.nii");
+
+    tmp = vtksys::SystemTools::JoinPath(sv);
+    outpath = tmp.c_str();
     }
   else if (!options.batch && (isDirectory ||
            (l > 0 && (outpath[l-1] == '/' || outpath[l-1] == '\\'))))
