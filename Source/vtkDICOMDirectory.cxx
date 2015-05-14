@@ -355,7 +355,8 @@ vtkStringArray *vtkDICOMDirectory::GetFileNamesForSeries(int i)
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMDirectory::MatchesQuery(const vtkDICOMItem& record)
+bool vtkDICOMDirectory::MatchesQuery(
+  const vtkDICOMItem& record, vtkDICOMItem& results)
 {
   bool matched = true;
 
@@ -366,10 +367,17 @@ bool vtkDICOMDirectory::MatchesQuery(const vtkDICOMItem& record)
       {
       const vtkDICOMValue& v =
         this->Query->GetAttributeValue(iter->GetTag());
-      if (v.IsValid() && !iter->GetValue().Matches(v))
+      if (v.IsValid())
         {
-        matched = false;
-        break;
+        if (iter->GetValue().Matches(v))
+          {
+          results.SetAttributeValue(iter->GetTag(), iter->GetValue());
+          }
+        else
+          {
+          matched = false;
+          break;
+          }
         }
       }
     }
@@ -389,11 +397,50 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
     this->AddSeriesFileNames(
       patient, study, files,
       patientRecord, studyRecord, seriesRecord);
+    return;
     }
-  else if (this->MatchesQuery(patientRecord) &&
-           this->MatchesQuery(studyRecord) &&
-           this->MatchesQuery(seriesRecord))
+
+  // To store results of querying the patient, study, series records
+  vtkDICOMItem results;
+
+  if (this->MatchesQuery(patientRecord, results) &&
+      this->MatchesQuery(studyRecord, results) &&
+      this->MatchesQuery(seriesRecord, results))
     {
+    // Have we checked all the attributes in the query?
+    bool fullyMatched = true;
+    vtkDICOMDataElementIterator iter;
+    for (iter = this->Query->Begin(); iter != this->Query->End(); ++iter)
+      {
+      if (iter->GetValue().GetVR() == vtkDICOMVR::SQ)
+        {
+        if (iter->GetValue().GetNumberOfValues() > 0)
+          {
+          fullyMatched = false;
+          break;
+          }
+        }
+      else if (iter->GetTag() != DC::SpecificCharacterSet)
+        {
+        if (iter->GetValue().GetVL() > 0 &&
+            !results.GetAttributeValue(iter->GetTag()).IsValid())
+          {
+          fullyMatched = false;
+          break;
+          }
+        }
+      }
+
+    if (fullyMatched)
+      {
+      // All query attributes have been matched!
+      this->AddSeriesFileNames(
+        patient, study, files,
+        patientRecord, studyRecord, seriesRecord);
+      return;
+      }
+
+    // Need to query against the actual files
     vtkSmartPointer<vtkDICOMMetaData> meta =
       vtkSmartPointer<vtkDICOMMetaData>::New();
     vtkSmartPointer<vtkDICOMParser> parser =

@@ -207,7 +207,11 @@ protected:
     const vtkDICOMItem& seriesRecord);
 
   //! Returns false if the record doesn't match the query.
-  bool MatchesQuery(const vtkDICOMItem& record);
+  /*!
+   *  Matching values are placed into the result parameter.
+   */
+  bool MatchesQuery(
+    const vtkDICOMItem& record, vtkDICOMItem& result);
 
   //! Convert parser errors into sorter errors.
   void RelayError(vtkObject *o, unsigned long e, void *data);
