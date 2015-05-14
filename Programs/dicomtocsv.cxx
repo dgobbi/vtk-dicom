@@ -54,15 +54,16 @@ void dicomtocsv_usage(FILE *file, const char *cp)
   fprintf(file, "usage:\n"
     "  %s [options] <directory>\n\n", cp);
   fprintf(file, "options:\n"
-    "  -k tag=value    Provide a key to be queried and matched.\n"
-    "  -q <query.txt>  Provide a file to describe the find query.\n"
-    "  -o <data.csv>   Provide a file for the query results.\n"
-    "  --first-nonzero Search series for first nonzero value of each key.\n"
-    "  --study         Print one row for each study.\n"
-    "  --series        Print one row for each series (default).\n"
-    "  --image         Print one row for each image.\n"
-    "  --help          Print a brief help message.\n"
-    "  --version       Print the software version.\n");
+    "  -k tag=value     Provide a key to be queried and matched.\n"
+    "  -q <query.txt>   Provide a file to describe the find query.\n"
+    "  -o <data.csv>    Provide a file for the query results.\n"
+    "  --first-nonzero  Search series for first nonzero value of each key.\n"
+    "  --directory-only Use directory scan only, do not re-scan files.\n"
+    "  --study          Print one row for each study.\n"
+    "  --series         Print one row for each series (default).\n"
+    "  --image          Print one row for each image.\n"
+    "  --help           Print a brief help message.\n"
+    "  --version        Print the software version.\n");
 }
 
 // print the help
@@ -174,7 +175,7 @@ std::string dicomtocsv_quote(const std::string& s)
 // Write out the results in csv format
 void dicomtocsv_write(vtkDICOMDirectory *finder,
   const vtkDICOMItem& query, const QueryTagList *ql, std::ostream& os,
-  int level, bool firstNonZero, vtkCommand *p)
+  int level, bool firstNonZero, bool useDirectoryRecords, vtkCommand *p)
 {
   // for keeping track of progress
   vtkIdType count = 0.0;
@@ -222,23 +223,44 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
 
       vtkSmartPointer<vtkDICOMMetaData> meta =
         vtkSmartPointer<vtkDICOMMetaData>::New();
-      vtkSmartPointer<vtkDICOMParser> parser =
-        vtkSmartPointer<vtkDICOMParser>::New();
 
-      parser->SetQueryItem(query);
-      parser->SetMetaData(meta);
-
-      if (level >= 4 || firstNonZero)
+      if (useDirectoryRecords)
         {
-        // need to parse all files
-        meta->SetNumberOfInstances(a->GetNumberOfValues());
+        // all the needed meta data is stored in the index records
+        const vtkDICOMItem *items[3];
+        items[0] = &finder->GetPatientRecordForStudy(j);
+        items[1] = &finder->GetStudyRecord(j);
+        items[2] = &finder->GetSeriesRecord(k);
+        for (int ii = 0; ii < 3; ii++)
+          {
+          vtkDICOMDataElementIterator iter;
+          for (iter = items[ii]->Begin(); iter != items[ii]->End(); ++iter)
+            {
+            meta->SetAttributeValue(iter->GetTag(), iter->GetValue());
+            }
+          }
         }
-
-      for (int ii = 0; ii < meta->GetNumberOfInstances(); ii++)
+      else
         {
-        parser->SetIndex(ii);
-        parser->SetFileName(a->GetValue(ii));
-        parser->Update();
+        // need to go to the files for the meta data
+        vtkSmartPointer<vtkDICOMParser> parser =
+          vtkSmartPointer<vtkDICOMParser>::New();
+
+        parser->SetQueryItem(query);
+        parser->SetMetaData(meta);
+
+        if (level >= 4 || firstNonZero)
+          {
+          // need to parse all files
+          meta->SetNumberOfInstances(a->GetNumberOfValues());
+          }
+
+        for (int ii = 0; ii < meta->GetNumberOfInstances(); ii++)
+          {
+          parser->SetIndex(ii);
+          parser->SetFileName(a->GetValue(ii));
+          parser->Update();
+          }
         }
 
       // create an adapter, in case of enhanced IOD
@@ -471,6 +493,7 @@ MAINMACRO(argc, argv)
   vtkDICOMItem query;
   std::vector<std::string> oplist;
   bool firstNonZero = false;
+  bool useDirectoryRecords = false;
   int level = 3; // default to series level
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
@@ -542,6 +565,10 @@ MAINMACRO(argc, argv)
     else if (strcmp(arg, "--first-nonzero") == 0)
       {
       firstNonZero = true;
+      }
+    else if (strcmp(arg, "--directory-only") == 0)
+      {
+      useDirectoryRecords = true;
       }
     else if (strcmp(arg, "--study") == 0)
       {
@@ -618,7 +645,8 @@ MAINMACRO(argc, argv)
       p->SetText("Writing");
       }
     dicomtocsv_write(
-      finder, query, &qtlist, *osp, level, firstNonZero, p);
+      finder, query, &qtlist, *osp, level,
+      firstNonZero, useDirectoryRecords, p);
 
     osp->flush();
     }
