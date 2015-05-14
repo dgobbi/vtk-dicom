@@ -223,6 +223,11 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
 
       vtkSmartPointer<vtkDICOMMetaData> meta =
         vtkSmartPointer<vtkDICOMMetaData>::New();
+      if (level >= 4 || firstNonZero)
+        {
+        // need to parse all files
+        meta->SetNumberOfInstances(a->GetNumberOfValues());
+        }
 
       if (useDirectoryRecords)
         {
@@ -248,12 +253,6 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
 
         parser->SetQueryItem(query);
         parser->SetMetaData(meta);
-
-        if (level >= 4 || firstNonZero)
-          {
-          // need to parse all files
-          meta->SetNumberOfInstances(a->GetNumberOfValues());
-          }
 
         for (int ii = 0; ii < meta->GetNumberOfInstances(); ii++)
           {
