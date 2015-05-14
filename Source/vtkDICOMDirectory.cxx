@@ -1020,6 +1020,19 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
   q->Delete();
   dbase = NULL;
 
+  // To track progress, count number of images processed.
+  size_t imageCounter = 0;
+
+  // Check for abort.
+  if (!this->AbortExecute)
+    {
+    this->UpdateProgress(0.0);
+    }
+  if (this->AbortExecute)
+    {
+    return;
+    }
+
   // Go through all of the studies
   for (std::vector<StudyRow>::iterator st = studyTable.begin();
        st != studyTable.end(); ++st)
@@ -1048,11 +1061,6 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
     patientItem.SetAttributeValue(
       DC::PatientSex, st->col[ST_PATIENTSEX].ToString());
 
-    if (!this->MatchesQuery(patientItem))
-      {
-      continue;
-      }
-
     studyItem.SetAttributeValue(
       DC::SpecificCharacterSet, vtkDICOMCharacterSet::ISO_IR_192);
     studyItem.SetAttributeValue(
@@ -1067,11 +1075,6 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
       DC::AccessionNumber, st->col[ST_ACCESSIONNUMBER].ToString());
     studyItem.SetAttributeValue(DC::StudyDate, studyDT.substr(0,8));
     studyItem.SetAttributeValue(DC::StudyTime, studyDT.substr(8,13));
-
-    if (!this->MatchesQuery(studyItem))
-      {
-      continue;
-      }
 
     int studyIdx = this->GetNumberOfStudies();
     int patientIdx;
@@ -1149,11 +1152,6 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
       seriesItem.SetAttributeValue(
         DC::Modality, se->col[SE_MODALITY].ToString());
 
-      if (!this->MatchesQuery(seriesItem))
-        {
-        continue;
-        }
-
       vtkSmartPointer<vtkStringArray> fileNames =
         vtkSmartPointer<vtkStringArray>::New();
 
@@ -1193,12 +1191,30 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
           fileNames->InsertNextValue(fpath);
           lastpath = fpath;
           }
+
+        // Increment the progress counter.
+        imageCounter++;
         }
 
       // Add the series if it passes the query
       this->AddSeriesWithQuery(
         patientIdx, studyIdx, fileNames,
         patientItem, studyItem, seriesItem);
+
+      // Check for abort and update progress at 1% intervals
+      if (!this->AbortExecute)
+        {
+        double progress = (imageCounter + 1.0)/imageTable.size();
+        if (progress == 1.0 || progress > this->GetProgress() + 0.01)
+          {
+          progress = static_cast<int>(progress*100.0)/100.0;
+          this->UpdateProgress(progress);
+          }
+        }
+      if (this->AbortExecute)
+        {
+        return;
+        }
       }
     }
 }
