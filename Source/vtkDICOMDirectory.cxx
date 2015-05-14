@@ -1256,6 +1256,19 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
     offset = items[0].GetByteOffset();
     }
 
+  // To track progress, count number of items processed.
+  unsigned int itemCounter = 0;
+
+  // Check for abort.
+  if (!this->AbortExecute)
+    {
+    this->UpdateProgress(0.0);
+    }
+  if (this->AbortExecute)
+    {
+    return;
+    }
+
   // A stack to track the directory level.
   std::vector<std::pair<unsigned int, std::string> > offsetStack;
   int patientIdx = this->GetNumberOfPatients();
@@ -1371,6 +1384,22 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
           }
         }
       }
+
+    // Check for abort and update progress at 1% intervals
+    if (!this->AbortExecute)
+      {
+      double progress = (itemCounter + 1.0)/n;
+      if (progress == 1.0 || progress > this->GetProgress() + 0.01)
+        {
+        progress = static_cast<int>(progress*100.0)/100.0;
+        this->UpdateProgress(progress);
+        }
+      }
+    if (this->AbortExecute)
+      {
+      return;
+      }
+    ++itemCounter;
     }
 }
 
