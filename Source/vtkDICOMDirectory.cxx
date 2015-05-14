@@ -410,7 +410,7 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
 
     vtkIdType n = files->GetNumberOfValues();
     // Only check the first file unless image-level query
-    if (this->FindLevel < vtkDICOMDirectory::IMAGE)
+    if (n > 0 && this->FindLevel < vtkDICOMDirectory::IMAGE)
       {
       n = 1;
       }
@@ -452,7 +452,7 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
     if (a->GetNumberOfValues() > 0)
       {
       this->AddSeriesFileNames(
-        patient, study, files,
+        patient, study, a,
         patientRecord, studyRecord, seriesRecord);
       }
     }
