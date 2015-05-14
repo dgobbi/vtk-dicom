@@ -596,6 +596,10 @@ MAINMACRO(argc, argv)
 
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
+    if (level < 4)
+      {
+      finder->SetFindLevelToSeries();
+      }
     if (ofile)
       {
       p = vtkSmartPointer<ProgressObserver>::New();
