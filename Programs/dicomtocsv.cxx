@@ -23,6 +23,7 @@
 // from dicomcli
 #include "mainmacro.h"
 #include "readquery.h"
+#include "progress.h"
 
 #include <vtkCommand.h>
 #include <vtkTimerLog.h>
@@ -403,81 +404,6 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
   if (p)
     {
     p->Execute(NULL, vtkCommand::EndEvent, NULL);
-    }
-}
-
-// Capture progress events
-class ProgressObserver : public vtkCommand
-{
-public:
-  static ProgressObserver *New() { return new ProgressObserver; }
-  vtkTypeMacro(ProgressObserver,vtkCommand);
-  virtual void Execute(
-    vtkObject *caller, unsigned long eventId, void *callData);
-  void SetText(const char *text) { this->Text = text; }
-protected:
-  ProgressObserver() : Stage(0), Anim(0), LastTime(0), Text("") {}
-  ProgressObserver(const ProgressObserver& c) : vtkCommand(c) {}
-  void operator=(const ProgressObserver&) {}
-  int Stage;
-  int Anim;
-  double LastTime;
-  const char *Text;
-};
-
-void ProgressObserver::Execute(vtkObject *, unsigned long e, void *vp)
-{
-  const double initial = 2.0; // time until first report
-  const double delta = 0.1; // time between reports
-  double t = vtkTimerLog::GetUniversalTime();
-
-  if (e == vtkCommand::StartEvent)
-    {
-    this->LastTime = t;
-    this->Stage = 0;
-    this->Anim = 0;
-    }
-  else if (e == vtkCommand::ProgressEvent)
-    {
-    double *dp = static_cast<double *>(vp);
-    int progress = static_cast<int>((*dp)*100.0 + 0.5);
-
-    if (this->Stage == 0)
-      {
-      if (t - this->LastTime > initial)
-        {
-        std::cout << "\r                                   ";
-        this->Stage = 1;
-        }
-      }
-    if (t - this->LastTime > delta)
-      {
-      if (this->Stage == 1)
-        {
-        if (progress == 0)
-          {
-          const char *dots[] = { ".  ", ".. ", "..." };
-          this->Anim = (this->Anim + 1) % 3;
-          std::cout << "\r" << this->Text << dots[this->Anim];
-          std::cout.flush();
-          this->LastTime = t;
-          }
-        else
-          {
-          std::cout << "\r" << this->Text << " " << progress << "%";
-          std::cout.flush();
-          this->LastTime = t;
-          }
-        }
-      }
-    }
-  else if (e == vtkCommand::EndEvent)
-    {
-    if (this->Stage > 0)
-      {
-      std::cout << "\r" << this->Text << " 100%";
-      std::cout << std::endl;
-      }
     }
 }
 

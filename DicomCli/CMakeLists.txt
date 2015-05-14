@@ -5,6 +5,7 @@ set(LIB_NAME dicomcli)
 set(LIB_SRCS
   mainmacro.cxx
   readquery.cxx
+  progress.cxx
 )
 
 add_library(${LIB_NAME} STATIC ${LIB_SRCS})
