@@ -378,6 +378,87 @@ bool vtkDICOMDirectory::MatchesQuery(const vtkDICOMItem& record)
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMDirectory::AddSeriesWithQuery(
+  int patient, int study, vtkStringArray *files,
+  const vtkDICOMItem& patientRecord,
+  const vtkDICOMItem& studyRecord,
+  const vtkDICOMItem& seriesRecord)
+{
+  if (this->Query == 0)
+    {
+    this->AddSeriesFileNames(
+      patient, study, files,
+      patientRecord, studyRecord, seriesRecord);
+    }
+  else if (this->MatchesQuery(patientRecord) &&
+           this->MatchesQuery(studyRecord) &&
+           this->MatchesQuery(seriesRecord))
+    {
+    vtkSmartPointer<vtkDICOMMetaData> meta =
+      vtkSmartPointer<vtkDICOMMetaData>::New();
+    vtkSmartPointer<vtkDICOMParser> parser =
+      vtkSmartPointer<vtkDICOMParser>::New();
+
+    parser->AddObserver(
+      vtkCommand::ErrorEvent, this, &vtkDICOMDirectory::RelayError);
+
+    parser->SetMetaData(meta);
+    parser->SetQueryItem(*this->Query);
+
+    vtkSmartPointer<vtkStringArray> a =
+      vtkSmartPointer<vtkStringArray>::New();
+
+    vtkIdType n = files->GetNumberOfValues();
+    // Only check the first file unless image-level query
+    if (this->FindLevel < vtkDICOMDirectory::IMAGE)
+      {
+      n = 1;
+      }
+
+    for (vtkIdType i = 0; i < n; i++)
+      {
+      // Read the file metadata
+      meta->Initialize();
+      const std::string fileName = files->GetValue(i);
+      this->SetInternalFileName(fileName.c_str());
+      parser->SetFileName(fileName.c_str());
+      parser->Update();
+      if (!parser->GetPixelDataFound())
+        {
+        if (!this->ErrorCode)
+          {
+          this->ErrorCode = parser->GetErrorCode();
+          }
+        if (this->ErrorCode || this->RequirePixelData)
+          {
+          continue;
+          }
+        }
+      if (parser->GetQueryMatched())
+        {
+        if (this->FindLevel < vtkDICOMDirectory::IMAGE)
+          {
+          // Add all the files.
+          a = files;
+          }
+        else
+          {
+          // Add the matched file.
+          a->InsertNextValue(fileName);
+          }
+        }
+      }
+
+    if (a->GetNumberOfValues() > 0)
+      {
+      this->AddSeriesFileNames(
+        patient, study, files,
+        patientRecord, studyRecord, seriesRecord);
+      }
+    }
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMDirectory::AddSeriesFileNames(
   int patient, int study, vtkStringArray *files,
   const vtkDICOMItem& patientRecord,
@@ -801,8 +882,7 @@ struct ImageRow { vtkVariant col[4]; };
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMDirectory::ProcessOsirixDatabase(
-  const char *fname, vtkStringArray *files)
+void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
 {
   // Open the database
   vtkSmartPointer<vtkSQLiteDatabase> dbase =
@@ -1115,28 +1195,17 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(
           }
         }
 
-      if (this->Query)
-        {
-        // Add series to the provided list of filenames
-        for (vtkIdType i = 0; i < fileNames->GetNumberOfValues(); i++)
-          {
-          files->InsertNextValue(fileNames->GetValue(i));
-          }
-        }
-      else
-        {
-        // Directly add the series to "this"
-        this->AddSeriesFileNames(
-          patientIdx, studyIdx, fileNames,
-          patientItem, studyItem, seriesItem);
-        }
+      // Add the series if it passes the query
+      this->AddSeriesWithQuery(
+        patientIdx, studyIdx, fileNames,
+        patientItem, studyItem, seriesItem);
       }
     }
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMDirectory::ProcessDirectoryFile(
-  const char *dirname, vtkDICOMMetaData *meta, vtkStringArray *files)
+  const char *dirname, vtkDICOMMetaData *meta)
 {
   // Get the ID of this file set (informative only).
   if (meta->HasAttribute(DC::FileSetID))
@@ -1278,26 +1347,10 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
           }
         else if (entryType == "SERIES")
           {
-          if (files)
-            {
-            // Add series to the provided list of filenames
-            if (this->MatchesQuery(items[patientItem]) &&
-                this->MatchesQuery(items[studyItem]) &&
-                this->MatchesQuery(items[seriesItem]))
-              {
-              for (vtkIdType i = 0; i < fileNames->GetNumberOfValues(); i++)
-                {
-                files->InsertNextValue(fileNames->GetValue(i));
-                }
-              }
-            }
-          else
-            {
-            // Directly add the series to "this"
-            this->AddSeriesFileNames(
-              patientIdx, studyIdx, fileNames,
-              items[patientItem], items[studyItem], items[seriesItem]);
-            }
+          // Add the series if it passes the query
+          this->AddSeriesWithQuery(
+            patientIdx, studyIdx, fileNames,
+            items[patientItem], items[studyItem], items[seriesItem]);
           fileNames = vtkSmartPointer<vtkStringArray>::New();
           }
         }
@@ -1364,16 +1417,8 @@ void vtkDICOMDirectory::ProcessDirectory(
         }
       else if (errorCode == 0)
         {
-        if (this->Query)
-          {
-          // Convert the DICOMDIR into a list of filenames.
-          this->ProcessDirectoryFile(dirname, meta, files);
-          }
-        else
-          {
-          // Directly process DICOMDIR, no need to re-sort the files later.
-          this->ProcessDirectoryFile(dirname, meta, 0);
-          }
+        // Process the DICOMDIR file.
+        this->ProcessDirectoryFile(dirname, meta);
         return;
         }
       }
@@ -1466,7 +1511,7 @@ void vtkDICOMDirectory::Execute()
         }
       else if (vtkDICOMUtilities::PatternMatches("*.sql", fname.c_str()))
         {
-        this->ProcessOsirixDatabase(fname.c_str(), files);
+        this->ProcessOsirixDatabase(fname.c_str());
         }
       else if (this->FilePattern == 0 || this->FilePattern[0] == '\0' ||
                vtkDICOMUtilities::PatternMatches(

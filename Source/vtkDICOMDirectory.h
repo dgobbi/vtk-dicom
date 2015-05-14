@@ -199,6 +199,13 @@ protected:
     const vtkDICOMItem& studyRecord,
     const vtkDICOMItem& seriesRecord);
 
+  //! Add files only if they match the query.
+  void AddSeriesWithQuery(
+    int patient, int study, vtkStringArray *files,
+    const vtkDICOMItem& patientRecord,
+    const vtkDICOMItem& studyRecord,
+    const vtkDICOMItem& seriesRecord);
+
   //! Returns false if the record doesn't match the query.
   bool MatchesQuery(const vtkDICOMItem& record);
 
@@ -217,15 +224,14 @@ protected:
    *  the DICOMDIR file, rather than the DICOMDIR file itself.  The
    *  DICOMDIR file should be parsed before this method is called.
    */
-  void ProcessDirectoryFile(
-    const char *dirname, vtkDICOMMetaData *meta, vtkStringArray *files);
+  void ProcessDirectoryFile(const char *dirname, vtkDICOMMetaData *meta);
 
   //! Process a directory, and subdirs to the specified depth.
   void ProcessDirectory(
     const char *dirname, int depth, vtkStringArray *files);
 
   //! Process an OsiriX sqlite database file.
-  void ProcessOsirixDatabase(const char *fname, vtkStringArray *files);
+  void ProcessOsirixDatabase(const char *fname);
 
 private:
   vtkDICOMDirectory(const vtkDICOMDirectory&);  // Not implemented.
