@@ -1268,11 +1268,13 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
 
         if (entryType == "PATIENT")
           {
-          patientIdx++;
+          // Get current max patient index plus one
+          patientIdx = this->GetNumberOfPatients();
           }
         else if (entryType == "STUDY")
           {
-          studyIdx++;
+          // Get current max study index plus one
+          studyIdx = this->GetNumberOfStudies();
           }
         else if (entryType == "SERIES")
           {
