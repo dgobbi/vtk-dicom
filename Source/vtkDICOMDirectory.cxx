@@ -41,6 +41,7 @@
 #include <vtksys/Directory.hxx>
 
 #include <ctype.h>
+#include <stdlib.h>
 
 vtkStandardNewMacro(vtkDICOMDirectory);
 
@@ -1223,6 +1224,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
         std::string fpath = im->col[IM_PATHSTRING].ToString();
         if (fpath.length() == 0)
           {
+          // no PATHSTRING, so use PATHNUMBER instead
           vtkTypeInt64 fnum = im->col[IM_PATHNUMBER].ToTypeInt64();
           vtkTypeInt64 dnum = (fnum/10000 + 1)*10000;
           vtkVariant fv(fnum);
@@ -1233,8 +1235,21 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
           path.pop_back();
           path.pop_back();
           }
+        else if (fpath[0] != '/')
+          {
+          // PATHSTRING is a local path, not an absolute path
+          vtkTypeInt64 fnum = atol(fpath.c_str());
+          vtkTypeInt64 dnum = (fnum/10000 + 1)*10000;
+          vtkVariant dv(dnum);
+          path.push_back(dv.ToString());
+          path.push_back(fpath);
+          fpath = vtksys::SystemTools::JoinPath(path);
+          path.pop_back();
+          path.pop_back();
+          }
         if (fpath != lastpath)
           {
+          // Add the path to the list of filenames
           fileNames->InsertNextValue(fpath);
           lastpath = fpath;
           }
