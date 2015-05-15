@@ -63,6 +63,7 @@ void dicomtocsv_usage(FILE *file, const char *cp)
     "  --study          Print one row for each study.\n"
     "  --series         Print one row for each series (default).\n"
     "  --image          Print one row for each image.\n"
+    "  --silent        Do not report any progress information.\n"
     "  --help           Print a brief help message.\n"
     "  --version        Print the software version.\n");
 }
@@ -419,6 +420,7 @@ MAINMACRO(argc, argv)
   std::vector<std::string> oplist;
   bool firstNonZero = false;
   bool useDirectoryRecords = false;
+  bool silent = false;
   int level = 3; // default to series level
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
@@ -507,6 +509,10 @@ MAINMACRO(argc, argv)
       {
       level = 4;
       }
+    else if (strcmp(arg, "--silent") == 0)
+      {
+      silent = true;
+      }
     else if (arg[0] == '-')
       {
       fprintf(stderr, "unrecognized option %s.\n\n", arg);
@@ -536,6 +542,11 @@ MAINMACRO(argc, argv)
       }
     osp = &ofs;
     }
+  else
+    {
+    // if output to stdout, then silence progress reporting
+    silent = true;
+    }
 
   // Write the header
   dicomtocsv_writeheader(query, &qtlist, *osp);
@@ -552,7 +563,7 @@ MAINMACRO(argc, argv)
       {
       finder->SetFindLevelToSeries();
       }
-    if (ofile)
+    if (!silent)
       {
       p = vtkSmartPointer<ProgressObserver>::New();
       p->SetText("Scanning");
@@ -565,7 +576,7 @@ MAINMACRO(argc, argv)
     finder->SetFindQuery(query);
     finder->Update();
 
-    if (ofile)
+    if (!silent)
       {
       p->SetText("Writing");
       }

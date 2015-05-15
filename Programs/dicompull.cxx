@@ -65,6 +65,7 @@ void dicompull_usage(FILE *file, const char *cp)
     "  -name pattern   Set file names to match (with \"*\" or \"?\").\n"
     "  -image          Restrict the search to files with PixelData.\n"
     "  -series         Find all files in series if even one file matches.\n"
+    "  --silent        Do not report any progress information.\n"
     "  --help          Print a brief help message.\n"
     "  --version       Print the software version.\n"
     );
@@ -251,6 +252,7 @@ MAINMACRO(argc, argv)
   vtkDICOMItem query;
   bool requirePixelData = false;
   bool findSeries = false;
+  bool silent = false;
   std::string outdir;
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
@@ -358,6 +360,10 @@ MAINMACRO(argc, argv)
       {
       findSeries = true;
       }
+    else if (strcmp(arg, "--silent") == 0)
+      {
+      silent = true;
+      }
     else if (arg[0] == '-')
       {
       fprintf(stderr, "unrecognized option %s.\n\n", arg);
@@ -415,20 +421,25 @@ MAINMACRO(argc, argv)
 
     vtkSmartPointer<ProgressObserver> p =
       vtkSmartPointer<ProgressObserver>::New();
-    p->SetText("Scanning");
-    finder->AddObserver(vtkCommand::ProgressEvent, p);
-    finder->AddObserver(vtkCommand::StartEvent, p);
-    finder->AddObserver(vtkCommand::EndEvent, p);
-
+    if (!silent)
+      {
+      p->SetText("Scanning");
+      finder->AddObserver(vtkCommand::ProgressEvent, p);
+      finder->AddObserver(vtkCommand::StartEvent, p);
+      finder->AddObserver(vtkCommand::EndEvent, p);
+      }
     finder->Update();
 
-    p->SetText("Copying");
-    p->Execute(NULL, vtkCommand::StartEvent, NULL);
     vtkIdType count = 0;
     vtkIdType total = 0;
-    for (int k = 0; k < finder->GetNumberOfSeries(); k++)
+    if (!silent)
       {
-      total += finder->GetFileNamesForSeries(k)->GetNumberOfValues();
+      p->SetText("Copying");
+      p->Execute(NULL, vtkCommand::StartEvent, NULL);
+      for (int k = 0; k < finder->GetNumberOfSeries(); k++)
+        {
+        total += finder->GetFileNamesForSeries(k)->GetNumberOfValues();
+        }
       }
 
     for (int j = 0; j < finder->GetNumberOfStudies(); j++)
@@ -539,15 +550,21 @@ MAINMACRO(argc, argv)
               }
             }
 
-          count++;
-          double progress = (static_cast<double>(count)/
-                             static_cast<double>(total));
-          p->Execute(NULL, vtkCommand::ProgressEvent, &progress);
+          if (!silent)
+            {
+            count++;
+            double progress = (static_cast<double>(count)/
+                               static_cast<double>(total));
+            p->Execute(NULL, vtkCommand::ProgressEvent, &progress);
+            }
           }
         }
       }
     delete [] buffer;
-    p->Execute(NULL, vtkCommand::EndEvent, NULL);
+    if (!silent)
+      {
+      p->Execute(NULL, vtkCommand::EndEvent, NULL);
+      }
     }
 
   return rval;
