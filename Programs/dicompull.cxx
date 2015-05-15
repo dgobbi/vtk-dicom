@@ -23,6 +23,7 @@
 // from dicomcli
 #include "mainmacro.h"
 #include "readquery.h"
+#include "progress.h"
 
 #include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
@@ -411,7 +412,24 @@ MAINMACRO(argc, argv)
     finder->SetRequirePixelData(requirePixelData);
     finder->SetFindLevel(
       findSeries ? vtkDICOMDirectory::SERIES : vtkDICOMDirectory::IMAGE);
+
+    vtkSmartPointer<ProgressObserver> p =
+      vtkSmartPointer<ProgressObserver>::New();
+    p->SetText("Scanning");
+    finder->AddObserver(vtkCommand::ProgressEvent, p);
+    finder->AddObserver(vtkCommand::StartEvent, p);
+    finder->AddObserver(vtkCommand::EndEvent, p);
+
     finder->Update();
+
+    p->SetText("Copying");
+    p->Execute(NULL, vtkCommand::StartEvent, NULL);
+    vtkIdType count = 0;
+    vtkIdType total = 0;
+    for (int k = 0; k < finder->GetNumberOfSeries(); k++)
+      {
+      total += finder->GetFileNamesForSeries(k)->GetNumberOfValues();
+      }
 
     for (int j = 0; j < finder->GetNumberOfStudies(); j++)
       {
@@ -450,10 +468,8 @@ MAINMACRO(argc, argv)
                   sep, si, static_cast<int>(i+1));
           const std::string& srcname = sa->GetValue(i);
           std::string fullname = dirname + fname;
-          fprintf(stderr, "same %s\n", srcname.c_str());
           if (!vtksys::SystemTools::SameFile(srcname.c_str(), fullname.c_str()))
             {
-            fprintf(stderr, "copy %s\n", srcname.c_str());
             vtkDICOMFile infile(srcname.c_str(), vtkDICOMFile::In);
             if (infile.GetError())
               {
@@ -522,10 +538,16 @@ MAINMACRO(argc, argv)
                 }
               }
             }
+
+          count++;
+          double progress = (static_cast<double>(count)/
+                             static_cast<double>(total));
+          p->Execute(NULL, vtkCommand::ProgressEvent, &progress);
           }
         }
       }
     delete [] buffer;
+    p->Execute(NULL, vtkCommand::EndEvent, NULL);
     }
 
   return rval;
