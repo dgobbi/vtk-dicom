@@ -63,7 +63,7 @@ void dicomtocsv_usage(FILE *file, const char *cp)
     "  --study          Print one row for each study.\n"
     "  --series         Print one row for each series (default).\n"
     "  --image          Print one row for each image.\n"
-    "  --silent        Do not report any progress information.\n"
+    "  --silent         Do not report any progress information.\n"
     "  --help           Print a brief help message.\n"
     "  --version        Print the software version.\n");
 }
