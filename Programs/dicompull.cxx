@@ -18,6 +18,7 @@
 #include "vtkDICOMDataElement.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMDictionary.h"
+#include "vtkDICOMFile.h"
 
 // from dicomcli
 #include "mainmacro.h"
@@ -397,6 +398,9 @@ MAINMACRO(argc, argv)
   // Write data for every input directory
   if (a->GetNumberOfTuples() > 0)
     {
+    const size_t bufsize = 8192;
+    unsigned char *buffer = new unsigned char [bufsize];
+
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
     finder->SetInputFileNames(a);
@@ -434,6 +438,7 @@ MAINMACRO(argc, argv)
             {
             fprintf(stderr, "Cannot create directory: %s\n",
                     dirname.c_str());
+            delete [] buffer;
             exit(1);
             }
           }
@@ -443,12 +448,84 @@ MAINMACRO(argc, argv)
           char fname[32];
           sprintf(fname, "%sIM-%04d-%04d.dcm",
                   sep, si, static_cast<int>(i+1));
+          const std::string& srcname = sa->GetValue(i);
           std::string fullname = dirname + fname;
-          vtksys::SystemTools::CopyFileIfDifferent(
-            sa->GetValue(i).c_str(), fullname.c_str());
+          fprintf(stderr, "same %s\n", srcname.c_str());
+          if (!vtksys::SystemTools::SameFile(srcname.c_str(), fullname.c_str()))
+            {
+            fprintf(stderr, "copy %s\n", srcname.c_str());
+            vtkDICOMFile infile(srcname.c_str(), vtkDICOMFile::In);
+            if (infile.GetError())
+              {
+              const char *message = "Cannot copy file";
+              switch (infile.GetError())
+                {
+                case vtkDICOMFile::AccessDenied:
+                  message = "Access denied for file";
+                  break;
+                case vtkDICOMFile::IsDirectory:
+                  message = "This file is a directory";
+                  break;
+                case vtkDICOMFile::FileNotFound:
+                case vtkDICOMFile::DirectoryNotFound:
+                  message = "File does not exist";
+                  break;
+                }
+              fprintf(stderr, "%s: %s\n", message, srcname.c_str());
+              }
+            else if (infile.GetSize() == 0)
+              {
+              fprintf(stderr, "File size is zero: %s\n", srcname.c_str());
+              }
+            else
+              {
+              vtkDICOMFile outfile(fullname.c_str(), vtkDICOMFile::Out);
+              if (outfile.GetError())
+                {
+                const char *message = "Cannot write file";
+                switch (outfile.GetError())
+                  {
+                  case vtkDICOMFile::AccessDenied:
+                    message = "Access denied for output file";
+                    break;
+                  case vtkDICOMFile::IsDirectory:
+                    message = "This output is a directory";
+                    break;
+                  case vtkDICOMFile::DirectoryNotFound:
+                    message = "Directory does not exist";
+                    break;
+                  }
+                fprintf(stderr, "%s: %s\n", message, fullname.c_str());
+                }
+              else
+                {
+                // copy the file
+                while (!infile.EndOfFile())
+                  {
+                  size_t bytecount = infile.Read(buffer, bufsize);
+                  if (bytecount == 0 && infile.GetError())
+                    {
+                    fprintf(stderr, "Error, incomplete read: %s\n",
+                            srcname.c_str());
+                    vtkDICOMFile::Remove(fullname.c_str());
+                    break;
+                    }
+                  if (bytecount > 0 &&
+                      outfile.Write(buffer, bytecount) != bytecount)
+                    {
+                    fprintf(stderr, "Error, incomplete write: %s\n",
+                            fullname.c_str());
+                    vtkDICOMFile::Remove(fullname.c_str());
+                    break;
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
+    delete [] buffer;
     }
 
   return rval;
