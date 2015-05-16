@@ -223,32 +223,20 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
         numberOfFiles = a->GetNumberOfValues();
         }
 
-      vtkSmartPointer<vtkDICOMMetaData> meta =
-        vtkSmartPointer<vtkDICOMMetaData>::New();
-      if (level >= 4 || firstNonZero)
-        {
-        // need to parse all files
-        meta->SetNumberOfInstances(a->GetNumberOfValues());
-        }
-
+      vtkSmartPointer<vtkDICOMMetaData> meta;
       if (useDirectoryRecords)
         {
-        // all the needed meta data is stored in the index records
-        const vtkDICOMItem *items[3];
-        items[0] = &finder->GetPatientRecordForStudy(j);
-        items[1] = &finder->GetStudyRecord(j);
-        items[2] = &finder->GetSeriesRecord(k);
-        for (int ii = 0; ii < 3; ii++)
-          {
-          vtkDICOMDataElementIterator iter;
-          for (iter = items[ii]->Begin(); iter != items[ii]->End(); ++iter)
-            {
-            meta->SetAttributeValue(iter->GetTag(), iter->GetValue());
-            }
-          }
+        meta = finder->GetMetaDataForSeries(k);
         }
       else
         {
+        meta = vtkSmartPointer<vtkDICOMMetaData>::New();
+        if (level >= 4 || firstNonZero)
+          {
+          // need to parse all files
+          meta->SetNumberOfInstances(a->GetNumberOfValues());
+          }
+
         // need to go to the files for the meta data
         vtkSmartPointer<vtkDICOMParser> parser =
           vtkSmartPointer<vtkDICOMParser>::New();
