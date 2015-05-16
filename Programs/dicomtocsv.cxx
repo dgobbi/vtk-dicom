@@ -560,7 +560,6 @@ MAINMACRO(argc, argv)
       finder->AddObserver(vtkCommand::EndEvent, p);
       }
     finder->SetInputFileNames(a);
-    finder->SetDirectoryName(a->GetValue(0));
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
     finder->Update();
