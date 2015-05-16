@@ -1717,7 +1717,7 @@ void vtkDICOMDirectory::ProcessDirectory(
     path.pop_back();
     }
 
-  if (this->InputFileNames == 0 && depth == this->ScanDepth)
+  if (depth == this->ScanDepth)
     {
     // Build the path to the DICOMDIR file.
     path.push_back("DICOMDIR");
