@@ -15,6 +15,7 @@
 
 #include "vtkDICOMItem.h"
 #include "vtkDICOMMetaData.h"
+#include "vtkDICOMSequence.h"
 #include "vtkDICOMParser.h"
 #include "vtkDICOMUtilities.h"
 #include "vtkDICOMVR.h"
@@ -52,6 +53,7 @@ struct vtkDICOMDirectory::SeriesItem
 {
   vtkDICOMItem Record;
   vtkSmartPointer<vtkStringArray> Files;
+  vtkSmartPointer<vtkDICOMMetaData> Meta;
 };
 
 struct vtkDICOMDirectory::StudyItem
@@ -91,6 +93,7 @@ struct vtkDICOMDirectory::FileInfo
 {
   unsigned int InstanceNumber;
   const char *FileName;
+  vtkDICOMItem ImageRecord;
 };
 
 struct vtkDICOMDirectory::SeriesInfo
@@ -356,6 +359,12 @@ vtkStringArray *vtkDICOMDirectory::GetFileNamesForSeries(int i)
 }
 
 //----------------------------------------------------------------------------
+vtkDICOMMetaData *vtkDICOMDirectory::GetMetaDataForSeries(int i)
+{
+  return (*this->Series)[i].Meta;
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMDirectory::MatchesQuery(
   const vtkDICOMItem& record, vtkDICOMItem& results)
 {
@@ -366,18 +375,22 @@ bool vtkDICOMDirectory::MatchesQuery(
     vtkDICOMDataElementIterator iter;
     for (iter = record.Begin(); iter != record.End(); ++iter)
       {
-      const vtkDICOMValue& v =
-        this->Query->GetAttributeValue(iter->GetTag());
-      if (v.IsValid())
+      vtkDICOMTag tag = iter->GetTag();
+      if (tag != DC::SpecificCharacterSet && tag.GetGroup() != 0x0004)
         {
-        if (iter->GetValue().Matches(v))
+        const vtkDICOMValue& v = this->Query->GetAttributeValue(tag);
+        if (v.IsValid())
           {
-          results.SetAttributeValue(iter->GetTag(), iter->GetValue());
-          }
-        else
-          {
-          matched = false;
-          break;
+          const vtkDICOMValue& u = iter->GetValue();
+          if (u.Matches(v))
+            {
+            results.SetAttributeValue(tag, u);
+            }
+          else
+            {
+            matched = false;
+            break;
+            }
           }
         }
       }
@@ -387,17 +400,75 @@ bool vtkDICOMDirectory::MatchesQuery(
 }
 
 //----------------------------------------------------------------------------
+int vtkDICOMDirectory::MatchesImageQuery(
+  const vtkDICOMItem& record, const vtkDICOMItem& results)
+{
+  bool fullyMatched = true;
+  bool misMatched = false;
+
+  if (this->Query)
+    {
+    vtkDICOMDataElementIterator iter;
+    for (iter = this->Query->Begin(); iter != this->Query->End(); ++iter)
+      {
+      vtkDICOMTag tag = iter->GetTag();
+      const vtkDICOMValue& v = iter->GetValue();
+      if (v.GetVR() == vtkDICOMVR::SQ)
+        {
+        if (v.GetNumberOfValues() > 0)
+          {
+          fullyMatched = false;
+          break;
+          }
+        }
+      else if (tag != DC::SpecificCharacterSet && tag.GetGroup() != 0x0004)
+        {
+        if (v.GetVL() > 0)
+          {
+          if (!results.GetAttributeValue(tag).IsValid())
+            {
+            const vtkDICOMValue& u = record.GetAttributeValue(tag);
+            if (!u.IsValid())
+              {
+              fullyMatched = false;
+              }
+            else if (!u.Matches(v))
+              {
+              misMatched = true;
+              break;
+              }
+            }
+          }
+        }
+      }
+    }
+
+  int r = 1;
+  if (fullyMatched)
+    {
+    r = 0;
+    }
+  if (misMatched)
+    {
+    r = -1;
+    }
+
+  return r;
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMDirectory::AddSeriesWithQuery(
   int patient, int study, vtkStringArray *files,
   const vtkDICOMItem& patientRecord,
   const vtkDICOMItem& studyRecord,
-  const vtkDICOMItem& seriesRecord)
+  const vtkDICOMItem& seriesRecord,
+  const vtkDICOMItem *imageRecords[])
 {
   if (this->Query == 0)
     {
     this->AddSeriesFileNames(
       patient, study, files,
-      patientRecord, studyRecord, seriesRecord);
+      patientRecord, studyRecord, seriesRecord, imageRecords);
     return;
     }
 
@@ -413,18 +484,20 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
     vtkDICOMDataElementIterator iter;
     for (iter = this->Query->Begin(); iter != this->Query->End(); ++iter)
       {
-      if (iter->GetValue().GetVR() == vtkDICOMVR::SQ)
+      vtkDICOMTag tag = iter->GetTag();
+      const vtkDICOMValue& v = iter->GetValue();
+      if (v.GetVR() == vtkDICOMVR::SQ)
         {
-        if (iter->GetValue().GetNumberOfValues() > 0)
+        if (v.GetNumberOfValues() > 0)
           {
           fullyMatched = false;
           break;
           }
         }
-      else if (iter->GetTag() != DC::SpecificCharacterSet)
+      else if (tag != DC::SpecificCharacterSet && tag.GetGroup() != 0x0004)
         {
-        if (iter->GetValue().GetVL() > 0 &&
-            !results.GetAttributeValue(iter->GetTag()).IsValid())
+        if (v.GetVL() > 0 &&
+            !results.GetAttributeValue(tag).IsValid())
           {
           fullyMatched = false;
           break;
@@ -437,11 +510,13 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
       // All query attributes have been matched!
       this->AddSeriesFileNames(
         patient, study, files,
-        patientRecord, studyRecord, seriesRecord);
+        patientRecord, studyRecord, seriesRecord, imageRecords);
       return;
       }
 
     // Need to query against the actual files
+    const vtkDICOMItem **usedImageRecords = imageRecords;
+    std::vector<const vtkDICOMItem *> newImageRecords;
     vtkSmartPointer<vtkDICOMMetaData> meta =
       vtkSmartPointer<vtkDICOMMetaData>::New();
     vtkSmartPointer<vtkDICOMParser> parser =
@@ -465,24 +540,35 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
 
     for (vtkIdType i = 0; i < n; i++)
       {
-      // Read the file metadata
-      meta->Initialize();
-      const std::string fileName = files->GetValue(i);
-      this->SetInternalFileName(fileName.c_str());
-      parser->SetFileName(fileName.c_str());
-      parser->Update();
-      if (!parser->GetPixelDataFound())
+      const std::string& fileName = files->GetValue(i);
+      bool matched = false;
+      int r = this->MatchesImageQuery(*imageRecords[i], results);
+      if (r == 0)
         {
-        if (!this->ErrorCode)
-          {
-          this->ErrorCode = parser->GetErrorCode();
-          }
-        if (this->ErrorCode || this->RequirePixelData)
-          {
-          continue;
-          }
+        // All remaining queries were matched by image record
+        matched = true;
         }
-      if (parser->GetQueryMatched())
+      else if (r > 0)
+        {
+        // Read the file metadata
+        meta->Initialize();
+        this->SetInternalFileName(fileName.c_str());
+        parser->SetFileName(fileName.c_str());
+        parser->Update();
+        if (!parser->GetPixelDataFound())
+          {
+          if (!this->ErrorCode)
+            {
+            this->ErrorCode = parser->GetErrorCode();
+            }
+          if (this->ErrorCode || this->RequirePixelData)
+            {
+            continue;
+            }
+          }
+        matched = parser->GetQueryMatched();
+        }
+      if (matched)
         {
         if (this->FindLevel < vtkDICOMDirectory::IMAGE)
           {
@@ -493,6 +579,8 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
           {
           // Add the matched file.
           a->InsertNextValue(fileName);
+          newImageRecords.push_back(imageRecords[i]);
+          usedImageRecords = &newImageRecords[0];
           }
         }
       }
@@ -501,7 +589,7 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
       {
       this->AddSeriesFileNames(
         patient, study, a,
-        patientRecord, studyRecord, seriesRecord);
+        patientRecord, studyRecord, seriesRecord, usedImageRecords);
       }
     }
 }
@@ -511,7 +599,8 @@ void vtkDICOMDirectory::AddSeriesFileNames(
   int patient, int study, vtkStringArray *files,
   const vtkDICOMItem& patientRecord,
   const vtkDICOMItem& studyRecord,
-  const vtkDICOMItem& seriesRecord)
+  const vtkDICOMItem& seriesRecord,
+  const vtkDICOMItem *imageRecords[])
 {
   int m = static_cast<int>(this->Patients->size());
   int n = static_cast<int>(this->Studies->size());
@@ -567,10 +656,83 @@ void vtkDICOMDirectory::AddSeriesFileNames(
     return;
     }
 
+  int ni = static_cast<int>(files->GetNumberOfValues());
+  vtkSmartPointer<vtkDICOMMetaData> meta =
+    vtkSmartPointer<vtkDICOMMetaData>::New();
+  meta->SetNumberOfInstances(ni);
+  this->CopyRecord(meta, &patientRecord, -1);
+  this->CopyRecord(meta, &studyRecord, -1);
+  this->CopyRecord(meta, &seriesRecord, -1);
+  for (int ii = 0; ii < ni; ii++)
+    {
+    this->CopyRecord(meta, imageRecords[ii], ii);
+    }
+
   this->Series->push_back(SeriesItem());
   SeriesItem& item = this->Series->back();
   item.Record = seriesRecord;
   item.Files = files;
+  item.Meta = meta;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMDirectory::CopyRecord(
+  vtkDICOMMetaData *meta, const vtkDICOMItem *item, int instance)
+{
+  vtkDICOMDataElementIterator iter = item->Begin();
+  vtkDICOMDataElementIterator iterEnd = item->End();
+  for (; iter != iterEnd; ++iter)
+    {
+    vtkDICOMTag tag = iter->GetTag();
+    if (tag.GetGroup() == 0x0004)
+      {
+      // DICOMDIR-specific tags
+      if (tag == DC::ReferencedSOPClassUIDInFile)
+        {
+        tag = DC::SOPClassUID;
+        }
+      else if (tag == DC::ReferencedSOPInstanceUIDInFile)
+        {
+        tag = DC::SOPInstanceUID;
+        }
+      else if (tag == DC::ReferencedTransferSyntaxUIDInFile)
+        {
+        tag = DC::TransferSyntaxUID;
+        }
+      else
+        {
+        continue;
+        }
+      }
+
+    if (instance >= 0)
+      {
+      meta->SetAttributeValue(instance, tag, iter->GetValue());
+      }
+    else
+      {
+      meta->SetAttributeValue(tag, iter->GetValue());
+      }
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMDirectory::FillImageRecord(
+  vtkDICOMItem *item, vtkDICOMMetaData *meta)
+{
+  static const DC::EnumType tags[] = {
+    DC::SOPClassUID,
+    DC::SOPInstanceUID,
+    DC::InstanceNumber,
+    DC::ItemDelimitationItem
+  };
+
+  const DC::EnumType *tag = tags;
+  while (*tag != DC::ItemDelimitationItem)
+    {
+    item->SetAttributeValue(*tag, meta->GetAttributeValue(*tag));
+    tag++;
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -662,6 +824,8 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     // basic required information
     DC::SpecificCharacterSet, // 1C
     // image-level information
+    DC::SOPClassUID,          // 1
+    DC::SOPInstanceUID,       // 1
     DC::InstanceNumber,       // 1
     // series-level information
     DC::SeriesDate,           // 3
@@ -848,7 +1012,11 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
         }
       if (c == 0 && seriesUID != 0)
         {
-        li->Files.push_back(fileInfo);
+        std::vector<FileInfo>::iterator pos =
+          li->Files.insert(
+            std::upper_bound(li->Files.begin(), li->Files.end(), fileInfo,
+              CompareInstance), fileInfo);
+        this->FillImageRecord(&pos->ImageRecord, meta);
         li->QueryMatched |= queryMatched;
         foundSeries = true;
         break;
@@ -873,10 +1041,11 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       this->FillPatientRecord(&li->PatientRecord, meta);
       this->FillStudyRecord(&li->StudyRecord, meta);
       this->FillSeriesRecord(&li->SeriesRecord, meta);
+      this->FillImageRecord(&li->Files.back().ImageRecord, meta);
       }
     }
 
-  // Sort each series by InstanceNumber
+  // Visit each series and call AddSeriesFileNames
   int patientCount = this->GetNumberOfPatients();
   int studyCount = this->GetNumberOfStudies();
 
@@ -887,9 +1056,6 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     {
     SeriesInfo &v = *li;
     if (!v.QueryMatched) { continue; }
-
-    // Sort files by InstanceNumber
-    std::stable_sort(v.Files.begin(), v.Files.end(), CompareInstance);
 
     // Is this a new patient or a new study?
     if (!lastPatientID.IsValid() || v.PatientID != lastPatientID)
@@ -909,13 +1075,15 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       vtkSmartPointer<vtkStringArray>::New();
     vtkIdType n = static_cast<vtkIdType>(v.Files.size());
     sa->SetNumberOfValues(n);
+    std::vector<const vtkDICOMItem *> imageRecords(n);
     for (vtkIdType i = 0; i < n; i++)
       {
       sa->SetValue(i, v.Files[i].FileName);
+      imageRecords[i] = &v.Files[i].ImageRecord;
       }
     this->AddSeriesFileNames(
       patientCount-1, studyCount-1, sa,
-      v.PatientRecord, v.StudyRecord, v.SeriesRecord);
+      v.PatientRecord, v.StudyRecord, v.SeriesRecord, &imageRecords[0]);
     }
 }
 
@@ -925,7 +1093,31 @@ namespace {
 // Trivial structs needed by ProcessOsirixDatabase
 struct StudyRow { vtkVariant col[12]; };
 struct SeriesRow { vtkVariant col[8]; };
-struct ImageRow { vtkVariant col[4]; };
+struct ImageRow { vtkVariant col[5]; };
+
+// Decompress an CompressInstanceUID from an Osirix database
+std::string DecompressUID(const std::string& s)
+{
+  char uid[64];
+  size_t n = s.length();
+  size_t m = 0;
+  for (size_t i = 0; i < n && i < 32; i++)
+    {
+    unsigned char c = s[i];
+    c >>= 4;
+    if (c == 0) { break; }
+    c += ('0' - 1);
+    if (c > '9') { c = '.'; }
+    uid[m++] = c;
+    c = s[i];
+    c &= 0x0f;
+    if (c == 0) { break; }
+    c += ('0' - 1);
+    if (c > '9') { c = '.'; }
+    uid[m++] = c;
+    }
+  return std::string(uid, m);
+}
 
 }
 
@@ -978,7 +1170,8 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
 
   // Indices to columns in the image table
   enum {
-    IM_INSTANCENUMBER, IM_FRAMEID, IM_PATHNUMBER, IM_PATHSTRING, IM_NCOLS
+    IM_INSTANCENUMBER, IM_FRAMEID, IM_PATHNUMBER, IM_PATHSTRING,
+    IM_COMPRESSEDSOPINSTANCEUID, IM_NCOLS
   };
 
   // These vectors will hold the tables
@@ -1039,7 +1232,8 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
 
   // Read the image table
   if (!q->SetQuery("select ZINSTANCENUMBER,ZFRAMEID,ZPATHNUMBER,"
-                   "ZPATHSTRING,ZSERIES from ZIMAGE order by"
+                   "ZPATHSTRING,ZCOMPRESSEDSOPINSTANCEUID,ZSERIES"
+                   " from ZIMAGE order by"
                    " ZSERIES,ZINSTANCENUMBER") ||
       !q->Execute())
     {
@@ -1173,8 +1367,10 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
       double seriesSeconds = se->col[SE_DATE].ToDouble();
       std::string seriesDT = vtkDICOMUtilities::GenerateDateTime(
         static_cast<long long>((seriesSeconds + timediff)*1e6), NULL);
+      vtkDICOMValue sopClassUID(
+        vtkDICOMVR::UI, se->col[SE_SERIESSOPCLASSUID].ToString());
       std::string seriesUID = se->col[SE_SERIESDICOMUID].ToString();
-      // Remove anything before the UID
+      // Remove any text before the UID
       size_t k = 0;
       while (k < seriesUID.length() &&
              (seriesUID[k] <= '0' || seriesUID[k] >= '9'))
@@ -1202,6 +1398,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
 
       vtkSmartPointer<vtkStringArray> fileNames =
         vtkSmartPointer<vtkStringArray>::New();
+      vtkDICOMSequence imageRecordSequence;
 
       std::string lastpath;
 
@@ -1250,6 +1447,14 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
         if (fpath != lastpath)
           {
           // Add the path to the list of filenames
+          vtkDICOMItem imageRecord;
+          imageRecord.SetAttributeValue(DC::SOPClassUID, sopClassUID);
+          imageRecord.SetAttributeValue(
+            DC::SOPInstanceUID,
+            DecompressUID(im->col[IM_COMPRESSEDSOPINSTANCEUID].ToString()));
+          imageRecord.SetAttributeValue(
+            DC::InstanceNumber, im->col[IM_INSTANCENUMBER].ToString());
+          imageRecordSequence.AddItem(imageRecord);
           fileNames->InsertNextValue(fpath);
           lastpath = fpath;
           }
@@ -1259,9 +1464,20 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
         }
 
       // Add the series if it passes the query
-      this->AddSeriesWithQuery(
-        patientIdx, studyIdx, fileNames,
-        patientItem, studyItem, seriesItem);
+      size_t n = imageRecordSequence.GetNumberOfItems();
+      if (n > 0)
+        {
+        const vtkDICOMItem *data = imageRecordSequence.GetSequenceData();
+        std::vector<const vtkDICOMItem *> imageRecords(n);
+        for (size_t i = 0; i < n; i++)
+          {
+          imageRecords[i] = &data[i];
+          }
+
+        this->AddSeriesWithQuery(
+          patientIdx, studyIdx, fileNames,
+          patientItem, studyItem, seriesItem, &imageRecords[0]);
+        }
 
       // Check for abort and update progress at 1% intervals
       if (!this->AbortExecute)
@@ -1342,6 +1558,7 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
   // List of filenames for the current series.
   vtkSmartPointer<vtkStringArray> fileNames =
     vtkSmartPointer<vtkStringArray>::New();
+  std::vector<const vtkDICOMItem *> imageRecords;
 
   // Path broken into components.
   std::vector<std::string> path;
@@ -1405,6 +1622,7 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
               }
             fileNames->InsertNextValue(vtksys::SystemTools::JoinPath(path));
             path.resize(pathDepth);
+            imageRecords.push_back(&items[j]);
             }
           }
         }
@@ -1438,11 +1656,17 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
           }
         else if (entryType == "SERIES")
           {
-          // Add the series if it passes the query
-          this->AddSeriesWithQuery(
-            patientIdx, studyIdx, fileNames,
-            items[patientItem], items[studyItem], items[seriesItem]);
-          fileNames = vtkSmartPointer<vtkStringArray>::New();
+          if (!imageRecords.empty())
+            {
+            // Add the series if it passes the query
+            this->AddSeriesWithQuery(
+              patientIdx, studyIdx, fileNames,
+              items[patientItem], items[studyItem], items[seriesItem],
+              &imageRecords[0]);
+
+            fileNames = vtkSmartPointer<vtkStringArray>::New();
+            imageRecords.clear();
+            }
           }
         }
       }

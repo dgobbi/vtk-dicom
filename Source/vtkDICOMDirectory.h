@@ -137,6 +137,15 @@ public:
   //! Get the file names for a specific series.
   vtkStringArray *GetFileNamesForSeries(int i);
 
+  //! Get the meta data for a specific series.
+  /*!
+   *  This provides a subset of the meta data of each file in the series.
+   *  To be specific, it contains all the information from the patient,
+   *  study, and, at the very minimum, the SOPClassUID, SOPInstanceUID,
+   *  and InstanceNumber for each file.
+   */
+  vtkDICOMMetaData *GetMetaDataForSeries(int i);
+
   //! Get the file set ID.  This will be NULL unless a DICOMDIR was found.
   const char *GetFileSetID() { return this->FileSetID; }
 
@@ -174,6 +183,9 @@ protected:
   //! Fill the output filename array.
   virtual void Execute();
 
+  //! Fill image info from image metadata.
+  virtual void FillImageRecord(vtkDICOMItem *item, vtkDICOMMetaData *meta);
+
   //! Fill series info from image metadata.
   virtual void FillSeriesRecord(vtkDICOMItem *item, vtkDICOMMetaData *meta);
 
@@ -197,14 +209,16 @@ protected:
     int patient, int study, vtkStringArray *files,
     const vtkDICOMItem& patientRecord,
     const vtkDICOMItem& studyRecord,
-    const vtkDICOMItem& seriesRecord);
+    const vtkDICOMItem& seriesRecord,
+    const vtkDICOMItem *imageRecords[]);
 
   //! Add files only if they match the query.
   void AddSeriesWithQuery(
     int patient, int study, vtkStringArray *files,
     const vtkDICOMItem& patientRecord,
     const vtkDICOMItem& studyRecord,
-    const vtkDICOMItem& seriesRecord);
+    const vtkDICOMItem& seriesRecord,
+    const vtkDICOMItem *imageRecords[]);
 
   //! Returns false if the record doesn't match the query.
   /*!
@@ -212,6 +226,19 @@ protected:
    */
   bool MatchesQuery(
     const vtkDICOMItem& record, vtkDICOMItem& result);
+
+  //! Perform query on image record, given results from previous levels.
+  /*!
+   *  This method requires that MatchesQuery() was already called on the
+   *  patient, study, and series records.  It has three possible return
+   *  values.  If all remaining query attributes were matched by the image
+   *  record, then 0 is returned.  If any of the remaining query attributes
+   *  mis-matches with the image record, then -1 is returned.  If the query
+   *  contains tags that weren't in the patient, study, series, or image
+   *  record, then 1 is returned to indicate that the match is inconclusive.
+   */
+  int MatchesImageQuery(
+    const vtkDICOMItem& record, const vtkDICOMItem& result);
 
   //! Convert parser errors into sorter errors.
   void RelayError(vtkObject *o, unsigned long e, void *data);
@@ -236,6 +263,10 @@ protected:
 
   //! Process an OsiriX sqlite database file.
   void ProcessOsirixDatabase(const char *fname);
+
+  //! Copy attributes into a meta data object.
+  void CopyRecord(
+    vtkDICOMMetaData *meta, const vtkDICOMItem *item, int instance);
 
 private:
   vtkDICOMDirectory(const vtkDICOMDirectory&);  // Not implemented.
