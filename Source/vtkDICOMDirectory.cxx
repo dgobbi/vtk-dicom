@@ -724,6 +724,8 @@ void vtkDICOMDirectory::FillImageRecord(
     DC::SOPClassUID,
     DC::SOPInstanceUID,
     DC::InstanceNumber,
+    DC::Rows,
+    DC::Columns,
     DC::ItemDelimitationItem
   };
 
@@ -827,6 +829,8 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     DC::SOPClassUID,          // 1
     DC::SOPInstanceUID,       // 1
     DC::InstanceNumber,       // 1
+    DC::Rows,                 // 3
+    DC::Columns,              // 3
     // series-level information
     DC::SeriesDate,           // 3
     DC::SeriesTime,           // 3
@@ -1093,7 +1097,7 @@ namespace {
 // Trivial structs needed by ProcessOsirixDatabase
 struct StudyRow { vtkVariant col[12]; };
 struct SeriesRow { vtkVariant col[8]; };
-struct ImageRow { vtkVariant col[5]; };
+struct ImageRow { vtkVariant col[7]; };
 
 // Decompress an CompressInstanceUID from an Osirix database
 std::string DecompressUID(const std::string& s)
@@ -1171,7 +1175,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
   // Indices to columns in the image table
   enum {
     IM_INSTANCENUMBER, IM_FRAMEID, IM_PATHNUMBER, IM_PATHSTRING,
-    IM_COMPRESSEDSOPINSTANCEUID, IM_NCOLS
+    IM_COMPRESSEDSOPINSTANCEUID, IM_STOREDHEIGHT, IM_STOREDWIDTH, IM_NCOLS
   };
 
   // These vectors will hold the tables
@@ -1232,7 +1236,8 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
 
   // Read the image table
   if (!q->SetQuery("select ZINSTANCENUMBER,ZFRAMEID,ZPATHNUMBER,"
-                   "ZPATHSTRING,ZCOMPRESSEDSOPINSTANCEUID,ZSERIES"
+                   "ZPATHSTRING,ZCOMPRESSEDSOPINSTANCEUID,"
+                   "ZSTOREDHEIGHT,ZSTOREDWIDTH,ZSERIES"
                    " from ZIMAGE order by"
                    " ZSERIES,ZINSTANCENUMBER") ||
       !q->Execute())
@@ -1454,6 +1459,10 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
             DecompressUID(im->col[IM_COMPRESSEDSOPINSTANCEUID].ToString()));
           imageRecord.SetAttributeValue(
             DC::InstanceNumber, im->col[IM_INSTANCENUMBER].ToString());
+          imageRecord.SetAttributeValue(
+            DC::Rows, im->col[IM_STOREDHEIGHT].ToInt());
+          imageRecord.SetAttributeValue(
+            DC::Columns, im->col[IM_STOREDWIDTH].ToInt());
           imageRecordSequence.AddItem(imageRecord);
           fileNames->InsertNextValue(fpath);
           lastpath = fpath;
