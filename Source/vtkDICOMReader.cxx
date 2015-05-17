@@ -889,10 +889,13 @@ int vtkDICOMReader::RequestInformation(
       {
       pv.GetValues(point, 3);
       ov.GetValues(orient, 6);
-      vtkMath::Normalize(&orient[0]);
-      vtkMath::Normalize(&orient[3]);
       vtkMath::Cross(&orient[0], &orient[3], normal);
-      vtkMath::Normalize(normal);
+      if (vtkMath::Normalize(normal) < 1e-10)
+        {
+        orient[0] = 1.0; orient[1] = 0.0; orient[2] = 0.0;
+        orient[3] = 0.0; orient[4] = 1.0; orient[5] = 0.0;
+        normal[0] = 0.0; normal[1] = 0.0; normal[2] = 1.0;
+        }
       // re-orthogonalize x vector (improve precision)
       vtkMath::Cross(&orient[3], normal, &orient[0]);
 
