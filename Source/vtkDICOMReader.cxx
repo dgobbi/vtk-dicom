@@ -898,6 +898,8 @@ int vtkDICOMReader::RequestInformation(
         }
       // re-orthogonalize x vector (improve precision)
       vtkMath::Cross(&orient[3], normal, &orient[0]);
+      vtkMath::Normalize(orient[0]);
+      vtkMath::Normalize(orient[3]);
 
       if (this->MemoryRowOrder == vtkDICOMReader::BottomUp)
         {
