@@ -1099,7 +1099,7 @@ struct StudyRow { vtkVariant col[12]; };
 struct SeriesRow { vtkVariant col[8]; };
 struct ImageRow { vtkVariant col[7]; };
 
-// Decompress an CompressInstanceUID from an Osirix database
+// Decompress a SOPInstanceUID from an Osirix database
 std::string DecompressUID(const std::string& s)
 {
   char uid[64];
