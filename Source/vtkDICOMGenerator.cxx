@@ -1469,7 +1469,7 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *source)
     {
     vtkDICOMMetaDataAdapter sourceAdapter(source);
     thickness = sourceAdapter->GetAttributeValue(
-      DC::SliceThickness).AsDouble();
+      0, DC::SliceThickness).AsDouble();
     }
   if (thickness <= 0)
     {
