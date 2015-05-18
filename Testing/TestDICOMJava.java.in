@@ -15,12 +15,12 @@ public class TestDICOMJava {
           String[] kits = vtkSettings.GetKits();
           String vtk5libs[] = {
             "vtkCommonJava", "vtkFilteringJava", "vtkImagingJava",
-            "vtkGraphicsJava", "vtkIOJava"
+            "vtkGraphicsJava", "vtkIOJava", "vtkInfovisJava"
           };
           String vtk6libs[] = {
             "vtkCommonCoreJava", "vtkCommonDataModelJava",
             "vtkCommonExecutionModelJava", "vtkIOImageJava",
-            "vtkIOMPIImageJava"
+            "vtkIOMPIImageJava", "vtkIOSQLJava"
           };
           int cc;
           for (cc = 0; cc < kits.length; cc++) {
