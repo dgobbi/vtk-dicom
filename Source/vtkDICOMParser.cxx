@@ -173,7 +173,7 @@ vtkDICOMCharacterSet DecoderContext::GetCharacterSet()
       this->GetAttributeValue(DC::SpecificCharacterSet);
     if (v.IsValid())
       {
-      cs = vtkDICOMCharacterSet(v.AsString());
+      cs = vtkDICOMCharacterSet(v.GetCharData(), v.GetVL());
       }
     else if (this->Prev)
       {

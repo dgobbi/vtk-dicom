@@ -6478,19 +6478,24 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
 } // end anonymous namespace
 
 //----------------------------------------------------------------------------
-vtkDICOMCharacterSet::vtkDICOMCharacterSet(const std::string& name)
+unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
 {
-  const char *cp = name.c_str();
+  const char *cp = name;
+  const char *ep = name;
   int key = 0;
+  if (cp)
+    {
+    ep += nl;
+    }
 
   // Loop over backslash-separated values
-  for (int n = 0; *cp != '\0'; n++)
+  for (int n = 0; cp != ep && *cp != '\0'; n++)
     {
     // strip leading spaces
-    while (*cp == ' ') { cp++; }
+    while (cp != ep && *cp == ' ') { cp++; }
     // search for end of value
     const char *dp = cp;
-    while (*dp != '\\' && *dp != '\0') { dp++; }
+    while (dp != ep && *dp != '\\' && *dp != '\0') { dp++; }
     // find length of value (strip trailing spaces)
     size_t l = dp - cp;
     while (l > 0 && cp[l-1] == ' ') { l--; }
@@ -6535,10 +6540,10 @@ vtkDICOMCharacterSet::vtkDICOMCharacterSet(const std::string& name)
       }
 
     cp = dp;
-    if (*cp == '\\') { cp++; }
+    if (cp != ep && *cp == '\\') { cp++; }
     }
 
-  this->Key = static_cast<unsigned char>(key);
+  return static_cast<unsigned char>(key);
 }
 
 //----------------------------------------------------------------------------

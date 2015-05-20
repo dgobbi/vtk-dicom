@@ -34,7 +34,8 @@ vtkDICOMItem::vtkDICOMItem(vtkDICOMMetaData *meta)
       meta->GetAttributeValue(DC::SpecificCharacterSet);
     if (vcs.IsValid())
       {
-      this->L->CharacterSet = vtkDICOMCharacterSet(vcs.AsString());
+      this->L->CharacterSet =
+        vtkDICOMCharacterSet(vcs.GetCharData(), vcs.GetVL());
       }
     const vtkDICOMValue &v = meta->GetAttributeValue(DC::PixelRepresentation);
     if (v.IsValid())
@@ -247,7 +248,7 @@ vtkDICOMItem *vtkDICOMItem::FindItemOrInsert(
           this->GetAttributeValue(DC::SpecificCharacterSet);
         if (vcs.IsValid())
           {
-          cs = vtkDICOMCharacterSet(vcs.AsString());
+          cs = vtkDICOMCharacterSet(vcs.GetCharData(), vcs.GetVL());
           }
         const vtkDICOMValue &v = this->GetAttributeValue(
           DC::PixelRepresentation);
@@ -352,7 +353,7 @@ void vtkDICOMItem::SetAttributeValue(
         item->GetAttributeValue(DC::SpecificCharacterSet);
       if (vcs.IsValid())
         {
-        cs = vtkDICOMCharacterSet(vcs.AsString());
+        cs = vtkDICOMCharacterSet(vcs.GetCharData(), vcs.GetVL());
         }
       item->SetAttributeValue(tag, vtkDICOMValue(vr, cs, v));
       }
@@ -516,7 +517,7 @@ vtkDICOMTag vtkDICOMItem::ResolvePrivateTagForWriting(
           this->GetAttributeValue(DC::SpecificCharacterSet);
         if (vcs.IsValid())
           {
-          cs = vtkDICOMCharacterSet(vcs.AsString());
+          cs = vtkDICOMCharacterSet(vcs.GetCharData(), vcs.GetVL());
           }
         // if an empty slot was found, use it for this creator
         d->Tag = ctag;

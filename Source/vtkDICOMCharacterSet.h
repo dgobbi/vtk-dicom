@@ -76,7 +76,10 @@ public:
    *  This generates an 8-bit code that uniquely identifies a DICOM
    *  character set plus its code extensions.
    */
-  explicit vtkDICOMCharacterSet(const std::string& name);
+  explicit vtkDICOMCharacterSet(const std::string& name) {
+    this->Key = KeyFromString(name.data(), name.length()); }
+  vtkDICOMCharacterSet(const char *name, size_t nl) {
+    this->Key = KeyFromString(name, nl); }
 
   //! Generate a SpecificCharacterSet value.
   /*!
@@ -148,6 +151,8 @@ public:
   bool operator>(vtkDICOMCharacterSet a) const { return (this->Key > a.Key); }
 
 private:
+  unsigned char KeyFromString(const char *name, size_t nl);
+
   unsigned char Key;
 };
 

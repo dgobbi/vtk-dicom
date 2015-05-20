@@ -604,7 +604,7 @@ int vtkDICOMMetaData::FindItemsOrInsert(
         this->GetAttributeValue(DC::SpecificCharacterSet);
       if (vcs.IsValid())
         {
-        cs = vtkDICOMCharacterSet(vcs.AsString());
+        cs = vtkDICOMCharacterSet(vcs.GetCharData(), vcs.GetVL());
         }
       const vtkDICOMValue &v = this->GetAttributeValue(
         DC::PixelRepresentation);
@@ -907,7 +907,7 @@ vtkDICOMValue vtkDICOMMetaData::MakeValueWithSpecificCharacterSet(
     this->GetAttributeValue(DC::SpecificCharacterSet);
   if (vcs.IsValid())
     {
-    cs = vtkDICOMCharacterSet(vcs.AsString());
+    cs = vtkDICOMCharacterSet(vcs.GetCharData(), vcs.GetVL());
     }
   return vtkDICOMValue(vr, cs, v);
 }
