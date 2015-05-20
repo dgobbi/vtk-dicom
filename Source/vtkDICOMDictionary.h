@@ -20,7 +20,7 @@
 
 //! The size of the hash table for the dicom dictionary.
 #define DICT_HASH_TABLE_SIZE 1024
-#define DICT_PRIVATE_TABLE_SIZE 64
+#define DICT_PRIVATE_TABLE_SIZE 512
 
 //! Provide access to the DICOM tag dictionary.
 class VTK_DICOM_EXPORT vtkDICOMDictionary
