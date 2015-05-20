@@ -151,7 +151,7 @@ public:
   bool operator>(vtkDICOMCharacterSet a) const { return (this->Key > a.Key); }
 
 private:
-  unsigned char KeyFromString(const char *name, size_t nl);
+  static unsigned char KeyFromString(const char *name, size_t nl);
 
   unsigned char Key;
 };
