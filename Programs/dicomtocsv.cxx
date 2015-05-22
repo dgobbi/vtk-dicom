@@ -523,7 +523,7 @@ MAINMACRO(argc, argv)
              std::ofstream::binary |
              std::ofstream::trunc);
 
-    if (ofs.bad())
+    if (ofs.fail())
       {
       fprintf(stderr, "Unable to open output file %s.\n", ofile);
       return 1;
