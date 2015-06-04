@@ -84,7 +84,7 @@ GEMS_PARM_01
 +{ 0x0043, 0x00a5, 0, VR::IS, VM::M1, "DurationOfTheLabelOrControlPulse" },
 +{ 0x0043, 0x00a6, 0, VR::DS, VM::M1, "OffsetFrequencyValueForFastB1Map" },
 +{ 0x0043, 0x00a7, 0, VR::DS, VM::M1, "MotionEncodingFactor" },
-+{ 0x0043, 0x00a8, 0, VR::DS, VM::M3, "DualDriveModeAndAmplitudeAttenuationAndPh
++{ 0x0043, 0x00a8, 0, VR::DS, VM::M3, "DualDriveModeAndAmplitudeAttenuationAndPhaseOffset" },
 +{ 0x0043, 0x00a9, 0, VR::LO, VM::M1TN, "CalibrationData3D" },
 +{ 0x0043, 0x00aa, 0, VR::LO, VM::M1TN, "AdditionalFilteringParameters" },
 +{ 0x0043, 0x00ab, 0, VR::DS, VM::M1TN, "SilenzData" },
@@ -95,6 +95,9 @@ GEMS_PARM_01
 +{ 0x0043, 0x00b0, 0, VR::FL, VM::M1, "RescanTimeInAcquisition" },
 +{ 0x0043, 0x00b1, 0, VR::SS, VM::M1, "ExcitationMode" },
 +{ 0x0043, 0x00b2, 0, VR::DS, VM::M1TN, "AdvancedEddyCorrection" },
+GEMS_STDY_01
+-{ 0x0023, 0x0080, 0, VR::SQ, VM::M1, "HasMPPSRelatedTags" },
++{ 0x0023, 0x0080, 0, VR::SQ, VM::M1, "PPSDataSequence" },
 
 =========================================================================*/
 
