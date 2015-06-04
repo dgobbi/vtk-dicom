@@ -17308,7 +17308,7 @@ DictEntry Dict309Contents[] = {
 { 0x0023, 0x0070, 0, VR::FD, VM::M1, "StartTimeSecsInFirstAxial" },
 { 0x0023, 0x0074, 0, VR::SL, VM::M1, "NumberOfUpdatesToHeader" },
 { 0x0023, 0x007d, 0, VR::SS, VM::M1, "IndicatesIfStudyHasCompleteInfo" },
-{ 0x0023, 0x0080, 0, VR::SQ, VM::M1, "HasMPPSRelatedTags" },
+{ 0x0023, 0x0080, 0, VR::SQ, VM::M1, "PPSDataSequence" },
 };
 
 unsigned short Dict309TagHashTable[] = {
