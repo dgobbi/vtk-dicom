@@ -5949,7 +5949,7 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
 void CaseFoldUnicode(unsigned int code, std::string *s)
 {
   // This has been tested against the Unicode CaseFolding.txt
-  // published on 2014-04-09 for Unicode 7.
+  // published on 2015-01-13 for Unicode 8.
   unsigned int code2 = 0;
   unsigned int code3 = 0;
 
@@ -6165,12 +6165,16 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
       code2 = 0x0582;
       }
     }
-  else if (code <= 0x10cf)
-    { // georgian
+  else if (code <= 0x13ff)
+    {
     if ((code >= 0x10A0 && code <= 0x10C5) ||
         code == 0x10C7 || code == 0x10CD)
-      {
+      { // georgian
       code += 0x1C60;
+      }
+    else if (code >= 0x13F8 && code <= 0x13FD)
+      { // cherokee
+      code -= 0x08;
       }
     }
   else if (code <= 0x1eff)
@@ -6387,11 +6391,16 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
       {
       code |= 0x0001;
       }
-    else if (code >= 0xA7AA && code <= 0xA7B1)
+    else if (code >= 0xA7AA && code <= 0xA7B6)
       {
-      const static unsigned short table[8] = {
-        0x0266, 0x025C, 0x0261, 0x026C, 0xA7AE, 0xA7AF, 0x029E, 0x0287 };
+      const static unsigned short table[13] = {
+        0x0266, 0x025C, 0x0261, 0x026C, 0xA7AE, 0xA7AF, 0x029E, 0x0287,
+        0x029D, 0xAB53, 0xA7B5, 0xA7B5, 0xA7B7 };
       code = table[code - 0xA7AA];
+      }
+    else if (code >= 0xAB70 && code <= 0xABBF)
+      { // cherokee
+      code -= 0x97D0;
       }
     }
   else if (code <= 0xfaff)
@@ -6455,6 +6464,10 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
     if (code >= 0x10400 && code <= 0x10427 )
       {
       code += 0x28;
+      }
+    else if (code >= 0x10C80 && code <= 0x10CB2)
+      {
+      code += 0x40;
       }
     else if (code >= 0x118A0 && code <= 0x118BF)
       {
