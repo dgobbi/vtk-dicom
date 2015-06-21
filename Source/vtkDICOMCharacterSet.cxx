@@ -3110,7 +3110,9 @@ unsigned short CodePageKSX1001[8836] = {
   0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD
 };
 
-// Code page for gb18030 two-byte codes from gb-18030-2005.ucm
+// Code page for gb18030 two-byte codes from gb-18030-2005.ucm.
+// There were 24 codes with duplicate mappings, which are listed in
+// the PrivateToStandard table below.
 unsigned short CodePageGB18030[23940] = {
   0x4E02, 0x4E04, 0x4E05, 0x4E06, 0x4E0F, 0x4E12, 0x4E17, 0x4E1F, 0x4E20,
   0x4E21, 0x4E23, 0x4E26, 0x4E29, 0x4E2E, 0x4E2F, 0x4E31, 0x4E33, 0x4E35,
@@ -5774,9 +5776,7 @@ unsigned short CodePageGB18030[23940] = {
   0xE4BD, 0xE4BE, 0xE4BF, 0xE4C0, 0xE4C1, 0xE4C2, 0xE4C3, 0xE4C4, 0xE4C5
 };
 
-// Linear table for gb18030 four-byte codes.  The portions of the
-// table that would map to U+20000 and beyond are mapped to the
-// private use area U+E000..U+F8FF instead.
+// Linear table for gb18030 four-byte codes that map to the BMP.
 unsigned short LinearGB18030[412] = {
   0x0000, 0x0080,  0x0024, 0x00A5,  0x0026, 0x00A9,  0x002D, 0x00B2,
   0x0032, 0x00B8,  0x0051, 0x00D8,  0x0059, 0x00E2,  0x005F, 0x00EB,
