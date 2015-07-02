@@ -1289,7 +1289,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
     vtkTypeInt64 zstudy = st->col[ST_PK].ToTypeInt64();
     std::string name = st->col[ST_NAME].ToString();
     std::replace(name.begin(), name.end(), ' ', '^');
-    std::string patientID = st->col[ST_NAME].ToString();
+    std::string patientID = st->col[ST_PATIENTID].ToString();
 
     // Seconds between our time base and database time base
     const double timediff = 978307200.0;
