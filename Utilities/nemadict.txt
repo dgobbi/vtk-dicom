@@ -466,6 +466,18 @@ ReferringPhysicianIdentificationSequence
 SQ
 1
 
+(0008,009C)
+Consulting Physician's Name
+ConsultingPhysicianName
+PN
+1-n
+
+(0008,009D)
+Consulting Physician Identification Sequence
+ConsultingPhysicianIdentificationSequence
+SQ
+1
+
 (0008,0100)
 Code Value
 CodeValue
@@ -608,6 +620,54 @@ SQ
 Timezone Offset From UTC
 TimezoneOffsetFromUTC
 SH
+1
+
+(0008,0300)
+Private Data Element Characteristics Sequence
+PrivateDataElementCharacteristicsSequence
+SQ
+1
+
+(0008,0301)
+Private Group Reference
+PrivateGroupReference
+US
+1
+
+(0008,0302)
+Private Creator Reference
+PrivateCreatorReference
+LO
+1
+
+(0008,0303)
+Block Identifying Information Status
+BlockIdentifyingInformationStatus
+CS
+1
+
+(0008,0304)
+Nonidentifying Private Elements
+NonidentifyingPrivateElements
+US
+1-n
+
+(0008,0306)
+Identifying Private Elements
+IdentifyingPrivateElements
+US
+1-n
+
+(0008,0305)
+Deidentification Action Sequence
+DeidentificationActionSequence
+SQ
+1
+
+(0008,0307)
+Deidentification Action
+DeidentificationAction
+CS
 1
 
 (0008,1000)
@@ -1461,6 +1521,12 @@ Patient's Telephone Numbers
 PatientTelephoneNumbers
 SH
 1-n
+
+(0010,2155)
+Patient's Telecom Information
+PatientTelecomInformation
+LT
+1
 
 (0010,2160)
 Ethnic Group
@@ -8140,6 +8206,12 @@ RightImageSequence
 SQ
 1
 
+(0022,0028)
+Stereo Pairs Present
+StereoPairsPresent
+CS
+1
+
 (0022,0030)
 Axial Length of the Eye
 AxialLengthOfTheEye
@@ -12130,6 +12202,12 @@ PersonTelephoneNumbers
 LO
 1-n
 
+(0040,1104)
+Person's Telecom Information
+PersonTelecomInformation
+LT
+1
+
 (0040,1400)
 Requested Procedure Comments
 RequestedProcedureComments
@@ -12182,6 +12260,12 @@ SH
 Order Callback Phone Number
 OrderCallbackPhoneNumber
 SH
+1
+
+(0040,2011)
+Order Callback Telecom Information
+OrderCallbackTelecomInformation
+LT
 1
 
 (0040,2016)
@@ -16598,6 +16682,12 @@ SL
 Selector SS Value
 SelectorSSValue
 SS
+1-n
+
+(0072,007F)
+Selector UI Value
+SelectorUIValue
+UI
 1-n
 
 (0072,0080)
@@ -22160,6 +22250,24 @@ IS
 Referenced Range Modulator Number
 ReferencedRangeModulatorNumber
 IS
+1
+
+(300C,0111)
+Omitted Beam Task Sequence
+OmittedBeamTaskSequence
+SQ
+1
+
+(300C,0112)
+Reason for Omission
+ReasonForOmission
+CS
+1
+
+(300C,0113)
+Reason for Omission Description
+ReasonForOmissionDescription
+LO
 1
 
 (300E,0002)

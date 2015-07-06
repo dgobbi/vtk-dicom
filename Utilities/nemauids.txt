@@ -139,6 +139,18 @@ PS3.5
 MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1
 Transfer Syntax
 PS3.5
+1.2.840.10008.1.2.4.104
+MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.105
+MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.106
+MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2
+Transfer Syntax
+PS3.5
 1.2.840.10008.1.2.5
 RLE Lossless
 Transfer Syntax
@@ -881,6 +893,10 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.88.34
 Comprehensive 3D SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.35
+Extensible SR Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.88.40
@@ -4368,3 +4384,84 @@ Summary Radiation Exposure Quantities
 1.2.840.10008.6.1.1029
 CID 4245
 Wide Field Ophthalmic Photography Transformation Method
+1.2.840.10008.6.1.1030
+CID 84
+PET Units
+1.2.840.10008.6.1.1031
+CID 7300
+Implant Materials
+1.2.840.10008.6.1.1032
+CID 7301
+Intervention Types
+1.2.840.10008.6.1.1033
+CID 7302
+Implant Templates View Orientations
+1.2.840.10008.6.1.1034
+CID 7303
+Implant Templates Modified View Orientations
+1.2.840.10008.6.1.1035
+CID 7304
+Implant Target Anatomy
+1.2.840.10008.6.1.1036
+CID 7305
+Implant Planning Landmarks
+1.2.840.10008.6.1.1037
+CID 7306
+Human Hip Implant Planning Landmarks
+1.2.840.10008.6.1.1038
+CID 7307
+Implant Component Types
+1.2.840.10008.6.1.1039
+CID 7308
+Human Hip Implant Component Types
+1.2.840.10008.6.1.1040
+CID 7309
+Human Trauma Implant Component Types
+1.2.840.10008.6.1.1041
+CID 7310
+Implant Fixation Method
+1.2.840.10008.6.1.1042
+CID 7445
+Device Participating Roles
+1.2.840.10008.6.1.1043
+CID 8101
+Container Types
+1.2.840.10008.6.1.1044
+CID 8102
+Container Component Types
+1.2.840.10008.6.1.1045
+CID 8103
+Anatomic Pathology Specimen Types
+1.2.840.10008.6.1.1046
+CID 8104
+Breast Tissue Specimen Types
+1.2.840.10008.6.1.1047
+CID 8109
+Specimen Collection Procedure
+1.2.840.10008.6.1.1048
+CID 8110
+Specimen Sampling Procedure
+1.2.840.10008.6.1.1049
+CID 8111
+Specimen Preparation Procedure
+1.2.840.10008.6.1.1050
+CID 8112
+Specimen Stains
+1.2.840.10008.6.1.1051
+CID 8113
+Specimen Preparation Steps
+1.2.840.10008.6.1.1052
+CID 8114
+Specimen Fixatives
+1.2.840.10008.6.1.1053
+CID 8115
+Specimen Embedding Media
+1.2.840.10008.6.1.1054
+CID 10020
+Source of Projection X-Ray Dose Information
+1.2.840.10008.6.1.1055
+CID 10021
+Source of CT Dose Information
+1.2.840.10008.6.1.1056
+CID 10025
+Radiation Dose Reference Points
