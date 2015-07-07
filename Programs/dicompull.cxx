@@ -169,7 +169,7 @@ std::string dicompull_makedirname(
     while (*cp != '{' && *cp != '}' && *cp != '\0') { cp++; }
     if (*cp == '}')
       {
-      fprintf(stderr, "Missing \'{\': %s\n", outdir);
+      fprintf(stderr, "Error: Missing \'{\': %s\n", outdir);
       exit(1);
       }
     if (*cp == '{')
@@ -178,7 +178,7 @@ std::string dicompull_makedirname(
       while (*cp != '}' && *cp != '\0') { cp++; }
       if (*cp != '}')
         {
-        fprintf(stderr, "Unmatched \'{\': %s\n", outdir);
+        fprintf(stderr, "Error: Unmatched \'{\': %s\n", outdir);
         exit(1);
         }
       else
@@ -199,7 +199,7 @@ std::string dicompull_makedirname(
             }
           else
             {
-            fprintf(stderr, "Unrecognized key %s\n", key.c_str());
+            fprintf(stderr, "Error: Unrecognized key %s\n", key.c_str());
             exit(1);
             }
           }
@@ -224,7 +224,7 @@ std::string dicompull_makedirname(
           }
         else if (finder)
           {
-          fprintf(stderr, "Sorry, key %s cannot be in output directory.\n",
+          fprintf(stderr, "Error: Key %s not allowed in output directory.\n",
                   key.c_str());
           exit(1);
           }
@@ -294,14 +294,14 @@ MAINMACRO(argc, argv)
       {
       if (argi + 1 == argc || argv[argi+1][0] == '-')
         {
-        fprintf(stderr, "%s must be followed by a file.\n\n", arg);
+        fprintf(stderr, "Error: %s must be followed by a file.\n\n", arg);
         dicompull_usage(stderr, dicompull_basename(argv[0]));
         return 1;
         }
       const char *qfile = argv[++argi];
       if (!dicomcli_readquery(qfile, &query, &qtlist))
         {
-        fprintf(stderr, "Can't read query file %s\n\n", qfile);
+        fprintf(stderr, "Error: Can't read query file %s\n\n", qfile);
         return 1;
         }
       }
@@ -311,7 +311,7 @@ MAINMACRO(argc, argv)
       ++argi;
       if (argi == argc)
         {
-        fprintf(stderr, "%s must be followed by gggg,eeee=value "
+        fprintf(stderr, "Error: %s must be followed by gggg,eeee=value "
                         "where gggg,eeee is a DICOM tag.\n\n", arg);
         return 1;
         }
@@ -326,7 +326,7 @@ MAINMACRO(argc, argv)
       ++argi;
       if (argi == argc || argv[argi][0] == '-')
         {
-        fprintf(stderr, "%s must be followed by an output directory.\n\n",
+        fprintf(stderr, "Error: %s must be followed by output directory.\n\n",
                 arg);
         return 1;
         }
@@ -337,7 +337,7 @@ MAINMACRO(argc, argv)
       ++argi;
       if (argi == argc)
         {
-        fprintf(stderr, "%s must be followed by an argument.\n\n", arg);
+        fprintf(stderr, "Error: %s must be followed by an argument.\n\n", arg);
         return 1;
         }
       scandepth = static_cast<int>(atol(argv[argi]));
@@ -347,7 +347,7 @@ MAINMACRO(argc, argv)
       ++argi;
       if (argi == argc)
         {
-        fprintf(stderr, "%s must be followed by an argument.\n\n", arg);
+        fprintf(stderr, "Error: %s must be followed by an argument.\n\n", arg);
         return 1;
         }
       pattern = argv[argi];
@@ -366,13 +366,26 @@ MAINMACRO(argc, argv)
       }
     else if (arg[0] == '-')
       {
-      fprintf(stderr, "unrecognized option %s.\n\n", arg);
+      fprintf(stderr, "Error: Unrecognized option %s.\n\n", arg);
       dicompull_usage(stderr, dicompull_basename(argv[0]));
       return 1;
       }
     else
       {
-      a->InsertNextValue(arg);
+      if (vtksys::SystemTools::FileExists(arg))
+        {
+        a->InsertNextValue(arg);
+        }
+      else if (dicomcli_looks_like_key(arg))
+        {
+        fprintf(stderr, "Error: Missing -k before %s.\n\n", arg);
+        return 1;
+        }
+      else
+        {
+        fprintf(stderr, "Error: File not found: %s.\n\n", arg);
+        return 1;
+        }
       }
     }
 
@@ -380,7 +393,7 @@ MAINMACRO(argc, argv)
   if (outdir.empty())
     {
     fprintf(stderr,
-      "\nNo output directory was specified (-o <directory>).\n\n");
+      "\nError: No output directory was specified (-o <directory>).\n\n");
     exit(1);
     }
 
@@ -465,7 +478,7 @@ MAINMACRO(argc, argv)
           dircount[dirname] = si;
           if (!vtksys::SystemTools::MakeDirectory(dirname.c_str()))
             {
-            fprintf(stderr, "Cannot create directory: %s\n",
+            fprintf(stderr, "Error: Cannot create directory: %s\n",
                     dirname.c_str());
             delete [] buffer;
             exit(1);
@@ -498,11 +511,12 @@ MAINMACRO(argc, argv)
                   message = "File does not exist";
                   break;
                 }
-              fprintf(stderr, "%s: %s\n", message, srcname.c_str());
+              fprintf(stderr, "Error: %s: %s\n", message, srcname.c_str());
               }
             else if (infile.GetSize() == 0)
               {
-              fprintf(stderr, "File size is zero: %s\n", srcname.c_str());
+              fprintf(stderr, "Error: File size is zero: %s\n",
+                      srcname.c_str());
               }
             else
               {
@@ -522,7 +536,7 @@ MAINMACRO(argc, argv)
                     message = "Directory does not exist";
                     break;
                   }
-                fprintf(stderr, "%s: %s\n", message, fullname.c_str());
+                fprintf(stderr, "Error: %s: %s\n", message, fullname.c_str());
                 }
               else
                 {
@@ -540,7 +554,7 @@ MAINMACRO(argc, argv)
                   if (bytecount > 0 &&
                       outfile.Write(buffer, bytecount) != bytecount)
                     {
-                    fprintf(stderr, "Error, incomplete write: %s\n",
+                    fprintf(stderr, "Error: Incomplete write: %s\n",
                             fullname.c_str());
                     vtkDICOMFile::Remove(fullname.c_str());
                     break;

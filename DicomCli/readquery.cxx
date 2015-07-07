@@ -128,7 +128,7 @@ bool dicomcli_readkey_query(
         }
       if (s == n)
         {
-        fprintf(stderr, "Block is missing the final \"]\".\n");
+        fprintf(stderr, "Error: Block is missing the final \"]\".\n");
         tagError = true;
         continue;
         }
@@ -181,7 +181,7 @@ bool dicomcli_readkey_query(
         }
       else
         {
-        fprintf(stderr, "Unrecognized key %s\n", key.c_str());
+        fprintf(stderr, "Error: Unrecognized key %s\n", key.c_str());
         tagError = true;
         continue;
         }
@@ -249,7 +249,7 @@ bool dicomcli_readkey_query(
         {
         int m = static_cast<int>(vrEnd - lineStart);
         m = (m > 40 ? 40 : m);
-        fprintf(stderr, "Unrecognized DICOM VR \"%*.*s\"\n",
+        fprintf(stderr, "Error: Unrecognized DICOM VR \"%*.*s\"\n",
            m, m, &cp[lineStart]);
         return false;
         }
@@ -291,7 +291,7 @@ bool dicomcli_readkey_query(
       {
       int m = static_cast<int>(vrEnd - lineStart);
       m = (m > 40 ? 40 : m);
-      fprintf(stderr, "VR of \"%*.*s\" doesn't match dictionary VR of %s\n",
+      fprintf(stderr, "Error: VR of \"%*.*s\" doesn't match dict VR of %s\n",
          m, m, &cp[lineStart], dictvr.GetText());
       }
     }
@@ -300,7 +300,7 @@ bool dicomcli_readkey_query(
     {
     int m = static_cast<int>(s - lineStart);
     m = (m > 40 ? 40 : m);
-    fprintf(stderr, "Unrecognized DICOM tag \"%*.*s\"\n",
+    fprintf(stderr, "Error: Unrecognized DICOM tag \"%*.*s\"\n",
             m, m, &cp[lineStart]);
     return false;
     }
@@ -354,11 +354,11 @@ bool dicomcli_readkey_query(
     {
     if (isgraph(cp[s]))
       {
-      fprintf(stderr, "Illegal character \"%c\" after tag.\n", cp[s]);
+      fprintf(stderr, "Error: Illegal character \"%c\" after tag.\n", cp[s]);
       }
     else
       {
-      fprintf(stderr, "Illegal character after tag.\n");
+      fprintf(stderr, "Error: Illegal character after tag.\n");
       }
     return false;
     }
@@ -402,4 +402,79 @@ bool dicomcli_readkey(
   const char *cp, vtkDICOMItem *query, QueryTagList *ql)
 {
   return dicomcli_readkey_query(cp, query, ql, false);
+}
+
+bool dicomcli_looks_like_key(const char *cp)
+{
+  size_t s = 0;
+  size_t l = 0;
+
+  // Look for private dictionary specifier in square brackets
+  if (*cp == '[')
+    {
+    while (cp[l] != ']' && cp[l] != '\0')
+      {
+      l++;
+      }
+    if (cp[l] == ']')
+      {
+      l++;
+      s = l;
+      }
+    else
+      {
+      return false;
+      }
+    }
+
+  // Look for hexadecimal tag
+  bool istag = true;
+  size_t commas = 0;
+  size_t digitrun = 0;
+  while (cp[l] != '\0' && cp[l] != ':' && cp[l] != '=')
+    {
+    if (cp[l] == ',')
+      {
+      commas++;
+      if (digitrun > 4)
+        {
+        istag = false;
+        }
+      digitrun = 0;
+      }
+    else if (isxdigit(cp[l]))
+      {
+      digitrun++;
+      }
+    else
+      {
+      istag = false;
+      }
+    l++;
+    }
+  if (istag && digitrun > 0 &&
+      ((commas == 0 && digitrun <= 8) ||
+       (commas == 1 && digitrun <= 4)))
+    {
+    return true;
+    }
+
+  // Look for dictionary key
+  if (l != s)
+    {
+    std::string key(&cp[s], l - s);
+    std::string creator;
+    if (s > 0)
+      {
+      creator = std::string(&cp[1], s-2);
+      }
+    vtkDICOMDictEntry de =
+      vtkDICOMDictionary::FindDictEntry(key.c_str(), creator.c_str());
+    if (de.IsValid())
+      {
+      return true;
+      }
+    }
+
+  return false;
 }

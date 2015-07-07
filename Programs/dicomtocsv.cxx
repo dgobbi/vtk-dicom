@@ -30,6 +30,8 @@
 #include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
 
+#include <vtksys/SystemTools.hxx>
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -443,7 +445,7 @@ MAINMACRO(argc, argv)
       {
       if (argi + 1 == argc || argv[argi+1][0] == '-')
         {
-        fprintf(stderr, "%s must be followed by a file.\n\n", arg);
+        fprintf(stderr, "Error: %s must be followed by a file.\n\n", arg);
         dicomtocsv_usage(stderr, dicomtocsv_basename(argv[0]));
         return 1;
         }
@@ -453,7 +455,7 @@ MAINMACRO(argc, argv)
         const char *qfile = argv[++argi];
         if (!dicomcli_readquery(qfile, &query, &qtlist))
           {
-          fprintf(stderr, "Can't read query file %s\n\n", qfile);
+          fprintf(stderr, "Error: Can't read query file %s\n\n", qfile);
           return 1;
           }
         }
@@ -468,7 +470,7 @@ MAINMACRO(argc, argv)
       ++argi;
       if (argi == argc)
         {
-        fprintf(stderr, "%s must be followed by gggg,eeee=value "
+        fprintf(stderr, "Error: %s must be followed by gggg,eeee=value "
                         "where gggg,eeee is a DICOM tag.\n\n", arg);
         return 1;
         }
@@ -503,13 +505,32 @@ MAINMACRO(argc, argv)
       }
     else if (arg[0] == '-')
       {
-      fprintf(stderr, "unrecognized option %s.\n\n", arg);
+      fprintf(stderr, "Error: Unrecognized option %s.\n\n", arg);
       dicomtocsv_usage(stderr, dicomtocsv_basename(argv[0]));
       return 1;
       }
     else
       {
-      a->InsertNextValue(arg);
+      if (vtksys::SystemTools::FileExists(arg))
+        {
+        a->InsertNextValue(arg);
+        }
+      else if (dicomcli_looks_like_key(arg))
+        {
+        fprintf(stderr, "Error: Missing -k before %s.\n\n", arg);
+        return 1;
+        }
+      else if (strlen(arg) > 4 &&
+               strcmp(&arg[strlen(arg) - 4], ".csv") == 0)
+        {
+        fprintf(stderr, "Error: Missing -o before %s.\n\n", arg);
+        return 1;
+        }
+      else
+        {
+        fprintf(stderr, "Error: File not found: %s.\n\n", arg);
+        return 1;
+        }
       }
     }
 
@@ -525,7 +546,7 @@ MAINMACRO(argc, argv)
 
     if (ofs.fail())
       {
-      fprintf(stderr, "Unable to open output file %s.\n", ofile);
+      fprintf(stderr, "Error: Unable to open output file %s.\n", ofile);
       return 1;
       }
     osp = &ofs;

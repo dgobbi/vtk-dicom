@@ -36,4 +36,7 @@ bool dicomcli_readquery(
 bool dicomcli_readkey(
   const char *key, vtkDICOMItem *query, QueryTagList *ql=0);
 
+//! Check if text looks like a query key (for error checking).
+bool dicomcli_looks_like_key(const char *key);
+
 #endif /* readquery_h */
