@@ -25,6 +25,10 @@
 
 typedef vtkDICOMVR VR;
 
+// Prototype for function that reads one query key
+bool dicomcli_readkey_query(
+  const char *cp, vtkDICOMItem *query, QueryTagList *ql, bool qfile);
+
 // Build a tagpath
 vtkDICOMTagPath path_append(const vtkDICOMTagPath& tpath, vtkDICOMTag tag)
 {
@@ -88,7 +92,7 @@ bool dicomcli_readquery(
       continue;
       }
 
-    if (!dicomcli_readkey(cp, query, ql))
+    if (!dicomcli_readkey_query(cp, query, ql, true))
       {
       fprintf(stderr, "Error %s line %d:\n", fname, lineNumber);
       return false;
@@ -98,8 +102,9 @@ bool dicomcli_readquery(
   return true;
 }
 
-bool dicomcli_readkey(
-  const char *cp, vtkDICOMItem *query, QueryTagList *ql)
+// If qfile is true, then key is being read from a query file
+bool dicomcli_readkey_query(
+  const char *cp, vtkDICOMItem *query, QueryTagList *ql, bool qfile)
 {
   // read the tag path
   vtkDICOMTagPath tagPath;
@@ -309,7 +314,7 @@ bool dicomcli_readkey(
     s++;
     valueStart = s;
     valueEnd = s;
-    if (s < n && cp[s] == '\"')
+    if (s < n && qfile && cp[s] == '\"')
       {
       char delim = cp[s++];
       valueStart = s;
@@ -338,14 +343,14 @@ bool dicomcli_readkey(
       }
     else
       {
-      while (s < n && !isspace(cp[s]))
+      while (s < n && (!qfile || !isspace(cp[s])))
         {
         s++;
         }
       valueEnd = s;
       }
     }
-  else if (s < n && !isspace(cp[s]))
+  else if (s < n && (!qfile || !isspace(cp[s])))
     {
     if (isgraph(cp[s]))
       {
@@ -391,4 +396,10 @@ bool dicomcli_readkey(
     }
 
   return !tagError;
+}
+
+bool dicomcli_readkey(
+  const char *cp, vtkDICOMItem *query, QueryTagList *ql)
+{
+  return dicomcli_readkey_query(cp, query, ql, false);
 }
