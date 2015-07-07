@@ -652,17 +652,17 @@ NonidentifyingPrivateElements
 US
 1-n
 
-(0008,0306)
-Identifying Private Elements
-IdentifyingPrivateElements
-US
-1-n
-
 (0008,0305)
 Deidentification Action Sequence
 DeidentificationActionSequence
 SQ
 1
+
+(0008,0306)
+Identifying Private Elements
+IdentifyingPrivateElements
+US
+1-n
 
 (0008,0307)
 Deidentification Action
