@@ -145,6 +145,7 @@ vtkDICOMDirectory::vtkDICOMDirectory()
   this->ScanDepth = 1;
   this->Query = 0;
   this->FindLevel = vtkDICOMDirectory::IMAGE;
+  this->UsingOsirixDatabase = false;
 }
 
 //----------------------------------------------------------------------------
@@ -365,6 +366,106 @@ vtkDICOMMetaData *vtkDICOMDirectory::GetMetaDataForSeries(int i)
 }
 
 //----------------------------------------------------------------------------
+// The following code does loose matching to accomodate the way that Osirix
+// modifies some attributes before storing them in its database
+
+namespace {
+
+// Perform cleanup of a string according to Osirix rules.
+std::string OsirixCleanString(const std::string& text)
+{
+  std::string s;
+  size_t l = text.length();
+  if (l > 0)
+    {
+    char space = '\0';
+    for (size_t i = 0; i < l; i++)
+      {
+      char c = text[i];
+      switch (c)
+        {
+        case ',':
+        case '^':
+          c = '\0';
+          space = ' ';
+          break;
+        case '/':
+          c = '-';
+          break;
+        case '\r':
+        case '\n':
+          c = '\0';
+          break;
+        case '\"':
+          c = '\'';
+          break;
+        case ' ':
+          c = '\0';
+          space = ' ';
+          break;
+        }
+      if (c)
+        {
+        if (space)
+          {
+          s.push_back(space);
+          space = '\0';
+          }
+        s.push_back(c);
+        }
+      }
+    }
+
+  return s;
+}
+
+// Loose matching for checking against Osirix database
+bool MatchesOsirixDatabase(
+  vtkDICOMTag tag, const vtkDICOMValue& u, const vtkDICOMValue& v)
+{
+  bool needsCleanCompare = false;
+  unsigned short g = tag.GetGroup();
+  if (u.GetNumberOfValues() > 0 && v.GetNumberOfValues() > 0 &&
+      (g == 0x0008 || g == 0x0010))
+    {
+    const DC::EnumType tagsToClean[] = {
+      DC::StudyDescription,
+      DC::SeriesDescription,
+      DC::PatientName,
+      DC::InstitutionName,
+      DC::ReferringPhysicianName,
+      DC::PerformingPhysicianName,
+      DC::ItemDelimitationItem
+    };
+
+    for (int i = 0; tagsToClean[i] != DC::ItemDelimitationItem; i++)
+      {
+      needsCleanCompare |= (tag == tagsToClean[i]);
+      }
+    }
+
+  bool matched = false;
+  if (needsCleanCompare)
+    {
+    vtkDICOMValue uclean(
+      u.GetVR(), vtkDICOMCharacterSet::ISO_IR_192,
+      OsirixCleanString(u.AsUTF8String()));
+    vtkDICOMValue vclean(
+      v.GetVR(), vtkDICOMCharacterSet::ISO_IR_192,
+      OsirixCleanString(v.AsUTF8String()));
+    matched = uclean.Matches(vclean);
+    }
+  else
+    {
+    matched = u.Matches(v);
+    }
+
+  return matched;
+}
+
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMDirectory::MatchesQuery(
   const vtkDICOMItem& record, vtkDICOMItem& results)
 {
@@ -382,13 +483,20 @@ bool vtkDICOMDirectory::MatchesQuery(
         if (v.IsValid())
           {
           const vtkDICOMValue& u = iter->GetValue();
-          if (u.Matches(v))
+          if (this->UsingOsirixDatabase)
+            {
+            matched = MatchesOsirixDatabase(tag, u, v);
+            }
+          else
+            {
+            matched = u.Matches(v);
+            }
+          if (matched)
             {
             results.SetAttributeValue(tag, u);
             }
           else
             {
-            matched = false;
             break;
             }
           }
@@ -1288,7 +1396,6 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
     vtkDICOMItem studyItem;
     vtkTypeInt64 zstudy = st->col[ST_PK].ToTypeInt64();
     std::string name = st->col[ST_NAME].ToString();
-    std::replace(name.begin(), name.end(), ' ', '^');
     std::string patientID = st->col[ST_PATIENTID].ToString();
 
     // Seconds between our time base and database time base
@@ -1483,9 +1590,15 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
           imageRecords[i] = &data[i];
           }
 
+        // Set a flag to indicate that loose matching is needed, because
+        // the Osirix database "cleans" certain attribute value strings
+        this->UsingOsirixDatabase = true;
+
         this->AddSeriesWithQuery(
           patientIdx, studyIdx, fileNames,
           patientItem, studyItem, seriesItem, &imageRecords[0]);
+
+        this->UsingOsirixDatabase = false;
         }
 
       // Check for abort and update progress at 1% intervals

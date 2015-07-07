@@ -290,6 +290,7 @@ private:
   PatientVector *Patients;
   VisitedVector *Visited;
   char *FileSetID;
+  bool UsingOsirixDatabase;
 
   //! Compare FileInfo entries by instance number
   static bool CompareInstance(const FileInfo &fi1, const FileInfo &fi2);
