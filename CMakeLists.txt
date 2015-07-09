@@ -20,7 +20,17 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 include(CTest)
 
 # Look for a VTK build directory
-find_package(VTK REQUIRED)
+if (Module_vtkDICOM)
+  message(STATUS "vtkDICOM: Building vtkDICOM as a Remote VTK Module")
+  set(EXECUTABLE_OUTPUT_PATH ${VTK_BINARY_DIR})
+  set(vtkDICOM_BINARY_DIR ${EXECUTABLE_OUTPUT_PATH})
+  find_package(VTK PATHS ${VTK_BINARY_DIR})
+  include(${VTK_USE_FILE})
+  vtk_module_impl()
+else()
+  find_package(VTK REQUIRED)
+  message(STATUS "vtkDICOM: Building vtkDICOM stand-alone")
+endif()
 if(VTK_FOUND)
   include(${VTK_USE_FILE})
   if("${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}" VERSION_LESS 5.8)
@@ -271,6 +281,7 @@ endif()
 install(FILES Copyright.txt
   DESTINATION ${DICOM_DATA_INSTALL_DEST})
 
+if (NOT Module_vtkDICOM)
 #---------------------------------------------------
 # Export information for other projects
 
@@ -319,3 +330,4 @@ install(FILES
 # Install the export set for use with the install-tree
 install(EXPORT DICOMTargets
   DESTINATION "${DICOM_CMAKE_INSTALL_DEST}" COMPONENT Development)
+endif()

@@ -1,3 +1,8 @@
+# Allow use of LOCATION target property
+if(POLICY CMP0026)
+  cmake_policy(SET CMP0026 OLD)
+endif()
+
 include_directories(${DICOM_INCLUDE_DIRS})
 
 set(BASE_LIBS vtkDICOM ${VTK_LIBS})
@@ -51,9 +56,12 @@ get_target_property(pth TestDICOMUtilities RUNTIME_OUTPUT_DIRECTORY)
 add_test(TestDICOMUtilities ${pth}/TestDICOMUtilities)
 
 if(BUILD_PYTHON_WRAPPERS)
+  get_target_property(WRAP_PYTHON_PATH vtkWrapPython LOCATION)
+  get_filename_component(VTK_EXE_DIR ${WRAP_PYTHON_PATH} PATH)
+  if(VTK_PYTHON_EXE)
+    set(VTK_PYTHON_EXE ${VTK_EXE_DIR}/${VTK_PYTHON_EXE})
+  endif()
   if(NOT VTK_PYTHON_EXE)
-    get_target_property(WRAP_PYTHON_PATH vtkWrapPython LOCATION)
-    get_filename_component(VTK_EXE_DIR ${WRAP_PYTHON_PATH} PATH)
     find_program(VTK_PYTHON_EXE vtkpython "${VTK_EXE_DIR}")
   endif()
   if(NOT VTK_PYTHON_EXE)

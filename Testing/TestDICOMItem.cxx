@@ -134,5 +134,6 @@ int main(int argc, char *argv[])
     TestAssert(i.GetAttributeValue(DC::MappedPixelValue).GetVR() == vtkDICOMVR::US);
   }
 
+  meta->Delete();
   return rval;
 }
