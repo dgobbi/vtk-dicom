@@ -46,6 +46,18 @@ SourceApplicationEntityTitle
 AE
 1
 
+(0002,0017)
+Sending Application Entity Title
+SendingApplicationEntityTitle
+AE
+1
+
+(0002,0018)
+Receiving Application Entity Title
+ReceivingApplicationEntityTitle
+AE
+1
+
 (0002,0100)
 Private Information Creator UID
 PrivateInformationCreatorUID
