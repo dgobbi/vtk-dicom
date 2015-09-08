@@ -62,7 +62,6 @@
 #endif
 
 #include "vtksys/SystemTools.hxx"
-#include "vtksys/ios/sstream"
 
 #include <algorithm>
 #include <stdio.h>
