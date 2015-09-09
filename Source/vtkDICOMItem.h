@@ -89,7 +89,7 @@ public:
   //! Clear the data.
   void Clear() {
     if (this->L && --(this->L->ReferenceCount) == 0) { this->FreeList(); }
-    else (this->L = 0); }
+    else { this->L = 0; } }
 
   //! Check if empty.
   bool IsEmpty() const { return (this->L == 0); }
