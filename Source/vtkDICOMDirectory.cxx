@@ -999,6 +999,10 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     // Skip anything that does not look like a DICOM file.
     if (!vtkDICOMUtilities::IsDICOMFile(fileName.c_str()))
       {
+      if (!vtksys::SystemTools::FileExists(fileName.c_str()))
+        {
+        vtkWarningMacro("File does not exist: " << fileName.c_str());
+        }
       continue;
       }
 
@@ -1961,6 +1965,11 @@ void vtkDICOMDirectory::Execute()
       if (vtksys::SystemTools::FileIsDirectory(fname.c_str()))
         {
         this->ProcessDirectory(fname.c_str(), this->ScanDepth, files);
+        }
+      else if (!vtksys::SystemTools::FileExists(fname.c_str()))
+        {
+        vtkErrorMacro("File or directory not found: " << fname.c_str());
+        return;
         }
       else if (vtkDICOMUtilities::PatternMatches("*.sql", fname.c_str()))
         {
