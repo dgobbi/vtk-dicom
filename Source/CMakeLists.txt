@@ -50,6 +50,7 @@ set(LIB_SRCS
   vtkDICOMSequence.cxx
   vtkDICOMItem.cxx
   vtkDICOMSorter.cxx
+  vtkDICOMTransformReader.cxx
   ${REFCOUNT_SRC}
   vtkDICOMUtilities.cxx
   vtkDICOMUtilitiesUIDTable.cxx
