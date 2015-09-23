@@ -12,12 +12,21 @@ if(NOT DICOM_USE_FILE_INCLUDED)
       "VTK not found in DICOM_VTK_DIR=\"${DICOM_VTK_DIR}\".")
   endif()
 
-  if(DICOM_USE_GDCM AND NOT DICOM_BUILD_SHARED_LIBS AND NOT GDCM_FOUND)
-    if(GDCM_FOUND)
-      include(${GDCM_USE_FILE})
-    else()
-      message(FATAL_ERROR
-        "GDCM not found in DICOM_GDCM_DIR=\"${DICOM_GDCM_DIR}\"")
+  if(NOT DICOM_BUILD_SHARED_LIBS)
+    if(DICOM_USE_ITK_GDCM)
+      if(ITK_FOUND)
+        include(${ITK_USE_FILE})
+      else()
+        message(FATAL_ERROR
+          "ITK not found in DICOM_ITK_DIR=\"${DICOM_ITK_DIR}\"")
+      endif()
+    elseif(DICOM_USE_GDCM)
+      if(GDCM_FOUND)
+        include(${GDCM_USE_FILE})
+      else()
+        message(FATAL_ERROR
+          "GDCM not found in DICOM_GDCM_DIR=\"${DICOM_GDCM_DIR}\"")
+      endif()
     endif()
   endif()
 

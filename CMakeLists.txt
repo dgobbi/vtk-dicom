@@ -51,8 +51,18 @@ if(NOT DICOM_USE_VTKZLIB)
 endif()
 
 # GDCM or DCMTK are required for reading compressed DICOM images
+option(USE_ITK_GDCM "Use ITK's GDCM for image decompression" OFF)
 option(USE_GDCM "Use GDCM for image decompression" OFF)
-if(USE_GDCM)
+if(USE_ITK_GDCM)
+  # To avoid conflicts, we might want to use ITK's GDCM
+  find_package(ITK REQUIRED)
+  if(ITK_FOUND)
+    include(${ITK_USE_FILE})
+    set(GDCM_LIBS gdcmMSFF gdcmIOD gdcmDSED gdcmDICT)
+    set(GDCM_FOUND 1)
+    set(USE_GDCM ON CACHE BOOL "Use GDCM for image decompression" FORCE)
+  endif()
+elseif(USE_GDCM)
   find_package(GDCM)
   if(NOT GDCM_DIR)
     message(FATAL_ERROR "Please set GDCM_DIR.")
@@ -205,6 +215,7 @@ if(BUILD_PYTHON_WRAPPERS)
   set(DICOM_PYTHON_LIBRARIES vtkDICOMPythonD)
 endif()
 
+
 # For the java wrappers
 if(BUILD_JAVA_WRAPPERS)
   find_package(Java REQUIRED)
@@ -229,6 +240,7 @@ if(BUILD_JAVA_WRAPPERS)
 
   set(DICOM_JAVA_LIBRARIES vtkDICOMJava)
 endif()
+
 
 # Disable C and C++ deprecation warnings for MSVC 2005 and later
 if(MSVC_VERSION EQUAL 1400 OR MSVC_VERSION GREATER 1400 OR MSVC10)
