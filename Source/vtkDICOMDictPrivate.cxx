@@ -24052,7 +24052,7 @@ vtkDICOMDictionary::Dict *PrivateDictData[] = {
 
 } // end anonymous namespace
 
-static int vtkDICOMDictPrivateInitializerCounter;
+static unsigned int vtkDICOMDictPrivateInitializerCounter;
 
 vtkDICOMDictPrivateInitializer::vtkDICOMDictPrivateInitializer()
 {

@@ -79,7 +79,7 @@ public:
   static void RemovePrivateDictionary(const char *name);
 
 private:
-  friend struct vtkDICOMDictionaryInitializer;
+  friend class vtkDICOMDictionaryInitializer;
 
   //! Compute a string hash for a DICOM text value.
   /*!
@@ -107,10 +107,15 @@ private:
  *  This ensures that the vtkDICOMDictionary module is initialized before
  *  any other module that includes this header file.
  */
-struct VTK_DICOM_EXPORT vtkDICOMDictionaryInitializer
+class VTK_DICOM_EXPORT vtkDICOMDictionaryInitializer
 {
+public:
   vtkDICOMDictionaryInitializer();
   ~vtkDICOMDictionaryInitializer();
+private:
+  vtkDICOMDictionaryInitializer(const vtkDICOMDictionaryInitializer&);
+  vtkDICOMDictionaryInitializer& operator=(
+    const vtkDICOMDictionaryInitializer&);
 };
 
 static vtkDICOMDictionaryInitializer vtkDICOMDictionaryInitializerInstance;

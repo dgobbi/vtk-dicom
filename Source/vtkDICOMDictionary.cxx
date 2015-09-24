@@ -34,7 +34,7 @@ vtkDICOMDictionary::DictHashEntry *
 
 //----------------------------------------------------------------------------
 // A helper class to delete static variables when program exits.
-static int vtkDICOMDictionaryInitializerCounter;
+static unsigned int vtkDICOMDictionaryInitializerCounter;
 
 // Perform initialization of static variables.
 vtkDICOMDictionaryInitializer::vtkDICOMDictionaryInitializer()
