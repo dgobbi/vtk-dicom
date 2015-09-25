@@ -205,8 +205,8 @@ const unsigned char vtkDICOMVR::TypeTable[34] = {
   VTK_UNSIGNED_CHAR,  // OB Other Byte
   VTK_DOUBLE,         // OD Other Double
   VTK_FLOAT,          // OF Other Float
-  VTK_INT,            // OL Other Long
-  VTK_SHORT,          // OW Other Word
+  VTK_UNSIGNED_INT,   // OL Other Long
+  VTK_UNSIGNED_SHORT, // OW Other Word
   VTK_CHAR,           // PN Personal Name
   VTK_CHAR,           // SH Short String
   VTK_INT,            // SL Signed Long

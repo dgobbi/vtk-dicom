@@ -110,12 +110,12 @@ int main(int argc, char *argv[])
   vtkDICOMVR vrOL("OL");
   TestAssert(vrOL == vtkDICOMVR::OL);
   TestAssert(strcmp(vrOL.GetText(), "OL") == 0);
-  TestAssert(vrOL.GetType() == VTK_INT);
+  TestAssert(vrOL.GetType() == VTK_UNSIGNED_INT);
 
   vtkDICOMVR vrOW("OW");
   TestAssert(vrOW == vtkDICOMVR::OW);
   TestAssert(strcmp(vrOW.GetText(), "OW") == 0);
-  TestAssert(vrOW.GetType() == VTK_SHORT);
+  TestAssert(vrOW.GetType() == VTK_UNSIGNED_SHORT);
 
   vtkDICOMVR vrPN("PN");
   TestAssert(vrPN == vtkDICOMVR::PN);

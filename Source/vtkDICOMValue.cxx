@@ -576,27 +576,27 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, size_t n)
     }
   else if (vr == VR::OW)
     {
-    if (vt == VTK_UNSIGNED_SHORT)
+    if (vt == VTK_SHORT)
       {
-      unsigned short *ptr = this->AllocateUnsignedShortData(vr, n);
+      short *ptr = this->AllocateShortData(vr, n);
       memcpy(ptr, data, n*2);
       }
     else
       {
-      short *ptr = this->AllocateShortData(vr, n*sizeof(T)/2);
+      unsigned short *ptr = this->AllocateUnsignedShortData(vr, n*sizeof(T)/2);
       memcpy(ptr, data, n*sizeof(T));
       }
     }
   else if (vr == VR::OL)
     {
-    if (vt == VTK_UNSIGNED_INT)
+    if (vt == VTK_INT)
       {
-      unsigned int *ptr = this->AllocateUnsignedIntData(vr, n);
+      int *ptr = this->AllocateIntData(vr, n);
       memcpy(ptr, data, n*4);
       }
     else
       {
-      int *ptr = this->AllocateIntData(vr, n*sizeof(T)/4);
+      unsigned int *ptr = this->AllocateUnsignedIntData(vr, n*sizeof(T)/4);
       memcpy(ptr, data, n*sizeof(T));
       }
     }
@@ -701,12 +701,12 @@ void vtkDICOMValue::CreateValue<char>(
     }
   else if (vr == VR::OW)
     {
-    short *ptr = this->AllocateShortData(vr, m/2);
+    unsigned short *ptr = this->AllocateUnsignedShortData(vr, m/2);
     memcpy(ptr, data, m);
     }
   else if (vr == VR::OL)
     {
-    int *ptr = this->AllocateIntData(vr, m/4);
+    unsigned int *ptr = this->AllocateUnsignedIntData(vr, m/4);
     memcpy(ptr, data, m);
     }
   else if (vr == VR::OF)
@@ -921,7 +921,7 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
     }
   else if (vr == VR::OW || vr == VR::OX)
     {
-    this->AllocateShortData(VR::OW, 0);
+    this->AllocateUnsignedShortData(VR::OW, 0);
     }
   else if (vr == VR::OF || vr == VR::FL)
     {
@@ -935,11 +935,11 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
     {
     this->AllocateUnsignedCharData(vr, 0);
     }
-  else if (vr == VR::UL)
+  else if (vr == VR::OL || vr == VR::UL)
     {
     this->AllocateUnsignedIntData(vr, 0);
     }
-  else if (vr == VR::OL || vr == VR::SL)
+  else if (vr == VR::SL)
     {
     this->AllocateIntData(vr, 0);
     }
@@ -2536,12 +2536,12 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
   else if (vr == vtkDICOMVR::OW)
     {
     // OW must match exactly
-    match = ValueT<short>::Compare(value.V, this->V);
+    match = ValueT<unsigned short>::Compare(value.V, this->V);
     }
   else if (vr == vtkDICOMVR::OL)
     {
     // OL must match exactly
-    match = ValueT<int>::Compare(value.V, this->V);
+    match = ValueT<unsigned int>::Compare(value.V, this->V);
     }
   else if (vr == vtkDICOMVR::OF)
     {
