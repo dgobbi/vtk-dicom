@@ -107,6 +107,11 @@ int main(int argc, char *argv[])
   TestAssert(strcmp(vrOF.GetText(), "OF") == 0);
   TestAssert(vrOF.GetType() == VTK_FLOAT);
 
+  vtkDICOMVR vrOL("OL");
+  TestAssert(vrOL == vtkDICOMVR::OL);
+  TestAssert(strcmp(vrOL.GetText(), "OL") == 0);
+  TestAssert(vrOL.GetType() == VTK_INT);
+
   vtkDICOMVR vrOW("OW");
   TestAssert(vrOW == vtkDICOMVR::OW);
   TestAssert(strcmp(vrOW.GetText(), "OW") == 0);
@@ -189,32 +194,33 @@ int main(int argc, char *argv[])
     vtkDICOMVR::CS, vtkDICOMVR::DA, vtkDICOMVR::DS, vtkDICOMVR::DT,
     vtkDICOMVR::FD, vtkDICOMVR::FL, vtkDICOMVR::IS, vtkDICOMVR::LO,
     vtkDICOMVR::LT, vtkDICOMVR::OB, vtkDICOMVR::OD, vtkDICOMVR::OF,
-    vtkDICOMVR::OW, vtkDICOMVR::PN, vtkDICOMVR::SH, vtkDICOMVR::SL,
-    vtkDICOMVR::SQ, vtkDICOMVR::SS, vtkDICOMVR::ST, vtkDICOMVR::TM,
-    vtkDICOMVR::UC, vtkDICOMVR::UI, vtkDICOMVR::UL, vtkDICOMVR::UN,
-    vtkDICOMVR::UR, vtkDICOMVR::US, vtkDICOMVR::UT, vtkDICOMVR::OX,
-    vtkDICOMVR::XS,
+    vtkDICOMVR::OL, vtkDICOMVR::OW, vtkDICOMVR::PN, vtkDICOMVR::SH,
+    vtkDICOMVR::SL, vtkDICOMVR::SQ, vtkDICOMVR::SS, vtkDICOMVR::ST,
+    vtkDICOMVR::TM, vtkDICOMVR::UC, vtkDICOMVR::UI, vtkDICOMVR::UL,
+    vtkDICOMVR::UN, vtkDICOMVR::UR, vtkDICOMVR::US, vtkDICOMVR::UT,
+    vtkDICOMVR::OX, vtkDICOMVR::XS,
   };
 
-  // XX  AS  CS  DS  FD  IS  LT  OD  OW  SH  SQ  ST  UC  UL  UR  UT  XS
-  //   AE  AT  DA  DT  FL  LO  OB  OF  PN  SL  SS  TM  UI  UN  US  OS
+  // XX  AS  CS  DS  FD  IS  LT  OD  OL  PN  SL  SS  TM  UI  UN  US  OS
+  //   AE  AT  DA  DT  FL  LO  OB  OF  OW  SH  SQ  ST  UC  UL  UR  UT  XS
+
   bool hasLongVL[] = {
-     0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,1,0,0,0,1,0,0,1,1,0,1,0,0
+     0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,1,0,0,0,1,0,0,1,1,0,1,0,0
   };
   bool hasSpecificCharacterSet[] = {
-     0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,1,0,1,0,0,0,0,0,1,0,0
+     0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,0,0,0,0,1,0,0
   };
   bool hasTextValue[] = {
-     0,1,1,0,1,1,1,1,0,0,1,1,1,0,0,0,0,1,1,0,0,0,1,1,1,1,0,0,1,0,1,0,0
+     0,1,1,0,1,1,1,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,1,1,1,0,0,1,0,1,0,0
   };
   bool hasNumericValue[] = {
-     0,0,0,0,0,0,1,0,1,1,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,0,0,1,0,0,0
+     0,0,0,0,0,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,0,0,1,0,0,0
   };
   bool hasSingleValue[] = {
-     0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0
+     0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0
   };
 
-  for (int i = 0; i < 33; i++)
+  for (int i = 0; i < 34; i++)
     {
     TestAssert(hasLongVL[i] == vrs[i].HasLongVL());
     TestAssert(hasSpecificCharacterSet[i] == vrs[i].HasSpecificCharacterSet());

@@ -96,10 +96,10 @@ const unsigned char LXT[256] = { // LO LT
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 };
 
-const unsigned char OXT[256] = { // OB OF OW
+const unsigned char OXT[256] = { // OB OF OL OW
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  0, 0,VR::OB,0,VR::OD,0,VR::OF,0, 0, 0, 0, 0, 0, 0, 0, 0, // ABCDEFGHIJKLMNO
+  0,0,VR::OB,0,VR::OD,0,VR::OF,0,0,0,0,0,VR::OL,0,0,0, //  ABCDEFGHIJKLMNO
   0, 0, 0, 0, 0, 0, 0, VR::OW, 0, 0, 0, 0, 0, 0, 0, 0, // PQRSTUVWXYZ
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -188,7 +188,7 @@ const unsigned char *vtkDICOMVR::VRTable[256] = {
   XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,
 };
 
-const unsigned char vtkDICOMVR::TypeTable[33] = {
+const unsigned char vtkDICOMVR::TypeTable[34] = {
   VTK_VOID,           // Invalid
   VTK_CHAR,           // AE Application Entity
   VTK_CHAR,           // AS Age String
@@ -205,6 +205,7 @@ const unsigned char vtkDICOMVR::TypeTable[33] = {
   VTK_UNSIGNED_CHAR,  // OB Other Byte
   VTK_DOUBLE,         // OD Other Double
   VTK_FLOAT,          // OF Other Float
+  VTK_INT,            // OL Other Long
   VTK_SHORT,          // OW Other Word
   VTK_CHAR,           // PN Personal Name
   VTK_CHAR,           // SH Short String
@@ -224,7 +225,7 @@ const unsigned char vtkDICOMVR::TypeTable[33] = {
   VTK_VOID,           // Invalid
 };
 
-const char vtkDICOMVR::TextTable[33][4] = {
+const char vtkDICOMVR::TextTable[34][4] = {
   { 0, 0, 0, 0 },     // Invalid
   { 'A', 'E', 0, 0 }, // AE Application Entity
   { 'A', 'S', 0, 0 }, // AS Age String
@@ -241,6 +242,7 @@ const char vtkDICOMVR::TextTable[33][4] = {
   { 'O', 'B', 0, 0 }, // OB Other Byte
   { 'O', 'D', 0, 0 }, // OD Other Double
   { 'O', 'F', 0, 0 }, // OF Other Float
+  { 'O', 'L', 0, 0 }, // OL Other Long
   { 'O', 'W', 0, 0 }, // OW Other Word
   { 'P', 'N', 0, 0 }, // PN Personal Name
   { 'S', 'H', 0, 0 }, // SH Short String

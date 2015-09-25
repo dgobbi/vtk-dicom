@@ -587,6 +587,19 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, size_t n)
       memcpy(ptr, data, n*sizeof(T));
       }
     }
+  else if (vr == VR::OL)
+    {
+    if (vt == VTK_UNSIGNED_INT)
+      {
+      unsigned int *ptr = this->AllocateUnsignedIntData(vr, n);
+      memcpy(ptr, data, n*4);
+      }
+    else
+      {
+      int *ptr = this->AllocateIntData(vr, n*sizeof(T)/4);
+      memcpy(ptr, data, n*sizeof(T));
+      }
+    }
   else if (vr == VR::OF)
     {
     float *ptr = this->AllocateFloatData(vr, n*sizeof(T)/4);
@@ -689,6 +702,11 @@ void vtkDICOMValue::CreateValue<char>(
   else if (vr == VR::OW)
     {
     short *ptr = this->AllocateShortData(vr, m/2);
+    memcpy(ptr, data, m);
+    }
+  else if (vr == VR::OL)
+    {
+    int *ptr = this->AllocateIntData(vr, m/4);
     memcpy(ptr, data, m);
     }
   else if (vr == VR::OF)
@@ -921,7 +939,7 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
     {
     this->AllocateUnsignedIntData(vr, 0);
     }
-  else if (vr == VR::SL)
+  else if (vr == VR::OL || vr == VR::SL)
     {
     this->AllocateIntData(vr, 0);
     }
@@ -1130,9 +1148,18 @@ const unsigned short *vtkDICOMValue::GetUnsignedShortData() const
 const int *vtkDICOMValue::GetIntData() const
 {
   const int *ptr = 0;
-  if (this->V && this->V->Type == VTK_INT)
+  if (this->V)
     {
-    ptr = static_cast<const ValueT<int> *>(this->V)->Data;
+    if (this->V->Type == VTK_INT)
+      {
+      ptr = static_cast<const ValueT<int> *>(this->V)->Data;
+      }
+    else if (this->V->Type == VTK_UNSIGNED_INT &&
+             this->V->VR == vtkDICOMVR::OL)
+      {
+      ptr = reinterpret_cast<const int *>(
+        static_cast<const ValueT<unsigned int> *>(this->V)->Data);
+      }
     }
   return ptr;
 }
@@ -1140,9 +1167,18 @@ const int *vtkDICOMValue::GetIntData() const
 const unsigned int *vtkDICOMValue::GetUnsignedIntData() const
 {
   const unsigned int *ptr = 0;
-  if (this->V && this->V->Type == VTK_UNSIGNED_INT)
+  if (this->V)
     {
-    ptr = static_cast<const ValueT<unsigned int> *>(this->V)->Data;
+    if (this->V->Type == VTK_UNSIGNED_INT)
+      {
+      ptr = static_cast<const ValueT<unsigned int> *>(this->V)->Data;
+      }
+    else if (this->V->Type == VTK_INT &&
+             this->V->VR == vtkDICOMVR::OL)
+      {
+      ptr = reinterpret_cast<const unsigned int *>(
+        static_cast<const ValueT<int> *>(this->V)->Data);
+      }
     }
   return ptr;
 }
@@ -1612,6 +1648,7 @@ std::string vtkDICOMValue::AsString() const
       this->V->VR != vtkDICOMVR::SQ &&
       this->V->VR != vtkDICOMVR::OW &&
       this->V->VR != vtkDICOMVR::OB &&
+      this->V->VR != vtkDICOMVR::OL &&
       this->V->VR != vtkDICOMVR::OF &&
       this->V->VR != vtkDICOMVR::OD)
     {
@@ -2501,6 +2538,11 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
     // OW must match exactly
     match = ValueT<short>::Compare(value.V, this->V);
     }
+  else if (vr == vtkDICOMVR::OL)
+    {
+    // OL must match exactly
+    match = ValueT<int>::Compare(value.V, this->V);
+    }
   else if (vr == vtkDICOMVR::OF)
     {
     // OF must match exactly
@@ -2691,6 +2733,10 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
   else if (vr == vtkDICOMVR::OW)
     {
     os << "words[" << v.GetNumberOfValues() << "]";
+    }
+  else if (vr == vtkDICOMVR::OW)
+    {
+    os << "longwords[" << v.GetNumberOfValues() << "]";
     }
   else if (vr == vtkDICOMVR::OF)
     {
