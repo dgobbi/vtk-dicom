@@ -1102,7 +1102,7 @@ size_t Decoder<E>::ReadElementHead(
       }
     if (!implicit && vr.HasLongVL())
       {
-      // for OB, OD, OF, OW, SQ, UC, UN, UR, UT
+      // for OB, OD, OF, OL, OW, SQ, UC, UN, UR, UT, and unrecognized
       // check that buffer has 4 bytes for 32-bit VL
       if (!this->CheckBuffer(cp, ep, 4))
         {

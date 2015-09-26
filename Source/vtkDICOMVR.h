@@ -87,7 +87,7 @@ public:
 
   //! The VRs OB, OD, OF, OL, OW, SQ, UC, UN, UR, UT require a 32-bit VL.
   bool HasLongVL() const {
-    return (((1ull << this->Key) & 0xb223e000u) != 0); }
+    return (((1ull << this->Key) & 0xb223e001u) != 0); }
 
   //! The VRs SH, LO, PN, ST, LT, UC, and UT use SpecificCharacterSet.
   bool HasSpecificCharacterSet() const {
