@@ -4006,6 +4006,12 @@ dBdt
 DS
 1
 
+(0018,1320)
+B1rms
+B1rms
+FL
+1
+
 (0018,1400)
 Acquisition Device Processing Description
 AcquisitionDeviceProcessingDescription
@@ -10340,6 +10346,12 @@ CS
 ICC Profile
 ICCProfile
 OB
+1
+
+(0028,2002)
+Color Space
+ColorSpace
+CS
 1
 
 (0028,2110)
