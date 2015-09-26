@@ -87,15 +87,15 @@ public:
 
   //! The VRs OB, OD, OF, OL, OW, SQ, UC, UN, UR, UT require a 32-bit VL.
   bool HasLongVL() const {
-    return (((1ull << this->Key) & 0xb223e000ul) != 0); }
+    return (((1ull << this->Key) & 0xb223e000u) != 0); }
 
   //! The VRs SH, LO, PN, ST, LT, UC, and UT use SpecificCharacterSet.
   bool HasSpecificCharacterSet() const {
-    return (((1ull << this->Key) & 0x828c1800ul) != 0); }
+    return (((1ull << this->Key) & 0x828c1800u) != 0); }
 
   //! This is true for all VRs whose value is stored as text.
   bool HasTextValue() const {
-    return (((1ull << this->Key) & 0xa78c1cf6ul) != 0); }
+    return (((1ull << this->Key) & 0xa78c1cf6u) != 0); }
 
   //! This is true for for all VRs that store numbers.
   /*!
@@ -103,7 +103,7 @@ public:
    *  OB, OW, OF, OL, and OD are not included.
    */
   bool HasNumericValue() const {
-    return (((1ull << this->Key) & 0x48500740ul) != 0); }
+    return (((1ull << this->Key) & 0x48500740u) != 0); }
 
   //! The VRs ST, LT, and UT carry only one value.
   /*!
@@ -112,7 +112,7 @@ public:
    * is an illegal character in UR.
    */
   bool HasSingleValue() const {
-    return (((1ull << this->Key) & 0x80801000ul) != 0); }
+    return (((1ull << this->Key) & 0x80801000u) != 0); }
 
   bool operator==(vtkDICOMVR a) const { return (this->Key == a.Key); }
   bool operator!=(vtkDICOMVR a) const { return (this->Key != a.Key); }
