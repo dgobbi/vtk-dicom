@@ -10216,6 +10216,12 @@ SegmentedBluePaletteColorLookupTableData
 OW
 1
 
+(0028,1224)
+Segmented Alpha Palette Color Lookup Table Data
+SegmentedAlphaPaletteColorLookupTableData
+OW
+1
+
 (0028,1300)
 Breast Implant Present
 BreastImplantPresent
@@ -15382,6 +15388,102 @@ LongVertexPointIndexList
 UL
 1-n
 
+(0066,0101)
+Track Set Sequence
+TrackSetSequence
+SQ
+1
+
+(0066,0102)
+Track Sequence
+TrackSequence
+SQ
+1
+
+(0066,0103)
+Recommended Display CIELab Value List
+RecommendedDisplayCIELabValueList
+OW
+1
+
+(0066,0104)
+Tracking Algorithm Identification Sequence
+TrackingAlgorithmIdentificationSequence
+SQ
+1
+
+(0066,0105)
+Track Set Number
+TrackSetNumber
+UL
+1
+
+(0066,0106)
+Track Set Label
+TrackSetLabel
+LO
+1
+
+(0066,0107)
+Track Set Description
+TrackSetDescription
+UT
+1
+
+(0066,0108)
+Track Set Anatomical Type Code Sequence
+TrackSetAnatomicalTypeCodeSequence
+SQ
+1
+
+(0066,0121)
+Measurements Sequence
+MeasurementsSequence
+SQ
+1
+
+(0066,0124)
+Track Set Statistics Sequence
+TrackSetStatisticsSequence
+SQ
+1
+
+(0066,0125)
+Floating Point Values
+FloatingPointValues
+OF
+1
+
+(0066,0129)
+Track Point Index List
+TrackPointIndexList
+OL
+1
+
+(0066,0130)
+Track Statistics Sequence
+TrackStatisticsSequence
+SQ
+1
+
+(0066,0132)
+Measurement Values Sequence
+MeasurementValuesSequence
+SQ
+1
+
+(0066,0133)
+Diffusion Acquisition Code Sequence
+DiffusionAcquisitionCodeSequence
+SQ
+1
+
+(0066,0134)
+Diffusion Model Code Sequence
+DiffusionModelCodeSequence
+SQ
+1
+
 (0068,6210)
 Implant Size
 ImplantSize
@@ -16436,6 +16538,282 @@ SQ
 Blending Position
 BlendingPosition
 CS
+1
+
+(0070,1101)
+Presentation Display Collection UID
+PresentationDisplayCollectionUID
+UI
+1
+
+(0070,1102)
+Presentation Sequence Collection UID
+PresentationSequenceCollectionUID
+UI
+1
+
+(0070,1103)
+Presentation Sequence Position Index
+PresentationSequencePositionIndex
+US
+1
+
+(0070,1104)
+Rendered Image Reference Sequence
+RenderedImageReferenceSequence
+SQ
+1
+
+(0070,1201)
+Volumetric Presentation State Input Sequence
+VolumetricPresentationStateInputSequence
+SQ
+1
+
+(0070,1202)
+Presentation Input Type
+PresentationInputType
+CS
+1
+
+(0070,1203)
+Input Sequence Position Index
+InputSequencePositionIndex
+US
+1
+
+(0070,1204)
+Crop
+Crop
+CS
+1
+
+(0070,1205)
+Cropping Specification Index
+CroppingSpecificationIndex
+US
+1-n
+
+(0070,1206)
+Compositing Method
+CompositingMethod
+CS
+1
+
+(0070,1207)
+Volumetric Presentation Input Number
+VolumetricPresentationInputNumber
+US
+1
+
+(0070,1208)
+Image Volume Geometry
+ImageVolumeGeometry
+CS
+1
+
+(0070,1301)
+Volume Cropping Sequence
+VolumeCroppingSequence
+SQ
+1
+
+(0070,1302)
+Volume Cropping Method
+VolumeCroppingMethod
+CS
+1
+
+(0070,1303)
+Bounding Box Crop
+BoundingBoxCrop
+FD
+6
+
+(0070,1304)
+Oblique Cropping Plane Sequence
+ObliqueCroppingPlaneSequence
+SQ
+1
+
+(0070,1305)
+Oblique Cropping Plane
+ObliqueCroppingPlane
+FD
+4
+
+(0070,1306)
+Oblique Cropping Plane Normal
+ObliqueCroppingPlaneNormal
+FD
+3
+
+(0070,1309)
+Cropping Specification Number
+CroppingSpecificationNumber
+US
+1
+
+(0070,1501)
+Multi-Planar Reconstruction Style
+MultiPlanarReconstructionStyle
+CS
+1
+
+(0070,1502)
+MPR Thickness Type
+MPRThicknessType
+CS
+1
+
+(0070,1503)
+MPR Slab Thickness
+MPRSlabThickness
+FD
+1
+
+(0070,1505)
+MPR Top Left Hand Corner
+MPRTopLeftHandCorner
+FD
+3
+
+(0070,1507)
+MPR View Width Direction
+MPRViewWidthDirection
+FD
+3
+
+(0070,1508)
+MPR View Width
+MPRViewWidth
+FD
+1
+
+(0070,150C)
+Number of Volumetric Curve Points
+NumberOfVolumetricCurvePoints
+UL
+1
+
+(0070,150D)
+Volumetric Curve Points
+VolumetricCurvePoints
+OD
+1
+
+(0070,1511)
+MPR View Height Direction
+MPRViewHeightDirection
+FD
+3
+
+(0070,1512)
+MPR View Height
+MPRViewHeight
+FD
+1
+
+(0070,1801)
+Presentation State Classification Component Sequence
+PresentationStateClassificationComponentSequence
+SQ
+1
+
+(0070,1802)
+Component Type
+ComponentType
+CS
+1
+
+(0070,1803)
+Component Input Sequence
+ComponentInputSequence
+SQ
+1
+
+(0070,1804)
+Volumetric Presentation Input Index
+VolumetricPresentationInputIndex
+US
+1
+
+(0070,1805)
+Presentation State Compositor Component Sequence
+PresentationStateCompositorComponentSequence
+SQ
+1
+
+(0070,1806)
+Weighting Transfer Function Sequence
+WeightingTransferFunctionSequence
+SQ
+1
+
+(0070,1807)
+Weighting Lookup Table Descriptor
+WeightingLookupTableDescriptor
+US
+3
+
+(0070,1808)
+Weighting Lookup Table Data
+WeightingLookupTableData
+OB
+1
+
+(0070,1901)
+Volumetric Annotation Sequence
+VolumetricAnnotationSequence
+SQ
+1
+
+(0070,1903)
+Referenced Structured Context Sequence
+ReferencedStructuredContextSequence
+SQ
+1
+
+(0070,1904)
+Referenced Content Item
+ReferencedContentItem
+UI
+1
+
+(0070,1905)
+Volumetric Presentation Input Annotation Sequence
+VolumetricPresentationInputAnnotationSequence
+SQ
+1
+
+(0070,1907)
+Annotation Clipping
+AnnotationClipping
+CS
+1
+
+(0070,1A01)
+Presentation Animation Style
+PresentationAnimationStyle
+CS
+1
+
+(0070,1A03)
+Recommended Animation Rate
+RecommendedAnimationRate
+FD
+1
+
+(0070,1A04)
+Animation Curve Sequence
+AnimationCurveSequence
+SQ
+1
+
+(0070,1A05)
+Animation Step Size
+AnimationStepSize
+FD
 1
 
 (0072,0002)

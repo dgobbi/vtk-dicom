@@ -22,16 +22,16 @@ UIDTableEntry UIDTable[] = {
 { 170, 1, 1, 0, 0 },
 { 196, 1, 2, 0, 0 },
 { 197, 1, 1, 0, 0 },
-{ 1139, 1, 1, 0, 0 },
-{ 2196, 1, 1, 0, 0 },
-{ 2199, 1, 1, 0, 0 },
-{ 2201, 24, 1, 0, 0 },
+{ 1142, 1, 1, 0, 0 },
+{ 2205, 1, 1, 0, 0 },
+{ 2208, 1, 1, 0, 0 },
+{ 2210, 24, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 2225, 2, 0, 0, 0 },
+{ 2234, 2, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.1.1
   "Verification SOP Class" },
 { 58, 6, 1, 0, // 1.2.840.10008.1.2
@@ -418,26 +418,26 @@ UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.31
   "Modality Worklist Information Model - FIND" },
-{ 1095, 3, 1, 0, // 1.2.840.10008.5.1.4.32 (Retired)
+{ 1098, 3, 1, 0, // 1.2.840.10008.5.1.4.32 (Retired)
   "General Purpose Worklist Management Meta SOP Class" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.33
   "Instance Availability Notification SOP Class" },
-{ 1098, 9, 1, 0, 0 },
+{ 1101, 9, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1116, 3, 1, 0, 0 },
-{ 1119, 4, 1, 0, 0 },
-{ 1123, 4, 1, 0, 0 },
+{ 1119, 3, 1, 0, 0 },
+{ 1122, 4, 1, 0, 0 },
+{ 1126, 4, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.41
   "Product Characteristics Query SOP Class" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.42
   "Substance Approval Query SOP Class" },
-{ 1127, 4, 1, 0, 0 },
-{ 1131, 4, 1, 0, 0 },
-{ 1135, 4, 1, 0, 0 },
+{ 1130, 4, 1, 0, 0 },
+{ 1134, 4, 1, 0, 0 },
+{ 1138, 4, 1, 0, 0 },
 { 297, 601, 1, 0, 0 },
-{ 1078, 5, 1, 0, 0 },
+{ 1081, 5, 1, 0, 0 },
 { 898, 3, 1, 0, // 1.2.840.10008.5.1.4.1.1.1
   "Computed Radiography Image Storage" },
 { 904, 2, 1, 0, // 1.2.840.10008.5.1.4.1.1.2
@@ -458,11 +458,11 @@ UIDTableEntry UIDTable[] = {
   "Standalone Curve Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.10 (Retired)
   "Standalone Modality LUT Storage" },
-{ 932, 5, 1, 0, // 1.2.840.10008.5.1.4.1.1.11 (Retired)
+{ 932, 7, 1, 0, // 1.2.840.10008.5.1.4.1.1.11 (Retired)
   "Standalone VOI LUT Storage" },
-{ 937, 3, 1, 0, 0 },
-{ 942, 1, 1, 0, 0 },
-{ 948, 2, 1, 0, 0 },
+{ 939, 3, 1, 0, 0 },
+{ 944, 1, 1, 0, 0 },
+{ 950, 2, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -516,11 +516,11 @@ UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 950, 5, 1, 0, // 1.2.840.10008.5.1.4.1.1.66
+{ 952, 6, 1, 0, // 1.2.840.10008.5.1.4.1.1.66
   "Raw Data Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.67
   "Real World Value Mapping Storage" },
-{ 955, 2, 1, 0, 0 },
+{ 958, 2, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -529,34 +529,18 @@ UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 957, 2, 1, 0, 0 },
-{ 974, 8, 1, 0, 0 },
-{ 982, 1, 1, 0, 0 },
-{ 983, 1, 1, 0, 0 },
-{ 984, 1, 1, 0, 0 },
+{ 960, 2, 1, 0, 0 },
+{ 977, 8, 1, 0, 0 },
 { 985, 1, 1, 0, 0 },
+{ 986, 1, 1, 0, 0 },
+{ 987, 1, 1, 0, 0 },
+{ 988, 1, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 986, 70, 1, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 1056, 2, 1, 0, 0 },
+{ 989, 70, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -572,6 +556,7 @@ UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
+{ 1059, 2, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -580,7 +565,22 @@ UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1058, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.128
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 1061, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.128
   "Positron Emission Tomography Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.129 (Retired)
   "Standalone PET Curve Storage" },
@@ -937,7 +937,7 @@ UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1059, 9, 1, 0, 0 },
+{ 1062, 9, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -957,7 +957,7 @@ UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1068, 6, 1, 0, 0 },
+{ 1071, 6, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -1057,7 +1057,7 @@ UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1076, 2, 1, 0, 0 },
+{ 1079, 2, 1, 0, 0 },
 { 901, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.1.1
   "Digital X-Ray Image Storage - For Presentation" },
 { 902, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.1.2
@@ -1122,18 +1122,22 @@ UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.9.6.1
   "Respiratory Waveform Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.11.1
-  "Grayscale Softcopy Presentation State Storage SOP Class" },
+  "Grayscale Softcopy Presentation State Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.11.2
-  "Color Softcopy Presentation State Storage SOP Class" },
+  "Color Softcopy Presentation State Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.11.3
-  "Pseudo-Color Softcopy Presentation State Storage SOP Class" },
+  "Pseudo-Color Softcopy Presentation State Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.11.4
-  "Blending Softcopy Presentation State Storage SOP Class" },
+  "Blending Softcopy Presentation State Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.11.5
   "XA/XRF Grayscale Softcopy Presentation State Storage" },
-{ 940, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.12.1
+{ 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.11.6
+  "Grayscale Planar MPR Volumetric Presentation State Storage" },
+{ 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.11.7
+  "Compositing Planar MPR Volumetric Presentation State Storage" },
+{ 942, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.12.1
   "X-Ray Angiographic Image Storage" },
-{ 941, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.12.2
+{ 943, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.12.2
   "X-Ray Radiofluoroscopic Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.12.3 (Retired)
   "X-Ray Angiographic Bi-Plane Image Storage" },
@@ -1141,7 +1145,7 @@ UIDTableEntry UIDTable[] = {
   "Enhanced XA Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.12.2.1
   "Enhanced XRF Image Storage" },
-{ 943, 5, 1, 0, 0 },
+{ 945, 5, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.13.1.1
   "X-Ray 3D Angiographic Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.13.1.2
@@ -1166,23 +1170,25 @@ UIDTableEntry UIDTable[] = {
   "Segmentation Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.66.5
   "Surface Segmentation Storage" },
+{ 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.66.6
+  "Tractography Results" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.68.1
   "Surface Scan Mesh Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.68.2
   "Surface Scan Point Cloud Storage" },
-{ 959, 6, 1, 0, // 1.2.840.10008.5.1.4.1.1.77.1 (Retired)
+{ 962, 6, 1, 0, // 1.2.840.10008.5.1.4.1.1.77.1 (Retired)
   "VL Image Storage - Trial" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.77.2 (Retired)
   "VL Multi-frame Image Storage - Trial" },
-{ 965, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.77.1.1
+{ 968, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.77.1.1
   "VL Endoscopic Image Storage" },
-{ 966, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.77.1.2
+{ 969, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.77.1.2
   "VL Microscopic Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.77.1.3
   "VL Slide-Coordinates Microscopic Image Storage" },
-{ 967, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.77.1.4
+{ 970, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.77.1.4
   "VL Photographic Image Storage" },
-{ 968, 6, 1, 0, 0 },
+{ 971, 6, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.77.1.6
   "VL Whole Slide Microscopy Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.77.1.1.1
@@ -1340,7 +1346,7 @@ UIDTableEntry UIDTable[] = {
   "RT Ion Beams Treatment Record Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.501.1
   "DICOS CT Image Storage" },
-{ 1074, 2, 1, 0, 0 },
+{ 1077, 2, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.501.3
   "DICOS Threat Detection Report Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.501.4
@@ -1357,11 +1363,11 @@ UIDTableEntry UIDTable[] = {
   "Eddy Current Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.601.2
   "Eddy Current Multi-frame Image Storage" },
-{ 1083, 3, 1, 0, 0 },
 { 1086, 3, 1, 0, 0 },
 { 1089, 3, 1, 0, 0 },
-{ 1092, 2, 2, 0, 0 },
-{ 1094, 1, 3, 0, 0 },
+{ 1092, 3, 1, 0, 0 },
+{ 1095, 2, 2, 0, 0 },
+{ 1097, 1, 3, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.2.1.1
   "Patient Root Query/Retrieve Information Model - FIND" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.2.1.2
@@ -1398,11 +1404,11 @@ UIDTableEntry UIDTable[] = {
   "RT Conventional Machine Verification - Trial" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.34.3 (Retired)
   "RT Ion Machine Verification - Trial" },
-{ 1107, 4, 1, 0, // 1.2.840.10008.5.1.4.34.4 (Retired)
+{ 1110, 4, 1, 0, // 1.2.840.10008.5.1.4.34.4 (Retired)
   "Unified Worklist and Procedure Step Service Class - Trial" },
-{ 1111, 1, 1, 0, // 1.2.840.10008.5.1.4.34.5
+{ 1114, 1, 1, 0, // 1.2.840.10008.5.1.4.34.5
   "UPS Global Subscription SOP Instance" },
-{ 1112, 4, 1, 0, // 1.2.840.10008.5.1.4.34.6
+{ 1115, 4, 1, 0, // 1.2.840.10008.5.1.4.34.6
   "Unified Worklist and Procedure Step Service Class" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.34.7
   "RT Beams Delivery Instruction Storage" },
@@ -1474,7 +1480,7 @@ UIDTableEntry UIDTable[] = {
   "Implant Template Group Information Model - MOVE" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.45.4
   "Implant Template Group Information Model - GET" },
-{ 1140, 1056, 1, 0, 0 },
+{ 1143, 1062, 1, 0, 0 },
 { 0, 0, 0, 2, // 1.2.840.10008.6.1.1
   "Anatomic Modifier" },
 { 0, 0, 0, 4, // 1.2.840.10008.6.1.2
@@ -3481,12 +3487,24 @@ UIDTableEntry UIDTable[] = {
   "Source of CT Dose Information" },
 { 0, 0, 0, 10025, // 1.2.840.10008.6.1.1056
   "Radiation Dose Reference Points" },
-{ 2197, 2, 1, 0, 0 },
+{ 0, 0, 0, 501, // 1.2.840.10008.6.1.1057
+  "Volumetric View Description" },
+{ 0, 0, 0, 502, // 1.2.840.10008.6.1.1058
+  "Volumetric View Modifier" },
+{ 0, 0, 0, 7260, // 1.2.840.10008.6.1.1059
+  "Diffusion Acquisition Value Types" },
+{ 0, 0, 0, 7261, // 1.2.840.10008.6.1.1060
+  "Diffusion Model Value Types" },
+{ 0, 0, 0, 7262, // 1.2.840.10008.6.1.1061
+  "Diffusion Tractography Algorithm Families" },
+{ 0, 0, 0, 7263, // 1.2.840.10008.6.1.1062
+  "Diffusion Tractography Measurement Types" },
+{ 2206, 2, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.1
   "Native DICOM Model" },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.2
   "Abstract Multi-Dimensional Image Model" },
-{ 2200, 1, 1, 0, 0 },
+{ 2209, 1, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.8.1.1
   "DICOM Content Mapping Resource" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.1
@@ -3537,10 +3555,10 @@ UIDTableEntry UIDTable[] = {
   "General Section Entries" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.24
   "Imaging Addendum Report" },
-{ 2227, 2, 3, 0, 0 },
-{ 2268, 1, 1, 0, 0 },
-{ 2229, 31, 1, 0, 0 },
-{ 2260, 8, 1, 0, 0 },
+{ 2236, 2, 3, 0, 0 },
+{ 2277, 1, 1, 0, 0 },
+{ 2238, 31, 1, 0, 0 },
+{ 2269, 8, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.1
   "dicomDeviceName" },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.2

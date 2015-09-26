@@ -640,23 +640,31 @@ Standalone VOI LUT Storage (Retired)
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.11.1
-Grayscale Softcopy Presentation State Storage SOP Class
+Grayscale Softcopy Presentation State Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.11.2
-Color Softcopy Presentation State Storage SOP Class
+Color Softcopy Presentation State Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.11.3
-Pseudo-Color Softcopy Presentation State Storage SOP Class
+Pseudo-Color Softcopy Presentation State Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.11.4
-Blending Softcopy Presentation State Storage SOP Class
+Blending Softcopy Presentation State Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.11.5
 XA/XRF Grayscale Softcopy Presentation State Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.11.6
+Grayscale Planar MPR Volumetric Presentation State Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.11.7
+Compositing Planar MPR Volumetric Presentation State Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.12.1
@@ -737,6 +745,10 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.66.5
 Surface Segmentation Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.66.6
+Tractography Results
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.67
@@ -4465,3 +4477,21 @@ Source of CT Dose Information
 1.2.840.10008.6.1.1056
 CID 10025
 Radiation Dose Reference Points
+1.2.840.10008.6.1.1057
+CID 501
+Volumetric View Description
+1.2.840.10008.6.1.1058
+CID 502
+Volumetric View Modifier
+1.2.840.10008.6.1.1059
+CID 7260
+Diffusion Acquisition Value Types
+1.2.840.10008.6.1.1060
+CID 7261
+Diffusion Model Value Types
+1.2.840.10008.6.1.1061
+CID 7262
+Diffusion Tractography Algorithm Families
+1.2.840.10008.6.1.1062
+CID 7263
+Diffusion Tractography Measurement Types
