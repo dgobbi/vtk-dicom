@@ -36,7 +36,7 @@ for arg in sys.argv[1:]:
     sys.exit(1)
 
 # the hash table, in PYTHON
-htsize = 1024
+htsize = 4096
 
 # collect private dictionaries
 privatelines = {}
@@ -109,9 +109,9 @@ def makedict(lines, creator="DICOM"):
   # a set to keep track of all VM strings encountered
   vms = {}
 
-  htsize = 1024
+  htsize = 4096
   if privatedict:
-    htsize = int(len(lines)/24)
+    htsize = int(len(lines)/6)
     if htsize == 0:
       htsize = 1
 
