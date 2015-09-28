@@ -373,7 +373,7 @@ def printbody(entry_dict, classname):
     print
     print "} // end anonymous namespace"
     print
-    print "static int %sInitializerCounter;" % (classname,)
+    print "static unsigned int %sInitializerCounter;" % (classname,)
     print
     print "%sInitializer::%sInitializer()" % (classname,classname)
     print "{"
