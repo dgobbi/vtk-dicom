@@ -29,7 +29,7 @@ class vtkDICOMValue;
  *  If constructed from a metadata object that is not an enhanced
  *  multi-frame dataset, it simply acts as a pass-through.
  */
-class VTK_DICOM_EXPORT vtkDICOMMetaDataAdapter
+class VTKDICOM_EXPORT vtkDICOMMetaDataAdapter
 {
 public:
   //! Construct an adapter for the given meta data object.

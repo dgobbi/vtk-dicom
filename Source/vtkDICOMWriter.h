@@ -32,7 +32,7 @@ class vtkMatrix4x4;
 class vtkDICOMMetaData;
 class vtkDICOMGenerator;
 
-class VTK_DICOM_EXPORT vtkDICOMWriter : public vtkImageWriter
+class VTKDICOM_EXPORT vtkDICOMWriter : public vtkImageWriter
 {
 public:
   // Description:

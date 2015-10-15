@@ -12,6 +12,7 @@
 
 =========================================================================*/
 
+#include "vtkDICOMConfig.h"
 #include "vtkDICOMBuild.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMParser.h"

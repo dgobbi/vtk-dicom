@@ -26,7 +26,7 @@
  *  value for each data set instance used to build the the meta data
  *  for the image series.
  */
-class VTK_DICOM_EXPORT vtkDICOMDataElement
+class VTKDICOM_EXPORT vtkDICOMDataElement
 {
 public:
   vtkDICOMDataElement() : Tag(), Value(), Next(0), Prev(0) {}
@@ -74,7 +74,7 @@ private:
 };
 
 //! A const iterator for a vtkDataElement list.
-class VTK_DICOM_EXPORT vtkDICOMDataElementIterator
+class VTKDICOM_EXPORT vtkDICOMDataElementIterator
 {
 public:
   vtkDICOMDataElementIterator() : Pointer(0) {}
@@ -116,6 +116,6 @@ private:
   friend class vtkDICOMItem;
 };
 
-VTK_DICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMDataElement& v);
+VTKDICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMDataElement& v);
 
 #endif /* vtkDICOMDataElement_h */

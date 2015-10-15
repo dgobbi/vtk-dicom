@@ -30,7 +30,7 @@ class vtkDICOMTagPath;
  *  for efficient access.  One vtkDICOMMetaData object can store the
  *  metadata for a series of DICOM images.
  */
-class VTK_DICOM_EXPORT vtkDICOMMetaData : public vtkDataObject
+class VTKDICOM_EXPORT vtkDICOMMetaData : public vtkDataObject
 {
 public:
   //! Create a new vtkDICOMMetaData instance.

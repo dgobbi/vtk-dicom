@@ -29,7 +29,7 @@ class vtkDICOMItem;
  *  a list of DICOM file names as output, sorted by patient, study, series,
  *  and image.
  */
-class VTK_DICOM_EXPORT vtkDICOMDirectory : public vtkAlgorithm
+class VTKDICOM_EXPORT vtkDICOMDirectory : public vtkAlgorithm
 {
 public:
   vtkTypeMacro(vtkDICOMDirectory,vtkAlgorithm);

@@ -33,7 +33,7 @@ class vtkDICOMParserInternalFriendship;
  *  offset of the PixelData within the file can be retrieved
  *  with GetFileOffset().
  */
-class VTK_DICOM_EXPORT vtkDICOMParser : public vtkObject
+class VTKDICOM_EXPORT vtkDICOMParser : public vtkObject
 {
 public:
   //! Create a new vtkDICOMParser instance.

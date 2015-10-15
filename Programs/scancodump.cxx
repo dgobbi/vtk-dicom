@@ -12,6 +12,7 @@
 
 =========================================================================*/
 
+#include "vtkDICOMConfig.h"
 #include "vtkScancoCTReader.h"
 #include <vtkSmartPointer.h>
 

@@ -17,7 +17,7 @@
 #include "vtkDICOMFileSorter.h"
 
 //! Deprecated class, please use vtkDICOMFileSorter instead.
-class VTK_DICOM_EXPORT vtkDICOMSorter : public vtkDICOMFileSorter
+class VTKDICOM_EXPORT vtkDICOMSorter : public vtkDICOMFileSorter
 {
 public:
   vtkTypeMacro(vtkDICOMSorter,vtkDICOMFileSorter);

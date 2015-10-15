@@ -32,7 +32,7 @@ class vtkDICOMParser;
 class vtkDICOMSliceSorter;
 
 //----------------------------------------------------------------------------
-class VTK_DICOM_EXPORT vtkDICOMReader : public vtkImageReader2
+class VTKDICOM_EXPORT vtkDICOMReader : public vtkImageReader2
 {
 public:
   // Description:

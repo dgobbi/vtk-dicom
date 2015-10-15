@@ -23,6 +23,7 @@
 #include "vtkDICOMImageCodec.h"
 #include "vtkDICOMSliceSorter.h"
 #include "vtkDICOMUtilities.h"
+#include "vtkDICOMConfig.h"
 
 #include "vtkObjectFactory.h"
 #include "vtkImageData.h"

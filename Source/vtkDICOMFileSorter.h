@@ -29,7 +29,7 @@ class vtkDICOMMetaData;
  *  SetInputFileName(), then other files in the same series will be found,
  *  and the series will be sorted by InstanceNumber.
  */
-class VTK_DICOM_EXPORT vtkDICOMFileSorter : public vtkObject
+class VTKDICOM_EXPORT vtkDICOMFileSorter : public vtkObject
 {
 public:
   vtkTypeMacro(vtkDICOMFileSorter,vtkObject);

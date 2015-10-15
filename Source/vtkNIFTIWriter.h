@@ -36,7 +36,7 @@
 class vtkMatrix4x4;
 class vtkNIFTIHeader;
 
-class VTK_DICOM_EXPORT vtkNIFTIWriter : public vtkImageWriter
+class VTKDICOM_EXPORT vtkNIFTIWriter : public vtkImageWriter
 {
 public:
   // Description:

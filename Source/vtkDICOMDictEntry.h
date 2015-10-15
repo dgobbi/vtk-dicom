@@ -20,7 +20,7 @@
 #include "vtkDICOMTag.h"
 
 //! An entry in the DICOM dictionary.
-class VTK_DICOM_EXPORT vtkDICOMDictEntry
+class VTKDICOM_EXPORT vtkDICOMDictEntry
 {
 public:
   //! A struct to statically store DICOM dictionary entries.
@@ -71,6 +71,6 @@ private:
   static const Entry InvalidEntry;
 };
 
-VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMDictEntry& a);
+VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMDictEntry& a);
 
 #endif /* vtkDICOMDictEntry_h */

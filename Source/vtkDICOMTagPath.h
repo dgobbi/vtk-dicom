@@ -24,7 +24,7 @@
  *  buried within sequences.  In the interest of creating a simple
  *  and efficient implementation, it can go at most two levels deep.
  */
-class VTK_DICOM_EXPORT vtkDICOMTagPath
+class VTKDICOM_EXPORT vtkDICOMTagPath
 {
 public:
   //! Construct a tag path with an empty head and tail.
@@ -67,6 +67,6 @@ private:
   vtkDICOMTag Tail2;
 };
 
-VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMTagPath& a);
+VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMTagPath& a);
 
 #endif /* vtkDICOMTagPath_h */

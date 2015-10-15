@@ -50,6 +50,7 @@ set(LIB_SRCS
   vtkDICOMSorter.cxx
   ${REFCOUNT_SRC}
   vtkDICOMUtilities.cxx
+  vtkDICOMUtilitiesUIDTable.cxx
   vtkDICOMValue.cxx
   vtkDICOMWriter.cxx
   vtkDICOMAlgorithm.cxx
@@ -65,17 +66,12 @@ set(LIB_SRCS
   vtkScancoCTReader.cxx
 )
 
-# Sources that have no header files
-set(LIB_EXTRA_SRCS
-  vtkDICOMUtilitiesUIDTable.cxx
-)
-
 # Headers without a matching .cxx file are listed here
 set(LIB_HDRS
-  vtkDICOMModule.h
   ${REFCOUNT_HDR}
   vtkNIFTIPrivate.h
   ${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMConfig.h
+  ${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMModule.h
 )
 
 # Internal headers (not installed)
@@ -97,19 +93,32 @@ set(LIB_SPECIAL
   vtkDICOMVM.cxx
   vtkDICOMCharacterSet.cxx
   vtkDICOMDictEntry.cxx
+  vtkDICOMDictHash.cxx
   vtkDICOMDictionary.cxx
+  vtkDICOMDictPrivate.cxx
   vtkDICOMDataElement.cxx
   vtkDICOMImageCodec.cxx
   ${REFCOUNT_SRC}
   vtkDICOMSequence.cxx
   vtkDICOMItem.cxx
-  vtkDICOMUtilities.cxx
   vtkDICOMValue.cxx
   vtkDICOMMetaDataAdapter.cxx
+  vtkDICOMUtilitiesUIDTable.cxx
 )
 
-set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_EXCLUDE ON)
-set_source_files_properties(${LIB_ABSTRACT} PROPERTIES ABSTRACT ON)
+set_source_files_properties(${LIB_HDRS} ${LIB_SPECIAL}
+  PROPERTIES WRAP_EXCLUDE ON)
+set_source_files_properties(${LIB_ABSTRACT}
+  PROPERTIES ABSTRACT ON)
+
+if(Module_vtkDICOM) # Building as a VTK remote module
+
+  vtk_module_library(vtkDICOM ${LIB_SRCS} ${LIB_HDRS})
+
+else() # else MODULE_vtkDICOM
+
+configure_file(${DICOM_SOURCE_DIR}/CMake/vtkDICOMModule.h.in
+  "${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMModule.h" COPYONLY)
 
 # Automatically find the header for each cxx file
 foreach(arg ${LIB_SRCS})
@@ -144,7 +153,7 @@ if(DEFINED VTK_CUSTOM_LIBRARY_SUFFIX)
 endif()
 
 # Create the library
-add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_EXTRA_SRCS} ${LIB_HIERARCHY_STAMP})
+add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_HIERARCHY_STAMP})
 if("${VTK_MAJOR_VERSION}" GREATER 5)
   set_target_properties(${LIB_NAME} PROPERTIES
     OUTPUT_NAME ${LIB_NAME}${LIB_NAME_SUFFIX})
@@ -160,7 +169,7 @@ target_link_libraries(${LIB_NAME} LINK_PRIVATE
   ${KWSYS_LIBS} ${ZLIB_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS})
 
 # Wrappers
-if(BUILD_PYTHON_WRAPPERS)
+if(BUILD_PYTHON_WRAPPERS AND NOT Module_vtkDICOM)
   set(vtk-module ${LIB_NAME})
   set(XY) # Get python version, e.g. 27 for python 2.7
   if(vtkPython_LIBRARIES)
@@ -229,7 +238,7 @@ if(BUILD_PYTHON_WRAPPERS)
   target_link_libraries(${MODULE_PYTHON_NAME} ${LIB_PYTHON_NAME})
 endif()
 
-if(BUILD_JAVA_WRAPPERS)
+if(BUILD_JAVA_WRAPPERS AND NOT Module_vtkDICOM)
   set(vtk-module ${LIB_NAME})
   set(VTK_WRAP_JAVA3_INIT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
   set(VTK_JAVA_HOME ${CMAKE_CURRENT_BINARY_DIR}/java/vtk)
@@ -316,3 +325,5 @@ endif()
 
 install(FILES ${LIB_HDRS}
   DESTINATION ${DICOM_INCLUDE_INSTALL_DEST} COMPONENT Development)
+
+endif() # else MODULE_vtkDICOM

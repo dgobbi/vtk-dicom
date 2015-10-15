@@ -2,7 +2,7 @@
 This is an automatically generated file.  Include errata for any changes.
 =========================================================================*/
 
-#include "vtkDICOMUtilities.h"
+#include "vtkDICOMUtilitiesUIDTable.h"
 
 namespace {
 

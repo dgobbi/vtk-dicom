@@ -41,7 +41,7 @@ class vtkMatrix4x4;
 struct nifti_1_header;
 
 //----------------------------------------------------------------------------
-class VTK_DICOM_EXPORT vtkNIFTIReader : public vtkImageReader2
+class VTKDICOM_EXPORT vtkNIFTIReader : public vtkImageReader2
 {
 public:
   // Description:

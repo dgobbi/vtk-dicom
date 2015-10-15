@@ -31,7 +31,7 @@
  *  GB18030/GBK, although only a subset of the iso-2022 escape codes are
  *  supported by DICOM.
  */
-class VTK_DICOM_EXPORT vtkDICOMCharacterSet
+class VTKDICOM_EXPORT vtkDICOMCharacterSet
 {
 public:
   enum EnumType
@@ -156,6 +156,6 @@ private:
   unsigned char Key;
 };
 
-VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a);
+VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a);
 
 #endif /* vtkDICOMCharacterSet_h */

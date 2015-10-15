@@ -27,7 +27,7 @@ class vtkDICOMMetaData;
  *  index the files and frames in the series so that they can be sorted
  *  into a multi-dimensional volume.
  */
-class VTK_DICOM_EXPORT vtkDICOMSliceSorter : public vtkObject
+class VTKDICOM_EXPORT vtkDICOMSliceSorter : public vtkObject
 {
 public:
   vtkTypeMacro(vtkDICOMSliceSorter,vtkObject);

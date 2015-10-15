@@ -29,7 +29,7 @@
 
 class vtkDICOMRealWorldMapping;
 
-class VTK_DICOM_EXPORT vtkDICOMApplyRescale :
+class VTKDICOM_EXPORT vtkDICOMApplyRescale :
   public vtkDICOMAlgorithm
 {
 public:

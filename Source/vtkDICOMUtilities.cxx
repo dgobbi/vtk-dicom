@@ -15,6 +15,7 @@
 #include <vtkStringArray.h>
 #include "vtkDICOMUtilities.h"
 #include "vtkDICOMFile.h"
+#include "vtkDICOMConfig.h"
 
 #include <string>
 

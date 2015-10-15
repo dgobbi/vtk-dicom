@@ -28,7 +28,7 @@ class vtkDICOMTagPath;
  *  filled in with the SetItem() method, or, you can start
  *  with an empty sequence and use AddItem() to append items.
  */
-class VTK_DICOM_EXPORT vtkDICOMSequence
+class VTKDICOM_EXPORT vtkDICOMSequence
 {
 public:
   //! Construct a growable sequence with no items.
@@ -109,6 +109,6 @@ private:
   static const vtkDICOMItem EmptyItem;
 };
 
-VTK_DICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMSequence& v);
+VTKDICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMSequence& v);
 
 #endif /* vtkDICOMSequence_h */

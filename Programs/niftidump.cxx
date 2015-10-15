@@ -12,6 +12,7 @@
 
 =========================================================================*/
 
+#include "vtkDICOMConfig.h"
 #include "vtkNIFTIReader.h"
 #include "vtkNIFTIHeader.h"
 #include "vtkNIFTIPrivate.h"

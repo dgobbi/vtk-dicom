@@ -30,7 +30,7 @@ class vtkDICOMMetaData;
  *  essentially a data set of its own.  An item consists of
  *  zero or more data elements, each with a tag and value.
  */
-class VTK_DICOM_EXPORT vtkDICOMItem
+class VTKDICOM_EXPORT vtkDICOMItem
 {
 private:
 

@@ -23,7 +23,7 @@
 #define DICT_PRIVATE_TABLE_SIZE 512
 
 //! Provide access to the DICOM tag dictionary.
-class VTK_DICOM_EXPORT vtkDICOMDictionary
+class VTKDICOM_EXPORT vtkDICOMDictionary
 {
 public:
   struct Dict
@@ -107,7 +107,7 @@ private:
  *  This ensures that the vtkDICOMDictionary module is initialized before
  *  any other module that includes this header file.
  */
-class VTK_DICOM_EXPORT vtkDICOMDictionaryInitializer
+class VTKDICOM_EXPORT vtkDICOMDictionaryInitializer
 {
 public:
   vtkDICOMDictionaryInitializer();

@@ -25,7 +25,7 @@ class vtkDICOMMetaData;
 /*!
  *  DICOM supports a wide variety of image compression methods.
  */
-class VTK_DICOM_EXPORT vtkDICOMImageCodec
+class VTKDICOM_EXPORT vtkDICOMImageCodec
 {
 public:
   enum EnumType
@@ -147,6 +147,6 @@ private:
     return cp[0] + (cp[1] << 8) + (cp[2] << 16) + (cp[3] << 24); }
 };
 
-VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMImageCodec& a);
+VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMImageCodec& a);
 
 #endif /* vtkDICOMImageCodec_h */

@@ -28,7 +28,7 @@ class vtkDICOMCompilerInternalFriendship;
  *  This class provides routines for compiling a vtkDICOMMetaData
  *  object into a DICOM file.
  */
-class VTK_DICOM_EXPORT vtkDICOMCompiler : public vtkObject
+class VTKDICOM_EXPORT vtkDICOMCompiler : public vtkObject
 {
 public:
   //! Create a new vtkDICOMCompiler instance.

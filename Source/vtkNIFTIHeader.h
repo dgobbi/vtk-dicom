@@ -40,7 +40,7 @@ struct nifti_1_header;
 struct nifti_2_header;
 
 //----------------------------------------------------------------------------
-class VTK_DICOM_EXPORT vtkNIFTIHeader : public vtkObject
+class VTKDICOM_EXPORT vtkNIFTIHeader : public vtkObject
 {
 public:
 

@@ -35,7 +35,7 @@
 #include "vtkDICOMModule.h"
 
 //----------------------------------------------------------------------------
-class VTK_DICOM_EXPORT vtkScancoCTReader : public vtkImageReader2
+class VTKDICOM_EXPORT vtkScancoCTReader : public vtkImageReader2
 {
 public:
   // Description:

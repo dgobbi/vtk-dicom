@@ -26,7 +26,7 @@
 class vtkDICOMMetaData;
 
 //----------------------------------------------------------------------------
-class VTK_DICOM_EXPORT vtkDICOMLookupTable : public vtkLookupTable
+class VTKDICOM_EXPORT vtkDICOMLookupTable : public vtkLookupTable
 {
 public:
   // Description:

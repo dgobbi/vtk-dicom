@@ -23,7 +23,7 @@
  *  In order to safely access values from multiple threads, all
  *  operations that modify the reference count must be atomic.
  */
-class VTK_DICOM_EXPORT vtkDICOMReferenceCount
+class VTKDICOM_EXPORT vtkDICOMReferenceCount
 {
 public:
   vtkDICOMReferenceCount(unsigned int i) : Counter(i) {}

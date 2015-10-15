@@ -10,7 +10,7 @@ This is an automatically generated file.  Include errata for any changes.
 
 //! @cond
 // Initializer to add dict when header included.
-class VTK_DICOM_EXPORT vtkDICOMDictPrivateInitializer
+class VTKDICOM_EXPORT vtkDICOMDictPrivateInitializer
 {
 public:
   vtkDICOMDictPrivateInitializer();

@@ -19,7 +19,7 @@
 #include "vtkDICOMDictHash.h"
 
 //! A (group,element) identifier tag for DICOM attributes.
-class VTK_DICOM_EXPORT vtkDICOMTag
+class VTKDICOM_EXPORT vtkDICOMTag
 {
 public:
   //! A struct that provides static storage for a DICOM tag.
@@ -74,6 +74,6 @@ private:
   unsigned int Key;
 };
 
-VTK_DICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMTag& a);
+VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMTag& a);
 
 #endif /* vtkDICOMTag_h */

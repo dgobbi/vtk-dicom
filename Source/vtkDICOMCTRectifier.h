@@ -26,7 +26,7 @@
 class vtkMatrix4x4;
 
 //----------------------------------------------------------------------------
-class VTK_DICOM_EXPORT vtkDICOMCTRectifier : public vtkDICOMAlgorithm
+class VTKDICOM_EXPORT vtkDICOMCTRectifier : public vtkDICOMAlgorithm
 {
 public:
   // Description:

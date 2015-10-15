@@ -33,6 +33,7 @@
 // Header for NIFTI
 #include "vtkNIFTIHeader.h"
 #include "vtkNIFTIPrivate.h"
+#include "vtkDICOMConfig.h"
 
 // Header for zlib
 #ifdef DICOM_USE_VTKZLIB

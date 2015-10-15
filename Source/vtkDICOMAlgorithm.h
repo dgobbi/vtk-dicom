@@ -31,7 +31,7 @@ class vtkDICOMMetaData;
 class vtkDICOMPerFilePalette;
 
 //----------------------------------------------------------------------------
-class VTK_DICOM_EXPORT vtkDICOMAlgorithm : public vtkThreadedImageAlgorithm
+class VTKDICOM_EXPORT vtkDICOMAlgorithm : public vtkThreadedImageAlgorithm
 {
 public:
   // Description:

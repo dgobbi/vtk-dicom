@@ -24,7 +24,7 @@
 class vtkStringArray;
 
 //! Utility functions for use with DICOM classes.
-class VTK_DICOM_EXPORT vtkDICOMUtilities : public vtkObject
+class VTKDICOM_EXPORT vtkDICOMUtilities : public vtkObject
 {
 public:
   //! VTK dynamic type information macro.

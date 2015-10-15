@@ -38,7 +38,7 @@ class vtkDICOMItem;
  *  are concrete classes that provide generation of data sets belonging
  *  to specific modalities.
  */
-class VTK_DICOM_EXPORT vtkDICOMGenerator : public vtkObject
+class VTKDICOM_EXPORT vtkDICOMGenerator : public vtkObject
 {
 public:
   //! Static method for construction.

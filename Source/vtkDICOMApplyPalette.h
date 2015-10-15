@@ -30,7 +30,7 @@ class vtkDICOMMetaData;
 class vtkDICOMPerFilePalette;
 
 //----------------------------------------------------------------------------
-class VTK_DICOM_EXPORT vtkDICOMApplyPalette : public vtkDICOMAlgorithm
+class VTKDICOM_EXPORT vtkDICOMApplyPalette : public vtkDICOMAlgorithm
 {
 public:
   // Description:

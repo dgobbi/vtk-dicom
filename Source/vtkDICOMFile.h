@@ -29,7 +29,7 @@
  *  It uses system-level I/O calls so that it can eventually be used not
  *  only on files, but on sockets as well.
  */
-class VTK_DICOM_EXPORT vtkDICOMFile
+class VTKDICOM_EXPORT vtkDICOMFile
 {
 public:
   //! The file mode (input or output).

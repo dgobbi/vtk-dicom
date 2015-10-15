@@ -47,7 +47,7 @@ class vtkDICOMSequence;
  *  data object.  To keep it lightweight, in terms of size, it has
  *  no virtual methods.
  */
-class VTK_DICOM_EXPORT vtkDICOMValue
+class VTKDICOM_EXPORT vtkDICOMValue
 {
 private:
   //! A reference-counted value class.
@@ -457,6 +457,6 @@ class vtkDICOMValueFriendMetaData
 };
 //! @endcond
 
-VTK_DICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMValue& v);
+VTKDICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMValue& v);
 
 #endif /* vtkDICOMValue_h */
