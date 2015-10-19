@@ -14,12 +14,10 @@
 #ifndef vtkDICOMUtilities_h
 #define vtkDICOMUtilities_h
 
-#include <vtkSystemIncludes.h>
 #include <vtkObject.h>
-#include "vtkDICOMModule.h"
-#include "vtkDICOMTag.h"
-
-#include <string>
+#include <vtkStdString.h> // For std::string
+#include "vtkDICOMModule.h" // For export macro
+#include "vtkDICOMTag.h" // For method parameter
 
 class vtkStringArray;
 
@@ -27,8 +25,14 @@ class vtkStringArray;
 class VTKDICOM_EXPORT vtkDICOMUtilities : public vtkObject
 {
 public:
+  //! VTK new method (for Java and Tcl wrappers)
+  static vtkDICOMUtilities *New();
+
   //! VTK dynamic type information macro.
   vtkTypeMacro(vtkDICOMUtilities, vtkObject);
+
+  //! Print a summary of the contents of this object.
+  void PrintSelf(ostream& os, vtkIndent indent);
 
   //! Set a UID prefix to use when generating UIDs.
   /*!
@@ -162,8 +166,8 @@ public:
   unsigned short GetCIDFromUID(const char *uid);
 
 protected:
-  vtkDICOMUtilities();
-  ~vtkDICOMUtilities();
+  vtkDICOMUtilities() {}
+  ~vtkDICOMUtilities() {}
 
   static char UIDPrefix[64];
   static char ImplementationClassUID[65];

@@ -15,7 +15,7 @@
 #define vtkDICOMDirectory_h
 
 #include <vtkAlgorithm.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 class vtkStringArray;
 class vtkIntArray;

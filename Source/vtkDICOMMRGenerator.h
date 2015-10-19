@@ -14,7 +14,7 @@
 #ifndef vtkDICOMMRGenerator_h
 #define vtkDICOMMRGenerator_h
 
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMGenerator.h"
 
 //! Generate DICOM data objects for MR images.

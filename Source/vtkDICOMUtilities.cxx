@@ -12,7 +12,9 @@
 
 =========================================================================*/
 
+#include <vtkSystemIncludes.h>
 #include <vtkStringArray.h>
+#include <vtkObjectFactory.h>
 #include "vtkDICOMUtilities.h"
 #include "vtkDICOMFile.h"
 #include "vtkDICOMConfig.h"
@@ -34,6 +36,8 @@
 #include <windows.h>
 #include <wincrypt.h>
 #endif
+
+vtkStandardNewMacro(vtkDICOMUtilities);
 
 namespace {
 
@@ -958,4 +962,10 @@ bool vtkDICOMUtilities::PatternMatches(const char *pattern, const char *val)
 {
   return vtkDICOMUtilities::PatternMatches(
     pattern, strlen(pattern), val, strlen(val));
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMUtilities::PrintSelf(ostream& os, vtkIndent indent)
+{
+  this->Superclass::PrintSelf(os, indent);
 }

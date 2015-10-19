@@ -15,7 +15,7 @@
 #define vtkDICOMFile_h
 
 #include <vtkSystemIncludes.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 #if defined(_WIN32)
 #define VTK_DICOM_WIN32_IO
@@ -114,3 +114,4 @@ private:
 };
 
 #endif /* vtkDICOMFile_h */
+// VTK-HeaderTest-Exclude: vtkDICOMFile.h

@@ -14,7 +14,7 @@
 #ifndef vtkDICOMDictEntry_h
 #define vtkDICOMDictEntry_h
 
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMVR.h"
 #include "vtkDICOMVM.h"
 #include "vtkDICOMTag.h"
@@ -74,3 +74,4 @@ private:
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMDictEntry& a);
 
 #endif /* vtkDICOMDictEntry_h */
+// VTK-HeaderTest-Exclude: vtkDICOMDictEntry.h

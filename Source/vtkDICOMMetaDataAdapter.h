@@ -14,7 +14,7 @@
 #ifndef vtkDICOMMetaDataAdapter_h
 #define vtkDICOMMetaDataAdapter_h
 
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMTag.h"
 
 class vtkDICOMMetaData;
@@ -91,3 +91,4 @@ private:
 };
 
 #endif /* vtkDICOMMetaDataAdapter_h */
+// VTK-HeaderTest-Exclude: vtkDICOMMetaDataAdapter.h

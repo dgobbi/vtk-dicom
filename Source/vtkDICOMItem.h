@@ -14,7 +14,7 @@
 #ifndef vtkDICOMItem_h
 #define vtkDICOMItem_h
 
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMDataElement.h"
 #include "vtkDICOMDictEntry.h"
 #include "vtkDICOMReferenceCount.h"
@@ -213,3 +213,4 @@ private:
 };
 
 #endif /* vtkDICOMItem_h */
+// VTK-HeaderTest-Exclude: vtkDICOMItem.h

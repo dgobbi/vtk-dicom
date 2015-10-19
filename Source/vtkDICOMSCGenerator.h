@@ -14,7 +14,7 @@
 #ifndef vtkDICOMSCGenerator_h
 #define vtkDICOMSCGenerator_h
 
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMGenerator.h"
 
 //! Generate DICOM data objects for Secondary Capture images.

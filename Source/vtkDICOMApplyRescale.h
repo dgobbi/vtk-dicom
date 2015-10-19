@@ -25,7 +25,7 @@
 #define vtkDICOMApplyRescale_h
 
 #include "vtkDICOMAlgorithm.h"
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 class vtkDICOMRealWorldMapping;
 

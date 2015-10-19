@@ -33,7 +33,7 @@
 #define vtkNIFTIReader_h
 
 #include <vtkImageReader2.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 class vtkNIFTIHeader;
 class vtkMatrix4x4;

@@ -25,3 +25,4 @@ static vtkDICOMDictPrivateInitializer vtkDICOMDictPrivateInitializerInstance;
 //! @endcond
 
 #endif /* vtkDICOMDictPrivate_h */
+// VTK-HeaderTest-Exclude: vtkDICOMDictPrivate.h

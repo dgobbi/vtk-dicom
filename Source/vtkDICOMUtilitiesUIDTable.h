@@ -21,3 +21,4 @@
 // provide any classes of its own.
 
 #endif /* vtkDICOMUtilitiesUIDTable_h */
+// VTK-HeaderTest-Exclude: vtkDICOMUtilitiesUIDTable.h

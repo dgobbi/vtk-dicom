@@ -20,7 +20,7 @@
 #define vtkDICOMReader_h
 
 #include <vtkImageReader2.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 class vtkIntArray;
 class vtkTypeInt64Array;

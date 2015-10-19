@@ -32,7 +32,7 @@
 #define vtkScancoCTReader_h
 
 #include <vtkImageReader2.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 //----------------------------------------------------------------------------
 class VTKDICOM_EXPORT vtkScancoCTReader : public vtkImageReader2

@@ -14,7 +14,7 @@
 #ifndef vtkDICOMDataElement_h
 #define vtkDICOMDataElement_h
 
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMTag.h"
 #include "vtkDICOMValue.h"
 
@@ -119,3 +119,4 @@ private:
 VTKDICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMDataElement& v);
 
 #endif /* vtkDICOMDataElement_h */
+// VTK-HeaderTest-Exclude: vtkDICOMDataElement.h

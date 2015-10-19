@@ -31,7 +31,7 @@
 #define vtkNIFTIWriter_h
 
 #include <vtkImageWriter.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 class vtkMatrix4x4;
 class vtkNIFTIHeader;

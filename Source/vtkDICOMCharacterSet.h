@@ -15,7 +15,7 @@
 #define vtkDICOMCharacterSet_h
 
 #include <vtkSystemIncludes.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 #include <string>
 
@@ -159,3 +159,4 @@ private:
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a);
 
 #endif /* vtkDICOMCharacterSet_h */
+// VTK-HeaderTest-Exclude: vtkDICOMCharacterSet.h

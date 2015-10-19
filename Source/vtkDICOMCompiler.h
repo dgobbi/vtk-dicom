@@ -15,7 +15,7 @@
 #define vtkDICOMCompiler_h
 
 #include <vtkObject.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 
 class vtkStringArray;

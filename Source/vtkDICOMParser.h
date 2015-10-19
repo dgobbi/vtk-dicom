@@ -15,9 +15,8 @@
 #define vtkDICOMParser_h
 
 #include <vtkObject.h>
-#include "vtkDICOMModule.h"
-
-#include <string>
+#include <vtkStdString.h> // For std::string
+#include "vtkDICOMModule.h" // For export macro
 
 class vtkDICOMFile;
 class vtkDICOMItem;

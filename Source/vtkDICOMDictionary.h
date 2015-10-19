@@ -14,7 +14,7 @@
 #ifndef vtkDICOMDictionary_h
 #define vtkDICOMDictionary_h
 
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMDictEntry.h"
 #include "vtkDICOMDictHash.h"
 
@@ -121,3 +121,4 @@ private:
 static vtkDICOMDictionaryInitializer vtkDICOMDictionaryInitializerInstance;
 
 #endif /* vtkDICOMDictionary_h */
+// VTK-HeaderTest-Exclude: vtkDICOMDictionary.h

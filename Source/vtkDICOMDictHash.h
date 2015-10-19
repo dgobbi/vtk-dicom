@@ -4769,3 +4769,4 @@ SequenceDelimitationItem                = 0xFFFEE0DD  // XX M0    0
 } // end namespace DC
 
 #endif /* vtkDICOMDictHash_h */
+// VTK-HeaderTest-Exclude: vtkDICOMDictHash.h

@@ -24,7 +24,7 @@
 #define vtkDICOMApplyPalette_h
 
 #include "vtkDICOMAlgorithm.h"
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 class vtkDICOMMetaData;
 class vtkDICOMPerFilePalette;

@@ -15,7 +15,7 @@
 #define vtkDICOMReferenceCount_h
 
 #include <vtkSystemIncludes.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 //! An object for holding an atomic reference count.
 /*!
@@ -64,3 +64,4 @@ inline unsigned int vtkDICOMReferenceCount::operator++()
 #endif
 
 #endif /* vtkDICOMReferenceCount_h */
+// VTK-HeaderTest-Exclude: vtkDICOMReferenceCount.h

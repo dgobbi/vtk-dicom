@@ -15,7 +15,7 @@
 #define vtkDICOMVR_h
 
 #include <vtkSystemIncludes.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 //! VRs (Value Representations)
 class VTKDICOM_EXPORT vtkDICOMVR
@@ -132,3 +132,4 @@ private:
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMVR& a);
 
 #endif /* vtkDICOMVR_h */
+// VTK-HeaderTest-Exclude: vtkDICOMVR.h

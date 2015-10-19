@@ -15,7 +15,7 @@
 #define vtkDICOMVM_h
 
 #include <vtkSystemIncludes.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 //! VMs (Value Multiplicities)
 class VTKDICOM_EXPORT vtkDICOMVM
@@ -470,3 +470,4 @@ private:
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMVM& a);
 
 #endif /* vtkDICOMVM_h */
+// VTK-HeaderTest-Exclude: vtkDICOMVM.h

@@ -15,8 +15,8 @@
 #define vtkDICOMGenerator_h
 
 #include <vtkObject.h>
-#include "vtkDICOMModule.h"
-#include "vtkDICOMTag.h"
+#include "vtkDICOMModule.h" // For export macro
+#include "vtkDICOMTag.h" // For method parameter
 
 class vtkIntArray;
 class vtkMatrix4x4;

@@ -15,7 +15,7 @@
 #define vtkDICOMValue_h
 
 #include <vtkSystemIncludes.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMVR.h"
 #include "vtkDICOMTag.h"
 #include "vtkDICOMCharacterSet.h"
@@ -460,3 +460,4 @@ class vtkDICOMValueFriendMetaData
 VTKDICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMValue& v);
 
 #endif /* vtkDICOMValue_h */
+// VTK-HeaderTest-Exclude: vtkDICOMValue.h

@@ -15,11 +15,10 @@
 #define vtkDICOMMetaData_h
 
 #include <vtkDataObject.h>
-#include "vtkDICOMModule.h"
-#include "vtkDICOMDataElement.h"
-#include "vtkDICOMDictEntry.h"
-
-#include <string>
+#include <vtkStdString.h> // For std::string
+#include "vtkDICOMModule.h" // For export macro
+#include "vtkDICOMDataElement.h" // For method parameter
+#include "vtkDICOMDictEntry.h" // For method parameter
 
 class vtkIntArray;
 class vtkDICOMTagPath;

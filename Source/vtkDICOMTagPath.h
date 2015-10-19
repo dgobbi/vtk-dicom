@@ -15,7 +15,7 @@
 #define vtkDICOMTagPath_h
 
 #include <vtkSystemIncludes.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMTag.h"
 
 //! A tag path for digging values out of sequence items.
@@ -70,3 +70,4 @@ private:
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMTagPath& a);
 
 #endif /* vtkDICOMTagPath_h */
+// VTK-HeaderTest-Exclude: vtkDICOMTagPath.h

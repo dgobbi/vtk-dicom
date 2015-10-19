@@ -14,7 +14,7 @@
 #ifndef vtkDICOMSequence_h
 #define vtkDICOMSequence_h
 
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMValue.h"
 
 class vtkDICOMItem;
@@ -112,3 +112,4 @@ private:
 VTKDICOM_EXPORT ostream& operator<<(ostream& os, const vtkDICOMSequence& v);
 
 #endif /* vtkDICOMSequence_h */
+// VTK-HeaderTest-Exclude: vtkDICOMSequence.h

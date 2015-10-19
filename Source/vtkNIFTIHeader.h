@@ -34,7 +34,7 @@
 #define vtkNIFTIHeader_h
 
 #include <vtkObject.h>
-#include "vtkDICOMModule.h"
+#include "vtkDICOMModule.h" // For export macro
 
 struct nifti_1_header;
 struct nifti_2_header;
