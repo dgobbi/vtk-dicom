@@ -20,7 +20,7 @@
 class VTK_DICOM_EXPORT vtkDICOMSorter : public vtkDICOMFileSorter
 {
 public:
-  vtkTypeMacro(vtkDICOMSorter,vtkObject);
+  vtkTypeMacro(vtkDICOMSorter,vtkDICOMFileSorter);
   void PrintSelf(ostream& os, vtkIndent indent);
   static vtkDICOMSorter *New();
 
