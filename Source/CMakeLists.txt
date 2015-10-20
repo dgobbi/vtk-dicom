@@ -114,6 +114,8 @@ set_source_files_properties(${LIB_ABSTRACT}
 if(Module_vtkDICOM) # Building as a VTK remote module
 
   vtk_module_library(vtkDICOM ${LIB_SRCS} ${LIB_HDRS})
+  target_link_libraries(${LIB_NAME}
+    LINK_PRIVATE ${GDCM_LIBS} ${DCMTK_LIBS})
 
 else() # else MODULE_vtkDICOM
 
