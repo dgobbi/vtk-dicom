@@ -36,12 +36,10 @@ if(Module_vtkDICOM) # We are being built as a VTK remote module
   message(STATUS "vtkDICOM: Building vtkDICOM as a Remote VTK Module")
   set(vtkDICOM_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Source)
   set(vtkDICOM_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/Source)
-  find_package(VTK PATHS ${VTK_BINARY_DIR})
-  include(${VTK_USE_FILE})
   vtk_module_impl()
 
-  # Use vtkzlib as our zlib (instead of system zlib)
-  set(ZLIB_LIBS vtkzlib)
+  # Clear VTK_LIBS, linking will be handled by modular build
+  set(VTK_LIBS)
 
   # Wrapping will be done by VTK's modular build, so turn off
   # these flags that enable our own wrapping CMake code
@@ -97,28 +95,27 @@ else() # We are being built as a stand-alone package
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${DICOM_BINARY_DIR}/lib")
   endif()
 
-endif()
-
-# Check if VTK set VTK_ZLIB_LIBRARIES
-if(NOT VTK_ZLIB_LIBRARIES)
-  # VTK 6 doesn't set it, so search for vtkzlib directly
-  list(FIND VTK_LIBRARIES vtkzlib TMP_INDEX)
-  if(TMP_INDEX GREATER -1)
-    set(VTK_ZLIB_LIBRARIES vtkzlib)
+  # Check if VTK set VTK_ZLIB_LIBRARIES
+  if(NOT VTK_ZLIB_LIBRARIES)
+    # VTK 6 doesn't set it, so search for vtkzlib directly
+    list(FIND VTK_LIBRARIES vtkzlib TMP_INDEX)
+    if(TMP_INDEX GREATER -1)
+      set(VTK_ZLIB_LIBRARIES vtkzlib)
+    endif()
   endif()
-endif()
-set(DICOM_USE_VTKZLIB OFF)
-if(VTK_ZLIB_LIBRARIES)
-  set(DICOM_USE_VTKZLIB ON)
-  set(ZLIB_LIBS ${VTK_ZLIB_LIBRARIES})
-endif()
+  set(DICOM_USE_VTKZLIB OFF)
+  if(VTK_ZLIB_LIBRARIES)
+    set(DICOM_USE_VTKZLIB ON)
+    set(ZLIB_LIBS ${VTK_ZLIB_LIBRARIES})
+  endif()
 
-# Look for zlib
-if(NOT DICOM_USE_VTKZLIB)
-  find_package(ZLIB REQUIRED)
-  if(ZLIB_FOUND)
-    set(ZLIB_LIBS ${ZLIB_LIBRARIES})
-    include_directories("${ZLIB_INCLUDE_DIR}")
+  # Look for zlib
+  if(NOT DICOM_USE_VTKZLIB)
+    find_package(ZLIB REQUIRED)
+    if(ZLIB_FOUND)
+      set(ZLIB_LIBS ${ZLIB_LIBRARIES})
+      include_directories("${ZLIB_INCLUDE_DIR}")
+    endif()
   endif()
 endif()
 
