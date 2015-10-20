@@ -34,13 +34,11 @@ set(DICOM_INCLUDE_DIRS
 if(Module_vtkDICOM) # We are being built as a VTK remote module
 
   message(STATUS "vtkDICOM: Building vtkDICOM as a Remote VTK Module")
-  set(EXECUTABLE_OUTPUT_PATH ${VTK_BINARY_DIR})
-  set(vtkDICOM_BINARY_DIR ${EXECUTABLE_OUTPUT_PATH})
+  set(vtkDICOM_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Source)
+  set(vtkDICOM_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/Source)
   find_package(VTK PATHS ${VTK_BINARY_DIR})
   include(${VTK_USE_FILE})
   vtk_module_impl()
-
-  list(APPEND vtkDICOM_INCLUDE_DIRS ${DICOM_INCLUDE_DIRS})
 
   # Use vtkzlib as our zlib (instead of system zlib)
   set(ZLIB_LIBS vtkzlib)
