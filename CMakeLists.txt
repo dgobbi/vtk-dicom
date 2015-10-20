@@ -50,10 +50,6 @@ if(Module_vtkDICOM) # We are being built as a VTK remote module
   set(BUILD_PYTHON_WRAPPERS OFF)
   set(BUILD_JAVA_WRAPPERS OFF)
 
-  if (NOT DEFINED VTK_PYTHON_EXE)
-    set(VTK_PYTHON_EXE "\$<TARGET_FILE:vtkpython>")
-  endif()
-
   option(BUILD_DICOM_PROGRAMS "Build the vtkDICOM tools" ON)
   set(BUILD_PROGRAMS ${BUILD_DICOM_PROGRAMS})
 
