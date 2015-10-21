@@ -1,8 +1,3 @@
-# Allow use of LOCATION target property
-if(POLICY CMP0026)
-  cmake_policy(SET CMP0026 OLD)
-endif()
-
 include_directories(${DICOM_INCLUDE_DIRS})
 
 set(BASE_LIBS vtkDICOM ${VTK_LIBS})
@@ -57,6 +52,8 @@ add_test(TestDICOMUtilities ${pth}/TestDICOMUtilities)
 
 if(BUILD_PYTHON_WRAPPERS)
   if(NOT VTK_PYTHON_EXE)
+    get_target_property(WRAP_PYTHON_PATH vtkWrapPython LOCATION_<CONFIG>)
+    get_filename_component(VTK_EXE_DIR ${WRAP_PYTHON_PATH} PATH)
     find_program(VTK_PYTHON_EXE vtkpython "${VTK_EXE_DIR}")
   endif()
   if(NOT VTK_PYTHON_EXE)
