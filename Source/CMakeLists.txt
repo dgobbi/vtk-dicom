@@ -70,12 +70,14 @@ set(LIB_SRCS
 set(LIB_HDRS
   ${REFCOUNT_HDR}
   vtkNIFTIPrivate.h
+  ${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMBuild.h
   ${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMConfig.h
   ${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMModule.h
 )
 
 # Internal headers (not installed)
-set(LIB_INTERNAL_HDRS
+set(LIB_PRIVATE_HDRS
+  vtkNIFTIPrivate.h
   ${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMBuild.h
 )
 
@@ -110,6 +112,8 @@ set_source_files_properties(${LIB_HDRS} ${LIB_SPECIAL}
   PROPERTIES WRAP_EXCLUDE ON)
 set_source_files_properties(${LIB_ABSTRACT}
   PROPERTIES ABSTRACT ON)
+set_source_files_properties(${LIB_PRIVATE_HDRS}
+  PROPERTIES SKIP_HEADER_INSTALL ON)
 
 if(Module_vtkDICOM) # Building as a VTK remote module
 
