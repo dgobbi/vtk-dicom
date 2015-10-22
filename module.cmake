@@ -13,6 +13,7 @@ vtk_module(vtkDICOM
   PRIVATE_DEPENDS
     vtksys
     vtkzlib
+  COMPILE_DEPENDS
     vtkImagingStatistics
     vtkInteractionStyle
     vtkRenderingImage

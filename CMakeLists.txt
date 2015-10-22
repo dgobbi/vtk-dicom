@@ -41,6 +41,9 @@ if(Module_vtkDICOM) # We are being built as a VTK remote module
   # Clear VTK_LIBS, linking will be handled by modular build
   set(VTK_LIBS)
 
+  # To set DICOM_USE_VTKZLIB in vtkDICOMConfig.h
+  set(DICOM_USE_VTKZLIB ON)
+
   # Wrapping will be done by VTK's modular build, so turn off
   # these flags that enable our own wrapping CMake code
   set(BUILD_PYTHON_WRAPPERS OFF)
