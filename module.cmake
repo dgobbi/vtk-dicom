@@ -8,6 +8,7 @@ vtk_module(vtkDICOM
   DESCRIPTION
     "${DOCUMENTATION}"
   DEPENDS
+    vtkImagingCore
     vtkIOImage
     vtkIOSQL
   PRIVATE_DEPENDS
