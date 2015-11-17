@@ -6634,7 +6634,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
     s.reserve(l + l/2);
     const char *cp = text;
     const char *ep = text + l;
-    while (cp < ep)
+    while (cp != ep)
       {
       int code = static_cast<unsigned char>(*cp++);
       if (code >= 0xA0)
@@ -6651,7 +6651,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
     s.reserve(2*l);
     const char *cp = text;
     const char *ep = text + l;
-    while (cp < ep)
+    while (cp != ep)
       {
       int code = static_cast<unsigned char>(*cp++);
       if ((code > 0x7F && code <= 0x9F) || code == '\\')
@@ -6689,11 +6689,16 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
     // Chinese national encoding standard
     const char *cp = text;
     const char *ep = text + l;
-    while (cp < ep)
+    while (cp != ep)
       {
       unsigned int code = static_cast<unsigned char>(*cp++);
       if (code > 0x7f)
         {
+        if (cp == ep)
+          {
+          // end of input, terminate early
+          break;
+          }
         unsigned short a = static_cast<unsigned char>(code);
         unsigned short b = static_cast<unsigned char>(*cp++);
         code = 0xFFFD; // untranslated multi-byte character
@@ -6707,47 +6712,61 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           }
         if (this->Key == GB18030)
           {
-          if (a > 0x80 && a < 0x90 &&
-              b >= '0' && b <= '9' &&
-              static_cast<unsigned char>(cp[0]) > 0x80 &&
-              static_cast<unsigned char>(cp[0]) < 0xFF &&
-              cp[1] >= '0' && cp[1] <= '9')
+          if (a > 0x80 && a < 0x90 && b >= '0' && b <= '9')
             {
-            // four-byte GB18030 character
-            unsigned short c = static_cast<unsigned char>(*cp++);
-            unsigned short d = static_cast<unsigned char>(*cp++);
-            a = (a - 0x81)*10 + (b - '0');
-            b = (c - 0x81)*10 + (d - '0');
-            unsigned int g = a*1260 + b;
-            if (g <= 0x99FB)
+            // start of a four-byte code
+            if (cp == ep || cp+1 == ep)
               {
-              // search linearly compressed table
-              size_t n = sizeof(LinearGB18030)/sizeof(short);
-              for (size_t i = 0;; i += 2)
+              // unexpected end of input, terminate early
+              break;
+              }
+            if (static_cast<unsigned char>(cp[0]) > 0x80 &&
+                static_cast<unsigned char>(cp[0]) < 0xFF &&
+                cp[1] >= '0' && cp[1] <= '9')
+              {
+              // four-byte GB18030 character
+              unsigned short c = static_cast<unsigned char>(*cp++);
+              unsigned short d = static_cast<unsigned char>(*cp++);
+              a = (a - 0x81)*10 + (b - '0');
+              b = (c - 0x81)*10 + (d - '0');
+              unsigned int g = a*1260 + b;
+              if (g <= 0x99FB)
                 {
-                if (i >= n || LinearGB18030[i] > g)
+                // search linearly compressed table
+                size_t n = sizeof(LinearGB18030)/sizeof(short);
+                for (size_t i = 0;; i += 2)
                   {
-                  code = LinearGB18030[i-1] + (g - LinearGB18030[i-2]);
-                  break;
+                  if (i >= n || LinearGB18030[i] > g)
+                    {
+                    code = LinearGB18030[i-1] + (g - LinearGB18030[i-2]);
+                    break;
+                    }
                   }
                 }
               }
             }
-          else if (a >= 0x90 && a < 0xFF &&
-                   b >= '0' && b <= '9' &&
-                   static_cast<unsigned char>(cp[0]) > 0x80 &&
-                   static_cast<unsigned char>(cp[0]) < 0xFF &&
-                   cp[1] >= '0' && cp[1] <= '9')
+          else if (a >= 0x90 && a < 0xFF && b >= '0' && b <= '9')
             {
-            // four-byte GB18030 to codes beyond 0xFFFF
-            unsigned short c = static_cast<unsigned char>(*cp++);
-            unsigned short d = static_cast<unsigned char>(*cp++);
-            a = (a - 0x90)*10 + (b - '0');
-            b = (c - 0x81)*10 + (d - '0');
-            unsigned int g = a*1260 + b;
-            if (g <= 0xFFFFF)
+            // start of a four-byte code
+            if (cp == ep || cp+1 == ep)
               {
-              code = g + 0x10000;
+              // unexpected end of input, terminate early
+              break;
+              }
+            if (static_cast<unsigned char>(cp[0]) > 0x80 &&
+                static_cast<unsigned char>(cp[0]) < 0xFF &&
+                cp[1] >= '0' && cp[1] <= '9')
+              {
+              // four-byte GB18030 to codes beyond 0xFFFF
+              unsigned short c = static_cast<unsigned char>(*cp++);
+              unsigned short d = static_cast<unsigned char>(*cp++);
+              a = (a - 0x90)*10 + (b - '0');
+              b = (c - 0x81)*10 + (d - '0');
+              unsigned int g = a*1260 + b;
+              if (g <= 0xFFFFF)
+                {
+                code = g + 0x10000;
+                }
               }
             }
           // convert some private codes to new unicode standard codes
@@ -6803,6 +6822,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           unsigned short code = static_cast<unsigned char>(text[i++]);
           if (code >= 0xA1 && code < 0xFF)
             {
+            if (i == j)
+              {
+              break;
+              }
             unsigned short a = code - 0x81;
             code = static_cast<unsigned char>(text[i++]);
             if (code >= 0xA1 && code < 0xFF)
@@ -6824,6 +6847,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           unsigned short code = static_cast<unsigned char>(text[i++]);
           if (code >= 0x21 && code < 0x7F)
             {
+            if (i == j)
+              {
+              break;
+              }
             unsigned short a = code - 0x21;
             code = static_cast<unsigned char>(text[i++]);
             if (code >= 0x21 && code < 0x7F)
@@ -6862,6 +6889,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           unsigned short code = static_cast<unsigned char>(text[i++]);
           if (code >= 0xA1 && code < 0xFF)
             {
+            if (i == j)
+              {
+              break;
+              }
             // convert two bytes into unicode
             unsigned short a = code - 0xA1;
             unsigned short b = static_cast<unsigned char>(text[i++]) - 0xA1;
@@ -6875,9 +6906,14 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
         // other multibyte conversions
         while (i < j)
           {
-          // Unrecognized multi-byte character
+          i++;
+          if (i == j)
+            {
+            break;
+            }
+          i++;
+          // unrecognized multi-byte character
           UnicodeToUTF8(0xFFFD, &s);
-          i += 2;
           }
         }
 
