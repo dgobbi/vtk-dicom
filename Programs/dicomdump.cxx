@@ -170,24 +170,32 @@ void printElement(
              vr == vtkDICOMVR::UT)
       {
       // replace breaks with "\\", cap length to MAX_LENGTH
+      size_t l = (vl > MAX_LENGTH ? MAX_LENGTH-4 : vl);
       const char *cp = v.GetCharData();
-      unsigned int j = 0;
-      while (j < vl && cp[j] != '\0')
+      std::string utf8;
+      if (v.GetCharacterSet() != vtkDICOMCharacterSet::ISO_IR_6)
         {
-        unsigned int k = j;
-        unsigned int m = j;
-        for (; j < vl && cp[j] != '\0'; j++)
+        utf8 = v.GetCharacterSet().ConvertToUTF8(cp, l);
+        l = utf8.length();
+        cp = utf8.data();
+        }
+      size_t j = 0;
+      while (j < l && cp[j] != '\0')
+        {
+        size_t k = j;
+        size_t m = j;
+        for (; j < l && cp[j] != '\0'; j++)
           {
           m = j;
           if (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f')
             {
             do { j++; }
-            while (j < vl && (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f'));
+            while (j < l && (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f'));
             break;
             }
           m++;
           }
-        if (j == vl)
+        if (j == l)
           {
           while (m > 0 && cp[m-1] == ' ') { m--; }
           }
@@ -196,9 +204,8 @@ void printElement(
           s.append("\\\\");
           }
         s.append(&cp[k], m-k);
-        if (s.size() > MAX_LENGTH)
+        if (vl > MAX_LENGTH)
           {
-          s.resize(MAX_LENGTH-4);
           s.append("...");
           break;
           }
