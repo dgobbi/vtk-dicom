@@ -5915,14 +5915,17 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
           good = ((s & 0xC0) == 0x80);
           cp += good;
           code |= (s & 0x3F);
-          // check for a UTF16 high surrogate
-          if (good && (code & 0xFC00) == 0xD800)
+          // check for UTF16 surrogates
+          if (good && (code & 0xF800) == 0xD800)
             {
-            // got a high surrogate, check for low surrogate
-            if (cp != ep && cp[0] == 0xED &&
+            good = false;
+            // check for high surrogate followed by low surrogate
+            if ((code & 0xFC00) == 0xD800 &&
+                cp != ep && cp[0] == 0xED &&
                 cp+1 != ep && (cp[1] & 0xF0) == 0xB0 &&
                 cp+2 != ep && (cp[2] & 0xC0) == 0x80)
               {
+              good = true;
               code &= 0x03FF;
               code <<= 4;
               code |= cp[1] & 0x0F;
