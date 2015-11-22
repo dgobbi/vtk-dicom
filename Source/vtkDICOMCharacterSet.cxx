@@ -5916,26 +5916,20 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
           cp += good;
           code |= (s & 0x3F);
           // check for a UTF16 high surrogate
-          if (good && code >= 0xD800 && code <= 0xDBFF)
+          if (good && (code & 0xFC00) == 0xD800)
             {
-            // got a high surrogate, so get the next code
-            if (cp != ep && (cp[0] & 0xF0) == 0xE0 &&
-                cp+1 != ep && (cp[1] & 0xC0) == 0x80 &&
+            // got a high surrogate, check for low surrogate
+            if (cp != ep && cp[0] == 0xED &&
+                cp+1 != ep && (cp[1] & 0xF0) == 0xB0 &&
                 cp+2 != ep && (cp[2] & 0xC0) == 0x80)
               {
-              unsigned int code2 = cp[0] & 0x0F;
-              code2 <<= 6;
-              code2 |= cp[1] & 0x3F;
-              code2 <<= 6;
-              code2 |= cp[2] & 0x3F;
-              // check for a UTF16 low surrogate
-              if (code2 >= 0xDC00 && code2 <= 0xDFFF)
-                {
-                // join surrogates, 0x010000 to 0x10FFFF
-                code = ((code - 0xD800) << 10) + (code2 - 0xDC00);
-                code += 0x010000;
-                cp += 3;
-                }
+              code &= 0x03FF;
+              code <<= 4;
+              code |= cp[1] & 0x0F;
+              code <<= 6;
+              code |= cp[2] & 0x3F;
+              code += 0x010000;
+              cp += 3;
               }
             }
           }
