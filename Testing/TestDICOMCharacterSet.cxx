@@ -169,5 +169,14 @@ int main(int argc, char *argv[])
   TestAssert(v.GetString(2) == "\x1b$B$d$^$@\x1b(J^\x1b$B$\x3f$m$&\x1b(J");
   }
 
+  { // test for handling of utf-16 surrogates encoded in utf-8
+  vtkDICOMCharacterSet cs = vtkDICOMCharacterSet::ISO_IR_192;
+  // the following string has a matched surrogate pair
+  std::string raw = "\xed\xa1\x80\xed\xb3\x8c"; // D840 DCCC
+  // case folding causes decoding + encoding
+  std::string cooked = cs.CaseFoldedUTF8(raw.data(), raw.length());
+  TestAssert(cooked == "\xf0\xa0\x83\x8c"); // 0200CC
+  }
+
   return rval;
 }
