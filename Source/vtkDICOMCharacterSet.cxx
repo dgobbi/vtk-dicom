@@ -5883,6 +5883,7 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
     code = *cp++;
     }
 
+  // check for non-ASCII
   if ((code & 0x80) != 0)
     {
     bool good = false;
@@ -5890,6 +5891,7 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
       {
       if ((code & 0xE0) == 0xC0)
         {
+        // 2 bytes, 0x0080 to 0x07FF
         code &= 0x1F;
         code <<= 6;
         unsigned int s = *cp;
@@ -5901,6 +5903,7 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
         {
         if ((code & 0xF0) == 0xE0)
           {
+          // 3 bytes, 0x0800 to 0xFFFF
           code &= 0x0F;
           code <<= 6;
           unsigned int s = *cp;
@@ -5912,11 +5915,35 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
           good = ((s & 0xC0) == 0x80);
           cp += good;
           code |= (s & 0x3F);
+          // check for a UTF16 high surrogate
+          if (good && code >= 0xD800 && code <= 0xDBFF)
+            {
+            // got a high surrogate, so get the next code
+            if (cp != ep && (cp[0] & 0xF0) == 0xE0 &&
+                cp+1 != ep && (cp[1] & 0xC0) == 0x80 &&
+                cp+2 != ep && (cp[2] & 0xC0) == 0x80)
+              {
+              unsigned int code2 = cp[0] & 0x0F;
+              code2 <<= 6;
+              code2 |= cp[1] & 0x3F;
+              code2 <<= 6;
+              code2 |= cp[2] & 0x3F;
+              // check for a UTF16 low surrogate
+              if (code2 >= 0xDC00 && code2 <= 0xDFFF)
+                {
+                // join surrogates, 0x010000 to 0x10FFFF
+                code = ((code - 0xD800) << 10) + (code2 - 0xDC00);
+                code += 0x010000;
+                cp += 3;
+                }
+              }
+            }
           }
         else if (cp+2 != ep)
           {
           if ((code & 0xF8) == 0xF0)
             {
+            // 4 bytes, 0x010000 to 0x10FFFF
             code &= 0x07;
             code <<= 6;
             unsigned int s = *cp;
