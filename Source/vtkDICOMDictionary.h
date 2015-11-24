@@ -31,9 +31,9 @@ public:
     const char *Name;
     unsigned short HashSize;
     unsigned short DataSize;
-    unsigned short *TagHashTable;
-    unsigned short *KeyHashTable;
-    vtkDICOMDictEntry::Entry *Contents;
+    const unsigned short *TagHashTable;
+    const unsigned short *KeyHashTable;
+    const vtkDICOMDictEntry::Entry *Contents;
   };
 
   struct DictHashEntry;

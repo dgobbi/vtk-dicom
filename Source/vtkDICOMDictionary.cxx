@@ -143,12 +143,12 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
     }
 
   // search the hash table
-  unsigned short *hptr = &dict->TagHashTable[dict->TagHashTable[i]];
-  vtkDICOMDictEntry::Entry *dptr = dict->Contents;
+  const unsigned short *hptr = &dict->TagHashTable[dict->TagHashTable[i]];
+  const vtkDICOMDictEntry::Entry *dptr = dict->Contents;
   for (unsigned short n = *hptr; n != 0; --n)
     {
     ++hptr;
-    vtkDICOMDictEntry::Entry *entry = &dptr[*hptr];
+    const vtkDICOMDictEntry::Entry *entry = &dptr[*hptr];
     ++hptr;
     if (*hptr == element && entry->Group == group)
       {
@@ -190,12 +190,12 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
   unsigned short j = static_cast<unsigned short>(h / dict->HashSize);
 
   // search the hash table
-  unsigned short *hptr = &dict->KeyHashTable[dict->KeyHashTable[i]];
-  vtkDICOMDictEntry::Entry *dptr = dict->Contents;
+  const unsigned short *hptr = &dict->KeyHashTable[dict->KeyHashTable[i]];
+  const vtkDICOMDictEntry::Entry *dptr = dict->Contents;
   for (unsigned short n = *hptr; n != 0; --n)
     {
     ++hptr;
-    vtkDICOMDictEntry::Entry *entry = &dptr[*hptr];
+    const vtkDICOMDictEntry::Entry *entry = &dptr[*hptr];
     ++hptr;
     if (*hptr == j && strncmp(stripkey, entry->Name, 64) == 0)
       {
@@ -210,7 +210,7 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
     // without re-running makedict.py to re-generate the hash table)
     for (unsigned short k = 0; k < dict->DataSize; k++)
       {
-      vtkDICOMDictEntry::Entry *entry = &dptr[k];
+      const vtkDICOMDictEntry::Entry *entry = &dptr[k];
       if (strncmp(stripkey, entry->Name, 64) == 0)
         {
         return vtkDICOMDictEntry(entry);

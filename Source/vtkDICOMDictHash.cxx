@@ -11,7 +11,7 @@ typedef vtkDICOMVR VR;
 typedef vtkDICOMVM VM;
 typedef vtkDICOMDictEntry::Entry DictEntry;
 
-DictEntry DictContents[] = {
+const DictEntry DictContents[] = {
 { 0x0002, 0x0000, 0, VR::UL, VM::M1, "FileMetaInformationGroupLength" },
 { 0x0002, 0x0001, 0, VR::OB, VM::M1, "FileMetaInformationVersion" },
 { 0x0002, 0x0002, 0, VR::UI, VM::M1, "MediaStorageSOPClassUID" },
@@ -4770,7 +4770,7 @@ DictEntry DictContents[] = {
 { 0xFFFE, 0xE0DD, 0, VR::XX, VM::M0, "SequenceDelimitationItem" },
 };
 
-unsigned short DictTagHashTable[] = {
+const unsigned short DictTagHashTable[] = {
  4097,  4132,  4153,  4174,  4193,  4212,  4231,  4252,  4269,  4284,
  4297,  4310,  4321,  4334,  4351,  4362,  4373,  4398,  4419,  4440,
  4457,  4472,  4489,  4502,  4519,  4542,  4559,  4576,  4593,  4606,
@@ -6278,7 +6278,7 @@ unsigned short DictTagHashTable[] = {
 57344,     1,  4754, 57357,
 };
 
-unsigned short DictKeyHashTable[] = {
+const unsigned short DictKeyHashTable[] = {
  4096,  4097,  4100,  4096,  4103,  4096,  4106,  4096,  4096,  4109,
  4112,  4115,  4118,  4096,  4096,  4096,  4121,  4124,  4127,  4130,
  4133,  4138,  4141,  4096,  4144,  4096,  4096,  4149,  4152,  4155,

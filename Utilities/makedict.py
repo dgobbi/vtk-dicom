@@ -303,13 +303,13 @@ def printbody(entry_dict, classname):
       ds = "%03d" % (dn,)
       print "// ----- %s -----" % (name,)
       print
-    print "DictEntry Dict%sContents[] = {" % (ds,)
+    print "const DictEntry Dict%sContents[] = {" % (ds,)
     for l in entry_list:
       print l
     print "};"
     for table,tagorkey in [(tag_table,"Tag"),(key_table,"Key")]:
       print
-      print "unsigned short Dict%s%sHashTable[] = {" % (ds,tagorkey)
+      print "const unsigned short Dict%s%sHashTable[] = {" % (ds,tagorkey)
       i = 0
       j = len(table) + 1
       for l in table:

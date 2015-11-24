@@ -15,7 +15,7 @@ struct UIDTableEntry
   const char *Name;
 };
 
-UIDTableEntry UIDTable[] = {
+const UIDTableEntry UIDTable[] = {
 { 1, 15, 1, 0, 0 },
 { 16, 42, 1, 0, 0 },
 { 157, 11, 6, 0, 0 },
@@ -3641,7 +3641,7 @@ UIDTableEntry UIDTable[] = {
   "Universal Coordinated Time" },
 };
 
-UIDTableEntry *GetUIDTableEntry(const char *uid)
+const UIDTableEntry *GetUIDTableEntry(const char *uid)
 {
   if (uid == 0)
     {
@@ -3660,7 +3660,7 @@ UIDTableEntry *GetUIDTableEntry(const char *uid)
     return 0;
     }
 
-  UIDTableEntry *table = UIDTable;
+  const UIDTableEntry *table = UIDTable;
   while (*uid != '\0')
     {
     int i = -1;
@@ -3709,7 +3709,7 @@ UIDTableEntry *GetUIDTableEntry(const char *uid)
 const char *vtkDICOMUtilities::GetUIDName(const char *uid)
 {
   const char *result = "";
-  UIDTableEntry *table = GetUIDTableEntry(uid);
+  const UIDTableEntry *table = GetUIDTableEntry(uid);
   if (table)
     {
     if (table->Name)
@@ -3723,7 +3723,7 @@ const char *vtkDICOMUtilities::GetUIDName(const char *uid)
 unsigned short vtkDICOMUtilities::GetCIDFromUID(const char *uid)
 {
   unsigned short result = 0;
-  UIDTableEntry *table = GetUIDTableEntry(uid);
+  const UIDTableEntry *table = GetUIDTableEntry(uid);
   if (table)
     {
     result = table->CID;
