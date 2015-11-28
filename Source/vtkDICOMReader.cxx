@@ -62,8 +62,6 @@
 #include "gdcmImageReader.h"
 #endif
 
-#include "vtksys/SystemTools.hxx"
-
 #include <algorithm>
 #include <stdio.h>
 #include <math.h>
