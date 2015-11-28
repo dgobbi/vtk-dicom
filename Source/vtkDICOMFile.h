@@ -95,6 +95,14 @@ public:
   //! Return an error indicator (zero if no error).
   int GetError() { return this->Error; }
 
+  //! Test the specified file for accessibility (static method).
+  /*!
+   *  The mode should be "In" or "Out" to indicate how you intend to use
+   *  the file.  The return value will be zero (for an ordinary file) or
+   *  one of the codes returned by GetError.
+   */
+  static int Access(const char *filename, Mode mode);
+
   //! Delete the specified file (static method).
   /*!
    *  The return value is zero if successful, otherwise an error

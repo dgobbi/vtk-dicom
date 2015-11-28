@@ -373,6 +373,80 @@ vtkDICOMFile::Size vtkDICOMFile::GetSize()
 }
 
 //----------------------------------------------------------------------------
+int vtkDICOMFile::Access(const char *filename, Mode mode)
+{
+#ifdef _WIN32
+  int errorCode = Bad;
+  wchar_t *wideFilename = vtkDICOMFile::ConvertToWideChar(filename);
+  if (wideFilename)
+    {
+    errorCode = 0;
+    DWORD code = GetFileAttributesW(wideFilename);
+    if (code == INVALID_FILE_ATTRIBUTES)
+      {
+      DWORD lastError = GetLastError();
+      if (lastError == ERROR_ACCESS_DENIED ||
+          lastError == ERROR_SHARING_VIOLATION)
+        {
+        errorCode = AccessDenied;
+        }
+      else if (lastError == ERROR_FILE_NOT_FOUND)
+        {
+        errorCode = FileNotFound;
+        }
+      else if (lastError == ERROR_DIRECTORY)
+        {
+        errorCode = DirectoryNotFound;
+        }
+      else
+        {
+        errorCode = Bad;
+        }
+      }
+    else if (mode == Out && (code & FILE_ATTRIBUTE_READONLY) != 0)
+      {
+      errorCode = AccessDenied;
+      }
+    else if ((code & FILE_ATTRIBUTE_DIRECTORY) != 0)
+      {
+      errorCode = IsDirectory;
+      }
+    delete [] wideFilename;
+    }
+  return errorCode;
+#else
+  int errorCode = 0;
+  struct stat fs;
+  if (stat(filename, &fs) != 0 ||
+      access(filename, (mode == In ? R_OK : W_OK)) != 0)
+    {
+    int e = errno;
+    if (e == EACCES || e == EPERM)
+      {
+      errorCode = AccessDenied;
+      }
+    else if (e == ENOENT)
+      {
+      errorCode = FileNotFound;
+      }
+    else if (e == ENOTDIR)
+      {
+      errorCode = DirectoryNotFound;
+      }
+    else
+      {
+      errorCode = Bad;
+      }
+    }
+  else if (S_ISDIR(fs.st_mode))
+    {
+    errorCode = IsDirectory;
+    }
+  return errorCode;
+#endif
+}
+
+//----------------------------------------------------------------------------
 int vtkDICOMFile::Remove(const char *filename)
 {
 #if defined(VTK_DICOM_WIN32_IO)
