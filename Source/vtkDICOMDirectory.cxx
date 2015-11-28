@@ -13,6 +13,7 @@
 =========================================================================*/
 #include "vtkDICOMDirectory.h"
 
+#include "vtkDICOMFile.h"
 #include "vtkDICOMItem.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMSequence.h"
@@ -999,9 +1000,23 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     // Skip anything that does not look like a DICOM file.
     if (!vtkDICOMUtilities::IsDICOMFile(fileName.c_str()))
       {
-      if (!vtksys::SystemTools::FileExists(fileName.c_str()))
+      int code = vtkDICOMFile::Access(fileName.c_str(), vtkDICOMFile::In);
+      if (code == vtkDICOMFile::FileNotFound ||
+          code == vtkDICOMFile::DirectoryNotFound)
         {
         vtkWarningMacro("File does not exist: " << fileName.c_str());
+        }
+      else if (code == vtkDICOMFile::AccessDenied)
+        {
+        vtkWarningMacro("File permission denied: " << fileName.c_str());
+        }
+      else if (code == vtkDICOMFile::IsDirectory)
+        {
+        vtkWarningMacro("File is a directory: " << fileName.c_str());
+        }
+      else if (code != 0)
+        {
+        vtkWarningMacro("Unknown file error: " << fileName.c_str());
         }
       continue;
       }
@@ -1851,7 +1866,7 @@ void vtkDICOMDirectory::ProcessDirectory(
     path.pop_back();
 
     // Check to see if the DICOMDIR file exists.
-    if (vtksys::SystemTools::FileExists(dicomdir.c_str(), true))
+    if (vtkDICOMFile::Access(dicomdir.c_str(), vtkDICOMFile::In) == 0)
       {
       vtkSmartPointer<vtkDICOMMetaData> meta =
         vtkSmartPointer<vtkDICOMMetaData>::New();
@@ -1962,13 +1977,28 @@ void vtkDICOMDirectory::Execute()
     for (vtkIdType i = 0; i < this->InputFileNames->GetNumberOfValues(); i++)
       {
       const std::string& fname = this->InputFileNames->GetValue(i);
-      if (vtksys::SystemTools::FileIsDirectory(fname.c_str()))
+      int code = vtkDICOMFile::Access(fname.c_str(), vtkDICOMFile::In);
+      if (code == vtkDICOMFile::IsDirectory)
         {
         this->ProcessDirectory(fname.c_str(), this->ScanDepth, files);
         }
-      else if (!vtksys::SystemTools::FileExists(fname.c_str()))
+      else if (code == vtkDICOMFile::FileNotFound ||
+               code == vtkDICOMFile::DirectoryNotFound)
         {
+        this->ErrorCode = vtkErrorCode::FileNotFoundError;
         vtkErrorMacro("File or directory not found: " << fname.c_str());
+        return;
+        }
+      else if (code == vtkDICOMFile::AccessDenied)
+        {
+        this->ErrorCode = vtkErrorCode::CannotOpenFileError;
+        vtkErrorMacro("Permission denied: " << fname.c_str());
+        return;
+        }
+      else if (code != 0)
+        {
+        this->ErrorCode = vtkErrorCode::UnknownError;
+        vtkErrorMacro("Unknown file error: " << fname.c_str());
         return;
         }
       else if (vtkDICOMUtilities::PatternMatches("*.sql", fname.c_str()))
@@ -1990,20 +2020,37 @@ void vtkDICOMDirectory::Execute()
       // No directory is a valid input.  Return an empty output.
       return;
       }
-    else if (!vtksys::SystemTools::FileExists(this->DirectoryName))
+
+    int code = vtkDICOMFile::Access(this->DirectoryName, vtkDICOMFile::In);
+    if (code == vtkDICOMFile::IsDirectory)
+      {
+      this->ProcessDirectory(this->DirectoryName, this->ScanDepth, files);
+      }
+    else if (code == vtkDICOMFile::FileNotFound ||
+             code == vtkDICOMFile::DirectoryNotFound)
       {
       this->ErrorCode = vtkErrorCode::FileNotFoundError;
       vtkErrorMacro("Directory not found: " << this->DirectoryName);
       return;
       }
-    else if (!vtksys::SystemTools::FileIsDirectory(this->DirectoryName))
+    else if (code == vtkDICOMFile::AccessDenied)
+      {
+      this->ErrorCode = vtkErrorCode::CannotOpenFileError;
+      vtkErrorMacro("Permission denied: " << this->DirectoryName);
+      return;
+      }
+    else if (code != 0)
+      {
+      this->ErrorCode = vtkErrorCode::UnknownError;
+      vtkErrorMacro("Unknown error: " << this->DirectoryName);
+      return;
+      }
+    else
       {
       this->ErrorCode = vtkErrorCode::CannotOpenFileError;
       vtkErrorMacro("Found a file, not a directory: " << this->DirectoryName);
       return;
       }
-
-    this->ProcessDirectory(this->DirectoryName, this->ScanDepth, files);
     }
 
   // Check for abort.
