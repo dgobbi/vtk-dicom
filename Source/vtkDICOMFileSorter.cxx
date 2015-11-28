@@ -12,6 +12,7 @@
 
 =========================================================================*/
 #include "vtkDICOMFileSorter.h"
+#include "vtkDICOMFile.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMParser.h"
 #include "vtkDICOMUtilities.h"
@@ -345,16 +346,30 @@ void vtkDICOMFileSorter::Execute()
 
   if (this->InputFileName) // The input was a single file
     {
-    if (!vtksys::SystemTools::FileExists(this->InputFileName))
+    int code = vtkDICOMFile::Access(this->InputFileName, vtkDICOMFile::In);
+    if (code == vtkDICOMFile::FileNotFound ||
+        code == vtkDICOMFile::DirectoryNotFound)
       {
       this->ErrorCode = vtkErrorCode::FileNotFoundError;
-      vtkErrorMacro("File not found: " << this->InputFileName);
+      vtkErrorMacro("File or directory not found: " << this->InputFileName);
       return;
       }
-    else if (vtksys::SystemTools::FileIsDirectory(this->InputFileName))
+    else if (code == vtkDICOMFile::IsDirectory)
       {
       this->ErrorCode = vtkErrorCode::CannotOpenFileError;
       vtkErrorMacro("Named file is a directory: " << this->InputFileName);
+      return;
+      }
+    else if (code == vtkDICOMFile::AccessDenied)
+      {
+      this->ErrorCode = vtkErrorCode::CannotOpenFileError;
+      vtkErrorMacro("Permission denied: " << this->InputFileName);
+      return;
+      }
+    else if (code != 0)
+      {
+      this->ErrorCode = vtkErrorCode::UnknownError;
+      vtkErrorMacro("Unknown file error: " << this->InputFileName);
       return;
       }
 
