@@ -35,6 +35,8 @@
 #include <errno.h>
 #endif
 
+#include <string.h>
+
 //----------------------------------------------------------------------------
 vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
 {
@@ -503,4 +505,55 @@ int vtkDICOMFile::Remove(const char *filename)
     }
   return errorCode;
 #endif
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMFile::SameFile(const char *file1, const char *file2)
+{
+  // Two files are considered to be the same if:
+  // 1) they are on the same device
+  // 2) their index (inode number) is the same
+
+  bool result = false;
+#ifdef _WIN32
+  wchar_t *widepath = vtkDICOMFilePath::ConvertToWideChar(file1);
+  HANDLE h1 = CreateFileW(widepath,
+    GENERIC_READ, FILE_SHARE_READ , NULL, OPEN_EXISTING,
+    FILE_FLAG_BACKUP_SEMANTICS, NULL);
+  delete [] widepath;
+  widepath = vtkDICOMFilePath::ConvertToWideChar(file2);
+  HANDLE h2 = CreateFileW(widepath,
+    GENERIC_READ, FILE_SHARE_READ , NULL, OPEN_EXISTING,
+    FILE_FLAG_BACKUP_SEMANTICS, NULL);
+  delete [] widepath;
+  if (h1 != INVALID_HANDLE_VALUE && h2 != INVALID_HANDLE_VALUE)
+    {
+    BY_HANDLE_FILE_INFORMATION buf;
+    GetFileInformationByHandle(h1, &buf);
+    DWORD sn = buf.dwVolumeSerialNumber;
+    DWORD hi = buf.nFileIndexHigh;
+    DWORD li = buf.nFileIndexLow;
+    GetFileInformationByHandle(h2, &buf);
+    result = (buf.dwVolumeSerialNumber == sn);
+    result &= (buf.nFileIndexHigh == hi);
+    result &= (buf.nFileIndexLow == li);
+    }
+  if (h1 != INVALID_HANDLE_VALUE)
+    {
+    CloseHandle(h1);
+    }
+  if (h2 != INVALID_HANDLE_VALUE)
+    {
+    CloseHandle(h2);
+    }
+#else
+  struct stat st1;
+  struct stat st2;
+  if (stat(file1, &st1) == 0 && stat(file2, &st2) == 0)
+    {
+    result = (memcmp(&st1.st_dev, &st2.st_dev, sizeof(st1.st_dev)) == 0);
+    result &= (memcmp(&st1.st_ino, &st2.st_ino, sizeof(st1.st_ino)) == 0);
+    }
+#endif
+  return result;
 }

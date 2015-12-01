@@ -111,6 +111,15 @@ public:
    */
   static int Remove(const char *filename);
 
+  //! Check if two files are the same.
+  /*!
+   *  This does not check that the filenames are the same.  Instead,
+   *  it checks to see if the two filenames point to the same actual
+   *  disk file.  If either file does not exist or is otherwise not
+   *  accessible, then it returns false.
+   */
+  static bool SameFile(const char *file1, const char *file2);
+
 private:
 #ifdef VTK_DICOM_POSIX_IO
   int Handle;
