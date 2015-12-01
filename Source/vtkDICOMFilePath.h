@@ -76,6 +76,9 @@ private:
 #endif
   }
 
+  //! Strip the trailing slash, if present.
+  static void StripTrailingSlash(std::string *path);
+
   //! Get the length of the "root device" part of the path.
   /*!
    *  On UNIX, the root is '/' for absolute paths, and is empty for relative

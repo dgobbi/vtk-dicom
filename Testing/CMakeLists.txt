@@ -50,6 +50,11 @@ target_link_libraries(TestDICOMUtilities ${BASE_LIBS})
 get_target_property(pth TestDICOMUtilities RUNTIME_OUTPUT_DIRECTORY)
 add_test(TestDICOMUtilities ${pth}/TestDICOMUtilities)
 
+add_executable(TestDICOMFilePath TestDICOMFilePath.cxx)
+target_link_libraries(TestDICOMFilePath ${BASE_LIBS})
+get_target_property(pth TestDICOMFilePath RUNTIME_OUTPUT_DIRECTORY)
+add_test(TestDICOMFilePath ${pth}/TestDICOMFilePath)
+
 if(BUILD_PYTHON_WRAPPERS)
   if(NOT VTK_PYTHON_EXE)
     get_target_property(WRAP_PYTHON_PATH vtkWrapPython LOCATION_<CONFIG>)

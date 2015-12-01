@@ -26,9 +26,8 @@
 vtkDICOMFilePath::vtkDICOMFilePath(const std::string& path)
   : Path(path), Separator('/')
 {
-  size_t l = path.length();
-  size_t r = RootLength(path);
 #ifdef _WIN32
+  size_t l = path.length();
   for (size_t i = 0; i < l; i++)
     {
     if (IsSeparator(path[i]))
@@ -37,23 +36,8 @@ vtkDICOMFilePath::vtkDICOMFilePath(const std::string& path)
       break;
       }
     }
-  if (r >= 4 && path.compare("\\\\\?\\"))
-    {
-    // remove the trailing slash, if present and not the root
-    while (l > r && this->Path[l-1] == '\\')
-      {
-      this->Path.resize(--l);
-      }
-    }
-  else
 #endif
-    {
-    // remove the trailing slash, if present and not the root
-    while (l > r && IsSeparator(this->Path[l-1]))
-      {
-      this->Path.resize(--l);
-      }
-    }
+  StripTrailingSlash(&this->Path);
 }
 
 //----------------------------------------------------------------------------
@@ -159,7 +143,6 @@ std::string vtkDICOMFilePath::Join(const std::string& second) const
       }
     pos = endpos;
     }
-  return path;
 #else
   if (this->Path.length() == 0)
     {
@@ -181,8 +164,9 @@ std::string vtkDICOMFilePath::Join(const std::string& second) const
     path.push_back(this->Separator);
     }
   path.append(second);
-  return path;
 #endif
+  StripTrailingSlash(&path);
+  return path;
 }
 
 //----------------------------------------------------------------------------
@@ -414,6 +398,31 @@ void vtkDICOMFilePath::PopBack()
     }
 
   this->Path.resize(l);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMFilePath::StripTrailingSlash(std::string *path)
+{
+  size_t l = path->length();
+  size_t r = RootLength(*path);
+#ifdef _WIN32
+  if (r >= 4 && path->compare(0, 4, "\\\\\?\\") == 0)
+    {
+    // remove the trailing slash, if present and not the root
+    while (l > r && (*path)[l-1] == '\\')
+      {
+      path->resize(--l);
+      }
+    }
+  else
+#endif
+    {
+    // remove the trailing slash, if present and not the root
+    while (l > r && IsSeparator((*path)[l-1]))
+      {
+      path->resize(--l);
+      }
+    }
 }
 
 //----------------------------------------------------------------------------
