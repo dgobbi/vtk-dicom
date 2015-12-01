@@ -112,11 +112,6 @@ public:
   static int Remove(const char *filename);
 
 private:
-#ifdef VTK_DICOM_WIN32_IO
-  //! Convert to WideChar. Returns NULL or new string (free with delete []).
-  static wchar_t *ConvertToWideChar(const char *filename);
-#endif
-
 #ifdef VTK_DICOM_POSIX_IO
   int Handle;
 #else

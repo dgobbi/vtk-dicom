@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #include "vtkDICOMFile.h"
+#include "vtkDICOMFilePath.h"
 
 #if defined(VTK_DICOM_POSIX_IO)
 #include <sys/types.h>
@@ -85,7 +86,7 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
   this->Error = 0;
   this->Eof = false;
 
-  WCHAR *wideFilename = vtkDICOMFile::ConvertToWideChar(filename);
+  wchar_t *wideFilename = vtkDICOMFilePath::ConvertToWideChar(filename);
   if (wideFilename)
     {
     if (mode == In)
@@ -377,7 +378,7 @@ int vtkDICOMFile::Access(const char *filename, Mode mode)
 {
 #ifdef _WIN32
   int errorCode = Bad;
-  wchar_t *wideFilename = vtkDICOMFile::ConvertToWideChar(filename);
+  wchar_t *wideFilename = vtkDICOMFilePath::ConvertToWideChar(filename);
   if (wideFilename)
     {
     errorCode = 0;
@@ -451,7 +452,7 @@ int vtkDICOMFile::Remove(const char *filename)
 {
 #if defined(VTK_DICOM_WIN32_IO)
   int errorCode = 0;
-  wchar_t *wideFilename = vtkDICOMFile::ConvertToWideChar(filename);
+  wchar_t *wideFilename = vtkDICOMFilePath::ConvertToWideChar(filename);
   if (wideFilename)
     {
     if (!DeleteFileW(wideFilename))
@@ -503,25 +504,3 @@ int vtkDICOMFile::Remove(const char *filename)
   return errorCode;
 #endif
 }
-
-//----------------------------------------------------------------------------
-#if defined(VTK_DICOM_WIN32_IO)
-wchar_t *vtkDICOMFile::ConvertToWideChar(const char *filename)
-{
-  wchar_t *wideFilename = 0;
-  int n = MultiByteToWideChar(
-    CP_UTF8, MB_ERR_INVALID_CHARS, filename, -1, NULL, 0);
-  if (n > 0)
-    {
-    wideFilename = new wchar_t[n];
-    n = MultiByteToWideChar(
-      CP_UTF8, MB_ERR_INVALID_CHARS, filename, -1, wideFilename, n);
-    if (n == 0)
-      {
-      delete [] wideFilename;
-      wideFilename = 0;
-      }
-    }
-  return wideFilename;
-}
-#endif

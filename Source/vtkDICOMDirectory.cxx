@@ -14,6 +14,8 @@
 #include "vtkDICOMDirectory.h"
 
 #include "vtkDICOMFile.h"
+#include "vtkDICOMFileDirectory.h"
+#include "vtkDICOMFilePath.h"
 #include "vtkDICOMItem.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMSequence.h"
@@ -38,9 +40,6 @@
 #include <map>
 #include <algorithm>
 #include <utility>
-
-#include <vtksys/SystemTools.hxx>
-#include <vtksys/Directory.hxx>
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -1279,10 +1278,9 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
     }
 
   // Create the path to DATABASE.noindex, where .dcm files are stored
-  std::vector<std::string> path;
-  vtksys::SystemTools::SplitPath(fname, path);
-  path.pop_back();
-  path.push_back("DATABASE.noindex");
+  vtkDICOMFilePath path(fname);
+  path.PopBack();
+  path.PushBack("DATABASE.noindex");
 
   vtkSQLQuery *q = dbase->GetQueryInstance();
 
@@ -1557,11 +1555,11 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
           vtkTypeInt64 dnum = (fnum/10000 + 1)*10000;
           vtkVariant fv(fnum);
           vtkVariant dv(dnum);
-          path.push_back(dv.ToString());
-          path.push_back(fv.ToString() + ".dcm");
-          fpath = vtksys::SystemTools::JoinPath(path);
-          path.pop_back();
-          path.pop_back();
+          path.PushBack(dv.ToString());
+          path.PushBack(fv.ToString() + ".dcm");
+          fpath = path.AsString();
+          path.PopBack();
+          path.PopBack();
           }
         else if (fpath[0] != '/')
           {
@@ -1569,11 +1567,11 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
           vtkTypeInt64 fnum = atol(fpath.c_str());
           vtkTypeInt64 dnum = (fnum/10000 + 1)*10000;
           vtkVariant dv(dnum);
-          path.push_back(dv.ToString());
-          path.push_back(fpath);
-          fpath = vtksys::SystemTools::JoinPath(path);
-          path.pop_back();
-          path.pop_back();
+          path.PushBack(dv.ToString());
+          path.PushBack(fpath);
+          fpath = path.AsString();
+          path.PopBack();
+          path.PopBack();
           }
         if (fpath != lastpath)
           {
@@ -1701,15 +1699,6 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
     vtkSmartPointer<vtkStringArray>::New();
   std::vector<const vtkDICOMItem *> imageRecords;
 
-  // Path broken into components.
-  std::vector<std::string> path;
-  vtksys::SystemTools::SplitPath(dirname, path);
-  if (path.size() > 0 && path.back() == "")
-    {
-    path.pop_back();
-    }
-  size_t pathDepth = path.size();
-
   // The entry type that is currently being processed.
   std::string entryType;
 
@@ -1757,12 +1746,12 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
           unsigned int m = fileID.GetNumberOfValues();
           if (m > 0)
             {
+            vtkDICOMFilePath path(dirname);
             for (unsigned int k = 0; k < m; k++)
               {
-              path.push_back(fileID.GetString(k));
+              path.PushBack(fileID.GetString(k));
               }
-            fileNames->InsertNextValue(vtksys::SystemTools::JoinPath(path));
-            path.resize(pathDepth);
+            fileNames->InsertNextValue(path.AsString());
             imageRecords.push_back(&items[j]);
             }
           }
@@ -1836,7 +1825,7 @@ void vtkDICOMDirectory::ProcessDirectory(
 {
   // Check if the directory has been visited yet.  This avoids infinite
   // recursion when following circular links.
-  std::string realname = vtksys::SystemTools::GetRealPath(dirname);
+  std::string realname = vtkDICOMFilePath(dirname).GetRealPath();
   std::vector<std::string>::iterator viter =
     std::lower_bound(this->Visited->begin(), this->Visited->end(), realname);
   if (viter == this->Visited->end() || *viter != realname)
@@ -1851,19 +1840,14 @@ void vtkDICOMDirectory::ProcessDirectory(
     }
 
   // Find the path to the directory.
-  std::vector<std::string> path;
-  vtksys::SystemTools::SplitPath(dirname, path);
-  if (path.size() > 0 && path.back() == "")
-    {
-    path.pop_back();
-    }
+  vtkDICOMFilePath path(dirname);
 
   if (depth == this->ScanDepth)
     {
     // Build the path to the DICOMDIR file.
-    path.push_back("DICOMDIR");
-    std::string dicomdir = vtksys::SystemTools::JoinPath(path);
-    path.pop_back();
+    path.PushBack("DICOMDIR");
+    std::string dicomdir = path.AsString();
+    path.PopBack();
 
     // Check to see if the DICOMDIR file exists.
     if (vtkDICOMFile::Access(dicomdir.c_str(), vtkDICOMFile::In) == 0)
@@ -1912,8 +1896,8 @@ void vtkDICOMDirectory::ProcessDirectory(
     return;
     }
 
-  vtksys::Directory d;
-  if (!d.Load(dirname))
+  vtkDICOMFileDirectory d(dirname);
+  if (d.GetError() != 0)
     {
     // Only fail at the initial depth.
     if (depth == this->ScanDepth)
@@ -1924,21 +1908,20 @@ void vtkDICOMDirectory::ProcessDirectory(
       }
     }
 
-  unsigned long n = d.GetNumberOfFiles();
-  for (unsigned long i = 0; i < n; i++)
+  int n = d.GetNumberOfFiles();
+  for (int i = 0; i < n; i++)
     {
     const char *fname = d.GetFile(i);
     if (fname[0] != '.' && strcmp(fname, "DICOMDIR") != 0)
       {
-      path.push_back(fname);
-      std::string fileString = vtksys::SystemTools::JoinPath(path);
-      path.pop_back();
-      if (!this->FollowSymlinks &&
-          vtksys::SystemTools::FileIsSymlink(fileString.c_str()))
+      path.PushBack(fname);
+      std::string fileString = path.AsString();
+      path.PopBack();
+      if (!this->FollowSymlinks && d.IsSymlink(i))
         {
         // Do nothing unless FollowSymlinks is On
         }
-      else if (vtksys::SystemTools::FileIsDirectory(fileString.c_str()))
+      else if (d.IsDirectory(i))
         {
         if (depth > 1)
           {
