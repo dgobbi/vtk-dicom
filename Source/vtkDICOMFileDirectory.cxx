@@ -14,6 +14,7 @@
 
 #include "vtkDICOMFileDirectory.h"
 #include "vtkDICOMFilePath.h"
+#include "vtkDICOMFile.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -27,6 +28,7 @@
 #endif
 
 #include <string>
+#include <vector>
 
 // for PGI compiler, use dirent64 if readdir is readdir64
 #if defined(__PGI) && defined(__GLIBC__)
@@ -247,4 +249,83 @@ void vtkDICOMFileDirectory::AddEntry(
   this->Entries[n].Mask= mask;
 
   this->NumberOfFiles++;
+}
+
+//----------------------------------------------------------------------------
+int vtkDICOMFileDirectory::Create(const char *name)
+{
+  int result = 0;
+
+  std::vector<std::string> dirsToCreate;
+  vtkDICOMFilePath path(name);
+
+  while (!path.IsRoot() && !path.IsEmpty() && result == 0)
+    {
+    int code = vtkDICOMFile::Access(path.AsString().c_str(), vtkDICOMFile::In);
+    if (code == 0 || code == vtkDICOMFile::AccessDenied)
+      {
+      // The name exists as a file, or there is no permission to use path
+      result = AccessDenied;
+      }
+    else if (code == vtkDICOMFile::IsDirectory)
+      {
+      // Found a directory!
+      break;
+      }
+    dirsToCreate.push_back(path.AsString());
+    path.PopBack();
+    }
+
+  while (dirsToCreate.size() > 0 && result == 0)
+    {
+    const char *dirname = dirsToCreate.back().c_str();
+#ifdef _WIN32
+    wchar_t *widename = vtkDICOMFilePath::ConvertToWideChar(dirname);
+    if (widename == 0)
+      {
+      result = Bad;
+      }
+    else if (!CreateDirectoryW(widename, NULL))
+      {
+      DWORD e = GetLastError();
+      if (e == ERROR_ALREADY_EXISTS)
+        {
+        result = AccessDenied;
+        }
+      else if (e == ERROR_PATH_NOT_FOUND)
+        {
+        result = DirectoryNotFound;
+        }
+      else
+        {
+        result = Bad;
+        }
+      }
+    delete [] widename;
+#else
+    if (mkdir(dirname, 00777) != 0)
+      {
+      int e = errno;
+      if (e == EACCES || e == EPERM)
+        {
+        result = AccessDenied;
+        }
+      else if (e == ENOENT)
+        {
+        result = FileNotFound;
+        }
+      else if (e == ENOTDIR)
+        {
+        result = DirectoryNotFound;
+        }
+      else
+        {
+        result = Bad;
+        }
+      }
+#endif
+    dirsToCreate.pop_back();
+    }
+
+  return result;
 }

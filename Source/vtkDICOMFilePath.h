@@ -36,6 +36,13 @@ public:
   //! Get the path as a string.
   const std::string& AsString() const { return this->Path; }
 
+  //! Check if the path is empty.
+  bool IsEmpty() const { return (this->Path.length() == 0); }
+
+  //! Check if the path is a root path.
+  bool IsRoot() const {
+    return (this->Path.length() == RootLength(this->Path)); }
+
   //! Return the path joined with the given extra component.
   std::string Join(const std::string& second) const;
 

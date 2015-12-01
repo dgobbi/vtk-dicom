@@ -60,6 +60,14 @@ public:
   //! Check if the list entry is a symbolic link.
   bool IsSymlink(int i);
 
+  //! Create a new directory with default permissions.
+  /*!
+   *  This will create any intermediate directories, as well.  The return
+   *  value is zero for success.  Otherwise, one of the error codes is
+   *  returned.
+   */
+  static int Create(const char *dirname);
+
 private:
   //! Add a directory entry.
   void AddEntry(const char *name, unsigned short flags, unsigned short mask);
