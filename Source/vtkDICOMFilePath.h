@@ -42,8 +42,20 @@ public:
   //! Get the final component of the path.
   std::string GetBack() const;
 
+  //! Remove a component from the path.
+  void PopBack();
+
+  //! Add a new component (or components) to the path.
+  void PushBack(const std::string& path);
+
   //! Get the file extension (the final dot and everything after).
   std::string GetExtension() const;
+
+  //! Remove the current file extension, including the dot.
+  void PopExtension();
+
+  //! Add a new file extension to the current file path.
+  void PushExtension(const std::string& path);
 
   //! Get the full absolute path (or empty string if file doesn't exist).
   /*!
@@ -54,12 +66,6 @@ public:
    *  that extended path processing should be used.
    */
   std::string GetRealPath() const;
-
-  //! Add a new component (or components) to the path.
-  void PushBack(const std::string& path);
-
-  //! Remove a component from the path.
-  void PopBack();
 
 private:
   friend class vtkDICOMFile;
@@ -78,6 +84,9 @@ private:
 
   //! Strip the trailing slash, if present.
   static void StripTrailingSlash(std::string *path);
+
+  //! Find the position of the extension (including the dot).
+  static size_t ExtensionPosition(const std::string& path);
 
   //! Get the length of the "root device" part of the path.
   /*!

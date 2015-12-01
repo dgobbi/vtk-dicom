@@ -196,20 +196,56 @@ std::string vtkDICOMFilePath::GetBack() const
 //----------------------------------------------------------------------------
 std::string vtkDICOMFilePath::GetExtension() const
 {
-  size_t l = this->Path.length();
-  size_t r = RootLength(this->Path);
+  size_t i = ExtensionPosition(this->Path);
+  return this->Path.substr(i);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMFilePath::PopExtension()
+{
+  size_t i = ExtensionPosition(this->Path);
+  this->Path.resize(i);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMFilePath::PushExtension(const std::string& ext)
+{
+  size_t l = ext.length();
+  if (l == 0 || (l == 1 && ext[0] == '.'))
+    {
+    return;
+    }
+  for (size_t i = 0; i < l; i++)
+    {
+    if (IsSeparator(ext[i]))
+      {
+      return;
+      }
+    }
+
+  if (l > 0 && ext[0] != '.')
+    {
+    this->Path.push_back('.');
+    }
+
+  this->Path.append(ext);
+}
+
+//----------------------------------------------------------------------------
+size_t vtkDICOMFilePath::ExtensionPosition(const std::string& path)
+{
+  size_t l = path.length();
+  size_t r = RootLength(path);
   size_t i = l;
-  size_t j = l;
 
 #ifdef _WIN32
-  if (r >= 4 && this->Path.compare("\\\\\?\\"))
+  if (r >= 4 && path.compare(0, 4, "\\\\\?\\") == 0)
     {
-    while (l > r && this->Path[l-1] != '\\')
+    while (l > r && path[l-1] != '\\')
       {
-      i = j;
-      if (this->Path[--l] == '.')
+      if (path[--l] == '.')
         {
-        j = l;
+        i = l;
         break;
         }
       }
@@ -217,18 +253,17 @@ std::string vtkDICOMFilePath::GetExtension() const
   else
 #endif
     {
-    while (l > r && !IsSeparator(this->Path[l-1]))
+    while (l > r && !IsSeparator(path[l-1]))
       {
-      i = j;
-      if (this->Path[--l] == '.')
+      if (path[--l] == '.')
         {
-        j = l;
+        i = l;
         break;
         }
       }
     }
 
-  return this->Path.substr(i);
+  return i;
 }
 
 //----------------------------------------------------------------------------

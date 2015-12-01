@@ -80,6 +80,30 @@ int main(int argc, char *argv[])
   TestAssert(path.Join("/") == "/");
   }
 
+  { // test extension
+  vtkDICOMFilePath path("/hello");
+  TestAssert(path.GetExtension() == "");
+  path.PushBack("world.wld");
+  TestAssert(path.GetExtension() == ".wld");
+  path.PushBack("space.tar.gz");
+  TestAssert(path.GetExtension() == ".gz");
+  path.PopExtension();
+  TestAssert(path.GetExtension() == ".tar");
+  path.PopExtension();
+  TestAssert(path.GetExtension() == "");
+  TestAssert(path.AsString() == "/hello/world.wld/space");
+  path.PushExtension("");
+  TestAssert(path.AsString() == "/hello/world.wld/space");
+  path.PushExtension(".");
+  TestAssert(path.AsString() == "/hello/world.wld/space");
+  path.PushExtension("/");
+  TestAssert(path.AsString() == "/hello/world.wld/space");
+  path.PushExtension("./");
+  TestAssert(path.AsString() == "/hello/world.wld/space");
+  path.PushExtension(".com");
+  TestAssert(path.AsString() == "/hello/world.wld/space.com");
+  }
+
 #ifdef _WIN32
 #endif
 
