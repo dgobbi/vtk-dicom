@@ -28,7 +28,11 @@
 #include "vtkCommand.h"
 #include "vtkVersion.h"
 
+#ifdef VTK_DICOM_EXPORT
+#include "vtkDICOMFile.h"
+#else
 #include "vtksys/SystemTools.hxx"
+#endif
 
 // Header for NIFTI
 #include "vtkNIFTIHeader.h"
@@ -936,7 +940,11 @@ int vtkNIFTIWriter::RequestData(
     {
     // erase the file, rather than leave a corrupt file on disk
     vtkErrorMacro("Out of disk space, removing incomplete file " << imgname);
+#ifdef VTK_DICOM_EXPORT
+    vtkDICOMFile::Remove(imgname);
+#else
     vtksys::SystemTools::RemoveFile(imgname);
+#endif
     if (!singleFile)
       {
       vtksys::SystemTools::RemoveFile(hdrname);

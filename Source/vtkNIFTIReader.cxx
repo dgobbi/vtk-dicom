@@ -29,7 +29,11 @@
 #include "vtkStringArray.h"
 #include "vtkVersion.h"
 
+#ifdef VTK_DICOM_EXPORT
+#include "vtkDICOMFile.h"
+#else
 #include "vtksys/SystemTools.hxx"
+#endif
 
 // Header for NIFTI
 #include "vtkNIFTIHeader.h"
@@ -296,10 +300,18 @@ char *vtkNIFTIReader::ReplaceExtension(
     // existence of file
     for (int i = 0; i < 2; i++)
       {
+#ifdef VTK_DICOM_EXPORT
+      int code = vtkDICOMFile::Access(newname);
+      if (code != vtkDICOMFile::FileNotFound)
+        {
+        return newname;
+        }
+#else
       if (vtksys::SystemTools::FileExists(newname))
         {
         return newname;
         }
+#endif
       if (i == 0)
         {
         if (m < n)
