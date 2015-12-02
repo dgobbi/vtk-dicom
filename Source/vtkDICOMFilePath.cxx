@@ -19,6 +19,8 @@
 #ifdef _WIN32
 #include <windows.h>
 #else
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #endif
 
@@ -267,6 +269,66 @@ size_t vtkDICOMFilePath::ExtensionPosition(const std::string& path)
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMFilePath::IsRoot() const
+{
+  size_t l = this->Path.length();
+  return (l > 0 && l == RootLength(this->Path));
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMFilePath::IsDirectory() const
+{
+  bool result = false;
+#ifdef _WIN32
+  wchar_t *widepath = ConvertToWideChar(this->Path.c_str());
+  if (widepath)
+    {
+    DWORD a = GetFileAttributesW(widepath);
+    delete [] widepath;
+    result = ((a & FILE_ATTRIBUTE_DIRECTORY) != 0);
+    }
+#else
+  struct stat fs;
+  if (stat(this->Path.c_str(), &fs) == 0 && S_ISDIR(fs.st_mode))
+    {
+    result = true;
+    }
+#endif
+  return result;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMFilePath::IsSymlink() const
+{
+  bool result = false;
+#ifdef _WIN32
+  wchar_t *widepath = ConvertToWideChar(this->Path.c_str());
+  if (widepath && GetFileAttributesW(widepath) != INVALID_FILE_ATTRIBUTES)
+    {
+    WIN32_FIND_DATAW buf;
+    HANDLE h = FindFirstFileW(widepath, &buf);
+    delete [] widepath;
+    if (h != INVALID_HANDLE_VALUE)
+      {
+      CloseHandle(h);
+      if ((buf.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0 &&
+          buf.dwReserved0 == 0xA000000C)
+        {
+        result = true;
+        }
+      }
+    }
+#else
+  struct stat fs;
+  if (lstat(this->Path.c_str(), &fs) == 0 && S_ISLNK(fs.st_mode))
+    {
+    result = true;
+    }
+#endif
+  return result;
+}
+
+//----------------------------------------------------------------------------
 std::string vtkDICOMFilePath::GetRealPath() const
 {
 #ifdef _WIN32
@@ -336,17 +398,17 @@ std::string vtkDICOMFilePath::GetRealPath() const
       if (l >= 2 && path[0] == '\\' && path[1] == '\\')
         {
         result = "\\\\?\\UNC\\";
-        result.append(&path[2])
+        result.append(&path[2]);
         }
       else if (l >= 1 && path[0] == '\\')
         {
         result = "\\\\?\\";
-        result.append(&path[1])
+        result.append(&path[1]);
         }
       else
         {
         result = "\\\\?\\";
-        result.append(path)
+        result.append(path);
         }
       }
 #else

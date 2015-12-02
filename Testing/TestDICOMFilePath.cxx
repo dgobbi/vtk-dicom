@@ -58,6 +58,8 @@ int main(int argc, char *argv[])
   TestAssert(path.AsString() == "/");
   path.PopBack();
   TestAssert(path.AsString() == "/");
+  TestAssert(path.IsRoot());
+  TestAssert(!path.IsEmpty());
   }
 
   { // test push and pop for relative paths
@@ -71,6 +73,8 @@ int main(int argc, char *argv[])
   TestAssert(path.AsString() == "");
   path.PopBack();
   TestAssert(path.AsString() == "");
+  TestAssert(path.IsEmpty());
+  TestAssert(!path.IsRoot());
   }
 
   { // test join
@@ -105,6 +109,9 @@ int main(int argc, char *argv[])
   }
 
 #ifdef _WIN32
+  {
+  }
+
 #endif
 
   return rval;

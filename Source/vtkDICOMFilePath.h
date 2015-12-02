@@ -40,8 +40,13 @@ public:
   bool IsEmpty() const { return (this->Path.length() == 0); }
 
   //! Check if the path is a root path.
-  bool IsRoot() const {
-    return (this->Path.length() == RootLength(this->Path)); }
+  bool IsRoot() const;
+
+  //! Check whether the path is an existing directory.
+  bool IsDirectory() const;
+
+  //! Check whether the path is a symbolic link.
+  bool IsSymlink() const;
 
   //! Return the path joined with the given extra component.
   std::string Join(const std::string& second) const;
