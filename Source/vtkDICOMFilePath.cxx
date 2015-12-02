@@ -74,7 +74,7 @@ std::string vtkDICOMFilePath::Join(const std::string& second) const
   // converted into back slashes, and "." and ".." must be removed
   char sep = this->Separator;
   bool extended = false;
-  if (path.compare(0, 4, "\\\\\?\\") == 0)
+  if (HasExtendedPrefix(path))
     {
     sep = '\\';
     extended = true;
@@ -177,7 +177,7 @@ std::string vtkDICOMFilePath::GetBack() const
   size_t l = this->Path.length();
   size_t r = RootLength(this->Path);
 #ifdef _WIN32
-  if (r >= 4 && this->Path.compare(0, 4, "\\\\\?\\") == 0)
+  if (r >= 4 && HasExtendedPrefix(this->Path))
     {
     while (l > r && this->Path[l-1] != '\\')
       {
@@ -241,7 +241,7 @@ size_t vtkDICOMFilePath::ExtensionPosition(const std::string& path)
   size_t i = l;
 
 #ifdef _WIN32
-  if (r >= 4 && path.compare(0, 4, "\\\\\?\\") == 0)
+  if (r >= 4 && HasExtendedPrefix(path))
     {
     while (l > r && path[l-1] != '\\')
       {
@@ -465,8 +465,7 @@ void vtkDICOMFilePath::PopBack()
   size_t l = path.length();
 
 #ifdef _WIN32
-  if (l >= 4 && (path.compare(0, 4, "\\\\\?\\") == 0 ||
-                 path.compare(0, 4, "\\\\.\\") == 0))
+  if (l >= 4 && HasExtendedPrefix(path))
     {
     // only allow backslash as a separator with the "\\?\" prefix
     while (l > root && path[l-1] != '\\')
@@ -503,7 +502,7 @@ void vtkDICOMFilePath::StripTrailingSlash(std::string *path)
   size_t l = path->length();
   size_t r = RootLength(*path);
 #ifdef _WIN32
-  if (r >= 4 && path->compare(0, 4, "\\\\\?\\") == 0)
+  if (r >= 4 && HasExtendedPrefix(*path))
     {
     // remove the trailing slash, if present and not the root
     while (l > r && (*path)[l-1] == '\\')
@@ -541,13 +540,12 @@ size_t vtkDICOMFilePath::RootLength(const std::string& path)
   //  \\?\UNC\server\share\ (a UNC path prefix)
   // Finally, the special "\\?\" prefix is used to name system devices:
   //  \\.\DEVICE (name of a special devices)
-  if (l >= 4 && (path.compare(0, 4, "\\\\\?\\") == 0 ||
-                 path.compare(0, 4, "\\\\.\\") == 0))
+  if (l >= 4 && HasExtendedPrefix(path))
     {
     root = 4;
     if (path[2] == '\?')
       {
-      if (path.compare(4, 3, "UNC") == 0)
+      if (l >= 7 && path[4] == 'U' && path[5] == 'N' && path[6] == 'C')
         {
         if (l == 7)
           {
@@ -629,12 +627,23 @@ size_t vtkDICOMFilePath::RootLength(const std::string& path)
 
 //----------------------------------------------------------------------------
 #ifdef _WIN32
+bool vtkDICOMFilePath::HasExtendedPrefix(const std::string& path)
+{
+  // extended prefixes are '\\?\' and '\\.\'
+  return (path.length() >= 4 &&
+          path[0] == '\\' && path[1] == '\\' && path[3] == '\\' &&
+          (path[2] == '\?' || path[2] == '.'));
+}
+#endif
+
+//----------------------------------------------------------------------------
+#ifdef _WIN32
 char vtkDICOMFilePath::DriveLetter(const std::string& path)
 {
   char d = '\0';
   size_t l = path.length();
   size_t pos = 0;
-  if (l >= 4 && path.compare(0, 4, "\\\\\?\\") == 0)
+  if (l >= 4 && HasExtendedPrefix(path))
     {
     pos = 4;
     }

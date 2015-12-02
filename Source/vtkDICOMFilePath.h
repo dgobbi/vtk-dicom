@@ -109,11 +109,12 @@ private:
   static size_t RootLength(const std::string& path);
 
 #ifdef _WIN32
+  //! Check if an extended path prefix is present.
+  static bool HasExtendedPrefix(const std::string& path);
+
   //! Get the drive letter (or zero if none).
   static char DriveLetter(const std::string& path);
-#endif
 
-#ifdef _WIN32
   //! Convert to WideChar. Returns NULL or new string (free with delete []).
   static wchar_t *ConvertToWideChar(const char *filename);
 
