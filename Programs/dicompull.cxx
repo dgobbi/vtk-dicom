@@ -375,7 +375,7 @@ MAINMACRO(argc, argv)
       {
       int code = vtkDICOMFile::Access(arg, vtkDICOMFile::In);
       if (code == vtkDICOMFile::Good ||
-          code == vtkDICOMFile::IsDirectory)
+          code == vtkDICOMFile::FileIsDirectory)
         {
         a->InsertNextValue(arg);
         }
@@ -496,7 +496,7 @@ MAINMACRO(argc, argv)
                 case vtkDICOMFile::AccessDenied:
                   message = "Access denied for file";
                   break;
-                case vtkDICOMFile::IsDirectory:
+                case vtkDICOMFile::FileIsDirectory:
                   message = "This file is a directory";
                   break;
                 case vtkDICOMFile::FileNotFound:
@@ -522,7 +522,7 @@ MAINMACRO(argc, argv)
                   case vtkDICOMFile::AccessDenied:
                     message = "Access denied for output file";
                     break;
-                  case vtkDICOMFile::IsDirectory:
+                  case vtkDICOMFile::FileIsDirectory:
                     message = "This output is a directory";
                     break;
                   case vtkDICOMFile::DirectoryNotFound:

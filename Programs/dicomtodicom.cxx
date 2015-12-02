@@ -663,7 +663,7 @@ MAINMACRO(argc, argv)
     }
 
   int code = vtkDICOMFile::Access(outpath, vtkDICOMFile::In);
-  if (code != vtkDICOMFile::IsDirectory)
+  if (code != vtkDICOMFile::FileIsDirectory)
     {
     fprintf(stderr, "option -o must give a directory, not a file.\n");
     exit(1);

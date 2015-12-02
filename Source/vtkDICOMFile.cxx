@@ -63,7 +63,7 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
       }
     else if (errorCode == EISDIR)
       {
-      this->Error = IsDirectory;
+      this->Error = FileIsDirectory;
       }
     else if (errorCode == ENOTDIR)
       {
@@ -117,7 +117,7 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
         DWORD attr = GetFileAttributesW(wideFilename);
         if ((attr & FILE_ATTRIBUTE_DIRECTORY) != 0)
           {
-          this->Error = IsDirectory;
+          this->Error = FileIsDirectory;
           }
         }
       }
@@ -412,7 +412,7 @@ int vtkDICOMFile::Access(const char *filename, Mode mode)
       }
     else if ((code & FILE_ATTRIBUTE_DIRECTORY) != 0)
       {
-      errorCode = IsDirectory;
+      errorCode = FileIsDirectory;
       }
     delete [] wideFilename;
     }
@@ -443,7 +443,7 @@ int vtkDICOMFile::Access(const char *filename, Mode mode)
     }
   else if (S_ISDIR(fs.st_mode))
     {
-    errorCode = IsDirectory;
+    errorCode = FileIsDirectory;
     }
   return errorCode;
 #endif

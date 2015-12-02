@@ -1142,7 +1142,7 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
       {
       errText = "No permission to write the file ";
       }
-    else if (this->OutputFile->GetError() == vtkDICOMFile::IsDirectory)
+    else if (this->OutputFile->GetError() == vtkDICOMFile::FileIsDirectory)
       {
       errText = "The selected file is a directory ";
       }

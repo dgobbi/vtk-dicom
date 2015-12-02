@@ -512,7 +512,7 @@ MAINMACRO(argc, argv)
     else
       {
       int code = vtkDICOMFile::Access(arg, vtkDICOMFile::In);
-      if (code == vtkDICOMFile::Good || code == vtkDICOMFile::IsDirectory)
+      if (code == vtkDICOMFile::Good || code == vtkDICOMFile::FileIsDirectory)
         {
         a->InsertNextValue(arg);
         }

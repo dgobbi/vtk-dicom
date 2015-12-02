@@ -45,7 +45,7 @@ public:
     Good,              // no error
     Bad,               // unspecified error
     AccessDenied,      // file permission error
-    IsDirectory,       // can't open file: directory with that name exists
+    FileIsDirectory,   // can't open file: directory with that name exists
     DirectoryNotFound, // one of the directories in the path doesn't exist
     FileNotFound,      // requested file (or directory) doesn't exist
     OutOfSpace         // disk full or quota exceeded

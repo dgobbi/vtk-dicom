@@ -1009,7 +1009,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
         {
         vtkWarningMacro("File permission denied: " << fileName.c_str());
         }
-      else if (code == vtkDICOMFile::IsDirectory)
+      else if (code == vtkDICOMFile::FileIsDirectory)
         {
         vtkWarningMacro("File is a directory: " << fileName.c_str());
         }
@@ -1961,7 +1961,7 @@ void vtkDICOMDirectory::Execute()
       {
       const std::string& fname = this->InputFileNames->GetValue(i);
       int code = vtkDICOMFile::Access(fname.c_str(), vtkDICOMFile::In);
-      if (code == vtkDICOMFile::IsDirectory)
+      if (code == vtkDICOMFile::FileIsDirectory)
         {
         this->ProcessDirectory(fname.c_str(), this->ScanDepth, files);
         }
@@ -2005,7 +2005,7 @@ void vtkDICOMDirectory::Execute()
       }
 
     int code = vtkDICOMFile::Access(this->DirectoryName, vtkDICOMFile::In);
-    if (code == vtkDICOMFile::IsDirectory)
+    if (code == vtkDICOMFile::FileIsDirectory)
       {
       this->ProcessDirectory(this->DirectoryName, this->ScanDepth, files);
       }

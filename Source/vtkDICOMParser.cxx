@@ -1816,7 +1816,7 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
       {
       errText = "No permission to read the file ";
       }
-    else if (infile.GetError() == vtkDICOMFile::IsDirectory)
+    else if (infile.GetError() == vtkDICOMFile::FileIsDirectory)
       {
       errText = "The selected file is a directory ";
       }

@@ -267,7 +267,7 @@ int vtkDICOMFileDirectory::Create(const char *name)
       // The name exists as a file, or there is no permission to use path
       result = AccessDenied;
       }
-    else if (code == vtkDICOMFile::IsDirectory)
+    else if (code == vtkDICOMFile::FileIsDirectory)
       {
       // Found a directory!
       break;

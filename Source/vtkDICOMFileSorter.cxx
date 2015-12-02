@@ -242,7 +242,7 @@ void vtkDICOMFileSorter::SortFiles(vtkStringArray *input)
     this->SetInternalFileName(fileName.c_str());
 
     int code = vtkDICOMFile::Access(fileName.c_str(), vtkDICOMFile::In);
-    if (code == vtkDICOMFile::IsDirectory)
+    if (code == vtkDICOMFile::FileIsDirectory)
       {
       // Skip anything that is a directory
       continue;
@@ -372,7 +372,7 @@ void vtkDICOMFileSorter::Execute()
       vtkErrorMacro("File or directory not found: " << this->InputFileName);
       return;
       }
-    else if (code == vtkDICOMFile::IsDirectory)
+    else if (code == vtkDICOMFile::FileIsDirectory)
       {
       this->ErrorCode = vtkErrorCode::CannotOpenFileError;
       vtkErrorMacro("Named file is a directory: " << this->InputFileName);

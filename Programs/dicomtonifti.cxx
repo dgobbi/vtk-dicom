@@ -1108,13 +1108,13 @@ MAINMACRO(argc, argv)
   int code = vtkDICOMFile::Access(outpath, vtkDICOMFile::In);
   size_t l = strlen(outpath);
   vtkDICOMFilePath tmp(outpath);
-  if (options.batch && code == vtkDICOMFile::IsDirectory)
+  if (options.batch && code == vtkDICOMFile::FileIsDirectory)
     {
     tmp.PushBack(
       "{PatientID}-{StudyDate}-{SeriesDescription}-{SeriesNumber}.nii");
     outpath = tmp.AsString().c_str();
     }
-  else if (!options.batch && (code == vtkDICOMFile::IsDirectory ||
+  else if (!options.batch && (code == vtkDICOMFile::FileIsDirectory ||
            (l > 0 && (outpath[l-1] == '/' || outpath[l-1] == '\\'))))
     {
     fprintf(stderr, "The -o option must give a file, not a directory.\n");
