@@ -24,6 +24,8 @@
 #include "vtkDICOMToRAS.h"
 #include "vtkDICOMCTRectifier.h"
 #include "vtkDICOMUtilities.h"
+#include "vtkDICOMFile.h"
+#include "vtkDICOMFileDirectory.h"
 #include "vtkNIFTIHeader.h"
 #include "vtkNIFTIReader.h"
 
@@ -41,10 +43,6 @@
 #if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
 #include <vtkImageHistogramStatistics.h>
 #endif
-
-#include <vtksys/SystemTools.hxx>
-#include <vtksys/Directory.hxx>
-#include <vtksys/Glob.hxx>
 
 #include <string>
 #include <vector>
@@ -233,60 +231,6 @@ void niftitodicom_check_error(vtkObject *o)
   exit(1);
 }
 
-// Add a dicom file to the list, expand if wildcard
-void niftitodicom_add_file(vtkStringArray *files, const char *filepath)
-{
-#ifdef _WIN32
-  bool ispattern = false;
-  bool hasbackslash = false;
-  size_t n = strlen(filepath);
-  for (size_t i = 0; i < n; i++)
-    {
-    if (filepath[i] == '*' || filepath[i] == '?' || filepath[i] == '[')
-      {
-      ispattern = true;
-      }
-    if (filepath[i] == '\\')
-      {
-      hasbackslash = true;
-      }
-    }
-
-  std::string newpath = filepath;
-  if (hasbackslash)
-    {
-    // backslashes interfere with vtksys::Glob
-    vtksys::SystemTools::ConvertToUnixSlashes(newpath);
-    }
-  filepath = newpath.c_str();
-
-  if (ispattern)
-    {
-    vtksys::Glob glob;
-    if (glob.FindFiles(filepath))
-      {
-      const std::vector<std::string> &globfiles = glob.GetFiles();
-      size_t m = globfiles.size();
-      for (size_t j = 0; j < m; j++)
-        {
-        files->InsertNextValue(globfiles[j]);
-        }
-      }
-    else
-      {
-      fprintf(stderr, "Could not match pattern: %s\n", filepath);
-      exit(1);
-      }
-    }
-  else
-    {
-    files->InsertNextValue(filepath);
-    }
-#else
-  files->InsertNextValue(filepath);
-#endif
-}
-
 // Check that a file has a NIFTI name
 bool isNIFTIFileName(const char *f)
 {
@@ -451,7 +395,7 @@ void niftitodicom_read_options(
       }
     else
       {
-      niftitodicom_add_file(files, arg);
+      files->InsertNextValue(arg);
       vtkIdType m = files->GetMaxId();
       if (m >= 0)
         {
@@ -476,7 +420,7 @@ void niftitodicom_read_options(
 
   while (argi < argc)
     {
-    niftitodicom_add_file(files, argv[argi++]);
+    files->InsertNextValue(argv[argi++]);
     vtkIdType m = files->GetMaxId();
     if (m >= 0)
       {
@@ -915,15 +859,14 @@ MAINMACRO(argc, argv)
     exit(1);
     }
 
-  if (vtksys::SystemTools::FileExists(outpath))
+  int code = vtkDICOMFile::Access(outpath, vtkDICOMFile::In);
+  if (code != vtkDICOMFile::IsDirectory)
     {
-    if (!vtksys::SystemTools::FileIsDirectory(outpath))
-      {
-      fprintf(stderr, "option -o must give a directory, not a file.\n");
-      exit(1);
-      }
+    fprintf(stderr, "option -o must give a directory, not a file.\n");
+    exit(1);
     }
-  else if (!vtksys::SystemTools::MakeDirectory(outpath))
+  code = vtkDICOMFileDirectory::Create(outpath);
+  if (code != vtkDICOMFileDirectory::Good)
     {
     fprintf(stderr, "Cannot create directory: %s\n", outpath);
     exit(1);

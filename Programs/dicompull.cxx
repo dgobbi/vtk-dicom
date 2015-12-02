@@ -20,6 +20,8 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMDictionary.h"
 #include "vtkDICOMFile.h"
+#include "vtkDICOMFilePath.h"
+#include "vtkDICOMFileDirectory.h"
 
 // from dicomcli
 #include "mainmacro.h"
@@ -28,8 +30,6 @@
 
 #include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
-
-#include <vtksys/SystemTools.hxx>
 
 #include <stdio.h>
 #include <string.h>
@@ -373,7 +373,9 @@ MAINMACRO(argc, argv)
       }
     else
       {
-      if (vtksys::SystemTools::FileExists(arg))
+      int code = vtkDICOMFile::Access(arg, vtkDICOMFile::In);
+      if (code == vtkDICOMFile::Good ||
+          code == vtkDICOMFile::IsDirectory)
         {
         a->InsertNextValue(arg);
         }
@@ -400,17 +402,6 @@ MAINMACRO(argc, argv)
 
   // do a dry run to make sure outdir string is valid
   dicompull_makedirname(NULL, 0, 0, outdir.c_str());
-
-  // Separator between directory and file
-  const char *sep = (outdir.empty() ? "" : "//");
-#ifdef _WIN32
-  for (std::string::const_iterator si = outdir.begin();
-       si != outdir.end(); ++si)
-    {
-    if (*si == '/') { sep = "/"; }
-    else if (*si == '\\') { sep = "\\"; }
-    }
-#endif
 
   // Create a map of all directories written to.  The count is the
   // number of series that have been written to the directory.
@@ -477,7 +468,8 @@ MAINMACRO(argc, argv)
         else
           {
           dircount[dirname] = si;
-          if (!vtksys::SystemTools::MakeDirectory(dirname.c_str()))
+          int code = vtkDICOMFileDirectory::Create(dirname.c_str());
+          if (code != vtkDICOMFileDirectory::Good)
             {
             fprintf(stderr, "Error: Cannot create directory: %s\n",
                     dirname.c_str());
@@ -485,15 +477,15 @@ MAINMACRO(argc, argv)
             exit(1);
             }
           }
+        vtkDICOMFilePath outpath(dirname);
         for (vtkIdType i = 0; i < sa->GetNumberOfValues(); i++)
           {
           // copy the file
           char fname[32];
-          sprintf(fname, "%sIM-%04d-%04d.dcm",
-                  sep, si, static_cast<int>(i+1));
+          sprintf(fname, "IM-%04d-%04d.dcm", si, static_cast<int>(i+1));
           const std::string& srcname = sa->GetValue(i);
-          std::string fullname = dirname + fname;
-          if (!vtksys::SystemTools::SameFile(srcname.c_str(), fullname.c_str()))
+          std::string fullname = outpath.Join(fname);
+          if (!vtkDICOMFile::SameFile(srcname.c_str(), fullname.c_str()))
             {
             vtkDICOMFile infile(srcname.c_str(), vtkDICOMFile::In);
             if (infile.GetError())

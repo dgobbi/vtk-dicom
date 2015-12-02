@@ -24,6 +24,8 @@
 #include "vtkDICOMToRAS.h"
 #include "vtkDICOMCTRectifier.h"
 #include "vtkDICOMUtilities.h"
+#include "vtkDICOMFile.h"
+#include "vtkDICOMFileDirectory.h"
 
 #include <vtkImageData.h>
 #include <vtkMatrix4x4.h>
@@ -33,10 +35,6 @@
 #include <vtkErrorCode.h>
 #include <vtkSortFileNames.h>
 #include <vtkSmartPointer.h>
-
-#include <vtksys/SystemTools.hxx>
-#include <vtksys/Directory.hxx>
-#include <vtksys/Glob.hxx>
 
 #include <string>
 #include <vector>
@@ -230,60 +228,6 @@ void dicomtodicom_check_error(vtkObject *o)
   exit(1);
 }
 
-// Add a dicom file to the list, expand if wildcard
-void dicomtodicom_add_file(vtkStringArray *files, const char *filepath)
-{
-#ifdef _WIN32
-  bool ispattern = false;
-  bool hasbackslash = false;
-  size_t n = strlen(filepath);
-  for (size_t i = 0; i < n; i++)
-    {
-    if (filepath[i] == '*' || filepath[i] == '?' || filepath[i] == '[')
-      {
-      ispattern = true;
-      }
-    if (filepath[i] == '\\')
-      {
-      hasbackslash = true;
-      }
-    }
-
-  std::string newpath = filepath;
-  if (hasbackslash)
-    {
-    // backslashes interfere with vtksys::Glob
-    vtksys::SystemTools::ConvertToUnixSlashes(newpath);
-    }
-  filepath = newpath.c_str();
-
-  if (ispattern)
-    {
-    vtksys::Glob glob;
-    if (glob.FindFiles(filepath))
-      {
-      const std::vector<std::string> &globfiles = glob.GetFiles();
-      size_t m = globfiles.size();
-      for (size_t j = 0; j < m; j++)
-        {
-        files->InsertNextValue(globfiles[j]);
-        }
-      }
-    else
-      {
-      fprintf(stderr, "Could not match pattern: %s\n", filepath);
-      exit(1);
-      }
-    }
-  else
-    {
-    files->InsertNextValue(filepath);
-    }
-#else
-  files->InsertNextValue(filepath);
-#endif
-}
-
 // Read the options
 void dicomtodicom_read_options(
   int argc, char *argv[],
@@ -422,13 +366,13 @@ void dicomtodicom_read_options(
       }
     else
       {
-      dicomtodicom_add_file(files, arg);
+      files->InsertNextValue(arg);
       }
     }
 
   while (argi < argc)
     {
-    dicomtodicom_add_file(files, argv[argi++]);
+    files->InsertNextValue(argv[argi++]);
     }
 }
 
@@ -718,15 +662,14 @@ MAINMACRO(argc, argv)
     exit(1);
     }
 
-  if (vtksys::SystemTools::FileExists(outpath))
+  int code = vtkDICOMFile::Access(outpath, vtkDICOMFile::In);
+  if (code != vtkDICOMFile::IsDirectory)
     {
-    if (!vtksys::SystemTools::FileIsDirectory(outpath))
-      {
-      fprintf(stderr, "option -o must give a directory, not a file.\n");
-      exit(1);
-      }
+    fprintf(stderr, "option -o must give a directory, not a file.\n");
+    exit(1);
     }
-  else if (!vtksys::SystemTools::MakeDirectory(outpath))
+  code = vtkDICOMFileDirectory::Create(outpath);
+  if (code != vtkDICOMFileDirectory::Good)
     {
     fprintf(stderr, "Cannot create directory: %s\n", outpath);
     exit(1);

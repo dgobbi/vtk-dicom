@@ -20,6 +20,7 @@
 #include "vtkDICOMParser.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMMetaDataAdapter.h"
+#include "vtkDICOMFile.h"
 
 // from dicomcli
 #include "mainmacro.h"
@@ -30,8 +31,6 @@
 #include <vtkTimerLog.h>
 #include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
-
-#include <vtksys/SystemTools.hxx>
 
 #include <stdio.h>
 #include <string.h>
@@ -512,7 +511,8 @@ MAINMACRO(argc, argv)
       }
     else
       {
-      if (vtksys::SystemTools::FileExists(arg))
+      int code = vtkDICOMFile::Access(arg, vtkDICOMFile::In);
+      if (code == vtkDICOMFile::Good || code == vtkDICOMFile::IsDirectory)
         {
         a->InsertNextValue(arg);
         }
