@@ -47,6 +47,16 @@ std::string vtkDICOMFilePath::Join(const std::string& second) const
 {
 #ifdef _WIN32
   std::string path = this->Path;
+  char sep = this->Separator;
+
+  // if extended prefix is present, then all forward slashes must be
+  // converted into back slashes, and "." and ".." must be removed
+  bool extended = false;
+  if (HasExtendedPrefix(path))
+    {
+    sep = '\\';
+    extended = true;
+    }
 
   // check whether the second part might be an absolute path
   size_t pos = 0;
@@ -56,28 +66,42 @@ std::string vtkDICOMFilePath::Join(const std::string& second) const
     // if second drive letter mismatches the first, paths can't be joined
     char drive1 = DriveLetter(path);
     char drive2 = DriveLetter(second);
-    if (drive2 && drive1 == drive2)
+    if (HasExtendedPrefix(second))
+      {
+      // if second part uses extended prefix, ignore the first part
+      path.resize(0);
+      }
+    else if (drive2 && drive1 == drive2 && r != 3)
       {
       // skip the drive letter in the second path
       pos = 2;
       }
-    else if (drive1 == 0 || path.length() != 2 || r != 1)
+    else if (extended && drive2 && r >= 2)
       {
-      // second path is absolute, so ignore first path
-      // unless the first path is X: and second path is
-      // an absolute path with no drive letter
-      path = "";
+      // move the drive letter from the second path to the first
+      pos = 2;
+      path = "\\\\\?\\";
+      path.append(second, 0, pos);
+      pos += (r >= 3 && IsSeparator(second[pos]));
       }
-    }
-
-  // if extended prefix is present, then all forward slashes must be
-  // converted into back slashes, and "." and ".." must be removed
-  char sep = this->Separator;
-  bool extended = false;
-  if (HasExtendedPrefix(path))
-    {
-    sep = '\\';
-    extended = true;
+    else if (drive1 && drive2 == 0 && r == 1)
+      {
+      // keep the drive letter, but use absolute path from second part
+      sep = second[0];
+      path.resize(4*extended + 2);
+      }
+    else if (extended && r >= 2 &&
+             IsSeparator(second[0]) && IsSeparator(second[1]))
+      {
+      // create an extended UNC path
+      pos = 2;
+      path = "\\\\\?\\UNC\\";
+      }
+    else
+      {
+      // ignore the first path completely
+      path.resize(0);
+      }
     }
 
   // append a separator before appending the second part
@@ -96,7 +120,7 @@ std::string vtkDICOMFilePath::Join(const std::string& second) const
       pos++;
       }
     size_t endpos = pos;
-    while (endpos != second.length() && !IsSeparator(second[pos]))
+    while (endpos != second.length() && !IsSeparator(second[endpos]))
       {
       endpos++;
       }
@@ -132,6 +156,12 @@ std::string vtkDICOMFilePath::Join(const std::string& second) const
               }
             path.resize(l);
             }
+          }
+        else if (n > 2 && second[pos + 1] == ':')
+          {
+          path.append(second, pos, 2);
+          path.push_back(sep);
+          path.append(second, pos+2, n-2);
           }
         else
           {
@@ -387,7 +417,8 @@ std::string vtkDICOMFilePath::GetRealPath() const
 
 #ifndef DICOM_DEPRECATE_WINXP
     // Add extended prefix if not present
-    if (strncmp("\\\\?\\", path, 4) == 0 ||
+    if (path[0] == '\0' ||
+        strncmp("\\\\?\\", path, 4) == 0 ||
         strncmp("\\\\.\\", path, 4) == 0)
       {
       result = path;
@@ -399,11 +430,6 @@ std::string vtkDICOMFilePath::GetRealPath() const
         {
         result = "\\\\?\\UNC\\";
         result.append(&path[2]);
-        }
-      else if (l >= 1 && path[0] == '\\')
-        {
-        result = "\\\\?\\";
-        result.append(&path[1]);
         }
       else
         {
@@ -444,15 +470,30 @@ std::string vtkDICOMFilePath::GetRealPath() const
 //----------------------------------------------------------------------------
 void vtkDICOMFilePath::PushBack(const std::string& second)
 {
-  if (RootLength(second) == 0)
+  if (this->Path.length() == 0 || RootLength(second) == 0)
     {
     this->Path = this->Join(second);
     }
 #ifdef _WIN32
-  else if (RootLength(this->Path) == 2 &&
-           DriveLetter(this->Path) == DriveLetter(second))
+  else if (this->Path.length() == 4 && HasExtendedPrefix(this->Path))
     {
     this->Path = this->Join(second);
+    }
+  else if (RootLength(this->Path) == 2 && DriveLetter(this->Path) &&
+           (DriveLetter(this->Path) == DriveLetter(second) ||
+            RootLength(second) == 1))
+    {
+    this->Path = this->Join(second);
+    }
+  // Check if the separator changed, make it sticky.
+  size_t l = this->Path.length();
+  for (size_t i = 0; i < l; i++)
+    {
+    if (IsSeparator(this->Path[i]))
+      {
+      this->Separator = this->Path[i];
+      break;
+      }
     }
 #endif
 }

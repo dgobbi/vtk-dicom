@@ -109,7 +109,94 @@ int main(int argc, char *argv[])
   }
 
 #ifdef _WIN32
-  {
+  { // test the various roots
+  TestAssert(vtkDICOMFilePath("\\").IsRoot());
+  TestAssert(vtkDICOMFilePath("/").IsRoot());
+  TestAssert(vtkDICOMFilePath("f:").IsRoot());
+  TestAssert(vtkDICOMFilePath("E:\\").IsRoot());
+  TestAssert(vtkDICOMFilePath("E:/").IsRoot());
+  TestAssert(vtkDICOMFilePath("\\\\server\\share").IsRoot());
+  TestAssert(vtkDICOMFilePath("//server/share").IsRoot());
+  }
+
+  { // test stripping of trailing slash from root
+  vtkDICOMFilePath path1("C:");
+  TestAssert(path1.AsString() == "C:");
+  vtkDICOMFilePath path2("C:\\");
+  TestAssert(path2.AsString() == "C:\\");
+  vtkDICOMFilePath path3("\\\\server\\share\\");
+  TestAssert(path3.AsString() == "\\\\server\\share");
+  }
+
+  { // test separator
+  vtkDICOMFilePath path1("");
+  path1.PushBack("hello");
+  path1.PushBack("there");
+  TestAssert(path1.AsString() == "hello/there");
+  vtkDICOMFilePath path2("\\");
+  path2.PushBack("hello");
+  path2.PushBack("there");
+  TestAssert(path2.AsString() == "\\hello\\there");
+  }
+
+  { // test special rules for device paths
+  vtkDICOMFilePath path1("E:\\hello");
+  TestAssert(path1.Join("\\") == "E:\\");
+  TestAssert(path1.Join("E:world") == "E:\\hello\\world");
+  TestAssert(path1.Join("D:world") == "D:world");
+  TestAssert(path1.Join("E:\\world") == "E:\\world");
+  vtkDICOMFilePath path2("E:");
+  TestAssert(path2.Join("\\world") == "E:\\world");
+  TestAssert(path2.Join("\\") == "E:\\");
+  path2.PushBack("D:");
+  TestAssert(path2.AsString() == "E:");
+  path2.PushBack("D:\\");
+  TestAssert(path2.AsString() == "E:");
+  path2.PushBack("D:\\hello");
+  TestAssert(path2.AsString() == "E:");
+  path2.PushBack("\\\\server\\share");
+  TestAssert(path2.AsString() == "E:");
+  path2.PushBack("\\hello");
+  TestAssert(path2.AsString() == "E:\\hello");
+  path2.PushBack("world");
+  TestAssert(path2.AsString() == "E:\\hello\\world");
+  }
+
+  { // test UNC path names
+  vtkDICOMFilePath path1("\\\\server\\share");
+  TestAssert(path1.Join("\\") == "\\");
+  TestAssert(path1.Join("\\dir") == "\\dir");
+  TestAssert(path1.Join("dir") == "\\\\server\\share\\dir");
+  vtkDICOMFilePath path2("//server/share");
+  TestAssert(path2.Join("/") == "/");
+  TestAssert(path2.Join("/dir") == "/dir");
+  TestAssert(path2.Join("dir") == "//server/share/dir");
+  vtkDICOMFilePath path3("//server/share/dir");
+  path3.PopBack();
+  TestAssert(path3.AsString() == "//server/share");
+  path3.PopBack();
+  TestAssert(path3.AsString() == "//server/share");
+  }
+
+  { // test the extended prefix
+  TestAssert(vtkDICOMFilePath("\\\\\?\\").IsRoot());
+  TestAssert(vtkDICOMFilePath("\\\\.\\").IsRoot());
+  TestAssert(vtkDICOMFilePath("\\\\\?\\D:").IsRoot());
+  TestAssert(vtkDICOMFilePath("\\\\\?\\D:\\").IsRoot());
+  TestAssert(vtkDICOMFilePath("\\\\\?\\UNC\\server\\share").IsRoot());
+  vtkDICOMFilePath path1("\\\\\?\\");
+  path1.PushBack("D:/");
+  TestAssert(path1.AsString() == "\\\\\?\\D:\\");
+  path1.PushBack(".");
+  TestAssert(path1.AsString() == "\\\\\?\\D:\\");
+  path1.PushBack("..");
+  TestAssert(path1.AsString() == "\\\\\?\\D:\\");
+  path1.PushBack("hello");
+  TestAssert(path1.AsString() == "\\\\\?\\D:\\hello");
+  path1.PushBack("..");
+  TestAssert(path1.AsString() == "\\\\\?\\D:\\");
+  path1.PushBack("hello/../world/./");
+  TestAssert(path1.AsString() == "\\\\\?\\D:\\world");
   }
 
 #endif
