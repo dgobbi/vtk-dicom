@@ -1000,8 +1000,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     if (!vtkDICOMUtilities::IsDICOMFile(fileName.c_str()))
       {
       int code = vtkDICOMFile::Access(fileName.c_str(), vtkDICOMFile::In);
-      if (code == vtkDICOMFile::FileNotFound ||
-          code == vtkDICOMFile::DirectoryNotFound)
+      if (code == vtkDICOMFile::FileNotFound)
         {
         vtkWarningMacro("File does not exist: " << fileName.c_str());
         }
@@ -1012,6 +1011,10 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       else if (code == vtkDICOMFile::FileIsDirectory)
         {
         vtkWarningMacro("File is a directory: " << fileName.c_str());
+        }
+      else if (code == vtkDICOMFile::ImpossiblePath)
+        {
+        vtkWarningMacro("Bad file path: " << fileName.c_str());
         }
       else if (code != 0)
         {
@@ -1965,8 +1968,7 @@ void vtkDICOMDirectory::Execute()
         {
         this->ProcessDirectory(fname.c_str(), this->ScanDepth, files);
         }
-      else if (code == vtkDICOMFile::FileNotFound ||
-               code == vtkDICOMFile::DirectoryNotFound)
+      else if (code == vtkDICOMFile::FileNotFound)
         {
         this->ErrorCode = vtkErrorCode::FileNotFoundError;
         vtkErrorMacro("File or directory not found: " << fname.c_str());
@@ -1976,6 +1978,12 @@ void vtkDICOMDirectory::Execute()
         {
         this->ErrorCode = vtkErrorCode::CannotOpenFileError;
         vtkErrorMacro("Permission denied: " << fname.c_str());
+        return;
+        }
+      else if (code == vtkDICOMFile::ImpossiblePath)
+        {
+        this->ErrorCode = vtkErrorCode::CannotOpenFileError;
+        vtkErrorMacro("Bad file path: " << fname.c_str());
         return;
         }
       else if (code != 0)
@@ -2009,8 +2017,7 @@ void vtkDICOMDirectory::Execute()
       {
       this->ProcessDirectory(this->DirectoryName, this->ScanDepth, files);
       }
-    else if (code == vtkDICOMFile::FileNotFound ||
-             code == vtkDICOMFile::DirectoryNotFound)
+    else if (code == vtkDICOMFile::FileNotFound)
       {
       this->ErrorCode = vtkErrorCode::FileNotFoundError;
       vtkErrorMacro("Directory not found: " << this->DirectoryName);
@@ -2020,6 +2027,12 @@ void vtkDICOMDirectory::Execute()
       {
       this->ErrorCode = vtkErrorCode::CannotOpenFileError;
       vtkErrorMacro("Permission denied: " << this->DirectoryName);
+      return;
+      }
+    else if (code == vtkDICOMFile::ImpossiblePath)
+      {
+      this->ErrorCode = vtkErrorCode::CannotOpenFileError;
+      vtkErrorMacro("Bad file path: " << this->DirectoryName);
       return;
       }
     else if (code != 0)

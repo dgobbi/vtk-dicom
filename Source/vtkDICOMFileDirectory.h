@@ -30,7 +30,7 @@ public:
     Bad,               // unspecified error
     AccessDenied,      // file permission error
     Reserved,
-    DirectoryNotFound, // one of the directories in the path doesn't exist
+    ImpossiblePath,    // part of the path doesn't exist or goes through a file
     FileNotFound,      // requested file (or directory) doesn't exist
     OutOfSpace         // disk full or quota exceeded
   };

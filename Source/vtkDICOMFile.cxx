@@ -67,7 +67,7 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
       }
     else if (errorCode == ENOTDIR)
       {
-      this->Error = DirectoryNotFound;
+      this->Error = (mode == Out ? ImpossiblePath : FileNotFound);
       }
     else if (errorCode == ENOENT)
       {
@@ -121,9 +121,9 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
           }
         }
       }
-    else if (errorCode == ERROR_DIRECTORY)
+    else if (errorCode == ERROR_PATH_NOT_FOUND)
       {
-      this->Error = DirectoryNotFound;
+      this->Error = (mode == Out ? ImpossiblePath : FileNotFound);
       }
     else if (errorCode == ERROR_FILE_NOT_FOUND)
       {
@@ -397,9 +397,9 @@ int vtkDICOMFile::Access(const char *filename, Mode mode)
         {
         errorCode = FileNotFound;
         }
-      else if (lastError == ERROR_DIRECTORY)
+      else if (lastError == ERROR_PATH_NOT_FOUND)
         {
-        errorCode = DirectoryNotFound;
+        errorCode = (mode == Out ? ImpossiblePath : FileNotFound);
         }
       else
         {
@@ -434,7 +434,7 @@ int vtkDICOMFile::Access(const char *filename, Mode mode)
       }
     else if (e == ENOTDIR)
       {
-      errorCode = DirectoryNotFound;
+      errorCode = (mode == Out ? ImpossiblePath : FileNotFound);
       }
     else
       {
@@ -465,13 +465,10 @@ int vtkDICOMFile::Remove(const char *filename)
         {
         errorCode = AccessDenied;
         }
-      else if (lastError == ERROR_FILE_NOT_FOUND)
+      else if (lastError == ERROR_FILE_NOT_FOUND ||
+               lastError == ERROR_PATH_NOT_FOUND)
         {
         errorCode = FileNotFound;
-        }
-      else if (lastError == ERROR_DIRECTORY)
-        {
-        errorCode = DirectoryNotFound;
         }
       else
         {
@@ -490,13 +487,9 @@ int vtkDICOMFile::Remove(const char *filename)
       {
       errorCode = AccessDenied;
       }
-    else if (e == ENOENT)
+    else if (e == ENOENT || e == ENOTDIR)
       {
       errorCode = FileNotFound;
-      }
-    else if (e == ENOTDIR)
-      {
-      errorCode = DirectoryNotFound;
       }
     else
       {

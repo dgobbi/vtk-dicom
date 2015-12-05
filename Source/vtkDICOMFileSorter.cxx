@@ -255,10 +255,13 @@ void vtkDICOMFileSorter::SortFiles(vtkStringArray *input)
         {
         errText = "No permission to read the file ";
         }
-      else if (code == vtkDICOMFile::DirectoryNotFound ||
-               code == vtkDICOMFile::FileNotFound)
+      else if (code == vtkDICOMFile::FileNotFound)
         {
         errText = "File not found ";
+        }
+      else if (code == vtkDICOMFile::ImpossiblePath)
+        {
+        errText = "Bad file path ";
         }
       vtkErrorMacro("SortFiles: " << errText << this->InternalFileName);
       continue;
@@ -365,8 +368,7 @@ void vtkDICOMFileSorter::Execute()
   if (this->InputFileName) // The input was a single file
     {
     int code = vtkDICOMFile::Access(this->InputFileName, vtkDICOMFile::In);
-    if (code == vtkDICOMFile::FileNotFound ||
-        code == vtkDICOMFile::DirectoryNotFound)
+    if (code == vtkDICOMFile::FileNotFound)
       {
       this->ErrorCode = vtkErrorCode::FileNotFoundError;
       vtkErrorMacro("File or directory not found: " << this->InputFileName);
@@ -382,6 +384,12 @@ void vtkDICOMFileSorter::Execute()
       {
       this->ErrorCode = vtkErrorCode::CannotOpenFileError;
       vtkErrorMacro("Permission denied: " << this->InputFileName);
+      return;
+      }
+    else if (code == vtkDICOMFile::ImpossiblePath)
+      {
+      this->ErrorCode = vtkErrorCode::CannotOpenFileError;
+      vtkErrorMacro("Bad file path: " << this->InputFileName);
       return;
       }
     else if (code != 0)

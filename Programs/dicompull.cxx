@@ -499,9 +499,8 @@ MAINMACRO(argc, argv)
                 case vtkDICOMFile::FileIsDirectory:
                   message = "This file is a directory";
                   break;
-                case vtkDICOMFile::FileNotFound:
-                case vtkDICOMFile::DirectoryNotFound:
-                  message = "File does not exist";
+                case vtkDICOMFile::ImpossiblePath:
+                  message = "Bad file path";
                   break;
                 }
               fprintf(stderr, "Error: %s: %s\n", message, srcname.c_str());
@@ -525,8 +524,8 @@ MAINMACRO(argc, argv)
                   case vtkDICOMFile::FileIsDirectory:
                     message = "This output is a directory";
                     break;
-                  case vtkDICOMFile::DirectoryNotFound:
-                    message = "Directory does not exist";
+                  case vtkDICOMFile::ImpossiblePath:
+                    message = "Bad file path";
                     break;
                   }
                 fprintf(stderr, "Error: %s: %s\n", message, fullname.c_str());

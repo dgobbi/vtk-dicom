@@ -105,10 +105,6 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
       {
       this->Error = FileNotFound;
       }
-    else if (code == ERROR_DIRECTORY)
-      {
-      this->Error = DirectoryNotFound;
-      }
     else if (code != ERROR_NO_MORE_FILES)
       {
       this->Error = Bad;
@@ -129,13 +125,9 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
       {
       this->Error = AccessDenied;
       }
-    else if (e == ENOENT)
+    else if (e == ENOENT || e == ENOTDIR)
       {
       this->Error = FileNotFound;
-      }
-    else if (e == ENOTDIR)
-      {
-      this->Error = DirectoryNotFound;
       }
     else
       {
@@ -288,13 +280,18 @@ int vtkDICOMFileDirectory::Create(const char *name)
     else if (!CreateDirectoryW(widename, NULL))
       {
       DWORD e = GetLastError();
-      if (e == ERROR_ALREADY_EXISTS)
+      if (e == ERROR_ACCESS_DENIED ||
+          e == ERROR_ALREADY_EXISTS)
         {
         result = AccessDenied;
         }
       else if (e == ERROR_PATH_NOT_FOUND)
         {
-        result = DirectoryNotFound;
+        result = ImpossiblePath;
+        }
+      else if (e == ERROR_DISK_FULL)
+        {
+        result = OutOfSpace;
         }
       else
         {
@@ -310,13 +307,14 @@ int vtkDICOMFileDirectory::Create(const char *name)
         {
         result = AccessDenied;
         }
-      else if (e == ENOENT)
+      else if (e == ENOENT || e == ENOTDIR)
         {
-        result = FileNotFound;
+        result = ImpossiblePath;
         }
-      else if (e == ENOTDIR)
+      else if (e == ENOSPC)
         {
-        result = DirectoryNotFound;
+        // some systems also have EDQUOT for "quota exceeded"
+        result = OutOfSpace;
         }
       else
         {
