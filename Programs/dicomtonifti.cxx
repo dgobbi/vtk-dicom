@@ -939,10 +939,9 @@ void dicomtonifti_convert_files(
     if (options->compress)
       {
       size_t os = strlen(outpath);
-      if (os > 2 &&
-          (outpath[os-3] != '.' ||
-           tolower(outpath[os-2]) != 'g' ||
-           tolower(outpath[os-1]) != 'z'))
+      if (os < 3 || outpath[os-3] != '.' ||
+          tolower(outpath[os-2]) != 'g' ||
+          tolower(outpath[os-1]) != 'z')
         {
         outfile.append(".gz");
         }
@@ -977,7 +976,11 @@ void dicomtonifti_convert_files(
         std::string outfile =
           dicomtonifti_make_filename(outpath, meta);
 
-        if (options->compress)
+        size_t os = outfile.length();
+        if (options->compress &&
+            (os < 3 || outfile[os-3] != '.' ||
+             tolower(outfile[os-2]) != 'g' ||
+             tolower(outfile[os-1]) != 'z'))
           {
           outfile.append(".gz");
           }
