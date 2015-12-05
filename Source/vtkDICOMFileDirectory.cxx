@@ -60,7 +60,7 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
     vtkDICOMFilePath::ConvertToWideChar(path.AsString().c_str());
   if (widename == 0)
     {
-    this->Error = Bad;
+    this->Error = UnknownError;
     }
   else
     {
@@ -107,7 +107,7 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
       }
     else if (code != ERROR_NO_MORE_FILES)
       {
-      this->Error = Bad;
+      this->Error = UnknownError;
       }
     if (h != INVALID_HANDLE_VALUE)
       {
@@ -131,7 +131,7 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
       }
     else
       {
-      this->Error = Bad;
+      this->Error = UnknownError;
       }
     }
   else
@@ -275,7 +275,7 @@ int vtkDICOMFileDirectory::Create(const char *name)
     wchar_t *widename = vtkDICOMFilePath::ConvertToWideChar(dirname);
     if (widename == 0)
       {
-      result = Bad;
+      result = UnknownError;
       }
     else if (!CreateDirectoryW(widename, NULL))
       {
@@ -295,7 +295,7 @@ int vtkDICOMFileDirectory::Create(const char *name)
         }
       else
         {
-        result = Bad;
+        result = UnknownError;
         }
       }
     delete [] widename;
@@ -318,7 +318,7 @@ int vtkDICOMFileDirectory::Create(const char *name)
         }
       else
         {
-        result = Bad;
+        result = UnknownError;
         }
       }
 #endif

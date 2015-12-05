@@ -80,7 +80,7 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
       }
     else
       {
-      this->Error = Bad;
+      this->Error = UnknownError;
       }
     }
 #elif defined(VTK_DICOM_WIN32_IO)
@@ -135,7 +135,7 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
       }
     else
       {
-      this->Error = Bad;
+      this->Error = UnknownError;
       }
     }
 
@@ -155,7 +155,7 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
     }
   if (this->Handle == 0)
     {
-    this->Error = Bad;
+    this->Error = UnknownError;
     }
 #endif
 }
@@ -178,7 +178,7 @@ void vtkDICOMFile::Close()
       }
     else if (errno != EINTR)
       {
-      this->Error = Bad;
+      this->Error = UnknownError;
       }
     this->Handle = 0;
     }
@@ -213,7 +213,7 @@ size_t vtkDICOMFile::Read(unsigned char *data, size_t len)
     }
   else if (n == -1)
     {
-    this->Error = Bad;
+    this->Error = UnknownError;
     n = 0;
     }
   return n;
@@ -227,7 +227,7 @@ size_t vtkDICOMFile::Read(unsigned char *data, size_t len)
     DWORD r = 0;
     if (ReadFile(this->Handle, &data[n], l, &r, NULL) == FALSE)
       {
-      this->Error = Bad;
+      this->Error = UnknownError;
       break;
       }
     else if (r == 0)
@@ -243,7 +243,8 @@ size_t vtkDICOMFile::Read(unsigned char *data, size_t len)
   if (n != len || len == 0)
     {
     this->Eof = (feof(static_cast<FILE *>(this->Handle)) != 0);
-    this->Error = (ferror(static_cast<FILE *>(this->Handle)) == 0 ? 0 : Bad);
+    this->Error = (ferror(static_cast<FILE *>(this->Handle)) == 0 ?
+                     0 : UnknownError);
     }
   return n;
 #endif
@@ -264,7 +265,7 @@ size_t vtkDICOMFile::Write(const unsigned char *data, size_t len)
     }
   if (n == -1)
     {
-    this->Error = Bad;
+    this->Error = UnknownError;
     n = 0;
     }
   return n;
@@ -285,7 +286,7 @@ size_t vtkDICOMFile::Write(const unsigned char *data, size_t len)
         }
       else
         {
-        this->Error = Bad;
+        this->Error = UnknownError;
         }
       break;
       }
@@ -296,7 +297,8 @@ size_t vtkDICOMFile::Write(const unsigned char *data, size_t len)
   size_t n = fwrite(data, 1, len, static_cast<FILE *>(this->Handle));
   if (n != len || len == 0)
     {
-    this->Error = (ferror(static_cast<FILE *>(this->Handle)) == 0 ? 0 : Bad);
+    this->Error = (ferror(static_cast<FILE *>(this->Handle)) == 0 ?
+                     0 : UnknownError);
     }
   return n;
 #endif
@@ -313,7 +315,7 @@ bool vtkDICOMFile::SetPosition(Size offset)
 #endif
   if (pos == -1)
     {
-    this->Error = Bad;
+    this->Error = UnknownError;
     return false;
     }
   return true;
@@ -323,7 +325,7 @@ bool vtkDICOMFile::SetPosition(Size offset)
   DWORD pos = SetFilePointer(this->Handle, lowerBits, &upperBits, FILE_BEGIN);
   if (pos == INVALID_SET_FILE_POINTER && GetLastError() != NO_ERROR)
     {
-    this->Error = Bad;
+    this->Error = UnknownError;
     return false;
     }
   return true;
@@ -339,7 +341,7 @@ vtkDICOMFile::Size vtkDICOMFile::GetSize()
   struct stat fs;
   if (fstat(this->Handle, &fs) != 0)
     {
-    this->Error = Bad;
+    this->Error = UnknownError;
     return static_cast<long long>(-1);
     }
   return fs.st_size;
@@ -348,7 +350,7 @@ vtkDICOMFile::Size vtkDICOMFile::GetSize()
   DWORD lowerBits = GetFileSize(this->Handle, &upperBits);
   if (lowerBits == INVALID_FILE_SIZE && GetLastError() != NO_ERROR)
     {
-    this->Error = Bad;
+    this->Error = UnknownError;
     return static_cast<long long>(-1);
     }
   return lowerBits | (static_cast<Size>(upperBits) << 32);
@@ -364,12 +366,12 @@ vtkDICOMFile::Size vtkDICOMFile::GetSize()
       }
     if (fsetpos(fp, &pos) != 0)
       {
-      this->Error = Bad;
+      this->Error = UnknownError;
       }
     }
   if (size == -1)
     {
-    this->Error = Bad;
+    this->Error = UnknownError;
     }
   return size;
 #endif
@@ -379,7 +381,7 @@ vtkDICOMFile::Size vtkDICOMFile::GetSize()
 int vtkDICOMFile::Access(const char *filename, Mode mode)
 {
 #ifdef _WIN32
-  int errorCode = Bad;
+  int errorCode = UnknownError;
   wchar_t *wideFilename = vtkDICOMFilePath::ConvertToWideChar(filename);
   if (wideFilename)
     {
@@ -403,7 +405,7 @@ int vtkDICOMFile::Access(const char *filename, Mode mode)
         }
       else
         {
-        errorCode = Bad;
+        errorCode = UnknownError;
         }
       }
     else if (mode == Out && (code & FILE_ATTRIBUTE_READONLY) != 0)
@@ -438,7 +440,7 @@ int vtkDICOMFile::Access(const char *filename, Mode mode)
       }
     else
       {
-      errorCode = Bad;
+      errorCode = UnknownError;
       }
     }
   else if (S_ISDIR(fs.st_mode))
@@ -472,7 +474,7 @@ int vtkDICOMFile::Remove(const char *filename)
         }
       else
         {
-        errorCode = Bad;
+        errorCode = UnknownError;
         }
       }
     delete [] wideFilename;
@@ -493,7 +495,7 @@ int vtkDICOMFile::Remove(const char *filename)
       }
     else
       {
-      errorCode = Bad;
+      errorCode = UnknownError;
       }
     }
   return errorCode;

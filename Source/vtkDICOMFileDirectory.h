@@ -27,7 +27,7 @@ public:
   enum Code
   {
     Good,              // no error
-    Bad,               // unspecified error
+    UnknownError,      // unspecified error
     AccessDenied,      // file permission error
     Reserved,
     ImpossiblePath,    // part of the path doesn't exist or goes through a file
