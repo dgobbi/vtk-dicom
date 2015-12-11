@@ -26,6 +26,7 @@
 class VTKDICOM_EXPORT vtkDICOMDictionary
 {
 public:
+  //! A struct to store a DICOM dictionary hash table.
   struct Dict
   {
     const char *Name;
@@ -38,6 +39,7 @@ public:
 
   struct DictHashEntry;
 
+  //@{
   //! Find the dictionary entry for the given tag.
   static vtkDICOMDictEntry FindDictEntry(const vtkDICOMTag tag) {
     return vtkDICOMDictionary::FindDictEntry(tag, 0); }
@@ -45,7 +47,9 @@ public:
   //! Find the dictionary for the given key.
   static vtkDICOMDictEntry FindDictEntry(const char *key) {
     return vtkDICOMDictionary::FindDictEntry(key, 0); }
+  //@}
 
+  //@{
   //! Include a private dictionary when searching for the tag.
   /*!
    *  This method requires that the creator of the private dictionary
@@ -66,7 +70,9 @@ public:
    */
   static vtkDICOMDictEntry FindDictEntry(
     const char *key, const char *privateDict);
+  //@}
 
+  //@{
   //! Add the hash table for a private dictionary.
   /*!
    *  The name should be the text that appears in the PrivateCreator
@@ -77,6 +83,7 @@ public:
 
   //! Remove a private dictionary.
   static void RemovePrivateDictionary(const char *name);
+  //@}
 
 private:
   friend class vtkDICOMDictionaryInitializer;

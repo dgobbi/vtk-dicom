@@ -76,6 +76,8 @@ private:
   };
 
 public:
+
+  //@{
   //! Construct a new value from the data that is provided.
   /*!
    *  The data will be copied into the value, with conversion if
@@ -102,7 +104,9 @@ public:
   vtkDICOMValue(vtkDICOMVR vr, const double *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMTag *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMItem *data, size_t count);
+  //@}
 
+  //@{
   //! Construct a string value with a specific character set.
   /*!
    *  This will set the character set that will be used to interpret
@@ -114,7 +118,9 @@ public:
                 const std::string& v);
   vtkDICOMValue(vtkDICOMVR vr, vtkDICOMCharacterSet cs,
                 const char *data, size_t l);
+  //@}
 
+  //@{
   //! Create an emtpy value.
   explicit vtkDICOMValue(vtkDICOMVR vr);
 
@@ -130,13 +136,17 @@ public:
 
   //! Construct from a sequence.
   vtkDICOMValue(const vtkDICOMSequence &v);
+  //@}
 
+  //@{
   //! Default constructor, constructs an invalid value.
   vtkDICOMValue() : V(0) {}
 
   //! Destructor releases the internal data array.
   ~vtkDICOMValue() { this->Clear(); }
+  //@}
 
+  //@{
   //! Clear the value, the result is an invalid value.
   void Clear() {
     if (this->V && --(this->V->ReferenceCount) == 0) {
@@ -145,7 +155,9 @@ public:
 
   //! Check whether this value is valid, i.e. contains data.
   bool IsValid() const { return (this->V != 0); }
+  //@}
 
+  //@{
   //! Get the VR, the representation of the data values.
   vtkDICOMVR GetVR() const { return (this->V ? this->V->VR : vtkDICOMVR()); }
 
@@ -183,7 +195,9 @@ public:
             + (static_cast<size_t>(this->V->Overflow) << 32)
 #endif
             : 0); }
+  //@}
 
+  //@{
   //! Copy "n" values into vb, starting at value "i".
   /*!
    *  Get one or more values, doing conversion from the stored type to
@@ -200,7 +214,9 @@ public:
   void GetValues(float *vb, size_t n, size_t i=0) const;
   void GetValues(double *vb, size_t n, size_t i=0) const;
   void GetValues(vtkDICOMTag *vb, size_t n, size_t i=0) const;
+  //@}
 
+  //@{
   //! Get one scalar, string, tag or item from the value.
   /*!
    *  Convert the i'th value to the desired type, if possible, and return
@@ -220,7 +236,9 @@ public:
   double GetDouble(size_t i) const;
   vtkDICOMTag GetTag(size_t i) const;
   const vtkDICOMItem& GetItem(size_t i) const;
+  //@}
 
+  //@{
   //! Get the value as a scalar, string, tag, or item.
   /*!
    *  The value is converted to the desired type, if possible, and returned.
@@ -240,7 +258,9 @@ public:
   double AsDouble() const;
   vtkDICOMTag AsTag() const;
   const vtkDICOMItem& AsItem() const;
+  //@}
 
+  //@{
   //! Get a pointer to the internal data array.
   /*!
    *  GetCharData will return a null-terminated string if VR is
@@ -266,7 +286,9 @@ public:
   const vtkDICOMTag *GetTagData() const;
   const vtkDICOMItem *GetSequenceData() const;
   const vtkDICOMValue *GetMultiplexData() const;
+  //@}
 
+  //@{
   //! Allocate space within a value object.
   /*!
    *  Allocate an array of the specified size (number of elements)
@@ -288,7 +310,9 @@ public:
   vtkDICOMTag *AllocateTagData(vtkDICOMVR vr, size_t vn);
   vtkDICOMItem *AllocateSequenceData(vtkDICOMVR vr, size_t vn);
   vtkDICOMValue *AllocateMultiplexData(vtkDICOMVR vr, size_t vn);
+  //@}
 
+  //@{
   //! Compute the number of backslash-separated string values.
   /*!
    *  After calling AllocateCharData and writing text into the allocated
@@ -305,7 +329,9 @@ public:
    *  the NumberOfValues will be vn, and the VL will be 0xffffffff.
    */
   unsigned char *ReallocateUnsignedCharData(size_t vn);
+  //@}
 
+  //@{
   //! Append value "i" to the supplied UTF8 string.
   /*
    *  String values will be converted from their native encoding
@@ -321,7 +347,9 @@ public:
    *  long, and might contain special (i.e. non-printable) characters.
    */
   void AppendValueToString(std::string &str, size_t i) const;
+  //@}
 
+  //@{
   //! Check if the value matches the specified find query value.
   /*!
    *  This method is used during "find" requests, according to the rules
@@ -353,7 +381,9 @@ public:
    *  then the match is true if at least one value matches.
    */
   bool Matches(double v) const;
+  //@}
 
+  //@{
   //! Override assignment operator for reference counting.
   vtkDICOMValue& operator=(const vtkDICOMValue& o) {
     if (this->V != o.V) {
@@ -365,10 +395,13 @@ public:
 
   //! Assign a value from a sequence object.
   vtkDICOMValue& operator=(const vtkDICOMSequence& o);
+  //@}
 
+  //@{
   //! Equality requires that all elements of the value are equal.
   bool operator==(const vtkDICOMValue& o) const;
   bool operator!=(const vtkDICOMValue& o) const { return !(*this == o); }
+  //@}
 
 private:
   //! Allocate an array of size vn for the specified vr

@@ -41,6 +41,7 @@ public:
   //! Print a summary of the contents of this object.
   void PrintSelf(ostream& os, vtkIndent indent);
 
+  //@{
   //! Get the number of instances (i.e. files).
   /*!
    *  We want to track the metadata from all of the files that
@@ -51,13 +52,17 @@ public:
    */
   int GetNumberOfInstances() { return this->NumberOfInstances; }
   void SetNumberOfInstances(int n);
+  //@}
 
+  //@{
   //! Remove all data elements.
   void Clear();
 
   //! Remove all data elements and initialize all members.
   void Initialize();
+  //@}
 
+  //@{
   //! Get the number of data elements that are present.
   int GetNumberOfDataElements() {
     return this->NumberOfDataElements; }
@@ -69,7 +74,9 @@ public:
   //! Get an end iterator for the list of data elements.
   vtkDICOMDataElementIterator End() {
     return &this->Tail; }
+  //@}
 
+  //@{
   //! Get the iterator for a specific data element.
   /*!
    *  If the element was not found, then End() will be returned.
@@ -77,13 +84,17 @@ public:
   vtkDICOMDataElementIterator Find(vtkDICOMTag tag) {
     vtkDICOMDataElement *e = this->FindDataElement(tag);
     return (e != 0 ? e : &this->Tail); }
+  //@}
 
+  //@{
   //! Check whether an attribute is present in the metadata.
   bool HasAttribute(vtkDICOMTag tag);
 
   //! Erase an attribute.
   void RemoveAttribute(vtkDICOMTag tag);
+  //@}
 
+  //@{
   //! Get an attribute value.
   /*!
    *  The tag will usually be specified in one of these two ways:
@@ -94,7 +105,9 @@ public:
    */
   const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag);
   const vtkDICOMValue &GetAttributeValue(const vtkDICOMTagPath &p);
+  //@}
 
+  //@{
   //! Get an attribute value for the specified file index.
   /*!
    *  If this meta data object is used to hold the meta data for
@@ -105,7 +118,9 @@ public:
    */
   const vtkDICOMValue &GetAttributeValue(int idx, vtkDICOMTag tag);
   const vtkDICOMValue &GetAttributeValue(int idx, const vtkDICOMTagPath &p);
+  //@}
 
+  //@{
   //! Get an attribute value for the specified file and frame index.
   /*!
    *  In order to get the file and frame index for a particular slice
@@ -120,7 +135,9 @@ public:
   const vtkDICOMValue &GetAttributeValue(int idx, int frame, vtkDICOMTag tag);
   const vtkDICOMValue &GetAttributeValue(
     int idx, int frame, const vtkDICOMTagPath &p);
+  //@}
 
+  //@{
   //! Get the file index for the given image slice and component.
   /*!
    *  This takes into account the way the files were sorted to create
@@ -131,7 +148,9 @@ public:
    */
   int GetFileIndex(int sliceIdx, int compIdx, int numComps);
   int GetFileIndex(int sliceIdx);
+  //@}
 
+  //@{
   //! Get the frame index for the given image slice and component.
   /*!
    *  This takes into account the way the frames were sorted to create
@@ -142,7 +161,9 @@ public:
    */
   int GetFrameIndex(int sliceIdx, int compIdx, int numComps);
   int GetFrameIndex(int sliceIdx);
+  //@}
 
+  //@{
   //! Set an attribute value for the image at file index "idx".
   /*!
    *  Except for the method that takes a vtkDICOMValue, these methods
@@ -157,12 +178,16 @@ public:
   void SetAttributeValue(int idx, vtkDICOMTag tag, const vtkDICOMValue& v);
   void SetAttributeValue(int idx, vtkDICOMTag tag, double v);
   void SetAttributeValue(int idx, vtkDICOMTag tag, const std::string& v);
+  //@}
 
+  //@{
   //! Set the same attribute value for all images.
   void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
   void SetAttributeValue(vtkDICOMTag tag, double v);
   void SetAttributeValue(vtkDICOMTag tag, const std::string& v);
+  //@}
 
+  //@{
   //! Set the attribute at the specified path.
   /*!
    *  The data element is inserted at the tail of the given path.  If the
@@ -176,12 +201,16 @@ public:
     int idx, const vtkDICOMTagPath& tag, double v);
   void SetAttributeValue(
     int idx, const vtkDICOMTagPath& tag, const std::string& v);
+  //@}
 
+  //@{
   //! Set the attribute value along this path for all images.
   void SetAttributeValue(const vtkDICOMTagPath& tag, const vtkDICOMValue& v);
   void SetAttributeValue(const vtkDICOMTagPath& tag, double v);
   void SetAttributeValue(const vtkDICOMTagPath& tag, const std::string& v);
+  //@}
 
+  //@{
   //! Resolve a private tag, or return (ffff,ffff) if not resolved.
   /*!
    *  Private data elements are mobile, which means that different data
@@ -204,7 +233,9 @@ public:
    */
   vtkDICOMTag ResolvePrivateTagForWriting(
     vtkDICOMTag ptag, const std::string& creator);
+  //@}
 
+  //@{
   //! Look up a tag in the DICOM dictionary.
   /*!
    *  Unlike the method in vtkDICOMDictionary, this method can identify
@@ -215,19 +246,27 @@ public:
 
   //! Use the dictionary to get the VR, return UN if not found.
   vtkDICOMVR FindDictVR(int idx, vtkDICOMTag tag);
+  //@}
 
+  //@{
   //! Create a value from text in a specific character set.
   vtkDICOMValue MakeValueWithSpecificCharacterSet(
     vtkDICOMVR vr, const std::string& v);
+  //@}
 
+  //@{
   //! Set the array to convert slice, component indices to file index.
   void SetFileIndexArray(vtkIntArray *fileArray);
   vtkIntArray *GetFileIndexArray() { return this->FileIndexArray; }
+  //@}
 
+  //@{
   //! Set the array to convert slice, component indices to frame index.
   void SetFrameIndexArray(vtkIntArray *frameArray);
   vtkIntArray *GetFrameIndexArray() { return this->FrameIndexArray; }
+  //@}
 
+  //@{
   //! Copy all the attributes from another MetaData object.
   /*!
    *  Copy attributes from the source meta data object into this one.
@@ -237,10 +276,13 @@ public:
    *  value for all instances.
    */
   void CopyAttributes(vtkDICOMMetaData *source);
+  //@}
 
+  //@{
   //! DataObject interface function.
   void ShallowCopy(vtkDataObject *source);
   void DeepCopy(vtkDataObject *source);
+  //@}
 
 protected:
   vtkDICOMMetaData();

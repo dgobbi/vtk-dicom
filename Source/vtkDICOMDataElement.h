@@ -29,16 +29,21 @@
 class VTKDICOM_EXPORT vtkDICOMDataElement
 {
 public:
+  //@{
   vtkDICOMDataElement() : Tag(), Value(), Next(0), Prev(0) {}
   vtkDICOMDataElement(const vtkDICOMTag& t, const vtkDICOMValue &v) :
     Tag(t), Value(v), Next(0), Prev(0) {}
+  //@}
 
+  //@{
   //! Get the tag for this data element.
   vtkDICOMTag GetTag() const { return this->Tag; }
 
   //! Get the VR for this data element.
   vtkDICOMVR GetVR() const { return this->Value.GetVR(); }
+  //@}
 
+  //@{
   //! Check whether this data element carries per-instance values.
   bool IsPerInstance() const { return (this->Value.GetMultiplexData() != 0); }
 
@@ -52,12 +57,15 @@ public:
   const vtkDICOMValue& GetValue(int i) const {
     const vtkDICOMValue *vptr = this->Value.GetMultiplexData();
     return (vptr == 0 ? this->Value : vptr[i]); }
+  //@}
 
+  //@{
   bool operator==(const vtkDICOMDataElement& o) const {
     return (this->Tag == o.Tag && this->Value == o.Value); }
 
   bool operator!=(const vtkDICOMDataElement& o) const {
     return (this->Tag != o.Tag || this->Value != o.Value); }
+  //@}
 
 private:
   vtkDICOMTag          Tag;
@@ -77,8 +85,11 @@ private:
 class VTKDICOM_EXPORT vtkDICOMDataElementIterator
 {
 public:
+  //@{
   vtkDICOMDataElementIterator() : Pointer(0) {}
+  //@}
 
+  //@{
   vtkDICOMDataElementIterator& operator++() {
     if (this->Pointer) { this->Pointer = this->Pointer->Next; }
     return *this; }
@@ -96,15 +107,20 @@ public:
     const vtkDICOMDataElement *ptr = this->Pointer;
     if (ptr) { this->Pointer = this->Pointer->Prev; }
     return vtkDICOMDataElementIterator(ptr); }
+  //@}
 
+  //@{
   const vtkDICOMDataElement *operator->() const { return this->Pointer; }
   const vtkDICOMDataElement& operator*() const { return *this->Pointer; }
+  //@}
 
+  //@{
   bool operator==(const vtkDICOMDataElementIterator& it) const {
     return (this->Pointer == it.Pointer); }
 
   bool operator!=(const vtkDICOMDataElementIterator& it) const {
     return (this->Pointer != it.Pointer); }
+  //@}
 
 private:
   vtkDICOMDataElementIterator(const vtkDICOMDataElement *ptr) {

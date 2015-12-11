@@ -41,6 +41,7 @@ public:
     PATIENT, STUDY, SERIES, IMAGE, FRAME
   };
 
+  //@{
   //! Set the input directory.
   /*!
    *  Set the input directory.  If it has a DICOMDIR file, then that
@@ -51,14 +52,18 @@ public:
    */
   void SetDirectoryName(const char *name);
   const char *GetDirectoryName() { return this->DirectoryName; }
+  //@}
 
+  //@{
   //! Set a list of filenames (or files and directories) to read.
   /*!
    *  This can be used as alternative to setting a single input directory.
    */
   void SetInputFileNames(vtkStringArray *sa);
   vtkStringArray *GetInputFileNames() { return this->InputFileNames; }
+  //@}
 
+  //@{
   //! Set a pattern to match for the filenames.
   /*!
    *  For example "*.dcm" will match files ending with ".dcm".  The two
@@ -66,7 +71,9 @@ public:
    */
   void SetFilePattern(const char *pattern);
   const char *GetFilePattern() { return this->FilePattern; }
+  //@}
 
+  //@{
   //! Set the scan depth to use when no DICOMDIR is found.
   /*!
    *  The default scan depth is 1, which scans only the given directory
@@ -75,10 +82,14 @@ public:
    */
   vtkSetMacro(ScanDepth, int);
   int GetScanDepth() { return this->ScanDepth; }
+  //@}
 
+  //@{
   //! Specify a find query.
   void SetFindQuery(const vtkDICOMItem& query);
+  //@}
 
+  //@{
   //! Specify the find level.
   /*!
    *  If this is Series, then the whole series will be found if a single
@@ -90,7 +101,9 @@ public:
   void SetFindLevelToImage() { this->SetFindLevel(IMAGE); }
   void SetFindLevelToSeries() { this->SetFindLevel(SERIES); }
   int GetFindLevel() { return this->FindLevel; }
+  //@}
 
+  //@{
   //! Update the information about the files.
   /*!
    * This method causes the directory to be read.  It must be called before
@@ -98,7 +111,9 @@ public:
    */
   virtual void Update() { this->Update(0); }
   virtual void Update(int);
+  //@}
 
+  //@{
   //! Get the total number of series that were found.
   int GetNumberOfSeries();
 
@@ -127,7 +142,9 @@ public:
 
   //! Get the studies for this patient.
   vtkIntArray *GetStudiesForPatient(int patient);
+  //@}
 
+  //@{
   //! Get the first series in a particular study.
   int GetFirstSeriesForStudy(int study);
 
@@ -145,13 +162,19 @@ public:
    *  and InstanceNumber for each file.
    */
   vtkDICOMMetaData *GetMetaDataForSeries(int i);
+  //@}
 
+  //@{
   //! Get the file set ID.  This will be NULL unless a DICOMDIR was found.
   const char *GetFileSetID() { return this->FileSetID; }
+  //@}
 
+  //@{
   //! Get the filename associated with the error code.
   const char *GetInternalFileName() { return this->InternalFileName; }
+  //@}
 
+  //@{
   //! If this is On, files with no pixel data will be skipped.
   /*!
    *  This is On by default.  Some files, such as dicom directory files,
@@ -160,11 +183,14 @@ public:
   vtkSetMacro(RequirePixelData, int);
   vtkBooleanMacro(RequirePixelData, int);
   int GetRequirePixelData() { return this->RequirePixelData; }
+  //@}
 
+  //@{
   //! If On (the default), symbolic links will not be followed.
   vtkSetMacro(FollowSymlinks, int);
   vtkBooleanMacro(FollowSymlinks, int);
   int GetFollowSymlinks() { return this->FollowSymlinks; }
+  //@}
 
 protected:
   vtkDICOMDirectory();

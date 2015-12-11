@@ -60,6 +60,7 @@ public:
     Unknown    = 255  // signifies unknown character set
   };
 
+  //@{
   //! Construct an object that describes the default (ASCII) character set.
   vtkDICOMCharacterSet() : Key(0) {}
 
@@ -80,7 +81,9 @@ public:
     this->Key = KeyFromString(name.data(), name.length()); }
   vtkDICOMCharacterSet(const char *name, size_t nl) {
     this->Key = KeyFromString(name, nl); }
+  //@}
 
+  //@{
   //! Generate a SpecificCharacterSet value.
   /*!
    *  The result is given as a set of backslash-separated values if more
@@ -96,7 +99,9 @@ public:
 
   //! Get the numerical code for this character set object.
   unsigned char GetKey() const { return this->Key; }
+  //@}
 
+  //@{
   //! Convert text from this encoding to UTF-8.
   /*!
    *  This will convert text to UTF-8, which is generally a lossless
@@ -127,7 +132,9 @@ public:
    */
   bool IsBiDirectional() const {
     return (this->Key == ISO_IR_127 || this->Key == ISO_IR_138); }
+  //@}
 
+  //@{
   //! Count the number of backslashes in an encoded string.
   /*!
    *  The backslash byte is sometimes present as half of a multibyte
@@ -142,13 +149,16 @@ public:
    *  either at the beginning of the string or just after a backslash.
    */
   size_t NextBackslash(const char *text, const char *end) const;
+  //@}
 
+  //@{
   bool operator==(vtkDICOMCharacterSet b) const { return (this->Key == b.Key); }
   bool operator!=(vtkDICOMCharacterSet b) const { return (this->Key != b.Key); }
   bool operator<=(vtkDICOMCharacterSet a) const { return (this->Key <= a.Key); }
   bool operator>=(vtkDICOMCharacterSet a) const { return (this->Key >= a.Key); }
   bool operator<(vtkDICOMCharacterSet a) const { return (this->Key < a.Key); }
   bool operator>(vtkDICOMCharacterSet a) const { return (this->Key > a.Key); }
+  //@}
 
 private:
   static unsigned char KeyFromString(const char *name, size_t nl);

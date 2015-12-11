@@ -35,10 +35,11 @@ class vtkDICOMGenerator;
 class VTKDICOM_EXPORT vtkDICOMWriter : public vtkImageWriter
 {
 public:
+  vtkTypeMacro(vtkDICOMWriter, vtkImageWriter);
+
   // Description:
   // Static method for construction.
   static vtkDICOMWriter *New();
-  vtkTypeMacro(vtkDICOMWriter, vtkImageWriter);
 
   // Description:
   // Print information about this object.

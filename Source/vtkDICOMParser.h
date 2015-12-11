@@ -44,18 +44,25 @@ public:
   //! Print a summary of the contents of this object.
   void PrintSelf(ostream& os, vtkIndent indent);
 
+  //@{
   //! Set the file name.
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
+  //@}
 
+  //@{
   //! Set the metadata object for storing the data elements.
   void SetMetaData(vtkDICOMMetaData *);
   vtkDICOMMetaData *GetMetaData() { return this->MetaData; }
+  //@}
 
+  //@{
   //! Set the instance index to use when storing metadata.
   vtkSetMacro(Index, int);
   int GetIndex() { return this->Index; }
+  //@}
 
+  //@{
   //! Set a query. Only matching data will be retrieved.
   /*!
    *  This can be used to scan a file for data that matches a given
@@ -64,7 +71,9 @@ public:
    */
   void SetQuery(vtkDICOMMetaData *query);
   vtkDICOMMetaData *GetQuery() { return this->Query; }
+  //@}
 
+  //@{
   //! Set a query, using an item instead of vtkDICOMMetaData.
   /*!
    *  This can be used to scan a file for data that matches a given
@@ -73,14 +82,18 @@ public:
    *  empty item.
    */
   void SetQueryItem(const vtkDICOMItem& query);
+  //@}
 
+  //@{
   //! Set specific metadata groups to read (obsolete).
   /*!
    *  This method is obsolete, the SetQuery() method should be used instead.
    */
   void SetGroups(vtkUnsignedShortArray *groups);
   vtkUnsignedShortArray *GetGroups() { return this->Groups; }
+  //@}
 
+  //@{
   //! This is true only if the file matched the query.
   bool GetQueryMatched() { return this->QueryMatched; }
 
@@ -89,7 +102,9 @@ public:
 
   //! Get the VL for the PixelData, will be 0xffffffff if compressed.
   unsigned int GetPixelDataVL() { return this->PixelDataVL; }
+  //@}
 
+  //@{
   //! Get the byte offset to the end of the metadata.
   /*!
    *  After the metadata has been read, the file offset
@@ -100,6 +115,7 @@ public:
   //! Get the total file length (only valid after Update).
   vtkTypeInt64 GetFileSize() { return this->FileSize; }
 
+  //@{
   //! Set the buffer size, the default is 8192 (8k).
   /*!
    *  A larger buffer size results in fewer IO calls.  The
@@ -107,12 +123,15 @@ public:
    */
   void SetBufferSize(int size);
   int GetBufferSize() { return this->BufferSize; }
+  //@}
 
+  //@{
   //! Read the metadata from the file.
   virtual void Update();
 
   //! Get the error code.
   unsigned long GetErrorCode() { return this->ErrorCode; }
+  //@}
 
 protected:
   vtkDICOMParser();

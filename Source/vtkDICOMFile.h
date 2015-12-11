@@ -54,6 +54,7 @@ public:
   //! Typedef for a file size.
   typedef unsigned long long Size;
 
+  //@{
   //! Construct the file object.
   /*!
    *  The Mode can be "In" or "Out" (read or write).
@@ -62,7 +63,9 @@ public:
 
   //! Destruct the object and close the file.
   ~vtkDICOMFile();
+  //@}
 
+  //@{
   //! Close a file.
   void Close();
 
@@ -94,7 +97,9 @@ public:
 
   //! Return an error indicator (zero if no error).
   int GetError() { return this->Error; }
+  //@}
 
+  //@{
   //! Test the specified file for accessibility (static method).
   /*!
    *  The mode should be "In" or "Out" to indicate how you intend to use
@@ -119,6 +124,7 @@ public:
    *  accessible, then it returns false.
    */
   static bool SameFile(const char *file1, const char *file2);
+  //@}
 
 private:
 #ifdef VTK_DICOM_POSIX_IO

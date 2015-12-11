@@ -432,12 +432,15 @@ public:
     M8192 = 0xA000
   };
 
+  //@{
   //! Construct an empty, invalid VM.
   vtkDICOMVM() : Key(0) {}
 
   //! Construct a VM from a VM enum constant.
   vtkDICOMVM(EnumType vm) : Key(static_cast<unsigned short>(vm)) {}
+  //@}
 
+  //@{
   //! Check validity of this VM.
   bool IsValid() const { return (this->Key != 0); }
 
@@ -455,13 +458,16 @@ public:
   int GetStep() const {
     if ((this->Key & 0x8000) != 0) { return 1; }
     else { return ((this->Key & 0x80) == 0 ? 1 : ((-this->Key) & 0xff)); } }
+  //@}
 
+  //@{
   bool operator==(vtkDICOMVM b) const { return (this->Key == b.Key); }
   bool operator!=(vtkDICOMVM b) const { return (this->Key != b.Key); }
   bool operator<=(vtkDICOMVM a) const { return (this->Key <= a.Key); }
   bool operator>=(vtkDICOMVM a) const { return (this->Key >= a.Key); }
   bool operator<(vtkDICOMVM a) const { return (this->Key < a.Key); }
   bool operator>(vtkDICOMVM a) const { return (this->Key > a.Key); }
+  //@}
 
 private:
   unsigned short Key;

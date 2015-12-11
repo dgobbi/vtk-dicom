@@ -23,6 +23,7 @@
 class VTKDICOM_EXPORT vtkDICOMFilePath
 {
 public:
+  //@{
   //! Create a new path from the given string.
   /*!
    *  Trailing slashes will be removed (unless the trailing slash is
@@ -32,10 +33,14 @@ public:
 
   //! Destructor.
   ~vtkDICOMFilePath() {}
+  //@}
 
+  //@{
   //! Get the path as a string.
   const std::string& AsString() const { return this->Path; }
+  //@}
 
+  //@{
   //! Check if the path is empty.
   bool IsEmpty() const { return (this->Path.length() == 0); }
 
@@ -47,10 +52,14 @@ public:
 
   //! Check whether the path is a symbolic link.
   bool IsSymlink() const;
+  //@}
 
+  //@{
   //! Return the path joined with the given extra component.
   std::string Join(const std::string& second) const;
+  //@}
 
+  //@{
   //! Get the final component of the path.
   std::string GetBack() const;
 
@@ -59,7 +68,9 @@ public:
 
   //! Add a new component (or components) to the path.
   void PushBack(const std::string& path);
+  //@}
 
+  //@{
   //! Get the file extension (the final dot and everything after).
   std::string GetExtension() const;
 
@@ -68,7 +79,9 @@ public:
 
   //! Add a new file extension to the current file path.
   void PushExtension(const std::string& path);
+  //@}
 
+  //@{
   //! Get the full absolute path (or empty string if file doesn't exist).
   /*!
    *  This will go to the file system to find the true path to a file,
@@ -78,6 +91,7 @@ public:
    *  that extended path processing should be used.
    */
   std::string GetRealPath() const;
+  //@}
 
 private:
   friend class vtkDICOMFile;

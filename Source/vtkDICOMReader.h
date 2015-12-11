@@ -35,10 +35,11 @@ class vtkDICOMSliceSorter;
 class VTKDICOM_EXPORT vtkDICOMReader : public vtkImageReader2
 {
 public:
+  vtkTypeMacro(vtkDICOMReader, vtkImageReader2);
+
   // Description:
   // Static method for construction.
   static vtkDICOMReader *New();
-  vtkTypeMacro(vtkDICOMReader, vtkImageReader2);
 
   // Description:
   // Print information about this object.

@@ -27,6 +27,7 @@
 class VTKDICOM_EXPORT vtkDICOMTagPath
 {
 public:
+  //@{
   //! Construct a tag path with an empty head and tail.
   vtkDICOMTagPath() : Head(), Index(0), Tail(), Index2(0), Tail2() {}
 
@@ -42,7 +43,9 @@ public:
   //! Construct a tag path from just a single tag.
   explicit vtkDICOMTagPath(vtkDICOMTag tag) :
     Head(tag), Index(0), Tail(), Index2(0), Tail2() {}
+  //@}
 
+  //@{
   //! If there is no tail, then Head is the end of the path.
   bool HasTail() const {
     return (this->Tail > vtkDICOMTag()); }
@@ -58,6 +61,7 @@ public:
   //! Get the remainder of the path.
   vtkDICOMTagPath GetTail() const {
     return vtkDICOMTagPath(this->Tail, this->Index2, this->Tail2); }
+  //@}
 
 private:
   vtkDICOMTag Head;

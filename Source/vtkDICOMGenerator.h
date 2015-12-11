@@ -47,6 +47,7 @@ public:
   //! Print information about this object.
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
+  //@{
   //! Generate an instance of one of the supported classes.
   /*!
    *  This is the primary interface method of this class.  Given the
@@ -54,14 +55,18 @@ public:
    *  attributes of the supplied vtkDICOMMetaData object.
    */
   virtual bool GenerateInstance(vtkInformation *) = 0;
+  //@}
 
+  //@{
   //! Get the generated meta data.
   /*!
    *  Every time GenerateInstance() is called, it will generate a
    *  new meta data object that can be retrieved with this method.
    */
   vtkDICOMMetaData *GetMetaData();
+  //@}
 
+  //@{
   //! Create a multi-frame object (default: Off).
   /*!
    *  If this is on, the one multi-frame data set will be created.  If
@@ -71,7 +76,9 @@ public:
   vtkSetMacro(MultiFrame, int);
   vtkBooleanMacro(MultiFrame, int);
   vtkGetMacro(MultiFrame, int);
+  //@}
 
+  //@{
   //! Write scalar components as the time dimension (default: Off).
   /*!
    *  If this is on, then each time slot is stored in a different scalar
@@ -81,7 +88,9 @@ public:
   vtkSetMacro(TimeAsVector, int);
   vtkBooleanMacro(TimeAsVector, int);
   vtkGetMacro(TimeAsVector, int);
+  //@}
 
+  //@{
   //! Set the time dimension to use in the DICOM file (or zero if none).
   /*!
    *  The number of components of the input data must be divisible by the
@@ -94,7 +103,9 @@ public:
   vtkGetMacro(TimeDimension, int);
   vtkSetMacro(TimeSpacing, double);
   vtkGetMacro(TimeSpacing, double);
+  //@}
 
+  //@{
   //! Set the rescaling parameters, for example for CT.
   /*!
    *  CT, PET, and some other modalities require rescaling parameters
@@ -105,7 +116,9 @@ public:
   vtkGetMacro(RescaleIntercept, double);
   vtkSetMacro(RescaleSlope, double);
   vtkGetMacro(RescaleSlope, double);
+  //@}
 
+  //@{
   //! Set the matrix that places the image in DICOM patient coords.
   /*!
    *  The 3x3 portion of the matrix must be orthonormal, and the
@@ -113,7 +126,9 @@ public:
    */
   void SetPatientMatrix(vtkMatrix4x4 *);
   vtkMatrix4x4 *GetPatientMatrix() { return this->PatientMatrix; }
+  //@}
 
+  //@{
   //! Let the generator know how the image is arranged in memory.
   /*!
    *  The generator needs to know how to interpret the geometry of
@@ -125,7 +140,9 @@ public:
    */
   vtkSetMacro(OriginAtBottom, int);
   vtkGetMacro(OriginAtBottom, int);
+  //@}
 
+  //@{
   //! Let the generator know how to order the slices.
   /*!
    *  By default, the generator will try to keep the same slice order
@@ -135,7 +152,9 @@ public:
    */
   vtkSetMacro(ReverseSliceOrder, int);
   vtkGetMacro(ReverseSliceOrder, int);
+  //@}
 
+  //@{
   //! Set some meta data for the constructor to use as a source.
   /*!
    *  The supplied meta data can provide some general properties
@@ -145,7 +164,9 @@ public:
    */
   void SetSourceMetaData(vtkDICOMMetaData *);
   vtkDICOMMetaData *GetSourceMetaData();
+  //@}
 
+  //@{
   //! Get an array that maps file and frame to slice.
   /*!
    *  Once the generator has created the metadata, this array lets the
@@ -163,11 +184,9 @@ public:
    *  frame as the second index.
    */
   vtkIntArray *GetComponentIndexArray() { return this->ComponentIndexArray; }
+  //@}
 
 protected:
-  vtkDICOMGenerator();
-  ~vtkDICOMGenerator();
-
   //! Enumerated values for restricting pixel values.
   enum {
     RepresentationUnsigned = 1u,
@@ -181,11 +200,20 @@ protected:
     BitsStored32 = (1u << 31)
   };
 
+  //@{
+  //! Protected constructor method.
+  vtkDICOMGenerator();
+  ~vtkDICOMGenerator();
+  //@}
+
+  //@{
   //! Used by subclasses to place restrictions on the pixel type.
   void SetPixelRestrictions(
     unsigned int pixelRepresentation, unsigned int bitsStored,
     int colorComponents);
+  //@}
 
+  //@{
   //! Generate the DICOM SOP Common Module.
   virtual bool GenerateSOPCommonModule(
     vtkDICOMMetaData *meta, const char *SOPClass);
@@ -243,7 +271,9 @@ protected:
 
   //! Generate the DICOM VOI LUT Module.
   virtual bool GenerateVOILUTModule(vtkDICOMMetaData *source);
+  //@}
 
+  //@{
   //! Copy required attributes into the meta data.
   /*!
    *  Required attributes must be set, so if no value is available,
@@ -259,13 +289,16 @@ protected:
    */
   virtual bool CopyOptionalAttributes(
     const DC::EnumType *tags, vtkDICOMMetaData *source);
+  //@}
 
   //! Compute aspect ratio from spacing.
   static void ComputeAspectRatio(const double spacing[2], int aspect[2]);
 
+  //@{
   //! Compute the matrix, needed for Position and Orientation.
   void ComputeAdjustedMatrix(
     double matrix[16], double origin[3], double spacing[3]);
+  //@}
 
   //! Compute the position and orientation for a slice.
   /*!
@@ -277,6 +310,7 @@ protected:
     const double origin[3], const double matrix[16],
     double position[3], double orientation[6]);
 
+  //@{
   //! Compute the dimensions.
   /*!
    *  This will compute the dimensions of the data, given the information
@@ -293,9 +327,14 @@ protected:
    */
   virtual void ComputePixelValueRange(
     vtkInformation *info, int seriesRange[2]);
+  //@}
 
+  //@{
+  //! Attempt to match each slice to a source meta data slice.
   virtual void MatchInstances(vtkDICOMMetaData *source);
+  //@}
 
+  //@{
   //! Initialize the meta data and compute the slice index array.
   /*!
    *  This must be done before any of the meta data has been generated.
@@ -303,6 +342,7 @@ protected:
    *  and the slices that make up the image data.
    */
   virtual void InitializeMetaData(vtkInformation *info);
+  //@}
 
   //! The generated meta data
   vtkDICOMMetaData *MetaData;

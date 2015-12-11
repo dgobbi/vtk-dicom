@@ -31,6 +31,7 @@ class vtkDICOMTagPath;
 class VTKDICOM_EXPORT vtkDICOMSequence
 {
 public:
+  //@{
   //! Construct a growable sequence with no items.
   vtkDICOMSequence() {
     this->V.AppendInit<vtkDICOMItem>(vtkDICOMVR::SQ); }
@@ -39,16 +40,21 @@ public:
   explicit vtkDICOMSequence(unsigned int n) {
     this->V.AllocateSequenceData(vtkDICOMVR::SQ, n); }
 
+  //@{
   //! Clear a sequence, remove its contents and make it empty.
   void Clear() {
     this->V.AppendInit<vtkDICOMItem>(vtkDICOMVR::SQ); }
+  //@}
 
+  //@{
   //! Get a value from an item in the sequence.
   const vtkDICOMValue &GetAttributeValue(
     size_t i, vtkDICOMTag tag) const;
   const vtkDICOMValue &GetAttributeValue(
     size_t i, const vtkDICOMTagPath &p) const;
+  //@}
 
+  //@{
   //! Add an item to the sequence.
   /*!
    *  After calling this method, GetNumberOfItems() will report
@@ -62,7 +68,9 @@ public:
   //! Get the number of items in the sequence.
   size_t GetNumberOfItems() const {
     return this->V.GetNumberOfValues(); }
+  //@}
 
+  //@{
   //! Set an item in the sequence.
   /*!
    *  This method can only be used if space as been allocated within
@@ -77,11 +85,9 @@ public:
   //! Get a pointer to the items in the sequence.
   const vtkDICOMItem *GetSequenceData() const {
     return this->V.GetSequenceData(); }
+  //@}
 
-  //! Check that the sequence was constructed from a valid value.
-  bool IsValid() const {
-    return this->V.IsValid(); }
-
+  //@{
   //! Copy constructor.
   vtkDICOMSequence(const vtkDICOMSequence& o) : V(o.V) {}
 
@@ -89,6 +95,12 @@ public:
   vtkDICOMSequence(const vtkDICOMValue& o) : V(o) {
     if (o.GetVR() != vtkDICOMVR::SQ) { this->V.Clear(); } }
 
+  //! Check that the sequence was constructed from a valid value.
+  bool IsValid() const {
+    return this->V.IsValid(); }
+  //@}
+
+  //@{
   //! Assignment operator.
   vtkDICOMSequence& operator=(const vtkDICOMSequence& o) {
     this->V = o.V; return *this; }
@@ -97,6 +109,7 @@ public:
   vtkDICOMSequence& operator=(const vtkDICOMValue& o) {
     if (o.GetVR() == vtkDICOMVR::SQ) { this->V = o; }
     else { this->V.Clear(); } return *this; }
+  //@}
 
 private:
   friend class vtkDICOMValue;

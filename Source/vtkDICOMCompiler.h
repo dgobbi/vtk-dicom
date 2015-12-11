@@ -40,10 +40,13 @@ public:
   //! Print a summary of the contents of this object.
   void PrintSelf(ostream& os, vtkIndent indent);
 
+  //@{
   //! Set the file name.
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
+  //@}
 
+  //@{
   //! Set the SOP Instance UID.
   /*!
    *  If you do not supply a UID, a random UID will be generated.
@@ -51,7 +54,9 @@ public:
    */
   vtkSetStringMacro(SOPInstanceUID);
   vtkGetStringMacro(SOPInstanceUID);
+  //@}
 
+  //@{
   //! Set the Series Instance UID.
   /*!
    *  If you do not supply a UID, a random UID will be generated.
@@ -59,7 +64,9 @@ public:
    */
   vtkSetStringMacro(SeriesInstanceUID);
   vtkGetStringMacro(SeriesInstanceUID);
+  //@}
 
+  //@{
   //! Set the Study Instance UID.
   /*!
    *  If you do not supply a UID, a random UID will be generated.
@@ -67,21 +74,27 @@ public:
    */
   vtkSetStringMacro(StudyInstanceUID);
   vtkGetStringMacro(StudyInstanceUID);
+  //@}
 
+  //@{
   //! Set the Implementation Class UID.
   /*!
    *  If you do not supply a UID, a default one will be used.
    */
   vtkSetStringMacro(ImplementationClassUID);
   vtkGetStringMacro(ImplementationClassUID);
+  //@}
 
+  //@{
   //! Set the Implementation Version Name.
   /*!
    *  If you do not supply a name, a default one will be used.
    */
   vtkSetStringMacro(ImplementationVersionName);
   vtkGetStringMacro(ImplementationVersionName);
+  //@}
 
+  //@{
   //! Set the Source Application Entity Title.
   /*!
    *  Provide a short name (16 chars max) for the network node that
@@ -90,7 +103,9 @@ public:
    */
   vtkSetStringMacro(SourceApplicationEntityTitle);
   vtkGetStringMacro(SourceApplicationEntityTitle);
+  //@}
 
+  //@{
   //! Set the Transfer Syntax UID.
   /*!
    *  The transfer syntax should be left at its default value of
@@ -101,15 +116,21 @@ public:
    */
   vtkSetStringMacro(TransferSyntaxUID);
   vtkGetStringMacro(TransferSyntaxUID);
+  //@}
 
+  //@{
   //! Set the metadata object to write to the file.
   void SetMetaData(vtkDICOMMetaData *);
   vtkDICOMMetaData *GetMetaData() { return this->MetaData; }
+  //@}
 
+  //@{
   //! Set the instance index to use when accessing vtkDICOMMataData.
   vtkSetMacro(Index, int);
   int GetIndex() { return this->Index; }
+  //@}
 
+  //@{
   //! Set the buffer size, the default is 8192 (8k).
   /*!
    *  A larger buffer size results in fewer IO calls.  The
@@ -117,7 +138,9 @@ public:
    */
   void SetBufferSize(int size);
   int GetBufferSize() { return this->BufferSize; }
+  //@}
 
+  //@{
   //! Write the metadata to the file.
   virtual void WriteHeader();
 
@@ -144,7 +167,9 @@ public:
 
   //! Get the IO error code.
   unsigned long GetErrorCode() { return this->ErrorCode; }
+  //@}
 
+  //@{
   //! Generate a series UID and instance UIDs for the meta data.
   /*!
    *  This will be called automatically whenever you provide a
@@ -153,7 +178,9 @@ public:
    *  SetSOPInstanceUID() and SetSeriesUID().
    */
   void GenerateSeriesUIDs();
+  //@}
 
+  //@{
   //! Use the original PixelData VR when writing pixel data element.
   /*!
    *  This is really only useful when cloning data sets.  It ensures
@@ -162,6 +189,7 @@ public:
   vtkSetMacro(KeepOriginalPixelDataVR, bool);
   vtkBooleanMacro(KeepOriginalPixelDataVR, bool);
   vtkGetMacro(KeepOriginalPixelDataVR, bool);
+  //@}
 
 protected:
   vtkDICOMCompiler();

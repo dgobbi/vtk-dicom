@@ -20,15 +20,19 @@
 class VTKDICOM_EXPORT vtkDICOMSorter : public vtkDICOMFileSorter
 {
 public:
+  //@{
   vtkTypeMacro(vtkDICOMSorter,vtkDICOMFileSorter);
   void PrintSelf(ostream& os, vtkIndent indent);
   static vtkDICOMSorter *New();
+  //@}
 
+  //@{
   //! Get the first series in a particular study.
   int GetFirstSeriesInStudy(int study);
 
   //! Get the number of series in a particular study.
   int GetNumberOfSeriesInStudy(int study);
+  //@}
 
 protected:
   vtkDICOMSorter();

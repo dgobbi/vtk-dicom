@@ -32,12 +32,15 @@ class vtkDICOMValue;
 class VTKDICOM_EXPORT vtkDICOMMetaDataAdapter
 {
 public:
+  //@{
   //! Construct an adapter for the given meta data object.
   vtkDICOMMetaDataAdapter(vtkDICOMMetaData *meta);
 
   //! Destructor release the reference to the meta data.
   ~vtkDICOMMetaDataAdapter();
+  //@}
 
+  //@{
   //! Get the number of instances (i.e. files).
   /*!
    *  For an enhanced multi-frame data set, this will return the
@@ -45,7 +48,9 @@ public:
    *  the number of instances in the series.
    */
   int GetNumberOfInstances() const { return this->NumberOfInstances; }
+  //@}
 
+  //@{
   //! Check whether an attribute is present in the metadata.
   /*!
    *  For an enhanced multi-frame data set, this will search the Shared
@@ -76,10 +81,13 @@ public:
    *  data set attributes.
    */
   vtkDICOMTag ResolvePrivateTag(vtkDICOMTag ptag, const std::string& creator);
+  //@}
 
+  //@{
   //! Make the adapter look like a pointer (for convenience).
   const vtkDICOMMetaDataAdapter* operator->() const { return this; }
   vtkDICOMMetaDataAdapter* operator->() { return this; }
+  //@}
 
 private:
 

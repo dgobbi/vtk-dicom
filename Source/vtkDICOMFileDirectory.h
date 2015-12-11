@@ -35,6 +35,7 @@ public:
     OutOfSpace         // disk full or quota exceeded
   };
 
+  //@{
   //! Construct the object from a directory name.
   /*!
    *  This causes the directory to be read.  Use GetError() to check whether
@@ -44,22 +45,28 @@ public:
 
   //! Destruct the object.
   ~vtkDICOMFileDirectory();
+  //@}
 
+  //@{
+  //! Return an error indicator (zero if no error).
+  int GetError() { return this->Error; }
+  //@}
+
+  //@{
   //! Get the number of files and subdirectories in the directory.
   int GetNumberOfFiles() { return this->NumberOfFiles; }
 
   //! Get the name of the ith file or subdirectory.
   const char *GetFile(int i);
 
-  //! Return an error indicator (zero if no error).
-  int GetError() { return this->Error; }
-
   //! Check if the list entry is a directory.
   bool IsDirectory(int i);
 
   //! Check if the list entry is a symbolic link.
   bool IsSymlink(int i);
+  //@}
 
+  //@{
   //! Create a new directory with default permissions.
   /*!
    *  This will create any intermediate directories, as well.  The return
@@ -67,6 +74,7 @@ public:
    *  returned.
    */
   static int Create(const char *dirname);
+  //@}
 
 private:
   //! Add a directory entry.

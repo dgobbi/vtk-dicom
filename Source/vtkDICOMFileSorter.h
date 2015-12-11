@@ -36,6 +36,7 @@ public:
   void PrintSelf(ostream& os, vtkIndent indent);
   static vtkDICOMFileSorter *New();
 
+  //@{
   //! Set one file from the desired series.
   /*!
    *  When Update() is called, all files that belong to the
@@ -44,7 +45,9 @@ public:
    */
   void SetInputFileName(const char *name);
   const char *GetInputFileName() { return this->InputFileName; }
+  //@}
 
+  //@{
   //! Set a list of file names to group and sort.
   /*!
    *  This method is mutually exclusive with SetInputFileName().
@@ -53,13 +56,17 @@ public:
    */
   void SetInputFileNames(vtkStringArray *input);
   vtkStringArray *GetInputFileNames() { return this->InputFileNames; }
+  //@}
 
+  //@{
   //! Update the information about the files.
   /*!
    * This method must be called before any of the Get methods.
    */
   virtual void Update();
+  //@}
 
+  //@{
   //! Get the total number of series that were found.
   int GetNumberOfSeries();
 
@@ -71,19 +78,25 @@ public:
 
   //! Get the last series (inclusive) for a particular study.
   int GetLastSeriesForStudy(int study);
+  //@}
 
+  //@{
   //! Get the full list of sorted filenames.
   vtkStringArray *GetOutputFileNames() { return this->OutputFileNames; }
 
   //! Get the file names for a specific series.
   vtkStringArray *GetFileNamesForSeries(int i);
+  //@}
 
+  //@{
   //! Get the error code.
   unsigned long GetErrorCode() { return this->ErrorCode; }
 
   //! Get the filename associated with the error code.
   const char *GetInternalFileName() { return this->InternalFileName; }
+  //@}
 
+  //@{
   //! If this is On, files with no pixel data will be skipped.
   /*!
    *  This is On by default.  Some files, such as dicom directory files,
@@ -92,6 +105,7 @@ public:
   vtkSetMacro(RequirePixelData, int);
   vtkBooleanMacro(RequirePixelData, int);
   int GetRequirePixelData() { return this->RequirePixelData; }
+  //@}
 
 protected:
   vtkDICOMFileSorter();

@@ -34,10 +34,11 @@ class vtkDICOMPerFilePalette;
 class VTKDICOM_EXPORT vtkDICOMAlgorithm : public vtkThreadedImageAlgorithm
 {
 public:
+  vtkTypeMacro(vtkDICOMAlgorithm, vtkThreadedImageAlgorithm);
+
   // Description:
   // Static method for construction.
   static vtkDICOMAlgorithm *New();
-  vtkTypeMacro(vtkDICOMAlgorithm, vtkThreadedImageAlgorithm);
 
   // Description:
   // Print information about this object.

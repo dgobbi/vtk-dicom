@@ -33,8 +33,6 @@ class vtkDICOMPerFilePalette;
 class VTKDICOM_EXPORT vtkDICOMApplyPalette : public vtkDICOMAlgorithm
 {
 public:
-  // Description:
-  // Static method for construction.
   static vtkDICOMApplyPalette *New();
   vtkTypeMacro(vtkDICOMApplyPalette, vtkDICOMAlgorithm);
 
