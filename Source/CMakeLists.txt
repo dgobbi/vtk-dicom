@@ -124,6 +124,9 @@ if(Module_vtkDICOM) # Building as a VTK remote module
   vtk_module_library(vtkDICOM ${LIB_SRCS} ${LIB_HDRS})
   target_link_libraries(${LIB_NAME}
     LINK_PRIVATE ${GDCM_LIBS} ${DCMTK_LIBS})
+  if(USE_DCMTK AND DCMTK_charls_LIBRARY)
+    target_link_libraries(${LIB_NAME} LINK_PRIVATE ${DCMTK_charls_LIBRARY})
+  endif()
 
 else() # else MODULE_vtkDICOM
 
@@ -177,6 +180,9 @@ endif()
 target_link_libraries(${LIB_NAME} LINK_PUBLIC ${VTK_LIBS})
 target_link_libraries(${LIB_NAME} LINK_PRIVATE
   ${KWSYS_LIBS} ${ZLIB_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS})
+if(USE_DCMTK AND DCMTK_charls_LIBRARY)
+  target_link_libraries(${LIB_NAME} LINK_PRIVATE ${DCMTK_charls_LIBRARY})
+endif()
 
 # Wrappers
 if(BUILD_PYTHON_WRAPPERS AND NOT Module_vtkDICOM)
