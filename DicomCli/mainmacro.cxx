@@ -19,7 +19,6 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#include <io.h>
 #endif
 
 // A struct to arguments converted from UTF-16 to UTF-8.
@@ -131,7 +130,7 @@ bool dicomcli_expandargs(
   int argc, wchar_t *argv[],
   int *argc_p, char ***argv_p)
 {
-  struct _wfinddata64_t data;
+  WIN32_FIND_DATAW data;
 
   for (int i = 0; i < argc; i++)
     {
@@ -157,15 +156,15 @@ bool dicomcli_expandargs(
       {
       wchar_t *temp = 0;
       size_t tempsize = 0;
-      intptr_t hFile = _wfindfirst64(argv[i], &data);
-      if (hFile != static_cast<intptr_t>(-1))
+      HANDLE hFile = FindFirstFileW(argv[i], &data);
+      if (hFile != INVALID_HANDLE_VALUE)
         {
         do
           {
           if (dp == argv[i])
             {
             // Path does not contain a directory.
-            dicomcli_arguments.Push(data.name);
+            dicomcli_arguments.Push(data.cFileName);
             }
           else
             {
@@ -173,7 +172,7 @@ bool dicomcli_expandargs(
             cp = argv[i];
             size_t l = dp - cp;
             size_t k = 0;
-            wchar_t *ep = data.name;
+            wchar_t *ep = data.cFileName;
             while (ep[k] != 0) { k++; }
             if (l + k + 1 > tempsize)
               {
@@ -187,8 +186,8 @@ bool dicomcli_expandargs(
             dicomcli_arguments.Push(temp);
             }
           }
-        while (_wfindnext64(hFile, &data) != -1);
-        _findclose(hFile);
+        while (FindNextFileW(hFile, &data));
+        FindClose(hFile);
         }
       else
         {
