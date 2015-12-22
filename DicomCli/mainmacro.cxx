@@ -161,7 +161,19 @@ bool dicomcli_expandargs(
         {
         do
           {
-          if (dp == argv[i])
+          if (data.cFileName[0] == '.' &&
+              (data.cFileName[1] == 0 ||
+               (data.cFileName[1] == '.' && data.cFileName[2] == 0)))
+            {
+            // The found file was '.' or '..'
+            continue;
+            }
+          else if (data.cFileName[0] == '.' && dp[0] != '.')
+            {
+            // The found file began with '.' but the pattern file did not.
+            continue;
+            }
+          else if (dp == argv[i])
             {
             // Path does not contain a directory.
             dicomcli_arguments.Push(data.cFileName);
