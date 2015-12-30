@@ -179,7 +179,7 @@ if("${VTK_MAJOR_VERSION}" GREATER 5)
 endif()
 
 # Wrappers
-if(BUILD_PYTHON_WRAPPERS AND NOT Module_vtkDICOM)
+if(BUILD_PYTHON_WRAPPERS)
   set(vtk-module ${LIB_NAME})
   set(XY) # Get python version, e.g. 27 for python 2.7
   if(vtkPython_LIBRARIES)
@@ -245,7 +245,7 @@ if(BUILD_PYTHON_WRAPPERS AND NOT Module_vtkDICOM)
   target_link_libraries(${MODULE_PYTHON_NAME} ${LIB_PYTHON_NAME})
 endif()
 
-if(BUILD_JAVA_WRAPPERS AND NOT Module_vtkDICOM)
+if(BUILD_JAVA_WRAPPERS)
   set(vtk-module ${LIB_NAME})
   set(VTK_WRAP_JAVA3_INIT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
   set(VTK_JAVA_HOME ${CMAKE_CURRENT_BINARY_DIR}/java/vtk)
