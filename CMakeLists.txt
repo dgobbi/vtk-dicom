@@ -1,12 +1,8 @@
+# for CMake 3, add VERSION X.Y.Z to set the version here
 project(DICOM)
 
 # CMake version requirements
 cmake_minimum_required(VERSION 2.8.7)
-
-# Use LINK_INTERFACE_LIBRARIES instead of INTERFACE_LINK_LIBRARIES
-#if(POLICY CMP0022)
-#  cmake_policy(SET CMP0022 OLD)
-#endif()
 
 # When CMake 3.0.0 is required, remove this block (see CMP0042).
 if(NOT DEFINED CMAKE_MACOSX_RPATH)
@@ -23,9 +19,15 @@ include(CTest)
 # Project version
 set(DICOM_MAJOR_VERSION 0)
 set(DICOM_MINOR_VERSION 7)
-set(DICOM_BUILD_VERSION 2)
+set(DICOM_PATCH_VERSION 2)
 set(DICOM_SHORT_VERSION "${DICOM_MAJOR_VERSION}.${DICOM_MINOR_VERSION}")
-set(DICOM_VERSION "${DICOM_SHORT_VERSION}.${DICOM_BUILD_VERSION}")
+set(DICOM_VERSION "${DICOM_SHORT_VERSION}.${DICOM_PATCH_VERSION}")
+
+# Generic project version variables (forwards compatibility with CMake 3)
+set(PROJECT_MAJOR_VERSION ${DICOM_MAJOR_VERSION})
+set(PROJECT_MINOR_VERSION ${DICOM_MINOR_VERSION})
+set(PROJECT_PATCH_VERSION ${DICOM_PATCH_VERSION})
+set(PROJECT_VERSION ${DICOM_VERSION})
 
 # Include directories
 set(DICOM_INCLUDE_DIRS

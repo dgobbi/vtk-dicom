@@ -848,7 +848,7 @@ void vtkDICOMUtilities::SetImplementationClassUID(const char *uid)
 
 char vtkDICOMUtilities::ImplementationVersionName[17] =
   VTK_DICOM_VERSION_CREATOR("VTK_DICOM",
-    DICOM_MAJOR_VERSION, DICOM_MINOR_VERSION, DICOM_BUILD_VERSION);
+    DICOM_MAJOR_VERSION, DICOM_MINOR_VERSION, DICOM_PATCH_VERSION);
 
 const char *vtkDICOMUtilities::GetImplementationVersionName()
 {
