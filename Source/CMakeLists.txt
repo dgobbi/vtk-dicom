@@ -3,9 +3,9 @@ set(DICOM_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
 set(DICOM_BUILD_TESTING ${BUILD_TESTING})
 set(DICOM_USE_GDCM ${USE_GDCM})
 set(DICOM_USE_DCMTK ${USE_DCMTK})
-configure_file(${DICOM_SOURCE_DIR}/CMake/vtkDICOMConfig.h.in
+configure_file(${DICOM_CMAKE_DIR}/vtkDICOMConfig.h.in
   "${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMConfig.h" @ONLY)
-configure_file(${DICOM_SOURCE_DIR}/CMake/vtkDICOMBuild.h.in
+configure_file(${DICOM_CMAKE_DIR}/vtkDICOMBuild.h.in
   "${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMBuild.h" @ONLY)
 
 # Include directories
@@ -127,7 +127,7 @@ if(Module_vtkDICOM) # Building as a VTK remote module
 
 else() # else MODULE_vtkDICOM
 
-configure_file(${DICOM_SOURCE_DIR}/CMake/vtkDICOMModule.h.in
+configure_file(${DICOM_CMAKE_DIR}/vtkDICOMModule.h.in
   "${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMModule.h" COPYONLY)
 
 # Automatically find the header for each cxx file
@@ -170,7 +170,7 @@ if("${VTK_MAJOR_VERSION}" GREATER 5)
     set(vtk-module ${LIB_NAME})
     # _LINK_DEPENDS is a variable suffix from the VTK 6 module macros
     set(${vtk-module}_LINK_DEPENDS ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS})
-    include(${DICOM_SOURCE_DIR}/CMake/vtkWrapHierarchy.cmake)
+    include(vtkWrapHierarchy)
     vtk_wrap_hierarchy(${MODULE_HIERARCHY_NAME} ${CMAKE_CURRENT_BINARY_DIR}
       "${LIB_SRCS}")
     set(KIT_HIERARCHY_FILE ${CMAKE_CURRENT_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.txt)
@@ -210,7 +210,7 @@ if(BUILD_PYTHON_WRAPPERS)
   endif()
   # Tell vtkWrapPython to locate the python libraries for us.
   set(VTK_WRAP_PYTHON_FIND_LIBS ON)
-  include(${VTK_CMAKE_DIR}/vtkWrapPython.cmake)
+  include(vtkWrapPython)
   vtk_wrap_python3(${MODULE_PYTHON_NAME} LIB_PYTHON_SRCS "${LIB_SRCS}")
   add_library(${LIB_PYTHON_NAME} ${LIB_PYTHON_SRCS} ${LIB_PYTHON_EXTRA_SRCS}
               ${LIB_HIERARCHY_STAMP})
@@ -263,7 +263,7 @@ if(BUILD_JAVA_WRAPPERS)
   else()
     include_directories("${JAVA_INCLUDE_PATH}" "${JAVA_INCLUDE_PATH2}")
   endif()
-  include(${VTK_CMAKE_DIR}/vtkWrapJava.cmake)
+  include(vtkWrapJava)
   vtk_wrap_java3(${LIB_JAVA_NAME} LIB_JAVA_SRCS "${LIB_SRCS}")
   add_library(${LIB_JAVA_NAME} SHARED ${LIB_JAVA_SRCS} ${LIB_JAVA_EXTRA_SRCS}
               ${LIB_HIERARCHY_STAMP})

@@ -14,7 +14,8 @@ if(NOT DEFINED CMAKE_MACOSX_RPATH)
 endif()
 
 # Allow custom cmake overrides
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
+set(DICOM_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
+set(CMAKE_MODULE_PATH ${DICOM_CMAKE_DIR} ${CMAKE_MODULE_PATH})
 
 # Use ctest for dashboard submissions
 include(CTest)
