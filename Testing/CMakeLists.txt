@@ -1,9 +1,6 @@
 include_directories(${DICOM_INCLUDE_DIRS})
 
 set(BASE_LIBS vtkDICOM ${VTK_LIBS})
-if(USE_DCMTK AND DCMTK_charls_LIBRARY)
- set(BASE_LIBS ${BASE_LIBS} ${DCMTK_charls_LIBRARY})
-endif()
 
 add_executable(TestDICOMDictionary TestDICOMDictionary.cxx)
 target_link_libraries(TestDICOMDictionary ${BASE_LIBS})
