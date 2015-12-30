@@ -142,23 +142,6 @@ foreach(arg ${LIB_SRCS})
   endif()
 endforeach()
 
-# Create the hierarchy file
-if("${VTK_MAJOR_VERSION}" GREATER 5)
-  if(BUILD_PYTHON_WRAPPERS OR BUILD_JAVA_WRAPPERS)
-    set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
-    set(MODULE_HIERARCHY_NAME ${LIB_NAME}Hierarchy)
-    # The VTK 6 wrapping macros require vtk-module to be set
-    set(vtk-module ${LIB_NAME})
-    # _LINK_DEPENDS is a variable suffix from the VTK 6 module macros
-    set(${vtk-module}_LINK_DEPENDS ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS})
-    include(${DICOM_SOURCE_DIR}/CMake/vtkWrapHierarchy.cmake)
-    vtk_wrap_hierarchy(${MODULE_HIERARCHY_NAME} ${CMAKE_CURRENT_BINARY_DIR}
-      "${LIB_SRCS}")
-    set(KIT_HIERARCHY_FILE ${CMAKE_CURRENT_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.txt)
-    set(LIB_HIERARCHY_STAMP ${CMAKE_CURRENT_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.stamp)
-  endif()
-endif()
-
 # Set the library name suffix for VTK 6 libraries
 set(LIB_NAME_SUFFIX "-${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
 if(DEFINED VTK_CUSTOM_LIBRARY_SUFFIX)
@@ -166,7 +149,7 @@ if(DEFINED VTK_CUSTOM_LIBRARY_SUFFIX)
 endif()
 
 # Create the library
-add_library(${LIB_NAME} ${LIB_SRCS} ${LIB_HIERARCHY_STAMP})
+add_library(${LIB_NAME} ${LIB_SRCS})
 if("${VTK_MAJOR_VERSION}" GREATER 5)
   set_target_properties(${LIB_NAME} PROPERTIES
     OUTPUT_NAME ${LIB_NAME}${LIB_NAME_SUFFIX})
@@ -182,6 +165,23 @@ target_link_libraries(${LIB_NAME} LINK_PRIVATE
   ${KWSYS_LIBS} ${ZLIB_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS})
 if(USE_DCMTK AND DCMTK_charls_LIBRARY)
   target_link_libraries(${LIB_NAME} LINK_PRIVATE ${DCMTK_charls_LIBRARY})
+endif()
+
+# Create the hierarchy file
+if("${VTK_MAJOR_VERSION}" GREATER 5)
+  if(BUILD_PYTHON_WRAPPERS OR BUILD_JAVA_WRAPPERS)
+    set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
+    set(MODULE_HIERARCHY_NAME ${LIB_NAME}Hierarchy)
+    # The VTK 6 wrapping macros require vtk-module to be set
+    set(vtk-module ${LIB_NAME})
+    # _LINK_DEPENDS is a variable suffix from the VTK 6 module macros
+    set(${vtk-module}_LINK_DEPENDS ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS})
+    include(${DICOM_SOURCE_DIR}/CMake/vtkWrapHierarchy.cmake)
+    vtk_wrap_hierarchy(${MODULE_HIERARCHY_NAME} ${CMAKE_CURRENT_BINARY_DIR}
+      "${LIB_SRCS}")
+    set(KIT_HIERARCHY_FILE ${CMAKE_CURRENT_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.txt)
+    set(LIB_HIERARCHY_STAMP ${CMAKE_CURRENT_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.stamp)
+  endif()
 endif()
 
 # Wrappers
@@ -218,7 +218,8 @@ if(BUILD_PYTHON_WRAPPERS AND NOT Module_vtkDICOM)
   set(VTK_WRAP_PYTHON_FIND_LIBS ON)
   include(${VTK_CMAKE_DIR}/vtkWrapPython.cmake)
   vtk_wrap_python3(${MODULE_PYTHON_NAME} LIB_PYTHON_SRCS "${LIB_SRCS}")
-  add_library(${LIB_PYTHON_NAME} ${LIB_PYTHON_SRCS} ${LIB_PYTHON_EXTRA_SRCS})
+  add_library(${LIB_PYTHON_NAME} ${LIB_PYTHON_SRCS} ${LIB_PYTHON_EXTRA_SRCS}
+              ${LIB_HIERARCHY_STAMP})
   if(NOT (CMAKE_VERSION VERSION_LESS 2.8))
     set_target_properties(${LIB_PYTHON_NAME} PROPERTIES
       POSITION_INDEPENDENT_CODE ON)
@@ -274,7 +275,8 @@ if(BUILD_JAVA_WRAPPERS AND NOT Module_vtkDICOM)
   endif()
   include(${VTK_CMAKE_DIR}/vtkWrapJava.cmake)
   vtk_wrap_java3(${LIB_JAVA_NAME} LIB_JAVA_SRCS "${LIB_SRCS}")
-  add_library(${LIB_JAVA_NAME} SHARED ${LIB_JAVA_SRCS} ${LIB_JAVA_EXTRA_SRCS})
+  add_library(${LIB_JAVA_NAME} SHARED ${LIB_JAVA_SRCS} ${LIB_JAVA_EXTRA_SRCS}
+              ${LIB_HIERARCHY_STAMP})
   if(APPLE)
     set_target_properties(${LIB_JAVA_NAME} PROPERTIES SUFFIX ".jnilib")
   endif()
