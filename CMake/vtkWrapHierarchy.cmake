@@ -11,7 +11,8 @@ macro(VTK_WRAP_HIERARCHY module_name OUTPUT_DIR SOURCES)
   endif()
 
   # collect the common wrapper-tool arguments
-  if(NOT CMAKE_VERSION VERSION_LESS 3.1 AND NOT VTK_ENABLE_KITS)
+  if(NOT CMAKE_VERSION VERSION_LESS 3.1 AND
+     NOT VTK_VERSION VERSION_LESS 7.1)
     # write wrapper-tool arguments to a file
     set(_args_file ${module_name}Hierarchy.$<CONFIGURATION>.args)
     file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_args_file} CONTENT "
