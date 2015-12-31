@@ -167,13 +167,10 @@ if("${VTK_MAJOR_VERSION}" GREATER 5)
   if(BUILD_PYTHON_WRAPPERS OR BUILD_JAVA_WRAPPERS)
     set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
     set(MODULE_HIERARCHY_NAME ${LIB_NAME}Hierarchy)
-    # The VTK 6 wrapping macros require vtk-module to be set
-    set(vtk-module ${LIB_NAME})
     # _LINK_DEPENDS is a variable suffix from the VTK 6 module macros
-    set(${vtk-module}_LINK_DEPENDS ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS})
+    set(${LIB_NAME}_LINK_DEPENDS ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS})
     include(vtkWrapHierarchy)
-    vtk_wrap_hierarchy(${MODULE_HIERARCHY_NAME} ${CMAKE_CURRENT_BINARY_DIR}
-      "${LIB_SRCS}")
+    vtk_wrap_hierarchy(${LIB_NAME} ${CMAKE_CURRENT_BINARY_DIR} "${LIB_SRCS}")
     set(KIT_HIERARCHY_FILE ${CMAKE_CURRENT_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.txt)
     set(LIB_HIERARCHY_STAMP ${CMAKE_CURRENT_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.stamp)
   endif()
@@ -181,7 +178,6 @@ endif()
 
 # Wrappers
 if(BUILD_PYTHON_WRAPPERS)
-  set(vtk-module ${LIB_NAME})
   set(XY) # Get python version, e.g. 27 for python 2.7
   if(vtkPython_LIBRARIES)
     list(GET vtkPython_LIBRARIES 0 TMP_LIB_NAME)
@@ -247,7 +243,6 @@ if(BUILD_PYTHON_WRAPPERS)
 endif()
 
 if(BUILD_JAVA_WRAPPERS)
-  set(vtk-module ${LIB_NAME})
   set(VTK_WRAP_JAVA3_INIT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
   set(VTK_JAVA_HOME ${CMAKE_CURRENT_BINARY_DIR}/java/vtk)
   set(VTK_JAVA_MANIFEST ${CMAKE_CURRENT_BINARY_DIR}/java/manifest.txt)
