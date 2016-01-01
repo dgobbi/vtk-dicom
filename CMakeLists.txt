@@ -73,6 +73,13 @@ else() # We are being built as a stand-alone package
     unset(BUILD_PYTHON_WRAPPERS CACHE)
   endif()
 
+  # Wrap Tcl option
+  if(VTK_WRAP_TCL)
+    option(BUILD_TCL_WRAPPERS "Build tcl wrappers" ON)
+  else()
+    unset(BUILD_TCL_WRAPPERS CACHE)
+  endif()
+
   # Wrap Java option
   if(VTK_WRAP_JAVA)
     option(BUILD_JAVA_WRAPPERS "Build java wrappers" OFF)
@@ -250,6 +257,12 @@ if(NOT Module_vtkDICOM)
   # For the python wrappers
   if(BUILD_PYTHON_WRAPPERS)
     set(DICOM_PYTHON_LIBRARIES vtkDICOMPythonD)
+  endif()
+
+  # For the tcl wrappers
+  if(BUILD_TCL_WRAPPERS)
+    find_package(TCL REQUIRED)
+    set(DICOM_TCL_LIBRARIES vtkDICOMTCL)
   endif()
 
   # For the java wrappers

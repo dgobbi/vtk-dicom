@@ -1,0 +1,10 @@
+package ifneeded @MODULE_TCL_NAME@ @VTK_VERSION_MAJOR@.@VTK_VERSION_MINOR@ {
+  set libPrefix ""
+  if {$tcl_platform(platform) == "unix"} {
+    set libPrefix "lib"
+  }
+  set libExt [info sharedlibextension]
+  set libPath {@CMAKE_LIBRARY_OUTPUT_DIRECTORY@}
+  load [file join ${libPath} ${libPrefix}@LIB_TCL_OUTPUT_NAME@${libExt}]
+  package provide @MODULE_TCL_NAME@ @VTK_VERSION_MAJOR@.@VTK_VERSION_MINOR@
+}
