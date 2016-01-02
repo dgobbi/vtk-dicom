@@ -72,6 +72,22 @@ if(BUILD_PYTHON_WRAPPERS)
   endif()
 endif()
 
+if(BUILD_TCL_WRAPPERS)
+  if(NOT VTK_TCL_EXE AND (NOT UNIX OR DEFINED ENV{DISPLAY}))
+    get_target_property(WRAP_TCL_PATH vtkWrapTcl LOCATION_<CONFIG>)
+    get_filename_component(VTK_EXE_DIR ${WRAP_TCL_PATH} PATH)
+    find_program(VTK_TCL_EXE vtk "${VTK_EXE_DIR}")
+  endif()
+  if(NOT VTK_TCL_EXE)
+    # fall back to using tclsh
+    set(VTK_TCL_EXE ${TCL_TCLSH})
+  endif()
+  add_test(TestDICOMTcl "${TCL_TCLSH}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/TestDICOMTcl.tcl")
+  set_tests_properties(TestDICOMTcl PROPERTIES ENVIRONMENT
+    "TCLLIBPATH={${CMAKE_LIBRARY_OUTPUT_DIRECTORY}} {${VTK_DIR}/Wrapping/Tcl}")
+endif()
+
 if(BUILD_JAVA_WRAPPERS)
   set(_sep ":")
   if(WIN32)
