@@ -4,7 +4,7 @@ package ifneeded @MODULE_TCL_NAME@ @VTK_VERSION_MAJOR@.@VTK_VERSION_MINOR@ {
     set libPrefix "lib"
   }
   set libExt [info sharedlibextension]
-  set libPath {@CMAKE_LIBRARY_OUTPUT_DIRECTORY@}
+  set libPath {@MODULE_TCL_PATH@}
   set configs "@CMAKE_CONFIGURATION_TYPES@"
   set dirs ${libPath}
   if { "${configs}" != "" } {
