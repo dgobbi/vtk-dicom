@@ -914,7 +914,7 @@ bool vtkDICOMUtilities::PatternMatches(
       }
     else if (*cp == '?')
       {
-      // the '?' matches a whole codepoint, not just one character
+      // the '?' matches a whole codepoint, not just one byte
       cp++;
       if (static_cast<signed char>(*dp++) < 0)
         {
