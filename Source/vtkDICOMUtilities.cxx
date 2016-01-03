@@ -930,7 +930,8 @@ bool vtkDICOMUtilities::PatternMatches(
       cp++;
       if (static_cast<signed char>(*dp++) < 0)
         {
-        while (cp != ep && dp != fp && (*cp & 0xC0) == 0x80)
+        while (cp != ep && dp != fp &&
+               ((*cp & 0xC0) == 0x80 || (*dp & 0xC0) == 0x80))
           {
           if (*dp != *cp)
             {
