@@ -59,6 +59,7 @@ $<$<BOOL:$<TARGET_PROPERTY:${module_name},INCLUDE_DIRECTORIES>>:
     get_property(TMP_WRAP_EXCLUDE SOURCE ${FILE} PROPERTY WRAP_EXCLUDE)
     get_source_file_property(TMP_ABSTRACT ${FILE} ABSTRACT)
     get_source_file_property(TMP_EXCLUDE_PYTHON ${FILE} WRAP_EXCLUDE_PYTHON)
+    get_source_file_property(TMP_WRAP_SPECIAL ${FILE} WRAP_SPECIAL)
 
     # what is the filename without the extension
     get_filename_component(TMP_FILENAME ${FILE} NAME_WE)
@@ -109,6 +110,10 @@ $<$<BOOL:$<TARGET_PROPERTY:${module_name},INCLUDE_DIRECTORIES>>:
 
       if(TMP_EXCLUDE_PYTHON)
         set(VTK_WRAPPER_INIT_DATA "${VTK_WRAPPER_INIT_DATA};WRAP_EXCLUDE_PYTHON")
+      endif()
+
+      if(TMP_WRAP_SPECIAL)
+        set(VTK_WRAPPER_INIT_DATA "${VTK_WRAPPER_INIT_DATA};WRAP_SPECIAL")
       endif()
 
       set(VTK_WRAPPER_INIT_DATA "${VTK_WRAPPER_INIT_DATA}\n")
