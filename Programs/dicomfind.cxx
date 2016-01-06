@@ -491,8 +491,11 @@ void dicomfind_operations(
     }
 }
 
+// Delay wildcard expansion for -name option
+MAINMACRO_PASSTHROUGH(-name);
+
 // This program will dump all the metadata in the given file
-MAINMACRO(argc, argv)
+int MAINMACRO(int argc, char *argv[])
 {
   std::vector<Operation> operationList;
 

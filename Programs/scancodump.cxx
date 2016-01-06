@@ -60,7 +60,7 @@ const char *fileBasename(const char *filename)
 }
 
 // This program will convert
-MAINMACRO(argc, argv)
+int MAINMACRO(int argc, char *argv[])
 {
   int rval = 0;
 

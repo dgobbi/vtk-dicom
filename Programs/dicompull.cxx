@@ -242,8 +242,11 @@ std::string dicompull_makedirname(
   return s;
 }
 
+// Delay wildcard expansion for -name option
+MAINMACRO_PASSTHROUGH(-name);
+
 // This program will find and copy dicom files
-MAINMACRO(argc, argv)
+int MAINMACRO(int argc, char *argv[])
 {
   int rval = 0;
   int scandepth = std::numeric_limits<int>::max();

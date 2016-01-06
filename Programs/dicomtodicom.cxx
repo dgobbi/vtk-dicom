@@ -626,7 +626,7 @@ void dicomtodicom_convert_files(
 }
 
 // This program will convert DICOM to DICOM
-MAINMACRO(argc, argv)
+int MAINMACRO(int argc, char *argv[])
 {
   // for the list of input DICOM files
   vtkSmartPointer<vtkStringArray> files =

@@ -408,7 +408,7 @@ void printElementFromTagPath(
 }
 
 // This program will dump all the metadata in the given file
-MAINMACRO(argc, argv)
+int MAINMACRO(int argc, char *argv[])
 {
   int rval = 0;
 

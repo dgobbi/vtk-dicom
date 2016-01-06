@@ -2,8 +2,14 @@ include_directories(${DICOM_INCLUDE_DIRS})
 
 set(LIB_NAME dicomcli)
 
+if(WIN32)
+  set(MAINMACRO_SRC mainmacro.cxx)
+else()
+  set(MAINMACRO_SRC)
+endif()
+
 set(LIB_SRCS
-  mainmacro.cxx
+  ${MAINMACRO_SRC}
   readquery.cxx
   progress.cxx
 )

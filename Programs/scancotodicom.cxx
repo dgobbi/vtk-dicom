@@ -631,7 +631,7 @@ void scancotodicom_convert_one(
 }
 
 // This program will convert ScancoCT to DICOM
-MAINMACRO(argc, argv)
+int MAINMACRO(int argc, char *argv[])
 {
   // for the list of input DICOM files
   vtkSmartPointer<vtkStringArray> files =

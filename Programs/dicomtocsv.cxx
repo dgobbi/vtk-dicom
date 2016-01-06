@@ -401,7 +401,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
 } // end anonymous namespace
 
 // This program will dump all the metadata in the given file
-MAINMACRO(argc, argv)
+int MAINMACRO(int argc, char *argv[])
 {
   int rval = 0;
   int scandepth = std::numeric_limits<int>::max();
