@@ -31,7 +31,7 @@ MITRA OBJECT UTF8 ATTRIBUTES 1.0
 +{ 0x0033, 0x0004, 0, VR::CS, VM::M1, "StudyDescriptionUTF8Encoded" },
 +{ 0x0033, 0x0006, 0, VR::PN, VM::M1, "ReferringPhysicianNameUTF8Encoded" },
 +{ 0x0033, 0x0008, 0, VR::PN, VM::M1, "RequestingPhysicianNameUTF8Encoded" },
-+{ 0x0033, 0x000a, 0, VR::OB, VM::M1, "PerformingPhysicianNameUTF8Encoded" },
++{ 0x0033, 0x000a, 0, VR::PN, VM::M1, "PerformingPhysicianNameUTF8Encoded" },
 +{ 0x0033, 0x000c, 0, VR::LO, VM::M1, "ReasonForStudyUTF8Encoded" },
 +{ 0x0033, 0x000e, 0, VR::LO, VM::M1, "StudyCommentsUTF8Encoded" },
 SIEMENS MR HEADER
@@ -7475,7 +7475,7 @@ const DictEntry Dict121Contents[] = {
 { 0x0033, 0x0004, 0, VR::CS, VM::M1, "StudyDescriptionUTF8Encoded" },
 { 0x0033, 0x0006, 0, VR::PN, VM::M1, "ReferringPhysicianNameUTF8Encoded" },
 { 0x0033, 0x0008, 0, VR::PN, VM::M1, "RequestingPhysicianNameUTF8Encoded" },
-{ 0x0033, 0x000a, 0, VR::OB, VM::M1, "PerformingPhysicianNameUTF8Encoded" },
+{ 0x0033, 0x000a, 0, VR::PN, VM::M1, "PerformingPhysicianNameUTF8Encoded" },
 { 0x0033, 0x000c, 0, VR::LO, VM::M1, "ReasonForStudyUTF8Encoded" },
 { 0x0033, 0x000e, 0, VR::LO, VM::M1, "StudyCommentsUTF8Encoded" },
 { 0x0033, 0x0013, 0, VR::PN, VM::M1, "" },
