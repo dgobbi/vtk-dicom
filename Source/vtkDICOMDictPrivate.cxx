@@ -11,6 +11,29 @@ camtron.tpl    gems.tpl        other.tpl       picker.tpl      toshiba.tpl
 
 Errata:
 
+AGFA PACS Archive Mirroring 1.0
+-{ 0x0031, 0x0000, 0, VR::CS, VM::M1, "" },
+-{ 0x0031, 0x0001, 0, VR::UL, VM::M1, "" },
++{ 0x0031, 0x0000, 0, VR::CS, VM::M1, "StudyStatus" },
++{ 0x0031, 0x0001, 0, VR::CS, VM::M1, "DateTimeVerified" },
+MITRA LINKED ATTRIBUTES 1.0
+-{ 0x0031, 0x0020, 0, VR::IS, VM::M1, "" },
++{ 0x0031, 0x0020, 0, VR::LO, VM::M1, "GlobalPatientID" },
+MITRA OBJECT UTF8 ATTRIBUTES 1.0
+-{ 0x0033, 0x0002, 0, VR::OB, VM::M1, "" },
+-{ 0x0033, 0x0004, 0, VR::CS, VM::M1, "" },
+-{ 0x0033, 0x0006, 0, VR::OB, VM::M1, "" },
+-{ 0x0033, 0x0008, 0, VR::OB, VM::M1, "" },
+-{ 0x0033, 0x000a, 0, VR::OB, VM::M1, "" },
+-{ 0x0033, 0x000c, 0, VR::LO, VM::M1, "" },
+-{ 0x0033, 0x000e, 0, VR::OB, VM::M1, "" },
++{ 0x0033, 0x0002, 0, VR::PN, VM::M1, "PatientNameUTF8Encoded" },
++{ 0x0033, 0x0004, 0, VR::CS, VM::M1, "StudyDescriptionUTF8Encoded" },
++{ 0x0033, 0x0006, 0, VR::PN, VM::M1, "ReferringPhysicianNameUTF8Encoded" },
++{ 0x0033, 0x0008, 0, VR::PN, VM::M1, "RequestingPhysicianNameUTF8Encoded" },
++{ 0x0033, 0x000a, 0, VR::OB, VM::M1, "PerformingPhysicianNameUTF8Encoded" },
++{ 0x0033, 0x000c, 0, VR::LO, VM::M1, "ReasonForStudyUTF8Encoded" },
++{ 0x0033, 0x000e, 0, VR::LO, VM::M1, "StudyCommentsUTF8Encoded" },
 SIEMENS MR HEADER
 -{ 0x0051, 0x000b, 0, VR::SH, VM::M1, "AcquisitionMatrixText" },
 +{ 0x0051, 0x000b, 0, VR::LO, VM::M1, "AcquisitionMatrixText" },
@@ -1347,8 +1370,8 @@ Dict022Contents
 // ----- AGFA PACS Archive Mirroring 1.0 -----
 
 const DictEntry Dict023Contents[] = {
-{ 0x0031, 0x0000, 0, VR::CS, VM::M1, "" },
-{ 0x0031, 0x0001, 0, VR::UL, VM::M1, "" },
+{ 0x0031, 0x0000, 0, VR::CS, VM::M1, "StudyStatus" },
+{ 0x0031, 0x0001, 0, VR::UL, VM::M1, "DateTimeVerified" },
 };
 
 const unsigned short Dict023TagHashTable[] = {
@@ -1356,7 +1379,7 @@ const unsigned short Dict023TagHashTable[] = {
 };
 
 const unsigned short Dict023KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
+    3,     2,     0,     2,     0,  9201,     1, 56416,
 };
 
 vtkDICOMDictionary::Dict Dict023Data = {
@@ -7448,13 +7471,13 @@ Dict120Contents
 // ----- MITRA OBJECT UTF8 ATTRIBUTES 1.0 -----
 
 const DictEntry Dict121Contents[] = {
-{ 0x0033, 0x0002, 0, VR::OB, VM::M1, "" },
-{ 0x0033, 0x0004, 0, VR::CS, VM::M1, "" },
-{ 0x0033, 0x0006, 0, VR::OB, VM::M1, "" },
-{ 0x0033, 0x0008, 0, VR::OB, VM::M1, "" },
-{ 0x0033, 0x000a, 0, VR::OB, VM::M1, "" },
-{ 0x0033, 0x000c, 0, VR::LO, VM::M1, "" },
-{ 0x0033, 0x000e, 0, VR::OB, VM::M1, "" },
+{ 0x0033, 0x0002, 0, VR::PN, VM::M1, "PatientNameUTF8Encoded" },
+{ 0x0033, 0x0004, 0, VR::CS, VM::M1, "StudyDescriptionUTF8Encoded" },
+{ 0x0033, 0x0006, 0, VR::PN, VM::M1, "ReferringPhysicianNameUTF8Encoded" },
+{ 0x0033, 0x0008, 0, VR::PN, VM::M1, "RequestingPhysicianNameUTF8Encoded" },
+{ 0x0033, 0x000a, 0, VR::OB, VM::M1, "PerformingPhysicianNameUTF8Encoded" },
+{ 0x0033, 0x000c, 0, VR::LO, VM::M1, "ReasonForStudyUTF8Encoded" },
+{ 0x0033, 0x000e, 0, VR::LO, VM::M1, "StudyCommentsUTF8Encoded" },
 { 0x0033, 0x0013, 0, VR::PN, VM::M1, "" },
 { 0x0033, 0x0014, 0, VR::OB, VM::M1, "" },
 { 0x0033, 0x0015, 0, VR::OB, VM::M1, "" },
@@ -7471,10 +7494,11 @@ const unsigned short Dict121TagHashTable[] = {
 };
 
 const unsigned short Dict121KeyHashTable[] = {
-   12,    12,    12,    12,    12,    13,    12,    12,    12,    12,
-   12,    12,     0,    12,     0,   448,     1,   448,     2,   448,
-    3,   448,     4,   448,     5,   448,     6,   448,     7,   448,
-    8,   448,     9,   448,    10,   448,    11,   448,
+   13,    16,    19,    12,    12,    22,    33,    36,    39,    12,
+   12,    42,     0,     1,     4, 22592,     1,     6, 57109,     1,
+    5, 52851,     5,     7,   448,     8,   448,     9,   448,    10,
+  448,    11,   448,     1,     3,  2102,     1,     1, 45511,     1,
+    0, 33809,     1,     2, 23768,
 };
 
 vtkDICOMDictionary::Dict Dict121Data = {
@@ -25030,7 +25054,7 @@ Dict416Contents
 // ----- MITRA LINKED ATTRIBUTES 1.0 -----
 
 const DictEntry Dict417Contents[] = {
-{ 0x0031, 0x0020, 0, VR::IS, VM::M1, "" },
+{ 0x0031, 0x0020, 0, VR::LO, VM::M1, "GlobalPatientID" },
 };
 
 const unsigned short Dict417TagHashTable[] = {
@@ -25038,7 +25062,7 @@ const unsigned short Dict417TagHashTable[] = {
 };
 
 const unsigned short Dict417KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
+    2,     0,     1,     0, 55096,
 };
 
 vtkDICOMDictionary::Dict Dict417Data = {
