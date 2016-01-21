@@ -85,6 +85,18 @@ AMI ImageContext_01
 SIEMENS CSA REPORT
 -{ 0x0029, 0x0017, 0, VR::UI, VM::M1, "SCSOP InstanceUID" },
 +{ 0x0029, 0x0017, 0, VR::UI, VM::M1, "SCSOPInstanceUID" },
+GEMS_MR_RAW_01
++{ 0x7001, 0x1001, 0, VR::OB, VM::M1, "Rdb_hdr_rec" },
++{ 0x7001, 0x1002, 0, VR::OB, VM::M1, "Rdb_hdr_per_pass_tab" },
++{ 0x7001, 0x1003, 0, VR::OB, VM::M1, "Rdb_hdr_unlock_raw" },
++{ 0x7001, 0x1004, 0, VR::OB, VM::M1, "Rdb_hdr_data_acq_tab" },
++{ 0x7001, 0x1005, 0, VR::OB, VM::M1, "Rdb_hdr_nex_tab" },
++{ 0x7001, 0x1006, 0, VR::OB, VM::M1, "Rdb_hdr_nex_abort_tab" },
++{ 0x7001, 0x1007, 0, VR::OB, VM::M1, "Rdb_hdr_tool" },
++{ 0x7001, 0x1008, 0, VR::OB, VM::M1, "Rdb_raw_data" },
++{ 0x7001, 0x1009, 0, VR::OB, VM::M1, "SSPSave" },
++{ 0x7001, 0x100A, 0, VR::OB, VM::M1, "UDASave" },
++{ 0x7001, 0x100B, 0, VR::OB, VM::M1, "Rdb_chemsat_data" },
 GEMS_FUNCTOOL_01
 -{ 0x0051, 0x000c, 0, VR::SL, VM::M1, "WizardStateDataSize" },
 -{ 0x0051, 0x000d, 0, VR::OB, VM::M1, "WizardState" },
@@ -197,6 +209,40 @@ GEHC_CT_ADVAPP_001
 +{ 0x0053, 0x009D, 0, VR::LO, VM::M1, "MARsAnnotation" },
 +{ 0x0053, 0x009E, 0, VR::IS, VM::M1, "MultiEnergyNumNoiseRedPairs" },
 +{ 0x0053, 0x009F, 0, VR::LO, VM::M1TN, "MultiEnergyNoiseRedString" },
+BRAINWAVE: 1.2.840.113819.3
++{ 0x2001, 0x0010, 0, VR::UI, VM::M1, "DICOMImplementationUID" },
++{ 0x2001, 0x0011, 0, VR::SH, VM::M1, "DICOMImplementationVersion" },
++{ 0x2001, 0x0012, 0, VR::UI, VM::M1, "WithinDICOMImplementationSOPInstanceUID" 
++{ 0x2001, 0x0013, 0, VR::SH, VM::M1, "ApplicationName" },
++{ 0x2001, 0x0014, 0, VR::SH, VM::M1, "ApplicationVersion" },
++{ 0x2001, 0x0015, 0, VR::SH, VM::M1, "CompatibilityVersion" },
++{ 0x2001, 0x0021, 0, VR::UI, VM::M1TN, "ReferencedSeriesUID" },
++{ 0x2001, 0x0031, 0, VR::US, VM::M1, "NumberOfObjectsAveraged" },
++{ 0x2001, 0x0041, 0, VR::US, VM::M1, "NumberOfExpectedTimePoints" },
++{ 0x2001, 0x0051, 0, VR::US, VM::M1, "NumberOfSlicesPerVolume" },
++{ 0x2001, 0x0060, 0, VR::US, VM::M1, "BWImageType" },
++{ 0x2001, 0x0061, 0, VR::US, VM::M1, "ExperimentType" },
++{ 0x2001, 0x0071, 0, VR::UI, VM::M1, "ParadigmUID" },
++{ 0x2001, 0x0072, 0, VR::LO, VM::M1, "ParadigmName" },
++{ 0x2001, 0x0073, 0, VR::ST, VM::M1, "ParadigmDescription" },
++{ 0x2001, 0x0080, 0, VR::OB, VM::M1, "Contrast" },
++{ 0x2001, 0x0081, 0, VR::FL, VM::M1TN, "RegressorValues" },
++{ 0x2001, 0x0086, 0, VR::US, VM::M1, "NumberOfDegreesOfFreedom" },
++{ 0x2001, 0x008A, 0, VR::FL, VM::M1, "ZThreshold" },
++{ 0x2001, 0x008B, 0, VR::FL, VM::M1, "PThreshold" },
++{ 0x2001, 0x0090, 0, VR::OB, VM::M1, "ProcessingParameters" },
++{ 0x2001, 0x0091, 0, VR::OB, VM::M1, "MotionPlot" },
++{ 0x2001, 0x0092, 0, VR::OB, VM::M1, "ROIs" },
++{ 0x2001, 0x0093, 0, VR::OB, VM::M1, "Tracts" },
++{ 0x2001, 0x0094, 0, VR::OB, VM::M1, "Report" },
++{ 0x2001, 0x0095, 0, VR::OB, VM::M1, "ResponseData" },
++{ 0x2001, 0x0096, 0, VR::OB, VM::M1, "DesignMatrix" },
++{ 0x2001, 0x0097, 0, VR::FL, VM::M1TN, "QualityMetrics" },
++{ 0x2001, 0x00A0, 0, VR::FL, VM::M1TN, "MotionParameters" },
++{ 0x2001, 0x00A1, 0, VR::FL, VM::M1TN, "RegistrationParameters" },
++{ 0x2001, 0x00A2, 0, VR::FL, VM::M1TN, "SubjectData" },
++{ 0x2001, 0x00B0, 0, VR::OB, VM::M1, "DTIParameters" },
++{ 0x2001, 0x00C0, 0, VR::OB, VM::M1, "ParadigmInfo" },
 
 =========================================================================*/
 
@@ -7389,88 +7435,129 @@ Dict117KeyHashTable,
 Dict117Contents
 };
 
-// ----- VEPRO VIF 3.0 DATA -----
+// ----- GEMS_MR_RAW_01 -----
 
 const DictEntry Dict118Contents[] = {
-{ 0x0055, 0x0020, 0, VR::OB, VM::M1, "" },
-{ 0x0055, 0x0030, 0, VR::OB, VM::M1, "IconData" },
-{ 0x0055, 0x0065, 0, VR::OB, VM::M1, "ImageHashValue" },
+{ 0x7001, 0x1001, 0, VR::OB, VM::M1, "Rdb_hdr_rec" },
+{ 0x7001, 0x1002, 0, VR::OB, VM::M1, "Rdb_hdr_per_pass_tab" },
+{ 0x7001, 0x1003, 0, VR::OB, VM::M1, "Rdb_hdr_unlock_raw" },
+{ 0x7001, 0x1004, 0, VR::OB, VM::M1, "Rdb_hdr_data_acq_tab" },
+{ 0x7001, 0x1005, 0, VR::OB, VM::M1, "Rdb_hdr_nex_tab" },
+{ 0x7001, 0x1006, 0, VR::OB, VM::M1, "Rdb_hdr_nex_abort_tab" },
+{ 0x7001, 0x1007, 0, VR::OB, VM::M1, "Rdb_hdr_tool" },
+{ 0x7001, 0x1008, 0, VR::OB, VM::M1, "Rdb_raw_data" },
+{ 0x7001, 0x1009, 0, VR::OB, VM::M1, "SSPSave" },
+{ 0x7001, 0x100A, 0, VR::OB, VM::M1, "UDASave" },
+{ 0x7001, 0x100B, 0, VR::OB, VM::M1, "Rdb_chemsat_data" },
 };
 
 const unsigned short Dict118TagHashTable[] = {
-    4,     7,    10,     0,     1,     2,   101,     1,     1,    48,
-    1,     0,    32,
+   12,    15,    11,    20,    23,    26,    29,    32,    35,    38,
+   41,     0,     1,    10,  4107,     2,     0,  4097,     9,  4106,
+    1,     2,  4099,     1,     1,  4098,     1,     4,  4101,     1,
+    3,  4100,     1,     6,  4103,     1,     5,  4102,     1,     8,
+ 4105,     1,     7,  4104,
 };
 
 const unsigned short Dict118KeyHashTable[] = {
-    4,     3,     7,     0,     1,     2, 33635,     2,     0,  1793,
-    1, 56642,
+   11,    11,    11,    12,    15,    20,    25,    28,    31,    36,
+   39,     0,     1,     3, 23886,     2,     0,  7693,     9, 11838,
+    2,     5, 37924,     6, 11222,     1,     2, 46296,     1,    10,
+11129,     2,     4, 38678,     8,  1958,     1,     7, 19522,     1,
+    1, 12326,
 };
 
 vtkDICOMDictionary::Dict Dict118Data = {
-"VEPRO VIF 3.0 DATA",
-3,
-3,
+"GEMS_MR_RAW_01",
+11,
+11,
 Dict118TagHashTable,
 Dict118KeyHashTable,
 Dict118Contents
 };
 
-// ----- MeVis eatDicom -----
+// ----- VEPRO VIF 3.0 DATA -----
 
 const DictEntry Dict119Contents[] = {
-{ 0x0009, 0x0010, 0, VR::LO, VM::M1, "eatDicomVersion" },
-{ 0x0009, 0x0011, 0, VR::ST, VM::M1, "eatDicomOptions" },
+{ 0x0055, 0x0020, 0, VR::OB, VM::M1, "" },
+{ 0x0055, 0x0030, 0, VR::OB, VM::M1, "IconData" },
+{ 0x0055, 0x0065, 0, VR::OB, VM::M1, "ImageHashValue" },
 };
 
 const unsigned short Dict119TagHashTable[] = {
-    3,     6,     0,     1,     1,    17,     1,     0,    16,
+    4,     7,    10,     0,     1,     2,   101,     1,     1,    48,
+    1,     0,    32,
 };
 
 const unsigned short Dict119KeyHashTable[] = {
-    2,     3,     0,     2,     0, 24984,     1, 21435,
+    4,     3,     7,     0,     1,     2, 33635,     2,     0,  1793,
+    1, 56642,
 };
 
 vtkDICOMDictionary::Dict Dict119Data = {
-"MeVis eatDicom",
-2,
-2,
+"VEPRO VIF 3.0 DATA",
+3,
+3,
 Dict119TagHashTable,
 Dict119KeyHashTable,
 Dict119Contents
 };
 
-// ----- DIGISCAN IMAGE -----
+// ----- MeVis eatDicom -----
 
 const DictEntry Dict120Contents[] = {
+{ 0x0009, 0x0010, 0, VR::LO, VM::M1, "eatDicomVersion" },
+{ 0x0009, 0x0011, 0, VR::ST, VM::M1, "eatDicomOptions" },
+};
+
+const unsigned short Dict120TagHashTable[] = {
+    3,     6,     0,     1,     1,    17,     1,     0,    16,
+};
+
+const unsigned short Dict120KeyHashTable[] = {
+    2,     3,     0,     2,     0, 24984,     1, 21435,
+};
+
+vtkDICOMDictionary::Dict Dict120Data = {
+"MeVis eatDicom",
+2,
+2,
+Dict120TagHashTable,
+Dict120KeyHashTable,
+Dict120Contents
+};
+
+// ----- DIGISCAN IMAGE -----
+
+const DictEntry Dict121Contents[] = {
 { 0x0029, 0x0031, 0, VR::US, VM::M1TN, "" },
 { 0x0029, 0x0032, 0, VR::US, VM::M1TN, "" },
 { 0x0029, 0x0033, 0, VR::LO, VM::M1, "" },
 { 0x0029, 0x0034, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict120TagHashTable[] = {
+const unsigned short Dict121TagHashTable[] = {
     5,     8,    11,    14,     0,     1,     0,    49,     1,     3,
    52,     1,     2,    51,     1,     1,    50,
 };
 
-const unsigned short Dict120KeyHashTable[] = {
+const unsigned short Dict121KeyHashTable[] = {
     4,     5,     4,     4,     0,     4,     0,  1345,     1,  1345,
     2,  1345,     3,  1345,
 };
 
-vtkDICOMDictionary::Dict Dict120Data = {
+vtkDICOMDictionary::Dict Dict121Data = {
 "DIGISCAN IMAGE",
 4,
 4,
-Dict120TagHashTable,
-Dict120KeyHashTable,
-Dict120Contents
+Dict121TagHashTable,
+Dict121KeyHashTable,
+Dict121Contents
 };
 
 // ----- MITRA OBJECT UTF8 ATTRIBUTES 1.0 -----
 
-const DictEntry Dict121Contents[] = {
+const DictEntry Dict122Contents[] = {
 { 0x0033, 0x0002, 0, VR::PN, VM::M1, "PatientNameUTF8Encoded" },
 { 0x0033, 0x0004, 0, VR::CS, VM::M1, "StudyDescriptionUTF8Encoded" },
 { 0x0033, 0x0006, 0, VR::PN, VM::M1, "ReferringPhysicianNameUTF8Encoded" },
@@ -7485,7 +7572,7 @@ const DictEntry Dict121Contents[] = {
 { 0x0033, 0x0019, 0, VR::PN, VM::M1, "" },
 };
 
-const unsigned short Dict121TagHashTable[] = {
+const unsigned short Dict122TagHashTable[] = {
    12,    13,    20,    23,    12,    28,    31,    34,    37,    40,
    12,    43,     0,     3,     0,     2,     6,    14,    10,    22,
     1,     9,    21,     2,     5,    12,     8,    20,     1,     2,
@@ -7493,7 +7580,7 @@ const unsigned short Dict121TagHashTable[] = {
     1,     4,    10,     1,     3,     8,
 };
 
-const unsigned short Dict121KeyHashTable[] = {
+const unsigned short Dict122KeyHashTable[] = {
    13,    16,    19,    12,    12,    22,    33,    36,    39,    12,
    12,    42,     0,     1,     4, 22592,     1,     6, 57109,     1,
     5, 52851,     5,     7,   448,     8,   448,     9,   448,    10,
@@ -7501,42 +7588,42 @@ const unsigned short Dict121KeyHashTable[] = {
     0, 33809,     1,     2, 23768,
 };
 
-vtkDICOMDictionary::Dict Dict121Data = {
+vtkDICOMDictionary::Dict Dict122Data = {
 "MITRA OBJECT UTF8 ATTRIBUTES 1.0",
 12,
 12,
-Dict121TagHashTable,
-Dict121KeyHashTable,
-Dict121Contents
-};
-
-// ----- GEMS_Ultrasound_ExamGroup_001 -----
-
-const DictEntry Dict122Contents[] = {
-{ 0x6005, 0x0010, 0, VR::UT, VM::M1, "" },
-{ 0x6005, 0x0020, 0, VR::UT, VM::M1, "" },
-};
-
-const unsigned short Dict122TagHashTable[] = {
-    2,     3,     0,     2,     0,    16,     1,    32,
-};
-
-const unsigned short Dict122KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
-};
-
-vtkDICOMDictionary::Dict Dict122Data = {
-"GEMS_Ultrasound_ExamGroup_001",
-2,
-2,
 Dict122TagHashTable,
 Dict122KeyHashTable,
 Dict122Contents
 };
 
-// ----- VEPRO BROKER 1.0 DATA REPLACE -----
+// ----- GEMS_Ultrasound_ExamGroup_001 -----
 
 const DictEntry Dict123Contents[] = {
+{ 0x6005, 0x0010, 0, VR::UT, VM::M1, "" },
+{ 0x6005, 0x0020, 0, VR::UT, VM::M1, "" },
+};
+
+const unsigned short Dict123TagHashTable[] = {
+    2,     3,     0,     2,     0,    16,     1,    32,
+};
+
+const unsigned short Dict123KeyHashTable[] = {
+    2,     3,     0,     2,     0,  2690,     1,  2690,
+};
+
+vtkDICOMDictionary::Dict Dict123Data = {
+"GEMS_Ultrasound_ExamGroup_001",
+2,
+2,
+Dict123TagHashTable,
+Dict123KeyHashTable,
+Dict123Contents
+};
+
+// ----- VEPRO BROKER 1.0 DATA REPLACE -----
+
+const DictEntry Dict124Contents[] = {
 { 0x0057, 0x0020, 0, VR::SQ, VM::M1, "OriginalDataSequence" },
 { 0x0057, 0x0030, 0, VR::SQ, VM::M1, "ReplacedDataSequence" },
 { 0x0057, 0x0040, 0, VR::DA, VM::M1, "DateOfDataReplacement" },
@@ -7546,81 +7633,81 @@ const DictEntry Dict123Contents[] = {
 { 0x0057, 0x0044, 0, VR::LO, VM::M1, "ComputerName" },
 };
 
-const unsigned short Dict123TagHashTable[] = {
+const unsigned short Dict124TagHashTable[] = {
     8,    11,    14,     7,    17,    20,    23,     0,     1,     4,
    66,     1,     3,    65,     1,     2,    64,     1,     1,    48,
     1,     6,    68,     2,     0,    32,     5,    67,
 };
 
-const unsigned short Dict123KeyHashTable[] = {
+const unsigned short Dict124KeyHashTable[] = {
     8,     7,    11,    14,    17,    22,    25,     0,     1,     0,
 58411,     1,     6, 30261,     1,     4, 44241,     2,     2,  5234,
     3, 17497,     1,     1, 24725,     1,     5, 10092,
 };
 
-vtkDICOMDictionary::Dict Dict123Data = {
+vtkDICOMDictionary::Dict Dict124Data = {
 "VEPRO BROKER 1.0 DATA REPLACE",
 7,
 7,
-Dict123TagHashTable,
-Dict123KeyHashTable,
-Dict123Contents
+Dict124TagHashTable,
+Dict124KeyHashTable,
+Dict124Contents
 };
 
 // ----- PHILIPS-MR-1 -----
 
-const DictEntry Dict124Contents[] = {
+const DictEntry Dict125Contents[] = {
 { 0x0019, 0x0011, 0, VR::IS, VM::M1, "ChemicalShiftNumber" },
 { 0x0019, 0x0012, 0, VR::IS, VM::M1, "PhaseNumber" },
 { 0x0021, 0x0001, 0, VR::IS, VM::M1, "ReconstructionNumber" },
 { 0x0021, 0x0002, 0, VR::IS, VM::M1, "SliceNumber" },
 };
 
-const unsigned short Dict124TagHashTable[] = {
+const unsigned short Dict125TagHashTable[] = {
     5,     4,     4,    10,     0,     2,     0,    17,     2,     1,
     2,     1,    18,     3,     2,
 };
 
-const unsigned short Dict124KeyHashTable[] = {
+const unsigned short Dict125KeyHashTable[] = {
     5,     4,     8,    13,     0,     1,     2,  1804,     2,     0,
 57880,     3,  7303,     1,     1, 29943,
 };
 
-vtkDICOMDictionary::Dict Dict124Data = {
+vtkDICOMDictionary::Dict Dict125Data = {
 "PHILIPS-MR-1",
 4,
 4,
-Dict124TagHashTable,
-Dict124KeyHashTable,
-Dict124Contents
-};
-
-// ----- MERGE TECHNOLOGIES, INC. -----
-
-const DictEntry Dict125Contents[] = {
-{ 0x0009, 0x0000, 0, VR::OB, VM::M1, "" },
-};
-
-const unsigned short Dict125TagHashTable[] = {
-    2,     0,     1,     0,     0,
-};
-
-const unsigned short Dict125KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict125Data = {
-"MERGE TECHNOLOGIES, INC.",
-1,
-1,
 Dict125TagHashTable,
 Dict125KeyHashTable,
 Dict125Contents
 };
 
-// ----- SIEMENS DLR.01 -----
+// ----- MERGE TECHNOLOGIES, INC. -----
 
 const DictEntry Dict126Contents[] = {
+{ 0x0009, 0x0000, 0, VR::OB, VM::M1, "" },
+};
+
+const unsigned short Dict126TagHashTable[] = {
+    2,     0,     1,     0,     0,
+};
+
+const unsigned short Dict126KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
+vtkDICOMDictionary::Dict Dict126Data = {
+"MERGE TECHNOLOGIES, INC.",
+1,
+1,
+Dict126TagHashTable,
+Dict126KeyHashTable,
+Dict126Contents
+};
+
+// ----- SIEMENS DLR.01 -----
+
+const DictEntry Dict127Contents[] = {
 { 0x0019, 0x0010, 0, VR::LO, VM::M1, "MeasurementMode" },
 { 0x0019, 0x0011, 0, VR::LO, VM::M1, "ImageType" },
 { 0x0019, 0x0015, 0, VR::LO, VM::M1, "SoftwareVersion" },
@@ -7667,7 +7754,7 @@ const DictEntry Dict126Contents[] = {
 { 0x0041, 0x0031, 0, VR::LO, VM::M1, "FullFilmFormat" },
 };
 
-const unsigned short Dict126TagHashTable[] = {
+const unsigned short Dict127TagHashTable[] = {
    45,    48,    51,    44,    44,    54,    44,    57,    60,    65,
    68,    71,    74,    79,    82,    85,    88,    93,    98,   101,
    44,   104,   107,   110,   113,   118,    44,    44,   123,   126,
@@ -7687,7 +7774,7 @@ const unsigned short Dict126TagHashTable[] = {
   103,     1,    13,    49,     1,    12,    48,     1,    14,    50,
 };
 
-const unsigned short Dict126KeyHashTable[] = {
+const unsigned short Dict127KeyHashTable[] = {
    44,    45,    44,    50,    55,    58,    44,    44,    44,    61,
    44,    44,    44,    68,    81,    44,    88,    95,    98,    44,
   103,    44,   106,   111,    44,   114,   117,   120,   123,   126,
@@ -7706,18 +7793,18 @@ const unsigned short Dict126KeyHashTable[] = {
     1,     3, 36627,     1,     8, 41394,     1,    26,  4098,
 };
 
-vtkDICOMDictionary::Dict Dict126Data = {
+vtkDICOMDictionary::Dict Dict127Data = {
 "SIEMENS DLR.01",
 44,
 44,
-Dict126TagHashTable,
-Dict126KeyHashTable,
-Dict126Contents
+Dict127TagHashTable,
+Dict127KeyHashTable,
+Dict127Contents
 };
 
 // ----- Agfa ADC NX -----
 
-const DictEntry Dict127Contents[] = {
+const DictEntry Dict128Contents[] = {
 { 0x0019, 0x0007, 0, VR::CS, VM::M1, "" },
 { 0x0019, 0x0009, 0, VR::SQ, VM::M1, "" },
 { 0x0019, 0x0021, 0, VR::FL, VM::M1, "" },
@@ -7737,7 +7824,7 @@ const DictEntry Dict127Contents[] = {
 { 0x0019, 0x00fe, 0, VR::CS, VM::M1, "" },
 };
 
-const unsigned short Dict127TagHashTable[] = {
+const unsigned short Dict128TagHashTable[] = {
    18,    21,    17,    24,    17,    27,    17,    32,    17,    35,
    38,    41,    44,    47,    52,    55,    60,     0,     1,     8,
   244,     1,     9,   245,     1,    13,   250,     2,     2,    33,
@@ -7747,7 +7834,7 @@ const unsigned short Dict127TagHashTable[] = {
     2,     1,     9,    11,   247,
 };
 
-const unsigned short Dict127KeyHashTable[] = {
+const unsigned short Dict128KeyHashTable[] = {
    18,    17,    17,    21,    17,    24,    17,    17,    17,    27,
    17,    17,    17,    46,    49,    52,    57,     0,     1,     8,
 58476,     1,    11, 50881,     1,     9, 49224,     9,     0,   316,
@@ -7756,42 +7843,42 @@ const unsigned short Dict127KeyHashTable[] = {
     5, 58475,     2,     6, 58475,    10, 41319,     1,     7, 58475,
 };
 
-vtkDICOMDictionary::Dict Dict127Data = {
+vtkDICOMDictionary::Dict Dict128Data = {
 "Agfa ADC NX",
 17,
 17,
-Dict127TagHashTable,
-Dict127KeyHashTable,
-Dict127Contents
-};
-
-// ----- Imaging Dynamics Company Ltd. -----
-
-const DictEntry Dict128Contents[] = {
-{ 0x4321, 0x0042, 0, VR::US, VM::M1, "" },
-{ 0x4321, 0x0064, 0, VR::LO, VM::M1, "PODMode" },
-};
-
-const unsigned short Dict128TagHashTable[] = {
-    3,     2,     0,     2,     0,    66,     1,   100,
-};
-
-const unsigned short Dict128KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1, 25126,
-};
-
-vtkDICOMDictionary::Dict Dict128Data = {
-"Imaging Dynamics Company Ltd.",
-2,
-2,
 Dict128TagHashTable,
 Dict128KeyHashTable,
 Dict128Contents
 };
 
-// ----- SIEMENS DFR.01 ORIGINAL -----
+// ----- Imaging Dynamics Company Ltd. -----
 
 const DictEntry Dict129Contents[] = {
+{ 0x4321, 0x0042, 0, VR::US, VM::M1, "" },
+{ 0x4321, 0x0064, 0, VR::LO, VM::M1, "PODMode" },
+};
+
+const unsigned short Dict129TagHashTable[] = {
+    3,     2,     0,     2,     0,    66,     1,   100,
+};
+
+const unsigned short Dict129KeyHashTable[] = {
+    2,     3,     0,     2,     0,  2690,     1, 25126,
+};
+
+vtkDICOMDictionary::Dict Dict129Data = {
+"Imaging Dynamics Company Ltd.",
+2,
+2,
+Dict129TagHashTable,
+Dict129KeyHashTable,
+Dict129Contents
+};
+
+// ----- SIEMENS DFR.01 ORIGINAL -----
+
+const DictEntry Dict130Contents[] = {
 { 0x0017, 0x0011, 0, VR::US, VM::M1, "" },
 { 0x0017, 0x0012, 0, VR::US, VM::M1, "" },
 { 0x0017, 0x0014, 0, VR::US, VM::M1, "" },
@@ -7837,7 +7924,7 @@ const DictEntry Dict129Contents[] = {
 { 0x0017, 0x00c2, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict129TagHashTable[] = {
+const unsigned short Dict130TagHashTable[] = {
    43,    44,    49,    52,    55,    58,    63,    70,    73,    78,
    85,    88,    91,    43,    94,    97,    43,   102,   105,    43,
    43,    43,   108,   111,    43,   114,    43,    43,   119,    43,
@@ -7856,7 +7943,7 @@ const unsigned short Dict129TagHashTable[] = {
    23,    69,     1,    41,   193,     2,    21,    67,    42,   194,
 };
 
-const unsigned short Dict129KeyHashTable[] = {
+const unsigned short Dict130KeyHashTable[] = {
    43,    43,    43,    43,    43,    43,    44,    43,    43,    43,
    43,    43,    43,    43,    43,    43,    43,    43,    43,    43,
    43,    43,    43,    43,    43,    43,    43,    43,    43,    43,
@@ -7873,18 +7960,18 @@ const unsigned short Dict129KeyHashTable[] = {
   125,
 };
 
-vtkDICOMDictionary::Dict Dict129Data = {
+vtkDICOMDictionary::Dict Dict130Data = {
 "SIEMENS DFR.01 ORIGINAL",
 43,
 43,
-Dict129TagHashTable,
-Dict129KeyHashTable,
-Dict129Contents
+Dict130TagHashTable,
+Dict130KeyHashTable,
+Dict130Contents
 };
 
 // ----- NQHeader -----
 
-const DictEntry Dict130Contents[] = {
+const DictEntry Dict131Contents[] = {
 { 0x0099, 0x0001, 0, VR::UI, VM::M1, "Version" },
 { 0x0099, 0x0002, 0, VR::UI, VM::M1, "AnalyzedSeriesUID" },
 { 0x0099, 0x0003, 0, VR::LT, VM::M1, "License" },
@@ -7895,31 +7982,31 @@ const DictEntry Dict130Contents[] = {
 { 0x0099, 0x0021, 0, VR::FL, VM::M1, "ICV" },
 };
 
-const unsigned short Dict130TagHashTable[] = {
+const unsigned short Dict131TagHashTable[] = {
     9,    12,    15,    20,     8,     8,    25,    28,     0,     1,
     2,     3,     1,     1,     2,     2,     0,     1,     7,    33,
     2,     5,    16,     6,    32,     1,     4,     5,     1,     3,
     4,
 };
 
-const unsigned short Dict130KeyHashTable[] = {
+const unsigned short Dict131KeyHashTable[] = {
     9,     8,    16,    21,     8,     8,     8,    26,     0,     3,
     2,   513,     3, 36268,     6, 59479,     2,     1, 13509,     4,
 12345,     2,     0,  6789,     5, 11919,     1,     7, 65100,
 };
 
-vtkDICOMDictionary::Dict Dict130Data = {
+vtkDICOMDictionary::Dict Dict131Data = {
 "NQHeader",
 8,
 8,
-Dict130TagHashTable,
-Dict130KeyHashTable,
-Dict130Contents
+Dict131TagHashTable,
+Dict131KeyHashTable,
+Dict131Contents
 };
 
 // ----- SIEMENS CT APPL PRESENTATION -----
 
-const DictEntry Dict131Contents[] = {
+const DictEntry Dict132Contents[] = {
 { 0x0029, 0x0000, 0, VR::US, VM::M1, "TranslucentMode" },
 { 0x0029, 0x0001, 0, VR::FD, VM::M1, "TranslucentWindowSize" },
 { 0x0029, 0x0002, 0, VR::US, VM::M1, "PanoramicMode" },
@@ -7933,7 +8020,7 @@ const DictEntry Dict131Contents[] = {
 { 0x0029, 0x0010, 0, VR::US, VM::M1, "KernelFilter" },
 };
 
-const unsigned short Dict131TagHashTable[] = {
+const unsigned short Dict132TagHashTable[] = {
    12,    17,    20,    25,    11,    11,    11,    28,    31,    34,
    37,     0,     2,     5,     5,     8,     8,     1,     4,     4,
     2,     7,     7,    10,    16,     1,     6,     6,     1,     1,
@@ -7941,48 +8028,48 @@ const unsigned short Dict131TagHashTable[] = {
     9,     9,
 };
 
-const unsigned short Dict131KeyHashTable[] = {
+const unsigned short Dict132KeyHashTable[] = {
    11,    12,    17,    11,    20,    11,    11,    11,    25,    34,
    37,     0,     2,     6, 57280,     8,  4794,     1,     0, 40913,
     2,     3, 15109,    10, 34552,     4,     1,   489,     2,  3604,
     5, 30722,     7, 49656,     1,     4, 55748,     1,     9, 43036,
 };
 
-vtkDICOMDictionary::Dict Dict131Data = {
+vtkDICOMDictionary::Dict Dict132Data = {
 "SIEMENS CT APPL PRESENTATION",
 11,
 11,
-Dict131TagHashTable,
-Dict131KeyHashTable,
-Dict131Contents
-};
-
-// ----- SIEMENS SYNGO PRINT SERVICE -----
-
-const DictEntry Dict132Contents[] = {
-{ 0x0029, 0x0010, 0, VR::IS, VM::M1, "SheetNumber" },
-};
-
-const unsigned short Dict132TagHashTable[] = {
-    2,     0,     1,     0,    16,
-};
-
-const unsigned short Dict132KeyHashTable[] = {
-    2,     0,     1,     0, 41639,
-};
-
-vtkDICOMDictionary::Dict Dict132Data = {
-"SIEMENS SYNGO PRINT SERVICE",
-1,
-1,
 Dict132TagHashTable,
 Dict132KeyHashTable,
 Dict132Contents
 };
 
-// ----- Siemens: Thorax/Multix FD Raw Image Settings -----
+// ----- SIEMENS SYNGO PRINT SERVICE -----
 
 const DictEntry Dict133Contents[] = {
+{ 0x0029, 0x0010, 0, VR::IS, VM::M1, "SheetNumber" },
+};
+
+const unsigned short Dict133TagHashTable[] = {
+    2,     0,     1,     0,    16,
+};
+
+const unsigned short Dict133KeyHashTable[] = {
+    2,     0,     1,     0, 41639,
+};
+
+vtkDICOMDictionary::Dict Dict133Data = {
+"SIEMENS SYNGO PRINT SERVICE",
+1,
+1,
+Dict133TagHashTable,
+Dict133KeyHashTable,
+Dict133Contents
+};
+
+// ----- Siemens: Thorax/Multix FD Raw Image Settings -----
+
+const DictEntry Dict134Contents[] = {
 { 0x0025, 0x0000, 0, VR::SS, VM::M1, "RawImageAmplification" },
 { 0x0025, 0x0001, 0, VR::SS, VM::M1, "GammaLUT" },
 { 0x0025, 0x0002, 0, VR::US, VM::M1, "" },
@@ -8023,7 +8110,7 @@ const DictEntry Dict133Contents[] = {
 { 0x0025, 0x0037, 0, VR::DS, VM::M1, "" },
 };
 
-const unsigned short Dict133TagHashTable[] = {
+const unsigned short Dict134TagHashTable[] = {
    39,    42,    45,    48,    51,    54,    57,    60,    63,    66,
    69,    72,    75,    78,    81,    84,    87,    92,    97,   102,
   107,   110,   113,   118,   123,   126,    38,    38,    38,    38,
@@ -8041,7 +8128,7 @@ const unsigned short Dict133TagHashTable[] = {
     6,     1,     1,     1,     1,     0,     0,
 };
 
-const unsigned short Dict133KeyHashTable[] = {
+const unsigned short Dict134KeyHashTable[] = {
    38,    38,    38,    38,    38,    38,    38,    39,    38,    38,
    38,    42,    45,    38,    48,    51,    38,    38,    54,    38,
    38,    59,    38,    66,    38,   105,    38,    38,    38,   110,
@@ -8057,42 +8144,42 @@ const unsigned short Dict133KeyHashTable[] = {
    34, 16771,     1,    28, 19197,     2,    10, 26273,    13,  6170,
 };
 
-vtkDICOMDictionary::Dict Dict133Data = {
+vtkDICOMDictionary::Dict Dict134Data = {
 "Siemens: Thorax/Multix FD Raw Image Settings",
 38,
 38,
-Dict133TagHashTable,
-Dict133KeyHashTable,
-Dict133Contents
-};
-
-// ----- SIEMENS CT VA0  ORI -----
-
-const DictEntry Dict134Contents[] = {
-{ 0x0009, 0x0020, 0, VR::LO, VM::M1, "" },
-{ 0x0009, 0x0030, 0, VR::LO, VM::M1, "" },
-};
-
-const unsigned short Dict134TagHashTable[] = {
-    2,     3,     0,     2,     0,    32,     1,    48,
-};
-
-const unsigned short Dict134KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
-};
-
-vtkDICOMDictionary::Dict Dict134Data = {
-"SIEMENS CT VA0  ORI",
-2,
-2,
 Dict134TagHashTable,
 Dict134KeyHashTable,
 Dict134Contents
 };
 
-// ----- Philips X-ray Imaging DD 001 -----
+// ----- SIEMENS CT VA0  ORI -----
 
 const DictEntry Dict135Contents[] = {
+{ 0x0009, 0x0020, 0, VR::LO, VM::M1, "" },
+{ 0x0009, 0x0030, 0, VR::LO, VM::M1, "" },
+};
+
+const unsigned short Dict135TagHashTable[] = {
+    2,     3,     0,     2,     0,    32,     1,    48,
+};
+
+const unsigned short Dict135KeyHashTable[] = {
+    2,     3,     0,     2,     0,  2690,     1,  2690,
+};
+
+vtkDICOMDictionary::Dict Dict135Data = {
+"SIEMENS CT VA0  ORI",
+2,
+2,
+Dict135TagHashTable,
+Dict135KeyHashTable,
+Dict135Contents
+};
+
+// ----- Philips X-ray Imaging DD 001 -----
+
+const DictEntry Dict136Contents[] = {
 { 0x2003, 0x0000, 0, VR::CS, VM::M1, "" },
 { 0x2003, 0x0001, 0, VR::LO, VM::M1, "" },
 { 0x2003, 0x0002, 0, VR::FD, VM::M3, "" },
@@ -8126,7 +8213,7 @@ const DictEntry Dict135Contents[] = {
 { 0x2003, 0x0032, 0, VR::UI, VM::M1, "" },
 };
 
-const unsigned short Dict135TagHashTable[] = {
+const unsigned short Dict136TagHashTable[] = {
    32,    37,    42,    45,    48,    31,    31,    51,    54,    31,
    31,    31,    57,    60,    63,    68,    31,    71,    76,    79,
    82,    85,    88,    93,    96,    31,    99,   102,   105,   110,
@@ -8141,7 +8228,7 @@ const unsigned short Dict135TagHashTable[] = {
     1,     8,    18,     2,     7,    17,    30,    50,
 };
 
-const unsigned short Dict135KeyHashTable[] = {
+const unsigned short Dict136KeyHashTable[] = {
    31,    31,    31,    31,    31,    31,    31,    31,    31,    31,
    31,    31,    31,    31,    31,    31,    31,    31,    32,    31,
    31,    31,    31,    31,    31,    31,    31,    31,    31,    31,
@@ -8154,18 +8241,18 @@ const unsigned short Dict135KeyHashTable[] = {
   173,    29,   173,    30,   173,
 };
 
-vtkDICOMDictionary::Dict Dict135Data = {
+vtkDICOMDictionary::Dict Dict136Data = {
 "Philips X-ray Imaging DD 001",
 31,
 31,
-Dict135TagHashTable,
-Dict135KeyHashTable,
-Dict135Contents
+Dict136TagHashTable,
+Dict136KeyHashTable,
+Dict136Contents
 };
 
 // ----- SIEMENS SMS-AX  VIEW 1.0 -----
 
-const DictEntry Dict136Contents[] = {
+const DictEntry Dict137Contents[] = {
 { 0x0019, 0x0000, 0, VR::US, VM::M1, "ReviewMode" },
 { 0x0019, 0x0001, 0, VR::US, VM::M1, "AnatomicalBackgroundPercent" },
 { 0x0019, 0x0002, 0, VR::US, VM::M1, "NumberOfPhases" },
@@ -8200,7 +8287,7 @@ const DictEntry Dict136Contents[] = {
 { 0x0019, 0x0042, 0, VR::SL, VM::M2, "DispayedAreaBottomRightHandCorner" },
 };
 
-const unsigned short Dict136TagHashTable[] = {
+const unsigned short Dict137TagHashTable[] = {
    32,    32,    33,    36,    39,    42,    45,    48,    51,    54,
    57,    60,    63,    66,    69,    72,    75,    78,    81,    84,
    87,    90,    93,    96,    99,   102,   107,   112,   115,   118,
@@ -8216,7 +8303,7 @@ const unsigned short Dict136TagHashTable[] = {
     4,     1,     7,     7,     1,     6,     6,
 };
 
-const unsigned short Dict136KeyHashTable[] = {
+const unsigned short Dict137KeyHashTable[] = {
    32,    33,    32,    36,    39,    44,    47,    50,    53,    32,
    56,    32,    61,    64,    67,    70,    32,    32,    73,    78,
    83,    32,    86,    91,    32,    32,    32,   100,   103,   110,
@@ -8231,96 +8318,96 @@ const unsigned short Dict136KeyHashTable[] = {
     1,    20, 21703,     2,     5, 20548,    12, 57634,
 };
 
-vtkDICOMDictionary::Dict Dict136Data = {
+vtkDICOMDictionary::Dict Dict137Data = {
 "SIEMENS SMS-AX  VIEW 1.0",
 32,
 32,
-Dict136TagHashTable,
-Dict136KeyHashTable,
-Dict136Contents
-};
-
-// ----- SPI-P-Private_CDS Release 1 -----
-
-const DictEntry Dict137Contents[] = {
-{ 0x0021, 0x0040, 0, VR::IS, VM::M1, "" },
-{ 0x0029, 0x0000, 0, VR::UN, VM::M1, "" },
-{ 0x0029, 0x0010, 0, VR::OB, VM::M1, "" },
-};
-
-const unsigned short Dict137TagHashTable[] = {
-    4,     3,     9,     0,     2,     0,    64,     2,    16,     1,
-    1,     0,
-};
-
-const unsigned short Dict137KeyHashTable[] = {
-    3,     3,     4,     0,     3,     0,  1793,     1,  1793,     2,
- 1793,
-};
-
-vtkDICOMDictionary::Dict Dict137Data = {
-"SPI-P-Private_CDS Release 1",
-3,
-3,
 Dict137TagHashTable,
 Dict137KeyHashTable,
 Dict137Contents
 };
 
-// ----- astm.org/diconde/iod/NdeCtImage -----
+// ----- SPI-P-Private_CDS Release 1 -----
 
 const DictEntry Dict138Contents[] = {
-{ 0x0009, 0x0002, 0, VR::IS, VM::M1, "LINACEnergy" },
-{ 0x0009, 0x0004, 0, VR::IS, VM::M1, "LINACOutput" },
+{ 0x0021, 0x0040, 0, VR::IS, VM::M1, "" },
+{ 0x0029, 0x0000, 0, VR::UN, VM::M1, "" },
+{ 0x0029, 0x0010, 0, VR::OB, VM::M1, "" },
 };
 
 const unsigned short Dict138TagHashTable[] = {
-    2,     3,     0,     2,     0,     2,     1,     4,
+    4,     3,     9,     0,     2,     0,    64,     2,    16,     1,
+    1,     0,
 };
 
 const unsigned short Dict138KeyHashTable[] = {
-    3,     6,     0,     1,     0,  5547,     1,     1, 20494,
+    3,     3,     4,     0,     3,     0,  1793,     1,  1793,     2,
+ 1793,
 };
 
 vtkDICOMDictionary::Dict Dict138Data = {
-"astm.org/diconde/iod/NdeCtImage",
-2,
-2,
+"SPI-P-Private_CDS Release 1",
+3,
+3,
 Dict138TagHashTable,
 Dict138KeyHashTable,
 Dict138Contents
 };
 
-// ----- SIEMENS SYNGO TIME POINT SERVICE -----
+// ----- astm.org/diconde/iod/NdeCtImage -----
 
 const DictEntry Dict139Contents[] = {
-{ 0x0029, 0x0001, 0, VR::LO, VM::M1, "TimePointID" },
-{ 0x0029, 0x0002, 0, VR::LO, VM::M1, "TimePointInformation" },
-{ 0x0029, 0x0050, 0, VR::SQ, VM::M1, "StudiesinTimePointSequence" },
+{ 0x0009, 0x0002, 0, VR::IS, VM::M1, "LINACEnergy" },
+{ 0x0009, 0x0004, 0, VR::IS, VM::M1, "LINACOutput" },
 };
 
 const unsigned short Dict139TagHashTable[] = {
-    4,     7,     3,     0,     1,     2,    80,     2,     0,     1,
-    1,     2,
+    2,     3,     0,     2,     0,     2,     1,     4,
 };
 
 const unsigned short Dict139KeyHashTable[] = {
-    3,     4,     7,     0,     1,     0, 17902,     2,     1,  4630,
-    2, 57039,
+    3,     6,     0,     1,     0,  5547,     1,     1, 20494,
 };
 
 vtkDICOMDictionary::Dict Dict139Data = {
-"SIEMENS SYNGO TIME POINT SERVICE",
-3,
-3,
+"astm.org/diconde/iod/NdeCtImage",
+2,
+2,
 Dict139TagHashTable,
 Dict139KeyHashTable,
 Dict139Contents
 };
 
-// ----- Silhouette Line V1.0 -----
+// ----- SIEMENS SYNGO TIME POINT SERVICE -----
 
 const DictEntry Dict140Contents[] = {
+{ 0x0029, 0x0001, 0, VR::LO, VM::M1, "TimePointID" },
+{ 0x0029, 0x0002, 0, VR::LO, VM::M1, "TimePointInformation" },
+{ 0x0029, 0x0050, 0, VR::SQ, VM::M1, "StudiesinTimePointSequence" },
+};
+
+const unsigned short Dict140TagHashTable[] = {
+    4,     7,     3,     0,     1,     2,    80,     2,     0,     1,
+    1,     2,
+};
+
+const unsigned short Dict140KeyHashTable[] = {
+    3,     4,     7,     0,     1,     0, 17902,     2,     1,  4630,
+    2, 57039,
+};
+
+vtkDICOMDictionary::Dict Dict140Data = {
+"SIEMENS SYNGO TIME POINT SERVICE",
+3,
+3,
+Dict140TagHashTable,
+Dict140KeyHashTable,
+Dict140Contents
+};
+
+// ----- Silhouette Line V1.0 -----
+
+const DictEntry Dict141Contents[] = {
 { 0x0029, 0x0011, 0, VR::IS, VM::M1, "LineName" },
 { 0x0029, 0x0012, 0, VR::LT, VM::M1, "LineNameFont" },
 { 0x0029, 0x0013, 0, VR::UL, VM::M1, "LineNameDisplay" },
@@ -8342,7 +8429,7 @@ const DictEntry Dict140Contents[] = {
 { 0x0029, 0x0029, 0, VR::UL, VM::M1, "LineDontSave" },
 };
 
-const unsigned short Dict140TagHashTable[] = {
+const unsigned short Dict141TagHashTable[] = {
    20,    23,    28,    31,    34,    37,    40,    19,    43,    46,
    49,    54,    59,    62,    65,    68,    19,    19,    71,     0,
     1,    18,    41,     2,     2,    19,    17,    40,     1,     1,
@@ -8353,7 +8440,7 @@ const unsigned short Dict140TagHashTable[] = {
    38,     1,     0,    17,
 };
 
-const unsigned short Dict140KeyHashTable[] = {
+const unsigned short Dict141KeyHashTable[] = {
    19,    20,    19,    19,    29,    32,    19,    19,    35,    40,
    47,    50,    53,    19,    19,    60,    63,    66,    19,     0,
     4,     8, 50265,    11, 56860,    14, 53126,    16, 22638,     1,
@@ -8363,18 +8450,18 @@ const unsigned short Dict140KeyHashTable[] = {
     1,     1, 44530,     1,     2, 16316,     1,    17, 19604,
 };
 
-vtkDICOMDictionary::Dict Dict140Data = {
+vtkDICOMDictionary::Dict Dict141Data = {
 "Silhouette Line V1.0",
 19,
 19,
-Dict140TagHashTable,
-Dict140KeyHashTable,
-Dict140Contents
+Dict141TagHashTable,
+Dict141KeyHashTable,
+Dict141Contents
 };
 
 // ----- BrainLAB_BeamProfile -----
 
-const DictEntry Dict141Contents[] = {
+const DictEntry Dict142Contents[] = {
 { 0x3411, 0x0001, 0, VR::SQ, VM::M1, "BeamProfileSequence" },
 { 0x3411, 0x0002, 0, VR::IS, VM::M1, "BeamProfileNumber" },
 { 0x3411, 0x0003, 0, VR::SQ, VM::M1, "BeamParameterSequence" },
@@ -8383,30 +8470,30 @@ const DictEntry Dict141Contents[] = {
 { 0x3411, 0x0006, 0, VR::IS, VM::M1, "ReferencedBeamProfileNumber" },
 };
 
-const unsigned short Dict141TagHashTable[] = {
+const unsigned short Dict142TagHashTable[] = {
     7,    10,    13,    16,    19,    22,     0,     1,     2,     3,
     1,     1,     2,     1,     4,     5,     1,     3,     4,     1,
     0,     1,     1,     5,     6,
 };
 
-const unsigned short Dict141KeyHashTable[] = {
+const unsigned short Dict142KeyHashTable[] = {
     7,    12,    15,     6,    20,     6,     0,     2,     0, 57638,
     3, 30167,     1,     5, 42433,     2,     2,  5395,     4, 42837,
     1,     1, 52792,
 };
 
-vtkDICOMDictionary::Dict Dict141Data = {
+vtkDICOMDictionary::Dict Dict142Data = {
 "BrainLAB_BeamProfile",
 6,
 6,
-Dict141TagHashTable,
-Dict141KeyHashTable,
-Dict141Contents
+Dict142TagHashTable,
+Dict142KeyHashTable,
+Dict142Contents
 };
 
 // ----- astm.org/diconde/iod/NdeDxCalibrationData -----
 
-const DictEntry Dict142Contents[] = {
+const DictEntry Dict143Contents[] = {
 { 0x0009, 0x0040, 0, VR::SQ, VM::M1, "DarkCurrentSequence" },
 { 0x0009, 0x0050, 0, VR::OW, VM::M1, "DarkCurrentCounts" },
 { 0x0009, 0x0060, 0, VR::SQ, VM::M1, "GainCorrectionReferenceSequence" },
@@ -8422,7 +8509,7 @@ const DictEntry Dict142Contents[] = {
 { 0x0009, 0x0099, 0, VR::LT, VM::M1, "CalibrationNotes" },
 };
 
-const unsigned short Dict142TagHashTable[] = {
+const unsigned short Dict143TagHashTable[] = {
    14,    13,    13,    17,    22,    25,    28,    31,    36,    39,
    44,    13,    13,     0,     1,     2,    96,     2,     3,   112,
    12,   153,     1,     4,   113,     1,     5,   114,     1,     6,
@@ -8430,7 +8517,7 @@ const unsigned short Dict142TagHashTable[] = {
     9,   118,    11,   128,     2,     1,    80,    10,   119,
 };
 
-const unsigned short Dict142KeyHashTable[] = {
+const unsigned short Dict143KeyHashTable[] = {
    14,    19,    22,    13,    25,    30,    35,    13,    38,    43,
    13,    13,    13,     0,     2,     7, 25645,    11, 50357,     1,
     3, 29772,     1,     0, 24037,     2,     2, 48192,     5,  8278,
@@ -8438,18 +8525,18 @@ const unsigned short Dict142KeyHashTable[] = {
  9334,    10,  7464,     2,     4, 53052,     9,  5902,
 };
 
-vtkDICOMDictionary::Dict Dict142Data = {
+vtkDICOMDictionary::Dict Dict143Data = {
 "astm.org/diconde/iod/NdeDxCalibrationData",
 13,
 13,
-Dict142TagHashTable,
-Dict142KeyHashTable,
-Dict142Contents
+Dict143TagHashTable,
+Dict143KeyHashTable,
+Dict143Contents
 };
 
 // ----- GEMS_XELPRV_01 -----
 
-const DictEntry Dict143Contents[] = {
+const DictEntry Dict144Contents[] = {
 { 0x0033, 0x0008, 0, VR::CS, VM::M1, "" },
 { 0x0033, 0x0010, 0, VR::SL, VM::M1, "" },
 { 0x0033, 0x0011, 0, VR::LO, VM::M1, "" },
@@ -8473,7 +8560,7 @@ const DictEntry Dict143Contents[] = {
 { 0x0033, 0x0072, 0, VR::UI, VM::M1, "" },
 };
 
-const unsigned short Dict143TagHashTable[] = {
+const unsigned short Dict144TagHashTable[] = {
    22,    25,    30,    35,    40,    45,    21,    21,    21,    21,
    21,    21,    21,    48,    51,    54,    57,    62,    67,    70,
    75,     0,     1,     6,    25,     2,     5,    24,    20,   114,
@@ -8484,7 +8571,7 @@ const unsigned short Dict143TagHashTable[] = {
     2,     8,    27,    13,    32,     1,     7,    26,
 };
 
-const unsigned short Dict143KeyHashTable[] = {
+const unsigned short Dict144KeyHashTable[] = {
    21,    21,    21,    21,    21,    22,    21,    21,    21,    21,
    21,    21,    21,    21,    21,    21,    21,    21,    21,    21,
    21,     0,    21,     0,   256,     1,   256,     2,   256,     3,
@@ -8494,18 +8581,18 @@ const unsigned short Dict143KeyHashTable[] = {
   256,    19,   256,    20,   256,
 };
 
-vtkDICOMDictionary::Dict Dict143Data = {
+vtkDICOMDictionary::Dict Dict144Data = {
 "GEMS_XELPRV_01",
 21,
 21,
-Dict143TagHashTable,
-Dict143KeyHashTable,
-Dict143Contents
+Dict144TagHashTable,
+Dict144KeyHashTable,
+Dict144Contents
 };
 
 // ----- AgilityOverlay -----
 
-const DictEntry Dict144Contents[] = {
+const DictEntry Dict145Contents[] = {
 { 0x0071, 0x0001, 0, VR::ST, VM::M1, "" },
 { 0x0071, 0x0002, 0, VR::ST, VM::M1, "" },
 { 0x0071, 0x0003, 0, VR::ST, VM::M1, "" },
@@ -8548,7 +8635,7 @@ const DictEntry Dict144Contents[] = {
 { 0x0071, 0x0060, 0, VR::FD, VM::M1, "" },
 };
 
-const unsigned short Dict144TagHashTable[] = {
+const unsigned short Dict145TagHashTable[] = {
    41,    46,    49,    56,    59,    62,    40,    40,    40,    40,
    40,    40,    65,    68,    71,    40,    74,    77,    82,    85,
    88,    91,    94,    97,   100,   103,    40,   106,   109,   112,
@@ -8567,7 +8654,7 @@ const unsigned short Dict144TagHashTable[] = {
    86,
 };
 
-const unsigned short Dict144KeyHashTable[] = {
+const unsigned short Dict145KeyHashTable[] = {
    40,    40,    40,    40,    40,    40,    40,    40,    40,    40,
    40,    40,    40,    40,    40,    40,    40,    40,    40,    40,
    40,    41,    40,    40,    40,    40,    40,    40,    40,    40,
@@ -8583,18 +8670,18 @@ const unsigned short Dict144KeyHashTable[] = {
    39,   134,
 };
 
-vtkDICOMDictionary::Dict Dict144Data = {
+vtkDICOMDictionary::Dict Dict145Data = {
 "AgilityOverlay",
 40,
 40,
-Dict144TagHashTable,
-Dict144KeyHashTable,
-Dict144Contents
+Dict145TagHashTable,
+Dict145KeyHashTable,
+Dict145Contents
 };
 
 // ----- VEPRO VIM 5.0 DATA -----
 
-const DictEntry Dict145Contents[] = {
+const DictEntry Dict146Contents[] = {
 { 0x0055, 0x0010, 0, VR::OB, VM::M1, "" },
 { 0x0055, 0x0020, 0, VR::OB, VM::M1, "" },
 { 0x0055, 0x0030, 0, VR::OB, VM::M1, "IconData" },
@@ -8602,52 +8689,52 @@ const DictEntry Dict145Contents[] = {
 { 0x0055, 0x0065, 0, VR::OB, VM::M1, "ImageHashValue" },
 };
 
-const unsigned short Dict145TagHashTable[] = {
+const unsigned short Dict146TagHashTable[] = {
     6,     9,     5,    12,    17,     0,     1,     2,    48,     1,
     1,    32,     2,     0,    16,     4,   101,     1,     3,    81,
 };
 
-const unsigned short Dict145KeyHashTable[] = {
+const unsigned short Dict146KeyHashTable[] = {
     6,    11,     5,     5,     5,     0,     2,     2, 60200,     4,
 20181,     3,     0,  1076,     1,  1076,     3,  1076,
 };
 
-vtkDICOMDictionary::Dict Dict145Data = {
+vtkDICOMDictionary::Dict Dict146Data = {
 "VEPRO VIM 5.0 DATA",
 5,
 5,
-Dict145TagHashTable,
-Dict145KeyHashTable,
-Dict145Contents
-};
-
-// ----- SIEMENS DICOM -----
-
-const DictEntry Dict146Contents[] = {
-{ 0x0009, 0x0010, 0, VR::UN, VM::M1, "" },
-{ 0x0009, 0x0012, 0, VR::LO, VM::M1, "" },
-};
-
-const unsigned short Dict146TagHashTable[] = {
-    2,     3,     0,     2,     0,    16,     1,    18,
-};
-
-const unsigned short Dict146KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
-};
-
-vtkDICOMDictionary::Dict Dict146Data = {
-"SIEMENS DICOM",
-2,
-2,
 Dict146TagHashTable,
 Dict146KeyHashTable,
 Dict146Contents
 };
 
-// ----- SIEMENS MED NM -----
+// ----- SIEMENS DICOM -----
 
 const DictEntry Dict147Contents[] = {
+{ 0x0009, 0x0010, 0, VR::UN, VM::M1, "" },
+{ 0x0009, 0x0012, 0, VR::LO, VM::M1, "" },
+};
+
+const unsigned short Dict147TagHashTable[] = {
+    2,     3,     0,     2,     0,    16,     1,    18,
+};
+
+const unsigned short Dict147KeyHashTable[] = {
+    2,     3,     0,     2,     0,  2690,     1,  2690,
+};
+
+vtkDICOMDictionary::Dict Dict147Data = {
+"SIEMENS DICOM",
+2,
+2,
+Dict147TagHashTable,
+Dict147KeyHashTable,
+Dict147Contents
+};
+
+// ----- SIEMENS MED NM -----
+
+const DictEntry Dict148Contents[] = {
 { 0x0009, 0x0080, 0, VR::ST, VM::M1, "" },
 { 0x0011, 0x0010, 0, VR::ST, VM::M1, "" },
 { 0x0017, 0x0000, 0, VR::ST, VM::M1, "" },
@@ -8842,7 +8929,7 @@ const DictEntry Dict147Contents[] = {
 { 0x7fe3, 0x0028, 0, VR::OW, VM::M1, "" },
 };
 
-const unsigned short Dict147TagHashTable[] = {
+const unsigned short Dict148TagHashTable[] = {
   193,   200,   205,   210,   213,   218,   221,   226,   233,   236,
   241,   244,   192,   192,   192,   247,   250,   255,   264,   267,
   192,   270,   273,   278,   285,   288,   293,   296,   192,   192,
@@ -8915,7 +9002,7 @@ const unsigned short Dict147TagHashTable[] = {
   167,     1,    11,   166,     1,    10,   165,
 };
 
-const unsigned short Dict147KeyHashTable[] = {
+const unsigned short Dict148KeyHashTable[] = {
   193,   192,   192,   196,   192,   199,   192,   192,   192,   192,
   192,   192,   192,   192,   192,   192,   192,   316,   321,   328,
   335,   340,   345,   348,   351,   354,   192,   363,   366,   192,
@@ -8986,18 +9073,18 @@ const unsigned short Dict147KeyHashTable[] = {
   159, 39388,
 };
 
-vtkDICOMDictionary::Dict Dict147Data = {
+vtkDICOMDictionary::Dict Dict148Data = {
 "SIEMENS MED NM",
 192,
 192,
-Dict147TagHashTable,
-Dict147KeyHashTable,
-Dict147Contents
+Dict148TagHashTable,
+Dict148KeyHashTable,
+Dict148Contents
 };
 
 // ----- SPI-P-XSB-DCI Release 1 -----
 
-const DictEntry Dict148Contents[] = {
+const DictEntry Dict149Contents[] = {
 { 0x0019, 0x0010, 0, VR::LT, VM::M1, "VideoBeamBoost" },
 { 0x0019, 0x0011, 0, VR::US, VM::M1, "ChannelGeneratingVideoSync" },
 { 0x0019, 0x0012, 0, VR::US, VM::M1, "VideoGain" },
@@ -9005,29 +9092,29 @@ const DictEntry Dict148Contents[] = {
 { 0x0019, 0x0020, 0, VR::DS, VM::M1, "RTDDataCompressionFactor" },
 };
 
-const unsigned short Dict148TagHashTable[] = {
+const unsigned short Dict149TagHashTable[] = {
     6,     9,    12,    15,    18,     0,     1,     3,    19,     1,
     2,    18,     1,     4,    32,     1,     1,    17,     1,     0,
    16,
 };
 
-const unsigned short Dict148KeyHashTable[] = {
+const unsigned short Dict149KeyHashTable[] = {
     5,     5,     5,     6,    13,     0,     3,     1, 23927,     2,
 49848,     3, 24448,     2,     0, 35076,     4, 22366,
 };
 
-vtkDICOMDictionary::Dict Dict148Data = {
+vtkDICOMDictionary::Dict Dict149Data = {
 "SPI-P-XSB-DCI Release 1",
 5,
 5,
-Dict148TagHashTable,
-Dict148KeyHashTable,
-Dict148Contents
+Dict149TagHashTable,
+Dict149KeyHashTable,
+Dict149Contents
 };
 
 // ----- GEMS_AWSOFT_CD1 -----
 
-const DictEntry Dict149Contents[] = {
+const DictEntry Dict150Contents[] = {
 { 0x0039, 0x0065, 0, VR::UI, VM::M1, "ReferenceToStudyUID" },
 { 0x0039, 0x0070, 0, VR::UI, VM::M1, "ReferenceToSeriesUID" },
 { 0x0039, 0x0075, 0, VR::IS, VM::M1, "ReferenceToOriginalInstance" },
@@ -9039,32 +9126,32 @@ const DictEntry Dict149Contents[] = {
 { 0x0039, 0x00FF, 0, VR::OB, VM::M1, "DPOData" },
 };
 
-const unsigned short Dict149TagHashTable[] = {
+const unsigned short Dict150TagHashTable[] = {
    10,    15,     9,    20,     9,    25,     9,    28,    31,     0,
     2,     1,   112,     5,   144,     2,     4,   133,     7,   170,
     2,     0,   101,     6,   149,     1,     2,   117,     1,     3,
   128,     1,     8,   255,
 };
 
-const unsigned short Dict149KeyHashTable[] = {
+const unsigned short Dict150KeyHashTable[] = {
     9,    10,    13,    16,    19,    26,    29,     9,    32,     0,
     1,     4,  7069,     1,     2, 61095,     1,     1, 56857,     3,
     5,  6363,     6, 21677,     7,  8310,     1,     0, 25477,     1,
     8,  7068,     1,     3, 20833,
 };
 
-vtkDICOMDictionary::Dict Dict149Data = {
+vtkDICOMDictionary::Dict Dict150Data = {
 "GEMS_AWSOFT_CD1",
 9,
 9,
-Dict149TagHashTable,
-Dict149KeyHashTable,
-Dict149Contents
+Dict150TagHashTable,
+Dict150KeyHashTable,
+Dict150Contents
 };
 
 // ----- GEMS_SEND_02 -----
 
-const DictEntry Dict150Contents[] = {
+const DictEntry Dict151Contents[] = {
 { 0x0045, 0x0055, 0, VR::DS, VM::M8, "A_Coefficients" },
 { 0x0045, 0x0062, 0, VR::IS, VM::M1, "UserWindowCenter" },
 { 0x0045, 0x0063, 0, VR::IS, VM::M1, "UserWindowWidth" },
@@ -9075,30 +9162,30 @@ const DictEntry Dict150Contents[] = {
 { 0x0045, 0x0073, 0, VR::IS, VM::M1, "CollimatorHeight" },
 };
 
-const unsigned short Dict150TagHashTable[] = {
+const unsigned short Dict151TagHashTable[] = {
     9,     8,    14,     8,    17,     8,    20,    25,     0,     2,
     0,    85,     3,   101,     1,     4,   103,     1,     5,   105,
     2,     2,    99,     7,   115,     2,     1,    98,     6,   114,
 };
 
-const unsigned short Dict150KeyHashTable[] = {
+const unsigned short Dict151KeyHashTable[] = {
     8,     8,     8,     9,    16,    23,     8,    26,     0,     3,
     4,  5352,     5, 13265,     6, 22843,     3,     2, 29079,     3,
 16921,     7,  6426,     1,     1, 25135,     1,     0, 59138,
 };
 
-vtkDICOMDictionary::Dict Dict150Data = {
+vtkDICOMDictionary::Dict Dict151Data = {
 "GEMS_SEND_02",
 8,
 8,
-Dict150TagHashTable,
-Dict150KeyHashTable,
-Dict150Contents
+Dict151TagHashTable,
+Dict151KeyHashTable,
+Dict151Contents
 };
 
 // ----- Philips Imaging DD 001 -----
 
-const DictEntry Dict151Contents[] = {
+const DictEntry Dict152Contents[] = {
 { 0x2001, 0x0001, 0, VR::FL, VM::M1, "ChemicalShift" },
 { 0x2001, 0x0002, 0, VR::IS, VM::M1, "ChemicalShiftNumberMR" },
 { 0x2001, 0x0003, 0, VR::FL, VM::M1, "DiffusionBFactor" },
@@ -9216,7 +9303,7 @@ const DictEntry Dict151Contents[] = {
 { 0x2001, 0x00f2, 0, VR::FL, VM::M6, "RetrospectiveMotionCorrection" },
 };
 
-const unsigned short Dict151TagHashTable[] = {
+const unsigned short Dict152TagHashTable[] = {
   116,   121,   124,   127,   115,   130,   133,   136,   139,   142,
   145,   148,   115,   151,   115,   154,   115,   115,   115,   115,
   157,   160,   163,   166,   169,   174,   177,   180,   185,   190,
@@ -9263,7 +9350,7 @@ const unsigned short Dict151TagHashTable[] = {
     1,    49,    72,
 };
 
-const unsigned short Dict151KeyHashTable[] = {
+const unsigned short Dict152KeyHashTable[] = {
   115,   116,   115,   115,   119,   115,   115,   124,   115,   115,
   127,   115,   130,   135,   115,   138,   115,   115,   141,   144,
   147,   150,   115,   153,   115,   158,   161,   115,   166,   115,
@@ -9307,18 +9394,18 @@ const unsigned short Dict151KeyHashTable[] = {
  9412,
 };
 
-vtkDICOMDictionary::Dict Dict151Data = {
+vtkDICOMDictionary::Dict Dict152Data = {
 "Philips Imaging DD 001",
 115,
 115,
-Dict151TagHashTable,
-Dict151KeyHashTable,
-Dict151Contents
+Dict152TagHashTable,
+Dict152KeyHashTable,
+Dict152Contents
 };
 
 // ----- PRIVATE_CODE_STRING_1003 -----
 
-const DictEntry Dict152Contents[] = {
+const DictEntry Dict153Contents[] = {
 { 0x1003, 0x0001, 0, VR::UN, VM::M1, "NumberOfProbes" },
 { 0x1003, 0x0010, 0, VR::UN, VM::M1, "US Probe Sequence" },
 { 0x1003, 0x0011, 0, VR::UN, VM::M1, "Identifier" },
@@ -9347,7 +9434,7 @@ const DictEntry Dict152Contents[] = {
 { 0x1003, 0x0043, 0, VR::UN, VM::M1, "Focus" },
 };
 
-const unsigned short Dict152TagHashTable[] = {
+const unsigned short Dict153TagHashTable[] = {
    27,    30,    33,    26,    26,    26,    26,    26,    26,    36,
    26,    26,    26,    26,    39,    44,    49,    54,    59,    64,
    69,    74,    79,    84,    89,    92,     0,     1,    10,    25,
@@ -9360,7 +9447,7 @@ const unsigned short Dict152TagHashTable[] = {
    19,    49,     1,    18,    48,
 };
 
-const unsigned short Dict152KeyHashTable[] = {
+const unsigned short Dict153KeyHashTable[] = {
    27,    26,    34,    26,    37,    40,    45,    48,    26,    26,
    53,    26,    62,    65,    68,    26,    26,    26,    26,    26,
    71,    74,    77,    82,    87,    26,     0,     3,     2, 62212,
@@ -9373,18 +9460,18 @@ const unsigned short Dict152KeyHashTable[] = {
     3, 41983,    15, 50436,
 };
 
-vtkDICOMDictionary::Dict Dict152Data = {
+vtkDICOMDictionary::Dict Dict153Data = {
 "PRIVATE_CODE_STRING_1003",
 26,
 26,
-Dict152TagHashTable,
-Dict152KeyHashTable,
-Dict152Contents
+Dict153TagHashTable,
+Dict153KeyHashTable,
+Dict153Contents
 };
 
 // ----- Applicare/Workflow/Version 1.0 -----
 
-const DictEntry Dict153Contents[] = {
+const DictEntry Dict154Contents[] = {
 { 0x3113, 0x0001, 0, VR::CS, VM::M1, "OrderControl" },
 { 0x3113, 0x0010, 0, VR::SH, VM::M1, "ScheduledActionItemCodeValue" },
 { 0x3113, 0x0011, 0, VR::SH, VM::M1, "ScheduledActionItemCodingSchemeDesignator" },
@@ -9405,7 +9492,7 @@ const DictEntry Dict153Contents[] = {
 { 0x3113, 0x00E2, 0, VR::CS, VM::M1, "KfEditLockUser" },
 };
 
-const unsigned short Dict153TagHashTable[] = {
+const unsigned short Dict154TagHashTable[] = {
    18,    18,    18,    18,    19,    22,    25,    18,    18,    28,
    31,    36,    41,    46,    49,    54,    59,    64,     0,     1,
    12,    39,     1,    11,    38,     1,    10,    37,     1,     9,
@@ -9415,7 +9502,7 @@ const unsigned short Dict153TagHashTable[] = {
     2,    17,    17,   226,     1,     1,    16,
 };
 
-const unsigned short Dict153KeyHashTable[] = {
+const unsigned short Dict154KeyHashTable[] = {
    19,    22,    25,    18,    18,    30,    33,    18,    36,    18,
    39,    18,    18,    42,    51,    56,    61,    18,     0,     1,
    10, 48685,     1,    11, 15677,     2,     0,  7200,     2, 39829,
@@ -9425,18 +9512,18 @@ const unsigned short Dict153KeyHashTable[] = {
 19055,     2,    12, 20206,    17, 41562,
 };
 
-vtkDICOMDictionary::Dict Dict153Data = {
+vtkDICOMDictionary::Dict Dict154Data = {
 "Applicare/Workflow/Version 1.0",
 18,
 18,
-Dict153TagHashTable,
-Dict153KeyHashTable,
-Dict153Contents
+Dict154TagHashTable,
+Dict154KeyHashTable,
+Dict154Contents
 };
 
 // ----- PRIVATE_CODE_STRING_1001 -----
 
-const DictEntry Dict154Contents[] = {
+const DictEntry Dict155Contents[] = {
 { 0x1001, 0x00A0, 0, VR::SQ, VM::M1, "MarkerSequence" },
 { 0x1001, 0x00A1, 0, VR::SL, VM::M1, "MarkerType" },
 { 0x1001, 0x00A2, 0, VR::SL, VM::M1, "MarkerNumber" },
@@ -9506,7 +9593,7 @@ const DictEntry Dict154Contents[] = {
 { 0x1001, 0x00F3, 0, VR::SL, VM::M1, "SortingMethod" },
 };
 
-const unsigned short Dict154TagHashTable[] = {
+const unsigned short Dict155TagHashTable[] = {
    67,    67,    67,    68,    71,    74,    77,    80,    83,    67,
    86,    89,    92,    95,    98,   101,   104,   107,   110,   113,
   116,   119,   122,   125,   128,   131,   134,   137,   140,   143,
@@ -9535,7 +9622,7 @@ const unsigned short Dict154TagHashTable[] = {
    18,   190,     1,    17,   189,     1,    16,   188,
 };
 
-const unsigned short Dict154KeyHashTable[] = {
+const unsigned short Dict155KeyHashTable[] = {
    68,    73,    67,    78,    67,    85,    92,    95,    67,    98,
   101,   104,   111,   114,    67,   117,    67,   124,    67,    67,
    67,    67,   127,   134,   137,   142,   145,   148,   151,    67,
@@ -9563,68 +9650,68 @@ const unsigned short Dict154KeyHashTable[] = {
    20, 37337,    27, 57166,     1,    57, 42386,
 };
 
-vtkDICOMDictionary::Dict Dict154Data = {
+vtkDICOMDictionary::Dict Dict155Data = {
 "PRIVATE_CODE_STRING_1001",
 67,
 67,
-Dict154TagHashTable,
-Dict154KeyHashTable,
-Dict154Contents
-};
-
-// ----- SIEMENS MR EXTRACTED CSA HEADER -----
-
-const DictEntry Dict155Contents[] = {
-{ 0x0025, 0x0001, 0, VR::SQ, VM::M1, "ExtractedMRHeaderInformationSequence" },
-{ 0x0025, 0x0002, 0, VR::LO, VM::M1, "ExtractedMRHeaderCreatorIdentificationCode" },
-{ 0x0025, 0x0003, 0, VR::AT, VM::M1, "ExtractedMRHeaderTag" },
-};
-
-const unsigned short Dict155TagHashTable[] = {
-    4,     3,     9,     0,     2,     0,     1,     1,     2,     1,
-    2,     3,
-};
-
-const unsigned short Dict155KeyHashTable[] = {
-    4,     7,     3,     0,     1,     2,  9615,     2,     0, 12741,
-    1, 45335,
-};
-
-vtkDICOMDictionary::Dict Dict155Data = {
-"SIEMENS MR EXTRACTED CSA HEADER",
-3,
-3,
 Dict155TagHashTable,
 Dict155KeyHashTable,
 Dict155Contents
 };
 
-// ----- KRETZ_US -----
+// ----- SIEMENS MR EXTRACTED CSA HEADER -----
 
 const DictEntry Dict156Contents[] = {
-{ 0x7fe1, 0x0001, 0, VR::OB, VM::M1, "" },
+{ 0x0025, 0x0001, 0, VR::SQ, VM::M1, "ExtractedMRHeaderInformationSequence" },
+{ 0x0025, 0x0002, 0, VR::LO, VM::M1, "ExtractedMRHeaderCreatorIdentificationCode" },
+{ 0x0025, 0x0003, 0, VR::AT, VM::M1, "ExtractedMRHeaderTag" },
 };
 
 const unsigned short Dict156TagHashTable[] = {
-    2,     0,     1,     0,     1,
+    4,     3,     9,     0,     2,     0,     1,     1,     2,     1,
+    2,     3,
 };
 
 const unsigned short Dict156KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
+    4,     7,     3,     0,     1,     2,  9615,     2,     0, 12741,
+    1, 45335,
 };
 
 vtkDICOMDictionary::Dict Dict156Data = {
-"KRETZ_US",
-1,
-1,
+"SIEMENS MR EXTRACTED CSA HEADER",
+3,
+3,
 Dict156TagHashTable,
 Dict156KeyHashTable,
 Dict156Contents
 };
 
-// ----- GEIIS PACS -----
+// ----- KRETZ_US -----
 
 const DictEntry Dict157Contents[] = {
+{ 0x7fe1, 0x0001, 0, VR::OB, VM::M1, "" },
+};
+
+const unsigned short Dict157TagHashTable[] = {
+    2,     0,     1,     0,     1,
+};
+
+const unsigned short Dict157KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
+vtkDICOMDictionary::Dict Dict157Data = {
+"KRETZ_US",
+1,
+1,
+Dict157TagHashTable,
+Dict157KeyHashTable,
+Dict157Contents
+};
+
+// ----- GEIIS PACS -----
+
+const DictEntry Dict158Contents[] = {
 { 0x0903, 0x0010, 0, VR::US, VM::M1, "RejectImageFlag" },
 { 0x0903, 0x0011, 0, VR::US, VM::M1, "SignificantFlag" },
 { 0x0903, 0x0012, 0, VR::US, VM::M1, "ConfidentialFlag" },
@@ -9636,32 +9723,32 @@ const DictEntry Dict157Contents[] = {
 { 0x0907, 0x0031, 0, VR::UI, VM::M1TN, "ExcludeStudyUIDs" },
 };
 
-const unsigned short Dict157TagHashTable[] = {
+const unsigned short Dict158TagHashTable[] = {
    10,    17,    22,     9,     9,     9,     9,    25,    30,     0,
     3,     1,    17,     6,    35,     8,    49,     2,     0,    16,
     5,    34,     1,     4,    33,     2,     3,    32,     7,    36,
     1,     2,    18,
 };
 
-const unsigned short Dict157KeyHashTable[] = {
+const unsigned short Dict158KeyHashTable[] = {
    10,     9,     9,    13,     9,    16,    19,    22,    29,     0,
     1,     8, 17205,     1,     4, 31146,     1,     0, 35306,     1,
     5, 48128,     3,     1,  7407,     6, 21601,     7, 57919,     2,
     2, 34991,     3,   597,
 };
 
-vtkDICOMDictionary::Dict Dict157Data = {
+vtkDICOMDictionary::Dict Dict158Data = {
 "GEIIS PACS",
 9,
 9,
-Dict157TagHashTable,
-Dict157KeyHashTable,
-Dict157Contents
+Dict158TagHashTable,
+Dict158KeyHashTable,
+Dict158Contents
 };
 
 // ----- PRIVATE_CODE_STRING_0021 -----
 
-const DictEntry Dict158Contents[] = {
+const DictEntry Dict159Contents[] = {
 { 0x0021, 0x0070, 0, VR::FD, VM::M1, "DistanceBasePlaneToTemplate" },
 { 0x0021, 0x0071, 0, VR::FD, VM::M16, "VolumeToPatientMatrix" },
 { 0x0021, 0x0072, 0, VR::FD, VM::M16, "PatientToWorldMatrix" },
@@ -9671,30 +9758,30 @@ const DictEntry Dict158Contents[] = {
 { 0x0021, 0x0076, 0, VR::FD, VM::M1, "BasePlaneOffset" },
 };
 
-const unsigned short Dict158TagHashTable[] = {
+const unsigned short Dict159TagHashTable[] = {
     8,    11,    14,    17,    20,    23,    26,     0,     1,     4,
   116,     1,     5,   117,     1,     6,   118,     1,     0,   112,
     1,     1,   113,     1,     2,   114,     1,     3,   115,
 };
 
-const unsigned short Dict158KeyHashTable[] = {
+const unsigned short Dict159KeyHashTable[] = {
     8,    11,    14,    17,     7,    20,    25,     0,     1,     3,
 20656,     1,     2, 38847,     1,     4, 15502,     1,     6, 44588,
     2,     0, 47747,     1, 60787,     1,     5, 64891,
 };
 
-vtkDICOMDictionary::Dict Dict158Data = {
+vtkDICOMDictionary::Dict Dict159Data = {
 "PRIVATE_CODE_STRING_0021",
 7,
 7,
-Dict158TagHashTable,
-Dict158KeyHashTable,
-Dict158Contents
+Dict159TagHashTable,
+Dict159KeyHashTable,
+Dict159Contents
 };
 
 // ----- SIEMENS CT VA0  IDE -----
 
-const DictEntry Dict159Contents[] = {
+const DictEntry Dict160Contents[] = {
 { 0x0009, 0x0010, 0, VR::LO, VM::M1, "" },
 { 0x0009, 0x0030, 0, VR::CS, VM::M1, "" },
 { 0x0009, 0x0031, 0, VR::SH, VM::M1, "" },
@@ -9706,55 +9793,55 @@ const DictEntry Dict159Contents[] = {
 { 0x0009, 0x0051, 0, VR::TM, VM::M1, "" },
 };
 
-const unsigned short Dict159TagHashTable[] = {
+const unsigned short Dict160TagHashTable[] = {
    10,     9,    13,    18,     9,    21,     9,    24,    31,     0,
     1,     5,    64,     2,     2,    49,     6,    66,     1,     1,
    48,     1,     3,    50,     3,     0,    16,     4,    52,     7,
    80,     1,     8,    81,
 };
 
-const unsigned short Dict159KeyHashTable[] = {
+const unsigned short Dict160KeyHashTable[] = {
     9,     9,     9,     9,     9,     9,     9,     9,    10,     0,
     9,     0,   597,     1,   597,     2,   597,     3,   597,     4,
   597,     5,   597,     6,   597,     7,   597,     8,   597,
 };
 
-vtkDICOMDictionary::Dict Dict159Data = {
+vtkDICOMDictionary::Dict Dict160Data = {
 "SIEMENS CT VA0  IDE",
 9,
 9,
-Dict159TagHashTable,
-Dict159KeyHashTable,
-Dict159Contents
-};
-
-// ----- SCHICK TECHNOLOGIES - Note List Creator ID -----
-
-const DictEntry Dict160Contents[] = {
-{ 0x0021, 0x0001, 0, VR::UI, VM::M1, "" },
-{ 0x0021, 0x0002, 0, VR::SQ, VM::M1, "" },
-};
-
-const unsigned short Dict160TagHashTable[] = {
-    3,     6,     0,     1,     0,     1,     1,     1,     2,
-};
-
-const unsigned short Dict160KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
-};
-
-vtkDICOMDictionary::Dict Dict160Data = {
-"SCHICK TECHNOLOGIES - Note List Creator ID",
-2,
-2,
 Dict160TagHashTable,
 Dict160KeyHashTable,
 Dict160Contents
 };
 
-// ----- Mortara_Inc -----
+// ----- SCHICK TECHNOLOGIES - Note List Creator ID -----
 
 const DictEntry Dict161Contents[] = {
+{ 0x0021, 0x0001, 0, VR::UI, VM::M1, "" },
+{ 0x0021, 0x0002, 0, VR::SQ, VM::M1, "" },
+};
+
+const unsigned short Dict161TagHashTable[] = {
+    3,     6,     0,     1,     0,     1,     1,     1,     2,
+};
+
+const unsigned short Dict161KeyHashTable[] = {
+    2,     3,     0,     2,     0,  2690,     1,  2690,
+};
+
+vtkDICOMDictionary::Dict Dict161Data = {
+"SCHICK TECHNOLOGIES - Note List Creator ID",
+2,
+2,
+Dict161TagHashTable,
+Dict161KeyHashTable,
+Dict161Contents
+};
+
+// ----- Mortara_Inc -----
+
+const DictEntry Dict162Contents[] = {
 { 0x1455, 0x0000, 0, VR::OW, VM::M1, "ELIInterpretationVector" },
 { 0x1455, 0x0001, 0, VR::UN, VM::M1, "CustomID" },
 { 0x1455, 0x0002, 0, VR::UT, VM::M1, "Race" },
@@ -9767,32 +9854,32 @@ const DictEntry Dict161Contents[] = {
 { 0x1455, 0x0010, 0, VR::LO, VM::M1, "ManufacturerName" },
 };
 
-const unsigned short Dict161TagHashTable[] = {
+const unsigned short Dict162TagHashTable[] = {
    11,    16,    19,    24,    27,    30,    33,    36,    10,    10,
     0,     2,     4,     4,     9,    16,     1,     5,     5,     2,
     6,     6,     8,     8,     1,     7,     7,     1,     0,     0,
     1,     1,     1,     1,     2,     2,     1,     3,     3,
 };
 
-const unsigned short Dict161KeyHashTable[] = {
+const unsigned short Dict162KeyHashTable[] = {
    11,    16,    10,    23,    28,    10,    10,    10,    10,    31,
     0,     2,     2, 24176,     6,  8606,     3,     4, 51201,     7,
  8606,     9, 49301,     2,     1, 44833,     8, 41000,     1,     0,
 15367,     2,     3, 19436,     5, 48235,
 };
 
-vtkDICOMDictionary::Dict Dict161Data = {
+vtkDICOMDictionary::Dict Dict162Data = {
 "Mortara_Inc",
 10,
 10,
-Dict161TagHashTable,
-Dict161KeyHashTable,
-Dict161Contents
+Dict162TagHashTable,
+Dict162KeyHashTable,
+Dict162Contents
 };
 
 // ----- SMIL_PB79 -----
 
-const DictEntry Dict162Contents[] = {
+const DictEntry Dict163Contents[] = {
 { 0x0079, 0x0000, 0, VR::LO, VM::M1, "Analgesia" },
 { 0x0079, 0x0001, 0, VR::LO, VM::M1, "Anesthesia" },
 { 0x0079, 0x0002, 0, VR::IS, VM::M1, "BedMotion" },
@@ -9817,7 +9904,7 @@ const DictEntry Dict162Contents[] = {
 { 0x0079, 0x0017, 0, VR::IS, VM::M1, "SubjectOrientation" },
 };
 
-const unsigned short Dict162TagHashTable[] = {
+const unsigned short Dict163TagHashTable[] = {
    22,    23,    26,    29,    32,    35,    38,    41,    44,    47,
    50,    53,    56,    59,    62,    22,    65,    70,    75,    78,
    81,    84,     0,     1,    21,    23,     1,     7,     8,     1,
@@ -9829,7 +9916,7 @@ const unsigned short Dict162TagHashTable[] = {
    19,     1,    19,    20,     1,    20,    21,
 };
 
-const unsigned short Dict162KeyHashTable[] = {
+const unsigned short Dict163KeyHashTable[] = {
    23,    22,    22,    28,    35,    42,    45,    48,    22,    51,
    22,    22,    22,    54,    57,    60,    63,    66,    69,    72,
    77,    80,     0,     2,     1,  9743,     2, 22793,     3,     3,
@@ -9841,54 +9928,31 @@ const unsigned short Dict162KeyHashTable[] = {
     1,    15,  9402,
 };
 
-vtkDICOMDictionary::Dict Dict162Data = {
+vtkDICOMDictionary::Dict Dict163Data = {
 "SMIL_PB79",
 22,
 22,
-Dict162TagHashTable,
-Dict162KeyHashTable,
-Dict162Contents
-};
-
-// ----- SIEMENS IKM CKS LUNGCAD BMK -----
-
-const DictEntry Dict163Contents[] = {
-{ 0x0029, 0x0001, 0, VR::UT, VM::M1, "" },
-};
-
-const unsigned short Dict163TagHashTable[] = {
-    2,     0,     1,     0,     1,
-};
-
-const unsigned short Dict163KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict163Data = {
-"SIEMENS IKM CKS LUNGCAD BMK",
-1,
-1,
 Dict163TagHashTable,
 Dict163KeyHashTable,
 Dict163Contents
 };
 
-// ----- APEX_PRIVATE -----
+// ----- SIEMENS IKM CKS LUNGCAD BMK -----
 
 const DictEntry Dict164Contents[] = {
-{ 0x0027, 0x0011, 0, VR::DS, VM::M1, "BedPosition" },
+{ 0x0029, 0x0001, 0, VR::UT, VM::M1, "" },
 };
 
 const unsigned short Dict164TagHashTable[] = {
-    2,     0,     1,     0,    17,
+    2,     0,     1,     0,     1,
 };
 
 const unsigned short Dict164KeyHashTable[] = {
-    2,     0,     1,     0, 32165,
+    2,     0,     1,     0,  5381,
 };
 
 vtkDICOMDictionary::Dict Dict164Data = {
-"APEX_PRIVATE",
+"SIEMENS IKM CKS LUNGCAD BMK",
 1,
 1,
 Dict164TagHashTable,
@@ -9896,9 +9960,32 @@ Dict164KeyHashTable,
 Dict164Contents
 };
 
-// ----- PRIVATE_CODE_STRING_0019 -----
+// ----- APEX_PRIVATE -----
 
 const DictEntry Dict165Contents[] = {
+{ 0x0027, 0x0011, 0, VR::DS, VM::M1, "BedPosition" },
+};
+
+const unsigned short Dict165TagHashTable[] = {
+    2,     0,     1,     0,    17,
+};
+
+const unsigned short Dict165KeyHashTable[] = {
+    2,     0,     1,     0, 32165,
+};
+
+vtkDICOMDictionary::Dict Dict165Data = {
+"APEX_PRIVATE",
+1,
+1,
+Dict165TagHashTable,
+Dict165KeyHashTable,
+Dict165Contents
+};
+
+// ----- PRIVATE_CODE_STRING_0019 -----
+
+const DictEntry Dict166Contents[] = {
 { 0x0019, 0x0000, 0, VR::FD, VM::M1, "Calibration" },
 { 0x0019, 0x0001, 0, VR::FD, VM::M1, "DepthConversion" },
 { 0x0019, 0x0002, 0, VR::FD, VM::M1, "Stepsize" },
@@ -9906,28 +9993,28 @@ const DictEntry Dict165Contents[] = {
 { 0x0019, 0x0004, 0, VR::ST, VM::M1, "DataID" },
 };
 
-const unsigned short Dict165TagHashTable[] = {
+const unsigned short Dict166TagHashTable[] = {
     6,     9,    12,     5,    15,     0,     1,     0,     0,     1,
     3,     3,     1,     2,     2,     2,     1,     1,     4,     4,
 };
 
-const unsigned short Dict165KeyHashTable[] = {
+const unsigned short Dict166KeyHashTable[] = {
     5,     6,     9,     5,    12,     0,     1,     3, 61458,     1,
     1, 32134,     3,     0, 16277,     2,  5976,     4, 30856,
 };
 
-vtkDICOMDictionary::Dict Dict165Data = {
+vtkDICOMDictionary::Dict Dict166Data = {
 "PRIVATE_CODE_STRING_0019",
 5,
 5,
-Dict165TagHashTable,
-Dict165KeyHashTable,
-Dict165Contents
+Dict166TagHashTable,
+Dict166KeyHashTable,
+Dict166Contents
 };
 
 // ----- GEMS_IMAG_01 -----
 
-const DictEntry Dict166Contents[] = {
+const DictEntry Dict167Contents[] = {
 { 0x0027, 0x0006, 0, VR::SL, VM::M1, "ImageArchiveFlag" },
 { 0x0027, 0x0010, 0, VR::SS, VM::M1, "ScoutType" },
 { 0x0027, 0x001c, 0, VR::SL, VM::M1, "VmaMamp" },
@@ -9966,7 +10053,7 @@ const DictEntry Dict166Contents[] = {
 { 0x0027, 0x0062, 0, VR::FL, VM::M1, "NumberOfExcitations" },
 };
 
-const unsigned short Dict166TagHashTable[] = {
+const unsigned short Dict167TagHashTable[] = {
    37,    40,    43,    46,    36,    36,    49,    52,    57,    60,
    63,    66,    36,    36,    36,    36,    36,    69,    72,    75,
    78,    83,    88,    93,    98,   101,   104,   107,   110,   113,
@@ -9983,7 +10070,7 @@ const unsigned short Dict166TagHashTable[] = {
    76,    33,    96,     2,    26,    77,    34,    97,
 };
 
-const unsigned short Dict166KeyHashTable[] = {
+const unsigned short Dict167KeyHashTable[] = {
    36,    37,    36,    42,    47,    50,    53,    36,    60,    63,
    68,    71,    76,    36,    81,    36,    84,    87,    90,    36,
    93,    98,    36,    36,   103,    36,    36,   106,   109,    36,
@@ -10000,18 +10087,18 @@ const unsigned short Dict166KeyHashTable[] = {
 16095,    34,  5761,
 };
 
-vtkDICOMDictionary::Dict Dict166Data = {
+vtkDICOMDictionary::Dict Dict167Data = {
 "GEMS_IMAG_01",
 36,
 36,
-Dict166TagHashTable,
-Dict166KeyHashTable,
-Dict166Contents
+Dict167TagHashTable,
+Dict167KeyHashTable,
+Dict167Contents
 };
 
 // ----- Silhouette ROI V1.0 -----
 
-const DictEntry Dict167Contents[] = {
+const DictEntry Dict168Contents[] = {
 { 0x0029, 0x0011, 0, VR::IS, VM::M1, "ROIName" },
 { 0x0029, 0x0012, 0, VR::LT, VM::M1, "ROINameFont" },
 { 0x0029, 0x0013, 0, VR::LT, VM::M1, "ROINormalColor" },
@@ -10038,7 +10125,7 @@ const DictEntry Dict167Contents[] = {
 { 0x0029, 0x0034, 0, VR::UL, VM::M1, "ROIDontSave" },
 };
 
-const unsigned short Dict167TagHashTable[] = {
+const unsigned short Dict168TagHashTable[] = {
    25,    32,    39,    42,    24,    45,    24,    24,    48,    53,
    56,    61,    66,    71,    76,    81,    24,    24,    24,    24,
    24,    24,    24,    24,     0,     3,     8,    25,    18,    41,
@@ -10050,7 +10137,7 @@ const unsigned short Dict167TagHashTable[] = {
    39,     2,     5,    22,    15,    38,
 };
 
-const unsigned short Dict167KeyHashTable[] = {
+const unsigned short Dict168KeyHashTable[] = {
    25,    24,    30,    33,    36,    39,    42,    45,    48,    24,
    24,    51,    24,    54,    57,    24,    62,    65,    24,    70,
    73,    76,    79,    82,     0,     2,     0, 32878,     4, 10856,
@@ -10063,18 +10150,18 @@ const unsigned short Dict167KeyHashTable[] = {
 15238,
 };
 
-vtkDICOMDictionary::Dict Dict167Data = {
+vtkDICOMDictionary::Dict Dict168Data = {
 "Silhouette ROI V1.0",
 24,
 24,
-Dict167TagHashTable,
-Dict167KeyHashTable,
-Dict167Contents
+Dict168TagHashTable,
+Dict168KeyHashTable,
+Dict168Contents
 };
 
 // ----- DZDICOM 4.3.0 -----
 
-const DictEntry Dict168Contents[] = {
+const DictEntry Dict169Contents[] = {
 { 0x0009, 0x0001, 0, VR::UI, VM::M1, "" },
 { 0x0009, 0x0002, 0, VR::LO, VM::M1, "" },
 { 0x0009, 0x0003, 0, VR::LO, VM::M1, "" },
@@ -10102,7 +10189,7 @@ const DictEntry Dict168Contents[] = {
 { 0x0009, 0x00f9, 0, VR::IS, VM::M1, "" },
 };
 
-const unsigned short Dict168TagHashTable[] = {
+const unsigned short Dict169TagHashTable[] = {
    25,    26,    33,    36,    41,    44,    47,    25,    50,    25,
    53,    56,    59,    62,    65,    70,    25,    25,    73,    76,
    79,    84,    87,    25,    90,     0,     3,     7,     8,    10,
@@ -10115,7 +10202,7 @@ const unsigned short Dict168TagHashTable[] = {
     2,     8,    17,    18,   116,
 };
 
-const unsigned short Dict168KeyHashTable[] = {
+const unsigned short Dict169KeyHashTable[] = {
    25,    25,    25,    25,    25,    25,    26,    25,    25,    25,
    25,    25,    25,    25,    25,    25,    25,    25,    25,    25,
    25,    25,    25,    25,    25,     0,    25,     0,   215,     1,
@@ -10126,18 +10213,18 @@ const unsigned short Dict168KeyHashTable[] = {
   215,    22,   215,    23,   215,    24,   215,
 };
 
-vtkDICOMDictionary::Dict Dict168Data = {
+vtkDICOMDictionary::Dict Dict169Data = {
 "DZDICOM 4.3.0",
 25,
 25,
-Dict168TagHashTable,
-Dict168KeyHashTable,
-Dict168Contents
+Dict169TagHashTable,
+Dict169KeyHashTable,
+Dict169Contents
 };
 
 // ----- SIEMENS SERIES SHADOW ATTRIBUTES -----
 
-const DictEntry Dict169Contents[] = {
+const DictEntry Dict170Contents[] = {
 { 0x0021, 0x0001, 0, VR::IS, VM::M1, "" },
 { 0x0021, 0x0002, 0, VR::DS, VM::M1TN, "" },
 { 0x0021, 0x0003, 0, VR::OB, VM::M1, "" },
@@ -10187,7 +10274,7 @@ const DictEntry Dict169Contents[] = {
 { 0x0021, 0x003b, 0, VR::DS, VM::M1, "" },
 };
 
-const unsigned short Dict169TagHashTable[] = {
+const unsigned short Dict170TagHashTable[] = {
    47,    48,    51,    56,    61,    47,    66,    71,    76,    79,
    82,    87,    92,    97,   102,   107,   112,   115,   118,   121,
   124,   127,    47,   130,    47,   133,   136,    47,    47,    47,
@@ -10208,7 +10295,7 @@ const unsigned short Dict169TagHashTable[] = {
    11,    13,     1,    10,    12,     1,    12,    15,
 };
 
-const unsigned short Dict169KeyHashTable[] = {
+const unsigned short Dict170KeyHashTable[] = {
    47,    47,    47,    47,    47,    47,    47,    47,    47,    47,
    47,    47,    47,    47,    47,    47,    47,    47,    47,    47,
    47,    47,    47,    48,    47,    47,    47,    47,    47,    47,
@@ -10226,41 +10313,41 @@ const unsigned short Dict169KeyHashTable[] = {
   114,    46,   114,
 };
 
-vtkDICOMDictionary::Dict Dict169Data = {
+vtkDICOMDictionary::Dict Dict170Data = {
 "SIEMENS SERIES SHADOW ATTRIBUTES",
 47,
 47,
-Dict169TagHashTable,
-Dict169KeyHashTable,
-Dict169Contents
-};
-
-// ----- DL_INTERNAL_USE -----
-
-const DictEntry Dict170Contents[] = {
-{ 0x0015, 0x008f, 0, VR::IS, VM::M1, "" },
-};
-
-const unsigned short Dict170TagHashTable[] = {
-    2,     0,     1,     0,   143,
-};
-
-const unsigned short Dict170KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict170Data = {
-"DL_INTERNAL_USE",
-1,
-1,
 Dict170TagHashTable,
 Dict170KeyHashTable,
 Dict170Contents
 };
 
-// ----- HOLOGIC, Inc. -----
+// ----- DL_INTERNAL_USE -----
 
 const DictEntry Dict171Contents[] = {
+{ 0x0015, 0x008f, 0, VR::IS, VM::M1, "" },
+};
+
+const unsigned short Dict171TagHashTable[] = {
+    2,     0,     1,     0,   143,
+};
+
+const unsigned short Dict171KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
+vtkDICOMDictionary::Dict Dict171Data = {
+"DL_INTERNAL_USE",
+1,
+1,
+Dict171TagHashTable,
+Dict171KeyHashTable,
+Dict171Contents
+};
+
+// ----- HOLOGIC, Inc. -----
+
+const DictEntry Dict172Contents[] = {
 { 0x0019, 0x0001, 0, VR::IS, VM::M1, "" },
 { 0x0019, 0x0002, 0, VR::IS, VM::M1, "" },
 { 0x0019, 0x0003, 0, VR::IS, VM::M1, "" },
@@ -10318,7 +10405,7 @@ const DictEntry Dict171Contents[] = {
 { 0x7f01, 0x0012, 0, VR::OB, VM::M1, "CodecContent" },
 };
 
-const unsigned short Dict171TagHashTable[] = {
+const unsigned short Dict172TagHashTable[] = {
    55,    55,    55,    56,    55,    59,    62,    65,    68,    55,
    71,    74,    77,    55,    55,    80,    55,    83,    88,    91,
    96,   101,   104,    55,   107,    55,   110,   113,    55,   116,
@@ -10342,7 +10429,7 @@ const unsigned short Dict171TagHashTable[] = {
   112,     1,    35,   113,
 };
 
-const unsigned short Dict171KeyHashTable[] = {
+const unsigned short Dict172KeyHashTable[] = {
    56,    55,    55,    55,    55,    63,    70,    55,    55,    55,
    55,    55,    75,    55,    84,    55,    55,    87,    55,    92,
    95,    55,    98,   103,    55,    55,   106,   109,   120,   123,
@@ -10365,41 +10452,41 @@ const unsigned short Dict171KeyHashTable[] = {
     1,    39, 35678,
 };
 
-vtkDICOMDictionary::Dict Dict171Data = {
+vtkDICOMDictionary::Dict Dict172Data = {
 "HOLOGIC, Inc.",
 55,
 55,
-Dict171TagHashTable,
-Dict171KeyHashTable,
-Dict171Contents
-};
-
-// ----- AMI StudyExtensions_01 -----
-
-const DictEntry Dict172Contents[] = {
-{ 0x3111, 0x0001, 0, VR::UL, VM::M1, "Last Released Annot Label" },
-};
-
-const unsigned short Dict172TagHashTable[] = {
-    2,     0,     1,     0,     1,
-};
-
-const unsigned short Dict172KeyHashTable[] = {
-    2,     0,     1,     0, 56990,
-};
-
-vtkDICOMDictionary::Dict Dict172Data = {
-"AMI StudyExtensions_01",
-1,
-1,
 Dict172TagHashTable,
 Dict172KeyHashTable,
 Dict172Contents
 };
 
-// ----- SPI-P-Private-DCI Release 1 -----
+// ----- AMI StudyExtensions_01 -----
 
 const DictEntry Dict173Contents[] = {
+{ 0x3111, 0x0001, 0, VR::UL, VM::M1, "Last Released Annot Label" },
+};
+
+const unsigned short Dict173TagHashTable[] = {
+    2,     0,     1,     0,     1,
+};
+
+const unsigned short Dict173KeyHashTable[] = {
+    2,     0,     1,     0, 56990,
+};
+
+vtkDICOMDictionary::Dict Dict173Data = {
+"AMI StudyExtensions_01",
+1,
+1,
+Dict173TagHashTable,
+Dict173KeyHashTable,
+Dict173Contents
+};
+
+// ----- SPI-P-Private-DCI Release 1 -----
+
+const DictEntry Dict174Contents[] = {
 { 0x0019, 0x0010, 0, VR::UN, VM::M1, "ECGTimeMapDataBitsAllocated" },
 { 0x0019, 0x0011, 0, VR::UN, VM::M1, "ECGTimeMapDataBitsStored" },
 { 0x0019, 0x0012, 0, VR::UN, VM::M1, "ECGTimeMapDataHighBit" },
@@ -10410,31 +10497,31 @@ const DictEntry Dict173Contents[] = {
 { 0x0019, 0x0017, 0, VR::UN, VM::M1, "ECGTimeMapData" },
 };
 
-const unsigned short Dict173TagHashTable[] = {
+const unsigned short Dict174TagHashTable[] = {
     9,    12,    15,    18,    21,    24,    27,    30,     0,     1,
     1,    17,     1,     0,    16,     1,     3,    19,     1,     2,
    18,     1,     5,    21,     1,     4,    20,     1,     7,    23,
     1,     6,    22,
 };
 
-const unsigned short Dict173KeyHashTable[] = {
+const unsigned short Dict174KeyHashTable[] = {
     8,     8,     9,    12,    17,     8,    20,    27,     0,     1,
     2, 29379,     2,     6,  7908,     7, 35587,     1,     5, 27872,
     3,     0, 64646,     1,  8751,     3, 48465,     1,     4,  9486,
 };
 
-vtkDICOMDictionary::Dict Dict173Data = {
+vtkDICOMDictionary::Dict Dict174Data = {
 "SPI-P-Private-DCI Release 1",
 8,
 8,
-Dict173TagHashTable,
-Dict173KeyHashTable,
-Dict173Contents
+Dict174TagHashTable,
+Dict174KeyHashTable,
+Dict174Contents
 };
 
 // ----- GEMS_FALCON_03 -----
 
-const DictEntry Dict174Contents[] = {
+const DictEntry Dict175Contents[] = {
 { 0x0045, 0x0055, 0, VR::DS, VM::M8, "A_Coefficients" },
 { 0x0045, 0x0062, 0, VR::IS, VM::M1, "UserWindowCenter" },
 { 0x0045, 0x0063, 0, VR::IS, VM::M1, "UserWindowWidth" },
@@ -10445,30 +10532,30 @@ const DictEntry Dict174Contents[] = {
 { 0x0045, 0x0073, 0, VR::IS, VM::M1, "CollimatorHeight" },
 };
 
-const unsigned short Dict174TagHashTable[] = {
+const unsigned short Dict175TagHashTable[] = {
     9,     8,    14,     8,    17,     8,    20,    25,     0,     2,
     0,    85,     3,   101,     1,     4,   103,     1,     5,   105,
     2,     2,    99,     7,   115,     2,     1,    98,     6,   114,
 };
 
-const unsigned short Dict174KeyHashTable[] = {
+const unsigned short Dict175KeyHashTable[] = {
     8,     8,     8,     9,    16,    23,     8,    26,     0,     3,
     4,  5352,     5, 13265,     6, 22843,     3,     2, 29079,     3,
 16921,     7,  6426,     1,     1, 25135,     1,     0, 59138,
 };
 
-vtkDICOMDictionary::Dict Dict174Data = {
+vtkDICOMDictionary::Dict Dict175Data = {
 "GEMS_FALCON_03",
 8,
 8,
-Dict174TagHashTable,
-Dict174KeyHashTable,
-Dict174Contents
+Dict175TagHashTable,
+Dict175KeyHashTable,
+Dict175Contents
 };
 
 // ----- SIEMENS CM VA0  CMS -----
 
-const DictEntry Dict175Contents[] = {
+const DictEntry Dict176Contents[] = {
 { 0x0009, 0x0000, 0, VR::DS, VM::M1, "NumberOfMeasurements" },
 { 0x0009, 0x0010, 0, VR::CS, VM::M1, "StorageMode" },
 { 0x0009, 0x0012, 0, VR::UL, VM::M1, "EvaluationMaskImage" },
@@ -10541,7 +10628,7 @@ const DictEntry Dict175Contents[] = {
 { 0x7fe1, 0x0000, 0, VR::OB, VM::M1TN, "BinaryData" },
 };
 
-const unsigned short Dict175TagHashTable[] = {
+const unsigned short Dict176TagHashTable[] = {
    71,    76,    85,    90,    97,   100,    70,   105,    70,   108,
   115,   122,   127,    70,   130,   133,   136,   141,    70,   144,
    70,   151,    70,   154,    70,   157,    70,   160,    70,    70,
@@ -10570,7 +10657,7 @@ const unsigned short Dict175TagHashTable[] = {
    86,     1,    49,   101,
 };
 
-const unsigned short Dict175KeyHashTable[] = {
+const unsigned short Dict176KeyHashTable[] = {
    71,    70,    76,    79,    86,    70,    89,    92,    70,    70,
    70,    70,    70,    95,   106,   113,    70,   116,    70,   119,
   122,    70,    70,   125,    70,   128,   131,    70,   134,    70,
@@ -10599,46 +10686,23 @@ const unsigned short Dict175KeyHashTable[] = {
     1,     9, 24952,
 };
 
-vtkDICOMDictionary::Dict Dict175Data = {
+vtkDICOMDictionary::Dict Dict176Data = {
 "SIEMENS CM VA0  CMS",
 70,
 70,
-Dict175TagHashTable,
-Dict175KeyHashTable,
-Dict175Contents
-};
-
-// ----- PHILIPS MR/PART 7 -----
-
-const DictEntry Dict176Contents[] = {
-{ 0x0019, 0x0000, 0, VR::IS, VM::M1, "" },
-};
-
-const unsigned short Dict176TagHashTable[] = {
-    2,     0,     1,     0,     0,
-};
-
-const unsigned short Dict176KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict176Data = {
-"PHILIPS MR/PART 7",
-1,
-1,
 Dict176TagHashTable,
 Dict176KeyHashTable,
 Dict176Contents
 };
 
-// ----- PHILIPS MR/PART 6 -----
+// ----- PHILIPS MR/PART 7 -----
 
 const DictEntry Dict177Contents[] = {
-{ 0x0019, 0x0010, 0, VR::IS, VM::M1, "" },
+{ 0x0019, 0x0000, 0, VR::IS, VM::M1, "" },
 };
 
 const unsigned short Dict177TagHashTable[] = {
-    2,     0,     1,     0,    16,
+    2,     0,     1,     0,     0,
 };
 
 const unsigned short Dict177KeyHashTable[] = {
@@ -10646,7 +10710,7 @@ const unsigned short Dict177KeyHashTable[] = {
 };
 
 vtkDICOMDictionary::Dict Dict177Data = {
-"PHILIPS MR/PART 6",
+"PHILIPS MR/PART 7",
 1,
 1,
 Dict177TagHashTable,
@@ -10654,9 +10718,32 @@ Dict177KeyHashTable,
 Dict177Contents
 };
 
-// ----- PHILIPS MR/PART -----
+// ----- PHILIPS MR/PART 6 -----
 
 const DictEntry Dict178Contents[] = {
+{ 0x0019, 0x0010, 0, VR::IS, VM::M1, "" },
+};
+
+const unsigned short Dict178TagHashTable[] = {
+    2,     0,     1,     0,    16,
+};
+
+const unsigned short Dict178KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
+vtkDICOMDictionary::Dict Dict178Data = {
+"PHILIPS MR/PART 6",
+1,
+1,
+Dict178TagHashTable,
+Dict178KeyHashTable,
+Dict178Contents
+};
+
+// ----- PHILIPS MR/PART -----
+
+const DictEntry Dict179Contents[] = {
 { 0x0019, 0x0000, 0, VR::IS, VM::M1, "NumberOfStacks" },
 { 0x0019, 0x0001, 0, VR::IS, VM::M1TN, "StackType" },
 { 0x0019, 0x0002, 0, VR::IS, VM::M1TN, "" },
@@ -10810,7 +10897,7 @@ const DictEntry Dict178Contents[] = {
 { 0x0029, 0x00d5, 0, VR::LT, VM::M1, "SliceThickness" },
 };
 
-const unsigned short Dict178TagHashTable[] = {
+const unsigned short Dict179TagHashTable[] = {
   152,   159,   164,   167,   172,   177,   151,   180,   185,   190,
   151,   151,   195,   198,   151,   151,   201,   206,   211,   214,
   217,   222,   225,   230,   235,   242,   245,   248,   253,   151,
@@ -10869,7 +10956,7 @@ const unsigned short Dict178TagHashTable[] = {
    72,   142,     1,    71,   141,
 };
 
-const unsigned short Dict178KeyHashTable[] = {
+const unsigned short Dict179KeyHashTable[] = {
   151,   152,   151,   151,   151,   151,   151,   151,   151,   151,
   151,   151,   151,   151,   151,   151,   151,   151,   151,   155,
   151,   151,   151,   151,   160,   151,   163,   151,   166,   151,
@@ -10923,18 +11010,18 @@ const unsigned short Dict178KeyHashTable[] = {
  7113,     1,   133,  5770,
 };
 
-vtkDICOMDictionary::Dict Dict178Data = {
+vtkDICOMDictionary::Dict Dict179Data = {
 "PHILIPS MR/PART",
 151,
 151,
-Dict178TagHashTable,
-Dict178KeyHashTable,
-Dict178Contents
+Dict179TagHashTable,
+Dict179KeyHashTable,
+Dict179Contents
 };
 
 // ----- GEMS_DL_IMG_01 -----
 
-const DictEntry Dict179Contents[] = {
+const DictEntry Dict180Contents[] = {
 { 0x0019, 0x000B, 0, VR::DS, VM::M1T2, "FOVDimensionDouble" },
 { 0x0019, 0x002B, 0, VR::FL, VM::M1, "DistanceToTableTop" },
 { 0x0019, 0x0030, 0, VR::LO, VM::M1, "ImageFileName" },
@@ -11064,7 +11151,7 @@ const DictEntry Dict179Contents[] = {
 { 0x0019, 0x00ef, 0, VR::FL, VM::M1, "" },
 };
 
-const unsigned short Dict179TagHashTable[] = {
+const unsigned short Dict180TagHashTable[] = {
   128,   131,   134,   137,   140,   143,   146,   149,   152,   155,
   158,   161,   164,   167,   170,   173,   176,   179,   182,   187,
   190,   193,   196,   199,   202,   205,   208,   211,   214,   217,
@@ -11116,7 +11203,7 @@ const unsigned short Dict179TagHashTable[] = {
    42,   100,     1,    43,   101,     1,    44,   102,
 };
 
-const unsigned short Dict179KeyHashTable[] = {
+const unsigned short Dict180KeyHashTable[] = {
   128,   127,   131,   134,   139,   127,   127,   127,   142,   145,
   127,   127,   127,   148,   155,   160,   165,   168,   127,   173,
   176,   181,   127,   184,   127,   187,   190,   195,   200,   127,
@@ -11165,46 +11252,23 @@ const unsigned short Dict179KeyHashTable[] = {
   100, 35521,     2,    10,  8739,    11, 61602,     1,    78, 46024,
 };
 
-vtkDICOMDictionary::Dict Dict179Data = {
+vtkDICOMDictionary::Dict Dict180Data = {
 "GEMS_DL_IMG_01",
 127,
 127,
-Dict179TagHashTable,
-Dict179KeyHashTable,
-Dict179Contents
-};
-
-// ----- ESOFT_DICOM_ECAT_OWNERCODE -----
-
-const DictEntry Dict180Contents[] = {
-{ 0x0015, 0x0000, 0, VR::OB, VM::M1, "" },
-};
-
-const unsigned short Dict180TagHashTable[] = {
-    2,     0,     1,     0,     0,
-};
-
-const unsigned short Dict180KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict180Data = {
-"ESOFT_DICOM_ECAT_OWNERCODE",
-1,
-1,
 Dict180TagHashTable,
 Dict180KeyHashTable,
 Dict180Contents
 };
 
-// ----- KINETDX_GRAPHICS -----
+// ----- ESOFT_DICOM_ECAT_OWNERCODE -----
 
 const DictEntry Dict181Contents[] = {
-{ 0x0021, 0x00a4, 0, VR::OB, VM::M1, "" },
+{ 0x0015, 0x0000, 0, VR::OB, VM::M1, "" },
 };
 
 const unsigned short Dict181TagHashTable[] = {
-    2,     0,     1,     0,   164,
+    2,     0,     1,     0,     0,
 };
 
 const unsigned short Dict181KeyHashTable[] = {
@@ -11212,7 +11276,7 @@ const unsigned short Dict181KeyHashTable[] = {
 };
 
 vtkDICOMDictionary::Dict Dict181Data = {
-"KINETDX_GRAPHICS",
+"ESOFT_DICOM_ECAT_OWNERCODE",
 1,
 1,
 Dict181TagHashTable,
@@ -11220,9 +11284,32 @@ Dict181KeyHashTable,
 Dict181Contents
 };
 
-// ----- GEMS_PETD_01 -----
+// ----- KINETDX_GRAPHICS -----
 
 const DictEntry Dict182Contents[] = {
+{ 0x0021, 0x00a4, 0, VR::OB, VM::M1, "" },
+};
+
+const unsigned short Dict182TagHashTable[] = {
+    2,     0,     1,     0,   164,
+};
+
+const unsigned short Dict182KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
+vtkDICOMDictionary::Dict Dict182Data = {
+"KINETDX_GRAPHICS",
+1,
+1,
+Dict182TagHashTable,
+Dict182KeyHashTable,
+Dict182Contents
+};
+
+// ----- GEMS_PETD_01 -----
+
+const DictEntry Dict183Contents[] = {
 { 0x0009, 0x0001, 0, VR::LO, VM::M2, "ImplementationVersionName" },
 { 0x0009, 0x0002, 0, VR::LO, VM::M1, "PatientID" },
 { 0x0009, 0x0003, 0, VR::SH, VM::M1, "PatientCompatibleVersion" },
@@ -11560,7 +11647,7 @@ const DictEntry Dict182Contents[] = {
 { 0x5005, 0x000d, 0, VR::LO, VM::M1, "PointColor" },
 };
 
-const unsigned short Dict182TagHashTable[] = {
+const unsigned short Dict183TagHashTable[] = {
   336,   339,   342,   345,   348,   351,   354,   357,   360,   365,
   370,   375,   380,   385,   390,   395,   400,   409,   416,   425,
   432,   439,   446,   453,   458,   463,   466,   473,   480,   487,
@@ -11688,7 +11775,7 @@ const unsigned short Dict182TagHashTable[] = {
   229,
 };
 
-const unsigned short Dict182KeyHashTable[] = {
+const unsigned short Dict183KeyHashTable[] = {
   336,   341,   344,   347,   335,   335,   352,   355,   360,   363,
   376,   335,   335,   335,   379,   386,   391,   335,   335,   335,
   394,   399,   335,   414,   417,   335,   335,   420,   423,   426,
@@ -11813,41 +11900,41 @@ const unsigned short Dict182KeyHashTable[] = {
   162,  7261,     2,    21, 55087,    23, 53378,
 };
 
-vtkDICOMDictionary::Dict Dict182Data = {
+vtkDICOMDictionary::Dict Dict183Data = {
 "GEMS_PETD_01",
 335,
 335,
-Dict182TagHashTable,
-Dict182KeyHashTable,
-Dict182Contents
-};
-
-// ----- ISI -----
-
-const DictEntry Dict183Contents[] = {
-{ 0x0009, 0x0001, 0, VR::UN, VM::M1, "SIENETGeneralPurposeIMGEF" },
-};
-
-const unsigned short Dict183TagHashTable[] = {
-    2,     0,     1,     0,     1,
-};
-
-const unsigned short Dict183KeyHashTable[] = {
-    2,     0,     1,     0,  1153,
-};
-
-vtkDICOMDictionary::Dict Dict183Data = {
-"ISI",
-1,
-1,
 Dict183TagHashTable,
 Dict183KeyHashTable,
 Dict183Contents
 };
 
-// ----- GEMS_DRS_1 -----
+// ----- ISI -----
 
 const DictEntry Dict184Contents[] = {
+{ 0x0009, 0x0001, 0, VR::UN, VM::M1, "SIENETGeneralPurposeIMGEF" },
+};
+
+const unsigned short Dict184TagHashTable[] = {
+    2,     0,     1,     0,     1,
+};
+
+const unsigned short Dict184KeyHashTable[] = {
+    2,     0,     1,     0,  1153,
+};
+
+vtkDICOMDictionary::Dict Dict184Data = {
+"ISI",
+1,
+1,
+Dict184TagHashTable,
+Dict184KeyHashTable,
+Dict184Contents
+};
+
+// ----- GEMS_DRS_1 -----
+
+const DictEntry Dict185Contents[] = {
 { 0x0037, 0x0010, 0, VR::LO, VM::M1, "ReferringDepartment" },
 { 0x0037, 0x0020, 0, VR::US, VM::M1, "ScreenNumber" },
 { 0x0037, 0x0040, 0, VR::SH, VM::M1, "LeftOrientation" },
@@ -11856,103 +11943,103 @@ const DictEntry Dict184Contents[] = {
 { 0x0037, 0x0060, 0, VR::US, VM::M1, "DSA" },
 };
 
-const unsigned short Dict184TagHashTable[] = {
+const unsigned short Dict185TagHashTable[] = {
     7,     6,    10,    15,    18,    21,     0,     1,     4,    80,
     2,     3,    66,     5,    96,     1,     0,    16,     1,     2,
    64,     1,     1,    32,
 };
 
-const unsigned short Dict184KeyHashTable[] = {
+const unsigned short Dict185KeyHashTable[] = {
     7,    10,     6,    13,    16,    21,     0,     1,     1, 59757,
     1,     3, 23101,     1,     0, 49695,     2,     2, 62532,     4,
 11413,     1,     5, 64132,
 };
 
-vtkDICOMDictionary::Dict Dict184Data = {
+vtkDICOMDictionary::Dict Dict185Data = {
 "GEMS_DRS_1",
 6,
 6,
-Dict184TagHashTable,
-Dict184KeyHashTable,
-Dict184Contents
-};
-
-// ----- RamSoft Race Identifier -----
-
-const DictEntry Dict185Contents[] = {
-{ 0x3129, 0x0010, 0, VR::LO, VM::M1, "" },
-};
-
-const unsigned short Dict185TagHashTable[] = {
-    2,     0,     1,     0,    16,
-};
-
-const unsigned short Dict185KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict185Data = {
-"RamSoft Race Identifier",
-1,
-1,
 Dict185TagHashTable,
 Dict185KeyHashTable,
 Dict185Contents
 };
 
-// ----- TOSHIBA MDW NON-IMAGE -----
+// ----- RamSoft Race Identifier -----
 
 const DictEntry Dict186Contents[] = {
-{ 0x0029, 0x0008, 0, VR::CS, VM::M1, "NonImageHeaderType" },
-{ 0x0029, 0x0009, 0, VR::LO, VM::M1, "NonImageHeaderVersion" },
-{ 0x0029, 0x0020, 0, VR::OB, VM::M1, "" },
+{ 0x3129, 0x0010, 0, VR::LO, VM::M1, "" },
 };
 
 const unsigned short Dict186TagHashTable[] = {
-    4,     3,     9,     0,     2,     0,     8,     2,    32,     1,
-    1,     9,
+    2,     0,     1,     0,    16,
 };
 
 const unsigned short Dict186KeyHashTable[] = {
-    3,     4,     7,     0,     1,     0, 30143,     2,     1, 59488,
-    2,  1793,
+    2,     0,     1,     0,  5381,
 };
 
 vtkDICOMDictionary::Dict Dict186Data = {
-"TOSHIBA MDW NON-IMAGE",
-3,
-3,
+"RamSoft Race Identifier",
+1,
+1,
 Dict186TagHashTable,
 Dict186KeyHashTable,
 Dict186Contents
 };
 
-// ----- SIEMENS MED OCS PUBLIC RT PLAN ATTRIBUTES -----
+// ----- TOSHIBA MDW NON-IMAGE -----
 
 const DictEntry Dict187Contents[] = {
-{ 0x0039, 0x0001, 0, VR::UT, VM::M1, "ExternalAttributes" },
+{ 0x0029, 0x0008, 0, VR::CS, VM::M1, "NonImageHeaderType" },
+{ 0x0029, 0x0009, 0, VR::LO, VM::M1, "NonImageHeaderVersion" },
+{ 0x0029, 0x0020, 0, VR::OB, VM::M1, "" },
 };
 
 const unsigned short Dict187TagHashTable[] = {
-    2,     0,     1,     0,     1,
+    4,     3,     9,     0,     2,     0,     8,     2,    32,     1,
+    1,     9,
 };
 
 const unsigned short Dict187KeyHashTable[] = {
-    2,     0,     1,     0, 18287,
+    3,     4,     7,     0,     1,     0, 30143,     2,     1, 59488,
+    2,  1793,
 };
 
 vtkDICOMDictionary::Dict Dict187Data = {
-"SIEMENS MED OCS PUBLIC RT PLAN ATTRIBUTES",
-1,
-1,
+"TOSHIBA MDW NON-IMAGE",
+3,
+3,
 Dict187TagHashTable,
 Dict187KeyHashTable,
 Dict187Contents
 };
 
-// ----- DR Systems, Inc. -----
+// ----- SIEMENS MED OCS PUBLIC RT PLAN ATTRIBUTES -----
 
 const DictEntry Dict188Contents[] = {
+{ 0x0039, 0x0001, 0, VR::UT, VM::M1, "ExternalAttributes" },
+};
+
+const unsigned short Dict188TagHashTable[] = {
+    2,     0,     1,     0,     1,
+};
+
+const unsigned short Dict188KeyHashTable[] = {
+    2,     0,     1,     0, 18287,
+};
+
+vtkDICOMDictionary::Dict Dict188Data = {
+"SIEMENS MED OCS PUBLIC RT PLAN ATTRIBUTES",
+1,
+1,
+Dict188TagHashTable,
+Dict188KeyHashTable,
+Dict188Contents
+};
+
+// ----- DR Systems, Inc. -----
+
+const DictEntry Dict189Contents[] = {
 { 0x4453, 0x0001, 0, VR::LO, VM::M1, "ExamID" },
 { 0x4453, 0x0002, 0, VR::LO, VM::M1, "ImageType" },
 { 0x4453, 0x0004, 0, VR::LO, VM::M1, "FileType" },
@@ -11961,30 +12048,30 @@ const DictEntry Dict188Contents[] = {
 { 0x4453, 0x000C, 0, VR::SQ, VM::M1, "OriginalInstanceUIDSequence" },
 };
 
-const unsigned short Dict188TagHashTable[] = {
+const unsigned short Dict189TagHashTable[] = {
     7,    12,     6,     6,    15,    20,     0,     2,     4,    10,
     5,    12,     1,     0,     1,     2,     1,     2,     2,     4,
     1,     3,     5,
 };
 
-const unsigned short Dict188KeyHashTable[] = {
+const unsigned short Dict189KeyHashTable[] = {
     7,    14,    19,     6,     6,     6,     0,     3,     1, 28071,
     3, 29887,     5, 30295,     2,     0, 16330,     2, 14801,     1,
     4, 50688,
 };
 
-vtkDICOMDictionary::Dict Dict188Data = {
+vtkDICOMDictionary::Dict Dict189Data = {
 "DR Systems, Inc.",
 6,
 6,
-Dict188TagHashTable,
-Dict188KeyHashTable,
-Dict188Contents
+Dict189TagHashTable,
+Dict189KeyHashTable,
+Dict189Contents
 };
 
 // ----- SCHICK TECHNOLOGIES - Change Item Creator ID -----
 
-const DictEntry Dict189Contents[] = {
+const DictEntry Dict190Contents[] = {
 { 0x0021, 0x0001, 0, VR::UI, VM::M1, "" },
 { 0x0021, 0x0002, 0, VR::US, VM::M1, "" },
 { 0x0021, 0x0003, 0, VR::DT, VM::M1, "" },
@@ -11992,52 +12079,52 @@ const DictEntry Dict189Contents[] = {
 { 0x0021, 0x0005, 0, VR::OB, VM::M1, "" },
 };
 
-const unsigned short Dict189TagHashTable[] = {
+const unsigned short Dict190TagHashTable[] = {
     6,     9,    12,     5,    17,     0,     1,     1,     2,     1,
     4,     5,     2,     0,     1,     3,     4,     1,     2,     3,
 };
 
-const unsigned short Dict189KeyHashTable[] = {
+const unsigned short Dict190KeyHashTable[] = {
     5,     6,     5,     5,     5,     0,     5,     0,  1076,     1,
  1076,     2,  1076,     3,  1076,     4,  1076,
 };
 
-vtkDICOMDictionary::Dict Dict189Data = {
+vtkDICOMDictionary::Dict Dict190Data = {
 "SCHICK TECHNOLOGIES - Change Item Creator ID",
 5,
 5,
-Dict189TagHashTable,
-Dict189KeyHashTable,
-Dict189Contents
-};
-
-// ----- SIEMENS AX INSPACE_EP -----
-
-const DictEntry Dict190Contents[] = {
-{ 0x0009, 0x0050, 0, VR::UI, VM::M1, "" },
-{ 0x0009, 0x0051, 0, VR::UI, VM::M1, "" },
-};
-
-const unsigned short Dict190TagHashTable[] = {
-    3,     6,     0,     1,     0,    80,     1,     1,    81,
-};
-
-const unsigned short Dict190KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
-};
-
-vtkDICOMDictionary::Dict Dict190Data = {
-"SIEMENS AX INSPACE_EP",
-2,
-2,
 Dict190TagHashTable,
 Dict190KeyHashTable,
 Dict190Contents
 };
 
-// ----- AGFA-AG_HPState -----
+// ----- SIEMENS AX INSPACE_EP -----
 
 const DictEntry Dict191Contents[] = {
+{ 0x0009, 0x0050, 0, VR::UI, VM::M1, "" },
+{ 0x0009, 0x0051, 0, VR::UI, VM::M1, "" },
+};
+
+const unsigned short Dict191TagHashTable[] = {
+    3,     6,     0,     1,     0,    80,     1,     1,    81,
+};
+
+const unsigned short Dict191KeyHashTable[] = {
+    2,     3,     0,     2,     0,  2690,     1,  2690,
+};
+
+vtkDICOMDictionary::Dict Dict191Data = {
+"SIEMENS AX INSPACE_EP",
+2,
+2,
+Dict191TagHashTable,
+Dict191KeyHashTable,
+Dict191Contents
+};
+
+// ----- AGFA-AG_HPState -----
+
+const DictEntry Dict192Contents[] = {
 { 0x0011, 0x0011, 0, VR::SH, VM::M1, "" },
 { 0x0019, 0x00a0, 0, VR::SQ, VM::M1, "" },
 { 0x0019, 0x00a1, 0, VR::FL, VM::M1, "" },
@@ -12072,7 +12159,7 @@ const DictEntry Dict191Contents[] = {
 { 0x0087, 0x0008, 0, VR::FD, VM::M2, "" },
 };
 
-const unsigned short Dict191TagHashTable[] = {
+const unsigned short Dict192TagHashTable[] = {
    33,    38,    41,    44,    47,    32,    52,    55,    58,    61,
    64,    32,    67,    70,    73,    32,    76,    81,    86,    89,
    92,    32,    95,    32,    98,   101,   104,   109,   114,   117,
@@ -12088,7 +12175,7 @@ const unsigned short Dict191TagHashTable[] = {
     1,     5,   164,
 };
 
-const unsigned short Dict191KeyHashTable[] = {
+const unsigned short Dict192KeyHashTable[] = {
    32,    32,    32,    32,    32,    33,    32,    32,    32,    32,
    32,    32,    32,    32,    32,    32,    32,    32,    32,    32,
    32,    32,    32,    32,    32,    32,    32,    32,    32,    32,
@@ -12101,18 +12188,18 @@ const unsigned short Dict191KeyHashTable[] = {
    28,   168,    29,   168,    30,   168,    31,   168,
 };
 
-vtkDICOMDictionary::Dict Dict191Data = {
+vtkDICOMDictionary::Dict Dict192Data = {
 "AGFA-AG_HPState",
 32,
 32,
-Dict191TagHashTable,
-Dict191KeyHashTable,
-Dict191Contents
+Dict192TagHashTable,
+Dict192KeyHashTable,
+Dict192Contents
 };
 
 // ----- SPI-P-Private_ICS Release 1 -----
 
-const DictEntry Dict192Contents[] = {
+const DictEntry Dict193Contents[] = {
 { 0x0019, 0x0030, 0, VR::DS, VM::M1, "" },
 { 0x0019, 0x0031, 0, VR::LO, VM::M1, "" },
 { 0x0029, 0x000d, 0, VR::SQ, VM::M1, "" },
@@ -12140,7 +12227,7 @@ const DictEntry Dict192Contents[] = {
 { 0x0029, 0x0091, 0, VR::IS, VM::M1, "" },
 };
 
-const unsigned short Dict192TagHashTable[] = {
+const unsigned short Dict193TagHashTable[] = {
    26,    31,    34,    39,    44,    47,    25,    50,    53,    56,
    25,    61,    25,    66,    69,    74,    79,    84,    25,    25,
    87,    90,    25,    25,    25,     0,     2,     7,    27,    13,
@@ -12153,7 +12240,7 @@ const unsigned short Dict192TagHashTable[] = {
     1,    18,    81,
 };
 
-const unsigned short Dict192KeyHashTable[] = {
+const unsigned short Dict193KeyHashTable[] = {
    25,    25,    25,    25,    25,    25,    26,    25,    25,    25,
    25,    25,    25,    25,    25,    25,    25,    25,    25,    25,
    25,    25,    25,    25,    25,     0,    25,     0,   215,     1,
@@ -12164,56 +12251,32 @@ const unsigned short Dict192KeyHashTable[] = {
   215,    22,   215,    23,   215,    24,   215,
 };
 
-vtkDICOMDictionary::Dict Dict192Data = {
+vtkDICOMDictionary::Dict Dict193Data = {
 "SPI-P-Private_ICS Release 1",
 25,
 25,
-Dict192TagHashTable,
-Dict192KeyHashTable,
-Dict192Contents
-};
-
-// ----- RadWorksTBR -----
-
-const DictEntry Dict193Contents[] = {
-{ 0x3111, 0x0002, 0, VR::CS, VM::M1, "CompressionType" },
-{ 0x3111, 0x00FF, 0, VR::SQ, VM::M1, "QueryResult" },
-};
-
-const unsigned short Dict193TagHashTable[] = {
-    2,     3,     0,     2,     0,     2,     1,   255,
-};
-
-const unsigned short Dict193KeyHashTable[] = {
-    3,     6,     0,     1,     1, 42557,     1,     0, 44844,
-};
-
-vtkDICOMDictionary::Dict Dict193Data = {
-"RadWorksTBR",
-2,
-2,
 Dict193TagHashTable,
 Dict193KeyHashTable,
 Dict193Contents
 };
 
-// ----- SIEMENS SYNGO REGISTRATION -----
+// ----- RadWorksTBR -----
 
 const DictEntry Dict194Contents[] = {
-{ 0x0071, 0x0020, 0, VR::SQ, VM::M1, "RegisteredImageSequence" },
-{ 0x0071, 0x0021, 0, VR::CS, VM::M1, "RegistrationIsValidatedFlag" },
+{ 0x3111, 0x0002, 0, VR::CS, VM::M1, "CompressionType" },
+{ 0x3111, 0x00FF, 0, VR::SQ, VM::M1, "QueryResult" },
 };
 
 const unsigned short Dict194TagHashTable[] = {
-    3,     6,     0,     1,     0,    32,     1,     1,    33,
+    2,     3,     0,     2,     0,     2,     1,   255,
 };
 
 const unsigned short Dict194KeyHashTable[] = {
-    3,     6,     0,     1,     1, 65362,     1,     0, 53639,
+    3,     6,     0,     1,     1, 42557,     1,     0, 44844,
 };
 
 vtkDICOMDictionary::Dict Dict194Data = {
-"SIEMENS SYNGO REGISTRATION",
+"RadWorksTBR",
 2,
 2,
 Dict194TagHashTable,
@@ -12221,23 +12284,23 @@ Dict194KeyHashTable,
 Dict194Contents
 };
 
-// ----- AMI Sequence AnnotElements_01 -----
+// ----- SIEMENS SYNGO REGISTRATION -----
 
 const DictEntry Dict195Contents[] = {
-{ 0x3105, 0x0010, 0, VR::DS, VM::M1TN, "AnnotationElementPosition" },
-{ 0x3105, 0x0020, 0, VR::LT, VM::M1, "AnnotationElementText" },
+{ 0x0071, 0x0020, 0, VR::SQ, VM::M1, "RegisteredImageSequence" },
+{ 0x0071, 0x0021, 0, VR::CS, VM::M1, "RegistrationIsValidatedFlag" },
 };
 
 const unsigned short Dict195TagHashTable[] = {
-    2,     3,     0,     2,     0,    16,     1,    32,
+    3,     6,     0,     1,     0,    32,     1,     1,    33,
 };
 
 const unsigned short Dict195KeyHashTable[] = {
-    2,     3,     0,     2,     0, 22223,     1, 63671,
+    3,     6,     0,     1,     1, 65362,     1,     0, 53639,
 };
 
 vtkDICOMDictionary::Dict Dict195Data = {
-"AMI Sequence AnnotElements_01",
+"SIEMENS SYNGO REGISTRATION",
 2,
 2,
 Dict195TagHashTable,
@@ -12245,9 +12308,33 @@ Dict195KeyHashTable,
 Dict195Contents
 };
 
-// ----- AMI ImageTransform_01 -----
+// ----- AMI Sequence AnnotElements_01 -----
 
 const DictEntry Dict196Contents[] = {
+{ 0x3105, 0x0010, 0, VR::DS, VM::M1TN, "AnnotationElementPosition" },
+{ 0x3105, 0x0020, 0, VR::LT, VM::M1, "AnnotationElementText" },
+};
+
+const unsigned short Dict196TagHashTable[] = {
+    2,     3,     0,     2,     0,    16,     1,    32,
+};
+
+const unsigned short Dict196KeyHashTable[] = {
+    2,     3,     0,     2,     0, 22223,     1, 63671,
+};
+
+vtkDICOMDictionary::Dict Dict196Data = {
+"AMI Sequence AnnotElements_01",
+2,
+2,
+Dict196TagHashTable,
+Dict196KeyHashTable,
+Dict196Contents
+};
+
+// ----- AMI ImageTransform_01 -----
+
+const DictEntry Dict197Contents[] = {
 { 0x3107, 0x0010, 0, VR::DS, VM::M1TN, "TransformationMatrix" },
 { 0x3107, 0x0020, 0, VR::DS, VM::M1, "CenterOffset" },
 { 0x3107, 0x0030, 0, VR::DS, VM::M1, "Magnification" },
@@ -12256,82 +12343,82 @@ const DictEntry Dict196Contents[] = {
 { 0x3107, 0x0060, 0, VR::DS, VM::M1, "CalibrationFactor" },
 };
 
-const unsigned short Dict196TagHashTable[] = {
+const unsigned short Dict197TagHashTable[] = {
     7,    10,    13,    16,    19,    22,     0,     1,     4,    80,
     1,     2,    48,     1,     3,    64,     1,     1,    32,     1,
     5,    96,     1,     0,    16,
 };
 
-const unsigned short Dict196KeyHashTable[] = {
+const unsigned short Dict197KeyHashTable[] = {
     7,    12,    17,     6,     6,    20,     0,     2,     3, 18224,
     5,  9826,     2,     0,  2792,     1, 49378,     1,     2, 47562,
     1,     4, 25284,
 };
 
-vtkDICOMDictionary::Dict Dict196Data = {
+vtkDICOMDictionary::Dict Dict197Data = {
 "AMI ImageTransform_01",
 6,
 6,
-Dict196TagHashTable,
-Dict196KeyHashTable,
-Dict196Contents
+Dict197TagHashTable,
+Dict197KeyHashTable,
+Dict197Contents
 };
 
 // ----- SECTRA_ImageInfo_01 -----
 
-const DictEntry Dict197Contents[] = {
+const DictEntry Dict198Contents[] = {
 { 0x0029, 0x0001, 0, VR::OB, VM::M1, "ImageInfo" },
 { 0x0029, 0x0002, 0, VR::CS, VM::M1, "Marking" },
 { 0x0029, 0x0003, 0, VR::LO, VM::M1, "NoDecompression" },
 { 0x0029, 0x0004, 0, VR::OB, VM::M1, "ImageInfoNew" },
 };
 
-const unsigned short Dict197TagHashTable[] = {
+const unsigned short Dict198TagHashTable[] = {
     5,     8,    11,    14,     0,     1,     0,     1,     1,     3,
     4,     1,     2,     3,     1,     1,     2,
 };
 
-const unsigned short Dict197KeyHashTable[] = {
+const unsigned short Dict198KeyHashTable[] = {
     5,     8,    11,     4,     0,     1,     0, 38509,     1,     2,
 36303,     2,     1, 60139,     3, 61855,
 };
 
-vtkDICOMDictionary::Dict Dict197Data = {
+vtkDICOMDictionary::Dict Dict198Data = {
 "SECTRA_ImageInfo_01",
 4,
 4,
-Dict197TagHashTable,
-Dict197KeyHashTable,
-Dict197Contents
-};
-
-// ----- HMC - CT - ID -----
-
-const DictEntry Dict198Contents[] = {
-{ 0x0009, 0x0000, 0, VR::OB, VM::M1, "ImageIDInformationPatientNameID" },
-{ 0x0009, 0x0001, 0, VR::OB, VM::M1, "ImageIDInformationPatientComment" },
-};
-
-const unsigned short Dict198TagHashTable[] = {
-    3,     6,     0,     1,     1,     1,     1,     0,     0,
-};
-
-const unsigned short Dict198KeyHashTable[] = {
-    3,     6,     0,     1,     0, 17343,     1,     1, 63969,
-};
-
-vtkDICOMDictionary::Dict Dict198Data = {
-"HMC - CT - ID",
-2,
-2,
 Dict198TagHashTable,
 Dict198KeyHashTable,
 Dict198Contents
 };
 
-// ----- VEPRO DICOM RECEIVE DATA 1.0 -----
+// ----- HMC - CT - ID -----
 
 const DictEntry Dict199Contents[] = {
+{ 0x0009, 0x0000, 0, VR::OB, VM::M1, "ImageIDInformationPatientNameID" },
+{ 0x0009, 0x0001, 0, VR::OB, VM::M1, "ImageIDInformationPatientComment" },
+};
+
+const unsigned short Dict199TagHashTable[] = {
+    3,     6,     0,     1,     1,     1,     1,     0,     0,
+};
+
+const unsigned short Dict199KeyHashTable[] = {
+    3,     6,     0,     1,     0, 17343,     1,     1, 63969,
+};
+
+vtkDICOMDictionary::Dict Dict199Data = {
+"HMC - CT - ID",
+2,
+2,
+Dict199TagHashTable,
+Dict199KeyHashTable,
+Dict199Contents
+};
+
+// ----- VEPRO DICOM RECEIVE DATA 1.0 -----
+
+const DictEntry Dict200Contents[] = {
 { 0x0059, 0x0040, 0, VR::DA, VM::M1, "ReceiveDate" },
 { 0x0059, 0x0041, 0, VR::TM, VM::M1, "ReceiveTime" },
 { 0x0059, 0x0042, 0, VR::ST, VM::M1, "ReceiveNode" },
@@ -12343,83 +12430,83 @@ const DictEntry Dict199Contents[] = {
 { 0x0059, 0x0070, 0, VR::UI, VM::M1, "ReceiveOriginalTransferSyntax" },
 };
 
-const unsigned short Dict199TagHashTable[] = {
+const unsigned short Dict200TagHashTable[] = {
    10,     9,    15,    18,     9,    21,    24,    27,    30,     0,
     2,     2,    66,     4,    80,     1,     7,    97,     1,     6,
    96,     1,     8,   112,     1,     1,    65,     1,     0,    64,
     2,     3,    67,     5,    81,
 };
 
-const unsigned short Dict199KeyHashTable[] = {
+const unsigned short Dict200KeyHashTable[] = {
    10,    13,    16,    21,     9,    26,    29,     9,    32,     0,
     1,     5, 34915,     1,     4,  8601,     2,     1, 28845,     2,
  5580,     2,     7, 51377,     8, 62294,     1,     3, 16927,     1,
     6, 42133,     1,     0, 29550,
 };
 
-vtkDICOMDictionary::Dict Dict199Data = {
+vtkDICOMDictionary::Dict Dict200Data = {
 "VEPRO DICOM RECEIVE DATA 1.0",
 9,
 9,
-Dict199TagHashTable,
-Dict199KeyHashTable,
-Dict199Contents
+Dict200TagHashTable,
+Dict200KeyHashTable,
+Dict200Contents
 };
 
 // ----- ADAC_IMG -----
 
-const DictEntry Dict200Contents[] = {
+const DictEntry Dict201Contents[] = {
 { 0x0019, 0x0002, 0, VR::IS, VM::M1, "ADACPegasysFileSize" },
 { 0x0019, 0x0021, 0, VR::US, VM::M1, "NumberOfADACHeaders" },
 { 0x0019, 0x0041, 0, VR::IS, VM::M1TN, "ADACHeaderImageSize" },
 { 0x0019, 0x0061, 0, VR::OB, VM::M1, "ADACPegasysHeaders" },
 };
 
-const unsigned short Dict200TagHashTable[] = {
+const unsigned short Dict201TagHashTable[] = {
     5,     8,     4,    13,     0,     1,     1,    33,     2,     2,
    65,     3,    97,     1,     0,     2,
 };
 
-const unsigned short Dict200KeyHashTable[] = {
+const unsigned short Dict201KeyHashTable[] = {
     5,     8,    13,     4,     0,     1,     1, 22938,     2,     0,
  7665,     2, 36501,     1,     3, 58761,
 };
 
-vtkDICOMDictionary::Dict Dict200Data = {
+vtkDICOMDictionary::Dict Dict201Data = {
 "ADAC_IMG",
 4,
 4,
-Dict200TagHashTable,
-Dict200KeyHashTable,
-Dict200Contents
-};
-
-// ----- SIEMENS MEDCOM HEADER2 -----
-
-const DictEntry Dict201Contents[] = {
-{ 0x0029, 0x0060, 0, VR::LO, VM::M1, "SeriesWorkFlowStatus" },
-};
-
-const unsigned short Dict201TagHashTable[] = {
-    2,     0,     1,     0,    96,
-};
-
-const unsigned short Dict201KeyHashTable[] = {
-    2,     0,     1,     0, 26191,
-};
-
-vtkDICOMDictionary::Dict Dict201Data = {
-"SIEMENS MEDCOM HEADER2",
-1,
-1,
 Dict201TagHashTable,
 Dict201KeyHashTable,
 Dict201Contents
 };
 
-// ----- Philips MR Imaging DD 002 -----
+// ----- SIEMENS MEDCOM HEADER2 -----
 
 const DictEntry Dict202Contents[] = {
+{ 0x0029, 0x0060, 0, VR::LO, VM::M1, "SeriesWorkFlowStatus" },
+};
+
+const unsigned short Dict202TagHashTable[] = {
+    2,     0,     1,     0,    96,
+};
+
+const unsigned short Dict202KeyHashTable[] = {
+    2,     0,     1,     0, 26191,
+};
+
+vtkDICOMDictionary::Dict Dict202Data = {
+"SIEMENS MEDCOM HEADER2",
+1,
+1,
+Dict202TagHashTable,
+Dict202KeyHashTable,
+Dict202Contents
+};
+
+// ----- Philips MR Imaging DD 002 -----
+
+const DictEntry Dict203Contents[] = {
 { 0x2005, 0x0032, 0, VR::SQ, VM::M1, "" },
 { 0x2005, 0x0034, 0, VR::LT, VM::M1, "" },
 { 0x2005, 0x0037, 0, VR::LO, VM::M1, "" },
@@ -12433,7 +12520,7 @@ const DictEntry Dict202Contents[] = {
 { 0x2005, 0x0099, 0, VR::UL, VM::M1, "" },
 };
 
-const unsigned short Dict202TagHashTable[] = {
+const unsigned short Dict203TagHashTable[] = {
    11,    11,    12,    11,    15,    18,    23,    26,    11,    29,
    36,     0,     1,     8,    68,     1,     0,    50,     2,     9,
    71,    10,   153,     1,     5,    64,     1,     6,    65,     3,
@@ -12441,25 +12528,25 @@ const unsigned short Dict202TagHashTable[] = {
    56,
 };
 
-const unsigned short Dict202KeyHashTable[] = {
+const unsigned short Dict203KeyHashTable[] = {
    11,    11,    12,    11,    11,    11,    11,    11,    11,    11,
    11,     0,    11,     0,   489,     1,   489,     2,   489,     3,
   489,     4,   489,     5,   489,     6,   489,     7,   489,     8,
   489,     9,   489,    10,   489,
 };
 
-vtkDICOMDictionary::Dict Dict202Data = {
+vtkDICOMDictionary::Dict Dict203Data = {
 "Philips MR Imaging DD 002",
 11,
 11,
-Dict202TagHashTable,
-Dict202KeyHashTable,
-Dict202Contents
+Dict203TagHashTable,
+Dict203KeyHashTable,
+Dict203Contents
 };
 
 // ----- SIEMENS CSA HEADER -----
 
-const DictEntry Dict203Contents[] = {
+const DictEntry Dict204Contents[] = {
 { 0x0029, 0x0008, 0, VR::CS, VM::M1, "CSAImageHeaderType" },
 { 0x0029, 0x0009, 0, VR::LO, VM::M1, "CSAImageHeaderVersion" },
 { 0x0029, 0x0010, 0, VR::OB, VM::M1, "CSAImageHeaderInfo" },
@@ -12468,80 +12555,80 @@ const DictEntry Dict203Contents[] = {
 { 0x0029, 0x0020, 0, VR::OB, VM::M1, "CSASeriesHeaderInfo" },
 };
 
-const unsigned short Dict203TagHashTable[] = {
+const unsigned short Dict204TagHashTable[] = {
     7,    10,    13,    16,     6,     6,     0,     1,     4,    25,
     1,     3,    24,     1,     1,     9,     3,     0,     8,     2,
    16,     5,    32,
 };
 
-const unsigned short Dict203KeyHashTable[] = {
+const unsigned short Dict204KeyHashTable[] = {
     7,     6,    12,     6,    15,     6,     0,     2,     0, 16775,
     5,  1386,     1,     3,  3784,     3,     1, 53655,     2, 14376,
     4, 20995,
 };
 
-vtkDICOMDictionary::Dict Dict203Data = {
+vtkDICOMDictionary::Dict Dict204Data = {
 "SIEMENS CSA HEADER",
 6,
 6,
-Dict203TagHashTable,
-Dict203KeyHashTable,
-Dict203Contents
-};
-
-// ----- MeVis eD: Geometry Information -----
-
-const DictEntry Dict204Contents[] = {
-{ 0x0021, 0x0010, 0, VR::UN, VM::M1, "GeometryScannerOrigin" },
-};
-
-const unsigned short Dict204TagHashTable[] = {
-    2,     0,     1,     0,    16,
-};
-
-const unsigned short Dict204KeyHashTable[] = {
-    2,     0,     1,     0, 24355,
-};
-
-vtkDICOMDictionary::Dict Dict204Data = {
-"MeVis eD: Geometry Information",
-1,
-1,
 Dict204TagHashTable,
 Dict204KeyHashTable,
 Dict204Contents
 };
 
-// ----- SIEMENS SYNGO 3D FUSION MATRIX -----
+// ----- MeVis eD: Geometry Information -----
 
 const DictEntry Dict205Contents[] = {
-{ 0x0029, 0x0008, 0, VR::UI, VM::M1, "ObjectSeriesInstanceUID" },
-{ 0x0029, 0x0009, 0, VR::UI, VM::M1, "ModelSeriesInstanceUID" },
-{ 0x0029, 0x0010, 0, VR::UI, VM::M1, "MatrixReferencedSeriesInstanceUID" },
+{ 0x0021, 0x0010, 0, VR::UN, VM::M1, "GeometryScannerOrigin" },
 };
 
 const unsigned short Dict205TagHashTable[] = {
-    4,     3,     9,     0,     2,     0,     8,     2,    16,     1,
-    1,     9,
+    2,     0,     1,     0,    16,
 };
 
 const unsigned short Dict205KeyHashTable[] = {
-    4,     9,     3,     0,     2,     1, 51112,     2, 20485,     1,
-    0, 40511,
+    2,     0,     1,     0, 24355,
 };
 
 vtkDICOMDictionary::Dict Dict205Data = {
-"SIEMENS SYNGO 3D FUSION MATRIX",
-3,
-3,
+"MeVis eD: Geometry Information",
+1,
+1,
 Dict205TagHashTable,
 Dict205KeyHashTable,
 Dict205Contents
 };
 
-// ----- GEMS_3D_INTVL_01 -----
+// ----- SIEMENS SYNGO 3D FUSION MATRIX -----
 
 const DictEntry Dict206Contents[] = {
+{ 0x0029, 0x0008, 0, VR::UI, VM::M1, "ObjectSeriesInstanceUID" },
+{ 0x0029, 0x0009, 0, VR::UI, VM::M1, "ModelSeriesInstanceUID" },
+{ 0x0029, 0x0010, 0, VR::UI, VM::M1, "MatrixReferencedSeriesInstanceUID" },
+};
+
+const unsigned short Dict206TagHashTable[] = {
+    4,     3,     9,     0,     2,     0,     8,     2,    16,     1,
+    1,     9,
+};
+
+const unsigned short Dict206KeyHashTable[] = {
+    4,     9,     3,     0,     2,     1, 51112,     2, 20485,     1,
+    0, 40511,
+};
+
+vtkDICOMDictionary::Dict Dict206Data = {
+"SIEMENS SYNGO 3D FUSION MATRIX",
+3,
+3,
+Dict206TagHashTable,
+Dict206KeyHashTable,
+Dict206Contents
+};
+
+// ----- GEMS_3D_INTVL_01 -----
+
+const DictEntry Dict207Contents[] = {
 { 0x0023, 0x0001, 0, VR::SQ, VM::M1, "XRayMarkerSequence" },
 { 0x0023, 0x0002, 0, VR::SH, VM::M1, "MarkerID" },
 { 0x0023, 0x0003, 0, VR::CS, VM::M1, "MarkerType" },
@@ -12581,7 +12668,7 @@ const DictEntry Dict206Contents[] = {
 { 0x0023, 0x0044, 0, VR::CS, VM::M1, "AblationPointVisibility" },
 };
 
-const unsigned short Dict206TagHashTable[] = {
+const unsigned short Dict207TagHashTable[] = {
    38,    41,    44,    47,    50,    53,    56,    37,    37,    37,
    61,    64,    69,    72,    75,    78,    81,    86,    89,    94,
    97,   100,   103,   110,   115,   118,   121,   124,   127,    37,
@@ -12599,7 +12686,7 @@ const unsigned short Dict206TagHashTable[] = {
     6,     7,
 };
 
-const unsigned short Dict206KeyHashTable[] = {
+const unsigned short Dict207KeyHashTable[] = {
    37,    38,    41,    46,    37,    49,    58,    61,    64,    37,
    67,    37,    70,    73,    76,    79,    82,    37,    85,    88,
    91,    37,    94,    37,   105,    37,    37,   112,   117,   120,
@@ -12616,18 +12703,18 @@ const unsigned short Dict206KeyHashTable[] = {
 27498,     2,     6, 50609,    13, 63859,
 };
 
-vtkDICOMDictionary::Dict Dict206Data = {
+vtkDICOMDictionary::Dict Dict207Data = {
 "GEMS_3D_INTVL_01",
 37,
 37,
-Dict206TagHashTable,
-Dict206KeyHashTable,
-Dict206Contents
+Dict207TagHashTable,
+Dict207KeyHashTable,
+Dict207Contents
 };
 
 // ----- Philips Imaging DD 002 -----
 
-const DictEntry Dict207Contents[] = {
+const DictEntry Dict208Contents[] = {
 { 0x2001, 0x0001, 0, VR::US, VM::M1, "" },
 { 0x2001, 0x0002, 0, VR::FD, VM::M1, "" },
 { 0x2001, 0x0013, 0, VR::SS, VM::M1, "" },
@@ -12679,7 +12766,7 @@ const DictEntry Dict207Contents[] = {
 { 0x2001, 0x0073, 0, VR::FL, VM::M2, "" },
 };
 
-const unsigned short Dict207TagHashTable[] = {
+const unsigned short Dict208TagHashTable[] = {
    50,    53,    56,    59,    62,    65,    68,    71,    74,    49,
    77,    80,    83,    86,    89,    92,    95,    98,   101,   104,
   107,   110,   113,   116,   119,   122,   125,   128,   131,   134,
@@ -12702,7 +12789,7 @@ const unsigned short Dict207TagHashTable[] = {
    39,    57,     1,    41,    59,
 };
 
-const unsigned short Dict207KeyHashTable[] = {
+const unsigned short Dict208KeyHashTable[] = {
    49,    49,    49,    49,    49,    49,    49,    49,    49,    49,
    49,    49,    49,    49,    49,    49,    49,    49,    49,    49,
    49,    49,    49,    49,    49,    49,    49,    49,    49,    49,
@@ -12720,18 +12807,18 @@ const unsigned short Dict207KeyHashTable[] = {
   109,    45,   109,    46,   109,    47,   109,    48,   109,
 };
 
-vtkDICOMDictionary::Dict Dict207Data = {
+vtkDICOMDictionary::Dict Dict208Data = {
 "Philips Imaging DD 002",
 49,
 49,
-Dict207TagHashTable,
-Dict207KeyHashTable,
-Dict207Contents
+Dict208TagHashTable,
+Dict208KeyHashTable,
+Dict208Contents
 };
 
 // ----- KONICA1.0 -----
 
-const DictEntry Dict208Contents[] = {
+const DictEntry Dict209Contents[] = {
 { 0x0031, 0x0000, 0, VR::LO, VM::M1, "" },
 { 0x0031, 0x0001, 0, VR::US, VM::M1, "" },
 { 0x0031, 0x0005, 0, VR::US, VM::M1, "" },
@@ -12926,7 +13013,7 @@ const DictEntry Dict208Contents[] = {
 { 0x0031, 0x00ff, 0, VR::SQ, VM::M1, "PrivateDataSequence" },
 };
 
-const unsigned short Dict208TagHashTable[] = {
+const unsigned short Dict209TagHashTable[] = {
   193,   196,   199,   204,   207,   210,   213,   216,   219,   222,
   225,   228,   231,   234,   239,   242,   245,   250,   255,   260,
   265,   270,   273,   278,   283,   286,   289,   292,   295,   298,
@@ -13003,7 +13090,7 @@ const unsigned short Dict208TagHashTable[] = {
   141,     1,   116,   140,
 };
 
-const unsigned short Dict208KeyHashTable[] = {
+const unsigned short Dict209KeyHashTable[] = {
   192,   192,   192,   192,   192,   193,   192,   192,   192,   192,
   192,   192,   192,   192,   192,   192,   192,   192,   192,   192,
   192,   192,   192,   192,   192,   192,   192,   192,   192,   192,
@@ -13064,69 +13151,69 @@ const unsigned short Dict208KeyHashTable[] = {
   188,    28,   189,    28,   190,    28,     1,   191,  5825,
 };
 
-vtkDICOMDictionary::Dict Dict208Data = {
+vtkDICOMDictionary::Dict Dict209Data = {
 "KONICA1.0",
 192,
 192,
-Dict208TagHashTable,
-Dict208KeyHashTable,
-Dict208Contents
-};
-
-// ----- Applicare/Centricity Radiology Web/Version 1.0 -----
-
-const DictEntry Dict209Contents[] = {
-{ 0x4109, 0x0001, 0, VR::SH, VM::M1, "MammographyLaterality" },
-{ 0x4109, 0x0002, 0, VR::SH, VM::M1, "MammographyViewName" },
-{ 0x4109, 0x0003, 0, VR::SH, VM::M1, "MammographyViewModifier" },
-};
-
-const unsigned short Dict209TagHashTable[] = {
-    4,     7,     3,     0,     1,     2,     3,     2,     0,     1,
-    1,     2,
-};
-
-const unsigned short Dict209KeyHashTable[] = {
-    4,     9,     3,     0,     2,     1,  5633,     2, 59419,     1,
-    0, 24043,
-};
-
-vtkDICOMDictionary::Dict Dict209Data = {
-"Applicare/Centricity Radiology Web/Version 1.0",
-3,
-3,
 Dict209TagHashTable,
 Dict209KeyHashTable,
 Dict209Contents
 };
 
-// ----- SIEMENS Ultrasound S2000 -----
+// ----- Applicare/Centricity Radiology Web/Version 1.0 -----
 
 const DictEntry Dict210Contents[] = {
-{ 0x0021, 0x0000, 0, VR::US, VM::M1, "NipplePosition" },
-{ 0x0021, 0x0001, 0, VR::US, VM::M1, "ABVSClipDerivedFromVolume" },
+{ 0x4109, 0x0001, 0, VR::SH, VM::M1, "MammographyLaterality" },
+{ 0x4109, 0x0002, 0, VR::SH, VM::M1, "MammographyViewName" },
+{ 0x4109, 0x0003, 0, VR::SH, VM::M1, "MammographyViewModifier" },
 };
 
 const unsigned short Dict210TagHashTable[] = {
-    3,     6,     0,     1,     1,     1,     1,     0,     0,
+    4,     7,     3,     0,     1,     2,     3,     2,     0,     1,
+    1,     2,
 };
 
 const unsigned short Dict210KeyHashTable[] = {
-    3,     2,     0,     2,     0, 64705,     1, 21012,
+    4,     9,     3,     0,     2,     1,  5633,     2, 59419,     1,
+    0, 24043,
 };
 
 vtkDICOMDictionary::Dict Dict210Data = {
-"SIEMENS Ultrasound S2000",
-2,
-2,
+"Applicare/Centricity Radiology Web/Version 1.0",
+3,
+3,
 Dict210TagHashTable,
 Dict210KeyHashTable,
 Dict210Contents
 };
 
-// ----- 1.2.840.113708.794.1.1.2.0 -----
+// ----- SIEMENS Ultrasound S2000 -----
 
 const DictEntry Dict211Contents[] = {
+{ 0x0021, 0x0000, 0, VR::US, VM::M1, "NipplePosition" },
+{ 0x0021, 0x0001, 0, VR::US, VM::M1, "ABVSClipDerivedFromVolume" },
+};
+
+const unsigned short Dict211TagHashTable[] = {
+    3,     6,     0,     1,     1,     1,     1,     0,     0,
+};
+
+const unsigned short Dict211KeyHashTable[] = {
+    3,     2,     0,     2,     0, 64705,     1, 21012,
+};
+
+vtkDICOMDictionary::Dict Dict211Data = {
+"SIEMENS Ultrasound S2000",
+2,
+2,
+Dict211TagHashTable,
+Dict211KeyHashTable,
+Dict211Contents
+};
+
+// ----- 1.2.840.113708.794.1.1.2.0 -----
+
+const DictEntry Dict212Contents[] = {
 { 0x0087, 0x0010, 0, VR::CS, VM::M1, "MediaType" },
 { 0x0087, 0x0020, 0, VR::CS, VM::M1, "MediaLocation" },
 { 0x0087, 0x0030, 0, VR::ST, VM::M1, "StorageFileID" },
@@ -13134,28 +13221,28 @@ const DictEntry Dict211Contents[] = {
 { 0x0087, 0x0050, 0, VR::IS, VM::M1, "EstimatedRetrieveTime" },
 };
 
-const unsigned short Dict211TagHashTable[] = {
+const unsigned short Dict212TagHashTable[] = {
     6,     9,    14,     5,    17,     0,     1,     1,    32,     2,
     2,    48,     3,    64,     1,     4,    80,     1,     0,    16,
 };
 
-const unsigned short Dict211KeyHashTable[] = {
+const unsigned short Dict212KeyHashTable[] = {
     6,     5,    13,     5,     5,     0,     3,     0, 43643,     1,
 27878,     4, 54482,     2,     2, 32513,     3,  1965,
 };
 
-vtkDICOMDictionary::Dict Dict211Data = {
+vtkDICOMDictionary::Dict Dict212Data = {
 "1.2.840.113708.794.1.1.2.0",
 5,
 5,
-Dict211TagHashTable,
-Dict211KeyHashTable,
-Dict211Contents
+Dict212TagHashTable,
+Dict212KeyHashTable,
+Dict212Contents
 };
 
 // ----- TOSHIBA MDW HEADER -----
 
-const DictEntry Dict212Contents[] = {
+const DictEntry Dict213Contents[] = {
 { 0x0029, 0x0008, 0, VR::CS, VM::M1, "ImageHeaderType" },
 { 0x0029, 0x0009, 0, VR::LO, VM::M1, "ImageHeaderVersion" },
 { 0x0029, 0x0010, 0, VR::OB, VM::M1, "ImageHeaderInfo" },
@@ -13164,53 +13251,53 @@ const DictEntry Dict212Contents[] = {
 { 0x0029, 0x0020, 0, VR::OB, VM::M1, "SeriesHeaderInfo" },
 };
 
-const unsigned short Dict212TagHashTable[] = {
+const unsigned short Dict213TagHashTable[] = {
     7,    10,    13,    16,     6,     6,     0,     1,     4,    25,
     1,     3,    24,     1,     1,     9,     3,     0,     8,     2,
    16,     5,    32,
 };
 
-const unsigned short Dict212KeyHashTable[] = {
+const unsigned short Dict213KeyHashTable[] = {
     6,     7,     6,    10,     6,    15,     0,     1,     2, 58538,
     2,     0, 60936,     5, 16923,     3,     1, 43859,     3, 19321,
     4,  3567,
 };
 
-vtkDICOMDictionary::Dict Dict212Data = {
+vtkDICOMDictionary::Dict Dict213Data = {
 "TOSHIBA MDW HEADER",
 6,
 6,
-Dict212TagHashTable,
-Dict212KeyHashTable,
-Dict212Contents
-};
-
-// ----- GEMS_IQTB_IDEN_47 -----
-
-const DictEntry Dict213Contents[] = {
-{ 0x0047, 0x0002, 0, VR::UL, VM::M1, "" },
-};
-
-const unsigned short Dict213TagHashTable[] = {
-    2,     0,     1,     0,     2,
-};
-
-const unsigned short Dict213KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict213Data = {
-"GEMS_IQTB_IDEN_47",
-1,
-1,
 Dict213TagHashTable,
 Dict213KeyHashTable,
 Dict213Contents
 };
 
-// ----- GEMS_ACQU_01 -----
+// ----- GEMS_IQTB_IDEN_47 -----
 
 const DictEntry Dict214Contents[] = {
+{ 0x0047, 0x0002, 0, VR::UL, VM::M1, "" },
+};
+
+const unsigned short Dict214TagHashTable[] = {
+    2,     0,     1,     0,     2,
+};
+
+const unsigned short Dict214KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
+vtkDICOMDictionary::Dict Dict214Data = {
+"GEMS_IQTB_IDEN_47",
+1,
+1,
+Dict214TagHashTable,
+Dict214KeyHashTable,
+Dict214Contents
+};
+
+// ----- GEMS_ACQU_01 -----
+
+const DictEntry Dict215Contents[] = {
 { 0x0009, 0x0024, 0, VR::DS, VM::M1, "" },
 { 0x0009, 0x0025, 0, VR::US, VM::M1, "" },
 { 0x0009, 0x003e, 0, VR::US, VM::M1, "" },
@@ -13398,7 +13485,7 @@ const DictEntry Dict214Contents[] = {
 { 0x0019, 0x00f9, 0, VR::DS, VM::M1, "TransmitGain" },
 };
 
-const unsigned short Dict214TagHashTable[] = {
+const unsigned short Dict215TagHashTable[] = {
   186,   191,   196,   201,   185,   206,   209,   212,   217,   222,
   225,   230,   235,   240,   245,   250,   255,   258,   185,   261,
   264,   267,   270,   275,   280,   285,   288,   293,   298,   303,
@@ -13472,7 +13559,7 @@ const unsigned short Dict214TagHashTable[] = {
   163,
 };
 
-const unsigned short Dict214KeyHashTable[] = {
+const unsigned short Dict215KeyHashTable[] = {
   185,   185,   185,   186,   185,   185,   185,   189,   185,   185,
   185,   194,   199,   185,   202,   205,   208,   185,   185,   295,
   298,   185,   301,   185,   304,   185,   307,   312,   315,   318,
@@ -13541,69 +13628,69 @@ const unsigned short Dict214KeyHashTable[] = {
 45150,     2,    11, 54484,    31, 16389,
 };
 
-vtkDICOMDictionary::Dict Dict214Data = {
+vtkDICOMDictionary::Dict Dict215Data = {
 "GEMS_ACQU_01",
 185,
 185,
-Dict214TagHashTable,
-Dict214KeyHashTable,
-Dict214Contents
-};
-
-// ----- GEMS_IT_US_REPORT -----
-
-const DictEntry Dict215Contents[] = {
-{ 0x0045, 0x0111, 0, VR::OW, VM::M1, "VividExcelFile" },
-{ 0x0045, 0x0112, 0, VR::OW, VM::M1, "VividCHMFile" },
-{ 0x0045, 0x0113, 0, VR::OW, VM::M1, "VividPDFFile" },
-};
-
-const unsigned short Dict215TagHashTable[] = {
-    4,     7,    10,     0,     1,     2,   275,     1,     0,   273,
-    1,     1,   274,
-};
-
-const unsigned short Dict215KeyHashTable[] = {
-    4,     7,     3,     0,     1,     2, 55563,     2,     0, 34973,
-    1, 60362,
-};
-
-vtkDICOMDictionary::Dict Dict215Data = {
-"GEMS_IT_US_REPORT",
-3,
-3,
 Dict215TagHashTable,
 Dict215KeyHashTable,
 Dict215Contents
 };
 
-// ----- SCHICK TECHNOLOGIES - Change List Creator ID -----
+// ----- GEMS_IT_US_REPORT -----
 
 const DictEntry Dict216Contents[] = {
-{ 0x0021, 0x0001, 0, VR::UI, VM::M1, "" },
-{ 0x0021, 0x0002, 0, VR::SQ, VM::M1, "" },
+{ 0x0045, 0x0111, 0, VR::OW, VM::M1, "VividExcelFile" },
+{ 0x0045, 0x0112, 0, VR::OW, VM::M1, "VividCHMFile" },
+{ 0x0045, 0x0113, 0, VR::OW, VM::M1, "VividPDFFile" },
 };
 
 const unsigned short Dict216TagHashTable[] = {
-    3,     6,     0,     1,     0,     1,     1,     1,     2,
+    4,     7,    10,     0,     1,     2,   275,     1,     0,   273,
+    1,     1,   274,
 };
 
 const unsigned short Dict216KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
+    4,     7,     3,     0,     1,     2, 55563,     2,     0, 34973,
+    1, 60362,
 };
 
 vtkDICOMDictionary::Dict Dict216Data = {
-"SCHICK TECHNOLOGIES - Change List Creator ID",
-2,
-2,
+"GEMS_IT_US_REPORT",
+3,
+3,
 Dict216TagHashTable,
 Dict216KeyHashTable,
 Dict216Contents
 };
 
-// ----- astm.org/diconde/iod/NdeCtDetector -----
+// ----- SCHICK TECHNOLOGIES - Change List Creator ID -----
 
 const DictEntry Dict217Contents[] = {
+{ 0x0021, 0x0001, 0, VR::UI, VM::M1, "" },
+{ 0x0021, 0x0002, 0, VR::SQ, VM::M1, "" },
+};
+
+const unsigned short Dict217TagHashTable[] = {
+    3,     6,     0,     1,     0,     1,     1,     1,     2,
+};
+
+const unsigned short Dict217KeyHashTable[] = {
+    2,     3,     0,     2,     0,  2690,     1,  2690,
+};
+
+vtkDICOMDictionary::Dict Dict217Data = {
+"SCHICK TECHNOLOGIES - Change List Creator ID",
+2,
+2,
+Dict217TagHashTable,
+Dict217KeyHashTable,
+Dict217Contents
+};
+
+// ----- astm.org/diconde/iod/NdeCtDetector -----
+
+const DictEntry Dict218Contents[] = {
 { 0x0009, 0x0011, 0, VR::DS, VM::M1, "InternalDetectorFrameTime" },
 { 0x0009, 0x0012, 0, VR::DS, VM::M1, "NumberOfFramesIntegrated" },
 { 0x0009, 0x0020, 0, VR::SQ, VM::M1, "DetectorTemperatureSequence" },
@@ -13613,53 +13700,53 @@ const DictEntry Dict217Contents[] = {
 { 0x0009, 0x0028, 0, VR::DS, VM::M1, "SensorTemperature" },
 };
 
-const unsigned short Dict217TagHashTable[] = {
+const unsigned short Dict218TagHashTable[] = {
     7,     8,     7,    11,     7,    16,    21,     0,     1,     3,
    34,     2,     0,    17,     4,    36,     2,     5,    38,     6,
    40,     2,     1,    18,     2,    32,
 };
 
-const unsigned short Dict217KeyHashTable[] = {
+const unsigned short Dict218KeyHashTable[] = {
     8,     7,    13,    16,     7,    19,    24,     0,     2,     0,
 20186,     6, 21387,     1,     3, 20978,     1,     5, 52094,     2,
     1, 53765,     2,  8567,     1,     4,  7561,
 };
 
-vtkDICOMDictionary::Dict Dict217Data = {
+vtkDICOMDictionary::Dict Dict218Data = {
 "astm.org/diconde/iod/NdeCtDetector",
 7,
 7,
-Dict217TagHashTable,
-Dict217KeyHashTable,
-Dict217Contents
-};
-
-// ----- DLX_PATNT_01 -----
-
-const DictEntry Dict218Contents[] = {
-{ 0x0011, 0x0001, 0, VR::LT, VM::M1, "PatientDOB" },
-};
-
-const unsigned short Dict218TagHashTable[] = {
-    2,     0,     1,     0,     1,
-};
-
-const unsigned short Dict218KeyHashTable[] = {
-    2,     0,     1,     0, 49839,
-};
-
-vtkDICOMDictionary::Dict Dict218Data = {
-"DLX_PATNT_01",
-1,
-1,
 Dict218TagHashTable,
 Dict218KeyHashTable,
 Dict218Contents
 };
 
-// ----- MEDIFACE -----
+// ----- DLX_PATNT_01 -----
 
 const DictEntry Dict219Contents[] = {
+{ 0x0011, 0x0001, 0, VR::LT, VM::M1, "PatientDOB" },
+};
+
+const unsigned short Dict219TagHashTable[] = {
+    2,     0,     1,     0,     1,
+};
+
+const unsigned short Dict219KeyHashTable[] = {
+    2,     0,     1,     0, 49839,
+};
+
+vtkDICOMDictionary::Dict Dict219Data = {
+"DLX_PATNT_01",
+1,
+1,
+Dict219TagHashTable,
+Dict219KeyHashTable,
+Dict219Contents
+};
+
+// ----- MEDIFACE -----
+
+const DictEntry Dict220Contents[] = {
 { 0x0029, 0x0001, 0, VR::UL, VM::M1, "" },
 { 0x0029, 0x0010, 0, VR::DS, VM::M1, "" },
 { 0x0029, 0x0011, 0, VR::DS, VM::M1, "" },
@@ -13669,30 +13756,30 @@ const DictEntry Dict219Contents[] = {
 { 0x0029, 0x0030, 0, VR::LT, VM::M1, "" },
 };
 
-const unsigned short Dict219TagHashTable[] = {
+const unsigned short Dict220TagHashTable[] = {
     8,    11,    16,     7,    19,    24,     7,     0,     1,     2,
    17,     2,     1,    16,     4,    33,     1,     3,    32,     2,
     5,    34,     6,    48,     1,     0,     1,
 };
 
-const unsigned short Dict219KeyHashTable[] = {
+const unsigned short Dict220KeyHashTable[] = {
     7,     7,     7,     7,     7,     8,     7,     0,     7,     0,
   768,     1,   768,     2,   768,     3,   768,     4,   768,     5,
   768,     6,   768,
 };
 
-vtkDICOMDictionary::Dict Dict219Data = {
+vtkDICOMDictionary::Dict Dict220Data = {
 "MEDIFACE",
 7,
 7,
-Dict219TagHashTable,
-Dict219KeyHashTable,
-Dict219Contents
+Dict220TagHashTable,
+Dict220KeyHashTable,
+Dict220Contents
 };
 
 // ----- MITRA OBJECT ATTRIBUTES 1.0 -----
 
-const DictEntry Dict220Contents[] = {
+const DictEntry Dict221Contents[] = {
 { 0x0033, 0x0002, 0, VR::LO, VM::M1, "" },
 { 0x0033, 0x0004, 0, VR::LO, VM::M1, "" },
 { 0x0033, 0x0006, 0, VR::LO, VM::M1, "" },
@@ -13700,28 +13787,28 @@ const DictEntry Dict220Contents[] = {
 { 0x0033, 0x000a, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict220TagHashTable[] = {
+const unsigned short Dict221TagHashTable[] = {
     6,     5,     9,    12,    15,     0,     1,     1,     4,     1,
     4,    10,     1,     2,     6,     2,     0,     2,     3,     8,
 };
 
-const unsigned short Dict220KeyHashTable[] = {
+const unsigned short Dict221KeyHashTable[] = {
     5,     6,     5,     5,     5,     0,     5,     0,  1076,     1,
  1076,     2,  1076,     3,  1076,     4,  1076,
 };
 
-vtkDICOMDictionary::Dict Dict220Data = {
+vtkDICOMDictionary::Dict Dict221Data = {
 "MITRA OBJECT ATTRIBUTES 1.0",
 5,
 5,
-Dict220TagHashTable,
-Dict220KeyHashTable,
-Dict220Contents
+Dict221TagHashTable,
+Dict221KeyHashTable,
+Dict221Contents
 };
 
 // ----- SIEMENS MR DATAMAPPING ATTRIBUTES -----
 
-const DictEntry Dict221Contents[] = {
+const DictEntry Dict222Contents[] = {
 { 0x0011, 0x0001, 0, VR::ST, VM::M1, "ReprocessingInfo" },
 { 0x0011, 0x0002, 0, VR::CS, VM::M1TN, "DataRoleType" },
 { 0x0011, 0x0003, 0, VR::ST, VM::M1, "DataRoleName" },
@@ -13739,7 +13826,7 @@ const DictEntry Dict221Contents[] = {
 { 0x0011, 0x000F, 0, VR::ST, VM::M1, "IsInternalDataRole" },
 };
 
-const unsigned short Dict221TagHashTable[] = {
+const unsigned short Dict222TagHashTable[] = {
    16,    19,    15,    24,    27,    30,    33,    36,    39,    42,
    45,    48,    51,    54,    57,     0,     1,    14,    15,     2,
     0,     1,    13,    14,     1,     2,     3,     1,     1,     2,
@@ -13748,7 +13835,7 @@ const unsigned short Dict221TagHashTable[] = {
    11,     1,     9,    10,     1,    12,    13,     1,    11,    12,
 };
 
-const unsigned short Dict221KeyHashTable[] = {
+const unsigned short Dict222KeyHashTable[] = {
    15,    16,    15,    19,    24,    15,    27,    30,    15,    15,
    15,    35,    46,    51,    15,     0,     1,    14, 46599,     2,
     7,  7781,    13, 43440,     1,     1, 53729,     1,     3, 63044,
@@ -13757,70 +13844,70 @@ const unsigned short Dict221KeyHashTable[] = {
 60941,     1,     6, 52096,
 };
 
-vtkDICOMDictionary::Dict Dict221Data = {
+vtkDICOMDictionary::Dict Dict222Data = {
 "SIEMENS MR DATAMAPPING ATTRIBUTES",
 15,
 15,
-Dict221TagHashTable,
-Dict221KeyHashTable,
-Dict221Contents
-};
-
-// ----- SET WINDOW -----
-
-const DictEntry Dict222Contents[] = {
-{ 0x0019, 0x0000, 0, VR::SH, VM::M1, "SetWindowImageFilter" },
-{ 0x0019, 0x0001, 0, VR::US, VM::M1, "SetWindowMagnificationPower" },
-};
-
-const unsigned short Dict222TagHashTable[] = {
-    3,     6,     0,     1,     1,     1,     1,     0,     0,
-};
-
-const unsigned short Dict222KeyHashTable[] = {
-    3,     6,     0,     1,     0,  4537,     1,     1, 59799,
-};
-
-vtkDICOMDictionary::Dict Dict222Data = {
-"SET WINDOW",
-2,
-2,
 Dict222TagHashTable,
 Dict222KeyHashTable,
 Dict222Contents
 };
 
-// ----- SIEMENS CSA NON-IMAGE -----
+// ----- SET WINDOW -----
 
 const DictEntry Dict223Contents[] = {
+{ 0x0019, 0x0000, 0, VR::SH, VM::M1, "SetWindowImageFilter" },
+{ 0x0019, 0x0001, 0, VR::US, VM::M1, "SetWindowMagnificationPower" },
+};
+
+const unsigned short Dict223TagHashTable[] = {
+    3,     6,     0,     1,     1,     1,     1,     0,     0,
+};
+
+const unsigned short Dict223KeyHashTable[] = {
+    3,     6,     0,     1,     0,  4537,     1,     1, 59799,
+};
+
+vtkDICOMDictionary::Dict Dict223Data = {
+"SET WINDOW",
+2,
+2,
+Dict223TagHashTable,
+Dict223KeyHashTable,
+Dict223Contents
+};
+
+// ----- SIEMENS CSA NON-IMAGE -----
+
+const DictEntry Dict224Contents[] = {
 { 0x0029, 0x0008, 0, VR::CS, VM::M1, "CSADataType" },
 { 0x0029, 0x0009, 0, VR::LO, VM::M1, "CSADataVersion" },
 { 0x0029, 0x0010, 0, VR::OB, VM::M1, "CSADataInfo" },
 { 0x7fe1, 0x0010, 0, VR::OB, VM::M1, "CSAData" },
 };
 
-const unsigned short Dict223TagHashTable[] = {
+const unsigned short Dict224TagHashTable[] = {
     5,     8,    13,     4,     0,     1,     1,     9,     2,     0,
     8,     2,    16,     1,     3,    16,
 };
 
-const unsigned short Dict223KeyHashTable[] = {
+const unsigned short Dict224KeyHashTable[] = {
     5,     4,    10,     4,     0,     2,     0, 38590,     1, 50215,
     2,     2,  2224,     3, 14245,
 };
 
-vtkDICOMDictionary::Dict Dict223Data = {
+vtkDICOMDictionary::Dict Dict224Data = {
 "SIEMENS CSA NON-IMAGE",
 4,
 4,
-Dict223TagHashTable,
-Dict223KeyHashTable,
-Dict223Contents
+Dict224TagHashTable,
+Dict224KeyHashTable,
+Dict224Contents
 };
 
 // ----- GEMS_ADWSoft_DPO -----
 
-const DictEntry Dict224Contents[] = {
+const DictEntry Dict225Contents[] = {
 { 0x0039, 0x0080, 0, VR::IS, VM::M1, "PrivateEntityNumber" },
 { 0x0039, 0x0085, 0, VR::DA, VM::M1, "PrivateEntityDate" },
 { 0x0039, 0x0090, 0, VR::TM, VM::M1, "PrivateEntityTime" },
@@ -13828,103 +13915,103 @@ const DictEntry Dict224Contents[] = {
 { 0x0039, 0x00AA, 0, VR::CS, VM::M1, "PrivateEntityType" },
 };
 
-const unsigned short Dict224TagHashTable[] = {
+const unsigned short Dict225TagHashTable[] = {
     6,    11,    14,     5,    17,     0,     2,     1,   133,     4,
   170,     1,     2,   144,     1,     0,   128,     1,     3,   149,
 };
 
-const unsigned short Dict224KeyHashTable[] = {
+const unsigned short Dict225KeyHashTable[] = {
     6,     5,     9,    14,    17,     0,     1,     2, 10204,     2,
     1, 24581,     3, 50609,     1,     4, 13708,     1,     0, 26074,
 };
 
-vtkDICOMDictionary::Dict Dict224Data = {
+vtkDICOMDictionary::Dict Dict225Data = {
 "GEMS_ADWSoft_DPO",
 5,
 5,
-Dict224TagHashTable,
-Dict224KeyHashTable,
-Dict224Contents
-};
-
-// ----- EMAGEON STUDY HOME -----
-
-const DictEntry Dict225Contents[] = {
-{ 0x0009, 0x0000, 0, VR::LO, VM::M1, "" },
-{ 0x0009, 0x0001, 0, VR::LO, VM::M1, "" },
-};
-
-const unsigned short Dict225TagHashTable[] = {
-    3,     6,     0,     1,     1,     1,     1,     0,     0,
-};
-
-const unsigned short Dict225KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
-};
-
-vtkDICOMDictionary::Dict Dict225Data = {
-"EMAGEON STUDY HOME",
-2,
-2,
 Dict225TagHashTable,
 Dict225KeyHashTable,
 Dict225Contents
 };
 
-// ----- SIEMENS MR IMA -----
+// ----- EMAGEON STUDY HOME -----
 
 const DictEntry Dict226Contents[] = {
-{ 0x0021, 0x0001, 0, VR::SQ, VM::M1, "MRImageSequence" },
+{ 0x0009, 0x0000, 0, VR::LO, VM::M1, "" },
+{ 0x0009, 0x0001, 0, VR::LO, VM::M1, "" },
 };
 
 const unsigned short Dict226TagHashTable[] = {
-    2,     0,     1,     0,     1,
+    3,     6,     0,     1,     1,     1,     1,     0,     0,
 };
 
 const unsigned short Dict226KeyHashTable[] = {
-    2,     0,     1,     0, 11488,
+    2,     3,     0,     2,     0,  2690,     1,  2690,
 };
 
 vtkDICOMDictionary::Dict Dict226Data = {
-"SIEMENS MR IMA",
-1,
-1,
+"EMAGEON STUDY HOME",
+2,
+2,
 Dict226TagHashTable,
 Dict226KeyHashTable,
 Dict226Contents
 };
 
-// ----- SIEMENS MED PT -----
+// ----- SIEMENS MR IMA -----
 
 const DictEntry Dict227Contents[] = {
+{ 0x0021, 0x0001, 0, VR::SQ, VM::M1, "MRImageSequence" },
+};
+
+const unsigned short Dict227TagHashTable[] = {
+    2,     0,     1,     0,     1,
+};
+
+const unsigned short Dict227KeyHashTable[] = {
+    2,     0,     1,     0, 11488,
+};
+
+vtkDICOMDictionary::Dict Dict227Data = {
+"SIEMENS MR IMA",
+1,
+1,
+Dict227TagHashTable,
+Dict227KeyHashTable,
+Dict227Contents
+};
+
+// ----- SIEMENS MED PT -----
+
+const DictEntry Dict228Contents[] = {
 { 0x0071, 0x0021, 0, VR::UI, VM::M1, "RegistrationMatrixUID" },
 { 0x0071, 0x0022, 0, VR::DT, VM::M1, "DecayCorrectionDateTime" },
 { 0x0071, 0x0023, 0, VR::US, VM::M1, "VolumeIndex" },
 { 0x0071, 0x0024, 0, VR::IS, VM::M1, "TimeSliceDuration" },
 };
 
-const unsigned short Dict227TagHashTable[] = {
+const unsigned short Dict228TagHashTable[] = {
     5,     8,    11,    14,     0,     1,     3,    36,     1,     0,
    33,     1,     1,    34,     1,     2,    35,
 };
 
-const unsigned short Dict227KeyHashTable[] = {
+const unsigned short Dict228KeyHashTable[] = {
     5,     8,    11,    14,     0,     1,     1, 31052,     1,     2,
 24277,     1,     3, 35418,     1,     0, 14317,
 };
 
-vtkDICOMDictionary::Dict Dict227Data = {
+vtkDICOMDictionary::Dict Dict228Data = {
 "SIEMENS MED PT",
 4,
 4,
-Dict227TagHashTable,
-Dict227KeyHashTable,
-Dict227Contents
+Dict228TagHashTable,
+Dict228KeyHashTable,
+Dict228Contents
 };
 
 // ----- SIEMENS MED -----
 
-const DictEntry Dict228Contents[] = {
+const DictEntry Dict229Contents[] = {
 { 0x0009, 0x0010, 0, VR::LO, VM::M1, "RecognitionCode" },
 { 0x0009, 0x0030, 0, VR::US, VM::M1, "ByteOffsetOfOriginalHeader" },
 { 0x0009, 0x0031, 0, VR::UL, VM::M1, "LengthOfOriginalHeader" },
@@ -13943,7 +14030,7 @@ const DictEntry Dict228Contents[] = {
 { 0x7005, 0x0010, 0, VR::LO, VM::M1, "Dummy" },
 };
 
-const unsigned short Dict228TagHashTable[] = {
+const unsigned short Dict229TagHashTable[] = {
    17,    20,    16,    27,    16,    32,    16,    16,    35,    42,
    16,    16,    51,    16,    16,    54,     0,     1,    10,    17,
     3,     9,    16,    12,    32,    13,    16,     2,    11,    18,
@@ -13952,7 +14039,7 @@ const unsigned short Dict228TagHashTable[] = {
    81,     1,     8,   246,     1,     7,   245,
 };
 
-const unsigned short Dict228KeyHashTable[] = {
+const unsigned short Dict229KeyHashTable[] = {
    16,    17,    16,    28,    16,    31,    36,    16,    16,    16,
    39,    44,    47,    16,    54,    16,     0,     5,     0, 24778,
     4, 31907,     7, 62752,    13, 63631,    15, 63631,     1,     1,
@@ -13961,46 +14048,46 @@ const unsigned short Dict228KeyHashTable[] = {
    10, 48788,    11, 10273,     1,    14, 53320,
 };
 
-vtkDICOMDictionary::Dict Dict228Data = {
+vtkDICOMDictionary::Dict Dict229Data = {
 "SIEMENS MED",
 16,
 16,
-Dict228TagHashTable,
-Dict228KeyHashTable,
-Dict228Contents
+Dict229TagHashTable,
+Dict229KeyHashTable,
+Dict229Contents
 };
 
 // ----- GEMS_AWSoft_SB1 -----
 
-const DictEntry Dict229Contents[] = {
+const DictEntry Dict230Contents[] = {
 { 0x0039, 0x0050, 0, VR::UI, VM::M1, "ReferenceToStudyUID" },
 { 0x0039, 0x0051, 0, VR::UI, VM::M1, "ReferenceToSeriesUID" },
 { 0x0039, 0x0052, 0, VR::IS, VM::M1, "ReferenceToOriginalInstance" },
 { 0x0039, 0x0095, 0, VR::LO, VM::M1, "PrivateEntityLaunchCommand" },
 };
 
-const unsigned short Dict229TagHashTable[] = {
+const unsigned short Dict230TagHashTable[] = {
     5,     8,    11,     4,     0,     1,     0,    80,     1,     1,
    81,     2,     2,    82,     3,   149,
 };
 
-const unsigned short Dict229KeyHashTable[] = {
+const unsigned short Dict230KeyHashTable[] = {
     5,     8,    11,    14,     0,     1,     1, 29625,     1,     2,
 39160,     1,     0, 57324,     1,     3, 63261,
 };
 
-vtkDICOMDictionary::Dict Dict229Data = {
+vtkDICOMDictionary::Dict Dict230Data = {
 "GEMS_AWSoft_SB1",
 4,
 4,
-Dict229TagHashTable,
-Dict229KeyHashTable,
-Dict229Contents
+Dict230TagHashTable,
+Dict230KeyHashTable,
+Dict230Contents
 };
 
 // ----- ShowcaseAppearance -----
 
-const DictEntry Dict230Contents[] = {
+const DictEntry Dict231Contents[] = {
 { 0x0029, 0x0010, 0, VR::DS, VM::M1, "" },
 { 0x0029, 0x0011, 0, VR::DS, VM::M1, "" },
 { 0x0029, 0x0012, 0, VR::DS, VM::M1, "" },
@@ -14008,52 +14095,52 @@ const DictEntry Dict230Contents[] = {
 { 0x0029, 0x0014, 0, VR::SQ, VM::M1, "" },
 };
 
-const unsigned short Dict230TagHashTable[] = {
+const unsigned short Dict231TagHashTable[] = {
     5,     6,    11,    14,    17,     0,     2,     1,    17,     4,
    20,     1,     0,    16,     1,     3,    19,     1,     2,    18,
 };
 
-const unsigned short Dict230KeyHashTable[] = {
+const unsigned short Dict231KeyHashTable[] = {
     5,     6,     5,     5,     5,     0,     5,     0,  1076,     1,
  1076,     2,  1076,     3,  1076,     4,  1076,
 };
 
-vtkDICOMDictionary::Dict Dict230Data = {
+vtkDICOMDictionary::Dict Dict231Data = {
 "ShowcaseAppearance",
 5,
 5,
-Dict230TagHashTable,
-Dict230KeyHashTable,
-Dict230Contents
-};
-
-// ----- SIEMENS SYNGO INSTANCE MANIFEST -----
-
-const DictEntry Dict231Contents[] = {
-{ 0x0009, 0x0000, 0, VR::SQ, VM::M1, "TemporaryOriginalHeaderSequence" },
-{ 0x0009, 0x0010, 0, VR::AE, VM::M1, "syngoIndexSourceAETitle" },
-};
-
-const unsigned short Dict231TagHashTable[] = {
-    2,     3,     0,     2,     0,     0,     1,    16,
-};
-
-const unsigned short Dict231KeyHashTable[] = {
-    3,     6,     0,     1,     1, 21619,     1,     0, 18847,
-};
-
-vtkDICOMDictionary::Dict Dict231Data = {
-"SIEMENS SYNGO INSTANCE MANIFEST",
-2,
-2,
 Dict231TagHashTable,
 Dict231KeyHashTable,
 Dict231Contents
 };
 
-// ----- Image (ID, Version, Size, Dump, GUID) -----
+// ----- SIEMENS SYNGO INSTANCE MANIFEST -----
 
 const DictEntry Dict232Contents[] = {
+{ 0x0009, 0x0000, 0, VR::SQ, VM::M1, "TemporaryOriginalHeaderSequence" },
+{ 0x0009, 0x0010, 0, VR::AE, VM::M1, "syngoIndexSourceAETitle" },
+};
+
+const unsigned short Dict232TagHashTable[] = {
+    2,     3,     0,     2,     0,     0,     1,    16,
+};
+
+const unsigned short Dict232KeyHashTable[] = {
+    3,     6,     0,     1,     1, 21619,     1,     0, 18847,
+};
+
+vtkDICOMDictionary::Dict Dict232Data = {
+"SIEMENS SYNGO INSTANCE MANIFEST",
+2,
+2,
+Dict232TagHashTable,
+Dict232KeyHashTable,
+Dict232Contents
+};
+
+// ----- Image (ID, Version, Size, Dump, GUID) -----
+
+const DictEntry Dict233Contents[] = {
 { 0x8003, 0x0000, 0, VR::LO, VM::M1, "ID" },
 { 0x8003, 0x0010, 0, VR::LO, VM::M1, "Version" },
 { 0x8003, 0x0020, 0, VR::UL, VM::M1, "Size" },
@@ -14061,55 +14148,55 @@ const DictEntry Dict232Contents[] = {
 { 0x8003, 0x0040, 0, VR::LO, VM::M1, "GUID" },
 };
 
-const unsigned short Dict232TagHashTable[] = {
+const unsigned short Dict233TagHashTable[] = {
     6,     9,     5,    14,    17,     0,     1,     2,    32,     2,
     3,    48,     4,    64,     1,     0,     0,     1,     1,    16,
 };
 
-const unsigned short Dict232KeyHashTable[] = {
+const unsigned short Dict233KeyHashTable[] = {
     6,     9,     5,    12,    17,     0,     1,     1, 10863,     1,
     0, 58365,     2,     2, 57433,     3, 17688,     1,     4, 32034,
 };
 
-vtkDICOMDictionary::Dict Dict232Data = {
+vtkDICOMDictionary::Dict Dict233Data = {
 "Image (ID, Version, Size, Dump, GUID)",
 5,
 5,
-Dict232TagHashTable,
-Dict232KeyHashTable,
-Dict232Contents
-};
-
-// ----- SIEMENS SYNGO ENHANCED IDATASET API -----
-
-const DictEntry Dict233Contents[] = {
-{ 0x0027, 0x0001, 0, VR::CS, VM::M1, "BusinessUnitCode" },
-{ 0x0027, 0x0002, 0, VR::LO, VM::M1, "ApplicationType" },
-{ 0x0027, 0x0003, 0, VR::SQ, VM::M1, "ApplicationAttributesSequence" },
-};
-
-const unsigned short Dict233TagHashTable[] = {
-    4,     7,    10,     0,     1,     2,     3,     1,     1,     2,
-    1,     0,     1,
-};
-
-const unsigned short Dict233KeyHashTable[] = {
-    4,     7,    10,     0,     1,     0, 43524,     1,     1, 60478,
-    1,     2, 14077,
-};
-
-vtkDICOMDictionary::Dict Dict233Data = {
-"SIEMENS SYNGO ENHANCED IDATASET API",
-3,
-3,
 Dict233TagHashTable,
 Dict233KeyHashTable,
 Dict233Contents
 };
 
-// ----- astm.org/diconde/iod/NdeUsEquipmentSettings -----
+// ----- SIEMENS SYNGO ENHANCED IDATASET API -----
 
 const DictEntry Dict234Contents[] = {
+{ 0x0027, 0x0001, 0, VR::CS, VM::M1, "BusinessUnitCode" },
+{ 0x0027, 0x0002, 0, VR::LO, VM::M1, "ApplicationType" },
+{ 0x0027, 0x0003, 0, VR::SQ, VM::M1, "ApplicationAttributesSequence" },
+};
+
+const unsigned short Dict234TagHashTable[] = {
+    4,     7,    10,     0,     1,     2,     3,     1,     1,     2,
+    1,     0,     1,
+};
+
+const unsigned short Dict234KeyHashTable[] = {
+    4,     7,    10,     0,     1,     0, 43524,     1,     1, 60478,
+    1,     2, 14077,
+};
+
+vtkDICOMDictionary::Dict Dict234Data = {
+"SIEMENS SYNGO ENHANCED IDATASET API",
+3,
+3,
+Dict234TagHashTable,
+Dict234KeyHashTable,
+Dict234Contents
+};
+
+// ----- astm.org/diconde/iod/NdeUsEquipmentSettings -----
+
+const DictEntry Dict235Contents[] = {
 { 0x0009, 0x0020, 0, VR::SQ, VM::M1, "PulserSettingsSequence" },
 { 0x0009, 0x0022, 0, VR::DS, VM::M1, "PulseWidth" },
 { 0x0009, 0x0024, 0, VR::DS, VM::M1, "ExcitationFrequency" },
@@ -14149,7 +14236,7 @@ const DictEntry Dict234Contents[] = {
 { 0x0009, 0x007E, 0, VR::DA, VM::M1TN, "CalibrationDate" },
 };
 
-const unsigned short Dict234TagHashTable[] = {
+const unsigned short Dict235TagHashTable[] = {
    37,    38,    37,    41,    44,    47,    50,    55,    60,    65,
    68,    73,    76,    79,    82,    87,    92,    37,    97,   100,
   103,   108,   113,   116,   119,    37,   122,    37,    37,    37,
@@ -14166,7 +14253,7 @@ const unsigned short Dict234TagHashTable[] = {
    98,     1,     4,    40,     1,    28,   100,     1,    15,    64,
 };
 
-const unsigned short Dict234KeyHashTable[] = {
+const unsigned short Dict235KeyHashTable[] = {
    37,    38,    43,    46,    53,    56,    37,    59,    64,    67,
    70,    37,    73,    76,    79,    84,    37,    89,    98,   101,
   104,   107,   112,    37,   115,    37,   118,    37,   121,    37,
@@ -14183,18 +14270,18 @@ const unsigned short Dict234KeyHashTable[] = {
    29, 10968,     1,    26,  2544,     1,    36, 13077,
 };
 
-vtkDICOMDictionary::Dict Dict234Data = {
+vtkDICOMDictionary::Dict Dict235Data = {
 "astm.org/diconde/iod/NdeUsEquipmentSettings",
 37,
 37,
-Dict234TagHashTable,
-Dict234KeyHashTable,
-Dict234Contents
+Dict235TagHashTable,
+Dict235KeyHashTable,
+Dict235Contents
 };
 
 // ----- SIEMENS MR HEADER -----
 
-const DictEntry Dict235Contents[] = {
+const DictEntry Dict236Contents[] = {
 { 0x0019, 0x0008, 0, VR::CS, VM::M1, "" },
 { 0x0019, 0x0009, 0, VR::LO, VM::M1, "" },
 { 0x0019, 0x000A, 0, VR::US, VM::M1, "NumberOfImagesInMosaic" },
@@ -14235,7 +14322,7 @@ const DictEntry Dict235Contents[] = {
 { 0x0051, 0x0019, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict235TagHashTable[] = {
+const unsigned short Dict236TagHashTable[] = {
    38,    39,    38,    38,    38,    38,    38,    38,    42,    38,
    45,    50,    55,    60,    65,    70,    75,    80,    85,    90,
    95,   100,   103,   108,   111,   114,    38,   117,   120,   123,
@@ -14253,7 +14340,7 @@ const unsigned short Dict235TagHashTable[] = {
    25,
 };
 
-const unsigned short Dict235KeyHashTable[] = {
+const unsigned short Dict236KeyHashTable[] = {
    39,    42,    45,    38,    48,    38,    38,    38,    53,    38,
    56,    61,    38,    38,    38,    38,    38,    38,    66,    71,
    38,    38,    74,    77,    38,   112,    38,    38,    38,    38,
@@ -14270,48 +14357,24 @@ const unsigned short Dict235KeyHashTable[] = {
  8471,
 };
 
-vtkDICOMDictionary::Dict Dict235Data = {
+vtkDICOMDictionary::Dict Dict236Data = {
 "SIEMENS MR HEADER",
 38,
 38,
-Dict235TagHashTable,
-Dict235KeyHashTable,
-Dict235Contents
-};
-
-// ----- AGFA KOSD 1.0 -----
-
-const DictEntry Dict236Contents[] = {
-{ 0x0035, 0x0000, 0, VR::SH, VM::M1, "" },
-{ 0x0035, 0x0003, 0, VR::LT, VM::M1, "" },
-};
-
-const unsigned short Dict236TagHashTable[] = {
-    3,     6,     0,     1,     1,     3,     1,     0,     0,
-};
-
-const unsigned short Dict236KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
-};
-
-vtkDICOMDictionary::Dict Dict236Data = {
-"AGFA KOSD 1.0",
-2,
-2,
 Dict236TagHashTable,
 Dict236KeyHashTable,
 Dict236Contents
 };
 
-// ----- Siemens: Thorax/Multix FD Version -----
+// ----- AGFA KOSD 1.0 -----
 
 const DictEntry Dict237Contents[] = {
-{ 0x0017, 0x0000, 0, VR::LO, VM::M1, "" },
-{ 0x0017, 0x0001, 0, VR::LO, VM::M1, "" },
+{ 0x0035, 0x0000, 0, VR::SH, VM::M1, "" },
+{ 0x0035, 0x0003, 0, VR::LT, VM::M1, "" },
 };
 
 const unsigned short Dict237TagHashTable[] = {
-    3,     6,     0,     1,     1,     1,     1,     0,     0,
+    3,     6,     0,     1,     1,     3,     1,     0,     0,
 };
 
 const unsigned short Dict237KeyHashTable[] = {
@@ -14319,7 +14382,7 @@ const unsigned short Dict237KeyHashTable[] = {
 };
 
 vtkDICOMDictionary::Dict Dict237Data = {
-"Siemens: Thorax/Multix FD Version",
+"AGFA KOSD 1.0",
 2,
 2,
 Dict237TagHashTable,
@@ -14327,36 +14390,60 @@ Dict237KeyHashTable,
 Dict237Contents
 };
 
-// ----- SPI-P-Private-DiDi Release 1 -----
+// ----- Siemens: Thorax/Multix FD Version -----
 
 const DictEntry Dict238Contents[] = {
-{ 0x0019, 0x0000, 0, VR::LT, VM::M1, "PostModeString" },
-{ 0x0019, 0x0001, 0, VR::LT, VM::M1, "PostData" },
-{ 0x0019, 0x0010, 0, VR::LT, VM::M1, "ImageHeader" },
+{ 0x0017, 0x0000, 0, VR::LO, VM::M1, "" },
+{ 0x0017, 0x0001, 0, VR::LO, VM::M1, "" },
 };
 
 const unsigned short Dict238TagHashTable[] = {
-    4,     9,     3,     0,     2,     1,     1,     2,    16,     1,
-    0,     0,
+    3,     6,     0,     1,     1,     1,     1,     0,     0,
 };
 
 const unsigned short Dict238KeyHashTable[] = {
-    4,     9,     3,     0,     2,     0, 33837,     2, 58907,     1,
-    1, 10284,
+    2,     3,     0,     2,     0,  2690,     1,  2690,
 };
 
 vtkDICOMDictionary::Dict Dict238Data = {
-"SPI-P-Private-DiDi Release 1",
-3,
-3,
+"Siemens: Thorax/Multix FD Version",
+2,
+2,
 Dict238TagHashTable,
 Dict238KeyHashTable,
 Dict238Contents
 };
 
-// ----- SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0 -----
+// ----- SPI-P-Private-DiDi Release 1 -----
 
 const DictEntry Dict239Contents[] = {
+{ 0x0019, 0x0000, 0, VR::LT, VM::M1, "PostModeString" },
+{ 0x0019, 0x0001, 0, VR::LT, VM::M1, "PostData" },
+{ 0x0019, 0x0010, 0, VR::LT, VM::M1, "ImageHeader" },
+};
+
+const unsigned short Dict239TagHashTable[] = {
+    4,     9,     3,     0,     2,     1,     1,     2,    16,     1,
+    0,     0,
+};
+
+const unsigned short Dict239KeyHashTable[] = {
+    4,     9,     3,     0,     2,     0, 33837,     2, 58907,     1,
+    1, 10284,
+};
+
+vtkDICOMDictionary::Dict Dict239Data = {
+"SPI-P-Private-DiDi Release 1",
+3,
+3,
+Dict239TagHashTable,
+Dict239KeyHashTable,
+Dict239Contents
+};
+
+// ----- SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0 -----
+
+const DictEntry Dict240Contents[] = {
 { 0x0025, 0x0000, 0, VR::US, VM::M1, "ViewNative" },
 { 0x0025, 0x0001, 0, VR::US, VM::M1, "OriginalSeriesNumber" },
 { 0x0025, 0x0002, 0, VR::US, VM::M1, "OriginalImageNumber" },
@@ -14382,7 +14469,7 @@ const DictEntry Dict239Contents[] = {
 { 0x0025, 0x0016, 0, VR::IS, VM::M1, "ReadyProcessingStatus" },
 };
 
-const unsigned short Dict239TagHashTable[] = {
+const unsigned short Dict240TagHashTable[] = {
    24,    27,    30,    33,    23,    36,    39,    42,    45,    48,
    53,    56,    59,    62,    65,    68,    71,    74,    77,    80,
    83,    86,    89,     0,     1,    11,    11,     1,    10,    10,
@@ -14395,7 +14482,7 @@ const unsigned short Dict239TagHashTable[] = {
     8,     8,
 };
 
-const unsigned short Dict239KeyHashTable[] = {
+const unsigned short Dict240KeyHashTable[] = {
    23,    24,    27,    23,    34,    23,    39,    44,    47,    50,
    23,    23,    59,    62,    23,    65,    68,    71,    23,    74,
    77,    80,    83,     0,     1,     7, 14171,     3,     1, 45204,
@@ -14407,18 +14494,18 @@ const unsigned short Dict239KeyHashTable[] = {
     1,     9, 12229,     1,     6,  3597,
 };
 
-vtkDICOMDictionary::Dict Dict239Data = {
+vtkDICOMDictionary::Dict Dict240Data = {
 "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0",
 23,
 23,
-Dict239TagHashTable,
-Dict239KeyHashTable,
-Dict239Contents
+Dict240TagHashTable,
+Dict240KeyHashTable,
+Dict240Contents
 };
 
 // ----- SIENET -----
 
-const DictEntry Dict240Contents[] = {
+const DictEntry Dict241Contents[] = {
 { 0x0009, 0x0001, 0, VR::US, VM::M1, "SIENETCommandField" },
 { 0x0009, 0x0014, 0, VR::LO, VM::M1, "ReceiverPLA" },
 { 0x0009, 0x0016, 0, VR::US, VM::M1, "TransferPriority" },
@@ -14444,7 +14531,7 @@ const DictEntry Dict240Contents[] = {
 { 0x00A5, 0x0005, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict240TagHashTable[] = {
+const unsigned short Dict241TagHashTable[] = {
    23,    24,    23,    23,    23,    27,    30,    39,    42,    51,
    60,    23,    63,    23,    23,    68,    23,    71,    74,    23,
    77,    23,    80,     0,     1,    22,     5,     1,     4,   112,
@@ -14456,7 +14543,7 @@ const unsigned short Dict240TagHashTable[] = {
     1,    17,    32,
 };
 
-const unsigned short Dict240KeyHashTable[] = {
+const unsigned short Dict241KeyHashTable[] = {
    23,    24,    23,    23,    23,    23,    27,    30,    23,    23,
    33,    23,    36,    39,    44,    23,    23,    23,    49,    52,
    23,    23,    55,     0,     1,    12,  9350,     1,    14,  2362,
@@ -14467,18 +14554,18 @@ const unsigned short Dict240KeyHashTable[] = {
    16,   233,    18,   233,    19,   233,    21,   233,    22,   233,
 };
 
-vtkDICOMDictionary::Dict Dict240Data = {
+vtkDICOMDictionary::Dict Dict241Data = {
 "SIENET",
 23,
 23,
-Dict240TagHashTable,
-Dict240KeyHashTable,
-Dict240Contents
+Dict241TagHashTable,
+Dict241KeyHashTable,
+Dict241Contents
 };
 
 // ----- TOSHIBA_MEC_CT3 -----
 
-const DictEntry Dict241Contents[] = {
+const DictEntry Dict242Contents[] = {
 { 0x7005, 0x0000, 0, VR::OB, VM::M1, "CTPrivateData1" },
 { 0x7005, 0x0003, 0, VR::SH, VM::M1, "CardiacRRMeanTime" },
 { 0x7005, 0x0004, 0, VR::SH, VM::M1, "CardiacReconstructionGettingPhaseInPercent" },
@@ -14547,7 +14634,7 @@ const DictEntry Dict241Contents[] = {
 { 0x7005, 0x00F1, 0, VR::CS, VM::M1, "ProtectMarkForStudyRecord" },
 };
 
-const unsigned short Dict241TagHashTable[] = {
+const unsigned short Dict242TagHashTable[] = {
    66,    67,    66,    66,    66,    66,    66,    66,    70,    73,
    66,    66,    66,    66,    78,    81,    84,    89,    94,    97,
   102,   107,   110,   115,   120,   123,   126,   129,   132,   137,
@@ -14576,7 +14663,7 @@ const unsigned short Dict241TagHashTable[] = {
     1,    41,    54,
 };
 
-const unsigned short Dict241KeyHashTable[] = {
+const unsigned short Dict242KeyHashTable[] = {
    67,    70,    73,    80,    87,    66,    66,    66,    90,   101,
   104,   107,    66,    66,   110,   113,   118,   121,   124,   127,
    66,    66,   132,   135,   138,   145,   148,   153,   156,   159,
@@ -14604,18 +14691,18 @@ const unsigned short Dict241KeyHashTable[] = {
     1,    14, 17457,
 };
 
-vtkDICOMDictionary::Dict Dict241Data = {
+vtkDICOMDictionary::Dict Dict242Data = {
 "TOSHIBA_MEC_CT3",
 66,
 66,
-Dict241TagHashTable,
-Dict241KeyHashTable,
-Dict241Contents
+Dict242TagHashTable,
+Dict242KeyHashTable,
+Dict242Contents
 };
 
 // ----- Silhouette Annot V1.0 -----
 
-const DictEntry Dict242Contents[] = {
+const DictEntry Dict243Contents[] = {
 { 0x0029, 0x0011, 0, VR::IS, VM::M1, "AnnotationName" },
 { 0x0029, 0x0012, 0, VR::LT, VM::M1, "AnnotationFont" },
 { 0x0029, 0x0013, 0, VR::LT, VM::M1, "AnnotationTextForegroundColor" },
@@ -14653,7 +14740,7 @@ const DictEntry Dict242Contents[] = {
 { 0x0029, 0x0045, 0, VR::UL, VM::M1, "AnnotationDontSave" },
 };
 
-const unsigned short Dict242TagHashTable[] = {
+const unsigned short Dict243TagHashTable[] = {
    36,    41,    46,    49,    52,    35,    35,    35,    55,    58,
    61,    64,    67,    70,    75,    80,    83,    86,    35,    35,
    35,    89,    35,    92,    95,   100,   105,   110,   115,   120,
@@ -14670,7 +14757,7 @@ const unsigned short Dict242TagHashTable[] = {
    29,    64,
 };
 
-const unsigned short Dict242KeyHashTable[] = {
+const unsigned short Dict243KeyHashTable[] = {
    36,    39,    35,    35,    42,    35,    45,    48,    51,    56,
    59,    62,    35,    69,    72,    77,    35,    80,    83,    86,
    35,    35,    91,    96,    99,   106,    35,    35,   109,   114,
@@ -14686,92 +14773,92 @@ const unsigned short Dict242KeyHashTable[] = {
     0, 61697,    12, 32355,     2,    17,  6091,    29, 37795,
 };
 
-vtkDICOMDictionary::Dict Dict242Data = {
+vtkDICOMDictionary::Dict Dict243Data = {
 "Silhouette Annot V1.0",
 35,
 35,
-Dict242TagHashTable,
-Dict242KeyHashTable,
-Dict242Contents
-};
-
-// ----- SIEMENS CT APPL MEASUREMENT -----
-
-const DictEntry Dict243Contents[] = {
-{ 0x0029, 0x0000, 0, VR::UT, VM::M1, "OncologySegmentationMeasurementValues" },
-{ 0x0029, 0x0001, 0, VR::ST, VM::M1, "OncologyMeasurementRecistStandard" },
-{ 0x0029, 0x0010, 0, VR::CS, VM::M1, "DualEnergyROIAnnotationMode" },
-};
-
-const unsigned short Dict243TagHashTable[] = {
-    4,     7,    10,     0,     1,     2,    16,     1,     1,     1,
-    1,     0,     0,
-};
-
-const unsigned short Dict243KeyHashTable[] = {
-    3,     3,     4,     0,     3,     0, 61627,     1,  7898,     2,
-27039,
-};
-
-vtkDICOMDictionary::Dict Dict243Data = {
-"SIEMENS CT APPL MEASUREMENT",
-3,
-3,
 Dict243TagHashTable,
 Dict243KeyHashTable,
 Dict243Contents
 };
 
-// ----- GEMS_CT_FLRO_1 -----
+// ----- SIEMENS CT APPL MEASUREMENT -----
 
 const DictEntry Dict244Contents[] = {
-{ 0x0029, 0x0001, 0, VR::SS, VM::M1, "CTIntFluoro" },
-{ 0x0029, 0x0002, 0, VR::DS, VM::M1, "ImagePreciseLocation" },
+{ 0x0029, 0x0000, 0, VR::UT, VM::M1, "OncologySegmentationMeasurementValues" },
+{ 0x0029, 0x0001, 0, VR::ST, VM::M1, "OncologyMeasurementRecistStandard" },
+{ 0x0029, 0x0010, 0, VR::CS, VM::M1, "DualEnergyROIAnnotationMode" },
 };
 
 const unsigned short Dict244TagHashTable[] = {
-    3,     6,     0,     1,     0,     1,     1,     1,     2,
+    4,     7,    10,     0,     1,     2,    16,     1,     1,     1,
+    1,     0,     0,
 };
 
 const unsigned short Dict244KeyHashTable[] = {
-    3,     2,     0,     2,     0, 51487,     1, 30694,
+    3,     3,     4,     0,     3,     0, 61627,     1,  7898,     2,
+27039,
 };
 
 vtkDICOMDictionary::Dict Dict244Data = {
-"GEMS_CT_FLRO_1",
-2,
-2,
+"SIEMENS CT APPL MEASUREMENT",
+3,
+3,
 Dict244TagHashTable,
 Dict244KeyHashTable,
 Dict244Contents
 };
 
-// ----- RadWorksMarconi -----
+// ----- GEMS_CT_FLRO_1 -----
 
 const DictEntry Dict245Contents[] = {
-{ 0x0029, 0x0024, 0, VR::US, VM::M1TN, "KeyFrameIndices" },
+{ 0x0029, 0x0001, 0, VR::SS, VM::M1, "CTIntFluoro" },
+{ 0x0029, 0x0002, 0, VR::DS, VM::M1, "ImagePreciseLocation" },
 };
 
 const unsigned short Dict245TagHashTable[] = {
-    2,     0,     1,     0,    36,
+    3,     6,     0,     1,     0,     1,     1,     1,     2,
 };
 
 const unsigned short Dict245KeyHashTable[] = {
-    2,     0,     1,     0, 35992,
+    3,     2,     0,     2,     0, 51487,     1, 30694,
 };
 
 vtkDICOMDictionary::Dict Dict245Data = {
-"RadWorksMarconi",
-1,
-1,
+"GEMS_CT_FLRO_1",
+2,
+2,
 Dict245TagHashTable,
 Dict245KeyHashTable,
 Dict245Contents
 };
 
-// ----- A.L.I. Technologies, Inc. -----
+// ----- RadWorksMarconi -----
 
 const DictEntry Dict246Contents[] = {
+{ 0x0029, 0x0024, 0, VR::US, VM::M1TN, "KeyFrameIndices" },
+};
+
+const unsigned short Dict246TagHashTable[] = {
+    2,     0,     1,     0,    36,
+};
+
+const unsigned short Dict246KeyHashTable[] = {
+    2,     0,     1,     0, 35992,
+};
+
+vtkDICOMDictionary::Dict Dict246Data = {
+"RadWorksMarconi",
+1,
+1,
+Dict246TagHashTable,
+Dict246KeyHashTable,
+Dict246Contents
+};
+
+// ----- A.L.I. Technologies, Inc. -----
+
+const DictEntry Dict247Contents[] = {
 { 0x3711, 0x0001, 0, VR::LO, VM::M1, "Filename" },
 { 0x3711, 0x0002, 0, VR::OB, VM::M1, "DataBlobOfAVisit" },
 { 0x3711, 0x0003, 0, VR::US, VM::M1, "RevisionNumber" },
@@ -14785,7 +14872,7 @@ const DictEntry Dict246Contents[] = {
 { 0x3711, 0x0097, 0, VR::OB, VM::M1, "" },
 };
 
-const unsigned short Dict246TagHashTable[] = {
+const unsigned short Dict247TagHashTable[] = {
    12,    11,    17,    20,    11,    23,    26,    31,    34,    39,
    11,     0,     2,     9,    48,    10,   151,     1,     4,     5,
     1,     3,     4,     1,     6,    13,     2,     0,     1,     5,
@@ -14793,7 +14880,7 @@ const unsigned short Dict246TagHashTable[] = {
     1,     2,
 };
 
-const unsigned short Dict246KeyHashTable[] = {
+const unsigned short Dict247KeyHashTable[] = {
    11,    11,    12,    15,    20,    27,    30,    11,    11,    35,
    38,     0,     1,    10,   489,     2,     5, 40854,     8, 65259,
     3,     4, 43240,     7,  7295,     9, 13293,     1,     2, 27112,
@@ -14801,93 +14888,93 @@ const unsigned short Dict246KeyHashTable[] = {
 27161,
 };
 
-vtkDICOMDictionary::Dict Dict246Data = {
+vtkDICOMDictionary::Dict Dict247Data = {
 "A.L.I. Technologies, Inc.",
 11,
 11,
-Dict246TagHashTable,
-Dict246KeyHashTable,
-Dict246Contents
-};
-
-// ----- SEGAMI MIML -----
-
-const DictEntry Dict247Contents[] = {
-{ 0x0031, 0x0098, 0, VR::OW, VM::M1, "" },
-};
-
-const unsigned short Dict247TagHashTable[] = {
-    2,     0,     1,     0,   152,
-};
-
-const unsigned short Dict247KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict247Data = {
-"SEGAMI MIML",
-1,
-1,
 Dict247TagHashTable,
 Dict247KeyHashTable,
 Dict247Contents
 };
 
-// ----- EMAGEON JPEG2K INFO -----
+// ----- SEGAMI MIML -----
 
 const DictEntry Dict248Contents[] = {
-{ 0x0009, 0x0000, 0, VR::SQ, VM::M1, "" },
-{ 0x0009, 0x0001, 0, VR::DT, VM::M1, "" },
+{ 0x0031, 0x0098, 0, VR::OW, VM::M1, "" },
 };
 
 const unsigned short Dict248TagHashTable[] = {
-    3,     6,     0,     1,     1,     1,     1,     0,     0,
+    2,     0,     1,     0,   152,
 };
 
 const unsigned short Dict248KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
+    2,     0,     1,     0,  5381,
 };
 
 vtkDICOMDictionary::Dict Dict248Data = {
-"EMAGEON JPEG2K INFO",
-2,
-2,
+"SEGAMI MIML",
+1,
+1,
 Dict248TagHashTable,
 Dict248KeyHashTable,
 Dict248Contents
 };
 
-// ----- FOEM 1.0 -----
+// ----- EMAGEON JPEG2K INFO -----
 
 const DictEntry Dict249Contents[] = {
+{ 0x0009, 0x0000, 0, VR::SQ, VM::M1, "" },
+{ 0x0009, 0x0001, 0, VR::DT, VM::M1, "" },
+};
+
+const unsigned short Dict249TagHashTable[] = {
+    3,     6,     0,     1,     1,     1,     1,     0,     0,
+};
+
+const unsigned short Dict249KeyHashTable[] = {
+    2,     3,     0,     2,     0,  2690,     1,  2690,
+};
+
+vtkDICOMDictionary::Dict Dict249Data = {
+"EMAGEON JPEG2K INFO",
+2,
+2,
+Dict249TagHashTable,
+Dict249KeyHashTable,
+Dict249Contents
+};
+
+// ----- FOEM 1.0 -----
+
+const DictEntry Dict250Contents[] = {
 { 0x0019, 0x0050, 0, VR::IS, VM::M1, "" },
 { 0x0025, 0x0010, 0, VR::US, VM::M1, "" },
 { 0x0025, 0x0012, 0, VR::US, VM::M1, "" },
 { 0x0029, 0x0020, 0, VR::IS, VM::M1, "" },
 };
 
-const unsigned short Dict249TagHashTable[] = {
+const unsigned short Dict250TagHashTable[] = {
     5,     8,     4,    13,     0,     1,     0,    80,     2,     1,
    16,     3,    32,     1,     2,    18,
 };
 
-const unsigned short Dict249KeyHashTable[] = {
+const unsigned short Dict250KeyHashTable[] = {
     4,     5,     4,     4,     0,     4,     0,  1345,     1,  1345,
     2,  1345,     3,  1345,
 };
 
-vtkDICOMDictionary::Dict Dict249Data = {
+vtkDICOMDictionary::Dict Dict250Data = {
 "FOEM 1.0",
 4,
 4,
-Dict249TagHashTable,
-Dict249KeyHashTable,
-Dict249Contents
+Dict250TagHashTable,
+Dict250KeyHashTable,
+Dict250Contents
 };
 
 // ----- MeVis eD: Timepoint Information -----
 
-const DictEntry Dict250Contents[] = {
+const DictEntry Dict251Contents[] = {
 { 0x0021, 0x0010, 0, VR::LT, VM::M1, "TimepointDateTime" },
 { 0x0021, 0x0011, 0, VR::CS, VM::M1, "TimepointDateTimeType" },
 { 0x0021, 0x0012, 0, VR::UN, VM::M1, "TimepointSeriesDescription" },
@@ -14895,28 +14982,28 @@ const DictEntry Dict250Contents[] = {
 { 0x0021, 0x0071, 0, VR::UN, VM::M1, "TimepointEmptyFrames" },
 };
 
-const unsigned short Dict250TagHashTable[] = {
+const unsigned short Dict251TagHashTable[] = {
     6,     9,     5,    14,    17,     0,     1,     3,    19,     2,
     2,    18,     4,   113,     1,     1,    17,     1,     0,    16,
 };
 
-const unsigned short Dict250KeyHashTable[] = {
+const unsigned short Dict251KeyHashTable[] = {
     6,     5,    11,    14,     5,     0,     2,     0, 20911,     1,
 25769,     1,     2,  4175,     2,     3, 13689,     4, 63720,
 };
 
-vtkDICOMDictionary::Dict Dict250Data = {
+vtkDICOMDictionary::Dict Dict251Data = {
 "MeVis eD: Timepoint Information",
 5,
 5,
-Dict250TagHashTable,
-Dict250KeyHashTable,
-Dict250Contents
+Dict251TagHashTable,
+Dict251KeyHashTable,
+Dict251Contents
 };
 
 // ----- Harmony R2.0 -----
 
-const DictEntry Dict251Contents[] = {
+const DictEntry Dict252Contents[] = {
 { 0x0019, 0x0079, 0, VR::IS, VM::M1, "" },
 { 0x0019, 0x007c, 0, VR::IS, VM::M1, "" },
 { 0x0019, 0x007d, 0, VR::UN, VM::M1, "" },
@@ -14944,7 +15031,7 @@ const DictEntry Dict251Contents[] = {
 { 0x0019, 0x0099, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict251TagHashTable[] = {
+const unsigned short Dict252TagHashTable[] = {
    26,    31,    36,    39,    42,    45,    48,    51,    54,    57,
    25,    60,    63,    66,    69,    72,    75,    78,    81,    25,
    84,    87,    90,    95,    25,     0,     2,     1,   124,    14,
@@ -14957,7 +15044,7 @@ const unsigned short Dict251TagHashTable[] = {
     2,     0,   121,    10,   136,     1,    15,   143,
 };
 
-const unsigned short Dict251KeyHashTable[] = {
+const unsigned short Dict252KeyHashTable[] = {
    25,    25,    25,    25,    25,    25,    26,    25,    25,    25,
    25,    25,    25,    25,    25,    25,    25,    25,    25,    25,
    25,    25,    25,    25,    25,     0,    25,     0,   215,     1,
@@ -14968,18 +15055,18 @@ const unsigned short Dict251KeyHashTable[] = {
   215,    22,   215,    23,   215,    24,   215,
 };
 
-vtkDICOMDictionary::Dict Dict251Data = {
+vtkDICOMDictionary::Dict Dict252Data = {
 "Harmony R2.0",
 25,
 25,
-Dict251TagHashTable,
-Dict251KeyHashTable,
-Dict251Contents
+Dict252TagHashTable,
+Dict252KeyHashTable,
+Dict252Contents
 };
 
 // ----- PAPYRUS -----
 
-const DictEntry Dict252Contents[] = {
+const DictEntry Dict253Contents[] = {
 { 0x0009, 0x0000, 0, VR::LT, VM::M1, "OriginalFileName" },
 { 0x0009, 0x0010, 0, VR::LT, VM::M1, "OriginalFileLocation" },
 { 0x0009, 0x0018, 0, VR::LT, VM::M1, "DataSetIdentifier" },
@@ -15005,7 +15092,7 @@ const DictEntry Dict252Contents[] = {
 { 0x0041, 0x00b3, 0, VR::UL, VM::M1TN, "InternalOffsetToImage" },
 };
 
-const unsigned short Dict252TagHashTable[] = {
+const unsigned short Dict253TagHashTable[] = {
    23,    24,    29,    32,    35,    23,    23,    23,    23,    38,
    41,    46,    51,    58,    23,    23,    23,    61,    68,    73,
    76,    23,    81,     0,     2,     9,    52,    11,    64,     1,
@@ -15017,7 +15104,7 @@ const unsigned short Dict252TagHashTable[] = {
   161,     1,     8,    50,
 };
 
-const unsigned short Dict252KeyHashTable[] = {
+const unsigned short Dict253KeyHashTable[] = {
    24,    23,    27,    23,    23,    30,    33,    23,    36,    47,
    23,    23,    52,    55,    23,    23,    58,    61,    64,    69,
    74,    79,    23,     0,     1,     7, 24168,     1,     2, 54676,
@@ -15029,18 +15116,18 @@ const unsigned short Dict252KeyHashTable[] = {
    11, 65124,    20, 22909,
 };
 
-vtkDICOMDictionary::Dict Dict252Data = {
+vtkDICOMDictionary::Dict Dict253Data = {
 "PAPYRUS",
 23,
 23,
-Dict252TagHashTable,
-Dict252KeyHashTable,
-Dict252Contents
+Dict253TagHashTable,
+Dict253KeyHashTable,
+Dict253Contents
 };
 
 // ----- Philips Imaging DD 070 -----
 
-const DictEntry Dict253Contents[] = {
+const DictEntry Dict254Contents[] = {
 { 0x4001, 0x0010, 0, VR::SQ, VM::M1, "" },
 { 0x4001, 0x0011, 0, VR::SQ, VM::M1, "" },
 { 0x4001, 0x0012, 0, VR::SQ, VM::M1, "" },
@@ -15052,31 +15139,31 @@ const DictEntry Dict253Contents[] = {
 { 0x4001, 0x001d, 0, VR::LT, VM::M1, "" },
 };
 
-const unsigned short Dict253TagHashTable[] = {
+const unsigned short Dict254TagHashTable[] = {
    10,    15,     9,    18,    21,     9,    24,    29,    32,     0,
     2,     2,    18,     8,    29,     1,     7,    28,     1,     5,
    23,     1,     4,    22,     2,     1,    17,     6,    24,     1,
     0,    16,     1,     3,    19,
 };
 
-const unsigned short Dict253KeyHashTable[] = {
+const unsigned short Dict254KeyHashTable[] = {
     9,     9,     9,     9,     9,     9,     9,     9,    10,     0,
     9,     0,   597,     1,   597,     2,   597,     3,   597,     4,
   597,     5,   597,     6,   597,     7,   597,     8,   597,
 };
 
-vtkDICOMDictionary::Dict Dict253Data = {
+vtkDICOMDictionary::Dict Dict254Data = {
 "Philips Imaging DD 070",
 9,
 9,
-Dict253TagHashTable,
-Dict253KeyHashTable,
-Dict253Contents
+Dict254TagHashTable,
+Dict254KeyHashTable,
+Dict254Contents
 };
 
 // ----- TOSHIBA_MEC_XA3 -----
 
-const DictEntry Dict254Contents[] = {
+const DictEntry Dict255Contents[] = {
 { 0x7079, 0x0021, 0, VR::SH, VM::M5, "" },
 { 0x7079, 0x0022, 0, VR::IS, VM::M2, "" },
 { 0x7079, 0x0023, 0, VR::IS, VM::M2, "" },
@@ -15168,7 +15255,7 @@ const DictEntry Dict254Contents[] = {
 { 0x7079, 0x0080, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict254TagHashTable[] = {
+const unsigned short Dict255TagHashTable[] = {
    89,    89,    89,    89,    89,    89,    89,    89,    89,    89,
    89,    89,    89,    89,    89,    89,    89,    90,    93,    96,
    89,    89,    89,    89,    89,    99,   102,   105,   108,   111,
@@ -15204,7 +15291,7 @@ const unsigned short Dict254TagHashTable[] = {
    68,     1,    36,    71,     1,    35,    70,
 };
 
-const unsigned short Dict254KeyHashTable[] = {
+const unsigned short Dict255KeyHashTable[] = {
    89,    89,    89,    89,    89,    89,    89,    89,    89,    89,
    89,    89,    89,    89,    89,    89,    89,    89,    89,    89,
    89,    89,    89,    89,    89,    89,    89,    89,    89,    89,
@@ -15234,18 +15321,18 @@ const unsigned short Dict254KeyHashTable[] = {
    60,    85,    60,    86,    60,    87,    60,    88,    60,
 };
 
-vtkDICOMDictionary::Dict Dict254Data = {
+vtkDICOMDictionary::Dict Dict255Data = {
 "TOSHIBA_MEC_XA3",
 89,
 89,
-Dict254TagHashTable,
-Dict254KeyHashTable,
-Dict254Contents
+Dict255TagHashTable,
+Dict255KeyHashTable,
+Dict255Contents
 };
 
 // ----- Philips Imaging DD 073 -----
 
-const DictEntry Dict255Contents[] = {
+const DictEntry Dict256Contents[] = {
 { 0x4007, 0x0048, 0, VR::FL, VM::M1, "" },
 { 0x4007, 0x004b, 0, VR::FL, VM::M1, "" },
 { 0x4007, 0x004c, 0, VR::LO, VM::M1, "" },
@@ -15254,53 +15341,53 @@ const DictEntry Dict255Contents[] = {
 { 0x4007, 0x004f, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict255TagHashTable[] = {
+const unsigned short Dict256TagHashTable[] = {
     6,     7,    10,    15,    18,    21,     0,     1,     1,    75,
     2,     0,    72,     4,    78,     1,     5,    79,     1,     2,
    76,     1,     3,    77,
 };
 
-const unsigned short Dict255KeyHashTable[] = {
+const unsigned short Dict256KeyHashTable[] = {
     6,     6,     6,     6,     6,     7,     0,     6,     0,   896,
     1,   896,     2,   896,     3,   896,     4,   896,     5,   896,
 };
 
-vtkDICOMDictionary::Dict Dict255Data = {
+vtkDICOMDictionary::Dict Dict256Data = {
 "Philips Imaging DD 073",
 6,
 6,
-Dict255TagHashTable,
-Dict255KeyHashTable,
-Dict255Contents
-};
-
-// ----- SEGAMI_HEADER -----
-
-const DictEntry Dict256Contents[] = {
-{ 0x0029, 0x0031, 0, VR::CS, VM::M1, "" },
-{ 0x0029, 0x0032, 0, VR::OW, VM::M1, "" },
-};
-
-const unsigned short Dict256TagHashTable[] = {
-    3,     6,     0,     1,     0,    49,     1,     1,    50,
-};
-
-const unsigned short Dict256KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
-};
-
-vtkDICOMDictionary::Dict Dict256Data = {
-"SEGAMI_HEADER",
-2,
-2,
 Dict256TagHashTable,
 Dict256KeyHashTable,
 Dict256Contents
 };
 
-// ----- IMS s.r.l. Mammography Private Code -----
+// ----- SEGAMI_HEADER -----
 
 const DictEntry Dict257Contents[] = {
+{ 0x0029, 0x0031, 0, VR::CS, VM::M1, "" },
+{ 0x0029, 0x0032, 0, VR::OW, VM::M1, "" },
+};
+
+const unsigned short Dict257TagHashTable[] = {
+    3,     6,     0,     1,     0,    49,     1,     1,    50,
+};
+
+const unsigned short Dict257KeyHashTable[] = {
+    2,     3,     0,     2,     0,  2690,     1,  2690,
+};
+
+vtkDICOMDictionary::Dict Dict257Data = {
+"SEGAMI_HEADER",
+2,
+2,
+Dict257TagHashTable,
+Dict257KeyHashTable,
+Dict257Contents
+};
+
+// ----- IMS s.r.l. Mammography Private Code -----
+
+const DictEntry Dict258Contents[] = {
 { 0x1271, 0x0001, 0, VR::IS, VM::M1, "Threshold1" },
 { 0x1271, 0x0002, 0, VR::IS, VM::M1, "Threshold2" },
 { 0x1271, 0x0010, 0, VR::IS, VM::M1, "SegmentationLeftBorder" },
@@ -15360,7 +15447,7 @@ const DictEntry Dict257Contents[] = {
 { 0x1271, 0x0085, 0, VR::IS, VM::M1, "" },
 };
 
-const unsigned short Dict257TagHashTable[] = {
+const unsigned short Dict258TagHashTable[] = {
    58,    63,    68,    73,    78,    85,    90,    97,   102,   105,
   108,   113,   118,   121,    57,   124,   127,   130,    57,    57,
    57,    57,   133,   136,   139,   142,    57,    57,    57,    57,
@@ -15385,7 +15472,7 @@ const unsigned short Dict257TagHashTable[] = {
    49,   120,
 };
 
-const unsigned short Dict257KeyHashTable[] = {
+const unsigned short Dict258KeyHashTable[] = {
    57,    58,    57,    61,    64,    67,    57,    70,    57,    73,
    76,    83,    88,    93,    98,   103,   106,   111,   114,    57,
    57,   119,    57,   124,   127,   130,   135,    57,   138,   143,
@@ -15410,45 +15497,45 @@ const unsigned short Dict257KeyHashTable[] = {
 14681,
 };
 
-vtkDICOMDictionary::Dict Dict257Data = {
+vtkDICOMDictionary::Dict Dict258Data = {
 "IMS s.r.l. Mammography Private Code",
 57,
 57,
-Dict257TagHashTable,
-Dict257KeyHashTable,
-Dict257Contents
-};
-
-// ----- Silhouette Sequence Ids V1.0 -----
-
-const DictEntry Dict258Contents[] = {
-{ 0x0029, 0x0041, 0, VR::SQ, VM::M1, "" },
-{ 0x0029, 0x0042, 0, VR::SQ, VM::M1, "" },
-{ 0x0029, 0x0043, 0, VR::SQ, VM::M1, "" },
-};
-
-const unsigned short Dict258TagHashTable[] = {
-    4,     7,    10,     0,     1,     0,    65,     1,     1,    66,
-    1,     2,    67,
-};
-
-const unsigned short Dict258KeyHashTable[] = {
-    3,     3,     4,     0,     3,     0,  1793,     1,  1793,     2,
- 1793,
-};
-
-vtkDICOMDictionary::Dict Dict258Data = {
-"Silhouette Sequence Ids V1.0",
-3,
-3,
 Dict258TagHashTable,
 Dict258KeyHashTable,
 Dict258Contents
 };
 
-// ----- SIEMENS SYNGO ADVANCED PRESENTATION -----
+// ----- Silhouette Sequence Ids V1.0 -----
 
 const DictEntry Dict259Contents[] = {
+{ 0x0029, 0x0041, 0, VR::SQ, VM::M1, "" },
+{ 0x0029, 0x0042, 0, VR::SQ, VM::M1, "" },
+{ 0x0029, 0x0043, 0, VR::SQ, VM::M1, "" },
+};
+
+const unsigned short Dict259TagHashTable[] = {
+    4,     7,    10,     0,     1,     0,    65,     1,     1,    66,
+    1,     2,    67,
+};
+
+const unsigned short Dict259KeyHashTable[] = {
+    3,     3,     4,     0,     3,     0,  1793,     1,  1793,     2,
+ 1793,
+};
+
+vtkDICOMDictionary::Dict Dict259Data = {
+"Silhouette Sequence Ids V1.0",
+3,
+3,
+Dict259TagHashTable,
+Dict259KeyHashTable,
+Dict259Contents
+};
+
+// ----- SIEMENS SYNGO ADVANCED PRESENTATION -----
+
+const DictEntry Dict260Contents[] = {
 { 0x0029, 0x0000, 0, VR::CS, VM::M1, "PresentationName" },
 { 0x0029, 0x0001, 0, VR::CS, VM::M1, "PresentationType" },
 { 0x0029, 0x0002, 0, VR::SQ, VM::M1, "AdvancedPresentationSequence" },
@@ -15638,7 +15725,7 @@ const DictEntry Dict259Contents[] = {
 { 0x0029, 0x00FD, 0, VR::LO, VM::M1, "MeasurementApplicationTypeID" },
 };
 
-const unsigned short Dict259TagHashTable[] = {
+const unsigned short Dict260TagHashTable[] = {
   187,   188,   193,   196,   199,   187,   187,   187,   202,   205,
   208,   211,   214,   217,   222,   227,   232,   237,   240,   243,
   246,   249,   254,   259,   264,   269,   272,   275,   280,   285,
@@ -15713,7 +15800,7 @@ const unsigned short Dict259TagHashTable[] = {
     1,   112,   147,     1,   111,   146,     1,   110,   145,
 };
 
-const unsigned short Dict259KeyHashTable[] = {
+const unsigned short Dict260KeyHashTable[] = {
   188,   193,   187,   198,   201,   204,   187,   207,   187,   187,
   212,   215,   218,   187,   187,   221,   187,   187,   187,   187,
   226,   187,   233,   187,   240,   243,   187,   248,   251,   256,
@@ -15785,18 +15872,18 @@ const unsigned short Dict259KeyHashTable[] = {
 62279,
 };
 
-vtkDICOMDictionary::Dict Dict259Data = {
+vtkDICOMDictionary::Dict Dict260Data = {
 "SIEMENS SYNGO ADVANCED PRESENTATION",
 187,
 187,
-Dict259TagHashTable,
-Dict259KeyHashTable,
-Dict259Contents
+Dict260TagHashTable,
+Dict260KeyHashTable,
+Dict260Contents
 };
 
 // ----- MITRA PRESENTATION 1.0 -----
 
-const DictEntry Dict260Contents[] = {
+const DictEntry Dict261Contents[] = {
 { 0x0029, 0x0000, 0, VR::CS, VM::M1, "Rotation" },
 { 0x0029, 0x0001, 0, VR::LO, VM::M1, "WindowWidth" },
 { 0x0029, 0x0002, 0, VR::LO, VM::M1, "WindowCentre" },
@@ -15809,7 +15896,7 @@ const DictEntry Dict260Contents[] = {
 { 0x0029, 0x0013, 0, VR::CS, VM::M1, "" },
 };
 
-const unsigned short Dict260TagHashTable[] = {
+const unsigned short Dict261TagHashTable[] = {
    11,    14,    17,    20,    23,    26,    29,    32,    35,    38,
     0,     1,     1,     1,     1,     0,     0,     1,     3,     3,
     1,     2,     2,     1,     5,     5,     1,     4,     4,     1,
@@ -15817,123 +15904,123 @@ const unsigned short Dict260TagHashTable[] = {
    18,
 };
 
-const unsigned short Dict260KeyHashTable[] = {
+const unsigned short Dict261KeyHashTable[] = {
    10,    11,    24,    29,    10,    10,    10,    10,    10,    32,
     0,     6,     0,  6066,     1, 16198,     6,   538,     7,   538,
     8,   538,     9,   538,     2,     2, 22918,     4, 58278,     1,
     3, 29993,     1,     5, 33367,
 };
 
-vtkDICOMDictionary::Dict Dict260Data = {
+vtkDICOMDictionary::Dict Dict261Data = {
 "MITRA PRESENTATION 1.0",
 10,
 10,
-Dict260TagHashTable,
-Dict260KeyHashTable,
-Dict260Contents
+Dict261TagHashTable,
+Dict261KeyHashTable,
+Dict261Contents
 };
 
 // ----- CAMTRONICS IP -----
 
-const DictEntry Dict261Contents[] = {
+const DictEntry Dict262Contents[] = {
 { 0x0029, 0x0010, 0, VR::LT, VM::M1, "" },
 { 0x0029, 0x0020, 0, VR::UN, VM::M1, "" },
 { 0x0029, 0x0030, 0, VR::UN, VM::M1, "" },
 { 0x0029, 0x0040, 0, VR::UN, VM::M1, "" },
 };
 
-const unsigned short Dict261TagHashTable[] = {
+const unsigned short Dict262TagHashTable[] = {
     5,     8,     4,     4,     0,     1,     3,    64,     3,     0,
    16,     1,    32,     2,    48,
 };
 
-const unsigned short Dict261KeyHashTable[] = {
+const unsigned short Dict262KeyHashTable[] = {
     4,     5,     4,     4,     0,     4,     0,  1345,     1,  1345,
     2,  1345,     3,  1345,
 };
 
-vtkDICOMDictionary::Dict Dict261Data = {
+vtkDICOMDictionary::Dict Dict262Data = {
 "CAMTRONICS IP",
 4,
 4,
-Dict261TagHashTable,
-Dict261KeyHashTable,
-Dict261Contents
-};
-
-// ----- GEMS_VXTL_USERDATA_01 -----
-
-const DictEntry Dict262Contents[] = {
-{ 0x0047, 0x0011, 0, VR::LT, VM::M1, "" },
-};
-
-const unsigned short Dict262TagHashTable[] = {
-    2,     0,     1,     0,    17,
-};
-
-const unsigned short Dict262KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict262Data = {
-"GEMS_VXTL_USERDATA_01",
-1,
-1,
 Dict262TagHashTable,
 Dict262KeyHashTable,
 Dict262Contents
 };
 
-// ----- MITRA OBJECT DOCUMENT 1.0 -----
+// ----- GEMS_VXTL_USERDATA_01 -----
 
 const DictEntry Dict263Contents[] = {
-{ 0x0029, 0x0000, 0, VR::OB, VM::M1, "IMPAXObjectDocument" },
-{ 0x0029, 0x0001, 0, VR::OB, VM::M1, "IMPAXMarkupXMLStored" },
+{ 0x0047, 0x0011, 0, VR::LT, VM::M1, "" },
 };
 
 const unsigned short Dict263TagHashTable[] = {
-    3,     6,     0,     1,     1,     1,     1,     0,     0,
+    2,     0,     1,     0,    17,
 };
 
 const unsigned short Dict263KeyHashTable[] = {
-    3,     2,     0,     2,     0, 48829,     1, 31771,
+    2,     0,     1,     0,  5381,
 };
 
 vtkDICOMDictionary::Dict Dict263Data = {
-"MITRA OBJECT DOCUMENT 1.0",
-2,
-2,
+"GEMS_VXTL_USERDATA_01",
+1,
+1,
 Dict263TagHashTable,
 Dict263KeyHashTable,
 Dict263Contents
 };
 
-// ----- QTUltrasound -----
+// ----- MITRA OBJECT DOCUMENT 1.0 -----
 
 const DictEntry Dict264Contents[] = {
-{ 0x0099, 0x0000, 0, VR::SS, VM::M1, "BreastDensityValue" },
+{ 0x0029, 0x0000, 0, VR::OB, VM::M1, "IMPAXObjectDocument" },
+{ 0x0029, 0x0001, 0, VR::OB, VM::M1, "IMPAXMarkupXMLStored" },
 };
 
 const unsigned short Dict264TagHashTable[] = {
-    2,     0,     1,     0,     0,
+    3,     6,     0,     1,     1,     1,     1,     0,     0,
 };
 
 const unsigned short Dict264KeyHashTable[] = {
-    2,     0,     1,     0, 16835,
+    3,     2,     0,     2,     0, 48829,     1, 31771,
 };
 
 vtkDICOMDictionary::Dict Dict264Data = {
-"QTUltrasound",
-1,
-1,
+"MITRA OBJECT DOCUMENT 1.0",
+2,
+2,
 Dict264TagHashTable,
 Dict264KeyHashTable,
 Dict264Contents
 };
 
-// ----- SIEMENS MED SMS USG ANTARES -----
+// ----- QTUltrasound -----
 
 const DictEntry Dict265Contents[] = {
+{ 0x0099, 0x0000, 0, VR::SS, VM::M1, "BreastDensityValue" },
+};
+
+const unsigned short Dict265TagHashTable[] = {
+    2,     0,     1,     0,     0,
+};
+
+const unsigned short Dict265KeyHashTable[] = {
+    2,     0,     1,     0, 16835,
+};
+
+vtkDICOMDictionary::Dict Dict265Data = {
+"QTUltrasound",
+1,
+1,
+Dict265TagHashTable,
+Dict265KeyHashTable,
+Dict265Contents
+};
+
+// ----- SIEMENS MED SMS USG ANTARES -----
+
+const DictEntry Dict266Contents[] = {
 { 0x0019, 0x0000, 0, VR::SH, VM::M1, "" },
 { 0x0019, 0x0003, 0, VR::FD, VM::M1, "" },
 { 0x0019, 0x000c, 0, VR::US, VM::M1, "" },
@@ -15987,7 +16074,7 @@ const DictEntry Dict265Contents[] = {
 { 0x0019, 0x00a0, 0, VR::LT, VM::M1, "" },
 };
 
-const unsigned short Dict265TagHashTable[] = {
+const unsigned short Dict266TagHashTable[] = {
    52,    57,    62,    65,    68,    75,    78,    81,    84,    87,
    90,    93,    98,    51,   103,    51,    51,    51,   106,   109,
   112,   117,    51,   122,   127,   130,   137,    51,    51,   140,
@@ -16010,7 +16097,7 @@ const unsigned short Dict265TagHashTable[] = {
   131,
 };
 
-const unsigned short Dict265KeyHashTable[] = {
+const unsigned short Dict266KeyHashTable[] = {
    51,    51,    51,    51,    51,    51,    51,    51,    51,    51,
    51,    51,    51,    51,    51,    51,    51,    51,    51,    51,
    51,    51,    51,    51,    51,    51,    52,    51,    51,    51,
@@ -16029,93 +16116,93 @@ const unsigned short Dict265KeyHashTable[] = {
   105,    49,   105,    50,   105,
 };
 
-vtkDICOMDictionary::Dict Dict265Data = {
+vtkDICOMDictionary::Dict Dict266Data = {
 "SIEMENS MED SMS USG ANTARES",
 51,
 51,
-Dict265TagHashTable,
-Dict265KeyHashTable,
-Dict265Contents
+Dict266TagHashTable,
+Dict266KeyHashTable,
+Dict266Contents
 };
 
 // ----- PI Private Block (0781:3000 - 0781:30FF) -----
 
-const DictEntry Dict266Contents[] = {
+const DictEntry Dict267Contents[] = {
 { 0x0781, 0x0001, 0, VR::US, VM::M1, "" },
 { 0x0781, 0x0002, 0, VR::US, VM::M1, "" },
 { 0x0781, 0x0005, 0, VR::FL, VM::M1, "" },
 { 0x0781, 0x0009, 0, VR::FL, VM::M4, "" },
 };
 
-const unsigned short Dict266TagHashTable[] = {
+const unsigned short Dict267TagHashTable[] = {
     4,     5,     8,     4,     0,     1,     1,     2,     3,     0,
     1,     2,     5,     3,     9,
 };
 
-const unsigned short Dict266KeyHashTable[] = {
+const unsigned short Dict267KeyHashTable[] = {
     4,     5,     4,     4,     0,     4,     0,  1345,     1,  1345,
     2,  1345,     3,  1345,
 };
 
-vtkDICOMDictionary::Dict Dict266Data = {
+vtkDICOMDictionary::Dict Dict267Data = {
 "PI Private Block (0781:3000 - 0781:30FF)",
 4,
 4,
-Dict266TagHashTable,
-Dict266KeyHashTable,
-Dict266Contents
-};
-
-// ----- SIEMENS MED MAMMO -----
-
-const DictEntry Dict267Contents[] = {
-{ 0x0029, 0x005a, 0, VR::CS, VM::M1, "" },
-};
-
-const unsigned short Dict267TagHashTable[] = {
-    2,     0,     1,     0,    90,
-};
-
-const unsigned short Dict267KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict267Data = {
-"SIEMENS MED MAMMO",
-1,
-1,
 Dict267TagHashTable,
 Dict267KeyHashTable,
 Dict267Contents
 };
 
-// ----- PM -----
+// ----- SIEMENS MED MAMMO -----
 
 const DictEntry Dict268Contents[] = {
-{ 0x0101, 0x0005, 0, VR::LO, VM::M1TN, "ImageEnhancementParameterFile" },
-{ 0x0101, 0x0006, 0, VR::IS, VM::M1, "OriginalSigmoidRatio" },
+{ 0x0029, 0x005a, 0, VR::CS, VM::M1, "" },
 };
 
 const unsigned short Dict268TagHashTable[] = {
-    3,     6,     0,     1,     0,     5,     1,     1,     6,
+    2,     0,     1,     0,    90,
 };
 
 const unsigned short Dict268KeyHashTable[] = {
-    2,     3,     0,     2,     0, 39543,     1, 33778,
+    2,     0,     1,     0,  5381,
 };
 
 vtkDICOMDictionary::Dict Dict268Data = {
-"PM",
-2,
-2,
+"SIEMENS MED MAMMO",
+1,
+1,
 Dict268TagHashTable,
 Dict268KeyHashTable,
 Dict268Contents
 };
 
-// ----- MITRA MARKUP 1.0 -----
+// ----- PM -----
 
 const DictEntry Dict269Contents[] = {
+{ 0x0101, 0x0005, 0, VR::LO, VM::M1TN, "ImageEnhancementParameterFile" },
+{ 0x0101, 0x0006, 0, VR::IS, VM::M1, "OriginalSigmoidRatio" },
+};
+
+const unsigned short Dict269TagHashTable[] = {
+    3,     6,     0,     1,     0,     5,     1,     1,     6,
+};
+
+const unsigned short Dict269KeyHashTable[] = {
+    2,     3,     0,     2,     0, 39543,     1, 33778,
+};
+
+vtkDICOMDictionary::Dict Dict269Data = {
+"PM",
+2,
+2,
+Dict269TagHashTable,
+Dict269KeyHashTable,
+Dict269Contents
+};
+
+// ----- MITRA MARKUP 1.0 -----
+
+const DictEntry Dict270Contents[] = {
 { 0x0029, 0x0000, 0, VR::OB, VM::M1TN, "Markup1" },
 { 0x0029, 0x0001, 0, VR::OB, VM::M1TN, "Markup2" },
 { 0x0029, 0x0002, 0, VR::OB, VM::M1TN, "Markup3" },
@@ -16133,7 +16220,7 @@ const DictEntry Dict269Contents[] = {
 { 0x0029, 0x0014, 0, VR::OB, VM::M1TN, "Markup15" },
 };
 
-const unsigned short Dict269TagHashTable[] = {
+const unsigned short Dict270TagHashTable[] = {
    16,    19,    24,    29,    15,    15,    15,    15,    15,    15,
    32,    35,    40,    45,    50,     0,     1,     4,     4,     2,
     7,     7,    14,    20,     2,     6,     6,     9,     9,     1,
@@ -16142,7 +16229,7 @@ const unsigned short Dict269TagHashTable[] = {
     2,     5,     5,    12,    18,
 };
 
-const unsigned short Dict269KeyHashTable[] = {
+const unsigned short Dict270KeyHashTable[] = {
    16,    15,    15,    19,    22,    25,    28,    31,    34,    37,
    40,    45,    50,    53,    56,     0,     1,    14, 24981,     1,
     0, 16909,     1,     1, 16909,     1,     2, 16909,     1,     3,
@@ -16151,18 +16238,18 @@ const unsigned short Dict269KeyHashTable[] = {
     1,    11, 24980,     1,    12, 24980,     1,    13, 24980,
 };
 
-vtkDICOMDictionary::Dict Dict269Data = {
+vtkDICOMDictionary::Dict Dict270Data = {
 "MITRA MARKUP 1.0",
 15,
 15,
-Dict269TagHashTable,
-Dict269KeyHashTable,
-Dict269Contents
+Dict270TagHashTable,
+Dict270KeyHashTable,
+Dict270Contents
 };
 
 // ----- SIEMENS_FLCOMPACT_VA01A_PROC -----
 
-const DictEntry Dict270Contents[] = {
+const DictEntry Dict271Contents[] = {
 { 0x0017, 0x000a, 0, VR::SS, VM::M1, "" },
 { 0x0017, 0x000b, 0, VR::SS, VM::M1, "" },
 { 0x0017, 0x000c, 0, VR::SS, VM::M1, "" },
@@ -16230,7 +16317,7 @@ const DictEntry Dict270Contents[] = {
 { 0x0017, 0x00c0, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict270TagHashTable[] = {
+const unsigned short Dict271TagHashTable[] = {
    66,    69,    74,    77,    82,    85,    88,    93,    96,    99,
    65,   104,   107,   110,   113,   118,   121,   124,    65,    65,
    65,    65,   129,   132,   137,   144,   149,   156,   161,   166,
@@ -16257,7 +16344,7 @@ const unsigned short Dict270TagHashTable[] = {
     1,    27,    41,     1,    26,    40,
 };
 
-const unsigned short Dict270KeyHashTable[] = {
+const unsigned short Dict271KeyHashTable[] = {
    65,    65,    65,    65,    65,    65,    65,    65,    65,    65,
    65,    65,    65,    65,    65,    65,    65,    65,    65,    65,
    65,    65,    65,    65,    65,    65,    65,    65,    65,    65,
@@ -16280,18 +16367,18 @@ const unsigned short Dict270KeyHashTable[] = {
    82,    62,    82,    63,    82,    64,    82,
 };
 
-vtkDICOMDictionary::Dict Dict270Data = {
+vtkDICOMDictionary::Dict Dict271Data = {
 "SIEMENS_FLCOMPACT_VA01A_PROC",
 65,
 65,
-Dict270TagHashTable,
-Dict270KeyHashTable,
-Dict270Contents
+Dict271TagHashTable,
+Dict271KeyHashTable,
+Dict271Contents
 };
 
 // ----- Applicare/RadStore/Version 1.0 -----
 
-const DictEntry Dict271Contents[] = {
+const DictEntry Dict272Contents[] = {
 { 0x3113, 0x0001, 0, VR::SL, VM::M1, "" },
 { 0x3113, 0x0002, 0, VR::SL, VM::M1, "Id1" },
 { 0x3113, 0x0003, 0, VR::SL, VM::M1, "Id2" },
@@ -16334,7 +16421,7 @@ const DictEntry Dict271Contents[] = {
 { 0x3113, 0x0069, 0, VR::AT, VM::M1TN, "DeletedTags" },
 };
 
-const unsigned short Dict271TagHashTable[] = {
+const unsigned short Dict272TagHashTable[] = {
    40,    40,    40,    40,    40,    40,    41,    40,    44,    47,
    50,    40,    53,    56,    59,    62,    65,    68,    71,    76,
    81,    86,    91,    96,    40,    99,   102,   105,   108,   113,
@@ -16352,7 +16439,7 @@ const unsigned short Dict271TagHashTable[] = {
    33,    82,     2,     1,     2,    34,    83,     1,     0,     1,
 };
 
-const unsigned short Dict271KeyHashTable[] = {
+const unsigned short Dict272KeyHashTable[] = {
    41,    40,    48,    51,    56,    59,    62,    65,    68,    40,
    73,    76,    81,    40,    84,    40,    40,    40,    87,    90,
    40,    95,    40,    40,    40,   110,    40,    40,    40,    40,
@@ -16370,18 +16457,18 @@ const unsigned short Dict271KeyHashTable[] = {
     1,    14, 12256,
 };
 
-vtkDICOMDictionary::Dict Dict271Data = {
+vtkDICOMDictionary::Dict Dict272Data = {
 "Applicare/RadStore/Version 1.0",
 40,
 40,
-Dict271TagHashTable,
-Dict271KeyHashTable,
-Dict271Contents
+Dict272TagHashTable,
+Dict272KeyHashTable,
+Dict272Contents
 };
 
 // ----- Siemens: Thorax/Multix FD Post Processing -----
 
-const DictEntry Dict272Contents[] = {
+const DictEntry Dict273Contents[] = {
 { 0x0021, 0x0000, 0, VR::US, VM::M1, "" },
 { 0x0021, 0x0001, 0, VR::SS, VM::M1, "" },
 { 0x0021, 0x0002, 0, VR::FL, VM::M1, "" },
@@ -16411,7 +16498,7 @@ const DictEntry Dict272Contents[] = {
 { 0x0021, 0x0031, 0, VR::US, VM::M1, "AcquisitionSortNumber" },
 };
 
-const unsigned short Dict272TagHashTable[] = {
+const unsigned short Dict273TagHashTable[] = {
    28,    31,    27,    34,    27,    37,    40,    43,    46,    49,
    52,    55,    58,    61,    64,    67,    70,    75,    80,    83,
    86,    89,    92,    95,    98,   101,   104,     0,     1,    23,
@@ -16425,7 +16512,7 @@ const unsigned short Dict272TagHashTable[] = {
    18,     1,    21,    21,     1,    20,    20,
 };
 
-const unsigned short Dict272KeyHashTable[] = {
+const unsigned short Dict273KeyHashTable[] = {
    28,    31,    27,    34,    37,    27,    27,    27,    42,    27,
    73,    27,    27,    27,    27,    27,    27,    76,    79,    82,
    27,    27,    27,    27,    85,    27,    27,     0,     1,    22,
@@ -16438,18 +16525,18 @@ const unsigned short Dict272KeyHashTable[] = {
    24, 65387,
 };
 
-vtkDICOMDictionary::Dict Dict272Data = {
+vtkDICOMDictionary::Dict Dict273Data = {
 "Siemens: Thorax/Multix FD Post Processing",
 27,
 27,
-Dict272TagHashTable,
-Dict272KeyHashTable,
-Dict272Contents
+Dict273TagHashTable,
+Dict273KeyHashTable,
+Dict273Contents
 };
 
 // ----- SIEMENS MED PT WAVEFORM -----
 
-const DictEntry Dict273Contents[] = {
+const DictEntry Dict274Contents[] = {
 { 0x0071, 0x0046, 0, VR::UN, VM::M1, "StartingRespiratoryAmplitude" },
 { 0x0071, 0x0047, 0, VR::UN, VM::M1, "StartingRespiratoryPhase" },
 { 0x0071, 0x0048, 0, VR::UN, VM::M1, "EndingRespiratoryAmplitude" },
@@ -16457,53 +16544,53 @@ const DictEntry Dict273Contents[] = {
 { 0x0071, 0x0050, 0, VR::CS, VM::M1, "RespiratoryTriggerType" },
 };
 
-const unsigned short Dict273TagHashTable[] = {
+const unsigned short Dict274TagHashTable[] = {
     6,     9,    12,    15,    18,     0,     1,     0,    70,     1,
     3,    73,     1,     2,    72,     1,     4,    80,     1,     1,
    71,
 };
 
-const unsigned short Dict273KeyHashTable[] = {
+const unsigned short Dict274KeyHashTable[] = {
     5,     5,     6,     9,    12,     0,     1,     4, 51609,     1,
     0, 61035,     3,     1, 15354,     2, 34163,     3, 64847,
 };
 
-vtkDICOMDictionary::Dict Dict273Data = {
+vtkDICOMDictionary::Dict Dict274Data = {
 "SIEMENS MED PT WAVEFORM",
 5,
 5,
-Dict273TagHashTable,
-Dict273KeyHashTable,
-Dict273Contents
-};
-
-// ----- RamSoft Custom Report Identifier -----
-
-const DictEntry Dict274Contents[] = {
-{ 0x3113, 0x0010, 0, VR::OB, VM::M1, "BinaryDocument" },
-{ 0x3113, 0x0020, 0, VR::UL, VM::M1, "BinaryDocumentSize" },
-};
-
-const unsigned short Dict274TagHashTable[] = {
-    2,     3,     0,     2,     0,    16,     1,    32,
-};
-
-const unsigned short Dict274KeyHashTable[] = {
-    3,     6,     0,     1,     1, 16338,     1,     0, 28788,
-};
-
-vtkDICOMDictionary::Dict Dict274Data = {
-"RamSoft Custom Report Identifier",
-2,
-2,
 Dict274TagHashTable,
 Dict274KeyHashTable,
 Dict274Contents
 };
 
-// ----- Applicare/RadWorks/Version 5.0 -----
+// ----- RamSoft Custom Report Identifier -----
 
 const DictEntry Dict275Contents[] = {
+{ 0x3113, 0x0010, 0, VR::OB, VM::M1, "BinaryDocument" },
+{ 0x3113, 0x0020, 0, VR::UL, VM::M1, "BinaryDocumentSize" },
+};
+
+const unsigned short Dict275TagHashTable[] = {
+    2,     3,     0,     2,     0,    16,     1,    32,
+};
+
+const unsigned short Dict275KeyHashTable[] = {
+    3,     6,     0,     1,     1, 16338,     1,     0, 28788,
+};
+
+vtkDICOMDictionary::Dict Dict275Data = {
+"RamSoft Custom Report Identifier",
+2,
+2,
+Dict275TagHashTable,
+Dict275KeyHashTable,
+Dict275Contents
+};
+
+// ----- Applicare/RadWorks/Version 5.0 -----
+
+const DictEntry Dict276Contents[] = {
 { 0x3109, 0x0001, 0, VR::ST, VM::M1, "WorklistFilename" },
 { 0x3109, 0x0002, 0, VR::SH, VM::M1, "NewSeenStatus" },
 { 0x3109, 0x0003, 0, VR::CS, VM::M1, "DeleteLock" },
@@ -16554,7 +16641,7 @@ const DictEntry Dict275Contents[] = {
 { 0x3109, 0x00EF, 0, VR::CS, VM::M1, "Action" },
 };
 
-const unsigned short Dict275TagHashTable[] = {
+const unsigned short Dict276TagHashTable[] = {
    49,    52,    48,    48,    57,    60,    63,    66,    69,    72,
    75,    78,    81,    86,    91,    96,   101,   104,    48,   107,
   110,   115,   120,   123,   126,   131,   136,   141,   144,   149,
@@ -16575,7 +16662,7 @@ const unsigned short Dict275TagHashTable[] = {
    17,     1,    14,    16,     1,    17,    19,     1,    16,    18,
 };
 
-const unsigned short Dict275KeyHashTable[] = {
+const unsigned short Dict276KeyHashTable[] = {
    49,    52,    48,    48,    48,    55,    66,    48,    69,    72,
    48,    48,    77,    48,    80,    48,    83,    94,    99,   104,
    48,   107,   110,   113,   120,   125,   134,    48,    48,    48,
@@ -16596,18 +16683,18 @@ const unsigned short Dict275KeyHashTable[] = {
 27686,     1,    13, 32764,
 };
 
-vtkDICOMDictionary::Dict Dict275Data = {
+vtkDICOMDictionary::Dict Dict276Data = {
 "Applicare/RadWorks/Version 5.0",
 48,
 48,
-Dict275TagHashTable,
-Dict275KeyHashTable,
-Dict275Contents
+Dict276TagHashTable,
+Dict276KeyHashTable,
+Dict276Contents
 };
 
 // ----- Voxar 2.16.124.113543.6003.1999.12.20.12.5.0 -----
 
-const DictEntry Dict276Contents[] = {
+const DictEntry Dict277Contents[] = {
 { 0x1135, 0x0000, 0, VR::UI, VM::M1, "" },
 { 0x1135, 0x0001, 0, VR::OB, VM::M1, "" },
 { 0x1135, 0x0002, 0, VR::SQ, VM::M1, "" },
@@ -16624,7 +16711,7 @@ const DictEntry Dict276Contents[] = {
 { 0x1135, 0x0021, 0, VR::UL, VM::M1, "" },
 };
 
-const unsigned short Dict276TagHashTable[] = {
+const unsigned short Dict277TagHashTable[] = {
    14,    15,    20,    23,    26,    29,    34,    37,    40,    14,
    14,    43,    46,    51,     0,     2,     2,     2,     9,    20,
     1,    11,    23,     1,    10,    22,     1,     4,     7,     2,
@@ -16633,7 +16720,7 @@ const unsigned short Dict276TagHashTable[] = {
    19,     1,     0,     0,
 };
 
-const unsigned short Dict276KeyHashTable[] = {
+const unsigned short Dict277KeyHashTable[] = {
    14,    14,    14,    14,    14,    15,    14,    14,    14,    14,
    14,    14,    14,    14,     0,    14,     0,   384,     1,   384,
     2,   384,     3,   384,     4,   384,     5,   384,     6,   384,
@@ -16641,18 +16728,18 @@ const unsigned short Dict276KeyHashTable[] = {
    12,   384,    13,   384,
 };
 
-vtkDICOMDictionary::Dict Dict276Data = {
+vtkDICOMDictionary::Dict Dict277Data = {
 "Voxar 2.16.124.113543.6003.1999.12.20.12.5.0",
 14,
 14,
-Dict276TagHashTable,
-Dict276KeyHashTable,
-Dict276Contents
+Dict277TagHashTable,
+Dict277KeyHashTable,
+Dict277Contents
 };
 
 // ----- astm.org/diconde/iod/NDEGeometry -----
 
-const DictEntry Dict277Contents[] = {
+const DictEntry Dict278Contents[] = {
 { 0x0021, 0x0002, 0, VR::IS, VM::M1, "CoordinateSystemNumberOfAxes" },
 { 0x0021, 0x0004, 0, VR::SQ, VM::M1, "CoordinateSystemAxesSequence" },
 { 0x0021, 0x0006, 0, VR::ST, VM::M1, "CoordinateSystemAxisDescription" },
@@ -16670,7 +16757,7 @@ const DictEntry Dict277Contents[] = {
 { 0x0021, 0x002C, 0, VR::DS, VM::M1TN, "CoordinateSystemTransformTranslationMatrix" },
 };
 
-const unsigned short Dict277TagHashTable[] = {
+const unsigned short Dict278TagHashTable[] = {
    16,    19,    22,    25,    28,    31,    15,    36,    15,    41,
    15,    46,    15,    51,    15,     0,     1,     5,    12,     1,
     8,    32,     1,     6,    14,     1,     9,    34,     1,     7,
@@ -16679,7 +16766,7 @@ const unsigned short Dict277TagHashTable[] = {
    42,     2,     4,    10,    14,    44,
 };
 
-const unsigned short Dict277KeyHashTable[] = {
+const unsigned short Dict278KeyHashTable[] = {
    15,    16,    21,    24,    27,    15,    15,    32,    35,    42,
    15,    45,    15,    15,    50,     0,     2,     2,  8054,    11,
 11934,     1,     5,  5865,     1,     1, 39863,     2,     0, 19315,
@@ -16688,41 +16775,120 @@ const unsigned short Dict277KeyHashTable[] = {
     2,     6, 14228,    10, 22782,
 };
 
-vtkDICOMDictionary::Dict Dict277Data = {
+vtkDICOMDictionary::Dict Dict278Data = {
 "astm.org/diconde/iod/NDEGeometry",
 15,
 15,
-Dict277TagHashTable,
-Dict277KeyHashTable,
-Dict277Contents
-};
-
-// ----- GEMS_CT_VES_01 -----
-
-const DictEntry Dict278Contents[] = {
-{ 0x0051, 0x1001, 0, VR::SQ, VM::M1, "CTVESSequence" },
-};
-
-const unsigned short Dict278TagHashTable[] = {
-    2,     0,     1,     0,  4097,
-};
-
-const unsigned short Dict278KeyHashTable[] = {
-    2,     0,     1,     0, 32067,
-};
-
-vtkDICOMDictionary::Dict Dict278Data = {
-"GEMS_CT_VES_01",
-1,
-1,
 Dict278TagHashTable,
 Dict278KeyHashTable,
 Dict278Contents
 };
 
-// ----- AMI Sequence Annotations_01 -----
+// ----- BRAINWAVE: 1.2.840.113819.3 -----
 
 const DictEntry Dict279Contents[] = {
+{ 0x2001, 0x0010, 0, VR::UI, VM::M1, "DICOMImplementationUID" },
+{ 0x2001, 0x0011, 0, VR::SH, VM::M1, "DICOMImplementationVersion" },
+{ 0x2001, 0x0012, 0, VR::UI, VM::M1, "WithinDICOMImplementationSOPInstanceUID" },
+{ 0x2001, 0x0013, 0, VR::SH, VM::M1, "ApplicationName" },
+{ 0x2001, 0x0014, 0, VR::SH, VM::M1, "ApplicationVersion" },
+{ 0x2001, 0x0015, 0, VR::SH, VM::M1, "CompatibilityVersion" },
+{ 0x2001, 0x0021, 0, VR::UI, VM::M1TN, "ReferencedSeriesUID" },
+{ 0x2001, 0x0031, 0, VR::US, VM::M1, "NumberOfObjectsAveraged" },
+{ 0x2001, 0x0041, 0, VR::US, VM::M1, "NumberOfExpectedTimePoints" },
+{ 0x2001, 0x0051, 0, VR::US, VM::M1, "NumberOfSlicesPerVolume" },
+{ 0x2001, 0x0060, 0, VR::US, VM::M1, "BWImageType" },
+{ 0x2001, 0x0061, 0, VR::US, VM::M1, "ExperimentType" },
+{ 0x2001, 0x0071, 0, VR::UI, VM::M1, "ParadigmUID" },
+{ 0x2001, 0x0072, 0, VR::LO, VM::M1, "ParadigmName" },
+{ 0x2001, 0x0073, 0, VR::ST, VM::M1, "ParadigmDescription" },
+{ 0x2001, 0x0080, 0, VR::OB, VM::M1, "Contrast" },
+{ 0x2001, 0x0081, 0, VR::FL, VM::M1TN, "RegressorValues" },
+{ 0x2001, 0x0086, 0, VR::US, VM::M1, "NumberOfDegreesOfFreedom" },
+{ 0x2001, 0x008A, 0, VR::FL, VM::M1, "ZThreshold" },
+{ 0x2001, 0x008B, 0, VR::FL, VM::M1, "PThreshold" },
+{ 0x2001, 0x0090, 0, VR::OB, VM::M1, "ProcessingParameters" },
+{ 0x2001, 0x0091, 0, VR::OB, VM::M1, "MotionPlot" },
+{ 0x2001, 0x0092, 0, VR::OB, VM::M1, "ROIs" },
+{ 0x2001, 0x0093, 0, VR::OB, VM::M1, "Tracts" },
+{ 0x2001, 0x0094, 0, VR::OB, VM::M1, "Report" },
+{ 0x2001, 0x0095, 0, VR::OB, VM::M1, "ResponseData" },
+{ 0x2001, 0x0096, 0, VR::OB, VM::M1, "DesignMatrix" },
+{ 0x2001, 0x0097, 0, VR::FL, VM::M1TN, "QualityMetrics" },
+{ 0x2001, 0x00A0, 0, VR::FL, VM::M1TN, "MotionParameters" },
+{ 0x2001, 0x00A1, 0, VR::FL, VM::M1TN, "RegistrationParameters" },
+{ 0x2001, 0x00A2, 0, VR::FL, VM::M1TN, "SubjectData" },
+{ 0x2001, 0x00B0, 0, VR::OB, VM::M1, "DTIParameters" },
+{ 0x2001, 0x00C0, 0, VR::OB, VM::M1, "ParadigmInfo" },
+};
+
+const unsigned short Dict279TagHashTable[] = {
+   33,    34,    37,    40,    33,    33,    33,    33,    45,    50,
+   53,    58,    33,    61,    33,    33,    64,    67,    70,    73,
+   80,    85,    88,    91,    94,    99,   104,   109,   112,   115,
+  118,   121,    33,     0,     1,    10,    96,     1,    11,    97,
+    2,     6,    33,     8,    65,     2,    30,   162,    32,   192,
+    1,    29,   161,     2,    16,   129,    28,   160,     1,    15,
+  128,     1,    17,   134,     1,    19,   139,     1,    18,   138,
+    1,    12,   113,     3,     7,    49,     9,    81,    13,   114,
+    2,     1,    17,    14,   115,     1,     0,    16,     1,     3,
+   19,     1,     2,    18,     2,     5,    21,    23,   147,     2,
+    4,    20,    22,   146,     2,    21,   145,    31,   176,     1,
+   20,   144,     1,    27,   151,     1,    26,   150,     1,    25,
+  149,     1,    24,   148,
+};
+
+const unsigned short Dict279KeyHashTable[] = {
+   34,    37,    33,    33,    42,    33,    51,    33,    54,    33,
+   57,    60,    65,    72,    75,    33,    33,    82,    87,    90,
+   93,    33,    33,    96,    33,    99,   104,   107,   110,   113,
+   33,   116,   119,     0,     1,    18, 60524,     2,    26,   883,
+   31, 24793,     4,     0, 61333,     7, 38376,    27,  4897,    28,
+10251,     1,    32, 51312,     1,    29, 41996,     1,    19, 23448,
+    2,     5, 29882,    11, 46877,     3,    17, 57709,    22, 10678,
+   23, 18186,     1,    24, 13940,     3,     1, 24399,    12, 61310,
+   21, 59116,     2,     4, 37294,     8, 22544,     1,    10,  7665,
+    1,     2, 56256,     1,    25,  2202,     1,    20, 20031,     2,
+    3, 39873,     9, 24844,     1,    15, 37913,     1,    14, 51987,
+    1,    16, 42645,     1,    13, 56334,     1,    30, 33808,     1,
+    6, 56805,
+};
+
+vtkDICOMDictionary::Dict Dict279Data = {
+"BRAINWAVE: 1.2.840.113819.3",
+33,
+33,
+Dict279TagHashTable,
+Dict279KeyHashTable,
+Dict279Contents
+};
+
+// ----- GEMS_CT_VES_01 -----
+
+const DictEntry Dict280Contents[] = {
+{ 0x0051, 0x1001, 0, VR::SQ, VM::M1, "CTVESSequence" },
+};
+
+const unsigned short Dict280TagHashTable[] = {
+    2,     0,     1,     0,  4097,
+};
+
+const unsigned short Dict280KeyHashTable[] = {
+    2,     0,     1,     0, 32067,
+};
+
+vtkDICOMDictionary::Dict Dict280Data = {
+"GEMS_CT_VES_01",
+1,
+1,
+Dict280TagHashTable,
+Dict280KeyHashTable,
+Dict280Contents
+};
+
+// ----- AMI Sequence Annotations_01 -----
+
+const DictEntry Dict281Contents[] = {
 { 0x3103, 0x0010, 0, VR::CS, VM::M1, "AnnotationSequence" },
 { 0x3103, 0x0020, 0, VR::UI, VM::M1, "AnnotationUID" },
 { 0x3103, 0x0030, 0, VR::US, VM::M1, "AnnotationColor" },
@@ -16738,7 +16904,7 @@ const DictEntry Dict279Contents[] = {
 { 0x3103, 0x00E0, 0, VR::US, VM::M1, "AnnotationFrameNumber" },
 };
 
-const unsigned short Dict279TagHashTable[] = {
+const unsigned short Dict281TagHashTable[] = {
    13,    13,    13,    14,    13,    13,    19,    13,    13,    28,
    13,    13,    37,     0,     2,     6,   128,    10,   192,     4,
     0,    16,     3,    80,     7,   144,    11,   208,     4,     1,
@@ -16746,7 +16912,7 @@ const unsigned short Dict279TagHashTable[] = {
     5,   112,     9,   176,
 };
 
-const unsigned short Dict279KeyHashTable[] = {
+const unsigned short Dict281KeyHashTable[] = {
    13,    14,    17,    20,    23,    28,    31,    34,    13,    37,
    42,    47,    13,     0,     1,     1, 40997,     1,     2,  9937,
     1,     9, 18917,     2,    10,  9359,    12, 45136,     1,     0,
@@ -16754,18 +16920,18 @@ const unsigned short Dict279KeyHashTable[] = {
     8, 39570,     2,     4, 58303,     6, 14270,     1,    11, 12683,
 };
 
-vtkDICOMDictionary::Dict Dict279Data = {
+vtkDICOMDictionary::Dict Dict281Data = {
 "AMI Sequence Annotations_01",
 13,
 13,
-Dict279TagHashTable,
-Dict279KeyHashTable,
-Dict279Contents
+Dict281TagHashTable,
+Dict281KeyHashTable,
+Dict281Contents
 };
 
 // ----- AMI Sequence Annotations_02 -----
 
-const DictEntry Dict280Contents[] = {
+const DictEntry Dict282Contents[] = {
 { 0x3103, 0x0010, 0, VR::CS, VM::M1, "AnnotationSequence" },
 { 0x3103, 0x0020, 0, VR::UI, VM::M1, "AnnotationUID" },
 { 0x3103, 0x0030, 0, VR::US, VM::M1, "AnnotationColor" },
@@ -16781,7 +16947,7 @@ const DictEntry Dict280Contents[] = {
 { 0x3103, 0x00E0, 0, VR::US, VM::M1, "AnnotationFrameNumber" },
 };
 
-const unsigned short Dict280TagHashTable[] = {
+const unsigned short Dict282TagHashTable[] = {
    13,    13,    13,    14,    13,    13,    19,    13,    13,    28,
    13,    13,    37,     0,     2,     6,   128,    10,   192,     4,
     0,    16,     3,    80,     7,   144,    11,   208,     4,     1,
@@ -16789,7 +16955,7 @@ const unsigned short Dict280TagHashTable[] = {
     5,   112,     9,   176,
 };
 
-const unsigned short Dict280KeyHashTable[] = {
+const unsigned short Dict282KeyHashTable[] = {
    13,    14,    19,    22,    25,    30,    33,    36,    13,    39,
    44,    13,    13,     0,     2,     1, 40997,    11, 48691,     1,
     2,  9937,     1,     9, 18917,     2,    10,  9359,    12, 45136,
@@ -16797,41 +16963,41 @@ const unsigned short Dict280KeyHashTable[] = {
     7, 55037,     8, 39570,     2,     4, 58303,     6, 14270,
 };
 
-vtkDICOMDictionary::Dict Dict280Data = {
+vtkDICOMDictionary::Dict Dict282Data = {
 "AMI Sequence Annotations_02",
 13,
 13,
-Dict280TagHashTable,
-Dict280KeyHashTable,
-Dict280Contents
+Dict282TagHashTable,
+Dict282KeyHashTable,
+Dict282Contents
 };
 
 // ----- GE LUT Asymmetry Parameter -----
 
-const DictEntry Dict281Contents[] = {
+const DictEntry Dict283Contents[] = {
 { 0x0045, 0x0067, 0, VR::DS, VM::M1, "LUTAssymetry" },
 };
 
-const unsigned short Dict281TagHashTable[] = {
+const unsigned short Dict283TagHashTable[] = {
     2,     0,     1,     0,   103,
 };
 
-const unsigned short Dict281KeyHashTable[] = {
+const unsigned short Dict283KeyHashTable[] = {
     2,     0,     1,     0, 59819,
 };
 
-vtkDICOMDictionary::Dict Dict281Data = {
+vtkDICOMDictionary::Dict Dict283Data = {
 "GE LUT Asymmetry Parameter",
 1,
 1,
-Dict281TagHashTable,
-Dict281KeyHashTable,
-Dict281Contents
+Dict283TagHashTable,
+Dict283KeyHashTable,
+Dict283Contents
 };
 
 // ----- ACUSON:1.2.840.113680.1.0:0910 -----
 
-const DictEntry Dict282Contents[] = {
+const DictEntry Dict284Contents[] = {
 { 0x0009, 0x0000, 0, VR::IS, VM::M1, "" },
 { 0x0009, 0x0001, 0, VR::IS, VM::M1, "" },
 { 0x0009, 0x0002, 0, VR::LO, VM::M1, "PatientRegistrationCustomField1" },
@@ -16840,137 +17006,137 @@ const DictEntry Dict282Contents[] = {
 { 0x0009, 0x000f, 0, VR::LT, VM::M1, "" },
 };
 
-const unsigned short Dict282TagHashTable[] = {
+const unsigned short Dict284TagHashTable[] = {
     7,    10,    13,    16,    19,    22,     0,     1,     5,    15,
     1,     4,     4,     1,     1,     1,     1,     0,     0,     1,
     3,     3,     1,     2,     2,
 };
 
-const unsigned short Dict282KeyHashTable[] = {
+const unsigned short Dict284KeyHashTable[] = {
     7,     6,     6,     6,    10,    13,     0,     1,     3,  2065,
     1,     4,  8233,     4,     0,   896,     1,   896,     2,  2064,
     5,   896,
 };
 
-vtkDICOMDictionary::Dict Dict282Data = {
+vtkDICOMDictionary::Dict Dict284Data = {
 "ACUSON:1.2.840.113680.1.0:0910",
 6,
 6,
-Dict282TagHashTable,
-Dict282KeyHashTable,
-Dict282Contents
-};
-
-// ----- MATAKINA_10 -----
-
-const DictEntry Dict283Contents[] = {
-{ 0x0015, 0x0028, 0, VR::LO, VM::M1, "VolparaDensityGrade" },
-{ 0x0015, 0x0029, 0, VR::LT, VM::M1, "VolparaRunInformation" },
-{ 0x0015, 0x0030, 0, VR::LO, VM::M1, "VolparaDensityGradeCutoffs" },
-};
-
-const unsigned short Dict283TagHashTable[] = {
-    4,     7,     3,     0,     1,     1,    41,     2,     0,    40,
-    2,    48,
-};
-
-const unsigned short Dict283KeyHashTable[] = {
-    4,     3,     7,     0,     1,     2, 49309,     2,     0, 48841,
-    1, 31377,
-};
-
-vtkDICOMDictionary::Dict Dict283Data = {
-"MATAKINA_10",
-3,
-3,
-Dict283TagHashTable,
-Dict283KeyHashTable,
-Dict283Contents
-};
-
-// ----- SIEMENS CT VA0  OST -----
-
-const DictEntry Dict284Contents[] = {
-{ 0x6021, 0x0000, 0, VR::LO, VM::M1, "OsteoContourComment" },
-{ 0x6021, 0x0010, 0, VR::US, VM::M256, "OsteoContourBuffer" },
-};
-
-const unsigned short Dict284TagHashTable[] = {
-    2,     3,     0,     2,     0,     0,     1,    16,
-};
-
-const unsigned short Dict284KeyHashTable[] = {
-    3,     6,     0,     1,     0, 64726,     1,     1, 37913,
-};
-
-vtkDICOMDictionary::Dict Dict284Data = {
-"SIEMENS CT VA0  OST",
-2,
-2,
 Dict284TagHashTable,
 Dict284KeyHashTable,
 Dict284Contents
 };
 
-// ----- SIEMENS MED DISPLAY 0000 -----
+// ----- MATAKINA_10 -----
 
 const DictEntry Dict285Contents[] = {
+{ 0x0015, 0x0028, 0, VR::LO, VM::M1, "VolparaDensityGrade" },
+{ 0x0015, 0x0029, 0, VR::LT, VM::M1, "VolparaRunInformation" },
+{ 0x0015, 0x0030, 0, VR::LO, VM::M1, "VolparaDensityGradeCutoffs" },
+};
+
+const unsigned short Dict285TagHashTable[] = {
+    4,     7,     3,     0,     1,     1,    41,     2,     0,    40,
+    2,    48,
+};
+
+const unsigned short Dict285KeyHashTable[] = {
+    4,     3,     7,     0,     1,     2, 49309,     2,     0, 48841,
+    1, 31377,
+};
+
+vtkDICOMDictionary::Dict Dict285Data = {
+"MATAKINA_10",
+3,
+3,
+Dict285TagHashTable,
+Dict285KeyHashTable,
+Dict285Contents
+};
+
+// ----- SIEMENS CT VA0  OST -----
+
+const DictEntry Dict286Contents[] = {
+{ 0x6021, 0x0000, 0, VR::LO, VM::M1, "OsteoContourComment" },
+{ 0x6021, 0x0010, 0, VR::US, VM::M256, "OsteoContourBuffer" },
+};
+
+const unsigned short Dict286TagHashTable[] = {
+    2,     3,     0,     2,     0,     0,     1,    16,
+};
+
+const unsigned short Dict286KeyHashTable[] = {
+    3,     6,     0,     1,     0, 64726,     1,     1, 37913,
+};
+
+vtkDICOMDictionary::Dict Dict286Data = {
+"SIEMENS CT VA0  OST",
+2,
+2,
+Dict286TagHashTable,
+Dict286KeyHashTable,
+Dict286Contents
+};
+
+// ----- SIEMENS MED DISPLAY 0000 -----
+
+const DictEntry Dict287Contents[] = {
 { 0x0029, 0x0099, 0, VR::CS, VM::M1, "" },
 { 0x0029, 0x00b0, 0, VR::US, VM::M1, "" },
 { 0x0029, 0x00b2, 0, VR::US, VM::M1TN, "" },
 { 0x0029, 0x00c1, 0, VR::US, VM::M1TN, "" },
 };
 
-const unsigned short Dict285TagHashTable[] = {
+const unsigned short Dict287TagHashTable[] = {
     4,     5,     8,    11,     0,     1,     2,   178,     1,     0,
   153,     2,     1,   176,     3,   193,
 };
 
-const unsigned short Dict285KeyHashTable[] = {
+const unsigned short Dict287KeyHashTable[] = {
     4,     5,     4,     4,     0,     4,     0,  1345,     1,  1345,
     2,  1345,     3,  1345,
 };
 
-vtkDICOMDictionary::Dict Dict285Data = {
+vtkDICOMDictionary::Dict Dict287Data = {
 "SIEMENS MED DISPLAY 0000",
 4,
 4,
-Dict285TagHashTable,
-Dict285KeyHashTable,
-Dict285Contents
+Dict287TagHashTable,
+Dict287KeyHashTable,
+Dict287Contents
 };
 
 // ----- SIEMENS MED DISPLAY 0001 -----
 
-const DictEntry Dict286Contents[] = {
+const DictEntry Dict288Contents[] = {
 { 0x0029, 0x0099, 0, VR::CS, VM::M1, "" },
 { 0x0029, 0x00a0, 0, VR::US, VM::M1, "" },
 { 0x0029, 0x00a1, 0, VR::US, VM::M1, "" },
 { 0x0029, 0x00a2, 0, VR::US, VM::M1TN, "" },
 };
 
-const unsigned short Dict286TagHashTable[] = {
+const unsigned short Dict288TagHashTable[] = {
     4,     5,     8,    13,     0,     1,     3,   162,     2,     0,
   153,     2,   161,     1,     1,   160,
 };
 
-const unsigned short Dict286KeyHashTable[] = {
+const unsigned short Dict288KeyHashTable[] = {
     4,     5,     4,     4,     0,     4,     0,  1345,     1,  1345,
     2,  1345,     3,  1345,
 };
 
-vtkDICOMDictionary::Dict Dict286Data = {
+vtkDICOMDictionary::Dict Dict288Data = {
 "SIEMENS MED DISPLAY 0001",
 4,
 4,
-Dict286TagHashTable,
-Dict286KeyHashTable,
-Dict286Contents
+Dict288TagHashTable,
+Dict288KeyHashTable,
+Dict288Contents
 };
 
 // ----- Picker NM Private Group -----
 
-const DictEntry Dict287Contents[] = {
+const DictEntry Dict289Contents[] = {
 { 0x7001, 0x0001, 0, VR::UI, VM::M1, "" },
 { 0x7001, 0x0002, 0, VR::OB, VM::M1, "" },
 { 0x7001, 0x0003, 0, VR::OB, VM::M1, "" },
@@ -16989,7 +17155,7 @@ const DictEntry Dict287Contents[] = {
 { 0x7001, 0x0017, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict287TagHashTable[] = {
+const unsigned short Dict289TagHashTable[] = {
    17,    22,    25,    30,    35,    38,    43,    48,    53,    56,
    16,    16,    16,    16,    16,    16,     0,     2,     0,     1,
    10,    17,     1,     9,    16,     2,     2,     3,    12,    19,
@@ -16998,7 +17164,7 @@ const unsigned short Dict287TagHashTable[] = {
     6,    14,    22,     1,     8,     9,     1,     7,     8,
 };
 
-const unsigned short Dict287KeyHashTable[] = {
+const unsigned short Dict289KeyHashTable[] = {
    16,    16,    16,    16,    16,    17,    16,    16,    16,    16,
    16,    16,    16,    16,    16,    16,     0,    16,     0,   336,
     1,   336,     2,   336,     3,   336,     4,   336,     5,   336,
@@ -17006,18 +17172,18 @@ const unsigned short Dict287KeyHashTable[] = {
    11,   336,    12,   336,    13,   336,    14,   336,    15,   336,
 };
 
-vtkDICOMDictionary::Dict Dict287Data = {
+vtkDICOMDictionary::Dict Dict289Data = {
 "Picker NM Private Group",
 16,
 16,
-Dict287TagHashTable,
-Dict287KeyHashTable,
-Dict287Contents
+Dict289TagHashTable,
+Dict289KeyHashTable,
+Dict289Contents
 };
 
 // ----- PHILIPS MR SPECTRO;1 -----
 
-const DictEntry Dict288Contents[] = {
+const DictEntry Dict290Contents[] = {
 { 0x0019, 0x0001, 0, VR::US, VM::M1, "" },
 { 0x0019, 0x0002, 0, VR::US, VM::M1, "" },
 { 0x0019, 0x0003, 0, VR::US, VM::M1, "" },
@@ -17070,7 +17236,7 @@ const DictEntry Dict288Contents[] = {
 { 0x0019, 0x0080, 0, VR::IS, VM::M1, "" },
 };
 
-const unsigned short Dict288TagHashTable[] = {
+const unsigned short Dict290TagHashTable[] = {
    50,    51,    50,    50,    54,    57,    62,    67,    72,    77,
    82,    89,    96,   101,   106,   109,   112,   115,    50,    50,
   118,   121,   124,    50,   127,    50,   130,   133,   136,   139,
@@ -17092,7 +17258,7 @@ const unsigned short Dict288TagHashTable[] = {
     1,    26,    41,     1,    25,    40,
 };
 
-const unsigned short Dict288KeyHashTable[] = {
+const unsigned short Dict290KeyHashTable[] = {
    50,    50,    50,    50,    50,    50,    50,    50,    50,    50,
    50,    50,    50,    50,    50,    50,    50,    50,    50,    50,
    50,    50,    50,    50,    50,    50,    50,    50,    50,    50,
@@ -17111,18 +17277,18 @@ const unsigned short Dict288KeyHashTable[] = {
    49,   107,
 };
 
-vtkDICOMDictionary::Dict Dict288Data = {
+vtkDICOMDictionary::Dict Dict290Data = {
 "PHILIPS MR SPECTRO;1",
 50,
 50,
-Dict288TagHashTable,
-Dict288KeyHashTable,
-Dict288Contents
+Dict290TagHashTable,
+Dict290KeyHashTable,
+Dict290Contents
 };
 
 // ----- astm.org/diconde/iod/NdeIndication -----
 
-const DictEntry Dict289Contents[] = {
+const DictEntry Dict291Contents[] = {
 { 0x0021, 0x0002, 0, VR::SQ, VM::M1, "EvaluatorSequence" },
 { 0x0021, 0x0004, 0, VR::IS, VM::M1, "EvaluatorNumber" },
 { 0x0021, 0x0006, 0, VR::PN, VM::M1, "EvaluatorName" },
@@ -17138,7 +17304,7 @@ const DictEntry Dict289Contents[] = {
 { 0x0021, 0x0032, 0, VR::SH, VM::M1, "PropertyLabel" },
 };
 
-const unsigned short Dict289TagHashTable[] = {
+const unsigned short Dict291TagHashTable[] = {
    14,    17,    20,    23,    26,    29,    32,    35,    13,    38,
    13,    43,    48,     0,     1,     2,     6,     1,     5,    20,
     1,     3,     8,     1,     6,    22,     1,    11,    48,     1,
@@ -17147,7 +17313,7 @@ const unsigned short Dict289TagHashTable[] = {
    18,
 };
 
-const unsigned short Dict289KeyHashTable[] = {
+const unsigned short Dict291KeyHashTable[] = {
    14,    13,    17,    22,    13,    13,    31,    34,    39,    42,
    13,    13,    45,     0,     1,     4, 37280,     2,     5, 46406,
    11, 43872,     4,     0, 15814,     1, 23990,     7, 58856,     8,
@@ -17155,46 +17321,46 @@ const unsigned short Dict289KeyHashTable[] = {
     9, 35076,     1,     3, 33727,     1,     2, 53665,
 };
 
-vtkDICOMDictionary::Dict Dict289Data = {
+vtkDICOMDictionary::Dict Dict291Data = {
 "astm.org/diconde/iod/NdeIndication",
 13,
 13,
-Dict289TagHashTable,
-Dict289KeyHashTable,
-Dict289Contents
+Dict291TagHashTable,
+Dict291KeyHashTable,
+Dict291Contents
 };
 
 // ----- GEMS_LUNAR_RAW -----
 
-const DictEntry Dict290Contents[] = {
+const DictEntry Dict292Contents[] = {
 { 0x7003, 0x0001, 0, VR::ST, VM::M1, "enCOREFileName" },
 { 0x7003, 0x0002, 0, VR::OB, VM::M1, "enCOREFileData" },
 { 0x7003, 0x0003, 0, VR::UL, VM::M1, "enCOREFileLength" },
 { 0x7003, 0x0004, 0, VR::LO, VM::M1, "enCOREFileModifiedTime" },
 };
 
-const unsigned short Dict290TagHashTable[] = {
+const unsigned short Dict292TagHashTable[] = {
     5,     8,    11,    14,     0,     1,     2,     3,     1,     1,
     2,     1,     0,     1,     1,     3,     4,
 };
 
-const unsigned short Dict290KeyHashTable[] = {
+const unsigned short Dict292KeyHashTable[] = {
     4,     5,     8,    11,     0,     1,     3, 47668,     1,     0,
 24392,     2,     1,   142,     2,   168,
 };
 
-vtkDICOMDictionary::Dict Dict290Data = {
+vtkDICOMDictionary::Dict Dict292Data = {
 "GEMS_LUNAR_RAW",
 4,
 4,
-Dict290TagHashTable,
-Dict290KeyHashTable,
-Dict290Contents
+Dict292TagHashTable,
+Dict292KeyHashTable,
+Dict292Contents
 };
 
 // ----- PRIVATE_CODE_STRING_3007 -----
 
-const DictEntry Dict291Contents[] = {
+const DictEntry Dict293Contents[] = {
 { 0x3007, 0x0000, 0, VR::FD, VM::M16, "VolumeToPatientMatrix" },
 { 0x3007, 0x0001, 0, VR::FD, VM::M16, "VolumeResolutionConversion" },
 { 0x3007, 0x0002, 0, VR::FD, VM::M16, "VolumeDataConversion" },
@@ -17202,29 +17368,29 @@ const DictEntry Dict291Contents[] = {
 { 0x3007, 0x0004, 0, VR::FD, VM::M16, "DICOMDataConversion" },
 };
 
-const unsigned short Dict291TagHashTable[] = {
+const unsigned short Dict293TagHashTable[] = {
     6,     9,    12,    15,    18,     0,     1,     2,     2,     1,
     1,     1,     1,     0,     0,     1,     4,     4,     1,     3,
     3,
 };
 
-const unsigned short Dict291KeyHashTable[] = {
+const unsigned short Dict293KeyHashTable[] = {
     6,    11,    14,     5,    17,     0,     2,     2, 61209,     4,
 10045,     1,     0, 45781,     1,     1, 59953,     1,     3, 41758,
 };
 
-vtkDICOMDictionary::Dict Dict291Data = {
+vtkDICOMDictionary::Dict Dict293Data = {
 "PRIVATE_CODE_STRING_3007",
 5,
 5,
-Dict291TagHashTable,
-Dict291KeyHashTable,
-Dict291Contents
+Dict293TagHashTable,
+Dict293KeyHashTable,
+Dict293Contents
 };
 
 // ----- SIEMENS Selma -----
 
-const DictEntry Dict292Contents[] = {
+const DictEntry Dict294Contents[] = {
 { 0x0019, 0x0006, 0, VR::IS, VM::M1, "" },
 { 0x0019, 0x0007, 0, VR::IS, VM::M1, "" },
 { 0x0019, 0x0008, 0, VR::IS, VM::M1, "" },
@@ -17238,7 +17404,7 @@ const DictEntry Dict292Contents[] = {
 { 0x0019, 0x0035, 0, VR::US, VM::M1, "" },
 };
 
-const unsigned short Dict292TagHashTable[] = {
+const unsigned short Dict294TagHashTable[] = {
    12,    15,    11,    11,    18,    11,    21,    24,    27,    34,
    39,     0,     1,    10,    53,     1,     9,    52,     1,     4,
    41,     1,     2,     8,     1,     6,    49,     3,     1,     7,
@@ -17246,76 +17412,76 @@ const unsigned short Dict292TagHashTable[] = {
     7,    50,
 };
 
-const unsigned short Dict292KeyHashTable[] = {
+const unsigned short Dict294KeyHashTable[] = {
    11,    11,    12,    11,    11,    11,    11,    11,    11,    11,
    11,     0,    11,     0,   489,     1,   489,     2,   489,     3,
   489,     4,   489,     5,   489,     6,   489,     7,   489,     8,
   489,     9,   489,    10,   489,
 };
 
-vtkDICOMDictionary::Dict Dict292Data = {
+vtkDICOMDictionary::Dict Dict294Data = {
 "SIEMENS Selma",
 11,
 11,
-Dict292TagHashTable,
-Dict292KeyHashTable,
-Dict292Contents
+Dict294TagHashTable,
+Dict294KeyHashTable,
+Dict294Contents
 };
 
 // ----- ETIAM DICOMDIR -----
 
-const DictEntry Dict293Contents[] = {
+const DictEntry Dict295Contents[] = {
 { 0x0859, 0x0040, 0, VR::DS, VM::M1, "" },
 };
 
-const unsigned short Dict293TagHashTable[] = {
+const unsigned short Dict295TagHashTable[] = {
     2,     0,     1,     0,    64,
 };
 
-const unsigned short Dict293KeyHashTable[] = {
+const unsigned short Dict295KeyHashTable[] = {
     2,     0,     1,     0,  5381,
 };
 
-vtkDICOMDictionary::Dict Dict293Data = {
+vtkDICOMDictionary::Dict Dict295Data = {
 "ETIAM DICOMDIR",
 1,
 1,
-Dict293TagHashTable,
-Dict293KeyHashTable,
-Dict293Contents
+Dict295TagHashTable,
+Dict295KeyHashTable,
+Dict295Contents
 };
 
 // ----- MAROTECH Inc. -----
 
-const DictEntry Dict294Contents[] = {
+const DictEntry Dict296Contents[] = {
 { 0x0037, 0x0001, 0, VR::LO, VM::M1, "" },
 { 0x0037, 0x0021, 0, VR::US, VM::M1, "" },
 { 0x0037, 0x0022, 0, VR::US, VM::M1, "" },
 { 0x0037, 0x0023, 0, VR::OB, VM::M1, "" },
 };
 
-const unsigned short Dict294TagHashTable[] = {
+const unsigned short Dict296TagHashTable[] = {
     5,     8,    11,     4,     0,     1,     3,    35,     1,     2,
    34,     2,     0,     1,     1,    33,
 };
 
-const unsigned short Dict294KeyHashTable[] = {
+const unsigned short Dict296KeyHashTable[] = {
     4,     5,     4,     4,     0,     4,     0,  1345,     1,  1345,
     2,  1345,     3,  1345,
 };
 
-vtkDICOMDictionary::Dict Dict294Data = {
+vtkDICOMDictionary::Dict Dict296Data = {
 "MAROTECH Inc.",
 4,
 4,
-Dict294TagHashTable,
-Dict294KeyHashTable,
-Dict294Contents
+Dict296TagHashTable,
+Dict296KeyHashTable,
+Dict296Contents
 };
 
 // ----- GEMS_DL_FRAME_01 -----
 
-const DictEntry Dict295Contents[] = {
+const DictEntry Dict297Contents[] = {
 { 0x0025, 0x0002, 0, VR::IS, VM::M1, "FrameID" },
 { 0x0025, 0x0003, 0, VR::DS, VM::M1, "DistanceSourceToDetector" },
 { 0x0025, 0x0004, 0, VR::DS, VM::M1, "DistanceSourceToPatient" },
@@ -17361,7 +17527,7 @@ const DictEntry Dict295Contents[] = {
 { 0x0025, 0x003C, 0, VR::CS, VM::M1, "InternalLabelFrame" },
 };
 
-const unsigned short Dict295TagHashTable[] = {
+const unsigned short Dict297TagHashTable[] = {
    44,    47,    52,    57,    60,    65,    68,    71,    74,    77,
    80,    85,    88,    91,    96,   101,   106,   111,   114,   117,
   122,   125,   128,    43,    43,   131,    43,    43,   134,   137,
@@ -17381,7 +17547,7 @@ const unsigned short Dict295TagHashTable[] = {
     3,     1,     0,     2,
 };
 
-const unsigned short Dict295KeyHashTable[] = {
+const unsigned short Dict297KeyHashTable[] = {
    44,    47,    50,    43,    55,    43,    60,    63,    43,    43,
    43,    66,    69,    72,    79,    43,    82,    43,    85,    88,
    91,    94,    99,   104,   113,    43,   116,   119,   122,    43,
@@ -17401,41 +17567,41 @@ const unsigned short Dict295KeyHashTable[] = {
 46905,
 };
 
-vtkDICOMDictionary::Dict Dict295Data = {
+vtkDICOMDictionary::Dict Dict297Data = {
 "GEMS_DL_FRAME_01",
 43,
 43,
-Dict295TagHashTable,
-Dict295KeyHashTable,
-Dict295Contents
+Dict297TagHashTable,
+Dict297KeyHashTable,
+Dict297Contents
 };
 
 // ----- PHILIPS MR/PART 12 -----
 
-const DictEntry Dict296Contents[] = {
+const DictEntry Dict298Contents[] = {
 { 0x0009, 0x0010, 0, VR::US, VM::M1, "" },
 };
 
-const unsigned short Dict296TagHashTable[] = {
+const unsigned short Dict298TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
-const unsigned short Dict296KeyHashTable[] = {
+const unsigned short Dict298KeyHashTable[] = {
     2,     0,     1,     0,  5381,
 };
 
-vtkDICOMDictionary::Dict Dict296Data = {
+vtkDICOMDictionary::Dict Dict298Data = {
 "PHILIPS MR/PART 12",
 1,
 1,
-Dict296TagHashTable,
-Dict296KeyHashTable,
-Dict296Contents
+Dict298TagHashTable,
+Dict298KeyHashTable,
+Dict298Contents
 };
 
 // ----- SIEMENS MR N3D -----
 
-const DictEntry Dict297Contents[] = {
+const DictEntry Dict299Contents[] = {
 { 0x0021, 0x0030, 0, VR::SQ, VM::M1, "BackgroundColorDRSequence" },
 { 0x0021, 0x0031, 0, VR::DS, VM::M3, "BackgroundColor" },
 { 0x0021, 0x0036, 0, VR::SQ, VM::M1, "FieldMapDRSequence" },
@@ -17548,7 +17714,7 @@ const DictEntry Dict297Contents[] = {
 { 0x0021, 0x00C2, 0, VR::CS, VM::M1, "CurrentActivePlane" },
 };
 
-const unsigned short Dict297TagHashTable[] = {
+const unsigned short Dict299TagHashTable[] = {
   111,   110,   114,   117,   120,   125,   128,   133,   138,   141,
   144,   147,   150,   153,   110,   110,   156,   159,   162,   165,
   168,   171,   174,   179,   184,   189,   194,   199,   204,   207,
@@ -17593,7 +17759,7 @@ const unsigned short Dict297TagHashTable[] = {
     1,    14,    75,     1,    15,    76,     1,    16,    77,
 };
 
-const unsigned short Dict297KeyHashTable[] = {
+const unsigned short Dict299KeyHashTable[] = {
   111,   114,   119,   122,   131,   134,   139,   110,   110,   110,
   110,   110,   142,   110,   147,   110,   152,   110,   155,   158,
   161,   110,   164,   167,   170,   173,   110,   176,   179,   188,
@@ -17637,18 +17803,18 @@ const unsigned short Dict297KeyHashTable[] = {
 16233,    25, 10468,    63, 36589,
 };
 
-vtkDICOMDictionary::Dict Dict297Data = {
+vtkDICOMDictionary::Dict Dict299Data = {
 "SIEMENS MR N3D",
 110,
 110,
-Dict297TagHashTable,
-Dict297KeyHashTable,
-Dict297Contents
+Dict299TagHashTable,
+Dict299KeyHashTable,
+Dict299Contents
 };
 
 // ----- Camtronics image level data -----
 
-const DictEntry Dict298Contents[] = {
+const DictEntry Dict300Contents[] = {
 { 0x0009, 0x0004, 0, VR::IS, VM::M1, "" },
 { 0x0009, 0x0006, 0, VR::IS, VM::M1, "" },
 { 0x0009, 0x0009, 0, VR::LO, VM::M1, "" },
@@ -17657,29 +17823,29 @@ const DictEntry Dict298Contents[] = {
 { 0x0009, 0x0018, 0, VR::IS, VM::M1, "" },
 };
 
-const unsigned short Dict298TagHashTable[] = {
+const unsigned short Dict300TagHashTable[] = {
     7,    12,     6,    17,     6,    20,     0,     2,     2,     9,
     4,    23,     2,     0,     4,     3,    22,     1,     1,     6,
     1,     5,    24,
 };
 
-const unsigned short Dict298KeyHashTable[] = {
+const unsigned short Dict300KeyHashTable[] = {
     6,     6,     6,     6,     6,     7,     0,     6,     0,   896,
     1,   896,     2,   896,     3,   896,     4,   896,     5,   896,
 };
 
-vtkDICOMDictionary::Dict Dict298Data = {
+vtkDICOMDictionary::Dict Dict300Data = {
 "Camtronics image level data",
 6,
 6,
-Dict298TagHashTable,
-Dict298KeyHashTable,
-Dict298Contents
+Dict300TagHashTable,
+Dict300KeyHashTable,
+Dict300Contents
 };
 
 // ----- SIEMENS MED HG -----
 
-const DictEntry Dict299Contents[] = {
+const DictEntry Dict301Contents[] = {
 { 0x0029, 0x0010, 0, VR::US, VM::M1, "ListOfGroupNumbers" },
 { 0x0029, 0x0015, 0, VR::LO, VM::M1, "ListOfShadowOwnerCodes" },
 { 0x0029, 0x0020, 0, VR::US, VM::M1, "ListOfElementNumbers" },
@@ -17690,31 +17856,31 @@ const DictEntry Dict299Contents[] = {
 { 0x0029, 0x0070, 0, VR::LO, VM::M1, "ListOfTextConcatenation" },
 };
 
-const unsigned short Dict299TagHashTable[] = {
+const unsigned short Dict301TagHashTable[] = {
     9,    18,     8,     8,    25,     8,     8,     8,     0,     4,
     4,    64,     5,    80,     6,    96,     7,   112,     3,     0,
    16,     2,    32,     3,    48,     1,     1,    21,
 };
 
-const unsigned short Dict299KeyHashTable[] = {
+const unsigned short Dict301KeyHashTable[] = {
     9,    12,    17,     8,    22,    25,     8,    28,     0,     1,
     6, 28194,     2,     5, 28059,     7,  2168,     2,     3, 16906,
     4, 43179,     1,     2, 50495,     1,     1,  4798,     1,     0,
 31019,
 };
 
-vtkDICOMDictionary::Dict Dict299Data = {
+vtkDICOMDictionary::Dict Dict301Data = {
 "SIEMENS MED HG",
 8,
 8,
-Dict299TagHashTable,
-Dict299KeyHashTable,
-Dict299Contents
+Dict301TagHashTable,
+Dict301KeyHashTable,
+Dict301Contents
 };
 
 // ----- SCIVIS-1 -----
 
-const DictEntry Dict300Contents[] = {
+const DictEntry Dict302Contents[] = {
 { 0x6001, 0x00a0, 0, VR::DS, VM::M1, "" },
 { 0x6001, 0x00a1, 0, VR::DS, VM::M1, "" },
 { 0x6001, 0x00a2, 0, VR::US, VM::M1, "" },
@@ -17729,7 +17895,7 @@ const DictEntry Dict300Contents[] = {
 { 0x6001, 0x00ab, 0, VR::ST, VM::M1, "" },
 };
 
-const unsigned short Dict300TagHashTable[] = {
+const unsigned short Dict302TagHashTable[] = {
    13,    16,    19,    22,    25,    28,    31,    34,    37,    40,
    43,    46,     0,     1,     3,   163,     1,     2,   162,     1,
     1,   161,     1,     0,   160,     1,     7,   167,     1,     6,
@@ -17737,49 +17903,49 @@ const unsigned short Dict300TagHashTable[] = {
     1,    10,   170,     1,     9,   169,     1,     8,   168,
 };
 
-const unsigned short Dict300KeyHashTable[] = {
+const unsigned short Dict302KeyHashTable[] = {
    12,    12,    12,    12,    12,    13,    12,    12,    12,    12,
    12,    12,     0,    12,     0,   448,     1,   448,     2,   448,
     3,   448,     4,   448,     5,   448,     6,   448,     7,   448,
     8,   448,     9,   448,    10,   448,    11,   448,
 };
 
-vtkDICOMDictionary::Dict Dict300Data = {
+vtkDICOMDictionary::Dict Dict302Data = {
 "SCIVIS-1",
 12,
 12,
-Dict300TagHashTable,
-Dict300KeyHashTable,
-Dict300Contents
+Dict302TagHashTable,
+Dict302KeyHashTable,
+Dict302Contents
 };
 
 // ----- BrainLAB_PatientSetup -----
 
-const DictEntry Dict301Contents[] = {
+const DictEntry Dict303Contents[] = {
 { 0x3273, 0x0000, 0, VR::DS, VM::M3, "IsocenterPosition" },
 { 0x3273, 0x0001, 0, VR::CS, VM::M1, "PatientPosition" },
 };
 
-const unsigned short Dict301TagHashTable[] = {
+const unsigned short Dict303TagHashTable[] = {
     3,     6,     0,     1,     0,     0,     1,     1,     1,
 };
 
-const unsigned short Dict301KeyHashTable[] = {
+const unsigned short Dict303KeyHashTable[] = {
     3,     6,     0,     1,     0, 61443,     1,     1, 52199,
 };
 
-vtkDICOMDictionary::Dict Dict301Data = {
+vtkDICOMDictionary::Dict Dict303Data = {
 "BrainLAB_PatientSetup",
 2,
 2,
-Dict301TagHashTable,
-Dict301KeyHashTable,
-Dict301Contents
+Dict303TagHashTable,
+Dict303KeyHashTable,
+Dict303Contents
 };
 
 // ----- GEMS_CT_CARDIAC_001 -----
 
-const DictEntry Dict302Contents[] = {
+const DictEntry Dict304Contents[] = {
 { 0x0049, 0x0001, 0, VR::SQ, VM::M1, "CTCardiacSequence" },
 { 0x0049, 0x0002, 0, VR::CS, VM::M1, "HeartRateAtConfirm" },
 { 0x0049, 0x0003, 0, VR::FL, VM::M1, "AvgHeartRatePriorToConfirm" },
@@ -17801,7 +17967,7 @@ const DictEntry Dict302Contents[] = {
 { 0x0049, 0x0026, 0, VR::CS, VM::M1, "CompressionAlg" },
 };
 
-const unsigned short Dict302TagHashTable[] = {
+const unsigned short Dict304TagHashTable[] = {
    20,    23,    26,    29,    19,    19,    19,    32,    37,    40,
    43,    46,    51,    54,    57,    60,    63,    66,    69,     0,
     1,     3,     4,     1,     4,     5,     1,     5,     6,     1,
@@ -17812,7 +17978,7 @@ const unsigned short Dict302TagHashTable[] = {
     2,     3,    12,    22,
 };
 
-const unsigned short Dict302KeyHashTable[] = {
+const unsigned short Dict304KeyHashTable[] = {
    20,    23,    28,    33,    19,    19,    19,    36,    43,    46,
    19,    53,    56,    19,    59,    19,    19,    19,    66,     0,
     1,    12, 19816,     2,    16, 65086,    18, 45230,     2,    15,
@@ -17822,18 +17988,18 @@ const unsigned short Dict302KeyHashTable[] = {
     0, 19450,     2, 21766,     8, 12075,     1,    13, 16609,
 };
 
-vtkDICOMDictionary::Dict Dict302Data = {
+vtkDICOMDictionary::Dict Dict304Data = {
 "GEMS_CT_CARDIAC_001",
 19,
 19,
-Dict302TagHashTable,
-Dict302KeyHashTable,
-Dict302Contents
+Dict304TagHashTable,
+Dict304KeyHashTable,
+Dict304Contents
 };
 
 // ----- MMCPrivate -----
 
-const DictEntry Dict303Contents[] = {
+const DictEntry Dict305Contents[] = {
 { 0x0009, 0x0001, 0, VR::LO, VM::M1, "Technologist" },
 { 0x0009, 0x0002, 0, VR::LO, VM::M1, "ScheduledStudyDateTime" },
 { 0x0009, 0x0003, 0, VR::OB, VM::M1, "StudyAppData" },
@@ -18087,7 +18253,7 @@ const DictEntry Dict303Contents[] = {
 { 0x0029, 0x00d7, 0, VR::OB, VM::M1, "" },
 };
 
-const unsigned short Dict303TagHashTable[] = {
+const unsigned short Dict305TagHashTable[] = {
   252,   257,   264,   271,   276,   283,   288,   291,   296,   303,
   308,   315,   322,   327,   332,   337,   342,   349,   354,   361,
   368,   375,   382,   389,   396,   401,   404,   409,   414,   419,
@@ -18185,7 +18351,7 @@ const unsigned short Dict303TagHashTable[] = {
   197,     1,   247,   211,     1,   246,   208,
 };
 
-const unsigned short Dict303KeyHashTable[] = {
+const unsigned short Dict305KeyHashTable[] = {
   251,   251,   252,   255,   251,   251,   258,   261,   251,   264,
   269,   274,   279,   292,   299,   251,   251,   302,   307,   312,
   315,   251,   318,   321,   324,   327,   332,   251,   337,   251,
@@ -18279,68 +18445,68 @@ const unsigned short Dict303KeyHashTable[] = {
   176, 12982,
 };
 
-vtkDICOMDictionary::Dict Dict303Data = {
+vtkDICOMDictionary::Dict Dict305Data = {
 "MMCPrivate",
 251,
 251,
-Dict303TagHashTable,
-Dict303KeyHashTable,
-Dict303Contents
-};
-
-// ----- IDEXX -----
-
-const DictEntry Dict304Contents[] = {
-{ 0x0011, 0x0000, 0, VR::LO, VM::M1, "BreedName" },
-{ 0x0011, 0x0001, 0, VR::LO, VM::M1, "SpeciesName" },
-{ 0x0011, 0x0002, 0, VR::PN, VM::M1, "Owner" },
-};
-
-const unsigned short Dict304TagHashTable[] = {
-    3,     4,     9,     0,     2,     1,     1,     2,     2,     1,
-    0,     0,
-};
-
-const unsigned short Dict304KeyHashTable[] = {
-    4,     3,     9,     0,     2,     0, 32408,     1, 51206,     1,
-    2, 15226,
-};
-
-vtkDICOMDictionary::Dict Dict304Data = {
-"IDEXX",
-3,
-3,
-Dict304TagHashTable,
-Dict304KeyHashTable,
-Dict304Contents
-};
-
-// ----- VEPRO DICOM TRANSFER 1.0 -----
-
-const DictEntry Dict305Contents[] = {
-{ 0x0059, 0x0010, 0, VR::SQ, VM::M1, "DicomTransferInfo" },
-};
-
-const unsigned short Dict305TagHashTable[] = {
-    2,     0,     1,     0,    16,
-};
-
-const unsigned short Dict305KeyHashTable[] = {
-    2,     0,     1,     0,   610,
-};
-
-vtkDICOMDictionary::Dict Dict305Data = {
-"VEPRO DICOM TRANSFER 1.0",
-1,
-1,
 Dict305TagHashTable,
 Dict305KeyHashTable,
 Dict305Contents
 };
 
-// ----- SPI-P Release 1 -----
+// ----- IDEXX -----
 
 const DictEntry Dict306Contents[] = {
+{ 0x0011, 0x0000, 0, VR::LO, VM::M1, "BreedName" },
+{ 0x0011, 0x0001, 0, VR::LO, VM::M1, "SpeciesName" },
+{ 0x0011, 0x0002, 0, VR::PN, VM::M1, "Owner" },
+};
+
+const unsigned short Dict306TagHashTable[] = {
+    3,     4,     9,     0,     2,     1,     1,     2,     2,     1,
+    0,     0,
+};
+
+const unsigned short Dict306KeyHashTable[] = {
+    4,     3,     9,     0,     2,     0, 32408,     1, 51206,     1,
+    2, 15226,
+};
+
+vtkDICOMDictionary::Dict Dict306Data = {
+"IDEXX",
+3,
+3,
+Dict306TagHashTable,
+Dict306KeyHashTable,
+Dict306Contents
+};
+
+// ----- VEPRO DICOM TRANSFER 1.0 -----
+
+const DictEntry Dict307Contents[] = {
+{ 0x0059, 0x0010, 0, VR::SQ, VM::M1, "DicomTransferInfo" },
+};
+
+const unsigned short Dict307TagHashTable[] = {
+    2,     0,     1,     0,    16,
+};
+
+const unsigned short Dict307KeyHashTable[] = {
+    2,     0,     1,     0,   610,
+};
+
+vtkDICOMDictionary::Dict Dict307Data = {
+"VEPRO DICOM TRANSFER 1.0",
+1,
+1,
+Dict307TagHashTable,
+Dict307KeyHashTable,
+Dict307Contents
+};
+
+// ----- SPI-P Release 1 -----
+
+const DictEntry Dict308Contents[] = {
 { 0x0009, 0x0000, 0, VR::LT, VM::M1, "DataObjectRecognitionCode" },
 { 0x0009, 0x0004, 0, VR::LO, VM::M1, "ImageDataConsistency" },
 { 0x0009, 0x0008, 0, VR::US, VM::M1, "" },
@@ -18434,7 +18600,7 @@ const DictEntry Dict306Contents[] = {
 { 0x7FE1, 0x0010, 0, VR::OW, VM::M1, "PixelData" },
 };
 
-const unsigned short Dict306TagHashTable[] = {
+const unsigned short Dict308TagHashTable[] = {
    91,    92,    91,    91,    97,   104,    91,    91,    91,   109,
    91,    91,   116,   119,   124,   129,    91,   132,    91,    91,
    91,    91,    91,    91,   137,   140,    91,   147,   152,   155,
@@ -18470,7 +18636,7 @@ const unsigned short Dict306TagHashTable[] = {
    78,   159,     1,    66,   114,
 };
 
-const unsigned short Dict306KeyHashTable[] = {
+const unsigned short Dict308KeyHashTable[] = {
    92,    91,    91,    91,    91,    99,    91,    91,   102,    91,
   107,    91,   112,   193,   196,    91,    91,    91,    91,   201,
   206,    91,    91,    91,    91,    91,    91,   209,   212,    91,
@@ -18505,77 +18671,31 @@ const unsigned short Dict306KeyHashTable[] = {
    89, 39565,
 };
 
-vtkDICOMDictionary::Dict Dict306Data = {
+vtkDICOMDictionary::Dict Dict308Data = {
 "SPI-P Release 1",
 91,
 91,
-Dict306TagHashTable,
-Dict306KeyHashTable,
-Dict306Contents
-};
-
-// ----- Philips EV Imaging DD 022 -----
-
-const DictEntry Dict307Contents[] = {
-{ 0x2007, 0x0000, 0, VR::ST, VM::M1, "" },
-};
-
-const unsigned short Dict307TagHashTable[] = {
-    2,     0,     1,     0,     0,
-};
-
-const unsigned short Dict307KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict307Data = {
-"Philips EV Imaging DD 022",
-1,
-1,
-Dict307TagHashTable,
-Dict307KeyHashTable,
-Dict307Contents
-};
-
-// ----- TOSHIBA ENCRYPTED SR DATA -----
-
-const DictEntry Dict308Contents[] = {
-{ 0x7015, 0x0000, 0, VR::OB, VM::M1, "" },
-};
-
-const unsigned short Dict308TagHashTable[] = {
-    2,     0,     1,     0,     0,
-};
-
-const unsigned short Dict308KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict308Data = {
-"TOSHIBA ENCRYPTED SR DATA",
-1,
-1,
 Dict308TagHashTable,
 Dict308KeyHashTable,
 Dict308Contents
 };
 
-// ----- SECTRA_OverlayInfo_01 -----
+// ----- Philips EV Imaging DD 022 -----
 
 const DictEntry Dict309Contents[] = {
-{ 0x6001, 0x0001, 0, VR::LO, VM::M1, "SectraOverlay" },
+{ 0x2007, 0x0000, 0, VR::ST, VM::M1, "" },
 };
 
 const unsigned short Dict309TagHashTable[] = {
-    2,     0,     1,     0,     1,
+    2,     0,     1,     0,     0,
 };
 
 const unsigned short Dict309KeyHashTable[] = {
-    2,     0,     1,     0, 38985,
+    2,     0,     1,     0,  5381,
 };
 
 vtkDICOMDictionary::Dict Dict309Data = {
-"SECTRA_OverlayInfo_01",
+"Philips EV Imaging DD 022",
 1,
 1,
 Dict309TagHashTable,
@@ -18583,33 +18703,79 @@ Dict309KeyHashTable,
 Dict309Contents
 };
 
-// ----- SIEMENS CSA ENVELOPE -----
+// ----- TOSHIBA ENCRYPTED SR DATA -----
 
 const DictEntry Dict310Contents[] = {
-{ 0x0029, 0x0010, 0, VR::OB, VM::M1, "syngoReportData" },
-{ 0x0029, 0x0011, 0, VR::OB, VM::M1, "syngoReportPresentation" },
+{ 0x7015, 0x0000, 0, VR::OB, VM::M1, "" },
 };
 
 const unsigned short Dict310TagHashTable[] = {
-    3,     6,     0,     1,     1,    17,     1,     0,    16,
+    2,     0,     1,     0,     0,
 };
 
 const unsigned short Dict310KeyHashTable[] = {
-    2,     3,     0,     2,     0, 22501,     1, 44118,
+    2,     0,     1,     0,  5381,
 };
 
 vtkDICOMDictionary::Dict Dict310Data = {
-"SIEMENS CSA ENVELOPE",
-2,
-2,
+"TOSHIBA ENCRYPTED SR DATA",
+1,
+1,
 Dict310TagHashTable,
 Dict310KeyHashTable,
 Dict310Contents
 };
 
-// ----- SIEMENS RA PLANE A -----
+// ----- SECTRA_OverlayInfo_01 -----
 
 const DictEntry Dict311Contents[] = {
+{ 0x6001, 0x0001, 0, VR::LO, VM::M1, "SectraOverlay" },
+};
+
+const unsigned short Dict311TagHashTable[] = {
+    2,     0,     1,     0,     1,
+};
+
+const unsigned short Dict311KeyHashTable[] = {
+    2,     0,     1,     0, 38985,
+};
+
+vtkDICOMDictionary::Dict Dict311Data = {
+"SECTRA_OverlayInfo_01",
+1,
+1,
+Dict311TagHashTable,
+Dict311KeyHashTable,
+Dict311Contents
+};
+
+// ----- SIEMENS CSA ENVELOPE -----
+
+const DictEntry Dict312Contents[] = {
+{ 0x0029, 0x0010, 0, VR::OB, VM::M1, "syngoReportData" },
+{ 0x0029, 0x0011, 0, VR::OB, VM::M1, "syngoReportPresentation" },
+};
+
+const unsigned short Dict312TagHashTable[] = {
+    3,     6,     0,     1,     1,    17,     1,     0,    16,
+};
+
+const unsigned short Dict312KeyHashTable[] = {
+    2,     3,     0,     2,     0, 22501,     1, 44118,
+};
+
+vtkDICOMDictionary::Dict Dict312Data = {
+"SIEMENS CSA ENVELOPE",
+2,
+2,
+Dict312TagHashTable,
+Dict312KeyHashTable,
+Dict312Contents
+};
+
+// ----- SIEMENS RA PLANE A -----
+
+const DictEntry Dict313Contents[] = {
 { 0x0011, 0x0028, 0, VR::UL, VM::M1, "" },
 { 0x0011, 0x0029, 0, VR::UL, VM::M1, "" },
 { 0x0011, 0x002a, 0, VR::UL, VM::M1, "" },
@@ -18745,7 +18911,7 @@ const DictEntry Dict311Contents[] = {
 { 0x0019, 0x00e0, 0, VR::UL, VM::M1, "" },
 };
 
-const unsigned short Dict311TagHashTable[] = {
+const unsigned short Dict313TagHashTable[] = {
   134,   139,   142,   147,   150,   155,   158,   163,   166,   133,
   169,   133,   172,   133,   177,   133,   180,   133,   183,   133,
   186,   133,   189,   133,   192,   133,   195,   198,   133,   201,
@@ -18799,7 +18965,7 @@ const unsigned short Dict311TagHashTable[] = {
   152,
 };
 
-const unsigned short Dict311KeyHashTable[] = {
+const unsigned short Dict313KeyHashTable[] = {
   133,   133,   133,   133,   133,   133,   133,   133,   133,   133,
   133,   133,   133,   133,   133,   133,   133,   133,   133,   133,
   133,   133,   133,   133,   133,   133,   133,   133,   133,   133,
@@ -18843,18 +19009,18 @@ const unsigned short Dict311KeyHashTable[] = {
    40,
 };
 
-vtkDICOMDictionary::Dict Dict311Data = {
+vtkDICOMDictionary::Dict Dict313Data = {
 "SIEMENS RA PLANE A",
 133,
 133,
-Dict311TagHashTable,
-Dict311KeyHashTable,
-Dict311Contents
+Dict313TagHashTable,
+Dict313KeyHashTable,
+Dict313Contents
 };
 
 // ----- SIEMENS RA PLANE B -----
 
-const DictEntry Dict312Contents[] = {
+const DictEntry Dict314Contents[] = {
 { 0x0011, 0x0028, 0, VR::UL, VM::M1, "" },
 { 0x0011, 0x0029, 0, VR::UL, VM::M1, "" },
 { 0x0011, 0x002a, 0, VR::UL, VM::M1, "" },
@@ -18990,7 +19156,7 @@ const DictEntry Dict312Contents[] = {
 { 0x0019, 0x00e0, 0, VR::UL, VM::M1, "" },
 };
 
-const unsigned short Dict312TagHashTable[] = {
+const unsigned short Dict314TagHashTable[] = {
   134,   139,   142,   147,   150,   155,   158,   163,   166,   133,
   169,   133,   172,   133,   177,   133,   180,   133,   183,   133,
   186,   133,   189,   133,   192,   133,   195,   198,   133,   201,
@@ -19044,7 +19210,7 @@ const unsigned short Dict312TagHashTable[] = {
   152,
 };
 
-const unsigned short Dict312KeyHashTable[] = {
+const unsigned short Dict314KeyHashTable[] = {
   133,   133,   133,   133,   133,   133,   133,   133,   133,   133,
   133,   133,   133,   133,   133,   133,   133,   133,   133,   133,
   133,   133,   133,   133,   133,   133,   133,   133,   133,   133,
@@ -19088,18 +19254,18 @@ const unsigned short Dict312KeyHashTable[] = {
    40,
 };
 
-vtkDICOMDictionary::Dict Dict312Data = {
+vtkDICOMDictionary::Dict Dict314Data = {
 "SIEMENS RA PLANE B",
 133,
 133,
-Dict312TagHashTable,
-Dict312KeyHashTable,
-Dict312Contents
+Dict314TagHashTable,
+Dict314KeyHashTable,
+Dict314Contents
 };
 
 // ----- Silhouette V1.0 -----
 
-const DictEntry Dict313Contents[] = {
+const DictEntry Dict315Contents[] = {
 { 0x0029, 0x0013, 0, VR::UL, VM::M1, "" },
 { 0x0029, 0x0014, 0, VR::UL, VM::M1, "" },
 { 0x0029, 0x0017, 0, VR::UN, VM::M1, "" },
@@ -19138,7 +19304,7 @@ const DictEntry Dict313Contents[] = {
 { 0x0029, 0x0091, 0, VR::UN, VM::M1, "" },
 };
 
-const unsigned short Dict313TagHashTable[] = {
+const unsigned short Dict315TagHashTable[] = {
    37,    40,    43,    46,    36,    36,    49,    52,    55,    36,
    60,    63,    66,    71,    76,    83,    88,    93,    98,   103,
   112,    36,   115,   118,   121,   124,   129,    36,    36,    36,
@@ -19155,7 +19321,7 @@ const unsigned short Dict313TagHashTable[] = {
     2,    23,
 };
 
-const unsigned short Dict313KeyHashTable[] = {
+const unsigned short Dict315KeyHashTable[] = {
    36,    36,    36,    36,    36,    36,    36,    36,    36,    36,
    36,    36,    36,    36,    36,    36,    36,    37,    36,    36,
    36,    36,    36,    36,    36,    36,    36,    36,    36,    36,
@@ -19169,18 +19335,18 @@ const unsigned short Dict313KeyHashTable[] = {
    31,   149,    32,   149,    33,   149,    34,   149,    35,   149,
 };
 
-vtkDICOMDictionary::Dict Dict313Data = {
+vtkDICOMDictionary::Dict Dict315Data = {
 "Silhouette V1.0",
 36,
 36,
-Dict313TagHashTable,
-Dict313KeyHashTable,
-Dict313Contents
+Dict315TagHashTable,
+Dict315KeyHashTable,
+Dict315Contents
 };
 
 // ----- GEMS_STDY_01 -----
 
-const DictEntry Dict314Contents[] = {
+const DictEntry Dict316Contents[] = {
 { 0x0023, 0x0001, 0, VR::SL, VM::M1, "NumberOfSeriesInStudy" },
 { 0x0023, 0x0002, 0, VR::SL, VM::M1, "NumberOfUnarchivedSeries" },
 { 0x0023, 0x0010, 0, VR::SS, VM::M1, "ReferenceImageField" },
@@ -19191,30 +19357,30 @@ const DictEntry Dict314Contents[] = {
 { 0x0023, 0x0080, 0, VR::SQ, VM::M1, "PPSDataSequence" },
 };
 
-const unsigned short Dict314TagHashTable[] = {
+const unsigned short Dict316TagHashTable[] = {
     8,     9,    14,    21,     8,     8,    24,    27,     0,     2,
     1,     2,     7,   128,     3,     0,     1,     3,    80,     4,
   112,     1,     2,    16,     1,     5,   116,     1,     6,   125,
 };
 
-const unsigned short Dict314KeyHashTable[] = {
+const unsigned short Dict316KeyHashTable[] = {
     8,     8,     9,    12,     8,    17,    20,    27,     0,     1,
     6,  5368,     2,     2, 41255,     7, 57601,     1,     5, 42112,
     3,     0, 19343,     3, 33850,     4,  6019,     1,     1, 29474,
 };
 
-vtkDICOMDictionary::Dict Dict314Data = {
+vtkDICOMDictionary::Dict Dict316Data = {
 "GEMS_STDY_01",
 8,
 8,
-Dict314TagHashTable,
-Dict314KeyHashTable,
-Dict314Contents
+Dict316TagHashTable,
+Dict316KeyHashTable,
+Dict316Contents
 };
 
 // ----- TOSHIBA COMAPL HEADER -----
 
-const DictEntry Dict315Contents[] = {
+const DictEntry Dict317Contents[] = {
 { 0x0029, 0x0008, 0, VR::CS, VM::M1, "COMAPLHeaderType" },
 { 0x0029, 0x0009, 0, VR::LO, VM::M1, "COMAPLHeaderVersion" },
 { 0x0029, 0x0010, 0, VR::OB, VM::M1, "COMAPLHeaderInfo" },
@@ -19223,30 +19389,30 @@ const DictEntry Dict315Contents[] = {
 { 0x0029, 0x0034, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict315TagHashTable[] = {
+const unsigned short Dict317TagHashTable[] = {
     7,     6,    10,    13,     6,    20,     0,     1,     4,    49,
     1,     1,     9,     3,     0,     8,     2,    16,     3,    32,
     1,     5,    52,
 };
 
-const unsigned short Dict315KeyHashTable[] = {
+const unsigned short Dict317KeyHashTable[] = {
     6,     7,    10,     6,    15,    18,     0,     1,     3, 16724,
     2,     1,  6957,     2, 61854,     1,     0, 64252,     2,     4,
   896,     5,   896,
 };
 
-vtkDICOMDictionary::Dict Dict315Data = {
+vtkDICOMDictionary::Dict Dict317Data = {
 "TOSHIBA COMAPL HEADER",
 6,
 6,
-Dict315TagHashTable,
-Dict315KeyHashTable,
-Dict315Contents
+Dict317TagHashTable,
+Dict317KeyHashTable,
+Dict317Contents
 };
 
 // ----- GEMS_GDXE_FALCON_04 -----
 
-const DictEntry Dict316Contents[] = {
+const DictEntry Dict318Contents[] = {
 { 0x0011, 0x0003, 0, VR::UI, VM::M1, "ProcessedSeriesUID" },
 { 0x0011, 0x0004, 0, VR::CS, VM::M1, "AcquisitionType" },
 { 0x0011, 0x0005, 0, VR::UI, VM::M1, "AcquisitionUID" },
@@ -19288,7 +19454,7 @@ const DictEntry Dict316Contents[] = {
 { 0x0011, 0x006d, 0, VR::DS, VM::M1, "" },
 };
 
-const unsigned short Dict316TagHashTable[] = {
+const unsigned short Dict318TagHashTable[] = {
    40,    45,    50,    57,    62,    67,    72,    77,    80,    87,
    39,    39,    39,    39,    39,    90,    39,    93,    96,    39,
   101,   104,   107,   110,   113,   116,    39,    39,    39,    39,
@@ -19306,7 +19472,7 @@ const unsigned short Dict316TagHashTable[] = {
    52,     1,    26,    55,
 };
 
-const unsigned short Dict316KeyHashTable[] = {
+const unsigned short Dict318KeyHashTable[] = {
    40,    43,    48,    39,    39,    53,    39,    39,    56,    59,
    62,    39,    39,    39,    39,    39,    67,    39,    70,    39,
    39,    73,    78,    81,    39,    39,    39,    39,    84,    39,
@@ -19323,18 +19489,18 @@ const unsigned short Dict316KeyHashTable[] = {
    35,   137,    36,   137,    37,   137,    38,   137,
 };
 
-vtkDICOMDictionary::Dict Dict316Data = {
+vtkDICOMDictionary::Dict Dict318Data = {
 "GEMS_GDXE_FALCON_04",
 39,
 39,
-Dict316TagHashTable,
-Dict316KeyHashTable,
-Dict316Contents
+Dict318TagHashTable,
+Dict318KeyHashTable,
+Dict318Contents
 };
 
 // ----- PHILIPS IMAGING DD 001 -----
 
-const DictEntry Dict317Contents[] = {
+const DictEntry Dict319Contents[] = {
 { 0x2001, 0x0001, 0, VR::FL, VM::M1, "ChemicalShift" },
 { 0x2001, 0x0002, 0, VR::IS, VM::M1, "ChemicalShiftNumberMR" },
 { 0x2001, 0x0003, 0, VR::FL, VM::M1, "DiffusionBFactor" },
@@ -19451,7 +19617,7 @@ const DictEntry Dict317Contents[] = {
 { 0x2001, 0x00f2, 0, VR::FL, VM::M1TN, "RetrospectiveMotionCorrection" },
 };
 
-const unsigned short Dict317TagHashTable[] = {
+const unsigned short Dict319TagHashTable[] = {
   115,   122,   129,   136,   143,   146,   149,   154,   159,   164,
   114,   169,   172,   177,   180,   183,   188,   193,   196,   201,
   204,   207,   210,   215,   220,   223,   226,   229,   232,   235,
@@ -19497,7 +19663,7 @@ const unsigned short Dict317TagHashTable[] = {
   136,     1,    77,   113,     1,     0,     1,
 };
 
-const unsigned short Dict317KeyHashTable[] = {
+const unsigned short Dict319KeyHashTable[] = {
   114,   114,   114,   115,   114,   118,   114,   127,   130,   114,
   133,   114,   114,   114,   136,   139,   144,   114,   114,   114,
   147,   150,   114,   155,   114,   260,   263,   114,   114,   266,
@@ -19540,18 +19706,18 @@ const unsigned short Dict317KeyHashTable[] = {
     5, 14799,    85, 49784,
 };
 
-vtkDICOMDictionary::Dict Dict317Data = {
+vtkDICOMDictionary::Dict Dict319Data = {
 "PHILIPS IMAGING DD 001",
 114,
 114,
-Dict317TagHashTable,
-Dict317KeyHashTable,
-Dict317Contents
+Dict319TagHashTable,
+Dict319KeyHashTable,
+Dict319Contents
 };
 
 // ----- NQRight -----
 
-const DictEntry Dict318Contents[] = {
+const DictEntry Dict320Contents[] = {
 { 0x0299, 0x0001, 0, VR::FL, VM::M1, "RightCorticalWhiteMatter" },
 { 0x0299, 0x0002, 0, VR::FL, VM::M1, "RightCorticalGrayMatter" },
 { 0x0299, 0x0003, 0, VR::FL, VM::M1, "Right3rdVentricle" },
@@ -19612,7 +19778,7 @@ const DictEntry Dict318Contents[] = {
 { 0x0299, 0x003a, 0, VR::FL, VM::M1, "RightMeningie" },
 };
 
-const unsigned short Dict318TagHashTable[] = {
+const unsigned short Dict320TagHashTable[] = {
    59,    62,    65,    70,    75,    80,    85,    90,    95,    98,
   101,   104,   107,   110,   113,   116,   119,   122,   125,   128,
   131,    58,   134,   137,   140,   143,   146,   149,   152,   155,
@@ -19638,7 +19804,7 @@ const unsigned short Dict318TagHashTable[] = {
    38,     1,    36,    37,     1,    35,    36,
 };
 
-const unsigned short Dict318KeyHashTable[] = {
+const unsigned short Dict320KeyHashTable[] = {
    58,    58,    59,    58,    62,    65,    72,    58,    75,    58,
    78,    83,    86,    58,    58,    89,    58,    92,    58,    95,
    98,   105,   108,    58,   115,   118,    58,   125,   128,    58,
@@ -19663,18 +19829,18 @@ const unsigned short Dict318KeyHashTable[] = {
 23833,    46, 24728,     1,    27, 12877,
 };
 
-vtkDICOMDictionary::Dict Dict318Data = {
+vtkDICOMDictionary::Dict Dict320Data = {
 "NQRight",
 58,
 58,
-Dict318TagHashTable,
-Dict318KeyHashTable,
-Dict318Contents
+Dict320TagHashTable,
+Dict320KeyHashTable,
+Dict320Contents
 };
 
 // ----- Siemens: Thorax/Multix FD Lab Settings -----
 
-const DictEntry Dict319Contents[] = {
+const DictEntry Dict321Contents[] = {
 { 0x0019, 0x0000, 0, VR::LO, VM::M1, "" },
 { 0x0019, 0x0001, 0, VR::LO, VM::M1, "" },
 { 0x0019, 0x0002, 0, VR::LO, VM::M1, "TotalDoseAreaProduct" },
@@ -19696,7 +19862,7 @@ const DictEntry Dict319Contents[] = {
 { 0x0021, 0x0031, 0, VR::SH, VM::M1, "AcquisitionSortNumber" },
 };
 
-const unsigned short Dict319TagHashTable[] = {
+const unsigned short Dict321TagHashTable[] = {
    19,    19,    20,    23,    26,    29,    34,    37,    40,    43,
    46,    49,    52,    19,    55,    58,    61,    66,    19,     0,
     1,    10,     9,     1,     9,     8,     1,    12,    11,     2,
@@ -19707,7 +19873,7 @@ const unsigned short Dict319TagHashTable[] = {
    22,    17,    48,
 };
 
-const unsigned short Dict319KeyHashTable[] = {
+const unsigned short Dict321KeyHashTable[] = {
    20,    23,    26,    19,    31,    42,    45,    19,    48,    19,
    19,    19,    53,    56,    59,    19,    19,    62,    65,     0,
     1,    14, 27708,     1,     9, 58517,     2,    10, 21495,    11,
@@ -19717,74 +19883,74 @@ const unsigned short Dict319KeyHashTable[] = {
     2, 33760,     1,     6, 55050,     2,    15, 46275,    17, 55280,
 };
 
-vtkDICOMDictionary::Dict Dict319Data = {
+vtkDICOMDictionary::Dict Dict321Data = {
 "Siemens: Thorax/Multix FD Lab Settings",
 19,
 19,
-Dict319TagHashTable,
-Dict319KeyHashTable,
-Dict319Contents
+Dict321TagHashTable,
+Dict321KeyHashTable,
+Dict321Contents
 };
 
 // ----- CAD Sciences -----
 
-const DictEntry Dict320Contents[] = {
+const DictEntry Dict322Contents[] = {
 { 0x3335, 0x0000, 0, VR::UN, VM::M1, "" },
 { 0x3335, 0x0006, 0, VR::UN, VM::M1, "" },
 { 0x3335, 0x0007, 0, VR::UN, VM::M1, "" },
 { 0x3335, 0x0008, 0, VR::UN, VM::M1, "" },
 };
 
-const unsigned short Dict320TagHashTable[] = {
+const unsigned short Dict322TagHashTable[] = {
     4,     5,    10,    13,     0,     2,     0,     0,     3,     8,
     1,     2,     7,     1,     1,     6,
 };
 
-const unsigned short Dict320KeyHashTable[] = {
+const unsigned short Dict322KeyHashTable[] = {
     4,     5,     4,     4,     0,     4,     0,  1345,     1,  1345,
     2,  1345,     3,  1345,
 };
 
-vtkDICOMDictionary::Dict Dict320Data = {
+vtkDICOMDictionary::Dict Dict322Data = {
 "CAD Sciences",
 4,
 4,
-Dict320TagHashTable,
-Dict320KeyHashTable,
-Dict320Contents
+Dict322TagHashTable,
+Dict322KeyHashTable,
+Dict322Contents
 };
 
 // ----- V1 -----
 
-const DictEntry Dict321Contents[] = {
+const DictEntry Dict323Contents[] = {
 { 0x0011, 0x0001, 0, VR::OB, VM::M1, "UserData" },
 { 0x0011, 0x0002, 0, VR::DS, VM::M1, "NormalizationCoefficient" },
 { 0x0011, 0x0003, 0, VR::DS, VM::M1TN, "ReceivingGain" },
 { 0x0011, 0x0004, 0, VR::DS, VM::M1, "MeanImageNoise" },
 };
 
-const unsigned short Dict321TagHashTable[] = {
+const unsigned short Dict323TagHashTable[] = {
     5,     8,    11,    14,     0,     1,     0,     1,     1,     3,
     4,     1,     2,     3,     1,     1,     2,
 };
 
-const unsigned short Dict321KeyHashTable[] = {
+const unsigned short Dict323KeyHashTable[] = {
     5,     4,     8,    11,     0,     1,     2, 47152,     1,     0,
 51847,     2,     1,  7530,     3, 17937,
 };
 
-vtkDICOMDictionary::Dict Dict321Data = {
+vtkDICOMDictionary::Dict Dict323Data = {
 "V1",
 4,
 4,
-Dict321TagHashTable,
-Dict321KeyHashTable,
-Dict321Contents
+Dict323TagHashTable,
+Dict323KeyHashTable,
+Dict323Contents
 };
 
 // ----- GEMS_SERS_01 -----
 
-const DictEntry Dict322Contents[] = {
+const DictEntry Dict324Contents[] = {
 { 0x0025, 0x0006, 0, VR::SS, VM::M1, "LastPulseSequenceUsed" },
 { 0x0025, 0x0007, 0, VR::SL, VM::M1, "ImagesInSeries" },
 { 0x0025, 0x0010, 0, VR::SL, VM::M1, "LandmarkCounter" },
@@ -19797,32 +19963,32 @@ const DictEntry Dict322Contents[] = {
 { 0x0025, 0x001b, 0, VR::OB, VM::M1, "ProtocolDataBlockCompressed" },
 };
 
-const unsigned short Dict322TagHashTable[] = {
+const unsigned short Dict324TagHashTable[] = {
    11,    16,    19,    24,    29,    32,    10,    10,    10,    35,
     0,     2,     5,    23,     7,    25,     1,     6,    24,     2,
     3,    17,     9,    27,     2,     2,    16,     8,    26,     1,
     1,     7,     1,     0,     6,     1,     4,    20,
 };
 
-const unsigned short Dict322KeyHashTable[] = {
+const unsigned short Dict324KeyHashTable[] = {
    11,    10,    10,    14,    17,    20,    10,    27,    10,    30,
     0,     1,     0, 48638,     1,     4, 38095,     1,     7, 10378,
     3,     5, 57651,     6, 44233,     8, 31186,     1,     9, 20657,
     3,     1, 31090,     2, 30503,     3, 40239,
 };
 
-vtkDICOMDictionary::Dict Dict322Data = {
+vtkDICOMDictionary::Dict Dict324Data = {
 "GEMS_SERS_01",
 10,
 10,
-Dict322TagHashTable,
-Dict322KeyHashTable,
-Dict322Contents
+Dict324TagHashTable,
+Dict324KeyHashTable,
+Dict324Contents
 };
 
 // ----- astm.org/diconde/iod/NdeUsEquipment -----
 
-const DictEntry Dict323Contents[] = {
+const DictEntry Dict325Contents[] = {
 { 0x0009, 0x0002, 0, VR::SQ, VM::M1, "PulserEquipmentSequence" },
 { 0x0009, 0x0004, 0, VR::CS, VM::M1, "PulserType" },
 { 0x0009, 0x0006, 0, VR::LT, VM::M1, "PulserNotes" },
@@ -19846,7 +20012,7 @@ const DictEntry Dict323Contents[] = {
 { 0x0009, 0x001C, 0, VR::DS, VM::M1, "MeasuredBandwidth" },
 };
 
-const unsigned short Dict323TagHashTable[] = {
+const unsigned short Dict325TagHashTable[] = {
    22,    25,    21,    28,    33,    36,    41,    46,    51,    54,
    57,    60,    21,    63,    21,    66,    69,    72,    75,    78,
    21,     0,     1,    20,    28,     1,     3,     8,     2,     4,
@@ -19858,7 +20024,7 @@ const unsigned short Dict323TagHashTable[] = {
    26,
 };
 
-const unsigned short Dict323KeyHashTable[] = {
+const unsigned short Dict325KeyHashTable[] = {
    21,    21,    22,    25,    21,    30,    35,    40,    21,    43,
    48,    21,    55,    58,    21,    21,    21,    21,    61,    72,
    21,     0,     1,    12, 26724,     2,     5, 26272,    13, 26724,
@@ -19869,18 +20035,18 @@ const unsigned short Dict323KeyHashTable[] = {
    15, 51153,     1,    16, 51153,
 };
 
-vtkDICOMDictionary::Dict Dict323Data = {
+vtkDICOMDictionary::Dict Dict325Data = {
 "astm.org/diconde/iod/NdeUsEquipment",
 21,
 21,
-Dict323TagHashTable,
-Dict323KeyHashTable,
-Dict323Contents
+Dict325TagHashTable,
+Dict325KeyHashTable,
+Dict325Contents
 };
 
 // ----- AMI ImageContext_01 -----
 
-const DictEntry Dict324Contents[] = {
+const DictEntry Dict326Contents[] = {
 { 0x3109, 0x0010, 0, VR::CS, VM::M1, "WindowInvert" },
 { 0x3109, 0x0020, 0, VR::IS, VM::M1, "WindowCenter" },
 { 0x3109, 0x0030, 0, VR::IS, VM::M1, "WindowWidth" },
@@ -19892,32 +20058,32 @@ const DictEntry Dict324Contents[] = {
 { 0x3109, 0x0090, 0, VR::CS, VM::M1, "ShowImageOverlay" },
 };
 
-const unsigned short Dict324TagHashTable[] = {
+const unsigned short Dict326TagHashTable[] = {
     9,    10,     9,    15,     9,    22,    25,     9,    28,     0,
     2,     1,    32,     4,    80,     3,     0,    16,     3,    64,
     8,   144,     1,     7,   128,     1,     6,   112,     2,     2,
    48,     5,    96,
 };
 
-const unsigned short Dict324KeyHashTable[] = {
+const unsigned short Dict326KeyHashTable[] = {
     9,     9,    10,    13,    18,    23,    28,    31,     9,     0,
     1,     4, 14990,     2,     0,  3266,     2,  3434,     2,     1,
 25418,     3, 28245,     2,     5, 12513,     7,  9639,     1,     6,
 34690,     1,     8, 62020,
 };
 
-vtkDICOMDictionary::Dict Dict324Data = {
+vtkDICOMDictionary::Dict Dict326Data = {
 "AMI ImageContext_01",
 9,
 9,
-Dict324TagHashTable,
-Dict324KeyHashTable,
-Dict324Contents
+Dict326TagHashTable,
+Dict326KeyHashTable,
+Dict326Contents
 };
 
 // ----- SPI-P-XSB-VISUB Release 1 -----
 
-const DictEntry Dict325Contents[] = {
+const DictEntry Dict327Contents[] = {
 { 0x0019, 0x0000, 0, VR::UN, VM::M1, "" },
 { 0x0019, 0x0010, 0, VR::UN, VM::M1, "" },
 { 0x0019, 0x0011, 0, VR::UN, VM::M1, "" },
@@ -19943,7 +20109,7 @@ const DictEntry Dict325Contents[] = {
 { 0x0029, 0x003f, 0, VR::CS, VM::M1, "" },
 };
 
-const unsigned short Dict325TagHashTable[] = {
+const unsigned short Dict327TagHashTable[] = {
    23,    24,    27,    32,    35,    23,    38,    23,    41,    48,
    53,    56,    23,    65,    23,    68,    23,    71,    74,    77,
    80,    23,    83,     0,     1,    20,    49,     2,     0,     0,
@@ -19955,7 +20121,7 @@ const unsigned short Dict325TagHashTable[] = {
     1,     9,     2,     1,    22,    63,
 };
 
-const unsigned short Dict325KeyHashTable[] = {
+const unsigned short Dict327KeyHashTable[] = {
    23,    23,    23,    23,    23,    23,    23,    23,    23,    23,
    23,    23,    23,    23,    23,    23,    23,    23,    23,    23,
    23,    23,    24,     0,    23,     0,   233,     1,   233,     2,
@@ -19966,18 +20132,18 @@ const unsigned short Dict325KeyHashTable[] = {
   233,
 };
 
-vtkDICOMDictionary::Dict Dict325Data = {
+vtkDICOMDictionary::Dict Dict327Data = {
 "SPI-P-XSB-VISUB Release 1",
 23,
 23,
-Dict325TagHashTable,
-Dict325KeyHashTable,
-Dict325Contents
+Dict327TagHashTable,
+Dict327KeyHashTable,
+Dict327Contents
 };
 
 // ----- 2.16.840.1.114059.1.1.6.1.50.1 -----
 
-const DictEntry Dict326Contents[] = {
+const DictEntry Dict328Contents[] = {
 { 0x0029, 0x0020, 0, VR::LT, VM::M1, "" },
 { 0x0029, 0x0021, 0, VR::ST, VM::M1, "" },
 { 0x0029, 0x0022, 0, VR::ST, VM::M1, "" },
@@ -19988,31 +20154,31 @@ const DictEntry Dict326Contents[] = {
 { 0x0029, 0x0027, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict326TagHashTable[] = {
+const unsigned short Dict328TagHashTable[] = {
     9,    12,    15,    18,    21,    24,    27,    30,     0,     1,
     1,    33,     1,     0,    32,     1,     3,    35,     1,     2,
    34,     1,     5,    37,     1,     4,    36,     1,     7,    39,
     1,     6,    38,
 };
 
-const unsigned short Dict326KeyHashTable[] = {
+const unsigned short Dict328KeyHashTable[] = {
     8,     8,     8,     8,     8,     9,     8,     8,     0,     8,
     0,   672,     1,   672,     2,   672,     3,   672,     4,   672,
     5,   672,     6,   672,     7,   672,
 };
 
-vtkDICOMDictionary::Dict Dict326Data = {
+vtkDICOMDictionary::Dict Dict328Data = {
 "2.16.840.1.114059.1.1.6.1.50.1",
 8,
 8,
-Dict326TagHashTable,
-Dict326KeyHashTable,
-Dict326Contents
+Dict328TagHashTable,
+Dict328KeyHashTable,
+Dict328Contents
 };
 
 // ----- SIEMENS RIS -----
 
-const DictEntry Dict327Contents[] = {
+const DictEntry Dict329Contents[] = {
 { 0x0011, 0x0010, 0, VR::LO, VM::M1, "PatientUID" },
 { 0x0011, 0x0011, 0, VR::LO, VM::M1, "PatientID" },
 { 0x0011, 0x0020, 0, VR::DA, VM::M1, "PatientRegistrationDate" },
@@ -20028,7 +20194,7 @@ const DictEntry Dict327Contents[] = {
 { 0x0033, 0x0010, 0, VR::LO, VM::M1, "PatientStudyUID" },
 };
 
-const unsigned short Dict327TagHashTable[] = {
+const unsigned short Dict329TagHashTable[] = {
    14,    19,    22,    25,    28,    31,    34,    37,    13,    42,
    47,    13,    13,     0,     2,     1,    17,    10,    69,     1,
     0,    16,     1,     6,    64,     1,     7,    65,     1,     8,
@@ -20036,7 +20202,7 @@ const unsigned short Dict327TagHashTable[] = {
     9,    16,     2,     3,    33,    12,    16,     1,     2,    32,
 };
 
-const unsigned short Dict327KeyHashTable[] = {
+const unsigned short Dict329KeyHashTable[] = {
    14,    17,    20,    13,    23,    26,    13,    31,    38,    13,
    13,    13,    43,     0,     1,    11,  3643,     1,     2, 61210,
     1,     1,  8377,     1,     6, 50806,     2,     7, 47106,     8,
@@ -20044,42 +20210,42 @@ const unsigned short Dict327KeyHashTable[] = {
 45572,     3, 40556,     2,     4, 46545,    12, 32781,
 };
 
-vtkDICOMDictionary::Dict Dict327Data = {
+vtkDICOMDictionary::Dict Dict329Data = {
 "SIEMENS RIS",
 13,
 13,
-Dict327TagHashTable,
-Dict327KeyHashTable,
-Dict327Contents
+Dict329TagHashTable,
+Dict329KeyHashTable,
+Dict329Contents
 };
 
 // ----- GEMS_YMHD_01 -----
 
-const DictEntry Dict328Contents[] = {
+const DictEntry Dict330Contents[] = {
 { 0x0033, 0x0005, 0, VR::UN, VM::M1, "" },
 { 0x0033, 0x0006, 0, VR::UN, VM::M1, "" },
 };
 
-const unsigned short Dict328TagHashTable[] = {
+const unsigned short Dict330TagHashTable[] = {
     3,     6,     0,     1,     0,     5,     1,     1,     6,
 };
 
-const unsigned short Dict328KeyHashTable[] = {
+const unsigned short Dict330KeyHashTable[] = {
     2,     3,     0,     2,     0,  2690,     1,  2690,
 };
 
-vtkDICOMDictionary::Dict Dict328Data = {
+vtkDICOMDictionary::Dict Dict330Data = {
 "GEMS_YMHD_01",
 2,
 2,
-Dict328TagHashTable,
-Dict328KeyHashTable,
-Dict328Contents
+Dict330TagHashTable,
+Dict330KeyHashTable,
+Dict330Contents
 };
 
 // ----- SPI-P-CTBE Release 1 -----
 
-const DictEntry Dict329Contents[] = {
+const DictEntry Dict331Contents[] = {
 { 0x0019, 0x0000, 0, VR::IS, VM::M1, "" },
 { 0x0019, 0x0002, 0, VR::IS, VM::M1, "" },
 { 0x0019, 0x0003, 0, VR::DS, VM::M1, "" },
@@ -20096,7 +20262,7 @@ const DictEntry Dict329Contents[] = {
 { 0x0019, 0x001d, 0, VR::DS, VM::M1, "" },
 };
 
-const unsigned short Dict329TagHashTable[] = {
+const unsigned short Dict331TagHashTable[] = {
    15,    20,    25,    28,    31,    36,    14,    39,    14,    14,
    14,    42,    45,    48,     0,     2,     4,     5,     9,    25,
     2,     3,     4,     8,    24,     1,    11,    27,     1,    10,
@@ -20105,7 +20271,7 @@ const unsigned short Dict329TagHashTable[] = {
     2,     7,    20,
 };
 
-const unsigned short Dict329KeyHashTable[] = {
+const unsigned short Dict331KeyHashTable[] = {
    14,    14,    14,    14,    14,    15,    14,    14,    14,    14,
    14,    14,    14,    14,     0,    14,     0,   384,     1,   384,
     2,   384,     3,   384,     4,   384,     5,   384,     6,   384,
@@ -20113,72 +20279,72 @@ const unsigned short Dict329KeyHashTable[] = {
    12,   384,    13,   384,
 };
 
-vtkDICOMDictionary::Dict Dict329Data = {
+vtkDICOMDictionary::Dict Dict331Data = {
 "SPI-P-CTBE Release 1",
 14,
 14,
-Dict329TagHashTable,
-Dict329KeyHashTable,
-Dict329Contents
-};
-
-// ----- ISG shadow -----
-
-const DictEntry Dict330Contents[] = {
-{ 0x0029, 0x0070, 0, VR::IS, VM::M1, "" },
-{ 0x0029, 0x0080, 0, VR::IS, VM::M1, "" },
-{ 0x0029, 0x0090, 0, VR::IS, VM::M1, "" },
-};
-
-const unsigned short Dict330TagHashTable[] = {
-    4,     7,     3,     0,     1,     1,   128,     2,     0,   112,
-    2,   144,
-};
-
-const unsigned short Dict330KeyHashTable[] = {
-    3,     3,     4,     0,     3,     0,  1793,     1,  1793,     2,
- 1793,
-};
-
-vtkDICOMDictionary::Dict Dict330Data = {
-"ISG shadow",
-3,
-3,
-Dict330TagHashTable,
-Dict330KeyHashTable,
-Dict330Contents
-};
-
-// ----- METAEMOTION GINKGO RETINAL -----
-
-const DictEntry Dict331Contents[] = {
-{ 0x0011, 0x0001, 0, VR::LT, VM::M1, "KeyFileIndicator" },
-{ 0x0011, 0x000B, 0, VR::LT, VM::M1, "SerializedDiagnoseAndMarkers" },
-{ 0x0011, 0x000C, 0, VR::UN, VM::M1, "VirtualAneritraContrastImage" },
-};
-
-const unsigned short Dict331TagHashTable[] = {
-    3,     4,     7,     0,     1,     0,     1,     2,     1,    11,
-    2,    12,
-};
-
-const unsigned short Dict331KeyHashTable[] = {
-    4,     9,     3,     0,     2,     0, 32761,     2, 48753,     1,
-    1,  8406,
-};
-
-vtkDICOMDictionary::Dict Dict331Data = {
-"METAEMOTION GINKGO RETINAL",
-3,
-3,
 Dict331TagHashTable,
 Dict331KeyHashTable,
 Dict331Contents
 };
 
-// ----- Riverain Medical -----
+// ----- ISG shadow -----
 
 const DictEntry Dict332Contents[] = {
+{ 0x0029, 0x0070, 0, VR::IS, VM::M1, "" },
+{ 0x0029, 0x0080, 0, VR::IS, VM::M1, "" },
+{ 0x0029, 0x0090, 0, VR::IS, VM::M1, "" },
+};
+
+const unsigned short Dict332TagHashTable[] = {
+    4,     7,     3,     0,     1,     1,   128,     2,     0,   112,
+    2,   144,
+};
+
+const unsigned short Dict332KeyHashTable[] = {
+    3,     3,     4,     0,     3,     0,  1793,     1,  1793,     2,
+ 1793,
+};
+
+vtkDICOMDictionary::Dict Dict332Data = {
+"ISG shadow",
+3,
+3,
+Dict332TagHashTable,
+Dict332KeyHashTable,
+Dict332Contents
+};
+
+// ----- METAEMOTION GINKGO RETINAL -----
+
+const DictEntry Dict333Contents[] = {
+{ 0x0011, 0x0001, 0, VR::LT, VM::M1, "KeyFileIndicator" },
+{ 0x0011, 0x000B, 0, VR::LT, VM::M1, "SerializedDiagnoseAndMarkers" },
+{ 0x0011, 0x000C, 0, VR::UN, VM::M1, "VirtualAneritraContrastImage" },
+};
+
+const unsigned short Dict333TagHashTable[] = {
+    3,     4,     7,     0,     1,     0,     1,     2,     1,    11,
+    2,    12,
+};
+
+const unsigned short Dict333KeyHashTable[] = {
+    4,     9,     3,     0,     2,     0, 32761,     2, 48753,     1,
+    1,  8406,
+};
+
+vtkDICOMDictionary::Dict Dict333Data = {
+"METAEMOTION GINKGO RETINAL",
+3,
+3,
+Dict333TagHashTable,
+Dict333KeyHashTable,
+Dict333Contents
+};
+
+// ----- Riverain Medical -----
+
+const DictEntry Dict334Contents[] = {
 { 0x0203, 0x0000, 0, VR::LO, VM::M1, "" },
 { 0x0203, 0x0001, 0, VR::LO, VM::M1, "" },
 { 0x0203, 0x0002, 0, VR::LO, VM::M1, "" },
@@ -20188,30 +20354,30 @@ const DictEntry Dict332Contents[] = {
 { 0x0203, 0x00f1, 0, VR::UI, VM::M1, "" },
 };
 
-const unsigned short Dict332TagHashTable[] = {
+const unsigned short Dict334TagHashTable[] = {
     8,     7,    11,    14,    17,    22,     7,     0,     1,     4,
    16,     1,     3,     3,     1,     2,     2,     2,     1,     1,
     5,   240,     2,     0,     0,     6,   241,
 };
 
-const unsigned short Dict332KeyHashTable[] = {
+const unsigned short Dict334KeyHashTable[] = {
     7,     7,     7,     7,     7,     8,     7,     0,     7,     0,
   768,     1,   768,     2,   768,     3,   768,     4,   768,     5,
   768,     6,   768,
 };
 
-vtkDICOMDictionary::Dict Dict332Data = {
+vtkDICOMDictionary::Dict Dict334Data = {
 "Riverain Medical",
 7,
 7,
-Dict332TagHashTable,
-Dict332KeyHashTable,
-Dict332Contents
+Dict334TagHashTable,
+Dict334KeyHashTable,
+Dict334Contents
 };
 
 // ----- HOLOGIC -----
 
-const DictEntry Dict333Contents[] = {
+const DictEntry Dict335Contents[] = {
 { 0x0011, 0x0000, 0, VR::OB, VM::M1, "HxQuestionnaire" },
 { 0x0013, 0x0000, 0, VR::LO, VM::M1, "IVAResultsFlag" },
 { 0x0019, 0x0000, 0, VR::UT, VM::M1, "ReportData" },
@@ -20226,7 +20392,7 @@ const DictEntry Dict333Contents[] = {
 { 0x0029, 0x0001, 0, VR::UL, VM::M1, "GraphBitmapSize" },
 };
 
-const unsigned short Dict333TagHashTable[] = {
+const unsigned short Dict335TagHashTable[] = {
    12,    13,    16,    19,    22,    25,    12,    30,    33,    38,
    41,    44,     0,     1,     2,     0,     1,     9,     5,     1,
     8,     4,     1,    11,     1,     2,     0,     0,    10,     0,
@@ -20234,7 +20400,7 @@ const unsigned short Dict333TagHashTable[] = {
     2,     1,     5,     1,     1,     4,     0,
 };
 
-const unsigned short Dict333KeyHashTable[] = {
+const unsigned short Dict335KeyHashTable[] = {
    12,    13,    12,    18,    21,    12,    24,    27,    12,    30,
    33,    38,     0,     2,     8, 19844,     9, 18946,     1,     4,
 54723,     1,     0, 12614,     1,     5,  1260,     1,     2, 46831,
@@ -20242,18 +20408,18 @@ const unsigned short Dict333KeyHashTable[] = {
 36867,     7, 33057,    11, 10475,
 };
 
-vtkDICOMDictionary::Dict Dict333Data = {
+vtkDICOMDictionary::Dict Dict335Data = {
 "HOLOGIC",
 12,
 12,
-Dict333TagHashTable,
-Dict333KeyHashTable,
-Dict333Contents
+Dict335TagHashTable,
+Dict335KeyHashTable,
+Dict335Contents
 };
 
 // ----- GEMS_ACRQA_2.0 BLOCK1 -----
 
-const DictEntry Dict334Contents[] = {
+const DictEntry Dict336Contents[] = {
 { 0x0023, 0x0000, 0, VR::LO, VM::M1, "CRExposureMenuCode" },
 { 0x0023, 0x0010, 0, VR::LO, VM::M1, "CRExposureMenuString" },
 { 0x0023, 0x0020, 0, VR::LO, VM::M1, "CREDRMode" },
@@ -20266,32 +20432,32 @@ const DictEntry Dict334Contents[] = {
 { 0x0023, 0x0090, 0, VR::LO, VM::M1, "CRSShiftString" },
 };
 
-const unsigned short Dict334TagHashTable[] = {
+const unsigned short Dict336TagHashTable[] = {
    10,    11,    16,    19,    22,    25,    28,    31,    34,    37,
     0,     2,     1,    16,     8,   128,     1,     7,   112,     1,
     2,    32,     1,     5,    80,     1,     0,     0,     1,     6,
    96,     1,     9,   144,     1,     4,    64,     1,     3,    48,
 };
 
-const unsigned short Dict334KeyHashTable[] = {
+const unsigned short Dict336KeyHashTable[] = {
    11,    14,    17,    22,    27,    10,    30,    35,    10,    10,
     0,     1,     2, 48761,     1,     1, 46224,     2,     3, 41522,
     5, 31050,     2,     6, 39736,     8, 39860,     1,     4, 55886,
     2,     7, 30788,     9, 22214,     1,     0,  6115,
 };
 
-vtkDICOMDictionary::Dict Dict334Data = {
+vtkDICOMDictionary::Dict Dict336Data = {
 "GEMS_ACRQA_2.0 BLOCK1",
 10,
 10,
-Dict334TagHashTable,
-Dict334KeyHashTable,
-Dict334Contents
+Dict336TagHashTable,
+Dict336KeyHashTable,
+Dict336Contents
 };
 
 // ----- GEMS_ACRQA_2.0 BLOCK2 -----
 
-const DictEntry Dict335Contents[] = {
+const DictEntry Dict337Contents[] = {
 { 0x0023, 0x0000, 0, VR::US, VM::M1, "CRSShift" },
 { 0x0023, 0x0010, 0, VR::LO, VM::M1, "CRCShift" },
 { 0x0023, 0x0020, 0, VR::LO, VM::M1, "CRGT" },
@@ -20304,32 +20470,32 @@ const DictEntry Dict335Contents[] = {
 { 0x0023, 0x0090, 0, VR::DS, VM::M1, "CRDRT" },
 };
 
-const unsigned short Dict335TagHashTable[] = {
+const unsigned short Dict337TagHashTable[] = {
    10,    11,    16,    19,    22,    25,    28,    31,    34,    37,
     0,     2,     1,    16,     8,   128,     1,     7,   112,     1,
     2,    32,     1,     5,    80,     1,     0,     0,     1,     6,
    96,     1,     9,   144,     1,     4,    64,     1,     3,    48,
 };
 
-const unsigned short Dict335KeyHashTable[] = {
+const unsigned short Dict337KeyHashTable[] = {
    11,    10,    14,    10,    10,    21,    24,    27,    32,    35,
     0,     1,     3, 34077,     3,     4, 34077,     6, 34115,     9,
 36381,     1,     0, 28887,     1,     8, 34114,     2,     1, 64674,
     7, 34113,     1,     5, 34078,     1,     2, 34078,
 };
 
-vtkDICOMDictionary::Dict Dict335Data = {
+vtkDICOMDictionary::Dict Dict337Data = {
 "GEMS_ACRQA_2.0 BLOCK2",
 10,
 10,
-Dict335TagHashTable,
-Dict335KeyHashTable,
-Dict335Contents
+Dict337TagHashTable,
+Dict337KeyHashTable,
+Dict337Contents
 };
 
 // ----- GEMS_ACRQA_2.0 BLOCK3 -----
 
-const DictEntry Dict336Contents[] = {
+const DictEntry Dict338Contents[] = {
 { 0x0023, 0x0000, 0, VR::DS, VM::M1, "CRDRE" },
 { 0x0023, 0x0010, 0, VR::US, VM::M1, "CRDRN" },
 { 0x0023, 0x0020, 0, VR::DS, VM::M1, "CRORE" },
@@ -20344,7 +20510,7 @@ const DictEntry Dict336Contents[] = {
 { 0x0023, 0x00ff, 0, VR::US, VM::M1, "CRShuttersApplied" },
 };
 
-const unsigned short Dict336TagHashTable[] = {
+const unsigned short Dict338TagHashTable[] = {
    12,    12,    13,    16,    21,    24,    27,    32,    12,    37,
    40,    43,     0,     1,     4,    64,     2,     1,    16,     2,
    32,     1,    10,   240,     1,     8,   128,     2,     5,    80,
@@ -20352,7 +20518,7 @@ const unsigned short Dict336TagHashTable[] = {
     1,     7,   112,     1,     0,     0,
 };
 
-const unsigned short Dict336KeyHashTable[] = {
+const unsigned short Dict338KeyHashTable[] = {
    12,    13,    18,    21,    12,    24,    29,    32,    37,    42,
    12,    12,     0,     2,     5,   508,     7, 36020,     1,     1,
 30317,     1,    11, 14138,     2,     0, 30316,     3, 31315,     1,
@@ -20360,18 +20526,18 @@ const unsigned short Dict336KeyHashTable[] = {
     6, 40639,     1,    10, 61249,
 };
 
-vtkDICOMDictionary::Dict Dict336Data = {
+vtkDICOMDictionary::Dict Dict338Data = {
 "GEMS_ACRQA_2.0 BLOCK3",
 12,
 12,
-Dict336TagHashTable,
-Dict336KeyHashTable,
-Dict336Contents
+Dict338TagHashTable,
+Dict338KeyHashTable,
+Dict338Contents
 };
 
 // ----- GEMS_3DSTATE_001 -----
 
-const DictEntry Dict337Contents[] = {
+const DictEntry Dict339Contents[] = {
 { 0x0047, 0x00e9, 0, VR::FL, VM::M3, "" },
 { 0x0047, 0x00ea, 0, VR::DS, VM::M3, "" },
 { 0x0047, 0x00eb, 0, VR::DS, VM::M3, "" },
@@ -20379,75 +20545,75 @@ const DictEntry Dict337Contents[] = {
 { 0x0047, 0x00ed, 0, VR::CS, VM::M1, "" },
 };
 
-const unsigned short Dict337TagHashTable[] = {
+const unsigned short Dict339TagHashTable[] = {
     6,     5,     9,    12,    15,     0,     1,     1,   234,     1,
     0,   233,     1,     4,   237,     2,     2,   235,     3,   236,
 };
 
-const unsigned short Dict337KeyHashTable[] = {
+const unsigned short Dict339KeyHashTable[] = {
     5,     6,     5,     5,     5,     0,     5,     0,  1076,     1,
  1076,     2,  1076,     3,  1076,     4,  1076,
 };
 
-vtkDICOMDictionary::Dict Dict337Data = {
+vtkDICOMDictionary::Dict Dict339Data = {
 "GEMS_3DSTATE_001",
 5,
 5,
-Dict337TagHashTable,
-Dict337KeyHashTable,
-Dict337Contents
-};
-
-// ----- RamSoft File Kind Identifier -----
-
-const DictEntry Dict338Contents[] = {
-{ 0x3111, 0x0010, 0, VR::CS, VM::M1, "BinaryDocumentKind" },
-};
-
-const unsigned short Dict338TagHashTable[] = {
-    2,     0,     1,     0,    16,
-};
-
-const unsigned short Dict338KeyHashTable[] = {
-    2,     0,     1,     0,  6927,
-};
-
-vtkDICOMDictionary::Dict Dict338Data = {
-"RamSoft File Kind Identifier",
-1,
-1,
-Dict338TagHashTable,
-Dict338KeyHashTable,
-Dict338Contents
-};
-
-// ----- SEGAMI__PAGE -----
-
-const DictEntry Dict339Contents[] = {
-{ 0x0033, 0x0097, 0, VR::IS, VM::M1, "" },
-{ 0x0033, 0x0098, 0, VR::OW, VM::M1, "" },
-};
-
-const unsigned short Dict339TagHashTable[] = {
-    3,     6,     0,     1,     0,   151,     1,     1,   152,
-};
-
-const unsigned short Dict339KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
-};
-
-vtkDICOMDictionary::Dict Dict339Data = {
-"SEGAMI__PAGE",
-2,
-2,
 Dict339TagHashTable,
 Dict339KeyHashTable,
 Dict339Contents
 };
 
-// ----- SECTRA_Ident_01 -----
+// ----- RamSoft File Kind Identifier -----
 
 const DictEntry Dict340Contents[] = {
+{ 0x3111, 0x0010, 0, VR::CS, VM::M1, "BinaryDocumentKind" },
+};
+
+const unsigned short Dict340TagHashTable[] = {
+    2,     0,     1,     0,    16,
+};
+
+const unsigned short Dict340KeyHashTable[] = {
+    2,     0,     1,     0,  6927,
+};
+
+vtkDICOMDictionary::Dict Dict340Data = {
+"RamSoft File Kind Identifier",
+1,
+1,
+Dict340TagHashTable,
+Dict340KeyHashTable,
+Dict340Contents
+};
+
+// ----- SEGAMI__PAGE -----
+
+const DictEntry Dict341Contents[] = {
+{ 0x0033, 0x0097, 0, VR::IS, VM::M1, "" },
+{ 0x0033, 0x0098, 0, VR::OW, VM::M1, "" },
+};
+
+const unsigned short Dict341TagHashTable[] = {
+    3,     6,     0,     1,     0,   151,     1,     1,   152,
+};
+
+const unsigned short Dict341KeyHashTable[] = {
+    2,     3,     0,     2,     0,  2690,     1,  2690,
+};
+
+vtkDICOMDictionary::Dict Dict341Data = {
+"SEGAMI__PAGE",
+2,
+2,
+Dict341TagHashTable,
+Dict341KeyHashTable,
+Dict341Contents
+};
+
+// ----- SECTRA_Ident_01 -----
+
+const DictEntry Dict342Contents[] = {
 { 0x0009, 0x0001, 0, VR::SH, VM::M1, "RequestNumber" },
 { 0x0009, 0x0002, 0, VR::SH, VM::M1, "ExaminationNumber" },
 { 0x0009, 0x0004, 0, VR::LO, VM::M1, "SeriesIdentifier" },
@@ -20456,30 +20622,30 @@ const DictEntry Dict340Contents[] = {
 { 0x0009, 0x0007, 0, VR::LO, VM::M1, "ImageDataID" },
 };
 
-const unsigned short Dict340TagHashTable[] = {
+const unsigned short Dict342TagHashTable[] = {
     7,    10,    13,    18,     6,    21,     0,     1,     3,     5,
     1,     2,     4,     2,     0,     1,     5,     7,     1,     4,
     6,     1,     1,     2,
 };
 
-const unsigned short Dict340KeyHashTable[] = {
+const unsigned short Dict342KeyHashTable[] = {
     7,    10,     6,     6,    15,    18,     0,     1,     3, 59522,
     2,     0,  3545,     1, 48247,     1,     4, 40027,     2,     2,
 18701,     5,   359,
 };
 
-vtkDICOMDictionary::Dict Dict340Data = {
+vtkDICOMDictionary::Dict Dict342Data = {
 "SECTRA_Ident_01",
 6,
 6,
-Dict340TagHashTable,
-Dict340KeyHashTable,
-Dict340Contents
+Dict342TagHashTable,
+Dict342KeyHashTable,
+Dict342Contents
 };
 
 // ----- STENTOR -----
 
-const DictEntry Dict341Contents[] = {
+const DictEntry Dict343Contents[] = {
 { 0x0073, 0x0001, 0, VR::ST, VM::M1, "" },
 { 0x0073, 0x0002, 0, VR::ST, VM::M1, "" },
 { 0x0073, 0x0003, 0, VR::ST, VM::M1, "" },
@@ -20487,94 +20653,42 @@ const DictEntry Dict341Contents[] = {
 { 0x0073, 0x0006, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict341TagHashTable[] = {
+const unsigned short Dict343TagHashTable[] = {
     6,     9,    12,    15,     5,     0,     1,     0,     1,     1,
     4,     6,     1,     1,     2,     2,     2,     3,     3,     4,
 };
 
-const unsigned short Dict341KeyHashTable[] = {
+const unsigned short Dict343KeyHashTable[] = {
     5,     6,     5,     5,     5,     0,     5,     0,  1076,     1,
  1076,     2,  1076,     3,  1076,     4,  1076,
 };
 
-vtkDICOMDictionary::Dict Dict341Data = {
+vtkDICOMDictionary::Dict Dict343Data = {
 "STENTOR",
 5,
 5,
-Dict341TagHashTable,
-Dict341KeyHashTable,
-Dict341Contents
-};
-
-// ----- ObjectModel (ID, Version, Place, PlaceDescription) -----
-
-const DictEntry Dict342Contents[] = {
-{ 0x8101, 0x0000, 0, VR::LO, VM::M1, "ID" },
-{ 0x8101, 0x0010, 0, VR::LO, VM::M1, "Version" },
-};
-
-const unsigned short Dict342TagHashTable[] = {
-    2,     3,     0,     2,     0,     0,     1,    16,
-};
-
-const unsigned short Dict342KeyHashTable[] = {
-    3,     6,     0,     1,     0, 47609,     1,     1, 27157,
-};
-
-vtkDICOMDictionary::Dict Dict342Data = {
-"ObjectModel (ID, Version, Place, PlaceDescription)",
-2,
-2,
-Dict342TagHashTable,
-Dict342KeyHashTable,
-Dict342Contents
-};
-
-// ----- SIEMENS CSA REPORT -----
-
-const DictEntry Dict343Contents[] = {
-{ 0x0029, 0x0008, 0, VR::CS, VM::M1, "ReportType" },
-{ 0x0029, 0x0009, 0, VR::LO, VM::M1, "ReportVersion" },
-{ 0x0029, 0x0015, 0, VR::US, VM::M1, "SRVariant" },
-{ 0x0029, 0x0017, 0, VR::UI, VM::M1, "SCSOPInstanceUID" },
-};
-
-const unsigned short Dict343TagHashTable[] = {
-    5,    10,    13,     4,     0,     2,     1,     9,     2,    21,
-    1,     0,     8,     1,     3,    23,
-};
-
-const unsigned short Dict343KeyHashTable[] = {
-    5,     4,     4,     8,     0,     1,     3, 38633,     3,     0,
-28600,     1,  7209,     2, 38167,
-};
-
-vtkDICOMDictionary::Dict Dict343Data = {
-"SIEMENS CSA REPORT",
-4,
-4,
 Dict343TagHashTable,
 Dict343KeyHashTable,
 Dict343Contents
 };
 
-// ----- astm.org/diconde/iod/ComponentSeries -----
+// ----- ObjectModel (ID, Version, Place, PlaceDescription) -----
 
 const DictEntry Dict344Contents[] = {
-{ 0x0009, 0x0010, 0, VR::ST, VM::M1, "ActualEnvironmentalConditions" },
-{ 0x0009, 0x0040, 0, VR::ST, VM::M1, "EnvironmentalConditions" },
+{ 0x8101, 0x0000, 0, VR::LO, VM::M1, "ID" },
+{ 0x8101, 0x0010, 0, VR::LO, VM::M1, "Version" },
 };
 
 const unsigned short Dict344TagHashTable[] = {
-    3,     6,     0,     1,     1,    64,     1,     0,    16,
+    2,     3,     0,     2,     0,     0,     1,    16,
 };
 
 const unsigned short Dict344KeyHashTable[] = {
-    2,     3,     0,     2,     0,  4141,     1, 11328,
+    3,     6,     0,     1,     0, 47609,     1,     1, 27157,
 };
 
 vtkDICOMDictionary::Dict Dict344Data = {
-"astm.org/diconde/iod/ComponentSeries",
+"ObjectModel (ID, Version, Place, PlaceDescription)",
 2,
 2,
 Dict344TagHashTable,
@@ -20582,32 +20696,84 @@ Dict344KeyHashTable,
 Dict344Contents
 };
 
-// ----- GEMS_0039 -----
+// ----- SIEMENS CSA REPORT -----
 
 const DictEntry Dict345Contents[] = {
-{ 0x0039, 0x0095, 0, VR::LO, VM::M1, "SRApplicationName" },
+{ 0x0029, 0x0008, 0, VR::CS, VM::M1, "ReportType" },
+{ 0x0029, 0x0009, 0, VR::LO, VM::M1, "ReportVersion" },
+{ 0x0029, 0x0015, 0, VR::US, VM::M1, "SRVariant" },
+{ 0x0029, 0x0017, 0, VR::UI, VM::M1, "SCSOPInstanceUID" },
 };
 
 const unsigned short Dict345TagHashTable[] = {
-    2,     0,     1,     0,   149,
+    5,    10,    13,     4,     0,     2,     1,     9,     2,    21,
+    1,     0,     8,     1,     3,    23,
 };
 
 const unsigned short Dict345KeyHashTable[] = {
-    2,     0,     1,     0, 43423,
+    5,     4,     4,     8,     0,     1,     3, 38633,     3,     0,
+28600,     1,  7209,     2, 38167,
 };
 
 vtkDICOMDictionary::Dict Dict345Data = {
-"GEMS_0039",
-1,
-1,
+"SIEMENS CSA REPORT",
+4,
+4,
 Dict345TagHashTable,
 Dict345KeyHashTable,
 Dict345Contents
 };
 
-// ----- PHILIPS MR IMAGING DD 001 -----
+// ----- astm.org/diconde/iod/ComponentSeries -----
 
 const DictEntry Dict346Contents[] = {
+{ 0x0009, 0x0010, 0, VR::ST, VM::M1, "ActualEnvironmentalConditions" },
+{ 0x0009, 0x0040, 0, VR::ST, VM::M1, "EnvironmentalConditions" },
+};
+
+const unsigned short Dict346TagHashTable[] = {
+    3,     6,     0,     1,     1,    64,     1,     0,    16,
+};
+
+const unsigned short Dict346KeyHashTable[] = {
+    2,     3,     0,     2,     0,  4141,     1, 11328,
+};
+
+vtkDICOMDictionary::Dict Dict346Data = {
+"astm.org/diconde/iod/ComponentSeries",
+2,
+2,
+Dict346TagHashTable,
+Dict346KeyHashTable,
+Dict346Contents
+};
+
+// ----- GEMS_0039 -----
+
+const DictEntry Dict347Contents[] = {
+{ 0x0039, 0x0095, 0, VR::LO, VM::M1, "SRApplicationName" },
+};
+
+const unsigned short Dict347TagHashTable[] = {
+    2,     0,     1,     0,   149,
+};
+
+const unsigned short Dict347KeyHashTable[] = {
+    2,     0,     1,     0, 43423,
+};
+
+vtkDICOMDictionary::Dict Dict347Data = {
+"GEMS_0039",
+1,
+1,
+Dict347TagHashTable,
+Dict347KeyHashTable,
+Dict347Contents
+};
+
+// ----- PHILIPS MR IMAGING DD 001 -----
+
+const DictEntry Dict348Contents[] = {
 { 0x2005, 0x0000, 0, VR::FL, VM::M1, "ImageAngulationAP" },
 { 0x2005, 0x0001, 0, VR::FL, VM::M1, "ImageAngulationFH" },
 { 0x2005, 0x0002, 0, VR::FL, VM::M1, "ImageAngulationRL" },
@@ -20743,7 +20909,7 @@ const DictEntry Dict346Contents[] = {
 { 0x2005, 0x00c0, 0, VR::CS, VM::M1, "SeriesScanSequence" },
 };
 
-const unsigned short Dict346TagHashTable[] = {
+const unsigned short Dict348TagHashTable[] = {
   134,   139,   144,   147,   150,   133,   133,   133,   133,   133,
   133,   133,   133,   153,   156,   159,   162,   167,   170,   173,
   176,   179,   182,   185,   188,   191,   194,   197,   200,   203,
@@ -20798,7 +20964,7 @@ const unsigned short Dict346TagHashTable[] = {
   131,   178,
 };
 
-const unsigned short Dict346KeyHashTable[] = {
+const unsigned short Dict348KeyHashTable[] = {
   134,   137,   133,   140,   143,   133,   133,   150,   153,   133,
   156,   159,   164,   175,   133,   178,   181,   133,   186,   189,
   192,   133,   195,   133,   198,   133,   133,   201,   208,   211,
@@ -20850,18 +21016,18 @@ const unsigned short Dict346KeyHashTable[] = {
    50, 36577,    54, 60481,
 };
 
-vtkDICOMDictionary::Dict Dict346Data = {
+vtkDICOMDictionary::Dict Dict348Data = {
 "PHILIPS MR IMAGING DD 001",
 133,
 133,
-Dict346TagHashTable,
-Dict346KeyHashTable,
-Dict346Contents
+Dict348TagHashTable,
+Dict348KeyHashTable,
+Dict348Contents
 };
 
 // ----- GE_GENESIS_REV3.0 -----
 
-const DictEntry Dict347Contents[] = {
+const DictEntry Dict349Contents[] = {
 { 0x0019, 0x0039, 0, VR::SS, VM::M1, "AxialType" },
 { 0x0019, 0x008f, 0, VR::SS, VM::M1, "SwapPhaseFrequency" },
 { 0x0019, 0x009c, 0, VR::SS, VM::M1, "PulseSequenceName" },
@@ -20879,7 +21045,7 @@ const DictEntry Dict347Contents[] = {
 { 0x0043, 0x0027, 0, VR::SH, VM::M1, "ScanPitchRatio" },
 };
 
-const unsigned short Dict347TagHashTable[] = {
+const unsigned short Dict349TagHashTable[] = {
    16,    15,    21,    15,    26,    15,    15,    29,    32,    35,
    15,    38,    43,    48,    51,     0,     2,     2,   156,    11,
   217,     2,     0,    57,    13,    30,     1,     8,   204,     1,
@@ -20888,7 +21054,7 @@ const unsigned short Dict347TagHashTable[] = {
   143,     2,     7,   203,    10,   216,
 };
 
-const unsigned short Dict347KeyHashTable[] = {
+const unsigned short Dict349KeyHashTable[] = {
    16,    21,    24,    29,    34,    39,    15,    42,    15,    15,
    15,    15,    45,    52,    15,     0,     2,     8, 37446,    13,
  7540,     1,     5, 39961,     2,     3, 45780,    10,  5150,     2,
@@ -20897,18 +21063,18 @@ const unsigned short Dict347KeyHashTable[] = {
    14, 42747,     1,    12, 18822,
 };
 
-vtkDICOMDictionary::Dict Dict347Data = {
+vtkDICOMDictionary::Dict Dict349Data = {
 "GE_GENESIS_REV3.0",
 15,
 15,
-Dict347TagHashTable,
-Dict347KeyHashTable,
-Dict347Contents
+Dict349TagHashTable,
+Dict349KeyHashTable,
+Dict349Contents
 };
 
 // ----- SIEMENS MR VA0  COAD -----
 
-const DictEntry Dict348Contents[] = {
+const DictEntry Dict350Contents[] = {
 { 0x0019, 0x0012, 0, VR::DS, VM::M1, "MagneticFieldStrength" },
 { 0x0019, 0x0014, 0, VR::DS, VM::M1, "ADCVoltage" },
 { 0x0019, 0x0016, 0, VR::DS, VM::M2, "ADCOffset" },
@@ -20956,7 +21122,7 @@ const DictEntry Dict348Contents[] = {
 { 0x0019, 0x00da, 0, VR::CS, VM::M1, "PhaseCodingDirection" },
 };
 
-const unsigned short Dict348TagHashTable[] = {
+const unsigned short Dict350TagHashTable[] = {
    45,    45,    46,    49,    52,    55,    58,    61,    45,    64,
    67,    70,    75,    80,    83,    90,    97,    45,   102,    45,
   107,   112,    45,   115,   118,   121,   124,   127,   132,   135,
@@ -20976,7 +21142,7 @@ const unsigned short Dict348TagHashTable[] = {
     1,    30,   193,     1,    33,   196,     1,    34,   197,
 };
 
-const unsigned short Dict348KeyHashTable[] = {
+const unsigned short Dict350KeyHashTable[] = {
    45,    46,    45,    45,    45,    51,    45,    64,    45,    67,
    70,    77,    82,    85,    88,    45,    95,    45,    45,    45,
    98,   103,    45,    45,    45,    45,    45,   106,    45,   109,
@@ -20995,41 +21161,41 @@ const unsigned short Dict348KeyHashTable[] = {
 59617,     1,    31, 61907,     1,    37, 53889,     1,     6, 39638,
 };
 
-vtkDICOMDictionary::Dict Dict348Data = {
+vtkDICOMDictionary::Dict Dict350Data = {
 "SIEMENS MR VA0  COAD",
 45,
 45,
-Dict348TagHashTable,
-Dict348KeyHashTable,
-Dict348Contents
+Dict350TagHashTable,
+Dict350KeyHashTable,
+Dict350Contents
 };
 
 // ----- GEMS_PATI_01 -----
 
-const DictEntry Dict349Contents[] = {
+const DictEntry Dict351Contents[] = {
 { 0x0011, 0x0010, 0, VR::SS, VM::M1, "PatientStatus" },
 };
 
-const unsigned short Dict349TagHashTable[] = {
+const unsigned short Dict351TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
-const unsigned short Dict349KeyHashTable[] = {
+const unsigned short Dict351KeyHashTable[] = {
     2,     0,     1,     0, 24862,
 };
 
-vtkDICOMDictionary::Dict Dict349Data = {
+vtkDICOMDictionary::Dict Dict351Data = {
 "GEMS_PATI_01",
 1,
 1,
-Dict349TagHashTable,
-Dict349KeyHashTable,
-Dict349Contents
+Dict351TagHashTable,
+Dict351KeyHashTable,
+Dict351Contents
 };
 
 // ----- NNT -----
 
-const DictEntry Dict350Contents[] = {
+const DictEntry Dict352Contents[] = {
 { 0x0019, 0x0002, 0, VR::US, VM::M1, "" },
 { 0x0019, 0x0003, 0, VR::DS, VM::M1, "" },
 { 0x0019, 0x0004, 0, VR::DS, VM::M1, "" },
@@ -21062,7 +21228,7 @@ const DictEntry Dict350Contents[] = {
 { 0x0019, 0x0033, 0, VR::DS, VM::M8, "" },
 };
 
-const unsigned short Dict350TagHashTable[] = {
+const unsigned short Dict352TagHashTable[] = {
    31,    36,    41,    44,    30,    30,    47,    50,    30,    30,
    53,    58,    63,    66,    30,    30,    69,    30,    72,    75,
    80,    83,    86,    89,    30,    30,    92,    97,   102,   107,
@@ -21077,7 +21243,7 @@ const unsigned short Dict350TagHashTable[] = {
    19,    34,
 };
 
-const unsigned short Dict350KeyHashTable[] = {
+const unsigned short Dict352KeyHashTable[] = {
    30,    30,    30,    30,    30,    30,    30,    30,    30,    30,
    30,    31,    30,    30,    30,    30,    30,    30,    30,    30,
    30,    30,    30,    30,    30,    30,    30,    30,    30,    30,
@@ -21090,70 +21256,70 @@ const unsigned short Dict350KeyHashTable[] = {
    29,   179,
 };
 
-vtkDICOMDictionary::Dict Dict350Data = {
+vtkDICOMDictionary::Dict Dict352Data = {
 "NNT",
 30,
 30,
-Dict350TagHashTable,
-Dict350KeyHashTable,
-Dict350Contents
+Dict352TagHashTable,
+Dict352KeyHashTable,
+Dict352Contents
 };
 
 // ----- agfa/displayableImages -----
 
-const DictEntry Dict351Contents[] = {
+const DictEntry Dict353Contents[] = {
 { 0x2e13, 0x0010, 0, VR::IS, VM::M1, "" },
 { 0x2e13, 0x0011, 0, VR::IS, VM::M1, "" },
 };
 
-const unsigned short Dict351TagHashTable[] = {
+const unsigned short Dict353TagHashTable[] = {
     3,     6,     0,     1,     1,    17,     1,     0,    16,
 };
 
-const unsigned short Dict351KeyHashTable[] = {
+const unsigned short Dict353KeyHashTable[] = {
     2,     3,     0,     2,     0,  2690,     1,  2690,
 };
 
-vtkDICOMDictionary::Dict Dict351Data = {
+vtkDICOMDictionary::Dict Dict353Data = {
 "agfa/displayableImages",
 2,
 2,
-Dict351TagHashTable,
-Dict351KeyHashTable,
-Dict351Contents
+Dict353TagHashTable,
+Dict353KeyHashTable,
+Dict353Contents
 };
 
 // ----- GEMS_Ultrasound_ImageGroup_001 -----
 
-const DictEntry Dict352Contents[] = {
+const DictEntry Dict354Contents[] = {
 { 0x6003, 0x0010, 0, VR::SQ, VM::M1, "" },
 { 0x6003, 0x0011, 0, VR::OB, VM::M1, "" },
 { 0x6003, 0x0012, 0, VR::LT, VM::M1, "" },
 { 0x6003, 0x0015, 0, VR::LT, VM::M1TN, "" },
 };
 
-const unsigned short Dict352TagHashTable[] = {
+const unsigned short Dict354TagHashTable[] = {
     4,     5,     8,    13,     0,     1,     2,    18,     2,     1,
    17,     3,    21,     1,     0,    16,
 };
 
-const unsigned short Dict352KeyHashTable[] = {
+const unsigned short Dict354KeyHashTable[] = {
     4,     5,     4,     4,     0,     4,     0,  1345,     1,  1345,
     2,  1345,     3,  1345,
 };
 
-vtkDICOMDictionary::Dict Dict352Data = {
+vtkDICOMDictionary::Dict Dict354Data = {
 "GEMS_Ultrasound_ImageGroup_001",
 4,
 4,
-Dict352TagHashTable,
-Dict352KeyHashTable,
-Dict352Contents
+Dict354TagHashTable,
+Dict354KeyHashTable,
+Dict354Contents
 };
 
 // ----- SIEMENS MEDCOM HEADER -----
 
-const DictEntry Dict353Contents[] = {
+const DictEntry Dict355Contents[] = {
 { 0x0029, 0x0008, 0, VR::CS, VM::M1, "MedComHeaderType" },
 { 0x0029, 0x0009, 0, VR::LO, VM::M1, "MedComHeaderVersion" },
 { 0x0029, 0x0010, 0, VR::OB, VM::M1, "MedComHeaderInfo" },
@@ -21184,7 +21350,7 @@ const DictEntry Dict353Contents[] = {
 { 0x0029, 0x0077, 0, VR::UL, VM::M1, "ReferencedObjectOffset" },
 };
 
-const unsigned short Dict353TagHashTable[] = {
+const unsigned short Dict355TagHashTable[] = {
    29,    32,    28,    28,    37,    42,    47,    50,    53,    58,
    65,    70,    75,    78,    28,    28,    28,    28,    28,    28,
    81,    84,    87,    90,    93,    28,    98,   101,     0,     1,
@@ -21198,7 +21364,7 @@ const unsigned short Dict353TagHashTable[] = {
    51,     1,     5,    50,
 };
 
-const unsigned short Dict353KeyHashTable[] = {
+const unsigned short Dict355KeyHashTable[] = {
    29,    28,    32,    28,    39,    28,    28,    42,    47,    50,
    55,    28,    58,    28,    63,    66,    69,    28,    72,    75,
    78,    28,    28,    81,    86,    91,    98,   101,     0,     1,
@@ -21212,18 +21378,18 @@ const unsigned short Dict353KeyHashTable[] = {
 39385,     1,     8, 39385,
 };
 
-vtkDICOMDictionary::Dict Dict353Data = {
+vtkDICOMDictionary::Dict Dict355Data = {
 "SIEMENS MEDCOM HEADER",
 28,
 28,
-Dict353TagHashTable,
-Dict353KeyHashTable,
-Dict353Contents
+Dict355TagHashTable,
+Dict355KeyHashTable,
+Dict355Contents
 };
 
 // ----- SIEMENS SYNGO EVIDENCE DOCUMENT DATA -----
 
-const DictEntry Dict354Contents[] = {
+const DictEntry Dict356Contents[] = {
 { 0x0077, 0x0010, 0, VR::LO, VM::M1, "EvidenceDocumentTemplateName" },
 { 0x0077, 0x0011, 0, VR::DS, VM::M1, "EvidenceDocumentTemplateVersion" },
 { 0x0077, 0x0020, 0, VR::OB, VM::M1, "ClinicalFindingData" },
@@ -21238,7 +21404,7 @@ const DictEntry Dict354Contents[] = {
 { 0x0077, 0x0080, 0, VR::OB, VM::M1, "VolumeCatalog" },
 };
 
-const unsigned short Dict354TagHashTable[] = {
+const unsigned short Dict356TagHashTable[] = {
    12,    12,    13,    16,    21,    24,    27,    32,    12,    12,
    39,    42,     0,     1,     2,    32,     2,     3,    33,     6,
    80,     1,    11,   128,     1,    10,   114,     2,     0,    16,
@@ -21246,7 +21412,7 @@ const unsigned short Dict354TagHashTable[] = {
     4,    48,     1,     7,    96,
 };
 
-const unsigned short Dict354KeyHashTable[] = {
+const unsigned short Dict356KeyHashTable[] = {
    13,    20,    12,    25,    12,    28,    12,    12,    33,    36,
    39,    42,     0,     3,     0, 15331,     5, 22763,     9, 43355,
     2,     6, 43689,    10, 53675,     1,     7, 30572,     2,     2,
@@ -21254,18 +21420,18 @@ const unsigned short Dict354KeyHashTable[] = {
     3,  2677,     1,     8, 45714,
 };
 
-vtkDICOMDictionary::Dict Dict354Data = {
+vtkDICOMDictionary::Dict Dict356Data = {
 "SIEMENS SYNGO EVIDENCE DOCUMENT DATA",
 12,
 12,
-Dict354TagHashTable,
-Dict354KeyHashTable,
-Dict354Contents
+Dict356TagHashTable,
+Dict356KeyHashTable,
+Dict356Contents
 };
 
 // ----- GEMS_DL_SERIES_01 -----
 
-const DictEntry Dict355Contents[] = {
+const DictEntry Dict357Contents[] = {
 { 0x0015, 0x0085, 0, VR::LO, VM::M1, "SeriesFileName" },
 { 0x0015, 0x0087, 0, VR::IS, VM::M1, "NumberOfImages" },
 { 0x0015, 0x008C, 0, VR::CS, VM::M1, "SentFlag" },
@@ -21274,30 +21440,30 @@ const DictEntry Dict355Contents[] = {
 { 0x0019, 0x004d, 0, VR::CS, VM::M1, "BrowserHide" },
 };
 
-const unsigned short Dict355TagHashTable[] = {
+const unsigned short Dict357TagHashTable[] = {
     7,    12,    15,     6,    18,    21,     0,     2,     1,   135,
     4,    76,     1,     5,    77,     1,     0,   133,     1,     3,
   141,     1,     2,   140,
 };
 
-const unsigned short Dict355KeyHashTable[] = {
+const unsigned short Dict357KeyHashTable[] = {
     7,    10,    17,     6,     6,    20,     0,     1,     3, 45009,
     3,     1, 37972,     2, 22596,     5, 28427,     1,     4,  7152,
     1,     0, 18914,
 };
 
-vtkDICOMDictionary::Dict Dict355Data = {
+vtkDICOMDictionary::Dict Dict357Data = {
 "GEMS_DL_SERIES_01",
 6,
 6,
-Dict355TagHashTable,
-Dict355KeyHashTable,
-Dict355Contents
+Dict357TagHashTable,
+Dict357KeyHashTable,
+Dict357Contents
 };
 
 // ----- Canon Inc. -----
 
-const DictEntry Dict356Contents[] = {
+const DictEntry Dict358Contents[] = {
 { 0x0019, 0x0010, 0, VR::UN, VM::M1, "" },
 { 0x0019, 0x0013, 0, VR::UN, VM::M1, "" },
 { 0x0019, 0x0015, 0, VR::DS, VM::M2, "" },
@@ -21313,7 +21479,7 @@ const DictEntry Dict356Contents[] = {
 { 0x0019, 0x0021, 0, VR::IS, VM::M1, "" },
 };
 
-const unsigned short Dict356TagHashTable[] = {
+const unsigned short Dict358TagHashTable[] = {
    14,    17,    22,    27,    30,    33,    36,    39,    13,    42,
    45,    13,    48,     0,     1,     6,    25,     2,     4,    23,
     5,    24,     2,     3,    22,     8,    27,     1,     7,    26,
@@ -21322,7 +21488,7 @@ const unsigned short Dict356TagHashTable[] = {
    21,
 };
 
-const unsigned short Dict356KeyHashTable[] = {
+const unsigned short Dict358KeyHashTable[] = {
    13,    13,    13,    13,    13,    13,    13,    13,    13,    13,
    13,    13,    14,     0,    13,     0,   413,     1,   413,     2,
   413,     3,   413,     4,   413,     5,   413,     6,   413,     7,
@@ -21330,18 +21496,18 @@ const unsigned short Dict356KeyHashTable[] = {
   413,
 };
 
-vtkDICOMDictionary::Dict Dict356Data = {
+vtkDICOMDictionary::Dict Dict358Data = {
 "Canon Inc.",
 13,
 13,
-Dict356TagHashTable,
-Dict356KeyHashTable,
-Dict356Contents
+Dict358TagHashTable,
+Dict358KeyHashTable,
+Dict358Contents
 };
 
 // ----- GEMS_GENIE_1 -----
 
-const DictEntry Dict357Contents[] = {
+const DictEntry Dict359Contents[] = {
 { 0x0009, 0x0001, 0, VR::SH, VM::M1, "" },
 { 0x0009, 0x0010, 0, VR::LO, VM::M1, "StudyName" },
 { 0x0009, 0x0011, 0, VR::SL, VM::M1, "StudyFlags" },
@@ -21630,7 +21796,7 @@ const DictEntry Dict357Contents[] = {
 { 0x5001, 0x0060, 0, VR::LO, VM::M1TN, "DatasetROIMapping" },
 };
 
-const unsigned short Dict357TagHashTable[] = {
+const unsigned short Dict359TagHashTable[] = {
   287,   296,   303,   310,   319,   326,   335,   344,   355,   362,
   367,   372,   377,   380,   385,   390,   395,   398,   401,   404,
   286,   286,   286,   407,   412,   415,   418,   421,   426,   429,
@@ -21738,7 +21904,7 @@ const unsigned short Dict357TagHashTable[] = {
     1,   252,    58,     1,   255,    61,     1,   254,    60,
 };
 
-const unsigned short Dict357KeyHashTable[] = {
+const unsigned short Dict359KeyHashTable[] = {
   286,   287,   290,   286,   295,   286,   286,   298,   301,   286,
   306,   286,   309,   312,   315,   286,   318,   286,   286,   323,
   286,   328,   286,   286,   331,   334,   337,   286,   340,   345,
@@ -21845,41 +22011,41 @@ const unsigned short Dict357KeyHashTable[] = {
    30, 61371,
 };
 
-vtkDICOMDictionary::Dict Dict357Data = {
+vtkDICOMDictionary::Dict Dict359Data = {
 "GEMS_GENIE_1",
 286,
 286,
-Dict357TagHashTable,
-Dict357KeyHashTable,
-Dict357Contents
+Dict359TagHashTable,
+Dict359KeyHashTable,
+Dict359Contents
 };
 
 // ----- SCHICK TECHNOLOGIES - Image Security Creator ID -----
 
-const DictEntry Dict358Contents[] = {
+const DictEntry Dict360Contents[] = {
 { 0x0029, 0x0001, 0, VR::UL, VM::M1, "" },
 };
 
-const unsigned short Dict358TagHashTable[] = {
+const unsigned short Dict360TagHashTable[] = {
     2,     0,     1,     0,     1,
 };
 
-const unsigned short Dict358KeyHashTable[] = {
+const unsigned short Dict360KeyHashTable[] = {
     2,     0,     1,     0,  5381,
 };
 
-vtkDICOMDictionary::Dict Dict358Data = {
+vtkDICOMDictionary::Dict Dict360Data = {
 "SCHICK TECHNOLOGIES - Image Security Creator ID",
 1,
 1,
-Dict358TagHashTable,
-Dict358KeyHashTable,
-Dict358Contents
+Dict360TagHashTable,
+Dict360KeyHashTable,
+Dict360Contents
 };
 
 // ----- SIEMENS MR VA0  GEN -----
 
-const DictEntry Dict359Contents[] = {
+const DictEntry Dict361Contents[] = {
 { 0x0019, 0x0010, 0, VR::DS, VM::M1, "TotalMeasurementTimeNominal" },
 { 0x0019, 0x0011, 0, VR::DS, VM::M1, "TotalMeasurementTimeCurrent" },
 { 0x0019, 0x0012, 0, VR::DS, VM::M1, "StartDelayTime" },
@@ -21963,7 +22129,7 @@ const DictEntry Dict359Contents[] = {
 { 0x0021, 0x0096, 0, VR::DS, VM::M1, "EPIChangeValueOfZComponent" },
 };
 
-const unsigned short Dict359TagHashTable[] = {
+const unsigned short Dict361TagHashTable[] = {
    82,    85,    94,    97,    81,   100,    81,   103,   106,   111,
   116,   121,   126,   129,   134,   137,   144,   151,   156,   159,
   164,   169,   176,   179,   186,   193,    81,    81,    81,    81,
@@ -21996,7 +22162,7 @@ const unsigned short Dict359TagHashTable[] = {
    27,   133,     1,    26,   132,     1,    71,   112,
 };
 
-const unsigned short Dict359KeyHashTable[] = {
+const unsigned short Dict361KeyHashTable[] = {
    81,    82,    81,    81,    87,    94,    97,    81,    81,    81,
   100,   109,   114,   119,   122,    81,   127,    81,   130,    81,
   133,    81,   136,   141,    81,   144,   147,    81,    81,    81,
@@ -22029,18 +22195,18 @@ const unsigned short Dict359KeyHashTable[] = {
 49082,     1,    21, 15575,
 };
 
-vtkDICOMDictionary::Dict Dict359Data = {
+vtkDICOMDictionary::Dict Dict361Data = {
 "SIEMENS MR VA0  GEN",
 81,
 81,
-Dict359TagHashTable,
-Dict359KeyHashTable,
-Dict359Contents
+Dict361TagHashTable,
+Dict361KeyHashTable,
+Dict361Contents
 };
 
 // ----- Hologic -----
 
-const DictEntry Dict360Contents[] = {
+const DictEntry Dict362Contents[] = {
 { 0x0011, 0x0000, 0, VR::OB, VM::M1, "HxQuestionnaire" },
 { 0x0013, 0x0000, 0, VR::LO, VM::M1, "IVAResultsFlag" },
 { 0x0019, 0x0000, 0, VR::UT, VM::M1, "ReportData" },
@@ -22055,7 +22221,7 @@ const DictEntry Dict360Contents[] = {
 { 0x0029, 0x0001, 0, VR::UL, VM::M1, "GraphBitmapSize" },
 };
 
-const unsigned short Dict360TagHashTable[] = {
+const unsigned short Dict362TagHashTable[] = {
    12,    13,    16,    19,    22,    25,    12,    30,    33,    38,
    41,    44,     0,     1,     2,     0,     1,     9,     5,     1,
     8,     4,     1,    11,     1,     2,     0,     0,    10,     0,
@@ -22063,7 +22229,7 @@ const unsigned short Dict360TagHashTable[] = {
     2,     1,     5,     1,     1,     4,     0,
 };
 
-const unsigned short Dict360KeyHashTable[] = {
+const unsigned short Dict362KeyHashTable[] = {
    12,    13,    12,    18,    21,    12,    24,    27,    12,    30,
    33,    38,     0,     2,     8, 19844,     9, 18946,     1,     4,
 54723,     1,     0, 12614,     1,     5,  1260,     1,     2, 46831,
@@ -22071,46 +22237,46 @@ const unsigned short Dict360KeyHashTable[] = {
 36867,     7, 33057,    11, 10475,
 };
 
-vtkDICOMDictionary::Dict Dict360Data = {
+vtkDICOMDictionary::Dict Dict362Data = {
 "Hologic",
 12,
 12,
-Dict360TagHashTable,
-Dict360KeyHashTable,
-Dict360Contents
+Dict362TagHashTable,
+Dict362KeyHashTable,
+Dict362Contents
 };
 
 // ----- GEMS_DL_PATNT_01 -----
 
-const DictEntry Dict361Contents[] = {
+const DictEntry Dict363Contents[] = {
 { 0x0011, 0x0080, 0, VR::UI, VM::M1, "PatientInstanceUid" },
 { 0x0011, 0x0081, 0, VR::IS, VM::M1, "LastStudyNumber" },
 { 0x0011, 0x0082, 0, VR::CS, VM::M1, "PatientRepaired" },
 { 0x0011, 0x0083, 0, VR::CS, VM::M1, "LockDemographics" },
 };
 
-const unsigned short Dict361TagHashTable[] = {
+const unsigned short Dict363TagHashTable[] = {
     5,     8,    11,    14,     0,     1,     3,   131,     1,     2,
   130,     1,     1,   129,     1,     0,   128,
 };
 
-const unsigned short Dict361KeyHashTable[] = {
+const unsigned short Dict363KeyHashTable[] = {
     5,     8,    11,    14,     0,     1,     3, 21937,     1,     0,
 49412,     1,     2, 12345,     1,     1, 37238,
 };
 
-vtkDICOMDictionary::Dict Dict361Data = {
+vtkDICOMDictionary::Dict Dict363Data = {
 "GEMS_DL_PATNT_01",
 4,
 4,
-Dict361TagHashTable,
-Dict361KeyHashTable,
-Dict361Contents
+Dict363TagHashTable,
+Dict363KeyHashTable,
+Dict363Contents
 };
 
 // ----- SIEMENS SYNGO FRAME SET -----
 
-const DictEntry Dict362Contents[] = {
+const DictEntry Dict364Contents[] = {
 { 0x0029, 0x0010, 0, VR::SQ, VM::M1, "ImageFrameSequence" },
 { 0x0029, 0x0012, 0, VR::CS, VM::M1, "TypeOfProgression" },
 { 0x0029, 0x0014, 0, VR::IS, VM::M1, "RepresentationLevel" },
@@ -22119,54 +22285,54 @@ const DictEntry Dict362Contents[] = {
 { 0x0029, 0x0020, 0, VR::IS, VM::M1, "RepresentationPixelOffset" },
 };
 
-const unsigned short Dict362TagHashTable[] = {
+const unsigned short Dict364TagHashTable[] = {
     6,     7,     6,    12,     6,    19,     0,     2,     2,    20,
     4,    24,     3,     0,    16,     3,    22,     5,    32,     1,
     1,    18,
 };
 
-const unsigned short Dict362KeyHashTable[] = {
+const unsigned short Dict364KeyHashTable[] = {
     6,     7,     6,    12,    15,    20,     0,     2,     4, 10332,
     5, 36944,     1,     3, 18894,     2,     0, 45420,     2, 21842,
     1,     1, 34947,
 };
 
-vtkDICOMDictionary::Dict Dict362Data = {
+vtkDICOMDictionary::Dict Dict364Data = {
 "SIEMENS SYNGO FRAME SET",
 6,
 6,
-Dict362TagHashTable,
-Dict362KeyHashTable,
-Dict362Contents
+Dict364TagHashTable,
+Dict364KeyHashTable,
+Dict364Contents
 };
 
 // ----- SIEMENS MR CM 03 -----
 
-const DictEntry Dict363Contents[] = {
+const DictEntry Dict365Contents[] = {
 { 0x0021, 0x0001, 0, VR::IS, VM::M1, "" },
 { 0x0021, 0x0002, 0, VR::CS, VM::M1, "" },
 };
 
-const unsigned short Dict363TagHashTable[] = {
+const unsigned short Dict365TagHashTable[] = {
     3,     6,     0,     1,     0,     1,     1,     1,     2,
 };
 
-const unsigned short Dict363KeyHashTable[] = {
+const unsigned short Dict365KeyHashTable[] = {
     2,     3,     0,     2,     0,  2690,     1,  2690,
 };
 
-vtkDICOMDictionary::Dict Dict363Data = {
+vtkDICOMDictionary::Dict Dict365Data = {
 "SIEMENS MR CM 03",
 2,
 2,
-Dict363TagHashTable,
-Dict363KeyHashTable,
-Dict363Contents
+Dict365TagHashTable,
+Dict365KeyHashTable,
+Dict365Contents
 };
 
 // ----- SIEMENS Ultrasound SC2000 -----
 
-const DictEntry Dict364Contents[] = {
+const DictEntry Dict366Contents[] = {
 { 0x0019, 0x002D, 0, VR::US, VM::M1, "BModeTintIndex" },
 { 0x0019, 0x0072, 0, VR::US, VM::M1, "DopplerTintIndex" },
 { 0x0019, 0x0088, 0, VR::US, VM::M1, "MModeTintIndex" },
@@ -22211,7 +22377,7 @@ const DictEntry Dict364Contents[] = {
 { 0x7FD1, 0x0011, 0, VR::UN, VM::M1, "AfterPayload" },
 };
 
-const unsigned short Dict364TagHashTable[] = {
+const unsigned short Dict366TagHashTable[] = {
    42,    42,    43,    46,    49,    52,    42,    57,    60,    63,
    66,    42,    42,    42,    42,    42,    69,    74,    79,    82,
    87,    92,    97,   104,   107,   110,    42,    42,   115,   118,
@@ -22230,7 +22396,7 @@ const unsigned short Dict364TagHashTable[] = {
     2,     2,    25,     8,    37,     3,
 };
 
-const unsigned short Dict364KeyHashTable[] = {
+const unsigned short Dict366KeyHashTable[] = {
    42,    43,    42,    46,    51,    54,    57,    60,    63,    66,
    69,    42,    42,    76,    42,    79,    82,    87,    90,    93,
    96,    99,   102,    42,    42,   105,    42,   114,    42,   121,
@@ -22249,18 +22415,18 @@ const unsigned short Dict364KeyHashTable[] = {
     1,    31,  8093,     2,    18, 23632,    23, 41492,
 };
 
-vtkDICOMDictionary::Dict Dict364Data = {
+vtkDICOMDictionary::Dict Dict366Data = {
 "SIEMENS Ultrasound SC2000",
 42,
 42,
-Dict364TagHashTable,
-Dict364KeyHashTable,
-Dict364Contents
+Dict366TagHashTable,
+Dict366KeyHashTable,
+Dict366Contents
 };
 
 // ----- TOSHIBA_MEC_1.0 -----
 
-const DictEntry Dict365Contents[] = {
+const DictEntry Dict367Contents[] = {
 { 0x0009, 0x0001, 0, VR::LT, VM::M1, "" },
 { 0x0009, 0x0002, 0, VR::US, VM::M1TN, "" },
 { 0x0009, 0x0003, 0, VR::US, VM::M1TN, "" },
@@ -22278,7 +22444,7 @@ const DictEntry Dict365Contents[] = {
 { 0x7ff1, 0x0010, 0, VR::US, VM::M1TN, "" },
 };
 
-const unsigned short Dict365TagHashTable[] = {
+const unsigned short Dict367TagHashTable[] = {
    15,    16,    19,    22,    25,    32,    35,    15,    40,    43,
    46,    49,    52,    55,    15,     0,     1,     4,     1,     1,
     8,     1,     1,    12,     2,     3,     5,     2,    10,     3,
@@ -22287,7 +22453,7 @@ const unsigned short Dict365TagHashTable[] = {
     1,     2,     1,     7,     2,     1,     3,     4,
 };
 
-const unsigned short Dict365KeyHashTable[] = {
+const unsigned short Dict367KeyHashTable[] = {
    15,    15,    15,    15,    15,    15,    15,    15,    15,    15,
    15,    16,    15,    15,    15,     0,    15,     0,   358,     1,
   358,     2,   358,     3,   358,     4,   358,     5,   358,     6,
@@ -22295,18 +22461,18 @@ const unsigned short Dict365KeyHashTable[] = {
   358,    12,   358,    13,   358,    14,   358,
 };
 
-vtkDICOMDictionary::Dict Dict365Data = {
+vtkDICOMDictionary::Dict Dict367Data = {
 "TOSHIBA_MEC_1.0",
 15,
 15,
-Dict365TagHashTable,
-Dict365KeyHashTable,
-Dict365Contents
+Dict367TagHashTable,
+Dict367KeyHashTable,
+Dict367Contents
 };
 
 // ----- SIEMENS MED SMS USG S2000 3D VOLUME -----
 
-const DictEntry Dict366Contents[] = {
+const DictEntry Dict368Contents[] = {
 { 0x0039, 0x0050, 0, VR::LO, VM::M1, "PrivateCreatorVersionOfBookmark" },
 { 0x0039, 0x0051, 0, VR::US, VM::M1, "BCutPlaneEnable" },
 { 0x0039, 0x0052, 0, VR::US, VM::M1, "BMprColorMapIndex" },
@@ -22408,7 +22574,7 @@ const DictEntry Dict366Contents[] = {
 { 0x0039, 0x00f6, 0, VR::LT, VM::M1, "" },
 };
 
-const unsigned short Dict366TagHashTable[] = {
+const unsigned short Dict368TagHashTable[] = {
   100,   103,   106,   111,   116,   121,   126,   131,   134,   139,
   144,   149,   152,   157,   160,   163,    99,   166,   169,   172,
   175,   178,   181,   184,   187,   190,    99,    99,    99,    99,
@@ -22448,7 +22614,7 @@ const unsigned short Dict366TagHashTable[] = {
    10,    90,
 };
 
-const unsigned short Dict366KeyHashTable[] = {
+const unsigned short Dict368KeyHashTable[] = {
   100,   107,    99,   112,   117,   120,   123,    99,    99,    99,
    99,   126,    99,   131,   136,   139,   142,   147,   152,    99,
    99,   157,    99,    99,   162,   165,    99,   168,   173,    99,
@@ -22487,18 +22653,18 @@ const unsigned short Dict366KeyHashTable[] = {
    18, 23800,    34, 54477,     1,    46, 24860,
 };
 
-vtkDICOMDictionary::Dict Dict366Data = {
+vtkDICOMDictionary::Dict Dict368Data = {
 "SIEMENS MED SMS USG S2000 3D VOLUME",
 99,
 99,
-Dict366TagHashTable,
-Dict366KeyHashTable,
-Dict366Contents
+Dict368TagHashTable,
+Dict368KeyHashTable,
+Dict368Contents
 };
 
 // ----- Picker MR Private Group -----
 
-const DictEntry Dict367Contents[] = {
+const DictEntry Dict369Contents[] = {
 { 0x7101, 0x0000, 0, VR::OB, VM::M1, "" },
 { 0x7101, 0x0001, 0, VR::SL, VM::M1, "" },
 { 0x7101, 0x0002, 0, VR::OB, VM::M1, "" },
@@ -22509,31 +22675,31 @@ const DictEntry Dict367Contents[] = {
 { 0x7101, 0x0010, 0, VR::DS, VM::M1, "" },
 };
 
-const unsigned short Dict367TagHashTable[] = {
+const unsigned short Dict369TagHashTable[] = {
     9,    12,     8,    15,    18,    21,    26,    29,     0,     1,
     5,     5,     1,     4,     4,     1,     6,     6,     1,     1,
     1,     2,     0,     0,     7,    16,     1,     3,     3,     1,
     2,     2,
 };
 
-const unsigned short Dict367KeyHashTable[] = {
+const unsigned short Dict369KeyHashTable[] = {
     8,     8,     8,     8,     8,     9,     8,     8,     0,     8,
     0,   672,     1,   672,     2,   672,     3,   672,     4,   672,
     5,   672,     6,   672,     7,   672,
 };
 
-vtkDICOMDictionary::Dict Dict367Data = {
+vtkDICOMDictionary::Dict Dict369Data = {
 "Picker MR Private Group",
 8,
 8,
-Dict367TagHashTable,
-Dict367KeyHashTable,
-Dict367Contents
+Dict369TagHashTable,
+Dict369KeyHashTable,
+Dict369Contents
 };
 
 // ----- DLX_SERIE_01 -----
 
-const DictEntry Dict368Contents[] = {
+const DictEntry Dict370Contents[] = {
 { 0x0019, 0x0001, 0, VR::DS, VM::M1, "AngleValueLArm" },
 { 0x0019, 0x0002, 0, VR::DS, VM::M1, "AngleValuePArm" },
 { 0x0019, 0x0003, 0, VR::DS, VM::M1, "AngleValueCArm" },
@@ -22569,7 +22735,7 @@ const DictEntry Dict368Contents[] = {
 { 0x0019, 0x1028, 0, VR::DS, VM::M1, "ImageChainFWHMPsfMmMax" },
 };
 
-const unsigned short Dict368TagHashTable[] = {
+const unsigned short Dict370TagHashTable[] = {
    34,    37,    40,    43,    46,    49,    52,    55,    58,    61,
    33,    33,    64,    67,    70,    73,    76,    79,    82,    85,
    33,    33,    33,    88,    91,    96,    99,   104,   109,   114,
@@ -22585,7 +22751,7 @@ const unsigned short Dict368TagHashTable[] = {
    30,    38,     2,     5,     6,    31,  4135,
 };
 
-const unsigned short Dict368KeyHashTable[] = {
+const unsigned short Dict370KeyHashTable[] = {
    34,    33,    33,    33,    33,    33,    33,    33,    33,    33,
    33,    37,    33,    42,    33,    45,    48,    59,    62,    33,
    71,    33,    74,    77,    94,    33,    33,    99,   102,   105,
@@ -22600,92 +22766,92 @@ const unsigned short Dict368KeyHashTable[] = {
     2,    11, 38012,    20, 62065,
 };
 
-vtkDICOMDictionary::Dict Dict368Data = {
+vtkDICOMDictionary::Dict Dict370Data = {
 "DLX_SERIE_01",
 33,
 33,
-Dict368TagHashTable,
-Dict368KeyHashTable,
-Dict368Contents
-};
-
-// ----- SIEMENS SYNGO ENCAPSULATED DOCUMENT DATA -----
-
-const DictEntry Dict369Contents[] = {
-{ 0x0087, 0x0020, 0, VR::OB, VM::M1, "StudyModel" },
-{ 0x0087, 0x0030, 0, VR::OB, VM::M1, "ReportXMLSchema" },
-{ 0x0087, 0x0040, 0, VR::OB, VM::M1, "ReportIdentifier" },
-};
-
-const unsigned short Dict369TagHashTable[] = {
-    4,     7,     3,     0,     1,     0,    32,     2,     1,    48,
-    2,    64,
-};
-
-const unsigned short Dict369KeyHashTable[] = {
-    3,     4,     9,     0,     2,     0,  6778,     2, 17185,     1,
-    1, 11691,
-};
-
-vtkDICOMDictionary::Dict Dict369Data = {
-"SIEMENS SYNGO ENCAPSULATED DOCUMENT DATA",
-3,
-3,
-Dict369TagHashTable,
-Dict369KeyHashTable,
-Dict369Contents
-};
-
-// ----- 1.2.840.113663.1 -----
-
-const DictEntry Dict370Contents[] = {
-{ 0x0029, 0x0000, 0, VR::US, VM::M1, "" },
-{ 0x0029, 0x0001, 0, VR::US, VM::M1, "" },
-};
-
-const unsigned short Dict370TagHashTable[] = {
-    3,     6,     0,     1,     1,     1,     1,     0,     0,
-};
-
-const unsigned short Dict370KeyHashTable[] = {
-    2,     3,     0,     2,     0,  2690,     1,  2690,
-};
-
-vtkDICOMDictionary::Dict Dict370Data = {
-"1.2.840.113663.1",
-2,
-2,
 Dict370TagHashTable,
 Dict370KeyHashTable,
 Dict370Contents
 };
 
-// ----- SIEMENS MED OCS BEAM DISPLAY INFO -----
+// ----- SIEMENS SYNGO ENCAPSULATED DOCUMENT DATA -----
 
 const DictEntry Dict371Contents[] = {
-{ 0x0039, 0x0076, 0, VR::CS, VM::M1, "BeamDisplayProperties" },
+{ 0x0087, 0x0020, 0, VR::OB, VM::M1, "StudyModel" },
+{ 0x0087, 0x0030, 0, VR::OB, VM::M1, "ReportXMLSchema" },
+{ 0x0087, 0x0040, 0, VR::OB, VM::M1, "ReportIdentifier" },
 };
 
 const unsigned short Dict371TagHashTable[] = {
-    2,     0,     1,     0,   118,
+    4,     7,     3,     0,     1,     0,    32,     2,     1,    48,
+    2,    64,
 };
 
 const unsigned short Dict371KeyHashTable[] = {
-    2,     0,     1,     0, 57277,
+    3,     4,     9,     0,     2,     0,  6778,     2, 17185,     1,
+    1, 11691,
 };
 
 vtkDICOMDictionary::Dict Dict371Data = {
-"SIEMENS MED OCS BEAM DISPLAY INFO",
-1,
-1,
+"SIEMENS SYNGO ENCAPSULATED DOCUMENT DATA",
+3,
+3,
 Dict371TagHashTable,
 Dict371KeyHashTable,
 Dict371Contents
 };
 
-// ----- ULTRAVISUAL_TAG_SET1 -----
+// ----- 1.2.840.113663.1 -----
 
 const DictEntry Dict372Contents[] = {
+{ 0x0029, 0x0000, 0, VR::US, VM::M1, "" },
+{ 0x0029, 0x0001, 0, VR::US, VM::M1, "" },
+};
+
+const unsigned short Dict372TagHashTable[] = {
+    3,     6,     0,     1,     1,     1,     1,     0,     0,
+};
+
+const unsigned short Dict372KeyHashTable[] = {
+    2,     3,     0,     2,     0,  2690,     1,  2690,
+};
+
+vtkDICOMDictionary::Dict Dict372Data = {
+"1.2.840.113663.1",
+2,
+2,
+Dict372TagHashTable,
+Dict372KeyHashTable,
+Dict372Contents
+};
+
+// ----- SIEMENS MED OCS BEAM DISPLAY INFO -----
+
+const DictEntry Dict373Contents[] = {
+{ 0x0039, 0x0076, 0, VR::CS, VM::M1, "BeamDisplayProperties" },
+};
+
+const unsigned short Dict373TagHashTable[] = {
+    2,     0,     1,     0,   118,
+};
+
+const unsigned short Dict373KeyHashTable[] = {
+    2,     0,     1,     0, 57277,
+};
+
+vtkDICOMDictionary::Dict Dict373Data = {
+"SIEMENS MED OCS BEAM DISPLAY INFO",
+1,
+1,
+Dict373TagHashTable,
+Dict373KeyHashTable,
+Dict373Contents
+};
+
+// ----- ULTRAVISUAL_TAG_SET1 -----
+
+const DictEntry Dict374Contents[] = {
 { 0x0011, 0x0001, 0, VR::CS, VM::M1, "" },
 { 0x0011, 0x0002, 0, VR::UN, VM::M1, "" },
 { 0x0011, 0x0003, 0, VR::UN, VM::M1, "" },
@@ -22701,7 +22867,7 @@ const DictEntry Dict372Contents[] = {
 { 0x0011, 0x001d, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict372TagHashTable[] = {
+const unsigned short Dict374TagHashTable[] = {
    14,    19,    13,    22,    13,    27,    30,    13,    33,    36,
    39,    42,    45,     0,     2,     5,    17,    11,    28,     1,
     4,    16,     2,     0,     1,     6,    18,     1,     2,     3,
@@ -22709,7 +22875,7 @@ const unsigned short Dict372TagHashTable[] = {
    10,    27,     1,     9,    26,     2,     3,     8,    12,    29,
 };
 
-const unsigned short Dict372KeyHashTable[] = {
+const unsigned short Dict374KeyHashTable[] = {
    13,    13,    13,    13,    13,    13,    13,    13,    13,    13,
    13,    13,    14,     0,    13,     0,   413,     1,   413,     2,
   413,     3,   413,     4,   413,     5,   413,     6,   413,     7,
@@ -22717,18 +22883,18 @@ const unsigned short Dict372KeyHashTable[] = {
   413,
 };
 
-vtkDICOMDictionary::Dict Dict372Data = {
+vtkDICOMDictionary::Dict Dict374Data = {
 "ULTRAVISUAL_TAG_SET1",
 13,
 13,
-Dict372TagHashTable,
-Dict372KeyHashTable,
-Dict372Contents
+Dict374TagHashTable,
+Dict374KeyHashTable,
+Dict374Contents
 };
 
 // ----- Applicare/RadWorks/Version 6.0/Summary -----
 
-const DictEntry Dict373Contents[] = {
+const DictEntry Dict375Contents[] = {
 { 0x3109, 0x0001, 0, VR::SH, VM::M1, "Status" },
 { 0x3109, 0x0011, 0, VR::ST, VM::M1, "ReceiveOriginSiteName" },
 { 0x3109, 0x0012, 0, VR::ST, VM::M1, "ReceiveOriginDescription" },
@@ -22736,28 +22902,28 @@ const DictEntry Dict373Contents[] = {
 { 0x3109, 0x0016, 0, VR::TM, VM::M1, "ReceiveTime" },
 };
 
-const unsigned short Dict373TagHashTable[] = {
+const unsigned short Dict375TagHashTable[] = {
     6,     5,     9,    12,    17,     0,     1,     3,    21,     1,
     2,    18,     2,     0,     1,     4,    22,     1,     1,    17,
 };
 
-const unsigned short Dict373KeyHashTable[] = {
+const unsigned short Dict375KeyHashTable[] = {
     6,     9,    14,    17,     5,     0,     1,     0, 45525,     2,
     2, 11863,     4, 38814,     1,     1,  5876,     1,     3, 53191,
 };
 
-vtkDICOMDictionary::Dict Dict373Data = {
+vtkDICOMDictionary::Dict Dict375Data = {
 "Applicare/RadWorks/Version 6.0/Summary",
 5,
 5,
-Dict373TagHashTable,
-Dict373KeyHashTable,
-Dict373Contents
+Dict375TagHashTable,
+Dict375KeyHashTable,
+Dict375Contents
 };
 
 // ----- CARDIO-D.R. 1.0 -----
 
-const DictEntry Dict374Contents[] = {
+const DictEntry Dict376Contents[] = {
 { 0x0009, 0x0000, 0, VR::UL, VM::M1, "FileLocation" },
 { 0x0009, 0x0001, 0, VR::UL, VM::M1, "FileSize" },
 { 0x0009, 0x0040, 0, VR::SQ, VM::M1, "AlternateImageSequence" },
@@ -22778,7 +22944,7 @@ const DictEntry Dict374Contents[] = {
 { 0x0029, 0x00AD, 0, VR::FL, VM::M1, "DisplayedAreaTopLeftHandCornerFractional" },
 };
 
-const unsigned short Dict374TagHashTable[] = {
+const unsigned short Dict376TagHashTable[] = {
    19,    18,    18,    18,    22,    25,    30,    33,    38,    43,
    18,    52,    18,    57,    60,    18,    18,    63,     0,     1,
     2,    64,     1,    13,     1,     2,    10,    48,    12,     0,
@@ -22788,7 +22954,7 @@ const unsigned short Dict374TagHashTable[] = {
     1,    11,    19,     1,     7,     8,
 };
 
-const unsigned short Dict374KeyHashTable[] = {
+const unsigned short Dict376KeyHashTable[] = {
    19,    24,    27,    30,    33,    18,    18,    36,    18,    39,
    18,    46,    18,    18,    51,    18,    54,    63,     0,     2,
    10, 35814,    17, 45961,     1,    16, 47059,     1,    14,  8195,
@@ -22798,18 +22964,18 @@ const unsigned short Dict374KeyHashTable[] = {
 49832,    11, 41349,     1,     6, 15396,
 };
 
-vtkDICOMDictionary::Dict Dict374Data = {
+vtkDICOMDictionary::Dict Dict376Data = {
 "CARDIO-D.R. 1.0",
 18,
 18,
-Dict374TagHashTable,
-Dict374KeyHashTable,
-Dict374Contents
+Dict376TagHashTable,
+Dict376KeyHashTable,
+Dict376Contents
 };
 
 // ----- LODOX_STATSCAN -----
 
-const DictEntry Dict375Contents[] = {
+const DictEntry Dict377Contents[] = {
 { 0x0019, 0x0001, 0, VR::IS, VM::M1TN, "" },
 { 0x0019, 0x0002, 0, VR::IS, VM::M1, "" },
 { 0x0019, 0x0003, 0, VR::DS, VM::M1, "" },
@@ -22820,31 +22986,31 @@ const DictEntry Dict375Contents[] = {
 { 0x0019, 0x0008, 0, VR::DS, VM::M1, "" },
 };
 
-const unsigned short Dict375TagHashTable[] = {
+const unsigned short Dict377TagHashTable[] = {
     9,    12,    15,    18,    21,    24,    27,    30,     0,     1,
     0,     1,     1,     7,     8,     1,     2,     3,     1,     1,
     2,     1,     4,     5,     1,     3,     4,     1,     6,     7,
     1,     5,     6,
 };
 
-const unsigned short Dict375KeyHashTable[] = {
+const unsigned short Dict377KeyHashTable[] = {
     8,     8,     8,     8,     8,     9,     8,     8,     0,     8,
     0,   672,     1,   672,     2,   672,     3,   672,     4,   672,
     5,   672,     6,   672,     7,   672,
 };
 
-vtkDICOMDictionary::Dict Dict375Data = {
+vtkDICOMDictionary::Dict Dict377Data = {
 "LODOX_STATSCAN",
 8,
 8,
-Dict375TagHashTable,
-Dict375KeyHashTable,
-Dict375Contents
+Dict377TagHashTable,
+Dict377KeyHashTable,
+Dict377Contents
 };
 
 // ----- SIEMENS MED SMS USG ANTARES 3D VOLUME -----
 
-const DictEntry Dict376Contents[] = {
+const DictEntry Dict378Contents[] = {
 { 0x0039, 0x0000, 0, VR::UN, VM::M1, "ReleaseVersion" },
 { 0x0039, 0x0003, 0, VR::UN, VM::M1, "VolumeAcquisitionDuration" },
 { 0x0039, 0x0004, 0, VR::UN, VM::M1, "VolumeRawDataType" },
@@ -22983,7 +23149,7 @@ const DictEntry Dict376Contents[] = {
 { 0x0039, 0x00f6, 0, VR::LT, VM::M1, "" },
 };
 
-const unsigned short Dict376TagHashTable[] = {
+const unsigned short Dict378TagHashTable[] = {
   137,   140,   136,   136,   136,   136,   136,   136,   143,   146,
   149,   152,   155,   158,   161,   136,   164,   167,   170,   173,
   136,   136,   136,   136,   176,   179,   184,   187,   190,   195,
@@ -23037,7 +23203,7 @@ const unsigned short Dict376TagHashTable[] = {
    86,     1,    44,    87,     1,    36,    64,
 };
 
-const unsigned short Dict376KeyHashTable[] = {
+const unsigned short Dict378KeyHashTable[] = {
   136,   136,   137,   136,   140,   136,   145,   148,   136,   136,
   153,   136,   136,   136,   158,   136,   136,   136,   136,   161,
   166,   136,   136,   136,   136,   169,   136,   172,   136,   175,
@@ -23089,46 +23255,46 @@ const unsigned short Dict376KeyHashTable[] = {
    85, 60047,    94, 31579,     1,    60, 44115,     1,     8, 24323,
 };
 
-vtkDICOMDictionary::Dict Dict376Data = {
+vtkDICOMDictionary::Dict Dict378Data = {
 "SIEMENS MED SMS USG ANTARES 3D VOLUME",
 136,
 136,
-Dict376TagHashTable,
-Dict376KeyHashTable,
-Dict376Contents
+Dict378TagHashTable,
+Dict378KeyHashTable,
+Dict378Contents
 };
 
 // ----- 1.2.840.113681 -----
 
-const DictEntry Dict377Contents[] = {
+const DictEntry Dict379Contents[] = {
 { 0x0019, 0x0010, 0, VR::ST, VM::M1, "CRImageParamsCommon" },
 { 0x0019, 0x0011, 0, VR::ST, VM::M1, "CRImageIPParamsSingle" },
 { 0x0019, 0x0012, 0, VR::ST, VM::M1, "CRImageIPParamsLeft" },
 { 0x0019, 0x0013, 0, VR::ST, VM::M1, "CRImageIPParamsRight" },
 };
 
-const unsigned short Dict377TagHashTable[] = {
+const unsigned short Dict379TagHashTable[] = {
     5,     8,    11,    14,     0,     1,     1,    17,     1,     0,
    16,     1,     3,    19,     1,     2,    18,
 };
 
-const unsigned short Dict377KeyHashTable[] = {
+const unsigned short Dict379KeyHashTable[] = {
     5,    10,    13,     4,     0,     2,     1, 31079,     3,  6414,
     1,     2, 26617,     1,     0, 12906,
 };
 
-vtkDICOMDictionary::Dict Dict377Data = {
+vtkDICOMDictionary::Dict Dict379Data = {
 "1.2.840.113681",
 4,
 4,
-Dict377TagHashTable,
-Dict377KeyHashTable,
-Dict377Contents
+Dict379TagHashTable,
+Dict379KeyHashTable,
+Dict379Contents
 };
 
 // ----- Philips PET Private Group -----
 
-const DictEntry Dict378Contents[] = {
+const DictEntry Dict380Contents[] = {
 { 0x0511, 0x0000, 0, VR::US, VM::M1, "PrivateData" },
 { 0x0511, 0x0001, 0, VR::US, VM::M1, "PrivateData" },
 { 0x0511, 0x0002, 0, VR::OB, VM::M1, "PrivateData" },
@@ -23158,7 +23324,7 @@ const DictEntry Dict378Contents[] = {
 { 0x7053, 0x00c2, 0, VR::UI, VM::M1, "" },
 };
 
-const unsigned short Dict378TagHashTable[] = {
+const unsigned short Dict380TagHashTable[] = {
    28,    27,    27,    31,    34,    39,    42,    47,    50,    53,
    56,    59,    62,    65,    68,    73,    76,    79,    82,    27,
    85,    88,    91,    94,    97,   100,   103,     0,     1,    11,
@@ -23172,7 +23338,7 @@ const unsigned short Dict378TagHashTable[] = {
     1,    13,     7,     1,    10,     4,
 };
 
-const unsigned short Dict378KeyHashTable[] = {
+const unsigned short Dict380KeyHashTable[] = {
    27,    28,    27,    45,    27,    27,    27,    48,    51,    27,
    27,    27,    27,    27,    27,    27,    27,    27,    27,    27,
    27,    84,    27,    27,    27,    27,    27,     0,     8,     0,
@@ -23184,64 +23350,64 @@ const unsigned short Dict378KeyHashTable[] = {
    25,   199,    26,   199,     1,    11, 56148,
 };
 
-vtkDICOMDictionary::Dict Dict378Data = {
+vtkDICOMDictionary::Dict Dict380Data = {
 "Philips PET Private Group",
 27,
 27,
-Dict378TagHashTable,
-Dict378KeyHashTable,
-Dict378Contents
-};
-
-// ----- GEMS-IT/Centricity RA600/7.0 -----
-
-const DictEntry Dict379Contents[] = {
-{ 0x4113, 0x0010, 0, VR::UI, VM::M1, "NumberOfImagesInStudy" },
-};
-
-const unsigned short Dict379TagHashTable[] = {
-    2,     0,     1,     0,    16,
-};
-
-const unsigned short Dict379KeyHashTable[] = {
-    2,     0,     1,     0, 48361,
-};
-
-vtkDICOMDictionary::Dict Dict379Data = {
-"GEMS-IT/Centricity RA600/7.0",
-1,
-1,
-Dict379TagHashTable,
-Dict379KeyHashTable,
-Dict379Contents
-};
-
-// ----- syngoDynamics_Reporting -----
-
-const DictEntry Dict380Contents[] = {
-{ 0x0021, 0x00AD, 0, VR::OB, VM::M1, "Data" },
-};
-
-const unsigned short Dict380TagHashTable[] = {
-    2,     0,     1,     0,   173,
-};
-
-const unsigned short Dict380KeyHashTable[] = {
-    2,     0,     1,     0,  1343,
-};
-
-vtkDICOMDictionary::Dict Dict380Data = {
-"syngoDynamics_Reporting",
-1,
-1,
 Dict380TagHashTable,
 Dict380KeyHashTable,
 Dict380Contents
 };
 
-// ----- Harmony R1.0 C3 -----
+// ----- GEMS-IT/Centricity RA600/7.0 -----
 
 const DictEntry Dict381Contents[] = {
+{ 0x4113, 0x0010, 0, VR::UI, VM::M1, "NumberOfImagesInStudy" },
+};
+
+const unsigned short Dict381TagHashTable[] = {
+    2,     0,     1,     0,    16,
+};
+
+const unsigned short Dict381KeyHashTable[] = {
+    2,     0,     1,     0, 48361,
+};
+
+vtkDICOMDictionary::Dict Dict381Data = {
+"GEMS-IT/Centricity RA600/7.0",
+1,
+1,
+Dict381TagHashTable,
+Dict381KeyHashTable,
+Dict381Contents
+};
+
+// ----- syngoDynamics_Reporting -----
+
+const DictEntry Dict382Contents[] = {
+{ 0x0021, 0x00AD, 0, VR::OB, VM::M1, "Data" },
+};
+
+const unsigned short Dict382TagHashTable[] = {
+    2,     0,     1,     0,   173,
+};
+
+const unsigned short Dict382KeyHashTable[] = {
+    2,     0,     1,     0,  1343,
+};
+
+vtkDICOMDictionary::Dict Dict382Data = {
+"syngoDynamics_Reporting",
+1,
+1,
+Dict382TagHashTable,
+Dict382KeyHashTable,
+Dict382Contents
+};
+
+// ----- Harmony R1.0 C3 -----
+
+const DictEntry Dict383Contents[] = {
 { 0x0019, 0x0000, 0, VR::LO, VM::M1, "" },
 { 0x0019, 0x0003, 0, VR::LO, VM::M1, "" },
 { 0x0019, 0x0007, 0, VR::LO, VM::M1, "" },
@@ -23286,7 +23452,7 @@ const DictEntry Dict381Contents[] = {
 { 0x0019, 0x00f2, 0, VR::UN, VM::M1, "" },
 };
 
-const unsigned short Dict381TagHashTable[] = {
+const unsigned short Dict383TagHashTable[] = {
    43,    46,    49,    52,    42,    55,    42,    42,    42,    42,
    42,    42,    58,    61,    64,    69,    74,    79,    84,    89,
    42,    42,    92,    42,    95,   100,   107,    42,    42,   114,
@@ -23305,7 +23471,7 @@ const unsigned short Dict381TagHashTable[] = {
     1,    36,   237,
 };
 
-const unsigned short Dict381KeyHashTable[] = {
+const unsigned short Dict383KeyHashTable[] = {
    42,    42,    42,    42,    42,    43,    42,    42,    42,    42,
    42,    42,    42,    42,    42,    42,    42,    42,    42,    42,
    42,    42,    42,    42,    42,    42,    42,    42,    42,    42,
@@ -23321,18 +23487,18 @@ const unsigned short Dict381KeyHashTable[] = {
    38,   128,    39,   128,    40,   128,    41,   128,
 };
 
-vtkDICOMDictionary::Dict Dict381Data = {
+vtkDICOMDictionary::Dict Dict383Data = {
 "Harmony R1.0 C3",
 42,
 42,
-Dict381TagHashTable,
-Dict381KeyHashTable,
-Dict381Contents
+Dict383TagHashTable,
+Dict383KeyHashTable,
+Dict383Contents
 };
 
 // ----- Harmony R1.0 C2 -----
 
-const DictEntry Dict382Contents[] = {
+const DictEntry Dict384Contents[] = {
 { 0x0019, 0x0000, 0, VR::LO, VM::M1, "" },
 { 0x0019, 0x0001, 0, VR::UN, VM::M1, "" },
 { 0x0019, 0x0002, 0, VR::UN, VM::M1, "" },
@@ -23361,7 +23527,7 @@ const DictEntry Dict382Contents[] = {
 { 0x0019, 0x0091, 0, VR::UN, VM::M1, "" },
 };
 
-const unsigned short Dict382TagHashTable[] = {
+const unsigned short Dict384TagHashTable[] = {
    27,    30,    33,    36,    41,    46,    49,    26,    52,    26,
    55,    26,    58,    61,    64,    26,    67,    70,    73,    76,
    81,    26,    84,    87,    90,    95,     0,     1,     3,     3,
@@ -23374,7 +23540,7 @@ const unsigned short Dict382TagHashTable[] = {
     2,     1,     1,    21,   129,     2,     0,     0,    20,   128,
 };
 
-const unsigned short Dict382KeyHashTable[] = {
+const unsigned short Dict384KeyHashTable[] = {
    26,    26,    26,    26,    26,    26,    26,    26,    26,    26,
    26,    26,    26,    26,    26,    26,    26,    26,    26,    26,
    26,    26,    26,    26,    26,    27,     0,    26,     0,   206,
@@ -23385,42 +23551,42 @@ const unsigned short Dict382KeyHashTable[] = {
    21,   206,    22,   206,    23,   206,    24,   206,    25,   206,
 };
 
-vtkDICOMDictionary::Dict Dict382Data = {
+vtkDICOMDictionary::Dict Dict384Data = {
 "Harmony R1.0 C2",
 26,
 26,
-Dict382TagHashTable,
-Dict382KeyHashTable,
-Dict382Contents
+Dict384TagHashTable,
+Dict384KeyHashTable,
+Dict384Contents
 };
 
 // ----- SEGAMI__MEMO -----
 
-const DictEntry Dict383Contents[] = {
+const DictEntry Dict385Contents[] = {
 { 0x0035, 0x0097, 0, VR::SH, VM::M1, "" },
 { 0x0035, 0x0098, 0, VR::LT, VM::M1, "" },
 };
 
-const unsigned short Dict383TagHashTable[] = {
+const unsigned short Dict385TagHashTable[] = {
     3,     6,     0,     1,     0,   151,     1,     1,   152,
 };
 
-const unsigned short Dict383KeyHashTable[] = {
+const unsigned short Dict385KeyHashTable[] = {
     2,     3,     0,     2,     0,  2690,     1,  2690,
 };
 
-vtkDICOMDictionary::Dict Dict383Data = {
+vtkDICOMDictionary::Dict Dict385Data = {
 "SEGAMI__MEMO",
 2,
 2,
-Dict383TagHashTable,
-Dict383KeyHashTable,
-Dict383Contents
+Dict385TagHashTable,
+Dict385KeyHashTable,
+Dict385Contents
 };
 
 // ----- AGFA -----
 
-const DictEntry Dict384Contents[] = {
+const DictEntry Dict386Contents[] = {
 { 0x0009, 0x0010, 0, VR::LO, VM::M1, "" },
 { 0x0009, 0x0011, 0, VR::LO, VM::M1, "" },
 { 0x0009, 0x0013, 0, VR::LO, VM::M1, "" },
@@ -23446,7 +23612,7 @@ const DictEntry Dict384Contents[] = {
 { 0x0019, 0x0093, 0, VR::CS, VM::M1, "Status" },
 };
 
-const unsigned short Dict384TagHashTable[] = {
+const unsigned short Dict386TagHashTable[] = {
    23,    24,    27,    32,    23,    37,    44,    49,    52,    55,
    58,    23,    63,    68,    23,    71,    76,    79,    23,    23,
    23,    82,    23,     0,     1,     1,    17,     2,     0,    16,
@@ -23458,7 +23624,7 @@ const unsigned short Dict384TagHashTable[] = {
    19,   128,     1,    22,   147,
 };
 
-const unsigned short Dict384KeyHashTable[] = {
+const unsigned short Dict386KeyHashTable[] = {
    24,    23,    29,    32,    37,    42,    23,    23,    51,    23,
    23,    23,    58,    23,    23,    23,    23,    63,    23,    23,
    23,    23,    66,     0,     2,    13, 45429,    15, 16126,     1,
@@ -23469,119 +23635,119 @@ const unsigned short Dict384KeyHashTable[] = {
   233,     2,   233,     3,   233,     4,   233,    14, 37233,
 };
 
-vtkDICOMDictionary::Dict Dict384Data = {
+vtkDICOMDictionary::Dict Dict386Data = {
 "AGFA",
 23,
 23,
-Dict384TagHashTable,
-Dict384KeyHashTable,
-Dict384Contents
+Dict386TagHashTable,
+Dict386KeyHashTable,
+Dict386Contents
 };
 
 // ----- Philips Imaging DD 067 -----
 
-const DictEntry Dict385Contents[] = {
+const DictEntry Dict387Contents[] = {
 { 0x4001, 0x0000, 0, VR::SQ, VM::M1, "" },
 { 0x4001, 0x0001, 0, VR::CS, VM::M1, "" },
 { 0x4001, 0x0008, 0, VR::CS, VM::M1, "" },
 { 0x4001, 0x0009, 0, VR::CS, VM::M1, "" },
 };
 
-const unsigned short Dict385TagHashTable[] = {
+const unsigned short Dict387TagHashTable[] = {
     5,    10,     4,     4,     0,     2,     1,     1,     3,     9,
     2,     0,     0,     2,     8,
 };
 
-const unsigned short Dict385KeyHashTable[] = {
+const unsigned short Dict387KeyHashTable[] = {
     4,     5,     4,     4,     0,     4,     0,  1345,     1,  1345,
     2,  1345,     3,  1345,
 };
 
-vtkDICOMDictionary::Dict Dict385Data = {
+vtkDICOMDictionary::Dict Dict387Data = {
 "Philips Imaging DD 067",
 4,
 4,
-Dict385TagHashTable,
-Dict385KeyHashTable,
-Dict385Contents
-};
-
-// ----- DLX_EXAMS_01 -----
-
-const DictEntry Dict386Contents[] = {
-{ 0x0015, 0x0001, 0, VR::DS, VM::M1, "StenosisCalibrationRatio" },
-{ 0x0015, 0x0002, 0, VR::DS, VM::M1, "StenosisMagnification" },
-{ 0x0015, 0x0003, 0, VR::DS, VM::M1, "CardiacCalibrationRatio" },
-};
-
-const unsigned short Dict386TagHashTable[] = {
-    3,     4,     7,     0,     1,     2,     3,     2,     0,     1,
-    1,     2,
-};
-
-const unsigned short Dict386KeyHashTable[] = {
-    3,     4,     9,     0,     2,     0,  7265,     2, 44742,     1,
-    1, 40220,
-};
-
-vtkDICOMDictionary::Dict Dict386Data = {
-"DLX_EXAMS_01",
-3,
-3,
-Dict386TagHashTable,
-Dict386KeyHashTable,
-Dict386Contents
-};
-
-// ----- Philips Imaging DD 065 -----
-
-const DictEntry Dict387Contents[] = {
-{ 0x4007, 0x0000, 0, VR::CS, VM::M1, "" },
-};
-
-const unsigned short Dict387TagHashTable[] = {
-    2,     0,     1,     0,     0,
-};
-
-const unsigned short Dict387KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
-};
-
-vtkDICOMDictionary::Dict Dict387Data = {
-"Philips Imaging DD 065",
-1,
-1,
 Dict387TagHashTable,
 Dict387KeyHashTable,
 Dict387Contents
 };
 
-// ----- GE_GROUP -----
+// ----- DLX_EXAMS_01 -----
 
 const DictEntry Dict388Contents[] = {
-{ 0x6005, 0x0010, 0, VR::UT, VM::M1, "" },
+{ 0x0015, 0x0001, 0, VR::DS, VM::M1, "StenosisCalibrationRatio" },
+{ 0x0015, 0x0002, 0, VR::DS, VM::M1, "StenosisMagnification" },
+{ 0x0015, 0x0003, 0, VR::DS, VM::M1, "CardiacCalibrationRatio" },
 };
 
 const unsigned short Dict388TagHashTable[] = {
-    2,     0,     1,     0,    16,
+    3,     4,     7,     0,     1,     2,     3,     2,     0,     1,
+    1,     2,
 };
 
 const unsigned short Dict388KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
+    3,     4,     9,     0,     2,     0,  7265,     2, 44742,     1,
+    1, 40220,
 };
 
 vtkDICOMDictionary::Dict Dict388Data = {
-"GE_GROUP",
-1,
-1,
+"DLX_EXAMS_01",
+3,
+3,
 Dict388TagHashTable,
 Dict388KeyHashTable,
 Dict388Contents
 };
 
-// ----- SIEMENS SYNGO OBJECT GRAPHICS -----
+// ----- Philips Imaging DD 065 -----
 
 const DictEntry Dict389Contents[] = {
+{ 0x4007, 0x0000, 0, VR::CS, VM::M1, "" },
+};
+
+const unsigned short Dict389TagHashTable[] = {
+    2,     0,     1,     0,     0,
+};
+
+const unsigned short Dict389KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
+vtkDICOMDictionary::Dict Dict389Data = {
+"Philips Imaging DD 065",
+1,
+1,
+Dict389TagHashTable,
+Dict389KeyHashTable,
+Dict389Contents
+};
+
+// ----- GE_GROUP -----
+
+const DictEntry Dict390Contents[] = {
+{ 0x6005, 0x0010, 0, VR::UT, VM::M1, "" },
+};
+
+const unsigned short Dict390TagHashTable[] = {
+    2,     0,     1,     0,    16,
+};
+
+const unsigned short Dict390KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
+vtkDICOMDictionary::Dict Dict390Data = {
+"GE_GROUP",
+1,
+1,
+Dict390TagHashTable,
+Dict390KeyHashTable,
+Dict390Contents
+};
+
+// ----- SIEMENS SYNGO OBJECT GRAPHICS -----
+
+const DictEntry Dict391Contents[] = {
 { 0x0071, 0x0000, 0, VR::SQ, VM::M1, "GraphicObjectSequence" },
 { 0x0071, 0x0001, 0, VR::SL, VM::M1, "FillStyleVersion" },
 { 0x0071, 0x0002, 0, VR::FL, VM::M4, "FillBackgroundColor" },
@@ -23706,7 +23872,7 @@ const DictEntry Dict389Contents[] = {
 { 0x0071, 0x00B7, 0, VR::SL, VM::M1, "GraphicObjectReferenceLabel" },
 };
 
-const unsigned short Dict389TagHashTable[] = {
+const unsigned short Dict391TagHashTable[] = {
   123,   128,   133,   138,   143,   146,   149,   154,   159,   162,
   122,   122,   122,   122,   122,   122,   165,   168,   171,   174,
   177,   180,   183,   186,   189,   192,   122,   122,   122,   122,
@@ -23756,7 +23922,7 @@ const unsigned short Dict389TagHashTable[] = {
   129,
 };
 
-const unsigned short Dict389KeyHashTable[] = {
+const unsigned short Dict391KeyHashTable[] = {
   122,   122,   123,   130,   133,   136,   139,   122,   144,   122,
   122,   122,   153,   122,   158,   122,   163,   166,   122,   169,
   176,   122,   122,   179,   186,   122,   191,   194,   197,   200,
@@ -23804,18 +23970,18 @@ const unsigned short Dict389KeyHashTable[] = {
     2,    37, 30873,    82, 26040,     1,    12, 21249,
 };
 
-vtkDICOMDictionary::Dict Dict389Data = {
+vtkDICOMDictionary::Dict Dict391Data = {
 "SIEMENS SYNGO OBJECT GRAPHICS",
 122,
 122,
-Dict389TagHashTable,
-Dict389KeyHashTable,
-Dict389Contents
+Dict391TagHashTable,
+Dict391KeyHashTable,
+Dict391Contents
 };
 
 // ----- Visus Change -----
 
-const DictEntry Dict390Contents[] = {
+const DictEntry Dict392Contents[] = {
 { 0x5533, 0x0033, 0, VR::SQ, VM::M1, "SaveSequence" },
 { 0x5533, 0x0035, 0, VR::DA, VM::M1, "SaveDate" },
 { 0x5533, 0x0037, 0, VR::LO, VM::M1, "SaveOriginator" },
@@ -23823,28 +23989,28 @@ const DictEntry Dict390Contents[] = {
 { 0x5533, 0x003b, 0, VR::TM, VM::M1, "SaveTime" },
 };
 
-const unsigned short Dict390TagHashTable[] = {
+const unsigned short Dict392TagHashTable[] = {
     5,     6,     5,    11,    16,     0,     2,     1,    53,     4,
    59,     2,     0,    51,     3,    57,     1,     2,    55,
 };
 
-const unsigned short Dict390KeyHashTable[] = {
+const unsigned short Dict392KeyHashTable[] = {
     6,     9,    12,     5,    15,     0,     1,     2, 39946,     1,
     0, 60092,     1,     4, 33901,     2,     1, 48278,     3, 11769,
 };
 
-vtkDICOMDictionary::Dict Dict390Data = {
+vtkDICOMDictionary::Dict Dict392Data = {
 "Visus Change",
 5,
 5,
-Dict390TagHashTable,
-Dict390KeyHashTable,
-Dict390Contents
+Dict392TagHashTable,
+Dict392KeyHashTable,
+Dict392Contents
 };
 
 // ----- SIEMENS ISI -----
 
-const DictEntry Dict391Contents[] = {
+const DictEntry Dict393Contents[] = {
 { 0x0003, 0x0008, 0, VR::US, VM::M1, "ISICommandField" },
 { 0x0003, 0x0011, 0, VR::US, VM::M1, "AttachIDApplicationCode" },
 { 0x0003, 0x0012, 0, VR::UL, VM::M1, "AttachIDMessageCount" },
@@ -23887,7 +24053,7 @@ const DictEntry Dict391Contents[] = {
 { 0x4009, 0x00e3, 0, VR::LO, VM::M1, "ReportingRadiologist" },
 };
 
-const unsigned short Dict391TagHashTable[] = {
+const unsigned short Dict393TagHashTable[] = {
    41,    44,    51,    56,    40,    40,    40,    61,    66,    40,
    71,    78,    85,    40,    40,    88,    91,    94,   101,   110,
    40,   115,    40,   118,    40,    40,    40,   121,    40,    40,
@@ -23905,7 +24071,7 @@ const unsigned short Dict391TagHashTable[] = {
    38,   225,
 };
 
-const unsigned short Dict391KeyHashTable[] = {
+const unsigned short Dict393KeyHashTable[] = {
    41,    40,    40,    44,    47,    50,    53,    56,    61,    40,
    40,    66,    69,    76,    79,    40,    40,    40,    82,    87,
    92,    97,   100,   105,    40,    40,   108,    40,   111,   116,
@@ -23923,65 +24089,65 @@ const unsigned short Dict391KeyHashTable[] = {
     9, 42663,     2,     2, 37434,    21, 41031,
 };
 
-vtkDICOMDictionary::Dict Dict391Data = {
+vtkDICOMDictionary::Dict Dict393Data = {
 "SIEMENS ISI",
 40,
 40,
-Dict391TagHashTable,
-Dict391KeyHashTable,
-Dict391Contents
-};
-
-// ----- PHILIPS MR R5.6/PART -----
-
-const DictEntry Dict392Contents[] = {
-{ 0x0019, 0x0000, 0, VR::DS, VM::M1, "FieldOfView" },
-};
-
-const unsigned short Dict392TagHashTable[] = {
-    2,     0,     1,     0,     0,
-};
-
-const unsigned short Dict392KeyHashTable[] = {
-    2,     0,     1,     0, 16313,
-};
-
-vtkDICOMDictionary::Dict Dict392Data = {
-"PHILIPS MR R5.6/PART",
-1,
-1,
-Dict392TagHashTable,
-Dict392KeyHashTable,
-Dict392Contents
-};
-
-// ----- METAEMOTION GINKGO -----
-
-const DictEntry Dict393Contents[] = {
-{ 0x0011, 0x0001, 0, VR::LT, VM::M1, "KeyFileIndicator" },
-{ 0x0011, 0x000B, 0, VR::LT, VM::M1, "SerializedDiagnoseAndMarkers" },
-};
-
-const unsigned short Dict393TagHashTable[] = {
-    3,     2,     0,     2,     0,     1,     1,    11,
-};
-
-const unsigned short Dict393KeyHashTable[] = {
-    2,     3,     0,     2,     0, 16373,     1, 45377,
-};
-
-vtkDICOMDictionary::Dict Dict393Data = {
-"METAEMOTION GINKGO",
-2,
-2,
 Dict393TagHashTable,
 Dict393KeyHashTable,
 Dict393Contents
 };
 
-// ----- GEMS_IDEN_01 -----
+// ----- PHILIPS MR R5.6/PART -----
 
 const DictEntry Dict394Contents[] = {
+{ 0x0019, 0x0000, 0, VR::DS, VM::M1, "FieldOfView" },
+};
+
+const unsigned short Dict394TagHashTable[] = {
+    2,     0,     1,     0,     0,
+};
+
+const unsigned short Dict394KeyHashTable[] = {
+    2,     0,     1,     0, 16313,
+};
+
+vtkDICOMDictionary::Dict Dict394Data = {
+"PHILIPS MR R5.6/PART",
+1,
+1,
+Dict394TagHashTable,
+Dict394KeyHashTable,
+Dict394Contents
+};
+
+// ----- METAEMOTION GINKGO -----
+
+const DictEntry Dict395Contents[] = {
+{ 0x0011, 0x0001, 0, VR::LT, VM::M1, "KeyFileIndicator" },
+{ 0x0011, 0x000B, 0, VR::LT, VM::M1, "SerializedDiagnoseAndMarkers" },
+};
+
+const unsigned short Dict395TagHashTable[] = {
+    3,     2,     0,     2,     0,     1,     1,    11,
+};
+
+const unsigned short Dict395KeyHashTable[] = {
+    2,     3,     0,     2,     0, 16373,     1, 45377,
+};
+
+vtkDICOMDictionary::Dict Dict395Data = {
+"METAEMOTION GINKGO",
+2,
+2,
+Dict395TagHashTable,
+Dict395KeyHashTable,
+Dict395Contents
+};
+
+// ----- GEMS_IDEN_01 -----
+
+const DictEntry Dict396Contents[] = {
 { 0x0009, 0x0001, 0, VR::LO, VM::M1, "FullFidelity" },
 { 0x0009, 0x0002, 0, VR::SH, VM::M1, "SuiteId" },
 { 0x0009, 0x0004, 0, VR::SH, VM::M1, "ProductId" },
@@ -24000,7 +24166,7 @@ const DictEntry Dict394Contents[] = {
 { 0x0009, 0x00e9, 0, VR::SL, VM::M1, "ActualSeriesDataTimeStamp" },
 };
 
-const unsigned short Dict394TagHashTable[] = {
+const unsigned short Dict396TagHashTable[] = {
    16,    16,    17,    20,    16,    16,    25,    16,    28,    35,
    16,    42,    45,    48,    53,    16,     0,     1,    14,   232,
     2,     4,    26,    15,   233,     1,     7,    47,     3,     0,
@@ -24009,7 +24175,7 @@ const unsigned short Dict394TagHashTable[] = {
     4,    13,   231,     2,     3,    23,     6,    39,
 };
 
-const unsigned short Dict394KeyHashTable[] = {
+const unsigned short Dict396KeyHashTable[] = {
    17,    16,    20,    25,    16,    30,    16,    41,    44,    16,
    16,    16,    47,    50,    16,    53,     0,     1,     6, 45802,
     2,     0, 39865,    13, 31860,     2,     2,  9495,     8,  8204,
@@ -24018,88 +24184,88 @@ const unsigned short Dict394KeyHashTable[] = {
     1,    12, 17514,     2,     9, 34293,    11, 62425,
 };
 
-vtkDICOMDictionary::Dict Dict394Data = {
+vtkDICOMDictionary::Dict Dict396Data = {
 "GEMS_IDEN_01",
 16,
 16,
-Dict394TagHashTable,
-Dict394KeyHashTable,
-Dict394Contents
-};
-
-// ----- SIEMENS MED ECAT FILE INFO -----
-
-const DictEntry Dict395Contents[] = {
-{ 0x0021, 0x0000, 0, VR::OB, VM::M1, "ECATMainHeader" },
-{ 0x0021, 0x0001, 0, VR::OB, VM::M1, "ECATImageSubheader" },
-};
-
-const unsigned short Dict395TagHashTable[] = {
-    3,     6,     0,     1,     1,     1,     1,     0,     0,
-};
-
-const unsigned short Dict395KeyHashTable[] = {
-    3,     2,     0,     2,     0,  2200,     1, 20300,
-};
-
-vtkDICOMDictionary::Dict Dict395Data = {
-"SIEMENS MED ECAT FILE INFO",
-2,
-2,
-Dict395TagHashTable,
-Dict395KeyHashTable,
-Dict395Contents
-};
-
-// ----- SIEMENS CT APPL EVIDENCEDOCUMENT -----
-
-const DictEntry Dict396Contents[] = {
-{ 0x0029, 0x0000, 0, VR::UT, VM::M1, "PrivateTaskDatamodel" },
-};
-
-const unsigned short Dict396TagHashTable[] = {
-    2,     0,     1,     0,     0,
-};
-
-const unsigned short Dict396KeyHashTable[] = {
-    2,     0,     1,     0, 45534,
-};
-
-vtkDICOMDictionary::Dict Dict396Data = {
-"SIEMENS CT APPL EVIDENCEDOCUMENT",
-1,
-1,
 Dict396TagHashTable,
 Dict396KeyHashTable,
 Dict396Contents
 };
 
-// ----- Viewing Protocol -----
+// ----- SIEMENS MED ECAT FILE INFO -----
 
 const DictEntry Dict397Contents[] = {
-{ 0x0065, 0x0093, 0, VR::CS, VM::M1, "" },
+{ 0x0021, 0x0000, 0, VR::OB, VM::M1, "ECATMainHeader" },
+{ 0x0021, 0x0001, 0, VR::OB, VM::M1, "ECATImageSubheader" },
 };
 
 const unsigned short Dict397TagHashTable[] = {
-    2,     0,     1,     0,   147,
+    3,     6,     0,     1,     1,     1,     1,     0,     0,
 };
 
 const unsigned short Dict397KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
+    3,     2,     0,     2,     0,  2200,     1, 20300,
 };
 
 vtkDICOMDictionary::Dict Dict397Data = {
-"Viewing Protocol",
-1,
-1,
+"SIEMENS MED ECAT FILE INFO",
+2,
+2,
 Dict397TagHashTable,
 Dict397KeyHashTable,
 Dict397Contents
 };
 
-// ----- SIEMENS DFR.01 MANIPULATED -----
+// ----- SIEMENS CT APPL EVIDENCEDOCUMENT -----
 
 const DictEntry Dict398Contents[] = {
+{ 0x0029, 0x0000, 0, VR::UT, VM::M1, "PrivateTaskDatamodel" },
+};
+
+const unsigned short Dict398TagHashTable[] = {
+    2,     0,     1,     0,     0,
+};
+
+const unsigned short Dict398KeyHashTable[] = {
+    2,     0,     1,     0, 45534,
+};
+
+vtkDICOMDictionary::Dict Dict398Data = {
+"SIEMENS CT APPL EVIDENCEDOCUMENT",
+1,
+1,
+Dict398TagHashTable,
+Dict398KeyHashTable,
+Dict398Contents
+};
+
+// ----- Viewing Protocol -----
+
+const DictEntry Dict399Contents[] = {
+{ 0x0065, 0x0093, 0, VR::CS, VM::M1, "" },
+};
+
+const unsigned short Dict399TagHashTable[] = {
+    2,     0,     1,     0,   147,
+};
+
+const unsigned short Dict399KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
+vtkDICOMDictionary::Dict Dict399Data = {
+"Viewing Protocol",
+1,
+1,
+Dict399TagHashTable,
+Dict399KeyHashTable,
+Dict399Contents
+};
+
+// ----- SIEMENS DFR.01 MANIPULATED -----
+
+const DictEntry Dict400Contents[] = {
 { 0x0017, 0x0011, 0, VR::US, VM::M1, "" },
 { 0x0017, 0x0012, 0, VR::US, VM::M1, "" },
 { 0x0017, 0x0014, 0, VR::US, VM::M1, "" },
@@ -24130,7 +24296,7 @@ const DictEntry Dict398Contents[] = {
 { 0x0017, 0x00a3, 0, VR::SH, VM::M1, "ImageNameExtension2" },
 };
 
-const unsigned short Dict398TagHashTable[] = {
+const unsigned short Dict400TagHashTable[] = {
    28,    28,    29,    32,    35,    38,    43,    28,    50,    53,
    58,    63,    66,    69,    72,    77,    80,    83,    28,    86,
    91,    28,    94,    28,    97,    28,   100,   103,     0,     1,
@@ -24144,7 +24310,7 @@ const unsigned short Dict398TagHashTable[] = {
     1,    19,   120,     1,    20,   121,
 };
 
-const unsigned short Dict398KeyHashTable[] = {
+const unsigned short Dict400KeyHashTable[] = {
    28,    29,    28,    28,    32,    35,    28,    28,    28,    28,
    28,    28,    28,    28,    28,    74,    79,    28,    28,    82,
    28,    28,    85,    88,    91,    28,    28,    28,     0,     1,
@@ -24157,18 +24323,18 @@ const unsigned short Dict398KeyHashTable[] = {
 55280,     1,    27, 55280,
 };
 
-vtkDICOMDictionary::Dict Dict398Data = {
+vtkDICOMDictionary::Dict Dict400Data = {
 "SIEMENS DFR.01 MANIPULATED",
 28,
 28,
-Dict398TagHashTable,
-Dict398KeyHashTable,
-Dict398Contents
+Dict400TagHashTable,
+Dict400KeyHashTable,
+Dict400Contents
 };
 
 // ----- BioPri -----
 
-const DictEntry Dict399Contents[] = {
+const DictEntry Dict401Contents[] = {
 { 0x0009, 0x0000, 0, VR::LO, VM::M1, "" },
 { 0x0009, 0x0001, 0, VR::UN, VM::M1, "" },
 { 0x0009, 0x0002, 0, VR::UN, VM::M1, "" },
@@ -24181,32 +24347,32 @@ const DictEntry Dict399Contents[] = {
 { 0x0009, 0x0010, 0, VR::UN, VM::M1, "" },
 };
 
-const unsigned short Dict399TagHashTable[] = {
+const unsigned short Dict401TagHashTable[] = {
    11,    16,    21,    24,    27,    30,    10,    10,    33,    36,
     0,     2,     3,     3,     8,     9,     2,     2,     2,     7,
     8,     1,     5,     5,     1,     4,     4,     1,     6,     7,
     1,     9,    16,     1,     1,     1,     1,     0,     0,
 };
 
-const unsigned short Dict399KeyHashTable[] = {
+const unsigned short Dict401KeyHashTable[] = {
    10,    11,    10,    10,    10,    10,    10,    10,    10,    10,
     0,    10,     0,   538,     1,   538,     2,   538,     3,   538,
     4,   538,     5,   538,     6,   538,     7,   538,     8,   538,
     9,   538,
 };
 
-vtkDICOMDictionary::Dict Dict399Data = {
+vtkDICOMDictionary::Dict Dict401Data = {
 "BioPri",
 10,
 10,
-Dict399TagHashTable,
-Dict399KeyHashTable,
-Dict399Contents
+Dict401TagHashTable,
+Dict401KeyHashTable,
+Dict401Contents
 };
 
 // ----- GEMS_FUNCTOOL_01 -----
 
-const DictEntry Dict400Contents[] = {
+const DictEntry Dict402Contents[] = {
 { 0x0051, 0x0001, 0, VR::LO, VM::M1, "GroupName" },
 { 0x0051, 0x0002, 0, VR::LO, VM::M1, "FunctionName" },
 { 0x0051, 0x0003, 0, VR::SL, VM::M1, "Bias" },
@@ -24222,7 +24388,7 @@ const DictEntry Dict400Contents[] = {
 { 0x0051, 0x000e, 0, VR::SL, VM::M1, "Hidden" },
 };
 
-const unsigned short Dict400TagHashTable[] = {
+const unsigned short Dict402TagHashTable[] = {
    14,    17,    13,    20,    25,    28,    31,    34,    37,    40,
    43,    46,    49,     0,     1,    10,    11,     1,    11,    12,
     2,     0,     1,    12,    14,     1,     1,     2,     1,     2,
@@ -24231,7 +24397,7 @@ const unsigned short Dict400TagHashTable[] = {
     9,    10,
 };
 
-const unsigned short Dict400KeyHashTable[] = {
+const unsigned short Dict402KeyHashTable[] = {
    13,    14,    19,    13,    22,    29,    32,    13,    13,    35,
    38,    43,    46,     0,     2,     4, 35430,     5, 51288,     1,
     7, 31826,     3,     1, 31080,     3, 19661,     9, 32853,     1,
@@ -24239,18 +24405,18 @@ const unsigned short Dict400KeyHashTable[] = {
 19301,    12, 55683,     1,     2, 60733,     1,    11, 39629,
 };
 
-vtkDICOMDictionary::Dict Dict400Data = {
+vtkDICOMDictionary::Dict Dict402Data = {
 "GEMS_FUNCTOOL_01",
 13,
 13,
-Dict400TagHashTable,
-Dict400KeyHashTable,
-Dict400Contents
+Dict402TagHashTable,
+Dict402KeyHashTable,
+Dict402Contents
 };
 
 // ----- Vital Images SW 3.4 -----
 
-const DictEntry Dict401Contents[] = {
+const DictEntry Dict403Contents[] = {
 { 0x5653, 0x0010, 0, VR::OB, VM::M1, "SavedWorkflow" },
 { 0x5653, 0x0011, 0, VR::LO, VM::M1, "SavedWorkflowFileName" },
 { 0x5653, 0x0012, 0, VR::OB, VM::M1, "SavedWorkflowFileData" },
@@ -24269,7 +24435,7 @@ const DictEntry Dict401Contents[] = {
 { 0x5653, 0x0025, 0, VR::SL, VM::M1, "SavedWorkflowDataLength" },
 };
 
-const unsigned short Dict401TagHashTable[] = {
+const unsigned short Dict403TagHashTable[] = {
    16,    16,    17,    20,    16,    16,    16,    16,    23,    28,
    33,    38,    43,    46,    49,    54,     0,     1,     8,    24,
     1,     9,    25,     2,     2,    18,    12,    34,     2,     3,
@@ -24278,7 +24444,7 @@ const unsigned short Dict401TagHashTable[] = {
     4,    20,    14,    36,     2,     5,    21,    15,    37,
 };
 
-const unsigned short Dict401KeyHashTable[] = {
+const unsigned short Dict403KeyHashTable[] = {
    17,    20,    16,    23,    26,    29,    32,    16,    16,    16,
    16,    35,    38,    41,    50,    55,     0,     1,    11, 42451,
     1,     5, 19824,     1,     0, 43211,     1,     1, 40701,     1,
@@ -24287,41 +24453,41 @@ const unsigned short Dict401KeyHashTable[] = {
     2,     8, 14641,    10, 24291,     2,    12, 52573,    15,  3896,
 };
 
-vtkDICOMDictionary::Dict Dict401Data = {
+vtkDICOMDictionary::Dict Dict403Data = {
 "Vital Images SW 3.4",
 16,
 16,
-Dict401TagHashTable,
-Dict401KeyHashTable,
-Dict401Contents
+Dict403TagHashTable,
+Dict403KeyHashTable,
+Dict403Contents
 };
 
 // ----- AMI Annotations_01 -----
 
-const DictEntry Dict402Contents[] = {
+const DictEntry Dict404Contents[] = {
 { 0x3101, 0x0010, 0, VR::SQ, VM::M1, "AnnotationSequence" },
 };
 
-const unsigned short Dict402TagHashTable[] = {
+const unsigned short Dict404TagHashTable[] = {
     2,     0,     1,     0,    16,
 };
 
-const unsigned short Dict402KeyHashTable[] = {
+const unsigned short Dict404KeyHashTable[] = {
     2,     0,     1,     0, 13593,
 };
 
-vtkDICOMDictionary::Dict Dict402Data = {
+vtkDICOMDictionary::Dict Dict404Data = {
 "AMI Annotations_01",
 1,
 1,
-Dict402TagHashTable,
-Dict402KeyHashTable,
-Dict402Contents
+Dict404TagHashTable,
+Dict404KeyHashTable,
+Dict404Contents
 };
 
 // ----- CAMTRONICS -----
 
-const DictEntry Dict403Contents[] = {
+const DictEntry Dict405Contents[] = {
 { 0x0029, 0x0010, 0, VR::LT, VM::M1, "Commentline" },
 { 0x0029, 0x0020, 0, VR::DS, VM::M1, "EdgeEnhancementCoefficient" },
 { 0x0029, 0x0050, 0, VR::LT, VM::M1, "SceneText" },
@@ -24331,30 +24497,30 @@ const DictEntry Dict403Contents[] = {
 { 0x0029, 0x0090, 0, VR::IS, VM::M1, "" },
 };
 
-const unsigned short Dict403TagHashTable[] = {
+const unsigned short Dict405TagHashTable[] = {
     7,     8,    13,    18,    21,    24,     7,     0,     2,     0,
    16,     2,    80,     2,     1,    32,     3,    96,     1,     5,
   128,     1,     4,   112,     1,     6,   144,
 };
 
-const unsigned short Dict403KeyHashTable[] = {
+const unsigned short Dict405KeyHashTable[] = {
     7,     8,    11,    16,    19,    22,     7,     0,     1,     5,
 22482,     2,     0, 13618,     2, 13114,     1,     1, 33636,     1,
     3, 30351,     2,     4, 10278,     6,   768,
 };
 
-vtkDICOMDictionary::Dict Dict403Data = {
+vtkDICOMDictionary::Dict Dict405Data = {
 "CAMTRONICS",
 7,
 7,
-Dict403TagHashTable,
-Dict403KeyHashTable,
-Dict403Contents
+Dict405TagHashTable,
+Dict405KeyHashTable,
+Dict405Contents
 };
 
 // ----- Applicare/Print/Version 5.1 -----
 
-const DictEntry Dict404Contents[] = {
+const DictEntry Dict406Contents[] = {
 { 0x4101, 0x0001, 0, VR::UL, VM::M1, "MaskState" },
 { 0x4101, 0x0002, 0, VR::SQ, VM::M1, "Annotations" },
 { 0x4101, 0x0003, 0, VR::LO, VM::M1, "Font" },
@@ -24366,32 +24532,32 @@ const DictEntry Dict404Contents[] = {
 { 0x4101, 0x0009, 0, VR::US, VM::M1, "ShowCaliper" },
 };
 
-const unsigned short Dict404TagHashTable[] = {
+const unsigned short Dict406TagHashTable[] = {
     9,    10,    13,     9,    16,    19,    22,    25,    30,     0,
     1,     2,     3,     1,     1,     2,     1,     4,     5,     1,
     3,     4,     1,     6,     7,     2,     5,     6,     8,     9,
     2,     0,     1,     7,     8,
 };
 
-const unsigned short Dict404KeyHashTable[] = {
+const unsigned short Dict406KeyHashTable[] = {
    10,     9,    13,    16,    19,    22,    27,    30,    33,     0,
     1,     4,  7803,     1,     1, 32969,     1,     5, 37252,     1,
     8, 18802,     2,     6, 44289,     7, 40123,     1,     0, 19596,
     1,     2, 60781,     1,     3, 34391,
 };
 
-vtkDICOMDictionary::Dict Dict404Data = {
+vtkDICOMDictionary::Dict Dict406Data = {
 "Applicare/Print/Version 5.1",
 9,
 9,
-Dict404TagHashTable,
-Dict404KeyHashTable,
-Dict404Contents
+Dict406TagHashTable,
+Dict406KeyHashTable,
+Dict406Contents
 };
 
 // ----- GEHC_CT_ADVAPP_001 -----
 
-const DictEntry Dict405Contents[] = {
+const DictEntry Dict407Contents[] = {
 { 0x0053, 0x0020, 0, VR::IS, VM::M1, "TableSpeedNotReachesTargetFlag" },
 { 0x0053, 0x0040, 0, VR::SH, VM::M1, "IterativeReconAnnotation" },
 { 0x0053, 0x0041, 0, VR::SH, VM::M1, "IterativeReconMode" },
@@ -24456,7 +24622,7 @@ const DictEntry Dict405Contents[] = {
 { 0x0053, 0x009F, 0, VR::LO, VM::M1TN, "MultiEnergyNoiseRedString" },
 };
 
-const unsigned short Dict405TagHashTable[] = {
+const unsigned short Dict407TagHashTable[] = {
    62,    62,    62,    62,    62,    62,    62,    62,    63,    66,
    62,    69,    72,    75,    78,    81,    84,    89,    94,    99,
   104,   107,   110,   113,   116,   119,   122,   125,   128,   131,
@@ -24483,7 +24649,7 @@ const unsigned short Dict405TagHashTable[] = {
    15,   106,     1,    14,   105,     1,    13,   104,
 };
 
-const unsigned short Dict405KeyHashTable[] = {
+const unsigned short Dict407KeyHashTable[] = {
    63,    66,    69,    72,    62,    75,    80,    62,    85,    88,
    62,    93,    96,    62,    62,    99,   102,   105,   110,   113,
    62,    62,   118,   121,   124,   127,   130,   133,    62,   136,
@@ -24509,42 +24675,42 @@ const unsigned short Dict405KeyHashTable[] = {
  8845,     4,    19, 52485,    38,  3709,    43, 27547,    55, 49177,
 };
 
-vtkDICOMDictionary::Dict Dict405Data = {
+vtkDICOMDictionary::Dict Dict407Data = {
 "GEHC_CT_ADVAPP_001",
 62,
 62,
-Dict405TagHashTable,
-Dict405KeyHashTable,
-Dict405Contents
+Dict407TagHashTable,
+Dict407KeyHashTable,
+Dict407Contents
 };
 
 // ----- NUD_PRIVATE -----
 
-const DictEntry Dict406Contents[] = {
+const DictEntry Dict408Contents[] = {
 { 0x7777, 0x0002, 0, VR::UT, VM::M1, "Interfile" },
 { 0x7777, 0x0005, 0, VR::IS, VM::M1, "" },
 };
 
-const unsigned short Dict406TagHashTable[] = {
+const unsigned short Dict408TagHashTable[] = {
     3,     6,     0,     1,     0,     2,     1,     1,     5,
 };
 
-const unsigned short Dict406KeyHashTable[] = {
+const unsigned short Dict408KeyHashTable[] = {
     2,     3,     0,     2,     0, 47187,     1,  2690,
 };
 
-vtkDICOMDictionary::Dict Dict406Data = {
+vtkDICOMDictionary::Dict Dict408Data = {
 "NUD_PRIVATE",
 2,
 2,
-Dict406TagHashTable,
-Dict406KeyHashTable,
-Dict406Contents
+Dict408TagHashTable,
+Dict408KeyHashTable,
+Dict408Contents
 };
 
 // ----- astm.org/diconde/iod/NdeCtCalibrationData -----
 
-const DictEntry Dict407Contents[] = {
+const DictEntry Dict409Contents[] = {
 { 0x0009, 0x0040, 0, VR::SQ, VM::M1, "DarkCurrentSequence" },
 { 0x0009, 0x0050, 0, VR::OW, VM::M1, "DarkCurrentCounts" },
 { 0x0009, 0x0060, 0, VR::SQ, VM::M1, "GainCorrectionReferenceSequence" },
@@ -24560,7 +24726,7 @@ const DictEntry Dict407Contents[] = {
 { 0x0009, 0x0099, 0, VR::LT, VM::M1, "CalibrationNotes" },
 };
 
-const unsigned short Dict407TagHashTable[] = {
+const unsigned short Dict409TagHashTable[] = {
    14,    13,    13,    17,    22,    25,    28,    31,    36,    39,
    44,    13,    13,     0,     1,     2,    96,     2,     3,   112,
    12,   153,     1,     4,   113,     1,     5,   114,     1,     6,
@@ -24568,7 +24734,7 @@ const unsigned short Dict407TagHashTable[] = {
     9,   118,    11,   128,     2,     1,    80,    10,   119,
 };
 
-const unsigned short Dict407KeyHashTable[] = {
+const unsigned short Dict409KeyHashTable[] = {
    14,    19,    22,    13,    25,    30,    35,    13,    38,    43,
    13,    13,    13,     0,     2,     7, 25645,    11, 50357,     1,
     3, 29772,     1,     0, 24037,     2,     2, 48192,     5,  8278,
@@ -24576,45 +24742,45 @@ const unsigned short Dict407KeyHashTable[] = {
  9334,    10,  7464,     2,     4, 53052,     9,  5902,
 };
 
-vtkDICOMDictionary::Dict Dict407Data = {
+vtkDICOMDictionary::Dict Dict409Data = {
 "astm.org/diconde/iod/NdeCtCalibrationData",
 13,
 13,
-Dict407TagHashTable,
-Dict407KeyHashTable,
-Dict407Contents
+Dict409TagHashTable,
+Dict409KeyHashTable,
+Dict409Contents
 };
 
 // ----- SPI-P-Private-CWS Release 1 -----
 
-const DictEntry Dict408Contents[] = {
+const DictEntry Dict410Contents[] = {
 { 0x0021, 0x0000, 0, VR::LT, VM::M1, "WindowOfImagesID" },
 { 0x0021, 0x0001, 0, VR::CS, VM::M1, "WindowOfImagesType" },
 { 0x0021, 0x0002, 0, VR::IS, VM::M1TN, "WindowOfImagesScope" },
 };
 
-const unsigned short Dict408TagHashTable[] = {
+const unsigned short Dict410TagHashTable[] = {
     4,     3,     7,     0,     1,     0,     0,     2,     1,     1,
     2,     2,
 };
 
-const unsigned short Dict408KeyHashTable[] = {
+const unsigned short Dict410KeyHashTable[] = {
     3,     3,     4,     0,     3,     0, 12497,     1, 65208,     2,
 51040,
 };
 
-vtkDICOMDictionary::Dict Dict408Data = {
+vtkDICOMDictionary::Dict Dict410Data = {
 "SPI-P-Private-CWS Release 1",
 3,
 3,
-Dict408TagHashTable,
-Dict408KeyHashTable,
-Dict408Contents
+Dict410TagHashTable,
+Dict410KeyHashTable,
+Dict410Contents
 };
 
 // ----- GEMS_SENO_02 -----
 
-const DictEntry Dict409Contents[] = {
+const DictEntry Dict411Contents[] = {
 { 0x0045, 0x0004, 0, VR::CS, VM::M1, "AES" },
 { 0x0045, 0x0006, 0, VR::DS, VM::M1, "Angulation" },
 { 0x0045, 0x0009, 0, VR::DS, VM::M1, "RealMagnificationFactor" },
@@ -24680,7 +24846,7 @@ const DictEntry Dict409Contents[] = {
 { 0x0045, 0x00A8, 0, VR::DS, VM::M1, "EntranceDoseIndGyForCompleteDBTSequence" },
 };
 
-const unsigned short Dict409TagHashTable[] = {
+const unsigned short Dict411TagHashTable[] = {
    64,    67,    63,    72,    63,    63,    63,    63,    63,    75,
    78,    63,    81,    63,    84,    63,    87,    92,    97,   102,
   107,   110,   113,   118,   123,   126,   129,   132,   135,   140,
@@ -24707,7 +24873,7 @@ const unsigned short Dict409TagHashTable[] = {
    63,     1,    28,    57,
 };
 
-const unsigned short Dict409KeyHashTable[] = {
+const unsigned short Dict411KeyHashTable[] = {
    64,    63,    63,    63,    63,    67,    63,    70,    73,    63,
    63,    76,    81,    86,    63,    63,    63,    63,    95,    98,
    63,   101,    63,   104,   109,   112,   115,   122,   125,    63,
@@ -24733,18 +24899,18 @@ const unsigned short Dict409KeyHashTable[] = {
 17586,    42,  3841,     1,    35, 63010,     1,    55,  1283,
 };
 
-vtkDICOMDictionary::Dict Dict409Data = {
+vtkDICOMDictionary::Dict Dict411Data = {
 "GEMS_SENO_02",
 63,
 63,
-Dict409TagHashTable,
-Dict409KeyHashTable,
-Dict409Contents
+Dict411TagHashTable,
+Dict411KeyHashTable,
+Dict411Contents
 };
 
 // ----- BioPri3D -----
 
-const DictEntry Dict410Contents[] = {
+const DictEntry Dict412Contents[] = {
 { 0x0011, 0x0020, 0, VR::UL, VM::M1, "" },
 { 0x0011, 0x0024, 0, VR::DS, VM::M1TN, "" },
 { 0x0011, 0x0030, 0, VR::LO, VM::M1, "" },
@@ -24765,7 +24931,7 @@ const DictEntry Dict410Contents[] = {
 { 0x0063, 0x0035, 0, VR::SQ, VM::M1, "" },
 };
 
-const unsigned short Dict410TagHashTable[] = {
+const unsigned short Dict412TagHashTable[] = {
    18,    18,    19,    18,    22,    18,    25,    28,    33,    36,
    18,    18,    39,    44,    51,    56,    18,    61,     0,     1,
    14,    12,     1,     5,    57,     1,    10,   226,     2,     6,
@@ -24775,7 +24941,7 @@ const unsigned short Dict410TagHashTable[] = {
    53,     2,     1,    36,     4,    50,
 };
 
-const unsigned short Dict410KeyHashTable[] = {
+const unsigned short Dict412KeyHashTable[] = {
    18,    18,    18,    18,    18,    18,    18,    18,    18,    18,
    18,    18,    18,    18,    18,    18,    18,    19,     0,    18,
     0,   298,     1,   298,     2,   298,     3,   298,     4,   298,
@@ -24784,42 +24950,42 @@ const unsigned short Dict410KeyHashTable[] = {
    15,   298,    16,   298,    17,   298,
 };
 
-vtkDICOMDictionary::Dict Dict410Data = {
+vtkDICOMDictionary::Dict Dict412Data = {
 "BioPri3D",
 18,
 18,
-Dict410TagHashTable,
-Dict410KeyHashTable,
-Dict410Contents
+Dict412TagHashTable,
+Dict412KeyHashTable,
+Dict412Contents
 };
 
 // ----- TOSHIBA_SR -----
 
-const DictEntry Dict411Contents[] = {
+const DictEntry Dict413Contents[] = {
 { 0x7015, 0x0010, 0, VR::OB, VM::M1, "" },
 { 0x7015, 0x0060, 0, VR::OB, VM::M1, "" },
 };
 
-const unsigned short Dict411TagHashTable[] = {
+const unsigned short Dict413TagHashTable[] = {
     3,     6,     0,     1,     1,    96,     1,     0,    16,
 };
 
-const unsigned short Dict411KeyHashTable[] = {
+const unsigned short Dict413KeyHashTable[] = {
     2,     3,     0,     2,     0,  2690,     1,  2690,
 };
 
-vtkDICOMDictionary::Dict Dict411Data = {
+vtkDICOMDictionary::Dict Dict413Data = {
 "TOSHIBA_SR",
 2,
 2,
-Dict411TagHashTable,
-Dict411KeyHashTable,
-Dict411Contents
+Dict413TagHashTable,
+Dict413KeyHashTable,
+Dict413Contents
 };
 
 // ----- DIDI TO PCR 1.1 -----
 
-const DictEntry Dict412Contents[] = {
+const DictEntry Dict414Contents[] = {
 { 0x0019, 0x0022, 0, VR::LO, VM::M1, "RouteAET" },
 { 0x0019, 0x0023, 0, VR::DS, VM::M1, "PCRPrintScale" },
 { 0x0019, 0x0024, 0, VR::ST, VM::M1, "PCRPrintJobEnd" },
@@ -24864,7 +25030,7 @@ const DictEntry Dict412Contents[] = {
 { 0x0089, 0x0010, 0, VR::SQ, VM::M1, "StampImageSequence" },
 };
 
-const unsigned short Dict412TagHashTable[] = {
+const unsigned short Dict414TagHashTable[] = {
    43,    46,    49,    52,    42,    55,    58,    61,    64,    67,
    70,    73,    78,    83,    88,    91,    94,    99,   104,   111,
   118,   127,   134,   139,   144,   147,    42,    42,    42,   150,
@@ -24883,7 +25049,7 @@ const unsigned short Dict412TagHashTable[] = {
     1,    41,    16,
 };
 
-const unsigned short Dict412KeyHashTable[] = {
+const unsigned short Dict414KeyHashTable[] = {
    42,    42,    43,    48,    53,    42,    58,    42,    42,    42,
    42,    61,    64,    42,    69,    72,    42,    42,    75,    78,
    42,    81,    84,    89,    96,    42,    42,    42,    99,    42,
@@ -24902,45 +25068,45 @@ const unsigned short Dict412KeyHashTable[] = {
     7,   759,
 };
 
-vtkDICOMDictionary::Dict Dict412Data = {
+vtkDICOMDictionary::Dict Dict414Data = {
 "DIDI TO PCR 1.1",
 42,
 42,
-Dict412TagHashTable,
-Dict412KeyHashTable,
-Dict412Contents
+Dict414TagHashTable,
+Dict414KeyHashTable,
+Dict414Contents
 };
 
 // ----- SIEMENS MEDCOM OOG -----
 
-const DictEntry Dict413Contents[] = {
+const DictEntry Dict415Contents[] = {
 { 0x0029, 0x0008, 0, VR::CS, VM::M1, "MedComOOGType" },
 { 0x0029, 0x0009, 0, VR::LO, VM::M1, "MedComOOGVersion" },
 { 0x0029, 0x0010, 0, VR::OB, VM::M1, "MedComOOGInfo" },
 };
 
-const unsigned short Dict413TagHashTable[] = {
+const unsigned short Dict415TagHashTable[] = {
     4,     3,     9,     0,     2,     0,     8,     2,    16,     1,
     1,     9,
 };
 
-const unsigned short Dict413KeyHashTable[] = {
+const unsigned short Dict415KeyHashTable[] = {
     4,     7,    10,     0,     1,     0, 36427,     1,     2, 31630,
     1,     1, 38561,
 };
 
-vtkDICOMDictionary::Dict Dict413Data = {
+vtkDICOMDictionary::Dict Dict415Data = {
 "SIEMENS MEDCOM OOG",
 3,
 3,
-Dict413TagHashTable,
-Dict413KeyHashTable,
-Dict413Contents
+Dict415TagHashTable,
+Dict415KeyHashTable,
+Dict415Contents
 };
 
 // ----- astm.org/diconde/iod/NdeDxDetector -----
 
-const DictEntry Dict414Contents[] = {
+const DictEntry Dict416Contents[] = {
 { 0x0009, 0x0011, 0, VR::DS, VM::M1, "InternalDetectorFrameTime" },
 { 0x0009, 0x0012, 0, VR::DS, VM::M1, "NumberOfFramesIntegrated" },
 { 0x0009, 0x0020, 0, VR::SQ, VM::M1, "DetectorTemperatureSequence" },
@@ -24950,30 +25116,30 @@ const DictEntry Dict414Contents[] = {
 { 0x0009, 0x0028, 0, VR::DS, VM::M1, "SensorTemperature" },
 };
 
-const unsigned short Dict414TagHashTable[] = {
+const unsigned short Dict416TagHashTable[] = {
     7,     8,     7,    11,     7,    16,    21,     0,     1,     3,
    34,     2,     0,    17,     4,    36,     2,     5,    38,     6,
    40,     2,     1,    18,     2,    32,
 };
 
-const unsigned short Dict414KeyHashTable[] = {
+const unsigned short Dict416KeyHashTable[] = {
     8,     7,    13,    16,     7,    19,    24,     0,     2,     0,
 20186,     6, 21387,     1,     3, 20978,     1,     5, 52094,     2,
     1, 53765,     2,  8567,     1,     4,  7561,
 };
 
-vtkDICOMDictionary::Dict Dict414Data = {
+vtkDICOMDictionary::Dict Dict416Data = {
 "astm.org/diconde/iod/NdeDxDetector",
 7,
 7,
-Dict414TagHashTable,
-Dict414KeyHashTable,
-Dict414Contents
+Dict416TagHashTable,
+Dict416KeyHashTable,
+Dict416Contents
 };
 
 // ----- PMTF INFORMATION DATA -----
 
-const DictEntry Dict415Contents[] = {
+const DictEntry Dict417Contents[] = {
 { 0x0029, 0x0001, 0, VR::SQ, VM::M1, "" },
 { 0x0029, 0x0031, 0, VR::LO, VM::M1, "PMTFInformation1" },
 { 0x0029, 0x0032, 0, VR::UL, VM::M1, "PMTFInformation2" },
@@ -24984,30 +25150,30 @@ const DictEntry Dict415Contents[] = {
 { 0x7015, 0x0073, 0, VR::SQ, VM::M1, "" },
 };
 
-const unsigned short Dict415TagHashTable[] = {
+const unsigned short Dict417TagHashTable[] = {
     9,     8,    14,    19,     8,    24,     8,    27,     0,     2,
     0,     1,     1,    49,     2,     3,    51,     5,   137,     2,
     2,    50,     6,   144,     1,     4,    52,     1,     7,   115,
 };
 
-const unsigned short Dict415KeyHashTable[] = {
+const unsigned short Dict417KeyHashTable[] = {
     8,     8,     8,     9,    12,    15,    26,     8,     0,     1,
     1,  6778,     1,     2,  6778,     5,     0,   672,     3,  6778,
     5,   672,     6,   672,     7,   672,     1,     4,  6778,
 };
 
-vtkDICOMDictionary::Dict Dict415Data = {
+vtkDICOMDictionary::Dict Dict417Data = {
 "PMTF INFORMATION DATA",
 8,
 8,
-Dict415TagHashTable,
-Dict415KeyHashTable,
-Dict415Contents
+Dict417TagHashTable,
+Dict417KeyHashTable,
+Dict417Contents
 };
 
 // ----- SIEMENS MED DISPLAY -----
 
-const DictEntry Dict416Contents[] = {
+const DictEntry Dict418Contents[] = {
 { 0x0029, 0x0004, 0, VR::CS, VM::M1, "PhotometricInterpretation" },
 { 0x0029, 0x0010, 0, VR::US, VM::M1, "RowsOfSubmatrix" },
 { 0x0029, 0x0011, 0, VR::US, VM::M1, "ColumnsOfSubmatrix" },
@@ -25024,7 +25190,7 @@ const DictEntry Dict416Contents[] = {
 { 0x0029, 0x00c1, 0, VR::US, VM::M1, "ContourOfIrregularShutter" },
 };
 
-const unsigned short Dict416TagHashTable[] = {
+const unsigned short Dict418TagHashTable[] = {
    15,    18,    14,    23,    14,    14,    14,    14,    28,    33,
    36,    39,    44,    47,     0,     1,     2,    17,     2,     1,
    16,    11,   176,     2,     0,     4,     6,   128,     2,     4,
@@ -25033,7 +25199,7 @@ const unsigned short Dict416TagHashTable[] = {
    12,   178,
 };
 
-const unsigned short Dict416KeyHashTable[] = {
+const unsigned short Dict418KeyHashTable[] = {
    15,    14,    18,    14,    14,    23,    32,    37,    40,    14,
    45,    14,    14,    48,     0,     1,     1, 50526,     2,     2,
 14292,     9, 23104,     4,     0,  5445,     3,   384,     4,   384,
@@ -25042,41 +25208,41 @@ const unsigned short Dict416KeyHashTable[] = {
 20118,
 };
 
-vtkDICOMDictionary::Dict Dict416Data = {
+vtkDICOMDictionary::Dict Dict418Data = {
 "SIEMENS MED DISPLAY",
 14,
 14,
-Dict416TagHashTable,
-Dict416KeyHashTable,
-Dict416Contents
+Dict418TagHashTable,
+Dict418KeyHashTable,
+Dict418Contents
 };
 
 // ----- MITRA LINKED ATTRIBUTES 1.0 -----
 
-const DictEntry Dict417Contents[] = {
+const DictEntry Dict419Contents[] = {
 { 0x0031, 0x0020, 0, VR::LO, VM::M1, "GlobalPatientID" },
 };
 
-const unsigned short Dict417TagHashTable[] = {
+const unsigned short Dict419TagHashTable[] = {
     2,     0,     1,     0,    32,
 };
 
-const unsigned short Dict417KeyHashTable[] = {
+const unsigned short Dict419KeyHashTable[] = {
     2,     0,     1,     0, 55096,
 };
 
-vtkDICOMDictionary::Dict Dict417Data = {
+vtkDICOMDictionary::Dict Dict419Data = {
 "MITRA LINKED ATTRIBUTES 1.0",
 1,
 1,
-Dict417TagHashTable,
-Dict417KeyHashTable,
-Dict417Contents
+Dict419TagHashTable,
+Dict419KeyHashTable,
+Dict419Contents
 };
 
 // ----- BRIT Systems, Inc. -----
 
-const DictEntry Dict418Contents[] = {
+const DictEntry Dict420Contents[] = {
 { 0x0021, 0x0000, 0, VR::SQ, VM::M1, "PersonInformationSequence" },
 { 0x0021, 0x0001, 0, VR::LO, VM::M1, "PersonID" },
 { 0x0021, 0x0002, 0, VR::PN, VM::M1, "PersonName" },
@@ -25130,7 +25296,7 @@ const DictEntry Dict418Contents[] = {
 { 0x0021, 0x00a8, 0, VR::SH, VM::M1, "RemoteIPAddress" },
 };
 
-const unsigned short Dict418TagHashTable[] = {
+const unsigned short Dict420TagHashTable[] = {
    52,    57,    62,    67,    72,    77,    82,    87,    51,    90,
    93,    96,    51,    51,    51,    51,    99,   102,   105,   108,
    51,   111,    51,   114,   117,   120,   123,   128,   131,   134,
@@ -25153,7 +25319,7 @@ const unsigned short Dict418TagHashTable[] = {
    14,    17,     1,    16,    19,
 };
 
-const unsigned short Dict418KeyHashTable[] = {
+const unsigned short Dict420KeyHashTable[] = {
    51,    52,    61,    51,    51,    64,    51,    69,    72,    77,
    51,    80,    51,    85,    90,    93,    96,    51,    51,    99,
   102,   107,   110,    51,    51,    51,   113,   118,   121,   128,
@@ -25175,18 +25341,18 @@ const unsigned short Dict418KeyHashTable[] = {
 18107,     2,     7, 46785,    10, 48368,
 };
 
-vtkDICOMDictionary::Dict Dict418Data = {
+vtkDICOMDictionary::Dict Dict420Data = {
 "BRIT Systems, Inc.",
 51,
 51,
-Dict418TagHashTable,
-Dict418KeyHashTable,
-Dict418Contents
+Dict420TagHashTable,
+Dict420KeyHashTable,
+Dict420Contents
 };
 
 // ----- SIEMENS CT VA0  RAW -----
 
-const DictEntry Dict419Contents[] = {
+const DictEntry Dict421Contents[] = {
 { 0x0021, 0x0010, 0, VR::UL, VM::M2, "CreationMask" },
 { 0x0021, 0x0020, 0, VR::UL, VM::M2, "EvaluationMask" },
 { 0x0021, 0x0030, 0, VR::US, VM::M7, "ExtendedProcessingMask" },
@@ -25198,59 +25364,59 @@ const DictEntry Dict419Contents[] = {
 { 0x0021, 0x0050, 0, VR::CS, VM::M1, "" },
 };
 
-const unsigned short Dict419TagHashTable[] = {
+const unsigned short Dict421TagHashTable[] = {
    10,    13,     9,     9,    18,     9,    23,    26,    29,     0,
     1,     6,    67,     2,     1,    32,     7,    68,     2,     0,
    16,     8,    80,     1,     3,    64,     1,     4,    65,     2,
     2,    48,     5,    66,
 };
 
-const unsigned short Dict419KeyHashTable[] = {
+const unsigned short Dict421KeyHashTable[] = {
    10,    13,     9,    16,     9,     9,     9,     9,    19,     0,
     1,     1,  2209,     1,     0, 17597,     1,     2, 37852,     6,
     3,   597,     4,   597,     5,   597,     6,   597,     7,   597,
     8,   597,
 };
 
-vtkDICOMDictionary::Dict Dict419Data = {
+vtkDICOMDictionary::Dict Dict421Data = {
 "SIEMENS CT VA0  RAW",
 9,
 9,
-Dict419TagHashTable,
-Dict419KeyHashTable,
-Dict419Contents
+Dict421TagHashTable,
+Dict421KeyHashTable,
+Dict421Contents
 };
 
 // ----- SPI-P Release 2;1 -----
 
-const DictEntry Dict420Contents[] = {
+const DictEntry Dict422Contents[] = {
 { 0x0011, 0x0018, 0, VR::LT, VM::M1, "" },
 { 0x0023, 0x000d, 0, VR::UI, VM::M1, "" },
 { 0x0023, 0x000e, 0, VR::UI, VM::M1, "" },
 };
 
-const unsigned short Dict420TagHashTable[] = {
+const unsigned short Dict422TagHashTable[] = {
     4,     9,     3,     0,     2,     0,    24,     2,    14,     1,
     1,    13,
 };
 
-const unsigned short Dict420KeyHashTable[] = {
+const unsigned short Dict422KeyHashTable[] = {
     3,     3,     4,     0,     3,     0,  1793,     1,  1793,     2,
  1793,
 };
 
-vtkDICOMDictionary::Dict Dict420Data = {
+vtkDICOMDictionary::Dict Dict422Data = {
 "SPI-P Release 2;1",
 3,
 3,
-Dict420TagHashTable,
-Dict420KeyHashTable,
-Dict420Contents
+Dict422TagHashTable,
+Dict422KeyHashTable,
+Dict422Contents
 };
 
 // ----- SPI RELEASE 1 -----
 
-const DictEntry Dict421Contents[] = {
+const DictEntry Dict423Contents[] = {
 { 0x0009, 0x0010, 0, VR::LO, VM::M1, "Comments" },
 { 0x0009, 0x0015, 0, VR::LO, VM::M1, "UID" },
 { 0x0009, 0x0040, 0, VR::US, VM::M1, "DataObjectType" },
@@ -25261,90 +25427,44 @@ const DictEntry Dict421Contents[] = {
 { 0x0029, 0x0060, 0, VR::LO, VM::M1, "CompressionAlgorithm" },
 };
 
-const unsigned short Dict421TagHashTable[] = {
+const unsigned short Dict423TagHashTable[] = {
     9,    14,     8,     8,    23,     8,     8,     8,     0,     2,
     2,    64,     7,    96,     4,     0,    16,     3,    65,     4,
    16,     6,    32,     2,     1,    21,     5,    21,
 };
 
-const unsigned short Dict421KeyHashTable[] = {
+const unsigned short Dict423KeyHashTable[] = {
     9,     8,    12,    15,    18,     8,    23,    26,     0,     1,
     2, 24415,     1,     3, 55708,     1,     0, 52021,     2,     4,
 39623,     6, 29229,     1,     7, 57071,     2,     1,  1220,     5,
 21898,
 };
 
-vtkDICOMDictionary::Dict Dict421Data = {
+vtkDICOMDictionary::Dict Dict423Data = {
 "SPI RELEASE 1",
 8,
 8,
-Dict421TagHashTable,
-Dict421KeyHashTable,
-Dict421Contents
-};
-
-// ----- SIEMENS MI RWVM SUV -----
-
-const DictEntry Dict422Contents[] = {
-{ 0x0041, 0x0001, 0, VR::CS, VM::M1, "SUVDecayCorrectionMethod" },
-};
-
-const unsigned short Dict422TagHashTable[] = {
-    2,     0,     1,     0,     1,
-};
-
-const unsigned short Dict422KeyHashTable[] = {
-    2,     0,     1,     0, 19490,
-};
-
-vtkDICOMDictionary::Dict Dict422Data = {
-"SIEMENS MI RWVM SUV",
-1,
-1,
-Dict422TagHashTable,
-Dict422KeyHashTable,
-Dict422Contents
-};
-
-// ----- MeVis eD: Slice Information -----
-
-const DictEntry Dict423Contents[] = {
-{ 0x0021, 0x0010, 0, VR::UI, VM::M1TN, "SliceSOPInstanceUIDs" },
-};
-
-const unsigned short Dict423TagHashTable[] = {
-    2,     0,     1,     0,    16,
-};
-
-const unsigned short Dict423KeyHashTable[] = {
-    2,     0,     1,     0, 16081,
-};
-
-vtkDICOMDictionary::Dict Dict423Data = {
-"MeVis eD: Slice Information",
-1,
-1,
 Dict423TagHashTable,
 Dict423KeyHashTable,
 Dict423Contents
 };
 
-// ----- Silhouette Graphics Export V1.0 -----
+// ----- SIEMENS MI RWVM SUV -----
 
 const DictEntry Dict424Contents[] = {
-{ 0x0029, 0x0000, 0, VR::UI, VM::M1, "" },
+{ 0x0041, 0x0001, 0, VR::CS, VM::M1, "SUVDecayCorrectionMethod" },
 };
 
 const unsigned short Dict424TagHashTable[] = {
-    2,     0,     1,     0,     0,
+    2,     0,     1,     0,     1,
 };
 
 const unsigned short Dict424KeyHashTable[] = {
-    2,     0,     1,     0,  5381,
+    2,     0,     1,     0, 19490,
 };
 
 vtkDICOMDictionary::Dict Dict424Data = {
-"Silhouette Graphics Export V1.0",
+"SIEMENS MI RWVM SUV",
 1,
 1,
 Dict424TagHashTable,
@@ -25352,9 +25472,55 @@ Dict424KeyHashTable,
 Dict424Contents
 };
 
-// ----- SPI-P Release 1;3 -----
+// ----- MeVis eD: Slice Information -----
 
 const DictEntry Dict425Contents[] = {
+{ 0x0021, 0x0010, 0, VR::UI, VM::M1TN, "SliceSOPInstanceUIDs" },
+};
+
+const unsigned short Dict425TagHashTable[] = {
+    2,     0,     1,     0,    16,
+};
+
+const unsigned short Dict425KeyHashTable[] = {
+    2,     0,     1,     0, 16081,
+};
+
+vtkDICOMDictionary::Dict Dict425Data = {
+"MeVis eD: Slice Information",
+1,
+1,
+Dict425TagHashTable,
+Dict425KeyHashTable,
+Dict425Contents
+};
+
+// ----- Silhouette Graphics Export V1.0 -----
+
+const DictEntry Dict426Contents[] = {
+{ 0x0029, 0x0000, 0, VR::UI, VM::M1, "" },
+};
+
+const unsigned short Dict426TagHashTable[] = {
+    2,     0,     1,     0,     0,
+};
+
+const unsigned short Dict426KeyHashTable[] = {
+    2,     0,     1,     0,  5381,
+};
+
+vtkDICOMDictionary::Dict Dict426Data = {
+"Silhouette Graphics Export V1.0",
+1,
+1,
+Dict426TagHashTable,
+Dict426KeyHashTable,
+Dict426Contents
+};
+
+// ----- SPI-P Release 1;3 -----
+
+const DictEntry Dict427Contents[] = {
 { 0x0029, 0x0000, 0, VR::LT, VM::M1, "ImageEnhancementID" },
 { 0x0029, 0x0001, 0, VR::LT, VM::M1, "ImageEnhancement" },
 { 0x0029, 0x0002, 0, VR::LT, VM::M1, "ConvolutionID" },
@@ -25367,32 +25533,32 @@ const DictEntry Dict425Contents[] = {
 { 0x0029, 0x001f, 0, VR::CS, VM::M1, "ImageEnhancementSelectStatus" },
 };
 
-const unsigned short Dict425TagHashTable[] = {
+const unsigned short Dict427TagHashTable[] = {
    11,    14,    17,    20,    23,    28,    10,    33,    10,    10,
     0,     1,     1,     1,     1,     0,     0,     1,     3,     3,
     1,     2,     2,     2,     5,     5,     9,    31,     2,     4,
     4,     8,    30,     2,     6,     6,     7,    12,
 };
 
-const unsigned short Dict425KeyHashTable[] = {
+const unsigned short Dict427KeyHashTable[] = {
    11,    16,    19,    10,    10,    10,    10,    10,    10,    28,
     0,     2,     1, 41307,     4, 35963,     1,     8, 23628,     4,
     2, 31800,     6, 16426,     7, 14052,     9, 58824,     3,     0,
 38981,     3,  7555,     5,  1404,
 };
 
-vtkDICOMDictionary::Dict Dict425Data = {
+vtkDICOMDictionary::Dict Dict427Data = {
 "SPI-P Release 1;3",
 10,
 10,
-Dict425TagHashTable,
-Dict425KeyHashTable,
-Dict425Contents
+Dict427TagHashTable,
+Dict427KeyHashTable,
+Dict427Contents
 };
 
 // ----- SPI-P Release 1;2 -----
 
-const DictEntry Dict426Contents[] = {
+const DictEntry Dict428Contents[] = {
 { 0x0029, 0x0000, 0, VR::LT, VM::M1, "SubtractionMaskID" },
 { 0x0029, 0x0004, 0, VR::UN, VM::M1, "MaskingFunction" },
 { 0x0029, 0x000c, 0, VR::UN, VM::M1, "ProprietaryMaskingParameters" },
@@ -25400,28 +25566,28 @@ const DictEntry Dict426Contents[] = {
 { 0x0029, 0x001f, 0, VR::CS, VM::M1, "SubtractionMaskSelectStatus" },
 };
 
-const unsigned short Dict426TagHashTable[] = {
+const unsigned short Dict428TagHashTable[] = {
     6,    11,    14,     5,    17,     0,     2,     1,     4,     3,
    30,     1,     0,     0,     1,     2,    12,     1,     4,    31,
 };
 
-const unsigned short Dict426KeyHashTable[] = {
+const unsigned short Dict428KeyHashTable[] = {
     6,     9,    12,     5,    15,     0,     1,     3,  1026,     1,
     4,  5882,     1,     2,  7098,     2,     0, 22248,     1, 24029,
 };
 
-vtkDICOMDictionary::Dict Dict426Data = {
+vtkDICOMDictionary::Dict Dict428Data = {
 "SPI-P Release 1;2",
 5,
 5,
-Dict426TagHashTable,
-Dict426KeyHashTable,
-Dict426Contents
+Dict428TagHashTable,
+Dict428KeyHashTable,
+Dict428Contents
 };
 
 // ----- SPI-P Release 1;1 -----
 
-const DictEntry Dict427Contents[] = {
+const DictEntry Dict429Contents[] = {
 { 0x0009, 0x00c0, 0, VR::LT, VM::M1, "" },
 { 0x0009, 0x00c1, 0, VR::LT, VM::M1, "" },
 { 0x0019, 0x0000, 0, VR::UN, VM::M1, "PhysiologicalDataType" },
@@ -25460,7 +25626,7 @@ const DictEntry Dict427Contents[] = {
 { 0x0029, 0x004f, 0, VR::CS, VM::M1, "MagnifyingGlassSelectStatus" },
 };
 
-const unsigned short Dict427TagHashTable[] = {
+const unsigned short Dict429TagHashTable[] = {
    37,    42,    45,    48,    53,    56,    59,    36,    62,    65,
    70,    73,    76,    79,    82,    85,    88,    91,    36,    94,
    36,    36,    97,   100,   103,   106,   109,   112,   115,   118,
@@ -25477,7 +25643,7 @@ const unsigned short Dict427TagHashTable[] = {
    79,     1,    30,    64,     1,    31,    65,     1,    32,    67,
 };
 
-const unsigned short Dict427KeyHashTable[] = {
+const unsigned short Dict429KeyHashTable[] = {
    37,    36,    44,    53,    36,    56,    59,    66,    69,    36,
    72,    36,    75,    78,    36,    83,    86,    89,    36,    96,
    36,   103,    36,    36,   106,   109,    36,    36,   112,    36,
@@ -25494,18 +25660,18 @@ const unsigned short Dict427KeyHashTable[] = {
    21, 43250,
 };
 
-vtkDICOMDictionary::Dict Dict427Data = {
+vtkDICOMDictionary::Dict Dict429Data = {
 "SPI-P Release 1;1",
 36,
 36,
-Dict427TagHashTable,
-Dict427KeyHashTable,
-Dict427Contents
+Dict429TagHashTable,
+Dict429KeyHashTable,
+Dict429Contents
 };
 
 // ----- SPI-P-PCR Release 2 -----
 
-const DictEntry Dict428Contents[] = {
+const DictEntry Dict430Contents[] = {
 { 0x0019, 0x0010, 0, VR::US, VM::M1, "" },
 { 0x0019, 0x0020, 0, VR::IS, VM::M1, "" },
 { 0x0019, 0x0021, 0, VR::LO, VM::M1, "" },
@@ -25541,7 +25707,7 @@ const DictEntry Dict428Contents[] = {
 { 0x0019, 0x00ba, 0, VR::ST, VM::M1, "" },
 };
 
-const unsigned short Dict428TagHashTable[] = {
+const unsigned short Dict430TagHashTable[] = {
    33,    33,    33,    34,    37,    40,    43,    46,    51,    56,
    61,    64,    67,    70,    73,    76,    79,    82,    85,    88,
    33,    91,    96,    99,   106,   111,   114,    33,    33,   117,
@@ -25557,7 +25723,7 @@ const unsigned short Dict428TagHashTable[] = {
     1,    31,   185,     1,    30,   184,
 };
 
-const unsigned short Dict428KeyHashTable[] = {
+const unsigned short Dict430KeyHashTable[] = {
    33,    33,    34,    33,    33,    33,    33,    33,    33,    33,
    33,    33,    33,    33,    33,    33,    33,    33,    33,    33,
    33,    33,    33,    33,    33,    33,    33,    33,    33,    33,
@@ -25571,46 +25737,46 @@ const unsigned short Dict428KeyHashTable[] = {
   163,
 };
 
-vtkDICOMDictionary::Dict Dict428Data = {
+vtkDICOMDictionary::Dict Dict430Data = {
 "SPI-P-PCR Release 2",
 33,
 33,
-Dict428TagHashTable,
-Dict428KeyHashTable,
-Dict428Contents
+Dict430TagHashTable,
+Dict430KeyHashTable,
+Dict430Contents
 };
 
 // ----- SIEMENS MR PHOENIX ATTRIBUTES -----
 
-const DictEntry Dict429Contents[] = {
+const DictEntry Dict431Contents[] = {
 { 0x0021, 0x0001, 0, VR::UL, VM::M1, "MdsModeMask" },
 { 0x0021, 0x0002, 0, VR::US, VM::M1, "Dixon" },
 { 0x0021, 0x0003, 0, VR::LT, VM::M1, "SequenceFileName" },
 { 0x0021, 0x00F1, 0, VR::UL, VM::M1, "CountOfPseudoAttributes" },
 };
 
-const unsigned short Dict429TagHashTable[] = {
+const unsigned short Dict431TagHashTable[] = {
     5,     4,     8,    11,     0,     1,     0,     1,     1,     2,
     3,     2,     1,     2,     3,   241,
 };
 
-const unsigned short Dict429KeyHashTable[] = {
+const unsigned short Dict431KeyHashTable[] = {
     4,     4,     5,    10,     0,     2,     0,  9150,     3, 33686,
     2,     1, 18649,     2, 43687,
 };
 
-vtkDICOMDictionary::Dict Dict429Data = {
+vtkDICOMDictionary::Dict Dict431Data = {
 "SIEMENS MR PHOENIX ATTRIBUTES",
 4,
 4,
-Dict429TagHashTable,
-Dict429KeyHashTable,
-Dict429Contents
+Dict431TagHashTable,
+Dict431KeyHashTable,
+Dict431Contents
 };
 
 // ----- SIEMENS MR SDI 02 -----
 
-const DictEntry Dict430Contents[] = {
+const DictEntry Dict432Contents[] = {
 { 0x0021, 0x0001, 0, VR::US, VM::M1, "NumberOfImagesInMosaic" },
 { 0x0021, 0x0002, 0, VR::FD, VM::M3, "SliceNormalVector" },
 { 0x0021, 0x0003, 0, VR::DS, VM::M1, "SliceMeasurementDuration" },
@@ -25704,7 +25870,7 @@ const DictEntry Dict430Contents[] = {
 { 0x0021, 0x00FE, 0, VR::SQ, VM::M1, "SiemensMRSDISequence" },
 };
 
-const unsigned short Dict430TagHashTable[] = {
+const unsigned short Dict432TagHashTable[] = {
    92,    95,    98,   101,   104,   107,   112,   117,   122,   127,
   130,   135,   140,   145,   150,   155,   158,   161,   166,   171,
   176,   181,   186,   191,   196,   201,   206,   211,   216,   221,
@@ -25741,7 +25907,7 @@ const unsigned short Dict430TagHashTable[] = {
    86,   119,     1,    87,   120,     1,    88,   121,
 };
 
-const unsigned short Dict430KeyHashTable[] = {
+const unsigned short Dict432KeyHashTable[] = {
    92,    95,   100,   103,    91,    91,   108,   113,    91,   118,
   121,    91,   126,   131,   134,   137,   144,    91,   147,    91,
   150,    91,    91,    91,   153,   158,   161,    91,   166,    91,
@@ -25778,18 +25944,18 @@ const unsigned short Dict430KeyHashTable[] = {
    80, 53629,     1,     8,  6773,
 };
 
-vtkDICOMDictionary::Dict Dict430Data = {
+vtkDICOMDictionary::Dict Dict432Data = {
 "SIEMENS MR SDI 02",
 91,
 91,
-Dict430TagHashTable,
-Dict430KeyHashTable,
-Dict430Contents
+Dict432TagHashTable,
+Dict432KeyHashTable,
+Dict432Contents
 };
 
 // ----- Biospace Med : EOS Tag -----
 
-const DictEntry Dict431Contents[] = {
+const DictEntry Dict433Contents[] = {
 { 0x0863, 0x0010, 0, VR::SL, VM::M1, "ImageType" },
 { 0x0863, 0x0023, 0, VR::SL, VM::M1, "CalibrationFlag" },
 { 0x0863, 0x0026, 0, VR::UL, VM::M1, "AttributeVersion" },
@@ -25813,7 +25979,7 @@ const DictEntry Dict431Contents[] = {
 { 0x0863, 0x0057, 0, VR::CS, VM::M1, "ImageHorizontalFlip" },
 };
 
-const unsigned short Dict431TagHashTable[] = {
+const unsigned short Dict433TagHashTable[] = {
    21,    22,    25,    28,    33,    21,    36,    39,    44,    47,
    50,    53,    56,    61,    64,    21,    67,    70,    73,    78,
    21,     0,     1,     9,    54,     1,    10,    55,     2,     1,
@@ -25825,7 +25991,7 @@ const unsigned short Dict431TagHashTable[] = {
    51,
 };
 
-const unsigned short Dict431KeyHashTable[] = {
+const unsigned short Dict433KeyHashTable[] = {
    22,    21,    27,    21,    21,    30,    21,    21,    39,    42,
    21,    47,    21,    21,    54,    61,    66,    21,    21,    69,
    72,     0,     2,     3, 55074,     9,  6471,     1,     4, 12148,
@@ -25836,42 +26002,42 @@ const unsigned short Dict431KeyHashTable[] = {
     7, 51514,     1,    18, 26685,
 };
 
-vtkDICOMDictionary::Dict Dict431Data = {
+vtkDICOMDictionary::Dict Dict433Data = {
 "Biospace Med : EOS Tag",
 21,
 21,
-Dict431TagHashTable,
-Dict431KeyHashTable,
-Dict431Contents
+Dict433TagHashTable,
+Dict433KeyHashTable,
+Dict433Contents
 };
 
 // ----- AMI ImageContextExt_01 -----
 
-const DictEntry Dict432Contents[] = {
+const DictEntry Dict434Contents[] = {
 { 0x3107, 0x00A0, 0, VR::CS, VM::M1, "WindowFunction" },
 { 0x3107, 0x00B0, 0, VR::DS, VM::M1, "WindowSlope" },
 };
 
-const unsigned short Dict432TagHashTable[] = {
+const unsigned short Dict434TagHashTable[] = {
     2,     3,     0,     2,     0,   160,     1,   176,
 };
 
-const unsigned short Dict432KeyHashTable[] = {
+const unsigned short Dict434KeyHashTable[] = {
     3,     6,     0,     1,     1, 62736,     1,     0, 38065,
 };
 
-vtkDICOMDictionary::Dict Dict432Data = {
+vtkDICOMDictionary::Dict Dict434Data = {
 "AMI ImageContextExt_01",
 2,
 2,
-Dict432TagHashTable,
-Dict432KeyHashTable,
-Dict432Contents
+Dict434TagHashTable,
+Dict434KeyHashTable,
+Dict434Contents
 };
 
 // ----- IMS s.r.l. Biopsy Private Code -----
 
-const DictEntry Dict433Contents[] = {
+const DictEntry Dict435Contents[] = {
 { 0x1269, 0x0001, 0, VR::IS, VM::M1, "BiopsyImage" },
 { 0x1269, 0x0010, 0, VR::IS, VM::M1TN, "BiopsyMarkersX" },
 { 0x1269, 0x0011, 0, VR::IS, VM::M1TN, "BiopsyMarkersY" },
@@ -25883,32 +26049,32 @@ const DictEntry Dict433Contents[] = {
 { 0x1269, 0x0024, 0, VR::IS, VM::M1, "BiopsyNumber" },
 };
 
-const unsigned short Dict433TagHashTable[] = {
+const unsigned short Dict435TagHashTable[] = {
    10,    13,    16,    19,    24,    29,    32,     9,     9,     0,
     1,     4,    32,     1,     5,    33,     1,     6,    34,     2,
     1,    16,     7,    35,     2,     2,    17,     8,    36,     1,
     3,    18,     1,     0,     1,
 };
 
-const unsigned short Dict433KeyHashTable[] = {
+const unsigned short Dict435KeyHashTable[] = {
     9,    10,    15,    20,     9,    25,     9,    28,    31,     0,
     2,     0, 51605,     4, 12124,     2,     1,  6166,     3, 48415,
     2,     2,  6166,     7, 42788,     1,     6,  8128,     1,     8,
 21301,     1,     5, 21960,
 };
 
-vtkDICOMDictionary::Dict Dict433Data = {
+vtkDICOMDictionary::Dict Dict435Data = {
 "IMS s.r.l. Biopsy Private Code",
 9,
 9,
-Dict433TagHashTable,
-Dict433KeyHashTable,
-Dict433Contents
+Dict435TagHashTable,
+Dict435KeyHashTable,
+Dict435Contents
 };
 
 // ----- PMI Private Calibration Module Version 2.0 -----
 
-const DictEntry Dict434Contents[] = {
+const DictEntry Dict436Contents[] = {
 { 0x2121, 0x0001, 0, VR::ST, VM::M1, "CalibrationMethod" },
 { 0x2121, 0x0002, 0, VR::ST, VM::M1, "CalibrationMethodInfo" },
 { 0x2121, 0x0003, 0, VR::FL, VM::M1, "CalibrationObjectSize" },
@@ -25924,7 +26090,7 @@ const DictEntry Dict434Contents[] = {
 { 0x2121, 0x000e, 0, VR::FL, VM::M1, "VerticalPixelSDev" },
 };
 
-const unsigned short Dict434TagHashTable[] = {
+const unsigned short Dict436TagHashTable[] = {
    14,    17,    20,    25,    30,    33,    36,    13,    39,    42,
    45,    48,    13,     0,     1,    12,    14,     1,     7,     9,
     2,     4,     5,     6,     8,     2,     3,     4,     9,    11,
@@ -25933,7 +26099,7 @@ const unsigned short Dict434TagHashTable[] = {
    12,
 };
 
-const unsigned short Dict434KeyHashTable[] = {
+const unsigned short Dict436KeyHashTable[] = {
    14,    17,    13,    20,    23,    28,    13,    13,    31,    34,
    43,    46,    13,     0,     1,     1, 44194,     1,    12, 26778,
     1,     3, 19967,     2,     8, 29024,    10, 24532,     1,    11,
@@ -25941,18 +26107,18 @@ const unsigned short Dict434KeyHashTable[] = {
  1048,     9,  9474,     1,     5, 54420,     1,     4, 30559,
 };
 
-vtkDICOMDictionary::Dict Dict434Data = {
+vtkDICOMDictionary::Dict Dict436Data = {
 "PMI Private Calibration Module Version 2.0",
 13,
 13,
-Dict434TagHashTable,
-Dict434KeyHashTable,
-Dict434Contents
+Dict436TagHashTable,
+Dict436KeyHashTable,
+Dict436Contents
 };
 
 // ----- GEMS_ADWSoft_3D1 -----
 
-const DictEntry Dict435Contents[] = {
+const DictEntry Dict437Contents[] = {
 { 0x0047, 0x0001, 0, VR::SQ, VM::M1, "Reconstruction Parameters Sequence" },
 { 0x0047, 0x0050, 0, VR::UL, VM::M1, "VolumeVoxelCount" },
 { 0x0047, 0x0051, 0, VR::UL, VM::M1, "VolumeSegmentCount" },
@@ -26007,7 +26173,7 @@ const DictEntry Dict435Contents[] = {
 { 0x0047, 0x00D5, 0, VR::OB, VM::M1, "VolumeOriginalIndexList" },
 };
 
-const unsigned short Dict435TagHashTable[] = {
+const unsigned short Dict437TagHashTable[] = {
    53,    56,    61,    66,    52,    69,    72,    75,    78,    52,
    52,    52,    81,    84,    87,    90,    93,    52,    96,    99,
   104,    52,   107,   110,    52,    52,    52,    52,   113,   116,
@@ -26030,7 +26196,7 @@ const unsigned short Dict435TagHashTable[] = {
    20,   138,     1,    21,   139,
 };
 
-const unsigned short Dict435KeyHashTable[] = {
+const unsigned short Dict437KeyHashTable[] = {
    53,    58,    52,    63,    68,    52,    73,    76,    79,    82,
    87,    92,    95,    98,   101,   106,    52,   109,   114,   117,
    52,   120,   125,   128,   133,    52,   138,   141,    52,    52,
@@ -26053,42 +26219,42 @@ const unsigned short Dict435KeyHashTable[] = {
     1,    44, 51324,
 };
 
-vtkDICOMDictionary::Dict Dict435Data = {
+vtkDICOMDictionary::Dict Dict437Data = {
 "GEMS_ADWSoft_3D1",
 52,
 52,
-Dict435TagHashTable,
-Dict435KeyHashTable,
-Dict435Contents
+Dict437TagHashTable,
+Dict437KeyHashTable,
+Dict437Contents
 };
 
 // ----- INFINITT_FMX -----
 
-const DictEntry Dict436Contents[] = {
+const DictEntry Dict438Contents[] = {
 { 0x0015, 0x0010, 0, VR::LO, VM::M1, "" },
 { 0x0015, 0x0011, 0, VR::LO, VM::M1, "" },
 };
 
-const unsigned short Dict436TagHashTable[] = {
+const unsigned short Dict438TagHashTable[] = {
     3,     6,     0,     1,     1,    17,     1,     0,    16,
 };
 
-const unsigned short Dict436KeyHashTable[] = {
+const unsigned short Dict438KeyHashTable[] = {
     2,     3,     0,     2,     0,  2690,     1,  2690,
 };
 
-vtkDICOMDictionary::Dict Dict436Data = {
+vtkDICOMDictionary::Dict Dict438Data = {
 "INFINITT_FMX",
 2,
 2,
-Dict436TagHashTable,
-Dict436KeyHashTable,
-Dict436Contents
+Dict438TagHashTable,
+Dict438KeyHashTable,
+Dict438Contents
 };
 
 // ----- SIEMENS MR SDS 01 -----
 
-const DictEntry Dict437Contents[] = {
+const DictEntry Dict439Contents[] = {
 { 0x0021, 0x0001, 0, VR::IS, VM::M1, "" },
 { 0x0021, 0x0002, 0, VR::DS, VM::M1TN, "" },
 { 0x0021, 0x0003, 0, VR::OB, VM::M1, "" },
@@ -26181,7 +26347,7 @@ const DictEntry Dict437Contents[] = {
 { 0x0021, 0x00fe, 0, VR::SQ, VM::M1, "" },
 };
 
-const unsigned short Dict437TagHashTable[] = {
+const unsigned short Dict439TagHashTable[] = {
    90,    91,    94,    97,   100,   103,   106,   111,   116,   119,
   122,   129,   136,   143,   150,   157,   164,   167,   170,   173,
   176,   179,   182,   185,   190,   195,   200,    90,   205,   208,
@@ -26218,7 +26384,7 @@ const unsigned short Dict437TagHashTable[] = {
    33,    30,
 };
 
-const unsigned short Dict437KeyHashTable[] = {
+const unsigned short Dict439KeyHashTable[] = {
    90,    90,    90,    90,    91,    90,    90,    90,    90,    90,
    90,    94,    90,    90,    97,    90,    90,    90,    90,    90,
    90,   100,    90,    90,    90,    90,   103,    90,    90,    90,
@@ -26251,18 +26417,18 @@ const unsigned short Dict437KeyHashTable[] = {
 54723,    51, 64335,    88, 27848,     1,    43, 19302,
 };
 
-vtkDICOMDictionary::Dict Dict437Data = {
+vtkDICOMDictionary::Dict Dict439Data = {
 "SIEMENS MR SDS 01",
 90,
 90,
-Dict437TagHashTable,
-Dict437KeyHashTable,
-Dict437Contents
+Dict439TagHashTable,
+Dict439KeyHashTable,
+Dict439Contents
 };
 
 // ----- GEMS_RELA_01 -----
 
-const DictEntry Dict438Contents[] = {
+const DictEntry Dict440Contents[] = {
 { 0x0021, 0x0003, 0, VR::SS, VM::M1, "SeriesFromWhichPrescribed" },
 { 0x0021, 0x0005, 0, VR::SH, VM::M1, "GenesisVersionNow" },
 { 0x0021, 0x0007, 0, VR::UL, VM::M1, "SeriesRecordChecksum" },
@@ -26306,7 +26472,7 @@ const DictEntry Dict438Contents[] = {
 { 0x0021, 0x0094, 0, VR::LO, VM::M1TN, "AnnotationStrings" },
 };
 
-const unsigned short Dict438TagHashTable[] = {
+const unsigned short Dict440TagHashTable[] = {
    42,    45,    50,    53,    58,    41,    41,    41,    41,    41,
    41,    61,    64,    67,    70,    75,    80,    41,    41,    83,
    86,    41,    89,    92,    95,    41,    41,    41,    98,   101,
@@ -26325,7 +26491,7 @@ const unsigned short Dict438TagHashTable[] = {
    90,    31,   113,
 };
 
-const unsigned short Dict438KeyHashTable[] = {
+const unsigned short Dict440KeyHashTable[] = {
    42,    41,    41,    47,    50,    41,    41,    41,    41,    53,
    56,    71,    41,    76,    79,    82,    85,    90,    93,    41,
    96,   101,    41,   106,   111,    41,   114,   119,    41,    41,
@@ -26343,18 +26509,18 @@ const unsigned short Dict438KeyHashTable[] = {
 26866,     2,    25, 65225,    26, 65225,     1,    15,  1703,
 };
 
-vtkDICOMDictionary::Dict Dict438Data = {
+vtkDICOMDictionary::Dict Dict440Data = {
 "GEMS_RELA_01",
 41,
 41,
-Dict438TagHashTable,
-Dict438KeyHashTable,
-Dict438Contents
+Dict440TagHashTable,
+Dict440KeyHashTable,
+Dict440Contents
 };
 
 // ----- SIEMENS MR MRS 05 -----
 
-const DictEntry Dict439Contents[] = {
+const DictEntry Dict441Contents[] = {
 { 0x0021, 0x0001, 0, VR::FD, VM::M1, "TransmitterReferenceAmplitude" },
 { 0x0021, 0x0002, 0, VR::US, VM::M1, "HammingFilterWidth" },
 { 0x0021, 0x0003, 0, VR::FD, VM::M3, "CSIGridshiftVector" },
@@ -26373,7 +26539,7 @@ const DictEntry Dict439Contents[] = {
 { 0x0021, 0x004B, 0, VR::CS, VM::M1, "SpectroResultExtendTypeDetailed" },
 };
 
-const unsigned short Dict439TagHashTable[] = {
+const unsigned short Dict441TagHashTable[] = {
    17,    22,    25,    30,    35,    38,    43,    46,    49,    52,
    55,    58,    16,    16,    16,    16,     0,     2,     0,     1,
     4,    64,     1,     5,    65,     2,     2,     3,     6,    66,
@@ -26383,7 +26549,7 @@ const unsigned short Dict439TagHashTable[] = {
    75,
 };
 
-const unsigned short Dict439KeyHashTable[] = {
+const unsigned short Dict441KeyHashTable[] = {
    17,    20,    16,    16,    16,    16,    25,    30,    16,    35,
    38,    41,    44,    51,    54,    57,     0,     1,     3, 15396,
     2,     7, 18467,    12, 19400,     2,     0, 41119,     5, 12810,
@@ -26392,18 +26558,18 @@ const unsigned short Dict439KeyHashTable[] = {
 65199,     1,    14, 57592,     1,     6, 16634,     1,    10, 57721,
 };
 
-vtkDICOMDictionary::Dict Dict439Data = {
+vtkDICOMDictionary::Dict Dict441Data = {
 "SIEMENS MR MRS 05",
 16,
 16,
-Dict439TagHashTable,
-Dict439KeyHashTable,
-Dict439Contents
+Dict441TagHashTable,
+Dict441KeyHashTable,
+Dict441Contents
 };
 
 // ----- TOSHIBA_MEC_CT_1.0 -----
 
-const DictEntry Dict440Contents[] = {
+const DictEntry Dict442Contents[] = {
 { 0x0019, 0x0001, 0, VR::IS, VM::M1, "" },
 { 0x0019, 0x0002, 0, VR::IS, VM::M1, "" },
 { 0x0019, 0x0003, 0, VR::US, VM::M1TN, "" },
@@ -26432,7 +26598,7 @@ const DictEntry Dict440Contents[] = {
 { 0x7ff1, 0x000d, 0, VR::US, VM::M1TN, "" },
 };
 
-const unsigned short Dict440TagHashTable[] = {
+const unsigned short Dict442TagHashTable[] = {
    27,    32,    37,    42,    47,    50,    26,    26,    26,    26,
    26,    26,    26,    26,    26,    26,    55,    58,    61,    66,
    71,    76,    81,    84,    89,    92,     0,     2,     2,     3,
@@ -26445,7 +26611,7 @@ const unsigned short Dict440TagHashTable[] = {
     0,     1,     1,    19,     7,
 };
 
-const unsigned short Dict440KeyHashTable[] = {
+const unsigned short Dict442KeyHashTable[] = {
    26,    26,    27,    26,    26,    30,    26,    26,    26,    26,
    26,    35,    38,    26,    26,    26,    26,    26,    26,    26,
    26,    26,    26,    26,    26,    43,     0,     1,    12, 22493,
@@ -26457,18 +26623,18 @@ const unsigned short Dict440KeyHashTable[] = {
    24,   206,    25,   206,
 };
 
-vtkDICOMDictionary::Dict Dict440Data = {
+vtkDICOMDictionary::Dict Dict442Data = {
 "TOSHIBA_MEC_CT_1.0",
 26,
 26,
-Dict440TagHashTable,
-Dict440KeyHashTable,
-Dict440Contents
+Dict442TagHashTable,
+Dict442KeyHashTable,
+Dict442Contents
 };
 
 // ----- SPI Release 1 -----
 
-const DictEntry Dict441Contents[] = {
+const DictEntry Dict443Contents[] = {
 { 0x0009, 0x0008, 0, VR::CS, VM::M1, "" },
 { 0x0009, 0x0010, 0, VR::LO, VM::M1, "Comments" },
 { 0x0009, 0x0015, 0, VR::LO, VM::M1, "UID" },
@@ -26480,27 +26646,27 @@ const DictEntry Dict441Contents[] = {
 { 0x0029, 0x0060, 0, VR::LO, VM::M1, "CompressionAlgorithm" },
 };
 
-const unsigned short Dict441TagHashTable[] = {
+const unsigned short Dict443TagHashTable[] = {
    10,    15,     9,     9,    24,     9,     9,    29,     9,     0,
     2,     3,    64,     8,    96,     4,     0,     8,     2,    21,
     4,    65,     5,    16,     2,     6,    21,     7,    32,     1,
     1,    16,
 };
 
-const unsigned short Dict441KeyHashTable[] = {
+const unsigned short Dict443KeyHashTable[] = {
     9,    10,    15,     9,    20,     9,     9,    23,    26,     0,
     2,     3, 58111,     5, 27939,     2,     2,  1085,     7, 11418,
     1,     4, 49518,     1,     1, 60804,     3,     0,   597,     6,
 12183,     8, 36166,
 };
 
-vtkDICOMDictionary::Dict Dict441Data = {
+vtkDICOMDictionary::Dict Dict443Data = {
 "SPI Release 1",
 9,
 9,
-Dict441TagHashTable,
-Dict441KeyHashTable,
-Dict441Contents
+Dict443TagHashTable,
+Dict443KeyHashTable,
+Dict443Contents
 };
 
 vtkDICOMDictionary::Dict *PrivateDictData[] = {
@@ -26592,7 +26758,7 @@ vtkDICOMDictionary::Dict *PrivateDictData[] = {
 &Dict426Data, &Dict427Data, &Dict428Data, &Dict429Data, &Dict430Data,
 &Dict431Data, &Dict432Data, &Dict433Data, &Dict434Data, &Dict435Data,
 &Dict436Data, &Dict437Data, &Dict438Data, &Dict439Data, &Dict440Data,
-&Dict441Data, NULL
+&Dict441Data, &Dict442Data, &Dict443Data, NULL
 };
 
 } // end anonymous namespace
