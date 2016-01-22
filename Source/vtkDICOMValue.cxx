@@ -1288,8 +1288,8 @@ void vtkDICOMValue::GetValuesT(VT *v, size_t c, size_t s) const
         static_cast<const ValueT<vtkDICOMTag> *>(this->V)->Data + s;
       for (size_t i = 0; i < c; i += 2)
         {
-        v[i] = static_cast<VT>(tptr[i/2].GetGroup());
-        v[i+1] = static_cast<VT>(tptr[i/2].GetElement());
+        v[i] = tptr[i/2].GetGroup();
+        v[i+1] = tptr[i/2].GetElement();
         }
       }
       break;
