@@ -436,9 +436,13 @@ vtkDICOMVR vtkDICOMItem::FindDictVR(vtkDICOMTag tag) const
         unsigned short r = v.AsUnsignedShort();
         vr = (r == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
         }
+      else if (this->L)
+        {
+        vr = this->L->VRForXS;
+        }
       else
         {
-        vr = (this->L ? this->L->VRForXS : vtkDICOMVR::US);
+        vr = vtkDICOMVR::US;
         }
       }
     else if (vr == vtkDICOMVR::OX)
