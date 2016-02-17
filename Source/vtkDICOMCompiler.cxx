@@ -504,6 +504,16 @@ size_t Encoder<E>::WriteElementHead(
     cp[7] = 0;
     Encoder<E>::PutInt32(cp+8, vl);
     }
+  else if (vl > 65534)
+    {
+    // CP-1066 allows overlength values to be written as UN
+    hl = 12;
+    cp[4] = 'U';
+    cp[5] = 'N';
+    cp[6] = 0;
+    cp[7] = 0;
+    Encoder<E>::PutInt32(cp+8, vl);
+    }
   return hl;
 }
 

@@ -1468,6 +1468,7 @@ bool Decoder<E>::ReadElements(
       {
       // if it was explicitly labeled 'UN' then check dictionary
       vr = this->Context->FindDictVR(tag);
+      this->LastVR = vr; // save true VR, rather than recorded VR
       rl = this->ImplicitLE->ReadElementValue(cp, ep, vr, vl, v);
       }
     else
