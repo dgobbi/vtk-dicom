@@ -267,6 +267,9 @@ PS 3.6
 Basic Study Content Notification SOP Class (Retired)
 SOP Class
 PS3.4
+1.2.840.10008.1.20
+Papyrus 3 Implicit VR Little Endian (Retired)
+Transfer Syntax
 1.2.840.10008.1.20.1
 Storage Commitment Push Model SOP Class
 SOP Class
@@ -305,6 +308,26 @@ DICOM UIDs as a Coding Scheme
 PS 3.6
 1.2.840.10008.2.16.4
 DICOM Controlled Terminology
+Coding Scheme
+PS3.16
+1.2.840.10008.2.16.5
+Adult Mouse Anatomy Ontology
+Coding Scheme
+PS3.16
+1.2.840.10008.2.16.6
+Uberon Ontology
+Coding Scheme
+PS3.16
+1.2.840.10008.2.16.7
+Integrated Taxonomic Information System (ITIS) Taxonomic Serial Number (TSN)
+Coding Scheme
+PS3.16
+1.2.840.10008.2.16.8
+Mouse Genome Initiative (MGI)
+Coding Scheme
+PS3.16
+1.2.840.10008.2.16.9
+PubChem Compound CID
 Coding Scheme
 PS3.16
 1.2.840.10008.3.1.1.1
@@ -687,6 +710,10 @@ PS3.4
 X-Ray Angiographic Bi-Plane Image Storage (Retired)
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.12.77
+1.2.840.10008.5.1.4.1.1.12.77 (Retired)
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.13.1.1
 X-Ray 3D Angiographic Image Storage
 SOP Class
@@ -723,6 +750,10 @@ PS3.4
 Parametric Map Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.40
+1.2.840.10008.5.1.4.1.1.40 (Retired)
+PS3.4
+SOP Class
 1.2.840.10008.5.1.4.1.1.66
 Raw Data Storage
 SOP Class
@@ -748,7 +779,7 @@ Surface Segmentation Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.66.6
-Tractography Results
+Tractography Results Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.67
@@ -941,6 +972,10 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.88.70
 Implantation Plan SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.71
+Acquisition Context SR Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.104.1
@@ -1185,6 +1220,10 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.34.9
 RT Ion Machine Verification
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.10
+RT Brachy Application Setup Delivery Instruction Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.37.1
@@ -2192,7 +2231,7 @@ CID 3677
 Summary Codes ECG
 1.2.840.10008.6.1.192
 CID 3678
-Qt Correction Algorithms
+QT Correction Algorithms
 1.2.840.10008.6.1.193
 CID 3679
 ECG Morphology Descriptions (Retired)
@@ -2336,7 +2375,7 @@ CID 3742
 Medication Administration, PCI
 1.2.840.10008.6.1.240
 CID 3743
-Clopidogrel/ticlopidine Administration
+Clopidogrel/Ticlopidine Administration
 1.2.840.10008.6.1.241
 CID 3744
 EF Testing Method
@@ -2447,7 +2486,7 @@ CID 3820
 Non-invasive Vascular Procedures
 1.2.840.10008.6.1.277
 CID 3821
-Papillary Muscle Included/excluded
+Papillary Muscle Included/Excluded
 1.2.840.10008.6.1.278
 CID 3823
 Respiratory Status
@@ -2522,7 +2561,7 @@ CID 4017
 Anatomic Region Modifier for Intra-oral Radiography
 1.2.840.10008.6.1.302
 CID 4018
-Primary Anatomic Structure for Intra-oral Radiography (permanent Dentition - Designation of Teeth)
+Primary Anatomic Structure for Intra-oral Radiography (Permanent Dentition - Designation of Teeth)
 1.2.840.10008.6.1.303
 CID 4019
 Primary Anatomic Structure for Intra-oral Radiography (Deciduous Dentition - Designation of Teeth)
@@ -2555,7 +2594,7 @@ CID 4042
 XA/XRF Anatomy Imaged
 1.2.840.10008.6.1.313
 CID 4050
-Drug Or Contrast Agent Characteristics
+Drug or Contrast Agent Characteristics
 1.2.840.10008.6.1.314
 CID 4051
 General Devices
@@ -2609,103 +2648,103 @@ CID 6000
 Overall Breast Composition
 1.2.840.10008.6.1.331
 CID 6001
-Overall Breast Composition From BI-RADS(R)
+Overall Breast Composition from BI-RADS(R)
 1.2.840.10008.6.1.332
 CID 6002
-Change Since Last Mammogram Or Prior Surgery
+Change Since Last Mammogram or Prior Surgery
 1.2.840.10008.6.1.333
 CID 6003
-Change Since Last Mammogram Or Prior Surgery From BI-RADS(R)
+Change Since Last Mammogram or Prior Surgery from BI-RADS(R)
 1.2.840.10008.6.1.334
 CID 6004
 Mammography Characteristics of Shape
 1.2.840.10008.6.1.335
 CID 6005
-Characteristics of Shape From BI-RADS(R)
+Characteristics of Shape from BI-RADS(R)
 1.2.840.10008.6.1.336
 CID 6006
 Mammography Characteristics of Margin
 1.2.840.10008.6.1.337
 CID 6007
-Characteristics of Margin From BI-RADS(R)
+Characteristics of Margin from BI-RADS(R)
 1.2.840.10008.6.1.338
 CID 6008
 Density Modifier
 1.2.840.10008.6.1.339
 CID 6009
-Density Modifier From BI-RADS(R)
+Density Modifier from BI-RADS(R)
 1.2.840.10008.6.1.340
 CID 6010
 Mammography Calcification Types
 1.2.840.10008.6.1.341
 CID 6011
-Calcification Types From BI-RADS(R)
+Calcification Types from BI-RADS(R)
 1.2.840.10008.6.1.342
 CID 6012
 Calcification Distribution Modifier
 1.2.840.10008.6.1.343
 CID 6013
-Calcification Distribution Modifier From BI-RADS(R)
+Calcification Distribution Modifier from BI-RADS(R)
 1.2.840.10008.6.1.344
 CID 6014
 Mammography Single Image Finding
 1.2.840.10008.6.1.345
 CID 6015
-Single Image Finding From BI-RADS(R)
+Single Image Finding from BI-RADS(R)
 1.2.840.10008.6.1.346
 CID 6016
 Mammography Composite Feature
 1.2.840.10008.6.1.347
 CID 6017
-Composite Feature From BI-RADS(R)
+Composite Feature from BI-RADS(R)
 1.2.840.10008.6.1.348
 CID 6018
 Clockface Location or Region
 1.2.840.10008.6.1.349
 CID 6019
-Clockface Location Or Region From BI-RADS(R)
+Clockface Location or Region from BI-RADS(R)
 1.2.840.10008.6.1.350
 CID 6020
 Quadrant Location
 1.2.840.10008.6.1.351
 CID 6021
-Quadrant Location From BI-RADS(R)
+Quadrant Location from BI-RADS(R)
 1.2.840.10008.6.1.352
 CID 6022
 Side
 1.2.840.10008.6.1.353
 CID 6023
-Side From BI-RADS(R)
+Side from BI-RADS(R)
 1.2.840.10008.6.1.354
 CID 6024
 Depth
 1.2.840.10008.6.1.355
 CID 6025
-Depth From BI-RADS(R)
+Depth from BI-RADS(R)
 1.2.840.10008.6.1.356
 CID 6026
 Mammography Assessment
 1.2.840.10008.6.1.357
 CID 6027
-Assessment From BI-RADS(R)
+Assessment from BI-RADS(R)
 1.2.840.10008.6.1.358
 CID 6028
 Mammography Recommended Follow-up
 1.2.840.10008.6.1.359
 CID 6029
-Recommended Follow-up From BI-RADS(R)
+Recommended Follow-up from BI-RADS(R)
 1.2.840.10008.6.1.360
 CID 6030
 Mammography Pathology Codes
 1.2.840.10008.6.1.361
 CID 6031
-Benign Pathology Codes From BI-RADS(R)
+Benign Pathology Codes from BI-RADS(R)
 1.2.840.10008.6.1.362
 CID 6032
-High Risk Lesions Pathology Codes From BI-RADS(R)
+High Risk Lesions Pathology Codes from BI-RADS(R)
 1.2.840.10008.6.1.363
 CID 6033
-Malignant Pathology Codes From BI-RADS(R)
+Malignant Pathology Codes from BI-RADS(R)
 1.2.840.10008.6.1.364
 CID 6034
 Intended Use of CAD Output
@@ -2768,7 +2807,7 @@ CID 6054
 Breast Imaging Findings
 1.2.840.10008.6.1.384
 CID 6055
-Breast Clinical Finding Or Indicated Problem
+Breast Clinical Finding or Indicated Problem
 1.2.840.10008.6.1.385
 CID 6056
 Associated Findings for Breast
@@ -2879,22 +2918,22 @@ CID 6100
 Chest Component Categories
 1.2.840.10008.6.1.421
 CID 6101
-Chest Finding Or Feature
+Chest Finding or Feature
 1.2.840.10008.6.1.422
 CID 6102
-Chest Finding Or Feature Modifier
+Chest Finding or Feature Modifier
 1.2.840.10008.6.1.423
 CID 6103
-Abnormal Lines Finding Or Feature
+Abnormal Lines Finding or Feature
 1.2.840.10008.6.1.424
 CID 6104
-Abnormal Opacity Finding Or Feature
+Abnormal Opacity Finding or Feature
 1.2.840.10008.6.1.425
 CID 6105
-Abnormal Lucency Finding Or Feature
+Abnormal Lucency Finding or Feature
 1.2.840.10008.6.1.426
 CID 6106
-Abnormal Texture Finding Or Feature
+Abnormal Texture Finding or Feature
 1.2.840.10008.6.1.427
 CID 6107
 Width Descriptor
@@ -2903,22 +2942,22 @@ CID 6108
 Chest Anatomic Structure Abnormal Distribution
 1.2.840.10008.6.1.429
 CID 6109
-Radiographic Anatomy Finding Or Feature
+Radiographic Anatomy Finding or Feature
 1.2.840.10008.6.1.430
 CID 6110
-Lung Anatomy Finding Or Feature
+Lung Anatomy Finding or Feature
 1.2.840.10008.6.1.431
 CID 6111
-Bronchovascular Anatomy Finding Or Feature
+Bronchovascular Anatomy Finding or Feature
 1.2.840.10008.6.1.432
 CID 6112
-Pleura Anatomy Finding Or Feature
+Pleura Anatomy Finding or Feature
 1.2.840.10008.6.1.433
 CID 6113
-Mediastinum Anatomy Finding Or Feature
+Mediastinum Anatomy Finding or Feature
 1.2.840.10008.6.1.434
 CID 6114
-Osseous Anatomy Finding Or Feature
+Osseous Anatomy Finding or Feature
 1.2.840.10008.6.1.435
 CID 6115
 Osseous Anatomy Modifiers
@@ -3170,7 +3209,7 @@ CID 7453
 Performing Roles
 1.2.840.10008.6.1.518
 CID 7454
-Species
+Animal Taxonomic Rank Values
 1.2.840.10008.6.1.519
 CID 7455
 Sex
@@ -3242,7 +3281,7 @@ CID 10008
 Dose Related Distance Measurements
 1.2.840.10008.6.1.542
 CID 10009
-Measured/calculated
+Measured/Calculated
 1.2.840.10008.6.1.543
 CID 10010
 Dose Measurement Devices
@@ -3335,7 +3374,7 @@ CID 12105
 Intracranial Cerebral Vessels
 1.2.840.10008.6.1.573
 CID 12106
-Intracranial Cerebral Vessels (unilateral)
+Intracranial Cerebral Vessels (Unilateral)
 1.2.840.10008.6.1.574
 CID 12107
 Upper Extremity Arteries
@@ -3350,16 +3389,16 @@ CID 12110
 Lower Extremity Veins
 1.2.840.10008.6.1.578
 CID 12111
-Abdominal Arteries (lateral)
+Abdominal Arteries (Lateral)
 1.2.840.10008.6.1.579
 CID 12112
-Abdominal Arteries (unilateral)
+Abdominal Arteries (Unilateral)
 1.2.840.10008.6.1.580
 CID 12113
-Abdominal Veins (lateral)
+Abdominal Veins (Lateral)
 1.2.840.10008.6.1.581
 CID 12114
-Abdominal Veins (unilateral)
+Abdominal Veins (Unilateral)
 1.2.840.10008.6.1.582
 CID 12115
 Renal Vessels
@@ -3689,10 +3728,10 @@ CID 6200
 Colon Overall Assessment
 1.2.840.10008.6.1.788
 CID 6201
-Colon Finding Or Feature
+Colon Finding or Feature
 1.2.840.10008.6.1.789
 CID 6202
-Colon Finding Or Feature Modifier
+Colon Finding or Feature Modifier
 1.2.840.10008.6.1.790
 CID 6203
 Colon Non-lesion Object Type
@@ -3930,7 +3969,7 @@ CID 12288
 Cardiac Ultrasound Outflow Tracts Finding Sites
 1.2.840.10008.6.1.869
 CID 12289
-Cardiac Ultrasound Semilunar Valves, Annulate and Sinuses Finding Sites
+Cardiac Ultrasound Semilunar Valves, Annulus and Sinuses Finding Sites
 1.2.840.10008.6.1.870
 CID 12290
 Cardiac Ultrasound Pulmonary Arteries Finding Sites
@@ -3978,7 +4017,7 @@ CID 4239
 Anterior Chamber Depth Definition
 1.2.840.10008.6.1.886
 CID 4240
-Ophthalmic Measurement Or Calculation Data Source
+Ophthalmic Measurement or Calculation Data Source
 1.2.840.10008.6.1.887
 CID 4241
 Ophthalmic Axial Length Selection Method
@@ -3987,7 +4026,7 @@ Ophthalmic Axial Length Selection Method
 
 1.2.840.10008.6.1.889
 CID 4243
-Ophthalmic Axial Length Quality Metric Type
+Ophthalmic Quality Metric Type
 1.2.840.10008.6.1.890
 CID 4244
 Ophthalmic Agent Concentration Units
@@ -4329,7 +4368,7 @@ CID 12021
 Fetal Long Bone Anatomic Sites
 1.2.840.10008.6.1.1007
 CID 12022
-Fetal Cranium Bone Anatomic Sites
+Fetal Cranium Anatomic Sites
 1.2.840.10008.6.1.1008
 CID 12023
 Pelvis and Uterus Anatomic Sites
@@ -4377,13 +4416,13 @@ CID 4026
 Primary Anatomic Structure for Intra-oral and Craniofacial Radiography
 1.2.840.10008.6.1.1023
 CID 9401
-IEC6127 Device Position Parameters
+IEC61217 Device Position Parameters
 1.2.840.10008.6.1.1024
 CID 9402
-IEC6127 Gantry Position Parameters
+IEC61217 Gantry Position Parameters
 1.2.840.10008.6.1.1025
 CID 9403
-IEC6127 Patient Support Position Parameters
+IEC61217 Patient Support Position Parameters
 1.2.840.10008.6.1.1026
 CID 7035
 Actionable Finding Classification
@@ -4495,3 +4534,156 @@ Diffusion Tractography Algorithm Families
 1.2.840.10008.6.1.1062
 CID 7263
 Diffusion Tractography Measurement Types
+1.2.840.10008.6.1.1063
+CID 7490
+Research Animal Source Registries
+1.2.840.10008.6.1.1064
+CID 231
+Yes-No Only
+1.2.840.10008.6.1.1065
+CID 601
+Biosafety Levels
+1.2.840.10008.6.1.1066
+CID 602
+Biosafety Control Reasons
+1.2.840.10008.6.1.1067
+CID 7457
+Sex - Male Female or Both
+1.2.840.10008.6.1.1068
+CID 603
+Animal Room Types
+1.2.840.10008.6.1.1069
+CID 604
+Device Reuse
+1.2.840.10008.6.1.1070
+CID 605
+Animal Bedding Material
+1.2.840.10008.6.1.1071
+CID 606
+Animal Shelter Types
+1.2.840.10008.6.1.1072
+CID 607
+Animal Feed Types
+1.2.840.10008.6.1.1073
+CID 608
+Animal Feed Sources
+1.2.840.10008.6.1.1074
+CID 609
+Animal Feeding Methods
+1.2.840.10008.6.1.1075
+CID 610
+Water Types
+1.2.840.10008.6.1.1076
+CID 611
+Anesthesia Category Code Type for Small Animal Anesthesia
+1.2.840.10008.6.1.1077
+CID 612
+Anesthesia Category Code Type from Anesthesia Quality Initiative (AQI)
+1.2.840.10008.6.1.1078
+CID 613
+Anesthesia Induction Code Type for Small Animal Anesthesia
+1.2.840.10008.6.1.1079
+CID 614
+Anesthesia Induction Code Type from Anesthesia Quality Initiative (AQI)
+1.2.840.10008.6.1.1080
+CID 615
+Anesthesia Maintenance Code Type for Small Animal Anesthesia
+1.2.840.10008.6.1.1081
+CID 616
+Anesthesia Maintenance Code Type from Anesthesia Quality Initiative (AQI)
+1.2.840.10008.6.1.1082
+CID 617
+Airway Management Method Code Type for Small Animal Anesthesia
+1.2.840.10008.6.1.1083
+CID 618
+Airway Management Method Code Type from Anesthesia Quality Initiative (AQI)
+1.2.840.10008.6.1.1084
+CID 619
+Airway Management Sub-Method Code Type for Small Animal Anesthesia
+1.2.840.10008.6.1.1085
+CID 620
+Airway Management Sub-Method Code Type from Anesthesia Quality Initiative (AQI)
+1.2.840.10008.6.1.1086
+CID 621
+Medication Type Code Type for Small Animal Anesthesia
+1.2.840.10008.6.1.1087
+CID 622
+Medication Type Code Type from Anesthesia Quality Initiative (AQI)
+1.2.840.10008.6.1.1088
+CID 623
+Medication for Small Animal Anesthesia
+1.2.840.10008.6.1.1089
+CID 624
+Inhalational Anesthesia Agents for Small Animal Anesthesia
+1.2.840.10008.6.1.1090
+CID 625
+Injectable Anesthesia Agents for Small Animal Anesthesia
+1.2.840.10008.6.1.1091
+CID 626
+Premedication Agents for Small Animal Anesthesia
+1.2.840.10008.6.1.1092
+CID 627
+Neuromuscular Blocking Agents for Small Animal Anesthesia
+1.2.840.10008.6.1.1093
+CID 628
+Ancillary Medications for Small Animal Anesthesia
+1.2.840.10008.6.1.1094
+CID 629
+Carrier Gases for Small Animal Anesthesia
+1.2.840.10008.6.1.1095
+CID 630
+Local Anesthetics for Small Animal Anesthesia
+1.2.840.10008.6.1.1096
+CID 631
+Phase of Procedure Requiring Anesthesia
+1.2.840.10008.6.1.1097
+CID 632
+Phase of Surgical Procedure Requiring Anesthesia
+1.2.840.10008.6.1.1098
+CID 633
+Phase of Imaging Procedure Requiring Anesthesia
+1.2.840.10008.6.1.1099
+CID 634
+Phase of Animal Handling
+1.2.840.10008.6.1.1100
+CID 635
+Heating Method
+1.2.840.10008.6.1.1101
+CID 636
+Temperature Sensor Device Component Type for Small Animal Procedures
+1.2.840.10008.6.1.1102
+CID 637
+Exogenous Substance Types
+1.2.840.10008.6.1.1103
+CID 638
+Exogenous Substance
+1.2.840.10008.6.1.1104
+CID 639
+Tumor Graft Histologic Type
+1.2.840.10008.6.1.1105
+CID 640
+Fibrils
+1.2.840.10008.6.1.1106
+CID 641
+Viruses
+1.2.840.10008.6.1.1107
+CID 642
+Cytokines
+1.2.840.10008.6.1.1108
+CID 643
+Toxins
+1.2.840.10008.6.1.1109
+CID 644
+Exogenous Substance Administration Sites
+1.2.840.10008.6.1.1110
+CID 645
+Exogenous Substance Tissue of Origin
+1.2.840.10008.6.1.1111
+CID 646
+Preclinical Small Animal Imaging Procedures
+1.2.840.10008.6.1.1112
+CID 647
+Position Reference Indicator for Frame of Reference
+1.2.840.10008.6.1.1113
+CID 241
+Present-Absent Only
