@@ -388,6 +388,12 @@ RetrieveAETitle
 AE
 1-n
 
+(0008,0055)
+Station AE Title
+StationAETitle
+AE
+1
+
 (0008,0056)
 Instance Availability
 InstanceAvailability
@@ -958,6 +964,12 @@ ReferencedSOPSequence
 SQ
 1
 
+(0008,119A)
+Other Failures Sequence
+OtherFailuresSequence
+SQ
+1
+
 (0008,1200)
 Studies Containing Other Referenced Instances Sequence
 StudiesContainingOtherReferencedInstancesSequence
@@ -1366,6 +1378,24 @@ IssuerOfPatientIDQualifiersSequence
 SQ
 1
 
+(0010,0026)
+Source Patient Group Identification Sequence
+SourcePatientGroupIdentificationSequence
+SQ
+1
+
+(0010,0027)
+Group of Patients Identification Sequence
+GroupOfPatientsIdentificationSequence
+SQ
+1
+
+(0010,0028)
+Subject Relative Position in Image
+SubjectRelativePositionInImage
+US
+3
+
 (0010,0030)
 Patient's Birth Date
 PatientBirthDate
@@ -1411,6 +1441,54 @@ CS
 (0010,0201)
 Quality Control Subject Type Code Sequence
 QualityControlSubjectTypeCodeSequence
+SQ
+1
+
+(0010,0212)
+Strain Description
+StrainDescription
+UC
+1
+
+(0010,0213)
+Strain Nomenclature
+StrainNomenclature
+LO
+1
+
+(0010,0214)
+Strain Stock Number
+StrainStockNumber
+LO
+1
+
+(0010,0215)
+Strain Source Registry Code Sequence
+StrainSourceRegistryCodeSequence
+SQ
+1
+
+(0010,0216)
+Strain Stock Sequence
+StrainStockSequence
+SQ
+1
+
+(0010,0217)
+Strain Source
+StrainSource
+LO
+1
+
+(0010,0218)
+Strain Additional Information
+StrainAdditionalInformation
+UT
+1
+
+(0010,0219)
+Strain Code Sequence
+StrainCodeSequence
 SQ
 1
 
@@ -1790,25 +1868,25 @@ CS
 CAD File Format
 CADFileFormat
 ST
-1-n
+1
 RET
 (0014,0024)
 Component Reference System
 ComponentReferenceSystem
 ST
-1-n
+1
 RET
 (0014,0025)
 Component Manufacturing Procedure
 ComponentManufacturingProcedure
 ST
-1-n
+1
 DICONDE
 (0014,0028)
 Component Manufacturer
 ComponentManufacturer
 ST
-1-n
+1
 DICONDE
 (0014,0030)
 Material Thickness
@@ -1832,19 +1910,19 @@ DICONDE
 Material Grade
 MaterialGrade
 ST
-1-n
+1
 DICONDE
 (0014,0044)
 Material Properties Description
 MaterialPropertiesDescription
 ST
-1-n
+1
 DICONDE
 (0014,0045)
 Material Properties File Format (Retired)
 MaterialPropertiesFileFormatRetired
 ST
-1-n
+1
 RET
 (0014,0046)
 Material Notes
@@ -1875,6 +1953,60 @@ Inner Diameter
 InnerDiameter
 DS
 1
+DICONDE
+(0014,0100)
+Component Welder IDs
+ComponentWelderIDs
+LO
+1-n
+DICONDE
+(0014,0101)
+Secondary Approval Status
+SecondaryApprovalStatus
+CS
+1
+DICONDE
+(0014,0102)
+Secondary Review Date
+SecondaryReviewDate
+DA
+1
+DICONDE
+(0014,0103)
+Secondary Review Time
+SecondaryReviewTime
+TM
+1
+DICONDE
+(0014,0104)
+Secondary Reviewer Name
+SecondaryReviewerName
+PN
+1
+DICONDE
+(0014,0105)
+Repair ID
+RepairID
+ST
+1
+DICONDE
+(0014,0106)
+Multiple Component Approval Sequence
+MultipleComponentApprovalSequence
+SQ
+1
+DICONDE
+(0014,0107)
+Other Approval Status
+OtherApprovalStatus
+CS
+1-n
+DICONDE
+(0014,0108)
+Other Secondary Approval Status
+OtherSecondaryApprovalStatus
+CS
+1-n
 DICONDE
 (0014,1010)
 Actual Environmental Conditions
@@ -3070,6 +3202,12 @@ KVP
 DS
 1
 
+(0018,0061)
+
+
+DS
+1
+RET
 (0018,0070)
 Counts Accumulated
 CountsAccumulated
@@ -6946,6 +7084,30 @@ DiffusionBValueZZ
 FD
 1
 
+(0018,9621)
+Functional MR Sequence
+FunctionalMRSequence
+SQ
+1
+
+(0018,9622)
+Functional Settling Phase Frames Present
+FunctionalSettlingPhaseFramesPresent
+CS
+1
+
+(0018,9623)
+Functional Sync Pulse
+FunctionalSyncPulse
+DT
+1
+
+(0018,9624)
+Settling Phase Frame
+SettlingPhaseFrame
+CS
+1
+
 (0018,9701)
 Decay Correction DateTime
 DecayCorrectionDateTime
@@ -8867,7 +9029,7 @@ SQ
 1
 
 (0022,1527)
-Wide Field Ophthalmic Photography  Threshold Quality Rating
+Wide Field Ophthalmic Photography Threshold Quality Rating
 WideFieldOphthalmicPhotographyThresholdQualityRating
 FL
 1
@@ -12538,6 +12700,36 @@ ProcedureStepCancellationDateTime
 DT
 1
 
+(0040,4070)
+Output Destination Sequence
+OutputDestinationSequence
+SQ
+1
+
+(0040,4071)
+DICOM Storage Sequence
+DICOMStorageSequence
+SQ
+1
+
+(0040,4072)
+STOW-RS Storage Sequence
+STOWRSStorageSequence
+SQ
+1
+
+(0040,4073)
+Storage URL
+StorageURL
+UR
+1
+
+(0040,4074)
+XDS Storage Sequence
+XDSStorageSequence
+SQ
+1
+
 (0040,8302)
 Entrance Dose in mGy
 EntranceDoseInmGy
@@ -12585,6 +12777,18 @@ Real World Value LUT Data
 RealWorldValueLUTData
 FD
 1-n
+
+(0040,9213)
+Double Float Real World Value Last Value Mapped
+DoubleFloatRealWorldValueLastValueMapped
+FD
+1
+
+(0040,9214)
+Double Float Real World Value First Value Mapped
+DoubleFloatRealWorldValueFirstValueMapped
+FD
+1
 
 (0040,9216)
 Real World Value First Value Mapped
@@ -15046,6 +15250,18 @@ UsedSegmentsSequence
 SQ
 1
 
+(0062,0020)
+Tracking ID
+TrackingID
+UT
+1
+
+(0062,0021)
+Tracking UID
+TrackingUID
+UI
+1
+
 (0064,0002)
 Deformable Registration Sequence
 DeformableRegistrationSequence
@@ -15255,19 +15471,19 @@ Triangle Point Index List
 TrianglePointIndexList
 OW
 1
-
+RET
 (0066,0024)
 Edge Point Index List
 EdgePointIndexList
 OW
 1
-
+RET
 (0066,0025)
 Vertex Point Index List
 VertexPointIndexList
 OW
 1
-
+RET
 (0066,0026)
 Triangle Strip Sequence
 TriangleStripSequence
@@ -15291,7 +15507,7 @@ Primitive Point Index List
 PrimitivePointIndexList
 OW
 1
-
+RET
 (0066,002A)
 Surface Count
 SurfaceCount
@@ -15379,26 +15595,26 @@ FL
 (0066,0040)
 Long Primitive Point Index List
 LongPrimitivePointIndexList
-UL
-1-n
+OL
+1
 
 (0066,0041)
 Long Triangle Point Index List
 LongTrianglePointIndexList
-UL
-3-3n
+OL
+1
 
 (0066,0042)
 Long Edge Point Index List
 LongEdgePointIndexList
-UL
-2-2n
+OL
+1
 
 (0066,0043)
 Long Vertex Point Index List
 LongVertexPointIndexList
-UL
-1-n
+OL
+1
 
 (0066,0101)
 Track Set Sequence
@@ -16456,6 +16672,12 @@ MatrixSequence
 SQ
 1
 
+(0070,030B)
+Frame of Reference to Displayed Coordinate System Transformation Matrix
+FrameOfReferenceToDisplayedCoordinateSystemTransformationMatrix
+FD
+16
+
 (0070,030C)
 Frame of Reference Transformation Matrix Type
 FrameOfReferenceTransformationMatrixType
@@ -16649,14 +16871,14 @@ SQ
 1
 
 (0070,1305)
-Oblique Cropping Plane
-ObliqueCroppingPlane
+Plane
+Plane
 FD
 4
 
 (0070,1306)
-Oblique Cropping Plane Normal
-ObliqueCroppingPlaneNormal
+Plane Normal
+PlaneNormal
 FD
 3
 
@@ -17830,6 +18052,90 @@ DoubleExposureFieldDelta
 FD
 4
 
+(0074,1401)
+Brachy Task Sequence
+BrachyTaskSequence
+SQ
+1
+
+(0074,1402)
+Continuation Start Total Reference Air Kerma
+ContinuationStartTotalReferenceAirKerma
+DS
+1
+
+(0074,1403)
+Continuation End Total Reference Air Kerma
+ContinuationEndTotalReferenceAirKerma
+DS
+1
+
+(0074,1404)
+Continuation Pulse Number
+ContinuationPulseNumber
+IS
+1
+
+(0074,1405)
+Channel Delivery Order Sequence
+ChannelDeliveryOrderSequence
+SQ
+1
+
+(0074,1406)
+Referenced Channel Number
+ReferencedChannelNumber
+IS
+1
+
+(0074,1407)
+Start Cumulative Time Weight
+StartCumulativeTimeWeight
+DS
+1
+
+(0074,1408)
+End Cumulative Time Weight
+EndCumulativeTimeWeight
+DS
+1
+
+(0074,1409)
+Omitted Channel Sequence
+OmittedChannelSequence
+SQ
+1
+
+(0074,140A)
+Reason for Channel Omission
+ReasonForChannelOmission
+CS
+1
+
+(0074,140B)
+Reason for Channel Omission Description
+ReasonForChannelOmissionDescription
+LO
+1
+
+(0074,140C)
+Channel Delivery Order Index
+ChannelDeliveryOrderIndex
+IS
+1
+
+(0074,140D)
+Channel Delivery Continuation Sequence
+ChannelDeliveryContinuationSequence
+SQ
+1
+
+(0074,140E)
+Omitted Application Setup Sequence
+OmittedApplicationSetupSequence
+SQ
+1
+
 (0076,0001)
 Implant Assembly Template Name
 ImplantAssemblyTemplateName
@@ -18286,6 +18592,12 @@ CertifiedTimestamp
 OB
 1
 
+(0400,0315)
+
+
+FL
+1
+RET
 (0400,0401)
 Digital Signature Purpose Code Sequence
 DigitalSignaturePurposeCodeSequence
@@ -18897,7 +19209,7 @@ Destination AE
 DestinationAE
 AE
 1
-RET
+
 (2100,0160)
 Owner ID
 OwnerID
@@ -20662,6 +20974,24 @@ AverageBeamDosePointSSD
 FL
 1
 
+(300A,0090)
+Beam Dose Type
+BeamDoseType
+CS
+1
+
+(300A,0091)
+Alternate Beam Dose
+AlternateBeamDose
+DS
+1
+
+(300A,0092)
+Alternate Beam Dose Type
+AlternateBeamDoseType
+CS
+1
+
 (300A,00A0)
 Number of Brachy Application Setups
 NumberOfBrachyApplicationSetups
@@ -21275,8 +21605,8 @@ DS
 1
 
 (300A,0131)
-Average Beam Dose Point Source to External Contour Surface Distance
-AverageBeamDosePointSourceToExternalContourSurfaceDistance
+Average Beam Dose Point Source to External Contour Distance
+AverageBeamDosePointSourceToExternalContourDistance
 FL
 1
 
@@ -21988,6 +22318,12 @@ ScanMode
 CS
 1
 
+(300A,0309)
+Modulated Scan Mode Type
+ModulatedScanModeType
+CS
+1
+
 (300A,030A)
 Virtual Source-Axis Distances
 VirtualSourceAxisDistances
@@ -22147,6 +22483,12 @@ SH
 (300A,0354)
 Patient Support Accessory Code
 PatientSupportAccessoryCode
+LO
+1
+
+(300A,0355)
+Tray Accessory Code
+TrayAccessoryCode
 LO
 1
 
@@ -22466,6 +22808,78 @@ CS
 Device Motion Parameter Code Sequence
 DeviceMotionParameterCodeSequence
 SQ
+1
+
+(300A,0501)
+Distal Depth Fraction
+DistalDepthFraction
+FL
+1
+
+(300A,0502)
+Distal Depth
+DistalDepth
+FL
+1
+
+(300A,0503)
+Nominal Range Modulation Fractions
+NominalRangeModulationFractions
+FL
+2
+
+(300A,0504)
+Nominal Range Modulated Region Depths
+NominalRangeModulatedRegionDepths
+FL
+2
+
+(300A,0505)
+Depth Dose Parameters Sequence
+DepthDoseParametersSequence
+SQ
+1
+
+(300A,0506)
+Delivered Depth Dose Parameters Sequence
+DeliveredDepthDoseParametersSequence
+SQ
+1
+
+(300A,0507)
+Delivered Distal Depth Fraction
+DeliveredDistalDepthFraction
+FL
+1
+
+(300A,0508)
+Delivered Distal Depth
+DeliveredDistalDepth
+FL
+1
+
+(300A,0509)
+Delivered Nominal Range Modulation Fractions
+DeliveredNominalRangeModulationFractions
+FL
+2
+
+(300A,0510)
+Delivered Nominal Range Modulated Region Depths
+DeliveredNominalRangeModulatedRegionDepths
+FL
+2
+
+(300A,0511)
+Delivered Reference Dose Definition
+DeliveredReferenceDoseDefinition
+CS
+1
+
+(300A,0512)
+Reference Dose Definition
+ReferenceDoseDefinition
+CS
 1
 
 (300C,0002)
