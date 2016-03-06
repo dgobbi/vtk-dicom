@@ -418,6 +418,7 @@ else:
 
   if printheader:
     printhead({"DICOM" : enum_list}, classname)
+    print "// VTK-HeaderTest-Exclude: %s.h" % (classname,)
   else:
     printbody({"DICOM" : (entry_list, tag_table, key_table)}, classname)
 
