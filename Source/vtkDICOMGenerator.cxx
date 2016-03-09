@@ -33,6 +33,11 @@
 #include <math.h>
 #include <stdlib.h>
 
+// For compatibility with new VTK generic data arrays
+#ifdef vtkGenericDataArray_h
+#define SetTupleValue SetTypedTuple
+#endif
+
 vtkCxxSetObjectMacro(vtkDICOMGenerator,PatientMatrix,vtkMatrix4x4);
 vtkCxxSetObjectMacro(vtkDICOMGenerator,SourceMetaData,vtkDICOMMetaData);
 

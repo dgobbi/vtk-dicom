@@ -27,6 +27,12 @@
 #include <string.h>
 #include <stdlib.h>
 
+// For compatibility with new VTK generic data arrays
+#ifdef vtkGenericDataArray_h
+#define SetTupleValue SetTypedTuple
+#define GetTupleValue GetTypedTuple
+#endif
+
 // remove path portion of filename
 const char *fileBasename(const char *filename)
 {

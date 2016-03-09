@@ -67,6 +67,12 @@
 #include <math.h>
 #include <stdlib.h>
 
+// For compatibility with new VTK generic data arrays
+#ifdef vtkGenericDataArray_h
+#define SetTupleValue SetTypedTuple
+#define GetTupleValue GetTypedTuple
+#endif
+
 vtkStandardNewMacro(vtkDICOMReader);
 vtkCxxSetObjectMacro(vtkDICOMReader,Sorter,vtkDICOMSliceSorter);
 

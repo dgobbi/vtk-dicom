@@ -35,6 +35,13 @@
 
 #include <ctype.h>
 
+// For compatibility with new VTK generic data arrays
+#ifdef vtkGenericDataArray_h
+#define SetTupleValue SetTypedTuple
+#define GetTupleValue GetTypedTuple
+#define InsertNextTupleValue InsertNextTypedTuple
+#endif
+
 vtkStandardNewMacro(vtkDICOMFileSorter);
 
 //----------------------------------------------------------------------------
