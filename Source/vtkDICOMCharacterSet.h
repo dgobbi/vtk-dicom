@@ -84,16 +84,18 @@ public:
   //@}
 
   //@{
-  //! Generate a SpecificCharacterSet value.
+  //! Generate SpecificCharacterSet code values (diagnostic only).
   /*!
-   *  The result is given as a set of backslash-separated values if more
-   *  than one encoding is present.  The first value may be empty to indicate
-   *  that it is ASCII.  Since this class uses an unsigned char for storage,
-   *  the only secondary and tertiary values that can be represented are the
-   *  three multi-byte ISO 2022 character sets.  Therefore, if the condition
-   *  "if ((GetKey() & ISO_2022_OTHER) != 0)" is true, then the string
-   *  returned by this method will be incomplete and only the first character
-   *  set will be listed.
+   *  Attempt to generate SpecificCharacterSet code values.  If ISO 2022
+   *  encoding is not used, then a single code value is returned.  If
+   *  ISO 2022 encoding is used with the single-byte character sets, then
+   *  only the code value for first character set will be returned (due to
+   *  limitations in the way this class stores the information).  A simple
+   *  way to check whether such incomplete information will be returned is
+   *  to check if "((GetKey() & ISO_2022) == ISO_2022)" is true.  However,
+   *  if ISO 2022 encoding is used with one or more multi-byte character
+   *  sets, the result is a set of backslash-separated code values, where
+   *  the first value will be empty if the initial coding is ASCII.
    */
   std::string GetCharacterSetString() const;
 
