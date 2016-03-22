@@ -112,8 +112,9 @@ public:
   virtual void Update() { this->Update(0); }
   virtual void Update(int);
 #if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION > 0) || VTK_MAJOR_VERSION > 7
-  virtual int Update(vtkInformation *) { this->Update(); }
-  virtual int Update(int i, vtkInformationVector *) { this->Update(i); }
+  virtual int Update(vtkInformation *) { this->Update(); return 1; }
+  virtual int Update(int i, vtkInformationVector *) {
+    this->Update(i); return 1; }
 #endif
   //@}
 
