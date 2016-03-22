@@ -86,7 +86,7 @@ print "/*=======================================================================
 print "This is an automatically generated file.  Include errata for any changes."
 print "=========================================================================*/"
 
-print "\n#include \"vtkDICOMUtilities.h\""
+print "\n#include \"vtkDICOMUtilitiesUIDTable.h\""
 
 print "\nnamespace {\n"
 
