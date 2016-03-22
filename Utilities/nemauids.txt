@@ -978,6 +978,10 @@ PS3.4
 Acquisition Context SR Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.90.1
+Content Assessment Results Storage
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.104.1
 Encapsulated PDF Storage
 SOP Class
@@ -4687,3 +4691,15 @@ Position Reference Indicator for Frame of Reference
 1.2.840.10008.6.1.1113
 CID 241
 Present-Absent Only
+1.2.840.10008.6.1.1115
+CID 7022
+Radiotherapy Purposes of Reference
+1.2.840.10008.6.1.1116
+CID 701
+Content Assessment Types
+1.2.840.10008.6.1.1117
+CID 702
+RT Content Assessment Types
+1.2.840.10008.6.1.1118
+CID 703
+Basis of Assessment
