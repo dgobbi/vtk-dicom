@@ -1408,6 +1408,24 @@ PatientBirthTime
 TM
 1
 
+(0010,0033)
+Patient's Birth Date in Alternative Calendar
+PatientsBirthDateInAlternativeCalendar
+LO
+1
+
+(0010,0034)
+Patient's Death Date in Alternative Calendar
+PatientsDeathDateInAlternativeCalendar
+LO
+1
+
+(0010,0035)
+Patient's Alternative Calendar
+PatientsAlternativeCalendar
+LO
+1
+
 (0010,0040)
 Patient's Sex
 PatientSex
@@ -4088,6 +4106,18 @@ SH
 Phosphor Type
 PhosphorType
 LO
+1
+
+(0018,1271)
+Water Equivalent Diameter
+WaterEquivalentDiameter
+FD
+1
+
+(0018,1272)
+Water Equivalent Diameter Calculation Method Code Sequence
+WaterEquivalentDiameterCalculationMethodCodeSequence
+SQ
 1
 
 (0018,1300)
@@ -18460,6 +18490,222 @@ ReferencedSurfaceDataSequence
 SQ
 1
 
+(0082,0001)
+Assessment Summary
+AssessmentSummary
+CS
+1
+
+(0082,0003)
+Assessment Summary Description
+AssessmentSummaryDescription
+UT
+1
+
+(0082,0004)
+Assessed SOP Instance Sequence
+AssessedSOPInstanceSequence
+SQ
+1
+
+(0082,0005)
+Referenced Comparison SOP Instance Sequence
+ReferencedComparisonSOPInstanceSequence
+SQ
+1
+
+(0082,0006)
+Number of Assessment Observations
+NumberOfAssessmentObservations
+UL
+1
+
+(0082,0007)
+Assessment Observations Sequence
+AssessmentObservationsSequence
+SQ
+1
+
+(0082,0008)
+Observation Significance
+ObservationSignificance
+CS
+1
+
+(0082,000A)
+Observation Description
+ObservationDescription
+UT
+1
+
+(0082,000C)
+Structured Constraint Observation Sequence
+StructuredContraintObservationSequence
+SQ
+1
+
+(0082,0010)
+Assessed Attribute Value Sequence
+AssessedAttributeValueSequence
+SQ
+1
+
+(0082,0016)
+Assessment Set ID
+AssessmentSetID
+LO
+1
+
+(0082,0017)
+Assessment Requester Sequence
+AssessmentRequesterSequence
+SQ
+1
+
+(0082,0018)
+Selector Attribute Name
+SelectorAttributeName
+LO
+1
+
+(0082,0019)
+Selector Attribute Keyword
+SelectorAttributeKeyword
+LO
+1
+
+(0082,0021)
+Assessment Type Code Sequence
+AssessmentTypeCodeSequence
+SQ
+1
+
+(0082,0022)
+Observation Basis Code Sequence
+ObservationBasisCodeSequence
+SQ
+1
+
+(0082,0023)
+Assessment Label
+AssessmentLabel
+LO
+1
+
+(0082,0032)
+Constraint Type
+ConstraintType
+CS
+1
+
+(0082,0033)
+Specification Selection Guidance
+SpecificationSelectionGuidance
+UT
+1
+
+(0082,0034)
+Constraint Value Sequence
+ConstraintValueSequence
+SQ
+1
+
+(0082,0035)
+Recommended Default Value Sequence
+RecommendedDefaultValueSequence
+SQ
+1
+
+(0082,0036)
+Constraint Violation Significance
+ConstraintViolationSignificance
+CS
+1
+
+(0082,0037)
+Constraint Violation Condition
+ConstraintViolationCondition
+UT
+1
+
+(0072,005E)
+Selector AE Value
+SelectorAEValue
+AE
+1-n
+
+(0072,005F)
+Selector AS Value
+SelectorASValue
+AS
+1-n
+
+(0072,0061)
+Selector DA Value
+SelectorDAValue
+DA
+1-n
+
+(0072,0063)
+Selector DT Value
+SelectorDTValue
+DT
+1-n
+
+(0072,0065)
+Selector OB Value
+SelectorOBValue
+OB
+1
+
+(0072,0067)
+Selector OF Value
+SelectorOFValue
+OF
+1
+
+(0072,0069)
+Selector OW Value
+SelectorOWValue
+OW
+1
+
+(0072,006B)
+Selector TM Value
+SelectorTMValue
+TM
+1-n
+
+(0072,006D)
+Selector UN Value
+SelectorUNValue
+UN
+1
+
+(0072,006F)
+Selector UC Value
+SelectorUCValue
+UC
+1-n
+
+(0072,0071)
+Selector UR Value
+SelectorURValue
+UR
+1
+
+(0072,0073)
+Selector OD Value
+SelectorODValue
+OD
+1
+
+(0072,0075)
+Selector OL Value
+SelectorOLValue
+OL
+1
+
 (0088,0130)
 Storage Media File-set ID
 StorageMediaFileSetID
@@ -21674,6 +21920,42 @@ CS
 Gantry Pitch Angle Tolerance
 GantryPitchAngleTolerance
 FL
+1
+
+(300A,0150)
+Fixation Eye
+FixationEye
+CS
+1
+
+(300A,0151)
+Chair Head Frame Position
+ChairHeadFramePosition
+DS
+1
+
+(300A,0152)
+Head Fixation Angle Tolerance
+HeadFixationAngleTolerance
+DS
+1
+
+(300A,0153)
+Chair Head Frame Position Tolerance
+ChairHeadFramePositionTolerance
+DS
+1
+
+(300A,0154)
+Fixation Light Azimuthal Angle Tolerance
+FixationLightAzimuthalAngleTolerance
+DS
+1
+
+(300A,0155)
+Fixation Light Polar Angle Tolerance
+FixationLightPolarAngleTolerance
+DS
 1
 
 (300A,0180)
