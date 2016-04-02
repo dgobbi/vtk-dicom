@@ -1410,20 +1410,20 @@ TM
 
 (0010,0033)
 Patient's Birth Date in Alternative Calendar
-PatientsBirthDateInAlternativeCalendar
+PatientBirthDateInAlternativeCalendar
 LO
 1
 
 (0010,0034)
 Patient's Death Date in Alternative Calendar
-PatientsDeathDateInAlternativeCalendar
+PatientDeathDateInAlternativeCalendar
 LO
 1
 
 (0010,0035)
 Patient's Alternative Calendar
-PatientsAlternativeCalendar
-LO
+PatientAlternativeCalendar
+CS
 1
 
 (0010,0040)
@@ -17242,10 +17242,28 @@ SelectorAttributePrivateCreator
 LO
 1
 
+(0072,005E)
+Selector AE Value
+SelectorAEValue
+AE
+1-n
+
+(0072,005F)
+Selector AS Value
+SelectorASValue
+AS
+1-n
+
 (0072,0060)
 Selector AT Value
 SelectorATValue
 AT
+1-n
+
+(0072,0061)
+Selector DA Value
+SelectorDAValue
+DA
 1-n
 
 (0072,0062)
@@ -17254,11 +17272,23 @@ SelectorCSValue
 CS
 1-n
 
+(0072,0063)
+Selector DT Value
+SelectorDTValue
+DT
+1-n
+
 (0072,0064)
 Selector IS Value
 SelectorISValue
 IS
 1-n
+
+(0072,0065)
+Selector OB Value
+SelectorOBValue
+OB
+1
 
 (0072,0066)
 Selector LO Value
@@ -17266,10 +17296,22 @@ SelectorLOValue
 LO
 1-n
 
+(0072,0067)
+Selector OF Value
+SelectorOFValue
+OF
+1
+
 (0072,0068)
 Selector LT Value
 SelectorLTValue
 LT
+1
+
+(0072,0069)
+Selector OW Value
+SelectorOWValue
+OW
 1
 
 (0072,006A)
@@ -17278,11 +17320,23 @@ SelectorPNValue
 PN
 1-n
 
+(0072,006B)
+Selector TM Value
+SelectorTMValue
+TM
+1-n
+
 (0072,006C)
 Selector SH Value
 SelectorSHValue
 SH
 1-n
+
+(0072,006D)
+Selector UN Value
+SelectorUNValue
+UN
+1
 
 (0072,006E)
 Selector ST Value
@@ -17290,10 +17344,22 @@ SelectorSTValue
 ST
 1
 
+(0072,006F)
+Selector UC Value
+SelectorUCValue
+UC
+1-n
+
 (0072,0070)
 Selector UT Value
 SelectorUTValue
 UT
+1
+
+(0072,0071)
+Selector UR Value
+SelectorURValue
+UR
 1
 
 (0072,0072)
@@ -17302,11 +17368,23 @@ SelectorDSValue
 DS
 1-n
 
+(0072,0073)
+Selector OD Value
+SelectorODValue
+OD
+1
+
 (0072,0074)
 Selector FD Value
 SelectorFDValue
 FD
 1-n
+
+(0072,0075)
+Selector OL Value
+SelectorOLValue
+OL
+1
 
 (0072,0076)
 Selector FL Value
@@ -18626,84 +18704,6 @@ CS
 Constraint Violation Condition
 ConstraintViolationCondition
 UT
-1
-
-(0072,005E)
-Selector AE Value
-SelectorAEValue
-AE
-1-n
-
-(0072,005F)
-Selector AS Value
-SelectorASValue
-AS
-1-n
-
-(0072,0061)
-Selector DA Value
-SelectorDAValue
-DA
-1-n
-
-(0072,0063)
-Selector DT Value
-SelectorDTValue
-DT
-1-n
-
-(0072,0065)
-Selector OB Value
-SelectorOBValue
-OB
-1
-
-(0072,0067)
-Selector OF Value
-SelectorOFValue
-OF
-1
-
-(0072,0069)
-Selector OW Value
-SelectorOWValue
-OW
-1
-
-(0072,006B)
-Selector TM Value
-SelectorTMValue
-TM
-1-n
-
-(0072,006D)
-Selector UN Value
-SelectorUNValue
-UN
-1
-
-(0072,006F)
-Selector UC Value
-SelectorUCValue
-UC
-1-n
-
-(0072,0071)
-Selector UR Value
-SelectorURValue
-UR
-1
-
-(0072,0073)
-Selector OD Value
-SelectorODValue
-OD
-1
-
-(0072,0075)
-Selector OL Value
-SelectorOLValue
-OL
 1
 
 (0088,0130)

@@ -3694,7 +3694,8 @@ const UIDTableEntry UIDTable[] = {
   "Position Reference Indicator for Frame of Reference" },
 { 0, 0, 0, 241, // 1.2.840.10008.6.1.1113
   "Present-Absent Only" },
-{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 10024, // 1.2.840.10008.6.1.1114
+  "Water Equivalent Diameter Method" },
 { 0, 0, 0, 7022, // 1.2.840.10008.6.1.1115
   "Radiotherapy Purposes of Reference" },
 { 0, 0, 0, 701, // 1.2.840.10008.6.1.1116

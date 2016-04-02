@@ -4691,6 +4691,9 @@ Position Reference Indicator for Frame of Reference
 1.2.840.10008.6.1.1113
 CID 241
 Present-Absent Only
+1.2.840.10008.6.1.1114
+CID 10024
+Water Equivalent Diameter Method
 1.2.840.10008.6.1.1115
 CID 7022
 Radiotherapy Purposes of Reference
