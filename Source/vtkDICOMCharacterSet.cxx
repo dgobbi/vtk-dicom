@@ -6949,6 +6949,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
         {
         i++;
         if (i + 2 > l) { break; }
+        unsigned char oldcharset = charset;
         charset = 0xFF; // indicate none found yet
         // look through single-byte charset escape codes
         for (unsigned char k = 0; k < ISO_2022_LOWBIT; k++)
@@ -6958,10 +6959,17 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           if (le > 0 && strncmp(&text[i], escape, le) == 0)
             {
             charset = k;
-            // The escape code for Japanese romaji (ISO_IR 14) switches to
-            // JIS X 0201, which DICOM defines as "ISO 2022 IR 13".
-            if (charset == ISO_IR_14)
+            if (charset == ISO_IR_13 && (oldcharset == ISO_2022_IR_87 ||
+                                         oldcharset == ISO_2022_IR_159))
               {
+              // The ISO_IR_13 charset goes in G1, so let's keep the
+              // currently active kanji charset in G0.
+              charset = oldcharset;
+              }
+            else if (charset == ISO_IR_14)
+              {
+              // The escape code for Japanese romaji (ISO_IR 14) switches
+              // to JIS X 0201, which DICOM defines as "ISO 2022 IR 13".
               charset = ISO_IR_13;
               }
             i += le;
