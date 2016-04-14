@@ -35,7 +35,7 @@ const char *const Charsets[16][3] = {
   { "ISO_IR 148", "ISO 2022 IR 148", "-M" }, // iso-8859-9, latin5, turkish
   { "ISO_IR 166", "ISO 2022 IR 166", "-T" }, // iso-8859-11, thai
   { "ISO_IR 13",  "ISO 2022 IR 13",  ")I" }, // JIS X 0201, katakana
-  { "ISO_IR 14",  "ISO 2022 IR 14",  "(J" }, // JIS X 0201, romaji
+  { "ISO_IR 13",  "ISO 2022 IR 13",  "(J" }, // JIS X 0201, romaji
   { "ISO_IR 192", "",                ""   }, // unicode multibyte
   { "GB18030",    "",                ""   }, // chinese multibyte
   { "GBK",        "",                ""   }, // subset of GB18030
@@ -6668,8 +6668,8 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
       UnicodeToUTF8(code, &s);
       }
     }
-  else if (this->Key == ISO_IR_13 || // JIS_X_0201 katakana
-           this->Key == ISO_IR_14)   // JIS_X_0201 romaji
+  else if (this->Key == ISO_IR_13 || // JIS_X_0201 romaji & katakana
+           this->Key == ISO_IR_14)
     {
     // JIS_X_0201 romaji (<0x7f) and half-width katakana (>0x7f)
     s.reserve(2*l);
@@ -6958,6 +6958,12 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           if (le > 0 && strncmp(&text[i], escape, le) == 0)
             {
             charset = k;
+            // The escape code for Japanese romaji (ISO_IR 14) switches to
+            // JIS X 0201, which DICOM defines as "ISO 2022 IR 13".
+            if (charset == ISO_IR_14)
+              {
+              charset = ISO_IR_13;
+              }
             i += le;
             break;
             }
