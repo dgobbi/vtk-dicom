@@ -46,7 +46,7 @@ const int ISO_2022_LOWBIT = 16;
 
 // This table gives secondary character sets.
 const char *const Extensions[4][3] = {
-  { "ISO_IR 58",  "ISO 2022 IR 58",  "$)A" }, // GB2313, chinese
+  { "ISO_IR 58",  "ISO 2022 IR 58",  "$)A" }, // GB2312, chinese
   { "ISO_IR 87",  "ISO 2022 IR 87",  "$B" },  // JIS X 0208, japanese
   { "ISO_IR 159", "ISO 2022 IR 159", "$(D" }, // JIS X 0212, japanese
   { "ISO_IR 149", "ISO 2022 IR 149", "$)C" } }; // KS X 1001, korean
