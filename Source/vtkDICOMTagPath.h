@@ -63,6 +63,15 @@ public:
     return vtkDICOMTagPath(this->Tail, this->Index2, this->Tail2); }
   //@}
 
+  //@{
+  bool operator==(const vtkDICOMTagPath& b) const;
+  bool operator!=(const vtkDICOMTagPath& b) const;
+  bool operator<=(const vtkDICOMTagPath& b) const;
+  bool operator>=(const vtkDICOMTagPath& b) const;
+  bool operator<(const vtkDICOMTagPath& b) const;
+  bool operator>(const vtkDICOMTagPath& b) const;
+  //@}
+
 private:
   vtkDICOMTag Head;
   unsigned int Index;

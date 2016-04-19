@@ -13,6 +13,7 @@
 =========================================================================*/
 #include "vtkDICOMTagPath.h"
 
+//----------------------------------------------------------------------------
 ostream& operator<<(ostream& o, const vtkDICOMTagPath& a)
 {
   o << "[";
@@ -32,4 +33,52 @@ ostream& operator<<(ostream& o, const vtkDICOMTagPath& a)
   o << "]";
 
   return o;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMTagPath::operator==(const vtkDICOMTagPath& b) const
+{
+  return (this->Head == b.Head &&
+          this->Index == b.Index &&
+          this->Tail == b.Tail &&
+          this->Index2 == b.Index2 &&
+          this->Tail2 == b.Tail2);
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMTagPath::operator!=(const vtkDICOMTagPath& b) const
+{
+  return !(*this == b);
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMTagPath::operator<(const vtkDICOMTagPath& b) const
+{
+  return (this->Head < b.Head ||
+          (this->Head == b.Head &&
+           (this->Index < b.Index ||
+            (this->Index == b.Index &&
+             (this->Tail < b.Tail ||
+              (this->Tail == b.Tail &&
+               (this->Index2 < b.Index2 ||
+                (this->Index2 == b.Index2 &&
+                 (this->Tail2 < b.Tail2)))))))));
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMTagPath::operator>(const vtkDICOMTagPath& b) const
+{
+  return !(*this < b || *this == b);
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMTagPath::operator<=(const vtkDICOMTagPath& b) const
+{
+  return (*this < b || *this == b);
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMTagPath::operator>=(const vtkDICOMTagPath& b) const
+{
+  return !(*this < b);
 }
