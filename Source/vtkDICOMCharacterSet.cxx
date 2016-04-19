@@ -152,8 +152,8 @@ const unsigned short CodePagesISO8859[96][9] = {
   { 0x02D9, 0x02D9, 0x02D9, 0x045F, 0xFFFD, 0xFFFD, 0xFFFD, 0x00FF, 0xFFFD }
 };
 
-// Code page for JIS X 0208 from java-ISO2022JP-1.3_P.ucm,
-// plus 94 additional characters from Unihan_IRGSources.txt
+// Code page for JIS X 0208 from JIS0208.TXT, except that backslash has
+// been replaced by "fullwidth reverse solidus" U+FF3C (Unicode 1.1).
 const unsigned short CodePageJISX0208[8836] = {
   0x3000, 0x3001, 0x3002, 0xFF0C, 0xFF0E, 0x30FB, 0xFF1A, 0xFF1B, 0xFF1F,
   0xFF01, 0x309B, 0x309C, 0x00B4, 0xFF40, 0x00A8, 0xFF3E, 0xFFE3, 0xFF3F,
@@ -1140,7 +1140,7 @@ const unsigned short CodePageJISX0208[8836] = {
 };
 
 // Code page for JIS X 0212 from JIS0212.TXT, except that narrow tilde
-// has been replaced by wide tilde.
+// has been replaced by fullwidth tilde U+FF5E (Unicode 1.1).
 const unsigned short CodePageJISX0212[8836] = {
   0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD,
   0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD,
