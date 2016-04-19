@@ -84,7 +84,14 @@ void dicomtocsv_help(FILE *file, const char *cp)
     "Attributes nested within sequences can be specified by giving a tag\n"
     "path e.g. \"-k Tag1/Tag2/Tag3\".  Either a forward slash or a backslash\n"
     "can be used to separate the components of the path.  Private tags\n"
-    "should be preceded by the private dictionary name in square brackets.\n\n");
+    "should be preceded by the private dictionary name in square brackets.\n"
+    "\n"
+    "If the same tag is given more than once with \"-k\" (or if the tag is\n"
+    "listed multiple times in the query file, or appears in both the query\n"
+    "file and as a \"-k\" option), then its first appearance will set the\n"
+    "column number that it appears in.  Also, with regards to the search,\n"
+    "the value specified in the final appearance of the tag as an option\n"
+    "will be the value used for the search.\n\n");
 }
 
 // remove path portion of filename

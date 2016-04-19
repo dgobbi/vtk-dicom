@@ -21,6 +21,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <algorithm>
 #include <iostream>
 
 typedef vtkDICOMVR VR;
@@ -309,8 +310,10 @@ bool dicomcli_readkey_query(
   size_t valueStart = s;
   size_t valueEnd = s;
   bool valueContainsQuotes = false;
+  bool keyHasAssignment = false;
   if (s < n && cp[s] == '=')
     {
+    keyHasAssignment = true;
     s++;
     valueStart = s;
     valueEnd = s;
@@ -366,8 +369,12 @@ bool dicomcli_readkey_query(
   // add the tag and value to the query data set
   if (valueStart == valueEnd)
     {
-    // empty value (always matches, always retrieved)
-    query->SetAttributeValue(tagPath, vtkDICOMValue(vr));
+    // only overwrite previous value if '=' was explicitly used
+    if (keyHasAssignment || !query->GetAttributeValue(tagPath).IsValid())
+      {
+      // empty value (always matches, always retrieved)
+      query->SetAttributeValue(tagPath, vtkDICOMValue(vr));
+      }
     }
   else if (valueContainsQuotes)
     {
@@ -389,10 +396,13 @@ bool dicomcli_readkey_query(
       vtkDICOMValue(vr, &cp[valueStart], valueEnd - valueStart));
     }
 
-  // add the tag path to the list
+  // add the tag path to the list, if it isn't already there
   if (ql)
     {
-    ql->push_back(tagPath);
+    if (std::find(ql->begin(), ql->end(), tagPath) == ql->end())
+      {
+      ql->push_back(tagPath);
+      }
     }
 
   return !tagError;
