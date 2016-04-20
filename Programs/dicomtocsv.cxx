@@ -59,6 +59,7 @@ void dicomtocsv_usage(FILE *file, const char *cp)
   fprintf(file, "options:\n"
     "  -k tag=value     Provide a key to be queried and matched.\n"
     "  -q <query.txt>   Provide a file to describe the find query.\n"
+    "  -u <uids.txt>    Provide a file that contains a list of UIDs.\n"
     "  -o <data.csv>    Provide a file for the query results.\n"
     "  --first-nonzero  Search series for first nonzero value of each key.\n"
     "  --directory-only Use directory scan only, do not re-scan files.\n"
@@ -472,6 +473,21 @@ int MAINMACRO(int argc, char *argv[])
       else if (arg[1] == 'o')
         {
         ofile = argv[++argi];
+        }
+      }
+    else if (strcmp(arg, "-u") == 0)
+      {
+      if (argi + 1 == argc || argv[argi+1][0] == '-')
+        {
+        fprintf(stderr, "Error: %s must be followed by a file.\n\n", arg);
+        dicomtocsv_usage(stderr, dicomtocsv_basename(argv[0]));
+        return 1;
+        }
+      const char *qfile = argv[++argi];
+      if (!dicomcli_readuids(qfile, &query, &qtlist))
+        {
+        fprintf(stderr, "Error: Can't read uid file %s\n\n", qfile);
+        return 1;
         }
       }
     else if (strcmp(arg, "-k") == 0)

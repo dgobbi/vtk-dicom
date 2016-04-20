@@ -66,6 +66,7 @@ void dicomfind_usage(FILE *file, const char *cp)
     "  -P              Do not follow symbolic links.\n"
     "  -k tag=value    Provide an attribute to be queried and matched.\n"
     "  -q <query.txt>  Provide a file to describe the find query.\n"
+    "  -u <uids.txt>   Provide a file that contains a list of UIDs.\n"
     "  -maxdepth n     Set the maximum directory depth.\n"
     "  -name pattern   Set a pattern to match (with \"*\" or \"?\").\n"
     "  -image          Restrict the search to files with PixelData.\n"
@@ -387,7 +388,7 @@ void dicomfind_operations(
         // for execdir, keep a list of directories that are done
         std::vector<std::string> done_dirs;
         std::string doing_dir;
-        
+
         bool notdone = true;
 
         while (notdone)
@@ -558,6 +559,21 @@ int MAINMACRO(int argc, char *argv[])
       if (!dicomcli_readquery(qfile, &query, &qtlist))
         {
         fprintf(stderr, "Can't read query file %s\n\n", qfile);
+        return 1;
+        }
+      }
+    else if (strcmp(arg, "-u") == 0)
+      {
+      if (argi + 1 == argc || argv[argi+1][0] == '-')
+        {
+        fprintf(stderr, "Error: %s must be followed by a file.\n\n", arg);
+        dicomfind_usage(stderr, dicomfind_basename(argv[0]));
+        return 1;
+        }
+      const char *qfile = argv[++argi];
+      if (!dicomcli_readuids(qfile, &query, &qtlist))
+        {
+        fprintf(stderr, "Error: Can't read uid file %s\n\n", qfile);
         return 1;
         }
       }

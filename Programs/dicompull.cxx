@@ -61,6 +61,7 @@ void dicompull_usage(FILE *file, const char *cp)
     "  -P              Do not follow symbolic links.\n"
     "  -k tag=value    Provide an attribute to be queried and matched.\n"
     "  -q <query.txt>  Provide a file to describe the find query.\n"
+    "  -u <uids.txt>   Provide a file that contains a list of UIDs.\n"
     "  -o <directory>  Directory to place the files into.\n"
     "  -maxdepth n     Set the maximum directory depth.\n"
     "  -name pattern   Set file names to match (with \"*\" or \"?\").\n"
@@ -99,6 +100,10 @@ void dicompull_help(FILE *file, const char *cp)
     "\n"
     "The values used for \"-k key=value\" can use the wildcards * and ?, and\n"
     "can also use date ranges of the form \"19990103-19990105\".\n"
+    "\n"
+    "The \"-u\" option can be used to provide a list of UIDs.  Provide a file\n"
+    "where the first line of the file is the key (e.g. SeriesInstanceUID) and\n"
+    "the rest of the file is the UIDs to match, one UID per line.\n"
     "\n"
   );
 }
@@ -309,6 +314,21 @@ int MAINMACRO(int argc, char *argv[])
       if (!dicomcli_readquery(qfile, &query, &qtlist))
         {
         fprintf(stderr, "Error: Can't read query file %s\n\n", qfile);
+        return 1;
+        }
+      }
+    else if (strcmp(arg, "-u") == 0)
+      {
+      if (argi + 1 == argc || argv[argi+1][0] == '-')
+        {
+        fprintf(stderr, "Error: %s must be followed by a file.\n\n", arg);
+        dicompull_usage(stderr, dicompull_basename(argv[0]));
+        return 1;
+        }
+      const char *qfile = argv[++argi];
+      if (!dicomcli_readuids(qfile, &query, &qtlist))
+        {
+        fprintf(stderr, "Error: Can't read uid file %s\n\n", qfile);
         return 1;
         }
       }

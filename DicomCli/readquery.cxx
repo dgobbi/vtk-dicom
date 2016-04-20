@@ -488,3 +488,89 @@ bool dicomcli_looks_like_key(const char *cp)
 
   return false;
 }
+
+bool dicomcli_readuids(
+  const char *fname, vtkDICOMItem *query, QueryTagList *ql)
+{
+  ifstream f(fname);
+  if (!f.good())
+    {
+    return false;
+    }
+
+  // Basic file structure:
+  // # one or more comments
+  // GGGG,EEEE   # a tag or key (only one)
+  // 1.185.234   # a UID, followed by more UIDs
+
+  QueryTagList ql2;
+  std::string val;
+  int lineNumber = 0;
+  while (f.good())
+    {
+    std::string line;
+    std::getline(f, line);
+    const char *cp = line.c_str();
+    size_t n = line.size();
+    lineNumber++;
+
+    // strip leading whitespace
+    size_t s = 0;
+    while (s < n && isspace(cp[s]))
+      {
+      s++;
+      }
+
+    // skip trailing whitespace
+    if (n > s && isspace(cp[n-1]))
+      {
+      --n;
+      }
+
+    // skip line if it is a comment
+    if (s == n || cp[s] == '#')
+      {
+      continue;
+      }
+
+    if (ql2.size() == 0)
+      {
+      // get the tag line, if not gotten yet
+      if (!dicomcli_readkey_query(cp, query, &ql2, true))
+        {
+        fprintf(stderr, "Error %s line %d: ", fname, lineNumber);
+        fprintf(stderr, "Need Valid DICOM tag at top of file.\n");
+        return false;
+        }
+      }
+    else
+      {
+      // read and append a value
+      if (val.length() > 0)
+        {
+        val.append("\\", 1);
+        }
+      val.append(&cp[s], n-s);
+      if (val.length() >= 65535)
+        {
+        fprintf(stderr, "Error %s line %d: ", fname, lineNumber);
+        fprintf(stderr, "Too many values (there is a 65535 byte limit)\n");
+        return false;
+        }
+      }
+    }
+
+  if (ql2.size() > 0)
+    {
+    // add the key and value to the query
+    vtkDICOMTagPath tagPath = ql2[0];
+    query->SetAttributeValue(tagPath, val);
+
+    if (ql && std::find(ql->begin(), ql->end(), tagPath) == ql->end())
+      {
+      ql->push_back(tagPath);
+      }
+    }
+
+  return true;
+}
