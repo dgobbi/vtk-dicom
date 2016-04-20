@@ -2084,8 +2084,11 @@ bool vtkDICOMValue::ValueT<T>::CompareEach(const Value *a, const Value *b)
 bool vtkDICOMValue::PatternMatchesMulti(
     const char *pattern, const char *val, vtkDICOMVR vr)
 {
-  bool inclusive = (vr == vtkDICOMVR::UI);
-  bool ordered = (vr == vtkDICOMVR::IS || vr == vtkDICOMVR::DS);
+  typedef vtkDICOMVR VR;
+  bool inclusive = (vr == VR::UI);
+  bool ordered = (vr == VR::IS || vr == VR::DS);
+  bool nowildcards = (vr == VR::UI || vr == VR::AS ||
+                      vr == VR::IS || vr == VR::DS);
   bool match = !inclusive;
 
   const char *pp = pattern;
@@ -2111,7 +2114,22 @@ bool vtkDICOMValue::PatternMatchesMulti(
       while (*vp == ' ') { vp++; }
       while (vf != vp && vf[-1] == ' ') { --vf; }
 
-      match = vtkDICOMUtilities::PatternMatches(pp, pf-pp, vp, vf-vp);
+      if (nowildcards)
+        {
+        // if VR doesn't allow wildcards, use simple string comparison
+        // (start at back, because UIDs often share the same prefix).
+        const char *cf = pf;
+        match = (pf-pp == vf-vp);
+        while (match && cf != pp)
+          {
+          match = (*(--vf) == *(--cf));
+          }
+        }
+      else
+        {
+        // use wildcard pattern matching
+        match = vtkDICOMUtilities::PatternMatches(pp, pf-pp, vp, vf-vp);
+        }
 
       // break if no values remain
       if (*vd == '\0') { break; }
