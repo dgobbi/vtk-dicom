@@ -510,6 +510,9 @@ int MAINMACRO(int argc, char *argv[])
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
 
+  // always query SpecificCharacterSet
+  query.SetAttributeValue(DC::SpecificCharacterSet, vtkDICOMValue(VR::CS));
+
   // always query the functional sequences for advanced files
   query.SetAttributeValue(
     DC::SharedFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
