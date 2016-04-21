@@ -19,6 +19,9 @@ The source should compile on Windows, OS X, and Linux.  CMake is
 required to build the source.  Detailed build instructions are
 given on the last page of the pdf file listed below.
 
+Pre-compiled binaries can be found at the following website:
+https://bintray.com/dgobbi/dicomtools/vtk-dicom
+
 More information can be found at the following website:
 http://dgobbi.github.io/vtk-dicom/
 http://dgobbi.github.io/vtk-dicom/doc/api/
