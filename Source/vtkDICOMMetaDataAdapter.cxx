@@ -33,16 +33,31 @@ vtkDICOMMetaDataAdapter::vtkDICOMMetaDataAdapter(vtkDICOMMetaData *meta)
     iter = meta->Find(DC::PerFrameFunctionalGroupsSequence);
     if (iter != meta->End())
       {
-      this->PerFrame = &iter->GetValue();
+      if (iter->IsPerInstance())
+        {
+        this->PerFrame = &iter->GetValue(0);
+        }
+      else
+        {
+        this->PerFrame = &iter->GetValue();
+        }
       }
     iter = meta->Find(DC::SharedFunctionalGroupsSequence);
     if (iter != meta->End())
       {
-      this->Shared = &iter->GetValue();
+      if (iter->IsPerInstance())
+        {
+        this->Shared = &iter->GetValue(0);
+        }
+      else
+        {
+        this->Shared = &iter->GetValue();
+        }
       }
     }
 
-  if (this->Shared && this->PerFrame)
+  if (this->Shared && this->Shared->IsValid() &&
+      this->PerFrame && this->PerFrame->IsValid())
     {
     this->NumberOfInstances =
       meta->GetAttributeValue(DC::NumberOfFrames).AsInt();
