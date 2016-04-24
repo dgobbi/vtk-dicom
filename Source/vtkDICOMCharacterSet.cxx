@@ -5842,18 +5842,19 @@ const unsigned short LinearGB18030[412] = {
   0x9961, 0xFF5F,  0x99E2, 0xFFE6
 };
 
-// Note: in the GB18030-2005 tables some codepoints in the private
-// range U+E000..U+F8FF migrated to standard unicode codepoints.
-// My understanding is that this allows more characters to be displayed
-// when the PUA is not mapped to GBK characters, but reduces the ability
-// of GB18030 to reversibly encode these private codepoints.
+// Note: GB18030 maps 24 characters to the private use area, though
+// as of Unicode 4.1 there are now standard unicode codes for these.
+// By moving these out of the PUA, it becomes possible to display
+// these characters on systems that support Unicode 4.1 and have the
+// necessary fonts.  However, it breaks the round-trip compatibility
+// between GB18030 and Unicode and therefore breaks GB18030-2005.
 const unsigned int PrivateToStandard[48] = {
-  0xE81E, 0x9FB4,  0xE826, 0x9FB5,  0xE82B, 0x9FB6,  0xE82C, 0x9FB7,
-  0xE832, 0x9FB8,  0xE843, 0x9FB9,  0xE854, 0x9FBA,  0xE864, 0x9FBB,
-  0xE78D, 0xFE10,  0xE78F, 0xFE11,  0xE78E, 0xFE12,  0xE790, 0xFE13,
+  0xE78D, 0xFE10,  0xE78E, 0xFE12,  0xE78F, 0xFE11,  0xE790, 0xFE13,
   0xE791, 0xFE14,  0xE792, 0xFE15,  0xE793, 0xFE16,  0xE794, 0xFE17,
   0xE795, 0xFE18,  0xE796, 0xFE19,  0xE816, 0x20087, 0xE817, 0x20089,
-  0xE818, 0x200CC, 0xE831, 0x215D7, 0xE83B, 0x2298F, 0xE855, 0x241FE
+  0xE818, 0x200CC, 0xE81E, 0x9FB4,  0xE826, 0x9FB5,  0xE82B, 0x9FB6,
+  0xE82C, 0x9FB7,  0xE831, 0x215D7, 0xE832, 0x9FB8,  0xE83B, 0x2298F,
+  0xE843, 0x9FB9,  0xE854, 0x9FBA,  0xE855, 0x241FE, 0xE864, 0x9FBB
 };
 
 // Convert a unicode code point to UTF-8
@@ -6776,6 +6777,12 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
                     break;
                     }
                   }
+                // this mapping was modified in GB18030-2005, after the linear table
+                // had already been defined, so it must be special-cased
+                if (code == 0x1E3F)
+                  {
+                  code = 0xE7C7;
+                  }
                 }
               }
             }
@@ -6803,12 +6810,12 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
                 }
               }
             }
-          // convert some private codes to new unicode standard codes
-          // (do this only for GB18030, for GBK stay within the BMP for
-          // maximum font compatibility between GBK and Unicode)
-          if (code >= 0xE000 && code <= 0xF8FF)
+          // convert some private codes to Unicode 4.1 standard codes in order
+          // to ensure they these characters can be displayed (though this is
+          // done at the cost of the one-to-one Unicode-to-GB18030 mapping)
+          size_t n = sizeof(PrivateToStandard)/sizeof(int);
+          if (code >= PrivateToStandard[0] && code <= PrivateToStandard[n-2])
             {
-            size_t n = sizeof(PrivateToStandard)/sizeof(int);
             for (size_t i = 0; i < n; i += 2)
               {
               if (code == PrivateToStandard[i])
