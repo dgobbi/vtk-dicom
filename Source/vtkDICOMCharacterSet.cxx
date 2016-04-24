@@ -3118,6 +3118,11 @@ const unsigned short CodePageKSX1001[8836] = {
 // Code page for gb18030 two-byte codes from gb-18030-2005.ucm.
 // There were 24 codes with duplicate mappings, which are listed in
 // the PrivateToStandard table below.
+// This table is also used for GB2312 and GBK, to ensure compatibility.
+// However, note that GBK/GB18030 differs from GNU iconv's GB2312 table
+// for these two code points:
+// 1) here 'middle dot' U+00B7 -> iconv 'katakana middle dot' U+30FB
+// 2) here 'em dash' U+2014 -> iconv 'horizontal bar' U+2015
 const unsigned short CodePageGB18030[23940] = {
   0x4E02, 0x4E04, 0x4E05, 0x4E06, 0x4E0F, 0x4E12, 0x4E17, 0x4E1F, 0x4E20,
   0x4E21, 0x4E23, 0x4E26, 0x4E29, 0x4E2E, 0x4E2F, 0x4E31, 0x4E33, 0x4E35,
