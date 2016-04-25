@@ -6777,8 +6777,8 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
                     break;
                     }
                   }
-                // this mapping was modified in GB18030-2005, after the linear table
-                // had already been defined, so it must be special-cased
+                // this mapping was modified in GB18030-2005, after the linear
+                // table had already been defined, so it must be special-cased
                 if (code == 0x1E3F)
                   {
                   code = 0xE7C7;
