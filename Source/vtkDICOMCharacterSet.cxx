@@ -7007,19 +7007,22 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           size_t le = strlen(escape);
           if (le > 0 && strncmp(&text[i], escape, le) == 0)
             {
-            charset = k;
-            if (charset == ISO_IR_13 && (oldcharset == ISO_2022_IR_87 ||
-                                         oldcharset == ISO_2022_IR_159))
+            if (k == ISO_IR_13 && (oldcharset == ISO_2022_IR_87 ||
+                                   oldcharset == ISO_2022_IR_159))
               {
               // The ISO_IR_13 charset goes in G1, so let's keep the
               // currently active kanji charset in G0.
               charset = oldcharset;
               }
-            else if (charset == ISO_IR_14)
+            else if (k == ISO_IR_14)
               {
               // The escape code for Japanese romaji (ISO_IR 14) switches
               // to JIS X 0201, which DICOM defines as "ISO 2022 IR 13".
               charset = ISO_IR_13;
+              }
+            else
+              {
+              charset = k;
               }
             i += le;
             break;
