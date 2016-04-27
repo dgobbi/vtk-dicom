@@ -6689,17 +6689,17 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
     while (cp != ep)
       {
       int code = static_cast<unsigned char>(*cp++);
-      if ((code > 0x7F && code <= 0x9F) || code == '\\')
+      if (code <= 0x7F && code != '\\' && code != '~')
+        {
+        s.push_back(code);
+        }
+      else
         {
         if (code == '\\')
           {
           code = 0xA5; // yen symbol
           }
-        UnicodeToUTF8(code, &s);
-        }
-      else if (code > 0x9F || code == '~')
-        {
-        if (code == '~')
+        else if (code == '~')
           {
           code = 0x203E; // macron (overline)
           }
@@ -6707,15 +6707,47 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           {
           code += 0xFEC0; // half-width katakana
           }
+        else if (cp != ep)
+          {
+          // if the byte not a valid JIS X 0201 code, then it is probably
+          // the first byte of a two-byte Shift-JIS sequence (vendors are
+          // required to convert Shift-JIS to ISO 2022 for use in DICOM,
+          // so this code is for compatibility with non-conformant files).
+          int x = code;
+          int y = static_cast<unsigned char>(*cp++);
+          code = 0xFFFD; // illegal character
+
+          if (y >= 0x40 && y <= 0xFC && y != 0x7F)
+            {
+            int a, b;
+            if (y < 0x9F)
+              {
+              a = 0;
+              b = y - (y < 0x7F ? 0x40 : 0x41);
+              }
+            else
+              {
+              a = 1;
+              b = y - 0x9F;
+              }
+
+            if (x >= 0x81 && x <= 0x9F)
+              {
+              a += (x - 0x81)*2;
+              code = CodePageJISX0208[a*94+b];
+              }
+            else if (x >= 0xE0 && x <= 0xEF)
+              {
+              a += (x - 0xC1)*2;
+              code = CodePageJISX0208[a*94+b];
+              }
+            }
+          }
         else
           {
           code = 0xFFFD; // illegal character
           }
         UnicodeToUTF8(code, &s);
-        }
-      else
-        {
-        s.push_back(code);
         }
       }
     }
@@ -6915,8 +6947,8 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
             }
           else if (code > 0x7F)
             {
-            // most likely Shift JIS codes, which are not permitted
-            // in DICOM or in iso-2022-jp
+            // possibly EUC-JP or Shift-JIS, neither of which should
+            // be used with ISO 2022 escape codes
             code = 0xFFFD;
             }
           UnicodeToUTF8(code, &s);
