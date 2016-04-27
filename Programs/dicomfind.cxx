@@ -44,7 +44,6 @@
 #include <stdlib.h>
 
 #include <limits>
-#include <iostream>
 
 // print the version
 void dicomfind_version(FILE *file, const char *cp)
@@ -300,10 +299,10 @@ void dicomfind_operations(
       char endchar = (op->Type == "-print0" ? '\0' : '\n');
       for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
         {
-        std::cout << sa->GetValue(kk);
-        std::cout.put(endchar);
+        fwrite(sa->GetValue(kk).data(), sa->GetValue(kk).length(), 1, stdout);
+        fputc(endchar, stdout);
         }
-      std::cout.flush();
+      fflush(stdout);
       }
     else if (op->Type == "-exec" || op->Type == "-execdir")
       {

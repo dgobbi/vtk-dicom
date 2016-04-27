@@ -37,7 +37,6 @@
 #include <ctype.h>
 
 #include <limits>
-#include <iostream>
 #include <map>
 #include <utility>
 

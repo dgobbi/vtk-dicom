@@ -37,7 +37,6 @@
 #include <stdlib.h>
 
 #include <limits>
-#include <iostream>
 
 namespace {
 
@@ -107,14 +106,14 @@ typedef vtkDICOMVR VR;
 
 // Write the header for a csv file
 void dicomtocsv_writeheader(
-  const vtkDICOMItem& query, const QueryTagList *ql, std::ostream& os)
+  const vtkDICOMItem& query, const QueryTagList *ql, FILE *fp)
 {
   // print human-readable names for each tag
   for (size_t i = 0; i < ql->size(); i++)
     {
     if (i != 0)
       {
-      os << ",";
+      fprintf(fp, "%s", ",");
       }
     const vtkDICOMItem *pitem = &query;
     vtkDICOMTagPath tagPath = ql->at(i);
@@ -124,7 +123,7 @@ void dicomtocsv_writeheader(
       vtkDICOMDictEntry e = pitem->FindDictEntry(tag);
       if (e.IsValid())
         {
-        os << e.GetName();
+        fprintf(fp, "%s", e.GetName());
         }
       if (!tagPath.HasTail())
         {
@@ -132,10 +131,10 @@ void dicomtocsv_writeheader(
         }
       pitem = pitem->GetAttributeValue(tag).GetSequenceData();
       tagPath = tagPath.GetTail();
-      os << "\\";
+      fprintf(fp, "%s", "\\");
       }
     }
-  os << "\r\n";
+  fprintf(fp, "%s", "\r\n");
 }
 
 // Convert date to format YYYY-MM-DD HH:MM:SS
@@ -186,7 +185,7 @@ std::string dicomtocsv_quote(const std::string& s)
 
 // Write out the results in csv format
 void dicomtocsv_write(vtkDICOMDirectory *finder,
-  const vtkDICOMItem& query, const QueryTagList *ql, std::ostream& os,
+  const vtkDICOMItem& query, const QueryTagList *ql, FILE *fp,
   int level, bool firstNonZero, bool useDirectoryRecords, vtkCommand *p)
 {
   // for keeping track of progress
@@ -274,7 +273,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
           {
           if (i != 0)
             {
-            os << ",";
+            fprintf(fp, "%s", ",");
             }
 
           const vtkDICOMItem *qitem = &query;
@@ -351,13 +350,15 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
                  v.GetVR() == VR::FL ||
                  v.GetVR() == VR::FD))
               {
-              os << v;
+              std::string s = v.AsString();
+              fprintf(fp, "%s", s.c_str());
               }
             else if (v.GetVR() == VR::DA ||
                      v.GetVR() == VR::TM ||
                      v.GetVR() == VR::DT)
               {
-              os << "\"" << dicomtocsv_date(v.AsString(), v.GetVR()) << "\"";
+              std::string s = dicomtocsv_date(v.AsString(), v.GetVR());
+              fprintf(fp, "\"%s\"", s.c_str());
               }
             else if (v.GetVR() == VR::SQ)
               {
@@ -365,7 +366,8 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
               }
             else if (v.GetVL() != 0 && v.GetVL() != 0xFFFFFFFF)
               {
-              os << "\"" << dicomtocsv_quote(v.AsUTF8String()) << "\"";
+              std::string s = dicomtocsv_quote(v.AsUTF8String());
+              fprintf(fp, "\"%s\"", s.c_str());
               }
             }
           else if (tagPath.GetHead() == DC::ReferencedFileID &&
@@ -373,7 +375,8 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
             {
             // ReferencedFileID (0004,1500) is meant to be used in DICOMDIR,
             // but we hijack it to report the first file in the series.
-            os << "\"" << dicomtocsv_quote(a->GetValue(jj)) << "\"";
+            std::string s = dicomtocsv_quote(a->GetValue(jj));
+            fprintf(fp, "\"%s\"", s.c_str());
             }
           else if (tagPath.GetHead() == DC::NumberOfReferences &&
                    !tagPath.HasTail())
@@ -382,11 +385,11 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
             // to count the number of references to a file, but we hijack
             // it and use it to report the number of files found for the
             // series.
-            os << "\"" << numberOfFiles << "\"";
+            fprintf(fp, "\"%d\"", numberOfFiles);
             }
           }
 
-        os << "\r\n";
+        fprintf(fp, "%s", "\r\n");
 
         // report progress
         if (p)
@@ -561,22 +564,19 @@ int MAINMACRO(int argc, char *argv[])
       }
     }
 
-  std::ostream *osp = &std::cout;
-  std::ofstream ofs;
+  FILE *fp = stdout;
+  FILE *fp1 = NULL;
 
   if (ofile)
     {
-    ofs.open(ofile,
-             std::ofstream::out |
-             std::ofstream::binary |
-             std::ofstream::trunc);
+    fp1 = fopen(ofile, "wb");
 
-    if (ofs.fail())
+    if (!fp1)
       {
       fprintf(stderr, "Error: Unable to open output file %s.\n", ofile);
       return 1;
       }
-    osp = &ofs;
+    fp = fp1;
     }
   else
     {
@@ -585,8 +585,8 @@ int MAINMACRO(int argc, char *argv[])
     }
 
   // Write the header
-  dicomtocsv_writeheader(query, &qtlist, *osp);
-  osp->flush();
+  dicomtocsv_writeheader(query, &qtlist, fp);
+  fflush(fp);
 
   // Write data for every input directory
   if (a->GetNumberOfTuples() > 0)
@@ -617,10 +617,15 @@ int MAINMACRO(int argc, char *argv[])
       p->SetText("Writing");
       }
     dicomtocsv_write(
-      finder, query, &qtlist, *osp, level,
+      finder, query, &qtlist, fp, level,
       firstNonZero, useDirectoryRecords, p);
 
-    osp->flush();
+    fflush(fp);
+    }
+
+  if (fp1)
+    {
+    fclose(fp1);
     }
 
   return rval;
