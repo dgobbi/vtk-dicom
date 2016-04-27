@@ -7107,6 +7107,33 @@ size_t vtkDICOMCharacterSet::NextBackslash(
         }
       }
     }
+  else if (this->Key == ISO_IR_13)
+    {
+    // ensure backslash isn't second part of a Shift-JIS character
+    // that has been erroneously stored as ISO_IR 13
+    while (cp != ep && *cp != '\0')
+      {
+      unsigned char x = static_cast<unsigned char>(*cp);
+      if ((x >= 0x81 && x <= 0x9F) || (x >= 0xE0 && x <= 0xEF))
+        {
+        cp++;
+        if (cp != ep && static_cast<unsigned char>(*cp) >= 0x40 &&
+            static_cast<unsigned char>(*cp) <= 0xFC &&
+            static_cast<unsigned char>(*cp) != 0x7F)
+          {
+          cp++;
+          }
+        }
+      else if (*cp != '\\')
+        {
+        cp++;
+        }
+      else
+        {
+        break;
+        }
+      }
+    }
   else if ((this->Key & ISO_2022) != 0)
     {
     // ensure backslash isn't part of a G0 multi-byte code
