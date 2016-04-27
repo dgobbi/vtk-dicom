@@ -6968,8 +6968,12 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
               }
             // convert two bytes into unicode
             unsigned short a = code - 0xA1;
-            unsigned short b = static_cast<unsigned char>(text[i++]) - 0xA1;
-            code = CodePageKSX1001[a*94+b];
+            code = static_cast<unsigned char>(text[i++]);
+            if (code >= 0xA1 && code < 0xFF)
+              {
+              unsigned short b = code - 0xA1;
+              code = CodePageKSX1001[a*94+b];
+              }
             }
           UnicodeToUTF8(code, &s);
           }
