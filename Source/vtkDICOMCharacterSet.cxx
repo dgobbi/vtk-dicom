@@ -6715,7 +6715,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           // so this code is for compatibility with non-conformant files).
           int x = code;
           int y = static_cast<unsigned char>(*cp++);
-          code = 0xFFFD; // illegal character
+          code = (y == 0 ? 0 : 0xFFFD); // illegal character or null
 
           if (y >= 0x40 && y <= 0xFC && y != 0x7F)
             {
@@ -6979,14 +6979,20 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
         // other multibyte conversions
         while (i < j)
           {
-          i++;
-          if (i == j)
+          unsigned short code = 0xFFFD;
+          if (text[i++] == '\0')
             {
-            break;
+            code = 0;
             }
-          i++;
+          else if (i < j)
+            {
+            if (text[i++] == '\0')
+              {
+              code = 0;
+              }
+            }
           // unrecognized multi-byte character
-          UnicodeToUTF8(0xFFFD, &s);
+          UnicodeToUTF8(code, &s);
           }
         }
 
