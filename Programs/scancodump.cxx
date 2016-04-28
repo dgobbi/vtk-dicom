@@ -92,57 +92,58 @@ int MAINMACRO(int argc, char *argv[])
   reader->GetDataSpacing(spacing);
   reader->GetDataExtent(extent);
 
-  cout << "Version: " << reader->GetVersion() << "\n";
-  cout << "CreationDate: " << reader->GetCreationDate() << "\n";
+  printf("Version: %s\n", reader->GetVersion());
+  printf("CreationDate: %s\n", reader->GetCreationDate());
   if (strncmp(reader->GetVersion(), "AIMDATA", 7) == 0)
     {
-    cout << "ModificationDate: " << reader->GetModificationDate() << "\n";
-    cout << "Position: "
-         << static_cast<int>(origin[0]/spacing[0] + 0.5) << " "
-         << static_cast<int>(origin[1]/spacing[1] + 0.5) << " "
-         << static_cast<int>(origin[2]/spacing[2] + 0.5) << "\n";
-    cout << "Dimensions: "
-         << (extent[1] - extent[0] + 1) << " "
-         << (extent[3] - extent[2] + 1) << " "
-         << (extent[5] - extent[4] + 1) << "\n";
-    cout << "ElementSize: "
-         << spacing[0] << " " << spacing[1] << " " << spacing[2] << " [mm]\n";
-    cout << "DataType: "
-         << (reader->GetDataScalarType() == VTK_SHORT ? "short\n" : "byte\n");
+    printf("ModificationDate: %s\n", reader->GetModificationDate());
+    printf("Position: %d %d %d\n",
+           static_cast<int>(origin[0]/spacing[0] + 0.5),
+           static_cast<int>(origin[1]/spacing[1] + 0.5),
+           static_cast<int>(origin[2]/spacing[2] + 0.5));
+    printf("Dimensions: %d %d %d\n",
+           (extent[1] - extent[0] + 1),
+           (extent[3] - extent[2] + 1),
+           (extent[5] - extent[4] + 1));
+    printf("ElementSize: %g %g %g [mm]\n",
+           spacing[0], spacing[1], spacing[2]);
+    printf("DataType: %s\n",
+           (reader->GetDataScalarType() == VTK_SHORT ? "short" : "byte"));
     }
   reader->GetScanDimensionsPixels(ivec);
-  cout << "ScanDimensionsPixels: "
-       << ivec[0] << " " << ivec[1] << " " << ivec[2] << "\n";
+  printf("ScanDimensionsPixels: %d %d %d\n",
+         ivec[0], ivec[1], ivec[2]);
   reader->GetScanDimensionsPhysical(dvec);
-  cout << "ScanDimensionsPhysical: "
-       << dvec[0] << " " << dvec[1] << " " << dvec[2] << " [mm]\n";
-  cout << "PatientName: " << reader->GetPatientName() << "\n";
-  cout << "PatientIndex: " << reader->GetPatientIndex() << "\n";
-  cout << "MeasurementIndex: " << reader->GetMeasurementIndex() << "\n";
-  cout << "Site: " << reader->GetSite() << "\n";
-  cout << "ScannerID: " << reader->GetScannerID() << "\n";
-  cout << "ScannerType: " << reader->GetScannerType() << "\n";
-  cout << "PositionSlice1: " << reader->GetStartPosition() << " [mm]\n";
-  cout << "ReferenceLine: " << reader->GetReferenceLine() << " [mm]\n";
-  cout << "NumberOfSamples: " << reader->GetNumberOfSamples() << "\n";
-  cout << "NumberOfProjections: " << reader->GetNumberOfProjections() << "\n";
-  cout << "ScanDistance: " << reader->GetScanDistance() << " [mm]\n";
-  cout << "SampleTime: " << reader->GetSampleTime() << " [ms]\n";
-  cout << "SliceThickness: " << reader->GetSliceThickness() << " [mm]\n";
-  cout << "SliceIncrement: " << reader->GetSliceIncrement() << " [mm]\n";
-  cout << "ReconstructionAlg: " << reader->GetReconstructionAlg() << "\n";
-  cout << "Energy: " << reader->GetEnergy() << " [kV]\n";
-  cout << "Intensity: " << reader->GetIntensity() << " [mA]\n";
-  cout << "MuScaling: " << reader->GetMuScaling() << " [cm]\n";
+  printf("ScanDimensionsPhysical: %g %g %g [mm]\n",
+         dvec[0], dvec[1], dvec[2]);
+  printf("PatientName: %s\n", reader->GetPatientName());
+  printf("PatientIndex: %d\n", reader->GetPatientIndex());
+  printf("MeasurementIndex: %d\n", reader->GetMeasurementIndex());
+  printf("Site: %d\n", reader->GetSite());
+  printf("ScannerID: %d\n", reader->GetScannerID());
+  printf("ScannerType: %d\n", reader->GetScannerType());
+  printf("PositionSlice1: %g [mm]\n", reader->GetStartPosition());
+  printf("ReferenceLine: %g [mm]\n", reader->GetReferenceLine());
+  printf("NumberOfSamples: %d\n", reader->GetNumberOfSamples());
+  printf("NumberOfProjections: %d\n", reader->GetNumberOfProjections());
+  printf("ScanDistance: %g [mm]\n", reader->GetScanDistance());
+  printf("SampleTime: %g [ms]\n", reader->GetSampleTime());
+  printf("SliceThickness: %g [mm]\n", reader->GetSliceThickness());
+  printf("SliceIncrement: %g [mm]\n", reader->GetSliceIncrement());
+  printf("ReconstructionAlg: %d\n", reader->GetReconstructionAlg());
+  printf("Energy: %g [kV]\n", reader->GetEnergy());
+  printf("Intensity: %g [mA]\n", reader->GetIntensity());
+  printf("MuScaling: %g [cm]\n", reader->GetMuScaling());
   reader->GetDataRange(dvec);
-  cout << "DataRange: " << dvec[0] << " " << dvec[1] << "\n";
-  cout << "CalibrationData: " << reader->GetCalibrationData() << "\n";
-  cout << "RescaleType: " << reader->GetRescaleType() << "\n";
-  cout << "RescaleUnits: " << reader->GetRescaleUnits() << "\n";
-  cout << "RescaleSlope: " << reader->GetRescaleSlope() << "\n";
-  cout << "RescaleIntercept: " << reader->GetRescaleIntercept() << "\n";
-  cout << "MuWater: " << reader->GetMuWater() << " [cm^-1]\n";
-  cout << "HeaderSize: " << reader->GetHeaderSize() << "\n";
+  printf("DataRange: %g %g\n", dvec[0], dvec[1]);
+  printf("CalibrationData: %s\n", reader->GetCalibrationData());
+  printf("RescaleType: %d\n", reader->GetRescaleType());
+  printf("RescaleUnits: %s\n", reader->GetRescaleUnits());
+  printf("RescaleSlope: %g\n", reader->GetRescaleSlope());
+  printf("RescaleIntercept: %g\n", reader->GetRescaleIntercept());
+  printf("MuWater: %g [cm^-1]\n", reader->GetMuWater());
+  printf("HeaderSize: %d\n", static_cast<int>(reader->GetHeaderSize()));
+  fflush(stdout);
 
   return 0;
 }
