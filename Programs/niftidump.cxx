@@ -16,12 +16,13 @@
 #include "vtkNIFTIReader.h"
 #include "vtkNIFTIHeader.h"
 #include "vtkNIFTIPrivate.h"
-#include "vtkMatrix4x4.h"
-#include "vtkStringArray.h"
 
+#include <vtkMatrix4x4.h>
+#include <vtkStringArray.h>
 #include <vtkSmartPointer.h>
 
 #include <stdio.h>
+#include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -54,6 +55,34 @@ void printHelp(FILE *file, const char *cp)
   printUsage(file, cp);
   fprintf(file, "\n"
     "Dump the header from a NIfTI file.\n");
+}
+
+// sanitize a string (remove unprintable characters)
+#define SANITIZE_BUFSIZE 82
+const char *stringSanitize(
+  char op[SANITIZE_BUFSIZE], const char *cp, size_t l)
+{
+  if (l >= SANITIZE_BUFSIZE)
+    {
+    l = SANITIZE_BUFSIZE - 1;
+    }
+
+  size_t i;
+  for (i = 0; i < l && cp[i] != '\0'; i++)
+    {
+    if (isprint(cp[i]))
+      {
+      op[i] = cp[i];
+      }
+    else
+      {
+      op[i] = '?';
+      }
+    }
+
+  op[i] = '\0';
+
+  return op;
 }
 
 // remove path portion of filename
@@ -265,124 +294,103 @@ int MAINMACRO(int argc, char *argv[])
       }
     }
 
-  cout << "sizeof_hdr: " << (version >= 2 ?
-                             vtkNIFTIHeader::Nifti2HeaderSize :
-                             vtkNIFTIHeader::Nifti1HeaderSize) << "\n";
-  cout << "vox_offset: " << hdr.vox_offset << "\n";
-  //cout << "data_type: " << hdr.data_type << "\n";
-  //cout << "db_name: " << hdr.db_name << "\n";
-  //cout << "extents: " << hdr.extents << "\n";
-  //cout << "session_error: " << hdr.session_error << "\n";
-  //cout << "regular: " << static_cast<int>(hdr.regular) << "\n";
-  cout.setf(std::ios::hex, std::ios::basefield);
-  cout << "dim_info: 0x" << static_cast<int>(hdr.dim_info);
+  // temporary space
+  char buf[SANITIZE_BUFSIZE];
+
+  printf("sizeof_hdr: %d\n", (version >= 2 ?
+                              vtkNIFTIHeader::Nifti2HeaderSize :
+                              vtkNIFTIHeader::Nifti1HeaderSize));
+  printf("vox_offset: %lld\n", hdr.vox_offset);
+  //printf("data_type: %.10s\n", hdr.data_type);
+  //printf("db_name: %.18s\n", hdr.db_name);
+  //printf("extents: %d\n", hdr.extents);
+  //printf("session_error: %d\n", hdr.session_error);
+  //printf("regular: %d\n", hdr.regular);
+  printf("dim_info: 0x%x", hdr.dim_info);
   if (hdr.dim_info == 0)
     {
-    cout << " (unknown)\n";
+    printf(" (unknown)\n");
     }
   else
     {
-    cout << " (freq_dim=" << (hdr.dim_info & 0x3)
-         << ", phase_dim=" << ((hdr.dim_info >> 2) & 0x3)
-         << ", slice_dim=" << ((hdr.dim_info >> 4) & 0x3) << ")\n";
+    printf(" (freq_dim=%d, phase_dim=%d, slice_dim=%d\n",
+           (hdr.dim_info & 0x3),
+           ((hdr.dim_info >> 2) & 0x3),
+           ((hdr.dim_info >> 4) & 0x3));
     }
-  cout.unsetf(std::ios::hex);
-  cout << "dim:";
+  printf("dim:");
   for (int i = 0; i < 8; i++)
     {
-    cout << " " << hdr.dim[i];
+    printf(" %lld", hdr.dim[i]);
     }
-  cout << "\n";
-  cout << "pixdim:";
+  printf("\n");
+  printf("pixdim:");
   for (int i = 0; i < 8; i++)
     {
-    cout << " " << hdr.pixdim[i];
+    printf(" %g", hdr.pixdim[i]);
     }
-  cout << "\n";
-  cout.setf(std::ios::hex, std::ios::basefield);
-  cout << "xyzt_units: 0x" << static_cast<int>(hdr.xyzt_units)
-       << " (" << spaceUnits << ", " << timeUnits << ")\n";
-  cout.unsetf(std::ios::hex);
+  printf("\n");
+  printf("xyzt_units: 0x%x (%s, %s)\n",
+         hdr.xyzt_units, spaceUnits, timeUnits);
   if (version > 0)
     {
-    cout << "intent_code: " << hdr.intent_code
-         << " (" << intentCode << ")\n";
-    cout << "intent_name: \"";
-    for (size_t j = 0;
-         j < sizeof(hdr.intent_name) && hdr.intent_name[j] != '\0';
-         j++)
-      {
-      cout << (isprint(hdr.intent_name[j]) ? hdr.intent_name[j] : '?');
-      }
-    cout << "\"\n";
-    cout << "intent_p1: " << hdr.intent_p1 << "\n";
-    cout << "intent_p2: " << hdr.intent_p2 << "\n";
-    cout << "intent_p3: " << hdr.intent_p3 << "\n";
+    printf("intent_code: %d (%s)\n",
+           hdr.intent_code, intentCode);
+    printf("intent_name: \"%s\"\n",
+           stringSanitize(buf, hdr.intent_name, sizeof(hdr.intent_name)));
+    printf("intent_p1: %g\n", hdr.intent_p1);
+    printf("intent_p2: %g\n", hdr.intent_p2);
+    printf("intent_p3: %g\n", hdr.intent_p3);
     }
-  cout << "datatype: " << hdr.datatype
-     << " (" << datatypeName << ")\n";
-  cout << "bitpix: " << hdr.bitpix << "\n";
+  printf("datatype: %d (%s)\n", hdr.datatype, datatypeName);
+  printf("bitpix: %d\n", hdr.bitpix);
   if (version > 0)
     {
-    cout << "scl_slope: " << hdr.scl_slope << "\n";
-    cout << "scl_inter: " << hdr.scl_inter << "\n";
-    cout << "cal_max: " << hdr.cal_max << "\n";
-    cout << "cal_min: " << hdr.cal_min << "\n";
-    cout << "slice_code: " << static_cast<int>(hdr.slice_code)
-         << " (" << sliceCode << ")\n";
-    cout << "slice_start: " << hdr.slice_start << "\n";
-    cout << "slice_end: " << hdr.slice_end << "\n";
-    cout << "slice_duration: " << hdr.slice_duration << "\n";
-    cout << "toffset: " << hdr.toffset << "\n";
+    printf("scl_slope: %g\n", hdr.scl_slope);
+    printf("scl_inter: %g\n", hdr.scl_inter);
+    printf("cal_max: %g\n", hdr.cal_max);
+    printf("cal_min: %g\n", hdr.cal_min);
+    printf("slice_code: %d (%s)\n", hdr.slice_code, sliceCode);
+    printf("slice_start: %lld\n", hdr.slice_start);
+    printf("slice_end: %lld\n", hdr.slice_end);
+    printf("slice_duration: %g\n", hdr.slice_duration);
+    printf("toffset: %g\n", hdr.toffset);
     }
-  cout << "descrip: \"";
-  for (size_t j = 0; j < sizeof(hdr.descrip) && hdr.descrip[j] != '\0'; j++)
-    {
-    cout << (isprint(hdr.descrip[j]) ? hdr.descrip[j] : '?');
-    }
-  cout << "\"\n";
-  cout << "aux_file: \"";
-  for (size_t j = 0; j < sizeof(hdr.aux_file) && hdr.aux_file[j] != '\0'; j++)
-    {
-    cout << (isprint(hdr.aux_file[j]) ? hdr.aux_file[j] : '?');
-    }
-  cout << "\"\n";
+  printf("descrip: \"%s\"\n",
+         stringSanitize(buf, hdr.descrip, sizeof(hdr.descrip)));
+  printf("aux_file: \"%s\"\n",
+         stringSanitize(buf, hdr.aux_file, sizeof(hdr.aux_file)));
   if (version > 0)
     {
-    cout << "qform_code: " << hdr.qform_code
-         << " (" << xformCode[0] << ")\n";
-    cout << "sform_code: " << hdr.sform_code
-         << " (" << xformCode[1] << ")\n";
-    cout << "quatern_b: " << hdr.quatern_b << "\n";
-    cout << "quatern_c: " << hdr.quatern_c << "\n";
-    cout << "quatern_d: " << hdr.quatern_d << "\n";
-    cout << "qoffset_x: " << hdr.qoffset_x << "\n";
-    cout << "qoffset_y: " << hdr.qoffset_y << "\n";
-    cout << "qoffset_z: " << hdr.qoffset_z << "\n";
-    cout << "srow_x:";
+    printf("qform_code: %d (%s)\n", hdr.qform_code, xformCode[0]);
+    printf("sform_code: %d (%s)\n", hdr.sform_code, xformCode[1]);
+    printf("quatern_b: %g\n", hdr.quatern_b);
+    printf("quatern_c: %g\n", hdr.quatern_c);
+    printf("quatern_d: %g\n", hdr.quatern_d);
+    printf("qoffset_x: %g\n", hdr.qoffset_x);
+    printf("qoffset_y: %g\n", hdr.qoffset_y);
+    printf("qoffset_z: %g\n", hdr.qoffset_z);
+    printf("srow_x:");
     for (int i = 0; i < 4; i++)
       {
-      cout << " " << hdr.srow_x[i];
+      printf(" %g", hdr.srow_x[i]);
       }
-    cout << "\n";
-    cout << "srow_y:";
+    printf("\n");
+    printf("srow_y:");
     for (int i = 0; i < 4; i++)
       {
-      cout << " " << hdr.srow_y[i];
+      printf(" %g", hdr.srow_y[i]);
       }
-    cout << "\n";
-    cout << "srow_z:";
+    printf("\n");
+    printf("srow_z:");
     for (int i = 0; i < 4; i++)
       {
-      cout << " " << hdr.srow_z[i];
+      printf(" %g", hdr.srow_z[i]);
       }
-    cout << "\n";
-    cout << "magic: \"";
-    for (size_t j = 0; j < sizeof(hdr.magic) && hdr.magic[j] != '\0'; j++)
-      {
-      cout << (isprint(hdr.magic[j]) ? hdr.magic[j] : '?');
-      }
-    cout << "\"" << endl;
+    printf("\n");
+    printf("magic: \"%s\"\n",
+           stringSanitize(buf, hdr.magic, sizeof(hdr.magic)));
+    fflush(stdout);
     }
 
   return rval;
