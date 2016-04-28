@@ -47,13 +47,11 @@ namespace {
 class Arguments
 {
 public:
-  // Construct with an empty argument list.
-  Arguments() : m_Argc(0), m_Argv(0) {}
+  // Construct with an empty argument list, set console code page to UTF-8.
+  Arguments();
 
-  // Destruct by freeing the memory.
-  ~Arguments() {
-    FreeStrings(&m_Argc, &m_Argv);
-  }
+  // Destruct by freeing the memory and restoring the origin code page.
+  ~Arguments();
 
   // Add the next arg (this is called by ExpandArgs).
   void Push(wchar_t *arg);
@@ -142,7 +140,22 @@ private:
 
   int m_Argc;
   char **m_Argv;
+  UINT m_CodePage;
 };
+
+Arguments::Arguments() : m_Argc(0), m_Argv(0)
+{
+  // Save the current code page, then set code page to UTF-8
+  m_CodePage = GetConsoleOutputCP();
+  SetConsoleOutputCP(65001);
+}
+
+Arguments::~Arguments()
+{
+  FreeStrings(&m_Argc, &m_Argv);
+  // Restore the old code page
+  SetConsoleOutputCP(m_CodePage);
+}
 
 bool Arguments::MatchesSpec(
   const wchar_t *val, size_t vl,
