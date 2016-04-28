@@ -38,6 +38,10 @@
 
 #include <limits>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 namespace {
 
 // print the version
@@ -569,7 +573,16 @@ int MAINMACRO(int argc, char *argv[])
 
   if (ofile)
     {
+#ifndef _WIN32
     fp1 = fopen(ofile, "wb");
+#else
+    // use wide chars to avoid narrowing to local character set
+    int n = MultiByteToWideChar(CP_UTF8, 0, ofile, -1, NULL, 0);
+    wchar_t *wofile = new wchar_t[n];
+    MultiByteToWideChar(CP_UTF8, 0, ofile, -1, wofile, n);
+    fp1 = _wfopen(wofile, L"wb");
+    delete [] wofile;
+#endif
 
     if (!fp1)
       {

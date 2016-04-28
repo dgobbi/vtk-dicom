@@ -284,7 +284,12 @@ int dicomfind_chdir(const char *dirname)
 int dicomfind_chdir(const char *dirname)
 {
   // use _wchdir to allow paths longer than the 260 char limit
-  return _chdir(dirname);
+  int n = MultiByteToWideChar(CP_UTF8, 0, dirname, -1, NULL, 0);
+  wchar_t *wp = new wchar_t[n];
+  MultiByteToWideChar(CP_UTF8, 0, dirname, -1, wp, n);
+  int rval = _wchdir(wp);
+  delete [] wp;
+  return rval;
 }
 #endif
 
@@ -297,8 +302,16 @@ std::string dicomfind_getcwd()
 #else
 std::string dicomfind_getcwd()
 {
-  char buffer[2048];
-  return _getcwd(buffer, sizeof(buffer));
+  wchar_t wbuffer[2048];
+  wchar_t *wp = _wgetcwd(wbuffer, sizeof(wbuffer)/sizeof(wchar_t));
+  int n = WideCharToMultiByte(
+    CP_UTF8, 0, wp, -1, NULL, 0, NULL, NULL);
+  char *cp = new char[n];
+  WideCharToMultiByte(
+    CP_UTF8, 0, wp, -1, cp, n, NULL, NULL);
+  std::string s = cp;
+  delete [] cp;
+  return s;
 }
 #endif
 
