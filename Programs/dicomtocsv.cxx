@@ -134,11 +134,7 @@ void dicomtocsv_writeheader(
       fprintf(fp, "%s", "\\");
       }
     }
-#ifdef _WIN32
-  fprintf(fp, "%s", "\n");
-#else
   fprintf(fp, "%s", "\r\n");
-#endif
 }
 
 // Convert date to format YYYY-MM-DD HH:MM:SS
@@ -393,13 +389,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
             }
           }
 
-        // Win32 will automatically output DOS line endings, and for UNIX,
-        // we force DOS line endings as recommended by RFC 4180.
-#ifdef _WIN32
-        fprintf(fp, "%s", "\n");
-#else
         fprintf(fp, "%s", "\r\n");
-#endif
 
         // report progress
         if (p)
