@@ -33,6 +33,7 @@
 #include <errno.h>
 #else
 // includes for spawn
+#include <windows.h>
 #include <process.h>
 #include <errno.h>
 // include for getcwd
@@ -213,13 +214,32 @@ bool execute_command(const char *command, char *argv[])
   return true;
 }
 #else
-bool execute_command(const char *command, char *argv[])
+bool execute_command(const char *, char *argv[])
 {
+  bool rval = true;
+
   // flush the output
   fflush(stdout);
   fflush(stderr);
 
-  if (_spawnvp(_P_WAIT, command, argv) != 0)
+  int m = 0;
+  while (argv[m] != 0)
+    {
+    m++;
+    }
+
+  wchar_t **wargv = new wchar_t *[m + 1];
+
+  for (int i = 0; i < m; i++)
+    {
+    int n = MultiByteToWideChar(CP_UTF8, 0, argv[i], -1, NULL, 0);
+    wargv[i] = new wchar_t[n];
+    MultiByteToWideChar(CP_UTF8, 0, argv[i], -1, wargv[i], n);
+    }
+
+  wargv[m] = 0;
+
+  if (_wspawnvp(_P_WAIT, wargv[0], wargv) != 0)
     {
     if (errno == ENOENT)
       {
@@ -242,10 +262,16 @@ bool execute_command(const char *command, char *argv[])
       fprintf(stderr, "Unknown error while running command: %s\n", argv[0]);
       }
 
-    return false;
+    rval = false;
     }
 
-  return true;
+  for (int i = 0; i < m; i++)
+    {
+    delete [] wargv[i];
+    }
+  delete [] wargv;
+
+  return rval;
 }
 #endif
 
