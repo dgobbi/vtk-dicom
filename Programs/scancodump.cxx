@@ -20,9 +20,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-// from dicomcli
-#include "mainmacro.h"
-
 // print the version
 void printVersion(FILE *file, const char *cp)
 {
@@ -60,7 +57,7 @@ const char *fileBasename(const char *filename)
 }
 
 // This program will convert
-int MAINMACRO(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   int rval = 0;
 
