@@ -24,6 +24,10 @@
 #include <algorithm>
 #include <iostream>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 typedef vtkDICOMVR VR;
 
 // Prototype for function that reads one query key
@@ -57,7 +61,15 @@ vtkDICOMTagPath path_append(const vtkDICOMTagPath& tpath, vtkDICOMTag tag)
 bool dicomcli_readquery(
   const char *fname, vtkDICOMItem *query, QueryTagList *ql)
 {
+#ifdef _WIN32
+  int cn = MultiByteToWideChar(CP_UTF8, 0, fname, -1, NULL, 0);
+  wchar_t *wfname = new wchar_t[cn];
+  MultiByteToWideChar(CP_UTF8, 0, fname, -1, wfname, cn);
+  ifstream f(wfname);
+  delete [] wfname;
+#else
   ifstream f(fname);
+#endif
   if (!f.good())
     {
     return false;
@@ -492,7 +504,15 @@ bool dicomcli_looks_like_key(const char *cp)
 bool dicomcli_readuids(
   const char *fname, vtkDICOMItem *query, QueryTagList *ql)
 {
+#ifdef _WIN32
+  int cn = MultiByteToWideChar(CP_UTF8, 0, fname, -1, NULL, 0);
+  wchar_t *wfname = new wchar_t[cn];
+  MultiByteToWideChar(CP_UTF8, 0, fname, -1, wfname, cn);
+  ifstream f(wfname);
+  delete [] wfname;
+#else
   ifstream f(fname);
+#endif
   if (!f.good())
     {
     return false;
