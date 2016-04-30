@@ -21,6 +21,7 @@
 #include <stdlib.h>
 
 // from dicomcli
+#include "vtkConsoleOutputWindow.h"
 #include "mainmacro.h"
 
 // print the version
@@ -62,6 +63,9 @@ const char *fileBasename(const char *filename)
 // This program will convert
 int MAINMACRO(int argc, char *argv[])
 {
+  // redirect all VTK errors to stderr
+  vtkConsoleOutputWindow::Install();
+
   int rval = 0;
 
   if (argc < 2)

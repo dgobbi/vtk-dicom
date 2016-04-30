@@ -12,6 +12,7 @@ set(LIB_SRCS
   ${MAINMACRO_SRC}
   readquery.cxx
   progress.cxx
+  vtkConsoleOutputWindow.cxx
 )
 
 add_library(${LIB_NAME} STATIC ${LIB_SRCS})

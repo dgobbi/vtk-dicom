@@ -20,6 +20,7 @@
 #include "vtkDICOMMetaData.h"
 
 // from dicomcli
+#include "vtkConsoleOutputWindow.h"
 #include "mainmacro.h"
 #include "readquery.h"
 
@@ -536,6 +537,9 @@ MAINMACRO_PASSTHROUGH(-name);
 // This program will dump all the metadata in the given file
 int MAINMACRO(int argc, char *argv[])
 {
+  // redirect all VTK errors to stderr
+  vtkConsoleOutputWindow::Install();
+
   std::vector<Operation> operationList;
 
   int rval = 0;

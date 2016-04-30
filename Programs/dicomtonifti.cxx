@@ -53,6 +53,7 @@
 #include <ctype.h>
 
 // from dicomcli
+#include "vtkConsoleOutputWindow.h"
 #include "mainmacro.h"
 
 // Simple structure for command-line options
@@ -1088,6 +1089,9 @@ void dicomtonifti_files_and_dirs(
 // This program will convert DICOM to NIFTI
 int MAINMACRO(int argc, char *argv[])
 {
+  // redirect all VTK errors to stderr
+  vtkConsoleOutputWindow::Install();
+
   // for the list of input DICOM files
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();

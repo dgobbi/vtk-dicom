@@ -24,6 +24,7 @@
 #include "vtkDICOMFileDirectory.h"
 
 // from dicomcli
+#include "vtkConsoleOutputWindow.h"
 #include "mainmacro.h"
 #include "readquery.h"
 #include "progress.h"
@@ -252,6 +253,9 @@ MAINMACRO_PASSTHROUGH(-name);
 // This program will find and copy dicom files
 int MAINMACRO(int argc, char *argv[])
 {
+  // redirect all VTK errors to stderr
+  vtkConsoleOutputWindow::Install();
+
   int rval = 0;
   int scandepth = std::numeric_limits<int>::max();
   bool followSymlinks = true;

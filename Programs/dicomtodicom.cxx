@@ -46,6 +46,7 @@
 #include <ctype.h>
 
 // from dicomcli
+#include "vtkConsoleOutputWindow.h"
 #include "mainmacro.h"
 
 // Kinds of reformats
@@ -628,6 +629,9 @@ void dicomtodicom_convert_files(
 // This program will convert DICOM to DICOM
 int MAINMACRO(int argc, char *argv[])
 {
+  // redirect all VTK errors to stderr
+  vtkConsoleOutputWindow::Install();
+
   // for the list of input DICOM files
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();

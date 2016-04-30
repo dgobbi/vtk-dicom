@@ -23,6 +23,7 @@
 #include "vtkDICOMFile.h"
 
 // from dicomcli
+#include "vtkConsoleOutputWindow.h"
 #include "mainmacro.h"
 #include "readquery.h"
 #include "progress.h"
@@ -418,6 +419,9 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
 // This program will dump all the metadata in the given file
 int MAINMACRO(int argc, char *argv[])
 {
+  // redirect all VTK errors to stderr
+  vtkConsoleOutputWindow::Install();
+
   int rval = 0;
   int scandepth = std::numeric_limits<int>::max();
   QueryTagList qtlist;

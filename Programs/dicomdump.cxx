@@ -21,6 +21,7 @@
 #include "vtkDICOMUtilities.h"
 
 // from dicomcli
+#include "vtkConsoleOutputWindow.h"
 #include "mainmacro.h"
 #include "readquery.h"
 
@@ -406,6 +407,9 @@ void printElementFromTagPath(
 // This program will dump all the metadata in the given file
 int MAINMACRO(int argc, char *argv[])
 {
+  // redirect all VTK errors to stderr
+  vtkConsoleOutputWindow::Install();
+
   int rval = 0;
 
   // for the optional query file
