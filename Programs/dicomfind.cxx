@@ -339,7 +339,7 @@ void dicomfind_operations(
       char endchar = (op->Type == "-print0" ? '\0' : '\n');
       for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
         {
-        fwrite(sa->GetValue(kk).data(), sa->GetValue(kk).length(), 1, stdout);
+        fprintf(stdout, "%s", sa->GetValue(kk).c_str());
         fputc(endchar, stdout);
         }
       fflush(stdout);
