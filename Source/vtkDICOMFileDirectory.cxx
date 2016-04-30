@@ -89,7 +89,7 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
           {
           flags |= TypeDirectory;
           }
-        char *name = vtkDICOMFilePath::ConvertToMultiByte(fileData.cFileName);
+        char *name = vtkDICOMFilePath::ConvertToUTF8(fileData.cFileName);
         this->AddEntry(name, flags, (TypeSymlink | TypeDirectory));
         free(name);
         }

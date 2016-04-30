@@ -31,8 +31,16 @@ public:
    */
   vtkDICOMFilePath(const std::string& path);
 
+#ifdef _WIN32
+  //! Create a new path from a wide string.
+  /*!
+   *  This is to support unicode paths on Windows.
+   */
+  vtkDICOMFilePath(const std::wstring& path);
+#endif
+
   //! Destructor.
-  ~vtkDICOMFilePath() {}
+  ~vtkDICOMFilePath();
   //@}
 
   //@{
@@ -93,6 +101,25 @@ public:
   std::string GetRealPath() const;
   //@}
 
+#ifdef _WIN32
+  //@{
+  //! Convert the path to a wchar_t pointer for Windows methods.
+  /*!
+   *  Call this method if the path is going to be passed to a Windows
+   *  method that expects a unicode string.
+   */
+  const wchar_t *Wide();
+
+  //! Convert the path to a local 8-bit string for Windows methods.
+  /*!
+   *  Call this method if the path is going to be passed to a Windows
+   *  method that expects an 8-bit string with the local encoding.
+   */
+  const char *Local();
+  //@}
+
+#endif
+
 private:
   friend class vtkDICOMFile;
   friend class vtkDICOMFileDirectory;
@@ -132,12 +159,19 @@ private:
   //! Convert to WideChar. Returns NULL or new string (free with delete []).
   static wchar_t *ConvertToWideChar(const char *filename);
 
-  //! Convert to a string. Returns NULL or new string (free with delete []).
-  static char *ConvertToMultiByte(const wchar_t *filename);
+  //! Convert to utf8. Returns NULL or new string (free with delete []).
+  static char *ConvertToUTF8(const wchar_t *filename);
+
+  //! Convert to local 8-bit. Returns NULL or new string (free with delete []).
+  static char *ConvertToLocal(const wchar_t *filename);
 #endif
 
   std::string Path;
   char Separator;
+#ifdef _WIN32
+  wchar_t *WidePath;
+  char *LocalPath;
+#endif
 };
 
 #endif /* vtkDICOMFilePath_h */

@@ -28,11 +28,8 @@
 #include "vtkCommand.h"
 #include "vtkVersion.h"
 
-#ifdef VTK_DICOM_EXPORT
+// For removing file if write failed
 #include "vtkDICOMFile.h"
-#else
-#include "vtksys/SystemTools.hxx"
-#endif
 
 // Header for NIFTI
 #include "vtkNIFTIHeader.h"
@@ -50,6 +47,23 @@
 #include <string.h>
 #include <float.h>
 #include <math.h>
+
+#ifdef _WIN32
+// To allow use of wchar_t paths on Windows
+#include "vtkDICOMFilePath.h"
+#if VTK_MAJOR_VERSION >= 7
+#ifdef gzopen
+#undef gzopen
+#endif
+#define gzopen gzopen_w
+#define fopen _wfopen
+#define NIFTI_FILE_MODE L"wb"
+#else
+#define NIFTI_FILE_MODE "wb"
+#endif
+#else
+#define NIFTI_FILE_MODE "wb"
+#endif
 
 vtkStandardNewMacro(vtkNIFTIWriter);
 vtkCxxSetObjectMacro(vtkNIFTIWriter,QFormMatrix,vtkMatrix4x4);
@@ -676,21 +690,40 @@ int vtkNIFTIWriter::RequestData(
       }
     }
 
+#if _WIN32 
+  vtkDICOMFilePath fph(hdrname);
+  vtkDICOMFilePath fpi(imgname);
+#if VTK_MAJOR_VERSION < 7
+  // convert to the local character set
+  const char *uhdrname = fph.Local();
+  const char *uimgname = fpi.Local();
+#else
+  // use wide character
+  const wchar_t *uhdrname = fph.Wide();
+  const wchar_t *uimgname = fpi.Wide();
+#endif
+#else
+  const char *uhdrname = hdrname;
+  const char *uimgname = imgname;
+#endif
+
   // try opening file
   gzFile file = 0;
   FILE *ufile = 0;
-  if (isCompressed)
+  if (uhdrname && uimgname)
     {
-    file = gzopen(hdrname, "wb");
-    }
-  else
-    {
-    ufile = fopen(hdrname, "wb");
+    if (isCompressed)
+      {
+      file = gzopen(uhdrname, "wb");
+      }
+    else
+      {
+      ufile = fopen(uhdrname, NIFTI_FILE_MODE);
+      }
     }
 
   if (!file && !ufile)
     {
-    vtkErrorMacro("Cannot open file " << hdrname);
     delete [] hdrname;
     delete [] imgname;
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
@@ -745,12 +778,12 @@ int vtkNIFTIWriter::RequestData(
     if (isCompressed)
       {
       gzclose(file);
-      file = gzopen(imgname, "wb");
+      file = gzopen(uimgname, "wb");
       }
     else
       {
       fclose(ufile);
-      ufile = fopen(imgname, "wb");
+      ufile = fopen(uimgname, NIFTI_FILE_MODE);
       }
     }
 
@@ -940,14 +973,10 @@ int vtkNIFTIWriter::RequestData(
     {
     // erase the file, rather than leave a corrupt file on disk
     vtkErrorMacro("Out of disk space, removing incomplete file " << imgname);
-#ifdef VTK_DICOM_EXPORT
     vtkDICOMFile::Remove(imgname);
-#else
-    vtksys::SystemTools::RemoveFile(imgname);
-#endif
     if (!singleFile)
       {
-      vtksys::SystemTools::RemoveFile(hdrname);
+      vtkDICOMFile::Remove(hdrname);
       }
     }
 

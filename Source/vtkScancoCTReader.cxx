@@ -25,6 +25,11 @@
 #include "vtkStreamingDemandDrivenPipeline.h"
 #include "vtkVersion.h"
 
+#ifdef _WIN32
+// To allow use of wchar_t paths on Windows
+#include "vtkDICOMFilePath.h"
+#endif
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -855,7 +860,14 @@ int vtkScancoCTReader::RequestInformation(
 
   vtkDebugMacro("Opening ISQ/AIM file " << filename);
 
-  ifstream infile(filename, ios::in | ios::binary);
+#ifdef _WIN32
+  vtkDICOMFilePath fp(filename);
+  const wchar_t *ufilename = fp.Wide();
+#else
+  const char *ufilename = filename;
+#endif
+
+  ifstream infile(ufilename, ios::in | ios::binary);
   if (!infile.good())
     {
     vtkErrorMacro("Cannot open file " << filename);

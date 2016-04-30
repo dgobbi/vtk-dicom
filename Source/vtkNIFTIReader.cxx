@@ -29,11 +29,11 @@
 #include "vtkStringArray.h"
 #include "vtkVersion.h"
 
-#ifdef VTK_DICOM_EXPORT
-#include "vtkDICOMFile.h"
-#else
-#include "vtksys/SystemTools.hxx"
+#ifdef _WIN32
+// To allow use of wchar_t paths on Windows
+#include "vtkDICOMFilePath.h"
 #endif
+#include "vtkDICOMFile.h"
 
 // Header for NIFTI
 #include "vtkNIFTIHeader.h"
@@ -50,6 +50,17 @@
 #include <ctype.h>
 #include <string.h>
 #include <string>
+
+#ifdef _WIN32
+// To allow use of wchar_t paths on Windows
+#include "vtkDICOMFilePath.h"
+#if VTK_MAJOR_VERSION >= 7
+#ifdef gzopen
+#undef gzopen
+#endif
+#define gzopen gzopen_w
+#endif
+#endif
 
 vtkStandardNewMacro(vtkNIFTIReader);
 
@@ -300,18 +311,11 @@ char *vtkNIFTIReader::ReplaceExtension(
     // existence of file
     for (int i = 0; i < 2; i++)
       {
-#ifdef VTK_DICOM_EXPORT
-      int code = vtkDICOMFile::Access(newname);
+      int code = vtkDICOMFile::Access(newname, vtkDICOMFile::In);
       if (code != vtkDICOMFile::FileNotFound)
         {
         return newname;
         }
-#else
-      if (vtksys::SystemTools::FileExists(newname))
-        {
-        return newname;
-        }
-#endif
       if (i == 0)
         {
         if (m < n)
@@ -397,8 +401,22 @@ int vtkNIFTIReader::CanReadFile(const char *filename)
     return 0;
     }
 
+#if _WIN32 
+  vtkDICOMFilePath fp(hdrname);
+#if VTK_MAJOR_VERSION < 7
+  // convert to the local character set
+  const char *uhdrname = fp.Local();
+#else
+  // use wide character
+  const wchar_t *uhdrname = fp.Wide();
+  fprintf(stderr, "uhdrname\n");
+#endif
+#else
+  const char *uhdrname = hdrname;
+#endif
+
   // try opening file
-  gzFile file = gzopen(hdrname, "rb");
+  gzFile file = gzopen(uhdrname, "rb");
 
   delete [] hdrname;
 
@@ -506,8 +524,25 @@ int vtkNIFTIReader::RequestInformation(
 
   vtkDebugMacro("Opening NIFTI file " << hdrname);
 
+#if _WIN32 
+  vtkDICOMFilePath fph(hdrname);
+#if VTK_MAJOR_VERSION < 7
+  // convert to the local character set
+  const char *uhdrname = fph.Local();
+#else
+  // use wide character
+  const wchar_t *uhdrname = fph.Wide();
+#endif
+#else
+  const char *uhdrname = hdrname;
+#endif
+
   // try opening file
-  gzFile file = gzopen(hdrname, "rb");
+  gzFile file = 0;
+  if (uhdrname)
+    {
+    file = gzopen(uhdrname, "rb");
+    }
 
   if (!file)
     {
@@ -1155,7 +1190,25 @@ int vtkNIFTIReader::RequestData(
   unsigned char *dataPtr =
     static_cast<unsigned char *>(data->GetScalarPointer());
 
-  gzFile file = gzopen(imgname, "rb");
+#if _WIN32 
+  vtkDICOMFilePath fpi(imgname);
+#if VTK_MAJOR_VERSION < 7
+  // convert to the local character set
+  const char *uimgname = fpi.Local();
+#else
+  // use wide character
+  const wchar_t *uimgname = fpi.Wide();
+  fprintf(stderr, "uhdrname\n");
+#endif
+#else
+  const char *uimgname = imgname;
+#endif
+
+  gzFile file = 0;
+  if (uimgname)
+    {
+    file = gzopen(uimgname, "rb");
+    }
 
   delete [] imgname;
 

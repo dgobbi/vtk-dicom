@@ -38,8 +38,43 @@ vtkDICOMFilePath::vtkDICOMFilePath(const std::string& path)
       break;
       }
     }
+  this->WidePath = 0;
+  this->LocalPath = 0;
 #endif
   StripTrailingSlash(&this->Path);
+}
+
+//----------------------------------------------------------------------------
+#ifdef _WIN32
+vtkDICOMFilePath::vtkDICOMFilePath(const std::wstring& path)
+{
+  char *filename = ConvertToUTF8(path.c_str());
+  this->Path = filename;
+  this->Separator = '/';
+  delete [] filename;
+
+  size_t l = path.length();
+  for (size_t i = 0; i < l; i++)
+    {
+    if (IsSeparator(path[i]))
+      {
+      this->Separator = path[i];
+      break;
+      }
+    }
+  this->WidePath = 0;
+  this->LocalPath = 0;
+  StripTrailingSlash(&this->Path);
+}
+#endif
+
+//----------------------------------------------------------------------------
+vtkDICOMFilePath::~vtkDICOMFilePath()
+{
+#ifdef _WIN32
+  delete [] this->WidePath;
+  delete [] this->LocalPath;
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -404,7 +439,7 @@ std::string vtkDICOMFilePath::GetRealPath() const
 
   if (n != 0)
     {
-    char *path = ConvertToMultiByte(widepath);
+    char *path = ConvertToUTF8(widepath);
     if (widepath != buffer)
       {
       delete [] widepath;
@@ -668,6 +703,30 @@ size_t vtkDICOMFilePath::RootLength(const std::string& path)
 
 //----------------------------------------------------------------------------
 #ifdef _WIN32
+const wchar_t *vtkDICOMFilePath::Wide()
+{
+  delete [] this->WidePath;
+  this->WidePath = ConvertToWideChar(this->Path.c_str());
+  return this->WidePath;
+}
+#endif
+
+//----------------------------------------------------------------------------
+#ifdef _WIN32
+const char *vtkDICOMFilePath::Local()
+{
+  delete [] this->LocalPath;
+  this->LocalPath = 0;
+  if (this->Wide())
+    {
+    this->LocalPath = ConvertToLocal(this->WidePath);
+    }
+  return this->LocalPath;
+}
+#endif
+
+//----------------------------------------------------------------------------
+#ifdef _WIN32
 bool vtkDICOMFilePath::HasExtendedPrefix(const std::string& path)
 {
   // extended prefixes are '\\?\' and '\\.\'
@@ -728,7 +787,7 @@ wchar_t *vtkDICOMFilePath::ConvertToWideChar(const char *filename)
 
 //----------------------------------------------------------------------------
 #ifdef _WIN32
-char *vtkDICOMFilePath::ConvertToMultiByte(const wchar_t *wideFilename)
+char *vtkDICOMFilePath::ConvertToUTF8(const wchar_t *wideFilename)
 {
   char *filename = 0;
   int n = WideCharToMultiByte(
@@ -738,6 +797,28 @@ char *vtkDICOMFilePath::ConvertToMultiByte(const wchar_t *wideFilename)
     filename = new char[n];
     n = WideCharToMultiByte(
       CP_UTF8, 0, wideFilename, -1, filename, n, 0, 0);
+    if (n == 0)
+      {
+      delete [] filename;
+      filename = 0;
+      }
+    }
+  return filename;
+}
+#endif
+
+//----------------------------------------------------------------------------
+#ifdef _WIN32
+char *vtkDICOMFilePath::ConvertToLocal(const wchar_t *wideFilename)
+{
+  char *filename = 0;
+  int n = WideCharToMultiByte(
+    CP_ACP, 0, wideFilename, -1, NULL, 0, 0, 0);
+  if (n > 0)
+    {
+    filename = new char[n];
+    n = WideCharToMultiByte(
+      CP_ACP, 0, wideFilename, -1, filename, n, 0, 0);
     if (n == 0)
       {
       delete [] filename;
