@@ -42,7 +42,7 @@ void vtkConsoleOutputWindow::DisplayText(const char* text)
 {
   if (text)
     {
-    fwrite(text, strlen(text), 1, stderr);
+    fwrite(text, 1, strlen(text), stderr);
     fputc('\n', stderr);
     }
 }
