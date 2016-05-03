@@ -96,7 +96,10 @@ void dicomtocsv_help(FILE *file, const char *cp)
     "file and as a \"-k\" option), then its first appearance will set the\n"
     "column number that it appears in.  Also, with regards to the search,\n"
     "the value specified in the final appearance of the tag as an option\n"
-    "will be the value used for the search.\n\n");
+    "will be the value used for the search.\n"
+    "\n"
+    "If no attributes are specified with either \"-k\" or \"-q\", then a\n"
+    "default set of query attributes will be used.\n\n");
 }
 
 // remove path portion of filename
@@ -108,6 +111,120 @@ const char *dicomtocsv_basename(const char *filename)
 }
 
 typedef vtkDICOMVR VR;
+
+// Create a default query for --image
+void dicomtocsv_image_default(vtkDICOMItem *query, QueryTagList *ql)
+{
+  // these are the attributes that must be part of the query
+  static const DC::EnumType defaultElements[] = {
+    // patient-level information
+    DC::PatientName,          // 2
+    DC::PatientID,            // 1
+    DC::PatientBirthDate,     // 3
+    DC::PatientSex,           // 3
+    // study-level information
+    DC::StudyDate,            // 1
+    DC::StudyTime,            // 1
+    DC::StudyID,              // 1
+    DC::AccessionNumber,      // 2
+    DC::StudyDescription,     // 2
+    DC::StudyInstanceUID,     // 1
+    // series-level information
+    DC::Modality,             // 1
+    DC::SeriesNumber,         // 1
+    DC::SeriesDescription,    // 3
+    DC::SeriesInstanceUID,    // 1
+    DC::Rows,                 // 3
+    DC::Columns,              // 3
+    // image-level information
+    DC::InstanceNumber,       // 1
+    DC::SOPClassUID,          // 1
+    DC::SOPInstanceUID,       // 1
+    DC::ReferencedFileID,     // special
+    // delimiter to mark end of list
+    DC::ItemDelimitationItem
+  };
+
+  for (const DC::EnumType *tagPtr = defaultElements;
+       *tagPtr != DC::ItemDelimitationItem;
+       ++tagPtr)
+    {
+    VR vr = query->FindDictVR(*tagPtr);
+    query->SetAttributeValue(*tagPtr, vtkDICOMValue(vr));
+    ql->push_back(vtkDICOMTagPath(*tagPtr));
+    }
+}
+
+// Create a default query for --series
+void dicomtocsv_series_default(vtkDICOMItem *query, QueryTagList *ql)
+{
+  // these are the attributes that must be part of the query
+  static const DC::EnumType defaultElements[] = {
+    // patient-level information
+    DC::PatientName,          // 2
+    DC::PatientID,            // 1
+    DC::PatientBirthDate,     // 3
+    DC::PatientSex,           // 3
+    // study-level information
+    DC::StudyDate,            // 1
+    DC::StudyTime,            // 1
+    DC::StudyID,              // 1
+    DC::AccessionNumber,      // 2
+    DC::StudyDescription,     // 2
+    DC::StudyInstanceUID,     // 1
+    // series-level information
+    DC::Modality,             // 1
+    DC::SeriesNumber,         // 1
+    DC::SeriesDescription,    // 3
+    DC::SeriesInstanceUID,    // 1
+    DC::Rows,                 // 3
+    DC::Columns,              // 3
+    DC::NumberOfReferences,   // special
+    // delimiter to mark end of list
+    DC::ItemDelimitationItem
+  };
+
+  for (const DC::EnumType *tagPtr = defaultElements;
+       *tagPtr != DC::ItemDelimitationItem;
+       ++tagPtr)
+    {
+    VR vr = query->FindDictVR(*tagPtr);
+    query->SetAttributeValue(*tagPtr, vtkDICOMValue(vr));
+    ql->push_back(vtkDICOMTagPath(*tagPtr));
+    }
+}
+
+// Create a default query for --study
+void dicomtocsv_study_default(vtkDICOMItem *query, QueryTagList *ql)
+{
+  // these are the attributes that must be part of the query
+  static const DC::EnumType defaultElements[] = {
+    // patient-level information
+    DC::PatientName,          // 2
+    DC::PatientID,            // 1
+    DC::PatientBirthDate,     // 3
+    DC::PatientSex,           // 3
+    // study-level information
+    DC::StudyDate,            // 1
+    DC::StudyTime,            // 1
+    DC::StudyID,              // 1
+    DC::AccessionNumber,      // 2
+    DC::StudyDescription,     // 2
+    DC::StudyInstanceUID,     // 1
+    DC::NumberOfReferences,   // special
+    // delimiter to mark end of list
+    DC::ItemDelimitationItem
+  };
+
+  for (const DC::EnumType *tagPtr = defaultElements;
+       *tagPtr != DC::ItemDelimitationItem;
+       ++tagPtr)
+    {
+    VR vr = query->FindDictVR(*tagPtr);
+    query->SetAttributeValue(*tagPtr, vtkDICOMValue(vr));
+    ql->push_back(vtkDICOMTagPath(*tagPtr));
+    }
+}
 
 // Write the header for a csv file
 void dicomtocsv_writeheader(
@@ -599,6 +716,23 @@ int MAINMACRO(int argc, char *argv[])
     {
     // if output to stdout, then silence progress reporting
     silent = true;
+    }
+
+  // If no query specified, then use a default one
+  if (qtlist.size() == 0)
+    {
+    if (level == 2)
+      {
+      dicomtocsv_study_default(&query, &qtlist);
+      }
+    else if (level == 3)
+      {
+      dicomtocsv_series_default(&query, &qtlist);
+      }
+    else if (level == 4)
+      {
+      dicomtocsv_image_default(&query, &qtlist);
+      }
     }
 
   // Write the header
