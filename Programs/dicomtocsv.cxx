@@ -383,13 +383,6 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
           }
         }
 
-      // Create an adapter, which helps with extracting attributes from the
-      // PerFrameFunctionalSequence of enhanced IODs.  When a series of
-      // enhanced files is encountered, the adapter is only applied to
-      // the first file in the series (this is a limitation of how the
-      // code has been written, and might be fixed at a later date).
-      vtkDICOMMetaDataAdapter adapter(meta);
-
       // this loop is only for the "image" level
       int m = (level >= 4 ? meta->GetNumberOfInstances() : 1);
       for (int jj = 0; jj < m; jj++)
@@ -412,6 +405,10 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
           n = (level >= 4 ? jj+1 : n);
           for (int ii = jj; ii < n; ii++)
             {
+            // Create an adapter, which helps with extracting attributes from
+            // the PerFrameFunctionalSequence of enhanced IODs.
+            vtkDICOMMetaDataAdapter adapter(meta, ii);
+
             for (;;)
               {
               vtkDICOMTag tag = tagPath.GetHead();
@@ -424,20 +421,16 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
                   {
                   tag = mitem->ResolvePrivateTag(tag, creator);
                   }
-                else if (ii == 0)
-                  {
-                  tag = adapter->ResolvePrivateTag(tag, creator);
-                  }
                 else
                   {
-                  tag = meta->ResolvePrivateTag(tag, creator);
+                  tag = adapter->ResolvePrivateTag(tag, creator);
                   }
                 }
               if (mitem)
                 {
                 vp = &mitem->GetAttributeValue(tag);
                 }
-              else if (ii == 0 && tag != DC::NumberOfFrames)
+              else if (tag != DC::NumberOfFrames)
                 {
                 // vtkDICOMMetaDataAdapter hides NumberOfFrames, so it
                 // will never be found if we check the adapter
