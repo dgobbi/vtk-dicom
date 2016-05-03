@@ -383,7 +383,10 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
           }
         }
 
-      // create an adapter, in case of enhanced IOD
+      // Create an adapter, which helps with extracting attributes from the
+      // PerFrameFunctionalSequence of enhanced IODs.  We only use this
+      // adapter if there is only one file in the series, since it makes
+      // each enhanced file look like a whole series of files.
       vtkDICOMMetaDataAdapter adapter(meta);
 
       // this loop is only for the "image" level
@@ -420,30 +423,44 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
                   {
                   tag = mitem->ResolvePrivateTag(tag, creator);
                   }
-                else
+                else if (ii == 0)
                   {
                   tag = adapter->ResolvePrivateTag(tag, creator);
+                  }
+                else
+                  {
+                  tag = meta->ResolvePrivateTag(tag, creator);
                   }
                 }
               if (mitem)
                 {
                 vp = &mitem->GetAttributeValue(tag);
                 }
+              else if (ii == 0 && tag != DC::NumberOfFrames)
+                {
+                // vtkDICOMMetaDataAdapter hides NumberOfFrames, so it
+                // will never be found if we check the adapter
+                vp = &adapter->GetAttributeValue(tag);
+                }
               else
                 {
-                vp = &adapter->GetAttributeValue(ii, tag);
+                vp = &meta->GetAttributeValue(ii, tag);
                 }
               if (vp && !vp->IsValid())
                 {
                 vp = 0;
                 }
+              // break if we have reached the end of a tag path
               if (vp == 0 || !tagPath.HasTail())
                 {
                 break;
                 }
+              // go one level deeper into the query
               qitem = qitem->GetAttributeValue(
                 tagPath.GetHead()).GetSequenceData();
+              // go one level deeper along the tag path
               tagPath = tagPath.GetTail();
+              // go one level deeper into the meta data
               mitem = vp->GetSequenceData();
               if (mitem == 0 || vp->GetNumberOfValues() == 0)
                 {
