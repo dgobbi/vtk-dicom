@@ -34,7 +34,20 @@ class VTKDICOM_EXPORT vtkDICOMMetaDataAdapter
 public:
   //@{
   //! Construct an adapter for the given meta data object.
+  /*!
+   *  If the provided meta-data is from an enhanced multi-frame data set,
+   *  then the adapter will make it look like a series of data sets.  If
+   *  the provided meta-data is from a series of non-enhanced data sets,
+   *  the adapter will act as a simple pass-through.
+   */
   vtkDICOMMetaDataAdapter(vtkDICOMMetaData *meta);
+
+  //! Construct an adapter for one DICOM object instance.
+  /*!
+   *  If instance i of the provided meta-data is an enhanced multi-frame
+   *  data set, make it look like a series.
+   */
+  vtkDICOMMetaDataAdapter(vtkDICOMMetaData *meta, int i);
 
   //! Destructor release the reference to the meta data.
   ~vtkDICOMMetaDataAdapter();
@@ -89,6 +102,10 @@ public:
   vtkDICOMMetaDataAdapter* operator->() { return this; }
   //@}
 
+protected:
+  //! Helper function for the constructors.  Set all members.
+  void ConstructionHelper(vtkDICOMMetaData *meta, int i);
+
 private:
 
   vtkDICOMMetaData *Meta;
@@ -96,6 +113,7 @@ private:
   const vtkDICOMValue *Shared;
   vtkDICOMValue *NullValue;
   int NumberOfInstances;
+  int MetaInstance;
 };
 
 #endif /* vtkDICOMMetaDataAdapter_h */

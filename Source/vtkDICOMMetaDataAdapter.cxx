@@ -20,11 +20,26 @@
 //----------------------------------------------------------------------------
 vtkDICOMMetaDataAdapter::vtkDICOMMetaDataAdapter(vtkDICOMMetaData *meta)
 {
+  this->ConstructionHelper(meta, -1);
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMMetaDataAdapter::vtkDICOMMetaDataAdapter(
+  vtkDICOMMetaData *meta, int i)
+{
+  this->ConstructionHelper(meta, i);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMMetaDataAdapter::ConstructionHelper(
+  vtkDICOMMetaData *meta, int i)
+{
   this->Meta = meta;
   this->PerFrame = 0;
   this->Shared = 0;
-  this->NumberOfInstances = 0;
   this->NullValue = 0;
+  this->NumberOfInstances = 0;
+  this->MetaInstance = (i >= 0 ? i : 0);
 
   if (meta)
     {
@@ -35,7 +50,7 @@ vtkDICOMMetaDataAdapter::vtkDICOMMetaDataAdapter(vtkDICOMMetaData *meta)
       {
       if (iter->IsPerInstance())
         {
-        this->PerFrame = &iter->GetValue(0);
+        this->PerFrame = &iter->GetValue(this->MetaInstance);
         }
       else
         {
@@ -47,7 +62,7 @@ vtkDICOMMetaDataAdapter::vtkDICOMMetaDataAdapter(vtkDICOMMetaData *meta)
       {
       if (iter->IsPerInstance())
         {
-        this->Shared = &iter->GetValue(0);
+        this->Shared = &iter->GetValue(this->MetaInstance);
         }
       else
         {
@@ -59,19 +74,20 @@ vtkDICOMMetaDataAdapter::vtkDICOMMetaDataAdapter(vtkDICOMMetaData *meta)
   if (this->Shared && this->Shared->IsValid() &&
       this->PerFrame && this->PerFrame->IsValid())
     {
-    this->NumberOfInstances =
-      meta->GetAttributeValue(DC::NumberOfFrames).AsInt();
+    this->NumberOfInstances = meta->GetAttributeValue(
+      this->MetaInstance, DC::NumberOfFrames).AsInt();
     // an invalid value to return when asked for NumberOfFrames
     this->NullValue = new vtkDICOMValue();
     }
   else if (meta)
     {
-    this->NumberOfInstances = meta->GetNumberOfInstances();
+    this->NumberOfInstances = (i < 0 ? meta->GetNumberOfInstances() : 1);
     this->Shared = 0;
     this->PerFrame = 0;
     }
 }
 
+//----------------------------------------------------------------------------
 // Destructor
 vtkDICOMMetaDataAdapter::~vtkDICOMMetaDataAdapter()
 {
@@ -153,7 +169,7 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
       }
 
     // if it wasn't in a PerFrame or Shared functional group
-    const vtkDICOMValue& v = meta->GetAttributeValue(0, tag);
+    const vtkDICOMValue& v = meta->GetAttributeValue(this->MetaInstance, tag);
     if (privateValue && !v.IsValid())
       {
       // attributes found in private parts of the PerFrame or Shared are
@@ -164,21 +180,21 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
     }
 
   // if no per-frame data, use file instance
-  return meta->GetAttributeValue(idx, tag);
+  return meta->GetAttributeValue(idx + this->MetaInstance, tag);
 }
 
 //----------------------------------------------------------------------------
 const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
   vtkDICOMTag tag) const
 {
-  return this->GetAttributeValue(0, tag);
+  return this->GetAttributeValue(this->MetaInstance, tag);
 }
 
 //----------------------------------------------------------------------------
 bool vtkDICOMMetaDataAdapter::HasAttribute(
   vtkDICOMTag tag) const
 {
-  const vtkDICOMValue& v = this->GetAttributeValue(0, tag);
+  const vtkDICOMValue& v = this->GetAttributeValue(this->MetaInstance, tag);
   return v.IsValid();
 }
 
@@ -267,4 +283,3 @@ vtkDICOMTag vtkDICOMMetaDataAdapter::ResolvePrivateTag(
   // if no per-frame data, use file instance
   return meta->ResolvePrivateTag(ptag, creator);
 }
-
