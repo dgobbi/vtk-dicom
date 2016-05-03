@@ -384,9 +384,10 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
         }
 
       // Create an adapter, which helps with extracting attributes from the
-      // PerFrameFunctionalSequence of enhanced IODs.  We only use this
-      // adapter if there is only one file in the series, since it makes
-      // each enhanced file look like a whole series of files.
+      // PerFrameFunctionalSequence of enhanced IODs.  When a series of
+      // enhanced files is encountered, the adapter is only applied to
+      // the first file in the series (this is a limitation of how the
+      // code has been written, and might be fixed at a later date).
       vtkDICOMMetaDataAdapter adapter(meta);
 
       // this loop is only for the "image" level
