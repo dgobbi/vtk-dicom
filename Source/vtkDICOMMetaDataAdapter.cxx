@@ -187,14 +187,14 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
 const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
   vtkDICOMTag tag) const
 {
-  return this->GetAttributeValue(this->MetaInstance, tag);
+  return this->GetAttributeValue(0, tag);
 }
 
 //----------------------------------------------------------------------------
 bool vtkDICOMMetaDataAdapter::HasAttribute(
   vtkDICOMTag tag) const
 {
-  const vtkDICOMValue& v = this->GetAttributeValue(this->MetaInstance, tag);
+  const vtkDICOMValue& v = this->GetAttributeValue(0, tag);
   return v.IsValid();
 }
 
