@@ -1754,8 +1754,28 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
               {
               path.PushBack(fileID.GetString(k));
               }
-            fileNames->InsertNextValue(path.AsString());
+            vtkIdType ki = fileNames->InsertNextValue(path.AsString());
             imageRecords.push_back(&items[j]);
+            // sort the files by instance number, they will almost always
+            // already be in order so we use a simple algorithm
+            int inst = items[j].GetAttributeValue(DC::InstanceNumber).AsInt();
+            while (ki > 0)
+              {
+              const vtkDICOMItem *prev = imageRecords[--ki];
+              int inst2 = prev->GetAttributeValue(DC::InstanceNumber).AsInt();
+              if (inst < inst2)
+                {
+                std::string s = fileNames->GetValue(ki + 1);
+                fileNames->SetValue(ki + 1, fileNames->GetValue(ki));
+                fileNames->SetValue(ki, s);
+                std::swap(imageRecords[ki], imageRecords[ki + 1]);
+                }
+              else
+                {
+                // sorting is finished!
+                break;
+                }
+              }
             }
           }
         }
