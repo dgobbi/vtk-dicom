@@ -91,7 +91,7 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
           }
         char *name = vtkDICOMFilePath::ConvertToUTF8(fileData.cFileName);
         this->AddEntry(name, flags, (TypeSymlink | TypeDirectory));
-        free(name);
+        delete [] name;
         }
       while (FindNextFileW(h, &fileData));
       code = GetLastError();
@@ -114,6 +114,7 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
       FindClose(h);
       }
     }
+  delete [] widename;
 #else
   errno = 0;
   DIR* dir = opendir(dirname);

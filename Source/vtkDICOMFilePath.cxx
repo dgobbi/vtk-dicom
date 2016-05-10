@@ -372,7 +372,6 @@ bool vtkDICOMFilePath::IsSymlink() const
     {
     WIN32_FIND_DATAW buf;
     HANDLE h = FindFirstFileW(widepath, &buf);
-    delete [] widepath;
     if (h != INVALID_HANDLE_VALUE)
       {
       CloseHandle(h);
@@ -383,6 +382,7 @@ bool vtkDICOMFilePath::IsSymlink() const
         }
       }
     }
+  delete [] widepath;
 #else
   struct stat fs;
   if (lstat(this->Path.c_str(), &fs) == 0 && S_ISLNK(fs.st_mode))
