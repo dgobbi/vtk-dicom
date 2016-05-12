@@ -175,7 +175,7 @@ public:
    *  This will be called automatically whenever you provide a
    *  new meta data object for the compiler.  Note that new UIDs
    *  will not be generated if you have already provided them with
-   *  SetSOPInstanceUID() and SetSeriesUID().
+   *  SetSOPInstanceUID() and SetSeriesInstanceUID().
    */
   void GenerateSeriesUIDs();
   //@}
