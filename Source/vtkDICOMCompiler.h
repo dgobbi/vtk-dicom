@@ -198,10 +198,14 @@ protected:
   //! Internal method for flushing the IO buffer.
   /*!
    *  This is an internal method that flushes the buffer to the file.
-   *  The pointer cp markes the current position in the buffer, and
-   *  ep marks the end of the buffer.  By checking ep-cp, subroutines
-   *  can check how much space is left in the buffer and call FlushBuffer
-   *  only when the buffer is nearly full.
+   *  If called with cp = 0, it will initialize cp to the beginning of
+   *  the write buffer, and ep to the end of the buffer, without writing
+   *  anything to the file.  The caller should then write to the buffer,
+   *  incrementing the pointer cp while doing so.  When cp approaches the
+   *  end of the buffer (which is stored in ep), FlushBuffer should be
+   *  called to flush the buffer contents to the file.  Every call will
+   *  reset cp to the beginning of the buffer and ep to the end of the
+   *  buffer.
    */
   virtual bool FlushBuffer(unsigned char* &cp, unsigned char* &ep);
 

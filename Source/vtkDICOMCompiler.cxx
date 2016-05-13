@@ -1591,16 +1591,22 @@ unsigned int vtkDICOMCompiler::ComputePixelDataSize()
 
 //----------------------------------------------------------------------------
 bool vtkDICOMCompiler::FlushBuffer(
-  unsigned char* &ucp, unsigned char* &)
+  unsigned char* &ucp, unsigned char* &ep)
 {
+  bool rval = true;
   const unsigned char *cp = ucp;
   unsigned char *dp = this->Buffer;
   ucp = dp;
-  size_t n = cp - dp;
+  ep = dp + this->ChunkSize;
 
-  size_t m = this->OutputFile->Write(dp, n);
+  if (cp)
+    {
+    size_t n = cp - dp;
+    size_t m = this->OutputFile->Write(dp, n);
+    rval = (n == m);
+    }
 
-  return (n == m);
+  return rval;
 }
 
 //----------------------------------------------------------------------------
