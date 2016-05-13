@@ -191,7 +191,7 @@ public:
   //@}
 
   //@{
-  //! If On (the default), symbolic links will not be followed.
+  //! If On (the default), symbolic links will be followed.
   vtkSetMacro(FollowSymlinks, int);
   vtkBooleanMacro(FollowSymlinks, int);
   int GetFollowSymlinks() { return this->FollowSymlinks; }
