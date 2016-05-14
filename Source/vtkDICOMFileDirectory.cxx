@@ -56,8 +56,7 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
 #ifdef _WIN32
   vtkDICOMFilePath path(dirname);
   path.PushBack("*");
-  wchar_t *widename =
-    vtkDICOMFilePath::ConvertToWideChar(path.AsString().c_str());
+  const wchar_t *widename = path.Wide();
   if (widename == 0)
     {
     this->Error = UnknownError;
@@ -77,8 +76,13 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
       }
     else
       {
+      // each utf-16 wchar converts to three or fewer utf-8 bytes
+      int n = MAX_PATH*3;
+      char name[MAX_PATH*3];
       do
         {
+        WideCharToMultiByte(
+          CP_UTF8, 0, fileData.cFileName, -1, name, n, 0, 0);
         unsigned int flags = 0;
         if ((fileData.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0 &&
             fileData.dwReserved0 == IO_REPARSE_TAG_SYMLINK)
@@ -89,9 +93,7 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
           {
           flags |= TypeDirectory;
           }
-        char *name = vtkDICOMFilePath::ConvertToUTF8(fileData.cFileName);
         this->AddEntry(name, flags, (TypeSymlink | TypeDirectory));
-        delete [] name;
         }
       while (FindNextFileW(h, &fileData));
       code = GetLastError();
@@ -114,7 +116,6 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
       FindClose(h);
       }
     }
-  delete [] widename;
 #else
   errno = 0;
   DIR* dir = opendir(dirname);
@@ -271,9 +272,10 @@ int vtkDICOMFileDirectory::Create(const char *name)
 
   while (dirsToCreate.size() > 0 && result == 0)
     {
-    const char *dirname = dirsToCreate.back().c_str();
+    const std::string& dirname = dirsToCreate.back();
 #ifdef _WIN32
-    wchar_t *widename = vtkDICOMFilePath::ConvertToWideChar(dirname);
+    vtkDICOMFilePath dirpath(dirname);
+    const wchar_t *widename = dirpath.Wide();
     if (widename == 0)
       {
       result = UnknownError;
@@ -299,9 +301,8 @@ int vtkDICOMFileDirectory::Create(const char *name)
         result = UnknownError;
         }
       }
-    delete [] widename;
 #else
-    if (mkdir(dirname, 00777) != 0)
+    if (mkdir(dirname.c_str(), 00777) != 0)
       {
       int e = errno;
       if (e == EACCES || e == EPERM)

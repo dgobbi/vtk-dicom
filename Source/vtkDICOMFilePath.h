@@ -121,8 +121,6 @@ public:
 #endif
 
 private:
-  friend class vtkDICOMFile;
-  friend class vtkDICOMFileDirectory;
 
   //! Check if the given character is a separator.
   static bool IsSeparator(char c) {

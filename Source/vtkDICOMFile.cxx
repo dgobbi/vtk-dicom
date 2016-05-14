@@ -88,7 +88,8 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
   this->Error = 0;
   this->Eof = false;
 
-  wchar_t *wideFilename = vtkDICOMFilePath::ConvertToWideChar(filename);
+  vtkDICOMFilePath fpath(filename);
+  const wchar_t *wideFilename = fpath.Wide();
   if (wideFilename)
     {
     if (mode == In)
@@ -139,7 +140,6 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
       }
     }
 
-  delete [] wideFilename;
 #else
   this->Handle = 0;
   this->Error = 0;
@@ -382,7 +382,8 @@ int vtkDICOMFile::Access(const char *filename, Mode mode)
 {
 #ifdef _WIN32
   int errorCode = UnknownError;
-  wchar_t *wideFilename = vtkDICOMFilePath::ConvertToWideChar(filename);
+  vtkDICOMFilePath fpath(filename);
+  const wchar_t *wideFilename = fpath.Wide();
   if (wideFilename)
     {
     errorCode = 0;
@@ -416,7 +417,6 @@ int vtkDICOMFile::Access(const char *filename, Mode mode)
       {
       errorCode = FileIsDirectory;
       }
-    delete [] wideFilename;
     }
   return errorCode;
 #else
@@ -456,7 +456,8 @@ int vtkDICOMFile::Remove(const char *filename)
 {
 #if defined(VTK_DICOM_WIN32_IO)
   int errorCode = 0;
-  wchar_t *wideFilename = vtkDICOMFilePath::ConvertToWideChar(filename);
+  vtkDICOMFilePath fpath(filename);
+  const wchar_t *wideFilename = fpath.Wide();
   if (wideFilename)
     {
     if (!DeleteFileW(wideFilename))
@@ -477,7 +478,6 @@ int vtkDICOMFile::Remove(const char *filename)
         errorCode = UnknownError;
         }
       }
-    delete [] wideFilename;
     }
   return errorCode;
 #else
@@ -511,16 +511,16 @@ bool vtkDICOMFile::SameFile(const char *file1, const char *file2)
 
   bool result = false;
 #ifdef _WIN32
-  wchar_t *widepath = vtkDICOMFilePath::ConvertToWideChar(file1);
+  vtkDICOMFilePath fpath1(file1);
+  const wchar_t *widepath = fpath1.Wide();
   HANDLE h1 = CreateFileW(widepath,
     GENERIC_READ, FILE_SHARE_READ , NULL, OPEN_EXISTING,
     FILE_FLAG_BACKUP_SEMANTICS, NULL);
-  delete [] widepath;
-  widepath = vtkDICOMFilePath::ConvertToWideChar(file2);
+  vtkDICOMFilePath fpath2(file2);
+  widepath = fpath2.Wide();
   HANDLE h2 = CreateFileW(widepath,
     GENERIC_READ, FILE_SHARE_READ , NULL, OPEN_EXISTING,
     FILE_FLAG_BACKUP_SEMANTICS, NULL);
-  delete [] widepath;
   if (h1 != INVALID_HANDLE_VALUE && h2 != INVALID_HANDLE_VALUE)
     {
     BY_HANDLE_FILE_INFORMATION buf;
