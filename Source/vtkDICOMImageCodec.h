@@ -118,7 +118,7 @@ public:
 
   //! Encode a compressed image, and return an allocated destination buffer.
   /*!
-   *  The caller has the responsibility of calling "free" on the returned
+   *  The caller has the responsibility of calling "delete []" on the returned
    *  destination buffer.
    */
   int Encode(const ImageFormat& image,
