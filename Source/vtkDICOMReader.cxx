@@ -1708,10 +1708,13 @@ void vtkDICOMReader::UpdateMedicalImageProperties()
   vtkMatrix4x4 *matrix = this->PatientMatrix;
   vtkMedicalImageProperties *properties = this->MedicalImageProperties;
 
-  properties->SetPatientName(
-    meta->GetAttributeValue(DC::PatientName).GetCharData());
-  properties->SetPatientID(
-    meta->GetAttributeValue(DC::PatientID).GetCharData());
+  const vtkDICOMValue *vptr;
+  vptr = &meta->GetAttributeValue(DC::PatientName);
+  properties->SetPatientName(vptr->IsValid() ?
+    vptr->AsUTF8String().c_str() : NULL);
+  vptr = &meta->GetAttributeValue(DC::PatientID);
+  properties->SetPatientID(vptr->IsValid() ?
+    vptr->AsUTF8String().c_str() : NULL);
   properties->SetPatientAge(
     meta->GetAttributeValue(DC::PatientAge).GetCharData());
   properties->SetPatientSex(
@@ -1734,24 +1737,32 @@ void vtkDICOMReader::UpdateMedicalImageProperties()
     meta->GetAttributeValue(DC::InstanceNumber).GetCharData());
   properties->SetSeriesNumber(
     meta->GetAttributeValue(DC::SeriesNumber).GetCharData());
-  properties->SetSeriesDescription(
-    meta->GetAttributeValue(DC::SeriesDescription).GetCharData());
-  properties->SetStudyID(
-    meta->GetAttributeValue(DC::StudyID).GetCharData());
-  properties->SetStudyDescription(
-    meta->GetAttributeValue(DC::StudyDescription).GetCharData());
+  vptr = &meta->GetAttributeValue(DC::SeriesDescription);
+  properties->SetSeriesDescription(vptr->IsValid() ?
+    vptr->AsUTF8String().c_str() : NULL);
+  vptr = &meta->GetAttributeValue(DC::StudyID);
+  properties->SetStudyID(vptr->IsValid() ?
+    vptr->AsUTF8String().c_str() : NULL);
+  vptr = &meta->GetAttributeValue(DC::StudyDescription);
+  properties->SetStudyDescription(vptr->IsValid() ?
+    vptr->AsUTF8String().c_str() : NULL);
   properties->SetModality(
     meta->GetAttributeValue(DC::Modality).GetCharData());
-  properties->SetManufacturer(
-    meta->GetAttributeValue(DC::Manufacturer).GetCharData());
-  properties->SetManufacturerModelName(
-    meta->GetAttributeValue(DC::ManufacturerModelName).GetCharData());
-  properties->SetStationName(
-    meta->GetAttributeValue(DC::StationName).GetCharData());
-  properties->SetInstitutionName(
-    meta->GetAttributeValue(DC::InstitutionName).GetCharData());
-  properties->SetConvolutionKernel(
-    meta->GetAttributeValue(DC::ConvolutionKernel).GetCharData());
+  vptr = &meta->GetAttributeValue(DC::Manufacturer);
+  properties->SetManufacturer(vptr->IsValid() ?
+    vptr->AsUTF8String().c_str() : NULL);
+  vptr = &meta->GetAttributeValue(DC::ManufacturerModelName);
+  properties->SetManufacturerModelName(vptr->IsValid() ?
+    vptr->AsUTF8String().c_str() : NULL);
+  vptr = &meta->GetAttributeValue(DC::StationName);
+  properties->SetStationName(vptr->IsValid() ?
+    vptr->AsUTF8String().c_str() : NULL);
+  vptr = &meta->GetAttributeValue(DC::InstitutionName);
+  properties->SetInstitutionName(vptr->IsValid() ?
+    vptr->AsUTF8String().c_str() : NULL);
+  vptr = &meta->GetAttributeValue(DC::ConvolutionKernel);
+  properties->SetConvolutionKernel(vptr->IsValid() ?
+    vptr->AsUTF8String().c_str() : NULL);
   properties->SetSliceThickness(
     meta->GetAttributeValue(DC::SliceThickness).GetCharData());
   properties->SetKVP(
