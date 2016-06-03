@@ -237,7 +237,7 @@ int vtkDICOMImageCodec::EncodeRLE(
 
   // the amount to advance after each input byte
   unsigned int inInc = (image.PlanarConfiguration ? bps : n);
-  // the amount to advance advance after each sample
+  // the amount to advance after each sample
   size_t segInc = (image.PlanarConfiguration ? segmentSize : 1);
   segInc *= bps;
 
