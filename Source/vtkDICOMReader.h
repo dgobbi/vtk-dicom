@@ -138,6 +138,14 @@ public:
   vtkGetMacro(DesiredTimeIndex, int);
 
   // Description:
+  // Turn off automatic conversion of YBR images to RGB.
+  // By default, YBR images are always converted to RGB (though the
+  // photometric interpretation in the metadata will remain the same).
+  vtkGetMacro(AutoYBRToRGB, int);
+  vtkSetMacro(AutoYBRToRGB, int);
+  vtkBooleanMacro(AutoYBRToRGB, int);
+
+  // Description:
   // Turn off automatic rescaling of intensity values.
   // By default, of the reader sees different RescaleSlope and
   // RescaleIntercept values for different slices, then it will
@@ -230,6 +238,11 @@ protected:
     int fileIdx, int frameIdx, void *buffer, vtkIdType bufferSize);
 
   // Description:
+  // Convert buffer from YUV to RGB.
+  virtual void YBRToRGB(
+    int fileIdx, int frameIdx, void *buffer, vtkIdType bufferSize);
+
+  // Description:
   // Convert parser errors into reader errors.
   void RelayError(vtkObject *o, unsigned long e, void *data);
 
@@ -305,6 +318,11 @@ protected:
   // This indicates that the data must be rescaled.
   int NeedsRescale;
   int AutoRescale;
+
+  // Description:
+  // This indicates that the data must be converted to RGB.
+  int NeedsYBRToRGB;
+  int AutoYBRToRGB;
 
   // Description:
   // The number of packed pixel components in the input file.

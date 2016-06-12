@@ -79,6 +79,8 @@ vtkCxxSetObjectMacro(vtkDICOMReader,Sorter,vtkDICOMSliceSorter);
 //----------------------------------------------------------------------------
 vtkDICOMReader::vtkDICOMReader()
 {
+  this->AutoYBRToRGB = 1;
+  this->NeedsYBRToRGB = 0;
   this->AutoRescale = 1;
   this->NeedsRescale = 0;
   this->RescaleSlope = 1.0;
@@ -1112,6 +1114,74 @@ void vtkDICOMReader::RescaleBuffer(
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMReader::YBRToRGB(
+  int fileIdx, int frameIdx, void *buffer, vtkIdType bufferSize)
+{
+  const double fullYBR[16] = {
+     0.2990,  0.5870,  0.1140,   0.0,
+    -0.1687, -0.3313,  0.5000, 128.0,
+     0.5000, -0.4187, -0.0813, 128.0,
+     0.0, 0.0, 0.0, 1.0
+    };
+
+  const double partialYBR[16] = {
+     0.2568,  0.5041,  0.0979,  16.0,
+    -0.1482, -0.2910,  0.4392, 128.0,
+     0.4392, -0.3678, -0.0714, 128.0,
+     0.0, 0.0, 0.0, 1.0
+    };
+
+  double matrix[16];
+
+  vtkDICOMMetaData *meta = this->MetaData;
+  const vtkDICOMValue& photometric = meta->GetAttributeValue(
+    fileIdx, frameIdx, DC::PhotometricInterpretation);
+
+  if (photometric.Matches("YBR_FULL*"))
+    {
+    vtkMatrix4x4::Invert(fullYBR, matrix);
+    }
+  else if (photometric.Matches("YBR_PARTIAL*"))
+    {
+    vtkMatrix4x4::Invert(partialYBR, matrix);
+    }
+  else
+    {
+    return;
+    }
+
+  if (bufferSize >= 3)
+    {
+    unsigned char *cp = static_cast<unsigned char *>(buffer);
+    vtkIdType n = bufferSize/3;
+    double rgbx[4] = { 0.0, 0.0, 0.0, 1.0 };
+    do
+      {
+      rgbx[0] = cp[0];
+      rgbx[1] = cp[1];
+      rgbx[2] = cp[2];
+
+      vtkMatrix4x4::MultiplyPoint(matrix, rgbx, rgbx);
+
+      // need to clamp if YBR_PARTIAL wasn't within required limits
+      rgbx[0] = (rgbx[0] >= 0.0 ? rgbx[0] : 0.0);
+      rgbx[0] = (rgbx[0] <= 255.0 ? rgbx[0] : 255.0);
+      rgbx[1] = (rgbx[1] >= 0.0 ? rgbx[1] : 0.0);
+      rgbx[1] = (rgbx[1] <= 255.0 ? rgbx[1] : 255.0);
+      rgbx[2] = (rgbx[2] >= 0.0 ? rgbx[2] : 0.0);
+      rgbx[2] = (rgbx[2] <= 255.0 ? rgbx[2] : 255.0);
+
+      cp[0] = static_cast<unsigned char>(vtkMath::Floor(rgbx[0] + 0.5));
+      cp[1] = static_cast<unsigned char>(vtkMath::Floor(rgbx[1] + 0.5));
+      cp[2] = static_cast<unsigned char>(vtkMath::Floor(rgbx[2] + 0.5));
+
+      cp += 3;
+      }
+    while (--n);
+    }
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMReader::UnpackBits(
   const void *filePtr, void *buffer, vtkIdType bufferSize, int bits)
 {
@@ -1322,6 +1392,8 @@ bool vtkDICOMReader::ReadFileDelegated(
   unsigned char *buffer, vtkIdType bufferSize)
 {
 #if defined(DICOM_USE_DCMTK)
+  // For JPEG, DCMTK will do the YBR to RGB
+  this->NeedsYBRToRGB = false;
 
   DcmFileFormat *fileformat = new DcmFileFormat();
   fileformat->loadFile(filename);
@@ -1583,6 +1655,13 @@ int vtkDICOMReader::RequestData(
                    componentIdx*filePixelSize*numPlanes);
       }
 
+    // ReadOneFile will set NeedsYBRToRGB to false if it does YBR->RGB itself
+    // (note: NeedsYBRToRGB will is ignored unless PhotometricInterpretation
+    // is YBR_FULL* or YBR_PARTIAL*)
+    this->NeedsYBRToRGB = (this->AutoYBRToRGB &&
+                           numComponents == 3 &&
+                           scalarSize == 1);
+
     this->ComputeInternalFileName(fileIdx);
     this->ReadOneFile(this->InternalFileName, fileIdx,
                       bufferPtr, framesInFile*fileFrameSize);
@@ -1646,6 +1725,12 @@ int vtkDICOMReader::RequestData(
           }
 
         planePtr += filePlaneSize;
+        }
+
+      // convert to RGB if data was read from file as YUV
+      if (this->NeedsYBRToRGB)
+        {
+        this->YBRToRGB(fileIdx, frameIdx, slicePtr, sliceSize);
         }
       }
     }
