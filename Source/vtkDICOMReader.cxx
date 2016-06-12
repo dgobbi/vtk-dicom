@@ -797,7 +797,7 @@ int vtkDICOMReader::RequestInformation(
 
   // photometric interpretation
   // "MONOCHROME1" "MONOCHROME2"
-  // "PALETTE_COLOR" "RGB" (convert palette color to RGB)
+  // "PALETTE COLOR" "RGB" (convert palette color to RGB)
   // "HSV" "ARGB" "CMYK" (all three are retired)
   // "YBR_FULL" "YBR_FULL_422" (use CCIR 601-2 to convert to RGB)
   // "YBR_PARTIAL_422" "YBR_PARTIAL_420" (use CCIR 601-2 to convert to RGB)
