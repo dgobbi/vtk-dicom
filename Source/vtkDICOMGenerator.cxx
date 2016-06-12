@@ -1590,9 +1590,10 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *source)
       pm = source->GetAttributeValue(
         DC::PhotometricInterpretation).AsString();
       }
-    if (pm == "PALETTE COLOR" && source &&
-        source->HasAttribute(DC::RedPaletteColorLookupTableData))
+    if ((pm == "PALETTE COLOR" || pm == "PALETTE_COLOR") &&
+        source && source->HasAttribute(DC::RedPaletteColorLookupTableData))
       {
+      pm = "PALETTE COLOR";
       paletteColor = true;
       }
     else if (pm != "MONOCHROME1")
