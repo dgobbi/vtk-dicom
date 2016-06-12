@@ -634,6 +634,24 @@ EquivalentCodeSequence
 SQ
 1
 
+(0008,0122)
+Mapping Resource Name
+MappingResourceName
+LO
+1
+
+(0008,0123)
+Context Group Identification Sequence
+ContextGroupIdentificationSequence
+SQ
+1
+
+(0008,0124)
+Mapping Resource Identification Sequence
+MappingResourceIdentificationSequence
+SQ
+1
+
 (0008,0201)
 Timezone Offset From UTC
 TimezoneOffsetFromUTC
@@ -22876,10 +22894,22 @@ ScanSpotTuneID
 SH
 1
 
+(300A,0391)
+Scan Spot Prescribed Indices
+ScanSpotPrescribedIndices
+IS
+1-n
+
 (300A,0392)
 Number of Scan Spot Positions
 NumberOfScanSpotPositions
 IS
+1
+
+(300A,0393)
+Scan Spot Reordered
+ScanSpotReordered
+CS
 1
 
 (300A,0394)
@@ -22887,6 +22917,12 @@ Scan Spot Position Map
 ScanSpotPositionMap
 FL
 1-n
+
+(300A,0395)
+Scan Spot Reordering Allowed
+ScanSpotReorderingAllowed
+CS
+1
 
 (300A,0396)
 Scan Spot Meterset Weights

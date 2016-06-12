@@ -4706,3 +4706,9 @@ RT Content Assessment Types
 1.2.840.10008.6.1.1118
 CID 703
 Basis of Assessment
+1.2.840.10008.6.1.1119
+CID 7449
+Reader Specialty
+1.2.840.10008.6.1.1120
+CID 9233
+Requested Report Types
