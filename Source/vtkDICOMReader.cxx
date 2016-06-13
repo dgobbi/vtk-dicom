@@ -1115,7 +1115,7 @@ void vtkDICOMReader::RescaleBuffer(
 
 //----------------------------------------------------------------------------
 void vtkDICOMReader::YBRToRGB(
-  int fileIdx, int frameIdx, void *buffer, vtkIdType bufferSize)
+  int fileIdx, int, void *buffer, vtkIdType bufferSize)
 {
   const double fullYBR[16] = {
      0.2990,  0.5870,  0.1140,   0.0,
@@ -1135,7 +1135,9 @@ void vtkDICOMReader::YBRToRGB(
 
   vtkDICOMMetaData *meta = this->MetaData;
   const vtkDICOMValue& photometric = meta->GetAttributeValue(
-    fileIdx, frameIdx, DC::PhotometricInterpretation);
+    fileIdx, DC::PhotometricInterpretation);
+  const vtkDICOMValue& transferSyntax = meta->GetAttributeValue(
+    fileIdx, DC::TransferSyntaxUID);
 
   if (photometric.Matches("YBR_FULL*"))
     {
@@ -1144,6 +1146,11 @@ void vtkDICOMReader::YBRToRGB(
   else if (photometric.Matches("YBR_PARTIAL*"))
     {
     vtkMatrix4x4::Invert(partialYBR, matrix);
+    }
+  else if (transferSyntax.Matches("1.2.840.10008.1.2.4.50"))
+    {
+    // catch JPEG baseline images with incorrect PhotometricInterpretation
+    vtkMatrix4x4::Invert(fullYBR, matrix);
     }
   else
     {
