@@ -1117,43 +1117,52 @@ void vtkDICOMReader::RescaleBuffer(
 void vtkDICOMReader::YBRToRGB(
   int fileIdx, int, void *buffer, vtkIdType bufferSize)
 {
-  const double fullYBR[16] = {
-     0.2990,  0.5870,  0.1140,   0.0,
-    -0.1687, -0.3313,  0.5000, 128.0,
-     0.5000, -0.4187, -0.0813, 128.0,
-     0.0, 0.0, 0.0, 1.0
-    };
+  // digital luminance levels and color levels from Rec. 601
+  const int ylevels = 220;
+  const int clevels = 225;
 
-  const double partialYBR[16] = {
-     0.2568,  0.5041,  0.0979,  16.0,
-    -0.1482, -0.2910,  0.4392, 128.0,
-     0.4392, -0.3678, -0.0714, 128.0,
-     0.0, 0.0, 0.0, 1.0
-    };
+  // the digital black level from Rec. 601
+  double ymin = 16.0;
 
-  double matrix[16];
+  // the color constants from Rec. 601
+  const double Kb = 0.114;
+  const double Kr = 0.299;
+  double Kg = 1.0 - Kb - Kr;
 
+  // compute the matrix for YPbPr to RGB conversion
+  double matrix[3][3] = {
+    { 1.0,  0.0,                 2.0*(1.0-Kr)       },
+    { 1.0, -2.0*Kb*(1.0-Kb)/Kg, -2.0*Kr*(1.0-Kr)/Kg },
+    { 1.0,  2.0*(1.0-Kb),        0.0                }
+  };
+
+  // get information from the meta data
   vtkDICOMMetaData *meta = this->MetaData;
   const vtkDICOMValue& photometric = meta->GetAttributeValue(
     fileIdx, DC::PhotometricInterpretation);
   const vtkDICOMValue& transferSyntax = meta->GetAttributeValue(
     fileIdx, DC::TransferSyntaxUID);
 
-  if (photometric.Matches("YBR_FULL*"))
+  // catch JPEG baseline images with incorrect PhotometricInterpretation
+  if (transferSyntax.Matches("1.2.840.10008.1.2.4.50") ||
+      photometric.Matches("YBR_FULL*"))
     {
-    vtkMatrix4x4::Invert(fullYBR, matrix);
+    // use full-range, therefore black level is zero
+    ymin = 0.0;
     }
   else if (photometric.Matches("YBR_PARTIAL*"))
     {
-    vtkMatrix4x4::Invert(partialYBR, matrix);
-    }
-  else if (transferSyntax.Matches("1.2.840.10008.1.2.4.50"))
-    {
-    // catch JPEG baseline images with incorrect PhotometricInterpretation
-    vtkMatrix4x4::Invert(fullYBR, matrix);
+    // stretch the matrix so that full-range RGB is produced
+    for (int i = 0; i < 3; i++)
+      {
+      matrix[i][0] *= 255.0/(ylevels - 1);
+      matrix[i][1] *= 255.0/(clevels - 1);
+      matrix[i][2] *= 255.0/(clevels - 1);
+      }
     }
   else
     {
+    // no YBR here, so exit!
     return;
     }
 
@@ -1161,26 +1170,26 @@ void vtkDICOMReader::YBRToRGB(
     {
     unsigned char *cp = static_cast<unsigned char *>(buffer);
     vtkIdType n = bufferSize/3;
-    double rgbx[4] = { 0.0, 0.0, 0.0, 1.0 };
+    double ybr[3];
+    double rgb[3];
     do
       {
-      rgbx[0] = cp[0];
-      rgbx[1] = cp[1];
-      rgbx[2] = cp[2];
+      ybr[0] = cp[0] - ymin;
+      ybr[1] = cp[1] - 128.0;
+      ybr[2] = cp[2] - 128.0;
 
-      vtkMatrix4x4::MultiplyPoint(matrix, rgbx, rgbx);
+      vtkMath::Multiply3x3(matrix, ybr, rgb);
 
-      // need to clamp if YBR_PARTIAL wasn't within required limits
-      rgbx[0] = (rgbx[0] >= 0.0 ? rgbx[0] : 0.0);
-      rgbx[0] = (rgbx[0] <= 255.0 ? rgbx[0] : 255.0);
-      rgbx[1] = (rgbx[1] >= 0.0 ? rgbx[1] : 0.0);
-      rgbx[1] = (rgbx[1] <= 255.0 ? rgbx[1] : 255.0);
-      rgbx[2] = (rgbx[2] >= 0.0 ? rgbx[2] : 0.0);
-      rgbx[2] = (rgbx[2] <= 255.0 ? rgbx[2] : 255.0);
+      rgb[0] = (rgb[0] >= 0.0 ? rgb[0] : 0.0);
+      rgb[0] = (rgb[0] <= 255.0 ? rgb[0] : 255.0);
+      rgb[1] = (rgb[1] >= 0.0 ? rgb[1] : 0.0);
+      rgb[1] = (rgb[1] <= 255.0 ? rgb[1] : 255.0);
+      rgb[2] = (rgb[2] >= 0.0 ? rgb[2] : 0.0);
+      rgb[2] = (rgb[2] <= 255.0 ? rgb[2] : 255.0);
 
-      cp[0] = static_cast<unsigned char>(vtkMath::Floor(rgbx[0] + 0.5));
-      cp[1] = static_cast<unsigned char>(vtkMath::Floor(rgbx[1] + 0.5));
-      cp[2] = static_cast<unsigned char>(vtkMath::Floor(rgbx[2] + 0.5));
+      cp[0] = static_cast<unsigned char>(vtkMath::Floor(rgb[0] + 0.5));
+      cp[1] = static_cast<unsigned char>(vtkMath::Floor(rgb[1] + 0.5));
+      cp[2] = static_cast<unsigned char>(vtkMath::Floor(rgb[2] + 0.5));
 
       cp += 3;
       }
