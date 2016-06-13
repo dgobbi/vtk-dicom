@@ -1576,6 +1576,17 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *source)
   bool paletteColor = false;
   if (this->NumberOfColorComponents >= 3)
     {
+    if (source)
+      {
+      // if original data was YBR, then some loss occurred
+      const vtkDICOMValue& pmv = source->GetAttributeValue(
+        DC::PhotometricInterpretation);
+      if (pmv.Matches("YBR_*") && !pmv.Matches("YBR_RCT"))
+        {
+        meta->SetAttributeValue(DC::LossyImageCompression, "01");
+        }
+      }
+
     meta->SetAttributeValue(DC::SamplesPerPixel, 3);
     meta->SetAttributeValue(DC::PlanarConfiguration, 0);
     meta->SetAttributeValue(DC::PhotometricInterpretation, "RGB");
