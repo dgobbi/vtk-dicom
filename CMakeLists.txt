@@ -250,6 +250,11 @@ if(NOT Module_vtkDICOM)
     if(TMP_INDEX GREATER -1)
       set(VTK_LIBS ${VTK_LIBS} vtkIOMPIImage)
     endif()
+    # If vtkIOMySQL is present, it has factories for vtkIOSQL
+    list(FIND VTK_LIBRARIES vtkIOMySQL TMP_INDEX)
+    if(TMP_INDEX GREATER -1)
+      set(VTK_LIBS ${VTK_LIBS} vtkIOMySQL)
+    endif()
   else()
     set(VTK_LIBS vtkCommon vtkFiltering vtkImaging vtkIO vtkInfovis) # VTK 5.x
   endif()
