@@ -64,6 +64,9 @@ public:
 
   //! Check if the list entry is a symbolic link.
   bool IsSymlink(int i);
+
+  //! Check if the list entry has an attribute that marks it as hidden.
+  bool IsHidden(int i);
   //@}
 
   //@{
@@ -80,9 +83,13 @@ private:
   //! Add a directory entry.
   void AddEntry(const char *name, unsigned short flags, unsigned short mask);
 
+  //! Stat a file to set flags
+  void StatEntry(int i);
+
   struct Entry;
   static const unsigned int TypeDirectory = 1;
   static const unsigned int TypeSymlink = 2;
+  static const unsigned int TypeHidden = 4;
 
   std::string Name;
   int Error;
