@@ -1074,7 +1074,8 @@ void dicomtonifti_files_and_dirs(
       for (unsigned long j = 0; j < nf; j++)
         {
         const char *dirfile = directory.GetFile(j);
-        if (dirfile[0] != '.')
+        if (dirfile[0] != '.' || (dirfile[1] != '\0' &&
+            (dirfile[1] != '.' || dirfile[2] != '\0')))
           {
           path.PushBack(dirfile);
           files->InsertNextValue(path.AsString());

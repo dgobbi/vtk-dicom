@@ -1935,7 +1935,9 @@ void vtkDICOMDirectory::ProcessDirectory(
   for (int i = 0; i < n; i++)
     {
     const char *fname = d.GetFile(i);
-    if (fname[0] != '.' && strcmp(fname, "DICOMDIR") != 0)
+    if ((fname[0] != '.' || (fname[1] != '\0' &&
+         (fname[1] != '.' || fname[2] != '\0'))) &&
+        strcmp(fname, "DICOMDIR") != 0)
       {
       path.PushBack(fname);
       std::string fileString = path.AsString();
