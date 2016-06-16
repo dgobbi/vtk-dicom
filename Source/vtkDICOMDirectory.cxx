@@ -142,6 +142,7 @@ vtkDICOMDirectory::vtkDICOMDirectory()
   this->InternalFileName = 0;
   this->RequirePixelData = 1;
   this->FollowSymlinks = 1;
+  this->ShowHidden = 1;
   this->ScanDepth = 1;
   this->Query = 0;
   this->FindLevel = vtkDICOMDirectory::IMAGE;
@@ -1945,6 +1946,15 @@ void vtkDICOMDirectory::ProcessDirectory(
       if (!this->FollowSymlinks && d.IsSymlink(i))
         {
         // Do nothing unless FollowSymlinks is On
+        }
+#ifdef _WIN32
+      else if (!this->ShowHidden && d.IsHidden(i))
+#else
+      else if (!this->ShowHidden && (d.IsHidden(i) || fname[0] == '.'))
+#endif
+        {
+        // Do nothing for hidden files unless ShowHidden is On
+        // (on Linux and OS X, consider "." files to be hidden)
         }
       else if (d.IsDirectory(i))
         {

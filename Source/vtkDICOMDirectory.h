@@ -197,6 +197,17 @@ public:
   int GetFollowSymlinks() { return this->FollowSymlinks; }
   //@}
 
+  //@{
+  //! If On (the default), hidden files will be listed.
+  /*!
+   *  A file is hidden if it has a "hidden" attribute set.  On Linux and
+   *  OS X, any file that begins with "." will also be considered "hidden".
+   */
+  vtkSetMacro(ShowHidden, int);
+  vtkBooleanMacro(ShowHidden, int);
+  int GetShowHidden() { return this->ShowHidden; }
+  //@}
+
 protected:
   vtkDICOMDirectory();
   ~vtkDICOMDirectory();
@@ -206,6 +217,7 @@ protected:
   const char *FilePattern;
   int RequirePixelData;
   int FollowSymlinks;
+  int ShowHidden;
   int ScanDepth;
 
   vtkTimeStamp UpdateTime;
