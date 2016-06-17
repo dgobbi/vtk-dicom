@@ -244,7 +244,7 @@ int vtkDICOMApplyPalette::RequestInformation(
 
   if (meta && meta->GetAttributeValue(DC::SamplesPerPixel).Matches(1))
     {
-    // Check if PhotometricInterpretation is PALETTE_COLOR
+    // Check if PhotometricInterpretation is PALETTE COLOR
     const vtkDICOMValue& u = meta->GetAttributeValue(
       DC::PhotometricInterpretation);
     hasPalette = u.Matches("PALETTE?COLOR");

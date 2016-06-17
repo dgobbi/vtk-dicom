@@ -11,7 +11,7 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkDICOMApplyPalette - Apply palette to PALETTE_COLOR images
+// .NAME vtkDICOMApplyPalette - Apply palette to PALETTE COLOR images
 // .SECTION Description
 // If an image contains a palette LUT, then this filter will apply that
 // LUT to the image and produce an RGB image.  Images without a palette
