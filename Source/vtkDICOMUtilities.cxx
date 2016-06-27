@@ -798,12 +798,21 @@ bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
     return true;
     }
 
-  // Finally, look for little-endian implicit ACR-NEMA.
-  if (cp[0] == 8 && cp[1] == 0 && cp[2] == 0 && cp[3] == 0 &&
-      cp[4] == 4 && cp[5] == 0 && cp[6] == 0 && cp[7] == 0 &&
-      cp[12] == 8 && cp[13] == 0 && (cp[14] != 0 || cp[15] != 0))
+  // Look for two valid implicitly-encoded data elements in Group 0x0008,
+  // where the first element must be (0008,0016) or less (e.g. SOPClassUID)
+  // with a size of 64 or less, and the second element must be (0008,0018)
+  // or less (e.g. SOPInstanceUID) with a size of 64 or less.
+  if (cp[0] == 0x08 && cp[1] == 0x00 && cp[2] <= 0x16 && cp[3] == 0x00 &&
+      cp[4] <= 0x40 && cp[5] == 0x00 && cp[6] == 0x00 && cp[7] == 0x00)
     {
-    return true;
+    unsigned char e = cp[2];
+    cp += (cp[4] + 8);
+    if (cp[0] == 0x08 && cp[1] == 0x00 && cp[2] <= 0x18 && cp[3] == 0x00 &&
+        cp[4] <= 0x40 && cp[5] == 0x00 && cp[6] == 0x00 && cp[7] == 0x00 &&
+        cp[2] > e)
+      {
+      return true;
+      }
     }
 
   return false;
