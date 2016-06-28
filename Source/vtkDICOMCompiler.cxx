@@ -961,13 +961,6 @@ void vtkDICOMCompiler::GenerateSeriesUIDs()
     this->SeriesUIDs->InsertNextValue(
       vtkDICOMUtilities::GenerateUID(DC::SeriesInstanceUID));
     }
-
-  // study UID is only generated once per session
-  if (vtkDICOMCompiler::StudyUID[0] == '\0')
-    {
-    std::string uid = vtkDICOMUtilities::GenerateUID(DC::StudyInstanceUID);
-    strcpy(vtkDICOMCompiler::StudyUID, uid.c_str());
-    }
 }
 
 //----------------------------------------------------------------------------
@@ -1135,9 +1128,10 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
     }
 
   // Generate fresh UIDs if at index zero
-  if (idx == 0 || this->SeriesUIDs == 0 ||
-      this->SeriesUIDs->GetNumberOfValues() !=
-      data->GetNumberOfInstances() + 1)
+  if ((this->SOPInstanceUID == 0 || this->SeriesInstanceUID == 0) &&
+      (idx == 0 || this->SeriesUIDs == 0 ||
+       this->SeriesUIDs->GetNumberOfValues() !=
+       data->GetNumberOfInstances() + 1))
     {
     this->GenerateSeriesUIDs();
     }
@@ -1486,6 +1480,12 @@ bool vtkDICOMCompiler::WriteMetaData(
   if (studyUID == 0 &&
       meta->GetAttributeValue(DC::StudyInstanceUID).AsString() == "")
     {
+    // study UID is only generated once per session
+    if (vtkDICOMCompiler::StudyUID[0] == '\0')
+      {
+      std::string uid = vtkDICOMUtilities::GenerateUID(DC::StudyInstanceUID);
+      strcpy(vtkDICOMCompiler::StudyUID, uid.c_str());
+      }
     studyUID = vtkDICOMCompiler::StudyUID;
     }
 
