@@ -17,6 +17,7 @@
 #include "vtkDICOMItem.h"
 #include "vtkDICOMTagPath.h"
 #include "vtkDICOMMetaDataAdapter.h"
+#include "vtkDICOMUIDGenerator.h"
 #include "vtkDICOMUtilities.h"
 
 #include "vtkObjectFactory.h"
@@ -40,12 +41,14 @@
 
 vtkCxxSetObjectMacro(vtkDICOMGenerator,PatientMatrix,vtkMatrix4x4);
 vtkCxxSetObjectMacro(vtkDICOMGenerator,SourceMetaData,vtkDICOMMetaData);
+vtkCxxSetObjectMacro(vtkDICOMGenerator,UIDGenerator,vtkDICOMUIDGenerator);
 
 //----------------------------------------------------------------------------
 vtkDICOMGenerator::vtkDICOMGenerator()
 {
   this->MetaData = 0;
   this->SourceMetaData = 0;
+  this->UIDGenerator = 0;
   this->MultiFrame = 0;
   this->OriginAtBottom = 1;
   this->ReverseSliceOrder = 0;
@@ -98,6 +101,10 @@ vtkDICOMGenerator::~vtkDICOMGenerator()
     {
     this->PatientMatrix->Delete();
     }
+  if (this->UIDGenerator)
+    {
+    this->UIDGenerator->Delete();
+    }
   if (this->SourceMetaData)
     {
     this->SourceMetaData->Delete();
@@ -138,6 +145,15 @@ void vtkDICOMGenerator::PrintSelf(ostream& os, vtkIndent indent)
   if (this->SourceMetaData)
     {
     os << this->SourceMetaData << "\n";
+    }
+  else
+    {
+    os << "(none)\n";
+    }
+  os << indent << "UIDGenerator: ";
+  if (this->UIDGenerator)
+    {
+    os << this->UIDGenerator << "\n";
     }
   else
     {
@@ -189,6 +205,28 @@ void vtkDICOMGenerator::PrintSelf(ostream& os, vtkIndent indent)
     {
     os << " (none)\n";
     }
+}
+
+//----------------------------------------------------------------------------
+std::string vtkDICOMGenerator::GenerateUID(vtkDICOMTag tag)
+{
+  vtkDICOMUIDGenerator *uidgen = this->UIDGenerator;
+  if (uidgen == 0)
+    {
+    uidgen = vtkDICOMUIDGenerator::GetDefault();
+    }
+  return uidgen->GenerateUID(tag);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMGenerator::GenerateUIDs(vtkDICOMTag tag, vtkStringArray *uids)
+{
+  vtkDICOMUIDGenerator *uidgen = this->UIDGenerator;
+  if (uidgen == 0)
+    {
+    uidgen = vtkDICOMUIDGenerator::GetDefault();
+    }
+  uidgen->GenerateUIDs(tag, uids);
 }
 
 //----------------------------------------------------------------------------
@@ -987,7 +1025,7 @@ bool vtkDICOMGenerator::GenerateSOPCommonModule(
   vtkSmartPointer<vtkStringArray> uids =
     vtkSmartPointer<vtkStringArray>::New();
   uids->SetNumberOfValues(n);
-  vtkDICOMUtilities::GenerateUIDs(DC::SOPInstanceUID, uids);
+  this->GenerateUIDs(DC::SOPInstanceUID, uids);
   for (int i = 0; i < n; i++)
     {
     meta->SetAttributeValue(i, DC::SOPInstanceUID, uids->GetValue(i));
@@ -1101,7 +1139,7 @@ bool vtkDICOMGenerator::GenerateGeneralStudyModule(vtkDICOMMetaData *source)
     }
   if (studyUID == "")
     {
-    studyUID = vtkDICOMUtilities::GenerateUID(DC::StudyInstanceUID);
+    studyUID = this->GenerateUID(DC::StudyInstanceUID);
     }
   vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::StudyInstanceUID, studyUID);
@@ -1184,7 +1222,7 @@ bool vtkDICOMGenerator::GenerateGeneralSeriesModule(vtkDICOMMetaData *source)
   vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(
     DC::SeriesInstanceUID,
-    vtkDICOMUtilities::GenerateUID(DC::SeriesInstanceUID));
+    this->GenerateUID(DC::SeriesInstanceUID));
 
   // The modality is mandatory, it cannot be left blank,
   // and it must agree with the SOP Class IOD.
@@ -1307,7 +1345,7 @@ bool vtkDICOMGenerator::GenerateFrameOfReferenceModule(
     }
   if (uid == "")
     {
-    uid = vtkDICOMUtilities::GenerateUID(DC::FrameOfReferenceUID);
+    uid = this->GenerateUID(DC::FrameOfReferenceUID);
     }
 
   vtkDICOMMetaData *meta = this->MetaData;

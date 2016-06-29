@@ -62,6 +62,7 @@ set(LIB_SRCS
   vtkDICOMToRAS.cxx
   vtkDICOMCTRectifier.cxx
   vtkDICOMMetaDataAdapter.cxx
+  vtkDICOMUIDGenerator.cxx
   vtkNIFTIHeader.cxx
   vtkNIFTIReader.cxx
   vtkNIFTIWriter.cxx

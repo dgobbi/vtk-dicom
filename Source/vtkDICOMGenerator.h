@@ -21,8 +21,10 @@
 class vtkIntArray;
 class vtkMatrix4x4;
 class vtkInformation;
+class vtkStringArray;
 class vtkDICOMMetaData;
 class vtkDICOMItem;
+class vtkDICOMUIDGenerator;
 
 //! Generate DICOM data series for specific IOD classes.
 /*!
@@ -167,6 +169,16 @@ public:
   //@}
 
   //@{
+  //! Set the UID generator, for generating unique IDs.
+  /*!
+   *  If no UID generator is supplied, then the default UID generator
+   *  will be used.
+   */
+  void SetUIDGenerator(vtkDICOMUIDGenerator *);
+  vtkDICOMUIDGenerator *GetUIDGenerator() { return this->UIDGenerator; }
+  //@}
+
+  //@{
   //! Get an array that maps file and frame to slice.
   /*!
    *  Once the generator has created the metadata, this array lets the
@@ -204,6 +216,26 @@ protected:
   //! Protected constructor method.
   vtkDICOMGenerator();
   ~vtkDICOMGenerator();
+  //@}
+
+  //@{
+  //! Generate a UID for the provided tag.
+  /*
+   *  The generator uses the tag as a hint when generating the UIDs,
+   *  for example the SOPInstanceUID might have a different format from
+   *  the FrameOfReferenceUID.
+   */
+  std::string GenerateUID(vtkDICOMTag tag);
+
+  //! Generate a series of UIDs, sorted from low to high.
+  /*!
+   *  Before passing the string array, call SetNumberOfValues() on
+   *  the array to specify the number of UIDs that you want to be
+   *  stored in it.  The stored UIDs will be sorted, low to high.
+   *  Generating a batch of UIDs is more efficient than calling
+   *  GenerateUID() repeatedly.
+   */
+  void GenerateUIDs(vtkDICOMTag tag, vtkStringArray *uids);
   //@}
 
   //@{
@@ -349,6 +381,9 @@ protected:
 
   //! The source meta data.
   vtkDICOMMetaData *SourceMetaData;
+
+  //! The UID generator.
+  vtkDICOMUIDGenerator *UIDGenerator;
 
   //! Whether to prefer multi-frame files over single-frame.
   int MultiFrame;
