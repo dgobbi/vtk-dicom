@@ -208,25 +208,26 @@ void vtkDICOMGenerator::PrintSelf(ostream& os, vtkIndent indent)
 }
 
 //----------------------------------------------------------------------------
-std::string vtkDICOMGenerator::GenerateUID(vtkDICOMTag tag)
+vtkDICOMUIDGenerator *vtkDICOMGenerator::GetUIDGenerator()
 {
   vtkDICOMUIDGenerator *uidgen = this->UIDGenerator;
   if (uidgen == 0)
     {
     uidgen = vtkDICOMUIDGenerator::GetDefault();
     }
-  return uidgen->GenerateUID(tag);
+  return uidgen;
+}
+
+//----------------------------------------------------------------------------
+std::string vtkDICOMGenerator::GenerateUID(vtkDICOMTag tag)
+{
+  return this->GetUIDGenerator()->GenerateUID(tag);
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMGenerator::GenerateUIDs(vtkDICOMTag tag, vtkStringArray *uids)
 {
-  vtkDICOMUIDGenerator *uidgen = this->UIDGenerator;
-  if (uidgen == 0)
-    {
-    uidgen = vtkDICOMUIDGenerator::GetDefault();
-    }
-  uidgen->GenerateUIDs(tag, uids);
+  return this->GetUIDGenerator()->GenerateUIDs(tag, uids);
 }
 
 //----------------------------------------------------------------------------

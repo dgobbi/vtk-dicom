@@ -175,7 +175,7 @@ public:
    *  will be used.
    */
   void SetUIDGenerator(vtkDICOMUIDGenerator *);
-  vtkDICOMUIDGenerator *GetUIDGenerator() { return this->UIDGenerator; }
+  vtkDICOMUIDGenerator *GetUIDGenerator();
   //@}
 
   //@{
