@@ -763,20 +763,24 @@ void vtkDICOMDirectory::AddSeriesFileNames(
 
   // Check for files that are duplicate instances
   int ni = static_cast<int>(files->GetNumberOfValues());
+  std::vector<const vtkDICOMValue *> uids(ni);
+  for (int ii = 0; ii < ni; ii++)
+    {
+    uids[ii] = &imageRecords[ii]->GetAttributeValue(DC::SOPInstanceUID);
+    }
   std::vector<int> duplicate(ni);
   std::vector<int> seriesLength;
   seriesLength.push_back(0);
   int numberOfDuplicates = 0;
   for (int ii = 0; ii < ni; ii++)
     {
-    const vtkDICOMValue& uid =
-      imageRecords[ii]->GetAttributeValue(DC::SOPInstanceUID);
     int count = 0;
-    if (uid.GetVL() > 0)
+    const vtkDICOMValue *uid = uids[ii];
+    if (uid->GetVL() > 0)
       {
       for (int jj = 0; jj < ii; jj++)
         {
-        if (imageRecords[jj]->GetAttributeValue(DC::SOPInstanceUID) == uid)
+        if (*(uids[jj]) == *uid)
           {
           count++;
           }
