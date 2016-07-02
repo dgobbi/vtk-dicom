@@ -724,11 +724,7 @@ void vtkDICOMDirectory::AddSeriesFileNames(
     item.FirstSeries = series;
     item.LastSeries = series;
     }
-  else if (n >= 0 && study == n-1)
-    {
-    (*this->Studies)[study].LastSeries = series;
-    }
-  else
+  else if (n < 0 || study != n-1)
     {
     vtkErrorMacro("AddSeriesFileNames: non-monotonically increasing study")
     return;
@@ -765,23 +761,77 @@ void vtkDICOMDirectory::AddSeriesFileNames(
     return;
     }
 
+  // Check for files that are duplicate instances
   int ni = static_cast<int>(files->GetNumberOfValues());
-  vtkSmartPointer<vtkDICOMMetaData> meta =
-    vtkSmartPointer<vtkDICOMMetaData>::New();
-  meta->SetNumberOfInstances(ni);
-  this->CopyRecord(meta, &patientRecord, -1);
-  this->CopyRecord(meta, &studyRecord, -1);
-  this->CopyRecord(meta, &seriesRecord, -1);
+  std::vector<int> duplicate(ni);
+  std::vector<int> seriesLength;
+  seriesLength.push_back(0);
+  int numberOfDuplicates = 0;
   for (int ii = 0; ii < ni; ii++)
     {
-    this->CopyRecord(meta, imageRecords[ii], ii);
+    const vtkDICOMValue& uid =
+      imageRecords[ii]->GetAttributeValue(DC::SOPInstanceUID);
+    int count = 0;
+    if (uid.GetVL() > 0)
+      {
+      for (int jj = 0; jj < ii; jj++)
+        {
+        if (imageRecords[jj]->GetAttributeValue(DC::SOPInstanceUID) == uid)
+          {
+          count++;
+          }
+        }
+      }
+    duplicate[ii] = count;
+    if (count > numberOfDuplicates)
+      {
+      numberOfDuplicates = count;
+      seriesLength.push_back(0);
+      }
+    seriesLength[count]++;
     }
 
-  this->Series->push_back(SeriesItem());
-  SeriesItem& item = this->Series->back();
-  item.Record = seriesRecord;
-  item.Files = files;
-  item.Meta = meta;
+  // Add each duplicate as a separate series
+  for (int kk = 0; kk <= numberOfDuplicates; kk++)
+    {
+    vtkSmartPointer<vtkDICOMMetaData> meta =
+      vtkSmartPointer<vtkDICOMMetaData>::New();
+    meta->SetNumberOfInstances(seriesLength[kk]);
+    this->CopyRecord(meta, &patientRecord, -1);
+    this->CopyRecord(meta, &studyRecord, -1);
+    this->CopyRecord(meta, &seriesRecord, -1);
+
+    vtkSmartPointer<vtkStringArray> newfiles;
+    if (numberOfDuplicates > 0)
+      {
+      newfiles = vtkSmartPointer<vtkStringArray>::New();
+      newfiles->SetNumberOfValues(seriesLength[kk]);
+      }
+    else
+      {
+      newfiles = files;
+      }
+
+    int jj = 0;
+    for (int ii = 0; ii < ni; ii++)
+      {
+      if (duplicate[ii] == kk)
+        {
+        this->CopyRecord(meta, imageRecords[ii], jj);
+        if (numberOfDuplicates > 0)
+          {
+          newfiles->SetValue(jj, files->GetValue(ii));
+          }
+        }
+      }
+
+    (*this->Studies)[study].LastSeries = series++;
+    this->Series->push_back(SeriesItem());
+    SeriesItem& item = this->Series->back();
+    item.Record = seriesRecord;
+    item.Files = newfiles;
+    item.Meta = meta;
+    }
 }
 
 //----------------------------------------------------------------------------
