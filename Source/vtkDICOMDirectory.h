@@ -61,6 +61,15 @@ public:
    */
   void SetInputFileNames(vtkStringArray *sa);
   vtkStringArray *GetInputFileNames() { return this->InputFileNames; }
+
+  //! Add more filenames to be read.
+  /*!
+   *  This allows the directory to be updated.  The new files can belong to
+   *  an existing series or a new series.  If any of the new files are
+   *  already present in the directory, then nothing will be done for those
+   *  files.
+   */
+  void AddInputFileNames(vtkStringArray *sa);
   //@}
 
   //@{

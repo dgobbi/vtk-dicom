@@ -248,15 +248,36 @@ void vtkDICOMDirectory::SetInputFileNames(vtkStringArray *sa)
 {
   if (sa != this->InputFileNames)
     {
-    if (this->InputFileNames)
+    if (!sa)
       {
       this->InputFileNames->Delete();
       }
-    if (sa)
+    else
       {
-      sa->Register(this);
+      if (!this->InputFileNames)
+        {
+        this->InputFileNames = vtkStringArray::New();
+        }
+      this->InputFileNames->DeepCopy(sa);
       }
-    this->InputFileNames = sa;
+    this->Modified();
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMDirectory::AddInputFileNames(vtkStringArray *sa)
+{
+  if (sa && sa->GetNumberOfValues() > 0)
+    {
+    if (!this->InputFileNames)
+      {
+      this->InputFileNames = vtkStringArray::New();
+      }
+    vtkIdType n = sa->GetNumberOfValues();
+    for (vtkIdType i = 0; i < n; i++)
+      {
+      this->InputFileNames->InsertNextValue(sa->GetValue(i));
+      }
     this->Modified();
     }
 }
