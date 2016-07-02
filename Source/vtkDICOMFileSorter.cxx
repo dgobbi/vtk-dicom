@@ -60,6 +60,7 @@ struct vtkDICOMFileSorter::FileInfo
   std::string FileName;
   vtkDICOMValue StudyUID;
   vtkDICOMValue SeriesUID;
+  vtkDICOMValue InstanceUID;
   unsigned int InstanceNumber;
 };
 
@@ -235,6 +236,7 @@ void vtkDICOMFileSorter::SortFiles(vtkStringArray *input)
   parser->AddObserver(
     vtkCommand::ErrorEvent, this, &vtkDICOMFileSorter::RelayError);
 
+  groups->InsertNextValue(0x0008);
   groups->InsertNextValue(0x0020);
   parser->SetMetaData(meta);
   parser->SetGroups(groups);
@@ -296,6 +298,7 @@ void vtkDICOMFileSorter::SortFiles(vtkStringArray *input)
     fileInfo.FileName = fileName;
     fileInfo.StudyUID = meta->GetAttributeValue(DC::StudyInstanceUID);
     fileInfo.SeriesUID = meta->GetAttributeValue(DC::SeriesInstanceUID);
+    fileInfo.InstanceUID = meta->GetAttributeValue(DC::SOPInstanceUID);
     fileInfo.InstanceNumber =
       meta->GetAttributeValue(DC::InstanceNumber).AsUnsignedInt();
 
@@ -358,13 +361,13 @@ void vtkDICOMFileSorter::SortFiles(vtkStringArray *input)
     vtkIdType numberOfDuplicates = 0;
     for (vtkIdType i = 0; i < n; i++)
       {
-      unsigned int inst = v[i].InstanceNumber;
+      const vtkDICOMValue& uid = v[i].InstanceUID;
       vtkIdType count = 0;
-      if (inst != 0)
+      if (uid.GetVL() > 0)
         {
         for (vtkIdType j = 0; j < i; j++)
           {
-          if (v[j].InstanceNumber == inst)
+          if (v[j].InstanceUID == uid)
             {
             count++;
             }
