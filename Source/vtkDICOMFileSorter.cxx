@@ -60,7 +60,7 @@ struct vtkDICOMFileSorter::FileInfo
   std::string FileName;
   vtkDICOMValue StudyUID;
   vtkDICOMValue SeriesUID;
-  int InstanceNumber;
+  unsigned int InstanceNumber;
 };
 
 bool vtkDICOMFileSorter::CompareInstance(
@@ -350,15 +350,50 @@ void vtkDICOMFileSorter::SortFiles(vtkStringArray *input)
       studyCount++;
       }
 
-    vtkSmartPointer<vtkStringArray> sa =
-      vtkSmartPointer<vtkStringArray>::New();
+    // Check for duplicate instances, put them into a new series
     vtkIdType n = static_cast<vtkIdType>(v.size());
-    sa->SetNumberOfValues(n);
+    std::vector<vtkIdType> duplicate(n);
+    std::vector<vtkIdType> seriesLength;
+    seriesLength.push_back(0);
+    vtkIdType numberOfDuplicates = 0;
     for (vtkIdType i = 0; i < n; i++)
       {
-      sa->SetValue(i, v[i].FileName);
+      unsigned int inst = v[i].InstanceNumber;
+      vtkIdType count = 0;
+      if (inst != 0)
+        {
+        for (vtkIdType j = 0; j < i; j++)
+          {
+          if (v[j].InstanceNumber == inst)
+            {
+            count++;
+            }
+          }
+        }
+      duplicate[i] = count;
+      if (count > numberOfDuplicates)
+        {
+        numberOfDuplicates = count;
+        seriesLength.push_back(0);
+        }
+      seriesLength[count]++;
       }
-    this->AddSeriesFileNames(studyCount - 1, sa);
+
+    for (vtkIdType k = 0; k <= numberOfDuplicates; k++)
+      {
+      vtkSmartPointer<vtkStringArray> sa =
+        vtkSmartPointer<vtkStringArray>::New();
+      sa->SetNumberOfValues(seriesLength[k]);
+      vtkIdType j = 0;
+      for (vtkIdType i = 0; i < n; i++)
+        {
+        if (duplicate[i] == k)
+          {
+          sa->SetValue(j++, v[i].FileName);
+          }
+        }
+      this->AddSeriesFileNames(studyCount - 1, sa);
+      }
     }
 }
 
