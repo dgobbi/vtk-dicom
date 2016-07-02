@@ -826,6 +826,7 @@ void vtkDICOMDirectory::AddSeriesFileNames(
           {
           newfiles->SetValue(jj, files->GetValue(ii));
           }
+        jj++;
         }
       }
 
