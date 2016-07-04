@@ -86,10 +86,7 @@ vtkNIFTIWriter::vtkNIFTIWriter()
   this->OwnHeader = 0;
   this->NIFTIHeader = 0;
   this->NIFTIVersion = 0;
-  this->Description = new char[80];
-  // Default description is "VTKX.Y.Z"
-  strncpy(this->Description, "VTK", 3);
-  strncpy(&this->Description[3], vtkVersion::GetVTKVersion(), 77);
+  this->Description = 0;
   // Planar RGB (NIFTI doesn't allow this, it's here for Analyze)
   this->PlanarRGB = false;
 }
@@ -131,7 +128,8 @@ void vtkNIFTIWriter::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 
-  os << indent << "Description: " << this->Description << "\n";
+  os << indent << "Description: "
+     << (this->Description ? this->Description : "(NULL)") << "\n";
   os << indent << "TimeDimension: " << this->TimeDimension << "\n";
   os << indent << "TimeSpacing: " << this->TimeSpacing << "\n";
   os << indent << "RescaleSlope: " << this->RescaleSlope << "\n";

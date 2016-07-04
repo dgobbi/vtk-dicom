@@ -58,7 +58,6 @@ public:
 
   // Description:
   // Set a short description (max 80 chars) of how the file was produced.
-  // The default description is "VTKX.Y" where X.Y is the VTK version.
   vtkSetStringMacro(Description);
   vtkGetStringMacro(Description);
 
