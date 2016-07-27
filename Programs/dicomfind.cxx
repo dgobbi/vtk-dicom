@@ -352,7 +352,7 @@ void dicomfind_operations(
       size_t subcount = 0;
       for (size_t jj = 0; jj < op->Args.size(); jj++)
         {
-        subcount += (op->Args[jj] == "{}");
+        subcount += (op->Args[jj].find("{}") != std::string::npos);
         }
 
       // remember the current subdirectory
@@ -365,27 +365,37 @@ void dicomfind_operations(
           {
           size_t sub_argc = op->Args.size() + subcount - 1;
           char **sub_argv = new char *[sub_argc+1];
+          std::vector<std::string> temp_args(subcount);
+          size_t subc = 0;
 
           size_t ii = 0;
           size_t nn = op->Args.size()-1;
           for (size_t jj = 0; jj < nn; jj++)
             {
-            if (op->Args[jj] == "{}")
+            const std::string& arg = op->Args[jj];
+            size_t pos = arg.find("{}");
+            if (pos != std::string::npos)
               {
+              const char *sub = sa->GetValue(kk).c_str();
               if (execdir)
                 {
-                sub_argv[ii++] = const_cast<char *>(
-                  dicomfind_basename(sa->GetValue(kk).c_str()));
+                sub = dicomfind_basename(sub);
                 }
-              else
+
+              std::string& temp_arg = temp_args[subc++];
+              temp_arg = arg;
+              do
                 {
-                sub_argv[ii++] = const_cast<char *>(
-                  sa->GetValue(kk).c_str());
+                temp_arg.replace(pos, 2, sub);
+                pos = temp_arg.find("{}", pos + strlen(sub));
                 }
+              while (pos != std::string::npos);
+
+              sub_argv[ii++] = const_cast<char *>(temp_arg.c_str());
               }
             else
               {
-              sub_argv[ii++] = const_cast<char *>(op->Args[jj].c_str());
+              sub_argv[ii++] = const_cast<char *>(arg.c_str());
               }
             }
           sub_argv[ii] = 0;
@@ -423,6 +433,8 @@ void dicomfind_operations(
         size_t sub_argc = op->Args.size() +
           subcount*sa->GetNumberOfTuples() - 1;
         char **sub_argv = new char *[sub_argc+1];
+        std::vector<std::string> temp_args(subcount*sa->GetNumberOfValues());
+        size_t subc = 0;
 
         // for execdir, keep a list of directories that are done
         std::vector<std::string> done_dirs;
@@ -474,33 +486,40 @@ void dicomfind_operations(
           size_t nn = op->Args.size()-1;
           for (size_t jj = 0; jj < nn; jj++)
             {
-            if (op->Args[jj] == "{}")
+            const std::string& arg = op->Args[jj];
+            size_t pos = arg.find("{}");
+            if (pos != std::string::npos)
               {
-              if (execdir)
+              for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
                 {
-                for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
+                const char *sub = sa->GetValue(kk).c_str();
+
+                if (execdir)
                   {
-                  std::string dirname =
-                    dicomfind_dirname(sa->GetValue(kk).c_str());
-                  if (dirname == doing_dir)
+                  std::string dirname = dicomfind_dirname(sub);
+                  if (dirname != doing_dir)
                     {
-                    sub_argv[ii++] = const_cast<char *>(
-                      dicomfind_basename(sa->GetValue(kk).c_str()));
+                    continue;
                     }
+                  sub = dicomfind_basename(sub);
                   }
-                }
-              else
-                {
-                for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
+
+                std::string& temp_arg = temp_args[subc++];
+                temp_arg = arg;
+                pos = temp_arg.find("{}");
+                do
                   {
-                  sub_argv[ii++] = const_cast<char *>(
-                    sa->GetValue(kk).c_str());
+                  temp_arg.replace(pos, 2, sub);
+                  pos = temp_arg.find("{}", pos + strlen(sub));
                   }
+                while (pos != std::string::npos);
+
+                sub_argv[ii++] = const_cast<char *>(temp_arg.c_str());
                 }
               }
             else
               {
-              sub_argv[ii++] = const_cast<char *>(op->Args[jj].c_str());
+              sub_argv[ii++] = const_cast<char *>(arg.c_str());
               }
             }
           sub_argv[ii] = 0;
