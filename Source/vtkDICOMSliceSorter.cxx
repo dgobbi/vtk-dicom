@@ -822,22 +822,40 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       }
     else
       {
+      // breaks will be used to indicate new stacks
+      volumeBreaks.push_back(info.size());
+
+      size_t stt = 0;
+      size_t sttlen = volumeBreaks[0];
+      for (size_t k = 0; k < volumeBreaks.size(); k++)
+        {
+        // build the list of StackIDs
+        vtkVariant var(k);
+        this->StackIDs->InsertNextValue(var.ToString());
+        size_t len = volumeBreaks[k] - (k == 0 ? 0 : volumeBreaks[k-1]);
+        // identify the first stack with multiple images
+        if (sttlen == 1 && len > sttlen)
+          {
+          stt = k;
+          sttlen = len;
+          }
+        }
+
+      // if DesiredStackID is set, use it
+      if (this->DesiredStackID[0] != '\0')
+        {
+        stt = strtoul(this->DesiredStackID, 0, 10);
+        }
+
       // load just one of the rectilinear stacks that are present
-      size_t stt = strtoul(this->DesiredStackID, 0, 10);
-      if (stt > volumeBreaks.size())
+      if (stt >= volumeBreaks.size())
         {
         stt = 0;
         }
-      volumeBreaks.push_back(info.size());
       info.erase(info.begin() + volumeBreaks[stt], info.end());
       if (stt > 0)
         {
         info.erase(info.begin(), info.begin() + volumeBreaks[stt-1]);
-        }
-      for (size_t k = 0; k < volumeBreaks.size(); k++)
-        {
-        vtkVariant var(k);
-        this->StackIDs->InsertNextValue(var.ToString());
         }
       }
     }
