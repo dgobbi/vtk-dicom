@@ -5882,6 +5882,13 @@ inline void UnicodeToUTF8(unsigned int code, std::string *s)
     s->push_back(0x80 | ((code >> 6) & 0x3F));
     s->push_back(0x80 | (code & 0x3F));
     }
+  else
+    {
+    // indicate bad code with U+FFFD
+    s->push_back(0xEF);
+    s->push_back(0xBF);
+    s->push_back(0xBD);
+    }
 }
 
 inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
