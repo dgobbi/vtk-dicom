@@ -5906,7 +5906,8 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
         code &= 0x1F;
         code <<= 6;
         unsigned int s = *cp;
-        good = ((s & 0xC0) == 0x80);
+        good = (code != 0);
+        good &= ((s & 0xC0) == 0x80);
         cp += good;
         code |= (s & 0x3F);
         }
@@ -5918,12 +5919,13 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
           code &= 0x0F;
           code <<= 6;
           unsigned int s = *cp;
-          good = ((s & 0xC0) == 0x80);
+          good = ((code | (s & 0x20)) != 0);
+          good &= ((s & 0xC0) == 0x80);
           cp += good;
           code |= (s & 0x3F);
           code <<= 6;
           s = *cp;
-          good = ((s & 0xC0) == 0x80);
+          good &= ((s & 0xC0) == 0x80);
           cp += good;
           code |= (s & 0x3F);
           // check for UTF16 surrogates
@@ -5955,17 +5957,18 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
             code &= 0x07;
             code <<= 6;
             unsigned int s = *cp;
-            good = ((s & 0xC0) == 0x80);
+            good = ((code | (s & 0x30)) != 0);
+            good &= ((s & 0xC0) == 0x80);
             cp += good;
             code |= (s & 0x3F);
             code <<= 6;
             s = *cp;
-            good = ((s & 0xC0) == 0x80);
+            good &= ((s & 0xC0) == 0x80);
             cp += good;
             code |= (s & 0x3F);
             code <<= 6;
             s = *cp;
-            good = ((s & 0xC0) == 0x80);
+            good &= ((s & 0xC0) == 0x80);
             cp += good;
             code |= (s & 0x3F);
             good &= (code <= 0x10FFFF);
