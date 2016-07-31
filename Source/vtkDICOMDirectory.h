@@ -44,8 +44,8 @@ public:
   //@{
   //! Set the input directory.
   /*!
-   *  Set the input directory.  If it has a DICOMDIR file, then that
-   *  file will be scanned to get info about the directory.  Otherwise,
+   *  If the directory has a DICOMDIR file, then that file will be scanned
+   *  to get information about the DICOM files in the directory.  Otherwise,
    *  the directory will be scanned for DICOM files.  The depth of the
    *  scan (how many subdirectories deep) can be controlled with the
    *  SetScanDepth() method.
