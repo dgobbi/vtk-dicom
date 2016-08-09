@@ -992,6 +992,27 @@ void vtkDICOMDirectory::FillPatientRecord(
 }
 
 //----------------------------------------------------------------------------
+namespace {
+
+unsigned int vtkDICOMDirectoryHashString(const std::string& str)
+{
+  // Compute a string hash based on the function "djb2".
+  unsigned int h = 5381;
+  size_t n = str.size();
+  const char *cp = str.data();
+  for (size_t k = 0; k < n; k++)
+    {
+    unsigned char c = cp[k];
+    if (c == '\0') { break; }
+    h = (h << 5) + h + c;
+    }
+
+  return h;
+}
+
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 {
   vtkSmartPointer<vtkDICOMMetaData> meta =
@@ -1069,9 +1090,36 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   SeriesInfoList::iterator li;
 
   vtkIdType numberOfStrings = input->GetNumberOfValues();
+
+  // Hash table for efficiently checking for duplicates
+  typedef std::vector<vtkIdType> rowType;
+  typedef std::vector<rowType> tableType;
+  tableType dupcheck(numberOfStrings/4 + 1);
+
   for (vtkIdType j = 0; j < numberOfStrings; j++)
     {
     const std::string& fileName = input->GetValue(j);
+
+    // Check to see if this file name has already appeared, this is
+    // done with a hash table and is an O(n) check, which is better
+    // than using std::map at O(n log n) or brute-force at O(n^2)
+    unsigned int hash = vtkDICOMDirectoryHashString(fileName);
+    hash = hash % dupcheck.size();
+    rowType& row = dupcheck[hash];
+    bool duplicate = false;
+    for (rowType::iterator iter = row.begin(); iter != row.end(); ++iter)
+      {
+      if (input->GetValue(*iter) == fileName)
+        {
+        duplicate = true;
+        break;
+        }
+      }
+    if (duplicate)
+      {
+      continue;
+      }
+    row.push_back(j);
 
     // Skip anything that does not look like a DICOM file.
     if (!vtkDICOMUtilities::IsDICOMFile(fileName.c_str()))
