@@ -1095,6 +1095,8 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   typedef std::vector<vtkIdType> rowType;
   typedef std::vector<rowType> tableType;
   tableType dupcheck(numberOfStrings/4 + 1);
+  std::vector<std::string> realnames;
+  realnames.reserve(numberOfStrings);
 
   for (vtkIdType j = 0; j < numberOfStrings; j++)
     {
@@ -1103,19 +1105,20 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     // Check to see if this file name has already appeared, this is
     // done with a hash table and is an O(n) check, which is better
     // than using std::map at O(n log n) or brute-force at O(n^2)
-    unsigned int hash = vtkDICOMDirectoryHashString(fileName);
+    realnames.push_back(vtkDICOMFilePath(fileName).GetRealPath());
+    const std::string& realname = realnames.back();
+    unsigned int hash = vtkDICOMDirectoryHashString(realname);
     hash = hash % dupcheck.size();
     rowType& row = dupcheck[hash];
-    bool duplicate = false;
-    for (rowType::iterator iter = row.begin(); iter != row.end(); ++iter)
+    rowType::iterator iter = row.begin();
+    for (; iter != row.end(); ++iter)
       {
-      if (input->GetValue(*iter) == fileName)
+      if (realnames[*iter] == realname)
         {
-        duplicate = true;
         break;
         }
       }
-    if (duplicate)
+    if (iter != row.end())
       {
       continue;
       }
