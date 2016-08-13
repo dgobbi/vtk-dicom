@@ -1091,10 +1091,10 @@ size_t Decoder<E>::ReadElementHead(
       {
       // invalid vr, try to get VR from dictionary instead
       vr = this->Context->FindDictVR(tag);
-      if (cp[-4] <= 0x20 || cp[-4] >= 0x7f ||
-          cp[-3] <= 0x20 || cp[-3] >= 0x7f)
+      if (cp[-4] < 0x20 || cp[-4] >= 0x7f ||
+          cp[-3] < 0x20 || cp[-3] >= 0x7f)
         {
-        // if VR is not a graphical character within the default character
+        // if VR is not a printable character within the default character
         // set, assume implicit encoding for this particular element
         implicit = true;
         vl = Decoder<E>::GetInt32(cp - 4);
