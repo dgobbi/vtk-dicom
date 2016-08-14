@@ -1589,8 +1589,8 @@ bool Decoder<E>::SkipElements(
           // invalid vr, try to get VR from dictionary instead
           vr = this->Context->FindDictVR(vtkDICOMTag(g,e));
           // check that vr was composed of reasonable chars
-          if (cp[-4] <= 0x20 || cp[-4] >= 0x7f ||
-              cp[-3] <= 0x20 || cp[-3] >= 0x7f)
+          if (cp[-4] < 0x20 || cp[-4] >= 0x7f ||
+              cp[-3] < 0x20 || cp[-3] >= 0x7f)
             {
             // assume an implicitly coded element slipped into the data
             implicit = true;
