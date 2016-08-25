@@ -147,11 +147,13 @@ public:
 
   // Description:
   // Turn off automatic rescaling of intensity values.
-  // By default, of the reader sees different RescaleSlope and
-  // RescaleIntercept values for different slices, then it will
-  // adjust the pixel values so that they can all use the same
-  // slope and intercept.  This is a lossy process, so you might
-  // want to turn it off and use vtkDICOMApplyRescale instead.
+  // By default, if the RescaleSlope and RescaleIntercept values differ
+  // between slices (as occurs for all PET images and some CT images),
+  // then the reader will adjust the pixel values for the slices so
+  // that the same RescaleSlope and RescaleIntercept can be used for
+  // all slices.  This adjustment is a lossy process, so a preferable
+  // option is to call AutoRescaleOff() and use vtkDICOMApplyRescale
+  // to apply the pixel value rescaling instead.
   vtkGetMacro(AutoRescale, int);
   vtkSetMacro(AutoRescale, int);
   vtkBooleanMacro(AutoRescale, int);
