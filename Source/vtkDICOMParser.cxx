@@ -2090,7 +2090,18 @@ bool vtkDICOMParser::ReadMetaData(
     // want to add it as an empty attribute because we did not read its
     // value (the FileOffset was saved so it can be read later)
     unsigned short x = 0;
-    vtkDICOMValue v(decoder->GetLastVR(), &x, x);
+    vtkDICOMVR lastVR = decoder->GetLastVR();
+    if (!lastVR.IsValid())
+      {
+      lastVR = vtkDICOMVR::OW;
+      const vtkDICOMValue& ba =
+        meta->GetAttributeValue(idx, DC::BitsAllocated);
+      if (ba.IsValid() && ba.AsUnsignedInt() <= 8)
+        {
+        lastVR = vtkDICOMVR::OB;
+        }
+      }
+    vtkDICOMValue v(lastVR, &x, x);
     this->PixelDataVL = decoder->GetLastVL();
 
     if (idx >= 0)
