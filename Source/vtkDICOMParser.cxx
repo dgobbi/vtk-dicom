@@ -348,7 +348,7 @@ public:
   // Get the last tag that was read.
   vtkDICOMTag GetLastTag() { return this->LastTag; }
 
-  // Get the VR of the last data element.
+  // Get the VR of the last data element (invalid if implicit)
   vtkDICOMVR GetLastVR() { return this->LastVR; }
 
   // Get the VL of the last data element.
@@ -1070,10 +1070,10 @@ size_t Decoder<E>::ReadElementHead(
   // basic size is 4 bytes
   size_t l = 4;
 
-  if (this->ImplicitVR)
+  // sequence and item delimiters are always decoded as implicit
+  if (this->ImplicitVR || tag.GetGroup() == HxFFFE)
     {
     // implicit VR
-    vr = this->Context->FindDictVR(tag);
     vl = Decoder<E>::GetInt32(cp);
     // ignore vl in group length tags, it is corrupt in some files
     // and we know that it should always have a value of "4".
@@ -1091,6 +1091,7 @@ size_t Decoder<E>::ReadElementHead(
       {
       // invalid vr, try to get VR from dictionary instead
       vr = this->Context->FindDictVR(tag);
+      // check that vr was composed of reasonable chars
       if (cp[-4] < 0x20 || cp[-4] >= 0x7f ||
           cp[-3] < 0x20 || cp[-3] >= 0x7f)
         {
@@ -1416,6 +1417,9 @@ bool Decoder<E>::ReadElements(
     // return false if could not read element
     if (hl == 0) { return false; }
 
+    // if VR wasn't in the element head (e.g. implicit), use dictionary
+    if (!vr.IsValid()) { vr = this->Context->FindDictVR(tag); }
+
     // save this as the most recent tag
     this->LastTag = tag;
     this->LastVR = vr;
@@ -1564,50 +1568,14 @@ bool Decoder<E>::SkipElements(
       if (readGroup && group != g) { break; }
 
       cp += 4;
-      size_t tl = 8;
+      vtkDICOMTag tag(g, e);
       unsigned int vl = 0;
       vtkDICOMVR vr;
 
-      // sequence and item delimiters are always decoded as implicit
-      if (g == HxFFFE || this->ImplicitVR)
-        {
-        vl = Decoder<E>::GetInt32(cp);
-        // ignore vl in group length tags, it is corrupt in some files
-        // and we know that it should always have a value of "4".
-        if (e == 0x0000) { vl = 4; }
-        cp += 4;
-        }
-      else
-        {
-        // explicit VR
-        bool implicit = false;
-        vr = vtkDICOMVR(cp);
-        vl = Decoder<E>::GetInt16(cp + 2);
-        cp += 4;
-        if (!vr.IsValid())
-          {
-          // invalid vr, try to get VR from dictionary instead
-          vr = this->Context->FindDictVR(vtkDICOMTag(g,e));
-          // check that vr was composed of reasonable chars
-          if (cp[-4] < 0x20 || cp[-4] >= 0x7f ||
-              cp[-3] < 0x20 || cp[-3] >= 0x7f)
-            {
-            // assume an implicitly coded element slipped into the data
-            implicit = true;
-            vl = Decoder<E>::GetInt32(cp - 4);
-            }
-          }
-        if (!implicit && vr.HasLongVL())
-          {
-          if (!this->CheckBuffer(cp, ep, 4, v, sp)) { return false; }
-          vl = Decoder<E>::GetInt32(cp);
-          cp += 4;
-          tl += 4;
-          }
-        }
+      if (this->ReadElementHead(cp, ep, tag, vr, vl) == 0) { return false; }
 
       // save this as the most recent tag
-      this->LastTag = vtkDICOMTag(g, e);
+      this->LastTag = tag;
       this->LastVR = vr;
       this->LastVL = vl;
 
@@ -1656,13 +1624,13 @@ bool Decoder<E>::SkipElements(
           size_t n = v->GetNumberOfValues();
           unsigned char *ptr = v->ReallocateUnsignedCharData(n + vl + m) + n;
           if (m) { do { *ptr++ = *sp++; } while (--m); }
-          tl = this->ReadData(cp, ep, ptr, vl);
+          size_t tl = this->ReadData(cp, ep, ptr, vl);
           sp = cp;
           if (tl != static_cast<size_t>(vl)) { return false; }
           }
         else
           {
-          tl = this->SkipData(cp, ep, vl);
+          size_t tl = this->SkipData(cp, ep, vl);
           if (tl != static_cast<size_t>(vl)) { return false; }
           }
         }
