@@ -2,7 +2,7 @@
 
   Program: DICOM for VTK
 
-  Copyright (c) 2012-2015 David Gobbi
+  Copyright (c) 2012-2016 David Gobbi
   All rights reserved.
   See Copyright.txt or http://dgobbi.github.io/bsd3.txt for details.
 
@@ -11,15 +11,17 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkDICOMApplyRescale - Convert pixels to real-world values.
-// .SECTION Description
-// This filter uses the information in the DICOM meta data to convert the
-// pixel values to real-world values with known units.  It uses the DICOM
-// RealWorldValueMapping attributes, if present, otherwise it uses the
-// RescaleSlope and RescaleIntercept.  If no mapping information is present,
-// then the pixels are simply converted to floating-point.  Note that if
-// this filter is used, then AutoRescaleOff() should be set on the reader
-// to ensure that the reader does not rescale the data.
+/*! \class vtkDICOMApplyRescale
+ *  \brief Convert pixels to real-world values.
+ *
+ *  This filter uses the information in the DICOM meta data to convert the
+ *  pixel values to real-world values with known units.  It uses the DICOM
+ *  RealWorldValueMapping attributes, if present, otherwise it uses the
+ *  RescaleSlope and RescaleIntercept.  If no mapping information is present,
+ *  then the pixels are simply converted to floating-point.  Note that if
+ *  this filter is used, then AutoRescaleOff() should be set on the reader
+ *  to ensure that the reader does not rescale the data.
+ */
 
 #ifndef vtkDICOMApplyRescale_h
 #define vtkDICOMApplyRescale_h
@@ -35,16 +37,14 @@ class VTKDICOM_EXPORT vtkDICOMApplyRescale :
 public:
   vtkTypeMacro(vtkDICOMApplyRescale, vtkDICOMAlgorithm);
 
-  // Description:
-  // Static method for construction.
+  //! Static method for construction.
   static vtkDICOMApplyRescale *New();
 
-  // Description:
-  // Print information about this object.
+  //! Print information about this object.
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
-  // Description:
-  // Set the output data type to float or double (default is double).
+  //@{
+  //! Set the output data type to float or double (default is double).
   void SetOutputScalarType(int t);
   void SetOutputScalarTypeToFloat() {
     this->SetOutputScalarType(VTK_FLOAT); }
@@ -52,6 +52,7 @@ public:
     this->SetOutputScalarType(VTK_DOUBLE); }
   int GetOutputScalarType() {
     return this->OutputScalarType; }
+  //@}
 
 protected:
   vtkDICOMApplyRescale();

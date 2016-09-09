@@ -2,7 +2,7 @@
 
   Program: DICOM for VTK
 
-  Copyright (c) 2012-2015 David Gobbi
+  Copyright (c) 2012-2016 David Gobbi
   All rights reserved.
   See Copyright.txt or http://dgobbi.github.io/bsd3.txt for details.
 
@@ -11,14 +11,16 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkDICOMApplyPalette - Apply palette to PALETTE COLOR images
-// .SECTION Description
-// If an image contains a palette LUT, then this filter will apply that
-// LUT to the image and produce an RGB image.  Images without a palette
-// LUT will pass through unchanged.  If the image uses a supplemental
-// palette that only applies to a specific range of pixel values, then
-// pixel values outside of that range will be mapped to greyscale via
-// the WindowWidth and WindowCenter specified in the image.
+/*! \class vtkDICOMApplyPalette
+ *  \brief Apply palette to PALETTE COLOR images
+ *
+ *  If an image contains a palette LUT, then this filter will apply that
+ *  LUT to the image and produce an RGB image.  Images without a palette
+ *  LUT will pass through unchanged.  If the image uses a supplemental
+ *  palette that only applies to a specific range of pixel values, then
+ *  pixel values outside of that range will be mapped to greyscale via
+ *  the WindowWidth and WindowCenter specified in the image.
+ */
 
 #ifndef vtkDICOMApplyPalette_h
 #define vtkDICOMApplyPalette_h
@@ -36,8 +38,7 @@ public:
   static vtkDICOMApplyPalette *New();
   vtkTypeMacro(vtkDICOMApplyPalette, vtkDICOMAlgorithm);
 
-  // Description:
-  // Print information about this object.
+  //! Print information about this object.
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
 protected:
@@ -57,12 +58,10 @@ protected:
     vtkInformationVector *outputVector, vtkImageData ***inData,
     vtkImageData **outData, int ext[6], int id);
 
-  // Description:
-  // Container for the lookup tables used.
+  //! Container for the lookup tables used.
   vtkDICOMPerFilePalette *Palette;
 
-  // Description:
-  // True if palette is supplemental.
+  //! True if palette is supplemental.
   bool IsSupplemental;
 
 private:
