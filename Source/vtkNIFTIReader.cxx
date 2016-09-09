@@ -401,7 +401,7 @@ int vtkNIFTIReader::CanReadFile(const char *filename)
     return 0;
     }
 
-#if _WIN32 
+#if _WIN32
   vtkDICOMFilePath fp(hdrname);
 #if VTK_MAJOR_VERSION < 7
   // convert to the local character set
@@ -524,7 +524,7 @@ int vtkNIFTIReader::RequestInformation(
 
   vtkDebugMacro("Opening NIFTI file " << hdrname);
 
-#if _WIN32 
+#if _WIN32
   vtkDICOMFilePath fph(hdrname);
 #if VTK_MAJOR_VERSION < 7
   // convert to the local character set
@@ -1190,7 +1190,7 @@ int vtkNIFTIReader::RequestData(
   unsigned char *dataPtr =
     static_cast<unsigned char *>(data->GetScalarPointer());
 
-#if _WIN32 
+#if _WIN32
   vtkDICOMFilePath fpi(imgname);
 #if VTK_MAJOR_VERSION < 7
   // convert to the local character set

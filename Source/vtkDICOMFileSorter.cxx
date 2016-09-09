@@ -472,7 +472,7 @@ void vtkDICOMFileSorter::Execute()
     vtkDICOMFilePath path(this->InputFileName);
 
     // Create a glob pattern
-    std::string base = path.GetBack(); 
+    std::string base = path.GetBack();
     std::string ext = path.GetExtension();
     std::string pattern = "*";
     if (ext == ".dc" || ext == ".dcm" || ext == ".DC" || ext == ".DCM")

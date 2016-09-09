@@ -229,7 +229,7 @@ GEHC_CT_ADVAPP_001
 BRAINWAVE: 1.2.840.113819.3
 +{ 0x2001, 0x0010, 0, VR::UI, VM::M1, "DICOMImplementationUID" },
 +{ 0x2001, 0x0011, 0, VR::SH, VM::M1, "DICOMImplementationVersion" },
-+{ 0x2001, 0x0012, 0, VR::UI, VM::M1, "WithinDICOMImplementationSOPInstanceUID" 
++{ 0x2001, 0x0012, 0, VR::UI, VM::M1, "WithinDICOMImplementationSOPInstanceUID"
 +{ 0x2001, 0x0013, 0, VR::SH, VM::M1, "ApplicationName" },
 +{ 0x2001, 0x0014, 0, VR::SH, VM::M1, "ApplicationVersion" },
 +{ 0x2001, 0x0015, 0, VR::SH, VM::M1, "CompatibilityVersion" },
