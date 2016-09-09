@@ -84,19 +84,19 @@ void dicomtonifti_version(FILE *file, const char *command_name, bool verbose)
   while (cp != command_name && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
 
   if (!verbose)
-    {
+  {
     fprintf(file, "%s %s\n", cp, DICOM_VERSION);
     fprintf(file, "\n"
       "Copyright (c) 2012-2016, David Gobbi.\n\n"
       "This software is distributed under an open-source license.  See the\n"
       "Copyright.txt file that comes with the vtk-dicom source distribution.\n");
-    }
+  }
   else
-    {
+  {
     fprintf(file,
       "Head %8.8s, Built %s, %s\n",
       DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
-    }
+  }
 }
 
 // Print the options
@@ -204,32 +204,32 @@ void dicomtonifti_check_error(vtkObject *o)
   const char *filename = 0;
   unsigned long errorcode = 0;
   if (writer)
-    {
+  {
     filename = writer->GetFileName();
     errorcode = writer->GetErrorCode();
-    }
+  }
   else if (reader)
-    {
+  {
     filename = reader->GetInternalFileName();
     errorcode = reader->GetErrorCode();
-    }
+  }
   else if (sorter)
-    {
+  {
     filename = sorter->GetInternalFileName();
     errorcode = sorter->GetErrorCode();
-    }
+  }
   else if (parser)
-    {
+  {
     filename = parser->GetFileName();
     errorcode = parser->GetErrorCode();
-    }
+  }
   if (!filename)
-    {
+  {
     filename = "";
-    }
+  }
 
   switch(errorcode)
-    {
+  {
     case vtkErrorCode::NoError:
       return;
     case vtkErrorCode::FileNotFoundError:
@@ -256,7 +256,7 @@ void dicomtonifti_check_error(vtkObject *o)
     default:
       fprintf(stderr, "An unknown error occurred.\n");
       break;
-    }
+  }
 
   exit(1);
 }
@@ -285,171 +285,171 @@ void dicomtonifti_read_options(
   // read the options from the command line
   int argi = 1;
   while (argi < argc)
-    {
+  {
     const char *arg = argv[argi++];
     if (arg[0] == '-')
-      {
+    {
       if (strcmp(arg, "--") == 0)
-        {
+      {
         // stop processing switches
         break;
-        }
+      }
       else if (strcmp(arg, "--recurse") == 0)
-        {
+      {
         options->recurse = true;
-        }
+      }
       else if (strcmp(arg, "--compress") == 0)
-        {
+      {
         options->compress = true;
-        }
+      }
       else if (strcmp(arg, "--follow-symlinks") == 0)
-        {
+      {
         options->follow_symlinks = true;
-        }
+      }
       else if (strcmp(arg, "--fsl") == 0)
-        {
+      {
         options->fsl = true;
-        }
+      }
       else if (strcmp(arg, "--reformat-to-axial") == 0)
-        {
+      {
         options->reformat_to_axial = true;
-        }
+      }
       else if (strcmp(arg, "--no-slice-reordering") == 0)
-        {
+      {
         options->no_slice_reordering = true;
-        }
+      }
       else if (strcmp(arg, "--no-row-reordering") == 0)
-        {
+      {
         options->no_row_reordering = true;
-        }
+      }
       else if (strcmp(arg, "--no-column-reordering") == 0)
-        {
+      {
         options->no_column_reordering = true;
-        }
+      }
       else if (strcmp(arg, "--no-reordering") == 0)
-        {
+      {
         options->no_slice_reordering = true;
         options->no_row_reordering = true;
         options->no_column_reordering = true;
-        }
+      }
       else if (strcmp(arg, "--no-qform") == 0)
-        {
+      {
         options->no_qform = true;
-        }
+      }
       else if (strcmp(arg, "--no-sform") == 0)
-        {
+      {
         options->no_sform = true;
-        }
+      }
       else if (strcmp(arg, "--batch") == 0)
-        {
+      {
         options->batch = true;
-        }
+      }
       else if (strcmp(arg, "--silent") == 0)
-        {
+      {
         options->silent = true;
-        }
+      }
       else if (strcmp(arg, "--verbose") == 0)
-        {
+      {
         options->verbose = true;
-        }
+      }
       else if (strcmp(arg, "--volume") == 0)
-        {
+      {
         if (argi >= argc || argv[argi][0] == '-')
-          {
+        {
           fprintf(stderr, "\nA number must follow \'--volume\'\n\n");
           dicomtonifti_usage(stderr, argv[0]);
           exit(1);
-          }
+        }
         arg = argv[argi++];
         options->volume = atoi(arg);
-        }
+      }
       else if (strcmp(arg, "--version") == 0)
-        {
+      {
         dicomtonifti_version(stdout, argv[0], false);
         exit(0);
-        }
+      }
       else if (strcmp(arg, "--build-version") == 0)
-        {
+      {
         dicomtonifti_version(stdout, argv[0], true);
         exit(0);
-        }
+      }
       else if (strcmp(arg, "--help") == 0)
-        {
+      {
         dicomtonifti_help(stdout, argv[0]);
         exit(0);
-        }
+      }
       else if (arg[0] == '-' && arg[1] == '-')
-        {
+      {
         fprintf(stderr, "\nUnrecognized option %s\n\n", arg);
         dicomtonifti_usage(stderr, argv[0]);
         exit(1);
-        }
+      }
       else if (arg[0] == '-' && arg[1] != '-')
-        {
+      {
         for (int argj = 1; arg[argj] != '\0'; argj++)
-          {
+        {
           if (arg[argj] == 'z')
-            {
+          {
             options->compress = true;
-            }
+          }
           else if (arg[argj] == 'r')
-            {
+          {
             options->recurse = true;
-            }
+          }
           else if (arg[argj] == 'b')
-            {
+          {
             options->batch = true;
-            }
+          }
           else if (arg[argj] == 's')
-            {
+          {
             options->silent = true;
-            }
+          }
           else if (arg[argj] == 'v')
-            {
+          {
             options->verbose = true;
-            }
+          }
           else if (arg[argj] == 'L')
-            {
+          {
             options->follow_symlinks = true;
-            }
+          }
           else if (arg[argj] == 'o')
-            {
+          {
             if (arg[argj+1] != '\0')
-              {
+            {
               arg += argj+1;
-              }
+            }
             else
-              {
+            {
               if (argi >= argc)
-                {
+              {
                 fprintf(stderr, "\nA file must follow the \'-o\' flag\n\n");
                 dicomtonifti_usage(stderr, argv[0]);
                 exit(1);
-                }
-              arg = argv[argi++];
               }
+              arg = argv[argi++];
+            }
             options->output = arg;
             break;
-            }
+          }
           else
-            {
+          {
             fprintf(stderr, "\nUnrecognized \'%c\' in option %s\n\n", arg[argj], arg);
             dicomtonifti_usage(stderr, argv[0]);
             exit(1);
-            }
           }
         }
       }
-    else
-      {
-      files->InsertNextValue(arg);
-      }
     }
+    else
+    {
+      files->InsertNextValue(arg);
+    }
+  }
 
   while (argi < argc)
-    {
+  {
     files->InsertNextValue(argv[argi++]);
-    }
+  }
 }
 
 // Remove all characters but A-Za-z0-9_ from a string
@@ -459,25 +459,25 @@ std::string dicomtonifti_safe_string(const std::string& input)
   std::string::const_iterator b = a;
   std::string s;
   while (a != input.end())
-    {
+  {
     while (a != input.end() &&
            ((*a & 0x80) == 0) && isgraph(*a) && !ispunct(*a))
-      {
+    {
       ++a;
-      }
+    }
     s.append(b, a);
     b = a;
     while (a != input.end() &&
            (((*a & 0x80) != 0) || !isgraph(*a) || ispunct(*a)))
-      {
+    {
       ++a;
-      }
-    if (b != a && b != input.begin() && a != input.end())
-      {
-      s.append("_");
-      }
-    b = a;
     }
+    if (b != a && b != input.begin() && a != input.end())
+    {
+      s.append("_");
+    }
+    b = a;
+  }
 
   return s;
 }
@@ -495,24 +495,24 @@ std::string dicomtonifti_make_filename(
   const char *dp = cp;
   const char *bp = 0;
   while (*cp != '\0')
-    {
+  {
     while (*cp != '{' && *cp != '}' && *cp != '\0') { cp++; }
     if (*cp == '}')
-      {
+    {
       fprintf(stderr, "Missing \'{\': %s\n", outfile);
       exit(1);
-      }
+    }
     if (*cp == '{')
-      {
+    {
       bp = cp;
       while (*cp != '}' && *cp != '\0') { cp++; }
       if (*cp != '}')
-        {
+      {
         fprintf(stderr, "Unmatched \'{\': %s\n", outfile);
         exit(1);
-        }
+      }
       else
-        {
+      {
         s.append(dp, bp);
         bp++;
         key.assign(bp, cp);
@@ -521,40 +521,40 @@ std::string dicomtonifti_make_filename(
         v.Clear();
         vtkDICOMTag tag;
         if (key.length() > 0)
-          {
+        {
           vtkDICOMDictEntry de = vtkDICOMDictionary::FindDictEntry(key.c_str());
           if (de.IsValid())
-            {
+          {
             tag = de.GetTag();
-            }
+          }
           else
-            {
+          {
             fprintf(stderr, "Unrecognized key %s\n", key.c_str());
             exit(1);
-            }
           }
+        }
         if (meta)
-          {
+        {
           v = meta->GetAttributeValue(tag);
-          }
+        }
         if (v.IsValid())
-          {
+        {
           val.assign(dicomtonifti_safe_string(v.AsUTF8String()));
-          }
+        }
         else if (meta)
-          {
+        {
           fprintf(stderr, "Sorry, key %s not found.\n",
                   key.c_str());
           exit(1);
-          }
-        if (val.empty())
-          {
-          val = "Empty";
-          }
-        s.append(val);
         }
+        if (val.empty())
+        {
+          val = "Empty";
+        }
+        s.append(val);
       }
     }
+  }
   s.append(dp, cp);
 
   return s;
@@ -583,18 +583,18 @@ void dicomtonifti_convert_one(
     vtkSmartPointer<vtkImageExtractComponents>::New();
   extract->SetInputConnection(lastOutput);
   if (options->volume >= 0)
-    {
+  {
     if (reader->GetOutput()->GetNumberOfScalarComponents() <= options->volume)
-      {
+    {
       fprintf(stderr, "Only %d volumes, but --volume %d used.\n",
               reader->GetOutput()->GetNumberOfScalarComponents(),
               options->volume);
       exit(1);
-      }
+    }
     extract->SetComponents(options->volume);
     extract->Update();
     lastOutput = extract->GetOutputPort();
-    }
+  }
 
   // check if slices were reordered by the reader
   vtkIntArray *fileIndices = reader->GetFileIndexArray();
@@ -610,14 +610,14 @@ void dicomtonifti_convert_one(
   vtkSmartPointer<vtkDICOMCTRectifier> rectifier =
     vtkSmartPointer<vtkDICOMCTRectifier>::New();
   if (fabs(vtkDICOMCTRectifier::GetGantryDetectorTilt(patientMatrix)) > 1e-2)
-    {
+  {
     // tilt is significant, so regrid as a rectangular volume
     rectifier->SetInputConnection(lastOutput);
     rectifier->SetVolumeMatrix(patientMatrix);
     rectifier->Update();
     lastOutput = rectifier->GetOutputPort();
     patientMatrix = rectifier->GetRectifiedMatrix();
-    }
+  }
 
   // convert to NIFTI coordinate system
   vtkSmartPointer<vtkDICOMToRAS> converter =
@@ -634,10 +634,10 @@ void dicomtonifti_convert_one(
   checkMatrix->DeepCopy(patientMatrix);
   // undo the DICOM to NIFTI x = -x, y = -y conversion in check matrix
   for (int j = 0; j < 4; j++)
-    {
+  {
     checkMatrix->Element[0][j] = -checkMatrix->Element[0][j];
     checkMatrix->Element[1][j] = -checkMatrix->Element[1][j];
-    }
+  }
   checkMatrix->Invert();
   // checkMatrix = PatientMatrix^(-1) * RASMatrix
   vtkMatrix4x4::Multiply4x4(
@@ -659,7 +659,7 @@ void dicomtonifti_convert_one(
   int permutation[3] = { 0, 1, 2 };
 
   if (options->reformat_to_axial || options->fsl)
-    {
+  {
     // this becomes meaningless after reformatting
     slicesReordered = false;
 
@@ -671,50 +671,50 @@ void dicomtonifti_convert_one(
     int prevmaxj = -1;
     int prevmaxi = -1;
     for (int kdim = 0; kdim < 2; kdim++)
-      {
+    {
       int maxj = 0;
       int maxi = 0;
       double maxv = -0.0;
       for (int jdim = 0; jdim < 3; jdim++)
-        {
+      {
         if (jdim == prevmaxj) { continue; }
         for (int idim = 0; idim < 3; idim++)
-          {
+        {
           if (idim == prevmaxi) { continue; }
           double v = axes->GetElement(jdim, idim);
           if (v*v >= maxv)
-            {
+          {
             maxi = idim;
             maxj = jdim;
             maxv = v*v;
-            }
           }
         }
+      }
       maxidx[maxj] = maxi;
       value[maxj] = (axes->GetElement(maxj, maxi) < 0 ? -1.0 : 1.0);
       prevmaxj = maxj;
       prevmaxi = maxi;
-      }
+    }
 
     axes->Zero();
     axes->SetElement(3, 3, 1.0);
     for (int jdim = 0; jdim < 3; jdim++)
-      {
+    {
       int idim = maxidx[jdim];
       if (idim < 0)
-        {
+      {
         idim = 3 - maxidx[(jdim+1)%3] - maxidx[(jdim+2)%3];
         maxidx[jdim] = idim;
         double perm = (((3 + maxidx[2] - maxidx[0])%3) == 2 ? 1.0 : -1.0);
         value[jdim] = value[(jdim+1)%3]*value[(jdim+2)%3]*perm;
-        }
+      }
       permutation[jdim] = idim;
       axes->SetElement(jdim, idim, value[jdim]);
-      }
+    }
 
     // if fsl, use the fsl orientation
     if (options->fsl)
-      {
+    {
       double fslmat[16] = {
         -1.0,  0.0,  0.0,  0.0,
          0.0,  1.0,  0.0,  0.0,
@@ -722,7 +722,7 @@ void dicomtonifti_convert_one(
          0.0,  0.0,  0.0,  1.0 };
 
       vtkMatrix4x4::Multiply4x4(*axes->Element, fslmat, *axes->Element);
-      }
+    }
     // reformat with the permutated axes
     reformat->SetResliceAxes(axes);
     reformat->SetInputConnection(lastOutput);
@@ -730,7 +730,7 @@ void dicomtonifti_convert_one(
 
     // factor out the permuted axes
     vtkMatrix4x4::Multiply4x4(matrix, axes, matrix);
-    }
+  }
 
   // convert to signed short if fsl
   int scalarType = reader->GetOutput()->GetScalarType();
@@ -738,40 +738,40 @@ void dicomtonifti_convert_one(
     vtkSmartPointer<vtkImageCast>::New();
   if (options->fsl && scalarType != VTK_UNSIGNED_CHAR &&
       scalarType != VTK_SHORT && scalarType != VTK_FLOAT)
-    {
+  {
     double outputType = scalarType;
 
     if (scalarType == VTK_UNSIGNED_SHORT ||
         scalarType == VTK_CHAR ||
         scalarType == VTK_SIGNED_CHAR)
-      {
+    {
       outputType = VTK_SHORT;
       if (scalarType == VTK_UNSIGNED_SHORT)
-        {
+      {
         // change to float if values greater than 32767 exist
         const unsigned short *sptr = static_cast<const unsigned short *>(
           reader->GetOutput()->GetScalarPointer());
         vtkIdType n = reader->GetOutput()->GetNumberOfPoints();
         n *= reader->GetOutput()->GetNumberOfScalarComponents();
         for (vtkIdType i = 0; i < n; i++)
-          {
+        {
           if (*sptr++ > 32767)
-            {
+          {
             outputType = VTK_FLOAT;
             break;
-            }
           }
         }
       }
+    }
     else
-      {
+    {
       outputType = VTK_FLOAT;
-      }
+    }
 
     caster->SetInputConnection(lastOutput);
     caster->SetOutputScalarType(outputType);
     lastOutput = caster->GetOutputPort();
-    }
+  }
 
   // prepare the NIFTI header information
   vtkSmartPointer<vtkNIFTIHeader> hdr =
@@ -781,13 +781,13 @@ void dicomtonifti_convert_one(
   // the descrip is the date followed by the series description and ID
   std::string date = meta->GetAttributeValue(DC::SeriesDate).AsString();
   if (date.length() >= 8)
-    {
+  {
     const char *months[13] = { "/   /", "/Jan/", "/Feb/", "/Mar/", "/Apr/",
       "/May/", "/Jun/", "/Jul/", "/Aug/", "/Sep/", "/Oct/", "/Nov/", "/Dec/" };
     unsigned int month = (date[4] - '0')*10 + (date[5] - '0');
     month = (month > 12 ? 0 : month);
     date = date.substr(6, 2) + months[month] + date.substr(0, 4);
-    }
+  }
   std::string descrip = date + " " +
     meta->GetAttributeValue(DC::SeriesDescription).AsString() + " " +
     meta->GetAttributeValue(DC::StudyID).AsString();
@@ -800,35 +800,35 @@ void dicomtonifti_convert_one(
   std::string phase = meta->GetAttributeValue(
     firstFile, firstFrame, vtkDICOMTag(0x0018,0x1312)).AsString();
   if (phase == "COLUMN")
-    {
+  {
     hdr->SetDimInfo((permutation[2] << 4) +
                     (permutation[0] << 2) +
                     (permutation[1]));
-    }
+  }
   else if (phase == "ROW")
-    {
+  {
     hdr->SetDimInfo((permutation[2] << 4) +
                     (permutation[1] << 2) +
                     (permutation[0]));
-    }
+  }
   else if (phase == "OTHER")
-    {
+  {
     hdr->SetDimInfo(permutation[2] << 4);
-    }
+  }
 
   // get the scale information, if same for all slices
   if (meta->GetAttributeValue(
        firstFile, firstFrame, DC::RescaleSlope).IsValid())
-    {
+  {
     hdr->SetSclSlope(reader->GetRescaleSlope());
     hdr->SetSclInter(reader->GetRescaleIntercept());
-    }
+  }
 
   // compute a cal_min, cal_max
   bool useWindowLevel = false;
   if (meta->GetAttributeValue(
        firstFile, firstFrame, DC::WindowWidth).IsValid())
-    {
+  {
     useWindowLevel = true;
     double w = meta->GetAttributeValue(
       firstFile, firstFrame, DC::WindowWidth).GetDouble(0);
@@ -836,37 +836,37 @@ void dicomtonifti_convert_one(
       firstFile, firstFrame, DC::WindowCenter).GetDouble(0);
     int n = fileIndices->GetNumberOfTuples();
     for (int i = 1; i < n; i++)
-      {
+    {
       int j = fileIndices->GetComponent(i, 0);
       int k = frameIndices->GetComponent(i, 0);
       double tw = meta->GetAttributeValue(j, k, DC::WindowWidth).GetDouble(0);
       double tl = meta->GetAttributeValue(j, k, DC::WindowCenter).GetDouble(0);
       if (tl != l || tw != w)
-        {
+      {
         useWindowLevel = false;
         break;
-        }
       }
+    }
     if (useWindowLevel)
-      {
+    {
       double m = hdr->GetSclSlope();
       double b = hdr->GetSclInter();
       if (m == 0)
-        {
+      {
         m = 1.0;
         b = 0.0;
-        }
+      }
       hdr->SetCalMin((l - 0.5*w)*m + b);
       hdr->SetCalMax((l + 0.5*w)*m + b);
-      }
     }
+  }
 #if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
   if (!useWindowLevel)
-    {
+  {
     std::string photometric =
       meta->GetAttributeValue(DC::PhotometricInterpretation).AsString();
     if (photometric == "MONOCHROME1" || photometric == "MONOCHROME2")
-      {
+    {
       // compute range rather than using DICOM window/level setting
       vtkSmartPointer<vtkImageHistogramStatistics> histo =
         vtkSmartPointer<vtkImageHistogramStatistics>::New();
@@ -875,12 +875,12 @@ void dicomtonifti_convert_one(
       double hrange[2];
       histo->GetAutoRange(hrange);
       if (hrange[0] < hrange[1])
-        {
+      {
         hdr->SetCalMin(hrange[0]);
         hdr->SetCalMax(hrange[1]);
-        }
       }
     }
+  }
 #endif
 
   // prepare the writer to write the image
@@ -891,24 +891,24 @@ void dicomtonifti_convert_one(
   writer->SetFileName(outfile);
   if (reader->GetTimeDimension() > 1 &&
       options->volume < 0)
-    {
+  {
     writer->SetTimeDimension(reader->GetTimeDimension());
     writer->SetTimeSpacing(reader->GetTimeSpacing());
-    }
+  }
   if ((options->no_slice_reordering && slicesReordered) ||
       options->fsl)
-    {
+  {
     // force NIFTI file to store images in original DICOM order
     writer->SetQFac(-1.0);
-    }
+  }
   if (!options->no_qform)
-    {
+  {
     writer->SetQFormMatrix(matrix);
-    }
+  }
   if (!options->no_sform)
-    {
+  {
     writer->SetSFormMatrix(matrix);
-    }
+  }
   writer->SetInputConnection(lastOutput);
   writer->Write();
   dicomtonifti_check_error(writer);
@@ -935,23 +935,23 @@ void dicomtonifti_convert_files(
   dicomtonifti_check_error(sorter);
 
   if (!options->batch)
-    {
+  {
     std::string outfile = outpath;
     if (options->compress)
-      {
+    {
       size_t os = strlen(outpath);
       if (os < 3 || outpath[os-3] != '.' ||
           tolower(outpath[os-2]) != 'g' ||
           tolower(outpath[os-1]) != 'z')
-        {
+      {
         outfile.append(".gz");
-        }
       }
+    }
     dicomtonifti_convert_one(
       options, sorter->GetOutputFileNames(), outfile.c_str());
-    }
+  }
   else
-    {
+  {
     vtkSmartPointer<vtkDICOMParser> parser =
       vtkSmartPointer<vtkDICOMParser>::New();
     vtkSmartPointer<vtkDICOMMetaData> meta =
@@ -960,11 +960,11 @@ void dicomtonifti_convert_files(
 
     int m = sorter->GetNumberOfStudies();
     for (int j = 0; j < m; j++)
-      {
+    {
       int k = sorter->GetFirstSeriesForStudy(j);
       int kl = sorter->GetLastSeriesForStudy(j);
       for (; k <= kl; k++)
-        {
+      {
         // get metadata of first file
         vtkStringArray *a = sorter->GetFileNamesForSeries(k);
         std::string fname = a->GetValue(0);
@@ -982,35 +982,35 @@ void dicomtonifti_convert_files(
             (os < 3 || outfile[os-3] != '.' ||
              tolower(outfile[os-2]) != 'g' ||
              tolower(outfile[os-1]) != 'z'))
-          {
+        {
           outfile.append(".gz");
-          }
+        }
 
         // make the directory for the file
         if (k == sorter->GetFirstSeriesForStudy(j))
-          {
+        {
           vtkDICOMFilePath path(outfile);
           path.PopBack();
           std::string dirname = path.AsString();
           int code = vtkDICOMFileDirectory::Create(dirname.c_str());
           if (code != vtkDICOMFileDirectory::Good)
-            {
+          {
             fprintf(stderr, "Cannot create directory: %s\n",
                     dirname.c_str());
             exit(1);
-            }
           }
+        }
 
         if (!options->silent)
-          {
+        {
           printf("%s\n", outfile.c_str());
-          }
+        }
 
         // convert the file
         dicomtonifti_convert_one(options, a, outfile.c_str());
-        }
       }
     }
+  }
 }
 
 // Process a list of files and directories
@@ -1025,34 +1025,34 @@ void dicomtonifti_files_and_dirs(
     vtkSmartPointer<vtkStringArray>::New();
   vtkIdType n = files->GetNumberOfValues();
   for (vtkIdType i = 0; i < n; i++)
-    {
+  {
     std::string fname = files->GetValue(i);
     vtkDICOMFilePath path(fname);
     size_t m = fname.size();
     if ((m > 1 && (fname[m-1] == '/' || fname[m-1] == '\\')) ||
         path.IsDirectory())
-      {
+    {
       if (pastdirs->size() == 0 ||
           (options->recurse &&
            (options->follow_symlinks || !path.IsSymlink())))
-        {
-        directories->InsertNextValue(fname.c_str());
-        }
-      }
-    else
       {
-      newfiles->InsertNextValue(fname.c_str());
+        directories->InsertNextValue(fname.c_str());
       }
     }
+    else
+    {
+      newfiles->InsertNextValue(fname.c_str());
+    }
+  }
 
   if (newfiles->GetNumberOfValues() > 0)
-    {
+  {
     dicomtonifti_convert_files(options, newfiles, outpath);
-    }
+  }
 
   n = directories->GetNumberOfValues();
   for (vtkIdType i = 0; i < n; i++)
-    {
+  {
     std::string dirname = directories->GetValue(i);
     vtkDICOMFilePath path(dirname);
 
@@ -1064,27 +1064,27 @@ void dicomtonifti_files_and_dirs(
     vtkDICOMFileDirectory directory(dirname.c_str());
     int code = directory.GetError();
     if (code != vtkDICOMFileDirectory::Good)
-      {
+    {
       fprintf(stderr, "Could not open directory %s\n", dirname.c_str());
-      }
+    }
     else
-      {
+    {
       files->Initialize();
       unsigned long nf = directory.GetNumberOfFiles();
       for (unsigned long j = 0; j < nf; j++)
-        {
+      {
         const char *dirfile = directory.GetFile(j);
         if (dirfile[0] != '.' || (dirfile[1] != '\0' &&
             (dirfile[1] != '.' || dirfile[2] != '\0')))
-          {
+        {
           path.PushBack(dirfile);
           files->InsertNextValue(path.AsString());
           path.PopBack();
-          }
         }
-      dicomtonifti_files_and_dirs(options, files, outpath, pastdirs);
       }
+      dicomtonifti_files_and_dirs(options, files, outpath, pastdirs);
     }
+  }
 }
 
 // This program will convert DICOM to NIFTI
@@ -1106,36 +1106,36 @@ int MAINMACRO(int argc, char *argv[])
   // the output (NIFTI file or directory)
   const char *outpath = options.output;
   if (!outpath)
-    {
+  {
     fprintf(stderr,
       "\nNo output file was specified (\'-o\' <filename>).\n\n");
     dicomtonifti_usage(stderr, argv[0]);
     exit(1);
-    }
+  }
 
   int code = vtkDICOMFile::Access(outpath, vtkDICOMFile::In);
   size_t l = strlen(outpath);
   vtkDICOMFilePath tmp(outpath);
   if (options.batch && code == vtkDICOMFile::FileIsDirectory)
-    {
+  {
     tmp.PushBack(
       "{PatientID}-{StudyDate}-{SeriesDescription}-{SeriesNumber}.nii");
     outpath = tmp.AsString().c_str();
-    }
+  }
   else if (!options.batch && (code == vtkDICOMFile::FileIsDirectory ||
            (l > 0 && (outpath[l-1] == '/' || outpath[l-1] == '\\'))))
-    {
+  {
     fprintf(stderr, "The -o option must give a file, not a directory.\n");
     exit(1);
-    }
+  }
 
   // make sure that input files were provided
   if (files->GetNumberOfValues() == 0)
-    {
+  {
     fprintf(stderr, "\nNo input files were specified.\n\n");
     dicomtonifti_usage(stderr, argv[0]);
     exit(1);
-    }
+  }
 
   std::set<std::string> pastdirs;
   dicomtonifti_files_and_dirs(&options, files, outpath, &pastdirs);

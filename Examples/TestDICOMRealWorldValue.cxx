@@ -41,9 +41,9 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkStringArray>::New();
 
   for (int i = 1; i < argc; i++)
-    {
+  {
     files->InsertNextValue(argv[i]);
-    }
+  }
 
   sorter->SetInputFileNames(files);
   sorter->Update();
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMMetaData>::New();
 
   if (sorter->GetNumberOfSeries() > 0)
-    {
+  {
     // read the meta data from the supplied image
     vtkStringArray *a = sorter->GetFileNamesForSeries(0);
 
@@ -62,9 +62,9 @@ int main(int argc, char *argv[])
     reader->UpdateInformation();
 
     meta = reader->GetMetaData();
-    }
+  }
   else if (argc == 1)
-    {
+  {
     // create a real world value mapping sequence by hand
     // 1) use Unified Code for Units of Measure (UCUM), version 1.9
     // 2) the CodeMeaning should be a copy of CodeValue unless:
@@ -91,14 +91,14 @@ int main(int argc, char *argv[])
 
     meta->SetAttributeValue(DC::RealWorldValueMappingSequence,
       vtkDICOMValue(vtkDICOMVR::SQ, mappingItem));
-    }
+  }
   else
-    {
+  {
     cout << "The provided file is not DICOM!" << endl;
-    }
+  }
 
   if (meta->HasAttribute(DC::RealWorldValueMappingSequence))
-    {
+  {
     const vtkDICOMItem& mappingItem =
       meta->GetAttributeValue(DC::RealWorldValueMappingSequence).GetItem(0);
 
@@ -125,19 +125,19 @@ int main(int argc, char *argv[])
     cout << "and display the result with color table " << lutName << endl;
 
     if (argc == 1)
-      {
+    {
       TestAssert(range[0] == 0);
       TestAssert(range[1] == 4095);
       TestAssert(fabs(slope - 0.438) < 1e-16);
       TestAssert(fabs(inter - 0.234) < 1e-16);
       TestAssert(units == "m2/s");
       TestAssert(lutName == "HOT_METAL");
-      }
     }
+  }
   else
-    {
+  {
     cout << "Image has no real world value mapping!" << endl;
-    }
+  }
 
   return rval;
 }

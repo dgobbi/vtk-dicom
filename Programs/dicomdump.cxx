@@ -96,158 +96,158 @@ void printElement(
   const char *name = "";
   vtkDICOMDictEntry d;
   if (item)
-    {
+  {
     d = item->FindDictEntry(tag);
-    }
+  }
   else if (meta)
-    {
+  {
     d = meta->FindDictEntry(tag);
-    }
+  }
   if (d.IsValid())
-    {
+  {
     name = d.GetName();
     if (d.GetVR() != vr &&
         !(d.GetVR() == vtkDICOMVR::XS &&
           (vr == vtkDICOMVR::SS || vr == vtkDICOMVR::US)) &&
         !(d.GetVR() == vtkDICOMVR::OX &&
           (vr == vtkDICOMVR::OB || vr == vtkDICOMVR::OW)))
-      {
+    {
       printf("VR mismatch! %s != %s %s\n",
              vr.GetText(), d.GetVR().GetText(), name);
-      }
     }
+  }
   else if ((tag.GetGroup() & 0xFFFE) != 0 && tag.GetElement() == 0)
-    {
+  {
     // group is even, element is zero
     name = "GroupLength";
-    }
+  }
   else if ((tag.GetGroup() & 0x0001) != 0 &&
            (tag.GetElement() & 0xFF00) == 0)
-    {
+  {
     // group is odd, element is a creator element
     name = "PrivateCreator";
-    }
+  }
   // allow multiple values (i.e. for each image in series)
   vtkDICOMValue v = iter->GetValue();
   unsigned int vn = v.GetNumberOfValues();
   const vtkDICOMValue *vp = v.GetMultiplexData();
   if (vp == 0)
-    {
+  {
     vp = &v;
     vn = 1;
-    }
+  }
 
   // make an indentation string
   if (INDENT_SIZE*depth > MAX_INDENT)
-    {
+  {
     depth = MAX_INDENT/INDENT_SIZE;
-    }
+  }
   static const char spaces[MAX_INDENT+1] = "                        ";
   const char *indent = spaces + (MAX_INDENT - INDENT_SIZE*depth);
 
   for (unsigned int vi = 0; vi < vn; vi++)
-    {
+  {
     v = vp[vi];
     unsigned int vl = v.GetVL();
     if (tag == DC::PixelData ||
         tag == DC::FloatPixelData ||
         tag == DC::DoubleFloatPixelData)
-      {
+    {
       vl = (depth == 0 && vl == 0 ? pixelDataVL : v.GetVL());
-      }
+    }
     std::string s;
     if (vr == vtkDICOMVR::UN ||
         vr == vtkDICOMVR::SQ)
-      {
+    {
       // sequences are printed later
       s = (vl > 0 ? "..." : "");
-      }
+    }
     else if (vr == vtkDICOMVR::LT ||
              vr == vtkDICOMVR::ST ||
              vr == vtkDICOMVR::UT)
-      {
+    {
       // replace breaks with "\\", cap length to MAX_LENGTH
       size_t l = (vl > MAX_LENGTH ? MAX_LENGTH-4 : vl);
       const char *cp = v.GetCharData();
       std::string utf8;
       if (v.GetCharacterSet() != vtkDICOMCharacterSet::ISO_IR_6)
-        {
+      {
         utf8 = v.GetCharacterSet().ConvertToUTF8(cp, l);
         l = utf8.length();
         cp = utf8.data();
-        }
+      }
       size_t j = 0;
       while (j < l && cp[j] != '\0')
-        {
+      {
         size_t k = j;
         size_t m = j;
         for (; j < l && cp[j] != '\0'; j++)
-          {
+        {
           m = j;
           if (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f')
-            {
+          {
             do { j++; }
             while (j < l && (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f'));
             break;
-            }
+          }
           m++;
-          }
+        }
         if (j == l)
-          {
+        {
           while (m > 0 && cp[m-1] == ' ') { m--; }
-          }
+        }
         if (k != 0)
-          {
+        {
           s.append("\\\\");
-          }
+        }
         s.append(&cp[k], m-k);
         if (vl > MAX_LENGTH)
-          {
+        {
           s.append("...");
           break;
-          }
         }
       }
+    }
     else
-      {
+    {
       // print any other VR via conversion to string
       unsigned int n = v.GetNumberOfValues();
       size_t pos = 0;
       for (unsigned int i = 0; i < n; i++)
-        {
+      {
         v.AppendValueToUTF8String(s, i);
         if (i < n - 1)
-          {
+        {
           s.append("\\");
-          }
+        }
         if (s.size() > MAX_LENGTH-4)
-          {
+        {
           s.resize(pos);
           s.append("...");
           break;
-          }
-        pos = s.size();
         }
+        pos = s.size();
       }
+    }
 
     if (meta && vi == 0)
-      {
+    {
       printf("%s(%04X,%04X) %s \"%s\" :", indent, g, e, vr.GetText(), name);
-      }
+    }
     if (meta && vn > 1)
-      {
+    {
       printf("%s%s  %4.4u",
         (vi == 0 ? " (multiple values)\n" : ""), indent, vi + 1);
-      }
+    }
     if (vr == vtkDICOMVR::SQ)
-      {
+    {
       size_t m = v.GetNumberOfValues();
       const vtkDICOMItem *items = v.GetSequenceData();
       printf(" (%u %s%s)\n",
         static_cast<unsigned int>(m), (m == 1 ? "item" : "items"),
         (vl == 0xffffffffu ? ", delimited" : ""));
       for (size_t j = 0; j < m; j++)
-        {
+      {
         printf("%s%s---- SQ Item %04u at offset %u ----\n",
           indent, spaces+(MAX_INDENT - INDENT_SIZE),
           static_cast<unsigned int>(j+1),
@@ -256,48 +256,48 @@ void printElement(
         vtkDICOMDataElementIterator siterEnd = items[j].End();
 
         for (; siter != siterEnd; ++siter)
-          {
+        {
           printElement(meta, &items[j], siter, depth+1, pixelDataVL);
-          }
         }
       }
+    }
     else if (vl == 0xffffffffu)
-      {
+    {
       if (tag == DC::PixelData ||
           tag == DC::FloatPixelData ||
           tag == DC::DoubleFloatPixelData)
-        {
-        printf(" [...] (compressed)\n");
-        }
-      else
-        {
-        printf(" [...] (delimited)\n");
-        }
-      }
-    else
       {
+        printf(" [...] (compressed)\n");
+      }
+      else
+      {
+        printf(" [...] (delimited)\n");
+      }
+    }
+    else
+    {
       const char *uidName = "";
       if (vr == vtkDICOMVR::UI)
-        {
+      {
         uidName = vtkDICOMUtilities::GetUIDName(s.c_str());
-        }
+      }
       if (uidName[0] != '\0')
-        {
+      {
         printf(" [%s] {%s} (%u bytes)\n", s.c_str(), uidName, vl);
-        }
+      }
       else if (vr == vtkDICOMVR::OB ||
                vr == vtkDICOMVR::OW ||
                vr == vtkDICOMVR::OF ||
                vr == vtkDICOMVR::OD)
-        {
+      {
         printf(" [%s] (%u bytes)\n", (vl == 0 ? "" : "..."), vl);
-        }
+      }
       else
-        {
+      {
         printf(" [%s] (%u bytes)\n", s.c_str(), vl);
-        }
       }
     }
+  }
 }
 
 void printElementFromTagPathRecurse(
@@ -308,32 +308,32 @@ void printElementFromTagPathRecurse(
 
   vtkDICOMDataElementIterator iter = item->Begin();
   while (iter != item->End() && iter->GetTag() != tag)
-    {
+  {
     ++iter;
-    }
+  }
 
   if (iter != item->End())
-    {
+  {
     if (tagPath.HasTail())
-      {
+    {
       const vtkDICOMItem *items = iter->GetValue().GetSequenceData();
       if (items)
-        {
+      {
         size_t n = iter->GetValue().GetNumberOfValues();
         for (size_t i = 0; i < n; i++)
-          {
+        {
           printElementFromTagPathRecurse(
             &items[i], tagPath.GetTail(), fullPath, count);
-          }
         }
       }
+    }
     else
-      {
+    {
       ++(*count);
       fprintf(stdout, "  %04d", *count);
       printElement(0, item, iter, 0, 0);
-      }
     }
+  }
 }
 
 void printElementFromTagPath(
@@ -344,19 +344,19 @@ void printElementFromTagPath(
   vtkDICOMTag tag = tagPath.GetHead();
   vtkDICOMDataElementIterator iter = data->Find(tag);
   if (iter != data->End())
-    {
+  {
     if (tagPath.HasTail())
-      {
+    {
       for (vtkDICOMTagPath p = tagPath; ; p = p.GetTail())
-        {
+      {
         int g = p.GetHead().GetGroup();
         int e = p.GetHead().GetElement();
         if (p.HasTail())
-          {
+        {
           printf("(%04X,%04X)\\", g, e);
-          }
+        }
         else
-          {
+        {
           vtkDICOMDictEntry entry =
             vtkDICOMDictionary::FindDictEntry(p.GetHead());
           vtkDICOMVR vr = entry.GetVR();
@@ -365,43 +365,43 @@ void printElementFromTagPath(
           printf("(%04X,%04X) %s \"%s\" : (nested)\n",
             g, e, vr.GetText(), name);
           break;
-          }
         }
+      }
       if (iter->IsPerInstance())
-        {
+      {
         for (int j = 0; j < iter->GetNumberOfInstances(); j++)
-          {
+        {
           const vtkDICOMItem *items = iter->GetValue(j).GetSequenceData();
           if (items)
-            {
+          {
             size_t n = iter->GetValue().GetNumberOfValues();
             for (size_t i = 0; i < n; i++)
-              {
+            {
               printElementFromTagPathRecurse(
                 &items[i], tagPath.GetTail(), tagPath, &count);
-              }
             }
           }
         }
+      }
       else
-        {
+      {
         const vtkDICOMItem *items = iter->GetValue().GetSequenceData();
         if (items)
-          {
+        {
           size_t n = iter->GetValue().GetNumberOfValues();
           for (size_t i = 0; i < n; i++)
-            {
+          {
             printElementFromTagPathRecurse(
               &items[i], tagPath.GetTail(), tagPath, &count);
-            }
           }
         }
       }
-    else
-      {
-      printElement(data, 0, iter, 0, pixelDataVL);
-      }
     }
+    else
+    {
+      printElement(data, 0, iter, 0, pixelDataVL);
+    }
+  }
 }
 
 // This program will dump all the metadata in the given file
@@ -417,77 +417,77 @@ int MAINMACRO(int argc, char *argv[])
   vtkDICOMItem query;
 
   if (argc < 2)
-    {
+  {
     printUsage(stdout, fileBasename(argv[0]));
     return rval;
-    }
+  }
   else if (argc == 2 && strcmp(argv[1], "--help") == 0)
-    {
+  {
     printHelp(stdout, fileBasename(argv[0]));
     return rval;
-    }
+  }
   else if (argc == 2 && strcmp(argv[1], "--version") == 0)
-    {
+  {
     printVersion(stdout, fileBasename(argv[0]));
     return rval;
-    }
+  }
 
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();
 
   for (int argi = 1; argi < argc; argi++)
-    {
+  {
     const char *arg = argv[argi];
     if (strcmp(arg, "-q") == 0 || strcmp(arg, "-o") == 0)
-      {
+    {
       if (argi + 1 == argc || argv[argi+1][0] == '-')
-        {
+      {
         fprintf(stderr, "%s must be followed by a file.\n\n", arg);
         printUsage(stderr, fileBasename(argv[0]));
         return 1;
-        }
+      }
 
       if (arg[1] == 'q')
-        {
+      {
         const char *qfile = argv[++argi];
         if (!dicomcli_readquery(qfile, &query, &qtlist))
-          {
+        {
           fprintf(stderr, "Can't read query file %s\n\n", qfile);
           return 1;
-          }
-        }
-      else if (arg[1] == 'o')
-        {
-        fprintf(stderr, "unrecognized option %s.\n\n", arg);
-        return 1;
         }
       }
-    else if (strcmp(arg, "-k") == 0)
+      else if (arg[1] == 'o')
       {
+        fprintf(stderr, "unrecognized option %s.\n\n", arg);
+        return 1;
+      }
+    }
+    else if (strcmp(arg, "-k") == 0)
+    {
       vtkDICOMTag tag;
       ++argi;
       if (argi == argc)
-        {
+      {
         fprintf(stderr, "%s must be followed by gggg,eeee=value "
                         "where gggg,eeee is a DICOM tag.\n\n", arg);
         return 1;
-        }
-      if (!dicomcli_readkey(argv[argi], &query, &qtlist))
-        {
-        return 1;
-        }
       }
-    else if (arg[0] == '-')
+      if (!dicomcli_readkey(argv[argi], &query, &qtlist))
       {
+        return 1;
+      }
+    }
+    else if (arg[0] == '-')
+    {
       fprintf(stderr, "unrecognized option %s.\n\n", arg);
       printUsage(stderr, fileBasename(argv[0]));
       return 1;
-      }
-    else
-      {
-      files->InsertNextValue(arg);
-      }
     }
+    else
+    {
+      files->InsertNextValue(arg);
+    }
+  }
 
   // sort the files by study and series
   vtkSmartPointer<vtkDICOMDirectory> sorter =
@@ -507,20 +507,20 @@ int MAINMACRO(int argc, char *argv[])
 
   int m = sorter->GetNumberOfStudies();
   for (int j = 0; j < m; j++)
-    {
+  {
     int k = sorter->GetFirstSeriesForStudy(j);
     int kl = sorter->GetLastSeriesForStudy(j);
     for (; k <= kl; k++)
-      {
+    {
       vtkStringArray *a = sorter->GetFileNamesForSeries(k);
       vtkIdType l = a->GetNumberOfValues();
       std::string fname = a->GetValue(0);
       if (l == 1)
-        {
+      {
         printf("==== %s ====\n", fname.c_str());
-        }
+      }
       else
-        {
+      {
         // print the first and last filenames (sorted)
         vtkSmartPointer<vtkSortFileNames> fsort =
           vtkSmartPointer<vtkSortFileNames>::New();
@@ -533,40 +533,40 @@ int MAINMACRO(int argc, char *argv[])
           fsort->GetFileNames()->GetValue(0).c_str(),
           fileBasename(fsort->GetFileNames()->GetValue(l-1).c_str()),
           static_cast<int>(l));
-        }
+      }
 
       data->Clear();
       data->SetNumberOfInstances(static_cast<int>(l));
 
       unsigned int pixelDataVL = 0;
       for (vtkIdType i = 0; i < l; i++)
-        {
+      {
         fname = a->GetValue(i);
         parser->SetIndex(i);
         parser->SetFileName(fname.c_str());
         parser->Update();
         pixelDataVL = parser->GetPixelDataVL();
-        }
+      }
 
       if (query.GetNumberOfDataElements() > 0)
-        {
+      {
         for (size_t i = 0; i < qtlist.size(); i++)
-          {
-          printElementFromTagPath(data, qtlist[i], pixelDataVL);
-          }
-        }
-      else
         {
+          printElementFromTagPath(data, qtlist[i], pixelDataVL);
+        }
+      }
+      else
+      {
         vtkDICOMDataElementIterator iter = data->Begin();
         vtkDICOMDataElementIterator iterEnd = data->End();
 
         for (; iter != iterEnd; ++iter)
-          {
+        {
           printElement(data, 0, iter, 0, pixelDataVL);
-          }
         }
       }
     }
+  }
 
   return rval;
 }

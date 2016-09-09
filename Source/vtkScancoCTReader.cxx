@@ -151,22 +151,22 @@ int vtkScancoCTReader::CheckVersion(const char header[16])
   int fileType = 0;
 
   if (strncmp(header, "CTDATA-HEADER_V1", 16) == 0)
-    {
+  {
     fileType = 1;
-    }
+  }
   else if (strcmp(header, "AIMDATA_V030   ") == 0)
-    {
+  {
     fileType = 3;
-    }
+  }
   else
-    {
+  {
     int preHeaderSize = vtkScancoCTReader::DecodeInt(header);
     int imageHeaderSize = vtkScancoCTReader::DecodeInt(header + 4);
     if (preHeaderSize == 20 && imageHeaderSize == 140)
-      {
+    {
       fileType = 2;
-      }
     }
+  }
 
   return fileType;
 }
@@ -178,16 +178,16 @@ int vtkScancoCTReader::CanReadFile(const char *filename)
 
   bool canRead = false;
   if (infile.good())
-    {
+  {
     // header is a 512 byte block
     char buffer[512];
     infile.read(buffer, 512);
     if (!infile.bad())
-      {
+    {
       int fileType = vtkScancoCTReader::CheckVersion(buffer);
       canRead = (fileType > 0);
-      }
     }
+  }
 
   infile.close();
 
@@ -280,13 +280,13 @@ void vtkScancoCTReader::StripString(char *dest, const char *cp, size_t l)
 {
   char *dp = dest;
   for (size_t i = 0; i < l && *cp != '\0'; i++)
-    {
+  {
     *dp++ = *cp++;
-    }
+  }
   while (dp != dest && dp[-1] == ' ')
-    {
+  {
     dp--;
-    }
+  }
   *dp = '\0';
 }
 
@@ -294,9 +294,9 @@ void vtkScancoCTReader::StripString(char *dest, const char *cp, size_t l)
 int vtkScancoCTReader::ReadISQHeader(ifstream *file, unsigned long bytesRead)
 {
   if (bytesRead < 512)
-    {
+  {
     return 0;
-    }
+  }
 
   char *h = this->RawHeader;
   vtkScancoCTReader::StripString(this->Version, h, 16); h += 16;
@@ -319,7 +319,7 @@ int vtkScancoCTReader::ReadISQHeader(ifstream *file, unsigned long bytesRead)
   bool isRAD = (dataType == 9 || physdim[2] == 0);
 
   if (isRAD) // RAD file
-    {
+  {
     this->MeasurementIndex = vtkScancoCTReader::DecodeInt(h); h += 4;
     this->DataRange[0] = vtkScancoCTReader::DecodeInt(h); h += 4;
     this->DataRange[1] = vtkScancoCTReader::DecodeInt(h); h += 4;
@@ -334,9 +334,9 @@ int vtkScancoCTReader::ReadISQHeader(ifstream *file, unsigned long bytesRead)
     this->StartPosition = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
     this->EndPosition = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
     h += 88*4;
-    }
+  }
   else // ISQ file or RSQ file
-    {
+  {
     this->SliceThickness = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
     this->SliceIncrement = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
     this->StartPosition = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
@@ -358,23 +358,23 @@ int vtkScancoCTReader::ReadISQHeader(ifstream *file, unsigned long bytesRead)
     this->Energy = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
     this->Intensity = vtkScancoCTReader::DecodeInt(h)*1e-3; h += 4;
     h += 83*4;
-    }
+  }
 
   int dataOffset = vtkScancoCTReader::DecodeInt(h);
 
   // fix SliceThickness and SliceIncrement if they were truncated
   if (physdim[2] != 0)
-    {
+  {
     double computedSpacing = physdim[2]*1e-3/pixdim[2];
     if (fabs(computedSpacing - this->SliceThickness) < 1.1e-3)
-      {
+    {
       this->SliceThickness = computedSpacing;
-      }
-    if (fabs(computedSpacing - this->SliceIncrement) < 1.1e-3)
-      {
-      this->SliceIncrement = computedSpacing;
-      }
     }
+    if (fabs(computedSpacing - this->SliceIncrement) < 1.1e-3)
+    {
+      this->SliceIncrement = computedSpacing;
+    }
+  }
 
   // Convert date information into a string
   month = ((month > 12 || month < 1) ? 0 : month);
@@ -392,19 +392,19 @@ int vtkScancoCTReader::ReadISQHeader(ifstream *file, unsigned long bytesRead)
 
   // Perform a sanity check on the dimensions
   for (int i = 0; i < 3; i++)
-    {
+  {
     this->ScanDimensionsPixels[i] = pixdim[i];
     if (pixdim[i] < 1)
-      {
+    {
       pixdim[i] = 1;
-      }
+    }
     this->ScanDimensionsPhysical[i] =
       (isRAD ? physdim[i]*1e-6 : physdim[i]*1e-3);
     if (physdim[i] == 0)
-      {
+    {
       physdim[i] = 1.0;
-      }
     }
+  }
 
   this->SetDataExtent(0, pixdim[0]-1,
                       0, pixdim[1]-1,
@@ -413,17 +413,17 @@ int vtkScancoCTReader::ReadISQHeader(ifstream *file, unsigned long bytesRead)
   this->SetDataOrigin(0.0, 0.0, 0.0);
 
   if (isRAD) // RAD file
-    {
+  {
     this->SetDataSpacing(physdim[0]*1e-6/pixdim[0],
                          physdim[1]*1e-6/pixdim[1],
                          1.0);
-    }
+  }
   else
-    {
+  {
     this->SetDataSpacing(physdim[0]*1e-3/pixdim[0],
                          physdim[1]*1e-3/pixdim[1],
                          physdim[2]*1e-3/pixdim[2]);
-    }
+  }
 
   this->SetDataScalarType(VTK_SHORT);
   this->SetNumberOfScalarComponents(1);
@@ -434,50 +434,50 @@ int vtkScancoCTReader::ReadISQHeader(ifstream *file, unsigned long bytesRead)
 
   // read the rest of the header
   if (headerSize > bytesRead)
-    {
+  {
     h = new char[headerSize];
     memcpy(h, this->RawHeader, bytesRead);
     delete [] this->RawHeader;
     this->RawHeader = h;
     file->read(h + bytesRead, headerSize - bytesRead);
     if (static_cast<unsigned long>(file->gcount()) < headerSize - bytesRead)
-      {
+    {
       return 0;
-      }
     }
+  }
 
   // decode the extended header (lots of guesswork)
   if (headerSize >= 2048)
-    {
+  {
     char *calHeader = 0;
     int calHeaderSize = 0;
     h = this->RawHeader + 512;
     unsigned long hskip = 1;
     char *headerName = h + 8;
     if (strncmp(headerName, "MultiHeader     ", 16) == 0)
-      {
+    {
       h += 512;
       hskip += 1;
-      }
+    }
     unsigned long hsize = 0;
     for (int i = 0; i < 4; i++)
-      {
+    {
       hsize = vtkScancoCTReader::DecodeInt(h + i*128 + 24);
       if ((1 + hskip + hsize)*512 > headerSize)
-        {
+      {
         break;
-        }
+      }
       headerName = h + i*128 + 8;
       if (strncmp(headerName, "Calibration     ", 16) == 0)
-        {
+      {
         calHeader = this->RawHeader + (1 + hskip)*512;
         calHeaderSize = hsize*512;
-        }
-      hskip += hsize;
       }
+      hskip += hsize;
+    }
 
     if (calHeader && calHeaderSize >= 1024)
-      {
+    {
       h = calHeader;
       vtkScancoCTReader::StripString(this->CalibrationData, h + 28, 64);
       // std::string calFile(h + 112, 256);
@@ -489,14 +489,14 @@ int vtkScancoCTReader::ReadISQHeader(ifstream *file, unsigned long bytesRead)
       this->RescaleSlope = vtkScancoCTReader::DecodeDouble(h + 664);
       this->RescaleIntercept = vtkScancoCTReader::DecodeDouble(h + 672);
       this->MuWater = vtkScancoCTReader::DecodeDouble(h + 688);
-      }
     }
+  }
 
   // Include conversion to linear att coeff in the rescaling
   if (this->MuScaling != 0)
-    {
+  {
     this->RescaleSlope /= this->MuScaling;
-    }
+  }
 
   return 1;
 }
@@ -505,27 +505,27 @@ int vtkScancoCTReader::ReadISQHeader(ifstream *file, unsigned long bytesRead)
 int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
 {
   if (bytesRead < 160)
-    {
+  {
     return 0;
-    }
+  }
 
   char *h = this->RawHeader;
   int intSize = 0;
   unsigned long headerSize = 0;
   if (strcmp(h, "AIMDATA_V030   ") == 0)
-    {
+  {
     // header uses 64-bit ints (8 bytes)
     intSize = 8;
     strcpy(this->Version, h);
     headerSize = 16;
     h += headerSize;
-    }
+  }
   else
-    {
+  {
     // header uses 32-bit ints (4 bytes)
     intSize = 4;
     strcpy(this->Version, "AIMDATA_V020   ");
-    }
+  }
 
   // read the pre-header
   char *preheader = h;
@@ -537,7 +537,7 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
   headerSize += preheaderSize + structSize + logSize;
   this->SetHeaderSize(headerSize);
   if (headerSize > bytesRead)
-    {
+  {
     h = new char[headerSize];
     memcpy(h, this->RawHeader, bytesRead);
     preheader = h + (preheader - this->RawHeader);
@@ -545,10 +545,10 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
     this->RawHeader = h;
     file->read(h + bytesRead, headerSize - bytesRead);
     if (static_cast<unsigned long>(file->gcount()) < headerSize - bytesRead)
-      {
+    {
       return 0;
-      }
     }
+  }
 
   // decode the struct header
   h = preheader + preheaderSize;
@@ -556,19 +556,19 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
   int dataType = vtkScancoCTReader::DecodeInt(h); h += 4;
   int structValues[21];
   for (int i = 0; i < 21; i++)
-    {
+  {
     structValues[i] = vtkScancoCTReader::DecodeInt(h); h += intSize;
-    }
+  }
   float elementSize[3];
   for (int i = 0; i < 3; i++)
-    {
+  {
     elementSize[i] = vtkScancoCTReader::DecodeFloat(h);
     if (elementSize[i] == 0)
-      {
+    {
       elementSize[i] = 1.0;
-      }
-    h += 4;
     }
+    h += 4;
+  }
 
   // number of components per pixel is 1 by default
   int scalarType = VTK_UNSIGNED_CHAR;
@@ -578,7 +578,7 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
   // a limited selection of data types are supported
   // (only 0x00010001 (char) and 0x00020002 (short) are fully tested)
   switch (dataType)
-    {
+  {
     case 0x00160001:
       scalarType = VTK_UNSIGNED_CHAR;
       break;
@@ -623,7 +623,7 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
     default:
       vtkErrorMacro("Unrecognized data type in AIM file: " << dataType);
       return 0;
-    }
+  }
 
   this->SetDataScalarType(scalarType);
   this->SetNumberOfScalarComponents(scalarComponents);
@@ -648,190 +648,190 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
   char *logEnd = h + logSize;
 
   while (h != logEnd && *h != '\0')
-    {
+  {
     // skip newline and go to next line
     if (*h == '\n')
-      {
+    {
       h++;
-      }
+    }
 
     // search for the end of this line
     char *lineEnd = h;
     while (lineEnd != logEnd && *lineEnd != '\n' && *lineEnd != '\0')
-      {
+    {
       lineEnd++;
-      }
+    }
 
     // if not a comment, search for keys
     if (h != lineEnd && *h != '!' && (*lineEnd == '\n' || *lineEnd == '\0'))
-      {
+    {
       // key and value are separated by multiple spaces
       char *key = h;
       while (h+1 != lineEnd && (h[0] != ' ' || h[1] != ' '))
-        {
+      {
         h++;
-        }
+      }
       // this gives the length of the key
       size_t keylen = h - key;
       // skip to the end of the spaces
       while (h != lineEnd && *h == ' ')
-        {
+      {
         h++;
-        }
+      }
       // this is where the value starts
       char *value = h;
       size_t valuelen = lineEnd - value;
       // look for trailing spaces
       while (valuelen > 0 &&
              (h[valuelen-1] == ' ' || h[valuelen-1] == '\r'))
-        {
+      {
         valuelen--;
-        }
+      }
 
       // convert into a std::string for convenience
       std::string skey(key, keylen);
 
       // check for known keys
       if (skey == "Time")
-        {
+      {
         valuelen = (valuelen > 31 ? 31 : valuelen);
         strncpy(this->ModificationDate, value, valuelen);
         this->ModificationDate[valuelen] = '\0';
-        }
+      }
       else if (skey == "Original Creation-Date")
-        {
+      {
         valuelen = (valuelen > 31 ? 31 : valuelen);
         strncpy(this->CreationDate, value, valuelen);
         this->CreationDate[valuelen] = '\0';
-        }
+      }
       else if (skey == "Orig-ISQ-Dim-p")
-        {
+      {
         for (int i = 0; i < 3; i++)
-          {
+        {
           this->ScanDimensionsPixels[i] = strtol(value, &value, 10);
-          }
         }
+      }
       else if (skey == "Orig-ISQ-Dim-um")
-        {
+      {
         for (int i = 0; i < 3; i++)
-          {
-          this->ScanDimensionsPhysical[i] = strtod(value, &value)*1e-3;
-          }
-        }
-      else if (skey == "Patient Name")
         {
+          this->ScanDimensionsPhysical[i] = strtod(value, &value)*1e-3;
+        }
+      }
+      else if (skey == "Patient Name")
+      {
         valuelen = (valuelen > 41 ? 41 : valuelen);
         strncpy(this->PatientName, value, valuelen);
         this->PatientName[valuelen] = '\0';
-        }
+      }
       else if (skey == "Index Patient")
-        {
+      {
         this->PatientIndex = strtol(value, 0, 10);
-        }
+      }
       else if (skey == "Index Measurement")
-        {
+      {
         this->MeasurementIndex = strtol(value, 0, 10);
-        }
+      }
       else if (skey == "Site")
-        {
+      {
         this->Site = strtol(value, 0, 10);
-        }
+      }
       else if (skey == "Scanner ID")
-        {
+      {
         this->ScannerID = strtol(value, 0, 10);
-        }
+      }
       else if (skey == "Scanner type")
-        {
+      {
         this->ScannerType = strtol(value, 0, 10);
-        }
+      }
       else if (skey == "Position Slice 1 [um]")
-        {
+      {
         this->StartPosition = strtod(value, 0)*1e-3;
         this->EndPosition =
           this->StartPosition + elementSize[2]*(structValues[5] - 1);
-        }
+      }
       else if (skey == "No. samples")
-        {
+      {
         this->NumberOfSamples = strtol(value, 0, 10);
-        }
+      }
       else if (skey == "No. projections per 180")
-        {
+      {
         this->NumberOfProjections = strtol(value, 0, 10);
-        }
+      }
       else if (skey == "Scan Distance [um]")
-        {
+      {
         this->ScanDistance = strtod(value, 0)*1e-3;
-        }
+      }
       else if (skey == "Integration time [us]")
-        {
+      {
         this->SampleTime = strtod(value, 0)*1e-3;
-        }
+      }
       else if (skey == "Reference line [um]")
-        {
+      {
         this->ReferenceLine = strtod(value, 0)*1e-3;
-        }
+      }
       else if (skey == "Reconstruction-Alg.")
-        {
+      {
         this->ReconstructionAlg = strtol(value, 0, 10);
-        }
+      }
       else if (skey == "Energy [V]")
-        {
+      {
         this->Energy = strtod(value, 0)*1e-3;
-        }
+      }
       else if (skey == "Intensity [uA]")
-        {
+      {
         this->Intensity = strtod(value, 0)*1e-3;
-        }
+      }
       else if (skey == "Mu_Scaling")
-        {
+      {
         this->MuScaling = strtol(value, 0, 10);
-        }
+      }
       else if (skey == "Minimum data value")
-        {
+      {
         this->DataRange[0] = strtod(value, 0);
-        }
+      }
       else if (skey == "Maximum data value")
-        {
+      {
         this->DataRange[1] = strtod(value, 0);
-        }
+      }
       else if (skey == "Calib. default unit type")
-        {
+      {
         this->RescaleType = strtol(value, 0, 10);
-        }
+      }
       else if (skey == "Calibration Data")
-        {
+      {
         valuelen = (valuelen > 64 ? 64 : valuelen);
         strncpy(this->CalibrationData, value, valuelen);
         this->CalibrationData[valuelen] = '\0';
-        }
+      }
       else if (skey == "Density: unit")
-        {
+      {
         valuelen = (valuelen > 16 ? 16 : valuelen);
         strncpy(this->RescaleUnits, value, valuelen);
         this->RescaleUnits[valuelen] = '\0';
-        }
-      else if (skey == "Density: slope")
-        {
-        this->RescaleSlope = strtod(value, 0);
-        }
-      else if (skey == "Density: intercept")
-        {
-        this->RescaleIntercept = strtod(value, 0);
-        }
-      else if (skey == "HU: mu water")
-        {
-        this->MuWater = strtod(value, 0);
-        }
       }
+      else if (skey == "Density: slope")
+      {
+        this->RescaleSlope = strtod(value, 0);
+      }
+      else if (skey == "Density: intercept")
+      {
+        this->RescaleIntercept = strtod(value, 0);
+      }
+      else if (skey == "HU: mu water")
+      {
+        this->MuWater = strtod(value, 0);
+      }
+    }
     // skip to the end of the line
     h = lineEnd;
-    }
+  }
 
   // Include conversion to linear att coeff in the rescaling
   if (this->MuScaling != 0)
-    {
+  {
     this->RescaleSlope /= this->MuScaling;
-    }
+  }
 
   // these items are not in the processing log
   this->SliceThickness = elementSize[2];
@@ -853,10 +853,10 @@ int vtkScancoCTReader::RequestInformation(
 
   const char *filename = this->FileName;
   if (filename == 0)
-    {
+  {
     vtkErrorMacro("A filename must be specified");
     return 0;
-    }
+  }
 
   vtkDebugMacro("Opening ISQ/AIM file " << filename);
 
@@ -869,11 +869,11 @@ int vtkScancoCTReader::RequestInformation(
 
   ifstream infile(ufilename, ios::in | ios::binary);
   if (!infile.good())
-    {
+  {
     vtkErrorMacro("Cannot open file " << filename);
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
     return 0;
-    }
+  }
 
   // header is a 512 byte block
   delete [] this->RawHeader;
@@ -882,28 +882,28 @@ int vtkScancoCTReader::RequestInformation(
   int fileType = 0;
   unsigned long bytesRead = 0;
   if (!infile.bad())
-    {
+  {
     bytesRead = static_cast<unsigned long>(infile.gcount());
     fileType = vtkScancoCTReader::CheckVersion(this->RawHeader);
-    }
+  }
 
   if (fileType == 0)
-    {
+  {
     vtkErrorMacro(<< "Unrecognized header in " << filename);
     this->SetErrorCode(vtkErrorCode::UnrecognizedFileTypeError);
     infile.close();
     return 0;
-    }
+  }
 
   int returnValue = 0;
   if (fileType == 1)
-    {
+  {
     returnValue = this->ReadISQHeader(&infile, bytesRead);
-    }
+  }
   else
-    {
+  {
     returnValue = this->ReadAIMHeader(&infile, bytesRead);
-    }
+  }
 
   infile.close();
 
@@ -938,15 +938,15 @@ int vtkScancoCTReader::RequestData(
   vtkInformationVector* outputVector)
 {
   if (this->Compression == 0)
-    {
+  {
     return this->Superclass::RequestData(request, inputVector, outputVector);
-    }
+  }
 
   // check whether the reader is in an error state
   if (this->GetErrorCode() != vtkErrorCode::NoError)
-    {
+  {
     return 0;
-    }
+  }
 
   // which output port did the request come from
   int outputPort =
@@ -954,9 +954,9 @@ int vtkScancoCTReader::RequestData(
 
   // for now, this reader has only one output
   if (outputPort > 0)
-    {
+  {
     return 1;
-    }
+  }
 
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
@@ -976,19 +976,19 @@ int vtkScancoCTReader::RequestData(
 
   const char *filename = 0;
   if (this->FileNames && this->FileNames->GetNumberOfValues() == 1)
-    {
+  {
     filename = this->FileNames->GetValue(0);
-    }
+  }
   else
-    {
+  {
     filename = this->GetFileName();
-    }
+  }
 
   if (filename == 0)
-    {
+  {
     vtkErrorMacro("A FileName must be provided");
     return 0;
-    }
+  }
 
   // get the pointer to the output
   unsigned char *dataPtr =
@@ -997,11 +997,11 @@ int vtkScancoCTReader::RequestData(
   // open the file
   ifstream infile(filename, ios::in | ios::binary);
   if (!infile.good())
-    {
+  {
     vtkErrorMacro("Cannot open file " << filename);
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
     return 0;
-    }
+  }
 
   // seek to the data
   infile.seekg(this->HeaderSize);
@@ -1009,10 +1009,10 @@ int vtkScancoCTReader::RequestData(
   // get the size of the compressed data
   int intSize = 4;
   if (strcmp(this->Version, "AIMDATA_V030   ") == 0)
-    {
+  {
     // header uses 64-bit ints (8 bytes)
     intSize = 8;
-    }
+  }
 
   // Dimensions of the data
   int xsize = (extent[1] - extent[0] + 1);
@@ -1027,7 +1027,7 @@ int vtkScancoCTReader::RequestData(
   size_t size = 0;
 
   if (this->Compression == 0x00b1)
-    {
+  {
     // Compute the size of the binary packed data
     size_t xinc = (xsize+1)/2;
     size_t yinc = (ysize+1)/2;
@@ -1035,38 +1035,38 @@ int vtkScancoCTReader::RequestData(
     size = xinc*yinc*zinc + 1;
     input = new char[size];
     infile.read(input, size);
-    }
+  }
   else if (this->Compression == 0x00b2 ||
            this->Compression == 0x00c2)
-    {
+  {
     // Get the size of the compressed data
     char head[8];
     infile.read(head, intSize);
     size = static_cast<unsigned int>(vtkScancoCTReader::DecodeInt(head));
     if (intSize == 8)
-      {
+    {
       // Read the high word of a 64-bit int
       unsigned int high = vtkScancoCTReader::DecodeInt(head + 4);
       size += (static_cast<vtkTypeUInt64>(high) << 32);
-      }
+    }
     input = new char[size - intSize];
     size -= intSize;
     infile.read(input, size);
-    }
+  }
 
   // confirm that enough data was read
   size_t shortread = size - infile.gcount();
   if (shortread != 0)
-    {
+  {
     this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
     vtkErrorMacro("File is truncated, " << shortread << " bytes are missing");
-    }
+  }
 
   // Close the file
   infile.close();
 
   if (this->Compression == 0x00b1)
-    {
+  {
     // Unpack binary data, each byte becomes a 2x2x2 block of voxels
     size_t xinc = (xsize+1)/2;
     size_t yinc = (ysize+1)/2;
@@ -1074,89 +1074,89 @@ int vtkScancoCTReader::RequestData(
     v = (v == 0 ? 0x7f : v);
     unsigned char bit = 0;
     for (int i = 0; i < zsize; i++)
-      {
+    {
       bit ^= (bit & 2);
       for (int j = 0; j < ysize; j++)
-        {
+      {
         char *inPtr = input + (i*yinc + j)*xinc;
         bit ^= (bit & 1);
         for (int k = 0; k < xsize; k++)
-          {
+        {
           unsigned char c = *inPtr;
           *dataPtr++ = ((c >> bit) & 1)*v;
           inPtr += (bit & 1);
           bit ^= 1;
-          }
-        bit ^= 2;
         }
-      bit ^= 4;
+        bit ^= 2;
       }
+      bit ^= 4;
     }
+  }
   else if (this->Compression == 0x00b2)
-    {
+  {
     // Decompress binary run-lengths
     bool flip = 0;
     unsigned char v = input[flip];
     char *inPtr = input + 2;
     size -= 2;
     if (size > 0)
-      {
+    {
       do
-        {
+      {
         unsigned char l = *inPtr++;
         if (l == 255)
-          {
+        {
           l = 254;
           flip = !flip;
-          }
+        }
         if (l > outSize)
-          {
+        {
           l = outSize;
-          }
+        }
         outSize -= l;
         if (l > 0)
-          {
+        {
           do
-            {
+          {
             *dataPtr++ = v;
-            }
-          while (--l);
           }
+          while (--l);
+        }
         flip = !flip;
         v = input[flip];
-        }
-      while (--size != 0 && outSize != 0);
       }
+      while (--size != 0 && outSize != 0);
     }
+  }
   else if (this->Compression == 0x00c2)
-    {
+  {
     // Decompress 8-bit run-lengths
     char *inPtr = input;
     size /= 2;
     if (size > 0)
-      {
+    {
       do
-        {
+      {
         unsigned char l = inPtr[0];
         unsigned char v = inPtr[1];
         inPtr += 2;
         if (l > outSize)
-          {
+        {
           l = outSize;
-          }
+        }
         outSize -= l;
         if (l > 0)
-          {
+        {
           do
-            {
+          {
             *dataPtr++ = v;
-            }
-          while (--l);
           }
+          while (--l);
         }
-      while (--size != 0 && outSize != 0);
       }
+      while (--size != 0 && outSize != 0);
     }
+  }
 
   delete [] input;
 

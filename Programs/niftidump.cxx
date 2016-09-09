@@ -64,22 +64,22 @@ const char *stringSanitize(
   char op[SANITIZE_BUFSIZE], const char *cp, size_t l)
 {
   if (l >= SANITIZE_BUFSIZE)
-    {
+  {
     l = SANITIZE_BUFSIZE - 1;
-    }
+  }
 
   size_t i;
   for (i = 0; i < l && cp[i] != '\0'; i++)
-    {
+  {
     if (isprint(cp[i]))
-      {
+    {
       op[i] = cp[i];
-      }
-    else
-      {
-      op[i] = '?';
-      }
     }
+    else
+    {
+      op[i] = '?';
+    }
+  }
 
   op[i] = '\0';
 
@@ -103,20 +103,20 @@ int MAINMACRO(int argc, char *argv[])
   int rval = 0;
 
   if (argc < 2)
-    {
+  {
     printUsage(stdout, fileBasename(argv[0]));
     return rval;
-    }
+  }
   else if (argc == 2 && strcmp(argv[1], "--help") == 0)
-    {
+  {
     printHelp(stdout, fileBasename(argv[0]));
     return rval;
-    }
+  }
   else if (argc == 2 && strcmp(argv[1], "--version") == 0)
-    {
+  {
     printVersion(stdout, fileBasename(argv[0]));
     return rval;
-    }
+  }
 
   vtkSmartPointer<vtkNIFTIReader> reader =
     vtkSmartPointer<vtkNIFTIReader>::New();
@@ -127,13 +127,13 @@ int MAINMACRO(int argc, char *argv[])
   reader->GetNIFTIHeader()->GetHeader(&hdr);
   int version = 0;
   if (hdr.magic[2] >= '0' && hdr.magic[2] <= '9')
-    {
+  {
     version = hdr.magic[2] - '0';
-    }
+  }
 
   const char *datatypeName = "";
   switch (hdr.datatype)
-    {
+  {
     case NIFTI_TYPE_UINT8:
       datatypeName = "uint8";
       break;
@@ -182,7 +182,7 @@ int MAINMACRO(int argc, char *argv[])
     case NIFTI_TYPE_RGBA32:
       datatypeName = "rgba32";
       break;
-    }
+  }
 
   static const char *intentCodes[25] = {
     "none", "unknown", "correl", "ttest",
@@ -203,21 +203,21 @@ int MAINMACRO(int argc, char *argv[])
   short ic = hdr.intent_code;
   const char *intentCode = "unknown";
   if (ic >= 0 && ic <= 25)
-    {
+  {
     intentCode = intentCodes[ic];
-    }
+  }
   else if (ic >= 1000 && ic <= 1011)
-    {
+  {
     intentCode = intentCodes1000[ic-1000];
-    }
+  }
   else if (ic >= 2000 && ic <= 2005)
-    {
+  {
     intentCode = intentCodes2000[ic-2000];
-    }
+  }
 
   const char *spaceUnits = "unknown";
   switch (hdr.xyzt_units & 0x7)
-    {
+  {
     case 1:
       spaceUnits = "meters";
       break;
@@ -227,11 +227,11 @@ int MAINMACRO(int argc, char *argv[])
     case 3:
       spaceUnits = "microns";
       break;
-    }
+  }
 
   const char *timeUnits = "unknown";
   switch (hdr.xyzt_units & 0x38)
-    {
+  {
     case 8:
       timeUnits = "seconds";
       break;
@@ -250,11 +250,11 @@ int MAINMACRO(int argc, char *argv[])
     case 48:
       timeUnits = "radians";
       break;
-    }
+  }
 
   const char *sliceCode = "unknown";
   switch (hdr.slice_code)
-    {
+  {
     case 1:
       sliceCode = "seq_inc";
       break;
@@ -273,16 +273,16 @@ int MAINMACRO(int argc, char *argv[])
     case 6:
       sliceCode = "alt_dec2";
       break;
-    }
+  }
 
   const char *xformCode[2] = { "unknown", "unknown" };
   short xc[2];
   xc[0] = hdr.qform_code;
   xc[1] = hdr.sform_code;
   for (int i = 0; i < 2; i++)
-    {
+  {
     switch (xc[i])
-      {
+    {
       case 1:
         xformCode[i] = "scanner_anat";
         break;
@@ -295,8 +295,8 @@ int MAINMACRO(int argc, char *argv[])
       case 4:
         xformCode[i] = "mni_152";
         break;
-      }
     }
+  }
 
   // temporary space
   char buf[SANITIZE_BUFSIZE];
@@ -312,32 +312,32 @@ int MAINMACRO(int argc, char *argv[])
   //printf("regular: %d\n", hdr.regular);
   printf("dim_info: 0x%x", hdr.dim_info);
   if (hdr.dim_info == 0)
-    {
+  {
     printf(" (unknown)\n");
-    }
+  }
   else
-    {
+  {
     printf(" (freq_dim=%d, phase_dim=%d, slice_dim=%d\n",
            (hdr.dim_info & 0x3),
            ((hdr.dim_info >> 2) & 0x3),
            ((hdr.dim_info >> 4) & 0x3));
-    }
+  }
   printf("dim:");
   for (int i = 0; i < 8; i++)
-    {
+  {
     printf(" %lld", hdr.dim[i]);
-    }
+  }
   printf("\n");
   printf("pixdim:");
   for (int i = 0; i < 8; i++)
-    {
+  {
     printf(" %g", hdr.pixdim[i]);
-    }
+  }
   printf("\n");
   printf("xyzt_units: 0x%x (%s, %s)\n",
          hdr.xyzt_units, spaceUnits, timeUnits);
   if (version > 0)
-    {
+  {
     printf("intent_code: %d (%s)\n",
            hdr.intent_code, intentCode);
     printf("intent_name: \"%s\"\n",
@@ -345,11 +345,11 @@ int MAINMACRO(int argc, char *argv[])
     printf("intent_p1: %g\n", hdr.intent_p1);
     printf("intent_p2: %g\n", hdr.intent_p2);
     printf("intent_p3: %g\n", hdr.intent_p3);
-    }
+  }
   printf("datatype: %d (%s)\n", hdr.datatype, datatypeName);
   printf("bitpix: %d\n", hdr.bitpix);
   if (version > 0)
-    {
+  {
     printf("scl_slope: %g\n", hdr.scl_slope);
     printf("scl_inter: %g\n", hdr.scl_inter);
     printf("cal_max: %g\n", hdr.cal_max);
@@ -359,13 +359,13 @@ int MAINMACRO(int argc, char *argv[])
     printf("slice_end: %lld\n", hdr.slice_end);
     printf("slice_duration: %g\n", hdr.slice_duration);
     printf("toffset: %g\n", hdr.toffset);
-    }
+  }
   printf("descrip: \"%s\"\n",
          stringSanitize(buf, hdr.descrip, sizeof(hdr.descrip)));
   printf("aux_file: \"%s\"\n",
          stringSanitize(buf, hdr.aux_file, sizeof(hdr.aux_file)));
   if (version > 0)
-    {
+  {
     printf("qform_code: %d (%s)\n", hdr.qform_code, xformCode[0]);
     printf("sform_code: %d (%s)\n", hdr.sform_code, xformCode[1]);
     printf("quatern_b: %g\n", hdr.quatern_b);
@@ -376,26 +376,26 @@ int MAINMACRO(int argc, char *argv[])
     printf("qoffset_z: %g\n", hdr.qoffset_z);
     printf("srow_x:");
     for (int i = 0; i < 4; i++)
-      {
+    {
       printf(" %g", hdr.srow_x[i]);
-      }
+    }
     printf("\n");
     printf("srow_y:");
     for (int i = 0; i < 4; i++)
-      {
+    {
       printf(" %g", hdr.srow_y[i]);
-      }
+    }
     printf("\n");
     printf("srow_z:");
     for (int i = 0; i < 4; i++)
-      {
+    {
       printf(" %g", hdr.srow_z[i]);
-      }
+    }
     printf("\n");
     printf("magic: \"%s\"\n",
            stringSanitize(buf, hdr.magic, sizeof(hdr.magic)));
     fflush(stdout);
-    }
+  }
 
   return rval;
 }

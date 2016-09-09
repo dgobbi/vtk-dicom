@@ -265,7 +265,7 @@ bool Arguments::ExpandArgs(int argc, wchar_t *argv[], const char *passthrough)
   bool expand_wildcards = true;
 
   for (int i = 0; i < argc; i++)
-    {
+  {
     // for storing segments of the path that have wildcards
     int dirstart = 0;
     int dircount = 0;

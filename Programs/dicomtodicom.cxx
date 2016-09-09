@@ -82,19 +82,19 @@ void dicomtodicom_version(FILE *file, const char *command_name, bool verbose)
   while (cp != command_name && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
 
   if (!verbose)
-    {
+  {
     fprintf(file, "%s %s\n", cp, DICOM_VERSION);
     fprintf(file, "\n"
       "Copyright (c) 2012-2016, David Gobbi.\n\n"
       "This software is distributed under an open-source license.  See the\n"
       "Copyright.txt file that comes with the vtk-dicom source distribution.\n");
-    }
+  }
   else
-    {
+  {
     fprintf(file,
       "Head %8.8s, Built %s, %s\n",
       DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
-    }
+  }
 }
 
 
@@ -172,32 +172,32 @@ void dicomtodicom_check_error(vtkObject *o)
   const char *filename = 0;
   unsigned long errorcode = 0;
   if (writer)
-    {
+  {
     filename = writer->GetFileName();
     errorcode = writer->GetErrorCode();
-    }
+  }
   else if (reader)
-    {
+  {
     filename = reader->GetInternalFileName();
     errorcode = reader->GetErrorCode();
-    }
+  }
   else if (sorter)
-    {
+  {
     filename = sorter->GetInternalFileName();
     errorcode = sorter->GetErrorCode();
-    }
+  }
   else if (parser)
-    {
+  {
     filename = parser->GetFileName();
     errorcode = parser->GetErrorCode();
-    }
+  }
   if (!filename)
-    {
+  {
     filename = "";
-    }
+  }
 
   switch(errorcode)
-    {
+  {
     case vtkErrorCode::NoError:
       return;
     case vtkErrorCode::FileNotFoundError:
@@ -224,7 +224,7 @@ void dicomtodicom_check_error(vtkObject *o)
     default:
       fprintf(stderr, "An unknown error occurred.\n");
       break;
-    }
+  }
 
   exit(1);
 }
@@ -246,135 +246,135 @@ void dicomtodicom_read_options(
   // read the options from the command line
   int argi = 1;
   while (argi < argc)
-    {
+  {
     const char *arg = argv[argi++];
     if (arg[0] == '-')
-      {
+    {
       if (strcmp(arg, "--") == 0)
-        {
+      {
         // stop processing switches
         break;
-        }
+      }
       else if (strcmp(arg, "--modality") == 0 ||
                strcmp(arg, "--series-description") == 0 ||
                strcmp(arg, "--series-number") == 0 ||
                strcmp(arg, "--uid-prefix") == 0)
-        {
+      {
         if (argi >= argc ||
             argv[argi][0] == '-')
-          {
+        {
           fprintf(stderr, "\nA value must follow the \'%s\' flag\n\n", arg);
           exit(1);
-          }
+        }
         if (strcmp(arg, "--modality") == 0)
-          {
+        {
           options->modality = argv[argi];
-          }
+        }
         else if (strcmp(arg, "--series-description") == 0)
-          {
+        {
           options->series_description = argv[argi];
-          }
+        }
         else if (strcmp(arg, "--series-number") == 0)
-          {
+        {
           options->series_number= argv[argi];
-          }
+        }
         else if (strcmp(arg, "--uid-prefix") == 0)
-          {
+        {
           options->uid_prefix = argv[argi];
-          }
+        }
         argi++;
-        }
+      }
       else if (strcmp(arg, "--axial") == 0)
-        {
+      {
         options->mpr = MPRAxial;
-        }
+      }
       else if (strcmp(arg, "--coronal") == 0)
-        {
+      {
         options->mpr = MPRCoronal;
-        }
+      }
       else if (strcmp(arg, "--sagittal") == 0)
-        {
+      {
         options->mpr = MPRSagittal;
-        }
+      }
       else if (strcmp(arg, "--silent") == 0)
-        {
+      {
         options->silent = true;
-        }
+      }
       else if (strcmp(arg, "--verbose") == 0)
-        {
+      {
         options->verbose = true;
-        }
+      }
       else if (strcmp(arg, "--version") == 0)
-        {
+      {
         dicomtodicom_version(stdout, argv[0], false);
         exit(0);
-        }
+      }
       else if (strcmp(arg, "--build-version") == 0)
-        {
+      {
         dicomtodicom_version(stdout, argv[0], true);
         exit(0);
-        }
+      }
       else if (strcmp(arg, "--help") == 0)
-        {
+      {
         dicomtodicom_help(stdout, argv[0]);
         exit(0);
-        }
+      }
       else if (arg[0] == '-' && arg[1] == '-')
-        {
+      {
         fprintf(stderr, "\nUnrecognized option %s\n\n", arg);
         dicomtodicom_usage(stderr, argv[0]);
         exit(1);
-        }
+      }
       else if (arg[0] == '-' && arg[1] != '-')
-        {
+      {
         for (int argj = 1; arg[argj] != '\0'; argj++)
-          {
+        {
           if (arg[argj] == 's')
-            {
+          {
             options->silent = true;
-            }
+          }
           else if (arg[argj] == 'v')
-            {
+          {
             options->verbose = true;
-            }
+          }
           else if (arg[argj] == 'o')
-            {
+          {
             if (arg[argj+1] != '\0')
-              {
+            {
               arg += argj+1;
-              }
+            }
             else
-              {
+            {
               if (argi >= argc)
-                {
+              {
                 fprintf(stderr, "\nA file must follow the \'-o\' flag\n\n");
                 dicomtodicom_usage(stderr, argv[0]);
                 exit(1);
-                }
-              arg = argv[argi++];
               }
+              arg = argv[argi++];
+            }
             options->output = arg;
             break;
-            }
+          }
           else
-            {
+          {
             fprintf(stderr, "\nUnrecognized \'%c\' in option %s\n\n", arg[argj], arg);
             dicomtodicom_usage(stderr, argv[0]);
             exit(1);
-            }
           }
         }
       }
-    else
-      {
-      files->InsertNextValue(arg);
-      }
     }
+    else
+    {
+      files->InsertNextValue(arg);
+    }
+  }
 
   while (argi < argc)
-    {
+  {
     files->InsertNextValue(argv[argi++]);
-    }
+  }
 }
 
 // Convert one DICOM series into another DICOM series
@@ -406,28 +406,28 @@ void dicomtodicom_convert_one(
     (meta->GetAttributeValue(DC::SeriesDescription).AsString() +
      dicomtodicom_description[options->mpr]);
   if (seriesDescription.size() < 64)
-    {
+  {
     meta->SetAttributeValue(DC::SeriesDescription, seriesDescription);
-    }
+  }
 
   // set the metadata supplied on the command line
   if (options->series_description)
-    {
+  {
     meta->SetAttributeValue(DC::SeriesDescription, options->series_description);
-    }
+  }
   if (options->series_number)
-    {
+  {
     meta->SetAttributeValue(DC::SeriesNumber, options->series_number);
-    }
+  }
 
   // get the matrix from the DICOM series
   vtkMatrix4x4 *inputMatrix = reader->GetPatientMatrix();
   vtkSmartPointer<vtkMatrix4x4> matrix =
     vtkSmartPointer<vtkMatrix4x4>::New();
   if (inputMatrix)
-    {
+  {
     matrix->DeepCopy(inputMatrix);
-    }
+  }
 
   // mpr reformat if requested
   vtkSmartPointer<vtkImageReslice> reformat =
@@ -439,17 +439,17 @@ void dicomtodicom_convert_one(
   int permutation[3] = { 0, 1, 2 };
 
   if (options->mpr)
-    {
+  {
     // check for CT acquired with a tilted gantry
     if (fabs(vtkDICOMCTRectifier::GetGantryDetectorTilt(matrix)) > 1e-2)
-      {
+    {
       // tilt is significant, so regrid as a rectangular volume
       rectify->SetInputConnection(lastOutput);
       rectify->SetVolumeMatrix(matrix);
       rectify->Update();
       lastOutput = rectify->GetOutputPort();
       matrix = rectify->GetRectifiedMatrix();
-      }
+    }
 
     // create a permutation matrix to make the slices axial
     axes->DeepCopy(matrix);
@@ -459,50 +459,50 @@ void dicomtodicom_convert_one(
     int prevmaxj = -1;
     int prevmaxi = -1;
     for (int kdim = 0; kdim < 2; kdim++)
-      {
+    {
       int maxj = 0;
       int maxi = 0;
       double maxv = -0.0;
       for (int jdim = 0; jdim < 3; jdim++)
-        {
+      {
         if (jdim == prevmaxj) { continue; }
         for (int idim = 0; idim < 3; idim++)
-          {
+        {
           if (idim == prevmaxi) { continue; }
           double v = axes->GetElement(jdim, idim);
           if (v*v >= maxv)
-            {
+          {
             maxi = idim;
             maxj = jdim;
             maxv = v*v;
-            }
           }
         }
+      }
       maxidx[maxj] = maxi;
       value[maxj] = (axes->GetElement(maxj, maxi) < 0 ? -1.0 : 1.0);
       prevmaxj = maxj;
       prevmaxi = maxi;
-      }
+    }
 
     axes->Zero();
     axes->SetElement(3, 3, 1.0);
     for (int jdim = 0; jdim < 3; jdim++)
-      {
+    {
       int idim = maxidx[jdim];
       if (idim < 0)
-        {
+      {
         idim = 3 - maxidx[(jdim+1)%3] - maxidx[(jdim+2)%3];
         maxidx[jdim] = idim;
         double perm = (((3 + maxidx[2] - maxidx[0])%3) == 2 ? 1.0 : -1.0);
         value[jdim] = value[(jdim+1)%3]*value[(jdim+2)%3]*perm;
-        }
+      }
       permutation[jdim] = idim;
       axes->SetElement(jdim, idim, value[jdim]);
-      }
+    }
 
     // change the permutation to the desired mpr
     if (options->mpr == MPRCoronal)
-      {
+    {
       double cmatrix[16] = {
         1.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
@@ -513,9 +513,9 @@ void dicomtodicom_convert_one(
       permutation[0] = tperm[0];
       permutation[1] = tperm[2];
       permutation[2] = tperm[1];
-      }
+    }
     else if (options->mpr == MPRSagittal)
-      {
+    {
       double smatrix[16] = {
         0.0, 0.0,-1.0, 0.0,
         1.0, 0.0, 0.0, 0.0,
@@ -526,7 +526,7 @@ void dicomtodicom_convert_one(
       permutation[0] = tperm[1];
       permutation[1] = tperm[2];
       permutation[2] = tperm[0];
-      }
+    }
 
     // reformat with the permuted axes
     reformat->SetResliceAxes(axes);
@@ -535,7 +535,7 @@ void dicomtodicom_convert_one(
 
     // factor out the permuted axes
     vtkMatrix4x4::Multiply4x4(matrix, axes, matrix);
-    }
+  }
 
   // make the generator
   vtkSmartPointer<vtkDICOMMRGenerator> mrgenerator =
@@ -550,52 +550,52 @@ void dicomtodicom_convert_one(
   if (SOPClass == "1.2.840.10008.5.1.4.1.1.2" ||
       SOPClass == "1.2.840.10008.5.1.4.1.1.2.1" ||
       SOPClass == "1.2.840.10008.5.1.4.1.1.2.2")
-    {
+  {
     generator = ctgenerator;
-    }
+  }
   else if (SOPClass == "1.2.840.10008.5.1.4.1.1.4" ||
            SOPClass == "1.2.840.10008.5.1.4.1.1.4.1" ||
            SOPClass == "1.2.840.10008.5.1.4.1.1.4.4")
-    {
+  {
     generator = mrgenerator;
-    }
+  }
 
   // allow the user to override the generator
   if (options->modality)
-    {
+  {
     if (strcmp(options->modality, "CT") == 0)
-      {
+    {
       generator = ctgenerator;
-      }
+    }
     else if (strcmp(options->modality, "MR") == 0 ||
              strcmp(options->modality, "MRI") == 0)
-      {
+    {
       generator = mrgenerator;
-      }
     }
+  }
 
   // prepare the writer to write the image
   vtkSmartPointer<vtkDICOMWriter> writer =
     vtkSmartPointer<vtkDICOMWriter>::New();
   if (generator)
-    {
+  {
     writer->SetGenerator(generator);
-    }
+  }
   writer->SetMetaData(meta);
   writer->SetFilePrefix(outfile);
   writer->SetFilePattern("%s/IM-0001-%04.4d.dcm");
   writer->TimeAsVectorOn();
   if (reader->GetTimeDimension() > 1)
-    {
+  {
     writer->SetTimeDimension(reader->GetTimeDimension());
     writer->SetTimeSpacing(reader->GetTimeSpacing());
-    }
+  }
   writer->SetPatientMatrix(matrix);
   if (reader->GetRescaleSlope() > 0)
-    {
+  {
     writer->SetRescaleSlope(reader->GetRescaleSlope());
     writer->SetRescaleIntercept(reader->GetRescaleIntercept());
-    }
+  }
   writer->SetInputConnection(lastOutput);
   writer->SetMemoryRowOrderToFileNative();
   writer->Write();
@@ -644,40 +644,40 @@ int MAINMACRO(int argc, char *argv[])
 
   // set the UID prefix
   if (options.uid_prefix)
-    {
+  {
     vtkDICOMUtilities::SetUIDPrefix(options.uid_prefix);
-    }
+  }
 
   // make sure that input files were provided
   if (files->GetNumberOfValues() == 0)
-    {
+  {
     fprintf(stderr, "\nNo input files were specified.\n\n");
     dicomtodicom_usage(stderr, argv[0]);
     exit(1);
-    }
+  }
 
   // the output
   const char *outpath = options.output;
   if (!outpath)
-    {
+  {
     fprintf(stderr,
       "\nNo output directory was specified (\'-o\' <directory>).\n\n");
     dicomtodicom_usage(stderr, argv[0]);
     exit(1);
-    }
+  }
 
   int code = vtkDICOMFile::Access(outpath, vtkDICOMFile::In);
   if (code != vtkDICOMFile::FileIsDirectory)
-    {
+  {
     fprintf(stderr, "option -o must give a directory, not a file.\n");
     exit(1);
-    }
+  }
   code = vtkDICOMFileDirectory::Create(outpath);
   if (code != vtkDICOMFileDirectory::Good)
-    {
+  {
     fprintf(stderr, "Cannot create directory: %s\n", outpath);
     exit(1);
-    }
+  }
 
   dicomtodicom_convert_files(&options, files, outpath);
 

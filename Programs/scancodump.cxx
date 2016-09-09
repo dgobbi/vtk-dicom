@@ -69,20 +69,20 @@ int MAINMACRO(int argc, char *argv[])
   int rval = 0;
 
   if (argc < 2)
-    {
+  {
     printUsage(stdout, fileBasename(argv[0]));
     return rval;
-    }
+  }
   else if (argc == 2 && strcmp(argv[1], "--help") == 0)
-    {
+  {
     printHelp(stdout, fileBasename(argv[0]));
     return rval;
-    }
+  }
   else if (argc == 2 && strcmp(argv[1], "--version") == 0)
-    {
+  {
     printVersion(stdout, fileBasename(argv[0]));
     return rval;
-    }
+  }
 
   vtkSmartPointer<vtkScancoCTReader> reader =
     vtkSmartPointer<vtkScancoCTReader>::New();
@@ -99,7 +99,7 @@ int MAINMACRO(int argc, char *argv[])
   printf("Version: %s\n", reader->GetVersion());
   printf("CreationDate: %s\n", reader->GetCreationDate());
   if (strncmp(reader->GetVersion(), "AIMDATA", 7) == 0)
-    {
+  {
     printf("ModificationDate: %s\n", reader->GetModificationDate());
     printf("Position: %d %d %d\n",
            static_cast<int>(origin[0]/spacing[0] + 0.5),
@@ -113,7 +113,7 @@ int MAINMACRO(int argc, char *argv[])
            spacing[0], spacing[1], spacing[2]);
     printf("DataType: %s\n",
            (reader->GetDataScalarType() == VTK_SHORT ? "short" : "byte"));
-    }
+  }
   reader->GetScanDimensionsPixels(ivec);
   printf("ScanDimensionsPixels: %d %d %d\n",
          ivec[0], ivec[1], ivec[2]);

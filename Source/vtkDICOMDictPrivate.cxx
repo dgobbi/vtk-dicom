@@ -27630,21 +27630,21 @@ static unsigned int vtkDICOMDictPrivateInitializerCounter;
 vtkDICOMDictPrivateInitializer::vtkDICOMDictPrivateInitializer()
 {
   if (vtkDICOMDictPrivateInitializerCounter++ == 0)
-    {
+  {
     for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != NULL; dp++)
-      {
+    {
       vtkDICOMDictionary::AddPrivateDictionary(*dp);
-      }
     }
+  }
 }
 
 vtkDICOMDictPrivateInitializer::~vtkDICOMDictPrivateInitializer()
 {
   if (--vtkDICOMDictPrivateInitializerCounter == 0)
-    {
+  {
     for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != NULL; dp++)
-      {
+    {
       vtkDICOMDictionary::RemovePrivateDictionary((*dp)->Name);
-      }
     }
+  }
 }

@@ -62,13 +62,13 @@ bool vtkDICOMCTGenerator::GenerateCTImageModule(vtkDICOMMetaData *source)
   // AXIAL or LOCALIZER
   const char *it = 0;
   if (source)
-    {
+  {
     it = source->GetAttributeValue(DC::ImageType).GetCharData();
-    }
+  }
   if (it == 0 || it[0] == '\0')
-    {
+  {
     it = "DERIVED\\SECONDARY\\AXIAL";
-    }
+  }
   vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::ImageType, it);
 
@@ -164,9 +164,9 @@ bool vtkDICOMCTGenerator::GenerateCTInstance(vtkInformation *info)
       !this->GenerateCTImageModule(source) ||
       !this->GenerateOverlayPlaneModule(source) ||
       !this->GenerateVOILUTModule(source))
-    {
+  {
     return false;
-    }
+  }
 
   return true;
 }
@@ -175,10 +175,10 @@ bool vtkDICOMCTGenerator::GenerateCTInstance(vtkInformation *info)
 bool vtkDICOMCTGenerator::GenerateInstance(vtkInformation *info)
 {
   if (this->MultiFrame)
-    {
+  {
     vtkErrorMacro("Enhanced Multi-Frame CT is not yet supported.");
     return false;
-    }
+  }
 
   return this->GenerateCTInstance(info);
 }

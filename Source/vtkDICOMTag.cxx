@@ -26,14 +26,14 @@ ostream& operator<<(ostream& o, const vtkDICOMTag& a)
   char *cp = text;
   *cp++ = '(';
   for (int j = 0; j < 2; j++)
-    {
+  {
     for (int i = 12; i >= 0; i -= 4)
-      {
+    {
       char d = ((t[j] >> i) & 0x000F);
       *cp++ = (d < 10 ? '0' + d : 'A' - 10 + d);
-      }
-    *cp++ = ',';
     }
+    *cp++ = ',';
+  }
   cp[-1] = ')';
   *cp = '\0';
 

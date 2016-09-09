@@ -42,19 +42,19 @@ int main(int argc, char *argv[])
   const char *stackID = 0;
 
   for (int i = 1; i < argc; i++)
-    {
+  {
     if (strcmp(argv[i], "--stack") == 0)
-      {
+    {
       if (i+1 < argc)
-        {
-        stackID = argv[++i];
-        }
-      }
-    else
       {
-      files->InsertNextValue(argv[i]);
+        stackID = argv[++i];
       }
     }
+    else
+    {
+      files->InsertNextValue(argv[i]);
+    }
+  }
 
   // find all DICOM files supplied by the user
   vtkSmartPointer<vtkDICOMDirectory> sorter =
@@ -69,19 +69,19 @@ int main(int argc, char *argv[])
   int seriesIdx = 0;
   int kmax = 0;
   for (int i = 0; i < m; i++)
-    {
+  {
     int fj = sorter->GetFirstSeriesForStudy(i);
     int lj = sorter->GetLastSeriesForStudy(i);
     for (int j = fj; j <= lj; j++)
-      {
+    {
       int k = sorter->GetFileNamesForSeries(j)->GetNumberOfValues();
       if (k > kmax)
-        {
+      {
         kmax = k;
         seriesIdx = j;
-        }
       }
     }
+  }
 
   // display the longest series
   vtkStringArray *a = sorter->GetFileNamesForSeries(seriesIdx);
@@ -93,9 +93,9 @@ int main(int argc, char *argv[])
   //reader->TimeAsVectorOn();
   //reader->SetDesiredTimeIndex(5);
   if (stackID)
-    {
+  {
     reader->SetDesiredStackID(stackID);
-    }
+  }
   reader->SetFileNames(a);
 
   double range[2];
@@ -103,9 +103,9 @@ int main(int argc, char *argv[])
   reader->Update();
 
   if (reader->GetErrorCode() != vtkErrorCode::NoError)
-    {
+  {
     return 1;
-    }
+  }
 
   reader->GetOutput()->GetScalarRange(range);
   reader->GetOutput()->GetExtent(extent);
@@ -137,13 +137,13 @@ int main(int argc, char *argv[])
   bool imageIs3D = (extent[5] > extent[4]);
 
   for (int i = 2*(imageIs3D == 0); i < 3; i++)
-    {
+  {
     vtkSmartPointer<vtkImageResliceMapper> imageMapper =
       vtkSmartPointer<vtkImageResliceMapper>::New();
     if (i < 3)
-      {
+    {
       imageMapper->SetInputConnection(portToDisplay);
-      }
+    }
     imageMapper->SliceFacesCameraOn();
     imageMapper->SliceAtFocalPointOn();
     imageMapper->ResampleToScreenPixelsOn();
@@ -161,9 +161,9 @@ int main(int argc, char *argv[])
     renderer->AddViewProp(image);
     renderer->SetBackground(0.0, 0.0, 0.0);
     if (imageIs3D)
-      {
+    {
       renderer->SetViewport(viewport[i]);
-      }
+    }
 
     renWin->AddRenderer(renderer);
 
@@ -175,58 +175,58 @@ int main(int argc, char *argv[])
     point[2] = 0.5*(bounds[4] + bounds[5]);
     double maxdim = 0.0;
     for (int j = 0; j < 3; j++)
-      {
+    {
       double s = 0.5*(bounds[2*j+1] - bounds[2*j]);
       maxdim = (s > maxdim ? s : maxdim);
-      }
+    }
 
     vtkCamera *camera = renderer->GetActiveCamera();
     camera->SetFocalPoint(point);
     point[i % 3] -= 500.0;
     camera->SetPosition(point);
     if ((i % 3) == 2)
-      {
+    {
       camera->SetViewUp(0.0, -1.0, 0.0);
-      }
+    }
     else
-      {
+    {
       camera->SetViewUp(0.0, 0.0, +1.0);
-      }
+    }
     camera->ParallelProjectionOn();
     camera->SetParallelScale(maxdim);
-    }
+  }
 
   if (imageIs3D)
-    {
+  {
     renWin->SetSize(600, 400);
-    }
+  }
   else
-    {
+  {
     renWin->SetSize(400, 400);
-    }
+  }
 
   renWin->Render();
 
   vtkStringArray *sarray = reader->GetStackIDs();
   if (sarray->GetNumberOfValues())
-    {
+  {
     cout << "StackIDs (choose one with --stack):";
     for (vtkIdType ii = 0; ii < sarray->GetNumberOfValues(); ii++)
-      {
-      cout << " \"" << sarray->GetValue(ii) << "\"";
-      }
-    cout << "\n";
-    }
-  if (reader->GetTimeDimension() > 1)
     {
+      cout << " \"" << sarray->GetValue(ii) << "\"";
+    }
+    cout << "\n";
+  }
+  if (reader->GetTimeDimension() > 1)
+  {
     cout << "TimeDimension: " << reader->GetTimeDimension() << "\n";
     cout << "TimeSpacing: " << reader->GetTimeSpacing() << "\n";
-    }
+  }
   if (reader->GetFileIndexArray()->GetNumberOfComponents() > 1)
-    {
+  {
     cout << "VectorDimension: "
          << reader->GetFileIndexArray()->GetNumberOfComponents() << "\n";
-    }
+  }
 
   iren->Start();
 

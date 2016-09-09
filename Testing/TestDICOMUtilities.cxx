@@ -54,9 +54,9 @@ int main(int argc, char *argv[])
   a->SetNumberOfValues(10);
   DU::GenerateUIDs(DC::SeriesInstanceUID, a);
   for (int i = 0; i < 9; i++)
-    {
+  {
     TestAssert(DU::CompareUIDs(a->GetValue(i), a->GetValue(i+1)) < 0);
-    }
+  }
   }
 
   { // Test UID generation with given prefix
@@ -67,9 +67,9 @@ int main(int argc, char *argv[])
   a->SetNumberOfValues(10);
   DU::GenerateUIDs(DC::SeriesInstanceUID, a);
   for (int i = 0; i < 9; i++)
-    {
+  {
     TestAssert(DU::CompareUIDs(a->GetValue(i), a->GetValue(i+1)) < 0);
-    }
+  }
   }
 
   { // Test DateTime generation

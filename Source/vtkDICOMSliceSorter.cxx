@@ -49,21 +49,21 @@ vtkDICOMSliceSorter::vtkDICOMSliceSorter()
 vtkDICOMSliceSorter::~vtkDICOMSliceSorter()
 {
   if (this->FileIndexArray)
-    {
+  {
     this->FileIndexArray->Delete();
-    }
+  }
   if (this->FrameIndexArray)
-    {
+  {
     this->FrameIndexArray->Delete();
-    }
+  }
   if (this->StackIDs)
-    {
+  {
     this->StackIDs->Delete();
-    }
+  }
   if (this->MetaData)
-    {
+  {
     this->MetaData->Delete();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -73,13 +73,13 @@ void vtkDICOMSliceSorter::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "MetaData: ";
   if (this->MetaData)
-    {
+  {
     os << this->MetaData << "\n";
-    }
+  }
   else
-    {
+  {
     os << "(none)\n";
-    }
+  }
 
   os << indent << "DesiredStackID: "
      << (*this->DesiredStackID ? "(empty)" : this->DesiredStackID) << "\n";
@@ -103,35 +103,35 @@ void vtkDICOMSliceSorter::PrintSelf(ostream& os, vtkIndent indent)
 void vtkDICOMSliceSorter::SetMetaData(vtkDICOMMetaData *meta)
 {
   if (this->MetaData != meta)
-    {
+  {
     if (this->MetaData)
-      {
+    {
       this->MetaData->Delete();
-      }
+    }
     if (meta)
-      {
+    {
       meta->Register(this);
-      }
+    }
     this->MetaData = meta;
     this->Modified();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMSliceSorter::SetDesiredStackID(const char *stackId)
 {
   if (stackId == 0)
-    {
+  {
     stackId = "";
-    }
+  }
 
   // the maximum length of a stackId is 16
   if (strncmp(this->DesiredStackID, stackId, 16) != 0)
-    {
+  {
     strncpy(this->DesiredStackID, stackId, 16);
     this->DesiredStackID[17] = '\0';
     this->Modified();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -191,9 +191,9 @@ const vtkDICOMValue& vtkDICOMSliceSorterGetFrameAttributeValue(
   const vtkDICOMValue& v =
     frameSeq.GetAttributeValue(i, vtkDICOMTagPath(stag, 0, vtag));
   if (v.IsValid())
-    {
+  {
     return v;
-    }
+  }
   return sharedSeq.GetAttributeValue(0, vtkDICOMTagPath(stag, 0, vtag));
 }
 
@@ -205,11 +205,11 @@ double vtkDICOMSliceSorterComputeLocation(
   double location = 0.0;
 
   if (pv.GetNumberOfValues() != 3 || ov.GetNumberOfValues() != 6)
-    {
+  {
     *checkPtr = false;
-    }
+  }
   else
-    {
+  {
     double orientation[6], normal[3], position[3];
     pv.GetValues(position, 3);
     ov.GetValues(orientation, 6);
@@ -220,24 +220,24 @@ double vtkDICOMSliceSorterComputeLocation(
     location = vtkMath::Dot(normal, position);
 
     if (checkOrientation[9] == 0)
-      {
+    {
       // save the orientation and position for later checks
       for (int i = 0; i < 3; i++)
-        {
+      {
         checkOrientation[i] = orientation[i];
         checkOrientation[3+i] = orientation[3+i];
         checkOrientation[6+i] = position[i];
         checkOrientation[10+i] = normal[i];
-        }
+      }
       // indicate that checkOrientation has been set
       checkOrientation[9] = 1.0;
-      }
+    }
     else
-      {
+    {
       const double directionTolerance = 1e-4;
       const double positionTolerance = 1e-3;
       for (int i = 0; i < 2; i++)
-        {
+      {
         // make sure the orientation vectors stay the same
         double *vec = &orientation[3*i];
         double *checkVec = &checkOrientation[3*i];
@@ -248,16 +248,16 @@ double vtkDICOMSliceSorterComputeLocation(
         // (actually compute the square of the sine, it's easier)
         double d = 1.0;
         if (b > 0 && c > 0)
-          {
+        {
           d = 1.0 - (a*a)/(b*c);
-          }
+        }
         // the tolerance is in radians (small angle approximation)
         if (d > directionTolerance*directionTolerance)
-          {
+        {
           // not all slices have the same orientation
           *checkPtr = false;
-          }
         }
+      }
       // make sure the positions line up
       double *checkPosition = &checkOrientation[6];
       double v[3];
@@ -270,13 +270,13 @@ double vtkDICOMSliceSorterComputeLocation(
       if (checkOrientation[13] == 0 &&
           v[0]*v[0] + v[1]*v[1] + v[2]*v[2] >
           positionTolerance*positionTolerance)
-        {
+      {
         for (int i = 0; i < 3; i++)
-          {
+        {
           checkOrientation[10+i] = vdir*v[i];
-          }
-        vtkMath::Normalize(&checkOrientation[10]);
         }
+        vtkMath::Normalize(&checkOrientation[10]);
+      }
 
       // compare vector to check vector
       double w = vtkMath::Norm(&checkOrientation[10]);
@@ -289,33 +289,33 @@ double vtkDICOMSliceSorterComputeLocation(
       // the position tolerance is in millimetres
       if (d > (positionTolerance*positionTolerance +
                t*t*directionTolerance*directionTolerance))
-        {
+      {
         // positions don't line up along the normal
         *checkPtr = false;
-        }
+      }
       else if (checkOrientation[13] != 0 && vtkMath::Norm(v) > w)
-        {
+      {
         // use new vector as check vector if it is longer
         for (int i = 0; i < 3; i++)
-          {
+        {
           checkOrientation[10+i] = vdir*v[i];
-          }
         }
       }
+    }
     if (*checkPtr == false)
-      {
+    {
       // re-set the check orientation to the current stack
       for (int i = 0; i < 3; i++)
-        {
+      {
         checkOrientation[i] = orientation[i];
         checkOrientation[3+i] = orientation[3+i];
         checkOrientation[6+i] = position[i];
         checkOrientation[10+i] = normal[i];
-        }
+      }
       // mark the check vector as unset
       checkOrientation[13] = 0;
-      }
     }
+  }
 
   return location;
 }
@@ -331,39 +331,39 @@ double vtkDICOMSliceSorterComputeSpacing(
   int o = 0;
 
   while (m != 0)
-    {
+  {
     // compute the mean spacing and the variance in spacing
     double s1 = 0.0;
     double s2 = 0.0;
     size_t n = 0;
     o = 0;
     for (size_t i = 1; i < info.size(); i++)
-      {
+    {
       // first verify that locations aren't identical
       if (vtkDICOMSliceSorterSortInfo::CompareLocation(info[i-1], info[i]))
-        {
+      {
         // compute the offset
         double d = info[i].ComputedLocation - info[i-1].ComputedLocation;
         double dd = (d - a)*(d - a);
         // make sure offset is within 3 sigma or 10% of average offset
         if (dd < 0.01*a*a || dd < 9*v)
-          {
+        {
           s1 += d;
           s2 += d*d;
           n++;
-          }
+        }
         else
-          {
+        {
           o++;
-          }
         }
       }
+    }
 
     // no results!
     if (n == 0)
-      {
+    {
       break;
-      }
+    }
 
     // compute the mean and variance
     a = s1 / n;
@@ -371,13 +371,13 @@ double vtkDICOMSliceSorterComputeSpacing(
 
     // break if within tolerance or if results haven't changed
     if (v/(a*a) < 1e-6 || n == m)
-      {
+    {
       break;
-      }
+    }
 
     // save count to use as check
     m = n;
-    }
+  }
 
   *missing = o;
   return a;
@@ -439,17 +439,17 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 
   // sort by instance first
   for (int i = 0; i < numFiles; i++)
-    {
+  {
     int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
     info.push_back(vtkDICOMSliceSorterSortInfo(i, inst));
-    }
+  }
   std::stable_sort(info.begin(), info.end(),
     vtkDICOMSliceSorterSortInfo::CompareInstance);
   std::vector<int> fileOrder(info.size());
   for (int i = 0; i < numFiles; i++)
-    {
+  {
     fileOrder[i] = info[i].FileNumber;
-    }
+  }
   info.clear();
 
   // important position-related variables
@@ -460,20 +460,20 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     meta->GetAttributeValue(DC::SpacingBetweenSlices).AsDouble();
   double spacingSign = 1.0;
   if (spacingBetweenSlices == 0)
-    {
+  {
     spacingBetweenSlices = 1.0;
-    }
+  }
   else if (spacingBetweenSlices < 0)
-    {
+  {
     spacingBetweenSlices = -spacingBetweenSlices;
     spacingSign = -1.0;
-    }
+  }
 
   // important time-related variables
   int temporalSpacing = 1.0;
 
   if (meta->HasAttribute(DC::SharedFunctionalGroupsSequence))
-    {
+  {
     // a special stackInfo for the desired stack
     std::vector<vtkDICOMSliceSorterSortInfo> stackInfo;
     vtkDICOMValue firstStackId;
@@ -484,7 +484,7 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 
     // files have enhanced frame information
     for (int ii = 0; ii < numFiles; ii++)
-      {
+    {
       int i = fileOrder[ii];
       int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
       int numberOfFrames =
@@ -497,70 +497,70 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
         meta->GetAttributeValue(i, DC::SharedFunctionalGroupsSequence);
 
       if (ii == 0 && numberOfFrames > 0)
-        {
+      {
         firstStackId = vtkDICOMSliceSorterGetFrameAttributeValue(
           frameSeq, sharedSeq, 0, DC::FrameContentSequence,
           DC::StackID);
-        }
+      }
 
       // attributes for getting time information
       vtkDICOMTag timeSequence;
       vtkDICOMTag timeTag;
 
       if (numberOfFrames > 0)
-        {
+      {
         // time information can come from these attributes
         if (vtkDICOMSliceSorterGetFrameAttributeValue(
               frameSeq, sharedSeq, 0, DC::CardiacSynchronizationSequence,
               DC::NominalCardiacTriggerDelayTime).IsValid())
-          {
+        {
           timeSequence = DC::CardiacSynchronizationSequence;
           timeTag = DC::NominalCardiacTriggerDelayTime;
-          }
+        }
         else if (vtkDICOMSliceSorterGetFrameAttributeValue(
                    frameSeq, sharedSeq, 0, DC::TemporalPositionSequence,
                    DC::TemporalPositionTimeOffset).IsValid())
-          {
+        {
           timeSequence = DC::TemporalPositionSequence;
           timeTag = DC::TemporalPositionTimeOffset;
           temporalSpacing = 1000.0; // convert seconds to milliseconds
-          }
+        }
         else if (vtkDICOMSliceSorterGetFrameAttributeValue(
                   frameSeq, sharedSeq, 0, DC::FrameContentSequence,
                   DC::TemporalPositionIndex).IsValid())
-          {
+        {
           timeSequence = DC::FrameContentSequence;
           timeTag = DC::TemporalPositionIndex;
-          }
+        }
         else if (vtkDICOMSliceSorterGetFrameAttributeValue(
                   frameSeq, sharedSeq, 0, DC::MREchoSequence,
                   DC::EffectiveEchoTime).IsValid())
-          {
+        {
           timeSequence = DC::MREchoSequence;
           timeTag = DC::EffectiveEchoTime;
-          }
         }
+      }
 
       // position counter
       int position = 0;
       double lastTime = 0.0;
 
       for (int k = 0; k < numberOfFrames; k++)
-        {
+      {
         // time: use chosen time tag, if present
         double t = 0.0;
         if (timeTag.GetGroup() != 0)
-          {
+        {
           t = vtkDICOMSliceSorterGetFrameAttributeValue(
             frameSeq, sharedSeq, k, timeSequence, timeTag).AsDouble();
-          }
+        }
 
         // adjust position only if time did not change
         if (fabs(t - lastTime) < 1e-3 || k == 0)
-          {
+        {
           position = k;
           lastTime = t;
-          }
+        }
 
         // get the StackID
         vtkDICOMValue stackId = vtkDICOMSliceSorterGetFrameAttributeValue(
@@ -568,25 +568,25 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           DC::StackID);
 
         if (stackId.IsValid())
-          {
+        {
           // append new StackIDs to this->StackIDs
           vtkIdType stacksFound = this->StackIDs->GetNumberOfValues();
           std::string stackName = stackId.AsString();
           vtkIdType si;
           for (si = 0; si < stacksFound; si++)
-            {
+          {
             if (stackName == this->StackIDs->GetValue(si)) { break; }
-            }
+          }
           if (si == stacksFound)
-            {
+          {
             this->StackIDs->InsertNextValue(stackName);
-            }
+          }
 
           // position: look for InStackPositionNumber
           position = vtkDICOMSliceSorterGetFrameAttributeValue(
             frameSeq, sharedSeq, k, DC::FrameContentSequence,
             DC::InStackPositionNumber).AsInt();
-          }
+        }
 
         // check for valid Image Plane Module information
         vtkDICOMValue pv = vtkDICOMSliceSorterGetFrameAttributeValue(
@@ -598,7 +598,7 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 
         // check if the StackId is the one the user specified
         if (stackId == desiredStackId)
-          {
+        {
           // compute location from orientation and IPP
           double location = vtkDICOMSliceSorterComputeLocation(
             pv, ov, stackCheckNormal, &canSortStackByIPP);
@@ -607,9 +607,9 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 
           stackInfo.push_back(
             vtkDICOMSliceSorterSortInfo(i, k, inst, position, location, t));
-          }
+        }
         else if (stackId == firstStackId)
-          {
+        {
           // compute location from orientation and IPP
           double location = vtkDICOMSliceSorterComputeLocation(
             pv, ov, checkOrientation, &canSortByLocation);
@@ -618,54 +618,54 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           // force output of one single volume
           if ((ii > 0 || k > 0) && !firstStackId.IsValid() &&
               pv.IsValid() && !canSortByLocation)
-            {
+          {
             canSortByLocation = true;
             volumeBreaks.push_back(info.size());
-            }
+          }
 
           info.push_back(
             vtkDICOMSliceSorterSortInfo(i, k, inst, position, location, t));
-          }
         }
       }
+    }
 
     // if frames with the desired stack ID were found, use them
     if (stackInfo.size() > 0)
-      {
+    {
       canSortByLocation = canSortStackByIPP;
       info = stackInfo;
-      }
     }
+  }
   else
-    {
+  {
     // ways to get time information
     vtkDICOMTag timeTag;
     if (meta->GetAttributeValue(DC::CardiacNumberOfImages).AsInt() > 1)
-      {
+    {
       timeTag = DC::TriggerTime;
-      }
+    }
     else if (meta->GetAttributeValue(
               DC::NumberOfTemporalPositions).AsInt() > 1)
-      {
+    {
       timeTag = DC::TemporalPositionIdentifier;
       temporalSpacing =
         meta->GetAttributeValue(DC::TemporalResolution).AsDouble();
-      }
+    }
     else if (meta->HasAttribute(DC::TemporalPositionIndex))
-      {
+    {
       timeTag = DC::TemporalPositionIndex;
-      }
+    }
     else if (meta->HasAttribute(DC::EchoTime))
-      {
+    {
       timeTag = DC::EchoTime;
-      }
+    }
 
     // position counter
     int position = 0;
     double lastTime = 0.0;
 
     for (int ii = 0; ii < numFiles; ii++)
-      {
+    {
       int i = fileOrder[ii];
 
       // get the instance number
@@ -686,33 +686,33 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 
       // force output of one single rectilinear volume
       if (ii > 0 && !canSortByLocation && pv.IsValid())
-        {
+      {
         canSortByLocation = true;
         volumeBreaks.push_back(info.size());
-        }
+      }
 
       int numberOfFrames =
         meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
       if (numberOfFrames <= 1)
-        {
+      {
         double t = 0.0;
         if (timeTag.GetGroup() != 0)
-          {
+        {
           t = meta->GetAttributeValue(i, timeTag).AsDouble();
-          }
+        }
 
         // adjust position only if time did not change
         if (fabs(t - lastTime) < 1e-3 || ii == 0)
-          {
+        {
           position = inst;
           lastTime = t;
-          }
+        }
 
         info.push_back(
           vtkDICOMSliceSorterSortInfo(i, 0, inst, position, location, t));
-        }
+      }
       else
-        {
+      {
         // multi-frame image
         double frameTimeSpacing = 0;
         vtkDICOMValue timeVector;
@@ -723,228 +723,228 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           meta->GetAttributeValue(i, DC::FrameIncrementPointer);
         unsigned int n = fip.GetNumberOfValues();
         for (unsigned int j = 0; j < n; j++)
-          {
+        {
           vtkDICOMTag tag = fip.GetTag(j);
           if (tag == DC::FrameTime)
-            { // for CINE
+          { // for CINE
             frameTimeSpacing = meta->GetAttributeValue(i, tag).AsDouble();
-            }
+          }
           else if (tag == DC::FrameTimeVector)
-            { // for CINE
+          { // for CINE
             timeVector = meta->GetAttributeValue(i, tag);
-            }
+          }
           else if (tag == DC::SliceLocationVector)
-            { // generic
+          { // generic
             locationVector = meta->GetAttributeValue(i, tag);
             canSortByLocation = true;
-            }
+          }
           else if (tag == DC::TimeSlotVector)
-            { // for NM
+          { // for NM
             timeSlotVector = meta->GetAttributeValue(i, tag);
-            }
+          }
           else if (tag == DC::SliceVector)
-            { // for NM
+          { // for NM
             sliceVector = meta->GetAttributeValue(i, tag);
-            }
+          }
           // in dynamic NM, the total number of time frames is the
           // sum of the number of frames in all collected phases,
           // we do not support dynamic NM yet
-          }
+        }
 
         if (timeSlotVector.IsValid() || sliceVector.IsValid())
-          {
+        {
           // tomographic NM
           for (int k = 0; k < numberOfFrames; k++)
-            {
+          {
             double t = 0.0;
             double frameloc = location;
             if (k < static_cast<int>(timeSlotVector.GetNumberOfValues()))
-              {
+            {
               t = (timeSlotVector.GetDouble(k) - 1.0)*frameTimeSpacing;
-              }
+            }
             if (k < static_cast<int>(sliceVector.GetNumberOfValues()))
-              {
+            {
               position = sliceVector.GetInt(k) - 1;
               frameloc += position*spacingSign;
-              }
+            }
             info.push_back(
               vtkDICOMSliceSorterSortInfo(i, k, inst, position, frameloc, t));
-            }
           }
+        }
         else
-          {
+        {
           // CINE
           double t = 0.0;
           for (int k = 0; k < numberOfFrames; k++)
-            {
+          {
             if (k > 0)
-              {
+            {
               if (k < static_cast<int>(timeVector.GetNumberOfValues()))
-                {
-                frameTimeSpacing = timeVector.GetDouble(k);
-                }
-              t += frameTimeSpacing;
-              }
-            if (k < static_cast<int>(locationVector.GetNumberOfValues()))
               {
+                frameTimeSpacing = timeVector.GetDouble(k);
+              }
+              t += frameTimeSpacing;
+            }
+            if (k < static_cast<int>(locationVector.GetNumberOfValues()))
+            {
               location = locationVector.GetDouble(k);
               location /= spacingBetweenSlices;
-              }
+            }
             info.push_back(
               vtkDICOMSliceSorterSortInfo(i, k, inst, inst, location, t));
-            }
           }
         }
       }
     }
+  }
 
   // orientation changes suggest that multiple volumes are present
   if (volumeBreaks.size() > 0)
-    {
+  {
     // count the number of unique positions
     size_t pcount = 0;
     for (size_t j = 0; j < info.size(); j++)
-      {
+    {
       int p = info[j].PositionNumber;
       size_t k;
       for (k = 0; k < j; k++)
-        {
+      {
         if (info[k].PositionNumber == p) { break; }
-        }
-      pcount += (k == j);
       }
+      pcount += (k == j);
+    }
 
     if (volumeBreaks.size() + 1 > pcount/2)
-      {
+    {
       // too many unique volumes would be created, assume
       // that the acquisition was not rectilinear.
       canSortByLocation = false;
-      }
+    }
     else
-      {
+    {
       // breaks will be used to indicate new stacks
       volumeBreaks.push_back(info.size());
 
       size_t stt = 0;
       size_t sttlen = volumeBreaks[0];
       for (size_t k = 0; k < volumeBreaks.size(); k++)
-        {
+      {
         // build the list of StackIDs
         vtkVariant var(k);
         this->StackIDs->InsertNextValue(var.ToString());
         size_t len = volumeBreaks[k] - (k == 0 ? 0 : volumeBreaks[k-1]);
         // identify the first stack with multiple images
         if (sttlen == 1 && len > sttlen)
-          {
+        {
           stt = k;
           sttlen = len;
-          }
         }
+      }
 
       // if DesiredStackID is set, use it
       if (this->DesiredStackID[0] != '\0')
-        {
+      {
         stt = strtoul(this->DesiredStackID, 0, 10);
-        }
+      }
 
       // load just one of the rectilinear stacks that are present
       if (stt >= volumeBreaks.size())
-        {
+      {
         stt = 0;
-        }
+      }
       info.erase(info.begin() + volumeBreaks[stt], info.end());
       if (stt > 0)
-        {
+      {
         info.erase(info.begin(), info.begin() + volumeBreaks[stt-1]);
-        }
       }
     }
+  }
 
   // sort by position, count the number of slices per location
   int numSlices = static_cast<int>(info.size());
   int slicesPerLocation = 0;
   if (numSlices > 1)
-    {
+  {
     if (canSortByLocation)
-      {
+    {
       std::stable_sort(info.begin(), info.end(),
         vtkDICOMSliceSorterSortInfo::CompareLocation);
-      }
+    }
     else
-      {
+    {
       std::stable_sort(info.begin(), info.end(),
         vtkDICOMSliceSorterSortInfo::ComparePosition);
-      }
+    }
 
     // look for slices at the same location
     std::vector<vtkDICOMSliceSorterSortInfo>::iterator iter = info.begin();
     int slicesAtThisLocation = 0;
     while (iter != info.end())
-      {
+    {
       std::vector<vtkDICOMSliceSorterSortInfo>::iterator nextIter = iter + 1;
       slicesAtThisLocation++;
       bool positionIncreased = false;
       if (nextIter != info.end())
-        {
+      {
         // use the tolerance built into CompareLocation
         if (canSortByLocation)
-          {
+        {
           positionIncreased =
             vtkDICOMSliceSorterSortInfo::CompareLocation(*iter, *nextIter);
-          }
+        }
         else
-          {
+        {
           positionIncreased =
             vtkDICOMSliceSorterSortInfo::ComparePosition(*iter, *nextIter);
-          }
         }
-      if (nextIter == info.end() || positionIncreased)
-        {
-        if (slicesPerLocation == 0)
-          {
-          slicesPerLocation = slicesAtThisLocation;
-          }
-        else if (slicesPerLocation != slicesAtThisLocation)
-          {
-          slicesPerLocation = -1;
-          }
-        slicesAtThisLocation = 0;
-        }
-      iter = nextIter;
       }
+      if (nextIter == info.end() || positionIncreased)
+      {
+        if (slicesPerLocation == 0)
+        {
+          slicesPerLocation = slicesAtThisLocation;
+        }
+        else if (slicesPerLocation != slicesAtThisLocation)
+        {
+          slicesPerLocation = -1;
+        }
+        slicesAtThisLocation = 0;
+      }
+      iter = nextIter;
     }
+  }
   if (slicesPerLocation == 0)
-    {
+  {
     slicesPerLocation = 1;
-    }
+  }
   else if (slicesPerLocation == -1)
-    {
+  {
     slicesPerLocation = 1;
     vtkWarningMacro("Multidimensional series appears to be missing slices,"
                     " representation will be inaccurate.");
-    }
+  }
 
   // count number of unique time points
   int temporalPositions = 0;
   double tMin = VTK_DOUBLE_MAX;
   double tMax = VTK_DOUBLE_MIN;
   for (int i = 0; i < slicesPerLocation; i++)
-    {
+  {
     double d = info[i].Time;
     tMin = (d > tMin ? tMin : d);
     tMax = (d < tMax ? tMax : d);
     int u = 1;
     for (int j = 0; j < i; j++)
-      {
+    {
       u &= !(fabs(info[j].Time - d) < 1e-3);
-      }
-    temporalPositions += u;
     }
+    temporalPositions += u;
+  }
   // compute temporalSpacing from the apparent time spacing
   if (temporalPositions > 1)
-    {
+  {
     temporalSpacing *= (tMax - tMin)/(temporalPositions - 1);
-    }
+  }
 
   // compute the number of slices in the output image
   int spatialLocations = numSlices/slicesPerLocation;
@@ -952,34 +952,34 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   if (temporalPositions > 0 &&
       this->TimeAsVector == 0 &&
       this->DesiredTimeIndex < 0)
-    {
+  {
     locations *= temporalPositions;
-    }
+  }
 
   // recompute slice spacing from position info
   if (canSortByLocation)
-    {
+  {
     double locDiff = 0;
     if (locations > 1)
-      {
+    {
       int missing = 0;
       locDiff = vtkDICOMSliceSorterComputeSpacing(info, &missing);
       if (missing > 0)
-        {
+      {
         vtkWarningMacro("Series has " << missing <<
                         " gaps due to missing slices.");
-        }
+      }
       if (locations > spatialLocations)
-        {
+      {
         // squeeze time slices between spatial slices
         locDiff *= spatialLocations*1.0/locations;
-        }
-      }
-    if (locDiff > 0)
-      {
-      spacingBetweenSlices *= locDiff;
       }
     }
+    if (locDiff > 0)
+    {
+      spacingBetweenSlices *= locDiff;
+    }
+  }
 
   // write out the sorted indices
   bool flipOrder = (this->ReverseSlices != 0);
@@ -988,14 +988,14 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   int numberOfComponents = filesPerOutputSlice;
   int desiredTimeIndex = this->DesiredTimeIndex;
   if (desiredTimeIndex < 0)
-    {
+  {
     desiredTimeIndex = 0;
-    }
+  }
   else
-    {
+  {
     desiredTimeIndex %= temporalPositions;
     numberOfComponents /= temporalPositions;
-    }
+  }
 
   files->SetNumberOfComponents(numberOfComponents);
   files->SetNumberOfTuples(locations);
@@ -1003,21 +1003,21 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   frames->SetNumberOfTuples(locations);
 
   for (int loc = 0; loc < locations; loc++)
-    {
+  {
     int l = loc/locationsPerSpatialLocation;
     int j = loc - l*locationsPerSpatialLocation;
     if (flipOrder)
-      {
+    {
       l = spatialLocations - l - 1;
-      }
+    }
     for (int k = 0; k < numberOfComponents; k++)
-      {
+    {
       int i = ((l*locationsPerSpatialLocation + j)*filesPerOutputSlice +
                desiredTimeIndex*numberOfComponents + k);
       files->SetComponent(loc, k, info[i].FileNumber);
       frames->SetComponent(loc, k, info[i].FrameNumber);
-      }
     }
+  }
 
   // save the slice spacing and time information
   this->SliceSpacing = spacingBetweenSlices;

@@ -41,10 +41,10 @@ void vtkConsoleOutputWindow::Install()
 void vtkConsoleOutputWindow::DisplayText(const char* text)
 {
   if (text)
-    {
+  {
     fwrite(text, 1, strlen(text), stderr);
     fputc('\n', stderr);
-    }
+  }
 }
 
 void vtkConsoleOutputWindow::PrintSelf(ostream& os, vtkIndent indent)

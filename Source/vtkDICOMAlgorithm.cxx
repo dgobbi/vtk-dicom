@@ -61,18 +61,18 @@ vtkInformation *vtkDICOMAlgorithm::GetMetaDataInformation(
   // If SetInputData was used, the meta data is attached to the data
   vtkAlgorithmOutput *sourceConnection = this->GetInputConnection(0, 0);
   if (sourceConnection)
-    {
+  {
     // SetInputData causes a vtkTrivialProducer to be used
     vtkAlgorithm *producer = sourceConnection->GetProducer();
     if (producer && vtkTrivialProducer::SafeDownCast(producer))
-      {
+    {
       vtkDataObject *inputData = producer->GetOutputDataObject(0);
       if (inputData)
-        {
+      {
         metaInfo = inputData->GetInformation();
-        }
       }
     }
+  }
 
   return metaInfo;
 }
@@ -90,14 +90,14 @@ void vtkDICOMAlgorithm::CopyMetaDataToOutputInformation(
   int firstPort = outputPort;
   int lastPort = outputPort;
   if (outputPort < 0)
-    {
+  {
     firstPort = 0;
     lastPort = this->GetNumberOfOutputPorts() - 1;
-    }
+  }
 
   // Copy the meta data downstream
   for (int port = firstPort; port <= lastPort; port++)
-    {
+  {
     vtkInformation *outInfo = outputVector->GetInformationObject(port);
     // Matrix is stored as a vector of 16 doubles
     outInfo->CopyEntry(metaInfo, PATIENT_MATRIX());
@@ -106,13 +106,13 @@ void vtkDICOMAlgorithm::CopyMetaDataToOutputInformation(
     vtkDICOMMetaData *meta = vtkDICOMMetaData::SafeDownCast(
       metaInfo->Get(META_DATA()));
     if (meta)
-      {
+    {
       vtkSmartPointer<vtkDICOMMetaData> outMeta =
         vtkSmartPointer<vtkDICOMMetaData>::New();
       outMeta->ShallowCopy(meta);
       outInfo->Set(META_DATA(), outMeta);
-      }
     }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -133,10 +133,10 @@ int vtkDICOMAlgorithm::RequestInformation(
   // Copy the meta data to the output information
   if (this->GetNumberOfInputPorts() > 0 &&
       this->GetNumberOfInputConnections(0) > 0)
-    {
+  {
     this->CopyMetaDataToOutputInformation(
       inputVector, 0, 0, outputVector, -1);
-    }
+  }
 
   return this->Superclass::RequestInformation(
     request, inputVector, outputVector);
@@ -151,15 +151,15 @@ int vtkDICOMAlgorithm::RequestData(
   // Copy the meta data downstream
   int numPorts = this->GetNumberOfOutputPorts();
   for (int port = 0; port < numPorts; port++)
-    {
+  {
     vtkInformation *outInfo = outputVector->GetInformationObject(port);
     vtkImageData *outData = vtkImageData::SafeDownCast(
       outInfo->Get(vtkDataObject::DATA_OBJECT()));
     if (outData)
-      {
+    {
       this->CopyMetaDataToOutputData(outInfo, outData);
-      }
     }
+  }
 
   return this->Superclass::RequestData(request, inputVector, outputVector);
 }

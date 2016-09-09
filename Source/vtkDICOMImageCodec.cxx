@@ -62,13 +62,13 @@ vtkDICOMImageCodec::vtkDICOMImageCodec(const std::string& tsyntax)
   const char *ts = tsyntax.c_str();
 
   for (int i = 0; i < NumberOfCodecs; i++)
-    {
+  {
     if (strcmp(ts, vtkDICOMImageCodec::UIDs[i]) == 0)
-      {
+    {
       key = i;
       break;
-      }
     }
+  }
 
   this->Key = static_cast<unsigned char>(key);
 }
@@ -79,9 +79,9 @@ std::string vtkDICOMImageCodec::GetTransferSyntaxUID() const
   const char *result = "";
 
   if (this->Key < NumberOfCodecs)
-    {
+  {
     result = vtkDICOMImageCodec::UIDs[this->Key];
-    }
+  }
 
   return result;
 }
@@ -119,7 +119,7 @@ int vtkDICOMImageCodec::DecodeRLE(
 
   // loop over all RLE segments
   for (unsigned int i = 0; i < n; i++)
-    {
+  {
     // sample position in pixel
     unsigned int s = i / bps;
     // byte position in sample
@@ -127,84 +127,84 @@ int vtkDICOMImageCodec::DecodeRLE(
     // compute the offset into the output buffer for this segment
     size_t outOffset = s*segInc + b; // big-endian
     if (endiancheck.s == 1) // little-endian
-      {
+    {
       outOffset = s*segInc + (bps - b - 1);
-      }
+    }
     // get the offset into the input buffer for this segment
     unsigned int offset =
       vtkDICOMUtilities::UnpackUnsignedInt(inPtr + (i+1)*4);
     if (offset >= sourceSize)
-      {
+    {
       break;
-      }
+    }
     // loop over the segment and decompress it
     const signed char *cp =
       reinterpret_cast<const signed char *>(inPtr + offset);
     signed char *dp = reinterpret_cast<signed char *>(outPtr + outOffset);
     size_t remaining = segmentSize;
     while (remaining > 0 && offset < sourceSize)
-      {
+    {
       if (++offset == sourceSize)
-        {
+      {
         break;
-        }
+      }
       // check the indicator byte (use short to avoid overflow)
       short c = *cp++;
       if (c >= 0)
-        {
+      {
         // do a literal run
         c = c + 1;
         if (sourceSize - offset < static_cast<size_t>(c))
-          {
+        {
           // safety check: limit to the number available input bytes
           c = static_cast<short>(sourceSize - offset);
-          }
+        }
         offset += c;
         if (static_cast<size_t>(c) > remaining)
-          {
+        {
           // safety check: limit to the size of the output dest
           c = remaining;
-          }
+        }
         remaining -= c;
         do
-          {
+        {
           *dp = *cp++;
           dp += outInc;
-          }
-        while (--c);
         }
+        while (--c);
+      }
       else if (c > -128)
-        {
+      {
         // do a replication run
         c = 1 - c;
         offset += 1;
         if (static_cast<size_t>(c) > remaining)
-          {
+        {
           // safety check: limit to the size of the output dest
           c = remaining;
-          }
+        }
         remaining -= c;
         do
-          {
+        {
           *dp = *cp;
           dp += outInc;
-          }
+        }
         while (--c);
         cp++;
-        }
       }
+    }
     if (remaining > 0)
-      {
+    {
       // short read, clear remainder of dest
       errorCode = MissingData;
       do
-        {
+      {
         *dp = 0;
         dp += outInc;
-        }
-      while (--remaining);
       }
+      while (--remaining);
     }
+  }
 
   return errorCode;
 }
@@ -226,11 +226,11 @@ int vtkDICOMImageCodec::EncodeRLE(
   // the number of segments
   unsigned int n = spp*bps;
   if (n == 0 || n > 15)
-    {
+  {
     *destP = 0;
     *destSizeP = 0;
     return BadPixelFormat;
-    }
+  }
 
   // number of bytes per segment
   size_t segmentSize = sourceSize/n;
@@ -248,9 +248,9 @@ int vtkDICOMImageCodec::EncodeRLE(
   // write the table
   vtkDICOMUtilities::PackUnsignedInt(n, dest);
   for (unsigned int i = 0; i < 15; i++)
-    {
+  {
     vtkDICOMUtilities::PackUnsignedInt(0, dest + 4*(i + 1));
-    }
+  }
 
   // the offset to the first segment
   unsigned int offset = 64;
@@ -265,7 +265,7 @@ int vtkDICOMImageCodec::EncodeRLE(
   // loop over all RLE segments
   // write the segments
   for (unsigned int i = 0; i < n; i++)
-    {
+  {
     // write the offset into the table
     vtkDICOMUtilities::PackUnsignedInt(offset, dest + 4*(i + 1));
     // sample position in pixel
@@ -275,18 +275,18 @@ int vtkDICOMImageCodec::EncodeRLE(
     // compute the offset into the input buffer for this segment
     size_t inOffset = s*segInc + b; // big-endian
     if (endiancheck.s == 1) // little-endian
-      {
+    {
       inOffset = s*segInc + (bps - b - 1);
-      }
+    }
     const signed char *cp =
       reinterpret_cast<const signed char *>(source + inOffset);
     signed char *dp = reinterpret_cast<signed char *>(dest + offset);
 
     for (size_t j = 0; j < numrows; j++)
-      {
+    {
       const signed char *ep = cp + rowlen*inInc;
       while (cp != ep)
-        {
+      {
         short maxcount = 128;
         ptrdiff_t remainder = (ep - cp)/inInc;
         maxcount = (remainder < maxcount ? remainder : maxcount);
@@ -296,26 +296,26 @@ int vtkDICOMImageCodec::EncodeRLE(
         // count repeated characters
         signed char prev = *cp;
         do
-          {
+        {
           cp += inInc;
-          }
+        }
         while (--counter != 0 && *cp == prev);
 
         if (maxcount - counter > 1)
-          {
+        {
           // negative count for repeating
           counter = -(maxcount - counter - 1);
-          }
+        }
         else if (counter > 0)
-          {
+        {
           // count non-repeated bytes until a triplicate found
           signed char pprev;
           do
-            {
+          {
             pprev = prev;
             prev = *cp;
             cp += inInc;
-            }
+          }
           while (--counter != 0 && (*cp != prev || prev != pprev));
 
           // positive count for literal
@@ -323,23 +323,23 @@ int vtkDICOMImageCodec::EncodeRLE(
 
           // remove repeats at the end that can join with next run
           if (remainder > counter + 1 && *cp == prev)
-            {
+          {
             short reps = 1 + (prev == pprev);
             reps = (reps < counter ? reps : counter);
             counter -= reps;
             cp -= reps*inInc;
-            }
+          }
 
           // increment for the next offset into the destination
           offset += counter;
-          }
+        }
 
         // at least two bytes are always written to destination
         offset += 2;
 
         // check whether destination buffer is large enough
         if (offset > destReserve)
-          {
+        {
           destReserve *= 2;
           unsigned char *newdest = new unsigned char[destReserve];
           size_t size = dp-reinterpret_cast<signed char *>(dest);
@@ -347,26 +347,26 @@ int vtkDICOMImageCodec::EncodeRLE(
           delete [] dest;
           dest = newdest;
           dp = reinterpret_cast<signed char *>(dest + size);
-          }
+        }
 
         // write the results
         *dp++ = counter;
         do
-          {
+        {
           *dp++ = *sp;
           sp += inInc;
-          }
-        while (--counter >= 0);
         }
+        while (--counter >= 0);
       }
+    }
 
     // add a pad byte to the segment if needed
     if ((offset & 1) != 0)
-      {
+    {
       offset++;
       *dp = 0;
-      }
     }
+  }
 
   *destP = dest;
   *destSizeP = offset;
@@ -377,9 +377,9 @@ int vtkDICOMImageCodec::EncodeRLE(
   DecodeRLE(image, dest, offset, check, sourceSize);
 
   for (size_t k = 0; k < sourceSize; k++)
-    {
+  {
     assert(source[k] == check[k]);
-    }
+  }
   delete [] check;
 #endif
 
@@ -394,9 +394,9 @@ int vtkDICOMImageCodec::Decode(
 {
   int code = MissingCodec;
   if (this->Key == RLE)
-    {
+  {
     code = DecodeRLE(image, source, sourceSize, dest, destSize);
-    }
+  }
 
   return code;
 }
@@ -409,9 +409,9 @@ int vtkDICOMImageCodec::Encode(
 {
   int code = MissingCodec;
   if (this->Key == RLE)
-    {
+  {
     code = EncodeRLE(image, source, sourceSize, dest, destSize);
-    }
+  }
 
   return code;
 }
@@ -421,8 +421,8 @@ ostream& operator<<(ostream& o, const vtkDICOMImageCodec& a)
 {
   std::string c = a.GetTransferSyntaxUID();
   if (c == "")
-    {
+  {
     c = "Unknown";
-    }
+  }
   return o << c;
 }

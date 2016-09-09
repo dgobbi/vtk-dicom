@@ -153,14 +153,14 @@ private:
 const vtkDICOMValue& DecoderContext::GetAttributeValue(vtkDICOMTag tag)
 {
   if (this->Item)
-    {
+  {
     return this->Item->GetAttributeValue(tag);
-    }
+  }
   else
-    {
+  {
     int idx = (this->Index == -1 ? 0 : this->Index);
     return this->MetaData->GetAttributeValue(idx, tag);
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -168,26 +168,26 @@ vtkDICOMCharacterSet DecoderContext::GetCharacterSet()
 {
   vtkDICOMCharacterSet cs = this->CharacterSet;
   if (cs == vtkDICOMCharacterSet::Unknown)
-    {
+  {
     const vtkDICOMValue& v =
       this->GetAttributeValue(DC::SpecificCharacterSet);
     if (v.IsValid())
-      {
+    {
       cs = vtkDICOMCharacterSet(v.GetCharData(), v.GetVL());
-      }
-    else if (this->Prev)
-      {
-      cs = this->Prev->GetCharacterSet();
-      }
-    else
-      {
-      cs = vtkDICOMCharacterSet::ISO_IR_6;
-      }
-    if (this->CurrentTag > DC::SpecificCharacterSet)
-      {
-      this->CharacterSet = cs;
-      }
     }
+    else if (this->Prev)
+    {
+      cs = this->Prev->GetCharacterSet();
+    }
+    else
+    {
+      cs = vtkDICOMCharacterSet::ISO_IR_6;
+    }
+    if (this->CurrentTag > DC::SpecificCharacterSet)
+    {
+      this->CharacterSet = cs;
+    }
+  }
 
   return cs;
 }
@@ -197,26 +197,26 @@ vtkDICOMVR DecoderContext::GetVRForXS()
 {
   vtkDICOMVR vr = this->VRForXS;
   if (vr == vtkDICOMVR::XX)
-    {
+  {
     const vtkDICOMValue& v =
       this->GetAttributeValue(DC::PixelRepresentation);
     if (v.IsValid())
-      {
+    {
       vr = (v.AsUnsignedShort() == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
-      }
-    else if (this->Prev)
-      {
-      vr = this->Prev->GetVRForXS();
-      }
-    else
-      {
-      vr = vtkDICOMVR::US;
-      }
-    if (this->CurrentTag > DC::PixelRepresentation)
-      {
-      this->VRForXS = vr;
-      }
     }
+    else if (this->Prev)
+    {
+      vr = this->Prev->GetVRForXS();
+    }
+    else
+    {
+      vr = vtkDICOMVR::US;
+    }
+    if (this->CurrentTag > DC::PixelRepresentation)
+    {
+      this->VRForXS = vr;
+    }
+  }
   return vr;
 }
 
@@ -226,42 +226,42 @@ vtkDICOMVR DecoderContext::FindDictVR(vtkDICOMTag tag)
   vtkDICOMVR vr = vtkDICOMVR::UN;
 
   if (tag.GetElement() == 0x0000)
-    {
+  {
     // this is a group length element, which has VR of "UL"
     vr = vtkDICOMVR::UL;
-    }
+  }
   else if ((tag.GetGroup() & 0x1) != 0 &&
            tag.GetElement() >= 0x0010 && tag.GetElement() < 0x0100)
-    {
+  {
     // this is a private creator tag
     vr = vtkDICOMVR::LO;
-    }
+  }
   else
-    {
+  {
     vtkDICOMDictEntry de;
     if ((tag.GetGroup() & 0x1) == 0)
-      {
+    {
       de = vtkDICOMDictionary::FindDictEntry(tag);
-      }
+    }
     else if (this->Item)
-      {
+    {
       de = this->Item->FindDictEntry(tag);
-      }
+    }
     else if (this->MetaData)
-      {
+    {
       de = this->MetaData->FindDictEntry(tag);
-      }
+    }
     if (de.IsValid())
-      {
+    {
       vr = de.GetVR();
       if (vr == vtkDICOMVR::XS)
-        {
+      {
         // disambiguate tags that may be either "US" or "SS"
         this->CurrentTag = tag;
         vr = this->GetVRForXS();
-        }
+      }
       else if (vr == vtkDICOMVR::OX)
-        {
+      {
         // disambiguate tags that may be either "OB" or "OW"
         vr = vtkDICOMVR::OW;
         vtkDICOMTag reftag = (tag.GetGroup() == 0x5400 ?
@@ -269,12 +269,12 @@ vtkDICOMVR DecoderContext::FindDictVR(vtkDICOMTag tag)
                               DC::BitsAllocated);
         const vtkDICOMValue& v = this->GetAttributeValue(reftag);
         if (v.IsValid() && v.AsUnsignedShort() <= 8)
-          {
+        {
           vr = vtkDICOMVR::OB;
-          }
         }
       }
     }
+  }
 
   return vr;
 }
@@ -506,10 +506,10 @@ public:
     unsigned short g = 0;
     unsigned short e = 0;
     if (this->CheckBuffer(cp, ep, 4))
-      {
+    {
       g = Decoder<E>::GetInt16(cp);
       e = Decoder<E>::GetInt16(cp + 2);
-      }
+    }
     return vtkDICOMTag(g, e);
   }
 
@@ -593,18 +593,18 @@ void DecoderBase::SetQuery(
   const vtkDICOMDataElementIterator& iterEnd)
 {
   if (iter != iterEnd)
-    {
+  {
     this->HasQuery = true;
     this->QueryMatched = true;
     this->Query = iter;
     this->QueryEnd = iterEnd;
     this->QuerySave = iter;
-    }
+  }
   else
-    {
+  {
     this->HasQuery = false;
     this->QueryMatched = false;
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -613,12 +613,12 @@ inline void DecoderBase::CopyBuffer(
 {
   // append bytes from sp to cp into the supplied value "v"
   if (v && cp != sp)
-    {
+  {
     size_t m = cp - sp;
     size_t n = v->GetNumberOfValues();
     unsigned char *ptr = v->ReallocateUnsignedCharData(n + m) + n;
     do { *ptr++ = *sp++; } while (--m);
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -627,11 +627,11 @@ inline bool DecoderBase::CheckBuffer(
 {
   bool r = true;
   if (n > static_cast<size_t>(ep - cp))
-    {
+  {
     r = vtkDICOMParserInternalFriendship::FillBuffer(
           this->Parser, cp, ep);
     r &= (n <= static_cast<size_t>(ep - cp));
-    }
+  }
   return r;
 }
 
@@ -641,13 +641,13 @@ inline bool DecoderBase::CheckBuffer(
 {
   bool r = true;
   if (n > static_cast<size_t>(ep - cp))
-    {
+  {
     this->CopyBuffer(v, sp, cp);
     r = vtkDICOMParserInternalFriendship::FillBuffer(
           this->Parser, cp, ep);
     r &= (n <= static_cast<size_t>(ep - cp));
     sp = cp;
-    }
+  }
   return r;
 }
 
@@ -668,28 +668,28 @@ void DecoderBase::HandleMissingAttributes(vtkDICOMTag tag)
   --iter;
   if (iter->GetTag() != this->LastWrittenTag &&
       iter->GetTag().GetGroup() != 0x0002)
-    {
+  {
     int count = 0;
     do
-      {
+    {
       count++;
       --iter;
-      }
+    }
     while (iter->GetTag() != this->LastWrittenTag &&
            iter->GetTag().GetGroup() != 0x0002);
 
     vtkDICOMTag *missing = new vtkDICOMTag[count];
     for (int i = 0; i < count; i++)
-      {
+    {
       missing[i] = (++iter)->GetTag();
-      }
+    }
     for (int i = 0; i < count; i++)
-      {
+    {
       this->MetaData->SetAttributeValue(
         this->Index, missing[i], vtkDICOMValue());
-      }
-    delete [] missing;
     }
+    delete [] missing;
+  }
   this->LastWrittenTag = tag;
 }
 
@@ -698,7 +698,7 @@ void DecoderBase::AdvanceQueryIterator(vtkDICOMTag tag)
 {
   // advance the query iterator to the given tag
   while (this->Query != this->QueryEnd && this->Query->GetTag() < tag)
-    {
+  {
     // for query keys that weren't in the data set, only match if:
     // 1) the key is SpecificCharacterSet (not used for matching), or
     // 2) the key is a group length element (gggg,0000)
@@ -707,60 +707,60 @@ void DecoderBase::AdvanceQueryIterator(vtkDICOMTag tag)
     vtkDICOMTag qtag = this->Query->GetTag();
     if (qtag != DC::SpecificCharacterSet && qtag.GetElement() != 0 &&
         ((qtag.GetGroup() & 1) == 0 || qtag.GetElement() > 0x00ff))
-      {
+    {
       vtkDICOMValue nullValue;
       bool matched = nullValue.Matches(this->Query->GetValue());
 
       // if query tag is private, need additional checks
       if (!matched && (qtag.GetGroup() & 1) != 0)
-        {
+      {
         // compute creator tag, and search for it
         vtkDICOMTag ctag =
           vtkDICOMTag(qtag.GetGroup(), qtag.GetElement() >> 8);
         vtkDICOMDataElementIterator iter = this->QuerySave;
         while (iter != this->QueryEnd && iter->GetTag() < ctag)
-          {
+        {
           ++iter;
-          }
+        }
         if (iter != this->QueryEnd && iter->GetTag() == ctag)
-          {
+        {
           // if we already read the element, we already checked whether it
           // but if we didn't read it, then it doesn't exist, so don't match
           if (this->Item)
-            {
+          {
             vtkDICOMTag ptag = this->Item->ResolvePrivateTag(
               qtag, iter->GetValue().AsString());
             matched = (ptag != vtkDICOMTag(0xffff,0xffff) &&
                        this->Item->GetAttributeValue(ptag).IsValid());
-            }
+          }
           else
-            {
+          {
             vtkDICOMTag ptag = this->MetaData->ResolvePrivateTag(
               qtag, iter->GetValue().AsString());
             matched = (ptag != vtkDICOMTag(0xffff,0xffff) &&
                        this->MetaData->HasAttribute(ptag));
-            }
-          }
-        else
-          {
-          // query has a private tag with no creator!
-          if (this->Item)
-            {
-            matched = this->Item->GetAttributeValue(qtag).Matches(
-              this->Query->GetValue());
-            }
-          else
-            {
-            matched = this->MetaData->GetAttributeValue(qtag).Matches(
-              this->Query->GetValue());
-            }
           }
         }
+        else
+        {
+          // query has a private tag with no creator!
+          if (this->Item)
+          {
+            matched = this->Item->GetAttributeValue(qtag).Matches(
+              this->Query->GetValue());
+          }
+          else
+          {
+            matched = this->MetaData->GetAttributeValue(qtag).Matches(
+              this->Query->GetValue());
+          }
+        }
+      }
 
       this->QueryMatched &= matched;
-      }
-    ++this->Query;
     }
+    ++this->Query;
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -768,13 +768,13 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
 {
   // if the tag isn't private
   if ((tag.GetGroup() & 1) == 0)
-    {
+  {
     // advance the query iterator until the tag is found in the query
     this->AdvanceQueryIterator(tag);
 
     // return true if the tag exists in the query
     return (this->Query != this->QueryEnd && this->Query->GetTag() == tag);
-    }
+  }
 
   // the remainder of this function handles private tags
   unsigned short g = tag.GetGroup();
@@ -787,57 +787,57 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
 
   // save the query iterator
   if (this->QuerySave->GetTag() < gtag)
-    {
+  {
     this->QuerySave = this->Query;
-    }
+  }
 
   // if query doesn't contain any more keys in this group, return
   vtkDICOMDataElementIterator iter = this->Query;
   if (iter == this->QueryEnd || iter->GetTag().GetGroup() != g)
-    {
+  {
     return false;
-    }
+  }
 
   // if this is a creator element (e is 0x00XX), return true
   if (e >= 0x0010 && e <= 0x00FF)
-    {
+  {
     return true;
-    }
+  }
 
   // search for the creator element within the query
   vtkDICOMTag ctag = vtkDICOMTag(g, e >> 8);
   vtkDICOMValue creator = this->Context->GetAttributeValue(ctag);
   if (creator.IsValid())
-    {
+  {
     // maximum possible creator element is (gggg,00FF)
     gtag = vtkDICOMTag(g, 0x00FF);
     while (iter != this->QueryEnd && iter->GetTag() <= gtag)
-      {
+    {
       if (iter->GetValue().Matches(creator))
-        {
+      {
         tag = vtkDICOMTag(
           g, (iter->GetTag().GetElement() << 8) | (e & 0x00FF));
         break;
-        }
-      ++iter;
       }
+      ++iter;
+    }
     // if creator not found in query, tag obviously won't be found
     if (iter == this->QueryEnd || iter->GetTag() > gtag)
-      {
+    {
       return false;
-      }
     }
+  }
 
   // finally, look for the private tag at its resolved location
   while (iter != this->QueryEnd && iter->GetTag() < tag)
-    {
+  {
     ++iter;
-    }
+  }
   if (iter != this->QueryEnd && iter->GetTag() == tag)
-    {
+  {
     this->Query = iter;
     return true;
-    }
+  }
 
   return false;
 }
@@ -849,34 +849,34 @@ bool DecoderBase::QueryMatches(const vtkDICOMValue& v)
   vtkDICOMTag tag = this->Query->GetTag();
 
   if (v.GetVR() != vtkDICOMVR::SQ)
-    {
+  {
     // a query match is always true for SpecificCharacterSet, because this
     // element exists to describe the character encoding of the query, not
     // because it is to be matched.
     if (tag != DC::SpecificCharacterSet && tag.GetElement() != 0 &&
         ((tag.GetGroup() & 1) == 0 || tag.GetElement() > 0x00ff))
-      {
+    {
       // if above conditions don't apply, check if the query key matches
       matched = v.Matches(this->Query->GetValue());
-      }
     }
+  }
   else
-    {
+  {
     // if VR is SQ, then the matching was done when the sequence items were
     // parsed, and we just have to return the current value of QueryMatched
     matched = this->QueryMatched;
-    }
+  }
 
   if ((tag.GetGroup() & 1) == 0)
-    {
+  {
     // advance the query iterator
     ++this->Query;
-    }
+  }
   else
-    {
+  {
     // if private, restore to the start of the private group
     this->Query = this->QuerySave;
-    }
+  }
 
   return matched;
 }
@@ -885,9 +885,9 @@ bool DecoderBase::QueryMatches(const vtkDICOMValue& v)
 bool DecoderBase::FinishQuery()
 {
   if (this->HasQuery && this->QueryMatched)
-    {
+  {
     this->AdvanceQueryIterator(vtkDICOMTag(0xffff,0xffff));
-    }
+  }
   return this->QueryMatched;
 }
 
@@ -984,11 +984,11 @@ void Decoder<E>::GetValues(
   union { float f; unsigned int i; } u;
 
   do
-    {
+  {
     u.i = Decoder<E>::GetInt32(ip);
     *op++ = u.f;
     ip += 4;
-    }
+  }
   while (--n);
 }
 
@@ -999,11 +999,11 @@ void Decoder<E>::GetValues(
   union { double d; unsigned long long l; } u;
 
   do
-    {
+  {
     u.l = Decoder<E>::GetInt64(ip);
     *op++ = u.d;
     ip += 8;
-    }
+  }
   while (--n);
 }
 
@@ -1012,12 +1012,12 @@ void Decoder<E>::GetValues(
   const unsigned char *ip, vtkDICOMTag *op, size_t n)
 {
   do
-    {
+  {
     unsigned short g = Decoder<E>::GetInt16(ip);
     unsigned short e = Decoder<E>::GetInt16(ip + 2);
     *op++ = vtkDICOMTag(g, e);
     ip += 4;
-    }
+  }
   while (--n);
 }
 
@@ -1030,14 +1030,14 @@ size_t Decoder<E>::ReadData(
 {
   size_t l = n*sizeof(T);
   while (n != 0 && this->CheckBuffer(cp, ep, sizeof(T)))
-    {
+  {
     size_t m = (ep - cp)/sizeof(T);
     if (m > n) { m = n; }
     Decoder<E>::GetValues(cp, ptr, m);
     cp += m*sizeof(T);
     ptr += m;
     n -= m;
-    }
+  }
 
   return l - n*sizeof(T);
 }
@@ -1051,12 +1051,12 @@ size_t Decoder<E>::SkipData(
   size_t n = l;
 
   while (n != 0 && this->CheckBuffer(cp, ep, 2))
-    {
+  {
     size_t m = ep - cp;
     if (m > n) { m = n; }
     cp += m;
     n -= m;
-    }
+  }
 
   return l - n;
 }
@@ -1072,50 +1072,50 @@ size_t Decoder<E>::ReadElementHead(
 
   // sequence and item delimiters are always decoded as implicit
   if (this->ImplicitVR || tag.GetGroup() == HxFFFE)
-    {
+  {
     // implicit VR
     vl = Decoder<E>::GetInt32(cp);
     // ignore vl in group length tags, it is corrupt in some files
     // and we know that it should always have a value of "4".
     if (tag.GetElement() == 0x0000) { vl = 4; }
     cp += 4;
-    }
+  }
   else
-    {
+  {
     // explicit VR
     bool implicit = false;
     vr = vtkDICOMVR(cp);
     vl = Decoder<E>::GetInt16(cp + 2);
     cp += 4;
     if (!vr.IsValid())
-      {
+    {
       // invalid vr, try to get VR from dictionary instead
       vr = this->Context->FindDictVR(tag);
       // check that vr was composed of reasonable chars
       if (cp[-4] < 0x20 || cp[-4] >= 0x7f ||
           cp[-3] < 0x20 || cp[-3] >= 0x7f)
-        {
+      {
         // if VR is not a printable character within the default character
         // set, assume implicit encoding for this particular element
         implicit = true;
         vl = Decoder<E>::GetInt32(cp - 4);
-        }
       }
+    }
     if (!implicit && vr.HasLongVL())
-      {
+    {
       // for OB, OD, OF, OL, OW, SQ, UC, UN, UR, UT, and unrecognized
       // check that buffer has 4 bytes for 32-bit VL
       if (!this->CheckBuffer(cp, ep, 4))
-        {
+      {
         vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
           "Unexpected end of file.");
         return 0;
-        }
+      }
       vl = Decoder<E>::GetInt32(cp);
       cp += 4;
       l += 4;
-      }
     }
+  }
 
   return l;
 }
@@ -1130,144 +1130,144 @@ size_t Decoder<E>::ReadElementValue(
 
   // handle elements of unknown length
   if (vl == HxFFFFFFFF)
-    {
+  {
     if (vr == vtkDICOMVR::UN)
-      {
+    {
       // if VR is UN then it is a sequence encoded as implicit LE
       // (see DICOM Part 5, Section 6.2.2, Unknown (UN) Value Representation
       v.AllocateUnsignedCharData(vr, 0);
       this->ImplicitLE->SkipElements(
         cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
       return v.GetNumberOfValues();
-      }
+    }
     else if (vr == vtkDICOMVR::OB)
-      {
+    {
       // make sure unknown length data is properly encapsulated
       if (!this->CheckBuffer(cp, ep, 8))
-        {
+      {
         vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
           "Unexpected end of file.");
         return 0;
-        }
+      }
       unsigned short g1 = Decoder<E>::GetInt16(cp);
       unsigned short e1 = Decoder<E>::GetInt16(cp + 2);
       if (g1 != HxFFFE || (e1 != HxE000 && e1 != HxE0DD))
-        {
+      {
         vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
           "Encapsulated object is missing (FFFE,E000) tag.");
         return 0;
-        }
+      }
 
       v.AllocateUnsignedCharData(vr, 0);
       this->SkipElements(
         cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
       return v.GetNumberOfValues();
-      }
+    }
     else if (vr != vtkDICOMVR::SQ)
-      {
+    {
       // only UN, OB, and SQ can have unknown length
       vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
         "Illegal item length FFFFFFFF encountered.");
       return 0;
-      }
     }
+  }
   else if (static_cast<size_t>(ep - cp) < static_cast<size_t>(vl))
-    {
+  {
     // value is larger than what remains in buffer,
     // make sure there are enough bytes left in file
     vtkTypeInt64 bytesRemaining =
       vtkDICOMParserInternalFriendship::GetBytesRemaining(
           this->Parser, cp, ep);
     if (static_cast<vtkTypeInt64>(vl) > bytesRemaining)
-      {
+    {
       vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
         "Item length exceeds the bytes remaining in file.");
       return 0;
-      }
     }
+  }
 
   switch (vr.GetType())
-    {
+  {
     case VTK_CHAR:
-      {
+    {
       char *ptr;
       if (vr.HasSpecificCharacterSet() &&
           this->LastTag > DC::SpecificCharacterSet)
-        {
+      {
         ptr = v.AllocateCharData(vr, this->Context->GetCharacterSet(), vl);
-        }
+      }
       else
-        {
+      {
         ptr = v.AllocateCharData(vr, vl);
-        }
+      }
       l = this->ReadData(cp, ep, ptr, vl);
       // AllocateCharData makes room for terminal null
       if (l == 0 || ptr[l-1] != '\0') { ptr[l] = '\0'; }
       v.ComputeNumberOfValuesForCharData();
-      }
       break;
+    }
     case VTK_UNSIGNED_CHAR:
-      {
+    {
       unsigned char *ptr = v.AllocateUnsignedCharData(vr, vl);
       l = this->ReadData(cp, ep, ptr, vl);
-      }
       break;
+    }
     case VTK_SHORT:
-      {
+    {
       unsigned int n = vl/sizeof(short);
       short *ptr = v.AllocateShortData(vr, n);
       l = this->ReadData(cp, ep, ptr, n);
-      }
       break;
+    }
     case VTK_UNSIGNED_SHORT:
-      {
+    {
       unsigned int n = vl/sizeof(unsigned short);
       unsigned short *ptr = v.AllocateUnsignedShortData(vr, n);
       l = this->ReadData(cp, ep, ptr, n);
-      }
       break;
+    }
     case VTK_INT:
-      {
+    {
       unsigned int n = vl/sizeof(int);
       int *ptr = v.AllocateIntData(vr, n);
       l = this->ReadData(cp, ep, ptr, n);
-      }
       break;
+    }
     case VTK_UNSIGNED_INT:
-      {
+    {
       unsigned int n = vl/sizeof(unsigned int);
       unsigned int *ptr = v.AllocateUnsignedIntData(vr, n);
       l = this->ReadData(cp, ep, ptr, n);
-      }
       break;
+    }
     case VTK_FLOAT:
-      {
+    {
       unsigned int n = vl/sizeof(float);
       float *ptr = v.AllocateFloatData(vr, n);
       l = this->ReadData(cp, ep, ptr, n);
-      }
       break;
+    }
     case VTK_DOUBLE:
-      {
+    {
       unsigned int n = vl/sizeof(double);
       double *ptr = v.AllocateDoubleData(vr, n);
       l = this->ReadData(cp, ep, ptr, n);
-      }
       break;
+    }
     case VTK_DICOM_TAG:
-      {
+    {
       unsigned int n = vl/sizeof(vtkDICOMTag);
       vtkDICOMTag *ptr = v.AllocateTagData(vr, n);
       l = this->ReadData(cp, ep, ptr, n);
-      }
       break;
+    }
     case VTK_DICOM_ITEM:
-      {
+    {
       vtkDICOMTag tag = this->LastTag;
       vtkDICOMSequence seq;
       l = 0;
       while (l < static_cast<size_t>(vl) || vl == HxFFFFFFFF)
-        {
+      {
         if (!this->CheckBuffer(cp, ep, 8)) { return l; }
         unsigned short g = Decoder<E>::GetInt16(cp);
         unsigned short e = Decoder<E>::GetInt16(cp + 2);
@@ -1276,7 +1276,7 @@ size_t Decoder<E>::ReadElementValue(
         l += 8;
 
         if (g == HxFFFE && e == HxE000)
-          {
+        {
           // read one item
           unsigned int offset = this->GetByteOffset(cp, ep) - 8;
           bool delimited = (il == HxFFFFFFFF);
@@ -1288,7 +1288,7 @@ size_t Decoder<E>::ReadElementValue(
           this->PushContext(&context, tag);
 
           if (this->HasQuery)
-            {
+          {
             assert(this->Query != this->QueryEnd);
 
             // save the current query state before going one level deeper
@@ -1303,12 +1303,12 @@ size_t Decoder<E>::ReadElementValue(
 
             if ((query->GetTag().GetGroup() & 1) == 0 &&
                 query->GetValue().GetNumberOfValues() > 0)
-              {
+            {
               // if query sequence isn't empty, set HasQuery to 'true' and
               // use the sequence item as the new data set query
               const vtkDICOMItem *qitems = query->GetValue().GetSequenceData();
               if (qitems != 0 && qitems[0].GetNumberOfDataElements() != 0)
-                {
+              {
                 this->HasQuery = true;
                 this->QueryMatched = true;
                 this->Query = qitems[0].Begin();
@@ -1317,16 +1317,16 @@ size_t Decoder<E>::ReadElementValue(
 
                 // initialize queryMatched to false at the start of seq
                 queryMatched &= (seq.GetNumberOfItems() > 0);
-                }
               }
+            }
 
             this->ReadElements(cp, ep, il, endtag, l);
 
             // check query keys up to the end of the item
             if (this->HasQuery)
-              {
+            {
               this->AdvanceQueryIterator(vtkDICOMTag(0xffff,0xffff));
-              }
+            }
 
             // restore the query state
             this->HasQuery = hasQuery;
@@ -1334,52 +1334,52 @@ size_t Decoder<E>::ReadElementValue(
             this->Query = query;
             this->QueryEnd = queryEnd;
             this->QuerySave = querySave;
-            }
+          }
           else
-            {
+          {
             // if HasQuery is false, simply read the item
             this->ReadElements(cp, ep, il, endtag, l);
-            }
+          }
           seq.AddItem(item);
           this->PopContext();
-          }
+        }
         else if (g == HxFFFE && e == HxE0DD)
-          {
+        {
           // sequence delimiter found
           break;
-          }
+        }
         else
-          {
+        {
           // non-item tag found, skip to end if vl is known
           if (vl != HxFFFFFFFF)
-            {
+          {
             l += this->SkipData(cp, ep, static_cast<size_t>(vl) - l);
-            }
-          break;
           }
+          break;
         }
+      }
       if (vl != HxFFFFFFFF)
-        {
+      {
         // if vl != 0xffffffff, then the sequence was fixed-size rather
         // than delimited, so let's make our own fixed-size sequence and
         // copy all of the items into it
         size_t n = seq.GetNumberOfItems();
         vtkDICOMSequence seq2(n);
         for (size_t i = 0; i < n; i++)
-          {
+        {
           seq2.SetItem(i, seq.GetItem(i));
-          }
-        seq = seq2;
         }
+        seq = seq2;
+      }
       v = seq;
 
       // reset the tag and VR as we step out of the sequence
       this->LastTag = tag;
       this->LastVR = vr;
       this->LastVL = vl;
-      }
       break;
     }
+  }
 
   return l;
 }
@@ -1397,7 +1397,7 @@ bool Decoder<E>::ReadElements(
   bool readGroup = (delimiter.GetElement() == 0x0000);
 
   while (tl < static_cast<size_t>(l) || l == HxFFFFFFFF)
-    {
+  {
     // read the tag
     if (!this->CheckBuffer(cp, ep, 8)) { break; }
     unsigned short g = Decoder<E>::GetInt16(cp);
@@ -1430,89 +1430,89 @@ bool Decoder<E>::ReadElements(
 
     // skip the value if this tag is not in the query
     if (this->HasQuery && !this->QueryContains(tag))
-      {
+    {
       if (vl != HxFFFFFFFF)
-        {
+      {
         // constant length item
         tl = this->SkipData(cp, ep, vl);
         if (tl != static_cast<size_t>(vl)) { return false; }
-        }
+      }
       else
-        {
+      {
         // if vl == 0xffffffff, the value is delimited
         vtkDICOMTag newdelim(HxFFFE, HxE0DD);
         if (tag == vtkDICOMTag(HxFFFE, HxE000))
-          { // if tag is item tag, use item delimiter
+        { // if tag is item tag, use item delimiter
           newdelim = vtkDICOMTag(HxFFFE, HxE00D);
-          }
+        }
         if (vr != vtkDICOMVR::UN)
-          {
+        {
           // Value is either a sequence or is encapsulated data
           if (!this->SkipElements(cp, ep, vl, newdelim, NULL))
-            {
-            return false;
-            }
-          }
-        else
           {
-          // VR of UN indicates the value is an implicit LE sequence
-          if (!this->ImplicitLE->SkipElements(cp, ep, vl, newdelim, NULL))
-            {
             return false;
-            }
           }
         }
-      continue;
+        else
+        {
+          // VR of UN indicates the value is an implicit LE sequence
+          if (!this->ImplicitLE->SkipElements(cp, ep, vl, newdelim, NULL))
+          {
+            return false;
+          }
+        }
       }
+      continue;
+    }
 
     // read the value
     vtkDICOMValue v;
     size_t rl = 0;
     if (vr == vtkDICOMVR::UN && !this->ImplicitVR)
-      {
+    {
       // if it was explicitly labeled 'UN' then check dictionary
       vr = this->Context->FindDictVR(tag);
       this->LastVR = vr; // save true VR, rather than recorded VR
       rl = this->ImplicitLE->ReadElementValue(cp, ep, vr, vl, v);
-      }
+    }
     else
-      {
+    {
       rl = this->ReadElementValue(cp, ep, vr, vl, v);
-      }
+    }
 
     // was it a short read?
     if (rl < static_cast<size_t>(vl) && vl != HxFFFFFFFF)
-      {
+    {
       size_t dl = static_cast<size_t>(vl) - rl;
       // is the difference small, and not due to buffer underrun?
       if (dl <= 8 && this->CheckBuffer(cp, ep, dl))
-        {
+      {
         // treat the difference as if it is padding
         cp += dl;
         rl = vl;
-        }
-      else
-        {
-        return false;
-        }
       }
+      else
+      {
+        return false;
+      }
+    }
 
     tl += rl;
 
     // store the value
     if (this->Item)
-      {
+    {
       this->Item->SetAttributeValue(tag, v);
-      }
+    }
     else if (this->Index < 0)
-      {
+    {
       this->MetaData->SetAttributeValue(tag, v);
-      }
+    }
     else
-      {
+    {
       this->MetaData->SetAttributeValue(this->Index, tag, v);
       this->HandleMissingAttributes(tag);
-      }
+    }
 
     /*
     cout << tag << " " << vr << " " << vl << " " << v;
@@ -1526,16 +1526,16 @@ bool Decoder<E>::ReadElements(
 
     // check if the value matches the query
     if (this->HasQuery && !this->QueryMatches(v))
-      {
+    {
       this->QueryMatched = false;
-      }
     }
+  }
 
   // if reading by group, advance the query to the next group
   if (readGroup && this->HasQuery && this->QueryMatched)
-    {
+  {
     this->AdvanceQueryIterator(vtkDICOMTag(group+1, 0x0000));
-    }
+  }
 
   bytesRead += tl;
 
@@ -1549,7 +1549,7 @@ bool Decoder<E>::SkipElements(
   unsigned int l, vtkDICOMTag delimiter, vtkDICOMValue *v)
 {
   if (l == HxFFFFFFFF)
-    {
+  {
     // save the current buffer position
     const unsigned char *sp = cp;
 
@@ -1559,7 +1559,7 @@ bool Decoder<E>::SkipElements(
 
     // skip until delimiter found
     for (;;)
-      {
+    {
       if (!this->CheckBuffer(cp, ep, 8, v, sp)) { return false; }
       unsigned short g = Decoder<E>::GetInt16(cp);
       unsigned short e = Decoder<E>::GetInt16(cp + 2);
@@ -1583,7 +1583,7 @@ bool Decoder<E>::SkipElements(
       if (!readGroup && this->LastTag == delimiter) { break; }
 
       if (vl == HxFFFFFFFF)
-        {
+      {
         // copy data up to current buffer position
         this->CopyBuffer(v, sp, cp);
         sp = cp;
@@ -1591,32 +1591,32 @@ bool Decoder<E>::SkipElements(
         // use sequence delimiter
         vtkDICOMTag newdelim(HxFFFE, HxE0DD);
         if (g == HxFFFE && e == HxE000)
-          {
+        {
           // use item delimiter
           newdelim = vtkDICOMTag(HxFFFE, HxE00D);
-          }
+        }
         // skip internal segment until new delimiter found
         if (vr != vtkDICOMVR::UN)
-          {
+        {
           if (!this->SkipElements(cp, ep, vl, newdelim, v))
-            {
+          {
             return false;
-            }
           }
+        }
         // if VR is explicit UN, sequence is implicit LE
         // (see DICOM Part 5, Section 6.2.2)
         else if (!this->ImplicitLE->SkipElements(
                    cp, ep, vl, newdelim, v))
-          {
-          return false;
-          }
-        sp = cp;
-        }
-      else
         {
+          return false;
+        }
+        sp = cp;
+      }
+      else
+      {
         // fixed length element (vl != 0xffffffff)
         if (v != 0 && static_cast<size_t>(vl) > static_cast<size_t>(ep - cp))
-          {
+        {
           // if vl is larger than number of bytes left in buffer,
           // then copy data from save point "sp" up to "cp" into v,
           // and read the value into "v".
@@ -1627,38 +1627,38 @@ bool Decoder<E>::SkipElements(
           size_t tl = this->ReadData(cp, ep, ptr, vl);
           sp = cp;
           if (tl != static_cast<size_t>(vl)) { return false; }
-          }
+        }
         else
-          {
+        {
           size_t tl = this->SkipData(cp, ep, vl);
           if (tl != static_cast<size_t>(vl)) { return false; }
-          }
         }
       }
+    }
 
     // the for(;;) loop is done, copy data from the save point sp
     // up to current position cp into the value v
     this->CopyBuffer(v, sp, cp);
-    }
+  }
   else if (l != 0) // l != 0xffffffff
-    {
+  {
     // skipped a fixed number of bytes
     size_t tl;
     if (v != 0)
-      {
+    {
       // read bytes into the value "v"
       size_t n = v->GetNumberOfValues();
       unsigned char *ptr = v->ReallocateUnsignedCharData(n + l) + n;
       tl = this->ReadData(cp, ep, ptr, l);
       if (tl != static_cast<size_t>(l)) { return false; }
-      }
+    }
     else
-      {
+    {
       // simply skip "l" bytes
       tl = this->SkipData(cp, ep, l);
       if (tl != static_cast<size_t>(l)) { return false; }
-      }
     }
+  }
 
   return true;
 }
@@ -1696,45 +1696,45 @@ vtkDICOMParser::~vtkDICOMParser()
   delete this->QueryItem;
 
   if (this->MetaData)
-    {
+  {
     this->MetaData->Delete();
-    }
+  }
   if (this->Query)
-    {
+  {
     this->Query->Delete();
-    }
+  }
   if (this->Groups)
-    {
+  {
     this->Groups->Delete();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMParser::SetQueryItem(const vtkDICOMItem& query)
 {
   if (this->Query)
-    {
+  {
     this->Query->Delete();
     this->Query = 0;
-    }
+  }
   delete this->QueryItem;
   this->QueryItem = 0;
   if (query.GetNumberOfDataElements() > 0)
-    {
+  {
     this->QueryItem = new vtkDICOMItem(query);
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMParser::SetBufferSize(int size)
 {
   if (this->BufferSize != size)
-    {
+  {
     if (size < 256) { size = 256; }
     if (size > (2147483647 - 8)) { size = (2147483647 - 8); }
     this->BufferSize = size;
     this->Modified();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -1747,15 +1747,15 @@ void vtkDICOMParser::Update()
   if (this->MetaData &&
       this->MetaData->GetNumberOfDataElements() > 0 &&
       this->MetaData->GetNumberOfInstances() > 1)
-    {
+  {
     idx = this->Index;
-    }
+  }
 
   this->ReadFile(this->MetaData, idx);
   if (this->MetaData)
-    {
+  {
     this->MetaData->Modified();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -1769,29 +1769,29 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
 
   // Check that the file name has been set.
   if (!this->FileName)
-    {
+  {
     this->SetErrorCode(vtkErrorCode::NoFileNameError);
     vtkErrorMacro("ReadFile: No file name has been set");
     return false;
-    }
+  }
 
   // Make sure that the file is readable.
   vtkDICOMFile infile(this->FileName, vtkDICOMFile::In);
   if (infile.GetError())
-    {
+  {
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
     const char *errText = "Can't open the file ";
     if (infile.GetError() == vtkDICOMFile::AccessDenied)
-      {
+    {
       errText = "No permission to read the file ";
-      }
+    }
     else if (infile.GetError() == vtkDICOMFile::FileIsDirectory)
-      {
+    {
       errText = "The selected file is a directory ";
-      }
+    }
     vtkErrorMacro("ReadFile: " << errText << this->FileName);
     return false;
-    }
+  }
 
   this->InputFile = &infile;
   this->FileSize = infile.GetSize();
@@ -1806,16 +1806,16 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
 
   if (ep - cp >= 132 &&
       cp[128] == 'D' && cp[129] == 'I' && cp[130] == 'C' && cp[131] == 'M')
-    {
+  {
     // DICM magic number at offset 128, where it belongs in DICOM
     cp += 132;
-    }
+  }
   else if (ep - cp >= 4 &&
            cp[0] == 'D' && cp[1] == 'I' && cp[2] == 'C' && cp[3] == 'M')
-    {
+  {
     // DICM magic number at beginning of file, where it doesn't belong
     cp += 4;
-    }
+  }
 
   this->ReadMetaHeader(cp, ep, data, idx);
   this->ReadMetaData(cp, ep, data, idx);
@@ -1834,10 +1834,10 @@ bool vtkDICOMParser::ReadMetaHeader(
 {
   bool tempMeta = false;
   if (meta == 0)
-    {
+  {
     meta = vtkDICOMMetaData::New();
     tempMeta = true;
-    }
+  }
 
   LittleEndianDecoder decoder(this, meta, idx);
 
@@ -1849,34 +1849,34 @@ bool vtkDICOMParser::ReadMetaHeader(
 
   // verify that this is the right tag
   if (g == 0x0002)
-    {
+  {
     // check for strange files with implicit VR meta header
     decoder.SetImplicitVR(!vr.IsValid());
 
     unsigned int l = HxFFFFFFFF;
     if (e == 0x0000 && vl == 4)
-      {
+    {
       // get length from tag 0x0002,0x0000
       l = Decoder<LE>::GetInt32(cp + 8) + 12;
-      }
+    }
 
     decoder.ReadElements(cp, ep, l, vtkDICOMTag(g,0));
 
     int i = (idx == -1 ? 0 : idx);
     this->TransferSyntax =
       meta->GetAttributeValue(i, DC::TransferSyntaxUID).AsString();
-    }
+  }
   else
-    {
+  {
     this->TransferSyntax = "";
-    }
+  }
 
   this->FileOffset = this->GetBytesProcessed(cp, ep);
 
   if (tempMeta)
-    {
+  {
     meta->Delete();
-    }
+  }
 
   return true;
 }
@@ -1893,131 +1893,131 @@ bool vtkDICOMParser::ReadMetaData(
 
   // make sure there is at least one data element
   if (ep - cp < 8)
-    {
+  {
     this->FillBuffer(cp, ep);
     if (ep - cp < 8)
-      {
+    {
       return false;
-      }
     }
+  }
 
   std::string &tsyntax = this->TransferSyntax;
   if (tsyntax == "") // try to guess the syntax
-    {
+  {
     if (!decoder->CheckBuffer(cp, ep, 8)) { return false; }
     if (cp[0] == 0x00 && cp[1] == 0x08)
-      {
+    {
       tsyntax = "1.2.840.10008.1.2.2";
       decoder = &decoderBE;
-      }
-    decoder->SetImplicitVR(!vtkDICOMVR(cp + 4).IsValid());
     }
+    decoder->SetImplicitVR(!vtkDICOMVR(cp + 4).IsValid());
+  }
   else if (tsyntax == "1.2.840.10008.1.2" ||  // Implicit LE
            tsyntax == "1.2.840.10008.1.20" || // Papyrus Implicit LE
            tsyntax == "1.2.840.113619.5.2")   // GE Implicit LE
-    {
+  {
     decoder->SetImplicitVR(true);
-    }
+  }
   else if (tsyntax == "1.2.840.10008.1.2.2") // Explicit BE
-    {
+  {
     decoder = &decoderBE;
-    }
+  }
 
   // get the Query
   vtkDICOMDataElementIterator iter;
   vtkDICOMDataElementIterator iterEnd;
   bool hasQuery = false;
   if (this->Query)
-    {
+  {
     hasQuery = true;
     iter = this->Query->Begin();
     iterEnd = this->Query->End();
-    }
+  }
   else if (this->QueryItem)
-    {
+  {
     hasQuery = true;
     iter = this->QueryItem->Begin();
     iterEnd = this->QueryItem->End();
-    }
+  }
 
   if (hasQuery)
-    {
+  {
     // skip any elements in groups less than 0002
     while (iter != iterEnd && iter->GetTag().GetGroup() < 0x0002)
-      {
+    {
       ++iter;
-      }
+    }
 
     if (iter->GetTag() == vtkDICOMTag(0x0002,0x0000))
-      {
+    {
       // if FileMetaInformationGroupLength is set, assume that the
       // query was read from a file and that we don't actually want
       // to query the meta header
       while (iter != iterEnd && iter->GetTag().GetGroup() <= 0x0002)
-        {
-        ++iter;
-        }
-      }
-    else
       {
+        ++iter;
+      }
+    }
+    else
+    {
       // check the query against the meta header, which was already read
       bool matched = true;
       vtkDICOMDataElementIterator metaIter = meta->Begin();
       vtkDICOMDataElementIterator metaEnd = meta->End();
       while (metaIter != metaEnd && iter != iterEnd &&
              iter->GetTag().GetGroup() <= 0x0002)
-        {
+      {
         if (metaIter->GetTag() == iter->GetTag())
-          {
+        {
           matched &= metaIter->GetValue(this->Index).Matches(iter->GetValue());
           ++iter;
           ++metaIter;
-          }
+        }
         else if (metaIter->GetTag() < iter->GetTag())
-          {
+        {
           ++metaIter;
-          }
+        }
         else
-          {
+        {
           // this is a mismatch unless the query key is for universal matching
           vtkDICOMValue nullValue;
           matched &= nullValue.Matches(iter->GetValue());
           ++iter;
-          }
         }
-      this->QueryMatched &= matched;
       }
+      this->QueryMatched &= matched;
+    }
 
     // set the query for the decoder so it can scan the rest of the file
     decoder->SetQuery(iter, iterEnd);
-    }
+  }
 
   // make a list of the groups of interest
   std::vector<unsigned short> groups;
   if (hasQuery)
-    {
+  {
     unsigned short lastg = 0;
     while (iter != iterEnd)
-      {
+    {
       unsigned short g = iter->GetTag().GetGroup();
       if (g > lastg)
-        {
+      {
         lastg = g;
         groups.push_back(g);
-        }
-      ++iter;
       }
+      ++iter;
     }
+  }
   else if (this->Groups)
-    {
+  {
     vtkIdType n = this->Groups->GetNumberOfTuples();
     for (vtkIdType i = 0; i < n; i++)
-      {
+    {
       groups.push_back(this->Groups->GetValue(i));
-      }
+    }
     std::sort(groups.begin(),groups.end());
     groups.erase(std::unique(groups.begin(),groups.end()), groups.end());
-    }
+  }
 
   // iterator for going through the groups to read
   std::vector<unsigned short>::iterator giter = groups.begin();
@@ -2029,7 +2029,7 @@ bool vtkDICOMParser::ReadMetaData(
   bool bailOnQueryFailure = (meta && meta->GetNumberOfInstances() == 1);
   while (!foundPixelData && !readFailure &&
          (!queryFailure || !bailOnQueryFailure))
-    {
+  {
     vtkDICOMTag tag = decoder->Peek(cp, ep);
 
     // if there is no data left to decode, then break
@@ -2038,13 +2038,13 @@ bool vtkDICOMParser::ReadMetaData(
     // do we want to read or skip this group?
     bool found = true;
     if (!groups.empty())
-      {
+    {
       while (giter != groups.end() && *giter < tag.GetGroup())
-        {
+      {
         ++giter;
-        }
-      found = (giter != groups.end() && *giter == tag.GetGroup());
       }
+      found = (giter != groups.end() && *giter == tag.GetGroup());
+    }
 
     // create a delimiter to read/skip only this group
     vtkDICOMTag delimiter(tag.GetGroup(), 0);
@@ -2052,30 +2052,30 @@ bool vtkDICOMParser::ReadMetaData(
     // check for PixelData group 0x7fe0, or obsolete 0x7fxx
     unsigned int l = HxFFFFFFFF;
     if ((tag.GetGroup() & 0xff01) == 0x7f00)
-      {
+    {
       if (tag.GetElement() == 0x0000)
-        {
+      {
         // have to read "group length" before pixel data
         l = 12;
-        }
+      }
       else
-        {
+      {
         // set delimiter to pixel data tag
         delimiter = tag;
         foundPixelData = true;
-        }
-      }
-
-    if (found && meta)
-      {
-      readFailure = !decoder->ReadElements(cp, ep, l, delimiter);
-      queryFailure = (hasQuery && !decoder->GetQueryMatched());
-      }
-    else
-      {
-      readFailure = !decoder->SkipElements(cp, ep, l, delimiter);
       }
     }
+
+    if (found && meta)
+    {
+      readFailure = !decoder->ReadElements(cp, ep, l, delimiter);
+      queryFailure = (hasQuery && !decoder->GetQueryMatched());
+    }
+    else
+    {
+      readFailure = !decoder->SkipElements(cp, ep, l, delimiter);
+    }
+  }
 
   vtkDICOMTag lastTag = decoder->GetLastTag();
   this->FileOffset = this->GetBytesProcessed(cp, ep);
@@ -2085,35 +2085,35 @@ bool vtkDICOMParser::ReadMetaData(
   this->PixelDataVL = 0;
 
   if (meta && this->PixelDataFound)
-    {
+  {
     // the last tag read will be PixelData (or an equivalent), and we
     // want to add it as an empty attribute because we did not read its
     // value (the FileOffset was saved so it can be read later)
     unsigned short x = 0;
     vtkDICOMVR lastVR = decoder->GetLastVR();
     if (!lastVR.IsValid())
-      {
+    {
       lastVR = vtkDICOMVR::OW;
       const vtkDICOMValue& ba =
         meta->GetAttributeValue(idx, DC::BitsAllocated);
       if (ba.IsValid() && ba.AsUnsignedInt() <= 8)
-        {
+      {
         lastVR = vtkDICOMVR::OB;
-        }
       }
+    }
     vtkDICOMValue v(lastVR, &x, x);
     this->PixelDataVL = decoder->GetLastVL();
 
     if (idx >= 0)
-      {
+    {
       meta->SetAttributeValue(idx, lastTag, v);
       decoder->HandleMissingAttributes(lastTag);
-      }
-    else
-      {
-      meta->SetAttributeValue(lastTag, v);
-      }
     }
+    else
+    {
+      meta->SetAttributeValue(lastTag, v);
+    }
+  }
 
   return true;
 }
@@ -2129,26 +2129,26 @@ bool vtkDICOMParser::FillBuffer(
   // number of bytes to read
   size_t nbytes = this->ChunkSize;
   if (n != 0)
-    {
+  {
     // make sure read will not overflow the buffer
     if (n > 8)
-      {
+    {
       nbytes -= (n - 8);
-      }
+    }
     // recycle unused buffer chars to head of buffer
     do { *dp++ = *cp++; } while (--n);
-    }
+  }
   else if (this->InputFile->GetError())
-    {
+  {
     this->SetErrorCode(vtkErrorCode::UnknownError);
     vtkErrorMacro("FillBuffer: error reading from file " << this->FileName);
     return false;
-    }
+  }
   else if (this->InputFile->EndOfFile())
-    {
+  {
     // if buffer is drained, and eof, then done
     return false;
-    }
+  }
 
   // read at most n bytes
   n = this->InputFile->Read(dp, nbytes);

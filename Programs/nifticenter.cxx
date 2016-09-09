@@ -45,10 +45,10 @@ int MAINMACRO(int argc, char *argv[])
   int rval = 0;
 
   if (argc < 2)
-    {
+  {
     printf("usage: %s input.nii output.nii\n", basename(argv[0]));
     return rval;
-    }
+  }
 
   vtkSmartPointer<vtkNIFTIReader> reader =
     vtkSmartPointer<vtkNIFTIReader>::New();

@@ -75,19 +75,19 @@ int main(int argc, char *argv[])
 
   { // test the listed encodings
   for (int i = 0; ClunieText[i][0] != 0; i++)
-    {
+  {
     std::string name = ClunieText[i][0];
     std::string utf = ClunieText[i][1];
     std::string raw = ClunieText[i][2];
     vtkDICOMCharacterSet cs(name);
     std::string s = cs.ConvertToUTF8(raw.c_str(), raw.length());
     TestAssert(s == utf);
-    }
+  }
   }
 
   { // test storing values in their native encoding in an item
   for (int i = 0; ClunieText[i][0] != 0; i++)
-    {
+  {
     std::string name = ClunieText[i][0];
     std::string utf = ClunieText[i][1];
     std::string raw = ClunieText[i][2];
@@ -98,12 +98,12 @@ int main(int argc, char *argv[])
     TestAssert(s == utf);
     std::string t = item.GetAttributeValue(DC::PatientName).GetUTF8String(0);
     TestAssert(t == utf);
-    }
+  }
   }
 
   { // test storing values in their native encoding in metadata
   for (int i = 0; ClunieText[i][0] != 0; i++)
-    {
+  {
     std::string name = ClunieText[i][0];
     std::string utf = ClunieText[i][1];
     std::string raw = ClunieText[i][2];
@@ -115,12 +115,12 @@ int main(int argc, char *argv[])
     TestAssert(s == utf);
     std::string t = meta->GetAttributeValue(DC::PatientName).GetUTF8String(0);
     TestAssert(t == utf);
-    }
+  }
   }
 
   { // test storing multiple values in their native encoding in metadata
   for (int i = 0; ClunieText[i][0] != 0; i++)
-    {
+  {
     std::string name = ClunieText[i][0];
     std::string utf = ClunieText[i][1];
     std::string raw = ClunieText[i][2];
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
     meta->SetAttributeValue(1, DC::PatientName, raw);
     std::string s = meta->GetAttributeValue(1, DC::PatientName).AsUTF8String();
     TestAssert(s == utf);
-    }
+  }
   }
 
   { // test for proper escaping of backslashes in GB18030

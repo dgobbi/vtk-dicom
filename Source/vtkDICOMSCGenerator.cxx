@@ -46,25 +46,25 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
   // The BurnedInAnnotation attribute is mandatory
   std::string bia;
   if (source)
-    {
+  {
     bia = source->GetAttributeValue(
       DC::BurnedInAnnotation).AsString();
-    }
+  }
   if (bia != "YES")
-    {
+  {
     bia = "NO";
-    }
+  }
   vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::BurnedInAnnotation, bia);
 
   // These are mandatory, and must be set to these values
   if (meta->GetAttributeValue(DC::BitsStored).AsInt() != 1)
-    {
+  {
     meta->SetAttributeValue(DC::PresentationLUTShape, "IDENTITY");
     meta->SetAttributeValue(DC::RescaleIntercept, 0.0);
     meta->SetAttributeValue(DC::RescaleSlope, 1.0);
     meta->SetAttributeValue(DC::RescaleType, "US");
-    }
+  }
 
   // get dimensions of the data set: x,y,z,t,v
   int nframes = this->NumberOfFrames;
@@ -83,26 +83,26 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
   int vdim = (dims[4] > 0 ? dims[4] : 1);
   int tdim = (dims[3] > 0 ? dims[3] : 1);
   for (int f = 0; f < nframes; f++)
-    {
+  {
     int t = (f / vdim) % tdim;
     int z = f / (vdim * tdim);
     zvector[f] = z*spacing[2];
     tvector[f] = (t == 0 ? 0.0 : spacing[3]);
-    }
+  }
 
   if (dims[3] > 0 || (dims[2] == 0 && nframes == 1))
-    {
+  {
     pointers[npointers++] = DC::FrameTimeVector;
     meta->SetAttributeValue(
       DC::FrameTimeVector,
       vtkDICOMValue(vtkDICOMVR::DS, tvector, nframes));
-    }
+  }
   if (dims[2] > 0)
-    {
+  {
     pointers[npointers++] = DC::SliceLocationVector;
     meta->SetAttributeValue(DC::SliceLocationVector,
       vtkDICOMValue(vtkDICOMVR::DS, zvector, nframes));
-    }
+  }
 
   meta->RemoveAttribute(DC::FrameTime);
   meta->SetAttributeValue(
@@ -159,22 +159,22 @@ bool vtkDICOMSCGenerator::GenerateSCEquipmentModule(vtkDICOMMetaData *source)
   // ConversionType is a mandatory attribute
   std::string ct;
   if (source)
-    {
+  {
     ct = source->GetAttributeValue(DC::ConversionType).AsString();
-    }
+  }
   if (ct == "")
-    {
+  {
     ct = "WSD"; // workstation
-    }
+  }
   vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::ConversionType, ct);
 
   // Modality is optional for Secondary Capture
   std::string m = meta->GetAttributeValue(DC::Modality).AsString();
   if (m == "" || m == "OT")
-    {
+  {
     meta->RemoveAttribute(DC::Modality);
-    }
+  }
 
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
@@ -205,30 +205,30 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(vtkInformation *info)
 
   const char *SOPClass = 0;
   if (scalarType == VTK_UNSIGNED_CHAR)
-    {
+  {
     this->SetPixelRestrictions(
        RepresentationUnsigned,
        BitsStored8,
        numComponents);
 
     if (numComponents < 3)
-      {
-      SOPClass = "1.2.840.10008.5.1.4.1.1.7.2";
-      }
-    else
-      {
-      SOPClass = "1.2.840.10008.5.1.4.1.1.7.4";
-      }
-    }
-  else
     {
+      SOPClass = "1.2.840.10008.5.1.4.1.1.7.2";
+    }
+    else
+    {
+      SOPClass = "1.2.840.10008.5.1.4.1.1.7.4";
+    }
+  }
+  else
+  {
     this->SetPixelRestrictions(
        RepresentationUnsigned,
        BitsStored10 | BitsStored12 | BitsStored16,
        1);
 
     SOPClass = "1.2.840.10008.5.1.4.1.1.7.3";
-    }
+  }
 
   this->InitializeMetaData(info);
 
@@ -249,9 +249,9 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameInstance(vtkInformation *info)
       !this->GenerateDeviceModule(source) ||
       !this->GenerateSpecimenModule(source) ||
       !this->GenerateSCMultiFrameImageModule(source))
-    {
+  {
     return false;
-    }
+  }
 
   return true;
 }
@@ -270,9 +270,9 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(vtkInformation *info)
   int samplesPerPixel = 1;
 
   if (scalarType == VTK_UNSIGNED_CHAR)
-    {
+  {
     samplesPerPixel = numComponents;
-    }
+  }
 
   this->SetPixelRestrictions(
     RepresentationUnsigned | RepresentationSigned,
@@ -299,9 +299,9 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(vtkInformation *info)
       !this->GenerateSpecimenModule(source) ||
       !this->GenerateSCImageModule(source) ||
       !this->GenerateOverlayPlaneModule(source))
-    {
+  {
     return false;
-    }
+  }
 
   return true;
 }
@@ -310,9 +310,9 @@ bool vtkDICOMSCGenerator::GenerateSCInstance(vtkInformation *info)
 bool vtkDICOMSCGenerator::GenerateInstance(vtkInformation *info)
 {
   if (this->MultiFrame == 0)
-    {
+  {
     return this->GenerateSCInstance(info);
-    }
+  }
 
   return this->GenerateSCMultiFrameInstance(info);
 }

@@ -148,11 +148,11 @@ void dicomtocsv_image_default(vtkDICOMItem *query, QueryTagList *ql)
   for (const DC::EnumType *tagPtr = defaultElements;
        *tagPtr != DC::ItemDelimitationItem;
        ++tagPtr)
-    {
+  {
     VR vr = query->FindDictVR(*tagPtr);
     query->SetAttributeValue(*tagPtr, vtkDICOMValue(vr));
     ql->push_back(vtkDICOMTagPath(*tagPtr));
-    }
+  }
 }
 
 // Create a default query for --series
@@ -187,11 +187,11 @@ void dicomtocsv_series_default(vtkDICOMItem *query, QueryTagList *ql)
   for (const DC::EnumType *tagPtr = defaultElements;
        *tagPtr != DC::ItemDelimitationItem;
        ++tagPtr)
-    {
+  {
     VR vr = query->FindDictVR(*tagPtr);
     query->SetAttributeValue(*tagPtr, vtkDICOMValue(vr));
     ql->push_back(vtkDICOMTagPath(*tagPtr));
-    }
+  }
 }
 
 // Create a default query for --study
@@ -219,11 +219,11 @@ void dicomtocsv_study_default(vtkDICOMItem *query, QueryTagList *ql)
   for (const DC::EnumType *tagPtr = defaultElements;
        *tagPtr != DC::ItemDelimitationItem;
        ++tagPtr)
-    {
+  {
     VR vr = query->FindDictVR(*tagPtr);
     query->SetAttributeValue(*tagPtr, vtkDICOMValue(vr));
     ql->push_back(vtkDICOMTagPath(*tagPtr));
-    }
+  }
 }
 
 // Write the header for a csv file
@@ -232,30 +232,30 @@ void dicomtocsv_writeheader(
 {
   // print human-readable names for each tag
   for (size_t i = 0; i < ql->size(); i++)
-    {
+  {
     if (i != 0)
-      {
+    {
       fprintf(fp, "%s", ",");
-      }
+    }
     const vtkDICOMItem *pitem = &query;
     vtkDICOMTagPath tagPath = ql->at(i);
     for (;;)
-      {
+    {
       vtkDICOMTag tag = tagPath.GetHead();
       vtkDICOMDictEntry e = pitem->FindDictEntry(tag);
       if (e.IsValid())
-        {
+      {
         fprintf(fp, "%s", e.GetName());
-        }
+      }
       if (!tagPath.HasTail())
-        {
+      {
         break;
-        }
+      }
       pitem = pitem->GetAttributeValue(tag).GetSequenceData();
       tagPath = tagPath.GetTail();
       fprintf(fp, "%s", "\\");
-      }
     }
+  }
   fprintf(fp, "%s", "\r\n");
 }
 
@@ -263,18 +263,18 @@ void dicomtocsv_writeheader(
 std::string dicomtocsv_date(const std::string& dt, vtkDICOMVR vr)
 {
   if (vr == VR::TM && dt.length() >= 6)
-    {
+  {
     return dt.substr(0,2) + ":" + dt.substr(2,2) + ":" + dt.substr(4,2);
-    }
+  }
   else if (vr == VR::DA && dt.length() >= 8)
-    {
+  {
     return dt.substr(0,4) + "-" + dt.substr(4,2) + "-" + dt.substr(6,2);
-    }
+  }
   else if (vr == VR::DT && dt.length() >= 14)
-    {
+  {
     return dt.substr(0,4) + "-" + dt.substr(4,2) + "-" + dt.substr(6,2) + " " +
            dt.substr(8,2) + ":" + dt.substr(10,2) + ":" + dt.substr(12,2);
-    }
+  }
 
   return "";
 }
@@ -287,20 +287,20 @@ std::string dicomtocsv_quote(const std::string& s)
   std::string r;
 
   for (;;)
-    {
+  {
     size_t j = s.find('\"', i);
     if (j < s.length())
-      {
+    {
       r += s.substr(i, j-i+1);
       r += "\"";
       i = j+1;
-      }
+    }
     else
-      {
+    {
       r += s.substr(i);
       break;
-      }
     }
+  }
 
   return r;
 }
@@ -314,59 +314,59 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
   vtkIdType count = 0.0;
   vtkIdType total = 0.0;
   if (p)
-    {
+  {
     for (int k = 0; k < finder->GetNumberOfSeries(); k++)
-      {
+    {
       total += finder->GetFileNamesForSeries(k)->GetNumberOfValues();
-      }
-    p->Execute(NULL, vtkCommand::StartEvent, NULL);
     }
+    p->Execute(NULL, vtkCommand::StartEvent, NULL);
+  }
 
   for (int j = 0; j < finder->GetNumberOfStudies(); j++)
-    {
+  {
     int k0 = finder->GetFirstSeriesForStudy(j);
     int k1 = finder->GetLastSeriesForStudy(j);
     int numberOfFiles = 1;
 
     if (level < 3 && k1 > k0)
-      {
+    {
       // if level is "study", only look at one series
       numberOfFiles = 0;
       for (int k = k0; k <= k1; k++)
-        {
+      {
         vtkStringArray *a = finder->GetFileNamesForSeries(k);
         numberOfFiles += a->GetNumberOfValues();
-        }
-      k1 = k0;
       }
+      k1 = k0;
+    }
 
     for (int k = k0; k <= k1; k++)
-      {
+    {
       vtkStringArray *a = finder->GetFileNamesForSeries(k);
       if (a->GetNumberOfValues() == 0)
-        {
+      {
         continue;
-        }
+      }
 
       if (level == 3)
-        {
+      {
         // at series level, this is the number of files
         numberOfFiles = a->GetNumberOfValues();
-        }
+      }
 
       vtkSmartPointer<vtkDICOMMetaData> meta;
       if (useDirectoryRecords)
-        {
+      {
         meta = finder->GetMetaDataForSeries(k);
-        }
+      }
       else
-        {
+      {
         meta = vtkSmartPointer<vtkDICOMMetaData>::New();
         if (level >= 4 || firstNonZero)
-          {
+        {
           // need to parse all files
           meta->SetNumberOfInstances(a->GetNumberOfValues());
-          }
+        }
 
         // need to go to the files for the meta data
         vtkSmartPointer<vtkDICOMParser> parser =
@@ -376,24 +376,24 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
         parser->SetMetaData(meta);
 
         for (int ii = 0; ii < meta->GetNumberOfInstances(); ii++)
-          {
+        {
           parser->SetIndex(ii);
           parser->SetFileName(a->GetValue(ii));
           parser->Update();
-          }
         }
+      }
 
       // this loop is only for the "image" level
       int m = (level >= 4 ? meta->GetNumberOfInstances() : 1);
       for (int jj = 0; jj < m; jj++)
-        {
+      {
         // print the value of each tag
         for (size_t i = 0; i < ql->size(); i++)
-          {
+        {
           if (i != 0)
-            {
+          {
             fprintf(fp, "%s", ",");
-            }
+          }
 
           const vtkDICOMItem *qitem = &query;
           const vtkDICOMItem *mitem = 0;
@@ -404,51 +404,51 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
           int n = (firstNonZero ? meta->GetNumberOfInstances() : 1);
           n = (level >= 4 ? jj+1 : n);
           for (int ii = jj; ii < n; ii++)
-            {
+          {
             // Create an adapter, which helps with extracting attributes from
             // the PerFrameFunctionalSequence of enhanced IODs.
             vtkDICOMMetaDataAdapter adapter(meta, ii);
 
             for (;;)
-              {
+            {
               vtkDICOMTag tag = tagPath.GetHead();
               std::string creator;
               if ((tag.GetGroup() & 0x0001) == 1)
-                {
+              {
                 vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
                 creator = qitem->GetAttributeValue(ctag).AsString();
                 if (mitem)
-                  {
+                {
                   tag = mitem->ResolvePrivateTag(tag, creator);
-                  }
+                }
                 else
-                  {
+                {
                   tag = adapter->ResolvePrivateTag(tag, creator);
-                  }
                 }
+              }
               if (mitem)
-                {
+              {
                 vp = &mitem->GetAttributeValue(tag);
-                }
+              }
               else if (tag != DC::NumberOfFrames)
-                {
+              {
                 // vtkDICOMMetaDataAdapter hides NumberOfFrames, so it
                 // will never be found if we check the adapter
                 vp = &adapter->GetAttributeValue(tag);
-                }
+              }
               else
-                {
+              {
                 vp = &meta->GetAttributeValue(ii, tag);
-                }
+              }
               if (vp && !vp->IsValid())
-                {
+              {
                 vp = 0;
-                }
+              }
               // break if we have reached the end of a tag path
               if (vp == 0 || !tagPath.HasTail())
-                {
+              {
                 break;
-                }
+              }
               // go one level deeper into the query
               qitem = qitem->GetAttributeValue(
                 tagPath.GetHead()).GetSequenceData();
@@ -457,23 +457,23 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
               // go one level deeper into the meta data
               mitem = vp->GetSequenceData();
               if (mitem == 0 || vp->GetNumberOfValues() == 0)
-                {
+              {
                 break;
-                }
               }
+            }
             // If numerical value is zero, keep going until non-zero because
             // the zero value is of little interest
             if (vp != 0)
-              {
+            {
               if (!vp->GetVR().HasNumericValue() || vp->AsDouble() != 0.0)
-                {
+              {
                 break;
-                }
               }
             }
+          }
 
           if (vp != 0)
-            {
+          {
             const vtkDICOMValue& v = *vp;
             if (v.GetNumberOfValues() == 1 &&
                 (v.GetVR() == VR::SS ||
@@ -482,64 +482,64 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
                  v.GetVR() == VR::UL ||
                  v.GetVR() == VR::FL ||
                  v.GetVR() == VR::FD))
-              {
+            {
               std::string s = v.AsString();
               fprintf(fp, "%s", s.c_str());
-              }
+            }
             else if (v.GetVR() == VR::DA ||
                      v.GetVR() == VR::TM ||
                      v.GetVR() == VR::DT)
-              {
+            {
               std::string s = dicomtocsv_date(v.AsString(), v.GetVR());
               fprintf(fp, "\"%s\"", s.c_str());
-              }
+            }
             else if (v.GetVR() == VR::SQ)
-              {
+            {
               // how should a sequence be printed out to the csv file?
-              }
+            }
             else if (v.GetVL() != 0 && v.GetVL() != 0xFFFFFFFF)
-              {
+            {
               std::string s = dicomtocsv_quote(v.AsUTF8String());
               fprintf(fp, "\"%s\"", s.c_str());
-              }
             }
+          }
           else if (tagPath.GetHead() == DC::ReferencedFileID &&
                    !tagPath.HasTail())
-            {
+          {
             // ReferencedFileID (0004,1500) is meant to be used in DICOMDIR,
             // but we hijack it to report the first file in the series.
             std::string s = dicomtocsv_quote(a->GetValue(jj));
             fprintf(fp, "\"%s\"", s.c_str());
-            }
+          }
           else if (tagPath.GetHead() == DC::NumberOfReferences &&
                    !tagPath.HasTail())
-            {
+          {
             // NumberOfReferences (0004,1600) is a retired attribute meant
             // to count the number of references to a file, but we hijack
             // it and use it to report the number of files found for the
             // series.
             fprintf(fp, "\"%d\"", numberOfFiles);
-            }
           }
+        }
 
         fprintf(fp, "%s", "\r\n");
 
         // report progress
         if (p)
-          {
+        {
           count += numberOfFiles;
           double progress = (static_cast<double>(count)/
                              static_cast<double>(total));
           p->Execute(NULL, vtkCommand::ProgressEvent, &progress);
-          }
         }
       }
     }
+  }
 
   if (p)
-    {
+  {
     p->Execute(NULL, vtkCommand::EndEvent, NULL);
-    }
+  }
 }
 
 } // end anonymous namespace
@@ -573,138 +573,138 @@ int MAINMACRO(int argc, char *argv[])
     DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
   if (argc < 2)
-    {
+  {
     dicomtocsv_usage(stdout, dicomtocsv_basename(argv[0]));
     return rval;
-    }
+  }
   else if (argc == 2 && strcmp(argv[1], "--help") == 0)
-    {
+  {
     dicomtocsv_help(stdout, dicomtocsv_basename(argv[0]));
     return rval;
-    }
+  }
   else if (argc == 2 && strcmp(argv[1], "--version") == 0)
-    {
+  {
     dicomtocsv_version(stdout, dicomtocsv_basename(argv[0]));
     return rval;
-    }
+  }
 
   for (int argi = 1; argi < argc; argi++)
-    {
+  {
     const char *arg = argv[argi];
     if (strcmp(arg, "-q") == 0 || strcmp(arg, "-o") == 0)
-      {
+    {
       if (argi + 1 == argc || argv[argi+1][0] == '-')
-        {
+      {
         fprintf(stderr, "Error: %s must be followed by a file.\n\n", arg);
         dicomtocsv_usage(stderr, dicomtocsv_basename(argv[0]));
         return 1;
-        }
+      }
 
       if (arg[1] == 'q')
-        {
+      {
         const char *qfile = argv[++argi];
         if (!dicomcli_readquery(qfile, &query, &qtlist))
-          {
+        {
           fprintf(stderr, "Error: Can't read query file %s\n\n", qfile);
           return 1;
-          }
-        }
-      else if (arg[1] == 'o')
-        {
-        ofile = argv[++argi];
         }
       }
-    else if (strcmp(arg, "-u") == 0)
+      else if (arg[1] == 'o')
       {
+        ofile = argv[++argi];
+      }
+    }
+    else if (strcmp(arg, "-u") == 0)
+    {
       if (argi + 1 == argc || argv[argi+1][0] == '-')
-        {
+      {
         fprintf(stderr, "Error: %s must be followed by a file.\n\n", arg);
         dicomtocsv_usage(stderr, dicomtocsv_basename(argv[0]));
         return 1;
-        }
+      }
       const char *qfile = argv[++argi];
       if (!dicomcli_readuids(qfile, &query, &qtlist))
-        {
+      {
         fprintf(stderr, "Error: Can't read uid file %s\n\n", qfile);
         return 1;
-        }
       }
+    }
     else if (strcmp(arg, "-k") == 0)
-      {
+    {
       vtkDICOMTag tag;
       ++argi;
       if (argi == argc)
-        {
+      {
         fprintf(stderr, "Error: %s must be followed by gggg,eeee=value "
                         "where gggg,eeee is a DICOM tag.\n\n", arg);
         return 1;
-        }
+      }
       if (!dicomcli_readkey(argv[argi], &query, &qtlist))
-        {
+      {
         return 1;
-        }
       }
+    }
     else if (strcmp(arg, "--first-nonzero") == 0)
-      {
+    {
       firstNonZero = true;
-      }
+    }
     else if (strcmp(arg, "--directory-only") == 0)
-      {
+    {
       useDirectoryRecords = true;
-      }
+    }
     else if (strcmp(arg, "--study") == 0)
-      {
+    {
       level = 2;
-      }
+    }
     else if (strcmp(arg, "--series") == 0)
-      {
+    {
       level = 3;
-      }
+    }
     else if (strcmp(arg, "--image") == 0)
-      {
+    {
       level = 4;
-      }
+    }
     else if (strcmp(arg, "--silent") == 0)
-      {
+    {
       silent = true;
-      }
+    }
     else if (arg[0] == '-')
-      {
+    {
       fprintf(stderr, "Error: Unrecognized option %s.\n\n", arg);
       dicomtocsv_usage(stderr, dicomtocsv_basename(argv[0]));
       return 1;
-      }
+    }
     else
-      {
+    {
       int code = vtkDICOMFile::Access(arg, vtkDICOMFile::In);
       if (code == vtkDICOMFile::Good || code == vtkDICOMFile::FileIsDirectory)
-        {
+      {
         a->InsertNextValue(arg);
-        }
+      }
       else if (dicomcli_looks_like_key(arg))
-        {
+      {
         fprintf(stderr, "Error: Missing -k before %s.\n\n", arg);
         return 1;
-        }
+      }
       else if (strlen(arg) > 4 &&
                strcmp(&arg[strlen(arg) - 4], ".csv") == 0)
-        {
+      {
         fprintf(stderr, "Error: Missing -o before %s.\n\n", arg);
         return 1;
-        }
+      }
       else
-        {
+      {
         fprintf(stderr, "Error: File not found: %s.\n\n", arg);
         return 1;
-        }
       }
     }
+  }
 
   FILE *fp = stdout;
   FILE *fp1 = NULL;
 
   if (ofile)
-    {
+  {
 #ifndef _WIN32
     fp1 = fopen(ofile, "wb");
 #else
@@ -717,34 +717,34 @@ int MAINMACRO(int argc, char *argv[])
 #endif
 
     if (!fp1)
-      {
+    {
       fprintf(stderr, "Error: Unable to open output file %s.\n", ofile);
       return 1;
-      }
-    fp = fp1;
     }
+    fp = fp1;
+  }
   else
-    {
+  {
     // if output to stdout, then silence progress reporting
     silent = true;
-    }
+  }
 
   // If no query specified, then use a default one
   if (qtlist.size() == 0)
-    {
+  {
     if (level == 2)
-      {
+    {
       dicomtocsv_study_default(&query, &qtlist);
-      }
-    else if (level == 3)
-      {
-      dicomtocsv_series_default(&query, &qtlist);
-      }
-    else if (level == 4)
-      {
-      dicomtocsv_image_default(&query, &qtlist);
-      }
     }
+    else if (level == 3)
+    {
+      dicomtocsv_series_default(&query, &qtlist);
+    }
+    else if (level == 4)
+    {
+      dicomtocsv_image_default(&query, &qtlist);
+    }
+  }
 
   // Write the header
   dicomtocsv_writeheader(query, &qtlist, fp);
@@ -752,43 +752,43 @@ int MAINMACRO(int argc, char *argv[])
 
   // Write data for every input directory
   if (a->GetNumberOfTuples() > 0)
-    {
+  {
     vtkSmartPointer<ProgressObserver> p;
 
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
     if (level < 4)
-      {
+    {
       finder->SetFindLevelToSeries();
-      }
+    }
     if (!silent)
-      {
+    {
       p = vtkSmartPointer<ProgressObserver>::New();
       p->SetText("Scanning");
       finder->AddObserver(vtkCommand::ProgressEvent, p);
       finder->AddObserver(vtkCommand::StartEvent, p);
       finder->AddObserver(vtkCommand::EndEvent, p);
-      }
+    }
     finder->SetInputFileNames(a);
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
     finder->Update();
 
     if (!silent)
-      {
+    {
       p->SetText("Writing");
-      }
+    }
     dicomtocsv_write(
       finder, query, &qtlist, fp, level,
       firstNonZero, useDirectoryRecords, p);
 
     fflush(fp);
-    }
+  }
 
   if (fp1)
-    {
+  {
     fclose(fp1);
-    }
+  }
 
   return rval;
 }

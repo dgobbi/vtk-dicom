@@ -31,13 +31,13 @@ vtkDICOMFilePath::vtkDICOMFilePath(const std::string& path)
 #ifdef _WIN32
   size_t l = path.length();
   for (size_t i = 0; i < l; i++)
-    {
+  {
     if (IsSeparator(path[i]))
-      {
+    {
       this->Separator = path[i];
       break;
-      }
     }
+  }
   this->WidePath = 0;
   this->LocalPath = 0;
 #endif
@@ -55,13 +55,13 @@ vtkDICOMFilePath::vtkDICOMFilePath(const std::wstring& path)
 
   size_t l = path.length();
   for (size_t i = 0; i < l; i++)
-    {
+  {
     if (IsSeparator(path[i]))
-      {
+    {
       this->Separator = path[i];
       break;
-      }
     }
+  }
   this->WidePath = 0;
   this->LocalPath = 0;
   StripTrailingSlash(&this->Path);
@@ -88,148 +88,148 @@ std::string vtkDICOMFilePath::Join(const std::string& second) const
   // converted into back slashes, and "." and ".." must be removed
   bool extended = false;
   if (HasExtendedPrefix(path))
-    {
+  {
     sep = '\\';
     extended = true;
-    }
+  }
 
   // check whether the second part might be an absolute path
   size_t pos = 0;
   size_t r = RootLength(second);
   if (r > 0)
-    {
+  {
     // if second drive letter mismatches the first, paths can't be joined
     char drive1 = DriveLetter(path);
     char drive2 = DriveLetter(second);
     if (HasExtendedPrefix(second))
-      {
+    {
       // if second part uses extended prefix, ignore the first part
       path.resize(0);
-      }
+    }
     else if (drive2 && drive1 == drive2 && r != 3)
-      {
+    {
       // skip the drive letter in the second path
       pos = 2;
-      }
+    }
     else if (extended && drive2 && r >= 2)
-      {
+    {
       // move the drive letter from the second path to the first
       pos = 2;
       path = "\\\\\?\\";
       path.append(second, 0, pos);
       pos += (r >= 3 && IsSeparator(second[pos]));
-      }
+    }
     else if (drive1 && drive2 == 0 && r == 1)
-      {
+    {
       // keep the drive letter, but use absolute path from second part
       sep = second[0];
       path.resize(4*extended + 2);
-      }
+    }
     else if (extended && r >= 2 &&
              IsSeparator(second[0]) && IsSeparator(second[1]))
-      {
+    {
       // create an extended UNC path
       pos = 2;
       path = "\\\\\?\\UNC\\";
-      }
+    }
     else
-      {
+    {
       // ignore the first path completely
       path.resize(0);
-      }
     }
+  }
 
   // append a separator before appending the second part
   size_t l = path.length();
   if (l > 0 && !IsSeparator(path[l-1]) && !(l == 2 && path[1] == ':'))
-    {
+  {
     path.push_back(sep);
-    }
+  }
 
   // append one part at a time
   while (pos != second.length())
-    {
+  {
     if (IsSeparator(second[pos]))
-      {
+    {
       path.push_back(sep);
       pos++;
-      }
+    }
     size_t endpos = pos;
     while (endpos != second.length() && !IsSeparator(second[endpos]))
-      {
+    {
       endpos++;
-      }
+    }
     size_t n = endpos - pos;
     if (n > 0)
-      {
+    {
       if (extended)
-        {
+      {
         if (n == 1 && second[pos] == '.')
-          {
+        {
           // Ignore the '.' and the following slash
           if (endpos != second.length() && IsSeparator(second[endpos]))
-            {
-            endpos++;
-            }
-          }
-        else if (n == 2 && second[pos] == '.' && second[pos+1] == '.')
           {
+            endpos++;
+          }
+        }
+        else if (n == 2 && second[pos] == '.' && second[pos+1] == '.')
+        {
           // Ignore the '..' and the following slash
           if (endpos != second.length() && IsSeparator(second[endpos]))
-            {
+          {
             endpos++;
-            }
+          }
           // Remove the preceeding part of the path
           l = path.length();
           size_t m = RootLength(path);
           if (l > m && path[l-1] == sep)
-            {
+          {
             l--;
             while (l > m && path[l-1] != sep)
-              {
+            {
               l--;
-              }
-            path.resize(l);
             }
+            path.resize(l);
           }
+        }
         else if (n > 2 && second[pos + 1] == ':')
-          {
+        {
           path.append(second, pos, 2);
           path.push_back(sep);
           path.append(second, pos+2, n-2);
-          }
-        else
-          {
-          path.append(second, pos, n);
-          }
         }
-      else
+        else
         {
-        path.append(second, pos, n);
+          path.append(second, pos, n);
         }
       }
-    pos = endpos;
+      else
+      {
+        path.append(second, pos, n);
+      }
     }
+    pos = endpos;
+  }
 #else
   if (this->Path.length() == 0)
-    {
+  {
     // first part is empty, so just return second
     return second;
-    }
+  }
 
   if (second.length() > 0 && IsSeparator(second[0]))
-    {
+  {
     // second part is an absolute path
     return second;
-    }
+  }
 
   // append the second part to the first
   std::string path = this->Path;
   size_t l = path.length();
   if (l > 0 && !IsSeparator(path[l-1]))
-    {
+  {
     path.push_back(this->Separator);
-    }
+  }
   path.append(second);
 #endif
   StripTrailingSlash(&path);
@@ -243,20 +243,20 @@ std::string vtkDICOMFilePath::GetBack() const
   size_t r = RootLength(this->Path);
 #ifdef _WIN32
   if (r >= 4 && HasExtendedPrefix(this->Path))
-    {
+  {
     while (l > r && this->Path[l-1] != '\\')
-      {
+    {
       --l;
-      }
     }
+  }
   else
 #endif
-    {
+  {
     while (l > r && !IsSeparator(this->Path[l-1]))
-      {
+    {
       --l;
-      }
     }
+  }
   return this->Path.substr(l);
 }
 
@@ -279,21 +279,21 @@ void vtkDICOMFilePath::PushExtension(const std::string& ext)
 {
   size_t l = ext.length();
   if (l == 0 || (l == 1 && ext[0] == '.'))
-    {
+  {
     return;
-    }
+  }
   for (size_t i = 0; i < l; i++)
-    {
+  {
     if (IsSeparator(ext[i]))
-      {
+    {
       return;
-      }
     }
+  }
 
   if (l > 0 && ext[0] != '.')
-    {
+  {
     this->Path.push_back('.');
-    }
+  }
 
   this->Path.append(ext);
 }
@@ -307,28 +307,28 @@ size_t vtkDICOMFilePath::ExtensionPosition(const std::string& path)
 
 #ifdef _WIN32
   if (r >= 4 && HasExtendedPrefix(path))
-    {
+  {
     while (l > r && path[l-1] != '\\')
-      {
+    {
       if (path[--l] == '.')
-        {
+      {
         i = l;
         break;
-        }
       }
     }
+  }
   else
 #endif
-    {
+  {
     while (l > r && !IsSeparator(path[l-1]))
-      {
+    {
       if (path[--l] == '.')
-        {
+      {
         i = l;
         break;
-        }
       }
     }
+  }
 
   return i;
 }
@@ -347,17 +347,17 @@ bool vtkDICOMFilePath::IsDirectory() const
 #ifdef _WIN32
   wchar_t *widepath = ConvertToWideChar(this->Path.c_str());
   if (widepath)
-    {
+  {
     DWORD a = GetFileAttributesW(widepath);
     delete [] widepath;
     result = ((a & FILE_ATTRIBUTE_DIRECTORY) != 0);
-    }
+  }
 #else
   struct stat fs;
   if (stat(this->Path.c_str(), &fs) == 0 && S_ISDIR(fs.st_mode))
-    {
+  {
     result = true;
-    }
+  }
 #endif
   return result;
 }
@@ -369,26 +369,26 @@ bool vtkDICOMFilePath::IsSymlink() const
 #ifdef _WIN32
   wchar_t *widepath = ConvertToWideChar(this->Path.c_str());
   if (widepath && GetFileAttributesW(widepath) != INVALID_FILE_ATTRIBUTES)
-    {
+  {
     WIN32_FIND_DATAW buf;
     HANDLE h = FindFirstFileW(widepath, &buf);
     if (h != INVALID_HANDLE_VALUE)
-      {
+    {
       CloseHandle(h);
       if ((buf.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0 &&
           buf.dwReserved0 == 0xA000000C)
-        {
+      {
         result = true;
-        }
       }
     }
+  }
   delete [] widepath;
 #else
   struct stat fs;
   if (lstat(this->Path.c_str(), &fs) == 0 && S_ISLNK(fs.st_mode))
-    {
+  {
     result = true;
-    }
+  }
 #endif
   return result;
 }
@@ -407,10 +407,10 @@ std::string vtkDICOMFilePath::GetRealPath() const
   wchar_t *tmp = buffer;
   DWORD n = GetFullPathNameW(widepath, m, tmp, NULL);
   if (n >= m-1)
-    {
+  {
     tmp = new wchar_t[n+3];
     n = GetFullPathNameW(widepath, n+3, tmp, NULL);
-    }
+  }
   delete [] widepath;
   widepath = tmp;
 #else
@@ -420,9 +420,9 @@ std::string vtkDICOMFilePath::GetRealPath() const
   delete [] widepath;
 
   if (h == INVALID_HANDLE_VALUE)
-    {
+  {
     return result;
-    }
+  }
 
   wchar_t buffer[512];
   widepath = buffer;
@@ -430,54 +430,54 @@ std::string vtkDICOMFilePath::GetRealPath() const
   // GetFinalPathNameByHandle() is not supported on Windows XP
   DWORD n = GetFinalPathNameByHandleW(h, widepath, m, 0);
   if (n >= m)
-    {
+  {
     widepath = new wchar_t[n+1];
     n = GetFinalPathNameByHandleW(h, widepath, n+1, 0);
-    }
+  }
   CloseHandle(h);
 #endif
 
   if (n != 0)
-    {
+  {
     char *path = ConvertToUTF8(widepath);
     if (widepath != buffer)
-      {
+    {
       delete [] widepath;
-      }
+    }
 
     if (path == 0)
-      {
+    {
       return result;
-      }
+    }
 
 #ifndef DICOM_DEPRECATE_WINXP
     // Add extended prefix if not present
     if (path[0] == '\0' ||
         strncmp("\\\\?\\", path, 4) == 0 ||
         strncmp("\\\\.\\", path, 4) == 0)
-      {
+    {
       result = path;
-      }
+    }
     else
-      {
+    {
       size_t l = strlen(path);
       if (l >= 2 && path[0] == '\\' && path[1] == '\\')
-        {
+      {
         result = "\\\\?\\UNC\\";
         result.append(&path[2]);
-        }
+      }
       else
-        {
+      {
         result = "\\\\?\\";
         result.append(path);
-        }
       }
+    }
 #else
     result = path;
 #endif
 
     delete [] path;
-    }
+  }
 
   return result;
 
@@ -492,10 +492,10 @@ std::string vtkDICOMFilePath::GetRealPath() const
   std::string result;
   char *path = realpath(this->Path.c_str(), storage);
   if (path != 0)
-    {
+  {
     result = path;
     storage = path;
-    }
+  }
   free(storage);
   return result;
 
@@ -506,30 +506,30 @@ std::string vtkDICOMFilePath::GetRealPath() const
 void vtkDICOMFilePath::PushBack(const std::string& second)
 {
   if (this->Path.length() == 0 || RootLength(second) == 0)
-    {
+  {
     this->Path = this->Join(second);
-    }
+  }
 #ifdef _WIN32
   else if (this->Path.length() == 4 && HasExtendedPrefix(this->Path))
-    {
+  {
     this->Path = this->Join(second);
-    }
+  }
   else if (RootLength(this->Path) == 2 && DriveLetter(this->Path) &&
            (DriveLetter(this->Path) == DriveLetter(second) ||
             RootLength(second) == 1))
-    {
+  {
     this->Path = this->Join(second);
-    }
+  }
   // Check if the separator changed, make it sticky.
   size_t l = this->Path.length();
   for (size_t i = 0; i < l; i++)
-    {
+  {
     if (IsSeparator(this->Path[i]))
-      {
+    {
       this->Separator = this->Path[i];
       break;
-      }
     }
+  }
 #endif
 }
 
@@ -542,32 +542,32 @@ void vtkDICOMFilePath::PopBack()
 
 #ifdef _WIN32
   if (l >= 4 && HasExtendedPrefix(path))
-    {
+  {
     // only allow backslash as a separator with the "\\?\" prefix
     while (l > root && path[l-1] != '\\')
-      {
+    {
       --l;
-      }
+    }
     // strip all trailing slashes that aren't part of the root
     while (l > root && path[l-1] == '\\')
-      {
+    {
       --l;
-      }
     }
+  }
   else
 #endif
-    {
+  {
     // back up to the last separator
     while (l > root && !IsSeparator(path[l-1]))
-      {
+    {
       --l;
-      }
+    }
     // strip all trailing slashes that aren't part of the root
     while (l > root && IsSeparator(path[l-1]))
-      {
+    {
       --l;
-      }
     }
+  }
 
   this->Path.resize(l);
 }
@@ -579,22 +579,22 @@ void vtkDICOMFilePath::StripTrailingSlash(std::string *path)
   size_t r = RootLength(*path);
 #ifdef _WIN32
   if (r >= 4 && HasExtendedPrefix(*path))
-    {
+  {
     // remove the trailing slash, if present and not the root
     while (l > r && (*path)[l-1] == '\\')
-      {
+    {
       path->resize(--l);
-      }
     }
+  }
   else
 #endif
-    {
+  {
     // remove the trailing slash, if present and not the root
     while (l > r && IsSeparator((*path)[l-1]))
-      {
+    {
       path->resize(--l);
-      }
     }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -617,85 +617,85 @@ size_t vtkDICOMFilePath::RootLength(const std::string& path)
   // Finally, the special "\\?\" prefix is used to name system devices:
   //  \\.\DEVICE (name of a special devices)
   if (l >= 4 && HasExtendedPrefix(path))
-    {
+  {
     root = 4;
     if (path[2] == '\?')
-      {
+    {
       if (l >= 7 && path[4] == 'U' && path[5] == 'N' && path[6] == 'C')
-        {
+      {
         if (l == 7)
-          {
+        {
           root = 7;
-          }
+        }
         else if (l > 7 && path[7] == '\\')
-          {
+        {
           root = 8;
           while (root != l && path[root] != '\\')
-            {
+          {
             root++;
-            }
+          }
           if (root != l && path[root] == '\\')
-            {
+          {
             root++;
-            }
+          }
           while (root != l && path[root] != '\\')
-            {
+          {
             root++;
-            }
           }
         }
+      }
       else if (l > 5 && path[5] == ':' &&
                ((path[4] >= 'A' && path[4] <= 'Z') ||
                 (path[4] >= 'a' && path[4] <= 'z')))
-        {
+      {
         root = 6;
         if (l > 6 && path[6] == '\\')
-          {
+        {
           root = 7;
-          }
         }
       }
     }
+  }
   else
-    {
+  {
     if (l > 0 && IsSeparator(path[0]))
-      {
+    {
       root = 1;
       if (l > 1 && IsSeparator(path[1]))
-        {
+      {
         // UNC path
         root = 2;
         while (root != l && !IsSeparator(path[root]))
-          {
+        {
           root++;
-          }
+        }
         if (root != l && IsSeparator(path[root]))
-          {
+        {
           root++;
-          }
+        }
         while (root != l && !IsSeparator(path[root]))
-          {
+        {
           root++;
-          }
         }
       }
+    }
     else if (l >= 2 && path[1] == ':' &&
              ((path[0] >= 'A' && path[0] <= 'Z') ||
               (path[0] >= 'a' && path[0] <= 'z')))
-      {
+    {
       root = 2;
       if (l > 2 && IsSeparator(path[2]))
-        {
+      {
         root = 3;
-        }
       }
     }
+  }
 #else
   // For UNIX, the only possible root is "/"
   if (l > 0 && IsSeparator(path[0]))
-    {
+  {
     root = 1;
-    }
+  }
 #endif
 
   return root;
@@ -718,9 +718,9 @@ const char *vtkDICOMFilePath::Local()
   delete [] this->LocalPath;
   this->LocalPath = 0;
   if (this->Wide())
-    {
+  {
     this->LocalPath = ConvertToLocal(this->WidePath);
-    }
+  }
   return this->LocalPath;
 }
 #endif
@@ -744,21 +744,21 @@ char vtkDICOMFilePath::DriveLetter(const std::string& path)
   size_t l = path.length();
   size_t pos = 0;
   if (l >= 4 && HasExtendedPrefix(path))
-    {
+  {
     pos = 4;
-    }
+  }
   if (l >= pos+2 && path[pos+1] == ':')
-    {
+  {
     char e = path[pos];
     if (e >= 'A' && e <= 'Z')
-      {
+    {
       d = e;
-      }
-    else if (e >= 'a' && e <= 'z')
-      {
-      d = e - ('a' - 'A');
-      }
     }
+    else if (e >= 'a' && e <= 'z')
+    {
+      d = e - ('a' - 'A');
+    }
+  }
   return d;
 }
 #endif
@@ -771,16 +771,16 @@ wchar_t *vtkDICOMFilePath::ConvertToWideChar(const char *filename)
   int n = MultiByteToWideChar(
     CP_UTF8, 0, filename, -1, NULL, 0);
   if (n > 0)
-    {
+  {
     wideFilename = new wchar_t[n];
     n = MultiByteToWideChar(
       CP_UTF8, 0, filename, -1, wideFilename, n);
     if (n == 0)
-      {
+    {
       delete [] wideFilename;
       wideFilename = 0;
-      }
     }
+  }
   return wideFilename;
 }
 #endif
@@ -793,16 +793,16 @@ char *vtkDICOMFilePath::ConvertToUTF8(const wchar_t *wideFilename)
   int n = WideCharToMultiByte(
     CP_UTF8, 0, wideFilename, -1, NULL, 0, 0, 0);
   if (n > 0)
-    {
+  {
     filename = new char[n];
     n = WideCharToMultiByte(
       CP_UTF8, 0, wideFilename, -1, filename, n, 0, 0);
     if (n == 0)
-      {
+    {
       delete [] filename;
       filename = 0;
-      }
     }
+  }
   return filename;
 }
 #endif
@@ -815,16 +815,16 @@ char *vtkDICOMFilePath::ConvertToLocal(const wchar_t *wideFilename)
   int n = WideCharToMultiByte(
     CP_ACP, 0, wideFilename, -1, NULL, 0, 0, 0);
   if (n > 0)
-    {
+  {
     filename = new char[n];
     n = WideCharToMultiByte(
       CP_ACP, 0, wideFilename, -1, filename, n, 0, 0);
     if (n == 0)
-      {
+    {
       delete [] filename;
       filename = 0;
-      }
     }
+  }
   return filename;
 }
 #endif

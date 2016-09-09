@@ -48,18 +48,18 @@ int main(int argc, char *argv[])
   int rval = 0;
 
   if (argc < 2)
-    {
+  {
     printf("usage: %s file1.dcm [file2.dcm ...]\n", fileBasename(argv[0]));
     return rval;
-    }
+  }
 
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();
 
   for (int argi = 1; argi < argc; argi++)
-    {
+  {
     files->InsertNextValue(argv[argi]);
-    }
+  }
 
   const char *outfile = "/tmp/%s";
 
@@ -84,11 +84,11 @@ int main(int argc, char *argv[])
 
   int m = sorter->GetNumberOfStudies();
   for (int j = 0; j < m; j++)
-    {
+  {
     int k = sorter->GetFirstSeriesForStudy(j);
     int kl = sorter->GetLastSeriesForStudy(j);
     for (; k <= kl; k++)
-      {
+    {
       vtkStringArray *a = sorter->GetFileNamesForSeries(k);
       int l = static_cast<int>(a->GetNumberOfValues());
       std::string fname = a->GetValue(0);
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
       offsetArray->SetNumberOfTuples(l);
 
       for (int i = 0; i < l; i++)
-        {
+      {
         // read the DICOM series with the parser
         fname = a->GetValue(i);
         parser->SetIndex(i);
@@ -113,10 +113,10 @@ int main(int argc, char *argv[])
         tp[0] = parser->GetFileOffset();
         tp[1] = parser->GetFileSize();
         offsetArray->SetTupleValue(i, tp);
-        }
+      }
 
       for (int i = 0; i < l; i++)
-        {
+      {
         // write the DICOM series with the compiler
         fname = a->GetValue(i);
         char outpath[128];
@@ -125,10 +125,10 @@ int main(int argc, char *argv[])
         const char *instanceUID = data->GetAttributeValue(
           i, DC::SOPInstanceUID).GetCharData();
         if (instanceUID == 0)
-          {
+        {
           instanceUID = data->GetAttributeValue(
             i, DC::MediaStorageSOPInstanceUID).GetCharData();
-          }
+        }
         compiler->SetSOPInstanceUID(instanceUID);
         compiler->SetTransferSyntaxUID(data->GetAttributeValue(
           i, DC::TransferSyntaxUID).GetCharData());
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
         compiler->WriteHeader();
 
         if (parser->GetPixelDataFound())
-          {
+        {
           vtkTypeInt64 tp[2];
           offsetArray->GetTupleValue(i, tp);
 
@@ -160,50 +160,50 @@ int main(int argc, char *argv[])
           compiler->WritePixelData(
             reinterpret_cast<unsigned char *>(buffer), size - offset);
           delete [] buffer;
-          }
+        }
 
         compiler->Close();
 
         // compare the md5 hash
         char hash[2][40];
         for (int jj = 0; jj < 2; jj++)
-          {
+        {
           const char *fileToHash = outpath;
           if (jj == 0)
-            {
+          {
             fileToHash = fname.c_str();
-            }
+          }
           vtksysMD5* hasher = vtksysMD5_New();
           vtksysMD5_Initialize(hasher);
 
           char hashbuf[8192];
           std::ifstream f(fileToHash, ios::in | ios::binary);
           while (f.good())
-            {
+          {
             f.read(hashbuf, static_cast<std::streamsize>(sizeof(hashbuf)));
             std::streamsize c = f.gcount();
             vtksysMD5_Append(
               hasher, reinterpret_cast<unsigned char *>(hashbuf), c);
-            }
+          }
 
           vtksysMD5_FinalizeHex(hasher, hash[jj]);
           hash[jj][32] = '\0';
           vtksysMD5_Delete(hasher);
-          }
+        }
 
         if (strncmp(hash[0], hash[1], 32) != 0)
-          {
+        {
           std::cerr << "Hash mismatch!\n";
           std::cerr << hash[0] << " " << fname.c_str() << "\n";
           std::cerr << hash[1] << " " << outpath << "\n";
-          }
+        }
         else
-          {
+        {
           std::cerr << "Matched for " << fname.c_str() << "\n";
-          }
         }
       }
     }
+  }
 
   return rval;
 }

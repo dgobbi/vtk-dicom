@@ -132,41 +132,41 @@ vtkDICOMReader::~vtkDICOMReader()
 #endif
 
   if (this->Parser)
-    {
+  {
     this->Parser->Delete();
-    }
+  }
   if (this->Sorter)
-    {
+  {
     this->Sorter->Delete();
-    }
+  }
   if (this->FileOffsetArray)
-    {
+  {
     this->FileOffsetArray->Delete();
-    }
+  }
   if (this->FileIndexArray)
-    {
+  {
     this->FileIndexArray->Delete();
-    }
+  }
   if (this->FrameIndexArray)
-    {
+  {
     this->FrameIndexArray->Delete();
-    }
+  }
   if (this->StackIDs)
-    {
+  {
     this->StackIDs->Delete();
-    }
+  }
   if (this->MetaData)
-    {
+  {
     this->MetaData->Delete();
-    }
+  }
   if (this->PatientMatrix)
-    {
+  {
     this->PatientMatrix->Delete();
-    }
+  }
   if (this->MedicalImageProperties)
-    {
+  {
     this->MedicalImageProperties->Delete();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -176,33 +176,33 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "MetaData: ";
   if (this->MetaData)
-    {
+  {
     os << this->MetaData << "\n";
-    }
+  }
   else
-    {
+  {
     os << "(none)\n";
-    }
+  }
 
   os << indent << "MedicalImageProperties: ";
   if (this->MedicalImageProperties)
-    {
+  {
     os << this->MedicalImageProperties << "\n";
-    }
+  }
   else
-    {
+  {
     os << "(none)\n";
-    }
+  }
 
   os << indent << "Sorter: ";
   if (this->Sorter)
-    {
+  {
     os << this->Sorter << "\n";
-    }
+  }
   else
-    {
+  {
     os << "(none)\n";
-    }
+  }
 
   os << indent << "DesiredStackID: "
      << (*this->DesiredStackID ? "(empty)" : this->DesiredStackID) << "\n";
@@ -225,19 +225,19 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "PatientMatrix:";
   if (this->PatientMatrix)
-    {
+  {
     double mat[16];
     vtkMatrix4x4::DeepCopy(mat, this->PatientMatrix);
     for (int i = 0; i < 16; i++)
-      {
-      os << " " << mat[i];
-      }
-    os << "\n";
-    }
-  else
     {
-    os << " (none)\n";
+      os << " " << mat[i];
     }
+    os << "\n";
+  }
+  else
+  {
+    os << " (none)\n";
+  }
 
   os << indent << "MemoryRowOrder: "
      << this->GetMemoryRowOrderAsString() << "\n";
@@ -247,17 +247,17 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
 void vtkDICOMReader::SetDesiredStackID(const char *stackId)
 {
   if (stackId == 0)
-    {
+  {
     stackId = "";
-    }
+  }
 
   // the maximum length of a stackId is 16
   if (strncmp(this->DesiredStackID, stackId, 16) != 0)
-    {
+  {
     strncpy(this->DesiredStackID, stackId, 16);
     this->DesiredStackID[17] = '\0';
     this->Modified();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -287,13 +287,13 @@ void vtkDICOMErrorSilencer::Execute(vtkObject *, unsigned long, void *)
 void vtkDICOMReader::SetMemoryRowOrder(int order)
 {
   if (order >= 0 && order <= vtkDICOMReader::BottomUp)
-    {
+  {
     if (order != this->MemoryRowOrder)
-      {
+    {
       this->MemoryRowOrder = order;
       this->Modified();
-      }
     }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -301,7 +301,7 @@ const char *vtkDICOMReader::GetMemoryRowOrderAsString()
 {
   const char *text = "";
   switch (this->MemoryRowOrder)
-    {
+  {
     case vtkDICOMReader::FileNative:
       text = "FileNative";
       break;
@@ -311,7 +311,7 @@ const char *vtkDICOMReader::GetMemoryRowOrderAsString()
     case vtkDICOMReader::BottomUp:
       text = "BottomUp";
       break;
-    }
+  }
 
   return text;
 }
@@ -397,16 +397,16 @@ void vtkDICOMReader::NoSortFiles(vtkIntArray *files, vtkIntArray *frames)
   frames->SetNumberOfComponents(1);
 
   for (int i = 0; i < numFiles; i++)
-    {
+  {
     int numFrames = meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
     numFrames = (numFrames > 0 ? numFrames : 1);
 
     for (int j = 0; j < numFrames; j++)
-      {
+    {
       files->InsertNextValue(i);
       frames->InsertNextValue(j);
-      }
     }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -423,25 +423,25 @@ bool vtkDICOMReader::ValidateStructure(
   vtkIdType numSlices = fileArray->GetNumberOfTuples();
   if (numSlices != frameArray->GetNumberOfTuples() ||
       numComponents != fileArray->GetNumberOfComponents())
-    {
+  {
     this->SetErrorCode(vtkErrorCode::FileFormatError);
     vtkErrorMacro("Critical failure in file sorting!");
     return false;
-    }
+  }
 
   for (vtkIdType i = 0; i < numSlices; i++)
-    {
+  {
     for (int j = 0; j < numComponents; j++)
-      {
+    {
       int fileIndex = fileArray->GetComponent(i, j);
       int frameIndex = frameArray->GetComponent(i, j);
 
       if (fileIndex < 0 || fileIndex >= numFiles)
-        {
+      {
         this->SetErrorCode(vtkErrorCode::FileFormatError);
         vtkErrorMacro("File index " << fileIndex << " is out of range!");
         return false;
-        }
+      }
 
       usedFiles[fileIndex]++;
 
@@ -450,13 +450,13 @@ bool vtkDICOMReader::ValidateStructure(
       numFrames = (numFrames == 0 ? 1 : numFrames);
 
       if (frameIndex < 0 || frameIndex >= numFrames)
-        {
+      {
         this->SetErrorCode(vtkErrorCode::FileFormatError);
         vtkErrorMacro("Frame index " << frameIndex << " is out of range!");
         return false;
-        }
       }
     }
+  }
 
   // The reader requires the following mandatory attributes
   static const DC::EnumType imagePixelAttribs[] = {
@@ -470,65 +470,65 @@ bool vtkDICOMReader::ValidateStructure(
   for (const DC::EnumType *tags = imagePixelAttribs;
        *tags != DC::ItemDelimitationItem;
        tags++)
-    {
+  {
     int firstValue = 0;
 
     for (int fileIndex = 0; fileIndex < numFiles; fileIndex++)
-      {
+    {
       if (usedFiles[fileIndex] == 0) { continue; }
 
       const char *errorText = 0;
       vtkDICOMValue v = meta->GetAttributeValue(fileIndex, *tags);
       int i = 1;
       if (v.IsValid())
-        {
+      {
         i = v.AsInt();
-        }
+      }
       else if (*tags != DC::SamplesPerPixel)
-        {
+      {
         // Some ACR-NEMA files do not contain SamplesPerPixel, all
         // other tags must be present
         errorText = "Missing pixel info ";
-        }
+      }
 
       if (firstValue == 0)
-        {
+      {
         firstValue = i;
-        }
+      }
       else if (firstValue != i)
-        {
+      {
         errorText = "Inconsistent pixel info ";
-        }
+      }
 
       if (i <= 0 ||
           (*tags == DC::BitsAllocated &&
            i != 1 && i != 8 && i != 12 && i != 16 && i != 32 && i != 64))
-        {
+      {
         errorText = "Illegal value ";
-        }
+      }
 
       if (errorText)
-        {
+      {
         this->ComputeInternalFileName(this->DataExtent[4] + fileIndex);
         this->Parser->SetFileName(this->InternalFileName);
         vtkDICOMDictEntry de = meta->FindDictEntry(*tags);
         this->SetErrorCode(vtkErrorCode::FileFormatError);
         if (v.IsValid())
-          {
+        {
           vtkErrorMacro(<< errorText << i << " for " << de.GetTag()
                         << " \"" << de.GetName() << "\" in "
                         << this->InternalFileName);
-          }
+        }
         else
-          {
+        {
           vtkErrorMacro(<< errorText << "for " << de.GetTag()
                         << " \"" << de.GetName() << "\" in"
                         << this->InternalFileName);
-          }
-        return false;
         }
+        return false;
       }
     }
+  }
 
   return true;
 }
@@ -544,35 +544,35 @@ int vtkDICOMReader::RequestInformation(
 
   // How many files are to be loaded?
   if (this->FileNames)
-    {
+  {
     vtkIdType numFileNames = this->FileNames->GetNumberOfValues();
     this->DataExtent[4] = 0;
     this->DataExtent[5] = static_cast<int>(numFileNames - 1);
-    }
+  }
   else if (this->FileName)
-    {
+  {
     this->DataExtent[4] = 0;
     this->DataExtent[5] = 0;
-    }
+  }
   int numFiles = this->DataExtent[5] - this->DataExtent[4] + 1;
 
   if (numFiles <= 0)
-    {
+  {
     this->SetErrorCode(vtkErrorCode::FileFormatError);
     if (this->FileNames)
-      {
+    {
       vtkErrorMacro("No filenames were provided for reader.");
-      }
+    }
     else
-      {
+    {
       vtkErrorMacro("Bad DataExtent " << this->DataExtent[4]
                     << "," << this->DataExtent[5] << ".");
-      }
+    }
 
     // Reset the data extent to legal values
     this->DataExtent[4] = 0;
     this->DataExtent[5] = 0;
-    }
+  }
 
   // Reset the time information
   this->TimeDimension = 0;
@@ -581,15 +581,15 @@ int vtkDICOMReader::RequestInformation(
   // Clear the meta data, prepare the parser.
   this->MetaData->Initialize();
   if (numFiles > 0)
-    {
+  {
     this->MetaData->SetNumberOfInstances(numFiles);
-    }
+  }
 
   if (this->Parser)
-    {
+  {
     this->Parser->Delete();
     this->FileOffsetArray->Delete();
-    }
+  }
 
   // Parser reads just the meta data, not the pixel data.
   this->Parser = vtkDICOMParser::New();
@@ -603,49 +603,49 @@ int vtkDICOMReader::RequestInformation(
   this->FileOffsetArray->SetNumberOfTuples(numFiles);
 
   for (int idx = 0; idx < numFiles; idx++)
-    {
+  {
     this->ComputeInternalFileName(this->DataExtent[4] + idx);
     this->Parser->SetFileName(this->InternalFileName);
     this->Parser->SetIndex(idx);
     this->Parser->Update();
 
     if (this->Parser->GetErrorCode())
-      {
+    {
       break;
-      }
+    }
 
     // save the offset to the pixel data
     vtkTypeInt64 offset[2];
     offset[0] = this->Parser->GetFileOffset();
     offset[1] = this->Parser->GetFileSize();
     this->FileOffsetArray->SetTupleValue(idx, offset);
-    }
+  }
 
   // Files are read in the order provided, but they might have
   // to be re-sorted to create a proper volume.  The FileIndexArray
   // holds the sorted order of the files.
   this->StackIDs->Initialize();
   if (this->GetErrorCode() == vtkErrorCode::NoError)
-    {
+  {
     if (this->Sorting && this->Sorter)
-      {
+    {
       this->SortFiles(this->FileIndexArray, this->FrameIndexArray);
-      }
+    }
     else
-      {
+    {
       this->NoSortFiles(this->FileIndexArray, this->FrameIndexArray);
-      }
+    }
 
     // Verify the consistency of the data, e.g. verify that the dimensions
     // and data type are the same for all files.
     this->ValidateStructure(this->FileIndexArray, this->FrameIndexArray);
-    }
+  }
 
   if (this->GetErrorCode() != vtkErrorCode::NoError)
-    {
+  {
     // Last chance to bail out
     return false;
-    }
+  }
 
   // Set the indexing arrays for the meta data
   this->MetaData->SetFileIndexArray(this->FileIndexArray);
@@ -682,9 +682,9 @@ int vtkDICOMReader::RequestInformation(
   // (the DataExtent gives the number of files)
   this->FileDimensionality = 2;
   if (slices > this->DataExtent[5] - this->DataExtent[4] + 1)
-    {
+  {
     this->FileDimensionality = 3;
-    }
+  }
 
   // DICOM uses a upper-left origin
   this->FileLowerLeft = 0;
@@ -698,39 +698,39 @@ int vtkDICOMReader::RequestInformation(
   vtkDICOMValue pixelAspectRatio = this->MetaData->GetAttributeValue(
     fileIndex, frameIndex, DC::PixelAspectRatio);
   if (pixelAspectRatio.GetNumberOfValues() == 2)
-    {
+  {
     // use double, even though data is stored as integer strings
     double ya = pixelAspectRatio.GetDouble(0);
     double xa = pixelAspectRatio.GetDouble(1);
     if (xa > 0)
-      {
-      ratio = ya/xa;
-      }
-    }
-  else if (pixelAspectRatio.GetNumberOfValues() == 1)
     {
+      ratio = ya/xa;
+    }
+  }
+  else if (pixelAspectRatio.GetNumberOfValues() == 1)
+  {
     // ratio should be expressed as two values,
     // so this is only to support incorrect files
     ratio = pixelAspectRatio.AsDouble();
-    }
+  }
   if (ratio > 0)
-    {
+  {
     this->DataSpacing[0] = this->DataSpacing[1]/ratio;
-    }
+  }
 
   // Set spacing from PixelSpacing
   vtkDICOMValue pixelSpacing = this->MetaData->GetAttributeValue(
     fileIndex, frameIndex, DC::PixelSpacing);
   if (pixelSpacing.GetNumberOfValues() == 2)
-    {
+  {
     double spacing[2];
     pixelSpacing.GetValues(spacing, 2);
     if (spacing[0] > 0 && spacing[1] > 0)
-      {
+    {
       this->DataSpacing[0] = spacing[0];
       this->DataSpacing[1] = spacing[1];
-      }
     }
+  }
 
   // offset is part of the transform, so set origin to zero
   this->DataOrigin[0] = 0.0;
@@ -751,43 +751,43 @@ int vtkDICOMReader::RequestInformation(
   int scalarType = 0;
 
   if (bitsAllocated <= 8)
-    {
+  {
     scalarType = (pixelRepresentation ? VTK_SIGNED_CHAR : VTK_UNSIGNED_CHAR);
-    }
+  }
   else if (bitsAllocated <= 16)
-    {
+  {
     scalarType = (pixelRepresentation ? VTK_SHORT : VTK_UNSIGNED_SHORT);
-    }
+  }
   else if (bitsAllocated <= 32)
-    {
+  {
     if (this->MetaData->GetAttributeValue(
           fileIndex, DC::FloatPixelData).IsValid())
-      {
-      scalarType = VTK_FLOAT;
-      }
-    else
-      {
-      scalarType = (pixelRepresentation ? VTK_INT : VTK_UNSIGNED_INT);
-      }
-    }
-  else if (bitsAllocated <= 64)
     {
+      scalarType = VTK_FLOAT;
+    }
+    else
+    {
+      scalarType = (pixelRepresentation ? VTK_INT : VTK_UNSIGNED_INT);
+    }
+  }
+  else if (bitsAllocated <= 64)
+  {
     if (this->MetaData->GetAttributeValue(
           fileIndex, DC::DoubleFloatPixelData).IsValid())
-      {
+    {
       scalarType = VTK_DOUBLE;
-      }
-    else
-      {
-      scalarType = (pixelRepresentation ? VTK_TYPE_INT64: VTK_TYPE_UINT64);
-      }
     }
+    else
+    {
+      scalarType = (pixelRepresentation ? VTK_TYPE_INT64: VTK_TYPE_UINT64);
+    }
+  }
 
   // number of components
   if (numComponents <= 0)
-    {
+  {
     numComponents = 1;
-    }
+  }
 
   this->DataScalarType = scalarType;
   this->NumberOfPackedComponents =
@@ -830,17 +830,17 @@ int vtkDICOMReader::RequestInformation(
         fileIndex, frameIndex, DC::RescaleSlope).IsValid() &&
       this->MetaData->GetAttributeValue(
         fileIndex, frameIndex, DC::RescaleIntercept).IsValid())
-    {
+  {
     bool mismatch = false;
     double mMax = VTK_DOUBLE_MIN;
     double bMax = VTK_DOUBLE_MIN;
 
     vtkIdType numSlices = this->FileIndexArray->GetNumberOfTuples();
     for (vtkIdType iSlice = 0; iSlice < numSlices; iSlice++)
-      {
+    {
       int numComp = this->FileIndexArray->GetNumberOfComponents();
       for (int iComp = 0; iComp < numComp; iComp++)
-        {
+      {
         int iFile = this->FileIndexArray->GetComponent(iSlice, iComp);
         int iFrame = this->FrameIndexArray->GetComponent(iSlice, iComp);
 
@@ -849,23 +849,23 @@ int vtkDICOMReader::RequestInformation(
         double b = this->MetaData->GetAttributeValue(
           iFile, iFrame, DC::RescaleIntercept).AsDouble();
         if ((iSlice != 0 || iComp != 0) && (m != mMax || b != bMax))
-          {
+        {
           mismatch = true;
-          }
+        }
         if (m > mMax)
-          {
+        {
           mMax = m;
-          }
+        }
         if (b > bMax)
-          {
+        {
           bMax = b;
-          }
         }
       }
+    }
     this->NeedsRescale = (mismatch && this->AutoRescale);
     this->RescaleSlope = mMax;
     this->RescaleIntercept = bMax;
-    }
+  }
 
   // === Image Orientation in DICOM files ===
   //
@@ -884,7 +884,7 @@ int vtkDICOMReader::RequestInformation(
 
   // go through the slices in reverse order, so we end on the first
   for (vtkIdType iSlice = numSlices-1; iSlice >= 0; --iSlice)
-    {
+  {
     int iFile = this->FileIndexArray->GetComponent(iSlice, 0);
     int iFrame = this->FrameIndexArray->GetComponent(iSlice, 0);
     vtkDICOMValue pv = this->MetaData->GetAttributeValue(
@@ -892,23 +892,23 @@ int vtkDICOMReader::RequestInformation(
     vtkDICOMValue ov = this->MetaData->GetAttributeValue(
       fileIndex, frameIndex, DC::ImageOrientationPatient);
     if (pv.GetNumberOfValues() == 3 && ov.GetNumberOfValues() == 6)
-      {
+    {
       pv.GetValues(point, 3);
       ov.GetValues(orient, 6);
       vtkMath::Cross(&orient[0], &orient[3], normal);
       if (vtkMath::Normalize(normal) < 1e-10)
-        {
+      {
         orient[0] = 1.0; orient[1] = 0.0; orient[2] = 0.0;
         orient[3] = 0.0; orient[4] = 1.0; orient[5] = 0.0;
         normal[0] = 0.0; normal[1] = 0.0; normal[2] = 1.0;
-        }
+      }
       // re-orthogonalize x vector (improve precision)
       vtkMath::Cross(&orient[3], normal, &orient[0]);
       vtkMath::Normalize(&orient[0]);
       vtkMath::Normalize(&orient[3]);
 
       if (this->MemoryRowOrder == vtkDICOMReader::BottomUp)
-        {
+      {
         // calculate position of point at lower left
         double yspacing = this->DataSpacing[1];
         point[0] = point[0] + orient[3]*yspacing*(rows - 1);
@@ -918,23 +918,23 @@ int vtkDICOMReader::RequestInformation(
         orient[3] = -orient[3];
         orient[4] = -orient[4];
         orient[5] = -orient[5];
-        }
+      }
 
       size_t ip = points.size();
       points.resize(ip + 3);
       for (int ii = 0; ii < 3; ii++)
-        {
+      {
         centroid[ii] += point[ii];
         points[ip+ii] = point[ii];
-        }
       }
     }
+  }
 
   // compute Z vector by fitting points to a line
   double vector[3] = { normal[0], normal[1], normal[2] };
   size_t nPoints = points.size()/3;
   if (nPoints > 0)
-    {
+  {
     centroid[0] /= nPoints;
     centroid[1] /= nPoints;
     centroid[2] /= nPoints;
@@ -944,27 +944,27 @@ int vtkDICOMReader::RequestInformation(
     double *A[3] = { &storage[0], &storage[3], &storage[6] };
     double *E[3] = { &storage[9], &storage[12], &storage[15] };
     for (size_t iPoint = 0; iPoint < nPoints; iPoint++)
-      {
+    {
       for (int ii = 0; ii < 3; ii++)
-        {
+      {
         for (int jj = 0; jj < 3; jj++)
-          {
+        {
           A[ii][jj] = ((points[3*iPoint + ii] - centroid[ii]) *
                        (points[3*iPoint + jj] - centroid[jj]));
-          }
         }
       }
+    }
     double eigenvalues[3];
     vtkMath::Jacobi(A, eigenvalues, E);
 
     // only use eigenvector if the points fit a line very precisely
     if (eigenvalues[1]*eigenvalues[1] + eigenvalues[2]*eigenvalues[2] <
         1e-6*eigenvalues[0]*eigenvalues[0])
-      {
+    {
       // create the vector, dot(vector,normal) should be unity
       double vdn = E[0][0]*normal[0] + E[1][0]*normal[1] + E[2][0]*normal[2];
       if (vdn > 0)
-        {
+      {
         vector[0] = E[0][0]/vdn;
         vector[1] = E[1][0]/vdn;
         vector[2] = E[2][0]/vdn;
@@ -973,14 +973,14 @@ int vtkDICOMReader::RequestInformation(
         double vcn[3];
         vtkMath::Cross(vector, normal, vcn);
         if (vtkMath::Norm(vcn) < 1e-4)
-          {
+        {
           // use normal (more precise) if they are the same
           vector[0] = normal[0];
           vector[1] = normal[1];
           vector[2] = normal[2];
-          }
         }
       }
+    }
 
     // build the patient matrix
     double pm[16];
@@ -990,17 +990,17 @@ int vtkDICOMReader::RequestInformation(
     pm[12] = 0.0; pm[13] = 0.0; pm[14] = 0.0; pm[15] = 1.0;
 
     this->PatientMatrix->DeepCopy(pm);
-    }
+  }
   else
-    {
+  {
     this->PatientMatrix->Identity();
-    }
+  }
 
   // Set the medical image properties
   if (this->MedicalImageProperties)
-    {
+  {
     this->UpdateMedicalImageProperties();
-    }
+  }
 
   // Set the output information.
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
@@ -1029,24 +1029,24 @@ void vtkDICOMReaderRescaleBuffer(T *p, double m, double b, size_t bytecount)
 {
   size_t n = bytecount/sizeof(T);
   if (n > 0 && (m != 1.0 || b != 0.0))
-    {
+  {
     double minval = vtkTypeTraits<T>::Min();
     double maxval = vtkTypeTraits<T>::Max();
     do
-      {
+    {
       double val = (*p)*m + b;
       if (val < minval)
-        {
+      {
         val = minval;
-        }
-      if (val > maxval)
-        {
-        val = maxval;
-        }
-      *p++ = static_cast<T>(vtkMath::Round(val));
       }
-    while (--n);
+      if (val > maxval)
+      {
+        val = maxval;
+      }
+      *p++ = static_cast<T>(vtkMath::Round(val));
     }
+    while (--n);
+  }
 }
 
 } // end anonymous namespace
@@ -1073,44 +1073,44 @@ void vtkDICOMReader::RescaleBuffer(
     fileIdx, DC::PixelRepresentation).AsInt();
 
   if (bitsAllocated <= 8)
-    {
+  {
     if (pixelRep == 0)
-      {
+    {
       vtkDICOMReaderRescaleBuffer(
         static_cast<unsigned char *>(buffer), m, b, bufferSize);
-      }
+    }
     else
-      {
+    {
       vtkDICOMReaderRescaleBuffer(
         static_cast<signed char *>(buffer), m, b, bufferSize);
-      }
     }
+  }
   else if (bitsAllocated <= 16)
-    {
+  {
     if (pixelRep == 0)
-      {
+    {
       vtkDICOMReaderRescaleBuffer(
         static_cast<unsigned short *>(buffer), m, b, bufferSize);
-      }
+    }
     else
-      {
+    {
       vtkDICOMReaderRescaleBuffer(
         static_cast<short *>(buffer), m, b, bufferSize);
-      }
     }
+  }
   else if (bitsAllocated <= 32)
-    {
+  {
     if (pixelRep == 0)
-      {
+    {
       vtkDICOMReaderRescaleBuffer(
         static_cast<unsigned int *>(buffer), m, b, bufferSize);
-      }
+    }
     else
-      {
+    {
       vtkDICOMReaderRescaleBuffer(
         static_cast<int *>(buffer), m, b, bufferSize);
-      }
     }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -1146,34 +1146,34 @@ void vtkDICOMReader::YBRToRGB(
   // catch JPEG baseline images with incorrect PhotometricInterpretation
   if (transferSyntax.Matches("1.2.840.10008.1.2.4.50") ||
       photometric.Matches("YBR_FULL*"))
-    {
+  {
     // use full-range, therefore black level is zero
     ymin = 0.0;
-    }
+  }
   else if (photometric.Matches("YBR_PARTIAL*"))
-    {
+  {
     // stretch the matrix so that full-range RGB is produced
     for (int i = 0; i < 3; i++)
-      {
+    {
       matrix[i][0] *= 255.0/(ylevels - 1);
       matrix[i][1] *= 255.0/(clevels - 1);
       matrix[i][2] *= 255.0/(clevels - 1);
-      }
     }
+  }
   else
-    {
+  {
     // no YBR here, so exit!
     return;
-    }
+  }
 
   if (bufferSize >= 3)
-    {
+  {
     unsigned char *cp = static_cast<unsigned char *>(buffer);
     vtkIdType n = bufferSize/3;
     double ybr[3];
     double rgb[3];
     do
-      {
+    {
       ybr[0] = cp[0] - ymin;
       ybr[1] = cp[1] - 128.0;
       ybr[2] = cp[2] - 128.0;
@@ -1192,9 +1192,9 @@ void vtkDICOMReader::YBRToRGB(
       cp[2] = static_cast<unsigned char>(vtkMath::Floor(rgb[2] + 0.5));
 
       cp += 3;
-      }
-    while (--n);
     }
+    while (--n);
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -1202,13 +1202,13 @@ void vtkDICOMReader::UnpackBits(
   const void *filePtr, void *buffer, vtkIdType bufferSize, int bits)
 {
   if (bits == 12)
-    {
+  {
     const unsigned char *readPtr =
       static_cast<const unsigned char *>(filePtr);
     unsigned char *writePtr =
       static_cast<unsigned char *>(buffer);
     for (vtkIdType n = bufferSize/2; n > 0; n -= 2)
-      {
+    {
       unsigned int a1 = readPtr[0];
       unsigned int a2 = readPtr[1];
       unsigned int b1 = (a1 << 4) | (a2 & 0x0f);
@@ -1224,36 +1224,36 @@ void vtkDICOMReader::UnpackBits(
 
       readPtr += 3;
       writePtr += 4;
-      }
     }
+  }
   else if (bits == 1)
-    {
+  {
     const unsigned char *readPtr =
       static_cast<const unsigned char *>(filePtr);
     unsigned char *writePtr =
       static_cast<unsigned char *>(buffer);
     for (vtkIdType n = bufferSize/8; n > 0; n--)
-      {
+    {
       unsigned int a = *readPtr;
       for (int i = 0; i < 8; i++)
-        {
+      {
         writePtr[i] = (a & 1);
         a >>= 1;
-        }
+      }
       readPtr++;
       writePtr += 8;
-      }
+    }
     size_t r = (bufferSize % 8);
     if (r > 0)
-      {
+    {
       unsigned int a = *readPtr;
       for (size_t j = 0; j < r; j++)
-        {
+      {
         writePtr[j] = static_cast<unsigned char>(a & 1);
         a >>= 1;
-        }
       }
     }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -1270,19 +1270,19 @@ bool vtkDICOMReader::ReadFileNative(
   vtkDICOMFile infile(filename, vtkDICOMFile::In);
 
   if (infile.GetError())
-    {
+  {
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
     vtkErrorMacro("ReadFile: Can't read the file " << filename);
     return false;
-    }
+  }
 
   if (!infile.SetPosition(offset))
-    {
+  {
     this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
     vtkErrorMacro("DICOM file is truncated, some data is missing.");
     infile.Close();
     return false;
-    }
+  }
 
   std::string transferSyntax = this->MetaData->GetAttributeValue(
     fileIdx, DC::TransferSyntaxUID).AsString();
@@ -1299,7 +1299,7 @@ bool vtkDICOMReader::ReadFileNative(
   size_t readSize = bufferSize;
   size_t resultSize = 0;
   if (transferSyntax == "1.2.840.10008.1.2.5")
-    {
+  {
     vtkDICOMImageCodec codec(transferSyntax);
 
     unsigned int numFrames = this->MetaData->GetAttributeValue(
@@ -1310,9 +1310,9 @@ bool vtkDICOMReader::ReadFileNative(
     readSize = static_cast<size_t>(
       offsetAndSize[1] - offsetAndSize[0]);
     if (readSize < 8)
-      {
+    {
       readSize = 8;
-      }
+    }
     unsigned char *rleBuffer = new unsigned char[readSize];
     unsigned char *filePtr = rleBuffer;
     resultSize = infile.Read(filePtr, readSize);
@@ -1321,7 +1321,7 @@ bool vtkDICOMReader::ReadFileNative(
     vtkIdType frameSize = bufferSize/numFrames;
     bool isOffsetTable = true;
     while (bytesRemaining >= 8 && bufferPos < bufferSize)
-      {
+    {
       // get the item header
       unsigned int tagkey = vtkDICOMUtilities::UnpackUnsignedInt(filePtr);
       unsigned int length = vtkDICOMUtilities::UnpackUnsignedInt(filePtr + 4);
@@ -1329,31 +1329,31 @@ bool vtkDICOMReader::ReadFileNative(
       bytesRemaining -= 8;
       // make sure the tag is valid
       if (tagkey != 0xE000FFFE)
-        {
+      {
         break;
-        }
+      }
       if (length > bytesRemaining)
-        {
+      {
         // actual file size should have been at least this much larger
         readSize += length - bytesRemaining;
         length = bytesRemaining;
-        }
+      }
       // first item is the offset table
       if (!isOffsetTable)
-        {
+      {
         // unpack an RLE fragment
         codec.Decode(this->MetaData,
           filePtr, length, buffer + bufferPos, frameSize);
         bufferPos += frameSize;
-        }
+      }
       filePtr += length;
       bytesRemaining -= length;
       isOffsetTable = false;
-      }
-    delete [] rleBuffer;
     }
+    delete [] rleBuffer;
+  }
   else if (bitsAllocated == 12)
-    {
+  {
     // unpack 12 bits little endian into 16 bits little endian,
     // the result will have to be swapped if machine is BE (the
     // swapping is done at the end of this function)
@@ -1362,9 +1362,9 @@ bool vtkDICOMReader::ReadFileNative(
     resultSize = infile.Read(filePtr, readSize);
 
     vtkDICOMReader::UnpackBits(filePtr, buffer, bufferSize, bitsAllocated);
-    }
+  }
   else if (bitsAllocated == 1)
-    {
+  {
     // unpack 1 bit into 8 bits, source assumed to be either OB
     // or little endian OW, never big endian OW
     readSize = (bufferSize + 7)/8;
@@ -1372,31 +1372,31 @@ bool vtkDICOMReader::ReadFileNative(
     resultSize = infile.Read(filePtr, readSize);
 
     vtkDICOMReader::UnpackBits(filePtr, buffer, bufferSize, bitsAllocated);
-    }
+  }
   else
-    {
+  {
     resultSize = infile.Read(buffer, readSize);
-    }
+  }
 
   bool success = true;
   if (infile.EndOfFile() || resultSize != readSize)
-    {
+  {
     this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
     vtkErrorMacro("DICOM file is truncated, " <<
       (readSize - resultSize) << " bytes are missing.");
     success = false;
-    }
+  }
   else if (infile.GetError())
-    {
+  {
     this->SetErrorCode(vtkErrorCode::FileFormatError);
     vtkErrorMacro("Error in DICOM file, cannot read.");
     success = false;
-    }
+  }
   else if (fileBigEndian != memoryBigEndian)
-    {
+  {
     int scalarSize = vtkDataArray::GetDataTypeSize(this->DataScalarType);
     vtkByteSwap::SwapVoidRange(buffer, bufferSize/scalarSize, scalarSize);
-    }
+  }
 
   infile.Close();
   return success;
@@ -1417,12 +1417,12 @@ bool vtkDICOMReader::ReadFileDelegated(
     EXS_LittleEndianExplicit, NULL);
 
   if (!status.good())
-    {
+  {
     vtkErrorMacro("DCMTK error: " << status.text());
     this->SetErrorCode(vtkErrorCode::FileFormatError);
     delete fileformat;
     return false;
-    }
+  }
 
   unsigned long count;
   const Uint8 *pixelData;
@@ -1434,25 +1434,25 @@ bool vtkDICOMReader::ReadFileDelegated(
     fileIdx, DC::BitsAllocated).AsInt();
 
   if (bitsAllocated == 12 && imageSize >= bufferSize/2 + (bufferSize+3)/4)
-    {
+  {
     vtkDICOMReader::UnpackBits(pixelData, buffer, bufferSize, bitsAllocated);
-    }
+  }
   else if (bitsAllocated == 1 && imageSize >= (bufferSize + 7)/8)
-    {
+  {
     vtkDICOMReader::UnpackBits(pixelData, buffer, bufferSize, bitsAllocated);
-    }
+  }
   else if (imageSize >= bufferSize)
-    {
+  {
     memcpy(buffer, pixelData, bufferSize);
-    }
+  }
   else
-    {
+  {
     vtkErrorMacro(<< filename << ": The uncompressed image size is "
                   << imageSize << " bytes, expected "
                   << bufferSize << " bytes.");
     delete fileformat;
     return false;
-    }
+  }
 
   delete fileformat;
   return true;
@@ -1464,21 +1464,21 @@ bool vtkDICOMReader::ReadFileDelegated(
   gdcm::ImageReader reader;
   reader.SetFileName(filename);
   if(!reader.Read())
-    {
+  {
     vtkErrorMacro("The GDCM ImageReader could not read the image.");
     this->SetErrorCode(vtkErrorCode::FileFormatError);
     return false;
-    }
+  }
 
   gdcm::Image &image = reader.GetImage();
   if (static_cast<vtkIdType>(image.GetBufferLength()) < bufferSize)
-    {
+  {
     vtkErrorMacro(<< filename << ": The uncompressed image size is "
                   << image.GetBufferLength() << " bytes, expected "
                   << bufferSize << " bytes.");
     this->SetErrorCode(vtkErrorCode::FileFormatError);
     return false;
-    }
+  }
 
   image.GetBuffer(reinterpret_cast<char *>(buffer));
   return true;
@@ -1512,9 +1512,9 @@ bool vtkDICOMReader::ReadOneFile(
       transferSyntax == "1.2.840.10008.1.2.5" ||  // RLE compressed
       transferSyntax == "1.2.840.113619.5.2"  ||  // GE LE with BE data
       transferSyntax == "")
-    {
+  {
     return this->ReadFileNative(filename, fileIdx, buffer, bufferSize);
-    }
+  }
 
   return this->ReadFileDelegated(filename, fileIdx, buffer, bufferSize);
 }
@@ -1527,9 +1527,9 @@ int vtkDICOMReader::RequestData(
 {
   // check whether the reader is in an error state
   if (this->GetErrorCode() != vtkErrorCode::NoError)
-    {
+  {
     return false;
-    }
+  }
 
   // which output port did the request come from
   int outputPort =
@@ -1537,49 +1537,49 @@ int vtkDICOMReader::RequestData(
 
   // for now, this reader has only one output
   if (outputPort > 0)
-    {
+  {
     return true;
-    }
+  }
 
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
   int extent[6];
   outInfo->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
   if (this->FileDimensionality == 2)
-    {
+  {
     // limit the number of slices to the requested update extent
     int uExtent[6];
     outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(), uExtent);
     extent[4] = uExtent[4];
     extent[5] = uExtent[5];
-    }
+  }
 
   // make a list of all the files inside the update extent
   std::vector<vtkDICOMReaderFileInfo> files;
   int nComp = this->FileIndexArray->GetNumberOfComponents();
   for (int sIdx = extent[4]; sIdx <= extent[5]; sIdx++)
-    {
+  {
     for (int cIdx = 0; cIdx < nComp; cIdx++)
-      {
+    {
       int fileIdx = this->FileIndexArray->GetComponent(sIdx, cIdx);
       int frameIdx = this->FrameIndexArray->GetComponent(sIdx, cIdx);
       std::vector<vtkDICOMReaderFileInfo>::iterator iter = files.begin();
       while (iter != files.end() && iter->FileIndex != fileIdx)
-        {
+      {
         ++iter;
-        }
+      }
       if (iter == files.end())
-        {
+      {
         int n = this->MetaData->GetAttributeValue(
           fileIdx, DC::NumberOfFrames).AsInt();
         n = (n > 0 ? n : 1);
         files.push_back(vtkDICOMReaderFileInfo(fileIdx, n));
         iter = files.end();
         --iter;
-        }
-      iter->Frames.push_back(vtkDICOMReaderFrameInfo(frameIdx, sIdx, cIdx));
       }
+      iter->Frames.push_back(vtkDICOMReaderFrameInfo(frameIdx, sIdx, cIdx));
     }
+  }
 
   // get the data object, allocate memory
   vtkImageData *data =
@@ -1621,15 +1621,15 @@ int vtkDICOMReader::RequestData(
   bool planarToPacked = (filePixelSize != pixelSize);
   unsigned char *rowBuffer = 0;
   if (flipImage)
-    {
+  {
     rowBuffer = new unsigned char[fileRowSize];
-    }
+  }
   unsigned char *fileBuffer = 0;
   int framesInPreviousFile = -1;
 
   // loop through all files in the update extent
   for (size_t idx = 0; idx < files.size(); idx++)
-    {
+  {
     if (this->AbortExecute) { break; }
 
     this->UpdateProgress(static_cast<double>(idx)/
@@ -1644,32 +1644,32 @@ int vtkDICOMReader::RequestData(
     // we need a file buffer if input frames don't match output slices
     bool needBuffer = (planarToPacked || numFrames != framesInFile);
     for (int sIdx = 0; sIdx < numFrames && !needBuffer; sIdx++)
-      {
+    {
       needBuffer = (sIdx != frames[sIdx].FrameIndex);
-      }
+    }
 
     unsigned char *bufferPtr = 0;
 
     if (needBuffer)
-      {
+    {
       if (numFrames != framesInPreviousFile)
-        {
+      {
         // allocate a buffer for planar-to-packed conversion
         delete [] fileBuffer;
         fileBuffer = new unsigned char[fileFrameSize*framesInFile];
         framesInPreviousFile = numFrames;
-        }
-      bufferPtr = fileBuffer;
       }
+      bufferPtr = fileBuffer;
+    }
     else
-      {
+    {
       // read directly into the output
       int sliceIdx = frames[0].SliceIndex;
       int componentIdx = frames[0].ComponentIndex;
       bufferPtr = (dataPtr +
                    (sliceIdx - extent[4])*sliceSize +
                    componentIdx*filePixelSize*numPlanes);
-      }
+    }
 
     // ReadOneFile will set NeedsYBRToRGB to false if it does YBR->RGB itself
     // (note: NeedsYBRToRGB will is ignored unless PhotometricInterpretation
@@ -1684,7 +1684,7 @@ int vtkDICOMReader::RequestData(
 
     // iterate through all frames contained in the file
     for (int sIdx = 0; sIdx < numFrames; sIdx++)
-      {
+    {
       int frameIdx = frames[sIdx].FrameIndex;
       int sliceIdx = frames[sIdx].SliceIndex;
       int componentIdx = frames[sIdx].ComponentIndex;
@@ -1698,58 +1698,58 @@ int vtkDICOMReader::RequestData(
       // rescale if Rescale was different for different files
       if (this->NeedsRescale &&
           this->MetaData->GetAttributeValue(fileIdx, DC::PixelData).IsValid())
-        {
+      {
         this->RescaleBuffer(fileIdx, frameIdx, bufferPtr, sliceSize);
-        }
+      }
 
       // iterate through all color planes in the slice
       unsigned char *planePtr = framePtr;
       for (int pIdx = 0; pIdx < numPlanes; pIdx++)
-        {
+      {
         // flip the data if necessary
         if (flipImage)
-          {
+        {
           int numRows = extent[3] - extent[2] + 1;
           int halfRows = numRows/2;
           for (int yIdx = 0; yIdx < halfRows; yIdx++)
-            {
+          {
             unsigned char *row1 = planePtr + yIdx*fileRowSize;
             unsigned char *row2 = planePtr + (numRows-yIdx-1)*fileRowSize;
             memcpy(rowBuffer, row1, fileRowSize);
             memcpy(row1, row2, fileRowSize);
             memcpy(row2, rowBuffer, fileRowSize);
-            }
           }
+        }
 
         // convert planes into vector components
         if (planarToPacked)
-          {
+        {
           const unsigned char *tmpInPtr = planePtr;
           unsigned char *tmpOutPtr = slicePtr;
           int m = sliceSize/pixelSize;
           for (int i = 0; i < m; i++)
-            {
+          {
             vtkIdType n = filePixelSize;
             do { *tmpOutPtr++ = *tmpInPtr++; } while (--n);
             tmpOutPtr += pixelSize - filePixelSize;
-            }
+          }
           slicePtr += filePixelSize;
-          }
+        }
         else if (slicePtr != planePtr)
-          {
+        {
           memcpy(slicePtr, planePtr, filePlaneSize);
-          }
+        }
 
         planePtr += filePlaneSize;
-        }
+      }
 
       // convert to RGB if data was read from file as YUV
       if (this->NeedsYBRToRGB)
-        {
+      {
         this->YBRToRGB(fileIdx, frameIdx, slicePtr, sliceSize);
-        }
       }
     }
+  }
 
   delete [] rowBuffer;
   delete [] fileBuffer;
@@ -1764,40 +1764,40 @@ int vtkDICOMReader::RequestData(
 void vtkDICOMReader::RelayError(vtkObject *o, unsigned long e, void *data)
 {
   if (e == vtkCommand::ErrorEvent)
-    {
+  {
     vtkDICOMParser *parser = vtkDICOMParser::SafeDownCast(o);
     if (parser && parser->GetErrorCode())
-      {
+    {
       this->SetErrorCode(parser->GetErrorCode());
-      }
+    }
     else
-      {
+    {
       this->SetErrorCode(vtkErrorCode::UnknownError);
-      }
+    }
 
     if (data)
-      {
-      vtkErrorMacro(<< static_cast<char *>(data));
-      }
-    else
-      {
-      vtkErrorMacro(<< "An unknown error ocurred!");
-      }
-    }
-  else
     {
-    this->InvokeEvent(e, data);
+      vtkErrorMacro(<< static_cast<char *>(data));
     }
+    else
+    {
+      vtkErrorMacro(<< "An unknown error ocurred!");
+    }
+  }
+  else
+  {
+    this->InvokeEvent(e, data);
+  }
 }
 
 //----------------------------------------------------------------------------
 vtkMedicalImageProperties *vtkDICOMReader::GetMedicalImageProperties()
 {
   if (this->MedicalImageProperties == 0)
-    {
+  {
     this->MedicalImageProperties = vtkMedicalImageProperties::New();
     this->UpdateMedicalImageProperties();
-    }
+  }
 
   return this->MedicalImageProperties;
 }
@@ -1891,31 +1891,31 @@ void vtkDICOMReader::UpdateMedicalImageProperties()
   n = (m < n ? m : n);
   properties->RemoveAllWindowLevelPresets();
   for (int i = 0; i < n; i++)
-    {
+  {
     properties->AddWindowLevelPreset(
       center.GetDouble(i), width.GetDouble(i));
-    }
+  }
 
   const vtkDICOMValue& comment =
     meta->GetAttributeValue(DC::WindowCenterWidthExplanation);
   m = comment.GetNumberOfValues();
   m = (n < m ? n : m);
   for (int j = 0; j < m; j++)
-    {
+  {
     properties->SetNthWindowLevelPresetComment(
       j, comment.GetString(j).c_str());
-    }
+  }
 
   double dircos[6] = { 1.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
   if (matrix)
-    {
+  {
     for (int jj = 0; jj < 2; jj++)
-      {
+    {
       for (int ii = 0; ii < 3; ii++)
-        {
+      {
         dircos[ii + 3*jj] = matrix->GetElement(ii, jj);
-        }
       }
     }
+  }
   properties->SetDirectionCosine(dircos);
 }

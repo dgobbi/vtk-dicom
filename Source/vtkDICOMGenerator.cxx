@@ -71,48 +71,48 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->PixelValueRange[1] = -1;
 
   for (int i = 0; i < 5; i++)
-    {
+  {
     this->Dimensions[i] = 0;
     this->Spacing[i] = 0;
     this->Origin[i] = 0;
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
 vtkDICOMGenerator::~vtkDICOMGenerator()
 {
   if (this->RangeArray)
-    {
+  {
     this->RangeArray->Delete();
-    }
+  }
   if (this->SourceInstanceArray)
-    {
+  {
     this->SourceInstanceArray->Delete();
-    }
+  }
   if (this->SliceIndexArray)
-    {
+  {
     this->SliceIndexArray->Delete();
-    }
+  }
   if (this->ComponentIndexArray)
-    {
+  {
     this->ComponentIndexArray->Delete();
-    }
+  }
   if (this->PatientMatrix)
-    {
+  {
     this->PatientMatrix->Delete();
-    }
+  }
   if (this->UIDGenerator)
-    {
+  {
     this->UIDGenerator->Delete();
-    }
+  }
   if (this->SourceMetaData)
-    {
+  {
     this->SourceMetaData->Delete();
-    }
+  }
   if (this->MetaData)
-    {
+  {
     this->MetaData->Delete();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -134,49 +134,49 @@ void vtkDICOMGenerator::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "MetaData: ";
   if (this->MetaData)
-    {
+  {
     os << this->MetaData << "\n";
-    }
+  }
   else
-    {
+  {
     os << "(none)\n";
-    }
+  }
   os << indent << "SourceMetaData: ";
   if (this->SourceMetaData)
-    {
+  {
     os << this->SourceMetaData << "\n";
-    }
+  }
   else
-    {
+  {
     os << "(none)\n";
-    }
+  }
   os << indent << "UIDGenerator: ";
   if (this->UIDGenerator)
-    {
+  {
     os << this->UIDGenerator << "\n";
-    }
+  }
   else
-    {
+  {
     os << "(none)\n";
-    }
+  }
   os << indent << "SliceIndexArray: ";
   if (this->SliceIndexArray)
-    {
+  {
     os << this->SliceIndexArray << "\n";
-    }
+  }
   else
-    {
+  {
     os << "(none)\n";
-    }
+  }
   os << indent << "ComponentIndexArray: ";
   if (this->ComponentIndexArray)
-    {
+  {
     os << this->ComponentIndexArray << "\n";
-    }
+  }
   else
-    {
+  {
     os << "(none)\n";
-    }
+  }
   os << indent << "MultiFrame: "
      << (this->MultiFrame ? "On\n" : "Off\n");
   os << indent << "OriginAtBottom: "
@@ -192,19 +192,19 @@ void vtkDICOMGenerator::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "PatientMatrix:";
   if (this->PatientMatrix)
-    {
+  {
     double mat[16];
     vtkMatrix4x4::DeepCopy(mat, this->PatientMatrix);
     for (int i = 0; i < 16; i++)
-      {
-      os << " " << mat[i];
-      }
-    os << "\n";
-    }
-  else
     {
-    os << " (none)\n";
+      os << " " << mat[i];
     }
+    os << "\n";
+  }
+  else
+  {
+    os << " (none)\n";
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -212,9 +212,9 @@ vtkDICOMUIDGenerator *vtkDICOMGenerator::GetUIDGenerator()
 {
   vtkDICOMUIDGenerator *uidgen = this->UIDGenerator;
   if (uidgen == 0)
-    {
+  {
     uidgen = vtkDICOMUIDGenerator::GetDefault();
-    }
+  }
   return uidgen;
 }
 
@@ -261,28 +261,28 @@ void vtkDICOMGenerator::ComputeAspectRatio(
 
   double minrem = fabs(a - 1.0);
   for (int j = 0; primes[j] != 0; j++)
-    {
+  {
     int x = primes[j];
     double b = a*x;
     int y = static_cast<int>(b + 0.5);
     double r = fabs(b - y);
     if (r < minrem)
-      {
+    {
       minrem = r;
       yaspect = y;
       xaspect = x;
-      }
+    }
     y = x;
     b = y/a;
     x = static_cast<int>(b + 0.5);
     r = fabs(b - x);
     if (r < minrem)
-      {
+    {
       minrem = r;
       yaspect = y;
       xaspect = x;
-      }
     }
+  }
 
   aspect[0] = yaspect;
   aspect[1] = xaspect;
@@ -293,13 +293,13 @@ void vtkDICOMGenerator::ComputeAdjustedMatrix(
   double matrix[16], double origin[3], double spacing[3])
 {
   if (this->PatientMatrix)
-    {
+  {
     vtkMatrix4x4::DeepCopy(matrix, this->PatientMatrix);
-    }
+  }
   else
-    {
+  {
     vtkMatrix4x4::Identity(matrix);
-    }
+  }
 
   spacing[0] = this->Spacing[0];
   spacing[1] = this->Spacing[1];
@@ -310,7 +310,7 @@ void vtkDICOMGenerator::ComputeAdjustedMatrix(
   origin[2] = this->Origin[2];
 
   if (this->OriginAtBottom)
-    {
+  {
     // move origin to the correct corner
     origin[1] -= spacing[1]*(this->Dimensions[1] - 1);
     matrix[1] = -matrix[1];
@@ -321,7 +321,7 @@ void vtkDICOMGenerator::ComputeAdjustedMatrix(
     matrix[2] = -matrix[2];
     matrix[6] = -matrix[6];
     matrix[10] = -matrix[10];
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -372,40 +372,40 @@ void vtkDICOMGenerator::ComputeDimensions(
   // time is either in the slices or in the components
   int numTimeSlots = this->TimeDimension;
   if (numTimeSlots)
-    {
+  {
     if (this->TimeAsVector)
-      {
+    {
       if (numComponents % numTimeSlots == 0)
-        {
-        numComponents /= numTimeSlots;
-        }
-      else
-        {
-        numTimeSlots = 0;
-        }
-      }
-    else
       {
-      if (numSlices % numTimeSlots == 0)
-        {
-        numSlices /= numTimeSlots;
-        }
+        numComponents /= numTimeSlots;
+      }
       else
-        {
+      {
         numTimeSlots = 0;
-        }
       }
     }
+    else
+    {
+      if (numSlices % numTimeSlots == 0)
+      {
+        numSlices /= numTimeSlots;
+      }
+      else
+      {
+        numTimeSlots = 0;
+      }
+    }
+  }
 
   // if unsigned char, assume scalars are colors, not vector components
   if (scalarType == VTK_UNSIGNED_CHAR)
-    {
+  {
     numComponents /= this->NumberOfColorComponents;
     if (numComponents < 2)
-      {
+    {
       numComponents = 0;
-      }
     }
+  }
 
   dims[0] = extent[1] - extent[0] + 1;
   dims[1] = extent[3] - extent[2] + 1;
@@ -425,11 +425,11 @@ void vtkDICOMGenerator::ComputeDimensions(
 
   // get the dimension spacing
   if (!this->TimeAsVector && numTimeSlots > 1 && numSlices > 1)
-    {
+  {
     // adjust spacing for multiple temporal positions per spatial position
     spacing[2] *= (numTimeSlots*numSlices - 1);
     spacing[2] /= (numSlices - 1);
-    }
+  }
   spacing[3] = this->TimeSpacing;
   spacing[4] = 0.0;
 
@@ -443,16 +443,16 @@ void vtkDICOMGenerator::ComputeDimensions(
 void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *sourcemeta)
 {
   if (this->SourceInstanceArray)
-    {
+  {
     this->SourceInstanceArray->Delete();
     this->SourceInstanceArray = 0;
-    }
+  }
 
   // make sure there is sourcemeta data to compare with
   if (!sourcemeta)
-    {
+  {
     return;
-    }
+  }
 
   // create an adapter to handle enhanced multi-frame source
   vtkDICOMMetaDataAdapter source(sourcemeta);
@@ -465,32 +465,32 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *sourcemeta)
   bool mismatch = false;
   int m = source->GetNumberOfInstances();
   for (int j = 0; j < m && !mismatch; j++)
-    {
+  {
     const vtkDICOMValue &o =
       source->GetAttributeValue(j, DC::ImageOrientationPatient);
     if (o.GetNumberOfValues() != 6)
-      {
+    {
       mismatch = true;
       break;
-      }
+    }
 
     double orientation[6];
     o.GetValues(orientation, 6);
     for (int i = 0; i < 3; i++)
-      {
+    {
       if (fabs(matrix[4*i] - orientation[i]) > 1e-4 ||
           fabs(matrix[4*i + 1] - orientation[i + 3]) > 1e-4)
-        {
+      {
         mismatch = true;
         break;
-        }
       }
     }
+  }
 
   if (mismatch)
-    {
+  {
     return;
-    }
+  }
 
   this->SourceInstanceArray = vtkIntArray::New();
   this->SourceInstanceArray->SetNumberOfComponents(1);
@@ -499,21 +499,21 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *sourcemeta)
 
   int timeSlices = 1;
   if (!this->TimeAsVector && this->Dimensions[3] > 0)
-    {
+  {
     timeSlices = this->Dimensions[3];
-    }
+  }
 
   // for keeping track of which source instances have been matched
   bool *usedInstances = new bool[m];
   for (int j = 0; j < m; j++)
-    {
+  {
     usedInstances[j] = false;
-    }
+  }
 
   int n = this->MetaData->GetNumberOfInstances();
   double zorigin = origin[2];
   for (int i = 0; i < n && !mismatch; i++)
-    {
+  {
     int sliceIdx = this->SliceIndexArray->GetComponent(i, 0);
     // remove the time from the slice index
     sliceIdx /= timeSlices;
@@ -528,44 +528,44 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *sourcemeta)
     // the 4th and 5th dimensions correctly
     bool foundOne = false;
     for (int j = 0; j < m; j++)
-      {
+    {
       if (usedInstances[j])
-        {
+      {
         continue;
-        }
+      }
 
       const vtkDICOMValue &p =
         source->GetAttributeValue(j, DC::ImagePositionPatient);
       if (p.GetNumberOfValues() == 3)
-        {
+      {
         double r[3];
         p.GetValues(r, 3);
         double dd = 0;
         for (int k = 0; k < 3; k++)
-          {
+        {
           double d = r[k] - position[k];
           dd += d*d;
-          }
+        }
         if (dd/(spacing[2]*spacing[2]) < 1e-8)
-          {
+        {
           this->SourceInstanceArray->SetComponent(i, 0, j);
           usedInstances[j] = true;
           foundOne = true;
           break;
-          }
         }
       }
+    }
 
     mismatch = !foundOne;
-    }
+  }
 
   delete [] usedInstances;
 
   if (mismatch)
-    {
+  {
     this->SourceInstanceArray->Delete();
     this->SourceInstanceArray = 0;
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -577,33 +577,33 @@ void vtkDICOMGeneratorComputeHistogram(
   vtkIdType *histogram)
 {
   if (n > 0)
-    {
+  {
     if (nComponents == totalComponents)
-      {
+    {
       do { histogram[*ptr++]++; } while (--n > 0);
-      }
+    }
     else if (nComponents == 1)
-      {
+    {
       do
-        {
+      {
         histogram[*ptr]++;
         ptr += totalComponents;
         n -= totalComponents;
-        }
-      while (n > 0);
       }
+      while (n > 0);
+    }
     else
-      {
+    {
       do
-        {
+      {
         int m = nComponents;
         do { histogram[*ptr++]++; } while (--m > 0);
         ptr += (totalComponents - nComponents);
         n -= totalComponents;
-        }
-      while (n > 0);
       }
+      while (n > 0);
     }
+  }
 }
 
 } // end anonymous namespace
@@ -623,14 +623,14 @@ void vtkDICOMGenerator::ComputePixelValueRange(
   data->GetExtent(extent);
   info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), wholeExtent);
   for (int i = 0; i < 6; i++)
-    {
+  {
     if (extent[i] != wholeExtent[i])
-      {
+    {
       seriesRange[0] = 0;
       seriesRange[1] = -1;
       return;
-      }
     }
+  }
 
   vtkDataArray *a = data->GetPointData()->GetScalars();
   vtkIdType nt = a->GetNumberOfTuples();
@@ -645,15 +645,15 @@ void vtkDICOMGenerator::ComputePixelValueRange(
   seriesRange[1] = static_cast<int>(range[1]);
 
   if (this->RangeArray)
-    {
+  {
     this->RangeArray->Delete();
     this->RangeArray = 0;
-    }
+  }
 
   if (this->ScalarType == VTK_UNSIGNED_SHORT ||
       this->ScalarType == VTK_SHORT || this->ScalarType == VTK_SIGNED_CHAR ||
       this->ScalarType == VTK_UNSIGNED_CHAR)
-    {
+  {
     vtkIdType *h = new vtkIdType[seriesRange[1] - seriesRange[0] + 1];
     vtkIdType *histogram = h - seriesRange[0];
 
@@ -663,9 +663,9 @@ void vtkDICOMGenerator::ComputePixelValueRange(
     int nvector = (this->Dimensions[4] > 0 ? this->Dimensions[4] : 1);
     int sliceSize = npixels/(npositions*ntimes);
     if (this->TimeAsVector)
-      {
+    {
       sliceSize = npixels/npositions;
-      }
+    }
 
     int nframes = this->SliceIndexArray->GetNumberOfComponents();
     int ninstances = this->SliceIndexArray->GetNumberOfTuples();
@@ -676,9 +676,9 @@ void vtkDICOMGenerator::ComputePixelValueRange(
     this->RangeArray->SetNumberOfTuples(ntotal);
 
     for (int i = 0; i < ninstances; i++)
-      {
+    {
       for (int j = 0; j < nframes; j++)
-        {
+      {
         int k = i*nframes + j;
         int idx = 0;
         int s = this->SliceIndexArray->GetComponent(i, j);
@@ -686,22 +686,22 @@ void vtkDICOMGenerator::ComputePixelValueRange(
         int n = nc/nvector; // ntimes*samplesPerPixel
         idx += s*sliceSize;
         if (this->TimeAsVector)
-          {
+        {
           n /= ntimes; // samplesPerPixel
           int t = v/nvector;
           v = v % nvector;
           idx += t*nvector*n;
-          }
+        }
         idx += v*n;
 
         void *ptr = a->GetVoidPointer(idx);
         for (int hi = seriesRange[0]; hi <= seriesRange[1]; hi++)
-          {
+        {
           histogram[hi] = 0;
-          }
+        }
 
         switch (this->ScalarType)
-          {
+        {
           case VTK_UNSIGNED_SHORT:
             vtkDICOMGeneratorComputeHistogram(
               static_cast<unsigned short *>(ptr), sliceSize, n, nc, histogram);
@@ -718,7 +718,7 @@ void vtkDICOMGenerator::ComputePixelValueRange(
             vtkDICOMGeneratorComputeHistogram(
               static_cast<signed char *>(ptr), sliceSize, n, nc, histogram);
             break;
-          }
+        }
 
         // compute the min/max from the histogram,
         // also try to compute window/level as 99th percentile
@@ -731,18 +731,18 @@ void vtkDICOMGenerator::ComputePixelValueRange(
         int minVal = seriesRange[0] - 1;
         int maxVal = seriesRange[0];
         for (int hi = seriesRange[0]; hi <= seriesRange[1]; hi++)
-          {
+        {
           vtkIdType b = histogram[hi];
           sum += b;
           lowVal = (sum > lowSum ? lowVal : hi);
           highVal = (sum > highSum ? highVal : hi);
           minVal = (sum > 0 ? minVal : hi);
           maxVal = (b == 0 ? maxVal : hi);
-          }
+        }
         if (minVal < maxVal)
-          {
+        {
           minVal++;
-          }
+        }
         // expand the window slightly, but keep within total range
         int lowExpansion = static_cast<int>((highVal - lowVal)*0.1);
         int highExpansion = static_cast<int>((highVal - lowVal)*0.1);
@@ -757,20 +757,20 @@ void vtkDICOMGenerator::ComputePixelValueRange(
         tp[2] = lowVal;
         tp[3] = highVal;
         this->RangeArray->SetTupleValue(k, tp);
-        }
       }
+    }
 
     delete [] h;
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMGenerator::InitializeMetaData(vtkInformation *info)
 {
   if (this->MetaData)
-    {
+  {
     this->MetaData->Delete();
-    }
+  }
   this->MetaData = vtkDICOMMetaData::New();
   vtkDICOMMetaData *meta = this->MetaData;
 
@@ -790,23 +790,23 @@ void vtkDICOMGenerator::InitializeMetaData(vtkInformation *info)
   // compute the SliceIndexArray, either use one multi-frame file to save
   // the data or use a series of non-multi-frame files
   if (this->MultiFrame)
-    {
+  {
     this->NumberOfFrames = nframes;
     this->SliceIndexArray->SetNumberOfComponents(nframes);
     this->SliceIndexArray->SetNumberOfTuples(1);
     this->ComponentIndexArray->SetNumberOfComponents(nframes);
     this->ComponentIndexArray->SetNumberOfTuples(1);
     meta->SetNumberOfInstances(1);
-    }
+  }
   else
-    {
+  {
     this->NumberOfFrames = 0;
     this->SliceIndexArray->SetNumberOfComponents(1);
     this->SliceIndexArray->SetNumberOfTuples(nframes);
     this->ComponentIndexArray->SetNumberOfComponents(1);
     this->ComponentIndexArray->SetNumberOfTuples(nframes);
     meta->SetNumberOfInstances(nframes);
-    }
+  }
 
   // Reversing slice ordering isn't necessary if the ImagePlane module
   // is present, because then every file has an ImagePositionPatient,
@@ -816,53 +816,53 @@ void vtkDICOMGenerator::InitializeMetaData(vtkInformation *info)
   // dimension) comes before the slice dimension in the files.
   bool switchDimensions = false;
   for (int k = 0; k < 4; k++)
-    {
+  {
     int m = nframes/numSlices;
     int n = m/numTimeSlots;
     for (int i = 0; i < nframes; i++)
-      {
+    {
       int componentIdx = (switchDimensions ? i / numSlices : i % m);
       int sliceIdx = (switchDimensions ? i % numSlices : i / m);
       sliceIdx = (reverseSlices ? (numSlices - sliceIdx - 1) : sliceIdx);
       if (!this->TimeAsVector)
-        {
+      {
         int timeIdx = componentIdx / n;
         componentIdx = componentIdx % n;
         sliceIdx = sliceIdx*numTimeSlots + timeIdx;
-        }
+      }
       this->SliceIndexArray->SetValue(i, sliceIdx);
       this->ComponentIndexArray->SetValue(i, componentIdx);
-      }
+    }
 
     // Try to match each generated slice to an input slice
     this->MatchInstances(this->SourceMetaData);
 
     if (this->SourceInstanceArray)
-      {
+    {
       // If MatchInstances generated a reversed array, try again with
       // the slices in the opposite order.
       if (this->SourceInstanceArray->GetComponent(0, 0) >
           this->SourceInstanceArray->GetComponent(nframes-1, 0))
-        {
+      {
         reverseSlices = !reverseSlices;
         continue;
-        }
+      }
 
       // If MatchInstances generated a shuffled array, try again with
       // a different dimension ordering.
       for (int j = 1; j < nframes; j++)
-        {
+      {
         if (this->SourceInstanceArray->GetComponent(j-1, 0) >
             this->SourceInstanceArray->GetComponent(j, 0))
-          {
+        {
           switchDimensions = !switchDimensions;
           continue;
-          }
         }
       }
+    }
 
     break;
-    }
+  }
 
   this->ComputePixelValueRange(info, this->PixelValueRange);
 }
@@ -875,79 +875,79 @@ bool vtkDICOMGenerator::CopyRequiredAttributes(
 
   if (source && source == this->SourceMetaData && this->SourceInstanceArray &&
       source->HasAttribute(DC::PerFrameFunctionalGroupsSequence))
-    {
+  {
     while (*tags != DC::ItemDelimitationItem)
-      {
+    {
       vtkDICOMTag tag = *tags++;
       vtkDICOMMetaDataAdapter sourceAdapter(source);
       bool nonevalid = true;
       int n = meta->GetNumberOfInstances();
       for (int i = 0; i < n; i++)
-        {
+      {
         int j = this->SourceInstanceArray->GetComponent(i, 0);
         const vtkDICOMValue& v = sourceAdapter->GetAttributeValue(j, tag);
         if (v.IsValid())
-          {
+        {
           nonevalid = false;
           meta->SetAttributeValue(i, tag, v);
-          }
         }
+      }
       if (nonevalid)
-        {
+      {
         // set the attribute to zero-length value.
         vtkDICOMVR vr = meta->FindDictVR(0, tag);
         if (vr != vtkDICOMVR::UN)
-          {
+        {
           meta->SetAttributeValue(tag, vtkDICOMValue(vr));
-          }
         }
       }
     }
+  }
   else if (source)
-    {
+  {
     while (*tags != DC::ItemDelimitationItem)
-      {
+    {
       vtkDICOMTag tag = *tags++;
       vtkDICOMDataElementIterator iter = source->Find(tag);
       if (iter != source->End())
-        {
+      {
         if (!iter->IsPerInstance())
-          {
+        {
           meta->SetAttributeValue(tag, iter->GetValue());
-          }
+        }
         else if (this->SourceInstanceArray && source == this->SourceMetaData)
-          {
+        {
           int n = meta->GetNumberOfInstances();
           for (int i = 0; i < n; i++)
-            {
+          {
             int j = this->SourceInstanceArray->GetComponent(i, 0);
             meta->SetAttributeValue(i, tag, iter->GetValue(j));
-            }
           }
         }
+      }
       else
-        {
+      {
         // set the attribute to zero-length value.
         vtkDICOMVR vr = meta->FindDictVR(0, tag);
         if (vr != vtkDICOMVR::UN)
-          {
+        {
           meta->SetAttributeValue(tag, vtkDICOMValue(vr));
-          }
         }
       }
     }
+  }
   else
-    {
+  {
     while (*tags != DC::ItemDelimitationItem)
-      {
+    {
       vtkDICOMTag tag = *tags++;
       vtkDICOMVR vr = meta->FindDictVR(0, tag);
       if (vr != vtkDICOMVR::UN)
-        {
+      {
         meta->SetAttributeValue(tag, vtkDICOMValue(vr));
-        }
       }
     }
+  }
 
   return true;
 }
@@ -960,47 +960,47 @@ bool vtkDICOMGenerator::CopyOptionalAttributes(
 
   if (source && source == this->SourceMetaData && this->SourceInstanceArray &&
       source->HasAttribute(DC::PerFrameFunctionalGroupsSequence))
-    {
+  {
     while (*tags != DC::ItemDelimitationItem)
-      {
+    {
       vtkDICOMTag tag = *tags++;
       vtkDICOMMetaDataAdapter sourceAdapter(source);
       int n = meta->GetNumberOfInstances();
       for (int i = 0; i < n; i++)
-        {
+      {
         int j = this->SourceInstanceArray->GetComponent(i, 0);
         const vtkDICOMValue& v = sourceAdapter->GetAttributeValue(j, tag);
         if (v.IsValid())
-          {
+        {
           meta->SetAttributeValue(i, tag, v);
-          }
         }
       }
     }
+  }
   else if (source)
-    {
+  {
     while (*tags != DC::ItemDelimitationItem)
-      {
+    {
       vtkDICOMTag tag = *tags++;
       vtkDICOMDataElementIterator iter = source->Find(tag);
       if (iter != source->End())
-        {
+      {
         if (!iter->IsPerInstance())
-          {
+        {
           meta->SetAttributeValue(tag, iter->GetValue());
-          }
+        }
         else if (this->SourceInstanceArray && source == this->SourceMetaData)
-          {
+        {
           int n = meta->GetNumberOfInstances();
           for (int i = 0; i < n; i++)
-            {
+          {
             int j = this->SourceInstanceArray->GetComponent(i, 0);
             meta->SetAttributeValue(i, tag, iter->GetValue(j));
-            }
           }
         }
       }
     }
+  }
 
   return true;
 }
@@ -1028,17 +1028,17 @@ bool vtkDICOMGenerator::GenerateSOPCommonModule(
   uids->SetNumberOfValues(n);
   this->GenerateUIDs(DC::SOPInstanceUID, uids);
   for (int i = 0; i < n; i++)
-    {
+  {
     meta->SetAttributeValue(i, DC::SOPInstanceUID, uids->GetValue(i));
-    }
+  }
 
   // set the InstanceCreationDate and Time
   const char *tz = 0;
   if (source)
-    {
+  {
     tz = source->GetAttributeValue(
       DC::TimezoneOffsetFromUTC).GetCharData();
-    }
+  }
   std::string dt = vtkDICOMUtilities::GenerateDateTime(tz);
   meta->SetAttributeValue(DC::InstanceCreationDate, dt.substr(0, 8));
   meta->SetAttributeValue(DC::InstanceCreationTime, dt.substr(8, 13));
@@ -1134,14 +1134,14 @@ bool vtkDICOMGenerator::GenerateGeneralStudyModule(vtkDICOMMetaData *source)
   // The StudyInstanceUID is mandatory.
   std::string studyUID;
   if (source)
-    {
+  {
     studyUID = source->GetAttributeValue(
       DC::StudyInstanceUID).AsString();
-    }
+  }
   if (studyUID == "")
-    {
+  {
     studyUID = this->GenerateUID(DC::StudyInstanceUID);
-    }
+  }
   vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::StudyInstanceUID, studyUID);
 
@@ -1229,47 +1229,47 @@ bool vtkDICOMGenerator::GenerateGeneralSeriesModule(vtkDICOMMetaData *source)
   // and it must agree with the SOP Class IOD.
   std::string m;
   if (source)
-    {
+  {
     m = source->GetAttributeValue(DC::Modality).AsString();
-    }
+  }
   if (m == "")
-    {
+  {
     m = "OT"; // Other, i.e. unknown
-    }
+  }
   meta->SetAttributeValue(DC::Modality, m);
 
   // Set pixel min/max information
   if (this->ScalarType != VTK_INT && this->ScalarType != VTK_UNSIGNED_INT)
-    {
+  {
     // Get the pixel VR
     vtkDICOMVR pixelVR = vtkDICOMVR::US;
     if (this->ScalarType == VTK_SIGNED_CHAR ||
         this->ScalarType == VTK_SHORT)
-      {
+    {
       pixelVR = vtkDICOMVR::SS;
-      }
+    }
 
     // Force it to conform the VRs allowed by the SOP Class
     if ((this->AllowedPixelRepresentation & RepresentationSigned) == 0)
-      {
+    {
       pixelVR = vtkDICOMVR::US;
-      }
+    }
     else if ((this->AllowedPixelRepresentation & RepresentationUnsigned) == 0)
-      {
+    {
       pixelVR = vtkDICOMVR::SS;
-      }
+    }
 
     // These are optional, but very nice to have
     if (this->PixelValueRange[0] <= this->PixelValueRange[1])
-      {
+    {
       meta->SetAttributeValue(
         DC::SmallestPixelValueInSeries,
         vtkDICOMValue(pixelVR, this->PixelValueRange[0]));
       meta->SetAttributeValue(
         DC::LargestPixelValueInSeries,
         vtkDICOMValue(pixelVR, this->PixelValueRange[1]));
-      }
     }
+  }
 
   // required items: use simple read/write validation
   DC::EnumType required[] = {
@@ -1338,16 +1338,16 @@ bool vtkDICOMGenerator::GenerateFrameOfReferenceModule(
   // Note that, depending on how the image has been manipulated,
   // the frame of reference might have changed.
   if (source)
-    {
+  {
     uid = source->GetAttributeValue(
       DC::FrameOfReferenceUID).AsString();
     fid = source->GetAttributeValue(
       DC::PositionReferenceIndicator).AsString();
-    }
+  }
   if (uid == "")
-    {
+  {
     uid = this->GenerateUID(DC::FrameOfReferenceUID);
-    }
+  }
 
   vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::FrameOfReferenceUID, uid);
@@ -1395,10 +1395,10 @@ bool vtkDICOMGenerator::GenerateGeneralImageModule(
   vtkDICOMMetaData *meta = this->MetaData;
   int n = meta->GetNumberOfInstances();
   for (int i = 0; i < n; i++)
-    {
+  {
     unsigned int instance = i + 1;
     meta->SetAttributeValue(i, DC::InstanceNumber, instance);
-    }
+  }
 
   // PatientInformation is required if no ImagePlane module is present,
   // it will be overwritten if a real value is found
@@ -1446,9 +1446,9 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *source)
 
   int timeSlices = 1;
   if (!this->TimeAsVector && this->Dimensions[3] > 0)
-    {
+  {
     timeSlices = this->Dimensions[3];
-    }
+  }
 
   // remove attributes that conflict with this module
   vtkDICOMMetaData *meta = this->MetaData;
@@ -1463,7 +1463,7 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *source)
   int n = meta->GetNumberOfInstances();
   double zorigin = origin[2];
   for (int i = 0; i < n; i++)
-    {
+  {
     int sliceIdx = this->SliceIndexArray->GetComponent(i, 0);
     // remove the time from the slice index
     sliceIdx /= timeSlices;
@@ -1493,32 +1493,32 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *source)
 
     // use the original value if possible, to avoid surprises
     if (this->SourceInstanceArray && source == this->SourceMetaData && source)
-      {
+    {
       vtkDICOMMetaDataAdapter sourceAdapter(source);
       if (sourceAdapter->HasAttribute(DC::SliceLocation))
-        {
+      {
         int j = this->SourceInstanceArray->GetComponent(i, 0);
         location = sourceAdapter->GetAttributeValue(
           j, DC::SliceLocation).AsDouble();
-        }
       }
+    }
 
     meta->SetAttributeValue(i, DC::SliceLocation, location);
-    }
+  }
 
   // the original SliceThickness should be used if it is still valid,
   // i.e. if the slices are original slices rather than reformatted.
   double thickness = 0;
   if (this->SourceInstanceArray && source == this->SourceMetaData && source)
-    {
+  {
     vtkDICOMMetaDataAdapter sourceAdapter(source);
     thickness = sourceAdapter->GetAttributeValue(
       0, DC::SliceThickness).AsDouble();
-    }
+  }
   if (thickness <= 0)
-    {
+  {
     thickness = fabs(spacing[2]);
-    }
+  }
   meta->SetAttributeValue(DC::SliceThickness, thickness);
 
   return true;
@@ -1535,7 +1535,7 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *source)
   short pixelrep = 0;
 
   switch (this->ScalarType)
-    {
+  {
     case VTK_SIGNED_CHAR:
       pixelrep = 1;
       pixelbits = 8;
@@ -1560,90 +1560,90 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *source)
       break;
     default:
       break;
-    }
+  }
 
   if (pixelbits == 0)
-    {
+  {
     vtkErrorMacro("Illegal scalar type: " <<
       vtkImageScalarTypeNameMacro(this->ScalarType));
     return false;
-    }
+  }
 
   // modify the type based on what SOP allows
   int storedbits = pixelbits;
   if ((this->AllowedPixelRepresentation & (1 << pixelrep)) == 0)
-    {
+  {
     // if data is signed but no negative values are present,
     // then write as unsigned if SOP Class doesn't allow signed
     if (pixelrep == 1 && this->PixelValueRange[0] >= 0)
-      {
+    {
       pixelrep = 0;
-      }
+    }
     else
-      {
+    {
       vtkErrorMacro("This SOP class requires unsigned values.");
       return false;
-      }
     }
+  }
   if ((this->AllowedBitsStored & (1 << (pixelbits-1))) == 0)
-    {
+  {
     vtkErrorMacro("Illegal scalar type: " <<
       vtkImageScalarTypeNameMacro(this->ScalarType));
-    }
+  }
   // reduce BitsStored if the SOP class allows
   unsigned int minv = static_cast<unsigned int>(-this->PixelValueRange[0]);
   unsigned int maxv = static_cast<unsigned int>(this->PixelValueRange[1]);
   for (int bi = pixelbits/2 + 1; bi < pixelbits; bi++)
-    {
+  {
     if ((this->AllowedBitsStored & (1u << bi)) != 0 &&
         ((pixelrep == 0 && maxv < (1u << (bi + 1))) ||
          (pixelrep == 1 && maxv < (1u << bi) && minv <= (1u << bi))))
-      {
+    {
       storedbits = bi + 1;
       break;
-      }
     }
+  }
 
   if (rows > 65535 || cols > 65535)
-    {
+  {
     vtkErrorMacro("Image dimensions " << rows << "x"
       << cols << " are too large for DICOM");
     return false;
-    }
+  }
 
   vtkDICOMMetaData *meta = this->MetaData;
   bool paletteColor = false;
   if (this->NumberOfColorComponents >= 3)
-    {
+  {
     meta->SetAttributeValue(DC::SamplesPerPixel, 3);
     meta->SetAttributeValue(DC::PlanarConfiguration, 0);
     meta->SetAttributeValue(DC::PhotometricInterpretation, "RGB");
-    }
+  }
   else
-    {
+  {
     meta->SetAttributeValue(DC::SamplesPerPixel, 1);
 
     std::string pm;
     if (source)
-      {
+    {
       pm = source->GetAttributeValue(
         DC::PhotometricInterpretation).AsString();
-      }
+    }
     if ((pm == "PALETTE COLOR" || pm == "PALETTE_COLOR") &&
         source && source->HasAttribute(DC::RedPaletteColorLookupTableData))
-      {
+    {
       pm = "PALETTE COLOR";
       paletteColor = true;
-      }
-    else if (pm != "MONOCHROME1")
-      {
-      pm = "MONOCHROME2";
-      }
-    meta->SetAttributeValue(DC::PhotometricInterpretation, pm);
     }
+    else if (pm != "MONOCHROME1")
+    {
+      pm = "MONOCHROME2";
+    }
+    meta->SetAttributeValue(DC::PhotometricInterpretation, pm);
+  }
 
   if (paletteColor && source)
-    {
+  {
     static const DC::EnumType palette[] = {
       DC::RedPaletteColorLookupTableDescriptor,
       DC::GreenPaletteColorLookupTableDescriptor,
@@ -1654,11 +1654,11 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *source)
       DC::ItemDelimitationItem
     };
     for (int i = 0; palette[i] != DC::ItemDelimitationItem; i++)
-      {
+    {
       meta->SetAttributeValue(palette[i],
         source->GetAttributeValue(palette[i]));
-      }
     }
+  }
 
   meta->SetAttributeValue(DC::Rows, rows);
   meta->SetAttributeValue(DC::Columns, cols);
@@ -1669,55 +1669,55 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *source)
 
   // This cannot be set if PixelSpacing is set
   if (!meta->HasAttribute(DC::PixelSpacing))
-    {
+  {
     int aspect[2];
     vtkDICOMGenerator::ComputeAspectRatio(this->Spacing, aspect);
     meta->SetAttributeValue(
       DC::PixelAspectRatio,
       vtkDICOMValue(vtkDICOMVR::IS, aspect, 2));
-    }
+  }
 
   // The Smallest/LargestPixelValue are optional, but nice to have
   if (this->RangeArray)
-    {
+  {
     // Get the pixel VR
     vtkDICOMVR pixelVR = vtkDICOMVR::US;
     if (this->ScalarType == VTK_SIGNED_CHAR ||
         this->ScalarType == VTK_SHORT)
-      {
+    {
       pixelVR = vtkDICOMVR::SS;
-      }
+    }
 
     // Force it to conform the VRs allowed by the SOP Class
     if ((this->AllowedPixelRepresentation & RepresentationSigned) == 0)
-      {
+    {
       pixelVR = vtkDICOMVR::US;
-      }
+    }
     else if ((this->AllowedPixelRepresentation & RepresentationUnsigned) == 0)
-      {
+    {
       pixelVR = vtkDICOMVR::SS;
-      }
+    }
 
     int n = meta->GetNumberOfInstances();
     for (int i = 0; i < n; i++)
-      {
+    {
       int nframes = (this->NumberOfFrames > 0 ? this->NumberOfFrames : 1);
       int minVal = VTK_INT_MAX;
       int maxVal = VTK_INT_MIN;
       for (int j = 0; j < nframes; j++)
-        {
+      {
         int v = this->RangeArray->GetComponent(i*nframes + j, 0);
         minVal = (minVal <= v ? minVal : v);
         v = this->RangeArray->GetComponent(i*nframes + j, 1);
         maxVal = (maxVal >= v ? maxVal : v);
-        }
+      }
 
       meta->SetAttributeValue(
         i, DC::SmallestImagePixelValue, vtkDICOMValue(pixelVR, minVal));
       meta->SetAttributeValue(
         i, DC::LargestImagePixelValue, vtkDICOMValue(pixelVR, maxVal));
-      }
     }
+  }
 
   return true;
 }
@@ -1813,21 +1813,21 @@ bool vtkDICOMGenerator::GenerateOverlayPlaneModule(vtkDICOMMetaData *source)
   // overlay is a repeating group, it repeats 16 times
   DC::EnumType tags[16];
   for (int i = 0; i < 16; i++)
-    {
+  {
     if (source && source->HasAttribute(vtkDICOMTag(0x6000 + i*2, 0x0010)))
-      {
+    {
       for (int j = 0; j < 12; j++)
-        {
+      {
         tags[j] = static_cast<DC::EnumType>(basetags[j] + i*0x20000);
-        }
+      }
       tags[13] = DC::ItemDelimitationItem;
 
       if (!this->CopyOptionalAttributes(tags, source))
-        {
+      {
         return false;
-        }
       }
     }
+  }
 
   return true;
 }
@@ -1842,36 +1842,36 @@ bool vtkDICOMGenerator::GenerateVOILUTModule(vtkDICOMMetaData *source)
       this->RangeArray &&
       (this->ScalarType == VTK_SHORT ||
        this->ScalarType == VTK_UNSIGNED_SHORT))
-    {
+  {
     int n = meta->GetNumberOfInstances();
     int m = static_cast<int>(this->RangeArray->GetNumberOfTuples()/n);
     for (int i = 0; i < n; i++)
-      {
+    {
       int lowVal = this->RangeArray->GetComponent(i*m, 2);
       int highVal = this->RangeArray->GetComponent(i*m, 3);
       // set a limit on how tight the window can be
       if (highVal - lowVal < 20)
-        {
+      {
         highVal = lowVal + 20;
-        }
+      }
       // make sure that WindowCenter will be an integer
       if ((highVal - lowVal) % 2 != 0)
-        {
+      {
         if (lowVal > 0)
-          {
+        {
           lowVal--;
-          }
-        else
-          {
-          highVal--;
-          }
         }
+        else
+        {
+          highVal--;
+        }
+      }
       meta->SetAttributeValue(i, DC::WindowCenter, 0.5*(highVal + lowVal));
       meta->SetAttributeValue(i, DC::WindowWidth, 1.0*(highVal - lowVal));
-      }
+    }
 
     return true;
-    }
+  }
 
   // if data is real-valued like CT, then use original window/level
   static const DC::EnumType tags[] = {

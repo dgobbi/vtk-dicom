@@ -60,39 +60,39 @@ int vtkDICOMUtilities::CompareUIDs(const char *u1, const char *u2)
   int r = 0;
 
   if (u1 == 0 || u2 == 0)
-    {
+  {
     // if one or both are null
     r = (u2 == 0 ? r : -1);
     r = (u1 == 0 ? r : 1);
-    }
+  }
   else
-    {
+  {
     while (r == 0 && *u1 != 0 && *u2 != 0)
-      {
+    {
       int i1 = 0;
       int i2 = 0;
       do { i1++; } while (isdigit(u1[i1]));
       do { i2++; } while (isdigit(u2[i2]));
       r = i1 - i2; // longer number wins
       if (r == 0)
-        { // lexically compare numbers of the same length
+      { // lexically compare numbers of the same length
         do { r = *u1++ - *u2++; } while (r == 0 && --i1 != 0);
-        }
       }
+    }
 
     if (r == 0)
-      {
+    {
       // uid with remaining parts wins
       r = (*u2 == 0 ? r : -1);
       r = (*u1 == 0 ? r : 1);
-      }
+    }
     else
-      {
+    {
       // convert r to sgn(r)
       r = (r >= 0 ? r : -1);
       r = (r <= 0 ? r : 1);
-      }
     }
+  }
 
   return r;
 }
@@ -108,7 +108,7 @@ long long vtkDICOMUtilities::GetUTC(long long *offset)
                   static_cast<long long>(ft.dwLowDateTime));
 
   if (offset)
-    {
+  {
     // get the current timezone offset by subtracting UTC from local time
     TIME_ZONE_INFORMATION tzi;
     GetTimeZoneInformation(&tzi);
@@ -122,15 +122,15 @@ long long vtkDICOMUtilities::GetUTC(long long *offset)
     long long tzo = ((static_cast<long long>(lft.dwHighDateTime) << 32) +
                      static_cast<long long>(lft.dwLowDateTime) - t1);
     if (tzo >= 0)
-      {
+    {
       tzo = (tzo + 5000000)/10000000;
-      }
-    else
-      {
-      tzo = -((-tzo + 5000000)/10000000);
-      }
-    *offset = tzo*1000000;
     }
+    else
+    {
+      tzo = -((-tzo + 5000000)/10000000);
+    }
+    *offset = tzo*1000000;
+  }
 
   // convert file time to unix time
   return t1/10 - 11644473600000000ll;
@@ -141,21 +141,21 @@ long long vtkDICOMUtilities::GetUTC(long long *offset)
   gettimeofday(&tv, 0);
   long long t = (tv.tv_sec*1000000ll + tv.tv_usec);
   if (offset)
-    {
+  {
     static long long lastT = 0;
     if (t - lastT > 1000000ll)
-      {
+    {
       // this is needed on some systems to set timezone info,
       // because it might do I/O do it at most once per second
       tzset();
       lastT = t;
-      }
+    }
     // use localtime to get the offset from utc
     struct tm tmv;
     time_t tod = static_cast<time_t>(t/1000000);
     localtime_r(&tod, &tmv);
     *offset = tmv.tm_gmtoff*1000000ll;
-    }
+  }
 
   return t;
 
@@ -180,32 +180,32 @@ std::string vtkDICOMUtilities::GenerateDateTime(
   // all time stamps for the data set
   if (z && strlen(z) == 5 && (z[0] == '+' || z[0] == '-') &&
       isdigit(z[1]) && isdigit(z[2]) && isdigit(z[3]) && isdigit(z[4]))
-    {
+  {
     int zh = (z[1] - '0')*10 + (z[2] - '0');
     int zm = (z[3] - '0')*10 + (z[4] - '0');
     zs = (zh*3600 + zm*60) * (z[0] == '-' ? -1 : +1) * 1000000ll;
-    }
+  }
 
   if (z == 0 || z[0] == '\0' || t == VTK_LONG_LONG_MIN)
-    {
+  {
     long long *zsp = 0;
     if (z == 0 || z[0] == '\0')
-      {
+    {
       zsp = &zs;
-      }
+    }
 
     long long t1 = vtkDICOMUtilities::GetUTC(zsp);
 
     if (t == VTK_LONG_LONG_MIN)
-      {
+    {
       t = t1;
-      }
     }
+  }
 
   // generate a new timezone offset string
   char tzs[6] = { '+', '0', '0', '0', '0', '\0' };
   if (z == 0 || z[0] == '\0')
-    {
+  {
     long long zst = zs/1000000;
     tzs[0] = (zst < 0 ? '-' : '+');
     zst = (zst < 0 ? -zst : zst);
@@ -213,7 +213,7 @@ std::string vtkDICOMUtilities::GenerateDateTime(
             static_cast<int>((zst/3600)%24),
             static_cast<int>((zst%3600)/60));
     z = tzs;
-    }
+  }
 
   // add the time zone offset (in microseconds)
   t += zs;
@@ -235,9 +235,9 @@ std::string vtkDICOMUtilities::GenerateDateTime(
   int m = j + 2 - (12 * ell);
   int y = 100 * (n - 49) + i + ell;
   if (y > 9999)
-    {
+  {
     y = 9999;
-    }
+  }
 
   // convert microseconds to hours/minutes/seconds.microseconds
   int S = static_cast<int>(tus/1000000);
@@ -262,34 +262,34 @@ long long vtkDICOMUtilities::ConvertDateTime(const char *datetime)
   const char *epoch = "19700101000000.000000+0000";
   char normalized[27];
   for (int i = 0; i < 27; i++)
-    {
+  {
     normalized[i] = epoch[i];
-    }
+  }
   char *tp = normalized;
   const char *cp = datetime;
   while (*tp != 0 && *cp >= '0' && *cp <= '9')
-    {
+  {
     *tp++ = *cp++;
-    }
+  }
   if (*tp == '.' && *cp == '.')
-    {
+  {
     *tp++ = *cp++;
     while (*tp != 0 && *cp >= '0' && *cp <= '9')
-      {
-      *tp++ = *cp++;
-      }
-    }
-  if (*cp == '-' || *cp == '+')
     {
+      *tp++ = *cp++;
+    }
+  }
+  if (*cp == '-' || *cp == '+')
+  {
     tp = normalized + 21;
     *tp++ = *cp++;
     while (*tp != 0 && *cp >= '0' && *cp <= '9')
-      {
-      *tp++ = *cp++;
-      }
-    }
-  else
     {
+      *tp++ = *cp++;
+    }
+  }
+  else
+  {
     // use local time zone
     long long offset = 0;
     vtkDICOMUtilities::GetUTC(&offset);
@@ -305,7 +305,7 @@ long long vtkDICOMUtilities::ConvertDateTime(const char *datetime)
     tp[3] = M/10 + '0';
     tp[4] = M%10 + '0';
     tp[5] = 0;
-    }
+  }
 
   // convert normalized datetime to year, month, day etc.
   // first, convert all digits (and only digits) to binary values
@@ -313,9 +313,9 @@ long long vtkDICOMUtilities::ConvertDateTime(const char *datetime)
   normalized[14] += '0';
   normalized[21] += '0';
   for (int i = 0; i < 26; i++)
-    {
+  {
     normalized[i] -= '0';
-    }
+  }
 
   int y = tp[0]*1000 + tp[1]*100 + tp[2]*10 + tp[3];
   int m = tp[4]*10 + tp[5];
@@ -329,9 +329,9 @@ long long vtkDICOMUtilities::ConvertDateTime(const char *datetime)
   // get the timezone offset, in seconds
   int tzs = (tp[22]*600 + tp[23]*60 + tp[24]*10 + tp[25])*60;
   if (tp[21] == '-')
-    {
+  {
     tzs = -tzs;
-    }
+  }
 
   // use algorithm from Henry F. Fliegel and Thomas C. Van Flandern
   // to compute the day according to Gregorian calendar
@@ -354,65 +354,65 @@ bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
   unsigned char buffer[256];
 
   if (filename == 0)
-    {
+  {
     return false;
-    }
+  }
 
   vtkDICOMFile infile(filename, vtkDICOMFile::In);
 
   if (infile.GetError() != 0)
-    {
+  {
     return false;
-    }
+  }
 
   // valid file should be at least 256 chars long (probably longer)
   size_t size = infile.GetSize();
   if (size < sizeof(buffer))
-    {
+  {
     return 0;
-    }
+  }
   size = sizeof(buffer);
 
   size_t rsize = infile.Read(buffer, size);
   infile.Close();
   if (rsize != static_cast<size_t>(size))
-    {
+  {
     return false;
-    }
+  }
 
   const unsigned char *cp = buffer;
 
   // Look for the magic number and the first meta header tag.
   size_t skip = 128;
   for (int i = 0; i < 2; i++)
-    {
+  {
     if (size > skip + 8)
-      {
+    {
       cp = &buffer[skip];
       if (cp[0] == 'D' && cp[1] == 'I' && cp[2] == 'C' && cp[3] == 'M' &&
           cp[4] == 2 && cp[5] == 0 && cp[6] == 0 && cp[7] == 0)
-        {
+      {
         return true;
-        }
       }
+    }
     // Some non-standard files have DICM at the beginning.
     skip = 0;
-    }
+  }
 
   // File must be a reasonable size.
   if (size < 256)
-    {
+  {
     return false;
-    }
+  }
 
   cp = buffer;
 
   // If no magic number found, look for a valid meta header.
   if (cp[0] == 2 && cp[1] == 0 && cp[2] == 0 && cp[3] == 0 &&
       cp[4] == 'U' && cp[5] == 'L' && cp[6] == 4 && cp[7] == 0)
-    {
+  {
     return true;
-    }
+  }
 
   // Look for two valid implicitly-encoded data elements in Group 0x0008,
   // where the first element must be (0008,0016) or less (e.g. SOPClassUID)
@@ -420,16 +420,16 @@ bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
   // or less (e.g. SOPInstanceUID) with a size of 64 or less.
   if (cp[0] == 0x08 && cp[1] == 0x00 && cp[2] <= 0x16 && cp[3] == 0x00 &&
       cp[4] <= 0x40 && cp[5] == 0x00 && cp[6] == 0x00 && cp[7] == 0x00)
-    {
+  {
     unsigned char e = cp[2];
     cp += (cp[4] + 8);
     if (cp[0] == 0x08 && cp[1] == 0x00 && cp[2] <= 0x18 && cp[3] == 0x00 &&
         cp[4] <= 0x40 && cp[5] == 0x00 && cp[6] == 0x00 && cp[7] == 0x00 &&
         cp[2] > e)
-      {
+    {
       return true;
-      }
     }
+  }
 
   return false;
 }
@@ -505,79 +505,79 @@ bool vtkDICOMUtilities::PatternMatches(
   const char *fp = val + vl;
 
   while (cp != ep && dp != fp)
-    {
+  {
     if (*cp == '*')
-      {
+    {
       cp++;
       // if '*' is the final character, it matches the remainder of val
       if (cp == ep)
-        {
+      {
         dp = fp;
-        }
+      }
       else
-        {
+      {
         while (dp != fp)
-          {
+        {
           if (*cp == '?' || *dp == *cp)
-            {
+          {
             // check if the remainder of val matches remainder of pattern
             if (PatternMatches(cp, ep-cp, dp, fp-dp))
-              {
+            {
               break;
-              }
             }
+          }
           // else let the "*" eat one more codepoint of "val"
           if (static_cast<signed char>(*dp++) < 0)
-            {
+          {
             while (dp != fp && (*dp & 0xC0) == 0x80)
-              {
+            {
               dp++;
-              }
             }
           }
         }
       }
+    }
     else if (*cp == '?')
-      {
+    {
       // the '?' matches a whole codepoint, not just one byte
       cp++;
       if (static_cast<signed char>(*dp++) < 0)
-        {
+      {
         while (dp != fp && (*dp & 0xC0) == 0x80)
-          {
+        {
           dp++;
-          }
         }
       }
+    }
     else if (*cp == *dp)
-      {
+    {
       // make sure the entire codepoint matches
       cp++;
       if (static_cast<signed char>(*dp++) < 0)
-        {
+      {
         while (cp != ep && dp != fp &&
                ((*cp & 0xC0) == 0x80 || (*dp & 0xC0) == 0x80))
-          {
+        {
           if (*dp != *cp)
-            {
+          {
             return false;
-            }
+          }
           cp++;
           dp++;
-          }
         }
       }
-    else
-      {
-      return false;
-      }
     }
+    else
+    {
+      return false;
+    }
+  }
 
   // skip over any remaining '*' wildcards
   while (cp != ep && *cp == '*')
-    {
+  {
     cp++;
-    }
+  }
 
   // make sure we've reached the end of both the pattern and the value
   return (cp == ep && dp == fp);

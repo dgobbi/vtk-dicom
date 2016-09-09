@@ -106,23 +106,23 @@ int main(int argc, char *argv[])
   int n = metaData->GetNumberOfDataElements();
   TestAssert(n == 2);
   for (int i = 0; i < n; i++)
-    {
+  {
     if (i == 0)
-      {
+    {
       TestAssert(iter->GetTag() == DC::AcquisitionDateTime);
       TestAssert(iter->GetVR() == vtkDICOMVR::DT);
       TestAssert(iter->GetValue().GetVL() == 26);
       TestAssert(iter->GetValue().AsString() == acquisitionTime);
-      }
+    }
     else
-      {
+    {
       TestAssert(iter->GetTag() == DC::Modality);
       TestAssert(iter->GetVR() == vtkDICOMVR::CS);
       TestAssert(iter->GetValue().GetVL() == 2);
       TestAssert(iter->GetValue().AsString() == "CT");
-      }
-    ++iter;
     }
+    ++iter;
+  }
   TestAssert(iter == iterEnd);
   metaData->Clear();
 
@@ -136,14 +136,14 @@ int main(int argc, char *argv[])
   n = metaData->GetNumberOfDataElements();
   TestAssert(n == 2);
   for (int i = 0; i < n; i++)
-    {
+  {
     if (i == 0)
-      {
+    {
       TestAssert(iter->GetTag() == DC::AcquisitionDateTime);
       TestAssert(iter->GetValue().AsString() == acquisitionTime);
-      }
+    }
     else
-      {
+    {
       // two values multiplexed together in one value
       TestAssert(iter->GetTag() == DC::Modality);
       vtkDICOMValue v = iter->GetValue();
@@ -151,9 +151,9 @@ int main(int argc, char *argv[])
       const vtkDICOMValue *vp = v.GetMultiplexData();
       TestAssert(vp[0].AsString() == "CT");
       TestAssert(vp[1].AsString() == "MR");
-      }
-    ++iter;
     }
+    ++iter;
+  }
   TestAssert(iter == iterEnd);
   metaData->Clear();
 
@@ -166,12 +166,12 @@ int main(int argc, char *argv[])
   TestAssert(iter->GetValue().AsString() == acquisitionTime);
   iter = metaData->Find(DC::Modality);
   if (iter != metaData->End())
-    {
+  {
     vtkDICOMValue v = iter->GetValue();
     const vtkDICOMValue *vp = v.GetMultiplexData();
     TestAssert(vp[0].AsString() == "CT");
     TestAssert(vp[1].AsString() == "MR");
-    }
+  }
   iter = metaData->Find(DC::StudyDate);
   TestAssert(iter == metaData->End());
   metaData->Clear();
@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
 
   // only add one item to the outer sequence
   for (int i = 0; i < 1; i++)
-    {
+  {
     // add the first data element to the item
     vtkDICOMItem item(metaData);
     item.SetAttributeValue(DC::SeriesInstanceUID,
@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
 
     // add ten items to this sequence
     for (int j = 0; j < 10; j++)
-      {
+    {
       // create a unique InstanceUID
       sprintf(instanceUID, instanceUIDFormat, 255+j);
       vtkDICOMItem item2(metaData);
@@ -209,14 +209,14 @@ int main(int argc, char *argv[])
       item2.SetAttributeValue(DC::ReferencedSOPInstanceUID,
         vtkDICOMValue(vtkDICOMVR::UI, instanceUID));
       seq2.AddItem(item2);
-      }
+    }
 
     // create the ReferencedInstanceSequence from the items
     item.SetAttributeValue(DC::ReferencedInstanceSequence, seq2);
 
     // add this sequence-containing item to the original sequence
     seq.SetItem(i, item);
-    }
+  }
 
   // test nested access with tag path
   metaData->SetAttributeValue(DC::ReferencedSeriesSequence, seq);
@@ -225,11 +225,11 @@ int main(int argc, char *argv[])
                     DC::SeriesInstanceUID));
   TestAssert(v2.GetCharData() != 0);
   if (v2.GetCharData())
-    {
+  {
     TestAssert(
       strcmp(v2.GetCharData(),
              "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239") == 0);
-    }
+  }
 
   // test access two levels deep
   v2 = metaData->GetAttributeValue(
@@ -238,9 +238,9 @@ int main(int argc, char *argv[])
                     DC::ReferencedSOPClassUID));
   TestAssert(v2.GetCharData() != 0);
   if (v2.GetCharData())
-    {
+  {
     TestAssert(strcmp(v2.GetCharData(), "1.2.840.10008.5.1.4.1.1.4") == 0);
-    }
+  }
 
   metaData->Clear();
 
@@ -253,7 +253,7 @@ int main(int argc, char *argv[])
                   "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
 
   for (int j = 0; j < 10; j++)
-    {
+  {
     // create a unique InstanceUID
     sprintf(instanceUID, instanceUIDFormat, 255+j);
     metaData->SetAttributeValue(
@@ -266,7 +266,7 @@ int main(int argc, char *argv[])
                       DC::ReferencedInstanceSequence, j,
                       DC::ReferencedSOPInstanceUID),
       instanceUID);
-    }
+  }
 
   // test nested access with tag path
   v2 = metaData->GetAttributeValue(
@@ -274,11 +274,11 @@ int main(int argc, char *argv[])
                     DC::SeriesInstanceUID));
   TestAssert(v2.GetCharData() != 0);
   if (v2.GetCharData())
-    {
+  {
     TestAssert(
       strcmp(v2.GetCharData(),
              "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239") == 0);
-    }
+  }
 
   // test access two levels deep
   v2 = metaData->GetAttributeValue(
@@ -287,20 +287,20 @@ int main(int argc, char *argv[])
                     DC::ReferencedSOPClassUID));
   TestAssert(v2.GetCharData() != 0);
   if (v2.GetCharData())
-    {
+  {
     TestAssert(strcmp(v2.GetCharData(), "1.2.840.10008.5.1.4.1.1.4") == 0);
-    }
+  }
   v2 = metaData->GetAttributeValue(
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::ReferencedInstanceSequence, 8,
                     DC::ReferencedSOPInstanceUID));
   TestAssert(v2.GetCharData() != 0);
   if (v2.GetCharData())
-    {
+  {
     TestAssert(0 == strcmp(
       v2.GetCharData(),
       "1.2.840.113619.2.176.2025.4110284.7408.1276101323.263"));
-    }
+  }
 
   metaData->Clear();
 
@@ -410,11 +410,11 @@ int main(int argc, char *argv[])
   TestAssert(!v2.IsValid());
   v2 = metaData->GetAttributeValue(vtkDICOMTagPath(DC::SeriesInstanceUID));
   if (v2.GetCharData())
-    {
+  {
     TestAssert(
       strcmp(v2.GetCharData(),
              "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239") == 0);
-    }
+  }
 
   // test using a tag path with a private sequence
   metaData->SetAttributeValue(
@@ -465,12 +465,12 @@ int main(int argc, char *argv[])
                     DC::SeriesInstanceUID),
     "1.2.840.113619.2.176.2025.4110284.747");
   for (int i = 0; i < 3; i++)
-    {
+  {
     v2 = metaData->GetAttributeValue(i,
       vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                       DC::SeriesInstanceUID));
     TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025.4110284.747");
-    }
+  }
 
   metaData->Clear();
 

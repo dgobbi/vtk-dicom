@@ -58,99 +58,99 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
   path.PushBack("*");
   const wchar_t *widename = path.Wide();
   if (widename == 0)
-    {
+  {
     this->Error = UnknownError;
-    }
+  }
   else
-    {
+  {
     WIN32_FIND_DATAW fileData;
     HANDLE h = FindFirstFileW(widename, &fileData);
     DWORD code = 0;
     if (h == INVALID_HANDLE_VALUE)
-      {
+    {
       code = GetLastError();
       if (code == ERROR_FILE_NOT_FOUND)
-        {
-        code = ERROR_NO_MORE_FILES;
-        }
-      }
-    else
       {
+        code = ERROR_NO_MORE_FILES;
+      }
+    }
+    else
+    {
       // each utf-16 wchar converts to three or fewer utf-8 bytes
       int n = MAX_PATH*3;
       char name[MAX_PATH*3];
       do
-        {
+      {
         WideCharToMultiByte(
           CP_UTF8, 0, fileData.cFileName, -1, name, n, 0, 0);
         unsigned int flags = 0;
         if ((fileData.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0 &&
             fileData.dwReserved0 == IO_REPARSE_TAG_SYMLINK)
-          {
+        {
           flags |= TypeSymlink;
-          }
-        if ((fileData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) != 0)
-          {
-          flags |= TypeHidden;
-          }
-        if ((fileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
-          {
-          flags |= TypeDirectory;
-          }
-        this->AddEntry(name, flags, (TypeSymlink | TypeDirectory));
         }
+        if ((fileData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) != 0)
+        {
+          flags |= TypeHidden;
+        }
+        if ((fileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
+        {
+          flags |= TypeDirectory;
+        }
+        this->AddEntry(name, flags, (TypeSymlink | TypeDirectory));
+      }
       while (FindNextFileW(h, &fileData));
       code = GetLastError();
-      }
+    }
     if (code == ERROR_ACCESS_DENIED)
-      {
+    {
       this->Error = AccessDenied;
-      }
+    }
     else if (code == ERROR_FILE_NOT_FOUND ||
              code == ERROR_PATH_NOT_FOUND)
-      {
+    {
       this->Error = FileNotFound;
-      }
-    else if (code != ERROR_NO_MORE_FILES)
-      {
-      this->Error = UnknownError;
-      }
-    if (h != INVALID_HANDLE_VALUE)
-      {
-      FindClose(h);
-      }
     }
+    else if (code != ERROR_NO_MORE_FILES)
+    {
+      this->Error = UnknownError;
+    }
+    if (h != INVALID_HANDLE_VALUE)
+    {
+      FindClose(h);
+    }
+  }
 #else
   errno = 0;
   DIR* dir = opendir(dirname);
 
   if (!dir)
-    {
+  {
     int e = errno;
     if (e == EACCES || e == EPERM)
-      {
-      this->Error = AccessDenied;
-      }
-    else if (e == ENOENT || e == ENOTDIR)
-      {
-      this->Error = FileNotFound;
-      }
-    else
-      {
-      this->Error = UnknownError;
-      }
-    }
-  else
     {
-    for (redef_dirent *d = readdir(dir); d; d = readdir(dir))
-      {
-      if (strcmp(d->d_name, ".") != 0 && strcmp(d->d_name, "..") != 0)
-        {
-        this->AddEntry(d->d_name, 0, 0);
-        }
-      }
-    closedir(dir);
+      this->Error = AccessDenied;
     }
+    else if (e == ENOENT || e == ENOTDIR)
+    {
+      this->Error = FileNotFound;
+    }
+    else
+    {
+      this->Error = UnknownError;
+    }
+  }
+  else
+  {
+    for (redef_dirent *d = readdir(dir); d; d = readdir(dir))
+    {
+      if (strcmp(d->d_name, ".") != 0 && strcmp(d->d_name, "..") != 0)
+      {
+        this->AddEntry(d->d_name, 0, 0);
+      }
+    }
+    closedir(dir);
+  }
 #endif
 }
 
@@ -164,9 +164,9 @@ vtkDICOMFileDirectory::~vtkDICOMFileDirectory()
 const char *vtkDICOMFileDirectory::GetFile(int i)
 {
   if (i < 0 || i >= this->NumberOfFiles)
-    {
+  {
     return 0;
-    }
+  }
   return this->Entries[i].Name.c_str();
 }
 
@@ -174,24 +174,24 @@ const char *vtkDICOMFileDirectory::GetFile(int i)
 bool vtkDICOMFileDirectory::IsDirectory(int i)
 {
   if (i < 0 || i >= this->NumberOfFiles)
-    {
+  {
     return false;
-    }
+  }
 #ifndef _WIN32
   if ((this->Entries[i].Mask & TypeDirectory) == 0)
-    {
+  {
     struct stat fs;
     vtkDICOMFilePath path(this->Name);
     path.PushBack(this->Entries[i].Name);
     if (stat(path.AsString().c_str(), &fs) == 0)
-      {
+    {
       if (S_ISDIR(fs.st_mode))
-        {
+      {
         this->Entries[i].Flags |= TypeDirectory;
-        }
-      this->Entries[i].Mask |= TypeDirectory;
       }
+      this->Entries[i].Mask |= TypeDirectory;
     }
+  }
 #endif
   return ((this->Entries[i].Flags & TypeDirectory) != 0);
 }
@@ -200,13 +200,13 @@ bool vtkDICOMFileDirectory::IsDirectory(int i)
 bool vtkDICOMFileDirectory::IsSymlink(int i)
 {
   if (i < 0 || i >= this->NumberOfFiles)
-    {
+  {
     return false;
-    }
+  }
   if ((this->Entries[i].Mask & TypeSymlink) == 0)
-    {
+  {
     this->StatEntry(i);
-    }
+  }
 
   return ((this->Entries[i].Flags & TypeSymlink) != 0);
 }
@@ -215,13 +215,13 @@ bool vtkDICOMFileDirectory::IsSymlink(int i)
 bool vtkDICOMFileDirectory::IsHidden(int i)
 {
   if (i < 0 || i >= this->NumberOfFiles)
-    {
+  {
     return false;
-    }
+  }
   if ((this->Entries[i].Mask & TypeHidden) == 0)
-    {
+  {
     this->StatEntry(i);
-    }
+  }
 
   return ((this->Entries[i].Flags & TypeHidden) != 0);
 }
@@ -232,19 +232,19 @@ void vtkDICOMFileDirectory::AddEntry(
 {
   int n = this->NumberOfFiles;
   if (this->Entries == 0)
-    {
+  {
     this->Entries = new Entry[4];
-    }
+  }
   else if (n >= 4 && ((n-1) & n) == 0)
-    {
+  {
     Entry *entries = new Entry[n*2];
     for (int i = 0; i < n; i++)
-      {
+    {
       entries[i] = this->Entries[i];
-      }
+    }
     delete [] this->Entries;
     this->Entries = entries;
-    }
+  }
 
   this->Entries[n].Name = name;
   this->Entries[n].Flags = flags;
@@ -258,26 +258,26 @@ void vtkDICOMFileDirectory::AddEntry(
 void vtkDICOMFileDirectory::StatEntry(int i)
 {
   if (i >= 0 && i < this->NumberOfFiles)
-    {
+  {
     struct stat fs;
     vtkDICOMFilePath path(this->Name);
     path.PushBack(this->Entries[i].Name);
     if (lstat(path.AsString().c_str(), &fs) == 0)
-      {
+    {
       if (S_ISLNK(fs.st_mode))
-        {
+      {
         this->Entries[i].Flags |= TypeSymlink;
-        }
+      }
       this->Entries[i].Mask |= TypeSymlink;
 #ifdef __APPLE__
       if ((fs.st_flags & UF_HIDDEN) != 0)
-        {
+      {
         this->Entries[i].Flags |= TypeHidden;
-        }
+      }
       this->Entries[i].Mask |= TypeHidden;
 #endif
-      }
     }
+  }
 }
 #else /* _WIN32 */
 void vtkDICOMFileDirectory::StatEntry(int)
@@ -297,78 +297,78 @@ int vtkDICOMFileDirectory::Create(const char *name)
   vtkDICOMFilePath path(name);
 
   while (!path.IsRoot() && !path.IsEmpty() && result == 0)
-    {
+  {
     int code = vtkDICOMFile::Access(path.AsString().c_str(), vtkDICOMFile::In);
     if (code == 0 || code == vtkDICOMFile::AccessDenied)
-      {
+    {
       // The name exists as a file, or there is no permission to use path
       result = AccessDenied;
-      }
+    }
     else if (code == vtkDICOMFile::FileIsDirectory)
-      {
+    {
       // Found a directory!
       break;
-      }
+    }
     dirsToCreate.push_back(path.AsString());
     path.PopBack();
-    }
+  }
 
   while (dirsToCreate.size() > 0 && result == 0)
-    {
+  {
     const std::string& dirname = dirsToCreate.back();
 #ifdef _WIN32
     vtkDICOMFilePath dirpath(dirname);
     const wchar_t *widename = dirpath.Wide();
     if (widename == 0)
-      {
+    {
       result = UnknownError;
-      }
+    }
     else if (!CreateDirectoryW(widename, NULL))
-      {
+    {
       DWORD e = GetLastError();
       if (e == ERROR_ACCESS_DENIED ||
           e == ERROR_ALREADY_EXISTS)
-        {
+      {
         result = AccessDenied;
-        }
-      else if (e == ERROR_PATH_NOT_FOUND)
-        {
-        result = ImpossiblePath;
-        }
-      else if (e == ERROR_DISK_FULL)
-        {
-        result = OutOfSpace;
-        }
-      else
-        {
-        result = UnknownError;
-        }
       }
+      else if (e == ERROR_PATH_NOT_FOUND)
+      {
+        result = ImpossiblePath;
+      }
+      else if (e == ERROR_DISK_FULL)
+      {
+        result = OutOfSpace;
+      }
+      else
+      {
+        result = UnknownError;
+      }
+    }
 #else
     if (mkdir(dirname.c_str(), 00777) != 0)
-      {
+    {
       int e = errno;
       if (e == EACCES || e == EPERM)
-        {
+      {
         result = AccessDenied;
-        }
+      }
       else if (e == ENOENT || e == ENOTDIR)
-        {
+      {
         result = ImpossiblePath;
-        }
+      }
       else if (e == ENOSPC)
-        {
+      {
         // some systems also have EDQUOT for "quota exceeded"
         result = OutOfSpace;
-        }
-      else
-        {
-        result = UnknownError;
-        }
       }
+      else
+      {
+        result = UnknownError;
+      }
+    }
 #endif
     dirsToCreate.pop_back();
-    }
+  }
 
   return result;
 }

@@ -31,9 +31,9 @@ int main(int argc, char *argv[])
 
   const char *filename = 0;
   if (argc > 1)
-    {
+  {
     filename = argv[1];
-    }
+  }
 
   vtkSmartPointer<vtkScancoCTReader> reader =
     vtkSmartPointer<vtkScancoCTReader>::New();
@@ -41,9 +41,9 @@ int main(int argc, char *argv[])
   reader->Update();
 
   if (reader->GetErrorCode() != vtkErrorCode::NoError)
-    {
+  {
     return 1;
-    }
+  }
 
   double range[2];
   int extent[6];
@@ -60,13 +60,13 @@ int main(int argc, char *argv[])
   bool imageIs3D = (extent[5] > extent[4]);
 
   for (int i = 2*(imageIs3D == 0); i < 3; i++)
-    {
+  {
     vtkSmartPointer<vtkImageSliceMapper> imageMapper =
       vtkSmartPointer<vtkImageSliceMapper>::New();
     if (i < 3)
-      {
+    {
       imageMapper->SetInputConnection(reader->GetOutputPort());
-      }
+    }
     imageMapper->SetOrientation(i % 3);
     imageMapper->SliceAtFocalPointOn();
 
@@ -83,9 +83,9 @@ int main(int argc, char *argv[])
     renderer->AddViewProp(image);
     renderer->SetBackground(0.0, 0.0, 0.0);
     if (imageIs3D)
-      {
+    {
       renderer->SetViewport(viewport[i]);
-      }
+    }
 
     renWin->AddRenderer(renderer);
 
@@ -97,42 +97,42 @@ int main(int argc, char *argv[])
     point[2] = 0.5*(bounds[4] + bounds[5]);
     double maxdim = 0.0;
     for (int j = 0; j < 3; j++)
-      {
+    {
       double s = 0.5*(bounds[2*j+1] - bounds[2*j]);
       maxdim = (s > maxdim ? s : maxdim);
-      }
+    }
 
     vtkCamera *camera = renderer->GetActiveCamera();
     camera->SetFocalPoint(point);
     if ((i % 3) == 0)
-      {
+    {
       point[i % 3] -= 500.0;
-      }
+    }
     else
-      {
+    {
       point[i % 3] += 500.0;
-      }
+    }
     camera->SetPosition(point);
     if ((i % 3) == 2)
-      {
+    {
       camera->SetViewUp(0.0, +1.0, 0.0);
-      }
+    }
     else
-      {
+    {
       camera->SetViewUp(0.0, 0.0, -1.0);
-      }
+    }
     camera->ParallelProjectionOn();
     camera->SetParallelScale(maxdim);
-    }
+  }
 
   if (imageIs3D)
-    {
+  {
     renWin->SetSize(600, 400);
-    }
+  }
   else
-    {
+  {
     renWin->SetSize(400, 400);
-    }
+  }
 
   renWin->Render();
   iren->Start();

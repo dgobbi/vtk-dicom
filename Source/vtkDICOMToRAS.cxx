@@ -39,22 +39,22 @@ vtkDICOMToRAS::vtkDICOMToRAS()
   this->ReorderRows = 1;
   this->ReorderColumns = 1;
   for (int i = 0; i < 16; i++)
-    {
+  {
     this->Matrix[i] = 0.0;
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
 vtkDICOMToRAS::~vtkDICOMToRAS()
 {
   if (this->RASMatrix)
-    {
+  {
     this->RASMatrix->Delete();
-    }
+  }
   if (this->PatientMatrix)
-    {
+  {
     this->PatientMatrix->Delete();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -64,35 +64,35 @@ void vtkDICOMToRAS::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "PatientMatrix:";
   if (this->PatientMatrix)
-    {
+  {
     double mat[16];
     vtkMatrix4x4::DeepCopy(mat, this->PatientMatrix);
     for (int i = 0; i < 16; i++)
-      {
-      os << " " << mat[i];
-      }
-    os << "\n";
-    }
-  else
     {
-    os << " (none)\n";
+      os << " " << mat[i];
     }
+    os << "\n";
+  }
+  else
+  {
+    os << " (none)\n";
+  }
 
   os << indent << "RASMatrix:";
   if (this->RASMatrix)
-    {
+  {
     double mat[16];
     vtkMatrix4x4::DeepCopy(mat, this->RASMatrix);
     for (int i = 0; i < 16; i++)
-      {
-      os << " " << mat[i];
-      }
-    os << "\n";
-    }
-  else
     {
-    os << " (none)\n";
+      os << " " << mat[i];
     }
+    os << "\n";
+  }
+  else
+  {
+    os << " (none)\n";
+  }
 
   os << indent << "RASToDICOM: " << this->RASToDICOM << "\n";
 
@@ -111,10 +111,10 @@ void vtkDICOMToRAS::SetRASToDICOM(int val)
 {
   val = (val != 0);
   if (val != this->RASToDICOM)
-    {
+  {
     this->RASToDICOM = val;
     this->Modified();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -122,10 +122,10 @@ void vtkDICOMToRAS::SetRASMatrixHasPosition(int val)
 {
   val = (val != 0);
   if (val != this->RASMatrixHasPosition)
-    {
+  {
     this->RASMatrixHasPosition = val;
     this->Modified();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -133,10 +133,10 @@ void vtkDICOMToRAS::SetAllowColumnReordering(int val)
 {
   val = (val != 0);
   if (val != this->AllowColumnReordering)
-    {
+  {
     this->AllowColumnReordering = val;
     this->Modified();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -144,10 +144,10 @@ void vtkDICOMToRAS::SetAllowRowReordering(int val)
 {
   val = (val != 0);
   if (val != this->AllowRowReordering)
-    {
+  {
     this->AllowRowReordering = val;
     this->Modified();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -160,10 +160,10 @@ void vtkDICOMToRAS::CheckNeedToReorder()
   vtkMatrix4x4 *inputMatrix = (this->RASToDICOM  == 0 ?
     this->PatientMatrix : this->RASMatrix);
   if (inputMatrix)
-    {
+  {
     inputMatrix->MultiplyPoint(hdir, hdir);
     inputMatrix->MultiplyPoint(vdir, vdir);
-    }
+  }
 
   // do the DICOM-to-RAS sign changes
   hdir[0] = -hdir[0];
@@ -172,7 +172,7 @@ void vtkDICOMToRAS::CheckNeedToReorder()
   vdir[1] = -vdir[1];
 
   if (this->RASToDICOM)
-    {
+  {
     // for DICOM, hdir should be left (+x) or posterior (+y)
     this->ReorderColumns = (this->AllowColumnReordering &&
                             hdir[0] + hdir[1] < 0);
@@ -180,9 +180,9 @@ void vtkDICOMToRAS::CheckNeedToReorder()
     // for RAS, vdir should be inferior (-z) or posterior (+y)
     this->ReorderRows = (this->AllowRowReordering &&
                          vdir[1] - vdir[2] < 0);
-    }
+  }
   else
-    {
+  {
     // for RAS, hdir should be right (+x) or anterior (+y)
     this->ReorderColumns = (this->AllowColumnReordering &&
                             hdir[0] + hdir[1] < 0);
@@ -190,7 +190,7 @@ void vtkDICOMToRAS::CheckNeedToReorder()
     // for RAS, vdir should be superior (+z) or anterior (+y)
     this->ReorderRows = (this->AllowRowReordering &&
                          vdir[1] + vdir[2] < 0);
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -200,17 +200,17 @@ void vtkDICOMToRAS::ComputeMatrix(
   double *matrix = this->Matrix;
 
   if (this->PatientMatrix && this->RASToDICOM == 0)
-    {
+  {
     vtkMatrix4x4::DeepCopy(matrix, this->PatientMatrix);
-    }
+  }
   else if (this->RASMatrix && this->RASToDICOM != 0)
-    {
+  {
     vtkMatrix4x4::DeepCopy(matrix, this->RASMatrix);
-    }
+  }
   else
-    {
+  {
     vtkMatrix4x4::Identity(matrix);
-    }
+  }
 
   // what corner of the input image will become the (0,0,0) corner
   // of the output image?
@@ -221,7 +221,7 @@ void vtkDICOMToRAS::ComputeMatrix(
 
   double bounds[6];
   for (int i = 0; i < 3; i++)
-    {
+  {
     bounds[2*i] = extent[2*i]*spacing[i] + origin[i];
     bounds[2*i + 1] = extent[2*i + 1]*spacing[i] + origin[i];
     origin[i] = bounds[2*i + flip[i]];
@@ -230,26 +230,26 @@ void vtkDICOMToRAS::ComputeMatrix(
     extent[2*i] = 0;
 
     if (flip[i])
-      {
+    {
       // reverse along columns for flips
       origin[i] = -origin[i];
       matrix[i] = -matrix[i];
       matrix[4 + i] = -matrix[4 + i];
       matrix[8 + i] = -matrix[8 + i];
-      }
+    }
 
     if (i == 0 || i == 1)
-      {
+    {
       // reverse along rows for LPS to RAS conversion
       matrix[4*i] = -matrix[4*i];
       matrix[4*i + 1] = -matrix[4*i + 1];
       matrix[4*i + 2] = -matrix[4*i + 2];
       matrix[4*i + 3] = -matrix[4*i + 3];
-      }
     }
+  }
 
   if (this->RASMatrixHasPosition || this->RASToDICOM)
-    {
+  {
     // origin moves into position (last column of matrix)
     double offset[4];
     offset[0] = origin[0];
@@ -266,9 +266,9 @@ void vtkDICOMToRAS::ComputeMatrix(
     origin[0] = 0.0;
     origin[1] = 0.0;
     origin[2] = 0.0;
-    }
+  }
   else
-    {
+  {
     // position moves into origin
     double offset[4];
     offset[0] = matrix[3];
@@ -287,7 +287,7 @@ void vtkDICOMToRAS::ComputeMatrix(
     origin[0] += offset[0];
     origin[1] += offset[1];
     origin[2] += offset[2];
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -298,36 +298,36 @@ void vtkDICOMToRAS::UpdateMatrix()
 
   vtkMatrix4x4 *outMatrix;
   if (this->RASToDICOM == 0)
-    {
+  {
     if (this->RASMatrix == 0)
-      {
-      this->RASMatrix = vtkMatrix4x4::New();
-      }
-    outMatrix = this->RASMatrix;
-    }
-  else
     {
-    if (this->PatientMatrix == 0)
-      {
-      this->PatientMatrix = vtkMatrix4x4::New();
-      }
-    outMatrix = this->PatientMatrix;
+      this->RASMatrix = vtkMatrix4x4::New();
     }
+    outMatrix = this->RASMatrix;
+  }
+  else
+  {
+    if (this->PatientMatrix == 0)
+    {
+      this->PatientMatrix = vtkMatrix4x4::New();
+    }
+    outMatrix = this->PatientMatrix;
+  }
 
   const double *inElements = this->Matrix;
   double *outElements = *outMatrix->Element;
 
   bool changed = false;
   for (int i = 0; i < 16; i++)
-    {
+  {
     changed |= (inElements[i] != outElements[i]);
-    }
+  }
 
   // this ensures that the timestamp isn't changed unless values changed
   if (changed)
-    {
+  {
     outMatrix->DeepCopy(this->Matrix);
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -354,9 +354,9 @@ int vtkDICOMToRAS::RequestInformation(
 
   // if converting to DICOM, add patient matrix to information
   if (this->RASToDICOM && this->RASMatrix)
-    {
+  {
     outInfo->Set(vtkDICOMAlgorithm::PATIENT_MATRIX(), this->Matrix, 16);
-    }
+  }
 
   outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent, 6);
   outInfo->Set(vtkDataObject::SPACING(), spacing, 3);
@@ -388,17 +388,17 @@ int vtkDICOMToRAS::RequestUpdateExtent(
   flip[2] = flip[0] ^ flip[1];
 
   for (int i = 0; i < 3; i++)
-    {
+  {
     int offset = outExt[2*i];
     int size = outExt[2*i + 1] - outExt[2*i] + 1;
     int wholeSize = wholeExt[2*i + 1] - wholeExt[2*i] + 1;
     if (flip[i])
-      {
+    {
       offset = wholeSize - size - offset;
-      }
+    }
     inExt[2*i] = wholeExt[2*i] + offset;
     inExt[2*i + 1] = inExt[2*i] + size - 1;
-    }
+  }
 
   inInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(), outExt, 6);
 
@@ -414,19 +414,19 @@ int vtkDICOMToRAS::RequestData(
   // output the matrix that goes with the image
   vtkMatrix4x4 *outMatrix = 0;
   if (this->RASToDICOM == 0)
-    {
+  {
     if (this->RASMatrix == 0)
-      {
-      this->RASMatrix = vtkMatrix4x4::New();
-      }
-    outMatrix = this->RASMatrix;
-    }
-  else
     {
+      this->RASMatrix = vtkMatrix4x4::New();
+    }
+    outMatrix = this->RASMatrix;
+  }
+  else
+  {
     if (this->PatientMatrix == 0)
-      {
+    {
       this->PatientMatrix = vtkMatrix4x4::New();
-      }
+    }
     outMatrix = this->PatientMatrix;
 
     // copy the supplied matrix to the data information
@@ -434,22 +434,22 @@ int vtkDICOMToRAS::RequestData(
     vtkDataObject *outData = outInfo->Get(vtkDataObject::DATA_OBJECT());
     vtkInformation *dataInfo = outData->GetInformation();
     dataInfo->CopyEntry(outInfo, vtkDICOMAlgorithm::PATIENT_MATRIX());
-    }
+  }
 
   const double *inElements = this->Matrix;
   double *outElements = *outMatrix->Element;
 
   bool changed = false;
   for (int i = 0; i < 16; i++)
-    {
+  {
     changed |= (inElements[i] != outElements[i]);
-    }
+  }
 
   // this ensures that the timestamp isn't changed unless values changed
   if (changed)
-    {
+  {
     outMatrix->DeepCopy(this->Matrix);
-    }
+  }
 
   return this->Superclass::RequestData(request, inputVector, outputVector);
 }
@@ -479,20 +479,20 @@ void vtkDICOMToRASExecute(
   vtkIdType inIncY = inIncX*(inExt[1] - inExt[0] + 1);
   vtkIdType inIncZ = inIncY*(inExt[3] - inExt[2] + 1);
   if (flip[0])
-    {
+  {
     inPtr += inIncX*(sizeX - 1);
     inIncX = -inIncX;
-    }
+  }
   if (flip[1])
-    {
+  {
     inPtr += inIncY*(sizeY - 1);
     inIncY = -inIncY;
-    }
+  }
   if (flip[2])
-    {
+  {
     inPtr += inIncZ*(sizeZ - 1);
     inIncZ = -inIncZ;
-    }
+  }
 
   // progress tracking
   vtkIdType progressGoal = static_cast<vtkIdType>(sizeZ)*sizeY;
@@ -502,41 +502,41 @@ void vtkDICOMToRASExecute(
   // loop through the data and rearrange it
   const T *inPtrZ = inPtr;
   for (int k = 0; k < sizeZ; k++)
-    {
+  {
     const T *inPtrY = inPtrZ;
     for (int j = 0; j < sizeY; j++)
-      {
+    {
       if (progress != NULL && (progressCount % progressStep) == 0)
-        {
+      {
         progress->UpdateProgress(progressCount*1.0/progressGoal);
-        }
+      }
       progressCount++;
 
       const T *inPtrX = inPtrY;
       if (numComponents == 1)
-        {
+      {
         for (int i = 0; i < sizeX; i++)
-          {
+        {
           *outPtr++ = *inPtrX;
           inPtrX += inIncX;
-          }
         }
+      }
       else
-        {
+      {
         for (int i = 0; i < sizeX; i++)
-          {
+        {
           int c = numComponents;
           const T *inPtrC = inPtrX;
           do { *outPtr++ = *inPtrC++; } while (--c);
           inPtrX += inIncX;
-          }
         }
+      }
       inPtrY += inIncY;
       outPtr += outSkipY;
-      }
+    }
     inPtrZ += inIncZ;
     outPtr += outSkipZ;
-    }
+  }
 }
 
 } // end anonymous namespace
@@ -569,17 +569,17 @@ void vtkDICOMToRAS::ThreadedRequestData(
 
   int inExecuteExt[6];
   for (int i = 0; i < 3; i++)
-    {
+  {
     int offset = outExecuteExt[2*i];
     int size = outExecuteExt[2*i + 1] - outExecuteExt[2*i] + 1;
     int wholeSize = inWholeExt[2*i + 1] - inWholeExt[2*i] + 1;
     if (flip[i])
-      {
+    {
       offset = wholeSize - size - offset;
-      }
+    }
     inExecuteExt[2*i] = inWholeExt[2*i] + offset;
     inExecuteExt[2*i + 1] = inExecuteExt[2*i] + size - 1;
-    }
+  }
 
   int numComponents = input->GetNumberOfScalarComponents();
 
@@ -594,21 +594,21 @@ void vtkDICOMToRAS::ThreadedRequestData(
 
   // call the execute method
   if (outScalarType == inScalarType)
-    {
+  {
     switch (inScalarType)
-      {
+    {
       vtkTemplateAliasMacro(
         vtkDICOMToRASExecute(
           static_cast<const VTK_TT *>(inPtr), static_cast<VTK_TT *>(outPtr),
           flip, numComponents, inExt, outExt, outExecuteExt, progress));
       default:
         vtkErrorMacro("Execute: Unknown ScalarType");
-      }
     }
+  }
   else
-    {
+  {
     vtkErrorMacro("ThreadedRequestData: output scalar type does not match "
                   "input scalar type");
-    }
+  }
 
 }

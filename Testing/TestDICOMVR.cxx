@@ -221,13 +221,13 @@ int main(int argc, char *argv[])
   };
 
   for (int i = 0; i < 34; i++)
-    {
+  {
     TestAssert(hasLongVL[i] == vrs[i].HasLongVL());
     TestAssert(hasSpecificCharacterSet[i] == vrs[i].HasSpecificCharacterSet());
     TestAssert(hasTextValue[i] == vrs[i].HasTextValue());
     TestAssert(hasNumericValue[i] == vrs[i].HasNumericValue());
     TestAssert(hasSingleValue[i] == vrs[i].HasSingleValue());
-    }
+  }
   }
 
   return rval;

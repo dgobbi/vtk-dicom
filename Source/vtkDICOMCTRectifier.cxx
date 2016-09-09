@@ -45,17 +45,17 @@ vtkDICOMCTRectifier::vtkDICOMCTRectifier()
 vtkDICOMCTRectifier::~vtkDICOMCTRectifier()
 {
   if (this->RectifiedMatrix)
-    {
+  {
     this->RectifiedMatrix->Delete();
-    }
+  }
   if (this->VolumeMatrix)
-    {
+  {
     this->VolumeMatrix->Delete();
-    }
+  }
   if (this->Matrix)
-    {
+  {
     this->Matrix->Delete();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -65,35 +65,35 @@ void vtkDICOMCTRectifier::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "VolumeMatrix:";
   if (this->VolumeMatrix)
-    {
+  {
     double mat[16];
     vtkMatrix4x4::DeepCopy(mat, this->VolumeMatrix);
     for (int i = 0; i < 16; i++)
-      {
-      os << " " << mat[i];
-      }
-    os << "\n";
-    }
-  else
     {
-    os << " (none)\n";
+      os << " " << mat[i];
     }
+    os << "\n";
+  }
+  else
+  {
+    os << " (none)\n";
+  }
 
   os << indent << "RectifiedMatrix:";
   if (this->RectifiedMatrix)
-    {
+  {
     double mat[16];
     vtkMatrix4x4::DeepCopy(mat, this->RectifiedMatrix);
     for (int i = 0; i < 16; i++)
-      {
-      os << " " << mat[i];
-      }
-    os << "\n";
-    }
-  else
     {
-    os << " (none)\n";
+      os << " " << mat[i];
     }
+    os << "\n";
+  }
+  else
+  {
+    os << " (none)\n";
+  }
 
   os << indent << "Reverse: " << this->Reverse << "\n";
 }
@@ -103,10 +103,10 @@ void vtkDICOMCTRectifier::SetReverse(int val)
 {
   val = (val != 0);
   if (val != this->Reverse)
-    {
+  {
     this->Reverse = val;
     this->Modified();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -115,11 +115,11 @@ void vtkDICOMCTRectifier::ComputeMatrix(
   double spacing[3], double origin[3])
 {
   if (volumeMatrix == 0)
-    {
+  {
     this->RectifiedMatrix->Identity();
     this->Matrix->Identity();
     return;
-    }
+  }
 
   // get the first two columns of the volume matrix
   double xvec[4] = { 1.0, 0.0, 0.0, 0.0 };
@@ -138,19 +138,19 @@ void vtkDICOMCTRectifier::ComputeMatrix(
   // compute the shear matrix
   vtkMatrix4x4 *matrix = this->Matrix;
   if (this->Reverse)
-    {
+  {
     matrix->DeepCopy(this->RectifiedMatrix);
     matrix->Invert();
     double elements[16];
     vtkMatrix4x4::Multiply4x4(*matrix->Element, volumeMatrix, elements);
     matrix->DeepCopy(elements);
-    }
+  }
   else
-    {
+  {
     matrix->DeepCopy(volumeMatrix);
     matrix->Invert();
     vtkMatrix4x4::Multiply4x4(matrix, this->RectifiedMatrix, matrix);
-    }
+  }
 
   // compute the shear parameters for the volume
   double zdn = matrix->GetElement(2, 2);
@@ -169,11 +169,11 @@ void vtkDICOMCTRectifier::ComputeMatrix(
   matrix->SetElement(2, 3, pos[2]);
 
   if (this->Reverse)
-    {
+  {
     pos[0] = -pos[0];
     pos[1] = -pos[1];
     pos[2] = -pos[2];
-    }
+  }
 
   vtkMatrix4x4::MultiplyPoint(volumeMatrix, pos, pos);
   this->RectifiedMatrix->SetElement(0, 3, pos[0]);
@@ -223,15 +223,15 @@ int vtkDICOMCTRectifier::RequestInformation(
 
   double *volumeMatrix;
   if (this->VolumeMatrix)
-    {
+  {
     // If a VolumeMatrix was provided, then use it.
     volumeMatrix = *this->VolumeMatrix->Element;
-    }
+  }
   else
-    {
+  {
     // Otherwise, try to get the patient matrix from the pipeline.
     volumeMatrix = metaInfo->Get(vtkDICOMAlgorithm::PATIENT_MATRIX());
-    }
+  }
 
   // Compute the shear matrix and the new spacing and origin.
   this->ComputeMatrix(volumeMatrix, extent, spacing, origin);
@@ -239,13 +239,13 @@ int vtkDICOMCTRectifier::RequestInformation(
   // Write the new patient matrix to the pipeline.
   double *outMatrix = *this->RectifiedMatrix->Element;
   if (this->Reverse)
-    {
+  {
     outMatrix = volumeMatrix;
-    }
+  }
   if (outMatrix)
-    {
+  {
     outInfo->Set(vtkDICOMAlgorithm::PATIENT_MATRIX(), outMatrix, 16);
-    }
+  }
 
   // The spacing and origin may have changed.
   outInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent, 6);

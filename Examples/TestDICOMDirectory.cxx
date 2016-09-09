@@ -36,18 +36,18 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMDirectory>::New();
 
   if (argc < 2 || argc > 3)
-    {
+  {
     cout << "usage: " << exename << " <directory_name> [depth]" << endl;
     exit(0);
-    }
+  }
 
   const char *dirname = argv[1];
 
   int depth = 1;
   if (argc > 2)
-    {
+  {
     depth = static_cast<int>(atol(argv[2]));
-    }
+  }
 
   ddir->SetDirectoryName(dirname);
   ddir->SetScanDepth(depth);
@@ -55,18 +55,18 @@ int main(int argc, char *argv[])
 
   int n = ddir->GetNumberOfPatients();
   for (int i = 0; i < n; i++)
-    {
+  {
     const vtkDICOMItem& patientItem = ddir->GetPatientRecord(i);
     cout << "Patient " << i << ": "
          << patientItem.GetAttributeValue(DC::PatientID).AsString() << "\n";
     vtkIntArray *studies = ddir->GetStudiesForPatient(i);
     vtkIdType m = studies->GetMaxId() + 1;
     if (i == n-1 && m > 0)
-      {
+    {
       TestAssert(studies->GetValue(m-1) == ddir->GetNumberOfStudies() - 1);
-      }
+    }
     for (vtkIdType jj = 0; jj < m; jj++)
-      {
+    {
       int j = studies->GetValue(jj);
       const vtkDICOMItem& studyItem = ddir->GetStudyRecord(j);
       const vtkDICOMItem& studyPItem = ddir->GetPatientRecordForStudy(j);
@@ -79,11 +79,11 @@ int main(int argc, char *argv[])
       int k0 = ddir->GetFirstSeriesForStudy(j);
       int k1 = ddir->GetLastSeriesForStudy(j);
       if (i == n-1 && jj == m-1)
-        {
+      {
         TestAssert(k1 == ddir->GetNumberOfSeries() - 1);
-        }
+      }
       for (int k = k0; k <= k1; k++)
-        {
+      {
         const vtkDICOMItem& seriesItem = ddir->GetSeriesRecord(k);
         cout << "  Series " << k << ": \""
              << seriesItem.GetAttributeValue(DC::SeriesDescription).AsString()
@@ -93,12 +93,12 @@ int main(int argc, char *argv[])
              << seriesItem.GetAttributeValue(DC::Modality).AsString() << "\n";
         vtkStringArray *a = ddir->GetFileNamesForSeries(k);
         for (vtkIdType kk = 0; kk < a->GetNumberOfValues(); kk++)
-          {
+        {
           cout << "   " << a->GetValue(kk) << "\n";
-          }
         }
       }
     }
+  }
 
   return rval;
 }

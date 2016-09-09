@@ -75,19 +75,19 @@ void scancotodicom_version(FILE *file, const char *command_name, bool verbose)
   while (cp != command_name && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
 
   if (!verbose)
-    {
+  {
     fprintf(file, "%s %s\n", cp, DICOM_VERSION);
     fprintf(file, "\n"
       "Copyright (c) 2012-2016, David Gobbi.\n\n"
       "This software is distributed under an open-source license.  See the\n"
       "Copyright.txt file that comes with the vtk-dicom source distribution.\n");
-    }
+  }
   else
-    {
+  {
     fprintf(file,
       "Head %8.8s, Built %s, %s\n",
       DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
-    }
+  }
 }
 
 
@@ -144,27 +144,27 @@ void scancotodicom_check_error(vtkObject *o)
   const char *filename = 0;
   unsigned long errorcode = 0;
   if (writer)
-    {
+  {
     filename = writer->GetFileName();
     errorcode = writer->GetErrorCode();
-    }
+  }
   else if (reader)
-    {
+  {
     filename = reader->GetInternalFileName();
     errorcode = reader->GetErrorCode();
-    }
+  }
   else if (parser)
-    {
+  {
     filename = parser->GetFileName();
     errorcode = parser->GetErrorCode();
-    }
+  }
   if (!filename)
-    {
+  {
     filename = "";
-    }
+  }
 
   switch(errorcode)
-    {
+  {
     case vtkErrorCode::NoError:
       return;
     case vtkErrorCode::FileNotFoundError:
@@ -191,7 +191,7 @@ void scancotodicom_check_error(vtkObject *o)
     default:
       fprintf(stderr, "An unknown error occurred.\n");
       break;
-    }
+  }
 
   exit(1);
 }
@@ -210,40 +210,40 @@ void scancotodicom_convert_date(char date[32])
   char *cp = date;
   unsigned int parts[7];
   for (int i = 0; i < 7; i++)
-    {
+  {
     while (*cp == ' ') { cp++; }
     int lead = 0;
     while (cp[0] == '0' && isdigit(cp[1]))
-      {
+    {
       lead++;
       cp++;
-      }
+    }
     parts[i] = strtoul(cp, &cp, 10);
     if (i == 1 && isalpha(*cp))
-      {
+    {
       for (int j = 0; j < 12; j++)
-        {
+      {
         const char *month = months[j];
         if (toupper(cp[0]) == month[0] &&
             toupper(cp[1]) == month[1] &&
             toupper(cp[2]) == month[2])
-           {
+        {
            parts[i] = j+1;
            break;
-           }
         }
-      while (isalpha(*cp)) { cp++; }
       }
+      while (isalpha(*cp)) { cp++; }
+    }
     if (i == 6)
-      {
+    {
       unsigned int denom = 10;
       while (denom <= parts[i]) { denom *= 10; }
       while (lead > 0) { lead--; denom *= 10; }
       if (denom > 1000000) { parts[i] /= (denom/1000000); }
       else { parts[i] *= (1000000/denom); }
-      }
-    if (*cp != '\0') { cp++; }
     }
+    if (*cp != '\0') { cp++; }
+  }
 
   sprintf(date, "%04d%02d%02d%02d%02d%02d.%06d",
           parts[2] % 10000, parts[1] % 100, parts[0] % 100,
@@ -260,13 +260,13 @@ bool isScancoCTFileName(const char *f)
 
   size_t n = strlen(f);
   for (const char **s = suffixes; *s != 0; s++)
-    {
+  {
     size_t m = strlen(*s);
     if (n > m && strcmp(f + n - m, *s) == 0)
-      {
+    {
       return true;
-      }
     }
+  }
 
   return false;
 }
@@ -288,156 +288,156 @@ void scancotodicom_read_options(
   // read the options from the command line
   int argi = 1;
   while (argi < argc)
-    {
+  {
     const char *arg = argv[argi++];
     if (arg[0] == '-')
-      {
+    {
       if (strcmp(arg, "--") == 0)
-        {
+      {
         // stop processing switches
         break;
-        }
+      }
       else if (strcmp(arg, "--series-description") == 0 ||
                strcmp(arg, "--series-number") == 0 ||
                strcmp(arg, "--uid-prefix") == 0)
-        {
+      {
         if (argi >= argc ||
             argv[argi][0] == '-')
-          {
+        {
           fprintf(stderr, "\nA value must follow the \'%s\' flag\n\n", arg);
           exit(1);
-          }
+        }
         if (strcmp(arg, "--series-description") == 0)
-          {
+        {
           options->series_description = argv[argi];
-          }
+        }
         else if (strcmp(arg, "--series-number") == 0)
-          {
+        {
           options->series_number= argv[argi];
-          }
+        }
         else if (strcmp(arg, "--uid-prefix") == 0)
-          {
+        {
           options->uid_prefix = argv[argi];
-          }
+        }
         argi++;
-        }
+      }
       else if (strcmp(arg, "--silent") == 0)
-        {
+      {
         options->silent = true;
-        }
+      }
       else if (strcmp(arg, "--verbose") == 0)
-        {
+      {
         options->verbose = true;
-        }
+      }
       else if (strcmp(arg, "--version") == 0)
-        {
+      {
         scancotodicom_version(stdout, argv[0], false);
         exit(0);
-        }
+      }
       else if (strcmp(arg, "--build-version") == 0)
-        {
+      {
         scancotodicom_version(stdout, argv[0], true);
         exit(0);
-        }
+      }
       else if (strcmp(arg, "--help") == 0)
-        {
+      {
         scancotodicom_help(stdout, argv[0]);
         exit(0);
-        }
+      }
       else if (arg[0] == '-' && arg[1] == '-')
-        {
+      {
         fprintf(stderr, "\nUnrecognized option %s\n\n", arg);
         scancotodicom_usage(stderr, argv[0]);
         exit(1);
-        }
+      }
       else if (arg[0] == '-' && arg[1] != '-')
-        {
+      {
         for (int argj = 1; arg[argj] != '\0'; argj++)
-          {
+        {
           if (arg[argj] == 's')
-            {
+          {
             options->silent = true;
-            }
+          }
           else if (arg[argj] == 'v')
-            {
+          {
             options->verbose = true;
-            }
+          }
           else if (arg[argj] == 'o')
-            {
+          {
             if (arg[argj+1] != '\0')
-              {
+            {
               arg += argj+1;
-              }
+            }
             else
-              {
+            {
               if (argi >= argc)
-                {
+              {
                 fprintf(stderr, "\nA file must follow the \'-o\' flag\n\n");
                 scancotodicom_usage(stderr, argv[0]);
                 exit(1);
-                }
-              arg = argv[argi++];
               }
+              arg = argv[argi++];
+            }
             options->output = arg;
             break;
-            }
+          }
           else
-            {
+          {
             fprintf(stderr, "\nUnrecognized \'%c\' in option %s\n\n", arg[argj], arg);
             scancotodicom_usage(stderr, argv[0]);
             exit(1);
-            }
           }
         }
       }
+    }
     else
-      {
+    {
       files->InsertNextValue(arg);
       vtkIdType m = files->GetMaxId();
       if (m >= 0)
-        {
+      {
         const char *f = files->GetValue(m);
         if (isScancoCTFileName(f))
-          {
+        {
           if (options->input == 0)
-            {
+          {
             options->input = arg;
             files->SetNumberOfValues(m);
-            }
+          }
           else
-            {
+          {
             fprintf(stderr, "\nAt most one uCT file can be specified.\n");
             scancotodicom_usage(stderr, argv[0]);
             exit(1);
-            }
           }
         }
       }
     }
+  }
 
   while (argi < argc)
-    {
+  {
     files->InsertNextValue(argv[argi++]);
     vtkIdType m = files->GetMaxId();
     if (m >= 0)
-      {
+    {
       const char *f = files->GetValue(m);
       if (isScancoCTFileName(f))
-        {
+      {
         if (options->input == 0)
-          {
+        {
           options->input = argv[argi-1];
           files->SetNumberOfValues(m);
-          }
+        }
         else
-          {
+        {
           fprintf(stderr, "\nAt most one uCT file can be specified.\n");
           scancotodicom_usage(stderr, argv[0]);
           exit(1);
-          }
         }
       }
     }
+  }
 }
 
 // Convert one uCT file into a DICOM series
@@ -466,21 +466,21 @@ void scancotodicom_convert_one(
   const char *modality = "CT";
   const char *version = reader->GetVersion();
   if (strncmp(version, "AIM", 3) == 0)
-    {
+  {
     fileType = SCANCO_AIM;
     imageType = "ORIGINAL\\SECONDARY\\AXIAL";
     if (reader->GetDataScalarType() != VTK_SHORT)
-      {
+    {
       modality = "SEG";
       fileType = SCANCO_AIM_SEG;
       imageType = "DERIVED\\PRIMARY";
-      }
     }
+  }
   else if (physdim[2] == 0)
-    {
+  {
     fileType = SCANCO_RAD;
     imageType = "ORIGINAL\\PRIMARY\\LOCALIZER";
-    }
+  }
 
   // The meta data object
   vtkSmartPointer<vtkDICOMMetaData> meta =
@@ -488,21 +488,21 @@ void scancotodicom_convert_one(
 
   // read meta data from the sample DICOM file, if provided
   if (a->GetNumberOfValues() > 0)
-    {
+  {
     vtkSmartPointer<vtkDICOMReader> dicomReader =
       vtkSmartPointer<vtkDICOMReader>::New();
     dicomReader->SetFileNames(a);
     if (fileType == SCANCO_RAD)
-      {
+    {
       dicomReader->SetMemoryRowOrderToFileNative();
-      }
+    }
     else
-      {
+    {
       dicomReader->SetMemoryRowOrderToBottomUp();
-      }
+    }
     dicomReader->UpdateInformation();
     meta->DeepCopy(dicomReader->GetMetaData());
-    }
+  }
 
   // set metadata from the file header
   meta->SetAttributeValue(DC::Modality, modality);
@@ -514,29 +514,29 @@ void scancotodicom_convert_one(
   double rescaleSlope = 1.0;
   double rescaleIntercept = 0.0;
   if (reader->GetMuScaling() != 0 && reader->GetMuWater() != 0)
-    {
+  {
     // conversion to Hounsfield units
     rescaleIntercept = -1000.0;
     rescaleSlope = 1000.0/(reader->GetMuScaling()*reader->GetMuWater());
     meta->SetAttributeValue(DC::RescaleIntercept, rescaleIntercept);
     meta->SetAttributeValue(DC::RescaleSlope, rescaleSlope);
     meta->SetAttributeValue(DC::RescaleType, "HU");
-    }
+  }
   meta->SetAttributeValue(DC::KVP, reader->GetEnergy());
   meta->SetAttributeValue(DC::AcquisitionNumber, reader->GetMeasurementIndex());
   meta->SetAttributeValue(DC::ExposureTime, reader->GetSampleTime());
   meta->SetAttributeValue(DC::XRayTubeCurrentInuA, 1000*reader->GetIntensity());
   if (fileType != SCANCO_RAD)
-    {
+  {
     meta->SetAttributeValue(DC::SliceThickness, reader->GetSliceThickness());
     meta->SetAttributeValue(DC::DataCollectionDiameter, physdim[0]);
     meta->SetAttributeValue(DC::ReconstructionDiameter, physdim[0]);
-    }
+  }
 
   // date
   char date[32];
   if (!meta->HasAttribute(DC::StudyDate))
-    {
+  {
     strncpy(date, reader->GetCreationDate(), 32);
     scancotodicom_convert_date(date);
     meta->SetAttributeValue(DC::StudyTime, &date[8]);
@@ -544,16 +544,16 @@ void scancotodicom_convert_one(
     date[8] = '\0';
     meta->SetAttributeValue(DC::StudyDate, date);
     meta->SetAttributeValue(DC::SeriesDate, date);
-    }
+  }
 
   if (fileType == SCANCO_AIM_SEG)
-    {
+  {
     strncpy(date, reader->GetModificationDate(), 32);
     scancotodicom_convert_date(date);
     meta->SetAttributeValue(DC::CreationTime, &date[8]);
     date[8] = '\0';
     meta->SetAttributeValue(DC::CreationDate, date);
-    }
+  }
 
   // patient
   const char *patient = reader->GetPatientName();
@@ -561,13 +561,13 @@ void scancotodicom_convert_one(
 
   // set the metadata supplied on the command line
   if (options->series_description)
-    {
+  {
     meta->SetAttributeValue(DC::SeriesDescription, options->series_description);
-    }
+  }
   if (options->series_number)
-    {
+  {
     meta->SetAttributeValue(DC::SeriesNumber, options->series_number);
-    }
+  }
 
   // The DICOM orientation matrix
   vtkSmartPointer<vtkMatrix4x4> matrix =
@@ -578,7 +578,7 @@ void scancotodicom_convert_one(
   double center = 0.5*physdim[0]*(pixdim[0] - 1)/pixdim[0];
 
   if (fileType == SCANCO_RAD)
-    {
+  {
     // Convert localizer to DICOM coordinates (rotate)
     zoffset = reader->GetZPosition() - reader->GetReferenceLine();
     double radToDICOM[16] = {
@@ -587,9 +587,9 @@ void scancotodicom_convert_one(
       0.0, 1.0, 0.0, zoffset,
       0.0, 0.0, 0.0, 1.0 };
     matrix->DeepCopy(radToDICOM);
-    }
+  }
   else
-    {
+  {
     // Convert to DICOM patient coordinates as well as we can,
     // without knowing orientation of patient relative to scanner
     zoffset = reader->GetStartPosition() - reader->GetReferenceLine();
@@ -599,18 +599,18 @@ void scancotodicom_convert_one(
       0.0, 0.0, 1.0, zoffset,
       0.0, 0.0, 0.0, 1.0 };
     matrix->DeepCopy(rasToDICOM);
-    }
+  }
 
   // prepare the writer to write the image
   vtkSmartPointer<vtkDICOMWriter> writer =
     vtkSmartPointer<vtkDICOMWriter>::New();
   writer->StreamingOn();
   if (reader->GetDataScalarType() != VTK_SIGNED_CHAR)
-    {
+  {
     vtkSmartPointer<vtkDICOMCTGenerator> generator =
       vtkSmartPointer<vtkDICOMCTGenerator>::New();
     writer->SetGenerator(generator);
-    }
+  }
   writer->SetMetaData(meta);
   writer->SetFilePrefix(outfile);
   writer->SetFilePattern("%s/IM-0001-%04.4d.dcm");
@@ -620,13 +620,13 @@ void scancotodicom_convert_one(
   writer->SetInputConnection(reader->GetOutputPort());
   writer->SetFileSliceOrderToSame();
   if (fileType == SCANCO_RAD)
-    {
+  {
     writer->SetMemoryRowOrderToFileNative();
-    }
+  }
   else
-    {
+  {
     writer->SetMemoryRowOrderToBottomUp();
-    }
+  }
   writer->Write();
   scancotodicom_check_error(writer);
 }
@@ -649,39 +649,39 @@ int MAINMACRO(int argc, char *argv[])
 
   // set the UID prefix
   if (options.uid_prefix)
-    {
+  {
     vtkDICOMUtilities::SetUIDPrefix(options.uid_prefix);
-    }
+  }
 
   // the output directory
   const char *outpath = options.output;
   if (!outpath)
-    {
+  {
     fprintf(stderr,
       "\nNo output directory was specified (\'-o\' <directory>).\n\n");
     scancotodicom_usage(stderr, argv[0]);
     exit(1);
-    }
+  }
   if (!options.input)
-    {
+  {
     fprintf(stderr,
       "\nNo input file was specified.\n\n");
     scancotodicom_usage(stderr, argv[0]);
     exit(1);
-    }
+  }
 
   int code = vtkDICOMFile::Access(outpath, vtkDICOMFile::In);
   if (code != vtkDICOMFile::FileIsDirectory)
-    {
+  {
     fprintf(stderr, "option -o must give a directory, not a file.\n");
     exit(1);
-    }
+  }
   code = vtkDICOMFileDirectory::Create(outpath);
   if (code != vtkDICOMFileDirectory::Good)
-    {
+  {
     fprintf(stderr, "Cannot create directory: %s\n", outpath);
     exit(1);
-    }
+  }
 
   scancotodicom_convert_one(&options, options.input, files, outpath);
 

@@ -129,10 +129,10 @@ std::string dicomfind_dirname(const char *filename)
 {
   const char *cp = filename + strlen(filename);
   while (cp != filename)
-    {
+  {
     --cp;
     if (cp[0] == '\\' || cp[0] == '/') { break; }
-    }
+  }
   return std::string(filename, cp - filename);
 }
 
@@ -149,68 +149,68 @@ bool execute_command(const char *command, char *argv[])
   // fork a new process
   pid_t command_pid = fork();
   if (command_pid == -1)
-    {
+  {
     fprintf(stderr, "Unable to create subprocess: %s\n", argv[0]);
-    }
+  }
 
   // if fork() returned a pid, then this is the original process
   if (command_pid != 0)
-    {
+  {
     int command_status;
     while (waitpid(command_pid, &command_status, 0) == static_cast<pid_t>(-1))
-      {
+    {
       if (errno != EINTR)
-        {
+      {
         fprintf(stderr, "Unknown error with subprocess: %s\n", argv[0]);
         return false;
-        }
-      }
-    if (WIFEXITED(command_status))
-      {
-      if (WEXITSTATUS(command_status) != 0)
-        {
-        fprintf(stderr, "Subprocess returned negative result: %s\n", argv[0]);
-        }
-      return true;
-      }
-    else
-      {
-      fprintf(stderr, "Abnormal subprocess termination: %s\n", argv[0]);
       }
     }
-  else if (execvp(command, argv) == -1)
+    if (WIFEXITED(command_status))
     {
-    if (errno == ENOENT)
+      if (WEXITSTATUS(command_status) != 0)
       {
-      fprintf(stderr, "Executable not found: %s\n", argv[0]);
+        fprintf(stderr, "Subprocess returned negative result: %s\n", argv[0]);
       }
-    else if (errno == ENOEXEC)
-      {
-      fprintf(stderr, "File is not executable: %s\n", argv[0]);
-      }
-    else if (errno == EACCES)
-      {
-      fprintf(stderr, "Access (permission) error: %s\n", argv[0]);
-      }
-    else if (errno == E2BIG)
-      {
-      fprintf(stderr, "Command line to long for command: %s\n", argv[0]);
-      }
-    else if (errno == ENOMEM)
-      {
-      fprintf(stderr, "Out of memory while running command: %s\n", argv[0]);
-      }
-    else if (errno == EMFILE)
-      {
-      fprintf(stderr, "No more available file handles: %s\n", argv[0]);
-      }
+      return true;
+    }
     else
-      {
+    {
+      fprintf(stderr, "Abnormal subprocess termination: %s\n", argv[0]);
+    }
+  }
+  else if (execvp(command, argv) == -1)
+  {
+    if (errno == ENOENT)
+    {
+      fprintf(stderr, "Executable not found: %s\n", argv[0]);
+    }
+    else if (errno == ENOEXEC)
+    {
+      fprintf(stderr, "File is not executable: %s\n", argv[0]);
+    }
+    else if (errno == EACCES)
+    {
+      fprintf(stderr, "Access (permission) error: %s\n", argv[0]);
+    }
+    else if (errno == E2BIG)
+    {
+      fprintf(stderr, "Command line to long for command: %s\n", argv[0]);
+    }
+    else if (errno == ENOMEM)
+    {
+      fprintf(stderr, "Out of memory while running command: %s\n", argv[0]);
+    }
+    else if (errno == EMFILE)
+    {
+      fprintf(stderr, "No more available file handles: %s\n", argv[0]);
+    }
+    else
+    {
       fprintf(stderr, "Unknown error while running command: %s\n", argv[0]);
-      }
+    }
 
     return false;
-    }
+  }
 
   return true;
 }
@@ -225,51 +225,51 @@ bool execute_command(const char *, char *argv[])
 
   int m = 0;
   while (argv[m] != 0)
-    {
+  {
     m++;
-    }
+  }
 
   wchar_t **wargv = new wchar_t *[m + 1];
 
   for (int i = 0; i < m; i++)
-    {
+  {
     int n = MultiByteToWideChar(CP_UTF8, 0, argv[i], -1, NULL, 0);
     wargv[i] = new wchar_t[n];
     MultiByteToWideChar(CP_UTF8, 0, argv[i], -1, wargv[i], n);
-    }
+  }
 
   wargv[m] = 0;
 
   if (_wspawnvp(_P_WAIT, wargv[0], wargv) != 0)
-    {
+  {
     if (errno == ENOENT)
-      {
+    {
       fprintf(stderr, "Executable not found: %s\n", argv[0]);
-      }
+    }
     else if (errno == ENOEXEC)
-      {
+    {
       fprintf(stderr, "File is not executable: %s\n", argv[0]);
-      }
+    }
     else if (errno == E2BIG)
-      {
+    {
       fprintf(stderr, "Command line to long for command: %s\n", argv[0]);
-      }
+    }
     else if (errno == ENOMEM)
-      {
+    {
       fprintf(stderr, "Out of memory while running command: %s\n", argv[0]);
-      }
+    }
     else
-      {
+    {
       fprintf(stderr, "Unknown error while running command: %s\n", argv[0]);
-      }
+    }
 
     rval = false;
-    }
+  }
 
   for (int i = 0; i < m; i++)
-    {
+  {
     delete [] wargv[i];
-    }
+  }
   delete [] wargv;
 
   return rval;
@@ -333,36 +333,36 @@ void dicomfind_operations(
   for (std::vector<Operation>::iterator op = operationList.begin();
        op != operationList.end();
        ++op)
-    {
+  {
     if (op->Type == "-print" || op->Type == "-print0")
-      {
+    {
       char endchar = (op->Type == "-print0" ? '\0' : '\n');
       for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
-        {
+      {
         fprintf(stdout, "%s", sa->GetValue(kk).c_str());
         fputc(endchar, stdout);
-        }
-      fflush(stdout);
       }
+      fflush(stdout);
+    }
     else if (op->Type == "-exec" || op->Type == "-execdir")
-      {
+    {
       bool execdir = (op->Type == "-execdir");
 
       // Count the number of times {} appears in exec args
       size_t subcount = 0;
       for (size_t jj = 0; jj < op->Args.size(); jj++)
-        {
+      {
         subcount += (op->Args[jj].find("{}") != std::string::npos);
-        }
+      }
 
       // remember the current subdirectory
       std::string currentSubdir;
 
       if (op->Args.back() == ";")
-        {
+      {
         // call program for each file
         for (int kk = 0; kk < sa->GetNumberOfValues(); kk++)
-          {
+        {
           size_t sub_argc = op->Args.size() + subcount - 1;
           char **sub_argv = new char *[sub_argc+1];
           std::vector<std::string> temp_args(subcount);
@@ -371,61 +371,61 @@ void dicomfind_operations(
           size_t ii = 0;
           size_t nn = op->Args.size()-1;
           for (size_t jj = 0; jj < nn; jj++)
-            {
+          {
             const std::string& arg = op->Args[jj];
             size_t pos = arg.find("{}");
             if (pos != std::string::npos)
-              {
+            {
               const char *sub = sa->GetValue(kk).c_str();
               if (execdir)
-                {
+              {
                 sub = dicomfind_basename(sub);
-                }
+              }
 
               std::string& temp_arg = temp_args[subc++];
               temp_arg = arg;
               do
-                {
+              {
                 temp_arg.replace(pos, 2, sub);
                 pos = temp_arg.find("{}", pos + strlen(sub));
-                }
+              }
               while (pos != std::string::npos);
 
               sub_argv[ii++] = const_cast<char *>(temp_arg.c_str());
-              }
-            else
-              {
-              sub_argv[ii++] = const_cast<char *>(arg.c_str());
-              }
             }
+            else
+            {
+              sub_argv[ii++] = const_cast<char *>(arg.c_str());
+            }
+          }
           sub_argv[ii] = 0;
 
           if (execdir)
-            {
+          {
             std::string dirname =
               dicomfind_dirname(sa->GetValue(kk).c_str());
             if (dirname != currentSubdir)
-              {
+            {
               dicomfind_chdir(originalDir.c_str());
               dicomfind_chdir(dirname.c_str());
-              }
             }
+          }
 
           if (!execute_command(sub_argv[0], sub_argv))
-            {
+          {
             fprintf(stderr, "failure!");
-            }
+          }
 
           delete [] sub_argv;
-          }
+        }
 
         if (execdir && currentSubdir != "")
-          {
-          dicomfind_chdir(originalDir.c_str());
-          }
-        }
-      else
         {
+          dicomfind_chdir(originalDir.c_str());
+        }
+      }
+      else
+      {
         // call program for each series
         // for execdir, what if series is split across directories?
         // need to call executable once per directory, using only
@@ -443,111 +443,111 @@ void dicomfind_operations(
         bool notdone = true;
 
         while (notdone)
-          {
+        {
           notdone = false;
           if (execdir)
-            {
+          {
             bool foundDirToProcess = false;
             for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
-              {
+            {
               std::string dirname =
                 dicomfind_dirname(sa->GetValue(kk).c_str());
               if (!foundDirToProcess)
-                {
+              {
                 bool dirIsDone = false;
                 for (size_t ll = 0; ll < done_dirs.size(); ll++)
-                  {
+                {
                   if (dirname == done_dirs[ll])
-                    {
+                  {
                     dirIsDone = true;
                     break;
-                    }
                   }
+                }
                 if (!dirIsDone)
-                  {
+                {
                   foundDirToProcess = true;
                   doing_dir = dirname;
                   done_dirs.push_back(dirname);
                   break;
-                  }
                 }
               }
-            if (foundDirToProcess)
-              {
-              notdone = true;
-              }
-            else
-              {
-              break;
-              }
             }
+            if (foundDirToProcess)
+            {
+              notdone = true;
+            }
+            else
+            {
+              break;
+            }
+          }
 
           size_t ii = 0;
           size_t nn = op->Args.size()-1;
           for (size_t jj = 0; jj < nn; jj++)
-            {
+          {
             const std::string& arg = op->Args[jj];
             size_t pos = arg.find("{}");
             if (pos != std::string::npos)
-              {
+            {
               for (vtkIdType kk = 0; kk < sa->GetNumberOfValues(); kk++)
-                {
+              {
                 const char *sub = sa->GetValue(kk).c_str();
 
                 if (execdir)
-                  {
+                {
                   std::string dirname = dicomfind_dirname(sub);
                   if (dirname != doing_dir)
-                    {
+                  {
                     continue;
-                    }
-                  sub = dicomfind_basename(sub);
                   }
+                  sub = dicomfind_basename(sub);
+                }
 
                 std::string& temp_arg = temp_args[subc++];
                 temp_arg = arg;
                 pos = temp_arg.find("{}");
                 do
-                  {
+                {
                   temp_arg.replace(pos, 2, sub);
                   pos = temp_arg.find("{}", pos + strlen(sub));
-                  }
+                }
                 while (pos != std::string::npos);
 
                 sub_argv[ii++] = const_cast<char *>(temp_arg.c_str());
-                }
-              }
-            else
-              {
-              sub_argv[ii++] = const_cast<char *>(arg.c_str());
               }
             }
+            else
+            {
+              sub_argv[ii++] = const_cast<char *>(arg.c_str());
+            }
+          }
           sub_argv[ii] = 0;
 
           if (execdir)
-            {
+          {
             if (doing_dir != currentSubdir)
-              {
+            {
               dicomfind_chdir(originalDir.c_str());
               dicomfind_chdir(doing_dir.c_str());
-              }
             }
+          }
 
           if (!execute_command(sub_argv[0], sub_argv))
-            {
+          {
             fprintf(stderr, "failure!");
-            }
           }
+        }
 
         if (execdir && currentSubdir != "")
-          {
+        {
           dicomfind_chdir(originalDir.c_str());
-          }
+        }
 
         delete [] sub_argv;
-        }
       }
     }
+  }
 }
 
 // Delay wildcard expansion for -name option
@@ -582,160 +582,160 @@ int MAINMACRO(int argc, char *argv[])
     DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
   if (argc < 2)
-    {
+  {
     dicomfind_usage(stdout, dicomfind_basename(argv[0]));
     return rval;
-    }
+  }
   else if (argc == 2 && strcmp(argv[1], "--help") == 0)
-    {
+  {
     dicomfind_help(stdout, dicomfind_basename(argv[0]));
     return rval;
-    }
+  }
   else if (argc == 2 && strcmp(argv[1], "--version") == 0)
-    {
+  {
     dicomfind_version(stdout, dicomfind_basename(argv[0]));
     return rval;
-    }
+  }
 
   for (int argi = 1; argi < argc; argi++)
-    {
+  {
     const char *arg = argv[argi];
     if (strcmp(arg, "-P") == 0)
-      {
+    {
       followSymlinks = false;
-      }
+    }
     else if (strcmp(arg, "-L") == 0)
-      {
+    {
       followSymlinks = true;
-      }
+    }
     else if (strcmp(arg, "-q") == 0)
-      {
+    {
       if (argi + 1 == argc || argv[argi+1][0] == '-')
-        {
+      {
         fprintf(stderr, "%s must be followed by a file.\n\n", arg);
         dicomfind_usage(stderr, dicomfind_basename(argv[0]));
         return 1;
-        }
+      }
       const char *qfile = argv[++argi];
       if (!dicomcli_readquery(qfile, &query, &qtlist))
-        {
+      {
         fprintf(stderr, "Can't read query file %s\n\n", qfile);
         return 1;
-        }
       }
+    }
     else if (strcmp(arg, "-u") == 0)
-      {
+    {
       if (argi + 1 == argc || argv[argi+1][0] == '-')
-        {
+      {
         fprintf(stderr, "Error: %s must be followed by a file.\n\n", arg);
         dicomfind_usage(stderr, dicomfind_basename(argv[0]));
         return 1;
-        }
+      }
       const char *qfile = argv[++argi];
       if (!dicomcli_readuids(qfile, &query, &qtlist))
-        {
+      {
         fprintf(stderr, "Error: Can't read uid file %s\n\n", qfile);
         return 1;
-        }
       }
+    }
     else if (strcmp(arg, "-k") == 0)
-      {
+    {
       vtkDICOMTag tag;
       ++argi;
       if (argi == argc)
-        {
+      {
         fprintf(stderr, "%s must be followed by gggg,eeee=value "
                         "where gggg,eeee is a DICOM tag.\n\n", arg);
         return 1;
-        }
+      }
       if (!dicomcli_readkey(argv[argi], &query, &qtlist))
-        {
+      {
         return 1;
-        }
       }
+    }
     else if (strcmp(arg, "-maxdepth") == 0)
-      {
+    {
       ++argi;
       if (argi == argc)
-        {
+      {
         fprintf(stderr, "%s must be followed by an argument.\n\n", arg);
         return 1;
-        }
+      }
       scandepth = static_cast<int>(atol(argv[argi]));
-      }
+    }
     else if (strcmp(arg, "-name") == 0)
-      {
+    {
       ++argi;
       if (argi == argc)
-        {
+      {
         fprintf(stderr, "%s must be followed by an argument.\n\n", arg);
         return 1;
-        }
+      }
       pattern = argv[argi];
-      }
+    }
     else if (strcmp(arg, "-image") == 0)
-      {
+    {
       requirePixelData = true;
-      }
+    }
     else if (strcmp(arg, "-series") == 0)
-      {
+    {
       findSeries = true;
-      }
+    }
     else if (strcmp(arg, "-print") == 0 ||
              strcmp(arg, "-print0") == 0)
-      {
+    {
       operationList.push_back(arg);
-      }
+    }
     else if (strcmp(arg, "-exec") == 0 ||
              strcmp(arg, "-execdir") == 0)
-      {
+    {
       operationList.push_back(arg);
       int argj = ++argi;
       for (; argj < argc; argj++)
-        {
+      {
         if (strcmp(argv[argj], ";") == 0 ||
             strcmp(argv[argj], "+") == 0)
-          {
-          break;
-          }
-        }
-      if (argj == argc)
         {
+          break;
+        }
+      }
+      if (argj == argc)
+      {
         fprintf(stderr, "%s must be terminated with + or \\; "
                 "(plus or semicolon).\n\n",
                 arg);
         return 1;
-        }
-      for (; argi <= argj; argi++)
-        {
-        operationList.back().Args.push_back(argv[argi]);
-        }
-      argi = argj;
       }
-    else if (arg[0] == '-')
+      for (; argi <= argj; argi++)
       {
+        operationList.back().Args.push_back(argv[argi]);
+      }
+      argi = argj;
+    }
+    else if (arg[0] == '-')
+    {
       fprintf(stderr, "unrecognized option %s.\n\n", arg);
       dicomfind_usage(stderr, dicomfind_basename(argv[0]));
       return 1;
-      }
-    else
-      {
-      a->InsertNextValue(arg);
-      }
     }
+    else
+    {
+      a->InsertNextValue(arg);
+    }
+  }
 
   // if no operations were specified, default to "print"
   if (operationList.empty())
-    {
+  {
     operationList.push_back("-print");
-    }
+  }
 
   // Remember the current directory
   std::string originalDir = dicomfind_getcwd();
 
   // Write data for every input directory
   if (a->GetNumberOfTuples() > 0)
-    {
+  {
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
     finder->SetInputFileNames(a);
@@ -749,17 +749,17 @@ int MAINMACRO(int argc, char *argv[])
     finder->Update();
 
     for (int j = 0; j < finder->GetNumberOfStudies(); j++)
-      {
+    {
       int k0 = finder->GetFirstSeriesForStudy(j);
       int k1 = finder->GetLastSeriesForStudy(j);
 
       for (int k = k0; k <= k1; k++)
-        {
+      {
         vtkStringArray *sa = finder->GetFileNamesForSeries(k);
         dicomfind_operations(operationList, sa, originalDir);
-        }
       }
     }
+  }
 
   return rval;
 }

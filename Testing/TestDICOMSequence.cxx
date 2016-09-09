@@ -24,13 +24,13 @@ bool StringsEqual(const char *s1, const char *s2)
 {
   bool result = true;
   if (s1 != s2)
-    {
+  {
     result = false;
     if (s1 != 0 && s2 != 0)
-      {
+    {
       result = (strcmp(s1, s2) == 0);
-      }
     }
+  }
   return result;
 }
 
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
   // only add one item to the sequence
   for (int i = 0; i < 1; i++)
-    {
+  {
     // add the first data element to the item
     vtkDICOMItem item;
     item.SetAttributeValue(DC::SeriesInstanceUID,
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 
     // add ten items to this sequence
     for (int j = 0; j < 10; j++)
-      {
+    {
       // create a unique InstanceUID
       sprintf(instanceUID, instanceUIDFormat, 255+j);
       vtkDICOMItem item2;
@@ -78,14 +78,14 @@ int main(int argc, char *argv[])
       item2.SetAttributeValue(DC::ReferencedSOPInstanceUID,
         vtkDICOMValue(vtkDICOMVR::UI, instanceUID));
       seq2.AddItem(item2);
-      }
+    }
 
     // create the ReferencedInstanceSequence from the items
     item.SetAttributeValue(DC::ReferencedInstanceSequence, seq2);
 
     // add this sequence-containing item to the original sequence
     seq.SetItem(i, item);
-    }
+  }
 
   // do the tests
   unsigned int n = seq.GetNumberOfItems();
@@ -104,17 +104,17 @@ int main(int argc, char *argv[])
 
   // go through the item in ReferencedSeriesSequence
   for (iter = ip1->Begin(); iter != ip1->End(); ++iter)
-    {
+  {
     // make sure SeriesInstanceUID was found
     if (iter->GetTag() == DC::SeriesInstanceUID)
-      {
+    {
       found1 = true;
       TestAssert(StringsEqual(iter->GetValue().GetCharData(),
         "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
-      }
+    }
     // make sure ReferencedInstanceSequence was found
     if (iter->GetTag() == DC::ReferencedInstanceSequence)
-      {
+    {
       found2 = true;
       vtkDICOMDataElementIterator iter2;
 
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
 
       // go through the 10 items in the sequence
       for (unsigned int j = 0; j < m; j++)
-        {
+      {
         // check the two elements in each item
         const vtkDICOMItem &item = v2.GetItem(j);
         TestAssert(item.GetNumberOfDataElements() == 2);
@@ -135,10 +135,10 @@ int main(int argc, char *argv[])
         v3 = item.GetAttributeValue(DC::ReferencedSOPInstanceUID);
         sprintf(instanceUID, instanceUIDFormat, 255+j);
         TestAssert(StringsEqual(v3.GetCharData(), instanceUID));
-        }
       }
-    fullcount++;
     }
+    fullcount++;
+  }
 
   // check that there were two elements in the ReferencedSeriesSequence item
   TestAssert(fullcount == 2);
@@ -170,13 +170,13 @@ int main(int argc, char *argv[])
   TestAssert(val3.GetNumberOfValues() == 0);
 
   for (int i = 0; i < 1; i++)
-    {
+  {
     vtkDICOMItem item;
     item.SetAttributeValue(DC::SeriesInstanceUID,
       vtkDICOMValue(vtkDICOMVR::UI,
         "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
     seq3.AddItem(item);
-    }
+  }
 
   TestAssert(seq3.GetNumberOfItems() == 1);
 

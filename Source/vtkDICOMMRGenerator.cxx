@@ -65,13 +65,13 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
   // DENSITY MAP, IMAGE ADDITION, OTHER
   const char *it = 0;
   if (source)
-    {
+  {
     it = source->GetAttributeValue(DC::ImageType).GetCharData();
-    }
+  }
   if (it == 0 || it[0] == '\0')
-    {
+  {
     it = "DERIVED\\SECONDARY\\OTHER";
-    }
+  }
   vtkDICOMMetaData *meta = this->MetaData;
   meta->SetAttributeValue(DC::ImageType, it);
 
@@ -84,18 +84,18 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
   const char *ss = 0;
   const char *sv = 0;
   if (source)
-    {
+  {
     ss = source->GetAttributeValue(DC::ScanningSequence).GetCharData();
     sv = source->GetAttributeValue(DC::SequenceVariant).GetCharData();
-    }
+  }
   if (ss == 0 || ss[0] == '\0')
-    { // default to "research mode"
+  { // default to "research mode"
     ss = "RM";
-    }
+  }
   if (sv == 0 || sv[0] == '\0')
-    {
+  {
     sv = "NONE";
-    }
+  }
   meta->SetAttributeValue(DC::ScanningSequence, ss);
   meta->SetAttributeValue(DC::SequenceVariant, sv);
 
@@ -103,41 +103,41 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
   meta->SetAttributeValue(DC::SpacingBetweenSlices, this->Spacing[2]);
 
   if (source)
-    {
+  {
     // set this to the time dimension
     if (source->HasAttribute(DC::CardiacNumberOfImages))
-      {
+    {
       meta->SetAttributeValue(DC::CardiacNumberOfImages, this->Dimensions[3]);
-      }
+    }
     // keep this if data was not reformatted
     if (this->SourceInstanceArray != 0 && source == this->SourceMetaData)
-      {
+    {
       vtkDICOMMetaDataAdapter sourceAdapter(source);
       const char *ped = sourceAdapter->GetAttributeValue(
         DC::InPlanePhaseEncodingDirection).GetCharData();
       if (ped != 0 && ped[0] != '\0')
-        {
+      {
         meta->SetAttributeValue(DC::InPlanePhaseEncodingDirection, ped);
-        }
       }
     }
+  }
 
   // temporal information
   if (this->Dimensions[3] > 1)
-    {
+  {
     int n = meta->GetNumberOfInstances();
     int nslices = (this->Dimensions[2] > 0 ? this->Dimensions[2] : 1);
 
     for (int i = 0; i < n; i++)
-      {
+    {
       int t = (i % (n / nslices)) / (n / (nslices*this->Dimensions[3]));
       meta->SetAttributeValue(i, DC::TemporalPositionIdentifier, t + 1);
-      }
+    }
     meta->SetAttributeValue(
       DC::NumberOfTemporalPositions, this->Dimensions[3]);
     meta->SetAttributeValue(
       DC::TemporalResolution, this->Spacing[3]);
-    }
+  }
 
   // required items: use simple read/write validation
   DC::EnumType required[] = {
@@ -229,9 +229,9 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(vtkInformation *info)
       !this->GenerateMRImageModule(source) ||
       !this->GenerateOverlayPlaneModule(source) ||
       !this->GenerateVOILUTModule(source))
-    {
+  {
     return false;
-    }
+  }
 
   return true;
 }
@@ -240,10 +240,10 @@ bool vtkDICOMMRGenerator::GenerateMRInstance(vtkInformation *info)
 bool vtkDICOMMRGenerator::GenerateInstance(vtkInformation *info)
 {
   if (this->MultiFrame)
-    {
+  {
     vtkErrorMacro("Enhanced Multi-Frame MR is not yet supported.");
     return false;
-    }
+  }
 
   return this->GenerateMRInstance(info);
 }

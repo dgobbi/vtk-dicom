@@ -29,9 +29,9 @@ const vtkDICOMValue &vtkDICOMSequence::GetAttributeValue(
 {
   const vtkDICOMItem *ptr = this->V.GetSequenceData();
   if (ptr != 0 && i < this->V.GetNumberOfValues())
-    {
+  {
     return ptr[i].GetAttributeValue(tag);
-    }
+  }
   return vtkDICOMSequence::InvalidValue;
 }
 
@@ -41,9 +41,9 @@ const vtkDICOMValue &vtkDICOMSequence::GetAttributeValue(
 {
   const vtkDICOMItem *ptr = this->V.GetSequenceData();
   if (ptr != 0 && i < this->V.GetNumberOfValues())
-    {
+  {
     return ptr[i].GetAttributeValue(tagpath);
-    }
+  }
   return vtkDICOMSequence::InvalidValue;
 }
 
@@ -52,9 +52,9 @@ const vtkDICOMItem &vtkDICOMSequence::GetItem(size_t i) const
 {
   const vtkDICOMItem *ptr = this->V.GetSequenceData();
   if (ptr != 0 && i < this->V.GetNumberOfValues())
-    {
+  {
     return ptr[i];
-    }
+  }
   return vtkDICOMSequence::EmptyItem;
 }
 

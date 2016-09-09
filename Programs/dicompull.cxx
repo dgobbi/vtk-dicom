@@ -121,10 +121,10 @@ std::string dicompull_dirname(const char *filename)
 {
   const char *cp = filename + strlen(filename);
   while (cp != filename)
-    {
+  {
     --cp;
     if (cp[0] == '\\' || cp[0] == '/') { break; }
-    }
+  }
   return std::string(filename, cp - filename);
 }
 
@@ -136,25 +136,25 @@ std::string dicompull_cleanup(const std::string& input)
   std::string::const_iterator b = a;
   std::string s;
   while (a != input.end())
-    {
+  {
     while (a != input.end() &&
            ((*a & 0x80) == 0) && isgraph(*a) && !ispunct(*a))
-      {
+    {
       ++a;
-      }
+    }
     s.append(b, a);
     b = a;
     while (a != input.end() &&
            (((*a & 0x80) != 0) || !isgraph(*a) || ispunct(*a)))
-      {
+    {
       ++a;
-      }
-    if (b != a && b != input.begin() && a != input.end())
-      {
-      s.append("_");
-      }
-    b = a;
     }
+    if (b != a && b != input.begin() && a != input.end())
+    {
+      s.append("_");
+    }
+    b = a;
+  }
 
   return s;
 }
@@ -171,24 +171,24 @@ std::string dicompull_makedirname(
   const char *dp = cp;
   const char *bp = 0;
   while (*cp != '\0')
-    {
+  {
     while (*cp != '{' && *cp != '}' && *cp != '\0') { cp++; }
     if (*cp == '}')
-      {
+    {
       fprintf(stderr, "Error: Missing \'{\': %s\n", outdir);
       exit(1);
-      }
+    }
     if (*cp == '{')
-      {
+    {
       bp = cp;
       while (*cp != '}' && *cp != '\0') { cp++; }
       if (*cp != '}')
-        {
+      {
         fprintf(stderr, "Error: Unmatched \'{\': %s\n", outdir);
         exit(1);
-        }
+      }
       else
-        {
+      {
         s.append(dp, bp);
         bp++;
         key.assign(bp, cp);
@@ -197,51 +197,51 @@ std::string dicompull_makedirname(
         v.Clear();
         vtkDICOMTag tag;
         if (key.length() > 0)
-          {
+        {
           vtkDICOMDictEntry de = vtkDICOMDictionary::FindDictEntry(key.c_str());
           if (de.IsValid())
-            {
+          {
             tag = de.GetTag();
-            }
+          }
           else
-            {
+          {
             fprintf(stderr, "Error: Unrecognized key %s\n", key.c_str());
             exit(1);
-            }
           }
+        }
         if (finder)
-          {
+        {
           if (!v.IsValid())
-            {
+          {
             v = finder->GetStudyRecord(study).GetAttributeValue(tag);
-            }
+          }
           if (!v.IsValid())
-            {
+          {
             v = finder->GetPatientRecordForStudy(study).GetAttributeValue(tag);
-            }
+          }
           if (!v.IsValid())
-            {
+          {
             v = finder->GetSeriesRecord(series).GetAttributeValue(tag);
-            }
           }
+        }
         if (v.IsValid())
-          {
+        {
           val.assign(dicompull_cleanup(v.AsUTF8String()));
-          }
+        }
         else if (finder)
-          {
+        {
           fprintf(stderr, "Error: Key %s not allowed in output directory.\n",
                   key.c_str());
           exit(1);
-          }
-        if (val.empty())
-          {
-          val = "Empty";
-          }
-        s.append(val);
         }
+        if (val.empty())
+        {
+          val = "Empty";
+        }
+        s.append(val);
       }
     }
+  }
   s.append(dp, cp);
 
   return s;
@@ -279,155 +279,155 @@ int MAINMACRO(int argc, char *argv[])
     DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
   if (argc < 2)
-    {
+  {
     dicompull_usage(stdout, dicompull_basename(argv[0]));
     return rval;
-    }
+  }
   else if (argc == 2 && strcmp(argv[1], "--help") == 0)
-    {
+  {
     dicompull_help(stdout, dicompull_basename(argv[0]));
     return rval;
-    }
+  }
   else if (argc == 2 && strcmp(argv[1], "--version") == 0)
-    {
+  {
     dicompull_version(stdout, dicompull_basename(argv[0]));
     return rval;
-    }
+  }
 
   for (int argi = 1; argi < argc; argi++)
-    {
+  {
     const char *arg = argv[argi];
     if (strcmp(arg, "-P") == 0)
-      {
+    {
       followSymlinks = false;
-      }
+    }
     else if (strcmp(arg, "-L") == 0)
-      {
+    {
       followSymlinks = true;
-      }
+    }
     else if (strcmp(arg, "-q") == 0)
-      {
+    {
       if (argi + 1 == argc || argv[argi+1][0] == '-')
-        {
+      {
         fprintf(stderr, "Error: %s must be followed by a file.\n\n", arg);
         dicompull_usage(stderr, dicompull_basename(argv[0]));
         return 1;
-        }
+      }
       const char *qfile = argv[++argi];
       if (!dicomcli_readquery(qfile, &query, &qtlist))
-        {
+      {
         fprintf(stderr, "Error: Can't read query file %s\n\n", qfile);
         return 1;
-        }
       }
+    }
     else if (strcmp(arg, "-u") == 0)
-      {
+    {
       if (argi + 1 == argc || argv[argi+1][0] == '-')
-        {
+      {
         fprintf(stderr, "Error: %s must be followed by a file.\n\n", arg);
         dicompull_usage(stderr, dicompull_basename(argv[0]));
         return 1;
-        }
+      }
       const char *qfile = argv[++argi];
       if (!dicomcli_readuids(qfile, &query, &qtlist))
-        {
+      {
         fprintf(stderr, "Error: Can't read uid file %s\n\n", qfile);
         return 1;
-        }
       }
+    }
     else if (strcmp(arg, "-k") == 0)
-      {
+    {
       vtkDICOMTag tag;
       ++argi;
       if (argi == argc)
-        {
+      {
         fprintf(stderr, "Error: %s must be followed by gggg,eeee=value "
                         "where gggg,eeee is a DICOM tag.\n\n", arg);
         return 1;
-        }
-      if (!dicomcli_readkey(argv[argi], &query, &qtlist))
-        {
-        return 1;
-        }
       }
-    else if (strcmp(arg, "-o") == 0)
+      if (!dicomcli_readkey(argv[argi], &query, &qtlist))
       {
+        return 1;
+      }
+    }
+    else if (strcmp(arg, "-o") == 0)
+    {
       vtkDICOMTag tag;
       ++argi;
       if (argi == argc || argv[argi][0] == '-')
-        {
+      {
         fprintf(stderr, "Error: %s must be followed by output directory.\n\n",
                 arg);
         return 1;
-        }
+      }
       outdir = argv[argi];
-      }
+    }
     else if (strcmp(arg, "-maxdepth") == 0)
-      {
+    {
       ++argi;
       if (argi == argc)
-        {
+      {
         fprintf(stderr, "Error: %s must be followed by an argument.\n\n", arg);
         return 1;
-        }
+      }
       scandepth = static_cast<int>(atol(argv[argi]));
-      }
+    }
     else if (strcmp(arg, "-name") == 0)
-      {
+    {
       ++argi;
       if (argi == argc)
-        {
+      {
         fprintf(stderr, "Error: %s must be followed by an argument.\n\n", arg);
         return 1;
-        }
+      }
       pattern = argv[argi];
-      }
+    }
     else if (strcmp(arg, "-image") == 0)
-      {
+    {
       requirePixelData = true;
-      }
+    }
     else if (strcmp(arg, "-series") == 0)
-      {
+    {
       findSeries = true;
-      }
+    }
     else if (strcmp(arg, "--silent") == 0)
-      {
+    {
       silent = true;
-      }
+    }
     else if (arg[0] == '-')
-      {
+    {
       fprintf(stderr, "Error: Unrecognized option %s.\n\n", arg);
       dicompull_usage(stderr, dicompull_basename(argv[0]));
       return 1;
-      }
+    }
     else
-      {
+    {
       int code = vtkDICOMFile::Access(arg, vtkDICOMFile::In);
       if (code == vtkDICOMFile::Good ||
           code == vtkDICOMFile::FileIsDirectory)
-        {
+      {
         a->InsertNextValue(arg);
-        }
+      }
       else if (dicomcli_looks_like_key(arg))
-        {
+      {
         fprintf(stderr, "Error: Missing -k before %s.\n\n", arg);
         return 1;
-        }
+      }
       else
-        {
+      {
         fprintf(stderr, "Error: File not found: %s.\n\n", arg);
         return 1;
-        }
       }
     }
+  }
 
   // output directory is mandatory
   if (outdir.empty())
-    {
+  {
     fprintf(stderr,
       "\nError: No output directory was specified (-o <directory>).\n\n");
     exit(1);
-    }
+  }
 
   // do a dry run to make sure outdir string is valid
   dicompull_makedirname(NULL, 0, 0, outdir.c_str());
@@ -438,7 +438,7 @@ int MAINMACRO(int argc, char *argv[])
 
   // Write data for every input directory
   if (a->GetNumberOfTuples() > 0)
-    {
+  {
     const size_t bufsize = 8192;
     unsigned char *buffer = new unsigned char [bufsize];
 
@@ -456,33 +456,33 @@ int MAINMACRO(int argc, char *argv[])
     vtkSmartPointer<ProgressObserver> p =
       vtkSmartPointer<ProgressObserver>::New();
     if (!silent)
-      {
+    {
       p->SetText("Scanning");
       finder->AddObserver(vtkCommand::ProgressEvent, p);
       finder->AddObserver(vtkCommand::StartEvent, p);
       finder->AddObserver(vtkCommand::EndEvent, p);
-      }
+    }
     finder->Update();
 
     vtkIdType count = 0;
     vtkIdType total = 0;
     if (!silent)
-      {
+    {
       p->SetText("Copying");
       p->Execute(NULL, vtkCommand::StartEvent, NULL);
       for (int k = 0; k < finder->GetNumberOfSeries(); k++)
-        {
+      {
         total += finder->GetFileNamesForSeries(k)->GetNumberOfValues();
-        }
       }
+    }
 
     for (int j = 0; j < finder->GetNumberOfStudies(); j++)
-      {
+    {
       int k0 = finder->GetFirstSeriesForStudy(j);
       int k1 = finder->GetLastSeriesForStudy(j);
 
       for (int k = k0; k <= k1; k++)
-        {
+      {
         vtkStringArray *sa = finder->GetFileNamesForSeries(k);
         // create the directory name
         std::string dirname =
@@ -490,38 +490,38 @@ int MAINMACRO(int argc, char *argv[])
         std::map<std::string,int>::iterator mi = dircount.find(dirname);
         int si = 1;
         if (mi != dircount.end())
-          {
+        {
           si = mi->second + 1;
           mi->second = si;
-          }
+        }
         else
-          {
+        {
           dircount[dirname] = si;
           int code = vtkDICOMFileDirectory::Create(dirname.c_str());
           if (code != vtkDICOMFileDirectory::Good)
-            {
+          {
             fprintf(stderr, "Error: Cannot create directory: %s\n",
                     dirname.c_str());
             delete [] buffer;
             exit(1);
-            }
           }
+        }
         vtkDICOMFilePath outpath(dirname);
         for (vtkIdType i = 0; i < sa->GetNumberOfValues(); i++)
-          {
+        {
           // copy the file
           char fname[32];
           sprintf(fname, "IM-%04d-%04d.dcm", si, static_cast<int>(i+1));
           const std::string& srcname = sa->GetValue(i);
           std::string fullname = outpath.Join(fname);
           if (!vtkDICOMFile::SameFile(srcname.c_str(), fullname.c_str()))
-            {
+          {
             vtkDICOMFile infile(srcname.c_str(), vtkDICOMFile::In);
             if (infile.GetError())
-              {
+            {
               const char *message = "Cannot copy file";
               switch (infile.GetError())
-                {
+              {
                 case vtkDICOMFile::AccessDenied:
                   message = "Access denied for file";
                   break;
@@ -531,22 +531,22 @@ int MAINMACRO(int argc, char *argv[])
                 case vtkDICOMFile::ImpossiblePath:
                   message = "Bad file path";
                   break;
-                }
-              fprintf(stderr, "Error: %s: %s\n", message, srcname.c_str());
               }
+              fprintf(stderr, "Error: %s: %s\n", message, srcname.c_str());
+            }
             else if (infile.GetSize() == 0)
-              {
+            {
               fprintf(stderr, "Error: File size is zero: %s\n",
                       srcname.c_str());
-              }
+            }
             else
-              {
+            {
               vtkDICOMFile outfile(fullname.c_str(), vtkDICOMFile::Out);
               if (outfile.GetError())
-                {
+              {
                 const char *message = "Cannot write file";
                 switch (outfile.GetError())
-                  {
+                {
                   case vtkDICOMFile::AccessDenied:
                     message = "Access denied for output file";
                     break;
@@ -556,51 +556,51 @@ int MAINMACRO(int argc, char *argv[])
                   case vtkDICOMFile::ImpossiblePath:
                     message = "Bad file path";
                     break;
-                  }
-                fprintf(stderr, "Error: %s: %s\n", message, fullname.c_str());
                 }
+                fprintf(stderr, "Error: %s: %s\n", message, fullname.c_str());
+              }
               else
-                {
+              {
                 // copy the file
                 while (!infile.EndOfFile())
-                  {
+                {
                   size_t bytecount = infile.Read(buffer, bufsize);
                   if (bytecount == 0 && infile.GetError())
-                    {
+                  {
                     fprintf(stderr, "Error, incomplete read: %s\n",
                             srcname.c_str());
                     vtkDICOMFile::Remove(fullname.c_str());
                     break;
-                    }
+                  }
                   if (bytecount > 0 &&
                       outfile.Write(buffer, bytecount) != bytecount)
-                    {
+                  {
                     fprintf(stderr, "Error: Incomplete write: %s\n",
                             fullname.c_str());
                     vtkDICOMFile::Remove(fullname.c_str());
                     break;
-                    }
                   }
                 }
               }
             }
+          }
 
           if (!silent)
-            {
+          {
             count++;
             double progress = (static_cast<double>(count)/
                                static_cast<double>(total));
             p->Execute(NULL, vtkCommand::ProgressEvent, &progress);
-            }
           }
         }
       }
+    }
     delete [] buffer;
     if (!silent)
-      {
+    {
       p->Execute(NULL, vtkCommand::EndEvent, NULL);
-      }
     }
+  }
 
   return rval;
 }

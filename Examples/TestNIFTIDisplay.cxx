@@ -32,9 +32,9 @@ int main(int argc, char *argv[])
 
   const char *filename = 0;
   if (argc > 1)
-    {
+  {
     filename = argv[1];
-    }
+  }
 
   vtkSmartPointer<vtkNIFTIReader> reader =
     vtkSmartPointer<vtkNIFTIReader>::New();
@@ -42,22 +42,22 @@ int main(int argc, char *argv[])
   reader->Update();
 
   if (reader->GetErrorCode() != vtkErrorCode::NoError)
-    {
+  {
     return 1;
-    }
+  }
 
   vtkSmartPointer<vtkMatrix4x4> matrix =
     vtkSmartPointer<vtkMatrix4x4>::New();
   if (reader->GetQFormMatrix())
-    {
+  {
     matrix->DeepCopy(reader->GetQFormMatrix());
     matrix->Invert();
-    }
+  }
   else if (reader->GetSFormMatrix())
-    {
+  {
     matrix->DeepCopy(reader->GetSFormMatrix());
     matrix->Invert();
-    }
+  }
 
   vtkSmartPointer<vtkImageReslice> reslice =
     vtkSmartPointer<vtkImageReslice>::New();
@@ -81,13 +81,13 @@ int main(int argc, char *argv[])
   bool imageIs3D = (extent[5] > extent[4]);
 
   for (int i = 2*(imageIs3D == 0); i < 3; i++)
-    {
+  {
     vtkSmartPointer<vtkImageSliceMapper> imageMapper =
       vtkSmartPointer<vtkImageSliceMapper>::New();
     if (i < 3)
-      {
+    {
       imageMapper->SetInputConnection(reslice->GetOutputPort());
-      }
+    }
     imageMapper->SetOrientation(i % 3);
     imageMapper->SliceAtFocalPointOn();
 
@@ -104,9 +104,9 @@ int main(int argc, char *argv[])
     renderer->AddViewProp(image);
     renderer->SetBackground(0.0, 0.0, 0.0);
     if (imageIs3D)
-      {
+    {
       renderer->SetViewport(viewport[i]);
-      }
+    }
 
     renWin->AddRenderer(renderer);
 
@@ -118,36 +118,36 @@ int main(int argc, char *argv[])
     point[2] = 0.5*(bounds[4] + bounds[5]);
     double maxdim = 0.0;
     for (int j = 0; j < 3; j++)
-      {
+    {
       double s = 0.5*(bounds[2*j+1] - bounds[2*j]);
       maxdim = (s > maxdim ? s : maxdim);
-      }
+    }
 
     vtkCamera *camera = renderer->GetActiveCamera();
     camera->SetFocalPoint(point);
     if (imageMapper->GetOrientation() == 2)
-      {
+    {
       point[imageMapper->GetOrientation()] -= 500.0;
       camera->SetViewUp(0.0, +1.0, 0.0);
-      }
+    }
     else
-      {
+    {
       point[imageMapper->GetOrientation()] += 500.0;
       camera->SetViewUp(0.0, 0.0, +1.0);
-      }
+    }
     camera->SetPosition(point);
     camera->ParallelProjectionOn();
     camera->SetParallelScale(maxdim);
-    }
+  }
 
   if (imageIs3D)
-    {
+  {
     renWin->SetSize(600, 400);
-    }
+  }
   else
-    {
+  {
     renWin->SetSize(400, 400);
-    }
+  }
 
   renWin->Render();
   iren->Start();

@@ -5861,34 +5861,34 @@ const unsigned int PrivateToStandard[48] = {
 inline void UnicodeToUTF8(unsigned int code, std::string *s)
 {
   if (code <= 0x007F)
-    {
+  {
     s->push_back(code);
-    }
+  }
   else if (code <= 0x07FF)
-    {
+  {
     s->push_back(0xC0 | (code >> 6));
     s->push_back(0x80 | (code & 0x3F));
-    }
+  }
   else if (code <= 0xFFFF)
-    {
+  {
     s->push_back(0xE0 | (code >> 12));
     s->push_back(0x80 | ((code >> 6) & 0x3F));
     s->push_back(0x80 | (code & 0x3F));
-    }
+  }
   else if (code <= 0x10FFFF)
-    {
+  {
     s->push_back(0xF0 | (code >> 18));
     s->push_back(0x80 | ((code >> 12) & 0x3F));
     s->push_back(0x80 | ((code >> 6) & 0x3F));
     s->push_back(0x80 | (code & 0x3F));
-    }
+  }
   else
-    {
+  {
     // indicate bad code with U+FFFD
     s->push_back(0xEF);
     s->push_back(0xBF);
     s->push_back(0xBD);
-    }
+  }
 }
 
 inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
@@ -5897,18 +5897,18 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
   const unsigned char *ep = reinterpret_cast<const unsigned char *>(cpEnd);
   unsigned int code = 0;
   if (cp != ep)
-    {
+  {
     code = *cp++;
-    }
+  }
 
   // check for non-ASCII
   if ((code & 0x80) != 0)
-    {
+  {
     bool good = false;
     if (cp != ep)
-      {
+    {
       if ((code & 0xE0) == 0xC0)
-        {
+      {
         // 2 bytes, 0x0080 to 0x07FF
         code &= 0x1F;
         code <<= 6;
@@ -5917,11 +5917,11 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
         good &= ((s & 0xC0) == 0x80);
         cp += good;
         code |= (s & 0x3F);
-        }
+      }
       else if (cp+1 != ep)
-        {
+      {
         if ((code & 0xF0) == 0xE0)
-          {
+        {
           // 3 bytes, 0x0800 to 0xFFFF
           code &= 0x0F;
           code <<= 6;
@@ -5937,14 +5937,14 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
           code |= (s & 0x3F);
           // check for UTF16 surrogates
           if (good && (code & 0xF800) == 0xD800)
-            {
+          {
             good = false;
             // check for high surrogate followed by low surrogate
             if ((code & 0xFC00) == 0xD800 &&
                 cp != ep && cp[0] == 0xED &&
                 cp+1 != ep && (cp[1] & 0xF0) == 0xB0 &&
                 cp+2 != ep && (cp[2] & 0xC0) == 0x80)
-              {
+            {
               good = true;
               code &= 0x03FF;
               code <<= 4;
@@ -5953,13 +5953,13 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
               code |= cp[2] & 0x3F;
               code += 0x010000;
               cp += 3;
-              }
             }
           }
+        }
         else if (cp+2 != ep)
-          {
+        {
           if ((code & 0xF8) == 0xF0)
-            {
+          {
             // 4 bytes, 0x010000 to 0x10FFFF
             code &= 0x07;
             code <<= 6;
@@ -5979,13 +5979,13 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
             cp += good;
             code |= (s & 0x3F);
             good &= (code <= 0x10FFFF);
-            }
           }
         }
       }
+    }
 
     code = (good ? code : 0xFFFD);
-    }
+  }
 
   *cpp = reinterpret_cast<const char *>(cp);
   return code;
@@ -5999,73 +5999,73 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
   unsigned int code3 = 0;
 
   if (code <= 0x7f)
-    {
+  {
     if (code >= 'A' && code <= 'Z')
-      { // ascii uppercase -> ascii lowercase
+    { // ascii uppercase -> ascii lowercase
       code += 0x20;
-      }
     }
+  }
   else if (code <= 0xff)
-    {
+  {
     if (code >= 0xC0 && code <= 0xDE && code != 0xD7)
-      { // latin1 uppercase -> latin1 lowercase
+    { // latin1 uppercase -> latin1 lowercase
       code += 0x20;
-      }
+    }
     else if (code == 0xDF)
-      { // latin1 s-sharp -> lowercase ss
+    { // latin1 s-sharp -> lowercase ss
       code = 's';
       code2 = 's';
-      }
-    else if (code == 0xB5)
-      { // latin1 micron -> greek lowercase mu
-      code = 0x03BC;
-      }
     }
+    else if (code == 0xB5)
+    { // latin1 micron -> greek lowercase mu
+      code = 0x03BC;
+    }
+  }
   else if (code <= 0x017f)
-    {
+  {
     if (code >= 0x0100 && code <= 0x012F)
-      { // various accented latin characters
+    { // various accented latin characters
       code |= 0x0001;
-      }
+    }
     else if (code == 0x0130)
-      { // I with dot becomes lowercase i
+    { // I with dot becomes lowercase i
       code = 'i';
       code2 = 0x0307;
-      }
+    }
     else if (code >= 0x0132 && code <= 0x0137)
-      { // IJ and various accented latin characters
+    { // IJ and various accented latin characters
       code |= 0x0001;
-      }
+    }
     else if (code >= 0x139 && code <= 0x148)
-      { // various accented latin characters
+    { // various accented latin characters
       code += (code & 0x0001);
-      }
+    }
     else if (code == 0x0149)
-      { // 'n -> two separate characters
+    { // 'n -> two separate characters
       code = 0x02BC;
       code2 = 'n';
-      }
-    else if (code >= 0x014A && code <= 0x0177)
-      { // eng and various accented latin characters
-      code |= 0x0001;
-      }
-    else if (code == 0x0178)
-      { // uppercase y with diaeresis becomes lowercase y with diaeresis
-      code = 0xFF;
-      }
-    else if (code >= 0x0179 && code <= 0x017E)
-      { // various accented latin characters
-      code += (code & 0x0001);
-      }
-    else if (code == 0x017F)
-      { // long s -> lowercase s
-      code = 's';
-      }
     }
+    else if (code >= 0x014A && code <= 0x0177)
+    { // eng and various accented latin characters
+      code |= 0x0001;
+    }
+    else if (code == 0x0178)
+    { // uppercase y with diaeresis becomes lowercase y with diaeresis
+      code = 0xFF;
+    }
+    else if (code >= 0x0179 && code <= 0x017E)
+    { // various accented latin characters
+      code += (code & 0x0001);
+    }
+    else if (code == 0x017F)
+    { // long s -> lowercase s
+      code = 's';
+    }
+  }
   else if (code <= 0x036f)
-    { // yet more latin with accents
+  { // yet more latin with accents
     if (code >= 0x0180 && code <= 0x01CA)
-      {
+    {
       const static unsigned short table[75] = {
         0x0180, 0x0253, 0x0183, 0x0183, 0x0185, 0x0185, 0x0254, 0x0188,
         0x0188, 0x0256, 0x0257, 0x018C, 0x018C, 0x018D, 0x01DD, 0x0259,
@@ -6079,22 +6079,22 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
         0x01C9, 0x01C9, 0x01CC };
 
       code = table[code - 0x0180];
-      }
+    }
     else if (code >= 0x01CB && code <= 0x01DC)
-      {
+    {
       code += (code & 0x0001);
-      }
+    }
     else if (code >= 0x01DE && code <= 0x01EF)
-      {
+    {
       code |= 0x0001;
-      }
+    }
     else if (code == 0x01F0)
-      {
+    {
       code = 0x006A;
       code2 = 0x030C;
-      }
+    }
     else if (code >= 0x01F0 && code <= 0x024F)
-      {
+    {
       const static unsigned short table[96] = {
         0x01F0, 0x01F3, 0x01F3, 0x01F3, 0x01F5, 0x01F5, 0x0195, 0x01BF,
         0x01F9, 0x01F9, 0x01FB, 0x01FB, 0x01FD, 0x01FD, 0x01FF, 0x01FF,
@@ -6110,17 +6110,17 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
         0x0249, 0x0249, 0x024B, 0x024B, 0x024D, 0x024D, 0x024F, 0x024F };
 
       code = table[code - 0x01F0];
-      }
-    else if (code == 0x0345)
-      { // combining greek ypogegrammeni
-      code = 0x03B9;
-      }
     }
+    else if (code == 0x0345)
+    { // combining greek ypogegrammeni
+      code = 0x03B9;
+    }
+  }
   else if (code <= 0x03ff)
-    {
+  {
     // greek characters
     if (code >= 0x0370 && code <= 0x038F)
-      {
+    {
       const static unsigned short table[32] = {
         0x0371, 0x0371, 0x0373, 0x0373, 0x0374, 0x0375, 0x0377, 0x0377,
         0x0378, 0x0379, 0x037A, 0x037B, 0x037C, 0x037D, 0x037E, 0x03F3,
@@ -6128,108 +6128,108 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
         0x03AD, 0x03AE, 0x03AF, 0x038B, 0x03CC, 0x038D, 0x03CD, 0x03CE };
 
       code = table[code - 0x0370];
-      }
+    }
     else if ((code >= 0x0391 && code <= 0x03A1) ||
              (code >= 0x03A3 && code <= 0x03AB))
-      {
+    {
       code += 0x20;
-      }
+    }
     else if (code == 0x0390)
-      {
+    {
       code = 0x03B9;
       code2 = 0x0308;
       code3 = 0x0301;
-      }
+    }
     else if (code == 0x03B0)
-      {
+    {
       code = 0x03C5;
       code2 = 0x0308;
       code3 = 0x0301;
-      }
+    }
     else if (code == 0x03C2)
-      {
+    {
       code += 0x01;
-      }
+    }
     else if (code >= 0x03CF && code <= 0x03D6)
-      {
+    {
       const static unsigned short table[8] = {
         0x03D7, 0x03B2, 0x03B8, 0x03D2, 0x03D3, 0x03D4, 0x03C6, 0x03C0 };
 
       code = table[code - 0x03CF];
-      }
+    }
     else if (code >= 0x03D8 && code <= 0x03EF)
-      {
+    {
       code |= 0x0001;
-      }
+    }
     else if (code >= 0x03F0 && code <= 0x03FF)
-      {
+    {
       const static unsigned short table[16] = {
         0x03BA, 0x03C1, 0x03F2, 0x03F3, 0x03B8, 0x03B5, 0x03F6, 0x03F8,
         0x03F8, 0x03F2, 0x03FB, 0x03FB, 0x03FC, 0x037B, 0x037C, 0x037D };
 
       code = table[code - 0x03F0];
-      }
     }
+  }
   else if (code <= 0x052f)
-    { // cyrillic
+  { // cyrillic
     if (code >= 0x0400 && code <= 0x040F)
-      {
+    {
       code += 0x50;
-      }
+    }
     else if (code >= 0x0410 && code <= 0x042F)
-      {
+    {
       code += 0x20;
-      }
+    }
     else if ((code >= 0x0460 && code <= 0x0481) ||
              (code >= 0x048A && code <= 0x04BF))
-      {
+    {
       code |= 0x0001;
-      }
-    else if (code == 0x04C0)
-      {
-      code = 0x04CF;
-      }
-    else if (code >= 0x04C1 && code <= 0x04CE)
-      {
-      code += (code & 0x0001);
-      }
-    else if (code >= 0x04D0 && code <= 0x052F)
-      {
-      code |= 0x0001;
-      }
     }
+    else if (code == 0x04C0)
+    {
+      code = 0x04CF;
+    }
+    else if (code >= 0x04C1 && code <= 0x04CE)
+    {
+      code += (code & 0x0001);
+    }
+    else if (code >= 0x04D0 && code <= 0x052F)
+    {
+      code |= 0x0001;
+    }
+  }
   else if (code <= 0x1000)
-    { // armenian
+  { // armenian
     if (code >= 0x0531 && code <= 0x0556)
-      {
+    {
       code += 0x30;
-      }
+    }
     else if (code == 0x0587)
-      {
+    {
       code = 0x0565;
       code2 = 0x0582;
-      }
     }
+  }
   else if (code <= 0x13ff)
-    {
+  {
     if ((code >= 0x10A0 && code <= 0x10C5) ||
         code == 0x10C7 || code == 0x10CD)
-      { // georgian
+    { // georgian
       code += 0x1C60;
-      }
-    else if (code >= 0x13F8 && code <= 0x13FD)
-      { // cherokee
-      code -= 0x08;
-      }
     }
+    else if (code >= 0x13F8 && code <= 0x13FD)
+    { // cherokee
+      code -= 0x08;
+    }
+  }
   else if (code <= 0x1eff)
-    { // vietnamese and other latin
+  { // vietnamese and other latin
     if (code >= 0x1E00 && code <= 0x1E95)
-      {
+    {
       code |= 0x0001;
-      }
+    }
     else if (code >= 0x1E96 && code <= 0x1E9B)
-      {
+    {
       const static unsigned short table[6] = {
         'h',    't',    'w',    'y',    'a',    0x1E61 };
       const static unsigned short table2[6] = {
@@ -6237,44 +6237,44 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
 
       code2 = table2[code - 0x1E96];
       code = table[code - 0x1E96];
-      }
+    }
     else if (code == 0x1E9E)
-      { // capital s-sharp -> ss
+    { // capital s-sharp -> ss
       code = 's';
       code2 = 's';
-      }
-    else if (code >= 0x1EA0 && code <= 0x1EFE)
-      {
-      code |= 0x0001;
-      }
     }
-  else if (code <= 0x1fff)
+    else if (code >= 0x1EA0 && code <= 0x1EFE)
     {
+      code |= 0x0001;
+    }
+  }
+  else if (code <= 0x1fff)
+  {
     // rare greek
     if ((code >= 0x1F08 && code <= 0x1F0F) ||
         (code >= 0x1F18 && code <= 0x1F1D) ||
         (code >= 0x1F28 && code <= 0x1F2F) ||
         (code >= 0x1F38 && code <= 0x1F3F) ||
         (code >= 0x1F48 && code <= 0x1F4D))
-      {
+    {
       code -= 0x08;
-      }
+    }
     else if (code >= 0x1F50 && code <= 0x1F56 && (code & 0x1) == 0)
-      {
+    {
       const static unsigned short table3[7] = {
         0, 0, 0x0300, 0, 0x0301, 0, 0x0342 };
 
       code3 = table3[code - 0x1F50];
       code2 = 0x0313;
       code = 0x03C5;
-      }
+    }
     else if ((code >= 0x1F59 && code <= 0x1F5F && (code & 0x1) != 0) ||
              (code >= 0x1F68 && code <= 0x1F6F))
-      {
+    {
       code -= 0x08;
-      }
+    }
     else if (code >= 0x1F80 && code <= 0x1FAF)
-      {
+    {
       code2 = 0x03B9;
       if (code <= 0x1F87) { code -= 0x80; }
       else if (code <= 0x1F8F) { code -= 0x88; }
@@ -6282,9 +6282,9 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
       else if (code <= 0x1F9F) { code -= 0x78; }
       else if (code <= 0x1FA7) { code -= 0x40; }
       else { code -= 0x48; }
-      }
+    }
     else if (code >= 0x1FB2 && code <= 0x1FFC)
-      {
+    {
       const static unsigned short table[75] = {
         0x1F70, 0x03B1, 0x03AC, 0x1FB5, 0x03B1, 0x03B1, 0x1FB0, 0x1FB1,
         0x1F70, 0x1F71, 0x03B1, 0x1FBD, 0x03B9, 0x1FBF, 0x1FC0, 0x1FC1,
@@ -6301,82 +6301,82 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
           code == 0x1FBC || (code >= 0x1FC2 && code <= 0x1FC4) ||
           code == 0x1FCC || (code >= 0x1FF2 && code <= 0x1FF4) ||
           code == 0x1FFC)
-        {
+      {
         code2 = 0x03B9;
-        }
+      }
       else if (code == 0x1FB6 || code == 0x1FC6 || code == 0x1FD6 ||
                code == 0x1FE6 || code == 0x1FF6)
-        {
+      {
         code2 = 0x0342;
-        }
+      }
       else if (code == 0x1FB6 || code == 0x1FB7 || code == 0x1FC7 ||
                code == 0x1FF7)
-        {
+      {
         code2 = 0x0342;
         code3 = 0x03B9;
-        }
+      }
       else if (code >= 0x1FD2 && code <= 0x1FD3)
-        {
+      {
         code2 = 0x0308;
         code3 = code - (0x1FD2 - 0x0300);
-        }
+      }
       else if (code == 0x1FD7 || code == 0x1FE7)
-        {
+      {
         code2 = 0x0308;
         code3 = 0x0342;
-        }
+      }
       else if (code >= 0x1FE2 && code <= 0x1FE3)
-        {
+      {
         code2 = 0x0308;
         code3 = code - (0x1FE2 - 0x0300);
-        }
+      }
       else if (code == 0x1FE4)
-        {
+      {
         code2 = 0x0313;
-        }
+      }
 
       code = table[code - 0x1FB2];
-      }
     }
+  }
   else if (code <= 0x24ff)
-    { // symbols
+  { // symbols
     if (code == 0x2126)
-      { // Ohm symbol becomes omega
+    { // Ohm symbol becomes omega
       code = 0x03C9;
-      }
-    else if (code == 0x212A)
-      { // Kelvin symbol becomes k
-      code = 'k';
-      }
-    else if (code == 0x212B)
-      { // Angstrom symbol becomes a with circle
-      code = 0xE5;
-      }
-    else if (code == 0x2132)
-      {
-      code = 0x214E;
-      }
-    else if (code >= 0x2160 && code <= 0x216F)
-      {
-      code += 0x10;
-      }
-    else if (code == 0x2183)
-      {
-      code += 0x01;
-      }
-    else if (code >= 0x24B6 && code <= 0x24CF)
-      {
-      code += 0x1a;
-      }
     }
-  else if (code <= 0x2cff)
+    else if (code == 0x212A)
+    { // Kelvin symbol becomes k
+      code = 'k';
+    }
+    else if (code == 0x212B)
+    { // Angstrom symbol becomes a with circle
+      code = 0xE5;
+    }
+    else if (code == 0x2132)
     {
+      code = 0x214E;
+    }
+    else if (code >= 0x2160 && code <= 0x216F)
+    {
+      code += 0x10;
+    }
+    else if (code == 0x2183)
+    {
+      code += 0x01;
+    }
+    else if (code >= 0x24B6 && code <= 0x24CF)
+    {
+      code += 0x1a;
+    }
+  }
+  else if (code <= 0x2cff)
+  {
     if (code >= 0x2C00 && code <= 0x2C2E)
-      { // glagolitic
+    { // glagolitic
       code += 0x30;
-      }
+    }
     else if (code >= 0x2C60 && code <= 0x2C7F)
-      { // rare latin
+    { // rare latin
       const static unsigned short table[32] = {
         0x2C61, 0x2C61, 0x026B, 0x1D7D, 0x027D, 0x2C65, 0x2C66, 0x2C68,
         0x2C68, 0x2C6A, 0x2C6A, 0x2C6C, 0x2C6C, 0x0251, 0x0271, 0x0250,
@@ -6384,110 +6384,110 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
         0x2C78, 0x2C79, 0x2C7A, 0x2C7B, 0x2C7C, 0x2C7D, 0x023F, 0x0240 };
 
       code = table[code - 0x2C60];
-      }
+    }
     else if (code >= 0x2C80 && code <= 0x2CF3)
-      { // coptic
+    { // coptic
       if (code <= 0x2CE3)
-        {
+      {
         code |= 0x0001;
-        }
+      }
       else if (code == 0x2CEB || code == 0x2CED || code == 0x2CF2)
-        {
+      {
         code += 0x0001;
-        }
       }
     }
+  }
   else if (code <= 0x9fff)
-    {
+  {
     // cjk ideograms
-    }
+  }
   else if (code <= 0xabff)
-    {
+  {
     if ((code >= 0xA640 && code <= 0xA66D) ||
         (code >= 0xA680 && code <= 0xA69B))
-      { // rare cyrillic
+    { // rare cyrillic
       code |= 0x0001;
-      }
+    }
     else if (code >= 0xA722 && code <= 0xA76F && code != 0xA730)
-      { // rare latin
+    { // rare latin
       code |= 0x0001;
-      }
+    }
     else if (code >= 0xA779 && code <= 0xA77C)
-      {
+    {
       code += (code & 0x0001);
-      }
+    }
     else if (code == 0xA77D)
-      {
+    {
       code = 0x1D79;
-      }
+    }
     else if (code >= 0xA77E && code <= 0xA787)
-      {
+    {
       code |= 0x0001;
-      }
+    }
     else if (code == 0xA78B)
-      {
+    {
       code += 0x0001;
-      }
+    }
     else if (code == 0xA78D)
-      {
+    {
       code = 0x0265;
-      }
+    }
     else if (code >= 0xA790 && code <= 0xA7A9 && code != 0xA794)
-      {
+    {
       code |= 0x0001;
-      }
+    }
     else if (code >= 0xA7AA && code <= 0xA7B6)
-      {
+    {
       const static unsigned short table[13] = {
         0x0266, 0x025C, 0x0261, 0x026C, 0xA7AE, 0xA7AF, 0x029E, 0x0287,
         0x029D, 0xAB53, 0xA7B5, 0xA7B5, 0xA7B7 };
       code = table[code - 0xA7AA];
-      }
+    }
     else if (code >= 0xAB70 && code <= 0xABBF)
-      { // cherokee
+    { // cherokee
       code -= 0x97D0;
-      }
     }
+  }
   else if (code <= 0xfaff)
-    {
+  {
     // hangul, cjk, private use
-    }
+  }
   else if (code <= 0xfbff)
-    {
+  {
     if (code >= 0xFB00 && code <= 0xFB06)
-      { // latin ligatures
+    { // latin ligatures
       if (code <= 0xFB04)
-        {
+      {
         if (code == 0xFB01)
-          {
+        {
           code2 = 'i';
-          }
+        }
         else if (code == 0xFB02)
-          {
+        {
           code2 = 'l';
-          }
+        }
         else
-          {
+        {
           code2 = 'f';
           if (code == 0xFB03)
-            {
+          {
             code3 = 'i';
-            }
-          else if (code == 0xFB04)
-            {
-            code3 = 'l';
-            }
           }
-        code = 'f';
+          else if (code == 0xFB04)
+          {
+            code3 = 'l';
+          }
         }
+        code = 'f';
+      }
       else if (code <= 0xFB06)
-        {
+      {
         code = 's';
         code2 = 't';
-        }
       }
+    }
     else if (code >= 0xFB13 && code <= 0xFB17)
-      { // armenian ligatures
+    { // armenian ligatures
       const static unsigned short table[5] = {
         0x0574, 0x0574, 0x0574, 0x057E, 0x0574 };
       const static unsigned short table2[5] = {
@@ -6495,42 +6495,42 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
 
       code2 = table2[code - 0xFB13];
       code = table[code - 0xFB13];
-      }
     }
+  }
   else if (code <= 0xffff)
-    {
+  {
     if (code >= 0xFF21 && code <= 0xFF3A)
-      { // wide latin uppercase -> wide latin lowercase
+    { // wide latin uppercase -> wide latin lowercase
       code += 0x20;
-      }
     }
+  }
   else
-    {
+  {
     if (code >= 0x10400 && code <= 0x10427 )
-      {
+    {
       code += 0x28;
-      }
-    else if (code >= 0x10C80 && code <= 0x10CB2)
-      {
-      code += 0x40;
-      }
-    else if (code >= 0x118A0 && code <= 0x118BF)
-      {
-      code += 0x20;
-      }
     }
+    else if (code >= 0x10C80 && code <= 0x10CB2)
+    {
+      code += 0x40;
+    }
+    else if (code >= 0x118A0 && code <= 0x118BF)
+    {
+      code += 0x20;
+    }
+  }
 
   UnicodeToUTF8(code, s);
 
   if (code2)
-    {
+  {
     UnicodeToUTF8(code2, s);
 
     if (code3)
-      {
+    {
       UnicodeToUTF8(code3, s);
-      }
     }
+  }
 }
 
 } // end anonymous namespace
@@ -6542,13 +6542,13 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
   const char *ep = name;
   int key = 0;
   if (cp)
-    {
+  {
     ep += nl;
-    }
+  }
 
   // Loop over backslash-separated values
   for (int n = 0; cp != ep && *cp != '\0'; n++)
-    {
+  {
     // strip leading spaces
     while (cp != ep && *cp == ' ') { cp++; }
     // search for end of value
@@ -6559,47 +6559,47 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
     while (l > 0 && cp[l-1] == ' ') { l--; }
 
     if (n == 0 && l > 0)
-      {
+    {
       // find the initial character set
       for (int i = 0; i < ISO_2022_LOWBIT && key == 0; i++)
-        {
+      {
         for (int j = 0; j < 2 && key == 0; j++)
-          {
+        {
           if (l == strlen(Charsets[i][j]) &&
               strncmp(Charsets[i][j], cp, l) == 0)
-            {
+          {
             key = i;
             if (j != 0)
-              {
+            {
               key |= ISO_2022;
-              }
             }
           }
         }
       }
+    }
     else if (l > 0)
-      {
+    {
       // set the extensions as bits in the ISO_2022 bitfield
       for (int k = 0; k < 4; k++)
-        {
+      {
         if (l == strlen(Extensions[k][1]) &&
             strncmp(Extensions[k][1], cp, l) == 0)
-          {
+        {
           // if the whole ISO_2022 bitfield is set, clear it
           if ((key & ISO_2022) == ISO_2022)
-            {
+          {
             key ^= ISO_2022;
-            }
+          }
           // set each specifc extension as a bit in the bitfield
           key |= (ISO_2022_LOWBIT << k);
           break;
-          }
         }
       }
+    }
 
     cp = dp;
     if (cp != ep && *cp == '\\') { cp++; }
-    }
+  }
 
   return static_cast<unsigned char>(key);
 }
@@ -6612,23 +6612,23 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
   int base = (this->Key ^ ext);
 
   if (base != 0)
-    {
+  {
     bool extended = (ext != 0);
     value += Charsets[base][extended];
-    }
+  }
 
   // if ext is set to ISO_2022, there are no additional char sets
   if (ext != ISO_2022)
-    {
+  {
     for (int k = 0; k < 4; k++)
-      {
+    {
       if ((ext & (ISO_2022_LOWBIT << k)) != 0)
-        {
+      {
         value += "\\";
         value += Extensions[k][1];
-        }
       }
     }
+  }
 
   return value;
 }
@@ -6641,84 +6641,84 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
 
   if (this->Key == ISO_IR_6 || // US-ASCII
       this->Key == ISO_IR_192) // UTF-8
-    {
+  {
     s.assign(text, l);
-    }
+  }
   else if (this->Key == ISO_IR_100) // ISO-8895-1
-    {
+  {
     // latin1, codepage is identity
     const char *cp = text;
     size_t m = l;
     // compute the size of the UTF-8 string
     for (size_t n = 0; n < l; n++)
-      {
+    {
       m += static_cast<unsigned char>(*cp++) >> 7;
-      }
+    }
     cp = text;
     s.resize(m);
     // encode as UTF-8
     size_t i = 0;
     while (i < m)
-      {
+    {
       while (i < m && (*cp & 0x80) == 0)
-        {
+      {
         s[i++] = *cp++;
-        }
+      }
       if (i < m)
-        {
+      {
         int code = static_cast<unsigned char>(*cp++);
         s[i++] = (0xC0 | (code >> 6));
         s[i++] = (0x80 | (code & 0x3F));
-        }
       }
     }
+  }
   else if (this->Key <= ISO_IR_166) // ISO-8895-X
-    {
+  {
     // Use the ISO-8859 codepages
     int page = this->Key - ISO_IR_101;
     s.reserve(l + l/2);
     const char *cp = text;
     const char *ep = text + l;
     while (cp != ep)
-      {
+    {
       int code = static_cast<unsigned char>(*cp++);
       if (code >= 0xA0)
-        {
+      {
         code = CodePagesISO8859[code - 0xA0][page];
-        }
-      UnicodeToUTF8(code, &s);
       }
+      UnicodeToUTF8(code, &s);
     }
+  }
   else if (this->Key == ISO_IR_13 || // JIS_X_0201 romaji & katakana
            this->Key == ISO_IR_14)
-    {
+  {
     // JIS_X_0201 romaji (<0x7f) and half-width katakana (>0x7f)
     s.reserve(2*l);
     const char *cp = text;
     const char *ep = text + l;
     while (cp != ep)
-      {
+    {
       int code = static_cast<unsigned char>(*cp++);
       if (code <= 0x7F && code != '\\' && code != '~')
-        {
+      {
         s.push_back(code);
-        }
+      }
       else
-        {
+      {
         if (code == '\\')
-          {
+        {
           code = 0xA5; // yen symbol
-          }
+        }
         else if (code == '~')
-          {
+        {
           code = 0x203E; // macron (overline)
-          }
+        }
         else if (code >= 0xA1 && code <= 0xDF)
-          {
+        {
           code += 0xFEC0; // half-width katakana
-          }
+        }
         else if (cp != ep)
-          {
+        {
           // if the byte not a valid JIS X 0201 code, then it is probably
           // the first byte of a two-byte Shift-JIS sequence (vendors are
           // required to convert Shift-JIS to ISO 2022 for use in DICOM,
@@ -6728,79 +6728,79 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
           code = (y == 0 ? 0 : 0xFFFD); // illegal character or null
 
           if (y >= 0x40 && y <= 0xFC && y != 0x7F)
-            {
+          {
             int a, b;
             if (y < 0x9F)
-              {
+            {
               a = 0;
               b = y - (y < 0x7F ? 0x40 : 0x41);
-              }
+            }
             else
-              {
+            {
               a = 1;
               b = y - 0x9F;
-              }
+            }
 
             if (x >= 0x81 && x <= 0x9F)
-              {
+            {
               a += (x - 0x81)*2;
               code = CodePageJISX0208[a*94+b];
-              }
+            }
             else if (x >= 0xE0 && x <= 0xEF)
-              {
+            {
               a += (x - 0xC1)*2;
               code = CodePageJISX0208[a*94+b];
-              }
             }
           }
-        else
-          {
-          code = 0xFFFD; // illegal character
-          }
-        UnicodeToUTF8(code, &s);
         }
+        else
+        {
+          code = 0xFFFD; // illegal character
+        }
+        UnicodeToUTF8(code, &s);
       }
     }
+  }
   else if (this->Key == GB18030 || this->Key == GBK)
-    {
+  {
     // Chinese national encoding standard
     const char *cp = text;
     const char *ep = text + l;
     while (cp != ep)
-      {
+    {
       unsigned int code = static_cast<unsigned char>(*cp++);
       if (code > 0x7f)
-        {
+      {
         if (cp == ep)
-          {
+        {
           // end of input, terminate early
           break;
-          }
+        }
         unsigned short a = static_cast<unsigned char>(code);
         unsigned short b = static_cast<unsigned char>(*cp++);
         code = 0xFFFD; // untranslated multi-byte character
         if (a > 0x80 && a < 0xFF &&
             b >= 0x40 && b < 0xFF && b != 0x7F)
-          {
+        {
           // two-byte character
           if (b > 0x7F) { b--; }
           a = (a - 0x81)*190 + (b - 0x40);
           code = CodePageGB18030[a];
-          }
+        }
         if (this->Key == GB18030)
-          {
+        {
           if (a > 0x80 && a < 0x90 && b >= '0' && b <= '9')
-            {
+          {
             // start of a four-byte code
             if (cp == ep || cp+1 == ep)
-              {
+            {
               // unexpected end of input, terminate early
               break;
-              }
+            }
             if (static_cast<unsigned char>(cp[0]) > 0x80 &&
                 static_cast<unsigned char>(cp[0]) < 0xFF &&
                 cp[1] >= '0' && cp[1] <= '9')
-              {
+            {
               // four-byte GB18030 character
               unsigned short c = static_cast<unsigned char>(*cp++);
               unsigned short d = static_cast<unsigned char>(*cp++);
@@ -6808,38 +6808,38 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
               b = (c - 0x81)*10 + (d - '0');
               unsigned int g = a*1260 + b;
               if (g <= 0x99FB)
-                {
+              {
                 // search linearly compressed table
                 size_t n = sizeof(LinearGB18030)/sizeof(short);
                 for (size_t i = 0;; i += 2)
-                  {
+                {
                   if (i >= n || LinearGB18030[i] > g)
-                    {
+                  {
                     code = LinearGB18030[i-1] + (g - LinearGB18030[i-2]);
                     break;
-                    }
                   }
+                }
                 // this mapping was modified in GB18030-2005, after the linear
                 // table had already been defined, so it must be special-cased
                 if (code == 0x1E3F)
-                  {
+                {
                   code = 0xE7C7;
-                  }
                 }
               }
             }
+          }
           else if (a >= 0x90 && a < 0xFF && b >= '0' && b <= '9')
-            {
+          {
             // start of a four-byte code
             if (cp == ep || cp+1 == ep)
-              {
+            {
               // unexpected end of input, terminate early
               break;
-              }
+            }
             if (static_cast<unsigned char>(cp[0]) > 0x80 &&
                 static_cast<unsigned char>(cp[0]) < 0xFF &&
                 cp[1] >= '0' && cp[1] <= '9')
-              {
+            {
               // four-byte GB18030 to codes beyond 0xFFFF
               unsigned short c = static_cast<unsigned char>(*cp++);
               unsigned short d = static_cast<unsigned char>(*cp++);
@@ -6847,33 +6847,33 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
               b = (c - 0x81)*10 + (d - '0');
               unsigned int g = a*1260 + b;
               if (g <= 0xFFFFF)
-                {
+              {
                 code = g + 0x10000;
-                }
               }
             }
+          }
           // convert some private codes to Unicode 4.1 standard codes in order
           // to ensure they these characters can be displayed (though this is
           // done at the cost of the one-to-one Unicode-to-GB18030 mapping)
           size_t n = sizeof(PrivateToStandard)/sizeof(int);
           if (code >= PrivateToStandard[0] && code <= PrivateToStandard[n-2])
-            {
+          {
             for (size_t i = 0; i < n; i += 2)
-              {
+            {
               if (code == PrivateToStandard[i])
-                {
+              {
                 code = PrivateToStandard[i+1];
                 break;
-                }
               }
             }
           }
         }
-      UnicodeToUTF8(code, &s);
       }
+      UnicodeToUTF8(code, &s);
     }
+  }
   else if ((this->Key & ISO_2022) != 0)
-    {
+  {
     // Uses ISO-2022 escape codes to switch character sets.
     // To get the character set that is active at the beginning of
     // the string, remove all the bits in the ISO_2022 bitfield.
@@ -6883,190 +6883,190 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
     // and when an escape code is found, change the charset
     size_t i = 0;
     while (i < l)
-      {
+    {
       // search for the next escape
       size_t j = i;
       for (; j < l; j++)
-        {
+      {
         if (text[j] == '\033') { break; }
-        }
+      }
       if (charset < ISO_2022_LOWBIT)
-        {
+      {
         // indicates one of the single-byte character sets, convert
         // characters up to the next escape code
         vtkDICOMCharacterSet cs(charset);
         s += cs.ConvertToUTF8(&text[i], j-i);
-        }
+      }
       else if (charset == ISO_2022_IR_58)
-        {
+      {
         // GB2312 chinese encoding
         while (i < j)
-          {
+        {
           unsigned short code = static_cast<unsigned char>(text[i++]);
           if (code >= 0xA1 && code < 0xFF)
-            {
+          {
             if (i == j)
-              {
+            {
               break;
-              }
+            }
             unsigned short a = code - 0x81;
             code = static_cast<unsigned char>(text[i++]);
             if (code >= 0xA1 && code < 0xFF)
-              {
+            {
               unsigned short b = code - 0x41;
               code = CodePageGB18030[a*190 + b];
-              }
             }
-          UnicodeToUTF8(code, &s);
           }
+          UnicodeToUTF8(code, &s);
         }
+      }
       else if (charset == ISO_2022_IR_87 ||
                charset == ISO_2022_IR_159)
-        {
+      {
         // iso-2022-jp and iso-2022-jp-2
         while (i < j)
-          {
+        {
           // convert two bytes into unicode
           unsigned short code = static_cast<unsigned char>(text[i++]);
           if (code >= 0x21 && code < 0x7F)
-            {
+          {
             if (i == j)
-              {
+            {
               break;
-              }
+            }
             unsigned short a = code - 0x21;
             code = static_cast<unsigned char>(text[i++]);
             if (code >= 0x21 && code < 0x7F)
-              {
+            {
               unsigned short b = code - 0x21;
               if (charset == ISO_2022_IR_87)
-                {
+              {
                 code = CodePageJISX0208[a*94+b];
-                }
+              }
               else
-                {
+              {
                 code = CodePageJISX0212[a*94+b];
-                }
               }
             }
+          }
           else if (code >= 0xA1 && code <= 0xDF)
-            {
+          {
             // most likely half-width katakana, which can be used in
             // DICOM even though they are not permitted in iso-2022-jp
             code += 0xFEC0;
-            }
+          }
           else if (code > 0x7F)
-            {
+          {
             // possibly EUC-JP or Shift-JIS, neither of which should
             // be used with ISO 2022 escape codes
             code = 0xFFFD;
-            }
-          UnicodeToUTF8(code, &s);
           }
+          UnicodeToUTF8(code, &s);
         }
+      }
       else if (charset == ISO_2022_IR_149)
-        {
+      {
         // iso-2022-kr
         while (i < j)
-          {
+        {
           unsigned short code = static_cast<unsigned char>(text[i++]);
           if (code >= 0xA1 && code < 0xFF)
-            {
+          {
             if (i == j)
-              {
+            {
               break;
-              }
+            }
             // convert two bytes into unicode
             unsigned short a = code - 0xA1;
             code = static_cast<unsigned char>(text[i++]);
             if (code >= 0xA1 && code < 0xFF)
-              {
+            {
               unsigned short b = code - 0xA1;
               code = CodePageKSX1001[a*94+b];
-              }
             }
-          UnicodeToUTF8(code, &s);
           }
+          UnicodeToUTF8(code, &s);
         }
+      }
       else
-        {
+      {
         // other multibyte conversions
         while (i < j)
-          {
+        {
           unsigned short code = 0xFFFD;
           if (text[i++] == '\0')
-            {
+          {
             code = 0;
-            }
+          }
           else if (i < j)
-            {
+          {
             if (text[i++] == '\0')
-              {
+            {
               code = 0;
-              }
             }
+          }
           // unrecognized multi-byte character
           UnicodeToUTF8(code, &s);
-          }
         }
+      }
 
       // Make sure we are at the escape code (or the end of string)
       i = j;
 
       // Get the escape code for the next segment
       if (text[i] == '\033')
-        {
+      {
         i++;
         if (i + 2 > l) { break; }
         unsigned char oldcharset = charset;
         charset = 0xFF; // indicate none found yet
         // look through single-byte charset escape codes
         for (unsigned char k = 0; k < ISO_2022_LOWBIT; k++)
-          {
+        {
           const char *escape = Charsets[k][2];
           size_t le = strlen(escape);
           if (le > 0 && strncmp(&text[i], escape, le) == 0)
-            {
+          {
             if (k == ISO_IR_13 && (oldcharset == ISO_2022_IR_87 ||
                                    oldcharset == ISO_2022_IR_159))
-              {
+            {
               // The ISO_IR_13 charset goes in G1, so let's keep the
               // currently active kanji charset in G0.
               charset = oldcharset;
-              }
+            }
             else if (k == ISO_IR_14)
-              {
+            {
               // The escape code for Japanese romaji (ISO_IR 14) switches
               // to JIS X 0201, which DICOM defines as "ISO 2022 IR 13".
               charset = ISO_IR_13;
-              }
+            }
             else
-              {
+            {
               charset = k;
-              }
+            }
             i += le;
             break;
-            }
           }
+        }
         // the escape code doesn't match a single-byte charset
         if (charset == 0xFF)
-          {
+        {
           // look through multibyte charset escape codes
           for (int k = 0; k < 4; k++)
-            {
+          {
             const char *escape = Extensions[k][2];
             size_t le = strlen(escape);
             if (le > 0 && strncmp(&text[i], escape, le) == 0)
-              {
+            {
               charset = (ISO_2022_LOWBIT << k);
               i += le;
               break;
-              }
             }
           }
         }
       }
     }
+  }
 
   return s;
 }
@@ -7083,17 +7083,17 @@ std::string vtkDICOMCharacterSet::CaseFoldedUTF8(
 
   if (this->Key != ISO_IR_6 && // US-ASCII
       this->Key != ISO_IR_192) // UTF-8
-    {
+  {
     t = this->ConvertToUTF8(text, l);
     cp = t.data();
     ep = cp + t.length();
-    }
+  }
 
   while (cp != ep)
-    {
+  {
     unsigned int code = UTF8ToUnicode(&cp, ep);
     CaseFoldUnicode(code, &s);
-    }
+  }
 
   return s;
 }
@@ -7105,113 +7105,113 @@ size_t vtkDICOMCharacterSet::NextBackslash(
   const char *cp = text;
 
   if (this->Key == GB18030 || this->Key == GBK)
-    {
+  {
     // ensure backslash isn't second part of a multi-byte character
     while (cp != ep && *cp != '\0')
-      {
+    {
       if (static_cast<unsigned char>(*cp) >= 0x81)
-        {
+      {
         cp++;
         if (cp != ep && static_cast<unsigned char>(*cp) >= 0x21)
-          {
+        {
           cp++;
-          }
-        }
-      else if (*cp != '\\')
-        {
-        cp++;
-        }
-      else
-        {
-        break;
         }
       }
+      else if (*cp != '\\')
+      {
+        cp++;
+      }
+      else
+      {
+        break;
+      }
     }
+  }
   else if (this->Key == ISO_IR_13)
-    {
+  {
     // ensure backslash isn't second part of a Shift-JIS character
     // that has been erroneously stored as ISO_IR 13
     while (cp != ep && *cp != '\0')
-      {
+    {
       unsigned char x = static_cast<unsigned char>(*cp);
       if ((x >= 0x81 && x <= 0x9F) || (x >= 0xE0 && x <= 0xEF))
-        {
+      {
         cp++;
         if (cp != ep && static_cast<unsigned char>(*cp) >= 0x40 &&
             static_cast<unsigned char>(*cp) <= 0xFC &&
             static_cast<unsigned char>(*cp) != 0x7F)
-          {
+        {
           cp++;
-          }
-        }
-      else if (*cp != '\\')
-        {
-        cp++;
-        }
-      else
-        {
-        break;
         }
       }
+      else if (*cp != '\\')
+      {
+        cp++;
+      }
+      else
+      {
+        break;
+      }
     }
+  }
   else if ((this->Key & ISO_2022) != 0)
-    {
+  {
     // ensure backslash isn't part of a G0 multi-byte code
     bool multibyte = false;
     while (cp != ep && *cp != '\0')
-      {
+    {
       // look for iso 2022 escape code
       if (*cp == '\033')
-        {
+      {
         cp++;
         size_t l = 0;
         while (cp + l != ep &&
                static_cast<unsigned char>(cp[l]) >= 0x20 &&
                static_cast<unsigned char>(cp[l]) <= 0x2f)
-          {
+        {
           l++;
-          }
+        }
         if (cp + l != ep &&
             static_cast<unsigned char>(cp[l]) >= 0x40 &&
             static_cast<unsigned char>(cp[l]) <= 0x7f)
-          {
+        {
           l++;
           if ((l == 2 && cp[0] == '$') ||
               (l == 3 && cp[0] == '$' && cp[1] == '('))
-            {
+          {
             // G0 is designated to multibyte
             multibyte = true;
-            }
+          }
           else if (l == 2 && cp[0] == '(')
-            {
+          {
             // G0 is designated to single byte
             multibyte = false;
-            }
           }
+        }
         cp += l;
-        }
+      }
       else if (multibyte || *cp != '\\')
-        {
+      {
         cp++;
-        }
+      }
       else
-        {
+      {
         break;
-        }
       }
     }
+  }
   else
-    {
+  {
     // no special encoding, so backslash is backslash
     while (cp != ep && *cp != '\0')
-      {
+    {
       if (*cp == '\\')
-        {
+      {
         break;
-        }
-      cp++;
       }
+      cp++;
     }
+  }
 
   return (cp - text);
 }
@@ -7225,14 +7225,14 @@ unsigned int vtkDICOMCharacterSet::CountBackslashes(
   const char *ep = text + l;
 
   while (cp != ep && *cp != '\0')
-    {
+  {
     cp += this->NextBackslash(cp, ep);
     if (cp != ep && *cp == '\\')
-      {
+    {
       cp++;
       count++;
-      }
     }
+  }
 
   return count;
 }
@@ -7242,12 +7242,12 @@ ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a)
 {
   std::string s = a.GetCharacterSetString();
   if (s.length() == 0)
-    {
+  {
     s = "ISO_IR 6";
-    }
+  }
   else if (s[0] == '\\')
-    {
+  {
     s.insert(0, "ISO 2022 IR 6");
-    }
+  }
   return o << s.c_str();
 }

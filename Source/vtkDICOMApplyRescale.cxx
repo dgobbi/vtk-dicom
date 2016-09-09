@@ -77,10 +77,10 @@ vtkDICOMApplyRescale::~vtkDICOMApplyRescale()
 void vtkDICOMApplyRescale::SetOutputScalarType(int t)
 {
   if (t != this->OutputScalarType && (t == VTK_DOUBLE || t == VTK_FLOAT))
-    {
+  {
     this->OutputScalarType = t;
     this->Modified();
-    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -115,97 +115,97 @@ void vtkDICOMApplyRescaleExecute(
   vtkIdType progress = 0;
 
   for (int c = 0; c < numComponents; c++)
-    {
+  {
     T *inPtrC = inPtr0 + c;
     F *outPtrC = outPtr0 + c;
 
     for (int zIdx = extent[4]; zIdx <= extent[5]; zIdx++)
-      {
+    {
       vtkDICOMRealWorldMapping *mapping = 0;
       T first = vtkTypeTraits<T>::Min();
       T last = vtkTypeTraits<T>::Max();
       if (mapArray)
-        {
+      {
         mapping = &mapArray[(zIdx - wholeExtent[4])*numComponents + c];
         if (mapping->First > static_cast<int>(first))
-          {
+        {
           first = static_cast<T>(mapping->First);
-          }
-        if (mapping->Last < static_cast<int>(last))
-          {
-          last = static_cast<T>(mapping->Last);
-          }
         }
+        if (mapping->Last < static_cast<int>(last))
+        {
+          last = static_cast<T>(mapping->Last);
+        }
+      }
 
       T *inPtrZ = inPtrC + (zIdx - extent[4])*inIncZ;
       F *outPtrZ = outPtrC + (zIdx - extent[4])*outIncZ;
 
       for (int yIdx = extent[2]; yIdx <= extent[3]; yIdx++)
-        {
+      {
         T *inPtr = inPtrZ + inIncY*(yIdx - extent[2]);
         F *outPtr = outPtrZ + outIncY*(yIdx - extent[2]);
 
         // in base thread, report progress every 2% of the way to 100%
         if (id == 0)
-          {
+        {
           ++progress;
           vtkIdType icount = progress*50/target;
           if (progress == icount*target/50)
-            {
+          {
             self->UpdateProgress(progress*1.0/target);
-            }
           }
+        }
 
         if (mapping == 0)
-          {
+        {
           // no mapping to apply
           for (int xIdx = extent[0]; xIdx <= extent[1]; xIdx++)
-            {
+          {
             *outPtr = *inPtr;
             inPtr += numComponents;
             outPtr += numComponents;
-            }
           }
+        }
         else if (mapping->Map)
-          {
+        {
           // apply lookup table
           const double *table = mapping->Map;
           for (int xIdx = extent[0]; xIdx <= extent[1]; xIdx++)
-            {
+          {
             if (*inPtr >= first && *inPtr <= last)
-              {
+            {
               *outPtr = table[*inPtr - first];
-              }
+            }
             else
-              {
+            {
               *outPtr = 0;
-              }
+            }
             inPtr += numComponents;
             outPtr += numComponents;
-            }
           }
+        }
         else
-          {
+        {
           // apply slope and intercept
           double m = mapping->Slope;
           double b = mapping->Intercept;
           for (int xIdx = extent[0]; xIdx <= extent[1]; xIdx++)
-            {
+          {
             if (*inPtr >= first && *inPtr <= last)
-              {
+            {
               *outPtr = *inPtr*m + b;
-              }
+            }
             else
-              {
+            {
               *outPtr = 0;
-              }
+            }
             inPtr += numComponents;
             outPtr += numComponents;
-            }
           }
         }
       }
     }
+  }
 }
 
 } // end anonymous namespace
@@ -262,16 +262,16 @@ int vtkDICOMApplyRescale::RequestData(
       metaInfo->Get(vtkDICOMAlgorithm::META_DATA()));
 
   if (meta)
-    {
+  {
     size_t sz = (static_cast<size_t>(numComponents)*
                  static_cast<size_t>(extent[5] - extent[4] + 1));
     this->Mapping = new vtkDICOMRealWorldMapping[sz];
     bool hasMapping = false;
 
     for (int c = 0; c < numComponents; c++)
-      {
+    {
       for (int zIdx = extent[4]; zIdx <= extent[5]; zIdx++)
-        {
+      {
         vtkDICOMRealWorldMapping *mapping =
           &this->Mapping[(zIdx - extent[4])*numComponents + c];
         mapping->First = VTK_INT_MIN;
@@ -288,7 +288,7 @@ int vtkDICOMApplyRescale::RequestData(
         const vtkDICOMItem *rwvmi = rwvms.GetSequenceData();
 
         if (rwvmi)
-          {
+        {
           // use the real world value mapping first item
           mapping->First = rwvmi->GetAttributeValue(
             DC::RealWorldValueFirstValueMapped).AsInt();
@@ -304,45 +304,45 @@ int vtkDICOMApplyRescale::RequestData(
             DC::RealWorldValueLUTData);
           if (v.GetNumberOfValues() >=
               static_cast<size_t>(mapping->Last - mapping->First + 1))
-            {
-            mapping->Map = v.GetDoubleData();
-            }
-          hasMapping = true;
-          }
-        else
           {
+            mapping->Map = v.GetDoubleData();
+          }
+          hasMapping = true;
+        }
+        else
+        {
           // use the slope and intercept instead
           const vtkDICOMValue& u = meta->GetAttributeValue(
             i, j, DC::RescaleSlope);
           const vtkDICOMValue& v = meta->GetAttributeValue(
             i, j, DC::RescaleIntercept);
           if (u.IsValid() && v.IsValid())
-            {
+          {
             mapping->Slope = u.AsDouble();
             mapping->Intercept = v.AsDouble();
             hasMapping = true;
-            }
           }
+        }
 
         // zero slope means slope wasn't found
         if (mapping->Slope == 0)
-          {
+        {
           mapping->Slope = 1.0;
-          }
         }
       }
+    }
 
     if (!hasMapping)
-      {
+    {
       delete [] this->Mapping;
       this->Mapping = 0;
-      }
     }
+  }
 
   // Passthrough if data is already floating-point
   int rval = 1;
   if (scalarType == VTK_DOUBLE || scalarType == VTK_FLOAT)
-    {
+  {
     vtkImageData *inData =
       vtkImageData::SafeDownCast(inInfo->Get(vtkDataObject::DATA_OBJECT()));
     vtkImageData *outData =
@@ -350,13 +350,13 @@ int vtkDICOMApplyRescale::RequestData(
 
     outData->CopyStructure(inData);
     outData->GetPointData()->PassData(inData->GetPointData());
-    }
+  }
   else
-    {
+  {
     // Allow the superclass to call the ThreadedRequestData method
     rval = this->Superclass::RequestData(
       request, inputVector, outputVector);
-    }
+  }
 
   delete [] this->Mapping;
   this->Mapping = 0;
@@ -388,23 +388,23 @@ void vtkDICOMApplyRescale::ThreadedRequestData(
   int outScalarType = outData->GetScalarType();
 
   if (outScalarType == VTK_FLOAT)
-    {
+  {
     switch (scalarType)
-      {
+    {
       vtkTemplateAliasMacro(
         vtkDICOMApplyRescaleExecute(
           this, inData, static_cast<VTK_TT *>(inVoidPtr), outData,
           static_cast<float *>(outVoidPtr), this->Mapping, extent, id));
-      }
     }
+  }
   else if (outScalarType == VTK_DOUBLE)
-    {
+  {
     switch (scalarType)
-      {
+    {
       vtkTemplateAliasMacro(
         vtkDICOMApplyRescaleExecute(
           this, inData, static_cast<VTK_TT *>(inVoidPtr), outData,
           static_cast<double *>(outVoidPtr), this->Mapping, extent, id));
-      }
     }
+  }
 }

@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMParser>::New();
 
   for (int i = 1; i < argc; i++)
-    {
+  {
     cout << "=========== " << argv[i] << " =========\n";
 
     vtkSmartPointer<vtkDICOMMetaData> data =
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     parser->SetMetaData(data);
 
     parser->Update();
-    }
+  }
 
   return rval;
 }

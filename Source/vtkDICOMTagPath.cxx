@@ -19,17 +19,17 @@ ostream& operator<<(ostream& o, const vtkDICOMTagPath& a)
   o << "[";
   o << a.GetHead();
   if (a.HasTail())
-    {
+  {
     vtkDICOMTagPath b = a;
     while (b.HasTail())
-      {
+    {
       o << ",";
       o << b.GetIndex();
       o << ",";
       o << b.GetHead();
       b = b.GetTail();
-      }
     }
+  }
   o << "]";
 
   return o;

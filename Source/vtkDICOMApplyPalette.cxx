@@ -98,12 +98,12 @@ void vtkDICOMApplyPaletteExecute(
   vtkIdType progress = 0;
 
   for (int c = 0; c < inputComponents; c++)
-    {
+  {
     T *inPtrC = inPtr0 + c;
     unsigned char *outPtrC = outPtr0 + 3*c;
 
     for (int zIdx = extent[4]; zIdx <= extent[5]; zIdx++)
-      {
+    {
       int i = meta->GetFileIndex(zIdx, c, inputComponents);
       int f = meta->GetFrameIndex(zIdx, c, inputComponents);
       i = (i >= 0 ? i : 0);
@@ -113,9 +113,9 @@ void vtkDICOMApplyPaletteExecute(
       int firstValueMapped = static_cast<int>(range[0]);
       int maxIdx = static_cast<int>(range[1]) - firstValueMapped;
       if (maxIdx >= table->GetNumberOfColors())
-        {
+      {
         maxIdx = table->GetNumberOfColors() - 1;
-        }
+      }
       const unsigned char *rgba = table->GetPointer(0);
       T *inPtrZ = inPtrC + (zIdx - extent[4])*inIncZ;
       unsigned char *outPtrZ = outPtrC + (zIdx - extent[4])*outIncZ;
@@ -125,7 +125,7 @@ void vtkDICOMApplyPaletteExecute(
       double windowCenter = 0.0;
       double windowScale = 1.0;
       if (supplemental)
-        {
+      {
         // check if this frame is specifically monochrome
         monochrome = meta->GetAttributeValue(
           i, f, DC::PixelPresentation).Matches("MONOCHROME*");
@@ -137,10 +137,10 @@ void vtkDICOMApplyPaletteExecute(
           meta->GetAttributeValue(i, f, DC::WindowWidth);
         double windowWidth = 0.0;
         if (wc.IsValid() && ww.IsValid())
-          {
+        {
           windowCenter = wc.AsDouble();
           windowWidth = ww.AsDouble();
-          }
+        }
 
         // for CT images, the rescaling must be taken into account
         const vtkDICOMValue& rs =
@@ -148,44 +148,44 @@ void vtkDICOMApplyPaletteExecute(
         const vtkDICOMValue& ri =
           meta->GetAttributeValue(i, f, DC::RescaleIntercept);
         if (rs.IsValid() && ri.IsValid())
-          {
+        {
           double slope = rs.AsDouble();
           double inter = ri.AsDouble();
           if (slope > 0)
-            {
+          {
             windowWidth = windowWidth / slope;
             windowCenter = (windowCenter - inter) / slope;
-            }
-          }
-
-        // a scale parameter is more efficient and convenient
-        if (windowWidth > 0)
-          {
-          windowScale = 255.0/windowWidth;
           }
         }
 
-      for (int yIdx = extent[2]; yIdx <= extent[3]; yIdx++)
+        // a scale parameter is more efficient and convenient
+        if (windowWidth > 0)
         {
+          windowScale = 255.0/windowWidth;
+        }
+      }
+
+      for (int yIdx = extent[2]; yIdx <= extent[3]; yIdx++)
+      {
         T *inPtr = inPtrZ + inIncY*(yIdx - extent[2]);
         unsigned char *outPtr = outPtrZ + outIncY*(yIdx - extent[2]);
 
         // in base thread, report progress every 2% of the way to 100%
         if (id == 0)
-          {
+        {
           ++progress;
           vtkIdType icount = progress*50/target;
           if (progress == icount*target/50)
-            {
+          {
             self->UpdateProgress(progress*1.0/target);
-            }
           }
+        }
 
         for (int xIdx = extent[0]; xIdx <= extent[1]; xIdx++)
-          {
+        {
           int idx = inPtr[0] - firstValueMapped;
           if (monochrome || (supplemental && idx < 0))
-            {
+          {
             // use monochrome
             double fidx = (inPtr[0] - windowCenter)*windowScale + 127.5;
             fidx = (fidx >= 0.0 ? fidx : 0.0);
@@ -194,9 +194,9 @@ void vtkDICOMApplyPaletteExecute(
             outPtr[0] = gray;
             outPtr[1] = gray;
             outPtr[2] = gray;
-            }
+          }
           else
-            {
+          {
             // use color
             idx = (idx >= 0 ? idx : 0);
             idx = (idx <= maxIdx ? idx : maxIdx);
@@ -204,13 +204,13 @@ void vtkDICOMApplyPaletteExecute(
             outPtr[0] = rgb[0];
             outPtr[1] = rgb[1];
             outPtr[2] = rgb[2];
-            }
+          }
           inPtr += inputComponents;
           outPtr += outputComponents;
-          }
         }
       }
     }
+  }
 }
 
 } // end anonymous namespace
@@ -243,7 +243,7 @@ int vtkDICOMApplyPalette::RequestInformation(
   bool hasPalette = false;
 
   if (meta && meta->GetAttributeValue(DC::SamplesPerPixel).Matches(1))
-    {
+  {
     // Check if PhotometricInterpretation is PALETTE COLOR
     const vtkDICOMValue& u = meta->GetAttributeValue(
       DC::PhotometricInterpretation);
@@ -255,11 +255,11 @@ int vtkDICOMApplyPalette::RequestInformation(
                             v.Matches("MIXED") ||
                             v.Matches("TRUE_COLOR"));
     hasPalette |= this->IsSupplemental;
-    }
+  }
 
   // Modify the information
   if (hasPalette)
-    {
+  {
     // By setting Palette, we let RequestData know that there is a palette
     this->Palette = new vtkDICOMPerFilePalette;
     scalarType = VTK_UNSIGNED_CHAR;
@@ -285,7 +285,7 @@ int vtkDICOMApplyPalette::RequestInformation(
     outMeta->RemoveAttribute(DC::RedPaletteColorLookupTableData);
     outMeta->RemoveAttribute(DC::GreenPaletteColorLookupTableData);
     outMeta->RemoveAttribute(DC::BluePaletteColorLookupTableData);
-    }
+  }
 
   return 1;
 }
@@ -303,7 +303,7 @@ int vtkDICOMApplyPalette::RequestData(
 
   // Passthrough if there is no palette to apply
   if (meta == 0 || this->Palette == 0)
-    {
+  {
     vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
     vtkInformation *outInfo = outputVector->GetInformationObject(0);
     vtkImageData *inData =
@@ -314,16 +314,16 @@ int vtkDICOMApplyPalette::RequestData(
     outData->CopyStructure(inData);
     outData->GetPointData()->PassData(inData->GetPointData());
     return 1;
-    }
+  }
 
   // Build the lookup tables for all files that make up the volume
   int n = meta->GetNumberOfInstances();
   this->Palette->resize(n);
   for (int i = 0; i < n; i++)
-    {
+  {
     (*(this->Palette))[i] = vtkSmartPointer<vtkDICOMLookupTable>::New();
     (*(this->Palette))[i]->BuildImagePalette(meta, i);
-    }
+  }
 
   // Allow the superclass to call the ThreadedRequestData method
   int rval = this->Superclass::RequestData(
@@ -356,11 +356,11 @@ void vtkDICOMApplyPalette::ThreadedRequestData(
   void *outVoidPtr = outData->GetScalarPointerForExtent(extent);
 
   switch (scalarType)
-    {
+  {
     vtkTemplateAliasMacro(
       vtkDICOMApplyPaletteExecute(
         this, inData, static_cast<VTK_TT *>(inVoidPtr), outData,
         static_cast<unsigned char *>(outVoidPtr), extent,
         this->Palette, this->IsSupplemental, id));
-    }
+  }
 }

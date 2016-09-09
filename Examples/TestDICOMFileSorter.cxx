@@ -36,29 +36,29 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkStringArray>::New();
 
   for (int i = 1; i < argc; i++)
-    {
+  {
     files->InsertNextValue(argv[i]);
-    }
+  }
 
   sorter->SetInputFileNames(files);
   sorter->Update();
 
   int m = sorter->GetNumberOfStudies();
   for (int j = 0; j < m; j++)
-    {
+  {
     cout << "Study " << j << ":\n";
     int k = sorter->GetFirstSeriesForStudy(j);
     int kl = sorter->GetLastSeriesForStudy(j);
     for (; k <= kl; k++)
-      {
+    {
       cout << "  Series " << k << ":\n";
       vtkStringArray *a = sorter->GetFileNamesForSeries(k);
       for (vtkIdType kk = 0; kk < a->GetNumberOfValues(); kk++)
-        {
+      {
         cout << "    " << a->GetValue(kk) << "\n";
-        }
       }
     }
+  }
 
   return rval;
 }

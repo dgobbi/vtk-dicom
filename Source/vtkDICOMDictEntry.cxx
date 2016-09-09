@@ -19,14 +19,14 @@ const vtkDICOMDictEntry::Entry vtkDICOMDictEntry::InvalidEntry = {
 ostream& operator<<(ostream& o, const vtkDICOMDictEntry& a)
 {
   if (!a.IsValid())
-    {
+  {
     o << "INVALID";
-    }
+  }
   else
-    {
+  {
     o << a.GetTag() << "," << a.GetVR() << "," << a.GetVM() << ","
       << "\"" << a.GetName() << "\"";
-    }
+  }
 
   return o;
 }

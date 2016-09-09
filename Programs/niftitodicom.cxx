@@ -88,19 +88,19 @@ void niftitodicom_version(FILE *file, const char *command_name, bool verbose)
   while (cp != command_name && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
 
   if (!verbose)
-    {
+  {
     fprintf(file, "%s %s\n", cp, DICOM_VERSION);
     fprintf(file, "\n"
       "Copyright (c) 2012-2016, David Gobbi.\n\n"
       "This software is distributed under an open-source license.  See the\n"
       "Copyright.txt file that comes with the vtk-dicom source distribution.\n");
-    }
+  }
   else
-    {
+  {
     fprintf(file,
       "Head %8.8s, Built %s, %s\n",
       DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
-    }
+  }
 }
 
 
@@ -175,32 +175,32 @@ void niftitodicom_check_error(vtkObject *o)
   const char *filename = 0;
   unsigned long errorcode = 0;
   if (writer)
-    {
+  {
     filename = writer->GetFileName();
     errorcode = writer->GetErrorCode();
-    }
+  }
   else if (reader)
-    {
+  {
     filename = reader->GetInternalFileName();
     errorcode = reader->GetErrorCode();
-    }
+  }
   else if (sorter)
-    {
+  {
     filename = sorter->GetInternalFileName();
     errorcode = sorter->GetErrorCode();
-    }
+  }
   else if (parser)
-    {
+  {
     filename = parser->GetFileName();
     errorcode = parser->GetErrorCode();
-    }
+  }
   if (!filename)
-    {
+  {
     filename = "";
-    }
+  }
 
   switch(errorcode)
-    {
+  {
     case vtkErrorCode::NoError:
       return;
     case vtkErrorCode::FileNotFoundError:
@@ -227,7 +227,7 @@ void niftitodicom_check_error(vtkObject *o)
     default:
       fprintf(stderr, "An unknown error occurred.\n");
       break;
-    }
+  }
 
   exit(1);
 }
@@ -241,13 +241,13 @@ bool isNIFTIFileName(const char *f)
 
   size_t n = strlen(f);
   for (const char **s = suffixes; *s != 0; s++)
-    {
+  {
     size_t m = strlen(*s);
     if (n > m && strcmp(f + n - m, *s) == 0)
-      {
+    {
       return true;
-      }
     }
+  }
 
   return false;
 }
@@ -271,177 +271,177 @@ void niftitodicom_read_options(
   // read the options from the command line
   int argi = 1;
   while (argi < argc)
-    {
+  {
     const char *arg = argv[argi++];
     if (arg[0] == '-')
-      {
+    {
       if (strcmp(arg, "--") == 0)
-        {
+      {
         // stop processing switches
         break;
-        }
+      }
       else if (strcmp(arg, "--modality") == 0 ||
                strcmp(arg, "--series-description") == 0 ||
                strcmp(arg, "--series-number") == 0 ||
                strcmp(arg, "--uid-prefix") == 0)
-        {
+      {
         if (argi >= argc ||
             argv[argi][0] == '-')
-          {
+        {
           fprintf(stderr, "\nA value must follow the \'%s\' flag\n\n", arg);
           exit(1);
-          }
+        }
         if (strcmp(arg, "--modality") == 0)
-          {
+        {
           options->modality = argv[argi];
-          }
+        }
         else if (strcmp(arg, "--series-description") == 0)
-          {
+        {
           options->series_description = argv[argi];
-          }
+        }
         else if (strcmp(arg, "--series-number") == 0)
-          {
+        {
           options->series_number= argv[argi];
-          }
+        }
         else if (strcmp(arg, "--uid-prefix") == 0)
-          {
+        {
           options->uid_prefix = argv[argi];
-          }
+        }
         argi++;
-        }
+      }
       else if (strcmp(arg, "--axial") == 0)
-        {
+      {
         options->mpr = MPRAxial;
-        }
+      }
       else if (strcmp(arg, "--coronal") == 0)
-        {
+      {
         options->mpr = MPRCoronal;
-        }
+      }
       else if (strcmp(arg, "--sagittal") == 0)
-        {
+      {
         options->mpr = MPRSagittal;
-        }
+      }
       else if (strcmp(arg, "--no-reordering") == 0)
-        {
+      {
         options->no_reordering = true;
-        }
+      }
       else if (strcmp(arg, "--silent") == 0)
-        {
+      {
         options->silent = true;
-        }
+      }
       else if (strcmp(arg, "--verbose") == 0)
-        {
+      {
         options->verbose = true;
-        }
+      }
       else if (strcmp(arg, "--version") == 0)
-        {
+      {
         niftitodicom_version(stdout, argv[0], false);
         exit(0);
-        }
+      }
       else if (strcmp(arg, "--build-version") == 0)
-        {
+      {
         niftitodicom_version(stdout, argv[0], true);
         exit(0);
-        }
+      }
       else if (strcmp(arg, "--help") == 0)
-        {
+      {
         niftitodicom_help(stdout, argv[0]);
         exit(0);
-        }
+      }
       else if (arg[0] == '-' && arg[1] == '-')
-        {
+      {
         fprintf(stderr, "\nUnrecognized option %s\n\n", arg);
         niftitodicom_usage(stderr, argv[0]);
         exit(1);
-        }
+      }
       else if (arg[0] == '-' && arg[1] != '-')
-        {
+      {
         for (int argj = 1; arg[argj] != '\0'; argj++)
-          {
+        {
           if (arg[argj] == 's')
-            {
+          {
             options->silent = true;
-            }
+          }
           else if (arg[argj] == 'v')
-            {
+          {
             options->verbose = true;
-            }
+          }
           else if (arg[argj] == 'o')
-            {
+          {
             if (arg[argj+1] != '\0')
-              {
+            {
               arg += argj+1;
-              }
+            }
             else
-              {
+            {
               if (argi >= argc)
-                {
+              {
                 fprintf(stderr, "\nA file must follow the \'-o\' flag\n\n");
                 niftitodicom_usage(stderr, argv[0]);
                 exit(1);
-                }
-              arg = argv[argi++];
               }
+              arg = argv[argi++];
+            }
             options->output = arg;
             break;
-            }
+          }
           else
-            {
+          {
             fprintf(stderr, "\nUnrecognized \'%c\' in option %s\n\n", arg[argj], arg);
             niftitodicom_usage(stderr, argv[0]);
             exit(1);
-            }
           }
         }
       }
+    }
     else
-      {
+    {
       files->InsertNextValue(arg);
       vtkIdType m = files->GetMaxId();
       if (m >= 0)
-        {
+      {
         const char *f = files->GetValue(m);
         if (isNIFTIFileName(f))
-          {
+        {
           if (options->input == 0)
-            {
+          {
             options->input = arg;
             files->SetNumberOfValues(m);
-            }
+          }
           else
-            {
+          {
             fprintf(stderr, "\nAt most one NIFTI file can be specified.\n");
             niftitodicom_usage(stderr, argv[0]);
             exit(1);
-            }
           }
         }
       }
     }
+  }
 
   while (argi < argc)
-    {
+  {
     files->InsertNextValue(argv[argi++]);
     vtkIdType m = files->GetMaxId();
     if (m >= 0)
-      {
+    {
       const char *f = files->GetValue(m);
       if (isNIFTIFileName(f))
-        {
+      {
         if (options->input == 0)
-          {
+        {
           options->input = argv[argi-1];
           files->SetNumberOfValues(m);
-          }
+        }
         else
-          {
+        {
           fprintf(stderr, "\nAt most one NIFTI file can be specified.\n");
           niftitodicom_usage(stderr, argv[0]);
           exit(1);
-          }
         }
       }
     }
+  }
 }
 
 // Convert one NIFTI file into a DICOM series
@@ -463,21 +463,21 @@ void niftitodicom_convert_one(
   dicomReader->SetMemoryRowOrderToFileNative();
   vtkMatrix4x4 *readerMatrix = 0;
   if (a->GetNumberOfValues() > 0)
-    {
+  {
     dicomReader->UpdateInformation();
     meta->DeepCopy(dicomReader->GetMetaData());
     readerMatrix = dicomReader->GetPatientMatrix();
-    }
+  }
 
   // set the metadata supplied on the command line
   if (options->series_description)
-    {
+  {
     meta->SetAttributeValue(DC::SeriesDescription, options->series_description);
-    }
+  }
   if (options->series_number)
-    {
+  {
     meta->SetAttributeValue(DC::SeriesNumber, options->series_number);
-    }
+  }
 
   // read the NIFTI file
   vtkSmartPointer<vtkNIFTIReader> reader =
@@ -498,15 +498,15 @@ void niftitodicom_convert_one(
   vtkMatrix4x4 *inputMatrix = 0;
   int xformCode = 0;
   if (reader->GetQFormMatrix())
-    {
+  {
     inputMatrix = reader->GetQFormMatrix();
     xformCode = hdr->GetQFormCode();
-    }
+  }
   else if (reader->GetSFormMatrix())
-    {
+  {
     inputMatrix = reader->GetSFormMatrix();
     xformCode = hdr->GetSFormCode();
-    }
+  }
 
   // convert to NIFTI coordinate system
   vtkSmartPointer<vtkDICOMToRAS> converter =
@@ -523,15 +523,15 @@ void niftitodicom_convert_one(
   vtkSmartPointer<vtkMatrix4x4> checkMatrix =
     vtkSmartPointer<vtkMatrix4x4>::New();
   if (inputMatrix)
-    {
+  {
     checkMatrix->DeepCopy(inputMatrix);
-    }
+  }
   // undo the NIFTI to DICOM x = -x, y = -y conversion in check matrix
   for (int j = 0; j < 4; j++)
-    {
+  {
     checkMatrix->Element[0][j] = -checkMatrix->Element[0][j];
     checkMatrix->Element[1][j] = -checkMatrix->Element[1][j];
-    }
+  }
   checkMatrix->Invert();
   // checkMatrix = PatientMatrix^(-1) * RASMatrix
   vtkMatrix4x4::Multiply4x4(
@@ -552,7 +552,7 @@ void niftitodicom_convert_one(
   int permutation[3] = { 0, 1, 2 };
 
   if (options->mpr)
-    {
+  {
     // this becomes meaningless after reformatting
     slicesReordered = false;
 
@@ -564,50 +564,50 @@ void niftitodicom_convert_one(
     int prevmaxj = -1;
     int prevmaxi = -1;
     for (int kdim = 0; kdim < 2; kdim++)
-      {
+    {
       int maxj = 0;
       int maxi = 0;
       double maxv = -0.0;
       for (int jdim = 0; jdim < 3; jdim++)
-        {
+      {
         if (jdim == prevmaxj) { continue; }
         for (int idim = 0; idim < 3; idim++)
-          {
+        {
           if (idim == prevmaxi) { continue; }
           double v = axes->GetElement(jdim, idim);
           if (v*v >= maxv)
-            {
+          {
             maxi = idim;
             maxj = jdim;
             maxv = v*v;
-            }
           }
         }
+      }
       maxidx[maxj] = maxi;
       value[maxj] = (axes->GetElement(maxj, maxi) < 0 ? -1.0 : 1.0);
       prevmaxj = maxj;
       prevmaxi = maxi;
-      }
+    }
 
     axes->Zero();
     axes->SetElement(3, 3, 1.0);
     for (int jdim = 0; jdim < 3; jdim++)
-      {
+    {
       int idim = maxidx[jdim];
       if (idim < 0)
-        {
+      {
         idim = 3 - maxidx[(jdim+1)%3] - maxidx[(jdim+2)%3];
         maxidx[jdim] = idim;
         double perm = (((3 + maxidx[2] - maxidx[0])%3) == 2 ? 1.0 : -1.0);
         value[jdim] = value[(jdim+1)%3]*value[(jdim+2)%3]*perm;
-        }
+      }
       permutation[jdim] = idim;
       axes->SetElement(jdim, idim, value[jdim]);
-      }
+    }
 
     // change the permutation to the desired mpr
     if (options->mpr == MPRCoronal)
-      {
+    {
       double cmatrix[16] = {
         1.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
@@ -618,9 +618,9 @@ void niftitodicom_convert_one(
       permutation[0] = tperm[0];
       permutation[1] = tperm[2];
       permutation[2] = tperm[1];
-      }
+    }
     else if (options->mpr == MPRSagittal)
-      {
+    {
       double smatrix[16] = {
         0.0, 0.0,-1.0, 0.0,
         1.0, 0.0, 0.0, 0.0,
@@ -631,7 +631,7 @@ void niftitodicom_convert_one(
       permutation[0] = tperm[1];
       permutation[1] = tperm[2];
       permutation[2] = tperm[0];
-      }
+    }
 
     // reformat with the permuted axes
     reformat->SetResliceAxes(axes);
@@ -640,7 +640,7 @@ void niftitodicom_convert_one(
 
     // factor out the permuted axes
     vtkMatrix4x4::Multiply4x4(matrix, axes, matrix);
-    }
+  }
 
   // convert to signed short if not short
   int scalarType = reader->GetOutput()->GetScalarType();
@@ -650,16 +650,16 @@ void niftitodicom_convert_one(
   // whether to allow 8-bit DICOM
   bool allowUnsignedChar = false;
   if (options->modality && strcmp(options->modality, "SC") == 0)
-    {
+  {
     allowUnsignedChar = true;
-    }
+  }
 
   if (scalarType != VTK_SHORT && scalarType != VTK_UNSIGNED_SHORT &&
       (scalarType != VTK_UNSIGNED_CHAR || !allowUnsignedChar))
-    {
+  {
 #if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
     if (scalarType == VTK_FLOAT || scalarType == VTK_DOUBLE)
-      {
+    {
       // compute range
       vtkSmartPointer<vtkImageHistogramStatistics> histo =
         vtkSmartPointer<vtkImageHistogramStatistics>::New();
@@ -671,33 +671,33 @@ void niftitodicom_convert_one(
       histo->GetAutoRange(autoRange);
 
       if (minVal > 32768.0 || maxVal > 32767.0)
-        {
+      {
         // scale down if out-of-range
         double v = (maxVal > minVal ? maxVal : minVal);
         caster->SetScale(32767.0/v);
-        }
+      }
       else if (minVal < 2.047 && maxVal < 2.047)
-        {
+      {
         // scale up by 1000 if values are very small
         caster->SetScale(1000.0);
-        }
+      }
       else if (minVal < 20.47 && maxVal < 20.47)
-        {
+      {
         // scale up by 100 if values are small
         caster->SetScale(100.0);
-        }
+      }
       else if (minVal < 204.7 && maxVal < 204.7)
-        {
+      {
         // scale up by 10
         caster->SetScale(10.0);
-        }
       }
+    }
 #endif
 
     caster->SetInputConnection(lastOutput);
     caster->SetOutputScalarType(VTK_SHORT);
     lastOutput = caster->GetOutputPort();
-    }
+  }
 
   // check if requested to write as a CT tilted-gantry series via the
   // series of files that were sent to the reader
@@ -705,7 +705,7 @@ void niftitodicom_convert_one(
     vtkSmartPointer<vtkDICOMCTRectifier>::New();
   if (readerMatrix &&
       fabs(vtkDICOMCTRectifier::GetGantryDetectorTilt(readerMatrix)) > 0.01)
-    {
+  {
     rectifier->SetInputConnection(lastOutput);
     rectifier->SetVolumeMatrix(readerMatrix);
     rectifier->ReverseOn();
@@ -717,35 +717,35 @@ void niftitodicom_convert_one(
     vtkMatrix4x4::Multiply4x4(testMatrix, matrix, testMatrix);
     bool isIdentity = true;
     for (int ii = 0; ii < 4; ii++)
-      {
+    {
       for (int jj = 0; jj < 4; jj++)
-        {
+      {
         double dd = testMatrix->GetElement(ii,jj) - (ii == jj);
         isIdentity &= (fabs(dd) < 1e-3);
-        }
       }
+    }
     if (isIdentity)
-      {
+    {
       // exactly the same orientation, so write like the reader's series
       rectifier->Update();
       lastOutput = rectifier->GetOutputPort();
       matrix = readerMatrix;
-      }
     }
+  }
 
   // mix in the NIFTI header information
   if (xformCode == vtkNIFTIHeader::XFormTalairach)
-    {
+  {
     meta->SetAttributeValue(DC::FrameOfReferenceUID, "1.2.840.10008.1.4.1.1");
-    }
+  }
   else if (xformCode == vtkNIFTIHeader::XFormMNI152)
-    {
+  {
     meta->SetAttributeValue(DC::FrameOfReferenceUID, "1.2.840.10008.1.4.1.15");
-    }
+  }
   else if (xformCode != vtkNIFTIHeader::XFormScannerAnat)
-    {
+  {
     meta->RemoveAttribute(DC::FrameOfReferenceUID);
-    }
+  }
 
   // make the generator
   vtkSmartPointer<vtkDICOMMRGenerator> mrgenerator =
@@ -754,44 +754,44 @@ void niftitodicom_convert_one(
     vtkSmartPointer<vtkDICOMCTGenerator>::New();
   vtkDICOMGenerator *generator = mrgenerator;
   if (options->modality)
-    {
+  {
     if (strcmp(options->modality, "CT") == 0)
-      {
+    {
       generator = ctgenerator;
-      }
+    }
     else if (strcmp(options->modality, "MR") == 0 ||
              strcmp(options->modality, "MRI") == 0)
-      {
+    {
       generator = mrgenerator;
-      }
-    else
-      {
-      generator = 0;
-      }
     }
+    else
+    {
+      generator = 0;
+    }
+  }
 
   // prepare the writer to write the image
   vtkSmartPointer<vtkDICOMWriter> writer =
     vtkSmartPointer<vtkDICOMWriter>::New();
   if (generator)
-    {
+  {
     writer->SetGenerator(generator);
-    }
+  }
   writer->SetMetaData(meta);
   writer->SetFilePrefix(outfile);
   writer->SetFilePattern("%s/IM-0001-%04.4d.dcm");
   writer->TimeAsVectorOn();
   if (reader->GetTimeDimension() > 1)
-    {
+  {
     writer->SetTimeDimension(reader->GetTimeDimension());
     writer->SetTimeSpacing(reader->GetTimeSpacing());
-    }
+  }
   writer->SetPatientMatrix(matrix);
   if (reader->GetRescaleSlope() > 0)
-    {
+  {
     writer->SetRescaleSlope(reader->GetRescaleSlope());
     writer->SetRescaleIntercept(reader->GetRescaleIntercept());
-    }
+  }
   writer->SetInputConnection(lastOutput);
   writer->SetMemoryRowOrderToFileNative();
   writer->Write();
@@ -842,39 +842,39 @@ int MAINMACRO(int argc, char *argv[])
 
   // set the UID prefix
   if (options.uid_prefix)
-    {
+  {
     vtkDICOMUtilities::SetUIDPrefix(options.uid_prefix);
-    }
+  }
 
   // the output (NIFTI file or directory)
   const char *outpath = options.output;
   if (!outpath)
-    {
+  {
     fprintf(stderr,
       "\nNo output directory was specified (\'-o\' <directory>).\n\n");
     niftitodicom_usage(stderr, argv[0]);
     exit(1);
-    }
+  }
   if (!options.input)
-    {
+  {
     fprintf(stderr,
       "\nNo input file was specified (.nii or .nii.gz).\n\n");
     niftitodicom_usage(stderr, argv[0]);
     exit(1);
-    }
+  }
 
   int code = vtkDICOMFile::Access(outpath, vtkDICOMFile::In);
   if (code != vtkDICOMFile::FileIsDirectory)
-    {
+  {
     fprintf(stderr, "option -o must give a directory, not a file.\n");
     exit(1);
-    }
+  }
   code = vtkDICOMFileDirectory::Create(outpath);
   if (code != vtkDICOMFileDirectory::Good)
-    {
+  {
     fprintf(stderr, "Cannot create directory: %s\n", outpath);
     exit(1);
-    }
+  }
 
   niftitodicom_convert_files(&options, files, outpath);
 
