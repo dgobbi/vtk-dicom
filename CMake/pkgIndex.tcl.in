@@ -5,20 +5,9 @@ package ifneeded @MODULE_TCL_NAME@ @VTK_VERSION_MAJOR@.@VTK_VERSION_MINOR@ {
   }
   set libExt [info sharedlibextension]
   set libPath {@MODULE_TCL_PATH@}
-  set configs "@CMAKE_CONFIGURATION_TYPES@"
-  set dirs ${libPath}
-  if { "${configs}" != "" } {
-    # expect configuration subdirectories (Debug, Release, etc)
-    foreach config ${configs} {
-      set dirs [concat ${dirs} [file join ${libPath} ${config}] ]
-    }
-  }
-  foreach dir ${dirs} {
-    set libFile [file join ${dir} ${libPrefix}@LIB_TCL_OUTPUT_NAME@${libExt}]
-    if { [file exists ${libFile}] } {
-      load ${libFile}
-      package provide @MODULE_TCL_NAME@ @VTK_VERSION_MAJOR@.@VTK_VERSION_MINOR@
-      break;
-    }
+  set libFile [file join ${libPath} ${libPrefix}@LIB_TCL_OUTPUT_NAME@${libExt}]
+  if { [file exists ${libFile}] } {
+    load ${libFile}
+    package provide @MODULE_TCL_NAME@ @VTK_VERSION_MAJOR@.@VTK_VERSION_MINOR@
   }
 }

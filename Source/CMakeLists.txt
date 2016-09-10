@@ -269,9 +269,17 @@ if(BUILD_TCL_WRAPPERS)
   set_target_properties(${LIB_TCL_NAME} PROPERTIES
     OUTPUT_NAME ${LIB_TCL_OUTPUT_NAME})
   # create the pkgIndex.tcl file
-  set(MODULE_TCL_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-  configure_file(${DICOM_CMAKE_DIR}/pkgIndex.tcl.in
-    "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/pkgIndex.tcl" @ONLY)
+  if(CMAKE_CONFIGURATION_TYPES)
+    foreach(config ${CMAKE_CONFIGURATION_TYPES})
+      set(MODULE_TCL_PATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${config}")
+      configure_file(${DICOM_CMAKE_DIR}/pkgIndex.tcl.in
+        "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${config}/pkgIndex.tcl" @ONLY)
+    endforeach()
+  else()
+    set(MODULE_TCL_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+    configure_file(${DICOM_CMAKE_DIR}/pkgIndex.tcl.in
+      "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/pkgIndex.tcl" @ONLY)
+  endif()
   set(MODULE_TCL_PATH ${DICOM_LIBRARY_INSTALL_DEST})
   configure_file(${DICOM_CMAKE_DIR}/pkgIndex.tcl.in
     "${CMAKE_CURRENT_BINARY_DIR}/pkgIndex.tcl" @ONLY)

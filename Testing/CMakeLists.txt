@@ -73,7 +73,10 @@ if(BUILD_PYTHON_WRAPPERS)
 endif()
 
 if(BUILD_TCL_WRAPPERS)
-  if(NOT VTK_TCL_EXE AND (NOT UNIX OR DEFINED ENV{DISPLAY}))
+  if(UNIX AND NOT DEFINED ENV{DISPLAY})
+    # the X11 vtk executable requires DISPLAY, so use tclsh instead
+    set(VTK_TCL_EXE ${TCL_TCLSH})
+  elseif(NOT VTK_TCL_EXE)
     get_target_property(WRAP_TCL_PATH vtkWrapTcl LOCATION_<CONFIG>)
     get_filename_component(VTK_EXE_DIR ${WRAP_TCL_PATH} PATH)
     find_program(VTK_TCL_EXE vtk "${VTK_EXE_DIR}")
@@ -82,10 +85,12 @@ if(BUILD_TCL_WRAPPERS)
     # fall back to using tclsh
     set(VTK_TCL_EXE ${TCL_TCLSH})
   endif()
-  add_test(TestDICOMTcl "${TCL_TCLSH}"
+  add_test(TestDICOMTcl "${VTK_TCL_EXE}"
     "${CMAKE_CURRENT_SOURCE_DIR}/TestDICOMTcl.tcl")
-  set_tests_properties(TestDICOMTcl PROPERTIES ENVIRONMENT
-    "TCLLIBPATH={${CMAKE_LIBRARY_OUTPUT_DIRECTORY}} {${VTK_DIR}/Wrapping/Tcl}")
+  if(NOT CMAKE_CONFIGURATION_TYPES)
+    set_tests_properties(TestDICOMTcl PROPERTIES ENVIRONMENT
+      "TCLLIBPATH={${VTK_DIR}/Wrapping/Tcl}")
+  endif()
 endif()
 
 if(BUILD_JAVA_WRAPPERS)
