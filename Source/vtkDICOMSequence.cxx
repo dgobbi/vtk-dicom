@@ -16,12 +16,54 @@
 
 #include <assert.h>
 
+// provide extern declarations for all the template methods we use
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1700)
+extern template
+void vtkDICOMValue::AppendInit<vtkDICOMItem>(vtkDICOMVR);
+
+extern template
+void vtkDICOMValue::AppendValue<vtkDICOMItem>(const vtkDICOMItem&);
+
+extern template
+void vtkDICOMValue::SetValue<vtkDICOMItem>(size_t, const vtkDICOMItem&);
+#endif
+
 //----------------------------------------------------------------------------
 // For use by methods that must return an invalid value
 const vtkDICOMValue vtkDICOMSequence::InvalidValue;
 
 // For use by methods that must return an empty item
 const vtkDICOMItem vtkDICOMSequence::EmptyItem;
+
+//----------------------------------------------------------------------------
+vtkDICOMSequence::vtkDICOMSequence()
+{
+  this->V.AppendInit<vtkDICOMItem>(vtkDICOMVR::SQ);
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMSequence::vtkDICOMSequence(unsigned int n)
+{
+  this->V.AllocateSequenceData(vtkDICOMVR::SQ, n);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMSequence::Clear()
+{
+  this->V.AppendInit<vtkDICOMItem>(vtkDICOMVR::SQ);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMSequence::AddItem(const vtkDICOMItem& item)
+{
+  this->V.AppendValue(item);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMSequence::SetItem(size_t i, const vtkDICOMItem& item)
+{
+  this->V.SetValue(i, item);
+}
 
 //----------------------------------------------------------------------------
 const vtkDICOMValue &vtkDICOMSequence::GetAttributeValue(

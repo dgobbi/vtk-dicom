@@ -33,17 +33,15 @@ class VTKDICOM_EXPORT vtkDICOMSequence
 public:
   //@{
   //! Construct a growable sequence with no items.
-  vtkDICOMSequence() {
-    this->V.AppendInit<vtkDICOMItem>(vtkDICOMVR::SQ); }
+  vtkDICOMSequence();
 
   //! Construct a sequence of fixed size.
-  explicit vtkDICOMSequence(unsigned int n) {
-    this->V.AllocateSequenceData(vtkDICOMVR::SQ, n); }
+  explicit vtkDICOMSequence(unsigned int n);
+  //@}
 
   //@{
   //! Clear a sequence, remove its contents and make it empty.
-  void Clear() {
-    this->V.AppendInit<vtkDICOMItem>(vtkDICOMVR::SQ); }
+  void Clear();
   //@}
 
   //@{
@@ -62,8 +60,7 @@ public:
    *  the special value 0xffffffff to indicate that this is a delimited
    *  sequence rather than a fixed-size sequence.
    */
-  void AddItem(const vtkDICOMItem& item) {
-    this->V.AppendValue(item); }
+  void AddItem(const vtkDICOMItem& item);
 
   //! Get the number of items in the sequence.
   size_t GetNumberOfItems() const {
@@ -76,8 +73,7 @@ public:
    *  This method can only be used if space as been allocated within
    *  the sequence by specifying a size when calling the constructor.
    */
-  void SetItem(size_t i, const vtkDICOMItem& item) {
-    this->V.SetValue(i, item); }
+  void SetItem(size_t i, const vtkDICOMItem& item);
 
   //! Get an item from the sequence.
   const vtkDICOMItem& GetItem(size_t i) const;
