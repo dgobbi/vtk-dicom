@@ -43,6 +43,9 @@ public:
    */
   vtkDICOMFileDirectory(const char *dirname);
 
+  //! Copy constructor.
+  vtkDICOMFileDirectory(const vtkDICOMFileDirectory&);
+
   //! Destruct the object.
   ~vtkDICOMFileDirectory();
   //@}
@@ -77,6 +80,11 @@ public:
    *  returned.
    */
   static int Create(const char *dirname);
+  //@}
+
+  //@{
+  //! Assignment operator.
+  vtkDICOMFileDirectory& operator=(const vtkDICOMFileDirectory&);
   //@}
 
 private:

@@ -39,6 +39,9 @@ public:
   vtkDICOMFilePath(const std::wstring& path);
 #endif
 
+  //! Copy constructor.
+  vtkDICOMFilePath(const vtkDICOMFilePath&);
+
   //! Destructor.
   ~vtkDICOMFilePath();
   //@}
@@ -119,6 +122,11 @@ public:
   //@}
 
 #endif
+
+  //@{
+  //! Assignment operator.
+  vtkDICOMFilePath& operator=(const vtkDICOMFilePath&);
+  //@}
 
 private:
 

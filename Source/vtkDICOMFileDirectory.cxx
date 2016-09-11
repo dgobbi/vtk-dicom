@@ -155,6 +155,46 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
 }
 
 //----------------------------------------------------------------------------
+vtkDICOMFileDirectory::vtkDICOMFileDirectory(const vtkDICOMFileDirectory& o)
+  : Name(o.Name), Error(o.Error), NumberOfFiles(0), Entries(0)
+{
+  if (o.Entries && o.NumberOfFiles)
+  {
+    for (int i = 0; i < o.NumberOfFiles; i++)
+    {
+      const Entry& e = o.Entries[i];
+      this->AddEntry(e.Name.c_str(), e.Flags, e.Mask);
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMFileDirectory& vtkDICOMFileDirectory::operator=(
+  const vtkDICOMFileDirectory& o)
+{
+  if (this != &o)
+  {
+    delete [] this->Entries;
+
+    this->Name = o.Name;
+    this->Error = o.Error;
+    this->NumberOfFiles = 0;
+    this->Entries = 0;
+
+    if (o.Entries && o.NumberOfFiles)
+    {
+      for (int i = 0; i < o.NumberOfFiles; i++)
+      {
+        const Entry& e = o.Entries[i];
+        this->AddEntry(e.Name.c_str(), e.Flags, e.Mask);
+      }
+    }
+  }
+
+  return *this;
+}
+
+//----------------------------------------------------------------------------
 vtkDICOMFileDirectory::~vtkDICOMFileDirectory()
 {
   delete [] this->Entries;

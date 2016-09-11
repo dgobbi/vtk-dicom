@@ -126,7 +126,16 @@ public:
   static bool SameFile(const char *file1, const char *file2);
   //@}
 
+  //! @cond
+  // Copy constructor creates a closed file.  The copy constructor would
+  // normally be deleted, but that would cause the VTK python wrappers to
+  // skip this class.  Once the wrappers are fixed, this can be deleted.
+  vtkDICOMFile(const vtkDICOMFile&) : Handle(0), Error(0), Eof(false) {}
+  //! @endcond
+
 private:
+  vtkDICOMFile& operator=(const vtkDICOMFile&); // = delete;
+
 #ifdef VTK_DICOM_POSIX_IO
   int Handle;
 #else

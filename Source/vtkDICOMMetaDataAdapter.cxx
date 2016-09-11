@@ -88,6 +88,24 @@ void vtkDICOMMetaDataAdapter::ConstructionHelper(
 }
 
 //----------------------------------------------------------------------------
+// Copy constructor
+vtkDICOMMetaDataAdapter::vtkDICOMMetaDataAdapter(
+  const vtkDICOMMetaDataAdapter& other)
+  : Meta(other.Meta), PerFrame(other.PerFrame), Shared(other.Shared),
+    NullValue(other.NullValue), NumberOfInstances(other.NumberOfInstances),
+    MetaInstance(other.MetaInstance)
+{
+  if (other.Meta)
+  {
+    this->Meta->Register(0);
+  }
+  if (this->NullValue)
+  {
+    this->NullValue = new vtkDICOMValue();
+  }
+}
+
+//----------------------------------------------------------------------------
 // Destructor
 vtkDICOMMetaDataAdapter::~vtkDICOMMetaDataAdapter()
 {
@@ -96,6 +114,32 @@ vtkDICOMMetaDataAdapter::~vtkDICOMMetaDataAdapter()
     this->Meta->Delete();
   }
   delete this->NullValue;
+}
+
+//----------------------------------------------------------------------------
+// Assignment
+vtkDICOMMetaDataAdapter& vtkDICOMMetaDataAdapter::operator=(
+  const vtkDICOMMetaDataAdapter& other)
+{
+  if (this != &other)
+  {
+    this->Meta = other.Meta;
+    this->PerFrame = other.PerFrame;
+    this->Shared = other.Shared;
+    this->NullValue = other.NullValue;
+    this->NumberOfInstances = other.NumberOfInstances;
+    this->MetaInstance = other.MetaInstance;
+
+    if (other.Meta)
+    {
+      this->Meta->Register(0);
+    }
+    if (this->NullValue)
+    {
+      this->NullValue = new vtkDICOMValue();
+    }
+  }
+  return *this;
 }
 
 //----------------------------------------------------------------------------

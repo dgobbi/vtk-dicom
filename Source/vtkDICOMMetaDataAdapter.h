@@ -49,6 +49,9 @@ public:
    */
   vtkDICOMMetaDataAdapter(vtkDICOMMetaData *meta, int i);
 
+  //! Copy constructor.
+  vtkDICOMMetaDataAdapter(const vtkDICOMMetaDataAdapter&);
+
   //! Destructor release the reference to the meta data.
   ~vtkDICOMMetaDataAdapter();
   //@}
@@ -101,6 +104,9 @@ public:
   const vtkDICOMMetaDataAdapter* operator->() const { return this; }
   vtkDICOMMetaDataAdapter* operator->() { return this; }
   //@}
+
+  //! Copy constructor.
+  vtkDICOMMetaDataAdapter& operator=(const vtkDICOMMetaDataAdapter&);
 
 protected:
   //! Helper function for the constructors.  Set all members.

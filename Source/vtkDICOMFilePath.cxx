@@ -69,12 +69,33 @@ vtkDICOMFilePath::vtkDICOMFilePath(const std::wstring& path)
 #endif
 
 //----------------------------------------------------------------------------
+vtkDICOMFilePath::vtkDICOMFilePath(const vtkDICOMFilePath& other) :
+  Path(other.Path), Separator(other.Separator)
+{
+#ifdef _WIN32
+  this->WidePath = 0;
+  this->LocalPath = 0;
+#endif
+}
+
+//----------------------------------------------------------------------------
 vtkDICOMFilePath::~vtkDICOMFilePath()
 {
 #ifdef _WIN32
   delete [] this->WidePath;
   delete [] this->LocalPath;
 #endif
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMFilePath& vtkDICOMFilePath::operator=(const vtkDICOMFilePath& other)
+{
+  if (this != &other)
+  {
+    this->Path = other.Path;
+    this->Separator = other.Separator;
+  }
+  return *this;
 }
 
 //----------------------------------------------------------------------------
