@@ -48,7 +48,8 @@ public:
   bool IsPerInstance() const { return (this->Value.GetMultiplexData() != 0); }
 
   //! Get the number of value instances in this data element.
-  int GetNumberOfInstances() const { return this->Value.GetNumberOfValues(); }
+  int GetNumberOfInstances() const {
+    return static_cast<int>(this->Value.GetNumberOfValues()); }
 
   //! Get the value of the data element, if not multi-valued.
   const vtkDICOMValue& GetValue() const { return this->Value; }

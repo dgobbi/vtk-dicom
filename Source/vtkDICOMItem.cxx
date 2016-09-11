@@ -406,8 +406,8 @@ const vtkDICOMValue &vtkDICOMItem::GetAttributeValue(
   }
   if (v.IsValid())
   {
-    unsigned int i = tagpath.GetIndex();
-    unsigned int n = v.GetNumberOfValues();
+    size_t i = tagpath.GetIndex();
+    size_t n = v.GetNumberOfValues();
     const vtkDICOMItem *items = v.GetSequenceData();
     if (items != 0 && i < n)
     {

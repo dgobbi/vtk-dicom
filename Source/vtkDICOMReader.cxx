@@ -1898,7 +1898,7 @@ void vtkDICOMReader::UpdateMedicalImageProperties()
 
   const vtkDICOMValue& comment =
     meta->GetAttributeValue(DC::WindowCenterWidthExplanation);
-  m = comment.GetNumberOfValues();
+  m = static_cast<int>(comment.GetNumberOfValues());
   m = (n < m ? n : m);
   for (int j = 0; j < m; j++)
   {

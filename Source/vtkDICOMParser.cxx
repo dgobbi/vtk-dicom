@@ -1278,12 +1278,12 @@ size_t Decoder<E>::ReadElementValue(
         if (g == HxFFFE && e == HxE000)
         {
           // read one item
-          unsigned int offset = this->GetByteOffset(cp, ep) - 8;
+          size_t offset = this->GetByteOffset(cp, ep) - 8;
           bool delimited = (il == HxFFFFFFFF);
           vtkDICOMTag endtag(HxFFFE, HxE00D);
           vtkDICOMItem item(this->Context->GetCharacterSet(),
                             this->Context->GetVRForXS(),
-                            delimited, offset);
+                            delimited, static_cast<unsigned int>(offset));
           DecoderContext context(&item);
           this->PushContext(&context, tag);
 
@@ -1363,9 +1363,9 @@ size_t Decoder<E>::ReadElementValue(
         // if vl != 0xffffffff, then the sequence was fixed-size rather
         // than delimited, so let's make our own fixed-size sequence and
         // copy all of the items into it
-        size_t n = seq.GetNumberOfItems();
+        unsigned int n = static_cast<unsigned int>(seq.GetNumberOfItems());
         vtkDICOMSequence seq2(n);
-        for (size_t i = 0; i < n; i++)
+        for (unsigned int i = 0; i < n; i++)
         {
           seq2.SetItem(i, seq.GetItem(i));
         }

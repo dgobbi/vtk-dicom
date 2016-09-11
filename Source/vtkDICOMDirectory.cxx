@@ -1782,7 +1782,7 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
   // Get the directory as a sequence.
   const vtkDICOMValue& seq =
     meta->GetAttributeValue(DC::DirectoryRecordSequence);
-  unsigned int n = seq.GetNumberOfValues();
+  unsigned int n = static_cast<unsigned int>(seq.GetNumberOfValues());
   const vtkDICOMItem *items = seq.GetSequenceData();
 
   // The DICOMDIR uses byte offsets to identify items in the sequence.
@@ -1874,11 +1874,11 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
           items[j].GetAttributeValue(DC::ReferencedFileID);
         if (fileID.IsValid())
         {
-          unsigned int m = fileID.GetNumberOfValues();
+          size_t m = fileID.GetNumberOfValues();
           if (m > 0)
           {
             vtkDICOMFilePath path(dirname);
-            for (unsigned int k = 0; k < m; k++)
+            for (size_t k = 0; k < m; k++)
             {
               path.PushBack(fileID.GetString(k));
             }

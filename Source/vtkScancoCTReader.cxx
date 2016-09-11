@@ -1142,7 +1142,7 @@ int vtkScancoCTReader::RequestData(
         inPtr += 2;
         if (l > outSize)
         {
-          l = outSize;
+          l = static_cast<unsigned char>(outSize);
         }
         outSize -= l;
         if (l > 0)

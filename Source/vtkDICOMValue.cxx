@@ -164,8 +164,8 @@ vtkDICOMValue::ValueT<T>::ValueT(vtkDICOMVR vr, size_t vn)
   this->CharacterSet = 0;
   this->Overflow = OVERFLOW_BYTE(vn);
   this->VR = vr;
-  this->VL = vn*sizeof(T);
-  this->NumberOfValues = vn;
+  this->VL = static_cast<unsigned int>(vn*sizeof(T));
+  this->NumberOfValues = static_cast<unsigned int>(vn);
 }
 
 // Construct a string value.

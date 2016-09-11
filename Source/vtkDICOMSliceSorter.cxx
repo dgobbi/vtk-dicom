@@ -721,8 +721,8 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
         vtkDICOMValue locationVector;
         vtkDICOMValue fip =
           meta->GetAttributeValue(i, DC::FrameIncrementPointer);
-        unsigned int n = fip.GetNumberOfValues();
-        for (unsigned int j = 0; j < n; j++)
+        size_t n = fip.GetNumberOfValues();
+        for (size_t j = 0; j < n; j++)
         {
           vtkDICOMTag tag = fip.GetTag(j);
           if (tag == DC::FrameTime)
