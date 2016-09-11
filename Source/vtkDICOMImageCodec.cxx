@@ -163,7 +163,7 @@ int vtkDICOMImageCodec::DecodeRLE(
         if (static_cast<size_t>(c) > remaining)
         {
           // safety check: limit to the size of the output dest
-          c = remaining;
+          c = static_cast<short>(remaining);
         }
         remaining -= c;
         do

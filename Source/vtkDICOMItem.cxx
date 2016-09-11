@@ -220,12 +220,12 @@ vtkDICOMItem *vtkDICOMItem::FindItemOrInsert(
         vr = vtkDICOMVR::SQ;
       }
     }
-    // add the item to the sequences, or create a sequence
+    // add the item to the sequence, or create a sequence
     if (vr == vtkDICOMVR::SQ)
     {
-      unsigned int i = tagpath.GetIndex();
-      unsigned int n = i+1;
-      unsigned int m = 0;
+      size_t i = tagpath.GetIndex();
+      size_t n = i+1;
+      size_t m = 0;
       const vtkDICOMItem *oldItems = tptr->Value.GetSequenceData();
       if (oldItems != 0)
       {
@@ -235,7 +235,7 @@ vtkDICOMItem *vtkDICOMItem::FindItemOrInsert(
       vtkDICOMValue seq;
       vtkDICOMItem *items = seq.AllocateSequenceData(vtkDICOMVR::SQ, n);
       // copy the old sequence into the new one (shallow copy)
-      for (unsigned int j = 0; j < m; j++)
+      for (size_t j = 0; j < m; j++)
       {
         items[j] = oldItems[j];
       }
@@ -258,7 +258,7 @@ vtkDICOMItem *vtkDICOMItem::FindItemOrInsert(
                      vtkDICOMVR::US : vtkDICOMVR::SS);
         }
       }
-      for (unsigned int j = m; j < n; j++)
+      for (size_t j = m; j < n; j++)
       {
         // Inherit properties that originally came from parent data set
         items[j] = vtkDICOMItem(cs, vrForXS);

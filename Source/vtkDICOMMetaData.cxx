@@ -249,8 +249,8 @@ const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
   const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tagpath.GetHead());
   if (vptr != 0 && tagpath.HasTail())
   {
-    unsigned int i = tagpath.GetIndex();
-    unsigned int n = vptr->GetNumberOfValues();
+    size_t i = tagpath.GetIndex();
+    size_t n = vptr->GetNumberOfValues();
     const vtkDICOMItem *items = vptr->GetSequenceData();
     vptr = 0;
     if (items != 0 && i < n)
@@ -577,11 +577,11 @@ int vtkDICOMMetaData::FindItemsOrInsert(
     sptr = vptr;
   }
 
-  unsigned int i = tagpath.GetIndex();
+  size_t i = tagpath.GetIndex();
   for (int k = 0; k < count; k++)
   {
-    unsigned int n = i+1;
-    unsigned int m = 0;
+    size_t n = i+1;
+    size_t m = 0;
     const vtkDICOMItem *oldItems = sptr[k].GetSequenceData();
     if (oldItems != 0)
     {
@@ -591,7 +591,7 @@ int vtkDICOMMetaData::FindItemsOrInsert(
     vtkDICOMValue seq;
     vtkDICOMItem *items = seq.AllocateSequenceData(vtkDICOMVR::SQ, n);
     // copy the old sequence into the new one (shallow copy)
-    for (unsigned int j = 0; j < m; j++)
+    for (size_t j = 0; j < m; j++)
     {
       items[j] = oldItems[j];
     }
@@ -614,7 +614,7 @@ int vtkDICOMMetaData::FindItemsOrInsert(
                    vtkDICOMVR::US : vtkDICOMVR::SS);
       }
     }
-    for (unsigned int j = m; j < n; j++)
+    for (size_t j = m; j < n; j++)
     {
       items[j] = vtkDICOMItem(cs, vrForXS);
     }

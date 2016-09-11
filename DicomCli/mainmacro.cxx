@@ -173,8 +173,8 @@ bool Arguments::MatchesSpec(
       spec_lower[i] = spec[i];
     }
 
-    if (CharLowerBuffW(val_lower, vl) == vl &&
-        CharLowerBuffW(spec_lower, sl) == sl) {
+    if (CharLowerBuffW(val_lower, static_cast<unsigned int>(vl)) == vl &&
+        CharLowerBuffW(spec_lower, static_cast<unsigned int>(sl)) == sl) {
       // if successful, use the lower-case strings
       spec = spec_lower;
       val = val_lower;

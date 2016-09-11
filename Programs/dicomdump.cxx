@@ -129,7 +129,7 @@ void printElement(
   }
   // allow multiple values (i.e. for each image in series)
   vtkDICOMValue v = iter->GetValue();
-  unsigned int vn = v.GetNumberOfValues();
+  size_t vn = v.GetNumberOfValues();
   const vtkDICOMValue *vp = v.GetMultiplexData();
   if (vp == 0)
   {
@@ -145,7 +145,7 @@ void printElement(
   static const char spaces[MAX_INDENT+1] = "                        ";
   const char *indent = spaces + (MAX_INDENT - INDENT_SIZE*depth);
 
-  for (unsigned int vi = 0; vi < vn; vi++)
+  for (size_t vi = 0; vi < vn; vi++)
   {
     v = vp[vi];
     unsigned int vl = v.GetVL();
@@ -211,9 +211,9 @@ void printElement(
     else
     {
       // print any other VR via conversion to string
-      unsigned int n = v.GetNumberOfValues();
+      size_t n = v.GetNumberOfValues();
       size_t pos = 0;
-      for (unsigned int i = 0; i < n; i++)
+      for (size_t i = 0; i < n; i++)
       {
         v.AppendValueToUTF8String(s, i);
         if (i < n - 1)
@@ -237,7 +237,8 @@ void printElement(
     if (meta && vn > 1)
     {
       printf("%s%s  %4.4u",
-        (vi == 0 ? " (multiple values)\n" : ""), indent, vi + 1);
+        (vi == 0 ? " (multiple values)\n" : ""), indent,
+        static_cast<unsigned int>(vi + 1));
     }
     if (vr == vtkDICOMVR::SQ)
     {

@@ -177,7 +177,7 @@ vtkDICOMValue::ValueT<char>::ValueT(vtkDICOMVR vr, size_t vn)
   this->CharacterSet = 0;
   this->Overflow = OVERFLOW_BYTE(vn);
   this->VR = vr;
-  this->VL = vn;
+  this->VL = static_cast<unsigned int>(vn);
   this->NumberOfValues = (vn > 0);
 }
 
@@ -189,8 +189,9 @@ vtkDICOMValue::ValueT<unsigned char>::ValueT(vtkDICOMVR vr, size_t vn)
   this->CharacterSet = 0;
   this->Overflow = OVERFLOW_BYTE(vn);
   this->VR = vr;
-  this->VL = vn + (vn & 1); // pad VL to make it even
-  this->NumberOfValues = vn;
+  // pad VL to make it even
+  this->VL = static_cast<unsigned int>(vn + (vn & 1));
+  this->NumberOfValues = static_cast<unsigned int>(vn);
 }
 
 // Construct a list of attribute tags.
@@ -201,8 +202,8 @@ vtkDICOMValue::ValueT<vtkDICOMTag>::ValueT(vtkDICOMVR vr, size_t vn)
   this->CharacterSet = 0;
   this->Overflow = OVERFLOW_BYTE(vn);
   this->VR = vr;
-  this->VL = 4*vn;
-  this->NumberOfValues = vn;
+  this->VL = static_cast<unsigned int>(4*vn);
+  this->NumberOfValues = static_cast<unsigned int>(vn);
   vtkDICOMTag *dp = this->Data;
   for (size_t i = 0; i < vn; i++)
   {
@@ -221,7 +222,7 @@ vtkDICOMValue::ValueT<vtkDICOMItem>::ValueT(vtkDICOMVR vr, size_t vn)
   this->Overflow = OVERFLOW_BYTE(vn);
   this->VR = vr; // better be SQ
   this->VL = 0;
-  this->NumberOfValues = vn;
+  this->NumberOfValues = static_cast<unsigned int>(vn);
   vtkDICOMItem *dp = this->Data;
   for (size_t i = 0; i < vn; i++)
   {
@@ -240,7 +241,7 @@ vtkDICOMValue::ValueT<vtkDICOMValue>::ValueT(vtkDICOMVR vr, size_t vn)
   this->Overflow = OVERFLOW_BYTE(vn);
   this->VR = vr;
   this->VL = 0;
-  this->NumberOfValues = vn;
+  this->NumberOfValues = static_cast<unsigned int>(vn);
   vtkDICOMValue *dp = this->Data;
   for (size_t i = 0; i < vn; i++)
   {

@@ -1336,7 +1336,7 @@ bool vtkDICOMReader::ReadFileNative(
       {
         // actual file size should have been at least this much larger
         readSize += length - bytesRemaining;
-        length = bytesRemaining;
+        length = static_cast<unsigned int>(bytesRemaining);
       }
       // first item is the offset table
       if (!isOffsetTable)

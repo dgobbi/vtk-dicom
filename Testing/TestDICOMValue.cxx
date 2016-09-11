@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
   TestAssert(v.GetVL() == 10);
   TestAssert(memcmp(v.GetShortData(), data, 10) == 0);
   TestAssert(memcmp(v.GetUnsignedShortData(), data, 10) == 0);
-  static const float fdata[5] = { 1.0, 3.5, -2.0, 6.0, 0.13 };
+  static const float fdata[5] = { 1.0f, 3.5f, -2.0f, 6.0f, 0.13f };
   v = vtkDICOMValue(vtkDICOMVR::OF, fdata, 5);
   TestAssert(v.GetNumberOfValues() == 5);
   TestAssert(v.GetVL() == 20);

@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
   }
 
   // do the tests
-  unsigned int n = seq.GetNumberOfItems();
+  size_t n = seq.GetNumberOfItems();
   TestAssert(n == 1);
 
   // use iterator to go through the elements in each item
@@ -120,11 +120,11 @@ int main(int argc, char *argv[])
 
       // get the nested sequence
       vtkDICOMSequence v2 = iter->GetValue();
-      unsigned int m = v2.GetNumberOfItems();
+      size_t m = v2.GetNumberOfItems();
       TestAssert(m == 10);
 
       // go through the 10 items in the sequence
-      for (unsigned int j = 0; j < m; j++)
+      for (size_t j = 0; j < m; j++)
       {
         // check the two elements in each item
         const vtkDICOMItem &item = v2.GetItem(j);
