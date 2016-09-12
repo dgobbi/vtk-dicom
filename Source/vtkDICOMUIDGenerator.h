@@ -108,6 +108,7 @@ private:
   void operator=(const vtkDICOMUIDGenerator&);  // Not implemented.
 };
 
+//! @cond
 //! Initializer (Schwarz counter).
 /*!
  *  This ensures that the vtkDICOMUIDGenerator module is initialized before
@@ -125,5 +126,6 @@ private:
 };
 
 static vtkDICOMUIDGeneratorInitializer vtkDICOMUIDGeneratorInitializerInstance;
+//! @endcond
 
 #endif // vtkDICOMUIDGenerator_h

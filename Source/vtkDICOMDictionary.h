@@ -109,6 +109,7 @@ private:
   static DictHashEntry *PrivateDictTable[DICT_PRIVATE_TABLE_SIZE];
 };
 
+//! @cond
 //! Initializer (Schwarz counter).
 /*!
  *  This ensures that the vtkDICOMDictionary module is initialized before
@@ -126,6 +127,7 @@ private:
 };
 
 static vtkDICOMDictionaryInitializer vtkDICOMDictionaryInitializerInstance;
+//! @endcond
 
 #endif /* vtkDICOMDictionary_h */
 // VTK-HeaderTest-Exclude: vtkDICOMDictionary.h
