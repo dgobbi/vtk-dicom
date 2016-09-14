@@ -244,8 +244,7 @@ if(NOT Module_vtkDICOM)
 
   # The library dependencies
   if("${VTK_MAJOR_VERSION}" GREATER 5)
-    set(VTK_LIBS vtkCommonCore vtkCommonDataModel vtkCommonSystem
-      vtkImagingCore vtkIOImage vtkIOSQL)
+    set(VTK_LIBS vtkCommonCore vtkCommonDataModel vtkImagingCore vtkIOImage vtkIOSQL)
     # If vtkIOMPIImage is present, it has factories for vtkIOImage
     list(FIND VTK_LIBRARIES vtkIOMPIImage TMP_INDEX)
     if(TMP_INDEX GREATER -1)
