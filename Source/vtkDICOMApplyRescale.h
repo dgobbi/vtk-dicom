@@ -75,8 +75,8 @@ protected:
   int OutputScalarType;
 
 private:
-  vtkDICOMApplyRescale(const vtkDICOMApplyRescale&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMApplyRescale&) VTK_DELETE_FUNCTION;
+  vtkDICOMApplyRescale(const vtkDICOMApplyRescale&);  // Not implemented.
+  void operator=(const vtkDICOMApplyRescale&);  // Not implemented.
 };
 
 #endif // vtkDICOMApplyRescale_h

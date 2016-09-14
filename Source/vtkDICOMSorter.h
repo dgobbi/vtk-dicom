@@ -39,8 +39,8 @@ protected:
   ~vtkDICOMSorter();
 
 private:
-  vtkDICOMSorter(const vtkDICOMSorter&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMSorter&) VTK_DELETE_FUNCTION;
+  vtkDICOMSorter(const vtkDICOMSorter&);  // Not implemented.
+  void operator=(const vtkDICOMSorter&);  // Not implemented.
 };
 
 #endif

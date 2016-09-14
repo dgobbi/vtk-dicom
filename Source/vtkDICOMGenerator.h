@@ -466,8 +466,8 @@ protected:
   vtkIntArray *RangeArray;
 
 private:
-  vtkDICOMGenerator(const vtkDICOMGenerator&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMGenerator&) VTK_DELETE_FUNCTION;
+  vtkDICOMGenerator(const vtkDICOMGenerator&);  // Not implemented.
+  void operator=(const vtkDICOMGenerator&);  // Not implemented.
 };
 
 #endif // vtkDICOMGenerator_h

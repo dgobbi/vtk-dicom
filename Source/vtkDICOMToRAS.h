@@ -167,8 +167,8 @@ protected:
   double Matrix[16];
 
 private:
-  vtkDICOMToRAS(const vtkDICOMToRAS&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMToRAS&) VTK_DELETE_FUNCTION;
+  vtkDICOMToRAS(const vtkDICOMToRAS&);  // Not implemented.
+  void operator=(const vtkDICOMToRAS&);  // Not implemented.
 };
 
 #endif // vtkDICOMToRAS_h

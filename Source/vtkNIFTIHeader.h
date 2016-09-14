@@ -402,8 +402,8 @@ protected:
   void SetStringValue(char *x, const char *y, size_t n);
 
 private:
-  vtkNIFTIHeader(const vtkNIFTIHeader&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkNIFTIHeader&) VTK_DELETE_FUNCTION;
+  vtkNIFTIHeader(const vtkNIFTIHeader&);  // Not implemented.
+  void operator=(const vtkNIFTIHeader&);  // Not implemented.
 };
 
 #endif // vtkNIFTIHeader_h

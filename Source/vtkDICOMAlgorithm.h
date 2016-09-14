@@ -94,8 +94,8 @@ protected:
     vtkImageData **outData, int ext[6], int id);
 
 private:
-  vtkDICOMAlgorithm(const vtkDICOMAlgorithm&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMAlgorithm&) VTK_DELETE_FUNCTION;
+  vtkDICOMAlgorithm(const vtkDICOMAlgorithm&);  // Not implemented.
+  void operator=(const vtkDICOMAlgorithm&);  // Not implemented.
 };
 
 #endif // vtkDICOMAlgorithm_h

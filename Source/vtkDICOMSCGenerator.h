@@ -67,8 +67,8 @@ protected:
   virtual bool GenerateSCMultiFrameInstance(vtkInformation *info);
 
 private:
-  vtkDICOMSCGenerator(const vtkDICOMSCGenerator&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMSCGenerator&) VTK_DELETE_FUNCTION;
+  vtkDICOMSCGenerator(const vtkDICOMSCGenerator&);  // Not implemented.
+  void operator=(const vtkDICOMSCGenerator&);  // Not implemented.
 };
 
 #endif // vtkDICOMSCGenerator_h

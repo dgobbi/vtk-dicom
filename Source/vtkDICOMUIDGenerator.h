@@ -104,8 +104,8 @@ protected:
 private:
   friend class vtkDICOMUIDGeneratorInitializer;
 
-  vtkDICOMUIDGenerator(const vtkDICOMUIDGenerator&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMUIDGenerator&) VTK_DELETE_FUNCTION;
+  vtkDICOMUIDGenerator(const vtkDICOMUIDGenerator&);  // Not implemented.
+  void operator=(const vtkDICOMUIDGenerator&);  // Not implemented.
 };
 
 //! @cond

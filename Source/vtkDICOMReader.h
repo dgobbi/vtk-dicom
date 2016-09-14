@@ -366,8 +366,8 @@ protected:
   char DesiredStackID[20];
 
 private:
-  vtkDICOMReader(const vtkDICOMReader&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMReader&) VTK_DELETE_FUNCTION;
+  vtkDICOMReader(const vtkDICOMReader&);  // Not implemented.
+  void operator=(const vtkDICOMReader&);  // Not implemented.
 };
 
 #endif // vtkDICOMReader_h

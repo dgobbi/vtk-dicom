@@ -200,8 +200,8 @@ protected:
   bool PlanarRGB;
 
 private:
-  vtkNIFTIWriter(const vtkNIFTIWriter&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkNIFTIWriter&) VTK_DELETE_FUNCTION;
+  vtkNIFTIWriter(const vtkNIFTIWriter&);  // Not implemented.
+  void operator=(const vtkNIFTIWriter&);  // Not implemented.
 };
 
 #endif // vtkNIFTIWriter_h

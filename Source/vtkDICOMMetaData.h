@@ -331,8 +331,8 @@ private:
   //! An array to map slices and components to frames.
   vtkIntArray *FrameIndexArray;
 
-  vtkDICOMMetaData(const vtkDICOMMetaData&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMMetaData&) VTK_DELETE_FUNCTION;
+  vtkDICOMMetaData(const vtkDICOMMetaData&);  // Not implemented.
+  void operator=(const vtkDICOMMetaData&);  // Not implemented.
 };
 
 #endif /* vtkDICOMMetaData_h */

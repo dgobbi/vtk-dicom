@@ -65,8 +65,8 @@ protected:
   bool IsSupplemental;
 
 private:
-  vtkDICOMApplyPalette(const vtkDICOMApplyPalette&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMApplyPalette&) VTK_DELETE_FUNCTION;
+  vtkDICOMApplyPalette(const vtkDICOMApplyPalette&);  // Not implemented.
+  void operator=(const vtkDICOMApplyPalette&);  // Not implemented.
 };
 
 #endif // vtkDICOMApplyPalette_h

@@ -202,8 +202,8 @@ protected:
   friend class vtkDICOMParserInternalFriendship;
 
 private:
-  vtkDICOMParser(const vtkDICOMParser&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMParser&) VTK_DELETE_FUNCTION;
+  vtkDICOMParser(const vtkDICOMParser&);  // Not implemented.
+  void operator=(const vtkDICOMParser&);  // Not implemented.
 };
 
 #endif /* vtkDICOMParser_h */
