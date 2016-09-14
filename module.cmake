@@ -15,6 +15,7 @@ vtk_module(vtkDICOM
     vtksys
     vtkzlib
   COMPILE_DEPENDS
+    vtkCommonSystem
     vtkImagingStatistics
     vtkInteractionStyle
     vtkRenderingImage
