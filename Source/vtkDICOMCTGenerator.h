@@ -57,8 +57,8 @@ protected:
   virtual bool GenerateCTInstance(vtkInformation *info);
 
 private:
-  vtkDICOMCTGenerator(const vtkDICOMCTGenerator&);  // Not implemented.
-  void operator=(const vtkDICOMCTGenerator&);  // Not implemented.
+  vtkDICOMCTGenerator(const vtkDICOMCTGenerator&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMCTGenerator&) VTK_DELETE_FUNCTION;
 };
 
 #endif // vtkDICOMCTGenerator_h

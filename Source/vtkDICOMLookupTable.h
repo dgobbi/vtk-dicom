@@ -58,8 +58,8 @@ protected:
   ~vtkDICOMLookupTable();
 
 private:
-  vtkDICOMLookupTable(const vtkDICOMLookupTable&);  // Not implemented.
-  void operator=(const vtkDICOMLookupTable&);  // Not implemented.
+  vtkDICOMLookupTable(const vtkDICOMLookupTable&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMLookupTable&) VTK_DELETE_FUNCTION;
 };
 
 #endif // vtkDICOMLookupTable_h

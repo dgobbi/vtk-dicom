@@ -174,8 +174,8 @@ protected:
   double SliceSpacing;
 
 private:
-  vtkDICOMSliceSorter(const vtkDICOMSliceSorter&);  // Not implemented.
-  void operator=(const vtkDICOMSliceSorter&);  // Not implemented.
+  vtkDICOMSliceSorter(const vtkDICOMSliceSorter&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMSliceSorter&) VTK_DELETE_FUNCTION;
 };
 
 #endif

@@ -147,8 +147,8 @@ protected:
   void SetErrorCode(unsigned long e) { this->ErrorCode = e; }
 
 private:
-  vtkDICOMFileSorter(const vtkDICOMFileSorter&);  // Not implemented.
-  void operator=(const vtkDICOMFileSorter&);  // Not implemented.
+  vtkDICOMFileSorter(const vtkDICOMFileSorter&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMFileSorter&) VTK_DELETE_FUNCTION;
 
   class StringArrayVector;
   struct FileInfo;

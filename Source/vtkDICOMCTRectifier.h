@@ -124,8 +124,8 @@ protected:
   int Reverse;
 
 private:
-  vtkDICOMCTRectifier(const vtkDICOMCTRectifier&);  // Not implemented.
-  void operator=(const vtkDICOMCTRectifier&);  // Not implemented.
+  vtkDICOMCTRectifier(const vtkDICOMCTRectifier&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMCTRectifier&) VTK_DELETE_FUNCTION;
 };
 
 #endif // vtkDICOMCTRectifier_h

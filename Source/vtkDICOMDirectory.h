@@ -321,8 +321,8 @@ protected:
     vtkDICOMMetaData *meta, const vtkDICOMItem *item, int instance);
 
 private:
-  vtkDICOMDirectory(const vtkDICOMDirectory&);  // Not implemented.
-  void operator=(const vtkDICOMDirectory&);  // Not implemented.
+  vtkDICOMDirectory(const vtkDICOMDirectory&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMDirectory&) VTK_DELETE_FUNCTION;
 
   struct SeriesItem;
   struct StudyItem;

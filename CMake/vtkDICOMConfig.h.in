@@ -32,4 +32,13 @@
 /* Legacy (for backwards compatibility) */
 #define DICOM_BUILD_VERSION DICOM_PATCH_VERSION
 
+/* For compatibility with VTK 7.1 */
+#ifndef VTK_DELETE_FUNCTION
+#if (__cplusplus >= 201103L) || (defined(_MSC_VER) && _MSC_VER >= 1800)
+#define VTK_DELETE_FUNCTION =delete
+#else
+#define VTK_DELETE_FUNCTION
+#endif
+#endif
+
 #endif

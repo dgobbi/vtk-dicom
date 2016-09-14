@@ -192,8 +192,8 @@ protected:
   static char ImplementationVersionName[17];
 
 private:
-  vtkDICOMUtilities(const vtkDICOMUtilities&);  // Not implemented.
-  void operator=(const vtkDICOMUtilities&);  // Not implemented.
+  vtkDICOMUtilities(const vtkDICOMUtilities&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMUtilities&) VTK_DELETE_FUNCTION;
 };
 
 #endif /* vtkDICOMUtilities_h */

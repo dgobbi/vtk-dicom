@@ -57,8 +57,8 @@ protected:
   virtual bool GenerateMRInstance(vtkInformation *info);
 
 private:
-  vtkDICOMMRGenerator(const vtkDICOMMRGenerator&);  // Not implemented.
-  void operator=(const vtkDICOMMRGenerator&);  // Not implemented.
+  vtkDICOMMRGenerator(const vtkDICOMMRGenerator&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMMRGenerator&) VTK_DELETE_FUNCTION;
 };
 
 #endif // vtkDICOMMRGenerator_h

@@ -254,8 +254,8 @@ protected:
   int Compression;
 
 private:
-  vtkScancoCTReader(const vtkScancoCTReader&);  // Not implemented.
-  void operator=(const vtkScancoCTReader&);  // Not implemented.
+  vtkScancoCTReader(const vtkScancoCTReader&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkScancoCTReader&) VTK_DELETE_FUNCTION;
 };
 
 #endif // vtkScancoCTReader_h

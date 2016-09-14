@@ -271,8 +271,8 @@ protected:
   int Streaming;
 
 private:
-  vtkDICOMWriter(const vtkDICOMWriter&);  // Not implemented.
-  void operator=(const vtkDICOMWriter&);  // Not implemented.
+  vtkDICOMWriter(const vtkDICOMWriter&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMWriter&) VTK_DELETE_FUNCTION;
 };
 
 #endif // vtkDICOMWriter_h
