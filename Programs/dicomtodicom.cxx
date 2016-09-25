@@ -35,7 +35,14 @@
 #include <vtkErrorCode.h>
 #include <vtkSortFileNames.h>
 #include <vtkSmartPointer.h>
+#include <vtkVersion.h>
 
+#if VTK_MAJOR_VERSION >= 6 || VTK_MINOR_VERSION >= 10
+#include <vtkImageResize.h>
+#include <vtkImageSincInterpolator.h>
+#endif
+
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <set>
@@ -69,6 +76,7 @@ struct dicomtodicom_options
   const char *series_number;
   const char *uid_prefix;
   int mpr;
+  bool resample;
   bool silent;
   bool verbose;
   const char *output;
@@ -112,6 +120,7 @@ void dicomtodicom_usage(FILE *file, const char *command_name)
     "  -o directory            The output directory.\n"
     "  -s --silent             Do not print anything while executing.\n"
     "  -v --verbose            Verbose error reporting.\n"
+    "  --resample              Resample to produce square pixels.\n"
     "  --axial                 Produce axial slices.\n"
     "  --coronal               Produce coronal slices.\n"
     "  --sagittal              Produce sagittal slices.\n"
@@ -158,7 +167,8 @@ void dicomtodicom_help(FILE *file, const char *command_name)
   fprintf(file,
     "Reformatting of the data (MPR) is permitted during the conversion.\n"
     "This is an experimental feature and causes much of the per-instance\n"
-    "meta data to be discarded.\n"
+    "meta data to be discarded.  Reformatting be combined with resampling\n"
+    "to produce an output with square pixels via Lanczos interpolation.\n"
     "\n");
 }
 
@@ -239,6 +249,7 @@ void dicomtodicom_read_options(
   options->series_description = 0;
   options->series_number = 0;
   options->uid_prefix = "2.25";
+  options->resample = false;
   options->silent = false;
   options->verbose = false;
   options->output = 0;
@@ -295,6 +306,10 @@ void dicomtodicom_read_options(
       else if (strcmp(arg, "--sagittal") == 0)
       {
         options->mpr = MPRSagittal;
+      }
+      else if (strcmp(arg, "--resample") == 0)
+      {
+        options->resample = true;
       }
       else if (strcmp(arg, "--silent") == 0)
       {
@@ -434,6 +449,10 @@ void dicomtodicom_convert_one(
     vtkSmartPointer<vtkImageReslice>::New();
   vtkSmartPointer<vtkDICOMCTRectifier> rectify =
     vtkSmartPointer<vtkDICOMCTRectifier>::New();
+#if VTK_MAJOR_VERSION >= 6 || VTK_MINOR_VERSION >= 10
+  vtkSmartPointer<vtkImageResize> resample =
+    vtkSmartPointer<vtkImageResize>::New();
+#endif
   vtkSmartPointer<vtkMatrix4x4> axes =
     vtkSmartPointer<vtkMatrix4x4>::New();
   int permutation[3] = { 0, 1, 2 };
@@ -449,6 +468,38 @@ void dicomtodicom_convert_one(
       rectify->Update();
       lastOutput = rectify->GetOutputPort();
       matrix = rectify->GetRectifiedMatrix();
+    }
+
+    // check if resampling was requested
+    if (options->resample)
+    {
+#if VTK_MAJOR_VERSION >= 6 || VTK_MINOR_VERSION >= 10
+      // generate cube voxels
+      double spacing[3] = { 1.0, 1.0, 1.0 };
+      const vtkDICOMValue& v = meta->GetAttributeValue(DC::PixelSpacing);
+      if (v.GetNumberOfValues() == 2)
+      {
+        v.GetValues(spacing, 2);
+        double s = std::min(spacing[0], spacing[1]);
+        spacing[0] = s;
+        spacing[1] = s;
+        spacing[2] = s;
+      }
+      resample->SetInputConnection(lastOutput);
+      vtkSmartPointer<vtkImageSincInterpolator> interpolator =
+        vtkSmartPointer<vtkImageSincInterpolator>::New();
+      interpolator->SetWindowFunctionToLanczos();
+      resample->SetInterpolator(interpolator);
+      resample->SetResizeMethodToOutputSpacing();
+      resample->SetOutputSpacing(spacing);
+      resample->InterpolateOn();
+      resample->BorderOn();
+      resample->Update();
+      lastOutput = resample->GetOutputPort();
+#else
+      fprintf(stderr,
+              "\nTo use --resample, recompile with VTK 5.10 or later.\n\n");
+#endif
     }
 
     // create a permutation matrix to make the slices axial
