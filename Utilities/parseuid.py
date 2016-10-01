@@ -134,62 +134,62 @@ getterfunc = \
 const UIDTableEntry *GetUIDTableEntry(const char *uid)
 {
   if (uid == 0)
-    {
+  {
     return 0;
-    }
+  }
 
   const char *prefix = "1.2.840.10008.";
   while (*prefix != '\\0' && *uid != '\\0' && *prefix == *uid)
-    {
+  {
     prefix++;
     uid++;
-    }
+  }
 
   if (*prefix != '\\0')
-    {
+  {
     return 0;
-    }
+  }
 
   const UIDTableEntry *table = UIDTable;
   while (*uid != '\\0')
-    {
+  {
     int i = -1;
     if (*uid >= '0' && *uid <= '9')
-      {
+    {
       if (uid[0] != '0' || uid[1] != '0')
-        {
+      {
         i = 0;
         do
-          {
+        {
           i *= 10;
           i += (*uid - '0');
           uid++;
-          }
-        while (*uid >= '0' && *uid <= '9' && i < 214748364);
         }
+        while (*uid >= '0' && *uid <= '9' && i < 214748364);
       }
+    }
     if (*uid == '.')
-      {
+    {
       uid++;
       if (*uid == '\\0')
-        {
+      {
         table = 0;
         break;
-        }
       }
+    }
     else if (*uid != '\\0')
-      {
+    {
       table = 0;
       break;
-      }
+    }
     i -= table->First;
     if (i < 0 || i >= static_cast<int>(table->Size))
-      {
+    {
       table = 0;
       break;
-      }
-    table = &UIDTable[table->Next + i];
     }
+    table = &UIDTable[table->Next + i];
+  }
 
   return table;
 }
@@ -204,12 +204,12 @@ const char *vtkDICOMUtilities::GetUIDName(const char *uid)
   const char *result = "";
   const UIDTableEntry *table = GetUIDTableEntry(uid);
   if (table)
-    {
+  {
     if (table->Name)
-      {
+    {
       result = table->Name;
-      }
     }
+  }
   return result;
 }
 
@@ -218,9 +218,9 @@ unsigned short vtkDICOMUtilities::GetCIDFromUID(const char *uid)
   unsigned short result = 0;
   const UIDTableEntry *table = GetUIDTableEntry(uid);
   if (table)
-    {
+  {
     result = table->CID;
-    }
+  }
   return result;
 }"""
 

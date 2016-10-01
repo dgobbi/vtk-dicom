@@ -1010,6 +1010,14 @@ PS3.4
 Basic Structured Display Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.200.1
+CT Defined Procedure Protocol Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.200.2
+CT Performed Procedure Protocol Storage
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.481.1
 RT Image Storage
 SOP Class
@@ -1128,6 +1136,18 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.2.5.3
 Composite Instance Retrieve Without Bulk Data - GET
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.20.1
+Defined Procedure Protocol Information Model - FIND
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.20.2
+Defined Procedure Protocol Information Model - MOVE
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.20.3
+Defined Procedure Protocol Information Model - GET
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.31
@@ -1260,26 +1280,26 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.39.1
 Color Palette Storage
-Transfer
+SOP Class
 PS3.4
 1.2.840.10008.5.1.4.39.2
-Color Palette Information Model - FIND
-Query/Retrieve
+Color Palette Query/Retrieve Information Model - FIND
+SOP Class
 PS3.4
 1.2.840.10008.5.1.4.39.3
-Color Palette Information Model - MOVE
-Query/Retrieve
+Color Palette Query/Retrieve Information Model - MOVE
+SOP Class
 PS3.4
 1.2.840.10008.5.1.4.39.4
-Color Palette Information Model - GET
-Query/Retrieve
+Color Palette Query/Retrieve Information Model - GET
+SOP Class
 PS3.4
 1.2.840.10008.5.1.4.41
-Product Characteristics Query SOP Class
+Product Characteristics Query
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.42
-Substance Approval Query SOP Class
+Substance Approval Query
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.43.1
@@ -4712,3 +4732,54 @@ Reader Specialty
 1.2.840.10008.6.1.1120
 CID 9233
 Requested Report Types
+1.2.840.10008.6.1.1121
+CID 1000
+CT Transverse Plane Reference Basis
+1.2.840.10008.6.1.1122
+CID 1001
+Anatomical Reference Basis
+1.2.840.10008.6.1.1123
+CID 1002
+Anatomical Reference Basis - Head
+1.2.840.10008.6.1.1124
+CID 1003
+Anatomical Reference Basis - Spine
+1.2.840.10008.6.1.1125
+CID 1004
+Anatomical Reference Basis - Chest
+1.2.840.10008.6.1.1126
+CID 1005
+Anatomical Reference Basis - Abdomen/Pelvis
+1.2.840.10008.6.1.1127
+CID 1006
+Anatomical Reference Basis - Extremities
+1.2.840.10008.6.1.1128
+CID 1010
+Reference Geometry - Planes
+1.2.840.10008.6.1.1129
+CID 1011
+Reference Geometry - Points
+1.2.840.10008.6.1.1130
+CID 1015
+Patient Alignment Methods
+1.2.840.10008.6.1.1131
+CID 1200
+Contraindications For CT Imaging
+1.2.840.10008.6.1.1132
+CID 7110
+Fiducials Categories
+1.2.840.10008.6.1.1133
+CID 7111
+Fiducials
+1.2.840.10008.6.1.1134
+CID 7013
+Source Instance Purposes of Reference
+1.2.840.10008.6.1.1135
+CID 7023
+RT Process Output
+1.2.840.10008.6.1.1136
+CID 7024
+RT Process Input
+1.2.840.10008.6.1.1137
+CID 7025
+RT Process Input Used

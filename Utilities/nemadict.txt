@@ -658,6 +658,24 @@ TimezoneOffsetFromUTC
 SH
 1
 
+(0008,0220)
+Responsible Group Code Sequence
+ResponsibleGroupCodeSequence
+SQ
+1
+
+(0008,0221)
+Equipment Modality
+EquipmentModality
+CS
+1
+
+(0008,0222)
+Manufacturer's Related Model Group
+ManufacturerRelatedModelGroup
+LO
+1
+
 (0008,0300)
 Private Data Element Characteristics Sequence
 PrivateDataElementCharacteristicsSequence
@@ -704,6 +722,60 @@ US
 Deidentification Action
 DeidentificationAction
 CS
+1
+
+(0008,0308)
+Private Data Element
+PrivateDataElement
+US
+1
+
+(0008,0309)
+Private Data Element Value Multiplicity
+PrivateDataElementValueMultiplicity
+UL
+1-3
+
+(0008,030A)
+Private Data Element Value Representation
+PrivateDataElementValueRepresentation
+CS
+1
+
+(0008,030B)
+Private Data Element Number of Items
+PrivateDataElementNumberOfItems
+UL
+1-2
+
+(0008,030C)
+Private Data Element Name
+PrivateDataElementName
+UC
+1
+
+(0008,030D)
+Private Data Element Keyword
+PrivateDataElementKeyword
+UC
+1
+
+(0008,030E)
+Private Data Element Description
+PrivateDataElementDescription
+UT
+1
+
+(0008,030F)
+Private Data Element Encoding
+PrivateDataElementEncoding
+UT
+1
+
+(0008,0310)
+Private Data Element Definition Sequence
+PrivateDataElementDefinitionSequence
+SQ
 1
 
 (0008,1000)
@@ -1570,6 +1642,24 @@ PatientSizeCodeSequence
 SQ
 1
 
+(0010,1022)
+Patient's Body Mass Index
+PatientBodyMassIndex
+DS
+1
+
+(0010,1023)
+Measured AP Dimension
+MeasuredAPDimension
+DS
+1
+
+(0010,1024)
+Measured Lateral Dimension
+MeasuredLateralDimension
+DS
+1
+
 (0010,1030)
 Patient's Weight
 PatientWeight
@@ -1898,6 +1988,18 @@ CS
 Consent for Distribution Flag
 ConsentForDistributionFlag
 CS
+1
+
+(0012,0086)
+Ethics Committee Approval Effectiveness Start Date
+EthicsCommitteeApprovalEffectivenessStartDate
+DA
+1
+
+(0012,0087)
+Ethics Committee Approval Effectiveness End Date
+EthicsCommitteeApprovalEffectivenessEndDate
+DA
 1
 
 (0014,0023)
@@ -3416,6 +3518,18 @@ LO
 Gantry ID
 GantryID
 LO
+1
+
+(0018,1009)
+Unique Device Identifier
+UniqueDeviceIdentifier
+UT
+1
+
+(0018,100A)
+UDI Sequence
+UDISequence
+SQ
 1
 
 (0018,1010)
@@ -6380,7 +6494,7 @@ FD
 Exposure Modulation Type
 ExposureModulationType
 CS
-1
+1-n
 
 (0018,9324)
 Estimated Dose Saving
@@ -7498,6 +7612,360 @@ ZeroVelocityPixelValue
 US or SS
 1
 
+(0018,9900)
+Reference Location Label
+ReferenceLocationLabel
+LO
+1
+
+(0018,9901)
+Reference Location Description
+ReferenceLocationDescription
+UT
+1
+
+(0018,9902)
+Reference Basis Code Sequence
+ReferenceBasisCodeSequence
+SQ
+1
+
+(0018,9903)
+Reference Geometry Code Sequence
+ReferenceGeometryCodeSequence
+SQ
+1
+
+(0018,9904)
+Offset Distance
+OffsetDistance
+DS
+1
+
+(0018,9905)
+Offset Direction
+OffsetDirection
+CS
+1
+
+(0018,9906)
+Potential Scheduled Protocol Code Sequence
+PotentialScheduledProtocolCodeSequence
+SQ
+1
+
+(0018,9907)
+Potential Requested Procedure Code Sequence
+PotentialRequestedProcedureCodeSequence
+SQ
+1
+
+(0018,9908)
+Potential Reasons for Procedure
+PotentialReasonsForProcedure
+UC
+1-n
+
+(0018,9909)
+Potential Reasons for Procedure Code Sequence
+PotentialReasonsForProcedureCodeSequence
+SQ
+1
+
+(0018,990A)
+Potential Diagnostic Tasks
+PotentialDiagnosticTasks
+UC
+1-n
+
+(0018,990B)
+Contraindications Code Sequence
+ContraindicationsCodeSequence
+SQ
+1
+
+(0018,990C)
+Referenced Defined Protocol Sequence
+ReferencedDefinedProtocolSequence
+SQ
+1
+
+(0018,990D)
+Referenced Performed Protocol Sequence
+ReferencedPerformedProtocolSequence
+SQ
+1
+
+(0018,990E)
+Predecessor Protocol Sequence
+PredecessorProtocolSequence
+SQ
+1
+
+(0018,990F)
+Protocol Planning Information
+ProtocolPlanningInformation
+UT
+1
+
+(0018,9910)
+Protocol Design Rationale
+ProtocolDesignRationale
+UT
+1
+
+(0018,9911)
+Patient Specification Sequence
+PatientSpecificationSequence
+SQ
+1
+
+(0018,9912)
+Model Specification Sequence
+ModelSpecificationSequence
+SQ
+1
+
+(0018,9913)
+Parameters Specification Sequence
+ParametersSpecificationSequence
+SQ
+1
+
+(0018,9914)
+Instruction Sequence
+InstructionSequence
+SQ
+1
+
+(0018,9915)
+Instruction Index
+InstructionIndex
+US
+1
+
+(0018,9916)
+Instruction Text
+InstructionText
+LO
+1
+
+(0018,9917)
+Instruction Description
+InstructionDescription
+UT
+1
+
+(0018,9918)
+Instruction Performed Flag
+InstructionPerformedFlag
+CS
+1
+
+(0018,9919)
+Instruction Performed DateTime
+InstructionPerformedDateTime
+DT
+1
+
+(0018,991A)
+Instruction Performance Comment
+InstructionPerformanceComment
+UT
+1
+
+(0018,991B)
+Patient Positioning Instruction Sequence
+PatientPositioningInstructionSequence
+SQ
+1
+
+(0018,991C)
+Positioning Method Code Sequence
+PositioningMethodCodeSequence
+SQ
+1
+
+(0018,991D)
+Positioning Landmark Sequence
+PositioningLandmarkSequence
+SQ
+1
+
+(0018,991E)
+Target Frame of Reference UID
+TargetFrameOfReferenceUID
+UI
+1
+
+(0018,991F)
+Acquisition Protocol Element Specification Sequence
+AcquisitionProtocolElementSpecificationSequence
+SQ
+1
+
+(0018,9920)
+Acquisition Protocol Element Sequence
+AcquisitionProtocolElementSequence
+SQ
+1
+
+(0018,9921)
+Protocol Element Number
+ProtocolElementNumber
+US
+1
+
+(0018,9922)
+Protocol Element Name
+ProtocolElementName
+LO
+1
+
+(0018,9923)
+Protocol Element Characteristics Summary
+ProtocolElementCharacteristicsSummary
+UT
+1
+
+(0018,9924)
+Protocol Element Purpose
+ProtocolElementPurpose
+UT
+1
+
+(0018,9930)
+Acquisition Motion
+AcquisitionMotion
+CS
+1
+
+(0018,9931)
+Acquisition Start Location Sequence
+AcquisitionStartLocationSequence
+SQ
+1
+
+(0018,9932)
+Acquisition End Location Sequence
+AcquisitionEndLocationSequence
+SQ
+1
+
+(0018,9933)
+Reconstruction Protocol Element Specification Sequence
+ReconstructionProtocolElementSpecificationSequence
+SQ
+1
+
+(0018,9934)
+Reconstruction Protocol Element Sequence
+ReconstructionProtocolElementSequence
+SQ
+1
+
+(0018,9935)
+Storage Protocol Element Specification Sequence
+StorageProtocolElementSpecificationSequence
+SQ
+1
+
+(0018,9936)
+Storage Protocol Element Sequence
+StorageProtocolElementSequence
+SQ
+1
+
+(0018,9937)
+Requested Series Description
+RequestedSeriesDescription
+LO
+1
+
+(0018,9938)
+Source Acquisition Protocol Element Number
+SourceAcquisitionProtocolElementNumber
+US
+1-n
+
+(0018,9939)
+Source Acquisition Beam Number
+SourceAcquisitionBeamNumber
+US
+1-n
+
+(0018,993A)
+Source Reconstruction Protocol Element Number
+SourceReconstructionProtocolElementNumber
+US
+1-n
+
+(0018,993B)
+Reconstruction Start Location Sequence
+ReconstructionStartLocationSequence
+SQ
+1
+
+(0018,993C)
+Reconstruction End Location Sequence
+ReconstructionEndLocationSequence
+SQ
+1
+
+(0018,993D)
+Reconstruction Algorithm Sequence
+ReconstructionAlgorithmSequence
+SQ
+1
+
+(0018,993E)
+Reconstruction Target Center Location Sequence
+ReconstructionTargetCenterLocationSequence
+SQ
+1
+
+(0018,9941)
+Image Filter Description
+ImageFilterDescription
+UT
+1
+
+(0018,9942)
+CTDIvol Notification Trigger
+CTDIvolNotificationTrigger
+FD
+1
+
+(0018,9943)
+DLP Notification Trigger
+DLPNotificationTrigger
+FD
+1
+
+(0018,9944)
+Auto KVP Selection Type
+AutoKVPSelectionType
+CS
+1
+
+(0018,9945)
+Auto KVP Upper Bound
+AutoKVPUpperBound
+FD
+1
+
+(0018,9946)
+Auto KVP Lower Bound
+AutoKVPLowerBound
+FD
+1
+
+(0018,9947)
+Protocol Defined Patient Position
+ProtocolDefinedPatientPosition
+CS
+1
+
 (0018,A001)
 Contributing Equipment Sequence
 ContributingEquipmentSequence
@@ -7750,6 +8218,12 @@ Reference
 LO
 1-n
 RET
+(0020,103F)
+Target Position Reference Indicator
+TargetPositionReferenceIndicator
+LO
+1
+
 (0020,1040)
 Position Reference Indicator
 PositionReferenceIndicator
@@ -16792,6 +17266,12 @@ FiducialSequence
 SQ
 1
 
+(0070,031F)
+Fiducials Property Category Code Sequence
+FiducialsPropertyCategoryCodeSequence
+SQ
+1
+
 (0070,0401)
 Graphic Layer Recommended Display CIELab Value
 GraphicLayerRecommendedDisplayCIELabValue
@@ -18724,6 +19204,12 @@ ConstraintViolationCondition
 UT
 1
 
+(0082,0038)
+Modifiable Constraint Flag
+ModifiableConstraintFlag
+CS
+1
+
 (0088,0130)
 Storage Media File-set ID
 StorageMediaFileSetID
@@ -20253,7 +20739,7 @@ Additional RT ROI Identification Code Sequence
 AdditionalRTROIIdentificationCodeSequence
 SQ
 1
-
+RET
 (3006,00C0)
 Frame of Reference Relationship Sequence
 FrameOfReferenceRelationshipSequence
