@@ -84,11 +84,13 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
         WideCharToMultiByte(
           CP_UTF8, 0, fileData.cFileName, -1, name, n, 0, 0);
         unsigned int flags = 0;
+#if (_MSC_VER >= 1400)
         if ((fileData.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0 &&
             fileData.dwReserved0 == IO_REPARSE_TAG_SYMLINK)
         {
           flags |= TypeSymlink;
         }
+#endif
         if ((fileData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) != 0)
         {
           flags |= TypeHidden;

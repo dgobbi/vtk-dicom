@@ -860,7 +860,7 @@ int vtkScancoCTReader::RequestInformation(
 
   vtkDebugMacro("Opening ISQ/AIM file " << filename);
 
-#ifdef _WIN32
+#if defined(_WIN32) && (_MSC_VER >= 1400)
   vtkDICOMFilePath fp(filename);
   const wchar_t *ufilename = fp.Wide();
 #else

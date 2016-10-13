@@ -360,8 +360,8 @@ void vtkDICOMLookupTable::BuildImagePalette(
       for (int j = 0; j < 4; j++)
       {
         int k = i - firstValue[j];
-        k = (i >= firstValue[j] ? k : 0);
-        k = (i <= lastValue[j] ? k : lastValue[j] - firstValue[j]);
+        if (i < firstValue[j]) { k = 0; }
+        if (i > lastValue[j]) { k = lastValue[j] - firstValue[j]; }
         if (spp[j])
         {
           rgba[j] = spp[j][k] / divisor[j];

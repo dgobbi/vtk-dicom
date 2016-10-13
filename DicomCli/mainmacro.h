@@ -34,6 +34,10 @@
 #ifndef mainmacro_h
 #define mainmacro_h
 
+#ifdef _WIN32
+#include <stddef.h>
+#endif
+
 //! Expand command line arguments for Windows command line.
 /*!
  *  This will expand any wildcards in the arguments, and is only applied

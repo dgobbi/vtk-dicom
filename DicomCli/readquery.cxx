@@ -61,7 +61,7 @@ vtkDICOMTagPath path_append(const vtkDICOMTagPath& tpath, vtkDICOMTag tag)
 bool dicomcli_readquery(
   const char *fname, vtkDICOMItem *query, QueryTagList *ql)
 {
-#ifdef _WIN32
+#if defined(_WIN32) && (_MSC_VER >= 1400)
   int cn = MultiByteToWideChar(CP_UTF8, 0, fname, -1, NULL, 0);
   wchar_t *wfname = new wchar_t[cn];
   MultiByteToWideChar(CP_UTF8, 0, fname, -1, wfname, cn);
@@ -504,7 +504,7 @@ bool dicomcli_looks_like_key(const char *cp)
 bool dicomcli_readuids(
   const char *fname, vtkDICOMItem *query, QueryTagList *ql)
 {
-#ifdef _WIN32
+#if defined(_WIN32) && (_MSC_VER >= 1400)
   int cn = MultiByteToWideChar(CP_UTF8, 0, fname, -1, NULL, 0);
   wchar_t *wfname = new wchar_t[cn];
   MultiByteToWideChar(CP_UTF8, 0, fname, -1, wfname, cn);
