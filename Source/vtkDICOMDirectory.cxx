@@ -2070,7 +2070,7 @@ void vtkDICOMDirectory::ProcessDirectory(
       path.PushBack(fname);
       std::string fileString = path.AsString();
       path.PopBack();
-      if (!this->FollowSymlinks && d.IsSymlink(i))
+      if (d.IsSymlink(i) && !this->FollowSymlinks)
       {
         // Do nothing unless FollowSymlinks is On
       }
@@ -2094,7 +2094,10 @@ void vtkDICOMDirectory::ProcessDirectory(
                vtkDICOMUtilities::PatternMatches(
                  this->FilePattern, fileString.c_str()))
       {
-        files->InsertNextValue(fileString);
+        if (!d.IsSpecial(i) && !d.IsBroken(i))
+        {
+          files->InsertNextValue(fileString);
+        }
       }
     }
   }

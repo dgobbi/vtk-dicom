@@ -71,6 +71,14 @@ public:
   //! Check if the list entry is a symbolic link.
   bool IsSymlink(int i);
 
+  //! Check if the list entry is a symbolic link that is broken.
+  /*!
+   *  A link is broken if it points to a location that does not exist,
+   *  or to a location that is in a directory that cannot be accessed.
+   *  IsSymlink() will always be true if IsBroken() is true.
+   */
+  bool IsBroken(int i);
+
   //! Check if the list entry has an attribute that marks it as hidden.
   bool IsHidden(int i);
   //@}
@@ -104,7 +112,8 @@ private:
   static const unsigned int TypeDirectory = 1;
   static const unsigned int TypeSpecial = 2;
   static const unsigned int TypeSymlink = 4;
-  static const unsigned int TypeHidden = 8;
+  static const unsigned int TypeBroken = 8;
+  static const unsigned int TypeHidden = 16;
 
   std::string Name;
   int Error;

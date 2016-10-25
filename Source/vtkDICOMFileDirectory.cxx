@@ -103,7 +103,9 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
         {
           flags |= TypeSpecial;
         }
-        this->AddEntry(name, flags, (TypeSymlink|TypeDirectory|TypeSpecial));
+        this->AddEntry(name, flags, (TypeSymlink | TypeBroken |
+                                     TypeDirectory | TypeSpecial |
+                                     TypeHidden ));
       }
       while (FindNextFileW(h, &fileData));
       code = GetLastError();
@@ -262,6 +264,27 @@ bool vtkDICOMFileDirectory::IsSymlink(int i)
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMFileDirectory::IsBroken(int i)
+{
+  if (i < 0 || i >= this->NumberOfFiles)
+  {
+    return false;
+  }
+  if ((this->Entries[i].Mask & TypeBroken) == 0)
+  {
+    if ((this->Entries[i].Mask & TypeSymlink) == 0)
+    {
+      // first use lstat() to find out if it is a link
+      this->LinkStatEntry(i);
+    }
+    // then use stat() to find out if link is broken
+    this->StatEntry(i);
+  }
+
+  return ((this->Entries[i].Flags & TypeBroken) != 0);
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMFileDirectory::IsHidden(int i)
 {
   if (i < 0 || i >= this->NumberOfFiles)
@@ -322,6 +345,7 @@ void vtkDICOMFileDirectory::StatEntry(int i)
     {
       this->Entries[i].Mask |= TypeDirectory;
       this->Entries[i].Mask |= TypeSpecial;
+      this->Entries[i].Mask |= TypeBroken;
       if (S_ISDIR(fs.st_mode))
       {
         this->Entries[i].Flags |= TypeDirectory;
@@ -330,6 +354,12 @@ void vtkDICOMFileDirectory::StatEntry(int i)
       {
         this->Entries[i].Flags |= TypeSpecial;
       }
+    }
+    else if ((this->Entries[i].Mask & TypeSymlink) != 0 &&
+             (this->Entries[i].Flags & TypeSymlink) != 0)
+    {
+      this->Entries[i].Mask |= TypeBroken;
+      this->Entries[i].Flags |= TypeBroken;
     }
   }
 }
