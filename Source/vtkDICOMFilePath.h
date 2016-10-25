@@ -61,6 +61,9 @@ public:
   //! Check whether the path is an existing directory.
   bool IsDirectory() const;
 
+  //! Check whether the path goes to a device, socket, or pipe.
+  bool IsSpecial() const;
+
   //! Check whether the path is a symbolic link.
   bool IsSymlink() const;
   //@}

@@ -99,7 +99,11 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
         {
           flags |= TypeDirectory;
         }
-        this->AddEntry(name, flags, (TypeSymlink | TypeDirectory));
+        if ((fileData.dwFileAttributes & FILE_ATTRIBUTE_DEVICE) != 0)
+        {
+          flags |= TypeSpecial;
+        }
+        this->AddEntry(name, flags, (TypeSymlink|TypeDirectory|TypeSpecial));
       }
       while (FindNextFileW(h, &fileData));
       code = GetLastError();
@@ -219,23 +223,27 @@ bool vtkDICOMFileDirectory::IsDirectory(int i)
   {
     return false;
   }
-#ifndef _WIN32
   if ((this->Entries[i].Mask & TypeDirectory) == 0)
   {
-    struct stat fs;
-    vtkDICOMFilePath path(this->Name);
-    path.PushBack(this->Entries[i].Name);
-    if (stat(path.AsString().c_str(), &fs) == 0)
-    {
-      if (S_ISDIR(fs.st_mode))
-      {
-        this->Entries[i].Flags |= TypeDirectory;
-      }
-      this->Entries[i].Mask |= TypeDirectory;
-    }
+    this->StatEntry(i);
   }
-#endif
+
   return ((this->Entries[i].Flags & TypeDirectory) != 0);
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMFileDirectory::IsSpecial(int i)
+{
+  if (i < 0 || i >= this->NumberOfFiles)
+  {
+    return false;
+  }
+  if ((this->Entries[i].Mask & TypeSpecial) == 0)
+  {
+    this->StatEntry(i);
+  }
+
+  return ((this->Entries[i].Flags & TypeSpecial) != 0);
 }
 
 //----------------------------------------------------------------------------
@@ -247,7 +255,7 @@ bool vtkDICOMFileDirectory::IsSymlink(int i)
   }
   if ((this->Entries[i].Mask & TypeSymlink) == 0)
   {
-    this->StatEntry(i);
+    this->LinkStatEntry(i);
   }
 
   return ((this->Entries[i].Flags & TypeSymlink) != 0);
@@ -262,7 +270,13 @@ bool vtkDICOMFileDirectory::IsHidden(int i)
   }
   if ((this->Entries[i].Mask & TypeHidden) == 0)
   {
-    this->StatEntry(i);
+#ifdef __APPLE__
+    // use lstat to check for hidden flag
+    this->LinkStatEntry(i);
+#else
+    // set the mask bit, but not the flag bit
+    this->Entries[i].Mask |= TypeHidden;
+#endif
   }
 
   return ((this->Entries[i].Flags & TypeHidden) != 0);
@@ -304,25 +318,73 @@ void vtkDICOMFileDirectory::StatEntry(int i)
     struct stat fs;
     vtkDICOMFilePath path(this->Name);
     path.PushBack(this->Entries[i].Name);
-    if (lstat(path.AsString().c_str(), &fs) == 0)
+    if (stat(path.AsString().c_str(), &fs) == 0)
     {
-      if (S_ISLNK(fs.st_mode))
+      this->Entries[i].Mask |= TypeDirectory;
+      this->Entries[i].Mask |= TypeSpecial;
+      if (S_ISDIR(fs.st_mode))
       {
-        this->Entries[i].Flags |= TypeSymlink;
+        this->Entries[i].Flags |= TypeDirectory;
       }
-      this->Entries[i].Mask |= TypeSymlink;
-#ifdef __APPLE__
-      if ((fs.st_flags & UF_HIDDEN) != 0)
+      else if (!S_ISREG(fs.st_mode))
       {
-        this->Entries[i].Flags |= TypeHidden;
+        this->Entries[i].Flags |= TypeSpecial;
       }
-      this->Entries[i].Mask |= TypeHidden;
-#endif
     }
   }
 }
 #else /* _WIN32 */
 void vtkDICOMFileDirectory::StatEntry(int)
+{
+  // on Windows, the attributes were collected when the
+  // directory listing was done in the constructor, so
+  // there is no need to run stat on the files
+}
+#endif
+
+//----------------------------------------------------------------------------
+#ifndef _WIN32
+void vtkDICOMFileDirectory::LinkStatEntry(int i)
+{
+  if (i >= 0 && i < this->NumberOfFiles)
+  {
+    struct stat fs;
+    vtkDICOMFilePath path(this->Name);
+    path.PushBack(this->Entries[i].Name);
+    if (lstat(path.AsString().c_str(), &fs) == 0)
+    {
+      this->Entries[i].Mask |= TypeSymlink;
+      if (S_ISLNK(fs.st_mode))
+      {
+        this->Entries[i].Flags |= TypeSymlink;
+      }
+      else
+      {
+        // if not a link, check if directory or regular file
+        this->Entries[i].Mask |= TypeDirectory;
+        this->Entries[i].Mask |= TypeSpecial;
+        if (S_ISDIR(fs.st_mode))
+        {
+          this->Entries[i].Flags |= TypeDirectory;
+        }
+        else if (!S_ISREG(fs.st_mode))
+        {
+          this->Entries[i].Flags |= TypeSpecial;
+        }
+      }
+
+      this->Entries[i].Mask |= TypeHidden;
+#ifdef __APPLE__
+      if ((fs.st_flags & UF_HIDDEN) != 0)
+      {
+        this->Entries[i].Flags |= TypeHidden;
+      }
+#endif
+    }
+  }
+}
+#else /* _WIN32 */
+void vtkDICOMFileDirectory::LinkStatEntry(int)
 {
   // on Windows, the attributes were collected when the
   // directory listing was done in the constructor, so

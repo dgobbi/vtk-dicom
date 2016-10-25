@@ -384,6 +384,29 @@ bool vtkDICOMFilePath::IsDirectory() const
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMFilePath::IsSpecial() const
+{
+  bool result = false;
+#ifdef _WIN32
+  wchar_t *widepath = ConvertToWideChar(this->Path.c_str());
+  if (widepath)
+  {
+    DWORD a = GetFileAttributesW(widepath);
+    delete [] widepath;
+    result = ((a & FILE_ATTRIBUTE_DEVICE) != 0);
+  }
+#else
+  struct stat fs;
+  if (stat(this->Path.c_str(), &fs) == 0 &&
+      !S_ISDIR(fs.st_mode) && !S_ISREG(fs.st_mode))
+  {
+    result = true;
+  }
+#endif
+  return result;
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMFilePath::IsSymlink() const
 {
   bool result = false;

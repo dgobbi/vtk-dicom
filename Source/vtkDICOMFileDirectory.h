@@ -65,6 +65,9 @@ public:
   //! Check if the list entry is a directory.
   bool IsDirectory(int i);
 
+  //! Check if the list entry is special (a device, socket, or pipe).
+  bool IsSpecial(int i);
+
   //! Check if the list entry is a symbolic link.
   bool IsSymlink(int i);
 
@@ -91,13 +94,17 @@ private:
   //! Add a directory entry.
   void AddEntry(const char *name, unsigned short flags, unsigned short mask);
 
-  //! Stat a file to set flags
+  //! Call stat() on a file to set flags
   void StatEntry(int i);
+
+  //! Call lstat() on a file to set flags
+  void LinkStatEntry(int i);
 
   struct Entry;
   static const unsigned int TypeDirectory = 1;
-  static const unsigned int TypeSymlink = 2;
-  static const unsigned int TypeHidden = 4;
+  static const unsigned int TypeSpecial = 2;
+  static const unsigned int TypeSymlink = 4;
+  static const unsigned int TypeHidden = 8;
 
   std::string Name;
   int Error;
