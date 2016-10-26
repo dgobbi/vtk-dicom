@@ -277,8 +277,11 @@ bool vtkDICOMFileDirectory::IsBroken(int i)
       // first use lstat() to find out if it is a link
       this->LinkStatEntry(i);
     }
-    // then use stat() to find out if link is broken
-    this->StatEntry(i);
+    if ((this->Entries[i].Flags & TypeSymlink) != 0)
+    {
+      // then use stat() to find out if link is broken
+      this->StatEntry(i);
+    }
   }
 
   return ((this->Entries[i].Flags & TypeBroken) != 0);
