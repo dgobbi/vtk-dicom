@@ -6879,6 +6879,14 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
     // the string, remove all the bits in the ISO_2022 bitfield.
     unsigned char charset = this->Key ^ (this->Key & ISO_2022);
 
+    // For CN and KR the high bit is set for multi-byte chars, allowing
+    // them to be distinguished from ASCII, so activate the charset
+    // immediately even in the absence of the ISO 2022 escape code.
+    if (this->Key == ISO_2022_IR_58 || this->Key == ISO_2022_IR_149)
+    {
+      charset = this->Key;
+    }
+
     // loop through the string, looking for iso-2022 escape codes,
     // and when an escape code is found, change the charset
     size_t i = 0;
