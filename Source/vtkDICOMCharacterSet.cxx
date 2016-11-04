@@ -7971,21 +7971,21 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
               break;
             }
             // convert two bytes into unicode
-            unsigned short code1 = code;
-            code = static_cast<unsigned char>(text[i++]);
-            if (code1 >= 0xA1 && code >= 0xA1 && code < 0xFF)
+            unsigned short x = code;
+            unsigned short y = static_cast<unsigned char>(text[i++]);
+            if (x >= 0xA1 && y >= 0xA1 && y < 0xFF)
             {
-              unsigned short a = code1 - 0xA1;
-              unsigned short b = code - 0xA1;
+              unsigned short a = x - 0xA1;
+              unsigned short b = y - 0xA1;
               code = CodePageKSX1001[a*94+b];
             }
-            else if ((code >= 0x41 && code <= 0x5A) ||
-                     (code >= 0x61 && code <= 0x7A) ||
-                     (code >= 0x81 && code < 0xFF))
+            else if ((y >= 0x41 && y <= 0x5A) ||
+                     (y >= 0x61 && y <= 0x7A) ||
+                     (y >= 0x81 && y < 0xFF))
             {
               // possibly CP949 hangul extensions
-              unsigned short a = code1 - 0x81;
-              unsigned short b = code - 0x41;
+              unsigned short a = x - 0x81;
+              unsigned short b = y - 0x41;
               if (b >= 26)
               {
                 b -= 6;
