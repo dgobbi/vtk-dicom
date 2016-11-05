@@ -7629,7 +7629,16 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
 
   if (this->Key == ISO_IR_192) // UTF-8
   {
-    s.assign(text, l);
+    // convert to unicode and back, this will insert U+FFFD
+    // wherever a bad utf-8 sequence occurs
+    const char *cp = text;
+    const char *ep = text + l;
+
+    while (cp != ep)
+    {
+      unsigned int code = UTF8ToUnicode(&cp, ep);
+      UnicodeToUTF8(code, &s);
+    }
   }
   else if (this->Key == ISO_IR_6) // US-ASCII
   {
