@@ -2473,23 +2473,15 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
       }
       else if (vr.HasSpecificCharacterSet())
       {
-        if (this->V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_6 &&
-            this->V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_192)
-        {
-          // Convert value to UTF8 before matching
-          str = this->AsUTF8String();
-          cp = str.c_str();
-          l = str.length();
-        }
-        if (value.V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_6 &&
-            value.V->CharacterSet != vtkDICOMCharacterSet::ISO_IR_192)
-        {
-          // Convert pattern to UTF8 before matching
-          pstr = value.AsUTF8String();
-          pattern = pstr.c_str();
-          pl = pstr.length();
-        }
+        // Convert value and pattern to UTF8 before matching
+        str = this->AsUTF8String();
+        cp = str.c_str();
+        l = str.length();
+        pstr = value.AsUTF8String();
+        pattern = pstr.c_str();
+        pl = pstr.length();
       }
+
       if (vr == vtkDICOMVR::PN)
       {
         match = vtkDICOMValue::PatternMatchesPersonName(pattern, cp);
