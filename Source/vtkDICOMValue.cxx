@@ -1605,7 +1605,7 @@ std::string vtkDICOMValue::AsUTF8String() const
     }
   }
 
-  return vtkDICOMValue::AsString();
+  return this->AsString();
 }
 
 std::string vtkDICOMValue::AsString() const
