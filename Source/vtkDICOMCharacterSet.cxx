@@ -7627,10 +7627,44 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
 {
   std::string s;
 
-  if (this->Key == ISO_IR_6 || // US-ASCII
-      this->Key == ISO_IR_192) // UTF-8
+  if (this->Key == ISO_IR_192) // UTF-8
   {
     s.assign(text, l);
+  }
+  else if (this->Key == ISO_IR_6) // US-ASCII
+  {
+    // count the number of bad characters
+    size_t m = 0;
+    for (size_t i = 0; i < l; i++)
+    {
+      m += static_cast<unsigned char>(text[i]) >> 7;
+    }
+    if (m == 0)
+    {
+      // pure ASCII is valid utf-8
+      s.assign(text, l);
+    }
+    else
+    {
+      // codes > 0x7f become U+FFFD
+      s.resize(l + 2*m);
+      size_t j = 0;
+      for (size_t i = 0; i < l; i++)
+      {
+        char c = text[i];
+        if (static_cast<unsigned char>(c) <= 0x7f)
+        {
+          s[j++] = c;
+        }
+        else
+        {
+          // insert U+FFFD as utf-8
+          s[j++] = '\xef';
+          s[j++] = '\xbf';
+          s[j++] = '\xbd';
+        }
+      }
+    }
   }
   else if (this->Key == ISO_IR_100) // ISO-8895-1
   {
@@ -8183,8 +8217,7 @@ std::string vtkDICOMCharacterSet::CaseFoldedUTF8(
   const char *cp = text;
   const char *ep = text + l;
 
-  if (this->Key != ISO_IR_6 && // US-ASCII
-      this->Key != ISO_IR_192) // UTF-8
+  if (this->Key != ISO_IR_192) // UTF-8
   {
     t = this->ConvertToUTF8(text, l);
     cp = t.data();
