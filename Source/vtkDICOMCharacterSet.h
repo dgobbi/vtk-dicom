@@ -51,12 +51,13 @@ public:
     ISO_IR_14  = 12, // JIS X 0201,  romaji, japanese
     ISO_IR_192 = 13, // UTF-8,       unicode
     GB18030    = 14, // gb18030,     chinese with full unicode mapping
-    GBK        = 15, // gbk,         chinese without full unicode mapping
-    ISO_2022_IR_58  = 16, // the GB2312 subset of ISO-2022-CN
-    ISO_2022_IR_87  = 32, // the JIS X 0208 subset of ISO-2022-JP
-    ISO_2022_IR_159 = 64, // the JIS X 0212 subset of ISO-2022-JP-2
-    ISO_2022_IR_149 = 128, // the KS X 1001 subset of ISO-2022-KR
-    ISO_2022   = 240, // mask for the bitfield that indicates ISO-2022
+    GBK        = 15, // gbk,         chinese
+    ISO_2022_BASE = 31,  // mask to get the initial charset
+    ISO_2022      = 128, // bit that indicates use of ISO-2022 extensions
+    ISO_2022_IR_58  = 148, // GB2312
+    ISO_2022_IR_149 = 149, // KS X 1001
+    ISO_2022_IR_87  = 160, // the JIS X 0208 part of ISO-2022-JP
+    ISO_2022_IR_159 = 192, // the JIS X 0212 part of ISO-2022-JP2
     Unknown    = 255  // signifies unknown character set
   };
 
@@ -90,11 +91,9 @@ public:
    *  encoding is not used, then a single code value is returned.  If
    *  ISO 2022 encoding is used with the single-byte character sets, then
    *  only the code value for first character set will be returned (due to
-   *  limitations in the way this class stores the information).  A simple
-   *  way to check whether such incomplete information will be returned is
-   *  to check if "((GetKey() & ISO_2022) == ISO_2022)" is true.  However,
-   *  if ISO 2022 encoding is used with one or more multi-byte character
-   *  sets, the result is a set of backslash-separated code values, where
+   *  limitations in the way this class stores the information).  However,
+   *  if ISO 2022 encoding is used with the multi-byte character sets,
+   *  the result is a set of backslash-separated code values, where
    *  the first value will be empty if the initial coding is ASCII.
    */
   std::string GetCharacterSetString() const;
