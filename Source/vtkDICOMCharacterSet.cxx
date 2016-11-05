@@ -13,6 +13,8 @@
 =========================================================================*/
 #include "vtkDICOMCharacterSet.h"
 
+#include <algorithm>
+
 //----------------------------------------------------------------------------
 namespace {
 
@@ -7960,7 +7962,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
       }
       else if (charset == ISO_2022_IR_149)
       {
-        // iso-2022-kr
+        // EUC-KR encoding of KS X 1001 (and CP949 for compatibility)
         while (i < j)
         {
           unsigned short code = static_cast<unsigned char>(text[i++]);
@@ -7978,6 +7980,82 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
               unsigned short a = x - 0xA1;
               unsigned short b = y - 0xA1;
               code = CodePageKSX1001[a*94+b];
+
+              // check for hangul encoded as 8-byte jamo sequence
+              if (x == 0xA4 && y == 0xD4 && j - i >= 6 &&
+                  static_cast<unsigned char>(text[i]) == 0xA4 &&
+                  static_cast<unsigned char>(text[i+2]) == 0xA4 &&
+                  static_cast<unsigned char>(text[i+4]) == 0xA4)
+              {
+                // table to convert leading consonant to an index
+                static const unsigned char tableL[52] = {
+                     1, 2, 0, 3, 0, 0, 4, 5, 6, 0, 0, 0, 0, 0, 0,
+                  0, 7, 8, 9, 0,10,11,12,13,14,15,16,17,18,19, 0,
+                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                  0, 0, 0, 0, 20
+                };
+                // table to convert trailing consonant to an index
+                static const unsigned char tableT[52] = {
+                     2, 3, 4, 5, 6, 7, 8, 0, 9,10,11,12,13,14,15,
+                 16,17,18, 0,19,20,21,22,23, 0,24,25,26,27,28, 0,
+                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                  0, 0, 0, 0, 1
+                };
+                // get the leading consonant, vowel, and trailing consonant
+                unsigned short y1 = static_cast<unsigned char>(text[i+1]);
+                unsigned short y2 = static_cast<unsigned char>(text[i+3]);
+                unsigned short y3 = static_cast<unsigned char>(text[i+5]);
+                // check whether the sequence is valid
+                if (y1 >= 0xA1 && y1 <= 0xD4 && tableL[y1-0xA1] != 0 &&
+                    y2 >= 0xBF && y2 <= 0xD4 &&
+                    y3 >= 0xA1 && y3 <= 0xD4 && tableT[y3-0xA1] != 0)
+                {
+                  i += 6;
+                  unsigned short L = tableL[y1-0xA1]-1;
+                  unsigned short V = y2 - 0xBF;
+                  unsigned short T = tableT[y3-0xA1]-1;
+                  if (L < 19 && V < 21)
+                  {
+                    // compute the composed unicode hangul
+                    code = 0xAC00 + (L*21 + V)*28 + T;
+                    // ensure this hangul is absent from KS X 1001
+                    if (std::binary_search(&CodePageKSX1001[1410],
+                                           &CodePageKSX1001[3760],
+                                           code))
+                    {
+                      // if hangul has a precomposed form in KS X 1001,
+                      // ignore the composition and write out the sequence
+                      // using the Hangul Jamo Compatibility Block so
+                      // that it will round-trip back to KS X 1001
+                      UnicodeToUTF8(0x3164, &s);
+                      UnicodeToUTF8(0x3090 + y1, &s);
+                      UnicodeToUTF8(0x3090 + y2, &s);
+                      code = 0x3090 + y3;
+                    }
+                  }
+                  else if (L < 19 || V < 21 || T > 0)
+                  {
+                    // produce decomposed hangul with filler
+                    code = (L < 19 ? 0x1100 + L : 0x115F);
+                    UnicodeToUTF8(code, &s);
+                    code = (V < 21 ? 0x1161 + V : 0x1160);
+                    if (T > 0)
+                    {
+                      UnicodeToUTF8(code, &s);
+                      code = 0x11A7 + T;
+                    }
+                  }
+                  else
+                  {
+                    // all components are filler, so a syllable cannot be
+                    // created: write the sequence as compatibility codes
+                    UnicodeToUTF8(0x3164, &s);
+                    UnicodeToUTF8(0x3164, &s);
+                    UnicodeToUTF8(0x3164, &s);
+                    code = 0x3164;
+                  }
+                }
+              }
             }
             else if ((y >= 0x41 && y <= 0x5A) ||
                      (y >= 0x61 && y <= 0x7A) ||
