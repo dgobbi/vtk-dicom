@@ -7677,29 +7677,50 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   }
   else if (this->Key == ISO_IR_100) // ISO-8895-1
   {
-    // latin1, codepage is identity
-    const char *cp = text;
-    size_t m = l;
     // compute the size of the UTF-8 string
-    for (size_t n = 0; n < l; n++)
+    size_t m = 0;
+    for (size_t i = 0; i < l; i++)
     {
-      m += static_cast<unsigned char>(*cp++) >> 7;
-    }
-    cp = text;
-    s.resize(m);
-    // encode as UTF-8
-    size_t i = 0;
-    while (i < m)
-    {
-      while (i < m && (*cp & 0x80) == 0)
+      unsigned char c = static_cast<unsigned char>(text[i]);
+      if (c > 0x7f)
       {
-        s[i++] = *cp++;
+        m++; // will need at least 2 bytes to encode
+        if (c < 0xA0)
+        {
+          m++; // will need 3 bytes to encode
+        }
       }
-      if (i < m)
+    }
+    if (m == 0)
+    {
+      // pure ASCII
+      s.assign(text, l);
+    }
+    else
+    {
+      // algorithmically convert to utf-8
+      s.resize(l + m);
+      size_t j = 0;
+      for (size_t i = 0; i < l; i++)
       {
-        int code = static_cast<unsigned char>(*cp++);
-        s[i++] = (0xC0 | (code >> 6));
-        s[i++] = (0x80 | (code & 0x3F));
+        unsigned char code = static_cast<unsigned char>(text[i]);
+        if (code <= 0x7F)
+        {
+          s[j++] = code;
+        }
+        else if (code >= 0xA0)
+        {
+          // write latin1 code as utf-8
+          s[j++] = (0xC0 | (code >> 6));
+          s[j++] = (0x80 | (code & 0x3F));
+        }
+        else
+        {
+          // ISO_IR_100 doesn't define C1 controls, insert U+FFFD (as utf-8)
+          s[j++] = '\xef';
+          s[j++] = '\xbf';
+          s[j++] = '\xbd';
+        }
       }
     }
   }
@@ -7716,6 +7737,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
       if (code >= 0xA0)
       {
         code = CodePagesISO8859[code - 0xA0][page];
+      }
+      else if (code > 0x7F)
+      {
+        code = 0xFFFD;
       }
       UnicodeToUTF8(code, &s);
     }
