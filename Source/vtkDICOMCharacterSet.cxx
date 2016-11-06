@@ -7670,8 +7670,18 @@ void Latin1ToUTF8(const char *text, size_t l, std::string *s)
       }
       else
       {
-        // ISO_IR_100 doesn't define C1 controls, insert U+FFFD (as utf-8)
-        UnicodeToUTF8(0xFFFD, s);
+        // The range 0x80-0x9F is not designated by ISO IR 100.
+        // In a DICOM file, it is very unlikely to contain C1 control codes,
+        // but much more likely to contain special characters from CP1252
+        // AKA Windows-1252, which is the most common variant of latin1.
+        static const unsigned short cp1252[32] = {
+          0x20AC, 0xFFFD, 0x201A, 0x0192, 0x201E, 0x2026, 0x2020, 0x2021,
+          0x02C6, 0x2030, 0x0160, 0x2039, 0x0152, 0xFFFD, 0x017D, 0xFFFD,
+          0xFFFD, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014,
+          0x02DC, 0x2122, 0x0161, 0x203A, 0x0153, 0xFFFD, 0x017E, 0x0178
+        };
+
+        UnicodeToUTF8(cp1252[code - 0x80], s);
       }
     }
   }
