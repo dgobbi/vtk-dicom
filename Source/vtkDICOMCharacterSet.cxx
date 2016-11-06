@@ -7547,6 +7547,41 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
 }
 
 //----------------------------------------------------------------------------
+// Check an ISO-2022 escape code (without the leading escape) to see if it
+// designates G0 (the character range usually used for ASCII) to either a
+// single-byte code or a multi-byte code.  If it does neither, then the
+// value of the "multibyte" parameter is left unchanged.  The return value
+// is the number of octets consumed while reading the escape code.
+size_t CheckForMultiByteG0(const char *cp, size_t n, bool *multibyte)
+{
+  size_t l = 0;
+  while (l < n &&
+         static_cast<unsigned char>(cp[l]) >= 0x20 &&
+         static_cast<unsigned char>(cp[l]) <= 0x2f)
+  {
+    l++;
+  }
+  if (l < n &&
+      static_cast<unsigned char>(cp[l]) >= 0x40 &&
+      static_cast<unsigned char>(cp[l]) <= 0x7f)
+  {
+    l++;
+    if ((l == 2 && cp[0] == '$') ||
+        (l == 3 && cp[0] == '$' && cp[1] == '('))
+    {
+      // G0 is designated to multibyte
+      *multibyte = true;
+    }
+    else if (l == 2 && cp[0] == '(')
+    {
+      // G0 is designated to single byte
+      *multibyte = false;
+    }
+  }
+  return l;
+}
+
+//----------------------------------------------------------------------------
 void UTF8ToUTF8(const char *text, size_t l, std::string *s)
 {
   // convert to unicode and back, this will insert U+FFFD
@@ -8110,25 +8145,28 @@ void EUCKRToUTF8(const char *text, size_t l, std::string *s)
 //----------------------------------------------------------------------------
 void UnknownToUTF8(const char *text, size_t l, std::string *s)
 {
-  // convert unrecognized (and assumed to be multi-byte) data, we just
-  // want to generate a bunch of "unrecognized character" codes because
-  // that's more informative to the user than generating nothing at all
+  // assume an iso2022 multi-byte 94x94 encoding
   size_t i = 0;
   while (i < l)
   {
-    unsigned short code = 0xFFFD;
-    if (text[i++] == '\0')
+    unsigned short code = static_cast<unsigned char>(text[i++]);
+    if (code >= 0x21 && code < 0x7F)
     {
-      code = 0;
-    }
-    else if (i < l)
-    {
-      if (text[i++] == '\0')
+      if (i == l)
       {
-        code = 0;
+        break;
       }
+      code = static_cast<unsigned char>(text[i]);
+      if (code >= 0x21 && code < 0x7F)
+      {
+        i++;
+      }
+      code = 0xFFFD;
     }
-    // unrecognized multi-byte character
+    else if (code > 0x7F)
+    {
+      code = 0xFFFD;
+    }
     UnicodeToUTF8(code, s);
   }
 }
@@ -8289,6 +8327,12 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   {
     this->ISO2022ToUTF8(text, l, &s);
   }
+  else
+  {
+    // any octets in [0x00,0x7F] will be assumed to be ASCII,
+    // while all other octets will be treated as invalid
+    ASCIIToUTF8(text, l, &s);
+  }
 
   return s;
 }
@@ -8308,6 +8352,9 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
   {
     charset = this->Key;
   }
+
+  // this will be set when decoding a multibyte charset in G0
+  bool multibyteG0 = false;
 
   // loop through the string, looking for iso-2022 escape codes,
   // and when an escape code is found, change the charset
@@ -8339,9 +8386,17 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
     {
       EUCKRToUTF8(&text[i], j-i, s);
     }
+    else if (multibyteG0)
+    {
+      // any control codes such as carriage return, newline, and space
+      // will be emitted while everything else is treated as invalid
+      UnknownToUTF8(&text[i], j-i, s);
+    }
     else
     {
-      UnknownToUTF8(&text[i], j-i, s);
+      // any octets in [0x00,0x7F] will be assumed to be ASCII,
+      // while all other octets will be treated as invalid
+      ASCIIToUTF8(&text[i], j-i, s);
     }
 
     // Make sure we are at the escape code (or the end of string)
@@ -8351,15 +8406,18 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
     if (text[i] == '\033')
     {
       i++;
-      if (i + 2 > l) { break; }
+      const char *escapeCode = &text[i];
+      size_t escapeLen = CheckForMultiByteG0(&text[i], l-i, &multibyteG0);
+      i += escapeLen;
+
       unsigned char oldcharset = charset;
       charset = 0xFF; // indicate none found yet
       // look through single-byte charset escape codes
       for (unsigned char k = 0; k < CHARSET_TABLE_SIZE; k++)
       {
-        const char *escape = Charsets[k].EscapeCode;
-        size_t le = strlen(escape);
-        if (le > 0 && strncmp(&text[i], escape, le) == 0)
+        const char *escapeTry = Charsets[k].EscapeCode;
+        size_t le = strlen(escapeTry);
+        if (le == escapeLen && strncmp(escapeCode, escapeTry, le) == 0)
         {
           if (Charsets[k].Key == ISO_IR_13 &&
               (oldcharset == ISO_2022_IR_87 ||
@@ -8379,7 +8437,6 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
           {
             charset = Charsets[k].Key;
           }
-          i += le;
           break;
         }
       }
@@ -8479,31 +8536,7 @@ size_t vtkDICOMCharacterSet::NextBackslash(
       if (*cp == '\033')
       {
         cp++;
-        size_t l = 0;
-        while (cp + l != ep &&
-               static_cast<unsigned char>(cp[l]) >= 0x20 &&
-               static_cast<unsigned char>(cp[l]) <= 0x2f)
-        {
-          l++;
-        }
-        if (cp + l != ep &&
-            static_cast<unsigned char>(cp[l]) >= 0x40 &&
-            static_cast<unsigned char>(cp[l]) <= 0x7f)
-        {
-          l++;
-          if ((l == 2 && cp[0] == '$') ||
-              (l == 3 && cp[0] == '$' && cp[1] == '('))
-          {
-            // G0 is designated to multibyte
-            multibyte = true;
-          }
-          else if (l == 2 && cp[0] == '(')
-          {
-            // G0 is designated to single byte
-            multibyte = false;
-          }
-        }
-        cp += l;
+        cp += CheckForMultiByteG0(cp, ep-cp, &multibyte);
       }
       else if (multibyte || *cp != '\\')
       {
