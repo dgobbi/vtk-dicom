@@ -7646,13 +7646,13 @@ void Latin1ToUTF8(const char *text, size_t l, std::string *s)
 void ISO8859ToUTF8(int key, const char *text, size_t l, std::string *s)
 {
   // Use the ISO-8859 codepages
-  int page = key - vtkDICOMCharacterSet::ISO_IR_101;
+  unsigned int page = key - vtkDICOMCharacterSet::ISO_IR_101;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
   {
     int code = static_cast<unsigned char>(*cp++);
-    if (code >= 0xA0)
+    if (code >= 0xA0 && page < 9)
     {
       code = CodePagesISO8859[code - 0xA0][page];
     }
@@ -7698,8 +7698,8 @@ void ShiftJISToUTF8(const char *text, size_t l, std::string *s)
         // required to convert Shift-JIS to ISO 2022 for use in DICOM,
         // so this code is for compatibility with non-conformant files).
         int x = code;
-        int y = static_cast<unsigned char>(*cp++);
-        code = (y == 0 ? 0 : 0xFFFD); // illegal character or null
+        int y = static_cast<unsigned char>(*cp);
+        code = 0xFFFD;
 
         if (y >= 0x40 && y <= 0xFC && y != 0x7F)
         {
@@ -7719,11 +7719,13 @@ void ShiftJISToUTF8(const char *text, size_t l, std::string *s)
           {
             a += (x - 0x81)*2;
             code = CodePageJISX0208[a*94+b];
+            cp++;
           }
           else if (x >= 0xE0 && x <= 0xEF)
           {
             a += (x - 0xC1)*2;
             code = CodePageJISX0208[a*94+b];
+            cp++;
           }
         }
       }
@@ -7753,8 +7755,9 @@ void GBKToUTF8(const char *text, size_t l, std::string *s)
         break;
       }
       unsigned short a = static_cast<unsigned char>(code);
-      unsigned short b = static_cast<unsigned char>(*cp++);
-      code = 0xFFFD; // untranslated multi-byte character
+      unsigned short b = static_cast<unsigned char>(*cp);
+      code = 0xFFFD;
+
       if (a > 0x80 && a < 0xFF &&
           b >= 0x40 && b < 0xFF && b != 0x7F)
       {
@@ -7762,6 +7765,7 @@ void GBKToUTF8(const char *text, size_t l, std::string *s)
         if (b > 0x7F) { b--; }
         a = (a - 0x81)*190 + (b - 0x40);
         code = CodePageGB18030[a];
+        cp++;
       }
     }
     UnicodeToUTF8(code, s);
@@ -7785,8 +7789,8 @@ void GB18030ToUTF8(const char *text, size_t l, std::string *s)
         break;
       }
       unsigned short a = static_cast<unsigned char>(code);
-      unsigned short b = static_cast<unsigned char>(*cp++);
-      code = 0xFFFD; // untranslated multi-byte character
+      unsigned short b = static_cast<unsigned char>(*cp);
+      code = 0xFFFD;
 
       if (a > 0x80 && a < 0xFF &&
           b >= 0x40 && b < 0xFF && b != 0x7F)
@@ -7795,6 +7799,7 @@ void GB18030ToUTF8(const char *text, size_t l, std::string *s)
         if (b > 0x7F) { b--; }
         a = (a - 0x81)*190 + (b - 0x40);
         code = CodePageGB18030[a];
+        cp++;
       }
 
       if (a > 0x80 && a < 0x90 && b >= '0' && b <= '9')
@@ -7894,13 +7899,22 @@ void GB2312ToUTF8(const char *text, size_t l, std::string *s)
       {
         break;
       }
-      unsigned short a = code - 0x81;
-      code = static_cast<unsigned char>(text[i++]);
-      if (code >= 0xA1 && code < 0xFF)
+      unsigned short a = code;
+      unsigned short b = static_cast<unsigned char>(text[i]);
+
+      // default to replacement character
+      code = 0xFFFD;
+
+      if (b >= 0xA1 && b < 0xFF)
       {
-        unsigned short b = code - 0x41;
-        code = CodePageGB18030[a*190 + b];
+        code = CodePageGB18030[(a - 0x81)*190 + (b - 0x41)];
+        i++;
       }
+    }
+    else if (code > 0x7F)
+    {
+      // probably a GBK code
+      code = 0xFFFD;
     }
     UnicodeToUTF8(code, s);
   }
@@ -7921,19 +7935,24 @@ void JISXToUTF8(int charset, const char *text, size_t l, std::string *s)
       {
         break;
       }
-      unsigned short a = code - 0x21;
-      code = static_cast<unsigned char>(text[i++]);
-      if (code >= 0x21 && code < 0x7F)
+      unsigned short a = code;
+      unsigned short b = static_cast<unsigned char>(text[i]);
+
+      // default to replacement character
+      code = 0xFFFD;
+
+      if (b >= 0x21 && b < 0x7F)
       {
-        unsigned short b = code - 0x21;
+        a = (a - 0x21)*94 + (b - 0x21);
         if (charset == vtkDICOMCharacterSet::ISO_2022_IR_159)
         {
-          code = CodePageJISX0212[a*94+b];
+          code = CodePageJISX0212[a];
         }
         else
         {
-          code = CodePageJISX0208[a*94+b];
+          code = CodePageJISX0208[a];
         }
+        i++;
       }
     }
     else if (code >= 0xA1 && code <= 0xDF)
@@ -7968,18 +7987,24 @@ void EUCKRToUTF8(const char *text, size_t l, std::string *s)
       }
       // convert two bytes into unicode
       unsigned short x = code;
-      unsigned short y = static_cast<unsigned char>(text[i++]);
+      unsigned short y = static_cast<unsigned char>(text[i]);
+      // default to replacement character
+      code = 0xFFFD;
       if (x >= 0xA1 && y >= 0xA1 && y < 0xFF)
       {
         unsigned short a = x - 0xA1;
         unsigned short b = y - 0xA1;
         code = CodePageKSX1001[a*94+b];
+        i++;
 
         // check for hangul encoded as 8-byte jamo sequence
         if (x == 0xA4 && y == 0xD4 && l - i >= 6 &&
             static_cast<unsigned char>(text[i]) == 0xA4 &&
+            static_cast<unsigned char>(text[i+1]) >= 0xA1 &&
             static_cast<unsigned char>(text[i+2]) == 0xA4 &&
-            static_cast<unsigned char>(text[i+4]) == 0xA4)
+            static_cast<unsigned char>(text[i+3]) >= 0xA1 &&
+            static_cast<unsigned char>(text[i+4]) == 0xA4 &&
+            static_cast<unsigned char>(text[i+5]) >= 0xA1)
         {
           // table to convert leading consonant to an index
           static const unsigned char tableL[52] = {
@@ -8069,18 +8094,15 @@ void EUCKRToUTF8(const char *text, size_t l, std::string *s)
         if (a < 32)
         {
           code = CodePage949Ext[a*178 + b];
+          i++;
         }
         else if (a*84 + b + 3008 < 8822)
         {
           code = CodePage949Ext[a*84 + b + 3008];
-        }
-        else
-        {
-          code = 0xFFFD;
+          i++;
         }
       }
     }
-
     UnicodeToUTF8(code, s);
   }
 }
