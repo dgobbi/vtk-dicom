@@ -7546,6 +7546,571 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
   }
 }
 
+//----------------------------------------------------------------------------
+void UTF8ToUTF8(const char *text, size_t l, std::string *s)
+{
+  // convert to unicode and back, this will insert U+FFFD
+  // wherever a bad utf-8 sequence occurs
+  const char *cp = text;
+  const char *ep = text + l;
+
+  while (cp != ep)
+  {
+    unsigned int code = UTF8ToUnicode(&cp, ep);
+    UnicodeToUTF8(code, s);
+  }
+}
+
+//----------------------------------------------------------------------------
+void ASCIIToUTF8(const char *text, size_t l, std::string *s)
+{
+  // count the number of bad characters
+  size_t m = 0;
+  for (size_t i = 0; i < l; i++)
+  {
+    m += static_cast<unsigned char>(text[i]) >> 7;
+  }
+  if (m == 0)
+  {
+    // pure ASCII is valid utf-8
+    s->append(text, l);
+  }
+  else
+  {
+    // codes > 0x7f become U+FFFD
+    s->reserve(s->size() + l + 2*m);
+    for (size_t i = 0; i < l; i++)
+    {
+      char c = text[i];
+      if (static_cast<unsigned char>(c) <= 0x7f)
+      {
+        s->push_back(c);
+      }
+      else
+      {
+        // insert U+FFFD as utf-8
+        UnicodeToUTF8(0xFFFD, s);
+      }
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
+void Latin1ToUTF8(const char *text, size_t l, std::string *s)
+{
+  // compute the size of the UTF-8 string
+  size_t m = 0;
+  for (size_t i = 0; i < l; i++)
+  {
+    unsigned char c = static_cast<unsigned char>(text[i]);
+    if (c > 0x7f)
+    {
+      m++; // will need at least 2 bytes to encode
+      if (c < 0xA0)
+      {
+        m++; // will need 3 bytes to encode
+      }
+    }
+  }
+  if (m == 0)
+  {
+    // pure ASCII
+    s->append(text, l);
+  }
+  else
+  {
+    // algorithmically convert to utf-8
+    s->reserve(s->size() + l + m);
+    for (size_t i = 0; i < l; i++)
+    {
+      unsigned char code = static_cast<unsigned char>(text[i]);
+      if (code <= 0x7F)
+      {
+        s->push_back(code);
+      }
+      else if (code >= 0xA0)
+      {
+        // write latin1 code as utf-8
+        UnicodeToUTF8(code, s);
+      }
+      else
+      {
+        // ISO_IR_100 doesn't define C1 controls, insert U+FFFD (as utf-8)
+        UnicodeToUTF8(0xFFFD, s);
+      }
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
+void ISO8859ToUTF8(int key, const char *text, size_t l, std::string *s)
+{
+  // Use the ISO-8859 codepages
+  int page = key - vtkDICOMCharacterSet::ISO_IR_101;
+  const char *cp = text;
+  const char *ep = text + l;
+  while (cp != ep)
+  {
+    int code = static_cast<unsigned char>(*cp++);
+    if (code >= 0xA0)
+    {
+      code = CodePagesISO8859[code - 0xA0][page];
+    }
+    else if (code > 0x7F)
+    {
+      code = 0xFFFD;
+    }
+    UnicodeToUTF8(code, s);
+  }
+}
+
+//----------------------------------------------------------------------------
+void ShiftJISToUTF8(const char *text, size_t l, std::string *s)
+{
+  // JIS_X_0201 romaji (<0x7f) and half-width katakana (>0x7f)
+  const char *cp = text;
+  const char *ep = text + l;
+  while (cp != ep)
+  {
+    int code = static_cast<unsigned char>(*cp++);
+    if (code <= 0x7F && code != '\\' && code != '~')
+    {
+      s->push_back(code);
+    }
+    else
+    {
+      if (code == '\\')
+      {
+        code = 0xA5; // yen symbol
+      }
+      else if (code == '~')
+      {
+        code = 0x203E; // macron (overline)
+      }
+      else if (code >= 0xA1 && code <= 0xDF)
+      {
+        code += 0xFEC0; // half-width katakana
+      }
+      else if (cp != ep)
+      {
+        // if the byte not a valid JIS X 0201 code, then it is probably
+        // the first byte of a two-byte Shift-JIS sequence (vendors are
+        // required to convert Shift-JIS to ISO 2022 for use in DICOM,
+        // so this code is for compatibility with non-conformant files).
+        int x = code;
+        int y = static_cast<unsigned char>(*cp++);
+        code = (y == 0 ? 0 : 0xFFFD); // illegal character or null
+
+        if (y >= 0x40 && y <= 0xFC && y != 0x7F)
+        {
+          int a, b;
+          if (y < 0x9F)
+          {
+            a = 0;
+            b = y - (y < 0x7F ? 0x40 : 0x41);
+          }
+          else
+          {
+            a = 1;
+            b = y - 0x9F;
+          }
+
+          if (x >= 0x81 && x <= 0x9F)
+          {
+            a += (x - 0x81)*2;
+            code = CodePageJISX0208[a*94+b];
+          }
+          else if (x >= 0xE0 && x <= 0xEF)
+          {
+            a += (x - 0xC1)*2;
+            code = CodePageJISX0208[a*94+b];
+          }
+        }
+      }
+      else
+      {
+        code = 0xFFFD; // illegal character
+      }
+      UnicodeToUTF8(code, s);
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
+void GBKToUTF8(const char *text, size_t l, std::string *s)
+{
+  // Chinese national encoding standard
+  const char *cp = text;
+  const char *ep = text + l;
+  while (cp != ep)
+  {
+    unsigned int code = static_cast<unsigned char>(*cp++);
+    if (code > 0x7f)
+    {
+      if (cp == ep)
+      {
+        // end of input, terminate early
+        break;
+      }
+      unsigned short a = static_cast<unsigned char>(code);
+      unsigned short b = static_cast<unsigned char>(*cp++);
+      code = 0xFFFD; // untranslated multi-byte character
+      if (a > 0x80 && a < 0xFF &&
+          b >= 0x40 && b < 0xFF && b != 0x7F)
+      {
+        // two-byte character
+        if (b > 0x7F) { b--; }
+        a = (a - 0x81)*190 + (b - 0x40);
+        code = CodePageGB18030[a];
+      }
+    }
+    UnicodeToUTF8(code, s);
+  }
+}
+
+//----------------------------------------------------------------------------
+void GB18030ToUTF8(const char *text, size_t l, std::string *s)
+{
+  // Chinese national encoding standard
+  const char *cp = text;
+  const char *ep = text + l;
+  while (cp != ep)
+  {
+    unsigned int code = static_cast<unsigned char>(*cp++);
+    if (code > 0x7f)
+    {
+      if (cp == ep)
+      {
+        // end of input, terminate early
+        break;
+      }
+      unsigned short a = static_cast<unsigned char>(code);
+      unsigned short b = static_cast<unsigned char>(*cp++);
+      code = 0xFFFD; // untranslated multi-byte character
+
+      if (a > 0x80 && a < 0xFF &&
+          b >= 0x40 && b < 0xFF && b != 0x7F)
+      {
+        // two-byte character
+        if (b > 0x7F) { b--; }
+        a = (a - 0x81)*190 + (b - 0x40);
+        code = CodePageGB18030[a];
+      }
+
+      if (a > 0x80 && a < 0x90 && b >= '0' && b <= '9')
+      {
+        // start of a four-byte code
+        if (cp == ep || cp+1 == ep)
+        {
+          // unexpected end of input, terminate early
+          break;
+        }
+        if (static_cast<unsigned char>(cp[0]) > 0x80 &&
+            static_cast<unsigned char>(cp[0]) < 0xFF &&
+            cp[1] >= '0' && cp[1] <= '9')
+        {
+          // four-byte GB18030 character
+          unsigned short c = static_cast<unsigned char>(*cp++);
+          unsigned short d = static_cast<unsigned char>(*cp++);
+          a = (a - 0x81)*10 + (b - '0');
+          b = (c - 0x81)*10 + (d - '0');
+          unsigned int g = a*1260 + b;
+          if (g <= 0x99FB)
+          {
+            // search linearly compressed table
+            size_t n = sizeof(LinearGB18030)/sizeof(short);
+            for (size_t i = 0;; i += 2)
+            {
+              if (i >= n || LinearGB18030[i] > g)
+              {
+                code = LinearGB18030[i-1] + (g - LinearGB18030[i-2]);
+                break;
+              }
+            }
+            // this mapping was modified in GB18030-2005, after the linear
+            // table had already been defined, so it must be special-cased
+            if (code == 0x1E3F)
+            {
+              code = 0xE7C7;
+            }
+          }
+        }
+      }
+      else if (a >= 0x90 && a < 0xFF && b >= '0' && b <= '9')
+      {
+        // start of a four-byte code
+        if (cp == ep || cp+1 == ep)
+        {
+          // unexpected end of input, terminate early
+          break;
+        }
+        if (static_cast<unsigned char>(cp[0]) > 0x80 &&
+            static_cast<unsigned char>(cp[0]) < 0xFF &&
+            cp[1] >= '0' && cp[1] <= '9')
+        {
+          // four-byte GB18030 to codes beyond 0xFFFF
+          unsigned short c = static_cast<unsigned char>(*cp++);
+          unsigned short d = static_cast<unsigned char>(*cp++);
+          a = (a - 0x90)*10 + (b - '0');
+          b = (c - 0x81)*10 + (d - '0');
+          unsigned int g = a*1260 + b;
+          if (g <= 0xFFFFF)
+          {
+            code = g + 0x10000;
+          }
+        }
+      }
+      // convert some private codes to Unicode 4.1 standard codes in order
+      // to ensure they these characters can be displayed (though this is
+      // done at the cost of the one-to-one Unicode-to-GB18030 mapping)
+      size_t n = sizeof(PrivateToStandard)/sizeof(int);
+      if (code >= PrivateToStandard[0] && code <= PrivateToStandard[n-2])
+      {
+        for (size_t i = 0; i < n; i += 2)
+        {
+          if (code == PrivateToStandard[i])
+          {
+            code = PrivateToStandard[i+1];
+            break;
+          }
+        }
+      }
+    }
+    UnicodeToUTF8(code, s);
+  }
+}
+
+//----------------------------------------------------------------------------
+void GB2312ToUTF8(const char *text, size_t l, std::string *s)
+{
+  // GB2312 chinese encoding
+  size_t i = 0;
+  while (i < l)
+  {
+    unsigned short code = static_cast<unsigned char>(text[i++]);
+    if (code >= 0xA1 && code < 0xFF)
+    {
+      if (i == l)
+      {
+        break;
+      }
+      unsigned short a = code - 0x81;
+      code = static_cast<unsigned char>(text[i++]);
+      if (code >= 0xA1 && code < 0xFF)
+      {
+        unsigned short b = code - 0x41;
+        code = CodePageGB18030[a*190 + b];
+      }
+    }
+    UnicodeToUTF8(code, s);
+  }
+}
+
+//----------------------------------------------------------------------------
+void JISXToUTF8(int charset, const char *text, size_t l, std::string *s)
+{
+  // iso-2022-jp and iso-2022-jp-2
+  size_t i = 0;
+  while (i < l)
+  {
+    // convert two bytes into unicode
+    unsigned short code = static_cast<unsigned char>(text[i++]);
+    if (code >= 0x21 && code < 0x7F)
+    {
+      if (i == l)
+      {
+        break;
+      }
+      unsigned short a = code - 0x21;
+      code = static_cast<unsigned char>(text[i++]);
+      if (code >= 0x21 && code < 0x7F)
+      {
+        unsigned short b = code - 0x21;
+        if (charset == vtkDICOMCharacterSet::ISO_2022_IR_159)
+        {
+          code = CodePageJISX0212[a*94+b];
+        }
+        else
+        {
+          code = CodePageJISX0208[a*94+b];
+        }
+      }
+    }
+    else if (code >= 0xA1 && code <= 0xDF)
+    {
+      // most likely half-width katakana, which can be used in
+      // DICOM even though they are not permitted in iso-2022-jp
+      code += 0xFEC0;
+    }
+    else if (code > 0x7F)
+    {
+      // possibly EUC-JP or Shift-JIS, neither of which should
+      // be used with ISO 2022 escape codes
+      code = 0xFFFD;
+    }
+    UnicodeToUTF8(code, s);
+  }
+}
+
+//----------------------------------------------------------------------------
+void EUCKRToUTF8(const char *text, size_t l, std::string *s)
+{
+  // EUC-KR encoding of KS X 1001 (and CP949 for compatibility)
+  size_t i = 0;
+  while (i < l)
+  {
+    unsigned short code = static_cast<unsigned char>(text[i++]);
+    if (code >= 0x81 && code < 0xFF)
+    {
+      if (i == l)
+      {
+        break;
+      }
+      // convert two bytes into unicode
+      unsigned short x = code;
+      unsigned short y = static_cast<unsigned char>(text[i++]);
+      if (x >= 0xA1 && y >= 0xA1 && y < 0xFF)
+      {
+        unsigned short a = x - 0xA1;
+        unsigned short b = y - 0xA1;
+        code = CodePageKSX1001[a*94+b];
+
+        // check for hangul encoded as 8-byte jamo sequence
+        if (x == 0xA4 && y == 0xD4 && l - i >= 6 &&
+            static_cast<unsigned char>(text[i]) == 0xA4 &&
+            static_cast<unsigned char>(text[i+2]) == 0xA4 &&
+            static_cast<unsigned char>(text[i+4]) == 0xA4)
+        {
+          // table to convert leading consonant to an index
+          static const unsigned char tableL[52] = {
+               1, 2, 0, 3, 0, 0, 4, 5, 6, 0, 0, 0, 0, 0, 0,
+            0, 7, 8, 9, 0,10,11,12,13,14,15,16,17,18,19, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 20
+          };
+          // table to convert trailing consonant to an index
+          static const unsigned char tableT[52] = {
+               2, 3, 4, 5, 6, 7, 8, 0, 9,10,11,12,13,14,15,
+           16,17,18, 0,19,20,21,22,23, 0,24,25,26,27,28, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 1
+          };
+          // get the leading consonant, vowel, and trailing consonant
+          unsigned short y1 = static_cast<unsigned char>(text[i+1]);
+          unsigned short y2 = static_cast<unsigned char>(text[i+3]);
+          unsigned short y3 = static_cast<unsigned char>(text[i+5]);
+          // check whether the sequence is valid
+          if (y1 >= 0xA1 && y1 <= 0xD4 && tableL[y1-0xA1] != 0 &&
+              y2 >= 0xBF && y2 <= 0xD4 &&
+              y3 >= 0xA1 && y3 <= 0xD4 && tableT[y3-0xA1] != 0)
+          {
+            i += 6;
+            unsigned short L = tableL[y1-0xA1]-1;
+            unsigned short V = y2 - 0xBF;
+            unsigned short T = tableT[y3-0xA1]-1;
+            if (L < 19 && V < 21)
+            {
+              // compute the composed unicode hangul
+              code = 0xAC00 + (L*21 + V)*28 + T;
+              // ensure this hangul is absent from KS X 1001
+              if (std::binary_search(&CodePageKSX1001[1410],
+                                     &CodePageKSX1001[3760],
+                                     code))
+              {
+                // if hangul has a precomposed form in KS X 1001,
+                // ignore the composition and write out the sequence
+                // using the Hangul Jamo Compatibility Block so
+                // that it will round-trip back to KS X 1001
+                UnicodeToUTF8(0x3164, s);
+                UnicodeToUTF8(0x3090 + y1, s);
+                UnicodeToUTF8(0x3090 + y2, s);
+                code = 0x3090 + y3;
+              }
+            }
+            else if (L < 19 || V < 21 || T > 0)
+            {
+              // produce decomposed hangul with filler
+              code = (L < 19 ? 0x1100 + L : 0x115F);
+              UnicodeToUTF8(code, s);
+              code = (V < 21 ? 0x1161 + V : 0x1160);
+              if (T > 0)
+              {
+                UnicodeToUTF8(code, s);
+                code = 0x11A7 + T;
+              }
+            }
+            else
+            {
+              // all components are filler, so a syllable cannot be
+              // created: write the sequence as compatibility codes
+              UnicodeToUTF8(0x3164, s);
+              UnicodeToUTF8(0x3164, s);
+              UnicodeToUTF8(0x3164, s);
+              code = 0x3164;
+            }
+          }
+        }
+      }
+      else if ((y >= 0x41 && y <= 0x5A) ||
+               (y >= 0x61 && y <= 0x7A) ||
+               (y >= 0x81 && y < 0xFF))
+      {
+        // possibly CP949 hangul extensions
+        unsigned short a = x - 0x81;
+        unsigned short b = y - 0x41;
+        if (b >= 26)
+        {
+          b -= 6;
+          if (b >= 52)
+          {
+            b -= 6;
+          }
+        }
+        if (a < 32)
+        {
+          code = CodePage949Ext[a*178 + b];
+        }
+        else if (a*84 + b + 3008 < 8822)
+        {
+          code = CodePage949Ext[a*84 + b + 3008];
+        }
+        else
+        {
+          code = 0xFFFD;
+        }
+      }
+    }
+
+    UnicodeToUTF8(code, s);
+  }
+}
+
+//----------------------------------------------------------------------------
+void UnknownToUTF8(const char *text, size_t l, std::string *s)
+{
+  // convert unrecognized (and assumed to be multi-byte) data, we just
+  // want to generate a bunch of "unrecognized character" codes because
+  // that's more informative to the user than generating nothing at all
+  size_t i = 0;
+  while (i < l)
+  {
+    unsigned short code = 0xFFFD;
+    if (text[i++] == '\0')
+    {
+      code = 0;
+    }
+    else if (i < l)
+    {
+      if (text[i++] == '\0')
+      {
+        code = 0;
+      }
+    }
+    // unrecognized multi-byte character
+    UnicodeToUTF8(code, s);
+  }
+}
+
 } // end anonymous namespace
 
 //----------------------------------------------------------------------------
@@ -7671,599 +8236,133 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
 
   if (this->Key == ISO_IR_192) // UTF-8
   {
-    // convert to unicode and back, this will insert U+FFFD
-    // wherever a bad utf-8 sequence occurs
-    const char *cp = text;
-    const char *ep = text + l;
-
-    while (cp != ep)
-    {
-      unsigned int code = UTF8ToUnicode(&cp, ep);
-      UnicodeToUTF8(code, &s);
-    }
+    UTF8ToUTF8(text, l, &s);
   }
   else if (this->Key == ISO_IR_6) // US-ASCII
   {
-    // count the number of bad characters
-    size_t m = 0;
-    for (size_t i = 0; i < l; i++)
-    {
-      m += static_cast<unsigned char>(text[i]) >> 7;
-    }
-    if (m == 0)
-    {
-      // pure ASCII is valid utf-8
-      s.assign(text, l);
-    }
-    else
-    {
-      // codes > 0x7f become U+FFFD
-      s.resize(l + 2*m);
-      size_t j = 0;
-      for (size_t i = 0; i < l; i++)
-      {
-        char c = text[i];
-        if (static_cast<unsigned char>(c) <= 0x7f)
-        {
-          s[j++] = c;
-        }
-        else
-        {
-          // insert U+FFFD as utf-8
-          s[j++] = '\xef';
-          s[j++] = '\xbf';
-          s[j++] = '\xbd';
-        }
-      }
-    }
+    ASCIIToUTF8(text, l, &s);
   }
   else if (this->Key == ISO_IR_100) // ISO-8895-1
   {
-    // compute the size of the UTF-8 string
-    size_t m = 0;
-    for (size_t i = 0; i < l; i++)
-    {
-      unsigned char c = static_cast<unsigned char>(text[i]);
-      if (c > 0x7f)
-      {
-        m++; // will need at least 2 bytes to encode
-        if (c < 0xA0)
-        {
-          m++; // will need 3 bytes to encode
-        }
-      }
-    }
-    if (m == 0)
-    {
-      // pure ASCII
-      s.assign(text, l);
-    }
-    else
-    {
-      // algorithmically convert to utf-8
-      s.resize(l + m);
-      size_t j = 0;
-      for (size_t i = 0; i < l; i++)
-      {
-        unsigned char code = static_cast<unsigned char>(text[i]);
-        if (code <= 0x7F)
-        {
-          s[j++] = code;
-        }
-        else if (code >= 0xA0)
-        {
-          // write latin1 code as utf-8
-          s[j++] = (0xC0 | (code >> 6));
-          s[j++] = (0x80 | (code & 0x3F));
-        }
-        else
-        {
-          // ISO_IR_100 doesn't define C1 controls, insert U+FFFD (as utf-8)
-          s[j++] = '\xef';
-          s[j++] = '\xbf';
-          s[j++] = '\xbd';
-        }
-      }
-    }
+    Latin1ToUTF8(text, l, &s);
   }
   else if (this->Key <= ISO_IR_166) // ISO-8895-X
   {
-    // Use the ISO-8859 codepages
-    int page = this->Key - ISO_IR_101;
-    s.reserve(l + l/2);
-    const char *cp = text;
-    const char *ep = text + l;
-    while (cp != ep)
-    {
-      int code = static_cast<unsigned char>(*cp++);
-      if (code >= 0xA0)
-      {
-        code = CodePagesISO8859[code - 0xA0][page];
-      }
-      else if (code > 0x7F)
-      {
-        code = 0xFFFD;
-      }
-      UnicodeToUTF8(code, &s);
-    }
+    ISO8859ToUTF8(this->Key, text, l, &s);
   }
   else if (this->Key == ISO_IR_13 || // JIS_X_0201 romaji & katakana
            this->Key == ISO_IR_14)
   {
-    // JIS_X_0201 romaji (<0x7f) and half-width katakana (>0x7f)
-    s.reserve(2*l);
-    const char *cp = text;
-    const char *ep = text + l;
-    while (cp != ep)
-    {
-      int code = static_cast<unsigned char>(*cp++);
-      if (code <= 0x7F && code != '\\' && code != '~')
-      {
-        s.push_back(code);
-      }
-      else
-      {
-        if (code == '\\')
-        {
-          code = 0xA5; // yen symbol
-        }
-        else if (code == '~')
-        {
-          code = 0x203E; // macron (overline)
-        }
-        else if (code >= 0xA1 && code <= 0xDF)
-        {
-          code += 0xFEC0; // half-width katakana
-        }
-        else if (cp != ep)
-        {
-          // if the byte not a valid JIS X 0201 code, then it is probably
-          // the first byte of a two-byte Shift-JIS sequence (vendors are
-          // required to convert Shift-JIS to ISO 2022 for use in DICOM,
-          // so this code is for compatibility with non-conformant files).
-          int x = code;
-          int y = static_cast<unsigned char>(*cp++);
-          code = (y == 0 ? 0 : 0xFFFD); // illegal character or null
-
-          if (y >= 0x40 && y <= 0xFC && y != 0x7F)
-          {
-            int a, b;
-            if (y < 0x9F)
-            {
-              a = 0;
-              b = y - (y < 0x7F ? 0x40 : 0x41);
-            }
-            else
-            {
-              a = 1;
-              b = y - 0x9F;
-            }
-
-            if (x >= 0x81 && x <= 0x9F)
-            {
-              a += (x - 0x81)*2;
-              code = CodePageJISX0208[a*94+b];
-            }
-            else if (x >= 0xE0 && x <= 0xEF)
-            {
-              a += (x - 0xC1)*2;
-              code = CodePageJISX0208[a*94+b];
-            }
-          }
-        }
-        else
-        {
-          code = 0xFFFD; // illegal character
-        }
-        UnicodeToUTF8(code, &s);
-      }
-    }
+    ShiftJISToUTF8(text, l, &s);
   }
-  else if (this->Key == GB18030 || this->Key == GBK)
+  else if (this->Key == GB18030)
   {
-    // Chinese national encoding standard
-    const char *cp = text;
-    const char *ep = text + l;
-    while (cp != ep)
-    {
-      unsigned int code = static_cast<unsigned char>(*cp++);
-      if (code > 0x7f)
-      {
-        if (cp == ep)
-        {
-          // end of input, terminate early
-          break;
-        }
-        unsigned short a = static_cast<unsigned char>(code);
-        unsigned short b = static_cast<unsigned char>(*cp++);
-        code = 0xFFFD; // untranslated multi-byte character
-        if (a > 0x80 && a < 0xFF &&
-            b >= 0x40 && b < 0xFF && b != 0x7F)
-        {
-          // two-byte character
-          if (b > 0x7F) { b--; }
-          a = (a - 0x81)*190 + (b - 0x40);
-          code = CodePageGB18030[a];
-        }
-        if (this->Key == GB18030)
-        {
-          if (a > 0x80 && a < 0x90 && b >= '0' && b <= '9')
-          {
-            // start of a four-byte code
-            if (cp == ep || cp+1 == ep)
-            {
-              // unexpected end of input, terminate early
-              break;
-            }
-            if (static_cast<unsigned char>(cp[0]) > 0x80 &&
-                static_cast<unsigned char>(cp[0]) < 0xFF &&
-                cp[1] >= '0' && cp[1] <= '9')
-            {
-              // four-byte GB18030 character
-              unsigned short c = static_cast<unsigned char>(*cp++);
-              unsigned short d = static_cast<unsigned char>(*cp++);
-              a = (a - 0x81)*10 + (b - '0');
-              b = (c - 0x81)*10 + (d - '0');
-              unsigned int g = a*1260 + b;
-              if (g <= 0x99FB)
-              {
-                // search linearly compressed table
-                size_t n = sizeof(LinearGB18030)/sizeof(short);
-                for (size_t i = 0;; i += 2)
-                {
-                  if (i >= n || LinearGB18030[i] > g)
-                  {
-                    code = LinearGB18030[i-1] + (g - LinearGB18030[i-2]);
-                    break;
-                  }
-                }
-                // this mapping was modified in GB18030-2005, after the linear
-                // table had already been defined, so it must be special-cased
-                if (code == 0x1E3F)
-                {
-                  code = 0xE7C7;
-                }
-              }
-            }
-          }
-          else if (a >= 0x90 && a < 0xFF && b >= '0' && b <= '9')
-          {
-            // start of a four-byte code
-            if (cp == ep || cp+1 == ep)
-            {
-              // unexpected end of input, terminate early
-              break;
-            }
-            if (static_cast<unsigned char>(cp[0]) > 0x80 &&
-                static_cast<unsigned char>(cp[0]) < 0xFF &&
-                cp[1] >= '0' && cp[1] <= '9')
-            {
-              // four-byte GB18030 to codes beyond 0xFFFF
-              unsigned short c = static_cast<unsigned char>(*cp++);
-              unsigned short d = static_cast<unsigned char>(*cp++);
-              a = (a - 0x90)*10 + (b - '0');
-              b = (c - 0x81)*10 + (d - '0');
-              unsigned int g = a*1260 + b;
-              if (g <= 0xFFFFF)
-              {
-                code = g + 0x10000;
-              }
-            }
-          }
-          // convert some private codes to Unicode 4.1 standard codes in order
-          // to ensure they these characters can be displayed (though this is
-          // done at the cost of the one-to-one Unicode-to-GB18030 mapping)
-          size_t n = sizeof(PrivateToStandard)/sizeof(int);
-          if (code >= PrivateToStandard[0] && code <= PrivateToStandard[n-2])
-          {
-            for (size_t i = 0; i < n; i += 2)
-            {
-              if (code == PrivateToStandard[i])
-              {
-                code = PrivateToStandard[i+1];
-                break;
-              }
-            }
-          }
-        }
-      }
-      UnicodeToUTF8(code, &s);
-    }
+    GB18030ToUTF8(text, l, &s);
+  }
+  else if (this->Key == GBK)
+  {
+    GBKToUTF8(text, l, &s);
   }
   else if ((this->Key & ISO_2022) != 0)
   {
-    // Uses ISO-2022 escape codes to switch character sets.
-    // Mask to get the charset that is active before the first escape code.
-    unsigned char charset = (this->Key & ISO_2022_BASE);
+    this->ISO2022ToUTF8(text, l, &s);
+  }
 
-    // For CN and KR the high bit is set for multi-byte chars, allowing
-    // them to be distinguished from ASCII, so activate the charset
-    // immediately even in the absence of the ISO 2022 escape code.
-    if (this->Key == ISO_2022_IR_58 || this->Key == ISO_2022_IR_149)
+  return s;
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMCharacterSet::ISO2022ToUTF8(
+  const char *text, size_t l, std::string *s) const
+{
+  // Uses ISO-2022 escape codes to switch character sets.
+  // Mask to get the charset that is active before the first escape code.
+  unsigned char charset = (this->Key & ISO_2022_BASE);
+
+  // For CN and KR the high bit is set for multi-byte chars, allowing
+  // them to be distinguished from ASCII, so activate the charset
+  // immediately even in the absence of the ISO 2022 escape code.
+  if (this->Key == ISO_2022_IR_58 || this->Key == ISO_2022_IR_149)
+  {
+    charset = this->Key;
+  }
+
+  // loop through the string, looking for iso-2022 escape codes,
+  // and when an escape code is found, change the charset
+  size_t i = 0;
+  while (i < l)
+  {
+    // search for the next escape
+    size_t j = i;
+    for (; j < l; j++)
     {
-      charset = this->Key;
+      if (text[j] == '\033') { break; }
+    }
+    if ((charset & ISO_2022) == 0)
+    {
+      // convert characters up to the next escape code
+      vtkDICOMCharacterSet cs(charset);
+      s->append(cs.ConvertToUTF8(&text[i], j-i));
+    }
+    else if (charset == ISO_2022_IR_58)
+    {
+      GB2312ToUTF8(&text[i], j-i, s);
+    }
+    else if (charset == ISO_2022_IR_87 ||
+             charset == ISO_2022_IR_159)
+    {
+      JISXToUTF8(charset, &text[i], j-i, s);
+    }
+    else if (charset == ISO_2022_IR_149)
+    {
+      EUCKRToUTF8(&text[i], j-i, s);
+    }
+    else
+    {
+      UnknownToUTF8(&text[i], j-i, s);
     }
 
-    // loop through the string, looking for iso-2022 escape codes,
-    // and when an escape code is found, change the charset
-    size_t i = 0;
-    while (i < l)
+    // Make sure we are at the escape code (or the end of string)
+    i = j;
+
+    // Get the escape code for the next segment
+    if (text[i] == '\033')
     {
-      // search for the next escape
-      size_t j = i;
-      for (; j < l; j++)
+      i++;
+      if (i + 2 > l) { break; }
+      unsigned char oldcharset = charset;
+      charset = 0xFF; // indicate none found yet
+      // look through single-byte charset escape codes
+      for (unsigned char k = 0; k < CHARSET_TABLE_SIZE; k++)
       {
-        if (text[j] == '\033') { break; }
-      }
-      if ((charset & ISO_2022) == 0)
-      {
-        // convert characters up to the next escape code
-        vtkDICOMCharacterSet cs(charset);
-        s += cs.ConvertToUTF8(&text[i], j-i);
-      }
-      else if (charset == ISO_2022_IR_58)
-      {
-        // GB2312 chinese encoding
-        while (i < j)
+        const char *escape = Charsets[k].EscapeCode;
+        size_t le = strlen(escape);
+        if (le > 0 && strncmp(&text[i], escape, le) == 0)
         {
-          unsigned short code = static_cast<unsigned char>(text[i++]);
-          if (code >= 0xA1 && code < 0xFF)
+          if (Charsets[k].Key == ISO_IR_13 &&
+              (oldcharset == ISO_2022_IR_87 ||
+               oldcharset == ISO_2022_IR_159))
           {
-            if (i == j)
-            {
-              break;
-            }
-            unsigned short a = code - 0x81;
-            code = static_cast<unsigned char>(text[i++]);
-            if (code >= 0xA1 && code < 0xFF)
-            {
-              unsigned short b = code - 0x41;
-              code = CodePageGB18030[a*190 + b];
-            }
+            // The ISO_IR_13 charset goes in G1, so let's keep the
+            // currently active kanji charset in G0.
+            charset = oldcharset;
           }
-          UnicodeToUTF8(code, &s);
-        }
-      }
-      else if (charset == ISO_2022_IR_87 ||
-               charset == ISO_2022_IR_159)
-      {
-        // iso-2022-jp and iso-2022-jp-2
-        while (i < j)
-        {
-          // convert two bytes into unicode
-          unsigned short code = static_cast<unsigned char>(text[i++]);
-          if (code >= 0x21 && code < 0x7F)
+          else if (Charsets[k].Key == ISO_IR_14)
           {
-            if (i == j)
-            {
-              break;
-            }
-            unsigned short a = code - 0x21;
-            code = static_cast<unsigned char>(text[i++]);
-            if (code >= 0x21 && code < 0x7F)
-            {
-              unsigned short b = code - 0x21;
-              if (charset == ISO_2022_IR_87)
-              {
-                code = CodePageJISX0208[a*94+b];
-              }
-              else
-              {
-                code = CodePageJISX0212[a*94+b];
-              }
-            }
+            // The escape code for Japanese romaji (ISO_IR 14) switches
+            // to JIS X 0201, which DICOM defines as "ISO 2022 IR 13".
+            charset = ISO_IR_13;
           }
-          else if (code >= 0xA1 && code <= 0xDF)
+          else
           {
-            // most likely half-width katakana, which can be used in
-            // DICOM even though they are not permitted in iso-2022-jp
-            code += 0xFEC0;
+            charset = Charsets[k].Key;
           }
-          else if (code > 0x7F)
-          {
-            // possibly EUC-JP or Shift-JIS, neither of which should
-            // be used with ISO 2022 escape codes
-            code = 0xFFFD;
-          }
-          UnicodeToUTF8(code, &s);
-        }
-      }
-      else if (charset == ISO_2022_IR_149)
-      {
-        // EUC-KR encoding of KS X 1001 (and CP949 for compatibility)
-        while (i < j)
-        {
-          unsigned short code = static_cast<unsigned char>(text[i++]);
-          if (code >= 0x81 && code < 0xFF)
-          {
-            if (i == j)
-            {
-              break;
-            }
-            // convert two bytes into unicode
-            unsigned short x = code;
-            unsigned short y = static_cast<unsigned char>(text[i++]);
-            if (x >= 0xA1 && y >= 0xA1 && y < 0xFF)
-            {
-              unsigned short a = x - 0xA1;
-              unsigned short b = y - 0xA1;
-              code = CodePageKSX1001[a*94+b];
-
-              // check for hangul encoded as 8-byte jamo sequence
-              if (x == 0xA4 && y == 0xD4 && j - i >= 6 &&
-                  static_cast<unsigned char>(text[i]) == 0xA4 &&
-                  static_cast<unsigned char>(text[i+2]) == 0xA4 &&
-                  static_cast<unsigned char>(text[i+4]) == 0xA4)
-              {
-                // table to convert leading consonant to an index
-                static const unsigned char tableL[52] = {
-                     1, 2, 0, 3, 0, 0, 4, 5, 6, 0, 0, 0, 0, 0, 0,
-                  0, 7, 8, 9, 0,10,11,12,13,14,15,16,17,18,19, 0,
-                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                  0, 0, 0, 0, 20
-                };
-                // table to convert trailing consonant to an index
-                static const unsigned char tableT[52] = {
-                     2, 3, 4, 5, 6, 7, 8, 0, 9,10,11,12,13,14,15,
-                 16,17,18, 0,19,20,21,22,23, 0,24,25,26,27,28, 0,
-                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                  0, 0, 0, 0, 1
-                };
-                // get the leading consonant, vowel, and trailing consonant
-                unsigned short y1 = static_cast<unsigned char>(text[i+1]);
-                unsigned short y2 = static_cast<unsigned char>(text[i+3]);
-                unsigned short y3 = static_cast<unsigned char>(text[i+5]);
-                // check whether the sequence is valid
-                if (y1 >= 0xA1 && y1 <= 0xD4 && tableL[y1-0xA1] != 0 &&
-                    y2 >= 0xBF && y2 <= 0xD4 &&
-                    y3 >= 0xA1 && y3 <= 0xD4 && tableT[y3-0xA1] != 0)
-                {
-                  i += 6;
-                  unsigned short L = tableL[y1-0xA1]-1;
-                  unsigned short V = y2 - 0xBF;
-                  unsigned short T = tableT[y3-0xA1]-1;
-                  if (L < 19 && V < 21)
-                  {
-                    // compute the composed unicode hangul
-                    code = 0xAC00 + (L*21 + V)*28 + T;
-                    // ensure this hangul is absent from KS X 1001
-                    if (std::binary_search(&CodePageKSX1001[1410],
-                                           &CodePageKSX1001[3760],
-                                           code))
-                    {
-                      // if hangul has a precomposed form in KS X 1001,
-                      // ignore the composition and write out the sequence
-                      // using the Hangul Jamo Compatibility Block so
-                      // that it will round-trip back to KS X 1001
-                      UnicodeToUTF8(0x3164, &s);
-                      UnicodeToUTF8(0x3090 + y1, &s);
-                      UnicodeToUTF8(0x3090 + y2, &s);
-                      code = 0x3090 + y3;
-                    }
-                  }
-                  else if (L < 19 || V < 21 || T > 0)
-                  {
-                    // produce decomposed hangul with filler
-                    code = (L < 19 ? 0x1100 + L : 0x115F);
-                    UnicodeToUTF8(code, &s);
-                    code = (V < 21 ? 0x1161 + V : 0x1160);
-                    if (T > 0)
-                    {
-                      UnicodeToUTF8(code, &s);
-                      code = 0x11A7 + T;
-                    }
-                  }
-                  else
-                  {
-                    // all components are filler, so a syllable cannot be
-                    // created: write the sequence as compatibility codes
-                    UnicodeToUTF8(0x3164, &s);
-                    UnicodeToUTF8(0x3164, &s);
-                    UnicodeToUTF8(0x3164, &s);
-                    code = 0x3164;
-                  }
-                }
-              }
-            }
-            else if ((y >= 0x41 && y <= 0x5A) ||
-                     (y >= 0x61 && y <= 0x7A) ||
-                     (y >= 0x81 && y < 0xFF))
-            {
-              // possibly CP949 hangul extensions
-              unsigned short a = x - 0x81;
-              unsigned short b = y - 0x41;
-              if (b >= 26)
-              {
-                b -= 6;
-                if (b >= 52)
-                {
-                  b -= 6;
-                }
-              }
-              if (a < 32)
-              {
-                code = CodePage949Ext[a*178 + b];
-              }
-              else if (a*84 + b + 3008 < 8822)
-              {
-                code = CodePage949Ext[a*84 + b + 3008];
-              }
-              else
-              {
-                code = 0xFFFD;
-              }
-            }
-          }
-
-          UnicodeToUTF8(code, &s);
-        }
-      }
-      else
-      {
-        // other multibyte conversions
-        while (i < j)
-        {
-          unsigned short code = 0xFFFD;
-          if (text[i++] == '\0')
-          {
-            code = 0;
-          }
-          else if (i < j)
-          {
-            if (text[i++] == '\0')
-            {
-              code = 0;
-            }
-          }
-          // unrecognized multi-byte character
-          UnicodeToUTF8(code, &s);
-        }
-      }
-
-      // Make sure we are at the escape code (or the end of string)
-      i = j;
-
-      // Get the escape code for the next segment
-      if (text[i] == '\033')
-      {
-        i++;
-        if (i + 2 > l) { break; }
-        unsigned char oldcharset = charset;
-        charset = 0xFF; // indicate none found yet
-        // look through single-byte charset escape codes
-        for (unsigned char k = 0; k < CHARSET_TABLE_SIZE; k++)
-        {
-          const char *escape = Charsets[k].EscapeCode;
-          size_t le = strlen(escape);
-          if (le > 0 && strncmp(&text[i], escape, le) == 0)
-          {
-            if (Charsets[k].Key == ISO_IR_13 &&
-                (oldcharset == ISO_2022_IR_87 ||
-                 oldcharset == ISO_2022_IR_159))
-            {
-              // The ISO_IR_13 charset goes in G1, so let's keep the
-              // currently active kanji charset in G0.
-              charset = oldcharset;
-            }
-            else if (Charsets[k].Key == ISO_IR_14)
-            {
-              // The escape code for Japanese romaji (ISO_IR 14) switches
-              // to JIS X 0201, which DICOM defines as "ISO 2022 IR 13".
-              charset = ISO_IR_13;
-            }
-            else
-            {
-              charset = Charsets[k].Key;
-            }
-            i += le;
-            break;
-          }
+          i += le;
+          break;
         }
       }
     }
   }
-
-  return s;
 }
 
 //----------------------------------------------------------------------------

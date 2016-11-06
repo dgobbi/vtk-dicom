@@ -162,6 +162,7 @@ public:
   //@}
 
 private:
+  void ISO2022ToUTF8(const char *text, size_t l, std::string *s) const;
   static unsigned char KeyFromString(const char *name, size_t nl);
 
   unsigned char Key;
