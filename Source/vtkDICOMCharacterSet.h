@@ -119,8 +119,8 @@ public:
    *  This will convert text to UTF-8, which is generally a lossless
    *  process for western languages but not for the CJK languages.
    *  Characters that cannot be mapped to unicode, or whose place in
-   *  unicode is not known, will be printed as unicode missing-character
-   *  marks.
+   *  unicode is not known, will be printed as unicode U+FFFD which
+   *  appears as a question mark in a diamond.
    */
   std::string ConvertToUTF8(const char *text, size_t l) const;
 
