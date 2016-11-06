@@ -8440,6 +8440,15 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
           break;
         }
       }
+      if (charset == 0xFF)
+      {
+        // Even though it isn't in the DICOM standard, let's also check for
+        // the obsolete JIS X 0208 code in order to fully support ISO-2022-JP
+        if (escapeLen == 2 && strncmp(escapeCode, "$@", 2) == 0)
+        {
+          charset = ISO_2022_IR_87;
+        }
+      }
     }
   }
 }
