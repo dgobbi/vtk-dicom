@@ -21,6 +21,17 @@
 
 //! Character sets.
 /*!
+ *  This class provides the means to convert the various international
+ *  text encodings used by DICOM to the popular UTF-8 encoding.  It does
+ *  not at this time provide the means to convert to any encoding other
+ *  than UTF-8.
+ *
+ *  During conversion to UTF-8, any codes in the original encoding that
+ *  cannot be converted to Unicode are replaced by "REPLACEMENT CHARACTER",
+ *  which is a question mark in a black diamond.  For instance, if the
+ *  original encoding is ISO_IR_6, any octets with the 8th bit set will
+ *  be replaced.
+ *
  *  DICOM supports a fairly small number of single-byte and multi-byte
  *  character sets.  The only VRs that support these character sets are
  *  PN, LO, SH, ST, LT, and ST (all other text VRs must be ASCII). In
