@@ -7703,7 +7703,33 @@ void ISO8859ToUTF8(int key, const char *text, size_t l, std::string *s)
     }
     else if (code > 0x7F)
     {
+      // for compatibility, check for chars from Windows code pages
+      int x = code - 0x80;
       code = 0xFFFD;
+      if (x < 32)
+      {
+        // Windows uses codes from 0x80 to 0x9F
+        static const unsigned short wincodes[32] = {
+          0x20AC, 0xFFFD, 0x201A, 0x0192, 0x201E, 0x2026, 0x2020, 0x2021,
+          0x02C6, 0x2030, 0x0160, 0x2039, 0x0152, 0xFFFD, 0x017D, 0xFFFD,
+          0xFFFD, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014,
+          0x02DC, 0x2122, 0x0161, 0x203A, 0x0153, 0xFFFD, 0x017E, 0x0178
+        };
+        // bitfield to say which of the 32 codes are to be defined
+        unsigned int used = 0;
+        if (key == vtkDICOMCharacterSet::ISO_IR_138) // CP1255 hebrew
+        {
+          used = 0x0BFE0BFD;
+        }
+        else if (key == vtkDICOMCharacterSet::ISO_IR_148) // CP1254 turkish
+        {
+          used = 0x9FFE1FFD;
+        }
+        if (((1u << x) & used) != 0)
+        {
+          code = wincodes[x];
+        }
+      }
     }
     UnicodeToUTF8(code, s);
   }
