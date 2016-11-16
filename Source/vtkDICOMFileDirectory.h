@@ -23,6 +23,13 @@
 class VTKDICOM_EXPORT vtkDICOMFileDirectory
 {
 public:
+  //! The access mode (input or output).
+  enum Mode
+  {
+    In,
+    Out
+  };
+
   //! Error codes.
   enum Code
   {
@@ -84,7 +91,16 @@ public:
   //@}
 
   //@{
-  //! Create a new directory with default permissions.
+  //! Test a directory for accessibility (static method).
+  /*!
+   *  The mode should be "In" or "Out" to indicate whether you intend to
+   *  read from or write to the directory.  A return value of zero means
+   *  the directory can be accessed, otherwise an error code will be
+   *  returned.
+   */
+  static int Access(const char *dirname, Mode mode);
+
+  //! Create a new directory with default permissions (static method).
   /*!
    *  This will create any intermediate directories, as well.  The return
    *  value is zero for success.  Otherwise, one of the error codes is

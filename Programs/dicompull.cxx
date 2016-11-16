@@ -159,6 +159,39 @@ std::string dicompull_cleanup(const std::string& input)
   return s;
 }
 
+std::string dicompull_basedir(const char *outdir)
+{
+  std::string s;
+
+  const char *lastslash = outdir;
+  const char *cp = outdir;
+  while (*cp != '\0')
+  {
+    while (*cp != '/' && *cp != '{' && *cp != '\0') { cp++; }
+    if (*cp == '/')
+    {
+      cp++;
+      lastslash = cp;
+    }
+    else if (*cp == '{')
+    {
+      cp = lastslash;
+      break;
+    }
+  }
+
+  if (cp == outdir)
+  {
+    s = "."; // current directory
+  }
+  else
+  {
+    s.append(outdir, cp);
+  }
+
+  return s;
+}
+
 std::string dicompull_makedirname(
   vtkDICOMDirectory *finder, int study, int series, const char *outdir)
 {
@@ -429,8 +462,45 @@ int MAINMACRO(int argc, char *argv[])
     exit(1);
   }
 
-  // do a dry run to make sure outdir string is valid
+  // check that the outdir string is valid
   dicompull_makedirname(NULL, 0, 0, outdir.c_str());
+
+  // check that the outdir is writable
+  std::string basedir = dicompull_basedir(outdir.c_str());
+  vtkDICOMFilePath basepath(basedir);
+  while (!basepath.IsRoot() && !basepath.IsEmpty())
+  {
+    int code = vtkDICOMFileDirectory::Access(basepath.AsString().c_str(),
+                                             vtkDICOMFileDirectory::In);
+    if (code == 0)
+    {
+      // found a directory
+      break;
+    }
+    else if (code == vtkDICOMFileDirectory::AccessDenied)
+    {
+      fprintf(stderr,
+        "\nError: access to %s is denied.\n\n", basepath.AsString().c_str());
+      exit(1);
+    }
+    else if (code != vtkDICOMFileDirectory::FileNotFound)
+    {
+      fprintf(stderr,
+        "\nError: %s is not a valid directory.\n\n",
+        basepath.AsString().c_str());
+      exit(1);
+    }
+    basepath.PopBack();
+  }
+
+  // see if we can write to the directory
+  if (vtkDICOMFileDirectory::Access(basepath.AsString().c_str(),
+                                    vtkDICOMFileDirectory::Out) != 0)
+  {
+    fprintf(stderr,
+      "\nError: Cannot write to %s\n\n", basepath.AsString().c_str());
+    exit(1);
+  }
 
   // Create a map of all directories written to.  The count is the
   // number of series that have been written to the directory.
