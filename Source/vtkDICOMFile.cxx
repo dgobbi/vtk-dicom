@@ -116,7 +116,8 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
       if (wideFilename)
       {
         DWORD attr = GetFileAttributesW(wideFilename);
-        if ((attr & FILE_ATTRIBUTE_DIRECTORY) != 0)
+        if (attr != INVALID_FILE_ATTRIBUTES &&
+            (attr & FILE_ATTRIBUTE_DIRECTORY) != 0)
         {
           this->Error = FileIsDirectory;
         }
