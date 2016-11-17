@@ -457,10 +457,6 @@ int vtkDICOMFileDirectory::Access(const char *dirname, Mode mode)
         errorCode = UnknownError;
       }
     }
-    else if (mode == Out && (code & FILE_ATTRIBUTE_SYSTEM) != 0)
-    {
-      errorCode = AccessDenied;
-    }
     else if ((code & FILE_ATTRIBUTE_DIRECTORY) == 0)
     {
       errorCode = ImpossiblePath;
