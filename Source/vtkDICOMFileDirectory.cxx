@@ -426,6 +426,80 @@ void vtkDICOMFileDirectory::LinkStatEntry(int)
 #endif
 
 //----------------------------------------------------------------------------
+int vtkDICOMFileDirectory::Access(const char *dirname, Mode mode)
+{
+#ifdef _WIN32
+  int errorCode = UnknownError;
+  vtkDICOMFilePath fpath(dirname);
+  const wchar_t *wideFilename = fpath.Wide();
+  if (wideFilename)
+  {
+    errorCode = 0;
+    DWORD code = GetFileAttributesW(wideFilename);
+    if (code == INVALID_FILE_ATTRIBUTES)
+    {
+      DWORD lastError = GetLastError();
+      if (lastError == ERROR_ACCESS_DENIED ||
+          lastError == ERROR_SHARING_VIOLATION)
+      {
+        errorCode = AccessDenied;
+      }
+      else if (lastError == ERROR_FILE_NOT_FOUND)
+      {
+        errorCode = FileNotFound;
+      }
+      else if (lastError == ERROR_PATH_NOT_FOUND)
+      {
+        errorCode = ImpossiblePath;
+      }
+      else
+      {
+        errorCode = UnknownError;
+      }
+    }
+    else if (mode == Out && (code & FILE_ATTRIBUTE_SYSTEM) != 0)
+    {
+      errorCode = AccessDenied;
+    }
+    else if ((code & FILE_ATTRIBUTE_DIRECTORY) == 0)
+    {
+      errorCode = ImpossiblePath;
+    }
+  }
+  return errorCode;
+#else
+  int errorCode = 0;
+  struct stat fs;
+  if (stat(dirname, &fs) != 0 ||
+      access(dirname, (mode == In ? R_OK : W_OK)) != 0)
+  {
+    int e = errno;
+    if (e == EACCES || e == EPERM)
+    {
+      errorCode = AccessDenied;
+    }
+    else if (e == ENOENT)
+    {
+      errorCode = FileNotFound;
+    }
+    else if (e == ENOTDIR)
+    {
+      errorCode = ImpossiblePath;
+    }
+    else
+    {
+      errorCode = UnknownError;
+    }
+  }
+  else if (!S_ISDIR(fs.st_mode))
+  {
+    errorCode = ImpossiblePath;
+  }
+  return errorCode;
+#endif
+}
+
+//----------------------------------------------------------------------------
 int vtkDICOMFileDirectory::Create(const char *name)
 {
   int result = 0;
