@@ -124,11 +124,11 @@ JPIP Referenced Deflate
 Transfer Syntax
 PS3.5
 1.2.840.10008.1.2.4.100
-MPEG2 Main Profile @ Main Level
+MPEG2 Main Profile / Main Level
 Transfer Syntax
 PS3.5
 1.2.840.10008.1.2.4.101
-MPEG2 Main Profile @ High Level
+MPEG2 Main Profile / High Level
 Transfer Syntax
 PS3.5
 1.2.840.10008.1.2.4.102
@@ -149,6 +149,14 @@ Transfer Syntax
 PS3.5
 1.2.840.10008.1.2.4.106
 MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.107
+HEVC/H.265 Main Profile / Level 5.1
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.108
+HEVC/H.265 Main 10 Profile / Level 5.1
 Transfer Syntax
 PS3.5
 1.2.840.10008.1.2.5
@@ -261,6 +269,22 @@ Well-known SOP Instance
 PS 3.6
 1.2.840.10008.1.5.4
 PET 20 Step Color Palette SOP Instance
+Well-known SOP Instance
+PS 3.6
+1.2.840.10008.1.5.5
+Spring Color Palette SOP Instance
+Well-known SOP Instance
+PS 3.6
+1.2.840.10008.1.5.6
+Summer Color Palette SOP Instance
+Well-known SOP Instance
+PS 3.6
+1.2.840.10008.1.5.7
+Fall Color Palette SOP Instance
+Well-known SOP Instance
+PS 3.6
+1.2.840.10008.1.5.8
+Winter Color Palette SOP Instance
 Well-known SOP Instance
 PS 3.6
 1.2.840.10008.1.9
@@ -976,6 +1000,10 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.88.71
 Acquisition Context SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.72
+Simplified Adult Echo SR Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.90.1
@@ -4783,3 +4811,39 @@ RT Process Input
 1.2.840.10008.6.1.1137
 CID 7025
 RT Process Input Used
+1.2.840.10008.6.1.1138
+CID 6300
+Prostate Sector Anatomy
+1.2.840.10008.6.1.1139
+CID 6301
+Prostate Sector Anatomy from PI-RADS v2
+1.2.840.10008.6.1.1140
+CID 6302
+Prostate Sector Anatomy from European Concensus 16 Sector (Minimal) Model
+1.2.840.10008.6.1.1141
+CID 6303
+Prostate Sector Anatomy from European Concensus 27 Sector (Optimal) Model
+1.2.840.10008.6.1.1142
+CID 12301
+Measurement Selection Reasons
+1.2.840.10008.6.1.1143
+CID 12302
+Echo Finding Observation Types
+1.2.840.10008.6.1.1144
+CID 12303
+Echo Measurement Types
+1.2.840.10008.6.1.1145
+CID 12304
+Echo Measured Properties
+1.2.840.10008.6.1.1146
+CID 12305
+Basic Echo Anatomic Sites
+1.2.840.10008.6.1.1147
+CID 12306
+Echo Flow Directions
+1.2.840.10008.6.1.1148
+CID 12307
+Cardiac Phases and Time Points
+1.2.840.10008.6.1.1149
+CID 12300
+Core Echo Measurements

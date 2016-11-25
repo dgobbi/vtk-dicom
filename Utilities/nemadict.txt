@@ -10912,6 +10912,24 @@ SegmentedAlphaPaletteColorLookupTableData
 OW
 1
 
+(0028,1230)
+Stored Value Color Range Sequence
+StoredValueColorRangeSequence
+SQ
+1
+
+(0028,1231)
+Minimum Stored Value Mapped
+MinimumStoredValueMapped
+FD
+1
+
+(0028,1232)
+Maximum Stored Value Mapped
+MaximumStoredValueMapped
+FD
+1
+
 (0028,1300)
 Breast Implant Present
 BreastImplantPresent
@@ -15704,6 +15722,12 @@ LO
 Segment Description
 SegmentDescription
 ST
+1
+
+(0062,0007)
+Segmentation Algorithm Identification Sequence
+SegmentationAlgorithmIdentificationSequence
+SQ
 1
 
 (0062,0008)
@@ -21004,6 +21028,12 @@ OverrideReason
 ST
 1
 
+(3008,0067)
+Parameter Value Number
+ParameterValueNumber
+US
+1
+
 (3008,0068)
 Corrected Parameter Sequence
 CorrectedParameterSequence
@@ -23373,6 +23403,12 @@ Isocenter to Range Modulator Distance
 IsocenterToRangeModulatorDistance
 FL
 1
+
+(300A,038F)
+Scan Spot Time Offset
+ScanSpotTimeOffset
+FL
+1-n
 
 (300A,0390)
 Scan Spot Tune ID
