@@ -285,6 +285,9 @@ int vtkDICOMApplyPalette::RequestInformation(
     outMeta->RemoveAttribute(DC::RedPaletteColorLookupTableData);
     outMeta->RemoveAttribute(DC::GreenPaletteColorLookupTableData);
     outMeta->RemoveAttribute(DC::BluePaletteColorLookupTableData);
+    outMeta->RemoveAttribute(DC::SegmentedRedPaletteColorLookupTableData);
+    outMeta->RemoveAttribute(DC::SegmentedGreenPaletteColorLookupTableData);
+    outMeta->RemoveAttribute(DC::SegmentedBluePaletteColorLookupTableData);
   }
 
   return 1;

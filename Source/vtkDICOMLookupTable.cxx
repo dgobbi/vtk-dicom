@@ -295,6 +295,12 @@ void vtkDICOMLookupTable::BuildImagePalette(
     DC::BluePaletteColorLookupTableData,
     DC::AlphaPaletteColorLookupTableData
   };
+  const DC::EnumType segTag[] = {
+    DC::SegmentedRedPaletteColorLookupTableData,
+    DC::SegmentedGreenPaletteColorLookupTableData,
+    DC::SegmentedBluePaletteColorLookupTableData,
+    DC::SegmentedAlphaPaletteColorLookupTableData
+  };
 
   int isSigned = meta->GetAttributeValue(
     fileIndex, DC::PixelRepresentation).AsInt();
@@ -305,6 +311,9 @@ void vtkDICOMLookupTable::BuildImagePalette(
   double divisor[4] = { 255.0, 255.0, 255.0, 255.0 };
   const unsigned short *spp[4] = { 0, 0, 0, 0 };
   const unsigned char *cpp[4] = { 0, 0, 0, 0 };
+  const unsigned short *segpp[4] = { 0, 0, 0, 0 };
+  unsigned int segn[4] = { 0, 0, 0, 0 };
+
   for (int j = 0; j < 4; j++)
   {
     const vtkDICOMValue& v = meta->GetAttributeValue(
@@ -332,18 +341,29 @@ void vtkDICOMLookupTable::BuildImagePalette(
       // Get the lookup table data and confirm its size
       const vtkDICOMValue& d = meta->GetAttributeValue(
         fileIndex, dataTag[j]);
-      if (d.GetVL() >= static_cast<unsigned int>(2*n))
+      if (d.IsValid())
       {
-        spp[j] = d.GetUnsignedShortData();
-      }
-      else if (d.GetVL() >= static_cast<unsigned int>(n))
-      {
-        cpp[j] = d.GetUnsignedCharData();
-        if (cpp[j] == 0)
+        if (d.GetVL() >= static_cast<unsigned int>(2*n))
         {
-          cpp[j] = reinterpret_cast<const unsigned char *>(
-            d.GetUnsignedShortData());
+          spp[j] = d.GetUnsignedShortData();
         }
+        else if (d.GetVL() >= static_cast<unsigned int>(n))
+        {
+          cpp[j] = d.GetUnsignedCharData();
+          if (cpp[j] == 0)
+          {
+            cpp[j] = reinterpret_cast<const unsigned char *>(
+              d.GetUnsignedShortData());
+          }
+        }
+      }
+      else
+      {
+        // Search for segmented table data
+        const vtkDICOMValue& s = meta->GetAttributeValue(
+          fileIndex, segTag[j]);
+        segpp[j] = s.GetUnsignedShortData();
+        segn[j] = s.GetVL()/2;
       }
     }
   }
@@ -377,6 +397,148 @@ void vtkDICOMLookupTable::BuildImagePalette(
       cptr[3] = static_cast<unsigned char>(rgba[3]*255.0 + 0.5);
       cptr += 4;
     }
+
+    // Handle segmented lookup tables
+    cptr = this->WritePointer(0, maxValue - minValue + 1);
+    for (int j = 0; j < 4; j++)
+    {
+      if (segpp[j])
+      {
+        if (!vtkDICOMLookupTable::BuildSegmentedLUT(
+          segpp[j], segn[j], divisor[j], cptr+j, 4, maxValue-minValue+1))
+        {
+        static const char *names[] = { "Red", "Green", "Blue", "Alpha" };
+        vtkErrorMacro("Bad data in Segmented" << names[j]
+                      << "PaletteColorLookupTableData");
+        }
+      }
+    }
   }
+
   this->Modified();
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMLookupTable::BuildSegmentedLUT(
+  const unsigned short *input, unsigned int n, double divisor,
+  unsigned char *lut, unsigned int stride, unsigned int count)
+{
+  // i is position in input, j is position in output
+  unsigned int i = 0;
+  unsigned int j = 0;
+
+  while (i+1 < n)
+  {
+    unsigned char opcode = input[i++];
+    if (opcode == 0)
+    {
+      // discrete segment
+      unsigned short l = input[i++];
+      for (unsigned short k = 0; k < l && i < n && j < count; k++, j++, i++)
+      {
+        lut[j*stride] = input[i];
+      }
+    }
+    else if (opcode == 1)
+    {
+      // linear segment
+      unsigned short l = input[i++];
+      double y0 = 0.0;
+      if (j > 0)
+      {
+        // start of the ramp
+        y0 = lut[(j - 1)*stride]/divisor;
+      }
+      if (i < n)
+      {
+        // end of the ramp
+        double y1 = input[i++]/divisor;
+        // generate the ramp
+        for (unsigned short k = 0; k < l && j < count; k++, j++)
+        {
+          double y = y0 + (k + 1)*(y1 - y0)/l;
+          lut[j*stride] = static_cast<unsigned char>(y*255.0 + 0.5);
+        }
+      }
+    }
+    else if (opcode == 2)
+    {
+      // indirect segment
+      bool failed = true;
+      unsigned short nseg = input[i++];
+      if (i + 1 < n)
+      {
+        failed = false;
+        // offset to first segment to use
+        unsigned int offset = input[i++];
+        offset += input[i++] << 16;
+        // m is the number of input elements referred to, and
+        // l is the number of lut entries that will be generated
+        unsigned int m = 0;
+        unsigned int l = 0;
+        // compute m by looking at the segments
+        for (unsigned int k = 0; k < nseg && offset + m + 1 < n; k++)
+        {
+          unsigned short opcode2 = input[offset + m++];
+          if (opcode2 == 0)
+          {
+            // discrete
+            l += input[offset + m];
+            m += 1 + input[offset + m];
+          }
+          else if (opcode2 == 1)
+          {
+            // linear
+            l += input[offset + m];
+            m += 2;
+          }
+          else
+          {
+            // illegal opcode
+            failed = true;
+            break;
+          }
+        }
+
+        if (offset + m <= n)
+        {
+          // add the referenced segments via recursion
+          BuildSegmentedLUT(
+            &input[offset], m, divisor, &lut[j*stride], stride, count-j);
+
+          // increment the position in the output lut
+          if (j + l > count)
+          {
+            l = count - j;
+          }
+          j += l;
+        }
+      }
+      if (failed)
+      {
+        break;
+      }
+    }
+    else
+    {
+      // unrecognized opcode
+      break;
+    }
+  }
+
+  if (j < count)
+  {
+    // If write was incomplete, fill the remainder of the lookup table
+    // with alternating high and low to visually indicate that a
+    // problem occurred.
+    while (j < count)
+    {
+      lut[j*stride] = (j & 1)*255;
+      j++;
+    }
+
+    return false;
+  }
+
+  return true;
 }

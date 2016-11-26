@@ -57,6 +57,14 @@ protected:
   vtkDICOMLookupTable();
   ~vtkDICOMLookupTable();
 
+  //! Build a lookup table from compressed data.
+  /*!
+   *  This will decompress a segmented lookup table.
+   */
+  static bool BuildSegmentedLUT(
+    const unsigned short *input, unsigned int n, double divisor,
+    unsigned char *lut, unsigned int stride, unsigned int count);
+
 private:
   vtkDICOMLookupTable(const vtkDICOMLookupTable&);  // Not implemented.
   void operator=(const vtkDICOMLookupTable&);  // Not implemented.
