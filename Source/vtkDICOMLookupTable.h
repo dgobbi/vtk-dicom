@@ -41,7 +41,8 @@ public:
   //! Build the a standard lookup table, given a code string.
   /*!
    *  The supported code strings are HOT_IRON, HOT_METAL_BLUE, PET,
-   *  and PET_20_STEP.  This does not set the range of the table.
+   *  PET_20_STEP, SPRING, SUMMER, FALL, and WINTER.  This does not
+   *  set the range of the table. 
    */
   void BuildStandardPalette(const char *name);
 

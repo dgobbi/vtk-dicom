@@ -277,6 +277,86 @@ void vtkDICOMLookupTable::BuildStandardPalette(const char *cs)
     }
     this->Modified();
   }
+  else if (strcmp(cs, "SPRING") == 0)
+  {
+    int n = this->GetNumberOfColors();
+    unsigned char *cptr = this->WritePointer(0, n);
+    double rgba[4] = { 0.0, 0.0, 0.0, 1.0 };
+    for (int i = 0; i < n; i++)
+    {
+      double x = static_cast<double>(i)/(n - 1);
+      rgba[0] = 1.0;
+      rgba[1] = x;
+      rgba[2] = 1.0 - x;
+
+      cptr[0] = static_cast<unsigned char>(rgba[0]*255.0 + 0.5);
+      cptr[1] = static_cast<unsigned char>(rgba[1]*255.0 + 0.5);
+      cptr[2] = static_cast<unsigned char>(rgba[2]*255.0 + 0.5);
+      cptr[3] = static_cast<unsigned char>(rgba[3]*255.0 + 0.5);
+      cptr += 4;
+    }
+    this->Modified();
+  }
+  else if (strcmp(cs, "SUMMER") == 0)
+  {
+    int n = this->GetNumberOfColors();
+    unsigned char *cptr = this->WritePointer(0, n);
+    double rgba[4] = { 0.0, 0.0, 0.0, 1.0 };
+    for (int i = 0; i < n; i++)
+    {
+      const double xd = 0.5019607843137255;
+      double x = static_cast<double>(i)/(n - 1);
+      rgba[0] = 0.0;
+      rgba[1] = x*0.5;
+      rgba[2] = (x < xd ? 0.0 : (x - xd)*2.0);
+
+      cptr[0] = static_cast<unsigned char>(rgba[0]*255.0 + 0.5);
+      cptr[1] = static_cast<unsigned char>(rgba[1]*255.0 + 0.5);
+      cptr[2] = static_cast<unsigned char>(rgba[2]*255.0 + 0.5);
+      cptr[3] = static_cast<unsigned char>(rgba[3]*255.0 + 0.5);
+      cptr += 4;
+    }
+  }
+  else if (strcmp(cs, "FALL") == 0)
+  {
+    int n = this->GetNumberOfColors();
+    unsigned char *cptr = this->WritePointer(0, n);
+    double rgba[4] = { 0.0, 0.0, 0.0, 1.0 };
+    for (int i = 0; i < n; i++)
+    {
+      double x = static_cast<double>(i)/(n - 1);
+      rgba[0] = 1.0;
+      rgba[1] = 1.0 - x;
+      rgba[2] = x;
+
+      cptr[0] = static_cast<unsigned char>(rgba[0]*255.0 + 0.5);
+      cptr[1] = static_cast<unsigned char>(rgba[1]*255.0 + 0.5);
+      cptr[2] = static_cast<unsigned char>(rgba[2]*255.0 + 0.5);
+      cptr[3] = static_cast<unsigned char>(rgba[3]*255.0 + 0.5);
+      cptr += 4;
+    }
+    this->Modified();
+  }
+  else if (strcmp(cs, "WINTER") == 0)
+  {
+    int n = this->GetNumberOfColors();
+    unsigned char *cptr = this->WritePointer(0, n);
+    double rgba[4] = { 0.0, 0.0, 0.0, 1.0 };
+    for (int i = 0; i < n; i++)
+    {
+      const double xd = 0.5019607843137255;
+      double x = static_cast<double>(i)/(n - 1);
+      rgba[0] = (x < xd ? 0.0 : (x - xd));
+      rgba[1] = x;
+      rgba[2] = x*0.5;
+
+      cptr[0] = static_cast<unsigned char>(rgba[0]*255.0 + 0.5);
+      cptr[1] = static_cast<unsigned char>(rgba[1]*255.0 + 0.5);
+      cptr[2] = static_cast<unsigned char>(rgba[2]*255.0 + 0.5);
+      cptr[3] = static_cast<unsigned char>(rgba[3]*255.0 + 0.5);
+      cptr += 4;
+    }
+  }
 }
 
 //----------------------------------------------------------------------------
