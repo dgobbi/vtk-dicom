@@ -514,7 +514,8 @@ bool vtkDICOMLookupTable::BuildSegmentedLUT(
       unsigned short l = input[i++];
       for (unsigned short k = 0; k < l && i < n && j < count; k++, j++, i++)
       {
-        lut[j*stride] = input[i];
+        double y = input[i]/divisor;
+        lut[j*stride] = static_cast<unsigned char>(y*255.0 + 0.5);
       }
     }
     else if (opcode == 1)
@@ -525,7 +526,7 @@ bool vtkDICOMLookupTable::BuildSegmentedLUT(
       if (j > 0)
       {
         // start of the ramp
-        y0 = lut[(j - 1)*stride]/divisor;
+        y0 = lut[(j - 1)*stride]/255.0;
       }
       if (i < n)
       {
