@@ -43,8 +43,13 @@ public:
     JPEG2KLossless,    // 1.2.4.91  JPEG 2000 lossless/lossy
     MPEG2ML,           // 1.2.4.100 MPEG2 ML
     MPEG2HL,           // 1.2.4.101 MPEG2 HL
-    MPEG2HP,           // 1.2.4.102 MPEG4 AVC/H.264 High Profile / Level 4.1
-    MPEG2BD,           // 1.2.4.103 MPEG4 AVC/H.264 BD-compatible
+    MPEG4HPL41,        // 1.2.4.102 MPEG4 AVC/H.264 High Profile / Level 4.1
+    MPEG4HPL41BD,      // 1.2.4.103 MPEG4 AVC/H.264 BD-compatible
+    MPEG4HPL42V2D,     // 1.2.4.104 MPEG4 AVC/H.264 High Profile / 4.2 2D
+    MPEG4HPL42V3D,     // 1.2.4.105 MPEG4 AVC/H.264 High Profile / 4.2 3D
+    MPEG4HPL42Stereo,  // 1.2.4.106 MPEG4 AVC/H.264 Stereo High Profile / 4.2
+    HEVCMPL51,         // 1.2.4.107 HEVC/H.265 Main Profile / 5.1
+    HEVCM10PL51,       // 1.2.4.108 HEVC/H.265 Main 10 Profile / 5.1
     NumberOfCodecs
   };
 
@@ -137,7 +142,7 @@ public:
 
 private:
   unsigned char Key;
-  static const char *UIDs[16];
+  static const char *UIDs[21];
 
   static int DecodeRLE(
     const ImageFormat& image,
