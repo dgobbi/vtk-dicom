@@ -134,7 +134,10 @@ $<$<BOOL:$<TARGET_PROPERTY:${module_name},INCLUDE_DIRECTORIES>>:
   # which aren't library dependencies, merely dependencies for generators and
   # such. The dependecies specified under "DEPENDS" in the vtk_module(..) macro
   # call are located under _LINK_DEPENDS.
-  foreach(dep ${${module_name}_LINK_DEPENDS})
+  if(NOT ${module_name}_WRAP_DEPENDS)
+    set(${module_name}_WRAP_DEPENDS ${${module_name}_LINK_DEPENDS})
+  endif()
+  foreach(dep ${${module_name}_WRAP_DEPENDS})
     if(NOT "${module_name}" STREQUAL "${dep}")
       if(NOT ${dep}_EXCLUDE_FROM_WRAPPING)
         list(APPEND OTHER_HIERARCHY_FILES "${${dep}_WRAP_HIERARCHY_FILE}")
