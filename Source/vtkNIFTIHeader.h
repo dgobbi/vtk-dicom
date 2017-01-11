@@ -359,6 +359,12 @@ public:
   void GetHeader(nifti_2_header *hdr);
   //@}
 
+  //@{
+  //! Byte-swap the nifti header struct.
+  static void ByteSwapHeader(nifti_1_header *hdr);
+  static void ByteSwapHeader(nifti_2_header *hdr);
+  //@}
+
 protected:
   vtkNIFTIHeader();
   ~vtkNIFTIHeader();

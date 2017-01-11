@@ -103,90 +103,6 @@ vtkNIFTIReader::~vtkNIFTIReader()
 }
 
 //----------------------------------------------------------------------------
-namespace { // anonymous namespace
-
-void vtkNIFTIReaderSwapHeader(nifti_1_header *hdr)
-{
-  // Common to NIFTI and Analyze 7.5
-  vtkByteSwap::SwapVoidRange(&hdr->sizeof_hdr,    1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->extents,       1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->session_error, 1, 2);
-  vtkByteSwap::SwapVoidRange(hdr->dim,            8, 2);
-  vtkByteSwap::SwapVoidRange(&hdr->intent_p1,     1, 4); // unused in 7.5
-  vtkByteSwap::SwapVoidRange(&hdr->intent_p2,     1, 4); // unused in 7.5
-  vtkByteSwap::SwapVoidRange(&hdr->intent_p3,     1, 4); // unused in 7.5
-  vtkByteSwap::SwapVoidRange(&hdr->intent_code,   1, 2); // unused in 7.5
-  vtkByteSwap::SwapVoidRange(&hdr->datatype,      1, 2);
-  vtkByteSwap::SwapVoidRange(&hdr->bitpix,        1, 2);
-  vtkByteSwap::SwapVoidRange(&hdr->slice_start,   1, 2); // dim_un0 in 7.5
-  vtkByteSwap::SwapVoidRange(hdr->pixdim,         8, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->vox_offset,    1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->scl_slope,     1, 4); // unused in 7.5
-  vtkByteSwap::SwapVoidRange(&hdr->scl_inter,     1, 4); // unused in 7.5
-  vtkByteSwap::SwapVoidRange(&hdr->slice_end,     1, 2); // unused in 7.5
-  vtkByteSwap::SwapVoidRange(&hdr->cal_max,       1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->cal_min,       1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->slice_duration,1, 4); // compressed in 7.5
-  vtkByteSwap::SwapVoidRange(&hdr->toffset,       1, 4); // verified in 7.5
-  vtkByteSwap::SwapVoidRange(&hdr->glmax,         1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->glmin,         1, 4);
-
-  // All NIFTI-specific (meaning is totally different in Analyze 7.5)
-  if (strncmp(hdr->magic, "ni1", 4) == 0 ||
-      strncmp(hdr->magic, "n+1", 4) == 0)
-  {
-    vtkByteSwap::SwapVoidRange(&hdr->qform_code,    1, 2);
-    vtkByteSwap::SwapVoidRange(&hdr->sform_code,    1, 2);
-    vtkByteSwap::SwapVoidRange(&hdr->quatern_b,     1, 4);
-    vtkByteSwap::SwapVoidRange(&hdr->quatern_c,     1, 4);
-    vtkByteSwap::SwapVoidRange(&hdr->quatern_d,     1, 4);
-    vtkByteSwap::SwapVoidRange(&hdr->qoffset_x,     1, 4);
-    vtkByteSwap::SwapVoidRange(&hdr->qoffset_y,     1, 4);
-    vtkByteSwap::SwapVoidRange(&hdr->qoffset_z,     1, 4);
-    vtkByteSwap::SwapVoidRange(hdr->srow_x,         4, 4);
-    vtkByteSwap::SwapVoidRange(hdr->srow_y,         4, 4);
-    vtkByteSwap::SwapVoidRange(hdr->srow_z,         4, 4);
-  }
-}
-
-void vtkNIFTIReaderSwapHeader(nifti_2_header *hdr)
-{
-  vtkByteSwap::SwapVoidRange(&hdr->sizeof_hdr,    1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->datatype,      1, 2);
-  vtkByteSwap::SwapVoidRange(&hdr->bitpix,        1, 2);
-  vtkByteSwap::SwapVoidRange(hdr->dim,            8, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->intent_p1,     1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->intent_p2,     1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->intent_p3,     1, 8);
-  vtkByteSwap::SwapVoidRange(hdr->pixdim,         8, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->vox_offset,    1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->scl_slope,     1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->scl_inter,     1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->cal_max,       1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->cal_min,       1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->slice_duration,1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->toffset,       1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->slice_start,   1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->slice_end,     1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->qform_code,    1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->sform_code,    1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->quatern_b,     1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->quatern_c,     1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->quatern_d,     1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->qoffset_x,     1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->qoffset_y,     1, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->qoffset_z,     1, 8);
-  vtkByteSwap::SwapVoidRange(hdr->srow_x,         4, 8);
-  vtkByteSwap::SwapVoidRange(hdr->srow_y,         4, 8);
-  vtkByteSwap::SwapVoidRange(hdr->srow_z,         4, 8);
-  vtkByteSwap::SwapVoidRange(&hdr->slice_code,    1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->xyzt_units,    1, 4);
-  vtkByteSwap::SwapVoidRange(&hdr->intent_code,   1, 4);
-}
-
-} // end anonymous namespace
-
-//----------------------------------------------------------------------------
 vtkNIFTIHeader *vtkNIFTIReader::GetNIFTIHeader()
 {
   if (!this->NIFTIHeader)
@@ -594,7 +510,7 @@ int vtkNIFTIReader::RequestInformation(
     {
       if (NIFTI_NEEDS_SWAP(*hdr2))
       {
-        vtkNIFTIReaderSwapHeader(hdr2);
+        vtkNIFTIHeader::ByteSwapHeader(hdr2);
         isLittleEndian = !isLittleEndian;
       }
       this->NIFTIHeader->SetHeader(hdr2);
@@ -603,7 +519,7 @@ int vtkNIFTIReader::RequestInformation(
     {
       if (NIFTI_NEEDS_SWAP(*hdr1))
       {
-        vtkNIFTIReaderSwapHeader(hdr1);
+        vtkNIFTIHeader::ByteSwapHeader(hdr1);
         isLittleEndian = !isLittleEndian;
       }
       // convert NIFTIv1 header into NIFTIv2
