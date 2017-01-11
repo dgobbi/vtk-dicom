@@ -89,6 +89,7 @@ vtkNIFTIWriter::vtkNIFTIWriter()
   this->Description = 0;
   // Planar RGB (NIFTI doesn't allow this, it's here for Analyze)
   this->PlanarRGB = false;
+  this->DataByteOrder = LittleEndian;
 }
 
 //----------------------------------------------------------------------------
@@ -171,6 +172,9 @@ void vtkNIFTIWriter::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "NIFTIHeader:" << (this->NIFTIHeader ? "\n" : " (none)\n");
   os << indent << "NIFTIVersion: " << this->NIFTIVersion << "\n";
   os << indent << "PlanarRGB: " << (this->PlanarRGB ? "On\n" : "Off\n");
+  os << indent << "DataByteOrder: "
+     << ((this->DataByteOrder == BigEndian) ?
+         "BigEndian\n" : "LittleEndian\n");
 }
 
 //----------------------------------------------------------------------------
@@ -621,6 +625,13 @@ int vtkNIFTIWriter::RequestData(
     return 0;
   }
 
+  // check whether to do a byteswap (for header and data)
+#ifdef VTK_WORDS_BIGENDIAN
+  int swapBytes = (this->DataByteOrder != BigEndian);
+#else
+  int swapBytes = (this->DataByteOrder == BigEndian);
+#endif
+
   int extent[6];
   info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
 
@@ -672,14 +683,22 @@ int vtkNIFTIWriter::RequestData(
   if (version == 2)
   {
     this->OwnHeader->GetHeader(&hdr2);
-    hdrptr = &hdr2;
     hdrsize = hdr2.sizeof_hdr;
+    if (swapBytes)
+    {
+      vtkNIFTIHeader::ByteSwapHeader(&hdr2);
+    }
+    hdrptr = &hdr2;
   }
   else
   {
     this->OwnHeader->GetHeader(&hdr1);
-    hdrptr = &hdr1;
     hdrsize = hdr1.sizeof_hdr;
+    if (swapBytes)
+    {
+      vtkNIFTIHeader::ByteSwapHeader(&hdr1);
+    }
+    hdrptr = &hdr1;
     if (extent[1] - extent[0] + 1 > VTK_SHORT_MAX ||
         extent[3] - extent[2] + 1 > VTK_SHORT_MAX ||
         extent[5] - extent[4] + 1 > VTK_SHORT_MAX)
@@ -801,7 +820,6 @@ int vtkNIFTIWriter::RequestData(
                     (this->OwnHeader->GetDataType() == NIFTI_TYPE_RGB24 ||
                      this->OwnHeader->GetDataType() == NIFTI_TYPE_RGBA32));
 
-  int swapBytes = 0;
   int scalarSize = data->GetScalarSize();
   int numComponents = data->GetNumberOfScalarComponents();
   int outSizeX = static_cast<int>(this->OwnHeader->GetDim(1));

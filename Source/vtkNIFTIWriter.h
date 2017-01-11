@@ -41,6 +41,13 @@ class vtkNIFTIHeader;
 class VTKDICOM_EXPORT vtkNIFTIWriter : public vtkImageWriter
 {
 public:
+
+  //! Endianness of output file.
+  enum EndianEnum {
+    BigEndian = 0,
+    LittleEndian = 1
+  };
+
   //! Static method for construction.
   static vtkNIFTIWriter *New();
   vtkTypeMacro(vtkNIFTIWriter, vtkImageWriter);
@@ -152,6 +159,24 @@ public:
   vtkNIFTIHeader *GetNIFTIHeader();
   //@}
 
+  //@{
+  //! Set the byte order for the files (default: little endian).
+  /*!
+   *  These methods allow the byte order of the NIFTI file to be set.
+   *  Originally, Analyze files (and NIFTI, by extension) were meant to
+   *  be written using the native endianness of the system.  However,
+   *  with the overwhelming preference for little-endian architectures
+   *  on image processing workstations, defaulting to little endian
+   *  files (even on big-endian systems) provides better compatibility.
+   */
+  vtkSetMacro(DataByteOrder, EndianEnum);
+  void SetDataByteOrderToBigEndian() {
+    this->SetDataByteOrder(BigEndian); }
+  void SetDataByteOrderToLittleEndian() {
+    this->SetDataByteOrder(LittleEndian); }
+  vtkGetMacro(DataByteOrder, EndianEnum);
+  //@}
+
 protected:
   vtkNIFTIWriter();
   ~vtkNIFTIWriter();
@@ -198,6 +223,9 @@ protected:
 
   //! Use planar RGB instead of the default (packed).
   bool PlanarRGB;
+
+  //! Whether the file should be little endian.
+  EndianEnum DataByteOrder;
 
 private:
   vtkNIFTIWriter(const vtkNIFTIWriter&);  // Not implemented.
