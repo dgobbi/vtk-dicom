@@ -1128,7 +1128,18 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     if (!vtkDICOMUtilities::IsDICOMFile(fileName.c_str()))
     {
       int code = vtkDICOMFile::Access(fileName.c_str(), vtkDICOMFile::In);
-      if (code == vtkDICOMFile::FileNotFound)
+      if (code != 0 && vtkDICOMFilePath(fileName.c_str()).IsSymlink())
+      {
+        if (code == vtkDICOMFile::AccessDenied)
+        {
+          vtkWarningMacro("Permission denied for link: " << fileName.c_str());
+        }
+        else
+        {
+          vtkWarningMacro("Broken link: " << fileName.c_str());
+        }
+      }
+      else if (code == vtkDICOMFile::FileNotFound)
       {
         vtkWarningMacro("File does not exist: " << fileName.c_str());
       }
@@ -2129,6 +2140,17 @@ void vtkDICOMDirectory::Execute()
       if (code == vtkDICOMFile::FileIsDirectory)
       {
         this->ProcessDirectory(fname.c_str(), this->ScanDepth, files);
+      }
+      else if (code != 0 && vtkDICOMFilePath(fname.c_str()).IsSymlink())
+      {
+        if (code == vtkDICOMFile::AccessDenied)
+        {
+          vtkWarningMacro("Permission denied for link: " << fname.c_str());
+        }
+        else
+        {
+          vtkWarningMacro("Broken link: " << fname.c_str());
+        }
       }
       else if (code == vtkDICOMFile::FileNotFound)
       {
