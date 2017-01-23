@@ -635,6 +635,14 @@ int vtkNIFTIWriter::RequestData(
   int extent[6];
   info->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent);
 
+  if (extent[0] > extent[1] || extent[2] > extent[3] || extent[4] > extent[5])
+  {
+    vtkErrorMacro("The input is empty! The extent is (" << extent[0] << ","
+                  << extent[1] << "," << extent[2] << "," << extent[3] << ","
+                  << extent[4] << "," << extent[5] << ").");
+    return 0;
+  }
+
   // use compression if name ends in .gz
   bool isCompressed = false;
   size_t n = strlen(filename);
