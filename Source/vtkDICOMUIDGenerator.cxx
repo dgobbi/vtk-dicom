@@ -104,7 +104,9 @@ void vtkDICOMUIDGenerator::SetUIDPrefix(const char *uid)
 //----------------------------------------------------------------------------
 namespace {
 
-// divide a hex string by 10, return remainder
+// divide a hexdecimal string by 10 and return the remainder,
+// this is a helper function for converting a long hex string
+// (a uuid) into a decimal string (for a uid)
 int vtkDivideHexStringBy10(char *value)
 {
   char *cp = value;
@@ -201,7 +203,8 @@ void vtkConvertHexToDecimal(const char *uuid, char *uid)
   strcpy(uid, cp);
 }
 
-// convert a byte into two hexadecimal digits
+// convert a byte into two hexadecimal digits, used to convert raw
+// binary into a hexadecimal string one byte at a time
 inline void vtkGenerateHexDigits(unsigned char y, char cp[2])
 {
   unsigned int z = (y >> 4);
@@ -216,7 +219,7 @@ inline void vtkGenerateHexDigits(unsigned char y, char cp[2])
   }
 }
 
-// convert n bytes into 2*n hexadecimal digits
+// convert n raw bytes into 2*n hexadecimal digits
 void vtkConvertBytesToHex(const unsigned char *bytes, size_t n, char *cp)
 {
   for (size_t i = 0; i < n; i++)
@@ -229,7 +232,7 @@ void vtkConvertBytesToHex(const unsigned char *bytes, size_t n, char *cp)
 }
 
 // generate a 36-character uuid from a 128-bit random number
-// (the supplied pointer must have 37 bytes of available space)
+// (the supplied uuid pointer must have 37 bytes of available space)
 void vtkConvertRandomToUUID(const unsigned char bytes[16], char *uuid)
 {
   // copy it so that we can modify it
@@ -245,7 +248,7 @@ void vtkConvertRandomToUUID(const unsigned char bytes[16], char *uuid)
   // set the uuid variant to "0b10" (0b == binary)
   r[8] = ((r[8] & 0x3f) | 0x80);
 
-  // convert the uuid into hexidecimal text
+  // convert the uuid into hexadecimal text
   char *cp = uuid;
   for (unsigned int i = 0; i < 16; i++)
   {
@@ -269,7 +272,8 @@ void vtkConvertUUIDToUID(const char *uuid, char *uid)
   vtkConvertHexToDecimal(uuid, uid + 5);
 }
 
-// read from the random number generator
+// read from the random number generator, cryptographic quality random
+// numbers are needed to ensure uniqueness of the generated uids
 void vtkGenerateRandomBytes(unsigned char *bytes, vtkIdType n)
 {
   int r = 0;
@@ -306,7 +310,9 @@ void vtkGenerateRandomBytes(unsigned char *bytes, vtkIdType n)
   }
 }
 
-// to add a little bit of recognizability to UIDs
+// generate a single-digit numerical prefix for UIDs that identifies the
+// purpose of the uid (this is just for convenience in recognizing the
+// uid types, it is not suggested by the DICOM standard) 
 char vtkDICOMTagToDigit(vtkDICOMTag tag)
 {
   char d = '1';
@@ -337,7 +343,8 @@ char vtkDICOMTagToDigit(vtkDICOMTag tag)
   return d;
 }
 
-// get the number of random bytes to generate after this prefix
+// get the number of random bytes to generate after this prefix,
+// to ensure that we don't go over the 64 byte limit for UID length
 vtkIdType vtkRandomBytesForPrefix(const char *prefix)
 {
   size_t n = strlen(prefix);
@@ -424,11 +431,11 @@ std::string vtkDICOMUIDGenerator::GenerateUID(vtkDICOMTag tag)
     unsigned char r[16];
     vtkGenerateRandomBytes(r, 16);
 
-    // convert to a hex uuid
+    // convert to a hexadecimal uuid
     char uuid[40];
     vtkConvertRandomToUUID(r, uuid);
 
-    // convert the hex uuid into a DICOM UID with root 2.25
+    // convert the hexadedimal uuid into a DICOM UID with root 2.25
     vtkConvertUUIDToUID(uuid, uid);
   }
   else
