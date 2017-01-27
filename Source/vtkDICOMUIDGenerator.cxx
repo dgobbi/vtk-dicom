@@ -281,7 +281,7 @@ void vtkGenerateRandomBytes(unsigned char *bytes, vtkIdType n)
   // use the Windows cryptography interface (WinXP and later)
   HCRYPTPROV hProv;
   r = CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL,
-                          CRYPT_SILENT);
+                          CRYPT_SILENT | CRYPT_VERIFYCONTEXT);
   if (r == 0 && GetLastError() == NTE_BAD_KEYSET)
   {
     r = CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL,
