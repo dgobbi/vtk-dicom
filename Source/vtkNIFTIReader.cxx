@@ -1113,7 +1113,6 @@ int vtkNIFTIReader::RequestData(
 #else
   // use wide character
   const wchar_t *uimgname = fpi.Wide();
-  fprintf(stderr, "uhdrname\n");
 #endif
 #else
   const char *uimgname = imgname;
