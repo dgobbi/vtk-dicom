@@ -325,7 +325,6 @@ int vtkNIFTIReader::CanReadFile(const char *filename)
 #else
   // use wide character
   const wchar_t *uhdrname = fp.Wide();
-  fprintf(stderr, "uhdrname\n");
 #endif
 #else
   const char *uhdrname = hdrname;
