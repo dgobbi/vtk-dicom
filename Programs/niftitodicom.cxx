@@ -24,7 +24,6 @@
 #include "vtkDICOMToRAS.h"
 #include "vtkDICOMCTRectifier.h"
 #include "vtkDICOMUtilities.h"
-#include "vtkDICOMFile.h"
 #include "vtkDICOMFileDirectory.h"
 #include "vtkNIFTIHeader.h"
 #include "vtkNIFTIReader.h"
@@ -863,17 +862,25 @@ int MAINMACRO(int argc, char *argv[])
     exit(1);
   }
 
-  int code = vtkDICOMFile::Access(outpath, vtkDICOMFile::In);
-  if (code != vtkDICOMFile::FileIsDirectory)
+  int code = vtkDICOMFileDirectory::Access(outpath, vtkDICOMFileDirectory::Out);
+  if (code == vtkDICOMFileDirectory::AccessDenied)
   {
-    fprintf(stderr, "option -o must give a directory, not a file.\n");
+    fprintf(stderr, "Cannot write to directory: %s\n", outpath);
     exit(1);
   }
-  code = vtkDICOMFileDirectory::Create(outpath);
-  if (code != vtkDICOMFileDirectory::Good)
+  else if (code == vtkDICOMFileDirectory::ImpossiblePath)
   {
-    fprintf(stderr, "Cannot create directory: %s\n", outpath);
+    fprintf(stderr, "option -o must name a directory, not a file.\n");
     exit(1);
+  }
+  else if (code == vtkDICOMFileDirectory::FileNotFound)
+  {
+    code = vtkDICOMFileDirectory::Create(outpath);
+    if (code != vtkDICOMFileDirectory::Good)
+    {
+      fprintf(stderr, "Cannot create directory: %s\n", outpath);
+      exit(1);
+    }
   }
 
   niftitodicom_convert_files(&options, files, outpath);
