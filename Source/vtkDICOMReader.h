@@ -43,19 +43,19 @@ public:
   static vtkDICOMReader *New();
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+  virtual void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
 
   //@{
   //! Valid extensions for this file type.
-  virtual const char* GetFileExtensions() {
+  virtual const char* GetFileExtensions() VTK_OVERRIDE {
     return ".dcm .dc"; }
 
   //! Return a descriptive name that might be useful in a GUI.
-  virtual const char* GetDescriptiveName() {
+  virtual const char* GetDescriptiveName() VTK_OVERRIDE {
     return "DICOM"; }
 
   //! Return true if this reader can read the given file.
-  int CanReadFile(const char* filename);
+  int CanReadFile(const char* filename) VTK_OVERRIDE;
   //@}
 
   //@{
@@ -237,12 +237,12 @@ protected:
   //! Read the header information.
   virtual int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
 
   //! Read the voxel data.
   virtual int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
   //@}
 
   //@{
@@ -366,8 +366,8 @@ protected:
   char DesiredStackID[20];
 
 private:
-  vtkDICOMReader(const vtkDICOMReader&);  // Not implemented.
-  void operator=(const vtkDICOMReader&);  // Not implemented.
+  vtkDICOMReader(const vtkDICOMReader&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMReader&) VTK_DELETE_FUNCTION;
 };
 
 #endif // vtkDICOMReader_h

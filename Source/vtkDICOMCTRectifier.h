@@ -36,7 +36,7 @@ public:
   vtkTypeMacro(vtkDICOMCTRectifier, vtkDICOMAlgorithm);
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+  virtual void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
 
   //@{
   //! Reverse the default operation.
@@ -103,20 +103,20 @@ protected:
 
   virtual int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
 
   virtual int RequestUpdateExtent(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
 
   virtual int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
 
   virtual void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
-    vtkImageData **outData, int ext[6], int id);
+    vtkImageData **outData, int ext[6], int id) VTK_OVERRIDE;
 
   vtkMatrix4x4 *VolumeMatrix;
   vtkMatrix4x4 *RectifiedMatrix;
@@ -124,8 +124,8 @@ protected:
   int Reverse;
 
 private:
-  vtkDICOMCTRectifier(const vtkDICOMCTRectifier&);  // Not implemented.
-  void operator=(const vtkDICOMCTRectifier&);  // Not implemented.
+  vtkDICOMCTRectifier(const vtkDICOMCTRectifier&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMCTRectifier&) VTK_DELETE_FUNCTION;
 };
 
 #endif // vtkDICOMCTRectifier_h

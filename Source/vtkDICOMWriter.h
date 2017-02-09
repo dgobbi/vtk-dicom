@@ -41,7 +41,7 @@ public:
   static vtkDICOMWriter *New();
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+  virtual void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
 
   //@{
   //! Set a short description (max 64 chars) for the DICOM series.
@@ -208,7 +208,7 @@ public:
 
   //@{
   //! Write the file to disk.
-  virtual void Write();
+  virtual void Write() VTK_OVERRIDE;
   //@}
 
 protected:
@@ -227,7 +227,7 @@ protected:
   //! The main execution method, which writes the file.
   virtual int RequestData(vtkInformation *request,
                           vtkInformationVector** inputVector,
-                          vtkInformationVector* outputVector);
+                          vtkInformationVector* outputVector) VTK_OVERRIDE;
 
   //! The meta data set by the user.
   vtkDICOMMetaData *MetaData;
@@ -271,8 +271,8 @@ protected:
   int Streaming;
 
 private:
-  vtkDICOMWriter(const vtkDICOMWriter&);  // Not implemented.
-  void operator=(const vtkDICOMWriter&);  // Not implemented.
+  vtkDICOMWriter(const vtkDICOMWriter&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMWriter&) VTK_DELETE_FUNCTION;
 };
 
 #endif // vtkDICOMWriter_h

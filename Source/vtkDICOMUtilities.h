@@ -33,7 +33,7 @@ public:
   vtkTypeMacro(vtkDICOMUtilities, vtkObject);
 
   //! Print a summary of the contents of this object.
-  void PrintSelf(ostream& os, vtkIndent indent);
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
   //@}
 
   //@{
@@ -192,8 +192,8 @@ protected:
   static char ImplementationVersionName[17];
 
 private:
-  vtkDICOMUtilities(const vtkDICOMUtilities&);  // Not implemented.
-  void operator=(const vtkDICOMUtilities&);  // Not implemented.
+  vtkDICOMUtilities(const vtkDICOMUtilities&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMUtilities&) VTK_DELETE_FUNCTION;
 };
 
 #endif /* vtkDICOMUtilities_h */

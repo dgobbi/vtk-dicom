@@ -42,7 +42,7 @@ public:
   vtkTypeMacro(vtkDICOMParser, vtkObject);
 
   //! Print a summary of the contents of this object.
-  void PrintSelf(ostream& os, vtkIndent indent);
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
 
   //@{
   //! Set the file name.
@@ -202,8 +202,8 @@ protected:
   friend class vtkDICOMParserInternalFriendship;
 
 private:
-  vtkDICOMParser(const vtkDICOMParser&);  // Not implemented.
-  void operator=(const vtkDICOMParser&);  // Not implemented.
+  vtkDICOMParser(const vtkDICOMParser&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMParser&) VTK_DELETE_FUNCTION;
 };
 
 #endif /* vtkDICOMParser_h */
