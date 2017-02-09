@@ -41,7 +41,11 @@ public:
   static vtkDICOMApplyRescale *New();
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
   //@{
   //! Set the output data type to float or double (default is double).
@@ -58,25 +62,45 @@ protected:
   vtkDICOMApplyRescale();
   ~vtkDICOMApplyRescale();
 
-  virtual int RequestInformation(
+#ifdef VTK_OVERRIDE
+  int RequestInformation(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  int RequestData(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  void ThreadedRequestData(
+    vtkInformation *request, vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector, vtkImageData ***inData,
+    vtkImageData **outData, int ext[6], int id) VTK_OVERRIDE;
+#else
+  int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
-  virtual int RequestData(
+  int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
-  virtual void ThreadedRequestData(
+  void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
     vtkImageData **outData, int ext[6], int id);
+#endif
 
   vtkDICOMRealWorldMapping *Mapping;
   int OutputScalarType;
 
 private:
-  vtkDICOMApplyRescale(const vtkDICOMApplyRescale&);  // Not implemented.
-  void operator=(const vtkDICOMApplyRescale&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMApplyRescale(const vtkDICOMApplyRescale&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMApplyRescale&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMApplyRescale(const vtkDICOMApplyRescale&);
+  void operator=(const vtkDICOMApplyRescale&);
+#endif
 };
 
 #endif // vtkDICOMApplyRescale_h

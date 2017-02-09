@@ -43,7 +43,11 @@ public:
   static vtkDICOMAlgorithm *New();
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
   //@}
 
   //@{
@@ -80,22 +84,42 @@ protected:
     vtkInformation *outInfo, vtkDataObject *outData);
   //@}
 
-  virtual int RequestInformation(
+#ifdef VTK_OVERRIDE
+  int RequestInformation(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  int RequestData(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  void ThreadedRequestData(
+    vtkInformation *request, vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector, vtkImageData ***inData,
+    vtkImageData **outData, int ext[6], int id) VTK_OVERRIDE;
+#else
+  int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
-  virtual int RequestData(
+  int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
-  virtual void ThreadedRequestData(
+  void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
     vtkImageData **outData, int ext[6], int id);
+#endif
 
 private:
-  vtkDICOMAlgorithm(const vtkDICOMAlgorithm&);  // Not implemented.
-  void operator=(const vtkDICOMAlgorithm&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMAlgorithm(const vtkDICOMAlgorithm&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMAlgorithm&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMAlgorithm(const vtkDICOMAlgorithm&);
+  void operator=(const vtkDICOMAlgorithm&);
+#endif
 };
 
 #endif // vtkDICOMAlgorithm_h

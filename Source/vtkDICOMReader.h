@@ -43,20 +43,39 @@ public:
   static vtkDICOMReader *New();
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
+#ifdef VTK_OVERRIDE
   //@{
   //! Valid extensions for this file type.
-  virtual const char* GetFileExtensions() {
+  const char* GetFileExtensions() VTK_OVERRIDE {
     return ".dcm .dc"; }
 
   //! Return a descriptive name that might be useful in a GUI.
-  virtual const char* GetDescriptiveName() {
+  const char* GetDescriptiveName() VTK_OVERRIDE {
+    return "DICOM"; }
+
+  //! Return true if this reader can read the given file.
+  int CanReadFile(const char* filename) VTK_OVERRIDE;
+  //@}
+#else
+  //@{
+  //! Valid extensions for this file type.
+  const char* GetFileExtensions() {
+    return ".dcm .dc"; }
+
+  //! Return a descriptive name that might be useful in a GUI.
+  const char* GetDescriptiveName() {
     return "DICOM"; }
 
   //! Return true if this reader can read the given file.
   int CanReadFile(const char* filename);
   //@}
+#endif
 
   //@{
   //! Set the Stack ID of the stack to load, for named stacks.
@@ -233,6 +252,19 @@ protected:
   vtkDICOMReader();
   ~vtkDICOMReader();
 
+#ifdef VTK_OVERRIDE
+  //@{
+  //! Read the header information.
+  virtual int RequestInformation(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  //! Read the voxel data.
+  virtual int RequestData(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+  //@}
+#else
   //@{
   //! Read the header information.
   virtual int RequestInformation(
@@ -244,6 +276,7 @@ protected:
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
   //@}
+#endif
 
   //@{
   //! Read one file.  Specify the offset to the PixelData.
@@ -366,8 +399,13 @@ protected:
   char DesiredStackID[20];
 
 private:
-  vtkDICOMReader(const vtkDICOMReader&);  // Not implemented.
-  void operator=(const vtkDICOMReader&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMReader(const vtkDICOMReader&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMReader&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMReader(const vtkDICOMReader&);
+  void operator=(const vtkDICOMReader&);
+#endif
 };
 
 #endif // vtkDICOMReader_h

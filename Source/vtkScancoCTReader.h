@@ -44,16 +44,35 @@ public:
   static vtkScancoCTReader *New();
   vtkTypeMacro(vtkScancoCTReader, vtkImageReader2);
 
+#ifdef VTK_OVERRIDE
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
 
   //@{
   //! Valid extensions for this file type.
-  virtual const char* GetFileExtensions() {
+  const char* GetFileExtensions() VTK_OVERRIDE {
     return ".isq .rsq .rad .aim" ; }
 
   //! Return a descriptive name that might be useful in a GUI.
-  virtual const char* GetDescriptiveName() {
+  const char* GetDescriptiveName() VTK_OVERRIDE {
+    return "SCANCO MicroCT"; }
+  //@}
+
+  //@{
+  //! Return true if this reader can read the given file.
+  int CanReadFile(const char* filename) VTK_OVERRIDE;
+  //@}
+#else
+  //! Print information about this object.
+  void PrintSelf(ostream& os, vtkIndent indent);
+
+  //@{
+  //! Valid extensions for this file type.
+  const char* GetFileExtensions() {
+    return ".isq .rsq .rad .aim" ; }
+
+  //! Return a descriptive name that might be useful in a GUI.
+  const char* GetDescriptiveName() {
     return "SCANCO MicroCT"; }
   //@}
 
@@ -61,6 +80,7 @@ public:
   //! Return true if this reader can read the given file.
   int CanReadFile(const char* filename);
   //@}
+#endif
 
   //@{
   //! Get a string that states the version of the file header.
@@ -169,15 +189,27 @@ protected:
   vtkScancoCTReader();
   ~vtkScancoCTReader();
 
+#ifdef VTK_OVERRIDE
   //! Read the header information.
-  virtual int RequestInformation(
+  int RequestInformation(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  //! Read the voxel data.
+  int RequestData(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+#else
+  //! Read the header information.
+  int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
   //! Read the voxel data.
-  virtual int RequestData(
+  int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
+#endif
 
   //! Initialize the header information
   void InitializeHeader();
@@ -254,8 +286,13 @@ protected:
   int Compression;
 
 private:
-  vtkScancoCTReader(const vtkScancoCTReader&);  // Not implemented.
-  void operator=(const vtkScancoCTReader&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkScancoCTReader(const vtkScancoCTReader&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkScancoCTReader&) VTK_DELETE_FUNCTION;
+#else
+  vtkScancoCTReader(const vtkScancoCTReader&);
+  void operator=(const vtkScancoCTReader&);
+#endif
 };
 
 #endif // vtkScancoCTReader_h

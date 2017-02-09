@@ -39,24 +39,43 @@ public:
   vtkTypeMacro(vtkDICOMApplyPalette, vtkDICOMAlgorithm);
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
 protected:
   vtkDICOMApplyPalette();
   ~vtkDICOMApplyPalette();
 
-  virtual int RequestInformation(
+#ifdef VTK_OVERRIDE
+  int RequestInformation(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  int RequestData(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  void ThreadedRequestData(
+    vtkInformation *request, vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector, vtkImageData ***inData,
+    vtkImageData **outData, int ext[6], int id) VTK_OVERRIDE;
+#else
+  int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
-  virtual int RequestData(
+  int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
-  virtual void ThreadedRequestData(
+  void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
     vtkImageData **outData, int ext[6], int id);
+#endif
 
   //! Container for the lookup tables used.
   vtkDICOMPerFilePalette *Palette;
@@ -65,8 +84,13 @@ protected:
   bool IsSupplemental;
 
 private:
-  vtkDICOMApplyPalette(const vtkDICOMApplyPalette&);  // Not implemented.
-  void operator=(const vtkDICOMApplyPalette&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMApplyPalette(const vtkDICOMApplyPalette&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMApplyPalette&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMApplyPalette(const vtkDICOMApplyPalette&);
+  void operator=(const vtkDICOMApplyPalette&);
+#endif
 };
 
 #endif // vtkDICOMApplyPalette_h

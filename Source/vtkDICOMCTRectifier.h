@@ -36,7 +36,11 @@ public:
   vtkTypeMacro(vtkDICOMCTRectifier, vtkDICOMAlgorithm);
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
   //@{
   //! Reverse the default operation.
@@ -101,22 +105,41 @@ protected:
     const double matrix[16], const int extent[6], double spacing[3],
     double origin[3]);
 
-  virtual int RequestInformation(
+#ifdef VTK_OVERRIDE
+  int RequestInformation(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  int RequestUpdateExtent(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  int RequestData(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  void ThreadedRequestData(
+    vtkInformation *request, vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector, vtkImageData ***inData,
+    vtkImageData **outData, int ext[6], int id) VTK_OVERRIDE;
+#else
+  int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
-  virtual int RequestUpdateExtent(
+  int RequestUpdateExtent(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
-  virtual int RequestData(
+  int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
-  virtual void ThreadedRequestData(
+  void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
     vtkImageData **outData, int ext[6], int id);
+#endif
 
   vtkMatrix4x4 *VolumeMatrix;
   vtkMatrix4x4 *RectifiedMatrix;
@@ -124,8 +147,13 @@ protected:
   int Reverse;
 
 private:
-  vtkDICOMCTRectifier(const vtkDICOMCTRectifier&);  // Not implemented.
-  void operator=(const vtkDICOMCTRectifier&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMCTRectifier(const vtkDICOMCTRectifier&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMCTRectifier&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMCTRectifier(const vtkDICOMCTRectifier&);
+  void operator=(const vtkDICOMCTRectifier&);
+#endif
 };
 
 #endif // vtkDICOMCTRectifier_h

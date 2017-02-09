@@ -33,7 +33,11 @@ class VTKDICOM_EXPORT vtkDICOMDirectory : public vtkAlgorithm
 {
 public:
   vtkTypeMacro(vtkDICOMDirectory,vtkAlgorithm);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
   void PrintSelf(ostream& os, vtkIndent indent);
+#endif
   static vtkDICOMDirectory *New();
 
   //! Levels within the DICOM information model.
@@ -118,12 +122,24 @@ public:
    * This method causes the directory to be read.  It must be called before
    * any of the Get methods.
    */
-  virtual void Update() { this->Update(0); }
-  virtual void Update(int);
+#ifdef VTK_OVERRIDE
+  void Update() VTK_OVERRIDE { this->Update(0); }
+  void Update(int) VTK_OVERRIDE;
 #if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION > 0) || VTK_MAJOR_VERSION > 7
-  virtual int Update(vtkInformation *) { this->Update(); return 1; }
-  virtual int Update(int i, vtkInformationVector *) {
+  int Update(vtkInformation *) VTK_OVERRIDE {
+    this->Update(); return 1; }
+  int Update(int i, vtkInformationVector *) VTK_OVERRIDE {
     this->Update(i); return 1; }
+#endif
+#else
+  void Update() { this->Update(0); }
+  void Update(int);
+#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION > 0) || VTK_MAJOR_VERSION > 7
+  int Update(vtkInformation *) {
+    this->Update(); return 1; }
+  int Update(int i, vtkInformationVector *) {
+    this->Update(i); return 1; }
+#endif
 #endif
   //@}
 
@@ -299,7 +315,11 @@ protected:
   void SetInternalFileName(const char *fname);
 
   //! Set the error code.
+#ifdef VTK_OVERRIDE
+  void SetErrorCode(unsigned long e) VTK_OVERRIDE { this->ErrorCode = e; }
+#else
   void SetErrorCode(unsigned long e) { this->ErrorCode = e; }
+#endif
 
   //! Add all of the series listed in a DICOMDIR file.
   /*!
@@ -321,8 +341,13 @@ protected:
     vtkDICOMMetaData *meta, const vtkDICOMItem *item, int instance);
 
 private:
-  vtkDICOMDirectory(const vtkDICOMDirectory&);  // Not implemented.
-  void operator=(const vtkDICOMDirectory&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMDirectory(const vtkDICOMDirectory&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMDirectory&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMDirectory(const vtkDICOMDirectory&);
+  void operator=(const vtkDICOMDirectory&);
+#endif
 
   struct SeriesItem;
   struct StudyItem;

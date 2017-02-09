@@ -51,20 +51,39 @@ public:
   vtkTypeMacro(vtkNIFTIReader, vtkImageReader2);
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
+#ifdef VTK_OVERRIDE
   //@{
   //! Valid extensions for this file type.
-  virtual const char* GetFileExtensions() {
+  const char* GetFileExtensions() VTK_OVERRIDE {
     return ".nii .nii.gz .img .img.gz .hdr .hdr.gz"; }
 
   //! Return a descriptive name that might be useful in a GUI.
-  virtual const char* GetDescriptiveName() {
+  const char* GetDescriptiveName() VTK_OVERRIDE {
+    return "NIfTI"; }
+
+  //! Return true if this reader can read the given file.
+  int CanReadFile(const char* filename) VTK_OVERRIDE;
+  //@}
+#else
+  //@{
+  //! Valid extensions for this file type.
+  const char* GetFileExtensions() {
+    return ".nii .nii.gz .img .img.gz .hdr .hdr.gz"; }
+
+  //! Return a descriptive name that might be useful in a GUI.
+  const char* GetDescriptiveName() {
     return "NIfTI"; }
 
   //! Return true if this reader can read the given file.
   int CanReadFile(const char* filename);
   //@}
+#endif
 
   //@{
   //! Read the time dimension as scalar components (default: Off).
@@ -165,15 +184,27 @@ protected:
   vtkNIFTIReader();
   ~vtkNIFTIReader();
 
+#ifdef VTK_OVERRIDE
   //! Read the header information.
-  virtual int RequestInformation(
+  int RequestInformation(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  //! Read the voxel data.
+  int RequestData(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+#else
+  //! Read the header information.
+  int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
   //! Read the voxel data.
-  virtual int RequestData(
+  int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
+#endif
 
   //! Doe a case-insensitive check for the given extension.
   /*!
@@ -226,8 +257,13 @@ protected:
   bool PlanarRGB;
 
 private:
-  vtkNIFTIReader(const vtkNIFTIReader&);  // Not implemented.
-  void operator=(const vtkNIFTIReader&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkNIFTIReader(const vtkNIFTIReader&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkNIFTIReader&) VTK_DELETE_FUNCTION;
+#else
+  vtkNIFTIReader(const vtkNIFTIReader&);
+  void operator=(const vtkNIFTIReader&);
+#endif
 };
 
 #endif // vtkNIFTIReader_h

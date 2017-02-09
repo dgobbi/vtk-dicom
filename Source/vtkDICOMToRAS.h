@@ -40,7 +40,11 @@ public:
   vtkTypeMacro(vtkDICOMToRAS, vtkThreadedImageAlgorithm);
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
   //@{
   //! Perform RAS to DICOM instead of DICOM to RAS.
@@ -138,22 +142,41 @@ protected:
    */
   void ComputeMatrix(int extent[6], double spacing[3], double origin[3]);
 
-  virtual int RequestInformation(
+#ifdef VTK_OVERRIDE
+  int RequestInformation(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  int RequestUpdateExtent(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  int RequestData(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
+  void ThreadedRequestData(
+    vtkInformation *request, vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector, vtkImageData ***inData,
+    vtkImageData **outData, int ext[6], int id) VTK_OVERRIDE;
+#else
+  int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
-  virtual int RequestUpdateExtent(
+  int RequestUpdateExtent(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
-  virtual int RequestData(
+  int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector);
 
-  virtual void ThreadedRequestData(
+  void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
     vtkImageData **outData, int ext[6], int id);
+#endif
 
   vtkMatrix4x4 *PatientMatrix;
   vtkMatrix4x4 *RASMatrix;
@@ -167,8 +190,13 @@ protected:
   double Matrix[16];
 
 private:
-  vtkDICOMToRAS(const vtkDICOMToRAS&);  // Not implemented.
-  void operator=(const vtkDICOMToRAS&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMToRAS(const vtkDICOMToRAS&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMToRAS&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMToRAS(const vtkDICOMToRAS&);
+  void operator=(const vtkDICOMToRAS&);
+#endif
 };
 
 #endif // vtkDICOMToRAS_h

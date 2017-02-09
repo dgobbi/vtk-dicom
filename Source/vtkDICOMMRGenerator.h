@@ -33,7 +33,11 @@ public:
   vtkTypeMacro(vtkDICOMMRGenerator, vtkDICOMGenerator);
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
   //! Generate an instance of one of the supported classes.
   /*!
@@ -41,7 +45,11 @@ public:
    *  information for a vtkImageData object, it will populate the
    *  attributes of the supplied vtkDICOMMetaData object.
    */
-  virtual bool GenerateInstance(vtkInformation *info);
+#ifdef VTK_OVERRIDE
+  bool GenerateInstance(vtkInformation *info) VTK_OVERRIDE;
+#else
+  bool GenerateInstance(vtkInformation *info);
+#endif
 
 protected:
   vtkDICOMMRGenerator();
@@ -57,8 +65,13 @@ protected:
   virtual bool GenerateMRInstance(vtkInformation *info);
 
 private:
-  vtkDICOMMRGenerator(const vtkDICOMMRGenerator&);  // Not implemented.
-  void operator=(const vtkDICOMMRGenerator&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMMRGenerator(const vtkDICOMMRGenerator&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMMRGenerator&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMMRGenerator(const vtkDICOMMRGenerator&);
+  void operator=(const vtkDICOMMRGenerator&);
+#endif
 };
 
 #endif // vtkDICOMMRGenerator_h

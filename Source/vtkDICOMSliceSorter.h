@@ -31,7 +31,11 @@ class VTKDICOM_EXPORT vtkDICOMSliceSorter : public vtkObject
 {
 public:
   vtkTypeMacro(vtkDICOMSliceSorter,vtkObject);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
   void PrintSelf(ostream& os, vtkIndent indent);
+#endif
   static vtkDICOMSliceSorter *New();
 
   //@{
@@ -174,8 +178,13 @@ protected:
   double SliceSpacing;
 
 private:
-  vtkDICOMSliceSorter(const vtkDICOMSliceSorter&);  // Not implemented.
-  void operator=(const vtkDICOMSliceSorter&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMSliceSorter(const vtkDICOMSliceSorter&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMSliceSorter&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMSliceSorter(const vtkDICOMSliceSorter&);
+  void operator=(const vtkDICOMSliceSorter&);
+#endif
 };
 
 #endif

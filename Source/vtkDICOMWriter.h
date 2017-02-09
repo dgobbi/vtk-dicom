@@ -41,7 +41,11 @@ public:
   static vtkDICOMWriter *New();
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
   //@{
   //! Set a short description (max 64 chars) for the DICOM series.
@@ -208,7 +212,11 @@ public:
 
   //@{
   //! Write the file to disk.
-  virtual void Write();
+#ifdef VTK_OVERRIDE
+  void Write() VTK_OVERRIDE;
+#else
+  void Write();
+#endif
   //@}
 
 protected:
@@ -225,9 +233,15 @@ protected:
   virtual int GenerateMetaData(vtkInformation *info);
 
   //! The main execution method, which writes the file.
-  virtual int RequestData(vtkInformation *request,
-                          vtkInformationVector** inputVector,
-                          vtkInformationVector* outputVector);
+#ifdef VTK_OVERRIDE
+  int RequestData(vtkInformation *request,
+                  vtkInformationVector** inputVector,
+                  vtkInformationVector* outputVector) VTK_OVERRIDE;
+#else
+  int RequestData(vtkInformation *request,
+                  vtkInformationVector** inputVector,
+                  vtkInformationVector* outputVector);
+#endif
 
   //! The meta data set by the user.
   vtkDICOMMetaData *MetaData;
@@ -271,8 +285,13 @@ protected:
   int Streaming;
 
 private:
-  vtkDICOMWriter(const vtkDICOMWriter&);  // Not implemented.
-  void operator=(const vtkDICOMWriter&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMWriter(const vtkDICOMWriter&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMWriter&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMWriter(const vtkDICOMWriter&);
+  void operator=(const vtkDICOMWriter&);
+#endif
 };
 
 #endif // vtkDICOMWriter_h

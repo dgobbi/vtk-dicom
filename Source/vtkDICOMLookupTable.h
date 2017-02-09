@@ -36,13 +36,17 @@ public:
   vtkTypeMacro(vtkDICOMLookupTable, vtkLookupTable);
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
   //! Build the a standard lookup table, given a code string.
   /*!
    *  The supported code strings are HOT_IRON, HOT_METAL_BLUE, PET,
    *  PET_20_STEP, SPRING, SUMMER, FALL, and WINTER.  This does not
-   *  set the range of the table. 
+   *  set the range of the table.
    */
   void BuildStandardPalette(const char *name);
 
@@ -67,8 +71,13 @@ protected:
     unsigned char *lut, unsigned int stride, unsigned int count);
 
 private:
-  vtkDICOMLookupTable(const vtkDICOMLookupTable&);  // Not implemented.
-  void operator=(const vtkDICOMLookupTable&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMLookupTable(const vtkDICOMLookupTable&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMLookupTable&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMLookupTable(const vtkDICOMLookupTable&);
+  void operator=(const vtkDICOMLookupTable&);
+#endif
 };
 
 #endif // vtkDICOMLookupTable_h

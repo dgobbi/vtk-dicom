@@ -39,7 +39,11 @@ public:
   vtkTypeMacro(vtkDICOMMetaData, vtkDataObject);
 
   //! Print a summary of the contents of this object.
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
   void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
   //@{
   //! Get the number of instances (i.e. files).
@@ -59,7 +63,11 @@ public:
   void Clear();
 
   //! Remove all data elements and initialize all members.
+#ifdef VTK_OVERRIDE
+  void Initialize() VTK_OVERRIDE;
+#else
   void Initialize();
+#endif
   //@}
 
   //@{
@@ -280,8 +288,13 @@ public:
 
   //@{
   //! DataObject interface function.
+#ifdef VTK_OVERRIDE
+  void ShallowCopy(vtkDataObject *source) VTK_OVERRIDE;
+  void DeepCopy(vtkDataObject *source) VTK_OVERRIDE;
+#else
   void ShallowCopy(vtkDataObject *source);
   void DeepCopy(vtkDataObject *source);
+#endif
   //@}
 
 protected:
@@ -331,8 +344,13 @@ private:
   //! An array to map slices and components to frames.
   vtkIntArray *FrameIndexArray;
 
-  vtkDICOMMetaData(const vtkDICOMMetaData&);  // Not implemented.
-  void operator=(const vtkDICOMMetaData&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMMetaData(const vtkDICOMMetaData&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMMetaData&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMMetaData(const vtkDICOMMetaData&);
+  void operator=(const vtkDICOMMetaData&);
+#endif
 };
 
 #endif /* vtkDICOMMetaData_h */

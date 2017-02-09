@@ -48,7 +48,11 @@ public:
   vtkTypeMacro(vtkDICOMGenerator, vtkObject);
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
   //@{
   //! Generate an instance of one of the supported classes.
@@ -466,8 +470,13 @@ protected:
   vtkIntArray *RangeArray;
 
 private:
-  vtkDICOMGenerator(const vtkDICOMGenerator&);  // Not implemented.
-  void operator=(const vtkDICOMGenerator&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMGenerator(const vtkDICOMGenerator&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMGenerator&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMGenerator(const vtkDICOMGenerator&);
+  void operator=(const vtkDICOMGenerator&);
+#endif
 };
 
 #endif // vtkDICOMGenerator_h

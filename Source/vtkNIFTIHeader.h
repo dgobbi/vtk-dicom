@@ -162,7 +162,11 @@ public:
   vtkTypeMacro(vtkNIFTIHeader, vtkObject);
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
   //@{
   //! Get the magic number for the NIFTI file as a null-terminated string.
@@ -408,8 +412,13 @@ protected:
   void SetStringValue(char *x, const char *y, size_t n);
 
 private:
-  vtkNIFTIHeader(const vtkNIFTIHeader&);  // Not implemented.
-  void operator=(const vtkNIFTIHeader&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkNIFTIHeader(const vtkNIFTIHeader&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkNIFTIHeader&) VTK_DELETE_FUNCTION;
+#else
+  vtkNIFTIHeader(const vtkNIFTIHeader&);
+  void operator=(const vtkNIFTIHeader&);
+#endif
 };
 
 #endif // vtkNIFTIHeader_h

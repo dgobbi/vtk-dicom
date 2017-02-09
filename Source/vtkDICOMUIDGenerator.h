@@ -42,7 +42,11 @@ public:
   //@}
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+#ifdef VTK_OVERRIDE
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+#else
+  void PrintSelf(ostream& os, vtkIndent indent);
+#endif
 
   //@{
   //! Set a UID prefix to use when generating UIDs.
@@ -104,8 +108,13 @@ protected:
 private:
   friend class vtkDICOMUIDGeneratorInitializer;
 
-  vtkDICOMUIDGenerator(const vtkDICOMUIDGenerator&);  // Not implemented.
-  void operator=(const vtkDICOMUIDGenerator&);  // Not implemented.
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMUIDGenerator(const vtkDICOMUIDGenerator&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMUIDGenerator&) VTK_DELETE_FUNCTION;
+#else
+  vtkDICOMUIDGenerator(const vtkDICOMUIDGenerator&);
+  void operator=(const vtkDICOMUIDGenerator&);
+#endif
 };
 
 //! @cond
@@ -120,9 +129,16 @@ public:
   vtkDICOMUIDGeneratorInitializer();
   ~vtkDICOMUIDGeneratorInitializer();
 private:
+#ifdef VTK_DELETE_FUNCTION
+  vtkDICOMUIDGeneratorInitializer(
+    const vtkDICOMUIDGeneratorInitializer&) VTK_DELETE_FUNCTION;
+  vtkDICOMUIDGeneratorInitializer& operator=(
+    const vtkDICOMUIDGeneratorInitializer&) VTK_DELETE_FUNCTION;
+#else
   vtkDICOMUIDGeneratorInitializer(const vtkDICOMUIDGeneratorInitializer&);
   vtkDICOMUIDGeneratorInitializer& operator=(
     const vtkDICOMUIDGeneratorInitializer&);
+#endif
 };
 
 static vtkDICOMUIDGeneratorInitializer vtkDICOMUIDGeneratorInitializerInstance;
