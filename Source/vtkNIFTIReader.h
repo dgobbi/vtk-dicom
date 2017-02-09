@@ -51,19 +51,19 @@ public:
   vtkTypeMacro(vtkNIFTIReader, vtkImageReader2);
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+  virtual void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
 
   //@{
   //! Valid extensions for this file type.
-  virtual const char* GetFileExtensions() {
+  virtual const char* GetFileExtensions() VTK_OVERRIDE {
     return ".nii .nii.gz .img .img.gz .hdr .hdr.gz"; }
 
   //! Return a descriptive name that might be useful in a GUI.
-  virtual const char* GetDescriptiveName() {
+  virtual const char* GetDescriptiveName() VTK_OVERRIDE {
     return "NIfTI"; }
 
   //! Return true if this reader can read the given file.
-  int CanReadFile(const char* filename);
+  int CanReadFile(const char* filename) VTK_OVERRIDE;
   //@}
 
   //@{
@@ -168,12 +168,12 @@ protected:
   //! Read the header information.
   virtual int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
 
   //! Read the voxel data.
   virtual int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
 
   //! Doe a case-insensitive check for the given extension.
   /*!

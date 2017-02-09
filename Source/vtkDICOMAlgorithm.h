@@ -43,7 +43,7 @@ public:
   static vtkDICOMAlgorithm *New();
 
   //! Print information about this object.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+  virtual void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
   //@}
 
   //@{
@@ -82,20 +82,20 @@ protected:
 
   virtual int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
 
   virtual int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
 
   virtual void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
-    vtkImageData **outData, int ext[6], int id);
+    vtkImageData **outData, int ext[6], int id) VTK_OVERRIDE;
 
 private:
-  vtkDICOMAlgorithm(const vtkDICOMAlgorithm&);  // Not implemented.
-  void operator=(const vtkDICOMAlgorithm&);  // Not implemented.
+  vtkDICOMAlgorithm(const vtkDICOMAlgorithm&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMAlgorithm&) VTK_DELETE_FUNCTION;
 };
 
 #endif // vtkDICOMAlgorithm_h

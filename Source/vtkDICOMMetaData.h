@@ -39,7 +39,7 @@ public:
   vtkTypeMacro(vtkDICOMMetaData, vtkDataObject);
 
   //! Print a summary of the contents of this object.
-  void PrintSelf(ostream& os, vtkIndent indent);
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
 
   //@{
   //! Get the number of instances (i.e. files).
@@ -59,7 +59,7 @@ public:
   void Clear();
 
   //! Remove all data elements and initialize all members.
-  void Initialize();
+  void Initialize() VTK_OVERRIDE;
   //@}
 
   //@{
@@ -280,8 +280,8 @@ public:
 
   //@{
   //! DataObject interface function.
-  void ShallowCopy(vtkDataObject *source);
-  void DeepCopy(vtkDataObject *source);
+  void ShallowCopy(vtkDataObject *source) VTK_OVERRIDE;
+  void DeepCopy(vtkDataObject *source) VTK_OVERRIDE;
   //@}
 
 protected:
@@ -331,8 +331,8 @@ private:
   //! An array to map slices and components to frames.
   vtkIntArray *FrameIndexArray;
 
-  vtkDICOMMetaData(const vtkDICOMMetaData&);  // Not implemented.
-  void operator=(const vtkDICOMMetaData&);  // Not implemented.
+  vtkDICOMMetaData(const vtkDICOMMetaData&) VTK_DELETE_FUNCTION;
+  void operator=(const vtkDICOMMetaData&) VTK_DELETE_FUNCTION;
 };
 
 #endif /* vtkDICOMMetaData_h */

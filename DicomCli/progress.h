@@ -23,7 +23,7 @@ public:
   static ProgressObserver *New() { return new ProgressObserver; }
   vtkTypeMacro(ProgressObserver,vtkCommand);
   virtual void Execute(
-    vtkObject *caller, unsigned long eventId, void *callData);
+    vtkObject *caller, unsigned long eventId, void *callData) VTK_OVERRIDE;
   void SetText(const char *text) { this->Text = text; }
 protected:
   ProgressObserver() : Stage(0), Anim(0), LastTime(0), Text("") {}
