@@ -195,7 +195,7 @@ void dicomtonifti_help(FILE *file, const char *command_name)
 }
 
 // Print error
-void dicomtonifti_check_error(vtkObject *o)
+bool dicomtonifti_check_error(vtkObject *o)
 {
   vtkDICOMReader *reader = vtkDICOMReader::SafeDownCast(o);
   vtkDICOMFileSorter *sorter = vtkDICOMFileSorter::SafeDownCast(o);
@@ -231,7 +231,7 @@ void dicomtonifti_check_error(vtkObject *o)
   switch(errorcode)
   {
     case vtkErrorCode::NoError:
-      return;
+      return false;
     case vtkErrorCode::FileNotFoundError:
       fprintf(stderr, "File not found: %s\n", filename);
       break;
@@ -258,7 +258,7 @@ void dicomtonifti_check_error(vtkObject *o)
       break;
   }
 
-  exit(1);
+  return true;
 }
 
 // Read the options
@@ -572,7 +572,9 @@ void dicomtonifti_convert_one(
   reader->TimeAsVectorOn();
   reader->SetFileNames(a);
   reader->Update();
-  dicomtonifti_check_error(reader);
+  if (dicomtonifti_check_error(reader)) {
+    return;
+  }
 
   // get the output and the orientation matrix
   vtkAlgorithmOutput *lastOutput = reader->GetOutputPort();
@@ -589,7 +591,7 @@ void dicomtonifti_convert_one(
       fprintf(stderr, "Only %d volumes, but --volume %d used.\n",
               reader->GetOutput()->GetNumberOfScalarComponents(),
               options->volume);
-      exit(1);
+      return;
     }
     extract->SetComponents(options->volume);
     extract->Update();
@@ -932,7 +934,9 @@ void dicomtonifti_convert_files(
     vtkSmartPointer<vtkDICOMFileSorter>::New();
   sorter->SetInputFileNames(presorter->GetFileNames());
   sorter->Update();
-  dicomtonifti_check_error(sorter);
+  if (dicomtonifti_check_error(sorter)) {
+    exit(1);
+  }
 
   if (!options->batch)
   {
@@ -971,7 +975,9 @@ void dicomtonifti_convert_files(
         meta->Clear();
         parser->SetFileName(fname.c_str());
         parser->Update();
-        dicomtonifti_check_error(parser);
+        if (dicomtonifti_check_error(parser)) {
+          continue;
+        }
 
         // generate a filename from the meta data
         std::string outfile =
