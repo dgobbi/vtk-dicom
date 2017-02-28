@@ -67,6 +67,7 @@ void dicomtocsv_usage(FILE *file, const char *cp)
     "  -o <data.csv>    Provide a file for the query results.\n"
     "  --first-nonzero  Search series for first nonzero value of each key.\n"
     "  --directory-only Use directory scan only, do not re-scan files.\n"
+    "  --images-only    Only list files that have PixelData or equivalent.\n"
     "  --noheader       Do not print the csv header.\n"
     "  --study          Print one row for each study.\n"
     "  --series         Print one row for each series (default).\n"
@@ -558,6 +559,7 @@ int MAINMACRO(int argc, char *argv[])
   std::vector<std::string> oplist;
   bool firstNonZero = false;
   bool useDirectoryRecords = false;
+  bool imagesOnly = false;
   bool noHeader = false;
   bool silent = false;
   int level = 3; // default to series level
@@ -653,6 +655,10 @@ int MAINMACRO(int argc, char *argv[])
     else if (strcmp(arg, "--directory-only") == 0)
     {
       useDirectoryRecords = true;
+    }
+    else if (strcmp(arg, "--images-only") == 0)
+    {
+      imagesOnly = true;
     }
     else if (strcmp(arg, "--noheader") == 0)
     {
@@ -766,6 +772,7 @@ int MAINMACRO(int argc, char *argv[])
 
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
+    finder->SetRequirePixelData(imagesOnly);
     if (level < 4)
     {
       finder->SetFindLevelToSeries();
