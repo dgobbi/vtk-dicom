@@ -35,6 +35,7 @@
 #include <vtkSQLQuery.h>
 
 #include <string>
+#include <sstream>
 #include <vector>
 #include <list>
 #include <map>
@@ -147,6 +148,10 @@ vtkDICOMDirectory::vtkDICOMDirectory()
   this->Query = 0;
   this->FindLevel = vtkDICOMDirectory::IMAGE;
   this->UsingOsirixDatabase = false;
+  this->CurrentPatientRecord = 0;
+  this->CurrentStudyRecord = 0;
+  this->CurrentSeriesRecord = 0;
+  this->CurrentImageRecord = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -680,11 +685,22 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
       }
       else if (r > 0)
       {
+        // Set info for use by RelayError
+        this->CurrentPatientRecord = &patientRecord;
+        this->CurrentStudyRecord = &studyRecord;
+        this->CurrentSeriesRecord = &seriesRecord;
+        this->CurrentImageRecord = imageRecords[i];
         // Read the file metadata
         meta->Initialize();
         this->SetInternalFileName(fileName.c_str());
         parser->SetFileName(fileName.c_str());
         parser->Update();
+        // Clear info used by RelayError
+        this->CurrentPatientRecord = 0;
+        this->CurrentStudyRecord = 0;
+        this->CurrentSeriesRecord = 0;
+        this->CurrentImageRecord = 0;
+
         if (!parser->GetPixelDataFound())
         {
           if (!this->ErrorCode)
@@ -2303,6 +2319,53 @@ void vtkDICOMDirectory::RelayError(vtkObject *o, unsigned long e, void *data)
     {
       this->SetErrorCode(parser->GetErrorCode());
       this->SetInternalFileName(parser->GetFileName());
+      if (this->CurrentPatientRecord &&
+          this->CurrentStudyRecord &&
+          this->CurrentSeriesRecord &&
+          this->CurrentImageRecord)
+      {
+        std::stringstream msg;
+        // print some useful information about the file
+        msg << "RelayError: For this entry:\n";
+        msg << "StudyInstanceUID=\""
+            << this->CurrentStudyRecord->GetAttributeValue(
+               DC::StudyInstanceUID).AsString();
+        msg << "\",\nSeriesInstanceUID=\""
+            << this->CurrentSeriesRecord->GetAttributeValue(
+               DC::SeriesInstanceUID).AsString();
+        msg << "\",\nPatientID=\""
+            << this->CurrentPatientRecord->GetAttributeValue(
+               DC::PatientID).AsString();
+        msg << "\", StudyDate=\""
+            << this->CurrentStudyRecord->GetAttributeValue(
+               DC::StudyDate).AsString();
+        msg << "\", StudyTime=\""
+            << this->CurrentStudyRecord->GetAttributeValue(
+               DC::StudyTime).AsString();
+        msg << "\",\nStudyID=\""
+            << this->CurrentStudyRecord->GetAttributeValue(
+               DC::StudyID).AsString();
+        msg << "\", SeriesNumber=\""
+            << this->CurrentSeriesRecord->GetAttributeValue(
+               DC::SeriesNumber).AsString();
+        msg << "\", InstanceNumber=\""
+            << this->CurrentImageRecord->GetAttributeValue(
+               DC::InstanceNumber).AsString();
+        msg << "\"\n";
+        // strip whitespace from the vtkDICOMParser message
+        const char *cp = static_cast<char *>(data);
+        size_t l;
+        for (l = strlen(cp); l > 0; --l)
+        {
+          if (cp[l-1] != '\n' && cp[l-1] != '\r' && cp[l-1] != ' ')
+          {
+            break;
+          }
+        }
+        msg.write(cp, l);
+        vtkErrorMacro(<< msg.str());
+        return;
+      }
     }
     vtkErrorMacro(<< static_cast<char *>(data));
   }

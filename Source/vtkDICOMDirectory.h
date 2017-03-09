@@ -369,6 +369,11 @@ private:
   char *FileSetID;
   bool UsingOsirixDatabase;
 
+  const vtkDICOMItem *CurrentPatientRecord;
+  const vtkDICOMItem *CurrentStudyRecord;
+  const vtkDICOMItem *CurrentSeriesRecord;
+  const vtkDICOMItem *CurrentImageRecord;
+
   //! Compare FileInfo entries by instance number
   static bool CompareInstance(const FileInfo &fi1, const FileInfo &fi2);
 };
