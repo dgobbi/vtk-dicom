@@ -114,6 +114,61 @@ const char *dicomtocsv_basename(const char *filename)
 
 typedef vtkDICOMVR VR;
 
+// Observer for DICOM errors
+class ErrorObserver : public vtkCommand
+{
+public:
+  static ErrorObserver *New() { return new ErrorObserver(); }
+  vtkTypeMacro(ErrorObserver,vtkCommand);
+#ifdef VTK_OVERRIDE
+  void Execute(
+    vtkObject *caller, unsigned long eventId, void *callData) VTK_OVERRIDE;
+#else
+  void Execute(vtkObject *caller, unsigned long eventId, void *callData);
+#endif
+  void SetMetaData(vtkDICOMMetaData *meta) { this->MetaData = meta; }
+protected:
+  ErrorObserver() : MetaData(0) {}
+  ErrorObserver(const ErrorObserver& c) : vtkCommand(c) {}
+  void operator=(const ErrorObserver&) {}
+  vtkDICOMMetaData *MetaData;
+};
+
+void ErrorObserver::Execute(vtkObject *o, unsigned long e, void *data)
+{
+  if (e == vtkCommand::ErrorEvent)
+  {
+    vtkDICOMParser *parser = vtkDICOMParser::SafeDownCast(o);
+    if (parser)
+    {
+      if (this->MetaData)
+      {
+        // print some useful information about the file
+        std::cerr << "Cannot read the DICOM file for the following entry:\n";
+        std::cerr << "StudyInstanceUID=\""
+          << this->MetaData->GetAttributeValue(DC::StudyInstanceUID).AsString();
+        std::cerr << "\",\nSeriesInstanceUID=\""
+          << this->MetaData->GetAttributeValue(DC::SeriesInstanceUID).AsString();
+        std::cerr << "\",\nPatientID=\""
+          << this->MetaData->GetAttributeValue(DC::PatientID).AsString();
+        std::cerr << "\", StudyDate=\""
+          << this->MetaData->GetAttributeValue(DC::StudyDate).AsString();
+        std::cerr << "\", StudyTime=\""
+          << this->MetaData->GetAttributeValue(DC::StudyTime).AsString();
+        std::cerr << "\",\nStudyID=\""
+          << this->MetaData->GetAttributeValue(DC::StudyID).AsString();
+        std::cerr << "\", SeriesNumber=\""
+          << this->MetaData->GetAttributeValue(DC::SeriesNumber).AsString();
+        std::cerr << "\", InstanceNumber=\""
+          << this->MetaData->GetAttributeValue(
+               parser->GetIndex(), DC::InstanceNumber).AsString();
+        std::cerr << "\"\n";
+      }
+    }
+    std::cerr << static_cast<char *>(data);
+  }
+}
+
 // Create a default query for --image
 void dicomtocsv_image_default(vtkDICOMItem *query, QueryTagList *ql)
 {
@@ -373,6 +428,11 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
         // need to go to the files for the meta data
         vtkSmartPointer<vtkDICOMParser> parser =
           vtkSmartPointer<vtkDICOMParser>::New();
+
+        vtkSmartPointer<ErrorObserver> errorObserver =
+          vtkSmartPointer<ErrorObserver>::New();
+        errorObserver->SetMetaData(finder->GetMetaDataForSeries(k));
+        parser->AddObserver(vtkCommand::ErrorEvent, errorObserver);
 
         parser->SetQueryItem(query);
         parser->SetMetaData(meta);
