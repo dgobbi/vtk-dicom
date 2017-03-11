@@ -205,6 +205,17 @@ public:
   //@}
 
   //@{
+  //! If On, the DICOMDIR file will be ignored.
+  /*!
+   *  This method can be used to ignore the DICOMDIR file if it is present,
+   *  instead of using the DICOMDIR file as an index.
+   */
+  vtkSetMacro(IgnoreDicomdir, int);
+  vtkBooleanMacro(IgnoreDicomdir, int);
+  int GetIgnoreDicomdir() { return this->IgnoreDicomdir; }
+  //@}
+
+  //@{
   //! If this is On, files with no pixel data will be skipped.
   /*!
    *  This is On by default.  Some files, such as dicom directory files,
@@ -240,6 +251,7 @@ protected:
   const char *DirectoryName;
   vtkStringArray *InputFileNames;
   const char *FilePattern;
+  int IgnoreDicomdir;
   int RequirePixelData;
   int FollowSymlinks;
   int ShowHidden;

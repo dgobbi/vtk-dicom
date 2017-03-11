@@ -141,6 +141,7 @@ vtkDICOMDirectory::vtkDICOMDirectory()
   this->Visited = new VisitedVector;
   this->FileSetID = 0;
   this->InternalFileName = 0;
+  this->IgnoreDicomdir = 0;
   this->RequirePixelData = 1;
   this->FollowSymlinks = 1;
   this->ShowHidden = 1;
@@ -191,6 +192,9 @@ void vtkDICOMDirectory::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "FindLevel: "
      << (this->FindLevel == vtkDICOMDirectory::IMAGE ?
          "IMAGE\n" : "SERIES\n");
+
+  os << indent << "IgnoreDicomdir: "
+     << (this->IgnoreDicomdir ? "On\n" : "Off\n");
 
   os << indent << "RequirePixelData: "
      << (this->RequirePixelData ? "On\n" : "Off\n");
@@ -2020,7 +2024,7 @@ void vtkDICOMDirectory::ProcessDirectory(
   // Find the path to the directory.
   vtkDICOMFilePath path(dirname);
 
-  if (depth == this->ScanDepth)
+  if (depth == this->ScanDepth && !this->IgnoreDicomdir)
   {
     // Build the path to the DICOMDIR file.
     path.PushBack("DICOMDIR");
