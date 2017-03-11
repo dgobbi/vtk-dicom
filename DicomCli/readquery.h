@@ -15,6 +15,7 @@
 #define readquery_h
 
 #include "vtkDICOMItem.h"
+#include "vtkDICOMMetaData.h"
 #include "vtkDICOMTagPath.h"
 
 #include <vector>
@@ -47,5 +48,15 @@ bool dicomcli_looks_like_key(const char *key);
  */
 bool dicomcli_readuids(
   const char *fname, vtkDICOMItem *query, QueryTagList *ql=0);
+
+//! Print brief info about a file for error messages.
+/*!
+ *  Sometimes a file that is found in an index doesn't actually exist,
+ *  or cannot be read.  This method will print out the PatientID,
+ *  StudyDate, StudyTime, StudyId, SeriesNumber, and InstanceNumber
+ *  so that the user will have an idea of what file is missing, since
+ *  the DICOM filenames themselves are usually not informative.
+ */
+void dicomcli_error_helper(vtkDICOMMetaData *meta, int i);
 
 #endif /* readquery_h */

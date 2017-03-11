@@ -141,29 +141,7 @@ void ErrorObserver::Execute(vtkObject *o, unsigned long e, void *data)
     vtkDICOMParser *parser = vtkDICOMParser::SafeDownCast(o);
     if (parser)
     {
-      if (this->MetaData)
-      {
-        // print some useful information about the file
-        std::cerr << "Cannot read the DICOM file for the following entry:\n";
-        std::cerr << "StudyInstanceUID=\""
-          << this->MetaData->GetAttributeValue(DC::StudyInstanceUID).AsString();
-        std::cerr << "\",\nSeriesInstanceUID=\""
-          << this->MetaData->GetAttributeValue(DC::SeriesInstanceUID).AsString();
-        std::cerr << "\",\nPatientID=\""
-          << this->MetaData->GetAttributeValue(DC::PatientID).AsString();
-        std::cerr << "\", StudyDate=\""
-          << this->MetaData->GetAttributeValue(DC::StudyDate).AsString();
-        std::cerr << "\", StudyTime=\""
-          << this->MetaData->GetAttributeValue(DC::StudyTime).AsString();
-        std::cerr << "\",\nStudyID=\""
-          << this->MetaData->GetAttributeValue(DC::StudyID).AsString();
-        std::cerr << "\", SeriesNumber=\""
-          << this->MetaData->GetAttributeValue(DC::SeriesNumber).AsString();
-        std::cerr << "\", InstanceNumber=\""
-          << this->MetaData->GetAttributeValue(
-               parser->GetIndex(), DC::InstanceNumber).AsString();
-        std::cerr << "\"\n";
-      }
+      dicomcli_error_helper(this->MetaData, parser->GetIndex());
     }
     std::cerr << static_cast<char *>(data);
   }

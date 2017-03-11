@@ -570,7 +570,7 @@ int MAINMACRO(int argc, char *argv[])
           int code = vtkDICOMFileDirectory::Create(dirname.c_str());
           if (code != vtkDICOMFileDirectory::Good)
           {
-            fprintf(stderr, "Error: Cannot create directory: %s\n",
+            fprintf(stderr, "Error: Cannot create directory: %s\n\n",
                     dirname.c_str());
             delete [] buffer;
             exit(1);
@@ -589,7 +589,7 @@ int MAINMACRO(int argc, char *argv[])
             vtkDICOMFile infile(srcname.c_str(), vtkDICOMFile::In);
             if (infile.GetError())
             {
-              const char *message = "Cannot copy file";
+              const char *message = "Missing file";
               switch (infile.GetError())
               {
                 case vtkDICOMFile::AccessDenied:
@@ -602,11 +602,13 @@ int MAINMACRO(int argc, char *argv[])
                   message = "Bad file path";
                   break;
               }
-              fprintf(stderr, "Error: %s: %s\n", message, srcname.c_str());
+              dicomcli_error_helper(finder->GetMetaDataForSeries(k), i);
+              fprintf(stderr, "Error: %s: %s\n\n", message, srcname.c_str());
             }
             else if (infile.GetSize() == 0)
             {
-              fprintf(stderr, "Error: File size is zero: %s\n",
+              dicomcli_error_helper(finder->GetMetaDataForSeries(k), i);
+              fprintf(stderr, "Error: File size is zero: %s\n\n",
                       srcname.c_str());
             }
             else
@@ -627,7 +629,7 @@ int MAINMACRO(int argc, char *argv[])
                     message = "Bad file path";
                     break;
                 }
-                fprintf(stderr, "Error: %s: %s\n", message, fullname.c_str());
+                fprintf(stderr, "Error: %s: %s\n\n", message, fullname.c_str());
               }
               else
               {
@@ -637,7 +639,8 @@ int MAINMACRO(int argc, char *argv[])
                   size_t bytecount = infile.Read(buffer, bufsize);
                   if (bytecount == 0 && infile.GetError())
                   {
-                    fprintf(stderr, "Error, incomplete read: %s\n",
+                    dicomcli_error_helper(finder->GetMetaDataForSeries(k), i);
+                    fprintf(stderr, "Error, incomplete read: %s\n\n",
                             srcname.c_str());
                     vtkDICOMFile::Remove(fullname.c_str());
                     break;
@@ -645,7 +648,7 @@ int MAINMACRO(int argc, char *argv[])
                   if (bytecount > 0 &&
                       outfile.Write(buffer, bytecount) != bytecount)
                   {
-                    fprintf(stderr, "Error: Incomplete write: %s\n",
+                    fprintf(stderr, "Error: Incomplete write: %s\n\n",
                             fullname.c_str());
                     vtkDICOMFile::Remove(fullname.c_str());
                     break;

@@ -594,3 +594,24 @@ bool dicomcli_readuids(
 
   return true;
 }
+
+void dicomcli_error_helper(vtkDICOMMetaData *meta, int i)
+{
+  if (meta)
+  {
+    // print some useful identifying information about a DICOM file
+    fprintf(stderr, "Cannot read the DICOM file for the following entry:\n");
+    fprintf(stderr, "StudyInstanceUID=\"%s\",\n",
+      meta->GetAttributeValue(DC::StudyInstanceUID).AsString().c_str());
+    fprintf(stderr, "SeriesInstanceUID=\"%s\",\n",
+      meta->GetAttributeValue(DC::SeriesInstanceUID).AsString().c_str());
+    fprintf(stderr, "PatientID=\"%s\", StudyDate=\"%s\", StudyTime=\"%s\",\n",
+      meta->GetAttributeValue(DC::PatientID).AsString().c_str(),
+      meta->GetAttributeValue(DC::StudyDate).AsString().c_str(),
+      meta->GetAttributeValue(DC::StudyTime).AsString().c_str());
+    fprintf(stderr, "StudyID=\"%s\", SeriesNumber=\"%s\", InstanceNumber=\"%s\"\n",
+      meta->GetAttributeValue(DC::StudyID).AsString().c_str(),
+      meta->GetAttributeValue(DC::SeriesNumber).AsString().c_str(),
+      meta->GetAttributeValue(i, DC::InstanceNumber).AsString().c_str());
+  }
+}
