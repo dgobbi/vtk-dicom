@@ -57,19 +57,20 @@ void dicompull_usage(FILE *file, const char *cp)
   fprintf(file, "usage:\n"
     "  %s [options] <directory> ...\n\n", cp);
   fprintf(file, "options:\n"
-    "  -L              Follow symbolic links (default).\n"
-    "  -P              Do not follow symbolic links.\n"
-    "  -k tag=value    Provide an attribute to be queried and matched.\n"
-    "  -q <query.txt>  Provide a file to describe the find query.\n"
-    "  -u <uids.txt>   Provide a file that contains a list of UIDs.\n"
-    "  -o <directory>  Directory to place the files into.\n"
-    "  -maxdepth n     Set the maximum directory depth.\n"
-    "  -name pattern   Set file names to match (with \"*\" or \"?\").\n"
-    "  -image          Restrict the search to files with PixelData.\n"
-    "  -series         Find all files in series if even one file matches.\n"
-    "  --silent        Do not report any progress information.\n"
-    "  --help          Print a brief help message.\n"
-    "  --version       Print the software version.\n"
+    "  -L                Follow symbolic links (default).\n"
+    "  -P                Do not follow symbolic links.\n"
+    "  -k tag=value      Provide an attribute to be queried and matched.\n"
+    "  -q <query.txt>    Provide a file to describe the find query.\n"
+    "  -u <uids.txt>     Provide a file that contains a list of UIDs.\n"
+    "  -o <directory>    Directory to place the files into.\n"
+    "  -maxdepth n       Set the maximum directory depth.\n"
+    "  -name pattern     Set file names to match (with \"*\" or \"?\").\n"
+    "  -image            Restrict the search to files with PixelData.\n"
+    "  -series           Find all files in series if even one file matches.\n"
+    "  --ignore-dicomdir Ignore the DICOMDIR file even if it is present.\n"
+    "  --silent          Do not report any progress information.\n"
+    "  --help            Print a brief help message.\n"
+    "  --version         Print the software version.\n"
     );
 }
 
@@ -297,6 +298,7 @@ int MAINMACRO(int argc, char *argv[])
   vtkDICOMItem query;
   bool requirePixelData = false;
   bool findSeries = false;
+  bool ignoreDicomdir = false;
   bool silent = false;
   std::string outdir;
 
@@ -423,6 +425,10 @@ int MAINMACRO(int argc, char *argv[])
     {
       findSeries = true;
     }
+    else if (strcmp(arg, "--ignore-dicomdir") == 0)
+    {
+      ignoreDicomdir = true;
+    }
     else if (strcmp(arg, "--silent") == 0)
     {
       silent = true;
@@ -518,6 +524,7 @@ int MAINMACRO(int argc, char *argv[])
     finder->SetFilePattern(pattern);
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
+    finder->SetIgnoreDicomdir(ignoreDicomdir);
     finder->SetFollowSymlinks(followSymlinks);
     finder->SetRequirePixelData(requirePixelData);
     finder->SetFindLevel(

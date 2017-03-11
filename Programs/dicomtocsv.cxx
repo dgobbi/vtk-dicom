@@ -61,20 +61,21 @@ void dicomtocsv_usage(FILE *file, const char *cp)
   fprintf(file, "usage:\n"
     "  %s [options] <directory>\n\n", cp);
   fprintf(file, "options:\n"
-    "  -k tag=value     Provide a key to be queried and matched.\n"
-    "  -q <query.txt>   Provide a file to describe the find query.\n"
-    "  -u <uids.txt>    Provide a file that contains a list of UIDs.\n"
-    "  -o <data.csv>    Provide a file for the query results.\n"
-    "  --first-nonzero  Search series for first nonzero value of each key.\n"
-    "  --directory-only Use directory scan only, do not re-scan files.\n"
-    "  --images-only    Only list files that have PixelData or equivalent.\n"
-    "  --noheader       Do not print the csv header.\n"
-    "  --study          Print one row for each study.\n"
-    "  --series         Print one row for each series (default).\n"
-    "  --image          Print one row for each image.\n"
-    "  --silent         Do not report any progress information.\n"
-    "  --help           Print a brief help message.\n"
-    "  --version        Print the software version.\n");
+    "  -k tag=value      Provide a key to be queried and matched.\n"
+    "  -q <query.txt>    Provide a file to describe the find query.\n"
+    "  -u <uids.txt>     Provide a file that contains a list of UIDs.\n"
+    "  -o <data.csv>     Provide a file for the query results.\n"
+    "  --first-nonzero   Search series for first nonzero value of each key.\n"
+    "  --directory-only  Use directory scan only, do not re-scan files.\n"
+    "  --ignore-dicomdir Ignore the DICOMDIR file even if it is present.\n"
+    "  --images-only     Only list files that have PixelData or equivalent.\n"
+    "  --noheader        Do not print the csv header.\n"
+    "  --study           Print one row for each study.\n"
+    "  --series          Print one row for each series (default).\n"
+    "  --image           Print one row for each image.\n"
+    "  --silent          Do not report any progress information.\n"
+    "  --help            Print a brief help message.\n"
+    "  --version         Print the software version.\n");
 }
 
 // print the help
@@ -597,6 +598,7 @@ int MAINMACRO(int argc, char *argv[])
   std::vector<std::string> oplist;
   bool firstNonZero = false;
   bool useDirectoryRecords = false;
+  bool ignoreDicomdir = false;
   bool imagesOnly = false;
   bool noHeader = false;
   bool silent = false;
@@ -693,6 +695,10 @@ int MAINMACRO(int argc, char *argv[])
     else if (strcmp(arg, "--directory-only") == 0)
     {
       useDirectoryRecords = true;
+    }
+    else if (strcmp(arg, "--ignore-dicomdir") == 0)
+    {
+      ignoreDicomdir = true;
     }
     else if (strcmp(arg, "--images-only") == 0)
     {
@@ -824,6 +830,7 @@ int MAINMACRO(int argc, char *argv[])
       finder->AddObserver(vtkCommand::EndEvent, p);
     }
     finder->SetInputFileNames(a);
+    finder->SetIgnoreDicomdir(ignoreDicomdir);
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
     finder->Update();

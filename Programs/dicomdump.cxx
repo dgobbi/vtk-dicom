@@ -495,6 +495,7 @@ int MAINMACRO(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMDirectory>::New();
   sorter->RequirePixelDataOff();
   sorter->SetScanDepth(0);
+  sorter->IgnoreDicomdirOn();
   sorter->SetFindQuery(query);
   sorter->SetInputFileNames(files);
   sorter->Update();

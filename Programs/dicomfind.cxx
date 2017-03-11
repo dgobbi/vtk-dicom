@@ -63,23 +63,24 @@ void dicomfind_usage(FILE *file, const char *cp)
   fprintf(file, "usage:\n"
     "  %s [options] <directory> ...\n\n", cp);
   fprintf(file, "options:\n"
-    "  -L              Follow symbolic links (default).\n"
-    "  -P              Do not follow symbolic links.\n"
-    "  -k tag=value    Provide an attribute to be queried and matched.\n"
-    "  -q <query.txt>  Provide a file to describe the find query.\n"
-    "  -u <uids.txt>   Provide a file that contains a list of UIDs.\n"
-    "  -maxdepth n     Set the maximum directory depth.\n"
-    "  -name pattern   Set a pattern to match (with \"*\" or \"?\").\n"
-    "  -image          Restrict the search to files with PixelData.\n"
-    "  -series         Find all files in series if even one file matches.\n"
-    "  -print          Print the filenames of all matched files (default).\n"
-    "  -print0         Print the filenames with terminating null, for xargs.\n"
-    "  -exec ... +     Execute the given command for every series matched.\n"
-    "  -exec ... %s    Execute the given command for every file matched.\n"
-    "  -execdir ... +  Go to directory and execute command on every series.\n"
-    "  -execdir ... %s Go to directory and execute command on every file.\n"
-    "  --help          Print a brief help message.\n"
-    "  --version       Print the software version.\n",
+    "  -L                Follow symbolic links (default).\n"
+    "  -P                Do not follow symbolic links.\n"
+    "  -k tag=value      Provide an attribute to be queried and matched.\n"
+    "  -q <query.txt>    Provide a file to describe the find query.\n"
+    "  -u <uids.txt>     Provide a file that contains a list of UIDs.\n"
+    "  -maxdepth n       Set the maximum directory depth.\n"
+    "  -name pattern     Set a pattern to match (with \"*\" or \"?\").\n"
+    "  -image            Restrict the search to files with PixelData.\n"
+    "  -series           Find all files in series if even one file matches.\n"
+    "  -print            Print the filenames of all matched files (default).\n"
+    "  -print0           Print the filenames with terminating null, for xargs.\n"
+    "  -exec ... +       Execute the given command for every series matched.\n"
+    "  -exec ... %s      Execute the given command for every file matched.\n"
+    "  -execdir ... +    Go to directory and execute command on every series.\n"
+    "  -execdir ... %s   Go to directory and execute command on every file.\n"
+    "  --ignore-dicomdir Ignore the DICOMDIR file even if it is present.\n"
+    "  --help            Print a brief help message.\n"
+    "  --version         Print the software version.\n",
 #ifndef _WIN32
     "\\;", "\\;"
 #else
@@ -563,10 +564,11 @@ int MAINMACRO(int argc, char *argv[])
 
   int rval = 0;
   int scandepth = std::numeric_limits<int>::max();
-  bool followSymlinks = true;
   const char *pattern = "";
   QueryTagList qtlist;
   vtkDICOMItem query;
+  bool followSymlinks = true;
+  bool ignoreDicomdir = false;
   bool requirePixelData = false;
   bool findSeries = false;
 
@@ -712,6 +714,10 @@ int MAINMACRO(int argc, char *argv[])
       }
       argi = argj;
     }
+    else if (strcmp(arg, "--ignore-dicomdir") == 0)
+    {
+      ignoreDicomdir = true;
+    }
     else if (arg[0] == '-')
     {
       fprintf(stderr, "unrecognized option %s.\n\n", arg);
@@ -742,6 +748,7 @@ int MAINMACRO(int argc, char *argv[])
     finder->SetFilePattern(pattern);
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
+    finder->SetIgnoreDicomdir(ignoreDicomdir);
     finder->SetFollowSymlinks(followSymlinks);
     finder->SetRequirePixelData(requirePixelData);
     finder->SetFindLevel(
