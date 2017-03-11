@@ -378,23 +378,23 @@ def printbody(entry_dict, classname):
     print "%sInitializer::%sInitializer()" % (classname,classname)
     print "{"
     print "  if (%sInitializerCounter++ == 0)" % (classname,)
-    print "    {"
+    print "  {"
     print "    for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != NULL; dp++)"
-    print "      {"
+    print "    {"
     print "      vtkDICOMDictionary::AddPrivateDictionary(*dp);"
-    print "      }"
     print "    }"
+    print "  }"
     print "}"
     print
     print "%sInitializer::~%sInitializer()" % (classname,classname)
     print "{"
     print "  if (--%sInitializerCounter == 0)" % (classname,)
-    print "    {"
+    print "  {"
     print "    for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != NULL; dp++)"
-    print "      {"
+    print "    {"
     print "      vtkDICOMDictionary::RemovePrivateDictionary((*dp)->Name);"
-    print "      }"
     print "    }"
+    print "  }"
     print "}"
 
 if privatedict:
