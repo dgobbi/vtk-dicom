@@ -1600,6 +1600,30 @@ StrainCodeSequence
 SQ
 1
 
+(0010,0221)
+Genetic Modifications Sequence
+GeneticModificationsSequence
+SQ
+1
+
+(0010,0222)
+Genetic Modifications Description
+GeneticModificationsDescription
+UC
+1
+
+(0010,0223)
+Genetic Modifications Nomenclature
+GeneticModificationsNomenclature
+LO
+1
+
+(0010,0229)
+Genetic Modifications Code Sequence
+GeneticModificationsCodeSequence
+SQ
+1
+
 (0010,1000)
 Other Patient IDs
 OtherPatientIDs
@@ -16367,10 +16391,10 @@ SQ
 1
 
 (0068,62F0)
-View Orientation Modifier
-ViewOrientationModifier
-FD
-9
+View Orientation Modifier Code Sequence
+ViewOrientationModifierCodeSequence
+SQ
+1
 
 (0068,62F2)
 HPGL Document Scaling
@@ -18835,7 +18859,7 @@ SQ
 (0076,0034)
 Component Type Code Sequence
 ComponentTypeCodeSequence
-CS
+SQ
 1
 
 (0076,0036)
