@@ -11,16 +11,17 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/*! \class vtkDICOMToRAS
- *  \brief Convert DICOM orientation to RAS orientation
+/**
+ * \class vtkDICOMToRAS
+ * \brief Convert DICOM orientation to RAS orientation
  *
- *  This class will modify an image and its position-and-orientation matrix
- *  so that the patient coordinate system follows the conventions of NIFTI
- *  and MINC, i.e. the x, y, and z axes will point in the right, anterior,
- *  and superior directions respectively.  Optionally, the row and column
- *  ordering of the image will also be modified so that the row direction
- *  preferentially points right or anterior, and the column direction
- *  preferentially points superior or anterior.
+ * This class will modify an image and its position-and-orientation matrix
+ * so that the patient coordinate system follows the conventions of NIFTI
+ * and MINC, i.e. the x, y, and z axes will point in the right, anterior,
+ * and superior directions respectively.  Optionally, the row and column
+ * ordering of the image will also be modified so that the row direction
+ * preferentially points right or anterior, and the column direction
+ * preferentially points superior or anterior.
  */
 
 #ifndef vtkDICOMToRAS_h

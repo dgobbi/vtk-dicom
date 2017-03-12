@@ -11,12 +11,13 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/*! \class vtkDICOMCTRectifier
- *  \brief Prepare a CT for 3D processing
+/**
+ * \class vtkDICOMCTRectifier
+ * \brief Prepare a CT for 3D processing
  *
- *  This class will identify gantry-tilted CT images and resample them
- *  into a rectangular volume.  This is often a necessary step prior to
- *  volume rendering or other forms of 3D rendering.
+ * This class will identify gantry-tilted CT images and resample them
+ * into a rectangular volume.  This is often a necessary step prior to
+ * volume rendering or other forms of 3D rendering.
  */
 
 #ifndef vtkDICOMCTRectifier_h

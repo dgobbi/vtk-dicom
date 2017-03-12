@@ -11,23 +11,24 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/*! \class vtkScancoCTReader
- *  \brief Read SCANCO ISQ and AIM medical image files
+/**
+ * \class vtkScancoCTReader
+ * \brief Read SCANCO ISQ and AIM medical image files
  *
- *  This class reads ISQ and AIM files, which are used for high-resolution
- *  computed tomography.  The information that it provides uses different
- *  units as compared to the original files: all distances are given in
- *  millimeters (instead of micrometers), times are given in milliseconds
- *  (instead of microseconds), voltage and current given in kV and mA
- *  (instead of volts and microamps).  If the scanner was calibrated, then
- *  the data values can be converted to calibrated units.  To convert
- *  to linear attenuation coefficients [cm^-1], simply divide the data
- *  values by the MuScaling.  To convert to density values, multiply
- *  the data values by the RescaleSlope and add the RescaleIntercept.
- *  To convert to Hounsfield units, multiply by 1000/(MuScaling*MuWater)
- *  and subtract 1000.
+ * This class reads ISQ and AIM files, which are used for high-resolution
+ * computed tomography.  The information that it provides uses different
+ * units as compared to the original files: all distances are given in
+ * millimeters (instead of micrometers), times are given in milliseconds
+ * (instead of microseconds), voltage and current given in kV and mA
+ * (instead of volts and microamps).  If the scanner was calibrated, then
+ * the data values can be converted to calibrated units.  To convert
+ * to linear attenuation coefficients [cm^-1], simply divide the data
+ * values by the MuScaling.  To convert to density values, multiply
+ * the data values by the RescaleSlope and add the RescaleIntercept.
+ * To convert to Hounsfield units, multiply by 1000/(MuScaling*MuWater)
+ * and subtract 1000.
  *
- *  Created at the Calgary Image Processing and Analysis Centre (CIPAC).
+ * Created at the Calgary Image Processing and Analysis Centre (CIPAC).
  */
 
 #ifndef vtkScancoCTReader_h

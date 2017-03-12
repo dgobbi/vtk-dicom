@@ -11,12 +11,13 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/*! \class vtkDICOMLookupTable
- *  \brief Lookup tables from DICOM data.
+/**
+ * \class vtkDICOMLookupTable
+ * \brief Lookup tables from DICOM data.
  *
- *  This class can create VTK lookup tables from the information in a
- *  DICOM data set.  Lookup tables can be created from a palette LUT,
- *  or from standard DICOM LUTs such as HOT_IRON.
+ * This class can create VTK lookup tables from the information in a
+ * DICOM data set.  Lookup tables can be created from a palette LUT,
+ * or from standard DICOM LUTs such as HOT_IRON.
  */
 
 #ifndef vtkDICOMLookupTable_h

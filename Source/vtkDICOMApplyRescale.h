@@ -11,16 +11,17 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/*! \class vtkDICOMApplyRescale
- *  \brief Convert pixels to real-world values.
+/**
+ * \class vtkDICOMApplyRescale
+ * \brief Convert pixels to real-world values.
  *
- *  This filter uses the information in the DICOM meta data to convert the
- *  pixel values to real-world values with known units.  It uses the DICOM
- *  RealWorldValueMapping attributes, if present, otherwise it uses the
- *  RescaleSlope and RescaleIntercept.  If no mapping information is present,
- *  then the pixels are simply converted to floating-point.  Note that if
- *  this filter is used, then AutoRescaleOff() should be set on the reader
- *  to ensure that the reader does not rescale the data.
+ * This filter uses the information in the DICOM meta data to convert the
+ * pixel values to real-world values with known units.  It uses the DICOM
+ * RealWorldValueMapping attributes, if present, otherwise it uses the
+ * RescaleSlope and RescaleIntercept.  If no mapping information is present,
+ * then the pixels are simply converted to floating-point.  Note that if
+ * this filter is used, then AutoRescaleOff() should be set on the reader
+ * to ensure that the reader does not rescale the data.
  */
 
 #ifndef vtkDICOMApplyRescale_h

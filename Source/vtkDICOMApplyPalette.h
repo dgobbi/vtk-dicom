@@ -11,15 +11,16 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/*! \class vtkDICOMApplyPalette
- *  \brief Apply palette to PALETTE COLOR images
+/**
+ * \class vtkDICOMApplyPalette
+ * \brief Apply palette to PALETTE COLOR images
  *
- *  If an image contains a palette LUT, then this filter will apply that
- *  LUT to the image and produce an RGB image.  Images without a palette
- *  LUT will pass through unchanged.  If the image uses a supplemental
- *  palette that only applies to a specific range of pixel values, then
- *  pixel values outside of that range will be mapped to greyscale via
- *  the WindowWidth and WindowCenter specified in the image.
+ * If an image contains a palette LUT, then this filter will apply that
+ * LUT to the image and produce an RGB image.  Images without a palette
+ * LUT will pass through unchanged.  If the image uses a supplemental
+ * palette that only applies to a specific range of pixel values, then
+ * pixel values outside of that range will be mapped to greyscale via
+ * the WindowWidth and WindowCenter specified in the image.
  */
 
 #ifndef vtkDICOMApplyPalette_h

@@ -11,11 +11,12 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/*! \class vtkDICOMReader
- *  \brief Read DICOM image files.
+/**
+ * \class vtkDICOMReader
+ * \brief Read DICOM image files.
  *
- *  This class reads a series of DICOM files into a vtkImageData object,
- *  and also provides access to the DICOM meta data for each file.
+ * This class reads a series of DICOM files into a vtkImageData object,
+ * and also provides access to the DICOM meta data for each file.
  */
 
 #ifndef vtkDICOMReader_h

@@ -12,21 +12,22 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/*! \class vtkNIFTIWriter
- *  \brief Write NIfTI-1 and NIfTI-2 medical image files
+/**
+ * \class vtkNIFTIWriter
+ * \brief Write NIfTI-1 and NIfTI-2 medical image files
  *
- *  This class writes NIFTI files, either in .nii format or as separate
- *  .img and .hdr files.  If told to write a file that ends in ".gz",
- *  then the writer will automatically compress the file with zlib.
- *  Images of type unsigned char that have 3 or 4 scalar components
- *  will automatically be written as RGB or RGBA respectively.  Images
- *  of type float or double that have 2 components will automatically be
- *  written as complex values.
+ * This class writes NIFTI files, either in .nii format or as separate
+ * .img and .hdr files.  If told to write a file that ends in ".gz",
+ * then the writer will automatically compress the file with zlib.
+ * Images of type unsigned char that have 3 or 4 scalar components
+ * will automatically be written as RGB or RGBA respectively.  Images
+ * of type float or double that have 2 components will automatically be
+ * written as complex values.
  *
- *  This class was contributed to VTK by the Calgary Image Processing and
- *  Analysis Centre (CIPAC).
+ * This class was contributed to VTK by the Calgary Image Processing and
+ * Analysis Centre (CIPAC).
  *
- *  \sa vtkNIFTIReader
+ * \sa vtkNIFTIReader
  */
 
 #ifndef vtkNIFTIWriter_h

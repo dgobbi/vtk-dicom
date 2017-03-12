@@ -11,13 +11,14 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/*! \class vtkDICOMAlgorithm
- *  \brief Superclass for DICOM image filters
+/**
+ * \class vtkDICOMAlgorithm
+ * \brief Superclass for DICOM image filters
  *
- *  This class allows the DICOM meta data to be carried by the VTK pipeline.
- *  Subclasses should always call Superclass::RequestInformation() and
- *  Superclass::RequestData within their own RequestInformation and
- *  RequestData methods.
+ * This class allows the DICOM meta data to be carried by the VTK pipeline.
+ * Subclasses should always call Superclass::RequestInformation() and
+ * Superclass::RequestData within their own RequestInformation and
+ * RequestData methods.
  */
 
 #ifndef vtkDICOMAlgorithm_h

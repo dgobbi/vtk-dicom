@@ -12,23 +12,24 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/*! \class vtkNIFTIReader
- *  \brief Read NIfTI-1 and NIfTI-2 medical image files
+/**
+ * \class vtkNIFTIReader
+ * \brief Read NIfTI-1 and NIfTI-2 medical image files
  *
- *  This class reads NIFTI files, either in .nii format or as separate
- *  .img and .hdr files.  If two files are used, then they can be passed
- *  by using SetFileNames() instead of SetFileName().  Files ending in .gz
- *  are decompressed on-the-fly while they are being read.  Files with
- *  complex numbers or vector dimensions will be read as multi-component
- *  images.  If a NIFTI file has a time dimension, then by default only the
- *  first image in the time series will be read, but the TimeAsVector
- *  flag can be set to read the time steps as vector components.  Files in
- *  Analyze 7.5 format are also supported by this reader.
+ * This class reads NIFTI files, either in .nii format or as separate
+ * .img and .hdr files.  If two files are used, then they can be passed
+ * by using SetFileNames() instead of SetFileName().  Files ending in .gz
+ * are decompressed on-the-fly while they are being read.  Files with
+ * complex numbers or vector dimensions will be read as multi-component
+ * images.  If a NIFTI file has a time dimension, then by default only the
+ * first image in the time series will be read, but the TimeAsVector
+ * flag can be set to read the time steps as vector components.  Files in
+ * Analyze 7.5 format are also supported by this reader.
  *
- *  This class was contributed to VTK by the Calgary Image Processing and
- *  Analysis Centre (CIPAC).
+ * This class was contributed to VTK by the Calgary Image Processing and
+ * Analysis Centre (CIPAC).
  *
- *  \sa vtkNIFTIWriter, vtkNIFTIHeader
+ * \sa vtkNIFTIWriter, vtkNIFTIHeader
  */
 
 #ifndef vtkNIFTIReader_h

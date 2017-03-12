@@ -11,15 +11,16 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/*! \class vtkDICOMWriter
- *  \brief Write DICOM image files.
+/**
+ * \class vtkDICOMWriter
+ * \brief Write DICOM image files.
  *
- *  This class writes a series of one or more DICOM files.  The default
- *  behavior is to write a series of Secondary Capture files with no
- *  modality-specific information.  To write other kinds of DICOM files,
- *  use the SetGenerator() method to supply a generator for the type of
- *  data set that you wish to write.  Currently, there are generators for
- *  MR and CT data sets.
+ * This class writes a series of one or more DICOM files.  The default
+ * behavior is to write a series of Secondary Capture files with no
+ * modality-specific information.  To write other kinds of DICOM files,
+ * use the SetGenerator() method to supply a generator for the type of
+ * data set that you wish to write.  Currently, there are generators for
+ * MR and CT data sets.
  */
 
 #ifndef vtkDICOMWriter_h

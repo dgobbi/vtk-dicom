@@ -12,24 +12,25 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-/*! \class vtkNIFTIHeader
- *  \brief Store NIfTI header information.
+/**
+ * \class vtkNIFTIHeader
+ * \brief Store NIfTI header information.
  *
- *  This class stores the header of a NIfTI file in a VTK-friendly format.
- *  By using this class, it is possible to specify the header information
- *  that will be stored in a file written by the vtkNIFTIWriter.  Note
- *  that the SForm and QForm orientation information in this class will be
- *  ignored by the writer if an SForm and QForm have been explicitly set
- *  via the writer's SetSForm and SetQForm methods.  Also note that all
- *  info like Dim, PixDim, DataType, etc. will be ignored by the writer
- *  because this information must instead be taken from the vtkImageData
- *  information.  Finally, note that the vtkNIFTIWriter will ignore the
- *  Descrip field, since it has its own SetDescription method.
+ * This class stores the header of a NIfTI file in a VTK-friendly format.
+ * By using this class, it is possible to specify the header information
+ * that will be stored in a file written by the vtkNIFTIWriter.  Note
+ * that the SForm and QForm orientation information in this class will be
+ * ignored by the writer if an SForm and QForm have been explicitly set
+ * via the writer's SetSForm and SetQForm methods.  Also note that all
+ * info like Dim, PixDim, DataType, etc. will be ignored by the writer
+ * because this information must instead be taken from the vtkImageData
+ * information.  Finally, note that the vtkNIFTIWriter will ignore the
+ * Descrip field, since it has its own SetDescription method.
  *
- *  This class was contributed to VTK by the Calgary Image Processing and
- *  Analysis Centre (CIPAC).
+ * This class was contributed to VTK by the Calgary Image Processing and
+ * Analysis Centre (CIPAC).
  *
- *  \sa vtkNIFTIReader, vtkNIFTIWriter
+ * \sa vtkNIFTIReader, vtkNIFTIWriter
  */
 
 #ifndef vtkNIFTIHeader_h
