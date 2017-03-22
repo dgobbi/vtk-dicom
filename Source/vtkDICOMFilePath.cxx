@@ -658,7 +658,7 @@ size_t vtkDICOMFilePath::RootLength(const std::string& path)
   // does not allows substitutions such as "/" for "\" or "." and "..".
   //  \\?\A:\ (the root of a device)
   //  \\?\UNC\server\share\ (a UNC path prefix)
-  // Finally, the special "\\?\" prefix is used to name system devices:
+  // Finally, the special "\\.\" prefix is used to name system devices:
   //  \\.\DEVICE (name of a special devices)
   if (l >= 4 && HasExtendedPrefix(path))
   {
