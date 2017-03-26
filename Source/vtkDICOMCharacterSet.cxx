@@ -21,7 +21,7 @@ namespace {
 struct CharsetInfo
 {
   unsigned char Key;
-  unsigned char Flags;
+  unsigned char Flags; // 1=replace previous, 2=combine with previous
   const char *DefinedTerm;
   const char *DefinedTermExt;
   const char *EscapeCode;
@@ -8256,12 +8256,12 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
             // set key from first value of SpecificCharacterSet
             key = Charsets[i].Key | iso2022flag;
           }
-          else if (Charsets[i].Flags == 1)
+          else if (Charsets[i].Flags == 1) // replace previous
           {
             // set key from 2nd value of SpecificCharacterSet
             key = Charsets[i].Key | ISO_2022;
           }
-          else if (Charsets[i].Flags == 2)
+          else if (Charsets[i].Flags == 2) // combine with previous
           {
             // combine key with 2nd, 3rd value of SpecificCharacterSet
             // (specific to ISO_2022_IR_87 and ISO_2022_IR_159, which
@@ -8282,6 +8282,7 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
 //----------------------------------------------------------------------------
 std::string vtkDICOMCharacterSet::GetCharacterSetString() const
 {
+  unsigned char key = this->Key;
   std::string value;
 
   for (int i = 0; i < CHARSET_TABLE_SIZE; i++)
@@ -8289,17 +8290,17 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
     bool match = false;
     if (Charsets[i].Flags == 0 && value.empty())
     {
-      match = (Charsets[i].Key == (this->Key & ISO_2022_BASE));
+      match = (Charsets[i].Key == (key & ISO_2022_BASE));
     }
     else if (Charsets[i].Flags == 1 && value.empty())
     {
       // ISO_2022_IR_58 and ISO_2022_IR_149 go in 2nd value
-      match = (Charsets[i].Key == this->Key);
+      match = (Charsets[i].Key == key);
     }
     else if (Charsets[i].Flags == 2)
     {
       // ISO_2022_IR_87 and ISO_2022_IR_159 can combine
-      match = ((Charsets[i].Key & this->Key) == Charsets[i].Key);
+      match = ((Charsets[i].Key & key) == Charsets[i].Key);
     }
 
     if (match && Charsets[i].Key != ISO_IR_6)
@@ -8308,9 +8309,10 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
         {
         // put defined term in 2nd or 3rd position
         value += "\\";
+        key |= ISO_2022;
         }
 
-      if ((this->Key & ISO_2022) != 0)
+      if ((key & ISO_2022) != 0)
       {
         value += Charsets[i].DefinedTermExt;
       }

@@ -59,14 +59,18 @@ public:
     ISO_IR_148 = 9,  // ISO-8859-9,  latin5, turkish
     ISO_IR_166 = 10, // ISO-8859-11, thai
     ISO_IR_13  = 11, // JIS X 0201,  katakana, japanese
-    ISO_IR_14  = 12, // JIS X 0201,  romaji, japanese
+    ISO_IR_14  = 12, // JIS X 0201,  romaji, japanese (use ISO_IR_13 instead)
     ISO_IR_192 = 13, // UTF-8,       unicode
     GB18030    = 14, // gb18030,     chinese with full unicode mapping
     GBK        = 15, // gbk,         chinese
-    ISO_2022_BASE = 31,  // mask to get the initial charset
+    // ISO_IR_58  = 30, // reserved, use ISO_2022_IR_58
+    // ISO_IR_149 = 31, // reserved, use ISO_2022_IR_149
+    ISO_2022_BASE = 31, // mask to get the initial charset
+    // ISO_IR_87  = 32, // reserved, use ISO_2022_IR_87
+    // ISO_IR_159 = 64, // reserved, use ISO_2022_IR_159
     ISO_2022      = 128, // bit that indicates use of ISO-2022 extensions
-    ISO_2022_IR_58  = 148, // GB2312
-    ISO_2022_IR_149 = 149, // KS X 1001
+    ISO_2022_IR_58  = 158, // GB2312
+    ISO_2022_IR_149 = 159, // KS X 1001
     ISO_2022_IR_87  = 160, // the JIS X 0208 part of ISO-2022-JP
     ISO_2022_IR_159 = 192, // the JIS X 0212 part of ISO-2022-JP2
     Unknown    = 255  // signifies unknown character set
@@ -78,9 +82,14 @@ public:
 
   //! Construct a character set object from a given code.
   /*!
-   *  The code can be any of the enumerated code values.  The ISO 2022 codes
-   *  are a bitfield and they can be combined with most other codes, but they
-   *  cannot be combined with ISO_IR_192, GB18030, or GBK.
+   *  The code can be any of the enumerated code values except for ISO_IR_14,
+   *  which should always be specified by ISO_IR_13 instead.  The ISO_2022 flag
+   *  can be added to any of the ISO-8859 codes to indicate that the character
+   *  set allows the use of escape codes.  Also note that ISO_2022_IR_87 and
+   *  ISO_2022_IR_159 are combining codes that can be added to each other and
+   *  to ISO_IR_13.  Specifying any other codes in combination can lead to
+   *  undefined results, for example "ISO_2022 | ISO_IR_100 | ISO_IR_101" is
+   *  not permitted and "ISO_2022 | ISO_IR_100" must be used instead.
    */
   vtkDICOMCharacterSet(int k) : Key(static_cast<unsigned char>(k)) {}
 
