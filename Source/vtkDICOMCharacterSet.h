@@ -65,16 +65,29 @@ public:
     GBK        = 15, // gbk,         chinese
     // ISO_IR_58  = 30, // reserved, use ISO_2022_IR_58
     // ISO_IR_149 = 31, // reserved, use ISO_2022_IR_149
-    ISO_2022_BASE = 31, // mask to get the initial charset
     // ISO_IR_87  = 32, // reserved, use ISO_2022_IR_87
     // ISO_IR_159 = 64, // reserved, use ISO_2022_IR_159
-    ISO_2022      = 128, // bit that indicates use of ISO-2022 extensions
+    ISO_2022_IR_6   = 128, // US_ASCII
+    ISO_2022_IR_100 = 129, // ISO-8859-1,  latin1, western europe
+    ISO_2022_IR_101 = 130, // ISO-8859-2,  latin2, central europe
+    ISO_2022_IR_109 = 131, // ISO-8859-3,  latin3, maltese
+    ISO_2022_IR_110 = 132, // ISO-8859-4,  latin4, baltic
+    ISO_2022_IR_144 = 133, // ISO-8859-5,  cyrillic
+    ISO_2022_IR_127 = 134, // ISO-8859-6,  arabic
+    ISO_2022_IR_126 = 135, // ISO-8859-7,  greek
+    ISO_2022_IR_138 = 136, // ISO-8859-8,  hebrew
+    ISO_2022_IR_148 = 137, // ISO-8859-9,  latin5, turkish
+    ISO_2022_IR_166 = 138, // ISO-8859-11, thai
+    ISO_2022_IR_13  = 139, // JIS X 0201,  katakana, japanese
     ISO_2022_IR_58  = 158, // GB2312
     ISO_2022_IR_149 = 159, // KS X 1001
     ISO_2022_IR_87  = 160, // the JIS X 0208 part of ISO-2022-JP
     ISO_2022_IR_159 = 192, // the JIS X 0212 part of ISO-2022-JP2
     Unknown    = 255  // signifies unknown character set
   };
+
+  //! Bit that indicates use of ISO-2022.
+  static const unsigned char ISO_2022 = 128;
 
   //@{
   //! Construct an object that describes the default (ASCII) character set.
@@ -88,8 +101,8 @@ public:
    *  set allows the use of escape codes.  Also note that ISO_2022_IR_87 and
    *  ISO_2022_IR_159 are combining codes that can be added to each other and
    *  to ISO_IR_13.  Specifying any other codes in combination can lead to
-   *  undefined results, for example "ISO_2022 | ISO_IR_100 | ISO_IR_101" is
-   *  not permitted and "ISO_2022 | ISO_IR_100" must be used instead.
+   *  undefined results, for example "ISO_2022_IR_100 | ISO_2022_IR_101" is
+   *  not permitted and "ISO_2022_IR_100" must be used instead.
    */
   vtkDICOMCharacterSet(int k) : Key(static_cast<unsigned char>(k)) {}
 
@@ -186,6 +199,9 @@ private:
   static unsigned char KeyFromString(const char *name, size_t nl);
 
   unsigned char Key;
+
+  //! Mask to get the initial charset.
+  static const unsigned char ISO_2022_BASE = 31;
 };
 
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a);
