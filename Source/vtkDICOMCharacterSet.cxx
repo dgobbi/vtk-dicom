@@ -8210,6 +8210,10 @@ void UnknownToUTF8(const char *text, size_t l, std::string *s)
 } // end anonymous namespace
 
 //----------------------------------------------------------------------------
+const unsigned char vtkDICOMCharacterSet::ISO_2022;
+const unsigned char vtkDICOMCharacterSet::ISO_2022_BASE;
+
+//----------------------------------------------------------------------------
 unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
 {
   const char *cp = name;
