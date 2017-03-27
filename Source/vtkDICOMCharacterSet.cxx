@@ -33,8 +33,8 @@ struct CharsetInfo
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 20;
-static CharsetInfo Charsets[20] = {
+const int CHARSET_TABLE_SIZE = 21;
+static CharsetInfo Charsets[21] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "(B" },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -59,7 +59,7 @@ static CharsetInfo Charsets[20] = {
     "ISO_IR 166", "ISO 2022 IR 166", "-T" },
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, katakana
     "ISO_IR 13",  "ISO 2022 IR 13",  ")I" },
-  { vtkDICOMCharacterSet::ISO_IR_14, 0,      // JIS X 0201, romaji
+  { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, romaji
     "ISO_IR 13",  "ISO 2022 IR 13",  "(J" },
   { vtkDICOMCharacterSet::ISO_IR_192, 0,     // utf-8
     "ISO_IR 192", "",                ""   },
@@ -73,6 +73,8 @@ static CharsetInfo Charsets[20] = {
     "ISO_IR 149", "ISO 2022 IR 149", "$)C" },
   { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // JIS X 0208, japanese
     "ISO_IR 87",  "ISO 2022 IR 87",  "$B" },
+  { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // obsolete escape code
+    "ISO_IR 87",  "ISO 2022 IR 87",  "$@" },
   { vtkDICOMCharacterSet::ISO_2022_IR_159, 2,// JIS X 0212, japanese
     "ISO_IR 159", "ISO 2022 IR 159", "$(D" },
 };
@@ -8210,10 +8212,6 @@ void UnknownToUTF8(const char *text, size_t l, std::string *s)
 } // end anonymous namespace
 
 //----------------------------------------------------------------------------
-const unsigned char vtkDICOMCharacterSet::ISO_2022;
-const unsigned char vtkDICOMCharacterSet::ISO_2022_BASE;
-
-//----------------------------------------------------------------------------
 unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
 {
   const char *cp = name;
@@ -8352,8 +8350,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   {
     ISO8859ToUTF8(this->Key, text, l, &s);
   }
-  else if (this->Key == ISO_IR_13 || // JIS_X_0201 romaji & katakana
-           this->Key == ISO_IR_14)
+  else if (this->Key == ISO_IR_13) // JIS_X_0201 romaji & katakana
   {
     ShiftJISToUTF8(text, l, &s);
   }
@@ -8461,34 +8458,18 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
         size_t le = strlen(escapeTry);
         if (le == escapeLen && strncmp(escapeCode, escapeTry, le) == 0)
         {
-          if (Charsets[k].Key == ISO_IR_13 &&
+          charset = Charsets[k].Key;
+
+          if (charset == ISO_IR_13 &&
+              Charsets[k].EscapeCode[0] == ')' &&
               (oldcharset == ISO_2022_IR_87 ||
                oldcharset == ISO_2022_IR_159))
           {
-            // The ISO_IR_13 charset goes in G1, so let's keep the
+            // The ISO_IR_13 katakana go in G1, so let's keep the
             // currently active kanji charset in G0.
             charset = oldcharset;
           }
-          else if (Charsets[k].Key == ISO_IR_14)
-          {
-            // The escape code for Japanese romaji (ISO_IR 14) switches
-            // to JIS X 0201, which DICOM defines as "ISO 2022 IR 13".
-            charset = ISO_IR_13;
-          }
-          else
-          {
-            charset = Charsets[k].Key;
-          }
           break;
-        }
-      }
-      if (charset == 0xFF)
-      {
-        // Even though it isn't in the DICOM standard, let's also check for
-        // the obsolete JIS X 0208 code in order to fully support ISO-2022-JP
-        if (escapeLen == 2 && strncmp(escapeCode, "$@", 2) == 0)
-        {
-          charset = ISO_2022_IR_87;
         }
       }
     }

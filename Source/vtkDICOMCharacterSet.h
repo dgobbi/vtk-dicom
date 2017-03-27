@@ -59,14 +59,14 @@ public:
     ISO_IR_148 = 9,  // ISO-8859-9,  latin5, turkish
     ISO_IR_166 = 10, // ISO-8859-11, thai
     ISO_IR_13  = 11, // JIS X 0201,  katakana, japanese
-    ISO_IR_14  = 12, // JIS X 0201,  romaji, japanese (use ISO_IR_13 instead)
     ISO_IR_192 = 13, // UTF-8,       unicode
     GB18030    = 14, // gb18030,     chinese with full unicode mapping
     GBK        = 15, // gbk,         chinese
-    // ISO_IR_58  = 30, // reserved, use ISO_2022_IR_58
-    // ISO_IR_149 = 31, // reserved, use ISO_2022_IR_149
+    // ISO_IR_58  = 20, // reserved, use ISO_2022_IR_58
+    // ISO_IR_149 = 21, // reserved, use ISO_2022_IR_149
     // ISO_IR_87  = 32, // reserved, use ISO_2022_IR_87
     // ISO_IR_159 = 64, // reserved, use ISO_2022_IR_159
+    ISO_2022        = 128, // bit that indicates use of ISO-2022
     ISO_2022_IR_6   = 128, // US_ASCII
     ISO_2022_IR_100 = 129, // ISO-8859-1,  latin1, western europe
     ISO_2022_IR_101 = 130, // ISO-8859-2,  latin2, central europe
@@ -79,15 +79,12 @@ public:
     ISO_2022_IR_148 = 137, // ISO-8859-9,  latin5, turkish
     ISO_2022_IR_166 = 138, // ISO-8859-11, thai
     ISO_2022_IR_13  = 139, // JIS X 0201,  katakana, japanese
-    ISO_2022_IR_58  = 158, // GB2312
-    ISO_2022_IR_149 = 159, // KS X 1001
+    ISO_2022_IR_58  = 148, // GB2312
+    ISO_2022_IR_149 = 149, // KS X 1001
     ISO_2022_IR_87  = 160, // the JIS X 0208 part of ISO-2022-JP
     ISO_2022_IR_159 = 192, // the JIS X 0212 part of ISO-2022-JP2
     Unknown    = 255  // signifies unknown character set
   };
-
-  //! Bit that indicates use of ISO-2022.
-  static const unsigned char ISO_2022 = 128;
 
   //@{
   //! Construct an object that describes the default (ASCII) character set.
@@ -200,8 +197,10 @@ private:
 
   unsigned char Key;
 
-  //! Mask to get the initial charset.
-  static const unsigned char ISO_2022_BASE = 31;
+  enum {
+    //! Mask to get the initial charset.
+    ISO_2022_BASE = 31
+  };
 };
 
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a);
