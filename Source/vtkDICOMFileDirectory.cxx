@@ -42,13 +42,6 @@
 #endif
 
 //----------------------------------------------------------------------------
-const unsigned int vtkDICOMFileDirectory::TypeDirectory;
-const unsigned int vtkDICOMFileDirectory::TypeSpecial;
-const unsigned int vtkDICOMFileDirectory::TypeSymlink;
-const unsigned int vtkDICOMFileDirectory::TypeBroken;
-const unsigned int vtkDICOMFileDirectory::TypeHidden;
-
-//----------------------------------------------------------------------------
 struct vtkDICOMFileDirectory::Entry
 {
   std::string Name;
