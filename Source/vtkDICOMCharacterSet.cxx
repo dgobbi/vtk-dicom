@@ -8290,7 +8290,8 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
   for (int i = 0; i < CHARSET_TABLE_SIZE; i++)
   {
     bool match = false;
-    if (Charsets[i].Flags == 0 && value.empty())
+    if (Charsets[i].Flags == 0 && value.empty() &&
+        ((key & ISO_2022_BASE) != 0 || key == ISO_2022_IR_6))
     {
       match = (Charsets[i].Key == (key & ISO_2022_BASE));
     }
@@ -8305,7 +8306,7 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
       match = ((Charsets[i].Key & key) == Charsets[i].Key);
     }
 
-    if (match && Charsets[i].Key != ISO_IR_6)
+    if (match)
     {
       if (Charsets[i].Flags == 1 || Charsets[i].Flags == 2)
         {
@@ -8321,6 +8322,13 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
       else
       {
         value += Charsets[i].DefinedTerm;
+      }
+
+      // terminate if the only remaining bit is ISO_2022
+      key ^= Charsets[i].Key & (~ISO_2022);
+      if ((key | ISO_2022) == ISO_2022)
+      {
+        break;
       }
     }
   }
