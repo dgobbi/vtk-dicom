@@ -8287,7 +8287,7 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
   unsigned char key = this->Key;
   std::string value;
 
-  for (int i = 0; i < CHARSET_TABLE_SIZE; i++)
+  for (int i = 0; i < CHARSET_TABLE_SIZE && key != Unknown; i++)
   {
     bool match = false;
     if (Charsets[i].Flags == 0 && value.empty() &&
@@ -8631,7 +8631,9 @@ ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a)
   std::string s = a.GetCharacterSetString();
   if (s.length() == 0)
   {
-    s = "ISO_IR 6";
+    s = (a.GetKey() == vtkDICOMCharacterSet::ISO_IR_6 ?
+         "ISO_IR 6" :
+         "Unknown");
   }
   else if (s[0] == '\\')
   {
