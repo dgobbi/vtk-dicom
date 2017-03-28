@@ -73,11 +73,26 @@ public:
    *  Some DICOM files do not list a SpecificCharacterSet attribute, but
    *  neverthless use a non-ASCII character encoding.  This method can be
    *  used to specify the character set in absence of SpecificCharacterSet.
-   *  It will not override SpecificCharacterSet if present.
+   *  If SpecificCharacterSet is present, the default will not override it
+   *  unless OverrideCharacterSet is true.
    */
   void SetDefaultCharacterSet(vtkDICOMCharacterSet cs);
   vtkDICOMCharacterSet GetDefaultCharacterSet() {
     return this->DefaultCharacterSet; }
+
+  //! Override the value stored in SpecificCharacterSet.
+  /*!
+   *  This method can be used if the SpecificCharacterSet attribute of a
+   *  file is incorrect.  It overrides the SpecificCharacterSet with the
+   *  DefaultCharacterSet.
+   */
+  void SetOverrideCharacterSet(bool b);
+  void OverrideCharacterSetOn() {
+    this->SetOverrideCharacterSet(true); }
+  void OverrideCharacterSetOff() {
+    this->SetOverrideCharacterSet(false); }
+  bool GetOverrideCharacterSet() {
+    return this->OverrideCharacterSet; }
   //@}
 
   //@{
@@ -215,6 +230,7 @@ protected:
   bool PixelDataFound;
   bool QueryMatched;
   vtkDICOMCharacterSet DefaultCharacterSet;
+  bool OverrideCharacterSet;
   unsigned long ErrorCode;
 
   // used to share FillBuffer with internal classes
