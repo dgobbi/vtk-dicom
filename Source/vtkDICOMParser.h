@@ -17,6 +17,7 @@
 #include <vtkObject.h>
 #include <vtkStdString.h> // For std::string
 #include "vtkDICOMModule.h" // For export macro
+#include "vtkDICOMCharacterSet.h" // For character sets
 
 class vtkDICOMFile;
 class vtkDICOMItem;
@@ -64,6 +65,19 @@ public:
   //! Set the instance index to use when storing metadata.
   vtkSetMacro(Index, int);
   int GetIndex() { return this->Index; }
+  //@}
+
+  //@{
+  //! Set the character set to use if SpecificCharacterSet is missing.
+  /*!
+   *  Some DICOM files do not list a SpecificCharacterSet attribute, but
+   *  neverthless use a non-ASCII character encoding.  This method can be
+   *  used to specify the character set in absence of SpecificCharacterSet.
+   *  It will not override SpecificCharacterSet if present.
+   */
+  void SetDefaultCharacterSet(vtkDICOMCharacterSet cs);
+  vtkDICOMCharacterSet GetDefaultCharacterSet() {
+    return this->DefaultCharacterSet; }
   //@}
 
   //@{
@@ -200,6 +214,7 @@ protected:
   unsigned int PixelDataVL;
   bool PixelDataFound;
   bool QueryMatched;
+  vtkDICOMCharacterSet DefaultCharacterSet;
   unsigned long ErrorCode;
 
   // used to share FillBuffer with internal classes

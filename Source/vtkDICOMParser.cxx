@@ -103,15 +103,17 @@ class DecoderContext
 {
 public:
   // Construct the base info from the meta data.
-  DecoderContext(vtkDICOMMetaData *meta, int index) :
+  DecoderContext(vtkDICOMMetaData *meta, int index, vtkDICOMCharacterSet dcs) :
     Prev(0), Item(0), MetaData(meta), Index(index),
-    CurrentTag(0,0), CharacterSet(vtkDICOMCharacterSet::Unknown),
+    CurrentTag(0,0), DefaultCharacterSet(dcs),
+    CharacterSet(vtkDICOMCharacterSet::Unknown),
     VRForXS(vtkDICOMVR::XX) {}
 
   // Construct from the current item.
   DecoderContext(vtkDICOMItem *item) :
     Prev(0), Item(item), MetaData(0), Index(0),
-    CurrentTag(0,0), CharacterSet(vtkDICOMCharacterSet::Unknown),
+    CurrentTag(0,0), DefaultCharacterSet(vtkDICOMCharacterSet::ISO_IR_6),
+    CharacterSet(vtkDICOMCharacterSet::Unknown),
     VRForXS(vtkDICOMVR::XX) {}
 
   // Find an element within the current context.  This is used
@@ -145,6 +147,7 @@ private:
   vtkDICOMMetaData *MetaData;
   int Index;
   vtkDICOMTag CurrentTag;
+  vtkDICOMCharacterSet DefaultCharacterSet;
   vtkDICOMCharacterSet CharacterSet;
   vtkDICOMVR VRForXS;
 };
@@ -181,7 +184,7 @@ vtkDICOMCharacterSet DecoderContext::GetCharacterSet()
     }
     else
     {
-      cs = vtkDICOMCharacterSet::ISO_IR_6;
+      cs = this->DefaultCharacterSet;
     }
     if (this->CurrentTag > DC::SpecificCharacterSet)
     {
@@ -379,8 +382,8 @@ public:
 protected:
   // Constructor that initializes all of the members.
   DecoderBase(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
-    Parser(parser), BaseContext(data,idx), Item(0), MetaData(data),
-    Index(idx), ImplicitVR(false),
+    Parser(parser), BaseContext(data,idx,parser->GetDefaultCharacterSet()),
+    Item(0), MetaData(data), Index(idx), ImplicitVR(false),
     HasQuery(false), QueryMatched(false),
     LastVL(0) { this->Context = &this->BaseContext; }
 
@@ -1686,6 +1689,7 @@ vtkDICOMParser::vtkDICOMParser()
   this->PixelDataVL = 0;
   this->PixelDataFound = false;
   this->QueryMatched = false;
+  this->DefaultCharacterSet = vtkDICOMCharacterSet::ISO_IR_6;
   this->ErrorCode = 0;
 }
 
@@ -1722,6 +1726,16 @@ void vtkDICOMParser::SetQueryItem(const vtkDICOMItem& query)
   if (query.GetNumberOfDataElements() > 0)
   {
     this->QueryItem = new vtkDICOMItem(query);
+  }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMParser::SetDefaultCharacterSet(vtkDICOMCharacterSet cs)
+{
+  if (this->DefaultCharacterSet != cs)
+  {
+    this->DefaultCharacterSet = cs;
+    this->Modified();
   }
 }
 
@@ -2113,6 +2127,13 @@ bool vtkDICOMParser::ReadMetaData(
     {
       meta->SetAttributeValue(lastTag, v);
     }
+    if (this->PixelDataVL != HxFFFFFFFF)
+    {
+      if (this->PixelDataVL + this->FileOffset != this->FileSize)
+      {
+        cerr << "size mismatch! " << this->FileOffset << " + " << this->PixelDataVL << " != " << this->FileSize << " (" << static_cast<int>(this->FileSize - this->PixelDataVL - this->FileOffset) << ") " << this->FileName << "\n";
+      }
+    }
   }
 
   return true;
@@ -2197,6 +2218,8 @@ void vtkDICOMParser::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "FileName: "
      << (this->FileName ? this->FileName : "(NULL)") << "\n";
+  os << indent << "DefaultCharacterSet: "
+     << this->DefaultCharacterSet << "\n";
   os << indent << "PixelDataFound: "
      << (this->PixelDataFound ? "True\n" : "False\n");
   os << indent << "PixelDataVL: " << this->PixelDataVL << "\n";
