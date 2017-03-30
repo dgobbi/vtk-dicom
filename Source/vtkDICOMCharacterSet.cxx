@@ -7727,6 +7727,10 @@ void ISO8859ToUTF8(int key, const char *text, size_t l, std::string *s)
         {
           used = 0x9FFE1FFD;
         }
+        else if (key == vtkDICOMCharacterSet::ISO_IR_166) // CP874 thai
+        {
+          used = 0x00FE0021;
+        }
         if (((1u << x) & used) != 0)
         {
           code = wincodes[x];
