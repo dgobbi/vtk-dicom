@@ -92,8 +92,7 @@ public:
 
   //! Construct a character set object from a given code.
   /*!
-   *  The code can be any of the enumerated code values except for ISO_IR_14,
-   *  which should always be specified by ISO_IR_13 instead.  The ISO_2022 flag
+   *  The code can be any of the enumerated code values.  The ISO_2022 flag
    *  can be added to any of the ISO-8859 codes to indicate that the character
    *  set allows the use of escape codes.  Also note that ISO_2022_IR_87 and
    *  ISO_2022_IR_159 are combining codes that can be added to each other and

@@ -29,6 +29,224 @@ struct CharsetInfo
   const char *DefinedTerm;
   const char *DefinedTermExt;
   const char *EscapeCode;
+  const char **Names;
+};
+
+static const char *ISO_IR_6_Names[] = {
+  "ansi_x3.4-1968",
+  "ansi_x3.4-1986",
+  "ascii",
+  "iso-ir-6",
+  "iso646-us",
+  "us-ascii",
+  NULL
+};
+
+static const char *ISO_IR_100_Names[] = {
+  "cp1252",
+  "cp819",
+  "csisolatin1",
+  "ibm819",
+  "iso-8859-1",
+  "iso-ir-100",
+  "iso8859-1",
+  "iso88591",
+  "iso_8859-1",
+  "iso_8859-1:1987",
+  "l1",
+  "latin1",
+  "windows-1252",
+  "x-cp1252",
+  NULL
+};
+
+static const char *ISO_IR_101_Names[] = {
+  "csisolatin2",
+  "iso-8859-2",
+  "iso-ir-101",
+  "iso8859-2",
+  "iso88592",
+  "iso_8859-2",
+  "iso_8859-2:1987",
+  "l2",
+  "latin2",
+  NULL
+};
+
+static const char *ISO_IR_109_Names[] = {
+  "csisolatin3",
+  "iso-8859-3",
+  "iso-ir-109",
+  "iso8859-3",
+  "iso88593",
+  "iso_8859-3",
+  "iso_8859-3:1988",
+  "l3",
+  "latin3",
+  NULL
+};
+
+static const char *ISO_IR_110_Names[] = {
+  "csisolatin4",
+  "iso-8859-4",
+  "iso-ir-110",
+  "iso8859-4",
+  "iso88594",
+  "iso_8859-4",
+  "iso_8859-4:1988",
+  "l4",
+  "latin4",
+  NULL
+};
+
+static const char *ISO_IR_144_Names[] = {
+  "csisolatincyrillic",
+  "cyrillic",
+  "iso-8859-5",
+  "iso-ir-144",
+  "iso8859-5",
+  "iso88595",
+  "iso_8859-5",
+  "iso_8859-5:1988",
+  NULL
+};
+
+static const char *ISO_IR_127_Names[] = {
+  "arabic",
+  "asmo-708",
+  "csiso88596e",
+  "csiso88596i",
+  "csisolatinarabic",
+  "ecma-114",
+  "iso-8859-6",
+  "iso-8859-6-e",
+  "iso-8859-6-i",
+  "iso-ir-127",
+  "iso8859-6",
+  "iso88596",
+  "iso_8859-6",
+  "iso_8859-6:1987",
+  NULL
+};
+
+static const char *ISO_IR_126_Names[] = {
+  "csisolatingreek",
+  "ecma-118",
+  "elot_928",
+  "greek",
+  "greek8",
+  "iso-8859-7",
+  "iso-ir-126",
+  "iso8859-7",
+  "iso88597",
+  "iso_8859-7",
+  "iso_8859-7:1987",
+  "sun_eu_greek",
+  NULL
+};
+
+static const char *ISO_IR_138_Names[] = {
+  "csiso88598e",
+  "csisolatinhebrew",
+  "hebrew",
+  "iso-8859-8",
+  "iso-8859-8-e",
+  "iso-ir-138",
+  "iso8859-8",
+  "iso88598",
+  "iso_8859-8",
+  "iso_8859-8:1988",
+  NULL
+};
+
+static const char *ISO_IR_148_Names[] = {
+  "cp1254",
+  "csisolatin5",
+  "iso-8859-9",
+  "iso-ir-148",
+  "iso8859-9",
+  "iso88599",
+  "iso_8859-9",
+  "iso_8859-9:1989",
+  "l5",
+  "latin5",
+  "windows-1254",
+  "x-cp1254",
+  NULL
+};
+
+static const char *ISO_IR_166_Names[] = {
+  "dos-874",
+  "iso-8859-11",
+  "iso-ir-166",
+  "iso8859-11",
+  "iso885911",
+  "tis-620",
+  "windows-874",
+  NULL
+};
+
+static const char *ISO_IR_13_Names[] = {
+  "csshiftjis",
+  "iso-ir-13",
+  "ms932",
+  "ms_kanji",
+  "shift-jis",
+  "shift_jis",
+  "sjis",
+  "x-sjis",
+  NULL
+};
+
+static const char *ISO_IR_192_Names[] = {
+  "iso-ir-192",
+  "unicode-1-1-utf-8",
+  "utf-8",
+  "utf8",
+  NULL
+};
+
+static const char *GB18030_Names[] = {
+  "gb18030",
+  NULL
+};
+
+static const char *GBK_Names[] = {
+  "chinese",
+  "csgb2312",
+  "csiso58gb231280",
+  "gb2312",
+  "gb_2312",
+  "gb_2312-80",
+  "gbk",
+  "x-gbk",
+  NULL
+};
+
+static const char *ISO_IR_58_Names[] = {
+  "iso-ir-58",
+  NULL
+};
+
+static const char *ISO_IR_149_Names[] = {
+  "cseuckr",
+  "csksc56011987",
+  "euc-kr",
+  "iso-ir-149",
+  "korean",
+  "ks_c_5601-1987",
+  "ks_c_5601-1989",
+  "ksc5601",
+  "ksc_5601",
+  "windows-949",
+  NULL
+};
+
+static const char *ISO_IR_87_Names[] = {
+  "csiso2022jp",
+  "iso-2022-jp",
+  "iso-ir-87",
+  NULL
 };
 
 // This table gives the character sets that are defined in DICOM 2011-3.3
@@ -40,47 +258,47 @@ struct CharsetInfo
 const int CHARSET_TABLE_SIZE = 21;
 static CharsetInfo Charsets[21] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
-    "ISO_IR 6",   "ISO 2022 IR 6",   "(B" },
+    "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
-    "ISO_IR 100", "ISO 2022 IR 100", "-A" },
+    "ISO_IR 100", "ISO 2022 IR 100", "-A", ISO_IR_100_Names },
   { vtkDICOMCharacterSet::ISO_IR_101, 0,     // iso-8859-2, central europe
-    "ISO_IR 101", "ISO 2022 IR 101", "-B" },
+    "ISO_IR 101", "ISO 2022 IR 101", "-B", ISO_IR_101_Names },
   { vtkDICOMCharacterSet::ISO_IR_109, 0,     // iso-8859-3, maltese
-    "ISO_IR 109", "ISO 2022 IR 109", "-C" },
+    "ISO_IR 109", "ISO 2022 IR 109", "-C", ISO_IR_109_Names },
   { vtkDICOMCharacterSet::ISO_IR_110, 0,     // iso-8859-4, baltic
-    "ISO_IR 110", "ISO 2022 IR 110", "-D" },
+    "ISO_IR 110", "ISO 2022 IR 110", "-D", ISO_IR_110_Names },
   { vtkDICOMCharacterSet::ISO_IR_144, 0,     // iso-8859-5, cyrillic
-    "ISO_IR 144", "ISO 2022 IR 144", "-L" },
+    "ISO_IR 144", "ISO 2022 IR 144", "-L", ISO_IR_144_Names },
   { vtkDICOMCharacterSet::ISO_IR_127, 0,     // iso-8859-6, arabic
-    "ISO_IR 127", "ISO 2022 IR 127", "-G" },
+    "ISO_IR 127", "ISO 2022 IR 127", "-G", ISO_IR_127_Names },
   { vtkDICOMCharacterSet::ISO_IR_126, 0,     // iso-8859-7, greek
-    "ISO_IR 126", "ISO 2022 IR 126", "-F" },
+    "ISO_IR 126", "ISO 2022 IR 126", "-F", ISO_IR_126_Names },
   { vtkDICOMCharacterSet::ISO_IR_138, 0,     // iso-8859-8, hebrew
-    "ISO_IR 138", "ISO 2022 IR 138", "-H" },
+    "ISO_IR 138", "ISO 2022 IR 138", "-H", ISO_IR_138_Names },
   { vtkDICOMCharacterSet::ISO_IR_148, 0,     // iso-8859-9, latin5, turkish
-    "ISO_IR 148", "ISO 2022 IR 148", "-M" },
+    "ISO_IR 148", "ISO 2022 IR 148", "-M", ISO_IR_148_Names },
   { vtkDICOMCharacterSet::ISO_IR_166, 0,     // iso-8859-11, thai
-    "ISO_IR 166", "ISO 2022 IR 166", "-T" },
+    "ISO_IR 166", "ISO 2022 IR 166", "-T", ISO_IR_166_Names },
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, katakana
-    "ISO_IR 13",  "ISO 2022 IR 13",  ")I" },
+    "ISO_IR 13",  "ISO 2022 IR 13",  ")I", ISO_IR_13_Names },
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, romaji
-    "ISO_IR 13",  "ISO 2022 IR 13",  "(J" },
+    "ISO_IR 13",  "ISO 2022 IR 13",  "(J", NULL },
   { vtkDICOMCharacterSet::ISO_IR_192, 0,     // utf-8
-    "ISO_IR 192", "",                ""   },
+    "ISO_IR 192", "",                "",   ISO_IR_192_Names },
   { vtkDICOMCharacterSet::GB18030, 0,        // chinese multibyte
-    "GB18030",    "",                ""   },
+    "GB18030",    "",                "",   GB18030_Names },
   { vtkDICOMCharacterSet::GBK, 0,            // subset of GB18030
-    "GBK",        "",                ""   },
+    "GBK",        "",                "",   GBK_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // GB2312, chinese
-    "ISO_IR 58",  "ISO 2022 IR 58",  "$)A" },
+    "ISO_IR 58",  "ISO 2022 IR 58", "$)A", ISO_IR_58_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_149, 1,// KS X 1001, korean
-    "ISO_IR 149", "ISO 2022 IR 149", "$)C" },
+    "ISO_IR 149", "ISO 2022 IR 149","$)C", ISO_IR_149_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // JIS X 0208, japanese
-    "ISO_IR 87",  "ISO 2022 IR 87",  "$B" },
+    "ISO_IR 87",  "ISO 2022 IR 87", "$B" , ISO_IR_87_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // obsolete escape code
-    "ISO_IR 87",  "ISO 2022 IR 87",  "$@" },
+    "ISO_IR 87",  "ISO 2022 IR 87", "$@",  NULL },
   { vtkDICOMCharacterSet::ISO_2022_IR_159, 2,// JIS X 0212, japanese
-    "ISO_IR 159", "ISO 2022 IR 159", "$(D" },
+    "ISO_IR 159", "ISO 2022 IR 159","$(D", NULL },
 };
 
 
@@ -8224,13 +8442,15 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
 {
   const char *cp = name;
   const char *ep = name;
-  int key = 0;
+  int key = Unknown;
+  bool found = false;
+
   if (cp)
   {
     ep += nl;
   }
 
-  // Loop over backslash-separated values
+  // Loop over backslash-separated defined terms
   for (int n = 0; cp != ep && *cp != '\0'; n++)
   {
     // strip leading spaces
@@ -8242,9 +8462,14 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
     size_t l = dp - cp;
     while (l > 0 && cp[l-1] == ' ') { l--; }
 
-    if (l > 0)
+    if (l == 0)
     {
-      bool found = false;
+      found = true;
+      key = ISO_IR_6;
+    }
+    else
+    {
+      found = false;
       unsigned char iso2022flag = 0;
       for (int i = 0; i < CHARSET_TABLE_SIZE && !found; i++)
       {
@@ -8284,6 +8509,29 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
 
     cp = dp;
     if (cp != ep && *cp == '\\') { cp++; }
+  }
+
+  // if no defined terms matched, look for common character set names
+  if (!found && name && *name)
+  {
+    for (int i = 0; i < CHARSET_TABLE_SIZE && !found; i++)
+    {
+      for (const char **names = Charsets[i].Names;
+           names && *names && !found;
+           names++)
+      {
+        if (nl == strlen(*names) && strncmp(*names, name, nl) == 0)
+        {
+          found = true;
+          key = Charsets[i].Key;
+          if (Charsets[i].Flags == 1 || Charsets[i].Flags == 2)
+          {
+            // this is for compatibility with the decoders
+            key |= ISO_2022;
+          }
+        }
+      }
+    }
   }
 
   return static_cast<unsigned char>(key);
@@ -8378,7 +8626,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   {
     GBKToUTF8(text, l, &s);
   }
-  else if ((this->Key & ISO_2022) != 0)
+  else if ((this->Key & ISO_2022) != 0 && this->Key != Unknown)
   {
     this->ISO2022ToUTF8(text, l, &s);
   }
