@@ -86,6 +86,8 @@ vtkDICOMReader::vtkDICOMReader()
   this->NeedsRescale = 0;
   this->RescaleSlope = 1.0;
   this->RescaleIntercept = 0.0;
+  this->DefaultCharacterSet = vtkDICOMCharacterSet::GetGlobalDefault();
+  this->OverrideCharacterSet = vtkDICOMCharacterSet::GetGlobalOverride();
   this->Parser = 0;
   this->Sorter = vtkDICOMSliceSorter::New();
   this->FileIndexArray = vtkIntArray::New();
@@ -598,6 +600,8 @@ int vtkDICOMReader::RequestInformation(
 
   // Parser reads just the meta data, not the pixel data.
   this->Parser = vtkDICOMParser::New();
+  this->Parser->SetDefaultCharacterSet(this->DefaultCharacterSet);
+  this->Parser->SetOverrideCharacterSet(this->OverrideCharacterSet);
   this->Parser->SetMetaData(this->MetaData);
   this->Parser->AddObserver(
     vtkCommand::ErrorEvent, this, &vtkDICOMReader::RelayError);

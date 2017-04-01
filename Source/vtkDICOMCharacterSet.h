@@ -115,6 +115,32 @@ public:
   //@}
 
   //@{
+  //! Set the character set to use if SpecificCharacterSet is missing.
+  /*!
+   *  Some DICOM files do not list a SpecificCharacterSet attribute, but
+   *  neverthless use a non-ASCII character encoding.  This method can be
+   *  used to specify the character set in absence of SpecificCharacterSet.
+   *  If SpecificCharacterSet is present, the default will not override it
+   *  unless OverrideCharacterSet is true.
+   */
+  static void SetGlobalDefault(vtkDICOMCharacterSet cs) {
+    GlobalDefault = cs.GetKey(); }
+  static vtkDICOMCharacterSet GetGlobalDefault() {
+    return GlobalDefault; }
+
+  //! Override the value stored in SpecificCharacterSet.
+  /*!
+   *  This method can be used if the SpecificCharacterSet attribute of a
+   *  file is incorrect.
+   */
+  static void SetGlobalOverrideWithDefault(bool b) {
+    GlobalOverride = b; }
+  static void GlobalOverrideOn() { GlobalOverride = true; }
+  static void GlobalOverrideOff() { GlobalOverride = false; }
+  static bool GetGlobalOverride() { return GlobalOverride; }
+  //@}
+
+  //@{
   //! Generate SpecificCharacterSet code values (diagnostic only).
   /*!
    *  Attempt to generate SpecificCharacterSet code values.  If ISO 2022
@@ -201,6 +227,9 @@ private:
     //! Mask to get the initial charset.
     ISO_2022_BASE = 31
   };
+
+  static unsigned char GlobalDefault;
+  static bool GlobalOverride;
 };
 
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a);

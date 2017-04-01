@@ -24,6 +24,7 @@
 
 #include <vtkImageReader2.h>
 #include "vtkDICOMModule.h" // For export macro
+#include "vtkDICOMCharacterSet.h" // For character sets
 
 class vtkIntArray;
 class vtkTypeInt64Array;
@@ -131,6 +132,32 @@ public:
    *  FrameIndexArray to convert the slice index into file and frame indices.
    */
   vtkDICOMMetaData *GetMetaData() { return this->MetaData; }
+  //@}
+
+  //@{
+  //! Set the character set to use if SpecificCharacterSet is missing.
+  /*!
+   *  Some DICOM files do not list a SpecificCharacterSet attribute, but
+   *  neverthless use a non-ASCII character encoding.  This method can be
+   *  used to specify the character set in absence of SpecificCharacterSet.
+   *  This method will not take effect unless is is called before the image
+   *  is read.  If SpecificCharacterSet is present, the default will not
+   *  override it unless OverrideCharacterSet is true.
+   */
+  vtkSetMacro(DefaultCharacterSet, vtkDICOMCharacterSet);
+  vtkDICOMCharacterSet GetDefaultCharacterSet() {
+    return this->DefaultCharacterSet; }
+
+  //! Override the value stored in SpecificCharacterSet.
+  /*!
+   *  This method can be used if the SpecificCharacterSet attribute of a
+   *  file is incorrect.  It overrides the SpecificCharacterSet with the
+   *  DefaultCharacterSet.
+   */
+  vtkSetMacro(OverrideCharacterSet, bool);
+  vtkBooleanMacro(OverrideCharacterSet, bool);
+  bool GetOverrideCharacterSet() {
+    return this->OverrideCharacterSet; }
   //@}
 
   //@{
@@ -351,6 +378,12 @@ protected:
 
   //! The MedicalImageProperties, for compatibility with other readers.
   vtkMedicalImageProperties *MedicalImageProperties;
+
+  //! The default character set to use while parsing the file.
+  vtkDICOMCharacterSet DefaultCharacterSet;
+
+  //! Whether the default should override SpecificCharacterSet.
+  bool OverrideCharacterSet;
 
   //! The parser that is used to read the file.
   vtkDICOMParser *Parser;

@@ -135,6 +135,8 @@ vtkDICOMDirectory::vtkDICOMDirectory()
   this->DirectoryName = 0;
   this->InputFileNames = 0;
   this->FilePattern = 0;
+  this->DefaultCharacterSet = vtkDICOMCharacterSet::GetGlobalDefault();
+  this->OverrideCharacterSet = vtkDICOMCharacterSet::GetGlobalOverride();
   this->Series = new SeriesVector;
   this->Studies = new StudyVector;
   this->Patients = new PatientVector;
@@ -660,6 +662,8 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
       vtkSmartPointer<vtkDICOMMetaData>::New();
     vtkSmartPointer<vtkDICOMParser> parser =
       vtkSmartPointer<vtkDICOMParser>::New();
+    parser->SetDefaultCharacterSet(this->DefaultCharacterSet);
+    parser->SetOverrideCharacterSet(this->OverrideCharacterSet);
 
     parser->AddObserver(
       vtkCommand::ErrorEvent, this, &vtkDICOMDirectory::RelayError);
@@ -1041,6 +1045,8 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     vtkSmartPointer<vtkDICOMMetaData>::New();
   vtkSmartPointer<vtkDICOMParser> parser =
     vtkSmartPointer<vtkDICOMParser>::New();
+  parser->SetDefaultCharacterSet(this->DefaultCharacterSet);
+  parser->SetOverrideCharacterSet(this->OverrideCharacterSet);
 
   parser->AddObserver(
     vtkCommand::ErrorEvent, this, &vtkDICOMDirectory::RelayError);
@@ -2037,6 +2043,8 @@ void vtkDICOMDirectory::ProcessDirectory(
       vtkSmartPointer<vtkDICOMMetaData> meta =
         vtkSmartPointer<vtkDICOMMetaData>::New();
       vtkDICOMParser *parser = vtkDICOMParser::New();
+      parser->SetDefaultCharacterSet(this->DefaultCharacterSet);
+      parser->SetOverrideCharacterSet(this->OverrideCharacterSet);
       parser->AddObserver(
         vtkCommand::ErrorEvent, this, &vtkDICOMDirectory::RelayError);
       parser->SetMetaData(meta);

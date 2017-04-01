@@ -107,7 +107,7 @@ public:
                  vtkDICOMCharacterSet dcs, bool ocs) :
     Prev(0), Item(0), MetaData(meta), Index(index),
     CurrentTag(0,0), DefaultCharacterSet(dcs),
-    CharacterSet(ocs ? dcs : vtkDICOMCharacterSet::Unknown),
+    CharacterSet(ocs ? dcs.GetKey() : vtkDICOMCharacterSet::Unknown),
     VRForXS(vtkDICOMVR::XX) {}
 
   // Construct from the current item.
@@ -1692,8 +1692,8 @@ vtkDICOMParser::vtkDICOMParser()
   this->PixelDataVL = 0;
   this->PixelDataFound = false;
   this->QueryMatched = false;
-  this->DefaultCharacterSet = vtkDICOMCharacterSet::ISO_IR_6;
-  this->OverrideCharacterSet = false;
+  this->DefaultCharacterSet = vtkDICOMCharacterSet::GetGlobalDefault();
+  this->OverrideCharacterSet = vtkDICOMCharacterSet::GetGlobalOverride();
   this->ErrorCode = 0;
 }
 

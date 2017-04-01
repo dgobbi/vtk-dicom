@@ -15,6 +15,10 @@
 
 #include <algorithm>
 
+unsigned char vtkDICOMCharacterSet::GlobalDefault =
+  vtkDICOMCharacterSet::ISO_IR_6;
+bool vtkDICOMCharacterSet::GlobalOverride = false;
+
 //----------------------------------------------------------------------------
 namespace {
 
