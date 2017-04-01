@@ -68,6 +68,7 @@ void dicompull_usage(FILE *file, const char *cp)
     "  -image            Restrict the search to files with PixelData.\n"
     "  -series           Find all files in series if even one file matches.\n"
     "  --ignore-dicomdir Ignore the DICOMDIR file even if it is present.\n"
+    "  --charset <cs>    Charset to use if SpecificCharacterSet is missing.\n"
     "  --silent          Do not report any progress information.\n"
     "  --help            Print a brief help message.\n"
     "  --version         Print the software version.\n"
@@ -299,6 +300,7 @@ int MAINMACRO(int argc, char *argv[])
   bool requirePixelData = false;
   bool findSeries = false;
   bool ignoreDicomdir = false;
+  vtkDICOMCharacterSet charset;
   bool silent = false;
   std::string outdir;
 
@@ -429,6 +431,23 @@ int MAINMACRO(int argc, char *argv[])
     {
       ignoreDicomdir = true;
     }
+    else if (strcmp(arg, "--charset") == 0)
+    {
+      ++argi;
+      if (argi == argc || argv[argi][0] == '-')
+      {
+        fprintf(stderr, "%s must be followed by a valid character set\n\n",
+                arg);
+        return 1;
+      }
+      charset = vtkDICOMCharacterSet(argv[argi]);
+      if (charset.GetKey() == vtkDICOMCharacterSet::Unknown)
+      {
+        fprintf(stderr, "%s %s is not a known character set\n\n",
+                arg, argv[argi]);
+        return 1;
+      }
+    }
     else if (strcmp(arg, "--silent") == 0)
     {
       silent = true;
@@ -520,6 +539,7 @@ int MAINMACRO(int argc, char *argv[])
 
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
+    finder->SetDefaultCharacterSet(charset);
     finder->SetInputFileNames(a);
     finder->SetFilePattern(pattern);
     finder->SetScanDepth(scandepth);

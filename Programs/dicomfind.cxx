@@ -79,6 +79,7 @@ void dicomfind_usage(FILE *file, const char *cp)
     "  -execdir ... +    Go to directory and execute command on every series.\n"
     "  -execdir ... %s   Go to directory and execute command on every file.\n"
     "  --ignore-dicomdir Ignore the DICOMDIR file even if it is present.\n"
+    "  --charset <cs>    Charset to use if SpecificCharacterSet is missing.\n"
     "  --help            Print a brief help message.\n"
     "  --version         Print the software version.\n",
 #ifndef _WIN32
@@ -571,6 +572,7 @@ int MAINMACRO(int argc, char *argv[])
   bool ignoreDicomdir = false;
   bool requirePixelData = false;
   bool findSeries = false;
+  vtkDICOMCharacterSet charset;
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
 
@@ -718,6 +720,23 @@ int MAINMACRO(int argc, char *argv[])
     {
       ignoreDicomdir = true;
     }
+    else if (strcmp(arg, "--charset") == 0)
+    {
+      ++argi;
+      if (argi == argc || argv[argi][0] == '-')
+      {
+        fprintf(stderr, "%s must be followed by a valid character set\n\n",
+                arg);
+        return 1;
+      }
+      charset = vtkDICOMCharacterSet(argv[argi]);
+      if (charset.GetKey() == vtkDICOMCharacterSet::Unknown)
+      {
+        fprintf(stderr, "%s %s is not a known character set\n\n",
+                arg, argv[argi]);
+        return 1;
+      }
+    }
     else if (arg[0] == '-')
     {
       fprintf(stderr, "unrecognized option %s.\n\n", arg);
@@ -744,6 +763,7 @@ int MAINMACRO(int argc, char *argv[])
   {
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
+    finder->SetDefaultCharacterSet(charset);
     finder->SetInputFileNames(a);
     finder->SetFilePattern(pattern);
     finder->SetScanDepth(scandepth);

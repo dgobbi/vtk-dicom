@@ -68,6 +68,7 @@ void dicomtocsv_usage(FILE *file, const char *cp)
     "  --first-nonzero   Search series for first nonzero value of each key.\n"
     "  --directory-only  Use directory scan only, do not re-scan files.\n"
     "  --ignore-dicomdir Ignore the DICOMDIR file even if it is present.\n"
+    "  --charset <cs>    Charset to use if SpecificCharacterSet is missing.\n"
     "  --images-only     Only list files that have PixelData or equivalent.\n"
     "  --noheader        Do not print the csv header.\n"
     "  --study           Print one row for each study.\n"
@@ -599,6 +600,7 @@ int MAINMACRO(int argc, char *argv[])
   bool firstNonZero = false;
   bool useDirectoryRecords = false;
   bool ignoreDicomdir = false;
+  vtkDICOMCharacterSet charset;
   bool imagesOnly = false;
   bool noHeader = false;
   bool silent = false;
@@ -699,6 +701,23 @@ int MAINMACRO(int argc, char *argv[])
     else if (strcmp(arg, "--ignore-dicomdir") == 0)
     {
       ignoreDicomdir = true;
+    }
+    else if (strcmp(arg, "--charset") == 0)
+    {
+      ++argi;
+      if (argi == argc || argv[argi][0] == '-')
+      {
+        fprintf(stderr, "%s must be followed by a valid character set\n\n",
+                arg);
+        return 1;
+      }
+      charset = vtkDICOMCharacterSet(argv[argi]);
+      if (charset.GetKey() == vtkDICOMCharacterSet::Unknown)
+      {
+        fprintf(stderr, "%s %s is not a known character set\n\n",
+                arg, argv[argi]);
+        return 1;
+      }
     }
     else if (strcmp(arg, "--images-only") == 0)
     {
@@ -813,6 +832,9 @@ int MAINMACRO(int argc, char *argv[])
   if (a->GetNumberOfTuples() > 0)
   {
     vtkSmartPointer<ProgressObserver> p;
+
+    // Set the default characte set
+    vtkDICOMCharacterSet::SetGlobalDefault(charset);
 
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();

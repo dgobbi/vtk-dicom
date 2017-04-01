@@ -55,6 +55,7 @@ void printUsage(FILE *file, const char *cp)
   fprintf(file, "options:\n"
     "  -k tag          Provide a key to be printed.\n"
     "  -q <query.txt>  Provide a file that lists which elements to print.\n"
+    "  --charset <cs>  Charset to use if SpecificCharacterSet is missing.\n"
     "  --help          Print a brief help message.\n"
     "  --version       Print the software version.\n");
 }
@@ -417,6 +418,9 @@ int MAINMACRO(int argc, char *argv[])
   QueryTagList qtlist;
   vtkDICOMItem query;
 
+  // for the default character set
+  vtkDICOMCharacterSet charset;
+
   if (argc < 2)
   {
     printUsage(stdout, fileBasename(argv[0]));
@@ -465,9 +469,8 @@ int MAINMACRO(int argc, char *argv[])
     }
     else if (strcmp(arg, "-k") == 0)
     {
-      vtkDICOMTag tag;
       ++argi;
-      if (argi == argc)
+      if (argi == argc || argv[argi][0] == '-')
       {
         fprintf(stderr, "%s must be followed by gggg,eeee=value "
                         "where gggg,eeee is a DICOM tag.\n\n", arg);
@@ -475,6 +478,23 @@ int MAINMACRO(int argc, char *argv[])
       }
       if (!dicomcli_readkey(argv[argi], &query, &qtlist))
       {
+        return 1;
+      }
+    }
+    else if (strcmp(arg, "--charset") == 0)
+    {
+      ++argi;
+      if (argi == argc || argv[argi][0] == '-')
+      {
+        fprintf(stderr, "%s must be followed by a valid character set\n\n",
+                arg);
+        return 1;
+      }
+      charset = vtkDICOMCharacterSet(argv[argi]);
+      if (charset.GetKey() == vtkDICOMCharacterSet::Unknown)
+      {
+        fprintf(stderr, "%s %s is not a known character set\n\n",
+                arg, argv[argi]);
         return 1;
       }
     }
@@ -502,6 +522,7 @@ int MAINMACRO(int argc, char *argv[])
 
   vtkSmartPointer<vtkDICOMParser> parser =
     vtkSmartPointer<vtkDICOMParser>::New();
+  parser->SetDefaultCharacterSet(charset);
 
   vtkSmartPointer<vtkDICOMMetaData> data =
     vtkSmartPointer<vtkDICOMMetaData>::New();
