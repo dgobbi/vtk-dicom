@@ -14,6 +14,7 @@
 #include "vtkDICOMReader.h"
 #include "vtkDICOMAlgorithm.h"
 #include "vtkDICOMFile.h"
+#include "vtkDICOMFilePath.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMParser.h"
 #include "vtkDICOMDictionary.h"
@@ -1415,6 +1416,12 @@ bool vtkDICOMReader::ReadFileDelegated(
   // For JPEG, DCMTK will do the YBR to RGB
   this->NeedsYBRToRGB = false;
 
+#ifdef _WIN32
+  // Convert utf8 filename to local character set for dcmtk
+  vtkDICOMFilePath filePath(filename);
+  filename = filePath.Local();
+#endif
+
   DcmFileFormat *fileformat = new DcmFileFormat();
   fileformat->loadFile(filename);
   OFCondition status = fileformat->getDataset()->chooseRepresentation(
@@ -1464,6 +1471,12 @@ bool vtkDICOMReader::ReadFileDelegated(
 #elif defined(DICOM_USE_GDCM)
 
   (void)fileIdx;
+
+#ifdef _WIN32
+  // Convert utf8 filename to local character set for gdcm
+  vtkDICOMFilePath filePath(filename);
+  filename = filePath.Local();
+#endif
 
   gdcm::ImageReader reader;
   reader.SetFileName(filename);
