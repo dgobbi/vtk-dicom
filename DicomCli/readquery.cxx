@@ -126,6 +126,10 @@ bool dicomcli_readkey_query(
   size_t lineStart = s;
   size_t n = strlen(cp);
   bool tagError = false;
+
+  // set the default character set to utf-8
+  vtkDICOMCharacterSet cs(vtkDICOMCharacterSet::ISO_IR_192);
+
   while (!tagError && tagDepth < 3)
   {
     // check for private creator in square brackets
@@ -400,12 +404,27 @@ bool dicomcli_readkey_query(
         t++;
       }
     }
-    query->SetAttributeValue(tagPath, vtkDICOMValue(vr, sval));
+    if (vr.HasSpecificCharacterSet())
+    {
+      query->SetAttributeValue(tagPath, vtkDICOMValue(vr, cs, sval));
+    }
+    else
+    {
+      query->SetAttributeValue(tagPath, vtkDICOMValue(vr, sval));
+    }
   }
   else
   {
+    if (vr.HasSpecificCharacterSet())
+    {
+    query->SetAttributeValue(tagPath,
+      vtkDICOMValue(vr, cs, &cp[valueStart], valueEnd - valueStart));
+    }
+    else
+    {
     query->SetAttributeValue(tagPath,
       vtkDICOMValue(vr, &cp[valueStart], valueEnd - valueStart));
+    }
   }
 
   // add the tag path to the list, if it isn't already there
