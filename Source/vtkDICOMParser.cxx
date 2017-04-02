@@ -107,14 +107,16 @@ public:
                  vtkDICOMCharacterSet dcs, bool ocs) :
     Prev(0), Item(0), MetaData(meta), Index(index),
     CurrentTag(0,0), DefaultCharacterSet(dcs),
-    CharacterSet(ocs ? dcs.GetKey() : vtkDICOMCharacterSet::Unknown),
+    CharacterSet(ocs ? dcs :
+                 vtkDICOMCharacterSet(vtkDICOMCharacterSet::Unknown)),
     VRForXS(vtkDICOMVR::XX) {}
 
   // Construct from the current item.
   DecoderContext(vtkDICOMItem *item, vtkDICOMCharacterSet dcs, bool ocs) :
     Prev(0), Item(item), MetaData(0), Index(0),
     CurrentTag(0,0), DefaultCharacterSet(dcs),
-    CharacterSet(ocs ? dcs.GetKey() : vtkDICOMCharacterSet::Unknown),
+    CharacterSet(ocs ? dcs :
+                 vtkDICOMCharacterSet(vtkDICOMCharacterSet::Unknown)),
     VRForXS(vtkDICOMVR::XX) {}
 
   // Find an element within the current context.  This is used
