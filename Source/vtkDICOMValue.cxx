@@ -2698,7 +2698,7 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
     // might have control characters, don't print it
     os << "text[" << v.GetVL() << "]";
   }
-  else if (cp)
+  else if (cp && !vr.HasSpecificCharacterSet())
   {
     const char *dp = cp + v.GetVL();
     while (cp != dp && *cp == ' ') { cp++; }
