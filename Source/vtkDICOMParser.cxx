@@ -2141,13 +2141,6 @@ bool vtkDICOMParser::ReadMetaData(
     {
       meta->SetAttributeValue(lastTag, v);
     }
-    if (this->PixelDataVL != HxFFFFFFFF)
-    {
-      if (this->PixelDataVL + this->FileOffset != this->FileSize)
-      {
-        cerr << "size mismatch! " << this->FileOffset << " + " << this->PixelDataVL << " != " << this->FileSize << " (" << static_cast<int>(this->FileSize - this->PixelDataVL - this->FileOffset) << ") " << this->FileName << "\n";
-      }
-    }
   }
 
   return true;
