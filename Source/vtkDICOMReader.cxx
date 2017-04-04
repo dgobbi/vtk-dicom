@@ -264,6 +264,16 @@ void vtkDICOMReader::SetDesiredStackID(const char *stackId)
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMReader::SetDefaultCharacterSet(vtkDICOMCharacterSet cs)
+{
+  if (this->DefaultCharacterSet != cs)
+  {
+    this->DefaultCharacterSet = cs;
+    this->Modified();
+  }
+}
+
+//----------------------------------------------------------------------------
 namespace {
 
 // This silences error printing when CanReadFile is testing a file.

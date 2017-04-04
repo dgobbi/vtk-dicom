@@ -399,6 +399,16 @@ vtkDICOMMetaData *vtkDICOMDirectory::GetMetaDataForSeries(int i)
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMDirectory::SetDefaultCharacterSet(vtkDICOMCharacterSet cs)
+{
+  if (this->DefaultCharacterSet != cs)
+  {
+    this->DefaultCharacterSet = cs;
+    this->Modified();
+  }
+}
+
+//----------------------------------------------------------------------------
 // The following code does loose matching to accomodate the way that Osirix
 // modifies some attributes before storing them in its database
 

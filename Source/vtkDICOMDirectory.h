@@ -254,7 +254,7 @@ public:
    *  If SpecificCharacterSet is present, the default will not override it
    *  unless OverrideCharacterSet is true.
    */
-  vtkSetMacro(DefaultCharacterSet, vtkDICOMCharacterSet);
+  void SetDefaultCharacterSet(vtkDICOMCharacterSet cs);
   vtkDICOMCharacterSet GetDefaultCharacterSet() {
     return this->DefaultCharacterSet; }
 
