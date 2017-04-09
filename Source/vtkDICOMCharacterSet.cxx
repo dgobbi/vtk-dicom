@@ -270,14 +270,21 @@ static const char *CP1253_Names[] = {
   NULL
 };
 
+static const char *CP1255_Names[] = {
+  "cp1255",
+  "windows-1255",
+  "x-cp1255",
+  NULL
+};
+
 // This table gives the character sets that are defined in DICOM 2011-3.3
 // The first two columns are the possible CS values of character set in the
 // SpecificCharacterSet attribute of a DICOM data set.  If the second form
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 24;
-static CharsetInfo Charsets[24] = {
+const int CHARSET_TABLE_SIZE = 25;
+static CharsetInfo Charsets[25] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -324,6 +331,7 @@ static CharsetInfo Charsets[24] = {
   { vtkDICOMCharacterSet::X_CP1250, 0, "cp1250", "", "", CP1250_Names },
   { vtkDICOMCharacterSet::X_CP1251, 0, "cp1251", "", "", CP1251_Names },
   { vtkDICOMCharacterSet::X_CP1253, 0, "cp1253", "", "", CP1253_Names },
+  { vtkDICOMCharacterSet::X_CP1255, 0, "cp1255", "", "", CP1255_Names },
 };
 
 
@@ -8143,6 +8151,70 @@ void CP1253ToUTF8(const char *text, size_t l, std::string *s)
 }
 
 //----------------------------------------------------------------------------
+void CP1255ToUTF8(const char *text, size_t l, std::string *s)
+{
+  // CP1255 is similar to iso-8859-8, but it includes special Windows
+  // characters, hebrew vowels, and the sheqel sign in place of the
+  // generic currency symbol
+
+  for (size_t i = 0; i < l; i++)
+  {
+    unsigned short code = static_cast<unsigned char>(text[i]);
+    if (code <= 0x7F)
+    {
+      s->push_back(code);
+    }
+    else
+    {
+      if (code <= 0x9F)
+      {
+        // Windows replacement for the C1 block
+        static const unsigned short wincodes[32] = {
+          0x20AC, 0xFFFD, 0x201A, 0x0192, 0x201E, 0x2026, 0x2020, 0x2021,
+          0x02C6, 0x2030, 0xFFFD, 0x2039, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD,
+          0xFFFD, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014,
+          0x02DC, 0x2122, 0xFFFD, 0x203A, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD
+        };
+        code = wincodes[code - 0x80];
+      }
+      else if (code == 0xA4)
+      {
+        code = 0x20AA;
+      }
+      else if (code <= 0xBF)
+      {
+        // these codes are identical to iso-8859-1
+      }
+      else if (code <= 0xD3)
+      {
+        code += (0x05B0 - 0xC0);
+      }
+      else if (code <= 0xD8)
+      {
+        code += (0x05F0 - 0xD4);
+      }
+      else if (code <= 0xDF)
+      {
+        code = 0xFFFD;
+      }
+      else if (code <= 0xFA)
+      {
+        code += (0x05D0 - 0xE0);
+      }
+      else if (code == 0xFD || code == 0xFE)
+      {
+        code += (0x200E - 0xFD);
+      }
+      else
+      {
+        code = 0xFFFD;
+      }
+      UnicodeToUTF8(code, s);
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
 void ISO8859ToUTF8(int key, const char *text, size_t l, std::string *s)
 {
   // Use ASCII if "key" is out of range
@@ -8182,11 +8254,7 @@ void ISO8859ToUTF8(int key, const char *text, size_t l, std::string *s)
         };
         // bitfield to say which of the 32 codes are to be defined
         unsigned int used = 0;
-        if (key == vtkDICOMCharacterSet::ISO_IR_138) // CP1255 hebrew
-        {
-          used = 0x0BFE0BFD;
-        }
-        else if (key == vtkDICOMCharacterSet::ISO_IR_148) // CP1254 turkish
+        if (key == vtkDICOMCharacterSet::ISO_IR_148) // CP1254 turkish
         {
           used = 0x9FFE1FFD;
         }
@@ -8889,6 +8957,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   else if (this->Key == X_CP1253)
   {
     CP1253ToUTF8(text, l, &s);
+  }
+  else if (this->Key == X_CP1255)
+  {
+    CP1255ToUTF8(text, l, &s);
   }
   else if ((this->Key & ISO_2022) != 0 && this->Key != Unknown)
   {

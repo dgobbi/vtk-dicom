@@ -65,6 +65,7 @@ public:
     X_CP1250   = 16, // cp1250,      central europe
     X_CP1251   = 17, // cp1251,      cyrillic
     X_CP1253   = 18, // cp1253,      greek
+    X_CP1255   = 19, // cp1255,      hebrew
     // ISO_IR_58  = 20, // reserved, use ISO_2022_IR_58
     // ISO_IR_149 = 21, // reserved, use ISO_2022_IR_149
     // ISO_IR_87  = 32, // reserved, use ISO_2022_IR_87
@@ -191,7 +192,9 @@ public:
    *  into this category, this flag is off for unicode and GB18030/GBK.
    */
   bool IsBiDirectional() const {
-    return (this->Key == ISO_IR_127 || this->Key == ISO_IR_138); }
+    return (this->Key == ISO_IR_127 ||
+            this->Key == ISO_IR_138 ||
+            this->Key == X_CP1255); }
   //@}
 
   //@{
