@@ -62,6 +62,7 @@ public:
     ISO_IR_192 = 13, // UTF-8,       unicode
     GB18030    = 14, // gb18030,     chinese with full unicode mapping
     GBK        = 15, // gbk,         chinese
+    X_CP1250   = 16, // cp1250,      central europe
     // ISO_IR_58  = 20, // reserved, use ISO_2022_IR_58
     // ISO_IR_149 = 21, // reserved, use ISO_2022_IR_149
     // ISO_IR_87  = 32, // reserved, use ISO_2022_IR_87
