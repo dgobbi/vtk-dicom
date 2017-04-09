@@ -263,14 +263,21 @@ static const char *CP1251_Names[] = {
   NULL
 };
 
+static const char *CP1253_Names[] = {
+  "cp1253",
+  "windows-1253",
+  "x-cp1253",
+  NULL
+};
+
 // This table gives the character sets that are defined in DICOM 2011-3.3
 // The first two columns are the possible CS values of character set in the
 // SpecificCharacterSet attribute of a DICOM data set.  If the second form
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 23;
-static CharsetInfo Charsets[23] = {
+const int CHARSET_TABLE_SIZE = 24;
+static CharsetInfo Charsets[24] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -316,6 +323,7 @@ static CharsetInfo Charsets[23] = {
   // The remainder of these are not DICOM standard
   { vtkDICOMCharacterSet::X_CP1250, 0, "cp1250", "", "", CP1250_Names },
   { vtkDICOMCharacterSet::X_CP1251, 0, "cp1251", "", "", CP1251_Names },
+  { vtkDICOMCharacterSet::X_CP1253, 0, "cp1253", "", "", CP1253_Names },
 };
 
 
@@ -8093,6 +8101,48 @@ void CP1252ToUTF8(const char *text, size_t l, std::string *s)
 }
 
 //----------------------------------------------------------------------------
+void CP1253ToUTF8(const char *text, size_t l, std::string *s)
+{
+  // CP1253 is close to iso-8859-7, here are the differences
+  static const unsigned short cp1253[62] = {
+    0x20AC, 0xFFFD, 0x201A, 0x0192, 0x201E, 0x2026, 0x2020, 0x2021,
+    0xFFFD, 0x2030, 0xFFFD, 0x2039, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD,
+    0xFFFD, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014,
+    0xFFFD, 0x2122, 0xFFFD, 0x203A, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD,
+    0x00A0, 0x0385, 0x0386, 0x00A3, 0x00A4, 0x00A5, 0x00A6, 0x00A7,
+    0x00A8, 0x00A9, 0xFFFD, 0x00AB, 0x00AC, 0x00AD, 0x00AE, 0x2015,
+    0x00B0, 0x00B1, 0x00B2, 0x00B3, 0x0384, 0x00B5, 0x00B6, 0x00B7,
+    0x0388, 0x0389, 0x038A, 0x00BB, 0x038C, 0x00BD
+  };
+
+  for (size_t i = 0; i < l; i++)
+  {
+    unsigned short code = static_cast<unsigned char>(text[i]);
+    if (code <= 0x7F)
+    {
+      s->push_back(code);
+    }
+    else
+    {
+      if (code <= 0xBD)
+      {
+        // use codes that are different from iso-8859-7
+        code = cp1253[code - 0x80];
+      }
+      else if (code < 0xFF)
+      {
+        code += (0x0370 - 0xA0);
+      }
+      else
+      {
+        code = 0xFFFD;
+      }
+      UnicodeToUTF8(code, s);
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
 void ISO8859ToUTF8(int key, const char *text, size_t l, std::string *s)
 {
   // Use ASCII if "key" is out of range
@@ -8835,6 +8885,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   else if (this->Key == X_CP1251)
   {
     CP1251ToUTF8(text, l, &s);
+  }
+  else if (this->Key == X_CP1253)
+  {
+    CP1253ToUTF8(text, l, &s);
   }
   else if ((this->Key & ISO_2022) != 0 && this->Key != Unknown)
   {
