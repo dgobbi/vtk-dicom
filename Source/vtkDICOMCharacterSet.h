@@ -68,6 +68,7 @@ public:
     X_CP1255   = 19, // cp1255,      hebrew
     // ISO_IR_58  = 20, // reserved, use ISO_2022_IR_58
     // ISO_IR_149 = 21, // reserved, use ISO_2022_IR_149
+    X_BIG5     = 22, // big5 + ETEN, traditional chinese
     // ISO_IR_87  = 32, // reserved, use ISO_2022_IR_87
     // ISO_IR_159 = 64, // reserved, use ISO_2022_IR_159
     ISO_2022        = 128, // bit that indicates use of ISO-2022
