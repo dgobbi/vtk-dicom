@@ -59,6 +59,7 @@ public:
     ISO_IR_148 = 9,  // ISO-8859-9,  latin5, turkish
     ISO_IR_166 = 10, // ISO-8859-11, thai
     ISO_IR_13  = 11, // JIS X 0201,  katakana, japanese
+    X_LATIN9   = 12, // ISO-8859-15, latin9, western europe
     ISO_IR_192 = 13, // UTF-8,       unicode
     GB18030    = 14, // gb18030,     chinese with full unicode mapping
     GBK        = 15, // gbk,         chinese

@@ -198,6 +198,18 @@ static const char *ISO_IR_13_Names[] = {
   NULL
 };
 
+static const char *LATIN9_Names[] = {
+  "csisolatin9",
+  "iso-8859-15",
+  "iso-ir-203",
+  "iso8859-15",
+  "iso885915",
+  "iso_8859-15",
+  "l9",
+  "latin9",
+  NULL
+};
+
 static const char *ISO_IR_192_Names[] = {
   "iso-ir-192",
   "unicode-1-1-utf-8",
@@ -291,8 +303,8 @@ static const char *BIG5_Names[] = {
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 26;
-static CharsetInfo Charsets[26] = {
+const int CHARSET_TABLE_SIZE = 27;
+static CharsetInfo Charsets[27] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -336,6 +348,7 @@ static CharsetInfo Charsets[26] = {
   { vtkDICOMCharacterSet::ISO_2022_IR_159, 2,// JIS X 0212, japanese
     "ISO_IR 159", "ISO 2022 IR 159","$(D", NULL },
   // The remainder of these are not DICOM standard
+  { vtkDICOMCharacterSet::X_LATIN9, 0, "latin9", "", "", LATIN9_Names },
   { vtkDICOMCharacterSet::X_CP1250, 0, "cp1250", "", "", CP1250_Names },
   { vtkDICOMCharacterSet::X_CP1251, 0, "cp1251", "", "", CP1251_Names },
   { vtkDICOMCharacterSet::X_CP1253, 0, "cp1253", "", "", CP1253_Names },
@@ -9783,6 +9796,40 @@ void CP1255ToUTF8(const char *text, size_t l, std::string *s)
 }
 
 //----------------------------------------------------------------------------
+void Latin9ToUTF8(const char *text, size_t l, std::string *s)
+{
+  // Latin9 is like latin1, but exchanges some symbols for letters
+  // and adds the euro
+
+  for (size_t i = 0; i < l; i++)
+  {
+    unsigned short code = static_cast<unsigned char>(text[i]);
+    if (code <= 0x7F)
+    {
+      s->push_back(code);
+    }
+    else
+    {
+      if (code <= 0x9F)
+      {
+        code = 0xFFFD;
+      }
+      else if (code <= 0xBF)
+      {
+        static const unsigned short latin9[32] = {
+          0x00A0, 0x00A1, 0x00A2, 0x00A3, 0x20AC, 0x00A5, 0x0160, 0x00A7,
+          0x0161, 0x00A9, 0x00AA, 0x00AB, 0x00AC, 0x00AD, 0x00AE, 0x00AF,
+          0x00B0, 0x00B1, 0x00B2, 0x00B3, 0x017D, 0x00B5, 0x00B6, 0x00B7,
+          0x017E, 0x00B9, 0x00BA, 0x00BB, 0x0152, 0x0153, 0x0178, 0x00BF
+        };
+        code = latin9[code - 0xA0];
+      }
+      UnicodeToUTF8(code, s);
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
 void ISO8859ToUTF8(int key, const char *text, size_t l, std::string *s)
 {
   // Use ASCII if "key" is out of range
@@ -10557,6 +10604,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   else if (this->Key == ISO_IR_13) // JIS_X_0201 romaji & katakana
   {
     ShiftJISToUTF8(text, l, &s);
+  }
+  else if (this->Key == X_LATIN9) // ISO-8895-15
+  {
+    Latin9ToUTF8(text, l, &s);
   }
   else if (this->Key == GB18030)
   {
