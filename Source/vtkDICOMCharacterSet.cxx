@@ -8076,7 +8076,7 @@ void ShiftJISToUTF8(const char *text, size_t l, std::string *s)
             code = CodePageJISX0208[a*94+b];
             cp++;
           }
-          else if (x >= 0xFA)
+          else if (x >= 0xFA && x <= 0xFE)
           {
             // cp932 supplementary characters
             a += (x - 0xFA)*2;
@@ -8084,8 +8084,8 @@ void ShiftJISToUTF8(const char *text, size_t l, std::string *s)
             if (c < 388)
             {
               code = CodePage932Ext[c];
-              cp++;
             }
+            cp++;
           }
         }
       }
@@ -8863,7 +8863,8 @@ size_t vtkDICOMCharacterSet::NextBackslash(
     while (cp != ep && *cp != '\0')
     {
       unsigned char x = static_cast<unsigned char>(*cp);
-      if ((x >= 0x81 && x <= 0x9F) || (x >= 0xE0 && x <= 0xEF))
+      if ((x >= 0x81 && x <= 0x9F) || (x >= 0xE0 && x <= 0xEF) ||
+          (x >= 0xFA && x <= 0xFE))
       {
         cp++;
         if (cp != ep && static_cast<unsigned char>(*cp) >= 0x40 &&
