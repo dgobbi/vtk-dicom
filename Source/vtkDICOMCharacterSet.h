@@ -127,12 +127,13 @@ public:
   static vtkDICOMCharacterSet GetGlobalDefault() {
     return GlobalDefault; }
 
-  //! Override the value stored in SpecificCharacterSet.
+  //! Override the value stored in SpecificCharacterSet with the default.
   /*!
    *  This method can be used if the SpecificCharacterSet attribute of a
-   *  file is incorrect.
+   *  file is incorrect.  It forces the use of the character set that
+   *  was set with SetGlobalDefault.
    */
-  static void SetGlobalOverrideWithDefault(bool b) {
+  static void SetGlobalOverride(bool b) {
     GlobalOverride = b; }
   static void GlobalOverrideOn() { GlobalOverride = true; }
   static void GlobalOverrideOff() { GlobalOverride = false; }
