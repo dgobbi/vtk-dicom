@@ -8036,7 +8036,7 @@ void CP1251ToUTF8(const char *text, size_t l, std::string *s)
 }
 
 //----------------------------------------------------------------------------
-void Latin1ToUTF8(const char *text, size_t l, std::string *s)
+void CP1252ToUTF8(const char *text, size_t l, std::string *s)
 {
   // compute the size of the UTF-8 string
   size_t m = 0;
@@ -8810,7 +8810,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   }
   else if (this->Key == ISO_IR_100) // ISO-8895-1
   {
-    Latin1ToUTF8(text, l, &s);
+    CP1252ToUTF8(text, l, &s);
   }
   else if (this->Key <= ISO_IR_166) // ISO-8895-X
   {
