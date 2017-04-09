@@ -256,14 +256,21 @@ static const char *CP1250_Names[] = {
   NULL
 };
 
+static const char *CP1251_Names[] = {
+  "cp1251",
+  "windows-1251",
+  "x-cp1251",
+  NULL
+};
+
 // This table gives the character sets that are defined in DICOM 2011-3.3
 // The first two columns are the possible CS values of character set in the
 // SpecificCharacterSet attribute of a DICOM data set.  If the second form
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 22;
-static CharsetInfo Charsets[22] = {
+const int CHARSET_TABLE_SIZE = 23;
+static CharsetInfo Charsets[23] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -308,6 +315,7 @@ static CharsetInfo Charsets[22] = {
     "ISO_IR 159", "ISO 2022 IR 159","$(D", NULL },
   // The remainder of these are not DICOM standard
   { vtkDICOMCharacterSet::X_CP1250, 0, "cp1250", "", "", CP1250_Names },
+  { vtkDICOMCharacterSet::X_CP1251, 0, "cp1251", "", "", CP1251_Names },
 };
 
 
@@ -7992,6 +8000,42 @@ void CP1250ToUTF8(const char *text, size_t l, std::string *s)
 }
 
 //----------------------------------------------------------------------------
+void CP1251ToUTF8(const char *text, size_t l, std::string *s)
+{
+  static const unsigned short cp1251[64] = {
+    0x0402, 0x0403, 0x201A, 0x0453, 0x201E, 0x2026, 0x2020, 0x2021,
+    0x20AC, 0x2030, 0x0409, 0x2039, 0x040A, 0x040C, 0x040B, 0x040F,
+    0x0452, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014,
+    0xFFFD, 0x2122, 0x0459, 0x203A, 0x045A, 0x045C, 0x045B, 0x045F,
+    0x00A0, 0x040E, 0x045E, 0x0408, 0x00A4, 0x0490, 0x00A6, 0x00A7,
+    0x0401, 0x00A9, 0x0404, 0x00AB, 0x00AC, 0x00AD, 0x00AE, 0x0407,
+    0x00B0, 0x00B1, 0x0406, 0x0456, 0x0491, 0x00B5, 0x00B6, 0x00B7,
+    0x0451, 0x2116, 0x0454, 0x00BB, 0x0458, 0x0405, 0x0455, 0x0457
+  };
+
+  for (size_t i = 0; i < l; i++)
+  {
+    unsigned short code = static_cast<unsigned char>(text[i]);
+    if (code <= 0x7F)
+    {
+      s->push_back(code);
+    }
+    else
+    {
+      if (code <= 0xBF)
+      {
+        code = cp1251[code - 0x80];
+      }
+      else
+      {
+        code += (0x0410 - 0xC0);
+      }
+      UnicodeToUTF8(code, s);
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
 void Latin1ToUTF8(const char *text, size_t l, std::string *s)
 {
   // compute the size of the UTF-8 string
@@ -8787,6 +8831,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   else if (this->Key == X_CP1250)
   {
     CP1250ToUTF8(text, l, &s);
+  }
+  else if (this->Key == X_CP1251)
+  {
+    CP1251ToUTF8(text, l, &s);
   }
   else if ((this->Key & ISO_2022) != 0 && this->Key != Unknown)
   {
