@@ -38,9 +38,20 @@
  *  total, there is one 7-bit encoding (ASCII), eleven 8-bit single-byte
  *  encodings, three variable-length encodings (UTF-8, GB18030, GBK), and
  *  three iso-2022 multi-byte encodings.  It is possible to use iso-2022
- *  escape codes to switch between any encodings except for UTF-8 and
- *  GB18030/GBK, although only a subset of the iso-2022 escape codes are
- *  supported by DICOM.
+ *  escape codes to switch between most of the encodings, with UTF-8 and
+ *  GB18030/GBK as the most noteworthy exceptions.
+ *
+ *  In some DICOM data sets, especially old ones, the SpecificCharacterSet
+ *  attribute will be missing and it might be necessary to manually specify
+ *  a character set for the application to use.  Use SetGlobalDefault() to
+ *  do so.  The vtkDICOMCharacterSet constructor can take the desired
+ *  character encoding as a string, where the following encodings are
+ *  allowed: 'ascii', 'latin1' (cp1252), 'latin2', 'latin3', 'latin4',
+ *  'cyrillic' (iso-8859-5), 'arabic' (iso-8859-6), 'greek' (iso-8859-7),
+ *  'hebrew' (iso-8859-8), 'latin5' (cp1254), 'tis-620', 'shift-jis',
+ *  'iso-2022-jp', 'korean' (euc-kr), 'chinese' (gbk), 'gb18030', 'big5,
+ *  'cp1250', 'cp1251', 'cp1253', 'cp1255', 'latin9', and 'utf-8'.
+ *  Common aliases of these character sets can also be used.
  */
 class VTKDICOM_EXPORT vtkDICOMCharacterSet
 {
