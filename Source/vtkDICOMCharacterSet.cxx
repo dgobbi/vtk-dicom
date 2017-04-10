@@ -225,17 +225,18 @@ static const char *GB18030_Names[] = {
 
 static const char *GBK_Names[] = {
   "chinese",
-  "csgb2312",
-  "csiso58gb231280",
-  "gb2312",
-  "gb_2312",
-  "gb_2312-80",
   "gbk",
   "x-gbk",
   NULL
 };
 
 static const char *ISO_IR_58_Names[] = {
+  "GB2312",
+  "csgb2312",
+  "csiso58gb231280",
+  "gb2312",
+  "gb_2312",
+  "gb_2312-80",
   "iso-ir-58",
   NULL
 };
@@ -290,7 +291,11 @@ static const char *CP1255_Names[] = {
 };
 
 static const char *BIG5_Names[] = {
+  "B5",
+  "BIG5",
+  "b5",
   "big5",
+  "big5-eten",
   "cn-big5",
   "csbig5",
   "x-x-big5",
@@ -10541,7 +10546,7 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
     else if (Charsets[i].Flags == 1 && value.empty())
     {
       // ISO_2022_IR_58 and ISO_2022_IR_149 go in 2nd value
-      match = (Charsets[i].Key == key);
+      match = (Charsets[i].Key == (key | ISO_2022));
     }
     else if (Charsets[i].Flags == 2)
     {
@@ -10551,15 +10556,14 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
 
     if (match)
     {
-      if (Charsets[i].Flags == 1 || Charsets[i].Flags == 2)
-        {
-        // put defined term in 2nd or 3rd position
-        value += "\\";
-        key |= ISO_2022;
-        }
-
       if ((key & ISO_2022) != 0)
       {
+        if (Charsets[i].Flags == 1 || Charsets[i].Flags == 2)
+          {
+          // always put ISO 2022 multibyte in second value
+          value += "\\";
+          }
+
         value += Charsets[i].DefinedTermExt;
       }
       else
@@ -10616,6 +10620,14 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   else if (this->Key == GBK)
   {
     GBKToUTF8(text, l, &s);
+  }
+  else if (this->Key == X_GB2312)
+  {
+    GB2312ToUTF8(text, l, &s);
+  }
+  else if (this->Key == X_EUCKR)
+  {
+    EUCKRToUTF8(text, l, &s);
   }
   else if (this->Key == X_CP1250)
   {

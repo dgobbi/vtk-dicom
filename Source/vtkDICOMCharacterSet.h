@@ -69,7 +69,7 @@ public:
     ISO_IR_138 = 8,  // ISO-8859-8,  hebrew
     ISO_IR_148 = 9,  // ISO-8859-9,  latin5, turkish
     ISO_IR_166 = 10, // ISO-8859-11, thai
-    ISO_IR_13  = 11, // JIS X 0201,  katakana, japanese
+    ISO_IR_13  = 11, // JIS X 0201,  japanese katakana + shift-jis
     X_LATIN9   = 12, // ISO-8859-15, latin9, western europe
     ISO_IR_192 = 13, // UTF-8,       unicode
     GB18030    = 14, // gb18030,     chinese with full unicode mapping
@@ -78,8 +78,8 @@ public:
     X_CP1251   = 17, // cp1251,      cyrillic
     X_CP1253   = 18, // cp1253,      greek
     X_CP1255   = 19, // cp1255,      hebrew
-    // ISO_IR_58  = 20, // reserved, use ISO_2022_IR_58
-    // ISO_IR_149 = 21, // reserved, use ISO_2022_IR_149
+    X_GB2312   = 20, // reserved     ISO_IR_58 without escape codes
+    X_EUCKR    = 21, // reserved     ISO_IR_149 without escape codes
     X_BIG5     = 22, // big5 + ETEN, traditional chinese
     // ISO_IR_87  = 32, // reserved, use ISO_2022_IR_87
     // ISO_IR_159 = 64, // reserved, use ISO_2022_IR_159
@@ -95,9 +95,9 @@ public:
     ISO_2022_IR_138 = 136, // ISO-8859-8,  hebrew
     ISO_2022_IR_148 = 137, // ISO-8859-9,  latin5, turkish
     ISO_2022_IR_166 = 138, // ISO-8859-11, thai
-    ISO_2022_IR_13  = 139, // JIS X 0201,  katakana, japanese
-    ISO_2022_IR_58  = 148, // GB2312
-    ISO_2022_IR_149 = 149, // KS X 1001
+    ISO_2022_IR_13  = 139, // JIS X 0201,  japanese katakana
+    ISO_2022_IR_58  = 148, // the GB2312 part of ISO-2022-CN
+    ISO_2022_IR_149 = 149, // the KS X 1001 part of ISO-2022-KR
     ISO_2022_IR_87  = 160, // the JIS X 0208 part of ISO-2022-JP
     ISO_2022_IR_159 = 192, // the JIS X 0212 part of ISO-2022-JP2
     Unknown    = 255  // signifies unknown character set
