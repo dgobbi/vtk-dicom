@@ -9500,7 +9500,7 @@ size_t CheckForMultiByteG0(const char *cp, size_t n, bool *multibyte)
   }
   if (l < n &&
       static_cast<unsigned char>(cp[l]) >= 0x40 &&
-      static_cast<unsigned char>(cp[l]) <= 0x7f)
+      static_cast<unsigned char>(cp[l]) <= 0x7e)
   {
     l++;
     if ((l == 2 && cp[0] == '$') ||
@@ -9514,6 +9514,10 @@ size_t CheckForMultiByteG0(const char *cp, size_t n, bool *multibyte)
       // G0 is designated to single byte
       *multibyte = false;
     }
+  }
+  else
+  {
+    l = 0;
   }
   return l;
 }
@@ -10734,29 +10738,49 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
       i++;
       const char *escapeCode = &text[i];
       size_t escapeLen = CheckForMultiByteG0(&text[i], l-i, &multibyteG0);
-      i += escapeLen;
 
-      unsigned char oldcharset = charset;
-      charset = 0xFF; // indicate none found yet
-      // look through single-byte charset escape codes
-      for (unsigned char k = 0; k < CHARSET_TABLE_SIZE; k++)
+      // DICOM only uses ISO 2022 codes that designate G0 and G1
+      if ((escapeLen == 2 && (escapeCode[0] == '(' || escapeCode[0] == ')' ||
+                              escapeCode[0] == '-' || escapeCode[0] == '$')) ||
+          (escapeLen == 3 && escapeCode[0] == '$' && (escapeCode[1] == '(' ||
+                             escapeCode[1] == ')' || escapeCode[1] == '-')))
       {
-        const char *escapeTry = Charsets[k].EscapeCode;
-        size_t le = strlen(escapeTry);
-        if (le == escapeLen && strncmp(escapeCode, escapeTry, le) == 0)
-        {
-          charset = Charsets[k].Key;
+        // advance past the escape sequence
+        i += escapeLen;
 
-          if (charset == ISO_IR_13 &&
-              Charsets[k].EscapeCode[0] == ')' &&
-              (oldcharset == ISO_2022_IR_87 ||
-               oldcharset == ISO_2022_IR_159))
+        unsigned char oldcharset = charset;
+        charset = 0xFF; // indicate none found yet
+
+        // look through single-byte charset escape codes
+        for (unsigned char k = 0; k < CHARSET_TABLE_SIZE; k++)
+        {
+          const char *escapeTry = Charsets[k].EscapeCode;
+          size_t le = strlen(escapeTry);
+          if (le == escapeLen && strncmp(escapeCode, escapeTry, le) == 0)
           {
-            // The ISO_IR_13 katakana go in G1, so let's keep the
-            // currently active kanji charset in G0.
-            charset = oldcharset;
+            charset = Charsets[k].Key;
+
+            if (charset == ISO_IR_13 &&
+                Charsets[k].EscapeCode[0] == ')' &&
+                (oldcharset == ISO_2022_IR_87 ||
+                 oldcharset == ISO_2022_IR_159))
+            {
+              // The ISO_IR_13 katakana go in G1, so let's keep the
+              // currently active kanji charset in G0.
+              charset = oldcharset;
+            }
+            break;
           }
-          break;
+        }
+      }
+      else
+      {
+        // write any other escape sequences verbatim to the output
+        s->push_back('\033');
+        while (escapeLen)
+        {
+          s->push_back(text[i++]);
+          --escapeLen;
         }
       }
     }
@@ -10884,7 +10908,16 @@ size_t vtkDICOMCharacterSet::NextBackslash(
       if (*cp == '\033')
       {
         cp++;
-        cp += CheckForMultiByteG0(cp, ep-cp, &multibyte);
+        size_t l = CheckForMultiByteG0(cp, ep-cp, &multibyte);
+        // do not advance past backslashes in the escape sequence
+        for (size_t i = 0; i < l; i++)
+        {
+          if (*cp == '\\')
+          {
+            break;
+          }
+          cp++;
+        }
       }
       else if (multibyte || *cp != '\\')
       {
