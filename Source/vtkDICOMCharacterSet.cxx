@@ -10405,22 +10405,13 @@ void EUCKRToUTF8(const char *text, size_t l, std::string *s)
 //----------------------------------------------------------------------------
 void UnknownToUTF8(const char *text, size_t l, std::string *s)
 {
-  // assume an iso2022 multi-byte 94x94 encoding
+  // assumes an iso2022 94-character replacement set
   size_t i = 0;
   while (i < l)
   {
     unsigned short code = static_cast<unsigned char>(text[i++]);
     if (code >= 0x21 && code < 0x7F)
     {
-      if (i == l)
-      {
-        break;
-      }
-      code = static_cast<unsigned char>(text[i]);
-      if (code >= 0x21 && code < 0x7F)
-      {
-        i++;
-      }
       code = 0xFFFD;
     }
     else if (code > 0x7F)
