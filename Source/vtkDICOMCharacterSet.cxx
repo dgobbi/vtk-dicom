@@ -314,8 +314,8 @@ static const char *SJIS_Names[] = {
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 28;
-static CharsetInfo Charsets[28] = {
+const int CHARSET_TABLE_SIZE = 29;
+static CharsetInfo Charsets[29] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -340,6 +340,8 @@ static CharsetInfo Charsets[28] = {
     "ISO_IR 166", "ISO 2022 IR 166", "-T", ISO_IR_166_Names },
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, katakana
     "ISO_IR 13",  "ISO 2022 IR 13",  ")I", ISO_IR_13_Names },
+  { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // JIS X 0201, katakana
+    "ISO_IR 13",  "ISO 2022 IR 13",  "(I", NULL },
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, romaji
     "ISO_IR 13",  "ISO 2022 IR 13",  "(J", NULL },
   { vtkDICOMCharacterSet::ISO_IR_192, 0,     // utf-8
@@ -10230,7 +10232,6 @@ void GB2312ToUTF8(const char *text, size_t l, std::string *s)
 void JISXToUTF8(int charset, const char *text, size_t l, std::string *s)
 {
   // iso-2022-jp, with katakana in G1
-  charset |= vtkDICOMCharacterSet::ISO_2022;
   const unsigned short *dbcs = NULL;
   if (charset == vtkDICOMCharacterSet::ISO_2022_IR_87)
   {
@@ -10267,9 +10268,9 @@ void JISXToUTF8(int charset, const char *text, size_t l, std::string *s)
           i++;
         }
       }
-      else if (charset == vtkDICOMCharacterSet::ISO_2022_IR_13)
+      else if (charset == vtkDICOMCharacterSet::ISO_IR_13)
       {
-        // do the JIS X 0201 romaji substitutions
+        // do the JIS X 0201 romaji substitutions (ISO IR 14)
         if (code == '\\')
         {
           code = 0xA5; // yen symbol
@@ -10277,6 +10278,14 @@ void JISXToUTF8(int charset, const char *text, size_t l, std::string *s)
         else if (code == '~')
         {
           code = 0x203E; // macron (overline)
+        }
+      }
+      else if (charset == vtkDICOMCharacterSet::ISO_2022_IR_13)
+      {
+        // this puts half-width katakana in G0
+        if (code >= 0x21 && code <= 0x5F)
+        {
+          code += 0xFF40;
         }
       }
     }
@@ -10732,7 +10741,8 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
     {
       GB2312ToUTF8(&text[i], j-i, s);
     }
-    else if (charset == ISO_2022_IR_87 ||
+    else if (charset == ISO_2022_IR_13 ||
+             charset == ISO_2022_IR_87 ||
              charset == ISO_2022_IR_159)
     {
       JISXToUTF8(charset, &text[i], j-i, s);
