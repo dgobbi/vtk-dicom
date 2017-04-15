@@ -69,7 +69,7 @@ public:
     ISO_IR_138 = 8,  // ISO-8859-8,  hebrew
     ISO_IR_148 = 9,  // ISO-8859-9,  latin5, turkish
     ISO_IR_166 = 10, // ISO-8859-11, thai
-    ISO_IR_13  = 11, // JIS X 0201,  japanese katakana + shift-jis
+    ISO_IR_13  = 11, // JIS X 0201,  japanese romaji + katakana
     X_LATIN9   = 12, // ISO-8859-15, latin9, western europe
     ISO_IR_192 = 13, // UTF-8,       unicode
     GB18030    = 14, // gb18030,     chinese with full unicode mapping
@@ -81,6 +81,7 @@ public:
     X_GB2312   = 20, // reserved     ISO_IR_58 without escape codes
     X_EUCKR    = 21, // reserved     ISO_IR_149 without escape codes
     X_BIG5     = 22, // big5 + ETEN, traditional chinese
+    X_SJIS     = 23, // windows-31j, aka shift-jis, code page 932
     // ISO_IR_87  = 32, // reserved, use ISO_2022_IR_87
     // ISO_IR_159 = 64, // reserved, use ISO_2022_IR_159
     ISO_2022        = 128, // bit that indicates use of ISO-2022

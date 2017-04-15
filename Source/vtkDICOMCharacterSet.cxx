@@ -187,14 +187,8 @@ static const char *ISO_IR_166_Names[] = {
 };
 
 static const char *ISO_IR_13_Names[] = {
-  "csshiftjis",
   "iso-ir-13",
-  "ms932",
-  "ms_kanji",
-  "shift-jis",
-  "shift_jis",
-  "sjis",
-  "x-sjis",
+  "iso-ir-14",
   NULL
 };
 
@@ -302,14 +296,26 @@ static const char *BIG5_Names[] = {
   NULL
 };
 
+static const char *SJIS_Names[] = {
+  "csshiftjis",
+  "ms932",
+  "ms_kanji",
+  "shift-jis",
+  "shift_jis",
+  "sjis",
+  "windows-31j",
+  "x-sjis",
+  NULL
+};
+
 // This table gives the character sets that are defined in DICOM 2011-3.3
 // The first two columns are the possible CS values of character set in the
 // SpecificCharacterSet attribute of a DICOM data set.  If the second form
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 27;
-static CharsetInfo Charsets[27] = {
+const int CHARSET_TABLE_SIZE = 28;
+static CharsetInfo Charsets[28] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -359,6 +365,7 @@ static CharsetInfo Charsets[27] = {
   { vtkDICOMCharacterSet::X_CP1253, 0, "cp1253", "", "", CP1253_Names },
   { vtkDICOMCharacterSet::X_CP1255, 0, "cp1255", "", "", CP1255_Names },
   { vtkDICOMCharacterSet::X_BIG5, 0, "big5", "", "", BIG5_Names },
+  { vtkDICOMCharacterSet::X_SJIS, 0, "sjis", "", "", SJIS_Names },
 };
 
 
@@ -9897,38 +9904,27 @@ void ISO8859ToUTF8(int key, const char *text, size_t l, std::string *s)
 }
 
 //----------------------------------------------------------------------------
-void ShiftJISToUTF8(const char *text, size_t l, std::string *s)
+void SJISToUTF8(const char *text, size_t l, std::string *s)
 {
-  // JIS_X_0201 romaji (<0x7f) and half-width katakana (>0x7f)
+  // windows-31j (shift-jis)
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
   {
     int code = static_cast<unsigned char>(*cp++);
-    if (code <= 0x7F && code != '\\' && code != '~')
+    if (code <= 0x7F)
     {
-      s->push_back(code);
+      s->push_back(code); // ascii
     }
     else
     {
-      if (code == '\\')
-      {
-        code = 0xA5; // yen symbol
-      }
-      else if (code == '~')
-      {
-        code = 0x203E; // macron (overline)
-      }
-      else if (code >= 0xA1 && code <= 0xDF)
+      if (code >= 0xA1 && code <= 0xDF)
       {
         code += 0xFEC0; // half-width katakana
       }
       else if (cp != ep)
       {
-        // if the byte not a valid JIS X 0201 code, then it is probably
-        // the first byte of a two-byte Shift-JIS sequence (vendors are
-        // required to convert Shift-JIS to ISO 2022 for use in DICOM,
-        // so this code is for compatibility with non-conformant files).
+        // first byte of a two-byte Shift-JIS sequence
         int x = code;
         int y = static_cast<unsigned char>(*cp);
         code = 0xFFFD;
@@ -9952,6 +9948,21 @@ void ShiftJISToUTF8(const char *text, size_t l, std::string *s)
             a += (x - 0x81)*2;
             code = CodePageJISX0208[a*94+b];
             cp++;
+            if (x == 0x81)
+            {
+              // substitutions to get correct code page 932 values
+              switch (y)
+              {
+                case 0x5C: code = 0x2015; break; // HORIZONTAL BAR
+                case 0x5F: code = 0xFF3C; break; // FULLWIDTH REVERSE SOLIDUS
+                case 0x60: code = 0xFF5E; break; // FULLWIDTH TILDE
+                case 0x61: code = 0x2225; break; // PARALLEL TO
+                case 0x7C: code = 0xFF0D; break; // FULLWIDTH HYPHEN-MINUS
+                case 0x91: code = 0xFFE0; break; // FULLWIDTH CENT SIGN
+                case 0x92: code = 0xFFE1; break; // FULLWIDTH POUND SIGN
+                case 0xCA: code = 0xFFE2; break; // FULLWIDTH NOT SIGN
+              }
+            }
           }
           else if (x >= 0xE0 && x <= 0xEF)
           {
@@ -10218,36 +10229,55 @@ void GB2312ToUTF8(const char *text, size_t l, std::string *s)
 //----------------------------------------------------------------------------
 void JISXToUTF8(int charset, const char *text, size_t l, std::string *s)
 {
-  // iso-2022-jp and iso-2022-jp-2
+  // iso-2022-jp, with katakana in G1
+  charset |= vtkDICOMCharacterSet::ISO_2022;
+  const unsigned short *dbcs = NULL;
+  if (charset == vtkDICOMCharacterSet::ISO_2022_IR_87)
+  {
+    dbcs = CodePageJISX0208;
+  }
+  else if (charset == vtkDICOMCharacterSet::ISO_2022_IR_159)
+  {
+    dbcs = CodePageJISX0212;
+  }
+
   size_t i = 0;
   while (i < l)
   {
-    // convert two bytes into unicode
     unsigned short code = static_cast<unsigned char>(text[i++]);
     if (code >= 0x21 && code < 0x7F)
     {
-      if (i == l)
+      if (dbcs)
       {
-        break;
+        // convert two bytes into one unicode character
+        if (i == l)
+        {
+          break;
+        }
+        unsigned short a = code;
+        unsigned short b = static_cast<unsigned char>(text[i]);
+
+        // default to replacement character
+        code = 0xFFFD;
+
+        if (b >= 0x21 && b < 0x7F)
+        {
+          // convert double-byte to character
+          code = dbcs[(a - 0x21)*94 + (b - 0x21)];
+          i++;
+        }
       }
-      unsigned short a = code;
-      unsigned short b = static_cast<unsigned char>(text[i]);
-
-      // default to replacement character
-      code = 0xFFFD;
-
-      if (b >= 0x21 && b < 0x7F)
+      else if (charset == vtkDICOMCharacterSet::ISO_2022_IR_13)
       {
-        a = (a - 0x21)*94 + (b - 0x21);
-        if (charset == vtkDICOMCharacterSet::ISO_2022_IR_159)
+        // do the JIS X 0201 romaji substitutions
+        if (code == '\\')
         {
-          code = CodePageJISX0212[a];
+          code = 0xA5; // yen symbol
         }
-        else
+        else if (code == '~')
         {
-          code = CodePageJISX0208[a];
+          code = 0x203E; // macron (overline)
         }
-        i++;
       }
     }
     else if (code >= 0xA1 && code <= 0xDF)
@@ -10602,7 +10632,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   }
   else if (this->Key == ISO_IR_13) // JIS_X_0201 romaji & katakana
   {
-    ShiftJISToUTF8(text, l, &s);
+    JISXToUTF8(this->Key, text, l, &s);
   }
   else if (this->Key == X_LATIN9) // ISO-8895-15
   {
@@ -10643,6 +10673,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   else if (this->Key == X_BIG5)
   {
     Big5ToUTF8(text, l, &s);
+  }
+  else if (this->Key == X_SJIS)
+  {
+    SJISToUTF8(text, l, &s);
   }
   else if ((this->Key & ISO_2022) != 0 && this->Key != Unknown)
   {
@@ -10833,10 +10867,9 @@ size_t vtkDICOMCharacterSet::NextBackslash(
       }
     }
   }
-  else if (this->Key == ISO_IR_13)
+  else if (this->Key == X_SJIS)
   {
     // ensure backslash isn't second part of a Shift-JIS character
-    // that has been erroneously stored as ISO_IR 13
     while (cp != ep && *cp != '\0')
     {
       unsigned char x = static_cast<unsigned char>(*cp);
