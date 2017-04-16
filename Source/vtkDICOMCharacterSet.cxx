@@ -10709,14 +10709,6 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
   // Mask to get the charset that is active before the first escape code.
   unsigned char charset = (this->Key & ISO_2022_BASE);
 
-  // For CN and KR the high bit is set for multi-byte chars, allowing
-  // them to be distinguished from ASCII, so activate the charset
-  // immediately even in the absence of the ISO 2022 escape code.
-  if (this->Key == ISO_2022_IR_58 || this->Key == ISO_2022_IR_149)
-  {
-    charset = this->Key;
-  }
-
   // this will be set when decoding a multibyte charset in G0
   bool multibyteG0 = false;
 
@@ -10741,15 +10733,15 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
     {
       GB2312ToUTF8(&text[i], j-i, s);
     }
+    else if (charset == ISO_2022_IR_149)
+    {
+      EUCKRToUTF8(&text[i], j-i, s);
+    }
     else if (charset == ISO_2022_IR_13 ||
              charset == ISO_2022_IR_87 ||
              charset == ISO_2022_IR_159)
     {
       JISXToUTF8(charset, &text[i], j-i, s);
-    }
-    else if (charset == ISO_2022_IR_149)
-    {
-      EUCKRToUTF8(&text[i], j-i, s);
     }
     else if (multibyteG0)
     {
