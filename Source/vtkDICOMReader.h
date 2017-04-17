@@ -215,15 +215,16 @@ public:
   //@}
 
   //@{
-  //! Turn off automatic rescaling of intensity values.
+  //! Turn off automatic rescaling of stored pixel values.
   /*!
-   *  By default, if the RescaleSlope and RescaleIntercept values differ
-   *  between slices (as occurs for all PET images and some CT images),
-   *  then the reader will adjust the pixel values for the slices so
-   *  that the same RescaleSlope and RescaleIntercept can be used for
-   *  all slices.  This adjustment is a lossy process, so a preferable
-   *  option is to call AutoRescaleOff() and use vtkDICOMApplyRescale
-   *  to apply the pixel value rescaling instead.
+   *  By default, if the RescaleSlope and RescaleIntercept attributes
+   *  are present in the DICOM data set, they will be used to rescale
+   *  stored pixel values according to the DICOM modality LUT operation.
+   *  The resulting values will be stored as 16-bit integers if possible,
+   *  but single-precision floats will be used if the potential output
+   *  range is greater than can be stored in 16 bits, or if either the
+   *  RescaleSlope or the RescaleIntercept is not an integer.
+   *  If AutoRescale is off, then the data is not rescaled.
    */
   vtkGetMacro(AutoRescale, int);
   vtkSetMacro(AutoRescale, int);
@@ -233,8 +234,14 @@ public:
   //@{
   //! Get the slope and intercept for rescaling the scalar values.
   /*!
-   *  These values allow calibration of the data to real values.
-   *  Use the equation v = u*RescaleSlope + RescaleIntercept.
+   *  If AutoRescale in On (which is the default), then GetRescaleSlope()
+   *  will return 1 and GetRescaleIntercept() will return zero.  Otherwise,
+   *  they will return the RescaleSlope and RescaleIntercept for the data
+   *  set. Use the equation v = u*RescaleSlope + RescaleIntercept.
+   *
+   *  Note that the returned values might not be valid if these attributes
+   *  are not the same for all slices in the series.  Use the meta data to
+   *  retrieve the per-slice slope and intercept.
    */
   double GetRescaleSlope() { return this->RescaleSlope; }
   double GetRescaleIntercept() { return this->RescaleIntercept; }
@@ -328,9 +335,14 @@ protected:
   //@}
 
   //@{
+  //! Check if rescaling will change scalar type.
+  virtual int ComputeRescaledScalarType(
+    int scalarType, int bitsStored, int pixelRepresentation);
+
   //! Rescale the data in the buffer.
   virtual void RescaleBuffer(
-    int fileIdx, int frameIdx, void *buffer, vtkIdType bufferSize);
+    int fileIdx, int frameIdx, int fileType, int outputType,
+    void *fileBuffer, void *outputBuffer, vtkIdType bufferSize);
 
   //! Convert buffer from YUV to RGB.
   virtual void YBRToRGB(
@@ -409,6 +421,7 @@ protected:
   //! This indicates that the data must be rescaled.
   int NeedsRescale;
   int AutoRescale;
+  int FileScalarType;
 
   //! This indicates that the data must be converted to RGB.
   int NeedsYBRToRGB;

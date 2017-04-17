@@ -44,6 +44,7 @@
 #include "vtkErrorCode.h"
 #include "vtkSmartPointer.h"
 #include "vtkVersion.h"
+#include "vtkTemplateAliasMacro.h"
 #include "vtkTypeTraits.h"
 
 #if defined(DICOM_USE_DCMTK)
@@ -84,6 +85,7 @@ vtkDICOMReader::vtkDICOMReader()
   this->NeedsYBRToRGB = 0;
   this->AutoRescale = 1;
   this->NeedsRescale = 0;
+  this->FileScalarType = 0;
   this->RescaleSlope = 1.0;
   this->RescaleIntercept = 0.0;
   this->DefaultCharacterSet = vtkDICOMCharacterSet::GetGlobalDefault();
@@ -551,6 +553,113 @@ bool vtkDICOMReader::ValidateStructure(
 }
 
 //----------------------------------------------------------------------------
+int vtkDICOMReader::ComputeRescaledScalarType(
+  int scalarType, int bitsStored, int pixelRepresentation)
+{
+  // use BitsStored to get the potential input range
+  unsigned long long l = 1;
+  if (bitsStored > 0)
+  {
+    l <<= bitsStored - 1;
+  }
+  double pMin = 0;
+  double pMax = 2.0*l - 1.0;
+  if (pixelRepresentation)
+  {
+    pMin = -1.0*l;
+    pMax = l - 1.0;
+  }
+
+  // loop through all images to get the rescaled range
+  double vMin = VTK_DOUBLE_MAX;
+  double vMax = VTK_DOUBLE_MIN;
+
+  bool needsRescale = false;
+  bool outputFloat = (scalarType == VTK_FLOAT || scalarType == VTK_DOUBLE);
+
+  vtkIdType numSlices = this->FileIndexArray->GetNumberOfTuples();
+  for (vtkIdType iSlice = 0; iSlice < numSlices; iSlice++)
+  {
+    int numComp = this->FileIndexArray->GetNumberOfComponents();
+    for (int iComp = 0; iComp < numComp; iComp++)
+    {
+      int iFile = this->FileIndexArray->GetComponent(iSlice, iComp);
+      int iFrame = this->FrameIndexArray->GetComponent(iSlice, iComp);
+
+      double m = this->MetaData->GetAttributeValue(
+        iFile, iFrame, DC::RescaleSlope).AsDouble();
+      double b = this->MetaData->GetAttributeValue(
+        iFile, iFrame, DC::RescaleIntercept).AsDouble();
+
+      // sanity check
+      if (m == 0.0)
+      {
+        m = 1.0;
+      }
+
+      // check if rescale will be needed
+      if (m != 1.0 || b != 0.0)
+      {
+        needsRescale = true;
+
+        // check if slope and intercept are integers
+        if (m != floor(m) || b != floor(b))
+        {
+          outputFloat = true;
+        }
+      }
+
+      // compute the min, max output values for one image
+      double iMin = pMin*m + b;
+      double iMax = pMax*m + b;
+
+      // modify the global min, max output values
+      vMin = (iMin < vMin ? iMin : vMin);
+      vMax = (iMax > vMax ? iMax : vMax);
+    }
+  }
+
+  // check if the data type has to be changed
+  if (!outputFloat &&
+      (vMin < vtkDataArray::GetDataTypeMin(scalarType) ||
+       vMax > vtkDataArray::GetDataTypeMax(scalarType)))
+  {
+    int byteSize = vtkDataArray::GetDataTypeSize(scalarType);
+    if (byteSize <= 2 && vMin >= 0.0 && vMax <= 65535.0)
+    {
+      scalarType = VTK_UNSIGNED_SHORT;
+    }
+    else if (byteSize <= 2 && vMin >= -32768.0 && vMax <= 32767.0)
+    {
+      scalarType = VTK_SHORT;
+    }
+    else
+    {
+      outputFloat = true;
+    }
+  }
+
+  if (outputFloat &&
+      scalarType != VTK_FLOAT &&
+      scalarType != VTK_DOUBLE)
+  {
+    // use float if it can store the data without loss
+    if (pMax <= 16777216.0 && pMin >= -16777216.0)
+    {
+      scalarType = VTK_FLOAT;
+    }
+    else
+    {
+      scalarType = VTK_DOUBLE;
+    }
+  }
+
+  this->NeedsRescale = needsRescale;
+
+  return scalarType;
+}
+
+//----------------------------------------------------------------------------
 int vtkDICOMReader::RequestInformation(
   vtkInformation* vtkNotUsed(request),
   vtkInformationVector** vtkNotUsed(inputVector),
@@ -765,6 +874,12 @@ int vtkDICOMReader::RequestInformation(
     fileIndex, DC::SamplesPerPixel).AsInt();
   int planarConfiguration = this->MetaData->GetAttributeValue(
     fileIndex, DC::PlanarConfiguration).AsInt();
+  int bitsStored = this->MetaData->GetAttributeValue(
+    fileIndex, DC::BitsStored).AsInt();
+  if (bitsStored > bitsAllocated || bitsStored <= 0)
+  {
+    bitsStored = bitsAllocated;
+  }
 
   // datatype
   int scalarType = 0;
@@ -799,6 +914,38 @@ int vtkDICOMReader::RequestInformation(
     else
     {
       scalarType = (pixelRepresentation ? VTK_TYPE_INT64: VTK_TYPE_UINT64);
+    }
+  }
+
+  this->RescaleSlope = 1.0;
+  this->RescaleIntercept = 0.0;
+  this->NeedsRescale = false;
+  this->FileScalarType = scalarType;
+
+  const vtkDICOMValue& slopeValue = this->MetaData->GetAttributeValue(
+    fileIndex, frameIndex, DC::RescaleSlope);
+  const vtkDICOMValue& interceptValue = this->MetaData->GetAttributeValue(
+    fileIndex, frameIndex, DC::RescaleIntercept);
+
+  if (slopeValue.IsValid() && interceptValue.IsValid())
+  {
+    // AutoRescale is ignored for planar data, since planar data is not
+    // allowed in the IODs where RescaleSlope and RescaleIntercept occur
+    if (this->AutoRescale && !planarConfiguration)
+    {
+      // set NeedsRescale if any rescaling will be necessary,
+      // and provide the new output type that will be needed
+      scalarType = this->ComputeRescaledScalarType(
+        scalarType, bitsStored, pixelRepresentation);
+    }
+    else
+    {
+      this->RescaleSlope = slopeValue.AsDouble();
+      this->RescaleIntercept = interceptValue.AsDouble();
+      if (this->RescaleSlope == 0.0)
+      {
+        this->RescaleSlope = 1.0;
+      }
     }
   }
 
@@ -837,54 +984,6 @@ int vtkDICOMReader::RequestInformation(
 #else
   this->SwapBytes = bigEndian;
 #endif
-
-  // for CT and PET the rescale information might vary from file to file,
-  // in which case the data will be rescaled while being read if the
-  // AutoRescale option is set.
-  this->RescaleSlope = 1.0;
-  this->RescaleIntercept = 0.0;
-  this->NeedsRescale = false;
-
-  if (this->MetaData->GetAttributeValue(
-        fileIndex, frameIndex, DC::RescaleSlope).IsValid() &&
-      this->MetaData->GetAttributeValue(
-        fileIndex, frameIndex, DC::RescaleIntercept).IsValid())
-  {
-    bool mismatch = false;
-    double mMax = VTK_DOUBLE_MIN;
-    double bMax = VTK_DOUBLE_MIN;
-
-    vtkIdType numSlices = this->FileIndexArray->GetNumberOfTuples();
-    for (vtkIdType iSlice = 0; iSlice < numSlices; iSlice++)
-    {
-      int numComp = this->FileIndexArray->GetNumberOfComponents();
-      for (int iComp = 0; iComp < numComp; iComp++)
-      {
-        int iFile = this->FileIndexArray->GetComponent(iSlice, iComp);
-        int iFrame = this->FrameIndexArray->GetComponent(iSlice, iComp);
-
-        double m = this->MetaData->GetAttributeValue(
-          iFile, iFrame, DC::RescaleSlope).AsDouble();
-        double b = this->MetaData->GetAttributeValue(
-          iFile, iFrame, DC::RescaleIntercept).AsDouble();
-        if ((iSlice != 0 || iComp != 0) && (m != mMax || b != bMax))
-        {
-          mismatch = true;
-        }
-        if (m > mMax)
-        {
-          mMax = m;
-        }
-        if (b > bMax)
-        {
-          bMax = b;
-        }
-      }
-    }
-    this->NeedsRescale = (mismatch && this->AutoRescale);
-    this->RescaleSlope = mMax;
-    this->RescaleIntercept = bMax;
-  }
 
   // === Image Orientation in DICOM files ===
   //
@@ -1042,27 +1141,47 @@ int vtkDICOMReader::RequestInformation(
 namespace {
 
 //----------------------------------------------------------------------------
-// this rescales a series of data values
-template<class T>
-void vtkDICOMReaderRescaleBuffer(T *p, double m, double b, size_t bytecount)
+// templated conversion functions, for converting to and from floating point
+
+template<class T1, class T2>
+void vtkDICOMConvertBuffer(const T1 *ip, T2 *op, size_t n)
 {
-  size_t n = bytecount/sizeof(T);
-  if (n > 0 && (m != 1.0 || b != 0.0))
+  if (n > 0)
   {
-    double minval = vtkTypeTraits<T>::Min();
-    double maxval = vtkTypeTraits<T>::Max();
+    T1 minval = vtkTypeTraits<T2>::Min();
+    T1 maxval = vtkTypeTraits<T2>::Max();
     do
     {
-      double val = (*p)*m + b;
-      if (val < minval)
-      {
-        val = minval;
-      }
-      if (val > maxval)
-      {
-        val = maxval;
-      }
-      *p++ = static_cast<T>(vtkMath::Round(val));
+      T1 v = *ip++;
+      v = (v > minval ? v : minval);
+      v = (v < maxval ? v : maxval);
+      *op++ = static_cast<T2>(v);
+    }
+    while (--n);
+  }
+}
+
+template<class T>
+void vtkDICOMConvertBuffer(const T *ip, float *op, size_t n)
+{
+  if (n > 0)
+  {
+    do
+    {
+      *op++ = *ip++;
+    }
+    while (--n);
+  }
+}
+
+template<class T>
+void vtkDICOMConvertBuffer(const T *ip, double *op, size_t n)
+{
+  if (n > 0)
+  {
+    do
+    {
+      *op++ = *ip++;
     }
     while (--n);
   }
@@ -1072,63 +1191,77 @@ void vtkDICOMReaderRescaleBuffer(T *p, double m, double b, size_t bytecount)
 
 //----------------------------------------------------------------------------
 void vtkDICOMReader::RescaleBuffer(
-  int fileIdx, int frameIdx, void *buffer, vtkIdType bufferSize)
+  int fileIdx, int frameIdx, int fileType, int outputType,
+  void *fileBuffer, void *outputBuffer, vtkIdType bufferSize)
 {
   vtkDICOMMetaData *meta = this->MetaData;
   double m = meta->GetAttributeValue(
     fileIdx, frameIdx, DC::RescaleSlope).AsDouble();
   double b = meta->GetAttributeValue(
     fileIdx, frameIdx, DC::RescaleIntercept).AsDouble();
-  double m0 = this->RescaleSlope;
-  double b0 = this->RescaleIntercept;
 
-  // scale down to match the global slope and intercept
-  b = (b - b0)/m0;
-  m = m/m0;
-
-  int bitsAllocated = meta->GetAttributeValue(
-    fileIdx, DC::BitsAllocated).AsInt();
-  int pixelRep = meta->GetAttributeValue(
-    fileIdx, DC::PixelRepresentation).AsInt();
-
-  if (bitsAllocated <= 8)
+  if (m == 0.0)
   {
-    if (pixelRep == 0)
-    {
-      vtkDICOMReaderRescaleBuffer(
-        static_cast<unsigned char *>(buffer), m, b, bufferSize);
-    }
-    else
-    {
-      vtkDICOMReaderRescaleBuffer(
-        static_cast<signed char *>(buffer), m, b, bufferSize);
-    }
+    m = 1.0;
   }
-  else if (bitsAllocated <= 16)
+
+  int inSize = vtkDataArray::GetDataTypeSize(fileType);
+  int outSize = vtkDataArray::GetDataTypeSize(outputType);
+  size_t n = bufferSize/inSize;
+
+  // optimization for common case
+  if (inSize == 2 && outSize == 2)
   {
-    if (pixelRep == 0)
+    int bi = static_cast<int>(b);
+    unsigned short bu = static_cast<unsigned short>(bi);
+    unsigned short *op = static_cast<unsigned short *>(outputBuffer);
+
+    if (outputBuffer == fileBuffer)
     {
-      vtkDICOMReaderRescaleBuffer(
-        static_cast<unsigned short *>(buffer), m, b, bufferSize);
+      for (size_t i = 0; i < n; i++)
+      {
+        *op++ += bu;
+      }
     }
     else
     {
-      vtkDICOMReaderRescaleBuffer(
-        static_cast<short *>(buffer), m, b, bufferSize);
+      const unsigned short *ip = static_cast<unsigned short *>(fileBuffer);
+      for (size_t i = 0; i < n; i++)
+      {
+        *op++ = *ip++ + bu;
+      }
     }
+    return;
   }
-  else if (bitsAllocated <= 32)
+
+  // general case: use "double" as intermediate
+  while (n > 0)
   {
-    if (pixelRep == 0)
+    double temporary[64];
+    size_t nn = (n < 64 ? n : 64);
+    n -= nn;
+
+    switch (fileType)
     {
-      vtkDICOMReaderRescaleBuffer(
-        static_cast<unsigned int *>(buffer), m, b, bufferSize);
+      vtkTemplateAliasMacro(
+        vtkDICOMConvertBuffer(
+          static_cast<const VTK_TT *>(fileBuffer), temporary, nn));
     }
-    else
+
+    for (size_t ii = 0; ii < nn; ii++)
     {
-      vtkDICOMReaderRescaleBuffer(
-        static_cast<int *>(buffer), m, b, bufferSize);
+      temporary[ii] = temporary[ii]*m + b;
     }
+
+    switch (outputType)
+    {
+      vtkTemplateAliasMacro(
+        vtkDICOMConvertBuffer(
+          temporary, static_cast<VTK_TT *>(outputBuffer), nn));
+    }
+
+    fileBuffer = static_cast<char *>(fileBuffer) + inSize*nn;
+    outputBuffer = static_cast<char *>(outputBuffer) + outSize*nn;
   }
 }
 
@@ -1633,6 +1766,7 @@ int vtkDICOMReader::RequestData(
   unsigned char *dataPtr =
     static_cast<unsigned char *>(data->GetScalarPointer());
 
+  int scalarType = data->GetScalarType();
   int scalarSize = data->GetScalarSize();
   int numComponents = data->GetNumberOfScalarComponents();
   int numFileComponents = this->NumberOfPackedComponents;
@@ -1641,7 +1775,9 @@ int vtkDICOMReader::RequestData(
   vtkIdType pixelSize = numComponents*scalarSize;
   vtkIdType rowSize = pixelSize*(extent[1] - extent[0] + 1);
   vtkIdType sliceSize = rowSize*(extent[3] - extent[2] + 1);
-  vtkIdType filePixelSize = numFileComponents*scalarSize;
+
+  int fileScalarSize = vtkDataArray::GetDataTypeSize(this->FileScalarType);
+  vtkIdType filePixelSize = numFileComponents*fileScalarSize;
   vtkIdType fileRowSize = filePixelSize*(extent[1] - extent[0] + 1);
   vtkIdType filePlaneSize = fileRowSize*(extent[3] - extent[2] + 1);
   vtkIdType fileFrameSize = filePlaneSize*numPlanes;
@@ -1672,8 +1808,11 @@ int vtkDICOMReader::RequestData(
     std::vector<vtkDICOMReaderFrameInfo>& frames = files[idx].Frames;
     int numFrames = static_cast<int>(frames.size());
 
-    // we need a file buffer if input frames don't match output slices
-    bool needBuffer = (planarToPacked || numFrames != framesInFile);
+    // we need a file buffer if input frames don't match output slices,
+    // or if input data type doesn't match output data type
+    bool needBuffer = (planarToPacked ||
+                       numFrames != framesInFile ||
+                       scalarSize != fileScalarSize);
     for (int sIdx = 0; sIdx < numFrames && !needBuffer; sIdx++)
     {
       needBuffer = (sIdx != frames[sIdx].FrameIndex);
@@ -1683,9 +1822,9 @@ int vtkDICOMReader::RequestData(
 
     if (needBuffer)
     {
+      // allocate a buffer for format or datatype conversion
       if (numFrames != framesInPreviousFile)
       {
-        // allocate a buffer for planar-to-packed conversion
         delete [] fileBuffer;
         fileBuffer = new unsigned char[fileFrameSize*framesInFile];
         framesInPreviousFile = numFrames;
@@ -1726,13 +1865,6 @@ int vtkDICOMReader::RequestData(
         (dataPtr + (sliceIdx - extent[4])*sliceSize +
          componentIdx*filePixelSize*numPlanes);
 
-      // rescale if Rescale was different for different files
-      if (this->NeedsRescale &&
-          this->MetaData->GetAttributeValue(fileIdx, DC::PixelData).IsValid())
-      {
-        this->RescaleBuffer(fileIdx, frameIdx, bufferPtr, sliceSize);
-      }
-
       // iterate through all color planes in the slice
       unsigned char *planePtr = framePtr;
       for (int pIdx = 0; pIdx < numPlanes; pIdx++)
@@ -1765,6 +1897,12 @@ int vtkDICOMReader::RequestData(
             tmpOutPtr += pixelSize - filePixelSize;
           }
           slicePtr += filePixelSize;
+        }
+        else if (this->NeedsRescale)
+        {
+          this->RescaleBuffer(
+            fileIdx, frameIdx, this->FileScalarType, scalarType,
+            planePtr, slicePtr, filePlaneSize);
         }
         else if (slicePtr != planePtr)
         {
