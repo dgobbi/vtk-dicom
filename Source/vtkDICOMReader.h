@@ -342,6 +342,7 @@ protected:
   //! Rescale the data in the buffer.
   virtual void RescaleBuffer(
     int fileIdx, int frameIdx, int fileType, int outputType,
+    int numFileComponents, int numComponents,
     void *fileBuffer, void *outputBuffer, vtkIdType bufferSize);
 
   //! Convert buffer from YUV to RGB.

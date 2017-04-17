@@ -929,9 +929,7 @@ int vtkDICOMReader::RequestInformation(
 
   if (slopeValue.IsValid() && interceptValue.IsValid())
   {
-    // AutoRescale is ignored for planar data, since planar data is not
-    // allowed in the IODs where RescaleSlope and RescaleIntercept occur
-    if (this->AutoRescale && !planarConfiguration)
+    if (this->AutoRescale)
     {
       // set NeedsRescale if any rescaling will be necessary,
       // and provide the new output type that will be needed
@@ -1144,7 +1142,7 @@ namespace {
 // templated conversion functions, for converting to and from floating point
 
 template<class T1, class T2>
-void vtkDICOMConvertBuffer(const T1 *ip, T2 *op, size_t n)
+void vtkDICOMConvertBuffer(const T1 *ip, T2 *op, int im, int om, size_t n)
 {
   if (n > 0)
   {
@@ -1152,36 +1150,42 @@ void vtkDICOMConvertBuffer(const T1 *ip, T2 *op, size_t n)
     T1 maxval = vtkTypeTraits<T2>::Max();
     do
     {
-      T1 v = *ip++;
+      T1 v = *ip;
       v = (v > minval ? v : minval);
       v = (v < maxval ? v : maxval);
-      *op++ = static_cast<T2>(v);
+      *op = static_cast<T2>(v);
+      ip += im;
+      op += om;
     }
     while (--n);
   }
 }
 
 template<class T>
-void vtkDICOMConvertBuffer(const T *ip, float *op, size_t n)
+void vtkDICOMConvertBuffer(const T *ip, float *op, int im, int om, size_t n)
 {
   if (n > 0)
   {
     do
     {
-      *op++ = *ip++;
+      *op = *ip;
+      ip += im;
+      op += om;
     }
     while (--n);
   }
 }
 
 template<class T>
-void vtkDICOMConvertBuffer(const T *ip, double *op, size_t n)
+void vtkDICOMConvertBuffer(const T *ip, double *op, int im, int om, size_t n)
 {
   if (n > 0)
   {
     do
     {
-      *op++ = *ip++;
+      *op = *ip;
+      ip += im;
+      op += om;
     }
     while (--n);
   }
@@ -1192,6 +1196,7 @@ void vtkDICOMConvertBuffer(const T *ip, double *op, size_t n)
 //----------------------------------------------------------------------------
 void vtkDICOMReader::RescaleBuffer(
   int fileIdx, int frameIdx, int fileType, int outputType,
+  int fileNumComponents, int numComponents,
   void *fileBuffer, void *outputBuffer, vtkIdType bufferSize)
 {
   vtkDICOMMetaData *meta = this->MetaData;
@@ -1207,61 +1212,44 @@ void vtkDICOMReader::RescaleBuffer(
 
   int inSize = vtkDataArray::GetDataTypeSize(fileType);
   int outSize = vtkDataArray::GetDataTypeSize(outputType);
-  size_t n = bufferSize/inSize;
+  size_t numPixels = bufferSize/(inSize*fileNumComponents);
 
-  // optimization for common case
-  if (inSize == 2 && outSize == 2)
+  for (int c = 0; c < fileNumComponents; c++)
   {
-    int bi = static_cast<int>(b);
-    unsigned short bu = static_cast<unsigned short>(bi);
-    unsigned short *op = static_cast<unsigned short *>(outputBuffer);
+    void *filePtr = static_cast<char *>(fileBuffer) + inSize*c;
+    void *outputPtr = static_cast<char *>(outputBuffer) + outSize*c;
+    size_t n = numPixels;
 
-    if (outputBuffer == fileBuffer)
+    while (n > 0)
     {
-      for (size_t i = 0; i < n; i++)
+      double temp[64];
+      size_t nn = (n < 64 ? n : 64);
+      n -= nn;
+
+      switch (fileType)
       {
-        *op++ += bu;
+        vtkTemplateAliasMacro(
+          vtkDICOMConvertBuffer(
+            static_cast<const VTK_TT *>(filePtr), temp,
+            fileNumComponents, 1, nn));
       }
-    }
-    else
-    {
-      const unsigned short *ip = static_cast<unsigned short *>(fileBuffer);
-      for (size_t i = 0; i < n; i++)
+
+      for (size_t ii = 0; ii < nn; ii++)
       {
-        *op++ = *ip++ + bu;
+        temp[ii] = temp[ii]*m + b;
       }
+
+      switch (outputType)
+      {
+        vtkTemplateAliasMacro(
+          vtkDICOMConvertBuffer(
+            temp, static_cast<VTK_TT *>(outputPtr),
+            1, numComponents, nn));
+      }
+
+      filePtr = static_cast<char *>(filePtr) + inSize*fileNumComponents*nn;
+      outputPtr = static_cast<char *>(outputPtr) + outSize*numComponents*nn;
     }
-    return;
-  }
-
-  // general case: use "double" as intermediate
-  while (n > 0)
-  {
-    double temporary[64];
-    size_t nn = (n < 64 ? n : 64);
-    n -= nn;
-
-    switch (fileType)
-    {
-      vtkTemplateAliasMacro(
-        vtkDICOMConvertBuffer(
-          static_cast<const VTK_TT *>(fileBuffer), temporary, nn));
-    }
-
-    for (size_t ii = 0; ii < nn; ii++)
-    {
-      temporary[ii] = temporary[ii]*m + b;
-    }
-
-    switch (outputType)
-    {
-      vtkTemplateAliasMacro(
-        vtkDICOMConvertBuffer(
-          temporary, static_cast<VTK_TT *>(outputBuffer), nn));
-    }
-
-    fileBuffer = static_cast<char *>(fileBuffer) + inSize*nn;
-    outputBuffer = static_cast<char *>(outputBuffer) + outSize*nn;
   }
 }
 
@@ -1785,7 +1773,7 @@ int vtkDICOMReader::RequestData(
   this->InvokeEvent(vtkCommand::StartEvent);
 
   bool flipImage = (this->MemoryRowOrder == vtkDICOMReader::BottomUp);
-  bool planarToPacked = (filePixelSize != pixelSize);
+  bool planarToPacked = (numFileComponents != numComponents);
   unsigned char *rowBuffer = 0;
   if (flipImage)
   {
@@ -1885,7 +1873,14 @@ int vtkDICOMReader::RequestData(
         }
 
         // convert planes into vector components
-        if (planarToPacked)
+        if (this->NeedsRescale)
+        {
+          this->RescaleBuffer(
+            fileIdx, frameIdx, this->FileScalarType, scalarType,
+            numFileComponents, numComponents, planePtr, slicePtr,
+            filePlaneSize);
+        }
+        else if (planarToPacked)
         {
           const unsigned char *tmpInPtr = planePtr;
           unsigned char *tmpOutPtr = slicePtr;
@@ -1897,12 +1892,6 @@ int vtkDICOMReader::RequestData(
             tmpOutPtr += pixelSize - filePixelSize;
           }
           slicePtr += filePixelSize;
-        }
-        else if (this->NeedsRescale)
-        {
-          this->RescaleBuffer(
-            fileIdx, frameIdx, this->FileScalarType, scalarType,
-            planePtr, slicePtr, filePlaneSize);
         }
         else if (slicePtr != planePtr)
         {
