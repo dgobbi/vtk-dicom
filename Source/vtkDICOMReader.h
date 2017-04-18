@@ -283,6 +283,20 @@ public:
   const char *GetMemoryRowOrderAsString();
   //@}
 
+  //@{
+  //! Set the scalar type of the output.
+  /*!
+   *  The default value is -1, which means that the input scalar type will
+   *  be used to set the output scalar type (accounting for any type
+   *  changes required by AutoRescale).  Allowed output scalar types are
+   *  VTK_SIGNED_CHAR, VTK_UNSIGNED_CHAR, VTK_SHORT, VTK_UNSIGNED_SHORT,
+   *  VTK_INT, VTK_UNSIGNED_INT, VTK_FLOAT, or VTK_DOUBLE.  The output
+   *  data values will be clamped to the limits of the output type.
+   */
+  vtkSetMacro(OutputScalarType, int);
+  vtkGetMacro(OutputScalarType, int);
+  //@}
+
 protected:
   vtkDICOMReader();
   ~vtkDICOMReader();
@@ -423,6 +437,7 @@ protected:
   int NeedsRescale;
   int AutoRescale;
   int FileScalarType;
+  int OutputScalarType;
 
   //! This indicates that the data must be converted to RGB.
   int NeedsYBRToRGB;

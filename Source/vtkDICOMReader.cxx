@@ -86,6 +86,7 @@ vtkDICOMReader::vtkDICOMReader()
   this->AutoRescale = 1;
   this->NeedsRescale = 0;
   this->FileScalarType = 0;
+  this->OutputScalarType = -1;
   this->RescaleSlope = 1.0;
   this->RescaleIntercept = 0.0;
   this->DefaultCharacterSet = vtkDICOMCharacterSet::GetGlobalDefault();
@@ -246,6 +247,7 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "MemoryRowOrder: "
      << this->GetMemoryRowOrderAsString() << "\n";
+  os << indent << "OutputScalarType: " << this->OutputScalarType << "\n";
 }
 
 //----------------------------------------------------------------------------
@@ -947,6 +949,32 @@ int vtkDICOMReader::RequestInformation(
     }
   }
 
+  // apply requested scalar type
+  if (this->OutputScalarType != -1)
+  {
+    switch (this->OutputScalarType)
+    {
+      case VTK_SIGNED_CHAR:
+      case VTK_UNSIGNED_CHAR:
+      case VTK_SHORT:
+      case VTK_UNSIGNED_SHORT:
+      case VTK_INT:
+      case VTK_UNSIGNED_INT:
+      case VTK_FLOAT:
+      case VTK_DOUBLE:
+        scalarType = this->OutputScalarType;
+        if (scalarType != this->FileScalarType)
+        {
+          this->NeedsRescale = true;
+        }
+        break;
+      default:
+        vtkWarningMacro("Illegal OutputScalarType: "
+                        << this->OutputScalarType);
+        break;
+    }
+  }
+
   // number of components
   if (numComponents <= 0)
   {
@@ -1234,9 +1262,12 @@ void vtkDICOMReader::RescaleBuffer(
             fileNumComponents, 1, nn));
       }
 
-      for (size_t ii = 0; ii < nn; ii++)
+      if (this->AutoRescale)
       {
-        temp[ii] = temp[ii]*m + b;
+        for (size_t ii = 0; ii < nn; ii++)
+        {
+          temp[ii] = temp[ii]*m + b;
+        }
       }
 
       switch (outputType)
