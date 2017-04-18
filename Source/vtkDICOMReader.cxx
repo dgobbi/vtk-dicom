@@ -625,17 +625,17 @@ int vtkDICOMReader::ComputeRescaledScalarType(
        vMax > vtkDataArray::GetDataTypeMax(scalarType)))
   {
     int byteSize = vtkDataArray::GetDataTypeSize(scalarType);
-    if (byteSize <= 2 && vMin >= 0.0 && vMax <= 65535.0)
+    if (byteSize <= 2)
     {
-      scalarType = VTK_UNSIGNED_SHORT;
+      scalarType = (vMin < 0.0 ? VTK_SHORT : VTK_UNSIGNED_SHORT);
     }
-    else if (byteSize <= 2 && vMin >= -32768.0 && vMax <= 32767.0)
+    else if (byteSize <= 4)
     {
-      scalarType = VTK_SHORT;
+      scalarType = (vMin < 0.0 ? VTK_INT : VTK_UNSIGNED_INT);
     }
     else
     {
-      outputFloat = true;
+      scalarType = (vMin < 0.0 ? VTK_TYPE_INT64 : VTK_TYPE_UINT64);
     }
   }
 
@@ -643,8 +643,8 @@ int vtkDICOMReader::ComputeRescaledScalarType(
       scalarType != VTK_FLOAT &&
       scalarType != VTK_DOUBLE)
   {
-    // use float if it can store the data without loss
-    if (pMax <= 16777216.0 && pMin >= -16777216.0)
+    // use float if data is 24 bits or less
+    if (bitsStored <= 24)
     {
       scalarType = VTK_FLOAT;
     }
