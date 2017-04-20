@@ -2527,7 +2527,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
         // point of comparison with the data set strings.
         if (tag != DC::SpecificCharacterSet)
         {
-          match = ip->GetAttributeValue(tag).Matches(iter->GetValue());
+          match = ip->Get(tag).Matches(iter->GetValue());
         }
         ++iter;
       }

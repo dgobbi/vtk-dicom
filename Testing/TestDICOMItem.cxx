@@ -35,35 +35,34 @@ int main(int argc, char *argv[])
   {
     // default constructor
     vtkDICOMItem i;
-    meta->SetAttributeValue(DC::ConceptNameCodeSequence, i);
+    meta->Set(DC::ConceptNameCodeSequence, i);
     // try accessing it and removing it
-    meta->GetAttributeValue(
-      vtkDICOMTagPath(DC::ConceptNameCodeSequence, 0, DC::CodeMeaning));
-    meta->RemoveAttribute(DC::ConceptNameCodeSequence);
+    meta->Get(vtkDICOMTagPath(DC::ConceptNameCodeSequence, 0, DC::CodeMeaning));
+    meta->Remove(DC::ConceptNameCodeSequence);
   }
   {
     // low-level constructor (not for general use)
     vtkDICOMItem i(vtkDICOMCharacterSet::ISO_IR_101, vtkDICOMVR::US);
-    i.SetAttributeValue(DC::CodeMeaning, "Whatever");
-    vtkDICOMCharacterSet cs = i.GetAttributeValue(DC::CodeMeaning).GetCharacterSet(); 
+    i.Set(DC::CodeMeaning, "Whatever");
+    vtkDICOMCharacterSet cs = i.Get(DC::CodeMeaning).GetCharacterSet();
     TestAssert(cs == vtkDICOMCharacterSet::ISO_IR_101);
     // check the pixel representation (the VRForXS)
-    i.SetAttributeValue(DC::MappedPixelValue, 10);
-    TestAssert(i.GetAttributeValue(DC::MappedPixelValue).GetVR() == vtkDICOMVR::US);
+    i.Set(DC::MappedPixelValue, 10);
+    TestAssert(i.Get(DC::MappedPixelValue).GetVR() == vtkDICOMVR::US);
   }
   {
     // construct an item to be placed into a specific meta data object,
     // e.g. assume the same character set, pixel representation as meta data object
-    meta->SetAttributeValue(DC::SpecificCharacterSet, "ISO_IR 100");
-    meta->SetAttributeValue(DC::PixelRepresentation, 1);
+    meta->Set(DC::SpecificCharacterSet, "ISO_IR 100");
+    meta->Set(DC::PixelRepresentation, 1);
     vtkDICOMItem i = vtkDICOMItem(meta);
     // check that character set was inherited from meta data
-    i.SetAttributeValue(DC::CodeMeaning, "Whatever");
-    vtkDICOMCharacterSet cs = i.GetAttributeValue(DC::CodeMeaning).GetCharacterSet(); 
+    i.Set(DC::CodeMeaning, "Whatever");
+    vtkDICOMCharacterSet cs = i.Get(DC::CodeMeaning).GetCharacterSet();
     TestAssert(cs == vtkDICOMCharacterSet::ISO_IR_100);
     // check that pixel representation was inherited from meta data
-    i.SetAttributeValue(DC::MappedPixelValue, 10);
-    TestAssert(i.GetAttributeValue(DC::MappedPixelValue).GetVR() == vtkDICOMVR::SS);
+    i.Set(DC::MappedPixelValue, 10);
+    TestAssert(i.Get(DC::MappedPixelValue).GetVR() == vtkDICOMVR::SS);
   }
 
   // test actions on an empty item
@@ -90,48 +89,48 @@ int main(int argc, char *argv[])
   {
     // test getting attributes from an empty item
     vtkDICOMItem i;
-    TestAssert(i.GetAttributeValue(DC::CodeMeaning).IsValid() == false);
+    TestAssert(i.Get(DC::CodeMeaning).IsValid() == false);
     vtkDICOMTagPath tp1 = vtkDICOMTagPath(DC::CodeMeaning);
-    TestAssert(i.GetAttributeValue(tp1).IsValid() == false);
+    TestAssert(i.Get(tp1).IsValid() == false);
     vtkDICOMTagPath tp2(DC::ConceptNameCodeSequence, 0, DC::CodeMeaning);
-    TestAssert(i.GetAttributeValue(tp2).IsValid() == false);
+    TestAssert(i.Get(tp2).IsValid() == false);
   }
   {
     // test setting attributes from an empty item
     vtkDICOMItem i;
     vtkDICOMTagPath tp2(DC::ConceptNameCodeSequence, 0, DC::CodeMeaning);
-    i.SetAttributeValue(tp2, "Whatever");
-    TestAssert(i.GetAttributeValue(tp2).IsValid() == true);
+    i.Set(tp2, "Whatever");
+    TestAssert(i.Get(tp2).IsValid() == true);
     i.Clear();
     vtkDICOMTagPath tp1 = vtkDICOMTagPath(DC::CodeMeaning);
-    i.SetAttributeValue(tp1, "Whatever");
-    TestAssert(i.GetAttributeValue(tp1).IsValid() == true);
+    i.Set(tp1, "Whatever");
+    TestAssert(i.Get(tp1).IsValid() == true);
     i.Clear();
-    i.SetAttributeValue(DC::CodeMeaning, "Whatever");
-    TestAssert(i.GetAttributeValue(DC::CodeMeaning).IsValid() == true);
+    i.Set(DC::CodeMeaning, "Whatever");
+    TestAssert(i.Get(DC::CodeMeaning).IsValid() == true);
     i.Clear();
     vtkDICOMTagPath tp3(DC::CodeMeaning, 0, DC::CodeMeaning); // invalid path!
-    i.SetAttributeValue(tp3, "Whatever");
-    TestAssert(i.GetAttributeValue(tp3).IsValid() == false);
+    i.Set(tp3, "Whatever");
+    TestAssert(i.Get(tp3).IsValid() == false);
   }
   {
     // check lookup of character set for VRs that use it (will be ASCII)
     vtkDICOMItem i;
-    i.SetAttributeValue(DC::CodeMeaning, "Hello");
-    vtkDICOMCharacterSet cs = i.GetAttributeValue(DC::CodeMeaning).GetCharacterSet(); 
+    i.Set(DC::CodeMeaning, "Hello");
+    vtkDICOMCharacterSet cs = i.Get(DC::CodeMeaning).GetCharacterSet();
     TestAssert(cs == vtkDICOMCharacterSet::ISO_IR_6);
   }
   {
     // check lookup of XS being SS vs US (will be US)
     vtkDICOMItem i;
-    i.SetAttributeValue(DC::MappedPixelValue, 10);
-    TestAssert(i.GetAttributeValue(DC::MappedPixelValue).GetVR() == vtkDICOMVR::US);
+    i.Set(DC::MappedPixelValue, 10);
+    TestAssert(i.Get(DC::MappedPixelValue).GetVR() == vtkDICOMVR::US);
   }
   {
     // check lookup of XS being SS vs US (will be US)
     vtkDICOMItem i;
-    i.SetAttributeValue(DC::MappedPixelValue, 10);
-    TestAssert(i.GetAttributeValue(DC::MappedPixelValue).GetVR() == vtkDICOMVR::US);
+    i.Set(DC::MappedPixelValue, 10);
+    TestAssert(i.Get(DC::MappedPixelValue).GetVR() == vtkDICOMVR::US);
   }
 
   meta->Delete();

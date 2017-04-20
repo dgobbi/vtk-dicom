@@ -70,26 +70,26 @@ int main(int argc, char *argv[])
     // 2) the CodeMeaning should be a copy of CodeValue unless:
     // 2a) CodeValue=1, in which case use CodeMeaning=unity
     vtkDICOMItem unitsItem;
-    unitsItem.SetAttributeValue(DC::CodeValue, "m2/s");
-    unitsItem.SetAttributeValue(DC::CodingSchemeDesignator, "UCUM");
-    unitsItem.SetAttributeValue(DC::CodingSchemeVersion, "1.9");
-    unitsItem.SetAttributeValue(DC::CodeMeaning, "m2/s");
+    unitsItem.Set(DC::CodeValue, "m2/s");
+    unitsItem.Set(DC::CodingSchemeDesignator, "UCUM");
+    unitsItem.Set(DC::CodingSchemeVersion, "1.9");
+    unitsItem.Set(DC::CodeMeaning, "m2/s");
 
     vtkDICOMItem mappingItem;
-    mappingItem.SetAttributeValue(DC::LUTExplanation, "Hot Metal");
-    mappingItem.SetAttributeValue(DC::MeasurementUnitsCodeSequence,
+    mappingItem.Set(DC::LUTExplanation, "Hot Metal");
+    mappingItem.Set(DC::MeasurementUnitsCodeSequence,
       vtkDICOMValue(vtkDICOMVR::SQ, unitsItem));
-    mappingItem.SetAttributeValue(DC::LUTLabel, "HOT_METAL");
+    mappingItem.Set(DC::LUTLabel, "HOT_METAL");
     // need to explicitly define the VR for these, because it depends
     // on whether the PixelRepresentation is signed or unsigned
-    mappingItem.SetAttributeValue(DC::RealWorldValueFirstValueMapped,
+    mappingItem.Set(DC::RealWorldValueFirstValueMapped,
                                   vtkDICOMValue(vtkDICOMVR::US, 0));
-    mappingItem.SetAttributeValue(DC::RealWorldValueLastValueMapped,
+    mappingItem.Set(DC::RealWorldValueLastValueMapped,
                                   vtkDICOMValue(vtkDICOMVR::US, 4095));
-    mappingItem.SetAttributeValue(DC::RealWorldValueIntercept, 0.234);
-    mappingItem.SetAttributeValue(DC::RealWorldValueSlope, 0.438);
+    mappingItem.Set(DC::RealWorldValueIntercept, 0.234);
+    mappingItem.Set(DC::RealWorldValueSlope, 0.438);
 
-    meta->SetAttributeValue(DC::RealWorldValueMappingSequence,
+    meta->Set(DC::RealWorldValueMappingSequence,
       vtkDICOMValue(vtkDICOMVR::SQ, mappingItem));
   }
   else
@@ -97,27 +97,22 @@ int main(int argc, char *argv[])
     cout << "The provided file is not DICOM!" << endl;
   }
 
-  if (meta->HasAttribute(DC::RealWorldValueMappingSequence))
+  if (meta->Has(DC::RealWorldValueMappingSequence))
   {
     const vtkDICOMItem& mappingItem =
-      meta->GetAttributeValue(DC::RealWorldValueMappingSequence).GetItem(0);
+      meta->Get(DC::RealWorldValueMappingSequence).GetItem(0);
 
-    std::string lutName =
-      mappingItem.GetAttributeValue(DC::LUTLabel).AsString();
+    std::string lutName = mappingItem.Get(DC::LUTLabel).AsString();
 
-    std::string units = mappingItem.GetAttributeValue(vtkDICOMTagPath(
+    std::string units = mappingItem.Get(vtkDICOMTagPath(
       DC::MeasurementUnitsCodeSequence, 0, DC::CodeValue)).AsString();
 
     double range[2];
-    range[0] = mappingItem.GetAttributeValue(
-      DC::RealWorldValueFirstValueMapped).AsDouble();
-    range[1] = mappingItem.GetAttributeValue(
-      DC::RealWorldValueLastValueMapped).AsDouble();
+    range[0] = mappingItem.Get(DC::RealWorldValueFirstValueMapped).AsDouble();
+    range[1] = mappingItem.Get(DC::RealWorldValueLastValueMapped).AsDouble();
 
-    double slope = mappingItem.GetAttributeValue(
-      DC::RealWorldValueSlope).AsDouble();
-    double inter = mappingItem.GetAttributeValue(
-      DC::RealWorldValueIntercept).AsDouble();
+    double slope = mappingItem.Get(DC::RealWorldValueSlope).AsDouble();
+    double inter = mappingItem.Get(DC::RealWorldValueIntercept).AsDouble();
 
     cout << "Map pixel values in the range " << range[0] << ", " << range[1] << endl;
     cout << "through the equation y = " << slope << " * x + " << inter << endl;

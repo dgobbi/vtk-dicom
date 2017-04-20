@@ -148,7 +148,7 @@ void vtkDICOMMetaData::SetFrameIndexArray(vtkIntArray *a)
 
 //----------------------------------------------------------------------------
 // Erase an element from the hash table
-void vtkDICOMMetaData::RemoveAttribute(vtkDICOMTag tag)
+void vtkDICOMMetaData::Remove(vtkDICOMTag tag)
 {
   unsigned int m = METADATA_HASH_SIZE - 1;
   unsigned int i = (tag.ComputeHash() & m);
@@ -208,7 +208,7 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElement(
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMMetaData::HasAttribute(vtkDICOMTag tag)
+bool vtkDICOMMetaData::Has(vtkDICOMTag tag)
 {
   return (this->FindDataElement(tag) != 0);
 }
@@ -255,7 +255,7 @@ const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
     vptr = 0;
     if (items != 0 && i < n)
     {
-      vptr = &items[i].GetAttributeValue(tagpath.GetTail());
+      vptr = &items[i].Get(tagpath.GetTail());
       if (!vptr->IsValid())
       {
         vptr = 0;
@@ -266,30 +266,28 @@ const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
 }
 
 //----------------------------------------------------------------------------
-const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(vtkDICOMTag tag)
+const vtkDICOMValue &vtkDICOMMetaData::Get(vtkDICOMTag tag)
 {
   const vtkDICOMValue *vptr = this->FindAttributeValue(0, tag);
   return (vptr ? *vptr : this->Tail.Value);
 }
 
 //----------------------------------------------------------------------------
-const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
-  int idx, vtkDICOMTag tag)
+const vtkDICOMValue &vtkDICOMMetaData::Get(int idx, vtkDICOMTag tag)
 {
   const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tag);
   return (vptr ? *vptr : this->Tail.Value);
 }
 
 //----------------------------------------------------------------------------
-const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
-  const vtkDICOMTagPath &tagpath)
+const vtkDICOMValue &vtkDICOMMetaData::Get(const vtkDICOMTagPath &tagpath)
 {
   const vtkDICOMValue *vptr = this->FindAttributeValue(0, tagpath);
   return (vptr ? *vptr : this->Tail.Value);
 }
 
 //----------------------------------------------------------------------------
-const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
+const vtkDICOMValue &vtkDICOMMetaData::Get(
   int idx, const vtkDICOMTagPath &tagpath)
 {
   const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tagpath);
@@ -297,7 +295,7 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
 }
 
 //----------------------------------------------------------------------------
-const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
+const vtkDICOMValue &vtkDICOMMetaData::Get(
   int idx, int frame, const vtkDICOMTagPath &tagpath)
 {
   // if either of these is present in an enhanced DICOM file, then they
@@ -322,7 +320,7 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
     {
       // search for the item that matches the frame
       const vtkDICOMItem *items = seq->GetSequenceData();
-      const vtkDICOMValue &v = items[f].GetAttributeValue(tagpath);
+      const vtkDICOMValue &v = items[f].Get(tagpath);
       if (v.IsValid())
       {
         return v;
@@ -338,7 +336,7 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
           const vtkDICOMItem *item = u.GetSequenceData();
           if (item)
           {
-            const vtkDICOMValue &w = item->GetAttributeValue(tagpath);
+            const vtkDICOMValue &w = item->Get(tagpath);
             if (w.IsValid())
             {
               if ((iter->GetTag().GetGroup() & 1) == 0)
@@ -370,10 +368,9 @@ const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
 }
 
 //----------------------------------------------------------------------------
-const vtkDICOMValue &vtkDICOMMetaData::GetAttributeValue(
-  int idx, int frame, vtkDICOMTag tag)
+const vtkDICOMValue &vtkDICOMMetaData::Get(int idx, int frame, vtkDICOMTag tag)
 {
-  return this->GetAttributeValue(idx, frame, vtkDICOMTagPath(tag));
+  return this->Get(idx, frame, vtkDICOMTagPath(tag));
 }
 
 //----------------------------------------------------------------------------
@@ -531,7 +528,7 @@ int vtkDICOMMetaData::FindItemsOrInsert(
     if (vr != vtkDICOMVR::SQ && vr != vtkDICOMVR::UN)
     {
       // we just inserted a non-SQ value, remove it
-      this->RemoveAttribute(tag);
+      this->Remove(tag);
       return 0;
     }
   }
@@ -600,14 +597,12 @@ int vtkDICOMMetaData::FindItemsOrInsert(
     vtkDICOMVR vrForXS = vtkDICOMVR::US;
     if (n > m)
     {
-      const vtkDICOMValue& vcs =
-        this->GetAttributeValue(DC::SpecificCharacterSet);
+      const vtkDICOMValue& vcs = this->Get(DC::SpecificCharacterSet);
       if (vcs.IsValid())
       {
         cs = vtkDICOMCharacterSet(vcs.GetCharData(), vcs.GetVL());
       }
-      const vtkDICOMValue &v = this->GetAttributeValue(
-        DC::PixelRepresentation);
+      const vtkDICOMValue &v = this->Get(DC::PixelRepresentation);
       if (v.IsValid())
       {
         vrForXS = (v.AsUnsignedShort() == 0 ?
@@ -635,8 +630,7 @@ vtkDICOMItem *vtkDICOMMetaData::FindItemOrInsert(
 
 //----------------------------------------------------------------------------
 // Insert an attribute into the hash table
-void vtkDICOMMetaData::SetAttributeValue(
-  vtkDICOMTag tag, const vtkDICOMValue& v)
+void vtkDICOMMetaData::Set(vtkDICOMTag tag, const vtkDICOMValue& v)
 {
   if (v.IsValid())
   {
@@ -651,16 +645,16 @@ void vtkDICOMMetaData::SetAttributeValue(
   }
   else
   {
-    this->RemoveAttribute(tag);
+    this->Remove(tag);
   }
 }
 
-void vtkDICOMMetaData::SetAttributeValue(vtkDICOMTag tag, double v)
+void vtkDICOMMetaData::Set(vtkDICOMTag tag, double v)
 {
   vtkDICOMVR vr = this->FindDictVR(0, tag);
   if (vr != vtkDICOMVR::UN)
   {
-    this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
+    this->Set(tag, vtkDICOMValue(vr, v));
   }
   else
   {
@@ -669,17 +663,16 @@ void vtkDICOMMetaData::SetAttributeValue(vtkDICOMTag tag, double v)
   }
 }
 
-void vtkDICOMMetaData::SetAttributeValue(vtkDICOMTag tag, const std::string& v)
+void vtkDICOMMetaData::Set(vtkDICOMTag tag, const std::string& v)
 {
   vtkDICOMVR vr = this->FindDictVR(0, tag);
   if (vr.HasSpecificCharacterSet() && tag > DC::SpecificCharacterSet)
   {
-    this->SetAttributeValue(tag,
-      this->MakeValueWithSpecificCharacterSet(vr, v));
+    this->Set(tag, this->MakeValueWithSpecificCharacterSet(vr, v));
   }
   else if (vr != vtkDICOMVR::UN)
   {
-    this->SetAttributeValue(tag, vtkDICOMValue(vr, v));
+    this->Set(tag, vtkDICOMValue(vr, v));
   }
   else
   {
@@ -690,8 +683,7 @@ void vtkDICOMMetaData::SetAttributeValue(vtkDICOMTag tag, const std::string& v)
 
 //----------------------------------------------------------------------------
 // Insert an attribute for a particular image
-void vtkDICOMMetaData::SetAttributeValue(
-  int idx, vtkDICOMTag tag, const vtkDICOMValue& v)
+void vtkDICOMMetaData::Set(int idx, vtkDICOMTag tag, const vtkDICOMValue& v)
 {
   vtkDICOMDataElement *loc = this->FindDataElementOrInsert(tag);
   if (loc == 0)
@@ -720,7 +712,7 @@ void vtkDICOMMetaData::SetAttributeValue(
       }
       if (!valid)
       {
-        this->RemoveAttribute(tag);
+        this->Remove(tag);
       }
     }
   }
@@ -746,17 +738,16 @@ void vtkDICOMMetaData::SetAttributeValue(
   }
   else if (!vptr->IsValid())
   {
-    this->RemoveAttribute(tag);
+    this->Remove(tag);
   }
 }
 
-void vtkDICOMMetaData::SetAttributeValue(
-  int idx, vtkDICOMTag tag, double v)
+void vtkDICOMMetaData::Set(int idx, vtkDICOMTag tag, double v)
 {
   vtkDICOMVR vr = this->FindDictVR(idx, tag);
   if (vr != vtkDICOMVR::UN)
   {
-    this->SetAttributeValue(idx, tag, vtkDICOMValue(vr, v));
+    this->Set(idx, tag, vtkDICOMValue(vr, v));
   }
   else
   {
@@ -765,18 +756,16 @@ void vtkDICOMMetaData::SetAttributeValue(
   }
 }
 
-void vtkDICOMMetaData::SetAttributeValue(
-  int idx, vtkDICOMTag tag, const std::string& v)
+void vtkDICOMMetaData::Set(int idx, vtkDICOMTag tag, const std::string& v)
 {
   vtkDICOMVR vr = this->FindDictVR(idx, tag);
   if (vr.HasSpecificCharacterSet() && tag > DC::SpecificCharacterSet)
   {
-    this->SetAttributeValue(idx, tag,
-      this->MakeValueWithSpecificCharacterSet(vr, v));
+    this->Set(idx, tag, this->MakeValueWithSpecificCharacterSet(vr, v));
   }
   else if (vr != vtkDICOMVR::UN)
   {
-    this->SetAttributeValue(idx, tag, vtkDICOMValue(vr, v));
+    this->Set(idx, tag, vtkDICOMValue(vr, v));
   }
   else
   {
@@ -787,7 +776,7 @@ void vtkDICOMMetaData::SetAttributeValue(
 
 //----------------------------------------------------------------------------
 // Insert an attribute at a particular path
-void vtkDICOMMetaData::SetAttributeValue(
+void vtkDICOMMetaData::Set(
   const vtkDICOMTagPath& tagpath, const vtkDICOMValue& v)
 {
   if (tagpath.HasTail())
@@ -796,18 +785,17 @@ void vtkDICOMMetaData::SetAttributeValue(
     int n = this->FindItemsOrInsert(0, false, tagpath, items);
     for (int i = 0; i < n; i++)
     {
-      items[i]->SetAttributeValue(tagpath.GetTail(), v);
+      items[i]->Set(tagpath.GetTail(), v);
     }
     delete [] items;
   }
   else
   {
-    this->SetAttributeValue(tagpath.GetHead(), v);
+    this->Set(tagpath.GetHead(), v);
   }
 }
 
-void vtkDICOMMetaData::SetAttributeValue(
-  const vtkDICOMTagPath& tagpath, double v)
+void vtkDICOMMetaData::Set(const vtkDICOMTagPath& tagpath, double v)
 {
   if (tagpath.HasTail())
   {
@@ -815,17 +803,17 @@ void vtkDICOMMetaData::SetAttributeValue(
     int n = this->FindItemsOrInsert(0, false, tagpath, items);
     for (int i = 0; i < n; i++)
     {
-      items[i]->SetAttributeValue(tagpath.GetTail(), v);
+      items[i]->Set(tagpath.GetTail(), v);
     }
     delete [] items;
   }
   else
   {
-    this->SetAttributeValue(tagpath.GetHead(), v);
+    this->Set(tagpath.GetHead(), v);
   }
 }
 
-void vtkDICOMMetaData::SetAttributeValue(
+void vtkDICOMMetaData::Set(
   const vtkDICOMTagPath& tagpath, const std::string& v)
 {
   if (tagpath.HasTail())
@@ -834,19 +822,19 @@ void vtkDICOMMetaData::SetAttributeValue(
     int n = this->FindItemsOrInsert(0, false, tagpath, items);
     for (int i = 0; i < n; i++)
     {
-      items[i]->SetAttributeValue(tagpath.GetTail(), v);
+      items[i]->Set(tagpath.GetTail(), v);
     }
     delete [] items;
   }
   else
   {
-    this->SetAttributeValue(tagpath.GetHead(), v);
+    this->Set(tagpath.GetHead(), v);
   }
 }
 
 //----------------------------------------------------------------------------
 // Insert an attribute for a particular image
-void vtkDICOMMetaData::SetAttributeValue(
+void vtkDICOMMetaData::Set(
   int idx, const vtkDICOMTagPath& tagpath, const vtkDICOMValue& v)
 {
   if (tagpath.HasTail())
@@ -854,33 +842,32 @@ void vtkDICOMMetaData::SetAttributeValue(
     vtkDICOMItem *item = this->FindItemOrInsert(idx, tagpath);
     if (item)
     {
-      item->SetAttributeValue(tagpath.GetTail(), v);
+      item->Set(tagpath.GetTail(), v);
     }
   }
   else
   {
-    this->SetAttributeValue(idx, tagpath.GetHead(), v);
+    this->Set(idx, tagpath.GetHead(), v);
   }
 }
 
-void vtkDICOMMetaData::SetAttributeValue(
-  int idx, const vtkDICOMTagPath& tagpath, double v)
+void vtkDICOMMetaData::Set(int idx, const vtkDICOMTagPath& tagpath, double v)
 {
   if (tagpath.HasTail())
   {
     vtkDICOMItem *item = this->FindItemOrInsert(idx, tagpath);
     if (item)
     {
-      item->SetAttributeValue(tagpath.GetTail(), v);
+      item->Set(tagpath.GetTail(), v);
     }
   }
   else
   {
-    this->SetAttributeValue(idx, tagpath.GetHead(), v);
+    this->Set(idx, tagpath.GetHead(), v);
   }
 }
 
-void vtkDICOMMetaData::SetAttributeValue(
+void vtkDICOMMetaData::Set(
   int idx, const vtkDICOMTagPath& tagpath, const std::string& v)
 {
   if (tagpath.HasTail())
@@ -888,12 +875,12 @@ void vtkDICOMMetaData::SetAttributeValue(
     vtkDICOMItem *item = this->FindItemOrInsert(idx, tagpath);
     if (item)
     {
-      item->SetAttributeValue(tagpath.GetTail(), v);
+      item->Set(tagpath.GetTail(), v);
     }
   }
   else
   {
-    this->SetAttributeValue(idx, tagpath.GetHead(), v);
+    this->Set(idx, tagpath.GetHead(), v);
   }
 }
 
@@ -903,8 +890,7 @@ vtkDICOMValue vtkDICOMMetaData::MakeValueWithSpecificCharacterSet(
 {
   // note that there is similar code in vtkDICOMItem
   vtkDICOMCharacterSet cs; // defaults to ASCII
-  const vtkDICOMValue& vcs =
-    this->GetAttributeValue(DC::SpecificCharacterSet);
+  const vtkDICOMValue& vcs = this->Get(DC::SpecificCharacterSet);
   if (vcs.IsValid())
   {
     cs = vtkDICOMCharacterSet(vcs.GetCharData(), vcs.GetVL());
@@ -1011,8 +997,7 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
     if (vr == vtkDICOMVR::XS)
     {
       vr = vtkDICOMVR::US;
-      const vtkDICOMValue &v =
-        this->GetAttributeValue(idx, DC::PixelRepresentation);
+      const vtkDICOMValue &v = this->Get(idx, DC::PixelRepresentation);
       if (v.IsValid())
       {
         unsigned short r = v.AsUnsignedShort();
@@ -1029,8 +1014,7 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
       vr = vtkDICOMVR::OW;
       if (tag.GetGroup() == 0x5400)
       {
-        const vtkDICOMValue &v =
-          this->GetAttributeValue(idx, DC::WaveformBitsAllocated);
+        const vtkDICOMValue &v = this->Get(idx, DC::WaveformBitsAllocated);
         if (v.IsValid())
         {
           unsigned short s = v.AsUnsignedShort();
@@ -1044,8 +1028,7 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
       }
       else
       {
-        const vtkDICOMValue &v =
-          this->GetAttributeValue(idx, DC::BitsAllocated);
+        const vtkDICOMValue &v = this->Get(idx, DC::BitsAllocated);
         if (v.IsValid())
         {
           unsigned short s = v.AsUnsignedShort();
@@ -1153,7 +1136,7 @@ vtkDICOMDictEntry vtkDICOMMetaData::FindDictEntry(vtkDICOMTag tag)
     element &= 0x00ffu;
     tag = vtkDICOMTag(group, element);
     vtkDICOMTag creatorTag(group, creatorElement);
-    dict = this->GetAttributeValue(creatorTag).GetCharData();
+    dict = this->Get(creatorTag).GetCharData();
   }
 
   return vtkDICOMDictionary::FindDictEntry(tag, dict);

@@ -122,24 +122,24 @@ int main(int argc, char *argv[])
         char outpath[128];
         sprintf(outpath, outfile, fileBasename(fname.c_str()));
         compiler->SetFileName(outpath);
-        const char *instanceUID = data->GetAttributeValue(
-          i, DC::SOPInstanceUID).GetCharData();
+        const char *instanceUID =
+          data->Get(i, DC::SOPInstanceUID).GetCharData();
         if (instanceUID == 0)
         {
-          instanceUID = data->GetAttributeValue(
-            i, DC::MediaStorageSOPInstanceUID).GetCharData();
+          instanceUID =
+            data->Get(i, DC::MediaStorageSOPInstanceUID).GetCharData();
         }
         compiler->SetSOPInstanceUID(instanceUID);
-        compiler->SetTransferSyntaxUID(data->GetAttributeValue(
-          i, DC::TransferSyntaxUID).GetCharData());
-        compiler->SetSeriesInstanceUID(data->GetAttributeValue(
-          i, DC::SeriesInstanceUID).GetCharData());
-        compiler->SetImplementationClassUID(data->GetAttributeValue(
-          i, DC::ImplementationClassUID).GetCharData());
-        compiler->SetImplementationVersionName(data->GetAttributeValue(
-          i, DC::ImplementationVersionName).GetCharData());
-        compiler->SetSourceApplicationEntityTitle(data->GetAttributeValue(
-          i, DC::SourceApplicationEntityTitle).GetCharData());
+        compiler->SetTransferSyntaxUID(
+          data->Get(i, DC::TransferSyntaxUID).GetCharData());
+        compiler->SetSeriesInstanceUID(
+          data->Get(i, DC::SeriesInstanceUID).GetCharData());
+        compiler->SetImplementationClassUID(
+          data->Get(i, DC::ImplementationClassUID).GetCharData());
+        compiler->SetImplementationVersionName(
+          data->Get(i, DC::ImplementationVersionName).GetCharData());
+        compiler->SetSourceApplicationEntityTitle(
+          data->Get(i, DC::SourceApplicationEntityTitle).GetCharData());
         compiler->SetIndex(i);
         compiler->WriteHeader();
 

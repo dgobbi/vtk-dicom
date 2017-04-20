@@ -122,7 +122,7 @@ public:
   // Find an element within the current context.  This is used
   // by FindDictVR() to disambiguate VRs that could be either US
   // or SS, or that could be either OB or OW.
-  const vtkDICOMValue& GetAttributeValue(vtkDICOMTag tag);
+  const vtkDICOMValue& Get(vtkDICOMTag tag);
 
   // Get the dictionary VR (for implicit VR elements).
   // If the tag is not found, UN (unknown) will be returned.
@@ -156,16 +156,16 @@ private:
 };
 
 //----------------------------------------------------------------------------
-const vtkDICOMValue& DecoderContext::GetAttributeValue(vtkDICOMTag tag)
+const vtkDICOMValue& DecoderContext::Get(vtkDICOMTag tag)
 {
   if (this->Item)
   {
-    return this->Item->GetAttributeValue(tag);
+    return this->Item->Get(tag);
   }
   else
   {
     int idx = (this->Index == -1 ? 0 : this->Index);
-    return this->MetaData->GetAttributeValue(idx, tag);
+    return this->MetaData->Get(idx, tag);
   }
 }
 
@@ -175,8 +175,7 @@ vtkDICOMCharacterSet DecoderContext::GetCharacterSet()
   vtkDICOMCharacterSet cs = this->CharacterSet;
   if (cs == vtkDICOMCharacterSet::Unknown)
   {
-    const vtkDICOMValue& v =
-      this->GetAttributeValue(DC::SpecificCharacterSet);
+    const vtkDICOMValue& v = this->Get(DC::SpecificCharacterSet);
     if (v.IsValid())
     {
       cs = vtkDICOMCharacterSet(v.GetCharData(), v.GetVL());
@@ -204,8 +203,7 @@ vtkDICOMVR DecoderContext::GetVRForXS()
   vtkDICOMVR vr = this->VRForXS;
   if (vr == vtkDICOMVR::XX)
   {
-    const vtkDICOMValue& v =
-      this->GetAttributeValue(DC::PixelRepresentation);
+    const vtkDICOMValue& v = this->Get(DC::PixelRepresentation);
     if (v.IsValid())
     {
       vr = (v.AsUnsignedShort() == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
@@ -273,7 +271,7 @@ vtkDICOMVR DecoderContext::FindDictVR(vtkDICOMTag tag)
         vtkDICOMTag reftag = (tag.GetGroup() == 0x5400 ?
                               DC::WaveformBitsAllocated :
                               DC::BitsAllocated);
-        const vtkDICOMValue& v = this->GetAttributeValue(reftag);
+        const vtkDICOMValue& v = this->Get(reftag);
         if (v.IsValid() && v.AsUnsignedShort() <= 8)
         {
           vr = vtkDICOMVR::OB;
@@ -692,8 +690,7 @@ void DecoderBase::HandleMissingAttributes(vtkDICOMTag tag)
     }
     for (int i = 0; i < count; i++)
     {
-      this->MetaData->SetAttributeValue(
-        this->Index, missing[i], vtkDICOMValue());
+      this->MetaData->Set(this->Index, missing[i], vtkDICOMValue());
     }
     delete [] missing;
   }
@@ -738,14 +735,14 @@ void DecoderBase::AdvanceQueryIterator(vtkDICOMTag tag)
             vtkDICOMTag ptag = this->Item->ResolvePrivateTag(
               qtag, iter->GetValue().AsString());
             matched = (ptag != vtkDICOMTag(0xffff,0xffff) &&
-                       this->Item->GetAttributeValue(ptag).IsValid());
+                       this->Item->Get(ptag).IsValid());
           }
           else
           {
             vtkDICOMTag ptag = this->MetaData->ResolvePrivateTag(
               qtag, iter->GetValue().AsString());
             matched = (ptag != vtkDICOMTag(0xffff,0xffff) &&
-                       this->MetaData->HasAttribute(ptag));
+                       this->MetaData->Has(ptag));
           }
         }
         else
@@ -753,12 +750,12 @@ void DecoderBase::AdvanceQueryIterator(vtkDICOMTag tag)
           // query has a private tag with no creator!
           if (this->Item)
           {
-            matched = this->Item->GetAttributeValue(qtag).Matches(
+            matched = this->Item->Get(qtag).Matches(
               this->Query->GetValue());
           }
           else
           {
-            matched = this->MetaData->GetAttributeValue(qtag).Matches(
+            matched = this->MetaData->Get(qtag).Matches(
               this->Query->GetValue());
           }
         }
@@ -813,7 +810,7 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
 
   // search for the creator element within the query
   vtkDICOMTag ctag = vtkDICOMTag(g, e >> 8);
-  vtkDICOMValue creator = this->Context->GetAttributeValue(ctag);
+  vtkDICOMValue creator = this->Context->Get(ctag);
   if (creator.IsValid())
   {
     // maximum possible creator element is (gggg,00FF)
@@ -1510,15 +1507,15 @@ bool Decoder<E>::ReadElements(
     // store the value
     if (this->Item)
     {
-      this->Item->SetAttributeValue(tag, v);
+      this->Item->Set(tag, v);
     }
     else if (this->Index < 0)
     {
-      this->MetaData->SetAttributeValue(tag, v);
+      this->MetaData->Set(tag, v);
     }
     else
     {
-      this->MetaData->SetAttributeValue(this->Index, tag, v);
+      this->MetaData->Set(this->Index, tag, v);
       this->HandleMissingAttributes(tag);
     }
 
@@ -1893,8 +1890,7 @@ bool vtkDICOMParser::ReadMetaHeader(
     decoder.ReadElements(cp, ep, l, vtkDICOMTag(g,0));
 
     int i = (idx == -1 ? 0 : idx);
-    this->TransferSyntax =
-      meta->GetAttributeValue(i, DC::TransferSyntaxUID).AsString();
+    this->TransferSyntax = meta->Get(i, DC::TransferSyntaxUID).AsString();
   }
   else
   {
@@ -2124,8 +2120,7 @@ bool vtkDICOMParser::ReadMetaData(
     if (!lastVR.IsValid())
     {
       lastVR = vtkDICOMVR::OW;
-      const vtkDICOMValue& ba =
-        meta->GetAttributeValue(idx, DC::BitsAllocated);
+      const vtkDICOMValue& ba = meta->Get(idx, DC::BitsAllocated);
       if (ba.IsValid() && ba.AsUnsignedInt() <= 8)
       {
         lastVR = vtkDICOMVR::OB;
@@ -2136,12 +2131,12 @@ bool vtkDICOMParser::ReadMetaData(
 
     if (idx >= 0)
     {
-      meta->SetAttributeValue(idx, lastTag, v);
+      meta->Set(idx, lastTag, v);
       decoder->HandleMissingAttributes(lastTag);
     }
     else
     {
-      meta->SetAttributeValue(lastTag, v);
+      meta->Set(lastTag, v);
     }
   }
 

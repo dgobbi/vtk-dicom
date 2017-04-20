@@ -1242,7 +1242,7 @@ void vtkDICOMCompiler::WriteFrame(const unsigned char *cp, vtkIdType size)
     if (this->FrameCounter == 0)
     {
       unsigned int numFrames =
-        this->MetaData->GetAttributeValue(DC::NumberOfFrames).AsUnsignedInt();
+        this->MetaData->Get(DC::NumberOfFrames).AsUnsignedInt();
       numFrames = (numFrames == 0 ? 1 : numFrames);
       this->FrameData = new unsigned char *[numFrames];
       this->FrameLength = new unsigned int[numFrames];
@@ -1270,11 +1270,11 @@ void vtkDICOMCompiler::WriteFrame(const unsigned char *cp, vtkIdType size)
     n = size;
   }
   else if (((this->BigEndian != 0) ^ (endiancheck.s != 1)) &&
-           this->MetaData->GetAttributeValue(DC::BitsAllocated).AsInt() > 8)
+           this->MetaData->Get(DC::BitsAllocated).AsInt() > 8)
   {
     // Swap bytes before writing
     int scalarSize =
-      (this->MetaData->GetAttributeValue(DC::BitsAllocated).AsInt() + 7)/8;
+      (this->MetaData->Get(DC::BitsAllocated).AsInt() + 7)/8;
     unsigned char *buf = new unsigned char[size];
     unsigned char *dp = buf;
     if (scalarSize == 2)
@@ -1353,12 +1353,12 @@ bool vtkDICOMCompiler::WriteMetaHeader(
 
   // use the same class as the input meta data
   std::string classUIDString =
-    meta->GetAttributeValue(DC::SOPClassUID).AsString();
+    meta->Get(DC::SOPClassUID).AsString();
   if (classUIDString == "")
   {
     // if not present (e.g. DICOMDIR) get it from the meta header
     classUIDString =
-      meta->GetAttributeValue(DC::MediaStorageSOPClassUID).AsString();
+      meta->Get(DC::MediaStorageSOPClassUID).AsString();
   }
   const char *classUID = classUIDString.c_str();
 
@@ -1373,28 +1373,28 @@ bool vtkDICOMCompiler::WriteMetaHeader(
   }
 
   vtkDICOMItem item;
-  item.SetAttributeValue(
+  item.Set(
     DC::FileMetaInformationGroupLength,
     vtkDICOMValue(vtkDICOMVR::UL, l));
-  item.SetAttributeValue(
+  item.Set(
     DC::FileMetaInformationVersion,
     vtkDICOMValue(vtkDICOMVR::OB, metaver, 2));
-  item.SetAttributeValue(
+  item.Set(
     DC::MediaStorageSOPClassUID,
     vtkDICOMValue(vtkDICOMVR::UI, classUID));
-  item.SetAttributeValue(
+  item.Set(
     DC::MediaStorageSOPInstanceUID,
     vtkDICOMValue(vtkDICOMVR::UI, instanceUID));
-  item.SetAttributeValue(
+  item.Set(
     DC::TransferSyntaxUID,
     vtkDICOMValue(vtkDICOMVR::UI, this->TransferSyntaxUID));
-  item.SetAttributeValue(
+  item.Set(
     DC::ImplementationClassUID,
     vtkDICOMValue(vtkDICOMVR::UI, implementationUID));
 
   if (this->ImplementationVersionName)
   {
-    item.SetAttributeValue(
+    item.Set(
       DC::ImplementationVersionName,
       vtkDICOMValue(vtkDICOMVR::SH,
                     this->ImplementationVersionName));
@@ -1402,7 +1402,7 @@ bool vtkDICOMCompiler::WriteMetaHeader(
 
   if (this->SourceApplicationEntityTitle)
   {
-    item.SetAttributeValue(
+    item.Set(
       DC::SourceApplicationEntityTitle,
       vtkDICOMValue(vtkDICOMVR::AE,
                     this->SourceApplicationEntityTitle));
@@ -1410,12 +1410,11 @@ bool vtkDICOMCompiler::WriteMetaHeader(
 
   // keep private information stored in meta header
   const char *creatorUID =
-    meta->GetAttributeValue(DC::PrivateInformationCreatorUID).GetCharData();
+    meta->Get(DC::PrivateInformationCreatorUID).GetCharData();
   if (creatorUID)
   {
-    item.SetAttributeValue(DC::PrivateInformationCreatorUID, creatorUID);
-    item.SetAttributeValue(DC::PrivateInformation,
-      meta->GetAttributeValue(DC::PrivateInformation));
+    item.Set(DC::PrivateInformationCreatorUID, creatorUID);
+    item.Set(DC::PrivateInformation, meta->Get(DC::PrivateInformation));
   }
 
   vtkDICOMDataElementIterator iter = item.Begin();
@@ -1477,8 +1476,7 @@ bool vtkDICOMCompiler::WriteMetaData(
   {
     seriesUID = this->SeriesUIDs->GetValue(this->SeriesUIDs->GetMaxId());
   }
-  if (studyUID == 0 &&
-      meta->GetAttributeValue(DC::StudyInstanceUID).AsString() == "")
+  if (studyUID == 0 && meta->Get(DC::StudyInstanceUID).AsString() == "")
   {
     // study UID is only generated once per session
     if (vtkDICOMCompiler::StudyUID[0] == '\0')
@@ -1523,8 +1521,7 @@ bool vtkDICOMCompiler::WriteMetaData(
       (r = encoder->CheckBuffer(cp, ep, 12)) != false)
   {
     vtkDICOMVR vr = vtkDICOMVR::OW;
-    int bitsAllocated = this->MetaData->GetAttributeValue(
-      DC::BitsAllocated).AsInt();
+    int bitsAllocated = this->MetaData->Get(DC::BitsAllocated).AsInt();
     if ((bitsAllocated > 0 && bitsAllocated <= 8) || this->Compressed)
     {
       vr = vtkDICOMVR::OB;
@@ -1532,8 +1529,7 @@ bool vtkDICOMCompiler::WriteMetaData(
 
     if (this->KeepOriginalPixelDataVR)
     {
-      vtkDICOMVR vrOriginal = this->MetaData->GetAttributeValue(
-        idx, DC::PixelData).GetVR();
+      vtkDICOMVR vrOriginal = this->MetaData->Get(idx, DC::PixelData).GetVR();
       if (vrOriginal.IsValid())
       {
         vr = vrOriginal;
@@ -1559,18 +1555,15 @@ unsigned int vtkDICOMCompiler::ComputePixelDataSize()
   {
     // compute the size
     vtkDICOMMetaData *meta = this->MetaData;
-    int bitsAllocated = meta->GetAttributeValue(
-      this->Index, DC::BitsAllocated).AsInt();
+    int bitsAllocated = meta->Get(this->Index, DC::BitsAllocated).AsInt();
     if (bitsAllocated > 0)
     {
-      vl = meta->GetAttributeValue(
-        this->Index, DC::Columns).AsUnsignedInt();
-      vl *= meta->GetAttributeValue(
-        this->Index, DC::Rows).AsUnsignedInt();
-      unsigned int m = meta->GetAttributeValue(
-        this->Index, DC::SamplesPerPixel).AsUnsignedInt();
-      unsigned int n = meta->GetAttributeValue(
-        this->Index, DC::NumberOfFrames).AsUnsignedInt();
+      vl = meta->Get(this->Index, DC::Columns).AsUnsignedInt();
+      vl *= meta->Get(this->Index, DC::Rows).AsUnsignedInt();
+      unsigned int m =
+        meta->Get(this->Index, DC::SamplesPerPixel).AsUnsignedInt();
+      unsigned int n =
+        meta->Get(this->Index, DC::NumberOfFrames).AsUnsignedInt();
       vl *= ((m > 1) ? m : 1);
       vl *= ((n > 1) ? n : 1);
       if (bitsAllocated % 8 == 0)

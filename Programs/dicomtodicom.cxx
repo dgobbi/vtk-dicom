@@ -414,25 +414,24 @@ void dicomtodicom_convert_one(
   vtkSmartPointer<vtkDICOMMetaData> meta =
     vtkSmartPointer<vtkDICOMMetaData>::New();
   meta->DeepCopy(reader->GetMetaData());
-  meta->SetAttributeValue(DC::SeriesNumber,
-    meta->GetAttributeValue(DC::SeriesNumber).AsUnsignedInt() +
+  meta->Set(DC::SeriesNumber, meta->Get(DC::SeriesNumber).AsUnsignedInt() +
     1000*(1 + options->mpr*100));
   std::string seriesDescription =
-    (meta->GetAttributeValue(DC::SeriesDescription).AsString() +
+    (meta->Get(DC::SeriesDescription).AsString() +
      dicomtodicom_description[options->mpr]);
   if (seriesDescription.size() < 64)
   {
-    meta->SetAttributeValue(DC::SeriesDescription, seriesDescription);
+    meta->Set(DC::SeriesDescription, seriesDescription);
   }
 
   // set the metadata supplied on the command line
   if (options->series_description)
   {
-    meta->SetAttributeValue(DC::SeriesDescription, options->series_description);
+    meta->Set(DC::SeriesDescription, options->series_description);
   }
   if (options->series_number)
   {
-    meta->SetAttributeValue(DC::SeriesNumber, options->series_number);
+    meta->Set(DC::SeriesNumber, options->series_number);
   }
 
   // get the matrix from the DICOM series
@@ -476,7 +475,7 @@ void dicomtodicom_convert_one(
 #if VTK_MAJOR_VERSION >= 6 || VTK_MINOR_VERSION >= 10
       // generate cube voxels
       double spacing[3] = { 1.0, 1.0, 1.0 };
-      const vtkDICOMValue& v = meta->GetAttributeValue(DC::PixelSpacing);
+      const vtkDICOMValue& v = meta->Get(DC::PixelSpacing);
       if (v.GetNumberOfValues() == 2)
       {
         v.GetValues(spacing, 2);
@@ -596,8 +595,7 @@ void dicomtodicom_convert_one(
   vtkDICOMGenerator *generator = 0;
 
   // get the generator from the supplied DICOM data
-  std::string SOPClass =
-    meta->GetAttributeValue(DC::SOPClassUID).AsString();
+  std::string SOPClass = meta->Get(DC::SOPClassUID).AsString();
   if (SOPClass == "1.2.840.10008.5.1.4.1.1.2" ||
       SOPClass == "1.2.840.10008.5.1.4.1.1.2.1" ||
       SOPClass == "1.2.840.10008.5.1.4.1.1.2.2")

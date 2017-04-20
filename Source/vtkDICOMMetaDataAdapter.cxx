@@ -74,7 +74,7 @@ void vtkDICOMMetaDataAdapter::ConstructionHelper(
   if (this->Shared && this->Shared->IsValid() &&
       this->PerFrame && this->PerFrame->IsValid())
   {
-    this->NumberOfInstances = meta->GetAttributeValue(
+    this->NumberOfInstances = meta->Get(
       this->MetaInstance, DC::NumberOfFrames).AsInt();
     // an invalid value to return when asked for NumberOfFrames
     this->NullValue = new vtkDICOMValue();
@@ -143,7 +143,7 @@ vtkDICOMMetaDataAdapter& vtkDICOMMetaDataAdapter::operator=(
 }
 
 //----------------------------------------------------------------------------
-const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
+const vtkDICOMValue &vtkDICOMMetaDataAdapter::Get(
   int idx, vtkDICOMTag tag) const
 {
   vtkDICOMMetaData *meta = this->Meta;
@@ -174,7 +174,7 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
       {
         // search for the item that matches the frame
         const vtkDICOMItem *items = seq->GetSequenceData();
-        const vtkDICOMValue &v = items[f].GetAttributeValue(tag);
+        const vtkDICOMValue &v = items[f].Get(tag);
         if (v.IsValid())
         {
           return v;
@@ -190,7 +190,7 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
             const vtkDICOMItem *item = u.GetSequenceData();
             if (item)
             {
-              const vtkDICOMValue &w = item->GetAttributeValue(tag);
+              const vtkDICOMValue &w = item->Get(tag);
               if (w.IsValid())
               {
                 if ((iter->GetTag().GetGroup() & 1) == 0)
@@ -213,7 +213,7 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
     }
 
     // if it wasn't in a PerFrame or Shared functional group
-    const vtkDICOMValue& v = meta->GetAttributeValue(this->MetaInstance, tag);
+    const vtkDICOMValue& v = meta->Get(this->MetaInstance, tag);
     if (privateValue && !v.IsValid())
     {
       // attributes found in private parts of the PerFrame or Shared are
@@ -224,21 +224,19 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
   }
 
   // if no per-frame data, use file instance
-  return meta->GetAttributeValue(idx + this->MetaInstance, tag);
+  return meta->Get(idx + this->MetaInstance, tag);
 }
 
 //----------------------------------------------------------------------------
-const vtkDICOMValue &vtkDICOMMetaDataAdapter::GetAttributeValue(
-  vtkDICOMTag tag) const
+const vtkDICOMValue &vtkDICOMMetaDataAdapter::Get(vtkDICOMTag tag) const
 {
-  return this->GetAttributeValue(0, tag);
+  return this->Get(0, tag);
 }
 
 //----------------------------------------------------------------------------
-bool vtkDICOMMetaDataAdapter::HasAttribute(
-  vtkDICOMTag tag) const
+bool vtkDICOMMetaDataAdapter::Has(vtkDICOMTag tag) const
 {
-  const vtkDICOMValue& v = this->GetAttributeValue(0, tag);
+  const vtkDICOMValue& v = this->Get(0, tag);
   return v.IsValid();
 }
 
@@ -271,7 +269,7 @@ vtkDICOMTag vtkDICOMMetaDataAdapter::ResolvePrivateTag(
         vtkDICOMTag tag = items[f].ResolvePrivateTag(ptag, creator);
         if (tag != vtkDICOMTag(0xFFFF, 0xFFFF))
         {
-          const vtkDICOMValue &v = items[f].GetAttributeValue(tag);
+          const vtkDICOMValue &v = items[f].Get(tag);
           if (v.IsValid())
           {
             return tag;
@@ -291,7 +289,7 @@ vtkDICOMTag vtkDICOMMetaDataAdapter::ResolvePrivateTag(
               tag = item->ResolvePrivateTag(ptag, creator);
               if (tag != vtkDICOMTag(0xFFFF, 0xFFFF))
               {
-                const vtkDICOMValue &v = item->GetAttributeValue(tag);
+                const vtkDICOMValue &v = item->Get(tag);
                 if (v.IsValid())
                 {
                   if ((iter->GetTag().GetGroup() & 1) == 0)

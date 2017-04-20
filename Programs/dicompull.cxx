@@ -248,15 +248,15 @@ std::string dicompull_makedirname(
         {
           if (!v.IsValid())
           {
-            v = finder->GetStudyRecord(study).GetAttributeValue(tag);
+            v = finder->GetStudyRecord(study).Get(tag);
           }
           if (!v.IsValid())
           {
-            v = finder->GetPatientRecordForStudy(study).GetAttributeValue(tag);
+            v = finder->GetPatientRecordForStudy(study).Get(tag);
           }
           if (!v.IsValid())
           {
-            v = finder->GetSeriesRecord(series).GetAttributeValue(tag);
+            v = finder->GetSeriesRecord(series).Get(tag);
           }
         }
         if (v.IsValid())
@@ -307,13 +307,11 @@ int MAINMACRO(int argc, char *argv[])
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
 
   // always query SpecificCharacterSet
-  query.SetAttributeValue(DC::SpecificCharacterSet, vtkDICOMValue(VR::CS));
+  query.Set(DC::SpecificCharacterSet, vtkDICOMValue(VR::CS));
 
   // always query the functional sequences for advanced files
-  query.SetAttributeValue(
-    DC::SharedFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
-  query.SetAttributeValue(
-    DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
+  query.Set(DC::SharedFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
+  query.Set(DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
   if (argc < 2)
   {

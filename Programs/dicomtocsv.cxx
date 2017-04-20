@@ -187,7 +187,7 @@ void dicomtocsv_image_default(vtkDICOMItem *query, QueryTagList *ql)
        ++tagPtr)
   {
     VR vr = query->FindDictVR(*tagPtr);
-    query->SetAttributeValue(*tagPtr, vtkDICOMValue(vr));
+    query->Set(*tagPtr, vtkDICOMValue(vr));
     ql->push_back(vtkDICOMTagPath(*tagPtr));
   }
 }
@@ -226,7 +226,7 @@ void dicomtocsv_series_default(vtkDICOMItem *query, QueryTagList *ql)
        ++tagPtr)
   {
     VR vr = query->FindDictVR(*tagPtr);
-    query->SetAttributeValue(*tagPtr, vtkDICOMValue(vr));
+    query->Set(*tagPtr, vtkDICOMValue(vr));
     ql->push_back(vtkDICOMTagPath(*tagPtr));
   }
 }
@@ -258,7 +258,7 @@ void dicomtocsv_study_default(vtkDICOMItem *query, QueryTagList *ql)
        ++tagPtr)
   {
     VR vr = query->FindDictVR(*tagPtr);
-    query->SetAttributeValue(*tagPtr, vtkDICOMValue(vr));
+    query->Set(*tagPtr, vtkDICOMValue(vr));
     ql->push_back(vtkDICOMTagPath(*tagPtr));
   }
 }
@@ -288,7 +288,7 @@ void dicomtocsv_writeheader(
       {
         break;
       }
-      pitem = pitem->GetAttributeValue(tag).GetSequenceData();
+      pitem = pitem->Get(tag).GetSequenceData();
       tagPath = tagPath.GetTail();
       fprintf(fp, "%s", "\\");
     }
@@ -458,7 +458,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
               if ((tag.GetGroup() & 0x0001) == 1)
               {
                 vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
-                creator = qitem->GetAttributeValue(ctag).AsString();
+                creator = qitem->Get(ctag).AsString();
                 if (mitem)
                 {
                   tag = mitem->ResolvePrivateTag(tag, creator);
@@ -470,17 +470,17 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
               }
               if (mitem)
               {
-                vp = &mitem->GetAttributeValue(tag);
+                vp = &mitem->Get(tag);
               }
               else if (tag != DC::NumberOfFrames)
               {
                 // vtkDICOMMetaDataAdapter hides NumberOfFrames, so it
                 // will never be found if we check the adapter
-                vp = &adapter->GetAttributeValue(tag);
+                vp = &adapter->Get(tag);
               }
               else
               {
-                vp = &meta->GetAttributeValue(ii, tag);
+                vp = &meta->Get(ii, tag);
               }
               if (vp && !vp->IsValid())
               {
@@ -492,7 +492,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
                 break;
               }
               // go one level deeper into the query
-              qitem = qitem->GetAttributeValue(
+              qitem = qitem->Get(
                 tagPath.GetHead()).GetSequenceData();
               // go one level deeper along the tag path
               tagPath = tagPath.GetTail();
@@ -610,13 +610,11 @@ int MAINMACRO(int argc, char *argv[])
   const char *ofile = 0;
 
   // always query SpecificCharacterSet
-  query.SetAttributeValue(DC::SpecificCharacterSet, vtkDICOMValue(VR::CS));
+  query.Set(DC::SpecificCharacterSet, vtkDICOMValue(VR::CS));
 
   // always query the functional sequences for advanced files
-  query.SetAttributeValue(
-    DC::SharedFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
-  query.SetAttributeValue(
-    DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
+  query.Set(DC::SharedFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
+  query.Set(DC::PerFrameFunctionalGroupsSequence, vtkDICOMValue(VR::SQ));
 
   if (argc < 2)
   {

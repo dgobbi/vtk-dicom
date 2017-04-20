@@ -296,11 +296,10 @@ void vtkDICOMFileSorter::SortFiles(vtkStringArray *input)
     // Insert the file into the sorted list
     FileInfo fileInfo;
     fileInfo.FileName = fileName;
-    fileInfo.StudyUID = meta->GetAttributeValue(DC::StudyInstanceUID);
-    fileInfo.SeriesUID = meta->GetAttributeValue(DC::SeriesInstanceUID);
-    fileInfo.InstanceUID = meta->GetAttributeValue(DC::SOPInstanceUID);
-    fileInfo.InstanceNumber =
-      meta->GetAttributeValue(DC::InstanceNumber).AsUnsignedInt();
+    fileInfo.StudyUID = meta->Get(DC::StudyInstanceUID);
+    fileInfo.SeriesUID = meta->Get(DC::SeriesInstanceUID);
+    fileInfo.InstanceUID = meta->Get(DC::SOPInstanceUID);
+    fileInfo.InstanceNumber = meta->Get(DC::InstanceNumber).AsUnsignedInt();
 
     const char *studyUID = fileInfo.StudyUID.GetCharData();
     const char *seriesUID = fileInfo.SeriesUID.GetCharData();

@@ -92,11 +92,11 @@ int main(int argc, char *argv[])
     std::string utf = ClunieText[i][1];
     std::string raw = ClunieText[i][2];
     vtkDICOMItem item;
-    item.SetAttributeValue(DC::SpecificCharacterSet, name);
-    item.SetAttributeValue(DC::PatientName, raw);
-    std::string s = item.GetAttributeValue(DC::PatientName).AsUTF8String();
+    item.Set(DC::SpecificCharacterSet, name);
+    item.Set(DC::PatientName, raw);
+    std::string s = item.Get(DC::PatientName).AsUTF8String();
     TestAssert(s == utf);
-    std::string t = item.GetAttributeValue(DC::PatientName).GetUTF8String(0);
+    std::string t = item.Get(DC::PatientName).GetUTF8String(0);
     TestAssert(t == utf);
   }
   }
@@ -109,11 +109,11 @@ int main(int argc, char *argv[])
     std::string raw = ClunieText[i][2];
     vtkSmartPointer<vtkDICOMMetaData> meta =
       vtkSmartPointer<vtkDICOMMetaData>::New();
-    meta->SetAttributeValue(DC::SpecificCharacterSet, name);
-    meta->SetAttributeValue(DC::PatientName, raw);
-    std::string s = meta->GetAttributeValue(DC::PatientName).AsUTF8String();
+    meta->Set(DC::SpecificCharacterSet, name);
+    meta->Set(DC::PatientName, raw);
+    std::string s = meta->Get(DC::PatientName).AsUTF8String();
     TestAssert(s == utf);
-    std::string t = meta->GetAttributeValue(DC::PatientName).GetUTF8String(0);
+    std::string t = meta->Get(DC::PatientName).GetUTF8String(0);
     TestAssert(t == utf);
   }
   }
@@ -127,10 +127,10 @@ int main(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMMetaData> meta =
       vtkSmartPointer<vtkDICOMMetaData>::New();
     meta->SetNumberOfInstances(2);
-    meta->SetAttributeValue(DC::SpecificCharacterSet, name);
-    meta->SetAttributeValue(0, DC::PatientName, "Doe^John");
-    meta->SetAttributeValue(1, DC::PatientName, raw);
-    std::string s = meta->GetAttributeValue(1, DC::PatientName).AsUTF8String();
+    meta->Set(DC::SpecificCharacterSet, name);
+    meta->Set(0, DC::PatientName, "Doe^John");
+    meta->Set(1, DC::PatientName, raw);
+    std::string s = meta->Get(1, DC::PatientName).AsUTF8String();
     TestAssert(s == utf);
   }
   }
@@ -141,9 +141,9 @@ int main(int argc, char *argv[])
   // second byte has the same value as backslash
   std::string raw = "Wang^XiaoDong\\\xcd\xf5^\xd0\\\xb6\xab\\";
   vtkDICOMItem item;
-  item.SetAttributeValue(DC::SpecificCharacterSet, name);
-  item.SetAttributeValue(DC::OperatorsName, raw);
-  vtkDICOMValue v = item.GetAttributeValue(DC::OperatorsName);
+  item.Set(DC::SpecificCharacterSet, name);
+  item.Set(DC::OperatorsName, raw);
+  vtkDICOMValue v = item.Get(DC::OperatorsName);
   TestAssert(v.GetNumberOfValues() == 3);
   TestAssert(v.AsString() == raw);
   TestAssert(v.GetString(0) == "Wang^XiaoDong");
@@ -159,9 +159,9 @@ int main(int argc, char *argv[])
                     "\x1b$B\\3ED\x1b(J^\x1b$B\\\\O\\\x1b(J\\"
                     "\x1b$B$d$^$@\x1b(J^\x1b$B$\x3f$m$&\x1b(J";
   vtkDICOMItem item;
-  item.SetAttributeValue(DC::SpecificCharacterSet, name);
-  item.SetAttributeValue(DC::OperatorsName, raw);
-  vtkDICOMValue v = item.GetAttributeValue(DC::OperatorsName);
+  item.Set(DC::SpecificCharacterSet, name);
+  item.Set(DC::OperatorsName, raw);
+  vtkDICOMValue v = item.Get(DC::OperatorsName);
   TestAssert(v.GetNumberOfValues() == 3);
   TestAssert(v.AsString() == raw);
   TestAssert(v.GetString(0) == "\xd4\xcf\xc0\xde^\xc0\xdb\xb3");

@@ -73,14 +73,18 @@ public:
    *  and PerFrameFunctionGroupSequence in addition to searching the basic
    *  data set attributes.
    */
-  bool HasAttribute(vtkDICOMTag tag) const;
+  bool Has(vtkDICOMTag tag) const;
+  bool HasAttribute(vtkDICOMTag tag) const {
+    return this->Has(tag); }
 
   //! Get an attribute value.
   /*!
    *  For an enhanced multi-frame data set, this will first try to
    *  retrieve the attribute from the SharedFunctionalGroupSequence.
    */
-  const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag) const;
+  const vtkDICOMValue &Get(vtkDICOMTag tag) const;
+  const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag) const {
+    return this->Get(tag); }
 
   //! Get an attribute value for the specified file index.
   /*!
@@ -88,7 +92,9 @@ public:
    *  attributes, then the Shared attributes, and finally the basic
    *  data set attributes.
    */
-  const vtkDICOMValue &GetAttributeValue(int idx, vtkDICOMTag tag) const;
+  const vtkDICOMValue &Get(int idx, vtkDICOMTag tag) const;
+  const vtkDICOMValue &GetAttributeValue(int idx, vtkDICOMTag tag) const {
+    return this->Get(idx, tag); }
 
   //! Resolve a private tag.
   /*!

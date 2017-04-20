@@ -108,9 +108,15 @@ public:
    *  If you specify a string, it must either be an ASCII string, or it must
    *  be encoded in the SpecificCharacterSet for this item.
    */
-  void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
-  void SetAttributeValue(vtkDICOMTag tag, double v);
-  void SetAttributeValue(vtkDICOMTag tag, const std::string& v);
+  void Set(vtkDICOMTag tag, const vtkDICOMValue& v);
+  void Set(vtkDICOMTag tag, double v);
+  void Set(vtkDICOMTag tag, const std::string& v);
+  void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v) {
+    this->Set(tag, v); }
+  void SetAttributeValue(vtkDICOMTag tag, double v) {
+    this->Set(tag, v); }
+  void SetAttributeValue(vtkDICOMTag tag, const std::string& v) {
+    this->Set(tag, v); }
   //@}
 
   //@{
@@ -121,15 +127,25 @@ public:
    *  will be created.  If an item index in the path points to an item that
    *  does not exist, then that item will be created.
    */
-  void SetAttributeValue(const vtkDICOMTagPath& tag, const vtkDICOMValue& v);
-  void SetAttributeValue(const vtkDICOMTagPath& tag, double v);
-  void SetAttributeValue(const vtkDICOMTagPath& tag, const std::string& v);
+  void Set(const vtkDICOMTagPath& tag, const vtkDICOMValue& v);
+  void Set(const vtkDICOMTagPath& tag, double v);
+  void Set(const vtkDICOMTagPath& tag, const std::string& v);
+  void SetAttributeValue(const vtkDICOMTagPath& tag, const vtkDICOMValue& v) {
+    this->Set(tag, v); }
+  void SetAttributeValue(const vtkDICOMTagPath& tag, double v) {
+    this->Set(tag, v); }
+  void SetAttributeValue(const vtkDICOMTagPath& tag, const std::string& v) {
+    this->Set(tag, v); }
   //@}
 
   //@{
   //! Get a data element from this item.
-  const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag) const;
-  const vtkDICOMValue &GetAttributeValue(const vtkDICOMTagPath &tag) const;
+  const vtkDICOMValue &Get(vtkDICOMTag tag) const;
+  const vtkDICOMValue &Get(const vtkDICOMTagPath &tag) const;
+  const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag) const {
+    return this->Get(tag); }
+  const vtkDICOMValue &GetAttributeValue(const vtkDICOMTagPath &tag) const {
+    return this->Get(tag); }
   //@}
 
   //@{

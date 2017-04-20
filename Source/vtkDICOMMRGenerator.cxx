@@ -44,7 +44,7 @@ void vtkDICOMMRGenerator::PrintSelf(ostream& os, vtkIndent indent)
 bool vtkDICOMMRGenerator::GenerateMRSeriesModule(vtkDICOMMetaData *source)
 {
   vtkDICOMMetaData *meta = this->MetaData;
-  meta->SetAttributeValue(DC::Modality, "MR");
+  meta->Set(DC::Modality, "MR");
 
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
@@ -66,14 +66,14 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
   const char *it = 0;
   if (source)
   {
-    it = source->GetAttributeValue(DC::ImageType).GetCharData();
+    it = source->Get(DC::ImageType).GetCharData();
   }
   if (it == 0 || it[0] == '\0')
   {
     it = "DERIVED\\SECONDARY\\OTHER";
   }
   vtkDICOMMetaData *meta = this->MetaData;
-  meta->SetAttributeValue(DC::ImageType, it);
+  meta->Set(DC::ImageType, it);
 
   // These specialized from ImagePixelModule:
   // SamplesPerPixel must be 1
@@ -85,8 +85,8 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
   const char *sv = 0;
   if (source)
   {
-    ss = source->GetAttributeValue(DC::ScanningSequence).GetCharData();
-    sv = source->GetAttributeValue(DC::SequenceVariant).GetCharData();
+    ss = source->Get(DC::ScanningSequence).GetCharData();
+    sv = source->Get(DC::SequenceVariant).GetCharData();
   }
   if (ss == 0 || ss[0] == '\0')
   { // default to "research mode"
@@ -96,28 +96,28 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
   {
     sv = "NONE";
   }
-  meta->SetAttributeValue(DC::ScanningSequence, ss);
-  meta->SetAttributeValue(DC::SequenceVariant, sv);
+  meta->Set(DC::ScanningSequence, ss);
+  meta->Set(DC::SequenceVariant, sv);
 
   // SpacingBetweenSlices is optional, but everyone uses it
-  meta->SetAttributeValue(DC::SpacingBetweenSlices, this->Spacing[2]);
+  meta->Set(DC::SpacingBetweenSlices, this->Spacing[2]);
 
   if (source)
   {
     // set this to the time dimension
-    if (source->HasAttribute(DC::CardiacNumberOfImages))
+    if (source->Has(DC::CardiacNumberOfImages))
     {
-      meta->SetAttributeValue(DC::CardiacNumberOfImages, this->Dimensions[3]);
+      meta->Set(DC::CardiacNumberOfImages, this->Dimensions[3]);
     }
     // keep this if data was not reformatted
     if (this->SourceInstanceArray != 0 && source == this->SourceMetaData)
     {
       vtkDICOMMetaDataAdapter sourceAdapter(source);
-      const char *ped = sourceAdapter->GetAttributeValue(
-        DC::InPlanePhaseEncodingDirection).GetCharData();
+      const char *ped =
+        sourceAdapter->Get(DC::InPlanePhaseEncodingDirection).GetCharData();
       if (ped != 0 && ped[0] != '\0')
       {
-        meta->SetAttributeValue(DC::InPlanePhaseEncodingDirection, ped);
+        meta->Set(DC::InPlanePhaseEncodingDirection, ped);
       }
     }
   }
@@ -131,11 +131,11 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
     for (int i = 0; i < n; i++)
     {
       int t = (i % (n / nslices)) / (n / (nslices*this->Dimensions[3]));
-      meta->SetAttributeValue(i, DC::TemporalPositionIdentifier, t + 1);
+      meta->Set(i, DC::TemporalPositionIdentifier, t + 1);
     }
-    meta->SetAttributeValue(
+    meta->Set(
       DC::NumberOfTemporalPositions, this->Dimensions[3]);
-    meta->SetAttributeValue(
+    meta->Set(
       DC::TemporalResolution, this->Spacing[3]);
   }
 

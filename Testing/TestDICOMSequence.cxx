@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
   {
     // add the first data element to the item
     vtkDICOMItem item;
-    item.SetAttributeValue(DC::SeriesInstanceUID,
+    item.Set(DC::SeriesInstanceUID,
       vtkDICOMValue(vtkDICOMVR::UI,
         "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
 
@@ -73,15 +73,15 @@ int main(int argc, char *argv[])
       // create a unique InstanceUID
       sprintf(instanceUID, instanceUIDFormat, 255+j);
       vtkDICOMItem item2;
-      item2.SetAttributeValue(DC::ReferencedSOPClassUID,
+      item2.Set(DC::ReferencedSOPClassUID,
         vtkDICOMValue(vtkDICOMVR::UI, classUID));
-      item2.SetAttributeValue(DC::ReferencedSOPInstanceUID,
+      item2.Set(DC::ReferencedSOPInstanceUID,
         vtkDICOMValue(vtkDICOMVR::UI, instanceUID));
       seq2.AddItem(item2);
     }
 
     // create the ReferencedInstanceSequence from the items
-    item.SetAttributeValue(DC::ReferencedInstanceSequence, seq2);
+    item.Set(DC::ReferencedInstanceSequence, seq2);
 
     // add this sequence-containing item to the original sequence
     seq.SetItem(i, item);
@@ -130,9 +130,9 @@ int main(int argc, char *argv[])
         const vtkDICOMItem &item = v2.GetItem(j);
         TestAssert(item.GetNumberOfDataElements() == 2);
         vtkDICOMValue v3;
-        v3 = item.GetAttributeValue(DC::ReferencedSOPClassUID);
+        v3 = item.Get(DC::ReferencedSOPClassUID);
         TestAssert(StringsEqual(v3.GetCharData(), "1.2.840.10008.5.1.4.1.1.4"));
-        v3 = item.GetAttributeValue(DC::ReferencedSOPInstanceUID);
+        v3 = item.Get(DC::ReferencedSOPInstanceUID);
         sprintf(instanceUID, instanceUIDFormat, 255+j);
         TestAssert(StringsEqual(v3.GetCharData(), instanceUID));
       }
@@ -148,12 +148,12 @@ int main(int argc, char *argv[])
   TestAssert(found2);
 
   // test direct access with GetAttributeValue
-  vtkDICOMValue v2 = seq.GetAttributeValue(0, DC::SeriesInstanceUID);
+  vtkDICOMValue v2 = seq.Get(0, DC::SeriesInstanceUID);
   TestAssert(StringsEqual(v2.GetCharData(),
                     "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
 
   // test nested access with tag path
-  v2 = seq.GetAttributeValue(
+  v2 = seq.Get(
     0, vtkDICOMTagPath(DC::ReferencedInstanceSequence, 0,
                        DC::ReferencedSOPClassUID));
   TestAssert(StringsEqual(v2.GetCharData(), "1.2.840.10008.5.1.4.1.1.4"));
@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
   for (int i = 0; i < 1; i++)
   {
     vtkDICOMItem item;
-    item.SetAttributeValue(DC::SeriesInstanceUID,
+    item.Set(DC::SeriesInstanceUID,
       vtkDICOMValue(vtkDICOMVR::UI,
         "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
     seq3.AddItem(item);

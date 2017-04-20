@@ -377,8 +377,8 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
     char sd[65];
     strncpy(sd, this->SeriesDescription, 64);
     sd[64] = '\0';
-    meta->SetAttributeValue(DC::SeriesDescription, sd);
-    meta->RemoveAttribute(DC::SeriesDescriptionCodeSequence);
+    meta->Set(DC::SeriesDescription, sd);
+    meta->Remove(DC::SeriesDescriptionCodeSequence);
   }
 
   // set the image type from the member variable
@@ -431,12 +431,12 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
       return 0;
     }
 
-    meta->SetAttributeValue(DC::ImageType, sd);
+    meta->Set(DC::ImageType, sd);
   }
 
   // add an empty PixelData to be filled in by the compiler
   unsigned short empty = 0;
-  meta->SetAttributeValue(
+  meta->Set(
     DC::PixelData, vtkDICOMValue(vtkDICOMVR::OW, &empty, empty));
 
   return 1;
@@ -518,10 +518,8 @@ int vtkDICOMWriter::RequestData(
     data->GetScalarPointerForExtent(extent));
   bool flipImage = (this->MemoryRowOrder == vtkDICOMWriter::BottomUp);
 
-  int planarConfiguration =
-    meta->GetAttributeValue(DC::PlanarConfiguration).AsInt();
-  int samplesPerPixel =
-    meta->GetAttributeValue(DC::SamplesPerPixel).AsInt();
+  int planarConfiguration = meta->Get(DC::PlanarConfiguration).AsInt();
+  int samplesPerPixel = meta->Get(DC::SamplesPerPixel).AsInt();
   samplesPerPixel = (samplesPerPixel > 0 ? samplesPerPixel : 1);
 
   int numFileComponents = (planarConfiguration ? 1 : samplesPerPixel);
@@ -560,9 +558,9 @@ int vtkDICOMWriter::RequestData(
     compiler->SetFileName(this->InternalFileName);
     compiler->SetIndex(fileIdx);
     compiler->SetSOPInstanceUID(
-      meta->GetAttributeValue(fileIdx, DC::SOPInstanceUID).GetCharData());
+      meta->Get(fileIdx, DC::SOPInstanceUID).GetCharData());
     compiler->SetSeriesInstanceUID(
-      meta->GetAttributeValue(fileIdx, DC::SeriesInstanceUID).GetCharData());
+      meta->Get(fileIdx, DC::SeriesInstanceUID).GetCharData());
     compiler->WriteHeader();
 
     // iterate through all frames in the file

@@ -535,7 +535,7 @@ std::string dicomtonifti_make_filename(
         }
         if (meta)
         {
-          v = meta->GetAttributeValue(tag);
+          v = meta->Get(tag);
         }
         if (v.IsValid())
         {
@@ -781,7 +781,7 @@ void dicomtonifti_convert_one(
   vtkDICOMMetaData *meta = reader->GetMetaData();
 
   // the descrip is the date followed by the series description and ID
-  std::string date = meta->GetAttributeValue(DC::SeriesDate).AsString();
+  std::string date = meta->Get(DC::SeriesDate).AsString();
   if (date.length() >= 8)
   {
     const char *months[13] = { "/   /", "/Jan/", "/Feb/", "/Mar/", "/Apr/",
@@ -791,15 +791,15 @@ void dicomtonifti_convert_one(
     date = date.substr(6, 2) + months[month] + date.substr(0, 4);
   }
   std::string descrip = date + " " +
-    meta->GetAttributeValue(DC::SeriesDescription).AsString() + " " +
-    meta->GetAttributeValue(DC::StudyID).AsString();
+    meta->Get(DC::SeriesDescription).AsString() + " " +
+    meta->Get(DC::StudyID).AsString();
   descrip = descrip.substr(0, 79);
 
   // assume the units are millimetres/milliseconds
   hdr->SetXYZTUnits(0x12);
 
   // get the phase encoding direction
-  std::string phase = meta->GetAttributeValue(
+  std::string phase = meta->Get(
     firstFile, firstFrame, vtkDICOMTag(0x0018,0x1312)).AsString();
   if (phase == "COLUMN")
   {
@@ -819,8 +819,7 @@ void dicomtonifti_convert_one(
   }
 
   // get the scale information, if same for all slices
-  if (meta->GetAttributeValue(
-       firstFile, firstFrame, DC::RescaleSlope).IsValid())
+  if (meta->Get(firstFile, firstFrame, DC::RescaleSlope).IsValid())
   {
     hdr->SetSclSlope(reader->GetRescaleSlope());
     hdr->SetSclInter(reader->GetRescaleIntercept());
@@ -828,21 +827,18 @@ void dicomtonifti_convert_one(
 
   // compute a cal_min, cal_max
   bool useWindowLevel = false;
-  if (meta->GetAttributeValue(
-       firstFile, firstFrame, DC::WindowWidth).IsValid())
+  if (meta->Get(firstFile, firstFrame, DC::WindowWidth).IsValid())
   {
     useWindowLevel = true;
-    double w = meta->GetAttributeValue(
-      firstFile, firstFrame, DC::WindowWidth).GetDouble(0);
-    double l = meta->GetAttributeValue(
-      firstFile, firstFrame, DC::WindowCenter).GetDouble(0);
+    double w = meta->Get(firstFile, firstFrame, DC::WindowWidth).GetDouble(0);
+    double l = meta->Get(firstFile, firstFrame, DC::WindowCenter).GetDouble(0);
     int n = fileIndices->GetNumberOfTuples();
     for (int i = 1; i < n; i++)
     {
       int j = fileIndices->GetComponent(i, 0);
       int k = frameIndices->GetComponent(i, 0);
-      double tw = meta->GetAttributeValue(j, k, DC::WindowWidth).GetDouble(0);
-      double tl = meta->GetAttributeValue(j, k, DC::WindowCenter).GetDouble(0);
+      double tw = meta->Get(j, k, DC::WindowWidth).GetDouble(0);
+      double tl = meta->Get(j, k, DC::WindowCenter).GetDouble(0);
       if (tl != l || tw != w)
       {
         useWindowLevel = false;
@@ -866,7 +862,7 @@ void dicomtonifti_convert_one(
   if (!useWindowLevel)
   {
     std::string photometric =
-      meta->GetAttributeValue(DC::PhotometricInterpretation).AsString();
+      meta->Get(DC::PhotometricInterpretation).AsString();
     if (photometric == "MONOCHROME1" || photometric == "MONOCHROME2")
     {
       // compute range rather than using DICOM window/level setting

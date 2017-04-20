@@ -283,25 +283,24 @@ int vtkDICOMApplyRescale::RequestData(
         int i = meta->GetFileIndex(zIdx, c, numComponents);
         int j = meta->GetFrameIndex(zIdx, c, numComponents);
 
-        const vtkDICOMValue& rwvms = meta->GetAttributeValue(
-          i, j, DC::RealWorldValueMappingSequence);
+        const vtkDICOMValue& rwvms =
+          meta->Get(i, j, DC::RealWorldValueMappingSequence);
         const vtkDICOMItem *rwvmi = rwvms.GetSequenceData();
 
         if (rwvmi)
         {
           // use the real world value mapping first item
-          mapping->First = rwvmi->GetAttributeValue(
-            DC::RealWorldValueFirstValueMapped).AsInt();
-          mapping->Last = rwvmi->GetAttributeValue(
-            DC::RealWorldValueLastValueMapped).AsInt();
-          mapping->Slope = rwvmi->GetAttributeValue(
-            DC::RealWorldValueSlope).AsDouble();
-          mapping->Intercept = rwvmi->GetAttributeValue(
-            DC::RealWorldValueIntercept).AsDouble();
+          mapping->First =
+            rwvmi->Get(DC::RealWorldValueFirstValueMapped).AsInt();
+          mapping->Last =
+            rwvmi->Get(DC::RealWorldValueLastValueMapped).AsInt();
+          mapping->Slope =
+            rwvmi->Get(DC::RealWorldValueSlope).AsDouble();
+          mapping->Intercept =
+            rwvmi->Get(DC::RealWorldValueIntercept).AsDouble();
 
           // use lookup table if present
-          const vtkDICOMValue &v = rwvmi->GetAttributeValue(
-            DC::RealWorldValueLUTData);
+          const vtkDICOMValue &v = rwvmi->Get(DC::RealWorldValueLUTData);
           if (v.GetNumberOfValues() >=
               static_cast<size_t>(mapping->Last - mapping->First + 1))
           {
@@ -312,10 +311,8 @@ int vtkDICOMApplyRescale::RequestData(
         else
         {
           // use the slope and intercept instead
-          const vtkDICOMValue& u = meta->GetAttributeValue(
-            i, j, DC::RescaleSlope);
-          const vtkDICOMValue& v = meta->GetAttributeValue(
-            i, j, DC::RescaleIntercept);
+          const vtkDICOMValue& u = meta->Get(i, j, DC::RescaleSlope);
+          const vtkDICOMValue& v = meta->Get(i, j, DC::RescaleIntercept);
           if (u.IsValid() && v.IsValid())
           {
             mapping->Slope = u.AsDouble();

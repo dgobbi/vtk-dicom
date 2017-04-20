@@ -96,23 +96,30 @@ public:
 
   //@{
   //! Check whether an attribute is present in the metadata.
-  bool HasAttribute(vtkDICOMTag tag);
+  bool Has(vtkDICOMTag tag);
+  bool HasAttribute(vtkDICOMTag tag) {
+    return this->Has(tag); }
 
   //! Erase an attribute.
-  void RemoveAttribute(vtkDICOMTag tag);
+  void Remove(vtkDICOMTag tag);
+  void RemoveAttribute(vtkDICOMTag tag) {
+    this->Remove(tag); }
   //@}
 
   //@{
   //! Get an attribute value.
   /*!
    *  The tag will usually be specified in one of these two ways:
-   *  GetAttributeValue(vtkDICOMTag(0x0008,0x1030)) or, using the
-   *  dictionary enum type, GetAttributeValue(DC::StudyDescription).
-   *  If the attribute is not present, then the returned value will
-   *  be invalid, i.e. v.IsValid() will be false.
+   *  Get(vtkDICOMTag(0x0008,0x1030)) or, using the dictionary enum type,
+   *  Get(DC::StudyDescription).  If the attribute is not present, then
+   *  the returned value will be invalid, i.e. v.IsValid() will be false.
    */
-  const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag);
-  const vtkDICOMValue &GetAttributeValue(const vtkDICOMTagPath &p);
+  const vtkDICOMValue &Get(vtkDICOMTag tag);
+  const vtkDICOMValue &Get(const vtkDICOMTagPath &p);
+  const vtkDICOMValue &GetAttributeValue(vtkDICOMTag tag) {
+    return this->Get(tag); }
+  const vtkDICOMValue &GetAttributeValue(const vtkDICOMTagPath &p) {
+    return this->Get(p); }
   //@}
 
   //@{
@@ -124,8 +131,12 @@ public:
    *  is not present, the value will be invalid, i.e. v.IsValid()
    *  will be false.
    */
-  const vtkDICOMValue &GetAttributeValue(int idx, vtkDICOMTag tag);
-  const vtkDICOMValue &GetAttributeValue(int idx, const vtkDICOMTagPath &p);
+  const vtkDICOMValue &Get(int idx, vtkDICOMTag tag);
+  const vtkDICOMValue &Get(int idx, const vtkDICOMTagPath &p);
+  const vtkDICOMValue &GetAttributeValue(int idx, vtkDICOMTag tag) {
+    return this->Get(idx, tag); }
+  const vtkDICOMValue &GetAttributeValue(int idx, const vtkDICOMTagPath &p) {
+    return this->Get(idx, p); }
   //@}
 
   //@{
@@ -140,9 +151,13 @@ public:
    *  It can be used on either multi-frame or single-frame files.
    *  The frame index is counted from zero to NumberOfFrames-1.
    */
-  const vtkDICOMValue &GetAttributeValue(int idx, int frame, vtkDICOMTag tag);
+  const vtkDICOMValue &Get(int idx, int frame, vtkDICOMTag tag);
+  const vtkDICOMValue &Get(int idx, int frame, const vtkDICOMTagPath &p);
+  const vtkDICOMValue &GetAttributeValue(int idx, int frame, vtkDICOMTag tag) {
+    return this->Get(idx, frame, tag); }
   const vtkDICOMValue &GetAttributeValue(
-    int idx, int frame, const vtkDICOMTagPath &p);
+    int idx, int frame, const vtkDICOMTagPath &p) {
+    return this->Get(idx, frame, p); }
   //@}
 
   //@{
@@ -183,16 +198,28 @@ public:
    *  ASCII string, or it must be encoded in the SpecificCharacterSet
    *  for this data set.
    */
-  void SetAttributeValue(int idx, vtkDICOMTag tag, const vtkDICOMValue& v);
-  void SetAttributeValue(int idx, vtkDICOMTag tag, double v);
-  void SetAttributeValue(int idx, vtkDICOMTag tag, const std::string& v);
+  void Set(int idx, vtkDICOMTag tag, const vtkDICOMValue& v);
+  void Set(int idx, vtkDICOMTag tag, double v);
+  void Set(int idx, vtkDICOMTag tag, const std::string& v);
+  void SetAttributeValue(int idx, vtkDICOMTag tag, const vtkDICOMValue& v) {
+    this->Set(idx, tag, v); }
+  void SetAttributeValue(int idx, vtkDICOMTag tag, double v) {
+    this->Set(idx, tag, v); }
+  void SetAttributeValue(int idx, vtkDICOMTag tag, const std::string& v) {
+    this->Set(idx, tag, v); }
   //@}
 
   //@{
   //! Set the same attribute value for all images.
-  void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v);
-  void SetAttributeValue(vtkDICOMTag tag, double v);
-  void SetAttributeValue(vtkDICOMTag tag, const std::string& v);
+  void Set(vtkDICOMTag tag, const vtkDICOMValue& v);
+  void Set(vtkDICOMTag tag, double v);
+  void Set(vtkDICOMTag tag, const std::string& v);
+  void SetAttributeValue(vtkDICOMTag tag, const vtkDICOMValue& v) {
+    this->Set(tag, v); }
+  void SetAttributeValue(vtkDICOMTag tag, double v) {
+    this->Set(tag, v); }
+  void SetAttributeValue(vtkDICOMTag tag, const std::string& v) {
+    this->Set(tag, v); }
   //@}
 
   //@{
@@ -203,19 +230,31 @@ public:
    *  will be created.  If an item index in the path points to an item that
    *  does not exist, then that item will be created.
    */
+  void Set(int idx, const vtkDICOMTagPath& tag, const vtkDICOMValue& v);
+  void Set(int idx, const vtkDICOMTagPath& tag, double v);
+  void Set(int idx, const vtkDICOMTagPath& tag, const std::string& v);
   void SetAttributeValue(
-    int idx, const vtkDICOMTagPath& tag, const vtkDICOMValue& v);
+    int idx, const vtkDICOMTagPath& tag, const vtkDICOMValue& v) {
+    this->Set(idx, tag, v); }
   void SetAttributeValue(
-    int idx, const vtkDICOMTagPath& tag, double v);
+    int idx, const vtkDICOMTagPath& tag, double v) {
+    this->Set(idx, tag, v); }
   void SetAttributeValue(
-    int idx, const vtkDICOMTagPath& tag, const std::string& v);
+    int idx, const vtkDICOMTagPath& tag, const std::string& v) {
+    this->Set(idx, tag, v); }
   //@}
 
   //@{
   //! Set the attribute value along this path for all images.
-  void SetAttributeValue(const vtkDICOMTagPath& tag, const vtkDICOMValue& v);
-  void SetAttributeValue(const vtkDICOMTagPath& tag, double v);
-  void SetAttributeValue(const vtkDICOMTagPath& tag, const std::string& v);
+  void Set(const vtkDICOMTagPath& tag, const vtkDICOMValue& v);
+  void Set(const vtkDICOMTagPath& tag, double v);
+  void Set(const vtkDICOMTagPath& tag, const std::string& v);
+  void SetAttributeValue(const vtkDICOMTagPath& tag, const vtkDICOMValue& v) {
+    this->Set(tag, v); }
+  void SetAttributeValue(const vtkDICOMTagPath& tag, double v) {
+    this->Set(tag, v); }
+  void SetAttributeValue(const vtkDICOMTagPath& tag, const std::string& v) {
+    this->Set(tag, v); }
   //@}
 
   //@{

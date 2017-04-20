@@ -380,8 +380,7 @@ void vtkDICOMLookupTable::BuildImagePalette(
     DC::SegmentedAlphaPaletteColorLookupTableData
   };
 
-  int isSigned = meta->GetAttributeValue(
-    fileIndex, DC::PixelRepresentation).AsInt();
+  int isSigned = meta->Get(fileIndex, DC::PixelRepresentation).AsInt();
   int minValue = VTK_INT_MAX;
   int maxValue = VTK_INT_MIN;
   int firstValue[4] = { 0, 0, 0, 0 };
@@ -394,8 +393,7 @@ void vtkDICOMLookupTable::BuildImagePalette(
 
   for (int j = 0; j < 4; j++)
   {
-    const vtkDICOMValue& v = meta->GetAttributeValue(
-      fileIndex, descTag[j]);
+    const vtkDICOMValue& v = meta->Get(fileIndex, descTag[j]);
     // Descriptor must have three values
     if (v.GetNumberOfValues() == 3)
     {
@@ -417,8 +415,7 @@ void vtkDICOMLookupTable::BuildImagePalette(
       divisor[j] = (nbits == 0 ? 1.0 : (1u << nbits) - 1.0);
 
       // Get the lookup table data and confirm its size
-      const vtkDICOMValue& d = meta->GetAttributeValue(
-        fileIndex, dataTag[j]);
+      const vtkDICOMValue& d = meta->Get(fileIndex, dataTag[j]);
       if (d.IsValid())
       {
         if (d.GetVL() >= static_cast<unsigned int>(2*n))
@@ -438,8 +435,7 @@ void vtkDICOMLookupTable::BuildImagePalette(
       else
       {
         // Search for segmented table data
-        const vtkDICOMValue& s = meta->GetAttributeValue(
-          fileIndex, segTag[j]);
+        const vtkDICOMValue& s = meta->Get(fileIndex, segTag[j]);
         segpp[j] = s.GetUnsignedShortData();
         segn[j] = s.GetVL()/2;
       }

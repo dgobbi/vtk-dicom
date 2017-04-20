@@ -33,23 +33,23 @@ int main(int argc, char *argv[])
   vtkDICOMMetaData *metaData = vtkDICOMMetaData::New();
 
   // simple test of adding and removing attributes
-  metaData->SetAttributeValue(DC::Modality, "CT");
-  std::string modality = metaData->GetAttributeValue(DC::Modality).AsString();
+  metaData->Set(DC::Modality, "CT");
+  std::string modality = metaData->Get(DC::Modality).AsString();
   TestAssert(modality == "CT");
-  TestAssert(metaData->HasAttribute(DC::Modality));
-  TestAssert(!metaData->HasAttribute(DC::AcquisitionDateTime));
-  TestAssert(!metaData->GetAttributeValue(DC::AcquisitionDateTime).IsValid());
-  metaData->SetAttributeValue(DC::Modality, "MR");
-  modality = metaData->GetAttributeValue(DC::Modality).AsString();
+  TestAssert(metaData->Has(DC::Modality));
+  TestAssert(!metaData->Has(DC::AcquisitionDateTime));
+  TestAssert(!metaData->Get(DC::AcquisitionDateTime).IsValid());
+  metaData->Set(DC::Modality, "MR");
+  modality = metaData->Get(DC::Modality).AsString();
   TestAssert(modality == "MR");
-  metaData->RemoveAttribute(DC::Modality);
-  TestAssert(!metaData->HasAttribute(DC::Modality));
+  metaData->Remove(DC::Modality);
+  TestAssert(!metaData->Has(DC::Modality));
   TestAssert(metaData->GetNumberOfDataElements() == 0);
-  metaData->RemoveAttribute(DC::Modality);
+  metaData->Remove(DC::Modality);
   metaData->Clear();
   TestAssert(metaData->GetNumberOfDataElements() == 0);
-  metaData->SetAttributeValue(DC::Modality, "NM");
-  modality = metaData->GetAttributeValue(DC::Modality).AsString();
+  metaData->Set(DC::Modality, "NM");
+  modality = metaData->Get(DC::Modality).AsString();
   TestAssert(modality == "NM");
   TestAssert(metaData->GetNumberOfDataElements() == 1);
   metaData->Clear();
@@ -57,37 +57,37 @@ int main(int argc, char *argv[])
 
   // test of multiple instances in a single meta data object
   metaData->SetNumberOfInstances(3);
-  metaData->SetAttributeValue(DC::Modality, "CT");
-  TestAssert(metaData->HasAttribute(DC::Modality));
-  modality = metaData->GetAttributeValue(DC::Modality).AsString();
+  metaData->Set(DC::Modality, "CT");
+  TestAssert(metaData->Has(DC::Modality));
+  modality = metaData->Get(DC::Modality).AsString();
   TestAssert(modality == "CT");
-  modality = metaData->GetAttributeValue(0, DC::Modality).AsString();
+  modality = metaData->Get(0, DC::Modality).AsString();
   TestAssert(modality == "CT");
-  modality = metaData->GetAttributeValue(1, DC::Modality).AsString();
+  modality = metaData->Get(1, DC::Modality).AsString();
   TestAssert(modality == "CT");
-  modality = metaData->GetAttributeValue(2, DC::Modality).AsString();
+  modality = metaData->Get(2, DC::Modality).AsString();
   TestAssert(modality == "CT");
-  metaData->SetAttributeValue(1, DC::Modality, "MR");
-  modality = metaData->GetAttributeValue(DC::Modality).AsString();
+  metaData->Set(1, DC::Modality, "MR");
+  modality = metaData->Get(DC::Modality).AsString();
   TestAssert(modality == "CT");
-  modality = metaData->GetAttributeValue(0, DC::Modality).AsString();
+  modality = metaData->Get(0, DC::Modality).AsString();
   TestAssert(modality == "CT");
-  modality = metaData->GetAttributeValue(1, DC::Modality).AsString();
+  modality = metaData->Get(1, DC::Modality).AsString();
   TestAssert(modality == "MR");
-  modality = metaData->GetAttributeValue(2, DC::Modality).AsString();
+  modality = metaData->Get(2, DC::Modality).AsString();
   TestAssert(modality == "CT");
-  metaData->SetAttributeValue(DC::Modality, "MR");
-  modality = metaData->GetAttributeValue(DC::Modality).AsString();
+  metaData->Set(DC::Modality, "MR");
+  modality = metaData->Get(DC::Modality).AsString();
   TestAssert(modality == "MR");
-  modality = metaData->GetAttributeValue(0, DC::Modality).AsString();
+  modality = metaData->Get(0, DC::Modality).AsString();
   TestAssert(modality == "MR");
-  modality = metaData->GetAttributeValue(1, DC::Modality).AsString();
+  modality = metaData->Get(1, DC::Modality).AsString();
   TestAssert(modality == "MR");
-  modality = metaData->GetAttributeValue(2, DC::Modality).AsString();
+  modality = metaData->Get(2, DC::Modality).AsString();
   TestAssert(modality == "MR");
   TestAssert(metaData->GetNumberOfDataElements() == 1);
   TestAssert(metaData->GetNumberOfInstances() == 3);
-  metaData->RemoveAttribute(DC::Modality);
+  metaData->Remove(DC::Modality);
   TestAssert(metaData->GetNumberOfDataElements() == 0);
   metaData->Initialize();
   TestAssert(metaData->GetNumberOfInstances() == 1);
@@ -98,9 +98,9 @@ int main(int argc, char *argv[])
   vtkDICOMDataElementIterator iterEnd =
     metaData->End();
   TestAssert(iter == iterEnd);
-  metaData->SetAttributeValue(DC::Modality, "CT");
+  metaData->Set(DC::Modality, "CT");
   const char *acquisitionTime = "20130126080000.000000+0700";
-  metaData->SetAttributeValue(DC::AcquisitionDateTime, acquisitionTime);
+  metaData->Set(DC::AcquisitionDateTime, acquisitionTime);
   iter = metaData->Begin();
   iterEnd = metaData->End();
   int n = metaData->GetNumberOfDataElements();
@@ -128,9 +128,9 @@ int main(int argc, char *argv[])
 
   // test iterating through the data elements with multiple instances
   metaData->SetNumberOfInstances(2);
-  metaData->SetAttributeValue(0, DC::Modality, "CT");
-  metaData->SetAttributeValue(1, DC::Modality, "MR");
-  metaData->SetAttributeValue(DC::AcquisitionDateTime, acquisitionTime);
+  metaData->Set(0, DC::Modality, "CT");
+  metaData->Set(1, DC::Modality, "MR");
+  metaData->Set(DC::AcquisitionDateTime, acquisitionTime);
   iter = metaData->Begin();
   iterEnd = metaData->End();
   n = metaData->GetNumberOfDataElements();
@@ -159,9 +159,9 @@ int main(int argc, char *argv[])
 
   // test the Find() method
   metaData->SetNumberOfInstances(2);
-  metaData->SetAttributeValue(0, DC::Modality, "CT");
-  metaData->SetAttributeValue(1, DC::Modality, "MR");
-  metaData->SetAttributeValue(DC::AcquisitionDateTime, acquisitionTime);
+  metaData->Set(0, DC::Modality, "CT");
+  metaData->Set(1, DC::Modality, "MR");
+  metaData->Set(DC::AcquisitionDateTime, acquisitionTime);
   iter = metaData->Find(DC::AcquisitionDateTime);
   TestAssert(iter->GetValue().AsString() == acquisitionTime);
   iter = metaData->Find(DC::Modality);
@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
   {
     // add the first data element to the item
     vtkDICOMItem item(metaData);
-    item.SetAttributeValue(DC::SeriesInstanceUID,
+    item.Set(DC::SeriesInstanceUID,
       vtkDICOMValue(vtkDICOMVR::UI,
         "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
 
@@ -204,23 +204,23 @@ int main(int argc, char *argv[])
       // create a unique InstanceUID
       sprintf(instanceUID, instanceUIDFormat, 255+j);
       vtkDICOMItem item2(metaData);
-      item2.SetAttributeValue(DC::ReferencedSOPClassUID,
+      item2.Set(DC::ReferencedSOPClassUID,
         vtkDICOMValue(vtkDICOMVR::UI, classUID));
-      item2.SetAttributeValue(DC::ReferencedSOPInstanceUID,
+      item2.Set(DC::ReferencedSOPInstanceUID,
         vtkDICOMValue(vtkDICOMVR::UI, instanceUID));
       seq2.AddItem(item2);
     }
 
     // create the ReferencedInstanceSequence from the items
-    item.SetAttributeValue(DC::ReferencedInstanceSequence, seq2);
+    item.Set(DC::ReferencedInstanceSequence, seq2);
 
     // add this sequence-containing item to the original sequence
     seq.SetItem(i, item);
   }
 
   // test nested access with tag path
-  metaData->SetAttributeValue(DC::ReferencedSeriesSequence, seq);
-  vtkDICOMValue v2 = metaData->GetAttributeValue(
+  metaData->Set(DC::ReferencedSeriesSequence, seq);
+  vtkDICOMValue v2 = metaData->Get(
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID));
   TestAssert(v2.GetCharData() != 0);
@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
   }
 
   // test access two levels deep
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::ReferencedInstanceSequence, 0,
                     DC::ReferencedSOPClassUID));
@@ -246,7 +246,7 @@ int main(int argc, char *argv[])
 
   // ------
   // test setting sequences via tagpath
-  metaData->SetAttributeValue(
+  metaData->Set(
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID),
     vtkDICOMValue(vtkDICOMVR::UI,
@@ -256,12 +256,12 @@ int main(int argc, char *argv[])
   {
     // create a unique InstanceUID
     sprintf(instanceUID, instanceUIDFormat, 255+j);
-    metaData->SetAttributeValue(
+    metaData->Set(
       vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                       DC::ReferencedInstanceSequence, j,
                       DC::ReferencedSOPClassUID),
       classUID);
-    metaData->SetAttributeValue(
+    metaData->Set(
       vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                       DC::ReferencedInstanceSequence, j,
                       DC::ReferencedSOPInstanceUID),
@@ -269,7 +269,7 @@ int main(int argc, char *argv[])
   }
 
   // test nested access with tag path
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID));
   TestAssert(v2.GetCharData() != 0);
@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
   }
 
   // test access two levels deep
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::ReferencedInstanceSequence, 9,
                     DC::ReferencedSOPClassUID));
@@ -290,7 +290,7 @@ int main(int argc, char *argv[])
   {
     TestAssert(strcmp(v2.GetCharData(), "1.2.840.10008.5.1.4.1.1.4") == 0);
   }
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::ReferencedInstanceSequence, 8,
                     DC::ReferencedSOPInstanceUID));
@@ -308,19 +308,19 @@ int main(int argc, char *argv[])
   // test inheritance of XS=US,SS and CharacterSet
 
   // first, check default XS=US
-  metaData->SetAttributeValue(
+  metaData->Set(
     vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
                     DC::RealWorldValueLastValueMapped), 4095);
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
                     DC::RealWorldValueLastValueMapped));
   TestAssert(v2.GetVR() == vtkDICOMVR::US);
 
   // next, check default CharacterSet=ISO_IR_6
-  metaData->SetAttributeValue(
+  metaData->Set(
     vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
                     DC::LUTExplanation), "Too Hot");
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
                     DC::LUTExplanation));
   TestAssert(v2.GetCharacterSet() == vtkDICOMCharacterSet::ISO_IR_6);
@@ -328,22 +328,22 @@ int main(int argc, char *argv[])
   metaData->Clear();
 
   // next, check inheritance of XS=SS
-  metaData->SetAttributeValue(DC::BitsAllocated, 16);
-  metaData->SetAttributeValue(DC::PixelRepresentation, 1);
-  metaData->SetAttributeValue(
+  metaData->Set(DC::BitsAllocated, 16);
+  metaData->Set(DC::PixelRepresentation, 1);
+  metaData->Set(
     vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
                     DC::RealWorldValueLastValueMapped), 4095);
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
                     DC::RealWorldValueLastValueMapped));
   TestAssert(v2.GetVR() == vtkDICOMVR::SS);
 
   // two levels deep
-  metaData->SetAttributeValue(
+  metaData->Set(
     vtkDICOMTagPath(DC::IconImageSequence, 0,
                     DC::RealWorldValueMappingSequence, 0,
                     DC::RealWorldValueLastValueMapped), 4095);
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(DC::IconImageSequence, 0,
                     DC::RealWorldValueMappingSequence, 0,
                     DC::RealWorldValueLastValueMapped));
@@ -352,33 +352,33 @@ int main(int argc, char *argv[])
   metaData->Clear();
 
   // check inheritance of ISO_IR_100
-  metaData->SetAttributeValue(DC::SpecificCharacterSet, "ISO_IR 100");
-  metaData->SetAttributeValue(
+  metaData->Set(DC::SpecificCharacterSet, "ISO_IR 100");
+  metaData->Set(
     vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
                     DC::LUTExplanation), "Too Hot");
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
                     DC::LUTExplanation));
   TestAssert(v2.GetCharacterSet() == vtkDICOMCharacterSet::ISO_IR_100);
 
   // override with new item-specific character set
-  metaData->SetAttributeValue(
+  metaData->Set(
     vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
                     DC::SpecificCharacterSet), "\\ISO 2022 IR 149");
-  metaData->SetAttributeValue(
+  metaData->Set(
     vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
                     DC::LUTExplanation), "Too Hot");
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(DC::RealWorldValueMappingSequence, 0,
                     DC::LUTExplanation));
   TestAssert(v2.GetCharacterSet() == vtkDICOMCharacterSet::ISO_2022_IR_149);
 
   // two levels deep
-  metaData->SetAttributeValue(
+  metaData->Set(
     vtkDICOMTagPath(DC::IconImageSequence, 0,
                     DC::RealWorldValueMappingSequence, 0,
                     DC::LUTExplanation), "Too Hot");
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(DC::IconImageSequence, 0,
                     DC::RealWorldValueMappingSequence, 0,
                     DC::LUTExplanation));
@@ -388,7 +388,7 @@ int main(int argc, char *argv[])
 
   // ------
   // if a non-sequence is used in a path, the call is ignored
-  metaData->SetAttributeValue(
+  metaData->Set(
     vtkDICOMTagPath(DC::SeriesInstanceUID, 0,
                     DC::SeriesInstanceUID),
     vtkDICOMValue(vtkDICOMVR::UI,
@@ -397,18 +397,18 @@ int main(int argc, char *argv[])
 
   // ------
   // test using a non-sequence that already exists
-  metaData->SetAttributeValue(DC::SeriesInstanceUID,
+  metaData->Set(DC::SeriesInstanceUID,
     "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239");
-  metaData->SetAttributeValue(
+  metaData->Set(
     vtkDICOMTagPath(DC::SeriesInstanceUID, 0,
                     DC::SeriesInstanceUID),
     vtkDICOMValue(vtkDICOMVR::UI,
                   "1.2.840.113619.2.176.2025.4110284.7478.1276100777.239"));
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(DC::SeriesInstanceUID, 0,
                     DC::SeriesInstanceUID));
   TestAssert(!v2.IsValid());
-  v2 = metaData->GetAttributeValue(vtkDICOMTagPath(DC::SeriesInstanceUID));
+  v2 = metaData->Get(vtkDICOMTagPath(DC::SeriesInstanceUID));
   if (v2.GetCharData())
   {
     TestAssert(
@@ -417,18 +417,18 @@ int main(int argc, char *argv[])
   }
 
   // test using a tag path with a private sequence
-  metaData->SetAttributeValue(
+  metaData->Set(
     vtkDICOMTagPath(vtkDICOMTag(0x0009, 0x1013), 0,
                     vtkDICOMTag(0x0009, 0x1014), 1,
                     vtkDICOMTag(0x0009, 0x1015)),
     vtkDICOMValue(vtkDICOMVR::UI, "1.2.840.113619.2.176.2025"));
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(vtkDICOMTag(0x0009, 0x1013), 0,
                     vtkDICOMTag(0x0009, 0x1014), 1,
                     vtkDICOMTag(0x0009, 0x1015)));
   TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025");
   // make sure the "skipped" item returns nothing
-  v2 = metaData->GetAttributeValue(
+  v2 = metaData->Get(
     vtkDICOMTagPath(vtkDICOMTag(0x0009, 0x1013), 0,
                     vtkDICOMTag(0x0009, 0x1014), 0,
                     vtkDICOMTag(0x0009, 0x1015)));
@@ -439,34 +439,34 @@ int main(int argc, char *argv[])
   // ------
   // Test setting tag paths with indices
   metaData->SetNumberOfInstances(3);
-  metaData->SetAttributeValue(0,
+  metaData->Set(0,
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID),
     "1.2.840.113619.2.176.2025.4110284.747");
-  metaData->SetAttributeValue(2,
+  metaData->Set(2,
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID),
     "1.2.840.113619.2.176.2025.4110284.749");
-  v2 = metaData->GetAttributeValue(0,
+  v2 = metaData->Get(0,
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID));
   TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025.4110284.747");
-  v2 = metaData->GetAttributeValue(1,
+  v2 = metaData->Get(1,
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID));
   TestAssert(!v2.IsValid());
-  v2 = metaData->GetAttributeValue(2,
+  v2 = metaData->Get(2,
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID));
   TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025.4110284.749");
   // Set without index
-  metaData->SetAttributeValue(
+  metaData->Set(
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID),
     "1.2.840.113619.2.176.2025.4110284.747");
   for (int i = 0; i < 3; i++)
   {
-    v2 = metaData->GetAttributeValue(i,
+    v2 = metaData->Get(i,
       vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                       DC::SeriesInstanceUID));
     TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025.4110284.747");
@@ -477,27 +477,27 @@ int main(int argc, char *argv[])
   // ------
   // Test setting tag paths with indices after setting without indices
   metaData->SetNumberOfInstances(3);
-  metaData->SetAttributeValue(
+  metaData->Set(
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID),
     "1.2.840.113619.2.176.2025.4110284.747");
-  metaData->SetAttributeValue(1,
+  metaData->Set(1,
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID),
     vtkDICOMValue());
-  metaData->SetAttributeValue(2,
+  metaData->Set(2,
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID),
     "1.2.840.113619.2.176.2025.4110284.749");
-  v2 = metaData->GetAttributeValue(0,
+  v2 = metaData->Get(0,
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID));
   TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025.4110284.747");
-  v2 = metaData->GetAttributeValue(1,
+  v2 = metaData->Get(1,
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID));
   TestAssert(!v2.IsValid());
-  v2 = metaData->GetAttributeValue(2,
+  v2 = metaData->Get(2,
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID));
   TestAssert(v2.AsString() == "1.2.840.113619.2.176.2025.4110284.749");
@@ -507,37 +507,37 @@ int main(int argc, char *argv[])
   // ------
   // Test setting invalid value attributes
   metaData->SetNumberOfInstances(3);
-  metaData->SetAttributeValue(DC::Modality, "CT");
-  metaData->SetAttributeValue(DC::Modality, "MR");
+  metaData->Set(DC::Modality, "CT");
+  metaData->Set(DC::Modality, "MR");
   TestAssert(metaData->GetNumberOfDataElements() == 1);
-  metaData->SetAttributeValue(DC::Modality, vtkDICOMValue());
+  metaData->Set(DC::Modality, vtkDICOMValue());
   TestAssert(metaData->GetNumberOfDataElements() == 0);
-  metaData->SetAttributeValue(0, DC::Modality, vtkDICOMValue());
+  metaData->Set(0, DC::Modality, vtkDICOMValue());
   TestAssert(metaData->GetNumberOfDataElements() == 0);
-  metaData->SetAttributeValue(DC::Modality, "MR");
-  metaData->SetAttributeValue(0, DC::Modality, "CT");
-  TestAssert(metaData->GetAttributeValue(0, DC::Modality).AsString() == "CT");
-  TestAssert(metaData->GetAttributeValue(1, DC::Modality).AsString() == "MR");
-  TestAssert(metaData->GetAttributeValue(2, DC::Modality).AsString() == "MR");
-  metaData->SetAttributeValue(1, DC::Modality, vtkDICOMValue());
-  TestAssert(metaData->GetAttributeValue(0, DC::Modality).AsString() == "CT");
-  TestAssert(metaData->GetAttributeValue(1, DC::Modality).IsValid() == false);
-  TestAssert(metaData->GetAttributeValue(2, DC::Modality).AsString() == "MR");
-  metaData->SetAttributeValue(0, DC::Modality, vtkDICOMValue());
-  metaData->SetAttributeValue(2, DC::Modality, vtkDICOMValue());
+  metaData->Set(DC::Modality, "MR");
+  metaData->Set(0, DC::Modality, "CT");
+  TestAssert(metaData->Get(0, DC::Modality).AsString() == "CT");
+  TestAssert(metaData->Get(1, DC::Modality).AsString() == "MR");
+  TestAssert(metaData->Get(2, DC::Modality).AsString() == "MR");
+  metaData->Set(1, DC::Modality, vtkDICOMValue());
+  TestAssert(metaData->Get(0, DC::Modality).AsString() == "CT");
+  TestAssert(metaData->Get(1, DC::Modality).IsValid() == false);
+  TestAssert(metaData->Get(2, DC::Modality).AsString() == "MR");
+  metaData->Set(0, DC::Modality, vtkDICOMValue());
+  metaData->Set(2, DC::Modality, vtkDICOMValue());
   TestAssert(metaData->GetNumberOfDataElements() == 0);
-  metaData->SetAttributeValue(0, DC::Modality, "CT");
-  TestAssert(metaData->GetAttributeValue(0, DC::Modality).AsString() == "CT");
-  TestAssert(metaData->GetAttributeValue(1, DC::Modality).IsValid() == false);
-  TestAssert(metaData->GetAttributeValue(2, DC::Modality).IsValid() == false);
+  metaData->Set(0, DC::Modality, "CT");
+  TestAssert(metaData->Get(0, DC::Modality).AsString() == "CT");
+  TestAssert(metaData->Get(1, DC::Modality).IsValid() == false);
+  TestAssert(metaData->Get(2, DC::Modality).IsValid() == false);
   metaData->Clear();
 
   // ------
   // Test DeepCopy
   metaData->SetNumberOfInstances(3);
-  metaData->SetAttributeValue(DC::Modality, "CT");
-  metaData->SetAttributeValue(0, DC::Modality, "MR");
-  metaData->SetAttributeValue(DC::AcquisitionDateTime, acquisitionTime);
+  metaData->Set(DC::Modality, "CT");
+  metaData->Set(0, DC::Modality, "MR");
+  metaData->Set(DC::AcquisitionDateTime, acquisitionTime);
 
   metaData->DeepCopy(metaData);
   TestAssert(metaData->GetNumberOfInstances() == 3);
@@ -551,9 +551,9 @@ int main(int argc, char *argv[])
   mcopy->DeepCopy(metaData);
   TestAssert(mcopy->GetNumberOfInstances() == 3);
   TestAssert(mcopy->GetNumberOfDataElements() == 2);
-  TestAssert(mcopy->GetAttributeValue(0, DC::Modality).AsString() == "MR");
-  TestAssert(mcopy->GetAttributeValue(1, DC::Modality).AsString() == "CT");
-  TestAssert(mcopy->GetAttributeValue(
+  TestAssert(mcopy->Get(0, DC::Modality).AsString() == "MR");
+  TestAssert(mcopy->Get(1, DC::Modality).AsString() == "CT");
+  TestAssert(mcopy->Get(
     DC::AcquisitionDateTime).AsString() == acquisitionTime);
 
   mcopy->Initialize();

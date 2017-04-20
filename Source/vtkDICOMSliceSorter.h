@@ -81,10 +81,10 @@ public:
   //@{
   //! Set the meta data for the DICOM files.
   /*!
-   *  The GetAttributeValue() method of vtkDICOMMetaData takes optional
-   *  file and frame indices, which specify the file and the frame within
-   *  that file to get the attribute from.  If you have a slice index rather
-   *  than a file index and frame index, then use the FileIndexArray and
+   *  The Get() method of vtkDICOMMetaData takes optional file and frame
+   *  indices, which specify the file and the frame within that file to
+   *  get the attribute from.  If you have a slice index rather than a file
+   *  file index and frame index, then use the FileIndexArray and
    *  FrameIndexArray to convert the slice index into file and frame indices.
    */
   void SetMetaData(vtkDICOMMetaData *meta);

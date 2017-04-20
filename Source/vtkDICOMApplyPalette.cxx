@@ -127,14 +127,12 @@ void vtkDICOMApplyPaletteExecute(
       if (supplemental)
       {
         // check if this frame is specifically monochrome
-        monochrome = meta->GetAttributeValue(
-          i, f, DC::PixelPresentation).Matches("MONOCHROME*");
+        monochrome = meta->Get(i, f, DC::PixelPresentation).Matches(
+          "MONOCHROME*");
 
         // use the window that is suggested in the data
-        const vtkDICOMValue& wc =
-          meta->GetAttributeValue(i, f, DC::WindowCenter);
-        const vtkDICOMValue& ww =
-          meta->GetAttributeValue(i, f, DC::WindowWidth);
+        const vtkDICOMValue& wc = meta->Get(i, f, DC::WindowCenter);
+        const vtkDICOMValue& ww = meta->Get(i, f, DC::WindowWidth);
         double windowWidth = 0.0;
         if (wc.IsValid() && ww.IsValid())
         {
@@ -143,10 +141,8 @@ void vtkDICOMApplyPaletteExecute(
         }
 
         // for CT images, the rescaling must be taken into account
-        const vtkDICOMValue& rs =
-          meta->GetAttributeValue(i, f, DC::RescaleSlope);
-        const vtkDICOMValue& ri =
-          meta->GetAttributeValue(i, f, DC::RescaleIntercept);
+        const vtkDICOMValue& rs = meta->Get(i, f, DC::RescaleSlope);
+        const vtkDICOMValue& ri = meta->Get(i, f, DC::RescaleIntercept);
         if (rs.IsValid() && ri.IsValid())
         {
           double slope = rs.AsDouble();
@@ -242,15 +238,14 @@ int vtkDICOMApplyPalette::RequestInformation(
   this->IsSupplemental = 0;
   bool hasPalette = false;
 
-  if (meta && meta->GetAttributeValue(DC::SamplesPerPixel).Matches(1))
+  if (meta && meta->Get(DC::SamplesPerPixel).Matches(1))
   {
     // Check if PhotometricInterpretation is PALETTE COLOR
-    const vtkDICOMValue& u = meta->GetAttributeValue(
-      DC::PhotometricInterpretation);
+    const vtkDICOMValue& u = meta->Get(DC::PhotometricInterpretation);
     hasPalette = u.Matches("PALETTE?COLOR");
 
     // Check the PixelPresentation (enhanced files)
-    const vtkDICOMValue& v = meta->GetAttributeValue(DC::PixelPresentation);
+    const vtkDICOMValue& v = meta->Get(DC::PixelPresentation);
     this->IsSupplemental = (v.Matches("COLOR") ||
                             v.Matches("MIXED") ||
                             v.Matches("TRUE_COLOR"));
@@ -273,21 +268,21 @@ int vtkDICOMApplyPalette::RequestInformation(
     // Modify the meta data, the image has become an RGB image
     vtkDICOMMetaData *outMeta = vtkDICOMMetaData::SafeDownCast(
       outInfo->Get(vtkDICOMAlgorithm::META_DATA()));
-    outMeta->SetAttributeValue(DC::SamplesPerPixel, 3);
-    outMeta->SetAttributeValue(DC::PhotometricInterpretation, "RGB");
-    outMeta->SetAttributeValue(DC::PixelRepresentation, 0);
-    outMeta->SetAttributeValue(DC::BitsAllocated, 8);
-    outMeta->SetAttributeValue(DC::BitsStored, 8);
-    outMeta->SetAttributeValue(DC::HighBit, 7);
-    outMeta->RemoveAttribute(DC::RedPaletteColorLookupTableDescriptor);
-    outMeta->RemoveAttribute(DC::GreenPaletteColorLookupTableDescriptor);
-    outMeta->RemoveAttribute(DC::BluePaletteColorLookupTableDescriptor);
-    outMeta->RemoveAttribute(DC::RedPaletteColorLookupTableData);
-    outMeta->RemoveAttribute(DC::GreenPaletteColorLookupTableData);
-    outMeta->RemoveAttribute(DC::BluePaletteColorLookupTableData);
-    outMeta->RemoveAttribute(DC::SegmentedRedPaletteColorLookupTableData);
-    outMeta->RemoveAttribute(DC::SegmentedGreenPaletteColorLookupTableData);
-    outMeta->RemoveAttribute(DC::SegmentedBluePaletteColorLookupTableData);
+    outMeta->Set(DC::SamplesPerPixel, 3);
+    outMeta->Set(DC::PhotometricInterpretation, "RGB");
+    outMeta->Set(DC::PixelRepresentation, 0);
+    outMeta->Set(DC::BitsAllocated, 8);
+    outMeta->Set(DC::BitsStored, 8);
+    outMeta->Set(DC::HighBit, 7);
+    outMeta->Remove(DC::RedPaletteColorLookupTableDescriptor);
+    outMeta->Remove(DC::GreenPaletteColorLookupTableDescriptor);
+    outMeta->Remove(DC::BluePaletteColorLookupTableDescriptor);
+    outMeta->Remove(DC::RedPaletteColorLookupTableData);
+    outMeta->Remove(DC::GreenPaletteColorLookupTableData);
+    outMeta->Remove(DC::BluePaletteColorLookupTableData);
+    outMeta->Remove(DC::SegmentedRedPaletteColorLookupTableData);
+    outMeta->Remove(DC::SegmentedGreenPaletteColorLookupTableData);
+    outMeta->Remove(DC::SegmentedBluePaletteColorLookupTableData);
   }
 
   return 1;

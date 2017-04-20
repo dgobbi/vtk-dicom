@@ -184,17 +184,16 @@ struct vtkDICOMSliceSorterSortInfo
 };
 
 // get an attribute value for a particular frame
-const vtkDICOMValue& vtkDICOMSliceSorterGetFrameAttributeValue(
+const vtkDICOMValue& vtkDICOMSliceSorterGetFrame(
   const vtkDICOMSequence& frameSeq, const vtkDICOMSequence& sharedSeq,
   unsigned int i, vtkDICOMTag stag, vtkDICOMTag vtag)
 {
-  const vtkDICOMValue& v =
-    frameSeq.GetAttributeValue(i, vtkDICOMTagPath(stag, 0, vtag));
+  const vtkDICOMValue& v = frameSeq.Get(i, vtkDICOMTagPath(stag, 0, vtag));
   if (v.IsValid())
   {
     return v;
   }
-  return sharedSeq.GetAttributeValue(0, vtkDICOMTagPath(stag, 0, vtag));
+  return sharedSeq.Get(0, vtkDICOMTagPath(stag, 0, vtag));
 }
 
 // compute spatial location from position and orientation
@@ -440,7 +439,7 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   // sort by instance first
   for (int i = 0; i < numFiles; i++)
   {
-    int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
+    int inst = meta->Get(i, DC::InstanceNumber).AsInt();
     info.push_back(vtkDICOMSliceSorterSortInfo(i, inst));
   }
   std::stable_sort(info.begin(), info.end(),
@@ -457,7 +456,7 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   double checkOrientation[14] = {};
   bool canSortByLocation = true;
   double spacingBetweenSlices =
-    meta->GetAttributeValue(DC::SpacingBetweenSlices).AsDouble();
+    meta->Get(DC::SpacingBetweenSlices).AsDouble();
   double spacingSign = 1.0;
   if (spacingBetweenSlices == 0)
   {
@@ -472,7 +471,7 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   // important time-related variables
   int temporalSpacing = 1.0;
 
-  if (meta->HasAttribute(DC::SharedFunctionalGroupsSequence))
+  if (meta->Has(DC::SharedFunctionalGroupsSequence))
   {
     // a special stackInfo for the desired stack
     std::vector<vtkDICOMSliceSorterSortInfo> stackInfo;
@@ -486,19 +485,18 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
     for (int ii = 0; ii < numFiles; ii++)
     {
       int i = fileOrder[ii];
-      int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
-      int numberOfFrames =
-        meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
+      int inst = meta->Get(i, DC::InstanceNumber).AsInt();
+      int numberOfFrames = meta->Get(i, DC::NumberOfFrames).AsInt();
 
       // from the MultiFrameFunctionalGroups module
       vtkDICOMSequence frameSeq =
-        meta->GetAttributeValue(i, DC::PerFrameFunctionalGroupsSequence);
+        meta->Get(i, DC::PerFrameFunctionalGroupsSequence);
       vtkDICOMSequence sharedSeq =
-        meta->GetAttributeValue(i, DC::SharedFunctionalGroupsSequence);
+        meta->Get(i, DC::SharedFunctionalGroupsSequence);
 
       if (ii == 0 && numberOfFrames > 0)
       {
-        firstStackId = vtkDICOMSliceSorterGetFrameAttributeValue(
+        firstStackId = vtkDICOMSliceSorterGetFrame(
           frameSeq, sharedSeq, 0, DC::FrameContentSequence,
           DC::StackID);
       }
@@ -510,14 +508,14 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       if (numberOfFrames > 0)
       {
         // time information can come from these attributes
-        if (vtkDICOMSliceSorterGetFrameAttributeValue(
+        if (vtkDICOMSliceSorterGetFrame(
               frameSeq, sharedSeq, 0, DC::CardiacSynchronizationSequence,
               DC::NominalCardiacTriggerDelayTime).IsValid())
         {
           timeSequence = DC::CardiacSynchronizationSequence;
           timeTag = DC::NominalCardiacTriggerDelayTime;
         }
-        else if (vtkDICOMSliceSorterGetFrameAttributeValue(
+        else if (vtkDICOMSliceSorterGetFrame(
                    frameSeq, sharedSeq, 0, DC::TemporalPositionSequence,
                    DC::TemporalPositionTimeOffset).IsValid())
         {
@@ -525,14 +523,14 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           timeTag = DC::TemporalPositionTimeOffset;
           temporalSpacing = 1000.0; // convert seconds to milliseconds
         }
-        else if (vtkDICOMSliceSorterGetFrameAttributeValue(
+        else if (vtkDICOMSliceSorterGetFrame(
                   frameSeq, sharedSeq, 0, DC::FrameContentSequence,
                   DC::TemporalPositionIndex).IsValid())
         {
           timeSequence = DC::FrameContentSequence;
           timeTag = DC::TemporalPositionIndex;
         }
-        else if (vtkDICOMSliceSorterGetFrameAttributeValue(
+        else if (vtkDICOMSliceSorterGetFrame(
                   frameSeq, sharedSeq, 0, DC::MREchoSequence,
                   DC::EffectiveEchoTime).IsValid())
         {
@@ -551,7 +549,7 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
         double t = 0.0;
         if (timeTag.GetGroup() != 0)
         {
-          t = vtkDICOMSliceSorterGetFrameAttributeValue(
+          t = vtkDICOMSliceSorterGetFrame(
             frameSeq, sharedSeq, k, timeSequence, timeTag).AsDouble();
         }
 
@@ -563,7 +561,7 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
         }
 
         // get the StackID
-        vtkDICOMValue stackId = vtkDICOMSliceSorterGetFrameAttributeValue(
+        vtkDICOMValue stackId = vtkDICOMSliceSorterGetFrame(
           frameSeq, sharedSeq, k, DC::FrameContentSequence,
           DC::StackID);
 
@@ -583,16 +581,16 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
           }
 
           // position: look for InStackPositionNumber
-          position = vtkDICOMSliceSorterGetFrameAttributeValue(
+          position = vtkDICOMSliceSorterGetFrame(
             frameSeq, sharedSeq, k, DC::FrameContentSequence,
             DC::InStackPositionNumber).AsInt();
         }
 
         // check for valid Image Plane Module information
-        vtkDICOMValue pv = vtkDICOMSliceSorterGetFrameAttributeValue(
+        vtkDICOMValue pv = vtkDICOMSliceSorterGetFrame(
           frameSeq, sharedSeq, k, DC::PlanePositionSequence,
           DC::ImagePositionPatient);
-        vtkDICOMValue ov = vtkDICOMSliceSorterGetFrameAttributeValue(
+        vtkDICOMValue ov = vtkDICOMSliceSorterGetFrame(
           frameSeq, sharedSeq, k, DC::PlaneOrientationSequence,
           DC::ImageOrientationPatient);
 
@@ -640,22 +638,20 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   {
     // ways to get time information
     vtkDICOMTag timeTag;
-    if (meta->GetAttributeValue(DC::CardiacNumberOfImages).AsInt() > 1)
+    if (meta->Get(DC::CardiacNumberOfImages).AsInt() > 1)
     {
       timeTag = DC::TriggerTime;
     }
-    else if (meta->GetAttributeValue(
-              DC::NumberOfTemporalPositions).AsInt() > 1)
+    else if (meta->Get(DC::NumberOfTemporalPositions).AsInt() > 1)
     {
       timeTag = DC::TemporalPositionIdentifier;
-      temporalSpacing =
-        meta->GetAttributeValue(DC::TemporalResolution).AsDouble();
+      temporalSpacing = meta->Get(DC::TemporalResolution).AsDouble();
     }
-    else if (meta->HasAttribute(DC::TemporalPositionIndex))
+    else if (meta->Has(DC::TemporalPositionIndex))
     {
       timeTag = DC::TemporalPositionIndex;
     }
-    else if (meta->HasAttribute(DC::EchoTime))
+    else if (meta->Has(DC::EchoTime))
     {
       timeTag = DC::EchoTime;
     }
@@ -669,16 +665,14 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       int i = fileOrder[ii];
 
       // get the instance number
-      int inst = meta->GetAttributeValue(i, DC::InstanceNumber).AsInt();
+      int inst = meta->Get(i, DC::InstanceNumber).AsInt();
 
       // check for valid Image Plane Module information
       // (for NM this information is per-detector and is put in
       // the Detector Information Sequence)
       double location = 0;
-      vtkDICOMValue pv = meta->GetAttributeValue(
-        i, DC::ImagePositionPatient);
-      vtkDICOMValue ov = meta->GetAttributeValue(
-        i, DC::ImageOrientationPatient);
+      vtkDICOMValue pv = meta->Get(i, DC::ImagePositionPatient);
+      vtkDICOMValue ov = meta->Get(i, DC::ImageOrientationPatient);
 
       location = vtkDICOMSliceSorterComputeLocation(
         pv, ov, checkOrientation, &canSortByLocation);
@@ -691,14 +685,13 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
         volumeBreaks.push_back(info.size());
       }
 
-      int numberOfFrames =
-        meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
+      int numberOfFrames = meta->Get(i, DC::NumberOfFrames).AsInt();
       if (numberOfFrames <= 1)
       {
         double t = 0.0;
         if (timeTag.GetGroup() != 0)
         {
-          t = meta->GetAttributeValue(i, timeTag).AsDouble();
+          t = meta->Get(i, timeTag).AsDouble();
         }
 
         // adjust position only if time did not change
@@ -719,32 +712,31 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
         vtkDICOMValue timeSlotVector;
         vtkDICOMValue sliceVector;
         vtkDICOMValue locationVector;
-        vtkDICOMValue fip =
-          meta->GetAttributeValue(i, DC::FrameIncrementPointer);
+        vtkDICOMValue fip = meta->Get(i, DC::FrameIncrementPointer);
         size_t n = fip.GetNumberOfValues();
         for (size_t j = 0; j < n; j++)
         {
           vtkDICOMTag tag = fip.GetTag(j);
           if (tag == DC::FrameTime)
           { // for CINE
-            frameTimeSpacing = meta->GetAttributeValue(i, tag).AsDouble();
+            frameTimeSpacing = meta->Get(i, tag).AsDouble();
           }
           else if (tag == DC::FrameTimeVector)
           { // for CINE
-            timeVector = meta->GetAttributeValue(i, tag);
+            timeVector = meta->Get(i, tag);
           }
           else if (tag == DC::SliceLocationVector)
           { // generic
-            locationVector = meta->GetAttributeValue(i, tag);
+            locationVector = meta->Get(i, tag);
             canSortByLocation = true;
           }
           else if (tag == DC::TimeSlotVector)
           { // for NM
-            timeSlotVector = meta->GetAttributeValue(i, tag);
+            timeSlotVector = meta->Get(i, tag);
           }
           else if (tag == DC::SliceVector)
           { // for NM
-            sliceVector = meta->GetAttributeValue(i, tag);
+            sliceVector = meta->Get(i, tag);
           }
           // in dynamic NM, the total number of time frames is the
           // sum of the number of frames in all collected phases,

@@ -43,7 +43,7 @@ void vtkDICOMCTGenerator::PrintSelf(ostream& os, vtkIndent indent)
 bool vtkDICOMCTGenerator::GenerateCTSeriesModule(vtkDICOMMetaData *source)
 {
   vtkDICOMMetaData *meta = this->MetaData;
-  meta->SetAttributeValue(DC::Modality, "CT");
+  meta->Set(DC::Modality, "CT");
 
   // optional and conditional: direct copy of values with no checks
   static const DC::EnumType optional[] = {
@@ -63,14 +63,14 @@ bool vtkDICOMCTGenerator::GenerateCTImageModule(vtkDICOMMetaData *source)
   const char *it = 0;
   if (source)
   {
-    it = source->GetAttributeValue(DC::ImageType).GetCharData();
+    it = source->Get(DC::ImageType).GetCharData();
   }
   if (it == 0 || it[0] == '\0')
   {
     it = "DERIVED\\SECONDARY\\AXIAL";
   }
   vtkDICOMMetaData *meta = this->MetaData;
-  meta->SetAttributeValue(DC::ImageType, it);
+  meta->Set(DC::ImageType, it);
 
   // These specialized from ImagePixelModule:
   // SamplesPerPixel must be 1
@@ -79,8 +79,8 @@ bool vtkDICOMCTGenerator::GenerateCTImageModule(vtkDICOMMetaData *source)
   // BitsStored must be 12 to 16
 
   // these are mandatory
-  meta->SetAttributeValue(DC::RescaleIntercept, this->RescaleIntercept);
-  meta->SetAttributeValue(DC::RescaleSlope, this->RescaleSlope);
+  meta->Set(DC::RescaleIntercept, this->RescaleIntercept);
+  meta->Set(DC::RescaleSlope, this->RescaleSlope);
 
   // required items: use simple read/write validation
   DC::EnumType required[] = {

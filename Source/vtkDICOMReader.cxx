@@ -419,7 +419,7 @@ void vtkDICOMReader::NoSortFiles(vtkIntArray *files, vtkIntArray *frames)
 
   for (int i = 0; i < numFiles; i++)
   {
-    int numFrames = meta->GetAttributeValue(i, DC::NumberOfFrames).AsInt();
+    int numFrames = meta->Get(i, DC::NumberOfFrames).AsInt();
     numFrames = (numFrames > 0 ? numFrames : 1);
 
     for (int j = 0; j < numFrames; j++)
@@ -467,7 +467,7 @@ bool vtkDICOMReader::ValidateStructure(
       usedFiles[fileIndex]++;
 
       int numFrames =
-        meta->GetAttributeValue(fileIndex, DC::NumberOfFrames).AsInt();
+        meta->Get(fileIndex, DC::NumberOfFrames).AsInt();
       numFrames = (numFrames == 0 ? 1 : numFrames);
 
       if (frameIndex < 0 || frameIndex >= numFrames)
@@ -499,7 +499,7 @@ bool vtkDICOMReader::ValidateStructure(
       if (usedFiles[fileIndex] == 0) { continue; }
 
       const char *errorText = 0;
-      vtkDICOMValue v = meta->GetAttributeValue(fileIndex, *tags);
+      vtkDICOMValue v = meta->Get(fileIndex, *tags);
       int i = 1;
       if (v.IsValid())
       {
@@ -588,9 +588,9 @@ int vtkDICOMReader::ComputeRescaledScalarType(
       int iFile = this->FileIndexArray->GetComponent(iSlice, iComp);
       int iFrame = this->FrameIndexArray->GetComponent(iSlice, iComp);
 
-      double m = this->MetaData->GetAttributeValue(
+      double m = this->MetaData->Get(
         iFile, iFrame, DC::RescaleSlope).AsDouble();
-      double b = this->MetaData->GetAttributeValue(
+      double b = this->MetaData->Get(
         iFile, iFrame, DC::RescaleIntercept).AsDouble();
 
       // sanity check
@@ -786,12 +786,9 @@ int vtkDICOMReader::RequestInformation(
   int frameIndex = this->FrameIndexArray->GetComponent(0, 0);
 
   // image dimensions
-  int columns = this->MetaData->GetAttributeValue(
-    fileIndex, DC::Columns).AsInt();
-  int rows = this->MetaData->GetAttributeValue(
-    fileIndex, DC::Rows).AsInt();
-  int slices = static_cast<int>(
-    this->FileIndexArray->GetNumberOfTuples());
+  int columns = this->MetaData->Get(fileIndex, DC::Columns).AsInt();
+  int rows = this->MetaData->Get(fileIndex, DC::Rows).AsInt();
+  int slices = static_cast<int>(this->FileIndexArray->GetNumberOfTuples());
 
   int extent[6];
   extent[0] = 0;
@@ -825,8 +822,8 @@ int vtkDICOMReader::RequestInformation(
 
   // Set spacing from PixelAspectRatio
   double ratio = 1.0;
-  vtkDICOMValue pixelAspectRatio = this->MetaData->GetAttributeValue(
-    fileIndex, frameIndex, DC::PixelAspectRatio);
+  vtkDICOMValue pixelAspectRatio =
+    this->MetaData->Get(fileIndex, frameIndex, DC::PixelAspectRatio);
   if (pixelAspectRatio.GetNumberOfValues() == 2)
   {
     // use double, even though data is stored as integer strings
@@ -849,8 +846,8 @@ int vtkDICOMReader::RequestInformation(
   }
 
   // Set spacing from PixelSpacing
-  vtkDICOMValue pixelSpacing = this->MetaData->GetAttributeValue(
-    fileIndex, frameIndex, DC::PixelSpacing);
+  vtkDICOMValue pixelSpacing =
+    this->MetaData->Get(fileIndex, frameIndex, DC::PixelSpacing);
   if (pixelSpacing.GetNumberOfValues() == 2)
   {
     double spacing[2];
@@ -868,16 +865,15 @@ int vtkDICOMReader::RequestInformation(
   this->DataOrigin[2] = 0.0;
 
   // get information related to the data type
-  int bitsAllocated = this->MetaData->GetAttributeValue(
-    fileIndex, DC::BitsAllocated).AsInt();
-  int pixelRepresentation = this->MetaData->GetAttributeValue(
-    fileIndex, DC::PixelRepresentation).AsInt();
-  int numComponents = this->MetaData->GetAttributeValue(
-    fileIndex, DC::SamplesPerPixel).AsInt();
-  int planarConfiguration = this->MetaData->GetAttributeValue(
-    fileIndex, DC::PlanarConfiguration).AsInt();
-  int bitsStored = this->MetaData->GetAttributeValue(
-    fileIndex, DC::BitsStored).AsInt();
+  int bitsAllocated =
+    this->MetaData->Get(fileIndex, DC::BitsAllocated).AsInt();
+  int pixelRepresentation =
+    this->MetaData->Get(fileIndex, DC::PixelRepresentation).AsInt();
+  int numComponents =
+    this->MetaData->Get(fileIndex, DC::SamplesPerPixel).AsInt();
+  int planarConfiguration =
+    this->MetaData->Get(fileIndex, DC::PlanarConfiguration).AsInt();
+  int bitsStored = this->MetaData->Get(fileIndex, DC::BitsStored).AsInt();
   if (bitsStored > bitsAllocated || bitsStored <= 0)
   {
     bitsStored = bitsAllocated;
@@ -896,8 +892,7 @@ int vtkDICOMReader::RequestInformation(
   }
   else if (bitsAllocated <= 32)
   {
-    if (this->MetaData->GetAttributeValue(
-          fileIndex, DC::FloatPixelData).IsValid())
+    if (this->MetaData->Get(fileIndex, DC::FloatPixelData).IsValid())
     {
       scalarType = VTK_FLOAT;
     }
@@ -908,8 +903,7 @@ int vtkDICOMReader::RequestInformation(
   }
   else if (bitsAllocated <= 64)
   {
-    if (this->MetaData->GetAttributeValue(
-          fileIndex, DC::DoubleFloatPixelData).IsValid())
+    if (this->MetaData->Get(fileIndex, DC::DoubleFloatPixelData).IsValid())
     {
       scalarType = VTK_DOUBLE;
     }
@@ -924,10 +918,10 @@ int vtkDICOMReader::RequestInformation(
   this->NeedsRescale = false;
   this->FileScalarType = scalarType;
 
-  const vtkDICOMValue& slopeValue = this->MetaData->GetAttributeValue(
-    fileIndex, frameIndex, DC::RescaleSlope);
-  const vtkDICOMValue& interceptValue = this->MetaData->GetAttributeValue(
-    fileIndex, frameIndex, DC::RescaleIntercept);
+  const vtkDICOMValue& slopeValue =
+    this->MetaData->Get(fileIndex, frameIndex, DC::RescaleSlope);
+  const vtkDICOMValue& interceptValue =
+    this->MetaData->Get(fileIndex, frameIndex, DC::RescaleIntercept);
 
   if (slopeValue.IsValid() && interceptValue.IsValid())
   {
@@ -999,8 +993,8 @@ int vtkDICOMReader::RequestInformation(
   // See DICOM Ch. 3 Appendix C 7.6.3.1.2 for equations
 
   // endianness
-  std::string transferSyntax = this->MetaData->GetAttributeValue(
-    fileIndex, DC::TransferSyntaxUID).AsString();
+  std::string transferSyntax =
+    this->MetaData->Get(fileIndex, DC::TransferSyntaxUID).AsString();
 
   bool bigEndian = (transferSyntax == "1.2.840.10008.1.2.2" ||
                     transferSyntax == "1.2.840.113619.5.2");
@@ -1031,10 +1025,10 @@ int vtkDICOMReader::RequestInformation(
   {
     int iFile = this->FileIndexArray->GetComponent(iSlice, 0);
     int iFrame = this->FrameIndexArray->GetComponent(iSlice, 0);
-    vtkDICOMValue pv = this->MetaData->GetAttributeValue(
-      iFile, iFrame, DC::ImagePositionPatient);
-    vtkDICOMValue ov = this->MetaData->GetAttributeValue(
-      fileIndex, frameIndex, DC::ImageOrientationPatient);
+    vtkDICOMValue pv =
+       this->MetaData->Get(iFile, iFrame, DC::ImagePositionPatient);
+    vtkDICOMValue ov =
+      this->MetaData->Get(fileIndex, frameIndex, DC::ImageOrientationPatient);
     if (pv.GetNumberOfValues() == 3 && ov.GetNumberOfValues() == 6)
     {
       pv.GetValues(point, 3);
@@ -1228,10 +1222,8 @@ void vtkDICOMReader::RescaleBuffer(
   void *fileBuffer, void *outputBuffer, vtkIdType bufferSize)
 {
   vtkDICOMMetaData *meta = this->MetaData;
-  double m = meta->GetAttributeValue(
-    fileIdx, frameIdx, DC::RescaleSlope).AsDouble();
-  double b = meta->GetAttributeValue(
-    fileIdx, frameIdx, DC::RescaleIntercept).AsDouble();
+  double m = meta->Get(fileIdx, frameIdx, DC::RescaleSlope).AsDouble();
+  double b = meta->Get(fileIdx, frameIdx, DC::RescaleIntercept).AsDouble();
 
   if (m == 0.0)
   {
@@ -1309,10 +1301,10 @@ void vtkDICOMReader::YBRToRGB(
 
   // get information from the meta data
   vtkDICOMMetaData *meta = this->MetaData;
-  const vtkDICOMValue& photometric = meta->GetAttributeValue(
-    fileIdx, DC::PhotometricInterpretation);
-  const vtkDICOMValue& transferSyntax = meta->GetAttributeValue(
-    fileIdx, DC::TransferSyntaxUID);
+  const vtkDICOMValue& photometric =
+    meta->Get(fileIdx, DC::PhotometricInterpretation);
+  const vtkDICOMValue& transferSyntax =
+    meta->Get(fileIdx, DC::TransferSyntaxUID);
 
   // catch JPEG baseline images with incorrect PhotometricInterpretation
   if (transferSyntax.Matches("1.2.840.10008.1.2.4.50") ||
@@ -1455,8 +1447,8 @@ bool vtkDICOMReader::ReadFileNative(
     return false;
   }
 
-  std::string transferSyntax = this->MetaData->GetAttributeValue(
-    fileIdx, DC::TransferSyntaxUID).AsString();
+  std::string transferSyntax =
+    this->MetaData->Get(fileIdx, DC::TransferSyntaxUID).AsString();
 
   // this will set endiancheck.s to 1 on big endian architectures
   union { char c[2]; short s; } endianCheck = { { 0, 1 } };
@@ -1464,8 +1456,8 @@ bool vtkDICOMReader::ReadFileNative(
   bool fileBigEndian = (transferSyntax == "1.2.840.10008.1.2.2" ||
                         transferSyntax == "1.2.840.113619.5.2");
 
-  int bitsAllocated = this->MetaData->GetAttributeValue(
-    fileIdx, DC::BitsAllocated).AsInt();
+  int bitsAllocated =
+    this->MetaData->Get(fileIdx, DC::BitsAllocated).AsInt();
 
   size_t readSize = bufferSize;
   size_t resultSize = 0;
@@ -1473,8 +1465,8 @@ bool vtkDICOMReader::ReadFileNative(
   {
     vtkDICOMImageCodec codec(transferSyntax);
 
-    unsigned int numFrames = this->MetaData->GetAttributeValue(
-      fileIdx, DC::NumberOfFrames).AsUnsignedInt();
+    unsigned int numFrames =
+      this->MetaData->Get(fileIdx, DC::NumberOfFrames).AsUnsignedInt();
     numFrames = (numFrames == 0 ? 1 : numFrames);
 
     // assume the remainder of the file is all pixel data
@@ -1607,8 +1599,8 @@ bool vtkDICOMReader::ReadFileDelegated(
     DCM_PixelData, pixelData, &count, OFTrue);
   vtkIdType imageSize = static_cast<vtkIdType>(count);
 
-  int bitsAllocated = this->MetaData->GetAttributeValue(
-    fileIdx, DC::BitsAllocated).AsInt();
+  int bitsAllocated =
+    this->MetaData->Get(fileIdx, DC::BitsAllocated).AsInt();
 
   if (bitsAllocated == 12 && imageSize >= bufferSize/2 + (bufferSize+3)/4)
   {
@@ -1685,8 +1677,8 @@ bool vtkDICOMReader::ReadOneFile(
   const char *filename, int fileIdx,
   unsigned char *buffer, vtkIdType bufferSize)
 {
-  std::string transferSyntax = this->MetaData->GetAttributeValue(
-    fileIdx, DC::TransferSyntaxUID).AsString();
+  std::string transferSyntax =
+    this->MetaData->Get(fileIdx, DC::TransferSyntaxUID).AsString();
 
   if (transferSyntax == "1.2.840.10008.1.2"   ||  // Implicit LE
       transferSyntax == "1.2.840.10008.1.20"  ||  // Papyrus Implicit LE
@@ -1753,8 +1745,7 @@ int vtkDICOMReader::RequestData(
       }
       if (iter == files.end())
       {
-        int n = this->MetaData->GetAttributeValue(
-          fileIdx, DC::NumberOfFrames).AsInt();
+        int n = this->MetaData->Get(fileIdx, DC::NumberOfFrames).AsInt();
         n = (n > 0 ? n : 1);
         files.push_back(vtkDICOMReaderFileInfo(fileIdx, n));
         iter = files.end();
@@ -1999,81 +1990,61 @@ void vtkDICOMReader::UpdateMedicalImageProperties()
   vtkMedicalImageProperties *properties = this->MedicalImageProperties;
 
   const vtkDICOMValue *vptr;
-  vptr = &meta->GetAttributeValue(DC::PatientName);
+  vptr = &meta->Get(DC::PatientName);
   properties->SetPatientName(vptr->IsValid() ?
     vptr->AsUTF8String().c_str() : NULL);
-  vptr = &meta->GetAttributeValue(DC::PatientID);
+  vptr = &meta->Get(DC::PatientID);
   properties->SetPatientID(vptr->IsValid() ?
     vptr->AsUTF8String().c_str() : NULL);
-  properties->SetPatientAge(
-    meta->GetAttributeValue(DC::PatientAge).GetCharData());
-  properties->SetPatientSex(
-    meta->GetAttributeValue(DC::PatientSex).GetCharData());
+  properties->SetPatientAge(meta->Get(DC::PatientAge).GetCharData());
+  properties->SetPatientSex(meta->Get(DC::PatientSex).GetCharData());
   properties->SetPatientBirthDate(
-    meta->GetAttributeValue(DC::PatientBirthDate).GetCharData());
-  properties->SetStudyDate(
-    meta->GetAttributeValue(DC::StudyDate).GetCharData());
-  properties->SetAcquisitionDate(
-    meta->GetAttributeValue(DC::AcquisitionDate).GetCharData());
-  properties->SetStudyTime(
-    meta->GetAttributeValue(DC::StudyTime).GetCharData());
-  properties->SetAcquisitionTime(
-    meta->GetAttributeValue(DC::AcquisitionTime).GetCharData());
-  properties->SetImageDate(
-    meta->GetAttributeValue(DC::ContentDate).GetCharData());
-  properties->SetImageTime(
-    meta->GetAttributeValue(DC::ContentTime).GetCharData());
-  properties->SetImageNumber(
-    meta->GetAttributeValue(DC::InstanceNumber).GetCharData());
-  properties->SetSeriesNumber(
-    meta->GetAttributeValue(DC::SeriesNumber).GetCharData());
-  vptr = &meta->GetAttributeValue(DC::SeriesDescription);
+    meta->Get(DC::PatientBirthDate).GetCharData());
+  properties->SetStudyDate(meta->Get(DC::StudyDate).GetCharData());
+  properties->SetAcquisitionDate(meta->Get(DC::AcquisitionDate).GetCharData());
+  properties->SetStudyTime(meta->Get(DC::StudyTime).GetCharData());
+  properties->SetAcquisitionTime(meta->Get(DC::AcquisitionTime).GetCharData());
+  properties->SetImageDate(meta->Get(DC::ContentDate).GetCharData());
+  properties->SetImageTime(meta->Get(DC::ContentTime).GetCharData());
+  properties->SetImageNumber(meta->Get(DC::InstanceNumber).GetCharData());
+  properties->SetSeriesNumber(meta->Get(DC::SeriesNumber).GetCharData());
+  vptr = &meta->Get(DC::SeriesDescription);
   properties->SetSeriesDescription(vptr->IsValid() ?
     vptr->AsUTF8String().c_str() : NULL);
-  vptr = &meta->GetAttributeValue(DC::StudyID);
+  vptr = &meta->Get(DC::StudyID);
   properties->SetStudyID(vptr->IsValid() ?
     vptr->AsUTF8String().c_str() : NULL);
-  vptr = &meta->GetAttributeValue(DC::StudyDescription);
+  vptr = &meta->Get(DC::StudyDescription);
   properties->SetStudyDescription(vptr->IsValid() ?
     vptr->AsUTF8String().c_str() : NULL);
-  properties->SetModality(
-    meta->GetAttributeValue(DC::Modality).GetCharData());
-  vptr = &meta->GetAttributeValue(DC::Manufacturer);
+  properties->SetModality(meta->Get(DC::Modality).GetCharData());
+  vptr = &meta->Get(DC::Manufacturer);
   properties->SetManufacturer(vptr->IsValid() ?
     vptr->AsUTF8String().c_str() : NULL);
-  vptr = &meta->GetAttributeValue(DC::ManufacturerModelName);
+  vptr = &meta->Get(DC::ManufacturerModelName);
   properties->SetManufacturerModelName(vptr->IsValid() ?
     vptr->AsUTF8String().c_str() : NULL);
-  vptr = &meta->GetAttributeValue(DC::StationName);
+  vptr = &meta->Get(DC::StationName);
   properties->SetStationName(vptr->IsValid() ?
     vptr->AsUTF8String().c_str() : NULL);
-  vptr = &meta->GetAttributeValue(DC::InstitutionName);
+  vptr = &meta->Get(DC::InstitutionName);
   properties->SetInstitutionName(vptr->IsValid() ?
     vptr->AsUTF8String().c_str() : NULL);
-  vptr = &meta->GetAttributeValue(DC::ConvolutionKernel);
+  vptr = &meta->Get(DC::ConvolutionKernel);
   properties->SetConvolutionKernel(vptr->IsValid() ?
     vptr->AsUTF8String().c_str() : NULL);
-  properties->SetSliceThickness(
-    meta->GetAttributeValue(DC::SliceThickness).GetCharData());
-  properties->SetKVP(
-    meta->GetAttributeValue(DC::KVP).GetCharData());
-  properties->SetGantryTilt(
-    meta->GetAttributeValue(DC::GantryAngle).GetCharData());
-  properties->SetEchoTime(
-    meta->GetAttributeValue(DC::EchoTime).GetCharData());
-  properties->SetEchoTrainLength(
-    meta->GetAttributeValue(DC::EchoTrainLength).GetCharData());
-  properties->SetRepetitionTime(
-    meta->GetAttributeValue(DC::RepetitionTime).GetCharData());
-  properties->SetExposureTime(
-    meta->GetAttributeValue(DC::ExposureTime).GetCharData());
-  properties->SetXRayTubeCurrent(
-    meta->GetAttributeValue(DC::XRayTubeCurrent).GetCharData());
-  properties->SetExposure(
-    meta->GetAttributeValue(DC::Exposure).GetCharData());
+  properties->SetSliceThickness(meta->Get(DC::SliceThickness).GetCharData());
+  properties->SetKVP(meta->Get(DC::KVP).GetCharData());
+  properties->SetGantryTilt(meta->Get(DC::GantryAngle).GetCharData());
+  properties->SetEchoTime(meta->Get(DC::EchoTime).GetCharData());
+  properties->SetEchoTrainLength(meta->Get(DC::EchoTrainLength).GetCharData());
+  properties->SetRepetitionTime(meta->Get(DC::RepetitionTime).GetCharData());
+  properties->SetExposureTime(meta->Get(DC::ExposureTime).GetCharData());
+  properties->SetXRayTubeCurrent(meta->Get(DC::XRayTubeCurrent).GetCharData());
+  properties->SetExposure(meta->Get(DC::Exposure).GetCharData());
 
-  const vtkDICOMValue& center = meta->GetAttributeValue(DC::WindowCenter);
-  const vtkDICOMValue& width = meta->GetAttributeValue(DC::WindowWidth);
+  const vtkDICOMValue& center = meta->Get(DC::WindowCenter);
+  const vtkDICOMValue& width = meta->Get(DC::WindowWidth);
 
   int n = static_cast<int>(center.GetNumberOfValues());
   int m = static_cast<int>(width.GetNumberOfValues());
@@ -2085,8 +2056,7 @@ void vtkDICOMReader::UpdateMedicalImageProperties()
       center.GetDouble(i), width.GetDouble(i));
   }
 
-  const vtkDICOMValue& comment =
-    meta->GetAttributeValue(DC::WindowCenterWidthExplanation);
+  const vtkDICOMValue& comment = meta->Get(DC::WindowCenterWidthExplanation);
   m = static_cast<int>(comment.GetNumberOfValues());
   m = (n < m ? n : m);
   for (int j = 0; j < m; j++)

@@ -471,11 +471,11 @@ void niftitodicom_convert_one(
   // set the metadata supplied on the command line
   if (options->series_description)
   {
-    meta->SetAttributeValue(DC::SeriesDescription, options->series_description);
+    meta->Set(DC::SeriesDescription, options->series_description);
   }
   if (options->series_number)
   {
-    meta->SetAttributeValue(DC::SeriesNumber, options->series_number);
+    meta->Set(DC::SeriesNumber, options->series_number);
   }
 
   // read the NIFTI file
@@ -735,15 +735,15 @@ void niftitodicom_convert_one(
   // mix in the NIFTI header information
   if (xformCode == vtkNIFTIHeader::XFormTalairach)
   {
-    meta->SetAttributeValue(DC::FrameOfReferenceUID, "1.2.840.10008.1.4.1.1");
+    meta->Set(DC::FrameOfReferenceUID, "1.2.840.10008.1.4.1.1");
   }
   else if (xformCode == vtkNIFTIHeader::XFormMNI152)
   {
-    meta->SetAttributeValue(DC::FrameOfReferenceUID, "1.2.840.10008.1.4.1.15");
+    meta->Set(DC::FrameOfReferenceUID, "1.2.840.10008.1.4.1.15");
   }
   else if (xformCode != vtkNIFTIHeader::XFormScannerAnat)
   {
-    meta->RemoveAttribute(DC::FrameOfReferenceUID);
+    meta->Remove(DC::FrameOfReferenceUID);
   }
 
   // make the generator

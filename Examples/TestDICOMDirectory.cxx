@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
   {
     const vtkDICOMItem& patientItem = ddir->GetPatientRecord(i);
     cout << "Patient " << i << ": "
-         << patientItem.GetAttributeValue(DC::PatientID).AsString() << "\n";
+         << patientItem.Get(DC::PatientID).AsString() << "\n";
     vtkIntArray *studies = ddir->GetStudiesForPatient(i);
     vtkIdType m = studies->GetMaxId() + 1;
     if (i == n-1 && m > 0)
@@ -71,11 +71,9 @@ int main(int argc, char *argv[])
       const vtkDICOMItem& studyItem = ddir->GetStudyRecord(j);
       const vtkDICOMItem& studyPItem = ddir->GetPatientRecordForStudy(j);
       cout << " Study " << j << ": \""
-           << studyItem.GetAttributeValue(DC::StudyDescription).AsString()
-           << "\" \""
-           << studyPItem.GetAttributeValue(DC::PatientName).AsString()
-           << "\" "
-           << studyItem.GetAttributeValue(DC::StudyDate).AsString() << "\n";
+           << studyItem.Get(DC::StudyDescription).AsString() << "\" \""
+           << studyPItem.Get(DC::PatientName).AsString() << "\" "
+           << studyItem.Get(DC::StudyDate).AsString() << "\n";
       int k0 = ddir->GetFirstSeriesForStudy(j);
       int k1 = ddir->GetLastSeriesForStudy(j);
       if (i == n-1 && jj == m-1)
@@ -86,11 +84,9 @@ int main(int argc, char *argv[])
       {
         const vtkDICOMItem& seriesItem = ddir->GetSeriesRecord(k);
         cout << "  Series " << k << ": \""
-             << seriesItem.GetAttributeValue(DC::SeriesDescription).AsString()
-             << "\" "
-             << seriesItem.GetAttributeValue(DC::SeriesNumber).AsString()
-             << " "
-             << seriesItem.GetAttributeValue(DC::Modality).AsString() << "\n";
+             << seriesItem.Get(DC::SeriesDescription).AsString() << "\" "
+             << seriesItem.Get(DC::SeriesNumber).AsString() << " "
+             << seriesItem.Get(DC::Modality).AsString() << "\n";
         vtkStringArray *a = ddir->GetFileNamesForSeries(k);
         for (vtkIdType kk = 0; kk < a->GetNumberOfValues(); kk++)
         {

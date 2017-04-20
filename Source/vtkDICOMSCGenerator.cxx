@@ -47,23 +47,22 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
   std::string bia;
   if (source)
   {
-    bia = source->GetAttributeValue(
-      DC::BurnedInAnnotation).AsString();
+    bia = source->Get(DC::BurnedInAnnotation).AsString();
   }
   if (bia != "YES")
   {
     bia = "NO";
   }
   vtkDICOMMetaData *meta = this->MetaData;
-  meta->SetAttributeValue(DC::BurnedInAnnotation, bia);
+  meta->Set(DC::BurnedInAnnotation, bia);
 
   // These are mandatory, and must be set to these values
-  if (meta->GetAttributeValue(DC::BitsStored).AsInt() != 1)
+  if (meta->Get(DC::BitsStored).AsInt() != 1)
   {
-    meta->SetAttributeValue(DC::PresentationLUTShape, "IDENTITY");
-    meta->SetAttributeValue(DC::RescaleIntercept, 0.0);
-    meta->SetAttributeValue(DC::RescaleSlope, 1.0);
-    meta->SetAttributeValue(DC::RescaleType, "US");
+    meta->Set(DC::PresentationLUTShape, "IDENTITY");
+    meta->Set(DC::RescaleIntercept, 0.0);
+    meta->Set(DC::RescaleSlope, 1.0);
+    meta->Set(DC::RescaleType, "US");
   }
 
   // get dimensions of the data set: x,y,z,t,v
@@ -72,7 +71,7 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
   double *spacing = this->Spacing;
 
   // set multi-frame information
-  meta->SetAttributeValue(DC::NumberOfFrames, nframes);
+  meta->Set(DC::NumberOfFrames, nframes);
 
   // build the FrameIncrementPointer and the vectors
   vtkDICOMTag pointers[2];
@@ -93,26 +92,22 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
   if (dims[3] > 0 || (dims[2] == 0 && nframes == 1))
   {
     pointers[npointers++] = DC::FrameTimeVector;
-    meta->SetAttributeValue(
-      DC::FrameTimeVector,
+    meta->Set(DC::FrameTimeVector,
       vtkDICOMValue(vtkDICOMVR::DS, tvector, nframes));
   }
   if (dims[2] > 0)
   {
     pointers[npointers++] = DC::SliceLocationVector;
-    meta->SetAttributeValue(DC::SliceLocationVector,
+    meta->Set(DC::SliceLocationVector,
       vtkDICOMValue(vtkDICOMVR::DS, zvector, nframes));
   }
 
-  meta->RemoveAttribute(DC::FrameTime);
-  meta->SetAttributeValue(
-    DC::FrameIncrementPointer,
+  meta->Remove(DC::FrameTime);
+  meta->Set(DC::FrameIncrementPointer,
     vtkDICOMValue(vtkDICOMVR::AT, pointers, npointers));
 
-  meta->RemoveAttribute(DC::PixelAspectRatio);
-  meta->SetAttributeValue(
-    DC::PixelSpacing,
-    vtkDICOMValue(vtkDICOMVR::DS, spacing, 2));
+  meta->Remove(DC::PixelAspectRatio);
+  meta->Set(DC::PixelSpacing, vtkDICOMValue(vtkDICOMVR::DS, spacing, 2));
 
   delete [] zvector;
   delete [] tvector;
@@ -160,20 +155,20 @@ bool vtkDICOMSCGenerator::GenerateSCEquipmentModule(vtkDICOMMetaData *source)
   std::string ct;
   if (source)
   {
-    ct = source->GetAttributeValue(DC::ConversionType).AsString();
+    ct = source->Get(DC::ConversionType).AsString();
   }
   if (ct == "")
   {
     ct = "WSD"; // workstation
   }
   vtkDICOMMetaData *meta = this->MetaData;
-  meta->SetAttributeValue(DC::ConversionType, ct);
+  meta->Set(DC::ConversionType, ct);
 
   // Modality is optional for Secondary Capture
-  std::string m = meta->GetAttributeValue(DC::Modality).AsString();
+  std::string m = meta->Get(DC::Modality).AsString();
   if (m == "" || m == "OT")
   {
-    meta->RemoveAttribute(DC::Modality);
+    meta->Remove(DC::Modality);
   }
 
   // optional and conditional: direct copy of values with no checks
