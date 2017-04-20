@@ -489,10 +489,10 @@ void vtkDICOMFileSorter::Execute()
       vtkSmartPointer<vtkStringArray>::New();
     if (d.GetError() == 0)
     {
-      int n = d.GetNumberOfFiles();
+      int n = d.GetNumberOfEntries();
       for (int i = 0; i < n; i++)
       {
-        const char *filename = d.GetFile(i);
+        const char *filename = d.GetEntry(i);
         if (vtkDICOMUtilities::PatternMatches(pattern.c_str(), filename) &&
             !d.IsDirectory(i))
         {

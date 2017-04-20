@@ -64,10 +64,10 @@ public:
 
   //@{
   //! Get the number of files and subdirectories in the directory.
-  int GetNumberOfFiles() { return this->NumberOfFiles; }
+  int GetNumberOfEntries() { return this->NumberOfEntries; }
 
   //! Get the name of the ith file or subdirectory.
-  const char *GetFile(int i);
+  const char *GetEntry(int i);
 
   //! Check if the list entry is a directory.
   bool IsDirectory(int i);
@@ -133,7 +133,7 @@ private:
 
   std::string Name;
   int Error;
-  int NumberOfFiles;
+  int NumberOfEntries;
   Entry *Entries;
 };
 

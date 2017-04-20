@@ -1072,10 +1072,10 @@ void dicomtonifti_files_and_dirs(
     else
     {
       files->Initialize();
-      unsigned long nf = directory.GetNumberOfFiles();
+      unsigned long nf = directory.GetNumberOfEntries();
       for (unsigned long j = 0; j < nf; j++)
       {
-        const char *dirfile = directory.GetFile(j);
+        const char *dirfile = directory.GetEntry(j);
         if (dirfile[0] != '.' || (dirfile[1] != '\0' &&
             (dirfile[1] != '.' || dirfile[2] != '\0')))
         {

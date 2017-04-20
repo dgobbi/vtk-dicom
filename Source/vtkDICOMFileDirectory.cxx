@@ -51,7 +51,7 @@ struct vtkDICOMFileDirectory::Entry
 
 //----------------------------------------------------------------------------
 vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
-  : Name(dirname), Error(0), NumberOfFiles(0), Entries(0)
+  : Name(dirname), Error(0), NumberOfEntries(0), Entries(0)
 {
 #ifdef _WIN32
   vtkDICOMFilePath path(dirname);
@@ -164,11 +164,11 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
 
 //----------------------------------------------------------------------------
 vtkDICOMFileDirectory::vtkDICOMFileDirectory(const vtkDICOMFileDirectory& o)
-  : Name(o.Name), Error(o.Error), NumberOfFiles(0), Entries(0)
+  : Name(o.Name), Error(o.Error), NumberOfEntries(0), Entries(0)
 {
-  if (o.Entries && o.NumberOfFiles)
+  if (o.Entries && o.NumberOfEntries)
   {
-    for (int i = 0; i < o.NumberOfFiles; i++)
+    for (int i = 0; i < o.NumberOfEntries; i++)
     {
       const Entry& e = o.Entries[i];
       this->AddEntry(e.Name.c_str(), e.Flags, e.Mask);
@@ -186,12 +186,12 @@ vtkDICOMFileDirectory& vtkDICOMFileDirectory::operator=(
 
     this->Name = o.Name;
     this->Error = o.Error;
-    this->NumberOfFiles = 0;
+    this->NumberOfEntries = 0;
     this->Entries = 0;
 
-    if (o.Entries && o.NumberOfFiles)
+    if (o.Entries && o.NumberOfEntries)
     {
-      for (int i = 0; i < o.NumberOfFiles; i++)
+      for (int i = 0; i < o.NumberOfEntries; i++)
       {
         const Entry& e = o.Entries[i];
         this->AddEntry(e.Name.c_str(), e.Flags, e.Mask);
@@ -209,9 +209,9 @@ vtkDICOMFileDirectory::~vtkDICOMFileDirectory()
 }
 
 //----------------------------------------------------------------------------
-const char *vtkDICOMFileDirectory::GetFile(int i)
+const char *vtkDICOMFileDirectory::GetEntry(int i)
 {
-  if (i < 0 || i >= this->NumberOfFiles)
+  if (i < 0 || i >= this->NumberOfEntries)
   {
     return 0;
   }
@@ -221,7 +221,7 @@ const char *vtkDICOMFileDirectory::GetFile(int i)
 //----------------------------------------------------------------------------
 bool vtkDICOMFileDirectory::IsDirectory(int i)
 {
-  if (i < 0 || i >= this->NumberOfFiles)
+  if (i < 0 || i >= this->NumberOfEntries)
   {
     return false;
   }
@@ -236,7 +236,7 @@ bool vtkDICOMFileDirectory::IsDirectory(int i)
 //----------------------------------------------------------------------------
 bool vtkDICOMFileDirectory::IsSpecial(int i)
 {
-  if (i < 0 || i >= this->NumberOfFiles)
+  if (i < 0 || i >= this->NumberOfEntries)
   {
     return false;
   }
@@ -251,7 +251,7 @@ bool vtkDICOMFileDirectory::IsSpecial(int i)
 //----------------------------------------------------------------------------
 bool vtkDICOMFileDirectory::IsSymlink(int i)
 {
-  if (i < 0 || i >= this->NumberOfFiles)
+  if (i < 0 || i >= this->NumberOfEntries)
   {
     return false;
   }
@@ -266,7 +266,7 @@ bool vtkDICOMFileDirectory::IsSymlink(int i)
 //----------------------------------------------------------------------------
 bool vtkDICOMFileDirectory::IsBroken(int i)
 {
-  if (i < 0 || i >= this->NumberOfFiles)
+  if (i < 0 || i >= this->NumberOfEntries)
   {
     return false;
   }
@@ -290,7 +290,7 @@ bool vtkDICOMFileDirectory::IsBroken(int i)
 //----------------------------------------------------------------------------
 bool vtkDICOMFileDirectory::IsHidden(int i)
 {
-  if (i < 0 || i >= this->NumberOfFiles)
+  if (i < 0 || i >= this->NumberOfEntries)
   {
     return false;
   }
@@ -312,7 +312,7 @@ bool vtkDICOMFileDirectory::IsHidden(int i)
 void vtkDICOMFileDirectory::AddEntry(
   const char *name, unsigned short flags, unsigned short mask)
 {
-  int n = this->NumberOfFiles;
+  int n = this->NumberOfEntries;
   if (this->Entries == 0)
   {
     this->Entries = new Entry[4];
@@ -332,14 +332,14 @@ void vtkDICOMFileDirectory::AddEntry(
   this->Entries[n].Flags = flags;
   this->Entries[n].Mask= mask;
 
-  this->NumberOfFiles++;
+  this->NumberOfEntries++;
 }
 
 //----------------------------------------------------------------------------
 #ifndef _WIN32
 void vtkDICOMFileDirectory::StatEntry(int i)
 {
-  if (i >= 0 && i < this->NumberOfFiles)
+  if (i >= 0 && i < this->NumberOfEntries)
   {
     struct stat fs;
     vtkDICOMFilePath path(this->Name);
@@ -379,7 +379,7 @@ void vtkDICOMFileDirectory::StatEntry(int)
 #ifndef _WIN32
 void vtkDICOMFileDirectory::LinkStatEntry(int i)
 {
-  if (i >= 0 && i < this->NumberOfFiles)
+  if (i >= 0 && i < this->NumberOfEntries)
   {
     struct stat fs;
     vtkDICOMFilePath path(this->Name);

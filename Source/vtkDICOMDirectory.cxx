@@ -2091,10 +2091,10 @@ void vtkDICOMDirectory::ProcessDirectory(
     }
   }
 
-  int n = d.GetNumberOfFiles();
+  int n = d.GetNumberOfEntries();
   for (int i = 0; i < n; i++)
   {
-    const char *fname = d.GetFile(i);
+    const char *fname = d.GetEntry(i);
     if ((fname[0] != '.' || (fname[1] != '\0' &&
          (fname[1] != '.' || fname[2] != '\0'))) &&
         strcmp(fname, "DICOMDIR") != 0)
