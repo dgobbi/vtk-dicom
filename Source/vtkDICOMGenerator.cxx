@@ -1444,8 +1444,8 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *source)
 
   // remove attributes that conflict with this module
   vtkDICOMMetaData *meta = this->MetaData;
-  meta->Remove(DC::PixelAspectRatio);
-  meta->Remove(DC::PatientOrientation);
+  meta->Erase(DC::PixelAspectRatio);
+  meta->Erase(DC::PatientOrientation);
 
   meta->Set(DC::PixelSpacing, vtkDICOMValue(vtkDICOMVR::DS, spacing, 2));
 

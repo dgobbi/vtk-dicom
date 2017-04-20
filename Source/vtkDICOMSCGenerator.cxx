@@ -102,11 +102,11 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
       vtkDICOMValue(vtkDICOMVR::DS, zvector, nframes));
   }
 
-  meta->Remove(DC::FrameTime);
+  meta->Erase(DC::FrameTime);
   meta->Set(DC::FrameIncrementPointer,
     vtkDICOMValue(vtkDICOMVR::AT, pointers, npointers));
 
-  meta->Remove(DC::PixelAspectRatio);
+  meta->Erase(DC::PixelAspectRatio);
   meta->Set(DC::PixelSpacing, vtkDICOMValue(vtkDICOMVR::DS, spacing, 2));
 
   delete [] zvector;
@@ -168,7 +168,7 @@ bool vtkDICOMSCGenerator::GenerateSCEquipmentModule(vtkDICOMMetaData *source)
   std::string m = meta->Get(DC::Modality).AsString();
   if (m == "" || m == "OT")
   {
-    meta->Remove(DC::Modality);
+    meta->Erase(DC::Modality);
   }
 
   // optional and conditional: direct copy of values with no checks

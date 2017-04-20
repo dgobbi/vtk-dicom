@@ -378,7 +378,7 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
     strncpy(sd, this->SeriesDescription, 64);
     sd[64] = '\0';
     meta->Set(DC::SeriesDescription, sd);
-    meta->Remove(DC::SeriesDescriptionCodeSequence);
+    meta->Erase(DC::SeriesDescriptionCodeSequence);
   }
 
   // set the image type from the member variable

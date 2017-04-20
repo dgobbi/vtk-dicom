@@ -42,10 +42,10 @@ int main(int argc, char *argv[])
   metaData->Set(DC::Modality, "MR");
   modality = metaData->Get(DC::Modality).AsString();
   TestAssert(modality == "MR");
-  metaData->Remove(DC::Modality);
+  metaData->Erase(DC::Modality);
   TestAssert(!metaData->Has(DC::Modality));
   TestAssert(metaData->GetNumberOfDataElements() == 0);
-  metaData->Remove(DC::Modality);
+  metaData->Erase(DC::Modality);
   metaData->Clear();
   TestAssert(metaData->GetNumberOfDataElements() == 0);
   metaData->Set(DC::Modality, "NM");
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
   TestAssert(modality == "MR");
   TestAssert(metaData->GetNumberOfDataElements() == 1);
   TestAssert(metaData->GetNumberOfInstances() == 3);
-  metaData->Remove(DC::Modality);
+  metaData->Erase(DC::Modality);
   TestAssert(metaData->GetNumberOfDataElements() == 0);
   metaData->Initialize();
   TestAssert(metaData->GetNumberOfInstances() == 1);

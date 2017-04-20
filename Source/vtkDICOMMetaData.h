@@ -101,9 +101,9 @@ public:
     return this->Has(tag); }
 
   //! Erase an attribute.
-  void Remove(vtkDICOMTag tag);
+  void Erase(vtkDICOMTag tag);
   void RemoveAttribute(vtkDICOMTag tag) {
-    this->Remove(tag); }
+    this->Erase(tag); }
   //@}
 
   //@{

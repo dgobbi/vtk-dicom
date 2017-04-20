@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     meta->Set(DC::ConceptNameCodeSequence, i);
     // try accessing it and removing it
     meta->Get(vtkDICOMTagPath(DC::ConceptNameCodeSequence, 0, DC::CodeMeaning));
-    meta->Remove(DC::ConceptNameCodeSequence);
+    meta->Erase(DC::ConceptNameCodeSequence);
   }
   {
     // low-level constructor (not for general use)

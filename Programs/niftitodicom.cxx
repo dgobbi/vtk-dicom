@@ -743,7 +743,7 @@ void niftitodicom_convert_one(
   }
   else if (xformCode != vtkNIFTIHeader::XFormScannerAnat)
   {
-    meta->Remove(DC::FrameOfReferenceUID);
+    meta->Erase(DC::FrameOfReferenceUID);
   }
 
   // make the generator

@@ -274,15 +274,15 @@ int vtkDICOMApplyPalette::RequestInformation(
     outMeta->Set(DC::BitsAllocated, 8);
     outMeta->Set(DC::BitsStored, 8);
     outMeta->Set(DC::HighBit, 7);
-    outMeta->Remove(DC::RedPaletteColorLookupTableDescriptor);
-    outMeta->Remove(DC::GreenPaletteColorLookupTableDescriptor);
-    outMeta->Remove(DC::BluePaletteColorLookupTableDescriptor);
-    outMeta->Remove(DC::RedPaletteColorLookupTableData);
-    outMeta->Remove(DC::GreenPaletteColorLookupTableData);
-    outMeta->Remove(DC::BluePaletteColorLookupTableData);
-    outMeta->Remove(DC::SegmentedRedPaletteColorLookupTableData);
-    outMeta->Remove(DC::SegmentedGreenPaletteColorLookupTableData);
-    outMeta->Remove(DC::SegmentedBluePaletteColorLookupTableData);
+    outMeta->Erase(DC::RedPaletteColorLookupTableDescriptor);
+    outMeta->Erase(DC::GreenPaletteColorLookupTableDescriptor);
+    outMeta->Erase(DC::BluePaletteColorLookupTableDescriptor);
+    outMeta->Erase(DC::RedPaletteColorLookupTableData);
+    outMeta->Erase(DC::GreenPaletteColorLookupTableData);
+    outMeta->Erase(DC::BluePaletteColorLookupTableData);
+    outMeta->Erase(DC::SegmentedRedPaletteColorLookupTableData);
+    outMeta->Erase(DC::SegmentedGreenPaletteColorLookupTableData);
+    outMeta->Erase(DC::SegmentedBluePaletteColorLookupTableData);
   }
 
   return 1;

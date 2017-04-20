@@ -148,7 +148,7 @@ void vtkDICOMMetaData::SetFrameIndexArray(vtkIntArray *a)
 
 //----------------------------------------------------------------------------
 // Erase an element from the hash table
-void vtkDICOMMetaData::Remove(vtkDICOMTag tag)
+void vtkDICOMMetaData::Erase(vtkDICOMTag tag)
 {
   unsigned int m = METADATA_HASH_SIZE - 1;
   unsigned int i = (tag.ComputeHash() & m);
@@ -528,7 +528,7 @@ int vtkDICOMMetaData::FindItemsOrInsert(
     if (vr != vtkDICOMVR::SQ && vr != vtkDICOMVR::UN)
     {
       // we just inserted a non-SQ value, remove it
-      this->Remove(tag);
+      this->Erase(tag);
       return 0;
     }
   }
@@ -645,7 +645,7 @@ void vtkDICOMMetaData::Set(vtkDICOMTag tag, const vtkDICOMValue& v)
   }
   else
   {
-    this->Remove(tag);
+    this->Erase(tag);
   }
 }
 
@@ -712,7 +712,7 @@ void vtkDICOMMetaData::Set(int idx, vtkDICOMTag tag, const vtkDICOMValue& v)
       }
       if (!valid)
       {
-        this->Remove(tag);
+        this->Erase(tag);
       }
     }
   }
@@ -738,7 +738,7 @@ void vtkDICOMMetaData::Set(int idx, vtkDICOMTag tag, const vtkDICOMValue& v)
   }
   else if (!vptr->IsValid())
   {
-    this->Remove(tag);
+    this->Erase(tag);
   }
 }
 
