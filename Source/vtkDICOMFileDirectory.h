@@ -67,6 +67,9 @@ public:
   int GetNumberOfEntries() { return this->NumberOfEntries; }
 
   //! Get the name of the ith file or subdirectory.
+  /*!
+   *  The entries do not include "." or "..".
+   */
   const char *GetEntry(int i);
 
   //! Check if the list entry is a directory.
