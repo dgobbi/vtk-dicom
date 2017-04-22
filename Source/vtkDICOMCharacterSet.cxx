@@ -314,10 +314,10 @@ static const char *SJIS_Names[] = {
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 29;
-static CharsetInfo Charsets[29] = {
+const int CHARSET_TABLE_SIZE = 30;
+static CharsetInfo Charsets[30] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
-    "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_IR_6_Names },
+    "ISO_IR 6",   "ISO 2022 IR 6",   "",   ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
     "ISO_IR 100", "ISO 2022 IR 100", "-A", ISO_IR_100_Names },
   { vtkDICOMCharacterSet::ISO_IR_101, 0,     // iso-8859-2, central europe
@@ -340,10 +340,12 @@ static CharsetInfo Charsets[29] = {
     "ISO_IR 166", "ISO 2022 IR 166", "-T", ISO_IR_166_Names },
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, katakana
     "ISO_IR 13",  "ISO 2022 IR 13",  ")I", ISO_IR_13_Names },
-  { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // JIS X 0201, katakana
-    "ISO_IR 13",  "ISO 2022 IR 13",  "(I", NULL },
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, romaji
-    "ISO_IR 13",  "ISO 2022 IR 13",  "(J", NULL },
+    "ISO_IR 14",  "ISO 2022 IR 14",  "(J", NULL },
+  { vtkDICOMCharacterSet::ISO_2022_IR_6, 0,  // ascii
+    "ISO_IR 6",   "ISO 2022 IR 6",   "(B", NULL },
+  { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // JIS X 0201, katakana in G0
+    "ISO_IR 13",  "ISO 2022 IR 13",  "(I", NULL },
   { vtkDICOMCharacterSet::ISO_IR_192, 0,     // utf-8
     "ISO_IR 192", "",                "",   ISO_IR_192_Names },
   { vtkDICOMCharacterSet::GB18030, 0,        // chinese multibyte
@@ -10737,7 +10739,8 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
     {
       EUCKRToUTF8(&text[i], j-i, s);
     }
-    else if (charset == ISO_2022_IR_13 ||
+    else if (charset == ISO_2022_IR_6 ||
+             charset == ISO_2022_IR_13 ||
              charset == ISO_2022_IR_87 ||
              charset == ISO_2022_IR_159)
     {
@@ -10789,7 +10792,9 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
 
             if (charset == ISO_IR_13 &&
                 Charsets[k].EscapeCode[0] == ')' &&
-                (oldcharset == ISO_2022_IR_87 ||
+                (oldcharset == ISO_2022_IR_6 ||
+                 oldcharset == ISO_2022_IR_13 ||
+                 oldcharset == ISO_2022_IR_87 ||
                  oldcharset == ISO_2022_IR_159))
             {
               // The ISO_IR_13 katakana go in G1, so let's keep the
