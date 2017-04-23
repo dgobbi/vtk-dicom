@@ -312,12 +312,12 @@ bool dicomcli_readkey_query(
       }
       else
       {
-        vtkDICOMSequence seq = query->GetAttributeValue(tagPath);
+        vtkDICOMSequence seq = query->Get(tagPath);
         vtkDICOMItem item = seq.GetItem(0);
         tag = item.ResolvePrivateTagForWriting(tag, creator);
         vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
         vtkDICOMTagPath ctagPath = path_append(tagPath, ctag);
-        query->SetAttributeValue(ctagPath, creator);
+        query->Set(ctagPath, creator);
       }
     }
 
@@ -327,9 +327,9 @@ bool dicomcli_readkey_query(
     if (s < n && (cp[s] == '/' || cp[s] == '\\'))
     {
       // create an item for the next level of depth
-      if (!query->GetAttributeValue(tagPath).IsValid())
+      if (!query->Get(tagPath).IsValid())
       {
-        query->SetAttributeValue(tagPath, vtkDICOMSequence(1));
+        query->Set(tagPath, vtkDICOMSequence(1));
       }
       s++;
       tagDepth++;
@@ -378,7 +378,7 @@ bool dicomcli_readkey_query(
   vtkDICOMTagPath tmpPath = tagPath;
   while (tmpPath.HasTail())
   {
-    pitem = pitem->GetAttributeValue(tag).GetSequenceData();
+    pitem = pitem->Get(tag).GetSequenceData();
     tmpPath = tmpPath.GetTail();
     tag = tmpPath.GetHead();
   }
@@ -485,10 +485,10 @@ bool dicomcli_readkey_query(
   if (valueStart == valueEnd)
   {
     // only overwrite previous value if '=' was explicitly used
-    if (keyHasAssignment || !query->GetAttributeValue(tagPath).IsValid())
+    if (keyHasAssignment || !query->Get(tagPath).IsValid())
     {
       // empty value (always matches, always retrieved)
-      query->SetAttributeValue(tagPath, vtkDICOMValue(vr));
+      query->Set(tagPath, vtkDICOMValue(vr));
     }
   }
   else if (valueContainsQuotes)
@@ -505,23 +505,23 @@ bool dicomcli_readkey_query(
     }
     if (vr.HasSpecificCharacterSet())
     {
-      query->SetAttributeValue(tagPath, vtkDICOMValue(vr, cs, sval));
+      query->Set(tagPath, vtkDICOMValue(vr, cs, sval));
     }
     else
     {
-      query->SetAttributeValue(tagPath, vtkDICOMValue(vr, sval));
+      query->Set(tagPath, vtkDICOMValue(vr, sval));
     }
   }
   else
   {
     if (vr.HasSpecificCharacterSet())
     {
-    query->SetAttributeValue(tagPath,
+    query->Set(tagPath,
       vtkDICOMValue(vr, cs, &cp[valueStart], valueEnd - valueStart));
     }
     else
     {
-    query->SetAttributeValue(tagPath,
+    query->Set(tagPath,
       vtkDICOMValue(vr, &cp[valueStart], valueEnd - valueStart));
     }
   }
@@ -690,7 +690,7 @@ bool dicomcli_readuids(
   {
     // add the key and value to the query
     vtkDICOMTagPath tagPath = ql2[0];
-    query->SetAttributeValue(tagPath, val);
+    query->Set(tagPath, val);
 
     if (ql && std::find(ql->begin(), ql->end(), tagPath) == ql->end())
     {
@@ -708,16 +708,16 @@ void dicomcli_error_helper(vtkDICOMMetaData *meta, int i)
     // print some useful identifying information about a DICOM file
     fprintf(stderr, "Cannot read the DICOM file for the following entry:\n");
     fprintf(stderr, "StudyInstanceUID=\"%s\",\n",
-      meta->GetAttributeValue(DC::StudyInstanceUID).AsString().c_str());
+      meta->Get(DC::StudyInstanceUID).AsString().c_str());
     fprintf(stderr, "SeriesInstanceUID=\"%s\",\n",
-      meta->GetAttributeValue(DC::SeriesInstanceUID).AsString().c_str());
+      meta->Get(DC::SeriesInstanceUID).AsString().c_str());
     fprintf(stderr, "PatientID=\"%s\", StudyDate=\"%s\", StudyTime=\"%s\",\n",
-      meta->GetAttributeValue(DC::PatientID).AsString().c_str(),
-      meta->GetAttributeValue(DC::StudyDate).AsString().c_str(),
-      meta->GetAttributeValue(DC::StudyTime).AsString().c_str());
+      meta->Get(DC::PatientID).AsString().c_str(),
+      meta->Get(DC::StudyDate).AsString().c_str(),
+      meta->Get(DC::StudyTime).AsString().c_str());
     fprintf(stderr, "StudyID=\"%s\", SeriesNumber=\"%s\", InstanceNumber=\"%s\"\n",
-      meta->GetAttributeValue(DC::StudyID).AsString().c_str(),
-      meta->GetAttributeValue(DC::SeriesNumber).AsString().c_str(),
-      meta->GetAttributeValue(i, DC::InstanceNumber).AsString().c_str());
+      meta->Get(DC::StudyID).AsString().c_str(),
+      meta->Get(DC::SeriesNumber).AsString().c_str(),
+      meta->Get(i, DC::InstanceNumber).AsString().c_str());
   }
 }
