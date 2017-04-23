@@ -16,11 +16,11 @@ A short example of how this is done is as follows:
 
   // Create a meta data object with some desired attributes.
   vtkNew<vtkDICOMMetaData> meta;
-  meta->SetAttributeValue(DC::PatientName, "Doe^John");
-  meta->SetAttributeValue(DC::ScanningSequence, "GR"); // Gradient Recalled
-  meta->SetAttributeValue(DC::SequenceVatiant, "SP"); // Spoiled
-  meta->SetAttributeValue(DC::ScanOptions, "");
-  meta->SetAttributeValue(DC::MRAcquisitionType, "2D");
+  meta->Set(DC::PatientName, "Doe^John");
+  meta->Set(DC::ScanningSequence, "GR"); // Gradient Recalled
+  meta->Set(DC::SequenceVatiant, "SP"); // Spoiled
+  meta->Set(DC::ScanOptions, "");
+  meta->Set(DC::MRAcquisitionType, "2D");
 
   // Plug the generator and meta data into the writer.
   vtkNew<vtkDICOMWriter> writer;

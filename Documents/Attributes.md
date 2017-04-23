@@ -8,9 +8,10 @@ The meta data can be loaded from a DICOM file in two ways: either via
 the vtkDICOMReader class (which also reads the image data), or via the
 vtkDICOMParser class (which reads only the meta data).  These classes
 store the meta data in a vtkDICOMMetaData object, which provides storage
-for all of the files in the DICOM series. The GetAttributeValue() method
-for this class accepts a file index as a parameter, to allow one to
-choose the file in the series for which to get the attribute.
+for all of the files in the DICOM series. The Get() method for this class,
+which returns the value of a DICOM attribute, accepts a file index as a
+parameter.  This allows one to choose the file in the series for which
+to get the attribute.
 
 ~~~~~~~~{.cpp}
   // Get meta data from a vtkDICOMReader
@@ -21,14 +22,14 @@ choose the file in the series for which to get the attribute.
   int n = meta->GetNumberOfInstances();
 
   // Get EchoTime attribute for first file in series.
-  if (meta->HasAttribute(DC::EchoTime))
+  if (meta->Has(DC::EchoTime))
   {
     int fileIndex = 0;
-    double t = meta->GetAttributeValue(fileIndex, DC::EchoTime).AsDouble();
+    double t = meta->Get(fileIndex, DC::EchoTime).AsDouble();
   }
 
   // If fileIndex is not given, attribute is retrieved from first file.
-  std::string str = meta->GetAttributeValue(DC::SeriesDescription).AsString();
+  std::string str = meta->Get(DC::SeriesDescription).AsString();
 ~~~~~~~~
 
 Attributes are returned as a vtkDICOMValue object, which has methods
@@ -53,7 +54,7 @@ convert a "slice index" to a file index.  It also provides a
 FrameIndexArray that can be used to convert a slice index to a frame
 number.  Together, these can be used regardless of whether the there was
 one slice per file, or one slice per frame in a multi-frame file: the
-vtkDICOMMetaData object provides a GetAttributeValue() method that takes
+vtkDICOMMetaData object provides a Get() method that takes
 both a file index and a frame index, along with the tag of the attribute
 to be inspected.
 
@@ -73,8 +74,7 @@ to be inspected.
   int frameIndex = frameMap->GetComponent(sliceIndex, 0);
 
   // Get the position for that slice.
-  vtkDICOMValue pv = meta->GetAttributeValue(fileIdx, frameIdx,
-    DC::ImagePositionPatient);
+  vtkDICOMValue pv = meta->Get(fileIdx, frameIdx, DC::ImagePositionPatient);
   double position[3] = { 0.0, 0.0, 0.0 };
   if (pv.IsValid() && pv.GetNumberOfValues() == 3)
   {
@@ -120,7 +120,7 @@ meta data from the "imaginary" file:
   int frameIndex = frameMap->GetComponent(sliceIndex, vectorIndex);
 
   // Get an attribute from the meta data.
-  vtkDICOMValue v = metaData->GetAttributeValue(fileIdx, frameIdx, tag);
+  vtkDICOMValue v = metaData->Get(fileIdx, frameIdx, tag);
 ~~~~~~~~
 
 If the data has a time dimension and the reader's TimeAsVectorOn() method
@@ -175,7 +175,7 @@ data in multi-dimensional images:
   {
     int fileIndex = fileMap->GetComponent(sliceIndex, i);
     int frameIndex = frameMap->GetComponent(sliceIndex, i);
-    vtkDICOMValue v = meta->GetAttributeValue(fileIdx, frameIdx, tag);
+    vtkDICOMValue v = meta->Get(fileIdx, frameIdx, tag);
     // print or display the value
   }
 
@@ -207,7 +207,7 @@ class describes the full path to a nested attribute.
 ~~~~~~~~{.cpp}
   // Get an attribute for frame 3 of a multi-frame file.
   int frameIdx = 3;
-  double echoTime = meta->GetAttributeValue(
+  double echoTime = meta->Get(
     vtkDICOMTagPath(DC::PerFrameFunctionalGroupSequence, frameIdx,
                     DC::CardiacSynchronizationSequence, 0,
                     DC::NominalCardiacTriggerDelayTime)).AsDouble();
@@ -215,15 +215,15 @@ class describes the full path to a nested attribute.
 
 This is rather verbose, so a more convenient method for accessing per-frame
 data is provided for enhanced multi-frame files.  You can give the frame
-index after the file index, in which case the GetAttributeValue() method
+index after the file index, in which case the Get() method
 will perform a search for the attribute without requiring a full path.
 
 ~~~~~~~~{.cpp}
   // Get an attribute for frame 3 of an enhanced multi-frame file.
   int fileIdx = 0;
   int frameIdx = 3;
-  vtkDICOMValue vw = meta->GetAttributeValue(fileIdx, frameIdx, DC::WindowWidth);
-  vtkDICOMValue vc = meta->GetAttributeValue(fileIdx, frameIdx, DC::WindowCenter);
+  vtkDICOMValue vw = meta->Get(fileIdx, frameIdx, DC::WindowWidth);
+  vtkDICOMValue vc = meta->Get(fileIdx, frameIdx, DC::WindowCenter);
   if (vw.IsValid() && vc.IsValid())
   {
     // set the window for the image
@@ -362,7 +362,7 @@ private tag before using it.
   else
   {
     // ptag will now be 0019,xx04 where "xx" is usually 10 (first block)
-    double spacing = meta->GetAttributeValue(ptag).AsDouble();
+    double spacing = meta->Get(ptag).AsDouble();
   }
 ~~~~~~~~
 

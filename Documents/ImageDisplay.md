@@ -43,7 +43,7 @@ vtkDICOMReader for display:
 ~~~~~~~~{.cpp}
   reader->Update();
   vtkDICOMMetaData *meta = reader->GetMetaData();
-  vtkDICOMValue photometric = meta->GetAttributeValue(DC::PhotometricInterpretation)
+  vtkDICOMValue photometric = meta->Get(DC::PhotometricInterpretation)
   if (photometric.Matches("MONOCHROME1"))
   {
     // display with a lookup table that goes from white to black

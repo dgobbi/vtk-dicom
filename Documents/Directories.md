@@ -63,10 +63,10 @@ for (int i = 0; i < n; i++)
   // Get information related to the patient study
   vtkDICOMItem patient = dicomdir->GetPatientRecordForStudy(i);
   vtkDICOMItem study = dicomdir->GetStudyRecord(i);
-  std::cout << patient.GetAttributeValue(DC::PatientName) << " ";
-  std::cout << patient.GetAttributeValue(DC::PatientID) << " ";
-  std::cout << study.GetAttributeValue(DC::StudyDate) << " ";
-  std::cout << study.GetAttributeValue(DC::StudyTime) << std::endl;
+  std::cout << patient.Get(DC::PatientName) << " ";
+  std::cout << patient.Get(DC::PatientID) << " ";
+  std::cout << study.Get(DC::StudyDate) << " ";
+  std::cout << study.Get(DC::StudyTime) << std::endl;
 
   // Iterate through all of the series in this study.
   int j1 = dicomdir->GetFirstSeriesForStudy(i);
@@ -78,7 +78,7 @@ for (int i = 0; i < n; i++)
     // get all the files in the series
     vtkStringArray *sortedFiles = dicomdir->GetFileNamesForSeries(j);
     std::cout << sortedFiles.GetNumberOfValues() << " files: ";
-    std::cout << series.GetAttributeValue(DC::SeriesInstanceUID) << std::endl;
+    std::cout << series.Get(DC::SeriesInstanceUID) << std::endl;
   }
 }
 ~~~~~~~~
@@ -111,12 +111,12 @@ dicompath->InsertNextValue("/Volumes/Images2");
 
 // Make a list of attributes to match, using the utf-8 character set.
 vtkDICOMItem query;
-query.SetAttributeValue(DC::SpecificCharacterSet, "ISO_IR 192");
-query.SetAttributeValue(DC::PatientName, "Doe^John");
-query.SetAttributeValue(DC::StudyDate, "2012-2015");
-query.SetAttributeValue(DC::Modality, "MR");
-query.SetAttributeValue(DC::ImageType, "PRIMARY");
-query.SetAttributeValue(DC::SeriesDescription, "*T1w*");
+query.Set(DC::SpecificCharacterSet, "ISO_IR 192");
+query.Set(DC::PatientName, "Doe^John");
+query.Set(DC::StudyDate, "2012-2015");
+query.Set(DC::Modality, "MR");
+query.Set(DC::ImageType, "PRIMARY");
+query.Set(DC::SeriesDescription, "*T1w*");
 
 vtkNew<vtkDICOMDirectory> dicomdir;
 // The SetInputFileNames method takes directories, too!
