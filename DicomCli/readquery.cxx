@@ -94,7 +94,7 @@ bool dicomcli_readquery(
 
     // strip leading whitespace
     size_t s = 0;
-    while (s < n && isspace(cp[s]))
+    while (s < n && (cp[s] & 0x80) == 0 && isspace(cp[s]))
     {
       s++;
     }
@@ -161,14 +161,15 @@ bool dicomcli_readkey_query(
     bool isHex = true;
     bool hasComma = false;
     size_t commaPos = 0;
-    while (s < n && (isalnum(cp[s]) || (cp[s] == ',' && !hasComma)))
+    while (s < n && (cp[s] & 0x80) == 0 &&
+           (isalnum(cp[s]) || (cp[s] == ',' && !hasComma)))
     {
       if (cp[s] == ',')
       {
         hasComma = true;
         commaPos = s - tagStart;
       }
-      else if (!isxdigit(cp[s]))
+      else if ((cp[s] & 0x80) != 0 || !isxdigit(cp[s]))
       {
         isHex = false;
       }
@@ -362,16 +363,16 @@ bool dicomcli_readkey_query(
     }
     else
     {
-      while (s < n && (!qfile || !isspace(cp[s])))
+      while (s < n && (!qfile || (cp[s] & 0x80) != 0 || !isspace(cp[s])))
       {
         s++;
       }
       valueEnd = s;
     }
   }
-  else if (s < n && (!qfile || !isspace(cp[s])))
+  else if (s < n && (!qfile || (cp[s] & 0x80) != 0 || !isspace(cp[s])))
   {
-    if (isgraph(cp[s]))
+    if ((cp[s] & 0x80) != 0 || isgraph(cp[s]))
     {
       fprintf(stderr, "Error: Illegal character \"%c\" after tag.\n", cp[s]);
     }
@@ -483,7 +484,7 @@ bool dicomcli_looks_like_key(const char *cp)
       }
       digitrun = 0;
     }
-    else if (isxdigit(cp[l]))
+    else if ((cp[l] & 0x80) == 0 && isxdigit(cp[l]))
     {
       digitrun++;
     }
@@ -555,13 +556,13 @@ bool dicomcli_readuids(
 
     // strip leading whitespace
     size_t s = 0;
-    while (s < n && isspace(cp[s]))
+    while (s < n && (cp[s] & 0x80) == 0 && isspace(cp[s]))
     {
       s++;
     }
 
     // skip trailing whitespace
-    if (n > s && isspace(cp[n-1]))
+    if (n > s && (cp[n-1] & 0x80) == 0 && isspace(cp[n-1]))
     {
       --n;
     }
