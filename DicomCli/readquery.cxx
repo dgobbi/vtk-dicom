@@ -14,6 +14,7 @@
 
 #include "readquery.h"
 
+#include "vtkDICOMFile.h"
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMDictionary.h"
 
@@ -22,13 +23,122 @@
 #include <stdlib.h>
 
 #include <algorithm>
-#include <iostream>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
 typedef vtkDICOMVR VR;
+
+namespace {
+
+// A class for reading a text file line-by-line.
+// It uses its own buffer, since the file is unbuffered.
+class LineReader
+{
+public:
+  LineReader(vtkDICOMFile *file);
+  ~LineReader();
+
+  size_t ReadLine(std::string *s);
+
+private:
+  vtkDICOMFile *File;
+  size_t BufferSize;
+  unsigned char *Buffer;
+  const unsigned char *Pointer;
+  const unsigned char *EndPointer;
+};
+
+LineReader::LineReader(vtkDICOMFile *file) :
+  File(file), BufferSize(4096)
+{
+  this->Buffer = new unsigned char [this->BufferSize];
+  this->Pointer = &this->Buffer[0];
+  this->EndPointer = this->Pointer;
+}
+
+LineReader::~LineReader()
+{
+  delete [] this->Buffer;
+  this->File->Close();
+}
+
+size_t LineReader::ReadLine(std::string *s)
+{
+  s->clear();
+
+  size_t total = 0;
+  while (!this->File->GetError() && !this->File->EndOfFile())
+  {
+    if (this->Pointer == this->EndPointer)
+    {
+      this->Pointer = this->Buffer;
+      this->EndPointer = this->Buffer;
+      this->EndPointer += this->File->Read(this->Buffer, this->BufferSize);
+      if (this->Pointer == this->EndPointer)
+      {
+        break;
+      }
+    }
+
+    const unsigned char *ucp = this->Pointer;
+    const char *cp = reinterpret_cast<const char *>(ucp);
+    size_t l = 0;
+    while (ucp != this->EndPointer && *ucp != '\r' && *ucp != '\n')
+    {
+      ucp++;
+      l++;
+    }
+    this->Pointer = ucp;
+    if (ucp == this->EndPointer)
+    {
+      // append and continue
+      s->append(cp, l);
+      total += l;
+    }
+    else if (*ucp == '\n')
+    {
+      // newline means end of line
+      this->Pointer++;
+      l++;
+      s->append(cp, l);
+      total += l;
+      break;
+    }
+    else if (*ucp == '\r')
+    {
+      // carriage return is end of line, also eat following newline
+      this->Pointer++;
+      l++;
+      if (this->Pointer == this->EndPointer)
+      {
+        s->append(cp, l);
+        total += l;
+        l = 0;
+        this->Pointer = this->Buffer;
+        this->EndPointer = this->Buffer;
+        this->EndPointer += this->File->Read(this->Buffer, this->BufferSize);
+        cp = reinterpret_cast<const char *>(this->Pointer);
+      }
+      if (this->Pointer != this->EndPointer && *this->Pointer == '\n')
+      {
+        this->Pointer++;
+        l++;
+      }
+      if (l != 0)
+      {
+        s->append(cp, l);
+        total += l;
+      }
+      break;
+    }
+  }
+
+  return total;
+}
+
+}
 
 // Prototype for function that reads one query key
 bool dicomcli_readkey_query(
@@ -61,19 +171,7 @@ vtkDICOMTagPath path_append(const vtkDICOMTagPath& tpath, vtkDICOMTag tag)
 bool dicomcli_readquery(
   const char *fname, vtkDICOMItem *query, QueryTagList *ql)
 {
-#if defined(_WIN32) && (_MSC_VER >= 1400)
-  int cn = MultiByteToWideChar(CP_UTF8, 0, fname, -1, NULL, 0);
-  wchar_t *wfname = new wchar_t[cn];
-  MultiByteToWideChar(CP_UTF8, 0, fname, -1, wfname, cn);
-  ifstream f(wfname);
-  delete [] wfname;
-#else
-  ifstream f(fname);
-#endif
-  if (!f.good())
-  {
-    return false;
-  }
+  vtkDICOMFile f(fname, vtkDICOMFile::In);
 
   // Each query line is either:
   // # a comment
@@ -84,10 +182,10 @@ bool dicomcli_readquery(
   // GGGG,EEEE\GGGG,EEEE         # a tag nested within a sequence
 
   int lineNumber = 0;
-  while (f.good())
+  std::string line;
+  LineReader lr(&f);
+  while (lr.ReadLine(&line))
   {
-    std::string line;
-    std::getline(f, line);
     const char *cp = line.c_str();
     size_t n = line.size();
     lineNumber++;
@@ -112,7 +210,7 @@ bool dicomcli_readquery(
     }
   }
 
-  return true;
+  return (f.GetError() == 0);
 }
 
 // If qfile is true, then key is being read from a query file
@@ -524,19 +622,7 @@ bool dicomcli_looks_like_key(const char *cp)
 bool dicomcli_readuids(
   const char *fname, vtkDICOMItem *query, QueryTagList *ql)
 {
-#if defined(_WIN32) && (_MSC_VER >= 1400)
-  int cn = MultiByteToWideChar(CP_UTF8, 0, fname, -1, NULL, 0);
-  wchar_t *wfname = new wchar_t[cn];
-  MultiByteToWideChar(CP_UTF8, 0, fname, -1, wfname, cn);
-  ifstream f(wfname);
-  delete [] wfname;
-#else
-  ifstream f(fname);
-#endif
-  if (!f.good())
-  {
-    return false;
-  }
+  vtkDICOMFile f(fname, vtkDICOMFile::In);
 
   // Basic file structure:
   // # one or more comments
@@ -546,10 +632,10 @@ bool dicomcli_readuids(
   QueryTagList ql2;
   std::string val;
   int lineNumber = 0;
-  while (f.good())
+  std::string line;
+  LineReader lr(&f);
+  while (lr.ReadLine(&line))
   {
-    std::string line;
-    std::getline(f, line);
     const char *cp = line.c_str();
     size_t n = line.size();
     lineNumber++;
@@ -612,7 +698,7 @@ bool dicomcli_readuids(
     }
   }
 
-  return true;
+  return (f.GetError() == 0);
 }
 
 void dicomcli_error_helper(vtkDICOMMetaData *meta, int i)
