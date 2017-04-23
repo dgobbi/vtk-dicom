@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #include "vtkDICOMParser.h"
+#include "vtkDICOMFile.h"
 #include "vtkDICOMFileSorter.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMCompiler.h"
@@ -148,17 +149,16 @@ int main(int argc, char *argv[])
           vtkTypeInt64 tp[2];
           offsetArray->GetTupleValue(i, tp);
 
-          std::streamoff offset = static_cast<std::streamoff>(tp[0]);
-          std::streamoff size = static_cast<std::streamoff>(tp[1]);
+          vtkDICOMFile::Size offset = tp[0];
+          vtkDICOMFile::Size size = tp[1];
 
-          std::ifstream infile(fname.c_str(), ios::in | ios::binary);
-          infile.seekg(offset, std::ios::beg);
-          char *buffer = new char[size-offset];
-          infile.read(buffer, size-offset);
-          infile.close();
+          vtkDICOMFile infile(fname.c_str(), vtkDICOMFile::In);
+          infile.SetPosition(offset);
+          unsigned char *buffer = new unsigned char[size-offset];
+          infile.Read(buffer, size-offset);
+          infile.Close();
 
-          compiler->WritePixelData(
-            reinterpret_cast<unsigned char *>(buffer), size - offset);
+          compiler->WritePixelData(buffer, size - offset);
           delete [] buffer;
         }
 
@@ -176,15 +176,14 @@ int main(int argc, char *argv[])
           vtksysMD5* hasher = vtksysMD5_New();
           vtksysMD5_Initialize(hasher);
 
-          char hashbuf[8192];
-          std::ifstream f(fileToHash, ios::in | ios::binary);
-          while (f.good())
+          unsigned char hashbuf[8192];
+          vtkDICOMFile f(fileToHash, vtkDICOMFile::In);
+          while (!f.EndOfFile() && !f.GetError())
           {
-            f.read(hashbuf, static_cast<std::streamsize>(sizeof(hashbuf)));
-            std::streamsize c = f.gcount();
-            vtksysMD5_Append(
-              hasher, reinterpret_cast<unsigned char *>(hashbuf), c);
+            size_t c = f.Read(hashbuf, sizeof(hashbuf));
+            vtksysMD5_Append(hasher, hashbuf, c);
           }
+          f.Close();
 
           vtksysMD5_FinalizeHex(hasher, hash[jj]);
           hash[jj][32] = '\0';
