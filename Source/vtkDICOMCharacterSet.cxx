@@ -194,6 +194,11 @@ static const char *ISO_IR_13_Names[] = {
   NULL
 };
 
+static const char *ISO_2022_Names[] = {
+  "iso-2022",
+  NULL
+};
+
 static const char *LATIN9_Names[] = {
   "csisolatin9",
   "iso-8859-15",
@@ -345,7 +350,7 @@ static CharsetInfo Charsets[30] = {
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, romaji
     "ISO_IR 14",  "ISO 2022 IR 14",  "(J", NULL },
   { vtkDICOMCharacterSet::ISO_2022_IR_6, 0,  // ascii
-    "ISO_IR 6",   "ISO 2022 IR 6",   "(B", NULL },
+    "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_2022_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // JIS X 0201, katakana in G0
     "ISO_IR 13",  "ISO 2022 IR 13",  "(I", NULL },
   { vtkDICOMCharacterSet::ISO_IR_192, 0,     // utf-8
