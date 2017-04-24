@@ -232,7 +232,6 @@ static const char *GBK_Names[] = {
 };
 
 static const char *ISO_IR_58_Names[] = {
-  "GB2312",
   "csgb2312",
   "csiso58gb231280",
   "gb2312",
@@ -292,8 +291,6 @@ static const char *CP1255_Names[] = {
 };
 
 static const char *BIG5_Names[] = {
-  "B5",
-  "BIG5",
   "b5",
   "big5",
   "big5-eten",
@@ -10549,13 +10546,17 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
   // if no defined terms matched, look for common character set names
   if (!found && name && *name)
   {
+    // use lowercase comparison for case insensitivity
+    vtkDICOMCharacterSet cs;
+    std::string lowername = cs.CaseFoldedUTF8(name, nl);
+
     for (int i = 0; i < CHARSET_TABLE_SIZE && !found; i++)
     {
       for (const char **names = Charsets[i].Names;
            names && *names && !found;
            names++)
       {
-        if (nl == strlen(*names) && strncmp(*names, name, nl) == 0)
+        if (lowername == *names)
         {
           found = true;
           key = Charsets[i].Key;
