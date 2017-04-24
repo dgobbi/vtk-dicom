@@ -189,6 +189,8 @@ static const char *ISO_IR_166_Names[] = {
 static const char *ISO_IR_13_Names[] = {
   "iso-ir-13",
   "iso-ir-14",
+  "jis_x0201",
+  "x0201",
   NULL
 };
 
