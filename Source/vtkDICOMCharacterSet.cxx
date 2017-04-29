@@ -10718,6 +10718,7 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
   // Uses ISO-2022 escape codes to switch character sets.
   // Mask to get the charset that is active before the first escape code.
   unsigned char charset = (this->Key & ISO_2022_BASE);
+  unsigned char charsetG2 = 0;
 
   // this will be set when decoding a multibyte charset in G0
   bool multibyteG0 = false;
@@ -10812,6 +10813,35 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
             break;
           }
         }
+      }
+      else if (escapeLen == 2 && escapeCode[0] == '.')
+      {
+        // advance past the escape sequence
+        i += escapeLen;
+
+        // assign character set to G2, default to "Unknown"
+        charsetG2 = 0xFF;
+
+        // search for the matching character set
+        escapeCode[0] = '-';
+        for (unsigned char k = 0; k < CHARSET_TABLE_SIZE; k++)
+        {
+          const char *escapeTry = Charsets[k].EscapeCode;
+          size_t le = strlen(escapeTry);
+          if (le == escapeLen && strncmp(escapeCode, escapeTry, le) == 0)
+          {
+            charsetG2 = Charsets[k].Key;
+            break;
+          }
+        }
+      }
+      else if (escapeLen == 1 && escapeCode[0] == 'N')
+      {
+        // single shift G2, convert one character
+        i += escapeLen;
+        char g2char = (text[i++] | 0x80);
+        vtkDICOMCharacterSet cs(charsetG2);
+        s->append(cs.ConvertToUTF8(&g2char, 1));
       }
       else
       {
@@ -10941,6 +10971,7 @@ size_t vtkDICOMCharacterSet::NextBackslash(
   {
     // ensure backslash isn't part of a G0 multi-byte code
     bool multibyte = false;
+    bool sshift = false;
     while (cp != ep && *cp != '\0')
     {
       // look for iso 2022 escape code
@@ -10948,6 +10979,8 @@ size_t vtkDICOMCharacterSet::NextBackslash(
       {
         cp++;
         size_t l = CheckForMultiByteG0(cp, ep-cp, &multibyte);
+        // check for SS2, which designates GL for next byte
+        sshift = (l == 1 && *cp == 'N');
         // do not advance past backslashes in the escape sequence
         for (size_t i = 0; i < l; i++)
         {
@@ -10958,8 +10991,9 @@ size_t vtkDICOMCharacterSet::NextBackslash(
           cp++;
         }
       }
-      else if (multibyte || *cp != '\\')
+      else if (multibyte || sshift || *cp != '\\')
       {
+        sshift = false;
         cp++;
       }
       else
