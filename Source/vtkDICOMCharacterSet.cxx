@@ -331,8 +331,8 @@ static const char *SJIS_Names[] = {
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 33;
-static CharsetInfo Charsets[33] = {
+const int CHARSET_TABLE_SIZE = 34;
+static CharsetInfo Charsets[34] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "",   ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -359,6 +359,8 @@ static CharsetInfo Charsets[33] = {
     "ISO_IR 13",  "ISO 2022 IR 13",  ")I", ISO_IR_13_Names },
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, romaji
     "ISO_IR 14",  "ISO 2022 IR 14",  "(J", NULL },
+  { vtkDICOMCharacterSet::ISO_IR_13, 0,      // obsolete escape code
+    "ISO_IR 14",  "ISO 2022 IR 14",  "(H", NULL },
   { vtkDICOMCharacterSet::ISO_2022_IR_6, 0,  // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_2022_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // JIS X 0201, katakana in G0
@@ -10862,6 +10864,11 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
         char g2char = (text[i++] | 0x80);
         vtkDICOMCharacterSet cs(charsetG2);
         s->append(cs.ConvertToUTF8(&g2char, 1));
+      }
+      else if (escapeLen == 2 && escapeCode[0] == '&' && escapeCode[1] == '@')
+      {
+        // obsolete JIS code to switch versions of JIS X 0208
+        i += escapeLen;
       }
       else
       {
