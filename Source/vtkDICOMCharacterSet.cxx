@@ -241,24 +241,37 @@ static const char *ISO_IR_58_Names[] = {
   NULL
 };
 
-static const char *ISO_IR_149_Names[] = {
+static const char *EUCKR_Names[] = {
   "cseuckr",
-  "csksc56011987",
   "euc-kr",
+  "windows-949",
+  NULL
+};
+
+static const char *ISO_IR_149_Names[] = {
+  "csksc56011987",
+  "iso-2022-kr",
   "iso-ir-149",
+  "iso2022_kr",
   "korean",
   "ks_c_5601-1987",
   "ks_c_5601-1989",
   "ksc5601",
   "ksc_5601",
-  "windows-949",
   NULL
 };
 
 static const char *ISO_IR_87_Names[] = {
   "csiso2022jp",
   "iso-2022-jp",
+  "iso-2022-jp-1",
+  "iso-2022-jp-2",
+  "iso-ir-159",
   "iso-ir-87",
+  "iso2022_jp",
+  "iso2022_jp_1",
+  "iso2022_jp_2",
+  "jis",
   NULL
 };
 
@@ -318,8 +331,8 @@ static const char *SJIS_Names[] = {
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 30;
-static CharsetInfo Charsets[30] = {
+const int CHARSET_TABLE_SIZE = 33;
+static CharsetInfo Charsets[33] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "",   ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -357,9 +370,15 @@ static CharsetInfo Charsets[30] = {
   { vtkDICOMCharacterSet::GBK, 0,            // subset of GB18030
     "GBK",        "",                "",   GBK_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // GB2312, chinese
-    "ISO_IR 58",  "ISO 2022 IR 58", "$)A", ISO_IR_58_Names },
+    "ISO_IR 58",  "ISO 2022 IR 58", "$A",  ISO_IR_58_Names },
+  { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // compat escape code
+    "ISO_IR 58",  "ISO 2022 IR 58", "$(A", NULL },
+  { vtkDICOMCharacterSet::X_GB2312, 1,       // GB2312, chinese (in G1)
+    "ISO_IR 58",  "ISO 2022 IR 58", "$)A", NULL },
   { vtkDICOMCharacterSet::ISO_2022_IR_149, 1,// KS X 1001, korean
-    "ISO_IR 149", "ISO 2022 IR 149","$)C", ISO_IR_149_Names },
+    "ISO_IR 149", "ISO 2022 IR 149","$(C", ISO_IR_149_Names },
+  { vtkDICOMCharacterSet::X_EUCKR, 1,        // KS X 1001, korean (in G1)
+    "ISO_IR 149", "ISO 2022 IR 149","$)C", EUCKR_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // JIS X 0208, japanese
     "ISO_IR 87",  "ISO 2022 IR 87", "$B" , ISO_IR_87_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // obsolete escape code
@@ -10237,11 +10256,22 @@ void GB2312ToUTF8(const char *text, size_t l, std::string *s)
 //----------------------------------------------------------------------------
 void JISXToUTF8(int charset, const char *text, size_t l, std::string *s)
 {
-  // iso-2022-jp, with katakana in G1
+  // iso-2022-jp-2, with katakana in G1
   const unsigned short *dbcs = NULL;
-  if (charset == vtkDICOMCharacterSet::ISO_2022_IR_87)
+  int rowlen = 94;
+  if (charset == vtkDICOMCharacterSet::ISO_2022_IR_58)
+  {
+    // use the GB2312 sub-table from GB18030
+    rowlen = 190;
+    dbcs = CodePageGB18030 + (0xA1 - 0x81)*190 + (0xA1 - 0x41);
+  }
+  else if (charset == vtkDICOMCharacterSet::ISO_2022_IR_87)
   {
     dbcs = CodePageJISX0208;
+  }
+  else if (charset == vtkDICOMCharacterSet::ISO_2022_IR_149)
+  {
+    dbcs = CodePageKSX1001;
   }
   else if (charset == vtkDICOMCharacterSet::ISO_2022_IR_159)
   {
@@ -10270,7 +10300,7 @@ void JISXToUTF8(int charset, const char *text, size_t l, std::string *s)
         if (b >= 0x21 && b < 0x7F)
         {
           // convert double-byte to character
-          code = dbcs[(a - 0x21)*94 + (b - 0x21)];
+          code = dbcs[(a - 0x21)*rowlen + (b - 0x21)];
           i++;
         }
       }
@@ -10560,11 +10590,6 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
         {
           found = true;
           key = Charsets[i].Key;
-          if (Charsets[i].Flags == 1 || Charsets[i].Flags == 2)
-          {
-            // this is for compatibility with the decoders
-            key |= ISO_2022;
-          }
         }
       }
     }
@@ -10740,17 +10765,11 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
       vtkDICOMCharacterSet cs(charset);
       s->append(cs.ConvertToUTF8(&text[i], j-i));
     }
-    else if (charset == ISO_2022_IR_58)
-    {
-      GB2312ToUTF8(&text[i], j-i, s);
-    }
-    else if (charset == ISO_2022_IR_149)
-    {
-      EUCKRToUTF8(&text[i], j-i, s);
-    }
     else if (charset == ISO_2022_IR_6 ||
              charset == ISO_2022_IR_13 ||
+             charset == ISO_2022_IR_58 ||
              charset == ISO_2022_IR_87 ||
+             charset == ISO_2022_IR_149 ||
              charset == ISO_2022_IR_159)
     {
       JISXToUTF8(charset, &text[i], j-i, s);
@@ -10803,7 +10822,9 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
                 Charsets[k].EscapeCode[0] == ')' &&
                 (oldcharset == ISO_2022_IR_6 ||
                  oldcharset == ISO_2022_IR_13 ||
+                 oldcharset == ISO_2022_IR_58 ||
                  oldcharset == ISO_2022_IR_87 ||
+                 oldcharset == ISO_2022_IR_149 ||
                  oldcharset == ISO_2022_IR_159))
             {
               // The ISO_IR_13 katakana go in G1, so let's keep the
@@ -10823,12 +10844,11 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
         charsetG2 = 0xFF;
 
         // search for the matching character set
-        escapeCode[0] = '-';
         for (unsigned char k = 0; k < CHARSET_TABLE_SIZE; k++)
         {
           const char *escapeTry = Charsets[k].EscapeCode;
           size_t le = strlen(escapeTry);
-          if (le == escapeLen && strncmp(escapeCode, escapeTry, le) == 0)
+          if (le == 2 && escapeTry[0] == '-' && escapeTry[1] == escapeCode[1])
           {
             charsetG2 = Charsets[k].Key;
             break;
