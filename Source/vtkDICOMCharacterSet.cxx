@@ -310,6 +310,13 @@ static const char *CP1256_Names[] = {
   NULL
 };
 
+static const char *CP1257_Names[] = {
+  "cp1257",
+  "windows-1257",
+  "x-cp1257",
+  NULL
+};
+
 static const char *BIG5_Names[] = {
   "b5",
   "big5",
@@ -345,8 +352,8 @@ static const char *EUCJP_Names[] = {
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 36;
-static CharsetInfo Charsets[36] = {
+const int CHARSET_TABLE_SIZE = 37;
+static CharsetInfo Charsets[37] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "",   ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -408,6 +415,7 @@ static CharsetInfo Charsets[36] = {
   { vtkDICOMCharacterSet::X_CP1253, 0, "cp1253", "", "", CP1253_Names },
   { vtkDICOMCharacterSet::X_CP1255, 0, "cp1255", "", "", CP1255_Names },
   { vtkDICOMCharacterSet::X_CP1256, 0, "cp1256", "", "", CP1256_Names },
+  { vtkDICOMCharacterSet::X_CP1257, 0, "cp1257", "", "", CP1257_Names },
   { vtkDICOMCharacterSet::X_BIG5, 0, "big5", "", "", BIG5_Names },
   { vtkDICOMCharacterSet::X_SJIS, 0, "sjis", "", "", SJIS_Names },
   { vtkDICOMCharacterSet::X_EUCJP, 0, "euc-jp", "", "", EUCJP_Names },
@@ -552,8 +560,23 @@ const unsigned short CodePageISO8859_11[96] = {
  0x0E5A, 0x0E5B, 0xFFFD, 0xFFFD, 0xFFFD, 0xFFFD
 };
 
+// latin7, baltic
+const unsigned short CodePageISO8859_13[96] = {
+  0x00A0, 0x201D, 0x00A2, 0x00A3, 0x00A4, 0x201E, 0x00A6, 0x00A7, 0x00D8,
+  0x00A9, 0x0156, 0x00AB, 0x00AC, 0x00AD, 0x00AE, 0x00C6, 0x00B0, 0x00B1,
+  0x00B2, 0x00B3, 0x201C, 0x00B5, 0x00B6, 0x00B7, 0x00F8, 0x00B9, 0x0157,
+  0x00BB, 0x00BC, 0x00BD, 0x00BE, 0x00E6, 0x0104, 0x012E, 0x0100, 0x0106,
+  0x00C4, 0x00C5, 0x0118, 0x0112, 0x010C, 0x00C9, 0x0179, 0x0116, 0x0122,
+  0x0136, 0x012A, 0x013B, 0x0160, 0x0143, 0x0145, 0x00D3, 0x014C, 0x00D5,
+  0x00D6, 0x00D7, 0x0172, 0x0141, 0x015A, 0x016A, 0x00DC, 0x017B, 0x017D,
+  0x00DF, 0x0105, 0x012F, 0x0101, 0x0107, 0x00E4, 0x00E5, 0x0119, 0x0113,
+  0x010D, 0x00E9, 0x017A, 0x0117, 0x0123, 0x0137, 0x012B, 0x013C, 0x0161,
+  0x0144, 0x0146, 0x00F3, 0x014D, 0x00F5, 0x00F6, 0x00F7, 0x0173, 0x0142,
+  0x015B, 0x016B, 0x00FC, 0x017C, 0x017E, 0x2019
+};
+
 // The iso-8859 code pages that are part of DICOM (except 8859-1)
-const unsigned short *CodePagesISO8859[9] = {
+const unsigned short *CodePagesISO8859[10] = {
   CodePageISO8859_2, CodePageISO8859_3, CodePageISO8859_4,
   CodePageISO8859_5, CodePageISO8859_6, CodePageISO8859_7,
   CodePageISO8859_8, CodePageISO8859_9, CodePageISO8859_11
@@ -9912,6 +9935,49 @@ void CP1256ToUTF8(const char *text, size_t l, std::string *s)
 }
 
 //----------------------------------------------------------------------------
+void CP1257ToUTF8(const char *text, size_t l, std::string *s)
+{
+  // Windows encoding for the baltic states, differs from iso-8859-13
+  // by only two code points
+
+  for (size_t i = 0; i < l; i++)
+  {
+    unsigned short code = static_cast<unsigned char>(text[i]);
+    if (code <= 0x7F)
+    {
+      s->push_back(code);
+    }
+    else
+    {
+      if (code <= 0x9F)
+      {
+        // Windows replacement for the C1 block
+        static const unsigned short wincodes[32] = {
+          0x20AC, 0xFFFD, 0x201A, 0xFFFD, 0x201E, 0x2026, 0x2020, 0x2021,
+          0xFFFD, 0x2030, 0xFFFD, 0x2039, 0xFFFD, 0x00A8, 0x02C7, 0x00B8,
+          0xFFFD, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014,
+          0xFFFD, 0x2122, 0xFFFD, 0x203A, 0xFFFD, 0x00AF, 0x02DB, 0xFFFD
+        };
+        code = wincodes[code - 0x80];
+      }
+      else if (code == 0xA1 || code == 0xA5)
+      {
+        code = 0xFFFD;
+      }
+      else if (code == 0xFF)
+      {
+        code = 0x02D9;
+      }
+      else if (code != 0xB4)
+      {
+        code = CodePageISO8859_13[code - 0xA0];
+      }
+      UnicodeToUTF8(code, s);
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
 void Latin9ToUTF8(const char *text, size_t l, std::string *s)
 {
   // Latin9 is like latin1, but exchanges some symbols for letters
@@ -10842,6 +10908,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   else if (this->Key == X_CP1256)
   {
     CP1256ToUTF8(text, l, &s);
+  }
+  else if (this->Key == X_CP1257)
+  {
+    CP1257ToUTF8(text, l, &s);
   }
   else if (this->Key == X_BIG5)
   {
