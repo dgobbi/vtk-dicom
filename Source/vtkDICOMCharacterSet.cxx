@@ -325,14 +325,21 @@ static const char *SJIS_Names[] = {
   NULL
 };
 
+static const char *EUCJP_Names[] = {
+  "cseucpkdfmtjapanese",
+  "euc-jp",
+  "x-euc-jp",
+  NULL
+};
+
 // This table gives the character sets that are defined in DICOM 2011-3.3
 // The first two columns are the possible CS values of character set in the
 // SpecificCharacterSet attribute of a DICOM data set.  If the second form
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 34;
-static CharsetInfo Charsets[34] = {
+const int CHARSET_TABLE_SIZE = 35;
+static CharsetInfo Charsets[35] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "",   ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -395,6 +402,7 @@ static CharsetInfo Charsets[34] = {
   { vtkDICOMCharacterSet::X_CP1255, 0, "cp1255", "", "", CP1255_Names },
   { vtkDICOMCharacterSet::X_BIG5, 0, "big5", "", "", BIG5_Names },
   { vtkDICOMCharacterSet::X_SJIS, 0, "sjis", "", "", SJIS_Names },
+  { vtkDICOMCharacterSet::X_EUCJP, 0, "euc-jp", "", "", EUCJP_Names },
 };
 
 
@@ -10022,6 +10030,58 @@ void SJISToUTF8(const char *text, size_t l, std::string *s)
 }
 
 //----------------------------------------------------------------------------
+void EUCJPToUTF8(const char *text, size_t l, std::string *s)
+{
+  // UNIX encoding of JIS X 0201, JIS X 0208, and JIS X 0212
+  size_t i = 0;
+  while (i < l)
+  {
+    unsigned short code = static_cast<unsigned char>(text[i++]);
+    if (code >= 0x80 && code < 0xFF)
+    {
+      if (i == l)
+      {
+        break;
+      }
+      unsigned short a = code;
+      unsigned short b = static_cast<unsigned char>(text[i]);
+
+      // default to replacement character
+      code = 0xFFFD;
+
+      if (b >= 0xA1 && b < 0xFF)
+      {
+        if (a >= 0xA1 && a < 0xFF) // JIS X 0208
+        {
+          code = CodePageJISX0208[(a - 0xA1)*94 + (b - 0xA1)];
+          i++;
+        }
+        else if (a == 0x8F) // JIS X 0212
+        {
+          if (i+1 == l)
+          {
+            break;
+          }
+          a = b;
+          b = static_cast<unsigned char>(text[i+1]);
+          if (b >= 0xA1 && b < 0xFF)
+          {
+            code = CodePageJISX0212[(a - 0xA1)*94 + (b - 0xA1)];
+            i += 2;
+          }
+        }
+        else if (a == 0x8E && b <= 0xDF) // JIS X 0201
+        {
+          code = b + 0xFEC0; // half-width katakana
+          i++;
+        }
+      }
+    }
+    UnicodeToUTF8(code, s);
+  }
+}
+
+//----------------------------------------------------------------------------
 void Big5ToUTF8(const char *text, size_t l, std::string *s)
 {
   const char *cp = text;
@@ -10723,6 +10783,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   else if (this->Key == X_SJIS)
   {
     SJISToUTF8(text, l, &s);
+  }
+  else if (this->Key == X_EUCJP)
+  {
+    EUCJPToUTF8(text, l, &s);
   }
   else if ((this->Key & ISO_2022) != 0 && this->Key != Unknown)
   {
