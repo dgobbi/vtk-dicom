@@ -199,6 +199,18 @@ static const char *ISO_2022_Names[] = {
   NULL
 };
 
+static const char *LATIN7_Names[] = {
+  "csisolatin7",
+  "iso-8859-13",
+  "iso-ir-179",
+  "iso8859-13",
+  "iso885913",
+  "iso_8859-13",
+  "l7",
+  "latin7",
+  NULL
+};
+
 static const char *LATIN9_Names[] = {
   "csisolatin9",
   "iso-8859-15",
@@ -352,8 +364,8 @@ static const char *EUCJP_Names[] = {
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 37;
-static CharsetInfo Charsets[37] = {
+const int CHARSET_TABLE_SIZE = 38;
+static CharsetInfo Charsets[38] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "",   ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -409,7 +421,8 @@ static CharsetInfo Charsets[37] = {
   { vtkDICOMCharacterSet::ISO_2022_IR_159, 2,// JIS X 0212, japanese
     "ISO_IR 159", "ISO 2022 IR 159","$(D", NULL },
   // The remainder of these are not DICOM standard
-  { vtkDICOMCharacterSet::X_LATIN9, 0, "latin9", "", "", LATIN9_Names },
+  { vtkDICOMCharacterSet::X_LATIN7, 0, "latin7", "", "-Y", LATIN7_Names },
+  { vtkDICOMCharacterSet::X_LATIN9, 0, "latin9", "", "-b", LATIN9_Names },
   { vtkDICOMCharacterSet::X_CP1250, 0, "cp1250", "", "", CP1250_Names },
   { vtkDICOMCharacterSet::X_CP1251, 0, "cp1251", "", "", CP1251_Names },
   { vtkDICOMCharacterSet::X_CP1253, 0, "cp1253", "", "", CP1253_Names },
@@ -10016,7 +10029,8 @@ void ISO8859ToUTF8(int key, const char *text, size_t l, std::string *s)
 {
   // Use ASCII if "key" is out of range
   if (key < vtkDICOMCharacterSet::ISO_IR_101 &&
-      key > vtkDICOMCharacterSet::ISO_IR_166)
+      key > vtkDICOMCharacterSet::ISO_IR_166 &&
+      key != vtkDICOMCharacterSet::X_LATIN7)
   {
     ASCIIToUTF8(text, l, s);
     return;
@@ -10025,8 +10039,11 @@ void ISO8859ToUTF8(int key, const char *text, size_t l, std::string *s)
   // Use the ISO-8859 codepages
   const char *cp = text;
   const char *ep = text + l;
-  const unsigned short *page =
-    CodePagesISO8859[key - vtkDICOMCharacterSet::ISO_IR_101];
+  const unsigned short *page = CodePageISO8859_13;
+  if (key < vtkDICOMCharacterSet::ISO_IR_166)
+  {
+    page = CodePagesISO8859[key - vtkDICOMCharacterSet::ISO_IR_101];
+  }
 
   while (cp != ep)
   {
@@ -10861,7 +10878,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   {
     CP1252ToUTF8(text, l, &s);
   }
-  else if (this->Key <= ISO_IR_166) // ISO-8895-X
+  else if (this->Key <= ISO_IR_166 || this->Key == X_LATIN7) // ISO-8895-X
   {
     ISO8859ToUTF8(this->Key, text, l, &s);
   }
