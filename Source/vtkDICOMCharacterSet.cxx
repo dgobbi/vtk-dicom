@@ -303,6 +303,13 @@ static const char *CP1255_Names[] = {
   NULL
 };
 
+static const char *CP1256_Names[] = {
+  "cp1256",
+  "windows-1256",
+  "x-cp1256",
+  NULL
+};
+
 static const char *BIG5_Names[] = {
   "b5",
   "big5",
@@ -338,8 +345,8 @@ static const char *EUCJP_Names[] = {
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 35;
-static CharsetInfo Charsets[35] = {
+const int CHARSET_TABLE_SIZE = 36;
+static CharsetInfo Charsets[36] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "",   ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -400,6 +407,7 @@ static CharsetInfo Charsets[35] = {
   { vtkDICOMCharacterSet::X_CP1251, 0, "cp1251", "", "", CP1251_Names },
   { vtkDICOMCharacterSet::X_CP1253, 0, "cp1253", "", "", CP1253_Names },
   { vtkDICOMCharacterSet::X_CP1255, 0, "cp1255", "", "", CP1255_Names },
+  { vtkDICOMCharacterSet::X_CP1256, 0, "cp1256", "", "", CP1256_Names },
   { vtkDICOMCharacterSet::X_BIG5, 0, "big5", "", "", BIG5_Names },
   { vtkDICOMCharacterSet::X_SJIS, 0, "sjis", "", "", SJIS_Names },
   { vtkDICOMCharacterSet::X_EUCJP, 0, "euc-jp", "", "", EUCJP_Names },
@@ -9849,6 +9857,61 @@ void CP1255ToUTF8(const char *text, size_t l, std::string *s)
 }
 
 //----------------------------------------------------------------------------
+void CP1256ToUTF8(const char *text, size_t l, std::string *s)
+{
+  // Windows encoding for arabic, which has the arabic characters
+  // shifted around french characters from latin1
+
+  for (size_t i = 0; i < l; i++)
+  {
+    unsigned short code = static_cast<unsigned char>(text[i]);
+    if (code <= 0x7F)
+    {
+      s->push_back(code);
+    }
+    else
+    {
+      if (code <= 0x9F)
+      {
+        // Windows replacement for the C1 block
+        static const unsigned short wincodes[32] = {
+          0x20AC, 0x067E, 0x201A, 0x0192, 0x201E, 0x2026, 0x2020, 0x2021,
+          0x02C6, 0x2030, 0x0679, 0x2039, 0x0152, 0x0686, 0x0698, 0x0688,
+          0x06AF, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014,
+          0x06A9, 0x2122, 0x0691, 0x203A, 0x0153, 0x200C, 0x200D, 0x06BA
+        };
+        code = wincodes[code - 0x80];
+      }
+      else
+      {
+        // Linear table
+        static const unsigned short table[60] = {
+          0xA0, 0x00A0,  0xA1, 0x060C,  0xA2, 0x00A2,  0xAA, 0x06BE,
+          0xAB, 0x00AB,  0xBA, 0x061B,  0xBB, 0x00BB,  0xBF, 0x061F,
+          0xC0, 0x06C1,  0xC1, 0x0621,  0xD7, 0x00D7,  0xD8, 0x0637,
+          0xDC, 0x0640,  0xE0, 0x00E0,  0xE1, 0x0644,  0xE2, 0x00E2,
+          0xE3, 0x0645,  0xE7, 0x00E7,  0xEC, 0x0649,  0xEE, 0x00EE,
+          0xF0, 0x064B,  0xF4, 0x00F4,  0xF5, 0x064F,  0xF7, 0x00F7,
+          0xF8, 0x0651,  0xF9, 0x00F9,  0xFA, 0x0652,  0xFB, 0x00FB,
+          0xFD, 0x200E,  0xFF, 0x06D2
+        };
+
+        int i;
+        for (i = 2; i < 60; i += 2)
+        {
+          if (code < table[i])
+          {
+            break;
+          }
+        }
+        code = (code - table[i-2]) + table[i-1];
+      }
+      UnicodeToUTF8(code, s);
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
 void Latin9ToUTF8(const char *text, size_t l, std::string *s)
 {
   // Latin9 is like latin1, but exchanges some symbols for letters
@@ -10775,6 +10838,10 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   else if (this->Key == X_CP1255)
   {
     CP1255ToUTF8(text, l, &s);
+  }
+  else if (this->Key == X_CP1256)
+  {
+    CP1256ToUTF8(text, l, &s);
   }
   else if (this->Key == X_BIG5)
   {

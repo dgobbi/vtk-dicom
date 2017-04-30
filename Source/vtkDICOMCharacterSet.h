@@ -50,7 +50,7 @@
  *  'cyrillic' (iso-8859-5), 'arabic' (iso-8859-6), 'greek' (iso-8859-7),
  *  'hebrew' (iso-8859-8), 'latin5' (cp1254), 'tis-620', 'shift-jis', 'euc-jp',
  *  'iso-2022-jp', 'korean' (euc-kr), 'chinese' (gbk), 'gb18030', 'big5',
- *  'cp1250', 'cp1251', 'cp1253', 'cp1255', 'latin9', and 'utf-8'.
+ *  'cp1250', 'cp1251', 'cp1253', 'cp1255', 'cp1256', 'latin9', and 'utf-8'.
  *  Common aliases of these character sets can also be used.
  */
 class VTKDICOM_EXPORT vtkDICOMCharacterSet
@@ -83,6 +83,7 @@ public:
     X_BIG5     = 22, // big5 + ETEN, traditional chinese
     X_SJIS     = 23, // windows-31j, aka shift-jis, code page 932
     X_EUCJP    = 24, // euc-jp,      unix encoding for japanese
+    X_CP1256   = 25, // cp1256,      arabic
     // ISO_IR_87  = 32, // reserved, use ISO_2022_IR_87
     // ISO_IR_159 = 64, // reserved, use ISO_2022_IR_159
     ISO_2022        = 128, // bit that indicates use of ISO-2022
@@ -209,7 +210,8 @@ public:
   bool IsBiDirectional() const {
     return (this->Key == ISO_IR_127 ||
             this->Key == ISO_IR_138 ||
-            this->Key == X_CP1255); }
+            this->Key == X_CP1255 ||
+            this->Key == X_CP1256); }
   //@}
 
   //@{
