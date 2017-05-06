@@ -46,13 +46,13 @@
  *  a character set for the application to use.  Use SetGlobalDefault() to
  *  do so.  The vtkDICOMCharacterSet constructor can take the desired
  *  character encoding as a string, where the following encodings are
- *  allowed: 'ascii', 'latin1' (cp1252), 'latin2', 'latin3', 'latin4',
- *  'cyrillic' (iso-8859-5), 'arabic' (iso-8859-6), 'greek' (iso-8859-7),
- *  'hebrew' (iso-8859-8), 'latin5' (cp1254), 'tis-620', 'shift-jis', 'euc-jp',
- *  'iso-2022-jp', 'korean' (euc-kr), 'chinese' (gbk), 'gb18030', 'big5',
- *  'cp1250', 'cp1251', 'cp1253', 'cp1255', 'cp1256', 'cp1257', 'latin7',
- *  'latin9', and 'utf-8'.  Common aliases of these character sets can also
- *  be used.
+ *  allowed: 'ascii', 'latin1', 'latin2', 'latin3', 'latin4', 'latin5'
+ *  'latin7', 'latin9', 'cyrillic' (iso-8859-5), 'arabic' (iso-8859-6),
+ *  'greek' (iso-8859-7), 'hebrew' (iso-8859-8), 'tis-620', 'shift-jis',
+ *  'euc-jp', 'iso-2022-jp', 'korean' (euc-kr), 'chinese' (gbk), 'gb18030',
+ *  'big5', 'cp1250', 'cp1251', 'cp1252', 'cp1253', 'cp1254', 'cp1255',
+ *  'cp1256', 'cp1257', and 'utf-8'.  Common aliases of these character
+ *  sets can also be used.
  */
 class VTKDICOM_EXPORT vtkDICOMCharacterSet
 {
@@ -99,7 +99,9 @@ public:
     X_SJIS     = 70, // windows-31j, aka shift-jis, code page 932
     X_CP1250   = 80, // cp1250,      central europe
     X_CP1251   = 81, // cp1251,      cyrillic
+    X_CP1252   = 82, // cp1252,      western europe
     X_CP1253   = 83, // cp1253,      greek
+    X_CP1254   = 84, // cp1254,      turkish
     X_CP1255   = 85, // cp1255,      hebrew
     X_CP1256   = 86, // cp1256,      arabic
     X_CP1257   = 87, // cp1257,      baltic rim

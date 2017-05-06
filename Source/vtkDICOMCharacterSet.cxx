@@ -43,7 +43,6 @@ static const char *ISO_IR_6_Names[] = {
 };
 
 static const char *ISO_IR_100_Names[] = {
-  "cp1252",
   "cp819",
   "csisolatin1",
   "ibm819",
@@ -55,8 +54,6 @@ static const char *ISO_IR_100_Names[] = {
   "iso_8859-1:1987",
   "l1",
   "latin1",
-  "windows-1252",
-  "x-cp1252",
   NULL
 };
 
@@ -160,7 +157,6 @@ static const char *ISO_IR_138_Names[] = {
 };
 
 static const char *ISO_IR_148_Names[] = {
-  "cp1254",
   "csisolatin5",
   "iso-8859-9",
   "iso-ir-148",
@@ -170,8 +166,6 @@ static const char *ISO_IR_148_Names[] = {
   "iso_8859-9:1989",
   "l5",
   "latin5",
-  "windows-1254",
-  "x-cp1254",
   NULL
 };
 
@@ -301,10 +295,24 @@ static const char *CP1251_Names[] = {
   NULL
 };
 
+static const char *CP1252_Names[] = {
+  "cp1252",
+  "windows-1252",
+  "x-cp1252",
+  NULL
+};
+
 static const char *CP1253_Names[] = {
   "cp1253",
   "windows-1253",
   "x-cp1253",
+  NULL
+};
+
+static const char *CP1254_Names[] = {
+  "cp1254",
+  "windows-1254",
+  "x-cp1254",
   NULL
 };
 
@@ -364,8 +372,8 @@ static const char *EUCJP_Names[] = {
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 38;
-static CharsetInfo Charsets[38] = {
+const int CHARSET_TABLE_SIZE = 40;
+static CharsetInfo Charsets[40] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "",   ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -428,7 +436,9 @@ static CharsetInfo Charsets[38] = {
   { vtkDICOMCharacterSet::X_LATIN9, 0, "latin9", "", "-b", LATIN9_Names },
   { vtkDICOMCharacterSet::X_CP1250, 0, "cp1250", "", "", CP1250_Names },
   { vtkDICOMCharacterSet::X_CP1251, 0, "cp1251", "", "", CP1251_Names },
+  { vtkDICOMCharacterSet::X_CP1252, 0, "cp1252", "", "", CP1252_Names },
   { vtkDICOMCharacterSet::X_CP1253, 0, "cp1253", "", "", CP1253_Names },
+  { vtkDICOMCharacterSet::X_CP1254, 0, "cp1254", "", "", CP1254_Names },
   { vtkDICOMCharacterSet::X_CP1255, 0, "cp1255", "", "", CP1255_Names },
   { vtkDICOMCharacterSet::X_CP1256, 0, "cp1256", "", "", CP1256_Names },
   { vtkDICOMCharacterSet::X_CP1257, 0, "cp1257", "", "", CP1257_Names },
@@ -10923,9 +10933,17 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   {
     CP1251ToUTF8(text, l, &s);
   }
+  else if (this->Key == X_CP1252)
+  {
+    CP1252ToUTF8(text, l, &s);
+  }
   else if (this->Key == X_CP1253)
   {
     CP1253ToUTF8(text, l, &s);
+  }
+  else if (this->Key == X_CP1254)
+  {
+    ISO8859ToUTF8(ISO_IR_148, text, l, &s);
   }
   else if (this->Key == X_CP1255)
   {
