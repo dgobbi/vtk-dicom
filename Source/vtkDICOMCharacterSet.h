@@ -60,52 +60,49 @@ public:
   enum EnumType
   {
     ISO_IR_6   = 0,  // US_ASCII
-    ISO_IR_100 = 1,  // ISO-8859-1,  latin1, western europe
-    ISO_IR_101 = 2,  // ISO-8859-2,  latin2, central europe
-    ISO_IR_109 = 3,  // ISO-8859-3,  latin3, maltese
-    ISO_IR_110 = 4,  // ISO-8859-4,  latin4, baltic
-    ISO_IR_144 = 5,  // ISO-8859-5,  cyrillic
-    ISO_IR_127 = 6,  // ISO-8859-6,  arabic
-    ISO_IR_126 = 7,  // ISO-8859-7,  greek
-    ISO_IR_138 = 8,  // ISO-8859-8,  hebrew
-    ISO_IR_148 = 9,  // ISO-8859-9,  latin5, turkish
-    ISO_IR_166 = 10, // ISO-8859-11, thai
-    ISO_IR_13  = 11, // JIS X 0201,  japanese romaji + katakana
-    X_LATIN9   = 12, // ISO-8859-15, latin9, western europe
-    ISO_IR_192 = 13, // UTF-8,       unicode
-    GB18030    = 14, // gb18030,     chinese with full unicode mapping
-    GBK        = 15, // gbk,         chinese
-    X_CP1250   = 16, // cp1250,      central europe
-    X_CP1251   = 17, // cp1251,      cyrillic
-    X_CP1253   = 18, // cp1253,      greek
-    X_CP1255   = 19, // cp1255,      hebrew
-    X_GB2312   = 20, // reserved     ISO_IR_58 without escape codes
-    X_EUCKR    = 21, // reserved     ISO_IR_149 without escape codes
-    X_BIG5     = 22, // big5 + ETEN, traditional chinese
-    X_SJIS     = 23, // windows-31j, aka shift-jis, code page 932
-    X_EUCJP    = 24, // euc-jp,      unix encoding for japanese
-    X_CP1256   = 25, // cp1256,      arabic
-    X_CP1257   = 26, // cp1257,      baltic
-    X_LATIN7   = 27, // ISO-8859-13, baltic
-    // ISO_IR_87  = 32, // reserved, use ISO_2022_IR_87
-    // ISO_IR_159 = 64, // reserved, use ISO_2022_IR_159
-    ISO_2022        = 128, // bit that indicates use of ISO-2022
-    ISO_2022_IR_6   = 128, // US_ASCII
-    ISO_2022_IR_100 = 129, // ISO-8859-1,  latin1, western europe
-    ISO_2022_IR_101 = 130, // ISO-8859-2,  latin2, central europe
-    ISO_2022_IR_109 = 131, // ISO-8859-3,  latin3, maltese
-    ISO_2022_IR_110 = 132, // ISO-8859-4,  latin4, baltic
-    ISO_2022_IR_144 = 133, // ISO-8859-5,  cyrillic
-    ISO_2022_IR_127 = 134, // ISO-8859-6,  arabic
-    ISO_2022_IR_126 = 135, // ISO-8859-7,  greek
-    ISO_2022_IR_138 = 136, // ISO-8859-8,  hebrew
-    ISO_2022_IR_148 = 137, // ISO-8859-9,  latin5, turkish
-    ISO_2022_IR_166 = 138, // ISO-8859-11, thai
-    ISO_2022_IR_13  = 139, // JIS X 0201,  japanese katakana
-    ISO_2022_IR_58  = 148, // the GB2312 part of ISO-2022-CN
-    ISO_2022_IR_149 = 149, // the KS X 1001 part of ISO-2022-KR
-    ISO_2022_IR_87  = 160, // the JIS X 0208 part of ISO-2022-JP
-    ISO_2022_IR_159 = 192, // the JIS X 0212 part of ISO-2022-JP2
+    ISO_IR_13  = 1,  // JIS X 0201,  japanese romaji + katakana
+    ISO_IR_100 = 8,  // ISO-8859-1,  latin1, western europe
+    ISO_IR_101 = 9,  // ISO-8859-2,  latin2, central europe
+    ISO_IR_109 = 10, // ISO-8859-3,  latin3, maltese
+    ISO_IR_110 = 11, // ISO-8859-4,  latin4, baltic
+    ISO_IR_144 = 12, // ISO-8859-5,  cyrillic
+    ISO_IR_127 = 13, // ISO-8859-6,  arabic
+    ISO_IR_126 = 14, // ISO-8859-7,  greek
+    ISO_IR_138 = 15, // ISO-8859-8,  hebrew
+    ISO_IR_148 = 16, // ISO-8859-9,  latin5, turkish
+    ISO_IR_166 = 18, // ISO-8859-11, thai
+    X_LATIN7   = 19, // ISO-8859-13, baltic rim
+    X_LATIN9   = 21, // ISO-8859-15, latin9, western europe
+    X_EUCKR    = 24, // euc-kr,      ISO_IR_149 without escape codes
+    X_GB2312   = 25, // gb2312,      ISO_IR_58 without escape codes
+    ISO_2022_IR_6   = 32, // US_ASCII
+    ISO_2022_IR_13  = 33, // JIS X 0201,  japanese katakana
+    ISO_2022_IR_87  = 34, // JIS X 0208,  japanese 94x94 primary
+    ISO_2022_IR_159 = 36, // JIS X 0212,  japanese 94x94 secondary
+    ISO_2022_IR_100 = 41, // ISO-8859-1,  latin1, western europe
+    ISO_2022_IR_101 = 42, // ISO-8859-2,  latin2, central europe
+    ISO_2022_IR_109 = 43, // ISO-8859-3,  latin3, maltese
+    ISO_2022_IR_110 = 44, // ISO-8859-4,  latin4, baltic
+    ISO_2022_IR_144 = 45, // ISO-8859-5,  cyrillic
+    ISO_2022_IR_127 = 46, // ISO-8859-6,  arabic
+    ISO_2022_IR_126 = 47, // ISO-8859-7,  greek
+    ISO_2022_IR_138 = 48, // ISO-8859-8,  hebrew
+    ISO_2022_IR_148 = 49, // ISO-8859-9,  latin5, turkish
+    ISO_2022_IR_166 = 51, // ISO-8859-11, thai
+    ISO_2022_IR_149 = 56, // the KS X 1001 part of ISO-2022-KR
+    ISO_2022_IR_58  = 57, // the GB2312 part of ISO-2022-CN
+    ISO_IR_192 = 64, // UTF-8,       unicode
+    GB18030    = 65, // gb18030,     chinese with full unicode mapping
+    GBK        = 66, // gbk,         chinese
+    X_BIG5     = 67, // big5 + ETEN, traditional chinese
+    X_EUCJP    = 69, // euc-jp,      unix encoding for japanese
+    X_SJIS     = 70, // windows-31j, aka shift-jis, code page 932
+    X_CP1250   = 80, // cp1250,      central europe
+    X_CP1251   = 81, // cp1251,      cyrillic
+    X_CP1253   = 83, // cp1253,      greek
+    X_CP1255   = 85, // cp1255,      hebrew
+    X_CP1256   = 86, // cp1256,      arabic
+    X_CP1257   = 87, // cp1257,      baltic rim
     Unknown    = 255  // signifies unknown character set
   };
 
@@ -203,6 +200,15 @@ public:
    */
   std::string CaseFoldedUTF8(const char *text, size_t l) const;
 
+  //! Returns true if ISO 2022 escape codes are used.
+  /*!
+   *  If this method returns true, then escape codes can be used to
+   *  switch between character sets.
+   */
+  bool IsISO2022() const {
+    return ((this->Key & (ISO_2022 + ISO_2022 - 1)) == (this->Key | ISO_2022));
+  }
+
   //! Check for bidirectional character sets.
   /*!
    *  This is used to check for character sets that are likely to
@@ -250,8 +256,9 @@ private:
   unsigned char Key;
 
   enum {
-    //! Mask to get the initial charset.
-    ISO_2022_BASE = 31
+    ISO_2022_JP_BASE = 7,
+    ISO_2022_BASE = 31,
+    ISO_2022 = 32
   };
 
   static unsigned char GlobalDefault;

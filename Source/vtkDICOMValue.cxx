@@ -890,7 +890,7 @@ void vtkDICOMValue::CreateValueWithSpecificCharacterSet(
   {
     this->V->CharacterSet = cs.GetKey();
     // character set might change interpretation of backslashes
-    if (cs.GetKey() > vtkDICOMCharacterSet::ISO_IR_192)
+    if (l > 0 && !vr.HasSingleValue())
     {
       this->ComputeNumberOfValuesForCharData();
     }

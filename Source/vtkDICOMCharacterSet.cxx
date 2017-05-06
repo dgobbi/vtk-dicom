@@ -388,6 +388,7 @@ static CharsetInfo Charsets[38] = {
     "ISO_IR 148", "ISO 2022 IR 148", "-M", ISO_IR_148_Names },
   { vtkDICOMCharacterSet::ISO_IR_166, 0,     // iso-8859-11, thai
     "ISO_IR 166", "ISO 2022 IR 166", "-T", ISO_IR_166_Names },
+  // character sets for ISO 2022 encodings of JIS
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, katakana
     "ISO_IR 13",  "ISO 2022 IR 13",  ")I", ISO_IR_13_Names },
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, romaji
@@ -398,12 +399,13 @@ static CharsetInfo Charsets[38] = {
     "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_2022_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // JIS X 0201, katakana in G0
     "ISO_IR 13",  "ISO 2022 IR 13",  "(I", NULL },
-  { vtkDICOMCharacterSet::ISO_IR_192, 0,     // utf-8
-    "ISO_IR 192", "",                "",   ISO_IR_192_Names },
-  { vtkDICOMCharacterSet::GB18030, 0,        // chinese multibyte
-    "GB18030",    "",                "",   GB18030_Names },
-  { vtkDICOMCharacterSet::GBK, 0,            // subset of GB18030
-    "GBK",        "",                "",   GBK_Names },
+  { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // JIS X 0208, japanese
+    "ISO_IR 87",  "ISO 2022 IR 87", "$B" , ISO_IR_87_Names },
+  { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // obsolete escape code
+    "ISO_IR 87",  "ISO 2022 IR 87", "$@",  NULL },
+  { vtkDICOMCharacterSet::ISO_2022_IR_159, 2,// JIS X 0212, japanese
+    "ISO_IR 159", "ISO 2022 IR 159","$(D", NULL },
+  // other character sets that can be used with ISO 2022
   { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // GB2312, chinese
     "ISO_IR 58",  "ISO 2022 IR 58", "$A",  ISO_IR_58_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // compat escape code
@@ -414,12 +416,13 @@ static CharsetInfo Charsets[38] = {
     "ISO_IR 149", "ISO 2022 IR 149","$(C", ISO_IR_149_Names },
   { vtkDICOMCharacterSet::X_EUCKR, 1,        // KS X 1001, korean (in G1)
     "ISO_IR 149", "ISO 2022 IR 149","$)C", EUCKR_Names },
-  { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // JIS X 0208, japanese
-    "ISO_IR 87",  "ISO 2022 IR 87", "$B" , ISO_IR_87_Names },
-  { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // obsolete escape code
-    "ISO_IR 87",  "ISO 2022 IR 87", "$@",  NULL },
-  { vtkDICOMCharacterSet::ISO_2022_IR_159, 2,// JIS X 0212, japanese
-    "ISO_IR 159", "ISO 2022 IR 159","$(D", NULL },
+  // character sets that are not used with ISO 2022
+  { vtkDICOMCharacterSet::ISO_IR_192, 0,     // utf-8
+    "ISO_IR 192", "",                "",   ISO_IR_192_Names },
+  { vtkDICOMCharacterSet::GB18030, 0,        // chinese multibyte
+    "GB18030",    "",                "",   GB18030_Names },
+  { vtkDICOMCharacterSet::GBK, 0,            // subset of GB18030
+    "GBK",        "",                "",   GBK_Names },
   // The remainder of these are not DICOM standard
   { vtkDICOMCharacterSet::X_LATIN7, 0, "latin7", "", "-Y", LATIN7_Names },
   { vtkDICOMCharacterSet::X_LATIN9, 0, "latin9", "", "-b", LATIN9_Names },
@@ -588,11 +591,12 @@ const unsigned short CodePageISO8859_13[96] = {
   0x015B, 0x016B, 0x00FC, 0x017C, 0x017E, 0x2019
 };
 
-// The iso-8859 code pages that are part of DICOM (except 8859-1)
-const unsigned short *CodePagesISO8859[10] = {
+// The iso-8859 code pages (except 8859-1, 8859-15)
+const unsigned short *CodePagesISO8859[11] = {
   CodePageISO8859_2, CodePageISO8859_3, CodePageISO8859_4,
   CodePageISO8859_5, CodePageISO8859_6, CodePageISO8859_7,
-  CodePageISO8859_8, CodePageISO8859_9, CodePageISO8859_11
+  CodePageISO8859_8, CodePageISO8859_9, NULL,
+  CodePageISO8859_11, CodePageISO8859_13
 };
 
 // Code page for JIS X 0208 from JIS0208.TXT, except that backslash has
@@ -10027,22 +10031,19 @@ void Latin9ToUTF8(const char *text, size_t l, std::string *s)
 //----------------------------------------------------------------------------
 void ISO8859ToUTF8(int key, const char *text, size_t l, std::string *s)
 {
-  // Use ASCII if "key" is out of range
-  if (key < vtkDICOMCharacterSet::ISO_IR_101 &&
-      key > vtkDICOMCharacterSet::ISO_IR_166 &&
-      key != vtkDICOMCharacterSet::X_LATIN7)
+  // Use the ISO-8859 codepages (except latin1 and latin9)
+  const char *cp = text;
+  const char *ep = text + l;
+  const unsigned short *page = NULL;
+  if (key >= vtkDICOMCharacterSet::ISO_IR_101 &&
+      key <= vtkDICOMCharacterSet::X_LATIN7)
+  {
+    page = CodePagesISO8859[key - vtkDICOMCharacterSet::ISO_IR_101];
+  }
+  if (!page)
   {
     ASCIIToUTF8(text, l, s);
     return;
-  }
-
-  // Use the ISO-8859 codepages
-  const char *cp = text;
-  const char *ep = text + l;
-  const unsigned short *page = CodePageISO8859_13;
-  if (key < vtkDICOMCharacterSet::ISO_IR_166)
-  {
-    page = CodePagesISO8859[key - vtkDICOMCharacterSet::ISO_IR_101];
   }
 
   while (cp != ep)
@@ -10771,7 +10772,7 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
             // combine key with 2nd, 3rd value of SpecificCharacterSet
             // (specific to ISO_2022_IR_87 and ISO_2022_IR_159, which
             // combine with ISO_2022_IR_13 and with each other)
-            key |= Charsets[i].Key | ISO_2022;
+            key = (key & ISO_2022_JP_BASE) | Charsets[i].Key | ISO_2022;
           }
         }
       }
@@ -10812,28 +10813,43 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
   unsigned char key = this->Key;
   std::string value;
 
-  for (int i = 0; i < CHARSET_TABLE_SIZE && key != Unknown; i++)
+  for (int i = 0; i < CHARSET_TABLE_SIZE && key != 0; i++)
   {
     bool match = false;
-    if (Charsets[i].Flags == 0 && value.empty() &&
-        ((key & ISO_2022_BASE) != 0 || key == ISO_2022_IR_6))
+    if (key == (key & (ISO_2022_JP_BASE | ISO_2022)) && key != ISO_2022)
     {
-      match = (Charsets[i].Key == (key & ISO_2022_BASE));
+      // ISO_2022_IR_13, ISO_2022_IR_87 and ISO_2022_IR_159 can combine
+      if ((Charsets[i].Key & key) == Charsets[i].Key &&
+          (Charsets[i].Key | ISO_2022) != ISO_2022)
+      {
+        match = true;
+        // remove the bit for the matched charset
+        key ^= Charsets[i].Key & ~ISO_2022;
+        key = (key == ISO_2022 ? 0 : key);
+      }
+    }
+    else if (Charsets[i].Flags == 0 && value.empty())
+    {
+      if (this->IsISO2022())
+      {
+        match = (Charsets[i].Key == (key & ISO_2022_BASE));
+      }
+      else
+      {
+        match = (Charsets[i].Key == key);
+      }
+      key = (match ? 0 : key);
     }
     else if (Charsets[i].Flags == 1 && value.empty())
     {
-      // ISO_2022_IR_58 and ISO_2022_IR_149 go in 2nd value
+      // ISO_2022_IR_58 and ISO_2022_IR_149
       match = (Charsets[i].Key == (key | ISO_2022));
-    }
-    else if (Charsets[i].Flags == 2)
-    {
-      // ISO_2022_IR_87 and ISO_2022_IR_159 can combine
-      match = ((Charsets[i].Key & key) == Charsets[i].Key);
+      key = (match ? 0 : key);
     }
 
     if (match)
     {
-      if ((key & ISO_2022) != 0)
+      if (this->IsISO2022())
       {
         if (Charsets[i].Flags == 1 || Charsets[i].Flags == 2)
           {
@@ -10846,13 +10862,6 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
       else
       {
         value += Charsets[i].DefinedTerm;
-      }
-
-      // terminate if the only remaining bit is ISO_2022
-      key ^= Charsets[i].Key & (~ISO_2022);
-      if ((key | ISO_2022) == ISO_2022)
-      {
-        break;
       }
     }
   }
@@ -10878,7 +10887,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   {
     CP1252ToUTF8(text, l, &s);
   }
-  else if (this->Key <= ISO_IR_166 || this->Key == X_LATIN7) // ISO-8895-X
+  else if (this->Key >= ISO_IR_101 && this->Key <= X_LATIN7) // ISO-8895-X
   {
     ISO8859ToUTF8(this->Key, text, l, &s);
   }
@@ -10942,7 +10951,7 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   {
     EUCJPToUTF8(text, l, &s);
   }
-  else if ((this->Key & ISO_2022) != 0 && this->Key != Unknown)
+  else if (this->IsISO2022())
   {
     this->ISO2022ToUTF8(text, l, &s);
   }
@@ -10964,6 +10973,12 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
   // Mask to get the charset that is active before the first escape code.
   unsigned char charset = (this->Key & ISO_2022_BASE);
   unsigned char charsetG2 = 0;
+
+  // if Japanese, only ISO_IR_13 is active at the start
+  if (charset <= ISO_2022_JP_BASE)
+  {
+    charset &= ISO_IR_13;
+  }
 
   // this will be set when decoding a multibyte charset in G0
   bool multibyteG0 = false;
@@ -11212,7 +11227,7 @@ size_t vtkDICOMCharacterSet::NextBackslash(
       }
     }
   }
-  else if ((this->Key & ISO_2022) != 0)
+  else if (this->IsISO2022())
   {
     // ensure backslash isn't part of a G0 multi-byte code
     bool multibyte = false;
@@ -11280,6 +11295,8 @@ unsigned int vtkDICOMCharacterSet::CountBackslashes(
       count++;
     }
   }
+
+  std::cerr << "CountBackslashes " << count << " " << *this << "\n";
 
   return count;
 }
