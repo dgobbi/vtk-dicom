@@ -10885,99 +10885,88 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
 {
   std::string s;
 
-  if (this->Key == ISO_IR_192) // UTF-8
-  {
-    UTF8ToUTF8(text, l, &s);
-  }
-  else if (this->Key == ISO_IR_6) // US-ASCII
-  {
-    ASCIIToUTF8(text, l, &s);
-  }
-  else if (this->Key == ISO_IR_100) // ISO-8895-1
-  {
-    CP1252ToUTF8(text, l, &s);
-  }
-  else if (this->Key >= ISO_IR_101 && this->Key <= X_LATIN7) // ISO-8895-X
-  {
-    ISO8859ToUTF8(this->Key, text, l, &s);
-  }
-  else if (this->Key == ISO_IR_13) // JIS_X_0201 romaji & katakana
-  {
-    JISXToUTF8(this->Key, text, l, &s);
-  }
-  else if (this->Key == X_LATIN9) // ISO-8895-15
-  {
-    Latin9ToUTF8(text, l, &s);
-  }
-  else if (this->Key == GB18030)
-  {
-    GB18030ToUTF8(text, l, &s);
-  }
-  else if (this->Key == GBK)
-  {
-    GBKToUTF8(text, l, &s);
-  }
-  else if (this->Key == X_GB2312)
-  {
-    GB2312ToUTF8(text, l, &s);
-  }
-  else if (this->Key == X_EUCKR)
-  {
-    EUCKRToUTF8(text, l, &s);
-  }
-  else if (this->Key == X_CP1250)
-  {
-    CP1250ToUTF8(text, l, &s);
-  }
-  else if (this->Key == X_CP1251)
-  {
-    CP1251ToUTF8(text, l, &s);
-  }
-  else if (this->Key == X_CP1252)
-  {
-    CP1252ToUTF8(text, l, &s);
-  }
-  else if (this->Key == X_CP1253)
-  {
-    CP1253ToUTF8(text, l, &s);
-  }
-  else if (this->Key == X_CP1254)
-  {
-    ISO8859ToUTF8(ISO_IR_148, text, l, &s);
-  }
-  else if (this->Key == X_CP1255)
-  {
-    CP1255ToUTF8(text, l, &s);
-  }
-  else if (this->Key == X_CP1256)
-  {
-    CP1256ToUTF8(text, l, &s);
-  }
-  else if (this->Key == X_CP1257)
-  {
-    CP1257ToUTF8(text, l, &s);
-  }
-  else if (this->Key == X_BIG5)
-  {
-    Big5ToUTF8(text, l, &s);
-  }
-  else if (this->Key == X_SJIS)
-  {
-    SJISToUTF8(text, l, &s);
-  }
-  else if (this->Key == X_EUCJP)
-  {
-    EUCJPToUTF8(text, l, &s);
-  }
-  else if (this->IsISO2022())
+  if (this->IsISO2022())
   {
     this->ISO2022ToUTF8(text, l, &s);
   }
-  else
+  else switch (this->Key)
   {
-    // any octets in [0x00,0x7F] will be assumed to be ASCII,
-    // while all other octets will be treated as invalid
-    ASCIIToUTF8(text, l, &s);
+    case ISO_IR_6:  // US-ASCII
+      ASCIIToUTF8(text, l, &s);
+      break;
+    case ISO_IR_13: // JIS_X_0201 romaji & katakana
+      JISXToUTF8(this->Key, text, l, &s);
+      break;
+    case ISO_IR_100: // latin1, ISO-8859-1
+      CP1252ToUTF8(text, l, &s);
+      break;
+    case ISO_IR_101:
+    case ISO_IR_109:
+    case ISO_IR_110:
+    case ISO_IR_144:
+    case ISO_IR_127:
+    case ISO_IR_126:
+    case ISO_IR_138:
+    case ISO_IR_148:
+    case ISO_IR_166:
+      ISO8859ToUTF8(this->Key, text, l, &s);
+      break;
+    case X_LATIN9: // ISO-8895-15
+      Latin9ToUTF8(text, l, &s);
+      break;
+    case X_EUCKR:
+      EUCKRToUTF8(text, l, &s);
+      break;
+    case X_GB2312:
+      GB2312ToUTF8(text, l, &s);
+      break;
+    case ISO_IR_192: // UTF-8
+      UTF8ToUTF8(text, l, &s);
+      break;
+    case GB18030:
+      GB18030ToUTF8(text, l, &s);
+      break;
+    case GBK:
+      GBKToUTF8(text, l, &s);
+      break;
+    case X_BIG5:
+      Big5ToUTF8(text, l, &s);
+      break;
+    case X_SJIS:
+      SJISToUTF8(text, l, &s);
+      break;
+    case X_EUCJP:
+      EUCJPToUTF8(text, l, &s);
+      break;
+    case X_CP1250:
+      CP1250ToUTF8(text, l, &s);
+      break;
+    case X_CP1251:
+      CP1251ToUTF8(text, l, &s);
+      break;
+    case X_CP1252:
+      CP1252ToUTF8(text, l, &s);
+      break;
+    case X_CP1253:
+      CP1253ToUTF8(text, l, &s);
+      break;
+    case X_CP1254:
+      ISO8859ToUTF8(ISO_IR_148, text, l, &s);
+      break;
+    case X_CP1255:
+      CP1255ToUTF8(text, l, &s);
+      break;
+    case X_CP1256:
+      CP1256ToUTF8(text, l, &s);
+      break;
+    case X_CP1257:
+      CP1257ToUTF8(text, l, &s);
+      break;
+    default:
+      // any octets in [0x00,0x7F] will be assumed to be ASCII,
+      // while all other octets will be treated as invalid
+      ASCIIToUTF8(text, l, &s);
+      break;
   }
 
   return s;
