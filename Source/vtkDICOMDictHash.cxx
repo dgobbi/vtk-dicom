@@ -5029,9 +5029,9 @@ const DictEntry DictContents[] = {
 { 0x7F00, 0x0040, 1, VR::OW, VM::M1, "VariableCoefficientsSDDN" },
 { 0xFFFA, 0xFFFA, 0, VR::SQ, VM::M1, "DigitalSignaturesSequence" },
 { 0xFFFC, 0xFFFC, 0, VR::OB, VM::M1, "DataSetTrailingPadding" },
-{ 0xFFFE, 0xE000, 0, VR::XX, VM::M1, "Item" },
-{ 0xFFFE, 0xE00D, 0, VR::XX, VM::M1, "ItemDelimitationItem" },
-{ 0xFFFE, 0xE0DD, 0, VR::XX, VM::M1, "SequenceDelimitationItem" },
+{ 0xFFFE, 0xE000, 0, VR::XX, VM::M0, "Item" },
+{ 0xFFFE, 0xE00D, 0, VR::XX, VM::M0, "ItemDelimitationItem" },
+{ 0xFFFE, 0xE0DD, 0, VR::XX, VM::M0, "SequenceDelimitationItem" },
 };
 
 const unsigned short DictTagHashTable[] = {
