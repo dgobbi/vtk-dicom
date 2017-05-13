@@ -9951,15 +9951,15 @@ void CP1256ToUTF8(const char *text, size_t l, std::string *s)
           0xFD, 0x200E,  0xFF, 0x06D2
         };
 
-        int i;
-        for (i = 2; i < 60; i += 2)
+        int j;
+        for (j = 2; j < 60; j += 2)
         {
-          if (code < table[i])
+          if (code < table[j])
           {
             break;
           }
         }
-        code = (code - table[i-2]) + table[i-1];
+        code = (code - table[j-2]) + table[j-1];
       }
       UnicodeToUTF8(code, s);
     }
