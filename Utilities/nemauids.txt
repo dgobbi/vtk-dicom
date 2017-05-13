@@ -714,6 +714,22 @@ PS3.4
 Compositing Planar MPR Volumetric Presentation State Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.11.8
+Advanced Blending Volumetric Presentation State Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.11.9
+Volume Rendering Volumetric Presentation State Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.11.10
+Segmented Volume Rendering Volumetric Presentation State Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.11.11
+Multiple Volume Rendering Volumetric Presentation State Storage
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.12.1
 X-Ray Angiographic Image Storage
 SOP Class
@@ -878,6 +894,14 @@ PS3.4
 Wide Field Ophthalmic Photography 3D Coordinates Image Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.5.7
+Ophthalmic Optical Coherence Tomography En Face Image Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.5.8
+Ophthalmic Optical Coherence Tomography B-scan Volume Analysis Storage
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.77.1.6
 VL Whole Slide Microscopy Image Storage
 SOP Class
@@ -1004,6 +1028,10 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.88.72
 Simplified Adult Echo SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.73
+Patient Radiation Dose SR Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.90.1
@@ -4847,3 +4875,81 @@ Cardiac Phases and Time Points
 1.2.840.10008.6.1.1149
 CID 12300
 Core Echo Measurements
+1.2.840.10008.6.1.1150
+CID 4270
+OCT-A Processing Algorithm Families
+1.2.840.10008.6.1.1151
+CID 4271
+En Face Image Types
+1.2.840.10008.6.1.1152
+CID 4272
+Opt Scan Pattern Types
+1.2.840.10008.6.1.1153
+CID 4273
+Retinal Segmentation Surfaces
+1.2.840.10008.6.1.1154
+CID 10060
+Organs for Radiation Dose Estimates
+1.2.840.10008.6.1.1155
+CID 10061
+Absorbed Radiation Dose Types
+1.2.840.10008.6.1.1156
+CID 10062
+Equivalent Radiation Dose Types
+1.2.840.10008.6.1.1157
+CID 10063
+Radiation Dose Estimate Distribution Representation
+1.2.840.10008.6.1.1158
+CID 10064
+Patient Model Type
+1.2.840.10008.6.1.1159
+CID 10065
+Radiation Transport Model Type
+1.2.840.10008.6.1.1160
+CID 10066
+Attenuator Category
+1.2.840.10008.6.1.1161
+CID 10067
+Radiation Attenuator Materials
+1.2.840.10008.6.1.1162
+CID 10068
+Estimate Method Types
+1.2.840.10008.6.1.1163
+CID 10069
+Radiation Dose Estimation Parameter
+1.2.840.10008.6.1.1164
+CID 10070
+Radiation Dose Types
+1.2.840.10008.6.1.1165
+CID 7270
+MR Diffusion Component Semantics
+1.2.840.10008.6.1.1166
+CID 7271
+MR Diffusion Anisotropy Indices
+1.2.840.10008.6.1.1167
+CID 7272
+MR Diffusion Model Parameters
+1.2.840.10008.6.1.1168
+CID 7273
+MR Diffusion Models
+1.2.840.10008.6.1.1169
+CID 7274
+MR Diffusion Model Fitting Methods
+1.2.840.10008.6.1.1170
+CID 7275
+MR Diffusion Model Specific Methods
+1.2.840.10008.6.1.1171
+CID 7276
+MR Diffusion Model Inputs
+1.2.840.10008.6.1.1172
+CID 7277
+Units of Diffusion Rate Area Over Time
+1.2.840.10008.6.1.1173
+CID 7039
+Pediatric Size Categories
+1.2.840.10008.6.1.1174
+CID 7041
+Calcium Scoring Patient Size Categories
+1.2.840.10008.6.1.1175
+CID 10034
+Reason for Repeating Acquisition

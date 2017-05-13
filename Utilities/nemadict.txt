@@ -1629,7 +1629,7 @@ Other Patient IDs
 OtherPatientIDs
 LO
 1-n
-
+RET
 (0010,1001)
 Other Patient Names
 OtherPatientNames
@@ -1725,7 +1725,7 @@ Medical Record Locator
 MedicalRecordLocator
 LO
 1
-
+RET
 (0010,1100)
 Referenced Patient Photo Sequence
 ReferencedPatientPhotoSequence
@@ -9604,6 +9604,120 @@ TwoDimensionalToThreeDimensionalMapData
 OF
 1
 
+(0022,1612)
+Derivation Algorithm Sequence
+DerivationAlgorithmSequence
+SQ
+1
+
+(0022,1615)
+Ophthalmic Image Type Code Sequence
+OphthalmicImageTypeCodeSequence
+SQ
+1
+
+(0022,1616)
+Ophthalmic Image Type Description
+OphthalmicImageTypeDescription
+LO
+1
+
+(0022,1618)
+Scan Pattern Type Code Sequence
+ScanPatternTypeCodeSequence
+SQ
+1
+
+(0022,1620)
+Referenced Surface Mesh Identification Sequence
+ReferencedSurfaceMeshIdentificationSequence
+SQ
+1
+
+(0022,1622)
+Ophthalmic Volumetric Properties Flag
+OphthalmicVolumetricPropertiesFlag
+CS
+1
+
+(0022,1624)
+Ophthalmic Anatomic Reference Point X-Coordinate
+OphthalmicAnatomicReferencePointXCoordinate
+FL
+1
+
+(0022,1626)
+Ophthalmic Anatomic Reference Point Y-Coordinate
+OphthalmicAnatomicReferencePointYCoordinate
+FL
+1
+
+(0022,1628)
+Ophthalmic En Face Image Quality Rating Sequence
+OphthalmicEnFaceImageQualityRatingSequence
+SQ
+1
+
+(0022,1630)
+Quality Threshold
+QualityThreshold
+DS
+1
+
+(0022,1640)
+OCT B-scan Analysis Acquisition Parameters Sequence
+OCTBscanAnalysisAcquisitionParametersSequence
+SQ
+1
+
+(0022,1642)
+Number of B-scans Per Frame
+NumberofBscansPerFrame
+UL
+1
+
+(0022,1643)
+B-scan Slab Thickness
+BscanSlabThickness
+FL
+1
+
+(0022,1644)
+Distance Between B-scan Slabs
+DistanceBetweenBscanSlabs
+FL
+1
+
+(0022,1645)
+B-scan Cycle Time
+BscanCycleTime
+FL
+1
+
+(0022,1646)
+B-scan Cycle Time Vector
+BscanCycleTimeVector
+FL
+1-n
+
+(0022,1649)
+A-scan Rate
+AscanRate
+FL
+1
+
+(0022,1650)
+B-scan Rate
+BscanRate
+FL
+1
+
+(0022,1658)
+Surface Mesh Z-Pixel Offset
+SurfaceMeshZPixelOffset
+UL
+1
+
 (0024,0010)
 Visual Field Horizontal Extent
 VisualFieldHorizontalExtent
@@ -13298,6 +13412,12 @@ SQ
 Entrance Dose in mGy
 EntranceDoseInmGy
 DS
+1
+
+(0040,8303)
+Entrance Dose Derivation
+EntranceDoseDerivation
+CS
 1
 
 (0040,9092)
@@ -17409,7 +17529,7 @@ Compositing Method
 CompositingMethod
 CS
 1
-
+RET
 (0070,1207)
 Volumetric Presentation Input Number
 VolumetricPresentationInputNumber
@@ -17419,6 +17539,36 @@ US
 (0070,1208)
 Image Volume Geometry
 ImageVolumeGeometry
+CS
+1
+
+(0070,1209)
+Volumetric Presentation Input Set UID
+VolumetricPresentationInputSetUID
+UI
+1
+
+(0070,120A)
+Volumetric Presentation Input Set Sequence
+VolumetricPresentationInputSetSequence
+SQ
+1
+
+(0070,120B)
+Global Crop
+GlobalCrop
+CS
+1
+
+(0070,120C)
+Global Cropping Specification Index
+GlobalCroppingSpecificationIndex
+US
+1-n
+
+(0070,120D)
+Rendering Method
+RenderingMethod
 CS
 1
 
@@ -17524,6 +17674,78 @@ MPRViewHeight
 FD
 1
 
+(0070,1602)
+Render Projection
+RenderProjection
+CS
+1
+
+(0070,1603)
+Viewpoint Position
+ViewpointPosition
+FD
+3
+
+(0070,1604)
+Viewpoint LookAt Point
+ViewpointLookAtPoint
+FD
+3
+
+(0070,1605)
+Viewpoint Up Direction
+ViewpointUpDirection
+FD
+3
+
+(0070,1606)
+Render Field of View
+RenderFieldOfView
+FD
+6
+
+(0070,1607)
+Sampling Step Size
+SamplingStepSize
+FD
+1
+
+(0070,1701)
+Shading Style
+ShadingStyle
+CS
+1
+
+(0070,1702)
+Ambient Reflection Intensity
+AmbientReflectionIntensity
+FD
+1
+
+(0070,1703)
+Light Direction
+LightDirection
+FD
+3
+
+(0070,1704)
+Diffuse Reflection Intensity
+DiffuseReflectionIntensity
+FD
+1
+
+(0070,1705)
+Specular Reflection Intensity
+SpecularReflectionIntensity
+FD
+1
+
+(0070,1706)
+Shininess
+Shininess
+FD
+1
+
 (0070,1801)
 Presentation State Classification Component Sequence
 PresentationStateClassificationComponentSequence
@@ -17623,6 +17845,96 @@ SQ
 (0070,1A05)
 Animation Step Size
 AnimationStepSize
+FD
+1
+
+(0070,1A06)
+Swivel Range
+SwivelRange
+FD
+1
+
+(0070,1A07)
+Volumetric Curve Up Directions
+VolumetricCurveUpDirections
+OD
+1
+
+(0070,1A08)
+Volume Stream Sequence
+VolumeStreamSequence
+SQ
+1
+
+(0070,1A09)
+RGBA Transfer Function Description
+RGBATransferFunctionDescription
+LO
+1
+
+(0070,1B01)
+Advanced Blending Sequence
+AdvancedBlendingSequence
+SQ
+1
+
+(0070,1B02)
+Blending Input Number
+BlendingInputNumber
+US
+1
+
+(0070,1B03)
+Blending Display Input Sequence
+BlendingDisplayInputSequence
+SQ
+1
+
+(0070,1B04)
+Blending Display Sequence
+BlendingDisplaySequence
+SQ
+1
+
+(0070,1B06)
+Blending Mode
+BlendingMode
+CS
+1
+
+(0070,1B07)
+Time Series Blending
+TimeSeriesBlending
+CS
+1
+
+(0070,1B08)
+Geometry for Display
+GeometryForDisplay
+CS
+1
+
+(0070,1B11)
+Threshold Sequence
+ThresholdSequence
+SQ
+1
+
+(0070,1B12)
+Threshold Value Sequence
+ThresholdValueSequence
+SQ
+1
+
+(0070,1B13)
+Threshold Type
+ThresholdType
+CS
+1
+
+(0070,1B14)
+Threshold Value
+ThresholdValue
 FD
 1
 
@@ -21718,6 +22030,12 @@ BeamDoseSpecificationPoint
 DS
 3
 
+(300A,0083)
+Referenced Dose Reference UID
+ReferencedDoseReferenceUID
+UI
+1
+
 (300A,0084)
 Beam Dose
 BeamDose
@@ -25220,17 +25538,17 @@ OB
 Item
 Item
 See Note
-0
+1
 
 (FFFE,E00D)
 Item Delimitation Item
 ItemDelimitationItem
 See Note
-0
+1
 
 (FFFE,E0DD)
 Sequence Delimitation Item
 SequenceDelimitationItem
 See Note
-0
+1
 
