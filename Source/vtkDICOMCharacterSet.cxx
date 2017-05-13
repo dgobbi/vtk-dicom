@@ -176,7 +176,6 @@ static const char *ISO_IR_166_Names[] = {
   "iso8859-11",
   "iso885911",
   "tis-620",
-  "windows-874",
   NULL
 };
 
@@ -281,6 +280,11 @@ static const char *ISO_IR_87_Names[] = {
   NULL
 };
 
+static const char *CP874_Names[] = {
+  "windows-874",
+  NULL
+};
+
 static const char *CP1250_Names[] = {
   "cp1250",
   "windows-1250",
@@ -372,8 +376,8 @@ static const char *EUCJP_Names[] = {
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 40;
-static CharsetInfo Charsets[40] = {
+const int CHARSET_TABLE_SIZE = 41;
+static CharsetInfo Charsets[41] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "",   ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -434,6 +438,7 @@ static CharsetInfo Charsets[40] = {
   // The remainder of these are not DICOM standard
   { vtkDICOMCharacterSet::X_LATIN7, 0, "latin7", "", "-Y", LATIN7_Names },
   { vtkDICOMCharacterSet::X_LATIN9, 0, "latin9", "", "-b", LATIN9_Names },
+  { vtkDICOMCharacterSet::X_CP874, 0, "cp874", "", "", CP874_Names },
   { vtkDICOMCharacterSet::X_CP1250, 0, "cp1250", "", "", CP1250_Names },
   { vtkDICOMCharacterSet::X_CP1251, 0, "cp1251", "", "", CP1251_Names },
   { vtkDICOMCharacterSet::X_CP1252, 0, "cp1252", "", "", CP1252_Names },
@@ -10932,11 +10937,14 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
     case X_BIG5:
       Big5ToUTF8(text, l, &s);
       break;
+    case X_EUCJP:
+      EUCJPToUTF8(text, l, &s);
+      break;
     case X_SJIS:
       SJISToUTF8(text, l, &s);
       break;
-    case X_EUCJP:
-      EUCJPToUTF8(text, l, &s);
+    case X_CP874:
+      ISO8859ToUTF8(ISO_IR_166, text, l, &s);
       break;
     case X_CP1250:
       CP1250ToUTF8(text, l, &s);

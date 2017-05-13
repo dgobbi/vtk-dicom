@@ -97,6 +97,7 @@ public:
     X_BIG5     = 67, // big5 + ETEN, traditional chinese
     X_EUCJP    = 69, // euc-jp,      unix encoding for japanese
     X_SJIS     = 70, // windows-31j, aka shift-jis, code page 932
+    X_CP874    = 76, // cp1162,      thai (windows-874)
     X_CP1250   = 80, // cp1250,      central europe
     X_CP1251   = 81, // cp1251,      cyrillic
     X_CP1252   = 82, // cp1252,      western europe
