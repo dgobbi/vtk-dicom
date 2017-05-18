@@ -11317,8 +11317,6 @@ unsigned int vtkDICOMCharacterSet::CountBackslashes(
     }
   }
 
-  std::cerr << "CountBackslashes " << count << " " << *this << "\n";
-
   return count;
 }
 
