@@ -10257,45 +10257,42 @@ void Big5ToUTF8(const char *text, size_t l, std::string *s)
   const char *ep = text + l;
   while (cp != ep)
   {
-    int code = static_cast<unsigned char>(*cp++);
-    if (code <= 0x7F)
+    char c = *cp++;
+    if ((c & 0x80) == 0)
     {
-      s->push_back(code);
+      s->push_back(c);
     }
     else
     {
-      if (cp != ep)
+      int code = 0xFFFD;
+      unsigned short x = static_cast<unsigned char>(c);
+
+      if (cp != ep && x >= 0x81 && x <= 0xFE)
       {
-        int x = code;
-        int y = static_cast<unsigned char>(*cp);
-        code = 0xFFFD;
+        unsigned short y = static_cast<unsigned char>(*cp);
 
         if ((y >= 0x40 && y <= 0x7E) || (y >= 0xA1 && y <= 0xFE))
         {
           cp++;
-          int offset = (y < 0x7F ? 0x40 : 0x62);
-          int c = (x - 0x81)*157 + (y - offset);
-          if (c == 11205)
+          unsigned short offset = (y < 0x7F ? 0x40 : 0x62);
+          unsigned short j = (x - 0x81)*157 + (y - offset);
+          if (j == 11205)
           {
             code = 0x200CC;
           }
-          else if (c == 11207)
+          else if (j == 11207)
           {
             code = 0x2008A;
           }
-          else if (c == 11213)
+          else if (j == 11213)
           {
             code = 0x27607;
           }
-          else if (c >= 5024 && c <= 18996)
+          else if (j >= 5024 && j <= 18996)
           {
-            code = CodePageBig5[c - 5024];
+            code = CodePageBig5[j - 5024];
           }
         }
-      }
-      else
-      {
-        code = 0xFFFD; // illegal character
       }
       UnicodeToUTF8(code, s);
     }
