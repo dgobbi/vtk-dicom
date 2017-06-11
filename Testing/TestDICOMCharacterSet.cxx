@@ -65,6 +65,11 @@ static const char *ClunieText[][3] = {
 
 // order is character set, utf-8, native encoding
 static const char *OtherText[][3] = {
+{ "GB18030",
+  "Linear1: \xc2\x80 to \xef\xbf\xbf\n"
+  "Linear2: \xf0\x90\x80\x80 to \xf4\x8f\xbf\xbf\n",
+  "Linear1: \x81\x30\x81\x30 to \x84\x31\xa4\x39\n"
+  "Linear2: \x90\x30\x81\x30 to \xe3\x32\x9a\x35\n" },
 { "iso-2022-jp-2",
   "JISX0208: \xe5\x85\x83\xe6\xb0\x97\n"
   "JISX0212: \xe9\xa8\x8f\xe9\xa9\x8e\n"

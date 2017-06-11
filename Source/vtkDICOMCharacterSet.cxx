@@ -10362,10 +10362,10 @@ void GB18030ToUTF8(const char *text, size_t l, std::string *s)
         code = CodePageGB18030[a];
         cp++;
       }
-
-      if (a > 0x80 && a < 0x90 && b >= '0' && b <= '9')
+      else if (a > 0x80 && a < 0x90 && b >= '0' && b <= '9')
       {
         // start of a four-byte code
+        cp++;
         if (cp == ep || cp+1 == ep)
         {
           // unexpected end of input, terminate early
@@ -10405,6 +10405,7 @@ void GB18030ToUTF8(const char *text, size_t l, std::string *s)
       else if (a >= 0x90 && a < 0xFF && b >= '0' && b <= '9')
       {
         // start of a four-byte code
+        cp++;
         if (cp == ep || cp+1 == ep)
         {
           // unexpected end of input, terminate early
