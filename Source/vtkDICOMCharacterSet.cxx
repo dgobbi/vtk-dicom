@@ -4613,9 +4613,7 @@ const unsigned short CodePage949Ext[8822] = {
   0xD7A2, 0xD7A3,
 };
 
-// Code page for gb18030 two-byte codes from gb-18030-2005.ucm.
-// There were 24 codes with duplicate mappings, which are listed in
-// the PrivateToStandard table below.
+// Code page for gb18030 two-byte codes for GB18030-2000.
 // This table is also used for GB2312 and GBK, to ensure compatibility.
 // However, note that GBK/GB18030 differs from GNU iconv's GB2312 table
 // for these two code points:
@@ -5459,7 +5457,7 @@ const unsigned short CodePageGB18030[23940] = {
   0x0101, 0x00E1, 0x01CE, 0x00E0, 0x0113, 0x00E9, 0x011B, 0x00E8, 0x012B,
   0x00ED, 0x01D0, 0x00EC, 0x014D, 0x00F3, 0x01D2, 0x00F2, 0x016B, 0x00FA,
   0x01D4, 0x00F9, 0x01D6, 0x01D8, 0x01DA, 0x01DC, 0x00FC, 0x00EA, 0x0251,
-  0x1E3F, 0x0144, 0x0148, 0x01F9, 0x0261, 0xE7C9, 0xE7CA, 0xE7CB, 0xE7CC,
+  0xE7C7, 0x0144, 0x0148, 0x01F9, 0x0261, 0xE7C9, 0xE7CA, 0xE7CB, 0xE7CC,
   0x3105, 0x3106, 0x3107, 0x3108, 0x3109, 0x310A, 0x310B, 0x310C, 0x310D,
   0x310E, 0x310F, 0x3110, 0x3111, 0x3112, 0x3113, 0x3114, 0x3115, 0x3116,
   0x3117, 0x3118, 0x3119, 0x311A, 0x311B, 0x311C, 0x311D, 0x311E, 0x311F,
@@ -7338,21 +7336,6 @@ const unsigned short LinearGB18030[412] = {
   0x94BC, 0xFA25,  0x94BE, 0xFA2A,  0x98C4, 0xFE32,  0x98C5, 0xFE45,
   0x98C9, 0xFE53,  0x98CA, 0xFE58,  0x98CB, 0xFE67,  0x98CC, 0xFE6C,
   0x9961, 0xFF5F,  0x99E2, 0xFFE6
-};
-
-// Note: GB18030 maps 24 characters to the private use area, though
-// as of Unicode 4.1 there are now standard unicode codes for these.
-// By moving these out of the PUA, it becomes possible to display
-// these characters on systems that support Unicode 4.1 and have the
-// necessary fonts.  However, it breaks the round-trip compatibility
-// between GB18030 and Unicode and therefore breaks GB18030-2005.
-const unsigned int PrivateToStandard[48] = {
-  0xE78D, 0xFE10,  0xE78E, 0xFE12,  0xE78F, 0xFE11,  0xE790, 0xFE13,
-  0xE791, 0xFE14,  0xE792, 0xFE15,  0xE793, 0xFE16,  0xE794, 0xFE17,
-  0xE795, 0xFE18,  0xE796, 0xFE19,  0xE816, 0x20087, 0xE817, 0x20089,
-  0xE818, 0x200CC, 0xE81E, 0x9FB4,  0xE826, 0x9FB5,  0xE82B, 0x9FB6,
-  0xE82C, 0x9FB7,  0xE831, 0x215D7, 0xE832, 0x9FB8,  0xE83B, 0x2298F,
-  0xE843, 0x9FB9,  0xE854, 0x9FBA,  0xE855, 0x241FE, 0xE864, 0x9FBB
 };
 
 
@@ -10394,33 +10377,12 @@ void GB18030ToUTF8(const char *text, size_t l, std::string *s)
                   break;
                 }
               }
-              // this mapping was modified in GB18030-2005, after the linear
-              // table had already been defined, so it must be special-cased
-              if (code == 0x1E3F)
-              {
-                code = 0xE7C7;
-              }
             }
             else if (g >= 189000 && g <= 0xFFFFF + 189000)
             {
               // for unicode beyond the BMP
               code = g + (0x10000 - 189000);
             }
-          }
-        }
-      }
-      // convert some private codes to Unicode 4.1 standard codes in order
-      // to ensure they these characters can be displayed (though this is
-      // done at the cost of the one-to-one Unicode-to-GB18030 mapping)
-      size_t n = sizeof(PrivateToStandard)/sizeof(int);
-      if (code >= PrivateToStandard[0] && code <= PrivateToStandard[n-2])
-      {
-        for (size_t i = 0; i < n; i += 2)
-        {
-          if (code == PrivateToStandard[i])
-          {
-            code = PrivateToStandard[i+1];
-            break;
           }
         }
       }
