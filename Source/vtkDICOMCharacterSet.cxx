@@ -10354,76 +10354,58 @@ void GB18030ToUTF8(const char *text, size_t l, std::string *s)
       code = 0xFFFD;
 
       if (a > 0x80 && a < 0xFF &&
-          b >= 0x40 && b < 0xFF && b != 0x7F)
+          b >= 0x30 && b < 0xFF && b != 0x7F)
       {
-        // two-byte character
-        if (b > 0x7F) { b--; }
-        a = (a - 0x81)*190 + (b - 0x40);
-        code = CodePageGB18030[a];
         cp++;
-      }
-      else if (a > 0x80 && a < 0x90 && b >= '0' && b <= '9')
-      {
-        // start of a four-byte code
-        cp++;
-        if (cp == ep || cp+1 == ep)
+        if (b >= 0x40)
         {
-          // unexpected end of input, terminate early
-          break;
+          // two-byte character
+          if (b > 0x7F) { b--; }
+          a = (a - 0x81)*190 + (b - 0x40);
+          code = CodePageGB18030[a];
         }
-        if (static_cast<unsigned char>(cp[0]) > 0x80 &&
-            static_cast<unsigned char>(cp[0]) < 0xFF &&
-            cp[1] >= '0' && cp[1] <= '9')
+        else
         {
-          // four-byte GB18030 character
-          unsigned short c = static_cast<unsigned char>(*cp++);
-          unsigned short d = static_cast<unsigned char>(*cp++);
-          a = (a - 0x81)*10 + (b - '0');
-          b = (c - 0x81)*10 + (d - '0');
-          unsigned int g = a*1260 + b;
-          if (g <= 0x99FB)
+          // start of a four-byte code
+          if (cp == ep || cp+1 == ep)
           {
-            // search linearly compressed table
-            size_t n = sizeof(LinearGB18030)/sizeof(short);
-            for (size_t i = 0;; i += 2)
+            // unexpected end of input, terminate early
+            break;
+          }
+          if (static_cast<unsigned char>(cp[0]) > 0x80 &&
+              static_cast<unsigned char>(cp[0]) < 0xFF &&
+              cp[1] >= '0' && cp[1] <= '9')
+          {
+            // four-byte GB18030 character
+            unsigned short c = static_cast<unsigned char>(*cp++);
+            unsigned short d = static_cast<unsigned char>(*cp++);
+            a = (a - 0x81)*10 + (b - '0');
+            b = (c - 0x81)*10 + (d - '0');
+            unsigned int g = a*1260 + b;
+            if (g <= 0x99FB)
             {
-              if (i >= n || LinearGB18030[i] > g)
+              // search linearly compressed table
+              size_t n = sizeof(LinearGB18030)/sizeof(short);
+              for (size_t i = 0;; i += 2)
               {
-                code = LinearGB18030[i-1] + (g - LinearGB18030[i-2]);
-                break;
+                if (i >= n || LinearGB18030[i] > g)
+                {
+                  code = LinearGB18030[i-1] + (g - LinearGB18030[i-2]);
+                  break;
+                }
+              }
+              // this mapping was modified in GB18030-2005, after the linear
+              // table had already been defined, so it must be special-cased
+              if (code == 0x1E3F)
+              {
+                code = 0xE7C7;
               }
             }
-            // this mapping was modified in GB18030-2005, after the linear
-            // table had already been defined, so it must be special-cased
-            if (code == 0x1E3F)
+            else if (g >= 189000 && g <= 0xFFFFF + 189000)
             {
-              code = 0xE7C7;
+              // for unicode beyond the BMP
+              code = g + (0x10000 - 189000);
             }
-          }
-        }
-      }
-      else if (a >= 0x90 && a < 0xFF && b >= '0' && b <= '9')
-      {
-        // start of a four-byte code
-        cp++;
-        if (cp == ep || cp+1 == ep)
-        {
-          // unexpected end of input, terminate early
-          break;
-        }
-        if (static_cast<unsigned char>(cp[0]) > 0x80 &&
-            static_cast<unsigned char>(cp[0]) < 0xFF &&
-            cp[1] >= '0' && cp[1] <= '9')
-        {
-          // four-byte GB18030 to codes beyond 0xFFFF
-          unsigned short c = static_cast<unsigned char>(*cp++);
-          unsigned short d = static_cast<unsigned char>(*cp++);
-          a = (a - 0x90)*10 + (b - '0');
-          b = (c - 0x81)*10 + (d - '0');
-          unsigned int g = a*1260 + b;
-          if (g <= 0xFFFFF)
-          {
-            code = g + 0x10000;
           }
         }
       }
