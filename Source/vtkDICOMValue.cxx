@@ -26,6 +26,8 @@
 #include <assert.h>
 
 #include <new>
+#include <streambuf>
+#include <locale>
 
 // For use by methods that must return an empty item
 const vtkDICOMItem vtkDICOMValue::EmptyItem;
@@ -49,6 +51,26 @@ bool IsHexDigit(char c)
           (c >= 'a' && c <= 'f'));
 }
 
+// Buffer for reading from character string
+class InputString : public std::streambuf
+{
+public:
+  InputString(const char *ccp, size_t l) {
+    char *cp = const_cast<char *>(ccp);
+    setg(cp, cp, cp+l);
+  }
+};
+
+// Buffer for writing to a character string
+class OutputString : public std::streambuf
+{
+public:
+  OutputString(char *cp, size_t l) {
+    setp(cp, cp+l);
+  }
+  size_t length() const { return pptr() - pbase(); }
+};
+
 // The input is a list of one or more numerical string values separated
 // by backslashes, for example "1.23435\85234.0\2345.22".  Convert "n"
 // values to type OT, starting at the "i"th backslash-separated value.
@@ -59,34 +81,34 @@ void StringConversion(
 {
   if (vr == vtkDICOMVR::IS || vr == vtkDICOMVR::DS)
   {
-    for (size_t j = 0; j < i && *cp != '\0'; j++)
+    // create a stream for conversion with "C" locale
+    InputString sb(cp, strlen(cp));
+    std::istream sbs(&sb);
+    sbs.imbue(std::locale::classic());
+
+    for (size_t j = 0; j < i && !sbs.eof(); j++)
     {
-      bool bk = false;
-      do
-      {
-        bk = (*cp == '\\');
-        cp++;
-      }
-      while (!bk && *cp != '\0');
+      sbs.ignore(std::numeric_limits<std::streamsize>::max(), '\\');
     }
 
-    for (size_t k = 0; k < n && *cp != '\0'; k++)
+    for (size_t k = 0; k < n && !sbs.eof(); k++)
     {
       if (vr == vtkDICOMVR::DS)
       {
-        *v++ = static_cast<OT>(strtod(cp, NULL));
+        double d;
+        sbs >> d;
+        *v++ = static_cast<OT>(d);
       }
       else
       {
-        *v++ = static_cast<OT>(strtol(cp, NULL, 10));
+        int d;
+        sbs >> d;
+        *v++ = static_cast<OT>(d);
       }
-      bool bk = false;
-      do
+      if (k + 1 < n)
       {
-        bk = (*cp == '\\');
-        cp++;
+        sbs.ignore(std::numeric_limits<std::streamsize>::max(), '\\');
       }
-      while (!bk && *cp != '\0');
     }
   }
   else if (n > 0)
@@ -100,13 +122,22 @@ void StringConversionAT(const char *cp, vtkDICOMTag *v, size_t n)
 {
   for (size_t k = 0; k < n && *cp != '\0'; k++)
   {
-    while (!IsHexDigit(*cp) && *cp != '\\' && *cp != '\0')  { cp++; }
-    const char *dp = cp;
-    while (IsHexDigit(*dp)) { dp++; }
-    while (!IsHexDigit(*dp) && *dp != '\\' && *dp != '\0')  { dp++; }
-    unsigned short g = static_cast<unsigned short>(strtol(cp, NULL, 16));
-    unsigned short e = static_cast<unsigned short>(strtol(dp, NULL, 16));
-    *v++ = vtkDICOMTag(g, e);
+    unsigned short tag[2] = { 0, 0 };
+    for (int j = 0; j < 2; j++)
+    {
+      while (!IsHexDigit(*cp) && *cp != '\\' && *cp != '\0')  { cp++; }
+      for (int i = 0; i < 4; i++)
+      {
+        unsigned short d;
+        if (*cp >= '0' && *cp <= '9') { d = *cp - '0'; }
+        else if (*cp >= 'A' && *cp <= 'F') { d = *cp - ('A' - 10); }
+        else if (*cp >= 'a' && *cp <= 'f') { d = *cp - ('a' - 10); }
+        else { break; }
+        tag[j] = tag[j]*16 + d;
+        cp++;
+      }
+    }
+    *v++ = vtkDICOMTag(tag[0], tag[1]);
 
     bool bk = false;
     do
@@ -505,7 +536,11 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, size_t n)
   else if (vr == VR::DS)
   {
     char *cp = this->AllocateCharData(vr, 17*n);
-    char *dp = cp;
+    OutputString sb(cp, 17*n);
+    std::ostream sbs(&sb);
+    sbs.imbue(std::locale::classic());
+    sbs.precision(10);
+
     for (size_t i = 0; i < n; i++)
     {
       double d = static_cast<double>(data[i]);
@@ -522,49 +557,45 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, size_t n)
       {
         d = 0.0;
       }
-      // use a precision that will use 16 characters maximum
-      sprintf(cp, "%.10g", d);
-      size_t dl = strlen(cp);
-      // look for extra leading zeros on exponent
-      if (dl >= 5 && (cp[dl-5] == 'e' || cp[dl-5] =='E') && cp[dl-3] == '0')
+      sbs << d;
+      size_t dl = sb.length();
+      // look for superfluous leading zero on 3-digit exponent
+      if (dl >= 5 && (cp[dl-5] == 'e' || cp[dl-5] =='E') &&
+          cp[dl-3] == '0' &&
+          cp[dl-2] >= '0' && cp[dl-2] <= '9' &&
+          cp[dl-1] >= '0' && cp[dl-1] <= '9')
       {
         cp[dl-3] = cp[dl-2];
         cp[dl-2] = cp[dl-1];
-        cp[dl-1] = '\0';
-        dl--;
+        sbs.seekp(dl-1);
       }
-      cp += dl;
-      *cp++ = '\\';
+      if (i + 1 < n) { sbs.put('\\'); }
     }
-    if (cp != dp) { --cp; }
+
+    // pad to even length and terminate
+    if (sb.length() & 1) { sbs.put(' '); }
+    sbs.put('\0');
     this->V->NumberOfValues = static_cast<unsigned int>(n);
-    this->V->VL = static_cast<unsigned int>(cp - dp);
-    if (this->V->VL & 1)
-    { // pad to even number of chars
-      *cp++ = ' ';
-      this->V->VL++;
-    }
-    *cp = '\0';
+    this->V->VL = static_cast<unsigned int>(sb.length()-1);
   }
   else if (vr == VR::IS)
   {
     char *cp = this->AllocateCharData(vr, 13*n);
-    char *dp = cp;
+    OutputString sb(cp, 13*n);
+    std::ostream sbs(&sb);
+    sbs.imbue(std::locale::classic());
+
     for (size_t i = 0; i < n; i++)
     {
-      sprintf(cp, "%i", static_cast<int>(data[i]));
-      cp += strlen(cp);
-      *cp++ = '\\';
+      sbs << static_cast<int>(data[i]);;
+      if (i + 1 < n) { sbs.put('\\'); }
     }
-    if (cp != dp) { --cp; }
+
+    // pad to even length and terminate
+    if (sb.length() & 1) { sbs.put(' '); }
+    sbs.put('\0');
     this->V->NumberOfValues = static_cast<unsigned int>(n);
-    this->V->VL = static_cast<unsigned int>(cp - dp);
-    if (this->V->VL & 1)
-    { // pad to even number of chars
-      *cp++ = ' ';
-      this->V->VL++;
-    }
-    *cp = '\0';
+    this->V->VL = static_cast<unsigned int>(sb.length()-1);
   }
   else if (vr == VR::OB || vr == VR::UN)
   {
