@@ -34,6 +34,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include <sstream>
+#include <locale>
 
 vtkStandardNewMacro(vtkScancoCTReader);
 
@@ -273,6 +275,122 @@ double vtkScancoCTReader::DecodeDouble(const void *data)
   l2 = (cp[4] << 16) | (cp[5] << 24) | cp[6] | (cp[7] << 8);
   v.l = (static_cast<vtkTypeUInt64>(l1) << 32) | l2;
   return v.d*0.25;
+}
+
+//----------------------------------------------------------------------------
+// re-implement strtod() so that it always uses "C" locale,
+// i.e. so that it never uses "," as the decimal point.
+// (this implementation does not read "nan" or "infinity")
+double vtkScancoCTReader::StringToDouble(const char *cp, char **cpp)
+{
+  while (*cp == ' ' || *cp == '\t' ||
+         *cp == '\r' || *cp == '\n' ||
+         *cp == '\v' || *cp == '\f')
+  {
+    cp++;
+  }
+
+  if (cpp)
+  {
+    char *dp = const_cast<char *>(cp);
+    *cpp = dp;
+  }
+
+  // save the position
+  const char *sp = cp;
+
+  // read the sign
+  if (*cp == '-' || *cp == '+')
+  {
+    cp++;
+  }
+
+  // read the mantissa
+  bool digits = false;
+  while (*cp >= '0' && *cp <= '9')
+  {
+    cp++;
+    digits = true;
+  }
+  if (*cp == '.')
+  {
+    cp++;
+  }
+  while (*cp >= '0' && *cp <= '9')
+  {
+    cp++;
+    digits = true;
+  }
+
+  if (!digits)
+  {
+    return 0.0;
+  }
+
+  // read the exponent
+  if ((cp[0] == 'E' || cp[0] == 'e') &&
+      ((cp[1] >= '0' && cp[1] <= '9') ||
+       ((cp[1] == '-' || cp[1] == '+') && (cp[2] >= '0' && cp[2] <= '9'))))
+  {
+    cp++;
+    if (*cp == '-' || *cp == '+')
+    {
+      cp++;
+    }
+    while (*cp >= '0' && *cp <= '9')
+    {
+      cp++;
+    }
+  }
+
+  // now "dp" points to the end of the value
+  if (cpp)
+  {
+    char *dp = const_cast<char *>(cp);
+    *cpp = dp;
+  }
+
+  // convert with "C" locale
+  std::string s(sp, cp-sp);
+  std::istringstream istr(s);
+  istr.imbue(std::locale::classic());
+  double x = 0.0;
+  istr >> x;
+
+  return x;
+}
+
+//----------------------------------------------------------------------------
+// convert a decimal string to integer
+int vtkScancoCTReader::StringToInt(const char *cp, char **cpp)
+{
+  while (*cp == ' ' || *cp == '\t' ||
+         *cp == '\r' || *cp == '\n' ||
+         *cp == '\v' || *cp == '\f')
+  {
+    cp++;
+  }
+
+  char s = *cp;
+  if ((cp[0] == '-' || cp[0] == '+') &&
+      (cp[1] >= '0' && cp[1] <= '9'))
+  {
+    cp++;
+  }
+
+  unsigned int x = 0;
+  while (*cp >= '0' && *cp <= '9')
+  {
+    x = x*10 + (*cp++ - '0');
+  }
+
+  if (cpp)
+  {
+    char *dp = const_cast<char *>(cp);
+    *cpp = dp;
+  }
+
+  return (s == '-' ? -static_cast<int>(x) : static_cast<int>(x));
 }
 
 //----------------------------------------------------------------------------
@@ -708,14 +826,16 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
       {
         for (int i = 0; i < 3; i++)
         {
-          this->ScanDimensionsPixels[i] = strtol(value, &value, 10);
+          this->ScanDimensionsPixels[i] =
+            vtkScancoCTReader::StringToInt(value, &value);
         }
       }
       else if (skey == "Orig-ISQ-Dim-um")
       {
         for (int i = 0; i < 3; i++)
         {
-          this->ScanDimensionsPhysical[i] = strtod(value, &value)*1e-3;
+          this->ScanDimensionsPhysical[i] =
+            vtkScancoCTReader::StringToDouble(value, &value)*1e-3;
         }
       }
       else if (skey == "Patient Name")
@@ -726,77 +846,77 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
       }
       else if (skey == "Index Patient")
       {
-        this->PatientIndex = strtol(value, 0, 10);
+        this->PatientIndex = vtkScancoCTReader::StringToInt(value);
       }
       else if (skey == "Index Measurement")
       {
-        this->MeasurementIndex = strtol(value, 0, 10);
+        this->MeasurementIndex = vtkScancoCTReader::StringToInt(value);
       }
       else if (skey == "Site")
       {
-        this->Site = strtol(value, 0, 10);
+        this->Site = vtkScancoCTReader::StringToInt(value);
       }
       else if (skey == "Scanner ID")
       {
-        this->ScannerID = strtol(value, 0, 10);
+        this->ScannerID = vtkScancoCTReader::StringToInt(value);
       }
       else if (skey == "Scanner type")
       {
-        this->ScannerType = strtol(value, 0, 10);
+        this->ScannerType = vtkScancoCTReader::StringToInt(value);
       }
       else if (skey == "Position Slice 1 [um]")
       {
-        this->StartPosition = strtod(value, 0)*1e-3;
+        this->StartPosition = vtkScancoCTReader::StringToDouble(value)*1e-3;
         this->EndPosition =
           this->StartPosition + elementSize[2]*(structValues[5] - 1);
       }
       else if (skey == "No. samples")
       {
-        this->NumberOfSamples = strtol(value, 0, 10);
+        this->NumberOfSamples = vtkScancoCTReader::StringToInt(value);
       }
       else if (skey == "No. projections per 180")
       {
-        this->NumberOfProjections = strtol(value, 0, 10);
+        this->NumberOfProjections = vtkScancoCTReader::StringToInt(value);
       }
       else if (skey == "Scan Distance [um]")
       {
-        this->ScanDistance = strtod(value, 0)*1e-3;
+        this->ScanDistance = vtkScancoCTReader::StringToDouble(value)*1e-3;
       }
       else if (skey == "Integration time [us]")
       {
-        this->SampleTime = strtod(value, 0)*1e-3;
+        this->SampleTime = vtkScancoCTReader::StringToDouble(value)*1e-3;
       }
       else if (skey == "Reference line [um]")
       {
-        this->ReferenceLine = strtod(value, 0)*1e-3;
+        this->ReferenceLine = vtkScancoCTReader::StringToDouble(value)*1e-3;
       }
       else if (skey == "Reconstruction-Alg.")
       {
-        this->ReconstructionAlg = strtol(value, 0, 10);
+        this->ReconstructionAlg = vtkScancoCTReader::StringToInt(value);
       }
       else if (skey == "Energy [V]")
       {
-        this->Energy = strtod(value, 0)*1e-3;
+        this->Energy = vtkScancoCTReader::StringToDouble(value)*1e-3;
       }
       else if (skey == "Intensity [uA]")
       {
-        this->Intensity = strtod(value, 0)*1e-3;
+        this->Intensity = vtkScancoCTReader::StringToDouble(value)*1e-3;
       }
       else if (skey == "Mu_Scaling")
       {
-        this->MuScaling = strtol(value, 0, 10);
+        this->MuScaling = vtkScancoCTReader::StringToInt(value);
       }
       else if (skey == "Minimum data value")
       {
-        this->DataRange[0] = strtod(value, 0);
+        this->DataRange[0] = vtkScancoCTReader::StringToDouble(value);
       }
       else if (skey == "Maximum data value")
       {
-        this->DataRange[1] = strtod(value, 0);
+        this->DataRange[1] = vtkScancoCTReader::StringToDouble(value);
       }
       else if (skey == "Calib. default unit type")
       {
-        this->RescaleType = strtol(value, 0, 10);
+        this->RescaleType = vtkScancoCTReader::StringToInt(value);
       }
       else if (skey == "Calibration Data")
       {
@@ -812,15 +932,15 @@ int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
       }
       else if (skey == "Density: slope")
       {
-        this->RescaleSlope = strtod(value, 0);
+        this->RescaleSlope = vtkScancoCTReader::StringToDouble(value);
       }
       else if (skey == "Density: intercept")
       {
-        this->RescaleIntercept = strtod(value, 0);
+        this->RescaleIntercept = vtkScancoCTReader::StringToDouble(value);
       }
       else if (skey == "HU: mu water")
       {
-        this->MuWater = strtod(value, 0);
+        this->MuWater = vtkScancoCTReader::StringToDouble(value);
       }
     }
     // skip to the end of the line
