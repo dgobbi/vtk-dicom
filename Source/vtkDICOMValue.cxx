@@ -1862,7 +1862,12 @@ void vtkDICOMValue::AppendValueToString(
     }
     else
     {
+      // create a stream that uses the "C" locale
       char text[32];
+      OutputString sb(text, sizeof(text));
+      std::ostream sbs(&sb);
+      sbs.imbue(std::locale::classic());
+
       // guard against printing non-significant digits:
       // use exponential form if printing in "%f" format
       // would print an integer that is too large for the
@@ -1874,49 +1879,69 @@ void vtkDICOMValue::AppendValueToString(
       {
         if (this->V->Type == VTK_DOUBLE)
         {
-          sprintf(text, "%#.16g", f);
+          sbs.precision(16);
         }
         else
         {
-          sprintf(text, "%#.8g", f);
-        }
-        // make sure there is a zero after the decimal point
-        size_t l = strlen(text);
-        if (l > 0 && text[l-1] == '.')
-        {
-          text[l++] = '0';
-          text[l] = '\0';
+          sbs.precision(8);
         }
       }
       else
       {
+        sbs.setf(std::ios::scientific);
+
         if (this->V->Type == VTK_DOUBLE)
         {
-          sprintf(text, "%.15e", f);
+          sbs.precision(15);
         }
         else
         {
-          sprintf(text, "%.7e", f);
+          sbs.precision(7);
+        }
+      }
+
+      // write the value
+      sbs << f;
+      size_t l = sb.length();
+
+      if (l > 0)
+      {
+        // make sure there is a decimal point
+        size_t tk = (text[0] == '-' || text[0] == '+');
+        while (tk < l)
+        {
+          if (text[tk] < '0' || text[tk] > '9') { break; }
+          tk++;
+        }
+        if (tk == l)
+        {
+          text[l++] = '.';
+        }
+
+        // make sure there is a zero after the decimal point
+        if (text[l-1] == '.')
+        {
+          text[l++] = '0';
         }
       }
 
       // trim trailing zeros, except the one following decimal point
       size_t ti = 0;
-      while (text[ti] != '\0' && text[ti] != 'e') { ti++; }
+      while (ti < l && text[ti] != 'e') { ti++; }
       size_t tj = ti;
       while (tj > 1 && text[tj-1] == '0' && text[tj-2] != '.') { tj--; }
-      while (text[ti] != '\0') { text[tj++] = text[ti++]; }
+      while (ti < l) { text[tj++] = text[ti++]; }
+      l = tj;
 
       // if exponent has three digits, clear the first if it is zero
-      if (tj >= 5 && text[tj-5] == 'e' && text[tj-3] == '0')
+      if (l >= 5 && text[l-5] == 'e' && text[l-3] == '0')
       {
-        text[tj-3] = text[tj-2];
-        text[tj-2] = text[tj-1];
-        tj--;
+        text[l-3] = text[l-2];
+        text[l-2] = text[l-1];
+        l--;
       }
 
-      text[tj] = '\0';
-      str.append(text);
+      str.append(text, l);
     }
   }
   else if (this->V->Type == VTK_UNSIGNED_CHAR ||
