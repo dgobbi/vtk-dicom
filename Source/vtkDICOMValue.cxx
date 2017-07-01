@@ -96,13 +96,13 @@ void StringConversion(
     {
       if (vr == vtkDICOMVR::DS)
       {
-        double d;
+        double d = 0.0;
         sbs >> d;
         *v++ = static_cast<OT>(d);
       }
       else
       {
-        int d;
+        int d = 0;
         sbs >> d;
         *v++ = static_cast<OT>(d);
       }
