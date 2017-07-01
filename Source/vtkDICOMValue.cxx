@@ -27,6 +27,7 @@
 
 #include <new>
 #include <streambuf>
+#include <limits>
 #include <locale>
 
 // For use by methods that must return an empty item
