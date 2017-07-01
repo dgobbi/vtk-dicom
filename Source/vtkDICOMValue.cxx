@@ -70,12 +70,12 @@ public:
     setp(cp, cp+l);
   }
   size_t length() const { return pptr() - pbase(); }
+  void adjust(int n) { pbump(n); }
 };
 
 // The input is a list of one or more numerical string values separated
 // by backslashes, for example "1.23435\85234.0\2345.22".  Convert "n"
 // values to type OT, starting at the "i"th backslash-separated value.
-// If the VR is IS (integer string) then use strol(), if DS use strtod().
 template<class OT>
 void StringConversion(
   const char *cp, vtkDICOMVR vr, OT *v, size_t i, size_t n)
@@ -560,7 +560,9 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, size_t n)
       }
       sbs << d;
       size_t dl = sb.length();
-      // look for superfluous leading zero on 3-digit exponent
+      // look for superfluous leading zero on 3-digit exponent,
+      // this occurs for MSVC prior to MSVC 2015, and possibly
+      // for compilers that mimic MSVC behavior
       if (dl >= 5 && (cp[dl-5] == 'e' || cp[dl-5] =='E') &&
           cp[dl-3] == '0' &&
           cp[dl-2] >= '0' && cp[dl-2] <= '9' &&
@@ -568,7 +570,7 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, size_t n)
       {
         cp[dl-3] = cp[dl-2];
         cp[dl-2] = cp[dl-1];
-        sbs.seekp(dl-1);
+        sb.adjust(-1);
       }
       if (i + 1 < n) { sbs.put('\\'); }
     }
