@@ -2093,6 +2093,7 @@ int vtkDICOMReader::RequestData(
 //----------------------------------------------------------------------------
 bool vtkDICOMReader::ReadOverlays(vtkImageData *data)
 {
+  bool success = true;
   int extent[6];
   data->GetExtent(extent);
   int nComp = this->FileIndexArray->GetNumberOfComponents();
@@ -2115,12 +2116,14 @@ bool vtkDICOMReader::ReadOverlays(vtkImageData *data)
         // compute group number for this overlay
         unsigned short g = 0x6000 + 2*i;
 
-        vtkDICOMValue o = this->MetaData->Get(fileIdx, vtkDICOMTag(g, 0x3000));
-        const unsigned char *bptr = o.GetUnsignedCharData();
+        const vtkDICOMValue& overlayData =
+          this->MetaData->Get(fileIdx, vtkDICOMTag(g, 0x3000));
+        unsigned int vl = overlayData.GetVL();
+        const unsigned char *bptr = overlayData.GetUnsignedCharData();
         if (bptr == 0)
         {
           bptr = reinterpret_cast<const unsigned char *>(
-                 o.GetUnsignedShortData());
+                   overlayData.GetUnsignedShortData());
         }
         if (bptr == 0)
         {
@@ -2132,7 +2135,8 @@ bool vtkDICOMReader::ReadOverlays(vtkImageData *data)
 
         int startX = 0;
         int startY = 0;
-        vtkDICOMValue ov = this->MetaData->Get(fileIdx, vtkDICOMTag(g,0x0040));
+        const vtkDICOMValue& ov =
+          this->MetaData->Get(fileIdx, vtkDICOMTag(g,0x0040));
         if (ov.GetNumberOfValues() >= 2)
         {
           startX = ov.GetInt(1);
@@ -2151,6 +2155,18 @@ bool vtkDICOMReader::ReadOverlays(vtkImageData *data)
         if (numFrames &&
             (frameIdx < frameOrigin || frameIdx > frameOrigin+numFrames-1))
         {
+          continue;
+        }
+
+        size_t bitsNeeded = (numFrames == 0 ? 1 : numFrames);
+        bitsNeeded = bitsNeeded*sizeX*sizeY;
+        if ((bitsNeeded + 7)/8 > vl)
+        {
+          this->SetErrorCode(vtkErrorCode::FileFormatError);
+          vtkErrorMacro("OverlayData length " << vl << " too small for size "
+                        << sizeX << "x" << sizeY
+                        << " (frames=" << numFrames << ")");
+          success = false;
           continue;
         }
 
@@ -2229,7 +2245,7 @@ bool vtkDICOMReader::ReadOverlays(vtkImageData *data)
     }
   }
 
-  return true;
+  return success;
 }
 
 //----------------------------------------------------------------------------
