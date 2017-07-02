@@ -319,11 +319,11 @@ public:
   //@{
   using Superclass::Update;
   //! Update both the image and, if present, the overlay
-  #ifdef VTK_OVERRIDE
+#ifdef VTK_OVERRIDE
   void Update() VTK_OVERRIDE;
-  #else
-  virtual void Update() VTK_OVERRIDE;
-  #endif
+#else
+  virtual void Update();
+#endif
   //@}
 
 protected:
@@ -352,7 +352,7 @@ protected:
   //! Entry point for all pipeline requests.
   virtual int ProcessRequest(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector);
 
   //! Read the header information.
   virtual int RequestInformation(
