@@ -512,6 +512,7 @@ protected:
 
   //! Bitfield that says what overlays are present.
   int OverlayBitfield;
+  bool UpdateOverlayFlag;
 
 private:
 #ifdef VTK_DELETE_FUNCTION

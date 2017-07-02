@@ -109,6 +109,7 @@ vtkDICOMReader::vtkDICOMReader()
   this->TimeSpacing = 1.0;
   this->DesiredStackID[0] = '\0';
   this->OverlayBitfield = 0;
+  this->UpdateOverlayFlag = false;
 
   this->DataScalarType = VTK_SHORT;
   this->NumberOfScalarComponents = 1;
@@ -1788,12 +1789,10 @@ bool vtkDICOMReader::ReadOneFile(
 //----------------------------------------------------------------------------
 void vtkDICOMReader::Update()
 {
+  // if user didn't specify a port, also update the overlay if present
+  this->UpdateOverlayFlag = true;
   this->Update(0);
-  if (this->GetErrorCode() == vtkErrorCode::NoError &&
-      this->OverlayBitfield != 0)
-  {
-    this->Update(1);
-  }
+  this->UpdateOverlayFlag = false;
 }
 
 //----------------------------------------------------------------------------
@@ -1812,7 +1811,9 @@ int vtkDICOMReader::ProcessRequest(
     // initialize them before RequestData is called
     for (int i = 0; i < n; i++)
     {
-      if (i != outputPort)
+      if (i != outputPort &&
+          !(this->UpdateOverlayFlag && this->OverlayBitfield &&
+            outputPort == 1))
       {
         vtkInformation *outputInfo = outputVector->GetInformationObject(i);
         outputInfo->Set(vtkDemandDrivenPipeline::DATA_NOT_GENERATED(), 1);
@@ -1839,14 +1840,8 @@ int vtkDICOMReader::RequestData(
   int outputPort =
     request->Get(vtkDemandDrivenPipeline::FROM_OUTPUT_PORT());
 
-  // if outputPort is out of range, return
-  if (outputPort > 1)
-  {
-    return true;
-  }
-
   // check for the overlay output
-  if (outputPort == 1)
+  if (outputPort == 1 || (this->UpdateOverlayFlag && this->OverlayBitfield))
   {
     vtkInformation* outInfo = outputVector->GetInformationObject(1);
     int uExtent[6];
@@ -1861,6 +1856,11 @@ int vtkDICOMReader::RequestData(
     data->AllocateScalars();
   #endif
     this->ReadOverlays(data);
+  }
+
+  // if output port 0 was not requested, then return
+  if (outputPort > 0)
+  {
     return true;
   }
 
