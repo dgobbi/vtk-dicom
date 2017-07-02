@@ -42,6 +42,9 @@ if(VTK_MAJOR_VERSION GREATER 5 OR VTK_MINOR_VERSION GREATER 9)
 add_executable(TestDICOMDisplay TestDICOMDisplay.cxx)
 target_link_libraries(TestDICOMDisplay ${BASE_LIBS} ${VTK_RENDERING_LIBS})
 
+add_executable(TestDICOMOverlay TestDICOMOverlay.cxx)
+target_link_libraries(TestDICOMOverlay ${BASE_LIBS} ${VTK_RENDERING_LIBS})
+
 add_executable(TestNIFTIDisplay TestNIFTIDisplay.cxx)
 target_link_libraries(TestNIFTIDisplay ${BASE_LIBS} ${VTK_RENDERING_LIBS})
 
