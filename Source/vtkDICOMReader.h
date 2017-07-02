@@ -258,6 +258,25 @@ public:
   //@}
 
   //@{
+  //! Get the overlay.
+  /*!
+   *  The extent of the overlay will be the same as the main image.
+   *  For multiple overlays, each overlay will be stored in a different
+   *  bit. An 8-bit image will be used if there are eight or fewer
+   *  overlays, and an unsigned 16-bit image will be used if there are
+   *  more than eight overlays.
+   */
+  vtkImageData *GetOverlayOutput();
+  vtkAlgorithmOutput *GetOverlayOutputPort();
+
+  //! Returns true if any overlays are present.
+  bool HasOverlay() { return (this->OverlayBitfield != 0); }
+
+  //! Returns a bitfield that indicates which overlays are present.
+  int GetOverlayBitfield() { return this->OverlayBitfield; }
+  //@}
+
+  //@{
   //! Get a MedicalImageProperties object for this file.
   vtkMedicalImageProperties *GetMedicalImageProperties();
   //@}
@@ -297,24 +316,44 @@ public:
   vtkGetMacro(OutputScalarType, int);
   //@}
 
+  //@{
+  using Superclass::Update;
+  //! Update both the image and, if present, the overlay
+  #ifdef VTK_OVERRIDE
+  void Update() VTK_OVERRIDE;
+  #else
+  virtual void Update() VTK_OVERRIDE;
+  #endif
+  //@}
+
 protected:
   vtkDICOMReader();
   ~vtkDICOMReader();
 
 #ifdef VTK_OVERRIDE
   //@{
+  //! Entry point for all pipeline requests.
+  int ProcessRequest(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
   //! Read the header information.
-  virtual int RequestInformation(
+  int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector) VTK_OVERRIDE;
 
   //! Read the voxel data.
-  virtual int RequestData(
+  int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector) VTK_OVERRIDE;
   //@}
 #else
   //@{
+  //! Entry point for all pipeline requests.
+  virtual int ProcessRequest(
+    vtkInformation* request, vtkInformationVector** inputVector,
+    vtkInformationVector* outputVector) VTK_OVERRIDE;
+
   //! Read the header information.
   virtual int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
@@ -326,6 +365,16 @@ protected:
     vtkInformationVector* outputVector);
   //@}
 #endif
+
+  //@{
+  //! Read the overlays into an allocated vtkImageData object.
+  virtual bool ReadOverlays(vtkImageData *data);
+
+  //! Unpack overlay bits to build the overlay image.
+  void UnpackOverlay(
+    const void *filePtr, vtkIdType bitskip, vtkIdType count,
+    void *buffer, vtkIdType incr, int bit);
+  //@}
 
   //@{
   //! Read one file.  Specify the offset to the PixelData.
@@ -460,6 +509,9 @@ protected:
 
   //! The stack to load.
   char DesiredStackID[20];
+
+  //! Bitfield that says what overlays are present.
+  int OverlayBitfield;
 
 private:
 #ifdef VTK_DELETE_FUNCTION

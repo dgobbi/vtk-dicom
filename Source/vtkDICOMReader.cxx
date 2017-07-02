@@ -108,6 +108,7 @@ vtkDICOMReader::vtkDICOMReader()
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
   this->DesiredStackID[0] = '\0';
+  this->OverlayBitfield = 0;
 
   this->DataScalarType = VTK_SHORT;
   this->NumberOfScalarComponents = 1;
@@ -126,6 +127,9 @@ vtkDICOMReader::vtkDICOMReader()
   DJLSDecoderRegistration::registerCodecs();
   DcmRLEDecoderRegistration::registerCodecs();
 #endif
+
+  // the main image and the overlay are the two outputs
+  this->SetNumberOfOutputPorts(2);
 }
 
 //----------------------------------------------------------------------------
@@ -248,6 +252,8 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "MemoryRowOrder: "
      << this->GetMemoryRowOrderAsString() << "\n";
   os << indent << "OutputScalarType: " << this->OutputScalarType << "\n";
+
+  os << indent << "OverlayBitfield: " << this->OverlayBitfield << "\n";
 }
 
 //----------------------------------------------------------------------------
@@ -1155,6 +1161,40 @@ int vtkDICOMReader::RequestInformation(
   outInfo->Set(vtkDICOMAlgorithm::PATIENT_MATRIX(),
                *this->PatientMatrix->Element, 16);
 
+  // Check for overlays (60xx,3000)
+  unsigned short overlayBits = 0;
+  for (unsigned short i = 0; i < 16; i++)
+  {
+    unsigned short g = 0x6000 + 2*i;
+    if (this->MetaData->Has(vtkDICOMTag(g, 0x3000)))
+    {
+      overlayBits |= (1 << i);
+    }
+  }
+
+  // Set the information for the overlay
+  if (overlayBits)
+  {
+    vtkInformation* oInfo = outputVector->GetInformationObject(1);
+    oInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent, 6);
+
+    oInfo->Set(vtkDataObject::SPACING(), this->DataSpacing, 3);
+    oInfo->Set(vtkDataObject::ORIGIN(),  this->DataOrigin, 3);
+
+    int overlayType =
+      (overlayBits <= 255 ? VTK_UNSIGNED_CHAR : VTK_UNSIGNED_SHORT);
+    int overlayComponents =
+      this->FileIndexArray->GetNumberOfComponents();
+
+    vtkDataObject::SetPointDataActiveScalarInfo(
+      oInfo, overlayType, overlayComponents);
+
+    oInfo->Set(vtkDICOMAlgorithm::PATIENT_MATRIX(),
+               *this->PatientMatrix->Element, 16);
+  }
+
+  this->OverlayBitfield = overlayBits;
+
   return 1;
 }
 
@@ -1415,6 +1455,57 @@ void vtkDICOMReader::UnpackBits(
         writePtr[j] = static_cast<unsigned char>(a & 1);
         a >>= 1;
       }
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMReader::UnpackOverlay(
+  const void *filePtr, vtkIdType bitskip, vtkIdType count,
+  void *buffer, vtkIdType incr, int bit)
+{
+  const unsigned char *readPtr =
+    static_cast<const unsigned char *>(filePtr);
+  unsigned char *writePtr =
+    static_cast<unsigned char *>(buffer);
+
+  readPtr += bitskip/8;
+  int r = (bitskip % 8);
+  if (r > 0)
+  {
+    unsigned char a = *readPtr;
+    a >>= r;
+    for (int i = r; i < 8; i++)
+    {
+      *writePtr |= (a & 1) << bit;
+      a >>= 1;
+      writePtr += incr;
+    }
+    count -= (8 - r);
+    readPtr++;
+  }
+
+  for (vtkIdType n = count/8; n > 0; n--)
+  {
+    unsigned char a = *readPtr;
+    for (int i = 0; i < 8; i++)
+    {
+      *writePtr |= (a & 1) << bit;
+      a >>= 1;
+      writePtr += incr;
+    }
+    readPtr++;
+  }
+  count = (count % 8);
+
+  if (count > 0)
+  {
+    unsigned char a = *readPtr;
+    for (int i = 0; i < count; i++)
+    {
+      *writePtr |= (a & 1) << bit;
+      a >>= 1;
+      writePtr += incr;
     }
   }
 }
@@ -1695,6 +1786,44 @@ bool vtkDICOMReader::ReadOneFile(
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMReader::Update()
+{
+  this->Update(0);
+  if (this->GetErrorCode() == vtkErrorCode::NoError &&
+      this->OverlayBitfield != 0)
+  {
+    this->Update(1);
+  }
+}
+
+//----------------------------------------------------------------------------
+int vtkDICOMReader::ProcessRequest(
+  vtkInformation* request,
+  vtkInformationVector** inputVector,
+  vtkInformationVector* outputVector)
+{
+  if (request->Has(vtkDemandDrivenPipeline::REQUEST_DATA_NOT_GENERATED()))
+  {
+    // which output port did the request come from
+    int outputPort =
+      request->Get(vtkDemandDrivenPipeline::FROM_OUTPUT_PORT());
+    int n = outputVector->GetNumberOfInformationObjects();
+    // set DATA_NOT_GENERATED on other ports, otherwise executive will
+    // initialize them before RequestData is called
+    for (int i = 0; i < n; i++)
+    {
+      if (i != outputPort)
+      {
+        vtkInformation *outputInfo = outputVector->GetInformationObject(i);
+        outputInfo->Set(vtkDemandDrivenPipeline::DATA_NOT_GENERATED(), 1);
+      }
+    }
+  }
+
+  return this->Superclass::ProcessRequest(request, inputVector, outputVector);
+}
+
+//----------------------------------------------------------------------------
 int vtkDICOMReader::RequestData(
   vtkInformation* request,
   vtkInformationVector** vtkNotUsed(inputVector),
@@ -1710,12 +1839,32 @@ int vtkDICOMReader::RequestData(
   int outputPort =
     request->Get(vtkDemandDrivenPipeline::FROM_OUTPUT_PORT());
 
-  // for now, this reader has only one output
-  if (outputPort > 0)
+  // if outputPort is out of range, return
+  if (outputPort > 1)
   {
     return true;
   }
 
+  // check for the overlay output
+  if (outputPort == 1)
+  {
+    vtkInformation* outInfo = outputVector->GetInformationObject(1);
+    int uExtent[6];
+    outInfo->Get(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(), uExtent);
+    // get the overlay data object, allocate memory
+    vtkImageData *data =
+      static_cast<vtkImageData *>(outInfo->Get(vtkDataObject::DATA_OBJECT()));
+  #if VTK_MAJOR_VERSION >= 6
+    this->AllocateOutputData(data, outInfo, uExtent);
+  #else
+    data->SetExtent(uExtent);
+    data->AllocateScalars();
+  #endif
+    this->ReadOverlays(data);
+    return true;
+  }
+
+  // do the main output
   vtkInformation* outInfo = outputVector->GetInformationObject(0);
 
   int extent[6];
@@ -1761,7 +1910,8 @@ int vtkDICOMReader::RequestData(
 #if VTK_MAJOR_VERSION >= 6
   this->AllocateOutputData(data, outInfo, extent);
 #else
-  this->AllocateOutputData(data, extent);
+  data->SetExtent(extent);
+  data->AllocateScalars();
 #endif
 
   // label the scalars as "PixelData"
@@ -1941,6 +2091,148 @@ int vtkDICOMReader::RequestData(
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMReader::ReadOverlays(vtkImageData *data)
+{
+  int extent[6];
+  data->GetExtent(extent);
+  int nComp = this->FileIndexArray->GetNumberOfComponents();
+  unsigned char *ptr = static_cast<unsigned char *>(data->GetScalarPointer());
+  int scalarSize = data->GetScalarSize();
+  memset(ptr, 0, scalarSize*data->GetNumberOfPoints());
+
+  for (int sIdx = extent[4]; sIdx <= extent[5]; sIdx++)
+  {
+    for (int cIdx = 0; cIdx < nComp; cIdx++)
+    {
+      int fileIdx = this->FileIndexArray->GetComponent(sIdx, cIdx);
+      int frameIdx = this->FrameIndexArray->GetComponent(sIdx, cIdx);
+      int rows = this->MetaData->Get(fileIdx, DC::Rows).AsInt();
+
+      // loop through all possible overlays
+      int maxOverlay = (scalarSize > 1 ? 15 : 7);
+      for (int i = 0; i <= maxOverlay; i++)
+      {
+        // compute group number for this overlay
+        unsigned short g = 0x6000 + 2*i;
+
+        vtkDICOMValue o = this->MetaData->Get(fileIdx, vtkDICOMTag(g, 0x3000));
+        const unsigned char *bptr = o.GetUnsignedCharData();
+        if (bptr == 0)
+        {
+          bptr = reinterpret_cast<const unsigned char *>(
+                 o.GetUnsignedShortData());
+        }
+        if (bptr == 0)
+        {
+          continue;
+        }
+
+        int sizeX = this->MetaData->Get(fileIdx, vtkDICOMTag(g,0x0011)).AsInt();
+        int sizeY = this->MetaData->Get(fileIdx, vtkDICOMTag(g,0x0010)).AsInt();
+
+        int startX = 0;
+        int startY = 0;
+        vtkDICOMValue ov = this->MetaData->Get(fileIdx, vtkDICOMTag(g,0x0040));
+        if (ov.GetNumberOfValues() >= 2)
+        {
+          startX = ov.GetInt(1);
+          startY = ov.GetInt(0);
+          startX = (startX > 0 ? startX-1 : 0);
+          startY = (startY > 0 ? startY-1 : 0);
+        }
+
+        int numFrames =
+          this->MetaData->Get(fileIdx, vtkDICOMTag(g,0x0015)).AsInt();
+        int frameOrigin =
+          this->MetaData->Get(fileIdx, vtkDICOMTag(g,0x0051)).AsInt();
+        frameOrigin = (frameOrigin > 0 ? frameOrigin-1 : 0);
+
+        // make sure this frame exists in the overlay
+        if (numFrames &&
+            (frameIdx < frameOrigin || frameIdx > frameOrigin+numFrames-1))
+        {
+          continue;
+        }
+
+        // compute the number of frames to skip when reading the file
+        vtkIdType inSkip =
+          static_cast<vtkIdType>(frameIdx - frameOrigin)*sizeX*sizeY;
+
+        // compute the initial offset into the output
+        vtkIdType outSkip = static_cast<vtkIdType>(sIdx - extent[4])*
+          (extent[3] - extent[2] + 1)*(extent[1] - extent[0] + 1);
+        outSkip += cIdx*scalarSize;
+        if (i > 7)
+        {
+          outSkip += 1;
+        }
+
+        vtkIdType outRowInc =
+          static_cast<vtkIdType>(extent[1] - extent[0] + 1)*scalarSize*nComp;
+        int extentY[2] = { extent[2], extent[3] };
+        if (this->MemoryRowOrder == vtkDICOMReader::BottomUp)
+        {
+          outSkip += outRowInc*(extent[3]-extent[2]);
+          outRowInc = -outRowInc;
+          extentY[0] = rows - extent[3] - 1;
+          extentY[1] = rows - extent[2] - 1;
+        }
+
+        // find the number of rows to read from the file
+        int countY = sizeY;
+        if (extentY[0] < startY)
+        {
+          outSkip += (startY - extentY[0])*outRowInc;
+        }
+        else
+        {
+          inSkip += static_cast<vtkIdType>(extentY[0] - startY)*sizeX;
+          countY -= extentY[0] - startY;
+        }
+        if (startY + countY - 1 > extentY[1])
+        {
+          countY = extentY[1] - startY + 1;
+        }
+
+        // find the number of pixels per row to read from the file
+        int countX = sizeX;
+        if (extent[0] < startX)
+        {
+          outSkip +=
+            static_cast<vtkIdType>(startX - extent[0])*scalarSize*nComp;
+        }
+        else
+        {
+          inSkip += extent[0] - startX;
+          countX -= extent[0] - startX;
+        }
+        if (startX + countX - 1 > extent[1])
+        {
+          countX = extent[1] - startX + 1;
+        }
+
+        // make sure there is something to do
+        if (countX <= 0 || countY <= 0)
+        {
+          continue;
+        }
+
+        for (int j = 0; j < countY; j++)
+        {
+          vtkDICOMReader::UnpackOverlay(
+             bptr, inSkip, countX,
+             ptr + outSkip, nComp*scalarSize, (i & 0x7));
+          inSkip += sizeX;
+          outSkip += outRowInc;
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMReader::RelayError(vtkObject *o, unsigned long e, void *data)
 {
   if (e == vtkCommand::ErrorEvent)
@@ -1968,6 +2260,18 @@ void vtkDICOMReader::RelayError(vtkObject *o, unsigned long e, void *data)
   {
     this->InvokeEvent(e, data);
   }
+}
+
+//----------------------------------------------------------------------------
+vtkImageData *vtkDICOMReader::GetOverlayOutput()
+{
+  return this->GetOutput(1);
+}
+
+//----------------------------------------------------------------------------
+vtkAlgorithmOutput *vtkDICOMReader::GetOverlayOutputPort()
+{
+  return this->GetOutputPort(1);
 }
 
 //----------------------------------------------------------------------------
