@@ -1163,38 +1163,32 @@ int vtkDICOMReader::RequestInformation(
                *this->PatientMatrix->Element, 16);
 
   // Check for overlays (60xx,3000)
-  unsigned short overlayBits = 0;
+  this->OverlayBitfield = 0;
   for (unsigned short i = 0; i < 16; i++)
   {
     unsigned short g = 0x6000 + 2*i;
     if (this->MetaData->Has(vtkDICOMTag(g, 0x3000)))
     {
-      overlayBits |= (1 << i);
+      this->OverlayBitfield |= (1 << i);
     }
   }
 
   // Set the information for the overlay
-  if (overlayBits)
-  {
-    vtkInformation* oInfo = outputVector->GetInformationObject(1);
-    oInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent, 6);
+  vtkInformation* oInfo = outputVector->GetInformationObject(1);
+  oInfo->Set(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), extent, 6);
 
-    oInfo->Set(vtkDataObject::SPACING(), this->DataSpacing, 3);
-    oInfo->Set(vtkDataObject::ORIGIN(),  this->DataOrigin, 3);
+  oInfo->Set(vtkDataObject::SPACING(), this->DataSpacing, 3);
+  oInfo->Set(vtkDataObject::ORIGIN(),  this->DataOrigin, 3);
 
-    int overlayType =
-      (overlayBits <= 255 ? VTK_UNSIGNED_CHAR : VTK_UNSIGNED_SHORT);
-    int overlayComponents =
-      this->FileIndexArray->GetNumberOfComponents();
+  int overlayType =
+    (this->OverlayBitfield <= 255 ? VTK_UNSIGNED_CHAR : VTK_UNSIGNED_SHORT);
+  int overlayComponents = this->FileIndexArray->GetNumberOfComponents();
 
-    vtkDataObject::SetPointDataActiveScalarInfo(
-      oInfo, overlayType, overlayComponents);
+  vtkDataObject::SetPointDataActiveScalarInfo(
+    oInfo, overlayType, overlayComponents);
 
-    oInfo->Set(vtkDICOMAlgorithm::PATIENT_MATRIX(),
-               *this->PatientMatrix->Element, 16);
-  }
-
-  this->OverlayBitfield = overlayBits;
+  oInfo->Set(vtkDICOMAlgorithm::PATIENT_MATRIX(),
+             *this->PatientMatrix->Element, 16);
 
   return 1;
 }
@@ -1849,12 +1843,12 @@ int vtkDICOMReader::RequestData(
     // get the overlay data object, allocate memory
     vtkImageData *data =
       static_cast<vtkImageData *>(outInfo->Get(vtkDataObject::DATA_OBJECT()));
-  #if VTK_MAJOR_VERSION >= 6
+#if VTK_MAJOR_VERSION >= 6
     this->AllocateOutputData(data, outInfo, uExtent);
-  #else
+#else
     data->SetExtent(uExtent);
     data->AllocateScalars();
-  #endif
+#endif
     this->ReadOverlays(data);
   }
 
@@ -2176,7 +2170,8 @@ bool vtkDICOMReader::ReadOverlays(vtkImageData *data)
 
         // compute the initial offset into the output
         vtkIdType outSkip = static_cast<vtkIdType>(sIdx - extent[4])*
-          (extent[3] - extent[2] + 1)*(extent[1] - extent[0] + 1);
+          (extent[3] - extent[2] + 1)*(extent[1] - extent[0] + 1)*
+          nComp*scalarSize;
         outSkip += cIdx*scalarSize;
         if (i > 7)
         {
