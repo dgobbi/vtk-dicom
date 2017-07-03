@@ -123,7 +123,11 @@ void vtkDICOMApplyPaletteExecute(
       // for monochrome mapping when palette is supplemental
       bool monochrome = false;
       double windowCenter = 0.0;
-      double windowScale = 1.0;
+      double windowWidth = 1.0;
+      double slope = 1.0;
+      double inter = 0.0;
+      bool isSigmoid = false;
+      bool isLinearExact = false;
       if (supplemental)
       {
         // check if this frame is specifically monochrome
@@ -133,11 +137,18 @@ void vtkDICOMApplyPaletteExecute(
         // use the window that is suggested in the data
         const vtkDICOMValue& wc = meta->Get(i, f, DC::WindowCenter);
         const vtkDICOMValue& ww = meta->Get(i, f, DC::WindowWidth);
-        double windowWidth = 0.0;
         if (wc.IsValid() && ww.IsValid())
         {
           windowCenter = wc.AsDouble();
           windowWidth = ww.AsDouble();
+        }
+
+        // check which function to apply
+        const vtkDICOMValue& wf = meta->Get(i, f, DC::VOILUTFunction);
+        if (wf.IsValid())
+        {
+          isLinearExact = wf.Matches("LINEAR_EXACT");
+          isSigmoid = wf.Matches("SIGMOID");
         }
 
         // for CT images, the rescaling must be taken into account
@@ -145,22 +156,43 @@ void vtkDICOMApplyPaletteExecute(
         const vtkDICOMValue& ri = meta->Get(i, f, DC::RescaleIntercept);
         if (rs.IsValid() && ri.IsValid())
         {
-          double slope = rs.AsDouble();
-          double inter = ri.AsDouble();
-          if (slope > 0)
+          slope = rs.AsDouble();
+          inter = ri.AsDouble();
+          if (slope == 0.0)
           {
-            windowWidth = windowWidth / slope;
-            windowCenter = (windowCenter - inter) / slope;
+            slope = 1.0;
           }
-        }
-
-        // a scale parameter is more efficient and convenient
-        if (windowWidth > 0)
-        {
-          windowScale = 255.0/windowWidth;
         }
       }
 
+      // these values are used to compute the VOI LUT (DICOM PS3.3 C.11.2.1)
+      double ww = windowWidth;
+      double wc = windowCenter;
+      if (!isLinearExact && !isSigmoid)
+      {
+        ww -= 1.0;
+        wc -= 0.5;
+      }
+      ww = ww/slope;
+      wc = (wc - inter)/slope;
+      if (ww < 0.0)
+      {
+        ww = 0.0;
+      }
+      double ws = (isSigmoid ? -4.0 : 255.0);
+      if (ww != 0.0)
+      {
+        ws /= ww;
+      }
+      else
+      {
+        ws = 1.0;
+        isSigmoid = false;
+      }
+      double wl = wc - 0.5*ww;
+      double wh = wc + 0.5*ww;
+
+      // loop through slices
       for (int yIdx = extent[2]; yIdx <= extent[3]; yIdx++)
       {
         T *inPtr = inPtrZ + inIncY*(yIdx - extent[2]);
@@ -182,10 +214,25 @@ void vtkDICOMApplyPaletteExecute(
           int idx = inPtr[0] - firstValueMapped;
           if (monochrome || (supplemental && idx < 0))
           {
-            // use monochrome
-            double fidx = (inPtr[0] - windowCenter)*windowScale + 127.5;
-            fidx = (fidx >= 0.0 ? fidx : 0.0);
-            fidx = (fidx <= 255.0 ? fidx : 255.0);
+            double fidx = inPtr[0];
+            if (isSigmoid)
+            {
+              fidx = 255.0/(1.0 + exp((fidx - wc)*ws));
+            }
+            else if (fidx <= wl)
+            {
+              fidx = 0.0;
+            }
+            else if (fidx > wh)
+            {
+              fidx = 255.0;
+            }
+            else
+            {
+              fidx = (fidx - wc)*ws + 127.5;
+              fidx = (fidx >= 0.0 ? fidx : 0.0);
+              fidx = (fidx <= 255.0 ? fidx : 255.0);
+            }
             int gray = static_cast<int>(fidx + 0.5);
             outPtr[0] = gray;
             outPtr[1] = gray;
