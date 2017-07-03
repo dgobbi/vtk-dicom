@@ -1847,7 +1847,7 @@ void vtkDICOMReader::Update()
 {
   // if user didn't specify a port, also update the overlay if present
   this->UpdateOverlayFlag = true;
-  this->Update(0);
+  this->Superclass::Update();
   this->UpdateOverlayFlag = false;
 }
 
