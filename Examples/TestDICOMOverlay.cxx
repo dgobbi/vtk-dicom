@@ -111,8 +111,6 @@ int main(int argc, char *argv[])
   vtkSmartPointer<vtkDICOMReader> reader =
     vtkSmartPointer<vtkDICOMReader>::New();
   reader->SetMemoryRowOrderToFileNative();
-  //reader->TimeAsVectorOn();
-  //reader->SetDesiredTimeIndex(5);
   if (stackID)
   {
     reader->SetDesiredStackID(stackID);
@@ -143,14 +141,6 @@ int main(int argc, char *argv[])
   palette->Update();
   palette->GetOutput()->GetScalarRange(range);
   portToDisplay = palette->GetOutputPort();
-
-  // if image is a CT with tilted gantry, rectify the image
-  vtkSmartPointer<vtkDICOMCTRectifier> rect =
-    vtkSmartPointer<vtkDICOMCTRectifier>::New();
-  rect->SetVolumeMatrix(reader->GetPatientMatrix());
-  rect->SetInputConnection(portToDisplay);
-  rect->Update();
-  portToDisplay = rect->GetOutputPort();
 
   // lookup table for the overlay
   vtkSmartPointer<vtkLookupTable> table =
