@@ -4,16 +4,21 @@
 
 ## Overview
 
-The vtkDICOMReader provides the *stored value* of each pixel in the
-image, that is, it provides the value that was stored in the file.
-In some circumstances, these stored values can be displayed
-directly on the screen (for 8-bit grayscale ultrasound data, for
-example) or can be displayed via a user-defined window-level operation
-(as is common for MRI).  In the general case, however, the DICOM
-standard defines mappings of these stored values to either *real-world
-values* that represent real physical quantities, *presentation
-values* that are intended for radiographic display, or *color values*
-for video, photography, and other special applications.
+In general, the pixel values that are stored in a DICOM file cannot be
+directly displayed to the screen.  Instead, the pixel values go through
+a *display pipeline* that changes the values to something suitable for
+viewing.  Unless the pixels are stored in the file as RGB or as 8-bit
+grayscale, the display pipeline will generally do one of two things:
+it will map the values through a palette to generate RGB pixels, or it
+will rescale the values (sometimes in multiple steps) for monochrome display.
+
+The vtkDICOMReader will, by default, produce the *Modality Values* of
+the pixels, which are the values associated with the modality that
+produced the images (e.g. Hounsfield values for CT).  If desired, the
+AutoRescaleOff() method can be called on the reader to force it to
+produce *Stored Values* instead, which are the pixel values stored
+in the file.  Note that *Modality Values* are equal to *Stored Values*
+for many modalities, including MRI and Ultrasound.
 
 ## Photometric Interpretation
 
