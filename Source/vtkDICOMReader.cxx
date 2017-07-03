@@ -1396,6 +1396,56 @@ void vtkDICOMReader::YBRToRGB(
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMReader::UnpackYBR422(
+  const void *filePtr, void *buffer, vtkIdType bufferSize, vtkIdType rowlen)
+{
+  const unsigned char *readPtr =
+    static_cast<const unsigned char *>(filePtr);
+  unsigned char *writePtr =
+    static_cast<unsigned char *>(buffer);
+
+  vtkIdType n = bufferSize/3;
+  for (vtkIdType j = n; j > 0; j -= rowlen)
+  {
+    rowlen = std::min(rowlen, j);
+    for (int i = rowlen; i > 0; i -= 2)
+    {
+      // read one macropixel
+      unsigned char y1 = readPtr[0];
+      unsigned char y2 = readPtr[1];
+      unsigned char b = readPtr[2];
+      unsigned char r = readPtr[3];
+      readPtr += 4;
+
+      // write an even pixel
+      writePtr[0] = y1;
+      writePtr[1] = b;
+      writePtr[2] = r;
+      writePtr += 3;
+
+      // break early if rowlen is odd
+      if (i < 2)
+      {
+        break;
+      }
+
+      // filter color for odd pixels
+      if (i > 2)
+      {
+        b = (b + readPtr[2])/2;
+        r = (r + readPtr[3])/2;
+      }
+
+      // write an odd pixel
+      writePtr[0] = y2;
+      writePtr[1] = b;
+      writePtr[2] = r;
+      writePtr += 3;
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMReader::UnpackBits(
   const void *filePtr, void *buffer, vtkIdType bufferSize, int bits)
 {
@@ -1621,6 +1671,18 @@ bool vtkDICOMReader::ReadFileNative(
     resultSize = infile.Read(filePtr, readSize);
 
     vtkDICOMReader::UnpackBits(filePtr, buffer, bufferSize, bitsAllocated);
+  }
+  else if (this->MetaData->GetAttributeValue(fileIdx,
+             DC::PhotometricInterpretation).Matches("YBR_*_422"))
+  {
+    // the data uses 422 color compression
+    vtkIdType rowlen = this->MetaData->Get(fileIdx, DC::Columns).AsInt();
+    vtkIdType nrows = bufferSize/(rowlen*3);
+    readSize = (rowlen + 1)/2*nrows*4; // make rowlen even for reading
+    unsigned char *filePtr = buffer + (bufferSize - readSize);
+    resultSize = infile.Read(filePtr, readSize);
+
+    vtkDICOMReader::UnpackYBR422(filePtr, buffer, bufferSize, rowlen);
   }
   else
   {

@@ -386,6 +386,10 @@ protected:
   void UnpackBits(
     const void *source, void *buffer, vtkIdType bufferSize, int bits);
 
+  //! Unpack 4:2:2 color data.
+  void UnpackYBR422(
+    const void *source, void *buffer, vtkIdType bufferSize, vtkIdType rowlen);
+
   //! Read an DICOM file directly.
   virtual bool ReadFileNative(
     const char *filename, int idx,
