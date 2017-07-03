@@ -2173,10 +2173,11 @@ bool vtkDICOMReader::ReadOverlays(vtkImageData *data)
           (extent[3] - extent[2] + 1)*(extent[1] - extent[0] + 1)*
           nComp*scalarSize;
         outSkip += cIdx*scalarSize;
-        if (i > 7)
-        {
-          outSkip += 1;
-        }
+#ifdef VTK_WORDS_BIGENDIAN
+        outSkip += (scalarSize == 2 && i <= 7);
+#else
+        outSkip += (scalarSize == 2 && i > 7);
+#endif
 
         vtkIdType outRowInc =
           static_cast<vtkIdType>(extent[1] - extent[0] + 1)*scalarSize*nComp;
