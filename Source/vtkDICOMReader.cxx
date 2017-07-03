@@ -1060,9 +1060,15 @@ int vtkDICOMReader::RequestInformation(
         point[1] = point[1] + orient[4]*yspacing*(rows - 1);
         point[2] = point[2] + orient[5]*yspacing*(rows - 1);
 
+        // switch from "top down" to "bottom up"
         orient[3] = -orient[3];
         orient[4] = -orient[4];
         orient[5] = -orient[5];
+
+        // fix normal (cross product of orientation vectors)
+        normal[0] = -normal[0];
+        normal[1] = -normal[1];
+        normal[2] = -normal[2];
       }
 
       size_t ip = points.size();
