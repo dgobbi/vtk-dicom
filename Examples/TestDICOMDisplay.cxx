@@ -98,8 +98,23 @@ int main(int argc, char *argv[])
   }
   reader->SetFileNames(a);
 
-  double range[2];
-  int extent[6];
+  // update the meta data
+  reader->UpdateInformation();
+  vtkDICOMMetaData *meta = reader->GetMetaData();
+
+  // check whether data has a palette
+  bool hasPalette = false;
+  if (meta->Get(DC::PhotometricInterpretation).Matches("PALETTE?COLOR") ||
+      meta->Get(DC::PixelPresentation).Matches("COLOR") ||
+      meta->Get(DC::PixelPresentation).Matches("MIXED") ||
+      meta->Get(DC::PixelPresentation).Matches("TRUE_COLOR"))
+  {
+    hasPalette = true;
+    // palette maps stored values, not slope/intercept rescaled values
+    reader->AutoRescaleOff();
+  }
+
+  // update the data
   reader->Update();
 
   if (reader->GetErrorCode() != vtkErrorCode::NoError)
@@ -107,25 +122,33 @@ int main(int argc, char *argv[])
     return 1;
   }
 
+  double range[2];
+  int extent[6];
   reader->GetOutput()->GetScalarRange(range);
   reader->GetOutput()->GetExtent(extent);
 
   // get the output port to connect to the display pipeline
   vtkAlgorithmOutput *portToDisplay = reader->GetOutputPort();
 
-  vtkSmartPointer<vtkDICOMApplyPalette> palette =
-    vtkSmartPointer<vtkDICOMApplyPalette>::New();
-  palette->SetInputConnection(reader->GetOutputPort());
-  palette->Update();
-  palette->GetOutput()->GetScalarRange(range);
-  portToDisplay = palette->GetOutputPort();
+  vtkSmartPointer<vtkDICOMApplyPalette> palette;
+  if (hasPalette)
+  {
+    palette = vtkSmartPointer<vtkDICOMApplyPalette>::New();
+    palette->SetInputConnection(reader->GetOutputPort());
+    palette->Update();
+    palette->GetOutput()->GetScalarRange(range);
+    portToDisplay = palette->GetOutputPort();
+  }
 
-  vtkSmartPointer<vtkDICOMCTRectifier> rect =
-    vtkSmartPointer<vtkDICOMCTRectifier>::New();
-  rect->SetVolumeMatrix(reader->GetPatientMatrix());
-  rect->SetInputConnection(portToDisplay);
-  rect->Update();
-  portToDisplay = rect->GetOutputPort();
+  vtkSmartPointer<vtkDICOMCTRectifier> rect;
+  if (meta->Get(DC::Modality).Matches("CT"))
+  {
+    rect = vtkSmartPointer<vtkDICOMCTRectifier>::New();
+    rect->SetVolumeMatrix(reader->GetPatientMatrix());
+    rect->SetInputConnection(portToDisplay);
+    rect->Update();
+    portToDisplay = rect->GetOutputPort();
+  }
 
   static double viewport[3][4] = {
     { 0.67, 0.0, 1.0, 0.5 },

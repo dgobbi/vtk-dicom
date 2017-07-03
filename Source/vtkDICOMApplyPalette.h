@@ -21,6 +21,9 @@
  * palette that only applies to a specific range of pixel values, then
  * pixel values outside of that range will be mapped to greyscale via
  * the WindowWidth and WindowCenter specified in the image.
+ *
+ * \warning If this filter is used, then AutoRescaleOff() should be set on
+ * the reader to ensure that the reader does not rescale the data.
  */
 
 #ifndef vtkDICOMApplyPalette_h

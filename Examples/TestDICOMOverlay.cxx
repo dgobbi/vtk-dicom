@@ -116,6 +116,24 @@ int main(int argc, char *argv[])
     reader->SetDesiredStackID(stackID);
   }
   reader->SetFileNames(a);
+
+  // update the meta data
+  reader->UpdateInformation();
+  vtkDICOMMetaData *meta = reader->GetMetaData();
+
+  // check whether data has a palette
+  bool hasPalette = false;
+  if (meta->Get(DC::PhotometricInterpretation).Matches("PALETTE?COLOR") ||
+      meta->Get(DC::PixelPresentation).Matches("COLOR") ||
+      meta->Get(DC::PixelPresentation).Matches("MIXED") ||
+      meta->Get(DC::PixelPresentation).Matches("TRUE_COLOR"))
+  {
+    hasPalette = true;
+    // palette maps stored values, not slope/intercept rescaled values
+    reader->AutoRescaleOff();
+  }
+
+  // update the data
   reader->Update();
 
   if (reader->GetErrorCode() != vtkErrorCode::NoError)
@@ -135,12 +153,15 @@ int main(int argc, char *argv[])
   vtkAlgorithmOutput *portToDisplay = reader->GetOutputPort();
 
   // apply a palette if the image has one
-  vtkSmartPointer<vtkDICOMApplyPalette> palette =
-    vtkSmartPointer<vtkDICOMApplyPalette>::New();
-  palette->SetInputConnection(reader->GetOutputPort());
-  palette->Update();
-  palette->GetOutput()->GetScalarRange(range);
-  portToDisplay = palette->GetOutputPort();
+  if (hasPalette)
+  {
+    vtkSmartPointer<vtkDICOMApplyPalette> palette;
+    palette = vtkSmartPointer<vtkDICOMApplyPalette>::New();
+    palette->SetInputConnection(reader->GetOutputPort());
+    palette->Update();
+    palette->GetOutput()->GetScalarRange(range);
+    portToDisplay = palette->GetOutputPort();
+  }
 
   // lookup table for the overlay
   vtkSmartPointer<vtkLookupTable> table =
