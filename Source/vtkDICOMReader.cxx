@@ -2355,6 +2355,12 @@ vtkAlgorithmOutput *vtkDICOMReader::GetOverlayOutputPort()
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMReader::SetOverlayOutput(vtkImageData *data)
+{
+  this->GetExecutive()->SetOutputData(1, data);
+}
+
+//----------------------------------------------------------------------------
 vtkMedicalImageProperties *vtkDICOMReader::GetMedicalImageProperties()
 {
   if (this->MedicalImageProperties == 0)

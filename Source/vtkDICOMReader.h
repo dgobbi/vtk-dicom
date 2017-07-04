@@ -268,6 +268,7 @@ public:
    */
   vtkImageData *GetOverlayOutput();
   vtkAlgorithmOutput *GetOverlayOutputPort();
+  void SetOverlayOutput(vtkImageData *data);
 
   //! Returns true if any overlays are present.
   bool HasOverlay() { return (this->OverlayBitfield != 0); }
