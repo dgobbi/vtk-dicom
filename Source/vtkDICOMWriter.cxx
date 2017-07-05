@@ -39,6 +39,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include <algorithm>
 #include <vector>
 
 vtkStandardNewMacro(vtkDICOMWriter);
@@ -66,7 +67,11 @@ vtkDICOMWriter::vtkDICOMWriter()
   this->TransferSyntaxUID = 0;
   this->ImageType = new char[24];
   strcpy(this->ImageType, "DERIVED/SECONDARY/OTHER");
+  this->OverlayType = 0;
   this->Streaming = 0;
+
+  // the second input is the overlay
+  this->SetNumberOfInputPorts(2);
 }
 
 //----------------------------------------------------------------------------
@@ -102,6 +107,8 @@ void vtkDICOMWriter::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "SeriesDescription: " << this->SeriesDescription << "\n";
   os << indent << "ImageType: " << this->ImageType << "\n";
+  os << indent << "OverlayType: "
+     << (this->OverlayType ? "ROI\n" : "Graphics\n");
   os << indent << "TransferSyntaxUID: ";
   if (this->TransferSyntaxUID)
   {
@@ -443,6 +450,191 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMWriter::GenerateOverlays(
+  int minFileIdx, int maxFileIdx, const int wholeExtent[4])
+{
+  vtkImageData *data = this->GetOverlayInput();
+  if (!data)
+  {
+    return;
+  }
+
+  // Get the extent of the input
+  int extent[6];
+  data->GetExtent(extent);
+  int scalarSize = data->GetScalarSize();
+  int nComp = data->GetNumberOfScalarComponents();
+  vtkIdType pixelInc = nComp*scalarSize;
+  vtkIdType rowInc = pixelInc*(extent[1] - extent[0] + 1);
+
+  // Clip the overlay extent with the whole extent of the main input
+  // (According to DICOM standard, this doesn't need to be done)
+  for (int i = 0; i < 6; i += 2)
+  {
+    extent[i] = std::max(extent[i], wholeExtent[i]);
+    extent[i+1] = std::max(extent[i+1], wholeExtent[i+1]);
+    if (extent[i] > extent[i+1])
+    {
+      return;
+    }
+  }
+
+  // Get rows, cols in overlay
+  int overlayCols = extent[1] - extent[0] + 1;
+  int overlayRows = extent[3] - extent[2] + 1;
+  int firstCol = extent[0] - wholeExtent[0];
+  int firstRow = extent[2] - wholeExtent[2];
+
+  // adjust if a flip is needed
+  vtkIdType flipOffset = 0;
+  if (this->MemoryRowOrder == vtkDICOMWriter::BottomUp)
+  {
+    firstRow = wholeExtent[3] - extent[3];
+    flipOffset = rowInc*(extent[3] - extent[2]);
+    rowInc = -rowInc;
+  }
+
+  // Get the map from file,frame to slice.
+  vtkIntArray *sliceMap = this->Generator->GetSliceIndexArray();
+  vtkIntArray *componentMap = this->Generator->GetComponentIndexArray();
+  int numFrames = sliceMap->GetNumberOfComponents();
+
+  for (int fileIdx = minFileIdx; fileIdx <= maxFileIdx; fileIdx++)
+  {
+    // Count the number of overlay frames
+    int overlayFrames = 0;
+    for (int frameIdx = 0; frameIdx < numFrames; frameIdx++)
+    {
+      if (componentMap->GetComponent(fileIdx, frameIdx) < nComp)
+      {
+        overlayFrames++;
+      }
+    }
+
+    // Allocate the output buffer
+    size_t nbits = overlayFrames;
+    nbits *= overlayRows;
+    nbits *= overlayCols;
+    vtkDICOMValue v;
+    unsigned char *buffer =
+      v.AllocateUnsignedCharData(vtkDICOMVR::OB, (nbits+7)/8);
+    unsigned char *bptr = buffer;
+
+    // for keeping track of bits written
+    int bit = 0;
+    unsigned char c = 0;
+
+    // iterate through all frames in the file
+    for (int frameIdx = 0; frameIdx < numFrames; frameIdx++)
+    {
+      int sliceIdx = sliceMap->GetComponent(fileIdx, frameIdx);
+      int componentIdx = componentMap->GetComponent(fileIdx, frameIdx);
+      if (sliceIdx < extent[4] || sliceIdx > extent[5] ||
+          componentIdx >= nComp)
+      {
+        continue;
+      }
+
+      // Get the pointer to the data
+      int sliceExtent[6] = { extent[0], extent[1],
+                             extent[2], extent[3],
+                             sliceIdx, sliceIdx };
+      unsigned char *ptr = static_cast<unsigned char *>(
+        data->GetScalarPointerForExtent(sliceExtent));
+#ifdef VTK_WORDS_BIGENDIAN
+      ptr += (scalarSize-1);
+#endif
+      ptr += componentIdx*scalarSize;
+      ptr += flipOffset;
+      for (int i = extent[2]; i <= extent[3]; i++)
+      {
+        unsigned char *optr = ptr;
+        for (int j = extent[0]; j <= extent[1]; j++)
+        {
+          c |= (*optr & 1) << bit++;
+          if (bit == 8)
+          {
+            *bptr++ = c;
+            bit = 0;
+            c = 0;
+          }
+          optr += pixelInc;
+        }
+        ptr += rowInc;
+      }
+    }
+    if (bit != 0)
+    {
+      *bptr++ = c;
+    }
+    if (((bptr - buffer) & 1) != 0)
+    {
+      // pad data element to even size
+      *bptr++ = 0;
+    }
+
+    // write the attributes for the overlay
+    vtkDICOMMetaData *meta = this->GeneratedMetaData;
+    meta->Set(fileIdx, DC::OverlayRows, overlayRows);
+    meta->Set(fileIdx, DC::OverlayColumns, overlayCols);
+    meta->Set(fileIdx, DC::OverlayType, (this->OverlayType ? "R" : "G"));
+    short overlayOrigin[2] = {
+      static_cast<short>(firstRow+1), static_cast<short>(firstCol+1) };
+    meta->Set(fileIdx, DC::OverlayOrigin,
+      vtkDICOMValue(vtkDICOMVR::SS, overlayOrigin, 2));
+    meta->Set(fileIdx, DC::OverlayBitsAllocated, 1);
+    meta->Set(fileIdx, DC::OverlayBitPosition, 0);
+    meta->Set(fileIdx, DC::OverlayData, v);
+    if (meta->Has(DC::NumberOfFrames))
+    {
+      meta->Set(fileIdx, DC::NumberOfFramesInOverlay, overlayFrames);
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMWriter::SetOverlayInputData(vtkImageData *overlay)
+{
+#if VTK_MAJOR_VERSION >= 6
+  this->SetInputData(1, overlay);
+#else
+  this->SetInput(1, overlay);
+#endif
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMWriter::SetOverlayInputConnection(vtkAlgorithmOutput *overlay)
+{
+  this->SetInputConnection(1, overlay);
+}
+
+//----------------------------------------------------------------------------
+vtkImageData *vtkDICOMWriter::GetOverlayInput()
+{
+  if (this->GetNumberOfInputConnections(1) < 1)
+  {
+    return NULL;
+  }
+  return vtkImageData::SafeDownCast(
+    this->GetExecutive()->GetInputData(1, 0));
+}
+
+//----------------------------------------------------------------------------
+int vtkDICOMWriter::FillInputPortInformation(int port, vtkInformation *info)
+{
+  if (port == 1)
+  {
+    info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkImageData");
+    info->Set(vtkAlgorithm::INPUT_IS_OPTIONAL(), 1);
+  }
+  else
+  {
+    info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkImageData");
+  }
+  return 1;
+}
+
+//----------------------------------------------------------------------------
 int vtkDICOMWriter::RequestData(
   vtkInformation* vtkNotUsed(request),
   vtkInformationVector** inputVector,
@@ -503,6 +695,9 @@ int vtkDICOMWriter::RequestData(
       }
     }
   }
+
+  // Generate overlays
+  this->GenerateOverlays(minFileIdx, maxFileIdx, wholeExtent);
 
   vtkSmartPointer<vtkDICOMCompiler> compiler =
     vtkSmartPointer<vtkDICOMCompiler>::New();
@@ -653,6 +848,9 @@ void vtkDICOMWriter::Write()
   vtkInformation* inInfo = this->GetExecutive()->GetInputInformation(0, 0);
   int wholeExtent[6];
   inInfo->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(), wholeExtent);
+
+  int numOverlays = this->GetNumberOfInputConnections(1);
+
   // if streaming is on, write the slices one-at-a-time
   if (this->Streaming && this->FileDimensionality == 2)
   {
@@ -671,6 +869,23 @@ void vtkDICOMWriter::Write()
         this->Modified();
         inInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(),
                     extent, 6);
+
+        for (int j = 0; j < numOverlays; j++)
+        {
+          vtkInformation *ovInfo =
+            this->GetExecutive()->GetInputInformation(1, j);
+          int ovExtent[6];
+          ovInfo->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(),
+                      ovExtent);
+          if (i >= ovExtent[4] && i <= ovExtent[5])
+          {
+            ovExtent[4] = i;
+            ovExtent[5] = i;
+          }
+          ovInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(),
+                      ovExtent, 6);
+        }
+
         this->Update();
       }
     }
@@ -680,6 +895,17 @@ void vtkDICOMWriter::Write()
     // set update wholeExtent to whole wholeExtent
     inInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(),
                 wholeExtent, 6);
+
+    for (int j = 0; j < numOverlays; j++)
+    {
+      vtkInformation *ovInfo = this->GetExecutive()->GetInputInformation(1, j);
+      int ovExtent[6];
+      ovInfo->Get(vtkStreamingDemandDrivenPipeline::WHOLE_EXTENT(),
+                  ovExtent);
+      ovInfo->Set(vtkStreamingDemandDrivenPipeline::UPDATE_EXTENT(),
+                  ovExtent, 6);
+    }
+
     this->Update();
   }
 
