@@ -317,6 +317,7 @@ public:
   vtkGetMacro(OutputScalarType, int);
   //@}
 
+#ifndef __WRAP__
   //@{
   using Superclass::Update;
   //! Update both the image and, if present, the overlay
@@ -326,6 +327,7 @@ public:
   virtual void Update();
 #endif
   //@}
+#endif
 
 protected:
   vtkDICOMReader();
