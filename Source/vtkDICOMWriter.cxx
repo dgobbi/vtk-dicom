@@ -34,6 +34,7 @@
 #include "vtkCommand.h"
 #include "vtkErrorCode.h"
 #include "vtkSmartPointer.h"
+#include "vtkVersion.h"
 
 #include <time.h>
 #include <math.h>
