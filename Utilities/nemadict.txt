@@ -550,6 +550,18 @@ ExtendedCodeMeaning
 LT
 1
 DICOS
+(0008,0109)
+Coding Scheme Resources Sequence
+CodingSchemeResourcesSequence
+SQ
+1
+
+(0008,010A)
+Coding Scheme URL Type
+CodingSchemeURLType
+CS
+1
+
 (0008,010B)
 Context Group Extension Flag
 ContextGroupExtensionFlag
@@ -566,6 +578,12 @@ UI
 Context Group Extension Creator UID
 ContextGroupExtensionCreatorUID
 UI
+1
+
+(0008,010E)
+Coding Scheme URL
+CodingSchemeURL
+UR
 1
 
 (0008,010F)
@@ -13251,7 +13269,7 @@ Input Availability Flag
 InputAvailabilityFlag
 CS
 1
-
+RET
 (0040,4021)
 Input Information Sequence
 InputInformationSequence
@@ -14389,6 +14407,72 @@ SQ
 (0044,0019)
 Substance Administration Parameter Sequence
 SubstanceAdministrationParameterSequence
+SQ
+1
+
+(0044,0100)
+Approval Sequence
+ApprovalSequence
+SQ
+1
+
+(0044,0101)
+Assertion Code Sequence
+AssertionCodeSequence
+SQ
+1
+
+(0044,0102)
+Assertion UID
+AssertionUID
+UI
+1
+
+(0044,0103)
+Asserter Identification Sequence
+AsserterIdentificationSequence
+SQ
+1
+
+(0044,0104)
+Assertion DateTime
+AssertionDateTime
+DT
+1
+
+(0044,0105)
+Assertion Expiration DateTime
+AssertionExpirationDateTime
+DT
+1
+
+(0044,0106)
+Assertion Comments
+AssertionComments
+UT
+1
+
+(0044,0107)
+Related Assertion Sequence
+RelatedAssertionSequence
+SQ
+1
+
+(0044,0108)
+Referenced Assertion UID
+ReferencedAssertionUID
+UI
+1
+
+(0044,0109)
+Approval Subject Sequence
+ApprovalSubjectSequence
+SQ
+1
+
+(0044,010A)
+Organizational Role Code Sequence
+OrganizationalRoleCodeSequence
 SQ
 1
 
@@ -19476,7 +19560,7 @@ UT
 
 (0082,000C)
 Structured Constraint Observation Sequence
-StructuredContraintObservationSequence
+StructuredConstraintObservationSequence
 SQ
 1
 

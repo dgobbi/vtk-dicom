@@ -6,7 +6,7 @@ import sys
 
 if len(sys.argv) != 2:
     sys.stderr.write(
-        """usage: python parsuid.py nemauids.txt > vtkDICOMUtilitiesUIDTable.cxx""")
+        """usage: python parseuid.py nemauids.txt > vtkDICOMUtilitiesUIDTable.cxx""")
     sys.exit(1)
 
 f = open(sys.argv[1], 'r')

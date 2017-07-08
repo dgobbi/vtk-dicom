@@ -1074,6 +1074,22 @@ PS3.4
 CT Performed Procedure Protocol Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.200.3
+Protocol Approval Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.200.4
+Protocol Approval Information Model - FIND
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.200.5
+Protocol Approval Information Model - MOVE
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.200.6
+Protocol Approval Information Model - GET
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.481.1
 RT Image Storage
 SOP Class
@@ -4953,3 +4969,6 @@ Calcium Scoring Patient Size Categories
 1.2.840.10008.6.1.1175
 CID 10034
 Reason for Repeating Acquisition
+1.2.840.10008.6.1.1176
+CID 800
+Protocol Assertion Codes
