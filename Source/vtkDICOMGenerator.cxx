@@ -461,37 +461,6 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *sourcemeta)
   double matrix[16];
   this->ComputeAdjustedMatrix(matrix, origin, spacing);
 
-  // compare the orientation with the input slices
-  bool mismatch = false;
-  int m = source->GetNumberOfInstances();
-  for (int j = 0; j < m && !mismatch; j++)
-  {
-    const vtkDICOMValue &o =
-      source->Get(j, DC::ImageOrientationPatient);
-    if (o.GetNumberOfValues() != 6)
-    {
-      mismatch = true;
-      break;
-    }
-
-    double orientation[6];
-    o.GetValues(orientation, 6);
-    for (int i = 0; i < 3; i++)
-    {
-      if (fabs(matrix[4*i] - orientation[i]) > 1e-4 ||
-          fabs(matrix[4*i + 1] - orientation[i + 3]) > 1e-4)
-      {
-        mismatch = true;
-        break;
-      }
-    }
-  }
-
-  if (mismatch)
-  {
-    return;
-  }
-
   this->SourceInstanceArray = vtkIntArray::New();
   this->SourceInstanceArray->SetNumberOfComponents(1);
   this->SourceInstanceArray->SetNumberOfTuples(
@@ -504,12 +473,14 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *sourcemeta)
   }
 
   // for keeping track of which source instances have been matched
+  int m = source->GetNumberOfInstances();
   bool *usedInstances = new bool[m];
   for (int j = 0; j < m; j++)
   {
     usedInstances[j] = false;
   }
 
+  bool mismatch = false;
   int n = this->MetaData->GetNumberOfInstances();
   double zorigin = origin[2];
   for (int i = 0; i < n && !mismatch; i++)
@@ -534,19 +505,28 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *sourcemeta)
         continue;
       }
 
-      const vtkDICOMValue &p =
-        source->Get(j, DC::ImagePositionPatient);
-      if (p.GetNumberOfValues() == 3)
+      const vtkDICOMValue &p = source->Get(j, DC::ImagePositionPatient);
+      const vtkDICOMValue &o = source->Get(j, DC::ImageOrientationPatient);
+      if (p.GetNumberOfValues() == 3 &&
+          o.GetNumberOfValues() == 6)
       {
-        double r[3];
+        double r[3], uv[6];
         p.GetValues(r, 3);
-        double dd = 0;
+        o.GetValues(uv, 6);
+        double dd = 0.0;
+        double uu = 0.0;
+        double vv = 0.0;
         for (int k = 0; k < 3; k++)
         {
           double d = r[k] - position[k];
           dd += d*d;
+          double u = matrix[4*k] - uv[k];
+          uu += u*u;
+          double v = matrix[4*k +1] - uv[k + 3];
+          vv += v*v;
         }
-        if (dd/(spacing[2]*spacing[2]) < 1e-8)
+        if (dd/(spacing[2]*spacing[2]) < 1e-8 &&
+            uu < 1e-8 && vv < 1e-8)
         {
           this->SourceInstanceArray->SetComponent(i, 0, j);
           usedInstances[j] = true;
