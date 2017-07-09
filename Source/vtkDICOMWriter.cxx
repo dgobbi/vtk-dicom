@@ -365,6 +365,8 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
   this->Generator->SetTimeSpacing(this->TimeSpacing);
   this->Generator->SetRescaleIntercept(this->RescaleIntercept);
   this->Generator->SetRescaleSlope(this->RescaleSlope);
+  this->Generator->SetNumberOfOverlays(
+    this->GetNumberOfInputConnections(1));
   this->Generator->SetSourceMetaData(inMeta);
   this->Generator->SetPatientMatrix(inMatrix);
   if (inMatrix)
@@ -589,6 +591,13 @@ void vtkDICOMWriter::GenerateOverlays(
     if (meta->Has(DC::NumberOfFrames))
     {
       meta->Set(fileIdx, DC::NumberOfFramesInOverlay, overlayFrames);
+    }
+    // optional attributes must be suited for the type
+    if (!this->OverlayType) // not ROI
+    {
+      meta->Erase(DC::ROIArea);
+      meta->Erase(DC::ROIMean);
+      meta->Erase(DC::ROIStandardDeviation);
     }
   }
 }

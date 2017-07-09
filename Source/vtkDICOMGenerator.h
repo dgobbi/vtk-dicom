@@ -126,6 +126,17 @@ public:
   //@}
 
   //@{
+  //! Set the number of overlays to generate.
+  /*!
+   *  This will cause overlay attributes to be copied from the source
+   *  meta data to the output meta data.  It is up to the writer to
+   *  ensure that the values are consistent with each other.
+   */
+  vtkSetMacro(NumberOfOverlays, int);
+  vtkGetMacro(NumberOfOverlays, int);
+  //@}
+
+  //@{
   //! Set the matrix that places the image in DICOM patient coords.
   /*!
    *  The 3x3 portion of the matrix must be orthonormal, and the
@@ -409,6 +420,9 @@ protected:
   //! Data rescaling parameters.
   double RescaleIntercept;
   double RescaleSlope;
+
+  //! The number of overlays to generate.
+  int NumberOfOverlays;
 
   //! The VTK scalar type of the data, set by InitializeMetaData().
   int ScalarType;

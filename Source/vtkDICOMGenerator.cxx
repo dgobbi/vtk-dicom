@@ -62,6 +62,7 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->TimeSpacing = 1.0;
   this->RescaleIntercept = 0.0;
   this->RescaleSlope = 1.0;
+  this->NumberOfOverlays = 0;
   this->PatientMatrix = 0;
   this->SliceIndexArray = vtkIntArray::New();
   this->ComponentIndexArray = vtkIntArray::New();
@@ -189,6 +190,7 @@ void vtkDICOMGenerator::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "TimeSpacing: " << this->TimeSpacing << "\n";
   os << indent << "RescaleIntercept: " << this->RescaleIntercept << "\n";
   os << indent << "RescaleSlope: " << this->RescaleSlope << "\n";
+  os << indent << "NumberOfOverlays: " << this->NumberOfOverlays << "\n";
 
   os << indent << "PatientMatrix:";
   if (this->PatientMatrix)
@@ -1772,22 +1774,22 @@ bool vtkDICOMGenerator::GenerateOverlayPlaneModule(vtkDICOMMetaData *source)
 
   // overlay is a repeating group, it repeats 16 times
   DC::EnumType tags[16];
-  for (int i = 0; i < 16; i++)
+  int n = this->NumberOfOverlays;
+  n = (n < 0 ? 0 : n);
+  n = (n > 16 ? 16 : n);
+  for (int i = 0; i < n; i++)
   {
-    if (source && source->Has(vtkDICOMTag(0x6000 + i*2, 0x0010)))
+    int j = 0;
+    while (tags[j] != DC::ItemDelimitationItem)
     {
-      int j = 0;
-      while (tags[j] != DC::ItemDelimitationItem)
-      {
-        tags[j] = static_cast<DC::EnumType>(basetags[j] + i*0x20000);
-        j++;
-      }
-      tags[j] = DC::ItemDelimitationItem;
+      tags[j] = static_cast<DC::EnumType>(basetags[j] + i*0x20000);
+      j++;
+    }
+    tags[j] = DC::ItemDelimitationItem;
 
-      if (!this->CopyOptionalAttributes(tags, source))
-      {
-        return false;
-      }
+    if (!this->CopyOptionalAttributes(tags, source))
+    {
+      return false;
     }
   }
 
