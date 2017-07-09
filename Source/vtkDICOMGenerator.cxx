@@ -1776,11 +1776,13 @@ bool vtkDICOMGenerator::GenerateOverlayPlaneModule(vtkDICOMMetaData *source)
   {
     if (source && source->Has(vtkDICOMTag(0x6000 + i*2, 0x0010)))
     {
-      for (int j = 0; j < 12; j++)
+      int j = 0;
+      while (tags[j] != DC::ItemDelimitationItem)
       {
         tags[j] = static_cast<DC::EnumType>(basetags[j] + i*0x20000);
+        j++;
       }
-      tags[13] = DC::ItemDelimitationItem;
+      tags[j] = DC::ItemDelimitationItem;
 
       if (!this->CopyOptionalAttributes(tags, source))
       {
