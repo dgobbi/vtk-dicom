@@ -294,7 +294,7 @@ public:
    *  Allocate an array of the specified size (number of elements)
    *  within the value object.  This method will not do any checks
    *  to ensure that the data type matches the VR.  It is meant to
-   *  be an efficent way for the parser to allocate a value so that
+   *  be an efficient way for the parser to allocate a value so that
    *  the value's contents can be read in directly from a file.
    */
   char *AllocateCharData(vtkDICOMVR vr, size_t vn);

@@ -145,7 +145,7 @@ public:
   /*!
    *  Unlike the qform matrix, the sform matrix can contain scaling
    *  information.  Before being stored in the NIFTI header, the
-   *  first three columns of the matrix will be multipled by the voxel
+   *  first three columns of the matrix will be multiplied by the voxel
    *  spacing. In the NIFTI header, the sform_code will be set to 2.
    */
   void SetSFormMatrix(vtkMatrix4x4 *);

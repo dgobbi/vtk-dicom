@@ -200,7 +200,7 @@ std::string vtkDICOMFilePath::Join(const std::string& second) const
           {
             endpos++;
           }
-          // Remove the preceeding part of the path
+          // Remove the preceding part of the path
           l = path.length();
           size_t m = RootLength(path);
           if (l > m && path[l-1] == sep)

@@ -123,7 +123,7 @@ public:
   //! Get the number of samples.
   int GetNumberOfSamples() { return this->NumberOfSamples; }
 
-  //! Get the nubmer of projections.
+  //! Get the number of projections.
   int GetNumberOfProjections() { return this->NumberOfProjections; }
 
   //! Get the scan distance (in millimeters).

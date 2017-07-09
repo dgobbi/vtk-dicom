@@ -409,7 +409,7 @@ void vtkDICOMDirectory::SetDefaultCharacterSet(vtkDICOMCharacterSet cs)
 }
 
 //----------------------------------------------------------------------------
-// The following code does loose matching to accomodate the way that Osirix
+// The following code does loose matching to accommodate the way that Osirix
 // modifies some attributes before storing them in its database
 
 namespace {

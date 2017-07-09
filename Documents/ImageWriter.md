@@ -55,7 +55,7 @@ is as follows:
 The generator always creates a new `SOPInstanceUID` for each file and a
 new `SeriesInstanceUID` for each series. There is no way to set these
 UIDs manually.  The `ImageType` is set to `DERIVED` by default,
-because an image cannot be considered to be `ORIGINAL` if it was modifed
+because an image cannot be considered to be `ORIGINAL` if it was modified
 in any way after its original acquisition.  Finally, all information
 related to the pixel values or the slice geometry is generated from
 the vtkImageData information and from the PatientMatrix.

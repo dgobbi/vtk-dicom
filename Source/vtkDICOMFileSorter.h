@@ -55,7 +55,7 @@ public:
   //! Set a list of file names to group and sort.
   /*!
    *  This method is mutually exclusive with SetInputFileName().
-   *  If you call ths method, then InputFileName will be set to NULL
+   *  If you call this method, then InputFileName will be set to NULL
    *  and vice versa.
    */
   void SetInputFileNames(vtkStringArray *input);

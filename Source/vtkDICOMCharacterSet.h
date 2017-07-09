@@ -140,7 +140,7 @@ public:
   //! Set the character set to use if SpecificCharacterSet is missing.
   /*!
    *  Some DICOM files do not list a SpecificCharacterSet attribute, but
-   *  neverthless use a non-ASCII character encoding.  This method can be
+   *  nevertheless use a non-ASCII character encoding.  This method can be
    *  used to specify the character set in absence of SpecificCharacterSet.
    *  If SpecificCharacterSet is present, the default will not override it
    *  unless OverrideCharacterSet is true.

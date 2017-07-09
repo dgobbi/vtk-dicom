@@ -2333,7 +2333,7 @@ void vtkDICOMReader::RelayError(vtkObject *o, unsigned long e, void *data)
     }
     else
     {
-      vtkErrorMacro(<< "An unknown error ocurred!");
+      vtkErrorMacro(<< "An unknown error occurred!");
     }
   }
   else

@@ -105,7 +105,7 @@ void scancotodicom_usage(FILE *file, const char *command_name)
     "  -s --silent             Do not print anything while executing.\n"
     "  -v --verbose            Verbose error reporting.\n"
     "  --series-description    Textual description of the series.\n"
-    "  --series-number         The series number ot use.\n"
+    "  --series-number         The series number to use.\n"
     "  --uid-prefix            A DICOM uid prefix (optional).\n"
     "  --version               Print the version and exit.\n"
     "  --build-version         Print source and build version.\n"

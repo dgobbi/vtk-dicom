@@ -129,7 +129,7 @@ dicomdir->Update();
 
 All text attributes except for dates accept the wildcards '\*' and '?'.  For
 dates, you can use a hyphen to specify a range of dates.  Matching of all
-text is done by first converting the text to utf-8 for compability, and for
+text is done by first converting the text to utf-8 for compatibility, and for
 patient names the matching is case insensitive.  The query **PRIMARY**
 will match the multi-valued attribute value
 **ORIGINAL\\PRIMARY**, since only one value has to match.

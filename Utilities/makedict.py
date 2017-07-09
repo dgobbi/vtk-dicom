@@ -190,7 +190,7 @@ def makedict(lines, creator="DICOM"):
     # get the group, element
     g, e = tag[1:10].split(',')
 
-    # make sure g, e are hexidecimal integers
+    # make sure g, e are hexadecimal integers
     try:
       gi = int(g, 16)
       ei = int(e, 16)

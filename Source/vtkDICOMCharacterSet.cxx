@@ -9687,7 +9687,7 @@ void CP1250ToUTF8(const char *text, size_t l, std::string *s)
     {
       if (code <= 0xBF)
       {
-        // use convertion table
+        // use conversion table
         code = cp1250[code - 0x80];
       }
       UnicodeToUTF8(code, s);
