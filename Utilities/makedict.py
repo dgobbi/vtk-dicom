@@ -73,7 +73,7 @@ while i < len(lines):
         nb.append(rg[k+5])
         k = k + 6
     lines = lines[0:i] + nb + lines[i:]
-    i += 16*len(rg)
+    i += len(nb)
     rg = []
   else:
     # check for and filter out the private tags
