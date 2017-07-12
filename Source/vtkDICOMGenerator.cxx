@@ -1559,7 +1559,6 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *source)
       vtkImageScalarTypeNameMacro(this->ScalarType));
   }
   // reduce BitsStored if the SOP class allows
-  unsigned int minv = static_cast<unsigned int>(-this->PixelValueRange[0]);
   unsigned int maxv = static_cast<unsigned int>(this->PixelValueRange[1]);
   for (int bi = pixelbits/2 + 1; bi < pixelbits; bi++)
   {
