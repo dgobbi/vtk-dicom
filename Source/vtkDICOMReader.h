@@ -385,6 +385,10 @@ protected:
     const char *filename, int idx,
     unsigned char *buffer, vtkIdType bufferSize);
 
+  //! Clear or sign-extend any bits beyond BitsStored.
+  void MaskBits(void *buffer, vtkIdType bufferSize, int scalarSize,
+                int bitsStored, int pixelRepresentation);
+
   //! Unpack 1 bit to 8 bits or 12 bits to 16 bits.
   void UnpackBits(
     const void *source, void *buffer, vtkIdType bufferSize, int bits);

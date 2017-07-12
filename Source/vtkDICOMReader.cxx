@@ -1202,6 +1202,39 @@ int vtkDICOMReader::RequestInformation(
 namespace {
 
 //----------------------------------------------------------------------------
+// templated bit masking functions
+
+template<class T>
+void vtkDICOMMaskBits(T *ptr, size_t n, int bits, int pixelRepr)
+{
+  if (n > 0)
+  {
+    T bitmask = (1 << bits) - 1;
+    if (pixelRepr == 0)
+    {
+      // unsigned: simply apply mask
+      do
+      {
+        *ptr &= bitmask;
+        ptr++;
+      }
+      while (--n);
+    }
+    else
+    {
+      // signed: apply mask and sign extend
+      T highbit = (1 << (bits - 1));
+      do
+      {
+        *ptr = ((*ptr & bitmask) ^ highbit) - highbit;
+        ptr++;
+      }
+      while (--n);
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
 // templated conversion functions, for converting to and from floating point
 
 template<class T1, class T2>
@@ -1448,6 +1481,30 @@ void vtkDICOMReader::UnpackYBR422(
       writePtr[2] = r;
       writePtr += 3;
     }
+  }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMReader::MaskBits(
+  void *buffer, vtkIdType bufferSize, int scalarSize,
+  int bitsStored, int pixelRepresentation)
+{
+  size_t n = bufferSize/scalarSize;
+
+  if (scalarSize == 1)
+  {
+    vtkDICOMMaskBits(static_cast<unsigned char *>(buffer), n,
+                     bitsStored, pixelRepresentation);
+  }
+  else if (scalarSize == 2)
+  {
+    vtkDICOMMaskBits(static_cast<unsigned short *>(buffer), n,
+                     bitsStored, pixelRepresentation);
+  }
+  else if (scalarSize == 4)
+  {
+    vtkDICOMMaskBits(static_cast<unsigned int *>(buffer), n,
+                     bitsStored, pixelRepresentation);
   }
 }
 
@@ -2073,6 +2130,16 @@ int vtkDICOMReader::RequestData(
     this->ComputeInternalFileName(fileIdx);
     this->ReadOneFile(this->InternalFileName, fileIdx,
                       bufferPtr, framesInFile*fileFrameSize);
+
+    // clear or sign-extend any unused bits
+    int bitsStored = this->MetaData->Get(fileIdx, DC::BitsStored).AsInt();
+    if (bitsStored > 0 && bitsStored < scalarSize*8)
+    {
+      int pixelRepresentation =
+        this->MetaData->Get(fileIdx, DC::PixelRepresentation).AsInt();
+      vtkDICOMReader::MaskBits(bufferPtr, framesInFile*fileFrameSize,
+          scalarSize, bitsStored, pixelRepresentation);
+    }
 
     // iterate through all frames contained in the file
     for (int sIdx = 0; sIdx < numFrames; sIdx++)
