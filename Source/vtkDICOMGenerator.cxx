@@ -1564,8 +1564,7 @@ bool vtkDICOMGenerator::GenerateImagePixelModule(vtkDICOMMetaData *source)
   for (int bi = pixelbits/2 + 1; bi < pixelbits; bi++)
   {
     if ((this->AllowedBitsStored & (1u << bi)) != 0 &&
-        ((pixelrep == 0 && maxv < (1u << (bi + 1))) ||
-         (pixelrep == 1 && maxv < (1u << bi) && minv <= (1u << bi))))
+        (pixelrep == 0 && maxv < (1u << (bi + 1))))
     {
       storedbits = bi + 1;
       break;
