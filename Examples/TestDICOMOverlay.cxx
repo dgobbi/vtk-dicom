@@ -104,6 +104,13 @@ int main(int argc, char *argv[])
     }
   }
 
+  // exit if no files found
+  if (kmax == 0)
+  {
+    fprintf(stderr, "No PixelData to display!\n");
+    return 1;
+  }
+
   // display the longest series
   vtkStringArray *a = sorter->GetFileNamesForSeries(seriesIdx);
   vtkSmartPointer<vtkImageReslice> reslice =
