@@ -20,6 +20,7 @@
 #cmakedefine DICOM_BUILD_TESTING
 #cmakedefine DICOM_USE_GDCM
 #cmakedefine DICOM_USE_DCMTK
+#cmakedefine DICOM_USE_SQLITE
 #cmakedefine DICOM_USE_VTKZLIB
 
 /* Version number. */

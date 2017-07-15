@@ -31,8 +31,9 @@
 #include <vtkCommand.h>
 #include <vtkUnsignedShortArray.h>
 
-#include <vtkSQLiteDatabase.h>
-#include <vtkSQLQuery.h>
+#ifdef DICOM_USE_SQLITE
+#include <sqlite3.h>
+#endif
 
 #include <string>
 #include <sstream>
@@ -1387,6 +1388,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 }
 
 //----------------------------------------------------------------------------
+#ifdef DICOM_USE_SQLITE
 namespace {
 
 // Trivial structs needed by ProcessOsirixDatabase
@@ -1418,31 +1420,139 @@ std::string DecompressUID(const std::string& s)
   return std::string(uid, m);
 }
 
+// A class to simplify SQLite transaction
+class SimpleSQL
+{
+public:
+  SimpleSQL() : DBase(0), Statement(0), InTransaction(false) {}
+  ~SimpleSQL() { this->Close(); }
+  bool Open(const char *fname);
+  void Close();
+  bool Prepare(const char *query);
+  bool Next();
+  vtkVariant GetValue(int column);
+  const char *GetError();
+private:
+  void Finalize();
+  sqlite3 *DBase;
+  sqlite3_stmt *Statement;
+  bool InTransaction;
+};
+
+bool SimpleSQL::Open(const char *fname)
+{
+  int r = sqlite3_open_v2(fname, &this->DBase, SQLITE_OPEN_READONLY, NULL);
+  if (r == SQLITE_OK)
+  {
+    char *errmsg;
+    r = sqlite3_exec(this->DBase, "BEGIN TRANSACTION", NULL, NULL, &errmsg);
+    this->InTransaction = (r == SQLITE_OK);
+  }
+  return (r == SQLITE_OK);
 }
+
+void SimpleSQL::Close()
+{
+  this->Finalize();
+  if (this->InTransaction)
+  {
+    char *errmsg;
+    sqlite3_exec(this->DBase, "COMMIT", NULL, NULL, &errmsg);
+  }
+  sqlite3_close(this->DBase);
+  this->DBase = 0;
+}
+
+bool SimpleSQL::Prepare(const char *query)
+{
+  if (this->Statement)
+  {
+    sqlite3_finalize(this->Statement);
+    this->Statement = 0;
+  }
+  const char *ep;
+  int l = static_cast<int>(strlen(query));
+  return (sqlite3_prepare_v2(this->DBase, query, l, &this->Statement, &ep)
+          == SQLITE_OK);
+}
+
+bool SimpleSQL::Next()
+{
+  int result = sqlite3_step(this->Statement);
+  if (result == SQLITE_ROW)
+  {
+    return true;
+  }
+
+  this->Finalize();
+  return false;
+}
+
+vtkVariant SimpleSQL::GetValue(int column)
+{
+  vtkVariant v;
+  switch (sqlite3_column_type(this->Statement, column))
+  {
+    case SQLITE_INTEGER:
+    {
+      vtkTypeInt64 x = sqlite3_column_int64(this->Statement, column);
+      v = vtkVariant(x);
+      break;
+    }
+    case SQLITE_FLOAT:
+    {
+      double x = sqlite3_column_double(this->Statement, column);
+      v = vtkVariant(x);
+      break;
+    }
+    case SQLITE_TEXT:
+    {
+      const char *x = reinterpret_cast<const char *>(
+        sqlite3_column_text(this->Statement, column));
+      v = vtkVariant(x);
+      break;
+    }
+    case SQLITE_BLOB:
+    {
+      const char *x = static_cast<const char *>(
+        sqlite3_column_blob(this->Statement, column));
+      size_t l = sqlite3_column_bytes(this->Statement, column);
+      v = vtkVariant(vtkStdString(x, l));
+      break;
+    }
+    default:
+      break;
+  }
+  return v;
+}
+
+const char *SimpleSQL::GetError()
+{
+  return sqlite3_errmsg(this->DBase);
+}
+
+void SimpleSQL::Finalize()
+{
+  if (this->Statement)
+  {
+    sqlite3_finalize(this->Statement);
+    this->Statement = 0;
+  }
+}
+
+}
+#endif
 
 //----------------------------------------------------------------------------
 void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
 {
-  // Open the database
-  vtkSmartPointer<vtkSQLiteDatabase> dbase =
-    vtkSmartPointer<vtkSQLiteDatabase>::New();
-  dbase->SetDatabaseFileName(fname);
-  if (!dbase->Open("", vtkSQLiteDatabase::USE_EXISTING))
-  {
-    vtkErrorMacro("Unable to open database file " << fname);
-    return;
-  }
+#ifdef DICOM_USE_SQLITE
+  SimpleSQL dbase;
 
-  // Make sure this is an OsiriX database file.
-  vtkStringArray *tables = dbase->GetTables();
-  int count = 0;
-  for (vtkIdType i = 0; i < tables->GetNumberOfValues(); i++)
+  // Open the database
+  if (!dbase.Open(fname))
   {
-    std::string s = tables->GetValue(i);
-    count += (s == "ZSTUDY" || s == "ZSERIES" || s == "ZIMAGE");
-  }
-  if (count != 3)
-  {
+    vtkErrorMacro("File " << fname << ": " << dbase.GetError());
     return;
   }
 
@@ -1450,8 +1560,6 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
   vtkDICOMFilePath path(fname);
   path.PopBack();
   path.PushBack("DATABASE.noindex");
-
-  vtkSQLQuery *q = dbase->GetQueryInstance();
 
   // Indices to columns in the study table
   enum {
@@ -1477,89 +1585,72 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
   std::vector<SeriesRow> seriesTable;
   std::vector<ImageRow> imageTable;
 
-  // Acquire a shared lock while reading the three tables, to ensure that
-  // the three tables are consistent with each other.
-  q->BeginTransaction();
-
   // Read the study table
-  if (!q->SetQuery("select Z_PK,ZDATE,ZDATEOFBIRTH,ZMODALITY,ZNAME,"
-                   "ZINSTITUTIONNAME,ZSTUDYNAME,ZID,ZSTUDYINSTANCEUID,"
-                   "ZACCESSIONNUMBER,ZPATIENTSEX,ZPATIENTID from ZSTUDY"
-                   " order by ZDATE") ||
-      !q->Execute())
+  if (!dbase.Prepare("select Z_PK,ZDATE,ZDATEOFBIRTH,ZMODALITY,ZNAME,"
+                     "ZINSTITUTIONNAME,ZSTUDYNAME,ZID,ZSTUDYINSTANCEUID,"
+                     "ZACCESSIONNUMBER,ZPATIENTSEX,ZPATIENTID from ZSTUDY"
+                     " order by ZDATE"))
   {
-    vtkErrorMacro("Badly structured ZSTUDY table: " << fname);
-    q->CommitTransaction();
-    q->Delete();
+    vtkErrorMacro("File " << fname << ": " << dbase.GetError());
     return;
   }
 
-  while (q->NextRow())
+  while (dbase.Next())
   {
     studyTable.push_back(StudyRow());
     StudyRow *row = &studyTable.back();
     for (int k = 0; k < ST_NCOLS; k++)
     {
-      row->col[k] = q->DataValue(k);
+      row->col[k] = dbase.GetValue(k);
     }
   }
 
   // Read the series table
-  if (!q->SetQuery("select Z_PK,ZID,ZDATE,ZSERIESSOPCLASSUID,"
-                   "ZMODALITY,ZNAME,ZSERIESDICOMUID,ZSERIESDESCRIPTION,"
-                   "ZSTUDY from ZSERIES order by ZSTUDY,ZID") ||
-      !q->Execute())
+  if (!dbase.Prepare("select Z_PK,ZID,ZDATE,ZSERIESSOPCLASSUID,"
+                     "ZMODALITY,ZNAME,ZSERIESDICOMUID,ZSERIESDESCRIPTION,"
+                     "ZSTUDY from ZSERIES order by ZSTUDY,ZID"))
   {
-    vtkErrorMacro("Badly structured ZSERIES table: " << fname);
-    q->CommitTransaction();
-    q->Delete();
+    vtkErrorMacro("File " << fname << ": " << dbase.GetError());
     return;
   }
 
   std::vector<vtkTypeInt64> zseriesVec;
-  while (q->NextRow())
+  while (dbase.Next())
   {
     seriesTable.push_back(SeriesRow());
     SeriesRow *row = &seriesTable.back();
     for (int k = 0; k < SE_NCOLS; k++)
     {
-      row->col[k] = q->DataValue(k);
+      row->col[k] = dbase.GetValue(k);
     }
-    zseriesVec.push_back(q->DataValue(SE_NCOLS).ToTypeInt64());
+    zseriesVec.push_back(dbase.GetValue(SE_NCOLS).ToTypeInt64());
   }
 
   // Read the image table
-  if (!q->SetQuery("select ZINSTANCENUMBER,ZFRAMEID,ZPATHNUMBER,"
-                   "ZPATHSTRING,ZCOMPRESSEDSOPINSTANCEUID,"
-                   "ZSTOREDHEIGHT,ZSTOREDWIDTH,ZSERIES"
-                   " from ZIMAGE order by"
-                   " ZSERIES,ZINSTANCENUMBER") ||
-      !q->Execute())
+  if (!dbase.Prepare("select ZINSTANCENUMBER,ZFRAMEID,ZPATHNUMBER,"
+                     "ZPATHSTRING,ZCOMPRESSEDSOPINSTANCEUID,"
+                     "ZSTOREDHEIGHT,ZSTOREDWIDTH,ZSERIES"
+                     " from ZIMAGE order by"
+                     " ZSERIES,ZINSTANCENUMBER"))
   {
-    vtkErrorMacro("Badly structured IMAGE table: " << fname);
-    q->CommitTransaction();
-    q->Delete();
+    vtkErrorMacro("File " << fname << ": " << dbase.GetError());
     return;
   }
 
   std::vector<vtkTypeInt64> zimageVec;
-  while (q->NextRow())
+  while (dbase.Next())
   {
     imageTable.push_back(ImageRow());
     ImageRow *row = &imageTable.back();
     for (int k = 0; k < IM_NCOLS; k++)
     {
-      row->col[k] = q->DataValue(k);
+      row->col[k] = dbase.GetValue(k);
     }
-    zimageVec.push_back(q->DataValue(IM_NCOLS).ToTypeInt64());
+    zimageVec.push_back(dbase.GetValue(IM_NCOLS).ToTypeInt64());
   }
 
-  // Close the database and delete it by setting the smart pointer to NULL.
-  // Calling CommitTransaction doesn't write anything, because only SELECT
-  // has been used.  Instead, it just releases the shared lock.
-  q->CommitTransaction();
-  q->Delete();
-  dbase = NULL;
+  // Release the database
+  dbase.Close();
 
   // To track progress, count number of images processed.
   size_t imageCounter = 0;
@@ -1798,6 +1889,10 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
       }
     }
   }
+#else
+  vtkErrorMacro("File " << fname << ": "
+                << "sqlite was not enabled in the build");
+#endif
 }
 
 //----------------------------------------------------------------------------

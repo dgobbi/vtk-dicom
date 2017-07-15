@@ -3,6 +3,7 @@ set(DICOM_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
 set(DICOM_BUILD_TESTING ${BUILD_TESTING})
 set(DICOM_USE_GDCM ${USE_GDCM})
 set(DICOM_USE_DCMTK ${USE_DCMTK})
+set(DICOM_USE_SQLITE ${USE_SQLITE})
 configure_file(${DICOM_CMAKE_DIR}/vtkDICOMConfig.h.in
   "${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMConfig.h" @ONLY)
 configure_file(${DICOM_CMAKE_DIR}/vtkDICOMBuild.h.in
@@ -124,7 +125,7 @@ if(Module_vtkDICOM) # Building as a VTK remote module
 
   vtk_module_library(vtkDICOM ${LIB_SRCS} ${LIB_HDRS})
   target_link_libraries(${LIB_NAME}
-    LINK_PRIVATE ${GDCM_LIBS} ${DCMTK_LIBS})
+    LINK_PRIVATE ${GDCM_LIBS} ${DCMTK_LIBS} ${SQLITE_LIBS})
 
 else() # else MODULE_vtkDICOM
 
@@ -175,7 +176,7 @@ if(BUILD_PYTHON_WRAPPERS OR BUILD_TCL_WRAPPERS OR BUILD_JAVA_WRAPPERS AND
 endif()
 target_link_libraries(${LIB_NAME} LINK_PUBLIC ${VTK_LIBS})
 target_link_libraries(${LIB_NAME} LINK_PRIVATE
-  ${KWSYS_LIBS} ${ZLIB_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS})
+  ${KWSYS_LIBS} ${ZLIB_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS} ${SQLITE_LIBS})
 
 # Wrappers
 if(BUILD_PYTHON_WRAPPERS)

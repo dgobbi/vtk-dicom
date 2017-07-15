@@ -164,6 +164,17 @@ if(USE_DCMTK)
   include_directories(${DCMTK_INCLUDE_DIRS})
 endif()
 
+# Check for sqlite3 for reading OsiriX databases
+set(USE_SQLITE_DEFAULT OFF)
+set(SQLITE_LIBS)
+if(APPLE)
+  set(USE_SQLITE_DEFAULT ON)
+endif()
+option(USE_SQLITE "Use SQLite for OsiriX databases" ${USE_SQLITE_DEFAULT})
+if(USE_SQLITE)
+  set(SQLITE_LIBS sqlite3)
+endif()
+
 # Store the git hash of the current head
 if(EXISTS "${DICOM_SOURCE_DIR}/.git/HEAD")
   file(READ "${DICOM_SOURCE_DIR}/.git/HEAD" DICOM_SOURCE_VERSION)
@@ -244,16 +255,12 @@ if(NOT Module_vtkDICOM)
 
   # The library dependencies
   if("${VTK_MAJOR_VERSION}" GREATER 5)
-    set(VTK_LIBS vtkCommonCore vtkCommonDataModel vtkImagingCore vtkIOImage vtkIOSQL)
+    set(VTK_LIBS vtkCommonCore vtkCommonDataModel vtkImagingCore vtkIOCore
+        vtkIOImage)
     # If vtkIOMPIImage is present, it has factories for vtkIOImage
     list(FIND VTK_LIBRARIES vtkIOMPIImage TMP_INDEX)
     if(TMP_INDEX GREATER -1)
       set(VTK_LIBS ${VTK_LIBS} vtkIOMPIImage)
-    endif()
-    # If vtkIOMySQL is present, it has factories for vtkIOSQL
-    list(FIND VTK_LIBRARIES vtkIOMySQL TMP_INDEX)
-    if(TMP_INDEX GREATER -1)
-      set(VTK_LIBS ${VTK_LIBS} vtkIOMySQL)
     endif()
   else()
     set(VTK_LIBS vtkCommon vtkFiltering vtkImaging vtkIO vtkInfovis) # VTK 5.x
