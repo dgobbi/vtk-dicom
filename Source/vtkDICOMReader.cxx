@@ -2265,13 +2265,11 @@ bool vtkDICOMReader::ReadOverlays(vtkImageData *data)
         int startX = 0;
         int startY = 0;
         const vtkDICOMValue& ov =
-          this->MetaData->Get(fileIdx, vtkDICOMTag(g,0x0040));
+          this->MetaData->Get(fileIdx, vtkDICOMTag(g,0x0050));
         if (ov.GetNumberOfValues() >= 2)
         {
-          startX = ov.GetInt(1);
-          startY = ov.GetInt(0);
-          startX = (startX > 0 ? startX-1 : 0);
-          startY = (startY > 0 ? startY-1 : 0);
+          startX = ov.GetInt(1) - 1;
+          startY = ov.GetInt(0) - 1;
         }
 
         int numFrames =
