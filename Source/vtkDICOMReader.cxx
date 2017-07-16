@@ -2157,7 +2157,7 @@ int vtkDICOMReader::RequestData(
       // go to the correct position in the output
       unsigned char *slicePtr =
         (dataPtr + (sliceIdx - extent[4])*sliceSize +
-         componentIdx*filePixelSize*numPlanes);
+         componentIdx*scalarSize*numFileComponents*numPlanes);
 
       // iterate through all color planes in the slice
       unsigned char *planePtr = framePtr;
