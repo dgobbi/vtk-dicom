@@ -217,7 +217,7 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "DesiredStackID: "
      << (*this->DesiredStackID ? "(empty)" : this->DesiredStackID) << "\n";
-  os << "StackIDs: " << this->StackIDs << "\n";
+  os << indent << "StackIDs: " << this->StackIDs << "\n";
 
   os << indent << "FileIndexArray: " << this->FileIndexArray << "\n";
   os << indent << "FrameIndexArray: " << this->FrameIndexArray << "\n";
@@ -254,7 +254,12 @@ void vtkDICOMReader::PrintSelf(ostream& os, vtkIndent indent)
      << this->GetMemoryRowOrderAsString() << "\n";
   os << indent << "OutputScalarType: " << this->OutputScalarType << "\n";
 
-  os << indent << "OverlayBitfield: " << this->OverlayBitfield << "\n";
+  os << indent << "OverlayBitfield: 0b";
+  for (int i = 16; i >= 0; --i)
+  {
+    os << ((this->OverlayBitfield >> i) & 1);
+  }
+  os << "\n";
 }
 
 //----------------------------------------------------------------------------
@@ -1168,7 +1173,7 @@ int vtkDICOMReader::RequestInformation(
   outInfo->Set(vtkDICOMAlgorithm::PATIENT_MATRIX(),
                *this->PatientMatrix->Element, 16);
 
-  // Check for overlays (60xx,3000)
+  // Check for OverlayData (60xx,3000)
   this->OverlayBitfield = 0;
   for (unsigned short i = 0; i < 16; i++)
   {

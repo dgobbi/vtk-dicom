@@ -274,7 +274,7 @@ public:
   bool HasOverlay() { return (this->OverlayBitfield != 0); }
 
   //! Returns a bitfield that indicates which overlays are present.
-  int GetOverlayBitfield() { return this->OverlayBitfield; }
+  unsigned short GetOverlayBitfield() { return this->OverlayBitfield; }
   //@}
 
   //@{
@@ -522,7 +522,7 @@ protected:
   char DesiredStackID[20];
 
   //! Bitfield that says what overlays are present.
-  int OverlayBitfield;
+  unsigned short OverlayBitfield;
   bool UpdateOverlayFlag;
 
 private:
