@@ -2138,12 +2138,12 @@ int vtkDICOMReader::RequestData(
 
     // clear or sign-extend any unused bits
     int bitsStored = this->MetaData->Get(fileIdx, DC::BitsStored).AsInt();
-    if (bitsStored > 0 && bitsStored < scalarSize*8)
+    if (bitsStored > 0 && bitsStored < fileScalarSize*8)
     {
       int pixelRepresentation =
         this->MetaData->Get(fileIdx, DC::PixelRepresentation).AsInt();
       vtkDICOMReader::MaskBits(bufferPtr, framesInFile*fileFrameSize,
-          scalarSize, bitsStored, pixelRepresentation);
+          fileScalarSize, bitsStored, pixelRepresentation);
     }
 
     // iterate through all frames contained in the file
