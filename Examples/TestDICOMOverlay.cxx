@@ -160,9 +160,9 @@ int main(int argc, char *argv[])
   vtkAlgorithmOutput *portToDisplay = reader->GetOutputPort();
 
   // apply a palette if the image has one
+  vtkSmartPointer<vtkDICOMApplyPalette> palette;
   if (hasPalette)
   {
-    vtkSmartPointer<vtkDICOMApplyPalette> palette;
     palette = vtkSmartPointer<vtkDICOMApplyPalette>::New();
     palette->SetInputConnection(reader->GetOutputPort());
     palette->Update();
