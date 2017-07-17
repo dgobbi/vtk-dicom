@@ -48,7 +48,7 @@ public:
 #endif
 
   //@{
-  //! Perform RAS to DICOM instead of DICOM to RAS.
+  //! Reverse the filter: do RAS to DICOM instead of DICOM to RAS.
   void SetRASToDICOM(int v);
   void RASToDICOMOn() { this->SetRASToDICOM(1); }
   void RASToDICOMOff() { this->SetRASToDICOM(0); }
@@ -56,7 +56,7 @@ public:
   //@}
 
   //@{
-  //! Get a matrix to place the image within DICOM patient coords.
+  //! Set a matrix that places the image in DICOM patient coords.
   /*!
    *  This matrix is constructed from the ImageOrientationPatient
    *  and ImagePositionPatient meta data attributes.  See the
@@ -67,17 +67,18 @@ public:
   //@}
 
   //@{
-  //! Get a matrix that follows the RAS convention that can be used
+  //! Get a matrix that places the image in RAS coordinates.
   /*!
-   *  with the output image.  This matrix is only valid for the output
-   *  image, it is not valid for the input image.
+   *  This matrix is meant to be used with the output image (unless
+   *  the method RASToDICOMOn() has been called to reverse the operation
+   *  of the filter).
    */
-  void SetRASMatrix(vtkMatrix4x4 *matrix);
   vtkMatrix4x4 *GetRASMatrix() { return this->RASMatrix; }
+  void SetRASMatrix(vtkMatrix4x4 *matrix);
   //@}
 
   //@{
-  //! Update the RAS matrix without updating the output data.
+  //! Update the matrix without updating the output data.
   /*!
    *  This requires that an input has been set, because the origin,
    *  spacing, and extent of the input data must be known in order
@@ -87,13 +88,15 @@ public:
   //@}
 
   //@{
-  //! Specify whether the RAS matrix should include the position in its
+  //! Set whether the RAS matrix should hava a non-zero final column.
   /*!
-   *  final column (NIFTI style), or whether the final column should be
-   *  zero and the position instead used to compute a new Origin for the
-   *  output image.  If this option is On, then the Origin of the output
-   *  image will be (0,0,0), and if it is Off, then the position stored
-   *  the matrix will be (0,0,0).
+   *  By default, the RAS matrix produced by this filter will have a
+   *  position coordinate in its final column (NIfTI style).
+   *  Alternatively, this filter can set the final column to zero and
+   *  use the position to compute a new Origin for the output image.
+   *  If this option is On, then the Origin of the output image will
+   *  be (0,0,0), and if it is Off, then the final column of the matrix
+   *  will be (0,0,0).
    */
   void SetRASMatrixHasPosition(int v);
   void RASMatrixHasPositionOn() { this->SetRASMatrixHasPosition(1); }
@@ -102,8 +105,9 @@ public:
   //@}
 
   //@{
-  //! Allow the columns to be reordered so that columns with higher indices
+  //! Allow the columns of the image to be reordered.
   /*!
+   *  The columns can be reordered so that columns with higher indices
    *  are further to the right or further anterior.  Note that if you turn
    *  this option on, then you are implicitly allowing slice reordering to
    *  occur as well.  If you turn both ColumnReordering and SliceReordering
@@ -116,8 +120,9 @@ public:
   //@}
 
   //@{
-  //! Allow the rows to be reordered so that rows with higher indices
+  //! Allow the rows of the image to be reordered.
   /*!
+   *  The rows can be reordered so that rows with higher indices
    *  are further superior or further anterior.  Note that if you turn
    *  this option on, then you are implicitly allowing slice reordering to
    *  occur as well.  If you turn both ColumnReordering and SliceReordering
