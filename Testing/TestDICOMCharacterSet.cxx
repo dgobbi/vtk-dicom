@@ -131,6 +131,7 @@ int main(int argc, char *argv[])
     std::string raw = OtherText[i][2];
     vtkDICOMCharacterSet cs(name);
     std::string s = cs.ConvertToUTF8(raw.c_str(), raw.length());
+    // if (s != utf) { cout << i << "\n" << s << "\n" << utf << "\n"; }
     TestAssert(s == utf);
   }
   }
@@ -145,8 +146,10 @@ int main(int argc, char *argv[])
     item.Set(DC::SpecificCharacterSet, name);
     item.Set(DC::PatientName, raw);
     std::string s = item.Get(DC::PatientName).AsUTF8String();
+    // if (s != utf) { cout << i << "\n" << s << "\n" << utf << "\n"; }
     TestAssert(s == utf);
     std::string t = item.Get(DC::PatientName).GetUTF8String(0);
+    // if (t != utf) { cout << i << "\n" << t << "\n" << utf << "\n"; }
     TestAssert(t == utf);
   }
   }
@@ -162,8 +165,10 @@ int main(int argc, char *argv[])
     meta->Set(DC::SpecificCharacterSet, name);
     meta->Set(DC::PatientName, raw);
     std::string s = meta->Get(DC::PatientName).AsUTF8String();
+    // if (s != utf) { cout << i << "\n" << s << "\n" << utf << "\n"; }
     TestAssert(s == utf);
     std::string t = meta->Get(DC::PatientName).GetUTF8String(0);
+    // if (t != utf) { cout << i << "\n" << t << "\n" << utf << "\n"; }
     TestAssert(t == utf);
   }
   }
@@ -181,6 +186,7 @@ int main(int argc, char *argv[])
     meta->Set(0, DC::PatientName, "Doe^John");
     meta->Set(1, DC::PatientName, raw);
     std::string s = meta->Get(1, DC::PatientName).AsUTF8String();
+    // if (s != utf) { cout << i << "\n" << s << "\n" << utf << "\n"; }
     TestAssert(s == utf);
   }
   }

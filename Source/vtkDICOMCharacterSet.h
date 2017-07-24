@@ -70,9 +70,12 @@ public:
     ISO_IR_126 = 14, // ISO-8859-7,  greek
     ISO_IR_138 = 15, // ISO-8859-8,  hebrew
     ISO_IR_148 = 16, // ISO-8859-9,  latin5, turkish
+    X_LATIN6   = 17, // ISO-8859-10, latin6, nordic
     ISO_IR_166 = 18, // ISO-8859-11, thai
-    X_LATIN7   = 19, // ISO-8859-13, baltic rim
+    X_LATIN7   = 19, // ISO-8859-13, latin7, baltic rim
+    X_LATIN8   = 20, // ISO-8859-14, latin8, celtic
     X_LATIN9   = 21, // ISO-8859-15, latin9, western europe
+    X_LATIN10  = 22, // ISO-8859-16, latin10, southeastern europe
     X_EUCKR    = 24, // euc-kr,      ISO_IR_149 without escape codes
     X_GB2312   = 25, // gb2312,      ISO_IR_58 without escape codes
     ISO_2022_IR_6   = 32, // US_ASCII
@@ -212,6 +215,11 @@ public:
     return ((this->Key & (ISO_2022 + ISO_2022 - 1)) == (this->Key | ISO_2022));
   }
 
+  //! Returns true if this uses an ISO 8859 code page.
+  bool IsISO8859() const {
+    return (this->Key >= ISO_IR_100 && this->Key <= X_LATIN10);
+  }
+
   //! Check for bidirectional character sets.
   /*!
    *  This is used to check for character sets that are likely to
@@ -253,7 +261,18 @@ public:
   //@}
 
 private:
+  void SingleByteToUTF8(const char *text, size_t l, std::string *s) const;
+  void ISO8859ToUTF8(const char *text, size_t l, std::string *s) const;
   void ISO2022ToUTF8(const char *text, size_t l, std::string *s) const;
+  static void EUCKRToUTF8(const char *text, size_t l, std::string *s);
+  static void GB2312ToUTF8(const char *text, size_t l, std::string *s);
+  static void GB18030ToUTF8(const char *text, size_t l, std::string *s);
+  static void GBKToUTF8(const char *text, size_t l, std::string *s);
+  static void Big5ToUTF8(const char *text, size_t l, std::string *s);
+  static void EUCJPToUTF8(const char *text, size_t l, std::string *s);
+  static void SJISToUTF8(const char *text, size_t l, std::string *s);
+  static void JISXToUTF8(
+    int charset, const char *text, size_t l, std::string *s);
   static unsigned char KeyFromString(const char *name, size_t nl);
 
   unsigned char Key;
@@ -266,6 +285,9 @@ private:
 
   static unsigned char GlobalDefault;
   static bool GlobalOverride;
+
+public:
+  static const unsigned short *Table[256];
 };
 
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a);

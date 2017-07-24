@@ -33,6 +33,7 @@ set(LIB_SRCS
   vtkDICOMVR.cxx
   vtkDICOMVM.cxx
   vtkDICOMCharacterSet.cxx
+  vtkDICOMCharacterSetTables.cxx
   vtkDICOMDataElement.cxx
   vtkDICOMDictHash.cxx
   vtkDICOMDictEntry.cxx
@@ -100,6 +101,7 @@ set(LIB_SPECIAL
   vtkDICOMVR.cxx
   vtkDICOMVM.cxx
   vtkDICOMCharacterSet.cxx
+  vtkDICOMCharacterSetTables.cxx
   vtkDICOMDictEntry.cxx
   vtkDICOMDictHash.cxx
   vtkDICOMDictionary.cxx
