@@ -620,7 +620,7 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
   // check for non-ASCII
   if ((code & 0x80) != 0)
   {
-    bool good = false;
+    ptrdiff_t good = -1;
     if (cp != ep)
     {
       if ((code & 0xE0) == 0xC0)
@@ -654,14 +654,14 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
           // check for UTF16 surrogates
           if (good && (code & 0xF800) == 0xD800)
           {
-            good = false;
+            good = -1;
             // check for high surrogate followed by low surrogate
             if ((code & 0xFC00) == 0xD800 &&
                 cp != ep && cp[0] == 0xED &&
                 cp+1 != ep && (cp[1] & 0xF0) == 0xB0 &&
                 cp+2 != ep && (cp[2] & 0xC0) == 0x80)
             {
-              good = true;
+              good = 1;
               code &= 0x03FF;
               code <<= 4;
               code |= cp[1] & 0x0F;
@@ -700,7 +700,16 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
       }
     }
 
-    code = (good ? code : 0xFFFD);
+    if (good == 0)
+    {
+      // improperly formed character
+      code = 0xFFFD;
+    }
+    else if (good < 0)
+    {
+      // premature termination of string
+      code = 0xFFFE;
+    }
   }
 
   *cpp = reinterpret_cast<const char *>(cp);
@@ -1299,7 +1308,10 @@ void UTF8ToUTF8(const char *text, size_t l, std::string *s)
   while (cp != ep)
   {
     unsigned int code = UTF8ToUnicode(&cp, ep);
-    UnicodeToUTF8(code, s);
+    if (code != 0xFFFE)
+    {
+      UnicodeToUTF8(code, s);
+    }
   }
 }
 
@@ -2408,7 +2420,10 @@ std::string vtkDICOMCharacterSet::CaseFoldedUTF8(
   while (cp != ep)
   {
     unsigned int code = UTF8ToUnicode(&cp, ep);
-    CaseFoldUnicode(code, &s);
+    if (code != 0xFFFE)
+    {
+      CaseFoldUnicode(code, &s);
+    }
   }
 
   return s;
