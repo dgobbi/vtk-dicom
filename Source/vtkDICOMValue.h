@@ -458,10 +458,22 @@ private:
   static size_t NormalizeDateTime(
     const char *input, char output[22], vtkDICOMVR vr);
 
-  //! Do matching on names, after notmalization.
+  //! Do case-insensitive matching on names, after normalization.
+  /*!
+   *  This will check to see if a given wildcard pattern (using "*" and "?")
+   *  matches the given patient name.  It expects "^" to be used as the
+   *  separator between name segments.  Prior to comparison, the names are
+   *  normalized to five "^"-separated segments.
+   */
   static bool PatternMatchesPersonName(const char *pattern, const char *val);
 
-  //! Normalize a person's name.
+  //! Normalize a person's name for comparison.
+  /*!
+   *  The normalization involves expanding the name into 5 distinct segments
+   *  separated by "^".  If the "isquery" parameter is set, then empty
+   *  segments will be filled with "*" to allow them to match non-empty
+   *  segments.
+   */
   static void NormalizePersonName(
     const char *input, char output[256], bool isquery=false);
 
