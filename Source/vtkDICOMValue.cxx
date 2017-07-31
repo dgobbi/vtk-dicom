@@ -944,6 +944,103 @@ vtkDICOMValue::vtkDICOMValue(
 }
 
 //----------------------------------------------------------------------------
+size_t vtkDICOMValue::CreateValueFromUTF8(
+  vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *text, size_t l)
+{
+  if (vr.HasSpecificCharacterSet())
+  {
+    std::string s;
+    if (vr.HasSingleValue())
+    {
+      s = cs.FromUTF8(text, l, &l);
+    }
+    else
+    {
+      // convert each value separately
+      const char *cp = text;
+      const char *ep = cp + l;
+      while (cp != ep && *cp != '\0')
+      {
+        const char *dp = cp;
+        if (vr == vtkDICOMVR::PN)
+        {
+          for (; dp != ep && *cp != '\0'; dp++)
+          {
+            if (*dp == '\\' || *dp == '=' || *dp == '^') { break; }
+          }
+        }
+        else
+        {
+          for (; dp != ep && *cp != '\0'; dp++)
+          {
+            if (*dp == '\\') { break; }
+          }
+        }
+        size_t n = dp - cp;
+        if (n > 0)
+        {
+          size_t i;
+          size_t j = s.length();
+          s.append(cs.FromUTF8(cp, n, &i));
+          if (i < n)
+          {
+            // an encoding error occurred, record 1st occurrence
+            i += cp - text;
+            l = (i > l) ? l : i;
+          }
+          size_t k = s.length();
+          while (j < k)
+          {
+            // it is an error for conversion to add a backslash
+            j += cs.NextBackslash(&s[j], &s[k]);
+            if (j < k && s[j] == '\\')
+            {
+              s[j] = '?'; // remove the backslash
+              l = (j > l) ? l : j;
+              j++;
+            }
+          }
+          cp += n;
+        }
+        if (cp != ep && *cp != '\0')
+        {
+          s.append(cp, 1);
+          cp++;
+        }
+      }
+    }
+
+    this->CreateValueWithSpecificCharacterSet(vr, cs, s.data(), s.size());
+    return l;
+  }
+
+  char checkAscii = 0;
+  for (size_t i = 0; i < l; i++)
+  {
+    checkAscii |= text[i];
+  }
+
+  if ((checkAscii & 0x80) != 0)
+  {
+    vtkDICOMCharacterSet csa(vtkDICOMCharacterSet::ISO_IR_6);
+    std::string s = csa.FromUTF8(text, l, &l);
+    this->CreateValue(vr, s.data(), s.size());
+    return l;
+  }
+
+  this->CreateValue(vr, text, l);
+  return l;
+}
+
+vtkDICOMValue vtkDICOMValue::FromUTF8String(
+    vtkDICOMVR vr, vtkDICOMCharacterSet cs, const std::string& s)
+{
+  vtkDICOMValue v;
+  v.CreateValueFromUTF8(vr, cs, s.data(), s.length());
+  return v;
+}
+
+//----------------------------------------------------------------------------
 vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
 {
   typedef vtkDICOMVR VR;

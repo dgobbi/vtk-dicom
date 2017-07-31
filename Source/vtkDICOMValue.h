@@ -147,6 +147,19 @@ public:
   //@}
 
   //@{
+  //! Create a value from a UTF8-encoded string.
+  /*!
+   *  This will convert a UTF-8 string to the target encoding and store
+   *  the result in a new value.  If the target encoding is ISO 2022,
+   *  then escape codes will be added before and after delimeters as
+   *  necessary (the delimiters are 'backslash' for multi-valued VRs,
+   *  and '^', '=' for PN).
+   */
+  static vtkDICOMValue FromUTF8String(
+    vtkDICOMVR vr, vtkDICOMCharacterSet cs, const std::string& v);
+  //@}
+
+  //@{
   //! Clear the value, the result is an invalid value.
   void Clear() {
     if (this->V && --(this->V->ReferenceCount) == 0) {
@@ -439,6 +452,17 @@ private:
 
   //! Create a value from a string with a specific character set.
   void CreateValueWithSpecificCharacterSet(
+    vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, size_t l);
+
+  //! Create a value with conversion from UTF8 to the given encoding.
+  /*!
+   *  Given a UTF8 input string, this method will attempt to convert
+   *  it to the specified character set and store it in the value.
+   *  The return value is the number of input characters that were
+   *  successfully converted before the first error (it will be equal
+   *  to the length of the input string if no errors occurred);
+   */
+  size_t CreateValueFromUTF8(
     vtkDICOMVR vr, vtkDICOMCharacterSet cs, const char *data, size_t l);
 
   //! A simple string compare with wildcards "*" and "?".
