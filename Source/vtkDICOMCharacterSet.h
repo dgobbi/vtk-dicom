@@ -185,6 +185,17 @@ public:
   //@}
 
   //@{
+  //! Convert text from UTF-8 to this encoding.
+  /*!
+   *  Attempt to convert from UTF-8 to this character set.  Every
+   *  non-convertible character will be replaced with '?'.  If you
+   *  pass a non-null value for the "lp" parameter, it will return
+   *  the position in the input UTF-8 string where the first conversion
+   *  error occurred.  If a successful conversion was returned, then
+   *  lp will be set to the length of the input string.
+  */
+  std::string FromUTF8(const char *text, size_t l, size_t *lp=0) const;
+
   //! Convert text from this encoding to UTF-8.
   /*!
    *  This will convert text to UTF-8, which is generally a lossless
@@ -261,16 +272,27 @@ public:
   //@}
 
 private:
+  size_t UTF8ToSingleByte(const char *text, size_t l, std::string *s) const;
   void SingleByteToUTF8(const char *text, size_t l, std::string *s) const;
   void ISO8859ToUTF8(const char *text, size_t l, std::string *s) const;
+  size_t UTF8ToISO2022(const char *text, size_t l, std::string *s) const;
   void ISO2022ToUTF8(const char *text, size_t l, std::string *s) const;
+  static size_t UTF8ToEUCKR(const char *text, size_t l, std::string *s);
   static void EUCKRToUTF8(const char *text, size_t l, std::string *s);
+  static size_t UTF8ToGB2312(const char *text, size_t l, std::string *s);
   static void GB2312ToUTF8(const char *text, size_t l, std::string *s);
+  static size_t UTF8ToGB18030(const char *text, size_t l, std::string *s);
   static void GB18030ToUTF8(const char *text, size_t l, std::string *s);
+  static size_t UTF8ToGBK(const char *text, size_t l, std::string *s);
   static void GBKToUTF8(const char *text, size_t l, std::string *s);
+  static size_t UTF8ToBig5(const char *text, size_t l, std::string *s);
   static void Big5ToUTF8(const char *text, size_t l, std::string *s);
+  static size_t UTF8ToEUCJP(const char *text, size_t l, std::string *s);
   static void EUCJPToUTF8(const char *text, size_t l, std::string *s);
+  static size_t UTF8ToSJIS(const char *text, size_t l, std::string *s);
   static void SJISToUTF8(const char *text, size_t l, std::string *s);
+  static size_t UTF8ToJISX(
+    int charset, const char *text, size_t l, std::string *s);
   static void JISXToUTF8(
     int charset, const char *text, size_t l, std::string *s);
   static unsigned char KeyFromString(const char *name, size_t nl);
@@ -288,6 +310,7 @@ private:
 
 public:
   static const unsigned short *Table[256];
+  static const unsigned short *Reverse[256];
 };
 
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a);

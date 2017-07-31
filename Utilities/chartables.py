@@ -823,6 +823,8 @@ for x,u in readdict('whatwg/index-iso-2022-jp-katakana.txt').items():
          JISX0208_R[u - 0x309B + 10] = 0xFF61 + x
      elif u == 0x30FB:
          JISX0208_R[u - 0x30FB + 5] = 0xFF61 + x
+     elif u == 0x30FC:
+         JISX0208_R[u - 0x30FC + 27] = 0xFF61 + x
      else:
          JISX0208_R[u - 0x30A1 + 376] = 0xFF61 + x
 
@@ -974,68 +976,127 @@ for i in [874,1250,1251,1252,1253,1254,1255,1256,1257]:
     sys.stdout.write('\n')
 
 # this must be consistent with the enum in vtkDICOMCharacterSet.h
+ISO_2022   = 32
+ISO_IR_6   = 0  # US_ASCII
+ISO_IR_13  = 1  # JIS X 0201,  japanese romaji + katakana
+ISO_IR_100 = 8  # ISO-8859-1,  latin1, western europe
+ISO_IR_101 = 9  # ISO-8859-2,  latin2, central europe
+ISO_IR_109 = 10 # ISO-8859-3,  latin3, maltese
+ISO_IR_110 = 11 # ISO-8859-4,  latin4, baltic
+ISO_IR_144 = 12 # ISO-8859-5,  cyrillic
+ISO_IR_127 = 13 # ISO-8859-6,  arabic
+ISO_IR_126 = 14 # ISO-8859-7,  greek
+ISO_IR_138 = 15 # ISO-8859-8,  hebrew
+ISO_IR_148 = 16 # ISO-8859-9,  latin5, turkish
+X_LATIN6   = 17 # ISO-8859-10, latin6, nordic
+ISO_IR_166 = 18 # ISO-8859-11, thai
+X_LATIN7   = 19 # ISO-8859-13, latin7, baltic rim
+X_LATIN8   = 20 # ISO-8859-14, latin8, celtic
+X_LATIN9   = 21 # ISO-8859-15, latin9, western europe
+X_LATIN10  = 22 # ISO-8859-16, latin10, southeastern europe
+X_EUCKR    = 24 # euc-kr,      ISO_IR_149 without escape codes
+X_GB2312   = 25 # gb2312,      ISO_IR_58 without escape codes
+ISO_2022_IR_6   = 32 # US_ASCII
+ISO_2022_IR_13  = 33 # JIS X 0201,  japanese katakana
+ISO_2022_IR_87  = 34 # JIS X 0208,  japanese 94x94 primary
+ISO_2022_IR_159 = 36 # JIS X 0212,  japanese 94x94 secondary
+ISO_2022_IR_100 = 40 # ISO-8859-1,  latin1, western europe
+ISO_2022_IR_101 = 41 # ISO-8859-2,  latin2, central europe
+ISO_2022_IR_109 = 42 # ISO-8859-3,  latin3, maltese
+ISO_2022_IR_110 = 43 # ISO-8859-4,  latin4, baltic
+ISO_2022_IR_144 = 44 # ISO-8859-5,  cyrillic
+ISO_2022_IR_127 = 45 # ISO-8859-6,  arabic
+ISO_2022_IR_126 = 46 # ISO-8859-7,  greek
+ISO_2022_IR_138 = 47 # ISO-8859-8,  hebrew
+ISO_2022_IR_148 = 48 # ISO-8859-9,  latin5, turkish
+ISO_2022_IR_166 = 50 # ISO-8859-11, thai
+ISO_2022_IR_149 = 56 # the KS X 1001 part of ISO-2022-KR
+ISO_2022_IR_58  = 57 # the GB2312 part of ISO-2022-CN
+ISO_IR_192 = 64 # UTF-8,       unicode
+GB18030    = 65 # gb18030,     chinese with full unicode mapping
+GBK        = 66 # gbk,         chinese
+X_BIG5     = 67 # big5 + ETEN, traditional chinese
+X_EUCJP    = 69 # euc-jp,      unix encoding for japanese
+X_SJIS     = 70 # windows-31j, aka shift-jis, code page 932
+X_CP874    = 76 # cp1162,      thai (windows-874)
+X_CP1250   = 80 # cp1250,      central europe
+X_CP1251   = 81 # cp1251,      cyrillic
+X_CP1252   = 82 # cp1252,      western europe
+X_CP1253   = 83 # cp1253,      greek
+X_CP1254   = 84 # cp1254,      turkish
+X_CP1255   = 85 # cp1255,      hebrew
+X_CP1256   = 86 # cp1256,      arabic
+X_CP1257   = 87 # cp1257,      baltic rim
+
 pages = {
-  0 : 'CodePageASCII',
-  1 : 'CodePageJISX0201',
-  8 : 'CodePageISO8859_1',
-  9 : 'CodePageISO8859_2',
-  10 : 'CodePageISO8859_3',
-  11 : 'CodePageISO8859_4',
-  12 : 'CodePageISO8859_5',
-  13 : 'CodePageISO8859_6',
-  14 : 'CodePageISO8859_7',
-  15 : 'CodePageISO8859_8',
-  16 : 'CodePageISO8859_9',
-  17 : 'CodePageISO8859_10',
-  18 : 'CodePageISO8859_11',
-  19 : 'CodePageISO8859_13',
-  20 : 'CodePageISO8859_14',
-  21 : 'CodePageISO8859_15',
-  22 : 'CodePageISO8859_16',
-  24 : 'CodePageKSX1001',
-  25 : 'CodePageGB18030',
-  32 : 'CodePageASCII',
-  33 : 'CodePageJISX0201',
-  34 : 'CodePageJISX0208',
-  36 : 'CodePageJISX0212',
-  40 : 'CodePageISO8859_1',
-  41 : 'CodePageISO8859_2',
-  42 : 'CodePageISO8859_3',
-  43 : 'CodePageISO8859_4',
-  44 : 'CodePageISO8859_5',
-  45 : 'CodePageISO8859_6',
-  46 : 'CodePageISO8859_7',
-  47 : 'CodePageISO8859_8',
-  48 : 'CodePageISO8859_9',
-  49 : 'CodePageISO8859_10',
-  50 : 'CodePageISO8859_11',
-  51 : 'CodePageISO8859_13',
-  52 : 'CodePageISO8859_14',
-  53 : 'CodePageISO8859_15',
-  54 : 'CodePageISO8859_16',
-  56 : 'CodePageKSX1001',
-  57 : 'CodePageGB18030',
-  65 : 'CodePageGB18030',
-  66 : 'CodePageGB18030',
-  67 : 'CodePageBig5',
-  70 : 'CodePageJISX0208',
-  76 : 'CodePageWindows874',
-  80 : 'CodePageWindows1250',
-  81 : 'CodePageWindows1251',
-  82 : 'CodePageWindows1252',
-  83 : 'CodePageWindows1253',
-  84 : 'CodePageWindows1254',
-  85 : 'CodePageWindows1255',
-  86 : 'CodePageWindows1256',
-  87 : 'CodePageWindows1257',
+  ISO_IR_6 : ('CodePageASCII', 'CodePageASCII_R'),
+  ISO_IR_13 : ('CodePageJISX0201', 'CodePageJISX0201_R'),
+  ISO_IR_100 : ('CodePageISO8859_1', 'CodePageISO8859_1_R'),
+  ISO_IR_101 : ('CodePageISO8859_2', 'CodePageISO8859_2_R'),
+  ISO_IR_109 : ('CodePageISO8859_3', 'CodePageISO8859_3_R'),
+  ISO_IR_110 : ('CodePageISO8859_4', 'CodePageISO8859_4_R'),
+  ISO_IR_144 : ('CodePageISO8859_5', 'CodePageISO8859_5_R'),
+  ISO_IR_127 : ('CodePageISO8859_6', 'CodePageISO8859_6_R'),
+  ISO_IR_126 : ('CodePageISO8859_7', 'CodePageISO8859_7_R'),
+  ISO_IR_138 : ('CodePageISO8859_8', 'CodePageISO8859_8_R'),
+  ISO_IR_148 : ('CodePageISO8859_9', 'CodePageISO8859_9_R'),
+  X_LATIN6 : ('CodePageISO8859_10', 'CodePageISO8859_10_R'),
+  ISO_IR_166 : ('CodePageISO8859_11', 'CodePageISO8859_11_R'),
+  X_LATIN7 : ('CodePageISO8859_13', 'CodePageISO8859_13_R'),
+  X_LATIN8 : ('CodePageISO8859_14', 'CodePageISO8859_14_R'),
+  X_LATIN9 : ('CodePageISO8859_15', 'CodePageISO8859_15_R'),
+  X_LATIN10 : ('CodePageISO8859_16', 'CodePageISO8859_16_R'),
+  X_EUCKR : ('CodePageKSX1001', 'CodePageKSX1001_R'),
+  X_GB2312 : ('CodePageGB18030', 'CodePageGBK_R'),
+  ISO_2022_IR_6 : ('CodePageASCII', 'CodePageASCII_R'),
+  ISO_2022_IR_13 : ('CodePageJISX0201', 'CodePageJISX0201_R'),
+  ISO_2022_IR_87 : ('CodePageJISX0208', 'CodePageJISX_R'),
+  ISO_2022_IR_159 : ('CodePageJISX0212', 'CodePageJISX_R'),
+  ISO_2022_IR_100 : ('CodePageISO8859_1', 'CodePageISO8859_1_R'),
+  ISO_2022_IR_101 : ('CodePageISO8859_2', 'CodePageISO8859_2_R'),
+  ISO_2022_IR_109 : ('CodePageISO8859_3', 'CodePageISO8859_3_R'),
+  ISO_2022_IR_110 : ('CodePageISO8859_4', 'CodePageISO8859_4_R'),
+  ISO_2022_IR_144 : ('CodePageISO8859_5', 'CodePageISO8859_5_R'),
+  ISO_2022_IR_127 : ('CodePageISO8859_6', 'CodePageISO8859_6_R'),
+  ISO_2022_IR_126 : ('CodePageISO8859_7', 'CodePageISO8859_7_R'),
+  ISO_2022_IR_138 : ('CodePageISO8859_8', 'CodePageISO8859_8_R'),
+  ISO_2022_IR_148 : ('CodePageISO8859_9', 'CodePageISO8859_9_R'),
+  ISO_2022+X_LATIN6 : ('CodePageISO8859_10', 'CodePageISO8859_10_R'),
+  ISO_2022_IR_166 : ('CodePageISO8859_11', 'CodePageISO8859_11_R'),
+  ISO_2022+X_LATIN7 : ('CodePageISO8859_13', 'CodePageISO8859_13_R'),
+  ISO_2022+X_LATIN8 : ('CodePageISO8859_14', 'CodePageISO8859_14_R'),
+  ISO_2022+X_LATIN9 : ('CodePageISO8859_15', 'CodePageISO8859_15_R'),
+  ISO_2022+X_LATIN10 : ('CodePageISO8859_16', 'CodePageISO8859_16_R'),
+  ISO_2022_IR_149 : ('CodePageKSX1001', 'CodePageKSX1001_R'),
+  ISO_2022_IR_58 : ('CodePageGB18030', 'CodePageGBK_R'),
+  GB18030 : ('CodePageGB18030', 'CodePageGB18030_R'),
+  GBK : ('CodePageGB18030', 'CodePageGBK_R'),
+  X_BIG5 : ('CodePageBig5', 'CodePageBig5_R'),
+  X_EUCJP : ('CodePageJISX0208', 'CodePageJISX_R'),
+  X_SJIS : ('CodePageJISX0208', 'CodePageJISX0208_R'),
+  X_CP874 : ('CodePageWindows874', 'CodePageWindows874_R'),
+  X_CP1250 : ('CodePageWindows1250', 'CodePageWindows1250_R'),
+  X_CP1251 : ('CodePageWindows1251', 'CodePageWindows1251_R'),
+  X_CP1252 : ('CodePageWindows1252', 'CodePageWindows1252_R'),
+  X_CP1253 : ('CodePageWindows1253', 'CodePageWindows1253_R'),
+  X_CP1254 : ('CodePageWindows1254', 'CodePageWindows1254_R'),
+  X_CP1255 : ('CodePageWindows1255', 'CodePageWindows1255_R'),
+  X_CP1256 : ('CodePageWindows1256', 'CodePageWindows1256_R'),
+  X_CP1257 : ('CodePageWindows1257', 'CodePageWindows1257_R'),
 }
 
-table = ['0']*256
+table = [('0','0')]*256
 for x,y in pages.items():
     table[x] = y
 
 sys.stdout.write(
     'const unsigned short *vtkDICOMCharacterSet::Table[256] = {\n')
 for l in table:
-    sys.stdout.write('  %s,\n' % (l,))
+    sys.stdout.write('  %s,\n' % (l[0],))
+sys.stdout.write('};\n\n')
+
+sys.stdout.write(
+    'const unsigned short *vtkDICOMCharacterSet::Reverse[256] = {\n')
+for l in table:
+    sys.stdout.write('  %s,\n' % (l[1],))
 sys.stdout.write('};\n')
