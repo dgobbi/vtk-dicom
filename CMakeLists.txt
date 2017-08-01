@@ -271,7 +271,9 @@ if(NOT Module_vtkDICOM)
     ${VTK_WRAP_INCLUDE_DIRS})
 
   # For the python wrappers
-  if(BUILD_PYTHON_WRAPPERS)
+  if(BUILD_PYTHON_WRAPPERS AND
+     TARGET vtkCommonCorePythonD OR
+     TARGET vtkCommonKitPythonD)
     set(DICOM_PYTHON_LIBRARIES vtkDICOMPythonD)
   endif()
 
