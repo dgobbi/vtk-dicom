@@ -273,7 +273,8 @@ if(NOT Module_vtkDICOM)
   # For the python wrappers
   if(BUILD_PYTHON_WRAPPERS AND
      TARGET vtkCommonCorePythonD OR
-     TARGET vtkCommonKitPythonD)
+     TARGET vtkCommonKitPythonD OR
+     TARGET vtkCommonPythonD)
     set(DICOM_PYTHON_LIBRARIES vtkDICOMPythonD)
   endif()
 
