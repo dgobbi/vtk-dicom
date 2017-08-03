@@ -1422,6 +1422,72 @@ void UnknownToUTF8(const char *text, size_t l, std::string *s)
   }
 }
 
+//----------------------------------------------------------------------------
+bool LastChanceConversion(std::string *s, const char *cp, const char *ep)
+{
+  // the goal of this function is to replace things like smart quotes
+  // with regular quotes
+  unsigned int code = UTF8ToUnicode(&cp, ep);
+  bool success = true;
+  const char *replacement;
+
+  if (code == 0xA0 || (code >= 0x2000 && code <= 0x200A) ||
+      code == 0x202F)
+  {
+    // various flavors of "space" become ASCII space
+    replacement = " ";
+  }
+  else if (code == 0xAD || (code >= 0x200B && code <= 0x200D) ||
+           code == 0x2060)
+  {
+    // soft hyphen and zero-width spaces vanish without a trace
+    replacement = "";
+  }
+  else if (code >= 0x2010 && code <= 0x2014)
+  {
+    // various dashes become hyphen/minus
+    replacement = "-";
+  }
+  else if (code == 0x2015)
+  {
+    // horizontal bar becomes double-dash
+    replacement = "--";
+  }
+  else if (code >= 0x2018 && code <= 0x201B)
+  {
+    // smart quotes to apostrophe
+    replacement = "\'";
+  }
+  else if (code >= 0x201C && code <= 0x201F)
+  {
+    // smart quotes to regular quotes
+    replacement = "\"";
+  }
+  else if (code == 0x2026)
+  {
+    // ellipsis
+    replacement = "...";
+  }
+  else if (code == 0x2044)
+  {
+    // fraction separator
+    replacement = "/";
+  }
+  else if (code == 0x2053)
+  {
+    // swung dash
+    replacement = "~";
+  }
+  else
+  {
+    replacement = "?";
+    success = false;
+  }
+
+  s->append(replacement);
+  return success;
+}
+
 } // end anonymous namespace
 
 //----------------------------------------------------------------------------
@@ -1479,9 +1545,10 @@ size_t vtkDICOMCharacterSet::UTF8ToSJIS(
       }
     }
 
-    // signal conversion error with '?'
-    errpos = (errpos ? errpos : lastpos);
-    s->push_back('?');
+    if (!LastChanceConversion(s, lastpos, ep))
+    {
+      errpos = (errpos ? errpos : lastpos);
+    }
   }
 
   return (errpos ? errpos-text : cp-text);
@@ -1612,9 +1679,10 @@ size_t vtkDICOMCharacterSet::UTF8ToEUCJP(
       }
     }
 
-    // signal conversion error with '?'
-    errpos = (errpos ? errpos : lastpos);
-    s->push_back('?');
+    if (!LastChanceConversion(s, lastpos, ep))
+    {
+      errpos = (errpos ? errpos : lastpos);
+    }
   }
 
   return (errpos ? errpos-text : cp-text);
@@ -1717,11 +1785,9 @@ size_t vtkDICOMCharacterSet::UTF8ToBig5(
         s->push_back(static_cast<char>(x));
         s->push_back(static_cast<char>(y));
       }
-      else
+      else if (!LastChanceConversion(s, lastpos, ep))
       {
-        // signal conversion error with '?'
         errpos = (errpos ? errpos : lastpos);
-        s->push_back('?');
       }
     }
   }
@@ -1847,9 +1913,10 @@ size_t vtkDICOMCharacterSet::UTF8ToGBK(
       }
     }
 
-    // signal conversion error with '?'
-    errpos = (errpos ? errpos : lastpos);
-    s->push_back('?');
+    if (!LastChanceConversion(s, lastpos, ep))
+    {
+      errpos = (errpos ? errpos : lastpos);
+    }
   }
 
   return (errpos ? errpos-text : cp-text);
@@ -2124,9 +2191,10 @@ size_t vtkDICOMCharacterSet::UTF8ToGB2312(
       }
     }
 
-    // signal conversion error with '?'
-    errpos = (errpos ? errpos : lastpos);
-    s->push_back('?');
+    if (!LastChanceConversion(s, lastpos, ep))
+    {
+      errpos = (errpos ? errpos : lastpos);
+    }
   }
 
   return (errpos ? errpos-text : cp-text);
@@ -2277,11 +2345,21 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
       }
     }
 
-    // signal conversion error with '?'
-    errpos = (errpos ? errpos : lastpos);
+    // conversion of character failed
+    size_t lastsize = s->size();
     s->append(escBase);
-    s->push_back('?');
-    state = 0;
+    if (!LastChanceConversion(s, lastpos, ep))
+    {
+      errpos = (errpos ? errpos : lastpos);
+    }
+    if (s->size() == lastsize + 3)
+    {
+      s->resize(lastsize);
+    }
+    else
+    {
+      state = 0;
+    }
   }
 
   if (state != 0)
@@ -2415,9 +2493,10 @@ size_t vtkDICOMCharacterSet::UTF8ToEUCKR(
       }
     }
 
-    // signal conversion error with '?'
-    errpos = (errpos ? errpos : lastpos);
-    s->push_back('?');
+    if (!LastChanceConversion(s, lastpos, ep))
+    {
+      errpos = (errpos ? errpos : lastpos);
+    }
   }
 
   return (errpos ? errpos-text : cp-text);
@@ -2759,12 +2838,14 @@ size_t vtkDICOMCharacterSet::UTF8ToSingleByte(
     const char *lastpos = cp;
     unsigned int code = UTF8ToUnicode(&cp, ep);
     unsigned short t = table[code];
-    if (t >= 0xFFFD)
+    if (t < 0xFFFD)
     {
-      t = '?';
+      s->push_back(static_cast<char>(t));
+    }
+    else if (!LastChanceConversion(s, lastpos, ep))
+    {
       errpos = (errpos ? errpos : lastpos);
     }
-    s->push_back(static_cast<char>(t));
   }
   return (errpos ? errpos-text : cp-text);
 }
