@@ -181,6 +181,7 @@ target_link_libraries(${LIB_NAME} LINK_PRIVATE
 # Wrappers
 if(BUILD_PYTHON_WRAPPERS)
   set(MODULE_PYTHON_NAME ${LIB_NAME}Python)
+  set(${LIB_NAME}_WRAP_DEPENDS ${VTK_LIBS})
   if(VTK_PYTHON_INCLUDE_DIR)
     include_directories("${VTK_PYTHON_INCLUDE_DIR}")
   endif()
