@@ -653,6 +653,10 @@ inline void UnicodeToUTF8(unsigned int code, std::string *s)
   }
 }
 
+// Convert one UTF8-encoded character to Unicode.
+// If UTF8 sequence is malformed, return 0xFFFF.
+// If UTF8 sequence at end of input is incomplete, return 0xFFFE.
+// Paired encoded UTF-16 surrogates are combined to create one code.
 inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
 {
   const unsigned char *cp = reinterpret_cast<const unsigned char *>(*cpp);
@@ -749,7 +753,7 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
     if (good == 0)
     {
       // improperly formed character
-      code = 0xFFFD;
+      code = 0xFFFF;
     }
     else if (good < 0)
     {
@@ -762,6 +766,7 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
   return code;
 }
 
+// Convert a string to its lower-case equivalent.
 void CaseFoldUnicode(unsigned int code, std::string *s)
 {
   // This has been tested against the Unicode CaseFolding.txt
@@ -1356,13 +1361,14 @@ size_t UTF8ToUTF8(const char *text, size_t l, std::string *s)
   {
     const char *lastpos = cp;
     unsigned int code = UTF8ToUnicode(&cp, ep);
+    if (code >= 0xFFFE && code <= 0xFFFF)
+    {
+      if (code == 0xFFFF) { code = 0xFFFD; }
+      errpos = (errpos ? errpos : lastpos);
+    }
     if (code != 0xFFFE)
     {
       UnicodeToUTF8(code, s);
-    }
-    if (code >= 0xFFFD && code <= 0xFFFF)
-    {
-      errpos = (errpos ? errpos : lastpos);
     }
   }
   return (errpos ? errpos-text : cp-text);
@@ -1477,6 +1483,12 @@ bool LastChanceConversion(std::string *s, const char *cp, const char *ep)
   {
     // swung dash
     replacement = "~";
+  }
+  else if (code == 0xFFFE)
+  {
+    // we use 0xFFFE to mark early termination of UTF string
+    replacement = "";
+    success = false;
   }
   else
   {
@@ -2033,19 +2045,23 @@ size_t vtkDICOMCharacterSet::UTF8ToGB18030(
       }
       else
       {
-        // other BMP codes
+        // other BMP codes -> 4 byte GB18030 code
         t -= 23940;
       }
     }
     else if (code >= 0x10000)
     {
-      // non-BMP codes
+      // non-BMP codes -> 4 byte GB18030 code
       t = code - 0x10000 + 150*1260;
     }
     else
     {
-      errpos = (errpos ? errpos : lastpos);
-      t = 39417; // equivalent to U+FFFD
+      // for handling of 0xFFFE and 0xFFFF
+      if (!LastChanceConversion(s, lastpos, ep))
+      {
+        errpos = (errpos ? errpos : lastpos);
+      }
+      continue;
     }
 
     // four bytes
@@ -3250,6 +3266,11 @@ std::string vtkDICOMCharacterSet::CaseFoldedUTF8(
   while (cp != ep)
   {
     unsigned int code = UTF8ToUnicode(&cp, ep);
+    if (code == 0xFFFF)
+    {
+      // Since 0xFFFF is not permitted, convert to 0xFFFD
+      code = 0xFFFD;
+    }
     if (code != 0xFFFE)
     {
       CaseFoldUnicode(code, &s);
