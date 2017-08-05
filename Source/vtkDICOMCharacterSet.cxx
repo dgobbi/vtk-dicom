@@ -3032,7 +3032,7 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
     {
       // convert characters up to the next escape code
       vtkDICOMCharacterSet cs(charset);
-      s->append(cs.ConvertToUTF8(&text[i], j-i));
+      s->append(cs.ToUTF8(&text[i], j-i));
     }
     else if (charset == ISO_2022_IR_6 ||
              charset == ISO_2022_IR_13 ||
@@ -3130,7 +3130,7 @@ void vtkDICOMCharacterSet::ISO2022ToUTF8(
         i += escapeLen;
         char g2char = (text[i++] | 0x80);
         vtkDICOMCharacterSet cs(charsetG2);
-        s->append(cs.ConvertToUTF8(&g2char, 1));
+        s->append(cs.ToUTF8(&g2char, 1));
       }
       else if (escapeLen == 2 && escapeCode[0] == '&' && escapeCode[1] == '@')
       {
@@ -3195,7 +3195,7 @@ std::string vtkDICOMCharacterSet::FromUTF8(
 }
 
 //----------------------------------------------------------------------------
-std::string vtkDICOMCharacterSet::ConvertToUTF8(
+std::string vtkDICOMCharacterSet::ToUTF8(
   const char *text, size_t l) const
 {
   std::string s;
@@ -3247,6 +3247,14 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
 }
 
 //----------------------------------------------------------------------------
+// Obsolete method, kept for backwards compatibility
+std::string vtkDICOMCharacterSet::ConvertToUTF8(
+  const char *text, size_t l) const
+{
+  return ToUTF8(text, l);
+}
+
+//----------------------------------------------------------------------------
 std::string vtkDICOMCharacterSet::CaseFoldedUTF8(
   const char *text, size_t l) const
 {
@@ -3258,7 +3266,7 @@ std::string vtkDICOMCharacterSet::CaseFoldedUTF8(
 
   if (this->Key != ISO_IR_192) // UTF-8
   {
-    t = this->ConvertToUTF8(text, l);
+    t = this->ToUTF8(text, l);
     cp = t.data();
     ep = cp + t.length();
   }

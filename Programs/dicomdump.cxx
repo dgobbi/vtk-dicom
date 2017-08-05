@@ -173,7 +173,7 @@ void printElement(
       std::string utf8;
       if (v.GetCharacterSet() != vtkDICOMCharacterSet::ISO_IR_6)
       {
-        utf8 = v.GetCharacterSet().ConvertToUTF8(cp, l);
+        utf8 = v.GetCharacterSet().ToUTF8(cp, l);
         l = utf8.length();
         cp = utf8.data();
       }

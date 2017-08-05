@@ -1614,7 +1614,7 @@ std::string vtkDICOMValue::AsUTF8String() const
     if (this->V->VR.HasSingleValue())
     {
       while (l > 0 && cp[l-1] == ' ') { l--; }
-      return cs.ConvertToUTF8(cp, l);
+      return cs.ToUTF8(cp, l);
     }
     else
     {
@@ -1627,7 +1627,7 @@ std::string vtkDICOMValue::AsUTF8String() const
         while (n > 0 && *cp == ' ') { cp++; n--; }
         size_t m = n;
         while (m > 0 && cp[m-1] == ' ') { m--; }
-        s.append(cs.ConvertToUTF8(cp, m));
+        s.append(cs.ToUTF8(cp, m));
         cp += n;
         if (cp != ep && *cp == '\\')
         {
@@ -1774,7 +1774,7 @@ void vtkDICOMValue::AppendValueToUTF8String(
       this->Substring(i, cp, dp);
     }
     vtkDICOMCharacterSet cs(this->V->CharacterSet);
-    str += cs.ConvertToUTF8(cp, dp-cp);
+    str += cs.ToUTF8(cp, dp-cp);
   }
   else
   {

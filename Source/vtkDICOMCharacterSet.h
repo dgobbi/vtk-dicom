@@ -195,6 +195,8 @@ public:
    *  lp will be set to the length of the input string.
   */
   std::string FromUTF8(const char *text, size_t l, size_t *lp=0) const;
+  std::string FromUTF8(const std::string& text) const {
+    return FromUTF8(text.data(), text.length(); }
 
   //! Convert text from this encoding to UTF-8.
   /*!
@@ -204,6 +206,11 @@ public:
    *  unicode is not known, will be printed as unicode U+FFFD which
    *  appears as a question mark in a diamond.
    */
+  std::string ToUTF8(const char *text, size_t l) const;
+  std::string ToUTF8(const std::string& text) const {
+    return ToUTF8(text.data(), text.length()); }
+
+  //! Obsolete method for converting to UTF8.
   std::string ConvertToUTF8(const char *text, size_t l) const;
 
   //! Convert text into a form suitable for case-insensitive matching.
@@ -216,6 +223,8 @@ public:
    *  and Cyrillic) and latin characters used in East Asian languages.
    */
   std::string CaseFoldedUTF8(const char *text, size_t l) const;
+  std::string CaseFoldedUTF8(const std::string& text) const {
+    return CaseFoldedUTF8(text.data(), text.length()); }
 
   //! Returns true if ISO 2022 escape codes are used.
   /*!

@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
     std::string utf = ClunieText[i][1];
     std::string raw = ClunieText[i][2];
     vtkDICOMCharacterSet cs(name);
-    std::string s = cs.ConvertToUTF8(raw.c_str(), raw.length());
+    std::string s = cs.ToUTF8(raw);
     TestAssert(s == utf);
   }
 
@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
     std::string utf = OtherText[i][1];
     std::string raw = OtherText[i][2];
     vtkDICOMCharacterSet cs(name);
-    std::string s = cs.ConvertToUTF8(raw.c_str(), raw.length());
+    std::string s = cs.ToUTF8(raw);
     // if (s != utf) { cout << i << "\n" << s << "\n" << utf << "\n"; }
     TestAssert(s == utf);
   }
