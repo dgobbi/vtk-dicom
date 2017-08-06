@@ -2447,14 +2447,14 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
 
 //----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::JISXToUTF8(
-  int charset, const char *text, size_t l, std::string *s)
+  int csGL, int csGR, const char *text, size_t l, std::string *s)
 {
-  // iso-2022-jp-2, with katakana in G1
-  CompressedTable table(vtkDICOMCharacterSet::Table[charset]);
-  bool multibyte = (charset == ISO_2022_IR_87 ||
-                    charset == ISO_2022_IR_159 ||
-                    charset == ISO_2022_IR_149 ||
-                    charset == ISO_2022_IR_58);
+  // this is a helper method for iso-2022-jp-2 decoding
+  CompressedTable table(vtkDICOMCharacterSet::Table[csGL]);
+  bool multibyte = (csGL == ISO_2022_IR_87 ||
+                    csGL == ISO_2022_IR_159 ||
+                    csGL == ISO_2022_IR_149 ||
+                    csGL == ISO_2022_IR_58);
 
   const char *errpos = 0;
   const char *cp = text;
@@ -2486,9 +2486,9 @@ size_t vtkDICOMCharacterSet::JISXToUTF8(
           a = 0xFFFD;
         }
       }
-      else if (charset == ISO_2022_IR_13)
+      else if (csGL == ISO_2022_IR_13)
       {
-        // shift to put half-width katakana in G0
+        // shift to put half-width katakana in GL
         a += 0x80;
       }
       if (a != 0xFFFD)
@@ -2501,10 +2501,10 @@ size_t vtkDICOMCharacterSet::JISXToUTF8(
       // control codes, space, or delete
       code = a;
     }
-    else if (a >= 0xA1 && a <= 0xDF)
+    else if (csGR == ISO_IR_13 &&
+             a >= 0xA1 && a <= 0xDF)
     {
-      // most likely half-width katakana, which can be used in
-      // DICOM even though they are not permitted in iso-2022-jp
+      // half-width katakana in GR
       code = a + 0xFEC0;
     }
 
@@ -3100,12 +3100,14 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
   // Uses ISO-2022 escape codes to switch character sets.
   // Mask to get the charset that is active before the first escape code.
   unsigned char charset = (this->Key & ISO_2022_BASE);
+  unsigned char charsetG1 = charset;
   unsigned char charsetG2 = 0;
 
   // if Japanese, only ISO_IR_13 is active at the start
   if (charset <= ISO_2022_JP_BASE)
   {
     charset &= ISO_IR_13;
+    charsetG1 = charset;
   }
 
   // this will be set when decoding a multibyte charset in G0
@@ -3127,6 +3129,7 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
     if ((charset & ISO_2022) == 0)
     {
       // convert characters up to the next escape code
+      charsetG1 = charset;
       vtkDICOMCharacterSet cs(charset);
       s->append(cs.ToUTF8(&text[i], j-i, &m));
     }
@@ -3137,7 +3140,7 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
              charset == ISO_2022_IR_149 ||
              charset == ISO_2022_IR_159)
     {
-      m = JISXToUTF8(charset, &text[i], j-i, s);
+      m = JISXToUTF8(charset, charsetG1, &text[i], j-i, s);
     }
     else if (multibyteG0)
     {
@@ -3200,6 +3203,7 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
             {
               // The ISO_IR_13 katakana go in G1, so let's keep the
               // currently active kanji charset in G0.
+              charsetG1 = charset;
               charset = oldcharset;
             }
             break;

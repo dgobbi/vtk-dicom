@@ -307,7 +307,7 @@ private:
   static size_t UTF8ToJISX(
     int charset, const char *text, size_t l, std::string *s);
   static size_t JISXToUTF8(
-    int charset, const char *text, size_t l, std::string *s);
+    int csGL, int csGR, const char *text, size_t l, std::string *s);
   static unsigned char KeyFromString(const char *name, size_t nl);
 
   unsigned char Key;
