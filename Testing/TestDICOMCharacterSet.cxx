@@ -66,10 +66,17 @@ static const char *ClunieText[][3] = {
 // order is character set, utf-8, native encoding
 static const char *OtherText[][3] = {
 { "GB18030",
-  "Linear1: \xc2\x80 to \xef\xbf\xbf\n"
+  "Linear1: \xc2\x80 to \xef\xbf\xbd\n"
   "Linear2: \xf0\x90\x80\x80 to \xf4\x8f\xbf\xbf\n",
-  "Linear1: \x81\x30\x81\x30 to \x84\x31\xa4\x39\n"
+  "Linear1: \x81\x30\x81\x30 to \x84\x31\xa4\x37\n"
   "Linear2: \x90\x30\x81\x30 to \xe3\x32\x9a\x35\n" },
+{ "ISO 2022 IR 13\\ISO 2022 IR 87\\ISO 2022 IR 159",
+  "JISX0208: \xe5\x85\x83\xe6\xb0\x97\n"
+  "JISX0212: \xe9\xa8\x8f\xe9\xa9\x8e\n"
+  "JISX0201: \xef\xbd\xba\xef\xbe\x9d\xef\xbe\x86\xef\xbe\x81\xef\xbe\x8a\n",
+  "JISX0208: \x1b$B855$\x1b(J\n"
+  "JISX0212: \x1b$BqV\x1b$(DiQ\x1b(J\n"
+  "JISX0201: \xba\xdd\xc6\xc1\xca\n" },
 { "iso-2022-jp-2",
   "JISX0208: \xe5\x85\x83\xe6\xb0\x97\n"
   "JISX0212: \xe9\xa8\x8f\xe9\xa9\x8e\n"
@@ -122,6 +129,17 @@ int main(int argc, char *argv[])
     vtkDICOMCharacterSet cs(name);
     std::string s = cs.ToUTF8(raw);
     TestAssert(s == utf);
+    std::string t = cs.FromUTF8(utf);
+    if (name == "\\ISO 2022 IR 58" || name == "\\ISO 2022 IR 149")
+    {
+      // escape codes are placed differently, so just check round-trip
+      std::string u = cs.ToUTF8(t);
+      TestAssert(u == utf);
+    }
+    else
+    {
+      TestAssert(t == raw);
+    }
   }
 
   for (int i = 0; OtherText[i][0] != 0; i++)
@@ -133,6 +151,11 @@ int main(int argc, char *argv[])
     std::string s = cs.ToUTF8(raw);
     // if (s != utf) { cout << i << "\n" << s << "\n" << utf << "\n"; }
     TestAssert(s == utf);
+    std::string t = cs.FromUTF8(utf);
+    if (name != "iso-2022-jp-2")
+    {
+      TestAssert(t == raw);
+    }
   }
   }
 
@@ -232,6 +255,54 @@ int main(int argc, char *argv[])
   // case folding causes decoding + encoding
   std::string cooked = cs.CaseFoldedUTF8(raw.data(), raw.length());
   TestAssert(cooked == "\xf0\xa0\x83\x8c"); // 0200CC
+  }
+
+  { // test that all hangul will round-trip through EUC-KR, even the ones
+    // that have to be encoded as 8-bytes.
+  std::string hangul;
+  for (unsigned int code = 0xAC00; code <= 0xD7A3; code++)
+  {
+    // create a long utf-8 string with all the hangul
+    hangul.push_back(0xE0 | (code >> 12));
+    hangul.push_back(0x80 | ((code >> 6) & 0x3F));
+    hangul.push_back(0x80 | (code & 0x3F));
+  }
+  vtkDICOMCharacterSet cs = vtkDICOMCharacterSet::ISO_2022_IR_149;
+  std::string t = cs.FromUTF8(hangul);
+  std::string u = cs.ToUTF8(t);
+  TestAssert(u == hangul);
+  }
+
+  { // test round-trip of JIS X 0201 through JIS X 0208
+  std::string jisx0201;
+  for (unsigned char c = 0x20; c < 0x7f; c++)
+  {
+    jisx0201.push_back(static_cast<char>(c));
+  }
+  for (unsigned char c = 0xa1; c <= 0xdf; c++)
+  {
+    jisx0201.push_back(static_cast<char>(c));
+  }
+  vtkDICOMCharacterSet cs1 = vtkDICOMCharacterSet::ISO_IR_13;
+  vtkDICOMCharacterSet cs2 = vtkDICOMCharacterSet::ISO_2022_IR_87;
+  std::string u = cs1.ToUTF8(jisx0201);
+  std::string u2 = cs2.ToUTF8(cs2.FromUTF8(u));
+  std::string t = cs1.FromUTF8(u2);
+  TestAssert(t == jisx0201);
+  }
+
+  { // test compatibility mappings of jouyou kanji not in jis 0208
+    std::string official =
+      "\xf0\xa0\xae\x9f \xe5\xa1\xa1 \xe5\x89\x9d \xe9\xa0\xb0";
+    std::string compat =
+      "\xe5\x8f\xb1 \xe5\xa1\xab \xe5\x89\xa5 \xe9\xa0\xac";
+    vtkDICOMCharacterSet cs = vtkDICOMCharacterSet::ISO_2022_IR_87;
+    std::string t = cs.FromUTF8(official);
+    std::string s = cs.FromUTF8(compat);
+    TestAssert(t == s);
+    // round trip expected to fail due to compatibility mapping
+    std::string u = cs.ToUTF8(t);
+    TestAssert(u == compat);
   }
 
   return rval;
