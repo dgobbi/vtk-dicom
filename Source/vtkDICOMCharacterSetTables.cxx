@@ -7591,11 +7591,11 @@ const unsigned short CodePageKSX1001_R[27587] = {
 };
 
 // Simplified Chinese GB18030-2000
-const unsigned short CodePageGB18030[17426] = {
+const unsigned short CodePageGB18030[17420] = {
   // hot segments (indexes into segment table)
   2, 0, 35,
   // number of segments
-  661,
+  659,
   // segment table
        0,     94,    104,    110,    130,    150,    160,    162,
      172,    174,    186,    192,    281,    282,    365,    376,
@@ -7679,7 +7679,7 @@ const unsigned short CodePageGB18030[17426] = {
    41856,  41876,  41879,  41901,  42604,  42643,  42754,  42902,
    42983,  57409,  57411,  57424,  57460,  57476,  57490,  61785,
    61861,  61888,  61969,  61978,  62004,  62018,  63048,  63056,
-   63205,  63334,  63357,  63358,  63360,
+   63205,  63334,  63360,
   // compressed segments
    RCHAR, 0x2170, 0xE766, 0x2488, 0x2474, 0x2460,  RCHAR, 0x3220,
   0xE76E, 0x2160,  RCHAR, 0xFF05, 0xFFE3, 0x3041, 0xE772, 0x30A1,
@@ -7763,7 +7763,7 @@ const unsigned short CodePageGB18030[17426] = {
   0x4987, 0x499C, 0x49A0, 0x49B8, 0x4C78, 0x4CA4, 0x4D1A, 0x4DAF,
   0x9FA6,  RCHAR, 0xE7E7,  RCHAR, 0xE844, 0xE856, 0xE865, 0xF92D,
   0xF97A, 0xF996, 0xF9E8, 0xF9F2,  RCHAR, 0xFA2A,  RCHAR, 0xFE6C,
-  0xFF5F, 0xFFE6,  RCHAR, 0xFFFE,  RCHAR,
+  0xFF5F, 0xFFE6,  RCHAR,
   // uncompressed segments
   0x0000,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR, 0x1ACE,  RCHAR,
    RCHAR,  RCHAR, 0x1AD0,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
@@ -7847,7 +7847,7 @@ const unsigned short CodePageGB18030[17426] = {
    RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
    RCHAR, 0x3C13,  RCHAR, 0x3C15,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
    RCHAR,  RCHAR,  RCHAR,  RCHAR, 0x3C39,  RCHAR, 0x3C47,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,
   // [     0,    93] -v # seg 0 at pos 0
   0x3000, 0x3001, 0x3002, 0x00B7, 0x02C9, 0x02C7, 0x00A8, 0x3003,
   0x3005, 0x2014, 0xFF5E, 0x2016, 0x2026, 0x2018, 0x2019, 0x201C,
@@ -10514,12 +10514,11 @@ const unsigned short CodePageGB18030[17426] = {
   0xFE32, 0xFE45, 0xFE46, 0xFE47, 0xFE48, 0xFE53, 0xFE58, 0xFE67,
   // [ 63056, 63204] -> [0xFE6C,0xFF00] # seg 655
   // [ 63205, 63333] -> [0xFF5F,0xFFDF] # seg 656
-  // [ 63334, 63356] -> [0xFFE6,0xFFFC] # seg 657
-  // [ 63358, 63359] -> [0xFFFE,0xFFFF] # seg 659
+  // [ 63334, 63359] -> [0xFFE6,0xFFFF] # seg 657
 };
 
 // Reverse
-const unsigned short CodePageGB18030_R[22360] = {
+const unsigned short CodePageGB18030_R[22354] = {
   // hot segments (indexes into segment table)
   2, 103, 191,
   // number of segments

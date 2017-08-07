@@ -718,13 +718,26 @@ GBKCOMPAT=[RCHAR]*(1 + max(gbk_compat.keys()))
 table = maketable2(GBKCOMPAT, Reverse, gbk_compat)
 GBKCompatTable = table
 
+def removesegs(table, x, y=0):
+    """Remove the final segments from a table, to allow mapping of
+    replacement code 0xFFFD as if it were a normal code."""
+    m = table[0] + 1
+    n = table[m]
+    table[m] = n-x
+    m += 1
+    table[m+n-x-y:m+n-y] = []
+    table[m+2*(n-x)-y:m+n-x+n-y] = []
+    table[m+3*(n-x)-y:m+2*(n-x)+n-y] = []
+
 table = maketable2(GB18030, Forward, [0,93], [1410,8177])
 checktable(table, 0, GB18030)
+removesegs(table, 2, 1)
 CodePageGB18030 = table
 
 # for compatibility with GBK 1.0, be sure to map old GBK PUA codes
 table = maketable2(GB18030, Reverse, cjk_punct, cjk_unified)
 checktable(table, 1, GB18030)
+removesegs(table, 2)
 CodePageGB18030_R = table
 
 sys.stdout.write("// Simplified Chinese GB18030-2000\n")
