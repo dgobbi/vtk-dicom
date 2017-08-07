@@ -24293,6 +24293,69 @@ const unsigned short CodePageWindows1257_R[342] = {
   // [0x2122,0x2122] -> [   153,   153] # seg 12
 };
 
+// koi8 with extra cyrillic letters from koi8-ru
+const unsigned short CodePageKOI8[109] = {
+  // hot segments (indexes into segment table)
+  2, 0, 2,
+  // number of segments
+  3,
+  // segment table
+       0,    128,    160,
+  // compressed segments
+  0x0000,  RCHAR,  RCHAR,
+  // uncompressed segments
+   RCHAR,  RCHAR, 0x0000,
+  // [     0,   127] -> [0x0000,0x007F] # seg 0
+  // [   160,   255] -v # seg 2 at pos 0
+   RCHAR,  RCHAR,  RCHAR, 0x0451, 0x0454,  RCHAR, 0x0456, 0x0457,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR, 0x0491, 0x045E,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR, 0x0401, 0x0404,  RCHAR, 0x0406, 0x0407,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR, 0x0490, 0x040E,  RCHAR,
+  0x044E, 0x0430, 0x0431, 0x0446, 0x0434, 0x0435, 0x0444, 0x0433,
+  0x0445, 0x0438, 0x0439, 0x043A, 0x043B, 0x043C, 0x043D, 0x043E,
+  0x043F, 0x044F, 0x0440, 0x0441, 0x0442, 0x0443, 0x0436, 0x0432,
+  0x044C, 0x044B, 0x0437, 0x0448, 0x044D, 0x0449, 0x0447, 0x044A,
+  0x042E, 0x0410, 0x0411, 0x0426, 0x0414, 0x0415, 0x0424, 0x0413,
+  0x0425, 0x0418, 0x0419, 0x041A, 0x041B, 0x041C, 0x041D, 0x041E,
+  0x041F, 0x042F, 0x0420, 0x0421, 0x0422, 0x0423, 0x0416, 0x0412,
+  0x042C, 0x042B, 0x0417, 0x0428, 0x042D, 0x0429, 0x0427, 0x042A,
+};
+
+// Reverse
+const unsigned short CodePageKOI8_R[162] = {
+  // hot segments (indexes into segment table)
+  2, 0, 2,
+  // number of segments
+  4,
+  // segment table
+  0x0000, 0x0080, 0x0400, 0x0492,
+  // compressed segments
+       0,  RCHAR,  RCHAR,  RCHAR,
+  // uncompressed segments
+   RCHAR,  RCHAR,      0,  RCHAR,
+  // [0x0000,0x007F] -> [     0,   127] # seg 0
+  // [0x0400,0x0491] -v # seg 2 at pos 0
+   RCHAR,    179,  RCHAR,  RCHAR,    180,  RCHAR,    182,    183,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,    190,  RCHAR,
+     225,    226,    247,    231,    228,    229,    246,    250,
+     233,    234,    235,    236,    237,    238,    239,    240,
+     242,    243,    244,    245,    230,    232,    227,    254,
+     251,    253,    255,    249,    248,    252,    224,    241,
+     193,    194,    215,    199,    196,    197,    214,    218,
+     201,    202,    203,    204,    205,    206,    207,    208,
+     210,    211,    212,    213,    198,    200,    195,    222,
+     219,    221,    223,    217,    216,    220,    192,    209,
+   RCHAR,    163,  RCHAR,  RCHAR,    164,  RCHAR,    166,    167,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,    174,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+     189,    173,
+};
+
 const unsigned short *vtkDICOMCharacterSet::Table[256] = {
   CodePageASCII,
   CodePageJISX0201,
@@ -24384,7 +24447,7 @@ const unsigned short *vtkDICOMCharacterSet::Table[256] = {
   CodePageWindows1257,
   0,
   0,
-  0,
+  CodePageKOI8,
   0,
   0,
   0,
@@ -24643,7 +24706,7 @@ const unsigned short *vtkDICOMCharacterSet::Reverse[256] = {
   CodePageWindows1257_R,
   0,
   0,
-  0,
+  CodePageKOI8_R,
   0,
   0,
   0,

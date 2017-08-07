@@ -988,6 +988,34 @@ for i in [874,1250,1251,1252,1253,1254,1255,1256,1257]:
     printtable("CodePageWindows%d_R"%(i,), CodePageWindows_R[i], Reverse)
     sys.stdout.write('\n')
 
+# ----
+# KOI8 Code Pages
+# ----
+
+KOI8 = (list(range(0,128)) +
+         readtable('whatwg/index-koi8-u.txt'))
+# remove all non-alphabetic characters
+for i in range(0x80,0xC0):
+    if KOI8[i] < 0x400 or KOI8[i] >= 0x500:
+        KOI8[i] = RCHAR
+
+ftable = maketable2(KOI8, Forward, [160,255], maxin=255)
+ftable[0] += 1
+ftable.insert(1, 0)
+checktable(ftable, Forward, KOI8)
+
+rtable = maketable2(KOI8, Reverse, [0x0400,0x0491])
+rtable[0] += 1
+rtable.insert(1, 0)
+checktable(rtable, Reverse, KOI8)
+
+sys.stdout.write("// koi8 with extra cyrillic letters from koi8-ru\n")
+printtable("CodePageKOI8", ftable, Forward, maxin=255)
+sys.stdout.write('\n')
+sys.stdout.write('// Reverse\n')
+printtable("CodePageKOI8_R", rtable, Reverse)
+sys.stdout.write('\n')
+
 # this must be consistent with the enum in vtkDICOMCharacterSet.h
 ISO_2022   = 32
 ISO_IR_6   = 0  # US_ASCII
@@ -1040,6 +1068,7 @@ X_CP1254   = 84 # cp1254,      turkish
 X_CP1255   = 85 # cp1255,      hebrew
 X_CP1256   = 86 # cp1256,      arabic
 X_CP1257   = 87 # cp1257,      baltic rim
+X_KOI8     = 90 # koi,         cyrillic
 
 pages = {
   ISO_IR_6 : ('CodePageASCII', 'CodePageASCII_R'),
@@ -1096,6 +1125,7 @@ pages = {
   X_CP1255 : ('CodePageWindows1255', 'CodePageWindows1255_R'),
   X_CP1256 : ('CodePageWindows1256', 'CodePageWindows1256_R'),
   X_CP1257 : ('CodePageWindows1257', 'CodePageWindows1257_R'),
+  X_KOI8 : ('CodePageKOI8', 'CodePageKOI8_R'),
 }
 
 table = [('0','0')]*256

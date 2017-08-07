@@ -109,6 +109,7 @@ public:
     X_CP1255   = 85, // cp1255,      hebrew
     X_CP1256   = 86, // cp1256,      arabic
     X_CP1257   = 87, // cp1257,      baltic rim
+    X_KOI8     = 90, // koi8,        cyrillic
     Unknown    = 255  // signifies unknown character set
   };
 

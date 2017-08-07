@@ -534,14 +534,20 @@ static const char *EUCJP_Names[] = {
   NULL
 };
 
+static const char *KOI8_Names[] = {
+  "koi",
+  "koi8",
+  NULL
+};
+
 // This table gives the character sets that are defined in DICOM 2011-3.3
 // The first two columns are the possible CS values of character set in the
 // SpecificCharacterSet attribute of a DICOM data set.  If the second form
 // of the name appears in SpecificCharacterSet, then iso-2022 escape codes
 // can be used to switch between character sets.  The escape codes to switch
 // to the character set are given in the third column.
-const int CHARSET_TABLE_SIZE = 44;
-static CharsetInfo Charsets[44] = {
+const int CHARSET_TABLE_SIZE = 45;
+static CharsetInfo Charsets[45] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "",   ISO_IR_6_Names },
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
@@ -617,6 +623,7 @@ static CharsetInfo Charsets[44] = {
   { vtkDICOMCharacterSet::X_BIG5, 0, "big5", "", "", BIG5_Names },
   { vtkDICOMCharacterSet::X_SJIS, 0, "sjis", "", "", SJIS_Names },
   { vtkDICOMCharacterSet::X_EUCJP, 0, "euc-jp", "", "", EUCJP_Names },
+  { vtkDICOMCharacterSet::X_KOI8, 0, "koi8", "", "", KOI8_Names },
 };
 
 // Convert a unicode code point to UTF-8
