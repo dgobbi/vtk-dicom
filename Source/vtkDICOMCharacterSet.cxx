@@ -433,14 +433,18 @@ static const char *ISO_IR_149_Names[] = {
 static const char *ISO_IR_87_Names[] = {
   "csiso2022jp",
   "iso-2022-jp",
+  "iso-ir-87",
+  "iso2022_jp",
+  "jis",
+  NULL
+};
+
+static const char *ISO_IR_159_Names[] = {
   "iso-2022-jp-1",
   "iso-2022-jp-2",
   "iso-ir-159",
-  "iso-ir-87",
-  "iso2022_jp",
   "iso2022_jp_1",
   "iso2022_jp_2",
-  "jis",
   NULL
 };
 
@@ -586,7 +590,7 @@ static CharsetInfo Charsets[45] = {
   { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // obsolete escape code
     "ISO_IR 87",  "ISO 2022 IR 87", "$@",  NULL },
   { vtkDICOMCharacterSet::ISO_2022_IR_159, 2,// JIS X 0212, japanese
-    "ISO_IR 159", "ISO 2022 IR 159","$(D", NULL },
+    "ISO_IR 159", "ISO 2022 IR 159","$(D", ISO_IR_159_Names },
   // other character sets that can be used with ISO 2022
   { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // GB2312, chinese
     "ISO_IR 58",  "ISO 2022 IR 58", "$A",  ISO_IR_58_Names },
@@ -2833,6 +2837,11 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
         {
           found = true;
           key = Charsets[i].Key;
+          // always activate JISX0208 if JISX0212 is active
+          if (key == ISO_2022_IR_159)
+          {
+            key |= ISO_2022_IR_87;
+          }
         }
       }
     }
