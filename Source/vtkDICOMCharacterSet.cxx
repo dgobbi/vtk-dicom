@@ -15,6 +15,7 @@
 #include "vtkDICOMCharacterSetTables.h"
 
 #include <algorithm>
+#include <cstddef>
 
 unsigned char vtkDICOMCharacterSet::GlobalDefault =
   vtkDICOMCharacterSet::ISO_IR_6;
