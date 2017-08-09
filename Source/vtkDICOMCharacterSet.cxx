@@ -669,7 +669,7 @@ inline void UnicodeToUTF8(unsigned int code, std::string *s)
 // If UTF8 sequence is malformed, return 0xFFFF.
 // If UTF8 sequence at end of input is incomplete, return 0xFFFE.
 // Paired encoded UTF-16 surrogates are combined to create one code.
-inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
+unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
 {
   const unsigned char *cp = reinterpret_cast<const unsigned char *>(*cpp);
   const unsigned char *ep = reinterpret_cast<const unsigned char *>(cpEnd);
@@ -716,21 +716,40 @@ inline unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
           // check for UTF16 surrogates
           if (good && (code & 0xF800) == 0xD800)
           {
-            good = -1;
-            // check for high surrogate followed by low surrogate
-            if ((code & 0xFC00) == 0xD800 &&
-                cp != ep && cp[0] == 0xED &&
-                cp+1 != ep && (cp[1] & 0xF0) == 0xB0 &&
-                cp+2 != ep && (cp[2] & 0xC0) == 0x80)
+            good = 0;
+            // is this a high surrogate?
+            if ((code & 0xFC00) == 0xD800)
             {
-              good = 1;
-              code &= 0x03FF;
-              code <<= 4;
-              code |= cp[1] & 0x0F;
-              code <<= 6;
-              code |= cp[2] & 0x3F;
-              code += 0x010000;
-              cp += 3;
+              // is it followed by a low surrogate?
+              if (cp == ep)
+              {
+                good = -1;
+              }
+              else if (cp[0] == 0xED)
+              {
+                if (cp+1 == ep)
+                {
+                  good = -1;
+                }
+                else if ((cp[1] & 0xF0) == 0xB0)
+                {
+                  if (cp+2 == ep)
+                  {
+                    good = -1;
+                  }
+                  else if ((cp[2] & 0xC0) == 0x80)
+                  {
+                    good = 1;
+                    code &= 0x03FF;
+                    code <<= 4;
+                    code |= cp[1] & 0x0F;
+                    code <<= 6;
+                    code |= cp[2] & 0x3F;
+                    code += 0x010000;
+                    cp += 3;
+                  }
+                }
+              }
             }
           }
         }
