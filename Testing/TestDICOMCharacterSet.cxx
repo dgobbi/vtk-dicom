@@ -292,17 +292,72 @@ int main(int argc, char *argv[])
   }
 
   { // test compatibility mappings of jouyou kanji not in jis 0208
-    std::string official =
-      "\xf0\xa0\xae\x9f \xe5\xa1\xa1 \xe5\x89\x9d \xe9\xa0\xb0";
-    std::string compat =
-      "\xe5\x8f\xb1 \xe5\xa1\xab \xe5\x89\xa5 \xe9\xa0\xac";
-    vtkDICOMCharacterSet cs = vtkDICOMCharacterSet::ISO_2022_IR_87;
-    std::string t = cs.FromUTF8(official);
-    std::string s = cs.FromUTF8(compat);
-    TestAssert(t == s);
-    // round trip expected to fail due to compatibility mapping
-    std::string u = cs.ToUTF8(t);
-    TestAssert(u == compat);
+  std::string official =
+    "\xf0\xa0\xae\x9f \xe5\xa1\xa1 \xe5\x89\x9d \xe9\xa0\xb0";
+  std::string compat =
+    "\xe5\x8f\xb1 \xe5\xa1\xab \xe5\x89\xa5 \xe9\xa0\xac";
+  vtkDICOMCharacterSet cs = vtkDICOMCharacterSet::ISO_2022_IR_87;
+  std::string t = cs.FromUTF8(official);
+  std::string s = cs.FromUTF8(compat);
+  TestAssert(t == s);
+  // round trip expected to fail due to compatibility mapping
+  std::string u = cs.ToUTF8(t);
+  TestAssert(u == compat);
+  }
+
+  { // test round trip of single-byte character sets within valid ranges
+  const char *sets[] = {
+    "ISO_IR 13",  "\x01\x7f,\xa0\xdf,",
+    "ISO_IR 100", "\x01\x7f,\xa0\xff,",
+    "ISO_IR 101", "\x01\x7f,\xa0\xff,",
+    "ISO_IR 109", "\x01\x7f,\xa0\xa4,\xa6\xad,\xaf\xbd,\xbf\xc2,\xc4\xcf,"
+                  "\xd1\xe2,\xe4\xef,\xf1\xff,",
+    "ISO_IR 110", "\x01\x7f,\xa0\xff,",
+    "ISO_IR 144", "\x01\x7f,\xa0\xff,",
+    "ISO_IR 127", "\x01\x7f,\xa0\xa0,\xa4\xa4,\xac\xad,\xbb\xbb,\xbf\xbf,"
+                  "\xc1\xda,\xe0\xf2,",
+    "ISO_IR 126", "\x01\x7f,\xa0\xad,\xaf\xd1,\xd3\xfe,",
+    "ISO_IR 138", "\x01\x7f,\xa0\xa0,\xa2\xbe,\xdf\xfa,\xfd\xfe,",
+    "ISO_IR 148", "\x01\x7f,\xa0\xff,",
+    "LATIN6",     "\x01\x7f,\xa0\xff,",
+    "ISO_IR 166", "\x01\x7f,\xa0\xda,\xdf\xfb,",
+    "LATIN7",     "\x01\x7f,\xa0\xff,",
+    "LATIN8",     "\x01\x7f,\xa0\xff,",
+    "LATIN9",     "\x01\x7f,\xa0\xff,",
+    "LATIN10",    "\x01\x7f,\xa0\xff,",
+    "Windows-874","\x01\xda,\xdf\xfb,",
+    "CP1250",     "\x01\xff,",
+    "CP1251",     "\x01\xff,",
+    "CP1252",     "\x01\xff,",
+    "CP1253",     "\x01\xa9,\xab\xd1,\xd3\xfe,",
+    "CP1254",     "\x01\xff,",
+    "CP1255",     "\x01\xd8,\xe0\xfa,\xfd\xfe,",
+    "CP1256",     "\x01\xff,",
+    "CP1257",     "\x01\xa0,\xa2\xa4,\xa6\xff,",
+    "KOI8",       "\x01\x7f,\xa3\xa4,\xa6\xa7,\xad\xae,"
+                  "\xb3\xb4,\xb6\xb7,\xbd\xbe,\xc0\xff,",
+    NULL, NULL
+  };
+  for (int i = 0; sets[i]; i += 2)
+  {
+    std::string codes;
+    for (const char *r = sets[i+1]; *r; r += 3)
+    {
+      const unsigned char *range = reinterpret_cast<const unsigned char *>(r);
+      for (int c = range[0]; c <= range[1]; c++)
+      {
+        codes.push_back(static_cast<char>(c));
+      }
+    }
+    vtkDICOMCharacterSet cs(sets[i]);
+    std::string u = cs.ToUTF8(codes);
+    std::string t = cs.FromUTF8(u);
+    if (t != codes)
+    {
+      std::cerr << "Failed round-trip for " << sets[i] << "\n";
+      TestAssert(t == codes);
+    }
+  }
   }
 
   return rval;
