@@ -24294,23 +24294,23 @@ const unsigned short CodePageWindows1257_R[342] = {
 };
 
 // koi8 with extra cyrillic letters from koi8-ru
-const unsigned short CodePageKOI8[109] = {
+const unsigned short CodePageKOI8[120] = {
   // hot segments (indexes into segment table)
-  2, 0, 2,
+  2, 0, 4,
   // number of segments
-  3,
+  5,
   // segment table
-       0,    128,    160,
+       0,    128,    154,    159,    160,
   // compressed segments
-  0x0000,  RCHAR,  RCHAR,
+  0x0000,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
   // uncompressed segments
-   RCHAR,  RCHAR, 0x0000,
+   RCHAR,  RCHAR, 0x0060,  RCHAR, 0x0000,
   // [     0,   127] -> [0x0000,0x007F] # seg 0
-  // [   160,   255] -v # seg 2 at pos 0
+  // [   160,   255] -v # seg 4 at pos 0
    RCHAR,  RCHAR,  RCHAR, 0x0451, 0x0454,  RCHAR, 0x0456, 0x0457,
    RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR, 0x0491, 0x045E,  RCHAR,
    RCHAR,  RCHAR,  RCHAR, 0x0401, 0x0404,  RCHAR, 0x0406, 0x0407,
-   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR, 0x0490, 0x040E,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR, 0x0490, 0x040E, 0x00A9,
   0x044E, 0x0430, 0x0431, 0x0446, 0x0434, 0x0435, 0x0444, 0x0433,
   0x0445, 0x0438, 0x0439, 0x043A, 0x043B, 0x043C, 0x043D, 0x043E,
   0x043F, 0x044F, 0x0440, 0x0441, 0x0442, 0x0443, 0x0436, 0x0432,
@@ -24319,22 +24319,30 @@ const unsigned short CodePageKOI8[109] = {
   0x0425, 0x0418, 0x0419, 0x041A, 0x041B, 0x041C, 0x041D, 0x041E,
   0x041F, 0x042F, 0x0420, 0x0421, 0x0422, 0x0423, 0x0416, 0x0412,
   0x042C, 0x042B, 0x0417, 0x0428, 0x042D, 0x0429, 0x0427, 0x042A,
+  // [   154,   158] -v # seg 2 at pos 96
+  0x00A0,  RCHAR,  RCHAR,  RCHAR, 0x00B7,
 };
 
 // Reverse
-const unsigned short CodePageKOI8_R[162] = {
+const unsigned short CodePageKOI8_R[180] = {
   // hot segments (indexes into segment table)
-  2, 0, 2,
+  2, 0, 8,
   // number of segments
-  4,
+  10,
   // segment table
-  0x0000, 0x0080, 0x0400, 0x0492,
+  0x0000, 0x0080, 0x00A0, 0x00A1, 0x00A9, 0x00AA, 0x00B7, 0x00B8,
+  0x0400, 0x0492,
   // compressed segments
-       0,  RCHAR,  RCHAR,  RCHAR,
+       0,  RCHAR,    154,  RCHAR,    191,  RCHAR,    158,  RCHAR,
+   RCHAR,  RCHAR,
   // uncompressed segments
-   RCHAR,  RCHAR,      0,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+       0,  RCHAR,
   // [0x0000,0x007F] -> [     0,   127] # seg 0
-  // [0x0400,0x0491] -v # seg 2 at pos 0
+  // [0x00A0,0x00A0] -> [   154,   154] # seg 2
+  // [0x00A9,0x00A9] -> [   191,   191] # seg 4
+  // [0x00B7,0x00B7] -> [   158,   158] # seg 6
+  // [0x0400,0x0491] -v # seg 8 at pos 0
    RCHAR,    179,  RCHAR,  RCHAR,    180,  RCHAR,    182,    183,
    RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,    190,  RCHAR,
      225,    226,    247,    231,    228,    229,    246,    250,

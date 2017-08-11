@@ -994,10 +994,11 @@ for i in [874,1250,1251,1252,1253,1254,1255,1256,1257]:
 
 KOI8 = (list(range(0,128)) +
          readtable('whatwg/index-koi8-u.txt'))
-# remove all non-alphabetic characters
+# remove all non-alphabetic characters except nbsp, interpunct, copyright
 for i in range(0x80,0xC0):
     if KOI8[i] < 0x400 or KOI8[i] >= 0x500:
-        KOI8[i] = RCHAR
+        if KOI8[i] not in [0xA0,0xA9,0xB7]:
+            KOI8[i] = RCHAR
 
 ftable = maketable2(KOI8, Forward, [160,255], maxin=255)
 ftable[0] += 1
