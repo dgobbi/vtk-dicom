@@ -184,6 +184,14 @@ protected:
   virtual bool FillBuffer(
     const unsigned char* &cp, const unsigned char* &ep);
 
+  //! Internal method to reset the buffer to a new file position
+  /*!
+   *  This will throw away the current buffer, and move to a new
+   *  offset within the file.
+   */
+  virtual bool ResetBuffer(
+    const unsigned char* &cp, const unsigned char* &ep, vtkTypeInt64 offset);
+
   //! Internal method for skipping over a value.
   /*!
    *  This is for skipping over bulk data (such as PixelData).

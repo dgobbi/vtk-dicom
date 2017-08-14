@@ -2212,23 +2212,41 @@ bool vtkDICOMParser::FillBuffer(
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMParser::ResetBuffer(
+  const unsigned char* &ucp, const unsigned char* &ep, vtkTypeInt64 offset)
+{
+  if (!this->InputFile->GetError() &&
+      this->InputFile->SetPosition(offset))
+  {
+    // read just 8 bytes at the new position, i.e. enough to take a peek
+    // at the next element
+    size_t n = this->InputFile->Read(this->Buffer, 8);
+    ucp = this->Buffer;
+    ep = ucp + n;
+    this->BytesRead = offset + n;
+    return true;
+  }
+
+  return false;
+}
+
+//----------------------------------------------------------------------------
 bool vtkDICOMParser::SkipValue(
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int vl)
 {
   if (vl != 0xFFFFFFFF)
   {
-    size_t n = vl;
-
-    while (n != 0 && (cp != ep || this->FillBuffer(cp, ep)))
+    // if we can advance within the buffer, then do so
+    if (static_cast<size_t>(ep - cp) >= vl)
     {
-      size_t m = ep - cp;
-      if (m > n) { m = n; }
-      cp += m;
-      n -= m;
+      cp += vl;
+      return true;
     }
 
-    return (n == 0);
+    // otherwise, reset buffer to new file position
+    vtkTypeInt64 pos = this->GetBytesProcessed(cp, ep);
+    return this->ResetBuffer(cp, ep, pos + vl);
   }
 
   // skip encapsulated data
