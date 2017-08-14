@@ -2138,7 +2138,20 @@ bool vtkDICOMParser::ReadMetaData(
       }
 
       // skip over the PixelData
-      readFailure = !this->SkipValue(cp, ep, decoder->GetLastVL());
+      unsigned int vl = decoder->GetLastVL();
+      vtkTypeInt64 r = this->GetBytesRemaining(cp, ep);
+      if (vl != 0xFFFFFFFF && r == static_cast<vtkTypeInt64>(vl))
+      {
+        // end of pixel data is end of file
+        break;
+      }
+      if ((vl != 0xFFFFFFFF && r < static_cast<vtkTypeInt64>(vl)) ||
+          !this->SkipValue(cp, ep, vl))
+      {
+        this->ParseError(cp, ep,
+          "Premature end of file while reading PixelData.");
+        readFailure = true;
+      }
     }
   }
 
