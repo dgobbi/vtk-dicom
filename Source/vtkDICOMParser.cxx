@@ -2049,12 +2049,10 @@ bool vtkDICOMParser::ReadMetaData(
   std::vector<unsigned short>::iterator giter = groups.begin();
 
   // read group-by-group
-  bool foundPixelData = false;
   bool readFailure = false;
   bool queryFailure = (hasQuery && !this->QueryMatched);
   bool bailOnQueryFailure = (meta && meta->GetNumberOfInstances() == 1);
-  while (!foundPixelData && !readFailure &&
-         (!queryFailure || !bailOnQueryFailure))
+  while (!readFailure && (!queryFailure || !bailOnQueryFailure))
   {
     vtkDICOMTag tag = decoder->Peek(cp, ep);
 
@@ -2088,7 +2086,6 @@ bool vtkDICOMParser::ReadMetaData(
       {
         // set delimiter to pixel data tag
         delimiter = tag;
-        foundPixelData = true;
       }
     }
 
@@ -2101,43 +2098,56 @@ bool vtkDICOMParser::ReadMetaData(
     {
       readFailure = !decoder->SkipElements(cp, ep, l, delimiter);
     }
+
+    // check whether a PixelData element was found
+    vtkDICOMTag lastTag = decoder->GetLastTag();
+    if (!readFailure && lastTag == delimiter &&
+        lastTag.GetElement() != 0x0000)
+    {
+      if (lastTag.GetGroup() == 0x7fe0)
+      {
+        this->FileOffset = this->GetBytesProcessed(cp, ep);
+        this->PixelDataFound = true;
+        this->PixelDataVL = decoder->GetLastVL();
+      }
+
+      if (meta)
+      {
+        // add PixelData as an empty attribute, since we did not read its
+        // value (the FileOffset was saved so it can be read later)
+        vtkDICOMVR lastVR = decoder->GetLastVR();
+        if (!lastVR.IsValid())
+        {
+          lastVR = vtkDICOMVR::OW;
+          const vtkDICOMValue& ba = meta->Get(idx, DC::BitsAllocated);
+          if (ba.IsValid() && ba.AsUnsignedInt() <= 8)
+          {
+            lastVR = vtkDICOMVR::OB;
+          }
+        }
+
+        if (idx >= 0)
+        {
+          meta->Set(idx, lastTag, vtkDICOMValue(lastVR));
+          decoder->HandleMissingAttributes(lastTag);
+        }
+        else
+        {
+          meta->Set(lastTag, vtkDICOMValue(lastVR));
+        }
+      }
+
+      // exit after PixelData is found
+      break;
+    }
   }
 
-  vtkDICOMTag lastTag = decoder->GetLastTag();
-  this->FileOffset = this->GetBytesProcessed(cp, ep);
   this->QueryMatched &= decoder->FinishQuery();
-  this->PixelDataFound = (lastTag.GetGroup() == 0x7fe0 &&
-                          lastTag.GetElement() != 0x0000);
-  this->PixelDataVL = 0;
 
-  if (meta && this->PixelDataFound)
+  if (!this->PixelDataFound)
   {
-    // the last tag read will be PixelData (or an equivalent), and we
-    // want to add it as an empty attribute because we did not read its
-    // value (the FileOffset was saved so it can be read later)
-    unsigned short x = 0;
-    vtkDICOMVR lastVR = decoder->GetLastVR();
-    if (!lastVR.IsValid())
-    {
-      lastVR = vtkDICOMVR::OW;
-      const vtkDICOMValue& ba = meta->Get(idx, DC::BitsAllocated);
-      if (ba.IsValid() && ba.AsUnsignedInt() <= 8)
-      {
-        lastVR = vtkDICOMVR::OB;
-      }
-    }
-    vtkDICOMValue v(lastVR, &x, x);
-    this->PixelDataVL = decoder->GetLastVL();
-
-    if (idx >= 0)
-    {
-      meta->Set(idx, lastTag, v);
-      decoder->HandleMissingAttributes(lastTag);
-    }
-    else
-    {
-      meta->Set(lastTag, v);
-    }
+    // if no pixel data, set FileOffset to current file position
+    this->FileOffset = this->GetBytesProcessed(cp, ep);
   }
 
   return true;
