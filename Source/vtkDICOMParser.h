@@ -184,6 +184,15 @@ protected:
   virtual bool FillBuffer(
     const unsigned char* &cp, const unsigned char* &ep);
 
+  //! Internal method for skipping over a value.
+  /*!
+   *  This is for skipping over bulk data (such as PixelData).
+   *  If vl is 0xffffffff, then the value will be assumed to be
+   *  delimited (e.g. encapsulated pixel data).
+   */
+  virtual bool SkipValue(
+    const unsigned char* &cp, const unsigned char* &ep, unsigned int vl);
+
   //! Get the bytes remaining in the file.
   virtual vtkTypeInt64 GetBytesRemaining(
     const unsigned char *cp, const unsigned char *ep);

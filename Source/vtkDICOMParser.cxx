@@ -2137,8 +2137,8 @@ bool vtkDICOMParser::ReadMetaData(
         }
       }
 
-      // exit after PixelData is found
-      break;
+      // skip over the PixelData
+      readFailure = !this->SkipValue(cp, ep, decoder->GetLastVL());
     }
   }
 
@@ -2196,6 +2196,45 @@ bool vtkDICOMParser::FillBuffer(
   ucp = this->Buffer;
 
   return true;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMParser::SkipValue(
+    const unsigned char* &cp, const unsigned char* &ep,
+    unsigned int vl)
+{
+  if (vl != 0xFFFFFFFF)
+  {
+    size_t n = vl;
+
+    while (n != 0 && (cp != ep || this->FillBuffer(cp, ep)))
+    {
+      size_t m = ep - cp;
+      if (m > n) { m = n; }
+      cp += m;
+      n -= m;
+    }
+
+    return (n == 0);
+  }
+
+  // skip encapsulated data
+  while ((ep - cp) >= 8 || this->FillBuffer(cp, ep))
+  {
+    unsigned int t = Decoder<LE>::GetInt32(cp);
+    unsigned int l = Decoder<LE>::GetInt32(cp + 4);
+    cp += 8;
+    if (t == 0xE0DDFFFE)
+    {
+      return true;
+    }
+    if (t != 0xE000FFFE || !this->SkipValue(cp, ep, l))
+    {
+      break;
+    }
+  }
+
+  return false;
 }
 
 //----------------------------------------------------------------------------
