@@ -406,9 +406,14 @@ bool dicomcli_readkey_query(
           ((dictvr == VR::XS && (vr == VR::SS || vr == VR::US)))))
     {
       int m = static_cast<int>(vrEnd - lineStart);
-      m = (m > 40 ? 40 : m);
-      fprintf(stderr, "Error: VR of \"%*.*s\" doesn't match dict VR of %s\n",
-         m, m, &cp[lineStart], dictvr.GetText());
+      const char *ell = "";
+      if (m > 80)
+      {
+        m = 77;
+        ell = "...";
+      }
+      fprintf(stderr, "Error: VR of \"%*.*s%s\" doesn't match dict VR of %s\n",
+         m, m, &cp[lineStart], ell, dictvr.GetText());
     }
   }
 
