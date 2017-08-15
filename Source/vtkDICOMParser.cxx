@@ -59,6 +59,13 @@ public:
     return parser->FillBuffer(cp, ep);
   }
 
+  static bool SeekBuffer(vtkDICOMParser *parser,
+    const unsigned char* &cp, const unsigned char* &ep,
+    vtkTypeInt64 offset)
+  {
+    return parser->SeekBuffer(cp, ep, offset);
+  }
+
   static vtkTypeInt64 GetBytesRemaining(vtkDICOMParser *parser,
     const unsigned char *cp, const unsigned char *ep)
   {
@@ -1052,8 +1059,20 @@ template<int E>
 size_t Decoder<E>::SkipData(
   const unsigned char* &cp, const unsigned char* &ep, size_t l)
 {
-  size_t n = l;
+  // if the number of bytes to skip is larger than the buffer size
+  if (l >= static_cast<size_t>(this->Parser->GetBufferSize()))
+  {
+    // seek forward within the file
+    vtkTypeInt64 m = static_cast<vtkTypeInt64>(l);
+    vtkTypeInt64 n = vtkDICOMParserInternalFriendship::GetBytesRemaining(
+      this->Parser, cp, ep);
+    m = (m <= n ? m : n);
+    vtkDICOMParserInternalFriendship::SeekBuffer(this->Parser, cp, ep, m);
+    return static_cast<size_t>(m);
+  }
 
+  // otherwise, read and ignore the specified number of bytes
+  size_t n = l;
   while (n != 0 && this->CheckBuffer(cp, ep, 2))
   {
     size_t m = ep - cp;
