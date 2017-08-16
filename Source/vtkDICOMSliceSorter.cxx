@@ -494,6 +494,11 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       vtkDICOMSequence sharedSeq =
         meta->Get(i, DC::SharedFunctionalGroupsSequence);
 
+      if (numberOfFrames == 0)
+      {
+        numberOfFrames = frameSeq.GetNumberOfItems();
+      }
+
       if (ii == 0 && numberOfFrames > 0)
       {
         firstStackId = vtkDICOMSliceSorterGetFrame(
@@ -853,9 +858,13 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   }
 
   // sort by position, count the number of slices per location
-  int numSlices = static_cast<int>(info.size());
   int slicesPerLocation = 0;
-  if (numSlices > 1)
+  int numSlices = static_cast<int>(info.size());
+  if (numSlices == 0)
+  {
+    numSlices = 1;
+  }
+  else if (numSlices > 1)
   {
     if (canSortByLocation)
     {
