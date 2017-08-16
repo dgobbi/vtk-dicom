@@ -26,23 +26,60 @@
  */
 class VTKDICOM_EXPORT vtkDICOMTagPath
 {
+private:
+  struct Pair
+  {
+    unsigned int Index;
+    vtkDICOMTag Tail;
+  };
+
 public:
   //@{
   //! Construct a tag path with an empty head and tail.
-  vtkDICOMTagPath() : Head(), Index(0), Tail(), Index2(0), Tail2() {}
+  vtkDICOMTagPath() : Head(), Index(0), Tail(), More(0), List(0) {}
 
   //! Construct a tag path from a sequence tag, item index, and item tag.
   vtkDICOMTagPath(vtkDICOMTag seqTag, unsigned int i, vtkDICOMTag tag) :
-    Head(seqTag), Index(i), Tail(tag), Index2(0), Tail2() {}
+    Head(seqTag), Index(i), Tail(tag), More(0), List(0) {}
 
   //! Construct a tag path that goes two levels deep.
   vtkDICOMTagPath(vtkDICOMTag seqTag, unsigned int i, vtkDICOMTag tag,
                   unsigned int j, vtkDICOMTag tag2) :
-    Head(seqTag), Index(i), Tail(tag), Index2(j), Tail2(tag2) {}
+    Head(seqTag), Index(i), Tail(tag) {
+    More = (tag2 != vtkDICOMTag()); Last.Index = j; Last.Tail = tag2; }
+
+  //! Construct a tag path by adding to an existing tag path.
+  vtkDICOMTagPath(const vtkDICOMTagPath& pth, unsigned int i, vtkDICOMTag tag);
 
   //! Construct a tag path from just a single tag.
   explicit vtkDICOMTagPath(vtkDICOMTag tag) :
-    Head(tag), Index(0), Tail(), Index2(0), Tail2() {}
+    Head(tag), Index(0), Tail(), More(0), List(0) {}
+
+  //! Copy constructor.
+  vtkDICOMTagPath(const vtkDICOMTagPath& o) :
+    Head(o.Head), Index(o.Index), Tail(o.Tail), More(o.More) {
+    if (o.More <= 1) {
+      this->Last = o.Last; }
+    else {
+      this->List = vtkDICOMTagPath::CopyList(o.List, o.More); } }
+  //@}
+
+  //@{
+  //! Destructor.
+  ~vtkDICOMTagPath() {
+    if (this->More > 1) { delete [] this->List; } }
+  //@}
+
+  //@{
+  //! Assignment operator.
+  vtkDICOMTagPath& operator=(const vtkDICOMTagPath& o) {
+    this->Head = o.Head; this->Index = o.Index; this->Tail = o.Tail;
+    this->More = o.More;
+    if (o.More <= 1) {
+      this->Last = o.Last; }
+    else {
+      this->List = vtkDICOMTagPath::CopyList(o.List, o.More); }
+    return *this; }
   //@}
 
   //@{
@@ -59,8 +96,7 @@ public:
     return this->Index; }
 
   //! Get the remainder of the path.
-  vtkDICOMTagPath GetTail() const {
-    return vtkDICOMTagPath(this->Tail, this->Index2, this->Tail2); }
+  vtkDICOMTagPath GetTail() const;
   //@}
 
   //@{
@@ -73,11 +109,20 @@ public:
   //@}
 
 private:
+  vtkDICOMTagPath(vtkDICOMTag seqTag, unsigned int i, vtkDICOMTag tag,
+                  unsigned int n, Pair *l) :
+    Head(seqTag), Index(i), Tail(tag), More(n), List(l) {}
+
+  static Pair *CopyList(const Pair *o, unsigned int n);
+
   vtkDICOMTag Head;
   unsigned int Index;
   vtkDICOMTag Tail;
-  unsigned int Index2;
-  vtkDICOMTag Tail2;
+  unsigned int More;
+  union {
+    Pair Last;
+    Pair *List;
+  };
 };
 
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMTagPath& a);
