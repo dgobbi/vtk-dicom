@@ -224,6 +224,7 @@ bool dicomcli_readkey_query(
   size_t lineStart = s;
   size_t n = strlen(cp);
   bool tagError = false;
+  const int maxerrlen = 80;
 
   // set the default character set to utf-8
   vtkDICOMCharacterSet cs(vtkDICOMCharacterSet::ISO_IR_192);
@@ -364,7 +365,7 @@ bool dicomcli_readkey_query(
       if (!vr.IsValid() || vr == VR::OX || vr == VR::XS || vr == VR::UN)
       {
         int m = static_cast<int>(vrEnd - lineStart);
-        m = (m > 40 ? 40 : m);
+        m = (m > maxerrlen ? maxerrlen : m);
         fprintf(stderr, "Error: Unrecognized DICOM VR \"%*.*s\"\n",
            m, m, &cp[lineStart]);
         return false;
@@ -406,21 +407,16 @@ bool dicomcli_readkey_query(
           ((dictvr == VR::XS && (vr == VR::SS || vr == VR::US)))))
     {
       int m = static_cast<int>(vrEnd - lineStart);
-      const char *ell = "";
-      if (m > 80)
-      {
-        m = 77;
-        ell = "...";
-      }
-      fprintf(stderr, "Error: VR of \"%*.*s%s\" doesn't match dict VR of %s\n",
-         m, m, &cp[lineStart], ell, dictvr.GetText());
+      m = (m > maxerrlen ? maxerrlen : m);
+      fprintf(stderr, "Error: VR of \"%*.*s\" doesn't match dict VR of %s\n",
+         m, m, &cp[lineStart], dictvr.GetText());
     }
   }
 
   if (!vr.IsValid() || vr == VR::UN)
   {
     int m = static_cast<int>(s - lineStart);
-    m = (m > 40 ? 40 : m);
+    m = (m > maxerrlen ? maxerrlen : m);
     fprintf(stderr, "Error: Unrecognized DICOM tag \"%*.*s\"\n",
             m, m, &cp[lineStart]);
     return false;
