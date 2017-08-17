@@ -17,6 +17,11 @@ target_link_libraries(TestDICOMVR ${BASE_LIBS})
 get_target_property(pth TestDICOMVR RUNTIME_OUTPUT_DIRECTORY)
 add_test(TestDICOMVR ${pth}/TestDICOMVR)
 
+add_executable(TestDICOMTagPath TestDICOMTagPath.cxx)
+target_link_libraries(TestDICOMTagPath ${BASE_LIBS})
+get_target_property(pth TestDICOMTagPath RUNTIME_OUTPUT_DIRECTORY)
+add_test(TestDICOMTagPath ${pth}/TestDICOMTagPath)
+
 add_executable(TestDICOMValue TestDICOMValue.cxx)
 target_link_libraries(TestDICOMValue ${BASE_LIBS})
 get_target_property(pth TestDICOMValue RUNTIME_OUTPUT_DIRECTORY)
