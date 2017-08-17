@@ -144,29 +144,6 @@ size_t LineReader::ReadLine(std::string *s)
 bool dicomcli_readkey_query(
   const char *cp, vtkDICOMItem *query, QueryTagList *ql, bool qfile);
 
-// Build a tagpath
-vtkDICOMTagPath path_append(const vtkDICOMTagPath& tpath, vtkDICOMTag tag)
-{
-  vtkDICOMTagPath result(tag);
-
-  if (tpath.GetHead() != vtkDICOMTag())
-  {
-    if (tpath.HasTail())
-    {
-      result = vtkDICOMTagPath(
-        tpath.GetHead(), tpath.GetIndex(),
-        tpath.GetTail().GetHead(), 0, tag);
-    }
-    else
-    {
-      result = vtkDICOMTagPath(
-        tpath.GetHead(), 0, tag);
-    }
-  }
-
-  return result;
-}
-
 // Read a query file
 bool dicomcli_readquery(
   const char *fname, vtkDICOMItem *query, QueryTagList *ql)
@@ -230,7 +207,7 @@ bool dicomcli_readkey_query(
   // set the default character set to utf-8
   vtkDICOMCharacterSet cs(vtkDICOMCharacterSet::ISO_IR_192);
 
-  while (!tagError && tagDepth < 3)
+  while (!tagError)
   {
     // check for private creator in square brackets
     if (cp[s] == '[')
@@ -315,13 +292,13 @@ bool dicomcli_readkey_query(
         // creator element that was added to it, and then add
         // that creator element to 'query' using the tag path
         vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
-        vtkDICOMTagPath ctagPath = path_append(tagPath, ctag);
+        vtkDICOMTagPath ctagPath = vtkDICOMTagPath(tagPath, 0, ctag);
         query->Set(ctagPath, item.Get(ctag));
       }
     }
 
     // build the tag path
-    tagPath = path_append(tagPath, tag);
+    tagPath = vtkDICOMTagPath(tagPath, 0, tag);
 
     if (s < n && (cp[s] == '/' || cp[s] == '\\'))
     {
@@ -340,7 +317,7 @@ bool dicomcli_readkey_query(
   }
 
   // if an error occurred while reading tag, skip to next line
-  if (tagError || tagDepth > 2)
+  if (tagError)
   {
     return false;
   }
