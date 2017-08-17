@@ -219,6 +219,7 @@ bool dicomcli_readkey_query(
 {
   // read the tag path
   vtkDICOMTagPath tagPath;
+  std::string creator;
   size_t tagDepth = 0;
   size_t s = 0;
   size_t lineStart = s;
@@ -232,12 +233,9 @@ bool dicomcli_readkey_query(
   while (!tagError && tagDepth < 3)
   {
     // check for private creator in square brackets
-    size_t creatorStart = s;
-    size_t creatorEnd = s;
     if (cp[s] == '[')
     {
-      s++;
-      creatorStart = s;
+      size_t t = ++s;
       while (s < n && cp[s] != ']')
       {
         s++;
@@ -248,11 +246,8 @@ bool dicomcli_readkey_query(
         tagError = true;
         continue;
       }
-      creatorEnd = s;
-      s++;
+      creator.assign(&cp[t], s++ - t);
     }
-
-    std::string creator(&cp[creatorStart], creatorEnd - creatorStart);
 
     // read the DICOM tag
     vtkDICOMTag tag(0x0000,0x0000);
@@ -305,7 +300,7 @@ bool dicomcli_readkey_query(
     }
 
     // if creator, then resolve the tag now
-    if (creator.length() > 0)
+    if (creator.length() > 0 && (tag.GetGroup() & 0x0001) != 0)
     {
       if (tagDepth == 0)
       {
@@ -316,9 +311,12 @@ bool dicomcli_readkey_query(
         vtkDICOMSequence seq = query->Get(tagPath);
         vtkDICOMItem item = seq.GetItem(0);
         tag = item.ResolvePrivateTagForWriting(tag, creator);
+        // since "item" is copy-on-write, we have to get the
+        // creator element that was added to it, and then add
+        // that creator element to 'query' using the tag path
         vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
         vtkDICOMTagPath ctagPath = path_append(tagPath, ctag);
-        query->Set(ctagPath, creator);
+        query->Set(ctagPath, item.Get(ctag));
       }
     }
 
