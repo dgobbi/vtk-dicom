@@ -36,66 +36,69 @@ ostream& operator<<(ostream& o, const vtkDICOMTagPath& a)
       b = b.GetTail();
     }
   }
-  o << "]";
-
   return o;
 }
 
 //----------------------------------------------------------------------------
 vtkDICOMTagPath::vtkDICOMTagPath(
-  const vtkDICOMTagPath& pth, unsigned int i, vtkDICOMTag tag)
-  : Head(pth.Head), Index(pth.Index), Tail(pth.Tail), More(pth.More)
+  const vtkDICOMTagPath& p, unsigned int i, vtkDICOMTag tag)
+  : Size(p.Size+1), Head(p.Head), Index(p.Index), Tail(p.Tail), List(0)
 {
-  if (pth.GetHead() == vtkDICOMTag())
+  if (this->Size == 1)
   {
     this->Head = tag;
-    this->List = 0;
   }
-  else if (!pth.HasTail())
+  else if (this->Size == 2)
   {
     this->Index = i;
     this->Tail = tag;
-    this->List = 0;
   }
-  else if (pth.More == 0)
+  else if (this->Size == 3)
   {
-    this->More = (tag != vtkDICOMTag());
     this->Last.Index = i;
-    this->Last.Tail = tag;
+    this->Last.Tag = tag;
   }
-  else if (tag == vtkDICOMTag())
-  {
-    if (pth.More == 1)
-    {
-      this->Last = pth.Last;
-    }
-    else
-    {
-      this->List = vtkDICOMTagPath::CopyList(pth.List, pth.More);
-    }
-  }
-  else if (pth.More == 1)
+  else if (this->Size == 4)
   {
     Pair *l = new Pair[2];
-    l[0] = pth.Last;
+    l[0] = p.Last;
     l[1].Index = i;
-    l[1].Tail = tag;
-    this->More = 2;
+    l[1].Tag = tag;
     this->List = l;
   }
   else
   {
-    unsigned int n = pth.More;
+    unsigned int n = this->Size - 3;
     Pair *l = new Pair[n + 1];
     for (unsigned int j = 0; j < n; j++)
     {
-      l[j] = pth.List[j];
+      l[j] = p.List[j];
     }
     l[n].Index = i;
-    l[n].Tail = tag;
-    this->More = n + 1;
+    l[n].Tag = tag;
     this->List = l;
   }
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMTagPath& vtkDICOMTagPath::operator=(const vtkDICOMTagPath& o)
+{
+  if (this != &o)
+  {
+    this->Size = o.Size;
+    this->Head = o.Head;
+    this->Index = o.Index;
+    this->Tail = o.Tail;
+    if (o.Size <= 3)
+    {
+      this->Last = o.Last;
+    }
+    else
+    {
+      this->List = vtkDICOMTagPath::CopyList(o.List, o.Size - 2);
+    }
+  }
+  return *this;
 }
 
 //----------------------------------------------------------------------------
@@ -112,62 +115,65 @@ vtkDICOMTagPath::Pair *vtkDICOMTagPath::CopyList(const Pair *o, unsigned int n)
 //----------------------------------------------------------------------------
 vtkDICOMTagPath vtkDICOMTagPath::GetTail() const
 {
-  if (this->More == 0)
+  if (this->Size < 2)
+  {
+    return vtkDICOMTagPath();
+  }
+  if (this->Size == 2)
   {
     return vtkDICOMTagPath(this->Tail);
   }
-  else if (this->More == 1)
+  else if (this->Size == 3)
   {
-    return vtkDICOMTagPath(this->Tail, this->Last.Index, this->Last.Tail);
+    return vtkDICOMTagPath(this->Tail, this->Last.Index, this->Last.Tag);
   }
-  else if (this->More == 2)
+  else if (this->Size == 4)
   {
     return vtkDICOMTagPath(this->Tail,
-                           this->List[0].Index, this->List[0].Tail,
-                           this->List[1].Index, this->List[1].Tail);
+                           this->List[0].Index, this->List[0].Tag,
+                           this->List[1].Index, this->List[1].Tag);
   }
 
-  unsigned int n = this->More-1;
+  unsigned int n = this->Size - 3;
   Pair *t = this->List;
   Pair *l = vtkDICOMTagPath::CopyList(&this->List[1], n);
 
-  return vtkDICOMTagPath(this->Tail, t->Index, t->Tail, n, l);
+  return vtkDICOMTagPath(this->Tail, t->Index, t->Tag, n, l);
 }
 
 //----------------------------------------------------------------------------
 bool vtkDICOMTagPath::operator==(const vtkDICOMTagPath& b) const
 {
-  if (this->Head != b.Head)
+  if (this->Size != b.Size)
   {
     return false;
   }
-  if (!this->HasTail() || !b.HasTail())
+  if (this->Size > 0)
   {
-    return (this->HasTail() == b.HasTail());
-  }
-  if (this->Index != b.Index || this->Tail != b.Tail)
-  {
-    return false;
-  }
-  if (this->More != b.More)
-  {
-    return false;
-  }
-  if (this->More == 0)
-  {
-    return true;
-  }
-  if (this->More == 1)
-  {
-    return (this->Last.Index == b.Last.Index &&
-            this->Last.Tail == b.Last.Tail);
-  }
-  for (unsigned int i = 0; i < this->More; i++)
-  {
-    if (this->List[i].Index != b.List[i].Index &&
-        this->List[i].Tail != b.List[i].Tail)
+    if (this->Head != b.Head)
     {
       return false;
+    }
+    if (this->Size > 1)
+    {
+      if (this->Index != b.Index || this->Tail != b.Tail)
+      {
+        return false;
+      }
+      if (this->Size == 3)
+      {
+        return (this->Last.Index == b.Last.Index &&
+                this->Last.Tag == b.Last.Tag);
+      }
+      unsigned int n = this->Size - 2;
+      for (unsigned int i = 0; i < n; i++)
+      {
+        if (this->List[i].Index != b.List[i].Index &&
+            this->List[i].Tag != b.List[i].Tag)
+        {
+          return false;
+        }
+      }
     }
   }
   return true;
@@ -182,74 +188,54 @@ bool vtkDICOMTagPath::operator!=(const vtkDICOMTagPath& b) const
 //----------------------------------------------------------------------------
 bool vtkDICOMTagPath::operator<(const vtkDICOMTagPath& b) const
 {
+  if (this->Size == 0 || b.Size == 0)
+  {
+    return (this->Size < b.Size);
+  }
   if (this->Head != b.Head)
   {
     return (this->Head < b.Head);
   }
-  if (!this->HasTail() || !b.HasTail())
+  unsigned int n = (this->Size < b.Size ? this->Size : b.Size);
+  if (n > 1)
   {
-    return b.HasTail();
-  }
-  if (this->Index < b.Index ||
-      (this->Index == b.Index &&
-       (this->Tail != b.Tail)))
-  {
-    return (this->Tail < b.Tail);
-  }
-  if (this->More == 0 || b.More == 0)
-  {
-    return (this->More < b.More);
-  }
-
-  unsigned int aIndex;
-  vtkDICOMTag aTail;
-  unsigned int bIndex = 0;
-  vtkDICOMTag bTail;
-
-  if (this->More == 1)
-  {
-    aIndex = this->Last.Index;
-    aTail = this->Last.Tail;
-  }
-  else
-  {
-    aIndex = this->List[0].Index;
-    aTail = this->List[0].Tail;
-  }
-  if (b.More == 1)
-  {
-    bIndex = b.Last.Index;
-    bTail = b.Last.Tail;
-  }
-  else
-  {
-    bIndex = b.List[0].Index;
-    bTail = b.List[0].Tail;
-  }
-
-  unsigned int i = 0;
-  for (;;)
-  {
-    if (aIndex < bIndex ||
-        (aIndex == bIndex &&
-         (aTail != bTail)))
+    if (this->Index != b.Index)
     {
-      return (aTail < bTail);
+      return (this->Index < b.Index);
     }
-
-    i++;
-    if (i >= this->More || i >= b.More)
+    if (this->Tail != b.Tail)
     {
-      break;
+      return (this->Tail < b.Tail);
     }
-
-    aIndex = this->List[i].Index;
-    aTail = this->List[i].Tail;
-    bIndex = b.List[i].Index;
-    bTail = b.List[i].Tail;
   }
+  if (n > 2)
+  {
+    Pair p1 = (this->Size == 3 ? this->Last : this->List[0]);
+    Pair p2 = (b.Size == 3 ? b.Last : b.List[0]);
 
-  return (this->More < b.More);
+    unsigned int m = n-2;
+    unsigned int i = 0;
+    for (;;)
+    {
+      if (p1.Index != p2.Index)
+      {
+        return (p1.Index < p2.Index);
+      }
+      if (p1.Tag != p2.Tag)
+      {
+        return (p1.Tag < p2.Tag);
+      }
+
+      if (++i == m)
+      {
+        break;
+      }
+
+      p1 = this->List[i];
+      p2 = b.List[i];
+    }
+  }
+  return (this->Size < b.Size);
 }
 
 //----------------------------------------------------------------------------

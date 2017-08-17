@@ -21,71 +21,57 @@
 //! A tag path for digging values out of sequence items.
 /*!
  *  The tag path makes it easier to access data elements that are
- *  buried within sequences.  In the interest of creating a simple
- *  and efficient implementation, it can go at most two levels deep.
+ *  buried within sequences.
  */
 class VTKDICOM_EXPORT vtkDICOMTagPath
 {
-private:
-  struct Pair
-  {
-    unsigned int Index;
-    vtkDICOMTag Tail;
-  };
-
 public:
   //@{
   //! Construct a tag path with an empty head and tail.
-  vtkDICOMTagPath() : Head(), Index(0), Tail(), More(0), List(0) {}
+  vtkDICOMTagPath() : Size(0), Head(), Index(0), Tail(), List(0) {}
 
   //! Construct a tag path from a sequence tag, item index, and item tag.
-  vtkDICOMTagPath(vtkDICOMTag seqTag, unsigned int i, vtkDICOMTag tag) :
-    Head(seqTag), Index(i), Tail(tag), More(0), List(0) {}
+  vtkDICOMTagPath(vtkDICOMTag seqTag, unsigned int i, vtkDICOMTag tag)
+    : Size(2), Head(seqTag), Index(i), Tail(tag), List(0) {}
 
   //! Construct a tag path that goes two levels deep.
   vtkDICOMTagPath(vtkDICOMTag seqTag, unsigned int i, vtkDICOMTag tag,
-                  unsigned int j, vtkDICOMTag tag2) :
-    Head(seqTag), Index(i), Tail(tag) {
-    More = (tag2 != vtkDICOMTag()); Last.Index = j; Last.Tail = tag2; }
+                  unsigned int j, vtkDICOMTag tag2)
+    : Size(3), Head(seqTag), Index(i), Tail(tag) {
+    Last.Index = j; Last.Tag = tag2; }
 
   //! Construct a tag path by adding to an existing tag path.
-  vtkDICOMTagPath(const vtkDICOMTagPath& pth, unsigned int i, vtkDICOMTag tag);
+  vtkDICOMTagPath(const vtkDICOMTagPath& path, unsigned int i,
+                  vtkDICOMTag tag);
 
   //! Construct a tag path from just a single tag.
-  explicit vtkDICOMTagPath(vtkDICOMTag tag) :
-    Head(tag), Index(0), Tail(), More(0), List(0) {}
+  explicit vtkDICOMTagPath(vtkDICOMTag tag)
+    : Size(1), Head(tag), Index(0), Tail(), List(0) {}
 
   //! Copy constructor.
-  vtkDICOMTagPath(const vtkDICOMTagPath& o) :
-    Head(o.Head), Index(o.Index), Tail(o.Tail), More(o.More) {
-    if (o.More <= 1) {
+  vtkDICOMTagPath(const vtkDICOMTagPath& o)
+    : Size(o.Size), Head(o.Head), Index(o.Index), Tail(o.Tail) {
+    if (o.Size <= 3) {
       this->Last = o.Last; }
     else {
-      this->List = vtkDICOMTagPath::CopyList(o.List, o.More); } }
+      this->List = vtkDICOMTagPath::CopyList(o.List, o.Size - 2); } }
   //@}
 
   //@{
   //! Destructor.
   ~vtkDICOMTagPath() {
-    if (this->More > 1) { delete [] this->List; } }
+    if (this->Size > 3) { delete [] this->List; } }
   //@}
 
   //@{
   //! Assignment operator.
-  vtkDICOMTagPath& operator=(const vtkDICOMTagPath& o) {
-    this->Head = o.Head; this->Index = o.Index; this->Tail = o.Tail;
-    this->More = o.More;
-    if (o.More <= 1) {
-      this->Last = o.Last; }
-    else {
-      this->List = vtkDICOMTagPath::CopyList(o.List, o.More); }
-    return *this; }
+  vtkDICOMTagPath& operator=(const vtkDICOMTagPath& o);
   //@}
 
   //@{
   //! If there is no tail, then Head is the end of the path.
   bool HasTail() const {
-    return (this->Tail > vtkDICOMTag()); }
+    return (this->Size > 1); }
 
   //! Get the path head, which should be a sequence if HasTail() is true.
   vtkDICOMTag GetHead() const {
@@ -109,16 +95,22 @@ public:
   //@}
 
 private:
+  struct Pair
+  {
+    unsigned int Index;
+    vtkDICOMTag Tag;
+  };
+
   vtkDICOMTagPath(vtkDICOMTag seqTag, unsigned int i, vtkDICOMTag tag,
                   unsigned int n, Pair *l) :
-    Head(seqTag), Index(i), Tail(tag), More(n), List(l) {}
+    Size(n+2), Head(seqTag), Index(i), Tail(tag), List(l) {}
 
   static Pair *CopyList(const Pair *o, unsigned int n);
 
+  unsigned int Size;
   vtkDICOMTag Head;
   unsigned int Index;
   vtkDICOMTag Tail;
-  unsigned int More;
   union {
     Pair Last;
     Pair *List;
