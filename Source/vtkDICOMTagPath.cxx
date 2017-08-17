@@ -17,25 +17,20 @@
 ostream& operator<<(ostream& o, const vtkDICOMTagPath& a)
 {
   o << "[";
-  o << a.GetHead();
-  if (a.HasTail())
+  unsigned int n = a.GetSize();
+  if (n > 0)
   {
-    unsigned int i = a.GetIndex();
-    vtkDICOMTagPath b = a.GetTail();
-    for (;;)
+    o << a.GetHead();
+    for (unsigned int i = 1; i < n; i++)
     {
       o << ",";
-      o << i;
+      o << a.GetIndex(i-1);
       o << ",";
-      o << b.GetHead();
-      if (!b.HasTail())
-      {
-        break;
-      }
-      i = b.GetIndex();
-      b = b.GetTail();
+      o << a.GetTag(i);
     }
   }
+  o << "]";
+
   return o;
 }
 
@@ -139,6 +134,46 @@ vtkDICOMTagPath vtkDICOMTagPath::GetTail() const
   Pair *l = vtkDICOMTagPath::CopyList(&this->List[1], n);
 
   return vtkDICOMTagPath(this->Tail, t->Index, t->Tag, n, l);
+}
+
+//----------------------------------------------------------------------------
+unsigned int vtkDICOMTagPath::GetIndex(unsigned int i) const
+{
+  if (i == 0)
+  {
+    return this->Index;
+  }
+  if (i == 1 && this->Size <= 3)
+  {
+    return this->Last.Index;
+  }
+  if (this->Size > 0 && i < this->Size - 1)
+  {
+    return this->List[i-1].Index;
+  }
+  return 0;
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMTag vtkDICOMTagPath::GetTag(unsigned int i) const
+{
+  if (i == 0)
+  {
+    return this->Head;
+  }
+  if (i == 1)
+  {
+    return this->Tail;
+  }
+  if (i == 2 && this->Size <= 3)
+  {
+    return this->Last.Tag;
+  }
+  if (i < this->Size)
+  {
+    return this->List[i-2].Tag;
+  }
+  return vtkDICOMTag();
 }
 
 //----------------------------------------------------------------------------

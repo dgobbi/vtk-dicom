@@ -81,7 +81,17 @@ public:
   unsigned int GetIndex() const {
     return this->Index; }
 
-  //! Get the remainder of the path.
+  //! Get the nth index in the path.
+  unsigned int GetIndex(unsigned int i) const;
+
+  //! Get the nth tag in the path.
+  vtkDICOMTag GetTag(unsigned int i) const;
+
+  //! Get the number of tags in the path.
+  unsigned int GetSize() const {
+    return this->Size; }
+
+  //! Get the remainder of the path (after Head and Index).
   vtkDICOMTagPath GetTail() const;
   //@}
 
