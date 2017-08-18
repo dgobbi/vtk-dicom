@@ -494,9 +494,9 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       vtkDICOMSequence sharedSeq =
         meta->Get(i, DC::SharedFunctionalGroupsSequence);
 
-      if (numberOfFrames == 0)
+      if (numberOfFrames == 0 && frameSeq.GetNumberOfItems() > 0)
       {
-        numberOfFrames = frameSeq.GetNumberOfItems();
+        numberOfFrames = 1;
       }
 
       if (ii == 0 && numberOfFrames > 0)
