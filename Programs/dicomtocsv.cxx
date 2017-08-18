@@ -146,7 +146,10 @@ void ErrorObserver::Execute(vtkObject *o, unsigned long e, void *data)
     {
       dicomcli_error_helper(this->MetaData, parser->GetIndex());
     }
-    std::cerr << static_cast<char *>(data);
+    if (data)
+    {
+      fprintf(stderr, "%s", static_cast<char *>(data));
+    }
   }
 }
 
