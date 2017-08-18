@@ -363,7 +363,7 @@ void printElementFromTagPath(
             vtkDICOMDictionary::FindDictEntry(p.GetHead());
           vtkDICOMVR vr = entry.GetVR();
           const char *name = entry.GetName();
-          name = (name ? name : "Unknown");
+          name = ((name && name[0]) ? name : "Unknown");
           printf("(%04X,%04X) %s \"%s\" : (nested)\n",
             g, e, vr.GetText(), name);
           break;

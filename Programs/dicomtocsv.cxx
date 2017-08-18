@@ -283,7 +283,9 @@ void dicomtocsv_writeheader(
       vtkDICOMDictEntry e = pitem->FindDictEntry(tag);
       if (e.IsValid())
       {
-        fprintf(fp, "%s", e.GetName());
+        const char *name = e.GetName();
+        name = ((name && name[0]) ? name : "Unknown");
+        fprintf(fp, "%s", name);
       }
       if (!tagPath.HasTail())
       {
