@@ -490,6 +490,11 @@ public:
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter, size_t &bytesRead);
 
+  // Query the elements of one item within a sequence.
+  bool QueryOneItem(
+    const unsigned char* &cp, const unsigned char* &ep,
+    unsigned int l, vtkDICOMTag delimiter, size_t &bytesRead);
+
   // A SkipElements that copies skipped bytes into value "v".
   // This method is used when parsing encapsulated data, it simply
   // reads the encapsulated data into the value as raw bytes.
@@ -1313,57 +1318,13 @@ size_t Decoder<E>::ReadElementValue(
 
           if (this->HasQuery)
           {
-            assert(this->Query != this->QueryEnd);
-
-            // save the current query state before going one level deeper
-            bool hasQuery = this->HasQuery;
-            bool queryMatched = this->QueryMatched;
-            vtkDICOMDataElementIterator query = this->Query;
-            vtkDICOMDataElementIterator queryEnd = this->QueryEnd;
-            vtkDICOMDataElementIterator querySave = this->QuerySave;
-
-            // set default HasQuery to 'false' to match everything
-            this->HasQuery = false;
-
-            if ((query->GetTag().GetGroup() & 1) == 0 &&
-                query->GetValue().GetNumberOfValues() > 0)
-            {
-              // if query sequence isn't empty, set HasQuery to 'true' and
-              // use the sequence item as the new data set query
-              const vtkDICOMItem *qitems = query->GetValue().GetSequenceData();
-              if (qitems != 0 && qitems[0].GetNumberOfDataElements() != 0)
-              {
-                this->HasQuery = true;
-                this->QueryMatched = true;
-                this->Query = qitems[0].Begin();
-                this->QueryEnd = qitems[0].End();
-                this->QuerySave = this->Query;
-
-                // initialize queryMatched to false at the start of seq
-                queryMatched &= (seq.GetNumberOfItems() > 0);
-              }
-            }
-
-            this->ReadElements(cp, ep, il, endtag, l);
-
-            // check query keys up to the end of the item
-            if (this->HasQuery)
-            {
-              this->AdvanceQueryIterator(vtkDICOMTag(0xffff,0xffff));
-            }
-
-            // restore the query state
-            this->HasQuery = hasQuery;
-            this->QueryMatched |= queryMatched;
-            this->Query = query;
-            this->QueryEnd = queryEnd;
-            this->QuerySave = querySave;
+            this->QueryOneItem(cp, ep, il, endtag, l);
           }
           else
           {
-            // if HasQuery is false, simply read the item
             this->ReadElements(cp, ep, il, endtag, l);
           }
+
           seq.AddItem(item);
           this->PopContext();
         }
@@ -1562,6 +1523,58 @@ bool Decoder<E>::ReadElements(
   }
 
   bytesRead += tl;
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+template<int E>
+bool Decoder<E>::QueryOneItem(
+  const unsigned char* &cp, const unsigned char* &ep,
+  unsigned int l, vtkDICOMTag delimiter, size_t &bytesRead)
+{
+  assert(this->Query != this->QueryEnd);
+
+  // save the current query state before going one level deeper
+  bool hasQuery = this->HasQuery;
+  bool queryMatched = this->QueryMatched;
+  vtkDICOMDataElementIterator query = this->Query;
+  vtkDICOMDataElementIterator queryEnd = this->QueryEnd;
+  vtkDICOMDataElementIterator querySave = this->QuerySave;
+
+  // set default HasQuery to 'false' to match everything
+  this->HasQuery = false;
+
+  if ((query->GetTag().GetGroup() & 1) == 0 &&
+      query->GetValue().GetNumberOfValues() > 0)
+  {
+    // if query sequence isn't empty, set HasQuery to 'true' and
+    // use the sequence item as the new data set query
+    const vtkDICOMItem *qitems = query->GetValue().GetSequenceData();
+    if (qitems != 0 && qitems[0].GetNumberOfDataElements() != 0)
+    {
+      this->HasQuery = true;
+      this->QueryMatched = true;
+      this->Query = qitems[0].Begin();
+      this->QueryEnd = qitems[0].End();
+      this->QuerySave = this->Query;
+    }
+  }
+
+  this->ReadElements(cp, ep, l, delimiter, bytesRead);
+
+  // check query keys up to the end of the item
+  if (this->HasQuery)
+  {
+    this->AdvanceQueryIterator(vtkDICOMTag(0xffff,0xffff));
+  }
+
+  // restore the query state
+  this->HasQuery = hasQuery;
+  this->QueryMatched &= queryMatched;
+  this->Query = query;
+  this->QueryEnd = queryEnd;
+  this->QuerySave = querySave;
 
   return true;
 }
