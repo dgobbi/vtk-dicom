@@ -1319,14 +1319,18 @@ size_t Decoder<E>::ReadElementValue(
 
           if (this->HasQuery)
           {
-            queryMatched |= this->QueryOneItem(cp, ep, il, endtag, l);
+            if (this->QueryOneItem(cp, ep, il, endtag, l))
+            {
+              queryMatched = true;
+              seq.AddItem(item);
+            }
           }
           else
           {
             this->ReadElements(cp, ep, il, endtag, l);
+            seq.AddItem(item);
           }
 
-          seq.AddItem(item);
           this->PopContext();
         }
         else if (g == HxFFFE && e == HxE0DD)

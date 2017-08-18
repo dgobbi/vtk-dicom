@@ -516,8 +516,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
               // check if we have reached the end of a tag path
               if (!tpath.HasTail())
               {
-                if (vp == 0 && vptr != 0 &&
-                    vptr->Matches(qitem->Get(tpath.GetHead())))
+                if (vp == 0 && vptr != 0)
                 {
                   vp = vptr;
                   break;

@@ -523,6 +523,7 @@ int MAINMACRO(int argc, char *argv[])
   vtkSmartPointer<vtkDICOMParser> parser =
     vtkSmartPointer<vtkDICOMParser>::New();
   parser->SetDefaultCharacterSet(charset);
+  parser->SetQueryItem(query);
 
   vtkSmartPointer<vtkDICOMMetaData> data =
     vtkSmartPointer<vtkDICOMMetaData>::New();
