@@ -1293,6 +1293,7 @@ size_t Decoder<E>::ReadElementValue(
     {
       vtkDICOMTag tag = this->LastTag;
       vtkDICOMSequence seq;
+      bool queryMatched = false;
       l = 0;
       while (l < static_cast<size_t>(vl) || vl == HxFFFFFFFF)
       {
@@ -1318,7 +1319,7 @@ size_t Decoder<E>::ReadElementValue(
 
           if (this->HasQuery)
           {
-            this->QueryOneItem(cp, ep, il, endtag, l);
+            queryMatched |= this->QueryOneItem(cp, ep, il, endtag, l);
           }
           else
           {
@@ -1357,6 +1358,12 @@ size_t Decoder<E>::ReadElementValue(
         seq = seq2;
       }
       v = seq;
+
+      // save whether query matched for any of the items
+      if (this->HasQuery)
+      {
+        this->QueryMatched = queryMatched;
+      }
 
       // reset the tag and VR as we step out of the sequence
       this->LastTag = tag;
@@ -1419,8 +1426,9 @@ bool Decoder<E>::ReadElements(
       if (vl != HxFFFFFFFF)
       {
         // constant length item
-        tl = this->SkipData(cp, ep, vl);
-        if (tl != static_cast<size_t>(vl)) { return false; }
+        size_t sl = this->SkipData(cp, ep, vl);
+        tl += sl;
+        if (sl != static_cast<size_t>(vl)) { return false; }
       }
       else
       {
@@ -1536,20 +1544,19 @@ bool Decoder<E>::QueryOneItem(
   assert(this->Query != this->QueryEnd);
 
   // save the current query state before going one level deeper
-  bool hasQuery = this->HasQuery;
   bool queryMatched = this->QueryMatched;
   vtkDICOMDataElementIterator query = this->Query;
   vtkDICOMDataElementIterator queryEnd = this->QueryEnd;
   vtkDICOMDataElementIterator querySave = this->QuerySave;
 
+  // if query element is empty, then use universal matching:
   // set default HasQuery to 'false' to match everything
   this->HasQuery = false;
 
-  if ((query->GetTag().GetGroup() & 1) == 0 &&
-      query->GetValue().GetNumberOfValues() > 0)
+  // if query sequence isn't empty, set HasQuery to 'true' and
+  // use the sequence item as the new data set query
+  if (query->GetValue().GetNumberOfValues() > 0)
   {
-    // if query sequence isn't empty, set HasQuery to 'true' and
-    // use the sequence item as the new data set query
     const vtkDICOMItem *qitems = query->GetValue().GetSequenceData();
     if (qitems != 0 && qitems[0].GetNumberOfDataElements() != 0)
     {
@@ -1569,14 +1576,16 @@ bool Decoder<E>::QueryOneItem(
     this->AdvanceQueryIterator(vtkDICOMTag(0xffff,0xffff));
   }
 
+  bool matched = (this->QueryMatched & queryMatched);
+
   // restore the query state
-  this->HasQuery = hasQuery;
-  this->QueryMatched &= queryMatched;
+  this->HasQuery = true;
+  this->QueryMatched = queryMatched;
   this->Query = query;
   this->QueryEnd = queryEnd;
   this->QuerySave = querySave;
 
-  return true;
+  return matched;
 }
 
 //----------------------------------------------------------------------------
