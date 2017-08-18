@@ -343,6 +343,14 @@ std::string dicomtocsv_quote(const std::string& s)
   return r;
 }
 
+// A helper struct for dicomtocsv_write
+struct SearchState {
+  vtkDICOMTagPath p;
+  const vtkDICOMItem *q;
+  const vtkDICOMItem *m;
+  const vtkDICOMItem *n;
+};
+
 // Write out the results in csv format
 void dicomtocsv_write(vtkDICOMDirectory *finder,
   const vtkDICOMItem& query, const QueryTagList *ql, FILE *fp,
@@ -451,14 +459,8 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
             vtkDICOMMetaDataAdapter adapter(meta, ii);
 
             // Create a stack for searching the whole tree
-            struct stuff {
-              vtkDICOMTagPath p;
-              const vtkDICOMItem *q;
-              const vtkDICOMItem *m;
-              const vtkDICOMItem *n;
-            };
-            std::vector<stuff> tstack(1);
-            stuff &head = tstack.back();
+            std::vector<SearchState> tstack(1);
+            SearchState &head = tstack.back();
             head.p = tagPath;
             head.q = &query;
             head.m = 0;
@@ -466,7 +468,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
 
             while (!tstack.empty())
             {
-              stuff &top = tstack.back();
+              SearchState &top = tstack.back();
               if (top.m == top.n)
               {
                 tstack.pop_back();
@@ -530,7 +532,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
                 if (mitem)
                 {
                   tstack.resize(tstack.size()+1);
-                  stuff &b = tstack.back();
+                  SearchState &b = tstack.back();
                   b.p = tstack[tstack.size()-2].p.GetTail();
                   b.q = qitem;
                   b.m = mitem;
