@@ -38,6 +38,7 @@
 #include <stdlib.h>
 
 #include <limits>
+#include <vector>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -437,8 +438,6 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
             fprintf(fp, "%s", ",");
           }
 
-          const vtkDICOMItem *qitem = &query;
-          const vtkDICOMItem *mitem = 0;
           const vtkDICOMValue *vp = 0;
           vtkDICOMTagPath tagPath = ql->at(i);
 
@@ -451,9 +450,34 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
             // the PerFrameFunctionalSequence of enhanced IODs.
             vtkDICOMMetaDataAdapter adapter(meta, ii);
 
-            for (;;)
+            // Create a stack for searching the whole tree
+            struct stuff {
+              vtkDICOMTagPath p;
+              const vtkDICOMItem *q;
+              const vtkDICOMItem *m;
+              const vtkDICOMItem *n;
+            };
+            std::vector<stuff> tstack(1);
+            stuff &head = tstack.back();
+            head.p = tagPath;
+            head.q = &query;
+            head.m = 0;
+            head.n = head.m + 1;
+
+            while (!tstack.empty())
             {
-              vtkDICOMTag tag = tagPath.GetHead();
+              stuff &top = tstack.back();
+              if (top.m == top.n)
+              {
+                tstack.pop_back();
+                continue;
+              }
+
+              const vtkDICOMTagPath& tpath = top.p;
+              const vtkDICOMItem *qitem = top.q;
+              const vtkDICOMItem *mitem = top.m++;
+
+              vtkDICOMTag tag = tpath.GetHead();
               std::string creator;
               if ((tag.GetGroup() & 0x0001) == 1)
               {
@@ -468,39 +492,51 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
                   tag = adapter->ResolvePrivateTag(tag, creator);
                 }
               }
+              const vtkDICOMValue *vptr = 0;
               if (mitem)
               {
-                vp = &mitem->Get(tag);
+                vptr = &mitem->Get(tag);
               }
               else if (tag != DC::NumberOfFrames)
               {
                 // vtkDICOMMetaDataAdapter hides NumberOfFrames, so it
                 // will never be found if we check the adapter
-                vp = &adapter->Get(tag);
+                vptr = &adapter->Get(tag);
               }
               else
               {
-                vp = &meta->Get(ii, tag);
+                vptr = &meta->Get(ii, tag);
               }
-              if (vp && !vp->IsValid())
+              if (vptr && !vptr->IsValid())
               {
-                vp = 0;
+                vptr = 0;
               }
-              // break if we have reached the end of a tag path
-              if (vp == 0 || !tagPath.HasTail())
+              // check if we have reached the end of a tag path
+              if (!tpath.HasTail())
               {
-                break;
+                if (vp == 0 && vptr != 0 &&
+                    vptr->Matches(qitem->Get(tpath.GetHead())))
+                {
+                  vp = vptr;
+                  break;
+                }
               }
-              // go one level deeper into the query
-              qitem = qitem->Get(
-                tagPath.GetHead()).GetSequenceData();
-              // go one level deeper along the tag path
-              tagPath = tagPath.GetTail();
-              // go one level deeper into the meta data
-              mitem = vp->GetSequenceData();
-              if (mitem == 0 || vp->GetNumberOfValues() == 0)
+              else if (vptr != 0)
               {
-                break;
+                // go one level deeper into the query
+                qitem = qitem->Get(tpath.GetHead()).GetSequenceData();
+                // go one level deeper into the meta data
+                mitem = vptr->GetSequenceData();
+                if (mitem)
+                {
+                  tstack.resize(tstack.size()+1);
+                  stuff &b = tstack.back();
+                  b.p = tstack[tstack.size()-2].p.GetTail();
+                  b.q = qitem;
+                  b.m = mitem;
+                  b.n = mitem + vptr->GetNumberOfValues();
+                  continue;
+                }
               }
             }
             // If numerical value is zero, keep going until non-zero because
