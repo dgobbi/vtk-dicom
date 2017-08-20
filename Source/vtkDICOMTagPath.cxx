@@ -51,14 +51,14 @@ vtkDICOMTagPath::vtkDICOMTagPath(
   else if (this->Size == 3)
   {
     this->Last.Index = i;
-    this->Last.Tag = tag;
+    this->Last.Tag.Key = tag.GetKey();
   }
   else if (this->Size == 4)
   {
     Pair *l = new Pair[2];
     l[0] = p.Last;
     l[1].Index = i;
-    l[1].Tag = tag;
+    l[1].Tag.Key = tag.GetKey();
     this->List = l;
   }
   else
@@ -70,7 +70,7 @@ vtkDICOMTagPath::vtkDICOMTagPath(
       l[j] = p.List[j];
     }
     l[n].Index = i;
-    l[n].Tag = tag;
+    l[n].Tag.Key = tag.GetKey();
     this->List = l;
   }
 }
@@ -198,13 +198,13 @@ bool vtkDICOMTagPath::operator==(const vtkDICOMTagPath& b) const
       if (this->Size == 3)
       {
         return (this->Last.Index == b.Last.Index &&
-                this->Last.Tag == b.Last.Tag);
+                this->Last.Tag.Key == b.Last.Tag.Key);
       }
       unsigned int n = this->Size - 2;
       for (unsigned int i = 0; i < n; i++)
       {
         if (this->List[i].Index != b.List[i].Index &&
-            this->List[i].Tag != b.List[i].Tag)
+            this->List[i].Tag.Key != b.List[i].Tag.Key)
         {
           return false;
         }
@@ -256,9 +256,9 @@ bool vtkDICOMTagPath::operator<(const vtkDICOMTagPath& b) const
       {
         return (p1.Index < p2.Index);
       }
-      if (p1.Tag != p2.Tag)
+      if (p1.Tag.Key != p2.Tag.Key)
       {
-        return (p1.Tag < p2.Tag);
+        return (p1.Tag.Key < p2.Tag.Key);
       }
 
       if (++i == m)

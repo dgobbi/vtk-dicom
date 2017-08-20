@@ -38,7 +38,7 @@ public:
   vtkDICOMTagPath(vtkDICOMTag seqTag, unsigned int i, vtkDICOMTag tag,
                   unsigned int j, vtkDICOMTag tag2)
     : Size(3), Head(seqTag), Index(i), Tail(tag) {
-    Last.Index = j; Last.Tag = tag2; }
+    Last.Index = j; Last.Tag.Key = tag2.GetKey(); }
 
   //! Construct a tag path by adding to an existing tag path.
   vtkDICOMTagPath(const vtkDICOMTagPath& path, unsigned int i,
@@ -108,7 +108,7 @@ private:
   struct Pair
   {
     unsigned int Index;
-    vtkDICOMTag Tag;
+    vtkDICOMTag::StaticTag Tag;
   };
 
   vtkDICOMTagPath(vtkDICOMTag seqTag, unsigned int i, vtkDICOMTag tag,
