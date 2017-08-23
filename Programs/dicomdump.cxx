@@ -376,7 +376,7 @@ void printElementFromTagPath(
           const vtkDICOMItem *items = iter->GetValue(j).GetSequenceData();
           if (items)
           {
-            size_t n = iter->GetValue().GetNumberOfValues();
+            size_t n = iter->GetValue(j).GetNumberOfValues();
             for (size_t i = 0; i < n; i++)
             {
               printElementFromTagPathRecurse(
