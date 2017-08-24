@@ -285,15 +285,24 @@ bool dicomcli_readkey_query(
       }
       else
       {
-        vtkDICOMSequence seq = query->Get(tagPath);
-        vtkDICOMItem item = seq.GetItem(0);
-        tag = item.ResolvePrivateTagForWriting(tag, creator);
-        // since "item" is copy-on-write, we have to get the
-        // creator element that was added to it, and then add
-        // that creator element to 'query' using the tag path
-        vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
-        vtkDICOMTagPath ctagPath = vtkDICOMTagPath(tagPath, 0, ctag);
-        query->Set(ctagPath, item.Get(ctag));
+        // Since "item" is copy-on-write, we have to resolve the
+        // private tag (causing the creator element to be added),
+        // then get the creator element that was added, and then
+        // add that creator element to our query data set (since
+        // the item has now become a copy due to copy-on-write).
+        vtkDICOMTagPath ctagPath;
+        vtkDICOMValue cval;
+        {
+          // this must be in its own scope in order to work...
+          vtkDICOMSequence seq = query->Get(tagPath);
+          vtkDICOMItem item = seq.GetItem(0);
+          tag = item.ResolvePrivateTagForWriting(tag, creator);
+          vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
+          ctagPath = vtkDICOMTagPath(tagPath, 0, ctag);
+          cval = item.Get(ctag);
+        }
+        // add the creator element
+        query->Set(ctagPath, cval);
       }
     }
 
