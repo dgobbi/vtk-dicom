@@ -110,8 +110,14 @@ void vtkDICOMItem::FreeList()
 //----------------------------------------------------------------------------
 void vtkDICOMItem::CopyList(const List *o, List *t)
 {
+  t->NumberOfDataElements = o->NumberOfDataElements;
+  t->DataElements = 0;
   t->ByteOffset = o->ByteOffset;
   t->Delimited = o->Delimited;
+  t->CharacterSet = o->CharacterSet;
+  t->VRForXS = o->VRForXS;
+  t->Head.Next = &t->Tail;
+  t->Tail.Prev = &t->Head;
 
   int n = o->NumberOfDataElements;
   if (n > 0)

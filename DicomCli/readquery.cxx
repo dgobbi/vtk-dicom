@@ -285,11 +285,15 @@ bool dicomcli_readkey_query(
       }
       else
       {
-        // Since "item" is copy-on-write, we have to resolve the
-        // private tag (causing the creator element to be added),
-        // then get the creator element that was added, and then
-        // add that creator element to our query data set (since
-        // the item has now become a copy due to copy-on-write).
+        // Since "item" is copy-on-write, we want to avoid creating
+        // an unnecessary copy when the the creator element is added.
+        // So we get the item, add the creator element, then get
+        // the tag and value for that element, and let the item go
+        // out of scope so that its reference count is decremented
+        // (hopefully decremented to 1, so that the "copy" is not
+        // performed).  Then we add the creator element to the
+        // query data set (which may have become a copy due to
+        // copy-on-write, if the reference count was greater than one).
         vtkDICOMTagPath ctagPath;
         vtkDICOMValue cval;
         {
