@@ -203,7 +203,7 @@ bool vtkDICOMTagPath::operator==(const vtkDICOMTagPath& b) const
       unsigned int n = this->Size - 2;
       for (unsigned int i = 0; i < n; i++)
       {
-        if (this->List[i].Index != b.List[i].Index &&
+        if (this->List[i].Index != b.List[i].Index ||
             this->List[i].Tag.Key != b.List[i].Tag.Key)
         {
           return false;
