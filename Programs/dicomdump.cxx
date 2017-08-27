@@ -529,6 +529,19 @@ int MAINMACRO(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMMetaData>::New();
   parser->SetMetaData(data);
 
+      {
+        vtkDICOMDataElementIterator iter = query.Begin();
+        vtkDICOMDataElementIterator iterEnd = query.End();
+
+        for (; iter != iterEnd; ++iter)
+        {
+          printElement(data, 0, iter, 0, 0);
+        }
+        for (size_t i = 0; i < qtlist.size(); i++)
+        {
+          std::cout << qtlist[i] << "\n";
+        }
+      }
   int m = sorter->GetNumberOfStudies();
   for (int j = 0; j < m; j++)
   {

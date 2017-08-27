@@ -24,3 +24,4 @@
 #define RCHAR 0xFFFD
 
 #endif /* vtkDICOMCharacterSetTables_h */
+// VTK-HeaderTest-Exclude: vtkDICOMCharacterSetTables.h
