@@ -797,6 +797,18 @@ unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
   return code;
 }
 
+// Store unconvertible characters as UTF-16 low surrogates.
+// These can be easily recognized when the UTF-8 is read, and the original
+// codes can easily be retrieved.
+void BadCharsToUTF8(const char *cp, const char *ep, std::string *s)
+{
+  while (cp != ep)
+  {
+    unsigned int code = 0xDC00 + static_cast<unsigned char>(*cp++);
+    UnicodeToUTF8(code, s);
+  }
+}
+
 // Convert a string to its lower-case equivalent.
 void CaseFoldUnicode(unsigned int code, std::string *s)
 {
@@ -1392,12 +1404,19 @@ size_t UTF8ToUTF8(const char *text, size_t l, std::string *s)
   {
     const char *lastpos = cp;
     unsigned int code = UTF8ToUnicode(&cp, ep);
-    if (code >= 0xFFFE && code <= 0xFFFF)
+    // check for 0xFFFE and 0xFFFF invalid characters that were not present
+    // in the original string, these are the error indicators
+    if (code >= 0xFFFE && code <= 0xFFFF &&
+        !(cp-lastpos >= 3 && lastpos[0] == '\xef' && lastpos[1] == '\xbf' &&
+          lastpos[2] >= '\xbe' && lastpos[2] <= '\xbf'))
     {
-      if (code == 0xFFFF) { code = 0xFFFD; }
+      if (code == 0xFFFF)
+      {
+        BadCharsToUTF8(lastpos, cp, s);
+      }
       errpos = (errpos ? errpos : lastpos);
     }
-    if (code != 0xFFFE)
+    else
     {
       UnicodeToUTF8(code, s);
     }
@@ -1422,7 +1441,7 @@ size_t ASCIIToUTF8(const char *text, size_t l, std::string *s)
   }
   else
   {
-    // codes > 0x7f become U+FFFD
+    // codes > 0x7f
     s->reserve(s->size() + l + 2*m);
     for (size_t i = 0; i < l; i++)
     {
@@ -1433,8 +1452,7 @@ size_t ASCIIToUTF8(const char *text, size_t l, std::string *s)
       }
       else
       {
-        // insert U+FFFD as utf-8
-        UnicodeToUTF8(0xFFFD, s);
+        BadCharsToUTF8(&text[i], &text[i+1], s);
         errpos = (errpos ? errpos : &text[i]);
       }
     }
@@ -1450,15 +1468,14 @@ size_t UnknownToUTF8(const char *text, size_t l, std::string *s)
   while (i < l)
   {
     unsigned int code = static_cast<unsigned char>(text[i++]);
-    if (code >= 0x21 && code < 0x7F)
+    if ((code >= 0x21 && code < 0x7F) || code > 0x7F)
     {
-      code = 0xFFFD;
+      BadCharsToUTF8(&text[i], &text[i+1], s);
     }
-    else if (code > 0x7F)
+    else
     {
-      code = 0xFFFD;
+      UnicodeToUTF8(code, s);
     }
-    UnicodeToUTF8(code, s);
   }
   return 0;
 }
@@ -1684,9 +1701,13 @@ size_t vtkDICOMCharacterSet::SJISToUTF8(
 
       if (code == 0xFFFD)
       {
+        BadCharsToUTF8(lastpos, cp, s);
         errpos = (errpos ? errpos : lastpos);
       }
-      UnicodeToUTF8(code, s);
+      else
+      {
+        UnicodeToUTF8(code, s);
+      }
     }
   }
 
@@ -1807,9 +1828,13 @@ size_t vtkDICOMCharacterSet::EUCJPToUTF8(
 
       if (code == 0xFFFD)
       {
+        BadCharsToUTF8(lastpos, cp, s);
         errpos = (errpos ? errpos : lastpos);
       }
-      UnicodeToUTF8(code, s);
+      else
+      {
+        UnicodeToUTF8(code, s);
+      }
     }
   }
 
@@ -1909,9 +1934,13 @@ size_t vtkDICOMCharacterSet::Big5ToUTF8(
 
       if (code == 0xFFFD)
       {
+        BadCharsToUTF8(lastpos, cp, s);
         errpos = (errpos ? errpos : lastpos);
       }
-      UnicodeToUTF8(code, s);
+      else
+      {
+        UnicodeToUTF8(code, s);
+      }
     }
   }
 
@@ -2054,9 +2083,13 @@ size_t vtkDICOMCharacterSet::GBKToUTF8(
 
       if (code == 0xFFFD)
       {
+        BadCharsToUTF8(lastpos, cp, s);
         errpos = (errpos ? errpos : lastpos);
       }
-      UnicodeToUTF8(code, s);
+      else
+      {
+        UnicodeToUTF8(code, s);
+      }
     }
   }
 
@@ -2242,7 +2275,17 @@ size_t vtkDICOMCharacterSet::GB18030ToUTF8(
           }
         }
       }
-      UnicodeToUTF8(code, s);
+      // the 4-byte code 0x84,0x31,0xA4,0x37 is the valid code for 0xFFFD
+      if (code == 0xFFFD && !(cp-lastpos >= 4 && lastpos[0] == '\x84' &&
+          lastpos[1] == '1' && lastpos[2] == '\xa4' && lastpos[3] == '7'))
+      {
+        BadCharsToUTF8(lastpos, cp, s);
+        errpos = (errpos ? errpos : lastpos);
+      }
+      else
+      {
+        UnicodeToUTF8(code, s);
+      }
     }
   }
 
@@ -2340,9 +2383,13 @@ size_t vtkDICOMCharacterSet::GB2312ToUTF8(
 
       if (code == 0xFFFD)
       {
+        BadCharsToUTF8(lastpos, cp, s);
         errpos = (errpos ? errpos : lastpos);
       }
-      UnicodeToUTF8(code, s);
+      else
+      {
+        UnicodeToUTF8(code, s);
+      }
     }
   }
 
@@ -2541,9 +2588,13 @@ size_t vtkDICOMCharacterSet::JISXToUTF8(
 
     if (code == 0xFFFD)
     {
+      BadCharsToUTF8(lastpos, cp, s);
       errpos = (errpos ? errpos : lastpos);
     }
-    UnicodeToUTF8(code, s);
+    else
+    {
+      UnicodeToUTF8(code, s);
+    }
   }
 
   return (errpos ? errpos-text : cp-text);
@@ -2758,9 +2809,13 @@ size_t vtkDICOMCharacterSet::EUCKRToUTF8(
 
     if (code == 0xFFFD)
     {
+      BadCharsToUTF8(lastpos, cp, s);
       errpos = (errpos ? errpos : lastpos);
     }
-    UnicodeToUTF8(code, s);
+    else
+    {
+      UnicodeToUTF8(code, s);
+    }
   }
 
   return (errpos ? errpos-text : cp-text);
@@ -2953,9 +3008,13 @@ size_t vtkDICOMCharacterSet::SingleByteToUTF8(
     if (code == 0xFFFD)
     {
       errpos = (errpos ? errpos : cp);
+      BadCharsToUTF8(cp, cp+1, s);
+    }
+    else
+    {
+      UnicodeToUTF8(code, s);
     }
     cp++;
-    UnicodeToUTF8(code, s);
   }
 
   return (errpos ? errpos-text : cp-text);
@@ -3048,8 +3107,12 @@ size_t vtkDICOMCharacterSet::ISO8859ToUTF8(
       if (code == 0xFFFD)
       {
         errpos = (errpos ? errpos : lastpos);
+        BadCharsToUTF8(lastpos, cp, s);
       }
-      UnicodeToUTF8(code, s);
+      else
+      {
+        UnicodeToUTF8(code, s);
+      }
     }
   }
   return (errpos ? errpos-text : cp-text);
