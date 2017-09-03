@@ -1647,13 +1647,8 @@ size_t vtkDICOMCharacterSet::SJISToUTF8(
       {
         code = x + 0xFEC0; // half-width katakana
       }
-      else if (x != 0x80 && x != 0xA0 && x <= 0xFC)
+      else if (x != 0x80 && x != 0xA0 && x <= 0xFC && cp != ep)
       {
-        if (cp == ep)
-        {
-          errpos = (errpos ? errpos : lastpos);
-          break;
-        }
         // get second byte of a two-byte Shift-JIS sequence
         unsigned short y = static_cast<unsigned char>(*cp);
         if (y >= 0x40 && y <= 0xFC && y != 0x7F)
@@ -1790,13 +1785,8 @@ size_t vtkDICOMCharacterSet::EUCJPToUTF8(
       unsigned int code = 0xFFFD;
       unsigned short x = static_cast<unsigned char>(c);
 
-      if (x >= 0x80 && x < 0xFF)
+      if (x >= 0x80 && x < 0xFF && cp != ep)
       {
-        if (cp == ep)
-        {
-          errpos = (errpos ? errpos : lastpos);
-          break;
-        }
         unsigned short y = static_cast<unsigned char>(*cp);
         if (y >= 0xA1 && y < 0xFF)
         {
@@ -1910,13 +1900,8 @@ size_t vtkDICOMCharacterSet::Big5ToUTF8(
       unsigned int code = 0xFFFD;
       unsigned short x = static_cast<unsigned char>(c);
 
-      if (x >= 0x81 && x <= 0xFE)
+      if (x >= 0x81 && x <= 0xFE && cp != ep)
       {
-        if (cp == ep)
-        {
-          errpos = (errpos ? errpos : lastpos);
-          break;
-        }
         unsigned short y = static_cast<unsigned char>(*cp);
         if ((y >= 0x40 && y <= 0x7E) || (y >= 0xA1 && y <= 0xFE))
         {
@@ -2048,38 +2033,35 @@ size_t vtkDICOMCharacterSet::GBKToUTF8(
     }
     else
     {
-      if (cp == ep)
-      {
-        errpos = (errpos ? errpos : lastpos);
-        break;
-      }
       unsigned int code = 0xFFFD;
       unsigned short a = static_cast<unsigned char>(c);
-      unsigned short b = static_cast<unsigned char>(*cp);
 
-      if (a > 0x80 && a < 0xFF &&
-          b >= 0x40 && b < 0xFF && b != 0x7F)
+      if (a > 0x80 && a < 0xFF && cp != ep)
       {
-        // two-byte character
-        if (a < 0xA1)
+        unsigned short b = static_cast<unsigned char>(*cp);
+        if (b >= 0x40 && b < 0xFF && b != 0x7F)
         {
-          // GBK region 3
-          if (b > 0x7F) { b--; }
-          a = (a - 0x81)*190 + (b - 0x40) + 8836;
+          // two-byte character
+          if (a < 0xA1)
+          {
+            // GBK region 3
+            if (b > 0x7F) { b--; }
+            a = (a - 0x81)*190 + (b - 0x40) + 8836;
+          }
+          else if (b < 0xA1)
+          {
+            // GBK regions 4 & 5
+            if (b > 0x7F) { b--; }
+            a = (a - 0xA1)*96 + (b - 0x40) + 8836 + 6080;
+          }
+          else
+          {
+            // GBK regions 1 & 2 (GB2312)
+            a = (a - 0xA1)*94 + (b - 0xA1);
+          }
+          code = table[a];
+          cp++;
         }
-        else if (b < 0xA1)
-        {
-          // GBK regions 4 & 5
-          if (b > 0x7F) { b--; }
-          a = (a - 0xA1)*96 + (b - 0x40) + 8836 + 6080;
-        }
-        else
-        {
-          // GBK regions 1 & 2 (GB2312)
-          a = (a - 0xA1)*94 + (b - 0xA1);
-        }
-        code = table[a];
-        cp++;
       }
 
       if (code == 0xFFFD)
@@ -2211,66 +2193,62 @@ size_t vtkDICOMCharacterSet::GB18030ToUTF8(
       }
       unsigned int code = 0xFFFD;
       unsigned short a = static_cast<unsigned char>(c);
-      unsigned short b = static_cast<unsigned char>(*cp);
 
-      if (a > 0x80 && a < 0xFF &&
-          b >= 0x30 && b < 0xFF && b != 0x7F)
+      if (a > 0x80 && a < 0xFF && cp != ep)
       {
-        cp++;
-        if (b >= 0x40)
+        unsigned short b = static_cast<unsigned char>(*cp);
+        if (b >= 0x30 && b < 0xFF && b != 0x7F)
         {
-          // two-byte character
-          if (a < 0xA1)
+          cp++;
+          if (b >= 0x40)
           {
-            // GBK region 3
-            if (b > 0x7F) { b--; }
-            a = (a - 0x81)*190 + (b - 0x40) + 8836;
-          }
-          else if (b < 0xA1)
-          {
-            // GBK regions 4 & 5
-            if (b > 0x7F) { b--; }
-            a = (a - 0xA1)*96 + (b - 0x40) + (8836 + 6080);
-          }
-          else
-          {
-            // GBK regions 1 & 2 (GB2312)
-            a = (a - 0xA1)*94 + (b - 0xA1);
-          }
-          code = table[a];
-        }
-        else
-        {
-          // start of a four-byte code
-          if (cp == ep || cp+1 == ep)
-          {
-            // unexpected end of input, terminate early
-            errpos = (errpos ? errpos : lastpos);
-            break;
-          }
-          if (static_cast<unsigned char>(cp[0]) > 0x80 &&
-              static_cast<unsigned char>(cp[0]) < 0xFF &&
-              cp[1] >= '0' && cp[1] <= '9')
-          {
-            // four-byte GB18030 character
-            unsigned short x = static_cast<unsigned char>(*cp++);
-            unsigned short y = static_cast<unsigned char>(*cp++);
-            a = (a - 0x81)*10 + (b - '0');
-            b = (x - 0x81)*10 + (y - '0');
-            if (a < 32)
+            // two-byte character
+            if (a < 0xA1)
             {
-              // for unicode within the BMP
-              a = a*1260 + b + 23940;
-              code = table[a];
+              // GBK region 3
+              if (b > 0x7F) { b--; }
+              a = (a - 0x81)*190 + (b - 0x40) + 8836;
             }
-            else if (a >= 150)
+            else if (b < 0xA1)
             {
-              // for unicode beyond the BMP
-              a -= 150;
-              unsigned int g = a*1260 + b;
-              if (g <= 0xFFFFF)
+              // GBK regions 4 & 5
+              if (b > 0x7F) { b--; }
+              a = (a - 0xA1)*96 + (b - 0x40) + (8836 + 6080);
+            }
+            else
+            {
+              // GBK regions 1 & 2 (GB2312)
+              a = (a - 0xA1)*94 + (b - 0xA1);
+            }
+            code = table[a];
+          }
+          else if (cp != ep && cp+1 != ep)
+          {
+            // start of a four-byte code
+            if (static_cast<unsigned char>(cp[0]) > 0x80 &&
+                static_cast<unsigned char>(cp[0]) < 0xFF &&
+                cp[1] >= '0' && cp[1] <= '9')
+            {
+              // four-byte GB18030 character
+              unsigned short x = static_cast<unsigned char>(*cp++);
+              unsigned short y = static_cast<unsigned char>(*cp++);
+              a = (a - 0x81)*10 + (b - '0');
+              b = (x - 0x81)*10 + (y - '0');
+              if (a < 32)
               {
-                code = g + 0x10000;
+                // for unicode within the BMP
+                a = a*1260 + b + 23940;
+                code = table[a];
+              }
+              else if (a >= 150)
+              {
+                // for unicode beyond the BMP
+                a -= 150;
+                unsigned int g = a*1260 + b;
+                if (g <= 0xFFFFF)
+                {
+                  code = g + 0x10000;
+                }
               }
             }
           }
@@ -2362,13 +2340,8 @@ size_t vtkDICOMCharacterSet::GB2312ToUTF8(
     {
       unsigned int code = 0xFFFD;
       unsigned short a = static_cast<unsigned char>(c);
-      if (a >= 0xA1 && a < 0xFF)
+      if (a >= 0xA1 && a < 0xFF && cp != ep)
       {
-        if (cp == ep)
-        {
-          errpos = (errpos ? errpos : lastpos);
-          break;
-        }
         unsigned short b = static_cast<unsigned char>(*cp);
 
         // default to replacement character
@@ -2545,24 +2518,18 @@ size_t vtkDICOMCharacterSet::JISXToUTF8(
     unsigned short a = static_cast<unsigned char>(*cp++);
     if (a >= 0x21 && a < 0x7F)
     {
+      bool good = true;
       if (multibyte)
       {
-        if (cp == ep)
-        {
-          errpos = (errpos ? errpos : lastpos);
-          break;
-        }
-
-        unsigned short b = static_cast<unsigned char>(*cp);
-        if (b >= 0x21 && b < 0x7F)
+        if (cp != ep && *cp >= 0x21 && *cp < 0x7F)
         {
           // convert double-byte to character
+          unsigned short b = static_cast<unsigned char>(*cp++);
           a = (a - 0x21)*94 + (b - 0x21);
-          cp++;
         }
         else
         {
-          a = 0xFFFD;
+          good = false;
         }
       }
       else if (csGL == ISO_2022_IR_13)
@@ -2570,7 +2537,7 @@ size_t vtkDICOMCharacterSet::JISXToUTF8(
         // shift to put half-width katakana in GL
         a += 0x80;
       }
-      if (a != 0xFFFD)
+      if (good)
       {
         code = table[a];
       }
@@ -2686,19 +2653,16 @@ size_t vtkDICOMCharacterSet::EUCKRToUTF8(
   while (cp != ep)
   {
     const char *lastpos = cp;
-    unsigned short code = static_cast<unsigned char>(*cp++);
-    if (code >= 0x81 && code < 0xFF)
+    unsigned int code = 0xFFFD;
+    unsigned short x = static_cast<unsigned char>(*cp++);
+    if (x <= 0x7F)
     {
-      if (cp == ep)
-      {
-        errpos = (errpos ? errpos : lastpos);
-        break;
-      }
+      code = x;
+    }
+    else if (x >= 0x81 && x < 0xFF && cp != ep)
+    {
       // convert two bytes into unicode
-      unsigned short x = code;
       unsigned short y = static_cast<unsigned char>(*cp);
-      // default to replacement character
-      code = 0xFFFD;
       if (x >= 0xA1 && y >= 0xA1 && y < 0xFF)
       {
         unsigned short a = x - 0xA1;
