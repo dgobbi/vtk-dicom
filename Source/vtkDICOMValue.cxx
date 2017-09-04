@@ -1820,6 +1820,9 @@ void vtkDICOMValue::Substring(
 {
   const char *cp = static_cast<const ValueT<char> *>(this->V)->Data;
   const char *ep = cp + this->V->VL;
+
+  // remove any trailing NULLs for UI values
+  while (ep != cp && ep[-1] == '\0') { --ep; }
   const char *dp = ep;
 
   if (this->V->NumberOfValues > 1 && ++i > 0)
@@ -1867,6 +1870,7 @@ void vtkDICOMValue::AppendValueToSafeUTF8String(
     size_t l = this->V->VL;
     if (this->V->VR.HasSingleValue())
     {
+      while (l > 0 && cp[l-1] == '\0') { l--; }
       while (l > 0 && cp[l-1] == ' ') { l--; }
     }
     else
@@ -1895,6 +1899,7 @@ void vtkDICOMValue::AppendValueToUTF8String(
     size_t l = this->V->VL;
     if (this->V->VR.HasSingleValue())
     {
+      while (l > 0 && cp[l-1] == '\0') { l--; }
       while (l > 0 && cp[l-1] == ' ') { l--; }
     }
     else
@@ -1939,6 +1944,7 @@ void vtkDICOMValue::AppendValueToString(
       if (this->V->VR.HasSingleValue())
       {
         // strip trailing spaces
+        while (dp != cp && dp[-1] == '\0') { --dp; }
         while (dp != cp && dp[-1] == ' ') { --dp; }
       }
       else
