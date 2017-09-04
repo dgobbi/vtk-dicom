@@ -1865,13 +1865,19 @@ void vtkDICOMValue::AppendValueToUTF8String(
       this->V->CharacterSet != 0)
   {
     const char *cp = static_cast<const ValueT<char> *>(this->V)->Data;
-    const char *dp = cp + (i == 0 ? this->V->VL : 0);
-    if (!this->V->VR.HasSingleValue())
+    size_t l = this->V->VL;
+    if (this->V->VR.HasSingleValue())
     {
+      while (l > 0 && cp[l-1] == ' ') { l--; }
+    }
+    else
+    {
+      const char *dp;
       this->Substring(i, cp, dp);
+      l = dp - cp;
     }
     vtkDICOMCharacterSet cs(this->V->CharacterSet);
-    str += cs.ToUTF8(cp, dp-cp);
+    str += cs.ToUTF8(cp, l);
   }
   else
   {
