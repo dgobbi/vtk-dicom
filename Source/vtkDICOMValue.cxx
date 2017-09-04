@@ -1858,6 +1858,33 @@ void vtkDICOMValue::Substring(
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMValue::AppendValueToSafeUTF8String(
+  std::string& str, size_t i) const
+{
+  if (this->V && this->V->Type == VTK_CHAR)
+  {
+    const char *cp = static_cast<const ValueT<char> *>(this->V)->Data;
+    size_t l = this->V->VL;
+    if (this->V->VR.HasSingleValue())
+    {
+      while (l > 0 && cp[l-1] == ' ') { l--; }
+    }
+    else
+    {
+      const char *dp;
+      this->Substring(i, cp, dp);
+      l = dp - cp;
+    }
+    vtkDICOMCharacterSet cs(this->V->CharacterSet);
+    str += cs.ToSafeUTF8(cp, l);
+  }
+  else
+  {
+    this->AppendValueToString(str, i);
+  }
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMValue::AppendValueToUTF8String(
   std::string& str, size_t i) const
 {
@@ -2844,14 +2871,21 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
 {
   vtkDICOMVR vr = v.GetVR();
   const char *cp = v.GetCharData();
+  const vtkDICOMValue *vp = v.GetMultiplexData();
+  size_t m = v.GetNumberOfValues();
 
   if (!v.IsValid())
   {
     os << "empty[0]";
   }
+  else if (vp)
+  {
+    // value is a multiplex of per-instance values
+    os << "values[" << m << "]";
+  }
   else if (vr == vtkDICOMVR::UN)
   {
-    os << "unknown[" << v.GetNumberOfValues() << "]";
+    os << "unknown[" << m << "]";
   }
   else if (vr == vtkDICOMVR::ST ||
            vr == vtkDICOMVR::LT ||
@@ -2881,7 +2915,6 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
   else if (vr == vtkDICOMVR::AT)
   {
     const vtkDICOMTag *tp = v.GetTagData();
-    size_t m = v.GetNumberOfValues();
     if (tp)
     {
       for (size_t j = 0; j < m; j++)
@@ -2897,52 +2930,42 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
   }
   else if (vr == vtkDICOMVR::SQ)
   {
-    os << "items[" << v.GetNumberOfValues() << "]";
+    os << "items[" << m << "]";
   }
   else if (vr == vtkDICOMVR::OB)
   {
-    os << "bytes[" << v.GetNumberOfValues() << "]";
+    os << "bytes[" << m << "]";
   }
   else if (vr == vtkDICOMVR::OW)
   {
-    os << "words[" << v.GetNumberOfValues() << "]";
+    os << "words[" << m << "]";
   }
-  else if (vr == vtkDICOMVR::OW)
+  else if (vr == vtkDICOMVR::OL)
   {
-    os << "longwords[" << v.GetNumberOfValues() << "]";
+    os << "longwords[" << m << "]";
   }
   else if (vr == vtkDICOMVR::OF)
   {
-    os << "floats[" << v.GetNumberOfValues() << "]";
+    os << "floats[" << m << "]";
   }
   else if (vr == vtkDICOMVR::OD)
   {
-    os << "doubles[" << v.GetNumberOfValues() << "]";
+    os << "doubles[" << m << "]";
   }
   else
   {
-    const vtkDICOMValue *vp = v.GetMultiplexData();
-    if (vp)
+    std::string s;
+    size_t n = (m <= 16 ? m : 16);
+    for (size_t i = 0; i < n; i++)
     {
-      // value is a multiplex of per-instance values
-      os << "values[" << v.GetNumberOfValues() << "]";
+      s.append((i == 0 ? "" : ","));
+      v.AppendValueToSafeUTF8String(s, i);
     }
-    else
+    if (m > n)
     {
-      std::string s;
-      size_t m = v.GetNumberOfValues();
-      size_t n = (m <= 16 ? m : 16);
-      for (size_t i = 0; i < n; i++)
-      {
-        s.append((i == 0 ? "" : ","));
-        v.AppendValueToUTF8String(s, i);
-      }
-      if (m > n)
-      {
-        s.append(",...");
-      }
-      os << s.c_str();
+      s.append(",...");
     }
+    os << s.c_str();
   }
 
   return os;

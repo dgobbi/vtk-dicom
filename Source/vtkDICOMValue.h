@@ -352,6 +352,15 @@ public:
    */
   void AppendValueToUTF8String(std::string &str, size_t i) const;
 
+  //@{
+  //! Append value "i" to the supplied UTF8 string for safe printing.
+  /*
+   *  This method will check for control characters or unconvertible
+   *  characters in the value, and will replace them with four-byte
+   *  codes of the form '\ooo' where 'o' is an octal digit.
+   */
+  void AppendValueToSafeUTF8String(std::string &str, size_t i) const;
+
   //! Append value "i" to the supplied string.
   /*!
    *  This will convert the value to human-readable format.
