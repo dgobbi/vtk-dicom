@@ -214,6 +214,31 @@ int main(int argc, char *argv[])
   }
   }
 
+  { // test "safe" conversions
+  for (int i = 0; ClunieText[i][0] != 0; i++)
+  {
+    // ToSafeUTF8 == ToUTF8 if string is already "safe"
+    std::string name = ClunieText[i][0];
+    std::string raw = ClunieText[i][2];
+    if (raw[raw.length()-1] == '\n') { continue; }
+    vtkDICOMCharacterSet cs(name);
+    TestAssert(cs.ToUTF8(raw) == cs.ToSafeUTF8(raw));
+  }
+  // test control codes (C0, C1, and DELETE)
+  vtkDICOMCharacterSet cs(vtkDICOMCharacterSet::ISO_IR_100);
+  TestAssert(cs.ToSafeUTF8("Hello\r\nWorld") == "Hello\\015\\012World");
+  TestAssert(cs.ToSafeUTF8("\201Hello World") == "\\201Hello World");
+  TestAssert(cs.ToSafeUTF8("Hello World\177") == "Hello World\\177");
+  // test convertible characters for ISO 8859
+  TestAssert(cs.ToSafeUTF8("\240 \377") == "\302\240 \303\277");
+  // test unconvertible characters for ISO 8859
+  cs = vtkDICOMCharacterSet::ISO_IR_109;
+  TestAssert(cs.ToSafeUTF8("Hello \245World") == "Hello \\245World");
+  // test unconvertible characters for other character sets
+  cs = vtkDICOMCharacterSet::X_CP1253;
+  TestAssert(cs.ToSafeUTF8("Hello\251 \252") == "Hello\302\251 \\252");
+  }
+
   { // test for proper escaping of backslashes in GB18030
   std::string name = "GB18030";
   // the following string includes a multi-byte character where the
