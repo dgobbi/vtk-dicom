@@ -167,46 +167,65 @@ void printElement(
              vr == vtkDICOMVR::ST ||
              vr == vtkDICOMVR::UT)
     {
-      // replace breaks with "\\", cap length to MAX_LENGTH
-      size_t l = (vl > MAX_LENGTH ? MAX_LENGTH-4 : vl);
+      vtkDICOMCharacterSet cs = v.GetCharacterSet();
       const char *cp = v.GetCharData();
-      std::string utf8;
-      if (v.GetCharacterSet() != vtkDICOMCharacterSet::ISO_IR_6)
+      size_t l = vl;
+      bool truncated = false;
+      while (l > 0 && cp[l-1] == ' ')
       {
-        utf8 = v.GetCharacterSet().ToUTF8(cp, l);
-        l = utf8.length();
-        cp = utf8.data();
+        l--;
       }
-      size_t j = 0;
-      while (j < l && cp[j] != '\0')
+      if (l > MAX_LENGTH)
       {
-        size_t k = j;
-        size_t m = j;
-        for (; j < l && cp[j] != '\0'; j++)
+        l = MAX_LENGTH;
+        truncated = true;
+      }
+      std::string utf8 = cs.ToSafeUTF8(cp, l);
+      cp = utf8.data();
+      l = utf8.length();
+      if (l > MAX_LENGTH)
+      {
+        l = MAX_LENGTH-3;
+        truncated = true;
+        // remove possibly incomplete final character
+        while (l > 1 && (cp[l-1] & 0xC0) == 0x80)
         {
-          m = j;
-          if (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f')
-          {
-            do { j++; }
-            while (j < l && (cp[j] == '\r' || cp[j] == '\n' || cp[j] == '\f'));
-            break;
-          }
-          m++;
+          l--;
         }
-        if (j == l)
+        l--;
+      }
+      s.append(cp, l);
+      if (truncated)
+      {
+        s.append("...");
+      }
+    }
+    else if (vr.HasTextValue())
+    {
+      vtkDICOMCharacterSet cs = v.GetCharacterSet();
+      const char *cp = v.GetCharData();
+      const char *ep = cp + vl;
+      size_t pos = 0;
+      while (cp != ep && *cp != '\0')
+      {
+        size_t n = cs.NextBackslash(cp, ep);
+        while (n > 0 && *cp == ' ') { cp++; n--; }
+        size_t m = n;
+        while (m > 0 && cp[m-1] == ' ') { m--; }
+        s.append(cs.ToSafeUTF8(cp, m));
+        cp += n;
+        if (cp != ep && *cp == '\\')
         {
-          while (m > 0 && cp[m-1] == ' ') { m--; }
+          s.append(cp, 1);
+          cp++;
         }
-        if (k != 0)
+        if (s.size() > MAX_LENGTH-4)
         {
-          s.append("\\\\");
-        }
-        s.append(&cp[k], m-k);
-        if (vl > MAX_LENGTH)
-        {
+          s.resize(pos);
           s.append("...");
           break;
         }
+        pos = s.size();
       }
     }
     else
@@ -216,7 +235,7 @@ void printElement(
       size_t pos = 0;
       for (size_t i = 0; i < n; i++)
       {
-        v.AppendValueToUTF8String(s, i);
+        v.AppendValueToString(s, i);
         if (i < n - 1)
         {
           s.append("\\");
