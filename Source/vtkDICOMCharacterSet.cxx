@@ -713,41 +713,37 @@ unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
           good &= ((s & 0xC0) == 0x80);
           cp += good;
           code |= (s & 0x3F);
-          // check for UTF16 surrogates
-          if (good && (code & 0xF800) == 0xD800)
+          // is this a high surrogate?
+          if ((code & 0xFC00) == 0xD800)
           {
             good = 0;
-            // is this a high surrogate?
-            if ((code & 0xFC00) == 0xD800)
+            // is it followed by a low surrogate?
+            if (cp == ep)
             {
-              // is it followed by a low surrogate?
-              if (cp == ep)
+              good = -1;
+            }
+            else if (cp[0] == 0xED)
+            {
+              if (cp+1 == ep)
               {
                 good = -1;
               }
-              else if (cp[0] == 0xED)
+              else if ((cp[1] & 0xF0) == 0xB0)
               {
-                if (cp+1 == ep)
+                if (cp+2 == ep)
                 {
                   good = -1;
                 }
-                else if ((cp[1] & 0xF0) == 0xB0)
+                else if ((cp[2] & 0xC0) == 0x80)
                 {
-                  if (cp+2 == ep)
-                  {
-                    good = -1;
-                  }
-                  else if ((cp[2] & 0xC0) == 0x80)
-                  {
-                    good = 1;
-                    code &= 0x03FF;
-                    code <<= 4;
-                    code |= cp[1] & 0x0F;
-                    code <<= 6;
-                    code |= cp[2] & 0x3F;
-                    code += 0x010000;
-                    cp += 3;
-                  }
+                  good = 1;
+                  code &= 0x03FF;
+                  code <<= 4;
+                  code |= cp[1] & 0x0F;
+                  code <<= 6;
+                  code |= cp[2] & 0x3F;
+                  code += 0x010000;
+                  cp += 3;
                 }
               }
             }
@@ -1418,6 +1414,11 @@ size_t UTF8ToUTF8(const char *text, size_t l, std::string *s)
     }
     else
     {
+      if ((code & 0xF800) == 0xD800)
+      {
+        // lone surrogates pass through, but are considered to be errors
+        errpos = (errpos ? errpos : lastpos);
+      }
       UnicodeToUTF8(code, s);
     }
   }
