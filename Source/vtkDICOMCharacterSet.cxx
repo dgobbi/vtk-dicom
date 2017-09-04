@@ -1553,6 +1553,17 @@ bool LastChanceConversion(std::string *s, const char *cp, const char *ep)
   return success;
 }
 
+// print a character escape code
+void OctalCharCode(std::string *s, unsigned char c)
+{
+  char text[4];
+  text[0] = '\\';
+  text[1] = '0' + (c >> 6);
+  text[2] = '0' + ((c >> 3) & 7);
+  text[3] = '0' + (c & 7);
+  s->append(text, 4);
+}
+
 } // end anonymous namespace
 
 //----------------------------------------------------------------------------
@@ -3429,6 +3440,71 @@ std::string vtkDICOMCharacterSet::ConvertToUTF8(
   const char *text, size_t l) const
 {
   return ToUTF8(text, l);
+}
+
+//----------------------------------------------------------------------------
+std::string vtkDICOMCharacterSet::ToSafeUTF8(
+  const char *text, size_t l) const
+{
+  std::string s = ToUTF8(text, l);
+  std::string t;
+
+  // scan the string for codes that are unsafe to print to a console
+  const char *lp = s.data();
+  const char *cp = lp;
+  const char *ep = lp + s.length();
+  while (cp != ep)
+  {
+    const char *dp = cp;
+    unsigned char a = static_cast<unsigned char>(*cp++);
+    if (a < 0x20 || a == 0x7f || a == '\\')
+    {
+      // C0 control code and backslash
+      t.append(lp, dp);
+      OctalCharCode(&t, a);
+      lp = cp;
+    }
+    else if ((a & 0xC0) == 0xC0  && cp != ep)
+    {
+      unsigned char b = static_cast<unsigned char>(*cp++);
+      if (a == 0xC2 && b < 0xA0)
+      {
+        // C1 control code
+        t.append(lp, dp);
+        OctalCharCode(&t, b);
+        lp = cp;
+      }
+      else if ((a & 0xE0) == 0xE0 && cp != ep)
+      {
+        unsigned char c = static_cast<unsigned char>(*cp++);
+        if (a == 0xED && (b & 0xF0) == 0xB0)
+        {
+          // UTF-16 low surrogate used to store bad char
+          unsigned short d = ((b & 0x0F) << 6) | (c & 0x3F);
+          if (d <= 0xFF)
+          {
+            t.append(lp, dp);
+            OctalCharCode(&t, static_cast<unsigned char>(d));
+            lp = cp;
+          }
+        }
+        else if ((a & 0xF0) == 0xF0 && cp != ep)
+        {
+          cp++;
+        }
+      }
+    }
+  }
+
+  // if scan didn't find anything to change, return the string
+  if (lp == s.data())
+  {
+    return s;
+  }
+
+  // return the safetied string
+  t.append(lp, ep);
+  return t;
 }
 
 //----------------------------------------------------------------------------

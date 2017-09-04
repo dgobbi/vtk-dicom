@@ -218,6 +218,16 @@ public:
   //! Obsolete method for converting to UTF8.
   std::string ConvertToUTF8(const char *text, size_t l) const;
 
+  //! Convert text to UTF-8 that is safe to print to the console.
+  /*!
+   *  All control characters or unconvertible characters will be replaced
+   *  by four-byte octal codes, e.g. '\033'.  Backslashes will be replaced
+   *  by '\134' to avoid any potential ambiguity.
+   */
+  std::string ToSafeUTF8(const char *text, size_t l) const;
+  std::string ToSafeUTF8(const std::string& text) const {
+    return ToSafeUTF8(text.data(), text.length()); }
+
   //! Convert text into a form suitable for case-insensitive matching.
   /*!
    *  This function will perform case normalization on a string by
