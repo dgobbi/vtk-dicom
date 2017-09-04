@@ -583,7 +583,17 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
             }
             else if (v.GetVL() != 0 && v.GetVL() != 0xFFFFFFFF)
             {
-              std::string s = dicomtocsv_quote(v.AsUTF8String());
+              std::string s;
+              size_t nv = v.GetNumberOfValues();
+              for (size_t iv = 0; iv < nv; iv++)
+              {
+                if (iv) { s.push_back('\\'); }
+                v.AppendValueToSafeUTF8String(s, iv);
+              }
+              if (s.find('\"') < s.length())
+              {
+                s = dicomtocsv_quote(s);
+              }
               fprintf(fp, "\"%s\"", s.c_str());
             }
           }
