@@ -67,6 +67,7 @@ void dicomtocsv_usage(FILE *file, const char *cp)
     "  -u <uids.txt>     Provide a file that contains a list of UIDs.\n"
     "  -o <data.csv>     Provide a file for the query results.\n"
     "  --first-nonzero   Search series for first nonzero value of each key.\n"
+    "  --all-unique      Report all unique values within each series.\n"
     "  --directory-only  Use directory scan only, do not re-scan files.\n"
     "  --ignore-dicomdir Ignore the DICOMDIR file even if it is present.\n"
     "  --charset <cs>    Charset to use if SpecificCharacterSet is missing.\n"
@@ -348,6 +349,85 @@ std::string dicomtocsv_quote(const std::string& s)
   return r;
 }
 
+// Check if value is a single binary value
+bool is_binary_number(const vtkDICOMValue& v)
+{
+  return (v.GetNumberOfValues() == 1 &&
+          (v.GetVR() == VR::SS ||
+           v.GetVR() == VR::US ||
+           v.GetVR() == VR::SL ||
+           v.GetVR() == VR::UL ||
+           v.GetVR() == VR::FL ||
+           v.GetVR() == VR::FD));
+}
+
+// Check if value is a date or time
+bool is_date_or_time(const vtkDICOMValue& v)
+{
+  return (v.GetVR() == VR::DA ||
+          v.GetVR() == VR::TM ||
+          v.GetVR() == VR::DT);
+}
+
+// Convert an attribute value to a printable string
+std::string value_as_string(const vtkDICOMValue& v)
+{
+  std::string s;
+
+  if (is_binary_number(v))
+  {
+    s = v.AsString();
+  }
+  else if (is_date_or_time(v))
+  {
+    size_t n = v.GetNumberOfValues();
+    for (size_t i = 0; i < n; i++)
+    {
+      if (i) { s.push_back('\\'); }
+      s = dicomtocsv_date(v.GetString(i), v.GetVR());
+    }
+  }
+  else if (v.GetVR() == VR::SQ)
+  {
+    // how should a sequence be printed out to the csv file?
+  }
+  else if (v.GetVL() != 0 && v.GetVL() != 0xFFFFFFFF)
+  {
+    size_t n = v.GetNumberOfValues();
+    for (size_t i = 0; i < n; i++)
+    {
+      if (i) { s.push_back('\\'); }
+      v.AppendValueToSafeUTF8String(s, i);
+    }
+    if (s.find('\"') < s.length())
+    {
+      s = dicomtocsv_quote(s);
+    }
+  }
+
+  return s;
+}
+
+// check to see if t appears in s already
+bool unique_value(const std::string& t, const std::string& s)
+{
+  size_t pos = 0;
+  size_t l = s.length();
+  size_t n = t.length();
+
+  while (pos < l && pos + n <= l)
+  {
+    if (s.compare(pos, n, t) == 0) 
+    {
+      return false;
+    }
+    pos = s.find('\\', pos);
+    if (pos < l) { pos++; }
+  }
+
+  return true;
+}
+
 // A helper struct for dicomtocsv_write
 struct SearchState {
   vtkDICOMTagPath p;
@@ -359,7 +439,8 @@ struct SearchState {
 // Write out the results in csv format
 void dicomtocsv_write(vtkDICOMDirectory *finder,
   const vtkDICOMItem& query, const QueryTagList *ql, FILE *fp,
-  int level, bool firstNonZero, bool useDirectoryRecords, vtkCommand *p)
+  int level, bool firstNonZero, bool allUnique, bool useDirectoryRecords,
+  vtkCommand *p)
 {
   // for keeping track of progress
   vtkIdType count = 0.0;
@@ -413,7 +494,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
       else
       {
         meta = vtkSmartPointer<vtkDICOMMetaData>::New();
-        if (level >= 4 || firstNonZero)
+        if (level >= 4 || firstNonZero || allUnique)
         {
           // need to parse all files
           meta->SetNumberOfInstances(a->GetNumberOfValues());
@@ -451,13 +532,16 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
             fprintf(fp, "%s", ",");
           }
 
-          const vtkDICOMValue *vp = 0;
           vtkDICOMTagPath tagPath = ql->at(i);
+          std::string s;
+          bool isNumber = true;
+          bool found = false;
+          bool done = false;
 
-          // this loop is only needed if firstNonZero is set
-          int n = (firstNonZero ? meta->GetNumberOfInstances() : 1);
+          // this loop is only needed if all images are to be checked
+          int n = (m == 1 ? meta->GetNumberOfInstances() : 1);
           n = (level >= 4 ? jj+1 : n);
-          for (int ii = jj; ii < n; ii++)
+          for (int ii = jj; ii < n && !done; ii++)
           {
             // Create an adapter, which helps with extracting attributes from
             // the PerFrameFunctionalSequence of enhanced IODs.
@@ -521,10 +605,50 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
               // check if we have reached the end of a tag path
               if (!tpath.HasTail())
               {
-                if (vp == 0 && vptr != 0)
+                if (vptr != 0)
                 {
-                  vp = vptr;
-                  break;
+                  std::string t = value_as_string(*vptr);
+
+                  if (!is_binary_number(*vptr))
+                  {
+                    isNumber = false;
+                  }
+
+                  if (allUnique)
+                  {
+                    if (!found || unique_value(t, s))
+                    {
+                      if (found)
+                      {
+                        s.push_back('\\');
+                        isNumber = false;
+                      }
+                      found = true;
+                      s += t;
+                    }
+                  }
+                  else if (firstNonZero && vptr->GetVR().HasNumericValue())
+                  {
+                    // if a non-zero value is found, then break
+                    found = true;
+                    s = t;
+                    if (vptr->AsDouble() != 0.0)
+                    {
+                      done = true;
+                      break;
+                    }
+                  }
+                  else
+                  {
+                    // output the value
+                    s = t;
+                    found = true;
+                    if (!firstNonZero || vptr->GetVL() != 0)
+                    {
+                      done = true;
+                      break;
+                    }
+                  }
                 }
               }
               else if (vptr != 0)
@@ -545,55 +669,17 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
                 }
               }
             }
-            // If numerical value is zero, keep going until non-zero because
-            // the zero value is of little interest
-            if (vp != 0)
-            {
-              if (!vp->GetVR().HasNumericValue() || vp->AsDouble() != 0.0)
-              {
-                break;
-              }
-            }
           }
 
-          if (vp != 0)
+          if (found)
           {
-            const vtkDICOMValue& v = *vp;
-            if (v.GetNumberOfValues() == 1 &&
-                (v.GetVR() == VR::SS ||
-                 v.GetVR() == VR::US ||
-                 v.GetVR() == VR::SL ||
-                 v.GetVR() == VR::UL ||
-                 v.GetVR() == VR::FL ||
-                 v.GetVR() == VR::FD))
+            // Print the found value(s)
+            if (isNumber)
             {
-              std::string s = v.AsString();
               fprintf(fp, "%s", s.c_str());
             }
-            else if (v.GetVR() == VR::DA ||
-                     v.GetVR() == VR::TM ||
-                     v.GetVR() == VR::DT)
+            else
             {
-              std::string s = dicomtocsv_date(v.AsString(), v.GetVR());
-              fprintf(fp, "\"%s\"", s.c_str());
-            }
-            else if (v.GetVR() == VR::SQ)
-            {
-              // how should a sequence be printed out to the csv file?
-            }
-            else if (v.GetVL() != 0 && v.GetVL() != 0xFFFFFFFF)
-            {
-              std::string s;
-              size_t nv = v.GetNumberOfValues();
-              for (size_t iv = 0; iv < nv; iv++)
-              {
-                if (iv) { s.push_back('\\'); }
-                v.AppendValueToSafeUTF8String(s, iv);
-              }
-              if (s.find('\"') < s.length())
-              {
-                s = dicomtocsv_quote(s);
-              }
               fprintf(fp, "\"%s\"", s.c_str());
             }
           }
@@ -602,7 +688,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
           {
             // ReferencedFileID (0004,1500) is meant to be used in DICOMDIR,
             // but we hijack it to report the first file in the series.
-            std::string s = dicomtocsv_quote(a->GetValue(jj));
+            s = dicomtocsv_quote(a->GetValue(jj));
             fprintf(fp, "\"%s\"", s.c_str());
           }
           else if (tagPath.GetHead() == DC::NumberOfReferences &&
@@ -650,6 +736,7 @@ int MAINMACRO(int argc, char *argv[])
   vtkDICOMItem query;
   std::vector<std::string> oplist;
   bool firstNonZero = false;
+  bool allUnique = false;
   bool useDirectoryRecords = false;
   bool ignoreDicomdir = false;
   vtkDICOMCharacterSet charset;
@@ -743,6 +830,10 @@ int MAINMACRO(int argc, char *argv[])
     else if (strcmp(arg, "--first-nonzero") == 0)
     {
       firstNonZero = true;
+    }
+    else if (strcmp(arg, "--all-unique") == 0)
+    {
+      allUnique = true;
     }
     else if (strcmp(arg, "--directory-only") == 0)
     {
@@ -913,7 +1004,7 @@ int MAINMACRO(int argc, char *argv[])
     }
     dicomtocsv_write(
       finder, query, &qtlist, fp, level,
-      firstNonZero, useDirectoryRecords, p);
+      firstNonZero, allUnique, useDirectoryRecords, p);
 
     fflush(fp);
   }
