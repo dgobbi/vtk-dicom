@@ -14,7 +14,7 @@
 #ifndef vtkDICOMDirectory_h
 #define vtkDICOMDirectory_h
 
-#include <vtkAlgorithm.h>
+#include "vtkAlgorithm.h"
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMCharacterSet.h" // For character sets
 

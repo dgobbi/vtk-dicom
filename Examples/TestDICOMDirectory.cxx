@@ -3,9 +3,9 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMDictionary.h"
 
-#include <vtkSmartPointer.h>
-#include <vtkStringArray.h>
-#include <vtkIntArray.h>
+#include "vtkSmartPointer.h"
+#include "vtkStringArray.h"
+#include "vtkIntArray.h"
 
 #include <sstream>
 

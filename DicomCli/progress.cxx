@@ -14,7 +14,7 @@
 
 #include "progress.h"
 
-#include <vtkDICOMUtilities.h>
+#include "vtkDICOMUtilities.h"
 
 void ProgressObserver::Execute(vtkObject *, unsigned long e, void *vp)
 {

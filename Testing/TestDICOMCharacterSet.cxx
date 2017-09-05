@@ -2,7 +2,7 @@
 #include "vtkDICOMItem.h"
 #include "vtkDICOMMetaData.h"
 
-#include <vtkSmartPointer.h>
+#include "vtkSmartPointer.h"
 
 #include <sstream>
 

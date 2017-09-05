@@ -14,7 +14,7 @@
 #ifndef progress_h
 #define progress_h
 
-#include <vtkCommand.h>
+#include "vtkCommand.h"
 
 // Capture progress events
 class ProgressObserver : public vtkCommand

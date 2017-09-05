@@ -25,9 +25,9 @@
 #include "mainmacro.h"
 #include "readquery.h"
 
-#include <vtkSortFileNames.h>
-#include <vtkStringArray.h>
-#include <vtkSmartPointer.h>
+#include "vtkSortFileNames.h"
+#include "vtkStringArray.h"
+#include "vtkSmartPointer.h"
 
 #include <stdio.h>
 #include <string.h>

@@ -14,7 +14,7 @@
 #ifndef vtkDICOMVR_h
 #define vtkDICOMVR_h
 
-#include <vtkSystemIncludes.h>
+#include "vtkSystemIncludes.h"
 #include "vtkDICOMModule.h" // For export macro
 
 //! VRs (Value Representations)

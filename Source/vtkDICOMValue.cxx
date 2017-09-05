@@ -16,8 +16,8 @@
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMUtilities.h"
 
-#include <vtkMath.h>
-#include <vtkTypeTraits.h>
+#include "vtkMath.h"
+#include "vtkTypeTraits.h"
 
 #include <math.h>
 #include <float.h>

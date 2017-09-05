@@ -24,8 +24,8 @@
 #include "mainmacro.h"
 #include "readquery.h"
 
-#include <vtkStringArray.h>
-#include <vtkSmartPointer.h>
+#include "vtkStringArray.h"
+#include "vtkSmartPointer.h"
 
 #ifndef _WIN32
 // includes for execvp

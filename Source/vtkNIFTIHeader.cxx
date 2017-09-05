@@ -16,8 +16,8 @@ See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 #include "vtkNIFTIHeader.h"
 #include "vtkNIFTIPrivate.h"
 
-#include <vtkObjectFactory.h>
-#include <vtkByteSwap.h>
+#include "vtkObjectFactory.h"
+#include "vtkByteSwap.h"
 
 #include <string.h>
 #include <float.h>

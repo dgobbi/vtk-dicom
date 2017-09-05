@@ -23,13 +23,13 @@
 #include "vtkDICOMUtilities.h"
 #include "vtkDICOMVR.h"
 
-#include <vtkObjectFactory.h>
-#include <vtkSmartPointer.h>
-#include <vtkStringArray.h>
-#include <vtkIntArray.h>
-#include <vtkErrorCode.h>
-#include <vtkCommand.h>
-#include <vtkUnsignedShortArray.h>
+#include "vtkObjectFactory.h"
+#include "vtkSmartPointer.h"
+#include "vtkStringArray.h"
+#include "vtkIntArray.h"
+#include "vtkErrorCode.h"
+#include "vtkCommand.h"
+#include "vtkUnsignedShortArray.h"
 
 #ifdef DICOM_USE_SQLITE
 #include <sqlite3.h>

@@ -18,7 +18,7 @@
 #include "vtkImageData.h"
 #include "vtkStringArray.h"
 
-#include <vtkSmartPointer.h>
+#include "vtkSmartPointer.h"
 
 #include <stdio.h>
 #include <string.h>

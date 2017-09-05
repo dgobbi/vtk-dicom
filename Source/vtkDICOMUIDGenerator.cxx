@@ -16,8 +16,8 @@
 #include "vtkDICOMFile.h"
 #include "vtkDICOMUtilities.h"
 
-#include <vtkObjectFactory.h>
-#include <vtkStringArray.h>
+#include "vtkObjectFactory.h"
+#include "vtkStringArray.h"
 
 #include <string.h>
 

@@ -22,7 +22,7 @@
 #ifndef vtkDICOMReader_h
 #define vtkDICOMReader_h
 
-#include <vtkImageReader2.h>
+#include "vtkImageReader2.h"
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMCharacterSet.h" // For character sets
 

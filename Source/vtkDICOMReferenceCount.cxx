@@ -13,7 +13,7 @@
 =========================================================================*/
 #include "vtkDICOMReferenceCount.h"
 
-#include <vtkWindows.h>
+#include "vtkWindows.h"
 
 #if defined(_WIN32)
 unsigned int vtkDICOMReferenceCount::operator--()

@@ -28,19 +28,19 @@
 #include "vtkNIFTIHeader.h"
 #include "vtkNIFTIReader.h"
 
-#include <vtkVersion.h>
-#include <vtkImageData.h>
-#include <vtkMatrix4x4.h>
-#include <vtkImageReslice.h>
-#include <vtkImageShiftScale.h>
-#include <vtkStringArray.h>
-#include <vtkIntArray.h>
-#include <vtkErrorCode.h>
-#include <vtkSortFileNames.h>
-#include <vtkSmartPointer.h>
+#include "vtkVersion.h"
+#include "vtkImageData.h"
+#include "vtkMatrix4x4.h"
+#include "vtkImageReslice.h"
+#include "vtkImageShiftScale.h"
+#include "vtkStringArray.h"
+#include "vtkIntArray.h"
+#include "vtkErrorCode.h"
+#include "vtkSortFileNames.h"
+#include "vtkSmartPointer.h"
 
 #if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
-#include <vtkImageHistogramStatistics.h>
+#include "vtkImageHistogramStatistics.h"
 #endif
 
 #include <string>

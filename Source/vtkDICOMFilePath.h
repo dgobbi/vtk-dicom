@@ -14,7 +14,7 @@
 #ifndef vtkDICOMFilePath_h
 #define vtkDICOMFilePath_h
 
-#include <vtkSystemIncludes.h>
+#include "vtkSystemIncludes.h"
 #include "vtkDICOMModule.h" // For export macro
 
 #include <string> // Interface type

@@ -14,7 +14,7 @@
 #ifndef vtkDICOMCompiler_h
 #define vtkDICOMCompiler_h
 
-#include <vtkObject.h>
+#include "vtkObject.h"
 #include "vtkDICOMModule.h" // For export macro
 
 

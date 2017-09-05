@@ -3,7 +3,7 @@
 #ifndef vtkDICOMModule_h
 #define vtkDICOMModule_h
 
-#include <vtkABI.h>
+#include "vtkABI.h"
 #include "vtkDICOMConfig.h"
 
 #if defined(DICOM_BUILD_SHARED_LIBS)

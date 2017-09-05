@@ -34,7 +34,7 @@
 #ifndef vtkScancoCTReader_h
 #define vtkScancoCTReader_h
 
-#include <vtkImageReader2.h>
+#include "vtkImageReader2.h"
 #include "vtkDICOMModule.h" // For export macro
 
 //----------------------------------------------------------------------------

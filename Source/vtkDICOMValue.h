@@ -14,7 +14,7 @@
 #ifndef vtkDICOMValue_h
 #define vtkDICOMValue_h
 
-#include <vtkSystemIncludes.h>
+#include "vtkSystemIncludes.h"
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMVR.h"
 #include "vtkDICOMTag.h"

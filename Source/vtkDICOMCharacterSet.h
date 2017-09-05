@@ -14,7 +14,7 @@
 #ifndef vtkDICOMCharacterSet_h
 #define vtkDICOMCharacterSet_h
 
-#include <vtkSystemIncludes.h>
+#include "vtkSystemIncludes.h"
 #include "vtkDICOMModule.h" // For export macro
 
 #include <string>

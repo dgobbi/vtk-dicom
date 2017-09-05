@@ -12,9 +12,9 @@
 
 =========================================================================*/
 
-#include <vtkSystemIncludes.h>
-#include <vtkStringArray.h>
-#include <vtkObjectFactory.h>
+#include "vtkSystemIncludes.h"
+#include "vtkStringArray.h"
+#include "vtkObjectFactory.h"
 #include "vtkDICOMUtilities.h"
 #include "vtkDICOMUIDGenerator.h"
 #include "vtkDICOMFile.h"

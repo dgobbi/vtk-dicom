@@ -14,7 +14,7 @@
 #ifndef vtkDICOMFile_h
 #define vtkDICOMFile_h
 
-#include <vtkSystemIncludes.h>
+#include "vtkSystemIncludes.h"
 #include "vtkDICOMModule.h" // For export macro
 
 #if defined(_WIN32)

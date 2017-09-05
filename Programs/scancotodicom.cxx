@@ -23,13 +23,13 @@
 #include "vtkDICOMFileDirectory.h"
 #include "vtkScancoCTReader.h"
 
-#include <vtkImageData.h>
-#include <vtkMatrix4x4.h>
-#include <vtkImageReslice.h>
-#include <vtkStringArray.h>
-#include <vtkIntArray.h>
-#include <vtkErrorCode.h>
-#include <vtkSmartPointer.h>
+#include "vtkImageData.h"
+#include "vtkMatrix4x4.h"
+#include "vtkImageReslice.h"
+#include "vtkStringArray.h"
+#include "vtkIntArray.h"
+#include "vtkErrorCode.h"
+#include "vtkSmartPointer.h"
 
 #include <string>
 #include <vector>

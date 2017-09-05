@@ -15,17 +15,17 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMItem.h"
 
-#include <vtkObjectFactory.h>
-#include <vtkImageData.h>
-#include <vtkInformationVector.h>
-#include <vtkInformation.h>
-#include <vtkIntArray.h>
-#include <vtkStreamingDemandDrivenPipeline.h>
-#include <vtkDataSetAttributes.h>
+#include "vtkObjectFactory.h"
+#include "vtkImageData.h"
+#include "vtkInformationVector.h"
+#include "vtkInformation.h"
+#include "vtkIntArray.h"
+#include "vtkStreamingDemandDrivenPipeline.h"
+#include "vtkDataSetAttributes.h"
 #include "vtkPointData.h"
-#include <vtkSmartPointer.h>
-#include <vtkTypeTraits.h>
-#include <vtkVersion.h>
+#include "vtkSmartPointer.h"
+#include "vtkTypeTraits.h"
+#include "vtkVersion.h"
 
 #include "vtkTemplateAliasMacro.h"
 // turn off unused input types

@@ -26,7 +26,7 @@
 #ifndef vtkDICOMWriter_h
 #define vtkDICOMWriter_h
 
-#include <vtkImageWriter.h>
+#include "vtkImageWriter.h"
 #include "vtkDICOMModule.h" // For export macro
 
 class vtkMatrix4x4;

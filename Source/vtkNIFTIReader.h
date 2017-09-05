@@ -35,7 +35,7 @@
 #ifndef vtkNIFTIReader_h
 #define vtkNIFTIReader_h
 
-#include <vtkImageReader2.h>
+#include "vtkImageReader2.h"
 #include "vtkDICOMModule.h" // For export macro
 
 class vtkNIFTIHeader;

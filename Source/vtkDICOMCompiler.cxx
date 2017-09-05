@@ -20,10 +20,10 @@
 #include "vtkDICOMItem.h"
 #include "vtkDICOMImageCodec.h"
 
-#include <vtkObjectFactory.h>
-#include <vtkStringArray.h>
-#include <vtkUnsignedShortArray.h>
-#include <vtkErrorCode.h>
+#include "vtkObjectFactory.h"
+#include "vtkStringArray.h"
+#include "vtkUnsignedShortArray.h"
+#include "vtkErrorCode.h"
 
 #include <ctype.h>
 #include <assert.h>

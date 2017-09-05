@@ -16,11 +16,11 @@
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMTagPath.h"
 
-#include <vtkObjectFactory.h>
-#include <vtkSmartPointer.h>
-#include <vtkStringArray.h>
-#include <vtkIntArray.h>
-#include <vtkMath.h>
+#include "vtkObjectFactory.h"
+#include "vtkSmartPointer.h"
+#include "vtkStringArray.h"
+#include "vtkIntArray.h"
+#include "vtkMath.h"
 
 #include <algorithm>
 #include <string>

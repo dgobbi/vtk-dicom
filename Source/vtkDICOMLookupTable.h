@@ -23,7 +23,7 @@
 #ifndef vtkDICOMLookupTable_h
 #define vtkDICOMLookupTable_h
 
-#include <vtkLookupTable.h>
+#include "vtkLookupTable.h"
 #include "vtkDICOMModule.h" // For export macro
 
 class vtkDICOMMetaData;

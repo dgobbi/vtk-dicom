@@ -18,8 +18,8 @@
 #include "vtkDICOMWriter.h"
 #include "vtkDICOMMRGenerator.h"
 
-#include <vtkSmartPointer.h>
-#include <vtkStringArray.h>
+#include "vtkSmartPointer.h"
+#include "vtkStringArray.h"
 
 #include <sstream>
 

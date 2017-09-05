@@ -29,8 +29,8 @@
 #include "readquery.h"
 #include "progress.h"
 
-#include <vtkStringArray.h>
-#include <vtkSmartPointer.h>
+#include "vtkStringArray.h"
+#include "vtkSmartPointer.h"
 
 #include <stdio.h>
 #include <string.h>

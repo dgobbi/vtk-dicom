@@ -14,8 +14,8 @@
 #ifndef vtkDICOMGenerator_h
 #define vtkDICOMGenerator_h
 
-#include <vtkObject.h>
-#include <vtkStdString.h> // For std::string
+#include "vtkObject.h"
+#include "vtkStdString.h" // For std::string
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMTag.h" // For method parameter
 

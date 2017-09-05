@@ -16,10 +16,10 @@
 #include "vtkDICOMItem.h"
 #include "vtkDICOMTagPath.h"
 
-#include <vtkObjectFactory.h>
-#include <vtkMatrix4x4.h>
-#include <vtkAbstractArray.h>
-#include <vtkIntArray.h>
+#include "vtkObjectFactory.h"
+#include "vtkMatrix4x4.h"
+#include "vtkAbstractArray.h"
+#include "vtkIntArray.h"
 
 #include <assert.h>
 #include <vector>

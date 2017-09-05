@@ -14,7 +14,7 @@
 #ifndef vtkDICOMVM_h
 #define vtkDICOMVM_h
 
-#include <vtkSystemIncludes.h>
+#include "vtkSystemIncludes.h"
 #include "vtkDICOMModule.h" // For export macro
 
 //! VMs (Value Multiplicities)

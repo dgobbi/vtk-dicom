@@ -17,9 +17,9 @@
 #include "vtkNIFTIHeader.h"
 #include "vtkNIFTIPrivate.h"
 
-#include <vtkMatrix4x4.h>
-#include <vtkStringArray.h>
-#include <vtkSmartPointer.h>
+#include "vtkMatrix4x4.h"
+#include "vtkStringArray.h"
+#include "vtkSmartPointer.h"
 
 #include <stdio.h>
 #include <ctype.h>

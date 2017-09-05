@@ -14,8 +14,8 @@
 #ifndef vtkDICOMMetaData_h
 #define vtkDICOMMetaData_h
 
-#include <vtkDataObject.h>
-#include <vtkStdString.h> // For std::string
+#include "vtkDataObject.h"
+#include "vtkStdString.h" // For std::string
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMDataElement.h" // For method parameter
 #include "vtkDICOMDictEntry.h" // For method parameter

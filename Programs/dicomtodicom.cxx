@@ -27,19 +27,19 @@
 #include "vtkDICOMFile.h"
 #include "vtkDICOMFileDirectory.h"
 
-#include <vtkImageData.h>
-#include <vtkMatrix4x4.h>
-#include <vtkImageReslice.h>
-#include <vtkStringArray.h>
-#include <vtkIntArray.h>
-#include <vtkErrorCode.h>
-#include <vtkSortFileNames.h>
-#include <vtkSmartPointer.h>
-#include <vtkVersion.h>
+#include "vtkImageData.h"
+#include "vtkMatrix4x4.h"
+#include "vtkImageReslice.h"
+#include "vtkStringArray.h"
+#include "vtkIntArray.h"
+#include "vtkErrorCode.h"
+#include "vtkSortFileNames.h"
+#include "vtkSmartPointer.h"
+#include "vtkVersion.h"
 
 #if VTK_MAJOR_VERSION >= 6 || VTK_MINOR_VERSION >= 10
-#include <vtkImageResize.h>
-#include <vtkImageSincInterpolator.h>
+#include "vtkImageResize.h"
+#include "vtkImageSincInterpolator.h"
 #endif
 
 #include <algorithm>

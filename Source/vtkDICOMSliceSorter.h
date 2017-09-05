@@ -14,7 +14,7 @@
 #ifndef vtkDICOMSliceSorter_h
 #define vtkDICOMSliceSorter_h
 
-#include <vtkObject.h>
+#include "vtkObject.h"
 #include "vtkDICOMModule.h" // For export macro
 
 class vtkIntArray;

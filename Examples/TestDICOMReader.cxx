@@ -2,8 +2,8 @@
 #include "vtkDICOMFileSorter.h"
 #include "vtkDICOMReader.h"
 
-#include <vtkSmartPointer.h>
-#include <vtkStringArray.h>
+#include "vtkSmartPointer.h"
+#include "vtkStringArray.h"
 
 #include <sstream>
 

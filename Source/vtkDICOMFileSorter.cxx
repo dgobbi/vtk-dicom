@@ -20,13 +20,13 @@
 #include "vtkDICOMUtilities.h"
 #include "vtkDICOMCharacterSet.h"
 
-#include <vtkObjectFactory.h>
-#include <vtkSmartPointer.h>
-#include <vtkStringArray.h>
-#include <vtkIntArray.h>
-#include <vtkErrorCode.h>
-#include <vtkCommand.h>
-#include <vtkUnsignedShortArray.h>
+#include "vtkObjectFactory.h"
+#include "vtkSmartPointer.h"
+#include "vtkStringArray.h"
+#include "vtkIntArray.h"
+#include "vtkErrorCode.h"
+#include "vtkCommand.h"
+#include "vtkUnsignedShortArray.h"
 
 #include <string>
 #include <vector>

@@ -14,7 +14,7 @@
 #ifndef vtkDICOMTag_h
 #define vtkDICOMTag_h
 
-#include <vtkSystemIncludes.h>
+#include "vtkSystemIncludes.h"
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMDictHash.h"
 

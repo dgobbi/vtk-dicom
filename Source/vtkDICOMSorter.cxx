@@ -12,7 +12,7 @@
 
 =========================================================================*/
 #include "vtkDICOMSorter.h"
-#include <vtkObjectFactory.h>
+#include "vtkObjectFactory.h"
 
 vtkStandardNewMacro(vtkDICOMSorter);
 

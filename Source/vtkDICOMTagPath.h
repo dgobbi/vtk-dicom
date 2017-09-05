@@ -14,7 +14,7 @@
 #ifndef vtkDICOMTagPath_h
 #define vtkDICOMTagPath_h
 
-#include <vtkSystemIncludes.h>
+#include "vtkSystemIncludes.h"
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMTag.h"
 

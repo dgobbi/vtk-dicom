@@ -18,9 +18,9 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMCompiler.h"
 
-#include <vtkStringArray.h>
-#include <vtkSmartPointer.h>
-#include <vtkTypeInt64Array.h>
+#include "vtkStringArray.h"
+#include "vtkSmartPointer.h"
+#include "vtkTypeInt64Array.h"
 
 #include <stdio.h>
 #include <string.h>

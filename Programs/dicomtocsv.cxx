@@ -28,10 +28,10 @@
 #include "readquery.h"
 #include "progress.h"
 
-#include <vtkCommand.h>
-#include <vtkTimerLog.h>
-#include <vtkStringArray.h>
-#include <vtkSmartPointer.h>
+#include "vtkCommand.h"
+#include "vtkTimerLog.h"
+#include "vtkStringArray.h"
+#include "vtkSmartPointer.h"
 
 #include <stdio.h>
 #include <string.h>

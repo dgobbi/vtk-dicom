@@ -18,9 +18,9 @@
 #include "vtkDICOMSequence.h"
 #include "vtkDICOMItem.h"
 
-#include <vtkObjectFactory.h>
-#include <vtkUnsignedShortArray.h>
-#include <vtkErrorCode.h>
+#include "vtkObjectFactory.h"
+#include "vtkUnsignedShortArray.h"
+#include "vtkErrorCode.h"
 
 #include <ctype.h>
 #include <assert.h>

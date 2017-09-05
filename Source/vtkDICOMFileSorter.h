@@ -14,7 +14,7 @@
 #ifndef vtkDICOMFileSorter_h
 #define vtkDICOMFileSorter_h
 
-#include <vtkObject.h>
+#include "vtkObject.h"
 #include "vtkDICOMModule.h" // For export macro
 
 class vtkStringArray;

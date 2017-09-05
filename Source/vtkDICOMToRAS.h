@@ -27,7 +27,7 @@
 #ifndef vtkDICOMToRAS_h
 #define vtkDICOMToRAS_h
 
-#include <vtkThreadedImageAlgorithm.h>
+#include "vtkThreadedImageAlgorithm.h"
 #include "vtkDICOMModule.h" // For export macro
 
 class vtkMatrix4x4;

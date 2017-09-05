@@ -14,7 +14,7 @@
 #include "vtkDICOMLookupTable.h"
 #include "vtkDICOMMetaData.h"
 
-#include <vtkObjectFactory.h>
+#include "vtkObjectFactory.h"
 
 #include <string.h>
 
