@@ -540,7 +540,21 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
 
           // this loop is only needed if all images are to be checked
           int n = (m == 1 ? meta->GetNumberOfInstances() : 1);
-          n = (level >= 4 ? jj+1 : n);
+          if (level >= 4)
+          {
+            // we will probe one instance (instance jj)
+            n = jj+1;
+          }
+          else if (n > 1)
+          {
+            // do a quick check to see if value is same for all instances
+            vtkDICOMTag tag = tagPath.GetHead();
+            if ((tag.GetGroup() & 0x0001) == 0)
+            {
+              vtkDICOMDataElementIterator iter = meta->Find(tag);
+              n = ((iter == meta->End() || !iter->IsPerInstance()) ? 1 : n);
+            }
+          }
           for (int ii = jj; ii < n && !done; ii++)
           {
             // Create an adapter, which helps with extracting attributes from
