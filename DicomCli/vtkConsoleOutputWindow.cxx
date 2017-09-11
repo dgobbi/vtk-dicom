@@ -13,11 +13,9 @@
 
 =========================================================================*/
 #include "vtkConsoleOutputWindow.h"
+#include "vtkObjectFactory.h"
 
-vtkConsoleOutputWindow *vtkConsoleOutputWindow::New()
-{
-  return new vtkConsoleOutputWindow;
-}
+vtkStandardNewMacro(vtkConsoleOutputWindow);
 
 vtkConsoleOutputWindow::vtkConsoleOutputWindow()
 {
