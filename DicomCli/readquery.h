@@ -28,14 +28,20 @@ typedef std::vector<vtkDICOMTagPath> QueryTagList;
  *  attribute values.  If the ordering within the file is important,
  *  then a QueryTagList can also be provided.  The tags will be pushed
  *  onto the QueryTagList in the same order as they are encountered in
- *  the file.
+ *  the file.  If ql_unique is true (the default) then repeated tags
+ *  will not be pushed onto the QueryTagList.
  */
 bool dicomcli_readquery(
-  const char *fname, vtkDICOMItem *query, QueryTagList *ql=0);
+  const char *fname, vtkDICOMItem *query, QueryTagList *ql=0,
+  bool ql_unique=true);
 
 //! Read a single query key, return 'true' on success.
+/*!
+ *  See dicomcli_readquery() for more information.
+ */
 bool dicomcli_readkey(
-  const char *key, vtkDICOMItem *query, QueryTagList *ql=0);
+  const char *key, vtkDICOMItem *query, QueryTagList *ql=0,
+  bool ql_unique=true);
 
 //! Check if text looks like a query key (for error checking).
 bool dicomcli_looks_like_key(const char *key);

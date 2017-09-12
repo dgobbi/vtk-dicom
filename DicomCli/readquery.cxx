@@ -142,11 +142,12 @@ size_t LineReader::ReadLine(std::string *s)
 
 // Prototype for function that reads one query key
 bool dicomcli_readkey_query(
-  const char *cp, vtkDICOMItem *query, QueryTagList *ql, bool qfile);
+  const char *cp, vtkDICOMItem *query, QueryTagList *ql,
+  bool ql_unique, bool qfile);
 
 // Read a query file
 bool dicomcli_readquery(
-  const char *fname, vtkDICOMItem *query, QueryTagList *ql)
+  const char *fname, vtkDICOMItem *query, QueryTagList *ql, bool ql_unique)
 {
   vtkDICOMFile f(fname, vtkDICOMFile::In);
 
@@ -180,7 +181,7 @@ bool dicomcli_readquery(
       continue;
     }
 
-    if (!dicomcli_readkey_query(cp, query, ql, true))
+    if (!dicomcli_readkey_query(cp, query, ql, ql_unique, true))
     {
       fprintf(stderr, "Error %s line %d:\n", fname, lineNumber);
       return false;
@@ -192,7 +193,8 @@ bool dicomcli_readquery(
 
 // If qfile is true, then key is being read from a query file
 bool dicomcli_readkey_query(
-  const char *cp, vtkDICOMItem *query, QueryTagList *ql, bool qfile)
+  const char *cp, vtkDICOMItem *query, QueryTagList *ql,
+  bool ql_unique, bool qfile)
 {
   // read the tag path
   vtkDICOMTagPath tagPath;
@@ -518,7 +520,7 @@ bool dicomcli_readkey_query(
   // add the tag path to the list, if it isn't already there
   if (ql)
   {
-    if (std::find(ql->begin(), ql->end(), tagPath) == ql->end())
+    if (!ql_unique || std::find(ql->begin(), ql->end(), tagPath) == ql->end())
     {
       ql->push_back(tagPath);
     }
@@ -528,9 +530,9 @@ bool dicomcli_readkey_query(
 }
 
 bool dicomcli_readkey(
-  const char *cp, vtkDICOMItem *query, QueryTagList *ql)
+  const char *cp, vtkDICOMItem *query, QueryTagList *ql, bool ql_unique)
 {
-  return dicomcli_readkey_query(cp, query, ql, false);
+  return dicomcli_readkey_query(cp, query, ql, ql_unique, false);
 }
 
 bool dicomcli_looks_like_key(const char *cp)
@@ -651,7 +653,7 @@ bool dicomcli_readuids(
     if (ql2.size() == 0)
     {
       // get the tag line, if not gotten yet
-      if (!dicomcli_readkey_query(cp, query, &ql2, true))
+      if (!dicomcli_readkey_query(cp, query, &ql2, true, true))
       {
         fprintf(stderr, "Error %s line %d: ", fname, lineNumber);
         fprintf(stderr, "Need Valid DICOM tag at top of file.\n");

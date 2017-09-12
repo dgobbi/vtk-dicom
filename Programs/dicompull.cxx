@@ -194,13 +194,52 @@ std::string dicompull_basedir(const char *outdir)
   return s;
 }
 
-std::string dicompull_makedirname(
-  vtkDICOMDirectory *finder, int study, int series, const char *outdir)
+void dicompull_checktags(
+  vtkDICOMItem *query, QueryTagList *qtlist, const char *outdir)
+{
+  std::string keytext;
+  const char *cp = outdir;
+  const char *bp = 0;
+  while (*cp != '\0')
+  {
+    while (*cp != '{' && *cp != '}' && *cp != '\0') { cp++; }
+    if (*cp == '}')
+    {
+      fprintf(stderr, "Error: Missing \'{\': %s\n", outdir);
+      exit(1);
+    }
+    if (*cp == '{')
+    {
+      cp++;
+      bp = cp;
+      while (*cp != '}' && *cp != '\0') { cp++; }
+      if (*cp != '}')
+      {
+        fprintf(stderr, "Error: Unmatched \'{\': %s\n", outdir);
+        exit(1);
+      }
+      else
+      {
+        keytext.assign(bp, cp);
+        cp++;
+
+        if (!dicomcli_readkey(keytext.c_str(), query, qtlist))
+        {
+          exit(1);
+        }
+      }
+    }
+  }
+}
+
+std::string dicompull_makedirname(vtkDICOMMetaData *meta, const char *outdir)
 {
   std::string s;
-  std::string key;
+  std::string keytext;
   std::string val;
   vtkDICOMValue v;
+  vtkDICOMItem query;
+  QueryTagList qtlist;
 
   const char *cp = outdir;
   const char *dp = cp;
@@ -226,48 +265,22 @@ std::string dicompull_makedirname(
       {
         s.append(dp, bp);
         bp++;
-        key.assign(bp, cp);
+        keytext.assign(bp, cp);
         cp++;
         dp = cp;
-        v.Clear();
-        vtkDICOMTag tag;
-        if (key.length() > 0)
+
+        if (!dicomcli_readkey(keytext.c_str(), &query, &qtlist, false))
         {
-          vtkDICOMDictEntry de = vtkDICOMDictionary::FindDictEntry(key.c_str());
-          if (de.IsValid())
-          {
-            tag = de.GetTag();
-          }
-          else
-          {
-            fprintf(stderr, "Error: Unrecognized key %s\n", key.c_str());
-            exit(1);
-          }
+          exit(1);
         }
-        if (finder)
-        {
-          if (!v.IsValid())
-          {
-            v = finder->GetStudyRecord(study).Get(tag);
-          }
-          if (!v.IsValid())
-          {
-            v = finder->GetPatientRecordForStudy(study).Get(tag);
-          }
-          if (!v.IsValid())
-          {
-            v = finder->GetSeriesRecord(series).Get(tag);
-          }
-        }
+
+        const vtkDICOMTagPath& tagpath = qtlist.back();
+
+        val.clear();
+        v = meta->Get(tagpath);
         if (v.IsValid())
         {
           val.assign(dicompull_cleanup(v.AsUTF8String()));
-        }
-        else if (finder)
-        {
-          fprintf(stderr, "Error: Key %s not allowed in output directory.\n",
-                  key.c_str());
-          exit(1);
         }
         if (val.empty())
         {
@@ -486,7 +499,7 @@ int MAINMACRO(int argc, char *argv[])
   }
 
   // check that the outdir string is valid
-  dicompull_makedirname(NULL, 0, 0, outdir.c_str());
+  dicompull_checktags(&query, NULL, outdir.c_str());
 
   // check that the outdir is writable
   std::string basedir = dicompull_basedir(outdir.c_str());
@@ -579,9 +592,9 @@ int MAINMACRO(int argc, char *argv[])
       for (int k = k0; k <= k1; k++)
       {
         vtkStringArray *sa = finder->GetFileNamesForSeries(k);
+        vtkDICOMMetaData *meta = finder->GetMetaDataForSeries(k);
         // create the directory name
-        std::string dirname =
-          dicompull_makedirname(finder, j, k, outdir.c_str());
+        std::string dirname = dicompull_makedirname(meta, outdir.c_str());
         std::map<std::string,int>::iterator mi = dircount.find(dirname);
         int si = 1;
         if (mi != dircount.end())
