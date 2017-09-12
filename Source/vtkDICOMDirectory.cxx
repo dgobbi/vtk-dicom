@@ -124,6 +124,80 @@ bool vtkDICOMDirectory::CompareInstance(
 }
 
 //----------------------------------------------------------------------------
+// These are the attributes used for a directory scan
+
+namespace {
+
+static const DC::EnumType ScanTags[] = {
+  // basic required information
+  DC::SpecificCharacterSet, // 1C
+  // image-level information
+  DC::SOPClassUID,          // 1
+  DC::SOPInstanceUID,       // 1
+  DC::InstanceNumber,       // 1
+  DC::Rows,                 // 3
+  DC::Columns,              // 3
+  // series-level information
+  DC::SeriesDate,           // 3
+  DC::SeriesTime,           // 3
+  DC::Modality,             // 1
+  DC::SeriesDescription,    // 3
+  DC::SeriesInstanceUID,    // 1
+  DC::SeriesNumber,         // 1
+  // study-level information
+  DC::StudyDate,            // 1
+  DC::StudyTime,            // 1
+  DC::ReferringPhysicianName, // 3
+  DC::PatientAge,           // 3
+  DC::StudyInstanceUID,     // 1
+  DC::StudyID,              // 1
+  DC::AccessionNumber,      // 2
+  DC::StudyDescription,     // 2
+  // patient-level information
+  DC::PatientName,          // 2
+  DC::PatientID,            // 1
+  DC::PatientBirthDate,     // 3
+  DC::PatientSex,           // 3
+  // delimiter to mark end of list
+  DC::ItemDelimitationItem
+};
+
+static const DC::EnumType SeriesTags[] = {
+  DC::SpecificCharacterSet,
+  DC::SeriesDate,
+  DC::SeriesTime,
+  DC::Modality,
+  DC::SeriesDescription,
+  DC::SeriesInstanceUID,
+  DC::SeriesNumber,
+  DC::ItemDelimitationItem
+};
+
+static const DC::EnumType StudyTags[] = {
+  DC::SpecificCharacterSet,
+  DC::StudyDate,
+  DC::StudyTime,
+  DC::ReferringPhysicianName,
+  DC::PatientAge,
+  DC::StudyInstanceUID,
+  DC::StudyID,
+  DC::AccessionNumber,
+  DC::StudyDescription,
+  DC::ItemDelimitationItem
+};
+
+static const DC::EnumType PatientTags[] = {
+  DC::SpecificCharacterSet,
+  DC::PatientName,
+  DC::PatientID,
+  DC::PatientBirthDate,
+  DC::PatientSex,
+  DC::ItemDelimitationItem
+};
+
+}
+
+//----------------------------------------------------------------------------
 // A temporary container class for use with stl algorithms
 
 class vtkDICOMDirectory::SeriesInfoList
@@ -648,7 +722,7 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
       }
       else if (tag != DC::SpecificCharacterSet && tag.GetGroup() != 0x0004)
       {
-        if (v.GetVL() > 0 && !results.Get(tag).IsValid())
+        if (!results.Get(tag).IsValid())
         {
           fullyMatched = false;
           break;
@@ -666,8 +740,6 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
     }
 
     // Need to query against the actual files
-    const vtkDICOMItem **usedImageRecords = imageRecords;
-    std::vector<const vtkDICOMItem *> newImageRecords;
     vtkSmartPointer<vtkDICOMMetaData> meta =
       vtkSmartPointer<vtkDICOMMetaData>::New();
     vtkSmartPointer<vtkDICOMParser> parser =
@@ -685,10 +757,17 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
       vtkSmartPointer<vtkStringArray>::New();
 
     vtkIdType n = files->GetNumberOfValues();
-    // Only check the first file unless image-level query
-    if (n > 0 && this->FindLevel < vtkDICOMDirectory::IMAGE)
+
+    // Create a new set of image records for the extra info
+    std::vector<vtkDICOMItem> storeImageRecords(n);
+    std::vector<const vtkDICOMItem *> newImageRecords;
+    if (this->FindLevel < vtkDICOMDirectory::IMAGE)
     {
-      n = 1;
+      newImageRecords.resize(n);
+      for (vtkIdType i = 0; i < n; i++)
+      {
+        newImageRecords[i] = &storeImageRecords[i];
+      }
     }
 
     for (vtkIdType i = 0; i < n; i++)
@@ -696,6 +775,7 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
       const std::string& fileName = files->GetValue(i);
       bool matched = false;
       int r = this->MatchesImageQuery(*imageRecords[i], results);
+      const vtkDICOMItem *imageRecord = imageRecords[i];
       if (r == 0)
       {
         // All remaining queries were matched by image record
@@ -731,20 +811,21 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
           }
         }
         matched = parser->GetQueryMatched();
+        this->FillImageRecord(&storeImageRecords[i], meta);
+        imageRecord = &storeImageRecords[i];
       }
       if (matched)
       {
         if (this->FindLevel < vtkDICOMDirectory::IMAGE)
         {
-          // Add all the files.
+          // Add all the files if one file matches.
           a = files;
         }
         else
         {
           // Add the matched file.
           a->InsertNextValue(fileName);
-          newImageRecords.push_back(imageRecords[i]);
-          usedImageRecords = &newImageRecords[0];
+          newImageRecords.push_back(imageRecord);
         }
       }
     }
@@ -753,7 +834,7 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
     {
       this->AddSeriesFileNames(
         patient, study, a,
-        patientRecord, studyRecord, seriesRecord, usedImageRecords);
+        patientRecord, studyRecord, seriesRecord, &newImageRecords[0]);
     }
   }
 }
@@ -939,20 +1020,12 @@ void vtkDICOMDirectory::CopyRecord(
 void vtkDICOMDirectory::FillImageRecord(
   vtkDICOMItem *item, vtkDICOMMetaData *meta)
 {
-  static const DC::EnumType tags[] = {
-    DC::SOPClassUID,
-    DC::SOPInstanceUID,
-    DC::InstanceNumber,
-    DC::Rows,
-    DC::Columns,
-    DC::ItemDelimitationItem
-  };
-
-  const DC::EnumType *tag = tags;
-  while (*tag != DC::ItemDelimitationItem)
+  vtkDICOMDataElementIterator iter = meta->Begin();
+  vtkDICOMDataElementIterator iterEnd = meta->End();
+  while (iter != iterEnd)
   {
-    item->Set(*tag, meta->Get(*tag));
-    tag++;
+    item->Set(iter->GetTag(), iter->GetValue());
+    ++iter;
   }
 }
 
@@ -960,18 +1033,7 @@ void vtkDICOMDirectory::FillImageRecord(
 void vtkDICOMDirectory::FillSeriesRecord(
   vtkDICOMItem *item, vtkDICOMMetaData *meta)
 {
-  static const DC::EnumType tags[] = {
-    DC::SpecificCharacterSet,
-    DC::SeriesDate,
-    DC::SeriesTime,
-    DC::Modality,
-    DC::SeriesDescription,
-    DC::SeriesInstanceUID,
-    DC::SeriesNumber,
-    DC::ItemDelimitationItem
-  };
-
-  const DC::EnumType *tag = tags;
+  const DC::EnumType *tag = SeriesTags;
   while (*tag != DC::ItemDelimitationItem)
   {
     item->Set(*tag, meta->Get(*tag));
@@ -983,20 +1045,7 @@ void vtkDICOMDirectory::FillSeriesRecord(
 void vtkDICOMDirectory::FillStudyRecord(
   vtkDICOMItem *item, vtkDICOMMetaData *meta)
 {
-  static const DC::EnumType tags[] = {
-    DC::SpecificCharacterSet,
-    DC::StudyDate,
-    DC::StudyTime,
-    DC::ReferringPhysicianName,
-    DC::PatientAge,
-    DC::StudyInstanceUID,
-    DC::StudyID,
-    DC::AccessionNumber,
-    DC::StudyDescription,
-    DC::ItemDelimitationItem
-  };
-
-  const DC::EnumType *tag = tags;
+  const DC::EnumType *tag = StudyTags;
   while (*tag != DC::ItemDelimitationItem)
   {
     item->Set(*tag, meta->Get(*tag));
@@ -1008,16 +1057,7 @@ void vtkDICOMDirectory::FillStudyRecord(
 void vtkDICOMDirectory::FillPatientRecord(
   vtkDICOMItem *item, vtkDICOMMetaData *meta)
 {
-  static const DC::EnumType tags[] = {
-    DC::SpecificCharacterSet,
-    DC::PatientName,
-    DC::PatientID,
-    DC::PatientBirthDate,
-    DC::PatientSex,
-    DC::ItemDelimitationItem
-  };
-
-  const DC::EnumType *tag = tags;
+  const DC::EnumType *tag = PatientTags;
   while (*tag != DC::ItemDelimitationItem)
   {
     item->Set(*tag, meta->Get(*tag));
@@ -1063,42 +1103,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
   parser->SetMetaData(meta);
 
-  // these are the attributes that must be part of the query
-  static const DC::EnumType requiredElements[] = {
-    // basic required information
-    DC::SpecificCharacterSet, // 1C
-    // image-level information
-    DC::SOPClassUID,          // 1
-    DC::SOPInstanceUID,       // 1
-    DC::InstanceNumber,       // 1
-    DC::Rows,                 // 3
-    DC::Columns,              // 3
-    // series-level information
-    DC::SeriesDate,           // 3
-    DC::SeriesTime,           // 3
-    DC::Modality,             // 1
-    DC::SeriesDescription,    // 3
-    DC::SeriesInstanceUID,    // 1
-    DC::SeriesNumber,         // 1
-    // study-level information
-    DC::StudyDate,            // 1
-    DC::StudyTime,            // 1
-    DC::ReferringPhysicianName, // 3
-    DC::PatientAge,           // 3
-    DC::StudyInstanceUID,     // 1
-    DC::StudyID,              // 1
-    DC::AccessionNumber,      // 2
-    DC::StudyDescription,     // 2
-    // patient-level information
-    DC::PatientName,          // 2
-    DC::PatientID,            // 1
-    DC::PatientBirthDate,     // 3
-    DC::PatientSex,           // 3
-    // delimiter to mark end of list
-    DC::ItemDelimitationItem
-  };
-
-  for (const DC::EnumType *tagPtr = requiredElements;
+  for (const DC::EnumType *tagPtr = ScanTags;
        *tagPtr != DC::ItemDelimitationItem;
        ++tagPtr)
   {
