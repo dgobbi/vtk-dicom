@@ -702,9 +702,9 @@ void vtkDICOMMetaData::Set(int idx, vtkDICOMTag tag, const vtkDICOMValue& v)
   if (sptr)
   {
     sptr[idx] = v;
-    // if invalid value was added, make sure valid values remain
     if (!v.IsValid())
     {
+      // if invalid value was added, make sure valid values remain
       bool valid = false;
       for (int i = 0; i < this->NumberOfInstances; i++)
       {
@@ -713,6 +713,19 @@ void vtkDICOMMetaData::Set(int idx, vtkDICOMTag tag, const vtkDICOMValue& v)
       if (!valid)
       {
         this->Erase(tag);
+      }
+    }
+    else
+    {
+      // if all values are the same, replace with a single value
+      bool same = true;
+      for (int i = 0; i < this->NumberOfInstances && same; i++)
+      {
+        same = (i == idx || sptr[i] == v);
+      }
+      if (same)
+      {
+        loc->Value = v;
       }
     }
   }
