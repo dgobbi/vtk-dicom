@@ -242,7 +242,7 @@ bool vtkDICOMMetaDataAdapter::Has(vtkDICOMTag tag) const
 
 //----------------------------------------------------------------------------
 vtkDICOMTag vtkDICOMMetaDataAdapter::ResolvePrivateTag(
-  vtkDICOMTag ptag, const std::string& creator)
+  int idx, vtkDICOMTag ptag, const std::string& creator)
 {
   vtkDICOMMetaData *meta = this->Meta;
 
@@ -254,7 +254,7 @@ vtkDICOMTag vtkDICOMMetaDataAdapter::ResolvePrivateTag(
     for (int i = 0; i < 2; i++)
     {
       const vtkDICOMValue *seq = this->PerFrame;
-      unsigned int f = 0;
+      unsigned int f = idx;
 
       if (i == 1)
       {
@@ -314,7 +314,8 @@ vtkDICOMTag vtkDICOMMetaDataAdapter::ResolvePrivateTag(
     }
 
     // if it wasn't in a PerFrame or Shared functional group
-    vtkDICOMTag tag = meta->ResolvePrivateTag(ptag, creator);
+    vtkDICOMTag tag = meta->ResolvePrivateTag(
+      this->MetaInstance, ptag, creator);
     if (tag == vtkDICOMTag(0xFFFF, 0xFFFF))
     {
       tag = tagFromPrivSeq;
@@ -323,5 +324,12 @@ vtkDICOMTag vtkDICOMMetaDataAdapter::ResolvePrivateTag(
   }
 
   // if no per-frame data, use file instance
-  return meta->ResolvePrivateTag(ptag, creator);
+  return meta->ResolvePrivateTag(idx + this->MetaInstance, ptag, creator);
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMTag vtkDICOMMetaDataAdapter::ResolvePrivateTag(
+  vtkDICOMTag ptag, const std::string& creator)
+{
+  return this->ResolvePrivateTag(0, ptag, creator);
 }

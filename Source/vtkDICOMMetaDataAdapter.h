@@ -103,6 +103,8 @@ public:
    *  data set attributes.
    */
   vtkDICOMTag ResolvePrivateTag(vtkDICOMTag ptag, const std::string& creator);
+  vtkDICOMTag ResolvePrivateTag(
+    int idx, vtkDICOMTag ptag, const std::string& creator);
   //@}
 
   //@{

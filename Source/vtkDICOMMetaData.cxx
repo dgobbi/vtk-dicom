@@ -1048,7 +1048,7 @@ vtkDICOMVR vtkDICOMMetaData::FindDictVR(int idx, vtkDICOMTag tag)
 
 //----------------------------------------------------------------------------
 vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTag(
-  vtkDICOMTag ptag, const std::string& creator)
+  int idx, vtkDICOMTag ptag, const std::string& creator)
 {
   unsigned short g = ptag.GetGroup();
   if ((g & 0x0001) == 0)
@@ -1080,10 +1080,13 @@ vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTag(
   }
 
   // look for private creator elements within the group
+  idx = (idx < 0 ? 0 : idx);
   while (iter != iterEnd && iter->GetTag() <= etag)
   {
     ctag = iter->GetTag();
-    if (iter->GetValue().AsString() == creator)
+    const vtkDICOMValue *vp = (iter->IsPerInstance() ?
+                               &iter->GetValue(idx) : &iter->GetValue());
+    if (vp->AsString() == creator)
     {
       otag = vtkDICOMTag(
         g, (ctag.GetElement() << 8) | (ptag.GetElement() & 0x00FF));
@@ -1096,10 +1099,17 @@ vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTag(
 }
 
 //----------------------------------------------------------------------------
-vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTagForWriting(
+vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTag(
   vtkDICOMTag ptag, const std::string& creator)
 {
-  vtkDICOMTag otag = this->ResolvePrivateTag(ptag, creator);
+  return this->ResolvePrivateTag(0, ptag, creator);
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTagForWriting(
+  int idx, vtkDICOMTag ptag, const std::string& creator)
+{
+  vtkDICOMTag otag = this->ResolvePrivateTag(idx, ptag, creator);
   if (otag == vtkDICOMTag(0xFFFF, 0xFFFF))
   {
     unsigned short g = ptag.GetGroup();
@@ -1120,6 +1130,13 @@ vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTagForWriting(
   }
 
   return otag;
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTagForWriting(
+  vtkDICOMTag ptag, const std::string& creator)
+{
+  return this->ResolvePrivateTagForWriting(0, ptag, creator);
 }
 
 //----------------------------------------------------------------------------

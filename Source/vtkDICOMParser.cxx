@@ -749,12 +749,19 @@ void DecoderBase::AdvanceQueryIterator(vtkDICOMTag tag)
             matched = (ptag != vtkDICOMTag(0xffff,0xffff) &&
                        this->Item->Get(ptag).IsValid());
           }
-          else
+          else if (this->Index < 0)
           {
             vtkDICOMTag ptag = this->MetaData->ResolvePrivateTag(
               qtag, iter->GetValue().AsString());
             matched = (ptag != vtkDICOMTag(0xffff,0xffff) &&
                        this->MetaData->Has(ptag));
+          }
+          else
+          {
+            vtkDICOMTag ptag = this->MetaData->ResolvePrivateTag(
+              this->Index, qtag, iter->GetValue().AsString());
+            matched = (ptag != vtkDICOMTag(0xffff,0xffff) &&
+                       this->MetaData->Get(this->Index, ptag).IsValid());
           }
         }
         else

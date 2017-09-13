@@ -269,6 +269,8 @@ public:
    *  read DICOM Part 5 Section 7.8 for additional information.
    */
   vtkDICOMTag ResolvePrivateTag(vtkDICOMTag ptag, const std::string& creator);
+  vtkDICOMTag ResolvePrivateTag(
+    int idx, vtkDICOMTag ptag, const std::string& creator);
 
   //! Resolve a private tag, and add the creator to the data set.
   /*!
@@ -280,6 +282,8 @@ public:
    */
   vtkDICOMTag ResolvePrivateTagForWriting(
     vtkDICOMTag ptag, const std::string& creator);
+  vtkDICOMTag ResolvePrivateTagForWriting(
+    int idx, vtkDICOMTag ptag, const std::string& creator);
   //@}
 
   //@{
