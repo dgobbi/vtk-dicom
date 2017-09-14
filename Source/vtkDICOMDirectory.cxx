@@ -1393,7 +1393,7 @@ namespace {
 
 // Trivial structs needed by ProcessOsirixDatabase
 struct StudyRow { vtkVariant col[12]; };
-struct SeriesRow { vtkVariant col[8]; };
+struct SeriesRow { vtkVariant col[9]; };
 struct ImageRow { vtkVariant col[7]; };
 
 // Decompress a SOPInstanceUID from an Osirix database
@@ -1570,8 +1570,8 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
 
   // Indices to columns in the series table
   enum {
-    SE_PK, SE_ID, SE_DATE, SE_SERIESSOPCLASSUID, SE_MODALITY,
-    SE_NAME, SE_SERIESDICOMUID, SE_SERIESDESCRIPTION, SE_NCOLS
+    SE_PK, SE_ID, SE_NUMBEROFIMAGES, SE_DATE, SE_SERIESSOPCLASSUID,
+    SE_MODALITY, SE_NAME, SE_SERIESDICOMUID, SE_SERIESDESCRIPTION, SE_NCOLS
   };
 
   // Indices to columns in the image table
@@ -1606,9 +1606,10 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
   }
 
   // Read the series table
-  if (!dbase.Prepare("select Z_PK,ZID,ZDATE,ZSERIESSOPCLASSUID,"
-                     "ZMODALITY,ZNAME,ZSERIESDICOMUID,ZSERIESDESCRIPTION,"
-                     "ZSTUDY from ZSERIES order by ZSTUDY,ZID"))
+  if (!dbase.Prepare("select Z_PK,ZID,ZNUMBEROFIMAGES,ZDATE,"
+                     "ZSERIESSOPCLASSUID,ZMODALITY,ZNAME,ZSERIESDICOMUID,"
+                     "ZSERIESDESCRIPTION,ZSTUDY from ZSERIES"
+                     " order by ZSTUDY,ZID"))
   {
     vtkErrorMacro("File " << fname << ": " << dbase.GetError());
     return;
@@ -1750,6 +1751,13 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
         break;
       }
       ++zseriesVecIter;
+
+      if (this->RequirePixelData &&
+          se->col[SE_NUMBEROFIMAGES].ToTypeInt64() == 0)
+      {
+        // If no images, but pixel data is required, then skip
+        continue;
+      }
 
       vtkDICOMItem seriesItem;
       vtkTypeInt64 zseries = se->col[SE_PK].ToTypeInt64();
