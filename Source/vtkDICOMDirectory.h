@@ -22,6 +22,7 @@ class vtkStringArray;
 class vtkIntArray;
 class vtkDICOMMetaData;
 class vtkDICOMItem;
+class vtkDICOMTag;
 
 //! Get information about all DICOM files within a directory.
 /*!
@@ -292,7 +293,8 @@ protected:
   virtual void Execute();
 
   //! Fill image info from image metadata.
-  virtual void FillImageRecord(vtkDICOMItem *item, vtkDICOMMetaData *meta);
+  virtual void FillImageRecord(vtkDICOMItem *item, vtkDICOMMetaData *meta,
+                               const vtkDICOMTag *skip, size_t nskip);
 
   //! Fill series info from image metadata.
   virtual void FillSeriesRecord(vtkDICOMItem *item, vtkDICOMMetaData *meta);

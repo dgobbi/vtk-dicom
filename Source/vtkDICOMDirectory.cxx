@@ -205,6 +205,49 @@ class vtkDICOMDirectory::SeriesInfoList
 {};
 
 //----------------------------------------------------------------------------
+// A helper class for building a sorted list of unique tags
+class SortedTags : public std::vector<vtkDICOMTag>
+{
+public:
+  void SetFrom(const vtkDICOMItem& patientRecord,
+               const vtkDICOMItem& studyRecord,
+               const vtkDICOMItem& seriesRecord);
+};
+
+void SortedTags::SetFrom(const vtkDICOMItem& patientRecord,
+                         const vtkDICOMItem& studyRecord,
+                         const vtkDICOMItem& seriesRecord)
+{
+  this->clear();
+  this->reserve(patientRecord.GetNumberOfDataElements() +
+                studyRecord.GetNumberOfDataElements() +
+                seriesRecord.GetNumberOfDataElements());
+
+  const vtkDICOMItem *records[3] = {
+    &patientRecord, &studyRecord, &seriesRecord
+  };
+
+  for (int i = 0; i < 3; i++)
+  {
+    vtkDICOMDataElementIterator iter = records[i]->Begin();
+    vtkDICOMDataElementIterator iterEnd = records[i]->End();
+
+    while (iter != iterEnd)
+    {
+      vtkDICOMTag tag = iter->GetTag();
+      std::vector<vtkDICOMTag>::iterator pos =
+        std::lower_bound(begin(), end(), tag);
+      if (*pos != tag)
+      {
+        this->insert(pos, tag);
+      }
+
+      ++iter;
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
 vtkDICOMDirectory::vtkDICOMDirectory()
 {
   this->DirectoryName = 0;
@@ -770,6 +813,10 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
       }
     }
 
+    // Create a list of tags not to include in image record
+    SortedTags skip;
+    skip.SetFrom(patientRecord, studyRecord, seriesRecord);
+
     for (vtkIdType i = 0; i < n; i++)
     {
       const std::string& fileName = files->GetValue(i);
@@ -811,7 +858,8 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
           }
         }
         matched = parser->GetQueryMatched();
-        this->FillImageRecord(&storeImageRecords[i], meta);
+        this->FillImageRecord(&storeImageRecords[i], meta,
+                              &skip[0], skip.size());
         imageRecord = &storeImageRecords[i];
       }
       if (matched)
@@ -1018,13 +1066,26 @@ void vtkDICOMDirectory::CopyRecord(
 
 //----------------------------------------------------------------------------
 void vtkDICOMDirectory::FillImageRecord(
-  vtkDICOMItem *item, vtkDICOMMetaData *meta)
+  vtkDICOMItem *item, vtkDICOMMetaData *meta,
+  const vtkDICOMTag *skip, size_t nskip)
 {
+  // Add all elements that aren't already in the other records
+  // (but always add SpecificCharacterSet)
+  const vtkDICOMTag *skipEnd = (skip == 0 ? 0 : skip + nskip);
+
   vtkDICOMDataElementIterator iter = meta->Begin();
   vtkDICOMDataElementIterator iterEnd = meta->End();
   while (iter != iterEnd)
   {
-    item->Set(iter->GetTag(), iter->GetValue());
+    vtkDICOMTag tag = iter->GetTag();
+    while (skip != skipEnd && *skip < tag)
+    {
+      ++skip;
+    }
+    if (tag == DC::SpecificCharacterSet || tag != *skip)
+    {
+      item->Set(tag, iter->GetValue());
+    }
     ++iter;
   }
 }
@@ -1127,6 +1188,11 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
   parser->SetQuery(query);
 
+  // To hold a list of tags to skip at the image level, because they
+  // will be stored at patient, study, or series level instead
+  SortedTags skip;
+
+  // List of files
   SeriesInfoList sortedFiles;
   SeriesInfoList::iterator li;
 
@@ -1321,7 +1387,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
           li->Files.insert(
             std::upper_bound(li->Files.begin(), li->Files.end(), fileInfo,
               CompareInstance), fileInfo);
-        this->FillImageRecord(&pos->ImageRecord, meta);
+        this->FillImageRecord(&pos->ImageRecord, meta, &skip[0], skip.size());
         li->QueryMatched |= queryMatched;
         foundSeries = true;
         break;
@@ -1346,7 +1412,9 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       this->FillPatientRecord(&li->PatientRecord, meta);
       this->FillStudyRecord(&li->StudyRecord, meta);
       this->FillSeriesRecord(&li->SeriesRecord, meta);
-      this->FillImageRecord(&li->Files.back().ImageRecord, meta);
+      skip.SetFrom(li->PatientRecord, li->StudyRecord, li->SeriesRecord);
+      this->FillImageRecord(&li->Files.back().ImageRecord, meta,
+                            &skip[0], skip.size());
     }
   }
 
