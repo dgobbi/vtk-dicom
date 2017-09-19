@@ -684,10 +684,11 @@ int vtkDICOMDirectory::MatchesImageQuery(
       const vtkDICOMValue& v = iter->GetValue();
       if (v.GetVR() == vtkDICOMVR::SQ)
       {
-        if (v.GetNumberOfValues() > 0)
+        if (v.GetNumberOfValues() > 0 ||
+            (!results.Get(tag).IsValid() &&
+             !record.Get(tag).IsValid()))
         {
           fullyMatched = false;
-          break;
         }
       }
       else if (tag != DC::SpecificCharacterSet && tag.GetGroup() != 0x0004)
@@ -707,6 +708,11 @@ int vtkDICOMDirectory::MatchesImageQuery(
               break;
             }
           }
+        }
+        else if (!results.Get(tag).IsValid() &&
+                 !record.Get(tag).IsValid())
+        {
+          fullyMatched = false;
         }
       }
     }
@@ -757,7 +763,8 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
       const vtkDICOMValue& v = iter->GetValue();
       if (v.GetVR() == vtkDICOMVR::SQ)
       {
-        if (v.GetNumberOfValues() > 0)
+        if (v.GetNumberOfValues() > 0 ||
+            !results.Get(tag).IsValid())
         {
           fullyMatched = false;
           break;

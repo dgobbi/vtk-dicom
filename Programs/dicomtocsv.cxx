@@ -79,7 +79,6 @@ void dicomtocsv_usage(FILE *file, const char *cp)
     "  --all-unique      Report all unique values within each series.\n"
     "  --min-value       Report the minimum value within each series.\n"
     "  --max-value       Report the maximum value within each series.\n"
-    "  --directory-only  Use directory scan only, do not re-scan files.\n"
     "  --ignore-dicomdir Ignore the DICOMDIR file even if it is present.\n"
     "  --charset <cs>    Charset to use if SpecificCharacterSet is missing.\n"
     "  --images-only     Only list files that have PixelData or equivalent.\n"
@@ -775,7 +774,7 @@ int MAINMACRO(int argc, char *argv[])
   std::vector<std::string> oplist;
   ReductionType rt = None;
   bool allUnique = false;
-  bool useDirectoryRecords = false;
+  bool useDirectoryRecords = true;
   bool ignoreDicomdir = false;
   vtkDICOMCharacterSet charset;
   bool imagesOnly = false;
@@ -883,7 +882,11 @@ int MAINMACRO(int argc, char *argv[])
     }
     else if (strcmp(arg, "--directory-only") == 0)
     {
-      useDirectoryRecords = true;
+      // obsolete option
+    }
+    else if (strcmp(arg, "--rescan") == 0)
+    {
+      useDirectoryRecords = false;
     }
     else if (strcmp(arg, "--ignore-dicomdir") == 0)
     {
