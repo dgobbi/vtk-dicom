@@ -24,7 +24,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 
 // needed for gettimeofday
 #ifndef _WIN32
@@ -71,8 +70,8 @@ int vtkDICOMUtilities::CompareUIDs(const char *u1, const char *u2)
     {
       int i1 = 0;
       int i2 = 0;
-      do { i1++; } while (isdigit(u1[i1]));
-      do { i2++; } while (isdigit(u2[i2]));
+      do { i1++; } while (u1[i1] >= '0' && u1[i1] <= '9');
+      do { i2++; } while (u2[i2] >= '0' && u2[i2] <= '9');
       r = i1 - i2; // longer number wins
       if (r == 0)
       { // lexically compare numbers of the same length
@@ -198,8 +197,12 @@ std::string vtkDICOMUtilities::GenerateDateTime(
   // get any timezone info that was supplied by the caller, if a timezone
   // was already generated for the data set we want to use it for generating
   // all time stamps for the data set
-  if (z && strlen(z) == 5 && (z[0] == '+' || z[0] == '-') &&
-      isdigit(z[1]) && isdigit(z[2]) && isdigit(z[3]) && isdigit(z[4]))
+  if (z &&
+      (z[0] == '+' || z[0] == '-') &&
+      (z[1] >= '0' && z[1] <= '9') &&
+      (z[2] >= '0' && z[2] <= '9') &&
+      (z[3] >= '0' && z[3] <= '9') &&
+      (z[4] >= '0' && z[4] <= '9'))
   {
     int zh = (z[1] - '0')*10 + (z[2] - '0');
     int zm = (z[3] - '0')*10 + (z[4] - '0');
