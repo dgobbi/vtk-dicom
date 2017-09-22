@@ -221,6 +221,11 @@ std::string vtkDICOMUtilities::GenerateDateTime(
   // separate time into days and seconds
   int td = static_cast<int>(t/86400000000ll);
   long long tus = t - td*86400000000ll;
+  if (tus < 0)
+  {
+    td -= 1;
+    tus += 86400000000ll;
+  }
 
   // use algorithm from Henry F. Fliegel and Thomas C. Van Flandern,
   // computes the current date according to Gregorian calendar
