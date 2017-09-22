@@ -100,15 +100,16 @@ public:
    */
   static long long ConvertDateTime(const char *datetime);
 
-  //! Get the current UTC time in microseconds and an offset to localtime.
+  //! Get the current time in microseconds.
   /*!
    *  The time is in microseconds since the UNIX epoch (00:00:00 UTC on
-   *  1 Jan 1970).  The offset can be added to the returned UTC time in
-   *  order to get the local time.  If you do not need the offset, you
-   *  can pass a null pointer.
+   *  1 Jan 1970).
    */
-  static long long GetUTC(long long *offset);
+  static long long GetUniversalTime();
   //@}
+
+  //! Deprecated method, do not use.
+  static long long GetUTC(long long *offset);
 
   //@{
   //! Check if the specified file is a DICOM file.
@@ -190,6 +191,8 @@ public:
 protected:
   vtkDICOMUtilities() {}
   ~vtkDICOMUtilities() {}
+
+  static long long GetLocalOffset(long long t);
 
   static char UIDPrefix[64];
   static char ImplementationClassUID[65];

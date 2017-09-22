@@ -83,7 +83,22 @@ int main(int argc, char *argv[])
   TestAssert(s == t);
   s = "20140710093855.874905-0600";
   l = DU::ConvertDateTime(s.c_str());
-  TestAssert(l == 1405006735874905);
+  TestAssert(l == 1405006735874905ll);
+  }
+
+  { // Test DateTime handling of DST boundaries
+  const char *times[4] = {
+    "20170312015959.999999",
+    "20170312030000.000000",
+    "20171105015959.999999",
+    "20171105020000.000000",
+  };
+  for (int i = 0; i < 4; i++)
+  {
+    long long l = DU::ConvertDateTime(times[i]);
+    std::string t = DU::GenerateDateTime(l, 0);
+    TestAssert(t.compare(0, 21, times[i]) == 0);
+  }
   }
 
   { // Test packing/unpacking
