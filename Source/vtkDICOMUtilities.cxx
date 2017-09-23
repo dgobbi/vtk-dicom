@@ -135,7 +135,12 @@ long long vtkDICOMUtilities::GetLocalOffset(long long microsecs)
 #ifdef _WIN32
 
   // convert unix time to file time
-  FILETIME ft = microsecs*10 + 11644473600000000ll;
+  long long t1 = microsecs*10 + 11644473600000000ll;
+  ULARGE_INTEGER li;
+  li.QuadPart = t1;
+  FILETIME ft;
+  ft.dwLowDateTime = li.LowPart;
+  ft.dwHighDateTime = li.HighPart;
 
   // get the current timezone offset by subtracting UTC from local time
   TIME_ZONE_INFORMATION tzi;
@@ -147,8 +152,9 @@ long long vtkDICOMUtilities::GetLocalOffset(long long microsecs)
   FILETIME lft;
   SystemTimeToFileTime(&lst, &lft);
   // round to the nearest second, since result has a bit of numerical error
-  long long tzo = ((static_cast<long long>(lft.dwHighDateTime) << 32) +
-                   static_cast<long long>(lft.dwLowDateTime) - t1);
+  li.LowPart = lft.dwLowDateTime;
+  li.HighPart = lft.dwHighDateTime;
+  long long tzo = static_cast<long long>(li.QuadPart) - t1;
   if (tzo >= 0)
   {
     tzo = (tzo + 5000000)/10000000;
