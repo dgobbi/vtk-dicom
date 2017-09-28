@@ -1928,8 +1928,10 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
             DecompressUID(im->col[IM_COMPRESSEDSOPINSTANCEUID].ToString()));
           imageRecord.Set(DC::InstanceNumber,
             im->col[IM_INSTANCENUMBER].ToString());
-          imageRecord.Set(DC::Rows, im->col[IM_STOREDHEIGHT].ToInt());
-          imageRecord.Set(DC::Columns, im->col[IM_STOREDWIDTH].ToInt());
+          int rows = im->col[IM_STOREDHEIGHT].ToInt();
+          if (rows) { imageRecord.Set(DC::Rows, rows); }
+          int cols = im->col[IM_STOREDWIDTH].ToInt();
+          if (cols) { imageRecord.Set(DC::Columns, cols); }
           imageRecordSequence.AddItem(imageRecord);
           fileNames->InsertNextValue(fpath);
           lastpath = fpath;
