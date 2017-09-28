@@ -424,6 +424,12 @@ SOPClassesInStudy
 UI
 1-n
 
+(0008,0063)
+Anatomic Regions in Study Code Sequence
+AnatomicRegionsInStudyCodeSequence
+SQ
+1
+
 (0008,0064)
 Conversion Type
 ConversionType
@@ -1239,7 +1245,7 @@ Anatomic Structure, Space or Region Sequence
 AnatomicStructureSpaceOrRegionSequence
 SQ
 1
-
+RET
 (0008,2230)
 Primary Anatomic Structure Modifier Sequence
 PrimaryAnatomicStructureModifierSequence
@@ -1964,6 +1970,18 @@ LO
 Clinical Trial Time Point Description
 ClinicalTrialTimePointDescription
 ST
+1
+
+(0012,0052)
+Longitudinal Temporal Offset from Event
+LongitudinalTemporalOffsetFromEvent
+FD
+1
+
+(0012,0053)
+Longitudinal Temporal Event Type
+LongitudinalTemporalEventType
+CS
 1
 
 (0012,0060)
@@ -4204,10 +4222,22 @@ CompressionForce
 DS
 1
 
+(0018,11A3)
+Compression Pressure
+CompressionPressure
+DS
+1
+
 (0018,11A4)
 Paddle Description
 PaddleDescription
 LO
+1
+
+(0018,11A5)
+Compression Contact Area
+CompressionContactArea
+DS
 1
 
 (0018,1200)
@@ -12681,13 +12711,13 @@ Total Time of Fluoroscopy
 TotalTimeOfFluoroscopy
 US
 1
-
+RET
 (0040,0301)
 Total Number of Exposures
 TotalNumberOfExposures
 US
 1
-
+RET
 (0040,0302)
 Entrance Dose
 EntranceDose
@@ -12717,7 +12747,7 @@ Exposure Dose Sequence
 ExposureDoseSequence
 SQ
 1
-
+RET
 (0040,0310)
 Comments on Radiation Dose
 CommentsOnRadiationDose
@@ -18784,6 +18814,12 @@ ProcedureStepProgressDescription
 ST
 1
 
+(0074,1007)
+Procedure Step Progress Parameters Sequence
+ProcedureStepProgressParametersSequence
+SQ
+1
+
 (0074,1008)
 Procedure Step Communications URI Sequence
 ProcedureStepCommunicationsURISequence
@@ -22137,19 +22173,19 @@ Beam Dose Point Depth
 BeamDosePointDepth
 FL
 1
-RET
+
 (300A,0089)
 Beam Dose Point Equivalent Depth
 BeamDosePointEquivalentDepth
 FL
 1
-RET
+
 (300A,008A)
 Beam Dose Point SSD
 BeamDosePointSSD
 FL
 1
-RET
+
 (300A,008B)
 Beam Dose Meaning
 BeamDoseMeaning
@@ -22167,19 +22203,19 @@ Average Beam Dose Point Depth
 AverageBeamDosePointDepth
 FL
 1
-
+RET
 (300A,008E)
 Average Beam Dose Point Equivalent Depth
 AverageBeamDosePointEquivalentDepth
 FL
 1
-
+RET
 (300A,008F)
 Average Beam Dose Point SSD
 AverageBeamDosePointSSD
 FL
 1
-
+RET
 (300A,0090)
 Beam Dose Type
 BeamDoseType
@@ -22195,6 +22231,12 @@ DS
 (300A,0092)
 Alternate Beam Dose Type
 AlternateBeamDoseType
+CS
+1
+
+(300A,0093)
+Depth Value Averaging Flag
+DepthValueAveragingFlag
 CS
 1
 
@@ -23293,6 +23335,30 @@ DS
 (300A,026C)
 Brachy Accessory Device Nominal Transmission
 BrachyAccessoryDeviceNominalTransmission
+DS
+1
+
+(300A,0271)
+Channel Effective Length
+ChannelEffectiveLength
+DS
+1
+
+(300A,0272)
+Channel Inner Length
+ChannelInnerLength
+DS
+1
+
+(300A,0273)
+Afterloader Channel ID
+AfterloaderChannelID
+SH
+1
+
+(300A,0274)
+Source Applicator Tip Length
+SourceApplicatorTipLength
 DS
 1
 

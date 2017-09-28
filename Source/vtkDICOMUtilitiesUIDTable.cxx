@@ -23,15 +23,15 @@ const UIDTableEntry UIDTable[] = {
 { 207, 1, 2, 0, 0 },
 { 208, 1, 1, 0, 0 },
 { 1247, 1, 1, 0, 0 },
-{ 2424, 1, 1, 0, 0 },
-{ 2427, 1, 1, 0, 0 },
-{ 2429, 24, 1, 0, 0 },
+{ 2445, 1, 1, 0, 0 },
+{ 2448, 1, 1, 0, 0 },
+{ 2450, 24, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 2453, 2, 0, 0, 0 },
+{ 2474, 2, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.1.1
   "Verification SOP Class" },
 { 58, 6, 1, 0, // 1.2.840.10008.1.2
@@ -1619,7 +1619,7 @@ const UIDTableEntry UIDTable[] = {
   "Implant Template Group Information Model - MOVE" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.45.4
   "Implant Template Group Information Model - GET" },
-{ 1248, 1176, 1, 0, 0 },
+{ 1248, 1197, 1, 0, 0 },
 { 0, 0, 0, 2, // 1.2.840.10008.6.1.1
   "Anatomic Modifier" },
 { 0, 0, 0, 4, // 1.2.840.10008.6.1.2
@@ -3866,12 +3866,54 @@ const UIDTableEntry UIDTable[] = {
   "Reason for Repeating Acquisition" },
 { 0, 0, 0, 800, // 1.2.840.10008.6.1.1176
   "Protocol Assertion Codes" },
-{ 2425, 2, 1, 0, 0 },
+{ 0, 0, 0, 7026, // 1.2.840.10008.6.1.1177
+  "Radiotherapeutic Dose Measurement Devices" },
+{ 0, 0, 0, 7014, // 1.2.840.10008.6.1.1178
+  "Export Additional Information Document Titles" },
+{ 0, 0, 0, 7015, // 1.2.840.10008.6.1.1179
+  "Export Delay Reasons" },
+{ 0, 0, 0, 7016, // 1.2.840.10008.6.1.1180
+  "Level of Difficulty" },
+{ 0, 0, 0, 7017, // 1.2.840.10008.6.1.1181
+  "Category of Teaching Material - Imaging" },
+{ 0, 0, 0, 7018, // 1.2.840.10008.6.1.1182
+  "Miscellaneous Document Titles" },
+{ 0, 0, 0, 7019, // 1.2.840.10008.6.1.1183
+  "Segmentation Non-Image Source Purposes of Reference" },
+{ 0, 0, 0, 280, // 1.2.840.10008.6.1.1184
+  "Longitudinal Temporal Event Types" },
+{ 0, 0, 0, 6401, // 1.2.840.10008.6.1.1185
+  "Non-lesion Object Type - Physical Objects" },
+{ 0, 0, 0, 6402, // 1.2.840.10008.6.1.1186
+  "Non-lesion Object Type - Substances" },
+{ 0, 0, 0, 6403, // 1.2.840.10008.6.1.1187
+  "Non-lesion Object Type - Tissues" },
+{ 0, 0, 0, 6404, // 1.2.840.10008.6.1.1188
+  "Chest Non-lesion Object Type - Physical Objects" },
+{ 0, 0, 0, 6405, // 1.2.840.10008.6.1.1189
+  "Chest Non-lesion Object Type - Tissues" },
+{ 0, 0, 0, 7191, // 1.2.840.10008.6.1.1190
+  "Tissue Segmentation Property Types" },
+{ 0, 0, 0, 7192, // 1.2.840.10008.6.1.1191
+  "Anatomical Structure Segmentation Property Types" },
+{ 0, 0, 0, 7193, // 1.2.840.10008.6.1.1192
+  "Physical Object Segmentation Property Types" },
+{ 0, 0, 0, 7194, // 1.2.840.10008.6.1.1193
+  "Morphological Abnormal Structure Segmentation Property Types" },
+{ 0, 0, 0, 7195, // 1.2.840.10008.6.1.1194
+  "Function Segmentation Property Types" },
+{ 0, 0, 0, 7196, // 1.2.840.10008.6.1.1195
+  "Spatial and Relational Concept Segmentation Property Types" },
+{ 0, 0, 0, 7197, // 1.2.840.10008.6.1.1196
+  "Body Substance Segmentation Property Types" },
+{ 0, 0, 0, 7198, // 1.2.840.10008.6.1.1197
+  "Substance Segmentation Property Types" },
+{ 2446, 2, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.1
   "Native DICOM Model" },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.2
   "Abstract Multi-Dimensional Image Model" },
-{ 2428, 1, 1, 0, 0 },
+{ 2449, 1, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.8.1.1
   "DICOM Content Mapping Resource" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.1
@@ -3922,10 +3964,10 @@ const UIDTableEntry UIDTable[] = {
   "General Section Entries" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.24
   "Imaging Addendum Report" },
-{ 2455, 2, 3, 0, 0 },
-{ 2496, 1, 1, 0, 0 },
-{ 2457, 31, 1, 0, 0 },
-{ 2488, 8, 1, 0, 0 },
+{ 2476, 2, 3, 0, 0 },
+{ 2517, 1, 1, 0, 0 },
+{ 2478, 31, 1, 0, 0 },
+{ 2509, 8, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.1
   "dicomDeviceName" },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.2

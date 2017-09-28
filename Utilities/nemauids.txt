@@ -4972,3 +4972,66 @@ Reason for Repeating Acquisition
 1.2.840.10008.6.1.1176
 CID 800
 Protocol Assertion Codes
+1.2.840.10008.6.1.1177
+CID 7026
+Radiotherapeutic Dose Measurement Devices
+1.2.840.10008.6.1.1178
+CID 7014
+Export Additional Information Document Titles
+1.2.840.10008.6.1.1179
+CID 7015
+Export Delay Reasons
+1.2.840.10008.6.1.1180
+CID 7016
+Level of Difficulty
+1.2.840.10008.6.1.1181
+CID 7017
+Category of Teaching Material - Imaging
+1.2.840.10008.6.1.1182
+CID 7018
+Miscellaneous Document Titles
+1.2.840.10008.6.1.1183
+CID 7019
+Segmentation Non-Image Source Purposes of Reference
+1.2.840.10008.6.1.1184
+CID 280
+Longitudinal Temporal Event Types
+1.2.840.10008.6.1.1185
+CID 6401
+Non-lesion Object Type - Physical Objects
+1.2.840.10008.6.1.1186
+CID 6402
+Non-lesion Object Type - Substances
+1.2.840.10008.6.1.1187
+CID 6403
+Non-lesion Object Type - Tissues
+1.2.840.10008.6.1.1188
+CID 6404
+Chest Non-lesion Object Type - Physical Objects
+1.2.840.10008.6.1.1189
+CID 6405
+Chest Non-lesion Object Type - Tissues
+1.2.840.10008.6.1.1190
+CID 7191
+Tissue Segmentation Property Types
+1.2.840.10008.6.1.1191
+CID 7192
+Anatomical Structure Segmentation Property Types
+1.2.840.10008.6.1.1192
+CID 7193
+Physical Object Segmentation Property Types
+1.2.840.10008.6.1.1193
+CID 7194
+Morphological Abnormal Structure Segmentation Property Types
+1.2.840.10008.6.1.1194
+CID 7195
+Function Segmentation Property Types
+1.2.840.10008.6.1.1195
+CID 7196
+Spatial and Relational Concept Segmentation Property Types
+1.2.840.10008.6.1.1196
+CID 7197
+Body Substance Segmentation Property Types
+1.2.840.10008.6.1.1197
+CID 7198
+Substance Segmentation Property Types
