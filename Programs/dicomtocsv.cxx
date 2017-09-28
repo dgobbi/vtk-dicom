@@ -75,6 +75,7 @@ void dicomtocsv_usage(FILE *file, const char *cp)
     "  -q <query.txt>    Provide a file to describe the find query.\n"
     "  -u <uids.txt>     Provide a file that contains a list of UIDs.\n"
     "  -o <data.csv>     Provide a file for the query results.\n"
+    "  --default         Add to default query instead of replacing it.\n"
     "  --first-nonzero   Search series for first nonzero value of each key.\n"
     "  --all-unique      Report all unique values within each series.\n"
     "  --min-value       Report the minimum value within each series.\n"
@@ -275,6 +276,23 @@ void dicomtocsv_study_default(vtkDICOMItem *query, QueryTagList *ql)
     VR vr = query->FindDictVR(*tagPtr);
     query->Set(*tagPtr, vtkDICOMValue(vr));
     ql->push_back(vtkDICOMTagPath(*tagPtr));
+  }
+}
+
+// generate a default query
+void dicomtocsv_default(int level, vtkDICOMItem *query, QueryTagList *ql)
+{
+  if (level == 2)
+  {
+    dicomtocsv_study_default(query, ql);
+  }
+  else if (level == 3)
+  {
+    dicomtocsv_series_default(query, ql);
+  }
+  else if (level == 4)
+  {
+    dicomtocsv_image_default(query, ql);
   }
 }
 
@@ -808,6 +826,24 @@ int MAINMACRO(int argc, char *argv[])
     return rval;
   }
 
+  // need to check for query level first
+  for (int argi = 1; argi < argc; argi++)
+  {
+    const char *arg = argv[argi];
+    if (strcmp(arg, "--study") == 0)
+    {
+      level = 2;
+    }
+    else if (strcmp(arg, "--series") == 0)
+    {
+      level = 3;
+    }
+    else if (strcmp(arg, "--image") == 0)
+    {
+      level = 4;
+    }
+  }
+
   for (int argi = 1; argi < argc; argi++)
   {
     const char *arg = argv[argi];
@@ -864,6 +900,10 @@ int MAINMACRO(int argc, char *argv[])
         return 1;
       }
     }
+    else if (strcmp(arg, "--default") == 0)
+    {
+      dicomtocsv_default(level, &query, &qtlist);
+    }
     else if (strcmp(arg, "--first-nonzero") == 0)
     {
       rt = FirstNonzero;
@@ -917,21 +957,15 @@ int MAINMACRO(int argc, char *argv[])
     {
       noHeader = true;
     }
-    else if (strcmp(arg, "--study") == 0)
-    {
-      level = 2;
-    }
-    else if (strcmp(arg, "--series") == 0)
-    {
-      level = 3;
-    }
-    else if (strcmp(arg, "--image") == 0)
-    {
-      level = 4;
-    }
     else if (strcmp(arg, "--silent") == 0)
     {
       silent = true;
+    }
+    else if (strcmp(arg, "--study") == 0 ||
+             strcmp(arg, "--series") == 0 ||
+             strcmp(arg, "--image") == 0)
+    {
+      // these were handled in first arg scan
     }
     else if (arg[0] == '-')
     {
@@ -997,18 +1031,7 @@ int MAINMACRO(int argc, char *argv[])
   // If no query specified, then use a default one
   if (qtlist.size() == 0)
   {
-    if (level == 2)
-    {
-      dicomtocsv_study_default(&query, &qtlist);
-    }
-    else if (level == 3)
-    {
-      dicomtocsv_series_default(&query, &qtlist);
-    }
-    else if (level == 4)
-    {
-      dicomtocsv_image_default(&query, &qtlist);
-    }
+    dicomtocsv_default(level, &query, &qtlist);
   }
 
   // Write the header
