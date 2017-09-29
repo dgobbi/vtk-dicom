@@ -1793,8 +1793,11 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
 
     studyItem.Set(
       DC::SpecificCharacterSet, vtkDICOMCharacterSet::ISO_IR_192);
-    studyItem.Set(
-      DC::StudyDescription, st->col[ST_STUDYNAME].ToString());
+    std::string studyName = st->col[ST_STUDYNAME].ToString();
+    if (studyName != "Localizers")
+    {
+      studyItem.Set(DC::StudyDescription, studyName);
+    }
     studyItem.Set(
       DC::StudyID, st->col[ST_ID].ToString());
     studyItem.Set(
