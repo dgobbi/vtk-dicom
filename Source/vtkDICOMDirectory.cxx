@@ -1025,9 +1025,6 @@ void vtkDICOMDirectory::AddSeriesFileNames(
     vtkSmartPointer<vtkDICOMMetaData> meta =
       vtkSmartPointer<vtkDICOMMetaData>::New();
     meta->SetNumberOfInstances(seriesLength[kk]);
-    this->CopyRecord(meta, &patientRecord, -1);
-    this->CopyRecord(meta, &studyRecord, -1);
-    this->CopyRecord(meta, &seriesRecord, -1);
 
     vtkSmartPointer<vtkStringArray> newfiles;
     if (numberOfDuplicates > 0)
@@ -1054,6 +1051,11 @@ void vtkDICOMDirectory::AddSeriesFileNames(
       }
     }
 
+    // these must be added after the image-level information
+    this->CopyRecord(meta, &seriesRecord, -1);
+    this->CopyRecord(meta, &studyRecord, -1);
+    this->CopyRecord(meta, &patientRecord, -1);
+
     (*this->Studies)[study].LastSeries = series++;
     this->Series->push_back(SeriesItem());
     SeriesItem& item = this->Series->back();
@@ -1069,6 +1071,8 @@ void vtkDICOMDirectory::CopyRecord(
 {
   vtkDICOMDataElementIterator iter = item->Begin();
   vtkDICOMDataElementIterator iterEnd = item->End();
+  vtkDICOMDataElementIterator iter2 = meta->Begin();
+  vtkDICOMDataElementIterator iter2End = meta->End();
   for (; iter != iterEnd; ++iter)
   {
     vtkDICOMTag tag = iter->GetTag();
@@ -1093,9 +1097,37 @@ void vtkDICOMDirectory::CopyRecord(
       }
     }
 
-    if (instance >= 0)
+    if (instance > 0)
     {
-      meta->Set(instance, tag, iter->GetValue());
+      // check for elements that are missing for this instance,
+      // and insert NULL values to indicate their absence
+      if (iter2 != iter2End)
+      {
+        do
+        {
+          vtkDICOMTag tag2 = iter2->GetTag();
+          if (tag2 > tag)
+          {
+            break;
+          }
+          const vtkDICOMValue &v = iter2->GetValue();
+          ++iter2;
+          if (tag2 == tag)
+          {
+            if (v != iter->GetValue())
+            {
+              meta->Set(instance, tag, iter->GetValue());
+            }
+            break;
+          }
+          meta->Set(instance, tag2, vtkDICOMValue());
+        }
+        while (iter2 != iter2End);
+      }
+      else
+      {
+        meta->Set(instance, tag, iter->GetValue());
+      }
     }
     else
     {
