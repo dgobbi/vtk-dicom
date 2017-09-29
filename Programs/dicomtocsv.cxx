@@ -80,6 +80,7 @@ void dicomtocsv_usage(FILE *file, const char *cp)
     "  --all-unique      Report all unique values within each series.\n"
     "  --min-value       Report the minimum value within each series.\n"
     "  --max-value       Report the maximum value within each series.\n"
+    "  --directory-only  Do not scan files if DICOMDIR is present.\n"
     "  --ignore-dicomdir Ignore the DICOMDIR file even if it is present.\n"
     "  --charset <cs>    Charset to use if SpecificCharacterSet is missing.\n"
     "  --images-only     Only list files that have PixelData or equivalent.\n"
@@ -467,7 +468,7 @@ struct SearchState {
 // Write out the results in csv format
 void dicomtocsv_write(vtkDICOMDirectory *finder,
   const vtkDICOMItem& query, const QueryTagList *ql, FILE *fp,
-  int level, ReductionType rt, bool allUnique, bool useDirectoryRecords,
+  int level, ReductionType rt, bool allUnique, bool rescanFiles,
   vtkCommand *p)
 {
   // for keeping track of progress
@@ -515,7 +516,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
       }
 
       vtkSmartPointer<vtkDICOMMetaData> meta;
-      if (useDirectoryRecords)
+      if (!rescanFiles)
       {
         meta = finder->GetMetaDataForSeries(k);
       }
@@ -792,7 +793,8 @@ int MAINMACRO(int argc, char *argv[])
   std::vector<std::string> oplist;
   ReductionType rt = None;
   bool allUnique = false;
-  bool useDirectoryRecords = true;
+  bool rescanFiles = false;
+  bool onlyDicomdir = false;
   bool ignoreDicomdir = false;
   vtkDICOMCharacterSet charset;
   bool imagesOnly = false;
@@ -922,11 +924,11 @@ int MAINMACRO(int argc, char *argv[])
     }
     else if (strcmp(arg, "--directory-only") == 0)
     {
-      // obsolete option
+      onlyDicomdir = true;
     }
     else if (strcmp(arg, "--rescan") == 0)
     {
-      useDirectoryRecords = false;
+      rescanFiles = true;
     }
     else if (strcmp(arg, "--ignore-dicomdir") == 0)
     {
@@ -1066,6 +1068,14 @@ int MAINMACRO(int argc, char *argv[])
     }
     finder->SetInputFileNames(a);
     finder->SetIgnoreDicomdir(ignoreDicomdir);
+    if (onlyDicomdir)
+    {
+      finder->SetQueryFilesToNever();
+    }
+    else
+    {
+      finder->SetQueryFilesToAlways();
+    }
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
     finder->Update();
@@ -1075,8 +1085,7 @@ int MAINMACRO(int argc, char *argv[])
       p->SetText("Writing");
     }
     dicomtocsv_write(
-      finder, query, &qtlist, fp, level, rt, allUnique,
-      useDirectoryRecords, p);
+      finder, query, &qtlist, fp, level, rt, allUnique, rescanFiles, p);
 
     fflush(fp);
   }
