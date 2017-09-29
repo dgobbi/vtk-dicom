@@ -624,6 +624,16 @@ bool MatchesOsirixDatabase(
   return matched;
 }
 
+// Convert Osirix database times (NSDate) to DICOM DT
+std::string ConvertOsirixTime(double t)
+{
+  // Seconds between our time base (00:00:00 UTC Jan 1, 1970)
+  // and Osirix database time base (00:00:00 UTC Jan 1, 2001)
+  const long long timediff = 978307200;
+  long long s = static_cast<long long>(t + (t >= 0 ? 0.5 : -0.5));
+  return vtkDICOMUtilities::GenerateDateTime((s + timediff)*1000000, NULL);
+}
+
 }
 
 //----------------------------------------------------------------------------
@@ -1761,20 +1771,23 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
     std::string name = st->col[ST_NAME].ToString();
     std::string patientID = st->col[ST_PATIENTID].ToString();
 
-    // Seconds between our time base and database time base
-    const double timediff = 978307200.0;
     double studySeconds = st->col[ST_DATE].ToDouble();
     double birthSeconds = st->col[ST_DATEOFBIRTH].ToDouble();
-    std::string studyDT = vtkDICOMUtilities::GenerateDateTime(
-      static_cast<long long>((studySeconds + timediff)*1e6), NULL);
-    std::string birthDT = vtkDICOMUtilities::GenerateDateTime(
-      static_cast<long long>((birthSeconds + timediff)*1e6), NULL);
+    std::string studyDT = ConvertOsirixTime(studySeconds);
+    std::string birthDT = ConvertOsirixTime(birthSeconds);
 
     patientItem.Set(
       DC::SpecificCharacterSet, vtkDICOMCharacterSet::ISO_IR_192);
     patientItem.Set(DC::PatientName, name);
     patientItem.Set(DC::PatientID, patientID);
-    patientItem.Set(DC::PatientBirthDate, birthDT.substr(0, 8));
+    if (birthSeconds == 0)
+    {
+      patientItem.Set(DC::PatientBirthDate, "");
+    }
+    else
+    {
+      patientItem.Set(DC::PatientBirthDate, birthDT.substr(0, 8));
+    }
     patientItem.Set(
       DC::PatientSex, st->col[ST_PATIENTSEX].ToString());
 
@@ -1790,6 +1803,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
       DC::InstitutionName, st->col[ST_INSTITUTIONNAME].ToString());
     studyItem.Set(
       DC::AccessionNumber, st->col[ST_ACCESSIONNUMBER].ToString());
+
     studyItem.Set(DC::StudyDate, studyDT.substr(0,8));
     studyItem.Set(DC::StudyTime, studyDT.substr(8,13));
 
@@ -1847,8 +1861,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
       vtkDICOMItem seriesItem;
       vtkTypeInt64 zseries = se->col[SE_PK].ToTypeInt64();
       double seriesSeconds = se->col[SE_DATE].ToDouble();
-      std::string seriesDT = vtkDICOMUtilities::GenerateDateTime(
-        static_cast<long long>((seriesSeconds + timediff)*1e6), NULL);
+      std::string seriesDT = ConvertOsirixTime(seriesSeconds);
       vtkDICOMValue sopClassUID(
         vtkDICOMVR::UI, se->col[SE_SERIESSOPCLASSUID].ToString());
       std::string seriesUID = se->col[SE_SERIESDICOMUID].ToString();
