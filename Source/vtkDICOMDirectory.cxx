@@ -1666,6 +1666,8 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
   std::vector<ImageRow> imageTable;
 
   // Read the study table
+  // (Note that any "*NAME*" is slightly mangled, and ZDATE gives the
+  // date/time of the first acquisition, rather than the study date/time)
   if (!dbase.Prepare("select Z_PK,ZDATE,ZDATEOFBIRTH,ZMODALITY,ZNAME,"
                      "ZINSTITUTIONNAME,ZSTUDYNAME,ZID,ZSTUDYINSTANCEUID,"
                      "ZACCESSIONNUMBER,ZPATIENTSEX,ZPATIENTID from ZSTUDY"
@@ -1686,6 +1688,8 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
   }
 
   // Read the series table
+  // (Note that any "*NAME*" is slightly mangled, and ZDATE gives the
+  // date/time of the first acquisition, rather than the series date/time)
   if (!dbase.Prepare("select Z_PK,ZID,ZNUMBEROFIMAGES,ZDATE,"
                      "ZSERIESSOPCLASSUID,ZMODALITY,ZNAME,ZSERIESDICOMUID,"
                      "ZSERIESDESCRIPTION,ZSTUDY from ZSERIES"
@@ -1708,6 +1712,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
   }
 
   // Read the image table
+  // (Note that ZSTOREDHEIGHT, ZSTOREDWIDTH are sometimes NULL)
   if (!dbase.Prepare("select ZINSTANCENUMBER,ZFRAMEID,ZPATHNUMBER,"
                      "ZPATHSTRING,ZCOMPRESSEDSOPINSTANCEUID,"
                      "ZSTOREDHEIGHT,ZSTOREDWIDTH,ZSERIES"
