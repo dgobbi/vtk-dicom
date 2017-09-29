@@ -196,6 +196,24 @@ public:
   vtkDICOMMetaData *GetMetaDataForSeries(int i);
   //@}
 
+  //! Set when to query the files, rather than just the DICOMDIR index.
+  /*!
+   *  If a DICOMDIR file is present, the default behavior is to only
+   *  query the other files in the directory if the Query contains
+   *  elements that cannot be elucidated from the DICOMDIR file.
+   *  For Always, the data returned by GetMetaDataForSeries() will
+   *  always be data from the file, not the DICOMDIR (though the
+   *  data returned by GetSeriesRecord() etc. will be from DICOMDIR).
+   *  For Never, the files will never be scanned if a DICOMDIR is
+   *  present, which means that any Query that is applied can only
+   *  check attributes that are present in the DICOMDIR.
+   */
+  void SetQueryFilesToAlways() { this->SetQueryFiles(1); }
+  void SetQueryFilesToNever() { this->SetQueryFiles(0); }
+  void SetQueryFilesToDefault() { this->SetQueryFiles(-1); }
+  vtkSetMacro(QueryFiles, int);
+  int GetQueryFiles() { return this->QueryFiles; }
+
   //@{
   //! Get the file set ID.  This will be NULL unless a DICOMDIR was found.
   const char *GetFileSetID() { return this->FileSetID; }
@@ -278,6 +296,7 @@ protected:
   const char *DirectoryName;
   vtkStringArray *InputFileNames;
   const char *FilePattern;
+  int QueryFiles;
   int IgnoreDicomdir;
   int RequirePixelData;
   int FollowSymlinks;

@@ -261,6 +261,7 @@ vtkDICOMDirectory::vtkDICOMDirectory()
   this->Visited = new VisitedVector;
   this->FileSetID = 0;
   this->InternalFileName = 0;
+  this->QueryFiles = -1;
   this->IgnoreDicomdir = 0;
   this->RequirePixelData = 1;
   this->FollowSymlinks = 1;
@@ -312,6 +313,10 @@ void vtkDICOMDirectory::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "FindLevel: "
      << (this->FindLevel == vtkDICOMDirectory::IMAGE ?
          "IMAGE\n" : "SERIES\n");
+
+  os << indent << "QueryFiles: "
+     << (this->QueryFiles == 0 ? "Never\n" :
+         (this->QueryFiles == 1 ? "Always\n" : "Default\n"));
 
   os << indent << "IgnoreDicomdir: "
      << (this->IgnoreDicomdir ? "On\n" : "Off\n");
@@ -766,26 +771,35 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
   {
     // Have we checked all the attributes in the query?
     bool fullyMatched = true;
-    vtkDICOMDataElementIterator iter;
-    for (iter = this->Query->Begin(); iter != this->Query->End(); ++iter)
+    if (this->QueryFiles == 1)
     {
-      vtkDICOMTag tag = iter->GetTag();
-      const vtkDICOMValue& v = iter->GetValue();
-      if (v.GetVR() == vtkDICOMVR::SQ)
+      // Always scan files, even if directory records fulfil the query
+      fullyMatched = false;
+    }
+    else if (this->QueryFiles == -1)
+    {
+      // Check for unfulfilled query elements
+      vtkDICOMDataElementIterator iter;
+      for (iter = this->Query->Begin(); iter != this->Query->End(); ++iter)
       {
-        if (v.GetNumberOfValues() > 0 ||
-            !results.Get(tag).IsValid())
+        vtkDICOMTag tag = iter->GetTag();
+        const vtkDICOMValue& v = iter->GetValue();
+        if (v.GetVR() == vtkDICOMVR::SQ)
         {
-          fullyMatched = false;
-          break;
+          if (v.GetNumberOfValues() > 0 ||
+              !results.Get(tag).IsValid())
+          {
+            fullyMatched = false;
+            break;
+          }
         }
-      }
-      else if (tag != DC::SpecificCharacterSet && tag.GetGroup() != 0x0004)
-      {
-        if (!results.Get(tag).IsValid())
+        else if (tag != DC::SpecificCharacterSet && tag.GetGroup() != 0x0004)
         {
-          fullyMatched = false;
-          break;
+          if (!results.Get(tag).IsValid())
+          {
+            fullyMatched = false;
+            break;
+          }
         }
       }
     }
@@ -832,7 +846,16 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
 
     // Create a list of tags not to include in image record
     SortedTags skip;
-    skip.SetFrom(patientRecord, studyRecord, seriesRecord);
+    if (this->QueryFiles == 1)
+    {
+      // Scan for all attributes, even ones found in DICOMDIR
+      skip.push_back(DC::SpecificCharacterSet);
+    }
+    else
+    {
+      // Skip any attributes that were found in the DICOMDIR
+      skip.SetFrom(patientRecord, studyRecord, seriesRecord);
+    }
 
     for (vtkIdType i = 0; i < n; i++)
     {
@@ -840,12 +863,12 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
       bool matched = false;
       int r = this->MatchesImageQuery(*imageRecords[i], results);
       const vtkDICOMItem *imageRecord = imageRecords[i];
-      if (r == 0)
+      if (r == 0 && this->QueryFiles != 1)
       {
         // All remaining queries were matched by image record
         matched = true;
       }
-      else if (r > 0)
+      else if (r >= 0)
       {
         // Set info for use by RelayError
         this->CurrentPatientRecord = &patientRecord;
