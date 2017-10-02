@@ -1911,15 +1911,6 @@ bool vtkDICOMParser::ReadMetaHeader(
   const unsigned char* &cp, const unsigned char* &ep,
   vtkDICOMMetaData *meta, int idx)
 {
-  bool tempMeta = false;
-  if (meta == 0)
-  {
-    meta = vtkDICOMMetaData::New();
-    tempMeta = true;
-  }
-
-  LittleEndianDecoder decoder(this, meta, idx);
-
   // get the meta information group length
   unsigned short g = Decoder<LE>::GetInt16(cp);
   unsigned short e = Decoder<LE>::GetInt16(cp + 2);
@@ -1929,6 +1920,16 @@ bool vtkDICOMParser::ReadMetaHeader(
   // verify that this is the right tag
   if (g == 0x0002)
   {
+    // make a temporary MetaData object if none was provided
+    bool tempMeta = false;
+    if (meta == 0)
+    {
+      meta = vtkDICOMMetaData::New();
+      tempMeta = true;
+    }
+
+    LittleEndianDecoder decoder(this, meta, idx);
+
     // check for strange files with implicit VR meta header
     decoder.SetImplicitVR(!vr.IsValid());
 
@@ -1943,6 +1944,11 @@ bool vtkDICOMParser::ReadMetaHeader(
 
     int i = (idx == -1 ? 0 : idx);
     this->TransferSyntax = meta->Get(i, DC::TransferSyntaxUID).AsString();
+
+    if (tempMeta)
+    {
+      meta->Delete();
+    }
   }
   else
   {
@@ -1950,11 +1956,6 @@ bool vtkDICOMParser::ReadMetaHeader(
   }
 
   this->FileOffset = this->GetBytesProcessed(cp, ep);
-
-  if (tempMeta)
-  {
-    meta->Delete();
-  }
 
   return true;
 }
