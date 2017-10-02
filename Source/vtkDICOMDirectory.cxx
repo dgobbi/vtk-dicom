@@ -1093,6 +1093,18 @@ void vtkDICOMDirectory::FillImageRecord(
 
   vtkDICOMDataElementIterator iter = meta->Begin();
   vtkDICOMDataElementIterator iterEnd = meta->End();
+
+  // Group 0x0002 should be skipped if not part of query
+  if (!this->Query || this->Query->Begin() == this->Query->End() ||
+      this->Query->Begin()->GetTag().GetGroup() > 0x0002)
+  {
+    while (iter != iterEnd && iter->GetTag().GetGroup() <= 0x0002)
+    {
+      ++iter;
+    }
+  }
+
+  // Add all other elements unless marked to be skipped
   while (iter != iterEnd)
   {
     vtkDICOMTag tag = iter->GetTag();
