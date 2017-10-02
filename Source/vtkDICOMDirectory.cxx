@@ -95,6 +95,7 @@ struct vtkDICOMDirectory::FileInfo
 {
   unsigned int InstanceNumber;
   const char *FileName;
+  vtkDICOMValue ImageUID;
   vtkDICOMItem ImageRecord;
 };
 
@@ -985,84 +986,29 @@ void vtkDICOMDirectory::AddSeriesFileNames(
     return;
   }
 
-  // Check for files that are duplicate instances
+  // create an object to hold the meta data for each series
+  vtkSmartPointer<vtkDICOMMetaData> meta =
+    vtkSmartPointer<vtkDICOMMetaData>::New();
   int ni = static_cast<int>(files->GetNumberOfValues());
-  std::vector<const vtkDICOMValue *> uids(ni);
+  meta->SetNumberOfInstances(ni);
+
+  // add the image-level information
   for (int ii = 0; ii < ni; ii++)
   {
-    uids[ii] = &imageRecords[ii]->Get(DC::SOPInstanceUID);
-  }
-  std::vector<int> duplicate(ni);
-  std::vector<int> seriesLength;
-  seriesLength.push_back(0);
-  int numberOfDuplicates = 0;
-  for (int ii = 0; ii < ni; ii++)
-  {
-    int count = 0;
-    const vtkDICOMValue *uid = uids[ii];
-    if (uid->GetVL() > 0)
-    {
-      for (int jj = 0; jj < ii; jj++)
-      {
-        if (*(uids[jj]) == *uid)
-        {
-          count++;
-        }
-      }
-    }
-    duplicate[ii] = count;
-    if (count > numberOfDuplicates)
-    {
-      numberOfDuplicates = count;
-      seriesLength.push_back(0);
-    }
-    seriesLength[count]++;
+    this->CopyRecord(meta, imageRecords[ii], ii);
   }
 
-  // Add each duplicate as a separate series
-  for (int kk = 0; kk <= numberOfDuplicates; kk++)
-  {
-    vtkSmartPointer<vtkDICOMMetaData> meta =
-      vtkSmartPointer<vtkDICOMMetaData>::New();
-    meta->SetNumberOfInstances(seriesLength[kk]);
+  // these must be added after the image-level information
+  this->CopyRecord(meta, &seriesRecord, -1);
+  this->CopyRecord(meta, &studyRecord, -1);
+  this->CopyRecord(meta, &patientRecord, -1);
 
-    vtkSmartPointer<vtkStringArray> newfiles;
-    if (numberOfDuplicates > 0)
-    {
-      newfiles = vtkSmartPointer<vtkStringArray>::New();
-      newfiles->SetNumberOfValues(seriesLength[kk]);
-    }
-    else
-    {
-      newfiles = files;
-    }
-
-    int jj = 0;
-    for (int ii = 0; ii < ni; ii++)
-    {
-      if (duplicate[ii] == kk)
-      {
-        this->CopyRecord(meta, imageRecords[ii], jj);
-        if (numberOfDuplicates > 0)
-        {
-          newfiles->SetValue(jj, files->GetValue(ii));
-        }
-        jj++;
-      }
-    }
-
-    // these must be added after the image-level information
-    this->CopyRecord(meta, &seriesRecord, -1);
-    this->CopyRecord(meta, &studyRecord, -1);
-    this->CopyRecord(meta, &patientRecord, -1);
-
-    (*this->Studies)[study].LastSeries = series++;
-    this->Series->push_back(SeriesItem());
-    SeriesItem& item = this->Series->back();
-    item.Record = seriesRecord;
-    item.Files = newfiles;
-    item.Meta = meta;
-  }
+  (*this->Studies)[study].LastSeries = series++;
+  this->Series->push_back(SeriesItem());
+  SeriesItem& item = this->Series->back();
+  item.Record = seriesRecord;
+  item.Files = files;
+  item.Meta = meta;
 }
 
 //----------------------------------------------------------------------------
@@ -1199,27 +1145,6 @@ void vtkDICOMDirectory::FillPatientRecord(
 }
 
 //----------------------------------------------------------------------------
-namespace {
-
-unsigned int vtkDICOMDirectoryHashString(const std::string& str)
-{
-  // Compute a string hash based on the function "djb2".
-  unsigned int h = 5381;
-  size_t n = str.size();
-  const char *cp = str.data();
-  for (size_t k = 0; k < n; k++)
-  {
-    unsigned char c = cp[k];
-    if (c == '\0') { break; }
-    h = (h << 5) + h + c;
-  }
-
-  return h;
-}
-
-}
-
-//----------------------------------------------------------------------------
 void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 {
   vtkSmartPointer<vtkDICOMMetaData> meta =
@@ -1270,38 +1195,9 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
   vtkIdType numberOfStrings = input->GetNumberOfValues();
 
-  // Hash table for efficiently checking for duplicates
-  typedef std::vector<vtkIdType> rowType;
-  typedef std::vector<rowType> tableType;
-  tableType dupcheck(numberOfStrings/4 + 1);
-  std::vector<std::string> realnames;
-  realnames.reserve(numberOfStrings);
-
   for (vtkIdType j = 0; j < numberOfStrings; j++)
   {
     const std::string& fileName = input->GetValue(j);
-
-    // Check to see if this file name has already appeared, this is
-    // done with a hash table and is an O(n) check, which is better
-    // than using std::map at O(n log n) or brute-force at O(n^2)
-    realnames.push_back(vtkDICOMFilePath(fileName).GetRealPath());
-    const std::string& realname = realnames.back();
-    unsigned int hash = vtkDICOMDirectoryHashString(realname);
-    hash = hash % dupcheck.size();
-    rowType& row = dupcheck[hash];
-    rowType::iterator iter = row.begin();
-    for (; iter != row.end(); ++iter)
-    {
-      if (realnames[*iter] == realname)
-      {
-        break;
-      }
-    }
-    if (iter != row.end())
-    {
-      continue;
-    }
-    row.push_back(j);
 
     // Skip anything that does not look like a DICOM file.
     if (!vtkDICOMUtilities::IsDICOMFile(fileName.c_str()))
@@ -1384,6 +1280,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     FileInfo fileInfo;
     fileInfo.InstanceNumber = meta->Get(DC::InstanceNumber).AsUnsignedInt();
     fileInfo.FileName = fileName.c_str(); // stored in input StringArray
+    fileInfo.ImageUID = meta->Get(DC::SOPInstanceUID);
 
     const vtkDICOMValue& patientNameValue = meta->Get(DC::PatientName);
     const vtkDICOMValue& patientIDValue = meta->Get(DC::PatientID);
@@ -1399,6 +1296,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     const char *studyTime = studyTimeValue.GetCharData();
     const char *studyUID = studyUIDValue.GetCharData();
     const char *seriesUID = seriesUIDValue.GetCharData();
+    const char *imageUID = fileInfo.ImageUID.GetCharData();
 
     patientName = (patientName ? patientName : "");
     patientID = (patientID ? patientID : "");
@@ -1455,6 +1353,38 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       }
       if (c == 0 && seriesUID != 0)
       {
+        // Use UID to identify the image, but use instance number to sort.
+        bool sameFile = false;
+        bool repeatUID = false;
+        for (std::vector<FileInfo>::iterator im = li->Files.begin();
+             im != li->Files.end(); ++im)
+        {
+          if (vtkDICOMUtilities::CompareUIDs(
+                imageUID, im->ImageUID.GetCharData()) == 0)
+          {
+            // Duplicate UID! Check InstanceNumber.
+            if (im->InstanceNumber == fileInfo.InstanceNumber)
+            {
+              sameFile = vtkDICOMFile::SameFile(
+                im->FileName, fileInfo.FileName);
+              repeatUID = true;
+              break;
+            }
+            else if (imageUID && imageUID[0] != '\0')
+            {
+              repeatUID = true;
+            }
+          }
+        }
+        if (repeatUID)
+        {
+          if (sameFile)
+          {
+            break;
+          }
+          continue;
+        }
+
         std::vector<FileInfo>::iterator pos =
           li->Files.insert(
             std::upper_bound(li->Files.begin(), li->Files.end(), fileInfo,
