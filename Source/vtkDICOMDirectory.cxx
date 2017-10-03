@@ -630,6 +630,8 @@ bool MatchesOsirixDatabase(
   return matched;
 }
 
+#ifdef DICOM_USE_SQLITE
+
 // Convert Osirix database times (NSDate) to DICOM DT
 std::string ConvertOsirixTime(double t)
 {
@@ -639,6 +641,8 @@ std::string ConvertOsirixTime(double t)
   long long s = static_cast<long long>(t + (t >= 0 ? 0.5 : -0.5));
   return vtkDICOMUtilities::GenerateDateTime((s + timediff)*1000000, NULL);
 }
+
+#endif
 
 }
 
