@@ -1400,11 +1400,14 @@ size_t UTF8ToUTF8(const char *text, size_t l, std::string *s)
   {
     const char *lastpos = cp;
     unsigned int code = UTF8ToUnicode(&cp, ep);
+    size_t n = cp - lastpos;
     // check for 0xFFFE and 0xFFFF invalid characters that were not present
     // in the original string, these are the error indicators
     if (code >= 0xFFFE && code <= 0xFFFF &&
-        !(cp-lastpos >= 3 && lastpos[0] == '\xef' && lastpos[1] == '\xbf' &&
-          lastpos[2] >= '\xbe' && lastpos[2] <= '\xbf'))
+        !(n == 3 &&
+          static_cast<unsigned char>(lastpos[0]) == 0xef &&
+          static_cast<unsigned char>(lastpos[1]) == 0xbf &&
+          static_cast<unsigned char>(lastpos[2]) == (code ^ 0xFF40)))
     {
       if (code == 0xFFFF)
       {
@@ -1415,7 +1418,7 @@ size_t UTF8ToUTF8(const char *text, size_t l, std::string *s)
     else
     {
       // check for paired utf-16 surrogates and lone surrogates
-      if (cp-lastpos == 6 || (code & 0xF800) == 0xD800)
+      if (n == 6 || (code & 0xF800) == 0xD800)
       {
         // surrogates pass through, but are marked as utf-8 errors
         errpos = (errpos ? errpos : lastpos);
