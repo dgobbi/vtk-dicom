@@ -1414,9 +1414,10 @@ size_t UTF8ToUTF8(const char *text, size_t l, std::string *s)
     }
     else
     {
-      if ((code & 0xF800) == 0xD800)
+      // check for paired utf-16 surrogates and lone surrogates
+      if (cp-lastpos == 6 || (code & 0xF800) == 0xD800)
       {
-        // lone surrogates pass through, but are considered to be errors
+        // surrogates pass through, but are marked as utf-8 errors
         errpos = (errpos ? errpos : lastpos);
       }
       UnicodeToUTF8(code, s);
