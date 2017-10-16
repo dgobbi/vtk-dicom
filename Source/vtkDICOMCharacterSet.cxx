@@ -827,8 +827,16 @@ void BadCharsToUTF8(const char *cp, const char *ep, std::string *s)
 {
   while (cp != ep)
   {
-    unsigned int code = 0xDC00 + static_cast<unsigned char>(*cp++);
-    UnicodeToUTF8(code, s);
+    if ((*cp & 0x80) == 0)
+    {
+      s->push_back(*cp);
+    }
+    else
+    {
+      unsigned int code = 0xDC00 + static_cast<unsigned char>(*cp);
+      UnicodeToUTF8(code, s);
+    }
+    cp++;
   }
 }
 
