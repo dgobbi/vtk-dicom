@@ -691,7 +691,7 @@ unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
         code &= 0x1F;
         code <<= 6;
         unsigned int s = *cp;
-        good = (code != 0);
+        good = ((code & 0x0780) != 0);
         good &= ((s & 0xC0) == 0x80);
         cp += good;
         code |= (s & 0x3F);
