@@ -296,29 +296,30 @@ public:
   //@}
 
 private:
-  size_t UTF8ToSingleByte(const char *text, size_t l, std::string *s) const;
-  size_t SingleByteToUTF8(const char *text, size_t l, std::string *s) const;
-  size_t ISO8859ToUTF8(const char *text, size_t l, std::string *s) const;
-  size_t UTF8ToISO2022(const char *text, size_t l, std::string *s) const;
-  size_t ISO2022ToUTF8(const char *text, size_t l, std::string *s) const;
-  static size_t UTF8ToEUCKR(const char *text, size_t l, std::string *s);
-  static size_t EUCKRToUTF8(const char *text, size_t l, std::string *s);
-  static size_t UTF8ToGB2312(const char *text, size_t l, std::string *s);
-  static size_t GB2312ToUTF8(const char *text, size_t l, std::string *s);
-  static size_t UTF8ToGB18030(const char *text, size_t l, std::string *s);
-  static size_t GB18030ToUTF8(const char *text, size_t l, std::string *s);
-  static size_t UTF8ToGBK(const char *text, size_t l, std::string *s);
-  static size_t GBKToUTF8(const char *text, size_t l, std::string *s);
-  static size_t UTF8ToBig5(const char *text, size_t l, std::string *s);
-  static size_t Big5ToUTF8(const char *text, size_t l, std::string *s);
-  static size_t UTF8ToEUCJP(const char *text, size_t l, std::string *s);
-  static size_t EUCJPToUTF8(const char *text, size_t l, std::string *s);
-  static size_t UTF8ToSJIS(const char *text, size_t l, std::string *s);
-  static size_t SJISToUTF8(const char *text, size_t l, std::string *s);
+  size_t AnyToUTF8(const char *t, size_t l, std::string *s, int m) const;
+  size_t UTF8ToSingleByte(const char *t, size_t l, std::string *s) const;
+  size_t SingleByteToUTF8(const char *t, size_t l, std::string *s, int m) const;
+  size_t ISO8859ToUTF8(const char *t, size_t l, std::string *s, int) const;
+  size_t UTF8ToISO2022(const char *t, size_t l, std::string *s) const;
+  size_t ISO2022ToUTF8(const char *t, size_t l, std::string *s, int m) const;
+  static size_t UTF8ToEUCKR(const char *t, size_t l, std::string *s);
+  static size_t EUCKRToUTF8(const char *t, size_t l, std::string *s, int m);
+  static size_t UTF8ToGB2312(const char *t, size_t l, std::string *s);
+  static size_t GB2312ToUTF8(const char *t, size_t l, std::string *s, int m);
+  static size_t UTF8ToGB18030(const char *t, size_t l, std::string *s);
+  static size_t GB18030ToUTF8(const char *t, size_t l, std::string *s, int m);
+  static size_t UTF8ToGBK(const char *t, size_t l, std::string *s);
+  static size_t GBKToUTF8(const char *t, size_t l, std::string *s, int m);
+  static size_t UTF8ToBig5(const char *t, size_t l, std::string *s);
+  static size_t Big5ToUTF8(const char *t, size_t l, std::string *s, int m);
+  static size_t UTF8ToEUCJP(const char *t, size_t l, std::string *s);
+  static size_t EUCJPToUTF8(const char *t, size_t l, std::string *s, int m);
+  static size_t UTF8ToSJIS(const char *t, size_t l, std::string *s);
+  static size_t SJISToUTF8(const char *t, size_t l, std::string *s, int m);
   static size_t UTF8ToJISX(
-    int charset, const char *text, size_t l, std::string *s);
+    int charset, const char *t, size_t l, std::string *s);
   static size_t JISXToUTF8(
-    int csGL, int csGR, const char *text, size_t l, std::string *s);
+    int csGL, int csGR, const char *t, size_t l, std::string *s, int m);
   static unsigned char KeyFromString(const char *name, size_t nl);
 
   unsigned char Key;
