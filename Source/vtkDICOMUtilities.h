@@ -181,6 +181,17 @@ public:
   //@}
 
   //@{
+  //! Check that a string is valid utf-8.
+  /*!
+   *  The string is valid if it contains no NULL bytes and if it contains
+   *  only valid 1-byte, 2-byte, 3-byte, or 4-byte utf-8 sequences.  Any
+   *  overlength sequences or sequences that encode values above U+10FFFF
+   *  or between U+D800 and U+DFFF are considered invalid.
+   */
+  static bool IsValidUTF8(const char *text, size_t l);
+  //@}
+
+  //@{
   //! Get the name associated with the given UID.
   static const char *GetUIDName(const char *uid);
 

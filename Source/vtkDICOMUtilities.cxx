@@ -599,6 +599,61 @@ bool vtkDICOMUtilities::PatternMatches(const char *pattern, const char *val)
 }
 
 //----------------------------------------------------------------------------
+bool vtkDICOMUtilities::IsValidUTF8(const char *text, size_t l)
+{
+  const char *cp = text;
+  const char *ep = cp + l;
+
+  while (cp != ep)
+  {
+    if (cp[0] != '\0')
+    {
+      if ((cp[0] & 0x80) == 0)               // U+0001 to U+007F
+      {
+        cp++;
+        continue;
+      }
+
+      // check for trailing bytes in utf-8 sequence
+      if (cp+1 != ep && (cp[1] & 0xC0) == 0x80)
+      {
+        // combine the first two bytes for faster checking
+        unsigned short x = (((unsigned char)(cp[0]) << 8) |
+                             (unsigned char)(cp[1]));
+
+        if (x >= 0xC280 && x < 0xE000)       // U+0080 to U+07FF
+        {
+          cp += 2;
+          continue;
+        }
+        else if (cp+2 != ep && (cp[2] & 0xC0) == 0x80)
+        {
+          if ((x >= 0xE0A0 && x < 0xEDA0) || // U+0800 to U+D7FF
+              (x >= 0xEE80 && x < 0xF000))   // U+E000 to U+FFFF
+          {
+            cp += 3;
+            continue;
+          }
+          else if (cp+3 != ep && (cp[3] & 0xC0) == 0x80)
+          {
+            if (x >= 0xF090 && x < 0xF490)   // U+10000 to U+10FFFF
+            {
+              cp += 4;
+              continue;
+            }
+          }
+        }
+      }
+    }
+
+    // utf-8 decoding error occurred at position "cp"
+    return false;
+  }
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMUtilities::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
