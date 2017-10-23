@@ -405,6 +405,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkDICOMDirectory(const vtkDICOMDirectory&) VTK_DELETE_FUNCTION;
   void operator=(const vtkDICOMDirectory&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkDICOMDirectory(const vtkDICOMDirectory&) = delete;
+  void operator=(const vtkDICOMDirectory&) = delete;
 #else
   vtkDICOMDirectory(const vtkDICOMDirectory&);
   void operator=(const vtkDICOMDirectory&);

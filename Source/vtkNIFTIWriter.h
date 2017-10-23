@@ -242,6 +242,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkNIFTIWriter(const vtkNIFTIWriter&) VTK_DELETE_FUNCTION;
   void operator=(const vtkNIFTIWriter&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkNIFTIWriter(const vtkNIFTIWriter&) = delete;
+  void operator=(const vtkNIFTIWriter&) = delete;
 #else
   vtkNIFTIWriter(const vtkNIFTIWriter&);
   void operator=(const vtkNIFTIWriter&);

@@ -256,6 +256,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkDICOMParser(const vtkDICOMParser&) VTK_DELETE_FUNCTION;
   void operator=(const vtkDICOMParser&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkDICOMParser(const vtkDICOMParser&) = delete;
+  void operator=(const vtkDICOMParser&) = delete;
 #else
   vtkDICOMParser(const vtkDICOMParser&);
   void operator=(const vtkDICOMParser&);

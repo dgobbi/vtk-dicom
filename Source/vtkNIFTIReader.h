@@ -261,6 +261,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkNIFTIReader(const vtkNIFTIReader&) VTK_DELETE_FUNCTION;
   void operator=(const vtkNIFTIReader&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkNIFTIReader(const vtkNIFTIReader&) = delete;
+  void operator=(const vtkNIFTIReader&) = delete;
 #else
   vtkNIFTIReader(const vtkNIFTIReader&);
   void operator=(const vtkNIFTIReader&);

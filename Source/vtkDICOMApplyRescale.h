@@ -99,6 +99,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkDICOMApplyRescale(const vtkDICOMApplyRescale&) VTK_DELETE_FUNCTION;
   void operator=(const vtkDICOMApplyRescale&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkDICOMApplyRescale(const vtkDICOMApplyRescale&) = delete;
+  void operator=(const vtkDICOMApplyRescale&) = delete;
 #else
   vtkDICOMApplyRescale(const vtkDICOMApplyRescale&);
   void operator=(const vtkDICOMApplyRescale&);

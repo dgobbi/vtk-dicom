@@ -46,6 +46,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkDICOMSorter(const vtkDICOMSorter&) VTK_DELETE_FUNCTION;
   void operator=(const vtkDICOMSorter&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkDICOMSorter(const vtkDICOMSorter&) = delete;
+  void operator=(const vtkDICOMSorter&) = delete;
 #else
   vtkDICOMSorter(const vtkDICOMSorter&);
   void operator=(const vtkDICOMSorter&);

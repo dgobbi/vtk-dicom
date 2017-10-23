@@ -91,6 +91,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkDICOMApplyPalette(const vtkDICOMApplyPalette&) VTK_DELETE_FUNCTION;
   void operator=(const vtkDICOMApplyPalette&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkDICOMApplyPalette(const vtkDICOMApplyPalette&) = delete;
+  void operator=(const vtkDICOMApplyPalette&) = delete;
 #else
   vtkDICOMApplyPalette(const vtkDICOMApplyPalette&);
   void operator=(const vtkDICOMApplyPalette&);

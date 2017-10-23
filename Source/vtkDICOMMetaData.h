@@ -390,6 +390,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkDICOMMetaData(const vtkDICOMMetaData&) VTK_DELETE_FUNCTION;
   void operator=(const vtkDICOMMetaData&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkDICOMMetaData(const vtkDICOMMetaData&) = delete;
+  void operator=(const vtkDICOMMetaData&) = delete;
 #else
   vtkDICOMMetaData(const vtkDICOMMetaData&);
   void operator=(const vtkDICOMMetaData&);

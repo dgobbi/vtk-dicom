@@ -75,6 +75,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkDICOMLookupTable(const vtkDICOMLookupTable&) VTK_DELETE_FUNCTION;
   void operator=(const vtkDICOMLookupTable&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkDICOMLookupTable(const vtkDICOMLookupTable&) = delete;
+  void operator=(const vtkDICOMLookupTable&) = delete;
 #else
   vtkDICOMLookupTable(const vtkDICOMLookupTable&);
   void operator=(const vtkDICOMLookupTable&);

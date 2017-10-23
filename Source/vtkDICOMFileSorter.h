@@ -154,6 +154,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkDICOMFileSorter(const vtkDICOMFileSorter&) VTK_DELETE_FUNCTION;
   void operator=(const vtkDICOMFileSorter&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkDICOMFileSorter(const vtkDICOMFileSorter&) = delete;
+  void operator=(const vtkDICOMFileSorter&) = delete;
 #else
   vtkDICOMFileSorter(const vtkDICOMFileSorter&);
   void operator=(const vtkDICOMFileSorter&);

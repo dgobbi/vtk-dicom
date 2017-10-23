@@ -416,6 +416,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkNIFTIHeader(const vtkNIFTIHeader&) VTK_DELETE_FUNCTION;
   void operator=(const vtkNIFTIHeader&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkNIFTIHeader(const vtkNIFTIHeader&) = delete;
+  void operator=(const vtkNIFTIHeader&) = delete;
 #else
   vtkNIFTIHeader(const vtkNIFTIHeader&);
   void operator=(const vtkNIFTIHeader&);

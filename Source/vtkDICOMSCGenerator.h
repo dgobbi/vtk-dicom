@@ -78,6 +78,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkDICOMSCGenerator(const vtkDICOMSCGenerator&) VTK_DELETE_FUNCTION;
   void operator=(const vtkDICOMSCGenerator&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkDICOMSCGenerator(const vtkDICOMSCGenerator&) = delete;
+  void operator=(const vtkDICOMSCGenerator&) = delete;
 #else
   vtkDICOMSCGenerator(const vtkDICOMSCGenerator&);
   void operator=(const vtkDICOMSCGenerator&);

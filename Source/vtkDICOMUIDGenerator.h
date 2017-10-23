@@ -111,6 +111,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkDICOMUIDGenerator(const vtkDICOMUIDGenerator&) VTK_DELETE_FUNCTION;
   void operator=(const vtkDICOMUIDGenerator&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkDICOMUIDGenerator(const vtkDICOMUIDGenerator&) = delete;
+  void operator=(const vtkDICOMUIDGenerator&) = delete;
 #else
   vtkDICOMUIDGenerator(const vtkDICOMUIDGenerator&);
   void operator=(const vtkDICOMUIDGenerator&);
@@ -134,6 +137,11 @@ private:
     const vtkDICOMUIDGeneratorInitializer&) VTK_DELETE_FUNCTION;
   vtkDICOMUIDGeneratorInitializer& operator=(
     const vtkDICOMUIDGeneratorInitializer&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkDICOMUIDGeneratorInitializer(
+    const vtkDICOMUIDGeneratorInitializer&) = delete;
+  vtkDICOMUIDGeneratorInitializer& operator=(
+    const vtkDICOMUIDGeneratorInitializer&) = delete;
 #else
   vtkDICOMUIDGeneratorInitializer(const vtkDICOMUIDGeneratorInitializer&);
   vtkDICOMUIDGeneratorInitializer& operator=(

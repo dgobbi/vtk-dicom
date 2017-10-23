@@ -199,6 +199,9 @@ private:
 #ifdef VTK_DELETE_FUNCTION
   vtkDICOMToRAS(const vtkDICOMToRAS&) VTK_DELETE_FUNCTION;
   void operator=(const vtkDICOMToRAS&) VTK_DELETE_FUNCTION;
+#elif __cplusplus >= 201103L
+  vtkDICOMToRAS(const vtkDICOMToRAS&) = delete;
+  void operator=(const vtkDICOMToRAS&) = delete;
 #else
   vtkDICOMToRAS(const vtkDICOMToRAS&);
   void operator=(const vtkDICOMToRAS&);
