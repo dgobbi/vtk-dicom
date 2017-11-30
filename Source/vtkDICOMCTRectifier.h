@@ -44,6 +44,17 @@ public:
 #endif
 
   //@{
+  //! Interpolation constants.
+  enum
+  {
+    Nearest,
+    Linear,
+    Cubic,
+    WindowedSinc
+  };
+  //@}
+
+  //@{
   //! Reverse the default operation.
   /*!
    *  When this option is set, the filter takes a rectangular volume
@@ -64,6 +75,25 @@ public:
    */
   void SetVolumeMatrix(vtkMatrix4x4 *matrix);
   vtkMatrix4x4 *GetVolumeMatrix() { return this->VolumeMatrix; }
+  //@}
+
+  //@{
+  //! Set the interpolation method for resampling the data.
+  /*!
+   *  The default interpolation method is WindowedSinc, which gives the
+   *  highest quality output.  Linear interpolation is much faster and
+   *  will give satisfactory results in most situations.
+   */
+  void SetInterpolationMode(int t);
+  void SetInterpolationModeToNearest() {
+    this->SetInterpolationMode(Nearest); }
+  void SetInterpolationModeToLinear() {
+    this->SetInterpolationMode(Linear); }
+  void SetInterpolationModeToCubic() {
+    this->SetInterpolationMode(Cubic); }
+  void SetInterpolationModeToWindowedSinc() {
+    this->SetInterpolationMode(WindowedSinc); }
+  int GetInterpolationMode() { return this->InterpolationMode; }
   //@}
 
   //@{
@@ -146,6 +176,7 @@ protected:
   vtkMatrix4x4 *RectifiedMatrix;
   vtkMatrix4x4 *Matrix;
   int Reverse;
+  int InterpolationMode;
 
 private:
 #ifdef VTK_DELETE_FUNCTION

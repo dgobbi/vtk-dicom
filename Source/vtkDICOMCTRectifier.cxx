@@ -39,6 +39,7 @@ vtkDICOMCTRectifier::vtkDICOMCTRectifier()
   this->RectifiedMatrix = vtkMatrix4x4::New();
   this->Matrix = vtkMatrix4x4::New();
   this->Reverse = 0;
+  this->InterpolationMode = WindowedSinc;
 }
 
 //----------------------------------------------------------------------------
@@ -96,6 +97,7 @@ void vtkDICOMCTRectifier::PrintSelf(ostream& os, vtkIndent indent)
   }
 
   os << indent << "Reverse: " << this->Reverse << "\n";
+  os << indent << "InterpolationMode: " << this->InterpolationMode << "\n";
 }
 
 //----------------------------------------------------------------------------
@@ -105,6 +107,24 @@ void vtkDICOMCTRectifier::SetReverse(int val)
   if (val != this->Reverse)
   {
     this->Reverse = val;
+    this->Modified();
+  }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMCTRectifier::SetInterpolationMode(int val)
+{
+  if (val < 0)
+  {
+    val = 0;
+  }
+  else if (val > WindowedSinc)
+  {
+    val = WindowedSinc;
+  }
+  if (val != this->InterpolationMode)
+  {
+    this->InterpolationMode = val;
     this->Modified();
   }
 }
@@ -321,15 +341,30 @@ int vtkDICOMCTRectifier::RequestData(
   reslice->SetOutputSpacing(spacing);
   reslice->SetOutputOrigin(origin);
   reslice->SetOutputExtent(extent);
+  if (this->InterpolationMode == Nearest)
+  {
+    reslice->SetInterpolationModeToNearestNeighbor();
+  }
+  else if (this->InterpolationMode == Linear)
+  {
+    reslice->SetInterpolationModeToLinear();
+  }
+  else if (this->InterpolationMode == Cubic)
+  {
+    reslice->SetInterpolationModeToCubic();
+  }
+  else
+  {
 #if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
-  vtkSmartPointer<vtkImageSincInterpolator> interpolator =
-    vtkSmartPointer<vtkImageSincInterpolator>::New();
-  interpolator->SetWindowFunctionToBlackman();
+    vtkSmartPointer<vtkImageSincInterpolator> interpolator =
+      vtkSmartPointer<vtkImageSincInterpolator>::New();
+    interpolator->SetWindowFunctionToBlackman();
+    reslice->SetInterpolator(interpolator);
 #else
-  reslice->SetInterpolationModeToCubic();
+    reslice->SetInterpolationModeToCubic();
 #endif
+  }
 #if (VTK_MAJOR_VERSION > 5)
-  reslice->SetInterpolator(interpolator);
   reslice->SetInputData(image);
   this->AllocateOutputData(outData, outInfo, extent);
   reslice->SetOutput(outData);
