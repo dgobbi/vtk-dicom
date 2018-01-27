@@ -469,7 +469,7 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   }
 
   // important time-related variables
-  int temporalSpacing = 1.0;
+  double temporalSpacing = 1.0;
 
   if (meta->Has(DC::SharedFunctionalGroupsSequence))
   {
