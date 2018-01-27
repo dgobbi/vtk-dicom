@@ -17,6 +17,8 @@
 #include "vtkObject.h"
 #include "vtkDICOMModule.h" // For export macro
 
+#include "vtkDICOMTag.h" // For vtkDICOMTag
+
 class vtkIntArray;
 class vtkStringArray;
 class vtkDICOMMetaData;
@@ -92,6 +94,20 @@ public:
   //@}
 
   //@{
+  //! Force repeated slices to be at different times (default: Off).
+  /*!
+   *  If this is on, then repeated slices at the same spatial position
+   *  will always be considered to be at different time points.  If this
+   *  is off, then the repeated slices will either become the temporal
+   *  dimension or the vector dimension, depending on the presence of
+   *  temporal attributes in the meta data.
+   */
+  vtkGetMacro(RepeatsAsTime, int);
+  vtkSetMacro(RepeatsAsTime, int);
+  vtkBooleanMacro(RepeatsAsTime, int);
+  //@}
+
+  //@{
   //! Read the time dimension as scalar components (default: Off).
   /*!
    *  If this is on, then each time point will be stored as a scalar
@@ -118,6 +134,36 @@ public:
   //@}
 
   //@{
+  //! Set the DICOM tag to use for time measurement.
+  /*!
+   *  This method can be used to explicitly set the tag to use for temporal
+   *  sorting.  By default (i.e. if this method is not used), the sorter
+   *  will search the meta-data for the following temporal tags and will
+   *  automatically apply them if present:
+   *  - TriggerTime (for cardiac images)
+   *  - EchoTime (for relaxometry)
+   *  - TemporalPositionIdentifier (fMRI)
+   */
+  void SetTimeTag(vtkDICOMTag tag);
+  vtkDICOMTag GetTimeTag() { return this->TimeTag; }
+  //@}
+
+  //@{
+  //! Set the DICOM sequence to use for timing information.
+  /*!
+   *  This is only used for enhanced multi-frame images.  If used, then
+   *  SetTimeTag() must also be used to specify which tag in the sequence
+   *  to use for temporal sorting.  By default, the following sequence/tag
+   *  conbinations are automatically detected and applied:
+   *  - CardiacSynchronizationSequence/NominalCardiacTriggerDelayTime
+   *  - TemporalPositionSequence/TemporalPositionTimeOffset
+   *  - FrameContentSequence/TemporalPositionIndex
+   *  - MREchoSequence/EffectiveEchoTime
+   */
+  void SetTimeSequence(vtkDICOMTag tag);
+  vtkDICOMTag GetTimeSequence() { return this->TimeSequence; }
+
+  //@{
   //! Set whether to reverse the slice order.
   /*!
    *  This is desired if the images are to be flipped.
@@ -141,41 +187,38 @@ protected:
   vtkDICOMSliceSorter();
   ~vtkDICOMSliceSorter();
 
-  // Description:
   // Sort the input files, put the sort in the supplied arrays.
   virtual void SortFiles(vtkIntArray *fileArray, vtkIntArray *frameArray);
 
-  // Description:
   // The meta data for the image.
   vtkDICOMMetaData *MetaData;
 
-  // Description:
   // An array to convert slice indices to input files
   vtkIntArray *FileIndexArray;
 
-  // Description:
   // An array to convert slice indices to input frames
   vtkIntArray *FrameIndexArray;
 
-  // Description:
   // An array that holds the stack IDs.
   vtkStringArray *StackIDs;
 
-  // Description:
   // Time dimension variables.
+  int RepeatsAsTime;
   int TimeAsVector;
   int TimeDimension;
   int DesiredTimeIndex;
   double TimeSpacing;
 
-  // Description:
   // The stack to load.
   char DesiredStackID[20];
 
-  // Description:
   // Whether to reverse the slice order.
   int ReverseSlices;
   double SliceSpacing;
+
+  // The tags to use for time information.
+  vtkDICOMTag TimeTag;
+  vtkDICOMTag TimeSequence;
 
 private:
 #ifdef VTK_DELETE_FUNCTION

@@ -36,6 +36,7 @@ vtkDICOMSliceSorter::vtkDICOMSliceSorter()
   this->FrameIndexArray = vtkIntArray::New();
   this->StackIDs = vtkStringArray::New();
   this->MetaData = 0;
+  this->RepeatsAsTime = 0;
   this->TimeAsVector = 0;
   this->DesiredTimeIndex = -1;
   this->TimeDimension = 0;
@@ -92,11 +93,16 @@ void vtkDICOMSliceSorter::PrintSelf(ostream& os, vtkIndent indent)
      << (this->ReverseSlices ? "On\n" : "Off\n");
   os << indent << "SliceSpacing: " << this->SliceSpacing << "\n";
 
+  os << indent << "RepeatsAsTime: "
+     << (this->RepeatsAsTime ? "On\n" : "Off\n");
   os << indent << "TimeAsVector: "
      << (this->TimeAsVector ? "On\n" : "Off\n");
   os << indent << "TimeDimension: " << this->TimeDimension << "\n";
   os << indent << "TimeSpacing: " << this->TimeSpacing << "\n";
   os << indent << "DesiredTimeIndex: " << this->DesiredTimeIndex << "\n";
+
+  os << indent << "TimeTag: " << this->TimeTag << "\n";
+  os << indent << "TimeSequence: " << this->TimeSequence << "\n";
 }
 
 //----------------------------------------------------------------------------
@@ -130,6 +136,26 @@ void vtkDICOMSliceSorter::SetDesiredStackID(const char *stackId)
   {
     strncpy(this->DesiredStackID, stackId, 16);
     this->DesiredStackID[17] = '\0';
+    this->Modified();
+  }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMSliceSorter::SetTimeTag(vtkDICOMTag tag)
+{
+  if (tag != this->TimeTag)
+  {
+    this->TimeTag = tag;
+    this->Modified();
+  }
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMSliceSorter::SetTimeSequence(vtkDICOMTag tag)
+{
+  if (tag != this->TimeSequence)
+  {
+    this->TimeSequence = tag;
     this->Modified();
   }
 }
@@ -512,10 +538,19 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
 
       if (numberOfFrames > 0)
       {
-        // time information can come from these attributes
-        if (vtkDICOMSliceSorterGetFrame(
-              frameSeq, sharedSeq, 0, DC::CardiacSynchronizationSequence,
-              DC::NominalCardiacTriggerDelayTime).IsValid())
+        // search for time information in the functional groups
+        if (this->TimeSequence.GetGroup() != 0 &&
+            this->TimeTag.GetGroup() != 0 &&
+            vtkDICOMSliceSorterGetFrame(
+              frameSeq, sharedSeq, 0, this->TimeSequence,
+              this->TimeTag).IsValid())
+        {
+          timeSequence = this->TimeSequence;
+          timeTag = this->TimeTag;
+        }
+        else if (vtkDICOMSliceSorterGetFrame(
+                   frameSeq, sharedSeq, 0, DC::CardiacSynchronizationSequence,
+                   DC::NominalCardiacTriggerDelayTime).IsValid())
         {
           timeSequence = DC::CardiacSynchronizationSequence;
           timeTag = DC::NominalCardiacTriggerDelayTime;
@@ -643,7 +678,12 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   {
     // ways to get time information
     vtkDICOMTag timeTag;
-    if (meta->Get(DC::CardiacNumberOfImages).AsInt() > 1)
+    if (this->TimeTag.GetGroup() != 0 &&
+        meta->Get(this->TimeTag).IsValid())
+    {
+      timeTag = this->TimeTag;
+    }
+    else if (meta->Get(DC::CardiacNumberOfImages).AsInt() > 1)
     {
       timeTag = DC::TriggerTime;
     }
@@ -945,6 +985,10 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
   if (temporalPositions > 1)
   {
     temporalSpacing *= (tMax - tMin)/(temporalPositions - 1);
+  }
+  else if (this->RepeatsAsTime)
+  {
+    temporalPositions = slicesPerLocation;
   }
 
   // compute the number of slices in the output image

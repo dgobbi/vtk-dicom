@@ -19,6 +19,7 @@
 #include "vtkDICOMParser.h"
 #include "vtkDICOMReader.h"
 #include "vtkDICOMFileSorter.h"
+#include "vtkDICOMSliceSorter.h"
 #include "vtkDICOMToRAS.h"
 #include "vtkDICOMCTRectifier.h"
 #include "vtkDICOMFile.h"
@@ -55,6 +56,7 @@
 // from dicomcli
 #include "vtkConsoleOutputWindow.h"
 #include "mainmacro.h"
+#include "readquery.h"
 
 // Simple structure for command-line options
 struct dicomtonifti_options
@@ -73,6 +75,10 @@ struct dicomtonifti_options
   bool silent;
   bool verbose;
   int volume;
+  double time_delta;
+  int time_units;
+  vtkDICOMTagPath time_tagpath;
+  vtkDICOMTagPath time_delta_tagpath;
   const char *output;
 };
 
@@ -126,7 +132,10 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
     "  --no-reordering         Never reorder slices, rows, or columns.\n"
     "  --no-qform              Don't include a qform in the NIFTI file.\n"
     "  --no-sform              Don't include an sform in the NIFTI file.\n"
-    "  --volume N              Set the volume to output (starts at 0).\n"
+    "  --time-tag              Set the tag to use for time coordinate.\n"
+    "  --time-delta-tag        Set the tag to use for time spacing.\n"
+    "  --time-delta            Force the time spacing to be the given value.\n"
+    "  --volume N              Set which volume to output (starts at 0).\n"
     "  --version               Print the version and exit.\n"
     "  --build-version         Print source and build version.\n"
     "  --help                  Documentation for dicomtonifti.\n"
@@ -172,6 +181,16 @@ void dicomtonifti_help(FILE *file, const char *command_name)
     "superior, column number increasing from right to left, and row number\n"
     "increasing from posterior to anterior.  This will also convert the data\n"
     "type from unsigned 16-bit to signed 16-bit if necessary.\n"
+    "\n");
+  fprintf(file,
+    "The --time-tag, --time-delta-tag, and --time-delta options can be used\n"
+    "to tweak the time information.  By default, tags such as TriggerTime,\n"
+    "TemporalPositionIdentifier, or TriggerTime are used to perform\n"
+    "temporal sorting, but --time-tag can be used to explicitly name a tag.\n"
+    "The --time-delta-tag option can be used to set which tag gives temporal\n"
+    "spacing, if there is no tag that gives the temporal coordinate.\n"
+    "The --time-delta option will force the temporal spacing to be a specific\n"
+    "value, e.g. 500ms, 2s, or 2600us.\n"
     "\n");
   fprintf(file,
     "If batch mode is selected, the output file given with \"-o\" can be\n"
@@ -261,6 +280,50 @@ bool dicomtonifti_check_error(vtkObject *o)
   return true;
 }
 
+
+bool dicomtonifti_time_delta(const char *arg, dicomtonifti_options *options)
+{
+  const char *unit_list[6] = {
+    "s", "ms", "us", "Hz", "ppm", "rads"
+  };
+  int unit_consts[6] = {
+    8, 16, 24, 32, 40, 48   // from NIFTI header
+  };
+
+  char *units;
+  double t = strtod(arg, &units);
+  if (units == arg || t == 0.0)
+  {
+    fprintf(stderr, "Illegal value for --time-delta: %s\n", arg);
+    return false;
+  }
+
+  options->time_delta = t;
+
+  if (units[0] != '\0')
+  {
+    options->time_units = 0;
+
+    for (int i = 0; i < 6; i++)
+    {
+      if (strcmp(units, unit_list[i]) == 0)
+      {
+        options->time_units = unit_consts[i];
+        break;
+      }
+    }
+
+    if (options->time_units == 0)
+    {
+      fprintf(stderr, "Illegal value for --time-delta: %s\n", arg);
+      fprintf(stderr, "Units must be s, ms, Hz, ppm, or rads.\n");
+      return false;
+    }
+  }
+
+  return true;
+}
+
 // Read the options
 void dicomtonifti_read_options(
   int argc, char *argv[],
@@ -280,6 +343,10 @@ void dicomtonifti_read_options(
   options->silent = false;
   options->verbose = false;
   options->volume = -1;
+  options->time_delta = 0.0;
+  options->time_units = 16;  // default to msec
+  options->time_tagpath = vtkDICOMTagPath();
+  options->time_delta_tagpath = vtkDICOMTagPath();
   options->output = 0;
 
   // read the options from the command line
@@ -339,6 +406,43 @@ void dicomtonifti_read_options(
       else if (strcmp(arg, "--no-sform") == 0)
       {
         options->no_sform = true;
+      }
+      else if (strcmp(arg, "--time-delta") == 0 ||
+               strcmp(arg, "--time-delta-tag") == 0 ||
+               strcmp(arg, "--time-tag") == 0)
+      {
+        if (argi >= argc || argv[argi][0] == '-')
+        {
+          fprintf(stderr, "\nAn argument must follow \'%s\'\n\n", arg);
+          dicomtonifti_usage(stderr, argv[0]);
+          exit(1);
+        }
+        const char *optarg = arg;
+        arg = argv[argi++];
+        if (strcmp(optarg, "--time-delta") == 0)
+        {
+          if (!dicomtonifti_time_delta(arg, options))
+          {
+            exit(1);
+          }
+        }
+        else
+        {
+          vtkDICOMItem data;
+          QueryTagList qtlist;
+          if (!dicomcli_readkey(arg, &data, &qtlist))
+          {
+            exit(1);
+          }
+          if (strcmp(optarg, "--time-delta-tag") == 0)
+          {
+            options->time_delta_tagpath = qtlist[0];
+          }
+          else
+          {
+            options->time_tagpath = qtlist[0];
+          }
+        }
       }
       else if (strcmp(arg, "--batch") == 0)
       {
@@ -571,6 +675,24 @@ void dicomtonifti_convert_one(
   reader->SetMemoryRowOrderToFileNative();
   reader->TimeAsVectorOn();
   reader->SetFileNames(a);
+  // check for user-supplied time info
+  if (options->time_delta != 0.0 ||
+      options->time_delta_tagpath.GetSize() > 0)
+  {
+    reader->GetSorter()->RepeatsAsTimeOn();
+  }
+  if (options->time_tagpath.GetSize() > 0)
+  {
+    vtkDICOMTagPath tagpath = options->time_tagpath;
+    vtkDICOMTag tag = tagpath.GetHead();
+    while (tagpath.HasTail())
+    {
+      reader->GetSorter()->SetTimeSequence(tag);
+      tagpath = tagpath.GetTail();
+      tag = tagpath.GetHead();
+    }
+    reader->GetSorter()->SetTimeTag(tag);
+  }
   reader->Update();
   if (dicomtonifti_check_error(reader)) {
     return;
@@ -796,7 +918,7 @@ void dicomtonifti_convert_one(
   descrip = descrip.substr(0, 79);
 
   // assume the units are millimetres/milliseconds
-  hdr->SetXYZTUnits(0x12);
+  hdr->SetXYZTUnits(0x02 + options->time_units);
 
   // get the phase encoding direction
   std::string phase = meta->Get(
@@ -892,6 +1014,21 @@ void dicomtonifti_convert_one(
   {
     writer->SetTimeDimension(reader->GetTimeDimension());
     writer->SetTimeSpacing(reader->GetTimeSpacing());
+    if (options->time_delta != 0.0)
+    {
+      // override if user gave --time-delta
+      writer->SetTimeSpacing(options->time_delta);
+    }
+    else if (options->time_delta_tagpath.GetSize() > 0)
+    {
+      // override if user gave --time-delta-tag
+      const vtkDICOMValue& tsv =
+        meta->Get(firstFile, firstFrame, options->time_delta_tagpath);
+      if (tsv.IsValid())
+      {
+        writer->SetTimeSpacing(tsv.AsDouble());
+      }
+    }
   }
   if ((options->no_slice_reordering && slicesReordered) ||
       options->fsl)
