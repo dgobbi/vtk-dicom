@@ -161,5 +161,8 @@ $<$<BOOL:$<TARGET_PROPERTY:${module_name},INCLUDE_DIRECTORIES>>:
             ${INPUT_FILES}
     VERBATIM
     )
+  add_custom_target(${module_name}Hierarchy
+    DEPENDS
+      ${OUTPUT_DIR}/${module_name}Hierarchy.stamp.txt)
 
 endmacro()
