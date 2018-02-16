@@ -31,7 +31,7 @@ foreach(src ${PROGRAM_SRCS})
   string(REGEX REPLACE "\\.(cxx|c|mm|m)$" "" prog ${src})
   add_executable(${prog} ${src})
   target_link_libraries(${prog} ${BASE_LIBS} ${CLI_LIBS}
-    ${VTK_IMAGING_LIBS} ${KWSYS_LIBS})
+    ${VTK_IMAGING_LIBS})
   list(APPEND PROGRAM_EXES ${prog})
 endforeach()
 

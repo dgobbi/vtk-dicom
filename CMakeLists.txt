@@ -318,9 +318,6 @@ if(MSVC_VERSION EQUAL 1400 OR MSVC_VERSION GREATER 1400 OR MSVC10)
   add_definitions(-D_SCL_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS)
 endif()
 
-# For use by subdirectories
-set(KWSYS_LIBS vtksys)
-
 # The main library
 add_subdirectory(Source)
 

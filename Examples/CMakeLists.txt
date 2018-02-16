@@ -18,7 +18,7 @@ endif()
 set(BASE_LIBS vtkDICOM ${VTK_LIBS})
 
 add_executable(TestDICOMCompiler TestDICOMCompiler.cxx)
-target_link_libraries(TestDICOMCompiler ${BASE_LIBS} ${KWSYS_LIBS})
+target_link_libraries(TestDICOMCompiler ${BASE_LIBS})
 
 add_executable(TestDICOMDirectory TestDICOMDirectory.cxx)
 target_link_libraries(TestDICOMDirectory ${BASE_LIBS})

@@ -149,7 +149,7 @@ if("${VTK_MAJOR_VERSION}" GREATER 5)
     set_source_files_properties(${LIB_SPECIAL} PROPERTIES WRAP_SPECIAL ON)
     set(MODULE_HIERARCHY_NAME ${LIB_NAME}Hierarchy)
     # _LINK_DEPENDS is a variable suffix from the VTK 6 module macros
-    set(${LIB_NAME}_LINK_DEPENDS ${VTK_LIBS} ${KWSYS_LIBS} ${ZLIB_LIBS})
+    set(${LIB_NAME}_LINK_DEPENDS ${VTK_LIBS} ${ZLIB_LIBS})
     include(vtkWrapHierarchy)
     vtk_wrap_hierarchy(${LIB_NAME} ${CMAKE_CURRENT_BINARY_DIR} "${LIB_SRCS}")
     set(KIT_HIERARCHY_FILE ${CMAKE_CURRENT_BINARY_DIR}/${MODULE_HIERARCHY_NAME}.txt)
@@ -178,7 +178,7 @@ if(BUILD_PYTHON_WRAPPERS OR BUILD_TCL_WRAPPERS OR BUILD_JAVA_WRAPPERS AND
 endif()
 target_link_libraries(${LIB_NAME} LINK_PUBLIC ${VTK_LIBS})
 target_link_libraries(${LIB_NAME} LINK_PRIVATE
-  ${KWSYS_LIBS} ${ZLIB_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS} ${SQLITE_LIBS})
+  ${ZLIB_LIBS} ${GDCM_LIBS} ${DCMTK_LIBS} ${SQLITE_LIBS})
 
 # Wrappers
 if(BUILD_PYTHON_WRAPPERS)

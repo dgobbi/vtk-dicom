@@ -12,7 +12,6 @@ vtk_module(vtkDICOM
     vtkIOImage
     vtkIOSQL
   PRIVATE_DEPENDS
-    vtksys
     vtkzlib
   COMPILE_DEPENDS
     vtkImagingStatistics
