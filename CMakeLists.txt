@@ -172,7 +172,11 @@ if(APPLE)
 endif()
 option(USE_SQLITE "Use SQLite for OsiriX databases" ${USE_SQLITE_DEFAULT})
 if(USE_SQLITE)
-  set(SQLITE_LIBS sqlite3)
+  if("${VTK_MAJOR_VERSION}" GREATER 8)
+    set(SQLITE_LIBS vtksqlite3)
+  else()
+    set(SQLITE_LIBS sqlite3)
+  endif()
 endif()
 
 # Store the git hash of the current head
