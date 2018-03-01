@@ -2066,6 +2066,13 @@ void vtkDICOMValue::AppendValueToString(
       while (ti < l && text[ti] != 'e') { ti++; }
       size_t tj = ti;
       while (tj > 1 && text[tj-1] == '0' && text[tj-2] != '.') { tj--; }
+      // in scientific notation, remove decimal if followed by zero
+      if (ti < l && text[ti] == 'e')
+      {
+        if (tj > 2 && text[tj-1] == '0' && text[tj-2] == '.') { tj -= 2; }
+        else if (tj > 1 && text[tj-1] == '.') { tj -= 1; }
+      }
+      // this performs the actual removal
       while (ti < l) { text[tj++] = text[ti++]; }
       l = tj;
 
