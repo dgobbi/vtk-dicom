@@ -507,7 +507,7 @@ void niftitodicom_convert_one(
     xformCode = hdr->GetSFormCode();
   }
 
-  // convert to NIFTI coordinate system
+  // convert from NIFTI coordinate system to DICOM coordinate system
   vtkSmartPointer<vtkDICOMToRAS> converter =
     vtkSmartPointer<vtkDICOMToRAS>::New();
   converter->SetInputConnection(reader->GetOutputPort());
