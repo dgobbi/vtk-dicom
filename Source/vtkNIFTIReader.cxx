@@ -715,7 +715,7 @@ int vtkNIFTIReader::RequestInformation(
   // 1) via a quaternion (orientation and offset, i.e. rigid-body)
   // 2) via a matrix (used to store e.g. the results of registration)
   //
-  // A NIFTI file can have both a quaternion (qform) and matrix (xform)
+  // A NIFTI file can have both a quaternion (qform) and matrix (sform)
   // stored in the same file.  The NIFTI documentation recommends that
   // the qform be used to record the "scanner anatomical" coordinates
   // and that the sform, if present, be used to define a secondary
@@ -795,7 +795,7 @@ int vtkNIFTIReader::RequestInformation(
   //       NIFTI, which allows us to preserve positive spacing and retain
   //       a well-behaved rotation matrix, by using these equations:
   //
-  //         J = number_of_slices - j - 1
+  //         K = number_of_slices - k - 1
   //
   //         M14 = qoffset_x - (number_of_slices - 1)*pixdim[3]*R13
   //         M24 = qoffset_y - (number_of_slices - 1)*pixdim[3]*R23
@@ -803,7 +803,7 @@ int vtkNIFTIReader::RequestInformation(
   //
   //       This will give us data that will be well-behaved in VTK, at
   //       the expense of making VTK slice numbers not match with
-  //       the original NIFTI slice numbers.  NIFTY slice 0 will become
+  //       the original NIFTI slice numbers.  NIFTI slice 0 will become
   //       VTK slice N-1, and the order will be reversed.
   //
   // -- Matrix Representation --
@@ -814,7 +814,7 @@ int vtkNIFTIReader::RequestInformation(
   // flip-factor as there is in the quaternion representation.
   //
   // Let S be the matrix stored in the NIFTI header, and let M be our
-  // desired coordinate tranformation from VTK data coordinates X,Y,Z
+  // desired coordinate transformation from VTK data coordinates X,Y,Z
   // to NIFTI data coordinates x,y,z (see discussion above for more
   // information).  Let's consider the cases where the determinant
   // is positive, or negative.
