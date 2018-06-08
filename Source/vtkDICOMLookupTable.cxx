@@ -482,8 +482,8 @@ void vtkDICOMLookupTable::BuildImagePalette(
           segpp[j], segn[j], divisor[j], cptr+j, 4, maxValue-minValue+1))
         {
         static const char *names[] = { "Red", "Green", "Blue", "Alpha" };
-        vtkErrorMacro("Bad data in Segmented" << names[j]
-                      << "PaletteColorLookupTableData");
+        vtkErrorMacro("Bad data in Segmented " << names[j]
+                      << " PaletteColorLookupTableData");
         }
       }
     }
