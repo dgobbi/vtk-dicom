@@ -238,7 +238,7 @@ void SortedTags::SetFrom(const vtkDICOMItem& patientRecord,
       vtkDICOMTag tag = iter->GetTag();
       std::vector<vtkDICOMTag>::iterator pos =
         std::lower_bound(begin(), end(), tag);
-      if (*pos != tag)
+      if (pos == end() || *pos != tag)
       {
         this->insert(pos, tag);
       }
