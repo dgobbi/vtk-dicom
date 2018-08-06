@@ -281,8 +281,12 @@ void vtkNIFTIWriterSetInformation(
 #endif
     { VTK_LONG_LONG, NIFTI_TYPE_INT64, 64 },
     { VTK_UNSIGNED_LONG_LONG, NIFTI_TYPE_UINT64, 64 },
+#ifdef VTK___INT64
     { VTK___INT64, NIFTI_TYPE_INT64, 64 },
+#endif
+#ifdef VTK_UNSIGNED___INT64
     { VTK_UNSIGNED___INT64, NIFTI_TYPE_UINT64, 64 },
+#endif
     { VTK_FLOAT, NIFTI_TYPE_FLOAT32, 32 },
     { VTK_DOUBLE, NIFTI_TYPE_FLOAT64, 64 },
     { 0, 0, 0 }
