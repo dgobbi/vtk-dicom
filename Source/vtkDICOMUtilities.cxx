@@ -265,7 +265,7 @@ std::string vtkDICOMUtilities::GenerateDateTime(
   S -= M*60;
 
   // create a DICOM datetime string
-  char dt[32];
+  char dt[40];
   sprintf(dt, "%04d%02d%02d%02d%02d%02d.%06d%s",
           y, m, d, H, M, S, us, z);
 
