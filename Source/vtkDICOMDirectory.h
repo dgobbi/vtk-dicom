@@ -17,6 +17,7 @@
 #include "vtkAlgorithm.h"
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMCharacterSet.h" // For character sets
+#include "vtkVersion.h"
 
 class vtkStringArray;
 class vtkIntArray;
