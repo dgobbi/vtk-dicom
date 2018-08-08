@@ -294,11 +294,11 @@ if(NOT Module_vtkDICOM)
     find_package(JNI REQUIRED)
 
     if(NOT VTK_JAVA_SOURCE_VERSION)
-      set(VTK_JAVA_SOURCE_VERSION "1.5" CACHE STRING "javac source version")
+      set(VTK_JAVA_SOURCE_VERSION "1.6" CACHE STRING "javac source version")
       mark_as_advanced(VTK_JAVA_SOURCE_VERSION)
     endif()
     if(NOT VTK_JAVA_TARGET_VERSION)
-      set(VTK_JAVA_TARGET_VERSION "1.5" CACHE STRING "javac target version")
+      set(VTK_JAVA_TARGET_VERSION "1.6" CACHE STRING "javac target version")
       mark_as_advanced(VTK_JAVA_TARGET_VERSION)
     endif()
 
