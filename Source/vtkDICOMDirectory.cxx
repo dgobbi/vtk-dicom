@@ -1116,7 +1116,7 @@ void vtkDICOMDirectory::FillImageRecord(
     {
       ++skip;
     }
-    if (tag == DC::SpecificCharacterSet || tag != *skip)
+    if (skip == skipEnd || *skip > tag || tag == DC::SpecificCharacterSet)
     {
       item->Set(tag, iter->GetValue());
     }
