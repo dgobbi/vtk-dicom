@@ -80,6 +80,7 @@ struct dicomtonifti_options
   vtkDICOMTagPath time_tagpath;
   vtkDICOMTagPath time_delta_tagpath;
   const char *output;
+  unsigned int conversions_attempted;
 };
 
 
@@ -348,6 +349,7 @@ void dicomtonifti_read_options(
   options->time_tagpath = vtkDICOMTagPath();
   options->time_delta_tagpath = vtkDICOMTagPath();
   options->output = 0;
+  options->conversions_attempted = 0;
 
   // read the options from the command line
   int argi = 1;
@@ -666,9 +668,17 @@ std::string dicomtonifti_make_filename(
 
 // Convert one DICOM series into one NIFTI file
 void dicomtonifti_convert_one(
-  const dicomtonifti_options *options, vtkStringArray *a,
+  dicomtonifti_options *options, vtkStringArray *a,
   const char *outfile)
 {
+  // make sure there are files to read
+  if (a->GetNumberOfValues() == 0) {
+    return;
+  }
+
+  // increment the number of conversions attempted
+  options->conversions_attempted++;
+
   // read the files
   vtkSmartPointer<vtkDICOMReader> reader =
     vtkSmartPointer<vtkDICOMReader>::New();
@@ -1052,7 +1062,7 @@ void dicomtonifti_convert_one(
 // Process a list of DICOM files
 void dicomtonifti_convert_files(
   dicomtonifti_options *options, vtkStringArray *files,
-  const char *outpath)
+  const char *outpath, unsigned int depth)
 {
   // sort the files by filename first, as a fallback
   vtkSmartPointer<vtkSortFileNames> presorter =
@@ -1084,8 +1094,13 @@ void dicomtonifti_convert_files(
         outfile.append(".gz");
       }
     }
+    // if filenames given directly on command line, use them directly,
+    // but files were found in a given directory, sort them first
+    if (depth != 0) {
+      files = sorter->GetOutputFileNames();
+    }
     dicomtonifti_convert_one(
-      options, sorter->GetOutputFileNames(), outfile.c_str());
+      options, files, outfile.c_str());
   }
   else
   {
@@ -1155,7 +1170,8 @@ void dicomtonifti_convert_files(
 // Process a list of files and directories
 void dicomtonifti_files_and_dirs(
   dicomtonifti_options *options, vtkStringArray *files,
-  const char *outpath, std::set<std::string> *pastdirs)
+  const char *outpath, std::set<std::string> *pastdirs,
+  unsigned int depth)
 {
   // look for directories among the files
   vtkSmartPointer<vtkStringArray> directories =
@@ -1186,7 +1202,7 @@ void dicomtonifti_files_and_dirs(
 
   if (newfiles->GetNumberOfValues() > 0)
   {
-    dicomtonifti_convert_files(options, newfiles, outpath);
+    dicomtonifti_convert_files(options, newfiles, outpath, depth);
   }
 
   n = directories->GetNumberOfValues();
@@ -1221,7 +1237,7 @@ void dicomtonifti_files_and_dirs(
           path.PopBack();
         }
       }
-      dicomtonifti_files_and_dirs(options, files, outpath, pastdirs);
+      dicomtonifti_files_and_dirs(options, files, outpath, pastdirs, depth+1);
     }
   }
 }
@@ -1277,7 +1293,11 @@ int MAINMACRO(int argc, char *argv[])
   }
 
   std::set<std::string> pastdirs;
-  dicomtonifti_files_and_dirs(&options, files, outpath, &pastdirs);
+  dicomtonifti_files_and_dirs(&options, files, outpath, &pastdirs, 0);
+
+  if (!options.batch && options.conversions_attempted == 0) {
+    fprintf(stderr, "No input DICOM files were found!\n\n");
+  }
 
   return 0;
 }
