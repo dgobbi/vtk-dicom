@@ -22,16 +22,16 @@ const UIDTableEntry UIDTable[] = {
 { 181, 1, 1, 0, 0 },
 { 207, 1, 2, 0, 0 },
 { 208, 1, 1, 0, 0 },
-{ 1247, 1, 1, 0, 0 },
-{ 2445, 1, 1, 0, 0 },
-{ 2448, 1, 1, 0, 0 },
-{ 2450, 24, 1, 0, 0 },
+{ 1248, 1, 1, 0, 0 },
+{ 2456, 1, 1, 0, 0 },
+{ 2459, 1, 1, 0, 0 },
+{ 2461, 24, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 2474, 2, 0, 0, 0 },
+{ 2485, 2, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.1.1
   "Verification SOP Class" },
 { 58, 6, 1, 0, // 1.2.840.10008.1.2
@@ -185,9 +185,9 @@ const UIDTableEntry UIDTable[] = {
   "HEVC/H.265 Main Profile / Level 5.1" },
 { 0, 0, 0, 0, // 1.2.840.10008.1.2.4.108
   "HEVC/H.265 Main 10 Profile / Level 5.1" },
-{ 0, 0, 0, 0, // 1.2.840.10008.1.2.6.1
+{ 0, 0, 0, 0, // 1.2.840.10008.1.2.6.1 (Retired)
   "RFC 2557 MIME encapsulation" },
-{ 0, 0, 0, 0, // 1.2.840.10008.1.2.6.2
+{ 0, 0, 0, 0, // 1.2.840.10008.1.2.6.2 (Retired)
   "XML Encoding" },
 { 0, 0, 0, 0, // 1.2.840.10008.1.3.10
   "Media Storage Directory Storage" },
@@ -428,7 +428,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1199, 3, 1, 0, 0 },
+{ 1200, 3, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -441,26 +441,26 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.31
   "Modality Worklist Information Model - FIND" },
-{ 1202, 3, 1, 0, // 1.2.840.10008.5.1.4.32 (Retired)
+{ 1203, 3, 1, 0, // 1.2.840.10008.5.1.4.32 (Retired)
   "General Purpose Worklist Management Meta SOP Class" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.33
   "Instance Availability Notification SOP Class" },
-{ 1205, 10, 1, 0, 0 },
+{ 1206, 10, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1224, 3, 1, 0, 0 },
-{ 1227, 4, 1, 0, 0 },
-{ 1231, 4, 1, 0, 0 },
+{ 1225, 3, 1, 0, 0 },
+{ 1228, 4, 1, 0, 0 },
+{ 1232, 4, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.41
   "Product Characteristics Query" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.42
   "Substance Approval Query" },
-{ 1235, 4, 1, 0, 0 },
-{ 1239, 4, 1, 0, 0 },
-{ 1243, 4, 1, 0, 0 },
+{ 1236, 4, 1, 0, 0 },
+{ 1240, 4, 1, 0, 0 },
+{ 1244, 4, 1, 0, 0 },
 { 308, 601, 1, 0, 0 },
-{ 1182, 5, 1, 0, 0 },
+{ 1183, 5, 1, 0, 0 },
 { 909, 3, 1, 0, // 1.2.840.10008.5.1.4.1.1.1
   "Computed Radiography Image Storage" },
 { 915, 2, 1, 0, // 1.2.840.10008.5.1.4.1.1.2
@@ -580,7 +580,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1154, 2, 1, 0, 0 },
+{ 1154, 3, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -604,7 +604,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1156, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.128
+{ 1157, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.128
   "Positron Emission Tomography Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.129 (Retired)
   "Standalone PET Curve Storage" },
@@ -680,7 +680,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1157, 6, 1, 0, 0 },
+{ 1158, 6, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -961,7 +961,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1163, 9, 1, 0, 0 },
+{ 1164, 9, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -981,7 +981,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1172, 6, 1, 0, 0 },
+{ 1173, 6, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -1081,7 +1081,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1180, 2, 1, 0, 0 },
+{ 1181, 2, 1, 0, 0 },
 { 912, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.1.1
   "Digital X-Ray Image Storage - For Presentation" },
 { 913, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.1.2
@@ -1160,7 +1160,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.11.7
   "Compositing Planar MPR Volumetric Presentation State Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.11.8
-  "Advanced Blending Volumetric Presentation State Storage" },
+  "Advanced Blending Presentation State Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.11.9
   "Volume Rendering Volumetric Presentation State Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.11.10
@@ -1443,6 +1443,8 @@ const UIDTableEntry UIDTable[] = {
   "Encapsulated PDF Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.104.2
   "Encapsulated CDA Storage" },
+{ 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.104.3
+  "Encapsulated STL Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.128.1
   "Legacy Converted Enhanced PET Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.200.1
@@ -1477,7 +1479,7 @@ const UIDTableEntry UIDTable[] = {
   "RT Ion Beams Treatment Record Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.501.1
   "DICOS CT Image Storage" },
-{ 1178, 2, 1, 0, 0 },
+{ 1179, 2, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.501.3
   "DICOS Threat Detection Report Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.501.4
@@ -1494,11 +1496,11 @@ const UIDTableEntry UIDTable[] = {
   "Eddy Current Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.601.2
   "Eddy Current Multi-frame Image Storage" },
-{ 1187, 3, 1, 0, 0 },
-{ 1190, 3, 1, 0, 0 },
-{ 1193, 3, 1, 0, 0 },
-{ 1196, 2, 2, 0, 0 },
-{ 1198, 1, 3, 0, 0 },
+{ 1188, 3, 1, 0, 0 },
+{ 1191, 3, 1, 0, 0 },
+{ 1194, 3, 1, 0, 0 },
+{ 1197, 2, 2, 0, 0 },
+{ 1199, 1, 3, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.2.1.1
   "Patient Root Query/Retrieve Information Model - FIND" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.2.1.2
@@ -1541,11 +1543,11 @@ const UIDTableEntry UIDTable[] = {
   "RT Conventional Machine Verification - Trial" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.34.3 (Retired)
   "RT Ion Machine Verification - Trial" },
-{ 1215, 4, 1, 0, // 1.2.840.10008.5.1.4.34.4 (Retired)
+{ 1216, 4, 1, 0, // 1.2.840.10008.5.1.4.34.4 (Retired)
   "Unified Worklist and Procedure Step Service Class - Trial" },
-{ 1219, 1, 1, 0, // 1.2.840.10008.5.1.4.34.5
+{ 1220, 1, 1, 0, // 1.2.840.10008.5.1.4.34.5
   "UPS Global Subscription SOP Instance" },
-{ 1220, 4, 1, 0, // 1.2.840.10008.5.1.4.34.6
+{ 1221, 4, 1, 0, // 1.2.840.10008.5.1.4.34.6
   "Unified Worklist and Procedure Step Service Class" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.34.7
   "RT Beams Delivery Instruction Storage" },
@@ -1619,7 +1621,7 @@ const UIDTableEntry UIDTable[] = {
   "Implant Template Group Information Model - MOVE" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.45.4
   "Implant Template Group Information Model - GET" },
-{ 1248, 1197, 1, 0, 0 },
+{ 1249, 1207, 1, 0, 0 },
 { 0, 0, 0, 2, // 1.2.840.10008.6.1.1
   "Anatomic Modifier" },
 { 0, 0, 0, 4, // 1.2.840.10008.6.1.2
@@ -3899,7 +3901,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 7193, // 1.2.840.10008.6.1.1192
   "Physical Object Segmentation Property Types" },
 { 0, 0, 0, 7194, // 1.2.840.10008.6.1.1193
-  "Morphological Abnormal Structure Segmentation Property Types" },
+  "Morphologically Abnormal Structure Segmentation Property Types" },
 { 0, 0, 0, 7195, // 1.2.840.10008.6.1.1194
   "Function Segmentation Property Types" },
 { 0, 0, 0, 7196, // 1.2.840.10008.6.1.1195
@@ -3908,12 +3910,32 @@ const UIDTableEntry UIDTable[] = {
   "Body Substance Segmentation Property Types" },
 { 0, 0, 0, 7198, // 1.2.840.10008.6.1.1197
   "Substance Segmentation Property Types" },
-{ 2446, 2, 1, 0, 0 },
+{ 0, 0, 0, 9303, // 1.2.840.10008.6.1.1198
+  "Interpretation Request Discontinuation Reasons" },
+{ 0, 0, 0, 7475, // 1.2.840.10008.6.1.1199
+  "Gray Level Run Length Based Features" },
+{ 0, 0, 0, 7476, // 1.2.840.10008.6.1.1200
+  "Gray Level Size Zone Based Features" },
+{ 0, 0, 0, 7060, // 1.2.840.10008.6.1.1201
+  "Encapsulated Document Source Purposes of Reference" },
+{ 0, 0, 0, 7061, // 1.2.840.10008.6.1.1202
+  "Model Document Titles" },
+{ 0, 0, 0, 7062, // 1.2.840.10008.6.1.1203
+  "Purpose of Reference to Predecessor 3D Model" },
+{ 0, 0, 0, 7063, // 1.2.840.10008.6.1.1204
+  "Model Scale Units" },
+{ 0, 0, 0, 7064, // 1.2.840.10008.6.1.1205
+  "Model Usage" },
+{ 0, 0, 0, 10071, // 1.2.840.10008.6.1.1206
+  "Radiation Dose Units" },
+{ 0, 0, 0, 7112, // 1.2.840.10008.6.1.1207
+  "Radiotherapy Fiducials" },
+{ 2457, 2, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.1
   "Native DICOM Model" },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.2
   "Abstract Multi-Dimensional Image Model" },
-{ 2449, 1, 1, 0, 0 },
+{ 2460, 1, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.8.1.1
   "DICOM Content Mapping Resource" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.1
@@ -3964,10 +3986,10 @@ const UIDTableEntry UIDTable[] = {
   "General Section Entries" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.24
   "Imaging Addendum Report" },
-{ 2476, 2, 3, 0, 0 },
-{ 2517, 1, 1, 0, 0 },
-{ 2478, 31, 1, 0, 0 },
-{ 2509, 8, 1, 0, 0 },
+{ 2487, 2, 3, 0, 0 },
+{ 2528, 1, 1, 0, 0 },
+{ 2489, 31, 1, 0, 0 },
+{ 2520, 8, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.1
   "dicomDeviceName" },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.2

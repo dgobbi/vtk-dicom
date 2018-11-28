@@ -164,11 +164,11 @@ RLE Lossless
 Transfer Syntax
 PS3.5
 1.2.840.10008.1.2.6.1
-RFC 2557 MIME encapsulation
+RFC 2557 MIME encapsulation (Retired)
 Transfer Syntax
 PS3.10
 1.2.840.10008.1.2.6.2
-XML Encoding
+XML Encoding (Retired)
 Transfer Syntax
 PS3.10
 1.2.840.10008.1.3.10
@@ -715,7 +715,7 @@ Compositing Planar MPR Volumetric Presentation State Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.11.8
-Advanced Blending Volumetric Presentation State Storage
+Advanced Blending Presentation State Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.11.9
@@ -792,8 +792,8 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.40
 1.2.840.10008.5.1.4.1.1.40 (Retired)
-PS3.4
 SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.66
 Raw Data Storage
 SOP Class
@@ -1044,6 +1044,10 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.104.2
 Encapsulated CDA Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.104.3
+Encapsulated STL Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.128
@@ -5022,7 +5026,7 @@ CID 7193
 Physical Object Segmentation Property Types
 1.2.840.10008.6.1.1193
 CID 7194
-Morphological Abnormal Structure Segmentation Property Types
+Morphologically Abnormal Structure Segmentation Property Types
 1.2.840.10008.6.1.1194
 CID 7195
 Function Segmentation Property Types
@@ -5035,3 +5039,33 @@ Body Substance Segmentation Property Types
 1.2.840.10008.6.1.1197
 CID 7198
 Substance Segmentation Property Types
+1.2.840.10008.6.1.1198
+CID 9303
+Interpretation Request Discontinuation Reasons
+1.2.840.10008.6.1.1199
+CID 7475
+Gray Level Run Length Based Features
+1.2.840.10008.6.1.1200
+CID 7476
+Gray Level Size Zone Based Features
+1.2.840.10008.6.1.1201
+CID 7060
+Encapsulated Document Source Purposes of Reference
+1.2.840.10008.6.1.1202
+CID 7061
+Model Document Titles
+1.2.840.10008.6.1.1203
+CID 7062
+Purpose of Reference to Predecessor 3D Model
+1.2.840.10008.6.1.1204
+CID 7063
+Model Scale Units
+1.2.840.10008.6.1.1205
+CID 7064
+Model Usage
+1.2.840.10008.6.1.1206
+CID 10071
+Radiation Dose Units
+1.2.840.10008.6.1.1207
+CID 7112
+Radiotherapy Fiducials

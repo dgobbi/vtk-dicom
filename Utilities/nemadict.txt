@@ -1000,6 +1000,12 @@ ReferencedSOPInstanceUID
 UI
 1
 
+(0008,1156)
+Definition Source Sequence
+DefinitionSourceSequence
+SQ
+1
+
 (0008,115A)
 SOP Classes Supported
 SOPClassesSupported
@@ -12970,6 +12976,12 @@ SlideIdentifier
 LO
 1
 RET
+(0040,0710)
+Whole Slide Microscopy Image Frame Type Sequence
+WholeSlideMicroscopyImageFrameTypeSequence
+SQ
+1
+
 (0040,071A)
 Image Center Point Coordinates Sequence
 ImageCenterPointCoordinatesSequence
@@ -13250,6 +13262,12 @@ RET
 Performed Processing Applications Code Sequence
 PerformedProcessingApplicationsCodeSequence
 SQ
+1
+RET
+(0040,4008)
+Scheduled Procedure Step Expiration DateTime
+ScheduledProcedureStepExpirationDateTime
+DT
 1
 
 (0040,4009)
@@ -15166,6 +15184,18 @@ PixelOriginInterpretation
 CS
 1
 
+(0048,0302)
+Number of Optical Paths
+NumberOfOpticalPaths
+UL
+1
+
+(0048,0303)
+Total Pixel Matrix Focal Planes
+TotalPixelMatrixFocalPlanes
+UL
+1
+
 (0050,0004)
 Calibration Image
 CalibrationImage
@@ -16054,6 +16084,12 @@ UsedSegmentsSequence
 SQ
 1
 
+(0062,0013)
+Segments Overlap
+SegmentsOverlap
+CS
+1
+
 (0062,0020)
 Tracking ID
 TrackingID
@@ -16936,6 +16972,24 @@ ThreeDPlaneNormal
 FD
 3
 
+(0068,7001)
+Model Modification
+ModelModification
+CS
+1
+
+(0068,7002)
+Model Mirroring
+ModelMirroring
+CS
+1
+
+(0068,7003)
+Model Usage Code Sequence
+ModelUsageCodeSequence
+SQ
+1
+
 (0070,0001)
 Graphic Annotation Sequence
 GraphicAnnotationSequence
@@ -17533,6 +17587,12 @@ SQ
 (0070,031A)
 Fiducial UID
 FiducialUID
+UI
+1
+
+(0070,031B)
+Referenced Fiducial UID
+ReferencedFiducialUID
 UI
 1
 
@@ -19526,13 +19586,13 @@ SH
 U Value Data
 UValueData
 OF
-1-n
+1
 
 (0080,0011)
 V Value Data
 VValueData
 OF
-1-n
+1
 
 (0080,0012)
 Referenced Texture Sequence
@@ -19903,6 +19963,12 @@ LO
 (0400,0565)
 Reason for the Attribute Modification
 ReasonForTheAttributeModification
+CS
+1
+
+(0400,0600)
+Instance Origin Status
+InstanceOriginStatus
 CS
 1
 
@@ -21062,6 +21128,12 @@ CS
 ROI Generation Algorithm
 ROIGenerationAlgorithm
 CS
+1
+
+(3006,0037)
+ROI Derivation Algorithm Identification Sequence
+ROIDerivationAlgorithmIdentificationSequence
+SQ
 1
 
 (3006,0038)
@@ -22238,6 +22310,12 @@ CS
 Depth Value Averaging Flag
 DepthValueAveragingFlag
 CS
+1
+
+(300A,0094)
+Beam Dose Point Source to External Contour Distance
+BeamDosePointSourceToExternalContourDistance
+DS
 1
 
 (300A,00A0)
