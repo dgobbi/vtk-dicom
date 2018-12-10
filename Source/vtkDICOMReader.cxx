@@ -2083,11 +2083,14 @@ int vtkDICOMReader::RequestData(
   {
     if (this->AbortExecute) { break; }
 
+    // get the index for this file
+    int fileIdx = files[idx].FileIndex;
+    this->ComputeInternalFileName(fileIdx);
+    this->SetProgressText(this->InternalFileName);
     this->UpdateProgress(static_cast<double>(idx)/
                          static_cast<double>(files.size()));
 
-    // get the index for this file
-    int fileIdx = files[idx].FileIndex;
+    // get the number of frames contained in this file
     int framesInFile = files[idx].FramesInFile;
     std::vector<vtkDICOMReaderFrameInfo>& frames = files[idx].Frames;
     int numFrames = static_cast<int>(frames.size());
@@ -2102,6 +2105,7 @@ int vtkDICOMReader::RequestData(
       needBuffer = (sIdx != frames[sIdx].FrameIndex);
     }
 
+    // this will point to the memory the file will be read into
     unsigned char *bufferPtr = 0;
 
     if (needBuffer)
@@ -2132,7 +2136,7 @@ int vtkDICOMReader::RequestData(
                            numComponents == 3 &&
                            scalarSize == 1);
 
-    this->ComputeInternalFileName(fileIdx);
+    // this is the method that actually reads the file
     this->ReadOneFile(this->InternalFileName, fileIdx,
                       bufferPtr, framesInFile*fileFrameSize);
 
@@ -2219,6 +2223,7 @@ int vtkDICOMReader::RequestData(
   delete [] fileBuffer;
 
   this->UpdateProgress(1.0);
+  this->SetProgressText(0);
   this->InvokeEvent(vtkCommand::EndEvent);
 
   return 1;

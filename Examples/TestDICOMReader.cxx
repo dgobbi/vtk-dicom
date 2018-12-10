@@ -2,6 +2,7 @@
 #include "vtkDICOMFileSorter.h"
 #include "vtkDICOMReader.h"
 
+#include "vtkCommand.h"
 #include "vtkSmartPointer.h"
 #include "vtkStringArray.h"
 
@@ -18,6 +19,44 @@ if (!(t)) \
   cout << __FILE__ << ":" << __LINE__ << "\n"; \
   cout.flush(); \
   rval |= 1; \
+}
+
+class ReaderProgress : public vtkCommand
+{
+public:
+  vtkTypeMacro(ReaderProgress, vtkCommand);
+
+  static ReaderProgress *New() { return new ReaderProgress; }
+
+#ifdef VTK_OVERRIDE
+  void Execute(vtkObject *object, unsigned long event, void *data)
+    VTK_OVERRIDE;
+#else
+  void Execute(vtkObject *object, unsigned long event, void *data);
+#endif
+};
+
+void ReaderProgress::Execute(
+  vtkObject *object, unsigned long event, void *data)
+{
+  if (event == vtkCommand::ProgressEvent)
+  {
+    if (data)
+    {
+      double progress = *static_cast<double *>(data);
+      const char *text = "";
+      vtkAlgorithm *algorithm = vtkAlgorithm::SafeDownCast(object);
+      if (algorithm)
+      {
+        text = algorithm->GetProgressText();
+      }
+      if (text)
+      {
+        std::cout << text << ": ";
+      }
+      std::cout << static_cast<int>(100.0*progress + 0.5) << std::endl;
+    }
+  }
 }
 
 int main(int argc, char *argv[])
@@ -54,10 +93,13 @@ int main(int argc, char *argv[])
     {
       cout << "  Series " << k << ":\n";
       vtkStringArray *a = sorter->GetFileNamesForSeries(k);
-      vtkDICOMReader *reader = vtkDICOMReader::New();
+      vtkSmartPointer<ReaderProgress> progressCommand =
+        vtkSmartPointer<ReaderProgress>::New();
+      vtkSmartPointer<vtkDICOMReader> reader =
+        vtkSmartPointer<vtkDICOMReader>::New();
+      reader->AddObserver(vtkCommand::ProgressEvent, progressCommand);
       reader->SetFileNames(a);
       reader->Update();
-      reader->Delete();
     }
   }
 
