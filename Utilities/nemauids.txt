@@ -1034,6 +1034,14 @@ PS3.4
 Patient Radiation Dose SR Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.88.74
+Planned Imaging Agent Administration SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.75
+Performed Imaging Agent Administrator SR Storage
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.90.1
 Content Assessment Results Storage
 SOP Class
@@ -1128,6 +1136,14 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.481.9
 RT Ion Beams Treatment Record Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.10
+RT Physician Intent Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.11
+RT Segment Annotation Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.501.1
@@ -5069,3 +5085,180 @@ Radiation Dose Units
 1.2.840.10008.6.1.1207
 CID 7112
 Radiotherapy Fiducials
+1.2.840.10008.6.1.1208
+CID 300
+Multi-energy Relevant Materials
+1.2.840.10008.6.1.1209
+CID 301
+Multi-energy Material Units
+1.2.840.10008.6.1.1210
+CID 9500
+Dosimetric Objective Types
+1.2.840.10008.6.1.1211
+CID 9501
+Prescription Anatomy Categories
+1.2.840.10008.6.1.1212
+CID 9502
+RT Segment Annotation Categories
+1.2.840.10008.6.1.1213
+CID 9503
+Radiotherapy Therapeutic Role Categories
+1.2.840.10008.6.1.1214
+CID 9504
+RT Geometric Information
+1.2.840.10008.6.1.1215
+CID 9505
+Fixation or Positioning Devices
+1.2.840.10008.6.1.1216
+CID 9506
+Brachytherapy Devices
+1.2.840.10008.6.1.1217
+CID 9507
+External Body Models
+1.2.840.10008.6.1.1218
+CID 9508
+Non-specific Volumes
+1.2.840.10008.6.1.1219
+CID 9509
+Purpose of Reference For RT Physician Intent Input
+1.2.840.10008.6.1.1220
+CID 9510
+Purpose of Reference For RT Treatment Planning Input
+1.2.840.10008.6.1.1221
+CID 9511
+General External Radiotherapy Procedure Techniques
+1.2.840.10008.6.1.1222
+CID 9512
+Tomotherapeutic Radiotherapy Procedure Techniques
+1.2.840.10008.6.1.1223
+CID 9513
+Fixation Devices
+1.2.840.10008.6.1.1224
+CID 9514
+Anatomical Structures For Radiotherapy
+1.2.840.10008.6.1.1225
+CID 9515
+RT Patient Support Devices
+1.2.840.10008.6.1.1226
+CID 9516
+Radiotherapy Bolus Device Types
+1.2.840.10008.6.1.1227
+CID 9517
+Radiotherapy Block Device Types
+1.2.840.10008.6.1.1228
+CID 9518
+Radiotherapy Accessory No-slot Holder Device Types
+1.2.840.10008.6.1.1229
+CID 9519
+Radiotherapy Accessory Slot Holder Device Types
+1.2.840.10008.6.1.1230
+CID 9520
+Segmented RT Accessory Devices
+1.2.840.10008.6.1.1231
+CID 9521
+Radiotherapy Treatment Energy Unit
+1.2.840.10008.6.1.1232
+CID 9522
+Multi-source Radiotherapy Procedure Techniques
+1.2.840.10008.6.1.1233
+CID 9523
+Robotic Radiotherapy Procedure Techniques
+1.2.840.10008.6.1.1234
+CID 9524
+Radiotherapy Procedure Techniques
+1.2.840.10008.6.1.1235
+CID 9525
+Radiation Therapy Particle
+1.2.840.10008.6.1.1236
+CID 9526
+Ion Therapy Particle
+1.2.840.10008.6.1.1237
+CID 9527
+Teletherapy Isotope
+1.2.840.10008.6.1.1238
+CID 9528
+Brachytherapy Isotope
+1.2.840.10008.6.1.1239
+CID 9529
+Single Dose Dosimetric Objectives
+1.2.840.10008.6.1.1240
+CID 9530
+Percentage and Dose Dosimetric Objectives
+1.2.840.10008.6.1.1241
+CID 9531
+Volume and Dose Dosimetric Objectives
+1.2.840.10008.6.1.1242
+CID 9532
+No-Parameter Dosimetric Objectives
+1.2.840.10008.6.1.1243
+CID 9533
+Delivery Time Structure
+1.2.840.10008.6.1.1244
+CID 9534
+Radiotherapy Targets
+1.2.840.10008.6.1.1245
+CID 9535
+Radiotherapy Dose Calculation Roles
+1.2.840.10008.6.1.1246
+CID 9536
+Radiotherapy Prescribing and Segmenting Person Roles
+1.2.840.10008.6.1.1247
+CID 9537
+Effective Dose Calculation Method Categories
+1.2.840.10008.6.1.1248
+CID 9538
+Radiation Transport-based Effective Dose Method Modifiers
+1.2.840.10008.6.1.1249
+CID 9539
+Fractionation-based Effective Dose Method Modifiers
+1.2.840.10008.6.1.1250
+CID 60
+Imaging Agent Administration Adverse Events
+1.2.840.10008.6.1.1251
+CID 61
+Time Relative to Procedure
+1.2.840.10008.6.1.1252
+CID 62
+Imaging Agent Administration Phase Type
+1.2.840.10008.6.1.1253
+CID 63
+Imaging Agent Administration Mode
+1.2.840.10008.6.1.1254
+CID 64
+Imaging Agent Administration Patient State
+1.2.840.10008.6.1.1255
+CID 65
+Pre-medication For Imaging Agent Administration
+1.2.840.10008.6.1.1256
+CID 66
+Medication For Imaging Agent Administration
+1.2.840.10008.6.1.1257
+CID 67
+Imaging Agent Administration Completion Status
+1.2.840.10008.6.1.1258
+CID 68
+Imaging Agent Administration Pharmaceutical Unit of Presentation
+1.2.840.10008.6.1.1259
+CID 69
+Imaging Agent Administration Consumables
+1.2.840.10008.6.1.1260
+CID 70
+Flush
+1.2.840.10008.6.1.1261
+CID 71
+Imaging Agent Administration Injector Event Type
+1.2.840.10008.6.1.1262
+CID 72
+Imaging Agent Administration Step Type
+1.2.840.10008.6.1.1263
+CID 73
+Bolus Shaping Curves
+1.2.840.10008.6.1.1264
+CID 74
+Imaging Agent Administration Consumable Catheter Type
+1.2.840.10008.6.1.1265
+CID 75
+Low-high-equal
+1.2.840.10008.6.1.1266
+CID 76
+Type of Pre-medication
