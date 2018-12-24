@@ -4,11 +4,6 @@ project(DICOM)
 # CMake version requirements
 cmake_minimum_required(VERSION 2.8.7)
 
-# When CMake 3.0.0 is required, remove this block (see CMP0042).
-if(NOT DEFINED CMAKE_MACOSX_RPATH)
-  set(CMAKE_MACOSX_RPATH 0)
-endif()
-
 # Allow custom cmake overrides
 set(DICOM_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 set(CMAKE_MODULE_PATH ${DICOM_CMAKE_DIR} ${CMAKE_MODULE_PATH})
@@ -51,6 +46,11 @@ if(Module_vtkDICOM) # We are being built as a VTK remote module
   set(BUILD_PROGRAMS ${BUILD_DICOM_PROGRAMS})
 
 else() # We are being built as a stand-alone package
+
+  # When CMake 3.0.0 is required, remove this block (see CMP0042).
+  if(NOT DEFINED CMAKE_MACOSX_RPATH)
+    set(CMAKE_MACOSX_RPATH 0)
+  endif()
 
   option(BUILD_SHARED_LIBS "Build shared libraries." OFF)
 
