@@ -2,7 +2,7 @@
 
 @brief The license for vtk-dicom is the 3-clause BSD license.
 
-Copyright (c) 2012-2017 David Gobbi
+Copyright (c) 2012-2019 David Gobbi
 
 All rights reserved.
 
