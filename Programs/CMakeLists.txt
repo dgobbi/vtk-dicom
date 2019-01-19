@@ -17,10 +17,13 @@ set(PROGRAM_SRCS
   scancodump.cxx
 )
 
-if("${VTK_MAJOR_VERSION}" GREATER 5)
-  set(VTK_IMAGING_LIBS vtkImagingStatistics) # VTK 6.x
+if(NOT VTK_VERSION VERSION_LESS 6)
+  set(VTK_EXTRA_LIBS)
+  foreach(_lib ImagingStatistics CommonSystem)
+    list(APPEND VTK_EXTRA_LIBS ${VTK_TARGET_PREFIX}${_lib})
+  endforeach()
 else()
-  set(VTK_IMAGING_LIBS) # VTK 5.x
+  set(VTK_EXTRA_LIBS) # VTK 5.x
 endif()
 
 set(BASE_LIBS vtkDICOM ${VTK_LIBS})
@@ -31,7 +34,7 @@ foreach(src ${PROGRAM_SRCS})
   string(REGEX REPLACE "\\.(cxx|c|mm|m)$" "" prog ${src})
   add_executable(${prog} ${src})
   target_link_libraries(${prog} ${BASE_LIBS} ${CLI_LIBS}
-    ${VTK_IMAGING_LIBS})
+    ${VTK_EXTRA_LIBS})
   list(APPEND PROGRAM_EXES ${prog})
 endforeach()
 

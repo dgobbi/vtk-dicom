@@ -1,14 +1,15 @@
 include_directories(${DICOM_INCLUDE_DIRS})
 
-if("${VTK_MAJOR_VERSION}" GREATER 5)
-  set(VTK_RENDERING_LIBS vtkRenderingImage vtkInteractionStyle
-      vtkRenderingFreeType) # VTK 6.x
-  set(VTK_GL_LIBS vtkRenderingOpenGL vtkRenderingFreeTypeOpenGL
-      vtkRenderingOpenGL2 vtkRenderingFreeTypeOpenGL2)
-  foreach(TMP_LIB ${VTK_GL_LIBS})
-    list(FIND VTK_LIBRARIES ${TMP_LIB} TMP_INDEX)
-    if(TMP_INDEX GREATER -1)
-      set(VTK_RENDERING_LIBS ${VTK_RENDERING_LIBS} ${TMP_LIB})
+if(NOT VTK_VERSION VERSION_LESS 6)
+  set(VTK_RENDERING_LIBS)
+  foreach(_lib RenderingImage InteractionStyle RenderingFreeType)
+    list(APPEND VTK_RENDERING_LIBS ${VTK_TARGET_PREFIX}${_lib})
+  endforeach()
+  foreach(_lib RenderingOpenGL RenderingFreeTypeOpenGL
+               RenderingOpenGL2 RenderingFreeTypeOpenGL2)
+    list(FIND VTK_LIBRARIES ${VTK_TARGET_PREFIX}${_lib} _index)
+    if(_index GREATER -1)
+      list(APPEND VTK_RENDERING_LIBS ${VTK_TARGET_PREFIX}${_lib})
     endif()
   endforeach()
 else()

@@ -61,8 +61,14 @@ else() # We are being built as a stand-alone package
 
   find_package(VTK REQUIRED)
   message(STATUS "vtkDICOM: Building vtkDICOM stand-alone")
-  include(${VTK_USE_FILE})
-  if("${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}" VERSION_LESS 5.8)
+  if(NOT DEFINED VTK_VERSION)
+    # backwards compatibility pre VTK 9.x
+    set(VTK_VERSION ${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION})
+  endif()
+  if(${VTK_VERSION} VERSION_LESS 8.90)
+    include(${VTK_USE_FILE})
+  endif()
+  if(${VTK_VERSION} VERSION_LESS 5.8)
     message(FATAL_ERROR "VTK 5.8 or later is required.")
   endif()
 
@@ -258,14 +264,23 @@ if(NOT Module_vtkDICOM)
   set(DICOM_LIBRARIES vtkDICOM)
 
   # The library dependencies
-  if("${VTK_MAJOR_VERSION}" GREATER 5)
-    set(VTK_LIBS vtkCommonCore vtkCommonDataModel vtkImagingCore vtkIOCore
-        vtkIOImage)
-    # If vtkIOMPIImage is present, it has factories for vtkIOImage
-    list(FIND VTK_LIBRARIES vtkIOMPIImage TMP_INDEX)
-    if(TMP_INDEX GREATER -1)
-      set(VTK_LIBS ${VTK_LIBS} vtkIOMPIImage)
+  if(NOT VTK_VERSION VERSION_LESS 6)
+    set(VTK_TARGET_PREFIX "VTK::")
+    if(VTK_VERSION VERSION_LESS 8.90)
+      set(VTK_TARGET_PREFIX "vtk")
     endif()
+    set(VTK_LIBS)
+    # required libraries
+    foreach(_lib CommonCore CommonMisc CommonDataModel ImagingCore IOCore IOImage)
+      list(APPEND VTK_LIBS ${VTK_TARGET_PREFIX}${_lib})
+    endforeach()
+    # factory libraries (only needed if present)
+    foreach(_lib IOMPIImage)
+      list(FIND VTK_LIBRARIES ${VTK_TARGET_PREFIX}${_lib} _index)
+      if(_index GREATER -1)
+        list(APPEND VTK_LIBS ${VTK_TARGET_PREFIX}${_lib})
+      endif()
+    endforeach()
   else()
     set(VTK_LIBS vtkCommon vtkFiltering vtkImaging vtkIO vtkInfovis) # VTK 5.x
   endif()
