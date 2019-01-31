@@ -96,11 +96,11 @@ const unsigned char LXT[256] = { // LO LT
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 };
 
-const unsigned char OXT[256] = { // OB OF OL OW
+const unsigned char OXT[256] = { // OB OF OL OV OW
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,VR::OB,0,VR::OD,0,VR::OF,0,0,0,0,0,VR::OL,0,0,0, //  ABCDEFGHIJKLMNO
-  0, 0, 0, 0, 0, 0, 0, VR::OW, 0, 0, 0, 0, 0, 0, 0, 0, // PQRSTUVWXYZ
+  0, 0, 0, 0, 0, 0, VR::OV, VR::OW, 0, 0, 0, 0, 0, 0, 0, 0, // PQRSTUVWXYZ
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -120,11 +120,11 @@ const unsigned char PXT[256] = { // PN
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 };
 
-const unsigned char SXT[256] = { // SH SL SQ SS ST
+const unsigned char SXT[256] = { // SH SL SQ SS ST SV
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0, 0, 0, 0, 0, 0, 0, 0, VR::SH, 0, 0, 0, VR::SL, 0, 0, 0, //  ABCDEFGHIJKLMNO
-  0, VR::SQ, 0, VR::SS, VR::ST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // PQRSTUVWXYZ
+  0, VR::SQ, 0, VR::SS, VR::ST, 0, VR::SV, 0,0,0,0,0,0,0,0,0, // PQRSTUVWXYZ
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -144,11 +144,11 @@ const unsigned char TXT[256] = { // TM
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 };
 
-const unsigned char UXT[256] = { // UI UL UN US UT
+const unsigned char UXT[256] = { // UI UL UN US UT UV
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,VR::UC,0,0,0,0,0,VR::UI,0,0,VR::UL,0,VR::UN,0, //  ABCDEFGHIJKLMNO
-  0, 0, VR::UR,VR::US,VR::UT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // PQRSTUVWXYZ
+  0, 0, VR::UR,VR::US,VR::UT, 0, VR::UV, 0,0,0,0,0,0,0,0,0, // PQRSTUVWXYZ
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -188,7 +188,7 @@ const unsigned char *vtkDICOMVR::VRTable[256] = {
   XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,XXT,
 };
 
-const unsigned char vtkDICOMVR::TypeTable[34] = {
+const unsigned char vtkDICOMVR::TypeTable[37] = {
   VTK_VOID,           // Invalid
   VTK_CHAR,           // AE Application Entity
   VTK_CHAR,           // AS Age String
@@ -206,6 +206,7 @@ const unsigned char vtkDICOMVR::TypeTable[34] = {
   VTK_DOUBLE,         // OD Other Double
   VTK_FLOAT,          // OF Other Float
   VTK_UNSIGNED_INT,   // OL Other Long
+  VTK_UNSIGNED_LONG_LONG, // OV Other Very Long
   VTK_UNSIGNED_SHORT, // OW Other Word
   VTK_CHAR,           // PN Personal Name
   VTK_CHAR,           // SH Short String
@@ -213,6 +214,7 @@ const unsigned char vtkDICOMVR::TypeTable[34] = {
   VTK_DICOM_ITEM,     // SQ Sequence
   VTK_SHORT,          // SS Signed Short
   VTK_CHAR,           // ST Short Text
+  VTK_LONG_LONG,      // SV Signed Very Long
   VTK_CHAR,           // TM Time
   VTK_CHAR,           // UC Unlimited Characters
   VTK_CHAR,           // UI UID
@@ -221,11 +223,12 @@ const unsigned char vtkDICOMVR::TypeTable[34] = {
   VTK_CHAR,           // UR URI or URL
   VTK_UNSIGNED_SHORT, // US Unsigned Short
   VTK_CHAR,           // UT Unlimited Text
+  VTK_UNSIGNED_LONG_LONG, // UV Unsigned Very Long
   VTK_VOID,           // Invalid
   VTK_VOID,           // Invalid
 };
 
-const char vtkDICOMVR::TextTable[34][4] = {
+const char vtkDICOMVR::TextTable[37][4] = {
   { 0, 0, 0, 0 },     // Invalid
   { 'A', 'E', 0, 0 }, // AE Application Entity
   { 'A', 'S', 0, 0 }, // AS Age String
@@ -243,6 +246,7 @@ const char vtkDICOMVR::TextTable[34][4] = {
   { 'O', 'D', 0, 0 }, // OD Other Double
   { 'O', 'F', 0, 0 }, // OF Other Float
   { 'O', 'L', 0, 0 }, // OL Other Long
+  { 'O', 'V', 0, 0 }, // OV Other Very Long
   { 'O', 'W', 0, 0 }, // OW Other Word
   { 'P', 'N', 0, 0 }, // PN Personal Name
   { 'S', 'H', 0, 0 }, // SH Short String
@@ -250,6 +254,7 @@ const char vtkDICOMVR::TextTable[34][4] = {
   { 'S', 'Q', 0, 0 }, // SQ Sequence
   { 'S', 'S', 0, 0 }, // SS Signed Short
   { 'S', 'T', 0, 0 }, // ST Short Text
+  { 'S', 'V', 0, 0 }, // SV Signed Very Long
   { 'T', 'M', 0, 0 }, // TM Time
   { 'U', 'C', 0, 0 }, // UC Unlimited Characters
   { 'U', 'I', 0, 0 }, // UI UID
@@ -258,6 +263,7 @@ const char vtkDICOMVR::TextTable[34][4] = {
   { 'U', 'R', 0, 0 }, // UR URI or URL
   { 'U', 'S', 0, 0 }, // US Unsigned Short
   { 'U', 'T', 0, 0 }, // UT Unlimited Text
+  { 'U', 'V', 0, 0 }, // UV Unsigned Very Long
   { 'O', 'X', 0, 0 },     // Invalid
   { 'X', 'S', 0, 0 },     // Invalid
 };

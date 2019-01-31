@@ -390,6 +390,17 @@ unsigned int *vtkDICOMValue::AllocateUnsignedIntData(
   return this->Allocate<unsigned int>(vr, vn);
 }
 
+long long *vtkDICOMValue::AllocateInt64Data(vtkDICOMVR vr, size_t vn)
+{
+  return this->Allocate<long long>(vr, vn);
+}
+
+unsigned long long *vtkDICOMValue::AllocateUnsignedInt64Data(
+  vtkDICOMVR vr, size_t vn)
+{
+  return this->Allocate<unsigned long long>(vr, vn);
+}
+
 float *vtkDICOMValue::AllocateFloatData(vtkDICOMVR vr, size_t vn)
 {
   return this->Allocate<float>(vr, vn);
@@ -514,6 +525,16 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, size_t n)
     float *ptr = this->AllocateFloatData(vr, n);
     NumericalConversion(data, ptr, n);
   }
+  else if (vr == VR::UV)
+  {
+    unsigned long long *ptr = this->AllocateUnsignedInt64Data(vr, n);
+    NumericalConversion(data, ptr, n);
+  }
+  else if (vr == VR::SV)
+  {
+    long long *ptr = this->AllocateInt64Data(vr, n);
+    NumericalConversion(data, ptr, n);
+  }
   else if (vr == VR::UL)
   {
     unsigned int *ptr = this->AllocateUnsignedIntData(vr, n);
@@ -635,6 +656,20 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, size_t n)
       memcpy(ptr, data, n*sizeof(T));
     }
   }
+  else if (vr == VR::OV)
+  {
+    if (vt == VTK_LONG_LONG)
+    {
+      long long *ptr = this->AllocateInt64Data(vr, n);
+      memcpy(ptr, data, n*4);
+    }
+    else
+    {
+      unsigned long long *ptr =
+        this->AllocateUnsignedInt64Data(vr, n*sizeof(T)/4);
+      memcpy(ptr, data, n*sizeof(T));
+    }
+  }
   else if (vr == VR::OF)
   {
     float *ptr = this->AllocateFloatData(vr, n*sizeof(T)/4);
@@ -744,6 +779,11 @@ void vtkDICOMValue::CreateValue<char>(
     unsigned int *ptr = this->AllocateUnsignedIntData(vr, m/4);
     memcpy(ptr, data, m);
   }
+  else if (vr == VR::OV)
+  {
+    unsigned long long *ptr = this->AllocateUnsignedInt64Data(vr, m/4);
+    memcpy(ptr, data, m);
+  }
   else if (vr == VR::OF)
   {
     float *ptr = this->AllocateFloatData(vr, m/4);
@@ -795,6 +835,16 @@ void vtkDICOMValue::CreateValue<char>(
   {
     float *ptr = this->AllocateFloatData(vr, n);
     StringConversion(data, VR::DS, ptr, 0, n);
+  }
+  else if (vr == VR::UV)
+  {
+    unsigned long long *ptr = this->AllocateUnsignedInt64Data(vr, n);
+    StringConversion(data, VR::IS, ptr, 0, n);
+  }
+  else if (vr == VR::SV)
+  {
+    long long *ptr = this->AllocateInt64Data(vr, n);
+    StringConversion(data, VR::IS, ptr, 0, n);
   }
   else if (vr == VR::UL)
   {
@@ -1067,6 +1117,14 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
   {
     this->AllocateUnsignedCharData(vr, 0);
   }
+  else if (vr == VR::OV || vr == VR::UV)
+  {
+    this->AllocateUnsignedInt64Data(vr, 0);
+  }
+  else if (vr == VR::SV)
+  {
+    this->AllocateInt64Data(vr, 0);
+  }
   else if (vr == VR::OL || vr == VR::UL)
   {
     this->AllocateUnsignedIntData(vr, 0);
@@ -1310,6 +1368,44 @@ const unsigned int *vtkDICOMValue::GetUnsignedIntData() const
     {
       ptr = reinterpret_cast<const unsigned int *>(
         static_cast<const ValueT<int> *>(this->V)->Data);
+    }
+  }
+  return ptr;
+}
+
+const long long *vtkDICOMValue::GetInt64Data() const
+{
+  const long long *ptr = 0;
+  if (this->V)
+  {
+    if (this->V->Type == VTK_LONG_LONG)
+    {
+      ptr = static_cast<const ValueT<long long> *>(this->V)->Data;
+    }
+    else if (this->V->Type == VTK_UNSIGNED_LONG_LONG &&
+             this->V->VR == vtkDICOMVR::OV)
+    {
+      ptr = reinterpret_cast<const long long *>(
+        static_cast<const ValueT<unsigned long long> *>(this->V)->Data);
+    }
+  }
+  return ptr;
+}
+
+const unsigned long long *vtkDICOMValue::GetUnsignedInt64Data() const
+{
+  const unsigned long long *ptr = 0;
+  if (this->V)
+  {
+    if (this->V->Type == VTK_UNSIGNED_LONG_LONG)
+    {
+      ptr = static_cast<const ValueT<unsigned long long> *>(this->V)->Data;
+    }
+    else if (this->V->Type == VTK_LONG_LONG &&
+             this->V->VR == vtkDICOMVR::OV)
+    {
+      ptr = reinterpret_cast<const unsigned long long *>(
+        static_cast<const ValueT<long long> *>(this->V)->Data);
     }
   }
   return ptr;
@@ -1561,6 +1657,26 @@ unsigned int vtkDICOMValue::GetUnsignedInt(size_t i) const
   return v;
 }
 
+long long vtkDICOMValue::GetInt64(size_t i) const
+{
+  long long v = 0;
+  if (this->V && i < this->V->NumberOfValues)
+  {
+    this->GetValuesT(&v, 1, i);
+  }
+  return v;
+}
+
+unsigned long long vtkDICOMValue::GetUnsignedInt64(size_t i) const
+{
+  unsigned long long v = 0;
+  if (this->V && i < this->V->NumberOfValues)
+  {
+    this->GetValuesT(&v, 1, i);
+  }
+  return v;
+}
+
 float vtkDICOMValue::GetFloat(size_t i) const
 {
   float v = 0.0;
@@ -1673,6 +1789,26 @@ int vtkDICOMValue::AsInt() const
 unsigned int vtkDICOMValue::AsUnsignedInt() const
 {
   unsigned int v = 0;
+  if (this->V && this->V->NumberOfValues >= 1)
+  {
+    this->GetValuesT(&v, 1, 0);
+  }
+  return v;
+}
+
+long long vtkDICOMValue::AsInt64() const
+{
+  long long v = 0;
+  if (this->V && this->V->NumberOfValues >= 1)
+  {
+    this->GetValuesT(&v, 1, 0);
+  }
+  return v;
+}
+
+unsigned long long vtkDICOMValue::AsUnsignedInt64() const
+{
+  unsigned long long v = 0;
   if (this->V && this->V->NumberOfValues >= 1)
   {
     this->GetValuesT(&v, 1, 0);

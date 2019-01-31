@@ -44,23 +44,26 @@ public:
     OD = 0x0e, //!< Other Double
     OF = 0x0f, //!< Other Float
     OL = 0x10, //!< Other Long
-    OW = 0x11, //!< Other Word
-    PN = 0x12, //!< Personal Name
-    SH = 0x13, //!< Short String
-    SL = 0x14, //!< Signed Long
-    SQ = 0x15, //!< Sequence of Items
-    SS = 0x16, //!< Signed Short
-    ST = 0x17, //!< Short Text
-    TM = 0x18, //!< Time
-    UC = 0x19, //!< Unlimited Characters
-    UI = 0x1a, //!< Unique Identifier
-    UL = 0x1b, //!< Unsigned Long
-    UN = 0x1c, //!< Unknown
-    UR = 0x1d, //!< URI or URL
-    US = 0x1e, //!< Unsigned Short
-    UT = 0x1f, //!< Unlimited Text
-    OX = 0x20, //!< Either OB or OW (for dict entries, not data elements)
-    XS = 0x21  //!< Either SS or US (for dict entries, not data elements)
+    OV = 0x11, //!< Other Very Long
+    OW = 0x12, //!< Other Word
+    PN = 0x13, //!< Personal Name
+    SH = 0x14, //!< Short String
+    SL = 0x15, //!< Signed Long
+    SQ = 0x16, //!< Sequence of Items
+    SS = 0x17, //!< Signed Short
+    ST = 0x18, //!< Short Text
+    SV = 0x19, //!< Signed Very Long
+    TM = 0x1a, //!< Time
+    UC = 0x1b, //!< Unlimited Characters
+    UI = 0x1c, //!< Unique Identifier
+    UL = 0x1d, //!< Unsigned Long
+    UN = 0x1e, //!< Unknown
+    UR = 0x1f, //!< URI or URL
+    US = 0x20, //!< Unsigned Short
+    UT = 0x21, //!< Unlimited Text
+    UV = 0x22, //!< Unsigned Very Long
+    OX = 0x23, //!< Either OB or OW (for dict entries, not data elements)
+    XS = 0x24  //!< Either SS or US (for dict entries, not data elements)
   };
 
   //@{
@@ -90,25 +93,25 @@ public:
   //@}
 
   //@{
-  //! The VRs OB, OD, OF, OL, OW, SQ, UC, UN, UR, UT require a 32-bit VL.
+  //! The VRs OB, OD, OF, OL, OW, OV, SQ, UC, UN, UR, UT require a 32-bit VL.
   bool HasLongVL() const {
-    return (((1ull << this->Key) & 0xb223e001u) != 0); }
+    return (((1ull << this->Key) & 0x6ca47e001ull) != 0); }
 
   //! The VRs SH, LO, PN, ST, LT, UC, and UT use SpecificCharacterSet.
   bool HasSpecificCharacterSet() const {
-    return (((1ull << this->Key) & 0x828c1800u) != 0); }
+    return (((1ull << this->Key) & 0x209181800ull) != 0); }
 
   //! This is true for all VRs whose value is stored as text.
   bool HasTextValue() const {
-    return (((1ull << this->Key) & 0xa78c1cf6u) != 0); }
+    return (((1ull << this->Key) & 0x29d181cf6ull) != 0); }
 
   //! This is true for for all VRs that store numbers.
   /*!
-   *  The VRs included are IS, DS, US, UL, SS, SL, FL, FD.  The VRs
-   *  OB, OW, OF, OL, and OD are not included.
+   *  The VRs included are IS, DS, US, UL, UV, SS, SL, SV, FL, FD.  The VRs
+   *  OB, OW, OL, OV, OF, and OD are not included.
    */
   bool HasNumericValue() const {
-    return (((1ull << this->Key) & 0x48500740u) != 0); }
+    return (((1ull << this->Key) & 0x522a00740ull) != 0); }
 
   //! The VRs ST, LT, and UT carry only one value.
   /*!
@@ -117,7 +120,7 @@ public:
    * is an illegal character in UR.
    */
   bool HasSingleValue() const {
-    return (((1ull << this->Key) & 0x80801000u) != 0); }
+    return (((1ull << this->Key) & 0x201001000ull) != 0); }
   //@}
 
   //@{
@@ -133,8 +136,8 @@ private:
   unsigned char Key;
 
   static const unsigned char *VRTable[256];
-  static const unsigned char TypeTable[34];
-  static const char TextTable[34][4];
+  static const unsigned char TypeTable[37];
+  static const char TextTable[37][4];
 };
 
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMVR& a);

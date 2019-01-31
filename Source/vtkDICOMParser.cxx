@@ -443,6 +443,9 @@ public:
   static void GetValues(const unsigned char *ip, unsigned short *v, size_t n);
   static void GetValues(const unsigned char *ip, int *v, size_t n);
   static void GetValues(const unsigned char *ip, unsigned int *v, size_t n);
+  static void GetValues(const unsigned char *ip, long long *v, size_t n);
+  static void GetValues(
+    const unsigned char *ip, unsigned long long *v, size_t n);
   static void GetValues(const unsigned char *ip, float *v, size_t n);
   static void GetValues(const unsigned char *ip, double *v, size_t n);
   static void GetValues(const unsigned char *ip, vtkDICOMTag *v, size_t n);
@@ -1002,6 +1005,21 @@ void Decoder<E>::GetValues(
 
 template<int E>
 void Decoder<E>::GetValues(
+  const unsigned char *ip, long long *op, size_t n)
+{
+  do { *op++ = static_cast<long long>(Decoder<E>::GetInt64(ip)); ip += 8; }
+  while (--n);
+}
+
+template<int E>
+void Decoder<E>::GetValues(
+  const unsigned char *ip, unsigned long long *op, size_t n)
+{
+  do { *op++ = Decoder<E>::GetInt64(ip); ip += 8; } while (--n);
+}
+
+template<int E>
+void Decoder<E>::GetValues(
   const unsigned char *ip, float *op, size_t n)
 {
   union { float f; unsigned int i; } u;
@@ -1272,6 +1290,20 @@ size_t Decoder<E>::ReadElementValue(
     {
       unsigned int n = vl/sizeof(unsigned int);
       unsigned int *ptr = v.AllocateUnsignedIntData(vr, n);
+      l = this->ReadData(cp, ep, ptr, n);
+      break;
+    }
+    case VTK_LONG_LONG:
+    {
+      unsigned long long n = vl/sizeof(long long);
+      long long *ptr = v.AllocateInt64Data(vr, n);
+      l = this->ReadData(cp, ep, ptr, n);
+      break;
+    }
+    case VTK_UNSIGNED_LONG_LONG:
+    {
+      unsigned long long n = vl/sizeof(unsigned long long);
+      unsigned long long *ptr = v.AllocateUnsignedInt64Data(vr, n);
       l = this->ReadData(cp, ep, ptr, n);
       break;
     }

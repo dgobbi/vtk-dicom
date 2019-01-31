@@ -112,6 +112,11 @@ int main(int argc, char *argv[])
   TestAssert(strcmp(vrOL.GetText(), "OL") == 0);
   TestAssert(vrOL.GetType() == VTK_UNSIGNED_INT);
 
+  vtkDICOMVR vrOV("OV");
+  TestAssert(vrOV == vtkDICOMVR::OV);
+  TestAssert(strcmp(vrOV.GetText(), "OV") == 0);
+  TestAssert(vrOV.GetType() == VTK_UNSIGNED_LONG_LONG);
+
   vtkDICOMVR vrOW("OW");
   TestAssert(vrOW == vtkDICOMVR::OW);
   TestAssert(strcmp(vrOW.GetText(), "OW") == 0);
@@ -146,6 +151,11 @@ int main(int argc, char *argv[])
   TestAssert(vrST == vtkDICOMVR::ST);
   TestAssert(strcmp(vrST.GetText(), "ST") == 0);
   TestAssert(vrST.GetType() == VTK_CHAR);
+
+  vtkDICOMVR vrSV("SV");
+  TestAssert(vrSV == vtkDICOMVR::SV);
+  TestAssert(strcmp(vrSV.GetText(), "SV") == 0);
+  TestAssert(vrSV.GetType() == VTK_LONG_LONG);
 
   vtkDICOMVR vrTM("TM");
   TestAssert(vrTM == vtkDICOMVR::TM);
@@ -186,6 +196,11 @@ int main(int argc, char *argv[])
   TestAssert(vrUT == vtkDICOMVR::UT);
   TestAssert(strcmp(vrUT.GetText(), "UT") == 0);
   TestAssert(vrUT.GetType() == VTK_CHAR);
+
+  vtkDICOMVR vrUV("UV");
+  TestAssert(vrUV == vtkDICOMVR::UV);
+  TestAssert(strcmp(vrUV.GetText(), "UV") == 0);
+  TestAssert(vrUV.GetType() == VTK_UNSIGNED_LONG_LONG);
   }
 
   { // Test the attributes that are stored in bitfields
@@ -194,33 +209,34 @@ int main(int argc, char *argv[])
     vtkDICOMVR::CS, vtkDICOMVR::DA, vtkDICOMVR::DS, vtkDICOMVR::DT,
     vtkDICOMVR::FD, vtkDICOMVR::FL, vtkDICOMVR::IS, vtkDICOMVR::LO,
     vtkDICOMVR::LT, vtkDICOMVR::OB, vtkDICOMVR::OD, vtkDICOMVR::OF,
-    vtkDICOMVR::OL, vtkDICOMVR::OW, vtkDICOMVR::PN, vtkDICOMVR::SH,
-    vtkDICOMVR::SL, vtkDICOMVR::SQ, vtkDICOMVR::SS, vtkDICOMVR::ST,
-    vtkDICOMVR::TM, vtkDICOMVR::UC, vtkDICOMVR::UI, vtkDICOMVR::UL,
-    vtkDICOMVR::UN, vtkDICOMVR::UR, vtkDICOMVR::US, vtkDICOMVR::UT,
+    vtkDICOMVR::OL, vtkDICOMVR::OV, vtkDICOMVR::OW, vtkDICOMVR::PN,
+    vtkDICOMVR::SH, vtkDICOMVR::SL, vtkDICOMVR::SQ, vtkDICOMVR::SS,
+    vtkDICOMVR::ST, vtkDICOMVR::SV, vtkDICOMVR::TM, vtkDICOMVR::UC,
+    vtkDICOMVR::UI, vtkDICOMVR::UL, vtkDICOMVR::UN, vtkDICOMVR::UR,
+    vtkDICOMVR::US, vtkDICOMVR::UT, vtkDICOMVR::UV,
     vtkDICOMVR::OX, vtkDICOMVR::XS,
   };
 
-  // XX  AS  CS  DS  FD  IS  LT  OD  OL  PN  SL  SS  TM  UI  UN  US  OS
-  //   AE  AT  DA  DT  FL  LO  OB  OF  OW  SH  SQ  ST  UC  UL  UR  UT  XS
+  // XX  AS  CS  DS  FD  IS  LT  OD  OL  OW  SH  SQ  ST  TM  UI  UN  US  UV  XS
+  //   AE  AT  DA  DT  FL  LO  OB  OF  OV  PN  SL  SS  SV  UC  UL  UR  UT  OS
 
   bool hasLongVL[] = {
-     1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,1,0,0,0,1,0,0,1,1,0,1,0,0
+     1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,1,0,0,1,0,1,0,0,1,1,0,1,1,0,0
   };
   bool hasSpecificCharacterSet[] = {
-     0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,0,0,0,0,0,1,0,0
+     0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0
   };
   bool hasTextValue[] = {
-     0,1,1,0,1,1,1,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,1,1,1,0,0,1,0,1,0,0
+     0,1,1,0,1,1,1,1,0,0,1,1,1,0,0,0,0,0,0,1,1,0,0,0,1,0,1,1,1,0,0,1,0,1,0,0,0
   };
   bool hasNumericValue[] = {
-     0,0,0,0,0,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,0,0,1,0,0,0
+     0,0,0,0,0,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,0,1,0,1,0,0
   };
   bool hasSingleValue[] = {
-     0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0
+     0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0
   };
 
-  for (int i = 0; i < 34; i++)
+  for (int i = 0; i < 37; i++)
   {
     TestAssert(hasLongVL[i] == vrs[i].HasLongVL());
     TestAssert(hasSpecificCharacterSet[i] == vrs[i].HasSpecificCharacterSet());

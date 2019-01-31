@@ -245,6 +245,8 @@ public:
   unsigned short GetUnsignedShort(size_t i) const;
   int GetInt(size_t i) const;
   unsigned int GetUnsignedInt(size_t i) const;
+  long long GetInt64(size_t i) const;
+  unsigned long long GetUnsignedInt64(size_t i) const;
   float GetFloat(size_t i) const;
   double GetDouble(size_t i) const;
   vtkDICOMTag GetTag(size_t i) const;
@@ -267,6 +269,8 @@ public:
   unsigned short AsUnsignedShort() const;
   int AsInt() const;
   unsigned int AsUnsignedInt() const;
+  long long AsInt64() const;
+  unsigned long long AsUnsignedInt64() const;
   float AsFloat() const;
   double AsDouble() const;
   vtkDICOMTag AsTag() const;
@@ -294,6 +298,8 @@ public:
   const unsigned short *GetUnsignedShortData() const;
   const int *GetIntData() const;
   const unsigned int *GetUnsignedIntData() const;
+  const long long *GetInt64Data() const;
+  const unsigned long long *GetUnsignedInt64Data() const;
   const float *GetFloatData() const;
   const double *GetDoubleData() const;
   const vtkDICOMTag *GetTagData() const;
@@ -318,6 +324,8 @@ public:
   unsigned short *AllocateUnsignedShortData(vtkDICOMVR vr, size_t vn);
   int *AllocateIntData(vtkDICOMVR vr, size_t vn);
   unsigned int *AllocateUnsignedIntData(vtkDICOMVR vr, size_t vn);
+  long long *AllocateInt64Data(vtkDICOMVR vr, size_t vn);
+  unsigned long long *AllocateUnsignedInt64Data(vtkDICOMVR vr, size_t vn);
   float *AllocateFloatData(vtkDICOMVR vr, size_t vn);
   double *AllocateDoubleData(vtkDICOMVR vr, size_t vn);
   vtkDICOMTag *AllocateTagData(vtkDICOMVR vr, size_t vn);
