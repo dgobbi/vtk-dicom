@@ -110,7 +110,11 @@ static const char *OtherText[][3] = {
 { 0, 0, 0 }
 };
 
+#ifdef VTK_IN_VTK
+int TestDICOMCharacterSet(int argc, char *argv[])
+#else
 int main(int argc, char *argv[])
+#endif
 {
   int rval = 0;
   const char *exename = (argc > 0 ? argv[0] : "TestDICOMCharacterSet");

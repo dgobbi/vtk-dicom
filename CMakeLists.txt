@@ -29,8 +29,18 @@ set(DICOM_INCLUDE_DIRS
   "${DICOM_SOURCE_DIR}/Source"
   "${DICOM_BINARY_DIR}/Source")
 
-if(Module_vtkDICOM) # We are being built as a VTK remote module
+if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
+  # When building as a remote module for VTK 9 (or VTK 8.90+)
+  message(STATUS "vtkDICOM: Building vtkDICOM as a Remote VTK Module")
 
+  # Clear VTK_LIBS, linking will be handled by modular build
+  set(VTK_LIBS)
+
+  # To set DICOM_USE_VTKZLIB in vtkDICOMConfig.h
+  set(DICOM_USE_VTKZLIB ON)
+
+elseif(Module_vtkDICOM)
+  # When building as a remote module for older versions of VTK
   message(STATUS "vtkDICOM: Building vtkDICOM as a Remote VTK Module")
   set(vtkDICOM_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Source)
   set(vtkDICOM_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/Source)
@@ -45,7 +55,8 @@ if(Module_vtkDICOM) # We are being built as a VTK remote module
   option(BUILD_DICOM_PROGRAMS "Build the vtkDICOM tools" ON)
   set(BUILD_PROGRAMS ${BUILD_DICOM_PROGRAMS})
 
-else() # We are being built as a stand-alone package
+else()
+  # We are being built as a stand-alone package
 
   # When CMake 3.0.0 is required, remove this block (see CMP0042).
   if(NOT DEFINED CMAKE_MACOSX_RPATH)
@@ -344,26 +355,29 @@ endif()
 # The main library
 add_subdirectory(Source)
 
-# Subdirectories
-if(BUILD_PROGRAMS)
-  add_subdirectory(DicomCli)
-  add_subdirectory(Programs)
+if(NOT DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
+  # Subdirectories
+  if(BUILD_PROGRAMS)
+    add_subdirectory(DicomCli)
+    add_subdirectory(Programs)
+  endif()
+
+  if(BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(Testing)
+  endif()
+
+  if(BUILD_EXAMPLES)
+    add_subdirectory(Examples)
+  endif()
+
+  # Install files
+  install(FILES Copyright.txt
+    DESTINATION ${DICOM_DATA_INSTALL_DEST})
+
 endif()
 
-if(BUILD_TESTING)
-  enable_testing()
-  add_subdirectory(Testing)
-endif()
-
-if(BUILD_EXAMPLES)
-  add_subdirectory(Examples)
-endif()
-
-# Install files
-install(FILES Copyright.txt
-  DESTINATION ${DICOM_DATA_INSTALL_DEST})
-
-if(NOT Module_vtkDICOM)
+if(NOT Module_vtkDICOM AND NOT DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
   #---------------------------------------------------
   # Export information for other projects
 

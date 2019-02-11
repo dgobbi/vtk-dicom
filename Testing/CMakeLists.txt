@@ -1,61 +1,40 @@
+set(TEST_SRCS
+  TestDICOMCharacterSet.cxx
+  TestDICOMDictionary.cxx
+  TestDICOMFilePath.cxx
+  TestDICOMItem.cxx
+  TestDICOMMetaData.cxx
+  TestDICOMSequence.cxx
+  TestDICOMTagPath.cxx
+  TestDICOMUtilities.cxx
+  TestDICOMValue.cxx
+  TestDICOMVM.cxx
+  TestDICOMVR.cxx
+)
+
+if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
+  # When building as a remote module for VTK 9 (or VTK 8.90+)
+  vtk_add_test_cxx(vtkDICOMCxxTests TEST_NAMES NO_VALID ${TEST_SRCS})
+  vtk_test_cxx_executable(vtkDICOMCxxTests TEST_NAMES)
+
+elseif(Module_vtkDICOM)
+  # When building as a remote module for older versions of VTK
+  vtk_add_test_cxx(vtkDICOMCxxTests TEST_NAMES NO_VALID ${TEST_SRCS})
+  vtk_test_cxx_executable(vtkDICOMCxxTests TEST_NAMES)
+
+else()
+
 include_directories(${DICOM_INCLUDE_DIRS})
 
 set(BASE_LIBS vtkDICOM ${VTK_LIBS})
 
-add_executable(TestDICOMDictionary TestDICOMDictionary.cxx)
-target_link_libraries(TestDICOMDictionary ${BASE_LIBS})
-get_target_property(pth TestDICOMDictionary RUNTIME_OUTPUT_DIRECTORY)
-add_test(TestDICOMDictionary ${pth}/TestDICOMDictionary)
-
-add_executable(TestDICOMVM TestDICOMVM.cxx)
-target_link_libraries(TestDICOMVM ${BASE_LIBS})
-get_target_property(pth TestDICOMVM RUNTIME_OUTPUT_DIRECTORY)
-add_test(TestDICOMVM ${pth}/TestDICOMVM)
-
-add_executable(TestDICOMVR TestDICOMVR.cxx)
-target_link_libraries(TestDICOMVR ${BASE_LIBS})
-get_target_property(pth TestDICOMVR RUNTIME_OUTPUT_DIRECTORY)
-add_test(TestDICOMVR ${pth}/TestDICOMVR)
-
-add_executable(TestDICOMTagPath TestDICOMTagPath.cxx)
-target_link_libraries(TestDICOMTagPath ${BASE_LIBS})
-get_target_property(pth TestDICOMTagPath RUNTIME_OUTPUT_DIRECTORY)
-add_test(TestDICOMTagPath ${pth}/TestDICOMTagPath)
-
-add_executable(TestDICOMValue TestDICOMValue.cxx)
-target_link_libraries(TestDICOMValue ${BASE_LIBS})
-get_target_property(pth TestDICOMValue RUNTIME_OUTPUT_DIRECTORY)
-add_test(TestDICOMValue ${pth}/TestDICOMValue)
-
-add_executable(TestDICOMSequence TestDICOMSequence.cxx)
-target_link_libraries(TestDICOMSequence ${BASE_LIBS})
-get_target_property(pth TestDICOMSequence RUNTIME_OUTPUT_DIRECTORY)
-add_test(TestDICOMSequence ${pth}/TestDICOMSequence)
-
-add_executable(TestDICOMItem TestDICOMItem.cxx)
-target_link_libraries(TestDICOMItem ${BASE_LIBS})
-get_target_property(pth TestDICOMItem RUNTIME_OUTPUT_DIRECTORY)
-add_test(TestDICOMItem ${pth}/TestDICOMItem)
-
-add_executable(TestDICOMMetaData TestDICOMMetaData.cxx)
-target_link_libraries(TestDICOMMetaData ${BASE_LIBS})
-get_target_property(pth TestDICOMMetaData RUNTIME_OUTPUT_DIRECTORY)
-add_test(TestDICOMMetaData ${pth}/TestDICOMMetaData)
-
-add_executable(TestDICOMCharacterSet TestDICOMCharacterSet.cxx)
-target_link_libraries(TestDICOMCharacterSet ${BASE_LIBS})
-get_target_property(pth TestDICOMCharacterSet RUNTIME_OUTPUT_DIRECTORY)
-add_test(TestDICOMCharacterSet ${pth}/TestDICOMCharacterSet)
-
-add_executable(TestDICOMUtilities TestDICOMUtilities.cxx)
-target_link_libraries(TestDICOMUtilities ${BASE_LIBS})
-get_target_property(pth TestDICOMUtilities RUNTIME_OUTPUT_DIRECTORY)
-add_test(TestDICOMUtilities ${pth}/TestDICOMUtilities)
-
-add_executable(TestDICOMFilePath TestDICOMFilePath.cxx)
-target_link_libraries(TestDICOMFilePath ${BASE_LIBS})
-get_target_property(pth TestDICOMFilePath RUNTIME_OUTPUT_DIRECTORY)
-add_test(TestDICOMFilePath ${pth}/TestDICOMFilePath)
+foreach(_src ${TEST_SRCS})
+  get_filename_component(_test ${_src} NAME_WE)
+  add_executable(${_test} ${_src})
+  target_link_libraries(${_test} ${BASE_LIBS})
+  get_target_property(_pth ${_test} RUNTIME_OUTPUT_DIRECTORY)
+  add_test(${_test} ${_pth}/${_test})
+endforeach()
 
 if(BUILD_PYTHON_WRAPPERS)
   if(NOT VTK_PYTHON_EXE)
@@ -124,4 +103,6 @@ if(BUILD_JAVA_WRAPPERS)
   add_test(TestDICOMJava "${JAVA_RUNTIME}"
     -classpath "${VTK_JAR_PATH}/vtkdicom.jar${_sep}${DICOM_BINARY_DIR}/java${_sep}${VTK_JAVA_JAR}${_sep}${CMAKE_CURRENT_BINARY_DIR}"
     TestDICOMJava)
+endif()
+
 endif()

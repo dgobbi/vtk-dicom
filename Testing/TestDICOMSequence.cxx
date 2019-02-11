@@ -36,7 +36,11 @@ bool StringsEqual(const char *s1, const char *s2)
 
 }
 
+#ifdef VTK_IN_VTK
+int TestDICOMSequence(int argc, char *argv[])
+#else
 int main(int argc, char *argv[])
+#endif
 {
   int rval = 0;
   const char *exename = (argc > 0 ? argv[0] : "TestDICOMSequence");

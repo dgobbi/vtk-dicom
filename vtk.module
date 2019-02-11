@@ -1,0 +1,17 @@
+NAME
+  VTK::DICOM
+LIBRARY_NAME
+  vtkDICOM
+GROUPS
+  StandAlone
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::IOImage
+PRIVATE_DEPENDS
+  VTK::CommonMisc
+  VTK::ImagingCore
+  VTK::IOCore
+  VTK::zlib
+TEST_DEPENDS
+  VTK::TestingCore

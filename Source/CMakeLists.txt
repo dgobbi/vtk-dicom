@@ -14,6 +14,7 @@ include_directories(${DICOM_INCLUDE_DIRS})
 
 # Create the main library
 set(LIB_NAME vtkDICOM)
+set(MOD_NAME VTK::DICOM)
 
 if(WIN32)
   set(REFCOUNT_SRC vtkDICOMReferenceCount.cxx)
@@ -123,13 +124,26 @@ set_source_files_properties(${LIB_ABSTRACT}
 set_source_files_properties(${LIB_PRIVATE_HDRS}
   PROPERTIES SKIP_HEADER_INSTALL ON)
 
-if(Module_vtkDICOM) # Building as a VTK remote module
+if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
+  # When building as a remote module for VTK 9 (or VTK 8.90+)
+  set(LIB_SRC_HDRS)
+  foreach(_src ${LIB_SRCS})
+    get_filename_component(_base ${_src} NAME_WE)
+    list(APPEND LIB_SRC_HDRS ${_base}.h)
+  endforeach()
+  vtk_module_add_module(VTK::DICOM
+    SOURCES ${LIB_SRCS}
+    HEADERS ${LIB_SRC_HDRS} ${LIB_HDRS})
+  vtk_module_link(VTK::DICOM
+    PRIVATE ${GDCM_LIBS} ${DCMTK_LIBS} ${SQLITE_LIBS})
 
+elseif(Module_vtkDICOM)
+  # When building as a remote module for older versions of VTK
   vtk_module_library(vtkDICOM ${LIB_SRCS} ${LIB_HDRS})
   target_link_libraries(${LIB_NAME}
     LINK_PRIVATE ${GDCM_LIBS} ${DCMTK_LIBS} ${SQLITE_LIBS})
 
-else() # else MODULE_vtkDICOM
+else()
 
 configure_file(${DICOM_CMAKE_DIR}/vtkDICOMModule.h.in
   "${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMModule.h" COPYONLY)
