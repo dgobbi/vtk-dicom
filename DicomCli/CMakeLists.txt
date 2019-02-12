@@ -16,4 +16,4 @@ set(LIB_SRCS
 )
 
 add_library(${LIB_NAME} STATIC ${LIB_SRCS})
-target_link_libraries(${LIB_NAME} vtkDICOM)
+target_link_libraries(${LIB_NAME} ${VTK_DICOM_LINK_TARGET})

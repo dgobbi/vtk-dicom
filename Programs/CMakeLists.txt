@@ -26,7 +26,7 @@ else()
   set(VTK_EXTRA_LIBS) # VTK 5.x
 endif()
 
-set(BASE_LIBS vtkDICOM ${VTK_LIBS})
+set(BASE_LIBS ${VTK_DICOM_LINK_TARGET} ${VTK_LIBS})
 
 set(CLI_LIBS dicomcli)
 

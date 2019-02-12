@@ -35,9 +35,15 @@ if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
 
   # Clear VTK_LIBS, linking will be handled by modular build
   set(VTK_LIBS)
+  set(VTK_DICOM_LINK_TARGET VTK::DICOM)
 
   # To set DICOM_USE_VTKZLIB in vtkDICOMConfig.h
   set(DICOM_USE_VTKZLIB ON)
+
+  option(BUILD_DICOM_PROGRAMS "Build the vtkDICOM tools" ON)
+  option(BUILD_DICOM_EXAMPLES "Build the vtkDICOM examples" OFF)
+  set(BUILD_PROGRAMS ${BUILD_DICOM_PROGRAMS})
+  set(BUILD_EXAMPLES ${BUILD_DICOM_EXAMPLES})
 
 elseif(Module_vtkDICOM)
   # When building as a remote module for older versions of VTK
@@ -48,15 +54,19 @@ elseif(Module_vtkDICOM)
 
   # Clear VTK_LIBS, linking will be handled by modular build
   set(VTK_LIBS)
+  set(VTK_DICOM_LINK_TARGET vtkDICOM)
 
   # To set DICOM_USE_VTKZLIB in vtkDICOMConfig.h
   set(DICOM_USE_VTKZLIB ON)
 
   option(BUILD_DICOM_PROGRAMS "Build the vtkDICOM tools" ON)
+  option(BUILD_DICOM_EXAMPLES "Build the vtkDICOM examples" OFF)
   set(BUILD_PROGRAMS ${BUILD_DICOM_PROGRAMS})
+  set(BUILD_EXAMPLES ${BUILD_DICOM_EXAMPLES})
 
 else()
   # We are being built as a stand-alone package
+  set(VTK_DICOM_LINK_TARGET vtkDICOM)
 
   # When CMake 3.0.0 is required, remove this block (see CMP0042).
   if(NOT DEFINED CMAKE_MACOSX_RPATH)
@@ -355,20 +365,21 @@ endif()
 # The main library
 add_subdirectory(Source)
 
+# Subdirectories
+if(BUILD_PROGRAMS)
+  add_subdirectory(DicomCli)
+  add_subdirectory(Programs)
+endif()
+
+if(BUILD_EXAMPLES)
+  add_subdirectory(Examples)
+endif()
+
 if(NOT DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
-  # Subdirectories
-  if(BUILD_PROGRAMS)
-    add_subdirectory(DicomCli)
-    add_subdirectory(Programs)
-  endif()
 
   if(BUILD_TESTING)
     enable_testing()
     add_subdirectory(Testing)
-  endif()
-
-  if(BUILD_EXAMPLES)
-    add_subdirectory(Examples)
   endif()
 
   # Install files

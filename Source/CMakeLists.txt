@@ -14,7 +14,6 @@ include_directories(${DICOM_INCLUDE_DIRS})
 
 # Create the main library
 set(LIB_NAME vtkDICOM)
-set(MOD_NAME VTK::DICOM)
 
 if(WIN32)
   set(REFCOUNT_SRC vtkDICOMReferenceCount.cxx)
