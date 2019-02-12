@@ -17,7 +17,7 @@
 #include "vtkAlgorithm.h"
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMCharacterSet.h" // For character sets
-#include "vtkVersion.h"
+#include "vtkVersion.h" // For changes to pipeline API
 
 class vtkStringArray;
 class vtkIntArray;
