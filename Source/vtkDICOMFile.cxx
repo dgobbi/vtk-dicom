@@ -343,7 +343,7 @@ vtkDICOMFile::Size vtkDICOMFile::GetSize()
   if (fstat(this->Handle, &fs) != 0)
   {
     this->Error = UnknownError;
-    return static_cast<long long>(-1);
+    return ~0ull;
   }
   return fs.st_size;
 #elif defined(VTK_DICOM_WIN32_IO)
@@ -352,7 +352,7 @@ vtkDICOMFile::Size vtkDICOMFile::GetSize()
   if (lowerBits == INVALID_FILE_SIZE && GetLastError() != NO_ERROR)
   {
     this->Error = UnknownError;
-    return static_cast<long long>(-1);
+    return ~0ull;
   }
   return lowerBits | (static_cast<Size>(upperBits) << 32);
 #else
@@ -373,8 +373,9 @@ vtkDICOMFile::Size vtkDICOMFile::GetSize()
   if (size == -1)
   {
     this->Error = UnknownError;
+    return ~0ull;
   }
-  return size;
+  return static_cast<Size>(size);
 #endif
 }
 
