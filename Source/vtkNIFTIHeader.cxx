@@ -125,7 +125,7 @@ void vtkNIFTIHeader::SetHeader(const nifti_1_header *hdr)
   if (isnifti)
   {
     this->IntentCode = hdr->intent_code;
-    strncpy(this->IntentName, hdr->intent_name, sizeof(hdr->intent_name));
+    strncpy(this->IntentName, hdr->intent_name, sizeof(this->IntentName));
     this->IntentP1 = hdr->intent_p1;
     this->IntentP2 = hdr->intent_p2;
     this->IntentP3 = hdr->intent_p3;
@@ -144,8 +144,8 @@ void vtkNIFTIHeader::SetHeader(const nifti_1_header *hdr)
   }
   this->XYZTUnits = hdr->xyzt_units;
   this->DimInfo = hdr->dim_info;
-  strncpy(this->Descrip, hdr->descrip, sizeof(hdr->descrip));
-  strncpy(this->AuxFile, hdr->aux_file, sizeof(hdr->aux_file));
+  strncpy(this->Descrip, hdr->descrip, sizeof(this->Descrip));
+  strncpy(this->AuxFile, hdr->aux_file, sizeof(this->AuxFile));
   if (isnifti)
   {
     this->QFormCode = hdr->qform_code;
@@ -236,7 +236,7 @@ void vtkNIFTIHeader::SetHeader(const nifti_2_header *hdr)
     this->PixDim[i] = hdr->pixdim[i];
   }
   this->IntentCode = hdr->intent_code;
-  strncpy(this->IntentName, hdr->intent_name, sizeof(hdr->intent_name));
+  strncpy(this->IntentName, hdr->intent_name, sizeof(this->IntentName));
   this->IntentP1 = hdr->intent_p1;
   this->IntentP2 = hdr->intent_p2;
   this->IntentP3 = hdr->intent_p3;
@@ -251,8 +251,8 @@ void vtkNIFTIHeader::SetHeader(const nifti_2_header *hdr)
   this->SliceCode = hdr->slice_code;
   this->XYZTUnits = hdr->xyzt_units;
   this->DimInfo = hdr->dim_info;
-  strncpy(this->Descrip, hdr->descrip, sizeof(hdr->descrip));
-  strncpy(this->AuxFile, hdr->aux_file, sizeof(hdr->aux_file));
+  strncpy(this->Descrip, hdr->descrip, sizeof(this->Descrip));
+  strncpy(this->AuxFile, hdr->aux_file, sizeof(this->AuxFile));
   this->QFormCode = hdr->qform_code;
   this->SFormCode = hdr->sform_code;
   this->QuaternB = hdr->quatern_b;

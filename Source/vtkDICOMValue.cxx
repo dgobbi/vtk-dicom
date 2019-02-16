@@ -820,7 +820,7 @@ void vtkDICOMValue::CreateValue<char>(
   {
     int pad = (m & 1);
     char *cp = this->AllocateCharData(vr, m);
-    strncpy(cp, data, m);
+    memcpy(cp, data, m);
     // if not UI, then pad to even length with a space
     if (pad && vr != VR::UI) { cp[m++] = ' '; }
     cp[m] = '\0';

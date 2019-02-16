@@ -513,7 +513,7 @@ int vtkNIFTIWriter::GenerateHeader(vtkInformation *info, bool singleFile)
   if (version == 2)
   {
     // version 2 has four bytes for newline transfer checks
-    strncpy(&hdr.magic[4], "\r\n\032\n", 4);
+    memcpy(&hdr.magic[4], "\r\n\032\n", 4);
   }
 
   // set the description

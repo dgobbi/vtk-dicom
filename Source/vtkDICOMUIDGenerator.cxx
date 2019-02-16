@@ -268,7 +268,7 @@ void vtkConvertRandomToUUID(const unsigned char bytes[16], char *uuid)
 // convert a 36-character uuid to a 44-character uid
 void vtkConvertUUIDToUID(const char *uuid, char *uid)
 {
-  strncpy(uid, "2.25.", 5);
+  memcpy(uid, "2.25.", 5);
   vtkConvertHexToDecimal(uuid, uid + 5);
 }
 
