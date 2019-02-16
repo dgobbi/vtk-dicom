@@ -429,6 +429,8 @@ void vtkDICOMFileDirectory::LinkStatEntry(int)
 int vtkDICOMFileDirectory::Access(const char *dirname, Mode mode)
 {
 #ifdef _WIN32
+  // The "mode" is not checked on Win32, add AccessCheck()?
+  (void)mode;
   int errorCode = UnknownError;
   vtkDICOMFilePath fpath(dirname);
   const wchar_t *wideFilename = fpath.Wide();
