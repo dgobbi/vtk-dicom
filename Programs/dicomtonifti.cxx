@@ -419,9 +419,9 @@ void dicomtonifti_read_options(
           dicomtonifti_usage(stderr, argv[0]);
           exit(1);
         }
-        const char *optarg = arg;
+        const char *optionarg = arg;
         arg = argv[argi++];
-        if (strcmp(optarg, "--time-delta") == 0)
+        if (strcmp(optionarg, "--time-delta") == 0)
         {
           if (!dicomtonifti_time_delta(arg, options))
           {
@@ -436,7 +436,7 @@ void dicomtonifti_read_options(
           {
             exit(1);
           }
-          if (strcmp(optarg, "--time-delta-tag") == 0)
+          if (strcmp(optionarg, "--time-delta-tag") == 0)
           {
             options->time_delta_tagpath = qtlist[0];
           }
