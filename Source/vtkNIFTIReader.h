@@ -52,39 +52,20 @@ public:
   vtkTypeMacro(vtkNIFTIReader, vtkImageReader2);
 
   //! Print information about this object.
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
 
-#ifdef VTK_OVERRIDE
   //@{
   //! Valid extensions for this file type.
-  const char* GetFileExtensions() VTK_OVERRIDE {
+  const char* GetFileExtensions() VTK_DICOM_OVERRIDE {
     return ".nii .nii.gz .img .img.gz .hdr .hdr.gz"; }
 
   //! Return a descriptive name that might be useful in a GUI.
-  const char* GetDescriptiveName() VTK_OVERRIDE {
+  const char* GetDescriptiveName() VTK_DICOM_OVERRIDE {
     return "NIfTI"; }
 
   //! Return true if this reader can read the given file.
-  int CanReadFile(const char* filename) VTK_OVERRIDE;
+  int CanReadFile(const char* filename) VTK_DICOM_OVERRIDE;
   //@}
-#else
-  //@{
-  //! Valid extensions for this file type.
-  const char* GetFileExtensions() {
-    return ".nii .nii.gz .img .img.gz .hdr .hdr.gz"; }
-
-  //! Return a descriptive name that might be useful in a GUI.
-  const char* GetDescriptiveName() {
-    return "NIfTI"; }
-
-  //! Return true if this reader can read the given file.
-  int CanReadFile(const char* filename);
-  //@}
-#endif
 
   //@{
   //! Read the time dimension as scalar components (default: Off).
@@ -185,27 +166,15 @@ protected:
   vtkNIFTIReader();
   ~vtkNIFTIReader();
 
-#ifdef VTK_OVERRIDE
   //! Read the header information.
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   //! Read the voxel data.
   int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
-#else
-  //! Read the header information.
-  int RequestInformation(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-
-  //! Read the voxel data.
-  int RequestData(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-#endif
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   //! Doe a case-insensitive check for the given extension.
   /*!

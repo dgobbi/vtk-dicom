@@ -163,11 +163,7 @@ public:
   vtkTypeMacro(vtkNIFTIHeader, vtkObject);
 
   //! Print information about this object.
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
 
   //@{
   //! Get the magic number for the NIFTI file as a null-terminated string.

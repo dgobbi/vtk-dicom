@@ -33,11 +33,7 @@ class VTKDICOM_EXPORT vtkDICOMFileSorter : public vtkObject
 {
 public:
   vtkTypeMacro(vtkDICOMFileSorter,vtkObject);
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
   static vtkDICOMFileSorter *New();
 
   //@{

@@ -4,6 +4,13 @@ set(DICOM_BUILD_TESTING ${BUILD_TESTING})
 set(DICOM_USE_GDCM ${USE_GDCM})
 set(DICOM_USE_DCMTK ${USE_DCMTK})
 set(DICOM_USE_SQLITE ${USE_SQLITE})
+if(${VTK_VERSION} VERSION_LESS 7.0)
+  set(DICOM_OVERRIDE "")
+elseif(${VTK_VERSION} VERSION_LESS 8.90)
+  set(DICOM_OVERRIDE " VTK_OVERRIDE")
+else()
+  set(DICOM_OVERRIDE " override")
+endif()
 configure_file(${DICOM_CMAKE_DIR}/vtkDICOMConfig.h.in
   "${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMConfig.h" @ONLY)
 configure_file(${DICOM_CMAKE_DIR}/vtkDICOMBuild.h.in

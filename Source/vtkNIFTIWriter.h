@@ -54,11 +54,7 @@ public:
   vtkTypeMacro(vtkNIFTIWriter, vtkImageWriter);
 
   //! Print information about this object.
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
 
   //@{
   //! Set the version number for the NIfTI file format to use.
@@ -190,15 +186,9 @@ protected:
   int GenerateHeader(vtkInformation *info, bool singleFile);
 
   //! The main execution method, which writes the file.
-#ifdef VTK_OVERRIDE
   int RequestData(vtkInformation *request,
                   vtkInformationVector** inputVector,
-                  vtkInformationVector* outputVector) VTK_OVERRIDE;
-#else
-  int RequestData(vtkInformation *request,
-                  vtkInformationVector** inputVector,
-                  vtkInformationVector* outputVector);
-#endif
+                  vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   //! Make a new filename by replacing extension "ext1" with "ext2".
   /*!

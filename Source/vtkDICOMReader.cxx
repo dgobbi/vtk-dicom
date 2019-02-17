@@ -298,12 +298,8 @@ class vtkDICOMErrorSilencer : public vtkCommand
 public:
   static vtkDICOMErrorSilencer *New() { return new vtkDICOMErrorSilencer; }
   vtkTypeMacro(vtkDICOMErrorSilencer,vtkCommand);
-#ifdef VTK_OVERRIDE
   void Execute(vtkObject *caller, unsigned long eventId, void *callData)
-    VTK_OVERRIDE;
-#else
-  void Execute(vtkObject *caller, unsigned long eventId, void *callData);
-#endif
+    VTK_DICOM_OVERRIDE;
 protected:
   vtkDICOMErrorSilencer() {};
   vtkDICOMErrorSilencer(const vtkDICOMErrorSilencer& c) : vtkCommand(c) {}

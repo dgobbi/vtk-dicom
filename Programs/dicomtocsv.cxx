@@ -136,12 +136,9 @@ class ErrorObserver : public vtkCommand
 public:
   static ErrorObserver *New() { return new ErrorObserver(); }
   vtkTypeMacro(ErrorObserver,vtkCommand);
-#ifdef VTK_OVERRIDE
   void Execute(
-    vtkObject *caller, unsigned long eventId, void *callData) VTK_OVERRIDE;
-#else
-  void Execute(vtkObject *caller, unsigned long eventId, void *callData);
-#endif
+    vtkObject *caller, unsigned long eventId, void *callData)
+    VTK_DICOM_OVERRIDE;
   void SetMetaData(vtkDICOMMetaData *meta) { this->MetaData = meta; }
 protected:
   ErrorObserver() : MetaData(0) {}

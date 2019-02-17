@@ -33,11 +33,7 @@ public:
   vtkTypeMacro(vtkDICOMMRGenerator, vtkDICOMGenerator);
 
   //! Print information about this object.
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
 
   //! Generate an instance of one of the supported classes.
   /*!
@@ -45,11 +41,7 @@ public:
    *  information for a vtkImageData object, it will populate the
    *  attributes of the supplied vtkDICOMMetaData object.
    */
-#ifdef VTK_OVERRIDE
-  bool GenerateInstance(vtkInformation *info) VTK_OVERRIDE;
-#else
-  bool GenerateInstance(vtkInformation *info);
-#endif
+  bool GenerateInstance(vtkInformation *info) VTK_DICOM_OVERRIDE;
 
 protected:
   vtkDICOMMRGenerator();

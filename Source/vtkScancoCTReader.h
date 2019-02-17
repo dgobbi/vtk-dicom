@@ -45,43 +45,23 @@ public:
   static vtkScancoCTReader *New();
   vtkTypeMacro(vtkScancoCTReader, vtkImageReader2);
 
-#ifdef VTK_OVERRIDE
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
 
   //@{
   //! Valid extensions for this file type.
-  const char* GetFileExtensions() VTK_OVERRIDE {
+  const char* GetFileExtensions() VTK_DICOM_OVERRIDE {
     return ".isq .rsq .rad .aim" ; }
 
   //! Return a descriptive name that might be useful in a GUI.
-  const char* GetDescriptiveName() VTK_OVERRIDE {
+  const char* GetDescriptiveName() VTK_DICOM_OVERRIDE {
     return "SCANCO MicroCT"; }
   //@}
 
   //@{
   //! Return true if this reader can read the given file.
-  int CanReadFile(const char* filename) VTK_OVERRIDE;
+  int CanReadFile(const char* filename) VTK_DICOM_OVERRIDE;
   //@}
-#else
-  //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent);
-
-  //@{
-  //! Valid extensions for this file type.
-  const char* GetFileExtensions() {
-    return ".isq .rsq .rad .aim" ; }
-
-  //! Return a descriptive name that might be useful in a GUI.
-  const char* GetDescriptiveName() {
-    return "SCANCO MicroCT"; }
-  //@}
-
-  //@{
-  //! Return true if this reader can read the given file.
-  int CanReadFile(const char* filename);
-  //@}
-#endif
 
   //@{
   //! Get a string that states the version of the file header.
@@ -190,27 +170,15 @@ protected:
   vtkScancoCTReader();
   ~vtkScancoCTReader();
 
-#ifdef VTK_OVERRIDE
   //! Read the header information.
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   //! Read the voxel data.
   int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
-#else
-  //! Read the header information.
-  int RequestInformation(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-
-  //! Read the voxel data.
-  int RequestData(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-#endif
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   //! Initialize the header information
   void InitializeHeader();

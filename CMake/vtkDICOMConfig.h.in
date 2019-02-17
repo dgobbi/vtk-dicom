@@ -33,4 +33,7 @@
 /* Legacy (for backwards compatibility) */
 #define DICOM_BUILD_VERSION DICOM_PATCH_VERSION
 
+/* To support 'override' for C++11 compilers */
+#define VTK_DICOM_OVERRIDE@DICOM_OVERRIDE@
+
 #endif

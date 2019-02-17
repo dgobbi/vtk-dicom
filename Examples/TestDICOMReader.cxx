@@ -28,12 +28,8 @@ public:
 
   static ReaderProgress *New() { return new ReaderProgress; }
 
-#ifdef VTK_OVERRIDE
   void Execute(vtkObject *object, unsigned long event, void *data)
-    VTK_OVERRIDE;
-#else
-  void Execute(vtkObject *object, unsigned long event, void *data);
-#endif
+    VTK_DICOM_OVERRIDE;
 };
 
 void ReaderProgress::Execute(

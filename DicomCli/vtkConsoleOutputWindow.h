@@ -22,19 +22,15 @@
 #define vtkConsoleOutputWindow_h
 
 #include "vtkOutputWindow.h"
+#include "vtkDICOMConfig.h"
 
 class vtkConsoleOutputWindow : public vtkOutputWindow
 {
 public:
   vtkTypeMacro(vtkConsoleOutputWindow, vtkOutputWindow);
   static vtkConsoleOutputWindow* New();
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-  void DisplayText(const char*) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-  void DisplayText(const char*);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void DisplayText(const char*) VTK_DICOM_OVERRIDE;
   static void Install();
 
 protected:

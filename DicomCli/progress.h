@@ -15,6 +15,7 @@
 #define progress_h
 
 #include "vtkCommand.h"
+#include "vtkDICOMConfig.h"
 
 // Capture progress events
 class ProgressObserver : public vtkCommand
@@ -22,12 +23,9 @@ class ProgressObserver : public vtkCommand
 public:
   static ProgressObserver *New() { return new ProgressObserver; }
   vtkTypeMacro(ProgressObserver,vtkCommand);
-#ifdef VTK_OVERRIDE
   void Execute(
-    vtkObject *caller, unsigned long eventId, void *callData) VTK_OVERRIDE;
-#else
-  void Execute(vtkObject *caller, unsigned long eventId, void *callData);
-#endif
+    vtkObject *caller, unsigned long eventId, void *callData)
+    VTK_DICOM_OVERRIDE;
   void SetText(const char *text) { this->Text = text; }
 protected:
   ProgressObserver() : Stage(0), Anim(0), LastTime(0), Text("") {}

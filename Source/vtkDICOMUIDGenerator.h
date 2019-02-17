@@ -42,11 +42,7 @@ public:
   //@}
 
   //! Print information about this object.
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
 
   //@{
   //! Set a UID prefix to use when generating UIDs.

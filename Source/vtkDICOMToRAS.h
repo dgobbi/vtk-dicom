@@ -41,11 +41,7 @@ public:
   vtkTypeMacro(vtkDICOMToRAS, vtkThreadedImageAlgorithm);
 
   //! Print information about this object.
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
 
   //@{
   //! Reverse the filter: do RAS to DICOM instead of DICOM to RAS.
@@ -148,41 +144,22 @@ protected:
    */
   void ComputeMatrix(int extent[6], double spacing[3], double origin[3]);
 
-#ifdef VTK_OVERRIDE
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   int RequestUpdateExtent(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
-    vtkImageData **outData, int ext[6], int id) VTK_OVERRIDE;
-#else
-  int RequestInformation(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-
-  int RequestUpdateExtent(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-
-  int RequestData(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-
-  void ThreadedRequestData(
-    vtkInformation *request, vtkInformationVector **inputVector,
-    vtkInformationVector *outputVector, vtkImageData ***inData,
-    vtkImageData **outData, int ext[6], int id);
-#endif
+    vtkImageData **outData, int ext[6], int id) VTK_DICOM_OVERRIDE;
 
   vtkMatrix4x4 *PatientMatrix;
   vtkMatrix4x4 *RASMatrix;

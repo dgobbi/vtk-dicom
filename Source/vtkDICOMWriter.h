@@ -42,11 +42,7 @@ public:
   static vtkDICOMWriter *New();
 
   //! Print information about this object.
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
 
   //@{
   //! Set a short description (max 64 chars) for the DICOM series.
@@ -228,11 +224,7 @@ public:
 
   //@{
   //! Write the file to disk.
-#ifdef VTK_OVERRIDE
-  void Write() VTK_OVERRIDE;
-#else
-  void Write();
-#endif
+  void Write() VTK_DICOM_OVERRIDE;
   //@}
 
 protected:
@@ -253,19 +245,11 @@ protected:
                                 const int extent[4]);
 
   //! The main execution method, which writes the file.
-#ifdef VTK_OVERRIDE
-  int FillInputPortInformation(int port, vtkInformation *info) VTK_OVERRIDE;
+  int FillInputPortInformation(int port, vtkInformation *info) VTK_DICOM_OVERRIDE;
 
   int RequestData(vtkInformation *request,
                   vtkInformationVector** inputVector,
-                  vtkInformationVector* outputVector) VTK_OVERRIDE;
-#else
-  int FillInputPortInformation(int port, vtkInformation *info);
-
-  int RequestData(vtkInformation *request,
-                  vtkInformationVector** inputVector,
-                  vtkInformationVector* outputVector);
-#endif
+                  vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   //! The meta data set by the user.
   vtkDICOMMetaData *MetaData;

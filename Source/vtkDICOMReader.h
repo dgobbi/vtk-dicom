@@ -45,39 +45,20 @@ public:
   static vtkDICOMReader *New();
 
   //! Print information about this object.
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
 
-#ifdef VTK_OVERRIDE
   //@{
   //! Valid extensions for this file type.
-  const char* GetFileExtensions() VTK_OVERRIDE {
+  const char* GetFileExtensions() VTK_DICOM_OVERRIDE {
     return ".dcm .dc"; }
 
   //! Return a descriptive name that might be useful in a GUI.
-  const char* GetDescriptiveName() VTK_OVERRIDE {
+  const char* GetDescriptiveName() VTK_DICOM_OVERRIDE {
     return "DICOM"; }
 
   //! Return true if this reader can read the given file.
-  int CanReadFile(const char* filename) VTK_OVERRIDE;
+  int CanReadFile(const char* filename) VTK_DICOM_OVERRIDE;
   //@}
-#else
-  //@{
-  //! Valid extensions for this file type.
-  const char* GetFileExtensions() {
-    return ".dcm .dc"; }
-
-  //! Return a descriptive name that might be useful in a GUI.
-  const char* GetDescriptiveName() {
-    return "DICOM"; }
-
-  //! Return true if this reader can read the given file.
-  int CanReadFile(const char* filename);
-  //@}
-#endif
 
   //@{
   //! Set the Stack ID of the stack to load, for named stacks.
@@ -321,11 +302,7 @@ public:
   //@{
   using Superclass::Update;
   //! Update both the image and, if present, the overlay
-#ifdef VTK_OVERRIDE
-  void Update() VTK_OVERRIDE;
-#else
-  virtual void Update();
-#endif
+  void Update() VTK_DICOM_OVERRIDE;
   //@}
 #endif
 
@@ -333,41 +310,22 @@ protected:
   vtkDICOMReader();
   ~vtkDICOMReader();
 
-#ifdef VTK_OVERRIDE
   //@{
   //! Entry point for all pipeline requests.
   int ProcessRequest(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   //! Read the header information.
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   //! Read the voxel data.
   int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
   //@}
-#else
-  //@{
-  //! Entry point for all pipeline requests.
-  virtual int ProcessRequest(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-
-  //! Read the header information.
-  virtual int RequestInformation(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-
-  //! Read the voxel data.
-  virtual int RequestData(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-  //@}
-#endif
 
   //@{
   //! Read the overlays into an allocated vtkImageData object.

@@ -44,11 +44,7 @@ public:
   static vtkDICOMAlgorithm *New();
 
   //! Print information about this object.
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
   //@}
 
   //@{
@@ -85,33 +81,18 @@ protected:
     vtkInformation *outInfo, vtkDataObject *outData);
   //@}
 
-#ifdef VTK_OVERRIDE
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
-    vtkImageData **outData, int ext[6], int id) VTK_OVERRIDE;
-#else
-  int RequestInformation(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-
-  int RequestData(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-
-  void ThreadedRequestData(
-    vtkInformation *request, vtkInformationVector **inputVector,
-    vtkInformationVector *outputVector, vtkImageData ***inData,
-    vtkImageData **outData, int ext[6], int id);
-#endif
+    vtkImageData **outData, int ext[6], int id) VTK_DICOM_OVERRIDE;
 
 private:
 #ifdef VTK_DELETE_FUNCTION

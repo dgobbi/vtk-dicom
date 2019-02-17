@@ -39,11 +39,7 @@ public:
   vtkTypeMacro(vtkDICOMMetaData, vtkDataObject);
 
   //! Print a summary of the contents of this object.
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
 
   //@{
   //! Get the number of instances (i.e. files).
@@ -63,11 +59,7 @@ public:
   void Clear();
 
   //! Remove all data elements and initialize all members.
-#ifdef VTK_OVERRIDE
-  void Initialize() VTK_OVERRIDE;
-#else
-  void Initialize();
-#endif
+  void Initialize() VTK_DICOM_OVERRIDE;
   //@}
 
   //@{
@@ -331,13 +323,8 @@ public:
 
   //@{
   //! DataObject interface function.
-#ifdef VTK_OVERRIDE
-  void ShallowCopy(vtkDataObject *source) VTK_OVERRIDE;
-  void DeepCopy(vtkDataObject *source) VTK_OVERRIDE;
-#else
-  void ShallowCopy(vtkDataObject *source);
-  void DeepCopy(vtkDataObject *source);
-#endif
+  void ShallowCopy(vtkDataObject *source) VTK_DICOM_OVERRIDE;
+  void DeepCopy(vtkDataObject *source) VTK_DICOM_OVERRIDE;
   //@}
 
 protected:

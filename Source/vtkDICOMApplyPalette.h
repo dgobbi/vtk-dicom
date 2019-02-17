@@ -43,43 +43,24 @@ public:
   vtkTypeMacro(vtkDICOMApplyPalette, vtkDICOMAlgorithm);
 
   //! Print information about this object.
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
 
 protected:
   vtkDICOMApplyPalette();
   ~vtkDICOMApplyPalette();
 
-#ifdef VTK_OVERRIDE
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_OVERRIDE;
+    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 
   void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
-    vtkImageData **outData, int ext[6], int id) VTK_OVERRIDE;
-#else
-  int RequestInformation(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-
-  int RequestData(
-    vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
-
-  void ThreadedRequestData(
-    vtkInformation *request, vtkInformationVector **inputVector,
-    vtkInformationVector *outputVector, vtkImageData ***inData,
-    vtkImageData **outData, int ext[6], int id);
-#endif
+    vtkImageData **outData, int ext[6], int id) VTK_DICOM_OVERRIDE;
 
   //! Container for the lookup tables used.
   vtkDICOMPerFilePalette *Palette;

@@ -43,11 +43,7 @@ public:
   vtkTypeMacro(vtkDICOMParser, vtkObject);
 
   //! Print a summary of the contents of this object.
-#ifdef VTK_OVERRIDE
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
-#else
-  void PrintSelf(ostream& os, vtkIndent indent);
-#endif
+  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
 
   //@{
   //! Set the file name.
