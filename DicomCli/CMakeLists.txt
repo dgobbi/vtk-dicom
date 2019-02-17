@@ -1,3 +1,7 @@
+if(POLICY CMP0063)
+  cmake_policy(SET CMP0063 NEW)
+endif()
+
 include_directories(${DICOM_INCLUDE_DIRS})
 
 set(LIB_NAME dicomcli)
