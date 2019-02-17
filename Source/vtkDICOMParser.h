@@ -17,6 +17,7 @@
 #include "vtkObject.h"
 #include "vtkStdString.h" // For std::string
 #include "vtkDICOMModule.h" // For export macro
+#include "vtkDICOMConfig.h" // For configuration details
 #include "vtkDICOMCharacterSet.h" // For character sets
 
 class vtkDICOMFile;

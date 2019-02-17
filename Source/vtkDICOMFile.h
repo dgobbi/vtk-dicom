@@ -16,6 +16,7 @@
 
 #include "vtkSystemIncludes.h"
 #include "vtkDICOMModule.h" // For export macro
+#include "vtkDICOMConfig.h" // For configuration details
 
 #if defined(_WIN32)
 #define VTK_DICOM_WIN32_IO

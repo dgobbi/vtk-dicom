@@ -37,6 +37,7 @@
 
 #include "vtkImageReader2.h"
 #include "vtkDICOMModule.h" // For export macro
+#include "vtkDICOMConfig.h" // For configuration details
 
 class vtkNIFTIHeader;
 class vtkMatrix4x4;

@@ -38,6 +38,7 @@
 
 #include "vtkObject.h"
 #include "vtkDICOMModule.h" // For export macro
+#include "vtkDICOMConfig.h" // For configuration details
 
 struct nifti_1_header;
 struct nifti_2_header;

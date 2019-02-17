@@ -35,7 +35,7 @@
 
 /* To support 'override' for C++11 compilers */
 #define VTK_DICOM_OVERRIDE@DICOM_OVERRIDE@
-/* To support '=delete' for C++11 compilsers */
+/* To support '=delete' for C++11 compilers */
 #define VTK_DICOM_DELETE@DICOM_DELETE@
 
 #endif

@@ -16,6 +16,7 @@
 
 #include "vtkAlgorithm.h"
 #include "vtkDICOMModule.h" // For export macro
+#include "vtkDICOMConfig.h" // For configuration details
 #include "vtkDICOMCharacterSet.h" // For character sets
 #include "vtkVersion.h" // For changes to pipeline API
 

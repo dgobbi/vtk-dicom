@@ -29,6 +29,7 @@
 
 #include "vtkThreadedImageAlgorithm.h"
 #include "vtkDICOMModule.h" // For export macro
+#include "vtkDICOMConfig.h" // For configuration details
 
 class vtkMatrix4x4;
 

@@ -16,7 +16,7 @@
 
 #include "vtkObject.h"
 #include "vtkDICOMModule.h" // For export macro
-
+#include "vtkDICOMConfig.h" // For configuration details
 #include "vtkDICOMTag.h" // For vtkDICOMTag
 
 class vtkIntArray;
