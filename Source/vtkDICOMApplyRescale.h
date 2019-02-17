@@ -77,15 +77,12 @@ protected:
   int OutputScalarType;
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMApplyRescale(const vtkDICOMApplyRescale&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMApplyRescale&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMApplyRescale(const vtkDICOMApplyRescale&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMApplyRescale&) VTK_DICOM_DELETE;
+#else
   vtkDICOMApplyRescale(const vtkDICOMApplyRescale&) = delete;
   void operator=(const vtkDICOMApplyRescale&) = delete;
-#else
-  vtkDICOMApplyRescale(const vtkDICOMApplyRescale&);
-  void operator=(const vtkDICOMApplyRescale&);
 #endif
 };
 

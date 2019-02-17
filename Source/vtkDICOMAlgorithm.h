@@ -95,15 +95,12 @@ protected:
     vtkImageData **outData, int ext[6], int id) VTK_DICOM_OVERRIDE;
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMAlgorithm(const vtkDICOMAlgorithm&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMAlgorithm&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMAlgorithm(const vtkDICOMAlgorithm&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMAlgorithm&) VTK_DICOM_DELETE;
+#else
   vtkDICOMAlgorithm(const vtkDICOMAlgorithm&) = delete;
   void operator=(const vtkDICOMAlgorithm&) = delete;
-#else
-  vtkDICOMAlgorithm(const vtkDICOMAlgorithm&);
-  void operator=(const vtkDICOMAlgorithm&);
 #endif
 };
 

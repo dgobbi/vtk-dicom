@@ -217,15 +217,12 @@ protected:
   vtkDICOMTag TimeSequence;
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMSliceSorter(const vtkDICOMSliceSorter&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMSliceSorter&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMSliceSorter(const vtkDICOMSliceSorter&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMSliceSorter&) VTK_DICOM_DELETE;
+#else
   vtkDICOMSliceSorter(const vtkDICOMSliceSorter&) = delete;
   void operator=(const vtkDICOMSliceSorter&) = delete;
-#else
-  vtkDICOMSliceSorter(const vtkDICOMSliceSorter&);
-  void operator=(const vtkDICOMSliceSorter&);
 #endif
 };
 

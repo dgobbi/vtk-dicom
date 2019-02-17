@@ -229,15 +229,12 @@ protected:
   EndianEnum DataByteOrder;
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkNIFTIWriter(const vtkNIFTIWriter&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkNIFTIWriter&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkNIFTIWriter(const vtkNIFTIWriter&) VTK_DICOM_DELETE;
+  void operator=(const vtkNIFTIWriter&) VTK_DICOM_DELETE;
+#else
   vtkNIFTIWriter(const vtkNIFTIWriter&) = delete;
   void operator=(const vtkNIFTIWriter&) = delete;
-#else
-  vtkNIFTIWriter(const vtkNIFTIWriter&);
-  void operator=(const vtkNIFTIWriter&);
 #endif
 };
 

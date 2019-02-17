@@ -227,15 +227,12 @@ protected:
   bool PlanarRGB;
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkNIFTIReader(const vtkNIFTIReader&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkNIFTIReader&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkNIFTIReader(const vtkNIFTIReader&) VTK_DICOM_DELETE;
+  void operator=(const vtkNIFTIReader&) VTK_DICOM_DELETE;
+#else
   vtkNIFTIReader(const vtkNIFTIReader&) = delete;
   void operator=(const vtkNIFTIReader&) = delete;
-#else
-  vtkNIFTIReader(const vtkNIFTIReader&);
-  void operator=(const vtkNIFTIReader&);
 #endif
 };
 

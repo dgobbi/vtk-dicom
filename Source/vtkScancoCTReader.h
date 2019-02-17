@@ -261,15 +261,12 @@ protected:
   int Compression;
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkScancoCTReader(const vtkScancoCTReader&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkScancoCTReader&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkScancoCTReader(const vtkScancoCTReader&) VTK_DICOM_DELETE;
+  void operator=(const vtkScancoCTReader&) VTK_DICOM_DELETE;
+#else
   vtkScancoCTReader(const vtkScancoCTReader&) = delete;
   void operator=(const vtkScancoCTReader&) = delete;
-#else
-  vtkScancoCTReader(const vtkScancoCTReader&);
-  void operator=(const vtkScancoCTReader&);
 #endif
 };
 

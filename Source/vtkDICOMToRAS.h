@@ -173,15 +173,12 @@ protected:
   double Matrix[16];
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMToRAS(const vtkDICOMToRAS&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMToRAS&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMToRAS(const vtkDICOMToRAS&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMToRAS&) VTK_DICOM_DELETE;
+#else
   vtkDICOMToRAS(const vtkDICOMToRAS&) = delete;
   void operator=(const vtkDICOMToRAS&) = delete;
-#else
-  vtkDICOMToRAS(const vtkDICOMToRAS&);
-  void operator=(const vtkDICOMToRAS&);
 #endif
 };
 

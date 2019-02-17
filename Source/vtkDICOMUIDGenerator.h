@@ -104,15 +104,12 @@ protected:
 private:
   friend class vtkDICOMUIDGeneratorInitializer;
 
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMUIDGenerator(const vtkDICOMUIDGenerator&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMUIDGenerator&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMUIDGenerator(const vtkDICOMUIDGenerator&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMUIDGenerator&) VTK_DICOM_DELETE;
+#else
   vtkDICOMUIDGenerator(const vtkDICOMUIDGenerator&) = delete;
   void operator=(const vtkDICOMUIDGenerator&) = delete;
-#else
-  vtkDICOMUIDGenerator(const vtkDICOMUIDGenerator&);
-  void operator=(const vtkDICOMUIDGenerator&);
 #endif
 };
 
@@ -128,20 +125,16 @@ public:
   vtkDICOMUIDGeneratorInitializer();
   ~vtkDICOMUIDGeneratorInitializer();
 private:
-#ifdef VTK_DELETE_FUNCTION
+#ifdef VTK_DICOM_DELETE
   vtkDICOMUIDGeneratorInitializer(
-    const vtkDICOMUIDGeneratorInitializer&) VTK_DELETE_FUNCTION;
+    const vtkDICOMUIDGeneratorInitializer&) VTK_DICOM_DELETE;
   vtkDICOMUIDGeneratorInitializer& operator=(
-    const vtkDICOMUIDGeneratorInitializer&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
-  vtkDICOMUIDGeneratorInitializer(
-    const vtkDICOMUIDGeneratorInitializer&) = delete;
-  vtkDICOMUIDGeneratorInitializer& operator=(
-    const vtkDICOMUIDGeneratorInitializer&) = delete;
+    const vtkDICOMUIDGeneratorInitializer&) VTK_DICOM_DELETE;
 #else
-  vtkDICOMUIDGeneratorInitializer(const vtkDICOMUIDGeneratorInitializer&);
+  vtkDICOMUIDGeneratorInitializer(
+    const vtkDICOMUIDGeneratorInitializer&) = delete;
   vtkDICOMUIDGeneratorInitializer& operator=(
-    const vtkDICOMUIDGeneratorInitializer&);
+    const vtkDICOMUIDGeneratorInitializer&) = delete;
 #endif
 };
 

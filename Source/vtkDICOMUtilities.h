@@ -206,15 +206,12 @@ protected:
   static char ImplementationVersionName[17];
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMUtilities(const vtkDICOMUtilities&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMUtilities&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMUtilities(const vtkDICOMUtilities&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMUtilities&) VTK_DICOM_DELETE;
+#else
   vtkDICOMUtilities(const vtkDICOMUtilities&) = delete;
   void operator=(const vtkDICOMUtilities&) = delete;
-#else
-  vtkDICOMUtilities(const vtkDICOMUtilities&);
-  void operator=(const vtkDICOMUtilities&);
 #endif
 };
 

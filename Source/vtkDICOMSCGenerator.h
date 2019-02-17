@@ -67,15 +67,12 @@ protected:
   virtual bool GenerateSCMultiFrameInstance(vtkInformation *info);
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMSCGenerator(const vtkDICOMSCGenerator&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMSCGenerator&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMSCGenerator(const vtkDICOMSCGenerator&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMSCGenerator&) VTK_DICOM_DELETE;
+#else
   vtkDICOMSCGenerator(const vtkDICOMSCGenerator&) = delete;
   void operator=(const vtkDICOMSCGenerator&) = delete;
-#else
-  vtkDICOMSCGenerator(const vtkDICOMSCGenerator&);
-  void operator=(const vtkDICOMSCGenerator&);
 #endif
 };
 

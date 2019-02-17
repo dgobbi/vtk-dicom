@@ -39,12 +39,12 @@ protected:
   void Initialize();
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkConsoleOutputWindow(const vtkConsoleOutputWindow&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkConsoleOutputWindow&) VTK_DELETE_FUNCTION;
+#ifdef VTK_DICOM_DELETE
+  vtkConsoleOutputWindow(const vtkConsoleOutputWindow&) VTK_DICOM_DELETE;
+  void operator=(const vtkConsoleOutputWindow&) VTK_DICOM_DELETE;
 #else
-  vtkConsoleOutputWindow(const vtkConsoleOutputWindow&);
-  void operator=(const vtkConsoleOutputWindow&);
+  vtkConsoleOutputWindow(const vtkConsoleOutputWindow&) = delete;
+  void operator=(const vtkConsoleOutputWindow&) = delete;
 #endif
 };
 

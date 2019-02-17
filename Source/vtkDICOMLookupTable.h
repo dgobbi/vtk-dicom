@@ -68,15 +68,12 @@ protected:
     unsigned char *lut, unsigned int stride, unsigned int count);
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMLookupTable(const vtkDICOMLookupTable&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMLookupTable&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMLookupTable(const vtkDICOMLookupTable&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMLookupTable&) VTK_DICOM_DELETE;
+#else
   vtkDICOMLookupTable(const vtkDICOMLookupTable&) = delete;
   void operator=(const vtkDICOMLookupTable&) = delete;
-#else
-  vtkDICOMLookupTable(const vtkDICOMLookupTable&);
-  void operator=(const vtkDICOMLookupTable&);
 #endif
 };
 

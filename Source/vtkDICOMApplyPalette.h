@@ -69,15 +69,12 @@ protected:
   bool IsSupplemental;
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMApplyPalette(const vtkDICOMApplyPalette&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMApplyPalette&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMApplyPalette(const vtkDICOMApplyPalette&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMApplyPalette&) VTK_DICOM_DELETE;
+#else
   vtkDICOMApplyPalette(const vtkDICOMApplyPalette&) = delete;
   void operator=(const vtkDICOMApplyPalette&) = delete;
-#else
-  vtkDICOMApplyPalette(const vtkDICOMApplyPalette&);
-  void operator=(const vtkDICOMApplyPalette&);
 #endif
 };
 

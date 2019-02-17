@@ -156,15 +156,12 @@ protected:
   int InterpolationMode;
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMCTRectifier(const vtkDICOMCTRectifier&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMCTRectifier&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMCTRectifier(const vtkDICOMCTRectifier&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMCTRectifier&) VTK_DICOM_DELETE;
+#else
   vtkDICOMCTRectifier(const vtkDICOMCTRectifier&) = delete;
   void operator=(const vtkDICOMCTRectifier&) = delete;
-#else
-  vtkDICOMCTRectifier(const vtkDICOMCTRectifier&);
-  void operator=(const vtkDICOMCTRectifier&);
 #endif
 };
 

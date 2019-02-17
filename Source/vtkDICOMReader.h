@@ -484,15 +484,12 @@ protected:
   bool UpdateOverlayFlag;
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMReader(const vtkDICOMReader&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMReader&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMReader(const vtkDICOMReader&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMReader&) VTK_DICOM_DELETE;
+#else
   vtkDICOMReader(const vtkDICOMReader&) = delete;
   void operator=(const vtkDICOMReader&) = delete;
-#else
-  vtkDICOMReader(const vtkDICOMReader&);
-  void operator=(const vtkDICOMReader&);
 #endif
 };
 

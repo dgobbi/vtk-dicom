@@ -39,15 +39,12 @@ protected:
   ~vtkDICOMSorter();
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMSorter(const vtkDICOMSorter&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMSorter&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMSorter(const vtkDICOMSorter&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMSorter&) VTK_DICOM_DELETE;
+#else
   vtkDICOMSorter(const vtkDICOMSorter&) = delete;
   void operator=(const vtkDICOMSorter&) = delete;
-#else
-  vtkDICOMSorter(const vtkDICOMSorter&);
-  void operator=(const vtkDICOMSorter&);
 #endif
 };
 

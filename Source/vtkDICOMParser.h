@@ -249,15 +249,12 @@ protected:
   friend class vtkDICOMParserInternalFriendship;
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMParser(const vtkDICOMParser&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMParser&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMParser(const vtkDICOMParser&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMParser&) VTK_DICOM_DELETE;
+#else
   vtkDICOMParser(const vtkDICOMParser&) = delete;
   void operator=(const vtkDICOMParser&) = delete;
-#else
-  vtkDICOMParser(const vtkDICOMParser&);
-  void operator=(const vtkDICOMParser&);
 #endif
 };
 

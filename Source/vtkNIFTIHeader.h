@@ -409,15 +409,12 @@ protected:
   void SetStringValue(char *x, const char *y, size_t n);
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkNIFTIHeader(const vtkNIFTIHeader&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkNIFTIHeader&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkNIFTIHeader(const vtkNIFTIHeader&) VTK_DICOM_DELETE;
+  void operator=(const vtkNIFTIHeader&) VTK_DICOM_DELETE;
+#else
   vtkNIFTIHeader(const vtkNIFTIHeader&) = delete;
   void operator=(const vtkNIFTIHeader&) = delete;
-#else
-  vtkNIFTIHeader(const vtkNIFTIHeader&);
-  void operator=(const vtkNIFTIHeader&);
 #endif
 };
 

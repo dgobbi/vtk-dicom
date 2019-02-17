@@ -57,15 +57,12 @@ protected:
   virtual bool GenerateMRInstance(vtkInformation *info);
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMMRGenerator(const vtkDICOMMRGenerator&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMMRGenerator&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMMRGenerator(const vtkDICOMMRGenerator&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMMRGenerator&) VTK_DICOM_DELETE;
+#else
   vtkDICOMMRGenerator(const vtkDICOMMRGenerator&) = delete;
   void operator=(const vtkDICOMMRGenerator&) = delete;
-#else
-  vtkDICOMMRGenerator(const vtkDICOMMRGenerator&);
-  void operator=(const vtkDICOMMRGenerator&);
 #endif
 };
 

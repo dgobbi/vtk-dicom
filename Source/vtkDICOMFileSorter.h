@@ -147,15 +147,12 @@ protected:
   void SetErrorCode(unsigned long e) { this->ErrorCode = e; }
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMFileSorter(const vtkDICOMFileSorter&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMFileSorter&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMFileSorter(const vtkDICOMFileSorter&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMFileSorter&) VTK_DICOM_DELETE;
+#else
   vtkDICOMFileSorter(const vtkDICOMFileSorter&) = delete;
   void operator=(const vtkDICOMFileSorter&) = delete;
-#else
-  vtkDICOMFileSorter(const vtkDICOMFileSorter&);
-  void operator=(const vtkDICOMFileSorter&);
 #endif
 
   class StringArrayVector;

@@ -296,15 +296,12 @@ protected:
   int Streaming;
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMWriter(const vtkDICOMWriter&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMWriter&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMWriter(const vtkDICOMWriter&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMWriter&) VTK_DICOM_DELETE;
+#else
   vtkDICOMWriter(const vtkDICOMWriter&) = delete;
   void operator=(const vtkDICOMWriter&) = delete;
-#else
-  vtkDICOMWriter(const vtkDICOMWriter&);
-  void operator=(const vtkDICOMWriter&);
 #endif
 };
 

@@ -385,15 +385,12 @@ protected:
     vtkDICOMMetaData *meta, const vtkDICOMItem *item, int instance);
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMDirectory(const vtkDICOMDirectory&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMDirectory&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMDirectory(const vtkDICOMDirectory&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMDirectory&) VTK_DICOM_DELETE;
+#else
   vtkDICOMDirectory(const vtkDICOMDirectory&) = delete;
   void operator=(const vtkDICOMDirectory&) = delete;
-#else
-  vtkDICOMDirectory(const vtkDICOMDirectory&);
-  void operator=(const vtkDICOMDirectory&);
 #endif
 
   struct SeriesItem;

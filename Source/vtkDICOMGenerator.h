@@ -480,15 +480,12 @@ protected:
   vtkIntArray *RangeArray;
 
 private:
-#ifdef VTK_DELETE_FUNCTION
-  vtkDICOMGenerator(const vtkDICOMGenerator&) VTK_DELETE_FUNCTION;
-  void operator=(const vtkDICOMGenerator&) VTK_DELETE_FUNCTION;
-#elif __cplusplus >= 201103L
+#ifdef VTK_DICOM_DELETE
+  vtkDICOMGenerator(const vtkDICOMGenerator&) VTK_DICOM_DELETE;
+  void operator=(const vtkDICOMGenerator&) VTK_DICOM_DELETE;
+#else
   vtkDICOMGenerator(const vtkDICOMGenerator&) = delete;
   void operator=(const vtkDICOMGenerator&) = delete;
-#else
-  vtkDICOMGenerator(const vtkDICOMGenerator&);
-  void operator=(const vtkDICOMGenerator&);
 #endif
 };
 
