@@ -118,12 +118,12 @@ else()
   # Wrap Java option
   if(VTK_WRAP_JAVA)
     if(VTK_VERSION VERSION_LESS 8.90)
+      option(BUILD_PYTHON_WRAPPERS "Build python wrappers" ON)
+    else()
       message(WARNING
               "Stand-alone vtkDICOMJava not yet supported for "
               "VTK ${VTK_VERSION}, try building vtk-dicom as a remote "
               "module instead.")
-      option(BUILD_JAVA_WRAPPERS "Build java wrappers" OFF)
-    else()
       unset(BUILD_JAVA_WRAPPERS CACHE)
     endif()
   else()
