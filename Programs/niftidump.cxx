@@ -317,7 +317,7 @@ int MAINMACRO(int argc, char *argv[])
   }
   else
   {
-    printf(" (freq_dim=%d, phase_dim=%d, slice_dim=%d\n",
+    printf(" (freq_dim=%d, phase_dim=%d, slice_dim=%d)\n",
            (hdr.dim_info & 0x3),
            ((hdr.dim_info >> 2) & 0x3),
            ((hdr.dim_info >> 4) & 0x3));
