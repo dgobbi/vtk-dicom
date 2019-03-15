@@ -8,10 +8,14 @@ vtk_module(vtkDICOM
   DESCRIPTION
     "${DOCUMENTATION}"
   DEPENDS
-    vtkImagingCore
+    vtkCommonCore
+    vtkCommonDataModel
+    vtkCommonExecutionModel
     vtkIOImage
-    vtkIOCore
   PRIVATE_DEPENDS
+    vtkCommonMisc
+    vtkImagingCore
+    vtkIOCore
     vtkzlib
   COMPILE_DEPENDS
     vtkImagingStatistics

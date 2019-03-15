@@ -6,6 +6,7 @@ GROUPS
   StandAlone
 DEPENDS
   VTK::CommonCore
+  VTK::CommonDataModel
   VTK::CommonExecutionModel
   VTK::IOImage
 PRIVATE_DEPENDS
