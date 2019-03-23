@@ -1058,9 +1058,10 @@ void vtkDICOMDirectory::CopyRecord(
           vtkDICOMTag tag2 = iter2->GetTag();
           if (tag2 > tag)
           {
+            meta->Set(instance, tag, iter->GetValue());
             break;
           }
-          const vtkDICOMValue &v = iter2->GetValue();
+          const vtkDICOMValue &v = iter2->GetValue(instance);
           ++iter2;
           if (tag2 == tag)
           {
