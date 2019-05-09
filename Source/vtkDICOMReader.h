@@ -36,6 +36,12 @@ class vtkDICOMMetaData;
 class vtkDICOMParser;
 class vtkDICOMSliceSorter;
 
+// For compatibility with VTK 7.0 and earlier
+#ifndef VTK_TYPE_BOOL_TYPEDEFED
+#define VTK_TYPE_BOOL_TYPEDEFED
+typedef int vtkTypeBool;
+#endif
+
 //----------------------------------------------------------------------------
 class VTKDICOM_EXPORT vtkDICOMReader : public vtkImageReader2
 {
@@ -313,7 +319,7 @@ protected:
 
   //@{
   //! Entry point for all pipeline requests.
-  int ProcessRequest(
+  vtkTypeBool ProcessRequest(
     vtkInformation* request, vtkInformationVector** inputVector,
     vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
 

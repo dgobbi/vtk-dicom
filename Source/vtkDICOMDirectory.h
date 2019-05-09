@@ -125,9 +125,9 @@ public:
   void Update() VTK_DICOM_OVERRIDE { this->Update(0); }
   void Update(int) VTK_DICOM_OVERRIDE;
 #if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION > 0) || VTK_MAJOR_VERSION > 7
-  int Update(vtkInformation *) VTK_DICOM_OVERRIDE {
+  vtkTypeBool Update(vtkInformation *) VTK_DICOM_OVERRIDE {
     this->Update(); return 1; }
-  int Update(int i, vtkInformationVector *) VTK_DICOM_OVERRIDE {
+  vtkTypeBool Update(int i, vtkInformationVector *) VTK_DICOM_OVERRIDE {
     this->Update(i); return 1; }
 #endif
   //@}

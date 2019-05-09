@@ -1916,7 +1916,7 @@ void vtkDICOMReader::Update()
 }
 
 //----------------------------------------------------------------------------
-int vtkDICOMReader::ProcessRequest(
+vtkTypeBool vtkDICOMReader::ProcessRequest(
   vtkInformation* request,
   vtkInformationVector** inputVector,
   vtkInformationVector* outputVector)
