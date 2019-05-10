@@ -218,7 +218,7 @@ std::string vtkDICOMUtilities::GenerateDateTime(
   {
     // use the local time zone
     zs = vtkDICOMUtilities::GetLocalOffset(t);
-    long long zst = zs/1000000;
+    long long zst = zs/1000000ll;
     tzs[0] = (zst < 0 ? '-' : '+');
     zst = (zst < 0 ? -zst : zst);
     sprintf(&tzs[1], "%02d%02d",
@@ -257,8 +257,8 @@ std::string vtkDICOMUtilities::GenerateDateTime(
   }
 
   // convert microseconds to hours/minutes/seconds.microseconds
-  int S = static_cast<int>(tus/1000000);
-  int us = static_cast<int>(tus - S*1000000);
+  int S = static_cast<int>(tus/1000000ll);
+  int us = static_cast<int>(tus - S*1000000ll);
   int H = S/3600;
   S -= H*3600;
   int M = S/60;
