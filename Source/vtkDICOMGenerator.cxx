@@ -1429,7 +1429,9 @@ bool vtkDICOMGenerator::GenerateImagePlaneModule(vtkDICOMMetaData *source)
   meta->Erase(DC::PixelAspectRatio);
   meta->Erase(DC::PatientOrientation);
 
-  meta->Set(DC::PixelSpacing, vtkDICOMValue(vtkDICOMVR::DS, spacing, 2));
+  // DICOM PixelSpacing is RowSpacing,ColumnSpacing
+  double pixelSize[2] = { spacing[1], spacing[0] };
+  meta->Set(DC::PixelSpacing, vtkDICOMValue(vtkDICOMVR::DS, pixelSize, 2));
 
   // this will have to account for image flip, if present
   int n = meta->GetNumberOfInstances();

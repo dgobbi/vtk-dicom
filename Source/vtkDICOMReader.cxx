@@ -858,12 +858,13 @@ int vtkDICOMReader::RequestInformation(
     this->MetaData->Get(fileIndex, frameIndex, DC::PixelSpacing);
   if (pixelSpacing.GetNumberOfValues() == 2)
   {
-    double spacing[2];
-    pixelSpacing.GetValues(spacing, 2);
-    if (spacing[0] > 0 && spacing[1] > 0)
+    double pixelSize[2];
+    pixelSpacing.GetValues(pixelSize, 2);
+    if (pixelSize[0] > 0 && pixelSize[1] > 0)
     {
-      this->DataSpacing[0] = spacing[0];
-      this->DataSpacing[1] = spacing[1];
+      // PixelSpacing in DICOM is RowSpacing,ColumnSpacing
+      this->DataSpacing[0] = pixelSize[1];
+      this->DataSpacing[1] = pixelSize[0];
     }
   }
 

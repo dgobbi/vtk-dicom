@@ -107,7 +107,8 @@ bool vtkDICOMSCGenerator::GenerateSCMultiFrameImageModule(
     vtkDICOMValue(vtkDICOMVR::AT, pointers, npointers));
 
   meta->Erase(DC::PixelAspectRatio);
-  meta->Set(DC::PixelSpacing, vtkDICOMValue(vtkDICOMVR::DS, spacing, 2));
+  double pixelSize[2] = { spacing[1], spacing[0] };
+  meta->Set(DC::PixelSpacing, vtkDICOMValue(vtkDICOMVR::DS, pixelSize, 2));
 
   delete [] zvector;
   delete [] tvector;
