@@ -3226,6 +3226,636 @@ RadiusAlongWedge
 DS
 1
 DICONDE
+(0016,0001)
+White Point
+WhitePoint
+DS
+1
+
+(0016,0002)
+Primary Chromaticities
+PrimaryChromaticities
+DS
+3
+
+(0016,0003)
+Battery Level
+BatteryLevel
+UT
+1
+
+(0016,0004)
+Exposure Time in Seconds
+ExposureTimeInSeconds
+DS
+1
+
+(0016,0005)
+F-Number
+FNumber
+DS
+1
+
+(0016,0006)
+OECF Rows
+OECFRows
+IS
+1
+
+(0016,0007)
+OECF Columns
+OECFColumns
+IS
+1
+
+(0016,0008)
+OECF Column Names
+OECFColumnNames
+UC
+1-n
+
+(0016,0009)
+OECF Values
+OECFValues
+DS
+1-n
+
+(0016,000A)
+Spatial Frequency Response Rows
+SpatialFrequencyResponseRows
+IS
+1
+
+(0016,000B)
+Spatial Frequency Response Columns
+SpatialFrequencyResponseColumns
+IS
+1
+
+(0016,000C)
+Spatial Frequency Response Column Names
+SpatialFrequencyResponseColumnNames
+UC
+1-n
+
+(0016,000D)
+Spatial Frequency Response Values
+SpatialFrequencyResponseValues
+DS
+1-n
+
+(0016,000E)
+Color Filter Array Pattern Rows
+ColorFilterArrayPatternRows
+IS
+1
+
+(0016,000F)
+Color Filter Array Pattern Columns
+ColorFilterArrayPatternColumns
+IS
+1
+
+(0016,0010)
+Color Filter Array Pattern Values
+ColorFilterArrayPatternValues
+DS
+1-n
+
+(0016,0011)
+Flash Firing Status
+FlashFiringStatus
+US
+1
+
+(0016,0012)
+Flash Return Status
+FlashReturnStatus
+US
+1
+
+(0016,0013)
+Flash Mode
+FlashMode
+US
+1
+
+(0016,0014)
+Flash Function Present
+FlashFunctionPresent
+US
+1
+
+(0016,0015)
+Flash Red Eye Mode
+FlashRedEyeMode
+US
+1
+
+(0016,0016)
+Exposure Program
+ExposureProgram
+US
+1
+
+(0016,0017)
+Spectral Sensitivity
+SpectralSensitivity
+UT
+1
+
+(0016,0018)
+Photographic Sensitivity
+PhotographicSensitivity
+IS
+1
+
+(0016,0019)
+Self Timer Mode
+SelfTimerMode
+IS
+1
+
+(0016,001A)
+Sensitivity Type
+SensitivityType
+US
+1
+
+(0016,001B)
+Standard Output Sensitivity
+StandardOutputSensitivity
+IS
+1
+
+(0016,001C)
+Recommended Exposure Index
+RecommendedExposureIndex
+IS
+1
+
+(0016,001D)
+ISO Speed
+ISOSpeed
+IS
+1
+
+(0016,001E)
+ISO Speed Latitude yyy
+ISOSpeedLatitudeyyy
+IS
+1
+
+(0016,001F)
+ISO Speed Latitude zzz
+ISOSpeedLatitudezzz
+IS
+1
+
+(0016,0020)
+EXIF Version
+EXIFVersion
+UT
+1
+
+(0016,0021)
+Shutter Speed Value
+ShutterSpeedValue
+DS
+1
+
+(0016,0022)
+Aperture Value
+ApertureValue
+DS
+1
+
+(0016,0023)
+Brightness Value
+BrightnessValue
+DS
+1
+
+(0016,0024)
+Exposure Bias Value
+ExposureBiasValue
+DS
+1
+
+(0016,0025)
+Max Aperture Value
+MaxApertureValue
+DS
+1
+
+(0016,0026)
+Subject Distance
+SubjectDistance
+DS
+1
+
+(0016,0027)
+Metering Mode
+MeteringMode
+US
+1
+
+(0016,0028)
+Light Source
+LightSource
+US
+1
+
+(0016,0029)
+Focal Length
+FocalLength
+DS
+1
+
+(0016,002A)
+Subject Area
+SubjectArea
+IS
+2-4
+
+(0016,002B)
+Maker Note
+MakerNote
+OB
+1
+
+(0016,0030)
+Temperature
+Temperature
+DS
+1
+
+(0016,0031)
+Humidity
+Humidity
+DS
+1
+
+(0016,0032)
+Pressure
+Pressure
+DS
+1
+
+(0016,0033)
+Water Depth
+WaterDepth
+DS
+1
+
+(0016,0034)
+Acceleration
+Acceleration
+DS
+1
+
+(0016,0035)
+Camera Elevation Angle
+CameraElevationAngle
+DS
+1
+
+(0016,0036)
+Flash Energy
+FlashEnergy
+DS
+1-2
+
+(0016,0037)
+Subject Location
+SubjectLocation
+IS
+2
+
+(0016,0038)
+Photographic Exposure Index
+PhotographicExposureIndex
+DS
+1
+
+(0016,0039)
+Sensing Method
+SensingMethod
+US
+1
+
+(0016,003A)
+File Source
+FileSource
+US
+1
+
+(0016,003B)
+Scene Type
+SceneType
+US
+1
+
+(0016,0041)
+Custom Rendered
+CustomRendered
+US
+1
+
+(0016,0042)
+Exposure Mode
+ExposureMode
+US
+1
+
+(0016,0043)
+White Balance
+WhiteBalance
+US
+1
+
+(0016,0044)
+Digital Zoom Ratio
+DigitalZoomRatio
+DS
+1
+
+(0016,0045)
+Focal Length In 35mm Film
+FocalLengthIn35mmFilm
+IS
+1
+
+(0016,0046)
+Scene Capture Type
+SceneCaptureType
+US
+1
+
+(0016,0047)
+Gain Control
+GainControl
+US
+1
+
+(0016,0048)
+Contrast
+Contrast
+US
+1
+
+(0016,0049)
+Saturation
+Saturation
+US
+1
+
+(0016,004A)
+Sharpness
+Sharpness
+US
+1
+
+(0016,004B)
+Device Setting Description
+DeviceSettingDescription
+OB
+1
+
+(0016,004C)
+Subject Distance Range
+SubjectDistanceRange
+US
+1
+
+(0016,004D)
+Camera Owner Name
+CameraOwnerName
+UT
+1
+
+(0016,004E)
+Lens Specification
+LensSpecification
+DS
+4
+
+(0016,004F)
+Lens Make
+LensMake
+UT
+1
+
+(0016,0050)
+Lens Model
+LensModel
+UT
+1
+
+(0016,0051)
+Lens Serial Number
+LensSerialNumber
+UT
+1
+
+(0016,0061)
+Interoperability Index
+InteroperabilityIndex
+CS
+1
+
+(0016,0062)
+Interoperability Version
+InteroperabilityVersion
+OB
+1
+
+(0016,0070)
+GPS Version ID
+GPSVersionID
+OB
+1
+
+(0016,0071)
+GPS Latitude Ref
+GPSLatitudeRef
+CS
+1
+
+(0016,0072)
+GPS Latitude
+GPSLatitude
+DS
+3
+
+(0016,0073)
+GPS Longitude Ref
+GPSLongitudeRef
+CS
+1
+
+(0016,0074)
+GPS Longitude
+GPSLongitude
+DS
+3
+
+(0016,0075)
+GPS Altitude Ref
+GPSAltitudeRef
+US
+1
+
+(0016,0076)
+GPS Altitude
+GPSAltitude
+DS
+1
+
+(0016,0077)
+GPS Time Stamp
+GPSTimeStamp
+DT
+1
+
+(0016,0078)
+GPS Satellites
+GPSSatellites
+UT
+1
+
+(0016,0079)
+GPS Status
+GPSStatus
+CS
+1
+
+(0016,007A)
+GPS Measure Mode
+GPSMeasureMode
+CS
+1
+
+(0016,007B)
+GPS DOP
+GPSDOP
+DS
+1
+
+(0016,007C)
+GPS Speed Ref
+GPSSpeedRef
+CS
+1
+
+(0016,007D)
+GPS Speed
+GPSSpeed
+DS
+1
+
+(0016,007E)
+GPS Track Ref
+GPSTrackRef
+CS
+1
+
+(0016,007F)
+GPS Track
+GPSTrack
+DS
+1
+
+(0016,0080)
+GPS Img Direction Ref
+GPSImgDirectionRef
+CS
+1
+
+(0016,0081)
+GPS Img Direction
+GPSImgDirection
+DS
+1
+
+(0016,0082)
+GPS Map Datum
+GPSMapDatum
+UT
+1
+
+(0016,0083)
+GPS Dest Latitude Ref
+GPSDestLatitudeRef
+CS
+1
+
+(0016,0084)
+GPS Dest Latitude
+GPSDestLatitude
+DS
+3
+
+(0016,0085)
+GPS Dest Longitude Ref
+GPSDestLongitudeRef
+CS
+1
+
+(0016,0086)
+GPS Dest Longitude
+GPSDestLongitude
+DS
+3
+
+(0016,0087)
+GPS Dest Bearing Ref
+GPSDestBearingRef
+CS
+1
+
+(0016,0088)
+GPS Dest Bearing
+GPSDestBearing
+DS
+1
+
+(0016,0089)
+GPS Dest Distance Ref
+GPSDestDistanceRef
+CS
+1
+
+(0016,008A)
+GPS Dest Distance
+GPSDestDistance
+DS
+1
+
+(0016,008B)
+GPS Processing Method
+GPSProcessingMethod
+OB
+1
+
+(0016,008C)
+GPS Area Information
+GPSAreaInformation
+OB
+1
+
+(0016,008D)
+GPS Date Stamp
+GPSDateStamp
+DT
+1
+
+(0016,008E)
+GPS Differential
+GPSDifferential
+IS
+1
+
 (0018,0010)
 Contrast/Bolus Agent
 ContrastBolusAgent
@@ -3665,7 +4295,7 @@ LO
 1
 RET
 (0018,1020)
-Software Version(s)
+Software Versions
 SoftwareVersions
 LO
 1-n
@@ -9418,6 +10048,48 @@ OphthalmicUltrasoundMethodCodeSequence
 SQ
 1
 
+(0022,1045)
+Surgically Induced Astigmatism Sequence
+SurgicallyInducedAstigmatismSequence
+SQ
+1
+
+(0022,1046)
+Type of Optical Correction
+TypeOfOpticalCorrection
+CS
+1
+
+(0022,1047)
+Toric IOL Power Sequence
+ToricIOLPowerSequence
+SQ
+1
+
+(0022,1048)
+Predicted Toric Error Sequence
+PredictedToricErrorSequence
+SQ
+1
+
+(0022,1049)
+Pre-Selected for Implantation
+PreSelectedForImplantation
+CS
+1
+
+(0022,104A)
+Toric IOL Power for Exact Emmetropia Sequence
+ToricIOLPowerForExactEmmetropiaSequence
+SQ
+1
+
+(0022,104B)
+Toric IOL Power for Exact Target Refraction Sequence
+ToricIOLPowerForExactTargetRefractionSequence
+SQ
+1
+
 (0022,1050)
 Ophthalmic Axial Length Measurements Sequence
 OphthalmicAxialLengthMeasurementsSequence
@@ -9542,6 +10214,24 @@ SQ
 Anterior Chamber Depth Sequence
 AnteriorChamberDepthSequence
 SQ
+1
+
+(0022,112A)
+Calculation Comment Sequence
+CalculationCommentSequence
+SQ
+1
+
+(0022,112B)
+Calculation Comment Type
+CalculationCommentType
+CS
+1
+
+(0022,112C)
+Calculation Comment
+CalculationComment
+LT
 1
 
 (0022,1130)
@@ -12238,6 +12928,18 @@ RequestedProcedureCodeSequence
 SQ
 1
 
+(0032,1066)
+Reason for Visit
+ReasonForVisit
+UT
+1
+
+(0032,1067)
+Reason for Visit Code Sequence
+ReasonForVisitCodeSequence
+SQ
+1
+
 (0032,1070)
 Requested Contrast Agent
 RequestedContrastAgent
@@ -14079,7 +14781,7 @@ Referenced Frame Numbers
 ReferencedFrameNumbers
 US
 1-n
-
+RET
 (0040,A138)
 Referenced Time Offsets
 ReferencedTimeOffsets
@@ -14602,6 +15304,12 @@ ListOfMIMETypes
 LO
 1-n
 
+(0042,0015)
+Encapsulated Document Length
+EncapsulatedDocumentLength
+UL
+1
+
 (0044,0001)
 Product Package Identifier
 ProductPackageIdentifier
@@ -14984,6 +15692,60 @@ FD
 Viewing Distance
 ViewingDistance
 FD
+1
+
+(0046,0110)
+Cornea Measurements Sequence
+CorneaMeasurementsSequence
+SQ
+1
+
+(0046,0111)
+Source of Cornea Measurement Data Code Sequence
+SourceOfCorneaMeasurementDataCodeSequence
+SQ
+1
+
+(0046,0112)
+Steep Corneal Axis Sequence
+SteepCornealAxisSequence
+SQ
+1
+
+(0046,0113)
+Flat Corneal Axis Sequence
+FlatCornealAxisSequence
+SQ
+1
+
+(0046,0114)
+Corneal Power
+CornealPower
+FD
+1
+
+(0046,0115)
+Corneal Axis
+CornealAxis
+FD
+1
+
+(0046,0116)
+Cornea Measurement Method Code Sequence
+CorneaMeasurementMethodCodeSequence
+SQ
+1
+
+(0046,0117)
+Refractive Index of Cornea
+RefractiveIndexOfCornea
+FL
+1
+
+(0046,0118)
+Refractive Index of Aqueous Humor
+RefractiveIndexOfAqueousHumor
+FL
 1
 
 (0046,0121)
@@ -20176,6 +20938,18 @@ ModifiedAttributesSequence
 SQ
 1
 
+(0400,0551)
+Nonconforming Modified Attributes Sequence
+NonconformingModifiedAttributesSequence
+SQ
+1
+
+(0400,0552)
+Nonconforming Data Element Value
+NonconformingDataElementValue
+OB
+1
+
 (0400,0561)
 Original Attributes Sequence
 OriginalAttributesSequence
@@ -24786,7 +25560,7 @@ SQ
 
 (3010,0005)
 Effective Dose Calculation Method Description
-EffectiveDoseMethodDescription
+EffectiveDoseCalculationMethodDescription
 LO
 1
 
@@ -24912,7 +25686,7 @@ SQ
 
 (3010,001A)
 Manufacturer's Model Version
-ManufacturersModelVersion
+ManufacturerModelVersion
 LO
 1
 
@@ -26728,6 +27502,18 @@ OverlayComments
 LT
 1
 RET
+(7FE0,0001)
+Extended Offset Table
+ExtendedOffsetTable
+OV
+1
+
+(7FE0,0002)
+Extended Offset Table Lengths
+ExtendedOffsetTableLengths
+OV
+1
+
 (7FE0,0008)
 Float Pixel Data
 FloatPixelData

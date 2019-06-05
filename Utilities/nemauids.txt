@@ -354,6 +354,26 @@ PS3.16
 PubChem Compound CID
 Coding Scheme
 PS3.16
+1.2.840.10008.2.16.10
+ICD-11
+Coding Scheme
+PS3.16
+1.2.840.10008.2.16.11
+New York University Melanoma Clinical Cooperative Group
+Coding Scheme
+PS3.16
+1.2.840.10008.2.16.12
+Mayo Clinic Non-radiological Images Specific Body Structure Anatomical Surface Region Guide
+Coding Scheme
+PS3.16
+1.2.840.10008.2.16.13
+Image Biomarker Standardisation Initiative
+Coding Scheme
+PS3.16
+1.2.840.10008.2.16.14
+Radiomics Ontology
+Coding Scheme
+PS3.16
 1.2.840.10008.3.1.1.1
 DICOM Application Context Name
 Application Context Name
@@ -5262,3 +5282,54 @@ Low-high-equal
 1.2.840.10008.6.1.1266
 CID 76
 Type of Pre-medication
+1.2.840.10008.6.1.1267
+CID 245
+Laterality with Median
+1.2.840.10008.6.1.1268
+CID 4029
+Dermatology Anatomic Sites
+1.2.840.10008.6.1.1269
+CID 218
+Quantitative Image Features
+1.2.840.10008.6.1.1270
+CID 7477
+Global Shape Descriptors
+1.2.840.10008.6.1.1271
+CID 7478
+Intensity Histogram Features
+1.2.840.10008.6.1.1272
+CID 7479
+Grey Level Distance Zone Based Features
+1.2.840.10008.6.1.1273
+CID 7500
+Neighbourhood Grey Tone Difference Based Features
+1.2.840.10008.6.1.1274
+CID 7501
+Neighbouring Grey Level Dependence Based Features
+1.2.840.10008.6.1.1275
+CID 4242
+Cornea Measurement Method Descriptors
+1.2.840.10008.6.1.1276
+CID 7027
+Segmented Radiotherapeutic Dose Measurement Devices
+1.2.840.10008.6.1.1277
+CID 6098
+Clinical Course of Disease
+1.2.840.10008.6.1.1278
+CID 6099
+Racial Group
+1.2.840.10008.6.1.1279
+CID 246
+Relative Laterality
+1.2.840.10008.6.1.1280
+CID 7168
+Brain Lesion Segmentation Types With Necrosis
+1.2.840.10008.6.1.1281
+CID 7169
+Brain Lesion Segmentation Types Without Necrosis
+1.2.840.10008.6.1.1282
+CID 32
+Non-Acquisition Modality
+1.2.840.10008.6.1.1283
+CID 33
+Modality
