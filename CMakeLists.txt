@@ -86,10 +86,10 @@ else()
     # backwards compatibility pre VTK 9.x
     set(VTK_VERSION ${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION})
   endif()
-  if(${VTK_VERSION} VERSION_LESS 8.90)
+  if(VTK_VERSION VERSION_LESS 8.90)
     include(${VTK_USE_FILE})
   endif()
-  if(${VTK_VERSION} VERSION_LESS 5.8)
+  if(VTK_VERSION VERSION_LESS 5.8)
     message(FATAL_ERROR "VTK 5.8 or later is required.")
   endif()
 
