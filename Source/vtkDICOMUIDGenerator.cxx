@@ -24,7 +24,11 @@
 // needed for random number generation and time
 #ifdef _WIN32
 #include <windows.h>
+#ifndef DICOM_DEPRECATE_WINXP
 #include <wincrypt.h>
+#else
+#include <bcrypt.h>
+#endif
 #endif
 
 vtkStandardNewMacro(vtkDICOMUIDGenerator);
@@ -278,7 +282,8 @@ void vtkGenerateRandomBytes(unsigned char *bytes, vtkIdType n)
 {
   int r = 0;
 #ifdef _WIN32
-  // use the Windows cryptography interface (WinXP and later)
+#ifndef DICOM_DEPRECATE_WINXP
+  // legacy interface (Windows XP and later)
   HCRYPTPROV hProv;
   r = CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL,
                           CRYPT_SILENT | CRYPT_VERIFYCONTEXT);
@@ -293,6 +298,27 @@ void vtkGenerateRandomBytes(unsigned char *bytes, vtkIdType n)
     CryptReleaseContext(hProv, 0);
   }
 #else
+  // modern interface (Windows Vista and later), requires bcrypt.lib
+  BCRYPT_ALG_HANDLE hProv;
+  ULONG dwFlags = 0;
+  if (BCryptOpenAlgorithmProvider(&hProv, BCRYPT_RNG_ALGORITHM, NULL, 0) != 0)
+  {
+    // couldn't open algorithm, fall back to default
+    hProv = 0;
+    dwFlags = BCRYPT_USE_SYSTEM_PREFERRED_RNG;
+  }
+  if (BCryptGenRandom(hProv, reinterpret_cast<BYTE *>(bytes), n, dwFlags) == 0)
+  {
+    // success!
+    r = 1;
+  }
+  if (dwFlags == 0)
+  {
+    BCryptCloseAlgorithmProvider(hProv, 0);
+  }
+#endif
+#else
+  // use /dev/urandom, because /dev/random is too slow
   vtkDICOMFile infile("/dev/urandom", vtkDICOMFile::In);
   if (infile.GetError() == 0)
   {
