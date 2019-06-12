@@ -206,7 +206,6 @@ const unsigned char vtkDICOMVR::TypeTable[37] = {
   VTK_DOUBLE,         // OD Other Double
   VTK_FLOAT,          // OF Other Float
   VTK_UNSIGNED_INT,   // OL Other Long
-  VTK_UNSIGNED_LONG_LONG, // OV Other Very Long
   VTK_UNSIGNED_SHORT, // OW Other Word
   VTK_CHAR,           // PN Personal Name
   VTK_CHAR,           // SH Short String
@@ -214,7 +213,6 @@ const unsigned char vtkDICOMVR::TypeTable[37] = {
   VTK_DICOM_ITEM,     // SQ Sequence
   VTK_SHORT,          // SS Signed Short
   VTK_CHAR,           // ST Short Text
-  VTK_LONG_LONG,      // SV Signed Very Long
   VTK_CHAR,           // TM Time
   VTK_CHAR,           // UC Unlimited Characters
   VTK_CHAR,           // UI UID
@@ -223,9 +221,11 @@ const unsigned char vtkDICOMVR::TypeTable[37] = {
   VTK_CHAR,           // UR URI or URL
   VTK_UNSIGNED_SHORT, // US Unsigned Short
   VTK_CHAR,           // UT Unlimited Text
+  VTK_VOID,           // Invalid
+  VTK_VOID,           // Invalid
+  VTK_UNSIGNED_LONG_LONG, // OV Other Very Long
+  VTK_LONG_LONG,      // SV Signed Very Long
   VTK_UNSIGNED_LONG_LONG, // UV Unsigned Very Long
-  VTK_VOID,           // Invalid
-  VTK_VOID,           // Invalid
 };
 
 const char vtkDICOMVR::TextTable[37][4] = {
@@ -246,7 +246,6 @@ const char vtkDICOMVR::TextTable[37][4] = {
   { 'O', 'D', 0, 0 }, // OD Other Double
   { 'O', 'F', 0, 0 }, // OF Other Float
   { 'O', 'L', 0, 0 }, // OL Other Long
-  { 'O', 'V', 0, 0 }, // OV Other Very Long
   { 'O', 'W', 0, 0 }, // OW Other Word
   { 'P', 'N', 0, 0 }, // PN Personal Name
   { 'S', 'H', 0, 0 }, // SH Short String
@@ -254,7 +253,6 @@ const char vtkDICOMVR::TextTable[37][4] = {
   { 'S', 'Q', 0, 0 }, // SQ Sequence
   { 'S', 'S', 0, 0 }, // SS Signed Short
   { 'S', 'T', 0, 0 }, // ST Short Text
-  { 'S', 'V', 0, 0 }, // SV Signed Very Long
   { 'T', 'M', 0, 0 }, // TM Time
   { 'U', 'C', 0, 0 }, // UC Unlimited Characters
   { 'U', 'I', 0, 0 }, // UI UID
@@ -263,7 +261,9 @@ const char vtkDICOMVR::TextTable[37][4] = {
   { 'U', 'R', 0, 0 }, // UR URI or URL
   { 'U', 'S', 0, 0 }, // US Unsigned Short
   { 'U', 'T', 0, 0 }, // UT Unlimited Text
-  { 'U', 'V', 0, 0 }, // UV Unsigned Very Long
   { 'O', 'X', 0, 0 },     // Invalid
   { 'X', 'S', 0, 0 },     // Invalid
+  { 'O', 'V', 0, 0 }, // OV Other Very Long
+  { 'S', 'V', 0, 0 }, // SV Signed Very Long
+  { 'U', 'V', 0, 0 }, // UV Unsigned Very Long
 };
