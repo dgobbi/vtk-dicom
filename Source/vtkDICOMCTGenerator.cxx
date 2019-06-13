@@ -98,6 +98,7 @@ bool vtkDICOMCTGenerator::GenerateCTImageModule(vtkDICOMMetaData *source)
     DC::ReconstructionDiameter,
     DC::ReconstructionTargetCenterPatient,
     DC::DistanceSourceToDetector,
+    DC::DistanceSourceToPatient,
     DC::GantryDetectorTilt,
     DC::TableHeight,
     DC::RotationDirection,
