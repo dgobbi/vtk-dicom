@@ -49,6 +49,7 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->MetaData = 0;
   this->SourceMetaData = 0;
   this->UIDGenerator = 0;
+  this->Extended = 0;
   this->MultiFrame = 0;
   this->OriginAtBottom = 1;
   this->ReverseSliceOrder = 0;
@@ -180,6 +181,8 @@ void vtkDICOMGenerator::PrintSelf(ostream& os, vtkIndent indent)
   }
   os << indent << "MultiFrame: "
      << (this->MultiFrame ? "On\n" : "Off\n");
+  os << indent << "Extended: "
+     << (this->Extended ? "On\n" : "Off\n");
   os << indent << "OriginAtBottom: "
      << (this->OriginAtBottom ? "On\n" : "Off\n");
   os << indent << "ReverseSliceOrder: "
@@ -846,6 +849,13 @@ void vtkDICOMGenerator::InitializeMetaData(vtkInformation *info)
     break;
   }
 
+  if (this->Extended)
+  {
+    // Copy all attributes, not just ones in the IOD modules for this class.
+    // The module attribute values might be overwritten later.
+    this->CopyAttributes(NULL, this->SourceMetaData);
+  }
+
   this->ComputePixelValueRange(info, this->PixelValueRange);
 }
 
@@ -966,6 +976,61 @@ bool vtkDICOMGenerator::CopyOptionalAttributes(
       vtkDICOMTag tag = *tags++;
       vtkDICOMDataElementIterator iter = source->Find(tag);
       if (iter != source->End())
+      {
+        if (!iter->IsPerInstance())
+        {
+          meta->Set(tag, iter->GetValue());
+        }
+        else if (this->SourceInstanceArray && source == this->SourceMetaData)
+        {
+          int n = meta->GetNumberOfInstances();
+          for (int i = 0; i < n; i++)
+          {
+            int j = this->SourceInstanceArray->GetComponent(i, 0);
+            meta->Set(i, tag, iter->GetValue(j));
+          }
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::CopyAttributes(
+  const DC::EnumType *blacklist, vtkDICOMMetaData *source)
+{
+  vtkDICOMMetaData *meta = this->MetaData;
+
+  if (source && source == this->SourceMetaData && this->SourceInstanceArray &&
+      source->Has(DC::PerFrameFunctionalGroupsSequence))
+  {
+    // Not implemented for enhanced multi-frame DICOM files
+  }
+  else if (source)
+  {
+    vtkDICOMDataElementIterator iter = source->Begin();
+    vtkDICOMDataElementIterator iterEnd = source->End();
+    for (;iter != iterEnd; ++iter)
+    {
+      vtkDICOMTag tag = iter->GetTag();
+
+      bool blacklisted = false;
+      if (blacklist)
+      {
+        const DC::EnumType *tags = blacklist;
+        while (*tags != DC::ItemDelimitationItem)
+        {
+          if (*tags++ == tag.GetKey())
+          {
+            blacklisted = true;
+            break;
+          }
+        }
+      }
+
+      if (!blacklisted)
       {
         if (!iter->IsPerInstance())
         {

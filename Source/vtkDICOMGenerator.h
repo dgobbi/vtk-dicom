@@ -71,6 +71,19 @@ public:
   //@}
 
   //@{
+  //! Copy extended attributes from source (default: Off).
+  /*!
+   *  If this is off (the default), then only attributes that are part
+   *  of the base SOP class will be copied from the source.  Otherwise,
+   *  all attributes (standard and private) will be copied.  No validation
+   *  is performed on attributes that aren't part of the base SOP class.
+   */
+  vtkSetMacro(Extended, int);
+  vtkBooleanMacro(Extended, int);
+  vtkGetMacro(Extended, int);
+  //@}
+
+  //@{
   //! Create a multi-frame object (default: Off).
   /*!
    *  If this is on, the one multi-frame data set will be created.  If
@@ -336,6 +349,15 @@ protected:
     const DC::EnumType *tags, vtkDICOMMetaData *source);
   //@}
 
+  //! Copy all atributes into the meta data, excluding blacklisted ones.
+  /*!
+   *  The blacklist must be terminated with DC::ItemDelimitationItem.
+   *  The blacklist may be set to NULL.
+   */
+  virtual bool CopyAttributes(
+    const DC::EnumType *blacklist, vtkDICOMMetaData *source);
+  //@}
+
   //! Compute aspect ratio from spacing.
   static void ComputeAspectRatio(const double spacing[2], int aspect[2]);
 
@@ -397,6 +419,9 @@ protected:
 
   //! The UID generator.
   vtkDICOMUIDGenerator *UIDGenerator;
+
+  //! Whether to copy attributes that aren't in the base SOP class.
+  int Extended;
 
   //! Whether to prefer multi-frame files over single-frame.
   int MultiFrame;
