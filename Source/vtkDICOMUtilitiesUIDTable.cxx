@@ -23,15 +23,15 @@ const UIDTableEntry UIDTable[] = {
 { 212, 1, 2, 0, 0 },
 { 213, 1, 1, 0, 0 },
 { 1257, 1, 1, 0, 0 },
-{ 2541, 1, 1, 0, 0 },
-{ 2544, 1, 1, 0, 0 },
-{ 2546, 24, 1, 0, 0 },
+{ 2545, 1, 1, 0, 0 },
+{ 2548, 1, 1, 0, 0 },
+{ 2550, 24, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 2570, 2, 0, 0, 0 },
+{ 2574, 2, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.1.1
   "Verification SOP Class" },
 { 58, 6, 1, 0, // 1.2.840.10008.1.2
@@ -1639,7 +1639,7 @@ const UIDTableEntry UIDTable[] = {
   "Implant Template Group Information Model - MOVE" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.45.4
   "Implant Template Group Information Model - GET" },
-{ 1258, 1283, 1, 0, 0 },
+{ 1258, 1287, 1, 0, 0 },
 { 0, 0, 0, 2, // 1.2.840.10008.6.1.1
   "Anatomic Modifier" },
 { 0, 0, 0, 4, // 1.2.840.10008.6.1.2
@@ -4100,12 +4100,20 @@ const UIDTableEntry UIDTable[] = {
   "Non-Acquisition Modality" },
 { 0, 0, 0, 33, // 1.2.840.10008.6.1.1283
   "Modality" },
-{ 2542, 2, 1, 0, 0 },
+{ 0, 0, 0, 247, // 1.2.840.10008.6.1.1284
+  "Laterality Left-Right Only" },
+{ 0, 0, 0, 210, // 1.2.840.10008.6.1.1285
+  "Qualitative Evaluation Modifier Types" },
+{ 0, 0, 0, 211, // 1.2.840.10008.6.1.1286
+  "Qualitative Evaluation Modifier Values" },
+{ 0, 0, 0, 212, // 1.2.840.10008.6.1.1287
+  "Generic Anatomic Location Modifiers" },
+{ 2546, 2, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.1
   "Native DICOM Model" },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.2
   "Abstract Multi-Dimensional Image Model" },
-{ 2545, 1, 1, 0, 0 },
+{ 2549, 1, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.8.1.1
   "DICOM Content Mapping Resource" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.1
@@ -4156,10 +4164,10 @@ const UIDTableEntry UIDTable[] = {
   "General Section Entries" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.24
   "Imaging Addendum Report" },
-{ 2572, 2, 3, 0, 0 },
-{ 2613, 1, 1, 0, 0 },
-{ 2574, 31, 1, 0, 0 },
-{ 2605, 8, 1, 0, 0 },
+{ 2576, 2, 3, 0, 0 },
+{ 2617, 1, 1, 0, 0 },
+{ 2578, 31, 1, 0, 0 },
+{ 2609, 8, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.1
   "dicomDeviceName" },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.2

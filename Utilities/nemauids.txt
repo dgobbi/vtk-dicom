@@ -5333,3 +5333,15 @@ Non-Acquisition Modality
 1.2.840.10008.6.1.1283
 CID 33
 Modality
+1.2.840.10008.6.1.1284
+CID 247
+Laterality Left-Right Only
+1.2.840.10008.6.1.1285
+CID 210
+Qualitative Evaluation Modifier Types
+1.2.840.10008.6.1.1286
+CID 211
+Qualitative Evaluation Modifier Values
+1.2.840.10008.6.1.1287
+CID 212
+Generic Anatomic Location Modifiers
