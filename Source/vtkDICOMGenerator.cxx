@@ -835,14 +835,20 @@ void vtkDICOMGenerator::InitializeMetaData(vtkInformation *info)
 
       // If MatchInstances generated a shuffled array, try again with
       // a different dimension ordering.
+      bool switched = false;
       for (int j = 1; j < nframes; j++)
       {
         if (this->SourceInstanceArray->GetComponent(j-1, 0) >
             this->SourceInstanceArray->GetComponent(j, 0))
         {
           switchDimensions = !switchDimensions;
-          continue;
+          switched = true;
+          break;
         }
+      }
+      if (switched)
+      {
+        continue;
       }
     }
 
