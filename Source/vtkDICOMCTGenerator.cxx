@@ -82,6 +82,14 @@ bool vtkDICOMCTGenerator::GenerateCTImageModule(vtkDICOMMetaData *source)
   meta->Set(DC::RescaleIntercept, this->RescaleIntercept);
   meta->Set(DC::RescaleSlope, this->RescaleSlope);
 
+  // SpacingBetweenSlices is not part of the CT IOD, but it is a
+  // frequently used extended attribute.  If it is present we want to
+  // ensure that it is correct.  If absent, we don't set it.
+  if (meta->Has(DC::SpacingBetweenSlices))
+  {
+    meta->Set(DC::SpacingBetweenSlices, this->Spacing[2]);
+  }
+
   // required items: use simple read/write validation
   DC::EnumType required[] = {
     DC::KVP,
