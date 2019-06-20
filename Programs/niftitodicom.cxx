@@ -768,6 +768,20 @@ void niftitodicom_convert_one(
       generator = 0;
     }
   }
+  else if (meta->Has(DC::SOPClassUID))
+  {
+    std::string classUID = meta->Get(DC::SOPClassUID).AsString();
+    if (classUID == "1.2.840.10008.5.1.4.1.1.2" &&
+        (scalarType == VTK_SHORT || scalarType == VTK_UNSIGNED_SHORT))
+    {
+      generator = ctgenerator;
+    }
+    else if (classUID == "1.2.840.10008.5.1.4.1.1.4" &&
+             (scalarType == VTK_SHORT || scalarType == VTK_UNSIGNED_SHORT))
+    {
+      generator = mrgenerator;
+    }
+  }
 
   // prepare the writer to write the image
   vtkSmartPointer<vtkDICOMWriter> writer =
