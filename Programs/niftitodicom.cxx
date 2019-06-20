@@ -21,6 +21,7 @@
 #include "vtkDICOMFileSorter.h"
 #include "vtkDICOMMRGenerator.h"
 #include "vtkDICOMCTGenerator.h"
+#include "vtkDICOMSCGenerator.h"
 #include "vtkDICOMToRAS.h"
 #include "vtkDICOMCTRectifier.h"
 #include "vtkDICOMUtilities.h"
@@ -746,50 +747,74 @@ void niftitodicom_convert_one(
     meta->Erase(DC::FrameOfReferenceUID);
   }
 
+  // the UIDs for the SOP classes we support
+  const char *classUID_CT = "1.2.840.10008.5.1.4.1.1.2";
+  const char *classUID_MR = "1.2.840.10008.5.1.4.1.1.4";
+  const char *classUID_SC = "1.2.840.10008.5.1.4.1.1.7";
+  std::string sourceClassUID = meta->Get(DC::SOPClassUID).AsString();
+  std::string outputClassUID;
+
   // make the generator
   vtkSmartPointer<vtkDICOMMRGenerator> mrgenerator =
     vtkSmartPointer<vtkDICOMMRGenerator>::New();
   vtkSmartPointer<vtkDICOMCTGenerator> ctgenerator =
     vtkSmartPointer<vtkDICOMCTGenerator>::New();
+  vtkSmartPointer<vtkDICOMSCGenerator> scgenerator =
+    vtkSmartPointer<vtkDICOMSCGenerator>::New();
   vtkDICOMGenerator *generator = mrgenerator;
+
   if (options->modality)
   {
     if (strcmp(options->modality, "CT") == 0)
     {
       generator = ctgenerator;
+      outputClassUID = classUID_CT;
     }
     else if (strcmp(options->modality, "MR") == 0 ||
              strcmp(options->modality, "MRI") == 0)
     {
       generator = mrgenerator;
+      outputClassUID = classUID_MR;
     }
-    else
+    else if (strcmp(options->modality, "SC") == 0)
     {
-      generator = 0;
+      generator = scgenerator;
+      outputClassUID = classUID_SC;
     }
   }
   else if (meta->Has(DC::SOPClassUID))
   {
-    std::string classUID = meta->Get(DC::SOPClassUID).AsString();
-    if (classUID == "1.2.840.10008.5.1.4.1.1.2" &&
+    if (sourceClassUID == classUID_CT &&
         (scalarType == VTK_SHORT || scalarType == VTK_UNSIGNED_SHORT))
     {
       generator = ctgenerator;
+      outputClassUID = classUID_CT;
     }
-    else if (classUID == "1.2.840.10008.5.1.4.1.1.4" &&
+    else if (sourceClassUID == classUID_MR &&
              (scalarType == VTK_SHORT || scalarType == VTK_UNSIGNED_SHORT))
     {
       generator = mrgenerator;
+      outputClassUID = classUID_MR;
     }
+    else if (sourceClassUID == classUID_SC)
+    {
+      generator = scgenerator;
+      outputClassUID = classUID_SC;
+    }
+  }
+
+  if (sourceClassUID == outputClassUID)
+  {
+    // if the source data has the same SOP base class as the data that we
+    // are generating, then copy all attributes, otherwise only copy
+    // attributes that are part of the output's SOP base class.
+    generator->ExtendedOn();
   }
 
   // prepare the writer to write the image
   vtkSmartPointer<vtkDICOMWriter> writer =
     vtkSmartPointer<vtkDICOMWriter>::New();
-  if (generator)
-  {
-    writer->SetGenerator(generator);
-  }
+  writer->SetGenerator(generator);
   writer->SetMetaData(meta);
   writer->SetFilePrefix(outfile);
   writer->SetFilePattern("%s/IM-0001-%04.4d.dcm");
