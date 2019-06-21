@@ -530,7 +530,7 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *sourcemeta)
           double v = matrix[4*k +1] - uv[k + 3];
           vv += v*v;
         }
-        if (dd/(spacing[2]*spacing[2]) < 1e-8 &&
+        if (dd/(spacing[2]*spacing[2]) < 1e-6 &&
             uu < 1e-8 && vv < 1e-8)
         {
           this->SourceInstanceArray->SetComponent(i, 0, j);
