@@ -39,6 +39,7 @@
 #define SetTupleValue SetTypedTuple
 #endif
 
+vtkStandardNewMacro(vtkDICOMGenerator);
 vtkCxxSetObjectMacro(vtkDICOMGenerator,PatientMatrix,vtkMatrix4x4);
 vtkCxxSetObjectMacro(vtkDICOMGenerator,SourceMetaData,vtkDICOMMetaData);
 vtkCxxSetObjectMacro(vtkDICOMGenerator,UIDGenerator,vtkDICOMUIDGenerator);
@@ -221,6 +222,28 @@ vtkDICOMUIDGenerator *vtkDICOMGenerator::GetUIDGenerator()
     uidgen = vtkDICOMUIDGenerator::GetDefault();
   }
   return uidgen;
+}
+
+//----------------------------------------------------------------------------
+bool vtkDICOMGenerator::GenerateInstance(vtkInformation *info)
+{
+  this->InitializeMetaData(info);
+  this->CopyAttributes(NULL, this->SourceMetaData);
+
+  // create new SOP instance and series instance UIDs
+  vtkDICOMMetaData *meta = this->MetaData;
+  int n = meta->GetNumberOfInstances();
+  vtkSmartPointer<vtkStringArray> uids =
+    vtkSmartPointer<vtkStringArray>::New();
+  uids->SetNumberOfValues(n);
+  this->GenerateUIDs(DC::SOPInstanceUID, uids);
+  for (int i = 0; i < n; i++)
+  {
+    meta->Set(i, DC::SOPInstanceUID, uids->GetValue(i));
+  }
+  meta->Set(DC::SeriesInstanceUID, this->GenerateUID(DC::SeriesInstanceUID));
+
+  return true;
 }
 
 //----------------------------------------------------------------------------

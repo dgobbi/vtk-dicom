@@ -46,6 +46,7 @@ class VTKDICOM_EXPORT vtkDICOMGenerator : public vtkObject
 {
 public:
   //! Static method for construction.
+  static vtkDICOMGenerator *New();
   vtkTypeMacro(vtkDICOMGenerator, vtkObject);
 
   //! Print information about this object.
@@ -58,7 +59,7 @@ public:
    *  information for a vtkImageData object, it will populate the
    *  attributes of the supplied vtkDICOMMetaData object.
    */
-  virtual bool GenerateInstance(vtkInformation *) = 0;
+  virtual bool GenerateInstance(vtkInformation *);
   //@}
 
   //@{

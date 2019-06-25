@@ -76,6 +76,7 @@ struct niftitodicom_options
   int mpr;
   bool silent;
   bool verbose;
+  bool verbatim;
   const char *output;
   const char *input;
 };
@@ -118,6 +119,7 @@ void niftitodicom_usage(FILE *file, const char *command_name)
     "  -o directory            The output directory.\n"
     "  -s --silent             Do not print anything while executing.\n"
     "  -v --verbose            Verbose error reporting.\n"
+    "  --verbatim              Copy source metadata nearly verbatim.\n"
     "  --no-reordering         Never reorder slices, rows, or columns.\n"
     "  --axial                 Produce axial slices.\n"
     "  --coronal               Produce coronal slices.\n"
@@ -265,6 +267,7 @@ void niftitodicom_read_options(
   options->uid_prefix = "2.25";
   options->silent = false;
   options->verbose = false;
+  options->verbatim = false;
   options->output = 0;
   options->input = 0;
 
@@ -332,6 +335,10 @@ void niftitodicom_read_options(
       else if (strcmp(arg, "--verbose") == 0)
       {
         options->verbose = true;
+      }
+      else if (strcmp(arg, "--verbatim") == 0)
+      {
+        options->verbatim = true;
       }
       else if (strcmp(arg, "--version") == 0)
       {
@@ -761,9 +768,15 @@ void niftitodicom_convert_one(
     vtkSmartPointer<vtkDICOMCTGenerator>::New();
   vtkSmartPointer<vtkDICOMSCGenerator> scgenerator =
     vtkSmartPointer<vtkDICOMSCGenerator>::New();
+  vtkSmartPointer<vtkDICOMGenerator> verbgenerator =
+    vtkSmartPointer<vtkDICOMGenerator>::New();
   vtkDICOMGenerator *generator = mrgenerator;
 
-  if (options->modality)
+  if (options->verbatim)
+  {
+    generator = verbgenerator;
+  }
+  else if (options->modality)
   {
     if (strcmp(options->modality, "CT") == 0)
     {
@@ -816,6 +829,10 @@ void niftitodicom_convert_one(
     vtkSmartPointer<vtkDICOMWriter>::New();
   writer->SetGenerator(generator);
   writer->SetMetaData(meta);
+  if (options->verbatim)
+  {
+    writer->SetImageType(NULL);
+  }
   writer->SetFilePrefix(outfile);
   writer->SetFilePattern("%s/IM-0001-%04.4d.dcm");
   writer->TimeAsVectorOn();
