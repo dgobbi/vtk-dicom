@@ -1051,7 +1051,7 @@ bool vtkDICOMGenerator::CopyAttributes(
         const DC::EnumType *tags = blacklist;
         while (*tags != DC::ItemDelimitationItem)
         {
-          if (*tags++ == tag.GetKey())
+          if (static_cast<unsigned int>(*tags++) == tag.GetKey())
           {
             blacklisted = true;
             break;
