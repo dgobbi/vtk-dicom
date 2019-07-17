@@ -1318,6 +1318,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     patientName = (patientName ? patientName : "");
     patientID = (patientID ? patientID : "");
 
+    bool sameFile = false;
     bool foundSeries = false;
     for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
     {
@@ -1371,7 +1372,6 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       if (c == 0 && seriesUID != 0)
       {
         // Use UID to identify the image, but use instance number to sort.
-        bool sameFile = false;
         bool repeatUID = false;
         for (std::vector<FileInfo>::iterator im = li->Files.begin();
              im != li->Files.end(); ++im)
@@ -1415,6 +1415,12 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       {
         break;
       }
+    }
+
+    if (sameFile)
+    {
+      // This same file was already encountered, so skip it
+      continue;
     }
 
     if (!foundSeries)
