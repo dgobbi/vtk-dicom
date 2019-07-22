@@ -114,9 +114,22 @@ struct vtkDICOMDirectory::SeriesInfo
   vtkDICOMItem  SeriesRecord;
   vtkDICOMValue SeriesUID;
   unsigned int SeriesNumber;
+  // -- INSTANCES --
   std::vector<FileInfo> Files;
   bool QueryMatched;
 };
+
+bool vtkDICOMDirectory::CompareSeriesUIDs(
+  const SeriesInfo& si, const char *uid)
+{
+  return (vtkDICOMUtilities::CompareUIDs(si.SeriesUID.GetCharData(), uid) < 0);
+}
+
+bool vtkDICOMDirectory::CompareInstanceUIDs(
+  const FileInfo& fi, const char *uid)
+{
+  return (vtkDICOMUtilities::CompareUIDs(fi.ImageUID.GetCharData(), uid) < 0);
+}
 
 bool vtkDICOMDirectory::CompareInstance(
   const FileInfo &fi1, const FileInfo &fi2)
@@ -124,6 +137,73 @@ bool vtkDICOMDirectory::CompareInstance(
   return (fi1.InstanceNumber < fi2.InstanceNumber);
 }
 
+bool vtkDICOMDirectory::CompareSeriesIds(
+  const SeriesInfo &si1, const SeriesInfo &si2)
+{
+  // Compare patient, then study, then series
+  const char *patientID1 = si1.PatientID.GetCharData();
+  patientID1 = (patientID1 ? patientID1 : "");
+  const char *patientID2 = si2.PatientID.GetCharData();
+  patientID2 = (patientID2 ? patientID2 : "");
+
+  int c = strcmp(patientID1, patientID2);
+
+  if (c == 0)
+  {
+    c = vtkDICOMUtilities::CompareUIDs(
+      si1.StudyUID.GetCharData(),
+      si2.StudyUID.GetCharData());
+
+    if (c == 0)
+    {
+      c = vtkDICOMUtilities::CompareUIDs(
+        si1.SeriesUID.GetCharData(),
+        si2.SeriesUID.GetCharData());
+    }
+  }
+
+  return (c < 0);
+}
+
+bool vtkDICOMDirectory::CompareSeriesInfo(
+  const SeriesInfo &si1, const SeriesInfo &si2)
+{
+  // Use PatientName to sort the patients
+  const char *patientName1 = si1.PatientName.GetCharData();
+  patientName1 = (patientName1 ? patientName1 : "");
+  const char *patientName2 = si2.PatientName.GetCharData();
+  patientName2 = (patientName2 ? patientName2 : "");
+
+  int c = strcmp(patientName1, patientName2);
+
+  if (c == 0)
+  {
+    // Use StudyDate and StudyTime to sort the studies
+    const char *studyDate1 = si1.StudyDate.GetCharData();
+    const char *studyDate2 = si2.StudyDate.GetCharData();
+    if (studyDate1 && studyDate2)
+    {
+      c = strcmp(studyDate1, studyDate2);
+      if (c == 0)
+      {
+        const char *studyTime1 = si1.StudyTime.GetCharData();
+        const char *studyTime2 = si2.StudyTime.GetCharData();
+        if (studyTime1 && studyTime2)
+        {
+          c = strcmp(studyTime1, studyTime2);
+        }
+      }
+    }
+
+    if (c == 0)
+    {
+      // Use SeriesNumber to sort the series
+      c = si1.SeriesNumber - si2.SeriesNumber;
+    }
+  }
+
+  return (c < 0);
+}
 //----------------------------------------------------------------------------
 // These are the attributes used for a directory scan
 
@@ -1299,122 +1379,77 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     fileInfo.FileName = fileName.c_str(); // stored in input StringArray
     fileInfo.ImageUID = meta->Get(DC::SOPInstanceUID);
 
-    const vtkDICOMValue& patientNameValue = meta->Get(DC::PatientName);
-    const vtkDICOMValue& patientIDValue = meta->Get(DC::PatientID);
-    const vtkDICOMValue& studyDateValue = meta->Get(DC::StudyDate);
-    const vtkDICOMValue& studyTimeValue = meta->Get(DC::StudyTime);
     const vtkDICOMValue& studyUIDValue = meta->Get(DC::StudyInstanceUID);
     const vtkDICOMValue& seriesUIDValue = meta->Get(DC::SeriesInstanceUID);
     unsigned int seriesNumber = meta->Get(DC::SeriesNumber).AsUnsignedInt();
 
-    const char *patientName = patientNameValue.GetCharData();
-    const char *patientID = patientIDValue.GetCharData();
-    const char *studyDate = studyDateValue.GetCharData();
-    const char *studyTime = studyTimeValue.GetCharData();
     const char *studyUID = studyUIDValue.GetCharData();
     const char *seriesUID = seriesUIDValue.GetCharData();
     const char *imageUID = fileInfo.ImageUID.GetCharData();
 
-    patientName = (patientName ? patientName : "");
-    patientID = (patientID ? patientID : "");
-
     bool sameFile = false;
     bool foundSeries = false;
-    for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
+
+    // Locate the first potential match
+    li = std::lower_bound(sortedFiles.begin(), sortedFiles.end(),
+                          seriesUID, CompareSeriesUIDs);
+
+    // Iterate through all possible matches
+    for (; li != sortedFiles.end() &&
+           vtkDICOMUtilities::CompareUIDs(li->SeriesUID.GetCharData(),
+                                          seriesUID) == 0;
+         ++li)
     {
-      // Compare patient, then study, then series.
-      const char *patientName2 = li->PatientName.GetCharData();
-      patientName2 = (patientName2 ? patientName2 : "");
-      const char *patientID2 = li->PatientID.GetCharData();
-      patientID2 = (patientID2 ? patientID2 : "");
-      int c = strcmp(patientID2, patientID);
-      if (c != 0 || patientID[0] == '\0')
+      // For files that lack the mandatory SeriesInstanceUID,
+      // we also check whether SeriesNumber is the same
+      if ((seriesUID == 0 || seriesUID[0] == '\0') &&
+          seriesNumber != li->SeriesNumber)
       {
-        // Use ID to identify patient, but use name to sort.
-        int c2 = strcmp(patientName2, patientName);
-        c = (c2 == 0 ? c : c2);
+        continue;
       }
-      if (c == 0)
+
+      // Ensure that the StudyInstanceUID also matches
+      if (vtkDICOMUtilities::CompareUIDs(li->StudyUID.GetCharData(),
+                                         studyUID) != 0)
       {
-        c = vtkDICOMUtilities::CompareUIDs(
-          studyUID, li->StudyUID.GetCharData());
-        if (c != 0 || studyUID == 0)
-        {
-          // Use UID to identify study, but use date to sort.
-          int c2 = 0;
-          const char *studyDate2 = li->StudyDate.GetCharData();
-          if (studyDate && studyDate2)
-          {
-            c2 = strcmp(studyDate2, studyDate);
-            if (c2 == 0)
-            {
-              const char *studyTime2 = li->StudyTime.GetCharData();
-              if (studyTime2 && studyTime)
-              {
-                c2 = strcmp(studyTime, studyTime2);
-              }
-            }
-          }
-          c = (c2 == 0 ? c : c2);
-        }
-        if (c == 0)
-        {
-          c = vtkDICOMUtilities::CompareUIDs(
-            seriesUID, li->SeriesUID.GetCharData());
-          if (c != 0 || seriesUID == 0)
-          {
-            // Use UID to identify series, but use series number to sort.
-            int c2 = li->SeriesNumber - seriesNumber;
-            c = (c2 == 0 ? c : c2);
-          }
-        }
+        continue;
       }
-      if (c == 0 && seriesUID != 0)
+
+      // Prepare to insert this file into the series
+      std::vector<FileInfo>::iterator im =
+        std::lower_bound(li->Files.begin(), li->Files.end(), imageUID,
+          CompareInstanceUIDs);
+
+      if (im != li->Files.end())
       {
-        // Use UID to identify the image, but use instance number to sort.
-        bool repeatUID = false;
-        for (std::vector<FileInfo>::iterator im = li->Files.begin();
-             im != li->Files.end(); ++im)
+        // Check if this SOPInstanceUID is a duplicate
+        if (vtkDICOMUtilities::CompareUIDs(imageUID,
+                                           im->ImageUID.GetCharData()) == 0)
         {
-          if (vtkDICOMUtilities::CompareUIDs(
-                imageUID, im->ImageUID.GetCharData()) == 0)
+          // Duplicate UID! Check to see if it is the same file
+          // (SameFile() is expensive, so check InstanceNumber first)
+          if (im->InstanceNumber == fileInfo.InstanceNumber &&
+              vtkDICOMFile::SameFile(im->FileName, fileInfo.FileName))
           {
-            // Duplicate UID! Check InstanceNumber.
-            if (im->InstanceNumber == fileInfo.InstanceNumber)
-            {
-              sameFile = vtkDICOMFile::SameFile(
-                im->FileName, fileInfo.FileName);
-              repeatUID = true;
-              break;
-            }
-            else if (imageUID && imageUID[0] != '\0')
-            {
-              repeatUID = true;
-            }
-          }
-        }
-        if (repeatUID)
-        {
-          if (sameFile)
-          {
+            // Let's ignore this file
+            sameFile = true;
             break;
           }
-          continue;
-        }
 
-        std::vector<FileInfo>::iterator pos =
-          li->Files.insert(
-            std::upper_bound(li->Files.begin(), li->Files.end(), fileInfo,
-              CompareInstance), fileInfo);
-        this->FillImageRecord(&pos->ImageRecord, meta, &skip[0], skip.size());
-        li->QueryMatched |= queryMatched;
-        foundSeries = true;
-        break;
+          // Continue to the next series unless SOPInstanceUID is missing
+          if (imageUID && imageUID[0] != '\0')
+          {
+            continue;
+          }
+        }
       }
-      else if (c >= 0)
-      {
-        break;
-      }
+
+      // Insert this image into the series and break
+      std::vector<FileInfo>::iterator pos = li->Files.insert(im, fileInfo);
+      this->FillImageRecord(&pos->ImageRecord, meta, &skip[0], skip.size());
+      li->QueryMatched |= queryMatched;
+      foundSeries = true;
+      break;
     }
 
     if (sameFile)
@@ -1425,10 +1460,12 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
     if (!foundSeries)
     {
+      // Use this image to begin a new series
       li = sortedFiles.insert(li, SeriesInfo());
-      li->PatientName = patientNameValue;
-      li->PatientID = patientIDValue;
-      li->StudyDate = studyDateValue;
+      li->PatientName = meta->Get(DC::PatientName);
+      li->PatientID = meta->Get(DC::PatientID);
+      li->StudyDate = meta->Get(DC::StudyDate);
+      li->StudyTime = meta->Get(DC::StudyTime);
       li->StudyUID = studyUIDValue;
       li->SeriesUID = seriesUIDValue;
       li->SeriesNumber = seriesNumber;
@@ -1443,30 +1480,74 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     }
   }
 
+  // Remove any series that do not match the query
+  li = sortedFiles.begin();
+  while (li != sortedFiles.end())
+  {
+    if (!li->QueryMatched)
+    {
+      SeriesInfoList::iterator ci = li;
+      ++li;
+      sortedFiles.erase(ci);
+    }
+    else
+    {
+      ++li;
+    }
+  }
+
+  // Re-sort, using PatientID and StudyUID before SeriesUID
+  sortedFiles.sort(CompareSeriesIds);
+
+  SeriesInfo *lastInfo = 0;
+
+  // Force consistent PatientName, StudyDate, StudyTime
+  for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
+  {
+    SeriesInfo &v = *li;
+
+    // Is this a new patient or a new study?
+    if (!lastInfo || v.PatientID != lastInfo->PatientID)
+    {
+      lastInfo = &v;
+    }
+    else if (v.StudyUID != lastInfo->StudyUID)
+    {
+      v.PatientName = lastInfo->PatientName;
+      lastInfo = &v;
+    }
+    else
+    {
+      v.PatientName = lastInfo->PatientName;
+      v.StudyDate = lastInfo->StudyDate;
+      v.StudyTime = lastInfo->StudyTime;
+    }
+  }
+
+  // Sort again by PatientName, StudyDate, StudyTime, and SeriesNumber
+  sortedFiles.sort(CompareSeriesInfo);
+
   // Visit each series and call AddSeriesFileNames
   int patientCount = this->GetNumberOfPatients();
   int studyCount = this->GetNumberOfStudies();
 
-  vtkDICOMValue lastStudyUID;
-  vtkDICOMValue lastPatientID;
+  lastInfo = 0;
 
   for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
   {
     SeriesInfo &v = *li;
-    if (!v.QueryMatched) { continue; }
 
     // Is this a new patient or a new study?
-    if (!lastPatientID.IsValid() || v.PatientID != lastPatientID)
+    if (!lastInfo || v.PatientID != lastInfo->PatientID)
     {
-      lastPatientID = v.PatientID;
       patientCount++;
-      lastStudyUID = v.StudyUID;
       studyCount++;
+      lastInfo = &v;
     }
-    else if (!lastStudyUID.IsValid() || v.StudyUID != lastStudyUID)
+    else if (v.StudyUID != lastInfo->StudyUID)
     {
-      lastStudyUID = v.StudyUID;
       studyCount++;
+      lastInfo = &v;
     }
 
     vtkSmartPointer<vtkStringArray> sa =
@@ -1474,6 +1555,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     vtkIdType n = static_cast<vtkIdType>(v.Files.size());
     sa->SetNumberOfValues(n);
     std::vector<const vtkDICOMItem *> imageRecords(n);
+    std::stable_sort(li->Files.begin(), li->Files.end(), CompareInstance);
     for (vtkIdType i = 0; i < n; i++)
     {
       sa->SetValue(i, v.Files[i].FileName);
