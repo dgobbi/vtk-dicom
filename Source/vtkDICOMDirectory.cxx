@@ -134,7 +134,19 @@ bool vtkDICOMDirectory::CompareInstanceUIDs(
 bool vtkDICOMDirectory::CompareInstance(
   const FileInfo &fi1, const FileInfo &fi2)
 {
-  return (fi1.InstanceNumber < fi2.InstanceNumber);
+  if (fi1.InstanceNumber != fi2.InstanceNumber)
+  {
+    return (fi1.InstanceNumber < fi2.InstanceNumber);
+  }
+
+  // fall back to filename comparison
+  if (fi1.FileName != 0 && fi2.FileName != 0)
+  {
+    return (strcmp(fi1.FileName, fi2.FileName) < 0);
+  }
+
+  // null filename sorts before non-null filename
+  return (fi2.FileName != 0);
 }
 
 bool vtkDICOMDirectory::CompareSeriesIds(
