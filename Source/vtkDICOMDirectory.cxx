@@ -1436,9 +1436,17 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
             break;
           }
 
-          // Continue to the next series unless SOPInstanceUID is missing
-          if (imageUID && imageUID[0] != '\0')
+          if (imageUID == 0 || imageUID[0] == '\0')
           {
+            // If SOPInstanceUID is missing, advance iterator to end
+            // (this is necessary to keep the sort stable)
+            do { ++im; } while (im != li->Files.end() &&
+                                vtkDICOMUtilities::CompareUIDs(
+                                  im->ImageUID.GetCharData(), imageUID) == 0);
+          }
+          else
+          {
+            // For duplicate UID, continue to the next series
             continue;
           }
         }
