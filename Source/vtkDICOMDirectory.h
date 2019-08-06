@@ -401,6 +401,7 @@ private:
   class StudyVector;
   class PatientVector;
   struct FileInfo;
+  struct UIDIndexPair;
   struct SeriesInfo;
   class SeriesInfoList;
   class VisitedVector;
@@ -429,7 +430,7 @@ private:
   static bool CompareSeriesInfo(const SeriesInfo &li1, const SeriesInfo &li2);
 
   //! Compare SOPInstanceUID to a FileInfo entry.
-  static bool CompareInstanceUIDs(const FileInfo& fi, const char *uid);
+  static bool CompareInstanceUIDs(const UIDIndexPair& p, const char *uid);
 
   //! Compare SeriesInstanceUID to a SeriesInfo entry.
   static bool CompareSeriesUIDs(const SeriesInfo& si, const char *uid);

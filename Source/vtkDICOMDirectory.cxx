@@ -99,6 +99,14 @@ struct vtkDICOMDirectory::FileInfo
   vtkDICOMItem ImageRecord;
 };
 
+struct vtkDICOMDirectory::UIDIndexPair
+{
+  const char *UID;
+  size_t Index;
+
+  UIDIndexPair(const char *uid, size_t idx) : UID(uid), Index(idx) {}
+};
+
 struct vtkDICOMDirectory::SeriesInfo
 {
   // -- PATIENT --
@@ -116,6 +124,7 @@ struct vtkDICOMDirectory::SeriesInfo
   unsigned int SeriesNumber;
   // -- INSTANCES --
   std::vector<FileInfo> Files;
+  std::vector<UIDIndexPair> FilesByUID;
   bool QueryMatched;
 };
 
@@ -126,9 +135,9 @@ bool vtkDICOMDirectory::CompareSeriesUIDs(
 }
 
 bool vtkDICOMDirectory::CompareInstanceUIDs(
-  const FileInfo& fi, const char *uid)
+  const UIDIndexPair& p, const char *uid)
 {
-  return (vtkDICOMUtilities::CompareUIDs(fi.ImageUID.GetCharData(), uid) < 0);
+  return (vtkDICOMUtilities::CompareUIDs(p.UID, uid) < 0);
 }
 
 bool vtkDICOMDirectory::CompareInstance(
@@ -1428,20 +1437,20 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       }
 
       // Prepare to insert this file into the series
-      std::vector<FileInfo>::iterator im =
-        std::lower_bound(li->Files.begin(), li->Files.end(), imageUID,
-          CompareInstanceUIDs);
+      std::vector<UIDIndexPair>::iterator im =
+        std::lower_bound(li->FilesByUID.begin(), li->FilesByUID.end(),
+          imageUID, CompareInstanceUIDs);
 
-      if (im != li->Files.end())
+      if (im != li->FilesByUID.end())
       {
         // Check if this SOPInstanceUID is a duplicate
-        if (vtkDICOMUtilities::CompareUIDs(imageUID,
-                                           im->ImageUID.GetCharData()) == 0)
+        if (vtkDICOMUtilities::CompareUIDs(imageUID, im->UID) == 0)
         {
           // Duplicate UID! Check to see if it is the same file
           // (SameFile() is expensive, so check InstanceNumber first)
-          if (im->InstanceNumber == fileInfo.InstanceNumber &&
-              vtkDICOMFile::SameFile(im->FileName, fileInfo.FileName))
+          FileInfo *fip = &li->Files[im->Index];
+          if (fip->InstanceNumber == fileInfo.InstanceNumber &&
+              vtkDICOMFile::SameFile(fip->FileName, fileInfo.FileName))
           {
             // Let's ignore this file
             sameFile = true;
@@ -1452,9 +1461,9 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
           {
             // If SOPInstanceUID is missing, advance iterator to end
             // (this is necessary to keep the sort stable)
-            do { ++im; } while (im != li->Files.end() &&
+            do { ++im; } while (im != li->FilesByUID.end() &&
                                 vtkDICOMUtilities::CompareUIDs(
-                                  im->ImageUID.GetCharData(), imageUID) == 0);
+                                  im->UID, imageUID) == 0);
           }
           else
           {
@@ -1465,8 +1474,13 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       }
 
       // Insert this image into the series and break
-      std::vector<FileInfo>::iterator pos = li->Files.insert(im, fileInfo);
-      this->FillImageRecord(&pos->ImageRecord, meta, &skip[0], skip.size());
+      // (note: this requires that the 'imageUID' pointer remains valid,
+      // which is true only because vtkDICOMValue uses reference counting)
+      size_t fidx = li->Files.size();
+      li->FilesByUID.insert(im, UIDIndexPair(imageUID, fidx));
+      li->Files.push_back(fileInfo);
+      this->FillImageRecord(&li->Files[fidx].ImageRecord,
+                            meta, &skip[0], skip.size());
       li->QueryMatched |= queryMatched;
       foundSeries = true;
       break;
@@ -1490,6 +1504,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       li->SeriesUID = seriesUIDValue;
       li->SeriesNumber = seriesNumber;
       li->Files.push_back(fileInfo);
+      li->FilesByUID.push_back(UIDIndexPair(imageUID, 0));
       li->QueryMatched = queryMatched;
       this->FillPatientRecord(&li->PatientRecord, meta);
       this->FillStudyRecord(&li->StudyRecord, meta);
