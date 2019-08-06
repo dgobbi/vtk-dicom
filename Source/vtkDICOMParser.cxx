@@ -910,7 +910,7 @@ bool DecoderBase::QueryMatches(const vtkDICOMValue& v)
 //----------------------------------------------------------------------------
 bool DecoderBase::FinishQuery()
 {
-  if (this->HasQuery && this->QueryMatched)
+  if (this->HasQuery)
   {
     this->AdvanceQueryIterator(vtkDICOMTag(0xffff,0xffff));
   }
@@ -2136,8 +2136,7 @@ bool vtkDICOMParser::ReadMetaData(
   // read group-by-group
   bool readFailure = false;
   bool queryFailure = (hasQuery && !this->QueryMatched);
-  bool bailOnQueryFailure = (meta && meta->GetNumberOfInstances() == 1);
-  while (!readFailure && (!queryFailure || !bailOnQueryFailure))
+  while (!readFailure)
   {
     vtkDICOMTag tag = decoder->Peek(cp, ep);
 
