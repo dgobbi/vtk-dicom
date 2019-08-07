@@ -424,8 +424,11 @@ private:
   //! Compare FileInfo entries by instance number
   static bool CompareInstance(const FileInfo &fi1, const FileInfo &fi2);
 
+  //! Compare SeriesInfo entries by SeriesUID
+  static bool CompareSeriesUIDs(const SeriesInfo *si, const char *uid);
+
   //! Compare SeriesInfo entries by PatientID, StudyUID, and SeriesUID
-  static bool CompareSeriesIds(const SeriesInfo &li1, const SeriesInfo &li2);
+  static bool CompareSeriesIds(const SeriesInfo *li1, const SeriesInfo *li2);
 
   //! Compare SeriesInfo entries by PatientName, StudyDate, and SeriesNumber
   static bool CompareSeriesInfo(const SeriesInfo &li1, const SeriesInfo &li2);
