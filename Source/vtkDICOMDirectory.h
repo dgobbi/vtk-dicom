@@ -404,6 +404,7 @@ private:
   struct UIDIndexPair;
   struct SeriesInfo;
   class SeriesInfoList;
+  class SeriesInfoVector;
   class VisitedVector;
 
   vtkDICOMItem *Query;
@@ -431,9 +432,6 @@ private:
 
   //! Compare SOPInstanceUID to a FileInfo entry.
   static bool CompareInstanceUIDs(const UIDIndexPair& p, const char *uid);
-
-  //! Compare SeriesInstanceUID to a SeriesInfo entry.
-  static bool CompareSeriesUIDs(const SeriesInfo& si, const char *uid);
 };
 
 #endif

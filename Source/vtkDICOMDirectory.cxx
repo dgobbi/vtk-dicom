@@ -128,12 +128,6 @@ struct vtkDICOMDirectory::SeriesInfo
   bool QueryMatched;
 };
 
-bool vtkDICOMDirectory::CompareSeriesUIDs(
-  const SeriesInfo& si, const char *uid)
-{
-  return (vtkDICOMUtilities::CompareUIDs(si.SeriesUID.GetCharData(), uid) < 0);
-}
-
 bool vtkDICOMDirectory::CompareInstanceUIDs(
   const UIDIndexPair& p, const char *uid)
 {
@@ -305,6 +299,19 @@ static const DC::EnumType PatientTags[] = {
 class vtkDICOMDirectory::SeriesInfoList
   : public std::list<vtkDICOMDirectory::SeriesInfo>
 {};
+
+class vtkDICOMDirectory::SeriesInfoVector
+  : public std::vector<vtkDICOMDirectory::SeriesInfo *>
+{
+public:
+  static bool CompareSeriesUIDs(vtkDICOMDirectory::SeriesInfo *si,
+                                const char *uid)
+  {
+    return (vtkDICOMUtilities::CompareUIDs(
+      si->SeriesUID.GetCharData(), uid) < 0);
+  }
+};
+
 
 //----------------------------------------------------------------------------
 // A helper class for building a sorted list of unique tags
@@ -1309,7 +1316,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
   // List of files
   SeriesInfoList sortedFiles;
-  SeriesInfoList::iterator li;
+  SeriesInfoVector sortedVector;
 
   vtkIdType numberOfStrings = input->GetNumberOfValues();
 
@@ -1412,15 +1419,18 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     bool foundSeries = false;
 
     // Locate the first potential match
-    li = std::lower_bound(sortedFiles.begin(), sortedFiles.end(),
-                          seriesUID, CompareSeriesUIDs);
+    SeriesInfoVector::iterator vi =
+      std::lower_bound(sortedVector.begin(), sortedVector.end(), seriesUID,
+                       SeriesInfoVector::CompareSeriesUIDs);
 
     // Iterate through all possible matches
-    for (; li != sortedFiles.end() &&
-           vtkDICOMUtilities::CompareUIDs(li->SeriesUID.GetCharData(),
+    for (; vi != sortedVector.end() &&
+           vtkDICOMUtilities::CompareUIDs((*vi)->SeriesUID.GetCharData(),
                                           seriesUID) == 0;
-         ++li)
+         ++vi)
     {
+      SeriesInfo *li = *vi;
+
       // For files that lack the mandatory SeriesInstanceUID,
       // we also check whether SeriesNumber is the same
       if ((seriesUID == 0 || seriesUID[0] == '\0') &&
@@ -1495,7 +1505,9 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     if (!foundSeries)
     {
       // Use this image to begin a new series
-      li = sortedFiles.insert(li, SeriesInfo());
+      sortedFiles.push_back(SeriesInfo());
+      SeriesInfo *li = &sortedFiles.back();
+      sortedVector.insert(vi, li);
       li->PatientName = meta->Get(DC::PatientName);
       li->PatientID = meta->Get(DC::PatientID);
       li->StudyDate = meta->Get(DC::StudyDate);
@@ -1515,8 +1527,11 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     }
   }
 
+  // Free the vector, it isn't needed anymore
+  sortedVector.clear();
+
   // Remove any series that do not match the query
-  li = sortedFiles.begin();
+  SeriesInfoList::iterator li = sortedFiles.begin();
   while (li != sortedFiles.end())
   {
     if (!li->QueryMatched)
@@ -1531,7 +1546,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     }
   }
 
-  // Re-sort, using PatientID and StudyUID before SeriesUID
+  // Sort by PatientID, StudyUID, and SeriesUID
   sortedFiles.sort(CompareSeriesIds);
 
   SeriesInfo *lastInfo = 0;
