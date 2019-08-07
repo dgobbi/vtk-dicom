@@ -2135,7 +2135,6 @@ bool vtkDICOMParser::ReadMetaData(
 
   // read group-by-group
   bool readFailure = false;
-  bool queryFailure = (hasQuery && !this->QueryMatched);
   while (!readFailure)
   {
     vtkDICOMTag tag = decoder->Peek(cp, ep);
@@ -2176,7 +2175,6 @@ bool vtkDICOMParser::ReadMetaData(
     if (found && meta)
     {
       readFailure = !decoder->ReadElements(cp, ep, l, delimiter);
-      queryFailure = (hasQuery && !decoder->GetQueryMatched());
     }
     else
     {
