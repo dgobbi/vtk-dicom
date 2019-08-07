@@ -99,12 +99,12 @@ struct vtkDICOMDirectory::FileInfo
   vtkDICOMItem ImageRecord;
 };
 
-struct vtkDICOMDirectory::UIDIndexPair
+struct vtkDICOMDirectory::FileInfoPair
 {
-  const char *UID;
-  size_t Index;
+  const char *Key;
+  FileInfo *Info;
 
-  UIDIndexPair(const char *uid, size_t idx) : UID(uid), Index(idx) {}
+  FileInfoPair(const char *key, FileInfo *ptr) : Key(key), Info(ptr) {}
 };
 
 struct vtkDICOMDirectory::SeriesInfo
@@ -123,15 +123,15 @@ struct vtkDICOMDirectory::SeriesInfo
   vtkDICOMValue SeriesUID;
   unsigned int SeriesNumber;
   // -- INSTANCES --
-  std::vector<FileInfo> Files;
-  std::vector<UIDIndexPair> FilesByUID;
+  std::list<FileInfo> Files;
+  std::vector<FileInfoPair> FilesByUID;
   bool QueryMatched;
 };
 
 bool vtkDICOMDirectory::CompareInstanceUIDs(
-  const UIDIndexPair& p, const char *uid)
+  const FileInfoPair& p, const char *uid)
 {
-  return (vtkDICOMUtilities::CompareUIDs(p.UID, uid) < 0);
+  return (vtkDICOMUtilities::CompareUIDs(p.Key, uid) < 0);
 }
 
 bool vtkDICOMDirectory::CompareInstance(
@@ -1447,18 +1447,18 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       }
 
       // Prepare to insert this file into the series
-      std::vector<UIDIndexPair>::iterator im =
+      std::vector<FileInfoPair>::iterator im =
         std::lower_bound(li->FilesByUID.begin(), li->FilesByUID.end(),
           imageUID, CompareInstanceUIDs);
 
       if (im != li->FilesByUID.end())
       {
         // Check if this SOPInstanceUID is a duplicate
-        if (vtkDICOMUtilities::CompareUIDs(imageUID, im->UID) == 0)
+        if (vtkDICOMUtilities::CompareUIDs(imageUID, im->Key) == 0)
         {
           // Duplicate UID! Check to see if it is the same file
           // (SameFile() is expensive, so check InstanceNumber first)
-          FileInfo *fip = &li->Files[im->Index];
+          FileInfo *fip = im->Info;
           if (fip->InstanceNumber == fileInfo.InstanceNumber &&
               vtkDICOMFile::SameFile(fip->FileName, fileInfo.FileName))
           {
@@ -1473,7 +1473,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
             // (this is necessary to keep the sort stable)
             do { ++im; } while (im != li->FilesByUID.end() &&
                                 vtkDICOMUtilities::CompareUIDs(
-                                  im->UID, imageUID) == 0);
+                                  im->Key, imageUID) == 0);
           }
           else
           {
@@ -1484,13 +1484,10 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       }
 
       // Insert this image into the series and break
-      // (note: this requires that the 'imageUID' pointer remains valid,
-      // which is true only because vtkDICOMValue uses reference counting)
-      size_t fidx = li->Files.size();
-      li->FilesByUID.insert(im, UIDIndexPair(imageUID, fidx));
       li->Files.push_back(fileInfo);
-      this->FillImageRecord(&li->Files[fidx].ImageRecord,
-                            meta, &skip[0], skip.size());
+      FileInfo *fip = &li->Files.back();
+      li->FilesByUID.insert(im, FileInfoPair(fip->ImageUID.GetCharData(), fip));
+      this->FillImageRecord(&fip->ImageRecord, meta, &skip[0], skip.size());
       li->QueryMatched |= queryMatched;
       foundSeries = true;
       break;
@@ -1516,14 +1513,14 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       li->SeriesUID = seriesUIDValue;
       li->SeriesNumber = seriesNumber;
       li->Files.push_back(fileInfo);
-      li->FilesByUID.push_back(UIDIndexPair(imageUID, 0));
+      FileInfo *fip = &li->Files.back();
+      li->FilesByUID.push_back(FileInfoPair(fip->ImageUID.GetCharData(), fip));
       li->QueryMatched = queryMatched;
       this->FillPatientRecord(&li->PatientRecord, meta);
       this->FillStudyRecord(&li->StudyRecord, meta);
       this->FillSeriesRecord(&li->SeriesRecord, meta);
       skip.SetFrom(li->PatientRecord, li->StudyRecord, li->SeriesRecord);
-      this->FillImageRecord(&li->Files.back().ImageRecord, meta,
-                            &skip[0], skip.size());
+      this->FillImageRecord(&fip->ImageRecord, meta, &skip[0], skip.size());
     }
   }
 
@@ -1605,11 +1602,13 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     vtkIdType n = static_cast<vtkIdType>(v.Files.size());
     sa->SetNumberOfValues(n);
     std::vector<const vtkDICOMItem *> imageRecords(n);
-    std::stable_sort(li->Files.begin(), li->Files.end(), CompareInstance);
+    li->Files.sort(CompareInstance);
+    std::list<FileInfo>::iterator fi = li->Files.begin();
     for (vtkIdType i = 0; i < n; i++)
     {
-      sa->SetValue(i, v.Files[i].FileName);
-      imageRecords[i] = &v.Files[i].ImageRecord;
+      sa->SetValue(i, fi->FileName);
+      imageRecords[i] = &fi->ImageRecord;
+      ++fi;
     }
     this->AddSeriesFileNames(
       patientCount-1, studyCount-1, sa,
