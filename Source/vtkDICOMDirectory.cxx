@@ -1417,14 +1417,15 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     bool foundSeries = false;
 
     // Locate the first potential match
-    SeriesInfoVector::iterator vi =
+    SeriesInfoVector::iterator vib =
       std::lower_bound(seriesByUID.begin(), seriesByUID.end(), seriesUID,
                        CompareSeriesUIDs);
 
     // Iterate through all possible matches
-    for (; vi != seriesByUID.end() &&
-           vtkDICOMUtilities::CompareUIDs((*vi)->SeriesUID.GetCharData(),
-                                          seriesUID) == 0;
+    for (SeriesInfoVector::iterator vi = vib;
+         vi != seriesByUID.end() &&
+         vtkDICOMUtilities::CompareUIDs((*vi)->SeriesUID.GetCharData(),
+                                        seriesUID) == 0;
          ++vi)
     {
       SeriesInfo &v = *(*vi);
@@ -1502,7 +1503,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       // Use this image to begin a new series
       seriesList.push_back(SeriesInfo());
       SeriesInfo &v = seriesList.back();
-      seriesByUID.insert(vi, &v);
+      seriesByUID.insert(vib, &v);
       v.PatientName = meta->Get(DC::PatientName);
       v.PatientID = meta->Get(DC::PatientID);
       v.StudyDate = meta->Get(DC::StudyDate);
