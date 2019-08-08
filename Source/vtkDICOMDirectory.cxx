@@ -1312,9 +1312,9 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   // will be stored at patient, study, or series level instead
   SortedTags skip;
 
-  // List of files
-  SeriesInfoList sortedFiles;
-  SeriesInfoVector sortedVector;
+  // List of all series that have been found
+  SeriesInfoList seriesList; // in order of discovery
+  SeriesInfoVector seriesByUID; // sorted by UID
 
   vtkIdType numberOfStrings = input->GetNumberOfValues();
 
@@ -1399,7 +1399,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       continue;
     }
 
-    // Insert the file into the sorted list
+    // Create a FileInfo record and find the series it belongs to
     FileInfo fileInfo;
     fileInfo.InstanceNumber = meta->Get(DC::InstanceNumber).AsUnsignedInt();
     fileInfo.FileName = fileName.c_str(); // stored in input StringArray
@@ -1418,27 +1418,27 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
     // Locate the first potential match
     SeriesInfoVector::iterator vi =
-      std::lower_bound(sortedVector.begin(), sortedVector.end(), seriesUID,
+      std::lower_bound(seriesByUID.begin(), seriesByUID.end(), seriesUID,
                        CompareSeriesUIDs);
 
     // Iterate through all possible matches
-    for (; vi != sortedVector.end() &&
+    for (; vi != seriesByUID.end() &&
            vtkDICOMUtilities::CompareUIDs((*vi)->SeriesUID.GetCharData(),
                                           seriesUID) == 0;
          ++vi)
     {
-      SeriesInfo *li = *vi;
+      SeriesInfo &v = *(*vi);
 
       // For files that lack the mandatory SeriesInstanceUID,
       // we also check whether SeriesNumber is the same
       if ((seriesUID == 0 || seriesUID[0] == '\0') &&
-          seriesNumber != li->SeriesNumber)
+          seriesNumber != v.SeriesNumber)
       {
         continue;
       }
 
       // Ensure that the StudyInstanceUID also matches
-      if (vtkDICOMUtilities::CompareUIDs(li->StudyUID.GetCharData(),
+      if (vtkDICOMUtilities::CompareUIDs(v.StudyUID.GetCharData(),
                                          studyUID) != 0)
       {
         continue;
@@ -1446,19 +1446,19 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
       // Prepare to insert this file into the series
       std::vector<FileInfoPair>::iterator im =
-        std::lower_bound(li->FilesByUID.begin(), li->FilesByUID.end(),
+        std::lower_bound(v.FilesByUID.begin(), v.FilesByUID.end(),
           imageUID, CompareInstanceUIDs);
 
-      if (im != li->FilesByUID.end())
+      if (im != v.FilesByUID.end())
       {
         // Check if this SOPInstanceUID is a duplicate
         if (vtkDICOMUtilities::CompareUIDs(imageUID, im->Key) == 0)
         {
           // Duplicate UID! Check to see if it is the same file
           // (SameFile() is expensive, so check InstanceNumber first)
-          FileInfo *fip = im->Info;
-          if (fip->InstanceNumber == fileInfo.InstanceNumber &&
-              vtkDICOMFile::SameFile(fip->FileName, fileInfo.FileName))
+          FileInfo &f = *im->Info;
+          if (f.InstanceNumber == fileInfo.InstanceNumber &&
+              vtkDICOMFile::SameFile(f.FileName, fileInfo.FileName))
           {
             // Let's ignore this file
             sameFile = true;
@@ -1469,7 +1469,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
           {
             // If SOPInstanceUID is missing, advance iterator to end
             // (this is necessary to keep the sort stable)
-            do { ++im; } while (im != li->FilesByUID.end() &&
+            do { ++im; } while (im != v.FilesByUID.end() &&
                                 vtkDICOMUtilities::CompareUIDs(
                                   im->Key, imageUID) == 0);
           }
@@ -1482,11 +1482,11 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       }
 
       // Insert this image into the series and break
-      li->Files.push_back(fileInfo);
-      FileInfo *fip = &li->Files.back();
-      li->FilesByUID.insert(im, FileInfoPair(fip->ImageUID.GetCharData(), fip));
-      this->FillImageRecord(&fip->ImageRecord, meta, &skip[0], skip.size());
-      li->QueryMatched |= queryMatched;
+      v.Files.push_back(fileInfo);
+      FileInfo &f = v.Files.back();
+      v.FilesByUID.insert(im, FileInfoPair(f.ImageUID.GetCharData(), &f));
+      this->FillImageRecord(&f.ImageRecord, meta, &skip[0], skip.size());
+      v.QueryMatched |= queryMatched;
       foundSeries = true;
       break;
     }
@@ -1500,42 +1500,42 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     if (!foundSeries)
     {
       // Use this image to begin a new series
-      sortedFiles.push_back(SeriesInfo());
-      SeriesInfo *li = &sortedFiles.back();
-      sortedVector.insert(vi, li);
-      li->PatientName = meta->Get(DC::PatientName);
-      li->PatientID = meta->Get(DC::PatientID);
-      li->StudyDate = meta->Get(DC::StudyDate);
-      li->StudyTime = meta->Get(DC::StudyTime);
-      li->StudyUID = studyUIDValue;
-      li->SeriesUID = seriesUIDValue;
-      li->SeriesNumber = seriesNumber;
-      li->Files.push_back(fileInfo);
-      FileInfo *fip = &li->Files.back();
-      li->FilesByUID.push_back(FileInfoPair(fip->ImageUID.GetCharData(), fip));
-      li->QueryMatched = queryMatched;
-      this->FillPatientRecord(&li->PatientRecord, meta);
-      this->FillStudyRecord(&li->StudyRecord, meta);
-      this->FillSeriesRecord(&li->SeriesRecord, meta);
-      skip.SetFrom(li->PatientRecord, li->StudyRecord, li->SeriesRecord);
-      this->FillImageRecord(&fip->ImageRecord, meta, &skip[0], skip.size());
+      seriesList.push_back(SeriesInfo());
+      SeriesInfo &v = seriesList.back();
+      seriesByUID.insert(vi, &v);
+      v.PatientName = meta->Get(DC::PatientName);
+      v.PatientID = meta->Get(DC::PatientID);
+      v.StudyDate = meta->Get(DC::StudyDate);
+      v.StudyTime = meta->Get(DC::StudyTime);
+      v.StudyUID = studyUIDValue;
+      v.SeriesUID = seriesUIDValue;
+      v.SeriesNumber = seriesNumber;
+      v.Files.push_back(fileInfo);
+      FileInfo &f = v.Files.back();
+      v.FilesByUID.push_back(FileInfoPair(f.ImageUID.GetCharData(), &f));
+      v.QueryMatched = queryMatched;
+      this->FillPatientRecord(&v.PatientRecord, meta);
+      this->FillStudyRecord(&v.StudyRecord, meta);
+      this->FillSeriesRecord(&v.SeriesRecord, meta);
+      skip.SetFrom(v.PatientRecord, v.StudyRecord, v.SeriesRecord);
+      this->FillImageRecord(&f.ImageRecord, meta, &skip[0], skip.size());
     }
   }
 
   // Remove any series that do not match the query
-  sortedVector.clear();
-  SeriesInfoList::iterator li = sortedFiles.begin();
-  while (li != sortedFiles.end())
+  seriesByUID.clear();
+  SeriesInfoList::iterator li = seriesList.begin();
+  while (li != seriesList.end())
   {
     if (!li->QueryMatched)
     {
       SeriesInfoList::iterator ci = li;
       ++li;
-      sortedFiles.erase(ci);
+      seriesList.erase(ci);
     }
     else
     {
-      sortedVector.push_back(&(*li));
+      seriesByUID.push_back(&(*li));
       ++li;
     }
   }
@@ -1543,9 +1543,9 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   SeriesInfo *lastInfo = 0;
 
   // Force consistent PatientName, StudyDate, StudyTime
-  std::sort(sortedVector.begin(), sortedVector.end(), CompareSeriesIds);
-  for (std::vector<SeriesInfo *>::iterator vi = sortedVector.begin();
-       vi != sortedVector.end(); ++vi)
+  std::sort(seriesByUID.begin(), seriesByUID.end(), CompareSeriesIds);
+  for (SeriesInfoVector::iterator vi = seriesByUID.begin();
+       vi != seriesByUID.end(); ++vi)
   {
     SeriesInfo &v = *(*vi);
 
@@ -1568,7 +1568,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   }
 
   // Sort by PatientName, StudyDate, StudyTime, and SeriesNumber
-  sortedFiles.sort(CompareSeriesInfo);
+  seriesList.sort(CompareSeriesInfo);
 
   // Visit each series and call AddSeriesFileNames
   int patientCount = this->GetNumberOfPatients();
@@ -1576,7 +1576,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
   lastInfo = 0;
 
-  for (li = sortedFiles.begin(); li != sortedFiles.end(); ++li)
+  for (li = seriesList.begin(); li != seriesList.end(); ++li)
   {
     SeriesInfo &v = *li;
 
