@@ -102,9 +102,9 @@ void StringConversion(
       }
       else
       {
-        int d = 0;
+        OT d = 0;
         sbs >> d;
-        *v++ = static_cast<OT>(d);
+        *v++ = d;
       }
       if (k + 1 < n)
       {
@@ -1502,6 +1502,14 @@ void vtkDICOMValue::GetValuesT(VT *v, size_t c, size_t s) const
       NumericalConversion(
         static_cast<const ValueT<unsigned int> *>(this->V)->Data+s, v, c);
       break;
+    case VTK_LONG_LONG:
+      NumericalConversion(
+        static_cast<const ValueT<long long> *>(this->V)->Data+s, v, c);
+      break;
+    case VTK_UNSIGNED_LONG_LONG:
+      NumericalConversion(
+        static_cast<const ValueT<unsigned long long> *>(this->V)->Data+s, v, c);
+      break;
     case VTK_FLOAT:
       NumericalConversion(
         static_cast<const ValueT<float> *>(this->V)->Data+s, v, c);
@@ -1917,6 +1925,7 @@ std::string vtkDICOMValue::AsString() const
       this->V->VR != vtkDICOMVR::OW &&
       this->V->VR != vtkDICOMVR::OB &&
       this->V->VR != vtkDICOMVR::OL &&
+      this->V->VR != vtkDICOMVR::OV &&
       this->V->VR != vtkDICOMVR::OF &&
       this->V->VR != vtkDICOMVR::OD)
   {
@@ -2061,8 +2070,8 @@ void vtkDICOMValue::AppendValueToString(
   const char *cp = 0;
   const char *dp = 0;
   double f = 0.0;
-  int d = 0;
-  size_t u = 0;
+  long long d = 0;
+  unsigned long long u = 0;
   vtkDICOMTag a;
 
   if (this->V == 0)
@@ -2103,6 +2112,12 @@ void vtkDICOMValue::AppendValueToString(
       break;
     case VTK_UNSIGNED_INT:
       u = static_cast<const ValueT<unsigned int> *>(this->V)->Data[i];
+      break;
+    case VTK_LONG_LONG:
+      d = static_cast<const ValueT<long long> *>(this->V)->Data[i];
+      break;
+    case VTK_UNSIGNED_LONG_LONG:
+      u = static_cast<const ValueT<unsigned long long> *>(this->V)->Data[i];
       break;
     case VTK_FLOAT:
       f = static_cast<const ValueT<float> *>(this->V)->Data[i];
@@ -2227,11 +2242,13 @@ void vtkDICOMValue::AppendValueToString(
            this->V->Type == VTK_SHORT ||
            this->V->Type == VTK_UNSIGNED_SHORT ||
            this->V->Type == VTK_INT ||
-           this->V->Type == VTK_UNSIGNED_INT)
+           this->V->Type == VTK_UNSIGNED_INT ||
+           this->V->Type == VTK_LONG_LONG ||
+           this->V->Type == VTK_UNSIGNED_LONG_LONG)
   {
     // simple code to convert an integer to a string
-    char text[16];
-    size_t ti = 16;
+    char text[20];
+    size_t ti = 20;
 
     // if d is nonzero, set u to abs(d)
     if (d > 0)
@@ -2255,7 +2272,7 @@ void vtkDICOMValue::AppendValueToString(
       text[--ti] = '-';
     }
 
-    str.append(&text[ti], &text[16]);
+    str.append(&text[ti], &text[20]);
   }
   else if (this->V->Type == VTK_DICOM_TAG)
   {
@@ -2892,6 +2909,11 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
     // OL must match exactly
     match = ValueT<unsigned int>::Compare(value.V, this->V);
   }
+  else if (vr == vtkDICOMVR::OV)
+  {
+    // OV must match exactly
+    match = ValueT<unsigned int>::Compare(value.V, this->V);
+  }
   else if (vr == vtkDICOMVR::OF)
   {
     // OF must match exactly
@@ -2911,6 +2933,11 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
   {
     // Match if any value matches
     match = ValueT<int>::CompareEach(value.V, this->V);
+  }
+  else if (type == VTK_LONG_LONG || type == VTK_UNSIGNED_LONG_LONG)
+  {
+    // Match if any value matches
+    match = ValueT<long long>::CompareEach(value.V, this->V);
   }
   else if (type == VTK_FLOAT)
   {
@@ -2994,6 +3021,10 @@ bool vtkDICOMValue::operator==(const vtkDICOMValue& o) const
           case VTK_INT:
           case VTK_UNSIGNED_INT:
             r = ValueT<int>::Compare(a, b);
+            break;
+          case VTK_LONG_LONG:
+          case VTK_UNSIGNED_LONG_LONG:
+            r = ValueT<long long>::Compare(a, b);
             break;
           case VTK_FLOAT:
             r = ValueT<float>::Compare(a, b);
@@ -3092,6 +3123,10 @@ ostream& operator<<(ostream& os, const vtkDICOMValue& v)
   else if (vr == vtkDICOMVR::OL)
   {
     os << "longwords[" << m << "]";
+  }
+  else if (vr == vtkDICOMVR::OV)
+  {
+    os << "verylongwords[" << m << "]";
   }
   else if (vr == vtkDICOMVR::OF)
   {
