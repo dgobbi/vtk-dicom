@@ -1543,7 +1543,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
   SeriesInfo *lastInfo = 0;
 
-  // Force consistent PatientName, StudyDate, StudyTime
+  // Force consistent PatientName, StudyDate, StudyTime keys for sorting
   std::sort(seriesByUID.begin(), seriesByUID.end(), CompareSeriesIds);
   for (SeriesInfoVector::iterator vi = seriesByUID.begin();
        vi != seriesByUID.end(); ++vi)
@@ -1553,6 +1553,24 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     // Is this a new patient or a new study?
     if (!lastInfo || v.PatientID != lastInfo->PatientID)
     {
+      const char *cp = v.PatientName.GetCharData();
+      size_t l = v.PatientName.GetVL();
+      if (!cp)
+      {
+        // if PatientName key is missing, use PatientID as replacment
+        cp = v.PatientID.GetCharData();
+        l = v.PatientID.GetVL();
+      }
+      if (cp)
+      {
+        // Strip padding space
+        while (l > 0 && cp[l-1] == ' ') { --l; }
+        // Make PatientName key lower-case for case-insensitive sorting
+        vtkDICOMCharacterSet cs = v.PatientName.GetCharacterSet();
+        v.PatientName = vtkDICOMValue(
+          vtkDICOMVR::PN, vtkDICOMCharacterSet::ISO_IR_192,
+          cs.CaseFoldedUTF8(cp, l));
+      }
       lastInfo = &v;
     }
     else if (v.StudyUID != lastInfo->StudyUID)
