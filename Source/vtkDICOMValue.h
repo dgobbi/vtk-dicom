@@ -100,6 +100,8 @@ public:
   vtkDICOMValue(vtkDICOMVR vr, const unsigned short *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const int *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const unsigned int *data, size_t count);
+  vtkDICOMValue(vtkDICOMVR vr, const long long *data, size_t count);
+  vtkDICOMValue(vtkDICOMVR vr, const unsigned long long *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const float *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const double *data, size_t count);
   vtkDICOMValue(vtkDICOMVR vr, const vtkDICOMTag *data, size_t count);
@@ -224,6 +226,8 @@ public:
   void GetValues(unsigned short *vb, size_t n, size_t i=0) const;
   void GetValues(int *vb, size_t n, size_t i=0) const;
   void GetValues(unsigned int *vb, size_t n, size_t i=0) const;
+  void GetValues(long long *vb, size_t n, size_t i=0) const;
+  void GetValues(unsigned long long *vb, size_t n, size_t i=0) const;
   void GetValues(float *vb, size_t n, size_t i=0) const;
   void GetValues(double *vb, size_t n, size_t i=0) const;
   void GetValues(vtkDICOMTag *vb, size_t n, size_t i=0) const;

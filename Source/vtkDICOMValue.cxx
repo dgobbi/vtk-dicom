@@ -942,6 +942,18 @@ vtkDICOMValue::vtkDICOMValue(
 }
 
 vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const long long *data, size_t count)
+{
+  this->CreateValue(vr, data, count);
+}
+
+vtkDICOMValue::vtkDICOMValue(
+  vtkDICOMVR vr, const unsigned long long *data, size_t count)
+{
+  this->CreateValue(vr, data, count);
+}
+
+vtkDICOMValue::vtkDICOMValue(
   vtkDICOMVR vr, const float *data, size_t count)
 {
   this->CreateValue(vr, data, count);
@@ -1585,6 +1597,18 @@ void vtkDICOMValue::GetValues(int *v, size_t c, size_t s) const
 }
 
 void vtkDICOMValue::GetValues(unsigned int *v, size_t c, size_t s) const
+{
+  assert((s + c) <= this->V->NumberOfValues);
+  this->GetValuesT(v, c, s);
+}
+
+void vtkDICOMValue::GetValues(long long *v, size_t c, size_t s) const
+{
+  assert((s + c) <= this->V->NumberOfValues);
+  this->GetValuesT(v, c, s);
+}
+
+void vtkDICOMValue::GetValues(unsigned long long *v, size_t c, size_t s) const
 {
   assert((s + c) <= this->V->NumberOfValues);
   this->GetValuesT(v, c, s);
