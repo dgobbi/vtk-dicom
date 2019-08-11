@@ -384,6 +384,9 @@ public:
   // Returns true if all queries have matched so far.
   bool GetQueryMatched() { return this->QueryMatched; }
 
+  // Check whether the query is finished.
+  bool GetQueryFinished() { return this->Query == this->QueryEnd; }
+
   // Finish the query (check for unused keys that must match).
   bool FinishQuery();
 
@@ -2216,6 +2219,17 @@ bool vtkDICOMParser::ReadMetaData(
         else
         {
           meta->Set(lastTag, vtkDICOMValue(lastVR));
+        }
+      }
+
+      // if all attributes in the query have been scanned, then break now
+      // to avoid seeking through the pixel data fragments
+      if (hasQuery && this->PixelDataFound)
+      {
+        decoder->AdvanceQueryIterator(lastTag);
+        if (decoder->GetQueryFinished())
+        {
+          break;
         }
       }
 
