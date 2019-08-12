@@ -2140,42 +2140,47 @@ bool vtkDICOMParser::ReadMetaData(
   bool readFailure = false;
   while (!readFailure)
   {
-    vtkDICOMTag tag = decoder->Peek(cp, ep);
+    // peek ahead to get the next tag
+    vtkDICOMTag nextTag = decoder->Peek(cp, ep);
 
     // if there is no data left to decode, then break
     if (cp == ep) { break; }
 
     // do we want to read or skip this group?
-    bool found = true;
+    bool skipGroup = false;
     if (!groups.empty())
     {
-      while (giter != groups.end() && *giter < tag.GetGroup())
+      while (giter != groups.end() && *giter < nextTag.GetGroup())
       {
         ++giter;
       }
-      found = (giter != groups.end() && *giter == tag.GetGroup());
+      skipGroup = (giter == groups.end() || *giter != nextTag.GetGroup());
     }
 
     // create a delimiter to read/skip only this group
-    vtkDICOMTag delimiter(tag.GetGroup(), 0);
+    vtkDICOMTag delimiter(nextTag.GetGroup(), 0);
 
-    // check for PixelData group 0x7fe0, or obsolete 0x7fxx
+    // check for PixelData group 0x7fe0, or obsolete 0x7fxx, but do not
+    // accept private groups like 7fe1
     unsigned int l = HxFFFFFFFF;
-    if ((tag.GetGroup() & 0xff01) == 0x7f00)
+    if ((nextTag.GetGroup() & 0xff01) == 0x7f00)
     {
-      if (tag.GetElement() == 0x0000)
+      if (nextTag.GetElement() == 0x0000)
       {
-        // have to read "group length" before pixel data
+        // this is a "group length" tag, we want to read exactly
+        // 12 bytes to get to the next element (the pixel data)
         l = 12;
       }
       else
       {
-        // set delimiter to pixel data tag
-        delimiter = tag;
+        // this tag is pixel data, so we want to read the data
+        // element header for this tag and then stop
+        delimiter = nextTag;
       }
     }
 
-    if (found && meta)
+    // read or skip this group of data elements
+    if (meta && !skipGroup)
     {
       readFailure = !decoder->ReadElements(cp, ep, l, delimiter);
     }
