@@ -41,6 +41,7 @@ set(LIB_SRCS
   vtkDICOMFilePath.cxx
   vtkDICOMFile.cxx
   vtkDICOMFileDirectory.cxx
+  vtkDICOMFileWalker.cxx
   vtkDICOMTag.cxx
   vtkDICOMTagPath.cxx
   vtkDICOMVR.cxx
