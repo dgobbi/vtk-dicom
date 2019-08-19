@@ -51,11 +51,31 @@ public:
    */
   vtkDICOMFileDirectory(const char *dirname);
 
+  //! Default constructor, no path and no contents.
+  vtkDICOMFileDirectory();
+
   //! Copy constructor.
   vtkDICOMFileDirectory(const vtkDICOMFileDirectory&);
 
   //! Destruct the object.
   ~vtkDICOMFileDirectory();
+  //@}
+
+  //@{
+  //! Open the directory at the specified path.
+  /*!
+   *  Any trailing slash, if present, will be removed.
+   */
+  void SetPath(const char *dirname);
+
+  //! Open the directory at the specified path.
+  /*!
+   *  Any trailing slash, if present, will be removed.
+   */
+  void SetPath(const std::string &dirname);
+
+  //! Get the path to this directory.
+  const std::string& GetPath() { return this->Path; }
   //@}
 
   //@{
@@ -135,7 +155,7 @@ private:
   static const unsigned int TypeBroken = 8;
   static const unsigned int TypeHidden = 16;
 
-  std::string Name;
+  std::string Path;
   int Error;
   int NumberOfEntries;
   Entry *Entries;

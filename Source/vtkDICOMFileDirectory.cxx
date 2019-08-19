@@ -50,11 +50,23 @@ struct vtkDICOMFileDirectory::Entry
 };
 
 //----------------------------------------------------------------------------
-vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
-  : Name(dirname), Error(0), NumberOfEntries(0), Entries(0)
+void vtkDICOMFileDirectory::SetPath(const char *dirname)
 {
-#ifdef _WIN32
+  delete [] this->Entries;
+  this->Entries = 0;
+  this->NumberOfEntries = 0;
+  this->Error = 0;
+
+  if (dirname == 0)
+  {
+    return;
+  }
+
+  // normalize the path
   vtkDICOMFilePath path(dirname);
+  this->Path = path.AsString();
+
+#ifdef _WIN32
   path.PushBack("*");
   const wchar_t *widename = path.Wide();
   if (widename == 0)
@@ -163,8 +175,26 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
 }
 
 //----------------------------------------------------------------------------
+vtkDICOMFileDirectory::vtkDICOMFileDirectory()
+  : Error(0), NumberOfEntries(0), Entries(0)
+{
+}
+
+//----------------------------------------------------------------------------
+vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
+{
+  SetPath(dirname);
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMFileDirectory::SetPath(const std::string& dirname)
+{
+  SetPath(dirname.c_str());
+}
+
+//----------------------------------------------------------------------------
 vtkDICOMFileDirectory::vtkDICOMFileDirectory(const vtkDICOMFileDirectory& o)
-  : Name(o.Name), Error(o.Error), NumberOfEntries(0), Entries(0)
+  : Path(o.Path), Error(o.Error), NumberOfEntries(0), Entries(0)
 {
   if (o.Entries && o.NumberOfEntries)
   {
@@ -184,7 +214,7 @@ vtkDICOMFileDirectory& vtkDICOMFileDirectory::operator=(
   {
     delete [] this->Entries;
 
-    this->Name = o.Name;
+    this->Path = o.Path;
     this->Error = o.Error;
     this->NumberOfEntries = 0;
     this->Entries = 0;
@@ -342,7 +372,7 @@ void vtkDICOMFileDirectory::StatEntry(int i)
   if (i >= 0 && i < this->NumberOfEntries)
   {
     struct stat fs;
-    vtkDICOMFilePath path(this->Name);
+    vtkDICOMFilePath path(this->Path);
     path.PushBack(this->Entries[i].Name);
     if (stat(path.AsString().c_str(), &fs) == 0)
     {
@@ -382,7 +412,7 @@ void vtkDICOMFileDirectory::LinkStatEntry(int i)
   if (i >= 0 && i < this->NumberOfEntries)
   {
     struct stat fs;
-    vtkDICOMFilePath path(this->Name);
+    vtkDICOMFilePath path(this->Path);
     path.PushBack(this->Entries[i].Name);
     if (lstat(path.AsString().c_str(), &fs) == 0)
     {
