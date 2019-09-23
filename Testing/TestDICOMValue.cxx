@@ -574,7 +574,6 @@ int main(int argc, char *argv[])
   TestAssert(!v.Matches(u));
 
   // test comparison with character sets
-  std::string s;
   v = vtkDICOMValue(
     vtkDICOMVR::LO, vtkDICOMCharacterSet("ISO 2022 IR 13\\ISO 2022 IR 87"),
     "\xd4\xcf\xc0\xde^\xc0\xdb\xb3\\\x1b$B;3ED\x1b(J^\x1b$BB@O:\x1b(J");

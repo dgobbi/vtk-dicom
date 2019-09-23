@@ -340,12 +340,11 @@ bool dicomcli_readkey_query(
   // read the DICOM vr
   vtkDICOMVR vr;
 
-  size_t vrStart = s;
   size_t vrEnd = s;
   if (s < n && cp[s] == ':')
   {
     s++;
-    vrStart = s;
+    size_t vrStart = s;
     vrEnd = s;
     if (n - s >= 2)
     {
@@ -422,7 +421,6 @@ bool dicomcli_readkey_query(
     keyHasAssignment = true;
     s++;
     valueStart = s;
-    valueEnd = s;
     if (s < n && qfile && cp[s] == '\"')
     {
       char delim = cp[s++];
@@ -445,10 +443,6 @@ bool dicomcli_readkey_query(
         s++;
       }
       valueEnd = s;
-      if (s < n)
-      {
-        s++;
-      }
     }
     else
     {
@@ -526,7 +520,7 @@ bool dicomcli_readkey_query(
     }
   }
 
-  return !tagError;
+  return true;
 }
 
 bool dicomcli_readkey(

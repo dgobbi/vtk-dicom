@@ -335,7 +335,7 @@ bool Arguments::ExpandArgs(int argc, wchar_t *argv[], const char *passthrough)
                 // Append wildcard result to the directory.
                 wchar_t *result;
                 size_t n = 0;
-                while (data.cFileName[n] != 0 && n < MAX_PATH) {
+                while (n < MAX_PATH && data.cFileName[n] != 0) {
                   n++;
                 }
                 // Ensure that the true filename matches the wildcards.
