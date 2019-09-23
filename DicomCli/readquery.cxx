@@ -43,6 +43,9 @@ public:
   size_t ReadLine(std::string *s);
 
 private:
+  LineReader(const LineReader&); // = delete;
+  LineReader& operator=(const LineReader&); // = delete;
+
   vtkDICOMFile *File;
   size_t BufferSize;
   unsigned char *Buffer;
