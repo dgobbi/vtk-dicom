@@ -1685,13 +1685,59 @@ private:
 
 bool SimpleSQL::Open(const char *fname)
 {
-  int r = sqlite3_open_v2(fname, &this->DBase, SQLITE_OPEN_READONLY, NULL);
+  // convert to URI for use with sqlite3_open()
+  const char uri_reserved[] = " !#$%&'()*+,:;=?@[]";
+
+  // first, get absolute path
+  vtkDICOMFilePath path(fname);
+  std::string fullpath = path.GetRealPath();
+
+  // build the URI using percent encoding
+  std::string uri = "file://";
+
+  for (size_t i = 0; i < fullpath.length(); i++)
+  {
+    bool use_percent = false;
+    char c = fullpath[i];
+    if (c < ' ' || c > '~')
+    {
+      use_percent = true;
+    }
+    else for (size_t j = 0; j < sizeof(uri_reserved); j++)
+    {
+      if (c == uri_reserved[j])
+      {
+        use_percent = true;
+        break;
+      }
+    }
+
+    if (use_percent)
+    {
+      char enc[4];
+      sprintf(enc, "%%%2.2x", static_cast<unsigned char>(c));
+      uri += enc;
+    }
+    else
+    {
+      uri.push_back(c);
+    }
+  }
+
+  // we need to use "immutable" or else a read-only open will fail
+  // if the .sql-wal file is missing (and we definitely want to open
+  // the file in read-only mode, we never ever wish to modify the file!)
+  uri += "?mode=ro&immutable=1";
+
+  int r = sqlite3_open_v2(uri.c_str(), &this->DBase,
+                          SQLITE_OPEN_READONLY|SQLITE_OPEN_URI, 0);
   if (r == SQLITE_OK)
   {
     char *errmsg;
     r = sqlite3_exec(this->DBase, "BEGIN TRANSACTION", NULL, NULL, &errmsg);
     this->InTransaction = (r == SQLITE_OK);
   }
+
   return (r == SQLITE_OK);
 }
 
