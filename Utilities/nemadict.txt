@@ -58,6 +58,48 @@ ReceivingApplicationEntityTitle
 AE
 1
 
+(0002,0031)
+RTV Meta Information Version
+RTVMetaInformationVersion
+OB
+1
+
+(0002,0032)
+RTV Communication SOP Class UID
+RTVCommunicationSOPClassUID
+UI
+1
+
+(0002,0033)
+RTV Communication SOP Instance UID
+RTVCommunicationSOPInstanceUID
+UI
+1
+
+(0002,0035)
+RTV Source Identifier
+RTVSourceIdentifier
+OB
+1
+
+(0002,0036)
+RTV Flow Identifier
+RTVFlowIdentifier
+OB
+1
+
+(0002,0037)
+RTV Flow RTP Sampling Rate
+RTVFlowRTPSamplingRate
+UL
+1
+
+(0002,0038)
+RTV Flow Actual Frame Duration
+RTVFlowActualFrameDuration
+FD
+1
+
 (0002,0100)
 Private Information Creator UID
 PrivateInformationCreatorUID
@@ -184,6 +226,12 @@ NumberOfReferences
 UL
 1
 RET
+(0006,0001)
+Current Frame Functional Groups Sequence
+CurrentFrameFunctionalGroupsSequence
+SQ
+1
+
 (0008,0001)
 Length to End
 LengthToEnd
@@ -4234,6 +4282,12 @@ UDISequence
 SQ
 1
 
+(0018,100B)
+Manufacturer's Device Class UID
+ManufacturerDeviceClassUID
+UI
+1-n
+
 (0018,1010)
 Secondary Capture Device ID
 SecondaryCaptureDeviceID
@@ -5235,6 +5289,60 @@ Shutter Presentation Color CIELab Value
 ShutterPresentationColorCIELabValue
 US
 3
+
+(0018,1630)
+Outline Shape Type
+OutlineShapeType
+CS
+1
+
+(0018,1631)
+Outline Left Vertical Edge
+OutlineLeftVerticalEdge
+FD
+1
+
+(0018,1632)
+Outline Right Vertical Edge
+OutlineRightVerticalEdge
+FD
+1
+
+(0018,1633)
+Outline Upper Horizontal Edge
+OutlineUpperHorizontalEdge
+FD
+1
+
+(0018,1634)
+Outline Lower Horizontal Edge
+OutlineLowerHorizontalEdge
+FD
+1
+
+(0018,1635)
+Center of Circular Outline
+CenterOfCircularOutline
+FD
+2
+
+(0018,1636)
+Diameter of Circular Outline
+DiameterOfCircularOutline
+FD
+1
+
+(0018,1637)
+Number of Polygonal Vertices
+NumberOfPolygonalVertices
+UL
+1
+
+(0018,1638)
+Vertices of the Polygonal Outline
+VerticesOfThePolygonalOutline
+OF
+1
 
 (0018,1700)
 Collimator Shape
@@ -7403,13 +7511,13 @@ CS
 1
 
 (0018,9369)
-Source Start Date Time
+Source Start DateTime
 SourceStartDateTime
 DT
 1
 
 (0018,936A)
-Source End Date Time
+Source End DateTime
 SourceEndDateTime
 DT
 1
@@ -12952,6 +13060,78 @@ StudyComments
 LT
 1
 RET
+(0034,0001)
+Flow Identifier Sequence
+FlowIdentifierSequence
+SQ
+1
+
+(0034,0002)
+Flow Identifier
+FlowIdentifier
+OB
+1
+
+(0034,0003)
+Flow Transfer Syntax UID
+FlowTransferSyntaxUID
+UI
+1
+
+(0034,0004)
+Flow RTP Sampling Rate
+FlowRTPSamplingRate
+UL
+1
+
+(0034,0005)
+Source Identifier
+SourceIdentifier
+OB
+1
+
+(0034,0007)
+Frame Origin Timestamp
+FrameOriginTimestamp
+OB
+1
+
+(0034,0008)
+Includes Imaging Subject
+IncludesImagingSubject
+CS
+1
+
+(0034,0009)
+Frame Usefulness Group Sequence
+FrameUsefulnessGroupSequence
+SQ
+1
+
+(0034,000A)
+Real-Time Bulk Data Flow Sequence
+RealTimeBulkDataFlowSequence
+SQ
+1
+
+(0034,000B)
+Camera Position Group Sequence
+CameraPositionGroupSequence
+SQ
+1
+
+(0034,000C)
+Includes Information
+IncludesInformation
+CS
+1
+
+(0034,000D)
+Time of Frame Group Sequence
+TimeOfFrameGroupSequence
+SQ
+1
+
 (0038,0004)
 Referenced Patient Alias Sequence
 ReferencedPatientAliasSequence
@@ -22336,6 +22516,24 @@ FrameOfReferenceTransformationComment
 LO
 1
 
+(3006,00C9)
+Patient Location Coordinates Sequence
+PatientLocationCoordinatesSequence
+SQ
+1
+
+(3006,00CA)
+Patient Location Coordinates Code Sequence
+PatientLocationCoordinatesCodeSequence
+SQ
+1
+
+(3006,00CB)
+Patient Support Position Sequence
+PatientSupportPositionSequence
+SQ
+1
+
 (3008,0010)
 Measured Dose Reference Sequence
 MeasuredDoseReferenceSequence
@@ -23235,7 +23433,7 @@ Beam Dose Specification Point
 BeamDoseSpecificationPoint
 DS
 3
-
+RET
 (300A,0083)
 Referenced Dose Reference UID
 ReferencedDoseReferenceUID
@@ -25304,6 +25502,834 @@ CS
 Reference Dose Definition
 ReferenceDoseDefinition
 CS
+1
+
+(300A,0600)
+RT Control Point Index
+RTControlPointIndex
+US
+1
+
+(300A,0601)
+Radiation Generation Mode Index
+RadiationGenerationModeIndex
+US
+1
+
+(300A,0602)
+Referenced Defined Device Index
+ReferencedDefinedDeviceIndex
+US
+1
+
+(300A,0603)
+Radiation Dose Identification Index
+RadiationDoseIdentificationIndex
+US
+1
+
+(300A,0604)
+Number of RT Control Points
+NumberOfRTControlPoints
+US
+1
+
+(300A,0605)
+Referenced Radiation Generation Mode Index
+ReferencedRadiationGenerationModeIndex
+US
+1
+
+(300A,0606)
+Treatment Position Index
+TreatmentPositionIndex
+US
+1
+
+(300A,0607)
+Referenced Device Index
+ReferencedDeviceIndex
+US
+1
+
+(300A,0608)
+Treatment Position Group Label
+TreatmentPositionGroupLabel
+LO
+1
+
+(300A,0609)
+Treatment Position Group UID
+TreatmentPositionGroupUID
+UI
+1
+
+(300A,060A)
+Treatment Position Group Sequence
+TreatmentPositionGroupSequence
+SQ
+1
+
+(300A,060B)
+Referenced Treatment Position Index
+ReferencedTreatmentPositionIndex
+US
+1
+
+(300A,060C)
+Referenced Radiation Dose Identification Index
+ReferencedRadiationDoseIdentificationIndex
+US
+1
+
+(300A,060D)
+RT Accessory Holder Water-Equivalent Thickness
+RTAccessoryHolderWaterEquivalentThickness
+FD
+1
+
+(300A,060E)
+Referenced RT Accessory Holder Device Index
+ReferencedRTAccessoryHolderDeviceIndex
+US
+1
+
+(300A,060F)
+RT Accessory Holder Slot Existence Flag
+RTAccessoryHolderSlotExistenceFlag
+CS
+1
+
+(300A,0610)
+RT Accessory Holder Slot Sequence
+RTAccessoryHolderSlotSequence
+SQ
+1
+
+(300A,0611)
+RT Accessory Holder Slot ID
+RTAccessoryHolderSlotID
+LO
+1
+
+(300A,0612)
+RT Accessory Holder Slot Distance
+RTAccessoryHolderSlotDistance
+FD
+1
+
+(300A,0613)
+RT Accessory Slot Distance
+RTAccessorySlotDistance
+FD
+1
+
+(300A,0614)
+RT Accessory Holder Definition Sequence
+RTAccessoryHolderDefinitionSequence
+SQ
+1
+
+(300A,0615)
+RT Accessory Device Slot ID
+RTAccessoryDeviceSlotID
+LO
+1
+
+(300A,0616)
+RT Radiation Sequence
+RTRadiationSequence
+SQ
+1
+
+(300A,0617)
+Radiation Dose Sequence
+RadiationDoseSequence
+SQ
+1
+
+(300A,0618)
+Radiation Dose Identification Sequence
+RadiationDoseIdentificationSequence
+SQ
+1
+
+(300A,0619)
+Radiation Dose Identification Label
+RadiationDoseIdentificationLabel
+LO
+1
+
+(300A,061A)
+Reference Dose Type
+ReferenceDoseType
+CS
+1
+
+(300A,061B)
+Primary Dose Value Indicator
+PrimaryDoseValueIndicator
+CS
+1
+
+(300A,061C)
+Dose Values Sequence
+DoseValuesSequence
+SQ
+1
+
+(300A,061D)
+Dose Value Purpose
+DoseValuePurpose
+CS
+1-n
+
+(300A,061E)
+Reference Dose Point Coordinates
+ReferenceDosePointCoordinates
+FD
+3
+
+(300A,061F)
+Radiation Dose Values Parameters Sequence
+RadiationDoseValuesParametersSequence
+SQ
+1
+
+(300A,0620)
+Meterset to Dose Mapping Sequence
+MetersetToDoseMappingSequence
+SQ
+1
+
+(300A,0621)
+Expected In-Vivo Measurement Values Sequence
+ExpectedInVivoMeasurementValuesSequence
+SQ
+1
+
+(300A,0622)
+Expected In-Vivo Measurement Value Index
+ExpectedInVivoMeasurementValueIndex
+US
+1
+
+(300A,0623)
+Radiation Dose In-Vivo Measurement Label
+RadiationDoseInVivoMeasurementLabel
+LO
+1
+
+(300A,0624)
+Radiation Dose Central Axis Displacement
+RadiationDoseCentralAxisDisplacement
+FD
+2
+
+(300A,0625)
+Radiation Dose Value
+RadiationDoseValue
+FD
+1
+
+(300A,0626)
+Radiation Dose Source to Skin Distance
+RadiationDoseSourceToSkinDistance
+FD
+1
+
+(300A,0627)
+Radiation Dose Measurement Point Coordinates
+RadiationDoseMeasurementPointCoordinates
+FD
+3
+
+(300A,0628)
+Radiation Dose Source to External Contour Distance
+RadiationDoseSourceToExternalContourDistance
+FD
+1
+
+(300A,0629)
+RT Tolerance Set Sequence
+RTToleranceSetSequence
+SQ
+1
+
+(300A,062A)
+RT Tolerance Set Label
+RTToleranceSetLabel
+LO
+1
+
+(300A,062B)
+Attribute Tolerance Values Sequence
+AttributeToleranceValuesSequence
+SQ
+1
+
+(300A,062C)
+Tolerance Value
+ToleranceValue
+FD
+1
+
+(300A,062D)
+Patient Support Position Tolerance Sequence
+PatientSupportPositionToleranceSequence
+SQ
+1
+
+(300A,062E)
+Treatment Time Limit
+TreatmentTimeLimit
+FD
+1
+
+(300A,062F)
+C-Arm Photon-Electron Control Point Sequence
+CArmPhotonElectronControlPointSequence
+SQ
+1
+
+(300A,0630)
+Referenced RT Radiation Sequence
+ReferencedRTRadiationSequence
+SQ
+1
+
+(300A,0631)
+Referenced RT Instance Sequence
+ReferencedRTInstanceSequence
+SQ
+1
+
+(300A,0632)
+Referenced RT Patient Setup Sequence
+ReferencedRTPatientSetupSequence
+SQ
+1
+
+(300A,0634)
+Source to Patient Surface Distance
+SourceToPatientSurfaceDistance
+FD
+1
+
+(300A,0635)
+Treatment Machine Special Mode Code Sequence
+TreatmentMachineSpecialModeCodeSequence
+SQ
+1
+
+(300A,0636)
+Intended Number of Fractions
+IntendedNumberOfFractions
+US
+1
+
+(300A,0637)
+RT Radiation Set Intent
+RTRadiationSetIntent
+CS
+1
+
+(300A,0638)
+RT Radiation Physical and Geometric Content Detail Flag
+RTRadiationPhysicalAndGeometricContentDetailFlag
+CS
+1
+
+(300A,0639)
+RT Record Flag
+RTRecordFlag
+CS
+1
+
+(300A,063A)
+Treatment Device Identification Sequence
+TreatmentDeviceIdentificationSequence
+SQ
+1
+
+(300A,063B)
+Referenced RT Physician Intent Sequence
+ReferencedRTPhysicianIntentSequence
+SQ
+1
+
+(300A,063C)
+Cumulative Meterset
+CumulativeMeterset
+FD
+1
+
+(300A,063D)
+Delivery Rate
+DeliveryRate
+FD
+1
+
+(300A,063E)
+Delivery Rate Unit Sequence
+DeliveryRateUnitSequence
+SQ
+1
+
+(300A,063F)
+Treatment Position Sequence
+TreatmentPositionSequence
+SQ
+1
+
+(300A,0640)
+Radiation Source-Axis Distance
+RadiationSourceAxisDistance
+FD
+1
+
+(300A,0641)
+Number of RT Beam Limiting Devices
+NumberOfRTBeamLimitingDevices
+US
+1
+
+(300A,0642)
+RT Beam Limiting Device Proximal Distance
+RTBeamLimitingDeviceProximalDistance
+FD
+1
+
+(300A,0643)
+RT Beam Limiting Device Distal Distance
+RTBeamLimitingDeviceDistalDistance
+FD
+1
+
+(300A,0644)
+Parallel RT Beam Delimiter Device Orientation Label Code Sequence
+ParallelRTBeamDelimiterDeviceOrientationLabelCodeSequence
+SQ
+1
+
+(300A,0645)
+Beam Modifier Orientation Angle
+BeamModifierOrientationAngle
+FD
+1
+
+(300A,0646)
+Fixed RT Beam Delimiter Device Sequence
+FixedRTBeamDelimiterDeviceSequence
+SQ
+1
+
+(300A,0647)
+Parallel RT Beam Delimiter Device Sequence
+ParallelRTBeamDelimiterDeviceSequence
+SQ
+1
+
+(300A,0648)
+Number of Parallel RT Beam Delimiters
+NumberOfParallelRTBeamDelimiters
+US
+1
+
+(300A,0649)
+Parallel RT Beam Delimiter Boundaries
+ParallelRTBeamDelimiterBoundaries
+FD
+2-n
+
+(300A,064A)
+Parallel RT Beam Delimiter Positions
+ParallelRTBeamDelimiterPositions
+FD
+2-n
+
+(300A,064B)
+RT Beam Limiting Device Offset
+RTBeamLimitingDeviceOffset
+FD
+2
+
+(300A,064C)
+RT Beam Delimiter Geometry Sequence
+RTBeamDelimiterGeometrySequence
+SQ
+1
+
+(300A,064D)
+RT Beam Limiting Device Definition Sequence
+RTBeamLimitingDeviceDefinitionSequence
+SQ
+1
+
+(300A,064E)
+Parallel RT Beam Delimiter Opening Mode
+ParallelRTBeamDelimiterOpeningMode
+CS
+1
+
+(300A,064F)
+Parallel RT Beam Delimiter Leaf Mounting Side
+ParallelRTBeamDelimiterLeafMountingSide
+CS
+1-n
+
+(300A,0650)
+Patient Setup UID
+PatientSetupUID
+UI
+1
+
+(300A,0651)
+Wedge Definition Sequence
+WedgeDefinitionSequence
+SQ
+1
+
+(300A,0652)
+Radiation Beam Wedge Angle
+RadiationBeamWedgeAngle
+FD
+1
+
+(300A,0653)
+Radiation Beam Wedge Thin Edge Distance
+RadiationBeamWedgeThinEdgeDistance
+FD
+1
+
+(300A,0654)
+Radiation Beam Effective Wedge Angle
+RadiationBeamEffectiveWedgeAngle
+FD
+1
+
+(300A,0655)
+Number of Wedge Positions
+NumberOfWedgePositions
+US
+1
+
+(300A,0656)
+RT Beam Limiting Device Opening Sequence
+RTBeamLimitingDeviceOpeningSequence
+SQ
+1
+
+(300A,0657)
+Number of RT Beam Limiting Device Openings
+NumberOfRTBeamLimitingDeviceOpenings
+US
+1
+
+(300A,0658)
+Radiation Dosimeter Unit Sequence
+RadiationDosimeterUnitSequence
+SQ
+1
+
+(300A,0659)
+RT Device Distance Reference Location Code Sequence
+RTDeviceDistanceReferenceLocationCodeSequence
+SQ
+1
+
+(300A,065A)
+Radiation Device Configuration and Commissioning Key Sequence
+RadiationDeviceConfigurationAndCommissioningKeySequence
+SQ
+1
+
+(300A,065B)
+Patient Support Position Parameter Sequence
+PatientSupportPositionParameterSequence
+SQ
+1
+
+(300A,065C)
+Patient Support Position Specification Method
+PatientSupportPositionSpecificationMethod
+CS
+1
+
+(300A,065D)
+Patient Support Position Device Parameter Sequence
+PatientSupportPositionDeviceParameterSequence
+SQ
+1
+
+(300A,065E)
+Device Order Index
+DeviceOrderIndex
+US
+1
+
+(300A,065F)
+Patient Support Position Parameter Order Index
+PatientSupportPositionParameterOrderIndex
+US
+1
+
+(300A,0660)
+Patient Support Position Device Tolerance Sequence
+PatientSupportPositionDeviceToleranceSequence
+SQ
+1
+
+(300A,0661)
+Patient Support Position Tolerance Order Index
+PatientSupportPositionToleranceOrderIndex
+US
+1
+
+(300A,0662)
+Compensator Definition Sequence
+CompensatorDefinitionSequence
+SQ
+1
+
+(300A,0663)
+Compensator Map Orientation
+CompensatorMapOrientation
+CS
+1
+
+(300A,0664)
+Compensator Proximal Thickness Map
+CompensatorProximalThicknessMap
+OF
+1
+
+(300A,0665)
+Compensator Distal Thickness Map
+CompensatorDistalThicknessMap
+OF
+1
+
+(300A,0666)
+Compensator Base Plane Offset
+CompensatorBasePlaneOffset
+FD
+1
+
+(300A,0667)
+Compensator Shape Fabrication Code Sequence
+CompensatorShapeFabricationCodeSequence
+SQ
+1
+
+(300A,0668)
+Compensator Shape Sequence
+CompensatorShapeSequence
+SQ
+1
+
+(300A,0669)
+Radiation Beam Compensator Milling Tool Diameter
+RadiationBeamCompensatorMillingToolDiameter
+FD
+1
+
+(300A,066A)
+Block Definition Sequence
+BlockDefinitionSequence
+SQ
+1
+
+(300A,066B)
+Block Edge Data
+BlockEdgeData
+OF
+1
+
+(300A,066C)
+Block Orientation
+BlockOrientation
+CS
+1
+
+(300A,066D)
+Radiation Beam Block Thickness
+RadiationBeamBlockThickness
+FD
+1
+
+(300A,066E)
+Radiation Beam Block Slab Thickness
+RadiationBeamBlockSlabThickness
+FD
+1
+
+(300A,066F)
+Block Edge Data Sequence
+BlockEdgeDataSequence
+SQ
+1
+
+(300A,0670)
+Number of RT Accessory Holders
+NumberOfRTAccessoryHolders
+US
+1
+
+(300A,0671)
+General Accessory Definition Sequence
+GeneralAccessoryDefinitionSequence
+SQ
+1
+
+(300A,0672)
+Number of General Accessories
+NumberOfGeneralAccessories
+US
+1
+
+(300A,0673)
+Bolus Definition Sequence
+BolusDefinitionSequence
+SQ
+1
+
+(300A,0674)
+Number of Boluses
+NumberOfBoluses
+US
+1
+
+(300A,0675)
+Equipment Frame of Reference UID
+EquipmentFrameOfReferenceUID
+UI
+1
+
+(300A,0676)
+Equipment Frame of Reference Description
+EquipmentFrameOfReferenceDescription
+ST
+1
+
+(300A,0677)
+Equipment Reference Point Coordinates Sequence
+EquipmentReferencePointCoordinatesSequence
+SQ
+1
+
+(300A,0678)
+Equipment Reference Point Code Sequence
+EquipmentReferencePointCodeSequence
+SQ
+1
+
+(300A,0679)
+RT Beam Limiting Device Angle
+RTBeamLimitingDeviceAngle
+FD
+1
+
+(300A,067A)
+Source Roll Angle
+SourceRollAngle
+FD
+1
+
+(300A,067B)
+Radiation GenerationMode Sequence
+RadiationGenerationModeSequence
+SQ
+1
+
+(300A,067C)
+Radiation GenerationMode Label
+RadiationGenerationModeLabel
+SH
+1
+
+(300A,067D)
+Radiation GenerationMode Description
+RadiationGenerationModeDescription
+ST
+1
+
+(300A,067E)
+Radiation GenerationMode Machine Code Sequence
+RadiationGenerationModeMachineCodeSequence
+SQ
+1
+
+(300A,067F)
+Radiation Type Code Sequence
+RadiationTypeCodeSequence
+SQ
+1
+
+(300A,0680)
+Nominal Energy
+NominalEnergy
+DS
+1
+
+(300A,0681)
+Minimum Nominal Energy
+MinimumNominalEnergy
+DS
+1
+
+(300A,0682)
+Maximum Nominal Energy
+MaximumNominalEnergy
+DS
+1
+
+(300A,0683)
+Radiation Fluence Modifier Code Sequence
+RadiationFluenceModifierCodeSequence
+SQ
+1
+
+(300A,0684)
+Energy Unit Code Sequence
+EnergyUnitCodeSequence
+SQ
+1
+
+(300A,0685)
+Number of Radiation GenerationModes
+NumberOfRadiationGenerationModes
+US
+1
+
+(300A,0686)
+Patient Support Devices Sequence
+PatientSupportDevicesSequence
+SQ
+1
+
+(300A,0687)
+Number of Patient Support Devices
+NumberOfPatientSupportDevices
+US
+1
+
+(300A,0688)
+RT Beam Modifier Definition Distance
+RTBeamModifierDefinitionDistance
+FD
+1
+
+(300A,0689)
+Beam Area Limit Sequence
+BeamAreaLimitSequence
+SQ
+1
+
+(300A,068A)
+Referenced RT Prescription Sequence
+ReferencedRTPrescriptionSequence
+SQ
 1
 
 (300C,0002)

@@ -171,6 +171,18 @@ PS3.10
 XML Encoding (Retired)
 Transfer Syntax
 PS3.10
+1.2.840.10008.1.2.7.1
+SMPTE ST 2110-20 Uncompressed Progressive Active Video
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.7.2
+SMPTE ST 2110-20 Uncompressed Interlaced Active Video
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.7.3
+SMPTE ST 2110-30 PCM Digital Audio
+Transfer Syntax
+PS3.5
 1.2.840.10008.1.3.10
 Media Storage Directory Storage
 SOP Class
@@ -1166,6 +1178,14 @@ PS3.4
 RT Segment Annotation Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.481.12
+RT Radiation Set Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.13
+C-Arm Photon-Electron Radiation Storage
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.501.1
 DICOS CT Image Storage
 SOP Class
@@ -1474,6 +1494,22 @@ PS3.19
 DICOM Content Mapping Resource
 Mapping Resource
 PS3.16
+1.2.840.10008.10.1
+Video Endoscopic Image Real-Time Communication
+SOP Class
+PS3.22
+1.2.840.10008.10.2
+Video Photographic Image Real-Time Communication
+SOP Class
+PS3.22
+1.2.840.10008.10.3
+Audio Waveform Real-Time Communication
+SOP Class
+PS3.22
+1.2.840.10008.10.4
+Rendition Selection Document Real-Time Communication
+SOP Class
+PS3.22
 1.2.840.10008.9.1
 Imaging Report
 Document TemplateID
@@ -1791,6 +1827,9 @@ ICBM452 T1 Atlas
 1.2.840.10008.1.4.2.2
 ICBM Single Subject MRI Frame of Reference
 ICBM Single Subject MRI Anatomical Template
+1.2.840.10008.1.4.3.1
+IEC 61217 Fixed Coordinate System Frame of Reference
+Fixed coordinate system of Section C.36.12.2.1 “IEC 61217 Fixed Reference System Frame of Reference” in PS3.3
 # Context Group UID Values ================================================
 1.2.840.10008.6.1.1
 CID 2
@@ -5345,3 +5384,51 @@ Qualitative Evaluation Modifier Values
 1.2.840.10008.6.1.1287
 CID 212
 Generic Anatomic Location Modifiers
+1.2.840.10008.6.1.1288
+CID 9541
+Beam Limiting Device Types
+1.2.840.10008.6.1.1289
+CID 9542
+Compensator Device Types
+1.2.840.10008.6.1.1290
+CID 9543
+Radiotherapy Treatment Machine Modes
+1.2.840.10008.6.1.1291
+CID 9544
+Radiotherapy Distance Reference Locations
+1.2.840.10008.6.1.1292
+CID 9545
+Fixed Beam Limiting Device Types
+1.2.840.10008.6.1.1293
+CID 9546
+Radiotherapy Wedge Types
+1.2.840.10008.6.1.1294
+CID 9547
+RT Beam Limiting Device Orientation Labels
+1.2.840.10008.6.1.1295
+CID 9548
+General Accessory Device Types
+1.2.840.10008.6.1.1296
+CID 9549
+Radiation Generation Mode Types
+1.2.840.10008.6.1.1297
+CID 9550
+C-Arm Photon-Electron Delivery Rate Units
+1.2.840.10008.6.1.1298
+CID 9551
+Treatment Delivery Device Types
+1.2.840.10008.6.1.1299
+CID 9552
+C-Arm Photon-Electron Dosimeter Units
+1.2.840.10008.6.1.1300
+CID 9553
+Treatment Points
+1.2.840.10008.6.1.1301
+CID 9554
+Equipment Reference Points
+1.2.840.10008.6.1.1302
+CID 9555
+Radiotherapy Treatment Planning Person Roles
+1.2.840.10008.6.1.1303
+CID 7070
+Real Time Video Rendition Titles
