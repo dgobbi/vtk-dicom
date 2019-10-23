@@ -231,12 +231,16 @@ size_t vtkDICOMFile::Read(unsigned char *data, size_t len)
       this->Error = UnknownError;
       break;
     }
-    else if (r == 0)
+    n += r;
+    if (n == 0)
     {
       this->Eof = true;
       break;
     }
-    n += r;
+    else if (r < l)
+    {
+      break;
+    }
   }
   return n;
 #else
