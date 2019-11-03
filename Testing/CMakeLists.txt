@@ -12,7 +12,7 @@ set(TEST_SRCS
   TestDICOMVR.cxx
 )
 
-if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
+if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM AND NOT DICOM_EXTERNAL_BUILD)
   # When building as a remote module for VTK 9 (or VTK 8.90+)
   vtk_add_test_cxx(vtkDICOMCxxTests TEST_NAMES NO_VALID ${TEST_SRCS})
   vtk_test_cxx_executable(vtkDICOMCxxTests TEST_NAMES)
@@ -26,7 +26,7 @@ else()
 
 include_directories(${DICOM_INCLUDE_DIRS})
 
-set(BASE_LIBS vtkDICOM ${VTK_LIBS})
+set(BASE_LIBS ${VTK_DICOM_LINK_TARGET} ${VTK_LIBS})
 
 foreach(_src ${TEST_SRCS})
   get_filename_component(_test ${_src} NAME_WE)
@@ -36,9 +36,20 @@ foreach(_src ${TEST_SRCS})
   add_test(${_test} ${_pth}/${_test})
 endforeach()
 
+# For VTK 9 and up, executable targets use VTK:: namespace prefix
+if(VTK_VERSION VERSION_LESS 8.90)
+  set(_vtk vtk)
+  set(_python_module_path "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+else()
+  set(_vtk VTK::)
+  get_target_property(_python_module_path vtkDICOMPython
+                      LIBRARY_OUTPUT_DIRECTORY)
+endif()
+
 if(BUILD_PYTHON_WRAPPERS)
   if(NOT VTK_PYTHON_EXE)
-    get_target_property(WRAP_PYTHON_PATH vtkWrapPython LOCATION_<CONFIG>)
+    get_target_property(WRAP_PYTHON_PATH ${_vtk}WrapPython
+                        LOCATION_<CONFIG>)
     get_filename_component(VTK_EXE_DIR ${WRAP_PYTHON_PATH} PATH)
     find_program(VTK_PYTHON_EXE vtkpython "${VTK_EXE_DIR}")
   endif()
@@ -52,7 +63,7 @@ if(BUILD_PYTHON_WRAPPERS)
     "${CMAKE_CURRENT_SOURCE_DIR}/TestDICOMPython.py")
   if(NOT CMAKE_CONFIGURATION_TYPES)
     set_tests_properties(TestDICOMPython PROPERTIES ENVIRONMENT
-      "PYTHONPATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+      "PYTHONPATH=${_python_module_path}")
   endif()
 endif()
 

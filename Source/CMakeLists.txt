@@ -137,7 +137,7 @@ set_source_files_properties(${LIB_PRIVATE_HDRS}
   PROPERTIES SKIP_HEADER_INSTALL ON)
 
 if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
-  # When building as a remote module for VTK 9 (or VTK 8.90+)
+  # When building as a module for VTK 8.90 or later
   set(LIB_SRC_HDRS)
   foreach(_src ${LIB_SRCS})
     get_filename_component(_base ${_src} NAME_WE)
@@ -156,6 +156,7 @@ elseif(Module_vtkDICOM)
     LINK_PRIVATE ${GDCM_LIBS} ${DCMTK_LIBS} ${SQLITE_LIBS})
 
 else()
+# The remainder of the file is for old, non-modular builds
 
 configure_file(${DICOM_CMAKE_DIR}/vtkDICOMModule.h.in
   "${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMModule.h" COPYONLY)
@@ -420,4 +421,4 @@ endif()
 install(FILES ${LIB_HDRS}
   DESTINATION ${DICOM_INCLUDE_INSTALL_DEST} COMPONENT Development)
 
-endif() # else MODULE_vtkDICOM
+endif()
