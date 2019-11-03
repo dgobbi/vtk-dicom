@@ -29,7 +29,18 @@ set(DICOM_INCLUDE_DIRS
   "${DICOM_SOURCE_DIR}/Source"
   "${DICOM_BINARY_DIR}/Source")
 
-if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
+# Is this CMakeLists.txt file being called directly by cmake?
+if("${CMAKE_PROJECT_NAME}" STREQUAL "${PROJECT_NAME}")
+  set(_dicom_direct_build ON)
+else()
+  set(_dicom_direct_build OFF)
+endif()
+
+set(DICOM_EXTERNAL_BUILD ${_dicom_direct_build} CACHE BOOL
+    "Building DICOM module external to the VTK build")
+mark_as_advanced(DICOM_EXTERNAL_BUILD)
+
+if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM AND NOT DICOM_EXTERNAL_BUILD)
   # When building as a remote module for VTK 9 (or VTK 8.90+)
   message(STATUS "vtkDICOM: Building vtkDICOM as a Remote VTK Module")
 
@@ -65,6 +76,23 @@ elseif(Module_vtkDICOM)
   set(BUILD_EXAMPLES ${BUILD_DICOM_EXAMPLES})
 
 else()
+  # When building external to VTK
+  message(STATUS "vtkDICOM: Building vtkDICOM outside of VTK")
+
+  # Find VTK and get VTK configuration information
+  find_package(VTK REQUIRED)
+
+  # define VTK_VERSION if not already defined
+  if(NOT DEFINED VTK_VERSION)
+    set(VTK_VERSION ${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION})
+  endif()
+  if(VTK_VERSION VERSION_LESS 8.90)
+    include(${VTK_USE_FILE})
+  endif()
+  if(VTK_VERSION VERSION_LESS 5.8)
+    message(FATAL_ERROR "VTK 5.8 or later is required.")
+  endif()
+
   # We are being built as a stand-alone package
   set(VTK_DICOM_LINK_TARGET vtkDICOM)
 
@@ -80,30 +108,9 @@ else()
   option(BUILD_PROGRAMS "Build some useful DICOM tools" ON)
   option(BUILD_EXAMPLES "Build the examples" OFF)
 
-  find_package(VTK REQUIRED)
-  message(STATUS "vtkDICOM: Building vtkDICOM stand-alone")
-  if(NOT DEFINED VTK_VERSION)
-    # backwards compatibility pre VTK 9.x
-    set(VTK_VERSION ${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION})
-  endif()
-  if(VTK_VERSION VERSION_LESS 8.90)
-    include(${VTK_USE_FILE})
-  endif()
-  if(VTK_VERSION VERSION_LESS 5.8)
-    message(FATAL_ERROR "VTK 5.8 or later is required.")
-  endif()
-
   # Wrap Python option
   if(VTK_WRAP_PYTHON)
-    if(VTK_VERSION VERSION_LESS 8.90)
-      option(BUILD_PYTHON_WRAPPERS "Build python wrappers" ON)
-    else()
-      message(WARNING
-              "Stand-alone vtkDICOMPython not yet supported for "
-              "VTK ${VTK_VERSION}, try building vtk-dicom as a remote "
-              "module instead.")
-      unset(BUILD_PYTHON_WRAPPERS CACHE)
-    endif()
+    option(BUILD_PYTHON_WRAPPERS "Build python wrappers" ON)
   else()
     unset(BUILD_PYTHON_WRAPPERS CACHE)
   endif()
@@ -117,18 +124,13 @@ else()
 
   # Wrap Java option
   if(VTK_WRAP_JAVA)
-    if(VTK_VERSION VERSION_LESS 8.90)
-      option(BUILD_PYTHON_WRAPPERS "Build python wrappers" ON)
-    else()
-      message(WARNING
-              "Stand-alone vtkDICOMJava not yet supported for "
-              "VTK ${VTK_VERSION}, try building vtk-dicom as a remote "
-              "module instead.")
-      unset(BUILD_JAVA_WRAPPERS CACHE)
-    endif()
+    option(BUILD_JAVA_WRAPPERS "Build java wrappers" OFF)
   else()
     unset(BUILD_JAVA_WRAPPERS CACHE)
   endif()
+
+  # Defines CMAKE_INSTALL_LIBDIR etcetera
+  include(GNUInstallDirs)
 
   # Set up our directory structure for output libraries and binaries
   # (Note: these are the build locations, not the install locations)
@@ -168,6 +170,61 @@ else()
       include_directories("${ZLIB_INCLUDE_DIR}")
     endif()
   endif()
+
+  if(VTK_VERSION VERSION_GREATER_EQUAL 8.90)
+    # When building as a stand-alone module for VTK 9
+    message(STATUS "vtkDICOM: Building as an External VTK Module")
+
+    # Clear VTK_LIBS, linking will be handled by modular build
+    set(VTK_LIBS)
+    set(VTK_DICOM_LINK_TARGET VTK::DICOM)
+
+    # To set DICOM_USE_VTKZLIB in vtkDICOMConfig.h
+    set(DICOM_USE_VTKZLIB ON)
+
+    vtk_module_scan(
+      MODULE_FILES        "${CMAKE_CURRENT_SOURCE_DIR}/Source/dicom.module"
+      REQUEST_MODULES     "VTK::DICOM"
+      PROVIDES_MODULES    dicom_modules
+      ENABLE_TESTS        "${BUILD_TESTING}")
+
+    vtk_module_build(
+      MODULES             ${dicom_modules}
+      INSTALL_EXPORT      DICOM
+      ARCHIVE_DESTINATION "lib"
+      HEADERS_DESTINATION "include/dicom${DICOM_SHORT_VERSOIN}"
+      CMAKE_DESTINATION   "${CMAKE_INSTALL_LIBDIR}/cmake/vtk"
+      LICENSE_DESTINATION "${CMAKE_INSTALL_LIBDIR}/vtk"
+      HIERARCHY_DESTINATION "${CMAKE_INSTALL_LIBDIR}/vtk/hierarchy/${CMAKE_PROJECT_NAME}"
+      LIBRARY_NAME_SUFFIX "${DICOM_CUSTOM_LIBRARY_SUFFIX}"
+      VERSION             "${DICOM_VERSION}"
+      SOVERSION           "1"
+      TEST_DATA_TARGET    DicomData
+      USE_EXTERNAL        "${DICOM_USE_EXTERNAL}"
+      TEST_INPUT_DATA_DIRECTORY   "${dicom_test_data_directory_input}"
+      TEST_OUTPUT_DATA_DIRECTORY  "${dicom_test_data_directory_output}")
+
+    if(BUILD_PYTHON_WRAPPERS)
+      find_package(PythonInterp ${VTK_PYTHON_VERSION} QUIET)
+
+      vtk_module_wrap_python(
+        MODULES         ${dicom_modules}
+        INSTALL_EXPORT  DICOMPython
+        PYTHON_PACKAGE  "vtk.modules"
+        #MODULE_DESTINATION  ""
+        CMAKE_DESTINATION   "${CMAKE_INSTALL_LIBDIR}/cmake/vtk"
+        LIBRARY_DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        BUILD_STATIC    OFF)
+    endif()
+
+    if(BUILD_JAVA_WRAPPERS)
+      vtk_module_wrap_java(
+        MODULES         ${dicom_modules}
+        WRAPPED_MODULES dicom_java_wrapped_modules
+        JAVA_OUTPUT     "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles")
+    endif()
+  endif() #(VTK_VERSION VERSION_GREATER_EQUAL 8.90)
+
 endif()
 
 # GDCM or DCMTK are required for reading compressed DICOM images
@@ -321,6 +378,10 @@ if(NOT Module_vtkDICOM)
   else()
     set(VTK_LIBS vtkCommon vtkFiltering vtkImaging vtkIO vtkInfovis) # VTK 5.x
   endif()
+endif()
+
+if(NOT Module_vtkDICOM AND VTK_VERSION VERSION_LESS 8.90)
+  # External wrapping previous to VTK 9
 
   set(VTK_WRAP_INCLUDE_DIRS
     ${DICOM_INCLUDE_DIRS}
@@ -378,8 +439,10 @@ if(MSVC_VERSION EQUAL 1400 OR MSVC_VERSION GREATER 1400 OR MSVC10)
   add_definitions(-D_SCL_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS)
 endif()
 
-# The main library
-add_subdirectory(Source)
+if(NOT DICOM_EXTERNAL_BUILD OR NOT DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
+  # The main library, if not handled by the VTK 9 functions
+  add_subdirectory(Source)
+endif()
 
 # Subdirectories
 if(BUILD_PROGRAMS)
@@ -391,7 +454,7 @@ if(BUILD_EXAMPLES)
   add_subdirectory(Examples)
 endif()
 
-if(NOT DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
+if(DICOM_EXTERNAL_BUILD OR NOT DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
 
   if(BUILD_TESTING)
     enable_testing()
