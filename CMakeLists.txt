@@ -171,7 +171,7 @@ else()
     endif()
   endif()
 
-  if(VTK_VERSION VERSION_GREATER_EQUAL 8.90)
+  if(NOT VTK_VERSION VERSION_LESS 8.90)
     # When building as a stand-alone module for VTK 9
     message(STATUS "vtkDICOM: Building as an External VTK Module")
 
@@ -223,7 +223,7 @@ else()
         WRAPPED_MODULES dicom_java_wrapped_modules
         JAVA_OUTPUT     "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles")
     endif()
-  endif() #(VTK_VERSION VERSION_GREATER_EQUAL 8.90)
+  endif() #(NOT VTK_VERSION VERSION_LESS 8.90)
 
 endif()
 
