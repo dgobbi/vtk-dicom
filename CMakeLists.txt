@@ -388,11 +388,12 @@ if(NOT Module_vtkDICOM AND VTK_VERSION VERSION_LESS 8.90)
     ${VTK_WRAP_INCLUDE_DIRS})
 
   # For the python wrappers
-  if(BUILD_PYTHON_WRAPPERS AND
-     TARGET vtkCommonCorePythonD OR
-     TARGET vtkCommonKitPythonD OR
-     TARGET vtkCommonPythonD)
-    set(DICOM_PYTHON_LIBRARIES vtkDICOMPythonD)
+  if(BUILD_PYTHON_WRAPPERS)
+    if(TARGET vtkCommonCorePythonD OR
+       TARGET vtkCommonKitPythonD OR
+       TARGET vtkCommonPythonD)
+      set(DICOM_PYTHON_LIBRARIES vtkDICOMPythonD)
+    endif()
   endif()
 
   # For the tcl wrappers
