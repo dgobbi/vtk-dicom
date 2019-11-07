@@ -1,3 +1,15 @@
+# GDCM or DCMTK are required for reading compressed DICOM images
+option(USE_ITK_GDCM "Use ITK's GDCM for image decompression" OFF)
+option(USE_GDCM "Use GDCM for image decompression" OFF)
+option(USE_DCMTK "Use DCMTK for image decompression" OFF)
+
+# Check for sqlite3 for reading OsiriX databases
+set(USE_SQLITE_DEFAULT OFF)
+if(APPLE)
+  set(USE_SQLITE_DEFAULT ON)
+endif()
+option(USE_SQLITE "Use SQLite for OsiriX databases" ${USE_SQLITE_DEFAULT})
+
 # Configuration header
 set(DICOM_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
 set(DICOM_BUILD_TESTING ${BUILD_TESTING})
@@ -135,6 +147,52 @@ set_source_files_properties(${LIB_ABSTRACT}
   PROPERTIES ABSTRACT ON)
 set_source_files_properties(${LIB_PRIVATE_HDRS}
   PROPERTIES SKIP_HEADER_INSTALL ON)
+
+# Third party library dependencies
+
+if(USE_ITK_GDCM)
+  # To avoid conflicts, we might want to use ITK's GDCM
+  find_package(ITK REQUIRED)
+  if(ITK_FOUND)
+    include(${ITK_USE_FILE})
+    set(GDCM_LIBS gdcmMSFF gdcmIOD gdcmDSED gdcmDICT)
+    set(GDCM_FOUND 1)
+    set(USE_GDCM ON CACHE BOOL "Use GDCM for image decompression" FORCE)
+  endif()
+elseif(USE_GDCM)
+  find_package(GDCM)
+  if(NOT GDCM_DIR)
+    message(FATAL_ERROR "Please set GDCM_DIR.")
+  endif()
+  if(GDCM_FOUND)
+    include(${GDCM_USE_FILE})
+    set(GDCM_LIBS gdcmMSFF gdcmIOD gdcmDSED gdcmDICT)
+  endif()
+endif()
+
+set(DCMTK_LIBS)
+if(USE_DCMTK)
+  find_package(DCMTK)
+  if(NOT DCMTK_FOUND)
+    message(FATAL_ERROR "DCMTK not found or incomplete.")
+  endif()
+  if(${DCMTK_charls_LIBRARY})
+    set(DCMTK_LIBS ${DCMTK_LIBRARIES} ${DCMTK_charls_LIBRARY})
+  else()
+    set(DCMTK_LIBS ${DCMTK_LIBRARIES})
+  endif()
+  if(APPLE)
+    list(APPEND DCMTK_LIBS iconv)
+  endif()
+  include_directories(${DCMTK_INCLUDE_DIRS})
+endif()
+
+set(SQLITE_LIBS)
+if(USE_SQLITE)
+  set(SQLITE_LIBS sqlite3)
+endif()
+
+# Create the library
 
 if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
   # When building as a module for VTK 8.90 or later
