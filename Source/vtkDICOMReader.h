@@ -152,7 +152,7 @@ public:
   //! If the files have been pre-sorted, the sorting can be disabled.
   vtkGetMacro(Sorting, int);
   vtkSetMacro(Sorting, int);
-  vtkBooleanMacro(Sorting, int)
+  vtkBooleanMacro(Sorting, int);
   //@}
 
   //@{
