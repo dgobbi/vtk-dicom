@@ -1061,7 +1061,7 @@ void vtkDICOMDirectory::AddSeriesFileNames(
   }
   else if (n < 0 || study != n-1)
   {
-    vtkErrorMacro("AddSeriesFileNames: non-monotonically increasing study")
+    vtkErrorMacro("AddSeriesFileNames: non-monotonically increasing study");
     return;
   }
 
@@ -1092,7 +1092,7 @@ void vtkDICOMDirectory::AddSeriesFileNames(
   }
   else
   {
-    vtkErrorMacro("AddSeriesFileNames: non-monotonically increasing patient")
+    vtkErrorMacro("AddSeriesFileNames: non-monotonically increasing patient");
     return;
   }
 

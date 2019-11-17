@@ -217,7 +217,7 @@ void vtkDICOMFileSorter::AddSeriesFileNames(int study, vtkStringArray *files)
   }
   else
   {
-    vtkErrorMacro("AddSeriesFileNames: non-monotonically increasing study")
+    vtkErrorMacro("AddSeriesFileNames: non-monotonically increasing study");
   }
 
   this->Series->push_back(files);
