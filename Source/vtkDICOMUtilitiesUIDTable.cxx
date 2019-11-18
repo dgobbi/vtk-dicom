@@ -23,15 +23,15 @@ const UIDTableEntry UIDTable[] = {
 { 218, 1, 2, 0, 0 },
 { 219, 1, 1, 0, 0 },
 { 1265, 1, 1, 0, 0 },
-{ 2569, 1, 1, 0, 0 },
-{ 2572, 1, 1, 0, 0 },
-{ 2574, 24, 1, 0, 0 },
-{ 2598, 4, 1, 0, 0 },
+{ 2571, 1, 1, 0, 0 },
+{ 2574, 1, 1, 0, 0 },
+{ 2576, 24, 1, 0, 0 },
+{ 2600, 4, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 2602, 2, 0, 0, 0 },
+{ 2604, 2, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.1.1
   "Verification SOP Class" },
 { 58, 7, 1, 0, // 1.2.840.10008.1.2
@@ -1653,7 +1653,7 @@ const UIDTableEntry UIDTable[] = {
   "Implant Template Group Information Model - MOVE" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.45.4
   "Implant Template Group Information Model - GET" },
-{ 1266, 1303, 1, 0, 0 },
+{ 1266, 1305, 1, 0, 0 },
 { 0, 0, 0, 2, // 1.2.840.10008.6.1.1
   "Anatomic Modifier" },
 { 0, 0, 0, 4, // 1.2.840.10008.6.1.2
@@ -4154,12 +4154,16 @@ const UIDTableEntry UIDTable[] = {
   "Radiotherapy Treatment Planning Person Roles" },
 { 0, 0, 0, 7070, // 1.2.840.10008.6.1.1303
   "Real Time Video Rendition Titles" },
-{ 2570, 2, 1, 0, 0 },
+{ 0, 0, 0, 219, // 1.2.840.10008.6.1.1304
+  "Geometry Graphical Representation" },
+{ 0, 0, 0, 217, // 1.2.840.10008.6.1.1305
+  "Visual Explanation" },
+{ 2572, 2, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.1
   "Native DICOM Model" },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.2
   "Abstract Multi-Dimensional Image Model" },
-{ 2573, 1, 1, 0, 0 },
+{ 2575, 1, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.8.1.1
   "DICOM Content Mapping Resource" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.1
@@ -4218,10 +4222,10 @@ const UIDTableEntry UIDTable[] = {
   "Audio Waveform Real-Time Communication" },
 { 0, 0, 0, 0, // 1.2.840.10008.10.4
   "Rendition Selection Document Real-Time Communication" },
-{ 2604, 2, 3, 0, 0 },
-{ 2645, 1, 1, 0, 0 },
-{ 2606, 31, 1, 0, 0 },
-{ 2637, 8, 1, 0, 0 },
+{ 2606, 2, 3, 0, 0 },
+{ 2647, 1, 1, 0, 0 },
+{ 2608, 31, 1, 0, 0 },
+{ 2639, 8, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.1
   "dicomDeviceName" },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.2

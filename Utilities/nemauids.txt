@@ -5432,3 +5432,9 @@ Radiotherapy Treatment Planning Person Roles
 1.2.840.10008.6.1.1303
 CID 7070
 Real Time Video Rendition Titles
+1.2.840.10008.6.1.1304
+CID 219
+Geometry Graphical Representation
+1.2.840.10008.6.1.1305
+CID 217
+Visual Explanation

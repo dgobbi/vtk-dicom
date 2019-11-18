@@ -58,6 +58,24 @@ ReceivingApplicationEntityTitle
 AE
 1
 
+(0002,0026)
+Source Presentation Address
+SourcePresentationAddress
+UR
+1
+
+(0002,0027)
+Sending Presentation Address
+SendingPresentationAddress
+UR
+1
+
+(0002,0028)
+Receiving Presentation Address
+ReceivingPresentationAddress
+UR
+1
+
 (0002,0031)
 RTV Meta Information Version
 RTVMetaInformationVersion
@@ -1395,6 +1413,12 @@ Alternate Representation Sequence
 AlternateRepresentationSequence
 SQ
 1
+
+(0008,3002)
+Available Transfer Syntax UID
+AvailableTransferSyntaxUID
+UI
+1-n
 
 (0008,3010)
 Irradiation Event UID
