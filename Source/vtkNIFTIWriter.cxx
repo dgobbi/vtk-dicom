@@ -720,7 +720,7 @@ int vtkNIFTIWriter::RequestData(
     }
   }
 
-#if _WIN32
+#ifdef _WIN32
   vtkDICOMFilePath fph(hdrname);
   vtkDICOMFilePath fpi(imgname);
 #if VTK_MAJOR_VERSION < 7
