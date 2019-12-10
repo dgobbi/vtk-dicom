@@ -58,7 +58,7 @@ public:
 
 protected:
   vtkDICOMLookupTable();
-  ~vtkDICOMLookupTable();
+  ~vtkDICOMLookupTable() VTK_DICOM_OVERRIDE;
 
   //! Build a lookup table from compressed data.
   /*!

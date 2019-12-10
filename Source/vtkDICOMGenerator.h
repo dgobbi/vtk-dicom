@@ -242,7 +242,7 @@ protected:
   //@{
   //! Protected constructor method.
   vtkDICOMGenerator();
-  ~vtkDICOMGenerator();
+  ~vtkDICOMGenerator() VTK_DICOM_OVERRIDE;
   //@}
 
   //@{

@@ -96,7 +96,7 @@ public:
 
 protected:
   vtkDICOMUIDGenerator();
-  ~vtkDICOMUIDGenerator();
+  ~vtkDICOMUIDGenerator() VTK_DICOM_OVERRIDE;
 
   char *UIDPrefix;
   char UIDPrefixStore[64];

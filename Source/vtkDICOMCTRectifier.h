@@ -121,7 +121,7 @@ public:
 
 protected:
   vtkDICOMCTRectifier();
-  ~vtkDICOMCTRectifier();
+  ~vtkDICOMCTRectifier() VTK_DICOM_OVERRIDE;
 
   //! Compute the rectified matrix from the given volume matrix.
   /*!

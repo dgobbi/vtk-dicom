@@ -36,7 +36,7 @@ public:
 
 protected:
   vtkDICOMSorter();
-  ~vtkDICOMSorter();
+  ~vtkDICOMSorter() VTK_DICOM_OVERRIDE;
 
 private:
 #ifdef VTK_DICOM_DELETE

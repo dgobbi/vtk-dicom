@@ -165,7 +165,7 @@ public:
 
 protected:
   vtkNIFTIReader();
-  ~vtkNIFTIReader();
+  ~vtkNIFTIReader() VTK_DICOM_OVERRIDE;
 
   //! Read the header information.
   int RequestInformation(

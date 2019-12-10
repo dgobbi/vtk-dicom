@@ -110,7 +110,7 @@ public:
 
 protected:
   vtkDICOMFileSorter();
-  ~vtkDICOMFileSorter();
+  ~vtkDICOMFileSorter() VTK_DICOM_OVERRIDE;
 
   const char *InputFileName;
   vtkStringArray *InputFileNames;

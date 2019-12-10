@@ -278,7 +278,7 @@ public:
 
 protected:
   vtkDICOMDirectory();
-  ~vtkDICOMDirectory();
+  ~vtkDICOMDirectory() VTK_DICOM_OVERRIDE;
 
   const char *DirectoryName;
   vtkStringArray *InputFileNames;

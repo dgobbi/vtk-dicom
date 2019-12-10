@@ -369,7 +369,7 @@ public:
 
 protected:
   vtkNIFTIHeader();
-  ~vtkNIFTIHeader();
+  ~vtkNIFTIHeader() VTK_DICOM_OVERRIDE;
 
   char Magic[12];
   vtkTypeInt64 VoxOffset;

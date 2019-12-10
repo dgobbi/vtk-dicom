@@ -47,7 +47,7 @@ public:
 
 protected:
   vtkDICOMApplyPalette();
-  ~vtkDICOMApplyPalette();
+  ~vtkDICOMApplyPalette() VTK_DICOM_OVERRIDE;
 
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,

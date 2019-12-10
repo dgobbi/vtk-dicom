@@ -35,7 +35,7 @@ public:
 
 protected:
   vtkConsoleOutputWindow();
-  virtual ~vtkConsoleOutputWindow();
+  virtual ~vtkConsoleOutputWindow() VTK_DICOM_OVERRIDE;
   void Initialize();
 
 private:

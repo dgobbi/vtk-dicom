@@ -45,7 +45,7 @@ public:
 
 protected:
   vtkDICOMCTGenerator();
-  ~vtkDICOMCTGenerator();
+  ~vtkDICOMCTGenerator() VTK_DICOM_OVERRIDE;
 
   //! Generate the Series Module.
   virtual bool GenerateCTSeriesModule(vtkDICOMMetaData *source);

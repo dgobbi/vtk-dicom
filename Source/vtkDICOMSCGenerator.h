@@ -49,7 +49,7 @@ public:
 
 protected:
   vtkDICOMSCGenerator();
-  ~vtkDICOMSCGenerator();
+  ~vtkDICOMSCGenerator() VTK_DICOM_OVERRIDE;
 
   //! Generate the SC Equipment Module.
   virtual bool GenerateSCEquipmentModule(vtkDICOMMetaData *source);

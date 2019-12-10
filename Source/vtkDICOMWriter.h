@@ -230,7 +230,7 @@ public:
 
 protected:
   vtkDICOMWriter();
-  ~vtkDICOMWriter();
+  ~vtkDICOMWriter() VTK_DICOM_OVERRIDE;
 
   //! Compute the name of one of the output files.
   void ComputeInternalFileName(int slice);

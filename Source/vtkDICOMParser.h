@@ -165,7 +165,7 @@ public:
 
 protected:
   vtkDICOMParser();
-  ~vtkDICOMParser();
+  ~vtkDICOMParser() VTK_DICOM_OVERRIDE;
 
   //! Internal method for filling the buffer.
   /*!

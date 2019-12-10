@@ -58,7 +58,7 @@ public:
 
 protected:
   vtkDICOMAlgorithm();
-  ~vtkDICOMAlgorithm();
+  ~vtkDICOMAlgorithm() VTK_DICOM_OVERRIDE;
 
   //@{
   //! Get the information object that holds the meta data for the given input.

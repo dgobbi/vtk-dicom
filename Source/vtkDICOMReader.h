@@ -315,7 +315,7 @@ public:
 
 protected:
   vtkDICOMReader();
-  ~vtkDICOMReader();
+  ~vtkDICOMReader() VTK_DICOM_OVERRIDE;
 
   //@{
   //! Entry point for all pipeline requests.

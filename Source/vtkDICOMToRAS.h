@@ -133,7 +133,7 @@ public:
 
 protected:
   vtkDICOMToRAS();
-  ~vtkDICOMToRAS();
+  ~vtkDICOMToRAS() VTK_DICOM_OVERRIDE;
 
   //! Check whether the data will be reordered in cols or rows.
   void CheckNeedToReorder();

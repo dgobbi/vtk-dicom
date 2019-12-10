@@ -181,7 +181,7 @@ public:
 
 protected:
   vtkNIFTIWriter();
-  ~vtkNIFTIWriter();
+  ~vtkNIFTIWriter() VTK_DICOM_OVERRIDE;
 
   //! Generate the header information for the file.
   int GenerateHeader(vtkInformation *info, bool singleFile);

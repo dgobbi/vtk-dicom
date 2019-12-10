@@ -330,7 +330,7 @@ public:
 
 protected:
   vtkDICOMMetaData();
-  ~vtkDICOMMetaData();
+  ~vtkDICOMMetaData() VTK_DICOM_OVERRIDE;
 
   //! Find a tag, value pair.
   vtkDICOMDataElement *FindDataElement(vtkDICOMTag tag);

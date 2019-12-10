@@ -181,7 +181,7 @@ public:
 
 protected:
   vtkDICOMSliceSorter();
-  ~vtkDICOMSliceSorter();
+  ~vtkDICOMSliceSorter() VTK_DICOM_OVERRIDE;
 
   // Sort the input files, put the sort in the supplied arrays.
   virtual void SortFiles(vtkIntArray *fileArray, vtkIntArray *frameArray);

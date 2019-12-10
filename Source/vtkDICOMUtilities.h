@@ -198,7 +198,7 @@ public:
 
 protected:
   vtkDICOMUtilities() {}
-  ~vtkDICOMUtilities() {}
+  ~vtkDICOMUtilities() VTK_DICOM_OVERRIDE {}
 
   static long long GetLocalOffset(long long t);
 

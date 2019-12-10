@@ -169,7 +169,7 @@ public:
 
 protected:
   vtkScancoCTReader();
-  ~vtkScancoCTReader();
+  ~vtkScancoCTReader() VTK_DICOM_OVERRIDE;
 
   //! Read the header information.
   int RequestInformation(

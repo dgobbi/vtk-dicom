@@ -194,7 +194,7 @@ public:
 
 protected:
   vtkDICOMCompiler();
-  ~vtkDICOMCompiler();
+  ~vtkDICOMCompiler() VTK_DICOM_OVERRIDE;
 
   //! Internal method for flushing the IO buffer.
   /*!
