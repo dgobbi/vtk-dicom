@@ -14,7 +14,7 @@
 #include "vtkDICOMDictEntry.h"
 
 const vtkDICOMDictEntry::Entry vtkDICOMDictEntry::InvalidEntry = {
-  0, 0, 0, 0, 0, "" };
+  {0}, 0, 0, 0, "" };
 
 ostream& operator<<(ostream& o, const vtkDICOMDictEntry& a)
 {

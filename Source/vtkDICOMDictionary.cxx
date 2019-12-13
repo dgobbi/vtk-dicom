@@ -150,7 +150,7 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
     ++hptr;
     const vtkDICOMDictEntry::Entry *entry = &dptr[*hptr];
     ++hptr;
-    if (*hptr == element && entry->Group == group)
+    if (*hptr == element && vtkDICOMTag(entry->Tag) == tag)
     {
       return vtkDICOMDictEntry(entry);
     }

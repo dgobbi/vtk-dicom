@@ -26,8 +26,7 @@ public:
   //! A struct to statically store DICOM dictionary entries.
   struct Entry
   {
-    unsigned short Group;
-    unsigned short Element;
+    vtkDICOMTag::StaticTag Tag;
     unsigned char  Flags;
     unsigned char  VR;
     unsigned short VM;
@@ -43,7 +42,7 @@ public:
 
   //! Get the DICOM tag for this dictionary entry.
   vtkDICOMTag GetTag() const {
-    return vtkDICOMTag(this->I->Group, this->I->Element); }
+    return vtkDICOMTag(this->I->Tag); }
 
   //! Get the VR for this dictionary entry.
   vtkDICOMVR GetVR() const {
