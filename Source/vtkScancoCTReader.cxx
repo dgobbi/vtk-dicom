@@ -177,7 +177,13 @@ int vtkScancoCTReader::CheckVersion(const char header[16])
 //----------------------------------------------------------------------------
 int vtkScancoCTReader::CanReadFile(const char *filename)
 {
-  std::ifstream infile(filename, ios::in | ios::binary);
+#if defined(_WIN32) && (_MSC_VER >= 1400)
+  vtkDICOMFilePath fp(filename);
+  const wchar_t *ufilename = fp.Wide();
+#else
+  const char *ufilename = filename;
+#endif
+  std::ifstream infile(ufilename, ios::in | ios::binary);
 
   bool canRead = false;
   if (infile.good())
@@ -1115,8 +1121,16 @@ int vtkScancoCTReader::RequestData(
   unsigned char *dataPtr =
     static_cast<unsigned char *>(data->GetScalarPointer());
 
+  // convert utf-8 to wide string for Windows
+#if defined(_WIN32) && (_MSC_VER >= 1400)
+  vtkDICOMFilePath fp(filename);
+  const wchar_t *ufilename = fp.Wide();
+#else
+  const char *ufilename = filename;
+#endif
+
   // open the file
-  std::ifstream infile(filename, ios::in | ios::binary);
+  std::ifstream infile(ufilename, ios::in | ios::binary);
   if (!infile.good())
   {
     vtkErrorMacro("Cannot open file " << filename);
