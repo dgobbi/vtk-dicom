@@ -38,6 +38,8 @@
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMConfig.h" // For configuration details
 
+#include <iosfwd> // for std::istream
+
 //----------------------------------------------------------------------------
 class VTKDICOM_EXPORT vtkScancoCTReader : public vtkImageReader2
 {
@@ -185,10 +187,10 @@ protected:
   void InitializeHeader();
 
   //! Read an ISQ header.
-  int ReadISQHeader(ifstream *file, unsigned long bytesRead);
+  int ReadISQHeader(std::istream *file, unsigned long bytesRead);
 
   //! Read AIM header.
-  int ReadAIMHeader(ifstream *file, unsigned long bytesRead);
+  int ReadAIMHeader(std::istream *file, unsigned long bytesRead);
 
   //! Check the file header to see what type of file it is.
   /*!

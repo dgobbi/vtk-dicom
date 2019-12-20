@@ -33,6 +33,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
 #include <string>
 #include <sstream>
 #include <locale>
@@ -176,7 +177,7 @@ int vtkScancoCTReader::CheckVersion(const char header[16])
 //----------------------------------------------------------------------------
 int vtkScancoCTReader::CanReadFile(const char *filename)
 {
-  ifstream infile(filename, ios::in | ios::binary);
+  std::ifstream infile(filename, ios::in | ios::binary);
 
   bool canRead = false;
   if (infile.good())
@@ -409,7 +410,7 @@ void vtkScancoCTReader::StripString(char *dest, const char *cp, size_t l)
 }
 
 //----------------------------------------------------------------------------
-int vtkScancoCTReader::ReadISQHeader(ifstream *file, unsigned long bytesRead)
+int vtkScancoCTReader::ReadISQHeader(std::istream *file, unsigned long bytesRead)
 {
   if (bytesRead < 512)
   {
@@ -620,7 +621,7 @@ int vtkScancoCTReader::ReadISQHeader(ifstream *file, unsigned long bytesRead)
 }
 
 //----------------------------------------------------------------------------
-int vtkScancoCTReader::ReadAIMHeader(ifstream *file, unsigned long bytesRead)
+int vtkScancoCTReader::ReadAIMHeader(std::istream *file, unsigned long bytesRead)
 {
   if (bytesRead < 160)
   {
@@ -987,7 +988,7 @@ int vtkScancoCTReader::RequestInformation(
   const char *ufilename = filename;
 #endif
 
-  ifstream infile(ufilename, ios::in | ios::binary);
+  std::ifstream infile(ufilename, ios::in | ios::binary);
   if (!infile.good())
   {
     vtkErrorMacro("Cannot open file " << filename);
@@ -1115,7 +1116,7 @@ int vtkScancoCTReader::RequestData(
     static_cast<unsigned char *>(data->GetScalarPointer());
 
   // open the file
-  ifstream infile(filename, ios::in | ios::binary);
+  std::ifstream infile(filename, ios::in | ios::binary);
   if (!infile.good())
   {
     vtkErrorMacro("Cannot open file " << filename);
