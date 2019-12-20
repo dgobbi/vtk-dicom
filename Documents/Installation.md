@@ -8,7 +8,7 @@ If are building VTK 7 yourself, then vtk-dicom can be enabled as a VTK
 remote module.  This will cause cmake to automatically download the
 vtk-dicom source code from Github and build it as part of the VTK build.
 
-To enable vtk-dicom, select the following when you configure VTK with cmake: 
+To enable vtk-dicom, select the following when you configure VTK with cmake:
 
     Module_vtkDICOM:BOOL=ON
 

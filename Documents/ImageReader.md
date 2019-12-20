@@ -277,7 +277,7 @@ the reverse, and convert a NIfTI or MINC image to DICOM coordinates.
   converter->SetAllowColumnReordering(false);
 
   converter->UpdateMatrix();
-  vtkMatrix4x4 *matrix = converter->GetRASMatrix(); 
+  vtkMatrix4x4 *matrix = converter->GetRASMatrix();
   converter->Update();
   vtkImageData *image = converter->GetOutput();
 ~~~~~~~~

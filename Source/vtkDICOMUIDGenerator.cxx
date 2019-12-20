@@ -338,7 +338,7 @@ void vtkGenerateRandomBytes(unsigned char *bytes, vtkIdType n)
 
 // generate a single-digit numerical prefix for UIDs that identifies the
 // purpose of the uid (this is just for convenience in recognizing the
-// uid types, it is not suggested by the DICOM standard) 
+// uid types, it is not suggested by the DICOM standard)
 char vtkDICOMTagToDigit(vtkDICOMTag tag)
 {
   char d = '1';

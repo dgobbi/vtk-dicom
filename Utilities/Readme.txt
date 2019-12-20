@@ -59,7 +59,7 @@ nemadict.txt and nemauids.txt.  Then, the VTK-DICOM source code can
 be updated as follows:
 
 ```
-python makedict.py nemadict.txt > vtkDICOMDictHash.cxx 
+python makedict.py nemadict.txt > vtkDICOMDictHash.cxx
 python makedict.py nemadict.txt --header > vtkDICOMDictHash.h
 python parseuid.py nemauids.txt > vtkDICOMUtilitiesUIDTable.cxx
 ```

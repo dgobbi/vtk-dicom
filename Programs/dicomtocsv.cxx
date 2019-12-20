@@ -443,7 +443,7 @@ bool unique_value(const std::string& t, const std::string& s)
 
   while (pos < l && pos + n <= l)
   {
-    if (s.compare(pos, n, t) == 0) 
+    if (s.compare(pos, n, t) == 0)
     {
       return false;
     }
