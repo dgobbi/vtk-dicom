@@ -1244,9 +1244,10 @@ size_t Decoder<E>::ReadElementValue(
         cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
       return v.GetNumberOfValues();
     }
-    else if (vr == vtkDICOMVR::OB)
+    else if (vr == vtkDICOMVR::OB || vr == vtkDICOMVR::OW)
     {
-      // make sure unknown length data is properly encapsulated
+      // note that OW should not contain encapsulated data, but
+      // we tolerate it here and convert the VR to OB
       if (!this->CheckBuffer(cp, ep, 8))
       {
         this->ParseError(cp, ep, "Unexpected end of file.");
@@ -1261,16 +1262,21 @@ size_t Decoder<E>::ReadElementValue(
         return 0;
       }
 
-      v.AllocateUnsignedCharData(vr, 0);
+      v.AllocateUnsignedCharData(vtkDICOMVR::OB, 0);
       this->SkipElements(
         cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
       return v.GetNumberOfValues();
     }
     else if (vr != vtkDICOMVR::SQ)
     {
-      // only UN, OB, and SQ can have unknown length
-      this->ParseError(cp, ep, "Illegal item length FFFFFFFF encountered.");
-      return 0;
+      // only UN, OB, and SQ can have unknown length, so read others
+      // as UN and then throw away the result.
+      v.AllocateUnsignedCharData(vtkDICOMVR::UN, 0);
+      this->ImplicitLE->SkipElements(
+        cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
+      size_t l = v.GetNumberOfValues();
+      v = vtkDICOMValue(vr);
+      return l;
     }
   }
   else if (static_cast<size_t>(ep - cp) < static_cast<size_t>(vl))
