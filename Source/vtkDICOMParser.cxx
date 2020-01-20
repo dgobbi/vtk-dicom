@@ -25,6 +25,7 @@
 #include <ctype.h>
 #include <assert.h>
 
+#include <sstream>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -147,9 +148,11 @@ public:
 
   // Get the current item.
   vtkDICOMItem *GetItem() { return this->Item; }
+  int GetIndex() { return this->Index; }
 
   // Set the current tag position for the context.
   void SetCurrentTag(vtkDICOMTag tag) { this->CurrentTag = tag; }
+  vtkDICOMTag GetCurrentTag() { return this->CurrentTag; }
 
 private:
   DecoderContext *Prev;
@@ -389,6 +392,10 @@ public:
 
   // Finish the query (check for unused keys that must match).
   bool FinishQuery();
+
+  // Report an error.
+  void ParseError(
+    const unsigned char *cp, const unsigned char *ep, const char *message);
 
 protected:
   // Constructor that initializes all of the members.
@@ -921,6 +928,48 @@ bool DecoderBase::FinishQuery()
 }
 
 //----------------------------------------------------------------------------
+void DecoderBase::ParseError(
+  const unsigned char *cp, const unsigned char *ep, const char *message)
+{
+  vtkDICOMTag tag = this->LastTag;
+  const char *name = "Element";
+
+  vtkDICOMDictEntry de = vtkDICOMDictionary::FindDictEntry(tag);
+  if (de.IsValid())
+  {
+    name = de.GetName();
+  }
+
+  std::stringstream msg;
+  msg << "In " << name << " " << tag;
+
+  int idx = this->Context->GetIndex();
+  for (DecoderContext *context = this->Context->GetPrev();
+       context; context = context->GetPrev())
+  {
+    tag = context->GetCurrentTag();
+    const char *name = "Sequence";
+
+    vtkDICOMDictEntry de = vtkDICOMDictionary::FindDictEntry(tag);
+    if (de.IsValid())
+    {
+      name = de.GetName();
+    }
+    msg << ", in " << name << " " << tag;
+    if (idx >= 0)
+    {
+      msg << " [Item " << (idx + 1) << "]";
+    }
+    idx = context->GetIndex();
+  }
+
+  msg << ": " << message;
+
+  vtkDICOMParserInternalFriendship::ParseError(
+    this->Parser, cp, ep, msg.str().c_str());
+}
+
+//----------------------------------------------------------------------------
 template<>
 inline unsigned short Decoder<LE>::GetInt16(const unsigned char *ip)
 {
@@ -1163,8 +1212,7 @@ size_t Decoder<E>::ReadElementHead(
       // check that buffer has 4 bytes for 32-bit VL
       if (!this->CheckBuffer(cp, ep, 4))
       {
-        vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
-          "Unexpected end of file.");
+        this->ParseError(cp, ep, "Unexpected end of file.");
         return 0;
       }
       vl = Decoder<E>::GetInt32(cp);
@@ -1201,15 +1249,14 @@ size_t Decoder<E>::ReadElementValue(
       // make sure unknown length data is properly encapsulated
       if (!this->CheckBuffer(cp, ep, 8))
       {
-        vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
-          "Unexpected end of file.");
+        this->ParseError(cp, ep, "Unexpected end of file.");
         return 0;
       }
       unsigned short g1 = Decoder<E>::GetInt16(cp);
       unsigned short e1 = Decoder<E>::GetInt16(cp + 2);
       if (g1 != HxFFFE || (e1 != HxE000 && e1 != HxE0DD))
       {
-        vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
+        this->ParseError(cp, ep,
           "Encapsulated object is missing (FFFE,E000) tag.");
         return 0;
       }
@@ -1222,8 +1269,7 @@ size_t Decoder<E>::ReadElementValue(
     else if (vr != vtkDICOMVR::SQ)
     {
       // only UN, OB, and SQ can have unknown length
-      vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
-        "Illegal item length FFFFFFFF encountered.");
+      this->ParseError(cp, ep, "Illegal item length FFFFFFFF encountered.");
       return 0;
     }
   }
@@ -1236,7 +1282,7 @@ size_t Decoder<E>::ReadElementValue(
           this->Parser, cp, ep);
     if (static_cast<vtkTypeInt64>(vl) > bytesRemaining)
     {
-      vtkDICOMParserInternalFriendship::ParseError(this->Parser, cp, ep,
+      this->ParseError(cp, ep,
         "Item length exceeds the bytes remaining in file.");
       return 0;
     }
@@ -2249,8 +2295,7 @@ bool vtkDICOMParser::ReadMetaData(
       if ((vl != 0xFFFFFFFF && r < static_cast<vtkTypeInt64>(vl)) ||
           !this->SkipValue(cp, ep, vl))
       {
-        this->ParseError(cp, ep,
-          "Premature end of file while reading PixelData.");
+        vtkErrorMacro("Premature end of file while reading PixelData.");
         readFailure = true;
       }
     }
@@ -2393,8 +2438,8 @@ void vtkDICOMParser::ParseError(
 {
   this->FileOffset = this->GetBytesProcessed(cp, ep);
   this->SetErrorCode(vtkErrorCode::FileFormatError);
-  vtkErrorMacro("At byte offset " << this->FileOffset << " in file "
-                << this->FileName << ": " << message);
+  vtkErrorMacro("At byte offset " << this->FileOffset << " in file \""
+                << this->FileName << "\": " << message);
 }
 
 //----------------------------------------------------------------------------
