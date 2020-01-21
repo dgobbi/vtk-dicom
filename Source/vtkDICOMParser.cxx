@@ -1269,10 +1269,10 @@ size_t Decoder<E>::ReadElementValue(
     }
     else if (vr != vtkDICOMVR::SQ)
     {
-      // only UN, OB, and SQ can have unknown length, so read others
-      // as UN and then throw away the result.
-      v.AllocateUnsignedCharData(vtkDICOMVR::UN, 0);
-      this->ImplicitLE->SkipElements(
+      // only UN, OB, and SQ can have unknown length, but rather than fail,
+      // we attempt to skip this element in case we can read the rest
+      v.AllocateUnsignedCharData(vtkDICOMVR::OB, 0);
+      this->SkipElements(
         cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
       l = v.GetNumberOfValues();
       v = vtkDICOMValue(vr);
