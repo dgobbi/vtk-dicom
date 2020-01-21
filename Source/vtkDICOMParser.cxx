@@ -948,9 +948,9 @@ void DecoderBase::ParseError(
        context; context = context->GetPrev())
   {
     tag = context->GetCurrentTag();
-    const char *name = "Sequence";
+    name = "Sequence";
 
-    vtkDICOMDictEntry de = vtkDICOMDictionary::FindDictEntry(tag);
+    de = vtkDICOMDictionary::FindDictEntry(tag);
     if (de.IsValid())
     {
       name = de.GetName();
@@ -1274,7 +1274,7 @@ size_t Decoder<E>::ReadElementValue(
       v.AllocateUnsignedCharData(vtkDICOMVR::UN, 0);
       this->ImplicitLE->SkipElements(
         cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
-      size_t l = v.GetNumberOfValues();
+      l = v.GetNumberOfValues();
       v = vtkDICOMValue(vr);
       return l;
     }
