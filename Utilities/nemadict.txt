@@ -27388,6 +27388,78 @@ DeliveryTimeStructureCodeSequence
 SQ
 1
 
+(3010,0089)
+Treatment Site Modifier Code Sequence
+TreatmentSiteModifierCodeSequence
+CS
+1
+
+(3010,0090)
+Robotic Base Location Indicator
+RoboticBaseLocationIndicator
+CS
+1
+
+(3010,0091)
+Robotic Path Node Set Code Sequence
+RoboticPathNodeSetCodeSequence
+SQ
+1
+
+(3010,0092)
+Robotic Node Identifier
+RoboticNodeIdentifier
+UL
+1
+
+(3010,0093)
+RT Treatment Source Coordinates
+RTTreatmentSourceCoordinates
+FD
+3
+
+(3010,0094)
+Radiation Source Coordinate System Yaw Angle
+RadiationSourceCoordinateSystemYawAngle
+FD
+1
+
+(3010,0095)
+Radiation Source Coordinate System Roll Angle
+RadiationSourceCoordinateSystemRollAngle
+FD
+1
+
+(3010,0096)
+Radiation Source Coordinate System Pitch Angle
+RadiationSourceCoordinateSystemPitchAngle
+FD
+1
+
+(3010,0097)
+Robotic Path Control Point Sequence
+RoboticPathControlPointSequence
+SQ
+1
+
+(3010,0098)
+Tomotherapeutic Control Point Sequence
+TomotherapeuticControlPointSequence
+SQ
+1
+
+(3010,0099)
+Tomotherapeutic Leaf Open Durations
+TomotherapeuticLeafOpenDurations
+FD
+1-n
+
+(3010,009A)
+Tomotherapeutic Leaf Initial Closed Durations
+TomotherapeuticLeafInitialClosedDurations
+FD
+1-n
+
 (4000,0010)
 Arbitrary
 Arbitrary
