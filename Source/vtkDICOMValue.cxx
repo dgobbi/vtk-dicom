@@ -2725,12 +2725,36 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
       return true;
     }
   }
-  else if (value.GetNumberOfValues() == 0 ||
-           static_cast<const ValueT<vtkDICOMItem> *>(value.V)->Data
-             ->GetNumberOfDataElements() == 0)
+  else // VTK_DICOM_ITEM
   {
-    // empty sequences match
-    return true;
+    if (value.GetNumberOfValues() == 0)
+    {
+      // empty sequences match anything
+      return true;
+    }
+
+    // check whether the item provides universal matching
+    // (i.e. if it is empty, or if all its elements are empty)
+    const vtkDICOMItem *item =
+      static_cast<const ValueT<vtkDICOMItem> *>(value.V)->Data;
+    vtkDICOMDataElementIterator iter = item->Begin();
+    vtkDICOMDataElementIterator iterEnd = item->End();
+    vtkDICOMValue nullValue;
+    bool match = true;
+    while (match && iter != iterEnd)
+    {
+      vtkDICOMTag tag = iter->GetTag();
+      // the SpecificCharacterSet is always considered to match.
+      if (tag != DC::SpecificCharacterSet)
+      {
+        match = nullValue.Matches(iter->GetValue());
+      }
+      ++iter;
+    }
+    if (match)
+    {
+      return true;
+    }
   }
 
   if (this->V == 0 || this->V->VR != value.V->VR)
