@@ -23,15 +23,15 @@ const UIDTableEntry UIDTable[] = {
 { 220, 1, 2, 0, 0 },
 { 221, 1, 1, 0, 0 },
 { 1271, 1, 1, 0, 0 },
-{ 2583, 1, 1, 0, 0 },
-{ 2586, 1, 1, 0, 0 },
-{ 2588, 24, 1, 0, 0 },
-{ 2612, 4, 1, 0, 0 },
+{ 2589, 1, 1, 0, 0 },
+{ 2592, 1, 1, 0, 0 },
+{ 2594, 24, 1, 0, 0 },
+{ 2618, 4, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 2616, 2, 0, 0, 0 },
+{ 2622, 2, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.1.1
   "Verification SOP Class" },
 { 58, 7, 1, 0, // 1.2.840.10008.1.2
@@ -1665,7 +1665,7 @@ const UIDTableEntry UIDTable[] = {
   "Implant Template Group Information Model - MOVE" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.45.4
   "Implant Template Group Information Model - GET" },
-{ 1272, 1311, 1, 0, 0 },
+{ 1272, 1317, 1, 0, 0 },
 { 0, 0, 0, 2, // 1.2.840.10008.6.1.1
   "Anatomic Modifier" },
 { 0, 0, 0, 4, // 1.2.840.10008.6.1.2
@@ -4182,12 +4182,24 @@ const UIDTableEntry UIDTable[] = {
   "Robotic Delivery Device Dosimeter Units" },
 { 0, 0, 0, 9560, // 1.2.840.10008.6.1.1311
   "Robotic Delivery Device Dose Rate Units" },
-{ 2584, 2, 1, 0, 0 },
+{ 0, 0, 0, 8134, // 1.2.840.10008.6.1.1312
+  "Anatomic Structures for Anatomic Pathology" },
+{ 0, 0, 0, 6148, // 1.2.840.10008.6.1.1313
+  "Mediastinum Finding or Feature" },
+{ 0, 0, 0, 6149, // 1.2.840.10008.6.1.1314
+  "Mediastinum Anatomy" },
+{ 0, 0, 0, 12100, // 1.2.840.10008.6.1.1315
+  "Vascular Ultrasound Report Document Titles" },
+{ 0, 0, 0, 12130, // 1.2.840.10008.6.1.1316
+  "Parts of Organs (Non-Lateralized)" },
+{ 0, 0, 0, 12131, // 1.2.840.10008.6.1.1317
+  "Parts of Organs (Lateralized)" },
+{ 2590, 2, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.1
   "Native DICOM Model" },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.2
   "Abstract Multi-Dimensional Image Model" },
-{ 2587, 1, 1, 0, 0 },
+{ 2593, 1, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.8.1.1
   "DICOM Content Mapping Resource" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.1
@@ -4246,10 +4258,10 @@ const UIDTableEntry UIDTable[] = {
   "Audio Waveform Real-Time Communication" },
 { 0, 0, 0, 0, // 1.2.840.10008.10.4
   "Rendition Selection Document Real-Time Communication" },
-{ 2618, 2, 3, 0, 0 },
-{ 2659, 1, 1, 0, 0 },
-{ 2620, 31, 1, 0, 0 },
-{ 2651, 8, 1, 0, 0 },
+{ 2624, 2, 3, 0, 0 },
+{ 2665, 1, 1, 0, 0 },
+{ 2626, 31, 1, 0, 0 },
+{ 2657, 8, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.1
   "dicomDeviceName" },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.2

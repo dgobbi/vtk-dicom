@@ -5487,3 +5487,21 @@ Robotic Delivery Device Dosimeter Units
 1.2.840.10008.6.1.1311
 CID 9560
 Robotic Delivery Device Dose Rate Units
+1.2.840.10008.6.1.1312
+CID 8134
+Anatomic Structures for Anatomic Pathology
+1.2.840.10008.6.1.1313
+CID 6148
+Mediastinum Finding or Feature
+1.2.840.10008.6.1.1314
+CID 6149
+Mediastinum Anatomy
+1.2.840.10008.6.1.1315
+CID 12100
+Vascular Ultrasound Report Document Titles
+1.2.840.10008.6.1.1316
+CID 12130
+Parts of Organs (Non-Lateralized)
+1.2.840.10008.6.1.1317
+CID 12131
+Parts of Organs (Lateralized)
