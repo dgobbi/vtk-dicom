@@ -458,13 +458,15 @@ void vtkNIFTIHeader::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "Descrip: \"";
   for (size_t j = 0; j < 80 && this->Descrip[j] != '\0'; j++)
   {
-    os << (isprint(this->Descrip[j]) ? this->Descrip[j] : '?');
+    os << (isprint(static_cast<unsigned char>(this->Descrip[j])) ?
+           this->Descrip[j] : '?');
   }
   os << "\"\n";
   os << indent << "AuxFile: \"";
   for (size_t j = 0; j < 24 && this->AuxFile[j] != '\0'; j++)
   {
-    os << (isprint(this->AuxFile[j]) ? this->AuxFile[j] : '?');
+    os << (isprint(static_cast<unsigned char>(this->AuxFile[j])) ?
+           this->AuxFile[j] : '?');
   }
   os << "\"\n";
   os << indent << "QFormCode: " << this->QFormCode << "\n";
@@ -496,13 +498,15 @@ void vtkNIFTIHeader::PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "IntentName: \"";
   for (size_t j = 0; j < 16 && this->IntentName[j] != '\0'; j++)
   {
-    os << (isprint(this->IntentName[j]) ? this->IntentName[j] : '?');
+    os << (isprint(static_cast<unsigned char>(this->IntentName[j])) ?
+           this->IntentName[j] : '?');
   }
   os << "\"\n";
   os << indent << "Magic: \"";
   for (size_t j = 0; j < 4 && this->Magic[j] != '\0'; j++)
   {
-    os << (isprint(this->Magic[j]) ? this->Magic[j] : '?');
+    os << (isprint(static_cast<unsigned char>(this->Magic[j])) ?
+           this->Magic[j] : '?');
   }
   os << "\"\n";
 }
