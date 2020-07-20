@@ -71,7 +71,7 @@ const char *stringSanitize(
   size_t i;
   for (i = 0; i < l && cp[i] != '\0'; i++)
   {
-    if (isprint(cp[i]))
+    if (isprint((unsigned char)cp[i]))
     {
       op[i] = cp[i];
     }
