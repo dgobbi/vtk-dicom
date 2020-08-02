@@ -2,12 +2,18 @@
 
 import sys
 import vtk
-import vtkDICOMPython
+
+try:
+    import vtkDICOM
+except ImportError:
+    # for backwards compabilitity, before VTK 9
+    import vtkDICOMPython
+    vtkDICOM = vtkDICOMPython
 
 # put everything into the vtk namespace
-for a in dir(vtkDICOMPython):
+for a in dir(vtkDICOM):
     if a[0] != '_':
-        setattr(vtk, a, getattr(vtkDICOMPython, a))
+        setattr(vtk, a, getattr(vtkDICOM, a))
 
 m = vtk.vtkDICOMMetaData()
 

@@ -36,17 +36,16 @@ foreach(_src ${TEST_SRCS})
   add_test(${_test} ${_pth}/${_test})
 endforeach()
 
-# For VTK 9 and up, executable targets use VTK:: namespace prefix
-if(VTK_VERSION VERSION_LESS 8.90)
-  set(_vtk vtk)
-  set(_python_module_path "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-else()
-  set(_vtk VTK::)
-  get_target_property(_python_module_path vtkDICOMPython
-                      LIBRARY_OUTPUT_DIRECTORY)
-endif()
-
 if(BUILD_PYTHON_WRAPPERS)
+  # For VTK 9 and up, executable targets use VTK:: namespace prefix
+  if(VTK_VERSION VERSION_LESS 8.90)
+    set(_vtk vtk)
+    set(_python_module_path "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+  else()
+    set(_vtk VTK::)
+    get_target_property(_python_module_path vtkDICOMPython
+                        LIBRARY_OUTPUT_DIRECTORY)
+  endif()
   if(NOT VTK_PYTHON_EXE)
     get_target_property(WRAP_PYTHON_PATH ${_vtk}WrapPython
                         LOCATION_<CONFIG>)
@@ -88,7 +87,7 @@ if(BUILD_TCL_WRAPPERS)
   endif()
 endif()
 
-if(BUILD_JAVA_WRAPPERS)
+if(DUMMY_BUILD_JAVA_WRAPPERS)
   set(_sep ":")
   if(WIN32)
     set(_sep "\\;")
