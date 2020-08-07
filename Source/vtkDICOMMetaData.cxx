@@ -735,7 +735,8 @@ void vtkDICOMMetaData::Set(int idx, vtkDICOMTag tag, const vtkDICOMValue& v)
     // so create a value that is actually a list of values
     int n = this->NumberOfInstances;
     vtkDICOMValue l;
-    sptr = l.AllocateMultiplexData(vptr->GetVR(), n);
+    vtkDICOMVR vr = (vptr->IsValid() ? vptr->GetVR() : v.GetVR());
+    sptr = l.AllocateMultiplexData(vr, n);
     for (int i = 0; i < n; i++)
     {
       if (i == idx)
