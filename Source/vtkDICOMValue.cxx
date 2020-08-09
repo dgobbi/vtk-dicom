@@ -781,28 +781,33 @@ void vtkDICOMValue::CreateValue<char>(
   }
   else if (vr == VR::OW)
   {
-    unsigned short *ptr = this->AllocateUnsignedShortData(vr, m/2);
-    memcpy(ptr, data, m);
+    size_t n = m/2;
+    unsigned short *ptr = this->AllocateUnsignedShortData(vr, n);
+    memcpy(ptr, data, n*2);
   }
   else if (vr == VR::OL)
   {
-    unsigned int *ptr = this->AllocateUnsignedIntData(vr, m/4);
-    memcpy(ptr, data, m);
+    size_t n = m/4;
+    unsigned int *ptr = this->AllocateUnsignedIntData(vr, n);
+    memcpy(ptr, data, n*4);
   }
   else if (vr == VR::OV)
   {
-    unsigned long long *ptr = this->AllocateUnsignedInt64Data(vr, m/4);
-    memcpy(ptr, data, m);
+    size_t n = m/8;
+    unsigned long long *ptr = this->AllocateUnsignedInt64Data(vr, n);
+    memcpy(ptr, data, n*8);
   }
   else if (vr == VR::OF)
   {
-    float *ptr = this->AllocateFloatData(vr, m/4);
-    memcpy(ptr, data, m);
+    size_t n = m/4;
+    float *ptr = this->AllocateFloatData(vr, n);
+    memcpy(ptr, data, n*4);
   }
   else if (vr == VR::OD)
   {
-    double *ptr = this->AllocateDoubleData(vr, m/8);
-    memcpy(ptr, data, m);
+    size_t n = m/8;
+    double *ptr = this->AllocateDoubleData(vr, n);
+    memcpy(ptr, data, n*8);
   }
   else if (vr == VR::UN || vr == VR::OB || vr == VR::OX)
   {
