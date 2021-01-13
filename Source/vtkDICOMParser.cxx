@@ -345,6 +345,10 @@ public:
   // If there are fewer than "n" bytes left in the buffer, then move
   // any data that hasn't yet been parsed to the start of the buffer,
   // and then read new data into the remainder of the buffer.
+  // A return value of "false" indicates that the check failed
+  // because the needed bytes could not be read from the file, either
+  // due to an IO error or the end of the file. If "false" is
+  // returned, "cp" will be advanced to the position of "ep".
   bool CheckBuffer(
     const unsigned char* &cp, const unsigned char* &ep, size_t n);
 
@@ -658,9 +662,12 @@ inline bool DecoderBase::CheckBuffer(
   bool r = true;
   if (n > static_cast<size_t>(ep - cp))
   {
-    r = vtkDICOMParserInternalFriendship::FillBuffer(
-          this->Parser, cp, ep);
-    r &= (n <= static_cast<size_t>(ep - cp));
+    r = vtkDICOMParserInternalFriendship::FillBuffer(this->Parser, cp, ep);
+    if (r && n > static_cast<size_t>(ep - cp))
+    {
+      cp = ep;
+      r = false;
+    }
   }
   return r;
 }
@@ -673,9 +680,12 @@ inline bool DecoderBase::CheckBuffer(
   if (n > static_cast<size_t>(ep - cp))
   {
     this->CopyBuffer(v, sp, cp);
-    r = vtkDICOMParserInternalFriendship::FillBuffer(
-          this->Parser, cp, ep);
-    r &= (n <= static_cast<size_t>(ep - cp));
+    r = vtkDICOMParserInternalFriendship::FillBuffer(this->Parser, cp, ep);
+    if (r && n > static_cast<size_t>(ep - cp))
+    {
+      cp = ep;
+      r = false;
+    }
     sp = cp;
   }
   return r;
