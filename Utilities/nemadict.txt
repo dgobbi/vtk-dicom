@@ -748,6 +748,12 @@ TimezoneOffsetFromUTC
 SH
 1
 
+(0008,0202)
+
+
+SH
+1
+RET
 (0008,0220)
 Responsible Group Code Sequence
 ResponsibleGroupCodeSequence
@@ -3928,6 +3934,36 @@ GPSDifferential
 IS
 1
 
+(0016,1001)
+Light Source Polarization
+LightSourcePolarization
+CS
+1
+
+(0016,1002)
+Emitter Color Temperature
+EmitterColorTemperature
+DS
+1
+
+(0016,1003)
+Contact Method
+ContactMethod
+CS
+1
+
+(0016,1004)
+Immersion Media
+ImmersionMedia
+CS
+1-n
+
+(0016,1005)
+Optical Magnification Factor
+OpticalMagnificationFactor
+DS
+1
+
 (0018,0010)
 Contrast/Bolus Agent
 ContrastBolusAgent
@@ -5583,6 +5619,12 @@ Transducer Data
 TransducerData
 LO
 1-n
+
+(0018,5011)
+Transducer Identification Sequence
+TransducerIdentificationSequence
+SQ
+1
 
 (0018,5012)
 Focus Depth
@@ -13564,6 +13606,48 @@ ChannelMode
 CS
 1
 
+(003A,0310)
+Multiplex Group UID
+MultiplexGroupUID
+UI
+1
+
+(003A,0311)
+Powerline Frequency
+PowerlineFrequency
+DS
+1
+
+(003A,0312)
+Channel Impedance Sequence
+ChannelImpedanceSequence
+SQ
+1
+
+(003A,0313)
+Impedance Value
+ImpedanceValue
+DS
+1
+
+(003A,0314)
+Impedance Measurement DateTime
+ImpedanceMeasurementDateTime
+DT
+1
+
+(003A,0315)
+Impedance Measurement Frequency
+ImpedanceMeasurementFrequency
+DS
+1
+
+(003A,0316)
+Impedance Measurement Current Type
+ImpedanceMeasurementCurrentType
+CS
+1
+
 (0040,0001)
 Scheduled Station AE Title
 ScheduledStationAETitle
@@ -15340,6 +15424,54 @@ LanguageCodeSequenceTrial
 SQ
 1
 RET
+(0040,A801)
+Tabulated Values Sequence
+TabulatedValuesSequence
+SQ
+1
+
+(0040,A802)
+Number of Table Rows
+NumberOfTableRows
+UL
+1
+
+(0040,A803)
+Number of Table Columns
+NumbeOfTableColumns
+UL
+1
+
+(0040,A804)
+Table Row Number
+TableRowNumber
+UL
+1
+
+(0040,A805)
+Table Column Number
+TableColumnNumber
+UL
+1
+
+(0040,A806)
+Table Row Definition Sequence
+TableRowDefinitionSequence
+SQ
+1
+
+(0040,A807)
+Table Column Definition Sequence
+TableColumnDefinitionSequence
+SQ
+1
+
+(0040,A808)
+Cell Values Sequence
+CellValuesSequence
+SQ
+1
+
 (0040,A992)
 Uniform Resource Locator (Trial)
 UniformResourceLocatorTrial
@@ -18196,6 +18328,18 @@ ModelUsageCodeSequence
 SQ
 1
 
+(0068,7004)
+Model Group UID
+ModelGroupUID
+UI
+1
+
+(0068,7005)
+Relative URI Reference Within Encapsulated Document
+RelativeURIReferenceWithinEncapsulatedDocument
+UR
+1
+
 (0070,0001)
 Graphic Annotation Sequence
 GraphicAnnotationSequence
@@ -19665,6 +19809,24 @@ Selector Code Sequence Value
 SelectorCodeSequenceValue
 SQ
 1
+
+(0072,0081)
+Selector OV Value
+SelectorOVValue
+OV
+1
+
+(0072,0082)
+Selector SV Value
+SelectorSVValue
+SV
+1-n
+
+(0072,0083)
+Selector UV Value
+SelectorUVValue
+UV
+1-n
 
 (0072,0100)
 Number of Screens
@@ -25264,6 +25426,12 @@ ScanningSpotSize
 FL
 2
 
+(300A,0399)
+Scan Spot Sizes Delivered
+ScanSpotSizesDelivered
+FL
+2-2n
+
 (300A,039A)
 Number of Paintings
 NumberOfPaintings
@@ -25370,6 +25538,12 @@ IS
 Source to General Accessory Distance
 SourceToGeneralAccessoryDistance
 FL
+1
+
+(300A,0426)
+Isocenter to General Accessory Distance
+IsocenterToGeneralAccessoryDistance
+DS
 1
 
 (300A,0431)
@@ -26356,6 +26530,258 @@ ReferencedRTPrescriptionSequence
 SQ
 1
 
+(300A,0700)
+Treatment Session UID
+TreatmentSessionUID
+UI
+1
+
+(300A,0701)
+RT Radiation Usage
+RTRadiationUsage
+CS
+1
+
+(300A,0702)
+Referenced RT Radiation Set Sequence
+ReferencedRTRadiationSetSequence
+SQ
+1
+
+(300A,0703)
+Referenced RT Radiation Record Sequence
+ReferencedRTRadiationRecordSequence
+SQ
+1
+
+(300A,0704)
+RT Radiation Set Delivery Number
+RTRadiationSetDeliveryNumber
+US
+1
+
+(300A,0705)
+Clinical Fraction Number
+ClinicalFractionNumber
+US
+1
+
+(300A,0706)
+RT Treatment Fraction Completion Status
+RTTreatmentFractionCompletionStatus
+CS
+1
+
+(300A,0707)
+RT Radiation Set Usage
+RTRadiationSetUsage
+CS
+1
+
+(300A,0708)
+Treatment Delivery Continuation Flag
+TreatmentDeliveryContinuationFlag
+CS
+1
+
+(300A,0709)
+Treatment Record Content Origin
+TreatmentRecordContentOrigin
+CS
+1
+
+(300A,0714)
+RT Treatment Termination Status
+RTTreatmentTerminationStatus
+CS
+1
+
+(300A,0715)
+RT Treatment Termination Reason Code Sequence
+RTTreatmentTerminationReasonCodeSequence
+SQ
+1
+
+(300A,0716)
+Machine-Specific Treatment Termination Code Sequence
+MachineSpecificTreatmentTerminationCodeSequence
+SQ
+1
+
+(300A,0722)
+RT Radiation Salvage Record Control Point Sequence
+RTRadiationSalvageRecordControlPointSequence
+SQ
+1
+
+(300A,0723)
+Starting Meterset Value Known Flag
+StartingMetersetValueKnownFlag
+CS
+1
+
+(300A,0730)
+Treatment Termination Description
+TreatmentTerminationDescription
+ST
+1
+
+(300A,0731)
+Treatment Tolerance Violation Sequence
+TreatmentToleranceViolationSequence
+SQ
+1
+
+(300A,0732)
+Treatment Tolerance Violation Category
+TreatmentToleranceViolationCategory
+CS
+1
+
+(300A,0733)
+Treatment Tolerance Violation Attribute Sequence
+TreatmentToleranceViolationAttributeSequence
+SQ
+1
+
+(300A,0734)
+Treatment Tolerance Violation Description
+TreatmentToleranceViolationDescription
+ST
+1
+
+(300A,0735)
+Treatment Tolerance Violation Identification
+TreatmentToleranceViolationIdentification
+ST
+1
+
+(300A,0736)
+Treatment Tolerance Violation DateTime
+TreatmentToleranceViolationDateTime
+DT
+1
+
+(300A,073A)
+Recorded RT Control Point DateTime
+RecordedRTControlPointDateTime
+DT
+1
+
+(300A,073B)
+Referenced Radiation RT Control Point Index
+ReferencedRadiationRTControlPointIndex
+US
+1
+
+(300A,073E)
+Alternate Value Sequence
+AlternateValueSequence
+SQ
+1
+
+(300A,073F)
+Confirmation Sequence
+ConfirmationSequence
+SQ
+1
+
+(300A,0740)
+Interlock Sequence
+InterlockSequence
+SQ
+1
+
+(300A,0741)
+Interlock DateTime
+InterlockDateTime
+DT
+1
+
+(300A,0742)
+Interlock Description
+InterlockDescription
+ST
+1
+
+(300A,0743)
+Interlock Originating Device Sequence
+InterlockOriginatingDeviceSequence
+SQ
+1
+
+(300A,0744)
+Interlock Code Sequence
+InterlockCodeSequence
+SQ
+1
+
+(300A,0745)
+Interlock Resolution Code Sequence
+InterlockResolutionCodeSequence
+SQ
+1
+
+(300A,0746)
+Interlock Resolution User Sequence
+InterlockResolutionUserSequence
+SQ
+1
+
+(300A,0760)
+Override DateTime
+OverrideDateTime
+DT
+1
+
+(300A,0761)
+Treatment Tolerance Violation Type Code Sequence
+TreatmentToleranceViolationTypeCodeSequence
+SQ
+1
+
+(300A,0762)
+Treatment Tolerance Violation Cause Code Sequence
+TreatmentToleranceViolationCauseCodeSequence
+SQ
+1
+
+(300A,0772)
+Measured Meterset to Dose Mapping Sequence
+MeasuredMetersetToDoseMappingSequence
+SQ
+1
+
+(300A,0773)
+Referenced Expected In-Vivo Measurement Value Index
+ReferencedExpectedInVivoMeasurementValueIndex
+US
+1
+
+(300A,0774)
+Dose Measurement Device Code Sequence
+DoseMeasurementDeviceCodeSequence
+SQ
+1
+
+(300A,0780)
+Additional Parameter Recording Instance Sequence
+AdditionalParameterRecordingInstanceSequence
+SQ
+1
+
+(300A,0782)
+
+
+US
+1
+RET
+(300A,0783)
+Interlock Origin Description
+InterlockOriginDescription
+ST
+1
+
 (300C,0002)
 Referenced RT Plan Sequence
 ReferencedRTPlanSequence
@@ -26857,6 +27283,12 @@ LO
 (3010,002E)
 Device Type Code Sequence
 DeviceTypeCodeSequence
+SQ
+1
+
+(3010,002F)
+Segment Annotation Type Modifier Code Sequence
+SegmentAnnotationTypeModifierCodeSequence
 SQ
 1
 
@@ -27391,7 +27823,7 @@ SQ
 (3010,0089)
 Treatment Site Modifier Code Sequence
 TreatmentSiteModifierCodeSequence
-CS
+SQ
 1
 
 (3010,0090)
@@ -27852,7 +28284,7 @@ CS
 DICOS
 (4010,1029)
 Threat Detection Algorithm and Version
-ThreatDetectionAlgorithmandVersion
+ThreatDetectionAlgorithmAndVersion
 LO
 1-n
 DICOS

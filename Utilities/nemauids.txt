@@ -275,6 +275,26 @@ PS 3.3
 Standard Robotic-Arm Coordinate System Frame of Reference
 Well-known frame of reference
 PS 3.3
+1.2.840.10008.1.4.4.1
+SRI24 Frame of Reference
+Well-known frame of reference
+PS 3.3
+1.2.840.10008.1.4.5.1
+Colin27 Frame of Reference
+Well-known frame of reference
+PS 3.3
+1.2.840.10008.1.4.6.1
+LPBA40/AIR Frame of Reference
+Well-known frame of reference
+PS 3.3
+1.2.840.10008.1.4.6.2
+LPBA40/FLIRT Frame of Reference
+Well-known frame of reference
+PS 3.3
+1.2.840.10008.1.4.6.3
+LPBA40/SPM5 Frame of Reference
+Well-known frame of reference
+PS 3.3
 1.2.840.10008.1.5.1
 Hot Iron Color Palette SOP Instance
 Well-known SOP Instance
@@ -396,6 +416,10 @@ Coding Scheme
 PS3.16
 1.2.840.10008.2.16.15
 RadElement
+Coding Scheme
+PS3.16
+1.2.840.10008.2.16.16
+ICD-11
 Coding Scheme
 PS3.16
 1.2.840.10008.3.1.1.1
@@ -722,6 +746,30 @@ PS3.4
 Respiratory Waveform Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.9.6.2
+Multi-channel Respiratory Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.7.1
+Routine Scalp Electroencephalogram Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.7.2
+Electromyogram Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.7.3
+Electrooculogram Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.7.4
+Sleep Electroencephalogram Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.8.1
+Body Position Waveform Storage
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.10
 Standalone Modality LUT Storage (Retired)
 SOP Class
@@ -950,6 +998,10 @@ PS3.4
 VL Whole Slide Microscopy Image Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.77.1.7
+Dermoscopic Photography Image Storage
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.78.1
 Lensometry Measurements Storage
 SOP Class
@@ -1083,7 +1135,7 @@ Planned Imaging Agent Administration SR Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.88.75
-Performed Imaging Agent Administrator SR Storage
+Performed Imaging Agent Administration SR Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.90.1
@@ -1212,6 +1264,26 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.481.15
 Robotic-Arm Radiation Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.16
+RT Radiation Record Set Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.17
+RT Radiation Salvage Record Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.18
+Tomotherapeutic Radiation Record Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.19
+C-Arm Photon-Electron Radiation Record Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.481.20
+Robotic Radiation Record Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.501.1
@@ -1392,6 +1464,10 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.34.6.4
 Unified Procedure Step - Event SOP Class
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.34.6.5
+Unified Procedure Step - Query SOP Class
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.34.7
@@ -1861,6 +1937,21 @@ Fixed coordinate system of Section C.36.12.2.1 “IEC 61217 Fixed Reference Syst
 1.2.840.10008.1.4.3.2
 Standard Robotic-Arm Coordinate System Frame of Reference
 See Section C.36.12.2.2 “Standard Robotic-Arm Coordinate System Frame of Reference” in PS3.3.
+1.2.840.10008.1.4.4.1
+SRI24 Frame of Reference
+http://www.nitrc.org/projects/sri24/
+1.2.840.10008.1.4.5.1
+Colin27 Frame of Reference
+http://www.bic.mni.mcgill.ca/ServicesAtlases/Colin27
+1.2.840.10008.1.4.6.1
+LPBA40/AIR Frame of Reference
+http://resource.loni.usc.edu/atlasfiles/LPBA40_AIR_Atlas_NIFTI_format.zip
+1.2.840.10008.1.4.6.2
+LPBA40/FLIRT Frame of Reference
+http://resource.loni.usc.edu/atlasfiles/LPBA40_FLIRT_Atlas_NIFTI_format.zip
+1.2.840.10008.1.4.6.3
+LPBA40/SPM5 Frame of Reference
+http://resource.loni.usc.edu/atlasfiles/LPBA40_SPM5_atlas_NIFTI_format.zip
 # Context Group UID Values ================================================
 1.2.840.10008.6.1.1
 CID 2
@@ -4080,6 +4171,8 @@ Cardiac Ultrasound Hemodynamic Measurements
 CID 12255
 Cardiac Ultrasound Myocardium Measurements
 1.2.840.10008.6.1.837
+
+
 1.2.840.10008.6.1.838
 CID 12257
 Cardiac Ultrasound Left Ventricle
@@ -5505,3 +5598,117 @@ Parts of Organs (Non-Lateralized)
 1.2.840.10008.6.1.1317
 CID 12131
 Parts of Organs (Lateralized)
+1.2.840.10008.6.1.1318
+CID 9561
+Treatment Termination Reasons
+1.2.840.10008.6.1.1319
+CID 9562
+Radiotherapy Treatment Delivery Person Roles
+1.2.840.10008.6.1.1320
+CID 9563
+Interlock Resolutions
+1.2.840.10008.6.1.1321
+CID 9564
+Treatment Session Confirmation Assertions
+1.2.840.10008.6.1.1322
+CID 9565
+Treatment Tolerance Violation Causes
+1.2.840.10008.6.1.1323
+CID 9566
+Clinical Tolerance Violation Types
+1.2.840.10008.6.1.1324
+CID 9567
+Machine Tolerance Violation Types
+1.2.840.10008.6.1.1325
+CID 9568
+Treatment Interlocks
+1.2.840.10008.6.1.1326
+CID 9569
+Isocentric Patient Support Position Parameters
+1.2.840.10008.6.1.1327
+CID 9570
+RT Overridden Treatment Parameters
+1.2.840.10008.6.1.1328
+CID 3030
+EEG Leads
+1.2.840.10008.6.1.1329
+CID 3031
+Lead locations near or in muscles
+1.2.840.10008.6.1.1330
+CID 3032
+Lead locations near peripheral nerves
+1.2.840.10008.6.1.1331
+CID 3033
+EOG Leads
+1.2.840.10008.6.1.1332
+CID 3034
+Body Position Channels
+1.2.840.10008.6.1.1333
+CID 3035
+EEG Annotations – Neurophysiologic Enumerations (EEG)
+1.2.840.10008.6.1.1334
+CID 3036
+EMG Annotations – Neurophysiological Enumerations (EMG)
+1.2.840.10008.6.1.1335
+CID 3037
+EOG Annotations – Neurophysiological Enumerations (EOG)
+1.2.840.10008.6.1.1336
+CID 3038
+Pattern Events
+1.2.840.10008.6.1.1337
+CID 3039
+Device-related and Environment-related Events
+1.2.840.10008.6.1.1338
+CID 3040
+EEG Annotations - Neurological Monitoring Measurements
+1.2.840.10008.6.1.1339
+CID 12024
+OB-GYN Ultrasound Report Document Titles
+1.2.840.10008.6.1.1340
+CID 7230
+Automation of Measurement
+1.2.840.10008.6.1.1341
+CID 12025
+OB-GYN Ultrasound Beam Path
+1.2.840.10008.6.1.1342
+CID 7550
+Angle Measurements
+1.2.840.10008.6.1.1343
+CID 7551
+Generic Purpose of Reference to Images and Coordinates in Measurements
+1.2.840.10008.6.1.1344
+CID 7552
+Generic Purpose of Reference to Images in Measurements
+1.2.840.10008.6.1.1345
+CID 7553
+Generic Purpose of Reference to Coordinates in Measurements
+1.2.840.10008.6.1.1346
+CID 4401
+Fitzpatrick Skin Type
+1.2.840.10008.6.1.1347
+CID 4402
+History of Malignant Melanoma
+1.2.840.10008.6.1.1348
+CID 4403
+History of Melanoma in Situ
+1.2.840.10008.6.1.1349
+CID 4404
+History of Non-Melanoma Skin Cancer
+1.2.840.10008.6.1.1350
+CID 4405
+History of Non-Melanoma Skin Cancer
+1.2.840.10008.6.1.1351
+CID 4406
+Patient Reported Lesion Characteristics
+1.2.840.10008.6.1.1352
+CID 4407
+Lesion Palpation Findings
+1.2.840.10008.6.1.1353
+CID 4408
+Lesion Visual Findings
+1.2.840.10008.6.1.1354
+CID 4409
+Lesion Visual Findings
+1.2.840.10008.6.1.1355
+CID 12125
+Abdominopelvic Vessels
