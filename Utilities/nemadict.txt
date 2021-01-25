@@ -751,8 +751,8 @@ SH
 (0008,0202)
 
 
-SH
-1
+
+
 RET
 (0008,0220)
 Responsible Group Code Sequence
