@@ -17,23 +17,27 @@
 #include <algorithm>
 #include <cstddef>
 
+// The global default is used when a DICOM lacks SpecificCharacterSet
 unsigned char vtkDICOMCharacterSet::GlobalDefault =
   vtkDICOMCharacterSet::ISO_IR_6;
+// This allows GlobalDefault to override SpecificCharacterSet
 bool vtkDICOMCharacterSet::GlobalOverride = false;
 
-//----------------------------------------------------------------------------
 namespace {
 
+//----------------------------------------------------------------------------
+//! This struct provides information about a character set.
 struct CharsetInfo
 {
-  unsigned char Key;
-  unsigned char Flags; // 1=replace previous, 2=combine with previous
-  const char *DefinedTerm;
-  const char *DefinedTermExt;
-  const char *EscapeCode;
-  const char **Names;
+  unsigned char Key; // a number that identifies the character set
+  unsigned char Flags; // flags relating to use of defined terms
+  const char *DefinedTerm; // the DICOM defined term for the charset
+  const char *DefinedTermExt; // defined term for ISO 2022 usage of charset
+  const char *EscapeCode; // the ISO 2022 escape code for this charset
+  const char **Names; // list of generic names of this charset
 };
 
+//----------------------------------------------------------------------------
 //! This is a class for compressed lookup tables.
 class CompressedTable
 {
@@ -115,6 +119,7 @@ private:
   const unsigned short *LTable; // list of all regions
 };
 
+//----------------------------------------------------------------------------
 // For reversed tables, accept an "unsigned int" index, since unicode
 // is too large for "unsigned short".
 class CompressedTableR
@@ -136,6 +141,7 @@ unsigned short CompressedTableR::operator[](unsigned int x)
   return 0xFFFD;
 }
 
+//----------------------------------------------------------------------------
 // For reversed JIS X 0208/0212 table, include one compatibility
 // code that is beyond the BMP
 class CompressedTableJISXR
@@ -160,6 +166,11 @@ unsigned short CompressedTableJISXR::operator[](unsigned int x)
   }
   return 0xFFFD;
 }
+
+//----------------------------------------------------------------------------
+// The following are common names of each character set that we support.
+// Any of these common names can be passed to the vtkDICOMCharacterSet
+// constructor to instantiate a converter for that character set.
 
 static const char *ISO_IR_6_Names[] = {
   "ansi_x3.4-1968",
@@ -545,12 +556,26 @@ static const char *KOI8_Names[] = {
   NULL
 };
 
-// This table gives the character sets that are defined in DICOM 2011-3.3
-// The first two columns are the possible CS values of character set in the
-// SpecificCharacterSet attribute of a DICOM data set.  If the second form
-// of the name appears in SpecificCharacterSet, then iso-2022 escape codes
-// can be used to switch between character sets.  The escape codes to switch
-// to the character set are given in the third column.
+//----------------------------------------------------------------------------
+// This table gives the character sets that are defined in DICOM 2011-3.3,
+// plus additional character sets that might be found in legacy DICOMs.
+//
+// The fields are defined as follows:
+// 1. Key - an integer we use to identify the character set.
+// 2. Flags - a flag relating to use of the DefinedTermExt field
+// 3. DefinedTerm - the defined term used in the DICOM standard
+// 4. DefinedTermExt - the defined term for the ISO 2022 variant
+// 5. EscapeCode - the ISO 2022 escape code
+// 6. Names - list of alternative names for this character set
+//
+// The Flags are used as hints for what to do when SpecificCharacterSet
+// contains multiple defined terms, which only occurs with ISO 2022.
+// For example, "X\Y" or "X\Y\Z" (e.g. "ISO 2022 IR 100\ISO 2022 IR_126").
+// * Flags=0: The first value can be set to DefinedTermExt.
+// * Flags=1: Only the second value can be set to DefinedTermExt.
+// * Flags=2: Only the second or third values can be set to DefinedTermExt.
+// Example for character sets with Flags=1: "\ISO 2022 IR 149"
+// Example for character sets with Flags=2: "\ISO 2022 IR 87\ISO 2022 IR 159"
 const int CHARSET_TABLE_SIZE = 45;
 static CharsetInfo Charsets[45] = {
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
@@ -631,6 +656,7 @@ static CharsetInfo Charsets[45] = {
   { vtkDICOMCharacterSet::X_KOI8, 0, "koi8", "", "", KOI8_Names },
 };
 
+//----------------------------------------------------------------------------
 // Convert a unicode code point to UTF-8
 inline void UnicodeToUTF8(unsigned int code, std::string *s)
 {
@@ -665,6 +691,7 @@ inline void UnicodeToUTF8(unsigned int code, std::string *s)
   }
 }
 
+//----------------------------------------------------------------------------
 // Convert one UTF8-encoded character to Unicode.
 // If UTF8 sequence is malformed, return 0xFFFF.
 // If UTF8 sequence at end of input is incomplete, return 0xFFFE.
@@ -820,6 +847,7 @@ unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
   return code;
 }
 
+//----------------------------------------------------------------------------
 // Different ways to handle failed conversions
 enum { UTF8_IGNORE, UTF8_REPLACE, UTF8_ESCAPE };
 
@@ -847,6 +875,7 @@ void BadCharsToUTF8(const char *cp, const char *ep, std::string *s,
   }
 }
 
+//----------------------------------------------------------------------------
 // Convert a string to its lower-case equivalent.
 void CaseFoldUnicode(unsigned int code, std::string *s)
 {
@@ -1530,8 +1559,36 @@ size_t UnknownToUTF8(const char *text, size_t l, std::string *s, int mode)
 //----------------------------------------------------------------------------
 bool LastChanceConversion(std::string *s, const char *cp, const char *ep)
 {
-  // the goal of this function is to replace things like smart quotes
-  // with regular quotes
+  // The goal of this function is to coerce certain characters to their
+  // ASCII equivalents.  It is called "last chance" conversion, because
+  // it is applied after all other conversion attempts have failed.
+  // Most of these characters generated by so-called "smart" text entry
+  // systems: smart quotes, smart dashes, smart ellipsis, etcetera.
+  // Many users of these systems are unaware that they are generating
+  // non-ASCII text.
+
+  // The conversions that it does are as follows:
+  // 1. smart quotes become regular ASCII quotes
+  // 2. special spaces (wide, narrow) become ASCII space
+  // 3. soft hyphens and invisible spaces disappear
+  // 4. dashes become ASCII hyphen/minus
+  // 5. horizontal bar becomes a double-hyphen
+  // 6. ellipsis becomes ASCII "..."
+  // 7. the fraction slash becomes regular ASCII slash
+  // 8. the swung dash becomes ASCII tilde
+  // 9. code 0xFFFE disappears, but triggers the error indicator
+  // 10. other non-ASCII codes output '?' and trigger the error indicator
+
+  // The special treatment of 0xFFFE is done because our decoders use
+  // this code to indicate that the end of the string occurred midway
+  // through a multi-byte character.
+
+  // The "swung dash" is converted to tilde for the sake of Japanese,
+  // because "ISO-IR 13\ISO-IR 87" (JIS X 0201 + 0208) does not have
+  // tilde, and swung dash is the only reasonable replacement. So
+  // a round trip from ASCII to "ISO-IR 13\ISO-IR 87" will convert
+  // the tilde to swung dash and back to tilde again.
+
   unsigned int code = UTF8ToUnicode(&cp, ep);
   bool success = true;
   const char *replacement;
@@ -1616,7 +1673,7 @@ void OctalCharCode(std::string *s, unsigned char c)
 size_t vtkDICOMCharacterSet::UTF8ToSJIS(
   const char *text, size_t l, std::string *s)
 {
-  // windows-31j (shift-jis)
+  // windows-31j (the CP932 variant of shift-jis)
   CompressedTableJISXR table(vtkDICOMCharacterSet::Reverse[X_EUCJP]);
   CompressedTableR table2(vtkDICOMCharacterSet::Reverse[X_SJIS]);
 
@@ -1629,25 +1686,30 @@ size_t vtkDICOMCharacterSet::UTF8ToSJIS(
     unsigned int code = UTF8ToUnicode(&cp, ep);
     if (code < 0x80)
     {
+      // windows-31j uses ASCII for these codes, not ISO-IR 14
       s->push_back(static_cast<char>(code));
       continue;
     }
     else if (code >= 0xFF61 && code <= 0xFF9F)
     {
-      // half-width katakana
+      // half-width katakana maps to range 0xa1,0xdf like ISO-IR 13
       s->push_back(static_cast<char>(code - 0xFEC0));
       continue;
     }
     else
     {
+      // Attempt to convert unicode character to JIS X 0208 or JIS X 0212
+      // (if t < 8836, it is JIS X 0208, if t >= 8836, it is JIS X 0212)
       unsigned short t = table[code];
       if (t >= 8836)
       {
-        // check for CP932 compatibility
+        // Since JIS X 0212 is not a part of shift-jis, try to convert
+        // to a CP932 code instead
         t = table2[code];
       }
       if (t < 11280)
       {
+        // Now apply the shift-jis math to generate two bytes
         unsigned char x = static_cast<unsigned char>(t / 94);
         unsigned char y = static_cast<unsigned char>(t % 94);
         if ((x & 1) == 0)
@@ -1787,19 +1849,22 @@ size_t vtkDICOMCharacterSet::UTF8ToEUCJP(
     }
     else if (code >= 0xFF61 && code <= 0xFF9F)
     {
-      // half-width katakana
+      // half-width katakana, as used by ISO-IR 13, a prefix byte 0x8e
       s->push_back(0x8e);
       s->push_back(static_cast<char>(code - 0xFEC0));
       continue;
     }
     else
     {
+      // The table maps unicode to JIS X 0208 (0 <= t < 8836) or to
+      // JIS X 0212 (8836 <= t < 2*8836), or to unknown (t >= 2*8836)
       unsigned short t = table[code];
       if (t < 2*8836)
       {
         if (t >= 8836)
         {
-          // JIS X 0212
+          // JIS X 0212 needs a 0x8f prefix byte in EUC-JP
+          // (in the absence of a prefix byte, JIS X 0208 is assumed)
           s->push_back(0x8f);
           t -= 8836;
         }
@@ -1912,6 +1977,7 @@ size_t vtkDICOMCharacterSet::UTF8ToBig5(
       unsigned short t = table[code];
       if (t >= 0xFFFD) switch (code)
       {
+        // the table is restricted to the BMP, special-case big codes
         case 0x200CC: t = 11205; break;
         case 0x2008A: t = 11207; break;
         case 0x27607: t = 11213; break;
@@ -2012,6 +2078,7 @@ size_t vtkDICOMCharacterSet::UTF8ToGBK(
     }
     else
     {
+      // the primary table is the GB18030 table
       unsigned short t = table[code];
       if (t >= 0xFFFD) switch (code)
       {
@@ -2026,7 +2093,8 @@ size_t vtkDICOMCharacterSet::UTF8ToGBK(
       }
       if (t > 23940)
       {
-        // try additional compatibility mappings
+        // found a GB18030 code that is too large for GBK,
+        // so try additional compatibility mappings specific to GBK
         t = table2[code];
       }
       if (t < 23940)
@@ -3218,20 +3286,30 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
 size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
   const char *text, size_t l, std::string *s, int mode) const
 {
-  // Uses ISO-2022 escape codes to switch character sets.
-  // Mask to get the charset that is active before the first escape code.
-  unsigned char charset = (this->Key & ISO_2022_BASE);
-  unsigned char charsetG1 = charset;
-  unsigned char charsetG2 = 0;
+  // Decodes text that uses ISO-2022 escape codes to switch character sets.
+  // The primary intented use is decoding iso-2022-jp-1, but it is general
+  // enough to also handle iso-2022-jp-2 and all iso-2022 charsets used by
+  // DICOM.
 
-  // if Japanese, only ISO_IR_13 is active at the start
+  // Mask "charset" with ISO_2022_BASE, which removes the ISO_2022 flag bit
+  // to get the code page that will be designated to G1 (and therefore GR).
+  unsigned char charset = (this->Key & ISO_2022_BASE);
+
+  // ISO IR 13 is the only Japanese charset designated to G1, the others
+  // (ISO IR 87 and ISO IR 159) can be designated to G0 by their escape
+  // codes but they are not active at the beginning. So mask them out.
   if (charset <= ISO_2022_JP_BASE)
   {
     charset &= ISO_IR_13;
-    charsetG1 = charset;
   }
 
-  // this will be set when decoding a multibyte charset in G0
+  // Now "charset" is designated to G1, while G2 is unset (G3 is not used).
+  unsigned char charsetG1 = charset;
+  unsigned char charsetG2 = 0;
+
+  // This will be set true whan a multibyte charset is designated to G0.
+  // When this is false, G0 is ASCII (or romaji if G1 is ISO_IR_13, since
+  // ISO_IR_13 in G1 implies ISO_IR_14 in G0 according to JIS X 0201).
   bool multibyteG0 = false;
 
   // loop through the string, looking for iso-2022 escape codes,
@@ -3241,15 +3319,21 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
   size_t i = 0;
   while (i < l)
   {
-    // search for the next escape
+    // search for the next escape code or the end of the string
     size_t j = i;
     for (; j < l; j++)
     {
       if (text[j] == '\033') { break; }
     }
+    // now we convert all characters between "i" and "j" exclusive
     if ((charset & ISO_2022) == 0)
     {
-      // convert characters up to the next escape code
+      // We mask out the ISO_2022 bit at the start, so this branch
+      // is always taken before we encounter the first escape code.
+      // Also, the CharsetInfo table has been constructed such that
+      // the ISO_2022 flag of "charset" will only be set for escape
+      // codes that designate a charset other than ASCII or romaji
+      // to G0, so here we know that the charset is designated to G1.
       charsetG1 = charset;
       vtkDICOMCharacterSet cs(charset);
       m = cs.AnyToUTF8(&text[i], j-i, s, mode);
@@ -3261,38 +3345,44 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
              charset == ISO_2022_IR_149 ||
              charset == ISO_2022_IR_159)
     {
+      // All of these charsets are included in iso-2022-jp-2 and are
+      // supported by our JISX decoder (ISO IR 13 in G1, the rest in G0).
       m = JISXToUTF8(charset, charsetG1, &text[i], j-i, s, mode);
     }
     else if (multibyteG0)
     {
-      // any control codes such as carriage return, newline, and space
-      // will be emitted while everything else is treated as invalid
+      // If G0 is a multibyte charset not supported by our JISX decoder,
+      // then the only characters we will keep are the control chars and
+      // space. All other characters will be marked invalid (0xFFFD").
       m = UnknownToUTF8(&text[i], j-i, s, mode);
     }
     else
     {
-      // any octets in [0x00,0x7F] will be assumed to be ASCII,
-      // while all other octets will be treated as invalid
+      // This branch is taken for unknown character sets, where we know
+      // that G0 is not designated as a multibyte character set.  Here
+      // we assume G0 is ASCII (or something very similar), but consider
+      // all octets outside the range [0x00,0x7f] to be invalid.
       m = ASCIIToUTF8(&text[i], j-i, s, mode);
     }
 
-    // check for decoding errors
+    // If not all chars were decoded, there was a decoding error
     if (m != j-i && n == l)
     {
       n = i + m; // record position of error
     }
 
-    // Make sure we are at the escape code (or the end of string)
+    // Advance to the escape code (or the end of string)
     i = j;
 
-    // Get the escape code for the next segment
+    // Get the escape code for the next segment, modify state accordingly
     if (text[i] == '\033')
     {
       i++;
       const char *escapeCode = &text[i];
       size_t escapeLen = CheckForMultiByteG0(&text[i], l-i, &multibyteG0);
 
-      // DICOM only uses ISO 2022 codes that designate G0 and G1
+      // DICOM only uses ISO 2022 codes that designate G0 and G1,
+      // so those are the only escape codes that we will recognize.
       if ((escapeLen == 2 && (escapeCode[0] == '(' || escapeCode[0] == ')' ||
                               escapeCode[0] == '-' || escapeCode[0] == '$')) ||
           (escapeLen == 3 && escapeCode[0] == '$' && (escapeCode[1] == '(' ||
@@ -3301,18 +3391,25 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
         // advance past the escape sequence
         i += escapeLen;
 
+        // save the previous charset
         unsigned char oldcharset = charset;
-        charset = 0xFF; // indicate none found yet
+        // flag new charset as unknown until we discover what it is
+        charset = 0xFF;
 
-        // look through single-byte charset escape codes
+        // Look through the table that defines character sets known to us,
+        // and see if any of these match the escape code that we found.
         for (unsigned char k = 0; k < CHARSET_TABLE_SIZE; k++)
         {
           const char *escapeTry = Charsets[k].EscapeCode;
           size_t le = strlen(escapeTry);
           if (le == escapeLen && strncmp(escapeCode, escapeTry, le) == 0)
           {
+            // We found the charset that matches the escape code!
             charset = Charsets[k].Key;
 
+            // If the escape code designates ISO_IR_13 to G1, this checks
+            // whether whether there is a character set in G0 that is
+            // compatible with our JISX decoder.
             if (charset == ISO_IR_13 &&
                 Charsets[k].EscapeCode[0] == ')' &&
                 (oldcharset == ISO_2022_IR_6 ||
@@ -3322,8 +3419,8 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
                  oldcharset == ISO_2022_IR_149 ||
                  oldcharset == ISO_2022_IR_159))
             {
-              // The ISO_IR_13 katakana go in G1, so let's keep the
-              // currently active kanji charset in G0.
+              // The ISO_IR_13 katakana are going to G1, but let's keep
+              // the currently active kanji/romaji/ascii charset in G0.
               charsetG1 = charset;
               charset = oldcharset;
             }
@@ -3333,6 +3430,10 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
       }
       else if (escapeLen == 2 && escapeCode[0] == '.')
       {
+        // iso-2022-jp-2 allows latin and greek charsets in G2 using
+        // the escape codes ESC .A and ESC .F, and here we generically
+        // support the assignment of ISO 8859 charsets to G2
+
         // advance past the escape sequence
         i += escapeLen;
 
@@ -3353,7 +3454,10 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
       }
       else if (escapeLen == 1 && escapeCode[0] == 'N')
       {
-        // single shift G2, convert one character
+        // The escape code ESC N is called SS2 or Single Shift 2.
+        // It causes G2 to be used for the next char, and if G2 is set, it
+        // will be an ISO 8859 single-byte charset (see comments in the
+        // code block above). We set the high bit for the ISO 8859 decoder.
         i += escapeLen;
         char g2char = (text[i++] | 0x80);
         vtkDICOMCharacterSet cs(charsetG2);
@@ -3361,12 +3465,14 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
       }
       else if (escapeLen == 2 && escapeCode[0] == '&' && escapeCode[1] == '@')
       {
-        // obsolete JIS code to switch versions of JIS X 0208
+        // ESC &@ is a version indicator, it is a polite way of saying that
+        // we need JIS X 0208:1990 and not just JIS X 0208:1983.  We can
+        // ignore it since we support JIS X 0208:1990.
         i += escapeLen;
       }
       else if (escapeLen)
       {
-        // write any other escape sequences verbatim to the output
+        // if we didn't process an escape, write it verbatim to the output
         s->push_back('\033');
         while (escapeLen)
         {
@@ -3376,7 +3482,7 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
       }
       else
       {
-        // record position of error
+        // bad escape code, record position of error
         if (n == l) { n = i - 1; }
       }
     }

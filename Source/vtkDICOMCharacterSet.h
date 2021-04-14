@@ -23,24 +23,20 @@
 //! Character sets.
 /*!
  *  This class provides the means to convert the various international
- *  text encodings used by DICOM to the popular UTF-8 encoding.  It does
- *  not at this time provide the means to convert to any encoding other
- *  than UTF-8.
+ *  text encodings used by DICOM to UTF-8 and back again.
  *
- *  During conversion to UTF-8, any codes in the original encoding that
- *  cannot be converted to Unicode are replaced by "REPLACEMENT CHARACTER",
+ *  During conversion to UTF-8, any codes the original encoding that
+ *  can't be converted are replaced by Unicode's "REPLACEMENT CHARACTER",
  *  which is a question mark in a black diamond.  For instance, if the
- *  original encoding is ISO_IR_6, any octets with the 8th bit set will
- *  be replaced.
+ *  original encoding is ISO_IR_6 (ASCII), any octets outside of the
+ *  valid ASCII range of 0 to 127 will become "REPLACEMENT CHARACTER".
  *
  *  DICOM supports a fairly small number of single-byte and multi-byte
  *  character sets.  The only VRs that support these character sets are
  *  PN, LO, SH, ST, LT, and ST (all other text VRs must be ASCII). In
- *  total, there is one 7-bit encoding (ASCII), eleven 8-bit single-byte
- *  encodings, three variable-length encodings (UTF-8, GB18030, GBK), and
- *  three iso-2022 multi-byte encodings.  It is possible to use iso-2022
- *  escape codes to switch between most of the encodings, with UTF-8 and
- *  GB18030/GBK as the most noteworthy exceptions.
+ *  addition to ASCII, there are eleven 8-bit single-byte encodings,
+ *  three iso-2022 multi-byte encodings, and three variable-length
+ *  encodings (UTF-8, GB18030, GBK).
  *
  *  In some DICOM data sets, especially old ones, the SpecificCharacterSet
  *  attribute will be missing and it might be necessary to manually specify
