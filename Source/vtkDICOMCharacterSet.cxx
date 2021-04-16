@@ -431,9 +431,7 @@ static const char *EUCKR_Names[] = {
 
 static const char *ISO_IR_149_Names[] = {
   "csksc56011987",
-  "iso-2022-kr",
   "iso-ir-149",
-  "iso2022_kr",
   "korean",
   "ks_c_5601-1987",
   "ks_c_5601-1989",
@@ -3290,6 +3288,11 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
   // The primary intented use is decoding iso-2022-jp-1, but it is general
   // enough to also handle iso-2022-jp-2 and all iso-2022 charsets used by
   // DICOM.
+
+  // Note that the SI/SO control characters (Shift Out, Shift In) are
+  // ignored, so this cannot be used for iso-2022-cn or iso-2022-kr.
+  // Instead, it expects DICOM's altered 8-bit form of these encodings
+  // where the high bit indicates the shift status.
 
   // Mask "charset" with ISO_2022_BASE, which removes the ISO_2022 flag bit
   // to get the code page that will be designated to G1 (and therefore GR).
