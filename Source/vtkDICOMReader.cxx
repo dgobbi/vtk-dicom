@@ -1092,7 +1092,7 @@ int vtkDICOMReader::RequestInformation(
     centroid[1] /= nPoints;
     centroid[2] /= nPoints;
 
-    // use Jacobi to compute line of best fit
+    // use Jacobi to compute line of best fit (eigenvector)
     double storage[18] = {};
     double *A[3] = { &storage[0], &storage[3], &storage[6] };
     double *E[3] = { &storage[9], &storage[12], &storage[15] };
@@ -1102,8 +1102,8 @@ int vtkDICOMReader::RequestInformation(
       {
         for (int jj = 0; jj < 3; jj++)
         {
-          A[ii][jj] = ((points[3*iPoint + ii] - centroid[ii]) *
-                       (points[3*iPoint + jj] - centroid[jj]));
+          A[ii][jj] += ((points[3*iPoint + ii] - centroid[ii]) *
+                        (points[3*iPoint + jj] - centroid[jj]));
         }
       }
     }
@@ -1111,12 +1111,15 @@ int vtkDICOMReader::RequestInformation(
     vtkMath::Jacobi(A, eigenvalues, E);
 
     // only use eigenvector if the points fit a line very precisely
+    // (check that first eigenvalue is at least 1000 times larger than others)
     if (eigenvalues[1]*eigenvalues[1] + eigenvalues[2]*eigenvalues[2] <
         1e-6*eigenvalues[0]*eigenvalues[0])
     {
-      // create the vector, dot(vector,normal) should be unity
+      // compute dot product of eigenvector and slice normal
       double vdn = E[0][0]*normal[0] + E[1][0]*normal[1] + E[2][0]*normal[2];
-      if (vdn > 0)
+      // dot product of slice vector and slice normal must be unity,
+      // so we divide by the dot product that we just computed
+      if (vdn != 0.0)
       {
         vector[0] = E[0][0]/vdn;
         vector[1] = E[1][0]/vdn;
