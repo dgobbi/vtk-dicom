@@ -912,11 +912,33 @@ BIG5_R[18993] = 0xFFFD # 5244 0x256e
 BIG5_R[18994] = 0xFFFD # 5245 0x2570
 BIG5_R[18995] = 0xFFFD # 5246 0x256f
 
+# For Unicode to Big5 mapping, we want to provide compatibility with
+# various look-alike (or functionally equivalent) characters.  This is
+# particularly important because there is so much historic variability
+# among the various Big5 and CNS-11643 character tables.
 big5_compat = {
-    0x3038 : 5287, # HANGZHOU NUMERAL 10
-    0x3039 : 5288, # HANGZHOU NUMERAL 20
-    0x5344 : 5288, # cjk unified ideograph
-    0x303A : 5289, # HANGZHOU NUMERAL 30
+    0x00A2 : 5187, # CENT SIGN (map to FULLWIDTH CENT SIGN)
+    0x00A3 : 5188, # POUND SIGN (map to FULLWIDTH POUND SIGN)
+    0x00A5 : 5185, # YEN SIGN (map to FULLWIDTH YEN SIGN)
+    0x2015 : 5046, # HORIZONTAL BAR (map to EN DASH)
+    0x2016 : 5178, # DOUBLE VERTICAL LINE (map to PARALLEL TO)
+    0x2022 : 5029, # BULLET (map to HYPHENATION POINT)
+    0x203E : 5120, # OVERLINE (map to MACRON)
+    0x2044 : 5180, # FRACTION SLASH (map to FULLWIDTH SOLIDUS)
+    0x223C : 5153, # TILDE OPERATOR (map to FULLWIDTH TILDE)
+    0x2609 : 5169, # SUN (map to CIRCLED DOT OPERATOR)
+    0x2641 : 5168, # EARTH (map to CIRCLED PLUS)
+    0x2733 : 5101, # EIGHT SPOKED ASTERISK (map to FULLWIDTH ASTERISK)
+    0x2E9F : 5746, # CJK RADICAL MOTHER (map to look-alike 0x6BCD)
+    0x301C : 5153, # WAVE DASH (map to FULLWIDTH TILDE)
+    0x3036 : 5186, # CIRCLED POSTAL MARK (map to POSTAL MARK)
+    0x3038 : 5287, # HANGZHOU NUMERAL 10 (map to look-alike 0x5341)
+    0x3039 : 5288, # HANGZHOU NUMERAL 20 (map to look-alike 0x5344)
+    0x303A : 5289, # HANGZHOU NUMERAL 30 (map to look-alike 0x5345)
+    0x30FB : 5029, # KATAKANA MIDDLE DOT (map to HYPHENATION POINT)
+    0x5344 : 5288, # CJK UNIFIED IDEOGRAPH (map to look-alike numeral)
+    0x5F5E : 10226, # CJK IDEOGRAPH (map to variant 0x5F5D)
+    0xFE58 : 5048, # SMALL EM DASH (map to EM DASH)
 }
 # compatibility for CP950 private codes
 for i in range(10896,11304):

@@ -20695,102 +20695,103 @@ const unsigned short CodePageBig5[13551] = {
 };
 
 // Reverse
-const unsigned short CodePageBig5_R[22007] = {
+const unsigned short CodePageBig5_R[22042] = {
   // hot segments (indexes into segment table)
-  2, 128, 157,
+  2, 126, 155,
   // number of segments
-  180,
+  178,
   // segment table
-  0x0000, 0x00A7, 0x00B8, 0x00D7, 0x00D8, 0x00F7, 0x00F9, 0x014B,
+  0x0000, 0x00A2, 0x00B8, 0x00D7, 0x00D8, 0x00F7, 0x00F9, 0x014B,
   0x014C, 0x0153, 0x0154, 0x0250, 0x025C, 0x026A, 0x026B, 0x0275,
   0x0276, 0x0283, 0x028B, 0x02C6, 0x02CE, 0x02D9, 0x02DA, 0x0391,
   0x03A2, 0x03A3, 0x03AA, 0x03B1, 0x03C2, 0x03C3, 0x03CA, 0x0401,
   0x0402, 0x0410, 0x0416, 0x0436, 0x0450, 0x0451, 0x0452, 0x2013,
-  0x201E, 0x2025, 0x2028, 0x2032, 0x203C, 0x20AC, 0x20AD, 0x2103,
-  0x210A, 0x2116, 0x2117, 0x2121, 0x2122, 0x2160, 0x216A, 0x2170,
-  0x217A, 0x2190, 0x219A, 0x21B8, 0x21BA, 0x21E7, 0x21E8, 0x2215,
-  0x2236, 0x2252, 0x2253, 0x2260, 0x2268, 0x2295, 0x229A, 0x22A5,
-  0x22A6, 0x22BF, 0x22C0, 0x2400, 0x2420, 0x2421, 0x2422, 0x2460,
-  0x246A, 0x2474, 0x247E, 0x2500, 0x2503, 0x250C, 0x251D, 0x2524,
-  0x2525, 0x252C, 0x252D, 0x2534, 0x2535, 0x253C, 0x253D, 0x2550,
-  0x2575, 0x2581, 0x2589, 0x2596, 0x25A0, 0x25A2, 0x25B2, 0x25B4,
-  0x25BC, 0x25BE, 0x25C6, 0x25D0, 0x25E2, 0x25E6, 0x2605, 0x2607,
-  0x2640, 0x2643, 0x273D, 0x273E, 0x2E80, 0x2E8E, 0x2E95, 0x2E9E,
-  0x2EA5, 0x2EAF, 0x2EB6, 0x2EBF, 0x2EC6, 0x2EE4, 0x2F33, 0x2F34,
-  0x3000, 0x3020, 0x3021, 0x302A, 0x3038, 0x3041, 0x3094, 0x309B,
-  0x30A1, 0x30F7, 0x30FC, 0x3105, 0x312A, 0x31CF, 0x31D0, 0x3231,
-  0x3232, 0x32A3, 0x32A4, 0x338E, 0x3390, 0x339C, 0x33A2, 0x33C4,
-  0x33C5, 0x33CE, 0x33D6, 0x4491, 0x4492, 0x4E00, 0xA000, 0xE000,
-  0xE311, 0xEEB8, 0xF6B1, 0xF849, 0xFA0C, 0xFA0E, 0xFE30, 0xFE6C,
-  0xFF01, 0xFF10, 0xFF1A, 0xFF21, 0xFF3B, 0xFF41, 0xFF5B, 0xFF5F,
-  0xFFE0, 0xFFE6, 0xFFED, 0xFFEE,
+  0x2028, 0x2032, 0x2045, 0x20AC, 0x20AD, 0x2103, 0x210A, 0x2116,
+  0x2117, 0x2121, 0x2122, 0x2160, 0x216A, 0x2170, 0x217A, 0x2190,
+  0x219A, 0x21B8, 0x21BA, 0x21E7, 0x21E8, 0x2215, 0x223D, 0x2252,
+  0x2253, 0x2260, 0x2268, 0x2295, 0x229A, 0x22A5, 0x22A6, 0x22BF,
+  0x22C0, 0x2400, 0x2420, 0x2421, 0x2422, 0x2460, 0x246A, 0x2474,
+  0x247E, 0x2500, 0x2503, 0x250C, 0x251D, 0x2524, 0x2525, 0x252C,
+  0x252D, 0x2534, 0x2535, 0x253C, 0x253D, 0x2550, 0x2575, 0x2581,
+  0x2589, 0x2596, 0x25A0, 0x25A2, 0x25B2, 0x25B4, 0x25BC, 0x25BE,
+  0x25C6, 0x25D0, 0x25E2, 0x25E6, 0x2605, 0x260A, 0x2640, 0x2643,
+  0x2733, 0x2734, 0x273D, 0x273E, 0x2E80, 0x2E8E, 0x2E95, 0x2EAF,
+  0x2EB6, 0x2EBF, 0x2EC6, 0x2EE4, 0x2F33, 0x2F34, 0x3000, 0x3020,
+  0x3021, 0x302A, 0x3036, 0x3041, 0x3094, 0x309B, 0x30A1, 0x30F7,
+  0x30FB, 0x3105, 0x312A, 0x31CF, 0x31D0, 0x3231, 0x3232, 0x32A3,
+  0x32A4, 0x338E, 0x3390, 0x339C, 0x33A2, 0x33C4, 0x33C5, 0x33CE,
+  0x33D6, 0x4491, 0x4492, 0x4E00, 0xA000, 0xE000, 0xE311, 0xEEB8,
+  0xF6B1, 0xF849, 0xFA0C, 0xFA0E, 0xFE30, 0xFE6C, 0xFF01, 0xFF10,
+  0xFF1A, 0xFF21, 0xFF3B, 0xFF41, 0xFF5B, 0xFF5F, 0xFFE0, 0xFFE6,
+  0xFFED, 0xFFEE,
   // compressed segments
    RCHAR,  RCHAR,  RCHAR,   5135,  RCHAR,  RCHAR,  RCHAR,  11301,
    RCHAR,  11299,  RCHAR,  RCHAR,  RCHAR,  11303,  RCHAR,  11298,
    RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5427,  RCHAR,   5342,
    RCHAR,   5359,  RCHAR,   5366,  RCHAR,   5383,  RCHAR,  11141,
    RCHAR,  11135,  11142,  11175,  RCHAR,  11174,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5465,  RCHAR,  RCHAR,
-   RCHAR,  11259,  RCHAR,  11260,  RCHAR,   5268,  RCHAR,  10916,
-   RCHAR,  RCHAR,  RCHAR,  11202,  RCHAR,  11201,  RCHAR,  RCHAR,
-   RCHAR,   5146,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5156,
-   RCHAR,   5159,  RCHAR,   5432,  RCHAR,   5464,  RCHAR,  10896,
-   RCHAR,  10906,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5233,
-   RCHAR,   5232,  RCHAR,   5231,  RCHAR,   5230,  RCHAR,  RCHAR,
-   RCHAR,   5215,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,   5465,  RCHAR,  RCHAR,  RCHAR,  11259,
+   RCHAR,  11260,  RCHAR,   5268,  RCHAR,  10916,  RCHAR,  RCHAR,
+   RCHAR,  11202,  RCHAR,  11201,  RCHAR,  RCHAR,  RCHAR,   5146,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5156,  RCHAR,   5159,
+   RCHAR,   5432,  RCHAR,   5464,  RCHAR,  10896,  RCHAR,  10906,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5233,  RCHAR,   5232,
+   RCHAR,   5231,  RCHAR,   5230,  RCHAR,  RCHAR,  RCHAR,   5215,
    RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  10965,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  10940,  RCHAR,
-   RCHAR,  RCHAR,   5278,  RCHAR,  RCHAR,  10966,  RCHAR,  RCHAR,
-   11049,  RCHAR,  RCHAR,   5390,  RCHAR,  11204,  RCHAR,  11258,
-   RCHAR,   5118,  RCHAR,   5202,  RCHAR,  RCHAR,  RCHAR,   5204,
-   RCHAR,  RCHAR,  RCHAR,  11209,  RCHAR,  RCHAR,  RCHAR,  18997,
-    2041,      0,  10896,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,   5258,  RCHAR,   5290,  RCHAR,   5316,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  18996,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+    5101,  RCHAR,  10965,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  10940,  RCHAR,  RCHAR,  RCHAR,
+    5278,  RCHAR,  RCHAR,  10966,  RCHAR,  RCHAR,  11049,  RCHAR,
+   RCHAR,   5390,  RCHAR,  11204,  RCHAR,  11258,  RCHAR,   5118,
+   RCHAR,   5202,  RCHAR,  RCHAR,  RCHAR,   5204,  RCHAR,  RCHAR,
+   RCHAR,  11209,  RCHAR,  RCHAR,  RCHAR,  18997,   2041,      0,
+   10896,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5258,
+   RCHAR,   5290,  RCHAR,   5316,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   18996,  RCHAR,
   // uncompressed segments
-   RCHAR,  21024,  RCHAR,  RCHAR,  RCHAR,  21041,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,  21043,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,  21055,  RCHAR,  21063,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  21024,  RCHAR,  RCHAR,  RCHAR,  21046,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  21048,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  21060,  RCHAR,  21068,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
    RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  21071,
-   RCHAR,  21082,  RCHAR,  21085,  RCHAR,  RCHAR,  RCHAR,  21095,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  21076,
+   RCHAR,  21097,  RCHAR,  RCHAR,  RCHAR,  21116,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  21123,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  21133,  RCHAR,  RCHAR,
+   RCHAR,  21173,  RCHAR,  21181,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
    RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,  21102,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  21112,
-   RCHAR,  RCHAR,  RCHAR,  21145,  RCHAR,  21153,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,  21158,  RCHAR,  21161,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  21178,
-   RCHAR,  RCHAR,  21215,  RCHAR,  21228,  RCHAR,  21230,  RCHAR,
-   21232,  RCHAR,  21234,  RCHAR,  21244,  RCHAR,  21248,  RCHAR,
-   21250,  RCHAR,  RCHAR,  RCHAR,  21253,  RCHAR,  21267,  RCHAR,
-   21276,  RCHAR,  21286,  RCHAR,  21295,  RCHAR,  RCHAR,  RCHAR,
-       0,  RCHAR,  RCHAR,  RCHAR,  21325,  RCHAR,  RCHAR,  21334,
-   RCHAR,  RCHAR,  21340,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  21349,  RCHAR,  RCHAR,
-   RCHAR,  21355,  RCHAR,  RCHAR,  RCHAR,     32,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,  RCHAR,  21363,  RCHAR,  21365,  RCHAR,
-   21425,  RCHAR,  21440,  RCHAR,  21447,  RCHAR,  21453,  RCHAR,
-   21457,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  21186,  RCHAR,  21189,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  21206,  RCHAR,  RCHAR,
+   21243,  RCHAR,  21256,  RCHAR,  21258,  RCHAR,  21260,  RCHAR,
+   21262,  RCHAR,  21272,  RCHAR,  21276,  RCHAR,  21281,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  21284,  RCHAR,  21298,  RCHAR,
+   21324,  RCHAR,  21333,  RCHAR,  RCHAR,  RCHAR,      0,  RCHAR,
+   RCHAR,  RCHAR,  21363,  RCHAR,  RCHAR,  21374,  RCHAR,  RCHAR,
+   21380,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  21390,  RCHAR,  RCHAR,  RCHAR,  21396,
+   RCHAR,  RCHAR,  RCHAR,     32,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  21404,  RCHAR,  21406,  RCHAR,  21466,  RCHAR,
+   21481,  RCHAR,  21488,  RCHAR,  21494,  RCHAR,  21498,  RCHAR,
+   RCHAR,  RCHAR,
   // [0x00D7,0x00D7] -> [  5135,  5135] # seg 3
   // [0x0416,0x0435] -> [ 11142, 11173] # seg 34
+  // [0x2733,0x2733] -> [  5101,  5101] # seg 112
   // [0x273D,0x273D] -> [ 10965, 10965] # seg 114
-  // [0x2F33,0x2F33] -> [ 10940, 10940] # seg 126
-  // [0x3000,0x301F] -v # seg 128 at pos 0
+  // [0x2F33,0x2F33] -> [ 10940, 10940] # seg 124
+  // [0x3000,0x301F] -v # seg 126 at pos 0
     5024,   5026,   5027,   5104,  RCHAR,  10959,  10960,  10961,
     5073,   5074,   5069,   5070,   5077,   5078,   5081,   5082,
     5065,   5066,   5186,  RCHAR,   5061,   5062,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5095,   5096,  RCHAR,
-  // [0x3041,0x3093] -> [ 10966, 11048] # seg 133
-  // [0x30A1,0x30F6] -> [ 11049, 11134] # seg 136
-  // [0x3105,0x3129] -> [  5390,  5426] # seg 139
-  // [0x31CF,0x31CF] -> [ 11204, 11204] # seg 141
-  // [0x3231,0x3231] -> [ 11258, 11258] # seg 143
-  // [0x32A3,0x32A3] -> [  5118,  5118] # seg 145
-  // [0x338E,0x338F] -> [  5202,  5203] # seg 147
-  // [0x33C4,0x33C4] -> [  5204,  5204] # seg 151
-  // [0x4491,0x4491] -> [ 11209, 11209] # seg 155
-  // [0x4E00,0x9FFF] -v # seg 157 at pos 32
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,   5153,   5095,   5096,  RCHAR,
+  // [0x3041,0x3093] -> [ 10966, 11048] # seg 131
+  // [0x30A1,0x30F6] -> [ 11049, 11134] # seg 134
+  // [0x3105,0x3129] -> [  5390,  5426] # seg 137
+  // [0x31CF,0x31CF] -> [ 11204, 11204] # seg 139
+  // [0x3231,0x3231] -> [ 11258, 11258] # seg 141
+  // [0x32A3,0x32A3] -> [  5118,  5118] # seg 143
+  // [0x338E,0x338F] -> [  5202,  5203] # seg 145
+  // [0x33C4,0x33C4] -> [  5204,  5204] # seg 149
+  // [0x4491,0x4491] -> [ 11209, 11209] # seg 153
+  // [0x4E00,0x9FFF] -v # seg 155 at pos 32
     5495,   5497,  RCHAR,   5498,  RCHAR,  RCHAR,  RCHAR,  11309,
     5517,   5515,   5518,   5516,  11310,   5560,  11319,  11317,
     5559,   5558,  RCHAR,  RCHAR,   5654,   5653,   5652,  RCHAR,
@@ -21346,7 +21347,7 @@ const unsigned short CodePageBig5_R[22007] = {
    14478,  RCHAR,  RCHAR,  15165,  15164,  RCHAR,   8945,  RCHAR,
     9316,  15754,   9681,  16380,   9970,  RCHAR,  10727,  18644,
    10943,  RCHAR,  RCHAR,  RCHAR,  11827,  RCHAR,  12180,   7579,
-   13805,   8488,  RCHAR,  RCHAR,  RCHAR,  10226,  RCHAR,  RCHAR,
+   13805,   8488,  RCHAR,  RCHAR,  RCHAR,  10226,  10226,  RCHAR,
    RCHAR,  10944,   6074,  RCHAR,   6073,   6715,  RCHAR,  12619,
    RCHAR,   7581,   7853,   7582,   7580,   8037,  RCHAR,  15166,
     8946,   9317,  RCHAR,  11316,  11429,  RCHAR,  11576,   6075,
@@ -23415,22 +23416,22 @@ const unsigned short CodePageBig5_R[22007] = {
    RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
    RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
    RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-  // [0x00A7,0x00B7] -v # seg 1 at pos 21024
-    5103,  10951,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-    5120,   5205,   5137,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-    5040,
-  // [0x00F7,0x00F8] -v # seg 5 at pos 21041
+  // [0x00A2,0x00B7] -v # seg 1 at pos 21024
+    5187,   5188,  RCHAR,   5185,  RCHAR,   5103,  10951,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5120,   5205,   5137,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5040,
+  // [0x00F7,0x00F8] -v # seg 5 at pos 21046
     5136,  11300,
   // [0x014B,0x014B] -> [ 11301, 11301] # seg 7
   // [0x0153,0x0153] -> [ 11299, 11299] # seg 9
-  // [0x0250,0x025B] -v # seg 11 at pos 21043
+  // [0x0250,0x025B] -v # seg 11 at pos 21048
    11295,  RCHAR,  RCHAR,  RCHAR,  11297,  RCHAR,  RCHAR,  RCHAR,
    RCHAR,  RCHAR,  RCHAR,  11296,
   // [0x026A,0x026A] -> [ 11303, 11303] # seg 13
   // [0x0275,0x0275] -> [ 11298, 11298] # seg 15
-  // [0x0283,0x028A] -v # seg 17 at pos 21055
+  // [0x0283,0x028A] -v # seg 17 at pos 21060
    11294,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  11302,
-  // [0x02C6,0x02CD] -v # seg 19 at pos 21063
+  // [0x02C6,0x02CD] -v # seg 19 at pos 21068
    10952,   5430,  RCHAR,   5428,   5429,   5431,  RCHAR,   5123,
   // [0x02D9,0x02D9] -> [  5427,  5427] # seg 21
   // [0x0391,0x03A1] -> [  5342,  5358] # seg 23
@@ -23441,138 +23442,137 @@ const unsigned short CodePageBig5_R[22007] = {
   // [0x0410,0x0415] -> [ 11135, 11140] # seg 33
   // [0x0436,0x044F] -> [ 11175, 11200] # seg 35
   // [0x0451,0x0451] -> [ 11174, 11174] # seg 37
-  // [0x2013,0x201D] -v # seg 39 at pos 21071
-    5046,   5048,  RCHAR,  RCHAR,  RCHAR,   5091,   5092,  RCHAR,
-   RCHAR,   5093,   5094,
-  // [0x2025,0x2027] -v # seg 41 at pos 21082
-    5036,   5035,   5029,
-  // [0x2032,0x203B] -v # seg 43 at pos 21085
+  // [0x2013,0x2027] -v # seg 39 at pos 21076
+    5046,   5048,   5046,   5178,  RCHAR,   5091,   5092,  RCHAR,
+   RCHAR,   5093,   5094,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5029,
+   RCHAR,  RCHAR,   5036,   5035,   5029,
+  // [0x2032,0x2044] -v # seg 41 at pos 21097
     5098,  RCHAR,  RCHAR,   5097,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,   5102,
-  // [0x20AC,0x20AC] -> [  5465,  5465] # seg 45
-  // [0x2103,0x2109] -v # seg 47 at pos 21095
+   RCHAR,   5102,  RCHAR,  RCHAR,   5120,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,   5180,
+  // [0x20AC,0x20AC] -> [  5465,  5465] # seg 43
+  // [0x2103,0x2109] -v # seg 45 at pos 21116
     5191,  RCHAR,   5119,  RCHAR,  RCHAR,  RCHAR,   5192,
-  // [0x2116,0x2116] -> [ 11259, 11259] # seg 49
-  // [0x2121,0x2121] -> [ 11260, 11260] # seg 51
-  // [0x2160,0x2169] -> [  5268,  5277] # seg 53
-  // [0x2170,0x2179] -> [ 10916, 10925] # seg 55
-  // [0x2190,0x2199] -v # seg 57 at pos 21102
+  // [0x2116,0x2116] -> [ 11259, 11259] # seg 47
+  // [0x2121,0x2121] -> [ 11260, 11260] # seg 49
+  // [0x2160,0x2169] -> [  5268,  5277] # seg 51
+  // [0x2170,0x2179] -> [ 10916, 10925] # seg 53
+  // [0x2190,0x2199] -v # seg 55 at pos 21123
     5172,   5170,   5173,   5171,  RCHAR,  RCHAR,   5174,   5175,
     5177,   5176,
-  // [0x21B8,0x21B9] -> [ 11202, 11203] # seg 59
-  // [0x21E7,0x21E7] -> [ 11201, 11201] # seg 61
-  // [0x2215,0x2235] -v # seg 63 at pos 21112
+  // [0x21B8,0x21B9] -> [ 11202, 11203] # seg 57
+  // [0x21E7,0x21E7] -> [ 11201, 11201] # seg 59
+  // [0x2215,0x223C] -v # seg 61 at pos 21133
     5182,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5138,  RCHAR,  RCHAR,
    RCHAR,   5145,   5158,   5157,  RCHAR,  RCHAR,   5179,  RCHAR,
     5178,  RCHAR,  RCHAR,  RCHAR,   5154,   5155,   5162,  RCHAR,
    RCHAR,   5163,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5165,
-    5164,
-  // [0x2252,0x2252] -> [  5146,  5146] # seg 65
-  // [0x2260,0x2267] -v # seg 67 at pos 21145
+    5164,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5153,
+  // [0x2252,0x2252] -> [  5146,  5146] # seg 63
+  // [0x2260,0x2267] -v # seg 65 at pos 21173
     5144,   5147,  RCHAR,  RCHAR,  RCHAR,  RCHAR,   5142,   5143,
-  // [0x2295,0x2299] -v # seg 69 at pos 21153
+  // [0x2295,0x2299] -v # seg 67 at pos 21181
     5168,  RCHAR,  RCHAR,  RCHAR,   5169,
-  // [0x22A5,0x22A5] -> [  5156,  5156] # seg 71
-  // [0x22BF,0x22BF] -> [  5159,  5159] # seg 73
-  // [0x2400,0x241F] -> [  5432,  5463] # seg 75
-  // [0x2421,0x2421] -> [  5464,  5464] # seg 77
-  // [0x2460,0x2469] -> [ 10896, 10905] # seg 79
-  // [0x2474,0x247D] -> [ 10906, 10915] # seg 81
-  // [0x2500,0x2502] -v # seg 83 at pos 21158
+  // [0x22A5,0x22A5] -> [  5156,  5156] # seg 69
+  // [0x22BF,0x22BF] -> [  5159,  5159] # seg 71
+  // [0x2400,0x241F] -> [  5432,  5463] # seg 73
+  // [0x2421,0x2421] -> [  5464,  5464] # seg 75
+  // [0x2460,0x2469] -> [ 10896, 10905] # seg 77
+  // [0x2474,0x247D] -> [ 10906, 10915] # seg 79
+  // [0x2500,0x2502] -v # seg 81 at pos 21186
     5236,  RCHAR,   5237,
-  // [0x250C,0x251C] -v # seg 85 at pos 21161
+  // [0x250C,0x251C] -v # seg 83 at pos 21189
     5239,  RCHAR,  RCHAR,  RCHAR,   5240,  RCHAR,  RCHAR,  RCHAR,
     5241,  RCHAR,  RCHAR,  RCHAR,   5242,  RCHAR,  RCHAR,  RCHAR,
     5234,
-  // [0x2524,0x2524] -> [  5233,  5233] # seg 87
-  // [0x252C,0x252C] -> [  5232,  5232] # seg 89
-  // [0x2534,0x2534] -> [  5231,  5231] # seg 91
-  // [0x253C,0x253C] -> [  5230,  5230] # seg 93
-  // [0x2550,0x2574] -v # seg 95 at pos 21178
+  // [0x2524,0x2524] -> [  5233,  5233] # seg 85
+  // [0x252C,0x252C] -> [  5232,  5232] # seg 87
+  // [0x2534,0x2534] -> [  5231,  5231] # seg 89
+  // [0x253C,0x253C] -> [  5230,  5230] # seg 91
+  // [0x2550,0x2574] -v # seg 93 at pos 21206
     5247,  18990,  18972,  18981,  18963,  18974,  18983,  18965,
    18978,  18987,  18969,  18980,  18989,  18971,   5248,  18984,
    18966,   5250,  18986,  18968,  18973,  18982,  18964,  18979,
    18988,  18970,   5249,  18985,  18967,   5243,   5244,   5246,
     5245,   5255,   5256,   5257,   5050,
-  // [0x2581,0x2588] -> [  5215,  5222] # seg 97
-  // [0x2589,0x2595] -v # seg 98 at pos 21215
+  // [0x2581,0x2588] -> [  5215,  5222] # seg 95
+  // [0x2589,0x2595] -v # seg 96 at pos 21243
     5229,   5228,   5227,   5226,   5225,   5224,   5223,  RCHAR,
    RCHAR,  RCHAR,  RCHAR,   5235,   5238,
-  // [0x25A0,0x25A1] -v # seg 100 at pos 21228
+  // [0x25A0,0x25A1] -v # seg 98 at pos 21256
     5115,   5114,
-  // [0x25B2,0x25B3] -v # seg 102 at pos 21230
+  // [0x25B2,0x25B3] -v # seg 100 at pos 21258
     5108,   5107,
-  // [0x25BC,0x25BD] -v # seg 104 at pos 21232
+  // [0x25BC,0x25BD] -v # seg 102 at pos 21260
     5117,   5116,
-  // [0x25C6,0x25CF] -v # seg 106 at pos 21234
+  // [0x25C6,0x25CF] -v # seg 104 at pos 21262
     5113,   5112,  RCHAR,  RCHAR,  RCHAR,   5105,  RCHAR,  RCHAR,
     5109,   5106,
-  // [0x25E2,0x25E5] -v # seg 108 at pos 21244
+  // [0x25E2,0x25E5] -v # seg 106 at pos 21272
     5251,   5252,   5254,   5253,
-  // [0x2605,0x2606] -v # seg 110 at pos 21248
-    5111,   5110,
-  // [0x2640,0x2642] -v # seg 112 at pos 21250
-    5166,  RCHAR,   5167,
-  // [0x2E80,0x2E8D] -v # seg 116 at pos 21253
+  // [0x2605,0x2609] -v # seg 108 at pos 21276
+    5111,   5110,  RCHAR,  RCHAR,   5169,
+  // [0x2640,0x2642] -v # seg 110 at pos 21281
+    5166,   5168,   5167,
+  // [0x2E80,0x2E8D] -v # seg 116 at pos 21284
    11263,  RCHAR,  RCHAR,  RCHAR,  11264,  RCHAR,  11265,  11266,
    11267,  RCHAR,  11268,  RCHAR,  11269,  11270,
-  // [0x2E95,0x2E9D] -v # seg 118 at pos 21267
+  // [0x2E95,0x2EAE] -v # seg 118 at pos 21298
    11271,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  11272,
-   11273,
-  // [0x2EA5,0x2EAE] -v # seg 120 at pos 21276
+   11273,  RCHAR,   5746,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
    11274,  RCHAR,  11275,  RCHAR,  RCHAR,  11276,  RCHAR,  11277,
    RCHAR,  11278,
-  // [0x2EB6,0x2EBE] -v # seg 122 at pos 21286
+  // [0x2EB6,0x2EBE] -v # seg 120 at pos 21324
    11279,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  11280,  RCHAR,
    11281,
-  // [0x2EC6,0x2EE3] -v # seg 124 at pos 21295
+  // [0x2EC6,0x2EE3] -v # seg 122 at pos 21333
    11282,  RCHAR,  RCHAR,  RCHAR,  11283,  RCHAR,  11284,  11285,
    RCHAR,  11286,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
    11287,  11288,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
    11289,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  11290,
-  // [0x3021,0x3029] -> [  5278,  5286] # seg 130
-  // [0x3038,0x3040] -v # seg 132 at pos 21325
-    5287,   5288,   5289,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,
-  // [0x309B,0x30A0] -v # seg 135 at pos 21334
+  // [0x3021,0x3029] -> [  5278,  5286] # seg 128
+  // [0x3036,0x3040] -v # seg 130 at pos 21363
+    5186,  RCHAR,   5287,   5288,   5289,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,
+  // [0x309B,0x30A0] -v # seg 133 at pos 21374
    11261,  11262,  10955,  10956,  RCHAR,  RCHAR,
-  // [0x30FC,0x3104] -v # seg 138 at pos 21340
-   10962,  10953,  10954,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,
-  // [0x339C,0x33A1] -v # seg 149 at pos 21349
+  // [0x30FB,0x3104] -v # seg 136 at pos 21380
+    5029,  10962,  10953,  10954,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,
+  // [0x339C,0x33A1] -v # seg 147 at pos 21390
     5197,   5198,   5199,  RCHAR,  RCHAR,   5201,
-  // [0x33CE,0x33D5] -v # seg 153 at pos 21355
+  // [0x33CE,0x33D5] -v # seg 151 at pos 21396
     5200,  RCHAR,  RCHAR,   5161,   5160,  RCHAR,  RCHAR,   5196,
-  // [0xE000,0xE310] -> [ 18997, 19781] # seg 159
-  // [0xE311,0xEEB7] -> [  2041,  5023] # seg 160
-  // [0xEEB8,0xF6B0] -> [     0,  2040] # seg 161
-  // [0xF6B1,0xF848] -> [ 10896, 11303] # seg 162
-  // [0xFA0C,0xFA0D] -v # seg 164 at pos 21363
+  // [0xE000,0xE310] -> [ 18997, 19781] # seg 157
+  // [0xE311,0xEEB7] -> [  2041,  5023] # seg 158
+  // [0xEEB8,0xF6B0] -> [     0,  2040] # seg 159
+  // [0xF6B1,0xF848] -> [ 10896, 11303] # seg 160
+  // [0xFA0C,0xFA0D] -v # seg 162 at pos 21404
    11314,  14598,
-  // [0xFE30,0xFE6B] -v # seg 166 at pos 21365
+  // [0xFE30,0xFE6B] -v # seg 164 at pos 21406
     5034,   5047,  RCHAR,   5049,   5051,   5055,   5056,   5059,
     5060,   5063,   5064,   5067,   5068,   5071,   5072,   5075,
     5076,   5079,   5080,   5083,   5084,  RCHAR,  RCHAR,  RCHAR,
    RCHAR,   5124,   5125,   5128,   5129,   5126,   5127,   5052,
     5037,   5038,   5039,  RCHAR,   5041,   5042,   5043,   5044,
-   RCHAR,   5085,   5086,   5087,   5088,   5089,   5090,   5130,
+    5048,   5085,   5086,   5087,   5088,   5089,   5090,   5130,
     5131,   5132,   5148,   5149,   5150,   5151,   5152,  RCHAR,
     5183,   5193,   5194,   5195,
-  // [0xFF01,0xFF0F] -v # seg 168 at pos 21425
+  // [0xFF01,0xFF0F] -v # seg 166 at pos 21466
     5033,  11257,   5099,   5184,   5189,   5100,  11256,   5053,
     5054,   5101,   5133,   5025,   5134,   5028,   5180,
-  // [0xFF10,0xFF19] -> [  5258,  5267] # seg 169
-  // [0xFF1A,0xFF20] -v # seg 170 at pos 21440
+  // [0xFF10,0xFF19] -> [  5258,  5267] # seg 167
+  // [0xFF1A,0xFF20] -v # seg 168 at pos 21481
     5031,   5030,   5139,   5141,   5140,   5032,   5190,
-  // [0xFF21,0xFF3A] -> [  5290,  5315] # seg 171
-  // [0xFF3B,0xFF40] -v # seg 172 at pos 21447
+  // [0xFF21,0xFF3A] -> [  5290,  5315] # seg 169
+  // [0xFF3B,0xFF40] -v # seg 170 at pos 21488
    10963,   5181,  10964,  RCHAR,   5122,  RCHAR,
-  // [0xFF41,0xFF5A] -> [  5316,  5341] # seg 173
-  // [0xFF5B,0xFF5E] -v # seg 174 at pos 21453
+  // [0xFF41,0xFF5A] -> [  5316,  5341] # seg 171
+  // [0xFF5B,0xFF5E] -v # seg 172 at pos 21494
     5057,   5045,   5058,   5153,
-  // [0xFFE0,0xFFE5] -v # seg 176 at pos 21457
+  // [0xFFE0,0xFFE5] -v # seg 174 at pos 21498
     5187,   5188,  11254,   5121,  11255,   5185,
-  // [0xFFED,0xFFED] -> [ 18996, 18996] # seg 178
+  // [0xFFED,0xFFED] -> [ 18996, 18996] # seg 176
 };
 
 // Windows Thai, extends iso-8859-11
