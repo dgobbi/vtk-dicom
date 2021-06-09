@@ -574,8 +574,8 @@ static const char *KOI8_Names[] = {
 // * Flags=2: Only the second or third values can be set to DefinedTermExt.
 // Example for character sets with Flags=1: "\ISO 2022 IR 149"
 // Example for character sets with Flags=2: "\ISO 2022 IR 87\ISO 2022 IR 159"
-const int CHARSET_TABLE_SIZE = 45;
-static CharsetInfo Charsets[45] = {
+const int CHARSET_TABLE_SIZE = 47;
+static CharsetInfo Charsets[47] = {
 
   // the default character set
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
@@ -633,13 +633,19 @@ static CharsetInfo Charsets[45] = {
   { vtkDICOMCharacterSet::X_EUCKR, 1,        // KS X 1001, korean (in G1)
     "ISO_IR 149", "ISO 2022 IR 149","$)C", EUCKR_Names },
 
-  // character sets that are not used with ISO 2022
+  // character sets that can go into G2 for iso-2022-jp-2
+  { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1 (in G2)
+    "ISO_IR 100", "ISO 2022 IR 100", ".A", ISO_IR_100_Names },
+  { vtkDICOMCharacterSet::ISO_IR_126, 0,     // iso-8859-7 (in G2)
+    "ISO_IR 126", "ISO 2022 IR 126", ".F", ISO_IR_126_Names },
+
+  // character sets that are not ISO 2022
   { vtkDICOMCharacterSet::ISO_IR_192, 0,     // utf-8
-    "ISO_IR 192", "",                "",   ISO_IR_192_Names },
+    "ISO_IR 192", "",               "%/I", ISO_IR_192_Names },
   { vtkDICOMCharacterSet::GB18030, 0,        // chinese multibyte
-    "GB18030",    "",                "",   GB18030_Names },
+    "GB18030",    "",               "",    GB18030_Names },
   { vtkDICOMCharacterSet::GBK, 0,            // subset of GB18030
-    "GBK",        "",                "",   GBK_Names },
+    "GBK",        "",               "",    GBK_Names },
 
   // the remainder of these are not DICOM standard
   { vtkDICOMCharacterSet::X_LATIN6, 0, "latin6", "", "-V", LATIN6_Names },
@@ -1426,45 +1432,6 @@ void CaseFoldUnicode(unsigned int code, std::string *s)
 }
 
 //----------------------------------------------------------------------------
-// Check an ISO-2022 escape code (without the leading escape) to see if it
-// designates G0 (the character range usually used for ASCII) to either a
-// single-byte code or a multi-byte code.  If it does neither, then the
-// value of the "multibyte" parameter is left unchanged.  The return value
-// is the number of octets consumed while reading the escape code.
-size_t CheckForMultiByteG0(const char *cp, size_t n, bool *multibyte)
-{
-  size_t l = 0;
-  while (l < n &&
-         static_cast<unsigned char>(cp[l]) >= 0x20 &&
-         static_cast<unsigned char>(cp[l]) <= 0x2f)
-  {
-    l++;
-  }
-  if (l < n &&
-      static_cast<unsigned char>(cp[l]) >= 0x40 &&
-      static_cast<unsigned char>(cp[l]) <= 0x7e)
-  {
-    l++;
-    if ((l == 2 && cp[0] == '$') ||
-        (l == 3 && cp[0] == '$' && cp[1] == '('))
-    {
-      // G0 is designated to multibyte
-      *multibyte = true;
-    }
-    else if (l == 2 && cp[0] == '(')
-    {
-      // G0 is designated to single byte
-      *multibyte = false;
-    }
-  }
-  else
-  {
-    l = 0;
-  }
-  return l;
-}
-
-//----------------------------------------------------------------------------
 size_t UTF8ToUTF8(const char *text, size_t l, std::string *s, int mode)
 {
   // convert to unicode and back, this will insert U+FFFD
@@ -1671,6 +1638,55 @@ void OctalCharCode(std::string *s, unsigned char c)
   text[2] = '0' + ((c >> 3) & 7);
   text[3] = '0' + (c & 7);
   s->append(text, 4);
+}
+
+// control characters that mark new line: NL VT FF CR
+bool IsEndLine(char c)
+{
+  return (c >= '\n' && c <= '\r');
+}
+
+// set the position of the first decoding error
+// (before decoding begins, initialize 'n' to the input buffer size)
+void SetErrorPosition(size_t& n, size_t i)
+{
+  if (i < n)
+  {
+    n = i;
+  }
+}
+
+// get length of an escape sequence (excluding the ESC character)
+size_t EscapeCodeLength(const char *cp, size_t n)
+{
+  size_t l = 0;
+  if (n > 0 && cp[0] == '[')
+  {
+    l++;
+    while (l < n &&
+           static_cast<unsigned char>(cp[l]) >= 0x30 &&
+           static_cast<unsigned char>(cp[l]) <= 0x3F)
+    {
+      l++;
+    }
+  }
+  while (l < n &&
+         static_cast<unsigned char>(cp[l]) >= 0x20 &&
+         static_cast<unsigned char>(cp[l]) <= 0x2F)
+  {
+    l++;
+  }
+  if (l < n &&
+      static_cast<unsigned char>(cp[l]) >= 0x40 &&
+      static_cast<unsigned char>(cp[l]) <= 0x7E)
+  {
+    l++;
+  }
+  else
+  {
+    l = 0;
+  }
+  return l;
 }
 
 } // end anonymous namespace
@@ -3242,12 +3258,12 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
       const char *dp = cp;
       char checkAscii = 0;
       // loop until the end of the current line
-      while (dp != ep && (*dp < '\n' || *dp > '\r'))
+      while (dp != ep && !IsEndLine(*dp))
       {
         checkAscii |= *dp;
         dp++;
       }
-      while (dp != ep && *dp >= '\n' && *dp <= '\r')
+      while (dp != ep && IsEndLine(*dp))
       {
         dp++;
       }
@@ -3275,7 +3291,7 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
         if (n < m)
         {
           n += cp - text;
-          l = (l < n ? l : n);
+          SetErrorPosition(l, n);
         }
       }
       cp = dp;
@@ -3289,39 +3305,75 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
 }
 
 //----------------------------------------------------------------------------
+// For DICOM, ISO 2022 decoding does not start with a blank slate,
+// for example if SpecificCharacterSet contains 'ISO 2022 IR 13'
+// then G0 is ISO IR 14 and G1 is ISO IR 13 when decoding starts.
+unsigned int vtkDICOMCharacterSet::InitISO2022(
+  unsigned char key, unsigned char charsetG[4])
+{
+  charsetG[0] = ISO_2022_IR_6;
+  charsetG[1] = Unknown;
+  charsetG[2] = Unknown;
+  charsetG[3] = Unknown;
+
+  // This tracks some ISO 2022 state information, such as whether the
+  // active character sets are multi-byte.
+  unsigned int state = 0;
+
+  // Check that charsetG1 is within the enumerated range for ISO 2022
+  if (key <= ISO_2022_MAX)
+  {
+    // Mask with ISO_2022_BASE, which removes the ISO_2022 flag bit
+    // (this is so we can use AnyToUTF8() to decode the G1 charset)
+    charsetG[1] = (key & ISO_2022_BASE);
+
+    if (charsetG[1] >= (ISO_2022_IR_149 & ISO_2022_BASE))
+    {
+      // ISO IR 149 (Korean) and beyond are 94x94 charsets
+      state |= MULTIBYTE_G1;
+    }
+    else if (charsetG[1] >= ISO_IR_100)
+    {
+      // the ISO-8859 character sets contain 96 chars (0xA0 to 0xFF)
+      state |= CHARSET96_G1;
+    }
+
+    // For Japanese in DICOM, if ISO IR 13 is set, then it is designated
+    // to G1 immediately (with ISO IR 14 implicitly designated to G0).
+    // But ISO IR 87 and ISO IR 159 are not designated to G0 until after
+    // their escape codes.
+    if (charsetG[1] <= ISO_2022_JP_BASE)
+    {
+      charsetG[1] &= ISO_IR_13;
+      if (charsetG[1] == ISO_IR_13)
+      {
+        // actually ISO IR 14 (there is no distinct enum value for ISO IR 14)
+        charsetG[0] = ISO_IR_13;
+      }
+    }
+  }
+  else
+  {
+    // indicate any non-iso-2022 encoding in the state
+    state = key;
+  }
+
+  return state;
+}
+
+//----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
   const char *text, size_t l, std::string *s, int mode) const
 {
   // Decodes text that uses ISO-2022 escape codes to switch character sets.
-  // The primary intented use is decoding iso-2022-jp-1, but it is general
-  // enough to also handle iso-2022-jp-2 and all iso-2022 charsets used by
-  // DICOM.
-
   // Note that the SI/SO control characters (Shift Out, Shift In) are
   // ignored, so this cannot be used for iso-2022-cn or iso-2022-kr.
-  // Instead, it expects DICOM's altered 8-bit form of these encodings
+  // Instead, it expects DICOM's 8-bit form of these 7-bit encodings
   // where the high bit indicates the shift status.
 
-  // Mask "charset" with ISO_2022_BASE, which removes the ISO_2022 flag bit
-  // to get the code page that will be designated to G1 (and therefore GR).
-  unsigned char charset = (this->Key & ISO_2022_BASE);
-
-  // ISO IR 13 is the only Japanese charset designated to G1, the others
-  // (ISO IR 87 and ISO IR 159) can be designated to G0 by their escape
-  // codes but they are not active at the beginning. So mask them out.
-  if (charset <= ISO_2022_JP_BASE)
-  {
-    charset &= ISO_IR_13;
-  }
-
-  // Now "charset" is designated to G1, while G2 is unset (G3 is not used).
-  unsigned char charsetG1 = charset;
-  unsigned char charsetG2 = 0;
-
-  // This will be set true whan a multibyte charset is designated to G0.
-  // When this is false, G0 is ASCII (or romaji if G1 is ISO_IR_13, since
-  // ISO_IR_13 in G1 implies ISO_IR_14 in G0 according to JIS X 0201).
-  bool multibyteG0 = false;
+  // Get the initial settings of the ISO 2022 decoder
+  unsigned char charsetG[4];
+  unsigned int state = InitISO2022(this->Key, charsetG);
 
   // loop through the string, looking for iso-2022 escape codes,
   // and when an escape code is found, change the charset
@@ -3330,171 +3382,230 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
   size_t i = 0;
   while (i < l)
   {
-    // search for the next escape code or the end of the string
+    // search for the next control code (ESC CR NL VT FF SO SI),
+    // which will be the delimiter for our conversion
     size_t j = i;
     for (; j < l; j++)
     {
-      if (text[j] == '\033') { break; }
-    }
-    // now we convert all characters between "i" and "j" exclusive
-    if ((charset & ISO_2022) == 0)
-    {
-      // We mask out the ISO_2022 bit at the start, so this branch
-      // is always taken before we encounter the first escape code.
-      // Also, the CharsetInfo table has been constructed such that
-      // the ISO_2022 flag of "charset" will only be set for escape
-      // codes that designate a charset other than ASCII or romaji
-      // to G0, so here we know that the charset is designated to G1.
-      charsetG1 = charset;
-      vtkDICOMCharacterSet cs(charset);
-      m = cs.AnyToUTF8(&text[i], j-i, s, mode);
-    }
-    else if (charset == ISO_2022_IR_6 ||
-             charset == ISO_2022_IR_13 ||
-             charset == ISO_2022_IR_58 ||
-             charset == ISO_2022_IR_87 ||
-             charset == ISO_2022_IR_149 ||
-             charset == ISO_2022_IR_159)
-    {
-      // All of these charsets are included in iso-2022-jp-2 and are
-      // supported by our JISX decoder (ISO IR 13 in G1, the rest in G0).
-      m = JISXToUTF8(charset, charsetG1, &text[i], j-i, s, mode);
-    }
-    else if (multibyteG0)
-    {
-      // If G0 is a multibyte charset not supported by our JISX decoder,
-      // then the only characters we will keep are the control chars and
-      // space. All other characters will be marked invalid (0xFFFD").
-      m = UnknownToUTF8(&text[i], j-i, s, mode);
-    }
-    else
-    {
-      // This branch is taken for unknown character sets, where we know
-      // that G0 is not designated as a multibyte character set.  Here
-      // we assume G0 is ASCII (or something very similar), but consider
-      // all octets outside the range [0x00,0x7f] to be invalid.
-      m = ASCIIToUTF8(&text[i], j-i, s, mode);
-    }
-
-    // If not all chars were decoded, there was a decoding error
-    if (m != j-i && n == l)
-    {
-      n = i + m; // record position of error
-    }
-
-    // Advance to the escape code (or the end of string)
-    i = j;
-
-    // Get the escape code for the next segment, modify state accordingly
-    if (text[i] == '\033')
-    {
-      i++;
-      const char *escapeCode = &text[i];
-      size_t escapeLen = CheckForMultiByteG0(&text[i], l-i, &multibyteG0);
-
-      // DICOM only uses ISO 2022 codes that designate G0 and G1,
-      // so those are the only escape codes that we will recognize.
-      if ((escapeLen == 2 && (escapeCode[0] == '(' || escapeCode[0] == ')' ||
-                              escapeCode[0] == '-' || escapeCode[0] == '$')) ||
-          (escapeLen == 3 && escapeCode[0] == '$' && (escapeCode[1] == '(' ||
-                             escapeCode[1] == ')' || escapeCode[1] == '-')))
+      if (text[j] == '\033' || (text[j] >= '\012' && text[j] <= '\017'))
       {
-        // advance past the escape sequence
-        i += escapeLen;
-
-        // save the previous charset
-        unsigned char oldcharset = charset;
-        // flag new charset as unknown until we discover what it is
-        charset = 0xFF;
-
-        // Look through the table that defines character sets known to us,
-        // and see if any of these match the escape code that we found.
-        for (unsigned char k = 0; k < CHARSET_TABLE_SIZE; k++)
-        {
-          const char *escapeTry = Charsets[k].EscapeCode;
-          size_t le = strlen(escapeTry);
-          if (le == escapeLen && strncmp(escapeCode, escapeTry, le) == 0)
-          {
-            // We found the charset that matches the escape code!
-            charset = Charsets[k].Key;
-
-            // If the escape code designates ISO_IR_13 to G1, this checks
-            // whether whether there is a character set in G0 that is
-            // compatible with our JISX decoder.
-            if (charset == ISO_IR_13 &&
-                Charsets[k].EscapeCode[0] == ')' &&
-                (oldcharset == ISO_2022_IR_6 ||
-                 oldcharset == ISO_2022_IR_13 ||
-                 oldcharset == ISO_2022_IR_58 ||
-                 oldcharset == ISO_2022_IR_87 ||
-                 oldcharset == ISO_2022_IR_149 ||
-                 oldcharset == ISO_2022_IR_159))
-            {
-              // The ISO_IR_13 katakana are going to G1, but let's keep
-              // the currently active kanji/romaji/ascii charset in G0.
-              charsetG1 = charset;
-              charset = oldcharset;
-            }
-            break;
-          }
-        }
+        break;
       }
-      else if (escapeLen == 2 && escapeCode[0] == '.')
-      {
-        // iso-2022-jp-2 allows latin and greek charsets in G2 using
-        // the escape codes ESC .A and ESC .F, and here we generically
-        // support the assignment of ISO 8859 charsets to G2
+    }
 
-        // advance past the escape sequence
-        i += escapeLen;
-
-        // assign character set to G2, default to "Unknown"
-        charsetG2 = 0xFF;
-
-        // search for the matching character set
-        for (unsigned char k = 0; k < CHARSET_TABLE_SIZE; k++)
-        {
-          const char *escapeTry = Charsets[k].EscapeCode;
-          size_t le = strlen(escapeTry);
-          if (le == 2 && escapeTry[0] == '-' && escapeTry[1] == escapeCode[1])
-          {
-            charsetG2 = Charsets[k].Key;
-            break;
-          }
-        }
-      }
-      else if (escapeLen == 1 && escapeCode[0] == 'N')
+    if (i < j)
+    {
+      // now we convert all characters between "i" and "j" exclusive
+      if ((state & ALTERNATE_CS) != 0)
       {
-        // The escape code ESC N is called SS2 or Single Shift 2.
-        // It causes G2 to be used for the next char, and if G2 is set, it
-        // will be an ISO 8859 single-byte charset (see comments in the
-        // code block above). We set the high bit for the ISO 8859 decoder.
-        i += escapeLen;
-        char g2char = (text[i++] | 0x80);
-        vtkDICOMCharacterSet cs(charsetG2);
-        cs.AnyToUTF8(&g2char, 1, s, mode);
+        // The current encoding is not ISO-2022
+        vtkDICOMCharacterSet cs(state & ALTERNATE_CS);
+        m = cs.AnyToUTF8(&text[i], j-i, s, mode);
       }
-      else if (escapeLen == 2 && escapeCode[0] == '&' && escapeCode[1] == '@')
+      else if (charsetG[0] == ISO_2022_IR_6 && charsetG[1] != ISO_IR_13)
       {
-        // ESC &@ is a version indicator, it is a polite way of saying that
-        // we need JIS X 0208:1990 and not just JIS X 0208:1983.  We can
-        // ignore it since we support JIS X 0208:1990.
-        i += escapeLen;
+        // When G0 is ASCII, simply apply G1 charset to this segment
+        vtkDICOMCharacterSet cs(charsetG[1] & ISO_2022_BASE);
+        m = cs.AnyToUTF8(&text[i], j-i, s, mode);
       }
-      else if (escapeLen)
+      else if (charsetG[0] == ISO_IR_13 || // implies ISO 2022 IR 14
+               charsetG[0] == ISO_2022_IR_6 ||
+               charsetG[0] == ISO_2022_IR_13 ||
+               charsetG[0] == ISO_2022_IR_87 ||
+               charsetG[0] == ISO_2022_IR_159 ||
+               charsetG[0] == ISO_2022_IR_149 ||
+               charsetG[0] == ISO_2022_IR_58)
       {
-        // if we didn't process an escape, write it verbatim to the output
-        s->push_back('\033');
-        while (escapeLen)
-        {
-          s->push_back(text[i++]);
-          --escapeLen;
-        }
+        // These are the G0 charsets that are supported by our JISX decoder,
+        // all are part of iso-2022-jp-2.
+        m = JISXToUTF8(charsetG[0], charsetG[1], &text[i], j-i, s, mode);
+      }
+      else if ((state & MULTIBYTE_G0) != 0)
+      {
+        // If G0 is a multibyte charset not supported by our JISX decoder,
+        // then the only characters we will keep are the control chars and
+        // space. All other characters will be marked invalid (0xFFFD).
+        m = UnknownToUTF8(&text[i], j-i, s, mode);
       }
       else
       {
-        // bad escape code, record position of error
-        if (n == l) { n = i - 1; }
+        // This branch is taken for unknown character sets, where we know
+        // that G0 is not designated as a multibyte character set.  Here
+        // we assume G0 is an ISO 646 character set that shares most of
+        // its code points with ASCII.
+        m = ASCIIToUTF8(&text[i], j-i, s, mode);
+      }
+
+      // If not all chars were decoded, there was a decoding error
+      if (m != j - i)
+      {
+        SetErrorPosition(n, i + m);
+      }
+    }
+
+    // Process any control codes
+    i = j;
+    char prevchar = '\0';
+    while (i < l && (text[i] >= '\012' && text[i] <= '\017'))
+    {
+      // SI SO (shift-in, shift-out) are not allowed
+      if (text[i] == '\016' || text[i] == '\017')
+      {
+        SetErrorPosition(n, i);
+      }
+      // CRNL resets the ISO 2022 state
+      else if (prevchar == '\r' && text[i] == '\n')
+      {
+        state = InitISO2022(this->Key, charsetG);
+      }
+      prevchar = text[i];
+      i++;
+    }
+    if (j < i)
+    {
+      s->append(&text[j], i - j);
+    }
+
+    // Process any escape codes
+    while (i < l && text[i] == '\033')
+    {
+      // Save position and advance past ESC
+      size_t savePos = i++;
+      bool escapeFail = false;
+      int shift = 0;
+
+      // Parse the escape sequence
+      const char *escapeCode = &text[i];
+      size_t escapeLen = EscapeCodeLength(escapeCode, l-i);
+      i += escapeLen;
+
+      if ((state & ALTERNATE_CS) != 0)
+      {
+        // Encoding is not ISO 2022, pass escapes to output
+        s->push_back('\033');
+        s->append(escapeCode, escapeLen);
+        break;
+      }
+
+      // Process ISO 2022 escape codes
+      switch (EscapeCode(escapeCode, escapeLen, &state))
+      {
+        case CODE_ACS:
+          // Announcer code sequence
+          escapeFail = true;
+          break;
+        case CODE_CZD:
+        case CODE_C1D:
+          // C0 and C1 designate control set
+          escapeFail = true;
+          break;
+        case CODE_GZD:
+          // G0 designate character set
+          charsetG[0] = CharacterSetFromEscapeCode(escapeCode, escapeLen);
+          escapeFail = (charsetG[0] == Unknown);
+          break;
+        case CODE_G1D:
+          // G1 designate character set
+          charsetG[1] = CharacterSetFromEscapeCode(escapeCode, escapeLen);
+          escapeFail = (charsetG[1] == Unknown);
+          break;
+        case CODE_G2D:
+          // G2 designate character set
+          charsetG[2] = CharacterSetFromEscapeCode(escapeCode, escapeLen);
+          escapeFail = (charsetG[2] == Unknown);
+          break;
+        case CODE_G3D:
+          // G3 designate character set
+          charsetG[3] = CharacterSetFromEscapeCode(escapeCode, escapeLen);
+          escapeFail = (charsetG[3] == Unknown);
+          break;
+        case CODE_DOCS:
+          // Switch to other encoding, such as UTF-8
+          // state &= ~ALTERNATE_CS;
+          // state ^= CharacterSetFromEscapeCode(escapeCode, escapeLen);
+          escapeFail = true;
+          break;
+        case CODE_CMD:
+          // This indicates the end of ISO 2022 processing!
+          escapeFail = true;
+          break;
+        case CODE_IRR:
+          // Identify revised registration, e.g. ESC &@ ESC $B indicates
+          // JIS X 0208:1990 should be used instead of JIS X 0208:1983
+          escapeFail = (escapeCode[1] != '@' || i == l || text[i] != '\033');
+          break;
+        case CODE_SS2:
+          // Single-shift two
+          shift = 2;
+          escapeFail = (charsetG[2] == Unknown);
+          break;
+        case CODE_SS3:
+          // Single-shift three
+          shift = 3;
+          escapeFail = (charsetG[3] == Unknown);
+          break;
+        case CODE_LS2:
+        case CODE_LS3:
+        case CODE_LS1R:
+        case CODE_LS2R:
+        case CODE_LS3R:
+          // Various locking shifts, we do not handle these
+          escapeFail = true;
+          break;
+        case CODE_OTHER:
+          // pass escape code verbatim to output
+          s->push_back('\033');
+          s->append(escapeCode, escapeLen);
+          break;
+        case CODE_ERROR:
+          // illegal escape code
+          escapeFail = true;
+      }
+
+      if (!escapeFail && shift != 0)
+      {
+        escapeFail = true;
+        if (i < l && (state & ALTERNATE_CS) == 0)
+        {
+          // Perform a single-shift (one character).
+          bool multibyte = ((state & (MULTIBYTE_G0 << shift)) != 0);
+          bool charset96 = ((state & (CHARSET96_GX << shift)) != 0);
+          char shiftchars[2] = { '\0', '\0' };
+          size_t bytecount = (multibyte ? 2 : 1);
+          size_t k;
+          for (k = 0; i < l && k < bytecount; i++, k++)
+          {
+            // Make sure byte values are in the correct range
+            unsigned char cGR = static_cast<unsigned char>(text[i] | 0x80);
+            if ((cGR >= 0xA1 && cGR <= 0xAE) || (charset96 && cGR >= 0xA0))
+            {
+              shiftchars[k] = static_cast<char>(cGR);
+              continue;
+            }
+            break;
+          }
+          if (k > 0)
+          {
+            // Attempt conversion of single character
+            escapeFail = false;
+            vtkDICOMCharacterSet cs(charsetG[shift]);
+            m = cs.AnyToUTF8(shiftchars, k, s, mode);
+            if (m != bytecount)
+            {
+              // Error due to bad character
+              SetErrorPosition(n, i - k + m);
+            }
+          }
+        }
+      }
+
+      if (escapeFail)
+      {
+        // Unhandled escape codes must be passed through to output
+        s->push_back('\033');
+        s->append(escapeCode, escapeLen);
+        // Set error position
+        SetErrorPosition(n, savePos);
       }
     }
   }
@@ -3802,17 +3913,46 @@ size_t vtkDICOMCharacterSet::NextBackslash(
   else if (this->IsISO2022())
   {
     // ensure backslash isn't part of a G0 multi-byte code
-    bool multibyte = false;
-    bool sshift = false;
+    // or a shifted G2 or G3 character set, this code must
+    // match behavior of ISO2022ToUTF8()
+    unsigned char charsetG2 = Unknown;
+    unsigned char charsetG3 = Unknown;
+    unsigned int state = 0;
+    int shiftcount = 0;
+    bool charset96 = false;
     while (cp != ep && *cp != '\0')
     {
       // look for iso 2022 escape code
       if (*cp == '\033')
       {
         cp++;
-        size_t l = CheckForMultiByteG0(cp, ep-cp, &multibyte);
-        // check for SS2, which designates GL for next byte
-        sshift = (l == 1 && *cp == 'N');
+        shiftcount = 0;
+        size_t l = EscapeCodeLength(cp, ep-cp);
+        switch(EscapeCode(cp, l, &state))
+        {
+          case CODE_G2D:
+            charsetG2 = CharacterSetFromEscapeCode(cp, l);
+            break;
+          case CODE_G3D:
+            charsetG3 = CharacterSetFromEscapeCode(cp, l);
+            break;
+          case CODE_SS2:
+            if (charsetG2 != Unknown)
+            {
+              shiftcount = ((state & MULTIBYTE_G2) ? 2 : 1);
+              charset96 = ((state & CHARSET96_G2) != 0);
+            }
+            break;
+          case CODE_SS3:
+            if (charsetG3 != Unknown)
+            {
+              shiftcount = ((state & MULTIBYTE_G3) ? 2 : 1);
+              charset96 = ((state & CHARSET96_G3) != 0);
+            }
+            break;
+          default:
+            break;
+        }
         // do not advance past backslashes in the escape sequence
         for (size_t i = 0; i < l; i++)
         {
@@ -3823,13 +3963,49 @@ size_t vtkDICOMCharacterSet::NextBackslash(
           cp++;
         }
       }
-      else if (multibyte || sshift || *cp != '\\')
+      else if (IsEndLine(*cp))
       {
-        sshift = false;
+        // look for CRNL line ending, reset state if present
+        char prevchar = *cp++;
+        while (cp != ep && IsEndLine(*cp))
+        {
+          if (prevchar == '\r' && *cp == '\n')
+          {
+            charsetG2 = Unknown;
+            charsetG3 = Unknown;
+            state = 0;
+            shiftcount = 0;
+          }
+          prevchar = *cp++;
+        }
+      }
+      else if (shiftcount)
+      {
+        // skip over any single-shifted character, one octet at a time
+        unsigned char cGL = static_cast<unsigned char>(*cp & 0x7F);
+        if ((cGL >= 0x21 && cGL <= 0x7E) || (charset96 && cGL >= 0x20))
+        {
+          cp++;
+          shiftcount--;
+        }
+        else
+        {
+          shiftcount = 0;
+        }
+      }
+      else if ((state & MULTIBYTE_G0) != 0)
+      {
+        // when G0 is multibyte, any backslash is just half a character
+        cp++;
+      }
+      else if (*cp != '\\')
+      {
+        // skip over non-backslash characters
         cp++;
       }
       else
       {
+        // this indicates we found a valid backslash
         break;
       }
     }
@@ -3869,6 +4045,167 @@ unsigned int vtkDICOMCharacterSet::CountBackslashes(
   }
 
   return count;
+}
+
+//----------------------------------------------------------------------------
+// Return an integer code that indicates the type of the escape code.
+// Also update information about the ISO 2022 state: the state is maintained
+// as a bitfield where e.g. MULTIBYTE_G0 indicates that G0 is a multibyte
+// character set and e.g. CHARSET96_G1 indicates that G1 reserves 96
+// graphical characters from 0x20 to 0x7F instead of 94 from 0x21 to 0x7E.
+vtkDICOMCharacterSet::EscapeType vtkDICOMCharacterSet::EscapeCode(
+  const char *cp, size_t l, unsigned int *state)
+{
+  if (l == 1)
+  {
+    switch (cp[0])
+    {
+      case 'N':
+        return CODE_SS2;
+      case 'O':
+        return CODE_SS3;
+      case 'n':
+        return CODE_LS2;
+      case 'o':
+        return CODE_LS3;
+      case '~':
+        return CODE_LS1R;
+      case '}':
+        return CODE_LS2R;
+      case '|':
+        return CODE_LS3R;
+      default:
+        return CODE_OTHER;
+    }
+  }
+  else if (l == 2)
+  {
+    switch (cp[0])
+    {
+      case ' ':
+        return CODE_ACS;
+      case '!':
+        return CODE_CZD;
+      case '\"':
+        return CODE_C1D;
+      case '%':
+        return CODE_DOCS;
+      case '&':
+        return CODE_IRR;
+      case '\'':
+        return CODE_ERROR;
+      case '$':
+        *state |= MULTIBYTE_G0;
+        return CODE_GZD;
+      case '(':
+        *state &= ~MULTIBYTE_G0;
+        return CODE_GZD;
+      case ')':
+        *state &= ~(MULTIBYTE_G1 | CHARSET96_G1);
+        return CODE_G1D;
+      case '*':
+        *state &= ~(MULTIBYTE_G2 | CHARSET96_G2);
+        return CODE_G2D;
+      case '+':
+        *state &= ~(MULTIBYTE_G2 | CHARSET96_G2);
+        return CODE_G3D;
+      case ',':
+        return CODE_ERROR;
+      case '-':
+        *state &= ~MULTIBYTE_G1;
+        *state |= CHARSET96_G1;
+        return CODE_G1D;
+      case '.':
+        *state &= ~MULTIBYTE_G2;
+        *state |= CHARSET96_G2;
+        return CODE_G2D;
+      case '/':
+        *state &= ~MULTIBYTE_G3;
+        *state |= CHARSET96_G3;
+        return CODE_G3D;
+      default:
+        return CODE_OTHER;
+    }
+  }
+  else if (l == 3 && cp[0] == '$')
+  {
+    switch (cp[1])
+    {
+      case '(':
+        *state |= MULTIBYTE_G0;
+        return CODE_GZD;
+      case ')':
+        *state |= MULTIBYTE_G1;
+        *state &= ~CHARSET96_G1;
+        return CODE_G1D;
+      case '*':
+        *state |= MULTIBYTE_G2;
+        *state &= ~CHARSET96_G1;
+        return CODE_G2D;
+      case '+':
+        *state |= MULTIBYTE_G3;
+        *state &= ~CHARSET96_G1;
+        return CODE_G3D;
+      case '-':
+        *state |= (MULTIBYTE_G1 | CHARSET96_G1);
+        return CODE_G1D;
+      case '.':
+        *state |= (MULTIBYTE_G2 | CHARSET96_G2);
+        return CODE_G2D;
+      case '/':
+        *state |= (MULTIBYTE_G3 | CHARSET96_G3);
+        return CODE_G3D;
+      default:
+        return CODE_ERROR;
+    }
+  }
+  else if (l == 3 && cp[0] == '%' && cp[1] == '/')
+  {
+    return CODE_DOCS;
+  }
+  else if (l > 0)
+  {
+    switch (cp[0])
+    {
+      case ' ':
+      case '!':
+      case '\"':
+      case '%':
+      case '&':
+      case '\'':
+      case '$':
+      case '(':
+      case ')':
+      case '*':
+      case '+':
+      case ',':
+      case '-':
+      case '.':
+      case '/':
+        return CODE_ERROR;
+      default:
+        return CODE_OTHER;
+    }
+  }
+
+  return CODE_ERROR;
+}
+
+//----------------------------------------------------------------------------
+unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCode(
+  const char *code, size_t l)
+{
+  // Look through the table that defines character sets known to us,
+  // and see if any of these match the escape code.
+  for (unsigned char k = 0; k < CHARSET_TABLE_SIZE; k++)
+  {
+    if (strncmp(code, Charsets[k].EscapeCode, l) == 0)
+    {
+      return Charsets[k].Key;
+    }
+  }
+
+  return 255;
 }
 
 //----------------------------------------------------------------------------

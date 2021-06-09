@@ -330,6 +330,34 @@ int main(int argc, char *argv[])
   TestAssert(v.GetString(2) == "\x1b$B$\\\x1b(B^\x1b$B%\\\x1b(J");
   }
 
+  { // test for proper escaping of backslashes in iso-2022-jp-2
+  std::string name = "\\ISO 2022 IR 87\\ISO 2022 IR 159";
+  // the following string includes accented latin and greek characters
+  // that when invoked in G0 have the same value as backslash
+  // "GÜNTER"
+  // "άέήί"
+  std::string raw = "G\x1b.A\x1bN\\NTER\\"
+                    "\x1b.F\x1bN\\\x1bN]\x1bN^\x1bN_";
+  vtkDICOMItem item;
+  item.Set(DC::SpecificCharacterSet, name);
+  item.Set(DC::OperatorsName, raw);
+  vtkDICOMValue v = item.Get(DC::OperatorsName);
+  TestAssert(v.GetNumberOfValues() == 2);
+  TestAssert(v.AsString() == raw);
+  TestAssert(v.GetString(0) == "G\x1b.A\x1bN\\NTER");
+  TestAssert(v.GetString(1) == "\x1b.F\x1bN\\\x1bN]\x1bN^\x1bN_");
+  }
+
+  // { // test for utf-8 in generic ISO-2022 decoder
+  // std::string name = "ISO 2022 IR 6";
+  // "Très bien, Jérôme"
+  // std::string raw = "\x1b%/ITr\xc3\xa8s bien, J\xc3\xa9r\xc3\xb4me";
+  // std::string utf = "Tr\xc3\xa8s bien, J\xc3\xa9r\xc3\xb4me";
+  // vtkDICOMCharacterSet cs(name);
+  // std::string s = cs.ToUTF8(raw);
+  // TestAssert(s == utf);
+  // }
+
   { // test for handling of utf-16 surrogates encoded in utf-8
   vtkDICOMCharacterSet cs = vtkDICOMCharacterSet::ISO_IR_192;
   // the following string has a matched surrogate pair
