@@ -576,8 +576,12 @@ static const char *KOI8_Names[] = {
 // Example for character sets with Flags=2: "\ISO 2022 IR 87\ISO 2022 IR 159"
 const int CHARSET_TABLE_SIZE = 45;
 static CharsetInfo Charsets[45] = {
+
+  // the default character set
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "",   ISO_IR_6_Names },
+
+  // the various ISO 8859 character sets (designated to G1)
   { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
     "ISO_IR 100", "ISO 2022 IR 100", "-A", ISO_IR_100_Names },
   { vtkDICOMCharacterSet::ISO_IR_101, 0,     // iso-8859-2, central europe
@@ -598,8 +602,9 @@ static CharsetInfo Charsets[45] = {
     "ISO_IR 148", "ISO 2022 IR 148", "-M", ISO_IR_148_Names },
   { vtkDICOMCharacterSet::ISO_IR_166, 0,     // iso-8859-11, thai
     "ISO_IR 166", "ISO 2022 IR 166", "-T", ISO_IR_166_Names },
+
   // character sets for ISO 2022 encodings of JIS
-  { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, katakana
+  { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, katakana (in G1)
     "ISO_IR 13",  "ISO 2022 IR 13",  ")I", ISO_IR_13_Names },
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, romaji
     "ISO_IR 14",  "ISO 2022 IR 14",  "(J", NULL },
@@ -607,7 +612,7 @@ static CharsetInfo Charsets[45] = {
     "ISO_IR 14",  "ISO 2022 IR 14",  "(H", NULL },
   { vtkDICOMCharacterSet::ISO_2022_IR_6, 0,  // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_2022_Names },
-  { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // JIS X 0201, katakana in G0
+  { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // JIS X 0201, katakana (in G0)
     "ISO_IR 13",  "ISO 2022 IR 13",  "(I", NULL },
   { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // JIS X 0208, japanese
     "ISO_IR 87",  "ISO 2022 IR 87", "$B" , ISO_IR_87_Names },
@@ -615,17 +620,19 @@ static CharsetInfo Charsets[45] = {
     "ISO_IR 87",  "ISO 2022 IR 87", "$@",  NULL },
   { vtkDICOMCharacterSet::ISO_2022_IR_159, 2,// JIS X 0212, japanese
     "ISO_IR 159", "ISO 2022 IR 159","$(D", ISO_IR_159_Names },
+
   // other character sets that can be used with ISO 2022
-  { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // GB2312, chinese
+  { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // GB2312, chinese (in G0)
     "ISO_IR 58",  "ISO 2022 IR 58", "$A",  ISO_IR_58_Names },
-  { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // compat escape code
+  { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // compatible escape code
     "ISO_IR 58",  "ISO 2022 IR 58", "$(A", NULL },
   { vtkDICOMCharacterSet::X_GB2312, 1,       // GB2312, chinese (in G1)
     "ISO_IR 58",  "ISO 2022 IR 58", "$)A", NULL },
-  { vtkDICOMCharacterSet::ISO_2022_IR_149, 1,// KS X 1001, korean
+  { vtkDICOMCharacterSet::ISO_2022_IR_149, 1,// KS X 1001, korean (in G0)
     "ISO_IR 149", "ISO 2022 IR 149","$(C", ISO_IR_149_Names },
   { vtkDICOMCharacterSet::X_EUCKR, 1,        // KS X 1001, korean (in G1)
     "ISO_IR 149", "ISO 2022 IR 149","$)C", EUCKR_Names },
+
   // character sets that are not used with ISO 2022
   { vtkDICOMCharacterSet::ISO_IR_192, 0,     // utf-8
     "ISO_IR 192", "",                "",   ISO_IR_192_Names },
@@ -633,7 +640,8 @@ static CharsetInfo Charsets[45] = {
     "GB18030",    "",                "",   GB18030_Names },
   { vtkDICOMCharacterSet::GBK, 0,            // subset of GB18030
     "GBK",        "",                "",   GBK_Names },
-  // The remainder of these are not DICOM standard
+
+  // the remainder of these are not DICOM standard
   { vtkDICOMCharacterSet::X_LATIN6, 0, "latin6", "", "-V", LATIN6_Names },
   { vtkDICOMCharacterSet::X_LATIN7, 0, "latin7", "", "-Y", LATIN7_Names },
   { vtkDICOMCharacterSet::X_LATIN8, 0, "latin8", "", "-_", LATIN8_Names },
