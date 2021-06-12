@@ -21,6 +21,37 @@ import bisect
 import sys
 import string
 
+usage = """
+usage:
+
+python chartables.py whatwg/ > vtkDICOMCharacterSetTables.cxx
+
+The "whatwg" directory should contain the following character tables,
+downloaded from https://encoding.spec.whatwg.org
+
+index-iso-8859-1.txt  (and 2 to 16)
+index-iso-2022-jp-katakana.txt
+index-windows-1254.txt
+index-windows-874.txt
+index-euc-kr.txt
+index-gb18030.txt
+index-gb18030-ranges.txt
+index-jis0208.txt
+index-jis0212.txt
+index-iso-2022-jp-katakana.txt
+index-big5.txt
+index-windows-874.txt (and 1250 to 1257)
+index-koi8-u.txt
+"""
+
+if len(sys.argv) != 2 or sys.argv[1].startswith('-'):
+    sys.stderr.write(usage)
+    sys.exit()
+
+whatwg = sys.argv[1]
+if whatwg[-1] not in ('/', '\\'):
+    whatwg += '/'
+
 # replacement character
 RCHAR = 0xFFFD
 
@@ -115,7 +146,7 @@ def makedict(table, reverse, *special):
                   break
         if i == 0xFFFD or c == 0xFFFD:
             continue
-        if not d.has_key(c):
+        if c not in d:
             d[c] = i
     for s in dicts:
         for c,i in s.items():
@@ -426,17 +457,17 @@ def checktable(table, reverse, orig, *dicts):
         c = searchtable(table, k)
         if k == 0xFFFD:
             if c != RCHAR:
-                print "zerofail", i,c,hex(k)
+                print("zerofail %d %d %#4.4x" % (i, c, k))
         elif i != c:
-            print "matchfail", i,c,hex(k)
+            print("matchfail %d %d %#4.4x" % (i, c, k))
     for d in dicts:
         for k,i in d.items():
             c = searchtable(table, k)
             if k == 0xFFFD:
                 if c != RCHAR:
-                    print "zerofail", i,c,hex(k)
+                    print("zerofail %d %d %#4.4x" % (i, c, k))
             elif i != c:
-                print "matchfail", i,c,hex(k)
+                print("matchfail %d %d %#4.4x" % (i, c, k))
 
 
 header = \
@@ -482,7 +513,7 @@ j0201_compat = {
   ord('\\') : ord('\\'), ord('~') : ord('~'),
 }
 # allow fullwidth -> halfwidth conversion
-for x,u in readdict('whatwg/index-iso-2022-jp-katakana.txt').items():
+for x,u in readdict(whatwg + 'index-iso-2022-jp-katakana.txt').items():
     j0201_compat[u] = 161 + x
 for x in range(94):
     j0201_compat[0xFF01 + x] = 33 + x
@@ -536,13 +567,13 @@ for i in [1,2,3,4,5,6,7,8,9,10,11,13,14,15,16]:
         ISO8859[i] = list(range(0,256))
     elif i == 9:
         ISO8859[i] = (list(range(0,160)) +
-                      readtable('whatwg/index-windows-1254.txt')[32:])
+                      readtable(whatwg + 'index-windows-1254.txt')[32:])
     elif i == 11:
         ISO8859[i] = (list(range(0,160)) +
-                      readtable('whatwg/index-windows-874.txt')[32:])
+                      readtable(whatwg + 'index-windows-874.txt')[32:])
     else:
         ISO8859[i] = (list(range(0,128)) +
-                      readtable('whatwg/index-iso-8859-%d.txt' % (i,)))
+                      readtable(whatwg + 'index-iso-8859-%d.txt' % (i,)))
 
     if i in [2, 3, 4, 10, 13, 14, 16]:
         table = maketable2(ISO8859[i], Forward, [160,255], maxin=255)
@@ -573,7 +604,7 @@ for i in [1,2,3,4,5,6,7,8,9,10,11,13,14,15,16]:
 # Encodings of Korean
 # ----
 
-euckr = readdict('whatwg/index-euc-kr.txt')
+euckr = readdict(whatwg + 'index-euc-kr.txt')
 KSX1001 = [RCHAR]*(8836 + 8822)
 for x in range(0x81,0xFF):
     for y in range(0x41,0xFF):
@@ -638,7 +669,7 @@ sys.stdout.write('\n')
 """
 
 # Also use this table for GBK and GB2312
-GB18030 = readtable('whatwg/index-gb18030.txt')
+GB18030 = readtable(whatwg + 'index-gb18030.txt')
 # Fix difference between whatwg table and official table
 GB18030[6555] = 0xE5E5 # 0x3000, ideographic space (duplicate)
 # Change GB18030-2005 to GB18030-2000 (DICOM uses GB18030-2000)
@@ -656,7 +687,7 @@ for i in range(6080,6080+190*94,190):
 GB18030 = GB2312 + block2 + block3
 
 # Add all linear mappings within the BMP to our GB18030 table
-LinearGB18030 = readlinear('whatwg/index-gb18030-ranges.txt')
+LinearGB18030 = readlinear(whatwg + 'index-gb18030-ranges.txt')
 for i in range(0,len(LinearGB18030)-2,2):
     x1 = LinearGB18030[i]
     y = LinearGB18030[i+1]
@@ -703,9 +734,9 @@ gbk_compat = {
 }
 
 # re-number GBK codes in the above so that GB2312 comes first
-for k in gbk_compat.keys():
+for k in gbk_compat:
     v = gbk_compat[k]
-    (a,b) = (v/190,v%190)
+    (a,b) = (v//190,v%190)
     if a < 32:
         v += 8836 # make room for GB2312
     elif b < 96:
@@ -754,7 +785,7 @@ sys.stdout.write('\n')
 # Encodings of Japanese
 # ----
 
-JISX0208 = readtable('whatwg/index-jis0208.txt')
+JISX0208 = readtable(whatwg + 'index-jis0208.txt')
 JISX0208[8836:10716] = range(0xE000,0xE000+(10716-8836)) # EUDC
 JISX0208[16] = 0xFFE3 # FULLWIDTH MACRON
 JISX0208[28] = 0x2014 # EM DASH
@@ -767,7 +798,7 @@ JISX0208[80] = 0x00A2 # CENT SIGN
 JISX0208[81] = 0x00A3 # POUND SIGN
 JISX0208[137] = 0x00AC # NOT SIGN
 
-JISX0212 = readtable('whatwg/index-jis0212.txt')
+JISX0212 = readtable(whatwg + 'index-jis0212.txt')
 JISX0212[116] = 0xFF5E # FULLWIDTH TILDE
 JISX0212[128] = 0x00A6 # BROKEN BAR
 
@@ -811,7 +842,7 @@ j_compat = {
 # make a reversible table for CP932
 JISX0208_R = ([RCHAR]*(94*12) + JISX0208[12*94:13*94] +
               [RCHAR]*(94*75) + JISX0208[88*94:94*94] +
-              range(0xE000,0xE758))
+              list(range(0xE000,0xE758)))
 JISX0208_R[32] = 0xFF5E # FULLWIDTH TILDE (in JIS0212)
 # remove duplicate mappings
 JISX0208_R[1207] = RCHAR # 159 0x2252
@@ -827,7 +858,7 @@ JISX0208_R[1219] = RCHAR # 125 0x222a
 JISX0208_R[3405] = 0x5861 # U+586B (in JIS0212)
 JISX0208_R[3990] = 0x9830 # U+982C (in JIS0212)
 # map halfwidth kana to fullwidth
-for x,u in readdict('whatwg/index-iso-2022-jp-katakana.txt').items():
+for x,u in readdict(whatwg + 'index-iso-2022-jp-katakana.txt').items():
      if u <= 0x3002:
          JISX0208_R[u - 0x3000] = 0xFF61 + x
      elif u <= 0x300D:
@@ -879,7 +910,7 @@ sys.stdout.write('\n')
 
 # Read Big5, keep ETEN but ignore HKSCS
 # (ETEN adds 408 chars including japanese, cyrillic)
-BIG5_HKSCS = readtable('whatwg/index-big5.txt')
+BIG5_HKSCS = readtable(whatwg + 'index-big5.txt')
 BIG5_PRIV1 = list(range(0xEEB8,0xF6B1)) # CP950 compatibility
 BIG5_PRIV2 = list(range(0xE311,0xEEB8)) # CP950 compatibility
 BIG5_PRIV4 = list(range(0xE000,0xE311)) # CP950 compatibility
@@ -982,7 +1013,7 @@ comment = {
 
 for i in [874,1250,1251,1252,1253,1254,1255,1256,1257]:
     CP[i] = (list(range(0,128)) +
-             readtable('whatwg/index-windows-%d.txt' % (i,)))
+             readtable(whatwg + 'index-windows-%d.txt' % (i,)))
 
     if i in [1254]:
         table = maketable2(CP[i], Forward, [128,159], maxrun=1, maxin=255)
@@ -1015,7 +1046,7 @@ for i in [874,1250,1251,1252,1253,1254,1255,1256,1257]:
 # ----
 
 KOI8 = (list(range(0,128)) +
-         readtable('whatwg/index-koi8-u.txt'))
+         readtable(whatwg + 'index-koi8-u.txt'))
 # remove all non-alphabetic characters except nbsp, interpunct, copyright
 for i in range(0x80,0xC0):
     if KOI8[i] < 0x400 or KOI8[i] >= 0x500:
