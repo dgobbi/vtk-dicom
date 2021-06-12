@@ -31,14 +31,11 @@ downloaded from https://encoding.spec.whatwg.org
 
 index-iso-8859-1.txt  (and 2 to 16)
 index-iso-2022-jp-katakana.txt
-index-windows-1254.txt
-index-windows-874.txt
+index-jis0208.txt
+index-jis0212.txt
 index-euc-kr.txt
 index-gb18030.txt
 index-gb18030-ranges.txt
-index-jis0208.txt
-index-jis0212.txt
-index-iso-2022-jp-katakana.txt
 index-big5.txt
 index-windows-874.txt (and 1250 to 1257)
 index-koi8-u.txt
