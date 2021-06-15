@@ -194,6 +194,8 @@ static const char *ISO_IR_100_Names[] = {
   "iso_8859-1:1987",
   "l1",
   "latin1",
+  // documented but incorrect defined term
+  "iso-ir 100",
   NULL
 };
 
@@ -207,6 +209,8 @@ static const char *ISO_IR_101_Names[] = {
   "iso_8859-2:1987",
   "l2",
   "latin2",
+  // documented but incorrect defined term
+  "iso-ir 101",
   NULL
 };
 
@@ -220,6 +224,8 @@ static const char *ISO_IR_109_Names[] = {
   "iso_8859-3:1988",
   "l3",
   "latin3",
+  // documented but incorrect defined term
+  "iso-ir 109",
   NULL
 };
 
@@ -233,6 +239,8 @@ static const char *ISO_IR_110_Names[] = {
   "iso_8859-4:1988",
   "l4",
   "latin4",
+  // documented but incorrect defined term
+  "iso-ir 110",
   NULL
 };
 
@@ -245,6 +253,8 @@ static const char *ISO_IR_144_Names[] = {
   "iso88595",
   "iso_8859-5",
   "iso_8859-5:1988",
+  // documented but incorrect defined term
+  "iso-ir 144",
   NULL
 };
 
@@ -263,6 +273,8 @@ static const char *ISO_IR_127_Names[] = {
   "iso88596",
   "iso_8859-6",
   "iso_8859-6:1987",
+  // documented but incorrect defined term
+  "iso-ir 127",
   NULL
 };
 
@@ -279,6 +291,8 @@ static const char *ISO_IR_126_Names[] = {
   "iso_8859-7",
   "iso_8859-7:1987",
   "sun_eu_greek",
+  // documented but incorrect defined term
+  "iso-ir 126",
   NULL
 };
 
@@ -293,6 +307,8 @@ static const char *ISO_IR_138_Names[] = {
   "iso88598",
   "iso_8859-8",
   "iso_8859-8:1988",
+  // documented but incorrect defined term
+  "iso-ir 138",
   NULL
 };
 
@@ -306,6 +322,8 @@ static const char *ISO_IR_148_Names[] = {
   "iso_8859-9:1989",
   "l5",
   "latin5",
+  // documented but incorrect defined term
+  "iso-ir 148",
   NULL
 };
 
@@ -397,6 +415,8 @@ static const char *ISO_IR_192_Names[] = {
   "unicode-1-1-utf-8",
   "utf-8",
   "utf8",
+  // documented but incorrect defined term
+  "iso 2022 ir 192",
   NULL
 };
 
@@ -409,6 +429,8 @@ static const char *GBK_Names[] = {
   "chinese",
   "gbk",
   "x-gbk",
+  // documented but incorrect defined term
+  "iso 2022 gbk",
   NULL
 };
 
@@ -419,6 +441,8 @@ static const char *ISO_IR_58_Names[] = {
   "gb_2312",
   "gb_2312-80",
   "iso-ir-58",
+  // documented but incorrect defined term
+  "iso 2022 gb2312",
   NULL
 };
 
@@ -432,6 +456,7 @@ static const char *EUCKR_Names[] = {
 static const char *ISO_IR_149_Names[] = {
   "csksc56011987",
   "iso-ir-149",
+  "iso_ir 149",
   "korean",
   "ks_c_5601-1987",
   "ks_c_5601-1989",
@@ -526,6 +551,9 @@ static const char *BIG5_Names[] = {
   "cn-big5",
   "csbig5",
   "x-x-big5",
+  // documented but incorrect defined terms
+  "iso 2022 b5",
+  "iso 2022 big5",
   NULL
 };
 
