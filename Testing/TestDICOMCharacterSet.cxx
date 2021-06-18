@@ -22,62 +22,102 @@ if (!(t)) \
 // order is character set, utf-8, native encoding
 static const char *ClunieText[][3] = {
 { "ISO_IR 138",
+  // "שרון^דבורה"
   "\xd7\xa9\xd7\xa8\xd7\x95\xd7\x9f^\xd7\x93\xd7\x91\xd7\x95\xd7\xa8\xd7\x94",
   "\xf9\xf8\xe5\xef^\xe3\xe1\xe5\xf8\xe4" },
+
 { "ISO_IR 144",
+  // "Люкceмбypг"
   "\xd0\x9b\xd1\x8e\xd0\xba\x63\x65\xd0\xbc\xd0\xb1yp\xd0\xb3",
   "\xbb\xee\xda\x63\x65\xdc\xd1yp\xd3" },
+
 { "ISO_IR 127",
+  // "قباني^لنزار"
   "\xd9\x82\xd8\xa8\xd8\xa7\xd9\x86\xd9\x8a^\xd9\x84\xd9\x86\xd8\xb2\xd8\xa7\xd8\xb1",
   "\xe2\xc8\xc7\xe6\xea^\xe4\xe6\xd2\xc7\xd1" },
+
 { "ISO_IR 100",
+  // "Äneas^Rüdiger"
   "\xc3\x84neas^R\xc3\xbc\x64iger",
   "\xc4neas^R\xfc\x64iger" },
+
 { "ISO_IR 100",
+  // "Buc^Jérôme"
   "Buc^J\xc3\xa9r\xc3\xb4me",
   "Buc^J\xe9r\xf4me" },
+
 { "ISO_IR 126",
+  // "Διονυσιος"
   "\xce\x94\xce\xb9\xce\xbf\xce\xbd\xcf\x85\xcf\x83\xce\xb9\xce\xbf\xcf\x82",
   "\xc4\xe9\xef\xed\xf5\xf3\xe9\xef\xf2" },
+
 { "GB18030",
+  // "Wang^XiaoDong=王^小东="
   "Wang^XiaoDong=\xe7\x8e\x8b^\xe5\xb0\x8f\xe4\xb8\x9c=",
   "Wang^XiaoDong=\xcd\xf5^\xd0\xa1\xb6\xab=" },
+
 { "GBK",
+  // "Wang^XiaoDong=王^小东="
   "Wang^XiaoDong=\xe7\x8e\x8b^\xe5\xb0\x8f\xe4\xb8\x9c=",
   "Wang^XiaoDong=\xcd\xf5^\xd0\xa1\xb6\xab=" },
+
 { "\\ISO 2022 IR 58",
+  // "1. 第一行文字\r\n"
   "1. \xe7\xac\xac\xe4\xb8\x80\xe8\xa1\x8c\xe6\x96\x87\xe5\xad\x97\xe3\x80\x82\r\n",
   "1. \x1b$)A\xb5\xda\xd2\xbb\xd0\xd0\xce\xc4\xd7\xd6\xa1\xa3\x1b(B\r\n" },
+
 { "ISO_IR 192",
+  // "Wang^XiaoDong=王^小东="
   "Wang^XiaoDong=\xe7\x8e\x8b^\xe5\xb0\x8f\xe6\x9d\xb1=",
   "Wang^XiaoDong=\xe7\x8e\x8b^\xe5\xb0\x8f\xe6\x9d\xb1=" },
+
 { "\\ISO 2022 IR 149",
+  // "Hong^Gildong=洪^吉洞=홍^길동"
   "Hong^Gildong=\xe6\xb4\xaa^\xe5\x90\x89\xe6\xb4\x9e=\xed\x99\x8d^\xea\xb8\xb8\xeb\x8f\x99",
   "Hong^Gildong=\x1b$)C\xfb\xf3^\x1b$)C\xd1\xce\xd4\xd7=\x1b$)C\xc8\xab^\x1b$)C\xb1\xe6\xb5\xbf" },
+
 { "ISO 2022 IR 13\\ISO 2022 IR 87",
+  // "ﾔﾏﾀﾞ^ﾀﾛｳ=山田^太郎=やまだ^たろう"
   "\xef\xbe\x94\xef\xbe\x8f\xef\xbe\x80\xef\xbe\x9e^\xef\xbe\x80\xef\xbe\x9b\xef\xbd\xb3=\xe5\xb1\xb1\xe7\x94\xb0^\xe5\xa4\xaa\xe9\x83\x8e=\xe3\x82\x84\xe3\x81\xbe\xe3\x81\xa0^\xe3\x81\x9f\xe3\x82\x8d\xe3\x81\x86",
   "\xd4\xcf\xc0\xde^\xc0\xdb\xb3=\x1b$B;3ED\x1b(J^\x1b$BB@O:\x1b(J=\x1b$B$d$^$@\x1b(J^\x1b$B$\x3f$m$&\x1b(J" },
+
 { "\\ISO 2022 IR 87",
+  // "Yamada^Tarou=山田^太郎=やまだ^たろう"
   "Yamada^Tarou=\xe5\xb1\xb1\xe7\x94\xb0^\xe5\xa4\xaa\xe9\x83\x8e=\xe3\x82\x84\xe3\x81\xbe\xe3\x81\xa0^\xe3\x81\x9f\xe3\x82\x8d\xe3\x81\x86",
   "Yamada^Tarou=\x1b$B;3ED\x1b(B^\x1b$BB@O:\x1b(B=\x1b$B$d$^$@\x1b(B^\x1b$B$\x3f$m$&\x1b(B" },
+
 { 0, 0, 0 }
 };
 
 // order is character set, utf-8, native encoding
 static const char *OtherText[][3] = {
 { "GB18030",
+  // "Linear1: \x80 to \ufffd\n"
+  // "Linear2: \U00010000 to \U0010ffff\n"
   "Linear1: \xc2\x80 to \xef\xbf\xbd\n"
   "Linear2: \xf0\x90\x80\x80 to \xf4\x8f\xbf\xbf\n",
   "Linear1: \x81\x30\x81\x30 to \x84\x31\xa4\x37\n"
   "Linear2: \x90\x30\x81\x30 to \xe3\x32\x9a\x35\n" },
+
 { "ISO 2022 IR 13\\ISO 2022 IR 87\\ISO 2022 IR 159",
+  // "JISX0208: 元気\n"
+  // "JISX0212: 騏驎\n"
+  // "JISX0201: ｺﾝﾆﾁﾊ\n"
   "JISX0208: \xe5\x85\x83\xe6\xb0\x97\n"
   "JISX0212: \xe9\xa8\x8f\xe9\xa9\x8e\n"
   "JISX0201: \xef\xbd\xba\xef\xbe\x9d\xef\xbe\x86\xef\xbe\x81\xef\xbe\x8a\n",
   "JISX0208: \x1b$B855$\x1b(J\n"
   "JISX0212: \x1b$BqV\x1b$(DiQ\x1b(J\n"
   "JISX0201: \xba\xdd\xc6\xc1\xca\n" },
+
 { "iso-2022-jp-2",
+  // "JISX0208: 元気\n"
+  // "JISX0212: 騏驎\n"
+  // "Katakana: ｺﾝﾆﾁﾊ\n"
+  // "Chinese:  开发\n"
+  // "Korean:   안녕하세요\n"
+  // "French:   Très bien\n"
+  // "Greek:    μεγάλη\n"
   "JISX0208: \xe5\x85\x83\xe6\xb0\x97\n"
   "JISX0212: \xe9\xa8\x8f\xe9\xa9\x8e\n"
   "Katakana: \xef\xbd\xba\xef\xbe\x9d\xef\xbe\x86\xef\xbe\x81\xef\xbe\x8a\n"
@@ -92,21 +132,31 @@ static const char *OtherText[][3] = {
   "Korean:   \x1b$(C>H3gGO<<?d\x1b(B\n"
   "French:   \x1b.ATr\x1bNhs bien\n"
   "Greek:    \x1b.F\x1bNl\x1bNe\x1bNc\x1bN\\\x1bNk\x1bNg\n" },
+
 { "euc-jp",
+  // "JISX0208: 元気\n"
+  // "JISX0212: 騏驎\n"
+  // "Katakana: ｺﾝﾆﾁﾊ\n"
   "JISX0208: \xe5\x85\x83\xe6\xb0\x97\n"
   "JISX0212: \xe9\xa8\x8f\xe9\xa9\x8e\n"
   "Katakana: \xef\xbd\xba\xef\xbe\x9d\xef\xbe\x86\xef\xbe\x81\xef\xbe\x8a\n",
   "JISX0208: \xb8\xb5\xb5\xa4\n"
   "JISX0212: \xf1\xd6\x8f\xe9\xd1\n"
   "Katakana: \x8e\xba\x8e\xdd\x8e\xc6\x8e\xc1\x8e\xca\n" },
+
 { "shift-jis",
+  // "Shift-JIS (日本語) こんにちは, ｺﾝﾆﾁﾊ"
   "Shift-JIS (\xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e) \xe3\x81\x93\xe3\x82\x93\xe3\x81\xab\xe3\x81\xa1\xe3\x81\xaf, \xef\xbd\xba\xef\xbe\x9d\xef\xbe\x86\xef\xbe\x81\xef\xbe\x8a",
   "Shift-JIS (\x93\xfa\x96{\x8c\xea) \x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd, \xba\xdd\xc6\xc1\xca" },
+
 { "BIG5",
+  // "BIG5: 常用國字標準字體表 + 次常用國字標準字體表\n"
+  // "ETEN: 碁銹恒裏墻粧嫺"
   "BIG5: \xe5\xb8\xb8\xe7\x94\xa8\xe5\x9c\x8b\xe5\xad\x97\xe6\xa8\x99\xe6\xba\x96\xe5\xad\x97\xe9\xab\x94\xe8\xa1\xa8 + \xe6\xac\xa1\xe5\xb8\xb8\xe7\x94\xa8\xe5\x9c\x8b\xe5\xad\x97\xe6\xa8\x99\xe6\xba\x96\xe5\xad\x97\xe9\xab\x94\xe8\xa1\xa8\n"
   "ETEN: \xe7\xa2\x81\xe9\x8a\xb9\xe6\x81\x92\xe8\xa3\x8f\xe5\xa2\xbb\xe7\xb2\xa7\xe5\xab\xba",
   "BIG5: \xb1`\xa5\xce\xb0\xea\xa6r\xbc\xd0\xb7\xc7\xa6r\xc5\xe9\xaa\xed + \xa6\xb8\xb1`\xa5\xce\xb0\xea\xa6r\xbc\xd0\xb7\xc7\xa6r\xc5\xe9\xaa\xed\n"
   "ETEN: \xf9\xd6\xf9\xd7\xf9\xda\xf9\xd8\xf9\xd9\xf9\xdb\xf9\xdc" },
+
 { 0, 0, 0 }
 };
 
@@ -233,9 +283,9 @@ int main(int argc, char *argv[])
   TestAssert(cs.ToSafeUTF8("Hello\r\nWorld") == "Hello\\015\\012World");
   TestAssert(cs.ToSafeUTF8("\201Hello World") == "\\201Hello World");
   TestAssert(cs.ToSafeUTF8("Hello World\177") == "Hello World\\177");
-  // test convertible characters for ISO 8859
+  // test convertible characters "\xa0" and "\xff" for ISO-8859-1
   TestAssert(cs.ToSafeUTF8("\240 \377") == "\302\240 \303\277");
-  // test unconvertible characters for ISO 8859
+  // test unconvertible characters for ISO-8859-3
   cs = vtkDICOMCharacterSet::ISO_IR_109;
   TestAssert(cs.ToSafeUTF8("Hello \245World") == "Hello \\245World");
   // test unconvertible characters for other character sets
@@ -263,9 +313,12 @@ int main(int argc, char *argv[])
   std::string name = "ISO 2022 IR 13\\ISO 2022 IR 87";
   // the following string includes multi-byte characters where the
   // first and second bytes have the same value as backslash
+  // "ﾔﾏﾀﾞ^ﾀﾛｳ"
+  // "目本^樛楹"
+  // "ぼ^ボ"
   std::string raw = "\xd4\xcf\xc0\xde^\xc0\xdb\xb3\\"
-                    "\x1b$B\\3ED\x1b(J^\x1b$B\\\\O\\\x1b(J\\"
-                    "\x1b$B$d$^$@\x1b(J^\x1b$B$\x3f$m$&\x1b(J";
+                    "\x1b$BL\\K\\\x1b(B^\x1b$B\\\\\\3\x1b(J\\"
+                    "\x1b$B$\\\x1b(B^\x1b$B%\\\x1b(J";
   vtkDICOMItem item;
   item.Set(DC::SpecificCharacterSet, name);
   item.Set(DC::OperatorsName, raw);
@@ -273,8 +326,8 @@ int main(int argc, char *argv[])
   TestAssert(v.GetNumberOfValues() == 3);
   TestAssert(v.AsString() == raw);
   TestAssert(v.GetString(0) == "\xd4\xcf\xc0\xde^\xc0\xdb\xb3");
-  TestAssert(v.GetString(1) == "\x1b$B\\3ED\x1b(J^\x1b$B\\\\O\\\x1b(J");
-  TestAssert(v.GetString(2) == "\x1b$B$d$^$@\x1b(J^\x1b$B$\x3f$m$&\x1b(J");
+  TestAssert(v.GetString(1) == "\x1b$BL\\K\\\x1b(B^\x1b$B\\\\\\3\x1b(J");
+  TestAssert(v.GetString(2) == "\x1b$B$\\\x1b(B^\x1b$B%\\\x1b(J");
   }
 
   { // test for handling of utf-16 surrogates encoded in utf-8
@@ -321,6 +374,7 @@ int main(int argc, char *argv[])
   }
 
   { // test compatibility mappings of jouyou kanji not in jis 0208
+    // "𠮟 塡 剝 頰" are mapped to "叱 填 剥 頬" for jis 0208
   std::string official =
     "\xf0\xa0\xae\x9f \xe5\xa1\xa1 \xe5\x89\x9d \xe9\xa0\xb0";
   std::string compat =
@@ -329,7 +383,7 @@ int main(int argc, char *argv[])
   std::string t = cs.FromUTF8(official);
   std::string s = cs.FromUTF8(compat);
   TestAssert(t == s);
-  // round trip expected to fail due to compatibility mapping
+  // round trip of "compat" will succeed, but not of "official"
   std::string u = cs.ToUTF8(t);
   TestAssert(u == compat);
   }
