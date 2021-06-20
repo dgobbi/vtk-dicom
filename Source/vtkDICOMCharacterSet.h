@@ -330,7 +330,6 @@ private:
   static unsigned char GlobalDefault;
   static bool GlobalOverride;
 
-public:
   static const unsigned short *Table[256];
   static const unsigned short *Reverse[256];
 };
