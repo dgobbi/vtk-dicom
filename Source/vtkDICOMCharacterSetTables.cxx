@@ -13585,7 +13585,7 @@ const unsigned short CodePageGB18030_R[22354] = {
 };
 
 // Compatibility overlay for GBK and GB2312
-const unsigned short CodePageGBK_R[51] = {
+const unsigned short CodePageGBK_R[61] = {
   // hot segments (indexes into segment table)
   0,
   // number of segments
@@ -13595,10 +13595,10 @@ const unsigned short CodePageGBK_R[51] = {
   0xE7F4, 0xE815, 0xE865, 0xFE10, 0xFE1A,
   // compressed segments
    RCHAR,    685,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  15756,
-   RCHAR,  23860,  RCHAR,    526,  RCHAR,
+   RCHAR,  23860,  RCHAR,  RCHAR,  RCHAR,
   // uncompressed segments
    RCHAR,  RCHAR,  RCHAR,      0,  RCHAR,      8,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,     10,  RCHAR,
   // [0x1E3F,0x1E3F] -> [   685,   685] # seg 1
   // [0x9FB4,0x9FBB] -v # seg 3 at pos 0
    23869,  23877,  23882,  23883,  23889,  23906,  23923,  23939,
@@ -13606,7 +13606,9 @@ const unsigned short CodePageGBK_R[51] = {
      685,    688,
   // [0xE7E7,0xE7F3] -> [ 15756, 15768] # seg 7
   // [0xE815,0xE864] -> [ 23860, 23939] # seg 9
-  // [0xFE10,0xFE19] -> [   526,   535] # seg 11
+  // [0xFE10,0xFE19] -v # seg 11 at pos 10
+     526,    527,    528,    529,    530,    531,    532,    545,
+     546,    552,
 };
 
 // Japanese JIS X 0208, plus CP932 compatibility

@@ -724,7 +724,7 @@ gbk_compat = {
     0x9FB9 :23812, 0x9FBA :23829, 0x9FBB :23845,
     # Vertical punctuation (10) within GB2312 range
     0xFE10 : 7182, 0xFE11 : 7183, 0xFE12 : 7184, 0xFE13 : 7185, 0xFE14 : 7186,
-    0xFE15 : 7187, 0xFE16 : 7188, 0xFE17 : 7189, 0xFE18 : 7190, 0xFE19 : 7191,
+    0xFE15 : 7187, 0xFE16 : 7188, 0xFE17 : 7201, 0xFE18 : 7202, 0xFE19 : 7208,
     # Points beyond the BMP (6)
     #0x20087 : 23767, 0x20089 : 23768, 0x200CC : 23769, 0x215D7 : 23794,
     #0x2298F : 23804, 0x241FE : 23830,
