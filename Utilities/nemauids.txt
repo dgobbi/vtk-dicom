@@ -190,7 +190,7 @@ PS3.4
 1.2.840.10008.1.4.1.1
 Talairach Brain Atlas Frame of Reference
 Well-known frame of reference
-Talairach J. and Tournoux P. Co-Planar stereotactic atlas of the human brain. Stutgart: Georg Thieme Verlag, 1988.
+Talairach J. and Tournoux P. Co-Planar stereotactic atlas of the human brain. Stuttgart: Georg Thieme Verlag, 1988.
 1.2.840.10008.1.4.1.2
 SPM2 T1 Frame of Reference
 Well-known frame of reference
@@ -1138,6 +1138,10 @@ PS3.4
 Performed Imaging Agent Administration SR Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.88.76
+Enhanced X-Ray Radiation Dose SR Storage
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.90.1
 Content Assessment Results Storage
 SOP Class
@@ -1204,6 +1208,14 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.200.6
 Protocol Approval Information Model - GET
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.200.7
+XA Defined Procedure Protocol Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.200.8
+XA Performed Procedure Protocol Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.481.1
@@ -1598,22 +1610,6 @@ PS3.19
 DICOM Content Mapping Resource
 Mapping Resource
 PS3.16
-1.2.840.10008.10.1
-Video Endoscopic Image Real-Time Communication
-SOP Class
-PS3.22
-1.2.840.10008.10.2
-Video Photographic Image Real-Time Communication
-SOP Class
-PS3.22
-1.2.840.10008.10.3
-Audio Waveform Real-Time Communication
-SOP Class
-PS3.22
-1.2.840.10008.10.4
-Rendition Selection Document Real-Time Communication
-SOP Class
-PS3.22
 1.2.840.10008.9.1
 Imaging Report
 Document TemplateID
@@ -1710,6 +1706,22 @@ PS3.20
 Imaging Addendum Report
 Document TemplateID
 PS3.20
+1.2.840.10008.10.1
+Video Endoscopic Image Real-Time Communication
+SOP Class
+PS3.22
+1.2.840.10008.10.2
+Video Photographic Image Real-Time Communication
+SOP Class
+PS3.22
+1.2.840.10008.10.3
+Audio Waveform Real-Time Communication
+SOP Class
+PS3.22
+1.2.840.10008.10.4
+Rendition Selection Document Real-Time Communication
+SOP Class
+PS3.22
 1.2.840.10008.15.0.3.1
 dicomDeviceName
 LDAP OID
@@ -1873,7 +1885,7 @@ PS3.3
 # Frames of Reference ================================================
 1.2.840.10008.1.4.1.1
 Talairach Brain Atlas Frame of Reference
-Talairach J. and Tournoux P. Co-Planar stereotactic atlas of the human brain. Stutgart: Georg Thieme Verlag, 1988.
+Talairach J. and Tournoux P. Co-Planar stereotactic atlas of the human brain. Stuttgart: Georg Thieme Verlag, 1988.
 1.2.840.10008.1.4.1.2
 SPM2 T1 Frame of Reference
 SPM2 /templates/T1.mnc
@@ -5712,3 +5724,30 @@ Lesion Visual Findings
 1.2.840.10008.6.1.1355
 CID 12125
 Abdominopelvic Vessels
+1.2.840.10008.6.1.1356
+CID 43
+Numeric Value Failure Qualifier
+1.2.840.10008.6.1.1357
+CID 44
+Numeric Value Unknown Qualifier
+1.2.840.10008.6.1.1358
+CID 7170
+Couinaud Liver Segments
+1.2.840.10008.6.1.1359
+CID 7171
+Liver Segmentation Types
+1.2.840.10008.6.1.1360
+CID 1201
+Contraindications For XA Imaging
+1.2.840.10008.6.1.1361
+CID 3041
+Neurophysiologic Stimulation Modes
+1.2.840.10008.6.1.1362
+CID 10072
+Reported Value Types
+1.2.840.10008.6.1.1363
+CID 10073
+Value Timings
+1.2.840.10008.6.1.1364
+CID 10074
+RDSR Frame of Reference Origins

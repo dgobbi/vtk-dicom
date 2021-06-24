@@ -22,16 +22,16 @@ const UIDTableEntry UIDTable[] = {
 { 203, 1, 1, 0, 0 },
 { 229, 1, 2, 0, 0 },
 { 230, 1, 1, 0, 0 },
-{ 1295, 1, 1, 0, 0 },
-{ 2651, 1, 1, 0, 0 },
-{ 2654, 1, 1, 0, 0 },
-{ 2656, 24, 1, 0, 0 },
-{ 2680, 4, 1, 0, 0 },
+{ 1298, 1, 1, 0, 0 },
+{ 2663, 1, 1, 0, 0 },
+{ 2666, 1, 1, 0, 0 },
+{ 2668, 24, 1, 0, 0 },
+{ 2692, 4, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 2684, 2, 0, 0, 0 },
+{ 2696, 2, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.1.1
   "Verification SOP Class" },
 { 58, 7, 1, 0, // 1.2.840.10008.1.2
@@ -467,7 +467,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1246, 3, 1, 0, 0 },
+{ 1249, 3, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -480,26 +480,26 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.31
   "Modality Worklist Information Model - FIND" },
-{ 1249, 3, 1, 0, // 1.2.840.10008.5.1.4.32 (Retired)
+{ 1252, 3, 1, 0, // 1.2.840.10008.5.1.4.32 (Retired)
   "General Purpose Worklist Management Meta SOP Class" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.33
   "Instance Availability Notification SOP Class" },
-{ 1252, 10, 1, 0, 0 },
+{ 1255, 10, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1272, 3, 1, 0, 0 },
-{ 1275, 4, 1, 0, 0 },
-{ 1279, 4, 1, 0, 0 },
+{ 1275, 3, 1, 0, 0 },
+{ 1278, 4, 1, 0, 0 },
+{ 1282, 4, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.41
   "Product Characteristics Query" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.42
   "Substance Approval Query" },
-{ 1283, 4, 1, 0, 0 },
-{ 1287, 4, 1, 0, 0 },
-{ 1291, 4, 1, 0, 0 },
+{ 1286, 4, 1, 0, 0 },
+{ 1290, 4, 1, 0, 0 },
+{ 1294, 4, 1, 0, 0 },
 { 330, 601, 1, 0, 0 },
-{ 1229, 5, 1, 0, 0 },
+{ 1232, 5, 1, 0, 0 },
 { 931, 3, 1, 0, // 1.2.840.10008.5.1.4.1.1.1
   "Computed Radiography Image Storage" },
 { 937, 2, 1, 0, // 1.2.840.10008.5.1.4.1.1.2
@@ -603,11 +603,9 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1111, 75, 1, 0, 0 },
+{ 1111, 76, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1186, 1, 1, 0, 0 },
-{ 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 0 },
+{ 1187, 1, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -619,9 +617,9 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1187, 5, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
+{ 1188, 5, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -643,7 +641,9 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1192, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.128
+{ 0, 0, 0, 0, 0 },
+{ 0, 0, 0, 0, 0 },
+{ 1193, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.128
   "Positron Emission Tomography Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.129 (Retired)
   "Standalone PET Curve Storage" },
@@ -719,7 +719,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1193, 6, 1, 0, 0 },
+{ 1194, 8, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -1000,7 +1000,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1199, 20, 1, 0, 0 },
+{ 1202, 20, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -1020,7 +1020,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1219, 6, 1, 0, 0 },
+{ 1222, 6, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
@@ -1120,7 +1120,7 @@ const UIDTableEntry UIDTable[] = {
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 1227, 2, 1, 0, 0 },
+{ 1230, 2, 1, 0, 0 },
 { 934, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.1.1
   "Digital X-Ray Image Storage - For Presentation" },
 { 935, 1, 1, 0, // 1.2.840.10008.5.1.4.1.1.1.2
@@ -1496,6 +1496,8 @@ const UIDTableEntry UIDTable[] = {
   "Planned Imaging Agent Administration SR Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.88.75
   "Performed Imaging Agent Administration SR Storage" },
+{ 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.88.76
+  "Enhanced X-Ray Radiation Dose SR Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.90.1
   "Content Assessment Results Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.104.1
@@ -1522,6 +1524,10 @@ const UIDTableEntry UIDTable[] = {
   "Protocol Approval Information Model - MOVE" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.200.6
   "Protocol Approval Information Model - GET" },
+{ 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.200.7
+  "XA Defined Procedure Protocol Storage" },
+{ 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.200.8
+  "XA Performed Procedure Protocol Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.481.1
   "RT Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.481.2
@@ -1564,7 +1570,7 @@ const UIDTableEntry UIDTable[] = {
   "Robotic Radiation Record Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.501.1
   "DICOS CT Image Storage" },
-{ 1225, 2, 1, 0, 0 },
+{ 1228, 2, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.501.3
   "DICOS Threat Detection Report Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.501.4
@@ -1581,11 +1587,11 @@ const UIDTableEntry UIDTable[] = {
   "Eddy Current Image Storage" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.1.601.2
   "Eddy Current Multi-frame Image Storage" },
-{ 1234, 3, 1, 0, 0 },
 { 1237, 3, 1, 0, 0 },
 { 1240, 3, 1, 0, 0 },
-{ 1243, 2, 2, 0, 0 },
-{ 1245, 1, 3, 0, 0 },
+{ 1243, 3, 1, 0, 0 },
+{ 1246, 2, 2, 0, 0 },
+{ 1248, 1, 3, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.2.1.1
   "Patient Root Query/Retrieve Information Model - FIND" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.1.2.1.2
@@ -1628,11 +1634,11 @@ const UIDTableEntry UIDTable[] = {
   "RT Conventional Machine Verification - Trial" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.34.3 (Retired)
   "RT Ion Machine Verification - Trial" },
-{ 1262, 4, 1, 0, // 1.2.840.10008.5.1.4.34.4 (Retired)
+{ 1265, 4, 1, 0, // 1.2.840.10008.5.1.4.34.4 (Retired)
   "Unified Worklist and Procedure Step Service Class - Trial" },
-{ 1266, 1, 1, 0, // 1.2.840.10008.5.1.4.34.5
+{ 1269, 1, 1, 0, // 1.2.840.10008.5.1.4.34.5
   "UPS Global Subscription SOP Instance" },
-{ 1267, 5, 1, 0, // 1.2.840.10008.5.1.4.34.6
+{ 1270, 5, 1, 0, // 1.2.840.10008.5.1.4.34.6
   "Unified Worklist and Procedure Step Service Class" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.34.7
   "RT Beams Delivery Instruction Storage" },
@@ -1708,7 +1714,7 @@ const UIDTableEntry UIDTable[] = {
   "Implant Template Group Information Model - MOVE" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.45.4
   "Implant Template Group Information Model - GET" },
-{ 1296, 1355, 1, 0, 0 },
+{ 1299, 1364, 1, 0, 0 },
 { 0, 0, 0, 2, // 1.2.840.10008.6.1.1
   "Anatomic Modifier" },
 { 0, 0, 0, 4, // 1.2.840.10008.6.1.2
@@ -4313,12 +4319,30 @@ const UIDTableEntry UIDTable[] = {
   "Lesion Visual Findings" },
 { 0, 0, 0, 12125, // 1.2.840.10008.6.1.1355
   "Abdominopelvic Vessels" },
-{ 2652, 2, 1, 0, 0 },
+{ 0, 0, 0, 43, // 1.2.840.10008.6.1.1356
+  "Numeric Value Failure Qualifier" },
+{ 0, 0, 0, 44, // 1.2.840.10008.6.1.1357
+  "Numeric Value Unknown Qualifier" },
+{ 0, 0, 0, 7170, // 1.2.840.10008.6.1.1358
+  "Couinaud Liver Segments" },
+{ 0, 0, 0, 7171, // 1.2.840.10008.6.1.1359
+  "Liver Segmentation Types" },
+{ 0, 0, 0, 1201, // 1.2.840.10008.6.1.1360
+  "Contraindications For XA Imaging" },
+{ 0, 0, 0, 3041, // 1.2.840.10008.6.1.1361
+  "Neurophysiologic Stimulation Modes" },
+{ 0, 0, 0, 10072, // 1.2.840.10008.6.1.1362
+  "Reported Value Types" },
+{ 0, 0, 0, 10073, // 1.2.840.10008.6.1.1363
+  "Value Timings" },
+{ 0, 0, 0, 10074, // 1.2.840.10008.6.1.1364
+  "RDSR Frame of Reference Origins" },
+{ 2664, 2, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.1
   "Native DICOM Model" },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.2
   "Abstract Multi-Dimensional Image Model" },
-{ 2655, 1, 1, 0, 0 },
+{ 2667, 1, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.8.1.1
   "DICOM Content Mapping Resource" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.1
@@ -4377,10 +4401,10 @@ const UIDTableEntry UIDTable[] = {
   "Audio Waveform Real-Time Communication" },
 { 0, 0, 0, 0, // 1.2.840.10008.10.4
   "Rendition Selection Document Real-Time Communication" },
-{ 2686, 2, 3, 0, 0 },
-{ 2727, 1, 1, 0, 0 },
-{ 2688, 31, 1, 0, 0 },
-{ 2719, 8, 1, 0, 0 },
+{ 2698, 2, 3, 0, 0 },
+{ 2739, 1, 1, 0, 0 },
+{ 2700, 31, 1, 0, 0 },
+{ 2731, 8, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.1
   "dicomDeviceName" },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.2

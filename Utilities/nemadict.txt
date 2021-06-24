@@ -4996,6 +4996,114 @@ CompressionContactArea
 DS
 1
 
+(0018,11B0)
+Acquisition Mode
+AcquisitionMode
+LO
+1
+
+(0018,11B1)
+Dose Mode Name
+DoseModeName
+LO
+1
+
+(0018,11B2)
+Acquired Subtraction Mask Flag
+AcquiredSubtractionMaskFlag
+CS
+1
+
+(0018,11B3)
+Fluoroscopy Persistence Flag
+FluoroscopyPersistenceFlag
+CS
+1
+
+(0018,11B4)
+Fluoroscopy Last Image Hold Persistence Flag
+FluoroscopyLastImageHoldPersistenceFlag
+CS
+1
+
+(0018,11B5)
+Upper Limit Number Of Persistent Fluoroscopy Frames
+UpperLimitNumberOfPersistentFluoroscopyFrames
+IS
+1
+
+(0018,11B6)
+Contrast/Bolus Auto Injection Trigger Flag
+ContrastBolusAutoInjectionTriggerFlag
+CS
+1
+
+(0018,11B7)
+Contrast/Bolus Injection Delay
+ContrastBolusInjectionDelay
+FD
+1
+
+(0018,11B8)
+XA Acquisition Phase Details Sequence
+XAAcquisitionPhaseDetailsSequence
+SQ
+1
+
+(0018,11B9)
+XA Acquisition Frame Rate
+XAAcquisitionFrameRate
+FD
+1
+
+(0018,11BA)
+XA Plane Details Sequence
+XAPlaneDetailsSequence
+SQ
+1
+
+(0018,11BB)
+Acquisition Field of View Label
+AcquisitionFieldOfViewLabel
+LO
+1
+
+(0018,11BC)
+X-Ray Filter Details Sequence
+XRayFilterDetailsSequence
+SQ
+1
+
+(0018,11BD)
+XA Acquisition Duration
+XAAcquisitionDuration
+FD
+1
+
+(0018,11BE)
+Reconstruction Pipeline Type
+ReconstructionPipelineType
+CS
+1
+
+(0018,11BF)
+Image Filter Details Sequence
+ImageFilterDetailsSequence
+SQ
+1
+
+(0018,11C0)
+Applied Mask Subtraction Flag
+AppliedMaskSubtractionFlag
+CS
+1
+
+(0018,11C1)
+Requested Series Description Code Sequence
+RequestedSeriesDescriptionCodeSequence
+SQ
+1
+
 (0018,1200)
 Date of Last Calibration
 DateOfLastCalibration
@@ -6009,6 +6117,12 @@ R Wave Time Vector
 RWaveTimeVector
 FL
 1-n
+
+(0018,6070)
+Active Image Area Overlay Group
+ActiveImageAreaOverlayGroup
+US
+1
 
 (0018,7000)
 Detector Conditions Nominal Flag
@@ -7389,7 +7503,7 @@ Estimated Dose Saving
 EstimatedDoseSaving
 FD
 1
-
+RET
 (0018,9325)
 CT X-Ray Details Sequence
 CTXRayDetailsSequence
@@ -14851,6 +14965,12 @@ DT
 (0040,A032)
 Observation DateTime
 ObservationDateTime
+DT
+1
+
+(0040,A033)
+Observation Start DateTime
+ObservationStartDateTime
 DT
 1
 
@@ -22545,13 +22665,13 @@ Contour Slab Thickness
 ContourSlabThickness
 DS
 1
-
+RET
 (3006,0045)
 Contour Offset Vector
 ContourOffsetVector
 DS
 3
-
+RET
 (3006,0046)
 Number of Contour Points
 NumberOfContourPoints
@@ -22569,6 +22689,12 @@ Attached Contours
 AttachedContours
 IS
 1-n
+RET
+(3006,004A)
+Source Pixel Planes Characteristics Sequence
+SourcePixelPlanesCharacteristicsSequence
+SQ
+1
 
 (3006,0050)
 Contour Data
