@@ -31,7 +31,7 @@ while l < len(lines):
     else:
         cite = "1.2.840.10008."
     if uid[0:14] != "1.2.840.10008.":
-        print "oops at line", l
+        sys.stderr.write("oops at line %d\n" % (l,))
         l += 1
         continue
     if cite[0:14] != "1.2.840.10008." and cite[0] != '#':
@@ -54,7 +54,7 @@ while l < len(lines):
     k = name.find(": Default")
     if k > 0:
         name = name[0:k]
-    parts = map(int, uid.split('.'))
+    parts = [int(x) for x in uid.split('.')]
     node = root
     for level in range(len(parts)):
         idx = parts[level]
@@ -82,35 +82,36 @@ while l < len(lines):
             if level > maxlevel:
                 maxlevel = level
 
-print "/*========================================================================="
-print "This is an automatically generated file.  Include errata for any changes."
-print "=========================================================================*/"
+f = sys.stdout
+f.write("/*=========================================================================\n")
+f.write("This is an automatically generated file.  Include errata for any changes.\n")
+f.write("=========================================================================*/\n")
 
-print "\n#include \"vtkDICOMUtilitiesUIDTable.h\""
+f.write("\n#include \"vtkDICOMUtilitiesUIDTable.h\"\n")
 
-print "\nnamespace {\n"
+f.write("\nnamespace {\n\n")
 
-print "struct UIDTableEntry"
-print "{"
-print "  unsigned short Next;"
-print "  unsigned short Size;"
-print "  unsigned short First;"
-print "  unsigned short CID;"
-print "  const char *Name;"
-print "};"
+f.write("struct UIDTableEntry\n")
+f.write("{\n")
+f.write("  unsigned short Next;\n")
+f.write("  unsigned short Size;\n")
+f.write("  unsigned short First;\n")
+f.write("  unsigned short CID;\n")
+f.write("  const char *Name;\n")
+f.write("};\n")
 
 def printnode(node):
     if node[0]:
         child = node[0][0][6]
         if node[3] or node[5]:
-            print "{ %d, %d, %d, %d,%s\n  \"%s\" }," % tuple([child]+node[1:6])
+            f.write("{ %d, %d, %d, %d,%s\n  \"%s\" },\n" % tuple([child]+node[1:6]))
         else:
-            print "{ %d, %d, %d, 0, 0 }," % tuple([child]+node[1:3])
+            f.write("{ %d, %d, %d, 0, 0 },\n" % tuple([child]+node[1:3]))
     else:
         if node[3] or node[5]:
-            print "{ 0, %d, %d, %d,%s\n  \"%s\" }," % tuple(node[1:6])
+            f.write("{ 0, %d, %d, %d,%s\n  \"%s\" },\n" % tuple(node[1:6]))
         else:
-            print "{ 0, %d, %d, 0, 0 }," % tuple(node[1:3])
+            f.write("{ 0, %d, %d, 0, 0 },\n" % tuple(node[1:3]))
 
 def recursetrie(node, counter):
     if node[0]:
@@ -123,11 +124,11 @@ def recursetrie(node, counter):
         for child in node[0]:
             recursetrie(child, counter)
 
-print "\nconst UIDTableEntry UIDTable[] = {"
+f.write("\nconst UIDTableEntry UIDTable[] = {\n")
 recursetrie(root, [0])
 printnode(root)
 recursetrie(root, None)
-print "};"
+f.write("};\n")
 
 getterfunc = \
 """
@@ -193,9 +194,10 @@ const UIDTableEntry *GetUIDTableEntry(const char *uid)
 
   return table;
 }
+
 """
-print getterfunc
-print "} // anonymous namespace"
+f.write(getterfunc)
+f.write("} // anonymous namespace\n")
 
 exportedcode = \
 """
@@ -222,6 +224,7 @@ unsigned short vtkDICOMUtilities::GetCIDFromUID(const char *uid)
     result = table->CID;
   }
   return result;
-}"""
+}
+"""
 
-print exportedcode
+f.write(exportedcode)

@@ -17,7 +17,8 @@ import math
 header = \
 """/*=========================================================================
 This is an automatically generated file.  Include errata for any changes.
-=========================================================================*/"""
+=========================================================================*/
+"""
 
 printheader = False
 privatedict = False
@@ -111,7 +112,7 @@ def makedict(lines, creator="DICOM"):
 
   htsize = 4096
   if privatedict:
-    htsize = int(len(lines)/6)
+    htsize = int(len(lines)//6)
     if htsize == 0:
       htsize = 1
 
@@ -124,17 +125,17 @@ def makedict(lines, creator="DICOM"):
   n = len(lines)
   while i < n:
     try:
-      tag = lines[i].encode('ascii').strip()
+      tag = lines[i].encode('ascii').strip().decode('ascii')
       i = i + 1
-      name = lines[i].encode('ascii').strip()
+      name = lines[i].encode('ascii').strip().decode('ascii')
       i = i + 1
-      key = lines[i].encode('ascii').strip()
+      key = lines[i].encode('ascii').strip().decode('ascii')
       i = i + 1
-      vr = lines[i].encode('ascii').strip()
+      vr = lines[i].encode('ascii').strip().decode('ascii')
       i = i + 1
-      vm = lines[i].encode('ascii').strip()
+      vm = lines[i].encode('ascii').strip().decode('ascii')
       i = i + 1
-      ret = lines[i].encode('ascii').strip()
+      ret = lines[i].encode('ascii').strip().decode('ascii')
       i = i + 1
     except:
       sys.stderr.write("non-ascii character encountered on line %d\n" % (i,))
@@ -184,7 +185,7 @@ def makedict(lines, creator="DICOM"):
     # this is debug info: make sure no keys are over 63 chars,
     # which is the maximum id length in the C++ standard
     if len(key) > 63:
-      print "XXXXXX", key
+      print("XXXXXX %s" % (key,))
       sys.exit(1)
 
     # get the group, element
@@ -196,7 +197,7 @@ def makedict(lines, creator="DICOM"):
       ei = int(e, 16)
     except:
       # replace 'x' (which means any digit) with zero
-      #print "XXXXXX %s %s" % (tag, key)
+      #print("XXXXXX %s %s" % (tag, key))
       g = g.replace('xx','00')
       e = e.replace('xxxx','0000')
       e = e.replace('xxx','000')
@@ -235,60 +236,62 @@ def makedict(lines, creator="DICOM"):
       j = j + 1
 
   # debug: print all VM's that were found
-  #print vms.keys()
+  #print(vms.keys())
 
   # debug: print statistics about the hash table
-  #print maxl, minl, k0, k4
+  #print(maxl, minl, k0, k4)
   return enum_list, element_list, ht, ht2
 
 # write the output file
 def printhead(enum_dict, classname):
-  print header
-  print
-  print "#ifndef %s_h" % (classname,)
-  print "#define %s_h" % (classname,)
-  print
+  f = sys.stdout
+  f.write(header)
+  f.write("\n")
+  f.write("#ifndef %s_h\n" % (classname,))
+  f.write("#define %s_h\n" % (classname,))
+  f.write("\n")
   if not privatedict:
-    print "//! Tag values defined in the DICOM standard"
-    print "namespace DC"
-    print "{"
-    print "enum EnumType {"
+    f.write("//! Tag values defined in the DICOM standard\n")
+    f.write("namespace DC\n")
+    f.write("{\n")
+    f.write("enum EnumType {\n")
     for enum_list in enum_dict.values():
       # eliminate the "," for the last enum item
       m = len(enum_list)
       if m:
-         enum_list[m-1] = enum_list[m-1].replace(", //", "  //")
+        enum_list[m-1] = enum_list[m-1].replace(", //", "  //")
       for l in enum_list:
-        print l
-    print "};"
-    print "} // end namespace DC"
+        f.write(l + "\n")
+    f.write("};\n")
+    f.write("} // end namespace DC\n")
   else:
-    print "// This must be included before the initializer is declared."
-    print "#include \"vtkDICOMDictionary.h\""
-    print
-    print "// Initializer to add dict when header included."
-    print "struct VTK_DICOM_EXPORT %sInitializer" % (classname,)
-    print "{"
-    print "  %sInitializer();" % (classname,)
-    print "  ~%sInitializer();" % (classname,)
-    print "};"
-    print
-    print "static %sInitializer %sInitializerInstance;" % (classname,classname);
-  print
-  print "#endif /* %s_h */" % (classname,)
+    f.write("// This must be included before the initializer is declared.\n")
+    f.write("#include \"vtkDICOMDictionary.h\"\n")
+    f.write("\n")
+    f.write("// Initializer to add dict when header included.\n")
+    f.write("struct VTK_DICOM_EXPORT %sInitializer\n" % (classname,))
+    f.write("{\n")
+    f.write("  %sInitializer();\n" % (classname,))
+    f.write("  ~%sInitializer();\n" % (classname,))
+    f.write("};\n")
+    f.write("\n")
+    f.write("static %sInitializer %sInitializerInstance;\n" % (classname,classname))
+  f.write("\n")
+  f.write("#endif /* %s_h */\n" % (classname,))
 
 def printbody(entry_dict, classname):
-  print header
-  print
-  print "#include \"vtkDICOMDictionary.h\""
-  print "#include \"%s.h\"" % (classname,)
-  print
+  f = sys.stdout
+  f.write(header)
+  f.write("\n")
+  f.write("#include \"vtkDICOMDictionary.h\"\n")
+  f.write("#include \"%s.h\"\n" % (classname,))
+  f.write("\n")
 
-  print "namespace {"
-  print
-  print "typedef vtkDICOMVR VR;"
-  print "typedef vtkDICOMVM VM;"
-  print "typedef vtkDICOMDictEntry::Entry DictEntry;"
+  f.write("namespace {\n")
+  f.write("\n")
+  f.write("typedef vtkDICOMVR VR;\n")
+  f.write("typedef vtkDICOMVM VM;\n")
+  f.write("typedef vtkDICOMDictEntry::Entry DictEntry;\n")
 
   ns = ""
   if not privatedict:
@@ -298,104 +301,110 @@ def printbody(entry_dict, classname):
   for name, (entry_list, tag_table, key_table) in entry_dict.items():
     dn = dn + 1
     ds = ""
-    print
+    f.write("\n")
     if len(entry_dict) > 1:
       ds = "%03d" % (dn,)
-      print "// ----- %s -----" % (name,)
-      print
-    print "const DictEntry Dict%sContents[] = {" % (ds,)
+      f.write("// ----- %s -----\n" % (name,))
+      f.write("\n")
+    f.write("const DictEntry Dict%sContents[] = {\n" % (ds,))
     for l in entry_list:
-      print l
-    print "};"
+      f.write(l + "\n")
+    f.write("};\n")
     for table,tagorkey in [(tag_table,"Tag"),(key_table,"Key")]:
-      print
-      print "const unsigned short Dict%s%sHashTable[] = {" % (ds,tagorkey)
+      f.write("\n")
+      f.write("const unsigned short Dict%s%sHashTable[] = {\n" % (ds,tagorkey))
       i = 0
       j = len(table) + 1
+      row = []
       for l in table:
         if l is None:
-          print "%5d," % (len(table),),
+          row.append("%5d," % (len(table),))
           i = i + 1
           if i % 10 == 0:
-            print
+            f.write(" ".join(row) + "\n")
+            row = []
         else:
-          print "%5d," % (j,),
+          row.append("%5d," % (j,))
           i = i + 1
           if i % 10 == 0:
-            print
+            f.write(" ".join(row) + "\n")
+            row = []
           j = j + len(l) + 1
-      print "%5d," % (0,),
+      row.append("%5d," % (0,))
       i = i + 1
       if i % 10 == 0:
-        print
+        f.write(" ".join(row) + "\n")
+        row = []
       for l in table:
         if not (l is None):
-          print "%5d," % (len(l)/2,),
+          row.append("%5d," % (len(l)//2,))
           i = i + 1
           if i % 10 == 0:
-            print
-          for e in l:
-            print "%5d," % (e,),
+            f.write(" ".join(row) + "\n")
+            row = []
+          for j, e in enumerate(l):
+            row.append("%5d," % (e,))
             i = i + 1
             if i % 10 == 0:
-              print
+              f.write(" ".join(row) + "\n")
+              row = []
       if i % 10 != 0:
-        print
-      print "};"
+        f.write(" ".join(row) + "\n")
+      f.write("};\n")
 
     if not privatedict:
-      print
-      print "} // end anonymous namespace"
+      f.write("\n")
+      f.write("} // end anonymous namespace\n")
 
-    print
+    f.write("\n")
     if len(entry_dict) > 1:
       ds = "%03d" % (dn,)
-    print "vtkDICOMDictionary::Dict %sDict%sData = {" % (ns,ds)
-    print "\"%s\"," % (name,)
-    print "%d," % (len(tag_table),)
-    print "%d," % (len(entry_list),)
-    print "Dict%sTagHashTable," % (ds,)
-    print "Dict%sKeyHashTable," % (ds,)
-    print "Dict%sContents" % (ds,)
-    print "};"
+    f.write("vtkDICOMDictionary::Dict %sDict%sData = {\n" % (ns,ds))
+    f.write("\"%s\",\n" % (name,))
+    f.write("%d,\n" % (len(tag_table),))
+    f.write("%d,\n" % (len(entry_list),))
+    f.write("Dict%sTagHashTable,\n" % (ds,))
+    f.write("Dict%sKeyHashTable,\n" % (ds,))
+    f.write("Dict%sContents\n" % (ds,))
+    f.write("};\n")
 
   if privatedict:
-    print
-    print "vtkDICOMDictionary::Dict *PrivateDictData[] = {"
+    f.write("\n")
+    f.write("vtkDICOMDictionary::Dict *PrivateDictData[] = {\n")
     dn = 0
     for item in entry_dict.items():
       dn = dn + 1
-      print "&Dict%03dData," % (dn,),
+      f.write("&Dict%03dData," % (dn,))
       if dn % 5 == 0:
-        print
-    print "NULL"
-    print "};"
-    print
-    print "} // end anonymous namespace"
-    print
-    print "static unsigned int %sInitializerCounter;" % (classname,)
-    print
-    print "%sInitializer::%sInitializer()" % (classname,classname)
-    print "{"
-    print "  if (%sInitializerCounter++ == 0)" % (classname,)
-    print "  {"
-    print "    for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != NULL; dp++)"
-    print "    {"
-    print "      vtkDICOMDictionary::AddPrivateDictionary(*dp);"
-    print "    }"
-    print "  }"
-    print "}"
-    print
-    print "%sInitializer::~%sInitializer()" % (classname,classname)
-    print "{"
-    print "  if (--%sInitializerCounter == 0)" % (classname,)
-    print "  {"
-    print "    for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != NULL; dp++)"
-    print "    {"
-    print "      vtkDICOMDictionary::RemovePrivateDictionary((*dp)->Name);"
-    print "    }"
-    print "  }"
-    print "}"
+        f.write("\n")
+    f.write("NULL\n")
+    f.write("};\n")
+    f.write("\n")
+    f.write("} // end anonymous namespace\n")
+    f.write("\n")
+    f.write("static unsigned int %sInitializerCounter;\n" % (classname,))
+    f.write("\n")
+    f.write("%sInitializer::%sInitializer()\n" % (classname,classname))
+    f.write("{\n")
+    f.write("  if (%sInitializerCounter++ == 0)\n" % (classname,))
+    f.write("  {\n")
+    f.write("    for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != NULL; dp++)\n")
+    f.write("    {\n")
+    f.write("      vtkDICOMDictionary::AddPrivateDictionary(*dp);\n")
+    f.write("    }\n")
+    f.write("  }\n")
+    f.write("}\n")
+    f.write("\n")
+    f.write("%sInitializer::~%sInitializer()\n" % (classname,classname))
+    f.write("{\n")
+    f.write("  if (--%sInitializerCounter == 0)\n" % (classname,))
+    f.write("  {\n")
+    f.write("    for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != NULL; dp++)\n")
+    f.write("    {\n")
+    f.write("      vtkDICOMDictionary::RemovePrivateDictionary((*dp)->Name);\n")
+    f.write("    }\n")
+    f.write("  }\n")
+    f.write("}\n")
 
 if privatedict:
   enum_dict = {}
@@ -418,7 +427,7 @@ else:
 
   if printheader:
     printhead({"DICOM" : enum_list}, classname)
-    print "// VTK-HeaderTest-Exclude: %s.h" % (classname,)
+    sys.stdout.write("// VTK-HeaderTest-Exclude: %s.h\n" % (classname,))
   else:
     printbody({"DICOM" : (entry_list, tag_table, key_table)}, classname)
 

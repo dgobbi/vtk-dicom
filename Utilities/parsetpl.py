@@ -64,7 +64,7 @@ for filename in sys.argv[1:]:
   for line in f.readlines():
     parseline(line)
 
-#print len(blocks)
+#print(len(blocks))
 
 for owner, block in blocks.items():
   lines = []
@@ -81,4 +81,4 @@ for owner, block in blocks.items():
     lines.append(owner)
 
   for line in lines:
-    print line
+    print(line)

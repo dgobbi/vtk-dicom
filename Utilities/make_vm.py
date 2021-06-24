@@ -50,9 +50,9 @@ if __name__ == '__main__':
     else:
         nlist = [0x0000, 0x00FF, 0x7F7F, 0x8080, 0x80FF,
                  0x8100, 0x8200, 0x8300, 0x8400, 0x8800]
-        nrange = range(0,33) + [63, 64, 99, 100]
+        nrange = list(range(0,33)) + [63, 64, 99, 100]
         for i in nrange:
-            mrange = range(i,33) + [63, 64, 99, 100, 0xff]
+            mrange = list(range(i,33)) + [63, 64, 99, 100, 0xff]
             for j in mrange:
                 if j < i:
                     continue
@@ -64,4 +64,4 @@ if __name__ == '__main__':
     for i in nlist:
         m = printm(i)
         if len(m) <= 9:
-            print '    %-9.9s = 0x%4.4X,' % (m, i)
+            print('    %-9.9s = 0x%4.4X,' % (m, i))
