@@ -37,7 +37,7 @@ index-euc-kr.txt
 index-gb18030.txt
 index-gb18030-ranges.txt
 index-big5.txt
-index-windows-874.txt (and 1250 to 1257)
+index-windows-874.txt (and 1250 to 1258)
 index-koi8-u.txt
 """
 
@@ -1006,9 +1006,10 @@ comment = {
   1255: "Windows Hebrew",
   1256: "Windows Arabic",
   1257: "Windows Baltic Rim",
+  1258: "Windows Vietnamese",
 }
 
-for i in [874,1250,1251,1252,1253,1254,1255,1256,1257]:
+for i in [874,1250,1251,1252,1253,1254,1255,1256,1257,1258]:
     CP[i] = (list(range(0,128)) +
              readtable(whatwg + 'index-windows-%d.txt' % (i,)))
 
@@ -1119,6 +1120,7 @@ X_CP1254   = 84 # cp1254,      turkish
 X_CP1255   = 85 # cp1255,      hebrew
 X_CP1256   = 86 # cp1256,      arabic
 X_CP1257   = 87 # cp1257,      baltic rim
+X_CP1258   = 88 # cp1258,      vietnamese
 X_KOI8     = 90 # koi,         cyrillic
 
 pages = {
@@ -1176,6 +1178,7 @@ pages = {
   X_CP1255 : ('CodePageWindows1255', 'CodePageWindows1255_R'),
   X_CP1256 : ('CodePageWindows1256', 'CodePageWindows1256_R'),
   X_CP1257 : ('CodePageWindows1257', 'CodePageWindows1257_R'),
+  X_CP1258 : ('CodePageWindows1258', 'CodePageWindows1258_R'),
   X_KOI8 : ('CodePageKOI8', 'CodePageKOI8_R'),
 }
 

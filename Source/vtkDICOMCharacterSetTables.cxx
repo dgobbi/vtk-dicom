@@ -24295,6 +24295,100 @@ const unsigned short CodePageWindows1257_R[342] = {
   // [0x2122,0x2122] -> [   153,   153] # seg 12
 };
 
+// Windows Vietnamese
+const unsigned short CodePageWindows1258[108] = {
+  // hot segments (indexes into segment table)
+  1, 0,
+  // number of segments
+  4,
+  // segment table
+       0,    128,    160,    195,
+  // compressed segments
+  0x0000,  RCHAR, 0x00A0,  RCHAR,
+  // uncompressed segments
+   RCHAR, 0x0000,  RCHAR, 0x0020,
+  // [     0,   127] -> [0x0000,0x007F] # seg 0
+  // [   128,   159] -v # seg 1 at pos 0
+  0x20AC, 0x0081, 0x201A, 0x0192, 0x201E, 0x2026, 0x2020, 0x2021,
+  0x02C6, 0x2030, 0x008A, 0x2039, 0x0152, 0x008D, 0x008E, 0x008F,
+  0x0090, 0x2018, 0x2019, 0x201C, 0x201D, 0x2022, 0x2013, 0x2014,
+  0x02DC, 0x2122, 0x009A, 0x203A, 0x0153, 0x009D, 0x009E, 0x0178,
+  // [   160,   194] -> [0x00A0,0x00C2] # seg 2
+  // [   195,   255] -v # seg 3 at pos 32
+  0x0102, 0x00C4, 0x00C5, 0x00C6, 0x00C7, 0x00C8, 0x00C9, 0x00CA,
+  0x00CB, 0x0300, 0x00CD, 0x00CE, 0x00CF, 0x0110, 0x00D1, 0x0309,
+  0x00D3, 0x00D4, 0x01A0, 0x00D6, 0x00D7, 0x00D8, 0x00D9, 0x00DA,
+  0x00DB, 0x00DC, 0x01AF, 0x0303, 0x00DF, 0x00E0, 0x00E1, 0x00E2,
+  0x0103, 0x00E4, 0x00E5, 0x00E6, 0x00E7, 0x00E8, 0x00E9, 0x00EA,
+  0x00EB, 0x0301, 0x00ED, 0x00EE, 0x00EF, 0x0111, 0x00F1, 0x0323,
+  0x00F3, 0x00F4, 0x01A1, 0x00F6, 0x00F7, 0x00F8, 0x00F9, 0x00FA,
+  0x00FB, 0x00FC, 0x01B0, 0x20AB, 0x00FF,
+};
+
+// Reverse
+const unsigned short CodePageWindows1258_R[278] = {
+  // hot segments (indexes into segment table)
+  1, 0,
+  // number of segments
+  27,
+  // segment table
+  0x0000, 0x0080, 0x0081, 0x00A0, 0x00C3, 0x00C4, 0x0112, 0x0152,
+  0x0154, 0x0178, 0x0179, 0x0192, 0x01B1, 0x02C6, 0x02C7, 0x02DC,
+  0x02DD, 0x0300, 0x030A, 0x0323, 0x0324, 0x2013, 0x203B, 0x20AB,
+  0x20AD, 0x2122, 0x2123,
+  // compressed segments
+       0,  RCHAR,  RCHAR,    160,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,    159,  RCHAR,  RCHAR,  RCHAR,    136,  RCHAR,    152,
+   RCHAR,  RCHAR,  RCHAR,    242,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,    153,  RCHAR,
+  // uncompressed segments
+   RCHAR,  RCHAR,      0,  RCHAR,  RCHAR,     31,  RCHAR,    109,
+   RCHAR,  RCHAR,  RCHAR,    111,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,    142,  RCHAR,  RCHAR,  RCHAR,    152,  RCHAR,    192,
+   RCHAR,  RCHAR,  RCHAR,
+  // [0x0000,0x007F] -> [     0,   127] # seg 0
+  // [0x0081,0x009F] -v # seg 2 at pos 0
+     129,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,    138,  RCHAR,  RCHAR,    141,    142,    143,    144,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,    154,  RCHAR,  RCHAR,    157,    158,  RCHAR,
+  // [0x00A0,0x00C2] -> [   160,   194] # seg 3
+  // [0x00C4,0x0111] -v # seg 5 at pos 31
+     196,    197,    198,    199,    200,    201,    202,    203,
+   RCHAR,    205,    206,    207,  RCHAR,    209,  RCHAR,    211,
+     212,  RCHAR,    214,    215,    216,    217,    218,    219,
+     220,  RCHAR,  RCHAR,    223,    224,    225,    226,  RCHAR,
+     228,    229,    230,    231,    232,    233,    234,    235,
+   RCHAR,    237,    238,    239,  RCHAR,    241,  RCHAR,    243,
+     244,  RCHAR,    246,    247,    248,    249,    250,    251,
+     252,  RCHAR,  RCHAR,    255,  RCHAR,  RCHAR,    195,    227,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,    208,    240,
+  // [0x0152,0x0153] -v # seg 7 at pos 109
+     140,    156,
+  // [0x0178,0x0178] -> [   159,   159] # seg 9
+  // [0x0192,0x01B0] -v # seg 11 at pos 111
+     131,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,    213,    245,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,    221,    253,
+  // [0x02C6,0x02C6] -> [   136,   136] # seg 13
+  // [0x02DC,0x02DC] -> [   152,   152] # seg 15
+  // [0x0300,0x0309] -v # seg 17 at pos 142
+     204,    236,  RCHAR,    222,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,    210,
+  // [0x0323,0x0323] -> [   242,   242] # seg 19
+  // [0x2013,0x203A] -v # seg 21 at pos 152
+     150,    151,  RCHAR,  RCHAR,  RCHAR,    145,    146,    130,
+   RCHAR,    147,    148,    132,  RCHAR,    134,    135,    149,
+   RCHAR,  RCHAR,  RCHAR,    133,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,    137,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,    139,    155,
+  // [0x20AB,0x20AC] -v # seg 23 at pos 192
+     254,    128,
+  // [0x2122,0x2122] -> [   153,   153] # seg 25
+};
+
 // koi8 with extra cyrillic letters from koi8-ru
 const unsigned short CodePageKOI8[120] = {
   // hot segments (indexes into segment table)
@@ -24455,7 +24549,7 @@ const unsigned short *vtkDICOMCharacterSet::Table[256] = {
   CodePageWindows1255,
   CodePageWindows1256,
   CodePageWindows1257,
-  0,
+  CodePageWindows1258,
   0,
   CodePageKOI8,
   0,
@@ -24714,7 +24808,7 @@ const unsigned short *vtkDICOMCharacterSet::Reverse[256] = {
   CodePageWindows1255_R,
   CodePageWindows1256_R,
   CodePageWindows1257_R,
-  0,
+  CodePageWindows1258_R,
   0,
   CodePageKOI8_R,
   0,

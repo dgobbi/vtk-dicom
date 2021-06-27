@@ -544,6 +544,13 @@ static const char *CP1257_Names[] = {
   NULL
 };
 
+static const char *CP1258_Names[] = {
+  "cp1258",
+  "windows-1258",
+  "x-cp1258",
+  NULL
+};
+
 static const char *BIG5_Names[] = {
   "b5",
   "big5",
@@ -602,8 +609,8 @@ static const char *KOI8_Names[] = {
 // * Flags=2: Only the second or third values can be set to DefinedTermExt.
 // Example for character sets with Flags=1: "\ISO 2022 IR 149"
 // Example for character sets with Flags=2: "\ISO 2022 IR 87\ISO 2022 IR 159"
-const int CHARSET_TABLE_SIZE = 47;
-static CharsetInfo Charsets[47] = {
+const int CHARSET_TABLE_SIZE = 48;
+static CharsetInfo Charsets[48] = {
 
   // the default character set
   { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
@@ -690,6 +697,7 @@ static CharsetInfo Charsets[47] = {
   { vtkDICOMCharacterSet::X_CP1255, 0, "cp1255", "", "", CP1255_Names },
   { vtkDICOMCharacterSet::X_CP1256, 0, "cp1256", "", "", CP1256_Names },
   { vtkDICOMCharacterSet::X_CP1257, 0, "cp1257", "", "", CP1257_Names },
+  { vtkDICOMCharacterSet::X_CP1258, 0, "cp1258", "", "", CP1258_Names },
   { vtkDICOMCharacterSet::X_BIG5, 0, "big5", "", "", BIG5_Names },
   { vtkDICOMCharacterSet::X_SJIS, 0, "sjis", "", "", SJIS_Names },
   { vtkDICOMCharacterSet::X_EUCJP, 0, "euc-jp", "", "", EUCJP_Names },

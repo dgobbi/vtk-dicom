@@ -48,8 +48,8 @@
  *  'greek' (iso-8859-7), 'hebrew' (iso-8859-8), 'tis-620', 'shift-jis',
  *  'euc-jp', 'iso-2022-jp', 'korean' (euc-kr), 'chinese' (gbk), 'gb18030',
  *  'big5', 'cp1250', 'cp1251', 'cp1252', 'cp1253', 'cp1254', 'cp1255',
- *  'cp1256', 'cp1257', and 'utf-8'.  Common aliases of these character
- *  sets can also be used.
+ *  'cp1256', 'cp1257', 'cp1258', and 'utf-8'.  Common aliases of these
+ *  character *  sets can also be used.
  */
 class VTKDICOM_EXPORT vtkDICOMCharacterSet
 {
@@ -106,6 +106,7 @@ public:
     X_CP1255   = 85, // cp1255,      hebrew
     X_CP1256   = 86, // cp1256,      arabic
     X_CP1257   = 87, // cp1257,      baltic rim
+    X_CP1258   = 88, // cp1258,      vietnamese
     X_KOI8     = 90, // koi8,        cyrillic
     Unknown    = 255  // signifies unknown character set
   };
