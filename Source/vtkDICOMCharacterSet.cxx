@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <vector>
 
 // The global default is used when a DICOM lacks SpecificCharacterSet
 unsigned char vtkDICOMCharacterSet::GlobalDefault =
@@ -2970,6 +2971,424 @@ size_t vtkDICOMCharacterSet::EUCKRToUTF8(
 }
 
 //----------------------------------------------------------------------------
+namespace {
+
+// CP1258 (Vietnamese) is unique in that it contains combining
+// diacritics, which must be composed in order to produce NFC.
+// This contrasts with Hebrew, which also uses combining chars
+// but is excluded from composition (NFC Hebrew is decomposed).
+
+// The real tricky thing is encoding to CP1258, which requires
+// CP1258-specific partial decomposition (not the same as NFD).
+
+// This is the combining table for all latin chars in CP1258
+const int COMPOSITION_TABLE_SIZE = 258;
+const unsigned short CompressedCompositionTable[516] = {
+  // Each value represents a starter and a diacritic, algorithmically
+  // compressed to 16 bits (10 bits for starter, 6 bits for diacritic)
+  0x1040, 0x1041, 0x1042, 0x1043, 0x1046, 0x1048, 0x1049, 0x1063,
+  0x10A3, 0x10C1, 0x10C2, 0x1123, 0x1140, 0x1141, 0x1142, 0x1143,
+  0x1146, 0x1148, 0x1149, 0x1163, 0x11C1, 0x11C2, 0x11C6, 0x1202,
+  0x1208, 0x1223, 0x1240, 0x1241, 0x1242, 0x1243, 0x1246, 0x1248,
+  0x1249, 0x1263, 0x1282, 0x12C1, 0x12E3, 0x1301, 0x1323, 0x1341,
+  0x1363, 0x1380, 0x1381, 0x1383, 0x13A3, 0x13C0, 0x13C1, 0x13C2,
+  0x13C3, 0x13C6, 0x13C8, 0x13C9, 0x13DB, 0x13E3, 0x1401, 0x1481,
+  0x14A3, 0x14C1, 0x14C2, 0x14E3, 0x1523, 0x1540, 0x1541, 0x1542,
+  0x1543, 0x1546, 0x1548, 0x1549, 0x155B, 0x1563, 0x1583, 0x15A3,
+  0x15C0, 0x15C1, 0x15C2, 0x15C8, 0x15E3, 0x1608, 0x1640, 0x1641,
+  0x1642, 0x1643, 0x1648, 0x1649, 0x1663, 0x1681, 0x1682, 0x16A3,
+  0x1840, 0x1841, 0x1842, 0x1843, 0x1846, 0x1848, 0x1849, 0x1863,
+  0x18A3, 0x18C1, 0x18C2, 0x1923, 0x1940, 0x1941, 0x1942, 0x1943,
+  0x1946, 0x1948, 0x1949, 0x1963, 0x19C1, 0x19C2, 0x19C6, 0x1A02,
+  0x1A08, 0x1A23, 0x1A40, 0x1A41, 0x1A42, 0x1A43, 0x1A46, 0x1A48,
+  0x1A49, 0x1A63, 0x1A82, 0x1AC1, 0x1AE3, 0x1B01, 0x1B23, 0x1B41,
+  0x1B63, 0x1B80, 0x1B81, 0x1B83, 0x1BA3, 0x1BC0, 0x1BC1, 0x1BC2,
+  0x1BC3, 0x1BC6, 0x1BC8, 0x1BC9, 0x1BDB, 0x1BE3, 0x1C01, 0x1C81,
+  0x1CA3, 0x1CC1, 0x1CC2, 0x1CE3, 0x1D08, 0x1D23, 0x1D40, 0x1D41,
+  0x1D42, 0x1D43, 0x1D46, 0x1D48, 0x1D49, 0x1D5B, 0x1D63, 0x1D83,
+  0x1DA3, 0x1DC0, 0x1DC1, 0x1DC2, 0x1DC8, 0x1DE3, 0x1E08, 0x1E40,
+  0x1E41, 0x1E42, 0x1E43, 0x1E48, 0x1E49, 0x1E63, 0x1E81, 0x1E82,
+  0x1EA3, 0x3080, 0x3081, 0x3083, 0x3089, 0x3141, 0x31C1, 0x3280,
+  0x3281, 0x3283, 0x3289, 0x33C1, 0x3500, 0x3501, 0x3503, 0x3509,
+  0x3541, 0x3548, 0x3601, 0x3700, 0x3701, 0x3880, 0x3881, 0x3883,
+  0x3889, 0x3941, 0x3981, 0x39C1, 0x3A80, 0x3A81, 0x3A83, 0x3A89,
+  0x3BC1, 0x3D00, 0x3D01, 0x3D03, 0x3D09, 0x3D41, 0x3D48, 0x3E01,
+  0x3F00, 0x3F01, 0x4080, 0x4081, 0x4083, 0x4089, 0x40C0, 0x40C1,
+  0x40C3, 0x40C9, 0x5A01, 0x5A41, 0x6800, 0x6801, 0x6803, 0x6809,
+  0x6823, 0x6840, 0x6841, 0x6843, 0x6849, 0x6863, 0x6BC0, 0x6BC1,
+  0x6BC3, 0x6BC9, 0x6BE3, 0x6C00, 0x6C01, 0x6C03, 0x6C09, 0x6C23,
+  0x8A06, 0x8A46, 0xE802, 0xE806, 0xE842, 0xE846, 0xEE02, 0xEE42,
+  0xF302, 0xF342,
+
+  // Each value for the 2nd half of the table is a composed character
+  // (2nd half of table maps to 1st half, and vice-versa)
+  0x00C0, 0x00C1, 0x00C2, 0x00C3, 0x0102, 0x00C4, 0x1EA2, 0x1EA0,
+  0x1E04, 0x0106, 0x0108, 0x1E0C, 0x00C8, 0x00C9, 0x00CA, 0x1EBC,
+  0x0114, 0x00CB, 0x1EBA, 0x1EB8, 0x01F4, 0x011C, 0x011E, 0x0124,
+  0x1E26, 0x1E24, 0x00CC, 0x00CD, 0x00CE, 0x0128, 0x012C, 0x00CF,
+  0x1EC8, 0x1ECA, 0x0134, 0x1E30, 0x1E32, 0x0139, 0x1E36, 0x1E3E,
+  0x1E42, 0x01F8, 0x0143, 0x00D1, 0x1E46, 0x00D2, 0x00D3, 0x00D4,
+  0x00D5, 0x014E, 0x00D6, 0x1ECE, 0x01A0, 0x1ECC, 0x1E54, 0x0154,
+  0x1E5A, 0x015A, 0x015C, 0x1E62, 0x1E6C, 0x00D9, 0x00DA, 0x00DB,
+  0x0168, 0x016C, 0x00DC, 0x1EE6, 0x01AF, 0x1EE4, 0x1E7C, 0x1E7E,
+  0x1E80, 0x1E82, 0x0174, 0x1E84, 0x1E88, 0x1E8C, 0x1EF2, 0x00DD,
+  0x0176, 0x1EF8, 0x0178, 0x1EF6, 0x1EF4, 0x0179, 0x1E90, 0x1E92,
+  0x00E0, 0x00E1, 0x00E2, 0x00E3, 0x0103, 0x00E4, 0x1EA3, 0x1EA1,
+  0x1E05, 0x0107, 0x0109, 0x1E0D, 0x00E8, 0x00E9, 0x00EA, 0x1EBD,
+  0x0115, 0x00EB, 0x1EBB, 0x1EB9, 0x01F5, 0x011D, 0x011F, 0x0125,
+  0x1E27, 0x1E25, 0x00EC, 0x00ED, 0x00EE, 0x0129, 0x012D, 0x00EF,
+  0x1EC9, 0x1ECB, 0x0135, 0x1E31, 0x1E33, 0x013A, 0x1E37, 0x1E3F,
+  0x1E43, 0x01F9, 0x0144, 0x00F1, 0x1E47, 0x00F2, 0x00F3, 0x00F4,
+  0x00F5, 0x014F, 0x00F6, 0x1ECF, 0x01A1, 0x1ECD, 0x1E55, 0x0155,
+  0x1E5B, 0x015B, 0x015D, 0x1E63, 0x1E97, 0x1E6D, 0x00F9, 0x00FA,
+  0x00FB, 0x0169, 0x016D, 0x00FC, 0x1EE7, 0x01B0, 0x1EE5, 0x1E7D,
+  0x1E7F, 0x1E81, 0x1E83, 0x0175, 0x1E85, 0x1E89, 0x1E8D, 0x1EF3,
+  0x00FD, 0x0177, 0x1EF9, 0x00FF, 0x1EF7, 0x1EF5, 0x017A, 0x1E91,
+  0x1E93, 0x1EA6, 0x1EA4, 0x1EAA, 0x1EA8, 0x01FA, 0x1E08, 0x1EC0,
+  0x1EBE, 0x1EC4, 0x1EC2, 0x1E2E, 0x1ED2, 0x1ED0, 0x1ED6, 0x1ED4,
+  0x1E4C, 0x1E4E, 0x01FE, 0x01DB, 0x01D7, 0x1EA7, 0x1EA5, 0x1EAB,
+  0x1EA9, 0x01FB, 0x01FD, 0x1E09, 0x1EC1, 0x1EBF, 0x1EC5, 0x1EC3,
+  0x1E2F, 0x1ED3, 0x1ED1, 0x1ED7, 0x1ED5, 0x1E4D, 0x1E4F, 0x01FF,
+  0x01DC, 0x01D8, 0x1EB0, 0x1EAE, 0x1EB4, 0x1EB2, 0x1EB1, 0x1EAF,
+  0x1EB5, 0x1EB3, 0x1E78, 0x1E79, 0x1EDC, 0x1EDA, 0x1EE0, 0x1EDE,
+  0x1EE2, 0x1EDD, 0x1EDB, 0x1EE1, 0x1EDF, 0x1EE3, 0x1EEA, 0x1EE8,
+  0x1EEE, 0x1EEC, 0x1EF0, 0x1EEB, 0x1EE9, 0x1EEF, 0x1EED, 0x1EF1,
+  0x1E1C, 0x1E1D, 0x1EAC, 0x1EB6, 0x1EAD, 0x1EB7, 0x1EC6, 0x1EC7,
+  0x1ED8, 0x1ED9,
+};
+
+// Combining values, used to sort the diacritics.
+// 230 for ACUTE, GRAVE, CIRCUMFLEX, TILDE, etc.
+// 220 for DOT BELOW, etc.
+const unsigned char CombiningClassTable[64] = {
+  230, 230, 230, 230, 230, 230, 230, 230, 230, 230, 230, 230,
+  230, 230, 230, 230, 230, 230, 230, 230, 230, 232, 220, 220,
+  220, 220, 232, 216, 220, 220, 220, 220, 220, 202, 202, 220,
+  220, 220, 220, 202, 202, 220, 220, 220, 220, 220, 220, 220,
+  220, 220, 220, 220, 1, 1, 1, 1, 1, 220, 220, 220, 220, 230,
+  230, 230,
+};
+
+// Combining values for use with CP1258, tonal marks last.
+// 240 for ACUTE, GRAVE, TILDE, DOT BELOW
+const unsigned char CombiningClassCP1258[64] = {
+  240, 240, 230, 240, 230, 230, 230, 230, 230, 230, 230, 230,
+  230, 230, 230, 230, 230, 230, 230, 230, 230, 232, 220, 220,
+  220, 220, 232, 216, 220, 220, 220, 220, 220, 202, 202, 240,
+  220, 220, 220, 202, 202, 220, 220, 220, 220, 220, 220, 220,
+  220, 220, 220, 220, 1, 1, 1, 1, 1, 220, 220, 220, 220, 230,
+  230, 230,
+};
+
+// Try to compose a character from two parts
+bool Compose(unsigned short& starter, unsigned short diacritic)
+{
+  const unsigned short *table = CompressedCompositionTable;
+  const unsigned short *tableEnd = table + COMPOSITION_TABLE_SIZE;
+
+  // create a key for the composition table
+  unsigned short comp = 0;
+  if (starter < 0x0300)
+  {
+    comp = starter;
+  }
+  else if (starter >= 0x1E00 && starter < 0x1F00)
+  {
+    comp = starter - 0x1E00 + 0x0300;
+  }
+  comp = (comp << 6) + (diacritic & 0x3F);
+
+  // search the sorted table for the decomposition
+  const unsigned short *it = std::lower_bound(table, tableEnd, comp);
+  if (it != tableEnd && *it == comp)
+  {
+    // the table gave us a new starter
+    starter = *(it + COMPOSITION_TABLE_SIZE);
+    return true;
+  }
+
+  return false;
+}
+
+// Try to decompose a character into two parts
+bool Decompose(unsigned short& code, unsigned short& diacritic)
+{
+  const unsigned short *ctable = CompressedCompositionTable;
+  const unsigned short *table = ctable + COMPOSITION_TABLE_SIZE;
+  const unsigned short *tableEnd = table + COMPOSITION_TABLE_SIZE;
+
+  // search the unsorted composed character table
+  const unsigned short *it = std::find(table, tableEnd, code);
+  if (it != tableEnd)
+  {
+    // convert the 16-bit result into starter and diacritic
+    unsigned short comp = *(it - COMPOSITION_TABLE_SIZE);
+    unsigned short starter = (comp & 0xFFC0) >> 6;
+    if (starter >= 0x0300)
+    {
+      starter += 0x1E00 - 0x0300;
+    }
+    // return the starter and diacritic for the decomposition
+    code = starter;
+    diacritic = (comp & 0x3F) + 0x0300;
+    return true;
+  }
+
+  return false;
+}
+
+// Get the combining class for a character
+unsigned char CombiningClass(unsigned short a)
+{
+  // 0x0340 and 0x0341 alias to 0x0300 and 0x301
+  if (a >= 0x0300 && a < 0x0342)
+  {
+    return CombiningClassTable[a & 0x3F];
+  }
+  return 0;
+}
+
+// For sorting diacritics, always use a stable sort
+bool CompareDiacritic(unsigned short a, unsigned short b)
+{
+  return (CombiningClassTable[a & 0x3F] < CombiningClassTable[b & 0x3F]);
+}
+
+// For sorting diacritics, specifically for CP1258
+bool CompareCP1258(unsigned short a, unsigned short b)
+{
+  return (CombiningClassCP1258[a & 0x3F] < CombiningClassCP1258[b & 0x3F]);
+}
+
+// Do NFC normalization for starter plus diacritics
+void PerformNFC(unsigned short& s, std::vector<unsigned short>& diacritics)
+{
+  // decompose the starter recursively
+  unsigned short diacritic;
+  while (Decompose(s, diacritic))
+  {
+    diacritics.insert(diacritics.begin(), diacritic);
+  }
+
+  // sort the diacritics
+  std::stable_sort(diacritics.begin(), diacritics.end(), &CompareDiacritic);
+
+  // compose any starter + diacritic that will compose
+  std::vector<unsigned short>::iterator di = diacritics.begin();
+  while (di != diacritics.end())
+  {
+    if (Compose(s, *di))
+    {
+      // successful composition, remove diacritic from list
+      di = diacritics.erase(di);
+    }
+    else
+    {
+      // skip uncombined diacritic and all diacritics of the same class
+      unsigned char dclass = CombiningClass(*di);
+      do
+      {
+        ++di;
+      }
+      while (di != diacritics.end() && CombiningClass(*di) == dclass);
+    }
+  }
+}
+
+// Push a one-byte character to output, with error handling
+void PushSingleByteChar(
+  std::string *s, unsigned short t,
+  const char *tpos, const char *endpos, const char **errpos)
+{
+  if (t < 0xFFFD)
+  {
+    s->push_back(static_cast<char>(t));
+  }
+  else if (!LastChanceConversion(s, tpos, endpos))
+  {
+    *errpos = (*errpos ? *errpos : tpos);
+  }
+}
+
+} // end anonymous namespace
+
+//----------------------------------------------------------------------------
+// Windows-1258 (Vietnamese) contains combining diacritics,
+// so we normalize to NFC as part of the decoding.
+size_t vtkDICOMCharacterSet::CP1258ToUTF8(
+  const char *text, size_t l, std::string *s, int mode)
+{
+  CompressedTable table(vtkDICOMCharacterSet::Table[X_CP1258]);
+
+  const char *errpos = 0;
+  const char *cp = text;
+  const char *ep = text + l;
+  unsigned short starter = 0xFFFF;
+  typedef std::vector<unsigned short>::iterator IterT;
+  std::vector<unsigned short> diacritics;
+
+  while (cp != ep)
+  {
+    unsigned short x = static_cast<unsigned char>(*cp++);
+    unsigned short code = table[x];
+    bool newStarter = true;
+
+    // check if this is a combining diacritic
+    if (CombiningClass(code) != 0)
+    {
+      newStarter = false;
+      // if it comes immediately after the starter, see if it composes
+      if (!diacritics.empty() || !Compose(starter, code))
+      {
+        // fast-path composition failed, save the diacritic for later
+        diacritics.push_back(code);
+      }
+    }
+
+    // new starter or end of string
+    if (newStarter || cp == ep)
+    {
+      if (!diacritics.empty())
+      {
+        // use slow-path composition
+        PerformNFC(starter, diacritics);
+      }
+      if (starter != 0xFFFF)
+      {
+        // output old starter, if there was one
+        UnicodeToUTF8(starter, s);
+      }
+      for (IterT di = diacritics.begin(); di != diacritics.end(); ++di)
+      {
+        // output all uncombined diacritics
+        UnicodeToUTF8(*di, s);
+      }
+      diacritics.clear();
+
+      if (newStarter)
+      {
+        // set new starter
+        starter = code;
+
+        if (starter == 0xFFFD)
+        {
+          // new starter not valid
+          errpos = (errpos ? errpos : cp);
+          BadCharsToUTF8(cp, cp+1, s, mode);
+          starter = 0xFFFF;
+        }
+        else if (cp == ep)
+        {
+          // end of string, output the starter
+          UnicodeToUTF8(starter, s);
+        }
+      }
+    }
+  }
+
+  return (errpos ? errpos-text : cp-text);
+}
+
+//----------------------------------------------------------------------------
+// Windows-1258 (Vietnamese) contains combining chars, so it requires
+// partial decomposition during its encoding
+size_t vtkDICOMCharacterSet::UTF8ToCP1258(
+  const char *text, size_t l, std::string *s)
+{
+  CompressedTableR table(vtkDICOMCharacterSet::Reverse[X_CP1258]);
+
+  const char *errpos = 0;
+  const char *cp = text;
+  const char *ep = text + l;
+  unsigned short starter = 0xFFFF;
+  const char *starterpos = cp;
+  typedef std::vector<unsigned short>::iterator IterT;
+  std::vector<unsigned short> diacritics;
+
+  while (cp != ep)
+  {
+    const char *lastpos = cp;
+    unsigned int code = UTF8ToUnicode(&cp, ep);
+    bool newStarter = true;
+
+    // check if this is a combining diacritic
+    if (CombiningClass(code) != 0)
+    {
+      newStarter = false;
+      diacritics.push_back(code);
+    }
+
+    if (newStarter || cp == ep)
+    {
+      if (diacritics.empty() && starter != 0xFFFF)
+      {
+        // output old starter if it fits the table
+        unsigned short t = table[starter];
+        if (t < 0xFFFD)
+        {
+          s->push_back(static_cast<char>(t));
+          starter = 0xFFFF;
+        }
+      }
+
+      if (starter != 0xFFFF)
+      {
+        // decompose the starter recursively
+        unsigned short diacritic;
+        while (Decompose(starter, diacritic))
+        {
+          diacritics.insert(diacritics.begin(), diacritic);
+        }
+
+        if (!diacritics.empty())
+        {
+          // sort into an ordering appropriate for CP1258
+          std::stable_sort(diacritics.begin(), diacritics.end(),
+                           &CompareCP1258);
+          // find the first diacritic that composes with starter
+          for (IterT di = diacritics.begin(); di != diacritics.end(); ++di)
+          {
+            unsigned short temp = starter;
+            if (Compose(temp, *di) && table[temp] < 0xFFFD)
+            {
+              diacritics.erase(di);
+              starter = temp;
+              break;
+            }
+          }
+        }
+
+        // output the starter
+        PushSingleByteChar(s, table[starter], starterpos, ep, &errpos);
+      }
+
+      for (IterT di = diacritics.begin(); di != diacritics.end(); ++di)
+      {
+        // output all uncombined diacritics
+        PushSingleByteChar(s, table[*di], starterpos, ep, &errpos);
+      }
+      diacritics.clear();
+
+      if (newStarter)
+      {
+        // set new starter
+        starter = code;
+        starterpos = lastpos;
+
+        // if end of string or bad starter, output the starter
+        if (cp == ep || starter >= 0xFFFD)
+        {
+          PushSingleByteChar(s, table[starter], starterpos, ep, &errpos);
+          starter = 0xFFFF;
+        }
+      }
+    }
+  }
+
+  return (errpos ? errpos-text : cp-text);
+}
+
+//----------------------------------------------------------------------------
 unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
 {
   const char *cp = name;
@@ -3684,6 +4103,9 @@ std::string vtkDICOMCharacterSet::FromUTF8(
     case X_SJIS:
       l = UTF8ToSJIS(text, l, &s);
       break;
+    case X_CP1258:
+      l = UTF8ToCP1258(text, l, &s);
+      break;
     default:
       l = this->UTF8ToSingleByte(text, l, &s);
       break;
@@ -3746,6 +4168,9 @@ size_t vtkDICOMCharacterSet::AnyToUTF8(
       break;
     case X_SJIS:
       l = SJISToUTF8(text, l, s, mode);
+      break;
+    case X_CP1258:
+      l = CP1258ToUTF8(text, l, s, mode);
       break;
     default:
       l = SingleByteToUTF8(text, l, s, mode);

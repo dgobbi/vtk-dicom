@@ -363,6 +363,8 @@ private:
     int charset, const char *t, size_t l, std::string *s);
   static size_t JISXToUTF8(
     int csGL, int csGR, const char *t, size_t l, std::string *s, int m);
+  static size_t UTF8ToCP1258(const char *t, size_t l, std::string *s);
+  static size_t CP1258ToUTF8(const char *t, size_t l, std::string *s, int m);
 
   static unsigned int InitISO2022(unsigned char key, unsigned char G[4]);
   static EscapeType EscapeCode(const char *cp, size_t l, unsigned int *state);
