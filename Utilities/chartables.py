@@ -1026,7 +1026,11 @@ for i in [874,1250,1251,1252,1253,1254,1255,1256,1257,1258]:
     checktable(table, Forward, CP[i])
     CodePageWindows[i] = table
 
-    table = maketable2(CP[i], Reverse, maxrun=16)
+    if i in [1258]:
+        compat = { 0x0340 : 204, 0x0341 : 236 } # obsolete tone marks
+        table = maketable2(CP[i], Reverse, compat, maxrun=16)
+    else:
+        table = maketable2(CP[i], Reverse, maxrun=16)
     table[0] += 1
     table.insert(1, 0)
     checktable(table, Reverse, CP[i])

@@ -24326,26 +24326,26 @@ const unsigned short CodePageWindows1258[108] = {
 };
 
 // Reverse
-const unsigned short CodePageWindows1258_R[278] = {
+const unsigned short CodePageWindows1258_R[286] = {
   // hot segments (indexes into segment table)
   1, 0,
   // number of segments
-  27,
+  29,
   // segment table
   0x0000, 0x0080, 0x0081, 0x00A0, 0x00C3, 0x00C4, 0x0112, 0x0152,
   0x0154, 0x0178, 0x0179, 0x0192, 0x01B1, 0x02C6, 0x02C7, 0x02DC,
-  0x02DD, 0x0300, 0x030A, 0x0323, 0x0324, 0x2013, 0x203B, 0x20AB,
-  0x20AD, 0x2122, 0x2123,
+  0x02DD, 0x0300, 0x030A, 0x0323, 0x0324, 0x0340, 0x0342, 0x2013,
+  0x203B, 0x20AB, 0x20AD, 0x2122, 0x2123,
   // compressed segments
        0,  RCHAR,  RCHAR,    160,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
    RCHAR,    159,  RCHAR,  RCHAR,  RCHAR,    136,  RCHAR,    152,
    RCHAR,  RCHAR,  RCHAR,    242,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,    153,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,    153,  RCHAR,
   // uncompressed segments
    RCHAR,  RCHAR,      0,  RCHAR,  RCHAR,     31,  RCHAR,    109,
    RCHAR,  RCHAR,  RCHAR,    111,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
-   RCHAR,    142,  RCHAR,  RCHAR,  RCHAR,    152,  RCHAR,    192,
-   RCHAR,  RCHAR,  RCHAR,
+   RCHAR,    142,  RCHAR,  RCHAR,  RCHAR,    152,  RCHAR,    154,
+   RCHAR,    194,  RCHAR,  RCHAR,  RCHAR,
   // [0x0000,0x007F] -> [     0,   127] # seg 0
   // [0x0081,0x009F] -v # seg 2 at pos 0
      129,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
@@ -24378,15 +24378,17 @@ const unsigned short CodePageWindows1258_R[278] = {
      204,    236,  RCHAR,    222,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
    RCHAR,    210,
   // [0x0323,0x0323] -> [   242,   242] # seg 19
-  // [0x2013,0x203A] -v # seg 21 at pos 152
+  // [0x0340,0x0341] -v # seg 21 at pos 152
+     204,    236,
+  // [0x2013,0x203A] -v # seg 23 at pos 154
      150,    151,  RCHAR,  RCHAR,  RCHAR,    145,    146,    130,
    RCHAR,    147,    148,    132,  RCHAR,    134,    135,    149,
    RCHAR,  RCHAR,  RCHAR,    133,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
    RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,    137,  RCHAR,  RCHAR,
    RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,    139,    155,
-  // [0x20AB,0x20AC] -v # seg 23 at pos 192
+  // [0x20AB,0x20AC] -v # seg 25 at pos 194
      254,    128,
-  // [0x2122,0x2122] -> [   153,   153] # seg 25
+  // [0x2122,0x2122] -> [   153,   153] # seg 27
 };
 
 // koi8 with extra cyrillic letters from koi8-ru
