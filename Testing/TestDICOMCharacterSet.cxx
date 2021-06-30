@@ -412,6 +412,21 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   TestAssert(u == compat);
   }
 
+  { // test cp1258 encoding and decoding to NFC
+  std::string raw = "Mu\xf4\xf2n nh\xe2\xect l\xe0 t\xfd\xcc n\xe3m 1867 "
+    "\xf0\x61\xde c\xf3 ng\xfd\xf5\xcci go\xf2i ch\xfd\xde Latinh cho ti"
+    "\xea\xecng Vi\xea\xf2t l\xe0 ch\xfd\xde qu\xf4\xec\x63 ng\xfd\xde.\n";
+  std::string nfc = "Mu\xe1\xbb\x99n nh\xe1\xba\xa5t l\xc3\xa0 t\xe1\xbb\xab "
+    "n\xc4\x83m 1867 \xc4\x91\xc3\xa3 c\xc3\xb3 ng\xc6\xb0\xe1\xbb\x9di g\xe1"
+    "\xbb\x8di ch\xe1\xbb\xaf Latinh cho ti\xe1\xba\xbfng Vi\xe1\xbb\x87t "
+    "l\xc3\xa0 ch\xe1\xbb\xaf qu\xe1\xbb\x91\x63 ng\xe1\xbb\xaf.\n";
+  vtkDICOMCharacterSet cs = vtkDICOMCharacterSet::X_CP1258;
+  std::string t = cs.FromUTF8(nfc);
+  TestAssert(t == raw);
+  std::string s = cs.ToUTF8(raw);
+  TestAssert(s == nfc);
+  }
+
   { // test round trip of single-byte character sets within valid ranges
   const char *sets[] = {
     "ISO_IR 13",  "\x01\x7f,\xa0\xdf,",
@@ -441,6 +456,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
     "CP1255",     "\x01\xd8,\xe0\xfa,\xfd\xfe,",
     "CP1256",     "\x01\xff,",
     "CP1257",     "\x01\xa0,\xa2\xa4,\xa6\xff,",
+    "CP1258",     "\x01\xff,",
     "KOI8",       "\x01\x7f,\x9a\x9a,\x9e\x9e,\xa3\xa4,\xa6\xa7,\xad\xae,"
                   "\xb3\xb4,\xb6\xb7,\xbd\xbe,\xbf\xff,",
     NULL, NULL
