@@ -2,7 +2,7 @@
 project(DICOM)
 
 # CMake version requirements
-cmake_minimum_required(VERSION 2.8.7)
+cmake_minimum_required(VERSION 2.8.12)
 
 # Allow custom cmake overrides
 set(DICOM_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
