@@ -11,6 +11,10 @@ PS3.5
 Explicit VR Little Endian
 Transfer Syntax
 PS3.5
+1.2.840.10008.1.2.1.98
+Encapsulated Uncompressed Explicit VR Little Endian
+Transfer Syntax
+PS3.5
 1.2.840.10008.1.2.1.99
 Deflated Explicit VR Little Endian
 Transfer Syntax
@@ -1144,6 +1148,10 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.90.1
 Content Assessment Results Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.91.1
+Microscopy Bulk Simple Annotations Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.104.1
@@ -5751,3 +5759,186 @@ Value Timings
 1.2.840.10008.6.1.1364
 CID 10074
 RDSR Frame of Reference Origins
+1.2.840.10008.6.1.1365
+CID 8135
+Microscopy Annotation Property Types
+1.2.840.10008.6.1.1366
+CID 8136
+Microscopy Measurement Types
+1.2.840.10008.6.1.1367
+CID 6310
+Prostate Reporting Systems
+1.2.840.10008.6.1.1368
+CID 6311
+MR Signal Intensity
+1.2.840.10008.6.1.1369
+CID 6312
+Cross-sectional Scan Plane Orientation
+1.2.840.10008.6.1.1370
+CID 6313
+History of Prostate Disease
+1.2.840.10008.6.1.1371
+CID 6314
+Prostate MRI Study Quality Findings
+1.2.840.10008.6.1.1372
+CID 6315
+Prostate MRI Series Quality Findings
+1.2.840.10008.6.1.1373
+CID 6316
+MR Imaging Artifacts
+1.2.840.10008.6.1.1374
+CID 6317
+Prostate DCE MRI Quality Findings
+1.2.840.10008.6.1.1375
+CID 6318
+Prostate DWI MRI Quality Findings
+1.2.840.10008.6.1.1376
+CID 6319
+Abdominal Intervention Types
+1.2.840.10008.6.1.1377
+CID 6320
+Abdominal Interventions
+1.2.840.10008.6.1.1378
+CID 6321
+Prostate Cancer Diagnostic Procedures
+1.2.840.10008.6.1.1379
+CID 6322
+Prostate Cancer Family History
+1.2.840.10008.6.1.1380
+CID 6323
+Prostate Cancer Therapy
+1.2.840.10008.6.1.1381
+CID 6324
+Prostate MRI Assessment
+1.2.840.10008.6.1.1382
+CID 6325
+Overall Assessment from PI-RADS(R)
+1.2.840.10008.6.1.1383
+CID 6326
+Image Quality Control Standards
+1.2.840.10008.6.1.1384
+CID 6327
+Prostate Imaging Indications
+1.2.840.10008.6.1.1385
+CID 6328
+PI-RADS(R) v2 Lesion Assessment Category
+1.2.840.10008.6.1.1386
+CID 6329
+PI-RADS(R) v2 T2WI TZ Lesion Assessment Category
+1.2.840.10008.6.1.1387
+CID 6330
+PI-RADS(R) v2 T2WI PZ Lesion Assessment Category
+1.2.840.10008.6.1.1388
+CID 6331
+PI-RADS(R) v2 DWI Lesion Assessment Category
+1.2.840.10008.6.1.1389
+CID 6332
+PI-RADS(R) v2 DCE Lesion Assessment Category
+1.2.840.10008.6.1.1390
+CID 6333
+mpMRI Assessment Types
+1.2.840.10008.6.1.1391
+CID 6334
+mpMRI Assessment Types from PI-RADS(R)
+1.2.840.10008.6.1.1392
+CID 6335
+mpMRI Assessment Values
+1.2.840.10008.6.1.1393
+CID 6336
+MRI Abnormalities
+1.2.840.10008.6.1.1394
+CID 6337
+mpMRI Prostate Abnormalities from PI-RADS(R)
+1.2.840.10008.6.1.1395
+CID 6338
+mpMRI Benign Prostate Abnormalities from PI-RADS(R)
+1.2.840.10008.6.1.1396
+CID 6339
+MRI Shape Characteristics
+1.2.840.10008.6.1.1397
+CID 6340
+Prostate MRI Shape Characteristics from PI-RADS(R)
+1.2.840.10008.6.1.1398
+CID 6341
+MRI Margin Characteristics
+1.2.840.10008.6.1.1399
+CID 6342
+Prostate MRI Margin Characteristics from PI-RADS(R)
+1.2.840.10008.6.1.1400
+CID 6343
+MRI Signal Characteristics
+1.2.840.10008.6.1.1401
+CID 6344
+Prostate MRI Signal Characteristics from PI-RADS(R)
+1.2.840.10008.6.1.1402
+CID 6345
+MRI Enhancement Patterns
+1.2.840.10008.6.1.1403
+CID 6346
+Prostate MRI Enhancement Patterns from PI-RADS(R)
+1.2.840.10008.6.1.1404
+CID 6347
+Prostate MRI Extra-prostatic Findings
+1.2.840.10008.6.1.1405
+CID 6348
+Prostate MRI Assessment of Extra-prostatic Anatomic Sites
+1.2.840.10008.6.1.1406
+CID 6349
+MR Coil Types
+1.2.840.10008.6.1.1407
+CID 6350
+Endorectal Coil Fill Substances
+1.2.840.10008.6.1.1408
+CID 6351
+Prostate Relational Measurements
+1.2.840.10008.6.1.1409
+CID 6352
+Prostate Cancer Diagnostic Blood Lab Measurements
+1.2.840.10008.6.1.1410
+CID 6353
+Prostate Imaging Types of Quality Control Standard
+1.2.840.10008.6.1.1411
+CID 12308
+Ultrasound Shear Wave Measurements
+1.2.840.10008.6.1.1412
+CID 3780
+Left Ventricle Myocardial Wall 16 Segments
+1.2.840.10008.6.1.1413
+CID 3781
+Left Ventricle Myocardial Wall 18 Segments
+1.2.840.10008.6.1.1414
+CID 3782
+Left Ventricle Basal Wall 6 Segments
+1.2.840.10008.6.1.1415
+CID 3783
+Left Ventricle Midlevel Wall 6 Segments
+1.2.840.10008.6.1.1416
+CID 3784
+Left Ventricle Apical Wall 4 Segments
+1.2.840.10008.6.1.1417
+CID 3785
+Left Ventricle Apical Wall 6 Segments
+1.2.840.10008.6.1.1418
+CID 9571
+Patient Treatment Preparation Methods
+1.2.840.10008.6.1.1419
+CID 9572
+Patient Shielding Devices
+1.2.840.10008.6.1.1420
+CID 9573
+Patient Treaqtment Preparation Devices
+1.2.840.10008.6.1.1421
+CID 9574
+Patient Position Displacement Reference Points
+1.2.840.10008.6.1.1422
+CID 9575
+Patient Alignment Devices
+1.2.840.10008.6.1.1423
+CID 9576
+Reasons for RT Radiation Treatment Omission
+1.2.840.10008.6.1.1424
+CID 9577
+Patient Treatment Preparation Methods
+1.2.840.10008.6.1.1425
+CID 9578
+Motion Management Setup Devices

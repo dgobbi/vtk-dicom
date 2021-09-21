@@ -2602,6 +2602,18 @@ CalibrationNotes
 LT
 1
 DICONDE
+(0014,3100)
+Linearity Correction Technique
+LinearityCorrectionTechnique
+LT
+1
+DICONDE
+(0014,3101)
+Beam Hardening Correction Technique
+BeamHardeningCorrectionTechnique
+LT
+1
+DICONDE
 (0014,4002)
 Pulser Equipment Sequence
 PulserEquipmentSequence
@@ -3086,19 +3098,19 @@ DICONDE
 Image Quality Indicator Type
 ImageQualityIndicatorType
 LO
-1
+1-n
 DICONDE
 (0014,40A1)
 Image Quality Indicator Material
 ImageQualityIndicatorMaterial
 LO
-1
+1-n
 DICONDE
 (0014,40A2)
 Image Quality Indicator Size
 ImageQualityIndicatorSize
 LO
-1
+1-n
 DICONDE
 (0014,5002)
 LINAC Energy
@@ -10932,7 +10944,7 @@ SQ
 
 (0022,1642)
 Number of B-scans Per Frame
-NumberofBscansPerFrame
+NumberOfBscansPerFrame
 UL
 1
 
@@ -16593,19 +16605,19 @@ Referenced Image Navigation Sequence
 ReferencedImageNavigationSequence
 SQ
 1
-
+RET
 (0048,0201)
 Top Left Hand Corner of Localizer Area
 TopLeftHandCornerOfLocalizerArea
 US
 2
-
+RET
 (0048,0202)
 Bottom Right Hand Corner of Localizer Area
 BottomRightHandCornerOfLocalizerArea
 US
 2
-
+RET
 (0048,0207)
 Optical Path Identification Sequence
 OpticalPathIdentificationSequence
@@ -17764,6 +17776,12 @@ VectorCoordinateData
 OF
 1
 
+(0066,0022)
+Double Point Coordinates Data
+DoublePointCoordinatesData
+OD
+1
+
 (0066,0023)
 Triangle Point Index List
 TrianglePointIndexList
@@ -18458,6 +18476,102 @@ UI
 Relative URI Reference Within Encapsulated Document
 RelativeURIReferenceWithinEncapsulatedDocument
 UR
+1
+
+(006A,0001)
+Annotation Coordinate Type
+AnnotationCoordinateType
+CS
+1
+
+(006A,0002)
+Annotation Group Sequence
+AnnotationGroupSequence
+SQ
+1
+
+(006A,0003)
+Annotation Group UID
+AnnotationGroupUID
+UI
+1
+
+(006A,0005)
+Annotation Group Label
+AnnotationGroupLabel
+LO
+1
+
+(006A,0006)
+Annotation Group Description
+AnnotationGroupDescription
+UT
+1
+
+(006A,0007)
+Annotation Group Generation Type
+AnnotationGroupGenerationType
+CS
+1
+
+(006A,0008)
+Annotation Group Algorithm Identification Sequence
+AnnotationGroupAlgorithmIdentificationSequence
+SQ
+1
+
+(006A,0009)
+Annotation Property Category Code Sequence
+AnnotationPropertyCategoryCodeSequence
+SQ
+1
+
+(006A,000A)
+Annotation Property Type Code Sequence
+AnnotationPropertyTypeCodeSequence
+SQ
+1
+
+(006A,000B)
+Annotation Property Type Modifier Code Sequence
+AnnotationPropertyTypeModifierCodeSequence
+SQ
+1
+
+(006A,000C)
+Number of Annotations
+NumberOfAnnotations
+UL
+1
+
+(006A,000D)
+Annotation Applies to All Optical Paths
+AnnotationAppliesToAllOpticalPaths
+CS
+1
+
+(006A,000E)
+Referenced Optical Path Identifier
+ReferencedOpticalPathIdentifier
+SH
+1-n
+
+(006A,000F)
+Annotation Applies to All Z Planes
+AnnotationAppliesToAllZPlanes
+CS
+1
+
+(006A,0010)
+Common Z Coordinate Value
+CommonZCoordinateValue
+FD
+1-n
+
+(006A,0011)
+Annotation Index List
+AnnotationIndexList
+OL
 1
 
 (0070,0001)
@@ -25060,6 +25174,12 @@ SourceApplicatorStepSize
 DS
 1
 
+(300A,02A1)
+Applicator Shape Referenced ROI Number
+ApplicatorShapeReferencedROINumber
+IS
+1
+
 (300A,02A2)
 Transfer Tube Number
 TransferTubeNumber
@@ -26133,7 +26253,7 @@ Referenced RT Patient Setup Sequence
 ReferencedRTPatientSetupSequence
 SQ
 1
-
+RET
 (300A,0634)
 Source to Patient Surface Distance
 SourceToPatientSurfaceDistance
@@ -26307,7 +26427,7 @@ Patient Setup UID
 PatientSetupUID
 UI
 1
-
+RET
 (300A,0651)
 Wedge Definition Sequence
 WedgeDefinitionSequence
@@ -26906,6 +27026,168 @@ RET
 Interlock Origin Description
 InterlockOriginDescription
 ST
+1
+
+(300A,0784)
+RT Patient Position Scope Sequence
+RTPatientPositionScopeSequence
+SQ
+1
+
+(300A,0785)
+Referenced Treatment Position Group UID
+ReferencedTreatmentPositionGroupUID
+UI
+1
+
+(300A,0786)
+Radiation Order Index
+RadiationOrderIndex
+US
+1
+
+(300A,0787)
+Omitted Radiation Sequence
+OmittedRadiationSequence
+SQ
+1
+
+(300A,0788)
+Reason for Omission Code Sequence
+ReasonforOmissionCodeSequence
+SQ
+1
+
+(300A,0789)
+RT Delivery Start Patient Position Sequence
+RTDeliveryStartPatientPositionSequence
+SQ
+1
+
+(300A,078A)
+RT Treatment Preparation Patient Position Sequence
+RTTreatmentPreparationPatientPositionSequence
+SQ
+1
+
+(300A,078B)
+Referenced RT Treatment Preparation Sequence
+ReferencedRTTreatmentPreparationSequence
+SQ
+1
+
+(300A,078C)
+Referenced Patient Setup Photo Sequence
+ReferencedPatientSetupPhotoSequence
+SQ
+1
+
+(300A,078D)
+Patient Treatment Preparation Method Code Sequence
+PatientTreatmentPreparationMethodCodeSequence
+SQ
+1
+
+(300A,078E)
+Patient Treatment Preparation Procedure Parameter Description
+PatientTreatmentPreparationProcedureParameterDescription
+LT
+1
+
+(300A,078F)
+Patient Treatment Preparation Device Sequence
+PatientTreatmentPreparationDeviceSequence
+SQ
+1
+
+(300A,0790)
+Patient Treatment Preparation Procedure Sequence
+PatientTreatmentPreparationProcedureSequence
+SQ
+1
+
+(300A,0791)
+Patient Treatment Preparation Procedure Code Sequence
+PatientTreatmentPreparationProcedureCodeSequence
+SQ
+1
+
+(300A,0792)
+Patient Treatment Preparation Method Description
+PatientTreatmentPreparationMethodDescription
+LT
+1
+
+(300A,0793)
+Patient Treatment Preparation Procedure Parameter Sequence
+PatientTreatmentPreparationProcedureParameterSequence
+SQ
+1
+
+(300A,0794)
+Patient Setup Photo Description
+PatientSetupPhotoDescription
+LT
+1
+
+(300A,0795)
+Patient Treatment Preparation Procedure Index
+PatientTreatmentPreparationProcedureIndex
+US
+1
+
+(300A,0796)
+Referenced Patient Setup Procedure Index
+ReferencedPatientSetupProcedureIndex
+US
+1
+
+(300A,0797)
+RT Radiation Task Sequence
+RTRadiationTaskSequence
+SQ
+1
+
+(300A,0798)
+RT Patient Position Displacement Sequence
+RTPatientPositionDisplacementSequence
+SQ
+1
+
+(300A,0799)
+RT Patient Position Sequence
+RTPatientPositionSequence
+SQ
+1
+
+(300A,079A)
+Displacement Reference Label
+DisplacementReferenceLabel
+LO
+1
+
+(300A,079B)
+Displacement Matrix
+DisplacementMatrix
+FD
+16
+
+(300A,079C)
+Patient Support Displacement Sequence
+PatientSupportDisplacementSequence
+SQ
+1
+
+(300A,079D)
+Displacement Reference Location Code Sequence
+DisplacementReferenceLocationCodeSequence
+SQ
+1
+
+(300A,079E)
+RT Radiation Set Delivery Usage
+RTRadiationSetDeliveryUsage
+CS
 1
 
 (300C,0002)
