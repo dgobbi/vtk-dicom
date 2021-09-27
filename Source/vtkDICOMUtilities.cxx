@@ -398,7 +398,7 @@ bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
     {
       cp = &buffer[skip];
       if (cp[0] == 'D' && cp[1] == 'I' && cp[2] == 'C' && cp[3] == 'M' &&
-          cp[4] == 2 && cp[5] == 0 && cp[6] == 0 && cp[7] == 0)
+          cp[4] == 0x02 && cp[5] == 0x00 && cp[6] <= 0x10 && cp[7] == 0x00)
       {
         return true;
       }
