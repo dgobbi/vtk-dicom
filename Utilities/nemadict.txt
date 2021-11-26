@@ -27054,7 +27054,7 @@ SQ
 
 (300A,0788)
 Reason for Omission Code Sequence
-ReasonforOmissionCodeSequence
+ReasonForOmissionCodeSequence
 SQ
 1
 

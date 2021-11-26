@@ -279,6 +279,10 @@ PS 3.3
 Standard Robotic-Arm Coordinate System Frame of Reference
 Well-known frame of reference
 PS 3.3
+1.2.840.10008.1.4.3.3
+IEC 61217 Table Top Coordinate System Frame of Reference
+Well-known frame of reference
+PS 3.3
 1.2.840.10008.1.4.4.1
 SRI24 Frame of Reference
 Well-known frame of reference
@@ -1953,10 +1957,13 @@ ICBM Single Subject MRI Frame of Reference
 ICBM Single Subject MRI Anatomical Template
 1.2.840.10008.1.4.3.1
 IEC 61217 Fixed Coordinate System Frame of Reference
-Fixed coordinate system of Section C.36.12.2.1 “IEC 61217 Fixed Reference System Frame of Reference” in PS3.3
+Fixed coordinate system of Section C.36.12.2.1 "IEC 61217 Fixed Reference System Frame of Reference" in PS3.3
 1.2.840.10008.1.4.3.2
 Standard Robotic-Arm Coordinate System Frame of Reference
-See Section C.36.12.2.2 “Standard Robotic-Arm Coordinate System Frame of Reference” in PS3.3.
+See Section C.36.12.2.2 "Standard Robotic-Arm Coordinate System Frame of Reference" in PS3.3.
+1.2.840.10008.1.4.3.3
+IEC 61217 Table Top Coordinate System Frame of Reference
+Table top coordinate system ("t") of [IEC 61217].
 1.2.840.10008.1.4.4.1
 SRI24 Frame of Reference
 http://www.nitrc.org/projects/sri24/
@@ -5665,13 +5672,13 @@ CID 3034
 Body Position Channels
 1.2.840.10008.6.1.1333
 CID 3035
-EEG Annotations – Neurophysiologic Enumerations (EEG)
+EEG Annotations - Neurophysiologic Enumerations (EEG)
 1.2.840.10008.6.1.1334
 CID 3036
-EMG Annotations – Neurophysiological Enumerations (EMG)
+EMG Annotations - Neurophysiological Enumerations (EMG)
 1.2.840.10008.6.1.1335
 CID 3037
-EOG Annotations – Neurophysiological Enumerations (EOG)
+EOG Annotations - Neurophysiological Enumerations (EOG)
 1.2.840.10008.6.1.1336
 CID 3038
 Pattern Events
@@ -5942,3 +5949,21 @@ Patient Treatment Preparation Methods
 1.2.840.10008.6.1.1425
 CID 9578
 Motion Management Setup Devices
+1.2.840.10008.6.1.1426
+CID 12309
+Core Echo Strain Measurements
+1.2.840.10008.6.1.1427
+CID 12310
+Myocardial Strain Methods
+1.2.840.10008.6.1.1428
+CID 12311
+Echo Measured Strain Properties
+1.2.840.10008.6.1.1429
+CID 3020
+Assessment from CAD-RADS(TM)
+1.2.840.10008.6.1.1430
+CID 3021
+CAD-RADS(TM) Stenosis Assessment Modifier
+1.2.840.10008.6.1.1431
+CID 3022
+CAD-RADS(TM) Assessment Modifier
