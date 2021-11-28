@@ -8,7 +8,8 @@ a hash table that can be used for dictionary lookups.
 Usage: python makedict.py nemadict.txt > vtkDICOMDictHash.cxx
 Usage: python makedict.py --header nemadict.txt > vtkDICOMDictHash.h
 
-The option "--private" can be added to create a private dictionary.
+The option "--private=name" can be added to create a private dictionary,
+or "--private=vtkDICOMDictPrivate" for all default dictionaries.
 """
 
 import sys
@@ -37,7 +38,10 @@ for arg in sys.argv[1:]:
     sys.exit(1)
 
 # the hash table, in PYTHON
-htsize = 4096
+DICT_HASH_TABLE_SIZE = 4096
+
+# whether to show individual hash rows in output
+VISUALIZE_HASH_ROWS = False
 
 # collect private dictionaries
 privatelines = {}
@@ -91,6 +95,15 @@ while i < len(lines):
         privatelines[creator] = lines[i:i+6]
     i = i + 6
 
+def hashtag(g, e):
+  """Compute a hash from (group, element).
+  This was found by trial-and-error.
+  """
+  k = (g << 16) + e
+  h = (k >> 15) + k
+  h = h + (h >> 6) + (h >> 12)
+  return (h & 0xffffffff)
+
 def hashstring(s):
   """Compute a string hash based on the function "djb2".
   Use at most 64 characters.
@@ -101,6 +114,22 @@ def hashstring(s):
     h = ((h << 5) + h + ord(c)) & 0xffffffff
   return h
 
+def hashstats(ht):
+  """Return statistics for hash table, as a tuple:
+  (used bucket fraction, average linear search, total bytes used)
+  """
+  m = len(ht)
+  f = m
+  d = m
+  c = 0
+  for l in ht:
+    if l == None:
+      f = f - 1
+    else:
+      d = d + len(l) + 1
+      c = c + len(l)//2
+  return (f/m, c/f, 2*(d + 1))
+
 def makedict(lines, creator="DICOM"):
   # the tables that will be created
   enum_list = []
@@ -110,7 +139,7 @@ def makedict(lines, creator="DICOM"):
   # a set to keep track of all VM strings encountered
   vms = {}
 
-  htsize = 4096
+  htsize = DICT_HASH_TABLE_SIZE
   if privatedict:
     htsize = int(len(lines)//6)
     if htsize == 0:
@@ -213,8 +242,8 @@ def makedict(lines, creator="DICOM"):
       element_list.append(
         "{ 0x%s, 0x%s, %s, VR::%s, VM::%s, \"%s\" }," % (g, e, ret, vr, vm, key))
 
-      # create a 16-bit hash from group, element
-      h = ((gi ^ (gi >> 6)) ^ (ei ^ (ei >> 6)))
+      # create a hash from group, element
+      h = hashtag(gi, ei)
 
       # create a string hash
       hkey = hashstring(key)
@@ -239,7 +268,11 @@ def makedict(lines, creator="DICOM"):
   #print(vms.keys())
 
   # debug: print statistics about the hash table
-  #print(maxl, minl, k0, k4)
+  if not privatedict:
+    sys.stderr.write("Hash Stat: buckets used, items per bucket, total bytes\n")
+    sys.stderr.write("Tag Table: %f, %f, %d\n" % hashstats(ht))
+    sys.stderr.write("Key Table: %f, %f, %d\n" % hashstats(ht2))
+
   return enum_list, element_list, ht, ht2
 
 # write the output file
@@ -332,6 +365,8 @@ def printbody(entry_dict, classname):
           j = j + len(l) + 1
       row.append("%5d," % (0,))
       i = i + 1
+      if VISUALIZE_HASH_ROWS:
+        i = 0
       if i % 10 == 0:
         f.write(" ".join(row) + "\n")
         row = []
@@ -345,6 +380,8 @@ def printbody(entry_dict, classname):
           for j, e in enumerate(l):
             row.append("%5d," % (e,))
             i = i + 1
+            if VISUALIZE_HASH_ROWS and j == len(l) - 1:
+              i = 0
             if i % 10 == 0:
               f.write(" ".join(row) + "\n")
               row = []
