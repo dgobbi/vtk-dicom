@@ -5134,6 +5134,12 @@ DateTimeOfLastCalibration
 DT
 1
 
+(0018,1203)
+Calibration DateTime
+CalibrationDateTime
+DT
+1
+
 (0018,1210)
 Convolution Kernel
 ConvolutionKernel
@@ -13225,6 +13231,12 @@ LO
 (0032,1064)
 Requested Procedure Code Sequence
 RequestedProcedureCodeSequence
+SQ
+1
+
+(0032,1065)
+Requested Laterality Code Sequence
+RequestedLateralityCodeSequence
 SQ
 1
 
@@ -23296,6 +23308,12 @@ RecordedBlockSequence
 SQ
 1
 
+(3008,00D1)
+Recorded Block Slab Sequence
+RecordedBlockSlabSequence
+SQ
+1
+
 (3008,00E0)
 Treatment Summary Measured Dose Reference Sequence
 TreatmentSummaryMeasuredDoseReferenceSequence
@@ -23577,7 +23595,7 @@ Treatment Sites
 TreatmentSites
 LO
 1-n
-
+RET
 (300A,000C)
 RT Plan Geometry
 RTPlanGeometry
@@ -27392,6 +27410,96 @@ CS
 Reason for Omission Description
 ReasonForOmissionDescription
 LO
+1
+
+(300C,0114)
+Prescription Overview Sequence
+PrescriptionOverviewSequence
+SQ
+1
+
+(300C,0115)
+Total Prescription Dose
+TotalPrescriptionDose
+FL
+1
+
+(300C,0116)
+Plan Overview Sequence
+PlanOverviewSequence
+SQ
+1
+
+(300C,0117)
+Plan Overview Index
+PlanOverviewIndex
+US
+1
+
+(300C,0118)
+Referenced Plan Overview Index
+ReferencedPlanOverviewIndex
+US
+1
+
+(300C,0119)
+Number of Fractions Included
+NumberOfFractionsIncluded
+US
+1
+
+(300C,0120)
+Dose Calibration Conditions Sequence
+DoseCalibrationConditionsSequence
+SQ
+1
+
+(300C,0121)
+Absorbed Dose to Meterset Ratio
+AbsorbedDoseToMetersetRatio
+FD
+1
+
+(300C,0122)
+Delineated Radiation Field Size
+DelineatedRadiationFieldSize
+FD
+2
+
+(300C,0123)
+Dose Calibration Conditions Verified Flag
+DoseCalibrationConditionsVerifiedFlag
+CS
+1
+
+(300C,0124)
+Calibration Reference Point Depth
+CalibrationReferencePointDepth
+FD
+1
+
+(300C,0125)
+Gating Beam Hold Transition Sequence
+GatingBeamHoldTransitionSequence
+SQ
+1
+
+(300C,0126)
+Beam Hold Transition
+BeamHoldTransition
+CS
+1
+
+(300C,0127)
+Beam Hold Transition DateTime
+BeamHoldTransitionDateTime
+DT
+1
+
+(300C,0128)
+Beam Hold Originating Device Sequence
+BeamHoldOriginatingDeviceSequence
+SQ
 1
 
 (300E,0002)

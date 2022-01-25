@@ -430,6 +430,14 @@ PS3.16
 ICD-11
 Coding Scheme
 PS3.16
+1.2.840.10008.2.16.17
+Unified numbering system (UNS) for metals and alloys
+Coding Scheme
+PS3.16
+1.2.840.10008.2.16.18
+Research Resource Identification
+Coding Scheme
+PS3.16
 1.2.840.10008.3.1.1.1
 DICOM Application Context Name
 Application Context Name
@@ -5967,3 +5975,33 @@ CAD-RADS(TM) Stenosis Assessment Modifier
 1.2.840.10008.6.1.1431
 CID 3022
 CAD-RADS(TM) Assessment Modifier
+1.2.840.10008.6.1.1432
+CID 9579
+RT Segment Materials
+1.2.840.10008.6.1.1433
+CID 7602
+Vertebral Anatomic Structures
+1.2.840.10008.6.1.1434
+CID 7603
+Vertebrae
+1.2.840.10008.6.1.1435
+CID 7604
+Intervertebral Discs
+1.2.840.10008.6.1.1436
+CID 101
+Imaging Procedures
+1.2.840.10008.6.1.1437
+CID 103
+NICIP Short Codes for Imaging Procedures
+1.2.840.10008.6.1.1438
+CID 104
+NICIP SNOMED Subset of Imaging Procedures
+1.2.840.10008.6.1.1439
+CID 105
+ICD-10-PCS Imaging Procedures
+1.2.840.10008.6.1.1440
+CID 106
+ICD-10-PCS Nuclear Medicine Procedures
+1.2.840.10008.6.1.1441
+CID 107
+ICD-10-PCS Radiation Therapy Procedures
