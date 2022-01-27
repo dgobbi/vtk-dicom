@@ -58,8 +58,8 @@ public:
 
   //! Compute a hash value, used for accelerating lookups.
   unsigned int ComputeHash() const {
-    unsigned int h = (((this->Key >> 6) & 0x03FF03FF) ^ this->Key);
-    return (h ^ (h << 16)) >> 16; }
+    unsigned int h = (this->Key >> 15) + this->Key;
+    return h + (h >> 6) + (h >> 12); }
   //@}
 
   //@{
