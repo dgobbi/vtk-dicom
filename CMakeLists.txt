@@ -209,12 +209,20 @@ else()
 
       vtk_module_wrap_python(
         MODULES         ${dicom_modules}
+        TARGET          VTK::vtkdicommodules
         INSTALL_EXPORT  DICOMPython
-        PYTHON_PACKAGE  "vtk.modules"
-        #MODULE_DESTINATION  ""
+        PYTHON_PACKAGE  "vtkdicom"
         CMAKE_DESTINATION   "${CMAKE_INSTALL_LIBDIR}/cmake/vtk"
         LIBRARY_DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         BUILD_STATIC    OFF)
+
+      vtk_module_python_default_destination(python_destination)
+      file(GENERATE
+        OUTPUT  "${CMAKE_BINARY_DIR}/${python_destination}/vtkdicom/__init__.py"
+        CONTENT "__all__ = ['vtkDICOM']\n")
+      install(
+        FILES       "${CMAKE_BINARY_DIR}/${python_destination}/vtkdicom/__init__.py"
+        DESTINATION "${python_destination}/vtkdicom/")
     endif()
 
     if(BUILD_JAVA_WRAPPERS)
