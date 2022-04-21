@@ -182,6 +182,22 @@ else()
     # To set DICOM_USE_VTKZLIB in vtkDICOMConfig.h
     set(DICOM_USE_VTKZLIB ON)
 
+    option(DICOM_VERSIONED_INSTALL "Install with versioned names." ON)
+    mark_as_advanced(DICOM_VERSIONED_INSTALL)
+    set(vtk_version_suffix "")
+    set(dicom_library_suffix "")
+    if(VTK_VERSIONED_INSTALL OR DICOM_VERSIONED_INSTALL)
+      set(vtk_version_suffix "-${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
+      set(dicom_library_suffix "${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}")
+    endif()
+    if(DEFINED DICOM_CUSTOM_LIBRARY_SUFFIX)
+      set(dicom_library_suffix "${DICOM_CUSTOM_LIBRARY_SUFFIX}")
+    endif()
+
+    # Where to put config files
+    set(cmake_destination
+      "${CMAKE_INSTALL_LIBDIR}/cmake/dicom-${DICOM_SHORT_VERSION}")
+
     vtk_module_scan(
       MODULE_FILES        "${CMAKE_CURRENT_SOURCE_DIR}/Source/dicom.module"
       REQUEST_MODULES     "VTK::DICOM"
@@ -192,11 +208,11 @@ else()
       MODULES             ${dicom_modules}
       INSTALL_EXPORT      DICOM
       ARCHIVE_DESTINATION "lib"
-      HEADERS_DESTINATION "include/dicom${DICOM_SHORT_VERSION}"
-      CMAKE_DESTINATION   "${CMAKE_INSTALL_LIBDIR}/cmake/vtk"
-      LICENSE_DESTINATION "${CMAKE_INSTALL_LIBDIR}/vtk"
-      HIERARCHY_DESTINATION "${CMAKE_INSTALL_LIBDIR}/vtk/hierarchy/${CMAKE_PROJECT_NAME}"
-      LIBRARY_NAME_SUFFIX "${DICOM_CUSTOM_LIBRARY_SUFFIX}"
+      HEADERS_DESTINATION "include/vtk${vtk_version_suffix}"
+      CMAKE_DESTINATION   "${cmake_destination}"
+      LICENSE_DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/dicom-${DICOM_SHORT_VERSION}"
+      HIERARCHY_DESTINATION "${CMAKE_INSTALL_LIBDIR}/vtk/hierarchy"
+      LIBRARY_NAME_SUFFIX "${dicom_library_suffix}"
       VERSION             "${DICOM_VERSION}"
       SOVERSION           "1"
       TEST_DATA_TARGET    DicomData
@@ -212,7 +228,7 @@ else()
         TARGET          VTK::vtkdicommodules
         INSTALL_EXPORT  DICOMPython
         PYTHON_PACKAGE  "vtkdicom"
-        CMAKE_DESTINATION   "${CMAKE_INSTALL_LIBDIR}/cmake/vtk"
+        CMAKE_DESTINATION   "${cmake_destination}"
         LIBRARY_DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         BUILD_STATIC    OFF)
 
@@ -223,14 +239,50 @@ else()
       install(
         FILES       "${CMAKE_BINARY_DIR}/${python_destination}/vtkdicom/__init__.py"
         DESTINATION "${python_destination}/vtkdicom/")
+
+      export(
+        EXPORT    DICOMPython
+        NAMESPACE VTK::
+        FILE      "${cmake_destination}/DICOMPython-targets.cmake")
+      install(
+        EXPORT      DICOMPython
+        NAMESPACE   VTK::
+        FILE        DICOMPython-targets.cmake
+        DESTINATION "${cmake_destination}")
     endif()
 
     if(BUILD_JAVA_WRAPPERS)
+      # Untested, probably broken
       vtk_module_wrap_java(
         MODULES         ${dicom_modules}
         WRAPPED_MODULES dicom_java_wrapped_modules
         JAVA_OUTPUT     "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles")
     endif()
+
+    # Generate config files
+    include(CMakePackageConfigHelpers)
+    configure_package_config_file(CMake/dicom-config.cmake.in
+      "${cmake_destination}/dicom-config.cmake"
+      INSTALL_DESTINATION "${cmake_destination}")
+    write_basic_package_version_file("${cmake_destination}/dicom-config-version.cmake"
+      VERSION "${DICOM_MAJOR_VERSION}.${DICOM_MINOR_VERSION}.${DICOM_PATCH_VERSION}"
+      COMPATIBILITY AnyNewerVersion)
+
+    # In root of build directory for backwards compatibility
+    file(GENERATE
+      OUTPUT  "${CMAKE_BINARY_DIR}/dicom-config.cmake"
+      CONTENT "include(\"${CMAKE_BINARY_DIR}/${cmake_destination}/dicom-config.cmake\")\n")
+    configure_file(
+      "${CMAKE_BINARY_DIR}/${cmake_destination}/dicom-config-version.cmake"
+      "${CMAKE_BINARY_DIR}/dicom-config-version.cmake"
+      COPYONLY)
+
+    install(
+      FILES       "${CMAKE_BINARY_DIR}/${cmake_destination}/dicom-config.cmake"
+                  "${CMAKE_BINARY_DIR}/${cmake_destination}/dicom-config-version.cmake"
+      DESTINATION "${cmake_destination}"
+      COMPONENT   "development")
+
   endif() #(NOT VTK_VERSION VERSION_LESS 8.90)
 
 endif()
