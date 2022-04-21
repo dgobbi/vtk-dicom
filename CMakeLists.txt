@@ -230,6 +230,7 @@ else()
         PYTHON_PACKAGE  "vtkdicom"
         CMAKE_DESTINATION   "${cmake_destination}"
         LIBRARY_DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        SOABI           "${Python${VTK_PYTHON_VERSION}_SOABI}"
         BUILD_STATIC    OFF)
 
       vtk_module_python_default_destination(python_destination)
