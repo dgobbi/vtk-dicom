@@ -211,7 +211,7 @@ else()
       HEADERS_DESTINATION "include/vtk${vtk_version_suffix}"
       CMAKE_DESTINATION   "${cmake_destination}"
       LICENSE_DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/dicom-${DICOM_SHORT_VERSION}"
-      HIERARCHY_DESTINATION "${CMAKE_INSTALL_LIBDIR}/vtk/hierarchy"
+      HIERARCHY_DESTINATION "${CMAKE_INSTALL_LIBDIR}/vtk${vtk_version_suffix}/hierarchy/DICOM"
       LIBRARY_NAME_SUFFIX "${dicom_library_suffix}"
       VERSION             "${DICOM_VERSION}"
       SOVERSION           "1"
