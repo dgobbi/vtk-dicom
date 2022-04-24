@@ -131,28 +131,56 @@ PS3.5
 MPEG2 Main Profile / Main Level
 Transfer Syntax
 PS3.5
+1.2.840.10008.1.2.4.100.1
+Fragmentable MPEG2 Main Profile / Main Level
+Transfer Syntax
+PS3.5
 1.2.840.10008.1.2.4.101
 MPEG2 Main Profile / High Level
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.101.1
+Fragmentable MPEG2 Main Profile / High Level
 Transfer Syntax
 PS3.5
 1.2.840.10008.1.2.4.102
 MPEG-4 AVC/H.264 High Profile / Level 4.1
 Transfer Syntax
 PS3.5
+1.2.840.10008.1.2.4.102.1
+Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.1
+Transfer Syntax
+PS3.5
 1.2.840.10008.1.2.4.103
 MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.103.1
+Fragmentable MPEG-4 AVC/H.264 BD-compatible High Profile / Level 4.1
 Transfer Syntax
 PS3.5
 1.2.840.10008.1.2.4.104
 MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video
 Transfer Syntax
 PS3.5
+1.2.840.10008.1.2.4.104.1
+Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.2 For 2D Video
+Transfer Syntax
+PS3.5
 1.2.840.10008.1.2.4.105
 MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video
 Transfer Syntax
 PS3.5
+1.2.840.10008.1.2.4.105.1
+Fragmentable MPEG-4 AVC/H.264 High Profile / Level 4.2 For 3D Video
+Transfer Syntax
+PS3.5
 1.2.840.10008.1.2.4.106
 MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.106.1
+Fragmentable MPEG-4 AVC/H.264 Stereo High Profile / Level 4.2
 Transfer Syntax
 PS3.5
 1.2.840.10008.1.2.4.107
@@ -6005,3 +6033,15 @@ ICD-10-PCS Nuclear Medicine Procedures
 1.2.840.10008.6.1.1441
 CID 107
 ICD-10-PCS Radiation Therapy Procedures
+1.2.840.10008.6.1.1442
+CID 9580
+RT Segmentation Property Categories
+1.2.840.10008.6.1.1443
+CID 9581
+Radiotherapy Registration Marks
+1.2.840.10008.6.1.1444
+CID 9582
+Radiotherapy Dose Regions
+1.2.840.10008.6.1.1445
+CID 7199
+Anatomically Localized Lesion Segmentation Types

@@ -310,9 +310,21 @@ SOPClassUID
 UI
 1
 
+(0008,0017)
+Acquisition UID
+AcquisitionUID
+UI
+1
+
 (0008,0018)
 SOP Instance UID
 SOPInstanceUID
+UI
+1
+
+(0008,0019)
+Pyramid UID
+PyramidUID
 UI
 1
 
@@ -975,6 +987,12 @@ Admitting Diagnoses Description
 AdmittingDiagnosesDescription
 LO
 1-n
+
+(0008,1088)
+Pyramid Description
+PyramidDescription
+LO
+1
 
 (0008,1084)
 Admitting Diagnoses Code Sequence
@@ -9316,6 +9334,12 @@ LUTNumber
 IS
 1
 RET
+(0020,0027)
+Pyramid Label
+PyramidLabel
+LO
+1
+
 (0020,0030)
 Image Position
 ImagePosition
@@ -22239,13 +22263,13 @@ Proposed Study Sequence
 ProposedStudySequence
 SQ
 1
-RET
+
 (2130,00C0)
 Original Image Sequence
 OriginalImageSequence
 SQ
 1
-RET
+
 (2200,0001)
 Label Using Information Extracted From Instances
 LabelUsingInformationExtractedFromInstances
@@ -29582,6 +29606,12 @@ OV
 Extended Offset Table Lengths
 ExtendedOffsetTableLengths
 OV
+1
+
+(7FE0,0003)
+Encapsulated Pixel Data Value Total Length
+EncapsulatedPixelDataValueTotalLength
+UV
 1
 
 (7FE0,0008)
