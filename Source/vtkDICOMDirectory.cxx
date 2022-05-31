@@ -2063,14 +2063,13 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
 
     // Go through all of the series in the study
     for (std::vector<SeriesRow>::iterator se = seriesTable.begin() + seIdx;
-         se != seriesTable.end(); ++se)
+         se != seriesTable.end(); ++se, ++zseriesVecIter)
     {
       // Break when we find a series that isn't part of the study
       if (*zseriesVecIter != zstudy)
       {
         break;
       }
-      ++zseriesVecIter;
 
       if (this->RequirePixelData &&
           se->col[SE_NUMBEROFIMAGES].ToTypeInt64() == 0)
@@ -2132,7 +2131,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
 
       // Go through all of the images in the series
       for (std::vector<ImageRow>::iterator im = imageTable.begin() + imIdx;
-           im != imageTable.end(); ++im)
+           im != imageTable.end(); ++im, ++zimageVecIter)
       {
         // Break when we find a series that isn't part of the study
         if (*zimageVecIter != *zseriesInSeriesVecIter)
@@ -2146,7 +2145,6 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
           imIdx = std::distance(zimageVec.begin(), zimageVecIter);
           im = imageTable.begin() + imIdx;
         }
-        ++zimageVecIter;
 
         std::string fpath = im->col[IM_PATHSTRING].ToString();
         if (fpath.length() == 0)
