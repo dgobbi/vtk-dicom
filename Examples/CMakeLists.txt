@@ -4,21 +4,17 @@ endif()
 
 include_directories(${DICOM_INCLUDE_DIRS})
 
-if(NOT VTK_VERSION VERSION_LESS 6)
-  set(VTK_RENDERING_LIBS)
-  foreach(_lib RenderingImage InteractionStyle RenderingFreeType)
+set(VTK_RENDERING_LIBS)
+foreach(_lib RenderingImage InteractionStyle RenderingFreeType)
+  list(APPEND VTK_RENDERING_LIBS ${VTK_TARGET_PREFIX}${_lib})
+endforeach()
+foreach(_lib RenderingOpenGL RenderingFreeTypeOpenGL
+             RenderingOpenGL2 RenderingFreeTypeOpenGL2)
+  list(FIND VTK_LIBRARIES ${VTK_TARGET_PREFIX}${_lib} _index)
+  if(_index GREATER -1)
     list(APPEND VTK_RENDERING_LIBS ${VTK_TARGET_PREFIX}${_lib})
-  endforeach()
-  foreach(_lib RenderingOpenGL RenderingFreeTypeOpenGL
-               RenderingOpenGL2 RenderingFreeTypeOpenGL2)
-    list(FIND VTK_LIBRARIES ${VTK_TARGET_PREFIX}${_lib} _index)
-    if(_index GREATER -1)
-      list(APPEND VTK_RENDERING_LIBS ${VTK_TARGET_PREFIX}${_lib})
-    endif()
-  endforeach()
-else()
-  set(VTK_RENDERING_LIBS vtkRendering) # VTK 5.x
-endif()
+  endif()
+endforeach()
 
 set(BASE_LIBS ${VTK_DICOM_LINK_TARGET} ${VTK_LIBS})
 
@@ -43,7 +39,6 @@ target_link_libraries(TestDICOMWriter ${BASE_LIBS})
 add_executable(TestDICOMRealWorldValue TestDICOMRealWorldValue.cxx)
 target_link_libraries(TestDICOMRealWorldValue ${BASE_LIBS})
 
-if(VTK_VERSION VERSION_GREATER 5.9)
 add_executable(TestDICOMDisplay TestDICOMDisplay.cxx)
 target_link_libraries(TestDICOMDisplay ${BASE_LIBS} ${VTK_RENDERING_LIBS})
 if(NOT VTK_VERSION VERSION_LESS 8.90)
@@ -66,6 +61,4 @@ add_executable(TestScancoCTDisplay TestScancoCTDisplay.cxx)
 target_link_libraries(TestScancoCTDisplay ${BASE_LIBS} ${VTK_RENDERING_LIBS})
 if(NOT VTK_VERSION VERSION_LESS 8.90)
   vtk_module_autoinit(TARGETS TestScancoCTDisplay MODULES ${VTK_RENDERING_LIBS})
-endif()
-
 endif()

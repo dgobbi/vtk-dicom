@@ -39,10 +39,7 @@
 #include "vtkErrorCode.h"
 #include "vtkSortFileNames.h"
 #include "vtkSmartPointer.h"
-
-#if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
 #include "vtkImageHistogramStatistics.h"
-#endif
 
 #include <string>
 #include <vector>
@@ -990,7 +987,7 @@ void dicomtonifti_convert_one(
       hdr->SetCalMax((l + 0.5*w)*m + b);
     }
   }
-#if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
+
   if (!useWindowLevel)
   {
     std::string photometric =
@@ -1011,7 +1008,6 @@ void dicomtonifti_convert_one(
       }
     }
   }
-#endif
 
   // prepare the writer to write the image
   vtkSmartPointer<vtkNIFTIWriter> writer =

@@ -89,8 +89,8 @@ else()
   if(VTK_VERSION VERSION_LESS 8.90)
     include(${VTK_USE_FILE})
   endif()
-  if(VTK_VERSION VERSION_LESS 5.8)
-    message(FATAL_ERROR "VTK 5.8 or later is required.")
+  if(VTK_VERSION VERSION_LESS 6.0)
+    message(FATAL_ERROR "VTK 6 or later is required.")
   endif()
 
   # We are being built as a stand-alone package
@@ -150,7 +150,7 @@ else()
 
   # Check if VTK set VTK_ZLIB_LIBRARIES
   if(NOT VTK_ZLIB_LIBRARIES)
-    # VTK 6 doesn't set it, so search for vtkzlib directly
+    # VTK doesn't set it, so search for vtkzlib directly
     list(FIND VTK_LIBRARIES vtkzlib TMP_INDEX)
     if(TMP_INDEX GREATER -1)
       set(VTK_ZLIB_LIBRARIES vtkzlib)
@@ -367,26 +367,22 @@ if(NOT Module_vtkDICOM)
   set(DICOM_LIBRARIES vtkDICOM)
 
   # The library dependencies
-  if(NOT VTK_VERSION VERSION_LESS 6)
-    set(VTK_TARGET_PREFIX "VTK::")
-    if(VTK_VERSION VERSION_LESS 8.90)
-      set(VTK_TARGET_PREFIX "vtk")
-    endif()
-    set(VTK_LIBS)
-    # required libraries
-    foreach(_lib CommonCore CommonMisc CommonDataModel ImagingCore IOCore IOImage)
-      list(APPEND VTK_LIBS ${VTK_TARGET_PREFIX}${_lib})
-    endforeach()
-    # factory libraries (only needed if present)
-    foreach(_lib IOMPIImage)
-      list(FIND VTK_LIBRARIES ${VTK_TARGET_PREFIX}${_lib} _index)
-      if(_index GREATER -1)
-        list(APPEND VTK_LIBS ${VTK_TARGET_PREFIX}${_lib})
-      endif()
-    endforeach()
-  else()
-    set(VTK_LIBS vtkCommon vtkFiltering vtkImaging vtkIO vtkInfovis) # VTK 5.x
+  set(VTK_TARGET_PREFIX "VTK::")
+  if(VTK_VERSION VERSION_LESS 8.90)
+    set(VTK_TARGET_PREFIX "vtk")
   endif()
+  set(VTK_LIBS)
+  # required libraries
+  foreach(_lib CommonCore CommonMisc CommonDataModel ImagingCore IOCore IOImage)
+    list(APPEND VTK_LIBS ${VTK_TARGET_PREFIX}${_lib})
+  endforeach()
+  # factory libraries (only needed if present)
+  foreach(_lib IOMPIImage)
+    list(FIND VTK_LIBRARIES ${VTK_TARGET_PREFIX}${_lib} _index)
+    if(_index GREATER -1)
+      list(APPEND VTK_LIBS ${VTK_TARGET_PREFIX}${_lib})
+    endif()
+  endforeach()
 endif()
 
 if(NOT Module_vtkDICOM AND VTK_VERSION VERSION_LESS 8.90)
@@ -431,7 +427,7 @@ if(NOT Module_vtkDICOM AND VTK_VERSION VERSION_LESS 8.90)
     if(NOT VTK_JAR_PATH)
       set(VTK_JAR_PATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
     endif()
-    find_file(VTK_JAVA_JAR NAMES vtk.jar vtk6.jar vtk5.jar
+    find_file(VTK_JAVA_JAR NAMES vtk.jar vtk6.jar vtk7.jar vtk8.jar
       PATHS ${vtkWrappingJava_RUNTIME_LIBRARY_DIRS})
     if(NOT VTK_JAVA_JAR)
       message(FATAL_ERROR "VTK_JAVA_JAR must be set to the location of vtk.jar")

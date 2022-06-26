@@ -1094,11 +1094,7 @@ int vtkScancoCTReader::RequestData(
   // get the data object, allocate memory
   vtkImageData *data =
     static_cast<vtkImageData *>(outInfo->Get(vtkDataObject::DATA_OBJECT()));
-#if VTK_MAJOR_VERSION >= 6
   this->AllocateOutputData(data, outInfo, extent);
-#else
-  this->AllocateOutputData(data, extent);
-#endif
 
   data->GetPointData()->GetScalars()->SetName("ImageFile");
 

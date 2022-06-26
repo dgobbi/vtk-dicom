@@ -39,10 +39,7 @@
 #include "vtkErrorCode.h"
 #include "vtkSortFileNames.h"
 #include "vtkSmartPointer.h"
-
-#if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
 #include "vtkImageHistogramStatistics.h"
-#endif
 
 #include <string>
 #include <vector>
@@ -664,7 +661,6 @@ void niftitodicom_convert_one(
   if (scalarType != VTK_SHORT && scalarType != VTK_UNSIGNED_SHORT &&
       (scalarType != VTK_UNSIGNED_CHAR || !allowUnsignedChar))
   {
-#if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
     if (scalarType == VTK_FLOAT || scalarType == VTK_DOUBLE)
     {
       // compute range
@@ -699,7 +695,6 @@ void niftitodicom_convert_one(
         caster->SetScale(10.0);
       }
     }
-#endif
 
     caster->SetInputConnection(lastOutput);
     caster->SetOutputScalarType(VTK_SHORT);

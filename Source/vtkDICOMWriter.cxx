@@ -605,11 +605,7 @@ void vtkDICOMWriter::GenerateOverlays(
 //----------------------------------------------------------------------------
 void vtkDICOMWriter::SetOverlayInputData(vtkImageData *overlay)
 {
-#if VTK_MAJOR_VERSION >= 6
   this->SetInputData(1, overlay);
-#else
-  this->SetInput(1, overlay);
-#endif
 }
 
 //----------------------------------------------------------------------------

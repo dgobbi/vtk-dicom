@@ -37,10 +37,8 @@
 #include "vtkSmartPointer.h"
 #include "vtkVersion.h"
 
-#if VTK_MAJOR_VERSION >= 6 || VTK_MINOR_VERSION >= 10
 #include "vtkImageResize.h"
 #include "vtkImageSincInterpolator.h"
-#endif
 
 #include <algorithm>
 #include <string>
@@ -448,10 +446,8 @@ void dicomtodicom_convert_one(
     vtkSmartPointer<vtkImageReslice>::New();
   vtkSmartPointer<vtkDICOMCTRectifier> rectify =
     vtkSmartPointer<vtkDICOMCTRectifier>::New();
-#if VTK_MAJOR_VERSION >= 6 || VTK_MINOR_VERSION >= 10
   vtkSmartPointer<vtkImageResize> resample =
     vtkSmartPointer<vtkImageResize>::New();
-#endif
   vtkSmartPointer<vtkMatrix4x4> axes =
     vtkSmartPointer<vtkMatrix4x4>::New();
   int permutation[3] = { 0, 1, 2 };
@@ -472,7 +468,6 @@ void dicomtodicom_convert_one(
     // check if resampling was requested
     if (options->resample)
     {
-#if VTK_MAJOR_VERSION >= 6 || VTK_MINOR_VERSION >= 10
       // generate cube voxels
       double spacing[3] = { 1.0, 1.0, 1.0 };
       const vtkDICOMValue& v = meta->Get(DC::PixelSpacing);
@@ -495,10 +490,6 @@ void dicomtodicom_convert_one(
       resample->BorderOn();
       resample->Update();
       lastOutput = resample->GetOutputPort();
-#else
-      fprintf(stderr,
-              "\nTo use --resample, recompile with VTK 5.10 or later.\n\n");
-#endif
     }
 
     // create a permutation matrix to make the slices axial

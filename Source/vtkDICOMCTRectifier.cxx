@@ -25,9 +25,7 @@
 #include "vtkObjectFactory.h"
 #include "vtkSmartPointer.h"
 #include "vtkVersion.h"
-#if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
 #include "vtkImageSincInterpolator.h"
-#endif
 
 vtkStandardNewMacro(vtkDICOMCTRectifier);
 vtkCxxSetObjectMacro(vtkDICOMCTRectifier, VolumeMatrix, vtkMatrix4x4);
@@ -355,26 +353,15 @@ int vtkDICOMCTRectifier::RequestData(
   }
   else
   {
-#if (VTK_MAJOR_VERSION > 5) || (VTK_MINOR_VERSION > 9)
     vtkSmartPointer<vtkImageSincInterpolator> interpolator =
       vtkSmartPointer<vtkImageSincInterpolator>::New();
     interpolator->SetWindowFunctionToBlackman();
     reslice->SetInterpolator(interpolator);
-#else
-    reslice->SetInterpolationModeToCubic();
-#endif
   }
-#if (VTK_MAJOR_VERSION > 5)
   reslice->SetInputData(image);
   this->AllocateOutputData(outData, outInfo, extent);
   reslice->SetOutput(outData);
   reslice->Update();
-#else
-  reslice->SetInput(image);
-  reslice->Update();
-  outData->CopyStructure(reslice->GetOutput());
-  outData->GetPointData()->PassData(reslice->GetOutput()->GetPointData());
-#endif
 
   return 1;
 }

@@ -21,14 +21,10 @@ set(PROGRAM_SRCS
   scancodump.cxx
 )
 
-if(NOT VTK_VERSION VERSION_LESS 6)
-  set(VTK_EXTRA_LIBS)
-  foreach(_lib ImagingStatistics CommonSystem)
-    list(APPEND VTK_EXTRA_LIBS ${VTK_TARGET_PREFIX}${_lib})
-  endforeach()
-else()
-  set(VTK_EXTRA_LIBS) # VTK 5.x
-endif()
+set(VTK_EXTRA_LIBS)
+foreach(_lib ImagingStatistics CommonSystem)
+  list(APPEND VTK_EXTRA_LIBS ${VTK_TARGET_PREFIX}${_lib})
+endforeach()
 
 set(BASE_LIBS ${VTK_DICOM_LINK_TARGET} ${VTK_LIBS})
 
