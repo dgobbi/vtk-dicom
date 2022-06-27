@@ -151,7 +151,11 @@ else()
   # Check if VTK set VTK_ZLIB_LIBRARIES
   if(NOT VTK_ZLIB_LIBRARIES)
     # VTK doesn't set it, so search for vtkzlib directly
-    list(FIND VTK_LIBRARIES vtkzlib TMP_INDEX)
+    if(VTK_VERSION VERSION_LESS 8.90)
+      list(FIND VTK_LIBRARIES "vtkzlib" TMP_INDEX)
+    else()
+      list(FIND VTK_LIBRARIES "VTK::zlib" TMP_INDEX)
+    endif()
     if(TMP_INDEX GREATER -1)
       set(VTK_ZLIB_LIBRARIES vtkzlib)
     endif()
