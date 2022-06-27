@@ -1,4 +1,4 @@
-## Character Sets (#characterset}
+## Character Sets {#characterset}
 
 @brief Decoding and Encoding of Character Sets
 
