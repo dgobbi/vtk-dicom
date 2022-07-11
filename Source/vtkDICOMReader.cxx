@@ -2508,7 +2508,7 @@ void vtkDICOMReader::UpdateMedicalImageProperties()
   for (int i = 0; i < n; i++)
   {
     properties->AddWindowLevelPreset(
-      center.GetDouble(i), width.GetDouble(i));
+      width.GetDouble(i), center.GetDouble(i));
   }
 
   const vtkDICOMValue& comment = meta->Get(DC::WindowCenterWidthExplanation);
