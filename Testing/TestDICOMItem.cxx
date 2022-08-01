@@ -19,11 +19,7 @@ if (!(t)) \
   rval |= 1; \
 }
 
-#ifdef VTK_IN_VTK
 int TestDICOMItem(int argc, char *argv[])
-#else
-int main(int argc, char *argv[])
-#endif
 {
   int rval = 0;
   const char *exename = (argc > 0 ? argv[0] : "TestDICOMSequence");
@@ -140,3 +136,10 @@ int main(int argc, char *argv[])
   meta->Delete();
   return rval;
 }
+
+#ifdef VTK_DICOM_SEPARATE_TESTS
+int main(int argc, char *argv[])
+{
+  return TestDICOMItem(argc, argv);
+}
+#endif

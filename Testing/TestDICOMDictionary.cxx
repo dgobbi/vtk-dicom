@@ -16,11 +16,7 @@ if (!(t)) \
   rval |= 1; \
 }
 
-#ifdef VTK_IN_VTK
 int TestDICOMDictionary(int argc, char *argv[])
-#else
-int main(int argc, char *argv[])
-#endif
 {
   int rval = 0;
   const char *exename = (argc > 0 ? argv[0] : "TestDICOMDictionary");
@@ -79,3 +75,10 @@ int main(int argc, char *argv[])
 
   return rval;
 }
+
+#ifdef VTK_DICOM_SEPARATE_TESTS
+int main(int argc, char *argv[])
+{
+  return TestDICOMDictionary(argc, argv);
+}
+#endif

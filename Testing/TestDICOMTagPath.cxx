@@ -15,11 +15,7 @@ if (!(t)) \
   rval |= 1; \
 }
 
-#ifdef VTK_IN_VTK
 int TestDICOMTagPath(int argc, char *argv[])
-#else
-int main(int argc, char *argv[])
-#endif
 {
   int rval = 0;
   const char *exename = (argc > 0 ? argv[0] : "TestDICOMTagPath");
@@ -80,3 +76,10 @@ int main(int argc, char *argv[])
 
   return rval;
 }
+
+#ifdef VTK_DICOM_SEPARATE_TESTS
+int main(int argc, char *argv[])
+{
+  return TestDICOMTagPath(argc, argv);
+}
+#endif

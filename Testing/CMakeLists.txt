@@ -25,6 +25,7 @@ elseif(Module_vtkDICOM)
 else()
 
 include_directories(${DICOM_INCLUDE_DIRS})
+add_definitions(-DVTK_DICOM_SEPARATE_TESTS)
 
 set(BASE_LIBS ${VTK_DICOM_LINK_TARGET} ${VTK_LIBS})
 
