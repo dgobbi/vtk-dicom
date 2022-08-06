@@ -132,7 +132,7 @@ $<$<BOOL:$<TARGET_PROPERTY:${module_name},INCLUDE_DIRECTORIES>>:
   set(OTHER_HIERARCHY_FILES)
   # Don't use ${module_name}_DEPENDS. That list also includes COMPILE_DEPENDS,
   # which aren't library dependencies, merely dependencies for generators and
-  # such. The dependecies specified under "DEPENDS" in the vtk_module(..) macro
+  # such. The dependencies specified under "DEPENDS" in the vtk_module(..) macro
   # call are located under _LINK_DEPENDS.
   if(NOT ${module_name}_WRAP_DEPENDS)
     set(${module_name}_WRAP_DEPENDS ${${module_name}_LINK_DEPENDS})

@@ -123,7 +123,7 @@ public:
   //@}
 
   //@{
-  //! Create an emtpy value.
+  //! Create an empty value.
   explicit vtkDICOMValue(vtkDICOMVR vr);
 
   //! Copy constructor.
@@ -153,7 +153,7 @@ public:
   /*!
    *  This will convert a UTF-8 string to the target encoding and store
    *  the result in a new value.  If the target encoding is ISO 2022,
-   *  then escape codes will be added before and after delimeters as
+   *  then escape codes will be added before and after delimiters as
    *  necessary (the delimiters are 'backslash' for multi-valued VRs,
    *  and '^', '=' for PN).
    */
@@ -202,7 +202,7 @@ public:
    *  - for UN, the number of bytes will be returned.
    *  - for attribute tags (VR is AT) the number of tags will be returned.
    *  - for sequences (SQ) the number of items in the sequence,
-   *    excluding any delimeters, will be returned.
+   *    excluding any delimiters, will be returned.
    */
   size_t GetNumberOfValues() const {
     return (this->V ? this->V->NumberOfValues

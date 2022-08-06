@@ -145,7 +145,7 @@ RescaleIntercept for each slice.
 The vtkDICOMReader provides the rescaling information, along with all the
 other meta data, via the VTK data pipeline (i.e. via GetOutputPort()).
 If you use this filter together with vtkDICOMCTRectifier in the same
-pipeline, it is recommened that this filter comes before the rectifier.
+pipeline, it is recommended that this filter comes before the rectifier.
 
 ## Multi-dimensional images
 

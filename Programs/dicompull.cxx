@@ -85,7 +85,7 @@ void dicompull_help(FILE *file, const char *cp)
     "The output directory given with \"-o\" can use DICOM attributes, by\n"
     "naming those attributes within curly braces.  For example, consider\n"
     "\"{PatientID}/{StudyDescription}/{SeriesDescription}-{SeriesNumber}\"\n"
-    "or something similar to produce a hierarchichal directory structure.\n"
+    "or something similar to produce a hierarchical directory structure.\n"
     "\n"
     "The files to be copied are specified with search keys, which take the\n"
     "form \"-k key=value\" where keys can either use the standard names given\n"

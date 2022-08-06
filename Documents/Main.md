@@ -12,7 +12,7 @@ for interrogating and converting DICOM files.
 
 Note that if you download the zip file from github, all of the
 files will have unix-style line endings.  Windows users should
-therefore clone the respository with git, instead of downloading
+therefore clone the repository with git, instead of downloading
 the zip file, otherwise they might have difficulty viewing and
 compiling the source code.
 

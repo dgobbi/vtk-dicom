@@ -38,7 +38,7 @@ The extra characters that are supported by the decoder cannot also be
 supported by the encoder, since that would create files that do not
 conform with the DICOM standard.  Instead, the encoder will convert
 the extra characters to ASCII code points in cases where there is a
-suitable replacment.
+suitable replacement.
 
 The conversions that the encoder uses are as follows:
 
@@ -137,7 +137,7 @@ Notes:
    the same method for encoding romaji and half-width katakana, but with a
    different way of encoding the JIS X 0208 characters.
 2. This specifies the most widely used subset of iso-2022-jp, using only ASCII
-   and JIS X 0208:1900.  For broad compability, this is the best.
+   and JIS X 0208:1900.  For broad compatibility, this is the best.
 3. This specifies the most widely used subset of iso-2022-jp-2, like the above
    but adding JIS X 0212:1990 for additional characters.
 
@@ -146,7 +146,7 @@ both because it requires the use of romaji (not ASCII) in G0, and
 because half-width katakana are not supported by either iso-2022-jp
 or by iso-2022-jp-2.
 
-For (2) and (3) above, when our encoder encouters half-width katakana,
+For (2) and (3) above, when our encoder encounters half-width katakana,
 it will convert them to full-width katakana for ISO 2022 IR 87. For (1),
 or whenever ISO IR 13 is present, the half-width katakana will be
 encoded as-is.

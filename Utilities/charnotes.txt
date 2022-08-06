@@ -97,7 +97,7 @@ with the following defined term:
 The choice to require ISO 2022 escape codes with Korean in DICOM is strange,
 since typical use of KS X 1001 outside of DICOM does not use escape codes.
 When KS X 1001 double-byte characters are used, the high bit of both bytes
-is set, which allows them to be distinguised from ASCII even when no
+is set, which allows them to be distinguished from ASCII even when no
 escape codes are present.  Therefore, the omission of 'ISO_IR 149' as
 a defined term for SpecificCharacterSet is odd.
 
@@ -107,7 +107,7 @@ required.  When SpecificCharacterSet is 'ISO 2022 IR 149', the best
 practise is to use an euc-kr decoder (or CP949 or IBM 970) and to
 simply filter out any escape codes that are present.
 
-Suport for the Thai TIS 620 was introduced by CP 194, 1999, with the
+Support for the Thai TIS 620 was introduced by CP 194, 1999, with the
 following defined terms:
 
     ISO_IR 166 -> TIS 620, Thai

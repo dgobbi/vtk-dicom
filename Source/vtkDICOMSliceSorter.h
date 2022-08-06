@@ -150,7 +150,7 @@ public:
    *  This is only used for enhanced multi-frame images.  If used, then
    *  SetTimeTag() must also be used to specify which tag in the sequence
    *  to use for temporal sorting.  By default, the following sequence/tag
-   *  conbinations are automatically detected and applied:
+   *  combinations are automatically detected and applied:
    *  - CardiacSynchronizationSequence/NominalCardiacTriggerDelayTime
    *  - TemporalPositionSequence/TemporalPositionTimeOffset
    *  - FrameContentSequence/TemporalPositionIndex

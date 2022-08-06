@@ -85,7 +85,7 @@ public:
   //@}
 
   //@{
-  //! Set whether the RAS matrix should hava a non-zero final column.
+  //! Set whether the RAS matrix should have a non-zero final column.
   /*!
    *  By default, the RAS matrix produced by this filter will have a
    *  position coordinate in its final column (NIfTI style).

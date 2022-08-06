@@ -195,7 +195,7 @@ void dicomtonifti_help(FILE *file, const char *command_name)
     "constructed from DICOM attributes, by providing the attribute names\n"
     "within curly braces.  For example, consider the following:\n"
     "\"{PatientID}-{StudyDate}/{SeriesDescription}-{SeriesNumber}.nii\"\n"
-    "or something similar to produce a hierarchichal directory structure.\n"
+    "or something similar to produce a hierarchical directory structure.\n"
     "The attributes used in the path should be from the following list:\n"
     "  PatientID, PatientName, PatientBirthDate, PatientSex,\n"
     "  StudyID, StudyDescription, StudyDate, StudyTime, StudyInstanceUID,\n"

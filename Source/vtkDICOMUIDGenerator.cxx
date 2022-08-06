@@ -108,7 +108,7 @@ void vtkDICOMUIDGenerator::SetUIDPrefix(const char *uid)
 //----------------------------------------------------------------------------
 namespace {
 
-// divide a hexdecimal string by 10 and return the remainder,
+// divide a hexadecimal string by 10 and return the remainder,
 // this is a helper function for converting a long hex string
 // (a uuid) into a decimal string (for a uid)
 int vtkDivideHexStringBy10(char *value)

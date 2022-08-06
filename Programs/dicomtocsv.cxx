@@ -1045,7 +1045,7 @@ int MAINMACRO(int argc, char *argv[])
   {
     vtkSmartPointer<ProgressObserver> p;
 
-    // Set the default characte set
+    // Set the default character set
     vtkDICOMCharacterSet::SetGlobalDefault(charset);
 
     vtkSmartPointer<vtkDICOMDirectory> finder =

@@ -350,7 +350,7 @@ protected:
     const DC::EnumType *tags, vtkDICOMMetaData *source);
   //@}
 
-  //! Copy all atributes into the meta data, excluding blacklisted ones.
+  //! Copy all attributes into the meta data, excluding blacklisted ones.
   /*!
    *  The blacklist must be terminated with DC::ItemDelimitationItem.
    *  The blacklist may be set to NULL.

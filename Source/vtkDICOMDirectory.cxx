@@ -1557,7 +1557,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       size_t l = v.PatientName.GetVL();
       if (!cp)
       {
-        // if PatientName key is missing, use PatientID as replacment
+        // if PatientName key is missing, use PatientID as replacement
         cp = v.PatientID.GetCharData();
         l = v.PatientID.GetVL();
       }
@@ -2031,7 +2031,7 @@ void vtkDICOMDirectory::ProcessOsirixDatabase(const char *fname)
     int studyIdx = this->GetNumberOfStudies();
     int patientIdx;
     int firstUnusedPatientIdx = this->GetNumberOfPatients();
-    // Loop until corrent patientIdx is found
+    // Loop until correct patientIdx is found
     for (patientIdx = 0; patientIdx < firstUnusedPatientIdx; patientIdx++)
     {
       const vtkDICOMItem& pitem = this->GetPatientRecord(patientIdx);
