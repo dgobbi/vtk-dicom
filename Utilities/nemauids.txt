@@ -568,11 +568,11 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.1.17
 Printer SOP Instance
-Well-known Printer SOP Instance
+Well-known SOP Instance
 PS3.4
 1.2.840.10008.5.1.1.17.376
 Printer Configuration Retrieval SOP Instance
-Well-known Printer SOP Instance
+Well-known SOP Instance
 PS3.4
 1.2.840.10008.5.1.1.18
 Basic Color Print Management Meta SOP Class
@@ -1264,6 +1264,34 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.200.8
 XA Performed Procedure Protocol Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.201.1
+Inventory Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.201.1.1.1
+Storage Management SOP Instance
+Well-known SOP Instance
+PS3.4
+1.2.840.10008.5.1.4.1.1.201.2
+Inventory - FIND
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.201.3
+Inventory - MOVE
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.201.4
+Inventory - GET
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.201.5
+Inventory Creation
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.201.6
+Repository Query
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.481.1
@@ -6045,3 +6073,36 @@ Radiotherapy Dose Regions
 1.2.840.10008.6.1.1445
 CID 7199
 Anatomically Localized Lesion Segmentation Types
+1.2.840.10008.6.1.1446
+CID 7031
+Reason for Removal from Operational Use
+1.2.840.10008.6.1.1447
+CID 12320
+General Ultrasound Report Document Title
+1.2.840.10008.6.1.1448
+CID 12321
+Elastography Site
+1.2.840.10008.6.1.1449
+CID 12322
+Elastography Measurement Site
+1.2.840.10008.6.1.1450
+CID 12323
+Ultrasound Relevant Patient Condition
+1.2.840.10008.6.1.1451
+CID 12324
+Shear Wave Detection Method
+1.2.840.10008.6.1.1452
+CID 12325
+Liver Ultrasound Study Indication
+1.2.840.10008.6.1.1453
+CID 3042
+Analog Waveform Filter
+1.2.840.10008.6.1.1454
+CID 3043
+Digital Waveform Filter
+1.2.840.10008.6.1.1455
+CID 3044
+Waveform Filter Lookup Table Input Frequency Unit
+1.2.840.10008.6.1.1456
+CID 3045
+Waveform Filter Lookup Table Output Magnitude Unit

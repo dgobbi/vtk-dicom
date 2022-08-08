@@ -886,6 +886,252 @@ PrivateDataElementDefinitionSequence
 SQ
 1
 
+(0008,0400)
+Scope of Inventory Sequence
+ScopeOfInventorySequence
+SQ
+1
+
+(0008,0401)
+Inventory Purpose
+InventoryPurpose
+LT
+1
+
+(0008,0402)
+Inventory Instance Description
+InventoryInstanceDescription
+LT
+1
+
+(0008,0403)
+Inventory Level
+InventoryContentLevel
+CS
+1
+
+(0008,0404)
+Item Inventory DateTime
+ItemInventoryDateTime
+DT
+1
+
+(0008,0405)
+Removed from Operational Use
+RemovedFromOperationalUse
+CS
+1
+
+(0008,0406)
+Reason for Removal Code Sequence
+ReasonForRemovalCodeSequence
+SQ
+1
+
+(0008,0407)
+Stored Instance Base URI
+StoredInstanceBaseURI
+UR
+1
+
+(0008,0408)
+Folder Access URI
+FolderAccessURI
+UR
+1
+
+(0008,0409)
+File Access URI
+FileAccessURI
+UR
+1
+
+(0008,040A)
+Container File Type
+ContainerFileType
+CS
+1
+
+(0008,040B)
+Filename in Container
+FilenameInContainer
+UR
+1
+
+(0008,040C)
+File Offset in Container
+FileOffsetInContainer
+UV
+1
+
+(0008,040D)
+File Length in Container
+FileLengthInContainer
+UV
+1
+
+(0008,040E)
+Stored Instance Transfer Syntax UID
+StoredInstanceTransferSyntaxUID
+UI
+1
+
+(0008,040F)
+Extended Matching Mechanisms
+ExtendedMatchingMechanisms
+CS
+1-n
+
+(0008,0410)
+Range Matching Sequence
+RangeMatchingSequence
+SQ
+1
+
+(0008,0411)
+List of UID Matching Sequence
+UIDListMatchingSequence
+SQ
+1
+
+(0008,0412)
+Empty Value Matching Sequence
+EmptyValueMatchingSequence
+SQ
+1
+
+(0008,0413)
+General Matching Sequence
+GeneralMatchingSequence
+SQ
+1
+
+(0008,0414)
+Requested Status Interval
+RequestedStatusInterval
+US
+1
+
+(0008,0415)
+Retain Instances
+RetainInstances
+CS
+1
+
+(0008,0416)
+Expiration DateTime
+ExpirationDateTime
+DT
+1
+
+(0008,0417)
+Transaction Status
+TransactionStatus
+CS
+1
+
+(0008,0418)
+Transaction Status Comment
+TransactionStatusComment
+LT
+1
+
+(0008,0419)
+File Set Access Sequence
+FileSetAccessSequence
+SQ
+1
+
+(0008,041A)
+File Access Sequence
+FileAccessSequence
+SQ
+1
+
+(0008,041B)
+Record Key
+RecordKey
+OB
+1
+
+(0008,041C)
+Prior Record Key
+PriorRecordKey
+OB
+1
+
+(0008,041D)
+Metadata Sequence
+MetadataSequence
+SQ
+1
+
+(0008,041E)
+Updated Metadata Sequence
+UpdatedMetadataSequence
+SQ
+1
+
+(0008,041F)
+Study Update DateTime
+StudyUpdateDateTime
+DT
+1
+
+(0008,0420)
+Inventory Access End Points Sequence
+InventoryAccessEndPointsSequence
+SQ
+1
+
+(0008,0421)
+Study Access End Points Sequence
+StudyAccessEndPointsSequence
+SQ
+1
+
+(0008,0422)
+Incorporated Inventory Instance Sequence
+IncorporatedInventoryInstanceSequence
+SQ
+1
+
+(0008,0423)
+Inventoried Studies Sequence
+InventoriedStudiesSequence
+SQ
+1
+
+(0008,0424)
+Inventoried Series Sequence
+InventoriedSeriesSequence
+SQ
+1
+
+(0008,0425)
+Inventoried Instances Sequence
+InventoriedInstancesSequence
+SQ
+1
+
+(0008,0426)
+Inventory Completion Status
+InventoryCompletionStatus
+CS
+1
+
+(0008,0427)
+Number of Study Records in Instance
+NumberOfStudyRecordsInInstance
+UL
+1
+
+(0008,0428)
+Total Number of Study Records
+TotalNumberOfStudyRecords
+UV
+1
+
 (0008,1000)
 Network ID
 NetworkID
@@ -988,16 +1234,16 @@ AdmittingDiagnosesDescription
 LO
 1-n
 
-(0008,1088)
-Pyramid Description
-PyramidDescription
-LO
-1
-
 (0008,1084)
 Admitting Diagnoses Code Sequence
 AdmittingDiagnosesCodeSequence
 SQ
+1
+
+(0008,1088)
+Pyramid Description
+PyramidDescription
+LO
 1
 
 (0008,1090)
@@ -2313,6 +2559,54 @@ Other Secondary Approval Status
 OtherSecondaryApprovalStatus
 CS
 1-n
+DICONDE
+(0014,0200)
+Data Element Label Sequence
+DataElementLabelSequence
+SQ
+1
+DICONDE
+(0014,0201)
+Data Element Label Item Sequence
+DataElementLabelItemSequence
+SQ
+1
+DICONDE
+(0014,0202)
+Data Element
+DataElement
+AT
+1
+DICONDE
+(0014,0203)
+Data Element Name
+DataElementName
+LO
+1
+DICONDE
+(0014,0204)
+Data Element Description
+DataElementDescription
+LO
+1
+DICONDE
+(0014,0205)
+Data Element Conditionality
+DataElementConditionality
+CS
+1
+DICONDE
+(0014,0206)
+Data Element Minimum Characters
+DataElementMinimumCharacters
+IS
+1
+DICONDE
+(0014,0207)
+Data Element Maximum Characters
+DataElementMaximumCharacters
+IS
+1
 DICONDE
 (0014,1010)
 Actual Environmental Conditions
@@ -13810,6 +14104,114 @@ ImpedanceMeasurementCurrentType
 CS
 1
 
+(003A,0317)
+Waveform Amplifier Type
+WaveformAmplifierType
+CS
+1
+
+(003A,0318)
+Filter Low Frequency Characteristics Sequence
+FilterLowFrequencyCharacteristicsSequence
+SQ
+1
+
+(003A,0319)
+Filter High Frequency Characteristics Sequence
+FilterHighFrequencyCharacteristicsSequence
+SQ
+1
+
+(003A,0320)
+Summarized Filter Lookup Table Sequence
+SummarizedFilterLookupTable
+SQ
+1
+
+(003A,0321)
+Notch Filter Characteristics Sequence
+NotchFilterCharacteristicsSequence
+SQ
+1
+
+(003A,0322)
+Waveform Filter Type
+WaveformFilterType
+CS
+1
+
+(003A,0323)
+Analog Filter Characteristics Sequence
+AnalogFilterCharacteristicsSequence
+SQ
+1
+
+(003A,0324)
+Analog Filter Roll Off
+AnalogFilterRollOff
+DS
+1
+
+(003A,0325)
+Analog Filter Type Code Sequence
+AnalogFilterType
+SQ
+1
+
+(003A,0326)
+Digital Filter Characteristics Sequence
+DigitalFilterCharacteristicsSequence
+SQ
+1
+
+(003A,0327)
+Digital Filter Order
+DigitalFilterOrder
+IS
+1
+
+(003A,0328)
+Digital Filter Type Code Sequence
+DigitalFilterTypeCodeSequence
+SQ
+1
+
+(003A,0329)
+Waveform Filter Description
+WaveformFilterDescription
+ST
+1
+
+(003A,032A)
+Filter Lookup Table Sequence
+FilterLookupTableSequence
+SQ
+1
+
+(003A,032B)
+Filter Lookup Table Description
+FilterLookupTableDescription
+ST
+1
+
+(003A,032C)
+Frequency Encoding Code Sequence
+FrequencyEncodingCodeSequence
+SQ
+1
+
+(003A,032D)
+Magnitude Encoding Code Sequence
+MagnitudeEncodingCodeSequence
+SQ
+1
+
+(003A,032E)
+Filter Lookup Table Data
+FilterLookupTableData
+OD
+1
+
 (0040,0001)
 Scheduled Station AE Title
 ScheduledStationAETitle
@@ -15606,7 +16008,7 @@ UL
 
 (0040,A803)
 Number of Table Columns
-NumbeOfTableColumns
+NumberOfTableColumns
 UL
 1
 
@@ -17534,7 +17936,7 @@ CS
 Segment Algorithm Name
 SegmentAlgorithmName
 LO
-1
+1-n
 
 (0062,000A)
 Segment Identification Sequence
@@ -19195,6 +19597,12 @@ FD
 (0070,0314)
 Used Fiducials Sequence
 UsedFiducialsSequence
+SQ
+1
+
+(0070,0315)
+Used RT Structure Set ROI Sequence
+UsedRTStructureSetROISequence
 SQ
 1
 
@@ -22875,7 +23283,7 @@ ROI Observation Label
 ROIObservationLabel
 SH
 1
-
+RET
 (3006,0086)
 RT ROI Identification Code Sequence
 RTROIIdentificationCodeSequence
@@ -22887,7 +23295,7 @@ ROI Observation Description
 ROIObservationDescription
 ST
 1
-
+RET
 (3006,00A0)
 Related RT ROI Observations Sequence
 RelatedRTROIObservationsSequence
@@ -28431,6 +28839,12 @@ Tomotherapeutic Leaf Initial Closed Durations
 TomotherapeuticLeafInitialClosedDurations
 FD
 1-n
+
+(3010,00A0)
+Conceptual Volume Identification Sequence
+ConceptualVolumeIdentificationSequence
+SQ
+1
 
 (4000,0010)
 Arbitrary
