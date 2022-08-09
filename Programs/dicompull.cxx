@@ -67,6 +67,7 @@ void dicompull_usage(FILE *file, const char *cp)
     "  -name pattern     Set file names to match (with \"*\" or \"?\").\n"
     "  -image            Restrict the search to files with PixelData.\n"
     "  -series           Find all files in series if even one file matches.\n"
+    "  --directory-only  Do not scan files for search if DICOMDIR is present.\n"
     "  --ignore-dicomdir Ignore the DICOMDIR file even if it is present.\n"
     "  --charset <cs>    Charset to use if SpecificCharacterSet is missing.\n"
     "  --silent          Do not report any progress information.\n"
@@ -307,6 +308,7 @@ int MAINMACRO(int argc, char *argv[])
   vtkDICOMItem query;
   bool requirePixelData = false;
   bool findSeries = false;
+  bool onlyDicomdir = false;
   bool ignoreDicomdir = false;
   vtkDICOMCharacterSet charset;
   bool silent = false;
@@ -433,6 +435,10 @@ int MAINMACRO(int argc, char *argv[])
     {
       findSeries = true;
     }
+    else if (strcmp(arg, "--directory-only") == 0)
+    {
+      onlyDicomdir = true;
+    }
     else if (strcmp(arg, "--ignore-dicomdir") == 0)
     {
       ignoreDicomdir = true;
@@ -551,6 +557,10 @@ int MAINMACRO(int argc, char *argv[])
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
     finder->SetIgnoreDicomdir(ignoreDicomdir);
+    if (onlyDicomdir)
+    {
+      finder->SetQueryFilesToNever();
+    }
     finder->SetFollowSymlinks(followSymlinks);
     finder->SetRequirePixelData(requirePixelData);
     finder->SetFindLevel(

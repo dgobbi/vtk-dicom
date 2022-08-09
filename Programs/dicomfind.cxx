@@ -78,6 +78,7 @@ void dicomfind_usage(FILE *file, const char *cp)
     "  -exec ... %s      Execute the given command for every file matched.\n"
     "  -execdir ... +    Go to directory and execute command on every series.\n"
     "  -execdir ... %s   Go to directory and execute command on every file.\n"
+    "  --directory-only  Do not scan files themselves if DICOMDIR is present.\n"
     "  --ignore-dicomdir Ignore the DICOMDIR file even if it is present.\n"
     "  --charset <cs>    Charset to use if SpecificCharacterSet is missing.\n"
     "  --help            Print a brief help message.\n"
@@ -569,6 +570,7 @@ int MAINMACRO(int argc, char *argv[])
   QueryTagList qtlist;
   vtkDICOMItem query;
   bool followSymlinks = true;
+  bool onlyDicomdir = false;
   bool ignoreDicomdir = false;
   bool requirePixelData = false;
   bool findSeries = false;
@@ -714,6 +716,10 @@ int MAINMACRO(int argc, char *argv[])
       }
       argi = argj;
     }
+    else if (strcmp(arg, "--directory-only") == 0)
+    {
+      onlyDicomdir = true;
+    }
     else if (strcmp(arg, "--ignore-dicomdir") == 0)
     {
       ignoreDicomdir = true;
@@ -767,6 +773,10 @@ int MAINMACRO(int argc, char *argv[])
     finder->SetScanDepth(scandepth);
     finder->SetFindQuery(query);
     finder->SetIgnoreDicomdir(ignoreDicomdir);
+    if (onlyDicomdir)
+    {
+      finder->SetQueryFilesToNever();
+    }
     finder->SetFollowSymlinks(followSymlinks);
     finder->SetRequirePixelData(requirePixelData);
     finder->SetFindLevel(
