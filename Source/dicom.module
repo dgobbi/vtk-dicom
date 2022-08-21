@@ -2,8 +2,6 @@ NAME
   VTK::DICOM
 LIBRARY_NAME
   vtkDICOM
-GROUPS
-  StandAlone
 DEPENDS
   VTK::CommonCore
   VTK::CommonDataModel
