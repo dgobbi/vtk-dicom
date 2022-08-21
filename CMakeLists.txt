@@ -238,9 +238,13 @@ else()
         BUILD_STATIC    OFF)
 
       vtk_module_python_default_destination(python_destination)
+      string(CONCAT _content
+        "from .vtkDICOM import *\n\n"
+        "__all__ = ['vtkDICOM']\n"
+        "__version__ = \"${DICOM_VERSION}\"\n")
       file(GENERATE
         OUTPUT  "${CMAKE_BINARY_DIR}/${python_destination}/vtkdicom/__init__.py"
-        CONTENT "__all__ = ['vtkDICOM']\n")
+        CONTENT "${_content}")
       install(
         FILES       "${CMAKE_BINARY_DIR}/${python_destination}/vtkdicom/__init__.py"
         DESTINATION "${python_destination}/vtkdicom/")
