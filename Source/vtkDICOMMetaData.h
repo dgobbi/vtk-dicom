@@ -21,7 +21,17 @@
 #include "vtkDICOMDataElement.h" // For method parameter
 #include "vtkDICOMDictEntry.h" // For method parameter
 
+// Declare VTK classes within VTK's optional namespace
+#if defined(VTK_ABI_NAMESPACE_BEGIN)
+VTK_ABI_NAMESPACE_BEGIN
+#endif
+
 class vtkIntArray;
+
+#if defined(VTK_ABI_NAMESPACE_BEGIN)
+VTK_ABI_NAMESPACE_END
+#endif
+
 class vtkDICOMTagPath;
 
 //! A container class for DICOM metadata.

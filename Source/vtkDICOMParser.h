@@ -20,10 +20,20 @@
 #include "vtkDICOMConfig.h" // For configuration details
 #include "vtkDICOMCharacterSet.h" // For character sets
 
+// Declare VTK classes within VTK's optional namespace
+#if defined(VTK_ABI_NAMESPACE_BEGIN)
+VTK_ABI_NAMESPACE_BEGIN
+#endif
+
+class vtkUnsignedShortArray;
+
+#if defined(VTK_ABI_NAMESPACE_BEGIN)
+VTK_ABI_NAMESPACE_END
+#endif
+
 class vtkDICOMFile;
 class vtkDICOMItem;
 class vtkDICOMMetaData;
-class vtkUnsignedShortArray;
 class vtkDICOMParserInternalFriendship;
 
 //! A meta data reader for DICOM data.

@@ -20,7 +20,16 @@
 #include "vtkDICOMConfig.h" // For configuration details
 #include "vtkDICOMTag.h" // For method parameter
 
+// Declare VTK classes within VTK's optional namespace
+#if defined(VTK_ABI_NAMESPACE_BEGIN)
+VTK_ABI_NAMESPACE_BEGIN
+#endif
+
 class vtkStringArray;
+
+#if defined(VTK_ABI_NAMESPACE_BEGIN)
+VTK_ABI_NAMESPACE_END
+#endif
 
 //! Utility functions for use with DICOM classes.
 class VTKDICOM_EXPORT vtkDICOMUtilities : public vtkObject

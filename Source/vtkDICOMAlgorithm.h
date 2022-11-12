@@ -28,9 +28,19 @@
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMConfig.h" // For configuration details
 
+// Declare VTK classes within VTK's optional namespace
+#if defined(VTK_ABI_NAMESPACE_BEGIN)
+VTK_ABI_NAMESPACE_BEGIN
+#endif
+
 class vtkLookupTable;
 class vtkInformationDataObjectKey;
 class vtkInformationDoubleVectorKey;
+
+#if defined(VTK_ABI_NAMESPACE_BEGIN)
+VTK_ABI_NAMESPACE_END
+#endif
+
 class vtkDICOMMetaData;
 class vtkDICOMPerFilePalette;
 

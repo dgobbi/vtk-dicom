@@ -19,8 +19,18 @@
 #include "vtkDICOMConfig.h" // For configuration details
 #include "vtkDICOMTag.h" // For vtkDICOMTag
 
+// Declare VTK classes within VTK's optional namespace
+#if defined(VTK_ABI_NAMESPACE_BEGIN)
+VTK_ABI_NAMESPACE_BEGIN
+#endif
+
 class vtkIntArray;
 class vtkStringArray;
+
+#if defined(VTK_ABI_NAMESPACE_BEGIN)
+VTK_ABI_NAMESPACE_END
+#endif
+
 class vtkDICOMMetaData;
 
 //! Index a DICOM series to allow proper dimensional ordering.
