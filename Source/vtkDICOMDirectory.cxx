@@ -1740,10 +1740,16 @@ bool SimpleSQL::Open(const char *fname)
     }
   }
 
-  // we need to use "immutable" or else a read-only open will fail
-  // if the .sql-wal file is missing (and we definitely want to open
-  // the file in read-only mode, we never ever wish to modify the file!)
-  uri += "?mode=ro&immutable=1";
+  // open in read-only mode
+  uri += "?mode=ro";
+
+  // a read-only open will fail if the .sql-wal file is missing unless we
+  // use 'immutable' (this flag assumes that the file is static, unchanging)
+  std::string walpath = fullpath + "-wal";
+  if (vtkDICOMFile::Access(walpath.c_str(), vtkDICOMFile::In) != 0)
+  {
+    uri += "&immutable=1";
+  }
 
   int r = sqlite3_open_v2(uri.c_str(), &this->DBase,
                           SQLITE_OPEN_READONLY|SQLITE_OPEN_URI, 0);
