@@ -75,6 +75,7 @@ void dicomtocsv_usage(FILE *file, const char *cp)
     "  -q <query.txt>    Provide a file to describe the find query.\n"
     "  -u <uids.txt>     Provide a file that contains a list of UIDs.\n"
     "  -o <data.csv>     Provide a file for the query results.\n"
+    "  -maxdepth n       Set the maximum directory depth for search.\n"
     "  --default         Add to default query instead of replacing it.\n"
     "  --first-nonzero   Search series for first nonzero value of each key.\n"
     "  --all-unique      Report all unique values within each series.\n"
@@ -785,6 +786,7 @@ int MAINMACRO(int argc, char *argv[])
 
   int rval = 0;
   int scandepth = std::numeric_limits<int>::max();
+  bool followSymlinks = true;
   QueryTagList qtlist;
   vtkDICOMItem query;
   std::vector<std::string> oplist;
@@ -846,7 +848,15 @@ int MAINMACRO(int argc, char *argv[])
   for (int argi = 1; argi < argc; argi++)
   {
     const char *arg = argv[argi];
-    if (strcmp(arg, "-q") == 0 || strcmp(arg, "-o") == 0)
+    if (strcmp(arg, "-P") == 0)
+    {
+      followSymlinks = false;
+    }
+    else if (strcmp(arg, "-L") == 0)
+    {
+      followSymlinks = true;
+    }
+    else if (strcmp(arg, "-q") == 0 || strcmp(arg, "-o") == 0)
     {
       if (argi + 1 == argc || argv[argi+1][0] == '-')
       {
@@ -898,6 +908,16 @@ int MAINMACRO(int argc, char *argv[])
       {
         return 1;
       }
+    }
+    else if (strcmp(arg, "-maxdepth") == 0)
+    {
+      ++argi;
+      if (argi == argc)
+      {
+        fprintf(stderr, "%s must be followed by an argument.\n\n", arg);
+        return 1;
+      }
+      scandepth = static_cast<int>(atol(argv[argi]));
     }
     else if (strcmp(arg, "--default") == 0)
     {
@@ -1074,6 +1094,7 @@ int MAINMACRO(int argc, char *argv[])
       finder->SetQueryFilesToAlways();
     }
     finder->SetScanDepth(scandepth);
+    finder->SetFollowSymlinks(followSymlinks);
     finder->SetFindQuery(query);
     finder->Update();
 
