@@ -44,8 +44,7 @@ if(BUILD_PYTHON_WRAPPERS)
     set(_python_module_path "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
   else()
     set(_vtk VTK::)
-    get_target_property(_python_module_path vtkDICOMPython
-                        LIBRARY_OUTPUT_DIRECTORY)
+    set(_python_module_path "${CMAKE_BINARY_DIR}/${python_destination}")
   endif()
   if(NOT VTK_PYTHON_EXE)
     get_target_property(WRAP_PYTHON_PATH ${_vtk}WrapPython

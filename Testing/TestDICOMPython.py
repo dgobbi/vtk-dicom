@@ -4,26 +4,20 @@ import sys
 import vtk
 
 try:
-    import vtkDICOM
+    import vtkdicom
 except ImportError:
     # for backwards compabilitity, before VTK 9
-    import vtkDICOMPython
-    vtkDICOM = vtkDICOMPython
+    import vtkDICOMPython as vtkdicom
 
-# put everything into the vtk namespace
-for a in dir(vtkDICOM):
-    if a[0] != '_':
-        setattr(vtk, a, getattr(vtkDICOM, a))
-
-m = vtk.vtkDICOMMetaData()
+m = vtkdicom.vtkDICOMMetaData()
 
 if vtk.vtkVersion.GetVTKMajorVersion() < 6:
     sys.stderr.write("This test requires VTK 6 or higher.\n");
     sys.exit(0)
 
-m.Set(vtk.vtkDICOMTag(0x0008, 0x0005), 'ISO_IR 100')
+m.Set(vtkdicom.vtkDICOMTag(0x0008, 0x0005), 'ISO_IR 100')
 
-v = m.Get(vtk.vtkDICOMTag(0x0008, 0x0005))
+v = m.Get(vtkdicom.vtkDICOMTag(0x0008, 0x0005))
 
 if v.AsString() != 'ISO_IR 100':
     sys.exit(1)
