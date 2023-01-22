@@ -76,6 +76,11 @@ to add the following command block to the main CMakeLists.txt file
 in your project:
 
     find_package(DICOM QUIET)
+    set(VTK_DICOM_LIBRARIES vtkDICOM)
+
+For VTK 7 and 8, it is also necessary to include UseDICOM.cmake, as follows:
+
+    find_package(DICOM QUIET)
     if(DICOM_FOUND)
       include(${DICOM_USE_FILE})
     endif()
@@ -87,13 +92,13 @@ within projects that are not built with cmake.
 ## Wrapper languages
 
 All of the vtk-dicom classes can be used with Python, as long as VTK was
-built with python wrapping enabled.  A few of the classes, including the
-reader and writer, can be used though Java and Tcl.
+built with python wrapping enabled.  Use of vtk-dicom with Tcl and Java is
+no longer supported (Java wrapping might still work, but is untested).
 
 If you are already using the vtk .deb packages that came with your
 debian or ubuntu linux distribution, then you have the option of using
-the vtk-debian packages that were created by Mathieu Malaterre and that
-are maintained by the [neuro-debian team](http://neuro.debian.net/):
+the vtk-debian packages that were created by Mathieu Malaterre:
 
-    sudo apt-get install python-vtk-dicom
-    sudo apt-get install libvtkdicom-java
+    sudo apt-get install python3-vtk-dicom
+
+There are currently no pypi (pip) packages for vtk-dicom.
