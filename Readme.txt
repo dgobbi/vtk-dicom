@@ -26,5 +26,5 @@ http://dgobbi.github.io/vtk-dicom/doc/vtk-dicom.pdf
 http://github.com/dgobbi/vtk-dicom/wiki/Command-Line-Tools
 
 A software quality dashboard is provided, with nightly builds on
-Linux (gcc 4.6) and Windows (Visual Studio 2015):
+Linux (gcc 9.5) and Windows (Visual Studio 2015):
 http://my.cdash.org/index.php?project=vtk-dicom
