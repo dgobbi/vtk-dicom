@@ -224,6 +224,12 @@ else()
       TEST_INPUT_DATA_DIRECTORY   "${dicom_test_data_directory_input}"
       TEST_OUTPUT_DATA_DIRECTORY  "${dicom_test_data_directory_output}")
 
+    # Disable deprecation warnings for MSVC
+    if(MSVC)
+      vtk_module_definitions(${dicom_modules}
+        PRIVATE -D_CRT_SECURE_NO_DEPRECATE)
+    endif()
+
     if(BUILD_PYTHON_WRAPPERS)
       find_package(PythonInterp ${VTK_PYTHON_VERSION} QUIET)
 
