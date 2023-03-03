@@ -71,7 +71,8 @@ public:
     ISO_IR_166 = 18, // ISO-8859-11, thai
     X_LATIN7   = 19, // ISO-8859-13, latin7, baltic rim
     X_LATIN8   = 20, // ISO-8859-14, latin8, celtic
-    X_LATIN9   = 21, // ISO-8859-15, latin9, western europe
+    ISO_IR_203 = 21, // ISO-8859-15, latin9, western europe
+    X_LATIN9   = 21, // key from before ISO_IR 203 entered DICOM
     X_LATIN10  = 22, // ISO-8859-16, latin10, southeastern europe
     X_EUCKR    = 24, // euc-kr,      ISO_IR_149 without escape codes
     X_GB2312   = 25, // gb2312,      ISO_IR_58 without escape codes
@@ -89,6 +90,7 @@ public:
     ISO_2022_IR_138 = 47, // ISO-8859-8,  hebrew
     ISO_2022_IR_148 = 48, // ISO-8859-9,  latin5, turkish
     ISO_2022_IR_166 = 50, // ISO-8859-11, thai
+    ISO_2022_IR_203 = 53, // ISO-8859-15, latin9, western europe
     ISO_2022_IR_149 = 56, // the KS X 1001 part of ISO-2022-KR
     ISO_2022_IR_58  = 57, // the GB2312 part of ISO-2022-CN
     ISO_IR_192 = 64, // UTF-8,       unicode

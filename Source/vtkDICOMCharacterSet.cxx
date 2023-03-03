@@ -387,7 +387,7 @@ static const char *LATIN8_Names[] = {
   NULL
 };
 
-static const char *LATIN9_Names[] = {
+static const char *ISO_IR_203_Names[] = {
   "csisolatin9",
   "iso-8859-15",
   "iso-ir-203",
@@ -640,6 +640,8 @@ static CharsetInfo Charsets[48] = {
     "ISO_IR 148", "ISO 2022 IR 148", "-M", ISO_IR_148_Names },
   { vtkDICOMCharacterSet::ISO_IR_166, 0,     // iso-8859-11, thai
     "ISO_IR 166", "ISO 2022 IR 166", "-T", ISO_IR_166_Names },
+  { vtkDICOMCharacterSet::ISO_IR_203, 0,     // iso-8859-15, western europe
+    "ISO_IR 203", "ISO 2022 IR 203", "-b", ISO_IR_203_Names },
 
   // character sets for ISO 2022 encodings of JIS
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, katakana (in G1)
@@ -689,7 +691,6 @@ static CharsetInfo Charsets[48] = {
   { vtkDICOMCharacterSet::X_LATIN6, 0, "latin6", "", "-V", LATIN6_Names },
   { vtkDICOMCharacterSet::X_LATIN7, 0, "latin7", "", "-Y", LATIN7_Names },
   { vtkDICOMCharacterSet::X_LATIN8, 0, "latin8", "", "-_", LATIN8_Names },
-  { vtkDICOMCharacterSet::X_LATIN9, 0, "latin9", "", "-b", LATIN9_Names },
   { vtkDICOMCharacterSet::X_LATIN10, 0, "latin10", "", "-f", LATIN10_Names },
   { vtkDICOMCharacterSet::X_CP874, 0, "cp874", "", "", CP874_Names },
   { vtkDICOMCharacterSet::X_CP1250, 0, "cp1250", "", "", CP1250_Names },

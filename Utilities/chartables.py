@@ -1089,7 +1089,7 @@ X_LATIN6   = 17 # ISO-8859-10, latin6, nordic
 ISO_IR_166 = 18 # ISO-8859-11, thai
 X_LATIN7   = 19 # ISO-8859-13, latin7, baltic rim
 X_LATIN8   = 20 # ISO-8859-14, latin8, celtic
-X_LATIN9   = 21 # ISO-8859-15, latin9, western europe
+ISO_IR_203 = 21 # ISO-8859-15, latin9, western europe
 X_LATIN10  = 22 # ISO-8859-16, latin10, southeastern europe
 X_EUCKR    = 24 # euc-kr,      ISO_IR_149 without escape codes
 X_GB2312   = 25 # gb2312,      ISO_IR_58 without escape codes
@@ -1107,6 +1107,7 @@ ISO_2022_IR_126 = 46 # ISO-8859-7,  greek
 ISO_2022_IR_138 = 47 # ISO-8859-8,  hebrew
 ISO_2022_IR_148 = 48 # ISO-8859-9,  latin5, turkish
 ISO_2022_IR_166 = 50 # ISO-8859-11, thai
+ISO_2022_IR_203 = 53 # ISO-8859-15, latin9, western europe
 ISO_2022_IR_149 = 56 # the KS X 1001 part of ISO-2022-KR
 ISO_2022_IR_58  = 57 # the GB2312 part of ISO-2022-CN
 ISO_IR_192 = 64 # UTF-8,       unicode
@@ -1143,7 +1144,7 @@ pages = {
   ISO_IR_166 : ('CodePageISO8859_11', 'CodePageISO8859_11_R'),
   X_LATIN7 : ('CodePageISO8859_13', 'CodePageISO8859_13_R'),
   X_LATIN8 : ('CodePageISO8859_14', 'CodePageISO8859_14_R'),
-  X_LATIN9 : ('CodePageISO8859_15', 'CodePageISO8859_15_R'),
+  ISO_IR_203 : ('CodePageISO8859_15', 'CodePageISO8859_15_R'),
   X_LATIN10 : ('CodePageISO8859_16', 'CodePageISO8859_16_R'),
   X_EUCKR : ('CodePageKSX1001', 'CodePageKSX1001_R'),
   X_GB2312 : ('CodePageGB18030', 'CodePageGBK_R'),
@@ -1164,7 +1165,7 @@ pages = {
   ISO_2022_IR_166 : ('CodePageISO8859_11', 'CodePageISO8859_11_R'),
   ISO_2022+X_LATIN7 : ('CodePageISO8859_13', 'CodePageISO8859_13_R'),
   ISO_2022+X_LATIN8 : ('CodePageISO8859_14', 'CodePageISO8859_14_R'),
-  ISO_2022+X_LATIN9 : ('CodePageISO8859_15', 'CodePageISO8859_15_R'),
+  ISO_2022_IR_203 : ('CodePageISO8859_15', 'CodePageISO8859_15_R'),
   ISO_2022+X_LATIN10 : ('CodePageISO8859_16', 'CodePageISO8859_16_R'),
   ISO_2022_IR_149 : ('CodePageKSX1001', 'CodePageKSX1001_R'),
   ISO_2022_IR_58 : ('CodePageGB18030', 'CodePageGBK_R'),
