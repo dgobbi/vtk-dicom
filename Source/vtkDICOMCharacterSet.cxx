@@ -587,6 +587,8 @@ static const char *EUCJP_Names[] = {
 static const char *KOI8_Names[] = {
   "koi",
   "koi8",
+  "koi8-ru",
+  "koi8-u",
   NULL
 };
 
