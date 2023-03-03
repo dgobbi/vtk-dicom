@@ -150,6 +150,12 @@ Given the inclusion of GB18030, it's interesting to note the omission
 of the popular Big5 encoding for Taiwan.
 
 
+## DICOM 2011
+
+The only notable change in DICOM 2011 was that the normative reference
+for ISO_IR 192 was updated to ISO/IEC 10646:2003 (Unicode 4.0).
+
+
 ## DICOM 2013
 
 Finally, GBK was introduced by CP 1234 in 2012, along with the even
@@ -173,14 +179,26 @@ iso-2022-jp (but not UTF-8, euc-kr, or GB2312 where all parts of
 every multi-byte character have the high bit set).
 
 
-## DICOM current standard
+## DICOM 2021d
 
-Since 2013, no addition character sets have been added to the DICOM
-standard, nor are any expected.  The standard still references
-Unicode 3.2 (2002) and GB18030 (2000) even though more recent revisions
-of these exist.  No character sets have been retired, nor does the
-standard recommend any character sets over others.  That is, there is
-no deprecation of old character sets in favor of UTF-8.
+Late in 2021, CP 2113 introduced one additional 8-bit character set
+into the DICOM standard:
+
+    ISO_IR 203 -> ISO 8895-15, Latin9
+    ISO 2022 IR 203 -> Latin9 with ISO 2022 escape codes
+
+The latin9 character set is a modernization of the venerable latin1,
+expanded to include the Euro symbol and a few extra accented letters.
+It was first standardized by ISO/IEC in 1999, and prior to its addition
+to DICOM, it was added to HL7 2.6 in 2007.
+
+DICOM 2021d also updated the normative reference for Unicode from
+version 4.0 to version 13, which represents a very large jump.  The
+normative reference for GB 18030 remains the 2000 version of that standard,
+even though a more recent revision exists.  As of yet, no character sets
+have been retired from DICOM, nor are any character sets recommended over
+others.  There has been no deprecation of any older character sets in favor
+of UTF-8.
 
 
 ## Non-standard character sets
