@@ -6106,3 +6106,45 @@ Waveform Filter Lookup Table Input Frequency Unit
 1.2.840.10008.6.1.1456
 CID 3045
 Waveform Filter Lookup Table Output Magnitude Unit
+1.2.840.10008.6.1.1457
+CID 272
+Specific Observation Subject Class
+1.2.840.10008.6.1.1458
+CID 9540
+Movable Beam Limiting Device Type
+1.2.840.10008.6.1.1459
+CID 9260
+Radiotherapy Acquisition WorkItem Subtasks
+1.2.840.10008.6.1.1460
+CID 9261
+Patient Position Acquisition Radiation Source Locations
+1.2.840.10008.6.1.1461
+CID 9262
+Energy Derivation Types
+1.2.840.10008.6.1.1462
+CID 9263
+KV Imaging Acquisition Techniques
+1.2.840.10008.6.1.1463
+CID 9264
+MV Imaging Acquisition Techniques
+1.2.840.10008.6.1.1464
+CID 9265
+Patient Position Acquisition - Projection Techniques
+1.2.840.10008.6.1.1465
+CID 9266
+Patient Position Acquisition - CT Techniques
+1.2.840.10008.6.1.1466
+CID 9267
+Patient Positioning Related Object Purposes
+1.2.840.10008.6.1.1467
+CID 9268
+Patient Position Acquisition Devices
+1.2.840.10008.6.1.1468
+CID 9269
+RT Radiation Meterset Units
+1.2.840.10008.6.1.1469
+CID 9270
+Acquisition Initiation Types
+1.2.840.10008.6.1.1470
+CID 9271
+RT Image Patient Position Acquisition Devices

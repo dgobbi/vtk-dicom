@@ -906,7 +906,7 @@ LT
 
 (0008,0403)
 Inventory Level
-InventoryContentLevel
+InventoryLevel
 CS
 1
 
@@ -990,7 +990,7 @@ SQ
 
 (0008,0411)
 List of UID Matching Sequence
-UIDListMatchingSequence
+ListOfUIDMatchingSequence
 SQ
 1
 
@@ -1129,6 +1129,12 @@ UL
 (0008,0428)
 Total Number of Study Records
 TotalNumberOfStudyRecords
+UV
+1
+
+(0008,0429)
+Maximum Number of Records
+MaximumNumberOfRecords
 UV
 1
 
@@ -1718,7 +1724,7 @@ RET
 Frame Type
 FrameType
 CS
-4
+4-5
 
 (0008,9092)
 Referenced Image Evidence Sequence
@@ -2336,6 +2342,12 @@ FD
 Longitudinal Temporal Event Type
 LongitudinalTemporalEventType
 CS
+1
+
+(0012,0054)
+Clinical Trial Time Point Type Code Sequence
+ClinicalTrialTimePointTypeCodeSequence
+SQ
 1
 
 (0012,0060)
@@ -22924,6 +22936,330 @@ FluenceModeID
 SH
 1
 
+(3002,0100)
+Selected Frame Number
+SelectedFrameNumber
+IS
+1
+
+(3002,0101)
+Selected Frame Functional Groups Sequence
+SelectedFrameFunctionalGroupsSequence
+SQ
+1
+
+(3002,0102)
+RT Image Frame General Content Sequence
+RTImageFrameGeneralContentSequence
+SQ
+1
+
+(3002,0103)
+RT Image Frame Context Sequence
+RTImageFrameContextSequence
+SQ
+1
+
+(3002,0104)
+RT Image Scope Sequence
+RTImageScopeSequence
+SQ
+1
+
+(3002,0105)
+Beam Modifier Coordinates Presence Flag
+BeamModifierCoordinatesPresenceFlag
+CS
+1
+
+(3002,0106)
+Start Cumulative Meterset
+StartCumulativeMeterset
+FD
+1
+
+(3002,0107)
+Stop Cumulative Meterset
+StopCumulativeMeterset
+FD
+1
+
+(3002,0108)
+RT Acquisition Patient Position Sequence
+RTAcquisitionPatientPositionSequence
+SQ
+1
+
+(3002,0109)
+RT Image Frame Imaging Device Position Sequence
+RTImageFrameImagingDevicePositionSequence
+SQ
+1
+
+(3002,010A)
+RT Image Frame kV Radiation Acquisition Sequence
+RTImageFramekVRadiationAcquisitionSequence
+SQ
+1
+
+(3002,010B)
+RT Image Frame MV Radiation Acquisition Sequence
+RTImageFrameMVRadiationAcquisitionSequence
+SQ
+1
+
+(3002,010C)
+RT Image Frame Radiation Acquisition Sequence
+RTImageFrameRadiationAcquisitionSequence
+SQ
+1
+
+(3002,010D)
+Imaging Source Position Sequence
+ImagingSourcePositionSequence
+SQ
+1
+
+(3002,010E)
+Image Receptor Position Sequence
+ImageReceptorPositionSequence
+SQ
+1
+
+(3002,010F)
+Device Position to Equipment Mapping Matrix
+DevicePositionToEquipmentMappingMatrix
+FD
+16
+
+(3002,0110)
+Device Position Parameter Sequence
+DevicePositionParameterSequence
+SQ
+1
+
+(3002,0111)
+Imaging Source Location Specification Type
+ImagingSourceLocationSpecificationType
+CS
+1
+
+(3002,0112)
+Imaging Device Location Matrix Sequence
+ImagingDeviceLocationMatrixSequence
+SQ
+1
+
+(3002,0113)
+Imaging Device Location Parameter Sequence
+ImagingDeviceLocationParameterSequence
+SQ
+1
+
+(3002,0114)
+Imaging Aperture Sequence
+ImagingApertureSequence
+SQ
+1
+
+(3002,0115)
+Imaging Aperture Specification Type
+ImagingApertureSpecificationType
+CS
+1
+
+(3002,0116)
+Number of Acquisition Devices
+NumberOfAcquisitionDevices
+US
+1
+
+(3002,0117)
+Acquisition Device Sequence
+AcquisitionDeviceSequence
+SQ
+1
+
+(3002,0118)
+Acquisition Task Sequence
+AcquisitionTaskSequence
+SQ
+1
+
+(3002,0119)
+Acquisition Task Workitem Code Sequence
+AcquisitionTaskWorkitemCodeSequence
+SQ
+1
+
+(3002,011A)
+Acquisition Subtask Sequence
+AcquisitionSubtaskSequence
+SQ
+1
+
+(3002,011B)
+Subtask Workitem Code Sequence
+SubtaskWorkitemCodeSequence
+SQ
+1
+
+(3002,011C)
+Acquisition Task Index
+AcquisitionTaskIndex
+US
+1
+
+(3002,011D)
+Acquisition Subtask Index
+AcquisitionSubtaskIndex
+US
+1
+
+(3002,011E)
+Referenced Baseline Parameters RT Radiation Instance Sequence
+ReferencedBaselineParametersRTRadiationInstanceSequence
+SQ
+1
+
+(3002,011F)
+Position Acquisition Template Identification Sequence
+PositionAcquisitionTemplateIdentificationSequence
+SQ
+1
+
+(3002,0120)
+Position Acquisition Template ID
+PositionAcquisitionTemplateID
+ST
+1
+
+(3002,0121)
+Position Acquisition Template Name
+PositionAcquisitionTemplateName
+LO
+1
+
+(3002,0122)
+Position Acquisition Template Code Sequence
+PositionAcquisitionTemplateCodeSequence
+SQ
+1
+
+(3002,0123)
+Position Acquisition Template Description
+PositionAcquisitionTemplateDescription
+LT
+1
+
+(3002,0124)
+Acquisition Task Applicability Sequence
+AcquisitionTaskApplicabilitySequence
+SQ
+1
+
+(3002,0125)
+Projection Imaging Acquisition Parameter Sequence
+ProjectionImagingAcquisitionParameterSequence
+SQ
+1
+
+(3002,0126)
+CT Imaging Acquisition Parameter Sequence
+CTImagingAcquisitionParameterSequence
+SQ
+1
+
+(3002,0127)
+KV Imaging Generation Parameters Sequence
+KVImagingGenerationParametersSequence
+SQ
+1
+
+(3002,0128)
+MV Imaging Generation Parameters Sequence
+MVImagingGenerationParametersSequence
+SQ
+1
+
+(3002,0129)
+Acquisition Signal Type
+AcquisitionSignalType
+CS
+1
+
+(3002,012A)
+Acquisition Method
+AcquisitionMethod
+CS
+1
+
+(3002,012B)
+Scan Start Position Sequence
+ScanStartPositionSequence
+SQ
+1
+
+(3002,012C)
+Scan Stop Position Sequence
+ScanStopPositionSequence
+SQ
+1
+
+(3002,012D)
+Imaging Source to Beam Modifier Definition Plane Distance
+ImagingSourceToBeamModifierDefinitionPlaneDistance
+FD
+1
+
+(3002,012E)
+Scan Arc Type
+ScanArcType
+CS
+1
+
+(3002,012F)
+Detector Positioning Type
+DetectorPositioningType
+CS
+1
+
+(3002,0130)
+Additional RT Accessory Device Sequence
+AdditionalRTAccessoryDeviceSequence
+SQ
+1
+
+(3002,0131)
+Device-Specific Acquisition Parameter Sequence
+DeviceSpecificAcquisitionParameterSequence
+SQ
+1
+
+(3002,0132)
+Referenced Position Reference Instance Sequence
+ReferencedPositionReferenceInstanceSequence
+SQ
+1
+
+(3002,0133)
+Energy Derivation Code Sequence
+EnergyDerivationCodeSequence
+SQ
+1
+
+(3002,0134)
+Maximum Cumulative Meterset Exposure
+MaximumCumulativeMetersetExposure
+FD
+1
+
+(3002,0135)
+Acquisition Initiation Sequence
+AcquisitionInitiationSequence
+SQ
+1
+
 (3004,0001)
 DVH Type
 DVHType
@@ -22983,13 +23319,13 @@ RT Dose ROI Sequence
 RTDoseROISequence
 SQ
 1
-
+RET
 (3004,0012)
 Dose Value
 DoseValue
 DS
 1
-
+RET
 (3004,0014)
 Tissue Heterogeneity Correction
 TissueHeterogeneityCorrection
@@ -23721,6 +24057,30 @@ Beam Limiting Device Leaf Pairs Sequence
 BeamLimitingDeviceLeafPairsSequence
 SQ
 1
+
+(3008,00A1)
+Enhanced RT Beam Limiting Device Sequence
+EnhancedRTBeamLimitingDeviceSequence
+SQ
+1
+
+(3008,00A2)
+Enhanced RT Beam Limiting Opening Sequence
+EnhancedRTBeamLimitingOpeningSequence
+SQ
+1
+
+(3008,00A3)
+Enhanced RT Beam Limiting Device Definition Flag
+EnhancedRTBeamLimitingDeviceDefinitionFlag
+CS
+1
+
+(3008,00A4)
+Parallel RT Beam Delimiter Opening Extents
+ParallelRTBeamDelimiterOpeningExtents
+FD
+2-2n
 
 (3008,00B0)
 Recorded Wedge Sequence
@@ -28779,7 +29139,7 @@ Robotic Base Location Indicator
 RoboticBaseLocationIndicator
 CS
 1
-
+RET
 (3010,0091)
 Robotic Path Node Set Code Sequence
 RoboticPathNodeSetCodeSequence

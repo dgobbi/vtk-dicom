@@ -23,15 +23,15 @@ const UIDTableEntry UIDTable[] = {
 { 240, 1, 2, 0, 0 },
 { 241, 1, 1, 0, 0 },
 { 1318, 1, 1, 0, 0 },
-{ 2775, 1, 1, 0, 0 },
-{ 2778, 1, 1, 0, 0 },
-{ 2780, 24, 1, 0, 0 },
-{ 2804, 4, 1, 0, 0 },
+{ 2789, 1, 1, 0, 0 },
+{ 2792, 1, 1, 0, 0 },
+{ 2794, 24, 1, 0, 0 },
+{ 2818, 4, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 2808, 2, 0, 0, 0 },
+{ 2822, 2, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.1.1
   "Verification SOP Class" },
 { 58, 7, 1, 0, // 1.2.840.10008.1.2
@@ -1753,7 +1753,7 @@ const UIDTableEntry UIDTable[] = {
   "Implant Template Group Information Model - MOVE" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.45.4
   "Implant Template Group Information Model - GET" },
-{ 1319, 1456, 1, 0, 0 },
+{ 1319, 1470, 1, 0, 0 },
 { 0, 0, 0, 2, // 1.2.840.10008.6.1.1
   "Anatomic Modifier" },
 { 0, 0, 0, 4, // 1.2.840.10008.6.1.2
@@ -4560,12 +4560,40 @@ const UIDTableEntry UIDTable[] = {
   "Waveform Filter Lookup Table Input Frequency Unit" },
 { 0, 0, 0, 3045, // 1.2.840.10008.6.1.1456
   "Waveform Filter Lookup Table Output Magnitude Unit" },
-{ 2776, 2, 1, 0, 0 },
+{ 0, 0, 0, 272, // 1.2.840.10008.6.1.1457
+  "Specific Observation Subject Class" },
+{ 0, 0, 0, 9540, // 1.2.840.10008.6.1.1458
+  "Movable Beam Limiting Device Type" },
+{ 0, 0, 0, 9260, // 1.2.840.10008.6.1.1459
+  "Radiotherapy Acquisition WorkItem Subtasks" },
+{ 0, 0, 0, 9261, // 1.2.840.10008.6.1.1460
+  "Patient Position Acquisition Radiation Source Locations" },
+{ 0, 0, 0, 9262, // 1.2.840.10008.6.1.1461
+  "Energy Derivation Types" },
+{ 0, 0, 0, 9263, // 1.2.840.10008.6.1.1462
+  "KV Imaging Acquisition Techniques" },
+{ 0, 0, 0, 9264, // 1.2.840.10008.6.1.1463
+  "MV Imaging Acquisition Techniques" },
+{ 0, 0, 0, 9265, // 1.2.840.10008.6.1.1464
+  "Patient Position Acquisition - Projection Techniques" },
+{ 0, 0, 0, 9266, // 1.2.840.10008.6.1.1465
+  "Patient Position Acquisition - CT Techniques" },
+{ 0, 0, 0, 9267, // 1.2.840.10008.6.1.1466
+  "Patient Positioning Related Object Purposes" },
+{ 0, 0, 0, 9268, // 1.2.840.10008.6.1.1467
+  "Patient Position Acquisition Devices" },
+{ 0, 0, 0, 9269, // 1.2.840.10008.6.1.1468
+  "RT Radiation Meterset Units" },
+{ 0, 0, 0, 9270, // 1.2.840.10008.6.1.1469
+  "Acquisition Initiation Types" },
+{ 0, 0, 0, 9271, // 1.2.840.10008.6.1.1470
+  "RT Image Patient Position Acquisition Devices" },
+{ 2790, 2, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.1
   "Native DICOM Model" },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.2
   "Abstract Multi-Dimensional Image Model" },
-{ 2779, 1, 1, 0, 0 },
+{ 2793, 1, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.8.1.1
   "DICOM Content Mapping Resource" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.1
@@ -4624,10 +4652,10 @@ const UIDTableEntry UIDTable[] = {
   "Audio Waveform Real-Time Communication" },
 { 0, 0, 0, 0, // 1.2.840.10008.10.4
   "Rendition Selection Document Real-Time Communication" },
-{ 2810, 2, 3, 0, 0 },
-{ 2851, 1, 1, 0, 0 },
-{ 2812, 31, 1, 0, 0 },
-{ 2843, 8, 1, 0, 0 },
+{ 2824, 2, 3, 0, 0 },
+{ 2865, 1, 1, 0, 0 },
+{ 2826, 31, 1, 0, 0 },
+{ 2857, 8, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.1
   "dicomDeviceName" },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.2
