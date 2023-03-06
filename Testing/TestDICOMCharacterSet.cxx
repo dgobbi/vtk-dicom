@@ -445,7 +445,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
     "ISO_IR 166", "\x01\x7f,\xa0\xda,\xdf\xfb,",
     "LATIN7",     "\x01\x7f,\xa0\xff,",
     "LATIN8",     "\x01\x7f,\xa0\xff,",
-    "LATIN9",     "\x01\x7f,\xa0\xff,",
+    "ISO_IR 203", "\x01\x7f,\xa0\xff,",
     "LATIN10",    "\x01\x7f,\xa0\xff,",
     "Windows-874","\x01\xda,\xdf\xfb,",
     "CP1250",     "\x01\xff,",
