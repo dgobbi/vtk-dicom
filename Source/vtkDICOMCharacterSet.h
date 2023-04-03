@@ -25,7 +25,7 @@
  *  This class provides the means to convert the various international
  *  text encodings used by DICOM to UTF-8 and back again.
  *
- *  During conversion to UTF-8, any codes the original encoding that
+ *  During conversion to UTF-8, any codes from the original encoding that
  *  can't be converted are replaced by Unicode's "REPLACEMENT CHARACTER",
  *  which is a question mark in a black diamond.  For instance, if the
  *  original encoding is ISO_IR_6 (ASCII), any octets outside of the
@@ -34,7 +34,7 @@
  *  DICOM supports a fairly small number of single-byte and multi-byte
  *  character sets.  The only VRs that support these character sets are
  *  PN, LO, SH, ST, LT, and ST (all other text VRs must be ASCII). In
- *  addition to ASCII, there are eleven 8-bit single-byte encodings,
+ *  addition to ASCII, there are twelve 8-bit single-byte encodings,
  *  three iso-2022 multi-byte encodings, and three variable-length
  *  encodings (UTF-8, GB18030, GBK).
  *
@@ -49,7 +49,7 @@
  *  'euc-jp', 'iso-2022-jp', 'korean' (euc-kr), 'chinese' (gbk), 'gb18030',
  *  'big5', 'cp1250', 'cp1251', 'cp1252', 'cp1253', 'cp1254', 'cp1255',
  *  'cp1256', 'cp1257', 'cp1258', and 'utf-8'.  Common aliases of these
- *  character *  sets can also be used.
+ *  character sets can also be used.
  */
 class VTKDICOM_EXPORT vtkDICOMCharacterSet
 {
