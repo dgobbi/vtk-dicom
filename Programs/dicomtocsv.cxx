@@ -50,6 +50,7 @@ namespace {
 enum ReductionType
 {
   None = 0,
+  First,
   FirstNonzero,
   MinValue,
   MaxValue
@@ -77,6 +78,7 @@ void dicomtocsv_usage(FILE *file, const char *cp)
     "  -o <data.csv>     Provide a file for the query results.\n"
     "  -maxdepth n       Set the maximum directory depth for search.\n"
     "  --default         Add to default query instead of replacing it.\n"
+    "  --first           Report from the first file in the series (fast).\n"
     "  --first-nonzero   Search series for first nonzero value of each key.\n"
     "  --all-unique      Report all unique values within each series.\n"
     "  --min-value       Report the minimum value within each series.\n"
@@ -561,6 +563,9 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
 
           vtkDICOMTagPath tagPath = ql->at(i);
           std::string s;
+          std::string runval;
+          size_t runlength;
+          size_t lastrunlength = 0;
           double d = 0.0;
           bool isNumber = true;
           bool found = false;
@@ -656,7 +661,15 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
                     isNumber = false;
                   }
 
-                  if (rt != 0 && vptr->GetVR().HasNumericValue())
+                  if (rt == First)
+                  {
+                    s = t;
+                    found = true;
+                    done = true;
+                    break;
+                  }
+                  else if (rt != 0 && vptr->GetVL() != 0 &&
+                           vptr->GetVR().HasNumericValue())
                   {
                     double f = vptr->AsDouble();
                     if (!found)
@@ -692,15 +705,28 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
                       s += t;
                     }
                   }
-                  else
+                  else if (vptr->GetVL() != 0)
                   {
-                    // output the value
-                    s = t;
-                    found = true;
-                    if (rt == 0 || vptr->GetVL() != 0)
+                    if (lastrunlength == 0)
                     {
-                      done = true;
-                      break;
+                      s = t;
+                      runval = t;
+                      runlength = 1;
+                      lastrunlength = 1;
+                      found = true;
+                    }
+                    else if (t == runval)
+                    {
+                      if (++runlength > lastrunlength)
+                      {
+                        s = t;
+                        lastrunlength = runlength;
+                      }
+                    }
+                    else
+                    {
+                      runval = t;
+                      runlength = 1;
                     }
                   }
                 }
@@ -922,6 +948,10 @@ int MAINMACRO(int argc, char *argv[])
     else if (strcmp(arg, "--default") == 0)
     {
       dicomtocsv_default(level, &query, &qtlist);
+    }
+    else if (strcmp(arg, "--first") == 0)
+    {
+      rt = First;
     }
     else if (strcmp(arg, "--first-nonzero") == 0)
     {
