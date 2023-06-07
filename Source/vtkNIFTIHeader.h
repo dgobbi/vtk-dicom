@@ -98,7 +98,8 @@ public:
     XFormScannerAnat = 1,
     XFormAlignedAnat = 2,
     XFormTalairach = 3,
-    XFormMNI152 = 4
+    XFormMNI152 = 4,
+    XFormTemplateOther = 5
   };
 
   //! NIFTI slice codes.
