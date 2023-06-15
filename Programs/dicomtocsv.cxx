@@ -129,6 +129,56 @@ const char *dicomtocsv_basename(const char *filename)
   return cp;
 }
 
+// dot product
+double dicomtocsv_dotprod(const double x[3], const double y[3])
+{
+  return x[0]*y[0] + x[1]*y[1] + x[2]*y[2];
+}
+
+// check if two orientations are equal or nearly equal
+bool dicomtocsv_same_orientation(const vtkDICOMValue& ov1,
+                                 const vtkDICOMValue& ov2)
+{
+  // start with a simple check for exact equality
+  if (ov1 == ov2)
+  {
+    return true;
+  }
+
+  // do a numerical check with tolerance
+  double o1[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+  double o2[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+  ov1.GetValues(o1, 6);
+  ov2.GetValues(o2, 6);
+
+  // check the row and column orientation vectors
+  for (int i = 0; i < 2; i++)
+  {
+    // use dot product to compute sine of angle between vectors
+    double a = dicomtocsv_dotprod(&o1[3*i], &o2[3*i]);
+    double b = dicomtocsv_dotprod(&o1[3*i], &o1[3*i]);
+    double c = dicomtocsv_dotprod(&o2[3*i], &o2[3*i]);
+    // use "d" to hold the square of the sine
+    double d = 1.0;
+    const double tol = 1e-4;
+    // apply forumula only if both vectors are nonzero
+    if (b > 0.0 && c > 0.0)
+    {
+      // compute square of sine of angle between o1 and o2 vector
+      d = 1.0 - (a*a)/(b*c);
+      // compare against tolerance (due to sine small angle approximation,
+      // the tolerance is essentially applied to angle itself, in radians)
+      if (d > tol*tol)
+      {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+
 typedef vtkDICOMVR VR;
 
 // Observer for DICOM errors
@@ -549,8 +599,37 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
 
       // this loop is only for the "image" level
       int m = (level >= 4 ? meta->GetNumberOfInstances() : 1);
-      for (int jj = 0; jj < m; jj++)
+      int n = (m == 1 ? meta->GetNumberOfInstances() : 1);
+      for (int kk = 0; kk < m; kk++)
       {
+        // this will be zero unless level >= 4
+        int jj = kk;
+
+        // whether to report only specific images from series/study
+        if (level < 4 && n > 2)
+        {
+          // check for localizers at the beginning or end of series,
+          // and skip them if they are present
+          vtkDICOMTag tag(DC::ImageOrientationPatient);
+          vtkDICOMDataElementIterator iter = meta->Find(tag);
+          if (iter != meta->End() && iter->IsPerInstance())
+          {
+            vtkDICOMValue ov1 = iter->GetValue(0);
+            vtkDICOMValue ov2 = iter->GetValue(1);
+            vtkDICOMValue ov3 = iter->GetValue(n - 1);
+            bool match1 = dicomtocsv_same_orientation(ov1, ov2);
+            bool match2 = dicomtocsv_same_orientation(ov2, ov3);
+            if (match1 && !match2)
+            {
+              n -= 1; // skip the last image
+            }
+            else if (match2 && !match1)
+            {
+              jj += 1; // skip the first image
+            }
+          }
+        }
+
         // print the value of each tag
         for (size_t i = 0; i < ql->size(); i++)
         {
@@ -567,20 +646,19 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
           bool done = false;
 
           // this loop is only needed if all images are to be checked
-          int n = (m == 1 ? meta->GetNumberOfInstances() : 1);
           if (level >= 4)
           {
             // we will probe one instance (instance jj)
             n = jj+1;
           }
-          else if (n > 1)
+          else if (n > jj+1)
           {
             // do a quick check to see if value is same for all instances
             vtkDICOMTag tag = tagPath.GetHead();
             if ((tag.GetGroup() & 0x0001) == 0)
             {
               vtkDICOMDataElementIterator iter = meta->Find(tag);
-              n = ((iter == meta->End() || !iter->IsPerInstance()) ? 1 : n);
+              n = ((iter == meta->End() || !iter->IsPerInstance()) ? jj+1 : n);
             }
           }
           for (int ii = jj; ii < n && !done; ii++)
