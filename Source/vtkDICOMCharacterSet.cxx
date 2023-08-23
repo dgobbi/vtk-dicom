@@ -3785,7 +3785,7 @@ unsigned int vtkDICOMCharacterSet::InitISO2022(
     // (this is so we can use AnyToUTF8() to decode the G1 charset)
     charsetG[1] = (key & ISO_2022_BASE);
 
-    if (charsetG[1] >= (ISO_2022_IR_149 & ISO_2022_BASE))
+    if (charsetG[1] >= X_EUCKR)
     {
       // ISO IR 149 (Korean) and beyond are 94x94 charsets
       state |= MULTIBYTE_G1;
