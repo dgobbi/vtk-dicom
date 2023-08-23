@@ -51,10 +51,11 @@ if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM AND NOT DICOM_EXTERNAL_BUILD)
   # To set DICOM_USE_VTKZLIB in vtkDICOMConfig.h
   set(DICOM_USE_VTKZLIB ON)
 
+  # Make executable programs a configurable option
   option(BUILD_DICOM_PROGRAMS "Build the vtkDICOM tools" OFF)
-  option(BUILD_DICOM_EXAMPLES "Build the vtkDICOM examples" OFF)
   set(BUILD_PROGRAMS ${BUILD_DICOM_PROGRAMS})
-  set(BUILD_EXAMPLES ${BUILD_DICOM_EXAMPLES})
+  # An external build is required for the examples
+  set(BUILD_EXAMPLES OFF)
 
 elseif(Module_vtkDICOM)
   # When building as a remote module for older versions of VTK
