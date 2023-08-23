@@ -244,10 +244,10 @@ void scancotodicom_convert_date(char date[32])
     if (*cp != '\0') { cp++; }
   }
 
-  sprintf(date, "%04d%02d%02d%02d%02d%02d.%06d",
-          parts[2] % 10000, parts[1] % 100, parts[0] % 100,
-          parts[3] % 100, parts[4] % 100, parts[5] % 100,
-          parts[6] % 1000000);
+  snprintf(date, 32, "%04d%02d%02d%02d%02d%02d.%06d",
+           parts[2] % 10000, parts[1] % 100, parts[0] % 100,
+           parts[3] % 100, parts[4] % 100, parts[5] % 100,
+           parts[6] % 1000000);
 }
 
 // Check that a file has a valid extension

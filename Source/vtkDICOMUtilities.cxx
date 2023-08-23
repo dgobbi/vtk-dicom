@@ -221,9 +221,9 @@ std::string vtkDICOMUtilities::GenerateDateTime(
     long long zst = zs/1000000ll;
     tzs[0] = (zst < 0 ? '-' : '+');
     zst = (zst < 0 ? -zst : zst);
-    sprintf(&tzs[1], "%02d%02d",
-            static_cast<int>((zst/3600)%24),
-            static_cast<int>((zst%3600)/60));
+    snprintf(&tzs[1], sizeof(tzs) - 1, "%02d%02d",
+             static_cast<int>((zst/3600)%24),
+             static_cast<int>((zst%3600)/60));
     z = tzs;
   }
 
@@ -266,8 +266,8 @@ std::string vtkDICOMUtilities::GenerateDateTime(
 
   // create a DICOM datetime string
   char dt[84];
-  sprintf(dt, "%04d%02d%02d%02d%02d%02d.%06d%s",
-          y, m, d, H, M, S, us, z);
+  snprintf(dt, sizeof(dt), "%04d%02d%02d%02d%02d%02d.%06d%s",
+           y, m, d, H, M, S, us, z);
 
   return dt;
 }

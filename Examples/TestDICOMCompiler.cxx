@@ -180,7 +180,8 @@ int main(int argc, char *argv[])
         // write the DICOM series with the compiler
         fname = a->GetValue(i);
         char outpath[128];
-        sprintf(outpath, outfile, fileBasename(fname.c_str()));
+        snprintf(outpath, sizeof(outpath), outfile,
+                 fileBasename(fname.c_str()));
         compiler->SetFileName(outpath);
         const char *instanceUID =
           data->Get(i, DC::SOPInstanceUID).GetCharData();

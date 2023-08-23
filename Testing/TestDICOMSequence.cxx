@@ -71,7 +71,7 @@ int TestDICOMSequence(int argc, char *argv[])
     for (int j = 0; j < 10; j++)
     {
       // create a unique InstanceUID
-      sprintf(instanceUID, instanceUIDFormat, 255+j);
+      snprintf(instanceUID, sizeof(instanceUID), instanceUIDFormat, 255+j);
       vtkDICOMItem item2;
       item2.Set(DC::ReferencedSOPClassUID,
         vtkDICOMValue(vtkDICOMVR::UI, classUID));
@@ -133,7 +133,7 @@ int TestDICOMSequence(int argc, char *argv[])
         v3 = item.Get(DC::ReferencedSOPClassUID);
         TestAssert(StringsEqual(v3.GetCharData(), "1.2.840.10008.5.1.4.1.1.4"));
         v3 = item.Get(DC::ReferencedSOPInstanceUID);
-        sprintf(instanceUID, instanceUIDFormat, 255+j);
+        snprintf(instanceUID, sizeof(instanceUID), instanceUIDFormat, 255+j);
         TestAssert(StringsEqual(v3.GetCharData(), instanceUID));
       }
     }

@@ -624,7 +624,8 @@ int MAINMACRO(int argc, char *argv[])
         {
           // copy the file
           char fname[32];
-          sprintf(fname, "IM-%04d-%04d.dcm", si, static_cast<int>(i+1));
+          snprintf(fname, sizeof(fname), "IM-%04d-%04d.dcm",
+                   si, static_cast<int>(i+1));
           const std::string& srcname = sa->GetValue(i);
           std::string fullname = outpath.Join(fname);
           if (!vtkDICOMFile::SameFile(srcname.c_str(), fullname.c_str()))

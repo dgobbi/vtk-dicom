@@ -202,7 +202,7 @@ int TestDICOMMetaData(int argc, char *argv[])
     for (int j = 0; j < 10; j++)
     {
       // create a unique InstanceUID
-      sprintf(instanceUID, instanceUIDFormat, 255+j);
+      snprintf(instanceUID, sizeof(instanceUID), instanceUIDFormat, 255+j);
       vtkDICOMItem item2(metaData);
       item2.Set(DC::ReferencedSOPClassUID,
         vtkDICOMValue(vtkDICOMVR::UI, classUID));
@@ -255,7 +255,7 @@ int TestDICOMMetaData(int argc, char *argv[])
   for (int j = 0; j < 10; j++)
   {
     // create a unique InstanceUID
-    sprintf(instanceUID, instanceUIDFormat, 255+j);
+    snprintf(instanceUID, sizeof(instanceUID), instanceUIDFormat, 255+j);
     metaData->Set(
       vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                       DC::ReferencedInstanceSequence, j,

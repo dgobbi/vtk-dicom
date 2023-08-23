@@ -1731,7 +1731,7 @@ bool SimpleSQL::Open(const char *fname)
     if (use_percent)
     {
       char enc[4];
-      sprintf(enc, "%%%2.2x", static_cast<unsigned char>(c));
+      snprintf(enc, sizeof(enc), "%%%2.2x", static_cast<unsigned char>(c));
       uri += enc;
     }
     else

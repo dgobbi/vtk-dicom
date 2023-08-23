@@ -506,12 +506,12 @@ int vtkScancoCTReader::ReadISQHeader(std::istream *file, unsigned long bytesRead
   month = ((month > 12 || month < 1) ? 0 : month);
   static const char *months[] = { "XXX", "JAN", "FEB", "MAR", "APR", "MAY",
     "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
-  sprintf(this->CreationDate, "%d-%s-%d %02d:%02d:%02d.%03d",
-          (day % 100), months[month], (year % 10000),
-          (hour % 100), (minute % 100), (second % 100), (milli % 1000));
-  sprintf(this->ModificationDate, "%d-%s-%d %02d:%02d:%02d.%03d",
-          (day % 100), months[month], (year % 10000),
-          (hour % 100), (minute % 100), (second % 100), (milli % 1000));
+  snprintf(this->CreationDate, 32, "%d-%s-%d %02d:%02d:%02d.%03d",
+           (day % 100), months[month], (year % 10000),
+           (hour % 100), (minute % 100), (second % 100), (milli % 1000));
+  snprintf(this->ModificationDate, 32, "%d-%s-%d %02d:%02d:%02d.%03d",
+           (day % 100), months[month], (year % 10000),
+           (hour % 100), (minute % 100), (second % 100), (milli % 1000));
 
   this->SetDataByteOrderToLittleEndian();
   this->SetFileDimensionality(3);

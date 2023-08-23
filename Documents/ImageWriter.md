@@ -113,7 +113,7 @@ the series one-by-one.
   for (int i = 0; i < n; i++)
   {
     char outputFile[256];
-    sprintf(outputFile, "IM-0001-%04.4d.dcm", i+1);
+    snprintf(outputFile, sizeof(outputFile), "IM-0001-%04.4d.dcm", i+1);
     compiler->SetFileName(outputFile);
     compiler->SetIndex(i);
     compiler->WriteHeader();

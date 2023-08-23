@@ -264,16 +264,16 @@ void vtkDICOMWriter::ComputeInternalFileName(int slice)
 
   if (this->FileName)
   {
-    sprintf(this->InternalFileName, "%s", this->FileName);
+    snprintf(this->InternalFileName, n + 11, "%s", this->FileName);
   }
   else if (this->FilePrefix)
   {
-    sprintf(this->InternalFileName,
+    snprintf(this->InternalFileName, n + 11,
             this->FilePattern, this->FilePrefix, slice);
   }
   else
   {
-    sprintf(this->InternalFileName, this->FilePattern, slice);
+    snprintf(this->InternalFileName, n + 11, this->FilePattern, slice);
   }
 }
 
