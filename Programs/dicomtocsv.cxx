@@ -542,7 +542,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
         for (int ii = 0; ii < meta->GetNumberOfInstances(); ii++)
         {
           parser->SetIndex(ii);
-          parser->SetFileName(a->GetValue(ii));
+          parser->SetFileName(a->GetValue(ii).c_str());
           parser->Update();
         }
       }

@@ -395,7 +395,7 @@ void scancotodicom_read_options(
       vtkIdType m = files->GetMaxId();
       if (m >= 0)
       {
-        const char *f = files->GetValue(m);
+        const char *f = files->GetValue(m).c_str();
         if (isScancoCTFileName(f))
         {
           if (options->input == 0)
@@ -420,7 +420,7 @@ void scancotodicom_read_options(
     vtkIdType m = files->GetMaxId();
     if (m >= 0)
     {
-      const char *f = files->GetValue(m);
+      const char *f = files->GetValue(m).c_str();
       if (isScancoCTFileName(f))
       {
         if (options->input == 0)

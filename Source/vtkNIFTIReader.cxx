@@ -397,7 +397,7 @@ int vtkNIFTIReader::RequestInformation(
     int headers = 0;
     for (int i = 0; i < 2; i++)
     {
-      filename = this->FileNames->GetValue(i);
+      filename = this->FileNames->GetValue(i).c_str();
       // this checks for .hdr and .hdr.gz, case insensitive
       if (vtkNIFTIReader::CheckExtension(filename, ".hdr"))
       {
@@ -1054,7 +1054,7 @@ int vtkNIFTIReader::RequestData(
     int headers = 0;
     for (int i = 0; i < 2; i++)
     {
-      filename = this->FileNames->GetValue(i);
+      filename = this->FileNames->GetValue(i).c_str();
       // this checks for .hdr and .hdr.gz, case insensitive
       if (vtkNIFTIReader::CheckExtension(filename, ".hdr"))
       {

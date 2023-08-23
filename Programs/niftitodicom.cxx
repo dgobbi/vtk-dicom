@@ -404,7 +404,7 @@ void niftitodicom_read_options(
       vtkIdType m = files->GetMaxId();
       if (m >= 0)
       {
-        const char *f = files->GetValue(m);
+        const char *f = files->GetValue(m).c_str();
         if (isNIFTIFileName(f))
         {
           if (options->input == 0)
@@ -429,7 +429,7 @@ void niftitodicom_read_options(
     vtkIdType m = files->GetMaxId();
     if (m >= 0)
     {
-      const char *f = files->GetValue(m);
+      const char *f = files->GetValue(m).c_str();
       if (isNIFTIFileName(f))
       {
         if (options->input == 0)

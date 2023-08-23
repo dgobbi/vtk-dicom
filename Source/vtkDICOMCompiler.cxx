@@ -1364,7 +1364,7 @@ bool vtkDICOMCompiler::WriteMetaHeader(
 
   if (instanceUID == 0)
   {
-    instanceUID = this->SeriesUIDs->GetValue(idx);
+    instanceUID = this->SeriesUIDs->GetValue(idx).c_str();
   }
   if (implementationUID == 0)
   {
@@ -1470,11 +1470,11 @@ bool vtkDICOMCompiler::WriteMetaData(
 
   if (instanceUID == 0)
   {
-    instanceUID = this->SeriesUIDs->GetValue(idx);
+    instanceUID = this->SeriesUIDs->GetValue(idx).c_str();
   }
   if (seriesUID == 0)
   {
-    seriesUID = this->SeriesUIDs->GetValue(this->SeriesUIDs->GetMaxId());
+    seriesUID = this->SeriesUIDs->GetValue(this->SeriesUIDs->GetMaxId()).c_str();
   }
   if (studyUID == 0 && meta->Get(DC::StudyInstanceUID).AsString() == "")
   {

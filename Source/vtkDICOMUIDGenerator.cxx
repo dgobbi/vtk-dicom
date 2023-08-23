@@ -519,7 +519,7 @@ void vtkDICOMUIDGenerator::GenerateUIDs(vtkDICOMTag tag, vtkStringArray *uids)
     vtkIdType j = 0;
     for (; j < i; j++)
     {
-      if (vtkDICOMUtilities::CompareUIDs(uids->GetValue(j), uid) > 0)
+      if (vtkDICOMUtilities::CompareUIDs(uids->GetValue(j).c_str(), uid) > 0)
       {
         break;
       }

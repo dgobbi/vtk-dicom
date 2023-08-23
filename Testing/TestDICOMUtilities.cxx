@@ -55,7 +55,7 @@ int TestDICOMUtilities(int argc, char *argv[])
   DU::GenerateUIDs(DC::SeriesInstanceUID, a);
   for (int i = 0; i < 9; i++)
   {
-    TestAssert(DU::CompareUIDs(a->GetValue(i), a->GetValue(i+1)) < 0);
+    TestAssert(DU::CompareUIDs(a->GetValue(i).c_str(), a->GetValue(i+1).c_str()) < 0);
   }
   }
 
@@ -68,7 +68,7 @@ int TestDICOMUtilities(int argc, char *argv[])
   DU::GenerateUIDs(DC::SeriesInstanceUID, a);
   for (int i = 0; i < 9; i++)
   {
-    TestAssert(DU::CompareUIDs(a->GetValue(i), a->GetValue(i+1)) < 0);
+    TestAssert(DU::CompareUIDs(a->GetValue(i).c_str(), a->GetValue(i+1).c_str()) < 0);
   }
   }
 

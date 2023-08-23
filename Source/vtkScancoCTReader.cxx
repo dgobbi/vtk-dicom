@@ -1101,7 +1101,7 @@ int vtkScancoCTReader::RequestData(
   const char *filename = 0;
   if (this->FileNames && this->FileNames->GetNumberOfValues() == 1)
   {
-    filename = this->FileNames->GetValue(0);
+    filename = this->FileNames->GetValue(0).c_str();
   }
   else
   {
