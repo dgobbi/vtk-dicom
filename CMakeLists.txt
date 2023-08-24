@@ -105,7 +105,6 @@ else()
   option(BUILD_SHARED_LIBS "Build shared libraries." OFF)
 
   # Which parts of the package to build
-  option(BUILD_TESTING "Build the tests" OFF)
   option(BUILD_PROGRAMS "Build some useful DICOM tools" ON)
   option(BUILD_EXAMPLES "Build the examples" OFF)
 
