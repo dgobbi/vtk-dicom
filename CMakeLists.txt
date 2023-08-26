@@ -8,9 +8,6 @@ cmake_minimum_required(VERSION 3.12)
 set(DICOM_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 set(CMAKE_MODULE_PATH ${DICOM_CMAKE_DIR} ${CMAKE_MODULE_PATH})
 
-# Use ctest for dashboard submissions
-include(CTest)
-
 # Project version
 set(DICOM_MAJOR_VERSION 0)
 set(DICOM_MINOR_VERSION 8)
@@ -103,6 +100,12 @@ else()
   endif()
 
   option(BUILD_SHARED_LIBS "Build shared libraries." OFF)
+
+  # Use ctest for dashboard submissions
+  option(BUILD_TESTING "Build the tests" OFF)
+  if(BUILD_TESTING)
+    include(CTest)
+  endif()
 
   # Which parts of the package to build
   option(BUILD_PROGRAMS "Build some useful DICOM tools" ON)
