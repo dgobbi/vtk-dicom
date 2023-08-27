@@ -5464,6 +5464,18 @@ CalibrationDateTime
 DT
 1
 
+(0018,1204)
+Date of Manufacture
+DateOfManufacture
+DA
+1
+
+(0018,1205)
+Date of Installation
+DateOfInstallation
+DA
+1
+
 (0018,1210)
 Convolution Kernel
 ConvolutionKernel
@@ -9172,6 +9184,132 @@ ZeroVelocityPixelValue
 US or SS
 1
 
+(0018,9821)
+Photoacoustic Excitation Characteristics Sequence
+PhotoacousticExcitationCharacteristicsSequence
+SQ
+1
+
+(0018,9822)
+Excitation Spectral Width
+ExcitationSpectralWidth
+FD
+1
+
+(0018,9823)
+Excitation Energy
+ExcitationEnergy
+FD
+1
+
+(0018,9824)
+Excitation Pulse Duration
+ExcitationPulseDuration
+FD
+1
+
+(0018,9825)
+Excitation Wavelength Sequence
+ExcitationWavelengthSequence
+SQ
+1
+
+(0018,9826)
+Excitation Wavelength
+ExcitationWavelength
+FD
+1
+
+(0018,9828)
+Illumination Translation Flag
+IlluminationTranslationFlag
+CS
+1
+
+(0018,9829)
+Acoustic Coupling Medium Flag
+AcousticCouplingMediumFlag
+CS
+1
+
+(0018,982A)
+Acoustic Coupling Medium Code Sequence
+AcousticCouplingMediumCodeSequence
+SQ
+1
+
+(0018,982B)
+Acoustic Coupling Medium Temperature
+AcousticCouplingMediumTemperature
+FD
+1
+
+(0018,982C)
+Transducer Response Sequence
+TransducerResponseSequence
+SQ
+1
+
+(0018,982D)
+Center Frequency
+CenterFrequency
+FD
+1
+
+(0018,982E)
+Fractional Bandwidth
+FractionalBandwidth
+FD
+1
+
+(0018,982F)
+Lower Cutoff Frequency
+LowerCutoffFrequency
+FD
+1
+
+(0018,9830)
+Upper Cutoff Frequency
+UpperCutoffFrequency
+FD
+1
+
+(0018,9831)
+Transducer Technology Sequence
+TransducerTechnologySequence
+SQ
+1
+
+(0018,9832)
+Sound Speed Correction Mechanism Code Sequence
+SoundSpeedCorrectionMechanismCodeSequence
+SQ
+1
+
+(0018,9833)
+Object Sound Speed
+ObjectSoundSpeed
+FD
+1
+
+(0018,9834)
+Acoustic Coupling Medium Sound Speed
+AcousticCouplingMediumSoundSpeed
+FD
+1
+
+(0018,9835)
+Photoacoustic Image Frame Type Sequence
+PhotoacousticImageFrameTypeSequence
+SQ
+1
+
+(0018,9836)
+Image Data Type Code Sequence
+ImageDataTypeCodeSequence
+SQ
+1
+
 (0018,9900)
 Reference Location Label
 ReferenceLocationLabel
@@ -12823,6 +12961,12 @@ CS
 (0028,3000)
 Modality LUT Sequence
 ModalityLUTSequence
+SQ
+1
+
+(0028,3001)
+Variable Modality LUT Sequence
+VariableModalityLUTSequence
 SQ
 1
 
@@ -23805,7 +23949,7 @@ Treatment Termination Code
 TreatmentTerminationCode
 SH
 1
-
+RET
 (3008,002C)
 Treatment Verification Status
 TreatmentVerificationStatus
