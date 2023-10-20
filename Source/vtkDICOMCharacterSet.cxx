@@ -2250,6 +2250,11 @@ size_t vtkDICOMCharacterSet::GBKToUTF8(
           cp++;
         }
       }
+      else if (a == 0x80)
+      {
+        // EURO SIGN for CP936 compatibility (also at a=A2,b=E3)
+        code = 0x20AC;
+      }
 
       if (code == 0xFFFD)
       {
