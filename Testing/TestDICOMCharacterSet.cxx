@@ -313,8 +313,8 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   // "目本^樛楹"
   // "ぼ^ボ"
   std::string raw = "\xd4\xcf\xc0\xde^\xc0\xdb\xb3\\"
-                    "\x1b$BL\\K\\\x1b(B^\x1b$B\\\\\\3\x1b(J\\"
-                    "\x1b$B$\\\x1b(B^\x1b$B%\\\x1b(J";
+                    "\x1b$BL\\K\\\x1b(J^\x1b$B\\\\\\3\x1b(J\\"
+                    "\x1b$B$\\\x1b(J^\x1b$B%\\\x1b(J";
   vtkDICOMItem item;
   item.Set(DC::SpecificCharacterSet, name);
   item.Set(DC::OperatorsName, raw);
@@ -322,8 +322,8 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   TestAssert(v.GetNumberOfValues() == 3);
   TestAssert(v.AsString() == raw);
   TestAssert(v.GetString(0) == "\xd4\xcf\xc0\xde^\xc0\xdb\xb3");
-  TestAssert(v.GetString(1) == "\x1b$BL\\K\\\x1b(B^\x1b$B\\\\\\3\x1b(J");
-  TestAssert(v.GetString(2) == "\x1b$B$\\\x1b(B^\x1b$B%\\\x1b(J");
+  TestAssert(v.GetString(1) == "\x1b$BL\\K\\\x1b(J^\x1b$B\\\\\\3\x1b(J");
+  TestAssert(v.GetString(2) == "\x1b$B$\\\x1b(J^\x1b$B%\\\x1b(J");
   }
 
   { // test for proper escaping of backslashes in iso-2022-jp-2
