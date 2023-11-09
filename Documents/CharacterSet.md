@@ -230,31 +230,24 @@ and stored as 8-byte codes.
 
 The GB18030 encoding was designed to encompass all Unicode code points.
 Every GB18030 code point maps to a unique Unicode code point and
-vice-versa.  Since some GB18030 character codes map to the the
-Private Use Area (PUA) of Unicode, there are some special considerations
-for the use of GB18030 as discussed below.  Also, it must be noted that
-searching for ASCII backslash (0x5c) in GB18030-encoded strings must be
-done with care, as some two-byte character codes have 0x5c as the
-second byte.
+vice-versa, so round-trip encoding of all Unicode is possible.  Since
+the ASCII backslash code (0x5c) can appear in GB18030-encoded strings
+as the second byte of a two-byte character, special consideration is
+applied when decoding multi-value data elements to ensure that 0x5c
+is only parsed as a separator when it appears as a single-byte character.
 
 ### Decoding
 
-Decoding is done strictly according to the GB18030:2000 mapping tables.
-A small number of GB18030 characters map to locations in the Unicode
-PUA region, and will therefore only display correctly when used with
-a Chinese font that was designed for GB18030 (or for the GBK standard,
-which GB18030 extends).
-
-The Unicode 4.1 standard of 2005 added official code points for the
-characters that GB18030 maps to the PUA, so in the absence of fonts
-that include the correct glyphs at the PUA code points, those PUA
-code points can be mapped to Unicode 4.1 code points for display.
-Our decoder does not perform this additional mapping, since this
-would break round-trip mapping using the official GB18030:2000 tables.
+Decoding is done strictly according to the GB18030:2022 mapping tables.
+Compared to GB18030:2005, 18 character code points that previously mapped
+to the PUA (Unicode Private Use Area) are now mapped to valid Unicode
+characters, and 6 other character code points that previously mapped to
+the PUA have been retired in favor of new (previously unused) code points
+for those same six characters.
 
 ### Encoding
 
-As with decoding, encoding is done strictly according to the GB18030:2000
+As with decoding, encoding is done strictly according to the GB18030:2022
 tables.  Unlike our encoders for other character sets, our GB18030
 encoder does not perform any compatibility conversions.  This is because
 every Unicode code point maps to a unique GB18030 code point.
@@ -263,23 +256,26 @@ every Unicode code point maps to a unique GB18030 code point.
 ## Chinese via GBK
 
 The GBK character table is a strict subset of GB18030, and does not
-encompass all of Unicode.  Like GB18030, special consideration is needed
-for scanning GBK strings for backslash, since the second byte of
-some two-byte characters might have the value 0x5c.
+encompass all of Unicode.  Like GB18030, special consideration is used
+when scanning GBK strings for backslash, since the second byte of
+some two-byte characters can have the value 0x5c.
 
 ### Decoding
 
-The GBK table maps some code points to the Unicode PUA, so the same PUA
-concerns apply to GBK as apply to GB18030.
+Decoding is done per the GBK subset of GB18030, with one addition for
+compatibility with text that was encoded with Microsoft Code Page 936:
+the code 0x80 is mapped to the Euro symbol.
 
 ### Encoding
 
-Unlike GB18030, our encoder for GBK includes several compatibility
-conversions.  One conversion (for Unicode 0x1E3F) is related to
-GB18030:2005, 24 are for characters that were added to Unicode in 2005,
-and the remainder are to support round-trip mapping for Unicode strings
-containing PUA code points that were present in older versions of the
-GBK mapping tables.
+Unlike GB18030, our encoder for GBK includes compatibility mappings
+for 119 PUA codes that defined characters in older versions of the GB
+conversion tables.  Our encoder does not encode the Euro symbol as
+0x80, which an extension from Code Page 936 rather than an official
+code point in GBK.  Instead, the Euro symbol is encoded as the
+two-byte code 0xA2,0xE3 from GB18030.  Likewise, the 10 vertical
+punctuation marks U+FE10 to U+FE19 are encoded at their GB18030
+code points.
 
 
 ## Chinese via ISO 2022
@@ -288,13 +284,13 @@ DICOM's ISO 2022 IR 58 is identical to the popular euc-cn encoding of
 GB2312, except that DICOM requires the use of `ESC $)A` at the beginning
 of every line containing characters from GB2312.  Unlike GBK and GB18030,
 the second byte of a two-byte GB2312 character code will never be
-0x5c (ASCII backslash).
+0x5c (ASCII backslash), due to the fact that the high bit is always set.
 
 ### Decoding
 
 Decoding is done by removing the `ESC $)A` escape sequence and decoding
 as GB2312 in its euc-cn form.  The table used for decoding is a strict
-subset of the table defined by GB18030:2000.
+subset of the table defined by GB18030:2022.
 
 ### Encoding
 

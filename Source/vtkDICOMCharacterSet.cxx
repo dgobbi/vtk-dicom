@@ -2127,6 +2127,69 @@ size_t vtkDICOMCharacterSet::Big5ToUTF8(
 }
 
 //----------------------------------------------------------------------------
+namespace {
+
+// Each pair is PUA code <-> valid character code for GB18030-2022
+static const unsigned short TweakTableForGB18030[38] = {
+  0xE78D, 0xFE10, 0xE78E, 0xFE12, 0xE78F, 0xFE11, 0xE790, 0xFE13,
+  0xE791, 0xFE14, 0xE792, 0xFE15, 0xE793, 0xFE16, 0xE794, 0xFE17,
+  0xE795, 0xFE18, 0xE796, 0xFE19, 0xE7C7, 0x1E3F, 0xE81E, 0x9FB4,
+  0xE826, 0x9FB5, 0xE82B, 0x9FB6, 0xE82C, 0x9FB7, 0xE832, 0x9FB8,
+  0xE843, 0x9FB9, 0xE854, 0x9FBA, 0xE864, 0x9FBB
+};
+
+// Tweak GB18030 result to get GB18030-2022
+unsigned int TweakGB18030(unsigned int code)
+{
+  // The GB18030 conversion tables have been revised twice:
+  // 1. GB18030-2000 is the original
+  // 2. GB18030-2005 requires the U+E7C7 <-> U+1E3F tweak
+  // 3. GB18030-2022 requires all the tweaks in our tweak table
+
+  // These indicate what portion of the table to search,
+  // we only search relevant part of the table for efficiency
+  int start = 0;
+  int stop = 0;
+
+  if (code >= 0xE78D && code <= 0xE864) // PUA
+  {
+    // if code is private, search whole tweak table
+    stop = 38;
+  }
+  else if (code == 0x1E3F) // GB18030-2005 and GB18030-2022
+  {
+    start  = 21;
+    stop = 22;
+  }
+  else if (code >= 0xFE10 && code <= 0xFE19) // GB18030-2022
+  {
+    start = 1;
+    stop = 20;
+  }
+  else if (code >= 0x9FB4 && code <= 0x9FBB) // GB18030-2022
+  {
+    start = 23;
+    stop = 38;
+  }
+
+  // If start is even, we're searching for even (private) codes,
+  // if start is odd, we're searching for odd (non-private) codes.
+  for (int i = start; i < stop; i += 2)
+  {
+    if (TweakTableForGB18030[i] == static_cast<unsigned short>(code))
+    {
+      // Use xor to swap private to valid character and vice-versa
+      code = TweakTableForGB18030[i ^ 1];
+      break;
+    }
+  }
+
+  return code;
+}
+
+} // end namespace
+
+//----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::UTF8ToGBK(
   const char *text, size_t l, std::string *s)
 {
@@ -2150,17 +2213,6 @@ size_t vtkDICOMCharacterSet::UTF8ToGBK(
     {
       // the primary table is the GB18030 table
       unsigned short t = table[code];
-      if (t >= 0xFFFD) switch (code)
-      {
-        // compatibility mappings beyond the BMP
-        case 0x20087: t = 23767; break;
-        case 0x20089: t = 23768; break;
-        case 0x200CC: t = 23769; break;
-        case 0x215D7: t = 23794; break;
-        case 0x2298F: t = 23804; break;
-        case 0x241FE: t = 23830; break;
-        default: t = 23940;
-      }
       if (t > 23940)
       {
         // found a GB18030 code that is too large for GBK,
@@ -2255,6 +2307,14 @@ size_t vtkDICOMCharacterSet::GBKToUTF8(
             a = (a - 0xA1)*94 + (b - 0xA1);
           }
           code = table[a];
+
+          // if code is PUA, then try to remap to a character
+          if (code >= 0xE000 && code < 0xF900)
+          {
+            // use the mappings from the GB18030-2022 standard
+            code = TweakGB18030(code);
+          }
+
           cp++;
         }
       }
@@ -2298,6 +2358,9 @@ size_t vtkDICOMCharacterSet::UTF8ToGB18030(
       s->push_back(static_cast<char>(code));
       continue;
     }
+
+    // GB18030-2000 to GB18030-2022
+    code = TweakGB18030(code);
 
     unsigned int t;
     if (code <= 0xFFFD)
@@ -2471,6 +2534,8 @@ size_t vtkDICOMCharacterSet::GB18030ToUTF8(
       }
       else
       {
+        // tweak GB18030-2000 to GB18030-2022
+        code = TweakGB18030(code);
         UnicodeToUTF8(code, s);
       }
     }

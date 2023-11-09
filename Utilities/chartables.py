@@ -665,12 +665,38 @@ sys.stdout.write('\n')
   }
 """
 
+# Changes from GB18030-2000 to 2005 (1st row) and 2022 (all)
+GB18030_changes = [
+    ( 7533, 0xE7C7, 0x1E3F), # LATIN SMALL LETTER M WITH ACUTE
+    ( 7182, 0xE78D, 0xFE10), # PF VERTICAL COMMA
+    ( 7183, 0xE78E, 0xFE12), # PF VERTICAL IDEOGRAPHIC FULL STOP
+    ( 7184, 0xE78F, 0xFE11), # PF VERTICAL IDEOGRAPHIC COMMA
+    ( 7185, 0xE790, 0xFE13), # PF VERTICAL COLON
+    ( 7186, 0xE791, 0xFE14), # PF VERTICAL SEMICOLON
+    ( 7187, 0xE792, 0xFE15), # PF VERTICAL EXCLAMATION MARK
+    ( 7188, 0xE793, 0xFE16), # PF VERTICAL QUESTION MARK
+    ( 7201, 0xE794, 0xFE17), # PF VERTICAL LEFT WHITE LENTICULAR BRACKET
+    ( 7202, 0xE795, 0xFE18), # PF VERTICAL RIGHT WHITE LENTICULAR BRACKET
+    ( 7208, 0xE796, 0xFE19), # PF VERTICAL HORIZONTAL ELLIPSIS
+    (23775, 0xE81E, 0x9FB4), # CJK UNIFIED IDEOGRAPH-9FB4
+    (23783, 0xE826, 0x9FB5), # CJK UNIFIED IDEOGRAPH-9FB5
+    (23788, 0xE82B, 0x9FB6), # CJK UNIFIED IDEOGRAPH-9FB6
+    (23789, 0xE82C, 0x9FB7), # CJK UNIFIED IDEOGRAPH-9FB7
+    (23795, 0xE832, 0x9FB8), # CJK UNIFIED IDEOGRAPH-9FB8
+    (23812, 0xE843, 0x9FB9), # CJK UNIFIED IDEOGRAPH-9FB9
+    (23829, 0xE854, 0x9FBA), # CJK UNIFIED IDEOGRAPH-9FBA
+    (23845, 0xE864, 0x9FBB), # CJK UNIFIED IDEOGRAPH-9FBB
+]
+
 # Also use this table for GBK and GB2312
 GB18030 = readtable(whatwg + 'index-gb18030.txt')
 # Fix difference between whatwg table and official table
 GB18030[6555] = 0xE5E5 # 0x3000, ideographic space (duplicate)
-# Change GB18030-2005 to GB18030-2000 (DICOM uses GB18030-2000)
-GB18030[7533] = 0xE7C7 # 0x1E3F
+
+# Make this the GB18030-2000 table, we can easily adjust to
+# GB18030-2005 or GB18030-2022 during the decoding process
+for x,y,z in GB18030_changes:
+    GB18030[x] = y
 
 # Reorganize the 23940 codes so that GB2312 codes come first, this allows
 # us to use the first 8836 entries as a GB2312 table.
@@ -719,7 +745,7 @@ gbk_compat = {
     0xE856 :23831, 0xE857 :23832, 0xE858 :23833, 0xE859 :23834, 0xE85A :23835,
     0xE85B :23836, 0xE85C :23837, 0xE85D :23838, 0xE85E :23839, 0xE85F :23840,
     0xE860 :23841, 0xE861 :23842, 0xE862 :23843, 0xE863 :23844, 0xE864 :23845,
-    # Compatibility mappings (8) not present in GB18030
+    # Compatibility mappings (8) not present in GB18030-2000
     0x9FB4 :23775, 0x9FB5 :23783, 0x9FB6 :23788, 0x9FB7 :23789, 0x9FB8 :23795,
     0x9FB9 :23812, 0x9FBA :23829, 0x9FBB :23845,
     # Vertical punctuation (10) within GB2312 range
