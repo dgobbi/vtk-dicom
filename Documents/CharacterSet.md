@@ -271,9 +271,12 @@ the code 0x80 is mapped to the Euro symbol.
 Unlike GB18030, our encoder for GBK includes compatibility mappings
 for PUA codes that defined characters in older versions of the GB
 conversion tables.  Our encoder does not encode the Euro symbol.
+See the section on the GB2312 encoder for compatibility mappings
+(all of these are used for GBK except for EM DASH and HORIZONTAL BAR,
+since GBK encodes both separately).
 
 
-## Chinese via ISO 2022
+## Chinese via ISO 2022 (GB2312)
 
 DICOM's ISO 2022 IR 58 is identical to the popular euc-cn encoding of
 GB2312, except that DICOM requires the use of `ESC $)A` at the beginning
@@ -291,6 +294,17 @@ subset of the table defined by GB18030:2022.
 
 Encoding involves adding the `ESC $)A` escape sequence at the beginning
 of every line containing Chinese characters, and then encoding as GB2312.
+
+The following encoding equivalencies are used for compatibility with
+historical GB2312 to Unicode mapping tables:
+
+1. MIDDLE DOT and KATAKANA MIDDLE DOT
+2. EM DASH and HORIZONTAL BAR
+3. FULLWIDTH TILDE and WAVE DASH
+4. DOUBLE VERTICAL LINE and PARALLEL TO
+5. HORIZONTAL ELLIPSIS and MIDLINE HORIZONTAL ELLIPSIS
+6. FULLWIDTH CENT SIGN and CENT SIGN
+7. FULLWIDTH POUND SIGN and POUND SIGN
 
 
 ## Considerations for UTF-8

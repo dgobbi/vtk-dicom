@@ -13584,31 +13584,59 @@ const unsigned short CodePageGB18030_R[22354] = {
   // [0xFFE6,0xFFFF] -> [ 63334, 63359] # seg 242
 };
 
-// Compatibility overlay for GBK and GB2312
-const unsigned short CodePageGBK_R[61] = {
+// Compatibility overlay for GB2312
+const unsigned short CodePageGB2312_R[41] = {
   // hot segments (indexes into segment table)
   0,
   // number of segments
   13,
   // segment table
-  0x0000, 0x1E3F, 0x1E40, 0x9FB4, 0x9FBC, 0xE7C7, 0xE7C9, 0xE7E7,
-  0xE7F4, 0xE815, 0xE865, 0xFE10, 0xFE1A,
+  0x0000, 0x00A2, 0x00A4, 0x2015, 0x2016, 0x2225, 0x2226, 0x22EF,
+  0x22F0, 0x301C, 0x301D, 0x30FB, 0x30FC,
   // compressed segments
-   RCHAR,    685,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  15756,
-   RCHAR,  23860,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,     72,  RCHAR,      9,  RCHAR,     11,  RCHAR,     12,
+   RCHAR,     10,  RCHAR,      3,  RCHAR,
   // uncompressed segments
-   RCHAR,  RCHAR,  RCHAR,      0,  RCHAR,      8,  RCHAR,  RCHAR,
-   RCHAR,  RCHAR,  RCHAR,     10,  RCHAR,
-  // [0x1E3F,0x1E3F] -> [   685,   685] # seg 1
-  // [0x9FB4,0x9FBB] -v # seg 3 at pos 0
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+  // [0x00A2,0x00A3] -> [    72,    73] # seg 1
+  // [0x2015,0x2015] -> [     9,     9] # seg 3
+  // [0x2225,0x2225] -> [    11,    11] # seg 5
+  // [0x22EF,0x22EF] -> [    12,    12] # seg 7
+  // [0x301C,0x301C] -> [    10,    10] # seg 9
+  // [0x30FB,0x30FB] -> [     3,     3] # seg 11
+};
+
+// Compatibility overlay for GBK
+const unsigned short CodePageGBK_R[75] = {
+  // hot segments (indexes into segment table)
+  0,
+  // number of segments
+  21,
+  // segment table
+  0x0000, 0x00A2, 0x00A4, 0x1E3F, 0x1E40, 0x2225, 0x2226, 0x22EF,
+  0x22F0, 0x301C, 0x301D, 0x30FB, 0x30FC, 0x9FB4, 0x9FBC, 0xE7C7,
+  0xE7C9, 0xE7E7, 0xE7F4, 0xE815, 0xE865,
+  // compressed segments
+   RCHAR,     72,  RCHAR,    685,  RCHAR,     11,  RCHAR,     12,
+   RCHAR,     10,  RCHAR,      3,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  15756,  RCHAR,  23860,  RCHAR,
+  // uncompressed segments
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,      0,  RCHAR,      8,
+   RCHAR,  RCHAR,  RCHAR,  RCHAR,  RCHAR,
+  // [0x00A2,0x00A3] -> [    72,    73] # seg 1
+  // [0x1E3F,0x1E3F] -> [   685,   685] # seg 3
+  // [0x2225,0x2225] -> [    11,    11] # seg 5
+  // [0x22EF,0x22EF] -> [    12,    12] # seg 7
+  // [0x301C,0x301C] -> [    10,    10] # seg 9
+  // [0x30FB,0x30FB] -> [     3,     3] # seg 11
+  // [0x9FB4,0x9FBB] -v # seg 13 at pos 0
    23869,  23877,  23882,  23883,  23889,  23906,  23923,  23939,
-  // [0xE7C7,0xE7C8] -v # seg 5 at pos 8
+  // [0xE7C7,0xE7C8] -v # seg 15 at pos 8
      685,    688,
-  // [0xE7E7,0xE7F3] -> [ 15756, 15768] # seg 7
-  // [0xE815,0xE864] -> [ 23860, 23939] # seg 9
-  // [0xFE10,0xFE19] -v # seg 11 at pos 10
-     526,    528,    527,    529,    530,    531,    532,    545,
-     546,    552,
+  // [0xE7E7,0xE7F3] -> [ 15756, 15768] # seg 17
+  // [0xE815,0xE864] -> [ 23860, 23939] # seg 19
 };
 
 // Japanese JIS X 0208, plus CP932 compatibility
@@ -24747,7 +24775,7 @@ const unsigned short *vtkDICOMCharacterSet::Reverse[256] = {
   CodePageISO8859_16_R,
   0,
   CodePageKSX1001_R,
-  CodePageGBK_R,
+  CodePageGB2312_R,
   0,
   0,
   0,
@@ -24779,7 +24807,7 @@ const unsigned short *vtkDICOMCharacterSet::Reverse[256] = {
   CodePageISO8859_16_R,
   0,
   CodePageKSX1001_R,
-  CodePageGBK_R,
+  CodePageGB2312_R,
   0,
   0,
   0,
