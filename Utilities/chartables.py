@@ -748,9 +748,9 @@ gbk_compat = {
     # Compatibility mappings (8) not present in GB18030-2000
     0x9FB4 :23775, 0x9FB5 :23783, 0x9FB6 :23788, 0x9FB7 :23789, 0x9FB8 :23795,
     0x9FB9 :23812, 0x9FBA :23829, 0x9FBB :23845,
-    # Vertical punctuation (10) within GB2312 range
-    0xFE10 : 7182, 0xFE11 : 7184, 0xFE12 : 7183, 0xFE13 : 7185, 0xFE14 : 7186,
-    0xFE15 : 7187, 0xFE16 : 7188, 0xFE17 : 7201, 0xFE18 : 7202, 0xFE19 : 7208,
+    # Vertical punctuation (10), not official in GBK (only in GB18030)
+    #0xFE10 : 7182, 0xFE11 : 7184, 0xFE12 : 7183, 0xFE13 : 7185, 0xFE14 : 7186,
+    #0xFE15 : 7187, 0xFE16 : 7188, 0xFE17 : 7201, 0xFE18 : 7202, 0xFE19 : 7208,
     # Points beyond the BMP (6)
     #0x20087 : 23767, 0x20089 : 23768, 0x200CC : 23769, 0x215D7 : 23794,
     #0x2298F : 23804, 0x241FE : 23830,
