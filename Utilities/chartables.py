@@ -717,12 +717,28 @@ for i in range(0,len(LinearGB18030)-2,2):
     x2 = min(LinearGB18030[i+2], 39420)
     GB18030 += list(range(y,y+(x2-x1)))
 
+# For Unicode to GB2312 mapping, add compatibility for older tables
+gb2312_compat = {
+    0x30FB :   3, # KATAKANA MIDDLE DOT
+    0x2015 :   9, # HORIZONTAL BAR
+    0x301C :  10, # WAVE DASH
+    0x2225 :  11, # PARALLEL TO
+    0x22EF :  12, # MIDLINE HORIZONTAL ELLIPSIS
+    0x00A2 :  72, # CENT SIGN
+    0x00A3 :  73, # POUND SIGN
+    # 0x0261 : 258, # LATIN SMALL LETTER SCRIPT G
+}
+
+GB2312COMPAT=[RCHAR]*(1 + max(gb2312_compat.keys()))
+table = maketable2(GB2312COMPAT, Reverse, gb2312_compat)
+GB2312CompatTable = table
+
 # For Unicode to GBK mapping, ensure compatibility with the GBK mappings
 # that pre-date the GB18030-2000 standard, as described in this table:
 gbk_compat = {
     # Compatibility mapping - m with acute
     0x1E3F : 7533,
-    # PUA mappings (2) in GB2312
+    # PUA mappings (2) in GB2312 area
     0xE7C7 : 7533, 0xE7C8 : 7536,
     # PUA mappings (13) in GBK - ideographic description characters
     0xE7E7 : 7672, 0xE7E8 : 7673, 0xE7E9 : 7674, 0xE7EA : 7675, 0xE7EB : 7676,
@@ -768,6 +784,10 @@ for k in gbk_compat:
         v = (a-32)*94 + (b-96)
     gbk_compat[k] = v
 
+# the gb2312 compatibility mappings can also be used for GBK, except one
+gbk_compat.update(gb2312_compat)
+del gbk_compat[0x2015] # HORIZONTAL BAR
+
 GBKCOMPAT=[RCHAR]*(1 + max(gbk_compat.keys()))
 table = maketable2(GBKCOMPAT, Reverse, gbk_compat)
 GBKCompatTable = table
@@ -800,7 +820,10 @@ sys.stdout.write('\n')
 sys.stdout.write('// Reverse\n')
 printtable("CodePageGB18030_R", CodePageGB18030_R, Reverse)
 sys.stdout.write('\n')
-sys.stdout.write('// Compatibility overlay for GBK and GB2312\n')
+sys.stdout.write('// Compatibility overlay for GB2312\n')
+printtable("CodePageGB2312_R", GB2312CompatTable, Reverse)
+sys.stdout.write('\n')
+sys.stdout.write('// Compatibility overlay for GBK\n')
 printtable("CodePageGBK_R", GBKCompatTable, Reverse)
 sys.stdout.write('\n')
 
@@ -1173,7 +1196,7 @@ pages = {
   ISO_IR_203 : ('CodePageISO8859_15', 'CodePageISO8859_15_R'),
   X_LATIN10 : ('CodePageISO8859_16', 'CodePageISO8859_16_R'),
   X_EUCKR : ('CodePageKSX1001', 'CodePageKSX1001_R'),
-  X_GB2312 : ('CodePageGB18030', 'CodePageGBK_R'),
+  X_GB2312 : ('CodePageGB18030', 'CodePageGB2312_R'),
   ISO_2022_IR_6 : ('CodePageASCII', 'CodePageASCII_R'),
   ISO_2022_IR_13 : ('CodePageJISX0201', 'CodePageJISX0201_R'),
   ISO_2022_IR_87 : ('CodePageJISX0208', 'CodePageJISX_R'),
@@ -1194,7 +1217,7 @@ pages = {
   ISO_2022_IR_203 : ('CodePageISO8859_15', 'CodePageISO8859_15_R'),
   ISO_2022+X_LATIN10 : ('CodePageISO8859_16', 'CodePageISO8859_16_R'),
   ISO_2022_IR_149 : ('CodePageKSX1001', 'CodePageKSX1001_R'),
-  ISO_2022_IR_58 : ('CodePageGB18030', 'CodePageGBK_R'),
+  ISO_2022_IR_58 : ('CodePageGB18030', 'CodePageGB2312_R'),
   GB18030 : ('CodePageGB18030', 'CodePageGB18030_R'),
   GBK : ('CodePageGB18030', 'CodePageGBK_R'),
   X_BIG5 : ('CodePageBig5', 'CodePageBig5_R'),
