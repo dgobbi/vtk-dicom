@@ -269,13 +269,8 @@ the code 0x80 is mapped to the Euro symbol.
 ### Encoding
 
 Unlike GB18030, our encoder for GBK includes compatibility mappings
-for 119 PUA codes that defined characters in older versions of the GB
-conversion tables.  Our encoder does not encode the Euro symbol as
-0x80, which an extension from Code Page 936 rather than an official
-code point in GBK.  Instead, the Euro symbol is encoded as the
-two-byte code 0xA2,0xE3 from GB18030.  Likewise, the 10 vertical
-punctuation marks U+FE10 to U+FE19 are encoded at their GB18030
-code points.
+for PUA codes that defined characters in older versions of the GB
+conversion tables.  Our encoder does not encode the Euro symbol.
 
 
 ## Chinese via ISO 2022
@@ -295,8 +290,7 @@ subset of the table defined by GB18030:2022.
 ### Encoding
 
 Encoding involves adding the `ESC $)A` escape sequence at the beginning
-of every line containing Chinese characters, and also provides the
-relevant subset of the compatibility conversions that are done for GBK.
+of every line containing Chinese characters, and then encoding as GB2312.
 
 
 ## Considerations for UTF-8

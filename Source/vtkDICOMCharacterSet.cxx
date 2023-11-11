@@ -1737,6 +1737,31 @@ size_t EscapeCodeLength(const char *cp, size_t n)
   return l;
 }
 
+// Search a table that gives ranges of invalid, valid codes
+bool InvalidCode(const unsigned short *table, unsigned short t)
+{
+  size_t size = table[0];
+  const unsigned short *tp = std::upper_bound(&table[1], &table[size], t);
+  size_t offset = tp - table;
+  return ((offset & 1) == 0);
+}
+
+// Invalid ranges for GB2312-1980
+static const unsigned short GB2312InvalidRanges[30] = {
+  30, 94, 110, 160, 162, 172, 174, 186, 188, 365, 376, 462,
+  470, 494, 502, 526, 564, 597, 612, 645, 658, 684, 694, 731,
+  755, 831, 1410, 5165, 5170, 8178
+};
+
+// Invalid ranges for GBK 1.0 (CP936 plus 95 additions, includes EUDC)
+static const unsigned short GBKInvalidRanges[46] = {
+  46, 104, 110, 160, 162, 172, 174, 186, 188, 365, 376, 462,
+  470, 494, 502, 526, 533, 545, 547, 552, 553, 555, 564, 597,
+  612, 645, 658, 690, 694, 731, 755, 831, 846, 5165, 5170,
+  15673, 15684, 15708, 15709, 15711, 15712, 15713, 15716,
+  15770, 15780, 23940
+};
+
 } // end anonymous namespace
 
 //----------------------------------------------------------------------------
@@ -2213,10 +2238,9 @@ size_t vtkDICOMCharacterSet::UTF8ToGBK(
     {
       // the primary table is the GB18030 table
       unsigned short t = table[code];
-      if (t > 23940)
+      if (InvalidCode(GBKInvalidRanges, t))
       {
-        // found a GB18030 code that is too large for GBK,
-        // so try additional compatibility mappings specific to GBK
+        // try additional compatibility mappings specific to GBK
         t = table2[code];
       }
       if (t < 23940)
@@ -2320,7 +2344,7 @@ size_t vtkDICOMCharacterSet::GBKToUTF8(
       }
       else if (a == 0x80)
       {
-        // EURO SIGN for CP936 compatibility (also at a=A2,b=E3)
+        // EURO SIGN for CP936 compatibility
         code = 0x20AC;
       }
 
@@ -2567,7 +2591,7 @@ size_t vtkDICOMCharacterSet::UTF8ToGB2312(
     else
     {
       unsigned short t = table[code];
-      if (t >= 8836)
+      if (InvalidCode(GB2312InvalidRanges, t))
       {
         // try additional compatibility mappings
         t = table2[code];
