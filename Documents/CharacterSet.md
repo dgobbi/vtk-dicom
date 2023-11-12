@@ -131,13 +131,13 @@ defined terms for Specific Character Set:
 Notes:
 
 1. This generally implies iso-2022-jp, but requires the use of romaji instead
-   of ASCII, and also requires the use of JIS X 0208:1900 rather than
+   of ASCII, and also requires the use of JIS X 0208:1990 rather than
    any other version (such as JIS X 0208-1978 or JIS X 0208-1983).  This
    provides exactly the same characters as classic shift-jis, with exactly
    the same method for encoding romaji and half-width katakana, but with a
    different way of encoding the JIS X 0208 characters.
 2. This specifies the most widely used subset of iso-2022-jp, using only ASCII
-   and JIS X 0208:1900.  For broad compatibility, this is the best.
+   and JIS X 0208:1990.  For broad compatibility, this is the best.
 3. This specifies the most widely used subset of iso-2022-jp-2, like the above
    but adding JIS X 0212:1990 for additional characters.
 
