@@ -2378,11 +2378,6 @@ size_t vtkDICOMCharacterSet::GB18030ToUTF8(
     }
     else
     {
-      if (cp == ep)
-      {
-        errpos = (errpos ? errpos : lastpos);
-        break;
-      }
       unsigned int code = 0xFFFD;
       unsigned short a = static_cast<unsigned char>(c);
 
