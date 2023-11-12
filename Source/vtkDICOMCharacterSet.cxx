@@ -453,20 +453,19 @@ static const char *ISO_IR_58_Names[] = {
 
 static const char *EUCKR_Names[] = {
   "cseuckr",
+  "csksc56011987",
   "euc-kr",
+  "korean",
+  "ksc_5601",
+  "ksc5601",
+  "ks_c_5601-1987",
+  "ks_c_5601-1989",
   "windows-949",
   NULL
 };
 
 static const char *ISO_IR_149_Names[] = {
-  "csksc56011987",
   "iso-ir-149",
-  "iso_ir 149",
-  "korean",
-  "ks_c_5601-1987",
-  "ks_c_5601-1989",
-  "ksc5601",
-  "ksc_5601",
   NULL
 };
 
