@@ -2647,7 +2647,12 @@ size_t vtkDICOMCharacterSet::GB2312ToUTF8(
         if (b >= 0xA1 && b < 0xFF)
         {
           a = (a - 0xA1)*94 + (b - 0xA1);
-          code = table[a];
+
+          if (!InvalidCode(GB2312InvalidRanges, a))
+          {
+            code = table[a];
+          }
+
           cp++;
         }
       }
