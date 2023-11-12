@@ -225,6 +225,21 @@ of every line that uses Korean characters (or any characters from KS X 1001),
 as required by DICOM.  Hangul that do not exist in KS X 1001 are decomposed
 and stored as 8-byte codes.
 
+The following characters are considered to be compatible by our encoder,
+due to the various tables that vendors use to map KS X 1001 to Unicode:
+
+1. MIDDLE DOT and KATAKANA MIDDLE DOT
+2. SOFT HYPHEN and EN DASH
+3. HORIZONTAL BAR and EM DASH
+4. PARALLEL TO and DOUBLE VERTICAL LINE
+5. TILDE OPERATOR and WAVE DASH
+6. FULLWIDTH CENT SIGN and CENT SIGN
+7. FULLWIDTH POUND SIGN and POUND SIGN
+8. FULLWIDTH YEN SIGN and YEN SIGN
+9. FULLWIDTH NOT SIGN and NOT SIGN
+10. FULLWIDTH TILDE and SMALL TILDE
+11. CIRCLED DOT OPERATOR and FISHEYE
+
 
 ## Chinese via GB18030
 
