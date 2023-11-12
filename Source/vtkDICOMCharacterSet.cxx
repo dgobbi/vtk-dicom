@@ -427,7 +427,6 @@ static const char *GB18030_Names[] = {
 };
 
 static const char *GBK_Names[] = {
-  "chinese",
   "gbk",
   "x-gbk",
   // documented but incorrect defined term
@@ -435,12 +434,17 @@ static const char *GBK_Names[] = {
   NULL
 };
 
-static const char *ISO_IR_58_Names[] = {
+static const char *GB2312_Names[] = {
+  "chinese",
   "csgb2312",
   "csiso58gb231280",
   "gb2312",
   "gb_2312",
   "gb_2312-80",
+  NULL
+};
+
+static const char *ISO_IR_58_Names[] = {
   "iso-ir-58",
   // documented but incorrect defined term
   "iso 2022 gb2312",
@@ -667,7 +671,7 @@ static CharsetInfo Charsets[48] = {
   { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // compatible escape code
     "ISO_IR 58",  "ISO 2022 IR 58", "$(A", NULL },
   { vtkDICOMCharacterSet::X_GB2312, 1,       // GB2312, chinese (in G1)
-    "ISO_IR 58",  "ISO 2022 IR 58", "$)A", NULL },
+    "ISO_IR 58",  "ISO 2022 IR 58", "$)A", GB2312_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_149, 1,// KS X 1001, korean (in G0)
     "ISO_IR 149", "ISO 2022 IR 149","$(C", ISO_IR_149_Names },
   { vtkDICOMCharacterSet::X_EUCKR, 1,        // KS X 1001, korean (in G1)
