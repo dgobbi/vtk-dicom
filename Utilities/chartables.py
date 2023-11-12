@@ -630,8 +630,37 @@ table = maketable2(KSX1001, Forward, [0,163], [1410,3759])
 checktable(table, Forward, KSX1001)
 CodePageKSX1001 = table
 
-table = maketable2(KSX1001, Reverse, cjk_punct, kr_hangul)
-checktable(table, Reverse, KSX1001)
+# For compatiblity with different implementations of KSX-1001,
+# REVERSE SOLIDUS is in ASCII (though not in KS X 1003).
+kr_compat = {
+    0x30FB :   3, # KATAKANA MIDDLE DOT
+    0x00B7 :   3, # MIDDLE DOT
+    0x2013 :   8, # EN DASH
+    0x00AD :   8, # SOFT HYPHEN
+    0x2014 :   9, # EM DASH
+    0x2015 :   9, # HORIZONTAL BAR
+    0x2016 :  10, # DOUBLE VERTICAL LINE
+    0x2225 :  10, # PARALLEL TO
+    # 0x005C :  11, # REVERSE SOLIDUS
+    0xFF3C :  11, # FULLWIDTH REVERSE SOLIDUS
+    0x301C :  12, # WAVE DASH
+    0x223C :  12, # TILDE OPERATOR
+    0x00A2 :  42, # CENT SIGN
+    0xFFE0 :  42, # FULLWIDTH CENT SIGN
+    0x00A3 :  43, # POUND SIGN
+    0xFFE1 :  43, # FULLWIDTH POUND SIGN
+    0x00A5 :  44, # YEN SIGN
+    0xFFE5 :  44, # FULLWIDTH YEN SIGN
+    0x00AC :  93, # NOT SIGN
+    0xFFE2 :  93, # FULLWIDTH NOT SIGN
+    0x02DC :  99, # SMALL TILDE
+    0xFF5E :  99, # FULLWIDTH TILDE
+    0x25C9 : 126, # FISHEYE
+    0x2299 : 126, # CIRCLED DOT OPERATOR
+}
+
+table = maketable2(KSX1001, Reverse, cjk_punct, kr_hangul, kr_compat)
+checktable(table, Reverse, KSX1001, kr_compat)
 CodePageKSX1001_R = table
 
 sys.stdout.write("// Korean KS X 1001:1998")
