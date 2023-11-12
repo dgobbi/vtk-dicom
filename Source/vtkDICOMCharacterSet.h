@@ -46,10 +46,10 @@
  *  allowed: 'ascii', 'latin1', 'latin2', 'latin3', 'latin4', 'latin5'
  *  'latin7', 'latin9', 'cyrillic' (iso-8859-5), 'arabic' (iso-8859-6),
  *  'greek' (iso-8859-7), 'hebrew' (iso-8859-8), 'tis-620', 'shift-jis',
- *  'euc-jp', 'iso-2022-jp', 'korean' (euc-kr), 'chinese' (gbk), 'gb18030',
- *  'big5', 'cp1250', 'cp1251', 'cp1252', 'cp1253', 'cp1254', 'cp1255',
- *  'cp1256', 'cp1257', 'cp1258', and 'utf-8'.  Common aliases of these
- *  character sets can also be used.
+ *  'euc-jp', 'iso-2022-jp', 'korean' (euc-kr), 'chinese' (gb2312), 'gbk',
+ *  'gb18030', 'big5', 'cp1250', 'cp1251', 'cp1252', 'cp1253', 'cp1254',
+ *  'cp1255', 'cp1256', 'cp1257', 'cp1258', and 'utf-8'.  Common aliases
+ *  of these character sets can also be used.
  */
 class VTKDICOM_EXPORT vtkDICOMCharacterSet
 {
