@@ -649,14 +649,14 @@ static CharsetInfo Charsets[48] = {
   // character sets for ISO 2022 encodings of JIS
   { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, katakana (in G1)
     "ISO_IR 13",  "ISO 2022 IR 13",  ")I", ISO_IR_13_Names },
-  { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, romaji
+  { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, katakana (in G0)
+    "ISO_IR 13",  "ISO 2022 IR 13",  "(I", NULL },
+  { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // JIS X 0201, romaji
     "ISO_IR 14",  "ISO 2022 IR 14",  "(J", NULL },
-  { vtkDICOMCharacterSet::ISO_IR_13, 0,      // obsolete escape code
+  { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // obsolete escape code
     "ISO_IR 14",  "ISO 2022 IR 14",  "(H", NULL },
   { vtkDICOMCharacterSet::ISO_2022_IR_6, 0,  // ascii
     "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_2022_Names },
-  { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // JIS X 0201, katakana (in G0)
-    "ISO_IR 13",  "ISO 2022 IR 13",  "(I", NULL },
   { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // JIS X 0208, japanese
     "ISO_IR 87",  "ISO 2022 IR 87", "$B" , ISO_IR_87_Names },
   { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // obsolete escape code
@@ -2841,7 +2841,7 @@ size_t vtkDICOMCharacterSet::JISXToUTF8(
           good = false;
         }
       }
-      else if (csGL == ISO_2022_IR_13)
+      else if (csGL == ISO_IR_13)
       {
         // shift to put half-width katakana in GL
         a += 0x80;
@@ -3927,8 +3927,8 @@ unsigned int vtkDICOMCharacterSet::InitISO2022(
       charsetG[1] &= ISO_IR_13;
       if (charsetG[1] == ISO_IR_13)
       {
-        // actually ISO IR 14 (there is no distinct enum value for ISO IR 14)
-        charsetG[0] = ISO_IR_13;
+        // implies ISO 2022 IR 14 (it has no distinct enum value)
+        charsetG[0] = ISO_2022_IR_13;
       }
     }
   }
@@ -3984,16 +3984,17 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
         vtkDICOMCharacterSet cs(state & ALTERNATE_CS);
         m = cs.AnyToUTF8(&text[i], j-i, s, mode);
       }
-      else if (charsetG[0] == ISO_2022_IR_6 && charsetG[1] != ISO_IR_13)
+      else if (charsetG[0] == ISO_2022_IR_6 && // <- ASCII in G0
+               charsetG[1] != ISO_IR_13) // <- no katakana in G1
       {
         // When G0 is ASCII, simply apply G1 charset to this segment
         // (unless G1 is ISO_IR_13, which requires the JISXToUTF8 function)
         vtkDICOMCharacterSet cs(charsetG[1] & ISO_2022_BASE);
         m = cs.AnyToUTF8(&text[i], j-i, s, mode);
       }
-      else if (charsetG[0] == ISO_IR_13 || // implies ISO 2022 IR 14
+      else if (charsetG[0] == ISO_IR_13 || // <- katakana in G0
                charsetG[0] == ISO_2022_IR_6 ||
-               charsetG[0] == ISO_2022_IR_13 ||
+               charsetG[0] == ISO_2022_IR_13 || // <- romaji in G0
                charsetG[0] == ISO_2022_IR_87 ||
                charsetG[0] == ISO_2022_IR_159 ||
                charsetG[0] == ISO_2022_IR_149 ||
