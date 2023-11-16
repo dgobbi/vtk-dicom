@@ -4059,11 +4059,9 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
 
       if (escapeFail)
       {
-        // Unhandled escape codes must be passed through to output
-        s->push_back('\033');
-        s->append(escapeCode, escapeLen);
-        // Set error position
+        // Unhandled ISO 2022 escape codes are considered errors
         SetErrorPosition(n, savePos);
+        BadCharsToUTF8(&text[savePos], &text[i], s, mode);
       }
     }
   }
