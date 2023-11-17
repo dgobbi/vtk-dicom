@@ -3904,15 +3904,10 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
     // Process any control codes
     i = j;
     char prevchar = '\0';
-    while (i < l && (text[i] >= '\012' && text[i] <= '\017'))
+    while (i < l && (text[i] >= '\012' && text[i] <= '\015'))
     {
-      // SI SO (shift-in, shift-out) are not allowed
-      if (text[i] == '\016' || text[i] == '\017')
-      {
-        SetErrorPosition(n, i);
-      }
       // CRNL resets the ISO 2022 state
-      else if (prevchar == '\r' && text[i] == '\n')
+      if (prevchar == '\r' && text[i] == '\n')
       {
         state = InitISO2022(this->Key, charsetG);
       }
@@ -3922,6 +3917,14 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
     if (j < i)
     {
       s->append(&text[j], i - j);
+    }
+
+    // SI SO (shift-in, shift-out) are not allowed
+    if (i < l && (text[i] == '\016' || text[i] == '\017'))
+    {
+      SetErrorPosition(n, i);
+      BadCharsToUTF8(&text[i], &text[i + 1], s, mode);
+      i++;
     }
 
     // Process any escape codes
