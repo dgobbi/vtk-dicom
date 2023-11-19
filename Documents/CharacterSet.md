@@ -87,10 +87,9 @@ Japanese:
 
 1. Extra characters from Microsoft CP932.
 2. `ESC (I` will place ISO IR 13 in G0.
-3. `ESC (H` will place ISO IR 14 in G0.
-4. `ESC $@` will place ISO IR 87 in G0.
-5. `ESC &@ ESC $B` will place ISO IR 87 in G0.
-6. All of iso-2022-jp-2 is supported.
+3. `ESC $@` will place ISO IR 87 in G0.
+4. `ESC &@ ESC $B` will place ISO IR 87 in G0.
+5. All of iso-2022-jp-2 is supported.
 
 Notes:
 
@@ -103,16 +102,14 @@ Notes:
    katakana while iso-2022-jp does not.  To allow conversion of these
    characters to 7-bit iso-2022, the extension 'iso-2022-jp-ext' uses
    `ESC (I` to allow half-width katakana in G0.
-3. The use of `ESC (H` to place ISO IR 14 was a non-standard historical
-   practice.  It can occur in very old text.
-4. The `ESC $@` sequence is for ISO IR 42 (JISC 6226-1978), which predates
+3. The `ESC $@` sequence is for ISO IR 42 (JISC 6226-1978), which predates
    ISO IR 87 and is a strict subset of ISO IR 87.  Support of this escape
    sequence is required by iso-2022-jp.
-5. With the introduction of JIS X 0212:1990, JIS X 0208:1983 was updated
+4. With the introduction of JIS X 0212:1990, JIS X 0208:1983 was updated
    to JIS X 0208:1990 with minor revisions.  Rather than register a new
    iso-ir number for the JIS X 0208:1990, a new compound escape code
    `ESC &@ ESC $B` was adopted, though it is rarely used.
-6. Since iso-2022-jp-2 is the most commonly-used extension to iso-2022-jp,
+5. Since iso-2022-jp-2 is the most commonly-used extension to iso-2022-jp,
    supporting it in full seemed apropos.
 
 The JIS X 0213 standard and its encodings iso-2022-jp-3 and
