@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <sstream>
 #include <vector>
 
 // The global default is used when a DICOM lacks SpecificCharacterSet
@@ -30,10 +31,8 @@ namespace {
 //! This struct provides information about a character set.
 struct CharsetInfo
 {
-  unsigned char Key; // a number that identifies the character set
-  unsigned char Flags; // flags relating to use of defined terms
+  const char *Name; // the name we use for the charset
   const char *DefinedTerm; // the DICOM defined term for the charset
-  const char *DefinedTermExt; // defined term for ISO 2022 usage of charset
   const char *EscapeCode; // the ISO 2022 escape code for this charset
   const char **Names; // list of generic names of this charset
 };
@@ -596,119 +595,107 @@ static const char *KOI8_Names[] = {
 };
 
 //----------------------------------------------------------------------------
-// This table gives the character sets that are defined in DICOM 2011-3.3,
-// plus additional character sets that might be found in legacy DICOMs.
+// This table gives the character sets that are defined in DICOM,
+// plus additional legacy character sets of interest.
 //
 // The fields are defined as follows:
-// 1. Key - an integer we use to identify the character set.
-// 2. Flags - a flag relating to use of the DefinedTermExt field
-// 3. DefinedTerm - the defined term used in the DICOM standard
-// 4. DefinedTermExt - the defined term for the ISO 2022 variant
-// 5. EscapeCode - the ISO 2022 escape code
-// 6. Names - list of alternative names for this character set
-//
-// The Flags are used as hints for what to do when SpecificCharacterSet
-// contains multiple defined terms, which only occurs with ISO 2022.
-// For example, "X\Y" or "X\Y\Z" (e.g. "ISO 2022 IR 100\ISO 2022 IR_126").
-// * Flags=0: The first value can be set to DefinedTermExt.
-// * Flags=1: Only the second value can be set to DefinedTermExt.
-// * Flags=2: Only the second or third values can be set to DefinedTermExt.
-// Example for character sets with Flags=1: "\ISO 2022 IR 149"
-// Example for character sets with Flags=2: "\ISO 2022 IR 87\ISO 2022 IR 159"
-const int CHARSET_TABLE_SIZE = 48;
-static CharsetInfo Charsets[48] = {
-
-  // the default character set
-  { vtkDICOMCharacterSet::ISO_IR_6, 0,       // ascii
-    "ISO_IR 6",   "ISO 2022 IR 6",   "",   ISO_IR_6_Names },
-
-  // the various ISO 8859 character sets (designated to G1)
-  { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1, western europe
-    "ISO_IR 100", "ISO 2022 IR 100", "-A", ISO_IR_100_Names },
-  { vtkDICOMCharacterSet::ISO_IR_101, 0,     // iso-8859-2, central europe
-    "ISO_IR 101", "ISO 2022 IR 101", "-B", ISO_IR_101_Names },
-  { vtkDICOMCharacterSet::ISO_IR_109, 0,     // iso-8859-3, maltese
-    "ISO_IR 109", "ISO 2022 IR 109", "-C", ISO_IR_109_Names },
-  { vtkDICOMCharacterSet::ISO_IR_110, 0,     // iso-8859-4, baltic
-    "ISO_IR 110", "ISO 2022 IR 110", "-D", ISO_IR_110_Names },
-  { vtkDICOMCharacterSet::ISO_IR_144, 0,     // iso-8859-5, cyrillic
-    "ISO_IR 144", "ISO 2022 IR 144", "-L", ISO_IR_144_Names },
-  { vtkDICOMCharacterSet::ISO_IR_127, 0,     // iso-8859-6, arabic
-    "ISO_IR 127", "ISO 2022 IR 127", "-G", ISO_IR_127_Names },
-  { vtkDICOMCharacterSet::ISO_IR_126, 0,     // iso-8859-7, greek
-    "ISO_IR 126", "ISO 2022 IR 126", "-F", ISO_IR_126_Names },
-  { vtkDICOMCharacterSet::ISO_IR_138, 0,     // iso-8859-8, hebrew
-    "ISO_IR 138", "ISO 2022 IR 138", "-H", ISO_IR_138_Names },
-  { vtkDICOMCharacterSet::ISO_IR_148, 0,     // iso-8859-9, latin5, turkish
-    "ISO_IR 148", "ISO 2022 IR 148", "-M", ISO_IR_148_Names },
-  { vtkDICOMCharacterSet::ISO_IR_166, 0,     // iso-8859-11, thai
-    "ISO_IR 166", "ISO 2022 IR 166", "-T", ISO_IR_166_Names },
-  { vtkDICOMCharacterSet::ISO_IR_203, 0,     // iso-8859-15, western europe
-    "ISO_IR 203", "ISO 2022 IR 203", "-b", ISO_IR_203_Names },
-
-  // character sets for ISO 2022 encodings of JIS
-  { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, katakana (in G1)
-    "ISO_IR 13",  "ISO 2022 IR 13",  ")I", ISO_IR_13_Names },
-  { vtkDICOMCharacterSet::ISO_IR_13, 0,      // JIS X 0201, katakana (in G0)
-    "ISO_IR 13",  "ISO 2022 IR 13",  "(I", NULL },
-  { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // JIS X 0201, romaji
-    "ISO_IR 14",  "ISO 2022 IR 14",  "(J", NULL },
-  { vtkDICOMCharacterSet::ISO_2022_IR_13, 0, // obsolete escape code
-    "ISO_IR 14",  "ISO 2022 IR 14",  "(H", NULL },
-  { vtkDICOMCharacterSet::ISO_2022_IR_6, 0,  // ascii
-    "ISO_IR 6",   "ISO 2022 IR 6",   "(B", ISO_2022_Names },
-  { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // JIS X 0208, japanese
-    "ISO_IR 87",  "ISO 2022 IR 87", "$B" , ISO_IR_87_Names },
-  { vtkDICOMCharacterSet::ISO_2022_IR_87, 2, // obsolete escape code
-    "ISO_IR 87",  "ISO 2022 IR 87", "$@",  NULL },
-  { vtkDICOMCharacterSet::ISO_2022_IR_159, 2,// JIS X 0212, japanese
-    "ISO_IR 159", "ISO 2022 IR 159","$(D", ISO_IR_159_Names },
-
-  // other character sets that can be used with ISO 2022
-  { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // GB2312, chinese (in G0)
-    "ISO_IR 58",  "ISO 2022 IR 58", "$A",  ISO_IR_58_Names },
-  { vtkDICOMCharacterSet::ISO_2022_IR_58, 1, // compatible escape code
-    "ISO_IR 58",  "ISO 2022 IR 58", "$(A", NULL },
-  { vtkDICOMCharacterSet::X_GB2312, 1,       // GB2312, chinese (in G1)
-    "ISO_IR 58",  "ISO 2022 IR 58", "$)A", GB2312_Names },
-  { vtkDICOMCharacterSet::ISO_2022_IR_149, 1,// KS X 1001, korean (in G0)
-    "ISO_IR 149", "ISO 2022 IR 149","$(C", ISO_IR_149_Names },
-  { vtkDICOMCharacterSet::X_EUCKR, 1,        // KS X 1001, korean (in G1)
-    "ISO_IR 149", "ISO 2022 IR 149","$)C", EUCKR_Names },
-
-  // character sets that can go into G2 for iso-2022-jp-2
-  { vtkDICOMCharacterSet::ISO_IR_100, 0,     // iso-8859-1 (in G2)
-    "ISO_IR 100", "ISO 2022 IR 100", ".A", ISO_IR_100_Names },
-  { vtkDICOMCharacterSet::ISO_IR_126, 0,     // iso-8859-7 (in G2)
-    "ISO_IR 126", "ISO 2022 IR 126", ".F", ISO_IR_126_Names },
-
-  // character sets that are not ISO 2022
-  { vtkDICOMCharacterSet::ISO_IR_192, 0,     // utf-8
-    "ISO_IR 192", "",               "%/I", ISO_IR_192_Names },
-  { vtkDICOMCharacterSet::GB18030, 0,        // chinese multibyte
-    "GB18030",    "",               "",    GB18030_Names },
-  { vtkDICOMCharacterSet::GBK, 0,            // subset of GB18030
-    "GBK",        "",               "",    GBK_Names },
-
-  // the remainder of these are not DICOM standard
-  { vtkDICOMCharacterSet::X_LATIN6, 0, "latin6", "", "-V", LATIN6_Names },
-  { vtkDICOMCharacterSet::X_LATIN7, 0, "latin7", "", "-Y", LATIN7_Names },
-  { vtkDICOMCharacterSet::X_LATIN8, 0, "latin8", "", "-_", LATIN8_Names },
-  { vtkDICOMCharacterSet::X_LATIN10, 0, "latin10", "", "-f", LATIN10_Names },
-  { vtkDICOMCharacterSet::X_CP874, 0, "cp874", "", "", CP874_Names },
-  { vtkDICOMCharacterSet::X_CP1250, 0, "cp1250", "", "", CP1250_Names },
-  { vtkDICOMCharacterSet::X_CP1251, 0, "cp1251", "", "", CP1251_Names },
-  { vtkDICOMCharacterSet::X_CP1252, 0, "cp1252", "", "", CP1252_Names },
-  { vtkDICOMCharacterSet::X_CP1253, 0, "cp1253", "", "", CP1253_Names },
-  { vtkDICOMCharacterSet::X_CP1254, 0, "cp1254", "", "", CP1254_Names },
-  { vtkDICOMCharacterSet::X_CP1255, 0, "cp1255", "", "", CP1255_Names },
-  { vtkDICOMCharacterSet::X_CP1256, 0, "cp1256", "", "", CP1256_Names },
-  { vtkDICOMCharacterSet::X_CP1257, 0, "cp1257", "", "", CP1257_Names },
-  { vtkDICOMCharacterSet::X_CP1258, 0, "cp1258", "", "", CP1258_Names },
-  { vtkDICOMCharacterSet::X_BIG5, 0, "big5", "", "", BIG5_Names },
-  { vtkDICOMCharacterSet::X_SJIS, 0, "sjis", "", "", SJIS_Names },
-  { vtkDICOMCharacterSet::X_EUCJP, 0, "euc-jp", "", "", EUCJP_Names },
-  { vtkDICOMCharacterSet::X_KOI8, 0, "koi8", "", "", KOI8_Names },
+// 1. Name - the name that we use for the character set
+// 2. DefinedTerm - the defined term for the character set
+// 3. EscapeCode - the ISO 2022 escape code
+// 4. Names - list of alternative names for this character set
+static const int CHARSET_TABLE_SIZE = 91;
+static const CharsetInfo Charsets[91] = {
+  { "ISO_IR_6",   "",           NULL, ISO_IR_6_Names   }, // default, US-ASCII
+  { "ISO_IR_13",  "ISO_IR 13",  NULL, ISO_IR_13_Names  }, // JIS_X0201
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { "ISO_IR_100", "ISO_IR 100", NULL, ISO_IR_100_Names }, // ISO-8859-1
+  { "ISO_IR_101", "ISO_IR 101", NULL, ISO_IR_101_Names }, // ISO-8859-2
+  { "ISO_IR_109", "ISO_IR 109", NULL, ISO_IR_109_Names }, // ISO-8859-3
+  { "ISO_IR_110", "ISO_IR 110", NULL, ISO_IR_110_Names }, // ISO-8859-4
+  { "ISO_IR_144", "ISO_IR 144", NULL, ISO_IR_144_Names }, // ISO-8859-5
+  { "ISO_IR_127", "ISO_IR 127", NULL, ISO_IR_127_Names }, // ISO-8859-6
+  { "ISO_IR_126", "ISO_IR 126", NULL, ISO_IR_126_Names }, // ISO-8859-7
+  { "ISO_IR_138", "ISO_IR 138", NULL, ISO_IR_138_Names }, // ISO-8859-8
+  { "ISO_IR_148", "ISO_IR 148", NULL, ISO_IR_148_Names }, // ISO-8859-9
+  { "latin6",     NULL,         NULL, LATIN6_Names     }, // ISO-8859-10
+  { "ISO_IR_166", "ISO_IR 166", NULL, ISO_IR_166_Names }, // TIS-620
+  { "latin7",     NULL,         NULL, LATIN7_Names     }, // ISO-8859-13
+  { "latin8",     NULL,         NULL, LATIN8_Names     }, // ISO-8859-14
+  { "ISO_IR_203", "ISO_IR 203", NULL, ISO_IR_203_Names }, // ISO-8859-15
+  { "latin10",    NULL,         NULL, LATIN10_Names    }, // ISO-8859-16
+  { NULL, NULL, NULL, NULL },
+  { "euc-kr",     NULL,         NULL, EUCKR_Names      }, // EUC-KR
+  { "gb2312",     NULL,         NULL, GB2312_Names     }, // GB2312
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { "ISO_2022_IR_6",   "ISO 2022 IR 6",   "(B", ISO_2022_Names  }, // US-ASCII
+  { "ISO_2022_IR_13",  "ISO 2022 IR 13",  "(J", NULL            }, // JIS_X0201
+  { "ISO_2022_IR_87", "\\ISO 2022 IR 87", "$B", ISO_IR_87_Names }, // JIS_X0208
+  { NULL, "ISO 2022 IR 13\\ISO 2022 IR 87", NULL, NULL }, // ISO-2022-JP
+  { "ISO_2022_IR_159", "\\ISO 2022 IR 159", "$(D", NULL }, // JIS_X0212
+  { NULL, "ISO 2022 IR 13\\ISO 2022 IR 159", NULL, NULL },
+  { NULL, "\\ISO 2022 IR 87\\ISO 2022 IR 159", NULL, ISO_IR_159_Names },
+  { NULL, "ISO 2022 IR 13\\ISO 2022 IR 87\\ISO 2022 IR 159", NULL, NULL },
+  { "ISO_2022_IR_100", "ISO 2022 IR 100", "-A", NULL }, // ISO-8859-1
+  { "ISO_2022_IR_101", "ISO 2022 IR 101", "-B", NULL }, // ISO-8859-2
+  { "ISO_2022_IR_109", "ISO 2022 IR 109", "-C", NULL }, // ISO-8859-3
+  { "ISO_2022_IR_110", "ISO 2022 IR 110", "-D", NULL }, // ISO-8859-4
+  { "ISO_2022_IR_144", "ISO 2022 IR 144", "-L", NULL }, // ISO-8859-5
+  { "ISO_2022_IR_127", "ISO 2022 IR 127", "-G", NULL }, // ISO-8859-6
+  { "ISO_2022_IR_126", "ISO 2022 IR 126", "-F", NULL }, // ISO-8859-7
+  { "ISO_2022_IR_138", "ISO 2022 IR 138", "-H", NULL }, // ISO-8859-8
+  { "ISO_2022_IR_148", "ISO 2022 IR 148", "-M", NULL }, // ISO-8859-9
+  { "iso-2022-latin6", NULL,              "-V", NULL }, // ISO-8859-10
+  { "ISO_2022_IR_166", "ISO 2022 IR 166", "-T", NULL }, // TIS-620
+  { "iso-2022-latin7", NULL,              "-Y", NULL }, // ISO-8859-13
+  { "iso-2022-latin8", NULL,              "-_", NULL }, // ISO-8859-14
+  { "ISO_2022_IR_203", "ISO 2022 IR 203", "-b", NULL }, // ISO-8859-15
+  { "iso-2022-latin10", NULL,             "-f", NULL }, // ISO-8859-16
+  { NULL, NULL, NULL, NULL },
+  { "ISO_2022_IR_149", "\\ISO 2022 IR 149", "$)C", ISO_IR_149_Names }, // KS_C_5601
+  { "ISO_2022_IR_58",  "\\ISO 2022 IR 58",  "$)A", ISO_IR_58_Names}, // ISO2022CN
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { "ISO_IR_192", "ISO_IR 192", "%/I", ISO_IR_192_Names }, // UTF-8
+  { "GB18030",  "GB18030", NULL, GB18030_Names }, // GB18030:2022
+  { "GBK",      "GBK",     NULL, GBK_Names     }, // GBK subset of GB18030
+  { "big5",     NULL,      NULL, BIG5_Names    }, // BIG5 without hkscs
+  { NULL, NULL, NULL, NULL },
+  { "euc-jp",   NULL,      NULL, EUCJP_Names   }, // EUC-JP
+  { "sjis",     NULL,      NULL, SJIS_Names    }, // Shift_JIS
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { "cp874",    NULL, NULL, CP874_Names  }, // WINDOWS-874, thai
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { "cp1250",   NULL, NULL, CP1250_Names }, // WINDOWS-1250, central europe
+  { "cp1251",   NULL, NULL, CP1251_Names }, // WINDOWS-1251, cyrillic
+  { "cp1252",   NULL, NULL, CP1252_Names }, // WINDOWS-1252, western europe
+  { "cp1253",   NULL, NULL, CP1253_Names }, // WINDOWS-1253, greek
+  { "cp1254",   NULL, NULL, CP1254_Names }, // WINDOWS-1254, turkish
+  { "cp1255",   NULL, NULL, CP1255_Names }, // WINDOWS-1255, hebrew
+  { "cp1256",   NULL, NULL, CP1256_Names }, // WINDOWS-1256, arabic
+  { "cp1257",   NULL, NULL, CP1257_Names }, // WINDOWS-1257, baltic rim
+  { "cp1258",   NULL, NULL, CP1258_Names }, // WINDOWS-1258, vietnamese
+  { NULL, NULL, NULL, NULL },
+  { "koi8",     NULL, NULL, KOI8_Names   }, // KOI8-U, text only (no boxes)
 };
 
 //----------------------------------------------------------------------------
@@ -3519,7 +3506,6 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
   const char *cp = name;
   const char *ep = name;
   int key = Unknown;
-  bool found = false;
 
   if (cp)
   {
@@ -3540,70 +3526,81 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
 
     if (l == 0)
     {
-      found = true;
-      key = ISO_IR_6;
+      // empty value: default is ISO_IR 6
+      if (key == Unknown)
+      {
+        key = ISO_IR_6;
+      }
     }
     else
     {
-      found = false;
-      unsigned char iso2022flag = 0;
-      for (int i = 0; i < CHARSET_TABLE_SIZE && !found; i++)
+      // search for other values
+      for (int i = 0; i < CHARSET_TABLE_SIZE; i++)
       {
-        if (l == strlen(Charsets[i].DefinedTerm) &&
-            strncmp(Charsets[i].DefinedTerm, cp, l) == 0)
+        const char *definedTerm = Charsets[i].DefinedTerm;
+        bool beginsWithBackslash = false;
+        if (definedTerm && definedTerm[0] == '\\')
         {
-          found = true;
+          beginsWithBackslash = true;
+          ++definedTerm;
         }
-        else if (l == strlen(Charsets[i].DefinedTermExt) &&
-                 strncmp(Charsets[i].DefinedTermExt, cp, l) == 0)
-        {
-          found = true;
-          iso2022flag = ISO_2022;
-        }
-        if (found)
+        if (definedTerm && l == strlen(definedTerm) &&
+            strncmp(definedTerm, cp, l) == 0)
         {
           if (n == 0)
           {
             // set key from first value of SpecificCharacterSet
-            key = Charsets[i].Key | iso2022flag;
+            key = i;
           }
-          else if (Charsets[i].Flags == 1) // replace previous
+          else if (beginsWithBackslash)
           {
-            // set key from 2nd value of SpecificCharacterSet
-            key = Charsets[i].Key | ISO_2022;
+            if ((i & (ISO_2022 | ISO_2022_JP_BASE)) == i)
+            {
+              // combine key with 2nd, 3rd value of SpecificCharacterSet
+              // (specific to ISO_2022_IR_87 and ISO_2022_IR_159, which
+              // combine with ISO_2022_IR_13 and with each other)
+              key = (key & ISO_2022_JP_BASE) | i;
+            }
+            else
+            {
+              // set key from 2nd value of SpecificCharacterSet
+              // (specific to ISO_2022_IR_58 and ISO_2022_IR_149)
+              key = i;
+            }
           }
-          else if (Charsets[i].Flags == 2) // combine with previous
-          {
-            // combine key with 2nd, 3rd value of SpecificCharacterSet
-            // (specific to ISO_2022_IR_87 and ISO_2022_IR_159, which
-            // combine with ISO_2022_IR_13 and with each other)
-            key = (key & ISO_2022_JP_BASE) | Charsets[i].Key | ISO_2022;
-          }
+          break;
         }
       }
     }
 
     cp = dp;
-    if (cp != ep && *cp == '\\') { cp++; }
+    if (cp != ep && *cp == '\\')
+    {
+      // if multi-valued, turn ISO_IR 6 to ISO 2022
+      if (key == ISO_IR_6)
+      {
+        key = ISO_2022_IR_6;
+      }
+      cp++;
+    }
   }
 
   // if no defined terms matched, look for common character set names
-  if (!found && name && *name)
+  if (key == Unknown && name && *name)
   {
     // use lowercase comparison for case insensitivity
     vtkDICOMCharacterSet cs;
     std::string lowername = cs.CaseFoldedUTF8(name, nl);
 
-    for (int i = 0; i < CHARSET_TABLE_SIZE && !found; i++)
+    for (int i = 0; i < CHARSET_TABLE_SIZE && key == Unknown; i++)
     {
       for (const char **names = Charsets[i].Names;
-           names && *names && !found;
+           key == Unknown && names && *names;
            names++)
       {
         if (lowername == *names)
         {
-          found = true;
-          key = Charsets[i].Key;
+          key = i;
           // always activate JISX0208 if JISX0212 is active
           if (key == ISO_2022_IR_159)
           {
@@ -3621,62 +3618,38 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
 std::string vtkDICOMCharacterSet::GetCharacterSetString() const
 {
   unsigned char key = this->Key;
-  std::string value;
 
-  for (int i = 0; i < CHARSET_TABLE_SIZE && key != 0; i++)
+  // Use the DefinedTerm if present,
+  // otherwise use Name if present,
+  // fallback to the key as a string.
+
+  if (key == ISO_IR_6)
   {
-    bool match = false;
-    if (key == (key & (ISO_2022_JP_BASE | ISO_2022)) && key != ISO_2022)
-    {
-      // ISO_2022_IR_13, ISO_2022_IR_87 and ISO_2022_IR_159 can combine
-      if ((Charsets[i].Key & key) == Charsets[i].Key &&
-          (Charsets[i].Key | ISO_2022) != ISO_2022)
-      {
-        match = true;
-        // remove the bit for the matched charset
-        key ^= Charsets[i].Key & ~ISO_2022;
-        key = (key == ISO_2022 ? 0 : key);
-      }
-    }
-    else if (Charsets[i].Flags == 0 && value.empty())
-    {
-      if (this->IsISO2022())
-      {
-        match = (Charsets[i].Key == (key & ISO_2022_BASE));
-      }
-      else
-      {
-        match = (Charsets[i].Key == key);
-      }
-      key = (match ? 0 : key);
-    }
-    else if (Charsets[i].Flags == 1 && value.empty())
-    {
-      // ISO_2022_IR_58 and ISO_2022_IR_149
-      match = (Charsets[i].Key == (key | ISO_2022));
-      key = (match ? 0 : key);
-    }
+    return "";
+  }
+  if (key < CHARSET_TABLE_SIZE)
+  {
+    const char* name = Charsets[key].Name;
+    const char* dt = Charsets[key].DefinedTerm;
 
-    if (match)
+    if (dt)
     {
-      if (this->IsISO2022())
-      {
-        if (Charsets[i].Flags == 1 || Charsets[i].Flags == 2)
-          {
-          // always put ISO 2022 multibyte in second value
-          value += "\\";
-          }
-
-        value += Charsets[i].DefinedTermExt;
-      }
-      else
-      {
-        value += Charsets[i].DefinedTerm;
-      }
+      return dt;
+    }
+    else if (name)
+    {
+      return name;
     }
   }
+  if (key == Unknown)
+  {
+    return "Unknown";
+  }
 
-  return value;
+  std::stringstream ss;
+  ss << static_cast<int>(key);
+
+  return ss.str();
 }
 
 //----------------------------------------------------------------------------
@@ -3880,8 +3853,7 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
   }
 
   // don't write escape codes for single-byte character sets
-  vtkDICOMCharacterSet cs(this->Key ^ ISO_2022);
-  return cs.UTF8ToSingleByte(text, l, s);
+  return this->UTF8ToSingleByte(text, l, s);
 }
 
 //----------------------------------------------------------------------------
@@ -4786,17 +4758,75 @@ vtkDICOMCharacterSet::EscapeType vtkDICOMCharacterSet::EscapeCode(
 unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCode(
   const char *code, size_t l)
 {
-  // Look through the table that defines character sets known to us,
-  // and see if any of these match the escape code.
-  for (unsigned char k = 0; k < CHARSET_TABLE_SIZE; k++)
+  // Escape codes for iso-2022-jp-2 plus half-width katakana.
+  if (l == 2)
   {
-    if (strncmp(code, Charsets[k].EscapeCode, l) == 0)
+    if (code[0] == '(') // designate G0 94-set
     {
-      return Charsets[k].Key;
+      switch (code[1])
+      {
+        case 'B': // ascii
+          return ISO_2022_IR_6;
+        case 'I': // katakana in G0 (non-standard, not used when encoding)
+          return ISO_IR_13;
+        case 'J': // JIS X 0201 romaji
+          return ISO_2022_IR_13; // implies ISO 2022 IR 14
+      }
+    }
+    else if (code[0] == '$') // designate G0 multibyte
+    {
+      switch (code[1])
+      {
+        case '@': // JIS X 0208-1978 (not used when encoding)
+          return ISO_2022_IR_87;
+        case 'A': // GB2312-1980 chinese (not used when encoding)
+          return ISO_2022_IR_58;
+        case 'B': // JIS X 0208-1983
+          return ISO_2022_IR_87;
+      }
+    }
+    else if (code[0] == '.') // designate G2 96-set
+    {
+      switch (code[1])
+      {
+        case 'A': // ISO-8859-1 latin1 (not used when encoding)
+          return ISO_2022_IR_100;
+        case 'F': // ISO-8859-7 greek (not used when encoding)
+          return ISO_2022_IR_126;
+      }
+    }
+  }
+  else if (l == 3 && code[0] == '$' && code[1] == '(')
+  {
+    switch (code[2])
+    {
+      case 'C': // JIS X 0212 japanese supplementary
+        return ISO_2022_IR_149;
+      case 'D': // KS X 1001-1992 korean (not used when encoding)
+        return ISO_2022_IR_159;
     }
   }
 
-  return 255;
+  // Place half-width katakana in G1: this escape code is mentioned in
+  // DICOM, but since "ISO 2022 IR 13" implies that half-width katakana
+  // are in G1 at the start, use of this escape code is unnecessary.
+  if (l == 2 && code[0] == ')' && code[1] == 'I')
+  {
+    return ISO_IR_13;
+  }
+
+  // Look through the table that defines character sets known to us,
+  // this will catch escape codes for all ISO 8859 character sets.
+  for (unsigned char k = ISO_2022; k <= ISO_2022_MAX; k++)
+  {
+    const char *escape = Charsets[k].EscapeCode;
+    if (escape && strncmp(code, escape, l) == 0)
+    {
+      return k;
+    }
+  }
+
+  return Unknown;
 }
 
 //----------------------------------------------------------------------------
