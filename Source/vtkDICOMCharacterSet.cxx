@@ -3824,13 +3824,15 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
   const char *text, size_t l, std::string *s, int mode) const
 {
   // Decodes text that uses ISO-2022 escape codes to switch character sets.
+
   // Note that the SI/SO control characters (Shift Out, Shift In) are
-  // ignored, so this cannot be used for iso-2022-cn or iso-2022-kr.
-  // Instead, it expects DICOM's 8-bit form of these 7-bit encodings
-  // where the high bit indicates the shift status.
+  // not allowed, so this cannot be used for iso-2022-cn or iso-2022-kr.
+  // Instead, the decoder expects DICOM's 8-bit form of these 7-bit encodings
+  // where the character set is designated with an escape code, but the high
+  // bit indicates the shift status.
 
   // Get the initial settings of the ISO 2022 decoder
-  unsigned char charsetG[4];
+  unsigned char charsetG[4]; // G0, G1, G2, G3 charsets
   unsigned int state = InitISO2022(this->Key, charsetG);
 
   // loop through the string, looking for iso-2022 escape codes,
@@ -3863,6 +3865,7 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
       else if (charsetG[0] == ISO_2022_IR_6 && charsetG[1] != ISO_IR_13)
       {
         // When G0 is ASCII, simply apply G1 charset to this segment
+        // (unless G1 is ISO_IR_13, which requires the JISXToUTF8 function)
         vtkDICOMCharacterSet cs(charsetG[1] & ISO_2022_BASE);
         m = cs.AnyToUTF8(&text[i], j-i, s, mode);
       }
@@ -3875,7 +3878,7 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
                charsetG[0] == ISO_2022_IR_58)
       {
         // These are the G0 charsets that are supported by our JISX decoder,
-        // all are part of iso-2022-jp-2.
+        // all are part of iso-2022-jp-2 (and iso-2022-jp, of course)
         m = JISXToUTF8(charsetG[0], charsetG[1], &text[i], j-i, s, mode);
       }
       else if ((state & MULTIBYTE_G0) != 0)
@@ -3982,7 +3985,7 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
           break;
         case CODE_DOCS:
           // Switch to other encoding, such as UTF-8
-          // state &= ~ALTERNATE_CS;
+          // state ^= (state & ALTERNATE_CS);
           // state ^= CharacterSetFromEscapeCode(escapeCode, escapeLen);
           escapeFail = true;
           break;

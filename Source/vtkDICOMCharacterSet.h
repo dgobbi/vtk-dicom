@@ -77,7 +77,7 @@ public:
     X_EUCKR    = 24, // euc-kr,      ISO_IR_149 without escape codes
     X_GB2312   = 25, // gb2312,      ISO_IR_58 without escape codes
     ISO_2022_IR_6   = 32, // US_ASCII
-    ISO_2022_IR_13  = 33, // JIS X 0201,  japanese katakana
+    ISO_2022_IR_13  = 33, // JIS X 0201,  japanese romaji and katakana
     ISO_2022_IR_87  = 34, // JIS X 0208,  japanese 94x94 primary
     ISO_2022_IR_159 = 36, // JIS X 0212,  japanese 94x94 secondary
     ISO_2022_IR_100 = 40, // ISO-8859-1,  latin1, western europe
