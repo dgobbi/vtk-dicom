@@ -13815,7 +13815,7 @@ Referenced Patient Alias Sequence
 ReferencedPatientAliasSequence
 SQ
 1
-
+RET
 (0038,0008)
 Visit Status ID
 VisitStatusID

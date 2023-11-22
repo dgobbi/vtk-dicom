@@ -2310,7 +2310,7 @@ const DictEntry DictContents[] = {
 { 0x0034, 0x000B, 0, VR::SQ, VM::M1, "CameraPositionGroupSequence" },
 { 0x0034, 0x000C, 0, VR::CS, VM::M1, "IncludesInformation" },
 { 0x0034, 0x000D, 0, VR::SQ, VM::M1, "TimeOfFrameGroupSequence" },
-{ 0x0038, 0x0004, 0, VR::SQ, VM::M1, "ReferencedPatientAliasSequence" },
+{ 0x0038, 0x0004, 1, VR::SQ, VM::M1, "ReferencedPatientAliasSequence" },
 { 0x0038, 0x0008, 0, VR::CS, VM::M1, "VisitStatusID" },
 { 0x0038, 0x0010, 0, VR::LO, VM::M1, "AdmissionID" },
 { 0x0038, 0x0011, 1, VR::LO, VM::M1, "IssuerOfAdmissionID" },
