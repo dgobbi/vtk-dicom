@@ -1,7 +1,6 @@
 # Character Sets
 
-This document describes the evolution of character set support in
-DICOM.
+This document describes the evolution of character set support in DICOM.
 
 ## DICOM 1993
 
@@ -52,17 +51,17 @@ codes, JIS X 0201 was the only Japanese encoding allowed in DICOM.  At the
 time, JIS X 0201 was the only universally supported encoding in Japan.
 
 Use of JIS X 0201 in DICOM must be done with care, since it replaces
-BACKSLASH with YEN SIGN, forcing DICOM to use the yen symbol as
+backslash with YEN SIGN, forcing DICOM to use the yen symbol as
 the value separator when SpecificCharacterSet contains either 'ISO_IR 13'
 or 'ISO 2022 IR 13'.  This causes difficulty when converting the Japanese
 encodings to or from UTF-8.
 
 Let's say than someone wants to convert all text in a DICOM file from
 JIS X 0201 to UTF-8.  Should the YEN SIGN be converted to UTF-8 YEN SIGN,
-or to BACKSLASH?  The answer is, it should be converted UTF-8 YEN SIGN
+or to backslash?  The answer is, it should be converted to UTF-8 YEN SIGN
 only for attributes with a VR of ST, LT, and UT where it wasn't being
 used as a value separator.  For every other text VR, YEN SIGN must be
-interpreted as BACKSLASH (that is, its byte value of 0x5C must remain fixed).
+interpreted as backslash (that is, its byte value of 0x5C must remain fixed).
 
 Likewise, when UTF-8 is converted to iso-2022-jp for storage in DICOM,
 UTF-8 YEN SIGN will be stored as JIS X 0201 YEN SIGN, where it might be
@@ -81,10 +80,10 @@ activated by their escape codes.
 
 ## DICOM 1998
 
-In 1997 there was a proposal, CP 107, to add UTF-8 to DICOM with
-the defined term 'ISO_IR 196'.  This proposal was not accepted, but
-UTF-8 was added to DICOM in 2004 under its alternative ISO-IR
-registered name, 'ISO_IR 192'.
+In 1997 there was a proposal, CP 107, to add UTF-8 to DICOM with the
+defined term 'ISO_IR 196'.  This proposal was not accepted, but UTF-8
+was added to DICOM in 2004 under its alternative ISO-IR registered
+name, 'ISO_IR 192'.
 
 
 ## DICOM 2000
