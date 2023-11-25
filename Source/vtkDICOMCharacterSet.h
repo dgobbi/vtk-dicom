@@ -383,6 +383,10 @@ private:
 
   static const unsigned short *Table[256];
   static const unsigned short *Reverse[256];
+
+  static const int NumberOfAliases;
+  static const char *const Aliases[];
+  static const unsigned char AliasKeys[];
 };
 
 VTKDICOM_EXPORT ostream& operator<<(ostream& o, const vtkDICOMCharacterSet& a);

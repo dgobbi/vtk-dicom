@@ -17,6 +17,7 @@ be checked to see if it fits into one of the above categories, and the
 appropriate action could be taken.
 """
 
+import charsets
 import charutil
 
 import sys
@@ -747,66 +748,12 @@ sys.stdout.write('// Reverse\n')
 printtable("CodePageKOI8_R", rtable, Reverse)
 sys.stdout.write('\n')
 
-# this must be consistent with the enum in vtkDICOMCharacterSet.h
-ISO_2022   = 32
-ISO_IR_6   = 0  # US_ASCII
-ISO_IR_13  = 1  # JIS X 0201,  japanese romaji + katakana
-ISO_IR_100 = 8  # ISO-8859-1,  latin1, western europe
-ISO_IR_101 = 9  # ISO-8859-2,  latin2, central europe
-ISO_IR_109 = 10 # ISO-8859-3,  latin3, maltese
-ISO_IR_110 = 11 # ISO-8859-4,  latin4, baltic
-ISO_IR_144 = 12 # ISO-8859-5,  cyrillic
-ISO_IR_127 = 13 # ISO-8859-6,  arabic
-ISO_IR_126 = 14 # ISO-8859-7,  greek
-ISO_IR_138 = 15 # ISO-8859-8,  hebrew
-ISO_IR_148 = 16 # ISO-8859-9,  latin5, turkish
-X_LATIN6   = 17 # ISO-8859-10, latin6, nordic
-ISO_IR_166 = 18 # ISO-8859-11, thai
-X_LATIN7   = 19 # ISO-8859-13, latin7, baltic rim
-X_LATIN8   = 20 # ISO-8859-14, latin8, celtic
-ISO_IR_203 = 21 # ISO-8859-15, latin9, western europe
-X_LATIN10  = 22 # ISO-8859-16, latin10, southeastern europe
-X_EUCKR    = 24 # euc-kr,      ISO_IR_149 without escape codes
-X_GB2312   = 25 # gb2312,      ISO_IR_58 without escape codes
-ISO_2022_IR_6   = 32 # US_ASCII
-ISO_2022_IR_13  = 33 # JIS X 0201,  japanese katakana
-ISO_2022_IR_87  = 34 # JIS X 0208,  japanese 94x94 primary
-ISO_2022_IR_159 = 36 # JIS X 0212,  japanese 94x94 secondary
-ISO_2022_IR_100 = 40 # ISO-8859-1,  latin1, western europe
-ISO_2022_IR_101 = 41 # ISO-8859-2,  latin2, central europe
-ISO_2022_IR_109 = 42 # ISO-8859-3,  latin3, maltese
-ISO_2022_IR_110 = 43 # ISO-8859-4,  latin4, baltic
-ISO_2022_IR_144 = 44 # ISO-8859-5,  cyrillic
-ISO_2022_IR_127 = 45 # ISO-8859-6,  arabic
-ISO_2022_IR_126 = 46 # ISO-8859-7,  greek
-ISO_2022_IR_138 = 47 # ISO-8859-8,  hebrew
-ISO_2022_IR_148 = 48 # ISO-8859-9,  latin5, turkish
-ISO_2022_IR_166 = 50 # ISO-8859-11, thai
-ISO_2022_IR_203 = 53 # ISO-8859-15, latin9, western europe
-ISO_2022_IR_149 = 56 # the KS X 1001 part of ISO-2022-KR
-ISO_2022_IR_58  = 57 # the GB2312 part of ISO-2022-CN
-ISO_IR_192 = 64 # UTF-8,       unicode
-GB18030    = 65 # gb18030,     chinese with full unicode mapping
-GBK        = 66 # gbk,         chinese
-X_BIG5     = 67 # big5 + ETEN, traditional chinese
-X_EUCJP    = 69 # euc-jp,      unix encoding for japanese
-X_SJIS     = 70 # windows-31j, aka shift-jis, code page 932
-X_CP874    = 76 # cp1162,      thai (windows-874)
-X_CP1250   = 80 # cp1250,      central europe
-X_CP1251   = 81 # cp1251,      cyrillic
-X_CP1252   = 82 # cp1252,      western europe
-X_CP1253   = 83 # cp1253,      greek
-X_CP1254   = 84 # cp1254,      turkish
-X_CP1255   = 85 # cp1255,      hebrew
-X_CP1256   = 86 # cp1256,      arabic
-X_CP1257   = 87 # cp1257,      baltic rim
-X_CP1258   = 88 # cp1258,      vietnamese
-X_KOI8     = 90 # koi,         cyrillic
-
 # ----
 # Print the table of tables
 # ----
 
+# get the charset constants
+from charsets import *
 from charutil import print_table_of_tables
 
 pages = {
@@ -878,3 +825,26 @@ for x,y in pages.items():
 print_table_of_tables("Table", forward_tables)
 sys.stdout.write('\n')
 print_table_of_tables("Reverse", reverse_tables)
+
+# ----
+# Print the table of aliases
+# ----
+
+from charutil import print_alias_table
+
+all_aliases = []
+for key,names in charsets.aliases.items():
+    for name in names:
+        all_aliases.append((name, key))
+
+all_aliases.sort()
+alias_names = [name for name,key in all_aliases]
+alias_keys = [key for name,key in all_aliases]
+
+sys.stdout.write('\n')
+sys.stdout.write('const int vtkDICOMCharacterSet::NumberOfAliases = %d;\n'
+                 % (len(all_aliases),))
+sys.stdout.write('\n')
+print_alias_table('const char *const', 'Aliases', alias_names)
+sys.stdout.write('\n')
+print_alias_table('const unsigned char', 'AliasKeys', alias_keys)

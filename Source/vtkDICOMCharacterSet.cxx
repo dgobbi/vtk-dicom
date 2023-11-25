@@ -34,7 +34,106 @@ struct CharsetInfo
   const char *Name; // the name we use for the charset
   const char *DefinedTerm; // the DICOM defined term for the charset
   const char *EscapeCode; // the ISO 2022 escape code for this charset
-  const char **Names; // list of generic names of this charset
+  const char *MIMEName; // the IANA mime name for the charset
+};
+
+//----------------------------------------------------------------------------
+// This table gives the character sets that are defined in DICOM,
+// plus additional legacy character sets of interest.
+static const int CHARSET_TABLE_SIZE = 91;
+static const CharsetInfo Charsets[91] = {
+  { "ISO_IR_6",   "",           NULL, "US-ASCII" },
+  { "ISO_IR_13",  "ISO_IR 13",  NULL, NULL }, // JIS_X0201 romaji + katakana
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { "ISO_IR_100", "ISO_IR 100", NULL, "ISO-8859-1" },
+  { "ISO_IR_101", "ISO_IR 101", NULL, "ISO-8859-2" },
+  { "ISO_IR_109", "ISO_IR 109", NULL, "ISO-8859-3" },
+  { "ISO_IR_110", "ISO_IR 110", NULL, "ISO-8859-4" },
+  { "ISO_IR_144", "ISO_IR 144", NULL, "ISO-8859-5" },
+  { "ISO_IR_127", "ISO_IR 127", NULL, "ISO-8859-6" },
+  { "ISO_IR_126", "ISO_IR 126", NULL, "ISO-8859-7" },
+  { "ISO_IR_138", "ISO_IR 138", NULL, "ISO-8859-8" },
+  { "ISO_IR_148", "ISO_IR 148", NULL, "ISO-8859-9" },
+  { "latin6",     NULL,         NULL, "ISO-8859-10" },
+  { "ISO_IR_166", "ISO_IR 166", NULL, "TIS-620" },
+  { "latin7",     NULL,         NULL, "ISO-8859-13" },
+  { "latin8",     NULL,         NULL, "ISO-8859-14" },
+  { "ISO_IR_203", "ISO_IR 203", NULL, "ISO-8859-15" },
+  { "latin10",    NULL,         NULL, "ISO-8859-16" },
+  { NULL, NULL, NULL, NULL },
+  { "euc-kr",     NULL,         NULL, "EUC-KR" },
+  { "gb2312",     NULL,         NULL, "GB2312" },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { "ISO_2022_IR_6",   "ISO 2022 IR 6",   "(B", NULL }, // US-ASCII
+  { "ISO_2022_IR_13",  "ISO 2022 IR 13",  "(J", NULL }, // JIS_X0201
+  { "ISO_2022_IR_87", "\\ISO 2022 IR 87", "$B", "ISO-2022-JP" }, // JIS_X0208
+  { "ISO_2022_IR_13_87", "ISO 2022 IR 13\\ISO 2022 IR 87", NULL, NULL },
+  { "ISO_2022_IR_159", "\\ISO 2022 IR 159", "$(D", NULL }, // JIS_X0212
+  { "ISO_2022_IR_13_159", "ISO 2022 IR 13\\ISO 2022 IR 159", NULL, NULL },
+  { "ISO_2022_IR_87_159", "\\ISO 2022 IR 87\\ISO 2022 IR 159", NULL, NULL },
+  { "ISO_2022_IR_13_87_159", "ISO 2022 IR 13\\ISO 2022 IR 87\\ISO 2022 IR 159",
+    NULL, NULL },
+  { "ISO_2022_IR_100", "ISO 2022 IR 100", "-A", NULL }, // ISO-8859-1
+  { "ISO_2022_IR_101", "ISO 2022 IR 101", "-B", NULL }, // ISO-8859-2
+  { "ISO_2022_IR_109", "ISO 2022 IR 109", "-C", NULL }, // ISO-8859-3
+  { "ISO_2022_IR_110", "ISO 2022 IR 110", "-D", NULL }, // ISO-8859-4
+  { "ISO_2022_IR_144", "ISO 2022 IR 144", "-L", NULL }, // ISO-8859-5
+  { "ISO_2022_IR_127", "ISO 2022 IR 127", "-G", NULL }, // ISO-8859-6
+  { "ISO_2022_IR_126", "ISO 2022 IR 126", "-F", NULL }, // ISO-8859-7
+  { "ISO_2022_IR_138", "ISO 2022 IR 138", "-H", NULL }, // ISO-8859-8
+  { "ISO_2022_IR_148", "ISO 2022 IR 148", "-M", NULL }, // ISO-8859-9
+  { "iso-2022-latin6", NULL,              "-V", NULL }, // ISO-8859-10
+  { "ISO_2022_IR_166", "ISO 2022 IR 166", "-T", NULL }, // TIS-620
+  { "iso-2022-latin7", NULL,              "-Y", NULL }, // ISO-8859-13
+  { "iso-2022-latin8", NULL,              "-_", NULL }, // ISO-8859-14
+  { "ISO_2022_IR_203", "ISO 2022 IR 203", "-b", NULL }, // ISO-8859-15
+  { "iso-2022-latin10", NULL,             "-f", NULL }, // ISO-8859-16
+  { NULL, NULL, NULL, NULL },
+  { "ISO_2022_IR_149", "\\ISO 2022 IR 149", "$)C", NULL }, // ~ISO-2022-KR
+  { "ISO_2022_IR_58",  "\\ISO 2022 IR 58",  "$)A", NULL }, // ~ISO-2022-CN
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { "ISO_IR_192", "ISO_IR 192", "%/I", "UTF-8" },
+  { "GB18030",  "GB18030", NULL, "GB18030" },
+  { "GBK",      "GBK",     NULL, "GBK" }, // subset of GB18030
+  { "big5",     NULL,      NULL, "Big5" }, // ETEN, but no hkscs
+  { NULL, NULL, NULL, NULL },
+  { "euc-jp",   NULL,      NULL, "EUC-JP" },
+  { "sjis",     NULL,      NULL, "Shift_JIS" },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { "cp874",    NULL, NULL, "windows-874" }, // thai
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { NULL, NULL, NULL, NULL },
+  { "cp1250",   NULL, NULL, "windows-1250" }, // central europe
+  { "cp1251",   NULL, NULL, "windows-1251" }, // cyrillic
+  { "cp1252",   NULL, NULL, "windows-1252" }, // western europe
+  { "cp1253",   NULL, NULL, "windows-1253" }, // greek
+  { "cp1254",   NULL, NULL, "windows-1254" }, // turkish
+  { "cp1255",   NULL, NULL, "windows-1255" }, // hebrew
+  { "cp1256",   NULL, NULL, "windows-1256" }, // arabic
+  { "cp1257",   NULL, NULL, "windows-1257" }, // baltic rim
+  { "cp1258",   NULL, NULL, "windows-1258" }, // vietnamese
+  { NULL, NULL, NULL, NULL },
+  { "koi8",     NULL, NULL, "KOI8-U" }, // text only, no boxes
 };
 
 //----------------------------------------------------------------------------
@@ -166,537 +265,6 @@ unsigned short CompressedTableJISXR::operator[](unsigned int x)
   }
   return 0xFFFD;
 }
-
-//----------------------------------------------------------------------------
-// The following are common names of each character set that we support.
-// Any of these common names can be passed to the vtkDICOMCharacterSet
-// constructor to instantiate a converter for that character set.
-
-static const char *ISO_IR_6_Names[] = {
-  "ansi_x3.4-1968",
-  "ansi_x3.4-1986",
-  "ascii",
-  "iso-ir-6",
-  "iso646-us",
-  "us-ascii",
-  NULL
-};
-
-static const char *ISO_IR_100_Names[] = {
-  "cp819",
-  "csisolatin1",
-  "ibm819",
-  "iso-8859-1",
-  "iso-ir-100",
-  "iso8859-1",
-  "iso88591",
-  "iso_8859-1",
-  "iso_8859-1:1987",
-  "l1",
-  "latin1",
-  // documented but incorrect defined term
-  "iso-ir 100",
-  NULL
-};
-
-static const char *ISO_IR_101_Names[] = {
-  "csisolatin2",
-  "iso-8859-2",
-  "iso-ir-101",
-  "iso8859-2",
-  "iso88592",
-  "iso_8859-2",
-  "iso_8859-2:1987",
-  "l2",
-  "latin2",
-  // documented but incorrect defined term
-  "iso-ir 101",
-  NULL
-};
-
-static const char *ISO_IR_109_Names[] = {
-  "csisolatin3",
-  "iso-8859-3",
-  "iso-ir-109",
-  "iso8859-3",
-  "iso88593",
-  "iso_8859-3",
-  "iso_8859-3:1988",
-  "l3",
-  "latin3",
-  // documented but incorrect defined term
-  "iso-ir 109",
-  NULL
-};
-
-static const char *ISO_IR_110_Names[] = {
-  "csisolatin4",
-  "iso-8859-4",
-  "iso-ir-110",
-  "iso8859-4",
-  "iso88594",
-  "iso_8859-4",
-  "iso_8859-4:1988",
-  "l4",
-  "latin4",
-  // documented but incorrect defined term
-  "iso-ir 110",
-  NULL
-};
-
-static const char *ISO_IR_144_Names[] = {
-  "csisolatincyrillic",
-  "cyrillic",
-  "iso-8859-5",
-  "iso-ir-144",
-  "iso8859-5",
-  "iso88595",
-  "iso_8859-5",
-  "iso_8859-5:1988",
-  // documented but incorrect defined term
-  "iso-ir 144",
-  NULL
-};
-
-static const char *ISO_IR_127_Names[] = {
-  "arabic",
-  "asmo-708",
-  "csiso88596e",
-  "csiso88596i",
-  "csisolatinarabic",
-  "ecma-114",
-  "iso-8859-6",
-  "iso-8859-6-e",
-  "iso-8859-6-i",
-  "iso-ir-127",
-  "iso8859-6",
-  "iso88596",
-  "iso_8859-6",
-  "iso_8859-6:1987",
-  // documented but incorrect defined term
-  "iso-ir 127",
-  NULL
-};
-
-static const char *ISO_IR_126_Names[] = {
-  "csisolatingreek",
-  "ecma-118",
-  "elot_928",
-  "greek",
-  "greek8",
-  "iso-8859-7",
-  "iso-ir-126",
-  "iso8859-7",
-  "iso88597",
-  "iso_8859-7",
-  "iso_8859-7:1987",
-  "sun_eu_greek",
-  // documented but incorrect defined term
-  "iso-ir 126",
-  NULL
-};
-
-static const char *ISO_IR_138_Names[] = {
-  "csiso88598e",
-  "csisolatinhebrew",
-  "hebrew",
-  "iso-8859-8",
-  "iso-8859-8-e",
-  "iso-ir-138",
-  "iso8859-8",
-  "iso88598",
-  "iso_8859-8",
-  "iso_8859-8:1988",
-  // documented but incorrect defined term
-  "iso-ir 138",
-  NULL
-};
-
-static const char *ISO_IR_148_Names[] = {
-  "csisolatin5",
-  "iso-8859-9",
-  "iso-ir-148",
-  "iso8859-9",
-  "iso88599",
-  "iso_8859-9",
-  "iso_8859-9:1989",
-  "l5",
-  "latin5",
-  // documented but incorrect defined term
-  "iso-ir 148",
-  NULL
-};
-
-static const char *ISO_IR_166_Names[] = {
-  "dos-874",
-  "iso-8859-11",
-  "iso-ir-166",
-  "iso8859-11",
-  "iso885911",
-  "tis-620",
-  NULL
-};
-
-static const char *ISO_IR_13_Names[] = {
-  "iso-ir-13",
-  "iso-ir-14",
-  "jis_x0201",
-  "x0201",
-  NULL
-};
-
-static const char *ISO_2022_Names[] = {
-  "iso-2022",
-  NULL
-};
-
-static const char *LATIN6_Names[] = {
-  "csisolatin6",
-  "iso-8859-10",
-  "iso-ir-157",
-  "iso8859-10",
-  "iso885910",
-  "iso_8859-10",
-  "l6",
-  "latin6",
-  NULL
-};
-
-static const char *LATIN7_Names[] = {
-  "csisolatin7",
-  "iso-8859-13",
-  "iso-ir-179",
-  "iso8859-13",
-  "iso885913",
-  "iso_8859-13",
-  "l7",
-  "latin7",
-  NULL
-};
-
-static const char *LATIN8_Names[] = {
-  "csisolatin8",
-  "iso-8859-14",
-  "iso-ir-199",
-  "iso8859-14",
-  "iso885914",
-  "iso_8859-14",
-  "l8",
-  "latin8",
-  NULL
-};
-
-static const char *ISO_IR_203_Names[] = {
-  "csisolatin9",
-  "iso-8859-15",
-  "iso-ir-203",
-  "iso8859-15",
-  "iso885915",
-  "iso_8859-15",
-  "l9",
-  "latin9",
-  NULL
-};
-
-static const char *LATIN10_Names[] = {
-  "csisolatin10",
-  "iso-8859-16",
-  "iso-ir-226",
-  "iso8859-16",
-  "iso885916",
-  "iso_8859-16",
-  "l10",
-  "latin10",
-  NULL
-};
-
-static const char *ISO_IR_192_Names[] = {
-  "iso-ir-192",
-  "unicode-1-1-utf-8",
-  "utf-8",
-  "utf8",
-  // documented but incorrect defined term
-  "iso 2022 ir 192",
-  NULL
-};
-
-static const char *GB18030_Names[] = {
-  "gb18030",
-  NULL
-};
-
-static const char *GBK_Names[] = {
-  "gbk",
-  "x-gbk",
-  // documented but incorrect defined term
-  "iso 2022 gbk",
-  NULL
-};
-
-static const char *GB2312_Names[] = {
-  "chinese",
-  "csgb2312",
-  "csiso58gb231280",
-  "gb2312",
-  "gb_2312",
-  "gb_2312-80",
-  NULL
-};
-
-static const char *ISO_IR_58_Names[] = {
-  "iso-ir-58",
-  // documented but incorrect defined term
-  "iso 2022 gb2312",
-  NULL
-};
-
-static const char *EUCKR_Names[] = {
-  "cseuckr",
-  "csksc56011987",
-  "euc-kr",
-  "korean",
-  "ksc_5601",
-  "ksc5601",
-  "ks_c_5601-1987",
-  "ks_c_5601-1989",
-  "windows-949",
-  NULL
-};
-
-static const char *ISO_IR_149_Names[] = {
-  "iso-ir-149",
-  NULL
-};
-
-static const char *ISO_IR_87_Names[] = {
-  "csiso2022jp",
-  "iso-2022-jp",
-  "iso-ir-87",
-  "iso2022_jp",
-  "jis",
-  NULL
-};
-
-static const char *ISO_IR_159_Names[] = {
-  "iso-2022-jp-1",
-  "iso-2022-jp-2",
-  "iso-ir-159",
-  "iso2022_jp_1",
-  "iso2022_jp_2",
-  NULL
-};
-
-static const char *CP874_Names[] = {
-  "windows-874",
-  NULL
-};
-
-static const char *CP1250_Names[] = {
-  "cp1250",
-  "windows-1250",
-  "x-cp1250",
-  NULL
-};
-
-static const char *CP1251_Names[] = {
-  "cp1251",
-  "windows-1251",
-  "x-cp1251",
-  NULL
-};
-
-static const char *CP1252_Names[] = {
-  "cp1252",
-  "windows-1252",
-  "x-cp1252",
-  NULL
-};
-
-static const char *CP1253_Names[] = {
-  "cp1253",
-  "windows-1253",
-  "x-cp1253",
-  NULL
-};
-
-static const char *CP1254_Names[] = {
-  "cp1254",
-  "windows-1254",
-  "x-cp1254",
-  NULL
-};
-
-static const char *CP1255_Names[] = {
-  "cp1255",
-  "windows-1255",
-  "x-cp1255",
-  NULL
-};
-
-static const char *CP1256_Names[] = {
-  "cp1256",
-  "windows-1256",
-  "x-cp1256",
-  NULL
-};
-
-static const char *CP1257_Names[] = {
-  "cp1257",
-  "windows-1257",
-  "x-cp1257",
-  NULL
-};
-
-static const char *CP1258_Names[] = {
-  "cp1258",
-  "windows-1258",
-  "x-cp1258",
-  NULL
-};
-
-static const char *BIG5_Names[] = {
-  "b5",
-  "big5",
-  "big5-eten",
-  "cn-big5",
-  "csbig5",
-  "x-x-big5",
-  // documented but incorrect defined terms
-  "iso 2022 b5",
-  "iso 2022 big5",
-  NULL
-};
-
-static const char *SJIS_Names[] = {
-  "csshiftjis",
-  "ms932",
-  "ms_kanji",
-  "shift-jis",
-  "shift_jis",
-  "sjis",
-  "windows-31j",
-  "x-sjis",
-  NULL
-};
-
-static const char *EUCJP_Names[] = {
-  "cseucpkdfmtjapanese",
-  "euc-jp",
-  "x-euc-jp",
-  NULL
-};
-
-static const char *KOI8_Names[] = {
-  "koi",
-  "koi8",
-  "koi8-ru",
-  "koi8-u",
-  NULL
-};
-
-//----------------------------------------------------------------------------
-// This table gives the character sets that are defined in DICOM,
-// plus additional legacy character sets of interest.
-//
-// The fields are defined as follows:
-// 1. Name - the name that we use for the character set
-// 2. DefinedTerm - the defined term for the character set
-// 3. EscapeCode - the ISO 2022 escape code
-// 4. Names - list of alternative names for this character set
-static const int CHARSET_TABLE_SIZE = 91;
-static const CharsetInfo Charsets[91] = {
-  { "ISO_IR_6",   "",           NULL, ISO_IR_6_Names   }, // default, US-ASCII
-  { "ISO_IR_13",  "ISO_IR 13",  NULL, ISO_IR_13_Names  }, // JIS_X0201
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { "ISO_IR_100", "ISO_IR 100", NULL, ISO_IR_100_Names }, // ISO-8859-1
-  { "ISO_IR_101", "ISO_IR 101", NULL, ISO_IR_101_Names }, // ISO-8859-2
-  { "ISO_IR_109", "ISO_IR 109", NULL, ISO_IR_109_Names }, // ISO-8859-3
-  { "ISO_IR_110", "ISO_IR 110", NULL, ISO_IR_110_Names }, // ISO-8859-4
-  { "ISO_IR_144", "ISO_IR 144", NULL, ISO_IR_144_Names }, // ISO-8859-5
-  { "ISO_IR_127", "ISO_IR 127", NULL, ISO_IR_127_Names }, // ISO-8859-6
-  { "ISO_IR_126", "ISO_IR 126", NULL, ISO_IR_126_Names }, // ISO-8859-7
-  { "ISO_IR_138", "ISO_IR 138", NULL, ISO_IR_138_Names }, // ISO-8859-8
-  { "ISO_IR_148", "ISO_IR 148", NULL, ISO_IR_148_Names }, // ISO-8859-9
-  { "latin6",     NULL,         NULL, LATIN6_Names     }, // ISO-8859-10
-  { "ISO_IR_166", "ISO_IR 166", NULL, ISO_IR_166_Names }, // TIS-620
-  { "latin7",     NULL,         NULL, LATIN7_Names     }, // ISO-8859-13
-  { "latin8",     NULL,         NULL, LATIN8_Names     }, // ISO-8859-14
-  { "ISO_IR_203", "ISO_IR 203", NULL, ISO_IR_203_Names }, // ISO-8859-15
-  { "latin10",    NULL,         NULL, LATIN10_Names    }, // ISO-8859-16
-  { NULL, NULL, NULL, NULL },
-  { "euc-kr",     NULL,         NULL, EUCKR_Names      }, // EUC-KR
-  { "gb2312",     NULL,         NULL, GB2312_Names     }, // GB2312
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { "ISO_2022_IR_6",   "ISO 2022 IR 6",   "(B", ISO_2022_Names  }, // US-ASCII
-  { "ISO_2022_IR_13",  "ISO 2022 IR 13",  "(J", NULL            }, // JIS_X0201
-  { "ISO_2022_IR_87", "\\ISO 2022 IR 87", "$B", ISO_IR_87_Names }, // JIS_X0208
-  { NULL, "ISO 2022 IR 13\\ISO 2022 IR 87", NULL, NULL }, // ISO-2022-JP
-  { "ISO_2022_IR_159", "\\ISO 2022 IR 159", "$(D", NULL }, // JIS_X0212
-  { NULL, "ISO 2022 IR 13\\ISO 2022 IR 159", NULL, NULL },
-  { NULL, "\\ISO 2022 IR 87\\ISO 2022 IR 159", NULL, ISO_IR_159_Names },
-  { NULL, "ISO 2022 IR 13\\ISO 2022 IR 87\\ISO 2022 IR 159", NULL, NULL },
-  { "ISO_2022_IR_100", "ISO 2022 IR 100", "-A", NULL }, // ISO-8859-1
-  { "ISO_2022_IR_101", "ISO 2022 IR 101", "-B", NULL }, // ISO-8859-2
-  { "ISO_2022_IR_109", "ISO 2022 IR 109", "-C", NULL }, // ISO-8859-3
-  { "ISO_2022_IR_110", "ISO 2022 IR 110", "-D", NULL }, // ISO-8859-4
-  { "ISO_2022_IR_144", "ISO 2022 IR 144", "-L", NULL }, // ISO-8859-5
-  { "ISO_2022_IR_127", "ISO 2022 IR 127", "-G", NULL }, // ISO-8859-6
-  { "ISO_2022_IR_126", "ISO 2022 IR 126", "-F", NULL }, // ISO-8859-7
-  { "ISO_2022_IR_138", "ISO 2022 IR 138", "-H", NULL }, // ISO-8859-8
-  { "ISO_2022_IR_148", "ISO 2022 IR 148", "-M", NULL }, // ISO-8859-9
-  { "iso-2022-latin6", NULL,              "-V", NULL }, // ISO-8859-10
-  { "ISO_2022_IR_166", "ISO 2022 IR 166", "-T", NULL }, // TIS-620
-  { "iso-2022-latin7", NULL,              "-Y", NULL }, // ISO-8859-13
-  { "iso-2022-latin8", NULL,              "-_", NULL }, // ISO-8859-14
-  { "ISO_2022_IR_203", "ISO 2022 IR 203", "-b", NULL }, // ISO-8859-15
-  { "iso-2022-latin10", NULL,             "-f", NULL }, // ISO-8859-16
-  { NULL, NULL, NULL, NULL },
-  { "ISO_2022_IR_149", "\\ISO 2022 IR 149", "$)C", ISO_IR_149_Names }, // KS_C_5601
-  { "ISO_2022_IR_58",  "\\ISO 2022 IR 58",  "$)A", ISO_IR_58_Names}, // ISO2022CN
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { "ISO_IR_192", "ISO_IR 192", "%/I", ISO_IR_192_Names }, // UTF-8
-  { "GB18030",  "GB18030", NULL, GB18030_Names }, // GB18030:2022
-  { "GBK",      "GBK",     NULL, GBK_Names     }, // GBK subset of GB18030
-  { "big5",     NULL,      NULL, BIG5_Names    }, // BIG5 without hkscs
-  { NULL, NULL, NULL, NULL },
-  { "euc-jp",   NULL,      NULL, EUCJP_Names   }, // EUC-JP
-  { "sjis",     NULL,      NULL, SJIS_Names    }, // Shift_JIS
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { "cp874",    NULL, NULL, CP874_Names  }, // WINDOWS-874, thai
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { "cp1250",   NULL, NULL, CP1250_Names }, // WINDOWS-1250, central europe
-  { "cp1251",   NULL, NULL, CP1251_Names }, // WINDOWS-1251, cyrillic
-  { "cp1252",   NULL, NULL, CP1252_Names }, // WINDOWS-1252, western europe
-  { "cp1253",   NULL, NULL, CP1253_Names }, // WINDOWS-1253, greek
-  { "cp1254",   NULL, NULL, CP1254_Names }, // WINDOWS-1254, turkish
-  { "cp1255",   NULL, NULL, CP1255_Names }, // WINDOWS-1255, hebrew
-  { "cp1256",   NULL, NULL, CP1256_Names }, // WINDOWS-1256, arabic
-  { "cp1257",   NULL, NULL, CP1257_Names }, // WINDOWS-1257, baltic rim
-  { "cp1258",   NULL, NULL, CP1258_Names }, // WINDOWS-1258, vietnamese
-  { NULL, NULL, NULL, NULL },
-  { "koi8",     NULL, NULL, KOI8_Names   }, // KOI8-U, text only (no boxes)
-};
 
 //----------------------------------------------------------------------------
 // Convert a unicode code point to UTF-8
@@ -3588,25 +3156,27 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
   // if no defined terms matched, look for common character set names
   if (key == Unknown && name && *name)
   {
-    // use lowercase comparison for case insensitivity
-    vtkDICOMCharacterSet cs;
-    std::string lowername = cs.CaseFoldedUTF8(name, nl);
+    size_t n = vtkDICOMCharacterSet::NumberOfAliases;
+    const char *const *table = vtkDICOMCharacterSet::Aliases;
 
-    for (int i = 0; i < CHARSET_TABLE_SIZE && key == Unknown; i++)
+    // use lowercase comparison for case insensitivity
+    std::string lowername;
+    lowername.reserve(nl);
+    for (size_t j = 0; j < nl; j++)
     {
-      for (const char **names = Charsets[i].Names;
-           key == Unknown && names && *names;
-           names++)
+      char c = name[j];
+      lowername.push_back((c >= 'A' && c <= 'Z') ? c + 32 : c);
+    }
+
+    const char *const *iter = std::lower_bound(table, table + n, lowername);
+    size_t i = iter - table;
+    if (i < n && *iter == lowername)
+    {
+      key = vtkDICOMCharacterSet::AliasKeys[i];
+      // always activate JISX0208 if JISX0212 is active
+      if (key == ISO_2022_IR_159)
       {
-        if (lowername == *names)
-        {
-          key = i;
-          // always activate JISX0208 if JISX0212 is active
-          if (key == ISO_2022_IR_159)
-          {
-            key |= ISO_2022_IR_87;
-          }
-        }
+        key |= ISO_2022_IR_87;
       }
     }
   }
