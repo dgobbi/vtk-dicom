@@ -442,3 +442,21 @@ def print_table_of_tables(name, table):
     if count != 1:
         sys.stdout.write('\n')
     sys.stdout.write('};\n')
+
+def print_alias_table(atype, name, values):
+    n = len(values)
+    sys.stdout.write(
+        '%s vtkDICOMCharacterSet::%s[%d] = {\n' % (atype, name, n))
+    line = ''
+    for value in values:
+        if isinstance(value, str):
+            item = ' \"' + value + '\",'
+        else:
+            item = ' ' + str(value) + ','
+        if len(line) + len(item) > 74:
+            sys.stdout.write(' ' + line + '\n')
+            line = ''
+        line += item
+    if line:
+        sys.stdout.write(' ' + line + '\n')
+    sys.stdout.write('};\n')
