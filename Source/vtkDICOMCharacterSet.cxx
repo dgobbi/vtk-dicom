@@ -2590,8 +2590,8 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
         continue;
       }
 
-      // JIS X 0201 is an ugly mapping, because it lacks backslash
-      // and tilde, which were put into the official JIS X 0212 page.
+      // JIS X 0201 lacks backslash and tilde, so these are converted
+      // to their fullwidth forms and encoded via JIS X 0208 and 0212.
       if (code == '\\' && hasJISX0208)
       {
         code = 0xFF3C; // FULLWIDTH REVERSE SOLIDUS
@@ -2600,11 +2600,11 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
       {
         code = 0xFF5E; // FULLWIDTH TILDE
       }
-      else if (code == 0xA5 && !hasJISX0208) // YEN SIGN
+      else if (code == 0xA5) // YEN SIGN
       {
         code = '\\';
       }
-      else if (code == 0x203E && !hasJISX0212) // MACRON
+      else if (code == 0x203E) // MACRON
       {
         code = '~';
       }
