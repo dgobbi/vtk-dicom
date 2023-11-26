@@ -2661,12 +2661,16 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
 
     // conversion of character failed
     size_t lastsize = s->size();
-    s->append(escBase);
+    if (state != 0)
+    {
+      s->append(escBase);
+    }
+    size_t checksize = s->size();
     if (!LastChanceConversion(s, lastpos, ep))
     {
       errpos = (errpos ? errpos : lastpos);
     }
-    if (s->size() == lastsize + 3)
+    if (s->size() == checksize)
     {
       s->resize(lastsize);
     }
