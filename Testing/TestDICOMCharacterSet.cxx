@@ -587,6 +587,80 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   }
   }
 
+  { // test round trip of ISO 2022 korean and chinese
+  const char *sets[] = {
+    "\\ISO 2022 IR 149",
+    "\x1b$)C",
+    "A1A1-A2E7,A3A1-A4D3,A4D5-A5AA,A5B0-A5B9,A5C1-A5D8,A5E1-A5F8,"
+    "A6A1-A6E4,A7A1-A7EF,A8A1-A8A4,A8A6-A8A6,A8A8-A8AF,A8B1-AAF3,"
+    "ABA1-ABF6,ACA1-ACC1,ACD1-ACF1,B0A1-C8EF,CAA1-FDEF,",
+
+    "\\ISO 2022 IR 58",
+    "\x1b$)A",
+    "A1A1-A1FE,A2B1-A2E2,A2E5-A2EE,A2F1-A2FC,A3A1-A4F3,A5A1-A5F6,"
+    "A6A1-A6B8,A6C1-A6D8,A7A1-A7C1,A7D1-A7F1,A8A1-A8BA,A8C5-A8E9,"
+    "A9A4-A9EF,B0A1-D7F9,D8A1-F7FE,",
+
+    NULL, NULL, NULL
+  };
+
+  for (int i = 0; sets[i]; i += 3)
+  {
+    const char *charset = sets[i];
+    const char *escCode = sets[i+1];
+    const char *ranges = sets[i+2];
+
+    vtkDICOMCharacterSet cs(charset);
+    std::string bytes;
+
+    for (unsigned int c = 0x01; c <= 0x7F; c++)
+    {
+      if (c != 0x1b && c != 0x0E && c != 0x0F) // skip ESC SO SI
+      {
+        bytes.push_back(static_cast<char>(c));
+      }
+    }
+
+    bytes.append("\r\n");
+    bytes.append(escCode);
+
+    const char *r = ranges;
+    while (*r != '\0')
+    {
+      unsigned int range[2];
+      const char *rnext = r;
+      while (isalnum(*rnext)) { ++rnext; }
+      range[0] = static_cast<unsigned int>(strtoul(r, NULL, 16));
+      TestAssert(*rnext == '-');
+      r = ++rnext;
+      while (isalnum(*rnext)) { ++rnext; }
+      range[1] = static_cast<unsigned int>(strtoul(r, NULL, 16));
+      TestAssert(*rnext == ',');
+      r = ++rnext;
+
+      for (unsigned int c = range[0]; c <= range[1]; c++)
+      {
+        unsigned int a = (c >> 8);
+        unsigned int b = (c & 0xFF);
+        if (a > 0xA0 && a < 0xFF)
+        {
+          if (b > 0xA0 && b < 0xFF)
+          {
+            bytes.push_back(static_cast<char>(a));
+            bytes.push_back(static_cast<char>(b));
+          }
+        }
+      }
+    }
+    std::string u = cs.ToUTF8(bytes);
+    std::string t = cs.FromUTF8(u);
+    if (t != bytes)
+    {
+      std::cerr << "Failed round-trip for \"" << sets[i] << "\"\n";
+      TestAssert(t == bytes);
+    }
+  }
+  }
   return rval;
 }
 
