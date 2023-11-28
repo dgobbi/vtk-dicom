@@ -2283,7 +2283,6 @@ size_t vtkDICOMCharacterSet::UTF8ToGB18030(
   const char *ep = text + l;
   while (cp != ep)
   {
-    const char *lastpos = cp;
     unsigned int code = UTF8ToUnicode(&cp, ep);
     if (code < 0x80)
     {
@@ -2336,14 +2335,9 @@ size_t vtkDICOMCharacterSet::UTF8ToGB18030(
       // non-BMP codes -> 4 byte GB18030 code
       t = code - 0x10000 + 150*1260;
     }
-    else
+    else // (code == 0xFFFE || code == 0xFFFF)
     {
-      // for handling of 0xFFFE and 0xFFFF
-      if (!LastChanceConversion(s, lastpos, ep))
-      {
-        errpos = (errpos ? errpos : lastpos);
-      }
-      continue;
+      t = code - 0xFFFD + 39417;
     }
 
     // four bytes
