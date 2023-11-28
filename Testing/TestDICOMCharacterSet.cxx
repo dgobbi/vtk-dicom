@@ -521,7 +521,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
 
     for (unsigned int c = 0x01; c <= 0x7F; c++)
     {
-      if (c != 0x1b && c != 0x0E && c != 0x0F) // skip ESC SO SI
+      if (c != 0x1B && c != 0x0E && c != 0x0F) // skip ESC SO SI
       {
         bytes.push_back(static_cast<char>(c));
       }
@@ -615,7 +615,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
 
     for (unsigned int c = 0x01; c <= 0x7F; c++)
     {
-      if (c != 0x1b && c != 0x0E && c != 0x0F) // skip ESC SO SI
+      if (c != 0x1B && c != 0x0E && c != 0x0F) // skip ESC SO SI
       {
         bytes.push_back(static_cast<char>(c));
       }
@@ -661,6 +661,94 @@ int TestDICOMCharacterSet(int argc, char *argv[])
     }
   }
   }
+
+  { // test round trip of GBK and GB18030
+  const char *sets[] = {
+    "GBK",
+    "8140-A2AA,A2B1-A2E2,A2E5-A2EE,A2F1-A2FC,A340-A4F3,A540-A5F6,"
+    "A640-A6B8,A6C1-A6D8,A6E0-A6EB,A6EE-A6F2,A6F4-A6F5,A740-A7C1,"
+    "A7D1-A7F1,A840-A895,A8A1-A8C0,A8C5-A8E9,A940-A957,A959-A95A,"
+    "A95C-A95C,A960-A996,A9A4-A9EF,AA40-D7F9,D840-FEFE,",
+
+    "GB18030",
+    "8140-FEFE,81308130-8139FE39,82308130-8239FE39,83308130-8339FE39,"
+    "84308130-8431A439," // U+FFFF end of BMP
+    "90308130-9039FE39,E3308130-E3329A35,", // U+10FFFF
+
+    NULL, NULL
+  };
+
+  for (int i = 0; sets[i]; i += 2)
+  {
+    const char *charset = sets[i];
+    const char *ranges = sets[i+1];
+
+    vtkDICOMCharacterSet cs(charset);
+    std::string bytes;
+
+    for (unsigned int c = 0x01; c <= 0x7F; c++)
+    {
+      bytes.push_back(static_cast<char>(c));
+    }
+
+    const char *r = ranges;
+    while (*r != '\0')
+    {
+      unsigned int range[2];
+      const char *rnext = r;
+      while (isalnum(*rnext)) { ++rnext; }
+      range[0] = static_cast<unsigned int>(strtoul(r, NULL, 16));
+      TestAssert(*rnext == '-');
+      r = ++rnext;
+      while (isalnum(*rnext)) { ++rnext; }
+      range[1] = static_cast<unsigned int>(strtoul(r, NULL, 16));
+      TestAssert(*rnext == ',');
+      r = ++rnext;
+
+      for (unsigned int c = range[0]; c <= range[1]; c++)
+      {
+        if (c > 0xFFFF)
+        {
+          unsigned int a = (c >> 24);
+          unsigned int x = (c >> 16) & 0xFF;
+          unsigned int b = (c >> 8) & 0xFF;
+          unsigned int y = c & 0xFF;
+          if (a > 0x80 && a < 0xFF && b > 0x80 && b < 0xFF)
+          {
+            if (x >= 0x30 && x <= 0x39 && y >= 0x30 && y <= 0x39)
+            {
+              bytes.push_back(static_cast<char>(a));
+              bytes.push_back(static_cast<char>(x));
+              bytes.push_back(static_cast<char>(b));
+              bytes.push_back(static_cast<char>(y));
+            }
+          }
+        }
+        else
+        {
+          unsigned int a = (c >> 8);
+          unsigned int b = c & 0xFF;
+          if (a > 0x80 && a < 0xFF)
+          {
+            if (b >= 0x40 && b < 0xFF && b != 0x7F)
+            {
+              bytes.push_back(static_cast<char>(a));
+              bytes.push_back(static_cast<char>(b));
+            }
+          }
+        }
+      }
+    }
+    std::string u = cs.ToUTF8(bytes);
+    std::string t = cs.FromUTF8(u);
+    if (t != bytes)
+    {
+      std::cerr << "Failed round-trip for \"" << sets[i] << "\"\n";
+      TestAssert(t == bytes);
+    }
+  }
+  }
+
   return rval;
 }
 
