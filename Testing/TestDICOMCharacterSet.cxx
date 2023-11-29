@@ -119,24 +119,54 @@ static const char *OtherText[][3] = {
   "JISX0212: \x1b$BqV\x1b$(DiQ\x1b(J\n"
   "JISX0201: \xba\xdd\xc6\xc1\xca\n" },
 
+{ "iso-2022-jp",
+  // "JISX0208: 元気\n"
+  // "JISX0201: ¥‾\n"
+  "JISX0208: \xe5\x85\x83\xe6\xb0\x97\n"
+  "JISX0201: \xc2\xa5\xe2\x80\xbe\n",
+  "JISX0208: \x1b$B855$\x1b(B\n"
+  "JISX0201: \x1b(J\x5c\x7e\x1b(B\n" },
+
+{ "iso-2022-jp-1",
+  // "JISX0208: 元気\n"
+  // "JISX0212: 騏驎\n"
+  // "JISX0201: ¥‾\n"
+  "JISX0208: \xe5\x85\x83\xe6\xb0\x97\n"
+  "JISX0212: \xe9\xa8\x8f\xe9\xa9\x8e\n"
+  "JISX0201: \xc2\xa5\xe2\x80\xbe\n",
+  "JISX0208: \x1b$B855$\x1b(B\n"
+  "JISX0212: \x1b$BqV\x1b$(DiQ\x1b(B\n"
+  "JISX0201: \x1b(J\x5c\x7e\x1b(B\n" },
+
+{ "iso-2022-jp-ext",
+  // "JISX0208: 元気\n"
+  // "JISX0212: 騏驎\n"
+  // "JISX0201: ¥‾\n"
+  // "Katakana: ｺﾝﾆﾁﾊ\n"
+  "JISX0208: \xe5\x85\x83\xe6\xb0\x97\n"
+  "JISX0212: \xe9\xa8\x8f\xe9\xa9\x8e\n"
+  "JISX0201: \xc2\xa5\xe2\x80\xbe\n"
+  "Katakana: \xef\xbd\xba\xef\xbe\x9d\xef\xbe\x86\xef\xbe\x81\xef\xbe\x8a\n",
+  "JISX0208: \x1b$B855$\x1b(B\n"
+  "JISX0212: \x1b$BqV\x1b$(DiQ\x1b(B\n"
+  "JISX0201: \x1b(J\x5c\x7e\x1b(B\n"
+  "Katakana: \x1b(I:]FAJ\x1b(B\n" },
+
 { "iso-2022-jp-2",
   // "JISX0208: 元気\n"
   // "JISX0212: 騏驎\n"
-  // "Katakana: ｺﾝﾆﾁﾊ\n"
   // "Chinese:  开发\n"
   // "Korean:   안녕하세요\n"
   // "French:   Très bien\n"
   // "Greek:    μεγάλη\n"
   "JISX0208: \xe5\x85\x83\xe6\xb0\x97\n"
   "JISX0212: \xe9\xa8\x8f\xe9\xa9\x8e\n"
-  "Katakana: \xef\xbd\xba\xef\xbe\x9d\xef\xbe\x86\xef\xbe\x81\xef\xbe\x8a\n"
   "Chinese:  \xe5\xbc\x80\xe5\x8f\x91\n"
   "Korean:   \xec\x95\x88\xeb\x85\x95\xed\x95\x98\xec\x84\xb8\xec\x9a\x94\n"
   "French:   Tr\xc3\xa8s bien\n"
   "Greek:    \xce\xbc\xce\xb5\xce\xb3\xce\xac\xce\xbb\xce\xb7\n",
   "JISX0208: \x1b$B855$\x1b(B\n"
   "JISX0212: \x1b$BqV\x1b$(DiQ\x1b(B\n"
-  "Katakana: \x1b(I:]FAJ\x1b(B\n"
   "Chinese:  \x1b$A?*7\"\x1b(B\n"
   "Korean:   \x1b$(C>H3gGO<<?d\x1b(B\n"
   "French:   \x1b.ATr\x1bNhs bien\n"
@@ -211,7 +241,13 @@ int TestDICOMCharacterSet(int argc, char *argv[])
     // if (s != utf) { cout << i << "\n" << s << "\n" << utf << "\n"; }
     TestAssert(s == utf);
     std::string t = cs.FromUTF8(utf);
-    if (name != "iso-2022-jp-2")
+    if (name == "iso-2022-jp-2")
+    {
+      // check japanese, korean (other esc codes don't round-trip)
+      TestAssert(t.compare(0, 46, raw, 0, 46) == 0);
+      TestAssert(t.compare(67, 28, raw, 67, 28) == 0);
+    }
+    else
     {
       TestAssert(t == raw);
     }

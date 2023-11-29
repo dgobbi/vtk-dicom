@@ -101,10 +101,10 @@ static const CharsetInfo Charsets[91] = {
   { NULL, NULL, NULL, NULL },
   { "ISO_2022_IR_149", "\\ISO 2022 IR 149", "$)C", NULL }, // ~ISO-2022-KR
   { "ISO_2022_IR_58",  "\\ISO 2022 IR 58",  "$)A", NULL }, // ~ISO-2022-CN
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
+  { "iso-2022-jp",     NULL,              NULL, "ISO-2022-JP" },
+  { "iso-2022-jp-1",   NULL,              NULL, NULL },
+  { "iso-2022-jp-2",   NULL,              NULL, "ISO-2022-JP-2" },
+  { "iso-2022-jp-ext", NULL,              NULL, NULL },
   { NULL, NULL, NULL, NULL },
   { NULL, NULL, NULL, NULL },
   { "ISO_IR_192", "ISO_IR 192", "%/I", "UTF-8" },
@@ -2233,14 +2233,34 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
   // table for JIS X 0208 compatibility mappings
   CompressedTableR table2(vtkDICOMCharacterSet::Reverse[X_SJIS]);
 
-  bool hasJISX0201 = ((charset & ISO_IR_13) == ISO_IR_13);
-  bool hasJISX0208 = ((charset & ISO_2022_IR_87) == ISO_2022_IR_87);
-  bool hasJISX0212 = ((charset & ISO_2022_IR_159) == ISO_2022_IR_159);
-  const char *escBase = (hasJISX0201 ? "\033(J" : "\033(B");
+  enum stateType { ASCII, X0201r, X0201k, X0208, X0212, XGB, XKS };
+  stateType stateBase = ASCII;
+  bool hasJISX0201 = true;
+  bool hasKatakana = (charset == X_ISO_2022_JP_EXT);
+  bool hasJISX0208 = true;
+  bool hasJISX0212 = (charset != X_ISO_2022_JP);
+  const char *escBase = "\033(B";
+  const char *esc0201r = "\033(J";
+  const char *esc0201k = "\033(I";
   const char *esc0208 = "\033$B";
   const char *esc0212 = "\033$(D";
 
-  int state = 0;
+  if ((charset & DICOM_JP_BITS) == charset)
+  {
+    // use DICOM defined terms to check support for charsets
+    hasJISX0201 = ((charset & ISO_IR_13) == ISO_IR_13);
+    hasKatakana = hasJISX0201;
+    hasJISX0208 = ((charset & ISO_2022_IR_87) == ISO_2022_IR_87);
+    hasJISX0212 = ((charset & ISO_2022_IR_159) == ISO_2022_IR_159);
+    if (hasJISX0201)
+    {
+      stateBase = X0201r;
+      escBase = esc0201r;
+    }
+  }
+
+  stateType state = stateBase;
+  bool latin1G2 = false;
   const char *errpos = 0;
   const char *cp = text;
   const char *ep = text + l;
@@ -2250,29 +2270,41 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
     unsigned int code = UTF8ToUnicode(&cp, ep);
     if (hasJISX0201)
     {
-      if (code >= 0xFF61 && code <= 0xFF9F)
+      if (hasKatakana && code >= 0xFF61 && code <= 0xFF9F)
       {
-        // half-width katakana
-        s->push_back(static_cast<char>(code - 0xFEC0));
+        // half-width katakana in G1
+        unsigned int offset = 0xFEC0;
+        if (charset == X_ISO_2022_JP_EXT)
+        {
+          offset += 0x80; // offset to put in G0
+          if (state != X0201k)
+          {
+            s->append(esc0201k);
+            state = X0201k;
+          }
+        }
+        s->push_back(static_cast<char>(code - offset));
         continue;
       }
 
-      if (code == 0xA5) // YEN SIGN
+      if (code == 0xA5 || code == 0x203E) // YEN SIGN, OVERLINE
       {
-        code = '\\';
-      }
-      else if (code == 0x203E) // OVERLINE
-      {
-        code = '~';
+        if (state != X0201r)
+        {
+          s->append(esc0201r);
+          state = X0201r;
+        }
+        s->push_back(code == 0xA5 ? '\\' : '~');
+        continue;
       }
     }
 
     if (code < 0x80)
     {
-      if (state != 0)
+      if (state != stateBase)
       {
         s->append(escBase);
-        state = 0;
+        state = stateBase;
       }
       s->push_back(static_cast<char>(code));
       continue;
@@ -2284,10 +2316,10 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
       if (t >= 8836 && t < 2*8836 && hasJISX0212)
       {
         t -= 8836;
-        if (state != 2)
+        if (state != X0212)
         {
           s->append(esc0212);
-          state = 2;
+          state = X0212;
         }
       }
       else if (hasJISX0208)
@@ -2300,10 +2332,42 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
           // JIS X 0208 compatibility mappings
           t = table2[code];
         }
-        if (t < 8836 && state != 1)
+        if (t < 8836 && state != X0208)
         {
           s->append(esc0208);
-          state = 1;
+          state = X0208;
+        }
+      }
+      if (t >= 8836 && charset == X_ISO_2022_JP_2)
+      {
+        stateType kcState = XGB;
+        const char *escCode = "\033$A";
+        CompressedTableR tableGB(vtkDICOMCharacterSet::Reverse[GB18030]);
+        t = tableGB[code];
+        if (InvalidCode(GB2312InvalidRanges, t))
+        {
+          kcState = XKS;
+          escCode = "\033$(C";
+          CompressedTableR tableKR(vtkDICOMCharacterSet::Reverse[X_EUCKR]);
+          t = tableKR[code];
+        }
+        if (t < 8836)
+        {
+          if (state != kcState)
+          {
+            s->append(escCode);
+            state = kcState;
+          }
+        }
+        else if (code >= 0xA1 && code <= 0xFE)
+        {
+          if (!latin1G2) {
+            s->append("\033.A"); // latin1 to G2
+            latin1G2 = true;
+          }
+          s->append("\033N");  // SS2
+          s->push_back(static_cast<char>(code & 0x7F));
+          continue;
         }
       }
       if (t < 8836)
@@ -2318,7 +2382,7 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
 
     // conversion of character failed
     size_t lastsize = s->size();
-    if (state != 0)
+    if (state != stateBase)
     {
       s->append(escBase);
     }
@@ -2333,11 +2397,11 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
     }
     else
     {
-      state = 0;
+      state = stateBase;
     }
   }
 
-  if (state != 0)
+  if (state != stateBase)
   {
     s->append(escBase);
   }
@@ -2349,7 +2413,7 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
 size_t vtkDICOMCharacterSet::JISXToUTF8(
   int csGL, int csGR, const char *text, size_t l, std::string *s, int mode)
 {
-  // this is a helper method for iso-2022-jp-2 decoding
+  // this is a helper method for iso 2022 japanese decoding
   CompressedTable table(vtkDICOMCharacterSet::Table[csGL]);
   bool multibyte = (csGL == ISO_2022_IR_87 ||
                     csGL == ISO_2022_IR_159 ||
@@ -3106,12 +3170,12 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
           }
           else if (beginsWithBackslash)
           {
-            if ((i & (ISO_2022 | ISO_2022_JP_BASE)) == i)
+            if ((i & DICOM_JP_BITS) == i)
             {
               // combine key with 2nd, 3rd value of SpecificCharacterSet
               // (specific to ISO_2022_IR_87 and ISO_2022_IR_159, which
               // combine with ISO_2022_IR_13 and with each other)
-              key = (key & ISO_2022_JP_BASE) | i;
+              key = (key & DICOM_JP_BITS) | i;
             }
             else
             {
@@ -3342,7 +3406,8 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
   const char *text, size_t l, std::string *s) const
 {
   // check for iso-2022-jp encoding
-  if ((this->Key & (ISO_2022_JP_BASE|ISO_2022)) == this->Key)
+  if ((this->Key & DICOM_JP_BITS) == this->Key ||
+      (this->Key >= X_ISO_2022_JP && this->Key <= X_ISO_2022_JP_EXT))
   {
     return UTF8ToJISX(this->Key, text, l, s);
   }
@@ -3429,7 +3494,7 @@ unsigned int vtkDICOMCharacterSet::InitISO2022(
   // Check that charsetG1 is within the enumerated range for ISO 2022
   if (key <= ISO_2022_MAX)
   {
-    // Mask with ISO_2022_BASE, which removes the ISO_2022 flag bit
+    // Mask with ISO_2022_BASE, which removes the ISO 2022 flag bit
     // (this is so we can use AnyToUTF8() to decode the G1 charset)
     charsetG[1] = (key & ISO_2022_BASE);
 
@@ -3448,7 +3513,7 @@ unsigned int vtkDICOMCharacterSet::InitISO2022(
     // to G1 immediately (with ISO IR 14 implicitly designated to G0).
     // But ISO IR 87 and ISO IR 159 are not designated to G0 until after
     // their escape codes.
-    if (charsetG[1] <= ISO_2022_JP_BASE)
+    if ((charsetG[1] & DICOM_JP_BITS) == charsetG[1])
     {
       charsetG[1] &= ISO_IR_13;
       if (charsetG[1] == ISO_IR_13)
@@ -4321,7 +4386,7 @@ unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCode(
       {
         case 'B': // ascii
           return ISO_2022_IR_6;
-        case 'I': // katakana in G0 (non-standard, not used when encoding)
+        case 'I': // katakana in G0
           return ISO_IR_13;
         case 'J': // JIS X 0201 romaji
           return ISO_2022_IR_13; // implies ISO 2022 IR 14
@@ -4333,7 +4398,7 @@ unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCode(
       {
         case '@': // JIS X 0208-1978 (not used when encoding)
           return ISO_2022_IR_87;
-        case 'A': // GB2312-1980 chinese (not used when encoding)
+        case 'A': // GB2312-1980 chinese
           return ISO_2022_IR_58;
         case 'B': // JIS X 0208-1983
           return ISO_2022_IR_87;
@@ -4343,9 +4408,9 @@ unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCode(
     {
       switch (code[1])
       {
-        case 'A': // ISO-8859-1 latin1 (not used when encoding)
+        case 'A': // ISO-8859-1 latin1
           return ISO_2022_IR_100;
-        case 'F': // ISO-8859-7 greek (not used when encoding)
+        case 'F': // ISO-8859-7 greek
           return ISO_2022_IR_126;
       }
     }
@@ -4356,7 +4421,7 @@ unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCode(
     {
       case 'C': // JIS X 0212 japanese supplementary
         return ISO_2022_IR_149;
-      case 'D': // KS X 1001-1992 korean (not used when encoding)
+      case 'D': // KS X 1001-1992 korean
         return ISO_2022_IR_159;
     }
   }
@@ -4371,7 +4436,7 @@ unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCode(
 
   // Look through the table that defines character sets known to us,
   // this will catch escape codes for all ISO 8859 character sets.
-  for (unsigned char k = ISO_2022; k <= ISO_2022_MAX; k++)
+  for (unsigned char k = ISO_2022_MIN; k <= ISO_2022_MAX; k++)
   {
     const char *escape = Charsets[k].EscapeCode;
     if (escape && strncmp(code, escape, l) == 0)
