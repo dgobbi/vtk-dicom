@@ -96,6 +96,10 @@ public:
     ISO_2022_IR_203 = 53, // ISO-8859-15, latin9, western europe
     ISO_2022_IR_149 = 56, // KS X 1001, korean in G1 with escape codes
     ISO_2022_IR_58  = 57, // GB2312, chinese in G1 with escape codes
+    X_ISO_2022_JP   = 58, // iso-2022-jp with ascii and romaji
+    X_ISO_2022_JP_1 = 59, // like above, with addition of JIS X 0212
+    X_ISO_2022_JP_2 = 60, // adds chinese, korean, latin1, greek
+    X_ISO_2022_JP_EXT = 61, // iso-2022-jp-1 plus half-width katakana
     ISO_IR_192 = 64, // UTF-8,       unicode
     GB18030    = 65, // gb18030,     chinese with full unicode mapping
     GBK        = 66, // gbk,         chinese
@@ -250,7 +254,7 @@ public:
    *  switch between character sets.
    */
   bool IsISO2022() const {
-    return ((this->Key & ISO_2022_MAX) == (this->Key | ISO_2022));
+    return ((this->Key & ISO_2022_MAX) == (this->Key | ISO_2022_MIN));
   }
 
   //! Returns true if this uses an ISO 8859 code page.
@@ -338,9 +342,9 @@ private:
 
   // Other ISO-2022
   enum {
-    ISO_2022_JP_BASE = 7,
+    DICOM_JP_BITS = 39,
     ISO_2022_BASE = 31,
-    ISO_2022 = 32,
+    ISO_2022_MIN = 32,
     ISO_2022_MAX = 63
   };
 

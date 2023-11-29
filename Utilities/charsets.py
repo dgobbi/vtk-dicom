@@ -42,6 +42,10 @@ ISO_2022_IR_166 = 50 # ISO-8859-11, thai
 ISO_2022_IR_203 = 53 # ISO-8859-15, latin9, western europe
 ISO_2022_IR_149 = 56 # the KS X 1001 part of ISO-2022-KR
 ISO_2022_IR_58  = 57 # the GB2312 part of ISO-2022-CN
+X_ISO_2022_JP   = 58 # ascii, romaji, and JIS X 0208
+X_ISO_2022_JP_1 = 59 # ascii, romaji, JIS X 0208 and JIS X 0212
+X_ISO_2022_JP_2 = 60 # also GB2132, KS X 1001, latin1, greek
+X_ISO_2022_JP_EXT = 61 # ascii, romaji, katakana, JIS X 0208 and 0212
 ISO_IR_192 = 64 # UTF-8,       unicode
 GB18030    = 65 # gb18030,     chinese with full unicode mapping
 GBK        = 66 # gbk,         chinese
@@ -285,18 +289,10 @@ ISO_2022_IR_6 : (
   "iso-2022",
   ),
 ISO_2022_IR_87 : (
-  "csiso2022jp",
-  "iso-2022-jp",
   "iso-ir-87",
-  "iso2022_jp",
-  "jis",
   ),
 ISO_2022_IR_159 : (
-  "iso-2022-jp-1",
-  "iso-2022-jp-2",
   "iso-ir-159",
-  "iso2022_jp_1",
-  "iso2022_jp_2",
   ),
 ISO_2022_IR_149 : (
   "iso-ir-149",
@@ -305,6 +301,23 @@ ISO_2022_IR_58 : (
   "iso-ir-58",
   # documented but incorrect defined term
   "iso 2022 gb2312",
+  ),
+X_ISO_2022_JP : (
+  "csiso2022jp",
+  "iso-2022-jp",
+  "iso2022_jp",
+  "jis",
+  ),
+X_ISO_2022_JP_1 : (
+  "iso-2022-jp-1",
+  "iso2022_jp_1",
+  ),
+X_ISO_2022_JP_2 : (
+  "iso-2022-jp-2",
+  "iso2022_jp_2",
+  ),
+X_ISO_2022_JP_EXT : (
+  "iso-2022-jp-ext",
   ),
 ISO_IR_192: (
   "iso-ir-192",
