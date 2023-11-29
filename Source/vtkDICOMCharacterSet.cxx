@@ -1162,12 +1162,6 @@ bool LastChanceConversion(std::string *s, const char *cp, const char *ep)
   // this code to indicate that the end of the string occurred midway
   // through a multi-byte character.
 
-  // The "swung dash" is converted to tilde for the sake of Japanese,
-  // because "ISO-IR 13\ISO-IR 87" (JIS X 0201 + 0208) does not have
-  // tilde, and swung dash is the only reasonable replacement. So
-  // a round trip from ASCII to "ISO-IR 13\ISO-IR 87" will convert
-  // the tilde to swung dash and back to tilde again.
-
   unsigned int code = UTF8ToUnicode(&cp, ep);
   bool success = true;
   const char *replacement;
@@ -2263,21 +2257,11 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
         continue;
       }
 
-      // JIS X 0201 lacks backslash and tilde, so these are converted
-      // to their fullwidth forms and encoded via JIS X 0208 and 0212.
-      if (code == '\\' && hasJISX0208)
-      {
-        code = 0xFF3C; // FULLWIDTH REVERSE SOLIDUS
-      }
-      else if (code == '~' && hasJISX0212)
-      {
-        code = 0xFF5E; // FULLWIDTH TILDE
-      }
-      else if (code == 0xA5) // YEN SIGN
+      if (code == 0xA5) // YEN SIGN
       {
         code = '\\';
       }
-      else if (code == 0x203E) // MACRON
+      else if (code == 0x203E) // OVERLINE
       {
         code = '~';
       }
