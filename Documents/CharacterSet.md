@@ -138,10 +138,12 @@ Notes:
 3. This specifies the most widely used subset of iso-2022-jp-2, like the above
    but adding JIS X 0212:1990 for additional characters.
 
-It is preferred to avoid the use of ISO 2022 IR 13 (and ISO IR 13),
-both because it requires the use of romaji (not ASCII) in G0, and
-because half-width katakana are not supported by either iso-2022-jp
-or by iso-2022-jp-2.
+It is preferred to avoid the use of ISO 2022 IR 13 (and ISO IR 13), both
+because it requires romaji (not ASCII) in G0, and because half-width katakana
+are not supported by either iso-2022-jp or by iso-2022-jp-2.  The romaji
+character set does not contain tilde or backslash, so when these characters
+are encoded when romaji has replaced ASCII, they become MACRON and YEN
+SIGN respectively.
 
 For (2) and (3) above, when our encoder encounters half-width katakana,
 it will convert them to full-width katakana for ISO 2022 IR 87. For (1),
@@ -167,28 +169,14 @@ and will be converted if necessary to fit them into an encoding:
 
 1. MACRON and FULLWIDTH MACRON
 2. OVERLINE and FULLWIDTH MACRON
-3. REVERSE SOLIDUS and FULLWIDTH REVERSE SOLIDUS
-4. YEN SIGN and FULLWIDTH YEN SIGN
-5. CENT SIGN and FULLWIDTH CENT SIGN
-6. POUND SIGN and FULLWIDTH POUND SIGN
-7. MINUS SIGN and FULLWIDTH HYPHEN-MINUS
-8. NOT SIGN and FULLWIDTH NOT SIGN
-9. EM DASH and HORIZONTAL BAR
-10. FULLWIDTH TILDE and WAVE DASH
-11. TILDE and FULLWIDTH TILDE
-12. PARALLEL TO and DOUBLE VERTICAL LINE
-
-The use of the romaji character set (implied by the ISO IR 2022 13
-defined term) causes some specific issues regarding compatibility
-mapping, since it does not contain tilde or backslash (REVERSE SOLIDUS).
-So when encoding to ISO 2022 with romaji in G0, tilde is converted to
-FULLWIDTH TILDE (in JIS X 0212) and backslash is converted to
-FULLWIDTH REVERSE SOLIDUS (in JIS X 0208).  This is done to avoid tilde
-and backslash from appearing as MACRON and YEN, respectively.
-
-This romaji-specific compatibility mapping is yet another reason to
-avoid the use of ISO IR 13 unless half-width katakana are absolutely
-necessary.
+3. YEN SIGN and FULLWIDTH YEN SIGN
+4. CENT SIGN and FULLWIDTH CENT SIGN
+5. POUND SIGN and FULLWIDTH POUND SIGN
+6. MINUS SIGN and FULLWIDTH HYPHEN-MINUS
+7. NOT SIGN and FULLWIDTH NOT SIGN
+8. EM DASH and HORIZONTAL BAR
+9. FULLWIDTH TILDE and WAVE DASH
+10. PARALLEL TO and DOUBLE VERTICAL LINE
 
 
 ## Korean via ISO 2022
