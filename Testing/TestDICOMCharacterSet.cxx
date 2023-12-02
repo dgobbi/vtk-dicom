@@ -335,6 +335,46 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   TestAssert(cs.ToSafeUTF8("Hello\251 \252") == "Hello\302\251 \\252");
   }
 
+  { // test strict error reporting when decoding
+  vtkDICOMCharacterSet cs(vtkDICOMCharacterSet::ISO_2022_IR_58);
+  std::string s;
+  size_t l;
+  // test unmapped character codes
+  s = cs.ToUTF8("\x1b$)Aunmapped \xa6\xda character", 25, &l);
+  TestAssert(l == 13);
+  TestAssert(s == "unmapped <A6><DA> character");
+  // test partial character code
+  s = cs.ToUTF8("\x1b$)Apartial \xa6 character", 23, &l);
+  TestAssert(l == 12);
+  TestAssert(s == "partial <A6> character");
+  // test truncated character code
+  s = cs.ToUTF8("\x1b$)Atruncated \xa6", 15, &l);
+  TestAssert(l == 14);
+  TestAssert(s == "truncated <A6>");
+  }
+
+  { // test strict error reporting when encoding
+  vtkDICOMCharacterSet cs(vtkDICOMCharacterSet::GBK);
+  std::string s;
+  size_t l;
+  // test unconvertible character
+  s = cs.FromUTF8("unmapped \xf0\xa1\x80\x84 character", 23, &l);
+  TestAssert(l == 9);
+  TestAssert(s == "unmapped <U+21004> character");
+  // test bad UTF8 sequences
+  s = cs.FromUTF8("bad start \xbf sequence", 20, &l);
+  TestAssert(l = 11);
+  TestAssert(s == "bad start <BF> sequence");
+  // test partial UTF8 sequences
+  s = cs.FromUTF8("partial \xcf sequence", 18, &l);
+  TestAssert(l = 9);
+  TestAssert(s == "partial <CF> sequence");
+  // test truncated UTF8 sequences
+  s = cs.FromUTF8("truncated \xef\xbf", 12, &l);
+  TestAssert(l == 10);
+  TestAssert(s == "truncated <EF><BF>");
+  }
+
   { // test for proper escaping of backslashes in GB18030
   std::string name = "GB18030";
   // the following string includes a multi-byte character where the

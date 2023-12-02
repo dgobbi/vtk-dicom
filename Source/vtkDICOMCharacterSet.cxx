@@ -476,16 +476,34 @@ bool IsFFFX(unsigned int code, const char *cpp, const char *cpEnd)
 }
 
 //----------------------------------------------------------------------------
-// Different ways to handle failed conversions
-enum { UTF8_IGNORE, UTF8_REPLACE, UTF8_ESCAPE };
+// Different ways to handle failed conversions:
+// The "ESCAPE" is like Python's surrogatescape mode, it only applies
+// to conversions to UTF-8
+enum {
+  UTF8_STRICT,  // For error checking, replace with <XX> or <U+XXXX>.
+  UTF8_REPLACE, // Replace with '?' or unicode REPLACEMENT CHARACTER.
+  UTF8_ESCAPE   // Use unpaired surrogates to store unconverted bytes
+};
 
 // This is a handler for incorrectly encoded characters
 void BadCharsToUTF8(const char *cp, const char *ep, std::string *s,
                     int mode)
 {
-  if (mode == UTF8_REPLACE)
+  if (mode == UTF8_STRICT)
   {
-    // Replace each bad sequence with the replacement character
+    // Replace each unconvertible sequence with <XX> hex char code
+    char text[8];
+    while (cp != ep)
+    {
+      unsigned int code = static_cast<unsigned char>(*cp);
+      snprintf(text, sizeof(text), "<%02X>", code);
+      s->append(text);
+      cp++;
+    }
+  }
+  else if (mode == UTF8_REPLACE)
+  {
+    // Replace each unconvertible sequence with the replacement character
     const unsigned int code = 0xFFFD;
     UnicodeToUTF8(code, s);
   }
@@ -1064,22 +1082,21 @@ size_t UTF8ToUTF8(const char *text, size_t l, std::string *s, int mode)
     // in the original string, these are the error indicators
     if (code >= 0xFFFE && code <= 0xFFFF && !IsFFFX(code, lastpos, cp))
     {
-      if (code == 0xFFFF)
+      if (code == 0xFFFF || mode == UTF8_STRICT)
       {
         BadCharsToUTF8(lastpos, cp, s, mode);
-      }
-      errpos = (errpos ? errpos : lastpos);
-    }
-    else
-    {
-      // check for paired utf-16 surrogates
-      if (cp - lastpos == 6)
-      {
-        // paired surrogates are joined, but errpos is set
         errpos = (errpos ? errpos : lastpos);
       }
-      UnicodeToUTF8(code, s);
+      continue;
     }
+    // check for paired utf-16 surrogates
+    if (cp - lastpos == 6 && mode == UTF8_STRICT)
+    {
+      BadCharsToUTF8(lastpos, cp, s, mode);
+      errpos = (errpos ? errpos : lastpos);
+      continue;
+    }
+    UnicodeToUTF8(code, s);
   }
   return (errpos ? errpos-text : cp-text);
 }
@@ -1124,6 +1141,7 @@ size_t ASCIIToUTF8(const char *text, size_t l, std::string *s, int mode)
 size_t UnknownToUTF8(const char *text, size_t l, std::string *s, int mode)
 {
   // assumes an iso2022 94-character replacement set
+  const char *errpos = 0;
   size_t i = 0;
   while (i < l)
   {
@@ -1131,17 +1149,19 @@ size_t UnknownToUTF8(const char *text, size_t l, std::string *s, int mode)
     if ((code >= 0x21 && code < 0x7F) || code > 0x7F)
     {
       BadCharsToUTF8(&text[i], &text[i+1], s, mode);
+      errpos = (errpos ? errpos : &text[i]);
     }
     else
     {
       UnicodeToUTF8(code, s);
     }
   }
-  return 0;
+  return (errpos ? errpos-text : l);
 }
 
 //----------------------------------------------------------------------------
-bool LastChanceConversion(std::string *s, const char *cp, const char *ep)
+bool HandleReplacement(std::string *s, const char *cp, const char *ep,
+                       int mode)
 {
   // The goal of this function is to coerce certain characters to their
   // ASCII equivalents.  It is called "last chance" conversion, because
@@ -1167,70 +1187,98 @@ bool LastChanceConversion(std::string *s, const char *cp, const char *ep)
   // this code to indicate that the end of the string occurred midway
   // through a multi-byte character.
 
-  unsigned int code = UTF8ToUnicode(&cp, ep);
   bool success = true;
-  const char *replacement;
+  while (cp != ep)
+  {
+    const char *lastpos = cp;
+    unsigned int code = UTF8ToUnicode(&cp, ep);
+    char text[24];
+    const char *replacement = text;
 
-  if (code == 0xA0 || (code >= 0x2000 && code <= 0x200A) ||
-      code == 0x202F)
-  {
-    // various flavors of "space" become ASCII space
-    replacement = " ";
-  }
-  else if (code == 0xAD || (code >= 0x200B && code <= 0x200D) ||
-           code == 0x2060)
-  {
-    // soft hyphen and zero-width spaces vanish without a trace
-    replacement = "";
-  }
-  else if (code >= 0x2010 && code <= 0x2014)
-  {
-    // various dashes become hyphen/minus
-    replacement = "-";
-  }
-  else if (code == 0x2015)
-  {
-    // horizontal bar becomes double-dash
-    replacement = "--";
-  }
-  else if (code >= 0x2018 && code <= 0x201B)
-  {
-    // smart quotes to apostrophe
-    replacement = "\'";
-  }
-  else if (code >= 0x201C && code <= 0x201F)
-  {
-    // smart quotes to regular quotes
-    replacement = "\"";
-  }
-  else if (code == 0x2026)
-  {
-    // ellipsis
-    replacement = "...";
-  }
-  else if (code == 0x2044)
-  {
-    // fraction separator
-    replacement = "/";
-  }
-  else if (code == 0x2053)
-  {
-    // swung dash
-    replacement = "~";
-  }
-  else if (code == 0xFFFE)
-  {
-    // we use 0xFFFE to mark early termination of UTF string
-    replacement = "";
-    success = false;
-  }
-  else
-  {
-    replacement = "?";
-    success = false;
+    if (mode == UTF8_STRICT)
+    {
+      success = false;
+      // OxFFFE and 0xFFFF are UTF8ToUnicode error markers, but only if
+      // they weren't present in the orginal utf-8 string
+      if ((code == 0xFFFE || code == 0xFFFF) && !IsFFFX(code, lastpos, cp))
+      {
+        // show the bad bytes
+        const char *bp = lastpos;
+        for (size_t i = 0; bp != cp && i < sizeof(text); i += 4)
+        {
+          unsigned int x = static_cast<unsigned char>(*bp);
+          snprintf(&text[i], sizeof(text) - i, "<%02X>", x);
+          bp++;
+        }
+      }
+      else
+      {
+        // show the code that did not convert
+        snprintf(text, sizeof(text), "<U+%04X>", code);
+      }
+    }
+    else if (code == 0xA0 || (code >= 0x2000 && code <= 0x200A) ||
+             code == 0x202F)
+    {
+      // various flavors of "space" become ASCII space
+      replacement = " ";
+    }
+    else if (code == 0xAD || (code >= 0x200B && code <= 0x200D) ||
+             code == 0x2060)
+    {
+      // soft hyphen and zero-width spaces vanish without a trace
+      replacement = "";
+    }
+    else if (code >= 0x2010 && code <= 0x2014)
+    {
+      // various dashes become hyphen/minus
+      replacement = "-";
+    }
+    else if (code == 0x2015)
+    {
+      // horizontal bar becomes double-dash
+      replacement = "--";
+    }
+    else if (code >= 0x2018 && code <= 0x201B)
+    {
+      // smart quotes to apostrophe
+      replacement = "\'";
+    }
+    else if (code >= 0x201C && code <= 0x201F)
+    {
+      // smart quotes to regular quotes
+      replacement = "\"";
+    }
+    else if (code == 0x2026)
+    {
+      // ellipsis
+      replacement = "...";
+    }
+    else if (code == 0x2044)
+    {
+      // fraction separator
+      replacement = "/";
+    }
+    else if (code == 0x2053)
+    {
+      // swung dash
+      replacement = "~";
+    }
+    else if (code == 0xFFFE && !IsFFFX(code, lastpos, cp))
+    {
+      // we use 0xFFFE to mark early termination of UTF string
+      replacement = "";
+      success = false;
+    }
+    else
+    {
+      replacement = "?";
+      success = false;
+    }
+
+    s->append(replacement);
   }
 
-  s->append(replacement);
   return success;
 }
 
@@ -1323,7 +1371,7 @@ static const unsigned short GBKInvalidRanges[46] = {
 
 //----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::UTF8ToSJIS(
-  const char *text, size_t l, std::string *s)
+  const char *text, size_t l, std::string *s, int mode)
 {
   // windows-31j (the CP932 variant of shift-jis)
   CompressedTableJISXR table(vtkDICOMCharacterSet::Reverse[X_EUCJP]);
@@ -1381,7 +1429,7 @@ size_t vtkDICOMCharacterSet::UTF8ToSJIS(
       }
     }
 
-    if (!LastChanceConversion(s, lastpos, ep))
+    if (!HandleReplacement(s, lastpos, cp, mode))
     {
       errpos = (errpos ? errpos : lastpos);
     }
@@ -1483,7 +1531,7 @@ size_t vtkDICOMCharacterSet::SJISToUTF8(
 
 //----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::UTF8ToEUCJP(
-  const char *text, size_t l, std::string *s)
+  const char *text, size_t l, std::string *s, int mode)
 {
   CompressedTableJISXR table(vtkDICOMCharacterSet::Reverse[X_EUCJP]);
 
@@ -1526,7 +1574,7 @@ size_t vtkDICOMCharacterSet::UTF8ToEUCJP(
       }
     }
 
-    if (!LastChanceConversion(s, lastpos, ep))
+    if (!HandleReplacement(s, lastpos, cp, mode))
     {
       errpos = (errpos ? errpos : lastpos);
     }
@@ -1608,7 +1656,7 @@ size_t vtkDICOMCharacterSet::EUCJPToUTF8(
 
 //----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::UTF8ToBig5(
-  const char *text, size_t l, std::string *s)
+  const char *text, size_t l, std::string *s, int mode)
 {
   // traditional Chinese
   CompressedTableR table(vtkDICOMCharacterSet::Reverse[X_BIG5]);
@@ -1642,7 +1690,7 @@ size_t vtkDICOMCharacterSet::UTF8ToBig5(
         s->push_back(static_cast<char>(x));
         s->push_back(static_cast<char>(y));
       }
-      else if (!LastChanceConversion(s, lastpos, ep))
+      else if (!HandleReplacement(s, lastpos, cp, mode))
       {
         errpos = (errpos ? errpos : lastpos);
       }
@@ -1773,7 +1821,7 @@ unsigned int TweakGB18030(unsigned int code)
 
 //----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::UTF8ToGBK(
-  const char *text, size_t l, std::string *s)
+  const char *text, size_t l, std::string *s, int mode)
 {
   // Chinese national encoding standard
   CompressedTableR table(vtkDICOMCharacterSet::Reverse[GB18030]);
@@ -1832,7 +1880,7 @@ size_t vtkDICOMCharacterSet::UTF8ToGBK(
       }
     }
 
-    if (!LastChanceConversion(s, lastpos, ep))
+    if (!HandleReplacement(s, lastpos, cp, mode))
     {
       errpos = (errpos ? errpos : lastpos);
     }
@@ -1922,7 +1970,7 @@ size_t vtkDICOMCharacterSet::GBKToUTF8(
 
 //----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::UTF8ToGB18030(
-  const char *text, size_t l, std::string *s)
+  const char *text, size_t l, std::string *s, int mode)
 {
   // Chinese national encoding standard
   CompressedTableR table(vtkDICOMCharacterSet::Reverse[GB18030]);
@@ -1997,7 +2045,7 @@ size_t vtkDICOMCharacterSet::UTF8ToGB18030(
       }
       else
       {
-        if (!LastChanceConversion(s, lastpos, ep))
+        if (!HandleReplacement(s, lastpos, ep, mode))
         {
           errpos = (errpos ? errpos : lastpos);
         }
@@ -2127,7 +2175,7 @@ size_t vtkDICOMCharacterSet::GB18030ToUTF8(
 
 //----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::UTF8ToGB2312(
-  const char *text, size_t l, std::string *s)
+  const char *text, size_t l, std::string *s, int mode)
 {
   // Chinese national encoding standard
   CompressedTableR table(vtkDICOMCharacterSet::Reverse[GB18030]);
@@ -2163,7 +2211,7 @@ size_t vtkDICOMCharacterSet::UTF8ToGB2312(
       }
     }
 
-    if (!LastChanceConversion(s, lastpos, ep))
+    if (!HandleReplacement(s, lastpos, cp, mode))
     {
       errpos = (errpos ? errpos : lastpos);
     }
@@ -2231,7 +2279,7 @@ size_t vtkDICOMCharacterSet::GB2312ToUTF8(
 
 //----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::UTF8ToJISX(
-  int charset, const char *text, size_t l, std::string *s)
+  int charset, const char *text, size_t l, std::string *s, int mode)
 {
   // table for JIS X 0208 and JIS X 0212
   CompressedTableJISXR table(vtkDICOMCharacterSet::Reverse[X_EUCJP]);
@@ -2392,7 +2440,7 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
       s->append(escBase);
     }
     size_t checksize = s->size();
-    if (!LastChanceConversion(s, lastpos, ep))
+    if (!HandleReplacement(s, lastpos, cp, mode))
     {
       errpos = (errpos ? errpos : lastpos);
     }
@@ -2487,7 +2535,7 @@ size_t vtkDICOMCharacterSet::JISXToUTF8(
 
 //----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::UTF8ToEUCKR(
-  const char *text, size_t l, std::string *s) const
+  const char *text, size_t l, std::string *s, int mode) const
 {
   // EUC-KR encoding of KS X 1001 (and CP949 for compatibility)
   CompressedTableR table(vtkDICOMCharacterSet::Reverse[X_EUCKR]);
@@ -2579,7 +2627,7 @@ size_t vtkDICOMCharacterSet::UTF8ToEUCKR(
       }
     }
 
-    if (!LastChanceConversion(s, lastpos, ep))
+    if (!HandleReplacement(s, lastpos, cp, mode))
     {
       errpos = (errpos ? errpos : lastpos);
     }
@@ -2965,13 +3013,14 @@ void PerformNFC(unsigned short& s, std::vector<unsigned short>& diacritics)
 // Push a one-byte character to output, with error handling
 void PushSingleByteChar(
   std::string *s, unsigned short t,
-  const char *tpos, const char *endpos, const char **errpos)
+  const char *tpos, const char *endpos, const char **errpos,
+  int mode)
 {
   if (t < 0xFFFD)
   {
     s->push_back(static_cast<char>(t));
   }
-  else if (!LastChanceConversion(s, tpos, endpos))
+  else if (!HandleReplacement(s, tpos, endpos, mode))
   {
     *errpos = (*errpos ? *errpos : tpos);
   }
@@ -3060,7 +3109,7 @@ size_t vtkDICOMCharacterSet::CP1258ToUTF8(
 // Windows-1258 (Vietnamese) contains combining chars, so it requires
 // partial decomposition during its encoding
 size_t vtkDICOMCharacterSet::UTF8ToCP1258(
-  const char *text, size_t l, std::string *s)
+  const char *text, size_t l, std::string *s, int mode)
 {
   CompressedTableR table(vtkDICOMCharacterSet::Reverse[X_CP1258]);
 
@@ -3126,13 +3175,13 @@ size_t vtkDICOMCharacterSet::UTF8ToCP1258(
         }
 
         // output the starter
-        PushSingleByteChar(s, table[starter], starterpos, ep, &errpos);
+        PushSingleByteChar(s, table[starter], starterpos, ep, &errpos, mode);
       }
 
       for (IterT di = diacritics.begin(); di != diacritics.end(); ++di)
       {
         // output all uncombined diacritics
-        PushSingleByteChar(s, table[*di], starterpos, ep, &errpos);
+        PushSingleByteChar(s, table[*di], starterpos, ep, &errpos, mode);
       }
       diacritics.clear();
 
@@ -3145,7 +3194,7 @@ size_t vtkDICOMCharacterSet::UTF8ToCP1258(
         // if end of string or bad starter, output the starter
         if (cp == ep || starter >= 0xFFFD)
         {
-          PushSingleByteChar(s, table[starter], starterpos, ep, &errpos);
+          PushSingleByteChar(s, table[starter], starterpos, ep, &errpos, mode);
           starter = 0xFFFF;
         }
       }
@@ -3344,7 +3393,7 @@ size_t vtkDICOMCharacterSet::SingleByteToUTF8(
 
 //----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::UTF8ToSingleByte(
-  const char *text, size_t l, std::string *s) const
+  const char *text, size_t l, std::string *s, int mode) const
 {
   const unsigned short *tptr = vtkDICOMCharacterSet::Reverse[this->Key];
   tptr = (tptr ? tptr : vtkDICOMCharacterSet::Reverse[ISO_IR_6]);
@@ -3362,7 +3411,7 @@ size_t vtkDICOMCharacterSet::UTF8ToSingleByte(
     {
       s->push_back(static_cast<char>(t));
     }
-    else if (!LastChanceConversion(s, lastpos, ep))
+    else if (!HandleReplacement(s, lastpos, cp, mode))
     {
       errpos = (errpos ? errpos : lastpos);
     }
@@ -3442,13 +3491,13 @@ size_t vtkDICOMCharacterSet::ISO8859ToUTF8(
 
 //----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::UTF8ToISO2022(
-  const char *text, size_t l, std::string *s) const
+  const char *text, size_t l, std::string *s, int mode) const
 {
   // check for iso-2022-jp encoding
   if ((this->Key & DICOM_JP_BITS) == this->Key ||
       (this->Key >= X_ISO_2022_JP && this->Key <= X_ISO_2022_JP_EXT))
   {
-    return UTF8ToJISX(this->Key, text, l, s);
+    return UTF8ToJISX(this->Key, text, l, s, mode);
   }
 
   // check for multi-byte encodings that use G1
@@ -3492,11 +3541,11 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
         size_t n;
         if (this->Key == ISO_2022_IR_58)
         {
-          n = this->UTF8ToGB2312(cp, m, s);
+          n = this->UTF8ToGB2312(cp, m, s, mode);
         }
         else
         {
-          n = this->UTF8ToEUCKR(cp, m, s);
+          n = this->UTF8ToEUCKR(cp, m, s, mode);
         }
         // check for conversion error
         if (n < m)
@@ -3511,7 +3560,7 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
   }
 
   // don't write escape codes for single-byte character sets
-  return this->UTF8ToSingleByte(text, l, s);
+  return this->UTF8ToSingleByte(text, l, s, mode);
 }
 
 //----------------------------------------------------------------------------
@@ -3831,42 +3880,43 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
 std::string vtkDICOMCharacterSet::FromUTF8(
   const char *text, size_t l, size_t *lp) const
 {
+  int mode = (lp ? UTF8_STRICT : UTF8_REPLACE);
   std::string s;
   if (this->IsISO2022())
   {
-    l = this->UTF8ToISO2022(text, l, &s);
+    l = this->UTF8ToISO2022(text, l, &s, mode);
   }
   else switch (this->Key)
   {
     case X_EUCKR:
-      l = UTF8ToEUCKR(text, l, &s);
+      l = UTF8ToEUCKR(text, l, &s, mode);
       break;
     case X_GB2312:
-      l = UTF8ToGB2312(text, l, &s);
+      l = UTF8ToGB2312(text, l, &s, mode);
       break;
     case ISO_IR_192: // UTF-8
-      l = UTF8ToUTF8(text, l, &s, UTF8_REPLACE);
+      l = UTF8ToUTF8(text, l, &s, mode);
       break;
     case GB18030:
-      l = UTF8ToGB18030(text, l, &s);
+      l = UTF8ToGB18030(text, l, &s, mode);
       break;
     case GBK:
-      l = UTF8ToGBK(text, l, &s);
+      l = UTF8ToGBK(text, l, &s, mode);
       break;
     case X_BIG5:
-      l = UTF8ToBig5(text, l, &s);
+      l = UTF8ToBig5(text, l, &s, mode);
       break;
     case X_EUCJP:
-      l = UTF8ToEUCJP(text, l, &s);
+      l = UTF8ToEUCJP(text, l, &s, mode);
       break;
     case X_SJIS:
-      l = UTF8ToSJIS(text, l, &s);
+      l = UTF8ToSJIS(text, l, &s, mode);
       break;
     case X_CP1258:
-      l = UTF8ToCP1258(text, l, &s);
+      l = UTF8ToCP1258(text, l, &s, mode);
       break;
     default:
-      l = this->UTF8ToSingleByte(text, l, &s);
+      l = this->UTF8ToSingleByte(text, l, &s, mode);
       break;
   }
   if (lp) { *lp = l; }
@@ -3878,7 +3928,7 @@ std::string vtkDICOMCharacterSet::ToUTF8(
   const char *text, size_t l, size_t *lp) const
 {
   std::string s;
-  l = this->AnyToUTF8(text, l, &s, UTF8_REPLACE);
+  l = this->AnyToUTF8(text, l, &s, (lp ? UTF8_STRICT : UTF8_REPLACE));
   if (lp)
   {
     *lp = l;

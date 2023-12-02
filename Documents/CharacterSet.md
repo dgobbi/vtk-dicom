@@ -38,7 +38,9 @@ The extra characters that are supported by the decoder cannot also be
 supported by the encoder, since that would create files that do not
 conform with the DICOM standard.  Instead, the encoder will convert
 the extra characters to ASCII code points in cases where there is a
-suitable replacement.
+suitable replacement.  To avoid this automatical replacment, enable
+strict mode by using the error indicator parameter of the conversion
+methods.
 
 The conversions that the encoder uses are as follows:
 
@@ -50,7 +52,7 @@ The conversions that the encoder uses are as follows:
 6. Ellipsis becomes ASCII "..."
 7. The fraction slash becomes regular ASCII slash.
 8. The swung dash becomes ASCII tilde.
-9. Anything else becomes ? and sets the error flag.
+9. Anything else becomes ?
 
 Note that the resulting string might be longer than the original,
 so the length must be checked after encoding if there are constraints

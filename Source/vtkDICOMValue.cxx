@@ -1072,9 +1072,19 @@ size_t vtkDICOMValue::CreateValueFromUTF8(
             j += cs.NextBackslash(&s[j], &s[k]);
             if (j < k && s[j] == '\\')
             {
-              s[j] = '?'; // remove the backslash
-              l = (j > l) ? l : j;
-              j++;
+              // the only probable cause was YEN SIGN
+              s.replace(j, 1, "<U+00A5>");
+              j += 8; // advance past <U+00A5>
+              k = s.length();
+              // search for its position in the input
+              for (i = cp - text; i < l && i+1 < l; i++)
+              {
+                if (text[i] == '\xc2' && text[i+1] == '\xa5')
+                {
+                  break;
+                }
+              }
+              l = (i > l) ? l : i;
             }
           }
           cp += n;
