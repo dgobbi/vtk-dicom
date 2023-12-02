@@ -375,9 +375,10 @@ private:
   static size_t UTF8ToCP1258(const char *t, size_t l, std::string *s);
   static size_t CP1258ToUTF8(const char *t, size_t l, std::string *s, int m);
 
-  static unsigned int InitISO2022(unsigned char key, unsigned char G[4]);
+  unsigned int InitISO2022(unsigned char G[4]) const;
   static EscapeType EscapeCode(const char *cp, size_t l, unsigned int *state);
-  static unsigned char CharacterSetFromEscapeCode(const char *code, size_t l);
+  unsigned char CharacterSetFromEscapeCodeJP(const char *code, size_t l) const;
+  unsigned char CharacterSetFromEscapeCode(const char *code, size_t l) const;
   static unsigned char KeyFromString(const char *name, size_t nl);
 
   unsigned char Key;
