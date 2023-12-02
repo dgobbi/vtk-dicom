@@ -196,11 +196,12 @@ public:
   //! Convert text from UTF-8 to this encoding.
   /*!
    *  Attempt to convert from UTF-8 to this character set.  Every
-   *  non-convertible character will be replaced with '?'.  If you
-   *  pass a non-null value for the "lp" parameter, it will return
+   *  non-convertible character will be replaced with '?'.  If you pass
+   *  a non-null value for the "lp" parameter, then "lp" will be set to
    *  the position in the input UTF-8 string where the first conversion
-   *  error occurred.  If a successful conversion was returned, then
-   *  lp will be set to the length of the input string.
+   *  error occurred, and the unconverted character will be output as
+   *  \<U+XXXX\> instead of '?'.  If the conversion was error-free, then
+   *  "lp" will be set to the length of the input string.
   */
   std::string FromUTF8(const char *text, size_t l, size_t *lp=0) const;
   std::string FromUTF8(const std::string& text) const {
@@ -213,10 +214,11 @@ public:
    *  Characters that cannot be mapped to unicode, or whose place in
    *  unicode is not known, will be printed as unicode U+FFFD which
    *  appears as a question mark in a diamond.  If you pass a non-null
-   *  value for the "lp" parameter, it will return the position in the
-   *  input string where the first conversion error occurred.  If a
-   *  successful conversion was returned, then lp will be set to the
-   *  length of the input string.
+   *  value for the "lp" parameter, then "lp" will be set the position
+   *  in the input string where the first conversion error occurred, and
+   *  each unconverted byte will be output as \<XX\> (a hexadecimal code
+   *  in angle brackets).  If an error-free conversion was returned, then
+   *  "lp" will be set to the length of the input string.
    */
   std::string ToUTF8(const char *text, size_t l, size_t *lp=0) const;
   std::string ToUTF8(const std::string& text) const {
@@ -228,8 +230,8 @@ public:
   //! Convert text to UTF-8 that is safe to print to the console.
   /*!
    *  All control characters or unconvertible characters will be replaced
-   *  by four-byte octal codes, e.g. '\033'.  Backslashes will be replaced
-   *  by '\134' to avoid any potential ambiguity.
+   *  by four-byte octal codes, e.g. '\\033'.  Backslashes will be replaced
+   *  by '\\134' to avoid any potential ambiguity.
    */
   std::string ToSafeUTF8(const char *text, size_t l) const;
   std::string ToSafeUTF8(const std::string& text) const {
@@ -349,30 +351,30 @@ private:
   };
 
   size_t AnyToUTF8(const char *t, size_t l, std::string *s, int m) const;
-  size_t UTF8ToSingleByte(const char *t, size_t l, std::string *s) const;
+  size_t UTF8ToSingleByte(const char *t, size_t l, std::string *s, int m) const;
   size_t SingleByteToUTF8(const char *t, size_t l, std::string *s, int m) const;
-  size_t ISO8859ToUTF8(const char *t, size_t l, std::string *s, int) const;
-  size_t UTF8ToISO2022(const char *t, size_t l, std::string *s) const;
+  size_t ISO8859ToUTF8(const char *t, size_t l, std::string *s, int m) const;
+  size_t UTF8ToISO2022(const char *t, size_t l, std::string *s, int m) const;
   size_t ISO2022ToUTF8(const char *t, size_t l, std::string *s, int m) const;
-  size_t UTF8ToEUCKR(const char *t, size_t l, std::string *s) const;
+  size_t UTF8ToEUCKR(const char *t, size_t l, std::string *s, int m) const;
   static size_t EUCKRToUTF8(const char *t, size_t l, std::string *s, int m);
-  static size_t UTF8ToGB2312(const char *t, size_t l, std::string *s);
+  static size_t UTF8ToGB2312(const char *t, size_t l, std::string *s, int m);
   static size_t GB2312ToUTF8(const char *t, size_t l, std::string *s, int m);
-  static size_t UTF8ToGB18030(const char *t, size_t l, std::string *s);
+  static size_t UTF8ToGB18030(const char *t, size_t l, std::string *s, int m);
   static size_t GB18030ToUTF8(const char *t, size_t l, std::string *s, int m);
-  static size_t UTF8ToGBK(const char *t, size_t l, std::string *s);
+  static size_t UTF8ToGBK(const char *t, size_t l, std::string *s, int m);
   static size_t GBKToUTF8(const char *t, size_t l, std::string *s, int m);
-  static size_t UTF8ToBig5(const char *t, size_t l, std::string *s);
+  static size_t UTF8ToBig5(const char *t, size_t l, std::string *s, int m);
   static size_t Big5ToUTF8(const char *t, size_t l, std::string *s, int m);
-  static size_t UTF8ToEUCJP(const char *t, size_t l, std::string *s);
+  static size_t UTF8ToEUCJP(const char *t, size_t l, std::string *s, int m);
   static size_t EUCJPToUTF8(const char *t, size_t l, std::string *s, int m);
-  static size_t UTF8ToSJIS(const char *t, size_t l, std::string *s);
+  static size_t UTF8ToSJIS(const char *t, size_t l, std::string *s, int m);
   static size_t SJISToUTF8(const char *t, size_t l, std::string *s, int m);
   static size_t UTF8ToJISX(
-    int charset, const char *t, size_t l, std::string *s);
+    int charset, const char *t, size_t l, std::string *s, int m);
   static size_t JISXToUTF8(
     int csGL, int csGR, const char *t, size_t l, std::string *s, int m);
-  static size_t UTF8ToCP1258(const char *t, size_t l, std::string *s);
+  static size_t UTF8ToCP1258(const char *t, size_t l, std::string *s, int m);
   static size_t CP1258ToUTF8(const char *t, size_t l, std::string *s, int m);
 
   unsigned int InitISO2022(unsigned char G[4]) const;
