@@ -2283,6 +2283,7 @@ size_t vtkDICOMCharacterSet::UTF8ToGB18030(
   const char *ep = text + l;
   while (cp != ep)
   {
+    const char *lastpos = cp;
     unsigned int code = UTF8ToUnicode(&cp, ep);
     if (code < 0x80)
     {
@@ -2337,7 +2338,22 @@ size_t vtkDICOMCharacterSet::UTF8ToGB18030(
     }
     else // (code == 0xFFFE || code == 0xFFFF)
     {
-      t = code - 0xFFFD + 39417;
+      if (cp - lastpos == 3 &&
+          static_cast<unsigned char>(lastpos[0]) == 0xEF &&
+          static_cast<unsigned char>(lastpos[1]) == 0xBF &&
+          static_cast<unsigned char>(lastpos[2]) == (code ^ 0xFF40))
+      {
+        // was a valid code, not an error indicator
+        t = code - 0xFFFD + 39417;
+      }
+      else
+      {
+        if (!LastChanceConversion(s, lastpos, ep))
+        {
+          errpos = (errpos ? errpos : lastpos);
+        }
+        continue;
+      }
     }
 
     // four bytes
