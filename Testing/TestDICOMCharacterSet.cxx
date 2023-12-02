@@ -217,6 +217,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
     std::string raw = ClunieText[i][2];
     vtkDICOMCharacterSet cs(name);
     std::string s = cs.ToUTF8(raw);
+    if (s != utf) { std::cerr << name << std::endl; }
     TestAssert(s == utf);
     std::string t = cs.FromUTF8(utf);
     if (name == "\\ISO 2022 IR 58" || name == "\\ISO 2022 IR 149")
@@ -372,15 +373,13 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   }
 
   { // test for proper escaping of backslashes in iso-2022-jp-2
-  std::string name = "\\ISO 2022 IR 87\\ISO 2022 IR 159";
   // the following string includes accented latin and greek characters
   // that when invoked in G0 have the same value as backslash
   // "GÜNTER"
   // "άέήί"
   std::string raw = "G\x1b.A\x1bN\\NTER\\"
                     "\x1b.F\x1bN\\\x1bN]\x1bN^\x1bN_";
-  vtkDICOMItem item;
-  item.Set(DC::SpecificCharacterSet, name);
+  vtkDICOMItem item(vtkDICOMCharacterSet::X_ISO_2022_JP_2, vtkDICOMVR::SS);
   item.Set(DC::OperatorsName, raw);
   vtkDICOMValue v = item.Get(DC::OperatorsName);
   TestAssert(v.GetNumberOfValues() == 2);

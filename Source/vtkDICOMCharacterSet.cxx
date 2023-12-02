@@ -107,7 +107,7 @@ static const CharsetInfo Charsets[91] = {
   { "iso-2022-jp-ext", NULL,              NULL, NULL },
   { NULL, NULL, NULL, NULL },
   { NULL, NULL, NULL, NULL },
-  { "ISO_IR_192", "ISO_IR 192", "%/I", "UTF-8" },
+  { "ISO_IR_192", "ISO_IR 192", NULL, "UTF-8" },
   { "GB18030",  "GB18030", NULL, "GB18030" },
   { "GBK",      "GBK",     NULL, "GBK" }, // subset of GB18030
   { "big5",     NULL,      NULL, "Big5" }, // ETEN, but no hkscs
@@ -3480,7 +3480,7 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
 // for example if SpecificCharacterSet contains 'ISO 2022 IR 13'
 // then G0 is ISO IR 14 and G1 is ISO IR 13 when decoding starts.
 unsigned int vtkDICOMCharacterSet::InitISO2022(
-  unsigned char key, unsigned char charsetG[4])
+  unsigned char charsetG[4]) const
 {
   charsetG[0] = ISO_2022_IR_6;
   charsetG[1] = Unknown;
@@ -3492,11 +3492,11 @@ unsigned int vtkDICOMCharacterSet::InitISO2022(
   unsigned int state = 0;
 
   // Check that charsetG1 is within the enumerated range for ISO 2022
-  if (key <= ISO_2022_MAX)
+  if (this->Key <= ISO_2022_MAX)
   {
     // Mask with ISO_2022_BASE, which removes the ISO 2022 flag bit
     // (this is so we can use AnyToUTF8() to decode the G1 charset)
-    charsetG[1] = (key & ISO_2022_BASE);
+    charsetG[1] = (this->Key & ISO_2022_BASE);
 
     if (charsetG[1] >= X_EUCKR)
     {
@@ -3526,7 +3526,7 @@ unsigned int vtkDICOMCharacterSet::InitISO2022(
   else
   {
     // indicate any non-iso-2022 encoding in the state
-    state = key;
+    state = this->Key;
   }
 
   return state;
@@ -3546,7 +3546,7 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
 
   // Get the initial settings of the ISO 2022 decoder
   unsigned char charsetG[4]; // G0, G1, G2, G3 charsets
-  unsigned int state = InitISO2022(this->Key, charsetG);
+  unsigned int state = this->InitISO2022(charsetG);
 
   // loop through the string, looking for iso-2022 escape codes,
   // and when an escape code is found, change the charset
@@ -3626,7 +3626,7 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
       // CRNL resets the ISO 2022 state
       if (prevchar == '\r' && text[i] == '\n')
       {
-        state = InitISO2022(this->Key, charsetG);
+        state = this->InitISO2022(charsetG);
       }
       prevchar = text[i];
       i++;
@@ -4374,10 +4374,10 @@ vtkDICOMCharacterSet::EscapeType vtkDICOMCharacterSet::EscapeCode(
 }
 
 //----------------------------------------------------------------------------
-unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCode(
-  const char *code, size_t l)
+unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCodeJP(
+  const char *code, size_t l) const
 {
-  // Escape codes for iso-2022-jp-2 plus half-width katakana.
+  // escape codes for the iso-2022-jp family of encodings
   if (l == 2)
   {
     if (code[0] == '(') // designate G0 94-set
@@ -4404,7 +4404,7 @@ unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCode(
           return ISO_2022_IR_87;
       }
     }
-    else if (code[0] == '.') // designate G2 96-set
+    else if (code[0] == '.' && this->Key == X_ISO_2022_JP_2) // designate G2
     {
       switch (code[1])
       {
@@ -4426,16 +4426,20 @@ unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCode(
     }
   }
 
-  // Place half-width katakana in G1: this escape code is mentioned in
-  // DICOM, but since "ISO 2022 IR 13" implies that half-width katakana
-  // are in G1 at the start, use of this escape code is unnecessary.
-  if (l == 2 && code[0] == ')' && code[1] == 'I')
+  return Unknown;
+}
+
+//----------------------------------------------------------------------------
+unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCode(
+  const char *code, size_t l) const
+{
+  if (this->Key >= X_ISO_2022_JP && this->Key <= X_ISO_2022_JP_EXT)
   {
-    return ISO_IR_13;
+    // check codes specific to the ISO 2022 JP encodings
+    return CharacterSetFromEscapeCodeJP(code, l);
   }
 
-  // Look through the table that defines character sets known to us,
-  // this will catch escape codes for all ISO 8859 character sets.
+  // look through the table for other known escape codes
   for (unsigned char k = ISO_2022_MIN; k <= ISO_2022_MAX; k++)
   {
     const char *escape = Charsets[k].EscapeCode;
@@ -4443,6 +4447,12 @@ unsigned char vtkDICOMCharacterSet::CharacterSetFromEscapeCode(
     {
       return k;
     }
+  }
+
+  if (l == 2 && code[0] == ')' && code[1] == 'I')
+  {
+    // designate half-width katakana to G1 (not in table)
+    return ISO_IR_13;
   }
 
   return Unknown;

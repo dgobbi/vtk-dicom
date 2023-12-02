@@ -59,11 +59,10 @@ on the number of characters.
 
 ## Japanese via ISO 2022
 
-The use of iso-2022 escape sequences for the encoding of Japanese text
-was common before its standardization as iso-2022-jp, and many extensions
-to iso-2022-jp, both formal and informal, continued to arise until as late
-as 2004.  Our decoder aims to broadly support most of these extensions,
-while our encoder aims to strictly follow the rules set in the DICOM standard.
+The use of iso-2022 escape sequences for the encoding of Japanese text,
+referred to as "JIS encoding" began in 1978 and is still common (with
+restrictions) in the form of iso-2022-jp.  DICOM's encoding of Japanese
+is also based on JIS encoding, but with different restrictions.
 
 DICOM iso-2022 Japanese differs from iso-2022-jp most significantly
 in the optional inclusion, in DICOM, of ISO IR 13 in G1.  This is done
@@ -77,44 +76,15 @@ ISO IR 13 in G1.  Furthermore, the decoder returns to the initial
 state for every new line of text (that is, after every CRNL).
 
 In this usage, `ESC )I` will re-designate ISO IR 13 to G1 (though it is
-not recommended to designate any other character set to G1), and `ESC (J`
+not permitted to designate any other character set to G1), and `ESC (J`
 will re-designated ISO IR 14 to G0.
 
 ### Decoding
 
-Our decoder includes the following extensions to DICOM's ISO 2022
-Japanese:
-
-1. Extra characters from Microsoft CP932.
-2. `ESC (I` will place ISO IR 13 in G0.
-3. `ESC $@` will place ISO IR 87 in G0.
-4. `ESC &@ ESC $B` will place ISO IR 87 in G0.
-5. All of iso-2022-jp-2 is supported.
-
-Notes:
-
-1. When iso-2022-jp text is encoded on Windows, it can contain characters
-   that do not exist in JIS X 0208:1990.  This is because the Windows
-   code page for Japanese, CP932, contains these extra characters.  The
-   inclusion of these characters in text labelled as "iso-2022-jp" can
-   be either accidental or intentional, as in "iso-2022-jp-ms".
-2. The popular encodings euc-jp, shift-jis, and CP932 contain half-width
-   katakana while iso-2022-jp does not.  To allow conversion of these
-   characters to 7-bit iso-2022, the extension 'iso-2022-jp-ext' uses
-   `ESC (I` to allow half-width katakana in G0.
-3. The `ESC $@` sequence is for ISO IR 42 (JISC 6226-1978), which predates
-   ISO IR 87 and is a strict subset of ISO IR 87.  Support of this escape
-   sequence is required by iso-2022-jp.
-4. With the introduction of JIS X 0212:1990, JIS X 0208:1983 was updated
-   to JIS X 0208:1990 with minor revisions.  Rather than register a new
-   iso-ir number for the JIS X 0208:1990, a new compound escape code
-   `ESC &@ ESC $B` was adopted, though it is rarely used.
-5. Since iso-2022-jp-2 is the most commonly-used extension to iso-2022-jp,
-   supporting it in full seemed apropos.
-
-The JIS X 0213 standard and its encodings iso-2022-jp-3 and
-iso-2022-jp-2004 are not supported.  They are rarely used and they
-conflict with the informal iso-2022-jp-ms extension.
+Our decoder expands upon the JIS X 0208:1990 repertoire to include extra
+characters defined in Microsoft CP932 (including the NEC extension).  If
+the defined term ISO 2022 IR 13 is present, then JIS X 0201 is used as
+the initial character set.
 
 ### Encoding
 
@@ -129,7 +99,7 @@ Notes:
 
 1. This generally implies iso-2022-jp, but requires the use of romaji instead
    of ASCII, and also requires the use of JIS X 0208:1990 rather than
-   any other version (such as JIS X 0208-1978 or JIS X 0208-1983).  This
+   any other version (such as JIS X 0208:1978 or JIS X 0208:1983).  This
    provides exactly the same characters as classic shift-jis, with exactly
    the same method for encoding romaji and half-width katakana, but with a
    different way of encoding the JIS X 0208 characters.
