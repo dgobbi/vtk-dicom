@@ -3654,15 +3654,14 @@ size_t vtkDICOMCharacterSet::ISO2022ToUTF8(
 
     // Process any control codes
     i = j;
-    char prevchar = '\0';
     while (i < l && (text[i] >= '\012' && text[i] <= '\015'))
     {
-      // CRNL resets the ISO 2022 state
-      if (prevchar == '\r' && text[i] == '\n')
+      if (text[i] == '\n' || text[i] == '\f')
       {
-        state = this->InitISO2022(charsetG);
+        // Clear G2/G3 (for iso-2022-jp-2, other encodings never set G2/G3)
+        charsetG[2] = Unknown;
+        charsetG[3] = Unknown;
       }
-      prevchar = text[i];
       i++;
     }
     if (j < i)
