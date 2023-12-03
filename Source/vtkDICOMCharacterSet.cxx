@@ -2482,10 +2482,15 @@ size_t vtkDICOMCharacterSet::JISXToUTF8(
 
 //----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::UTF8ToEUCKR(
-  const char *text, size_t l, std::string *s)
+  const char *text, size_t l, std::string *s) const
 {
   // EUC-KR encoding of KS X 1001 (and CP949 for compatibility)
   CompressedTableR table(vtkDICOMCharacterSet::Reverse[X_EUCKR]);
+
+  // There are two ways we encode hangul that don't fit the 94x94 table:
+  // 1) with the expanded table used by Windows CP949, also called UHC
+  // 2) 8-byte sequences, which is the the only option for ISO 2022
+  // We use (1) when invoked as EUCKR, (2) when invoked with ISO 2022
 
   const char *errpos = 0;
   const char *cp = text;
@@ -2506,6 +2511,35 @@ size_t vtkDICOMCharacterSet::UTF8ToEUCKR(
       {
         unsigned char x = static_cast<unsigned char>(0xA1 + t / 94);
         unsigned char y = static_cast<unsigned char>(0xA1 + t % 94);
+        s->push_back(static_cast<char>(x));
+        s->push_back(static_cast<char>(y));
+        continue;
+      }
+      else if (t < 17658 && this->Key != ISO_2022_IR_149)
+      {
+        // use CP949 if not limited to the ISO 2022 94x94 set
+        unsigned char x, y;
+        t -= 8836;
+        if (t < 5696)
+        {
+          x = static_cast<unsigned char>(0x81 + t / 178);
+          y = static_cast<unsigned char>(0x41 + t % 178);
+        }
+        else
+        {
+          t -= 5696;
+          x = static_cast<unsigned char>(0xA1 + t / 84);
+          y = static_cast<unsigned char>(0x41 + t % 84);
+        }
+
+        if (y > 0x5A)
+        {
+          y += 6;
+          if (y > 0x7A)
+          {
+            y += 6;
+          }
+        }
         s->push_back(static_cast<char>(x));
         s->push_back(static_cast<char>(y));
         continue;

@@ -354,7 +354,7 @@ private:
   size_t ISO8859ToUTF8(const char *t, size_t l, std::string *s, int) const;
   size_t UTF8ToISO2022(const char *t, size_t l, std::string *s) const;
   size_t ISO2022ToUTF8(const char *t, size_t l, std::string *s, int m) const;
-  static size_t UTF8ToEUCKR(const char *t, size_t l, std::string *s);
+  size_t UTF8ToEUCKR(const char *t, size_t l, std::string *s) const;
   static size_t EUCKRToUTF8(const char *t, size_t l, std::string *s, int m);
   static size_t UTF8ToGB2312(const char *t, size_t l, std::string *s);
   static size_t GB2312ToUTF8(const char *t, size_t l, std::string *s, int m);
