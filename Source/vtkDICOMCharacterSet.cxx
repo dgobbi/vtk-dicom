@@ -2451,6 +2451,12 @@ size_t vtkDICOMCharacterSet::GB18030ToUTF8(
           }
         }
       }
+      else if (a == 0x80)
+      {
+        // EURO SIGN for CP936 compatibility (also at a=A2,b=E3)
+        code = 0x20AC;
+      }
+
       // the 4-byte code 0x84,0x31,0xA4,0x37 is the valid code for 0xFFFD
       if (code == 0xFFFD && !(cp-lastpos >= 4 && lastpos[0] == '\x84' &&
           lastpos[1] == '1' && lastpos[2] == '\xa4' && lastpos[3] == '7'))
