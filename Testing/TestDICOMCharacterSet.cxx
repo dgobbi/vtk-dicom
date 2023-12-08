@@ -402,9 +402,17 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   vtkDICOMCharacterSet cs = vtkDICOMCharacterSet::ISO_IR_192;
   // the following string has a matched surrogate pair
   std::string raw = "\xed\xa1\x80\xed\xb3\x8c"; // D840 DCCC
-  // case folding causes decoding + encoding
-  std::string cooked = cs.CaseFoldedUTF8(raw.data(), raw.length());
+  // perform a UTF-8 to UTF-8 conversion
+  std::string cooked = cs.ToUTF8(raw.data(), raw.length());
   TestAssert(cooked == "\xf0\xa0\x83\x8c"); // 0200CC
+  // test low surrogate on its own
+  raw = "\xed\xb3\x8c "; // DCCC
+  cooked = cs.ToUTF8(raw.data(), raw.length());
+  TestAssert(cooked == "\xef\xbf\xbd "); // REPLACEMENT CHARACTER
+  // test high surrogate on its own
+  raw = "\xed\xa1\x80 "; // D840
+  cooked = cs.ToUTF8(raw.data(), raw.length());
+  TestAssert(cooked == "\xef\xbf\xbd "); // REPLACEMENT CHARACTER
   }
 
   { // test that all hangul will round-trip through EUC-KR, even the ones
