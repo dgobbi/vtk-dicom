@@ -900,6 +900,19 @@ unsigned int UTF8ToUnicode(const char **cpp, const char *cpEnd)
 }
 
 //----------------------------------------------------------------------------
+// Check if "code" is represented by the utf-8 sequence starting at  "cpp"
+// and ending at "cpEnd".  This is meant to be used when UTF8ToUnicode()
+// returns 0xFFFE or 0xFFFF, in order to check whether they were returned
+// as error indicators or whether they were actually present in the string.
+bool IsFFFX(unsigned int code, const char *cpp, const char *cpEnd)
+{
+  return (cpEnd - cpp == 3 &&
+          static_cast<unsigned char>(cpp[0]) == 0xef &&
+          static_cast<unsigned char>(cpp[1]) == 0xbf &&
+          static_cast<unsigned char>(cpp[2]) == (code ^ 0xFF40));
+}
+
+//----------------------------------------------------------------------------
 // Different ways to handle failed conversions
 enum { UTF8_IGNORE, UTF8_REPLACE, UTF8_ESCAPE };
 
@@ -1484,14 +1497,9 @@ size_t UTF8ToUTF8(const char *text, size_t l, std::string *s, int mode)
   {
     const char *lastpos = cp;
     unsigned int code = UTF8ToUnicode(&cp, ep);
-    size_t n = cp - lastpos;
     // check for 0xFFFE and 0xFFFF invalid characters that were not present
     // in the original string, these are the error indicators
-    if (code >= 0xFFFE && code <= 0xFFFF &&
-        !(n == 3 &&
-          static_cast<unsigned char>(lastpos[0]) == 0xef &&
-          static_cast<unsigned char>(lastpos[1]) == 0xbf &&
-          static_cast<unsigned char>(lastpos[2]) == (code ^ 0xFF40)))
+    if (code >= 0xFFFE && code <= 0xFFFF && !IsFFFX(code, lastpos, cp))
     {
       if (code == 0xFFFF)
       {
@@ -1502,7 +1510,7 @@ size_t UTF8ToUTF8(const char *text, size_t l, std::string *s, int mode)
     else
     {
       // check for paired utf-16 surrogates and lone surrogates
-      if (n == 6 || (code & 0xF800) == 0xD800)
+      if (cp - lastpos == 6 || (code & 0xF800) == 0xD800)
       {
         // surrogates pass through, but are marked as utf-8 errors
         errpos = (errpos ? errpos : lastpos);
@@ -2338,10 +2346,7 @@ size_t vtkDICOMCharacterSet::UTF8ToGB18030(
     }
     else // (code == 0xFFFE || code == 0xFFFF)
     {
-      if (cp - lastpos == 3 &&
-          static_cast<unsigned char>(lastpos[0]) == 0xEF &&
-          static_cast<unsigned char>(lastpos[1]) == 0xBF &&
-          static_cast<unsigned char>(lastpos[2]) == (code ^ 0xFF40))
+      if (IsFFFX(code, lastpos, cp))
       {
         // was a valid code, not an error indicator
         t = code - 0xFFFD + 39417;
