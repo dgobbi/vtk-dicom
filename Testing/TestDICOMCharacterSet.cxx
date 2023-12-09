@@ -375,6 +375,19 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   TestAssert(s == "truncated <EF><BF>");
   }
 
+  { // test check for ESC when encoding ISO 2022
+  vtkDICOMCharacterSet cs1(vtkDICOMCharacterSet::ISO_2022_IR_149);
+  vtkDICOMCharacterSet cs2(vtkDICOMCharacterSet::ISO_2022_IR_87);
+  std::string s;
+  size_t l;
+  s = cs1.FromUTF8("esc \x1b(B code", 12, &l);
+  TestAssert(l == 4);
+  TestAssert(s == "esc <1B>(B code");
+  s = cs2.FromUTF8("esc \x1b(B code", 12, &l);
+  TestAssert(l == 4);
+  TestAssert(s == "esc <1B>(B code");
+  }
+
   { // test for proper escaping of backslashes in GB18030
   std::string name = "GB18030";
   // the following string includes a multi-byte character where the
