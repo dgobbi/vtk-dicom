@@ -1175,6 +1175,12 @@ bool HandleReplacement(std::string *s, const char *cp, const char *ep,
     char text[24];
     const char *replacement = text;
 
+    if (code < 0x20)
+    {
+      // consider C0 to be a bad bytes, not bad characters
+      code = 0xFFFF;
+    }
+
     if (mode == UTF8_STRICT)
     {
       // OxFFFE and 0xFFFF are UTF8ToUnicode error markers, but only if
@@ -2280,16 +2286,18 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
 
     if (code < 0x80)
     {
-      if (state != stateBase)
+      if (code != 0x1B && code != 0x0E && code != 0x0F) // ESC SO SI
       {
-        s->append(escBase);
-        state = stateBase;
+        if (state != stateBase)
+        {
+          s->append(escBase);
+          state = stateBase;
+        }
+        s->push_back(static_cast<char>(code));
+        continue;
       }
-      s->push_back(static_cast<char>(code));
-      continue;
     }
-
-    if (hasJISX0208 || hasJISX0212)
+    else if (hasJISX0208 || hasJISX0212)
     {
       unsigned short t = table[code];
       if (t >= 8836 && t < 2*8836 && hasJISX0212)
@@ -3441,16 +3449,19 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
     const char *ep = cp + l;
     while (cp != ep)
     {
+      bool hasG1 = false;
       const char *dp = cp;
       char checkAscii = 0;
-      // loop until the end of the current line
-      while (dp != ep && !IsEndLine(*dp))
+      // loop until the end of the current line or ESC, SO, or SI
+      while (dp != ep && !IsEndLine(*dp) && *dp != '\033' &&
+             *dp != '\016' && *dp != '\017')
       {
         checkAscii |= *dp;
         dp++;
       }
       while (dp != ep && IsEndLine(*dp))
       {
+        hasG1 = false;
         dp++;
       }
 
@@ -3462,8 +3473,13 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
       }
       else
       {
-        // add the escape code and write the encoded text
-        s->append(escCode);
+        // add the escape code
+        if (!hasG1)
+        {
+          s->append(escCode);
+          hasG1 = true;
+        }
+        // write the encoded text
         size_t n;
         if (this->Key == ISO_2022_IR_58)
         {
@@ -3480,6 +3496,17 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
           SetErrorPosition(l, n);
         }
       }
+
+      // guard against escape codes in original string
+      if (dp != ep && (*dp == '\033' || *dp == '\016' || *dp == '\017'))
+      {
+        cp = dp++;
+        if (!HandleReplacement(s, cp, dp, mode))
+        {
+          SetErrorPosition(l, cp - text);
+        }
+      }
+
       cp = dp;
     }
     return l;
