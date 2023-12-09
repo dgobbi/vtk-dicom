@@ -3434,86 +3434,87 @@ size_t vtkDICOMCharacterSet::UTF8ToISO2022(
     return UTF8ToJISX(this->Key, text, l, s, mode);
   }
 
-  // check for multi-byte encodings that use G1
-  if (this->Key == ISO_2022_IR_149 ||
-      this->Key == ISO_2022_IR_58)
+  // code for ISO 2022 encodings that use G1
+  const char *escCode = "";
+  if (this->Key == ISO_2022_IR_58)
   {
-    const char *escCode = "\033$)C";
-    if (this->Key == ISO_2022_IR_58)
+    escCode = "\033$)A";
+  }
+  else if (this->Key == ISO_2022_IR_149)
+  {
+    escCode = "\033$)C";
+  }
+
+  const char *cp = text;
+  const char *ep = cp + l;
+  while (cp != ep)
+  {
+    bool hasG1 = false;
+    const char *dp = cp;
+    char checkAscii = 0;
+    // loop until the end of the current line
+    while (dp != ep && !IsEndLine(*dp) && *dp != '\033' &&
+           *dp != '\016' && *dp != '\017')
     {
-      escCode = "\033$)A";
+      checkAscii |= *dp;
+      dp++;
+    }
+    while (dp != ep && IsEndLine(*dp))
+    {
+      hasG1 = false;
+      dp++;
     }
 
-    // loop over all the lines in the string
-    const char *cp = text;
-    const char *ep = cp + l;
-    while (cp != ep)
+    size_t m = dp - cp;
+    if ((checkAscii & 0x80) == 0)
     {
-      bool hasG1 = false;
-      const char *dp = cp;
-      char checkAscii = 0;
-      // loop until the end of the current line or ESC, SO, or SI
-      while (dp != ep && !IsEndLine(*dp) && *dp != '\033' &&
-             *dp != '\016' && *dp != '\017')
+      // segment between delims is pure ascii
+      s->append(cp, m);
+    }
+    else
+    {
+      // add the escape code
+      if (!hasG1)
       {
-        checkAscii |= *dp;
-        dp++;
+        s->append(escCode);
+        hasG1 = true;
       }
-      while (dp != ep && IsEndLine(*dp))
+      // write the encoded text
+      size_t n;
+      if (this->Key == ISO_2022_IR_58)
       {
-        hasG1 = false;
-        dp++;
+        n = this->UTF8ToGB2312(cp, m, s, mode);
       }
-
-      size_t m = dp - cp;
-      if ((checkAscii & 0x80) == 0)
+      else if (this->Key == ISO_2022_IR_149)
       {
-        // segment between delims is pure ascii
-        s->append(cp, m);
+        n = this->UTF8ToEUCKR(cp, m, s, mode);
       }
       else
       {
-        // add the escape code
-        if (!hasG1)
-        {
-          s->append(escCode);
-          hasG1 = true;
-        }
-        // write the encoded text
-        size_t n;
-        if (this->Key == ISO_2022_IR_58)
-        {
-          n = this->UTF8ToGB2312(cp, m, s, mode);
-        }
-        else
-        {
-          n = this->UTF8ToEUCKR(cp, m, s, mode);
-        }
-        // check for conversion error
-        if (n < m)
-        {
-          n += cp - text;
-          SetErrorPosition(l, n);
-        }
+        n = this->UTF8ToSingleByte(cp, m, s, mode);
       }
-
-      // guard against escape codes in original string
-      if (dp != ep && (*dp == '\033' || *dp == '\016' || *dp == '\017'))
+      // check for conversion error
+      if (n < m)
       {
-        cp = dp++;
-        if (!HandleReplacement(s, cp, dp, mode))
-        {
-          SetErrorPosition(l, cp - text);
-        }
+        n += cp - text;
+        SetErrorPosition(l, n);
       }
-
-      cp = dp;
     }
-    return l;
+
+    // guard against escape codes in original string
+    if (dp != ep && (*dp == '\033' || *dp == '\016' || *dp == '\017'))
+    {
+      cp = dp++;
+      if (!HandleReplacement(s, cp, dp, mode))
+      {
+        SetErrorPosition(l, cp - text);
+      }
+    }
+
+    cp = dp;
   }
 
-  // don't write escape codes for single-byte character sets
-  return this->UTF8ToSingleByte(text, l, s, mode);
+  return l;
 }
 
 //----------------------------------------------------------------------------
