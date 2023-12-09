@@ -36,27 +36,8 @@ as ASCII.
 
 The extra characters that are supported by the decoder cannot also be
 supported by the encoder, since that would create files that do not
-conform with the DICOM standard.  Instead, the encoder will convert
-the extra characters to ASCII code points in cases where there is a
-suitable replacement.  To avoid this automatical replacment, enable
-strict mode by using the error indicator parameter of the conversion
-methods.
-
-The conversions that the encoder uses are as follows:
-
-1. Smart quotes become regular ASCII quotes.
-2. Special spaces (wide, narrow) become ASCII space.
-3. Soft hyphens and invisible spaces disappear.
-4. Dashes become ASCII hyphen/minus.
-5. Horizontal bar becomes a double-hyphen.
-6. Ellipsis becomes ASCII "..."
-7. The fraction slash becomes regular ASCII slash.
-8. The swung dash becomes ASCII tilde.
-9. Anything else becomes ?
-
-Note that the resulting string might be longer than the original,
-so the length must be checked after encoding if there are constraints
-on the number of characters.
+conform with the DICOM standard.  Encoding is done strictly according
+to the named character set.
 
 
 ## Japanese via ISO 2022
