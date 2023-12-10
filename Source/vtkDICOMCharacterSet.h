@@ -177,16 +177,44 @@ public:
   //@{
   //! Generate SpecificCharacterSet code values (diagnostic only).
   /*!
-   *  Attempt to generate SpecificCharacterSet code values.  If ISO 2022
-   *  encoding is not used, then a single code value is returned.  If
-   *  ISO 2022 encoding is used with the single-byte character sets, then
-   *  only the code value for first character set will be returned (due to
-   *  limitations in the way this class stores the information).  However,
-   *  if ISO 2022 encoding is used with the multi-byte character sets,
-   *  the result is a set of backslash-separated code values, where
-   *  the first value will be empty if the initial coding is ASCII.
+   *  This will return the same value as GetDefinedTerm() is a defined
+   *  term exists, otherwise it return the same value as GetName() if the
+   *  character set has a name, with a final fallback to the number
+   *  returned by GetKey() converted to a string.
    */
   std::string GetCharacterSetString() const;
+
+  //! Get the defined term (possible multi-valued) for this character set.
+  /*!
+   *  If the character set permitted by the DICOM standard, this will return
+   *  the defined term, otherwise the returned value will be NULL.  An empty
+   *  string is returned for the default character set (ISO_IR 6).  Multiple
+   *  values will be separated by backslashes, e.g. "\\ISO 2022 IR 58" or
+   *  "ISO 2022 IR 13\\ISO 2022 IR 87".
+   */
+  const char *GetDefinedTerm() const;
+
+  //! Get the internet MIME name for this character set.
+  /*!
+   *  The return value will be NULL if there isn't a good match between this
+   *  character set and one of the MIME character sets in common use on the
+   *  internet.  So conversion may be necessary, either to UTF-8 or to a
+   *  different encoding with a similar character repertoire. For example,
+   *  "ISO 2022 IR 149" can be converted to "EUC-KR", "ISO 2022 IR 58" can
+   *  can be converted to "GBK", and "ISO 2022 IR 13\\ISO 2022 IR 87" can be
+   *  converted to "Shift_JIS".  Note that "ISO-2022-JP" is not equivalent
+   *  to DICOM's Japanese encodings since it does not allow half-width
+   *  katakana or the "ISO 2022 IR 159" characters.  
+   */
+  const char *GetMIMEName() const;
+
+  //! Get a name that identifies this character set.
+  /*!
+   *  For DICOM character sets, the name is based on the defined term,
+   *  and for other character sets, the common name is used.  If no name
+   *  exists, then "Unknown" will be returned.
+   */
+  const char *GetName() const;
 
   //! Get the numerical code for this character set object.
   unsigned char GetKey() const { return this->Key; }

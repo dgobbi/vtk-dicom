@@ -3293,6 +3293,52 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
 }
 
 //----------------------------------------------------------------------------
+const char *vtkDICOMCharacterSet::GetDefinedTerm() const
+{
+  unsigned char key = this->Key;
+  const char *dt = NULL;
+
+  if (key < CHARSET_TABLE_SIZE)
+  {
+    dt = Charsets[key].DefinedTerm;
+  }
+
+  return dt;
+}
+
+//----------------------------------------------------------------------------
+const char *vtkDICOMCharacterSet::GetMIMEName() const
+{
+  unsigned char key = this->Key;
+  const char *mime = NULL;
+
+  if (key < CHARSET_TABLE_SIZE)
+  {
+    mime = Charsets[key].MIMEName;
+  }
+
+  return mime;
+}
+
+//----------------------------------------------------------------------------
+const char *vtkDICOMCharacterSet::GetName() const
+{
+  unsigned char key = this->Key;
+  const char *name = NULL;
+
+  if (key < CHARSET_TABLE_SIZE)
+  {
+    name = Charsets[key].Name;
+  }
+  if (!name)
+  {
+    name = "Unknown";
+  }
+
+  return name;
+}
+
+//----------------------------------------------------------------------------
 size_t vtkDICOMCharacterSet::SingleByteToUTF8(
   const char *text, size_t l, std::string *s, int mode) const
 {
