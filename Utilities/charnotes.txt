@@ -216,8 +216,8 @@ they have extra characters that are not in the ISO standards).
     ISO_IR 138 -> Windows-1255 (Hebrew, partial compatibility)
     ISO_IR 148 -> Windows-1254 (Turkish)
     ISO_IR 166 -> Windows-874 (Thai)
-    ISO_IR 13 -> Windows-932 (Japanese)
-    ISO 2022 IR 149 -> Windows-949 (Korean, no escape codes)
+    ISO_IR 13 -> Windows-932 (Shift-JIS, Japanese)
+    ISO 2022 IR 149 -> Windows-949 (EUC-KR, Korean, no escape codes)
 
 There are also Windows code pages for central Europe, Cyrillic,
 Arabic, and the Baltic Rim that more popular than (and incompatible
@@ -231,3 +231,52 @@ non-conformant files that we might have to deal with as part of our
 workflow. Because of this, it is useful to support these code pages
 when reading DICOM files, though we must be careful to only use
 DICOM-conformant character sets when creating DICOM files.
+
+
+## Person name specifics
+
+In order to better support Japanese names (as well as Korean, Chinese)
+the Patient Name (VR=PN) values can have three components:
+
+    alphabetic=ideographic=phonetic
+
+There are specific rules for the "alphabetic" component in Part 5:
+
+1. It must not contain escape codes.
+2. It can contain any characters in Specific Character Set value 1,
+   unless this value is ISO_IR 192, GBK, or GB18030.
+
+For ISO_IR 192, GBK, and GB18030 there are these restrictions on the
+alphabetic component:
+
+1. It must be limited to U+0020 through U+1FFF, or,
+2. It must be limited to U+3001, U+3002, U+300C, U+300D,
+   U+3099 through U+309C, and U+30A0 through U+30FF.
+
+Here (1) specifies most world alphabets, and (2) specifies Japanese
+katakana (in composed or decomposed form).  For Japanese in UTF-8,
+DICOM does not allow the use of half-width katakana, only full-width
+katakana are allowed.  Hence, conversion of a Japanese data set from
+ISO_IR 13 to ISO_IR 192 requires transliteration of half-width forms
+to full-width forms for the alphabetic component.  And conversion of
+ISO_IR 192 to ISO_IR 13 requires the reverse.  The specification of
+"U+3099 through U+309C" is also interesting, since these are both the
+combining and the non-combining forms of the voiced sound marks.  This
+may be meant to allow transliteration of half-width to full-width without
+composition, which implies that conversion to Unicode does not require
+normalization to NFC.
+
+The DICOM specifics of Japanese names does not end there.  Imagine, for
+instance, that one wanted to convert DICOM datasets into a form compatible
+with iso-2022-jp, without ISO_IR 13.  Since escape codes are not allowed
+in the alphabetic component, it would be pure ASCII, and romanization of
+the katanaka would be required.  Each katakana (plus voice marks or the
+prolonged sound mark) would be romanized according to either ISO 3602 or
+Hepburn, but the lack of accented characters in ASCII means that long
+vowels would be represented by double vowels. A rule (heuristic?) would
+be needed to disambiguate long 'o' to either 'ou' or 'oo', unless 'o-'
+was used.
+
+What about Chinese and Korean?  For those languages, it seems that the
+name must be romanized to make it alphabetic.  Since Vietnamese requires
+only codes less than U+1F00, Vietnamese is covered entirely.
