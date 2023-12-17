@@ -404,6 +404,7 @@ private:
     int csGL, int csGR, const char *t, size_t l, std::string *s, int m);
   static size_t UTF8ToCP1258(const char *t, size_t l, std::string *s, int m);
   static size_t CP1258ToUTF8(const char *t, size_t l, std::string *s, int m);
+  static size_t UTF8ToJISX0201(const char *t, size_t l, std::string *s, int m);
 
   unsigned int InitISO2022(unsigned char G[4]) const;
   static EscapeType EscapeCode(const char *cp, size_t l, unsigned int *state);
