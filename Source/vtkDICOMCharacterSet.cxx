@@ -1299,6 +1299,36 @@ static const unsigned short GBKInvalidRanges[46] = {
   15770, 15780, 23940
 };
 
+// Given a half-width katakana and dakuten/handakuten (in Unicode),
+// provide the offset needed to apply the diacritic to the character.
+// The same offset works for Unicode and for JIS X 0208, except for
+// U+FF66 and U+FF9C (wa/wo) which have no composed forms in JIS X 0208.
+// They can be recognized because they return an offset of 8.
+unsigned int DakutenOffset(unsigned int code, unsigned int dakuten)
+{
+  unsigned int d = dakuten - 0xFF9D;
+  unsigned int offset = 0;
+
+  if (code == 0xFF73)
+  {
+    offset = (d <= 1 ? 78 : offset);
+  }
+  else if (code >= 0xFF76 && code <= 0xFF84)
+  {
+    offset = (d <= 1 ? d : offset);
+  }
+  else if (code >= 0xFF8A && code <= 0xFF8E)
+  {
+    offset = (d <= 2 ? d : offset);
+  }
+  else if (code == 0xFF66 || code == 0xFF9C)
+  {
+    offset = (d <= 1 ? 8 : offset);
+  }
+
+  return offset;
+}
+
 } // end anonymous namespace
 
 //----------------------------------------------------------------------------
@@ -2244,6 +2274,7 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
     }
   }
 
+  unsigned int code = 0;
   stateType state = stateBase;
   bool latin1G2 = false;
   const char *errpos = 0;
@@ -2252,7 +2283,8 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
   while (cp != ep)
   {
     const char *lastpos = cp;
-    unsigned int code = UTF8ToUnicode(&cp, ep);
+    unsigned int lastcode = code;
+    code = UTF8ToUnicode(&cp, ep);
     if (hasJISX0201)
     {
       if (hasKatakana && code >= 0xFF61 && code <= 0xFF9F)
@@ -2316,8 +2348,33 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
              code == 0xFF5E || // fullwidth tilde from JIS X 0212
              code == 0x5861 || code == 0x9830)) // JIS X 0212
         {
-          // JIS X 0208 compatibility mappings
-          t = table2[code];
+          if (code == 0xFF9E || code == 0xFF9F)
+          {
+            // half-width dakuten combine with half-width katakana
+            unsigned int offset = DakutenOffset(lastcode, code);
+            if (offset != 0 && offset != 8)
+            {
+              // apply dakuten to previous JIS X 0208 character
+              size_t sl = s->length();
+              if (sl > 2)
+              {
+                unsigned char x = (*s)[sl - 2];
+                unsigned char y = (*s)[sl - 1];
+                t = (x - 0x21)*94 + (y - 0x21) + offset;
+                s->resize(sl - 2);
+              }
+            }
+            else
+            {
+              // directly output dakuten/handakuten to JIS X 0208
+              t = code - (0xFF9E - 10);
+            }
+          }
+          else
+          {
+            // JIS X 0208 compatibility mappings
+            t = table2[code];
+          }
         }
         if (t < 8836 && state != X0208)
         {
@@ -3139,6 +3196,71 @@ size_t vtkDICOMCharacterSet::UTF8ToCP1258(
 }
 
 //----------------------------------------------------------------------------
+size_t vtkDICOMCharacterSet::UTF8ToJISX0201(
+  const char *text, size_t l, std::string *s, int mode)
+{
+  const unsigned short *tptr = vtkDICOMCharacterSet::Reverse[ISO_IR_13];
+  CompressedTableR table(tptr);
+
+  const char *errpos = 0;
+  const char *cp = text;
+  const char *ep = text + l;
+  while (cp != ep)
+  {
+    const char *lastpos = cp;
+    unsigned int code = UTF8ToUnicode(&cp, ep);
+    unsigned int dakuten = 0;
+
+    // decompose katakana to fit the table
+    if (code >= 0x30A1 && code <= 0x30FA)
+    {
+      if (code >= 0x30AB && code <= 0x30C9)
+      {
+        unsigned int offset = (code <= 0x30C3 ? 1 : 0);
+        dakuten = (code - offset) % 2;
+        code -= dakuten;
+      }
+      else if (code >= 0x30CF && code <= 0x30DD)
+      {
+        dakuten = code % 3;
+        code -= dakuten;
+      }
+      else if (code == 0x30F4)
+      {
+        dakuten = 1;
+        code = 0x30A6;
+      }
+      else if (code == 0x30F7 || code == 0x30FA)
+      {
+        dakuten = 1;
+        code -= 8;
+      }
+      if (dakuten != 0)
+      {
+        dakuten += 0x309A;
+      }
+    }
+
+    // insert the character and (if present) the dakuten
+    while (code != 0)
+    {
+      unsigned short t = table[code];
+      if (t < 0xFFFD)
+      {
+        s->push_back(static_cast<char>(t));
+      }
+      else if (!HandleReplacement(s, lastpos, cp, mode))
+      {
+        errpos = (errpos ? errpos : lastpos);
+      }
+      code = dakuten;
+      dakuten = 0;
+    }
+  }
+  return (errpos ? errpos-text : cp-text);
+}
+
+//----------------------------------------------------------------------------
 unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
 {
   const char *cp = name;
@@ -3905,6 +4027,9 @@ std::string vtkDICOMCharacterSet::FromUTF8(
       break;
     case X_BIG5:
       l = UTF8ToBig5(text, l, &s, mode);
+      break;
+    case ISO_IR_13:
+      l = UTF8ToJISX0201(text, l, &s, mode);
       break;
     case X_EUCJP:
       l = UTF8ToEUCJP(text, l, &s, mode);
