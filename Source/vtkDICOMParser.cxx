@@ -1569,11 +1569,20 @@ bool Decoder<E>::ReadElements(
     // read the value
     vtkDICOMValue v;
     size_t rl = 0;
+
+    bool explicitUN = false;
     if (vr == vtkDICOMVR::UN && !this->ImplicitVR)
     {
       // if it was explicitly labeled 'UN' then check dictionary
       vr = this->Context->FindDictVR(tag);
       this->LastVR = vr; // save true VR, rather than recorded VR
+      explicitUN = true;
+    }
+
+    if (explicitUN && vl == HxFFFFFFFF)
+    {
+      // if VR is explicit UN and length undefined, sequence is implicit LE
+      // (see DICOM Part 5, Section 6.2.2)
       rl = this->ImplicitLE->ReadElementValue(cp, ep, vr, vl, v);
     }
     else
