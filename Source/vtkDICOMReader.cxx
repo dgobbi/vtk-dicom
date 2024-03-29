@@ -1846,12 +1846,6 @@ bool vtkDICOMReader::ReadFileDelegated(
 
   (void)fileIdx;
 
-#ifdef _WIN32
-  // Convert utf8 filename to local character set for gdcm
-  vtkDICOMFilePath filePath(filename);
-  filename = filePath.Local();
-#endif
-
   gdcm::ImageReader reader;
   reader.SetFileName(filename);
   if(!reader.Read())
