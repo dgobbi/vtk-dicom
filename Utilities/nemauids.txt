@@ -6238,3 +6238,6 @@ Lesion Color
 1.2.840.10008.6.1.1480
 CID 4412
 Specimen Stain for Confocal Microscopy
+1.2.840.10008.6.1.1481
+CID 9272
+RT ROI Image Acquisition Context

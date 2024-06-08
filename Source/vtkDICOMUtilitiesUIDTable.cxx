@@ -23,15 +23,15 @@ const UIDTableEntry UIDTable[] = {
 { 337, 1, 2, 0, 0 },
 { 338, 1, 1, 0, 0 },
 { 1425, 1, 1, 0, 0 },
-{ 2906, 1, 1, 0, 0 },
-{ 2909, 1, 1, 0, 0 },
-{ 2911, 24, 1, 0, 0 },
-{ 2935, 4, 1, 0, 0 },
+{ 2907, 1, 1, 0, 0 },
+{ 2910, 1, 1, 0, 0 },
+{ 2912, 24, 1, 0, 0 },
+{ 2936, 4, 1, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
 { 0, 0, 0, 0, 0 },
-{ 2939, 2, 0, 0, 0 },
+{ 2940, 2, 0, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.1.1
   "Verification SOP Class" },
 { 58, 7, 1, 0, // 1.2.840.10008.1.2
@@ -1875,7 +1875,7 @@ const UIDTableEntry UIDTable[] = {
   "Implant Template Group Information Model - MOVE" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.45.4
   "Implant Template Group Information Model - GET" },
-{ 1426, 1480, 1, 0, 0 },
+{ 1426, 1481, 1, 0, 0 },
 { 0, 0, 0, 2, // 1.2.840.10008.6.1.1
   "Anatomic Modifier" },
 { 0, 0, 0, 4, // 1.2.840.10008.6.1.2
@@ -4730,12 +4730,14 @@ const UIDTableEntry UIDTable[] = {
   "Lesion Color" },
 { 0, 0, 0, 4412, // 1.2.840.10008.6.1.1480
   "Specimen Stain for Confocal Microscopy" },
-{ 2907, 2, 1, 0, 0 },
+{ 0, 0, 0, 9272, // 1.2.840.10008.6.1.1481
+  "RT ROI Image Acquisition Context" },
+{ 2908, 2, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.1
   "Native DICOM Model" },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.2
   "Abstract Multi-Dimensional Image Model" },
-{ 2910, 1, 1, 0, 0 },
+{ 2911, 1, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.8.1.1
   "DICOM Content Mapping Resource" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.1
@@ -4794,10 +4796,10 @@ const UIDTableEntry UIDTable[] = {
   "Audio Waveform Real-Time Communication" },
 { 0, 0, 0, 0, // 1.2.840.10008.10.4
   "Rendition Selection Document Real-Time Communication" },
-{ 2941, 2, 3, 0, 0 },
-{ 2982, 1, 1, 0, 0 },
-{ 2943, 31, 1, 0, 0 },
-{ 2974, 8, 1, 0, 0 },
+{ 2942, 2, 3, 0, 0 },
+{ 2983, 1, 1, 0, 0 },
+{ 2944, 31, 1, 0, 0 },
+{ 2975, 8, 1, 0, 0 },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.1
   "dicomDeviceName" },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.2

@@ -340,6 +340,12 @@ OriginalSpecializedSOPClassUID
 UI
 1
 
+(0008,001C)
+Synthetic Data
+SyntheticData
+CS
+1
+
 (0008,0020)
 Study Date
 StudyDate
@@ -1276,6 +1282,12 @@ ReferencedPerformedProcedureStepSequence
 SQ
 1
 
+(0008,1112)
+Referenced Instances by SOP Class Sequence
+ReferencedInstancesBySOPClassSequence
+SQ
+1
+
 (0008,1115)
 Referenced Series Sequence
 ReferencedSeriesSequence
@@ -1435,6 +1447,12 @@ SQ
 (0008,119A)
 Other Failures Sequence
 OtherFailuresSequence
+SQ
+1
+
+(0008,119B)
+Failed Study Sequence
+FailedStudySequence
 SQ
 1
 
@@ -2296,6 +2314,18 @@ ClinicalTrialProtocolName
 LO
 1
 
+(0012,0022)
+Issuer of Clinical Trial Protocol ID
+IssuerOfClinicalTrialProtocolID
+LO
+1
+
+(0012,0023)
+Other Clinical Trial Protocol IDs Sequence
+OtherClinicalTrialProtocolIDsSequence
+SQ
+1
+
 (0012,0030)
 Clinical Trial Site ID
 ClinicalTrialSiteID
@@ -2308,15 +2338,33 @@ ClinicalTrialSiteName
 LO
 1
 
+(0012,0032)
+Issuer of Clinical Trial Site ID
+IssuerOfClinicalTrialSiteID
+LO
+1
+
 (0012,0040)
 Clinical Trial Subject ID
 ClinicalTrialSubjectID
 LO
 1
 
+(0012,0041)
+Issuer of Clinical Trial Subject ID
+IssuerOfClinicalTrialSubjectID
+LO
+1
+
 (0012,0042)
 Clinical Trial Subject Reading ID
 ClinicalTrialSubjectReadingID
+LO
+1
+
+(0012,0043)
+Issuer of Clinical Trial Subject Reading ID
+IssuerOfClinicalTrialSubjectReadingID
 LO
 1
 
@@ -2348,6 +2396,12 @@ CS
 Clinical Trial Time Point Type Code Sequence
 ClinicalTrialTimePointTypeCodeSequence
 SQ
+1
+
+(0012,0055)
+Issuer of Clinical Trial Time Point ID
+IssuerOfClinicalTrialTimePointID
+LO
 1
 
 (0012,0060)
@@ -2383,6 +2437,12 @@ LO
 (0012,0072)
 Clinical Trial Series Description
 ClinicalTrialSeriesDescription
+LO
+1
+
+(0012,0073)
+Issuer of Clinical Trial Series ID
+IssuerOfClinicalTrialSeriesID
 LO
 1
 
@@ -10504,6 +10564,12 @@ DegreeOfDilation
 FL
 1
 
+(0022,000F)
+Vertex Distance
+VertexDistance
+FD
+1
+
 (0022,0010)
 Stereo Baseline Angle
 StereoBaselineAngle
@@ -17188,6 +17254,30 @@ ObjectiveLensNumericalAperture
 DS
 1
 
+(0048,0114)
+Confocal Mode
+ConfocalMode
+CS
+1
+
+(0048,0115)
+Tissue Location
+TissueLocation
+CS
+1
+
+(0048,0116)
+Confocal Microscopy Image Frame Type Sequence
+ConfocalMicroscopyImageFrameTypeSequence
+SQ
+1
+
+(0048,0117)
+Image Acquisition Depth
+ImageAcquisitionDepth
+FD
+1
+
 (0048,0120)
 Palette Color Lookup Table Sequence
 PaletteColorLookupTableSequence
@@ -20145,13 +20235,13 @@ Weighting Lookup Table Descriptor
 WeightingLookupTableDescriptor
 US
 3
-
+RET
 (0070,1808)
 Weighting Lookup Table Data
 WeightingLookupTableData
 OB
 1
-
+RET
 (0070,1901)
 Volumetric Annotation Sequence
 VolumetricAnnotationSequence
@@ -23650,6 +23740,18 @@ ROIVolume
 DS
 1
 
+(3006,002D)
+ROI DateTime
+ROIDateTime
+DT
+1
+
+(3006,002E)
+ROI Observation DateTime
+ROIObservationDateTime
+DT
+1
+
 (3006,0030)
 RT Related ROI Sequence
 RTRelatedROISequence
@@ -23731,6 +23833,36 @@ RET
 (3006,004A)
 Source Pixel Planes Characteristics Sequence
 SourcePixelPlanesCharacteristicsSequence
+SQ
+1
+
+(3006,004B)
+Source Series Sequence
+SourceSeriesSequence
+SQ
+1
+
+(3006,004C)
+Source Series Information Sequence
+SourceSeriesInformationSequence
+SQ
+1
+
+(3006,004D)
+ROI Creator Sequence
+ROICreatorSequence
+SQ
+1
+
+(3006,004E)
+ROI Interpreter Sequence
+ROIInterpreterSequence
+SQ
+1
+
+(3006,004F)
+ROI Observation Context Code Sequence
+ROIObservationContextCodeSequence
 SQ
 1
 
@@ -27730,6 +27862,12 @@ ReferencedRTPrescriptionSequence
 SQ
 1
 
+(300A,068B)
+Dose Value Interpretation
+DoseValueInterpretation
+CS
+1
+
 (300A,0700)
 Treatment Session UID
 TreatmentSessionUID
@@ -28436,6 +28574,12 @@ DT
 Beam Hold Originating Device Sequence
 BeamHoldOriginatingDeviceSequence
 SQ
+1
+
+(300C,0129)
+Beam Hold Transition Trigger Source
+BeamHoldTransitionTriggerSource
+CS
 1
 
 (300E,0002)
@@ -30215,7 +30359,7 @@ SQ
 1
 
 (5200,9230)
-Per-frame Functional Groups Sequence
+Per-Frame Functional Groups Sequence
 PerFrameFunctionalGroupsSequence
 SQ
 1
