@@ -76,6 +76,9 @@ struct dicomtodicom_options
   bool resample;
   bool silent;
   bool verbose;
+  bool version;
+  bool help;
+  bool invalid;
   const char *output;
 };
 
@@ -239,6 +242,9 @@ void dicomtodicom_read_options(
   options->resample = false;
   options->silent = false;
   options->verbose = false;
+  options->version = false;
+  options->help = false;
+  options->invalid = false;
   options->output = nullptr;
 
   // read the options from the command line
@@ -261,8 +267,9 @@ void dicomtodicom_read_options(
         if (argi >= argc ||
             argv[argi][0] == '-')
         {
-          fprintf(stderr, "\nA value must follow the \'%s\' flag\n\n", arg);
-          exit(1);
+          fprintf(stderr, "A value must follow the \'%s\' flag\n\n", arg);
+          options->invalid = true;
+          return;
         }
         if (strcmp(arg, "--modality") == 0)
         {
@@ -308,19 +315,19 @@ void dicomtodicom_read_options(
       }
       else if (strcmp(arg, "--version") == 0)
       {
-        dicomtodicom_version(stdout, argv[0]);
-        exit(0);
+        options->version = true;
+        return;
       }
       else if (strcmp(arg, "--help") == 0)
       {
-        dicomtodicom_help(stdout, argv[0]);
-        exit(0);
+        options->help = true;
+        return;
       }
       else if (arg[0] == '-' && arg[1] == '-')
       {
-        fprintf(stderr, "\nUnrecognized option %s\n\n", arg);
-        dicomtodicom_usage(stderr, argv[0]);
-        exit(1);
+        fprintf(stderr, "Unrecognized option %s\n\n", arg);
+        options->invalid = true;
+        return;
       }
       else if (arg[0] == '-' && arg[1] != '-')
       {
@@ -344,9 +351,10 @@ void dicomtodicom_read_options(
             {
               if (argi >= argc)
               {
-                fprintf(stderr, "\nA file must follow the \'-o\' flag\n\n");
+                fprintf(stderr, "A file must follow the \'-o\' flag\n\n");
                 dicomtodicom_usage(stderr, argv[0]);
-                exit(1);
+                options->invalid = true;
+                return;
               }
               arg = argv[argi++];
             }
@@ -355,9 +363,10 @@ void dicomtodicom_read_options(
           }
           else
           {
-            fprintf(stderr, "\nUnrecognized \'%c\' in option %s\n\n", arg[argj], arg);
+            fprintf(stderr, "Unrecognized \'%c\' in option %s\n\n", arg[argj], arg);
             dicomtodicom_usage(stderr, argv[0]);
-            exit(1);
+            options->invalid = true;
+            return;
           }
         }
       }
@@ -662,6 +671,20 @@ int MAINMACRO(int argc, char *argv[])
 
   dicomtodicom_options options;
   dicomtodicom_read_options(argc, argv, &options, files);
+  if (options.help)
+  {
+    dicomtodicom_help(stdout, argv[0]);
+    return 0;
+  }
+  else if (options.version)
+  {
+    dicomtodicom_version(stderr, argv[0]);
+    return 0;
+  }
+  else if (options.invalid)
+  {
+    return 1;
+  }
 
   // whether to silence VTK warnings and errors
   vtkObject::SetGlobalWarningDisplay(options.verbose);
@@ -675,9 +698,9 @@ int MAINMACRO(int argc, char *argv[])
   // make sure that input files were provided
   if (files->GetNumberOfValues() == 0)
   {
-    fprintf(stderr, "\nNo input files were specified.\n\n");
+    fprintf(stderr, "No input files were specified.\n\n");
     dicomtodicom_usage(stderr, argv[0]);
-    exit(1);
+    return 1;
   }
 
   // the output
@@ -685,22 +708,22 @@ int MAINMACRO(int argc, char *argv[])
   if (!outpath)
   {
     fprintf(stderr,
-      "\nNo output directory was specified (\'-o\' <directory>).\n\n");
+      "No output directory was specified (\'-o\' <directory>).\n\n");
     dicomtodicom_usage(stderr, argv[0]);
-    exit(1);
+    return 1;
   }
 
   int code = vtkDICOMFile::Access(outpath, vtkDICOMFile::In);
   if (code != vtkDICOMFile::FileIsDirectory)
   {
     fprintf(stderr, "option -o must give a directory, not a file.\n");
-    exit(1);
+    return 1;
   }
   code = vtkDICOMFileDirectory::Create(outpath);
   if (code != vtkDICOMFileDirectory::Good)
   {
     fprintf(stderr, "Cannot create directory: %s\n", outpath);
-    exit(1);
+    return 1;
   }
 
   dicomtodicom_convert_files(&options, files, outpath);

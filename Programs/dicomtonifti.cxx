@@ -70,6 +70,9 @@ struct dicomtonifti_options
   bool batch;
   bool silent;
   bool verbose;
+  bool version;
+  bool help;
+  bool invalid;
   int volume;
   double time_delta;
   int time_units;
@@ -329,6 +332,9 @@ void dicomtonifti_read_options(
   options->batch = false;
   options->silent = false;
   options->verbose = false;
+  options->version = false;
+  options->help = false;
+  options->invalid = false;
   options->volume = -1;
   options->time_delta = 0.0;
   options->time_units = 16;  // default to msec
@@ -401,9 +407,10 @@ void dicomtonifti_read_options(
       {
         if (argi >= argc || argv[argi][0] == '-')
         {
-          fprintf(stderr, "\nAn argument must follow \'%s\'\n\n", arg);
+          fprintf(stderr, "An argument must follow \'%s\'\n\n", arg);
           dicomtonifti_usage(stderr, argv[0]);
-          exit(1);
+          options->invalid = true;
+          return;
         }
         const char *optionarg = arg;
         arg = argv[argi++];
@@ -411,7 +418,8 @@ void dicomtonifti_read_options(
         {
           if (!dicomtonifti_time_delta(arg, options))
           {
-            exit(1);
+            options->invalid = true;
+            return;
           }
         }
         else
@@ -420,7 +428,8 @@ void dicomtonifti_read_options(
           QueryTagList qtlist;
           if (!dicomcli_readkey(arg, &data, &qtlist))
           {
-            exit(1);
+            options->invalid = true;
+            return;
           }
           if (strcmp(optionarg, "--time-delta-tag") == 0)
           {
@@ -448,28 +457,30 @@ void dicomtonifti_read_options(
       {
         if (argi >= argc || argv[argi][0] == '-')
         {
-          fprintf(stderr, "\nA number must follow \'--volume\'\n\n");
+          fprintf(stderr, "A number must follow \'--volume\'\n\n");
           dicomtonifti_usage(stderr, argv[0]);
-          exit(1);
+          options->invalid = true;
+          return;
         }
         arg = argv[argi++];
         options->volume = atoi(arg);
       }
       else if (strcmp(arg, "--version") == 0)
       {
-        dicomtonifti_version(stdout, argv[0]);
-        exit(0);
+        options->version = true;
+        return;
       }
       else if (strcmp(arg, "--help") == 0)
       {
-        dicomtonifti_help(stdout, argv[0]);
-        exit(0);
+        options->help = true;
+        return;
       }
       else if (arg[0] == '-' && arg[1] == '-')
       {
-        fprintf(stderr, "\nUnrecognized option %s\n\n", arg);
+        fprintf(stderr, "Unrecognized option %s\n\n", arg);
         dicomtonifti_usage(stderr, argv[0]);
-        exit(1);
+        options->invalid = true;
+        return;
       }
       else if (arg[0] == '-' && arg[1] != '-')
       {
@@ -509,9 +520,10 @@ void dicomtonifti_read_options(
             {
               if (argi >= argc)
               {
-                fprintf(stderr, "\nA file must follow the \'-o\' flag\n\n");
+                fprintf(stderr, "A file must follow the \'-o\' flag\n\n");
                 dicomtonifti_usage(stderr, argv[0]);
-                exit(1);
+                options->invalid = true;
+                return;
               }
               arg = argv[argi++];
             }
@@ -520,9 +532,10 @@ void dicomtonifti_read_options(
           }
           else
           {
-            fprintf(stderr, "\nUnrecognized \'%c\' in option %s\n\n", arg[argj], arg);
+            fprintf(stderr, "Unrecognized \'%c\' in option %s\n\n", arg[argj], arg);
             dicomtonifti_usage(stderr, argv[0]);
-            exit(1);
+            options->invalid = true;
+            return;
           }
         }
       }
@@ -1234,6 +1247,20 @@ int MAINMACRO(int argc, char *argv[])
 
   dicomtonifti_options options;
   dicomtonifti_read_options(argc, argv, &options, files);
+  if (options.help)
+  {
+    dicomtonifti_help(stdout, argv[0]);
+    return 0;
+  }
+  else if (options.version)
+  {
+    dicomtonifti_version(stdout, argv[0]);
+    return 0;
+  }
+  else if (options.invalid)
+  {
+    return 1;
+  }
 
   // whether to silence VTK warnings and errors
   vtkObject::SetGlobalWarningDisplay(options.verbose);
@@ -1243,9 +1270,9 @@ int MAINMACRO(int argc, char *argv[])
   if (!outpath)
   {
     fprintf(stderr,
-      "\nNo output file was specified (\'-o\' <filename>).\n\n");
+      "No output file was specified (\'-o\' <filename>).\n\n");
     dicomtonifti_usage(stderr, argv[0]);
-    exit(1);
+    return 1;
   }
 
   int code = vtkDICOMFile::Access(outpath, vtkDICOMFile::In);
@@ -1261,15 +1288,15 @@ int MAINMACRO(int argc, char *argv[])
            (l > 0 && (outpath[l-1] == '/' || outpath[l-1] == '\\'))))
   {
     fprintf(stderr, "The -o option must give a file, not a directory.\n");
-    exit(1);
+    return 1;
   }
 
   // make sure that input files were provided
   if (files->GetNumberOfValues() == 0)
   {
-    fprintf(stderr, "\nNo input files were specified.\n\n");
+    fprintf(stderr, "No input files were specified.\n\n");
     dicomtonifti_usage(stderr, argv[0]);
-    exit(1);
+    return 1;
   }
 
   std::set<std::string> pastdirs;
@@ -1277,6 +1304,7 @@ int MAINMACRO(int argc, char *argv[])
 
   if (!options.batch && options.conversions_attempted == 0) {
     fprintf(stderr, "No input DICOM files were found!\n\n");
+    return 1;
   }
 
   return 0;
