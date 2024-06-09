@@ -127,7 +127,7 @@ void scancotodicom_help(FILE *file, const char *command_name)
 }
 
 // Print error
-void scancotodicom_check_error(vtkObject *o)
+bool scancotodicom_check_error(vtkObject *o)
 {
   vtkScancoCTReader *reader = vtkScancoCTReader::SafeDownCast(o);
   vtkDICOMWriter *writer = vtkDICOMWriter::SafeDownCast(o);
@@ -157,7 +157,7 @@ void scancotodicom_check_error(vtkObject *o)
   switch(errorcode)
   {
     case vtkErrorCode::NoError:
-      return;
+      return false;
     case vtkErrorCode::FileNotFoundError:
       fprintf(stderr, "File not found: %s\n", filename);
       break;
@@ -184,7 +184,7 @@ void scancotodicom_check_error(vtkObject *o)
       break;
   }
 
-  exit(1);
+  return true;
 }
 
 // Convert a date to DICOM format (in-place conversion)
@@ -436,7 +436,7 @@ void scancotodicom_read_options(
 }
 
 // Convert one uCT file into a DICOM series
-void scancotodicom_convert_one(
+bool scancotodicom_convert_one(
   const scancotodicom_options *options,
   const char *filename,
   vtkStringArray *a,
@@ -447,7 +447,10 @@ void scancotodicom_convert_one(
     vtkSmartPointer<vtkScancoCTReader>::New();
   reader->SetFileName(filename);
   reader->UpdateInformation();
-  scancotodicom_check_error(reader);
+  if (scancotodicom_check_error(reader))
+  {
+    return false;
+  }
 
   // get info about the original scan dimensions
   int pixdim[3];
@@ -623,7 +626,12 @@ void scancotodicom_convert_one(
     writer->SetMemoryRowOrderToBottomUp();
   }
   writer->Write();
-  scancotodicom_check_error(writer);
+  if (scancotodicom_check_error(writer))
+  {
+    return false;
+  }
+
+  return true;
 }
 
 // This program will convert ScancoCT to DICOM
@@ -700,7 +708,10 @@ int MAINMACRO(int argc, char *argv[])
     }
   }
 
-  scancotodicom_convert_one(&options, options.input, files, outpath);
+  if (scancotodicom_convert_one(&options, options.input, files, outpath))
+  {
+    return 0;
+  }
 
-  return 0;
+  return 1;
 }

@@ -157,7 +157,7 @@ void niftitodicom_help(FILE *file, const char *command_name)
 }
 
 // Print error
-void niftitodicom_check_error(vtkObject *o)
+bool niftitodicom_check_error(vtkObject *o)
 {
   vtkNIFTIReader *reader = vtkNIFTIReader::SafeDownCast(o);
   vtkDICOMFileSorter *sorter = vtkDICOMFileSorter::SafeDownCast(o);
@@ -193,7 +193,7 @@ void niftitodicom_check_error(vtkObject *o)
   switch(errorcode)
   {
     case vtkErrorCode::NoError:
-      return;
+      return false;
     case vtkErrorCode::FileNotFoundError:
       fprintf(stderr, "File not found: %s\n", filename);
       break;
@@ -220,7 +220,7 @@ void niftitodicom_check_error(vtkObject *o)
       break;
   }
 
-  exit(1);
+  return true;
 }
 
 // Check that a file has a NIFTI name
@@ -445,7 +445,7 @@ void niftitodicom_read_options(
 }
 
 // Convert one NIFTI file into a DICOM series
-void niftitodicom_convert_one(
+bool niftitodicom_convert_one(
   const niftitodicom_options *options,
   const char *filename,
   vtkStringArray *a,
@@ -841,11 +841,16 @@ void niftitodicom_convert_one(
   writer->SetInputConnection(lastOutput);
   writer->SetMemoryRowOrderToFileNative();
   writer->Write();
-  niftitodicom_check_error(writer);
+  if (niftitodicom_check_error(writer))
+  {
+    return false;
+  }
+
+  return true;
 }
 
 // Process a list of files
-void niftitodicom_convert_files(
+bool niftitodicom_convert_files(
   niftitodicom_options *options, vtkStringArray *files,
   const char *outpath)
 {
@@ -864,9 +869,12 @@ void niftitodicom_convert_files(
     vtkSmartPointer<vtkDICOMFileSorter>::New();
   sorter->SetInputFileNames(presorter->GetFileNames());
   sorter->Update();
-  niftitodicom_check_error(sorter);
+  if (niftitodicom_check_error(sorter))
+  {
+    return false;
+  }
 
-  niftitodicom_convert_one(
+  return niftitodicom_convert_one(
     options, filename, sorter->GetOutputFileNames(), outpath);
 }
 
@@ -944,7 +952,10 @@ int MAINMACRO(int argc, char *argv[])
     }
   }
 
-  niftitodicom_convert_files(&options, files, outpath);
+  if (niftitodicom_convert_files(&options, files, outpath))
+  {
+    return 0;
+  }
 
-  return 0;
+  return 1;
 }

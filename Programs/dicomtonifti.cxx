@@ -600,7 +600,7 @@ std::string dicomtonifti_make_filename(
     if (*cp == '}')
     {
       fprintf(stderr, "Missing \'{\': %s\n", outfile);
-      exit(1);
+      return std::string();
     }
     if (*cp == '{')
     {
@@ -609,7 +609,7 @@ std::string dicomtonifti_make_filename(
       if (*cp != '}')
       {
         fprintf(stderr, "Unmatched \'{\': %s\n", outfile);
-        exit(1);
+        return std::string();
       }
       else
       {
@@ -630,7 +630,7 @@ std::string dicomtonifti_make_filename(
           else
           {
             fprintf(stderr, "Unrecognized key %s\n", key.c_str());
-            exit(1);
+            return std::string();
           }
         }
         if (meta)
@@ -645,7 +645,7 @@ std::string dicomtonifti_make_filename(
         {
           fprintf(stderr, "Sorry, key %s not found.\n",
                   key.c_str());
-          exit(1);
+          return std::string();
         }
         if (val.empty())
         {
@@ -661,13 +661,13 @@ std::string dicomtonifti_make_filename(
 }
 
 // Convert one DICOM series into one NIFTI file
-void dicomtonifti_convert_one(
+bool dicomtonifti_convert_one(
   dicomtonifti_options *options, vtkStringArray *a,
   const char *outfile)
 {
   // make sure there are files to read
   if (a->GetNumberOfValues() == 0) {
-    return;
+    return true;
   }
 
   // increment the number of conversions attempted
@@ -698,8 +698,9 @@ void dicomtonifti_convert_one(
     reader->GetSorter()->SetTimeTag(tag);
   }
   reader->Update();
-  if (dicomtonifti_check_error(reader)) {
-    return;
+  if (dicomtonifti_check_error(reader))
+  {
+    return false;
   }
 
   // get the output and the orientation matrix
@@ -717,7 +718,7 @@ void dicomtonifti_convert_one(
       fprintf(stderr, "Only %d volumes, but --volume %d used.\n",
               reader->GetOutput()->GetNumberOfScalarComponents(),
               options->volume);
-      return;
+      return false;
     }
     extract->SetComponents(options->volume);
     extract->Update();
@@ -1049,14 +1050,21 @@ void dicomtonifti_convert_one(
   }
   writer->SetInputConnection(lastOutput);
   writer->Write();
-  dicomtonifti_check_error(writer);
+  if (dicomtonifti_check_error(writer))
+  {
+    return false;
+  }
+
+  return true;
 }
 
 // Process a list of DICOM files
-void dicomtonifti_convert_files(
+bool dicomtonifti_convert_files(
   dicomtonifti_options *options, vtkStringArray *files,
   const char *outpath, unsigned int depth)
 {
+  bool rval = true;
+
   // sort the files by filename first, as a fallback
   vtkSmartPointer<vtkSortFileNames> presorter =
     vtkSmartPointer<vtkSortFileNames>::New();
@@ -1070,8 +1078,9 @@ void dicomtonifti_convert_files(
     vtkSmartPointer<vtkDICOMFileSorter>::New();
   sorter->SetInputFileNames(presorter->GetFileNames());
   sorter->Update();
-  if (dicomtonifti_check_error(sorter)) {
-    exit(1);
+  if (dicomtonifti_check_error(sorter))
+  {
+    return false;
   }
 
   if (!options->batch)
@@ -1092,8 +1101,7 @@ void dicomtonifti_convert_files(
     if (depth != 0) {
       files = sorter->GetOutputFileNames();
     }
-    dicomtonifti_convert_one(
-      options, files, outfile.c_str());
+    rval &= dicomtonifti_convert_one(options, files, outfile.c_str());
   }
   else
   {
@@ -1116,13 +1124,20 @@ void dicomtonifti_convert_files(
         meta->Clear();
         parser->SetFileName(fname.c_str());
         parser->Update();
-        if (dicomtonifti_check_error(parser)) {
+        if (dicomtonifti_check_error(parser))
+        {
+          rval = false;
           continue;
         }
 
         // generate a filename from the meta data
         std::string outfile =
           dicomtonifti_make_filename(outpath, meta);
+        if (outfile.empty())
+        {
+          rval = false;
+          break;
+        }
 
         size_t os = outfile.length();
         if (options->compress &&
@@ -1144,7 +1159,7 @@ void dicomtonifti_convert_files(
           {
             fprintf(stderr, "Cannot create directory: %s\n",
                     dirname.c_str());
-            exit(1);
+            return false;
           }
         }
 
@@ -1154,18 +1169,22 @@ void dicomtonifti_convert_files(
         }
 
         // convert the file
-        dicomtonifti_convert_one(options, a, outfile.c_str());
+        rval &= dicomtonifti_convert_one(options, a, outfile.c_str());
       }
     }
   }
+
+  return rval;
 }
 
 // Process a list of files and directories
-void dicomtonifti_files_and_dirs(
+bool dicomtonifti_files_and_dirs(
   dicomtonifti_options *options, vtkStringArray *files,
   const char *outpath, std::set<std::string> *pastdirs,
   unsigned int depth)
 {
+  bool rval = true;
+
   // look for directories among the files
   vtkSmartPointer<vtkStringArray> directories =
     vtkSmartPointer<vtkStringArray>::New();
@@ -1214,6 +1233,7 @@ void dicomtonifti_files_and_dirs(
     if (code != vtkDICOMFileDirectory::Good)
     {
       fprintf(stderr, "Could not open directory %s\n", dirname.c_str());
+      rval = false;
     }
     else
     {
@@ -1230,9 +1250,11 @@ void dicomtonifti_files_and_dirs(
           path.PopBack();
         }
       }
-      dicomtonifti_files_and_dirs(options, files, outpath, pastdirs, depth+1);
+      rval &= dicomtonifti_files_and_dirs(options, files, outpath, pastdirs, depth+1);
     }
   }
+
+  return rval;
 }
 
 // This program will convert DICOM to NIFTI
@@ -1300,7 +1322,10 @@ int MAINMACRO(int argc, char *argv[])
   }
 
   std::set<std::string> pastdirs;
-  dicomtonifti_files_and_dirs(&options, files, outpath, &pastdirs, 0);
+  if (!dicomtonifti_files_and_dirs(&options, files, outpath, &pastdirs, 0))
+  {
+    return 1;
+  }
 
   if (!options.batch && options.conversions_attempted == 0) {
     fprintf(stderr, "No input DICOM files were found!\n\n");

@@ -163,7 +163,7 @@ void dicomtodicom_help(FILE *file, const char *command_name)
 }
 
 // Print error
-void dicomtodicom_check_error(vtkObject *o)
+bool dicomtodicom_check_error(vtkObject *o)
 {
   vtkDICOMReader *reader = vtkDICOMReader::SafeDownCast(o);
   vtkDICOMFileSorter *sorter = vtkDICOMFileSorter::SafeDownCast(o);
@@ -199,7 +199,7 @@ void dicomtodicom_check_error(vtkObject *o)
   switch(errorcode)
   {
     case vtkErrorCode::NoError:
-      return;
+      return false;
     case vtkErrorCode::FileNotFoundError:
       fprintf(stderr, "File not found: %s\n", filename);
       break;
@@ -226,7 +226,7 @@ void dicomtodicom_check_error(vtkObject *o)
       break;
   }
 
-  exit(1);
+  return true;
 }
 
 // Read the options
@@ -384,7 +384,7 @@ void dicomtodicom_read_options(
 }
 
 // Convert one DICOM series into another DICOM series
-void dicomtodicom_convert_one(
+bool dicomtodicom_convert_one(
   const dicomtodicom_options *options,
   vtkStringArray *a,
   const char *outfile)
@@ -396,7 +396,10 @@ void dicomtodicom_convert_one(
   reader->TimeAsVectorOn();
   reader->SetFileNames(a);
   reader->Update();
-  dicomtodicom_check_error(reader);
+  if (dicomtodicom_check_error(reader))
+  {
+    return false;
+  }
 
   // get a handle for the reader's output
   vtkAlgorithmOutput *lastOutput = reader->GetOutputPort();
@@ -632,11 +635,16 @@ void dicomtodicom_convert_one(
   writer->SetInputConnection(lastOutput);
   writer->SetMemoryRowOrderToFileNative();
   writer->Write();
-  dicomtodicom_check_error(writer);
+  if (dicomtodicom_check_error(writer))
+  {
+    return false;
+  }
+
+  return true;
 }
 
 // Process a list of files
-void dicomtodicom_convert_files(
+bool dicomtodicom_convert_files(
   dicomtodicom_options *options, vtkStringArray *files,
   const char *outpath)
 {
@@ -653,9 +661,12 @@ void dicomtodicom_convert_files(
     vtkSmartPointer<vtkDICOMFileSorter>::New();
   sorter->SetInputFileNames(presorter->GetFileNames());
   sorter->Update();
-  dicomtodicom_check_error(sorter);
+  if (dicomtodicom_check_error(sorter))
+  {
+    return false;
+  }
 
-  dicomtodicom_convert_one(
+  return dicomtodicom_convert_one(
     options, sorter->GetOutputFileNames(), outpath);
 }
 
@@ -726,7 +737,10 @@ int MAINMACRO(int argc, char *argv[])
     return 1;
   }
 
-  dicomtodicom_convert_files(&options, files, outpath);
+  if (dicomtodicom_convert_files(&options, files, outpath))
+  {
+    return 0;
+  }
 
-  return 0;
+  return 1;
 }
