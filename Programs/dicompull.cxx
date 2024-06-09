@@ -190,7 +190,7 @@ std::string dicompull_basedir(const char *outdir)
   return s;
 }
 
-void dicompull_checktags(
+bool dicompull_checktags(
   vtkDICOMItem *query, QueryTagList *qtlist, const char *outdir)
 {
   std::string keytext;
@@ -202,7 +202,7 @@ void dicompull_checktags(
     if (*cp == '}')
     {
       fprintf(stderr, "Error: Missing \'{\': %s\n", outdir);
-      exit(1);
+      return false;
     }
     if (*cp == '{')
     {
@@ -212,7 +212,7 @@ void dicompull_checktags(
       if (*cp != '}')
       {
         fprintf(stderr, "Error: Unmatched \'{\': %s\n", outdir);
-        exit(1);
+        return false;
       }
       else
       {
@@ -221,11 +221,12 @@ void dicompull_checktags(
 
         if (!dicomcli_readkey(keytext.c_str(), query, qtlist))
         {
-          exit(1);
+          return false;
         }
       }
     }
   }
+  return true;
 }
 
 std::string dicompull_makedirname(vtkDICOMMetaData *meta, const char *outdir)
@@ -246,7 +247,7 @@ std::string dicompull_makedirname(vtkDICOMMetaData *meta, const char *outdir)
     if (*cp == '}')
     {
       fprintf(stderr, "Error: Missing \'{\': %s\n", outdir);
-      exit(1);
+      return std::string();
     }
     if (*cp == '{')
     {
@@ -255,7 +256,7 @@ std::string dicompull_makedirname(vtkDICOMMetaData *meta, const char *outdir)
       if (*cp != '}')
       {
         fprintf(stderr, "Error: Unmatched \'{\': %s\n", outdir);
-        exit(1);
+        return std::string();
       }
       else
       {
@@ -267,7 +268,7 @@ std::string dicompull_makedirname(vtkDICOMMetaData *meta, const char *outdir)
 
         if (!dicomcli_readkey(keytext.c_str(), &query, &qtlist, false))
         {
-          exit(1);
+          return std::string();
         }
 
         const vtkDICOMTagPath& tagpath = qtlist.back();
@@ -496,11 +497,14 @@ int MAINMACRO(int argc, char *argv[])
   {
     fprintf(stderr,
       "\nError: No output directory was specified (-o <directory>).\n\n");
-    exit(1);
+    return 1;
   }
 
   // check that the outdir string is valid
-  dicompull_checktags(&query, nullptr, outdir.c_str());
+  if (!dicompull_checktags(&query, nullptr, outdir.c_str()))
+  {
+    return 1;
+  }
 
   // check that the outdir is writable
   std::string basedir = dicompull_basedir(outdir.c_str());
@@ -518,14 +522,14 @@ int MAINMACRO(int argc, char *argv[])
     {
       fprintf(stderr,
         "\nError: access to %s is denied.\n\n", basepath.AsString().c_str());
-      exit(1);
+      return 1;
     }
     else if (code != vtkDICOMFileDirectory::FileNotFound)
     {
       fprintf(stderr,
         "\nError: %s is not a valid directory.\n\n",
         basepath.AsString().c_str());
-      exit(1);
+      return 1;
     }
     basepath.PopBack();
   }
@@ -536,7 +540,7 @@ int MAINMACRO(int argc, char *argv[])
   {
     fprintf(stderr,
       "\nError: Cannot write to %s\n\n", basepath.AsString().c_str());
-    exit(1);
+    return 1;
   }
 
   // Create a map of all directories written to.  The count is the
@@ -600,6 +604,11 @@ int MAINMACRO(int argc, char *argv[])
         vtkDICOMMetaData *meta = finder->GetMetaDataForSeries(k);
         // create the directory name
         std::string dirname = dicompull_makedirname(meta, outdir.c_str());
+        if (dirname.empty() && !outdir.empty())
+        {
+          delete [] buffer;
+          return 1;
+        }
         std::map<std::string,int>::iterator mi = dircount.find(dirname);
         int si = 1;
         if (mi != dircount.end())
@@ -616,7 +625,7 @@ int MAINMACRO(int argc, char *argv[])
             fprintf(stderr, "Error: Cannot create directory: %s\n\n",
                     dirname.c_str());
             delete [] buffer;
-            exit(1);
+            return 1;
           }
         }
         vtkDICOMFilePath outpath(dirname);
@@ -648,12 +657,14 @@ int MAINMACRO(int argc, char *argv[])
               }
               dicomcli_error_helper(finder->GetMetaDataForSeries(k), i);
               fprintf(stderr, "Error: %s: %s\n\n", message, srcname.c_str());
+              rval = 1;
             }
             else if (infile.GetSize() == 0)
             {
               dicomcli_error_helper(finder->GetMetaDataForSeries(k), i);
               fprintf(stderr, "Error: File size is zero: %s\n\n",
                       srcname.c_str());
+              rval = 1;
             }
             else
             {
@@ -674,6 +685,7 @@ int MAINMACRO(int argc, char *argv[])
                     break;
                 }
                 fprintf(stderr, "Error: %s: %s\n\n", message, fullname.c_str());
+                rval = 1;
               }
               else
               {
@@ -687,6 +699,7 @@ int MAINMACRO(int argc, char *argv[])
                     fprintf(stderr, "Error, incomplete read: %s\n\n",
                             srcname.c_str());
                     vtkDICOMFile::Remove(fullname.c_str());
+                    rval = 1;
                     break;
                   }
                   if (bytecount > 0 &&
@@ -695,6 +708,7 @@ int MAINMACRO(int argc, char *argv[])
                     fprintf(stderr, "Error: Incomplete write: %s\n\n",
                             fullname.c_str());
                     vtkDICOMFile::Remove(fullname.c_str());
+                    rval = 1;
                     break;
                   }
                 }
