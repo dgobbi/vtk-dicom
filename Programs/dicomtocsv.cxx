@@ -71,7 +71,7 @@ void dicomtocsv_usage(FILE *file, const char *cp)
   fprintf(file, "usage:\n"
     "  %s [options] <directory>\n\n", cp);
   fprintf(file, "options:\n"
-    "  -k tag=value      Provide a key to be queried and matched.\n"
+    "  -k tag=value      Provide a tag or key to be queried and matched.\n"
     "  -q <query.txt>    Provide a file to describe the find query.\n"
     "  -u <uids.txt>     Provide a file that contains a list of UIDs.\n"
     "  -o <data.csv>     Provide a file for the query results.\n"
@@ -100,10 +100,11 @@ void dicomtocsv_help(FILE *file, const char *cp)
   dicomtocsv_usage(file, cp);
   fprintf(file, "\n"
     "Dump selected metadata from a DICOM directory to a csv file.\n"
+    "\n"
     "For each attribute to be extracted, the tag can be given with \"-k\"\n"
     "(the \"-k\" option can be repeated as many times as needed).  Tags can\n"
     "given in hexadecimal GGGG,EEEE format, or in text format as specified\n"
-    "in the DICOM dictionary.  Alternately, the tags can be listed in a\n"
+    "in the DICOM dictionary key.  Alternately, the tags can be listed in a\n"
     "query file given with the \"-q\" option (one tag per line).\n"
     "Attributes nested within sequences can be specified by giving a tag\n"
     "path e.g. \"-k Tag1/Tag2/Tag3\".  Either a forward slash or a backslash\n"
