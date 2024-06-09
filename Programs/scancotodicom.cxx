@@ -13,7 +13,6 @@
 =========================================================================*/
 
 #include "vtkDICOMConfig.h"
-#include "vtkDICOMBuild.h"
 #include "vtkDICOMMetaData.h"
 #include "vtkDICOMParser.h"
 #include "vtkDICOMReader.h"
@@ -68,25 +67,16 @@ struct scancotodicom_options
 
 
 // Print the version
-void scancotodicom_version(FILE *file, const char *command_name, bool verbose)
+void scancotodicom_version(FILE *file, const char *command_name)
 {
   const char *cp = command_name + strlen(command_name);
   while (cp != command_name && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
 
-  if (!verbose)
-  {
-    fprintf(file, "%s %s\n", cp, DICOM_VERSION);
-    fprintf(file, "\n"
-      "Copyright (c) 2012-2022, David Gobbi.\n\n"
-      "This software is distributed under an open-source license.  See the\n"
-      "Copyright.txt file that comes with the vtk-dicom source distribution.\n");
-  }
-  else
-  {
-    fprintf(file,
-      "Head %8.8s, Built %s, %s\n",
-      DICOM_SOURCE_VERSION, DICOM_BUILD_DATE, DICOM_BUILD_TIME);
-  }
+  fprintf(file, "%s %s\n", cp, DICOM_VERSION);
+  fprintf(file, "\n"
+    "Copyright (c) 2012-2022, David Gobbi.\n\n"
+    "This software is distributed under an open-source license.  See the\n"
+    "Copyright.txt file that comes with the vtk-dicom source distribution.\n");
 }
 
 
@@ -108,7 +98,6 @@ void scancotodicom_usage(FILE *file, const char *command_name)
     "  --series-number         The series number to use.\n"
     "  --uid-prefix            A DICOM uid prefix (optional).\n"
     "  --version               Print the version and exit.\n"
-    "  --build-version         Print source and build version.\n"
     "  --help                  Documentation for scancotodicom.\n"
   );
 }
@@ -330,12 +319,7 @@ void scancotodicom_read_options(
       }
       else if (strcmp(arg, "--version") == 0)
       {
-        scancotodicom_version(stdout, argv[0], false);
-        exit(0);
-      }
-      else if (strcmp(arg, "--build-version") == 0)
-      {
-        scancotodicom_version(stdout, argv[0], true);
+        scancotodicom_version(stdout, argv[0]);
         exit(0);
       }
       else if (strcmp(arg, "--help") == 0)
