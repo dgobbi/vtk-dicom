@@ -79,6 +79,7 @@ struct dicomtonifti_options
   vtkDICOMTagPath time_tagpath;
   vtkDICOMTagPath time_delta_tagpath;
   const char *output;
+  const char *descrip;
   unsigned int conversions_attempted;
 };
 
@@ -115,6 +116,7 @@ void dicomtonifti_usage(FILE *file, const char *command_name)
     "  -s --silent             Do not echo output filenames.\n"
     "  -v --verbose            Verbose error reporting.\n"
     "  -L --follow-symlinks    Follow symbolic links when recursing.\n"
+    "  --descrip <text>        Set the NIFTI descrip field to <text>.\n"
     "  --fsl                   Format axial image for use in FSL.\n"
     "  --reformat-to-axial     Reformat the image into axial orientation.\n"
     "  --no-slice-reordering   Never reorder the slices.\n"
@@ -341,6 +343,7 @@ void dicomtonifti_read_options(
   options->time_tagpath = vtkDICOMTagPath();
   options->time_delta_tagpath = vtkDICOMTagPath();
   options->output = nullptr;
+  options->descrip = nullptr;
   options->conversions_attempted = 0;
 
   // read the options from the command line
@@ -464,6 +467,18 @@ void dicomtonifti_read_options(
         }
         arg = argv[argi++];
         options->volume = atoi(arg);
+      }
+      else if (strcmp(arg, "--descrip") == 0)
+      {
+        if (argi >= argc || argv[argi][0] == '-')
+        {
+          fprintf(stderr, "A string must follow \'--descrip\'\n\n");
+          dicomtonifti_usage(stderr, argv[0]);
+          options->invalid = true;
+          return;
+        }
+        arg = argv[argi++];
+        options->descrip = arg;
       }
       else if (strcmp(arg, "--version") == 0)
       {
@@ -907,7 +922,7 @@ bool dicomtonifti_convert_one(
     vtkSmartPointer<vtkNIFTIHeader>::New();
   vtkDICOMMetaData *meta = reader->GetMetaData();
 
-  // the descrip is the date followed by the series description and ID
+  // default descrip is the date followed by the series description and ID
   std::string date = meta->Get(DC::SeriesDate).AsString();
   if (date.length() >= 8)
   {
@@ -920,6 +935,14 @@ bool dicomtonifti_convert_one(
   std::string descrip = date + " " +
     meta->Get(DC::SeriesDescription).AsString() + " " +
     meta->Get(DC::StudyID).AsString();
+
+  // if user applied --descrip, then use theirs instead
+  if (options->descrip)
+  {
+    descrip = options->descrip;
+  }
+
+  // truncate to length of field
   descrip = descrip.substr(0, 79);
 
   // assume the units are millimetres/milliseconds
