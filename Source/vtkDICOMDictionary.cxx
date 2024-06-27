@@ -43,7 +43,7 @@ vtkDICOMDictionaryInitializer::vtkDICOMDictionaryInitializer()
   {
     for (int i = 0; i < DICT_PRIVATE_TABLE_SIZE; i++)
     {
-      vtkDICOMDictionary::PrivateDictTable[i] = 0;
+      vtkDICOMDictionary::PrivateDictTable[i] = nullptr;
     }
   }
 }
@@ -101,9 +101,9 @@ vtkDICOMDictionary::Dict *vtkDICOMDictionary::FindPrivateDict(
   unsigned int h = vtkDICOMDictionary::HashLongString(name, stripname);
   unsigned int i = (h & m);
 
-  if (htable && (hptr = htable[i]) != NULL)
+  if (htable && (hptr = htable[i]) != nullptr)
   {
-    while (hptr->Dict != 0)
+    while (hptr->Dict != nullptr)
     {
       if (hptr->Hash == h && strncmp(hptr->Dict->Name, stripname, 64) == 0)
       {
@@ -113,7 +113,7 @@ vtkDICOMDictionary::Dict *vtkDICOMDictionary::FindPrivateDict(
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 //----------------------------------------------------------------------------
@@ -131,10 +131,10 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
   vtkDICOMDictionary::Dict *dict = &vtkDICOMDictionary::DictData;
 
   // for odd group number, only search the private dictionary
-  if ((group & 1) != 0 && dictname != 0)
+  if ((group & 1) != 0 && dictname != nullptr)
   {
     dict = vtkDICOMDictionary::FindPrivateDict(dictname);
-    if (dict == 0)
+    if (dict == nullptr)
     {
       // private dictionary not found
       return vtkDICOMDictEntry();
@@ -164,7 +164,7 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
 vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
   const char *key, const char *dictname)
 {
-  if (key == 0 || key[0] == '\0')
+  if (key == nullptr || key[0] == '\0')
   {
     return vtkDICOMDictEntry();
   }
@@ -176,10 +176,10 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
   vtkDICOMDictionary::Dict *dict = &vtkDICOMDictionary::DictData;
 
   // for odd group number, only search the private dictionary
-  if (dictname != 0 && dictname[0] != '\0')
+  if (dictname != nullptr && dictname[0] != '\0')
   {
     dict = vtkDICOMDictionary::FindPrivateDict(dictname);
-    if (dict == 0)
+    if (dict == nullptr)
     {
       // private dictionary not found
       return vtkDICOMDictEntry();
@@ -203,7 +203,7 @@ vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
     }
   }
 
-  if (dictname != 0 && dictname[0] != '\0')
+  if (dictname != nullptr && dictname[0] != '\0')
   {
     // brute force search the entire dictionary, if hash lookup failed
     // (in case people manually changed the key strings in the code,
@@ -235,17 +235,17 @@ void vtkDICOMDictionary::AddPrivateDictionary(Dict *dict)
   DictHashEntry *hptr = htable[i];
 
   // create hash table row if it is empty
-  if (hptr == 0)
+  if (hptr == nullptr)
   {
     htable[i] = new DictHashEntry[2];
     hptr = htable[i];
     hptr->Hash = 0;
-    hptr->Dict = 0;
+    hptr->Dict = nullptr;
   }
 
   // go to the end of the row in the hash table
   int n = 0;
-  while (hptr->Dict != 0)
+  while (hptr->Dict != nullptr)
   {
     n++;
     hptr++;
@@ -270,7 +270,7 @@ void vtkDICOMDictionary::AddPrivateDictionary(Dict *dict)
 
   hptr++;
   hptr->Hash = 0;
-  hptr->Dict = 0;
+  hptr->Dict = nullptr;
 }
 
 //----------------------------------------------------------------------------
@@ -285,9 +285,9 @@ void vtkDICOMDictionary::RemovePrivateDictionary(const char *name)
   unsigned int h = vtkDICOMDictionary::HashLongString(name, stripname);
   unsigned int i = (h & m);
 
-  if (htable && (hptr = htable[i]) != NULL)
+  if (htable && (hptr = htable[i]) != nullptr)
   {
-    while (hptr->Dict != 0)
+    while (hptr->Dict != nullptr)
     {
       if (hptr->Hash == h && strncmp(hptr->Dict->Name, stripname, 64) == 0)
       {
@@ -297,7 +297,7 @@ void vtkDICOMDictionary::RemovePrivateDictionary(const char *name)
     }
 
     // erase
-    while (hptr->Dict != 0)
+    while (hptr->Dict != nullptr)
     {
       *hptr = *(hptr + 1);
       hptr++;

@@ -20,7 +20,7 @@ void ProgressObserver::Execute(vtkObject *, unsigned long e, void *vp)
 {
   const double initial = 2.0; // time until first report
   const double delta = 0.1; // time between reports
-  double t = 1e-6*vtkDICOMUtilities::GetUTC(NULL);
+  double t = 1e-6*vtkDICOMUtilities::GetUTC(nullptr);
 
   if (e == vtkCommand::StartEvent)
   {

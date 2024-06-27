@@ -81,12 +81,12 @@ vtkNIFTIWriter::vtkNIFTIWriter()
   this->RescaleSlope = 0.0;
   this->RescaleIntercept = 0.0;
   this->QFac = 0.0;
-  this->QFormMatrix = 0;
-  this->SFormMatrix = 0;
-  this->OwnHeader = 0;
-  this->NIFTIHeader = 0;
+  this->QFormMatrix = nullptr;
+  this->SFormMatrix = nullptr;
+  this->OwnHeader = nullptr;
+  this->NIFTIHeader = nullptr;
   this->NIFTIVersion = 0;
-  this->Description = 0;
+  this->Description = nullptr;
   // Planar RGB (NIFTI doesn't allow this, it's here for Analyze)
   this->PlanarRGB = false;
   this->DataByteOrder = LittleEndian;
@@ -295,7 +295,7 @@ void vtkNIFTIWriterSetInformation(
   short datatype = 0;
   short databits = 0;
 
-  for (int i = 0; typeMap[2] != 0; i++)
+  for (int i = 0; typeMap[2] != nullptr; i++)
   {
     if (scalarType == typeMap[i][0])
     {
@@ -448,7 +448,7 @@ int vtkNIFTIWriter::GenerateHeader(vtkInformation *info, bool singleFile)
   // create the header
   nifti_2_header hdr;
   int version = 0;
-  if (this->OwnHeader == 0)
+  if (this->OwnHeader == nullptr)
   {
     this->OwnHeader = vtkNIFTIHeader::New();
   }
@@ -615,14 +615,14 @@ int vtkNIFTIWriter::RequestData(
   vtkImageData *data =
     vtkImageData::SafeDownCast(info->Get(vtkDataObject::DATA_OBJECT()));
 
-  if (data == NULL)
+  if (data == nullptr)
   {
     vtkErrorMacro("No input provided!");
     return 0;
   }
 
   const char *filename = this->GetFileName();
-  if (filename == NULL)
+  if (filename == nullptr)
   {
     vtkErrorMacro("A FileName must be provided");
     this->SetErrorCode(vtkErrorCode::NoFileNameError);
@@ -689,7 +689,7 @@ int vtkNIFTIWriter::RequestData(
   // get either a NIFTIv1 or a NIFTIv2 header
   nifti_1_header hdr1;
   nifti_2_header hdr2;
-  void *hdrptr = 0;
+  void *hdrptr = nullptr;
   size_t hdrsize = 0;
   int version = this->OwnHeader->GetMagic()[2] - '0';
   if (version == 2)
@@ -738,8 +738,8 @@ int vtkNIFTIWriter::RequestData(
 #endif
 
   // try opening file
-  gzFile file = 0;
-  FILE *ufile = 0;
+  gzFile file = nullptr;
+  FILE *ufile = nullptr;
   if (uhdrname && uimgname)
   {
     if (isCompressed)
@@ -852,7 +852,7 @@ int vtkNIFTIWriter::RequestData(
   }
 
   // add a buffer for planar-vector to packed-vector conversion
-  unsigned char *rowBuffer = 0;
+  unsigned char *rowBuffer = nullptr;
   if (vectorDim > 1 || planarRGB || swapBytes)
   {
     rowBuffer = new unsigned char[outSizeX*fileVoxelIncr];

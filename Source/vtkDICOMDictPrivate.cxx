@@ -28932,7 +28932,7 @@ vtkDICOMDictionary::Dict *PrivateDictData[] = {
 &Dict466Data,&Dict467Data,&Dict468Data,&Dict469Data,&Dict470Data,
 &Dict471Data,&Dict472Data,&Dict473Data,&Dict474Data,&Dict475Data,
 &Dict476Data,&Dict477Data,&Dict478Data,&Dict479Data,&Dict480Data,
-&Dict481Data,&Dict482Data,&Dict483Data,NULL
+&Dict481Data,&Dict482Data,&Dict483Data,nullptr
 };
 
 } // end anonymous namespace
@@ -28943,7 +28943,7 @@ vtkDICOMDictPrivateInitializer::vtkDICOMDictPrivateInitializer()
 {
   if (vtkDICOMDictPrivateInitializerCounter++ == 0)
   {
-    for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != NULL; dp++)
+    for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != nullptr; dp++)
     {
       vtkDICOMDictionary::AddPrivateDictionary(*dp);
     }
@@ -28954,7 +28954,7 @@ vtkDICOMDictPrivateInitializer::~vtkDICOMDictPrivateInitializer()
 {
   if (--vtkDICOMDictPrivateInitializerCounter == 0)
   {
-    for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != NULL; dp++)
+    for (vtkDICOMDictionary::Dict **dp = PrivateDictData; *dp != nullptr; dp++)
     {
       vtkDICOMDictionary::RemovePrivateDictionary((*dp)->Name);
     }

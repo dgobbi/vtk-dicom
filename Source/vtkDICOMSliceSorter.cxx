@@ -35,7 +35,7 @@ vtkDICOMSliceSorter::vtkDICOMSliceSorter()
   this->FileIndexArray = vtkIntArray::New();
   this->FrameIndexArray = vtkIntArray::New();
   this->StackIDs = vtkStringArray::New();
-  this->MetaData = 0;
+  this->MetaData = nullptr;
   this->RepeatsAsTime = 0;
   this->TimeAsVector = 0;
   this->DesiredTimeIndex = -1;
@@ -126,7 +126,7 @@ void vtkDICOMSliceSorter::SetMetaData(vtkDICOMMetaData *meta)
 //----------------------------------------------------------------------------
 void vtkDICOMSliceSorter::SetDesiredStackID(const char *stackId)
 {
-  if (stackId == 0)
+  if (stackId == nullptr)
   {
     stackId = "";
   }
@@ -881,7 +881,7 @@ void vtkDICOMSliceSorter::SortFiles(vtkIntArray *files, vtkIntArray *frames)
       // if DesiredStackID is set, use it
       if (this->DesiredStackID[0] != '\0')
       {
-        stt = strtoul(this->DesiredStackID, 0, 10);
+        stt = strtoul(this->DesiredStackID, nullptr, 10);
       }
 
       // load just one of the rectilinear stacks that are present

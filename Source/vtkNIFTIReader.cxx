@@ -79,9 +79,9 @@ vtkNIFTIReader::vtkNIFTIReader()
   this->RescaleSlope = 1.0;
   this->RescaleIntercept = 0.0;
   this->QFac = 1.0;
-  this->QFormMatrix = 0;
-  this->SFormMatrix = 0;
-  this->NIFTIHeader = 0;
+  this->QFormMatrix = nullptr;
+  this->SFormMatrix = nullptr;
+  this->NIFTIHeader = nullptr;
   this->PlanarRGB = false;
 }
 
@@ -189,7 +189,7 @@ bool vtkNIFTIReader::CheckExtension(
 char *vtkNIFTIReader::ReplaceExtension(
   const char *filename, const char *ext1, const char *ext2)
 {
-  char *newname = 0;
+  char *newname = nullptr;
 
   if (strlen(ext1) == 4 && ext1[0] == '.' &&
       strlen(ext2) == 4 && ext2[0] == '.')
@@ -252,7 +252,7 @@ char *vtkNIFTIReader::ReplaceExtension(
     }
 
     delete [] newname;
-    newname = 0;
+    newname = nullptr;
   }
 
   return newname;
@@ -312,7 +312,7 @@ int vtkNIFTIReader::CanReadFile(const char *filename)
   char *hdrname = vtkNIFTIReader::ReplaceExtension(
     filename, ".img", ".hdr");
 
-  if (hdrname == 0)
+  if (hdrname == nullptr)
   {
     return 0;
   }
@@ -388,8 +388,8 @@ int vtkNIFTIReader::RequestInformation(
 #endif
 
 
-  const char *filename = 0;
-  char *hdrname = 0;
+  const char *filename = nullptr;
+  char *hdrname = nullptr;
 
   if (this->FileNames)
   {
@@ -417,20 +417,20 @@ int vtkNIFTIReader::RequestInformation(
     filename = this->GetFileName();
   }
 
-  if (filename == 0)
+  if (filename == nullptr)
   {
     vtkErrorMacro("A FileName must be provided");
     this->SetErrorCode(vtkErrorCode::NoFileNameError);
     return 0;
   }
 
-  if (hdrname == 0)
+  if (hdrname == nullptr)
   {
     hdrname = vtkNIFTIReader::ReplaceExtension(
       filename, ".img", ".hdr");
   }
 
-  if (hdrname == 0)
+  if (hdrname == nullptr)
   {
     vtkErrorMacro("Unable to locate header for file " << filename);
     this->SetErrorCode(vtkErrorCode::CannotOpenFileError);
@@ -453,7 +453,7 @@ int vtkNIFTIReader::RequestInformation(
 #endif
 
   // try opening file
-  gzFile file = 0;
+  gzFile file = nullptr;
   if (uhdrname)
   {
     file = gzopen(uhdrname, "rb");
@@ -531,7 +531,7 @@ int vtkNIFTIReader::RequestInformation(
 
   // delete the NIFTIv1 header, use the NIFTIv2 header
   delete hdr1;
-  hdr1 = 0;
+  hdr1 = nullptr;
 
   if (!canRead)
   {
@@ -650,7 +650,7 @@ int vtkNIFTIReader::RequestInformation(
   int scalarType = 0;
   int numComponents = 0;
 
-  for (int i = 0; typeMap[2] != 0; i++)
+  for (int i = 0; typeMap[2] != nullptr; i++)
   {
     if (hdr2->datatype == typeMap[i][0])
     {
@@ -859,12 +859,12 @@ int vtkNIFTIReader::RequestInformation(
   if (this->QFormMatrix)
   {
     this->QFormMatrix->Delete();
-    this->QFormMatrix = NULL;
+    this->QFormMatrix = nullptr;
   }
   if (this->SFormMatrix)
   {
     this->SFormMatrix->Delete();
-    this->SFormMatrix = NULL;
+    this->SFormMatrix = nullptr;
   }
 
   // Set the QFormMatrix from the quaternion data in the header.
@@ -1045,8 +1045,8 @@ int vtkNIFTIReader::RequestData(
 
   data->GetPointData()->GetScalars()->SetName("NIFTI");
 
-  const char *filename = 0;
-  char *imgname = 0;
+  const char *filename = nullptr;
+  char *imgname = nullptr;
 
   if (this->FileNames)
   {
@@ -1077,18 +1077,18 @@ int vtkNIFTIReader::RequestData(
     filename = this->GetFileName();
   }
 
-  if (filename == 0)
+  if (filename == nullptr)
   {
     vtkErrorMacro("A FileName must be provided");
     return 0;
   }
 
-  if (imgname == 0)
+  if (imgname == nullptr)
   {
     imgname = vtkNIFTIReader::ReplaceExtension(filename, ".hdr", ".img");
   }
 
-  if (imgname == 0)
+  if (imgname == nullptr)
   {
     vtkErrorMacro("Unable to locate image for file " << filename);
     return 0;
@@ -1114,7 +1114,7 @@ int vtkNIFTIReader::RequestData(
   const char *uimgname = imgname;
 #endif
 
-  gzFile file = 0;
+  gzFile file = nullptr;
   if (uimgname)
   {
     file = gzopen(uimgname, "rb");
@@ -1168,7 +1168,7 @@ int vtkNIFTIReader::RequestData(
   }
 
   // add a buffer for planar-vector to packed-vector conversion
-  unsigned char *rowBuffer = 0;
+  unsigned char *rowBuffer = nullptr;
   if (vectorDim > 1 || planarRGB)
   {
     rowBuffer = new unsigned char[outSizeX*fileVoxelIncr];
@@ -1265,7 +1265,7 @@ int vtkNIFTIReader::RequestData(
     {
       // advance the pointer to the next row
       ptr += outSizeX*numComponents*scalarSize;
-      rowBuffer = 0;
+      rowBuffer = nullptr;
     }
     else
     {

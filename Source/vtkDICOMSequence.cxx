@@ -69,7 +69,7 @@ void vtkDICOMSequence::SetItem(size_t i, const vtkDICOMItem& item)
 const vtkDICOMValue &vtkDICOMSequence::Get(size_t i, vtkDICOMTag tag) const
 {
   const vtkDICOMItem *ptr = this->V.GetSequenceData();
-  if (ptr != 0 && i < this->V.GetNumberOfValues())
+  if (ptr != nullptr && i < this->V.GetNumberOfValues())
   {
     return ptr[i].Get(tag);
   }
@@ -81,7 +81,7 @@ const vtkDICOMValue &vtkDICOMSequence::Get(
     size_t i, const vtkDICOMTagPath &tagpath) const
 {
   const vtkDICOMItem *ptr = this->V.GetSequenceData();
-  if (ptr != 0 && i < this->V.GetNumberOfValues())
+  if (ptr != nullptr && i < this->V.GetNumberOfValues())
   {
     return ptr[i].Get(tagpath);
   }
@@ -92,7 +92,7 @@ const vtkDICOMValue &vtkDICOMSequence::Get(
 const vtkDICOMItem &vtkDICOMSequence::GetItem(size_t i) const
 {
   const vtkDICOMItem *ptr = this->V.GetSequenceData();
-  if (ptr != 0 && i < this->V.GetNumberOfValues())
+  if (ptr != nullptr && i < this->V.GetNumberOfValues())
   {
     return ptr[i];
   }

@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
   iren->SetRenderWindow(renWin);
   iren->SetInteractorStyle(style);
 
-  const char *filename = 0;
+  const char *filename = nullptr;
   if (argc > 1)
   {
     filename = argv[1];

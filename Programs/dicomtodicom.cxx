@@ -177,7 +177,7 @@ void dicomtodicom_check_error(vtkObject *o)
   vtkDICOMFileSorter *sorter = vtkDICOMFileSorter::SafeDownCast(o);
   vtkDICOMWriter *writer = vtkDICOMWriter::SafeDownCast(o);
   vtkDICOMParser *parser = vtkDICOMParser::SafeDownCast(o);
-  const char *filename = 0;
+  const char *filename = nullptr;
   unsigned long errorcode = 0;
   if (writer)
   {
@@ -243,14 +243,14 @@ void dicomtodicom_read_options(
   dicomtodicom_options *options, vtkStringArray *files)
 {
   options->mpr = 0;
-  options->modality = 0;
-  options->series_description = 0;
-  options->series_number = 0;
+  options->modality = nullptr;
+  options->series_description = nullptr;
+  options->series_number = nullptr;
   options->uid_prefix = "2.25";
   options->resample = false;
   options->silent = false;
   options->verbose = false;
-  options->output = 0;
+  options->output = nullptr;
 
   // read the options from the command line
   int argi = 1;
@@ -583,7 +583,7 @@ void dicomtodicom_convert_one(
     vtkSmartPointer<vtkDICOMMRGenerator>::New();
   vtkSmartPointer<vtkDICOMCTGenerator> ctgenerator =
     vtkSmartPointer<vtkDICOMCTGenerator>::New();
-  vtkDICOMGenerator *generator = 0;
+  vtkDICOMGenerator *generator = nullptr;
 
   // get the generator from the supplied DICOM data
   std::string SOPClass = meta->Get(DC::SOPClassUID).AsString();

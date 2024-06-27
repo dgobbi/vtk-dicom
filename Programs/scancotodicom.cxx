@@ -140,7 +140,7 @@ void scancotodicom_check_error(vtkObject *o)
   vtkScancoCTReader *reader = vtkScancoCTReader::SafeDownCast(o);
   vtkDICOMWriter *writer = vtkDICOMWriter::SafeDownCast(o);
   vtkDICOMParser *parser = vtkDICOMParser::SafeDownCast(o);
-  const char *filename = 0;
+  const char *filename = nullptr;
   unsigned long errorcode = 0;
   if (writer)
   {
@@ -254,11 +254,11 @@ void scancotodicom_convert_date(char date[32])
 bool isScancoCTFileName(const char *f)
 {
   const char *suffixes[] = {
-    ".isq", ".ISQ", ".rsq", ".RSQ", ".rad", ".RAD", ".aim", ".AIM", 0
+    ".isq", ".ISQ", ".rsq", ".RSQ", ".rad", ".RAD", ".aim", ".AIM", nullptr
   };
 
   size_t n = strlen(f);
-  for (const char **s = suffixes; *s != 0; s++)
+  for (const char **s = suffixes; *s != nullptr; s++)
   {
     size_t m = strlen(*s);
     if (n > m && strcmp(f + n - m, *s) == 0)
@@ -276,13 +276,13 @@ void scancotodicom_read_options(
   scancotodicom_options *options, vtkStringArray *files)
 {
   options->no_reordering = false;
-  options->series_description = 0;
-  options->series_number = 0;
+  options->series_description = nullptr;
+  options->series_number = nullptr;
   options->uid_prefix = "2.25";
   options->silent = false;
   options->verbose = false;
-  options->output = 0;
-  options->input = 0;
+  options->output = nullptr;
+  options->input = nullptr;
 
   // read the options from the command line
   int argi = 1;
@@ -398,7 +398,7 @@ void scancotodicom_read_options(
         const char *f = files->GetValue(m).c_str();
         if (isScancoCTFileName(f))
         {
-          if (options->input == 0)
+          if (options->input == nullptr)
           {
             options->input = arg;
             files->SetNumberOfValues(m);
@@ -423,7 +423,7 @@ void scancotodicom_read_options(
       const char *f = files->GetValue(m).c_str();
       if (isScancoCTFileName(f))
       {
-        if (options->input == 0)
+        if (options->input == nullptr)
         {
           options->input = argv[argi-1];
           files->SetNumberOfValues(m);

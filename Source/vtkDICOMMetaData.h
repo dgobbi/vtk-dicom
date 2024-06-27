@@ -94,7 +94,7 @@ public:
    */
   vtkDICOMDataElementIterator Find(vtkDICOMTag tag) {
     vtkDICOMDataElement *e = this->FindDataElement(tag);
-    return (e != 0 ? e : &this->Tail); }
+    return (e != nullptr ? e : &this->Tail); }
   //@}
 
   //@{

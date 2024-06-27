@@ -65,7 +65,7 @@ vtkDICOMDataElement *vtkDICOMItem::NewDataElement(vtkDICOMDataElement **iter)
   int n = this->L->NumberOfDataElements;
 
   // if no data elements yet, then allocate four
-  if (this->L->DataElements == 0)
+  if (this->L->DataElements == nullptr)
   {
     this->L->DataElements = new vtkDICOMDataElement[4];
   }
@@ -73,9 +73,9 @@ vtkDICOMDataElement *vtkDICOMItem::NewDataElement(vtkDICOMDataElement **iter)
   else if (n >= 4 && (n & (n-1)) == 0)
   {
     // but first check if a free element exists
-    do { --n; } while (n > 0 && this->L->DataElements[n].Next != 0);
+    do { --n; } while (n > 0 && this->L->DataElements[n].Next != nullptr);
 
-    if (this->L->DataElements[n].Next != 0)
+    if (this->L->DataElements[n].Next != nullptr)
     {
       // make a new, larger list
       n = this->L->NumberOfDataElements;
@@ -104,14 +104,14 @@ void vtkDICOMItem::FreeList()
 {
   delete [] this->L->DataElements;
   delete this->L;
-  this->L = 0;
+  this->L = nullptr;
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMItem::CopyList(const List *o, List *t)
 {
   t->NumberOfDataElements = o->NumberOfDataElements;
-  t->DataElements = 0;
+  t->DataElements = nullptr;
   t->ByteOffset = o->ByteOffset;
   t->Delimited = o->Delimited;
   t->CharacterSet = o->CharacterSet;
@@ -165,7 +165,7 @@ void vtkDICOMItem::CopyDataElements(
 vtkDICOMDataElement *vtkDICOMItem::FindDataElementOrInsert(vtkDICOMTag tag)
 {
   // make a container if we don't have one yet
-  if (this->L == 0)
+  if (this->L == nullptr)
   {
     this->L = new List;
     this->L->Head.Next = &this->L->Tail;
@@ -209,7 +209,7 @@ vtkDICOMDataElement *vtkDICOMItem::FindDataElementOrInsert(vtkDICOMTag tag)
 vtkDICOMItem *vtkDICOMItem::FindItemOrInsert(
   const vtkDICOMTagPath& tagpath, vtkDICOMTag *tagptr)
 {
-  vtkDICOMItem *item = 0;
+  vtkDICOMItem *item = nullptr;
 
   if (tagpath.HasTail())
   {
@@ -232,7 +232,7 @@ vtkDICOMItem *vtkDICOMItem::FindItemOrInsert(
       size_t n = i+1;
       size_t m = 0;
       const vtkDICOMItem *oldItems = tptr->Value.GetSequenceData();
-      if (oldItems != 0)
+      if (oldItems != nullptr)
       {
         m = tptr->Value.GetNumberOfValues();
         n = (n > m ? n : m);
@@ -275,8 +275,8 @@ vtkDICOMItem *vtkDICOMItem::FindItemOrInsert(
       // we just inserted a non-SQ value, remove it
       tptr->Prev->Next = tptr->Next;
       tptr->Next->Prev = tptr->Prev;
-      tptr->Next = 0;
-      tptr->Prev = 0;
+      tptr->Next = nullptr;
+      tptr->Prev = nullptr;
       this->L->NumberOfDataElements--;
     }
   }
@@ -301,8 +301,8 @@ void vtkDICOMItem::Set(vtkDICOMTag tag, const vtkDICOMValue& v)
     // setting a value to the invalid value causes deletion
     tptr->Prev->Next = tptr->Next;
     tptr->Next->Prev = tptr->Prev;
-    tptr->Next = 0;
-    tptr->Prev = 0;
+    tptr->Next = nullptr;
+    tptr->Prev = nullptr;
     this->L->NumberOfDataElements--;
   }
 }
@@ -346,7 +346,7 @@ void vtkDICOMItem::Set(const vtkDICOMTagPath& tagpath, const std::string& v)
     vtkDICOMVR vr = item->FindDictVR(tag);
     assert(vr != vtkDICOMVR::UN);
     // note that there is similar code in vtkDICOMMetaData
-    if (vr.HasSpecificCharacterSet() && item->L != 0)
+    if (vr.HasSpecificCharacterSet() && item->L != nullptr)
     {
       vtkDICOMCharacterSet cs = item->L->CharacterSet;
       const vtkDICOMValue& vcs = item->Get(DC::SpecificCharacterSet);
@@ -406,7 +406,7 @@ const vtkDICOMValue &vtkDICOMItem::Get(const vtkDICOMTagPath &tagpath) const
     size_t i = tagpath.GetIndex();
     size_t n = v.GetNumberOfValues();
     const vtkDICOMItem *items = v.GetSequenceData();
-    if (items != 0 && i < n)
+    if (items != nullptr && i < n)
     {
       return items[i].Get(tagpath.GetTail());
     }
@@ -537,7 +537,7 @@ vtkDICOMDictEntry vtkDICOMItem::FindDictEntry(vtkDICOMTag tag) const
   unsigned short element = tag.GetElement();
 
   // note that there is similar code in vtkDICOMMetaData
-  const char *dict = 0;
+  const char *dict = nullptr;
   if ((group & 1) != 0 && element > 0x00ffu)
   {
     unsigned short creatorElement = (element >> 8);
@@ -560,7 +560,7 @@ bool vtkDICOMItem::operator==(const vtkDICOMItem& ob) const
   if (t != o)
   {
     r = false;
-    if (t != 0 && o != 0 &&
+    if (t != nullptr && o != nullptr &&
         t->NumberOfDataElements == o->NumberOfDataElements)
     {
       r = true;

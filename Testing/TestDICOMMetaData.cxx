@@ -223,7 +223,7 @@ int TestDICOMMetaData(int argc, char *argv[])
   vtkDICOMValue v2 = metaData->Get(
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID));
-  TestAssert(v2.GetCharData() != 0);
+  TestAssert(v2.GetCharData() != nullptr);
   if (v2.GetCharData())
   {
     TestAssert(
@@ -236,7 +236,7 @@ int TestDICOMMetaData(int argc, char *argv[])
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::ReferencedInstanceSequence, 0,
                     DC::ReferencedSOPClassUID));
-  TestAssert(v2.GetCharData() != 0);
+  TestAssert(v2.GetCharData() != nullptr);
   if (v2.GetCharData())
   {
     TestAssert(strcmp(v2.GetCharData(), "1.2.840.10008.5.1.4.1.1.4") == 0);
@@ -272,7 +272,7 @@ int TestDICOMMetaData(int argc, char *argv[])
   v2 = metaData->Get(
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::SeriesInstanceUID));
-  TestAssert(v2.GetCharData() != 0);
+  TestAssert(v2.GetCharData() != nullptr);
   if (v2.GetCharData())
   {
     TestAssert(
@@ -285,7 +285,7 @@ int TestDICOMMetaData(int argc, char *argv[])
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::ReferencedInstanceSequence, 9,
                     DC::ReferencedSOPClassUID));
-  TestAssert(v2.GetCharData() != 0);
+  TestAssert(v2.GetCharData() != nullptr);
   if (v2.GetCharData())
   {
     TestAssert(strcmp(v2.GetCharData(), "1.2.840.10008.5.1.4.1.1.4") == 0);
@@ -294,7 +294,7 @@ int TestDICOMMetaData(int argc, char *argv[])
     vtkDICOMTagPath(DC::ReferencedSeriesSequence, 0,
                     DC::ReferencedInstanceSequence, 8,
                     DC::ReferencedSOPInstanceUID));
-  TestAssert(v2.GetCharData() != 0);
+  TestAssert(v2.GetCharData() != nullptr);
   if (v2.GetCharData())
   {
     TestAssert(0 == strcmp(

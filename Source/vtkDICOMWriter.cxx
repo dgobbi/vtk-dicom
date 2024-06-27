@@ -53,19 +53,19 @@ vtkDICOMWriter::vtkDICOMWriter()
 {
   this->FileLowerLeft = 1;
   this->FileDimensionality = 2;
-  this->MetaData = 0;
-  this->GeneratedMetaData = 0;
+  this->MetaData = nullptr;
+  this->GeneratedMetaData = nullptr;
   this->Generator = vtkDICOMSCGenerator::New();
   this->TimeAsVector = 0;
   this->TimeDimension = 0;
   this->TimeSpacing = 1.0;
   this->RescaleIntercept = 0.0;
   this->RescaleSlope = 1.0;
-  this->PatientMatrix = 0;
+  this->PatientMatrix = nullptr;
   this->MemoryRowOrder = vtkDICOMWriter::BottomUp;
   this->FileSliceOrder = vtkDICOMWriter::RHR;
-  this->SeriesDescription = 0;
-  this->TransferSyntaxUID = 0;
+  this->SeriesDescription = nullptr;
+  this->TransferSyntaxUID = nullptr;
   this->ImageType = new char[24];
   strcpy(this->ImageType, "DERIVED/SECONDARY/OTHER");
   this->OverlayType = 0;
@@ -255,7 +255,7 @@ void vtkDICOMWriter::ComputeInternalFileName(int slice)
     n = strlen(this->FilePattern) + 10;
   }
 
-  if (this->InternalFileName == 0 ||
+  if (this->InternalFileName == nullptr ||
       strlen(this->InternalFileName) + 10 < n)
   {
     delete [] this->InternalFileName;
@@ -281,7 +281,7 @@ void vtkDICOMWriter::ComputeInternalFileName(int slice)
 void vtkDICOMWriter::FreeInternalFileName()
 {
   delete [] this->InternalFileName;
-  this->InternalFileName = 0;
+  this->InternalFileName = nullptr;
 }
 
 //----------------------------------------------------------------------------
@@ -290,7 +290,7 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
   if (this->GeneratedMetaData)
   {
     this->GeneratedMetaData->Delete();
-    this->GeneratedMetaData = 0;
+    this->GeneratedMetaData = nullptr;
   }
 
   if (!this->Generator)
@@ -320,7 +320,7 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
   vtkDICOMMetaData *inMeta = this->MetaData;
   vtkMatrix4x4 *inMatrix = this->PatientMatrix;
   vtkInformation *metaInfo = info;
-  if (inMeta == 0 || inMatrix == 0)
+  if (inMeta == nullptr || inMatrix == nullptr)
   {
     // this code is needed for when SetInputData was used
     vtkAlgorithmOutput *sourceConnection = this->GetInputConnection(0, 0);
@@ -337,12 +337,12 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
       }
     }
   }
-  if (inMeta == 0)
+  if (inMeta == nullptr)
   {
     inMeta = vtkDICOMMetaData::SafeDownCast(
       metaInfo->Get(vtkDICOMAlgorithm::META_DATA()));
   }
-  if (inMatrix == 0)
+  if (inMatrix == nullptr)
   {
     double *elements = metaInfo->Get(vtkDICOMAlgorithm::PATIENT_MATRIX());
     if (elements)
@@ -353,7 +353,7 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
   }
   else
   {
-    inMatrix->Register(0);
+    inMatrix->Register(nullptr);
   }
 
   // Generate the meta data
@@ -397,7 +397,7 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
     const char *allowedTypes[] = {
       "ORIGINAL\\PRIMARY", "DERIVED\\PRIMARY",
       "ORIGINAL\\SECONDARY", "DERIVED\\SECONDARY",
-      0
+      nullptr
     };
 
     char sd[256];
@@ -424,7 +424,7 @@ int vtkDICOMWriter::GenerateMetaData(vtkInformation *info)
     }
 
     bool isAllowed = false;
-    for (const char **allowed = allowedTypes; *allowed != 0; allowed++)
+    for (const char **allowed = allowedTypes; *allowed != nullptr; allowed++)
     {
       size_t sl = strlen(*allowed);
       if (strncmp(*allowed, sd, sl) == 0 && (sd[sl] == '\0' || sd[sl] == '\\'))
@@ -619,7 +619,7 @@ vtkImageData *vtkDICOMWriter::GetOverlayInput()
 {
   if (this->GetNumberOfInputConnections(1) < 1)
   {
-    return NULL;
+    return nullptr;
   }
   return vtkImageData::SafeDownCast(
     this->GetExecutive()->GetInputData(1, 0));
@@ -652,7 +652,7 @@ int vtkDICOMWriter::RequestData(
   vtkImageData *data =
     vtkImageData::SafeDownCast(info->Get(vtkDataObject::DATA_OBJECT()));
 
-  if (data == NULL)
+  if (data == nullptr)
   {
     vtkErrorMacro("No input provided!");
     return 0;
@@ -740,12 +740,12 @@ int vtkDICOMWriter::RequestData(
   this->UpdateProgress(0.0);
 
   bool packedToPlanar = (filePixelSize != pixelSize);
-  unsigned char *rowBuffer = 0;
+  unsigned char *rowBuffer = nullptr;
   if (flipImage)
   {
     rowBuffer = new unsigned char[fileRowSize];
   }
-  unsigned char *frameBuffer = 0;
+  unsigned char *frameBuffer = nullptr;
   if (flipImage || packedToPlanar)
   {
     frameBuffer = new unsigned char[fileFrameSize];
@@ -919,6 +919,6 @@ void vtkDICOMWriter::Write()
   if (this->GeneratedMetaData)
   {
     this->GeneratedMetaData->Delete();
-    this->GeneratedMetaData = 0;
+    this->GeneratedMetaData = nullptr;
   }
 }

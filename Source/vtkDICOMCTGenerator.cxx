@@ -60,12 +60,12 @@ bool vtkDICOMCTGenerator::GenerateCTImageModule(vtkDICOMMetaData *source)
   // ImageType is specialized from GeneralImageModule,
   // by adding a third value that is specific to CT:
   // AXIAL or LOCALIZER
-  const char *it = 0;
+  const char *it = nullptr;
   if (source)
   {
     it = source->Get(DC::ImageType).GetCharData();
   }
-  if (it == 0 || it[0] == '\0')
+  if (it == nullptr || it[0] == '\0')
   {
     it = "DERIVED\\SECONDARY\\AXIAL";
   }

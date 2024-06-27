@@ -81,14 +81,14 @@ class vtkDICOMFileSorter::FileInfoVectorList
 //----------------------------------------------------------------------------
 vtkDICOMFileSorter::vtkDICOMFileSorter()
 {
-  this->InputFileName = 0;
-  this->InputFileNames = 0;
+  this->InputFileName = nullptr;
+  this->InputFileNames = nullptr;
   this->OutputFileNames = vtkStringArray::New();
   this->Series = new StringArrayVector;
   this->Studies = vtkIntArray::New();
   this->Studies->SetNumberOfComponents(2);
   this->ErrorCode = 0;
-  this->InternalFileName = 0;
+  this->InternalFileName = nullptr;
   this->RequirePixelData = 1;
 }
 
@@ -135,7 +135,7 @@ void vtkDICOMFileSorter::PrintSelf(ostream& os, vtkIndent indent)
 void vtkDICOMFileSorter::SetInputFileName(const char *name)
 {
   // mutual exclusion with InputFileNames
-  if (name) { this->SetInputFileNames(0); }
+  if (name) { this->SetInputFileNames(nullptr); }
 
   if (name == this->InputFileName ||
       (name && this->InputFileName &&
@@ -145,7 +145,7 @@ void vtkDICOMFileSorter::SetInputFileName(const char *name)
   }
 
   delete [] this->InputFileName;
-  this->InputFileName = 0;
+  this->InputFileName = nullptr;
   if (name)
   {
     char *cp = new char[strlen(name) + 1];
@@ -159,7 +159,7 @@ void vtkDICOMFileSorter::SetInputFileName(const char *name)
 void vtkDICOMFileSorter::SetInputFileNames(vtkStringArray *input)
 {
   // mutual exclusion with InputFileName
-  if (input) { this->SetInputFileName(0); }
+  if (input) { this->SetInputFileName(nullptr); }
 
   vtkSetObjectBodyMacro(InputFileNames, vtkStringArray, input);
 }
@@ -316,7 +316,7 @@ void vtkDICOMFileSorter::SortFiles(vtkStringArray *input)
         c2 = vtkDICOMUtilities::CompareUIDs(
           seriesUID, (*li)[0].SeriesUID.GetCharData());
       }
-      if (c1 == 0 && c2 == 0 && seriesUID != 0)
+      if (c1 == 0 && c2 == 0 && seriesUID != nullptr)
       {
         (*li).push_back(fileInfo);
         foundSeries = true;
@@ -406,7 +406,7 @@ void vtkDICOMFileSorter::Execute()
   this->OutputFileNames->Reset();
   this->Series->clear();
   this->Studies->Reset();
-  this->SetInternalFileName(0);
+  this->SetInternalFileName(nullptr);
   this->ErrorCode = 0;
 
   if (this->InputFileName) // The input was a single file
@@ -573,11 +573,11 @@ void vtkDICOMFileSorter::Update()
 //----------------------------------------------------------------------------
 void vtkDICOMFileSorter::SetInternalFileName(const char *name)
 {
-  if (this->InternalFileName == NULL && name == NULL)
+  if (this->InternalFileName == nullptr && name == nullptr)
   {
     return;
   }
-  if (this->InternalFileName != 0 && name != 0 &&
+  if (this->InternalFileName != nullptr && name != nullptr &&
       strcmp(this->InternalFileName, name) == 0)
   {
     return;
@@ -596,7 +596,7 @@ void vtkDICOMFileSorter::SetInternalFileName(const char *name)
   }
   else
   {
-    this->InternalFileName = 0;
+    this->InternalFileName = nullptr;
   }
 }
 

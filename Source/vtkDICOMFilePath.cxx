@@ -535,7 +535,7 @@ std::string vtkDICOMFilePath::GetRealPath() const
 
   std::string result;
   char *path = realpath(this->Path.c_str(), storage);
-  if (path != 0)
+  if (path != nullptr)
   {
     result = path;
     storage = path;

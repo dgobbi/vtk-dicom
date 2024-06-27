@@ -32,7 +32,7 @@ typedef std::vector<vtkDICOMTagPath> QueryTagList;
  *  will not be pushed onto the QueryTagList.
  */
 bool dicomcli_readquery(
-  const char *fname, vtkDICOMItem *query, QueryTagList *ql=0,
+  const char *fname, vtkDICOMItem *query, QueryTagList *ql=nullptr,
   bool ql_unique=true);
 
 //! Read a single query key, return 'true' on success.
@@ -40,7 +40,7 @@ bool dicomcli_readquery(
  *  See dicomcli_readquery() for more information.
  */
 bool dicomcli_readkey(
-  const char *key, vtkDICOMItem *query, QueryTagList *ql=0,
+  const char *key, vtkDICOMItem *query, QueryTagList *ql=nullptr,
   bool ql_unique=true);
 
 //! Check if text looks like a query key (for error checking).
@@ -53,7 +53,7 @@ bool dicomcli_looks_like_key(const char *key);
  *  values, one value per line, without quotes.
  */
 bool dicomcli_readuids(
-  const char *fname, vtkDICOMItem *query, QueryTagList *ql=0);
+  const char *fname, vtkDICOMItem *query, QueryTagList *ql=nullptr);
 
 //! Print brief info about a file for error messages.
 /*!

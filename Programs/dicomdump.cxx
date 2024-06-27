@@ -142,7 +142,7 @@ void printElement(
   vtkDICOMValue v = iter->GetValue();
   size_t vn = v.GetNumberOfValues();
   const vtkDICOMValue *vp = v.GetMultiplexData();
-  if (vp == 0)
+  if (vp == nullptr)
   {
     vp = &v;
     vn = 1;
@@ -362,7 +362,7 @@ void printElementFromTagPathRecurse(
     {
       ++(*count);
       fprintf(stdout, "  %04d", *count);
-      printElement(0, item, iter, 0, 0);
+      printElement(nullptr, item, iter, 0, 0);
     }
   }
 }
@@ -430,7 +430,7 @@ void printElementFromTagPath(
     }
     else
     {
-      printElement(data, 0, iter, 0, pixelDataVL);
+      printElement(data, nullptr, iter, 0, pixelDataVL);
     }
   }
 }
@@ -615,7 +615,7 @@ int MAINMACRO(int argc, char *argv[])
 
         for (; iter != iterEnd; ++iter)
         {
-          printElement(data, 0, iter, 0, pixelDataVL);
+          printElement(data, nullptr, iter, 0, pixelDataVL);
         }
       }
     }

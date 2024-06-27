@@ -113,7 +113,7 @@ public:
   // Construct the base info from the meta data.
   DecoderContext(vtkDICOMMetaData *meta, int index,
                  vtkDICOMCharacterSet dcs, bool ocs) :
-    Prev(0), Item(0), MetaData(meta), Index(index),
+    Prev(nullptr), Item(nullptr), MetaData(meta), Index(index),
     CurrentTag(0,0), DefaultCharacterSet(dcs),
     CharacterSet(ocs ? dcs :
                  vtkDICOMCharacterSet(vtkDICOMCharacterSet::Unknown)),
@@ -121,7 +121,7 @@ public:
 
   // Construct from the current item.
   DecoderContext(vtkDICOMItem *item, vtkDICOMCharacterSet dcs, bool ocs) :
-    Prev(0), Item(item), MetaData(0), Index(0),
+    Prev(nullptr), Item(item), MetaData(nullptr), Index(0),
     CurrentTag(0,0), DefaultCharacterSet(dcs),
     CharacterSet(ocs ? dcs :
                  vtkDICOMCharacterSet(vtkDICOMCharacterSet::Unknown)),
@@ -406,7 +406,7 @@ protected:
   DecoderBase(vtkDICOMParser *parser, vtkDICOMMetaData *data, int idx) :
     Parser(parser), BaseContext(data,idx,parser->GetDefaultCharacterSet(),
       parser->GetOverrideCharacterSet()),
-    Item(0), MetaData(data), Index(idx), ImplicitVR(false),
+    Item(nullptr), MetaData(data), Index(idx), ImplicitVR(false),
     HasQuery(false), QueryMatched(false),
     LastVL(0) { this->Context = &this->BaseContext; }
 
@@ -499,7 +499,7 @@ public:
     const unsigned char* &cp, const unsigned char* &ep,
     unsigned int l, vtkDICOMTag delimiter) VTK_DICOM_OVERRIDE
   {
-    return SkipElements(cp, ep, l, delimiter, 0);
+    return SkipElements(cp, ep, l, delimiter, nullptr);
   }
 
   // A ReadElements that returns the number of bytes read.
@@ -1549,7 +1549,7 @@ bool Decoder<E>::ReadElements(
         if (vr != vtkDICOMVR::UN)
         {
           // Value is either a sequence or is encapsulated data
-          if (!this->SkipElements(cp, ep, vl, newdelim, NULL))
+          if (!this->SkipElements(cp, ep, vl, newdelim, nullptr))
           {
             return false;
           }
@@ -1557,7 +1557,7 @@ bool Decoder<E>::ReadElements(
         else
         {
           // VR of UN indicates the value is an implicit LE sequence
-          if (!this->ImplicitLE->SkipElements(cp, ep, vl, newdelim, NULL))
+          if (!this->ImplicitLE->SkipElements(cp, ep, vl, newdelim, nullptr))
           {
             return false;
           }
@@ -1675,7 +1675,7 @@ bool Decoder<E>::QueryOneItem(
   if (query->GetValue().GetNumberOfValues() > 0)
   {
     const vtkDICOMItem *qitems = query->GetValue().GetSequenceData();
-    if (qitems != 0 && qitems[0].GetNumberOfDataElements() != 0)
+    if (qitems != nullptr && qitems[0].GetNumberOfDataElements() != 0)
     {
       this->HasQuery = true;
       this->QueryMatched = true;
@@ -1778,7 +1778,8 @@ bool Decoder<E>::SkipElements(
       else
       {
         // fixed length element (vl != 0xffffffff)
-        if (v != 0 && static_cast<size_t>(vl) > static_cast<size_t>(ep - cp))
+        if (v != nullptr &&
+            static_cast<size_t>(vl) > static_cast<size_t>(ep - cp))
         {
           // if vl is larger than number of bytes left in buffer,
           // then copy data from save point "sp" up to "cp" into v,
@@ -1807,7 +1808,7 @@ bool Decoder<E>::SkipElements(
   {
     // skipped a fixed number of bytes
     size_t tl;
-    if (v != 0)
+    if (v != nullptr)
     {
       // read bytes into the value "v"
       size_t n = v->GetNumberOfValues();
@@ -1833,16 +1834,16 @@ bool Decoder<E>::SkipElements(
 // Constructor
 vtkDICOMParser::vtkDICOMParser()
 {
-  this->FileName = NULL;
-  this->MetaData = NULL;
-  this->Query = NULL;
-  this->QueryItem = NULL;
-  this->Groups = NULL;
-  this->InputFile = NULL;
+  this->FileName = nullptr;
+  this->MetaData = nullptr;
+  this->Query = nullptr;
+  this->QueryItem = nullptr;
+  this->Groups = nullptr;
+  this->InputFile = nullptr;
   this->BytesRead = 0;
   this->FileOffset = 0;
   this->FileSize = 0;
-  this->Buffer = NULL;
+  this->Buffer = nullptr;
   this->BufferSize = 8192;
   this->ChunkSize = 0;
   this->Index = -1;
@@ -1880,10 +1881,10 @@ void vtkDICOMParser::SetQueryItem(const vtkDICOMItem& query)
   if (this->Query)
   {
     this->Query->Delete();
-    this->Query = 0;
+    this->Query = nullptr;
   }
   delete this->QueryItem;
-  this->QueryItem = 0;
+  this->QueryItem = nullptr;
   if (query.GetNumberOfDataElements() > 0)
   {
     this->QueryItem = new vtkDICOMItem(query);
@@ -1948,7 +1949,7 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
 {
   // Mark pixel data as not found yet
   this->PixelDataFound = false;
-  this->QueryMatched = (this->Query != 0 || this->QueryItem != 0);
+  this->QueryMatched = (this->Query != nullptr || this->QueryItem != nullptr);
   this->FileOffset = 0;
   this->FileSize = 0;
 
@@ -1985,8 +1986,8 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
   // guard against anyone changing BufferSize while reading
   this->ChunkSize = this->BufferSize;
 
-  const unsigned char *cp = NULL;
-  const unsigned char *ep = NULL;
+  const unsigned char *cp = nullptr;
+  const unsigned char *ep = nullptr;
   this->FillBuffer(cp, ep);
 
   if (ep - cp >= 132 &&
@@ -2007,7 +2008,7 @@ bool vtkDICOMParser::ReadFile(vtkDICOMMetaData *data, int idx)
 
   delete [] this->Buffer;
   infile.Close();
-  this->InputFile = NULL;
+  this->InputFile = nullptr;
 
   return true;
 }
@@ -2028,7 +2029,7 @@ bool vtkDICOMParser::ReadMetaHeader(
   {
     // make a temporary MetaData object if none was provided
     bool tempMeta = false;
-    if (meta == 0)
+    if (meta == nullptr)
     {
       meta = vtkDICOMMetaData::New();
       tempMeta = true;

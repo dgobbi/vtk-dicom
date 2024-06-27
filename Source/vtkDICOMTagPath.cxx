@@ -37,7 +37,7 @@ ostream& operator<<(ostream& o, const vtkDICOMTagPath& a)
 //----------------------------------------------------------------------------
 vtkDICOMTagPath::vtkDICOMTagPath(
   const vtkDICOMTagPath& p, unsigned int i, vtkDICOMTag tag)
-  : Size(p.Size+1), Head(p.Head), Index(p.Index), Tail(p.Tail), List(0)
+  : Size(p.Size+1), Head(p.Head), Index(p.Index), Tail(p.Tail), List(nullptr)
 {
   if (this->Size == 1)
   {

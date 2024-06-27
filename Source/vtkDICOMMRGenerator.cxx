@@ -63,12 +63,12 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
   // MPR, T2 MAP, PHASE MAP, PHASE SUBTRACT, PROJECTION IMAGE,
   // DIFFUSION MAP, VELOCITY MAP, MODULUS SUBTRACT, T1 MAP,
   // DENSITY MAP, IMAGE ADDITION, OTHER
-  const char *it = 0;
+  const char *it = nullptr;
   if (source)
   {
     it = source->Get(DC::ImageType).GetCharData();
   }
-  if (it == 0 || it[0] == '\0')
+  if (it == nullptr || it[0] == '\0')
   {
     it = "DERIVED\\SECONDARY\\OTHER";
   }
@@ -81,18 +81,18 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
   // BitsAllocated must be 16
 
   // ScanningSequence and SequenceVariant are mandatory:
-  const char *ss = 0;
-  const char *sv = 0;
+  const char *ss = nullptr;
+  const char *sv = nullptr;
   if (source)
   {
     ss = source->Get(DC::ScanningSequence).GetCharData();
     sv = source->Get(DC::SequenceVariant).GetCharData();
   }
-  if (ss == 0 || ss[0] == '\0')
+  if (ss == nullptr || ss[0] == '\0')
   { // default to "research mode"
     ss = "RM";
   }
-  if (sv == 0 || sv[0] == '\0')
+  if (sv == nullptr || sv[0] == '\0')
   {
     sv = "NONE";
   }
@@ -110,12 +110,12 @@ bool vtkDICOMMRGenerator::GenerateMRImageModule(vtkDICOMMetaData *source)
       meta->Set(DC::CardiacNumberOfImages, this->Dimensions[3]);
     }
     // keep this if data was not reformatted
-    if (this->SourceInstanceArray != 0 && source == this->SourceMetaData)
+    if (this->SourceInstanceArray != nullptr && source == this->SourceMetaData)
     {
       vtkDICOMMetaDataAdapter sourceAdapter(source);
       const char *ped =
         sourceAdapter->Get(DC::InPlanePhaseEncodingDirection).GetCharData();
-      if (ped != 0 && ped[0] != '\0')
+      if (ped != nullptr && ped[0] != '\0')
       {
         meta->Set(DC::InPlanePhaseEncodingDirection, ped);
       }

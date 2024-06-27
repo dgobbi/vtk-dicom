@@ -193,7 +193,7 @@ public:
     VTK_DICOM_OVERRIDE;
   void SetMetaData(vtkDICOMMetaData *meta) { this->MetaData = meta; }
 protected:
-  ErrorObserver() : MetaData(0) {}
+  ErrorObserver() : MetaData(nullptr) {}
   ErrorObserver(const ErrorObserver& c) : vtkCommand(c) {}
   void operator=(const ErrorObserver&) {}
   vtkDICOMMetaData *MetaData;
@@ -529,7 +529,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
     {
       total += finder->GetFileNamesForSeries(k)->GetNumberOfValues();
     }
-    p->Execute(NULL, vtkCommand::StartEvent, NULL);
+    p->Execute(nullptr, vtkCommand::StartEvent, nullptr);
   }
 
   for (int j = 0; j < finder->GetNumberOfStudies(); j++)
@@ -673,7 +673,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
             SearchState &head = tstack.back();
             head.p = tagPath;
             head.q = &query;
-            head.m = 0;
+            head.m = nullptr;
             head.n = head.m + 1;
 
             while (!tstack.empty())
@@ -704,7 +704,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
                   tag = adapter->ResolvePrivateTag(tag, creator);
                 }
               }
-              const vtkDICOMValue *vptr = 0;
+              const vtkDICOMValue *vptr = nullptr;
               if (mitem)
               {
                 vptr = &mitem->Get(tag);
@@ -721,12 +721,12 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
               }
               if (vptr && !vptr->IsValid())
               {
-                vptr = 0;
+                vptr = nullptr;
               }
               // check if we have reached the end of a tag path
               if (!tpath.HasTail())
               {
-                if (vptr != 0)
+                if (vptr != nullptr)
                 {
                   std::string t = value_as_string(*vptr);
 
@@ -784,7 +784,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
                   }
                 }
               }
-              else if (vptr != 0)
+              else if (vptr != nullptr)
               {
                 // go one level deeper into the query
                 qitem = qitem->Get(tpath.GetHead()).GetSequenceData();
@@ -843,7 +843,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
           count += numberOfFiles;
           double progress = (static_cast<double>(count)/
                              static_cast<double>(total));
-          p->Execute(NULL, vtkCommand::ProgressEvent, &progress);
+          p->Execute(nullptr, vtkCommand::ProgressEvent, &progress);
         }
       }
     }
@@ -851,7 +851,7 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
 
   if (p)
   {
-    p->Execute(NULL, vtkCommand::EndEvent, NULL);
+    p->Execute(nullptr, vtkCommand::EndEvent, nullptr);
   }
 }
 
@@ -881,7 +881,7 @@ int MAINMACRO(int argc, char *argv[])
   int level = 3; // default to series level
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
-  const char *ofile = 0;
+  const char *ofile = nullptr;
 
   // always query SpecificCharacterSet
   query.Set(DC::SpecificCharacterSet, vtkDICOMValue(VR::CS));
@@ -1098,7 +1098,7 @@ int MAINMACRO(int argc, char *argv[])
   }
 
   FILE *fp = stdout;
-  FILE *fp1 = NULL;
+  FILE *fp1 = nullptr;
 
   if (ofile)
   {

@@ -256,8 +256,8 @@ bool dicomcli_readkey_query(
     {
       if (isHex)
       {
-        unsigned int group = strtoul(&cp[tagStart], NULL, 16);
-        unsigned int element = strtoul(&cp[tagStart+commaPos+1], NULL, 16);
+        unsigned int group = strtoul(&cp[tagStart], nullptr, 16);
+        unsigned int element = strtoul(&cp[tagStart+commaPos+1], nullptr, 16);
         if (group < 0xFFFF && element < 0xFFFF)
         {
           tag = vtkDICOMTag(group, element);

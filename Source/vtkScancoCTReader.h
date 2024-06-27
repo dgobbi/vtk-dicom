@@ -211,10 +211,10 @@ protected:
   static float DecodeFloat(const void *data);
 
   //! Convert a string to a double precision value.
-  static double StringToDouble(const char *cp, char **cpp=0);
+  static double StringToDouble(const char *cp, char **cpp=nullptr);
 
   //! Convert a string to an int.
-  static int StringToInt(const char *cp, char **cpp=0);
+  static int StringToInt(const char *cp, char **cpp=nullptr);
 
   //! Convert char data to float (double precision).
   static double DecodeDouble(const void *data);

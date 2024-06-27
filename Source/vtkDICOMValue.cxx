@@ -153,11 +153,11 @@ void StringConversionAT(const char *cp, vtkDICOMTag *v, size_t n)
 // custom allocator
 void *ValueMalloc(size_t size)
 {
-  void *vp = 0;
-  while ((vp = malloc(size)) == 0)
+  void *vp = nullptr;
+  while ((vp = malloc(size)) == nullptr)
   {
     // for C++11, get_new_handler is preferred
-    std::new_handler global_handler = std::set_new_handler(0);
+    std::new_handler global_handler = std::set_new_handler(nullptr);
     std::set_new_handler(global_handler);
 
     if (global_handler)
@@ -501,7 +501,7 @@ void vtkDICOMValue::CreateValue(vtkDICOMVR vr, const T *data, size_t n)
   assert(n*sizeof(T) < 0xffffffffu);
   int vt = vtkTypeTraits<T>::VTKTypeID();
 
-  this->V = 0;
+  this->V = nullptr;
 
   if (vr == VR::OX)
   {
@@ -726,7 +726,7 @@ void vtkDICOMValue::CreateValue<vtkDICOMTag>(
 
   assert(n*4 < 0xffffffffu);
 
-  this->V = 0;
+  this->V = nullptr;
 
   if (vr == VR::AT)
   {
@@ -746,7 +746,7 @@ void vtkDICOMValue::CreateValue<vtkDICOMItem>(
 
   assert(n*4 < 0xffffffffu);
 
-  this->V = 0;
+  this->V = nullptr;
 
   if (vr == VR::SQ)
   {
@@ -766,7 +766,7 @@ void vtkDICOMValue::CreateValue<char>(
 
   assert(m < 0xffffffffu);
 
-  this->V = 0;
+  this->V = nullptr;
 
   // directly copy data into these VRs without conversion
   if (vr.HasSingleValue())
@@ -1132,7 +1132,7 @@ vtkDICOMValue::vtkDICOMValue(vtkDICOMVR vr)
 {
   typedef vtkDICOMVR VR;
 
-  this->V = 0;
+  this->V = nullptr;
 
   if (vr.HasTextValue())
   {
@@ -1237,7 +1237,7 @@ template<class T>
 void vtkDICOMValue::AppendValue(const T &item)
 {
   // do nothing if not initialized yet
-  if (this->V == 0)
+  if (this->V == nullptr)
   {
     return;
   }
@@ -1316,7 +1316,7 @@ template void vtkDICOMValue::SetValue<vtkDICOMItem>(
 //----------------------------------------------------------------------------
 const char *vtkDICOMValue::GetCharData() const
 {
-  const char *ptr = 0;
+  const char *ptr = nullptr;
   if (this->V && this->V->Type == VTK_CHAR)
   {
     ptr = static_cast<const ValueT<char> *>(this->V)->Data;
@@ -1326,7 +1326,7 @@ const char *vtkDICOMValue::GetCharData() const
 
 const unsigned char *vtkDICOMValue::GetUnsignedCharData() const
 {
-  const unsigned char *ptr = 0;
+  const unsigned char *ptr = nullptr;
   if (this->V && this->V->Type == VTK_UNSIGNED_CHAR)
   {
     ptr = static_cast<const ValueT<unsigned char> *>(this->V)->Data;
@@ -1336,7 +1336,7 @@ const unsigned char *vtkDICOMValue::GetUnsignedCharData() const
 
 const short *vtkDICOMValue::GetShortData() const
 {
-  const short *ptr = 0;
+  const short *ptr = nullptr;
   if (this->V)
   {
     if (this->V->Type == VTK_SHORT)
@@ -1355,7 +1355,7 @@ const short *vtkDICOMValue::GetShortData() const
 
 const unsigned short *vtkDICOMValue::GetUnsignedShortData() const
 {
-  const unsigned short *ptr = 0;
+  const unsigned short *ptr = nullptr;
   if (this->V)
   {
     if (this->V->Type == VTK_UNSIGNED_SHORT)
@@ -1374,7 +1374,7 @@ const unsigned short *vtkDICOMValue::GetUnsignedShortData() const
 
 const int *vtkDICOMValue::GetIntData() const
 {
-  const int *ptr = 0;
+  const int *ptr = nullptr;
   if (this->V)
   {
     if (this->V->Type == VTK_INT)
@@ -1393,7 +1393,7 @@ const int *vtkDICOMValue::GetIntData() const
 
 const unsigned int *vtkDICOMValue::GetUnsignedIntData() const
 {
-  const unsigned int *ptr = 0;
+  const unsigned int *ptr = nullptr;
   if (this->V)
   {
     if (this->V->Type == VTK_UNSIGNED_INT)
@@ -1412,7 +1412,7 @@ const unsigned int *vtkDICOMValue::GetUnsignedIntData() const
 
 const long long *vtkDICOMValue::GetInt64Data() const
 {
-  const long long *ptr = 0;
+  const long long *ptr = nullptr;
   if (this->V)
   {
     if (this->V->Type == VTK_LONG_LONG)
@@ -1431,7 +1431,7 @@ const long long *vtkDICOMValue::GetInt64Data() const
 
 const unsigned long long *vtkDICOMValue::GetUnsignedInt64Data() const
 {
-  const unsigned long long *ptr = 0;
+  const unsigned long long *ptr = nullptr;
   if (this->V)
   {
     if (this->V->Type == VTK_UNSIGNED_LONG_LONG)
@@ -1450,7 +1450,7 @@ const unsigned long long *vtkDICOMValue::GetUnsignedInt64Data() const
 
 const float *vtkDICOMValue::GetFloatData() const
 {
-  const float *ptr = 0;
+  const float *ptr = nullptr;
   if (this->V && this->V->Type == VTK_FLOAT)
   {
     ptr = static_cast<const ValueT<float> *>(this->V)->Data;
@@ -1460,7 +1460,7 @@ const float *vtkDICOMValue::GetFloatData() const
 
 const double *vtkDICOMValue::GetDoubleData() const
 {
-  const double *ptr = 0;
+  const double *ptr = nullptr;
   if (this->V && this->V->Type == VTK_DOUBLE)
   {
     ptr = static_cast<const ValueT<double> *>(this->V)->Data;
@@ -1470,7 +1470,7 @@ const double *vtkDICOMValue::GetDoubleData() const
 
 const vtkDICOMTag *vtkDICOMValue::GetTagData() const
 {
-  const vtkDICOMTag *ptr = 0;
+  const vtkDICOMTag *ptr = nullptr;
   if (this->V && this->V->Type == VTK_DICOM_TAG)
   {
     ptr = static_cast<const ValueT<vtkDICOMTag> *>(this->V)->Data;
@@ -1480,7 +1480,7 @@ const vtkDICOMTag *vtkDICOMValue::GetTagData() const
 
 const vtkDICOMItem *vtkDICOMValue::GetSequenceData() const
 {
-  const vtkDICOMItem *ptr = 0;
+  const vtkDICOMItem *ptr = nullptr;
   if (this->V && this->V->Type == VTK_DICOM_ITEM)
   {
     ptr = static_cast<const ValueT<vtkDICOMItem> *>(this->V)->Data;
@@ -1490,7 +1490,7 @@ const vtkDICOMItem *vtkDICOMValue::GetSequenceData() const
 
 const vtkDICOMValue *vtkDICOMValue::GetMultiplexData() const
 {
-  const vtkDICOMValue *ptr = 0;
+  const vtkDICOMValue *ptr = nullptr;
   if (this->V && this->V->Type == VTK_DICOM_VALUE)
   {
     ptr = static_cast<const ValueT<vtkDICOMValue> *>(this->V)->Data;
@@ -1500,7 +1500,7 @@ const vtkDICOMValue *vtkDICOMValue::GetMultiplexData() const
 
 vtkDICOMValue *vtkDICOMValue::GetMultiplex()
 {
-  vtkDICOMValue *ptr = 0;
+  vtkDICOMValue *ptr = nullptr;
   if (this->V && this->V->Type == VTK_DICOM_VALUE)
   {
     ptr = static_cast<ValueT<vtkDICOMValue> *>(this->V)->Data;
@@ -2115,14 +2115,14 @@ void vtkDICOMValue::AppendValueToUTF8String(
 void vtkDICOMValue::AppendValueToString(
   std::string& str, size_t i) const
 {
-  const char *cp = 0;
-  const char *dp = 0;
+  const char *cp = nullptr;
+  const char *dp = nullptr;
   double f = 0.0;
   long long d = 0;
   unsigned long long u = 0;
   vtkDICOMTag a;
 
-  if (this->V == 0)
+  if (this->V == nullptr)
   {
     return;
   }
@@ -2737,7 +2737,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
   */
 
   // keys with no value match (universal matching)
-  if (value.V == 0)
+  if (value.V == nullptr)
   {
     return true;
   }
@@ -2781,7 +2781,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
     }
   }
 
-  if (this->V == 0 || this->V->VR != value.V->VR)
+  if (this->V == nullptr || this->V->VR != value.V->VR)
   {
     // match is impossible if VRs differ
     return false;
@@ -3073,7 +3073,7 @@ bool vtkDICOMValue::operator==(const vtkDICOMValue& o) const
   if (a != b)
   {
     r = false;
-    if (a != 0 && b != 0)
+    if (a != nullptr && b != nullptr)
     {
       if (a->VR == b->VR && a->VL == b->VL && a->Type == b->Type)
       {

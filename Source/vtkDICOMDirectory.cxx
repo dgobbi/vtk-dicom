@@ -143,13 +143,13 @@ bool vtkDICOMDirectory::CompareInstance(
   }
 
   // fall back to filename comparison
-  if (fi1.FileName != 0 && fi2.FileName != 0)
+  if (fi1.FileName != nullptr && fi2.FileName != nullptr)
   {
     return (strcmp(fi1.FileName, fi2.FileName) < 0);
   }
 
   // null filename sorts before non-null filename
-  return (fi2.FileName != 0);
+  return (fi2.FileName != nullptr);
 }
 
 bool vtkDICOMDirectory::CompareSeriesUIDs(
@@ -357,30 +357,30 @@ void SortedTags::SetFrom(const vtkDICOMItem& patientRecord,
 //----------------------------------------------------------------------------
 vtkDICOMDirectory::vtkDICOMDirectory()
 {
-  this->DirectoryName = 0;
-  this->InputFileNames = 0;
-  this->FilePattern = 0;
+  this->DirectoryName = nullptr;
+  this->InputFileNames = nullptr;
+  this->FilePattern = nullptr;
   this->DefaultCharacterSet = vtkDICOMCharacterSet::GetGlobalDefault();
   this->OverrideCharacterSet = vtkDICOMCharacterSet::GetGlobalOverride();
   this->Series = new SeriesVector;
   this->Studies = new StudyVector;
   this->Patients = new PatientVector;
   this->Visited = new VisitedVector;
-  this->FileSetID = 0;
-  this->InternalFileName = 0;
+  this->FileSetID = nullptr;
+  this->InternalFileName = nullptr;
   this->QueryFiles = -1;
   this->IgnoreDicomdir = 0;
   this->RequirePixelData = 1;
   this->FollowSymlinks = 1;
   this->ShowHidden = 1;
   this->ScanDepth = 1;
-  this->Query = 0;
+  this->Query = nullptr;
   this->FindLevel = vtkDICOMDirectory::IMAGE;
   this->UsingOsirixDatabase = false;
-  this->CurrentPatientRecord = 0;
-  this->CurrentStudyRecord = 0;
-  this->CurrentSeriesRecord = 0;
-  this->CurrentImageRecord = 0;
+  this->CurrentPatientRecord = nullptr;
+  this->CurrentStudyRecord = nullptr;
+  this->CurrentSeriesRecord = nullptr;
+  this->CurrentImageRecord = nullptr;
 }
 
 //----------------------------------------------------------------------------
@@ -453,7 +453,7 @@ void vtkDICOMDirectory::SetDirectoryName(const char *name)
   }
 
   delete [] this->DirectoryName;
-  this->DirectoryName = 0;
+  this->DirectoryName = nullptr;
   if (name)
   {
     char *cp = new char[strlen(name) + 1];
@@ -474,7 +474,7 @@ void vtkDICOMDirectory::SetFilePattern(const char *name)
   }
 
   delete [] this->FilePattern;
-  this->FilePattern = 0;
+  this->FilePattern = nullptr;
   if (name)
   {
     char *cp = new char[strlen(name) + 1];
@@ -529,7 +529,7 @@ void vtkDICOMDirectory::SetFindQuery(const vtkDICOMItem& item)
   if (this->Query != &item)
   {
     delete this->Query;
-    this->Query = 0;
+    this->Query = nullptr;
     if (!item.IsEmpty())
     {
       this->Query = new vtkDICOMItem;
@@ -745,7 +745,7 @@ std::string ConvertOsirixTime(double t)
   // and Osirix database time base (00:00:00 UTC Jan 1, 2001)
   const long long timediff = 978307200;
   long long s = static_cast<long long>(t + (t >= 0 ? 0.5 : -0.5));
-  return vtkDICOMUtilities::GenerateDateTime((s + timediff)*1000000, NULL);
+  return vtkDICOMUtilities::GenerateDateTime((s + timediff)*1000000, nullptr);
 }
 
 #endif
@@ -865,7 +865,7 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
   const vtkDICOMItem& seriesRecord,
   const vtkDICOMItem *imageRecords[])
 {
-  if (this->Query == 0)
+  if (this->Query == nullptr)
   {
     this->AddSeriesFileNames(
       patient, study, files,
@@ -992,10 +992,10 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
         parser->SetFileName(fileName.c_str());
         parser->Update();
         // Clear info used by RelayError
-        this->CurrentPatientRecord = 0;
-        this->CurrentStudyRecord = 0;
-        this->CurrentSeriesRecord = 0;
-        this->CurrentImageRecord = 0;
+        this->CurrentPatientRecord = nullptr;
+        this->CurrentStudyRecord = nullptr;
+        this->CurrentSeriesRecord = nullptr;
+        this->CurrentImageRecord = nullptr;
 
         if (!parser->GetPixelDataFound())
         {
@@ -1200,7 +1200,7 @@ void vtkDICOMDirectory::FillImageRecord(
 {
   // Add all elements that aren't already in the other records
   // (but always add SpecificCharacterSet)
-  const vtkDICOMTag *skipEnd = (skip == 0 ? 0 : skip + nskip);
+  const vtkDICOMTag *skipEnd = (skip == nullptr ? nullptr : skip + nskip);
 
   vtkDICOMDataElementIterator iter = meta->Begin();
   vtkDICOMDataElementIterator iterEnd = meta->End();
@@ -1432,7 +1432,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
 
       // For files that lack the mandatory SeriesInstanceUID,
       // we also check whether SeriesNumber is the same
-      if ((seriesUID == 0 || seriesUID[0] == '\0') &&
+      if ((seriesUID == nullptr || seriesUID[0] == '\0') &&
           seriesNumber != v.SeriesNumber)
       {
         continue;
@@ -1466,7 +1466,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
             break;
           }
 
-          if (imageUID == 0 || imageUID[0] == '\0')
+          if (imageUID == nullptr || imageUID[0] == '\0')
           {
             // If SOPInstanceUID is missing, advance iterator to end
             // (this is necessary to keep the sort stable)
@@ -1541,7 +1541,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
     }
   }
 
-  SeriesInfo *lastInfo = 0;
+  SeriesInfo *lastInfo = nullptr;
 
   // Force consistent PatientName, StudyDate, StudyTime keys for sorting
   std::sort(seriesByUID.begin(), seriesByUID.end(), CompareSeriesIds);
@@ -1593,7 +1593,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
   int patientCount = this->GetNumberOfPatients();
   int studyCount = this->GetNumberOfStudies();
 
-  lastInfo = 0;
+  lastInfo = nullptr;
 
   for (li = seriesList.begin(); li != seriesList.end(); ++li)
   {
@@ -1684,7 +1684,7 @@ std::string CleanUID(const std::string& s)
 class SimpleSQL
 {
 public:
-  SimpleSQL() : DBase(0), Statement(0), InTransaction(false) {}
+  SimpleSQL() : DBase(nullptr), Statement(nullptr), InTransaction(false) {}
   ~SimpleSQL() { this->Close(); }
   bool Open(const char *fname);
   void Close();
@@ -1752,11 +1752,12 @@ bool SimpleSQL::Open(const char *fname)
   }
 
   int r = sqlite3_open_v2(uri.c_str(), &this->DBase,
-                          SQLITE_OPEN_READONLY|SQLITE_OPEN_URI, 0);
+                          SQLITE_OPEN_READONLY|SQLITE_OPEN_URI, nullptr);
   if (r == SQLITE_OK)
   {
     char *errmsg;
-    r = sqlite3_exec(this->DBase, "BEGIN TRANSACTION", NULL, NULL, &errmsg);
+    r = sqlite3_exec(this->DBase, "BEGIN TRANSACTION",
+                     nullptr, nullptr, &errmsg);
     this->InTransaction = (r == SQLITE_OK);
   }
 
@@ -1769,10 +1770,10 @@ void SimpleSQL::Close()
   if (this->InTransaction)
   {
     char *errmsg;
-    sqlite3_exec(this->DBase, "COMMIT", NULL, NULL, &errmsg);
+    sqlite3_exec(this->DBase, "COMMIT", nullptr, nullptr, &errmsg);
   }
   sqlite3_close(this->DBase);
-  this->DBase = 0;
+  this->DBase = nullptr;
 }
 
 bool SimpleSQL::Prepare(const char *query)
@@ -1780,7 +1781,7 @@ bool SimpleSQL::Prepare(const char *query)
   if (this->Statement)
   {
     sqlite3_finalize(this->Statement);
-    this->Statement = 0;
+    this->Statement = nullptr;
   }
   const char *ep;
   int l = static_cast<int>(strlen(query));
@@ -1848,7 +1849,7 @@ void SimpleSQL::Finalize()
   if (this->Statement)
   {
     sqlite3_finalize(this->Statement);
-    this->Statement = 0;
+    this->Statement = nullptr;
   }
 }
 
@@ -2566,7 +2567,7 @@ void vtkDICOMDirectory::ProcessDirectory(
           this->ProcessDirectory(fileString.c_str(), depth-1, files);
         }
       }
-      else if (this->FilePattern == 0 || this->FilePattern[0] == '\0' ||
+      else if (this->FilePattern == nullptr || this->FilePattern[0] == '\0' ||
                vtkDICOMUtilities::PatternMatches(
                  this->FilePattern, fileString.c_str()))
       {
@@ -2588,7 +2589,7 @@ void vtkDICOMDirectory::Execute()
   this->Patients->clear();
   this->Visited->clear();
   delete [] this->FileSetID;
-  this->FileSetID = 0;
+  this->FileSetID = nullptr;
   this->ErrorCode = 0;
 
   this->InvokeEvent(vtkCommand::StartEvent);
@@ -2645,7 +2646,7 @@ void vtkDICOMDirectory::Execute()
       {
         this->ProcessOsirixDatabase(fname.c_str());
       }
-      else if (this->FilePattern == 0 || this->FilePattern[0] == '\0' ||
+      else if (this->FilePattern == nullptr || this->FilePattern[0] == '\0' ||
                vtkDICOMUtilities::PatternMatches(
                  this->FilePattern, fname.c_str()))
       {
@@ -2655,7 +2656,7 @@ void vtkDICOMDirectory::Execute()
   }
   else
   {
-    if (this->DirectoryName == 0)
+    if (this->DirectoryName == nullptr)
     {
       // No directory is a valid input.  Return an empty output.
       return;
@@ -2731,11 +2732,11 @@ void vtkDICOMDirectory::Update(int)
 //----------------------------------------------------------------------------
 void vtkDICOMDirectory::SetInternalFileName(const char *name)
 {
-  if (this->InternalFileName == NULL && name == NULL)
+  if (this->InternalFileName == nullptr && name == nullptr)
   {
     return;
   }
-  if (this->InternalFileName != 0 && name != 0 &&
+  if (this->InternalFileName != nullptr && name != nullptr &&
       strcmp(this->InternalFileName, name) == 0)
   {
     return;
@@ -2754,7 +2755,7 @@ void vtkDICOMDirectory::SetInternalFileName(const char *name)
   }
   else
   {
-    this->InternalFileName = 0;
+    this->InternalFileName = nullptr;
   }
 }
 

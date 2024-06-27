@@ -54,7 +54,7 @@ class vtkDICOMPerFilePalette :
 //----------------------------------------------------------------------------
 vtkDICOMApplyPalette::vtkDICOMApplyPalette()
 {
-  this->Palette = 0;
+  this->Palette = nullptr;
   this->IsSupplemental = false;
 }
 
@@ -281,7 +281,7 @@ int vtkDICOMApplyPalette::RequestInformation(
 
   // Bypass unless there is a palette to apply
   delete this->Palette;
-  this->Palette = 0;
+  this->Palette = nullptr;
   this->IsSupplemental = 0;
   bool hasPalette = false;
 
@@ -347,7 +347,7 @@ int vtkDICOMApplyPalette::RequestData(
       metaInfo->Get(vtkDICOMAlgorithm::META_DATA()));
 
   // Passthrough if there is no palette to apply
-  if (meta == 0 || this->Palette == 0)
+  if (meta == nullptr || this->Palette == nullptr)
   {
     vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
     vtkInformation *outInfo = outputVector->GetInformationObject(0);

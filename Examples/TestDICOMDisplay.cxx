@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
   vtkSmartPointer<vtkStringArray> files =
     vtkSmartPointer<vtkStringArray>::New();
 
-  const char *stackID = 0;
+  const char *stackID = nullptr;
 
   for (int i = 1; i < argc; i++)
   {

@@ -36,13 +36,13 @@ vtkDICOMMetaData::vtkDICOMMetaData()
 {
   this->NumberOfInstances = 1;
   this->NumberOfDataElements = 0;
-  this->Table = NULL;
-  this->Head.Prev = NULL;
+  this->Table = nullptr;
+  this->Head.Prev = nullptr;
   this->Head.Next = &this->Tail;
   this->Tail.Prev = &this->Head;
-  this->Tail.Next = NULL;
-  this->FileIndexArray = NULL;
-  this->FrameIndexArray = NULL;
+  this->Tail.Next = nullptr;
+  this->FileIndexArray = nullptr;
+  this->FrameIndexArray = nullptr;
 }
 
 // Destructor
@@ -74,7 +74,7 @@ void vtkDICOMMetaData::Clear()
   }
 
   this->NumberOfDataElements = 0;
-  this->Table = NULL;
+  this->Table = nullptr;
   this->Head.Next = &this->Tail;
   this->Tail.Prev = &this->Head;
 }
@@ -87,19 +87,19 @@ void vtkDICOMMetaData::Initialize()
   if (this->FileIndexArray)
   {
     this->FileIndexArray->Delete();
-    this->FileIndexArray = 0;
+    this->FileIndexArray = nullptr;
   }
   if (this->FrameIndexArray)
   {
     this->FrameIndexArray->Delete();
-    this->FrameIndexArray = 0;
+    this->FrameIndexArray = nullptr;
   }
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMMetaData::SetNumberOfInstances(int n)
 {
-  if (this->Table != NULL)
+  if (this->Table != nullptr)
   {
     vtkErrorMacro("SetNumberOfInstances: Cannot set NumberOfInstances after "
                   "attributes have been added");
@@ -155,9 +155,9 @@ void vtkDICOMMetaData::Erase(vtkDICOMTag tag)
   vtkDICOMDataElement **htable = this->Table;
   vtkDICOMDataElement *hptr;
 
-  if (htable && (hptr = htable[i]) != NULL)
+  if (htable && (hptr = htable[i]) != nullptr)
   {
-    while (hptr->Next != 0)
+    while (hptr->Next != nullptr)
     {
       if (hptr->Tag == tag)
       {
@@ -166,7 +166,7 @@ void vtkDICOMMetaData::Erase(vtkDICOMTag tag)
         hptr->Prev->Next = hptr->Next;
         // remove from the hash table
         hptr[0] = hptr[1];
-        while (hptr->Next != 0)
+        while (hptr->Next != nullptr)
         {
           // adjust links as necessary
           hptr->Prev->Next = hptr;
@@ -192,9 +192,9 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElement(
   vtkDICOMDataElement **htable = this->Table;
   vtkDICOMDataElement *hptr;
 
-  if (htable && (hptr = htable[i]) != NULL)
+  if (htable && (hptr = htable[i]) != nullptr)
   {
-    while (hptr->Next != 0)
+    while (hptr->Next != nullptr)
     {
       if (hptr->Tag == tag)
       {
@@ -204,13 +204,13 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElement(
     }
   }
 
-  return NULL;
+  return nullptr;
 }
 
 //----------------------------------------------------------------------------
 bool vtkDICOMMetaData::Has(vtkDICOMTag tag)
 {
-  return (this->FindDataElement(tag) != 0);
+  return (this->FindDataElement(tag) != nullptr);
 }
 
 //----------------------------------------------------------------------------
@@ -218,9 +218,9 @@ const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
   int idx, vtkDICOMTag tag)
 {
   vtkDICOMDataElement *a = this->FindDataElement(tag);
-  const vtkDICOMValue *vptr = 0;
+  const vtkDICOMValue *vptr = nullptr;
 
-  if (a != 0)
+  if (a != nullptr)
   {
     vptr = &a->Value;
     // is this a sequence of values?
@@ -228,7 +228,7 @@ const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
     if (sptr)
     {
       size_t n = vptr->GetNumberOfValues();
-      vptr = 0;
+      vptr = nullptr;
       if (idx >= 0 && static_cast<size_t>(idx) < n)
       {
         if (sptr[idx].IsValid())
@@ -247,18 +247,18 @@ const vtkDICOMValue *vtkDICOMMetaData::FindAttributeValue(
   int idx, const vtkDICOMTagPath& tagpath)
 {
   const vtkDICOMValue *vptr = this->FindAttributeValue(idx, tagpath.GetHead());
-  if (vptr != 0 && tagpath.HasTail())
+  if (vptr != nullptr && tagpath.HasTail())
   {
     size_t i = tagpath.GetIndex();
     size_t n = vptr->GetNumberOfValues();
     const vtkDICOMItem *items = vptr->GetSequenceData();
-    vptr = 0;
-    if (items != 0 && i < n)
+    vptr = nullptr;
+    if (items != nullptr && i < n)
     {
       vptr = &items[i].Get(tagpath.GetTail());
       if (!vptr->IsValid())
       {
-        vptr = 0;
+        vptr = nullptr;
       }
     }
   }
@@ -306,7 +306,7 @@ const vtkDICOMValue &vtkDICOMMetaData::Get(
   };
 
   // for temporarily saving location to private value (see below)
-  const vtkDICOMValue *privateValue = 0;
+  const vtkDICOMValue *privateValue = nullptr;
 
   // search PerFrame and then Shared functional sequences, if present
   // (if frame is "-1", then only search SharedFunctionalGroups)
@@ -343,7 +343,7 @@ const vtkDICOMValue &vtkDICOMMetaData::Get(
               {
                 return w;
               }
-              else if (privateValue == 0)
+              else if (privateValue == nullptr)
               {
                 // if we found the attribute in a private sequence,
                 // then save but and keep searching to see if it will
@@ -376,7 +376,7 @@ const vtkDICOMValue &vtkDICOMMetaData::Get(int idx, int frame, vtkDICOMTag tag)
 //----------------------------------------------------------------------------
 int vtkDICOMMetaData::GetFileIndex(int sliceIdx)
 {
-  if (this->FileIndexArray == 0 || sliceIdx < 0 ||
+  if (this->FileIndexArray == nullptr || sliceIdx < 0 ||
       sliceIdx >= this->FileIndexArray->GetNumberOfTuples())
   {
     return -1;
@@ -389,7 +389,7 @@ int vtkDICOMMetaData::GetFileIndex(int sliceIdx)
 //----------------------------------------------------------------------------
 int vtkDICOMMetaData::GetFileIndex(int sliceIdx, int compIdx, int numComp)
 {
-  if (this->FileIndexArray == 0 || sliceIdx < 0 ||
+  if (this->FileIndexArray == nullptr || sliceIdx < 0 ||
       sliceIdx >= this->FileIndexArray->GetNumberOfTuples() ||
       compIdx < 0 || compIdx >= numComp)
   {
@@ -403,7 +403,7 @@ int vtkDICOMMetaData::GetFileIndex(int sliceIdx, int compIdx, int numComp)
 //----------------------------------------------------------------------------
 int vtkDICOMMetaData::GetFrameIndex(int sliceIdx)
 {
-  if (this->FrameIndexArray == 0 || sliceIdx < 0 ||
+  if (this->FrameIndexArray == nullptr || sliceIdx < 0 ||
       sliceIdx >= this->FrameIndexArray->GetNumberOfTuples())
   {
     return -1;
@@ -416,7 +416,7 @@ int vtkDICOMMetaData::GetFrameIndex(int sliceIdx)
 //----------------------------------------------------------------------------
 int vtkDICOMMetaData::GetFrameIndex(int sliceIdx, int compIdx, int numComp)
 {
-  if (this->FrameIndexArray == 0 || sliceIdx < 0 ||
+  if (this->FrameIndexArray == nullptr || sliceIdx < 0 ||
       sliceIdx >= this->FrameIndexArray->GetNumberOfTuples() ||
       compIdx < 0 || compIdx >= numComp)
   {
@@ -438,24 +438,24 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
   vtkDICOMDataElement **htable = this->Table;
   vtkDICOMDataElement *hptr;
 
-  if (htable == NULL)
+  if (htable == nullptr)
   {
     // allocate the hash table
     m = METADATA_HASH_SIZE;
     htable = new vtkDICOMDataElement *[METADATA_HASH_SIZE];
     this->Table = htable;
-    do { *htable++ = NULL; } while (--m);
+    do { *htable++ = nullptr; } while (--m);
     htable = this->Table;
   }
 
   hptr = htable[i];
 
-  if (hptr == NULL)
+  if (hptr == nullptr)
   {
     hptr = new vtkDICOMDataElement[4];
     htable[i] = hptr;
   }
-  else if (hptr->Next != 0)
+  else if (hptr->Next != nullptr)
   {
     // see if item is already there
     unsigned int n = 0;
@@ -468,7 +468,7 @@ vtkDICOMDataElement *vtkDICOMMetaData::FindDataElementOrInsert(
       n++;
       hptr++;
     }
-    while (hptr->Next != 0);
+    while (hptr->Next != nullptr);
 
     // if n+1 is a power of two, double allocated space
     if (n > 2 && (n & (n+1)) == 0)
@@ -514,7 +514,7 @@ int vtkDICOMMetaData::FindItemsOrInsert(
   vtkDICOMTag tag = tagpath.GetHead();
 
   vtkDICOMDataElement *loc = this->FindDataElementOrInsert(tag);
-  if (loc == 0)
+  if (loc == nullptr)
   {
     vtkErrorMacro("SetAttributeValue: tag group number must not be zero.");
     return 0;
@@ -540,7 +540,7 @@ int vtkDICOMMetaData::FindItemsOrInsert(
   // is this a series of values?
   int count = 1;
   vtkDICOMValue *sptr = vtkDICOMValueFriendMetaData::GetMultiplex(vptr);
-  if (sptr != 0)
+  if (sptr != nullptr)
   {
     if (useidx)
     {
@@ -580,7 +580,7 @@ int vtkDICOMMetaData::FindItemsOrInsert(
     size_t n = i+1;
     size_t m = 0;
     const vtkDICOMItem *oldItems = sptr[k].GetSequenceData();
-    if (oldItems != 0)
+    if (oldItems != nullptr)
     {
       m = sptr[k].GetNumberOfValues();
       n = (n > m ? n : m);
@@ -623,7 +623,7 @@ int vtkDICOMMetaData::FindItemsOrInsert(
 vtkDICOMItem *vtkDICOMMetaData::FindItemOrInsert(
   int idx, const vtkDICOMTagPath& tagpath)
 {
-  vtkDICOMItem *itemptr = 0;
+  vtkDICOMItem *itemptr = nullptr;
   this->FindItemsOrInsert(idx, true, tagpath, &itemptr);
   return itemptr;
 }
@@ -635,7 +635,7 @@ void vtkDICOMMetaData::Set(vtkDICOMTag tag, const vtkDICOMValue& v)
   if (v.IsValid())
   {
     vtkDICOMDataElement *loc = this->FindDataElementOrInsert(tag);
-    if (loc == 0)
+    if (loc == nullptr)
     {
       vtkErrorMacro("SetAttributeValue: tag group number must not be zero.");
       return;
@@ -686,7 +686,7 @@ void vtkDICOMMetaData::Set(vtkDICOMTag tag, const std::string& v)
 void vtkDICOMMetaData::Set(int idx, vtkDICOMTag tag, const vtkDICOMValue& v)
 {
   vtkDICOMDataElement *loc = this->FindDataElementOrInsert(tag);
-  if (loc == 0)
+  if (loc == nullptr)
   {
     vtkErrorMacro("SetAttributeValue: tag group number must not be zero.");
     return;
@@ -919,10 +919,10 @@ void vtkDICOMMetaData::CopyAttributes(vtkDICOMMetaData *o)
   // private tag blocks, so at most one of the two data sets
   // can safely have private tags when this method is called.
 
-  if (o != 0 && o != this)
+  if (o != nullptr && o != this)
   {
     vtkDICOMDataElement **otable = o->Table;
-    if (otable != 0)
+    if (otable != nullptr)
     {
       const vtkDICOMDataElement *iter = o->Head.Next;
       const vtkDICOMDataElement *iterEnd = &o->Tail;
@@ -930,7 +930,7 @@ void vtkDICOMMetaData::CopyAttributes(vtkDICOMMetaData *o)
       {
         // if this is a per-instance element, then make a copy of it
         const vtkDICOMValue *vptr = iter->Value.GetMultiplexData();
-        if (vptr == 0)
+        if (vptr == nullptr)
         {
           vtkDICOMDataElement *e = this->FindDataElementOrInsert(iter->Tag);
           e->Tag = iter->Tag;
@@ -960,7 +960,7 @@ void vtkDICOMMetaData::ShallowCopy(vtkDataObject *source)
   if (o != this)
   {
     this->Initialize();
-    if (o != 0)
+    if (o != nullptr)
     {
       this->NumberOfInstances = o->NumberOfInstances;
       this->CopyAttributes(o);
@@ -978,7 +978,7 @@ void vtkDICOMMetaData::DeepCopy(vtkDataObject *source)
   if (o != this)
   {
     this->Initialize();
-    if (o != 0)
+    if (o != nullptr)
     {
       this->NumberOfInstances = o->NumberOfInstances;
       this->CopyAttributes(o);
@@ -1079,7 +1079,7 @@ vtkDICOMTag vtkDICOMMetaData::ResolvePrivateTag(
   vtkDICOMDataElementIterator iterEnd = this->End();
 
   vtkDICOMDataElement *e = this->FindDataElement(ctag);
-  if (e != 0)
+  if (e != nullptr)
   {
     // found (gggg,0010) in the hash table
     iter = vtkDICOMDataElementIterator(e);
@@ -1160,7 +1160,7 @@ vtkDICOMDictEntry vtkDICOMMetaData::FindDictEntry(vtkDICOMTag tag)
   unsigned short element = tag.GetElement();
 
   // note that there is similar code in vtkDICOMItem
-  const char *dict = 0;
+  const char *dict = nullptr;
   if ((group & 1) != 0 && element > 0x00ffu)
   {
     unsigned short creatorElement = (element >> 8);

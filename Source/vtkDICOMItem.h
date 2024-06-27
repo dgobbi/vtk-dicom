@@ -48,7 +48,7 @@ private:
     vtkDICOMVR VRForXS;
 
     List() : Head(), Tail(), ReferenceCount(1),
-             NumberOfDataElements(0), DataElements(0),
+             NumberOfDataElements(0), DataElements(nullptr),
              ByteOffset(0), Delimited(false),
              CharacterSet(vtkDICOMCharacterSet::ISO_IR_6),
              VRForXS(vtkDICOMVR::US) {}
@@ -58,7 +58,7 @@ public:
 
   //@{
   //! Default constructor creates an empty item.
-  vtkDICOMItem() : L(0) {}
+  vtkDICOMItem() : L(nullptr) {}
 
   //! Constructor that takes certain properties from the data set.
   /*!
@@ -92,14 +92,14 @@ public:
   //! Clear the data.
   void Clear() {
     if (this->L && --(this->L->ReferenceCount) == 0) { this->FreeList(); }
-    else { this->L = 0; } }
+    else { this->L = nullptr; } }
 
   //! Check if empty.
-  bool IsEmpty() const { return (this->L == 0); }
+  bool IsEmpty() const { return (this->L == nullptr); }
 
   //! Check if this was read as a delimited item.
   bool IsDelimited() const {
-    return (this->L == 0 || this->L->Delimited != 0); }
+    return (this->L == nullptr || this->L->Delimited != 0); }
   //@}
 
   //@{
@@ -156,7 +156,7 @@ public:
    *  know the byte offset of each item in the sequence.
    */
   unsigned int GetByteOffset() const {
-    return (this->L == 0 ? 0 : this->L->ByteOffset); }
+    return (this->L == nullptr ? 0 : this->L->ByteOffset); }
   //@}
 
   //@{
@@ -166,11 +166,11 @@ public:
 
   //! Get an iterator for the list of data elements.
   vtkDICOMDataElementIterator Begin() const {
-    return (this->L ? this->L->Head.Next : 0); }
+    return (this->L ? this->L->Head.Next : nullptr); }
 
   //! Get an end iterator for the list of data elements.
   vtkDICOMDataElementIterator End() const {
-    return (this->L ? &this->L->Tail : 0); }
+    return (this->L ? &this->L->Tail : nullptr); }
   //@}
 
   //@{

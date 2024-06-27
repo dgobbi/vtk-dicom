@@ -218,7 +218,7 @@ bool dicomtonifti_check_error(vtkObject *o)
   vtkDICOMFileSorter *sorter = vtkDICOMFileSorter::SafeDownCast(o);
   vtkNIFTIWriter *writer = vtkNIFTIWriter::SafeDownCast(o);
   vtkDICOMParser *parser = vtkDICOMParser::SafeDownCast(o);
-  const char *filename = 0;
+  const char *filename = nullptr;
   unsigned long errorcode = 0;
   if (writer)
   {
@@ -345,7 +345,7 @@ void dicomtonifti_read_options(
   options->time_units = 16;  // default to msec
   options->time_tagpath = vtkDICOMTagPath();
   options->time_delta_tagpath = vtkDICOMTagPath();
-  options->output = 0;
+  options->output = nullptr;
   options->conversions_attempted = 0;
 
   // read the options from the command line
@@ -596,7 +596,7 @@ std::string dicomtonifti_make_filename(
 
   const char *cp = outfile;
   const char *dp = cp;
-  const char *bp = 0;
+  const char *bp = nullptr;
   while (*cp != '\0')
   {
     while (*cp != '{' && *cp != '}' && *cp != '\0') { cp++; }

@@ -64,7 +64,7 @@ public:
 vtkDICOMApplyRescale::vtkDICOMApplyRescale()
 {
   this->OutputScalarType = VTK_DOUBLE;
-  this->Mapping = 0;
+  this->Mapping = nullptr;
 }
 
 //----------------------------------------------------------------------------
@@ -121,7 +121,7 @@ void vtkDICOMApplyRescaleExecute(
 
     for (int zIdx = extent[4]; zIdx <= extent[5]; zIdx++)
     {
-      vtkDICOMRealWorldMapping *mapping = 0;
+      vtkDICOMRealWorldMapping *mapping = nullptr;
       T first = vtkTypeTraits<T>::Min();
       T last = vtkTypeTraits<T>::Max();
       if (mapArray)
@@ -156,7 +156,7 @@ void vtkDICOMApplyRescaleExecute(
           }
         }
 
-        if (mapping == 0)
+        if (mapping == nullptr)
         {
           // no mapping to apply
           for (int xIdx = extent[0]; xIdx <= extent[1]; xIdx++)
@@ -278,7 +278,7 @@ int vtkDICOMApplyRescale::RequestData(
         mapping->Last = VTK_INT_MAX;
         mapping->Slope = 1.0;
         mapping->Intercept = 0.0;
-        mapping->Map = 0;
+        mapping->Map = nullptr;
 
         int i = meta->GetFileIndex(zIdx, c, numComponents);
         int j = meta->GetFrameIndex(zIdx, c, numComponents);
@@ -332,7 +332,7 @@ int vtkDICOMApplyRescale::RequestData(
     if (!hasMapping)
     {
       delete [] this->Mapping;
-      this->Mapping = 0;
+      this->Mapping = nullptr;
     }
   }
 
@@ -356,7 +356,7 @@ int vtkDICOMApplyRescale::RequestData(
   }
 
   delete [] this->Mapping;
-  this->Mapping = 0;
+  this->Mapping = nullptr;
 
   return rval;
 }

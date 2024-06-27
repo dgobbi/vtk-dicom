@@ -26,7 +26,7 @@ bool StringsEqual(const char *s1, const char *s2)
   if (s1 != s2)
   {
     result = false;
-    if (s1 != 0 && s2 != 0)
+    if (s1 != nullptr && s2 != nullptr)
     {
       result = (strcmp(s1, s2) == 0);
     }

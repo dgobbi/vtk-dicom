@@ -195,7 +195,7 @@ void dicompull_checktags(
 {
   std::string keytext;
   const char *cp = outdir;
-  const char *bp = 0;
+  const char *bp = nullptr;
   while (*cp != '\0')
   {
     while (*cp != '{' && *cp != '}' && *cp != '\0') { cp++; }
@@ -239,7 +239,7 @@ std::string dicompull_makedirname(vtkDICOMMetaData *meta, const char *outdir)
 
   const char *cp = outdir;
   const char *dp = cp;
-  const char *bp = 0;
+  const char *bp = nullptr;
   while (*cp != '\0')
   {
     while (*cp != '{' && *cp != '}' && *cp != '\0') { cp++; }
@@ -500,7 +500,7 @@ int MAINMACRO(int argc, char *argv[])
   }
 
   // check that the outdir string is valid
-  dicompull_checktags(&query, NULL, outdir.c_str());
+  dicompull_checktags(&query, nullptr, outdir.c_str());
 
   // check that the outdir is writable
   std::string basedir = dicompull_basedir(outdir.c_str());
@@ -582,7 +582,7 @@ int MAINMACRO(int argc, char *argv[])
     if (!silent)
     {
       p->SetText("Copying");
-      p->Execute(NULL, vtkCommand::StartEvent, NULL);
+      p->Execute(nullptr, vtkCommand::StartEvent, nullptr);
       for (int k = 0; k < finder->GetNumberOfSeries(); k++)
       {
         total += finder->GetFileNamesForSeries(k)->GetNumberOfValues();
@@ -707,7 +707,7 @@ int MAINMACRO(int argc, char *argv[])
             count++;
             double progress = (static_cast<double>(count)/
                                static_cast<double>(total));
-            p->Execute(NULL, vtkCommand::ProgressEvent, &progress);
+            p->Execute(nullptr, vtkCommand::ProgressEvent, &progress);
           }
         }
       }
@@ -715,7 +715,7 @@ int MAINMACRO(int argc, char *argv[])
     delete [] buffer;
     if (!silent)
     {
-      p->Execute(NULL, vtkCommand::EndEvent, NULL);
+      p->Execute(nullptr, vtkCommand::EndEvent, nullptr);
     }
   }
 

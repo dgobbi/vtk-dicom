@@ -143,8 +143,8 @@ public:
 protected:
   // Constructor that initializes all of the members.
   EncoderBase(vtkDICOMCompiler *comp, int idx) :
-    Compiler(comp), SOPInstanceUID(0), SeriesInstanceUID(0),
-    StudyInstanceUID(0), Index(idx), Depth(0), ImplicitVR(0) {}
+    Compiler(comp), SOPInstanceUID(nullptr), SeriesInstanceUID(nullptr),
+    StudyInstanceUID(nullptr), Index(idx), Depth(0), ImplicitVR(0) {}
 
   // the vtkDICOMCompiler::FlushBuffer method is used to refill the buffer
   vtkDICOMCompiler *Compiler;
@@ -860,28 +860,28 @@ bool Encoder<E>::WriteElements(
 // Constructor
 vtkDICOMCompiler::vtkDICOMCompiler()
 {
-  this->FileName = NULL;
-  this->SOPInstanceUID = NULL;
-  this->SeriesInstanceUID = NULL;
-  this->StudyInstanceUID = NULL;
-  this->ImplementationClassUID = NULL;
-  this->ImplementationVersionName = NULL;
-  this->SourceApplicationEntityTitle = NULL;
-  this->TransferSyntaxUID = NULL;
-  this->MetaData = NULL;
-  this->OutputFile = NULL;
-  this->Buffer = NULL;
+  this->FileName = nullptr;
+  this->SOPInstanceUID = nullptr;
+  this->SeriesInstanceUID = nullptr;
+  this->StudyInstanceUID = nullptr;
+  this->ImplementationClassUID = nullptr;
+  this->ImplementationVersionName = nullptr;
+  this->SourceApplicationEntityTitle = nullptr;
+  this->TransferSyntaxUID = nullptr;
+  this->MetaData = nullptr;
+  this->OutputFile = nullptr;
+  this->Buffer = nullptr;
   this->BufferSize = 8192;
   this->ChunkSize = 0;
   this->Index = 0;
   this->FrameCounter = 0;
-  this->FrameData = 0;
-  this->FrameLength = 0;
+  this->FrameData = nullptr;
+  this->FrameLength = nullptr;
   this->BigEndian = false;
   this->Compressed = false;
   this->KeepOriginalPixelDataVR = false;
   this->ErrorCode = 0;
-  this->SeriesUIDs = 0;
+  this->SeriesUIDs = nullptr;
 
   // This is our default implementation UID
   const char *impuid =
@@ -948,7 +948,7 @@ void vtkDICOMCompiler::SetBufferSize(int size)
 //----------------------------------------------------------------------------
 void vtkDICOMCompiler::GenerateSeriesUIDs()
 {
-  if (this->SeriesUIDs == 0)
+  if (this->SeriesUIDs == nullptr)
   {
     this->SeriesUIDs = vtkStringArray::New();
   }
@@ -984,7 +984,7 @@ void vtkDICOMCompiler::Close()
   {
     this->OutputFile->Close();
     delete this->OutputFile;
-    this->OutputFile = NULL;
+    this->OutputFile = nullptr;
   }
 }
 
@@ -1000,7 +1000,7 @@ void vtkDICOMCompiler::CloseAndRemove()
   {
     this->OutputFile->Close();
     delete this->OutputFile;
-    this->OutputFile = NULL;
+    this->OutputFile = nullptr;
     vtkDICOMFile::Remove(this->FileName);
   }
 }
@@ -1114,7 +1114,7 @@ void vtkDICOMCompiler::FreeFragments()
   }
   delete [] this->FrameData;
   delete [] this->FrameLength;
-  this->FrameData = 0;
+  this->FrameData = nullptr;
   this->FrameCounter = 0;
 }
 
@@ -1130,8 +1130,8 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
   }
 
   // Generate fresh UIDs if at index zero
-  if ((this->SOPInstanceUID == 0 || this->SeriesInstanceUID == 0) &&
-      (idx == 0 || this->SeriesUIDs == 0 ||
+  if ((this->SOPInstanceUID == nullptr || this->SeriesInstanceUID == nullptr) &&
+      (idx == 0 || this->SeriesUIDs == nullptr ||
        this->SeriesUIDs->GetNumberOfValues() !=
        data->GetNumberOfInstances() + 1))
   {
@@ -1153,7 +1153,7 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
       errText = "The selected file is a directory ";
     }
     delete this->OutputFile;
-    this->OutputFile = 0;
+    this->OutputFile = nullptr;
     vtkErrorMacro("WriteFile: " << errText << this->FileName);
     return false;
   }
@@ -1169,7 +1169,7 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
   bool r = true;
 
   // only write preamble and meta header if transfer syntax is set
-  if (this->TransferSyntaxUID != 0)
+  if (this->TransferSyntaxUID != nullptr)
   {
     // write the preamble
     memset(cp, '\0', 128);
@@ -1212,7 +1212,7 @@ bool vtkDICOMCompiler::WriteFile(vtkDICOMMetaData *data, int idx)
 //----------------------------------------------------------------------------
 void vtkDICOMCompiler::WritePixelData(const unsigned char *cp, vtkIdType size)
 {
-  if (this->OutputFile == 0)
+  if (this->OutputFile == nullptr)
   {
     return;
   }
@@ -1227,7 +1227,7 @@ void vtkDICOMCompiler::WritePixelData(const unsigned char *cp, vtkIdType size)
 //----------------------------------------------------------------------------
 void vtkDICOMCompiler::WriteFrame(const unsigned char *cp, vtkIdType size)
 {
-  if (this->OutputFile == 0)
+  if (this->OutputFile == nullptr)
   {
     return;
   }
@@ -1250,14 +1250,14 @@ void vtkDICOMCompiler::WriteFrame(const unsigned char *cp, vtkIdType size)
       this->FrameLength = new unsigned int[numFrames];
       for (unsigned int i = 0; i < numFrames; i++)
       {
-        this->FrameData[i] = 0;
+        this->FrameData[i] = nullptr;
         this->FrameLength[i] = 0;
       }
     }
 
     vtkDICOMImageCodec codec(this->TransferSyntaxUID);
     size_t fl = 0;
-    unsigned char *fd = 0;
+    unsigned char *fd = nullptr;
     int errCode = codec.Encode(this->MetaData, cp, size, &fd, &fl);
     this->FrameLength[this->FrameCounter] = static_cast<unsigned int>(fl);
     this->FrameData[this->FrameCounter] = fd;
@@ -1340,7 +1340,7 @@ bool vtkDICOMCompiler::WriteMetaHeader(
   vtkDICOMMetaData *meta, int idx)
 {
   // if no transfer syntax is set, do not write header
-  if (this->TransferSyntaxUID == 0)
+  if (this->TransferSyntaxUID == nullptr)
   {
     return true;
   }
@@ -1364,11 +1364,11 @@ bool vtkDICOMCompiler::WriteMetaHeader(
   }
   const char *classUID = classUIDString.c_str();
 
-  if (instanceUID == 0)
+  if (instanceUID == nullptr)
   {
     instanceUID = this->SeriesUIDs->GetValue(idx).c_str();
   }
-  if (implementationUID == 0)
+  if (implementationUID == nullptr)
   {
     implementationUID =
       vtkDICOMUtilities::GetImplementationClassUID();
@@ -1470,15 +1470,15 @@ bool vtkDICOMCompiler::WriteMetaData(
   const char *seriesUID = this->SeriesInstanceUID;
   const char *studyUID = this->StudyInstanceUID;
 
-  if (instanceUID == 0)
+  if (instanceUID == nullptr)
   {
     instanceUID = this->SeriesUIDs->GetValue(idx).c_str();
   }
-  if (seriesUID == 0)
+  if (seriesUID == nullptr)
   {
     seriesUID = this->SeriesUIDs->GetValue(this->SeriesUIDs->GetMaxId()).c_str();
   }
-  if (studyUID == 0 && meta->Get(DC::StudyInstanceUID).AsString() == "")
+  if (studyUID == nullptr && meta->Get(DC::StudyInstanceUID).AsString() == "")
   {
     // study UID is only generated once per session
     if (vtkDICOMCompiler::StudyUID[0] == '\0')

@@ -30,9 +30,9 @@ class VTKDICOM_EXPORT vtkDICOMDataElement
 {
 public:
   //@{
-  vtkDICOMDataElement() : Tag(), Value(), Next(0), Prev(0) {}
+  vtkDICOMDataElement() : Tag(), Value(), Next(nullptr), Prev(nullptr) {}
   vtkDICOMDataElement(const vtkDICOMTag& t, const vtkDICOMValue &v) :
-    Tag(t), Value(v), Next(0), Prev(0) {}
+    Tag(t), Value(v), Next(nullptr), Prev(nullptr) {}
   //@}
 
   //@{
@@ -45,7 +45,8 @@ public:
 
   //@{
   //! Check whether this data element carries per-instance values.
-  bool IsPerInstance() const { return (this->Value.GetMultiplexData() != 0); }
+  bool IsPerInstance() const {
+    return (this->Value.GetMultiplexData() != nullptr); }
 
   //! Get the number of value instances in this data element.
   int GetNumberOfInstances() const {
@@ -57,7 +58,7 @@ public:
   //! Get value instance i, if the data element is multi-valued.
   const vtkDICOMValue& GetValue(int i) const {
     const vtkDICOMValue *vptr = this->Value.GetMultiplexData();
-    return (vptr == 0 ? this->Value : vptr[i]); }
+    return (vptr == nullptr ? this->Value : vptr[i]); }
   //@}
 
   //@{
@@ -87,7 +88,7 @@ class VTKDICOM_EXPORT vtkDICOMDataElementIterator
 {
 public:
   //@{
-  vtkDICOMDataElementIterator() : Pointer(0) {}
+  vtkDICOMDataElementIterator() : Pointer(nullptr) {}
   //@}
 
   //@{

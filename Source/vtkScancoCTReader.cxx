@@ -45,7 +45,7 @@ vtkStandardNewMacro(vtkScancoCTReader);
 vtkScancoCTReader::vtkScancoCTReader()
 {
   this->InitializeHeader();
-  this->RawHeader = 0;
+  this->RawHeader = nullptr;
 
   // ISQ uses a lower-left-hand origin
   this->FileLowerLeft = true;
@@ -575,7 +575,7 @@ int vtkScancoCTReader::ReadISQHeader(std::istream *file, unsigned long bytesRead
   // decode the extended header (lots of guesswork)
   if (headerSize >= 2048)
   {
-    char *calHeader = 0;
+    char *calHeader = nullptr;
     int calHeaderSize = 0;
     h = this->RawHeader + 512;
     unsigned long hskip = 1;
@@ -980,7 +980,7 @@ int vtkScancoCTReader::RequestInformation(
   this->InitializeHeader();
 
   const char *filename = this->FileName;
-  if (filename == 0)
+  if (filename == nullptr)
   {
     vtkErrorMacro("A filename must be specified");
     return 0;
@@ -1098,7 +1098,7 @@ int vtkScancoCTReader::RequestData(
 
   data->GetPointData()->GetScalars()->SetName("ImageFile");
 
-  const char *filename = 0;
+  const char *filename = nullptr;
   if (this->FileNames && this->FileNames->GetNumberOfValues() == 1)
   {
     filename = this->FileNames->GetValue(0).c_str();
@@ -1108,7 +1108,7 @@ int vtkScancoCTReader::RequestData(
     filename = this->GetFileName();
   }
 
-  if (filename == 0)
+  if (filename == nullptr)
   {
     vtkErrorMacro("A FileName must be provided");
     return 0;
@@ -1155,7 +1155,7 @@ int vtkScancoCTReader::RequestData(
   outSize *= zsize;
 
   // For the input (compressed) data
-  char *input = 0;
+  char *input = nullptr;
   size_t size = 0;
 
   if (this->Compression == 0x00b1)

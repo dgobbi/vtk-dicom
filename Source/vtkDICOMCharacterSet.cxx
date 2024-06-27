@@ -42,98 +42,101 @@ struct CharsetInfo
 // plus additional legacy character sets of interest.
 static const int CHARSET_TABLE_SIZE = 91;
 static const CharsetInfo Charsets[91] = {
-  { "ISO_IR_6",   "",           NULL, "US-ASCII" },
-  { "ISO_IR_13",  "ISO_IR 13",  NULL, NULL }, // JIS_X0201 romaji + katakana
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { "ISO_IR_100", "ISO_IR 100", NULL, "ISO-8859-1" },
-  { "ISO_IR_101", "ISO_IR 101", NULL, "ISO-8859-2" },
-  { "ISO_IR_109", "ISO_IR 109", NULL, "ISO-8859-3" },
-  { "ISO_IR_110", "ISO_IR 110", NULL, "ISO-8859-4" },
-  { "ISO_IR_144", "ISO_IR 144", NULL, "ISO-8859-5" },
-  { "ISO_IR_127", "ISO_IR 127", NULL, "ISO-8859-6" },
-  { "ISO_IR_126", "ISO_IR 126", NULL, "ISO-8859-7" },
-  { "ISO_IR_138", "ISO_IR 138", NULL, "ISO-8859-8" },
-  { "ISO_IR_148", "ISO_IR 148", NULL, "ISO-8859-9" },
-  { "latin6",     NULL,         NULL, "ISO-8859-10" },
-  { "ISO_IR_166", "ISO_IR 166", NULL, "TIS-620" },
-  { "latin7",     NULL,         NULL, "ISO-8859-13" },
-  { "latin8",     NULL,         NULL, "ISO-8859-14" },
-  { "ISO_IR_203", "ISO_IR 203", NULL, "ISO-8859-15" },
-  { "latin10",    NULL,         NULL, "ISO-8859-16" },
-  { NULL, NULL, NULL, NULL },
-  { "euc-kr",     NULL,         NULL, "EUC-KR" },
-  { "gb2312",     NULL,         NULL, "GB2312" },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { "ISO_2022_IR_6",   "ISO 2022 IR 6",   "(B", NULL }, // US-ASCII
-  { "ISO_2022_IR_13",  "ISO 2022 IR 13",  "(J", NULL }, // JIS_X0201
+  { "ISO_IR_6",   "",           nullptr, "US-ASCII" },
+  { "ISO_IR_13",  "ISO_IR 13",  nullptr, nullptr }, // JIS_X0201 romaji+katakana
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { "ISO_IR_100", "ISO_IR 100", nullptr, "ISO-8859-1" },
+  { "ISO_IR_101", "ISO_IR 101", nullptr, "ISO-8859-2" },
+  { "ISO_IR_109", "ISO_IR 109", nullptr, "ISO-8859-3" },
+  { "ISO_IR_110", "ISO_IR 110", nullptr, "ISO-8859-4" },
+  { "ISO_IR_144", "ISO_IR 144", nullptr, "ISO-8859-5" },
+  { "ISO_IR_127", "ISO_IR 127", nullptr, "ISO-8859-6" },
+  { "ISO_IR_126", "ISO_IR 126", nullptr, "ISO-8859-7" },
+  { "ISO_IR_138", "ISO_IR 138", nullptr, "ISO-8859-8" },
+  { "ISO_IR_148", "ISO_IR 148", nullptr, "ISO-8859-9" },
+  { "latin6",     nullptr,      nullptr, "ISO-8859-10" },
+  { "ISO_IR_166", "ISO_IR 166", nullptr, "TIS-620" },
+  { "latin7",     nullptr,      nullptr, "ISO-8859-13" },
+  { "latin8",     nullptr,      nullptr, "ISO-8859-14" },
+  { "ISO_IR_203", "ISO_IR 203", nullptr, "ISO-8859-15" },
+  { "latin10",    nullptr,      nullptr, "ISO-8859-16" },
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { "euc-kr",     nullptr,      nullptr, "EUC-KR" },
+  { "gb2312",     nullptr,      nullptr, "GB2312" },
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { nullptr,      nullptr,      nullptr, nullptr },
+  { "ISO_2022_IR_6",   "ISO 2022 IR 6",   "(B", nullptr }, // US-ASCII
+  { "ISO_2022_IR_13",  "ISO 2022 IR 13",  "(J", nullptr }, // JIS_X0201
   { "ISO_2022_IR_87", "\\ISO 2022 IR 87", "$B", "ISO-2022-JP" }, // JIS_X0208
-  { "ISO_2022_IR_13_87", "ISO 2022 IR 13\\ISO 2022 IR 87", NULL, NULL },
-  { "ISO_2022_IR_159", "\\ISO 2022 IR 159", "$(D", NULL }, // JIS_X0212
-  { "ISO_2022_IR_13_159", "ISO 2022 IR 13\\ISO 2022 IR 159", NULL, NULL },
-  { "ISO_2022_IR_87_159", "\\ISO 2022 IR 87\\ISO 2022 IR 159", NULL, NULL },
+  { "ISO_2022_IR_13_87", "ISO 2022 IR 13\\ISO 2022 IR 87",
+    nullptr, nullptr },
+  { "ISO_2022_IR_159", "\\ISO 2022 IR 159", "$(D", nullptr }, // JIS_X0212
+  { "ISO_2022_IR_13_159", "ISO 2022 IR 13\\ISO 2022 IR 159",
+    nullptr, nullptr },
+  { "ISO_2022_IR_87_159", "\\ISO 2022 IR 87\\ISO 2022 IR 159",
+    nullptr, nullptr },
   { "ISO_2022_IR_13_87_159", "ISO 2022 IR 13\\ISO 2022 IR 87\\ISO 2022 IR 159",
-    NULL, NULL },
-  { "ISO_2022_IR_100", "ISO 2022 IR 100", "-A", NULL }, // ISO-8859-1
-  { "ISO_2022_IR_101", "ISO 2022 IR 101", "-B", NULL }, // ISO-8859-2
-  { "ISO_2022_IR_109", "ISO 2022 IR 109", "-C", NULL }, // ISO-8859-3
-  { "ISO_2022_IR_110", "ISO 2022 IR 110", "-D", NULL }, // ISO-8859-4
-  { "ISO_2022_IR_144", "ISO 2022 IR 144", "-L", NULL }, // ISO-8859-5
-  { "ISO_2022_IR_127", "ISO 2022 IR 127", "-G", NULL }, // ISO-8859-6
-  { "ISO_2022_IR_126", "ISO 2022 IR 126", "-F", NULL }, // ISO-8859-7
-  { "ISO_2022_IR_138", "ISO 2022 IR 138", "-H", NULL }, // ISO-8859-8
-  { "ISO_2022_IR_148", "ISO 2022 IR 148", "-M", NULL }, // ISO-8859-9
-  { "iso-2022-latin6", NULL,              "-V", NULL }, // ISO-8859-10
-  { "ISO_2022_IR_166", "ISO 2022 IR 166", "-T", NULL }, // TIS-620
-  { "iso-2022-latin7", NULL,              "-Y", NULL }, // ISO-8859-13
-  { "iso-2022-latin8", NULL,              "-_", NULL }, // ISO-8859-14
-  { "ISO_2022_IR_203", "ISO 2022 IR 203", "-b", NULL }, // ISO-8859-15
-  { "iso-2022-latin10", NULL,             "-f", NULL }, // ISO-8859-16
-  { NULL, NULL, NULL, NULL },
-  { "ISO_2022_IR_149", "\\ISO 2022 IR 149", "$)C", NULL }, // ~ISO-2022-KR
-  { "ISO_2022_IR_58",  "\\ISO 2022 IR 58",  "$)A", NULL }, // ~ISO-2022-CN
-  { "iso-2022-jp",     NULL,              NULL, "ISO-2022-JP" },
-  { "iso-2022-jp-1",   NULL,              NULL, NULL },
-  { "iso-2022-jp-2",   NULL,              NULL, "ISO-2022-JP-2" },
-  { "iso-2022-jp-ext", NULL,              NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { "ISO_IR_192", "ISO_IR 192", NULL, "UTF-8" },
-  { "GB18030",  "GB18030", NULL, "GB18030" },
-  { "GBK",      "GBK",     NULL, "GBK" }, // subset of GB18030
-  { "big5",     NULL,      NULL, "Big5" }, // ETEN, but no hkscs
-  { NULL, NULL, NULL, NULL },
-  { "euc-jp",   NULL,      NULL, "EUC-JP" },
-  { "sjis",     NULL,      NULL, "Shift_JIS" },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { "cp874",    NULL, NULL, "windows-874" }, // thai
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { NULL, NULL, NULL, NULL },
-  { "cp1250",   NULL, NULL, "windows-1250" }, // central europe
-  { "cp1251",   NULL, NULL, "windows-1251" }, // cyrillic
-  { "cp1252",   NULL, NULL, "windows-1252" }, // western europe
-  { "cp1253",   NULL, NULL, "windows-1253" }, // greek
-  { "cp1254",   NULL, NULL, "windows-1254" }, // turkish
-  { "cp1255",   NULL, NULL, "windows-1255" }, // hebrew
-  { "cp1256",   NULL, NULL, "windows-1256" }, // arabic
-  { "cp1257",   NULL, NULL, "windows-1257" }, // baltic rim
-  { "cp1258",   NULL, NULL, "windows-1258" }, // vietnamese
-  { NULL, NULL, NULL, NULL },
-  { "koi8",     NULL, NULL, "KOI8-U" }, // text only, no boxes
+    nullptr, nullptr },
+  { "ISO_2022_IR_100", "ISO 2022 IR 100", "-A", nullptr }, // ISO-8859-1
+  { "ISO_2022_IR_101", "ISO 2022 IR 101", "-B", nullptr }, // ISO-8859-2
+  { "ISO_2022_IR_109", "ISO 2022 IR 109", "-C", nullptr }, // ISO-8859-3
+  { "ISO_2022_IR_110", "ISO 2022 IR 110", "-D", nullptr }, // ISO-8859-4
+  { "ISO_2022_IR_144", "ISO 2022 IR 144", "-L", nullptr }, // ISO-8859-5
+  { "ISO_2022_IR_127", "ISO 2022 IR 127", "-G", nullptr }, // ISO-8859-6
+  { "ISO_2022_IR_126", "ISO 2022 IR 126", "-F", nullptr }, // ISO-8859-7
+  { "ISO_2022_IR_138", "ISO 2022 IR 138", "-H", nullptr }, // ISO-8859-8
+  { "ISO_2022_IR_148", "ISO 2022 IR 148", "-M", nullptr }, // ISO-8859-9
+  { "iso-2022-latin6", nullptr,           "-V", nullptr }, // ISO-8859-10
+  { "ISO_2022_IR_166", "ISO 2022 IR 166", "-T", nullptr }, // TIS-620
+  { "iso-2022-latin7", nullptr,           "-Y", nullptr }, // ISO-8859-13
+  { "iso-2022-latin8", nullptr,           "-_", nullptr }, // ISO-8859-14
+  { "ISO_2022_IR_203", "ISO 2022 IR 203", "-b", nullptr }, // ISO-8859-15
+  { "iso-2022-latin10", nullptr,          "-f", nullptr }, // ISO-8859-16
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { "ISO_2022_IR_149", "\\ISO 2022 IR 149", "$)C", nullptr }, // ~ISO-2022-KR
+  { "ISO_2022_IR_58",  "\\ISO 2022 IR 58",  "$)A", nullptr }, // ~ISO-2022-CN
+  { "iso-2022-jp",     nullptr, nullptr, "ISO-2022-JP" },
+  { "iso-2022-jp-1",   nullptr, nullptr, nullptr },
+  { "iso-2022-jp-2",   nullptr, nullptr, "ISO-2022-JP-2" },
+  { "iso-2022-jp-ext", nullptr, nullptr, nullptr },
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { "ISO_IR_192", "ISO_IR 192", nullptr, "UTF-8" },
+  { "GB18030",  "GB18030",      nullptr, "GB18030" },
+  { "GBK",      "GBK",          nullptr, "GBK" }, // subset of GB18030
+  { "big5",     nullptr,        nullptr, "Big5" }, // ETEN, but no hkscs
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { "euc-jp",   nullptr,        nullptr, "EUC-JP" },
+  { "sjis",     nullptr,        nullptr, "Shift_JIS" },
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { "cp874",    nullptr,        nullptr, "windows-874" }, // thai
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { "cp1250",   nullptr,        nullptr, "windows-1250" }, // central europe
+  { "cp1251",   nullptr,        nullptr, "windows-1251" }, // cyrillic
+  { "cp1252",   nullptr,        nullptr, "windows-1252" }, // western europe
+  { "cp1253",   nullptr,        nullptr, "windows-1253" }, // greek
+  { "cp1254",   nullptr,        nullptr, "windows-1254" }, // turkish
+  { "cp1255",   nullptr,        nullptr, "windows-1255" }, // hebrew
+  { "cp1256",   nullptr,        nullptr, "windows-1256" }, // arabic
+  { "cp1257",   nullptr,        nullptr, "windows-1257" }, // baltic rim
+  { "cp1258",   nullptr,        nullptr, "windows-1258" }, // vietnamese
+  { nullptr,    nullptr,        nullptr, nullptr },
+  { "koi8",     nullptr,        nullptr, "KOI8-U" }, // text only, no boxes
 };
 
 //----------------------------------------------------------------------------
@@ -198,7 +201,7 @@ public:
   //! Get the sub-table that starts at index "x" (no checks)
   const unsigned short *GetBlock(unsigned short x)
   {
-    const unsigned short *uptr = 0;
+    const unsigned short *uptr = nullptr;
     for (size_t k = 0; k < M; k++)
     {
       uptr = LTable + HTable[k];
@@ -1070,7 +1073,7 @@ size_t UTF8ToUTF8(const char *text, size_t l, std::string *s, int mode)
 {
   // convert to unicode and back, this will insert U+FFFD
   // wherever a bad utf-8 sequence occurs
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
 
@@ -1105,7 +1108,7 @@ size_t UTF8ToUTF8(const char *text, size_t l, std::string *s, int mode)
 size_t ASCIIToUTF8(const char *text, size_t l, std::string *s, int mode)
 {
   // count the number of bad characters
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   size_t m = 0;
   for (size_t i = 0; i < l; i++)
   {
@@ -1141,7 +1144,7 @@ size_t ASCIIToUTF8(const char *text, size_t l, std::string *s, int mode)
 size_t UnknownToUTF8(const char *text, size_t l, std::string *s, int mode)
 {
   // assumes an iso2022 94-character replacement set
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   size_t i = 0;
   while (i < l)
   {
@@ -1339,7 +1342,7 @@ size_t vtkDICOMCharacterSet::UTF8ToSJIS(
   CompressedTableJISXR table(vtkDICOMCharacterSet::Reverse[X_EUCJP]);
   CompressedTableR table2(vtkDICOMCharacterSet::Reverse[X_SJIS]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -1408,7 +1411,7 @@ size_t vtkDICOMCharacterSet::SJISToUTF8(
   CompressedTable table(vtkDICOMCharacterSet::Table[X_SJIS]);
 
   // windows-31j (shift-jis)
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -1497,7 +1500,7 @@ size_t vtkDICOMCharacterSet::UTF8ToEUCJP(
 {
   CompressedTableJISXR table(vtkDICOMCharacterSet::Reverse[X_EUCJP]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -1553,7 +1556,7 @@ size_t vtkDICOMCharacterSet::EUCJPToUTF8(
   CompressedTable jisx0208(vtkDICOMCharacterSet::Table[ISO_2022_IR_87]);
   CompressedTable jisx0212(vtkDICOMCharacterSet::Table[ISO_2022_IR_159]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -1623,7 +1626,7 @@ size_t vtkDICOMCharacterSet::UTF8ToBig5(
   // traditional Chinese
   CompressedTableR table(vtkDICOMCharacterSet::Reverse[X_BIG5]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -1669,7 +1672,7 @@ size_t vtkDICOMCharacterSet::Big5ToUTF8(
   // traditional Chinese, Big5 + ETEN extensions
   CompressedTable table(vtkDICOMCharacterSet::Table[X_BIG5]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -1789,7 +1792,7 @@ size_t vtkDICOMCharacterSet::UTF8ToGBK(
   CompressedTableR table(vtkDICOMCharacterSet::Reverse[GB18030]);
   CompressedTableR table2(vtkDICOMCharacterSet::Reverse[GBK]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -1858,7 +1861,7 @@ size_t vtkDICOMCharacterSet::GBKToUTF8(
   // Windows code page for simplified Chinese
   CompressedTable table(vtkDICOMCharacterSet::Table[GBK]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -1937,7 +1940,7 @@ size_t vtkDICOMCharacterSet::UTF8ToGB18030(
   // Chinese national encoding standard
   CompressedTableR table(vtkDICOMCharacterSet::Reverse[GB18030]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -2034,7 +2037,7 @@ size_t vtkDICOMCharacterSet::GB18030ToUTF8(
   // Chinese national encoding standard
   CompressedTable table(vtkDICOMCharacterSet::Table[GB18030]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -2143,7 +2146,7 @@ size_t vtkDICOMCharacterSet::UTF8ToGB2312(
   CompressedTableR table(vtkDICOMCharacterSet::Reverse[GB18030]);
   CompressedTableR table2(vtkDICOMCharacterSet::Reverse[X_GB2312]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -2189,7 +2192,7 @@ size_t vtkDICOMCharacterSet::GB2312ToUTF8(
   // GB2312 chinese encoding
   CompressedTable table(vtkDICOMCharacterSet::Table[X_GB2312]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -2277,7 +2280,7 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX(
   unsigned int code = 0;
   stateType state = stateBase;
   bool latin1G2 = false;
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -2464,7 +2467,7 @@ size_t vtkDICOMCharacterSet::JISXToUTF8(
                     csGL == ISO_2022_IR_149 ||
                     csGL == ISO_2022_IR_58);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -2536,7 +2539,7 @@ size_t vtkDICOMCharacterSet::UTF8ToEUCKR(
   // 2) 8-byte sequences, which is the the only option for ISO 2022
   // We use (1) when invoked as EUCKR, (2) when invoked with ISO 2022
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -2637,7 +2640,7 @@ size_t vtkDICOMCharacterSet::EUCKRToUTF8(
   // Get the hangul block in KS X 1001 (codes 1410 to 3759)
   const unsigned short *hangul = table.GetBlock(1410);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -3027,7 +3030,7 @@ size_t vtkDICOMCharacterSet::CP1258ToUTF8(
 {
   CompressedTable table(vtkDICOMCharacterSet::Table[X_CP1258]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   unsigned short starter = 0xFFFF;
@@ -3104,7 +3107,7 @@ size_t vtkDICOMCharacterSet::UTF8ToCP1258(
 {
   CompressedTableR table(vtkDICOMCharacterSet::Reverse[X_CP1258]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   unsigned short starter = 0xFFFF;
@@ -3202,7 +3205,7 @@ size_t vtkDICOMCharacterSet::UTF8ToJISX0201(
   const unsigned short *tptr = vtkDICOMCharacterSet::Reverse[ISO_IR_13];
   CompressedTableR table(tptr);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -3418,7 +3421,7 @@ std::string vtkDICOMCharacterSet::GetCharacterSetString() const
 const char *vtkDICOMCharacterSet::GetDefinedTerm() const
 {
   unsigned char key = this->Key;
-  const char *dt = NULL;
+  const char *dt = nullptr;
 
   if (key < CHARSET_TABLE_SIZE)
   {
@@ -3432,7 +3435,7 @@ const char *vtkDICOMCharacterSet::GetDefinedTerm() const
 const char *vtkDICOMCharacterSet::GetMIMEName() const
 {
   unsigned char key = this->Key;
-  const char *mime = NULL;
+  const char *mime = nullptr;
 
   if (key < CHARSET_TABLE_SIZE)
   {
@@ -3446,7 +3449,7 @@ const char *vtkDICOMCharacterSet::GetMIMEName() const
 const char *vtkDICOMCharacterSet::GetName() const
 {
   unsigned char key = this->Key;
-  const char *name = NULL;
+  const char *name = nullptr;
 
   if (key < CHARSET_TABLE_SIZE)
   {
@@ -3465,13 +3468,13 @@ size_t vtkDICOMCharacterSet::SingleByteToUTF8(
   const char *text, size_t l, std::string *s, int mode) const
 {
   const unsigned short *tptr = vtkDICOMCharacterSet::Table[this->Key];
-  if (tptr == 0)
+  if (tptr == nullptr)
   {
     tptr = vtkDICOMCharacterSet::Table[ISO_IR_6];
   }
   CompressedTable table(tptr);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -3501,7 +3504,7 @@ size_t vtkDICOMCharacterSet::UTF8ToSingleByte(
   tptr = (tptr ? tptr : vtkDICOMCharacterSet::Reverse[ISO_IR_6]);
   CompressedTableR table(tptr);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)
@@ -3553,7 +3556,7 @@ size_t vtkDICOMCharacterSet::ISO8859ToUTF8(
 
   CompressedTable table(vtkDICOMCharacterSet::Table[this->Key]);
 
-  const char *errpos = 0;
+  const char *errpos = nullptr;
   const char *cp = text;
   const char *ep = text + l;
   while (cp != ep)

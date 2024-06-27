@@ -142,7 +142,7 @@ public:
 
   //@{
   //! Default constructor, constructs an invalid value.
-  vtkDICOMValue() : V(0) {}
+  vtkDICOMValue() : V(nullptr) {}
 
   //! Destructor releases the internal data array.
   ~vtkDICOMValue() { this->Clear(); }
@@ -166,10 +166,10 @@ public:
   void Clear() {
     if (this->V && --(this->V->ReferenceCount) == 0) {
       this->FreeValue(this->V); }
-    this->V = 0; }
+    this->V = nullptr; }
 
   //! Check whether this value is valid, i.e. contains data.
-  bool IsValid() const { return (this->V != 0); }
+  bool IsValid() const { return (this->V != nullptr); }
   //@}
 
   //@{

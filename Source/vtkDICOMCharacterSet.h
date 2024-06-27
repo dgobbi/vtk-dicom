@@ -204,7 +204,7 @@ public:
    *  can be converted to "GBK", and "ISO 2022 IR 13\\ISO 2022 IR 87" can be
    *  converted to "Shift_JIS".  Note that "ISO-2022-JP" is not equivalent
    *  to DICOM's Japanese encodings since it does not allow half-width
-   *  katakana or the "ISO 2022 IR 159" characters.  
+   *  katakana or the "ISO 2022 IR 159" characters.
    */
   const char *GetMIMEName() const;
 
@@ -231,7 +231,7 @@ public:
    *  \<U+XXXX\> instead of '?'.  If the conversion was error-free, then
    *  "lp" will be set to the length of the input string.
   */
-  std::string FromUTF8(const char *text, size_t l, size_t *lp=0) const;
+  std::string FromUTF8(const char *text, size_t l, size_t *lp=nullptr) const;
   std::string FromUTF8(const std::string& text) const {
     return FromUTF8(text.data(), text.length()); }
 
@@ -248,7 +248,7 @@ public:
    *  in angle brackets).  If an error-free conversion was returned, then
    *  "lp" will be set to the length of the input string.
    */
-  std::string ToUTF8(const char *text, size_t l, size_t *lp=0) const;
+  std::string ToUTF8(const char *text, size_t l, size_t *lp=nullptr) const;
   std::string ToUTF8(const std::string& text) const {
     return ToUTF8(text.data(), text.length()); }
 

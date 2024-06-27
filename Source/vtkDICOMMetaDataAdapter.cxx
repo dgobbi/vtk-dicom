@@ -35,15 +35,15 @@ void vtkDICOMMetaDataAdapter::ConstructionHelper(
   vtkDICOMMetaData *meta, int i)
 {
   this->Meta = meta;
-  this->PerFrame = 0;
-  this->Shared = 0;
-  this->NullValue = 0;
+  this->PerFrame = nullptr;
+  this->Shared = nullptr;
+  this->NullValue = nullptr;
   this->NumberOfInstances = 0;
   this->MetaInstance = (i >= 0 ? i : 0);
 
   if (meta)
   {
-    meta->Register(0);
+    meta->Register(nullptr);
     vtkDICOMDataElementIterator iter;
     iter = meta->Find(DC::PerFrameFunctionalGroupsSequence);
     if (iter != meta->End())
@@ -82,8 +82,8 @@ void vtkDICOMMetaDataAdapter::ConstructionHelper(
   else if (meta)
   {
     this->NumberOfInstances = (i < 0 ? meta->GetNumberOfInstances() : 1);
-    this->Shared = 0;
-    this->PerFrame = 0;
+    this->Shared = nullptr;
+    this->PerFrame = nullptr;
   }
 }
 
@@ -97,7 +97,7 @@ vtkDICOMMetaDataAdapter::vtkDICOMMetaDataAdapter(
 {
   if (other.Meta)
   {
-    this->Meta->Register(0);
+    this->Meta->Register(nullptr);
   }
   if (this->NullValue)
   {
@@ -132,7 +132,7 @@ vtkDICOMMetaDataAdapter& vtkDICOMMetaDataAdapter::operator=(
 
     if (other.Meta)
     {
-      this->Meta->Register(0);
+      this->Meta->Register(nullptr);
     }
     if (this->NullValue)
     {
@@ -158,7 +158,7 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::Get(
 
     // search PerFrameFunctionalGroupsSequence first,
     // then search SharedFunctionalGroupsSequence
-    const vtkDICOMValue *privateValue = 0;
+    const vtkDICOMValue *privateValue = nullptr;
     for (int i = 0; i < 2; i++)
     {
       const vtkDICOMValue *seq = this->PerFrame;
@@ -197,7 +197,7 @@ const vtkDICOMValue &vtkDICOMMetaDataAdapter::Get(
                 {
                   return w;
                 }
-                else if (privateValue == 0)
+                else if (privateValue == nullptr)
                 {
                   // if we found the attribute in a private sequence,
                   // then save but and keep searching to see if it will

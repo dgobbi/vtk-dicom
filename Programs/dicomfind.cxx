@@ -401,7 +401,7 @@ void dicomfind_operations(
               sub_argv[ii++] = const_cast<char *>(arg.c_str());
             }
           }
-          sub_argv[ii] = 0;
+          sub_argv[ii] = nullptr;
 
           if (execdir)
           {
@@ -525,7 +525,7 @@ void dicomfind_operations(
               sub_argv[ii++] = const_cast<char *>(arg.c_str());
             }
           }
-          sub_argv[ii] = 0;
+          sub_argv[ii] = nullptr;
 
           if (execdir)
           {

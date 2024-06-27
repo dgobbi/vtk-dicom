@@ -39,7 +39,7 @@ void vtkDICOMLookupTable::PrintSelf(ostream& os, vtkIndent indent)
 //----------------------------------------------------------------------------
 void vtkDICOMLookupTable::BuildStandardPalette(const char *cs)
 {
-  if (cs == 0)
+  if (cs == nullptr)
   {
     vtkErrorMacro("Null string passed to BuildStandardPalette()!");
   }
@@ -386,9 +386,9 @@ void vtkDICOMLookupTable::BuildImagePalette(
   int firstValue[4] = { 0, 0, 0, 0 };
   int lastValue[4] = { 0, 0, 0, 0 };
   double divisor[4] = { 255.0, 255.0, 255.0, 255.0 };
-  const unsigned short *spp[4] = { 0, 0, 0, 0 };
-  const unsigned char *cpp[4] = { 0, 0, 0, 0 };
-  const unsigned short *segpp[4] = { 0, 0, 0, 0 };
+  const unsigned short *spp[4] = { nullptr, nullptr, nullptr, nullptr };
+  const unsigned char *cpp[4] = { nullptr, nullptr, nullptr, nullptr };
+  const unsigned short *segpp[4] = { nullptr, nullptr, nullptr, nullptr };
   unsigned int segn[4] = { 0, 0, 0, 0 };
 
   for (int j = 0; j < 4; j++)
@@ -425,7 +425,7 @@ void vtkDICOMLookupTable::BuildImagePalette(
         else if (d.GetVL() >= static_cast<unsigned int>(n))
         {
           cpp[j] = d.GetUnsignedCharData();
-          if (cpp[j] == 0)
+          if (cpp[j] == nullptr)
           {
             cpp[j] = reinterpret_cast<const unsigned char *>(
               d.GetUnsignedShortData());

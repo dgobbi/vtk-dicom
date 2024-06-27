@@ -171,7 +171,7 @@ void niftitodicom_check_error(vtkObject *o)
   vtkDICOMFileSorter *sorter = vtkDICOMFileSorter::SafeDownCast(o);
   vtkDICOMWriter *writer = vtkDICOMWriter::SafeDownCast(o);
   vtkDICOMParser *parser = vtkDICOMParser::SafeDownCast(o);
-  const char *filename = 0;
+  const char *filename = nullptr;
   unsigned long errorcode = 0;
   if (writer)
   {
@@ -235,11 +235,11 @@ void niftitodicom_check_error(vtkObject *o)
 bool isNIFTIFileName(const char *f)
 {
   const char *suffixes[] = {
-    ".nii", ".nii.gz", ".hdr", ".hdr.gz", ".img", ".img.gz", 0
+    ".nii", ".nii.gz", ".hdr", ".hdr.gz", ".img", ".img.gz", nullptr
   };
 
   size_t n = strlen(f);
-  for (const char **s = suffixes; *s != 0; s++)
+  for (const char **s = suffixes; *s != nullptr; s++)
   {
     size_t m = strlen(*s);
     if (n > m && strcmp(f + n - m, *s) == 0)
@@ -258,15 +258,15 @@ void niftitodicom_read_options(
 {
   options->mpr = 0;
   options->no_reordering = false;
-  options->modality = 0;
-  options->series_description = 0;
-  options->series_number = 0;
+  options->modality = nullptr;
+  options->series_description = nullptr;
+  options->series_number = nullptr;
   options->uid_prefix = "2.25";
   options->silent = false;
   options->verbose = false;
   options->verbatim = false;
-  options->output = 0;
-  options->input = 0;
+  options->output = nullptr;
+  options->input = nullptr;
 
   // read the options from the command line
   int argi = 1;
@@ -407,7 +407,7 @@ void niftitodicom_read_options(
         const char *f = files->GetValue(m).c_str();
         if (isNIFTIFileName(f))
         {
-          if (options->input == 0)
+          if (options->input == nullptr)
           {
             options->input = arg;
             files->SetNumberOfValues(m);
@@ -432,7 +432,7 @@ void niftitodicom_read_options(
       const char *f = files->GetValue(m).c_str();
       if (isNIFTIFileName(f))
       {
-        if (options->input == 0)
+        if (options->input == nullptr)
         {
           options->input = argv[argi-1];
           files->SetNumberOfValues(m);
@@ -465,7 +465,7 @@ void niftitodicom_convert_one(
   dicomReader->TimeAsVectorOn();
   dicomReader->SetFileNames(a);
   dicomReader->SetMemoryRowOrderToFileNative();
-  vtkMatrix4x4 *readerMatrix = 0;
+  vtkMatrix4x4 *readerMatrix = nullptr;
   if (a->GetNumberOfValues() > 0)
   {
     dicomReader->UpdateInformation();
@@ -499,7 +499,7 @@ void niftitodicom_convert_one(
   bool slicesReordered = (reader->GetQFac() < 0);
 
   // get the matrix from the NIFTI file
-  vtkMatrix4x4 *inputMatrix = 0;
+  vtkMatrix4x4 *inputMatrix = nullptr;
   int xformCode = 0;
   if (reader->GetQFormMatrix())
   {
@@ -826,7 +826,7 @@ void niftitodicom_convert_one(
   writer->SetMetaData(meta);
   if (options->verbatim)
   {
-    writer->SetImageType(NULL);
+    writer->SetImageType(nullptr);
   }
   writer->SetFilePrefix(outfile);
   writer->SetFilePattern("%s/IM-0001-%04.4d.dcm");

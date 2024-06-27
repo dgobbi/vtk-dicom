@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
         compiler->SetFileName(outpath);
         const char *instanceUID =
           data->Get(i, DC::SOPInstanceUID).GetCharData();
-        if (instanceUID == 0)
+        if (instanceUID == nullptr)
         {
           instanceUID =
             data->Get(i, DC::MediaStorageSOPInstanceUID).GetCharData();

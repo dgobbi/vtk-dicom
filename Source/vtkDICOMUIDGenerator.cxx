@@ -62,7 +62,7 @@ vtkDICOMUIDGeneratorInitializer::~vtkDICOMUIDGeneratorInitializer()
 //----------------------------------------------------------------------------
 vtkDICOMUIDGenerator::vtkDICOMUIDGenerator()
 {
-  this->UIDPrefix = NULL;
+  this->UIDPrefix = nullptr;
 }
 
 //----------------------------------------------------------------------------
@@ -83,7 +83,7 @@ void vtkDICOMUIDGenerator::PrintSelf(ostream& os, vtkIndent indent)
 const char *vtkDICOMUIDGenerator::GetUIDPrefix()
 {
   const char *prefix = this->UIDPrefix;
-  if (prefix == NULL)
+  if (prefix == nullptr)
   {
     prefix = vtkDICOMUtilities::GetUIDPrefix();
   }
@@ -101,7 +101,7 @@ void vtkDICOMUIDGenerator::SetUIDPrefix(const char *uid)
   }
   else
   {
-    this->UIDPrefix = NULL;
+    this->UIDPrefix = nullptr;
   }
 }
 
@@ -545,7 +545,7 @@ void vtkDICOMUIDGenerator::SetDefault(vtkDICOMUIDGenerator *uidgen)
     }
     if (uidgen)
     {
-      uidgen->Register(NULL);
+      uidgen->Register(nullptr);
     }
     else
     {

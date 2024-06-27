@@ -86,7 +86,7 @@ static const char *ClunieText[][3] = {
   "Yamada^Tarou=\xe5\xb1\xb1\xe7\x94\xb0^\xe5\xa4\xaa\xe9\x83\x8e=\xe3\x82\x84\xe3\x81\xbe\xe3\x81\xa0^\xe3\x81\x9f\xe3\x82\x8d\xe3\x81\x86",
   "Yamada^Tarou=\x1b$B;3ED\x1b(B^\x1b$BB@O:\x1b(B=\x1b$B$d$^$@\x1b(B^\x1b$B$\x3f$m$&\x1b(B" },
 
-{ 0, 0, 0 }
+{ nullptr, nullptr, nullptr }
 };
 
 // order is character set, utf-8, native encoding
@@ -196,7 +196,7 @@ static const char *OtherText[][3] = {
   "BIG5: \xb1`\xa5\xce\xb0\xea\xa6r\xbc\xd0\xb7\xc7\xa6r\xc5\xe9\xaa\xed + \xa6\xb8\xb1`\xa5\xce\xb0\xea\xa6r\xbc\xd0\xb7\xc7\xa6r\xc5\xe9\xaa\xed\n"
   "ETEN: \xf9\xd6\xf9\xd7\xf9\xda\xf9\xd8\xf9\xd9\xf9\xdb\xf9\xdc" },
 
-{ 0, 0, 0 }
+{ nullptr, nullptr, nullptr }
 };
 
 int TestDICOMCharacterSet(int argc, char *argv[])
@@ -210,7 +210,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   exename = cp;
 
   { // test the listed encodings
-  for (int i = 0; ClunieText[i][0] != 0; i++)
+  for (int i = 0; ClunieText[i][0] != nullptr; i++)
   {
     std::string name = ClunieText[i][0];
     std::string utf = ClunieText[i][1];
@@ -232,7 +232,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
     }
   }
 
-  for (int i = 0; OtherText[i][0] != 0; i++)
+  for (int i = 0; OtherText[i][0] != nullptr; i++)
   {
     std::string name = OtherText[i][0];
     std::string utf = OtherText[i][1];
@@ -256,7 +256,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   }
 
   { // test storing values in their native encoding in an item
-  for (int i = 0; ClunieText[i][0] != 0; i++)
+  for (int i = 0; ClunieText[i][0] != nullptr; i++)
   {
     std::string name = ClunieText[i][0];
     std::string utf = ClunieText[i][1];
@@ -274,7 +274,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   }
 
   { // test storing values in their native encoding in metadata
-  for (int i = 0; ClunieText[i][0] != 0; i++)
+  for (int i = 0; ClunieText[i][0] != nullptr; i++)
   {
     std::string name = ClunieText[i][0];
     std::string utf = ClunieText[i][1];
@@ -293,7 +293,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   }
 
   { // test storing multiple values in their native encoding in metadata
-  for (int i = 0; ClunieText[i][0] != 0; i++)
+  for (int i = 0; ClunieText[i][0] != nullptr; i++)
   {
     std::string name = ClunieText[i][0];
     std::string utf = ClunieText[i][1];
@@ -311,7 +311,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
   }
 
   { // test "safe" conversions
-  for (int i = 0; ClunieText[i][0] != 0; i++)
+  for (int i = 0; ClunieText[i][0] != nullptr; i++)
   {
     // ToSafeUTF8 == ToUTF8 if string is already "safe"
     std::string name = ClunieText[i][0];
@@ -596,7 +596,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
     "CP1258",     "\x01\xff,",
     "KOI8",       "\x01\x7f,\x9a\x9a,\x9e\x9e,\xa3\xa4,\xa6\xa7,\xad\xae,"
                   "\xb3\xb4,\xb6\xb7,\xbd\xbe,\xbf\xff,",
-    NULL, NULL
+    nullptr, nullptr
   };
   for (int i = 0; sets[i]; i += 2)
   {
@@ -626,7 +626,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
     "ISO 2022 IR 13\\ISO 2022 IR 87",
     "\\ISO 2022 IR 87\\ISO 2022 IR 159",
     "ISO 2022 IR 13\\ISO 2022 IR 87\\ISO 2022 IR 159",
-    NULL
+    nullptr
   };
   const unsigned char keyJISX0201 = vtkDICOMCharacterSet::ISO_2022_IR_13;
   const unsigned char keys[2] = {
@@ -689,11 +689,11 @@ int TestDICOMCharacterSet(int argc, char *argv[])
         unsigned int range[2];
         const char *rnext = r;
         while (isalnum(*rnext)) { ++rnext; }
-        range[0] = static_cast<unsigned int>(strtoul(r, NULL, 16));
+        range[0] = static_cast<unsigned int>(strtoul(r, nullptr, 16));
         TestAssert(*rnext == '-');
         r = ++rnext;
         while (isalnum(*rnext)) { ++rnext; }
-        range[1] = static_cast<unsigned int>(strtoul(r, NULL, 16));
+        range[1] = static_cast<unsigned int>(strtoul(r, nullptr, 16));
         TestAssert(*rnext == ',');
         r = ++rnext;
 
@@ -738,7 +738,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
     "A6A1-A6B8,A6C1-A6D8,A7A1-A7C1,A7D1-A7F1,A8A1-A8BA,A8C5-A8E9,"
     "A9A4-A9EF,B0A1-D7F9,D8A1-F7FE,",
 
-    NULL, NULL, NULL
+    nullptr, nullptr, nullptr
   };
 
   for (int i = 0; sets[i]; i += 3)
@@ -767,11 +767,11 @@ int TestDICOMCharacterSet(int argc, char *argv[])
       unsigned int range[2];
       const char *rnext = r;
       while (isalnum(*rnext)) { ++rnext; }
-      range[0] = static_cast<unsigned int>(strtoul(r, NULL, 16));
+      range[0] = static_cast<unsigned int>(strtoul(r, nullptr, 16));
       TestAssert(*rnext == '-');
       r = ++rnext;
       while (isalnum(*rnext)) { ++rnext; }
-      range[1] = static_cast<unsigned int>(strtoul(r, NULL, 16));
+      range[1] = static_cast<unsigned int>(strtoul(r, nullptr, 16));
       TestAssert(*rnext == ',');
       r = ++rnext;
 
@@ -812,7 +812,7 @@ int TestDICOMCharacterSet(int argc, char *argv[])
     "84308130-8431A439," // U+FFFF end of BMP
     "90308130-9039FE39,E3308130-E3329A35,", // U+10FFFF
 
-    NULL, NULL
+    nullptr, nullptr
   };
 
   for (int i = 0; sets[i]; i += 2)
@@ -834,11 +834,11 @@ int TestDICOMCharacterSet(int argc, char *argv[])
       unsigned int range[2];
       const char *rnext = r;
       while (isalnum(*rnext)) { ++rnext; }
-      range[0] = static_cast<unsigned int>(strtoul(r, NULL, 16));
+      range[0] = static_cast<unsigned int>(strtoul(r, nullptr, 16));
       TestAssert(*rnext == '-');
       r = ++rnext;
       while (isalnum(*rnext)) { ++rnext; }
-      range[1] = static_cast<unsigned int>(strtoul(r, NULL, 16));
+      range[1] = static_cast<unsigned int>(strtoul(r, nullptr, 16));
       TestAssert(*rnext == ',');
       r = ++rnext;
 

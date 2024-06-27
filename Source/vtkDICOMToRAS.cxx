@@ -299,7 +299,7 @@ void vtkDICOMToRAS::UpdateMatrix()
   vtkMatrix4x4 *outMatrix;
   if (this->RASToDICOM == 0)
   {
-    if (this->RASMatrix == 0)
+    if (this->RASMatrix == nullptr)
     {
       this->RASMatrix = vtkMatrix4x4::New();
     }
@@ -307,7 +307,7 @@ void vtkDICOMToRAS::UpdateMatrix()
   }
   else
   {
-    if (this->PatientMatrix == 0)
+    if (this->PatientMatrix == nullptr)
     {
       this->PatientMatrix = vtkMatrix4x4::New();
     }
@@ -412,10 +412,10 @@ int vtkDICOMToRAS::RequestData(
   vtkInformationVector* outputVector)
 {
   // output the matrix that goes with the image
-  vtkMatrix4x4 *outMatrix = 0;
+  vtkMatrix4x4 *outMatrix = nullptr;
   if (this->RASToDICOM == 0)
   {
-    if (this->RASMatrix == 0)
+    if (this->RASMatrix == nullptr)
     {
       this->RASMatrix = vtkMatrix4x4::New();
     }
@@ -423,7 +423,7 @@ int vtkDICOMToRAS::RequestData(
   }
   else
   {
-    if (this->PatientMatrix == 0)
+    if (this->PatientMatrix == nullptr)
     {
       this->PatientMatrix = vtkMatrix4x4::New();
     }
@@ -506,7 +506,7 @@ void vtkDICOMToRASExecute(
     const T *inPtrY = inPtrZ;
     for (int j = 0; j < sizeY; j++)
     {
-      if (progress != NULL && (progressCount % progressStep) == 0)
+      if (progress != nullptr && (progressCount % progressStep) == 0)
       {
         progress->UpdateProgress(progressCount*1.0/progressGoal);
       }
@@ -590,7 +590,7 @@ void vtkDICOMToRAS::ThreadedRequestData(
   int outScalarType = output->GetScalarType();
 
   // progress object if main thread
-  vtkAlgorithm *progress = ((threadId == 0) ? this : NULL);
+  vtkAlgorithm *progress = ((threadId == 0) ? this : nullptr);
 
   // call the execute method
   if (outScalarType == inScalarType)

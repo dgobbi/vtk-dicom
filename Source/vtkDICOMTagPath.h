@@ -28,11 +28,11 @@ class VTKDICOM_EXPORT vtkDICOMTagPath
 public:
   //@{
   //! Construct a tag path with an empty head and tail.
-  vtkDICOMTagPath() : Size(0), Head(), Index(0), Tail(), List(0) {}
+  vtkDICOMTagPath() : Size(0), Head(), Index(0), Tail(), List(nullptr) {}
 
   //! Construct a tag path from a sequence tag, item index, and item tag.
   vtkDICOMTagPath(vtkDICOMTag seqTag, unsigned int i, vtkDICOMTag tag)
-    : Size(2), Head(seqTag), Index(i), Tail(tag), List(0) {}
+    : Size(2), Head(seqTag), Index(i), Tail(tag), List(nullptr) {}
 
   //! Construct a tag path that goes two levels deep.
   vtkDICOMTagPath(vtkDICOMTag seqTag, unsigned int i, vtkDICOMTag tag,
@@ -46,7 +46,7 @@ public:
 
   //! Construct a tag path from just a single tag.
   explicit vtkDICOMTagPath(vtkDICOMTag tag)
-    : Size(1), Head(tag), Index(0), Tail(), List(0) {}
+    : Size(1), Head(tag), Index(0), Tail(), List(nullptr) {}
 
   //! Copy constructor.
   vtkDICOMTagPath(const vtkDICOMTagPath& o)

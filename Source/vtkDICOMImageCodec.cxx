@@ -39,7 +39,7 @@ const char *vtkDICOMImageCodec::UIDs[21] = {
   "1.2.840.10008.1.2.4.106", // MPEG4HPL42Stereo
   "1.2.840.10008.1.2.4.107", // HEVCMPL51
   "1.2.840.10008.1.2.4.108", // HEVCM10PL51
-  0
+  nullptr
 };
 
 //----------------------------------------------------------------------------
@@ -228,7 +228,7 @@ int vtkDICOMImageCodec::EncodeRLE(
   unsigned int n = spp*bps;
   if (n == 0 || n > 15)
   {
-    *destP = 0;
+    *destP = nullptr;
     *destSizeP = 0;
     return BadPixelFormat;
   }

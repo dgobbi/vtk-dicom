@@ -58,11 +58,11 @@ int vtkDICOMUtilities::CompareUIDs(const char *u1, const char *u2)
 {
   int r = 0;
 
-  if (u1 == 0 || u2 == 0)
+  if (u1 == nullptr || u2 == nullptr)
   {
     // if one or both are null
-    r = (u2 == 0 ? r : -1);
-    r = (u1 == 0 ? r : 1);
+    r = (u2 == nullptr ? r : -1);
+    r = (u1 == nullptr ? r : 1);
   }
   else
   {
@@ -112,7 +112,7 @@ long long vtkDICOMUtilities::GetUniversalTime()
 #else
 
   struct timeval tv;
-  gettimeofday(&tv, 0);
+  gettimeofday(&tv, nullptr);
   return (tv.tv_sec*1000000ll + tv.tv_usec);
 
 #endif
@@ -361,7 +361,7 @@ bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
 {
   unsigned char buffer[256];
 
-  if (filename == 0)
+  if (filename == nullptr)
   {
     return false;
   }

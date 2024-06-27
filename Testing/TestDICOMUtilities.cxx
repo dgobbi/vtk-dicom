@@ -77,9 +77,9 @@ int TestDICOMUtilities(int argc, char *argv[])
   long long l = DU::ConvertDateTime(s.c_str());
   std::string t = DU::GenerateDateTime(l, "-0600");
   TestAssert(s == t);
-  s = DU::GenerateDateTime(0);
+  s = DU::GenerateDateTime(nullptr);
   l = DU::ConvertDateTime(s.c_str());
-  t = DU::GenerateDateTime(l, 0);
+  t = DU::GenerateDateTime(l, nullptr);
   TestAssert(s == t);
   s = "20140710093855.874905-0600";
   l = DU::ConvertDateTime(s.c_str());
@@ -96,7 +96,7 @@ int TestDICOMUtilities(int argc, char *argv[])
   for (int i = 0; i < 4; i++)
   {
     long long l = DU::ConvertDateTime(times[i]);
-    std::string t = DU::GenerateDateTime(l, 0);
+    std::string t = DU::GenerateDateTime(l, nullptr);
     TestAssert(t.compare(0, 21, times[i]) == 0);
   }
   }

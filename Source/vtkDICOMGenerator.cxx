@@ -47,9 +47,9 @@ vtkCxxSetObjectMacro(vtkDICOMGenerator,UIDGenerator,vtkDICOMUIDGenerator);
 //----------------------------------------------------------------------------
 vtkDICOMGenerator::vtkDICOMGenerator()
 {
-  this->MetaData = 0;
-  this->SourceMetaData = 0;
-  this->UIDGenerator = 0;
+  this->MetaData = nullptr;
+  this->SourceMetaData = nullptr;
+  this->UIDGenerator = nullptr;
   this->Extended = 0;
   this->MultiFrame = 0;
   this->OriginAtBottom = 1;
@@ -65,11 +65,11 @@ vtkDICOMGenerator::vtkDICOMGenerator()
   this->RescaleIntercept = 0.0;
   this->RescaleSlope = 1.0;
   this->NumberOfOverlays = 0;
-  this->PatientMatrix = 0;
+  this->PatientMatrix = nullptr;
   this->SliceIndexArray = vtkIntArray::New();
   this->ComponentIndexArray = vtkIntArray::New();
-  this->SourceInstanceArray = 0;
-  this->RangeArray = 0;
+  this->SourceInstanceArray = nullptr;
+  this->RangeArray = nullptr;
   this->PixelValueRange[0] = 0;
   this->PixelValueRange[1] = -1;
 
@@ -217,7 +217,7 @@ void vtkDICOMGenerator::PrintSelf(ostream& os, vtkIndent indent)
 vtkDICOMUIDGenerator *vtkDICOMGenerator::GetUIDGenerator()
 {
   vtkDICOMUIDGenerator *uidgen = this->UIDGenerator;
-  if (uidgen == 0)
+  if (uidgen == nullptr)
   {
     uidgen = vtkDICOMUIDGenerator::GetDefault();
   }
@@ -228,7 +228,7 @@ vtkDICOMUIDGenerator *vtkDICOMGenerator::GetUIDGenerator()
 bool vtkDICOMGenerator::GenerateInstance(vtkInformation *info)
 {
   this->InitializeMetaData(info);
-  this->CopyAttributes(NULL, this->SourceMetaData);
+  this->CopyAttributes(nullptr, this->SourceMetaData);
 
   // create new SOP instance and series instance UIDs
   vtkDICOMMetaData *meta = this->MetaData;
@@ -473,7 +473,7 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *sourcemeta)
   if (this->SourceInstanceArray)
   {
     this->SourceInstanceArray->Delete();
-    this->SourceInstanceArray = 0;
+    this->SourceInstanceArray = nullptr;
   }
 
   // make sure there is sourcemeta data to compare with
@@ -572,7 +572,7 @@ void vtkDICOMGenerator::MatchInstances(vtkDICOMMetaData *sourcemeta)
   if (mismatch)
   {
     this->SourceInstanceArray->Delete();
-    this->SourceInstanceArray = 0;
+    this->SourceInstanceArray = nullptr;
   }
 }
 
@@ -655,7 +655,7 @@ void vtkDICOMGenerator::ComputePixelValueRange(
   if (this->RangeArray)
   {
     this->RangeArray->Delete();
-    this->RangeArray = 0;
+    this->RangeArray = nullptr;
   }
 
   if (this->ScalarType == VTK_UNSIGNED_SHORT ||
@@ -882,7 +882,7 @@ void vtkDICOMGenerator::InitializeMetaData(vtkInformation *info)
   {
     // Copy all attributes, not just ones in the IOD modules for this class.
     // The module attribute values might be overwritten later.
-    this->CopyAttributes(NULL, this->SourceMetaData);
+    this->CopyAttributes(nullptr, this->SourceMetaData);
   }
 
   this->ComputePixelValueRange(info, this->PixelValueRange);
@@ -1109,7 +1109,7 @@ bool vtkDICOMGenerator::GenerateSOPCommonModule(
   }
 
   // set the InstanceCreationDate and Time
-  const char *tz = 0;
+  const char *tz = nullptr;
   if (source)
   {
     tz = source->Get(DC::TimezoneOffsetFromUTC).GetCharData();

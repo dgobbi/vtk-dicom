@@ -33,7 +33,7 @@ vtkCxxSetObjectMacro(vtkDICOMCTRectifier, VolumeMatrix, vtkMatrix4x4);
 //----------------------------------------------------------------------------
 vtkDICOMCTRectifier::vtkDICOMCTRectifier()
 {
-  this->VolumeMatrix = 0;
+  this->VolumeMatrix = nullptr;
   this->RectifiedMatrix = vtkMatrix4x4::New();
   this->Matrix = vtkMatrix4x4::New();
   this->Reverse = 0;
@@ -132,7 +132,7 @@ void vtkDICOMCTRectifier::ComputeMatrix(
   const double volumeMatrix[16], const int extent[6],
   double spacing[3], double origin[3])
 {
-  if (volumeMatrix == 0)
+  if (volumeMatrix == nullptr)
   {
     this->RectifiedMatrix->Identity();
     this->Matrix->Identity();

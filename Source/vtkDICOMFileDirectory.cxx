@@ -51,7 +51,7 @@ struct vtkDICOMFileDirectory::Entry
 
 //----------------------------------------------------------------------------
 vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
-  : Name(dirname), Error(0), NumberOfEntries(0), Entries(0)
+  : Name(dirname), Error(0), NumberOfEntries(0), Entries(nullptr)
 {
 #ifdef _WIN32
   vtkDICOMFilePath path(dirname);
@@ -164,7 +164,7 @@ vtkDICOMFileDirectory::vtkDICOMFileDirectory(const char *dirname)
 
 //----------------------------------------------------------------------------
 vtkDICOMFileDirectory::vtkDICOMFileDirectory(const vtkDICOMFileDirectory& o)
-  : Name(o.Name), Error(o.Error), NumberOfEntries(0), Entries(0)
+  : Name(o.Name), Error(o.Error), NumberOfEntries(0), Entries(nullptr)
 {
   if (o.Entries && o.NumberOfEntries)
   {
@@ -187,7 +187,7 @@ vtkDICOMFileDirectory& vtkDICOMFileDirectory::operator=(
     this->Name = o.Name;
     this->Error = o.Error;
     this->NumberOfEntries = 0;
-    this->Entries = 0;
+    this->Entries = nullptr;
 
     if (o.Entries && o.NumberOfEntries)
     {
@@ -213,7 +213,7 @@ const char *vtkDICOMFileDirectory::GetEntry(int i)
 {
   if (i < 0 || i >= this->NumberOfEntries)
   {
-    return 0;
+    return nullptr;
   }
   return this->Entries[i].Name.c_str();
 }
@@ -313,7 +313,7 @@ void vtkDICOMFileDirectory::AddEntry(
   const char *name, unsigned short flags, unsigned short mask)
 {
   int n = this->NumberOfEntries;
-  if (this->Entries == 0)
+  if (this->Entries == nullptr)
   {
     this->Entries = new Entry[4];
   }
