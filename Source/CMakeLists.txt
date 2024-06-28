@@ -99,8 +99,6 @@ set(LIB_SRCS
 # Headers without a matching .cxx file are listed here
 set(LIB_HDRS
   ${REFCOUNT_HDR}
-  vtkNIFTIPrivate.h
-  ${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMBuild.h
   ${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMConfig.h
   ${CMAKE_CURRENT_BINARY_DIR}/vtkDICOMModule.h
 )
@@ -219,13 +217,14 @@ if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM)
   endforeach()
   vtk_module_add_module(VTK::DICOM
     SOURCES ${LIB_SRCS}
-    HEADERS ${LIB_SRC_HDRS} ${LIB_HDRS})
+    HEADERS ${LIB_SRC_HDRS} ${LIB_HDRS}
+    PRIVATE_HEADERS ${LIB_PRIVATE_HDRS})
   vtk_module_link(VTK::DICOM
     PRIVATE ${GDCM_LIBS} ${DCMTK_LIBS} ${SQLITE_LIBS})
 
 elseif(Module_vtkDICOM)
   # When building as a remote module for older versions of VTK
-  vtk_module_library(vtkDICOM ${LIB_SRCS} ${LIB_HDRS})
+  vtk_module_library(vtkDICOM ${LIB_SRCS} ${LIB_HDRS} ${LIB_PRIVATE_HDRS})
   target_link_libraries(${LIB_NAME}
     LINK_PRIVATE ${GDCM_LIBS} ${DCMTK_LIBS} ${SQLITE_LIBS})
 
