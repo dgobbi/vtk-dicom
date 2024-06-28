@@ -1106,7 +1106,7 @@ int MAINMACRO(int argc, char *argv[])
     fp1 = fopen(ofile, "wb");
 #else
     // use wide chars to avoid narrowing to local character set
-    int n = MultiByteToWideChar(CP_UTF8, 0, ofile, -1, NULL, 0);
+    int n = MultiByteToWideChar(CP_UTF8, 0, ofile, -1, nullptr, 0);
     wchar_t *wofile = new wchar_t[n];
     MultiByteToWideChar(CP_UTF8, 0, ofile, -1, wofile, n);
     fp1 = _wfopen(wofile, L"wb");

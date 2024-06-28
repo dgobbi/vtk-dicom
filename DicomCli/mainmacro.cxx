@@ -93,7 +93,7 @@ private:
   static T *NewString(size_t n, int *count, T ***strings) {
     T **array = *strings;
     (*count)++;
-    if (array == 0) {
+    if (array == nullptr) {
       size_t m = NearestPowerOfTwo(n);
       array = new T *[2];
       array[0] = new T[m];
@@ -135,7 +135,7 @@ private:
       delete [] *strings;
     }
     *count = 0;
-    *strings = 0;
+    *strings = nullptr;
   }
 
   int m_Argc;
@@ -251,16 +251,16 @@ bool Arguments::MatchesSpec(
 void Arguments::Push(wchar_t *arg)
 {
   int n = WideCharToMultiByte(
-    CP_UTF8, 0, arg, -1, NULL, 0, NULL, NULL);
+    CP_UTF8, 0, arg, -1, nullptr, 0, nullptr, nullptr);
   char *cp = NewString(n, &m_Argc, &m_Argv);
   WideCharToMultiByte(
-    CP_UTF8, 0, arg, -1, cp, n, NULL, NULL);
+    CP_UTF8, 0, arg, -1, cp, n, nullptr, nullptr);
 }
 
 bool Arguments::ExpandArgs(int argc, wchar_t *argv[], const char *passthrough)
 {
   WIN32_FIND_DATAW data;
-  wchar_t *temp = 0;
+  wchar_t *temp = nullptr;
   size_t tempsize = 0;
   bool expand_wildcards = true;
 
@@ -269,7 +269,7 @@ bool Arguments::ExpandArgs(int argc, wchar_t *argv[], const char *passthrough)
     // for storing segments of the path that have wildcards
     int dirstart = 0;
     int dircount = 0;
-    wchar_t **directories = 0;
+    wchar_t **directories = nullptr;
 
     // check for wildcards
     bool has_wildcard = false;

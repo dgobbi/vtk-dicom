@@ -1799,7 +1799,7 @@ bool vtkDICOMReader::ReadFileDelegated(
   DcmFileFormat *fileformat = new DcmFileFormat();
   fileformat->loadFile(filename);
   OFCondition status = fileformat->getDataset()->chooseRepresentation(
-    EXS_LittleEndianExplicit, NULL);
+    EXS_LittleEndianExplicit, nullptr);
 
   if (!status.good())
   {

@@ -532,7 +532,7 @@ int vtkDICOMFileDirectory::Create(const char *name)
     {
       result = UnknownError;
     }
-    else if (!CreateDirectoryW(widename, NULL))
+    else if (!CreateDirectoryW(widename, nullptr))
     {
       DWORD e = GetLastError();
       if (e == ERROR_ACCESS_DENIED ||

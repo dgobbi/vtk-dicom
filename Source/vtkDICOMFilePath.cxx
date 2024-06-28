@@ -38,8 +38,8 @@ vtkDICOMFilePath::vtkDICOMFilePath(const std::string& path)
       break;
     }
   }
-  this->WidePath = 0;
-  this->LocalPath = 0;
+  this->WidePath = nullptr;
+  this->LocalPath = nullptr;
 #endif
   StripTrailingSlash(&this->Path);
 }
@@ -62,8 +62,8 @@ vtkDICOMFilePath::vtkDICOMFilePath(const std::wstring& path)
       break;
     }
   }
-  this->WidePath = 0;
-  this->LocalPath = 0;
+  this->WidePath = nullptr;
+  this->LocalPath = nullptr;
   StripTrailingSlash(&this->Path);
 }
 #endif
@@ -73,8 +73,8 @@ vtkDICOMFilePath::vtkDICOMFilePath(const vtkDICOMFilePath& other) :
   Path(other.Path), Separator(other.Separator)
 {
 #ifdef _WIN32
-  this->WidePath = 0;
-  this->LocalPath = 0;
+  this->WidePath = nullptr;
+  this->LocalPath = nullptr;
 #endif
 }
 
@@ -449,18 +449,18 @@ std::string vtkDICOMFilePath::GetRealPath() const
   wchar_t buffer[512];
   DWORD m = 512;
   wchar_t *tmp = buffer;
-  DWORD n = GetFullPathNameW(widepath, m, tmp, NULL);
+  DWORD n = GetFullPathNameW(widepath, m, tmp, nullptr);
   if (n >= m-1)
   {
     tmp = new wchar_t[n+3];
-    n = GetFullPathNameW(widepath, n+3, tmp, NULL);
+    n = GetFullPathNameW(widepath, n+3, tmp, nullptr);
   }
   delete [] widepath;
   widepath = tmp;
 #else
   HANDLE h = CreateFileW(widepath,
-    GENERIC_READ, FILE_SHARE_READ , NULL, OPEN_EXISTING,
-    FILE_FLAG_BACKUP_SEMANTICS, NULL);
+    GENERIC_READ, FILE_SHARE_READ , nullptr, OPEN_EXISTING,
+    FILE_FLAG_BACKUP_SEMANTICS, nullptr);
   delete [] widepath;
 
   if (h == INVALID_HANDLE_VALUE)
@@ -528,7 +528,7 @@ std::string vtkDICOMFilePath::GetRealPath() const
 #else
 
 #if _POSIX_VERSION >= 200809L
-  char *storage = 0;
+  char *storage = nullptr;
 #else
   char *storage = static_cast<char *>(malloc(PATH_MAX));
 #endif
@@ -760,7 +760,7 @@ const wchar_t *vtkDICOMFilePath::Wide()
 const char *vtkDICOMFilePath::Local()
 {
   delete [] this->LocalPath;
-  this->LocalPath = 0;
+  this->LocalPath = nullptr;
   if (this->Wide())
   {
     this->LocalPath = ConvertToLocal(this->WidePath);
@@ -811,9 +811,9 @@ char vtkDICOMFilePath::DriveLetter(const std::string& path)
 #ifdef _WIN32
 wchar_t *vtkDICOMFilePath::ConvertToWideChar(const char *filename)
 {
-  wchar_t *wideFilename = 0;
+  wchar_t *wideFilename = nullptr;
   int n = MultiByteToWideChar(
-    CP_UTF8, 0, filename, -1, NULL, 0);
+    CP_UTF8, 0, filename, -1, nullptr, 0);
   if (n > 0)
   {
     wideFilename = new wchar_t[n];
@@ -822,7 +822,7 @@ wchar_t *vtkDICOMFilePath::ConvertToWideChar(const char *filename)
     if (n == 0)
     {
       delete [] wideFilename;
-      wideFilename = 0;
+      wideFilename = nullptr;
     }
   }
   return wideFilename;
@@ -833,9 +833,9 @@ wchar_t *vtkDICOMFilePath::ConvertToWideChar(const char *filename)
 #ifdef _WIN32
 char *vtkDICOMFilePath::ConvertToUTF8(const wchar_t *wideFilename)
 {
-  char *filename = 0;
+  char *filename = nullptr;
   int n = WideCharToMultiByte(
-    CP_UTF8, 0, wideFilename, -1, NULL, 0, 0, 0);
+    CP_UTF8, 0, wideFilename, -1, nullptr, 0, 0, 0);
   if (n > 0)
   {
     filename = new char[n];
@@ -844,7 +844,7 @@ char *vtkDICOMFilePath::ConvertToUTF8(const wchar_t *wideFilename)
     if (n == 0)
     {
       delete [] filename;
-      filename = 0;
+      filename = nullptr;
     }
   }
   return filename;
@@ -855,9 +855,9 @@ char *vtkDICOMFilePath::ConvertToUTF8(const wchar_t *wideFilename)
 #ifdef _WIN32
 char *vtkDICOMFilePath::ConvertToLocal(const wchar_t *wideFilename)
 {
-  char *filename = 0;
+  char *filename = nullptr;
   int n = WideCharToMultiByte(
-    CP_ACP, 0, wideFilename, -1, NULL, 0, 0, 0);
+    CP_ACP, 0, wideFilename, -1, nullptr, 0, 0, 0);
   if (n > 0)
   {
     filename = new char[n];
@@ -866,7 +866,7 @@ char *vtkDICOMFilePath::ConvertToLocal(const wchar_t *wideFilename)
     if (n == 0)
     {
       delete [] filename;
-      filename = 0;
+      filename = nullptr;
     }
   }
   return filename;

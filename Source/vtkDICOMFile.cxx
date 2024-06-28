@@ -96,13 +96,13 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
     {
       this->Handle = CreateFileW(wideFilename,
         GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
-        NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
     }
     else if (mode == Out)
     {
       this->Handle = CreateFileW(wideFilename,
         GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-        NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+        nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
     }
   }
 
@@ -142,7 +142,7 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
   }
 
 #else
-  this->Handle = 0;
+  this->Handle = nullptr;
   this->Error = 0;
   this->Eof = false;
 
@@ -154,7 +154,7 @@ vtkDICOMFile::vtkDICOMFile(const char *filename, Mode mode)
   {
     this->Handle = fopen(filename, "wb");
   }
-  if (this->Handle == 0)
+  if (this->Handle == nullptr)
   {
     this->Error = UnknownError;
   }
@@ -191,7 +191,7 @@ void vtkDICOMFile::Close()
   {
     fclose(static_cast<FILE *>(this->Handle));
   }
-  this->Handle = 0;
+  this->Handle = nullptr;
 #endif
 }
 
@@ -226,7 +226,7 @@ size_t vtkDICOMFile::Read(unsigned char *data, size_t len)
   {
     DWORD l = static_cast<DWORD>(len - n < chunksize ? len - n : chunksize);
     DWORD r = 0;
-    if (ReadFile(this->Handle, &data[n], l, &r, NULL) == FALSE)
+    if (ReadFile(this->Handle, &data[n], l, &r, nullptr) == FALSE)
     {
       this->Error = UnknownError;
       break;
@@ -282,7 +282,7 @@ size_t vtkDICOMFile::Write(const unsigned char *data, size_t len)
   {
     DWORD l = static_cast<DWORD>(len - n < chunksize ? len - n : chunksize);
     DWORD r = 0;
-    if (WriteFile(this->Handle, &data[n], l, &r, NULL) == FALSE)
+    if (WriteFile(this->Handle, &data[n], l, &r, nullptr) == FALSE)
     {
       DWORD errorCode = GetLastError();
       if (errorCode == ERROR_HANDLE_DISK_FULL)
@@ -520,13 +520,13 @@ bool vtkDICOMFile::SameFile(const char *file1, const char *file2)
   vtkDICOMFilePath fpath1(file1);
   const wchar_t *widepath = fpath1.Wide();
   HANDLE h1 = CreateFileW(widepath,
-    GENERIC_READ, FILE_SHARE_READ , NULL, OPEN_EXISTING,
-    FILE_FLAG_BACKUP_SEMANTICS, NULL);
+    GENERIC_READ, FILE_SHARE_READ , nullptr, OPEN_EXISTING,
+    FILE_FLAG_BACKUP_SEMANTICS, nullptr);
   vtkDICOMFilePath fpath2(file2);
   widepath = fpath2.Wide();
   HANDLE h2 = CreateFileW(widepath,
-    GENERIC_READ, FILE_SHARE_READ , NULL, OPEN_EXISTING,
-    FILE_FLAG_BACKUP_SEMANTICS, NULL);
+    GENERIC_READ, FILE_SHARE_READ , nullptr, OPEN_EXISTING,
+    FILE_FLAG_BACKUP_SEMANTICS, nullptr);
   if (h1 != INVALID_HANDLE_VALUE && h2 != INVALID_HANDLE_VALUE)
   {
     BY_HANDLE_FILE_INFORMATION buf;
