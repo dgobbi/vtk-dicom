@@ -1,8 +1,6 @@
-# for CMake 3, add VERSION X.Y.Z to set the version here
-project(DICOM)
-
-# CMake version requirements
 cmake_minimum_required(VERSION 3.12)
+
+project(DICOM)
 
 # Allow custom cmake overrides
 set(DICOM_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
@@ -14,12 +12,6 @@ set(DICOM_MINOR_VERSION 8)
 set(DICOM_PATCH_VERSION 15)
 set(DICOM_SHORT_VERSION "${DICOM_MAJOR_VERSION}.${DICOM_MINOR_VERSION}")
 set(DICOM_VERSION "${DICOM_SHORT_VERSION}.${DICOM_PATCH_VERSION}")
-
-# Generic project version variables (forwards compatibility with CMake 3)
-set(PROJECT_MAJOR_VERSION ${DICOM_MAJOR_VERSION})
-set(PROJECT_MINOR_VERSION ${DICOM_MINOR_VERSION})
-set(PROJECT_PATCH_VERSION ${DICOM_PATCH_VERSION})
-set(PROJECT_VERSION ${DICOM_VERSION})
 
 # Include directories
 set(DICOM_INCLUDE_DIRS
