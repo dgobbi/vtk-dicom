@@ -226,7 +226,7 @@ else()
     endif()
 
     if(BUILD_PYTHON_WRAPPERS)
-      find_package(PythonInterp ${VTK_PYTHON_VERSION} QUIET)
+      find_package(Python ${VTK_PYTHON_VERSION} QUIET)
 
       vtk_module_wrap_python(
         MODULES         ${dicom_modules}
