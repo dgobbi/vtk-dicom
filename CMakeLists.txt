@@ -297,39 +297,6 @@ else()
 
 endif()
 
-# Store the git hash of the current head
-if(EXISTS "${DICOM_SOURCE_DIR}/.git/HEAD")
-  file(READ "${DICOM_SOURCE_DIR}/.git/HEAD" DICOM_SOURCE_VERSION)
-  if("${DICOM_SOURCE_VERSION}" MATCHES "^ref:")
-    string(REGEX REPLACE "^ref: *([^ \n\r]*).*" "\\1"
-      DICOM_GIT_REF "${DICOM_SOURCE_VERSION}")
-    file(READ "${DICOM_SOURCE_DIR}/.git/${DICOM_GIT_REF}"
-      DICOM_SOURCE_VERSION)
-  endif()
-  string(STRIP "${DICOM_SOURCE_VERSION}" DICOM_SOURCE_VERSION)
-endif()
-
-# Store the build date
-if(WIN32)
-#  execute_process(COMMAND "cmd" " /c date /t" OUTPUT_VARIABLE DATE)
-#  string(REGEX REPLACE "[^0-9]*(..).*" "\\1" MONTH "${DATE}")
-#  set(MONTHS ""
-#    "Jan" "Feb" "Mar" "Apr" "May" "Jun" "Jul" "Aug" "Sep" "Oct" "Nov" "Dec")
-#  list(GET MONTHS "${MONTH}" MONTH)
-#  string(REGEX REPLACE "[^/]*/(..)/(....).*" "\\1 ${MONTH} \\2"
-#    DICOM_BUILD_DATE "${DATE}")
-#  execute_process(COMMAND "cmd" " /c echo %TIME%" OUTPUT_VARIABLE TIME)
-#  string(REGEX REPLACE "[^0-9]*(..:..:..).*" "\\1"
-#    DICOM_BUILD_TIME "${TIME}")
-else()
-  execute_process(COMMAND "date" "+%d %b %Y/%H:%M:%S"
-    OUTPUT_VARIABLE DATE_TIME)
-  string(REGEX REPLACE "([^/]*)/.*" "\\1"
-    DICOM_BUILD_DATE "${DATE_TIME}")
-  string(REGEX REPLACE "[^/]*/([0-9:]*).*" "\\1"
-    DICOM_BUILD_TIME "${DATE_TIME}")
-endif()
-
 if(Module_vtkDICOM)
   set(DICOM_BIN_DIR ${VTK_INSTALL_RUNTIME_DIR})
   set(DICOM_LIB_DIR ${VTK_INSTALL_LIBRARY_DIR})
