@@ -9,7 +9,7 @@ GROUPS
 SPDX_LICENSE_IDENTIFIER
   BSD-3-Clause
 SPDX_COPYRIGHT_TEXT
-  Copyright (c) 2012-2023 David Gobbi
+  Copyright (c) 2012-2024 David Gobbi
 DEPENDS
   VTK::CommonCore
   VTK::CommonDataModel
