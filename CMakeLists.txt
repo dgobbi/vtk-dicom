@@ -86,11 +86,7 @@ else()
   # We are being built as a stand-alone package
   set(VTK_DICOM_LINK_TARGET vtkDICOM)
 
-  # When CMake 3.0.0 is required, remove this block (see CMP0042).
-  if(NOT DEFINED CMAKE_MACOSX_RPATH)
-    set(CMAKE_MACOSX_RPATH 0)
-  endif()
-
+  # Standard option
   option(BUILD_SHARED_LIBS "Build shared libraries." OFF)
 
   # Use ctest for dashboard submissions
