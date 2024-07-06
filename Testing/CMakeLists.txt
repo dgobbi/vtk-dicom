@@ -54,9 +54,8 @@ if(BUILD_PYTHON_WRAPPERS)
   endif()
   if(NOT VTK_PYTHON_EXE)
     # fall back to using python rather than vtkpython
-    find_package(PythonInterp QUIET)
-    mark_as_advanced(PYTHON_EXECUTABLE)
-    set(VTK_PYTHON_EXE ${PYTHON_EXECUTABLE})
+    find_package(Python QUIET COMPONENTS Interpreter)
+    set(VTK_PYTHON_EXE ${Python_EXECUTABLE})
   endif()
   add_test(TestDICOMPython "${VTK_PYTHON_EXE}"
     "${CMAKE_CURRENT_SOURCE_DIR}/TestDICOMPython.py")

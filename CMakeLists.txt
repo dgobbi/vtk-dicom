@@ -222,7 +222,7 @@ else()
     endif()
 
     if(BUILD_PYTHON_WRAPPERS)
-      find_package(Python ${VTK_PYTHON_VERSION} QUIET)
+      find_package(Python QUIET COMPONENTS Development.Module)
 
       vtk_module_wrap_python(
         MODULES         ${dicom_modules}
@@ -231,7 +231,7 @@ else()
         PYTHON_PACKAGE  "vtkdicom"
         CMAKE_DESTINATION   "${cmake_destination}"
         LIBRARY_DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-        SOABI           "${Python${VTK_PYTHON_VERSION}_SOABI}"
+        SOABI           "${Python_SOABI}"
         BUILD_STATIC    OFF)
 
       vtk_module_python_default_destination(python_destination)
