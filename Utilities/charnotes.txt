@@ -135,18 +135,15 @@ the difficulty of implementing this standard, compared to the
 relative simpilicity of supporting UTF-8 on modern systems, the
 choice of UTF-8 seems obvious.
 
-Likewise the old Chinese national standard GB2312 can be used with
+In contrast, the old Chinese national standard GB2312 can be used with
 ISO 2022, but it defines only one plane for ISO 2022 that provides
-too few Chinese characters for generalized use.  Regardless of this
-limitation, it was eventually adopted in DICOM 2013 (see below).
+too few Chinese characters for generalized use.  When GB2312 is used
+without escape codes, GB18030 is backwards compatible with it, which
+effectively allows GB2312 (without escape codes) to be included in
+DICOM if labeled as GB18030.
 
-One interesting question is, why was GB18030 introduced when UTF-8
-can serve the same purpose?  One possible reason is that GB18030
-is backwards-compatible with the older GBK standard, which is the
-most commonly used encoding in China.
-
-Given the inclusion of GB18030, it's interesting to note the omission
-of the popular Big5 encoding for Taiwan.
+Despite its limitations, GB2312 with ISO 2022 escape codes was adopted
+in DICOM 2013 (see below).
 
 
 ## DICOM 2011
@@ -198,6 +195,23 @@ even though a more recent revision exists.  As of yet, no character sets
 have been retired from DICOM, nor are any character sets recommended over
 others.  There has been no deprecation of any older character sets in favor
 of UTF-8.
+
+
+## DICOM 2024b
+
+CP 2354 adds this note to the DICOM standard, which is really a disclaimer:
+
+    1. The Specific Character Set value does not indicate the character
+       set version in use at the time of SOP Instance creation. Updates
+       to character sets designated by a Specific Character Set value are
+       expected to be backward compatible.
+
+This acknowledges that character sets have evolved over time, and that some
+(like Unicode and GB18030) will continue to evolve.  Backwards compatibility
+is expected, but not guaranteed.  Both Unicode and GB18030 have undergone
+corrections that break backwards compatibility, such as the change of the
+WAVE DASH shape in Unicode 8.0, and the code point swaps in GB18030-2005
+and GB18030-2022.
 
 
 ## Non-standard character sets
