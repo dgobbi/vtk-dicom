@@ -156,8 +156,8 @@ void dicomtodicom_help(FILE *file, const char *command_name)
     "\n");
   fprintf(file,
     "Reformatting of the data (MPR) is permitted during the conversion.\n"
-    "This is an experimental feature and causes much of the per-instance\n"
-    "meta data to be discarded.  Reformatting be combined with resampling\n"
+    "This is an experimental feature and causes most per-instance meta\n"
+    "data to be discarded.  Reformatting can be combined with resampling\n"
     "to produce an output with square pixels via Lanczos interpolation.\n"
     "\n");
 }
