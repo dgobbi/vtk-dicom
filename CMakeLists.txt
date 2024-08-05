@@ -239,6 +239,9 @@ else()
         "from .vtkDICOM import *\n\n"
         "__all__ = ['vtkDICOM']\n"
         "__version__ = \"${DICOM_VERSION}\"\n")
+      if(NOT VTK_VERSION VERSION_LESS 8.90)
+        string(PREPEND _content "import vtkmodules\n")
+      endif()
       file(GENERATE
         OUTPUT  "${CMAKE_BINARY_DIR}/${python_destination}/vtkdicom/__init__.py"
         CONTENT "${_content}")
