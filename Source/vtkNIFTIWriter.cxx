@@ -295,7 +295,7 @@ void vtkNIFTIWriterSetInformation(
   short datatype = 0;
   short databits = 0;
 
-  for (int i = 0; typeMap[2] != nullptr; i++)
+  for (int i = 0; typeMap[i][2] != 0; i++)
   {
     if (scalarType == typeMap[i][0])
     {
