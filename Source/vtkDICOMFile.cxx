@@ -313,7 +313,7 @@ size_t vtkDICOMFile::Write(const unsigned char *data, size_t len)
 bool vtkDICOMFile::SetPosition(Size offset)
 {
 #if defined(VTK_DICOM_POSIX_IO)
-#if defined(__linux__) && defined(_LARGEFILE64_SOURCE)
+#if defined(_LARGEFILE64_SOURCE) && _LFS64_LARGEFILE-0
   off64_t pos = lseek64(this->Handle, offset, SEEK_SET);
 #else
   off_t pos = lseek(this->Handle, offset, SEEK_SET);
