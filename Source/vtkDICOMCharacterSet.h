@@ -177,7 +177,7 @@ public:
   //@{
   //! Generate SpecificCharacterSet code values (diagnostic only).
   /*!
-   *  This will return the same value as GetDefinedTerm() is a defined
+   *  This will return the same value as GetDefinedTerm() if a defined
    *  term exists, otherwise it return the same value as GetName() if the
    *  character set has a name, with a final fallback to the number
    *  returned by GetKey() converted to a string.
