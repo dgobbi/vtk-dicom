@@ -132,12 +132,18 @@ public:
   //@}
 
   //@{
-  bool operator==(vtkDICOMImageCodec b) const { return (this->Key == b.Key); }
-  bool operator!=(vtkDICOMImageCodec b) const { return (this->Key != b.Key); }
-  bool operator<=(vtkDICOMImageCodec a) const { return (this->Key <= a.Key); }
-  bool operator>=(vtkDICOMImageCodec a) const { return (this->Key >= a.Key); }
-  bool operator<(vtkDICOMImageCodec a) const { return (this->Key < a.Key); }
-  bool operator>(vtkDICOMImageCodec a) const { return (this->Key > a.Key); }
+  bool operator==(const vtkDICOMImageCodec& b) const {
+    return (this->Key == b.Key); }
+  bool operator!=(const vtkDICOMImageCodec& b) const {
+    return (this->Key != b.Key); }
+  bool operator<=(const vtkDICOMImageCodec& a) const {
+    return (this->Key <= a.Key); }
+  bool operator>=(const vtkDICOMImageCodec& a) const {
+    return (this->Key >= a.Key); }
+  bool operator<(const vtkDICOMImageCodec& a) const {
+    return (this->Key < a.Key); }
+  bool operator>(const vtkDICOMImageCodec& a) const {
+    return (this->Key > a.Key); }
   //@}
 
 private:

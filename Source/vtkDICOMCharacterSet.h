@@ -324,12 +324,18 @@ public:
   //@}
 
   //@{
-  bool operator==(vtkDICOMCharacterSet b) const { return (this->Key == b.Key); }
-  bool operator!=(vtkDICOMCharacterSet b) const { return (this->Key != b.Key); }
-  bool operator<=(vtkDICOMCharacterSet a) const { return (this->Key <= a.Key); }
-  bool operator>=(vtkDICOMCharacterSet a) const { return (this->Key >= a.Key); }
-  bool operator<(vtkDICOMCharacterSet a) const { return (this->Key < a.Key); }
-  bool operator>(vtkDICOMCharacterSet a) const { return (this->Key > a.Key); }
+  bool operator==(const vtkDICOMCharacterSet& b) const {
+    return (this->Key == b.Key); }
+  bool operator!=(const vtkDICOMCharacterSet& b) const {
+    return (this->Key != b.Key); }
+  bool operator<=(const vtkDICOMCharacterSet& a) const {
+    return (this->Key <= a.Key); }
+  bool operator>=(const vtkDICOMCharacterSet& a) const {
+    return (this->Key >= a.Key); }
+  bool operator<(const vtkDICOMCharacterSet& a) const {
+    return (this->Key < a.Key); }
+  bool operator>(const vtkDICOMCharacterSet& a) const {
+    return (this->Key > a.Key); }
   //@}
 
 private:

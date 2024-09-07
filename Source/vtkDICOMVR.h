@@ -124,12 +124,12 @@ public:
   //@}
 
   //@{
-  bool operator==(vtkDICOMVR a) const { return (this->Key == a.Key); }
-  bool operator!=(vtkDICOMVR a) const { return (this->Key != a.Key); }
-  bool operator<=(vtkDICOMVR a) const { return (this->Key <= a.Key); }
-  bool operator>=(vtkDICOMVR a) const { return (this->Key >= a.Key); }
-  bool operator<(vtkDICOMVR a) const { return (this->Key < a.Key); }
-  bool operator>(vtkDICOMVR a) const { return (this->Key > a.Key); }
+  bool operator==(const vtkDICOMVR& a) const { return (this->Key == a.Key); }
+  bool operator!=(const vtkDICOMVR& a) const { return (this->Key != a.Key); }
+  bool operator<=(const vtkDICOMVR& a) const { return (this->Key <= a.Key); }
+  bool operator>=(const vtkDICOMVR& a) const { return (this->Key >= a.Key); }
+  bool operator<(const vtkDICOMVR& a) const { return (this->Key < a.Key); }
+  bool operator>(const vtkDICOMVR& a) const { return (this->Key > a.Key); }
   //@}
 
 private:

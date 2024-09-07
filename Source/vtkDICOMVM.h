@@ -461,12 +461,12 @@ public:
   //@}
 
   //@{
-  bool operator==(vtkDICOMVM b) const { return (this->Key == b.Key); }
-  bool operator!=(vtkDICOMVM b) const { return (this->Key != b.Key); }
-  bool operator<=(vtkDICOMVM a) const { return (this->Key <= a.Key); }
-  bool operator>=(vtkDICOMVM a) const { return (this->Key >= a.Key); }
-  bool operator<(vtkDICOMVM a) const { return (this->Key < a.Key); }
-  bool operator>(vtkDICOMVM a) const { return (this->Key > a.Key); }
+  bool operator==(const vtkDICOMVM& b) const { return (this->Key == b.Key); }
+  bool operator!=(const vtkDICOMVM& b) const { return (this->Key != b.Key); }
+  bool operator<=(const vtkDICOMVM& a) const { return (this->Key <= a.Key); }
+  bool operator>=(const vtkDICOMVM& a) const { return (this->Key >= a.Key); }
+  bool operator<(const vtkDICOMVM& a) const { return (this->Key < a.Key); }
+  bool operator>(const vtkDICOMVM& a) const { return (this->Key > a.Key); }
   //@}
 
 private:
