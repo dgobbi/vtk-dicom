@@ -106,12 +106,12 @@ def printnode(node):
         if node[3] or node[5]:
             f.write("{ %d, %d, %d, %d,%s\n  \"%s\" },\n" % tuple([child]+node[1:6]))
         else:
-            f.write("{ %d, %d, %d, 0, 0 },\n" % tuple([child]+node[1:3]))
+            f.write("{ %d, %d, %d, 0, nullptr },\n" % tuple([child]+node[1:3]))
     else:
         if node[3] or node[5]:
             f.write("{ 0, %d, %d, %d,%s\n  \"%s\" },\n" % tuple(node[1:6]))
         else:
-            f.write("{ 0, %d, %d, 0, 0 },\n" % tuple(node[1:3]))
+            f.write("{ 0, %d, %d, 0, nullptr },\n" % tuple(node[1:3]))
 
 def recursetrie(node, counter):
     if node[0]:
@@ -134,9 +134,9 @@ getterfunc = \
 """
 const UIDTableEntry *GetUIDTableEntry(const char *uid)
 {
-  if (uid == 0)
+  if (uid == nullptr)
   {
-    return 0;
+    return nullptr;
   }
 
   const char *prefix = "1.2.840.10008.";
@@ -148,7 +148,7 @@ const UIDTableEntry *GetUIDTableEntry(const char *uid)
 
   if (*prefix != '\\0')
   {
-    return 0;
+    return nullptr;
   }
 
   const UIDTableEntry *table = UIDTable;
@@ -174,19 +174,19 @@ const UIDTableEntry *GetUIDTableEntry(const char *uid)
       uid++;
       if (*uid == '\\0')
       {
-        table = 0;
+        table = nullptr;
         break;
       }
     }
     else if (*uid != '\\0')
     {
-      table = 0;
+      table = nullptr;
       break;
     }
     i -= table->First;
     if (i < 0 || i >= static_cast<int>(table->Size))
     {
-      table = 0;
+      table = nullptr;
       break;
     }
     table = &UIDTable[table->Next + i];
