@@ -1348,6 +1348,12 @@ ReferencedRealWorldValueMappingInstanceSequence
 SQ
 1
 
+(0008,114C)
+Referenced Segmentation Sequence
+ReferencedSegmentationSequence
+SQ
+1
+
 (0008,1150)
 Referenced SOP Class UID
 ReferencedSOPClassUID
@@ -2174,6 +2180,12 @@ LT
 Ethnic Group
 EthnicGroup
 SH
+1
+
+(0010,2161)
+Ethnic Group Code Sequence
+EthnicGroupCodeSequence
+SQ
 1
 
 (0010,2180)
@@ -3698,6 +3710,558 @@ DICONDE
 Radius Along the Wedge
 RadiusAlongWedge
 DS
+1
+DICONDE
+(0014,6001)
+Thermal Camera Settings Sequence
+ThermalCameraSettingsSequence
+SQ
+1
+DICONDE
+(0014,6002)
+Acquisition Frame Rate
+AcquisitionFrameRate
+DS
+1
+DICONDE
+(0014,6003)
+Integration Time
+IntegrationTime
+DS
+1
+DICONDE
+(0014,6004)
+Number of Calibration Frames
+NumberOfCalibrationFrames
+DS
+1
+DICONDE
+(0014,6005)
+Number of Rows in Full Acquisition Image
+NumberOfRowsInFullAcquisitionImage
+DS
+1
+DICONDE
+(0014,6006)
+Number Of Columns in Full Acquisition Image
+NumberOfColumnsInFullAcquisitionImage
+DS
+1
+DICONDE
+(0014,6007)
+Thermal Source Settings Sequence
+ThermalSourceSettingsSequence
+SQ
+1
+DICONDE
+(0014,6008)
+Source Horizontal Pitch
+SourceHorizontalPitch
+DS
+1
+DICONDE
+(0014,6009)
+Source Vertical Pitch
+SourceVerticalPitch
+DS
+1
+DICONDE
+(0014,600A)
+Source Horizontal Scan Speed
+SourceHorizontalScanSpeed
+DS
+1
+DICONDE
+(0014,600B)
+Thermal Source Modulation Frequency
+ThermalSourceModulationFrequency
+DS
+1
+DICONDE
+(0014,600C)
+Induction Source Setting Sequence
+InductionSourceSettingSequence
+SQ
+1
+DICONDE
+(0014,600D)
+Coil Frequency
+CoilFrequency
+DS
+1
+DICONDE
+(0014,600E)
+Current Amplitude Across Coil
+CurrentAmplitudeAcrossCoil
+DS
+1
+DICONDE
+(0014,600F)
+Flash Source Setting Sequence
+FlashSourceSettingSequence
+SQ
+1
+DICONDE
+(0014,6010)
+Flash Duration
+FlashDuration
+DS
+1
+DICONDE
+(0014,6011)
+Flash Frame Number
+FlashFrameNumber
+DS
+1-n
+DICONDE
+(0014,6012)
+Laser Source Setting Sequence
+LaserSourceSettingSequence
+SQ
+1
+DICONDE
+(0014,6013)
+Horizontal Laser Spot Dimension
+HorizontalLaserSpotDimension
+DS
+1
+DICONDE
+(0014,6014)
+Vertical Laser Spot Dimension
+VerticalLaserSpotDimension
+DS
+1
+DICONDE
+(0014,6015)
+Laser Wavelength
+LaserWavelength
+DS
+1
+DICONDE
+(0014,6016)
+Laser Power
+LaserPower
+DS
+1
+DICONDE
+(0014,6017)
+Forced Gas Setting Sequence
+ForcedGasSettingSequence
+SQ
+1
+DICONDE
+(0014,6018)
+Vibration Source Setting Sequence
+VibrationSourceSettingSequence
+SQ
+1
+DICONDE
+(0014,6019)
+Vibration Excitation Frequency
+VibrationExcitationFrequency
+DS
+1
+DICONDE
+(0014,601A)
+Vibration Excitation Voltage
+VibrationExcitationVoltage
+DS
+1
+DICONDE
+(0014,601B)
+Thermography Data Capture Method
+ThermographyDataCaptureMethod
+CS
+1
+DICONDE
+(0014,601C)
+Thermal Technique
+ThermalTechnique
+CS
+1
+DICONDE
+(0014,601D)
+Thermal Camera Core Sequence
+ThermalCameraCoreSequence
+SQ
+1
+DICONDE
+(0014,601E)
+Detector Wavelength Range
+DetectorWavelengthRange
+CS
+1
+DICONDE
+(0014,601F)
+Thermal Camera Calibration Type
+ThermalCameraCalibrationType
+CS
+1
+DICONDE
+(0014,6020)
+Acquisition Image Counter
+AcquisitionImageCounter
+UV
+1
+DICONDE
+(0014,6021)
+Front Panel Temperature
+FrontPanelTemperature
+DS
+1
+DICONDE
+(0014,6022)
+Air Gap Temperature
+AirGapTemperature
+DS
+1
+DICONDE
+(0014,6023)
+Vertical Pixel Size
+VerticalPixelSize
+DS
+1
+DICONDE
+(0014,6024)
+Horizontal Pixel Size
+HorizontalPixelSize
+DS
+1
+DICONDE
+(0014,6025)
+Data Streaming Protocol
+DataStreamingProtocol
+ST
+1-n
+DICONDE
+(0014,6026)
+Lens Sequence
+LensSequence
+SQ
+1
+DICONDE
+(0014,6027)
+Field of View
+FieldOfView
+DS
+1
+DICONDE
+(0014,6028)
+Lens Filter Manufacturer
+LensFilterManufacturer
+LO
+1
+DICONDE
+(0014,6029)
+Cutoff Filter Type
+CutoffFilterType
+CS
+1
+DICONDE
+(0014,602A)
+Lens Filter Cut-Off Wavelength
+LensFilterCutOffWavelength
+DS
+1-n
+DICONDE
+(0014,602B)
+Thermal Source Sequence
+ThermalSourceSequence
+SQ
+1
+DICONDE
+(0014,602C)
+Thermal Source Motion State
+ThermalSourceMotionState
+CS
+1
+DICONDE
+(0014,602D)
+Thermal Source Motion Type
+ThermalSourceMotionType
+CS
+1
+DICONDE
+(0014,602E)
+Induction Heating Sequence
+InductionHeatingSequence
+SQ
+1
+DICONDE
+(0014,602F)
+Coil Configuration ID
+CoilConfigurationID
+ST
+1
+DICONDE
+(0014,6030)
+Number of Turns in Coil
+NumberOfTurnsInCoil
+DS
+1
+DICONDE
+(0014,6031)
+Shape of Individual Turn
+ShapeOfIndividualTurn
+CS
+1
+DICONDE
+(0014,6032)
+Size of Individual Turn
+SizeOfIndividualTurn
+DS
+1-n
+DICONDE
+(0014,6033)
+Distance Between Turns
+DistanceBetweenTurns
+DS
+1-n
+DICONDE
+(0014,6034)
+Flash Heating Sequence
+FlashHeatingSequence
+SQ
+1
+DICONDE
+(0014,6035)
+Number of Lamps
+NumberOfLamps
+DS
+1
+DICONDE
+(0014,6036)
+Flash Synchronization Protocol
+FlashSynchronizationProtocol
+ST
+1
+DICONDE
+(0014,6037)
+Flash Modification Status
+FlashModificationStatus
+CS
+1
+DICONDE
+(0014,6038)
+Laser Heating Sequence
+LaserHeatingSequence
+SQ
+1
+DICONDE
+(0014,6039)
+Laser Manufacturer
+LaserManufacturer
+LO
+1
+DICONDE
+(0014,603A)
+Laser Model Number
+LaserModelNumber
+LO
+1
+DICONDE
+(0014,603B)
+Laser Type Description
+LaserTypeDescription
+ST
+1
+DICONDE
+(0014,603C)
+Forced Gas Heating Sequence
+ForcedGasHeatingSequence
+SQ
+1
+DICONDE
+(0014,603D)
+Gas Used for Heating/Cooling Part
+GasUsedForHeatingCoolingPart
+LO
+1
+DICONDE
+(0014,603E)
+Vibration/Sonic Heating Sequence
+VibrationSonicHeatingSequence
+SQ
+1
+DICONDE
+(0014,603F)
+Probe Manufacturer
+ProbeManufacturer
+LO
+1
+DICONDE
+(0014,6040)
+Probe Model Number
+ProbeModelNumber
+LO
+1
+DICONDE
+(0014,6041)
+Aperture Size
+ApertureSize
+DS
+1
+DICONDE
+(0014,6042)
+Probe Resonant Frequency
+ProbeResonantFrequency
+DS
+1
+DICONDE
+(0014,6043)
+Heat Source Description
+HeatSourceDescription
+UT
+1
+DICONDE
+(0014,6044)
+Surface Preparation with Optical Coating
+SurfacePreparationWithOpticalCoating
+CS
+1
+DICONDE
+(0014,6045)
+Optical Coating Type
+OpticalCoatingType
+ST
+1
+DICONDE
+(0014,6046)
+Thermal Conductivity of Exposed Surface
+ThermalConductivityOfExposedSurface
+DS
+1
+DICONDE
+(0014,6047)
+Material Density
+MaterialDensity
+DS
+1
+DICONDE
+(0014,6048)
+Specific Heat of Inspection Surface
+SpecificHeatOfInspectionSurface
+DS
+1
+DICONDE
+(0014,6049)
+Emissivity of Inspection Surface
+EmissivityOfInspectionSurface
+DS
+1
+DICONDE
+(0014,604A)
+Electromagnetic Classification of Inspection Surface
+ElectromagneticClassificationOfInspectionSurface
+CS
+1-n
+DICONDE
+(0014,604C)
+Moving Window Size
+MovingWindowSize
+DS
+1
+DICONDE
+(0014,604D)
+Moving Window Type
+MovingWindowType
+CS
+1
+DICONDE
+(0014,604E)
+Moving Window Weights
+MovingWindowWeights
+DS
+1-n
+DICONDE
+(0014,604F)
+Moving Window Pitch
+MovingWindowPitch
+DS
+1
+DICONDE
+(0014,6050)
+Moving Window Padding Scheme
+MovingWindowPaddingScheme
+CS
+1
+DICONDE
+(0014,6051)
+Moving Window Padding Sength
+MovingWindowPaddingLength
+DS
+1
+DICONDE
+(0014,6052)
+Spatial Filtering Parameters Sequence
+SpatialFilteringParametersSequence
+SQ
+1
+DICONDE
+(0014,6053)
+Spatial Filtering Scheme
+SpatialFilteringScheme
+CS
+1
+DICONDE
+(0014,6056)
+Horizontal Moving Window Size
+HorizontalMovingWindowSize
+DS
+1
+DICONDE
+(0014,6057)
+Vertical Moving Window Size
+VerticalMovingWindowSize
+DS
+1
+DICONDE
+(0014,6059)
+Polynomial Fitting Sequence
+PolynomialFittingSequence
+SQ
+1
+DICONDE
+(0014,605A)
+Fitting Data Type
+FittingDataType
+CS
+1-n
+DICONDE
+(0014,605B)
+Operation on Time Axis Before Fitting
+OperationOnTimeAxisBeforeFitting
+CS
+1
+DICONDE
+(0014,605C)
+Operation on Pixel Intensity Before Fitting
+OperationOnPixelIntensityBeforeFitting
+CS
+1
+DICONDE
+(0014,605D)
+Order of Polynomial
+OrderOfPolynomial
+DS
+1
+DICONDE
+(0014,605E)
+Independent Variable for Polynomial Fit
+IndependentVariableForPolynomialFit
+CS
+1
+DICONDE
+(0014,605F)
+PolynomialCoefficients
+PolynomialCoefficients
+DS
+1-n
+DICONDE
+(0014,6060)
+Thermography Pixel Data Unit
+ThermographyPixelDataUnit
+CS
 1
 DICONDE
 (0016,0001)
@@ -11464,10 +12028,22 @@ OphthalmicAnatomicReferencePointYCoordinate
 FL
 1
 
+(0022,1627)
+Ophthalmic En Face Volume Descriptor Sequence
+OphthalmicEnFaceVolumeDescriptorSequence
+SQ
+1
+
 (0022,1628)
 Ophthalmic En Face Image Quality Rating Sequence
 OphthalmicEnFaceImageQualityRatingSequence
 SQ
+1
+
+(0022,1629)
+Ophthalmic En Face Volume Descriptor Scope
+OphthalmicEnFaceVolumeDescriptorScope
+CS
 1
 
 (0022,1630)
@@ -14346,7 +14922,7 @@ SQ
 
 (003A,0320)
 Summarized Filter Lookup Table Sequence
-SummarizedFilterLookupTable
+SummarizedFilterLookupTableSequence
 SQ
 1
 
@@ -14376,7 +14952,7 @@ DS
 
 (003A,0325)
 Analog Filter Type Code Sequence
-AnalogFilterType
+AnalogFilterTypeCodeSequence
 SQ
 1
 
@@ -18326,6 +18902,12 @@ UL
 Surface Comments
 SurfaceComments
 LT
+1
+
+(0066,0005)
+Surface Offset
+SurfaceOffset
+FL
 1
 
 (0066,0009)
@@ -23494,6 +24076,12 @@ AcquisitionInitiationSequence
 SQ
 1
 
+(3002,0136)
+RT Cone-Beam Imaging Geometry Sequence
+RTConeBeamImagingGeometrySequence
+SQ
+1
+
 (3004,0001)
 DVH Type
 DVHType
@@ -24884,6 +25472,12 @@ DS
 Table Top Lateral Position Tolerance
 TableTopLateralPositionTolerance
 DS
+1
+
+(300A,0054)
+Table Top Position Alignment UID
+TableTopPositionAlignmentUID
+UI
 1
 
 (300A,0055)
@@ -28280,6 +28874,24 @@ SQ
 RT Radiation Set Delivery Usage
 RTRadiationSetDeliveryUsage
 CS
+1
+
+(300A,079F)
+Patient Treatment Preparation Sequence
+PatientTreatmentPreparationSequence
+SQ
+1
+
+(300A,07A0)
+Patient to Equipment Relationship Sequence
+PatientToEquipmentRelationshipSequence
+SQ
+1
+
+(300A,07A1)
+Imaging Equipment to Treatment Delivery Device Relationship Sequence
+ImagingEquipmentToTreatmentDeliveryDeviceRelationshipSequence
+SQ
 1
 
 (300C,0002)

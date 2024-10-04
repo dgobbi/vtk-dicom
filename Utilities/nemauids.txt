@@ -191,6 +191,18 @@ PS3.5
 HEVC/H.265 Main 10 Profile / Level 5.1
 Transfer Syntax
 PS3.5
+1.2.840.10008.1.2.4.110
+JPEG XL Lossless
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.111
+JPEG XL JPEG Recompression
+Transfer Syntax
+PS3.5
+1.2.840.10008.1.2.4.112
+JPEG XL
+Transfer Syntax
+PS3.5
 1.2.840.10008.1.2.4.201
 High-Throughput JPEG 2000 Image Compression (Lossless Only)
 Transfer Syntax
@@ -990,6 +1002,14 @@ PS3.4
 Tractography Results Storage
 SOP Class
 PS3.4
+1.2.840.10008.5.1.4.1.1.66.7
+Label Map Segmentation Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.66.8
+Height Map Segmentation Storage
+SOP Class
+PS3.4
 1.2.840.10008.5.1.4.1.1.67
 Real World Value Mapping Storage
 SOP Class
@@ -1224,6 +1244,10 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.88.76
 Enhanced X-Ray Radiation Dose SR Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.88.77
+Waveform Annotation SR Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.90.1
@@ -1470,6 +1494,14 @@ DICONDE ASTM E2934
 Eddy Current Multi-frame Image Storage
 SOP Class
 DICONDE ASTM E2934
+1.2.840.10008.5.1.4.1.1.601.3
+Thermography Image Storage
+SOP Class
+DICONDE ASTM E3440
+1.2.840.10008.5.1.4.1.1.601.4
+Thermography Multi-frame Image Storage
+SOP Class
+DICONDE ASTM E3440
 1.2.840.10008.5.1.4.1.2.1.1
 Patient Root Query/Retrieve Information Model - FIND
 SOP Class
@@ -6241,3 +6273,60 @@ Specimen Stain for Confocal Microscopy
 1.2.840.10008.6.1.1481
 CID 9272
 RT ROI Image Acquisition Context
+1.2.840.10008.6.1.1482
+CID 6170
+Lobe of Lung
+1.2.840.10008.6.1.1483
+CID 6171
+Zone of Lung
+1.2.840.10008.6.1.1484
+CID 3046
+Sleep Stage
+1.2.840.10008.6.1.1485
+CID 9273
+Patient Position Acquisition - MR Techniques
+1.2.840.10008.6.1.1486
+CID 9583
+RT Plan Radiotherapy Procedure Technique
+1.2.840.10008.6.1.1487
+CID 3047
+Waveform Annotation Classification
+1.2.840.10008.6.1.1488
+CID 3048
+Waveform Annotations Document Title
+1.2.840.10008.6.1.1489
+CID 3049
+EEG Procedure
+1.2.840.10008.6.1.1490
+CID 3050
+Patient Consciousness
+1.2.840.10008.6.1.1491
+CID 12010
+Follicle Type
+1.2.840.10008.6.1.1492
+CID 7163
+Breast Segmentation Types
+1.2.840.10008.6.1.1493
+CID 3779
+Implanted Device
+1.2.840.10008.6.1.1494
+CID 281
+Similarity Measure
+1.2.840.10008.6.1.1495
+CID 34
+Waveform Acquisition Modality
+1.2.840.10008.6.1.1496
+CID 4274
+En Face Processing Algorithm Family
+1.2.840.10008.6.1.1497
+CID 4275
+Anterior Eye Segmentation Surface
+1.2.840.10008.6.1.1498
+CID 12312
+Fetal Echocardiography Image View
+1.2.840.10008.6.1.1499
+CID 12313
+Cardiac Ultrasound Fetal Arrhythmia Measurements
+1.2.840.10008.6.1.1500
+CID 12314
+Common Fetal Echocardiography Measurements
