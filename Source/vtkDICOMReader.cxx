@@ -2197,7 +2197,6 @@ int vtkDICOMReader::RequestData(
             do { *tmpOutPtr++ = *tmpInPtr++; } while (--n);
             tmpOutPtr += pixelSize - filePixelSize;
           }
-          slicePtr += filePixelSize;
         }
         else if (slicePtr != planePtr)
         {
@@ -2205,6 +2204,18 @@ int vtkDICOMReader::RequestData(
         }
 
         planePtr += filePlaneSize;
+
+        if (planarToPacked)
+        {
+          // the next input plane maps to the next output component
+          slicePtr += filePixelSize;
+        }
+      }
+
+      if (planarToPacked)
+      {
+        // adjust output pointer back to the first component
+        slicePtr -= filePixelSize*numPlanes;
       }
 
       // convert to RGB if data was read from file as YUV
