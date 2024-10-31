@@ -323,6 +323,20 @@ public:
   //@}
 #endif
 
+  //@{
+  //! Control registration of image codecs (DCMTK-specific).
+  /*!
+   *  If the reader has been compiled with DCMTK support, RegisterCodecs()
+   *  allows manual registration of the DCMTK codecs by the application.
+   *  If you do not call this method, the reader will automatically register
+   *  the codecs when it is instantiated.  The registration is internally
+   *  guarded by a refererence count, and every RegisterCodecs() call must
+   *  eventually be matched by an UnRegisterCodecs() call.
+   */
+  static void RegisterCodecs();
+  static void UnRegisterCodecs();
+  //@}
+
 protected:
   vtkDICOMReader();
   ~vtkDICOMReader() VTK_DICOM_OVERRIDE;

@@ -22,6 +22,7 @@
 #include "vtkDICOMItem.h"
 #include "vtkDICOMTagPath.h"
 #include "vtkDICOMImageCodec.h"
+#include "vtkDICOMReferenceCount.h"
 #include "vtkDICOMSliceSorter.h"
 #include "vtkDICOMUtilities.h"
 #include "vtkDICOMConfig.h"
@@ -123,11 +124,7 @@ vtkDICOMReader::vtkDICOMReader()
 
   this->MedicalImageProperties = nullptr;
 
-#ifdef DICOM_USE_DCMTK
-  DJDecoderRegistration::registerCodecs();
-  DJLSDecoderRegistration::registerCodecs();
-  DcmRLEDecoderRegistration::registerCodecs();
-#endif
+  vtkDICOMReader::RegisterCodecs();
 
   // the main image and the overlay are the two outputs
   this->SetNumberOfOutputPorts(2);
@@ -136,11 +133,7 @@ vtkDICOMReader::vtkDICOMReader()
 //----------------------------------------------------------------------------
 vtkDICOMReader::~vtkDICOMReader()
 {
-#ifdef DICOM_USE_DCMTK
-  DcmRLEDecoderRegistration::cleanup();
-  DJLSDecoderRegistration::cleanup();
-  DJDecoderRegistration::cleanup();
-#endif
+  vtkDICOMReader::UnRegisterCodecs();
 
   if (this->Parser)
   {
@@ -2549,4 +2542,35 @@ void vtkDICOMReader::UpdateMedicalImageProperties()
     }
   }
   properties->SetDirectionCosine(dircos);
+}
+
+//----------------------------------------------------------------------------
+#ifdef DICOM_USE_DCMTK
+static vtkDICOMReferenceCount vtkDICOMReaderCodecReferenceCount;
+#endif
+
+//----------------------------------------------------------------------------
+void vtkDICOMReader::RegisterCodecs()
+{
+#ifdef DICOM_USE_DCMTK
+  if (++vtkDICOMReaderCodecReferenceCount == 1)
+  {
+    DJDecoderRegistration::registerCodecs();
+    DJLSDecoderRegistration::registerCodecs();
+    DcmRLEDecoderRegistration::registerCodecs();
+  }
+#endif
+}
+
+//----------------------------------------------------------------------------
+void vtkDICOMReader::UnRegisterCodecs()
+{
+#ifdef DICOM_USE_DCMTK
+  if (--vtkDICOMReaderCodecReferenceCount == 0)
+  {
+    DcmRLEDecoderRegistration::cleanup();
+    DJLSDecoderRegistration::cleanup();
+    DJDecoderRegistration::cleanup();
+  }
+#endif
 }
