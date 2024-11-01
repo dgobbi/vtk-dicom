@@ -22,7 +22,6 @@
 #include "vtkDICOMItem.h"
 #include "vtkDICOMTagPath.h"
 #include "vtkDICOMImageCodec.h"
-#include "vtkDICOMReferenceCount.h"
 #include "vtkDICOMSliceSorter.h"
 #include "vtkDICOMUtilities.h"
 #include "vtkDICOMConfig.h"
@@ -61,6 +60,7 @@
 #ifndef _WIN32
 #undef HAVE_CONFIG_H
 #endif
+#include <mutex> /* for codec registration */
 #elif defined(DICOM_USE_GDCM)
 #include "gdcmImageReader.h"
 #endif
@@ -2545,15 +2545,19 @@ void vtkDICOMReader::UpdateMedicalImageProperties()
 }
 
 //----------------------------------------------------------------------------
+// Static variable initialization is managed by Schwarz counter
 #ifdef DICOM_USE_DCMTK
-static vtkDICOMReferenceCount vtkDICOMReaderCodecReferenceCount;
+static unsigned int vtkDICOMReaderInitializerCounter;
+static unsigned int vtkDICOMReaderCodecReferenceCount;
+static std::mutex* vtkDICOMReaderCodecMutex;
 #endif
 
 //----------------------------------------------------------------------------
 void vtkDICOMReader::RegisterCodecs()
 {
 #ifdef DICOM_USE_DCMTK
-  if (++vtkDICOMReaderCodecReferenceCount == 1)
+  const std::lock_guard<std::mutex> lock(*vtkDICOMReaderCodecMutex);
+  if (vtkDICOMReaderCodecReferenceCount++ == 0)
   {
     DJDecoderRegistration::registerCodecs();
     DJLSDecoderRegistration::registerCodecs();
@@ -2566,11 +2570,37 @@ void vtkDICOMReader::RegisterCodecs()
 void vtkDICOMReader::UnRegisterCodecs()
 {
 #ifdef DICOM_USE_DCMTK
+  const std::lock_guard<std::mutex> lock(*vtkDICOMReaderCodecMutex);
   if (--vtkDICOMReaderCodecReferenceCount == 0)
   {
     DcmRLEDecoderRegistration::cleanup();
     DJLSDecoderRegistration::cleanup();
     DJDecoderRegistration::cleanup();
+  }
+#endif
+}
+
+//----------------------------------------------------------------------------
+// Perform initialization of static variables.
+vtkDICOMReaderInitializer::vtkDICOMReaderInitializer()
+{
+#ifdef DICOM_USE_DCMTK
+  if (vtkDICOMReaderInitializerCounter++ == 0)
+  {
+    vtkDICOMReaderCodecReferenceCount = 0;
+    vtkDICOMReaderCodecMutex = new std::mutex;
+  }
+#endif
+}
+
+//----------------------------------------------------------------------------
+// Perform cleanup of static variables.
+vtkDICOMReaderInitializer::~vtkDICOMReaderInitializer()
+{
+#ifdef DICOM_USE_DCMTK
+  if (--vtkDICOMReaderInitializerCounter == 0)
+  {
+    delete vtkDICOMReaderCodecMutex;
   }
 #endif
 }

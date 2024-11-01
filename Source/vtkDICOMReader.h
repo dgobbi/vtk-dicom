@@ -524,4 +524,23 @@ private:
 #endif
 };
 
+//! @cond
+//! Initializer (Schwarz counter).
+/*!
+ *  This ensures that the vtkDICOMReader module is initialized before
+ *  any other module that includes this header file.
+ */
+class VTKDICOM_EXPORT vtkDICOMReaderInitializer
+{
+public:
+  vtkDICOMReaderInitializer();
+  ~vtkDICOMReaderInitializer();
+private:
+  vtkDICOMReaderInitializer(const vtkDICOMReaderInitializer&);
+  vtkDICOMReaderInitializer& operator=(const vtkDICOMReaderInitializer&);
+};
+
+static vtkDICOMReaderInitializer vtkDICOMReaderInitializerInstance;
+//! @endcond
+
 #endif // vtkDICOMReader_h
