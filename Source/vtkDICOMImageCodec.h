@@ -39,8 +39,8 @@ public:
     JPEGPrediction,    // 1.2.4.70  JPEG lossless prediction (14)
     JPEGLS,            // 1.2.4.80  JPEG-LS
     JPEGLSConstrained, // 1.2.4.81  JPEG-LS constrained error
-    JPEG2K,            // 1.2.4.90  JPEG 2000 lossless
-    JPEG2KLossless,    // 1.2.4.91  JPEG 2000 lossless/lossy
+    JPEG2KLossless,    // 1.2.4.90  JPEG 2000 lossless
+    JPEG2K,            // 1.2.4.91  JPEG 2000 lossless/lossy
     MPEG2ML,           // 1.2.4.100 MPEG2 ML
     MPEG2HL,           // 1.2.4.101 MPEG2 HL
     MPEG4HPL41,        // 1.2.4.102 MPEG4 AVC/H.264 High Profile / Level 4.1
