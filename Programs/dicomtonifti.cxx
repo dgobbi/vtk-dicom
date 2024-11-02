@@ -644,7 +644,7 @@ std::string dicomtonifti_make_filename(
           }
           else
           {
-            fprintf(stderr, "Unrecognized key %s\n", key.c_str());
+            fprintf(stderr, "Key %s is unrecognized.\n", key.c_str());
             return std::string();
           }
         }
@@ -658,13 +658,13 @@ std::string dicomtonifti_make_filename(
         }
         else if (meta)
         {
-          fprintf(stderr, "Sorry, key %s not found.\n",
-                  key.c_str());
-          return std::string();
+          fprintf(stderr, "Key %s is missing.\n", key.c_str());
+          val = "Missing" + key;
         }
         if (val.empty())
         {
-          val = "Empty";
+          fprintf(stderr, "Key %s is empty.\n", key.c_str());
+          val = "Empty" + key;
         }
         s.append(val);
       }
