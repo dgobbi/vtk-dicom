@@ -50,6 +50,9 @@ public:
     MPEG4HPL42Stereo,  // 1.2.4.106 MPEG4 AVC/H.264 Stereo High Profile / 4.2
     HEVCMPL51,         // 1.2.4.107 HEVC/H.265 Main Profile / 5.1
     HEVCM10PL51,       // 1.2.4.108 HEVC/H.265 Main 10 Profile / 5.1
+    JPEGXLLossless,    // 1.2.4.110 JPEG XL Lossless
+    JPEGXLRecomp,      // 1.2.4.111 JPEG XL JPEG Recompression
+    JPEGXL,            // 1.2.4.112 JPEG XL
     NumberOfCodecs
   };
 
@@ -142,7 +145,7 @@ public:
 
 private:
   unsigned char Key;
-  static const char *UIDs[21];
+  static const char *UIDs[24];
 
   static int DecodeRLE(
     const ImageFormat& image,
