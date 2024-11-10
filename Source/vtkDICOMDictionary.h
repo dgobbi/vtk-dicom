@@ -41,7 +41,7 @@ public:
 
   //@{
   //! Find the dictionary entry for the given tag.
-  static vtkDICOMDictEntry FindDictEntry(const vtkDICOMTag tag) {
+  static vtkDICOMDictEntry FindDictEntry(vtkDICOMTag tag) {
     return vtkDICOMDictionary::FindDictEntry(tag, nullptr); }
 
   //! Find the dictionary for the given key.
@@ -59,7 +59,7 @@ public:
    *  creator of any private tags that are present in the metadata.
    */
   static vtkDICOMDictEntry FindDictEntry(
-    const vtkDICOMTag tag, const char *privateDict);
+    vtkDICOMTag tag, const char *privateDict);
 
   //! Search for a private dictionary entry by key.
   /*!

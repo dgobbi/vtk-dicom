@@ -118,7 +118,7 @@ vtkDICOMDictionary::Dict *vtkDICOMDictionary::FindPrivateDict(
 
 //----------------------------------------------------------------------------
 vtkDICOMDictEntry vtkDICOMDictionary::FindDictEntry(
-  const vtkDICOMTag tag, const char *dictname)
+  vtkDICOMTag tag, const char *dictname)
 {
   unsigned short group = tag.GetGroup();
   unsigned short element = tag.GetElement();

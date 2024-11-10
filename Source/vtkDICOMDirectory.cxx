@@ -1010,7 +1010,7 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
         }
         matched = parser->GetQueryMatched();
         this->FillImageRecord(&storeImageRecords[i], meta,
-                              &skip[0], skip.size());
+                              skip.data(), skip.size());
         imageRecord = &storeImageRecords[i];
       }
       if (matched)
@@ -1033,7 +1033,7 @@ void vtkDICOMDirectory::AddSeriesWithQuery(
     {
       this->AddSeriesFileNames(
         patient, study, a,
-        patientRecord, studyRecord, seriesRecord, &newImageRecords[0]);
+        patientRecord, studyRecord, seriesRecord, newImageRecords.data());
     }
   }
 }
@@ -1486,7 +1486,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       v.Files.push_back(fileInfo);
       FileInfo &f = v.Files.back();
       v.FilesByUID.insert(im, FileInfoPair(f.ImageUID.GetCharData(), &f));
-      this->FillImageRecord(&f.ImageRecord, meta, &skip[0], skip.size());
+      this->FillImageRecord(&f.ImageRecord, meta, skip.data(), skip.size());
       v.QueryMatched |= queryMatched;
       foundSeries = true;
       break;
@@ -1519,7 +1519,7 @@ void vtkDICOMDirectory::SortFiles(vtkStringArray *input)
       this->FillStudyRecord(&v.StudyRecord, meta);
       this->FillSeriesRecord(&v.SeriesRecord, meta);
       skip.SetFrom(v.PatientRecord, v.StudyRecord, v.SeriesRecord);
-      this->FillImageRecord(&f.ImageRecord, meta, &skip[0], skip.size());
+      this->FillImageRecord(&f.ImageRecord, meta, skip.data(), skip.size());
     }
   }
 
@@ -2418,7 +2418,7 @@ void vtkDICOMDirectory::ProcessDirectoryFile(
             this->AddSeriesWithQuery(
               patientIdx, studyIdx, fileNames,
               items[patientItem], items[studyItem], items[seriesItem],
-              &imageRecords[0]);
+              imageRecords.data());
 
             fileNames = vtkSmartPointer<vtkStringArray>::New();
             imageRecords.clear();
@@ -2741,10 +2741,9 @@ void vtkDICOMDirectory::SetInternalFileName(const char *name)
   {
     return;
   }
-  if (this->InternalFileName)
-  {
-    delete [] this->InternalFileName;
-  }
+
+  delete [] this->InternalFileName;
+
   if (name)
   {
     size_t n = strlen(name) + 1;

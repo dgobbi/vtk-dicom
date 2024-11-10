@@ -47,7 +47,7 @@ private:
     vtkDICOMCharacterSet CharacterSet;
     vtkDICOMVR VRForXS;
 
-    List() : Head(), Tail(), ReferenceCount(1),
+    List() : ReferenceCount(1),
              NumberOfDataElements(0), DataElements(nullptr),
              ByteOffset(0), Delimited(false),
              CharacterSet(vtkDICOMCharacterSet::ISO_IR_6),

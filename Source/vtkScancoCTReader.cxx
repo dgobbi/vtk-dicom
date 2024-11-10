@@ -1227,7 +1227,7 @@ int vtkScancoCTReader::RequestData(
   else if (this->Compression == 0x00b2)
   {
     // Decompress binary run-lengths
-    bool flip = 0;
+    bool flip = false;
     unsigned char v = input[flip];
     char *inPtr = input + 2;
     size -= 2;

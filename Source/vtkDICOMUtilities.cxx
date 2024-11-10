@@ -377,7 +377,7 @@ bool vtkDICOMUtilities::IsDICOMFile(const char *filename)
   size_t size = infile.GetSize();
   if (size < sizeof(buffer))
   {
-    return 0;
+    return false;
   }
   size = sizeof(buffer);
 

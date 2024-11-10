@@ -30,7 +30,7 @@ class VTKDICOM_EXPORT vtkDICOMDataElement
 {
 public:
   //@{
-  vtkDICOMDataElement() : Tag(), Value(), Next(nullptr), Prev(nullptr) {}
+  vtkDICOMDataElement() : Next(nullptr), Prev(nullptr) {}
   vtkDICOMDataElement(const vtkDICOMTag& t, const vtkDICOMValue &v) :
     Tag(t), Value(v), Next(nullptr), Prev(nullptr) {}
   //@}

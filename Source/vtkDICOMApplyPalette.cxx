@@ -282,7 +282,7 @@ int vtkDICOMApplyPalette::RequestInformation(
   // Bypass unless there is a palette to apply
   delete this->Palette;
   this->Palette = nullptr;
-  this->IsSupplemental = 0;
+  this->IsSupplemental = false;
   bool hasPalette = false;
 
   if (meta && meta->Get(DC::SamplesPerPixel).Matches(1))

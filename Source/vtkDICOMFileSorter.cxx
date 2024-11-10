@@ -95,20 +95,15 @@ vtkDICOMFileSorter::vtkDICOMFileSorter()
 //----------------------------------------------------------------------------
 vtkDICOMFileSorter::~vtkDICOMFileSorter()
 {
-  if (this->InputFileName)
-  {
-    delete [] this->InputFileName;
-  }
+  delete [] this->InputFileName;
   if (this->InputFileNames)
   {
     this->InputFileNames->Delete();
   }
-  if (this->InternalFileName)
-  {
-    delete [] this->InternalFileName;
-  }
-
   this->OutputFileNames->Delete();
+
+  delete [] this->InternalFileName;
+
   delete this->Series;
   this->Studies->Delete();
 }
@@ -582,10 +577,9 @@ void vtkDICOMFileSorter::SetInternalFileName(const char *name)
   {
     return;
   }
-  if (this->InternalFileName)
-  {
-    delete [] this->InternalFileName;
-  }
+
+  delete [] this->InternalFileName;
+
   if (name)
   {
     size_t n = strlen(name) + 1;
