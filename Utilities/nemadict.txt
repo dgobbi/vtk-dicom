@@ -1354,6 +1354,12 @@ ReferencedSegmentationSequence
 SQ
 1
 
+(0008,114D)
+Referenced Surface Segmentation Sequence
+ReferencedSurfaceSegmentationSequence
+SQ
+1
+
 (0008,1150)
 Referenced SOP Class UID
 ReferencedSOPClassUID
@@ -1471,6 +1477,30 @@ SQ
 (0008,1250)
 Related Series Sequence
 RelatedSeriesSequence
+SQ
+1
+
+(0008,1301)
+Principal Diagnosis Code Sequence
+PrincipalDiagnosisCodeSequence
+SQ
+1
+
+(0008,1302)
+Primary Diagnosis Code Sequence
+PrimaryDiagnosisCodeSequence
+SQ
+1
+
+(0008,1303)
+Secondary Diagnosis Code Sequence
+SecondaryDiagnosisCodeSequence
+SQ
+1
+
+(0008,1304)
+Histological Diagnosis Code Sequence
+HistologicalDiagnosisCodeSequence
 SQ
 1
 
@@ -12016,6 +12046,12 @@ OphthalmicVolumetricPropertiesFlag
 CS
 1
 
+(0022,1623)
+Ophthalmic Anatomic Reference Point Frame Coordinate
+OphthalmicAnatomicReferencePointFrameCoordinate
+FL
+1
+
 (0022,1624)
 Ophthalmic Anatomic Reference Point X-Coordinate
 OphthalmicAnatomicReferencePointXCoordinate
@@ -12050,6 +12086,24 @@ CS
 Quality Threshold
 QualityThreshold
 DS
+1
+
+(0022,1632)
+Ophthalmic Anatomic Reference Point Sequence
+OphthalmicAnatomicReferencePointSequence
+SQ
+1
+
+(0022,1633)
+Ophthalmic Anatomic Reference Point Localization Type
+OphthalmicAnatomicReferencePointLocalizationType
+CS
+1
+
+(0022,1634)
+Primary Anatomic Structure Item Index
+PrimaryAnatomicStructureItemIndex
+IS
 1
 
 (0022,1640)
@@ -16850,6 +16904,120 @@ RET
 Waveform Annotation Sequence
 WaveformAnnotationSequence
 SQ
+1
+
+(0040,B030)
+Structured Waveform Annotation Sequence
+StructuredWaveformAnnotationSequence
+SQ
+1
+
+(0040,B031)
+Waveform Annotation Display Selection Sequence
+WaveformAnnotationDisplaySelectionSequence
+SQ
+1
+
+(0040,B032)
+Referenced Montage Index
+ReferencedMontageIndex
+US
+1
+
+(0040,B033)
+Waveform Textual Annotation Sequence
+WaveformTextualAnnotationSequence
+SQ
+1
+
+(0040,B034)
+Annotation DateTime
+AnnotationDateTime
+DT
+1
+
+(0040,B035)
+Displayed Waveform Segment Sequence
+DisplayedWaveformSegmentSequence
+SQ
+1
+
+(0040,B036)
+Segment Definition DateTime
+SegmentDefinitionDateTime
+DT
+1
+
+(0040,B037)
+Montage Activation Sequence
+MontageActivationSequence
+SQ
+1
+
+(0040,B038)
+Montage Activation Time Offset
+MontageActivationTimeOffset
+DS
+1
+
+(0040,B039)
+Waveform Montage Sequence
+WaveformMontageSequence
+SQ
+1
+
+(0040,B03A)
+Referenced Montage Channel Number
+ReferencedMontageChannelNumber
+IS
+1
+
+(0040,B03B)
+Montage Name
+MontageName
+LT
+1
+
+(0040,B03C)
+Montage Channel Sequence
+MontageChannelSequence
+SQ
+1
+
+(0040,B03D)
+Montage Index
+MontageIndex
+US
+1
+
+(0040,B03E)
+Montage Channel Number
+MontageChannelNumber
+IS
+1
+
+(0040,B03F)
+Montage Channel Label
+MontageChannelLabel
+LO
+1
+
+(0040,B040)
+Montage Channel Source Code Sequence
+MontageChannelSourceCodeSequence
+SQ
+1
+
+(0040,B041)
+Contributing Channel Sources Sequence
+ContributingChannelSourcesSequence
+SQ
+1
+
+(0040,B042)
+Channel Weight
+ChannelWeight
+FL
 1
 
 (0040,DB00)
@@ -24147,12 +24315,18 @@ Dose Value
 DoseValue
 DS
 1
-RET
+
 (3004,0014)
 Tissue Heterogeneity Correction
 TissueHeterogeneityCorrection
 CS
 1-3
+
+(3004,0016)
+Recommended Isodose Level Sequence
+RecommendedIsodoseLevelSequence
+SQ
+1
 
 (3004,0040)
 DVH Normalization Point
@@ -27002,6 +27176,12 @@ SQ
 Compensator Description
 CompensatorDescription
 LT
+1
+
+(300A,02EC)
+Compensator Surface Representation Flag
+CompensatorSurfaceRepresentationFlag
+CS
 1
 
 (300A,0302)
