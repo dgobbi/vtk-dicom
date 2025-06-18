@@ -189,6 +189,13 @@ else()
       set(dicom_library_suffix "${DICOM_CUSTOM_LIBRARY_SUFFIX}")
     endif()
 
+    # Optional arguments for vtk_module_build()
+    set(module_build_extra_args)
+    if(NOT "${dicom_library_suffix}" STREQUAL "")
+      list(APPEND module_build_extra_args
+        LIBRARY_NAME_SUFFIX "${dicom_library_suffix}")
+    endif()
+
     # Where to put config files
     set(cmake_destination
       "${CMAKE_INSTALL_LIBDIR}/cmake/dicom-${DICOM_SHORT_VERSION}")
@@ -207,13 +214,9 @@ else()
       CMAKE_DESTINATION   "${cmake_destination}"
       LICENSE_DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/dicom-${DICOM_SHORT_VERSION}"
       HIERARCHY_DESTINATION "${CMAKE_INSTALL_LIBDIR}/vtk${vtk_version_suffix}/hierarchy/DICOM"
-      LIBRARY_NAME_SUFFIX "${dicom_library_suffix}"
       VERSION             "${DICOM_VERSION}"
       SOVERSION           "1"
-      TEST_DATA_TARGET    DicomData
-      USE_EXTERNAL        "${DICOM_USE_EXTERNAL}"
-      TEST_INPUT_DATA_DIRECTORY   "${dicom_test_data_directory_input}"
-      TEST_OUTPUT_DATA_DIRECTORY  "${dicom_test_data_directory_output}")
+      ${module_build_extra_args})
 
     # Disable deprecation warnings for MSVC
     if(MSVC)
