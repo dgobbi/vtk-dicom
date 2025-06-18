@@ -191,6 +191,10 @@ else()
 
     # Optional arguments for vtk_module_build()
     set(module_build_extra_args)
+    if(NOT VTK_VERSION VERSION_LESS 9.4.0)
+      list(APPEND module_build_extra_args
+        USE_FILE_SETS ON)
+    endif()
     if(NOT "${dicom_library_suffix}" STREQUAL "")
       list(APPEND module_build_extra_args
         LIBRARY_NAME_SUFFIX "${dicom_library_suffix}")
