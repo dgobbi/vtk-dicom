@@ -234,6 +234,11 @@ public:
   //@}
 
   //@{
+  //! Set the file pattern as a printf-style string.
+  void SetFilePattern(const char*) VTK_DICOM_OVERRIDE;
+  //@}
+
+  //@{
   //! Write the file to disk.
   void Write() VTK_DICOM_OVERRIDE;
   //@}

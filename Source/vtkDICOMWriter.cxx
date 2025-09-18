@@ -238,6 +238,32 @@ const char *vtkDICOMWriter::GetFileSliceOrderAsString()
 }
 
 //----------------------------------------------------------------------------
+void vtkDICOMWriter::SetFilePattern(const char* pattern)
+{
+  if (this->FilePattern == nullptr && pattern == nullptr)
+  {
+    return;
+  }
+  if (this->FilePattern && pattern && (!strcmp(this->FilePattern, pattern)))
+  {
+    return;
+  }
+  delete[] this->FilePattern;
+  if (pattern)
+  {
+    size_t n = strlen(pattern) + 1;
+    char* cp1 = new char[n];
+    strcpy(cp1, pattern);
+    this->FilePattern = cp1;
+  }
+  else
+  {
+    this->FilePattern = nullptr;
+  }
+  this->Modified();
+}
+
+//----------------------------------------------------------------------------
 void vtkDICOMWriter::ComputeInternalFileName(int slice)
 {
   size_t n = 0;
