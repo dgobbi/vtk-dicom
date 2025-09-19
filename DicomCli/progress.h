@@ -15,7 +15,6 @@
 #define progress_h
 
 #include "vtkCommand.h"
-#include "vtkDICOMConfig.h"
 
 // Capture progress events
 class ProgressObserver : public vtkCommand

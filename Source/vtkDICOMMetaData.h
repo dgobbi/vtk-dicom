@@ -17,7 +17,6 @@
 #include "vtkDataObject.h"
 #include "vtkStdString.h" // For std::string
 #include "vtkDICOMModule.h" // For export macro
-#include "vtkDICOMConfig.h" // For configuration details
 #include "vtkDICOMDataElement.h" // For method parameter
 #include "vtkDICOMDictEntry.h" // For method parameter
 

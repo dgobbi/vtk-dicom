@@ -22,7 +22,6 @@
 #define vtkConsoleOutputWindow_h
 
 #include "vtkOutputWindow.h"
-#include "vtkDICOMConfig.h"
 
 class vtkConsoleOutputWindow : public vtkOutputWindow
 {
