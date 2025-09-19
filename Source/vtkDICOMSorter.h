@@ -22,7 +22,7 @@ class VTKDICOM_EXPORT vtkDICOMSorter : public vtkDICOMFileSorter
 public:
   //@{
   vtkTypeMacro(vtkDICOMSorter,vtkDICOMFileSorter);
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
   static vtkDICOMSorter *New();
   //@}
 
@@ -36,16 +36,11 @@ public:
 
 protected:
   vtkDICOMSorter();
-  ~vtkDICOMSorter() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMSorter() override;
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMSorter(const vtkDICOMSorter&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMSorter&) VTK_DICOM_DELETE;
-#else
   vtkDICOMSorter(const vtkDICOMSorter&) = delete;
   void operator=(const vtkDICOMSorter&) = delete;
-#endif
 };
 
 #endif

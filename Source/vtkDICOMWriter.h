@@ -53,7 +53,7 @@ public:
   static vtkDICOMWriter *New();
 
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
 
   //@{
   //! Set a short description (max 64 chars) for the DICOM series.
@@ -235,17 +235,17 @@ public:
 
   //@{
   //! Set the file pattern as a printf-style string.
-  void SetFilePattern(const char*) VTK_DICOM_OVERRIDE;
+  void SetFilePattern(const char*) override;
   //@}
 
   //@{
   //! Write the file to disk.
-  void Write() VTK_DICOM_OVERRIDE;
+  void Write() override;
   //@}
 
 protected:
   vtkDICOMWriter();
-  ~vtkDICOMWriter() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMWriter() override;
 
   //! Compute the name of one of the output files.
   void ComputeInternalFileName(int slice);
@@ -261,11 +261,11 @@ protected:
                                 const int extent[4]);
 
   //! The main execution method, which writes the file.
-  int FillInputPortInformation(int port, vtkInformation *info) VTK_DICOM_OVERRIDE;
+  int FillInputPortInformation(int port, vtkInformation *info) override;
 
   int RequestData(vtkInformation *request,
                   vtkInformationVector** inputVector,
-                  vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+                  vtkInformationVector* outputVector) override;
 
   //! The meta data set by the user.
   vtkDICOMMetaData *MetaData;
@@ -312,13 +312,8 @@ protected:
   int Streaming;
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMWriter(const vtkDICOMWriter&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMWriter&) VTK_DICOM_DELETE;
-#else
   vtkDICOMWriter(const vtkDICOMWriter&) = delete;
   void operator=(const vtkDICOMWriter&) = delete;
-#endif
 };
 
 #endif // vtkDICOMWriter_h

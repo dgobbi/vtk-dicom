@@ -44,7 +44,7 @@ class VTKDICOM_EXPORT vtkDICOMFileSorter : public vtkObject
 {
 public:
   vtkTypeMacro(vtkDICOMFileSorter,vtkObject);
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
   static vtkDICOMFileSorter *New();
 
   //@{
@@ -120,7 +120,7 @@ public:
 
 protected:
   vtkDICOMFileSorter();
-  ~vtkDICOMFileSorter() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMFileSorter() override;
 
   const char *InputFileName;
   vtkStringArray *InputFileNames;
@@ -158,13 +158,8 @@ protected:
   void SetErrorCode(unsigned long e) { this->ErrorCode = e; }
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMFileSorter(const vtkDICOMFileSorter&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMFileSorter&) VTK_DICOM_DELETE;
-#else
   vtkDICOMFileSorter(const vtkDICOMFileSorter&) = delete;
   void operator=(const vtkDICOMFileSorter&) = delete;
-#endif
 
   class StringArrayVector;
   struct FileInfo;

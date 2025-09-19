@@ -65,7 +65,7 @@ public:
   vtkTypeMacro(vtkNIFTIWriter, vtkImageWriter);
 
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
 
   //@{
   //! Set the version number for the NIfTI file format to use.
@@ -191,7 +191,7 @@ public:
 
 protected:
   vtkNIFTIWriter();
-  ~vtkNIFTIWriter() VTK_DICOM_OVERRIDE;
+  ~vtkNIFTIWriter() override;
 
   //! Generate the header information for the file.
   int GenerateHeader(vtkInformation *info, bool singleFile);
@@ -199,7 +199,7 @@ protected:
   //! The main execution method, which writes the file.
   int RequestData(vtkInformation *request,
                   vtkInformationVector** inputVector,
-                  vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+                  vtkInformationVector* outputVector) override;
 
   //! Make a new filename by replacing extension "ext1" with "ext2".
   /*!
@@ -240,13 +240,8 @@ protected:
   EndianEnum DataByteOrder;
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkNIFTIWriter(const vtkNIFTIWriter&) VTK_DICOM_DELETE;
-  void operator=(const vtkNIFTIWriter&) VTK_DICOM_DELETE;
-#else
   vtkNIFTIWriter(const vtkNIFTIWriter&) = delete;
   void operator=(const vtkNIFTIWriter&) = delete;
-#endif
 };
 
 #endif // vtkNIFTIWriter_h

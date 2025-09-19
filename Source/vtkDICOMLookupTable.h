@@ -38,7 +38,7 @@ public:
   vtkTypeMacro(vtkDICOMLookupTable, vtkLookupTable);
 
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
 
   //! Build the a standard lookup table, given a code string.
   /*!
@@ -58,7 +58,7 @@ public:
 
 protected:
   vtkDICOMLookupTable();
-  ~vtkDICOMLookupTable() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMLookupTable() override;
 
   //! Build a lookup table from compressed data.
   /*!
@@ -69,13 +69,8 @@ protected:
     unsigned char *lut, unsigned int stride, unsigned int count);
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMLookupTable(const vtkDICOMLookupTable&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMLookupTable&) VTK_DICOM_DELETE;
-#else
   vtkDICOMLookupTable(const vtkDICOMLookupTable&) = delete;
   void operator=(const vtkDICOMLookupTable&) = delete;
-#endif
 };
 
 #endif // vtkDICOMLookupTable_h

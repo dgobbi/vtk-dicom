@@ -47,7 +47,7 @@ class VTKDICOM_EXPORT vtkDICOMDirectory : public vtkAlgorithm
 {
 public:
   vtkTypeMacro(vtkDICOMDirectory,vtkAlgorithm);
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
   static vtkDICOMDirectory *New();
 
   //! Levels within the DICOM information model.
@@ -132,12 +132,12 @@ public:
    * This method causes the directory to be read.  It must be called before
    * any of the Get methods.
    */
-  void Update() VTK_DICOM_OVERRIDE { this->Update(0); }
-  void Update(int) VTK_DICOM_OVERRIDE;
+  void Update() override { this->Update(0); }
+  void Update(int) override;
 #if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION > 0) || VTK_MAJOR_VERSION > 7
-  vtkTypeBool Update(vtkInformation *) VTK_DICOM_OVERRIDE {
+  vtkTypeBool Update(vtkInformation *) override {
     this->Update(); return 1; }
-  vtkTypeBool Update(int i, vtkInformationVector *) VTK_DICOM_OVERRIDE {
+  vtkTypeBool Update(int i, vtkInformationVector *) override {
     this->Update(i); return 1; }
 #endif
   //@}
@@ -288,7 +288,7 @@ public:
 
 protected:
   vtkDICOMDirectory();
-  ~vtkDICOMDirectory() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMDirectory() override;
 
   const char *DirectoryName;
   vtkStringArray *InputFileNames;
@@ -373,7 +373,7 @@ protected:
   void SetInternalFileName(const char *fname);
 
   //! Set the error code.
-  void SetErrorCode(unsigned long e) VTK_DICOM_OVERRIDE {
+  void SetErrorCode(unsigned long e) override {
     this->ErrorCode = e; }
 
   //! Add all of the series listed in a DICOMDIR file.
@@ -396,13 +396,8 @@ protected:
     vtkDICOMMetaData *meta, const vtkDICOMItem *item, int instance);
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMDirectory(const vtkDICOMDirectory&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMDirectory&) VTK_DICOM_DELETE;
-#else
   vtkDICOMDirectory(const vtkDICOMDirectory&) = delete;
   void operator=(const vtkDICOMDirectory&) = delete;
-#endif
 
   struct SeriesItem;
   struct StudyItem;

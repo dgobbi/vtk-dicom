@@ -49,21 +49,21 @@ public:
   vtkTypeMacro(vtkScancoCTReader, vtkImageReader2);
 
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
 
   //@{
   //! Valid extensions for this file type.
-  const char* GetFileExtensions() VTK_DICOM_OVERRIDE {
+  const char* GetFileExtensions() override {
     return ".isq .rsq .rad .aim" ; }
 
   //! Return a descriptive name that might be useful in a GUI.
-  const char* GetDescriptiveName() VTK_DICOM_OVERRIDE {
+  const char* GetDescriptiveName() override {
     return "SCANCO MicroCT"; }
   //@}
 
   //@{
   //! Return true if this reader can read the given file.
-  int CanReadFile(const char* filename) VTK_DICOM_OVERRIDE;
+  int CanReadFile(const char* filename) override;
   //@}
 
   //@{
@@ -171,17 +171,17 @@ public:
 
 protected:
   vtkScancoCTReader();
-  ~vtkScancoCTReader() VTK_DICOM_OVERRIDE;
+  ~vtkScancoCTReader() override;
 
   //! Read the header information.
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   //! Read the voxel data.
   int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   //! Initialize the header information
   void InitializeHeader();
@@ -264,13 +264,8 @@ protected:
   int Compression;
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkScancoCTReader(const vtkScancoCTReader&) VTK_DICOM_DELETE;
-  void operator=(const vtkScancoCTReader&) VTK_DICOM_DELETE;
-#else
   vtkScancoCTReader(const vtkScancoCTReader&) = delete;
   void operator=(const vtkScancoCTReader&) = delete;
-#endif
 };
 
 #endif // vtkScancoCTReader_h

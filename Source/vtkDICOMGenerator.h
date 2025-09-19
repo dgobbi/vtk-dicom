@@ -60,7 +60,7 @@ public:
   vtkTypeMacro(vtkDICOMGenerator, vtkObject);
 
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
 
   //@{
   //! Generate an instance of one of the supported classes.
@@ -252,7 +252,7 @@ protected:
   //@{
   //! Protected constructor method.
   vtkDICOMGenerator();
-  ~vtkDICOMGenerator() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMGenerator() override;
   //@}
 
   //@{
@@ -517,13 +517,8 @@ protected:
   vtkIntArray *RangeArray;
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMGenerator(const vtkDICOMGenerator&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMGenerator&) VTK_DICOM_DELETE;
-#else
   vtkDICOMGenerator(const vtkDICOMGenerator&) = delete;
   void operator=(const vtkDICOMGenerator&) = delete;
-#endif
 };
 
 #endif // vtkDICOMGenerator_h

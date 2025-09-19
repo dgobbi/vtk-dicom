@@ -33,7 +33,7 @@ public:
   vtkTypeMacro(vtkDICOMCTGenerator, vtkDICOMGenerator);
 
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
 
   //! Generate an instance of one of the supported classes.
   /*!
@@ -41,11 +41,11 @@ public:
    *  information for a vtkImageData object, it will populate the
    *  attributes of the supplied vtkDICOMMetaData object.
    */
-  bool GenerateInstance(vtkInformation *info) VTK_DICOM_OVERRIDE;
+  bool GenerateInstance(vtkInformation *info) override;
 
 protected:
   vtkDICOMCTGenerator();
-  ~vtkDICOMCTGenerator() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMCTGenerator() override;
 
   //! Generate the Series Module.
   virtual bool GenerateCTSeriesModule(vtkDICOMMetaData *source);
@@ -57,13 +57,8 @@ protected:
   virtual bool GenerateCTInstance(vtkInformation *info);
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMCTGenerator(const vtkDICOMCTGenerator&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMCTGenerator&) VTK_DICOM_DELETE;
-#else
   vtkDICOMCTGenerator(const vtkDICOMCTGenerator&) = delete;
   void operator=(const vtkDICOMCTGenerator&) = delete;
-#endif
 };
 
 #endif // vtkDICOMCTGenerator_h

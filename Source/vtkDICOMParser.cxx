@@ -484,7 +484,7 @@ public:
   // the first element that is not in the specified group.
   bool ReadElements(
     const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int l, vtkDICOMTag delimiter) VTK_DICOM_OVERRIDE
+    unsigned int l, vtkDICOMTag delimiter) override
   {
     size_t bytesRead;
     return ReadElements(cp, ep, l, delimiter, bytesRead);
@@ -497,7 +497,7 @@ public:
   // the first element that is not in the specified group.
   bool SkipElements(
     const unsigned char* &cp, const unsigned char* &ep,
-    unsigned int l, vtkDICOMTag delimiter) VTK_DICOM_OVERRIDE
+    unsigned int l, vtkDICOMTag delimiter) override
   {
     return SkipElements(cp, ep, l, delimiter, nullptr);
   }
@@ -535,7 +535,7 @@ public:
 
   // Peek ahead to see what the next element is.
   vtkDICOMTag Peek(
-    const unsigned char* &cp, const unsigned char* &ep) VTK_DICOM_OVERRIDE
+    const unsigned char* &cp, const unsigned char* &ep) override
   {
     unsigned short g = 0;
     unsigned short e = 0;

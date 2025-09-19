@@ -34,7 +34,7 @@ public:
   static vtkDICOMPrinter *New() { return new vtkDICOMPrinter; }
   vtkTypeMacro(vtkDICOMPrinter,vtkCommand);
   void Execute(vtkObject *caller, unsigned long eventId, void *callData)
-    VTK_DICOM_OVERRIDE;
+    override;
 protected:
   vtkDICOMPrinter() {};
   vtkDICOMPrinter(const vtkDICOMPrinter& c) : vtkCommand(c) {}

@@ -189,8 +189,7 @@ public:
   static ErrorObserver *New() { return new ErrorObserver(); }
   vtkTypeMacro(ErrorObserver,vtkCommand);
   void Execute(
-    vtkObject *caller, unsigned long eventId, void *callData)
-    VTK_DICOM_OVERRIDE;
+    vtkObject *caller, unsigned long eventId, void *callData) override;
   void SetMetaData(vtkDICOMMetaData *meta) { this->MetaData = meta; }
 protected:
   ErrorObserver() : MetaData(nullptr) {}

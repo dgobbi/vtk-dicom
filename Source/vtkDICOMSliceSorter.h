@@ -43,7 +43,7 @@ class VTKDICOM_EXPORT vtkDICOMSliceSorter : public vtkObject
 {
 public:
   vtkTypeMacro(vtkDICOMSliceSorter,vtkObject);
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
   static vtkDICOMSliceSorter *New();
 
   //@{
@@ -191,7 +191,7 @@ public:
 
 protected:
   vtkDICOMSliceSorter();
-  ~vtkDICOMSliceSorter() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMSliceSorter() override;
 
   // Sort the input files, put the sort in the supplied arrays.
   virtual void SortFiles(vtkIntArray *fileArray, vtkIntArray *frameArray);
@@ -227,13 +227,8 @@ protected:
   vtkDICOMTag TimeSequence;
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMSliceSorter(const vtkDICOMSliceSorter&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMSliceSorter&) VTK_DICOM_DELETE;
-#else
   vtkDICOMSliceSorter(const vtkDICOMSliceSorter&) = delete;
   void operator=(const vtkDICOMSliceSorter&) = delete;
-#endif
 };
 
 #endif

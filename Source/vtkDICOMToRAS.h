@@ -51,7 +51,7 @@ public:
   vtkTypeMacro(vtkDICOMToRAS, vtkThreadedImageAlgorithm);
 
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
 
   //@{
   //! Reverse the filter: do RAS to DICOM instead of DICOM to RAS.
@@ -142,7 +142,7 @@ public:
 
 protected:
   vtkDICOMToRAS();
-  ~vtkDICOMToRAS() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMToRAS() override;
 
   //! Check whether the data will be reordered in cols or rows.
   void CheckNeedToReorder();
@@ -156,20 +156,20 @@ protected:
 
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   int RequestUpdateExtent(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
-    vtkImageData **outData, int ext[6], int id) VTK_DICOM_OVERRIDE;
+    vtkImageData **outData, int ext[6], int id) override;
 
   vtkMatrix4x4 *PatientMatrix;
   vtkMatrix4x4 *RASMatrix;
@@ -183,13 +183,8 @@ protected:
   double Matrix[16];
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMToRAS(const vtkDICOMToRAS&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMToRAS&) VTK_DICOM_DELETE;
-#else
   vtkDICOMToRAS(const vtkDICOMToRAS&) = delete;
   void operator=(const vtkDICOMToRAS&) = delete;
-#endif
 };
 
 #endif // vtkDICOMToRAS_h

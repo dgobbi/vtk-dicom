@@ -55,7 +55,7 @@ public:
   static vtkDICOMAlgorithm *New();
 
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
   //@}
 
   //@{
@@ -68,7 +68,7 @@ public:
 
 protected:
   vtkDICOMAlgorithm();
-  ~vtkDICOMAlgorithm() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMAlgorithm() override;
 
   //@{
   //! Get the information object that holds the meta data for the given input.
@@ -94,25 +94,20 @@ protected:
 
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
-    vtkImageData **outData, int ext[6], int id) VTK_DICOM_OVERRIDE;
+    vtkImageData **outData, int ext[6], int id) override;
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMAlgorithm(const vtkDICOMAlgorithm&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMAlgorithm&) VTK_DICOM_DELETE;
-#else
   vtkDICOMAlgorithm(const vtkDICOMAlgorithm&) = delete;
   void operator=(const vtkDICOMAlgorithm&) = delete;
-#endif
 };
 
 #endif // vtkDICOMAlgorithm_h

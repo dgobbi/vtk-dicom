@@ -43,7 +43,7 @@ public:
   vtkTypeMacro(vtkDICOMUtilities, vtkObject);
 
   //! Print a summary of the contents of this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
   //@}
 
   //@{
@@ -207,7 +207,7 @@ public:
 
 protected:
   vtkDICOMUtilities() {}
-  ~vtkDICOMUtilities() VTK_DICOM_OVERRIDE {}
+  ~vtkDICOMUtilities() override {}
 
   static long long GetLocalOffset(long long t);
 
@@ -216,13 +216,8 @@ protected:
   static char ImplementationVersionName[17];
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMUtilities(const vtkDICOMUtilities&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMUtilities&) VTK_DICOM_DELETE;
-#else
   vtkDICOMUtilities(const vtkDICOMUtilities&) = delete;
   void operator=(const vtkDICOMUtilities&) = delete;
-#endif
 };
 
 #endif /* vtkDICOMUtilities_h */

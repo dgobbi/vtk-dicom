@@ -62,19 +62,19 @@ public:
   static vtkDICOMReader *New();
 
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
 
   //@{
   //! Valid extensions for this file type.
-  const char* GetFileExtensions() VTK_DICOM_OVERRIDE {
+  const char* GetFileExtensions() override {
     return ".dcm .dc"; }
 
   //! Return a descriptive name that might be useful in a GUI.
-  const char* GetDescriptiveName() VTK_DICOM_OVERRIDE {
+  const char* GetDescriptiveName() override {
     return "DICOM"; }
 
   //! Return true if this reader can read the given file.
-  int CanReadFile(const char* filename) VTK_DICOM_OVERRIDE;
+  int CanReadFile(const char* filename) override;
   //@}
 
   //@{
@@ -319,7 +319,7 @@ public:
   //@{
   using Superclass::Update;
   //! Update both the image and, if present, the overlay
-  void Update() VTK_DICOM_OVERRIDE;
+  void Update() override;
   //@}
 #endif
 
@@ -339,23 +339,23 @@ public:
 
 protected:
   vtkDICOMReader();
-  ~vtkDICOMReader() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMReader() override;
 
   //@{
   //! Entry point for all pipeline requests.
   vtkTypeBool ProcessRequest(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   //! Read the header information.
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   //! Read the voxel data.
   int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
   //@}
 
   //@{
@@ -515,13 +515,8 @@ protected:
   bool UpdateOverlayFlag;
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMReader(const vtkDICOMReader&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMReader&) VTK_DICOM_DELETE;
-#else
   vtkDICOMReader(const vtkDICOMReader&) = delete;
   void operator=(const vtkDICOMReader&) = delete;
-#endif
 };
 
 //! @cond
@@ -536,8 +531,8 @@ public:
   vtkDICOMReaderInitializer();
   ~vtkDICOMReaderInitializer();
 private:
-  vtkDICOMReaderInitializer(const vtkDICOMReaderInitializer&);
-  vtkDICOMReaderInitializer& operator=(const vtkDICOMReaderInitializer&);
+  vtkDICOMReaderInitializer(const vtkDICOMReaderInitializer&) = delete;
+  vtkDICOMReaderInitializer& operator=(const vtkDICOMReaderInitializer&) = delete;
 };
 
 static vtkDICOMReaderInitializer vtkDICOMReaderInitializerInstance;

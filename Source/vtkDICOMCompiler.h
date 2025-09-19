@@ -48,7 +48,7 @@ public:
   vtkTypeMacro(vtkDICOMCompiler, vtkObject);
 
   //! Print a summary of the contents of this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
 
   //@{
   //! Set the file name.
@@ -203,7 +203,7 @@ public:
 
 protected:
   vtkDICOMCompiler();
-  ~vtkDICOMCompiler() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMCompiler() override;
 
   //! Internal method for flushing the IO buffer.
   /*!
@@ -279,13 +279,8 @@ protected:
   friend class vtkDICOMCompilerInternalFriendship;
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMCompiler(const vtkDICOMCompiler&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMCompiler&) VTK_DICOM_DELETE;
-#else
   vtkDICOMCompiler(const vtkDICOMCompiler&) = delete;
   void operator=(const vtkDICOMCompiler&) = delete;
-#endif
 };
 
 #endif /* vtkDICOMCompiler_h */

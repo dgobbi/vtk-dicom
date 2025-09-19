@@ -190,7 +190,7 @@ public:
   // write the head of a data element, return length (8 or 12)
   size_t WriteElementHead(
     unsigned char* cp, vtkDICOMTag tag, vtkDICOMVR vr, unsigned int vl)
-    VTK_DICOM_OVERRIDE;
+    override;
 
   // write one data element
   bool WriteDataElement(
@@ -201,8 +201,7 @@ public:
   bool WriteElements(
     unsigned char* &cp, unsigned char* &ep,
     vtkDICOMDataElementIterator iter,
-    vtkDICOMDataElementIterator iterend)
-    VTK_DICOM_OVERRIDE;
+    vtkDICOMDataElementIterator iterend) override;
 
 protected:
   Encoder(vtkDICOMCompiler *comp, int idx) :

@@ -24,8 +24,7 @@ public:
   static ProgressObserver *New() { return new ProgressObserver; }
   vtkTypeMacro(ProgressObserver,vtkCommand);
   void Execute(
-    vtkObject *caller, unsigned long eventId, void *callData)
-    VTK_DICOM_OVERRIDE;
+    vtkObject *caller, unsigned long eventId, void *callData) override;
   void SetText(const char *text) { this->Text = text; }
 protected:
   ProgressObserver() : Stage(0), Anim(0), LastTime(0), Text("") {}

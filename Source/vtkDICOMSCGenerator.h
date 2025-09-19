@@ -37,7 +37,7 @@ public:
   vtkTypeMacro(vtkDICOMSCGenerator, vtkDICOMGenerator);
 
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
 
   //! Generate an instance of one of the supported classes.
   /*!
@@ -45,11 +45,11 @@ public:
    *  information for a vtkImageData object, it will populate the
    *  attributes of the supplied vtkDICOMMetaData object.
    */
-  bool GenerateInstance(vtkInformation *info) VTK_DICOM_OVERRIDE;
+  bool GenerateInstance(vtkInformation *info) override;
 
 protected:
   vtkDICOMSCGenerator();
-  ~vtkDICOMSCGenerator() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMSCGenerator() override;
 
   //! Generate the SC Equipment Module.
   virtual bool GenerateSCEquipmentModule(vtkDICOMMetaData *source);
@@ -67,13 +67,8 @@ protected:
   virtual bool GenerateSCMultiFrameInstance(vtkInformation *info);
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMSCGenerator(const vtkDICOMSCGenerator&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMSCGenerator&) VTK_DICOM_DELETE;
-#else
   vtkDICOMSCGenerator(const vtkDICOMSCGenerator&) = delete;
   void operator=(const vtkDICOMSCGenerator&) = delete;
-#endif
 };
 
 #endif // vtkDICOMSCGenerator_h

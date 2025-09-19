@@ -29,23 +29,18 @@ class vtkConsoleOutputWindow : public vtkOutputWindow
 public:
   vtkTypeMacro(vtkConsoleOutputWindow, vtkOutputWindow);
   static vtkConsoleOutputWindow* New();
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
-  void DisplayText(const char*) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
+  void DisplayText(const char*) override;
   static void Install();
 
 protected:
   vtkConsoleOutputWindow();
-  virtual ~vtkConsoleOutputWindow() VTK_DICOM_OVERRIDE;
+  virtual ~vtkConsoleOutputWindow() override;
   void Initialize();
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkConsoleOutputWindow(const vtkConsoleOutputWindow&) VTK_DICOM_DELETE;
-  void operator=(const vtkConsoleOutputWindow&) VTK_DICOM_DELETE;
-#else
   vtkConsoleOutputWindow(const vtkConsoleOutputWindow&) = delete;
   void operator=(const vtkConsoleOutputWindow&) = delete;
-#endif
 };
 
 #endif

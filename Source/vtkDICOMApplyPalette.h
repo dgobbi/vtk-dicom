@@ -43,24 +43,24 @@ public:
   vtkTypeMacro(vtkDICOMApplyPalette, vtkDICOMAlgorithm);
 
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
 
 protected:
   vtkDICOMApplyPalette();
-  ~vtkDICOMApplyPalette() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMApplyPalette() override;
 
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
-    vtkImageData **outData, int ext[6], int id) VTK_DICOM_OVERRIDE;
+    vtkImageData **outData, int ext[6], int id) override;
 
   //! Container for the lookup tables used.
   vtkDICOMPerFilePalette *Palette;
@@ -69,13 +69,8 @@ protected:
   bool IsSupplemental;
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMApplyPalette(const vtkDICOMApplyPalette&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMApplyPalette&) VTK_DICOM_DELETE;
-#else
   vtkDICOMApplyPalette(const vtkDICOMApplyPalette&) = delete;
   void operator=(const vtkDICOMApplyPalette&) = delete;
-#endif
 };
 
 #endif // vtkDICOMApplyPalette_h

@@ -43,7 +43,7 @@ public:
   static vtkDICOMApplyRescale *New();
 
   //! Print information about this object.
-  void PrintSelf(ostream& os, vtkIndent indent) VTK_DICOM_OVERRIDE;
+  void PrintSelf(ostream& os, vtkIndent indent) override;
 
   //@{
   //! Set the output data type to float or double (default is double).
@@ -58,32 +58,27 @@ public:
 
 protected:
   vtkDICOMApplyRescale();
-  ~vtkDICOMApplyRescale() VTK_DICOM_OVERRIDE;
+  ~vtkDICOMApplyRescale() override;
 
   int RequestInformation(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   int RequestData(
     vtkInformation* request, vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector) VTK_DICOM_OVERRIDE;
+    vtkInformationVector* outputVector) override;
 
   void ThreadedRequestData(
     vtkInformation *request, vtkInformationVector **inputVector,
     vtkInformationVector *outputVector, vtkImageData ***inData,
-    vtkImageData **outData, int ext[6], int id) VTK_DICOM_OVERRIDE;
+    vtkImageData **outData, int ext[6], int id) override;
 
   vtkDICOMRealWorldMapping *Mapping;
   int OutputScalarType;
 
 private:
-#ifdef VTK_DICOM_DELETE
-  vtkDICOMApplyRescale(const vtkDICOMApplyRescale&) VTK_DICOM_DELETE;
-  void operator=(const vtkDICOMApplyRescale&) VTK_DICOM_DELETE;
-#else
   vtkDICOMApplyRescale(const vtkDICOMApplyRescale&) = delete;
   void operator=(const vtkDICOMApplyRescale&) = delete;
-#endif
 };
 
 #endif // vtkDICOMApplyRescale_h
