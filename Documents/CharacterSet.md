@@ -50,17 +50,18 @@ is also based on JIS encoding, but with different restrictions.
 DICOM iso-2022 Japanese differs from iso-2022-jp most significantly
 in the optional inclusion, in DICOM, of ISO IR 13 in G1.  This is done
 to support the use of half-width katakana in the traditional manner as
-described in JIS X 0201 and as commonly done in Japanese desktop
-computing and industrial computing.
+described in JIS X 0201 and as previously done in Japanese desktop
+computing and industrial computing.  The Specific Character Set defined
+term "ISO 2022 IR 13" indicates that the initial state of the decoder
+will be ISO IR 14 in G0 and ISO IR 13 in G1.  In this usage, `ESC )I`
+will re-designate ISO IR 13 to G1 (though "ISO 2022 IR 13" does not
+permit any other character set in G1), and `ESC (J` will re-designate
+ISO IR 14 to G0.
 
-The Specific Character Set defined term "ISO 2022 IR 13" indicates
-that the initial state of the decoder will be ISO IR 14 in G0 and
-ISO IR 13 in G1.  Furthermore, the decoder returns to the initial
-state for every new line of text (that is, after every CRNL).
-
-In this usage, `ESC )I` will re-designate ISO IR 13 to G1 (though it is
-not permitted to designate any other character set to G1), and `ESC (J`
-will re-designated ISO IR 14 to G0.
+The use of ISO IR 13 (and ISO 2022 IR 13) in DICOM in Japan was common at
+the turn of the century, but since then it has become increasingly rare.
+On the other hand, ISO 2022 IR 87 (the JIS X 0208 character set) is still
+used very widely.
 
 ### Decoding
 
@@ -80,33 +81,28 @@ defined terms for Specific Character Set:
 
 Notes:
 
-1. This generally implies iso-2022-jp, but requires the use of romaji instead
-   of ASCII, and also requires the use of JIS X 0208:1990 rather than
+1. This generally implies iso-2022-jp, but requires the use of ISO IR 14
+   instead of ASCII, and also requires the use of JIS X 0208:1990 rather than
    any other version (such as JIS X 0208:1978 or JIS X 0208:1983).  This
    provides exactly the same characters as classic shift-jis, with exactly
-   the same method for encoding romaji and half-width katakana, but with a
-   different way of encoding the JIS X 0208 characters.
+   the same method for encoding half-width katakana, but with a different
+   way of encoding the JIS X 0208 characters.
 2. This specifies the most widely used subset of iso-2022-jp, using only ASCII
-   and JIS X 0208:1990.  For broad compatibility, this is the best.
+   and JIS X 0208:1990.  For broad compatibility, this is the best option.
 3. This specifies the most widely used subset of iso-2022-jp-2, like the above
-   but adding JIS X 0212:1990 for additional characters.
+   but adding JIS X 0212:1990 for additional characters.  Rarely used.
 
-It is preferred to avoid the use of ISO 2022 IR 13 (and ISO IR 13), both
-because it requires romaji (not ASCII) in G0, and because half-width katakana
-are not supported by either iso-2022-jp or by iso-2022-jp-2.  The romaji
-character set does not contain tilde or backslash, so when these characters
-are encoded when romaji has replaced ASCII, they become MACRON and YEN
-SIGN respectively.
-
-For (2) and (3) above, when our encoder encounters half-width katakana,
-it will convert them to full-width katakana for ISO 2022 IR 87. For (1),
-or whenever ISO IR 13 is present, the half-width katakana will be
-encoded as-is.
+It is best to avoid the use of ISO 2022 IR 13 (and ISO IR 13), because
+it requires ISO IR 14 (not ASCII) in G0, and because half-width katakana
+have fallen out of use within the Japanese health care industry.  For (2)
+and (3) above, when our encoder encounters half-width katakana, it will
+convert them to full-width katakana for ISO 2022 IR 87. For (1), the
+half-width katakana will be encoded as-is.
 
 Regarding the structure of the ISO 2022 encoding, our encoder will always
-switch G0 to ASCII (or romaji if ISO IR 13) before any ASCII character,
-including any control character except ESC.  This includes SPACE and TAB
-as well as CR, NL, and FF.
+switch G0 to ASCII (or ISO IR 14 if ISO IR 13 in in use) before any ASCII
+character, including any control character except ESC.  This includes SPACE
+and TAB as well as CR, NL, and FF.
 
 Of course some tricky situations can arise when converting from UTF-8
 to ISO 2022 Japanese, or even when converting from Windows CP932, which
