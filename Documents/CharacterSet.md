@@ -81,12 +81,8 @@ defined terms for Specific Character Set:
 
 Notes:
 
-1. This generally implies iso-2022-jp, but requires the use of ISO IR 14
-   instead of ASCII, and also requires the use of JIS X 0208:1990 rather than
-   any other version (such as JIS X 0208:1978 or JIS X 0208:1983).  This
-   provides exactly the same characters as classic shift-jis, with exactly
-   the same method for encoding half-width katakana, but with a different
-   way of encoding the JIS X 0208 characters.
+1. This is similar to iso-2022-jp, but it requires the use of ISO IR 14
+   instead of ASCII, and it allows half-width katakana in G1 via ISO IR 13.
 2. This specifies the most widely used subset of iso-2022-jp, using only ASCII
    and JIS X 0208:1990.  For broad compatibility, this is the best option.
 3. This specifies the most widely used subset of iso-2022-jp-2, like the above
@@ -94,10 +90,10 @@ Notes:
 
 It is best to avoid the use of ISO 2022 IR 13 (and ISO IR 13), because
 it requires ISO IR 14 (not ASCII) in G0, and because half-width katakana
-have fallen out of use within the Japanese health care industry.  For (2)
+are not supported by all Japanese network communications.  For (2)
 and (3) above, when our encoder encounters half-width katakana, it will
-convert them to full-width katakana for ISO 2022 IR 87. For (1), the
-half-width katakana will be encoded as-is.
+convert them to full-width katakana encoded via ISO 2022 IR 87. For (1),
+the half-width katakana will be encoded directly via ISO IR 13.
 
 Regarding the structure of the ISO 2022 encoding, our encoder will always
 switch G0 to ASCII (or ISO IR 14 if ISO IR 13 in in use) before any ASCII
