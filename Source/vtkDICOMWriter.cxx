@@ -501,7 +501,7 @@ void vtkDICOMWriter::GenerateOverlays(
   for (int i = 0; i < 6; i += 2)
   {
     extent[i] = std::max(extent[i], wholeExtent[i]);
-    extent[i+1] = std::max(extent[i+1], wholeExtent[i+1]);
+    extent[i+1] = std::min(extent[i+1], wholeExtent[i+1]);
     if (extent[i] > extent[i+1])
     {
       return;
