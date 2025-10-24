@@ -1354,6 +1354,12 @@ ReferencedSegmentationSequence
 SQ
 1
 
+(0008,114D)
+Referenced Surface Segmentation Sequence
+ReferencedSurfaceSegmentationSequence
+SQ
+1
+
 (0008,1150)
 Referenced SOP Class UID
 ReferencedSOPClassUID
@@ -1471,6 +1477,30 @@ SQ
 (0008,1250)
 Related Series Sequence
 RelatedSeriesSequence
+SQ
+1
+
+(0008,1301)
+Principal Diagnosis Code Sequence
+PrincipalDiagnosisCodeSequence
+SQ
+1
+
+(0008,1302)
+Primary Diagnosis Code Sequence
+PrimaryDiagnosisCodeSequence
+SQ
+1
+
+(0008,1303)
+Secondary Diagnoses Code Sequence
+SecondaryDiagnosesCodeSequence
+SQ
+1
+
+(0008,1304)
+Histological Diagnoses Code Sequence
+HistologicalDiagnosesCodeSequence
 SQ
 1
 
@@ -1852,6 +1882,42 @@ PatientName
 PN
 1
 
+(0010,0011)
+Person Names to Use Sequence
+PersonNamesToUseSequence
+SQ
+1
+
+(0010,0012)
+Name to Use
+NameToUse
+LT
+1
+
+(0010,0013)
+Name to Use Comment
+NameToUseComment
+UT
+1
+
+(0010,0014)
+Third Person Pronouns Sequence
+ThirdPersonPronounsSequence
+SQ
+1
+
+(0010,0015)
+Pronoun Code Sequence
+PronounCodeSequence
+SQ
+1
+
+(0010,0016)
+Pronoun Comment
+PronounComment
+UT
+1
+
 (0010,0020)
 Patient ID
 PatientID
@@ -1929,6 +1995,48 @@ Patient's Sex
 PatientSex
 CS
 1
+
+(0010,0041)
+Gender Identity Sequence
+GenderIdentitySequence
+SQ
+1
+
+(0010,0042)
+Sex Parameters for Clinical Use Category Comment
+SexParametersForClinicalUseCategoryComment
+UT
+1
+
+(0010,0043)
+Sex Parameters for Clinical Use Category Sequence
+SexParametersForClinicalUseCategorySequence
+SQ
+1
+
+(0010,0044)
+Gender Identity Code Sequence
+GenderIdentityCodeSequence
+SQ
+1
+
+(0010,0045)
+Gender Identity Comment
+GenderIdentityComment
+UT
+1
+
+(0010,0046)
+Sex Parameters for Clinical Use Category Code Sequence
+SexParametersForClinicalUseCategoryCodeSequence
+SQ
+1
+
+(0010,0047)
+Sex Parameters for Clinical Use Category Reference
+SexParametersForClinicalUseCategoryReference
+UR
+1-n
 
 (0010,0050)
 Patient's Insurance Plan Code Sequence
@@ -2181,12 +2289,18 @@ Ethnic Group
 EthnicGroup
 SH
 1
-
+RET
 (0010,2161)
 Ethnic Group Code Sequence
 EthnicGroupCodeSequence
 SQ
 1
+
+(0010,2162)
+Ethnic Groups
+EthnicGroups
+UC
+1-n
 
 (0010,2180)
 Occupation
@@ -3507,6 +3621,78 @@ Image Quality Indicator Size
 ImageQualityIndicatorSize
 LO
 1-n
+DICONDE
+(0014,4101)
+Wave Dimensions Definition Sequence
+WaveDimensionsDefinitionSequence
+SQ
+1
+DICONDE
+(0014,4102)
+Wave Dimension Number
+WaveDimensionNumber
+US
+1
+DICONDE
+(0014,4103)
+Wave Dimension Description
+WaveDimensionDescription
+LO
+1
+DICONDE
+(0014,4104)
+Wave Dimension Unit
+WaveDimensionUnit
+US
+1
+DICONDE
+(0014,4105)
+Wave Dimension Value Type
+WaveDimensionValueType
+CS
+1
+DICONDE
+(0014,4106)
+Wave Dimension Values Sequence
+WaveDimensionValuesSequence
+SQ
+1-n
+DICONDE
+(0014,4107)
+Referenced Wave Dimension
+ReferencedWaveDimension
+US
+1
+DICONDE
+(0014,4108)
+Integer Numeric Value
+IntegerNumericValue
+SL
+1
+DICONDE
+(0014,4109)
+Byte Numeric Value
+ByteNumericValue
+OB
+1
+DICONDE
+(0014,410A)
+Short Numeric Value
+ShortNumericValue
+OW
+1
+DICONDE
+(0014,410B)
+Single Precision Floating Point Numeric Value
+SinglePrecisionFloatingPointNumericValue
+OF
+1
+DICONDE
+(0014,410C)
+Double Precision Floating Point Numeric Value
+DoublePrecisionFloatingPointNumericValue
+OD
+1
 DICONDE
 (0014,5002)
 LINAC Energy
@@ -12016,6 +12202,12 @@ OphthalmicVolumetricPropertiesFlag
 CS
 1
 
+(0022,1623)
+Ophthalmic Anatomic Reference Point Frame Coordinate
+OphthalmicAnatomicReferencePointFrameCoordinate
+FL
+1
+
 (0022,1624)
 Ophthalmic Anatomic Reference Point X-Coordinate
 OphthalmicAnatomicReferencePointXCoordinate
@@ -12050,6 +12242,24 @@ CS
 Quality Threshold
 QualityThreshold
 DS
+1
+
+(0022,1632)
+Ophthalmic Anatomic Reference Point Sequence
+OphthalmicAnatomicReferencePointSequence
+SQ
+1
+
+(0022,1633)
+Ophthalmic Anatomic Reference Point Localization Type
+OphthalmicAnatomicReferencePointLocalizationType
+CS
+1
+
+(0022,1634)
+Primary Anatomic Structure Item Index
+PrimaryAnatomicStructureItemIndex
+IS
 1
 
 (0022,1640)
@@ -16222,6 +16432,18 @@ ObservationStartDateTime
 DT
 1
 
+(0040,A034)
+Effective Start DateTime
+EffectiveStartDateTime
+DT
+1
+
+(0040,A035)
+Effective Stop DateTime
+EffectiveStopDateTime
+DT
+1
+
 (0040,A040)
 Value Type
 ValueType
@@ -16852,6 +17074,120 @@ WaveformAnnotationSequence
 SQ
 1
 
+(0040,B030)
+Structured Waveform Annotation Sequence
+StructuredWaveformAnnotationSequence
+SQ
+1
+
+(0040,B031)
+Waveform Annotation Display Selection Sequence
+WaveformAnnotationDisplaySelectionSequence
+SQ
+1
+
+(0040,B032)
+Referenced Montage Index
+ReferencedMontageIndex
+US
+1
+
+(0040,B033)
+Waveform Textual Annotation Sequence
+WaveformTextualAnnotationSequence
+SQ
+1
+
+(0040,B034)
+Annotation DateTime
+AnnotationDateTime
+DT
+1
+
+(0040,B035)
+Displayed Waveform Segment Sequence
+DisplayedWaveformSegmentSequence
+SQ
+1
+
+(0040,B036)
+Segment Definition DateTime
+SegmentDefinitionDateTime
+DT
+1
+
+(0040,B037)
+Montage Activation Sequence
+MontageActivationSequence
+SQ
+1
+
+(0040,B038)
+Montage Activation Time Offset
+MontageActivationTimeOffset
+DS
+1
+
+(0040,B039)
+Waveform Montage Sequence
+WaveformMontageSequence
+SQ
+1
+
+(0040,B03A)
+Referenced Montage Channel Number
+ReferencedMontageChannelNumber
+IS
+1
+
+(0040,B03B)
+Montage Name
+MontageName
+LT
+1
+
+(0040,B03C)
+Montage Channel Sequence
+MontageChannelSequence
+SQ
+1
+
+(0040,B03D)
+Montage Index
+MontageIndex
+US
+1
+
+(0040,B03E)
+Montage Channel Number
+MontageChannelNumber
+IS
+1
+
+(0040,B03F)
+Montage Channel Label
+MontageChannelLabel
+LO
+1
+
+(0040,B040)
+Montage Channel Source Code Sequence
+MontageChannelSourceCodeSequence
+SQ
+1
+
+(0040,B041)
+Contributing Channel Sources Sequence
+ContributingChannelSourcesSequence
+SQ
+1
+
+(0040,B042)
+Channel Weight
+ChannelWeight
+FL
+1
+
 (0040,DB00)
 Template Identifier
 TemplateIdentifier
@@ -17161,6 +17497,12 @@ SQ
 (0044,010A)
 Organizational Role Code Sequence
 OrganizationalRoleCodeSequence
+SQ
+1
+
+(0044,0110)
+RT Assertions Sequence
+RTAssertionsSequence
 SQ
 1
 
@@ -17918,6 +18260,12 @@ UL
 Total Pixel Matrix Focal Planes
 TotalPixelMatrixFocalPlanes
 UL
+1
+
+(0048,0304)
+Tiles Overlap
+TilesOverlap
+CS
 1
 
 (0050,0004)
@@ -24147,12 +24495,18 @@ Dose Value
 DoseValue
 DS
 1
-RET
+
 (3004,0014)
 Tissue Heterogeneity Correction
 TissueHeterogeneityCorrection
 CS
 1-3
+
+(3004,0016)
+Recommended Isodose Level Sequence
+RecommendedIsodoseLevelSequence
+SQ
+1
 
 (3004,0040)
 DVH Normalization Point
@@ -24224,6 +24578,36 @@ DS
 DVH Mean Dose
 DVHMeanDose
 DS
+1
+
+(3004,0080)
+Dose Calculation Model Sequence
+DoseCalculationModelSequence
+SQ
+1
+
+(3004,0081)
+Dose Calculation Algorithm Sequence
+DoseCalculationAlgorithmSequence
+SQ
+1
+
+(3004,0082)
+Commissioning Status
+CommissioningStatus
+CS
+1
+
+(3004,0083)
+Dose Calculation Model Parameter Sequence
+DoseCalculationModelParameterSequence
+SQ
+1
+
+(3004,0084)
+Dose Deposition Calculation Medium
+DoseDepositionCalculationMedium
+CS
 1
 
 (3006,0002)
@@ -27004,6 +27388,12 @@ CompensatorDescription
 LT
 1
 
+(300A,02EC)
+Compensator Surface Representation Flag
+CompensatorSurfaceRepresentationFlag
+CS
+1
+
 (300A,0302)
 Radiation Mass Number
 RadiationMassNumber
@@ -27363,6 +27753,18 @@ Number of Paintings
 NumberOfPaintings
 IS
 1
+
+(300A,039B)
+Scan Spot Gantry Angles
+ScanSpotGantryAngles
+FL
+1-n
+
+(300A,039C)
+Scan Spot Patient Support Angles
+ScanSpotPatientSupportAngles
+FL
+1-n
 
 (300A,03A0)
 Ion Tolerance Table Sequence

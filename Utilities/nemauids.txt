@@ -247,6 +247,10 @@ PS3.5
 SMPTE ST 2110-30 PCM Digital Audio
 Transfer Syntax
 PS3.5
+1.2.840.10008.1.2.8.1
+Deflated Image Frame Compression
+Transfer Syntax
+PS3.5
 1.2.840.10008.1.3.10
 Media Storage Directory Storage
 SOP Class
@@ -852,6 +856,14 @@ SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.9.8.1
 Body Position Waveform Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.100.1
+Waveform Presentation State Storage
+SOP Class
+PS3.4
+1.2.840.10008.5.1.4.1.1.9.100.2
+Waveform Acquisition Presentation State Storage
 SOP Class
 PS3.4
 1.2.840.10008.5.1.4.1.1.10
@@ -1500,6 +1512,10 @@ SOP Class
 DICONDE ASTM E3440
 1.2.840.10008.5.1.4.1.1.601.4
 Thermography Multi-frame Image Storage
+SOP Class
+DICONDE ASTM E3440
+1.2.840.10008.5.1.4.1.1.601.5
+Ultrasound Waveform Storage
 SOP Class
 DICONDE ASTM E3440
 1.2.840.10008.5.1.4.1.2.1.1
@@ -6330,3 +6346,150 @@ Cardiac Ultrasound Fetal Arrhythmia Measurements
 1.2.840.10008.6.1.1500
 CID 12314
 Common Fetal Echocardiography Measurements
+1.2.840.10008.6.1.1501
+CID 4061
+Head and Neck Primary Anatomic Structure
+1.2.840.10008.6.1.1502
+CID 4062
+VL View
+1.2.840.10008.6.1.1503
+CID 4063
+VL Dental View
+1.2.840.10008.6.1.1504
+CID 4064
+VL View Modifier
+1.2.840.10008.6.1.1505
+CID 4065
+VL Dental View Modifier
+1.2.840.10008.6.1.1506
+CID 4066
+Orthognathic Functional Condition
+1.2.840.10008.6.1.1507
+CID 4067
+Orthodontic Finding by Inspection
+1.2.840.10008.6.1.1508
+CID 4068
+Orthodontic Observable Entity
+1.2.840.10008.6.1.1509
+CID 4069
+Dental Occlusion
+1.2.840.10008.6.1.1510
+CID 4070
+Orthodontic Treatment Progress
+1.2.840.10008.6.1.1511
+CID 4071
+General Photography Device
+1.2.840.10008.6.1.1512
+CID 4072
+Devices for the Purpose of Dental Photography
+1.2.840.10008.6.1.1513
+CID 4053
+CTDI Phantom Device
+1.2.840.10008.6.1.1514
+CID 108
+Diagnostic Imaging Procedure without IV Contrast
+1.2.840.10008.6.1.1515
+CID 109
+Diagnostic Imaging Procedure with IV Contrast
+1.2.840.10008.6.1.1516
+CID 12331
+Structural Heart Procedure
+1.2.840.10008.6.1.1517
+CID 12332
+Structural Heart Device
+1.2.840.10008.6.1.1518
+CID 12333
+Structural Heart Measurement
+1.2.840.10008.6.1.1519
+CID 12334
+Aortic Valve Structural Measurement
+1.2.840.10008.6.1.1520
+CID 12335
+Mitral Valve Structural Measurement
+1.2.840.10008.6.1.1521
+CID 12336
+Tricuspid Valve Structural Measurement
+1.2.840.10008.6.1.1522
+CID 12337
+Structural Heart Echo Measurement
+1.2.840.10008.6.1.1523
+CID 12338
+Left Atrial Appendage Closure Measurement
+1.2.840.10008.6.1.1524
+CID 12339
+Structural Heart Procedure Anatomic Site
+1.2.840.10008.6.1.1525
+CID 12341
+Indication for Structural Heart Procedure
+1.2.840.10008.6.1.1526
+CID 12342
+Bradycardiac Agent
+1.2.840.10008.6.1.1527
+CID 12343
+Transesophageal Echocardiography Scan Plane
+1.2.840.10008.6.1.1528
+CID 12344
+Structural Heart Measurement Report Document Title
+1.2.840.10008.6.1.1529
+CID 7458
+Person Gender Identity
+1.2.840.10008.6.1.1530
+CID 7459
+Category of Sex Parameters for Clinical Use
+1.2.840.10008.6.1.1531
+CID 7448
+Third Person Pronoun Set
+1.2.840.10008.6.1.1532
+CID 12345
+Cardiac Structure Calcification Qualitative Evaluation
+1.2.840.10008.6.1.1533
+CID 4280
+Visual Field Measurements
+1.2.840.10008.6.1.1534
+CID 4281
+Optic Disc Key Measurements
+1.2.840.10008.6.1.1535
+CID 4282
+Retinal Sector Methods
+1.2.840.10008.6.1.1536
+CID 4283
+RNFL Sector Measurements
+1.2.840.10008.6.1.1537
+CID 4284
+RNFL Clockface Measurements
+1.2.840.10008.6.1.1538
+CID 4285
+Macular Thickness Key Measurements
+1.2.840.10008.6.1.1539
+CID 4286
+Ganglion Cell Measurement Extent
+1.2.840.10008.6.1.1540
+CID 4287
+Ganglion Cell Key Measurements
+1.2.840.10008.6.1.1541
+CID 4288
+Ganglion Cell Sector Measurements
+1.2.840.10008.6.1.1542
+CID 4289
+Ganglion Cell Sector Methods
+1.2.840.10008.6.1.1543
+CID 4290
+Endothelial Cell Count Measurements
+1.2.840.10008.6.1.1544
+CID 4291
+Ophthalmic Image ROI Measurements
+1.2.840.10008.6.1.1545
+CID 9584
+RT Plan Approval Assertion
+1.2.840.10008.6.1.1546
+CID 12026
+Estimated Delivery Date Methods
+1.2.840.10008.6.1.1547
+CID 9585
+RT Dose Calculation Algorithm Family
+1.2.840.10008.6.1.1548
+CID 10012
+Dose Index for Dose Calibration
+1.2.840.10008.6.1.1549
+CID 12036
+Ultrasound Attenuation Imaging Site
