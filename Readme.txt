@@ -1,6 +1,6 @@
 DICOM for VTK
 
-Copyright (c) 2012-2024, David Gobbi
+Copyright (c) 2012-2025, David Gobbi
 All rights reserved.
 
 See Copyright.txt for more details.
