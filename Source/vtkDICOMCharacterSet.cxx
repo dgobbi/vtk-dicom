@@ -3317,18 +3317,25 @@ unsigned char vtkDICOMCharacterSet::KeyFromString(const char *name, size_t nl)
           }
           else if (beginsWithBackslash)
           {
-            if ((i & DICOM_JP_BITS) == i)
+            if (((key | i) & DICOM_JP_BITS) == (key | i))
             {
               // combine key with 2nd, 3rd value of SpecificCharacterSet
               // (specific to ISO_2022_IR_87 and ISO_2022_IR_159, which
               // combine with ISO_2022_IR_13 and with each other)
-              key = (key & DICOM_JP_BITS) | i;
+              key |= i;
             }
-            else
+            else if (key == ISO_IR_6 || (key == ISO_2022_IR_6 &&
+                     (i & ISO_2022_MAX) == (i | ISO_2022_MIN)))
             {
-              // set key from 2nd value of SpecificCharacterSet
+              // replace previous values with the current value
               // (specific to ISO_2022_IR_58 and ISO_2022_IR_149)
               key = i;
+            }
+            else if (((key | i) & ISO_2022_MAX) == ((key | i) | ISO_2022_MIN))
+            {
+              // if all values encountered so far can be used with ISO 2022,
+              // then enable ISO 2022 and use first value as default
+              key |= ISO_2022_MIN;
             }
           }
           break;
