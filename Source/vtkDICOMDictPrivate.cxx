@@ -8619,7 +8619,7 @@ Dict137Contents
 
 const DictEntry Dict138Contents[] = {
 { 0x0033, 0x0002, 0, VR::PN, VM::M1, "PatientNameUTF8Encoded" },
-{ 0x0033, 0x0004, 0, VR::LO, VM::M1, "StudyDescriptionUTF8Encoded" },
+{ 0x0033, 0x0004, 0, VR::CS, VM::M1, "StudyDescriptionUTF8Encoded" },
 { 0x0033, 0x0006, 0, VR::PN, VM::M1, "ReferringPhysicianNameUTF8Encoded" },
 { 0x0033, 0x0008, 0, VR::PN, VM::M1, "RequestingPhysicianNameUTF8Encoded" },
 { 0x0033, 0x000a, 0, VR::PN, VM::M1, "PerformingPhysicianNameUTF8Encoded" },
