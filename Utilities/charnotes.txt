@@ -180,7 +180,7 @@ every multi-byte character have the high bit set).
 Late in 2021, CP 2113 introduced one additional 8-bit character set
 into the DICOM standard:
 
-    ISO_IR 203 -> ISO 8895-15, Latin9
+    ISO_IR 203 -> ISO-8859-15, Latin9
     ISO 2022 IR 203 -> Latin9 with ISO 2022 escape codes
 
 The latin9 character set is a modernization of the venerable latin1,
