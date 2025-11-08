@@ -2,14 +2,13 @@
 Generate a C++ DICOM dictionary from a text file.
 
 This program will read a text file generated from the DICOM data
-element regsistry table (DICOM Chapter 6 part 6) and will generate
+element registry table (DICOM Chapter 6 part 6) and will generate
 a hash table that can be used for dictionary lookups.
 
 Usage: python makedict.py nemadict.txt > vtkDICOMDictHash.cxx
 Usage: python makedict.py --header nemadict.txt > vtkDICOMDictHash.h
+Usage: python makedict.py --private=creators.txt privatedict.txt
 
-The option "--private=name" can be added to create a private dictionary,
-or "--private=vtkDICOMDictPrivate" for all default dictionaries.
 """
 
 import sys
@@ -27,8 +26,11 @@ filename = None
 for arg in sys.argv[1:]:
   if arg == "--header":
     printheader = True
-  elif arg[0:10] == "--private=":
-    privatedict = arg[10:]
+  elif arg[0:9] == "--private":
+    if arg[9] == '=':
+      privatedict = arg[10:]
+    else:
+      privatedict = 'all'
   elif arg[0] != '-' and filename == None:
     filename = arg
   else:
@@ -447,15 +449,32 @@ if privatedict:
   enum_dict = {}
   entry_dict = {}
 
-  for name, lines in privatelines.items():
+  classname = "vtkDICOMDictPrivate"
+
+  if privatedict == "all":
+    names = sorted(privatelines.keys())
+  else:
+    names = []
+    with open(privatedict, 'r') as f:
+      for line in f.readlines():
+        line = line.strip()
+        if line and not line.startswith('#'):
+          names.append(line)
+
+  for name in names:
+    try:
+      lines = privatelines[name]
+    except KeyError:
+      sys.stderr.write("Warning: could not find dict creator \"%s\n" % name);
+      continue
     enum_list, entry_list, tag_table, key_table = makedict(lines, name)
     enum_dict[name] = enum_list
     entry_dict[name] = (entry_list, tag_table, key_table)
 
   if printheader:
-    printhead(enum_dict, privatedict)
+    printhead(enum_dict, classname)
   else:
-    printbody(entry_dict, privatedict)
+    printbody(entry_dict, classname)
 
 else:
   enum_list, entry_list, tag_table, key_table = makedict(lines)
