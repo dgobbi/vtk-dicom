@@ -12,6 +12,7 @@ def parseline(line):
     return
   entries = {}
   tag = line[0:11]
+  entries['Tag'] = tag
   i = 12
   while 1:
     try:
@@ -30,8 +31,11 @@ def parseline(line):
       break
     i = j + 2
     j = i
-    while line[j] != '\"':
-      j = j + 1
+    try:
+      while line[j] != '\"':
+        j = j + 1
+    except:
+      sys.stderr.write(line)
     val = line[i:j]
     i = j + 1
     entries[key] = val.strip()
@@ -52,12 +56,20 @@ def parseline(line):
     block = {}
     blocks[entries['Owner']] = block
 
-  block[tag] = entries
-
-  #g = int(tag[1:5], 16)
-  #e = int(tag[6:10], 16)
-
-  #tag = "(%04x,%04x)" % (g,e)
+  try:
+    # check whether the tag is already defined
+    oldentries = block[tag.lower()]
+    # overwrite unless new definition has no keyword
+    if entries['Keyword'] and entries['Keyword'] != "?":
+      block[tag.lower()] = entries
+    # print any duplicate private tags to stderr
+    sys.stderr.write("Dup \"" + entries['Owner'] + "\" " +
+      tag.lower() + " " +
+      oldentries['VR'] + "/" + entries['VR'] + " " +
+      oldentries['VM'] + "/" + entries['VM'] + " " +
+      "\"" + oldentries['Keyword'] + "\"/\"" + entries['Keyword'] + "\"\n")
+  except KeyError:
+    block[tag.lower()] = entries
 
 for filename in sys.argv[1:]:
   f = open(filename)
@@ -66,14 +78,13 @@ for filename in sys.argv[1:]:
 
 #print(len(blocks))
 
-for owner, block in blocks.items():
+for owner in sorted(blocks.keys()):
+  block = blocks[owner]
   lines = []
-  tags = block.keys()
 
-  tags.sort()
-  for tag in tags:
+  for tag in sorted(block.keys()):
     entries = block[tag]
-    lines.append(tag)
+    lines.append(entries['Tag'])
     lines.append(entries['Name'])
     lines.append(entries['Keyword'])
     lines.append(entries['VR'])
