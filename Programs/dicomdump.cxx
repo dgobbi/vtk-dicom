@@ -83,7 +83,14 @@ void printHelp(FILE *file, const char *cp)
     "cannot be decoded with the SpecificCharacterSet of the DICOM file.  A\n"
     "backslash itself will be replaced by its byte value \"\\134\" if the VR is\n"
     "ST, LT or UT (that is, any VR where backslash isn't used as a separator\n"
-    "for multi-valued attributes).\n\n");
+    "for multi-valued attributes).\n"
+    "\n"
+    "A warning of the form \"#(gggg,eeee) XX/YY explict/dictionary VR mismatch\"\n"
+    "will be printed if any dataset element has an explicit VR that differs\n"
+    "from dicomdump's internal dictionary.  This warning occurs most often for\n"
+    "private elements, especially for old datasets.  It could indicate that the\n"
+    "dictionary is wrong, or that the dataset conformed to a different revision\n"
+    "of the dictionary, or that the dataset VR was incorrectly set.\n\n");
 }
 
 // remove path portion of filename
@@ -106,6 +113,15 @@ void printElement(
   vtkDICOMVR vr = iter->GetVR();
   const char *name = "";
   vtkDICOMDictEntry d;
+
+  // make an indentation string
+  if (INDENT_SIZE*depth > MAX_INDENT)
+  {
+    depth = MAX_INDENT/INDENT_SIZE;
+  }
+  static const char spaces[MAX_INDENT+1] = "                        ";
+  const char *indent = spaces + (MAX_INDENT - INDENT_SIZE*depth);
+
   if (item)
   {
     d = item->FindDictEntry(tag);
@@ -123,8 +139,8 @@ void printElement(
         !(d.GetVR() == vtkDICOMVR::OX &&
           (vr == vtkDICOMVR::OB || vr == vtkDICOMVR::OW)))
     {
-      printf("VR mismatch! %s != %s %s\n",
-             vr.GetText(), d.GetVR().GetText(), name);
+      printf("%s#(%04X,%04X) %s/%s explicit/dictionary VR mismatch\n",
+             indent, g, e, vr.GetText(), d.GetVR().GetText());
     }
   }
   else if ((tag.GetGroup() & 0xFFFE) != 0 && tag.GetElement() == 0)
@@ -147,14 +163,6 @@ void printElement(
     vp = &v;
     vn = 1;
   }
-
-  // make an indentation string
-  if (INDENT_SIZE*depth > MAX_INDENT)
-  {
-    depth = MAX_INDENT/INDENT_SIZE;
-  }
-  static const char spaces[MAX_INDENT+1] = "                        ";
-  const char *indent = spaces + (MAX_INDENT - INDENT_SIZE*depth);
 
   for (size_t vi = 0; vi < vn; vi++)
   {
