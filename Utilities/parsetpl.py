@@ -12,7 +12,6 @@ def parseline(line):
     return
   entries = {}
   tag = line[0:11]
-  entries['Tag'] = tag
   i = 12
   while 1:
     try:
@@ -57,6 +56,17 @@ def parseline(line):
     blocks[entries['Owner']] = block
 
   try:
+    # is this for a specific private block?
+    blocknumber = entries['PrivateBlock'][2:4]
+    tag = tag[0:6] + blocknumber + tag[8:]
+  except KeyError:
+    # if not, then force element to be 00xx
+    if tag[6:8] != '00':
+      sys.stderr.write("Tag != 00xx \"" + entries['Owner'] + "\" " +
+        tag + "\n")
+      tag = tag[0:6] + "00" + tag[8:]
+
+  try:
     # check whether the tag is already defined
     oldentries = block[tag.lower()]
     # overwrite unless new definition has no keyword
@@ -71,12 +81,13 @@ def parseline(line):
   except KeyError:
     block[tag.lower()] = entries
 
+  # save the tag itself as an attribute
+  entries['Tag'] = tag
+
 for filename in sys.argv[1:]:
   f = open(filename)
   for line in f.readlines():
     parseline(line)
-
-#print(len(blocks))
 
 for owner in sorted(blocks.keys()):
   block = blocks[owner]

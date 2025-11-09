@@ -541,10 +541,14 @@ vtkDICOMDictEntry vtkDICOMItem::FindDictEntry(vtkDICOMTag tag) const
   if ((group & 1) != 0 && element > 0x00ffu)
   {
     unsigned short creatorElement = (element >> 8);
-    element &= 0x00ffu;
-    tag = vtkDICOMTag(group, element);
     vtkDICOMTag creatorTag(group, creatorElement);
     dict = this->Get(creatorTag).GetCharData();
+    vtkDICOMDictEntry entry = vtkDICOMDictionary::FindDictEntry(
+      vtkDICOMTag(group, (element & 0x00ffu)), dict);
+    if (entry.IsValid())
+    {
+      return entry;
+    }
   }
 
   return vtkDICOMDictionary::FindDictEntry(tag, dict);
