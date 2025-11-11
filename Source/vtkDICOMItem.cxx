@@ -505,8 +505,22 @@ vtkDICOMTag vtkDICOMItem::ResolvePrivateTagForWriting(
   if (otag == vtkDICOMTag(0xFFFF, 0xFFFF))
   {
     unsigned short g = ptag.GetGroup();
-    for (unsigned short e = 0x0010; e <= 0x00FF; e++)
+    unsigned short pb = (ptag.GetElement() >> 8);
+    for (unsigned short cb = 0x0010; cb <= 0x00FF; cb++)
     {
+      // this code rearranges order so that pb (preferred block) is first
+      unsigned short e = cb;
+      if (pb > cb)
+      {
+        if (cb == 0x0010)
+        {
+          e = pb;
+        }
+        else
+        {
+          --e;
+        }
+      }
       vtkDICOMTag ctag(g, e);
       vtkDICOMDataElement *d = this->FindDataElementOrInsert(ctag);
       if (!d->Value.IsValid())

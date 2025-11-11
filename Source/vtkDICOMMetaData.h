@@ -281,6 +281,8 @@ public:
    *  resolve private tags that you plan to write to the data set.  The
    *  returned tag will be (ffff,ffff) if there are no empty slots available
    *  for the creator.  Every private group has 240 available slots.
+   *  If the private tag (gggg,xxee) has a non-zero value for xx, then
+   *  element (gggg,00xx) will be used for the creator if it is available.
    */
   vtkDICOMTag ResolvePrivateTagForWriting(
     vtkDICOMTag ptag, const std::string& creator);
