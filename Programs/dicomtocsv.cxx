@@ -362,11 +362,18 @@ void dicomtocsv_writeheader(
     {
       vtkDICOMTag tag = tagPath.GetHead();
       vtkDICOMDictEntry e = pitem->FindDictEntry(tag);
+      const char* name = nullptr;
       if (e.IsValid())
       {
-        const char *name = e.GetName();
-        name = ((name && name[0]) ? name : "Unknown");
+        name = e.GetName();
+      }
+      if (name && name[0])
+      {
         fprintf(fp, "%s", name);
+      }
+      else
+      {
+        fprintf(fp, "%s", "Unknown");
       }
       if (!tagPath.HasTail())
       {
@@ -689,18 +696,21 @@ void dicomtocsv_write(vtkDICOMDirectory *finder,
               const vtkDICOMItem *mitem = top.m++;
 
               vtkDICOMTag tag = tpath.GetHead();
-              std::string creator;
               if ((tag.GetGroup() & 0x0001) == 1)
               {
                 vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
-                creator = qitem->Get(ctag).AsString();
-                if (mitem)
+                const vtkDICOMValue& creatorValue = qitem->Get(ctag);
+                if (creatorValue.IsValid())
                 {
-                  tag = mitem->ResolvePrivateTag(tag, creator);
-                }
-                else
-                {
-                  tag = adapter->ResolvePrivateTag(tag, creator);
+                  std::string creator = creatorValue.AsString();
+                  if (mitem)
+                  {
+                    tag = mitem->ResolvePrivateTag(tag, creator);
+                  }
+                  else
+                  {
+                    tag = adapter->ResolvePrivateTag(tag, creator);
+                  }
                 }
               }
               const vtkDICOMValue *vptr = nullptr;

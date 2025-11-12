@@ -405,13 +405,10 @@ bool dicomcli_readkey_query(
     }
   }
 
+  // if no dictionary VR, use UT to hold raw text
   if (!vr.IsValid() || vr == VR::UN)
   {
-    int m = static_cast<int>(s - lineStart);
-    m = (m > maxerrlen ? maxerrlen : m);
-    fprintf(stderr, "Error: Unrecognized DICOM tag \"%*.*s\"\n",
-            m, m, &cp[lineStart]);
-    return false;
+    vr == VR::UT;
   }
 
   // check for a value or pattern following "="
