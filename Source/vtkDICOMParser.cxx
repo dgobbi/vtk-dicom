@@ -844,10 +844,14 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
     return false;
   }
 
-  // if this is a creator element (e is 0x00XX), return true
+  // if this is a creator element, return true if any creators in query
   if (e >= 0x0010 && e <= 0x00FF)
   {
-    return true;
+    if (iter != this->QueryEnd && iter->GetTag() <= vtkDICOMTag(g, 0x00FF))
+    {
+      return true;
+    }
+    return false;
   }
 
   // search for the creator element within the query
@@ -855,21 +859,29 @@ bool DecoderBase::QueryContains(vtkDICOMTag tag)
   vtkDICOMValue creator = this->Context->Get(ctag);
   if (creator.IsValid())
   {
+    bool needcreator = false;
     // maximum possible creator element is (gggg,00FF)
     gtag = vtkDICOMTag(g, 0x00FF);
     while (iter != this->QueryEnd && iter->GetTag() <= gtag)
     {
       if (iter->GetValue().Matches(creator))
       {
+        // resolve the tag using the creator found in the query
         tag = vtkDICOMTag(
           g, (iter->GetTag().GetElement() << 8) | (e & 0x00FF));
         break;
       }
+      if (iter->GetTag() == ctag)
+      {
+        // if the private tag we're querying has a creator, it must match
+        // the creator that we're looking for in this loop
+        needcreator = true;
+      }
       ++iter;
     }
-    // if creator not found in query, tag obviously won't be found
-    if (iter == this->QueryEnd || iter->GetTag() > gtag)
+    if (needcreator && (iter == this->QueryEnd || iter->GetTag() > gtag))
     {
+      // we needed to resolve the tag, but couldn't find the creator
       return false;
     }
   }
