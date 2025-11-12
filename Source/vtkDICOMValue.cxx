@@ -2781,9 +2781,8 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
     }
   }
 
-  if (this->V == nullptr || this->V->VR != value.V->VR)
+  if (this->V == nullptr)
   {
-    // match is impossible if VRs differ
     return false;
   }
 
@@ -2792,7 +2791,7 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
   int type = this->V->Type;
 
   // First, do comparisons for string values
-  if (type == VTK_CHAR)
+  if (type == VTK_CHAR && value.V->Type == VTK_CHAR)
   {
     // Does the pattern string have wildcards?
     bool wildcard = false;
@@ -2923,6 +2922,18 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
       }
     }
   }
+  else if (value.V->Type == VTK_CHAR)
+  {
+    // Match using a string
+    match = this->Matches(value.AsString());
+  }
+  else if (vr != value.V->VR &&
+           !((vr == vtkDICOMVR::US && value.V->VR == vtkDICOMVR::SS) ||
+             (vr == vtkDICOMVR::SS && value.V->VR == vtkDICOMVR::US)))
+  {
+    // For everything after this, VRs must match (exception for XS)
+    match = false;
+  }
   else if (type == VTK_DICOM_VALUE)
   {
     // Match if any of the contained values match
@@ -3000,6 +3011,22 @@ bool vtkDICOMValue::Matches(const vtkDICOMValue& value) const
   {
     // Match if any value matches
     match = ValueT<short>::CompareEach(value.V, this->V);
+    if (match && vr != value.V->VR)
+    {
+      // Signedness differs (SS vs US), so we need extra check
+      size_t sm = value.V->NumberOfValues;
+      const short *sp = static_cast<const ValueT<short> *>(value.V)->Data;
+      for (size_t si = 0; si < sm; si++)
+      {
+        // CompareEach() said values are bitwise equal, but if sign bit is
+        // set, then values aren't numerically equal (e.g. -1 != 65535)
+        if (sp[si] < 0)
+        {
+          match = false;
+          break;
+        } 
+      }
+    }
   }
   else if (type == VTK_INT || type == VTK_UNSIGNED_INT)
   {
