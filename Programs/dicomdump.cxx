@@ -613,7 +613,13 @@ int MAINMACRO(int argc, char *argv[])
       {
         for (size_t i = 0; i < qtlist.size(); i++)
         {
-          printElementFromTagPath(data, qtlist[i], pixelDataVL);
+          // TODO: resolving the path here, instead of during
+          // the iteration along the path, means that the
+          // instance (or item #) used for resolution might
+          // be different than the one being printed
+          vtkDICOMTagPath mpath = dicomcli_resolve_tagpath(
+            data, 0, qtlist[i], &query);
+          printElementFromTagPath(data, mpath, pixelDataVL);
         }
       }
       else
