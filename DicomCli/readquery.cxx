@@ -408,7 +408,7 @@ bool dicomcli_readkey_query(
   // if no dictionary VR, use UT to hold raw text
   if (!vr.IsValid() || vr == VR::UN)
   {
-    vr == VR::UT;
+    vr = VR::UT;
   }
 
   // check for a value or pattern following "="
