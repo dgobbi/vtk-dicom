@@ -566,7 +566,10 @@ int MAINMACRO(int argc, char *argv[])
   sorter->RequirePixelDataOff();
   sorter->SetScanDepth(0);
   sorter->IgnoreDicomdirOn();
-  sorter->SetFindQuery(query);
+  if (!qtlist.empty())
+  {
+    sorter->SetFindQuery(query);
+  }
   sorter->SetInputFileNames(files);
   sorter->Update();
 
@@ -574,7 +577,10 @@ int MAINMACRO(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMParser>::New();
   parser->SetDefaultCharacterSet(charset);
   parser->SetOverrideCharacterSet(forceCharset);
-  parser->SetQueryItem(query);
+  if (!qtlist.empty())
+  {
+    parser->SetQueryItem(query);
+  }
 
   vtkSmartPointer<vtkDICOMMetaData> data =
     vtkSmartPointer<vtkDICOMMetaData>::New();
@@ -623,7 +629,7 @@ int MAINMACRO(int argc, char *argv[])
         pixelDataVL = parser->GetPixelDataVL();
       }
 
-      if (query.GetNumberOfDataElements() > 0)
+      if (!qtlist.empty())
       {
         for (size_t i = 0; i < qtlist.size(); i++)
         {
