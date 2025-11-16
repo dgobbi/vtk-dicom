@@ -56,6 +56,7 @@ void printUsage(FILE *file, const char *cp)
     "  -k tag          Provide a tag or key to be printed.\n"
     "  -q <query.txt>  Provide a file that lists which elements to print.\n"
     "  --charset <cs>  Charset to use if SpecificCharacterSet is missing.\n"
+    "  --force-charset <cs> Force override of SpecificCharacterSet with <cs>.\n"
     "  --help          Print a brief help message.\n"
     "  --version       Print the software version.\n");
 }
@@ -457,6 +458,7 @@ int MAINMACRO(int argc, char *argv[])
 
   // for the default character set
   vtkDICOMCharacterSet charset;
+  bool forceCharset = false;
 
   if (argc < 2)
   {
@@ -518,7 +520,8 @@ int MAINMACRO(int argc, char *argv[])
         return 1;
       }
     }
-    else if (strcmp(arg, "--charset") == 0)
+    else if (strcmp(arg, "--charset") == 0 ||
+             strcmp(arg, "--force-charset") == 0)
     {
       ++argi;
       if (argi == argc || argv[argi][0] == '-')
@@ -526,6 +529,10 @@ int MAINMACRO(int argc, char *argv[])
         fprintf(stderr, "%s must be followed by a valid character set\n\n",
                 arg);
         return 1;
+      }
+      if (strncmp(arg, "--force-", 8) == 0)
+      {
+        forceCharset = true;
       }
       charset = vtkDICOMCharacterSet(argv[argi]);
       if (charset.GetKey() == vtkDICOMCharacterSet::Unknown)
@@ -560,6 +567,7 @@ int MAINMACRO(int argc, char *argv[])
   vtkSmartPointer<vtkDICOMParser> parser =
     vtkSmartPointer<vtkDICOMParser>::New();
   parser->SetDefaultCharacterSet(charset);
+  parser->SetOverrideCharacterSet(forceCharset);
   parser->SetQueryItem(query);
 
   vtkSmartPointer<vtkDICOMMetaData> data =

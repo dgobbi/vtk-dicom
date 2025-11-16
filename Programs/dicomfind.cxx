@@ -81,6 +81,7 @@ void dicomfind_usage(FILE *file, const char *cp)
     "  --directory-only  Do not scan files themselves if DICOMDIR is present.\n"
     "  --ignore-dicomdir Ignore the DICOMDIR file even if it is present.\n"
     "  --charset <cs>    Charset to use if SpecificCharacterSet is missing.\n"
+    "  --force-charset <cs> Force override of SpecificCharacterSet with <cs>.\n"
     "  --help            Print a brief help message.\n"
     "  --version         Print the software version.\n",
 #ifndef _WIN32
@@ -574,6 +575,7 @@ int MAINMACRO(int argc, char *argv[])
   bool ignoreDicomdir = false;
   bool requirePixelData = false;
   bool findSeries = false;
+  bool forceCharset = false;
   vtkDICOMCharacterSet charset;
 
   vtkSmartPointer<vtkStringArray> a = vtkSmartPointer<vtkStringArray>::New();
@@ -724,7 +726,8 @@ int MAINMACRO(int argc, char *argv[])
     {
       ignoreDicomdir = true;
     }
-    else if (strcmp(arg, "--charset") == 0)
+    else if (strcmp(arg, "--charset") == 0 ||
+             strcmp(arg, "--force-charset") == 0)
     {
       ++argi;
       if (argi == argc || argv[argi][0] == '-')
@@ -732,6 +735,10 @@ int MAINMACRO(int argc, char *argv[])
         fprintf(stderr, "%s must be followed by a valid character set\n\n",
                 arg);
         return 1;
+      }
+      if (strncmp(arg, "--force-", 8) == 0)
+      {
+        forceCharset = true;
       }
       charset = vtkDICOMCharacterSet(argv[argi]);
       if (charset.GetKey() == vtkDICOMCharacterSet::Unknown)
@@ -768,6 +775,7 @@ int MAINMACRO(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMDirectory> finder =
       vtkSmartPointer<vtkDICOMDirectory>::New();
     finder->SetDefaultCharacterSet(charset);
+    finder->SetOverrideCharacterSet(forceCharset);
     finder->SetInputFileNames(a);
     finder->SetFilePattern(pattern);
     finder->SetScanDepth(scandepth);
