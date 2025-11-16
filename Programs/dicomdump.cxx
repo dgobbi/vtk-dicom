@@ -561,17 +561,22 @@ int MAINMACRO(int argc, char *argv[])
   }
 
   // sort the files by study and series
-  vtkSmartPointer<vtkDICOMDirectory> sorter =
-    vtkSmartPointer<vtkDICOMDirectory>::New();
-  sorter->RequirePixelDataOff();
-  sorter->SetScanDepth(0);
-  sorter->IgnoreDicomdirOn();
-  if (!qtlist.empty())
+  vtkSmartPointer<vtkDICOMDirectory> sorter;
+  bool useSorter = false;
+  if (files->GetNumberOfValues() > 1)
   {
-    sorter->SetFindQuery(query);
+    useSorter = true;
+    sorter = vtkSmartPointer<vtkDICOMDirectory>::New();
+    sorter->RequirePixelDataOff();
+    sorter->SetScanDepth(0);
+    sorter->IgnoreDicomdirOn();
+    if (!qtlist.empty())
+    {
+      sorter->SetFindQuery(query);
+    }
+    sorter->SetInputFileNames(files);
+    sorter->Update();
   }
-  sorter->SetInputFileNames(files);
-  sorter->Update();
 
   vtkSmartPointer<vtkDICOMParser> parser =
     vtkSmartPointer<vtkDICOMParser>::New();
@@ -586,14 +591,27 @@ int MAINMACRO(int argc, char *argv[])
     vtkSmartPointer<vtkDICOMMetaData>::New();
   parser->SetMetaData(data);
 
-  int m = sorter->GetNumberOfStudies();
+  int m = (files->GetNumberOfValues() > 0 ? 1 : 0);
+  if (useSorter)
+  {
+    m = sorter->GetNumberOfStudies();
+  }
   for (int j = 0; j < m; j++)
   {
-    int k = sorter->GetFirstSeriesForStudy(j);
-    int kl = sorter->GetLastSeriesForStudy(j);
-    for (; k <= kl; k++)
+    int k = 0;
+    int kmax = 0;
+    if (useSorter)
     {
-      vtkStringArray *a = sorter->GetFileNamesForSeries(k);
+      k = sorter->GetFirstSeriesForStudy(j);
+      kmax = sorter->GetLastSeriesForStudy(j);
+    }
+    for (; k <= kmax; k++)
+    {
+      vtkStringArray *a = files;
+      if (useSorter)
+      {
+        a = sorter->GetFileNamesForSeries(k);
+      }
       vtkIdType l = a->GetNumberOfValues();
       std::string fname = a->GetValue(0);
       if (l == 1)
