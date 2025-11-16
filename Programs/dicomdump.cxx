@@ -37,6 +37,9 @@
 #define INDENT_SIZE 2
 #define MAX_LENGTH 120
 
+// for convenience when specifying VRs
+typedef vtkDICOMVR VR;
+
 // print the version
 void printVersion(FILE *file, const char *cp)
 {
@@ -455,6 +458,9 @@ int MAINMACRO(int argc, char *argv[])
   // for the optional query file
   QueryTagList qtlist;
   vtkDICOMItem query;
+
+  // always query SpecificCharacterSet
+  query.Set(DC::SpecificCharacterSet, vtkDICOMValue(VR::CS));
 
   // for the default character set
   vtkDICOMCharacterSet charset;
