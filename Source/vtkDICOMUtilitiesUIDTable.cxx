@@ -23,15 +23,15 @@ const UIDTableEntry UIDTable[] = {
 { 339, 1, 2, 0, nullptr },
 { 340, 1, 1, 0, nullptr },
 { 1527, 1, 1, 0, nullptr },
-{ 3077, 1, 1, 0, nullptr },
-{ 3080, 1, 1, 0, nullptr },
-{ 3082, 24, 1, 0, nullptr },
-{ 3106, 4, 1, 0, nullptr },
+{ 3087, 1, 1, 0, nullptr },
+{ 3090, 1, 1, 0, nullptr },
+{ 3092, 24, 1, 0, nullptr },
+{ 3116, 4, 1, 0, nullptr },
 { 0, 0, 0, 0, nullptr },
 { 0, 0, 0, 0, nullptr },
 { 0, 0, 0, 0, nullptr },
 { 0, 0, 0, 0, nullptr },
-{ 3110, 2, 0, 0, nullptr },
+{ 3120, 2, 0, 0, nullptr },
 { 0, 0, 0, 0, // 1.2.840.10008.1.1
   "Verification SOP Class" },
 { 58, 8, 1, 0, // 1.2.840.10008.1.2
@@ -1989,7 +1989,7 @@ const UIDTableEntry UIDTable[] = {
   "Implant Template Group Information Model - MOVE" },
 { 0, 0, 0, 0, // 1.2.840.10008.5.1.4.45.4
   "Implant Template Group Information Model - GET" },
-{ 1528, 1549, 1, 0, nullptr },
+{ 1528, 1559, 1, 0, nullptr },
 { 0, 0, 0, 2, // 1.2.840.10008.6.1.1
   "Anatomic Modifier" },
 { 0, 0, 0, 4, // 1.2.840.10008.6.1.2
@@ -4982,12 +4982,32 @@ const UIDTableEntry UIDTable[] = {
   "Dose Index for Dose Calibration" },
 { 0, 0, 0, 12036, // 1.2.840.10008.6.1.1549
   "Ultrasound Attenuation Imaging Site" },
-{ 3078, 2, 1, 0, nullptr },
+{ 0, 0, 0, 12040, // 1.2.840.10008.6.1.1550
+  "Fetal Anatomy Survey Assessment" },
+{ 0, 0, 0, 12041, // 1.2.840.10008.6.1.1551
+  "Fetal Anatomy Survey Assessment - Head" },
+{ 0, 0, 0, 12042, // 1.2.840.10008.6.1.1552
+  "Fetal Anatomy Survey Assessment - Face and Neck" },
+{ 0, 0, 0, 12043, // 1.2.840.10008.6.1.1553
+  "Fetal Anatomy Survey Assessment - Chest" },
+{ 0, 0, 0, 12044, // 1.2.840.10008.6.1.1554
+  "Fetal Anatomy Survey Assessment - Heart" },
+{ 0, 0, 0, 12045, // 1.2.840.10008.6.1.1555
+  "Fetal Anatomy Survey Assessment - Abdomen and Pelvis" },
+{ 0, 0, 0, 12046, // 1.2.840.10008.6.1.1556
+  "Fetal Anatomy Survey Assessment - Spine" },
+{ 0, 0, 0, 12047, // 1.2.840.10008.6.1.1557
+  "Fetal Anatomy Survey Assessment - Extremities" },
+{ 0, 0, 0, 12048, // 1.2.840.10008.6.1.1558
+  "Fetal Anatomy Survey Assessment - Maternal" },
+{ 0, 0, 0, 12049, // 1.2.840.10008.6.1.1559
+  "Fetal Anatomy Survey Practice Guideline" },
+{ 3088, 2, 1, 0, nullptr },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.1
   "Native DICOM Model" },
 { 0, 0, 0, 0, // 1.2.840.10008.7.1.2
   "Abstract Multi-Dimensional Image Model" },
-{ 3081, 1, 1, 0, nullptr },
+{ 3091, 1, 1, 0, nullptr },
 { 0, 0, 0, 0, // 1.2.840.10008.8.1.1
   "DICOM Content Mapping Resource" },
 { 0, 0, 0, 0, // 1.2.840.10008.9.1
@@ -5046,10 +5066,10 @@ const UIDTableEntry UIDTable[] = {
   "Audio Waveform Real-Time Communication" },
 { 0, 0, 0, 0, // 1.2.840.10008.10.4
   "Rendition Selection Document Real-Time Communication" },
-{ 3112, 2, 3, 0, nullptr },
-{ 3153, 1, 1, 0, nullptr },
-{ 3114, 31, 1, 0, nullptr },
-{ 3145, 8, 1, 0, nullptr },
+{ 3122, 2, 3, 0, nullptr },
+{ 3163, 1, 1, 0, nullptr },
+{ 3124, 31, 1, 0, nullptr },
+{ 3155, 8, 1, 0, nullptr },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.1
   "dicomDeviceName" },
 { 0, 0, 0, 0, // 1.2.840.10008.15.0.3.2

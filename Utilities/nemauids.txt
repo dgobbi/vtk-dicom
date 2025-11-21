@@ -6493,3 +6493,33 @@ Dose Index for Dose Calibration
 1.2.840.10008.6.1.1549
 CID 12036
 Ultrasound Attenuation Imaging Site
+1.2.840.10008.6.1.1550
+CID 12040
+Fetal Anatomy Survey Assessment
+1.2.840.10008.6.1.1551
+CID 12041
+Fetal Anatomy Survey Assessment - Head
+1.2.840.10008.6.1.1552
+CID 12042
+Fetal Anatomy Survey Assessment - Face and Neck
+1.2.840.10008.6.1.1553
+CID 12043
+Fetal Anatomy Survey Assessment - Chest
+1.2.840.10008.6.1.1554
+CID 12044
+Fetal Anatomy Survey Assessment - Heart
+1.2.840.10008.6.1.1555
+CID 12045
+Fetal Anatomy Survey Assessment - Abdomen and Pelvis
+1.2.840.10008.6.1.1556
+CID 12046
+Fetal Anatomy Survey Assessment - Spine
+1.2.840.10008.6.1.1557
+CID 12047
+Fetal Anatomy Survey Assessment - Extremities
+1.2.840.10008.6.1.1558
+CID 12048
+Fetal Anatomy Survey Assessment - Maternal
+1.2.840.10008.6.1.1559
+CID 12049
+Fetal Anatomy Survey Practice Guideline
