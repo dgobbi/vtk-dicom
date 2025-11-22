@@ -16,6 +16,8 @@
 
 #include "vtkDICOMUtilities.h"
 
+#include <iostream>
+
 void ProgressObserver::Execute(vtkObject *, unsigned long e, void *vp)
 {
   const double initial = 2.0; // time until first report

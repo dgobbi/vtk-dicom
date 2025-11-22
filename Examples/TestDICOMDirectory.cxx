@@ -7,6 +7,7 @@
 #include "vtkStringArray.h"
 #include "vtkIntArray.h"
 
+#include <iostream>
 #include <sstream>
 
 #include <string.h>
@@ -16,9 +17,9 @@
 #define TestAssert(t) \
 if (!(t)) \
 { \
-  cout << exename << ": Assertion Failed: " << #t << "\n"; \
-  cout << __FILE__ << ":" << __LINE__ << "\n"; \
-  cout.flush(); \
+  std::cout << exename << ": Assertion Failed: " << #t << "\n"; \
+  std::cout << __FILE__ << ":" << __LINE__ << "\n"; \
+  std::cout.flush(); \
   rval |= 1; \
 }
 
@@ -37,7 +38,7 @@ int main(int argc, char *argv[])
 
   if (argc < 2 || argc > 3)
   {
-    cout << "usage: " << exename << " <directory_name> [depth]" << endl;
+    std::cout << "usage: " << exename << " <directory_name> [depth]" << std::endl;
     exit(0);
   }
 
@@ -57,7 +58,7 @@ int main(int argc, char *argv[])
   for (int i = 0; i < n; i++)
   {
     const vtkDICOMItem& patientItem = ddir->GetPatientRecord(i);
-    cout << "Patient " << i << ": "
+    std::cout << "Patient " << i << ": "
          << patientItem.Get(DC::PatientID).AsString() << "\n";
     vtkIntArray *studies = ddir->GetStudiesForPatient(i);
     vtkIdType m = studies->GetMaxId() + 1;
@@ -70,7 +71,7 @@ int main(int argc, char *argv[])
       int j = studies->GetValue(jj);
       const vtkDICOMItem& studyItem = ddir->GetStudyRecord(j);
       const vtkDICOMItem& studyPItem = ddir->GetPatientRecordForStudy(j);
-      cout << " Study " << j << ": \""
+      std::cout << " Study " << j << ": \""
            << studyItem.Get(DC::StudyDescription).AsString() << "\" \""
            << studyPItem.Get(DC::PatientName).AsString() << "\" "
            << studyItem.Get(DC::StudyDate).AsString() << "\n";
@@ -83,14 +84,14 @@ int main(int argc, char *argv[])
       for (int k = k0; k <= k1; k++)
       {
         const vtkDICOMItem& seriesItem = ddir->GetSeriesRecord(k);
-        cout << "  Series " << k << ": \""
+        std::cout << "  Series " << k << ": \""
              << seriesItem.Get(DC::SeriesDescription).AsString() << "\" "
              << seriesItem.Get(DC::SeriesNumber).AsString() << " "
              << seriesItem.Get(DC::Modality).AsString() << "\n";
         vtkStringArray *a = ddir->GetFileNamesForSeries(k);
         for (vtkIdType kk = 0; kk < a->GetNumberOfValues(); kk++)
         {
-          cout << "   " << a->GetValue(kk) << "\n";
+          std::cout << "   " << a->GetValue(kk) << "\n";
         }
       }
     }

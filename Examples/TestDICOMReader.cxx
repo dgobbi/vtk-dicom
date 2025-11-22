@@ -6,6 +6,7 @@
 #include "vtkSmartPointer.h"
 #include "vtkStringArray.h"
 
+#include <iostream>
 #include <sstream>
 
 #include <string.h>
@@ -15,9 +16,9 @@
 #define TestAssert(t) \
 if (!(t)) \
 { \
-  cout << exename << ": Assertion Failed: " << #t << "\n"; \
-  cout << __FILE__ << ":" << __LINE__ << "\n"; \
-  cout.flush(); \
+  std::cout << exename << ": Assertion Failed: " << #t << "\n"; \
+  std::cout << __FILE__ << ":" << __LINE__ << "\n"; \
+  std::cout.flush(); \
   rval |= 1; \
 }
 
@@ -81,12 +82,12 @@ int main(int argc, char *argv[])
   int m = sorter->GetNumberOfStudies();
   for (int j = 0; j < m; j++)
   {
-    cout << "Study" << j << ":\n";
+    std::cout << "Study" << j << ":\n";
     int k = sorter->GetFirstSeriesForStudy(j);
     int kl = sorter->GetLastSeriesForStudy(j);
     for (; k <= kl; k++)
     {
-      cout << "  Series " << k << ":\n";
+      std::cout << "  Series " << k << ":\n";
       vtkStringArray *a = sorter->GetFileNamesForSeries(k);
       vtkSmartPointer<ReaderProgress> progressCommand =
         vtkSmartPointer<ReaderProgress>::New();

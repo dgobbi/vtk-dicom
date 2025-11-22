@@ -3,6 +3,7 @@
 #include "vtkDICOMDictionary.h"
 #include "vtkDICOMTagPath.h"
 
+#include <iostream>
 #include <sstream>
 
 #include <string.h>
@@ -12,9 +13,9 @@
 #define TestAssert(t) \
 if (!(t)) \
 { \
-  cout << exename << ": Assertion Failed: " << #t << "\n"; \
-  cout << __FILE__ << ":" << __LINE__ << "\n"; \
-  cout.flush(); \
+  std::cout << exename << ": Assertion Failed: " << #t << "\n"; \
+  std::cout << __FILE__ << ":" << __LINE__ << "\n"; \
+  std::cout.flush(); \
   rval |= 1; \
 }
 

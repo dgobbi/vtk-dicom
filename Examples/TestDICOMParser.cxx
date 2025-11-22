@@ -2,6 +2,7 @@
 #include "vtkDICOMMetaData.h"
 #include "vtkSmartPointer.h"
 
+#include <iostream>
 #include <sstream>
 
 #include <string.h>
@@ -11,9 +12,9 @@
 #define TestAssert(t) \
 if (!(t)) \
 { \
-  cout << exename << ": Assertion Failed: " << #t << "\n"; \
-  cout << __FILE__ << ":" << __LINE__ << "\n"; \
-  cout.flush(); \
+  std::cout << exename << ": Assertion Failed: " << #t << "\n"; \
+  std::cout << __FILE__ << ":" << __LINE__ << "\n"; \
+  std::cout.flush(); \
   rval |= 1; \
 }
 
@@ -32,7 +33,7 @@ int main(int argc, char *argv[])
 
   for (int i = 1; i < argc; i++)
   {
-    cout << "=========== " << argv[i] << " =========\n";
+    std::cout << "=========== " << argv[i] << " =========\n";
 
     vtkSmartPointer<vtkDICOMMetaData> data =
       vtkSmartPointer<vtkDICOMMetaData>::New();

@@ -25,6 +25,7 @@
 #include <ctype.h>
 #include <assert.h>
 
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -1637,13 +1638,13 @@ bool Decoder<E>::ReadElements(
     }
 
     /*
-    cout << tag << " " << vr << " " << vl << " " << v;
+    std::cout << tag << " " << vr << " " << vl << " " << v;
     vtkDICOMDictEntry entry;
     if (this->MetaData->FindDictEntry(tag, entry))
       {
-      cout << " \"" << entry.GetName() << "\"";
+      std::cout << " \"" << entry.GetName() << "\"";
       }
-    cout << "\n";
+    std::cout << "\n";
     */
 
     // check if the value matches the query

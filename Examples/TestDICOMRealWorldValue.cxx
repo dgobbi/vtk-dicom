@@ -8,6 +8,7 @@
 #include "vtkSmartPointer.h"
 #include "vtkStringArray.h"
 
+#include <iostream>
 #include <sstream>
 
 #include <string.h>
@@ -18,9 +19,9 @@
 #define TestAssert(t) \
 if (!(t)) \
 { \
-  cout << exename << ": Assertion Failed: " << #t << "\n"; \
-  cout << __FILE__ << ":" << __LINE__ << "\n"; \
-  cout.flush(); \
+  std::cout << exename << ": Assertion Failed: " << #t << "\n"; \
+  std::cout << __FILE__ << ":" << __LINE__ << "\n"; \
+  std::cout.flush(); \
   rval |= 1; \
 }
 
@@ -94,7 +95,7 @@ int main(int argc, char *argv[])
   }
   else
   {
-    cout << "The provided file is not DICOM!" << endl;
+    std::cout << "The provided file is not DICOM!" << std::endl;
   }
 
   if (meta->Has(DC::RealWorldValueMappingSequence))
@@ -114,10 +115,10 @@ int main(int argc, char *argv[])
     double slope = mappingItem.Get(DC::RealWorldValueSlope).AsDouble();
     double inter = mappingItem.Get(DC::RealWorldValueIntercept).AsDouble();
 
-    cout << "Map pixel values in the range " << range[0] << ", " << range[1] << endl;
-    cout << "through the equation y = " << slope << " * x + " << inter << endl;
-    cout << "to real values with units of " << units << endl;
-    cout << "and display the result with color table " << lutName << endl;
+    std::cout << "Map pixel values in the range " << range[0] << ", " << range[1] << std::endl;
+    std::cout << "through the equation y = " << slope << " * x + " << inter << std::endl;
+    std::cout << "to real values with units of " << units << std::endl;
+    std::cout << "and display the result with color table " << lutName << std::endl;
 
     if (argc == 1)
     {
@@ -131,7 +132,7 @@ int main(int argc, char *argv[])
   }
   else
   {
-    cout << "Image has no real world value mapping!" << endl;
+    std::cout << "Image has no real world value mapping!" << std::endl;
   }
 
   return rval;

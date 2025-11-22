@@ -24,6 +24,8 @@
 #include "vtkMath.h"
 #include "vtkErrorCode.h"
 
+#include <iostream>
+
 int main(int argc, char *argv[])
 {
   vtkSmartPointer<vtkRenderWindowInteractor> iren =
@@ -240,21 +242,21 @@ int main(int argc, char *argv[])
   vtkStringArray *sarray = reader->GetStackIDs();
   if (sarray->GetNumberOfValues())
   {
-    cout << "StackIDs (choose one with --stack):";
+    std::cout << "StackIDs (choose one with --stack):";
     for (vtkIdType ii = 0; ii < sarray->GetNumberOfValues(); ii++)
     {
-      cout << " \"" << sarray->GetValue(ii) << "\"";
+      std::cout << " \"" << sarray->GetValue(ii) << "\"";
     }
-    cout << "\n";
+    std::cout << "\n";
   }
   if (reader->GetTimeDimension() > 1)
   {
-    cout << "TimeDimension: " << reader->GetTimeDimension() << "\n";
-    cout << "TimeSpacing: " << reader->GetTimeSpacing() << "\n";
+    std::cout << "TimeDimension: " << reader->GetTimeDimension() << "\n";
+    std::cout << "TimeSpacing: " << reader->GetTimeSpacing() << "\n";
   }
   if (reader->GetFileIndexArray()->GetNumberOfComponents() > 1)
   {
-    cout << "VectorDimension: "
+    std::cout << "VectorDimension: "
          << reader->GetFileIndexArray()->GetNumberOfComponents() << "\n";
   }
 
