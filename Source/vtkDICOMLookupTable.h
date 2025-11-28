@@ -73,3 +73,4 @@ private:
 };
 
 #endif // vtkDICOMLookupTable_h
+// VTK-HeaderTest-Exclude: ABINAMESPACE

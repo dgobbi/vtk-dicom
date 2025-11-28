@@ -415,3 +415,4 @@ private:
 };
 
 #endif // vtkNIFTIHeader_h
+// VTK-HeaderTest-Exclude: ABINAMESPACE

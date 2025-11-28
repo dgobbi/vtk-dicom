@@ -62,3 +62,4 @@ private:
 };
 
 #endif // vtkDICOMMRGenerator_h
+// VTK-HeaderTest-Exclude: ABINAMESPACE

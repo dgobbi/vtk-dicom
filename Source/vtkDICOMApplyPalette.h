@@ -74,3 +74,4 @@ private:
 };
 
 #endif // vtkDICOMApplyPalette_h
+// VTK-HeaderTest-Exclude: ABINAMESPACE

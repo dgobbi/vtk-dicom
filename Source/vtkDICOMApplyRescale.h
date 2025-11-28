@@ -82,3 +82,4 @@ private:
 };
 
 #endif // vtkDICOMApplyRescale_h
+// VTK-HeaderTest-Exclude: ABINAMESPACE

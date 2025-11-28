@@ -268,3 +268,4 @@ private:
 };
 
 #endif // vtkScancoCTReader_h
+// VTK-HeaderTest-Exclude: ABINAMESPACE
