@@ -22,6 +22,8 @@
 #include "vtkSmartPointer.h"
 #include "vtkTypeInt64Array.h"
 
+#include <iostream>
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
