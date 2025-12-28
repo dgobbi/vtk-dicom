@@ -1743,10 +1743,10 @@ bool SimpleSQL::Open(const char *fname)
   // open in read-only mode
   uri += "?mode=ro";
 
-  // a read-only open will fail if the .sql-wal file is missing unless we
-  // use 'immutable' (this flag assumes that the file is static, unchanging)
+  // a read-only open will fail if the .sql-wal file is missing or unwritable
+  // unless we use 'immutable' (this flag assumes that the file is static)
   std::string walpath = fullpath + "-wal";
-  if (vtkDICOMFile::Access(walpath.c_str(), vtkDICOMFile::In) != 0)
+  if (vtkDICOMFile::Access(walpath.c_str(), vtkDICOMFile::Out) != 0)
   {
     uri += "&immutable=1";
   }
