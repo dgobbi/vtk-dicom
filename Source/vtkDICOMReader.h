@@ -23,6 +23,7 @@
 #define vtkDICOMReader_h
 
 #include "vtkImageReader2.h"
+#include "vtkDICOMAlgorithm.h" // For changes to pipeline API
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMCharacterSet.h" // For character sets
 
@@ -318,7 +319,7 @@ public:
   //@{
   using Superclass::Update;
   //! Update both the image and, if present, the overlay
-  void Update() override;
+  vtkDICOMAlgorithm::UpdateReturnType Update() override;
   //@}
 #endif
 

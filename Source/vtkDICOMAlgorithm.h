@@ -26,6 +26,7 @@
 
 #include "vtkThreadedImageAlgorithm.h"
 #include "vtkDICOMModule.h" // For export macro
+#include "vtkVersionMacros.h" // For changes to pipeline API
 
 // Declare VTK classes within VTK's optional namespace
 #if defined(VTK_ABI_NAMESPACE_BEGIN)
@@ -64,6 +65,16 @@ public:
   //! A key to get the patient matrix from the VTK pipeline.
   static vtkInformationDoubleVectorKey *PATIENT_MATRIX();
   //@}
+
+#if (VTK_MAJOR_VERSION == 9 && VTK_MINOR_VERSION > 6) || VTK_MAJOR_VERSION > 9 \
+  || VTK_BUILD_VERSION > 20260111
+#define VTK_DICOM_UPDATE_RETURNS_BOOL
+  //! Typedef to support VTK's new Update return type.
+  typedef bool UpdateReturnType;
+#else
+  //! Typedef to support VTK's old Update return type.
+  typedef void UpdateReturnType;
+#endif
 
 protected:
   vtkDICOMAlgorithm();

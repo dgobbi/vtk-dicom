@@ -15,9 +15,10 @@
 #define vtkDICOMDirectory_h
 
 #include "vtkAlgorithm.h"
+#include "vtkDICOMAlgorithm.h" // For changes to pipeline API
 #include "vtkDICOMModule.h" // For export macro
 #include "vtkDICOMCharacterSet.h" // For character sets
-#include "vtkVersion.h" // For changes to pipeline API
+#include "vtkVersionMacros.h" // For changes to pipeline API
 
 // Declare VTK classes within VTK's optional namespace
 #if defined(VTK_ABI_NAMESPACE_BEGIN)
@@ -131,8 +132,8 @@ public:
    * This method causes the directory to be read.  It must be called before
    * any of the Get methods.
    */
-  void Update() override { this->Update(0); }
-  void Update(int) override;
+  vtkDICOMAlgorithm::UpdateReturnType Update() override;
+  vtkDICOMAlgorithm::UpdateReturnType Update(int) override;
 #if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION > 0) || VTK_MAJOR_VERSION > 7
   vtkTypeBool Update(vtkInformation *) override {
     this->Update(); return 1; }
@@ -440,5 +441,14 @@ private:
   //! Compare SOPInstanceUID to a FileInfo entry.
   static bool CompareInstanceUIDs(const FileInfoPair& p, const char *uid);
 };
+
+inline vtkDICOMAlgorithm::UpdateReturnType vtkDICOMDirectory::Update()
+{
+#ifdef VTK_DICOM_UPDATE_RETURNS_BOOL
+  return this->Update(0);
+#else
+  this->Update(0);
+#endif
+}
 
 #endif

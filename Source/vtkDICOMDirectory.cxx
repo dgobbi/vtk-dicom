@@ -2718,7 +2718,7 @@ void vtkDICOMDirectory::Execute()
 }
 
 //----------------------------------------------------------------------------
-void vtkDICOMDirectory::Update(int)
+vtkDICOMAlgorithm::UpdateReturnType vtkDICOMDirectory::Update(int)
 {
   this->AbortExecute = 0;
 
@@ -2727,6 +2727,10 @@ void vtkDICOMDirectory::Update(int)
     this->Execute();
     this->UpdateTime.Modified();
   }
+
+#ifdef VTK_DICOM_UPDATE_RETURNS_BOOL
+  return (this->ErrorCode == 0);
+#endif
 }
 
 //----------------------------------------------------------------------------
