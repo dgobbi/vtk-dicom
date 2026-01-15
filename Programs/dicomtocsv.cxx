@@ -146,6 +146,11 @@ bool dicomtocsv_same_orientation(const vtkDICOMValue& ov1,
   {
     return true;
   }
+  // if one has orientation info and other does not
+  if (ov1.IsValid() != ov2.IsValid())
+  {
+    return false;
+  }
 
   // do a numerical check with tolerance
   double o1[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
