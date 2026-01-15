@@ -150,8 +150,14 @@ bool dicomtocsv_same_orientation(const vtkDICOMValue& ov1,
   // do a numerical check with tolerance
   double o1[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
   double o2[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-  ov1.GetValues(o1, 6);
-  ov2.GetValues(o2, 6);
+  if (ov1.IsValid())
+  {
+    ov1.GetValues(o1, 6);
+  }
+  if (ov2.IsValid())
+  {
+    ov2.GetValues(o2, 6);
+  }
 
   // check the row and column orientation vectors
   for (int i = 0; i < 2; i++)
