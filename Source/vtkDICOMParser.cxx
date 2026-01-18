@@ -707,8 +707,13 @@ void DecoderBase::HandleMissingAttributes(vtkDICOMTag tag)
   // instances in this series but not present for this instance
   vtkDICOMDataElementIterator iter = this->MetaData->Find(tag);
   --iter;
+  // If 'tag' is not found, then *--iter will be the last element
+  // in this->MetaData, due to the way the linked list is defined.
+  // If 'tag' is the first element (or if there are no elements),
+  // then *--iter will be this->MetaData->Head, for which GetTag()
+  // always returns (0x0000,0x0000).
   if (iter->GetTag() != this->LastWrittenTag &&
-      iter->GetTag().GetGroup() != 0x0002)
+      iter->GetTag().GetGroup() > 0x0002)
   {
     int count = 0;
     do
@@ -717,7 +722,7 @@ void DecoderBase::HandleMissingAttributes(vtkDICOMTag tag)
       --iter;
     }
     while (iter->GetTag() != this->LastWrittenTag &&
-           iter->GetTag().GetGroup() != 0x0002);
+           iter->GetTag().GetGroup() > 0x0002);
 
     vtkDICOMTag *missing = new vtkDICOMTag[count];
     for (int i = 0; i < count; i++)
