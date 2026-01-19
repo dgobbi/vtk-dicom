@@ -96,21 +96,21 @@ public:
 
   //@{
   vtkDICOMDataElementIterator& operator++() {
-    if (this->Pointer) { this->Pointer = this->Pointer->Next; }
+    this->Pointer = this->Pointer->Next;
     return *this; }
 
   vtkDICOMDataElementIterator operator++(int) {
     const vtkDICOMDataElement *ptr = this->Pointer;
-    if (ptr) { this->Pointer = this->Pointer->Next; }
+    this->Pointer = this->Pointer->Next;
     return vtkDICOMDataElementIterator(ptr); }
 
   vtkDICOMDataElementIterator& operator--() {
-    if (this->Pointer) { this->Pointer = this->Pointer->Prev; }
+    this->Pointer = this->Pointer->Prev;
     return *this; }
 
   vtkDICOMDataElementIterator operator--(int) {
     const vtkDICOMDataElement *ptr = this->Pointer;
-    if (ptr) { this->Pointer = this->Pointer->Prev; }
+    this->Pointer = this->Pointer->Prev;
     return vtkDICOMDataElementIterator(ptr); }
   //@}
 
