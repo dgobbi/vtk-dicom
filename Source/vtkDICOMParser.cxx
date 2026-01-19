@@ -373,9 +373,11 @@ public:
   // Get the VL of the last data element.
   unsigned int GetLastVL() { return this->LastVL; }
 
-  // Check for attributes missing from this instance, that were present
-  // for instances in the series that were already parsed.
-  void HandleMissingAttributes(vtkDICOMTag tag);
+  // Prepare this decoder for the use of SetIndexed().
+  void PrepareForSetIndexed();
+
+  // Set element for one particular instance, identified by index.
+  void SetIndexed(int idx, vtkDICOMTag tag, const vtkDICOMValue& v);
 
   // Advance the query iterator (this->Query) to the given tag,
   // and set this->QueryMatched to false if any unmatched query keys
@@ -437,8 +439,8 @@ protected:
   vtkDICOMTag LastTag;
   vtkDICOMVR  LastVR;
   unsigned int LastVL;
-  // this is set to the last tag written to this->MetaData
-  vtkDICOMTag LastWrittenTag;
+  // this is to track elements written by SetIndexed;
+  vtkDICOMTag LastTagForSetIndexed;
 };
 
 //----------------------------------------------------------------------------
@@ -701,29 +703,40 @@ inline size_t DecoderBase::GetByteOffset(
 }
 
 //----------------------------------------------------------------------------
-void DecoderBase::HandleMissingAttributes(vtkDICOMTag tag)
+void DecoderBase::PrepareForSetIndexed()
 {
-  // insert null values for any attributes that were present for other
-  // instances in this series but not present for this instance
-  vtkDICOMDataElementIterator iter = this->MetaData->Find(tag);
-  --iter;
-  // If 'tag' is not found, then *--iter will be the last element
-  // in this->MetaData, due to the way the linked list is defined.
-  // If 'tag' is the first element (or if there are no elements),
-  // then *--iter will be this->MetaData->Head, for which GetTag()
-  // always returns (0x0000,0x0000).
-  if (iter->GetTag() != this->LastWrittenTag &&
-      iter->GetTag().GetGroup() > 0x0002)
+  vtkDICOMMetaData *data = this->MetaData;
+  vtkDICOMDataElementIterator iter = data->Begin();
+  while (iter != data->End() && iter->GetTag().GetGroup() <= 0x0002)
   {
-    int count = 0;
-    do
-    {
-      count++;
-      --iter;
-    }
-    while (iter->GetTag() != this->LastWrittenTag &&
-           iter->GetTag().GetGroup() > 0x0002);
+    ++iter;
+  }
+  // note: if 'iter' is still 'data->Begin()', then this will set the
+  // position to be 'data->Head' (see vtkDICOMMetaData.h/.cxx)
+  this->LastTagForSetIndexed = (--iter)->GetTag();
+}
 
+//----------------------------------------------------------------------------
+void DecoderBase::SetIndexed(
+  int idx, vtkDICOMTag tag, const vtkDICOMValue& v)
+{
+  vtkDICOMDataElementIterator iter =
+    this->MetaData->InsertOrAssign(idx, tag, v);
+  vtkDICOMTag lastTag = this->LastTagForSetIndexed;
+  this->LastTagForSetIndexed = tag;
+
+  // check for a gap between the last data element and the current one
+  int count = 0;
+  while ((--iter)->GetTag() != lastTag)
+  {
+    count++;
+  }
+
+  // if there is a gap betwen the previous element and the new one, then
+  // other instances had data elements that are missing for this 'idx',
+  // so set these missing elements to null values
+  if (count > 0)
+  {
     vtkDICOMTag *missing = new vtkDICOMTag[count];
     for (int i = 0; i < count; i++)
     {
@@ -735,7 +748,6 @@ void DecoderBase::HandleMissingAttributes(vtkDICOMTag tag)
     }
     delete [] missing;
   }
-  this->LastWrittenTag = tag;
 }
 
 //----------------------------------------------------------------------------
@@ -1638,8 +1650,7 @@ bool Decoder<E>::ReadElements(
     }
     else
     {
-      this->MetaData->Set(this->Index, tag, v);
-      this->HandleMissingAttributes(tag);
+      this->SetIndexed(this->Index, tag, v);
     }
 
     /*
@@ -2127,6 +2138,12 @@ bool vtkDICOMParser::ReadMetaData(
     decoder = &decoderBE;
   }
 
+  // Initialization required for use of SetIndexed method
+  if (meta && idx >= 0)
+  {
+    decoder->PrepareForSetIndexed();
+  }
+
   // get the Query
   vtkDICOMDataElementIterator iter;
   vtkDICOMDataElementIterator iterEnd;
@@ -2308,8 +2325,7 @@ bool vtkDICOMParser::ReadMetaData(
 
         if (idx >= 0)
         {
-          meta->Set(idx, lastTag, vtkDICOMValue(lastVR));
-          decoder->HandleMissingAttributes(lastTag);
+          decoder->SetIndexed(idx, lastTag, vtkDICOMValue(lastVR));
         }
         else
         {

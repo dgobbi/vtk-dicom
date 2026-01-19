@@ -97,6 +97,15 @@ public:
   //@}
 
   //@{
+  //! Set an attribute and get the iterator for its data element.
+  /*!
+   *  This is equivalent to doing Set() and Find() with only one lookup.
+   */
+  vtkDICOMDataElementIterator InsertOrAssign(
+    int idx, vtkDICOMTag tag, const vtkDICOMValue& v);
+  //@}
+
+  //@{
   //! Check whether an attribute is present in the metadata.
   bool Has(vtkDICOMTag tag);
   bool HasAttribute(vtkDICOMTag tag) {
@@ -363,6 +372,10 @@ protected:
   //! Find the attribute value for the specified image index.
   const vtkDICOMValue *FindAttributeValue(
     int idx, const vtkDICOMTagPath& tagpath);
+
+  //! Utility function to split one value into multiple values.
+  void SplitAndSetValue(
+    vtkDICOMValue *vptr, int idx, const vtkDICOMValue& v);
 
 private:
   //! The number of DICOM files.
