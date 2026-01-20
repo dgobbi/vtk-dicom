@@ -464,7 +464,7 @@ void vtkDICOMValue::ComputeNumberOfValuesForCharData()
 //----------------------------------------------------------------------------
 unsigned char *vtkDICOMValue::ReallocateUnsignedCharData(size_t vn)
 {
-  assert(this->V != 0);
+  assert(this->V != nullptr);
   assert(this->V->VR == vtkDICOMVR::OB || this->V->VR == vtkDICOMVR::UN);
   assert(vn < 0xffffffffu);
 
@@ -1289,7 +1289,7 @@ template void vtkDICOMValue::AppendValue<vtkDICOMItem>(
 template<class T>
 void vtkDICOMValue::SetValue(size_t i, const T &item)
 {
-  assert(this->V != 0);
+  assert(this->V != nullptr);
   assert(i < this->V->NumberOfValues);
 
   T *ptr = static_cast<vtkDICOMValue::ValueT<T> *>(this->V)->Data;
