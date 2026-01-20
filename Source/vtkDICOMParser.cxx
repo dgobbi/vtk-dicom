@@ -727,7 +727,7 @@ void DecoderBase::SetIndexed(
 
   // check for a gap between the last data element and the current one
   int count = 0;
-  while ((--iter)->GetTag() != lastTag)
+  while ((--iter)->GetTag() > lastTag)
   {
     count++;
   }
