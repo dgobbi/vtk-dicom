@@ -84,6 +84,9 @@ private:
 };
 
 //! A const iterator for a vtkDataElement list.
+/*!
+ *  An iterator is only valid until the next modification of the data set.
+ */
 class VTKDICOM_EXPORT vtkDICOMDataElementIterator
 {
 public:

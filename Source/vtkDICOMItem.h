@@ -165,6 +165,9 @@ public:
     return (this->L ? this->L->NumberOfDataElements : 0); }
 
   //! Get an iterator for the list of data elements.
+  /*!
+   *  The iterator is only valid until the next modification of the data set.
+   */
   vtkDICOMDataElementIterator Begin() const {
     return (this->L ? this->L->Head.Next : nullptr); }
 

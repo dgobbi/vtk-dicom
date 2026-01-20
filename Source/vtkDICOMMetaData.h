@@ -78,6 +78,9 @@ public:
     return this->NumberOfDataElements; }
 
   //! Get an iterator for the list of data elements.
+  /*!
+   *  The iterator is only valid until the next modification of the data set.
+   */
   vtkDICOMDataElementIterator Begin() {
     return this->Head.Next; }
 
@@ -89,6 +92,7 @@ public:
   //@{
   //! Get the iterator for a specific data element.
   /*!
+   *  The iterator is only valid until the next modification of the data set.
    *  If the element was not found, then End() will be returned.
    */
   vtkDICOMDataElementIterator Find(vtkDICOMTag tag) {
@@ -100,6 +104,7 @@ public:
   //! Set an attribute and get the iterator for its data element.
   /*!
    *  This is equivalent to doing Set() and Find() with only one lookup.
+   *  The iterator is only valid until the next modification of the data set.
    */
   vtkDICOMDataElementIterator InsertOrAssign(
     int idx, vtkDICOMTag tag, const vtkDICOMValue& v);
