@@ -661,12 +661,12 @@ vtkDICOMDataElementIterator vtkDICOMMetaData::InsertOrAssign(
   if (loc == nullptr)
   {
     vtkErrorMacro("InsertOrAssign: tag group number must not be zero.");
-    return vtkDICOMDataElementIterator();
+    return &this->Tail;
   }
   else if (!v.IsValid())
   {
     vtkErrorMacro("InsertOrAssign: a valid value is required.");
-    return vtkDICOMDataElementIterator();
+    return &this->Tail;
   }
 
   loc->Tag = tag;
