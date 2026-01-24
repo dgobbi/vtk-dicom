@@ -33,6 +33,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <algorithm> // for std::min
+
 #define MAX_INDENT 24
 #define INDENT_SIZE 2
 #define MAX_LENGTH 120
@@ -103,6 +105,47 @@ const char *fileBasename(const char *filename)
   const char *cp = filename + strlen(filename);
   while (cp != filename && cp[-1] != '\\' && cp[-1] != '/') { --cp; }
   return cp;
+}
+
+// count code points in the output from ToSafeUTF8 up to a limit:
+//     l = number of bytes in string (must not split last utf-8 sequence)
+//     m = desired number of utf-8 code points
+//     *mp = gives number of utf-8 code points read
+//     returns number of input bytes read
+// if return value == l after execution, end of string was reached
+// if *mp == m after execution, reached desired utf-8 count
+size_t countSafeUTF8(const char *cp, size_t l, size_t m, size_t *mp=nullptr)
+{
+  size_t remainingOctalDigits = 0;
+  size_t codeCount = 0;
+  size_t i;
+  for (i = 0; i < l; i++)
+  {
+    if (remainingOctalDigits && cp[i] >= '0' && cp[i] <= '7')
+    {
+      --remainingOctalDigits;
+    }
+    else if ((cp[i] & 0xC0) != 0x80) // not a utf-8 trail byte
+    {
+      if (codeCount == m)
+      {
+        break;
+      }
+      codeCount++;
+      // for SafeUTF8, backslash starts a three-digit octal byte code
+      if (cp[i] == '\\')
+      {
+        remainingOctalDigits = 3;
+      }
+    }
+  }
+
+  if (mp != nullptr)
+  {
+    *mp = codeCount;
+  }
+
+  return i;
 }
 
 // Print out one data element
@@ -190,6 +233,9 @@ void printElement(
              vr == vtkDICOMVR::UT)
     {
       vtkDICOMCharacterSet cs = v.GetCharacterSet();
+      bool simpleSingleByte = (cs.IsISO8859() ||
+                               cs == vtkDICOMCharacterSet::ISO_IR_6 ||
+                               cs == vtkDICOMCharacterSet::ISO_IR_13);
       const char *cp = v.GetCharData();
       size_t l = vl;
       bool truncated = false;
@@ -199,27 +245,43 @@ void printElement(
       }
       if (l > MAX_LENGTH)
       {
-        l = MAX_LENGTH;
-        truncated = true;
-      }
-      std::string utf8 = cs.ToSafeUTF8(cp, l);
-      cp = utf8.data();
-      l = utf8.length();
-      if (l > MAX_LENGTH)
-      {
-        l = MAX_LENGTH-3;
-        truncated = true;
-        // remove possibly incomplete final character
-        while (l > 1 && (cp[l-1] & 0xC0) == 0x80)
+        // loop, increasing ltry each time
+        for (size_t ltry = MAX_LENGTH;;
+             ltry += std::min(l - ltry, static_cast<size_t>(MAX_LENGTH)))
         {
-          l--;
+          if (!simpleSingleByte)
+          {
+            // ensure that 'ltry' does not split a character code, by
+            // advancing to just before the next space or control code
+            while (ltry < l && static_cast<unsigned char>(cp[ltry]) > 0x20)
+            {
+              ltry++;
+            }
+          }
+          // create utf8 string and compare to max allowed output length
+          s = cs.ToSafeUTF8(cp, ltry);
+          size_t n;
+          size_t m = countSafeUTF8(s.data(), s.size(), MAX_LENGTH, &n);
+          if (n == MAX_LENGTH && (m < s.size() || ltry < l))
+          {
+            truncated = true;
+            break;
+          }
+          if (ltry == l)
+          {
+            break;
+          }
         }
-        l--;
+        // if string too long, truncate and append elipsis
+        if (truncated)
+        {
+          s.resize(countSafeUTF8(s.data(), s.size(), MAX_LENGTH-3));
+          s.append("...");
+        }
       }
-      s.append(cp, l);
-      if (truncated)
+      else
       {
-        s.append("...");
+        s = cs.ToSafeUTF8(cp, l);
       }
     }
     else if (vr.HasTextValue())
@@ -241,7 +303,8 @@ void printElement(
           s.append(cp, 1);
           cp++;
         }
-        if (s.size() > MAX_LENGTH-4)
+        if (s.size() > MAX_LENGTH-4 &&
+            s.size() > countSafeUTF8(s.data(), s.size(), MAX_LENGTH-4))
         {
           s.resize(pos);
           s.append("...");
