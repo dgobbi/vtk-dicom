@@ -289,7 +289,6 @@ void printElement(
       vtkDICOMCharacterSet cs = v.GetCharacterSet();
       const char *cp = v.GetCharData();
       const char *ep = cp + vl;
-      size_t pos = 0;
       while (cp != ep && *cp != '\0')
       {
         size_t n = cs.NextBackslash(cp, ep);
@@ -303,21 +302,19 @@ void printElement(
           s.append(cp, 1);
           cp++;
         }
-        if (s.size() > MAX_LENGTH-4 &&
-            s.size() > countSafeUTF8(s.data(), s.size(), MAX_LENGTH-4))
+        if (s.size() > MAX_LENGTH &&
+            s.size() > countSafeUTF8(s.data(), s.size(), MAX_LENGTH))
         {
-          s.resize(pos);
+          s.resize(countSafeUTF8(s.data(), s.size(), MAX_LENGTH-3));
           s.append("...");
           break;
         }
-        pos = s.size();
       }
     }
     else
     {
       // print any other VR via conversion to string
       size_t n = v.GetNumberOfValues();
-      size_t pos = 0;
       for (size_t i = 0; i < n; i++)
       {
         v.AppendValueToString(s, i);
@@ -325,13 +322,12 @@ void printElement(
         {
           s.append("\\");
         }
-        if (s.size() > MAX_LENGTH-4)
+        if (s.size() > MAX_LENGTH)
         {
-          s.resize(pos);
+          s.resize(MAX_LENGTH-3);
           s.append("...");
           break;
         }
-        pos = s.size();
       }
     }
 
