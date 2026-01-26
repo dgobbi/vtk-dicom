@@ -137,6 +137,7 @@ size_t countSafeUTF8(const char *cp, size_t l, size_t m, size_t *mp=nullptr)
       }
       codeCount++;
       // for SafeUTF8, backslash starts a three-digit octal byte code
+      remainingOctalDigits = 0;
       if (cp[i] == '\\')
       {
         remainingOctalDigits = 3;
