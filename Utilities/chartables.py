@@ -70,6 +70,8 @@ sys.stdout.write(header)
 sys.stdout.write('\n\n')
 sys.stdout.write('#include "vtkDICOMCharacterSetTables.h"\n')
 sys.stdout.write('\n')
+sys.stdout.write('// clang-format off\n')
+sys.stdout.write('\n')
 
 # REPLACEMENT CHARACTER and useful functions
 from charutil import RCHAR
@@ -815,8 +817,8 @@ pages = {
   X_KOI8 : ('CodePageKOI8', 'CodePageKOI8_R'),
 }
 
-forward_tables = ['0']*256
-reverse_tables = ['0']*256
+forward_tables = ['nullptr']*256
+reverse_tables = ['nullptr']*256
 for x,y in pages.items():
     forward,reverse = y
     forward_tables[x] = forward
@@ -848,3 +850,6 @@ sys.stdout.write('\n')
 print_alias_table('const char *const', 'Aliases', alias_names)
 sys.stdout.write('\n')
 print_alias_table('const unsigned char', 'AliasKeys', alias_keys)
+
+sys.stdout.write('\n')
+sys.stdout.write('// clang-format on\n')

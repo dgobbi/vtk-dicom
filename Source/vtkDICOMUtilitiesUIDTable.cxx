@@ -4,6 +4,8 @@ This is an automatically generated file.  Include errata for any changes.
 
 #include "vtkDICOMUtilitiesUIDTable.h"
 
+// clang-format off
+
 namespace {
 
 struct UIDTableEntry
@@ -5241,3 +5243,5 @@ unsigned short vtkDICOMUtilities::GetCIDFromUID(const char *uid)
   }
   return result;
 }
+
+// clang-format on

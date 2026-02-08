@@ -2,8 +2,10 @@
 This is an automatically generated file.  Include errata for any changes.
 =========================================================================*/
 
-#include "vtkDICOMDictionary.h"
 #include "vtkDICOMDictHash.h"
+#include "vtkDICOMDictionary.h"
+
+// clang-format off
 
 namespace {
 
@@ -10281,3 +10283,5 @@ DictTagHashTable,
 DictKeyHashTable,
 DictContents
 };
+
+// clang-format on

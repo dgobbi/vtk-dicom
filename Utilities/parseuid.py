@@ -89,6 +89,8 @@ f.write("=======================================================================
 
 f.write("\n#include \"vtkDICOMUtilitiesUIDTable.h\"\n")
 
+f.write("\n// clang-format off\n")
+
 f.write("\nnamespace {\n\n")
 
 f.write("struct UIDTableEntry\n")
@@ -228,3 +230,5 @@ unsigned short vtkDICOMUtilities::GetCIDFromUID(const char *uid)
 """
 
 f.write(exportedcode)
+
+f.write("\n// clang-format on\n")

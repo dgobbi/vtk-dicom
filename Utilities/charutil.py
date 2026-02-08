@@ -425,7 +425,7 @@ def print_table_of_tables(name, table):
         % (name, len(table)))
     count = 1
     for item in table:
-        if item != '0':
+        if item != 'nullptr':
             if count != 1:
                 sys.stdout.write('\n')
             sys.stdout.write('  %s,\n' % (item,))
@@ -433,7 +433,7 @@ def print_table_of_tables(name, table):
         elif count == 1:
             sys.stdout.write('  %s,' % (item,))
             count += 1
-        elif count < 24:
+        elif count < 8:
             sys.stdout.write(' %s,' % (item,))
             count += 1
         else:

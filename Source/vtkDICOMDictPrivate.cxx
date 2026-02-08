@@ -211,8 +211,10 @@ BRIT Systems, Inc.
 
 =========================================================================*/
 
-#include "vtkDICOMDictionary.h"
 #include "vtkDICOMDictPrivate.h"
+#include "vtkDICOMDictionary.h"
+
+// clang-format off
 
 namespace {
 
@@ -29777,3 +29779,5 @@ vtkDICOMDictPrivateInitializer::~vtkDICOMDictPrivateInitializer()
     }
   }
 }
+
+// clang-format on

@@ -4,6 +4,8 @@ This is an automatically generated file.  Include errata for any changes.
 
 #include "vtkDICOMCharacterSetTables.h"
 
+// clang-format off
+
 // ASCII
 const unsigned short CodePageASCII[9] = {
   // hot segments (indexes into segment table)
@@ -24742,3 +24744,5 @@ const unsigned char vtkDICOMCharacterSet::AliasKeys[247] = {
   84, 85, 86, 87, 88, 70, 76, 24, 80, 81, 82, 83, 84, 85, 86, 87, 88, 69,
   66, 70, 67, 1,
 };
+
+// clang-format on

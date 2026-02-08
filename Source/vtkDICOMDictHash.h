@@ -5,6 +5,8 @@ This is an automatically generated file.  Include errata for any changes.
 #ifndef vtkDICOMDictHash_h
 #define vtkDICOMDictHash_h
 
+// clang-format off
+
 //! Tag values defined in the DICOM standard
 namespace DC
 {
@@ -6293,6 +6295,8 @@ ItemDelimitationItem                    = 0xFFFEE00D, // XX M0    0
 SequenceDelimitationItem                = 0xFFFEE0DD  // XX M0    0
 };
 } // end namespace DC
+
+// clang-format on
 
 #endif /* vtkDICOMDictHash_h */
 // VTK-HeaderTest-Exclude: vtkDICOMDictHash.h

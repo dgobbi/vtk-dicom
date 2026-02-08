@@ -5,6 +5,8 @@ This is an automatically generated file.  Include errata for any changes.
 #ifndef vtkDICOMDictPrivate_h
 #define vtkDICOMDictPrivate_h
 
+// clang-format off
+
 // This must be included before the initializer is declared.
 #include "vtkDICOMDictionary.h"
 
@@ -23,6 +25,8 @@ private:
 
 static vtkDICOMDictPrivateInitializer vtkDICOMDictPrivateInitializerInstance;
 //! @endcond
+
+// clang-format on
 
 #endif /* vtkDICOMDictPrivate_h */
 // VTK-HeaderTest-Exclude: vtkDICOMDictPrivate.h

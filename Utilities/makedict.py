@@ -285,6 +285,8 @@ def printhead(enum_dict, classname):
   f.write("#ifndef %s_h\n" % (classname,))
   f.write("#define %s_h\n" % (classname,))
   f.write("\n")
+  f.write("// clang-format off\n");
+  f.write("\n")
   if not privatedict:
     f.write("//! Tag values defined in the DICOM standard\n")
     f.write("namespace DC\n")
@@ -312,14 +314,19 @@ def printhead(enum_dict, classname):
     f.write("\n")
     f.write("static %sInitializer %sInitializerInstance;\n" % (classname,classname))
   f.write("\n")
+  f.write("// clang-format on\n");
+  f.write("\n")
   f.write("#endif /* %s_h */\n" % (classname,))
 
 def printbody(entry_dict, classname):
   f = sys.stdout
   f.write(header)
   f.write("\n")
-  f.write("#include \"vtkDICOMDictionary.h\"\n")
   f.write("#include \"%s.h\"\n" % (classname,))
+  f.write("#include \"vtkDICOMDictionary.h\"\n")
+  f.write("\n")
+
+  f.write("// clang-format off\n");
   f.write("\n")
 
   f.write("namespace {\n")
@@ -348,46 +355,41 @@ def printbody(entry_dict, classname):
     for table,tagorkey in [(tag_table,"Tag"),(key_table,"Key")]:
       f.write("\n")
       f.write("const unsigned short Dict%s%sHashTable[] = {\n" % (ds,tagorkey))
-      i = 0
       j = len(table) + 1
       row = []
+      rowlen = 10
       for l in table:
         if l is None:
           row.append("%5d," % (len(table),))
-          i = i + 1
-          if i % 10 == 0:
+          if len(row) == rowlen:
             f.write(" ".join(row) + "\n")
             row = []
         else:
           row.append("%5d," % (j,))
-          i = i + 1
-          if i % 10 == 0:
+          if len(row) == rowlen:
             f.write(" ".join(row) + "\n")
             row = []
           j = j + len(l) + 1
-      row.append("%5d," % (0,))
-      i = i + 1
       if VISUALIZE_HASH_ROWS:
-        i = 0
-      if i % 10 == 0:
-        f.write(" ".join(row) + "\n")
-        row = []
+        rowlen = 11
+        if row:
+          f.write(" ".join(row) + "\n")
+          row = []
+        f.write("%5d,\n" % (0,))
+      else:
+        row.append("%5d," % (0,))
       for l in table:
         if not (l is None):
           row.append("%5d," % (len(l)//2,))
-          i = i + 1
-          if i % 10 == 0:
+          if len(row) == rowlen:
             f.write(" ".join(row) + "\n")
             row = []
           for j, e in enumerate(l):
             row.append("%5d," % (e,))
-            i = i + 1
-            if VISUALIZE_HASH_ROWS and j == len(l) - 1:
-              i = 0
-            if i % 10 == 0:
+            if len(row) == rowlen or (VISUALIZE_HASH_ROWS and j == len(l) - 1):
               f.write(" ".join(row) + "\n")
               row = []
-      if i % 10 != 0:
+      if row:
         f.write(" ".join(row) + "\n")
       f.write("};\n")
 
@@ -444,6 +446,9 @@ def printbody(entry_dict, classname):
     f.write("    }\n")
     f.write("  }\n")
     f.write("}\n")
+
+  f.write("\n")
+  f.write("// clang-format on\n");
 
 if privatedict:
   enum_dict = {}
