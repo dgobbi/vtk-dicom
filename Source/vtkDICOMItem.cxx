@@ -272,12 +272,28 @@ vtkDICOMItem *vtkDICOMItem::FindItemOrInsert(
     }
     else if (!tptr->Value.IsValid())
     {
-      // we just inserted a non-SQ value, remove it
+      // we just inserted a non-SQ value, remove it from the linked list
       tptr->Prev->Next = tptr->Next;
       tptr->Next->Prev = tptr->Prev;
+
+      // mark the slot free
       tptr->Next = nullptr;
       tptr->Prev = nullptr;
-      this->L->NumberOfDataElements--;
+
+      // Only decrement NumberOfDataElements if this was the last used slot.
+      if (this->L && this->L->DataElements)
+      {
+        ptrdiff_t idx = tptr - this->L->DataElements;
+        if (idx == static_cast<ptrdiff_t>(this->L->NumberOfDataElements) - 1)
+        {
+          this->L->NumberOfDataElements--;
+          while (this->L->NumberOfDataElements > 0 &&
+                 this->L->DataElements[this->L->NumberOfDataElements - 1].Next == nullptr)
+          {
+            this->L->NumberOfDataElements--;
+          }
+        }
+      }
     }
   }
   else
@@ -298,12 +314,28 @@ void vtkDICOMItem::Set(vtkDICOMTag tag, const vtkDICOMValue& v)
 
   if (!v.IsValid())
   {
-    // setting a value to the invalid value causes deletion
+    // setting a value to the invalid value causes deletion from the linked list
     tptr->Prev->Next = tptr->Next;
     tptr->Next->Prev = tptr->Prev;
+
+    // mark the slot free
     tptr->Next = nullptr;
     tptr->Prev = nullptr;
-    this->L->NumberOfDataElements--;
+
+    // Only decrement NumberOfDataElements if this was the last used slot.
+    if (this->L && this->L->DataElements)
+    {
+      ptrdiff_t idx = tptr - this->L->DataElements;
+      if (idx == static_cast<ptrdiff_t>(this->L->NumberOfDataElements) - 1)
+      {
+        this->L->NumberOfDataElements--;
+        while (this->L->NumberOfDataElements > 0 &&
+               this->L->DataElements[this->L->NumberOfDataElements - 1].Next == nullptr)
+        {
+          this->L->NumberOfDataElements--;
+        }
+      }
+    }
   }
 }
 
