@@ -60,6 +60,7 @@ public:
     return "SCANCO MicroCT"; }
   //@}
 
+  using Superclass::CanReadFile;
   //@{
   //! Return true if this reader can read the given file.
   int CanReadFile(const char* filename) override;
