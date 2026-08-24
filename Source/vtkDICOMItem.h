@@ -41,14 +41,15 @@ private:
     vtkDICOMDataElement Tail;
     vtkDICOMReferenceCount ReferenceCount;
     int NumberOfDataElements;
-    vtkDICOMDataElement *DataElements;
+    vtkDICOMDataElement *DataElementStore;
+    int DataElementStoreCount;
     unsigned int ByteOffset;
     bool Delimited;
     vtkDICOMCharacterSet CharacterSet;
     vtkDICOMVR VRForXS;
 
-    List() : ReferenceCount(1),
-             NumberOfDataElements(0), DataElements(nullptr),
+    List() : ReferenceCount(1), NumberOfDataElements(0),
+             DataElementStore(nullptr), DataElementStoreCount(0),
              ByteOffset(0), Delimited(false),
              CharacterSet(vtkDICOMCharacterSet::ISO_IR_6),
              VRForXS(vtkDICOMVR::US) {}

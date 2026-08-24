@@ -62,25 +62,31 @@ vtkDICOMItem::vtkDICOMItem(
 //----------------------------------------------------------------------------
 vtkDICOMDataElement *vtkDICOMItem::NewDataElement(vtkDICOMDataElement **iter)
 {
-  int n = this->L->NumberOfDataElements;
+  int n = this->L->DataElementStoreCount++;
 
   // if no data elements yet, then allocate four
-  if (this->L->DataElements == nullptr)
+  if (n == 0)
   {
-    this->L->DataElements = new vtkDICOMDataElement[4];
+    this->L->DataElementStore = new vtkDICOMDataElement[4];
   }
   // if n is a power of two, double allocated space
   else if (n >= 4 && (n & (n-1)) == 0)
   {
     // but first check if a free element exists
-    do { --n; } while (n > 0 && this->L->DataElements[n].Next != nullptr);
+    int m = n;
+    do { --m; } while (m > 0 && this->L->DataElementStore[m].Next != nullptr);
 
-    if (this->L->DataElements[n].Next != nullptr)
+    if (this->L->DataElementStore[m].Next == nullptr)
     {
-      // make a new, larger list
-      n = this->L->NumberOfDataElements;
-      vtkDICOMDataElement *oldptr = this->L->DataElements;
-      this->L->DataElements = new vtkDICOMDataElement[2*n];
+      // don't increase count, use the free slot that we found
+      this->L->DataElementStoreCount--;
+      n = m;
+    }
+    else
+    {
+      // more space is needed, so double the allocation
+      vtkDICOMDataElement *oldptr = this->L->DataElementStore;
+      this->L->DataElementStore = new vtkDICOMDataElement[2*n];
       vtkDICOMItem::CopyDataElements(
         this->L->Head.Next, &this->L->Tail, this->L);
       if (iter)
@@ -96,13 +102,13 @@ vtkDICOMDataElement *vtkDICOMItem::NewDataElement(vtkDICOMDataElement **iter)
     }
   }
 
-  return &this->L->DataElements[n];
+  return &this->L->DataElementStore[n];
 }
 
 //----------------------------------------------------------------------------
 void vtkDICOMItem::FreeList()
 {
-  delete [] this->L->DataElements;
+  delete [] this->L->DataElementStore;
   delete this->L;
   this->L = nullptr;
 }
@@ -111,7 +117,8 @@ void vtkDICOMItem::FreeList()
 void vtkDICOMItem::CopyList(const List *o, List *t)
 {
   t->NumberOfDataElements = o->NumberOfDataElements;
-  t->DataElements = nullptr;
+  t->DataElementStore = nullptr;
+  t->DataElementStoreCount = o->NumberOfDataElements;
   t->ByteOffset = o->ByteOffset;
   t->Delimited = o->Delimited;
   t->CharacterSet = o->CharacterSet;
@@ -133,7 +140,7 @@ void vtkDICOMItem::CopyList(const List *o, List *t)
 
     // allocate a minimum of 4 elements
     if (m < 4) { m = 4; }
-    t->DataElements = new vtkDICOMDataElement[m];
+    t->DataElementStore = new vtkDICOMDataElement[m];
     vtkDICOMItem::CopyDataElements(o->Head.Next, &o->Tail, t);
   }
 }
@@ -142,7 +149,7 @@ void vtkDICOMItem::CopyList(const List *o, List *t)
 void vtkDICOMItem::CopyDataElements(
   const vtkDICOMDataElement *begin, const vtkDICOMDataElement *end, List *t)
 {
-  vtkDICOMDataElement *e = t->DataElements;
+  vtkDICOMDataElement *e = t->DataElementStore;
   t->Head.Next = e;
 
   const vtkDICOMDataElement *ptr = begin;

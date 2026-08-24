@@ -133,7 +133,36 @@ int TestDICOMItem(int argc, char *argv[])
     i.Set(DC::MappedPixelValue, 10);
     TestAssert(i.Get(DC::MappedPixelValue).GetVR() == vtkDICOMVR::US);
   }
-
+  {
+    // check deletion of data elements from vtkDICOMItem
+    vtkDICOMItem i;
+    i.Set(DC::Modality, "CT");
+    i.Set(DC::SeriesNumber, 1);
+    i.Set(DC::InstanceNumber, 1);
+    i.Set(DC::SamplesPerPixel, 1);
+    i.Set(DC::PhotometricInterpretation, "MONOCHROME2");
+    i.Set(DC::Rows, 10);
+    i.Set(DC::Columns, 20);
+    i.Set(DC::BitsAllocated, 16);
+    i.Set(DC::BitsStored, 12);
+    i.Set(DC::HighBit, 11);
+    TestAssert(i.GetNumberOfDataElements() == 10);
+    i.Set(DC::Rows, vtkDICOMValue());    // deletion
+    i.Set(DC::Columns, vtkDICOMValue()); // deletion
+    TestAssert(i.Get(DC::Rows).IsValid() == false);
+    TestAssert(i.Get(DC::Columns).IsValid() == false);
+    i.Set(DC::Rows, 10);    // restore the data element
+    i.Set(DC::Columns, 20); // restore the data element
+    TestAssert(i.GetNumberOfDataElements() == 10);
+    TestAssert(i.Get(DC::Rows).IsValid() == true);
+    TestAssert(i.Get(DC::Rows).AsUnsignedShort() == 10);
+    TestAssert(i.Get(DC::Columns).IsValid() == true);
+    TestAssert(i.Get(DC::Columns).AsUnsignedShort() == 20);
+    // verify elements after deleted/restored elements weren't corrupted
+    TestAssert(i.Get(DC::BitsAllocated).AsUnsignedShort() == 16);
+    TestAssert(i.Get(DC::BitsStored).AsUnsignedShort() == 12);
+    TestAssert(i.Get(DC::HighBit).AsUnsignedShort() == 11);
+  }
   meta->Delete();
   return rval;
 }
