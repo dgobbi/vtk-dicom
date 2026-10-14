@@ -1278,7 +1278,7 @@ size_t Decoder<E>::ReadElementValue(
     if (vr == vtkDICOMVR::UN)
     {
       // if VR is UN then it is a sequence encoded as implicit LE
-      // (see DICOM Part 5, Section 6.2.2, Unknown (UN) Value Representation
+      // (see DICOM Part 5, Section 6.2.2, Unknown (UN) Value Representation)
       v.AllocateUnsignedCharData(vr, 0);
       this->ImplicitLE->SkipElements(
         cp, ep, vl, vtkDICOMTag(HxFFFE,HxE0DD), &v);
@@ -1609,10 +1609,11 @@ bool Decoder<E>::ReadElements(
       explicitUN = true;
     }
 
-    if (explicitUN && vl == HxFFFFFFFF)
+    if (explicitUN && (vr == vtkDICOMVR::SQ || vl == HxFFFFFFFF))
     {
-      // if VR is explicit UN and length undefined, sequence is implicit LE
-      // (see DICOM Part 5, Section 6.2.2)
+      // if VR is explicit UN and is known to be a sequence, or if it has
+      // undefined length (implying it's a sequence), then use implicit LE
+      // (see DICOM Part 5, Section 6.2.2, Unknown (UN) Value Representation)
       rl = this->ImplicitLE->ReadElementValue(cp, ep, vr, vl, v);
     }
     else
