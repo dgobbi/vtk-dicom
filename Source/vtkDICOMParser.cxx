@@ -143,6 +143,9 @@ public:
   // Get the VR to use for XS by checking PixelRepresentation.
   vtkDICOMVR GetVRForXS();
 
+  // Keep interpretation attributes even when they are absent from the query.
+  void SetContextValue(vtkDICOMTag tag, const vtkDICOMValue& v);
+
   // Set the previous context.
   void SetPrev(DecoderContext *context) { this->Prev = context; }
   DecoderContext *GetPrev() { return this->Prev; }
@@ -233,6 +236,21 @@ vtkDICOMVR DecoderContext::GetVRForXS()
     }
   }
   return vr;
+}
+
+//----------------------------------------------------------------------------
+void DecoderContext::SetContextValue(vtkDICOMTag tag, const vtkDICOMValue& v)
+{
+  if (tag == DC::SpecificCharacterSet &&
+      this->CharacterSet == vtkDICOMCharacterSet::Unknown)
+  {
+    // A forced character set is established in the constructor.
+    this->CharacterSet = vtkDICOMCharacterSet(v.GetCharData(), v.GetVL());
+  }
+  else if (tag == DC::PixelRepresentation)
+  {
+    this->VRForXS = (v.AsUnsignedShort() == 0 ? vtkDICOMVR::US : vtkDICOMVR::SS);
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -1558,8 +1576,16 @@ bool Decoder<E>::ReadElements(
     // break if delimiter found
     if (!readGroup && tag == delimiter) { break; }
 
-    // skip the value if this tag is not in the query
-    if (this->HasQuery && !this->QueryContains(tag))
+    // An unrequested interpretation attribute belongs to the decoder
+    // context, not the result item or the query's matching predicates.
+    const bool requested = !this->HasQuery || this->QueryContains(tag);
+    // Explicit UN uses the dictionary VR in the value reader below.
+    const bool useDictVR = (vr == vtkDICOMVR::UN && !this->ImplicitVR);
+    const bool contextOnly = !requested &&
+      ((tag == DC::SpecificCharacterSet && (vr == vtkDICOMVR::CS || useDictVR) &&
+        vl != HxFFFFFFFF) ||
+       (tag == DC::PixelRepresentation && (vr == vtkDICOMVR::US || useDictVR) && vl == 2));
+    if (!requested && !contextOnly)
     {
       if (vl != HxFFFFFFFF)
       {
@@ -1600,16 +1626,14 @@ bool Decoder<E>::ReadElements(
     vtkDICOMValue v;
     size_t rl = 0;
 
-    bool explicitUN = false;
-    if (vr == vtkDICOMVR::UN && !this->ImplicitVR)
+    if (useDictVR)
     {
       // if it was explicitly labeled 'UN' then check dictionary
       vr = this->Context->FindDictVR(tag);
       this->LastVR = vr; // save true VR, rather than recorded VR
-      explicitUN = true;
     }
 
-    if (explicitUN && (vr == vtkDICOMVR::SQ || vl == HxFFFFFFFF))
+    if (useDictVR && (vr == vtkDICOMVR::SQ || vl == HxFFFFFFFF))
     {
       // if VR is explicit UN and is known to be a sequence, or if it has
       // undefined length (implying it's a sequence), then use implicit LE
@@ -1639,6 +1663,12 @@ bool Decoder<E>::ReadElements(
     }
 
     tl += rl;
+
+    if (contextOnly)
+    {
+      this->Context->SetContextValue(tag, v);
+      continue;
+    }
 
     // store the value
     if (this->Item)
