@@ -4,6 +4,7 @@ set(TEST_SRCS
   TestDICOMFilePath.cxx
   TestDICOMItem.cxx
   TestDICOMMetaData.cxx
+  TestDICOMQueryContext.cxx
   TestDICOMSequence.cxx
   TestDICOMTagPath.cxx
   TestDICOMUtilities.cxx
