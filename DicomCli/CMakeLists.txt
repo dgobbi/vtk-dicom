@@ -21,3 +21,10 @@ set(LIB_SRCS
 
 add_library(${LIB_NAME} STATIC ${LIB_SRCS})
 target_link_libraries(${LIB_NAME} ${VTK_DICOM_LINK_TARGET})
+
+if(BUILD_TESTING)
+  add_executable(TestDICOMQueryBlocks ../Testing/TestDICOMQueryBlocks.cxx)
+  target_include_directories(TestDICOMQueryBlocks PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  target_link_libraries(TestDICOMQueryBlocks dicomcli)
+  add_test(NAME TestDICOMQueryBlocks COMMAND TestDICOMQueryBlocks)
+endif()
