@@ -22,6 +22,22 @@
 
 typedef std::vector<vtkDICOMTagPath> QueryTagList;
 
+// This item belongs to the CLI parser, not the exported vtkDICOM data model.
+// Creator provenance must survive successive keys even without display paths.
+#define DICOMCLI_QUERY_ITEM 1
+class DICOMQueryItem : public vtkDICOMItem
+{
+public:
+  // Only automatically placed creators may move when a literal block is requested.
+  std::vector<vtkDICOMTagPath> AutoCreators;
+
+  void Clear()
+  {
+    vtkDICOMItem::Clear();
+    this->AutoCreators.clear();
+  }
+};
+
 //! Read a query file, return 'true' on success.
 /*!
  *  The query file is read into the supplied vtkDICOMItem as a set of
@@ -32,7 +48,7 @@ typedef std::vector<vtkDICOMTagPath> QueryTagList;
  *  will not be pushed onto the QueryTagList.
  */
 bool dicomcli_readquery(
-  const char *fname, vtkDICOMItem *query, QueryTagList *ql=nullptr,
+  const char *fname, DICOMQueryItem *query, QueryTagList *ql=nullptr,
   bool ql_unique=true);
 
 //! Read a single query key, return 'true' on success.
@@ -40,7 +56,7 @@ bool dicomcli_readquery(
  *  See dicomcli_readquery() for more information.
  */
 bool dicomcli_readkey(
-  const char *key, vtkDICOMItem *query, QueryTagList *ql=nullptr,
+  const char *key, DICOMQueryItem *query, QueryTagList *ql=nullptr,
   bool ql_unique=true);
 
 //! Check if text looks like a query key (for error checking).
@@ -53,7 +69,7 @@ bool dicomcli_looks_like_key(const char *key);
  *  values, one value per line, without quotes.
  */
 bool dicomcli_readuids(
-  const char *fname, vtkDICOMItem *query, QueryTagList *ql=nullptr);
+  const char *fname, DICOMQueryItem *query, QueryTagList *ql=nullptr);
 
 //! Resolve a query tag to a specific data set.
 /*!

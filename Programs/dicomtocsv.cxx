@@ -888,7 +888,7 @@ int MAINMACRO(int argc, char *argv[])
   int scandepth = std::numeric_limits<int>::max();
   bool followSymlinks = true;
   QueryTagList qtlist;
-  vtkDICOMItem query;
+  DICOMQueryItem query;
   std::vector<std::string> oplist;
   ReductionType rt = None;
   bool allUnique = false;

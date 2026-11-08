@@ -141,17 +141,125 @@ size_t LineReader::ReadLine(std::string *s)
   return total;
 }
 
+// A missing creator element does not make a block free if the query already
+// addresses data in it by literal group and element.
+unsigned int FindFreeBlock(const vtkDICOMItem& item, unsigned short group,
+                           unsigned int preferred)
+{
+  bool used[256] = {};
+  for (auto it = item.Begin(); it != item.End(); ++it)
+  {
+    vtkDICOMTag tag = it->GetTag();
+    if (tag.GetGroup() > group) break;
+    if (tag.GetGroup() != group) continue;
+    unsigned int e = tag.GetElement();
+    if (e >= 0x10 && e <= 0xff) used[e] = true;
+    if (e >= 0x1000) used[e >> 8] = true;
+  }
+  if (preferred >= 0x10 && !used[preferred]) return preferred;
+  for (unsigned int b = 0x10; b <= 0xff; ++b)
+    if (!used[b]) return b;
+  return 0;
+}
+
+// Replace one component of displayed paths (and any nested creator paths)
+// when an automatic creator block moves. Keep the user-supplied order.
+void RemapPaths(std::vector<vtkDICOMTagPath>& paths, const vtkDICOMTagPath& prefix,
+                unsigned short group, unsigned int oldBlock, unsigned int newBlock)
+{
+  const unsigned int depth = prefix.GetSize();
+  for (auto& path : paths)
+  {
+    if (path.GetSize() <= depth) continue;
+    vtkDICOMTag tag = path.GetTag(depth);
+    unsigned int e = tag.GetElement();
+    if (tag.GetGroup() != group || (e != oldBlock && (e >> 8) != oldBlock)) continue;
+    vtkDICOMTagPath parent;
+    for (unsigned int i = 0; i < depth; ++i)
+      parent = vtkDICOMTagPath(parent, i ? path.GetIndex(i-1) : 0, path.GetTag(i));
+    if (parent != prefix || (depth && path.GetIndex(depth-1) != 0)) continue;
+    unsigned int moved = e == oldBlock ? newBlock : ((newBlock << 8) | (e & 0xff));
+    vtkDICOMTagPath replacement(parent, 0, vtkDICOMTag(group, moved));
+    for (unsigned int i = depth+1; i < path.GetSize(); ++i)
+      replacement = vtkDICOMTagPath(replacement, path.GetIndex(i-1), path.GetTag(i));
+    path = replacement;
+  }
+}
+
+bool ResolveQueryBlock(DICOMQueryItem *query, const vtkDICOMTagPath& prefix,
+                       vtkDICOMTag& tag, const std::string& creator, QueryTagList *ql,
+                       const vtkDICOMValue *replacement = nullptr)
+{
+  const unsigned short g = tag.GetGroup();
+  const unsigned int e = tag.GetElement();
+  vtkDICOMItem item = *query;
+  if (prefix.GetSize())
+  {
+    vtkDICOMSequence seq = query->Get(prefix);
+    item = seq.GetItem(0);
+  }
+  const unsigned int block = e >> 8;
+  if (!creator.empty())
+  {
+    vtkDICOMTag resolved = item.ResolvePrivateTag(tag, creator);
+    if (resolved == vtkDICOMTag(0xffff, 0xffff))
+    {
+      unsigned int b = FindFreeBlock(item, g, block);
+      if (!b) return false;
+      resolved = item.ResolvePrivateTagForWriting(vtkDICOMTag(g, (b << 8) | (e & 0xff)), creator);
+      vtkDICOMTag ctag(g, b);
+      vtkDICOMTagPath cp(prefix, 0, ctag);
+      query->Set(cp, item.Get(ctag));
+      query->AutoCreators.push_back(cp);
+    }
+    tag = resolved;
+    return true;
+  }
+  vtkDICOMTagPath cp(prefix, 0, vtkDICOMTag(g, e < 0x100 ? e : block));
+  auto pos = std::find(query->AutoCreators.begin(), query->AutoCreators.end(), cp);
+  if (pos == query->AutoCreators.end()) return true;
+  if (e < 0x100)
+  {
+    // Wait until the complete value (including query-file quotes) is parsed.
+    if (!replacement) return true;
+    if (item.Get(vtkDICOMTag(g, e)).AsString() == replacement->AsString())
+    {
+      // A matching explicit declaration pins this block to its literal address.
+      query->AutoCreators.erase(pos);
+      return true;
+    }
+  }
+  const unsigned int sourceBlock = e < 0x100 ? e : block;
+  unsigned int dest = FindFreeBlock(item, g, 0);
+  if (!dest) return false;
+  // 'item' is a copy-on-write snapshot; iterators stay valid while editing query.
+  for (auto it = item.Begin(); it != item.End(); ++it)
+  {
+    vtkDICOMTag oldTag = it->GetTag();
+    unsigned int n = oldTag.GetElement();
+    if (oldTag.GetGroup() != g || (n != sourceBlock && (n >> 8) != sourceBlock)) continue;
+    unsigned int moved = n == sourceBlock ? dest : ((dest << 8) | (n & 0xff));
+    query->Set(vtkDICOMTagPath(prefix, 0, vtkDICOMTag(g, moved)), it->GetValue());
+    query->Set(vtkDICOMTagPath(prefix, 0, oldTag), vtkDICOMValue());
+  }
+  if (ql) RemapPaths(*ql, prefix, g, sourceBlock, dest);
+  RemapPaths(query->AutoCreators, prefix, g, sourceBlock, dest);
+  return true;
+}
+
 }
 
 // Prototype for function that reads one query key
 bool dicomcli_readkey_query(
-  const char *cp, vtkDICOMItem *query, QueryTagList *ql,
-  bool ql_unique, bool qfile);
+  const char *cp, DICOMQueryItem *query, QueryTagList *ql,
+  bool ql_unique, bool qfile, vtkDICOMTagPath *result = nullptr);
 
 // Read a query file
 bool dicomcli_readquery(
-  const char *fname, vtkDICOMItem *query, QueryTagList *ql, bool ql_unique)
+  const char *fname, DICOMQueryItem *query, QueryTagList *ql, bool ql_unique)
 {
+  QueryTagList local;
+  if (!ql) ql = &local;
   vtkDICOMFile f(fname, vtkDICOMFile::In);
 
   // Each query line is either:
@@ -196,13 +304,13 @@ bool dicomcli_readquery(
 
 // If qfile is true, then key is being read from a query file
 bool dicomcli_readkey_query(
-  const char *cp, vtkDICOMItem *query, QueryTagList *ql,
-  bool ql_unique, bool qfile)
+  const char *cp, DICOMQueryItem *query, QueryTagList *ql,
+  bool ql_unique, bool qfile, vtkDICOMTagPath *result)
 {
   // read the tag path
   vtkDICOMTagPath tagPath;
+  vtkDICOMTagPath parentPath;
   std::string creator;
-  size_t tagDepth = 0;
   size_t s = 0;
   size_t lineStart = s;
   size_t n = strlen(cp);
@@ -214,6 +322,7 @@ bool dicomcli_readkey_query(
 
   while (!tagError)
   {
+    creator.clear();
     // check for private creator in square brackets
     if (cp[s] == '[')
     {
@@ -281,41 +390,15 @@ bool dicomcli_readkey_query(
       }
     }
 
-    // if creator, then resolve the tag now
-    if (creator.length() > 0 && (tag.GetGroup() & 0x0001) != 0)
+    if ((tag.GetGroup() & 1) && (!creator.empty() || tag.GetElement() >= 0x10) &&
+        !ResolveQueryBlock(query, tagPath, tag, creator, ql))
     {
-      if (tagDepth == 0)
-      {
-        tag = query->ResolvePrivateTagForWriting(tag, creator);
-      }
-      else
-      {
-        // Since "item" is copy-on-write, we want to avoid creating
-        // an unnecessary copy when the the creator element is added.
-        // So we get the item, add the creator element, then get
-        // the tag and value for that element, and let the item go
-        // out of scope so that its reference count is decremented
-        // (hopefully decremented to 1, so that the "copy" is not
-        // performed).  Then we add the creator element to the
-        // query data set (which may have become a copy due to
-        // copy-on-write, if the reference count was greater than one).
-        vtkDICOMTagPath ctagPath;
-        vtkDICOMValue cval;
-        {
-          // this must be in its own scope in order to work...
-          vtkDICOMSequence seq = query->Get(tagPath);
-          vtkDICOMItem item = seq.GetItem(0);
-          tag = item.ResolvePrivateTagForWriting(tag, creator);
-          vtkDICOMTag ctag(tag.GetGroup(), tag.GetElement() >> 8);
-          ctagPath = vtkDICOMTagPath(tagPath, 0, ctag);
-          cval = item.Get(ctag);
-        }
-        // add the creator element
-        query->Set(ctagPath, cval);
-      }
+      fprintf(stderr, "Error: No available block in private group %04x.\n", tag.GetGroup());
+      return false;
     }
 
     // build the tag path
+    parentPath = tagPath;
     tagPath = vtkDICOMTagPath(tagPath, 0, tag);
 
     if (s < n && (cp[s] == '/' || cp[s] == '\\'))
@@ -326,7 +409,6 @@ bool dicomcli_readkey_query(
         query->Set(tagPath, vtkDICOMSequence(1));
       }
       s++;
-      tagDepth++;
     }
     else
     {
@@ -466,15 +548,19 @@ bool dicomcli_readkey_query(
     return false;
   }
 
-  // add the tag and value to the query data set
+  // Parse the complete replacement before deciding whether an automatic
+  // creator must move out of a literal creator slot.
+  vtkDICOMValue value = query->Get(tagPath);
+  bool setValue = true;
   if (valueStart == valueEnd)
   {
     // only overwrite previous value if '=' was explicitly used
     if (keyHasAssignment || !query->Get(tagPath).IsValid())
     {
       // empty value (always matches, always retrieved)
-      query->Set(tagPath, vtkDICOMValue(vr));
+      value = vtkDICOMValue(vr);
     }
+    else setValue = false;
   }
   else if (valueContainsQuotes)
   {
@@ -490,26 +576,35 @@ bool dicomcli_readkey_query(
     }
     if (vr.HasSpecificCharacterSet())
     {
-      query->Set(tagPath, vtkDICOMValue(vr, cs, sval));
+      value = vtkDICOMValue(vr, cs, sval);
     }
     else
     {
-      query->Set(tagPath, vtkDICOMValue(vr, sval));
+      value = vtkDICOMValue(vr, sval);
     }
   }
   else
   {
     if (vr.HasSpecificCharacterSet())
     {
-    query->Set(tagPath,
-      vtkDICOMValue(vr, cs, &cp[valueStart], valueEnd - valueStart));
+      value = vtkDICOMValue(vr, cs, &cp[valueStart], valueEnd - valueStart);
     }
     else
     {
-    query->Set(tagPath,
-      vtkDICOMValue(vr, &cp[valueStart], valueEnd - valueStart));
+      value = vtkDICOMValue(vr, &cp[valueStart], valueEnd - valueStart);
     }
   }
+
+  unsigned int element = tag.GetElement();
+  if (creator.empty() && (tag.GetGroup() & 1) && element >= 0x10 && element < 0x100 &&
+      !ResolveQueryBlock(query, parentPath, tag, creator, ql, &value))
+  {
+    fprintf(stderr, "Error: No available block in private group %04x.\n", tag.GetGroup());
+    return false;
+  }
+  if (setValue) query->Set(tagPath, value);
+
+  if (result) *result = tagPath;
 
   // add the tag path to the list, if it isn't already there
   if (ql)
@@ -524,7 +619,7 @@ bool dicomcli_readkey_query(
 }
 
 bool dicomcli_readkey(
-  const char *cp, vtkDICOMItem *query, QueryTagList *ql, bool ql_unique)
+  const char *cp, DICOMQueryItem *query, QueryTagList *ql, bool ql_unique)
 {
   return dicomcli_readkey_query(cp, query, ql, ql_unique, false);
 }
@@ -605,7 +700,7 @@ bool dicomcli_looks_like_key(const char *cp)
 }
 
 bool dicomcli_readuids(
-  const char *fname, vtkDICOMItem *query, QueryTagList *ql)
+  const char *fname, DICOMQueryItem *query, QueryTagList *ql)
 {
   vtkDICOMFile f(fname, vtkDICOMFile::In);
 
@@ -614,7 +709,9 @@ bool dicomcli_readuids(
   // GGGG,EEEE   # a tag or key (only one)
   // 1.185.234   # a UID, followed by more UIDs
 
-  QueryTagList ql2;
+  QueryTagList local;
+  if (!ql) ql = &local;
+  vtkDICOMTagPath uidPath;
   std::string val;
   int lineNumber = 0;
   std::string line;
@@ -644,10 +741,10 @@ bool dicomcli_readuids(
       continue;
     }
 
-    if (ql2.size() == 0)
+    if (uidPath.GetSize() == 0)
     {
       // get the tag line, if not gotten yet
-      if (!dicomcli_readkey_query(cp, query, &ql2, true, true))
+      if (!dicomcli_readkey_query(cp, query, ql, true, true, &uidPath))
       {
         fprintf(stderr, "Error %s line %d: ", fname, lineNumber);
         fprintf(stderr, "Need Valid DICOM tag at top of file.\n");
@@ -671,16 +768,9 @@ bool dicomcli_readuids(
     }
   }
 
-  if (ql2.size() > 0)
+  if (uidPath.GetSize() > 0)
   {
-    // add the key and value to the query
-    vtkDICOMTagPath tagPath = ql2[0];
-    query->Set(tagPath, val);
-
-    if (ql && std::find(ql->begin(), ql->end(), tagPath) == ql->end())
-    {
-      ql->push_back(tagPath);
-    }
+    query->Set(uidPath, val);
   }
 
   return (f.GetError() == 0);

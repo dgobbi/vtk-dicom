@@ -569,7 +569,7 @@ int MAINMACRO(int argc, char *argv[])
   int scandepth = std::numeric_limits<int>::max();
   const char *pattern = "";
   QueryTagList qtlist;
-  vtkDICOMItem query;
+  DICOMQueryItem query;
   bool followSymlinks = true;
   bool onlyDicomdir = false;
   bool ignoreDicomdir = false;

@@ -536,7 +536,7 @@ int MAINMACRO(int argc, char *argv[])
 
   // for the optional query file
   QueryTagList qtlist;
-  vtkDICOMItem query;
+  DICOMQueryItem query;
 
   // always query SpecificCharacterSet
   query.Set(DC::SpecificCharacterSet, vtkDICOMValue(VR::CS));

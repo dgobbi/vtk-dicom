@@ -192,7 +192,7 @@ std::string dicompull_basedir(const char *outdir)
 }
 
 bool dicompull_checktags(
-  vtkDICOMItem *query, QueryTagList *qtlist, const char *outdir)
+  DICOMQueryItem *query, QueryTagList *qtlist, const char *outdir)
 {
   std::string keytext;
   const char *cp = outdir;
@@ -236,7 +236,7 @@ std::string dicompull_makedirname(vtkDICOMMetaData *meta, const char *outdir)
   std::string keytext;
   std::string val;
   vtkDICOMValue v;
-  vtkDICOMItem query;
+  DICOMQueryItem query;
   QueryTagList qtlist;
 
   const char *cp = outdir;
@@ -307,7 +307,7 @@ int MAINMACRO(int argc, char *argv[])
   bool followSymlinks = true;
   const char *pattern = "";
   QueryTagList qtlist;
-  vtkDICOMItem query;
+  DICOMQueryItem query;
   bool requirePixelData = false;
   bool findSeries = false;
   bool onlyDicomdir = false;

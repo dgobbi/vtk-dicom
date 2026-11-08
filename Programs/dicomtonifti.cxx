@@ -427,7 +427,7 @@ void dicomtonifti_read_options(
         }
         else
         {
-          vtkDICOMItem data;
+          DICOMQueryItem data;
           QueryTagList qtlist;
           if (!dicomcli_readkey(arg, &data, &qtlist))
           {
