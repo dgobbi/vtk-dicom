@@ -1210,7 +1210,7 @@ int vtkScancoCTReader::RequestData(
       bit ^= (bit & 2);
       for (int j = 0; j < ysize; j++)
       {
-        char *inPtr = input + (i*yinc + j)*xinc;
+        char *inPtr = input + ((i/2)*yinc + (j/2))*xinc;
         bit ^= (bit & 1);
         for (int k = 0; k < xsize; k++)
         {
