@@ -10,6 +10,7 @@ set(TEST_SRCS
   TestDICOMValue.cxx
   TestDICOMVM.cxx
   TestDICOMVR.cxx
+  TestScancoCTReader.cxx
 )
 
 if(DEFINED VTK_MODULE_ENABLE_VTK_DICOM AND NOT DICOM_EXTERNAL_BUILD)
