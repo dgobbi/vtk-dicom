@@ -417,6 +417,75 @@ void vtkScancoCTReader::StripString(char *dest, const char *cp, size_t l)
 }
 
 //----------------------------------------------------------------------------
+namespace {
+
+// Get the size of the file, and leave the stream positioned after the
+// bytes that have already been read.
+vtkTypeUInt64 vtkScancoFileSize(std::istream *file, unsigned long bytesRead)
+{
+  file->clear();
+  file->seekg(0, std::ios::end);
+  std::streamoff fileSize = file->tellg();
+  file->clear();
+  file->seekg(static_cast<std::streamoff>(bytesRead), std::ios::beg);
+  if (fileSize < static_cast<std::streamoff>(bytesRead))
+  {
+    return bytesRead;
+  }
+  return static_cast<vtkTypeUInt64>(fileSize);
+}
+
+// Check that the dimensions are not negative, and that the size of the
+// image in bytes can be computed without overflow.
+bool vtkScancoCheckDimensions(const int dims[3])
+{
+  const vtkTypeUInt64 maxVoxels = static_cast<vtkTypeUInt64>(VTK_ID_MAX)/64;
+  vtkTypeUInt64 voxels = 1;
+  for (int i = 0; i < 3; i++)
+  {
+    if (dims[i] < 0)
+    {
+      return false;
+    }
+    if (dims[i] > 0)
+    {
+      if (voxels > maxVoxels/static_cast<vtkTypeUInt64>(dims[i]))
+      {
+        return false;
+      }
+      voxels *= static_cast<vtkTypeUInt64>(dims[i]);
+    }
+  }
+  return true;
+}
+
+// Check that the data that follows the header can fill the image: one
+// byte per voxel byte, 8 voxels per byte when packed, and at most 255
+// voxels per byte when run-length encoded.  The dimensions must already
+// have passed vtkScancoCheckDimensions().
+bool vtkScancoCheckDataSize(const int dims[3], int bytesPerVoxel,
+                            int compression, vtkTypeUInt64 dataLength)
+{
+  vtkTypeUInt64 voxels = 1;
+  for (int i = 0; i < 3; i++)
+  {
+    voxels *= static_cast<vtkTypeUInt64>(dims[i]);
+  }
+  vtkTypeUInt64 needed = voxels*static_cast<vtkTypeUInt64>(bytesPerVoxel);
+  if (compression == 0x00b1)
+  {
+    needed = voxels/8;
+  }
+  else if (compression == 0x00b2 || compression == 0x00c2)
+  {
+    needed = voxels/255;
+  }
+  return (needed <= dataLength);
+}
+
+} // end anonymous namespace
+
+//----------------------------------------------------------------------------
 int vtkScancoCTReader::ReadISQHeader(std::istream *file, unsigned long bytesRead)
 {
   if (bytesRead < 512)
@@ -532,6 +601,14 @@ int vtkScancoCTReader::ReadISQHeader(std::istream *file, unsigned long bytesRead
     }
   }
 
+  if (!vtkScancoCheckDimensions(pixdim))
+  {
+    vtkErrorMacro("Invalid dimensions in ISQ file: " << pixdim[0]
+                  << ", " << pixdim[1] << ", " << pixdim[2]);
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
+    return 0;
+  }
+
   this->SetDataExtent(0, pixdim[0]-1,
                       0, pixdim[1]-1,
                       0, pixdim[2]-1);
@@ -554,8 +631,27 @@ int vtkScancoCTReader::ReadISQHeader(std::istream *file, unsigned long bytesRead
   this->SetDataScalarType(VTK_SHORT);
   this->SetNumberOfScalarComponents(1);
 
-  // total header size
-  unsigned long headerSize = static_cast<unsigned long>(dataOffset + 1)*512;
+  // total header size, which cannot be larger than the file
+  vtkTypeUInt64 fullHeaderSize = 0;
+  if (dataOffset >= 0)
+  {
+    fullHeaderSize = (static_cast<vtkTypeUInt64>(dataOffset) + 1)*512;
+  }
+  const vtkTypeUInt64 fileSize = vtkScancoFileSize(file, bytesRead);
+  if (dataOffset < 0 || fullHeaderSize > fileSize)
+  {
+    vtkErrorMacro("Invalid data offset in ISQ file: " << dataOffset);
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
+    return 0;
+  }
+  if (!vtkScancoCheckDataSize(pixdim, 2, 0, fileSize - fullHeaderSize))
+  {
+    vtkErrorMacro("ISQ file is too short for its dimensions: "
+                  << pixdim[0] << ", " << pixdim[1] << ", " << pixdim[2]);
+    this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
+    return 0;
+  }
+  unsigned long headerSize = static_cast<unsigned long>(fullHeaderSize);
   this->SetHeaderSize(headerSize);
 
   // read the rest of the header
@@ -659,8 +755,29 @@ int vtkScancoCTReader::ReadAIMHeader(std::istream *file, unsigned long bytesRead
   int structSize = vtkScancoCTReader::DecodeInt(h); h += intSize;
   int logSize = vtkScancoCTReader::DecodeInt(h); h += intSize;
 
+  // check the sizes before they are used as offsets into the header:
+  // the pre-header holds at least these three sizes, and the struct
+  // holds at least the values that are decoded below
+  const int minStructSize = 24 + 21*intSize + 12;
+  vtkTypeUInt64 fullHeaderSize = headerSize;
+  if (preheaderSize >= 3*intSize && structSize >= minStructSize &&
+      logSize >= 0)
+  {
+    fullHeaderSize += static_cast<vtkTypeUInt64>(preheaderSize);
+    fullHeaderSize += static_cast<vtkTypeUInt64>(structSize);
+    fullHeaderSize += static_cast<vtkTypeUInt64>(logSize);
+  }
+  const vtkTypeUInt64 fileSize = vtkScancoFileSize(file, bytesRead);
+  if (fullHeaderSize == headerSize || fullHeaderSize > fileSize)
+  {
+    vtkErrorMacro("Invalid header sizes in AIM file: " << preheaderSize
+                  << ", " << structSize << ", " << logSize);
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
+    return 0;
+  }
+
   // read the rest of the header
-  headerSize += preheaderSize + structSize + logSize;
+  headerSize = static_cast<unsigned long>(fullHeaderSize);
   this->SetHeaderSize(headerSize);
   if (headerSize > bytesRead)
   {
@@ -694,6 +811,14 @@ int vtkScancoCTReader::ReadAIMHeader(std::istream *file, unsigned long bytesRead
       elementSize[i] = 1.0;
     }
     h += 4;
+  }
+
+  if (!vtkScancoCheckDimensions(&structValues[3]))
+  {
+    vtkErrorMacro("Invalid dimensions in AIM file: " << structValues[3]
+                  << ", " << structValues[4] << ", " << structValues[5]);
+    this->SetErrorCode(vtkErrorCode::FileFormatError);
+    return 0;
   }
 
   // number of components per pixel is 1 by default
@@ -749,6 +874,17 @@ int vtkScancoCTReader::ReadAIMHeader(std::istream *file, unsigned long bytesRead
     default:
       vtkErrorMacro("Unrecognized data type in AIM file: " << dataType);
       return 0;
+  }
+
+  if (!vtkScancoCheckDataSize(&structValues[3],
+        vtkDataArray::GetDataTypeSize(scalarType)*scalarComponents,
+        this->Compression, fileSize - fullHeaderSize))
+  {
+    vtkErrorMacro("AIM file is too short for its dimensions: "
+                  << structValues[3] << ", " << structValues[4]
+                  << ", " << structValues[5]);
+    this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
+    return 0;
   }
 
   this->SetDataScalarType(scalarType);
@@ -1135,6 +1271,15 @@ int vtkScancoCTReader::RequestData(
     return 0;
   }
 
+  // get the number of bytes that follow the header
+  infile.seekg(0, std::ios::end);
+  std::streamoff fileSize = infile.tellg();
+  size_t dataLength = 0;
+  if (fileSize > static_cast<std::streamoff>(this->HeaderSize))
+  {
+    dataLength = static_cast<size_t>(fileSize) - this->HeaderSize;
+  }
+
   // seek to the data
   infile.seekg(this->HeaderSize);
 
@@ -1161,10 +1306,17 @@ int vtkScancoCTReader::RequestData(
   if (this->Compression == 0x00b1)
   {
     // Compute the size of the binary packed data
-    size_t xinc = (xsize+1)/2;
-    size_t yinc = (ysize+1)/2;
-    size_t zinc = (zsize+1)/2;
+    size_t xinc = (static_cast<size_t>(xsize)+1)/2;
+    size_t yinc = (static_cast<size_t>(ysize)+1)/2;
+    size_t zinc = (static_cast<size_t>(zsize)+1)/2;
     size = xinc*yinc*zinc + 1;
+    if (size > dataLength)
+    {
+      this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
+      vtkErrorMacro("File is truncated, " << (size - dataLength)
+                    << " bytes are missing");
+      return 0;
+    }
     input = new char[size];
     infile.read(input, size);
   }
@@ -1172,7 +1324,7 @@ int vtkScancoCTReader::RequestData(
            this->Compression == 0x00c2)
   {
     // Get the size of the compressed data
-    char head[8];
+    char head[8] = {};
     infile.read(head, intSize);
     size = static_cast<unsigned int>(vtkScancoCTReader::DecodeInt(head));
     if (intSize == 8)
@@ -1181,8 +1333,16 @@ int vtkScancoCTReader::RequestData(
       unsigned int high = vtkScancoCTReader::DecodeInt(head + 4);
       size += (static_cast<vtkTypeUInt64>(high) << 32);
     }
-    input = new char[size - intSize];
+    // run-length bits begin with the two voxel values
+    size_t minSize = intSize + (this->Compression == 0x00b2 ? 2 : 0);
+    if (size < minSize || size > dataLength)
+    {
+      this->SetErrorCode(vtkErrorCode::FileFormatError);
+      vtkErrorMacro("Invalid compressed data size: " << size);
+      return 0;
+    }
     size -= intSize;
+    input = new char[size];
     infile.read(input, size);
   }
 
@@ -1192,6 +1352,8 @@ int vtkScancoCTReader::RequestData(
   {
     this->SetErrorCode(vtkErrorCode::PrematureEndOfFileError);
     vtkErrorMacro("File is truncated, " << shortread << " bytes are missing");
+    delete [] input;
+    return 0;
   }
 
   // Close the file
@@ -1200,8 +1362,8 @@ int vtkScancoCTReader::RequestData(
   if (this->Compression == 0x00b1)
   {
     // Unpack binary data, each byte becomes a 2x2x2 block of voxels
-    size_t xinc = (xsize+1)/2;
-    size_t yinc = (ysize+1)/2;
+    size_t xinc = (static_cast<size_t>(xsize)+1)/2;
+    size_t yinc = (static_cast<size_t>(ysize)+1)/2;
     unsigned char v = input[size-1];
     v = (v == 0 ? 0x7f : v);
     unsigned char bit = 0;
@@ -1210,7 +1372,7 @@ int vtkScancoCTReader::RequestData(
       bit ^= (bit & 2);
       for (int j = 0; j < ysize; j++)
       {
-        char *inPtr = input + (i*yinc + j)*xinc;
+        char *inPtr = input + ((i/2)*yinc + (j/2))*xinc;
         bit ^= (bit & 1);
         for (int k = 0; k < xsize; k++)
         {
